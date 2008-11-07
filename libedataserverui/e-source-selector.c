@@ -548,6 +548,31 @@ selection_func (GtkTreeSelection *selection,
 /* Callbacks.  */
 
 static void
+text_cell_edited_cb (ESourceSelector *selector,
+                     const gchar *path_string,
+                     const gchar *new_name)
+{
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	ESource *source;
+
+	tree_view = GTK_TREE_VIEW (selector);
+	model = gtk_tree_view_get_model (tree_view);
+	path = gtk_tree_path_new_from_string (path_string);
+
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get (model, &iter, 0, &source, -1);
+	gtk_tree_path_free (path);
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (new_name != NULL && *new_name != '\0')
+		e_source_set_name (source, new_name);
+}
+
+static void
 cell_toggled_callback (GtkCellRendererToggle *renderer,
 		       const char *path_string,
 		       ESourceSelector *selector)
@@ -943,8 +968,10 @@ e_source_selector_init (ESourceSelector *selector)
 	g_signal_connect (cell_renderer, "toggled", G_CALLBACK (cell_toggled_callback), selector);
 
 	cell_renderer = gtk_cell_renderer_text_new ();
-	g_object_set (G_OBJECT (cell_renderer), "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
 	g_object_set (G_OBJECT (cell_renderer), "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+	g_signal_connect_swapped (
+		cell_renderer, "edited",
+		G_CALLBACK (text_cell_edited_cb), selector);
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) text_cell_data_func, selector, NULL);
 
@@ -1212,6 +1239,64 @@ e_source_selector_source_is_selected (ESourceSelector *selector,
 	source = find_source (selector, source);
 
 	return source && source_is_selected (selector, source);
+}
+
+/**
+ * e_source_selector_edit_primary_selection:
+ * @selector: An #ESourceSelector widget
+ *
+ * Allows the user to rename the primary selected source by opening an
+ * entry box directly in @selector.
+ **/
+void
+e_source_selector_edit_primary_selection (ESourceSelector *selector)
+{
+	GtkTreeRowReference *reference;
+	GtkTreeSelection *selection;
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreePath *path = NULL;
+	GtkTreeIter iter;
+	GList *list;
+
+	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
+
+	tree_view = GTK_TREE_VIEW (selector);
+	column = gtk_tree_view_get_column (tree_view, 0);
+	reference = selector->priv->saved_primary_selection;
+	selection = gtk_tree_view_get_selection (tree_view);
+
+	if (reference != NULL)
+		path = gtk_tree_row_reference_get_path (reference);
+	else if (gtk_tree_selection_get_selected (selection, &model, &iter))
+		path = gtk_tree_model_get_path (model, &iter);
+
+	if (path == NULL)
+		return;
+
+	/* XXX Because we stuff three renderers in a single column,
+	 *     we have to manually hunt for the text renderer. */
+	list = gtk_tree_view_column_get_cell_renderers (column);
+	while (list != NULL) {
+		renderer = list->data;
+		if (GTK_IS_CELL_RENDERER_TEXT (renderer))
+			break;
+		list = g_list_delete_link (list, list);
+	}
+	g_list_free (list);
+
+	/* Make the text cell renderer editable, but only temporarily.
+	 * We don't want editing to be activated by simply clicking on
+	 * the source name.  Too easy for accidental edits to occur. */
+	g_object_set (renderer, "editable", TRUE, NULL);
+	gtk_tree_view_expand_to_path (tree_view, path);
+	gtk_tree_view_set_cursor_on_cell (
+		tree_view, path, column, renderer, TRUE);
+	g_object_set (renderer, "editable", FALSE, NULL);
+
+	gtk_tree_path_free (path);
 }
 
 /**

@@ -1,3 +1,11 @@
+2008-11-07  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Related to bug #558322
+
+	* e-source-selector.c (e_source_selector_edit_primary_selection):
+	New function allows the user to rename the primary selected source
+	by opening an entry box directly in the source selector.
+
 2008-11-03  Sankar P  <psankar@novell.com>
 
 License Changes
