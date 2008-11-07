@@ -1,3 +1,13 @@
+2008-11-07  Sankar P  <psankar@novell.com>
+
+	** Patch committed on behalf of Ashish Shrivastava <shashish@novell.com>
+
+	** Part of fix for bug bnc #435964
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_load_source):
+	emit_async_generic response crash fix.
+
 2008-11-03  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #532136

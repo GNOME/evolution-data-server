@@ -3512,10 +3512,6 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if (offline  && g_str_equal (offline, "1"))
 		priv->marked_for_offline = TRUE;
 
-	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&  !priv->marked_for_offline ) {
-		return GNOME_Evolution_Addressbook_OfflineUnavailable;
-	}
-
 	uri =  e_source_get_uri (source);
 	priv->original_uri = g_strdup (uri);
 	if(uri == NULL)
@@ -3538,19 +3534,8 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 		priv->uri = g_strconcat ("https://", parsed_uri->host,":", port, "/soap", NULL );
 	else
 		priv->uri = g_strconcat ("http://", parsed_uri->host,":", port, "/soap", NULL );
-	priv->use_ssl = g_strdup (use_ssl);
-	priv->only_if_exists = only_if_exists;
 
 	priv->book_name = book_name;
-	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
-	e_book_backend_set_is_writable (E_BOOK_BACKEND(backend), FALSE);
-	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
-		e_book_backend_notify_writable (backend, FALSE);
-		e_book_backend_notify_connection_status (backend, FALSE);
-	}
-	else {
-		e_book_backend_notify_connection_status (backend, TRUE);
-	}
 
 	for (i = 0; i < strlen (uri); i++) {
 		switch (uri[i]) {
@@ -3560,14 +3545,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 		}
 	}
 
-	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL)
-		if (!e_book_backend_db_cache_exists (priv->original_uri)) {
-			g_free (uri);
-			e_uri_free (parsed_uri);
-			return GNOME_Evolution_Addressbook_OfflineUnavailable;
-	}
-
-        g_free (priv->summary_file_name);
+	g_free (priv->summary_file_name);
 	tmp = g_build_filename (g_get_home_dir(), ".evolution/addressbook" , uri, priv->book_name, NULL);
         priv->summary_file_name = g_strconcat (tmp, ".summary", NULL);
 	g_free (tmp);
@@ -3672,6 +3650,30 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 		g_free(filename);
 		g_free(dirname);
 		return GNOME_Evolution_Addressbook_OtherError;
+	}
+
+	if (priv->mode ==  GNOME_Evolution_Addressbook_MODE_LOCAL &&  !priv->marked_for_offline ) {
+		return GNOME_Evolution_Addressbook_OfflineUnavailable;
+	}
+
+	priv->use_ssl = g_strdup (use_ssl);
+	priv->only_if_exists = only_if_exists;
+
+	e_book_backend_set_is_loaded (E_BOOK_BACKEND (backend), TRUE);
+	e_book_backend_set_is_writable (E_BOOK_BACKEND(backend), FALSE);
+	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL) {
+		e_book_backend_notify_writable (backend, FALSE);
+		e_book_backend_notify_connection_status (backend, FALSE);
+	}
+	else {
+		e_book_backend_notify_connection_status (backend, TRUE);
+	}
+
+	if (priv->mode == GNOME_Evolution_Addressbook_MODE_LOCAL)
+		if (!e_book_backend_db_cache_exists (priv->original_uri)) {
+			g_free (uri);
+			e_uri_free (parsed_uri);
+			return GNOME_Evolution_Addressbook_OfflineUnavailable;
 	}
 
 	e_book_backend_db_cache_set_filename (ebgw->priv->file_db, filename);
