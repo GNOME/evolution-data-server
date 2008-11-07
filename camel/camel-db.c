@@ -737,6 +737,27 @@ camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, Came
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
+
+	/* Index on deleted*/
+	safe_index = g_strdup_printf("DELINDEX-%s", folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (deleted)", safe_index, folder_name);
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	g_free (safe_index);
+	sqlite3_free (table_creation_query);
+
+	/* Index on Junk*/
+	safe_index = g_strdup_printf("JUNKINDEX-%s", folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (junk)", safe_index, folder_name);
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	g_free (safe_index);
+	sqlite3_free (table_creation_query);
+	
+	/* Index on unread*/
+	safe_index = g_strdup_printf("READINDEX-%s", folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (read)", safe_index, folder_name);
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	g_free (safe_index);
+	sqlite3_free (table_creation_query);
 	
 	return ret;
 }

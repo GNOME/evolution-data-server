@@ -1584,25 +1584,16 @@ imap_expunge (CamelFolder *folder, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (folder->parent_store);
 	GPtrArray *uids;
-	int i, count;
-	CamelMessageInfo *info;
 
-	uids = g_ptr_array_new ();
-	count = camel_folder_summary_count (folder->summary);
-	for (i = 0; i < count; i++) {
-		info = camel_folder_summary_index (folder->summary, i);
-		if (camel_message_info_flags(info) & CAMEL_MESSAGE_DELETED)
-			g_ptr_array_add (uids, g_strdup (camel_message_info_uid (info)));
-		camel_message_info_free(info);
-	}
+	camel_folder_summary_save_to_db (folder->summary, ex);
+	uids = camel_db_get_folder_deleted_uids (folder->parent_store->cdb_r, folder->full_name, ex);
 
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL)
 		imap_expunge_uids_online (folder, uids, ex);
 	else
 		imap_expunge_uids_offline (folder, uids, ex);
 
-	for (i = 0; i < uids->len; i++)
-		g_free (uids->pdata[i]);
+	g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (uids, TRUE);
 }
 
