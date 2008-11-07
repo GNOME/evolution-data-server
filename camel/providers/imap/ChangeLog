@@ -1,3 +1,9 @@
+2008-11-07  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #558883
+
+	* camel-imap-folder.c: (imap_expunge): Do in bulk
+
 2008-11-06  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #558737
