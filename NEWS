@@ -1,3 +1,26 @@
+Evolution-Data-Server 2.24.1.1 2008-11-07
+-----------------------------------------
+
+Bug Fixes:
+	#209514: (Novell Bugzilla) Evolution Groupwise missing mails (Sankar P)
+	#372382: (Novell Bugzilla) VUL-0: OTRS SOAP interface vulnerability (Sankar P)
+	#434946: (Novell Bugzilla) Deleted Messages in Trash Show Bold and Behave Like New Messages (Sankar P)
+	#434950: (Novell Bugzilla) Newly Fetched Mail Doesn't Update Mailbox Count in QuickViewer Until Exit and Entry (Sankar P)
+	#434958: (Novell Bugzilla) 'Empty Trash' Sometimes Requires Multiple Attempts Before Initiating (Sankar P)
+	#435725: (Novell Bugzilla) Disable Right-Mouse "Delete" On GrouPWise System Email Folders (Sankar P)
+	#435727: (Novell Bugzilla) Deleted Shared Folder Crashes Evolution (Sankar P)
+	#435964: (Novell Bugzilla) Evo crashed after switching from offline to online in GW addressbook (Ashish Shrivastava)
+	#440502: (Novell Bugzilla) Tracker Bug: GroupWise Magic Patch Tracker (Sankar P)
+	#532136: Evolution crashed - modifying a local task and changed offline state (Milan Crha)
+	#555979: Evolution does not empty trash on exit (Milan Crha)
+	#556119: Takes a very long time to index newsgroup. (Srinivasa Ragavan)
+	#558727: Format string bugs causing potential crashes (Matthew Barnes)
+	#558737: Evolution freezes on trying to store folder (Milan Crha)
+	#558883: Evolution 2.24 is terribly slow with large IMAP folders. (Srinivasa Ragavan)
+
+Updated Translations:
+	Maxim Dziumanenko (uk)
+
 Evolution-Data-Server 2.24.1 2008-10-20
 ---------------------------------------
 
