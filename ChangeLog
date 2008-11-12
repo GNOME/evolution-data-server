@@ -1,3 +1,9 @@
+2008-11-12  Suman Manjunath  <msuman@novell.com>
+
+	* libedataserver/e-source.c (e_source_set_color), 
+	(e_source_unset_color), (e_source_get_color): These are deprecated 
+	functions, so enclose them within proper macros. 
+
 2008-11-03  Sankar P  <psankar@novell.com>
 
 License Changes

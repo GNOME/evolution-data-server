@@ -537,6 +537,7 @@ e_source_set_readonly (ESource  *source,
 
 }
 
+#ifndef EDS_DISABLE_DEPRECATED
 void
 e_source_set_color (ESource *source,
 		    guint32 color)
@@ -556,6 +557,7 @@ e_source_unset_color (ESource *source)
 
 	e_source_set_color_spec (source, NULL);
 }
+#endif
 
 /**
  * e_source_set_color_spec:
@@ -646,6 +648,7 @@ e_source_get_readonly (ESource *source)
 }
 
 
+#ifndef EDS_DISABLE_DEPRECATED
 /**
  * e_source_get_color:
  * @source: An ESource
@@ -679,6 +682,7 @@ e_source_get_color (ESource *source,
 
 	return TRUE;
 }
+#endif
 
 char *
 e_source_get_uri (ESource *source)
@@ -791,7 +795,7 @@ e_source_to_standalone_xml (ESource *source)
 }
 
 /**
- * e_source_compare:
+ * e_source_equal:
  * @a: An ESource
  * @b: Another ESource
  *
