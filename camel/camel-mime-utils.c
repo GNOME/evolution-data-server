@@ -3281,7 +3281,7 @@ camel_header_param_list_decode(const char *in)
 }
 
 static char *
-header_encode_param (const unsigned char *in, gboolean *encoded)
+header_encode_param (const unsigned char *in, gboolean *encoded, gboolean is_filename)
 {
 	const unsigned char *inptr = in;
 	unsigned char *outbuf = NULL;
@@ -3294,11 +3294,34 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 	
 	g_return_val_if_fail (in != NULL, NULL);
 
+	if (is_filename) {
+		if (!g_utf8_validate (inptr, -1, NULL)) {
+			GString *buff = g_string_new ("");
+
+			for (; inptr && *inptr; inptr++) {
+				if (*inptr < 32)
+					g_string_append_printf (buff, "%%%02X", (*inptr) & 0xFF);
+				else
+					g_string_append_c (buff, *inptr);
+			}
+
+			outbuf = g_string_free (buff, FALSE);
+			inptr = outbuf;
+		}
+
+		/* do not set encoded flag for file names */
+		str = camel_header_encode_string (inptr);
+		g_free (outbuf);
+
+		return str;
+	}
+
 	/* if we have really broken utf8 passed in, we just treat it as binary data */
 
 	charset = camel_charset_best((char *) in, strlen((char *) in));
-	if (charset == NULL)
+	if (charset == NULL) {
 		return g_strdup((char *) in);
+	}
 
 	if (g_ascii_strcasecmp(charset, "UTF-8") != 0) {
 		if ((outbuf = (unsigned char *) header_convert(charset, "UTF-8", (const char *) in, strlen((char *) in))))
@@ -3322,9 +3345,15 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 	str = out->str;
 	g_string_free (out, FALSE);
 	*encoded = TRUE;
-	
+
 	return str;
 }
+
+/* HACK: Set to non-zero when you want the 'filename' and 'name' headers encode in RFC 2047 way,
+   otherwise they will be encoded in the correct RFC 2231 way. It's because Outlook and GMail
+   do not understand the correct standard and refuse attachments with localized name sent
+   from evolution. */
+int camel_header_param_encode_filenames_in_rfc_2047 = 0;
 
 void
 camel_header_param_list_format_append (GString *out, struct _camel_header_param *p)
@@ -3332,6 +3361,7 @@ camel_header_param_list_format_append (GString *out, struct _camel_header_param 
 	int used = out->len;
 
 	while (p) {
+		gboolean is_filename = camel_header_param_encode_filenames_in_rfc_2047 && (g_ascii_strcasecmp (p->name, "filename") == 0 || g_ascii_strcasecmp (p->name, "name") == 0);
 		gboolean encoded = FALSE;
 		gboolean quote = FALSE;
 		int here = out->len;
@@ -3343,7 +3373,7 @@ camel_header_param_list_format_append (GString *out, struct _camel_header_param 
 			continue;
 		}
 
-		value = header_encode_param ((unsigned char *) p->value, &encoded);
+		value = header_encode_param ((unsigned char *) p->value, &encoded, is_filename);
 		if (!value) {
 			w(g_warning ("appending parameter %s=%s violates rfc2184", p->name, p->value));
 			value = g_strdup (p->value);
@@ -3360,17 +3390,19 @@ camel_header_param_list_format_append (GString *out, struct _camel_header_param 
 			quote = ch && *ch;
 		}
 
+		quote = quote || is_filename;
 		nlen = strlen (p->name);
 		vlen = strlen (value);
 
-		if (used + nlen + vlen > CAMEL_FOLD_SIZE - 8) {
+		/* do not fold file names */
+		if (!is_filename && used + nlen + vlen > CAMEL_FOLD_SIZE - 8) {
 			out = g_string_append (out, ";\n\t");
 			here = out->len;
 			used = 0;
 		} else
 			out = g_string_append (out, "; ");
 
-		if (nlen + vlen > CAMEL_FOLD_SIZE - 8) {
+		if (!is_filename && nlen + vlen > CAMEL_FOLD_SIZE - 8) {
 			/* we need to do special rfc2184 parameter wrapping */
 			int maxlen = CAMEL_FOLD_SIZE - (nlen + 8);
 			char *inptr, *inend;
