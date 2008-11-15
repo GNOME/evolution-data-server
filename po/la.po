@@ -8,13 +8,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "PO-Revision-Date: 2008-11-14 22:00-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Latin <la@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#~ msgid ""
-#~ msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:374
 #, c-format
@@ -869,7 +866,8 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-store.c:415
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1166
@@ -2015,9 +2013,6 @@ msgstr ""
 msgid "Deleted Items"
 msgstr ""
 
-#~ msgid "Detected a corrupt mbox file or an invalid 'From' header"
-#~ msgstr ""
-
 #: ../camel/camel-smime-context.c:549
 msgid "Digests missing from enveloped data"
 msgstr ""
@@ -2081,7 +2076,9 @@ msgid "Email List"
 msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:89
-msgid "Enable extended Mailing-List detection required for some filter and vFolder rules"
+msgid ""
+"Enable extended Mailing-List detection required for some filter and vFolder "
+"rules"
 msgstr ""
 
 #: ../camel/camel-gpg-context.c:1787 ../camel/camel-smime-context.c:969
@@ -2296,7 +2293,9 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-store.c:300
 #, c-format
-msgid "Failed to connect to IMAP server %s in secure mode: Server does not support STARTTLS"
+msgid ""
+"Failed to connect to IMAP server %s in secure mode: Server does not support "
+"STARTTLS"
 msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-store.c:225
@@ -2437,9 +2436,6 @@ msgstr ""
 msgid "Foggy"
 msgstr ""
 
-#~ msgid "Folder %s cannot be opened: %s"
-#~ msgstr ""
-
 #: ../camel/providers/local/camel-spool-store.c:180
 #, c-format
 msgid "Folder '%s' does not exist."
@@ -2458,9 +2454,6 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-store.c:394
 msgid "Folder already exists"
 msgstr ""
-
-#~ msgid "Folder was destroyed and recreated on server."
-#~ msgstr ""
 
 #: ../camel/providers/hula/camel-hula-provider.c:61
 #: ../camel/providers/imap/camel-imap-provider.c:60
@@ -2486,7 +2479,9 @@ msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:40
-msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
+msgid ""
+"For delivering mail by passing it to the \"sendmail\" program on the local "
+"system."
 msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:116
@@ -2509,7 +2504,9 @@ msgid "For reading mail as a query of another set of folders"
 msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:74
-msgid "For retrieving (moving) local mail from standard mbox-formatted spools into folders managed by Evolution."
+msgid ""
+"For retrieving (moving) local mail from standard mbox-formatted spools into "
+"folders managed by Evolution."
 msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:56
@@ -4177,15 +4174,20 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2239
 #: ../camel/providers/imap4/camel-imap4-store.c:959
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:181
-msgid "The input_token contains an invalid signature, or a signature that could not be verified."
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:176
-msgid "The input_token contains different channel bindings to those specified via the input_chan_bindings parameter."
+msgid ""
+"The input_token contains different channel bindings to those specified via "
+"the input_chan_bindings parameter."
 msgstr ""
 
 #: ../camel/providers/local/camel-mbox-store.c:485
@@ -4199,7 +4201,9 @@ msgid "The parent folder is not allowed to contain subfolders"
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:172
-msgid "The provided target_name parameter contained an invalid or unsupported type of name."
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:169
@@ -4223,7 +4227,9 @@ msgid "The specified folder was not found"
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:164
-msgid "The specified mechanism is not supported by the provided credential, or is unrecognized by the implementation."
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
 msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:575
@@ -4235,12 +4241,16 @@ msgid "The supplied context handle did not refer to a valid context."
 msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:185
-msgid "The supplied credentials were not valid for context initiation, or the credential handle did not reference any credentials."
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
 msgstr ""
 
 #: ../libedataserverui/e-categories-dialog.c:261
 #, c-format
-msgid "There is already a category '%s' in the configuration. Please use another name"
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
 msgstr ""
 
 #: ../camel/camel-gpg-context.c:1652
@@ -4273,7 +4283,9 @@ msgid "This operation cannot be performed in off-line mode"
 msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:76
-msgid "This option will authenticate with the NNTP server using a plaintext password."
+msgid ""
+"This option will authenticate with the NNTP server using a plaintext "
+"password."
 msgstr ""
 
 #: ../camel/camel-sasl-popb4smtp.c:41
@@ -4281,11 +4293,14 @@ msgid "This option will authorise a POP connection before attempting SMTP"
 msgstr ""
 
 #: ../camel/camel-sasl-ntlm.c:36
-msgid "This option will connect to a Windows-based server using NTLM / Secure Password Authentication."
+msgid ""
+"This option will connect to a Windows-based server using NTLM / Secure "
+"Password Authentication."
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:108
-msgid "This option will connect to the GroupWise server using a plaintext password."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
 
 #: ../camel/providers/hula/camel-hula-provider.c:97
@@ -4298,15 +4313,21 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:86
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
-msgid "This option will connect to the POP server using a plaintext password. This is the only option supported by many POP servers."
+msgid ""
+"This option will connect to the POP server using a plaintext password. This "
+"is the only option supported by many POP servers."
 msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:84
-msgid "This option will connect to the POP server using an encrypted password via the APOP protocol. This may not work for all users even on servers that claim to support it."
+msgid ""
+"This option will connect to the POP server using an encrypted password via "
+"the APOP protocol. This may not work for all users even on servers that "
+"claim to support it."
 msgstr ""
 
 #: ../camel/camel-sasl-kerberos4.c:49
@@ -4318,11 +4339,15 @@ msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 
 #: ../camel/camel-sasl-cram-md5.c:40
-msgid "This option will connect to the server using a secure CRAM-MD5 password, if the server supports it."
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
 msgstr ""
 
 #: ../camel/camel-sasl-digest-md5.c:50
-msgid "This option will connect to the server using a secure DIGEST-MD5 password, if the server supports it."
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
 msgstr ""
 
 #: ../camel/camel-sasl-login.c:38 ../camel/camel-sasl-plain.c:38
@@ -4434,12 +4459,16 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:403
 #: ../camel/providers/pop3/camel-pop3-store.c:536
 #, c-format
-msgid "Unable to connect to POP server %s: No support for requested authentication mechanism."
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
 msgstr ""
 
 #: ../camel/providers/pop3/camel-pop3-store.c:509
 #, c-format
-msgid "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation attack suspected. Please contact your admin."
+msgid ""
+"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
+"attack suspected. Please contact your admin."
 msgstr ""
 
 #: ../camel/camel-data-cache.c:136
@@ -4888,7 +4917,10 @@ msgid "You did not enter a password."
 msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
-msgid "You have exceeded this account's storage limit. Your messages are queued in your Outbox. Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"
+msgid ""
+"You have exceeded this account's storage limit. Your messages are queued in "
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
+"of your mail.\n"
 msgstr ""
 
 #: ../libedataserverui/e-passwords.c:1055
@@ -4931,7 +4963,9 @@ msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:939
 #, c-format
-msgid "\"%s\" expects all arguments to be strings or one and only one argument to be a boolean false (#f)"
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
 msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:925
@@ -4985,7 +5019,10 @@ msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
 #, c-format
-msgid "\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or \"location\", or \"attendee\", or \"organizer\", or \"classification\""
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
+"\"classification\""
 msgstr ""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:743
@@ -5114,7 +5151,8 @@ msgid "_Search:"
 msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid ""
+"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
 
 #: ../camel/providers/hula/camel-hula-provider.c:63
@@ -5201,4 +5239,3 @@ msgstr ""
 #, c-format
 msgid "~%s (%s)"
 msgstr ""
-
