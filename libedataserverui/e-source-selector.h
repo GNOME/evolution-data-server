@@ -49,9 +49,21 @@ struct _ESourceSelector {
 struct _ESourceSelectorClass {
 	GtkTreeViewClass parent_class;
 
-	void (* selection_changed) (ESourceSelector *selector);
-	void (* primary_selection_changed) (ESourceSelector *selector);
-	gboolean (*popup_event)(ESourceSelector *selector, ESource *primary, GdkEventButton *event);
+	void		(*selection_changed)	(ESourceSelector *selector);
+	void		(*primary_selection_changed)
+						(ESourceSelector *selector);
+	gboolean	(*popup_event)		(ESourceSelector *selector,
+						 ESource *primary,
+						 GdkEventButton *event);
+	gboolean	(*data_dropped)		(ESourceSelector *selector,
+						 GtkSelectionData *data,
+						 ESource *destination,
+						 GdkDragAction action,
+						 guint target_info);
+
+	gpointer padding1;
+	gpointer padding2;
+	gpointer padding3;
 };
 
 

@@ -1,3 +1,18 @@
+2008-11-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #557818
+
+	* e-source-selector.c:
+	Allow the ESourceSelector widget to determine whether a drag and
+	drop event is valid, and emit a new signal ("data-dropped") if it
+	_is_ valid.  This eliminates a lot of duplicate code in Evolution.
+
+	Note, while this is technically an ABI break, we explicitly
+	decided NOT to bump the libedataserverui soname because the
+	changes only affect Evolution.  And while we're at it, add
+	extra padding to the end of ESourceSelectorClass to allow for
+	future expansion.
+
 2008-11-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Related to bug #558322

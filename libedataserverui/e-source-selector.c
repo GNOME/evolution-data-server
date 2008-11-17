@@ -68,11 +68,10 @@ enum {
 	SELECTION_CHANGED,
 	PRIMARY_SELECTION_CHANGED,
 	POPUP_EVENT,
+	DATA_DROPPED,
 	NUM_SIGNALS
 };
 static unsigned int signals[NUM_SIGNALS] = { 0 };
-
-static gboolean selector_popup_menu (GtkWidget *widget);
 
 G_DEFINE_TYPE (ESourceSelector, e_source_selector, GTK_TYPE_TREE_VIEW)
 
@@ -673,18 +672,6 @@ row_expanded_callback (GtkTreeView *treeview, GtkTreeIter *iter, GtkTreePath *pa
 }
 
 static gboolean
-selector_popup_menu (GtkWidget *widget)
-{
-	ESourceSelector *selector = E_SOURCE_SELECTOR (widget);
-	ESource *source;
-	gboolean res = FALSE;
-
-	source = e_source_selector_peek_primary_selection (selector);
-	g_signal_emit (selector, signals[POPUP_EVENT], 0, source, NULL, &res);
-	return res;
-}
-
-static gboolean
 selector_button_press_event (GtkWidget *widget, GdkEventButton *event, ESourceSelector *selector)
 {
 	ESourceSelectorPrivate *priv = selector->priv;
@@ -827,6 +814,161 @@ source_selector_finalize (GObject *object)
 	G_OBJECT_CLASS (e_source_selector_parent_class)->finalize (object);
 }
 
+static void
+source_selector_drag_leave (GtkWidget *widget,
+                            GdkDragContext *context,
+                            guint time_)
+{
+	GtkTreeView *tree_view;
+	GtkTreeViewDropPosition pos;
+
+	tree_view = GTK_TREE_VIEW (widget);
+	pos = GTK_TREE_VIEW_DROP_BEFORE;
+
+	gtk_tree_view_set_drag_dest_row (tree_view, NULL, pos);
+}
+
+static gboolean
+source_selector_drag_motion (GtkWidget *widget,
+                             GdkDragContext *context,
+                             gint x,
+                             gint y,
+                             guint time_)
+{
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreePath *path = NULL;
+	GtkTreeIter iter;
+	GtkTreeViewDropPosition pos;
+	GdkDragAction action = 0;
+	gpointer object = NULL;
+
+	tree_view = GTK_TREE_VIEW (widget);
+	model = gtk_tree_view_get_model (tree_view);
+
+	if (!gtk_tree_view_get_dest_row_at_pos (tree_view, x, y, &path, NULL))
+		goto exit;
+
+	if (!gtk_tree_model_get_iter (model, &iter, path))
+		goto exit;
+
+	gtk_tree_model_get (model, &iter, 0, &object, -1);
+
+	if (E_IS_SOURCE_GROUP (object) || e_source_get_readonly (object))
+		goto exit;
+
+	pos = GTK_TREE_VIEW_DROP_INTO_OR_BEFORE;
+	gtk_tree_view_set_drag_dest_row (tree_view, path, pos);
+
+	if (context->actions & GDK_ACTION_MOVE)
+		action = GDK_ACTION_MOVE;
+	else
+		action = context->suggested_action;
+
+exit:
+	if (path != NULL)
+		gtk_tree_path_free (path);
+
+	if (object != NULL)
+		g_object_unref (object);
+
+	gdk_drag_status (context, action, time_);
+
+	return TRUE;
+}
+
+static gboolean
+source_selector_drag_drop (GtkWidget *widget,
+                           GdkDragContext *context,
+                           gint x,
+                           gint y,
+                           guint time_)
+{
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	gboolean drop_zone;
+	gboolean valid;
+	gpointer object;
+
+	tree_view = GTK_TREE_VIEW (widget);
+	model = gtk_tree_view_get_model (tree_view);
+
+	if (!gtk_tree_view_get_path_at_pos (
+		tree_view, x, y, &path, NULL, NULL, NULL))
+		return FALSE;
+
+	valid = gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_path_free (path);
+	g_return_val_if_fail (valid, FALSE);
+
+	gtk_tree_model_get (model, &iter, 0, &object, -1);
+	drop_zone = E_IS_SOURCE (object);
+	g_object_unref (object);
+
+	return drop_zone;
+}
+
+static void
+source_selector_drag_data_received (GtkWidget *widget,
+                                    GdkDragContext *context,
+                                    gint x,
+                                    gint y,
+                                    GtkSelectionData *selection_data,
+                                    guint info,
+                                    guint time_)
+{
+	GtkTreeView *tree_view;
+	GtkTreeModel *model;
+	GtkTreePath *path = NULL;
+	GtkTreeIter iter;
+	gpointer object = NULL;
+	gboolean delete;
+	gboolean success = FALSE;
+
+	tree_view = GTK_TREE_VIEW (widget);
+	model = gtk_tree_view_get_model (tree_view);
+	delete = (context->action == GDK_ACTION_MOVE);
+
+	if (!gtk_tree_view_get_dest_row_at_pos (tree_view, x, y, &path, NULL))
+		goto exit;
+
+	if (!gtk_tree_model_get_iter (model, &iter, path))
+		goto exit;
+
+	gtk_tree_model_get (model, &iter, 0, &object, -1);
+
+	if (!E_IS_SOURCE (object) || e_source_get_readonly (object))
+		goto exit;
+
+	g_signal_emit (
+		widget, signals[DATA_DROPPED], 0, selection_data,
+		object, context->action, info, &success);
+
+exit:
+	if (path != NULL)
+		gtk_tree_path_free (path);
+
+	if (object != NULL)
+		g_object_unref (object);
+
+	gtk_drag_finish (context, success, delete, time_);
+}
+
+static gboolean
+source_selector_popup_menu (GtkWidget *widget)
+{
+	ESourceSelector *selector;
+	ESource *source;
+	gboolean res = FALSE;
+
+	selector = E_SOURCE_SELECTOR (widget);
+	source = e_source_selector_peek_primary_selection (selector);
+	g_signal_emit (selector, signals[POPUP_EVENT], 0, source, NULL, &res);
+
+	return res;
+}
 
 /* Initialization.  */
 static gboolean
@@ -854,7 +996,11 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 	object_class->finalize = source_selector_finalize;
 
 	widget_class = GTK_WIDGET_CLASS (class);
-	widget_class->popup_menu = selector_popup_menu;
+	widget_class->drag_leave = source_selector_drag_leave;
+	widget_class->drag_motion = source_selector_drag_motion;
+	widget_class->drag_drop = source_selector_drag_drop;
+	widget_class->drag_data_received = source_selector_drag_data_received;
+	widget_class->popup_menu = source_selector_popup_menu;
 
 	g_object_class_install_property (
 		object_class,
@@ -893,6 +1039,18 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 			      e_data_server_ui_marshal_BOOLEAN__OBJECT_BOXED,
 			      G_TYPE_BOOLEAN, 2, G_TYPE_OBJECT,
 			      GDK_TYPE_EVENT|G_SIGNAL_TYPE_STATIC_SCOPE);
+	signals[DATA_DROPPED] =
+		g_signal_new ("data_dropped",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESourceSelectorClass, data_dropped),
+			      NULL, NULL,
+			      e_data_server_ui_marshal_BOOLEAN__BOXED_OBJECT_FLAGS_UINT,
+			      G_TYPE_BOOLEAN, 4,
+			      GTK_TYPE_SELECTION_DATA | G_SIGNAL_TYPE_STATIC_SCOPE,
+			      E_TYPE_SOURCE,
+			      GDK_TYPE_DRAG_ACTION,
+			      G_TYPE_UINT);
 }
 
 static gboolean
