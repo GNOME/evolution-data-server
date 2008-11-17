@@ -1,3 +1,13 @@
+2008-11-17  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #531090
+
+	* camel-object.h:
+	* camel-store.h:
+	Deprecate the CamelInterface and CamelIterator APIs since they're
+	unused.  If and when we move Camel to GObject, I don't want to have
+	to provide backward-compatibility support for these things.
+
 2008-11-12  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #524377
