@@ -42,7 +42,7 @@
 #define d(x)
 
 static CamelFolderSummaryClass *camel_vee_summary_parent;
-const char *unread_str = " (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n; (match-threads \"all\"  (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;";
+const char *unread_str = " (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n;  (or\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n; (match-threads \"all\"  (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;  (match-threads \"all\"  (or\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;";
 
 static void
 vee_message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
