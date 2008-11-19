@@ -2074,25 +2074,24 @@ camel_folder_summary_touch(CamelFolderSummary *s)
 void
 camel_folder_summary_clear(CamelFolderSummary *s)
 {
-#if 0
-	int i;
+	d(printf ("\ncamel_folder_summary_clearcalled \n"));
+	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 	if (camel_folder_summary_count(s) == 0) {
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 		return;
 	}
+	
+	g_ptr_array_foreach (s->uids, (GFunc) camel_pstring_free, NULL);
+	g_ptr_array_free (s->uids, TRUE);
+	s->uids = g_ptr_array_new ();
+	s->visible_count = s->deleted_count = s->unread_count = 0;
 
-	for (i=0;i<s->messages->len;i++)
-		camel_message_info_free(s->messages->pdata[i]);
+	g_hash_table_destroy(s->loaded_infos);
+	s->loaded_infos = g_hash_table_new(g_str_hash, g_str_equal);
 
-	g_ptr_array_set_size(s->messages, 0);
-	g_hash_table_destroy(s->messages_uid);
-	s->messages_uid = g_hash_table_new(g_str_hash, g_str_equal);
-	s->flags |= CAMEL_SUMMARY_DIRTY;
-	s->meta_summary->msg_expunged = TRUE;
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-#endif	
 }
 
 /* FIXME: This is non-sense. Neither an exception is passed,
