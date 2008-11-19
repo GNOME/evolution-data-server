@@ -2065,8 +2065,16 @@ vee_set_expression(CamelVeeFolder *vf, const char *query)
 	}
 
 	/* Recreate the table when the query changes, only if we are not setting it first */
-	if (vf->expression)
+	if (vf->expression) {
+		CamelFolderSummary *s = ((CamelFolder *)vf)->summary;
+		camel_folder_summary_clear (s);
 		camel_db_recreate_vfolder (((CamelFolder *) vf)->parent_store->cdb_w, ((CamelFolder *) vf)->full_name, NULL);
+		s->junk_count = 0;
+		s->deleted_count = 0; 
+		s->unread_count = 0;
+		s->visible_count = 0;
+		s->junk_not_deleted_count = 0;
+	}
 
 
 	g_free(vf->expression);
