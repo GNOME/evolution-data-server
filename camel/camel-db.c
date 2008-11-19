@@ -190,7 +190,8 @@ camel_db_begin_transaction (CamelDB *cdb, CamelException *ex)
 {
 	if (!cdb)
 		return -1;
-	g_static_rec_mutex_lock (&trans_lock);
+	if (g_getenv("SQLITE_TRANSLOCK"))
+		g_static_rec_mutex_lock (&trans_lock);
 
 	g_mutex_lock (cdb->lock);
 	return (cdb_sql_exec (cdb->db, "BEGIN", ex));
@@ -207,7 +208,8 @@ camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
 	END;
 	g_mutex_unlock (cdb->lock);
-	g_static_rec_mutex_unlock (&trans_lock);
+	if (g_getenv("SQLITE_TRANSLOCK"))
+		g_static_rec_mutex_unlock (&trans_lock);
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	
@@ -221,7 +223,8 @@ camel_db_abort_transaction (CamelDB *cdb, CamelException *ex)
 	
 	ret = cdb_sql_exec (cdb->db, "ROLLBACK", ex);
 	g_mutex_unlock (cdb->lock);
-	g_static_rec_mutex_unlock (&trans_lock);	
+	if (g_getenv("SQLITE_TRANSLOCK"))
+		g_static_rec_mutex_unlock (&trans_lock);	
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	
 	return ret;
