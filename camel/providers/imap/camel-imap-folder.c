@@ -1587,6 +1587,8 @@ imap_expunge (CamelFolder *folder, CamelException *ex)
 
 	camel_folder_summary_save_to_db (folder->summary, ex);
 	uids = camel_db_get_folder_deleted_uids (folder->parent_store->cdb_r, folder->full_name, ex);
+	if (!uids)
+		return;
 
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL)
 		imap_expunge_uids_online (folder, uids, ex);

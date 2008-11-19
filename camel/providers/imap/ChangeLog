@@ -1,3 +1,10 @@
+2008-11-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #561069
+
+	* camel-imap-folder.c (imap_expunge): If nothing to expunge, don't
+	crash.
+
 2008-11-07  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #558883
