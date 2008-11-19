@@ -223,7 +223,7 @@ skip_until (char **p, char *s)
 }
 
 static void
-read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable)
+read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable, const char *charset)
 {
 	char *lp = *p;
 	GString *str;
@@ -289,6 +289,16 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 		}
 		else if ((*lp == ';') ||
 			 (*lp == ',' && !g_ascii_strcasecmp (attr->name, "CATEGORIES"))) {
+			if (charset) {
+				char *tmp;
+
+				tmp = g_convert (str->str, str->len, "UTF-8", charset, NULL, NULL, NULL);
+				if (tmp) {
+					g_string_assign (str, tmp);
+					g_free (tmp);
+				}
+			}
+
 			e_vcard_attribute_add_value (attr, str->str);
 			g_string_assign (str, "");
 			lp = g_utf8_next_char(lp);
@@ -299,6 +309,16 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 		}
 	}
 	if (str) {
+		if (charset) {
+			char *tmp;
+
+			tmp = g_convert (str->str, str->len, "UTF-8", charset, NULL, NULL, NULL);
+			if (tmp) {
+				g_string_assign (str, tmp);
+				g_free (tmp);
+			}
+		}
+
 		e_vcard_attribute_add_value (attr, str->str);
 		g_string_free (str, TRUE);
 	}
@@ -309,7 +329,7 @@ read_attribute_value (EVCardAttribute *attr, char **p, gboolean quoted_printable
 }
 
 static void
-read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printable)
+read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printable, char **charset)
 {
 	char *lp;
 	GString *str;
@@ -387,6 +407,13 @@ read_attribute_params (EVCardAttribute *attr, char **p, gboolean *quoted_printab
 				    && !g_ascii_strcasecmp (param->name, "encoding")
 				    && !g_ascii_strcasecmp (param->values->data, "quoted-printable")) {
 					*quoted_printable = TRUE;
+					e_vcard_attribute_param_free (param);
+					param = NULL;
+				} else if (param
+				    && !g_ascii_strcasecmp (param->name, "charset")
+				    && g_ascii_strcasecmp (param->values->data, "utf-8") != 0) {
+					g_free (*charset);
+					*charset = g_strdup (param->values->data);
 					e_vcard_attribute_param_free (param);
 					param = NULL;
 				}
@@ -468,6 +495,7 @@ read_attribute (char **p)
 	GString *str;
 	char *lp;
 	gboolean is_qp = FALSE;
+	char *charset = NULL;
 
 	/* first read in the group/name */
 	str = g_string_new ("");
@@ -533,15 +561,17 @@ read_attribute (char **p)
 	if (*lp == ';') {
 		/* skip past the ';' */
 		lp = g_utf8_next_char(lp);
-		read_attribute_params (attr, &lp, &is_qp);
+		read_attribute_params (attr, &lp, &is_qp, &charset);
 		if (is_qp)
 			attr->encoding = EVC_ENCODING_RAW;
 	}
 	if (*lp == ':') {
 		/* skip past the ':' */
 		lp = g_utf8_next_char(lp);
-		read_attribute_value (attr, &lp, is_qp);
+		read_attribute_value (attr, &lp, is_qp, charset);
 	}
+
+	g_free (charset);
 
 	*p = lp;
 
