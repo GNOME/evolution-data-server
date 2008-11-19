@@ -1,3 +1,9 @@
+2008-11-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #558883
+
+	* camel/camel-db.c: Remove the redundant transaction lock.
+
 2008-11-17  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes bug #531090
