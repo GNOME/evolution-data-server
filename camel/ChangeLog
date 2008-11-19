@@ -18,6 +18,12 @@
 	* camel-vee-folder.c (vee_set_expression): Clear summary when we reset
 	query.
 
+2008-11-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Partial fix for bug #546637
+
+	* camel/camel-vee-summary.c: Now unread vfolder should be better.
+
 2008-11-07  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-vee-summary.c: Make unread vfolders to work for match threads.
