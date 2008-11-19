@@ -542,13 +542,14 @@ parse_status_node (xmlNodePtr node, guint *status_code)
 static char *
 xp_object_get_string (xmlXPathObjectPtr result)
 {
-	char *ret;
+	char *ret = NULL;
 
-	if (result == NULL || result->type != XPATH_STRING) {
-		return NULL;
+	if (result == NULL)
+		return ret;
+
+	if (result->type == XPATH_STRING) {
+		ret = g_strdup ((char *) result->stringval);
 	}
-
-	ret = g_strdup ((char *) result->stringval);
 
 	xmlXPathFreeObject (result);
 	return ret;
@@ -559,23 +560,24 @@ xp_object_get_string (xmlXPathObjectPtr result)
 static char *
 xp_object_get_href (xmlXPathObjectPtr result)
 {
-	char *ret;
+	char *ret = NULL;
 	char *val;
 
-	if (result == NULL || result->type != XPATH_STRING) {
-		return NULL;
+	if (result == NULL)
+		return ret;
+
+	if (result->type == XPATH_STRING) {
+		val = (char *) result->stringval;
+
+		if ((ret = g_strrstr (val, "/")) == NULL) {
+			ret = val;
+		} else {
+			ret++; /* skip the unwanted "/" */
+		}
+
+		ret = g_strdup (ret);
+		d(g_debug ("found href: %s", ret));
 	}
-
-	val = (char *) result->stringval;
-
-	if ((ret = g_strrstr (val, "/")) == NULL) {
-		ret = val;
-	} else {
-		ret++; /* skip the unwanted "/" */
-	}
-
-	ret = g_strdup (ret);
-	d(g_debug ("found href: %s", ret));
 
 	xmlXPathFreeObject (result);
 	return ret;
@@ -585,16 +587,17 @@ xp_object_get_href (xmlXPathObjectPtr result)
 static char *
 xp_object_get_etag (xmlXPathObjectPtr result)
 {
-	char *ret;
+	char *ret = NULL;
 	char *str;
 
-	if (result == NULL || result->type != XPATH_STRING) {
-		return NULL;
+	if (result == NULL)
+		return ret;
+
+	if (result->type == XPATH_STRING) {
+		str = (char *) result->stringval;
+
+		ret = quote_etag (str);
 	}
-
-	str = (char *) result->stringval;
-
-	ret = quote_etag (str);
 
 	xmlXPathFreeObject (result);
 	return ret;
@@ -604,20 +607,20 @@ static guint
 xp_object_get_status (xmlXPathObjectPtr result)
 {
 	gboolean res;
-	guint    ret;
+	guint    ret = 0;
 
+	if (result == NULL)
+		return ret;
 
-	if (result == NULL || result->type != XPATH_STRING) {
-		return 0;
-	}
+	if (result->type == XPATH_STRING) {
+		res = soup_headers_parse_status_line ((char *) result->stringval,
+							NULL,
+							&ret,
+							NULL);
 
-	res = soup_headers_parse_status_line ((char *) result->stringval,
-					      NULL,
-					      &ret,
-					      NULL);
-
-	if (res != TRUE) {
-		ret = 0;
+		if (res != TRUE) {
+			ret = 0;
+		}
 	}
 
 	xmlXPathFreeObject (result);
@@ -628,13 +631,14 @@ xp_object_get_status (xmlXPathObjectPtr result)
 static int
 xp_object_get_number (xmlXPathObjectPtr result)
 {
-	int ret;
+	int ret = -1;
 
-	if (result == NULL || result->type != XPATH_STRING) {
-		return -1;
+	if (result == NULL)
+		return ret;
+
+	if (result->type == XPATH_STRING) {
+		ret = result->boolval;
 	}
-
-	ret = result->boolval;
 
 	xmlXPathFreeObject (result);
 	return ret;
@@ -750,6 +754,8 @@ parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, int *len)
 	}
 
 out:
+	if (result != NULL)
+		xmlXPathFreeObject (result);
 	xmlXPathFreeContext (xpctx);
 	xmlFreeDoc (doc);
 	return res;

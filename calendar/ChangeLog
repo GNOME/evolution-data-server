@@ -1,3 +1,12 @@
+2008-11-19  Andrew McMillan  <andrew@morphoss.com>
+
+	** Fix for bug #560981
+
+	* backends/caldav/e-cal-backend-caldav.c: (xp_object_get_string),
+	(xp_object_get_href), (xp_object_get_etag), (xp_object_get_status),
+	(xp_object_get_number), (parse_report_response):
+	Plug memory leaks from unfreed xpath query results.
+
 2008-11-06  Sankar P  <psankar@novell.com>
 
 License Changes
