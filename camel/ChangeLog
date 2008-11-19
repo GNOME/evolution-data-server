@@ -4,6 +4,12 @@
 
 	* camel/camel-db.c: Remove the redundant transaction lock.
 
+2008-11-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #560076
+
+	* camel/camel-search-sql-sexp.c: Handle followup better.
+
 2008-11-07  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-vee-summary.c: Make unread vfolders to work for match threads.
