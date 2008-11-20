@@ -1,3 +1,15 @@
+2008-11-20  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #558883
+
+	* camel-imap-store.c: (parse_list_response_as_folder_info):
+	Do not strip CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW if set.
+	* camel-imap-store.c: (imap_can_refresh_folder):
+	Check if can refresh folder based on the data in store's folder
+	summary, to not download whole folder content because of this.
+	* camel-imap-folder.c: (imap_setv):
+	Set the 'check_folder' flag to store's folder summary too.
+
 2008-11-19  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #561069
