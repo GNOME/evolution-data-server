@@ -473,6 +473,7 @@ imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			break; }
 			/* imap args */
 		case CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER:
+			/* The internal value has precedence before the one stored in the summary. */
 			*arg->ca_int = ((CamelImapFolder *)object)->check_folder;
 			break;
 			/* CamelObject args */
@@ -514,8 +515,27 @@ imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 		switch (tag & CAMEL_ARG_TAG) {
 		case CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER:
 			if (((CamelImapFolder *)object)->check_folder != arg->ca_int) {
+				CamelFolder *folder = (CamelFolder *)object;
+
 				((CamelImapFolder *)object)->check_folder = arg->ca_int;
 				save = 1;
+
+				/* store both to the summary and to folder cmeta, to have this value restored correctly next time folder is fully loaded */
+				if (folder->parent_store && CAMEL_IS_IMAP_STORE (folder->parent_store)) {
+					CamelStoreInfo *si;
+					CamelStoreSummary *sm = CAMEL_STORE_SUMMARY (((CamelImapStore *)(folder->parent_store))->summary);
+
+					si = camel_store_summary_path (sm, folder->full_name);
+					if (si) {
+						if ((si->flags & CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW) != 0 ? 1 : 0 != (arg->ca_int) ? 1 : 0) {
+							si->flags = (si->flags & (~CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) | ((arg->ca_int) ? CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW : 0);
+							camel_store_summary_touch (sm);
+							camel_store_summary_save (sm);
+						}
+
+						camel_store_summary_info_free (sm, si);
+					}
+				}
 			}
 			break;
 		default:

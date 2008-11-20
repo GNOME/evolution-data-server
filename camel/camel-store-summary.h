@@ -57,6 +57,7 @@ typedef enum _CamelStoreInfoFlags {
 
 	/* not in camle-store.h yet */
 	CAMEL_STORE_INFO_FOLDER_READONLY = 1<<13,
+	CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW = 1<<14,
 
 	CAMEL_STORE_INFO_FOLDER_FLAGGED = 1<<31
 } CamelStoreInfoFlags;

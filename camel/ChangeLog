@@ -1,3 +1,10 @@
+2008-11-20  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #558883
+
+	* camel-store-summary.h: (CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW):
+	Define new flag.
+
 2008-11-19  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #558883

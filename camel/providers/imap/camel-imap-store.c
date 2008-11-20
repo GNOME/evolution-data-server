@@ -2385,7 +2385,7 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 	if (si == NULL)
 		return NULL;
 
-	newflags = (si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) | (flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
+	newflags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) | (flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 	if (si->info.flags != newflags) {
 		si->info.flags = newflags;
 		camel_store_summary_touch((CamelStoreSummary *)imap_store->summary);
@@ -3074,12 +3074,19 @@ imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelExceptio
 	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
 	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
-	if (!res && !camel_exception_is_set (ex)) {
-		CamelFolder *folder;
+	if (!res && !camel_exception_is_set (ex) && CAMEL_IS_IMAP_STORE (store)) {
+		CamelStoreInfo *si;
+		CamelStoreSummary *sm = CAMEL_STORE_SUMMARY (((CamelImapStore *)(store))->summary);
 
-		folder = camel_store_get_folder (store, info->full_name, 0, ex);
-		if (folder && CAMEL_IS_IMAP_FOLDER (folder))
-			res = CAMEL_IMAP_FOLDER (folder)->check_folder;
+		if (!sm)
+			return FALSE;
+
+		si = camel_store_summary_path (sm, info->full_name);
+		if (si) {
+			res = (si->flags & CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW) != 0 ? TRUE : FALSE;
+
+			camel_store_summary_info_free (sm, si);
+		}
 	}
 
 	return res;
