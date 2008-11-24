@@ -1,3 +1,12 @@
+2008-11-24  Srinivasa Ragavan <sragavan@novell.com>
+
+	* libedata-book/e-book-backend-db-cache.c
+	(e_book_backend_db_cache_set_time),
+	(e_book_backend_db_cache_get_time):
+	Added these APIs.
+	* libedata-book/e-book-backend-db-cache.h:
+	Declarations for the above APIs.
+
 2008-11-19  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #560681

@@ -25,6 +25,8 @@
 #include <libebook/e-contact.h>
 #include "db.h"
 
+G_BEGIN_DECLS
+
 EContact* e_book_backend_db_cache_get_contact (DB *db, const char *uid);
 void string_to_dbt(const char *str, DBT *dbt);
 char *e_book_backend_db_cache_get_filename(DB *db);
@@ -39,9 +41,8 @@ gboolean e_book_backend_db_cache_exists (const char *uri);
 void     e_book_backend_db_cache_set_populated (DB *db);
 gboolean e_book_backend_db_cache_is_populated (DB *db);
 GPtrArray* e_book_backend_db_cache_search (DB *db, const char *query);
-
-
-
+void e_book_backend_db_cache_set_time(DB *db, const char *t);
+char * e_book_backend_db_cache_get_time (DB *db); 
 
 G_END_DECLS
 

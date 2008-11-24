@@ -1,3 +1,15 @@
+2008-11-24  Suman Manjunath  <msuman@novell.com>
+
+	** Added CAL_STATIC_CAPABILITY_CREATE_MESSAGES
+
+	* libecal/e-cal-util.h:
+	This static capability determines if a calendar backend can send
+	messages to recipients by itself. It is different from the
+	CAL_STATIC_CAPABILITY_SAVE_SCHEDULES from the fact that this new
+	capability is processed after the user has been prompted to send
+	an update. It is useful if the actual object needs some processing
+	after the messages are sent.
+
 2008-11-19  Andrew McMillan  <andrew@morphoss.com>
 
 	** Fix for bug #560981

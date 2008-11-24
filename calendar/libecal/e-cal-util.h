@@ -115,6 +115,7 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND       "organizer-must-attend"
 #define CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS "organizer-not-email-address"
 #define CAL_STATIC_CAPABILITY_REMOVE_ALARMS               "remove-alarms"
+#define CAL_STATIC_CAPABILITY_CREATE_MESSAGES             "create-messages"
 #define CAL_STATIC_CAPABILITY_SAVE_SCHEDULES              "save-schedules"
 #define CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK	  "no-conv-to-assign-task"
 #define CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR		  "no-conv-to-recur"

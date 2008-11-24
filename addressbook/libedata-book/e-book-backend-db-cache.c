@@ -131,8 +131,8 @@ e_book_backend_db_cache_get_filename(DB *db)
 EContact *
 e_book_backend_db_cache_get_contact (DB *db, const char *uid)
 {
-	DBT        uid_dbt, vcard_dbt;
-	int        db_error;
+	DBT	uid_dbt, vcard_dbt;
+	int	db_error;
 	EContact *contact = NULL;
 
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -163,19 +163,19 @@ e_book_backend_db_cache_get_contact (DB *db, const char *uid)
  **/
 gboolean
 e_book_backend_db_cache_add_contact (DB *db,
-				   EContact *contact)
+				     EContact *contact)
 {
-	DBT        uid_dbt, vcard_dbt;
-	int        db_error;
-	char       *vcard_str;
+	DBT	uid_dbt, vcard_dbt;
+	int	db_error;
+	char	*vcard_str;
 	const char *uid;
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!uid) {
 		printf ("no uid\n");
 		printf("name:%s, email:%s\n",
-		       (char*)e_contact_get (contact, E_CONTACT_GIVEN_NAME),
-		       (char*)e_contact_get (contact, E_CONTACT_EMAIL_1));
+			(char*)e_contact_get (contact, E_CONTACT_GIVEN_NAME),
+			(char*)e_contact_get (contact, E_CONTACT_EMAIL_1));
 		return FALSE;
 	}
 	string_to_dbt (uid, &uid_dbt);
@@ -207,11 +207,11 @@ e_book_backend_db_cache_add_contact (DB *db,
  **/
 gboolean
 e_book_backend_db_cache_remove_contact (DB *db,
-				    const char *uid)
+					const char *uid)
 
 {
-	DBT        uid_dbt;
-	int        db_error;
+	DBT	uid_dbt;
+	int	db_error;
 
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -239,8 +239,8 @@ e_book_backend_db_cache_remove_contact (DB *db,
 gboolean
 e_book_backend_db_cache_check_contact (DB *db, const char *uid)
 {
-	DBT        uid_dbt, vcard_dbt;
-	int        db_error;
+	DBT	uid_dbt, vcard_dbt;
+	int	db_error;
 
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -271,11 +271,11 @@ e_book_backend_db_cache_check_contact (DB *db, const char *uid)
 GList *
 e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 {
-	DBC        *dbc;
-	DBT        uid_dbt, vcard_dbt;
-	int        db_error;
+	DBC	*dbc;
+	DBT	uid_dbt, vcard_dbt;
+	int	db_error;
 	GList *list = NULL;
-        EBookBackendSExp *sexp = NULL;
+	EBookBackendSExp *sexp = NULL;
 	EContact *contact;
 
 	if (query) {
@@ -315,7 +315,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const char *query)
 	if (sexp)
 		g_object_unref (sexp);
 
-        return g_list_reverse (list);
+	return g_list_reverse (list);
 }
 
 /**
@@ -381,8 +381,8 @@ e_book_backend_db_cache_exists (const char *uri)
 void
 e_book_backend_db_cache_set_populated (DB *db)
 {
-	DBT        uid_dbt, vcard_dbt;
-	int        db_error;
+	DBT	uid_dbt, vcard_dbt;
+	int	db_error;
 
 	string_to_dbt ("populated", &uid_dbt);
 	string_to_dbt ("TRUE", &vcard_dbt);
@@ -404,8 +404,8 @@ e_book_backend_db_cache_set_populated (DB *db)
 gboolean
 e_book_backend_db_cache_is_populated (DB *db)
 {
-	DBT        uid_dbt, vcard_dbt;
-	int        db_error;
+	DBT	uid_dbt, vcard_dbt;
+	int	db_error;
 
 	string_to_dbt ("populated", &uid_dbt);
 	memset(&vcard_dbt, 0, sizeof(vcard_dbt));
@@ -419,4 +419,41 @@ e_book_backend_db_cache_is_populated (DB *db)
 		free(vcard_dbt.data);
 		return TRUE;
 	}
+}
+
+void 
+e_book_backend_db_cache_set_time(DB *db, const char *t)
+{
+	DBT uid_dbt, vcard_dbt;
+	int db_error;
+
+	string_to_dbt ("last_update_time", &uid_dbt);
+	string_to_dbt (t, &vcard_dbt);
+
+	db_error = db->put (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->put failed with %d", db_error);
+	}
+}
+
+char *
+e_book_backend_db_cache_get_time (DB *db)
+{
+	DBT uid_dbt, vcard_dbt;
+	int db_error;
+	char *t = NULL;
+
+	string_to_dbt ("last_update_time", &uid_dbt);
+	memset (&vcard_dbt, 0, sizeof(vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+
+	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
+	if (db_error != 0) {
+		g_warning ("db->get failed with %d", db_error);
+	} else {
+		t = g_strdup (vcard_dbt.data);
+		free (vcard_dbt.data);
+	}
+
+	return t;
 }
