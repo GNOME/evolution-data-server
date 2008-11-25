@@ -1,3 +1,16 @@
+Evolution-Data-Server 2.24.2 2008-11-24
+-----------------------------------------
+
+Bug Fixes:
+	#546637: Now unread vfolder should be better (Srinivasa Ragavan)
+	#557348: Clear summary when we reset query. (Srinivasa Ragavan)
+	#558883: Improve performance in case of large IMAP folders. (Srinivasa Ragavan, Milan Crha)
+	#560076: Handle followup better (Srinivasa Ragavan)
+	#561069: If nothing to expunge, don't crash. (Srinivasa Ragavan)
+
+Updated Translations:
+	Rafael Garcia (la)
+
 Evolution-Data-Server 2.24.1.1 2008-11-07
 -----------------------------------------
 
