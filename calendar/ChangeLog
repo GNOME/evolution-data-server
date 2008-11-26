@@ -1,3 +1,10 @@
+2008-11-26  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #559272
+
+	* backends/caldav/e-cal-backend-caldav.c: (soup_authenticate):
+	Do not use same password twice (causes infinite loop).
+
 2008-11-24  Suman Manjunath  <msuman@novell.com>
 
 	** Added CAL_STATIC_CAPABILITY_CREATE_MESSAGES

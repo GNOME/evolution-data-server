@@ -777,7 +777,9 @@ soup_authenticate (SoupSession  *session,
 	cbdav = E_CAL_BACKEND_CALDAV (data);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	soup_auth_authenticate (auth, priv->username, priv->password);
+	/* do not send same password twice, but keep it for later use */
+	if (!retrying)
+		soup_auth_authenticate (auth, priv->username, priv->password);
 }
 
 static gint
