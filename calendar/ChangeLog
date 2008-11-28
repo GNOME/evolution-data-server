@@ -1,5 +1,16 @@
 2008-11-28  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #560185
+
+	* backends/caldav/e-cal-backend-caldav.c:
+	(struct _ECalBackendCalDAVPrivate), (parse_getctag_response),
+	(check_calendar_changed_on_server), (synchronize_cache),
+	(caldav_do_open), (e_cal_backend_caldav_finalize),
+	(e_cal_backend_caldav_init): Decide whether to check for changes
+	based on the 'getctag' extension, if supported by the server.
+
+2008-11-28  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #527692
 
 	* backends/caldav/e-cal-backend-caldav.c: (caldav_generate_uri),

@@ -115,6 +115,10 @@ struct _ECalBackendCalDAVPrivate {
 	gboolean disposed;
 
 	icaltimezone *default_zone;
+
+	/* support for 'getctag' extension */
+	gboolean ctag_supported;
+	gchar *ctag;
 };
 
 /* ************************************************************************* */
@@ -651,7 +655,8 @@ xp_object_get_number (xmlXPathObjectPtr result)
 #define XPATH_GETETAG_STATUS "string(/D:multistatus/D:response[%d]/D:propstat/D:prop/D:getetag/../../D:status)"
 #define XPATH_GETETAG "string(/D:multistatus/D:response[%d]/D:propstat/D:prop/D:getetag)"
 #define XPATH_CALENDAR_DATA "string(/D:multistatus/D:response[%d]/C:calendar-data)"
-
+#define XPATH_GETCTAG_STATUS "string(/D:multistatus/D:response/D:propstat/D:prop/CS:getctag/../../D:status)"
+#define XPATH_GETCTAG "string(/D:multistatus/D:response/D:propstat/D:prop/CS:getctag)"
 
 typedef struct _CalDAVObject CalDAVObject;
 
@@ -975,6 +980,136 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	return GNOME_Evolution_Calendar_NoSuchCal;
 }
 
+/* returns whether was able to read new ctag from the server's response */
+static gboolean
+parse_getctag_response (SoupMessage *message, gchar **new_ctag)
+{
+	xmlXPathContextPtr xpctx;
+	xmlDocPtr          doc;
+	gboolean           res = FALSE;
+
+	g_return_val_if_fail (message != NULL, FALSE);
+	g_return_val_if_fail (new_ctag != NULL, FALSE);
+
+	doc = xmlReadMemory (message->response_body->data,
+			     message->response_body->length,
+			     "response.xml",
+			     NULL,
+			     0);
+
+	if (doc == NULL) {
+		return FALSE;
+	}
+
+	xpctx = xmlXPathNewContext (doc);
+	xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
+	xmlXPathRegisterNs (xpctx, (xmlChar *) "CS", (xmlChar *) "http://calendarserver.org/ns/");
+
+	if (xp_object_get_status (xpath_eval (xpctx, XPATH_GETCTAG_STATUS)) == 200) {
+		char *txt = xp_object_get_string (xpath_eval (xpctx, XPATH_GETCTAG));
+
+		if (txt && *txt) {
+			int len = strlen (txt);
+
+			if (*txt == '\"' && len > 2 && txt [len - 1] == '\"') {
+				/* dequote */
+				*new_ctag = g_strndup (txt + 1, len - 2);
+			} else {
+				*new_ctag = txt;
+				txt = NULL;
+			}
+
+			res = (*new_ctag) != NULL;
+		}
+
+		g_free (txt);
+	}
+
+	xmlXPathFreeContext (xpctx);
+	xmlFreeDoc (doc);
+
+	return res;
+}
+
+/* Returns whether calendar changed on the server. This works only when server
+   supports 'getctag' extension. */
+static gboolean
+check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
+{
+	ECalBackendCalDAVPrivate *priv;
+	xmlOutputBufferPtr   	  buf;
+	SoupMessage              *message;
+	xmlDocPtr		  doc;
+	xmlNodePtr           	  root, node;
+	xmlNsPtr		  ns, nsdav;
+	gboolean 		  result = TRUE;
+
+	g_return_val_if_fail (cbdav != NULL, TRUE);
+
+	priv   = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	/* no support for 'getctag', thus update cache */
+	if (!priv->ctag_supported)
+		return TRUE;
+
+	doc = xmlNewDoc ((xmlChar *) "1.0");
+	root = xmlNewNode (NULL, (xmlChar *) "propfind");
+	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", NULL);
+	ns = xmlNewNs (root, (xmlChar *) "http://calendarserver.org/ns/", (xmlChar *) "CS");
+
+	node = xmlNewTextChild (root, nsdav, (xmlChar *) "prop", NULL);
+	node = xmlNewTextChild (node, nsdav, (xmlChar *) "getctag", NULL);
+	xmlSetNs (node, ns);
+
+	buf = xmlAllocOutputBuffer (NULL);
+	xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
+	xmlOutputBufferFlush (buf);
+
+	/* Prepare the soup message */
+	message = soup_message_new ("PROPFIND", priv->uri);
+	soup_message_headers_append (message->request_headers,
+				     "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (message->request_headers,
+				     "Depth", "0");
+
+	soup_message_set_request (message,
+				  "application/xml",
+				  SOUP_MEMORY_COPY,
+				  (char *) buf->buffer->content,
+				  buf->buffer->use);
+
+	/* Send the request now */
+	send_and_handle_redirection (priv->session, message, NULL);
+
+	/* Clean up the memory */
+	xmlOutputBufferClose (buf);
+	xmlFreeDoc (doc);
+
+	/* Check the result */
+	if (message->status_code != 207) {
+		/* does not support it, but report calendar changed to update cache */
+		priv->ctag_supported = FALSE;
+	} else {
+		char *ctag = NULL;
+
+		if (parse_getctag_response (message, &ctag)) {
+			if (ctag && priv->ctag && g_str_equal (ctag, priv->ctag)) {
+				/* ctag is same, no change in the calendar */
+				result = FALSE;
+				g_free (ctag);
+			} else {
+				g_free (priv->ctag);
+				priv->ctag = ctag;
+			}
+		} else {
+			priv->ctag_supported = FALSE;
+		}
+	}
+
+	g_object_unref (message);
+
+	return result;
+}
 
 static gboolean
 caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *len)
@@ -1338,6 +1473,11 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 	len    = 0;
 	sobjs  = NULL;
 
+	if (!check_calendar_changed_on_server (cbdav)) {
+		/* no changes on the server, no update required */
+		return;
+	}
+
 	res = caldav_server_list_objects (cbdav, &sobjs, &len);
 
 	if (res == FALSE) {
@@ -1691,6 +1831,11 @@ caldav_do_open (ECalBackendSync *backend,
 	status = GNOME_Evolution_Calendar_Success;
 
 	g_mutex_lock (priv->lock);
+
+	/* let it decide the 'getctag' extension availability again */
+	g_free (priv->ctag);
+	priv->ctag = NULL;
+	priv->ctag_supported = TRUE;
 
 	if (priv->loaded != TRUE) {
 		priv->ostatus = initialize_backend (cbdav);
@@ -2888,6 +3033,9 @@ e_cal_backend_caldav_finalize (GObject *object)
 	cbdav = E_CAL_BACKEND_CALDAV (object);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
+	g_free (priv->ctag);
+	priv->ctag = NULL;
+
 	g_mutex_free (priv->lock);
 	g_cond_free (priv->cond);
 	g_cond_free (priv->slave_gone_cond);
@@ -2918,6 +3066,10 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv->disposed = FALSE;
 	priv->do_synch = FALSE;
 	priv->loaded   = FALSE;
+
+	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
+	priv->ctag_supported = TRUE;
+	priv->ctag = NULL;
 
 	priv->lock = g_mutex_new ();
 	priv->cond = g_cond_new ();
