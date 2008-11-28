@@ -32,79 +32,92 @@
 #include "e-cal-backend-caldav.h"
 
 typedef struct {
-	   ECalBackendFactory parent_object;
+	ECalBackendFactory parent_object;
 } ECalBackendCalDAVFactory;
 
 typedef struct {
-	   ECalBackendFactoryClass parent_class;
+	ECalBackendFactoryClass parent_class;
 } ECalBackendCalDAVFactoryClass;
 
 static void
-e_cal_backend_caldav_factory_instance_init (ECalBackendCalDAVFactory *factory)
+ecb_caldav_factory_instance_init (ECalBackendCalDAVFactory *factory)
 {
 }
 
 static const char *
 _get_protocol (ECalBackendFactory *factory)
 {
-	   return "caldav";
+	return "caldav";
 }
 
-static ECalBackend*
-_events_new_backend (ECalBackendFactory *factory, ESource *source)
-{
-	   return g_object_new (E_TYPE_CAL_BACKEND_CALDAV,
-					    "source", source,
-					    "kind", ICAL_VEVENT_COMPONENT,
-					    NULL);
-}
+#define declare_functions(_type,_name)						\
+										\
+static ECalBackend*								\
+_new_backend_ ## _type (ECalBackendFactory *factory, ESource *source)		\
+{										\
+	   return g_object_new (E_TYPE_CAL_BACKEND_CALDAV,			\
+				"source", source,				\
+				"kind", ICAL_ ## _type ## _COMPONENT,		\
+				NULL);						\
+}										\
+										\
+static icalcomponent_kind							\
+_get_kind_ ## _type (ECalBackendFactory *factory)				\
+{										\
+	return ICAL_ ## _type ## _COMPONENT;					\
+}										\
+										\
+static void									\
+_backend_factory_class_init_ ## _type (ECalBackendCalDAVFactoryClass *klass)	\
+{										\
+	ECalBackendFactoryClass *bc =  E_CAL_BACKEND_FACTORY_CLASS (klass);	\
+										\
+	g_return_if_fail (bc != NULL);						\
+										\
+	bc->get_protocol = _get_protocol;					\
+	bc->get_kind     = _get_kind_ ## _type;					\
+	bc->new_backend  = _new_backend_ ## _type;				\
+}										\
+										\
+static GType									\
+backend_factory_get_type_ ## _type (GTypeModule *module)			\
+{										\
+	static GType type = 0;							\
+										\
+	GTypeInfo info = {							\
+		sizeof (ECalBackendCalDAVFactoryClass),				\
+		NULL, /* base_class_init */					\
+		NULL, /* base_class_finalize */					\
+		(GClassInitFunc)  _backend_factory_class_init_ ## _type,	\
+		NULL, /* class_finalize */					\
+		NULL, /* class_data */						\
+		sizeof (ECalBackend),						\
+		0,    /* n_preallocs */						\
+		(GInstanceInitFunc) ecb_caldav_factory_instance_init		\
+	   };									\
+										\
+	if (!type) {   								\
+		type = g_type_module_register_type (module,			\
+			E_TYPE_CAL_BACKEND_FACTORY,				\
+			_name,							\
+			&info, 0);						\
+	}									\
+										\
+	return type;								\
+}										\
 
-static icalcomponent_kind
-_events_get_kind (ECalBackendFactory *factory)
-{
-	   return ICAL_VEVENT_COMPONENT;
-}
+declare_functions (VEVENT,   "ECalBackendCalDAVEventsFactory");
+declare_functions (VTODO,    "ECalBackendCalDAVTodosFactory");
+declare_functions (VJOURNAL, "ECalBackendCalDAVMemosFactory");
 
-static void
-events_backend_factory_class_init (ECalBackendCalDAVFactoryClass *klass)
-{
-	   E_CAL_BACKEND_FACTORY_CLASS (klass)->get_protocol = _get_protocol;
-	   E_CAL_BACKEND_FACTORY_CLASS (klass)->get_kind     = _events_get_kind;
-	   E_CAL_BACKEND_FACTORY_CLASS (klass)->new_backend  = _events_new_backend;
-}
-
-static GType
-events_backend_factory_get_type (GTypeModule *module)
-{
-	   GType type;
-
-	   GTypeInfo info = {
-			 sizeof (ECalBackendCalDAVFactoryClass),
-			 NULL, /* base_class_init */
-			 NULL, /* base_class_finalize */
-			 (GClassInitFunc)  events_backend_factory_class_init,
-			 NULL, /* class_finalize */
-			 NULL, /* class_data */
-			 sizeof (ECalBackend),
-			 0,    /* n_preallocs */
-			 (GInstanceInitFunc) e_cal_backend_caldav_factory_instance_init
-	   };
-
-	   type = g_type_module_register_type (module,
-								    E_TYPE_CAL_BACKEND_FACTORY,
-								    "ECalBackendCalDAVEventsFactory",
-								    &info, 0);
-
-	   return type;
-}
-
-
-static GType caldav_types[1];
+static GType caldav_types[3];
 
 void
 eds_module_initialize (GTypeModule *module)
 {
-	   caldav_types[0] = events_backend_factory_get_type (module);
+	caldav_types[0] = backend_factory_get_type_VEVENT   (module);
+	caldav_types[1] = backend_factory_get_type_VTODO    (module);
+	caldav_types[2] = backend_factory_get_type_VJOURNAL (module);
 }
 
 void
@@ -115,6 +128,6 @@ eds_module_shutdown   (void)
 void
 eds_module_list_types (const GType **types, int *num_types)
 {
-	   *types = caldav_types;
-	   *num_types = 1;
+	*types = caldav_types;
+	*num_types = 3;
 }

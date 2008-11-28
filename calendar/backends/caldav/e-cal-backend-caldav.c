@@ -1010,7 +1010,18 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	xmlSetProp (node, (xmlChar *) "name", (xmlChar *) "VCALENDAR");
 
 	sn = xmlNewTextChild (node, nscd, (xmlChar *) "comp-filter", NULL);
-	xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VEVENT");
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
+		default:
+		case ICAL_VEVENT_COMPONENT:
+			xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VEVENT");
+			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VJOURNAL");
+			break;
+		case ICAL_VTODO_COMPONENT:
+			xmlSetProp (sn, (xmlChar *) "name", (xmlChar *) "VTODO");
+			break;
+	}
 	/* ^^^ add timerange for performance?  */
 
 
@@ -1248,31 +1259,34 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 	bkend = E_CAL_BACKEND (cbdav);
 
 	if (kind == ICAL_VCALENDAR_COMPONENT) {
-
 		kind = e_cal_backend_get_kind (bkend);
 		subcomp = icalcomponent_get_first_component (icomp, kind);
 
-		comp = e_cal_component_new ();
-		res = e_cal_component_set_icalcomponent (comp,
-						   icalcomponent_new_clone (subcomp));
-		if (res == TRUE) {
-			icaltimezone *zone = icaltimezone_new ();
-
-			e_cal_component_set_href (comp, object->href);
-			e_cal_component_set_etag (comp, object->etag);
-
-			for (subcomp = icalcomponent_get_first_component (icomp, ICAL_VTIMEZONE_COMPONENT);
-			    subcomp;
-			    subcomp = icalcomponent_get_next_component (icomp, ICAL_VTIMEZONE_COMPONENT)) {
-				/* copy timezones of the component to our cache to have it available later */
-				if (icaltimezone_set_component (zone, subcomp))
-					e_cal_backend_cache_put_timezone (priv->cache, zone);
-			}
-
-			icaltimezone_free (zone, TRUE);
+		if (!subcomp) {
+			res = FALSE;
 		} else {
-			g_object_unref (comp);
-			comp = NULL;
+			comp = e_cal_component_new ();
+			res = e_cal_component_set_icalcomponent (comp,
+						   icalcomponent_new_clone (subcomp));
+			if (res == TRUE) {
+				icaltimezone *zone = icaltimezone_new ();
+
+				e_cal_component_set_href (comp, object->href);
+				e_cal_component_set_etag (comp, object->etag);
+
+				for (subcomp = icalcomponent_get_first_component (icomp, ICAL_VTIMEZONE_COMPONENT);
+				    subcomp;
+				    subcomp = icalcomponent_get_next_component (icomp, ICAL_VTIMEZONE_COMPONENT)) {
+					/* copy timezones of the component to our cache to have it available later */
+					if (icaltimezone_set_component (zone, subcomp))
+						e_cal_backend_cache_put_timezone (priv->cache, zone);
+				}
+
+				icaltimezone_free (zone, TRUE);
+			} else {
+				g_object_unref (comp);
+				comp = NULL;
+			}
 		}
 	} else {
 		res = FALSE;
@@ -1611,7 +1625,22 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	}
 
 	if (priv->cache == NULL) {
-		priv->cache = e_cal_backend_cache_new (priv->uri, E_CAL_SOURCE_TYPE_EVENT);
+		ECalSourceType source_type;
+
+		switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
+			default:
+			case ICAL_VEVENT_COMPONENT:
+				source_type = E_CAL_SOURCE_TYPE_EVENT;
+				break;
+			case ICAL_VTODO_COMPONENT:
+				source_type = E_CAL_SOURCE_TYPE_TODO;
+				break;
+			case ICAL_VJOURNAL_COMPONENT:
+				source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+				break;
+		}
+
+		priv->cache = e_cal_backend_cache_new (priv->uri, source_type);
 
 		if (priv->cache == NULL) {
 			result = GNOME_Evolution_Calendar_OtherError;
@@ -2107,7 +2136,6 @@ extract_objects (icalcomponent       *icomp,
 						   ekind);
 
 	while (scomp) {
-
 		/* Remove components from toplevel here */
 		*objects = g_list_prepend (*objects, scomp);
 		icalcomponent_remove_component (icomp, scomp);
@@ -2315,8 +2343,7 @@ caldav_receive_objects (ECalBackendSync *backend,
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
-	/* FIXME: use the e_cal_backend_xxx_kind call here */
-	kind = ICAL_VEVENT_COMPONENT;
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (backend));
 	status = extract_objects (icomp, kind, &objects);
 
 	if (status != GNOME_Evolution_Calendar_Success) {
@@ -2401,7 +2428,22 @@ caldav_get_default_object (ECalBackendSync  *backend,
 	ECalComponent *comp;
 
  	comp = e_cal_component_new ();
-	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+
+ 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+ 	case ICAL_VEVENT_COMPONENT:
+ 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+ 		break;
+ 	case ICAL_VTODO_COMPONENT:
+ 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+ 		break;
+ 	case ICAL_VJOURNAL_COMPONENT:
+ 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
+ 		break;
+ 	default:
+ 		g_object_unref (comp);
+		return GNOME_Evolution_Calendar_ObjectNotFound;
+ 	}
+
  	*object = e_cal_component_get_as_string (comp);
  	g_object_unref (comp);
 
