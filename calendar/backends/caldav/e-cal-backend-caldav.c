@@ -913,8 +913,8 @@ caldav_generate_uri (ECalBackendCalDAV *cbdav, const char *target)
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	/* priv->uri must NOT have trailing slash */
-	uri = g_strconcat (priv->uri, "/" , target, NULL);
+	/* priv->uri *have* trailing slash already */
+	uri = g_strconcat (priv->uri, target, NULL);
 
 	return uri;
 }
@@ -1608,13 +1608,11 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		}
 
 		priv->uri = g_strconcat (proto, uri + 9, NULL);
-
 	} else {
-
 		priv->uri = g_strdup (uri);
 	}
 
-	/* remove trailing slashes */
+	/* remove trailing slashes... */
 	len = strlen (priv->uri);
 	while (len--) {
 		if (priv->uri[len] == '/') {
@@ -1622,6 +1620,15 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		} else {
 			break;
 		}
+	}
+
+	/* ...and append exactly one slash */
+	if (priv->uri && *priv->uri) {
+		char *tmp = priv->uri;
+
+		priv->uri = g_strconcat (priv->uri, "/", NULL);
+
+		g_free (tmp);
 	}
 
 	if (priv->cache == NULL) {

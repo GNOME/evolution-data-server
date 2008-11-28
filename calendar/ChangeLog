@@ -1,5 +1,13 @@
 2008-11-28  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #527692
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_generate_uri),
+	(initialize_backend): Always append trailing slash to the user
+	entered URI, it should point to the collection, not to the file.
+
+2008-11-28  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #359745
 
 	* backends/caldav/e-cal-backend-caldav-factory.c:
