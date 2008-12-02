@@ -296,4 +296,6 @@ e_book_backend_db_cache_exists
 e_book_backend_db_cache_set_populated
 e_book_backend_db_cache_is_populated
 e_book_backend_db_cache_search
+e_book_backend_db_cache_set_time
+e_book_backend_db_cache_get_time
 </SECTION>

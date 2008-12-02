@@ -204,6 +204,7 @@ CamelMIRecord
 CamelFIRecord
 CamelDBSelectCB
 camel_db_open
+camel_db_clone
 camel_db_close
 camel_db_command
 camel_db_transaction_command
@@ -216,6 +217,7 @@ camel_db_rename_folder
 camel_db_delete_folder
 camel_db_delete_uid
 camel_db_delete_uids
+camel_db_delete_vuids
 camel_db_create_folders_table
 camel_db_select
 camel_db_write_folder_info_record
@@ -231,6 +233,7 @@ camel_db_count_total_message_info
 camel_db_count_visible_message_info
 camel_db_count_visible_unread_message_info
 camel_db_count_junk_not_deleted_message_info
+camel_db_count_message_info
 camel_db_camel_mir_free
 camel_db_create_vfolder
 camel_db_recreate_vfolder
@@ -247,6 +250,8 @@ camel_db_free_sqlized_string
 camel_db_get_column_name
 camel_db_set_collate
 camel_db_migrate_vfolders_to_14
+<SUBSECTION Private>
+CamelDBPrivate
 </SECTION>
 
 <SECTION>
@@ -405,6 +410,7 @@ camel_folder_has_search_capability
 camel_folder_search_by_expression
 camel_folder_search_by_uids
 camel_folder_search_free
+camel_folder_count_by_expression
 camel_folder_get_message_info
 camel_folder_free_message_info
 camel_folder_ref_message_info
@@ -456,6 +462,7 @@ camel_folder_search_set_summary
 camel_folder_search_set_body_index
 camel_folder_search_execute_expression
 camel_folder_search_search
+camel_folder_search_count
 camel_folder_search_free_result
 <SUBSECTION Standard>
 CAMEL_FOLDER_SEARCH
@@ -498,6 +505,7 @@ camel_folder_summary_header_load_from_db
 camel_folder_summary_header_save_to_db
 camel_folder_summary_touch
 camel_folder_summary_add
+camel_folder_summary_peek_info
 camel_folder_summary_get_changed
 camel_folder_summary_cache_size
 camel_folder_summary_reload_from_db
@@ -524,6 +532,8 @@ camel_folder_summary_uid
 camel_folder_summary_uid_from_index
 camel_folder_summary_check_uid
 camel_folder_summary_array
+camel_folder_summary_get_hashtable
+camel_folder_summary_free_hashtable
 camel_folder_summary_encode_token
 camel_folder_summary_decode_token
 camel_flag_get
@@ -1299,7 +1309,6 @@ camel_object_class_is
 camel_interface_cast
 camel_interface_is
 camel_object_new
-camel_object_new_name
 camel_object_ref
 camel_object_unref
 camel_object_hook_event
@@ -1574,6 +1583,11 @@ camel_sasl_get_type
 <SECTION>
 <FILE>camel-search-sql</FILE>
 camel_sexp_to_sql
+</SECTION>
+
+<SECTION>
+<FILE>camel-search-sql-sexp.h</FILE>
+camel_sexp_to_sql_sexp
 </SECTION>
 
 <SECTION>
@@ -2096,6 +2110,8 @@ camel_vee_folder_remove_folder
 camel_vee_folder_set_folders
 camel_vee_folder_rebuild_folder
 camel_vee_folder_set_expression
+camel_vee_folder_mask_event_folder_changed
+camel_vee_folder_unmask_event_folder_changed
 camel_vee_folder_hash_folder
 camel_vee_folder_sync_headers
 <SUBSECTION Standard>
@@ -3405,6 +3421,12 @@ CamelArg
 CamelArgV
 CamelArgGet
 CamelArgGetV
+ca_object
+ca_int
+ca_double
+ca_str
+ca_ptr
+CAMEL_ARGV_MAX
 camel_argv_start
 camel_argv_end
 camel_argv_build

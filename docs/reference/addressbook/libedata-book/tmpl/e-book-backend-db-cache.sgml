@@ -130,3 +130,21 @@ e-book-backend-db-cache
 @Returns: 
 
 
+<!-- ##### FUNCTION e_book_backend_db_cache_set_time ##### -->
+<para>
+
+</para>
+
+@db: 
+@t: 
+
+
+<!-- ##### FUNCTION e_book_backend_db_cache_get_time ##### -->
+<para>
+
+</para>
+
+@db: 
+@Returns: 
+
+

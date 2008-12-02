@@ -362,15 +362,6 @@ CamelObject
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_object_new_name ##### -->
-<para>
-
-</para>
-
-@name: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_object_ref ##### -->
 <para>
 

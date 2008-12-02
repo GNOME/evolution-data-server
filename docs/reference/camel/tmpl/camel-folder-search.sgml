@@ -99,6 +99,17 @@ CamelFolderSearch
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_search_count ##### -->
+<para>
+
+</para>
+
+@search: 
+@expr: 
+@ex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_search_free_result ##### -->
 <para>
 

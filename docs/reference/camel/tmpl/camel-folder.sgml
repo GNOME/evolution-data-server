@@ -398,6 +398,17 @@ CamelFolder
 @result: 
 
 
+<!-- ##### FUNCTION camel_folder_count_by_expression ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expression: 
+@ex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_get_message_info ##### -->
 <para>
 

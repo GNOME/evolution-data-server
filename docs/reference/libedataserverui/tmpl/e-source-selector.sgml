@@ -154,6 +154,14 @@ ESourceSelector
 @state: 
 
 
+<!-- ##### FUNCTION e_source_selector_edit_primary_selection ##### -->
+<para>
+
+</para>
+
+@selector: 
+
+
 <!-- ##### FUNCTION e_source_selector_peek_primary_selection ##### -->
 <para>
 

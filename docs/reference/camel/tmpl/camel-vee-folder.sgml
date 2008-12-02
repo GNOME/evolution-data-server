@@ -121,6 +121,24 @@ CamelVeeFolder
 @expr: 
 
 
+<!-- ##### FUNCTION camel_vee_folder_mask_event_folder_changed ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+
+
+<!-- ##### FUNCTION camel_vee_folder_unmask_event_folder_changed ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+
+
 <!-- ##### FUNCTION camel_vee_folder_hash_folder ##### -->
 <para>
 

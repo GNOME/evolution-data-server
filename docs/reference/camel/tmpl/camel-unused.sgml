@@ -206,12 +206,6 @@ camel-search-private
 camel-types
 
 
-<!-- ##### MACRO CAMEL_ARGV_MAX ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### MACRO CAMEL_GROUPWISE_FOLDER_LOCK ##### -->
 <para>
 
@@ -447,36 +441,6 @@ camel-types
 @ai_canonname: 
 @ai_next: 
 
-<!-- ##### MACRO ca_double ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO ca_int ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO ca_object ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO ca_ptr ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO ca_str ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION camel_block_file_get_type ##### -->
 <para>
 
@@ -560,6 +524,14 @@ camel-types
 @ctx: 
 @buf: 
 @len: 
+
+<!-- ##### FUNCTION camel_object_new_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_partition_table_get_type ##### -->
 <para>

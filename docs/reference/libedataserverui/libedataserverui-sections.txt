@@ -257,6 +257,7 @@ e_source_selector_free_selection
 e_source_selector_show_selection
 e_source_selector_selection_shown
 e_source_selector_set_select_new
+e_source_selector_edit_primary_selection
 e_source_selector_peek_primary_selection
 e_source_selector_set_primary_selection
 e_source_selector_get_primary_source_group
@@ -312,6 +313,7 @@ e_name_selector_dialog_get_type
 
 <SECTION>
 <FILE>e-data-server-ui-marshal</FILE>
+e_data_server_ui_marshal_BOOLEAN__BOXED_OBJECT_FLAGS_UINT
 e_data_server_ui_marshal_BOOLEAN__OBJECT_BOXED
 </SECTION>
 
