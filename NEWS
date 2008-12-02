@@ -1,3 +1,32 @@
+Evolution-Data-Server 2.25.2 2008-12-01
+---------------------------------------
+
+New in 2.25.2
+	Support CalDAV for VTODO and VJOURNAL (Milan Crha)
+
+Bug Fixes:
+       #359745: Support CalDAV for VTODO and VJOURNAL (Milan Crha)
+       #524377: Attachments with localised letters are unrecognised by Outlook (Milan Crha)
+       #527692: CalDAV does not work with Apple CalDAV  (Milan Crha)
+       #531090: Deprecate dead API in camel-object.h (Matthew Barnes)
+       #546637: Mail opened from the "Unread mails" displays empty list (Srinivasa Ragavan)
+       #555979: Evolution does not empty trash on exit (Milan Crha)
+       #556119: Evolution takes a very long time to index newsgroup (Srinivasa Ragavan)
+       #557348: Search folders with "Include threads" do not update reliably (Srinivasa Ragavan)
+       #557818: Centralize ESourceSelector drag-n-drop handling (Matthew Barnes)
+       #558322: Pressing "F2" on a highlighted Task List / Memo List / Address Book / Calendar 
+                should bring up the properties dialog box (Matthew Barnes)
+       #558737: Evolution freezes on trying to store folder (Milan Crha)
+       #558883: Evolution 2.24 is terribly slow with large IMAP folders (Milan Crha) (Srinivasa Ragavan)
+       #559272: Evolution freeze while using a CalDAV calendar (Milan Crha)
+       #560076: Follow-Ups doesn't work in 2.24 (Srinivasa Ragavan)
+       #560185: Support 'getctag' in CalDAV, if available (Milan Crha)
+       #560681: Parsing QUOTED-PRINTABLE vcards probably ignores CHARSET info (Milan Crha)
+       #560981: Result of xpath query is not freed in CalDAV synch loop (Andrew McMillan)
+       #561069: Evolution crashed expunging 48k deleted junk messages (Srinivasa Ragavan)
+       #561466: Changes needed in E-D-S for evolution-mapi (Suman Manjunath)
+       #435964 (bugzilla.novell.com): Crash after switching from offline to online in GW addressbook (Ashish Shrivastava)
+
 Evolution-Data-Server 2.25.1 2008-11-03
 ---------------------------------------
 
