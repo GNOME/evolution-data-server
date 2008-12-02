@@ -1586,7 +1586,7 @@ camel_sexp_to_sql
 </SECTION>
 
 <SECTION>
-<FILE>camel-search-sql-sexp.h</FILE>
+<FILE>camel-search-sql-sexp</FILE>
 camel_sexp_to_sql_sexp
 </SECTION>
 
