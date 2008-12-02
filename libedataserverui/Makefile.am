@@ -12,6 +12,7 @@ MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 
 lib_LTLIBRARIES = libedataserverui-1.2.la
 noinst_PROGRAMS = 			\
+	test-category-completion		\
 	test-source-combo-box		\
 	test-source-selector		\
 	test-contact-store		\
@@ -20,6 +21,7 @@ noinst_PROGRAMS = 			\
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
 	e-categories-dialog.c		\
+	e-category-completion.c		\
 	e-destination-store.c		\
 	e-book-auth-util.c		\
 	e-contact-store.c		\
@@ -48,6 +50,7 @@ libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
 libedataserveruiinclude_HEADERS =	\
 	e-categories-dialog.h		\
+	e-category-completion.h		\
 	e-destination-store.h		\
 	e-book-auth-util.h		\
 	e-contact-store.h		\
@@ -65,6 +68,12 @@ libedataserveruiinclude_HEADERS =	\
 	e-cell-renderer-color.h
 
 # Test programs
+test_category_completion_SOURCES = test-category-completion.c
+test_category_completion_LDADD = 					\
+	libedataserverui-1.2.la 				\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(E_DATA_SERVER_UI_LIBS)
+
 test_source_selector_SOURCES = test-source-selector.c
 test_source_selector_LDADD = 					\
 	libedataserverui-1.2.la 				\

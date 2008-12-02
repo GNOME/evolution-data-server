@@ -1,3 +1,23 @@
+2008-12-02  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #348299
+
+	* Makefile.am:
+	Add new files and test program.
+
+	* e-category-completion.c:
+	* e-category-completion.h:
+	New files implement category completion for GtkEntry widgets.
+
+	* e-categories-dialog.c:
+	Fix inline searches in the category list.
+	Use ECategoryCompletion in the entry box.
+	Put spaces after commas in the entry box.
+	Listen for category changes and rebuild the list store.
+
+	* test-category-completion.c:
+	Test program for ECategoryCompletion.
+
 2008-11-17  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #557818
