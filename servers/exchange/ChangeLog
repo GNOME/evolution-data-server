@@ -1,3 +1,10 @@
+2008-12-02  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #562228
+
+	* lib/e2k-autoconfig.c: (validate): Always store correct owa_path when
+	validating, without trailing slash and without mailbox name. 
+
 2008-10-19  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #553944

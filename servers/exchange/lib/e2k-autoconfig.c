@@ -1516,6 +1516,8 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 	}
 
 	if (*result == E2K_AUTOCONFIG_OK) {
+		int len;
+
 		*result = e2k_autoconfig_check_global_catalog (ac, &op);
 		e2k_operation_free (&op);
 
@@ -1523,6 +1525,13 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		euri = e2k_uri_new (ac->home_uri);
 		path = g_strdup (euri->path + 1);
 		e2k_uri_free (euri);
+
+		/* no slash at the end of path */
+		len = strlen (path);
+		while (len && path [len - 1] == '/') {
+			path [len - 1] = '\0';
+			len--;
+		}
 
 		/* change a mailbox only if not set by the caller */
 		if (!exchange_params->mailbox || !*exchange_params->mailbox) {
@@ -1536,6 +1545,12 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 
 			g_free (exchange_params->mailbox);
 			exchange_params->mailbox  = g_strdup (mailbox);
+		} else {
+			/* always strip the mailbox part from the path */
+			char *slash = strrchr (path, '/');
+
+			if (slash)
+				*slash = '\0';
 		}
 
 		exchange_params->owa_path = g_strdup_printf ("%s%s", "/", path);
