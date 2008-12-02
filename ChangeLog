@@ -1,3 +1,11 @@
+2008-12-02  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #503662
+
+	* libedataserver/e-url.c: (e_uri_new):
+	Use last '@' in the address part to be the delimiter between
+	user name and server address, not the first one.
+
 2008-12-01  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS: Evolution Data Server 2.25.2 release changes

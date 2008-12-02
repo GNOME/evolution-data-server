@@ -180,6 +180,16 @@ e_uri_new (const char *uri_string)
 		slash = uri_string + strcspn (uri_string, "/#");
 		at = strchr (uri_string, '@');
 		if (at && at < slash) {
+			const char *at2;
+			/* this is for cases where username contains '@' at it, like:
+			   http://user@domain.com@server.addr.com/path
+			   We skip all at-s before the slash here. */
+
+			while (at2 = strchr (at + 1, '@'), at2 && at2 < slash) {
+				at = at2;
+			}
+		}
+		if (at && at < slash) {
 			colon = strchr (uri_string, ':');
 			if (colon && colon < at) {
 				uri->passwd = g_strndup (colon + 1, at - colon - 1);
