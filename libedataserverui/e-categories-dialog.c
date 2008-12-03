@@ -60,6 +60,25 @@ typedef struct {
 	GtkWidget *category_icon;
 } CategoryPropertiesDialog;
 
+static void
+update_preview (GtkFileChooser *chooser, gpointer user_data)
+{
+	GtkImage *image;
+	char *filename;
+
+	g_return_if_fail (chooser != NULL);
+
+	image = GTK_IMAGE (gtk_file_chooser_get_preview_widget (chooser));
+	g_return_if_fail (image != NULL);
+
+	filename = gtk_file_chooser_get_preview_filename (chooser);
+
+	gtk_image_set_from_file (image, filename);
+	gtk_file_chooser_set_preview_widget_active (chooser, filename != NULL);
+
+	g_free (filename);
+}
+
 static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
@@ -86,6 +105,21 @@ load_properties_dialog (ECategoriesDialog *parent)
 
 	prop_dialog->category_name = glade_xml_get_widget (prop_dialog->gui, "category-name");
 	prop_dialog->category_icon = glade_xml_get_widget (prop_dialog->gui, "category-icon");
+
+	if (prop_dialog->category_icon) {
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (prop_dialog->category_icon);
+
+		if (chooser) {
+			GtkWidget *image = gtk_image_new ();
+
+			gtk_widget_show (image);
+
+			gtk_file_chooser_set_preview_widget (chooser, image);
+			gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
+
+			g_signal_connect (G_OBJECT (chooser), "update-preview", (GCallback) update_preview, NULL);
+		}
+	}
 
 	return prop_dialog;
 }

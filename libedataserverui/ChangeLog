@@ -1,3 +1,10 @@
+2008-12-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #357948
+
+	* e-categories-dialog.c: (update_preview), (load_properties_dialog):
+	Show preview of the selected image file when choosing new icon.
+
 2008-12-02  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #348299
