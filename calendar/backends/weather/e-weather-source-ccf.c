@@ -26,18 +26,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
 #include <glib/gi18n-lib.h>
-
-#include <gconf/gconf-client.h>
-
-#include "libedataserver/e-xml-utils.h"
 
 #include "e-weather-source-ccf.h"
 
-#define DATA_SIZE 5000
+#define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+#include <libgweather/weather.h>
+#include <libgweather/gweather-xml.h>
+#undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 
 #ifdef G_OS_WIN32
 
@@ -58,86 +54,98 @@
 #define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
 #endif
 
-static gchar *
-parse_for_url (char *code, char *name, xmlNode *parent)
+struct search_struct
 {
-	xmlNode *child;
-	if (parent->type == XML_ELEMENT_NODE) {
-		if (strcmp ((char*)parent->name, "location") == 0) {
-			child = parent->children;
-			g_assert (child->type == XML_TEXT_NODE);
-			if (strcmp ((char*)child->content, name) == 0) {
-				xmlAttr *attr;
-				gchar *url = NULL;
-				for (attr = parent->properties; attr; attr = attr->next) {
-					if (strcmp ((char*)attr->name, "code") == 0) {
-						if (strcmp ((char*)attr->children->content, code) != 0)
-							return NULL;
-					}
-					if (strcmp ((char*)attr->name, "url") == 0)
-						url = (char*)attr->children->content;
-				}
-				return g_strdup (url);
-			}
-			return NULL;
-		} else {
-			for (child = parent->children; child; child = child->next) {
-				gchar *url = parse_for_url (code, name, child);
-				if (url)
-					return url;
-			}
-		}
+	const char *code;
+	const char *name;
+	gboolean is_old;
+	WeatherLocation *location;
+};
+
+static gboolean
+find_location_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *node, gpointer data)
+{
+	WeatherLocation *wl = NULL;
+	struct search_struct *search = (struct search_struct *)data;
+
+	gtk_tree_model_get (model, node, GWEATHER_XML_COL_POINTER, &wl, -1);
+	if (!wl || !wl->name || !wl->code || !search || search->location)
+		return FALSE;
+
+	if (((!strcmp (wl->code, search->code)) || (search->is_old && !strcmp (wl->code + 1, search->code))) &&
+	     (!strcmp (wl->name, search->name))) {
+		search->location = weather_location_clone (wl);
+		return TRUE;
 	}
-	return NULL;
+
+	return FALSE;
 }
 
-static void
-find_station_url (gchar *station, EWeatherSourceCCF *source)
+static WeatherLocation *
+find_location (const gchar *code_name, gboolean is_old)
 {
-	xmlDoc *doc;
-	xmlNode *root;
-	gchar **sstation;
-	gchar *url;
-	gchar *filename;
+	GtkTreeModel *model;
+	gchar **ids;
+	struct search_struct search;
 
-	sstation = g_strsplit (station, "/", 2);
+	search.location = NULL;
 
-#ifndef G_OS_WIN32
-	filename = g_strdup (WEATHER_DATADIR "/Locations.xml");
-#else
-	filename = e_util_replace_prefix (E_DATA_SERVER_PREFIX,
-					  e_util_get_prefix (),
-					  WEATHER_DATADIR "/Locations.xml");
-#endif
+	ids = g_strsplit (code_name, "/", 2);
 
-	doc = e_xml_parse_file (filename);
+	if (!ids || !ids [0] || !ids [1])
+		goto done;
 
-	g_assert (doc != NULL);
+	model = gweather_xml_load_locations ();
+	if (!model)
+		goto done;
 
-	root = xmlDocGetRootElement (doc);
+	search.code = ids [0];
+	search.name = ids [1];
+	search.is_old = is_old;
+	search.location = NULL;
 
-	url = parse_for_url (sstation[0], sstation[1], root);
+	gtk_tree_model_foreach (model, (GtkTreeModelForeachFunc) find_location_func, &search);
 
-	source->url = g_strdup (url);
-	source->substation = g_strdup (sstation[0]);
+	g_object_unref (model);
+	g_strfreev (ids);
 
-	g_strfreev (sstation);
+done:
+	return search.location;
 }
 
 EWeatherSource*
 e_weather_source_ccf_new (const char *uri)
 {
-	/* Our URI is formatted as weather://ccf/AAA[/BBB] - AAA is the 3-letter station
+	/* Old URI is formatted as weather://ccf/AAA[/BBB] - AAA is the 3-letter station
 	 * code for identifying the providing station (subdirectory within the crh data
 	 * repository). BBB is an optional additional station ID for the station within
 	 * the CCF file. If not present, BBB is assumed to be the same station as AAA.
+	 * But the new URI is as weather://code/name, where code is 4-letter code.
+	 * So if got the old URI, then migrate to the new one, if possible.
 	 */
-	EWeatherSourceCCF *source = E_WEATHER_SOURCE_CCF (g_object_new (e_weather_source_ccf_get_type (), NULL));
 
-	find_station_url (strchr (uri, '/') + 1, source);
+	WeatherLocation *wl;
+	EWeatherSourceCCF *source;
+
+	if (!uri)
+		return NULL;
+
+	if (strncmp (uri, "ccf/", 4) == 0)
+		wl = find_location (uri + 4, TRUE);
+	else
+		wl = find_location (uri, FALSE);
+
+	if (!wl)
+		return NULL;
+
+	source = E_WEATHER_SOURCE_CCF (g_object_new (e_weather_source_ccf_get_type (), NULL));
+	source->location = wl;
+	source->info = NULL;
+
 	return E_WEATHER_SOURCE (source);
 }
 
+#if 0
 static GSList*
 tokenize (char *buffer)
 {
@@ -388,74 +396,48 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 	g_free (forecasts);
 	g_list_free (fc);
 }
+#endif
 
 static void
-retrieval_done (SoupSession *session, SoupMessage *message, EWeatherSourceCCF *source)
+parse_done (WeatherInfo *info, gpointer data)
 {
-	/* check status code */
-	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		source->done (NULL, source->finished_data);
+	EWeatherSourceCCF *ccfsource = (EWeatherSourceCCF *) data;
+
+	if (!ccfsource)
+		return;
+
+	if (!info || !weather_info_is_valid (info)) {
+		ccfsource->done (NULL, ccfsource->finished_data);
 		return;
 	}
 
-	e_weather_source_ccf_do_parse (source, (char *)message->response_body->data);
+	ccfsource->done (info, ccfsource->finished_data);
 }
 
 static void
 e_weather_source_ccf_parse (EWeatherSource *source, EWeatherSourceFinished done, gpointer data)
 {
 	EWeatherSourceCCF *ccfsource = (EWeatherSourceCCF*) source;
-	SoupMessage *soup_message;
+	WeatherPrefs prefs;
 
 	ccfsource->finished_data = data;
-
 	ccfsource->done = done;
 
-	if (!ccfsource->soup_session) {
-		GConfClient *conf_client;
-		ccfsource->soup_session = soup_session_async_new ();
+	prefs.type = FORECAST_LIST;
+	prefs.radar = FALSE;
+	prefs.radar_custom_url = NULL;
+	prefs.temperature_unit = TEMP_UNIT_CENTIGRADE;
+	prefs.speed_unit = SPEED_UNIT_MS;
+	prefs.pressure_unit = PRESSURE_UNIT_HPA;
+	prefs.distance_unit = DISTANCE_UNIT_METERS;
 
-		/* set the HTTP proxy, if configuration is set to do so */
-		conf_client = gconf_client_get_default ();
-		if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
-			char *server, *proxy_uri;
-			int port;
-
-			server = gconf_client_get_string (conf_client, "/system/http_proxy/host", NULL);
-			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
-
-			if (server && server[0]) {
-				SoupURI *suri;
-				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
-					char *user, *password;
-
-					user = gconf_client_get_string (conf_client,
-									"/system/http_proxy/authentication_user",
-									NULL);
-					password = gconf_client_get_string (conf_client,
-									    "/system/http_proxy/authentication_password",
-									    NULL);
-
-					proxy_uri = g_strdup_printf("http://%s:%s@%s:%d", user, password, server, port);
-
-					g_free (user);
-					g_free (password);
-				} else
-					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
-
-				suri = soup_uri_new (proxy_uri);
-				g_object_set (G_OBJECT (ccfsource->soup_session), SOUP_SESSION_PROXY_URI, suri, NULL);
-
-				soup_uri_free (suri);
-				g_free (server);
-				g_free (proxy_uri);
-			}
-		}
-		g_object_unref (conf_client);
+	if (ccfsource->location && !ccfsource->info) {
+		ccfsource->info = weather_info_new (ccfsource->location, &prefs, parse_done, source);
+		weather_location_free (ccfsource->location);
+		ccfsource->location = NULL;
+	} else {
+		ccfsource->info = weather_info_update (ccfsource->info, &prefs, parse_done, source);
 	}
-
-	soup_message = soup_message_new (SOUP_METHOD_GET, ccfsource->url);
-	soup_session_queue_message (ccfsource->soup_session, soup_message, (SoupSessionCallback) retrieval_done, source);
 }
 
 static void
@@ -471,9 +453,8 @@ e_weather_source_ccf_class_init (EWeatherSourceCCFClass *class)
 static void
 e_weather_source_ccf_init (EWeatherSourceCCF *source)
 {
-	source->url = NULL;
-	source->substation = NULL;
-	source->soup_session = NULL;
+	source->location = NULL;
+	source->info = NULL;
 }
 
 GType

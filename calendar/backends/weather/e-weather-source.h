@@ -24,6 +24,10 @@
 #include <glib-object.h>
 #include <time.h>
 
+#define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+#include <libgweather/weather.h>
+#undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+
 G_BEGIN_DECLS
 
 typedef enum {
@@ -54,21 +58,7 @@ typedef enum {
 	WEATHER_RAIN,
 } WeatherConditions;
 
-typedef struct {
-	/* date, in UTC */
-	time_t date;
-	/* expected conditions */
-	WeatherConditions conditions;
-	/* internal storage is always in celcius and should be
-	 * converted based on the user's current locale setting */
-	float high, low;
-	/* probability of precipitation */
-	int pop;
-	/* snowfall forecast - internal storage in cm */
-	float snowhigh, snowlow;
-} WeatherForecast;
-
-typedef void (*EWeatherSourceFinished)(GList *results, gpointer data);
+typedef void (*EWeatherSourceFinished)(WeatherInfo *result, gpointer data);
 
 #define E_TYPE_WEATHER_SOURCE            (e_weather_source_get_type ())
 #define E_WEATHER_SOURCE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_WEATHER_SOURCE, EWeatherSource))

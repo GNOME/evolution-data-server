@@ -26,6 +26,10 @@
 #include <libsoup/soup-uri.h>
 #include "e-weather-source.h"
 
+#define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+#include <libgweather/weather.h>
+#undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+
 G_BEGIN_DECLS
 
 #define E_TYPE_WEATHER_SOURCE_CCF            (e_weather_source_ccf_get_type ())
@@ -40,10 +44,10 @@ typedef struct _EWeatherSourceCCFClass EWeatherSourceCCFClass;
 struct _EWeatherSourceCCF {
 	EWeatherSource parent;
 
-	char *url;
-	char *substation;
+	WeatherLocation *location;
+	WeatherInfo *info;
+
 	EWeatherSourceFinished done;
-	SoupSession *soup_session;
 	gpointer finished_data;
 };
 

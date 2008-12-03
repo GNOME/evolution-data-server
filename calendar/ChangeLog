@@ -1,3 +1,18 @@
+2008-12-03  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #352287
+
+	* backends/weather/Makefile.am:
+	* backends/weather/e-weather-source.h:
+	* backends/weather/e-weather-source.c: (e_weather_source_new):
+	* backends/weather/e-cal-backend-weather.c: (create_weather),
+	(finished_retrieval_cb), (getCategory):
+	* backends/weather/e-weather-source-ccf.h:
+	* backends/weather/e-weather-source-ccf.c: (e_weather_source_ccf_new),
+	(e_weather_source_ccf_parse), (find_location), (struct search_struct),
+	(parse_done), (find_location_func), (e_weather_source_ccf_init):
+	Share locations and forecast retrieving with libgweather.
+
 2008-11-28  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #560185

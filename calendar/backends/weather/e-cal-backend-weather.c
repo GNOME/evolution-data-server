@@ -27,11 +27,15 @@
 #include "e-cal-backend-weather.h"
 #include "e-weather-source.h"
 
+#define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+#include <libgweather/weather.h>
+#undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
+
 #define WEATHER_UID_EXT "-weather"
 
 static gboolean reload_cb (ECalBackendWeather *cbw);
 static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
-static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherForecast *report);
+static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast);
 static ECalBackendSyncStatus
 e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
 
@@ -131,16 +135,17 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 }
 
 static void
-finished_retrieval_cb (GList *forecasts, ECalBackendWeather *cbw)
+finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent *comp;
 	icalcomponent *icomp;
 	GList *l;
+	char *obj;
 
 	priv = cbw->priv;
 
-	if (forecasts == NULL) {
+	if (info == NULL) {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not retrieve weather data"));
 		return;
 	}
@@ -167,14 +172,36 @@ finished_retrieval_cb (GList *forecasts, ECalBackendWeather *cbw)
 	g_list_free (l);
 	e_file_cache_clean (E_FILE_CACHE (priv->cache));
 
-	for (l = forecasts; l != NULL; l = g_list_next (l)) {
-		char *obj;
-		comp = create_weather (cbw, l->data);
+	comp = create_weather (cbw, info, FALSE);
+	if (comp) {
+		GSList *forecasts;
+
 		e_cal_backend_cache_put_component (priv->cache, comp);
 		icomp = e_cal_component_get_icalcomponent (comp);
 		obj = icalcomponent_as_ical_string (icomp);
 		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
 		g_free (obj);
+
+		forecasts = weather_info_get_forecast_list (info);
+		if (forecasts) {
+			GSList *f;
+
+			/* skip the first one, it's for today, which has been added above */
+			for (f = forecasts->next; f; f = f->next) {
+				WeatherInfo *nfo = f->data;
+
+				if (nfo) {
+					comp = create_weather (cbw, nfo, TRUE);
+					if (comp) {
+						e_cal_backend_cache_put_component (priv->cache, comp);
+						icomp = e_cal_component_get_icalcomponent (comp);
+						obj = icalcomponent_as_ical_string (icomp);
+						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
+						g_free (obj);
+					}
+				}
+			}
+		}
 	}
 
 	priv->is_loading = FALSE;
@@ -210,86 +237,40 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 }
 
 static const char*
-getConditions (WeatherForecast *report)
+getCategory (WeatherInfo *report)
 {
-	switch (report->conditions) {
-		case WEATHER_FAIR:			return _("Fair");
-		case WEATHER_SNOW_SHOWERS:		return _("Snow showers");
-		case WEATHER_SNOW:			return _("Snow");
-		case WEATHER_PARTLY_CLOUDY:		return _("Partly cloudy");
-		case WEATHER_SMOKE:			return _("Smoke");
-		case WEATHER_THUNDERSTORMS:		return _("Thunderstorms");
-		case WEATHER_CLOUDY:			return _("Cloudy");
-		case WEATHER_DRIZZLE:			return _("Drizzle");
-		case WEATHER_SUNNY:			return _("Sunny");
-		case WEATHER_DUST:			return _("Dust");
-		case WEATHER_CLEAR:			return _("Clear");
-		case WEATHER_MOSTLY_CLOUDY:		return _("Mostly cloudy");
-		case WEATHER_WINDY:			return _("Windy");
-		case WEATHER_RAIN_SHOWERS:		return _("Rain showers");
-		case WEATHER_FOGGY:			return _("Foggy");
-		case WEATHER_RAIN_OR_SNOW_MIXED:	return _("Rain/snow mixed");
-		case WEATHER_SLEET:			return _("Sleet");
-		case WEATHER_VERY_HOT_OR_HOT_HUMID:	return _("Very hot/humid");
-		case WEATHER_BLIZZARD:			return _("Blizzard");
-		case WEATHER_FREEZING_RAIN:		return _("Freezing rain");
-		case WEATHER_HAZE:			return _("Haze");
-		case WEATHER_BLOWING_SNOW:		return _("Blowing snow");
-		case WEATHER_FREEZING_DRIZZLE:		return _("Freezing drizzle");
-		case WEATHER_VERY_COLD_WIND_CHILL:	return _("Very cold/wind chill");
-		case WEATHER_RAIN:			return _("Rain");
-		default:				return NULL;
+	struct {
+		const char *description;
+		const char *icon_name;
+	} categories[] = {
+		{ N_("Weather: Fog"), 		"weather-fog" },
+		{ N_("Weather: Cloudy"), 	"weather-few-clouds" },
+		{ N_("Weather: Cloudy Night"),	"weather-few-clouds-night" },
+		{ N_("Weather: Overcast"),	"weather-overcast" },
+		{ N_("Weather: Showers"), 	"weather-showers" },
+		{ N_("Weather: Snow"), 		"weather-snow" },
+		{ N_("Weather: Sunny"), 	"weather-clear" },
+		{ N_("Weather: Clear Night"), 	"weather-clear-night" },
+		{ N_("Weather: Thunderstorms"), "weather-storm" },
+		{ NULL,				NULL }
+	};
+
+	int i;
+	const char *icon_name = weather_info_get_icon_name (report);
+
+	if (!icon_name)
+		return NULL;
+
+	for (i = 0; categories [i].description; i++) {
+		if (g_str_equal (categories [i].icon_name, icon_name))
+			return _(categories [i].description);
 	}
-}
 
-static const char*
-getCategory (WeatherForecast *report)
-{
-	/* Right now this is based on which icons we have available */
-	switch (report->conditions) {
-		case WEATHER_FAIR:			return _("Weather: Sunny");
-		case WEATHER_SNOW_SHOWERS:		return _("Weather: Snow");
-		case WEATHER_SNOW:			return _("Weather: Snow");
-		case WEATHER_PARTLY_CLOUDY:		return _("Weather: Partly Cloudy");
-		case WEATHER_SMOKE:			return _("Weather: Fog");
-		case WEATHER_THUNDERSTORMS:		return _("Weather: Thunderstorms");
-		case WEATHER_CLOUDY:			return _("Weather: Cloudy");
-		case WEATHER_DRIZZLE:			return _("Weather: Rain");
-		case WEATHER_SUNNY:			return _("Weather: Sunny");
-		case WEATHER_DUST:			return _("Weather: Fog");
-		case WEATHER_CLEAR:			return _("Weather: Sunny");
-		case WEATHER_MOSTLY_CLOUDY:		return _("Weather: Cloudy");
-		case WEATHER_WINDY:			return "";
-		case WEATHER_RAIN_SHOWERS:		return _("Weather: Rain");
-		case WEATHER_FOGGY:			return _("Weather: Fog");
-		case WEATHER_RAIN_OR_SNOW_MIXED:	return _("Weather: Rain");
-		case WEATHER_SLEET:			return _("Weather: Rain");
-		case WEATHER_VERY_HOT_OR_HOT_HUMID:	return _("Weather: Sunny");
-		case WEATHER_BLIZZARD:			return _("Weather: Snow");
-		case WEATHER_FREEZING_RAIN:		return _("Weather: Rain");
-		case WEATHER_HAZE:			return _("Weather: Fog");
-		case WEATHER_BLOWING_SNOW:		return _("Weather: Snow");
-		case WEATHER_FREEZING_DRIZZLE:		return _("Weather: Rain");
-		case WEATHER_VERY_COLD_WIND_CHILL:	return "";
-		case WEATHER_RAIN:			return _("Weather: Rain");
-		default:				return NULL;
-	}
-}
-
-static float
-ctof (float c)
-{
-	return ((c * 9.0f / 5.0f) + 32.0f);
-}
-
-static float
-cmtoin (float cm)
-{
-	return cm / 2.54f;
+	return NULL;
 }
 
 static ECalComponent*
-create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
+create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast)
 {
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent             *cal_comp;
@@ -300,26 +281,34 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	const char                *uid;
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
-	char                      *pop, *snow;
 	ESource                   *source;
 	gboolean                   metric;
-	const char                *format;
+	const char                *tmp;
+	time_t			   update_time;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
+
+	if (!weather_info_get_value_update (report, &update_time))
+		return NULL;
 
 	priv = cbw->priv;
 
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbw));
-	format = e_source_get_property (source, "units");
-	if (format == NULL) {
-		format = e_source_get_property (source, "temperature");
-		if (format == NULL)
+	tmp = e_source_get_property (source, "units");
+	if (tmp == NULL) {
+		tmp = e_source_get_property (source, "temperature");
+		if (tmp == NULL)
 			metric = FALSE;
 		else
-			metric = (strcmp (format, "fahrenheit") != 0);
+			metric = (strcmp (tmp, "fahrenheit") != 0);
 	} else {
-		metric = (strcmp (format, "metric") == 0);
+		metric = (strcmp (tmp, "metric") == 0);
 	}
+
+	if (metric)
+		weather_info_to_metric (report);
+	else
+		weather_info_to_imperial (report);
 
 	/* create the component and event object */
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
@@ -331,52 +320,61 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	e_cal_component_set_uid (cal_comp, uid);
 
 	/* Set all-day event's date from forecast data */
-	itt = icaltime_from_timet (report->date, 1);
+	itt = icaltime_from_timet (update_time, 1);
 	dt.value = &itt;
 	dt.tzid = NULL;
 	e_cal_component_set_dtstart (cal_comp, &dt);
 
-	itt = icaltime_from_timet (report->date, 1);
+	itt = icaltime_from_timet (update_time, 1);
 	icaltime_adjust (&itt, 1, 0, 0, 0);
 	dt.value = &itt;
 	dt.tzid = NULL;
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
 	e_cal_component_set_dtend (cal_comp, &dt);
 
-	/* The summary is the high or high/low temperatures */
-	if (report->high == report->low) {
-		if (metric)
-			comp_summary.value = g_strdup_printf (_("%.1f°C - %s"), report->high, priv->city);
-		else
-			comp_summary.value = g_strdup_printf (_("%.1f°F - %s"), ctof (report->high), priv->city);
+	if (is_forecast) {
+		gdouble tmin, tmax;
+
+		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) && 
+		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax)) {
+			/* because weather_info_get_temp* uses one internal buffer, thus finally
+			   the last value is shown for both, which is obviously wrong */
+			GString *str = g_string_new (priv->city);
+
+			g_string_append (str, " : ");
+			g_string_append (str, weather_info_get_temp_min (report));
+			g_string_append (str, "/");
+			g_string_append (str, weather_info_get_temp_max (report));
+
+			comp_summary.value = g_string_free (str, FALSE);
+		} else {
+			comp_summary.value = g_strdup_printf ("%s : %s", priv->city, weather_info_get_temp (report));
+		}
 	} else {
-		if (metric)
-			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°C - %s"), report->high, report->low, priv->city);
-		else
-			comp_summary.value = g_strdup_printf (_("%.1f/%.1f°F - %s"), ctof (report->high), ctof (report->low), priv->city);
+		gdouble tmin, tmax;
+		/* because weather_info_get_temp* uses one internal buffer, thus finally
+		   the last value is shown for both, which is obviously wrong */
+		GString *str = g_string_new (priv->city);
+
+		g_string_append (str, " : ");
+		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) && 
+		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax)) {
+			g_string_append (str, weather_info_get_temp_min (report));
+			g_string_append (str, "/");
+			g_string_append (str, weather_info_get_temp_max (report));
+		} else {
+			g_string_append (str, weather_info_get_temp (report));
+		}
+
+		comp_summary.value = g_string_free (str, FALSE);
 	}
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
 
-	if (report->pop != 0)
-		pop = g_strdup_printf (_("%d%% chance of precipitation\n"), report->pop);
-	else
-		pop = g_strdup ("");
-	if (report->snowhigh == 0)
-		snow = g_strdup ("");
-	else if (report->snowhigh == report->snowlow) {
-		if (metric)
-			snow = g_strdup_printf (_("%.1fcm snow\n"), report->snowhigh);
-		else
-			snow = g_strdup_printf (_("%.1fin snow\n"), cmtoin(report->snowhigh));
-	} else {
-		if (metric)
-			snow = g_strdup_printf (_("%.1f-%.1fcm snow\n"), report->snowlow, report->snowhigh);
-		else
-			snow = g_strdup_printf (_("%.1f-%.1fin snow\n"), cmtoin(report->snowlow), cmtoin(report->snowhigh));
-	}
+	tmp = weather_info_get_forecast (report);
+
 	description = g_new0 (ECalComponentText, 1);
-	description->value = g_strdup_printf ("%s\n%s%s", getConditions (report), pop, snow);
+	description->value = g_strconcat (is_forecast ? "" : weather_info_get_weather_summary (report), is_forecast ? "" : "\n", tmp ? _("Forecast") : "", tmp ? ":" : "", tmp && !is_forecast ? "\n" : "", tmp ? tmp : "", NULL);
 	description->altrep = "";
 	text_list = g_slist_append (text_list, description);
 	e_cal_component_set_description_list (cal_comp, text_list);
@@ -389,9 +387,6 @@ create_weather (ECalBackendWeather *cbw, WeatherForecast *report)
 	e_cal_component_set_transparency (cal_comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
 
 	e_cal_component_commit_sequence (cal_comp);
-
-	g_free (pop);
-	g_free (snow);
 
 	return cal_comp;
 }

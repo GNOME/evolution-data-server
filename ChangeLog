@@ -1,3 +1,9 @@
+2008-12-03  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #352287
+
+	* configure.in: Require libgweather in configure stage.
+
 2008-12-02  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #503662

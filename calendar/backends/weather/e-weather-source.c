@@ -70,7 +70,5 @@ EWeatherSource*	e_weather_source_new (const char *uri)
 {
 	const char *base = uri + 10; /* skip weather:// */
 
-	if (strncmp (base, "ccf/", 4) == 0)
-		return e_weather_source_ccf_new (base);
-	return NULL;
+	return e_weather_source_ccf_new (base);
 }
