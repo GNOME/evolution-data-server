@@ -4397,7 +4397,7 @@ msgstr "Az üzenetek _maradjanak meg a kiszolgálón"
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 #, c-format
 msgid "_Delete after %s day(s)"
-msgstr "Törlés %s _nap után"
+msgstr "_Törlés %s nap után"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 msgid "Disable _support for all POP3 extensions"
