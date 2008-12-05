@@ -163,6 +163,22 @@ sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
 	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
 }
 
+static int
+uid_compare (const void *va, const void *vb)
+{
+	const char **sa = (const char **)va, **sb = (const char **)vb;
+	unsigned long a, b;
+
+	a = strtoul (*sa, NULL, 10);
+	b = strtoul (*sb, NULL, 10);
+	if (a < b)
+		return -1;
+	else if (a == b)
+		return 0;
+	else
+		return 1;
+}
+
 /**
  * camel_imap_summary_new:
  * @folder: Parent folder.
@@ -181,7 +197,8 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 	camel_exception_init (&ex);
 
 	summary->folder = folder;
-	if (folder) {
+	/* Don't do DB sort. Its pretty slow to load */
+	if (folder && 0) {
 		camel_db_set_collate (folder->parent_store->cdb_r, "uid", "imap_uid_sort", (CamelDBCollate)sort_uid_cmp);
 		summary->sort_by = "uid";
 		summary->collate = "imap_uid_sort";
@@ -198,6 +215,8 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 		g_warning ("Unable to load summary %s\n", camel_exception_get_description (&ex));
 		camel_exception_clear (&ex);
 	}
+
+	g_ptr_array_sort (summary->uids, (GCompareFunc) uid_compare); 
 
 	return summary;
 }
