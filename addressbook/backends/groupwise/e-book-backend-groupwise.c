@@ -848,6 +848,9 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 				email = v ? v->data : NULL;
 			}
 		}
+
+		if (!id && !email)
+			email = e_vcard_attribute_get_value (attr);
 		if (id) {
 			member = g_new0 (EGroupMember , 1);
 			member->id = g_strdup (id);
@@ -2020,7 +2023,7 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 						g_object_unref (contact);
 					}
 					g_ptr_array_free (ids, TRUE);
-					ids->len = 0;
+					ids = NULL;
 				}
 			}
 			else {
