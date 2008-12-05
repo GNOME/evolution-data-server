@@ -247,7 +247,6 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 
 	id = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!id) {
-		g_object_unref (contact);
 		g_mutex_unlock (book_view->priv->pending_mutex);
 		return;
 	}

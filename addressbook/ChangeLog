@@ -15,6 +15,13 @@
 	(read_attribute): Support CHARSET parameter within the attribute and
 	convert text to UTF-8, if necessary, based on its value.
 
+2008-12-05  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for BNC bug #435632
+
+	* addressbook/libedata-book/e-data-book-view.c: Don't unref when
+	things aren't reffed.
+
 2008-11-07  Sankar P  <psankar@novell.com>
 
 	** Patch committed on behalf of Ashish Shrivastava <shashish@novell.com>
