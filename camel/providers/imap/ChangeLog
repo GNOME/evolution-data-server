@@ -1,3 +1,10 @@
+2008-12-05  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #561081
+
+	* camel/providers/imap/camel-imap-folder.c: Delete mails for XGWMOVE
+	when mails are moved.
+
 2008-11-20  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #558883

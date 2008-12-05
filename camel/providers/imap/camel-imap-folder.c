@@ -2276,12 +2276,12 @@ do_copy (CamelFolder *source, GPtrArray *uids,
 			if (response)
 				handle_copyuid_copy_user_tags (response, source, destination);
 			camel_imap_response_free (store, response);
+		}
 
-			if (!camel_exception_is_set(ex) && delete_originals) {
-				for (i=last;i<uid;i++)
-					camel_folder_delete_message(source, uids->pdata[i]);
-				last = uid;
-			}
+		if (!camel_exception_is_set(ex) && delete_originals) {
+			for (i=last;i<uid;i++)
+				camel_folder_delete_message(source, uids->pdata[i]);
+			last = uid;
 		}
 		g_free (uidset);
 	}
