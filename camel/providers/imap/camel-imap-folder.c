@@ -2921,12 +2921,29 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		 && retry < 2
 		 && camel_exception_get_id(ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE);
 
-done:	/* FIXME, this shouldn't be done this way. */
-	if (msg)
+done:
+	if (msg) {
+		/* FIXME, this shouldn't be done this way. */
 		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Source", store->base_url);
+
+		if (!mi->info.mlist || !*mi->info.mlist) {
+			/* update mailing list information, if necessary */
+			char *mlist = camel_header_raw_check_mailing_list (&(CAMEL_MIME_PART (msg)->headers));
+
+			if (mlist) {
+				if (mi->info.mlist)
+					camel_pstring_free (mi->info.mlist);
+				mi->info.mlist = camel_pstring_add (mlist, TRUE);
+				mi->info.dirty = TRUE;
+
+				if (mi->info.summary)
+					camel_folder_summary_touch (mi->info.summary);
+			}
+		}
+	}
 fail:
 	camel_message_info_free(&mi->info);
-	
+
 	return msg;
 }
 

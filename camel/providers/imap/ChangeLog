@@ -1,3 +1,10 @@
+2008-12-05  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #545834
+
+	* camel-imap-folder.c: (imap_get_message): Update mailing list
+	information after full message retrieval if necessary.
+
 2008-12-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #561081
