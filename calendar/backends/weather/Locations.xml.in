@@ -53,7 +53,7 @@
 		<location type="ccf" code="BFL" url="http://www.crh.noaa.gov/data/HNX/CCFHNX">Bakersfield</location>
 		<location type="ccf" code="CIH" url="http://www.crh.noaa.gov/data/VEF/CCFVEF">Bishop</location>
 		<location type="ccf" code="BLU" url="http://www.crh.noaa.gov/data/STO/CCFSTO">Blue Canyon</location>
-		<location type="ccf" code="SLE" url="http://www.crh.noaa.gov/data/PQR/CCFPQR">Blythe</location>
+		<location type="ccf" code="BLH" url="http://www.crh.noaa.gov/data/PSR/CCFPSR">Blythe</location>
 		<location type="ccf" code="CEC" url="http://www.crh.noaa.gov/data/EKA/CCFEKA">Crescent City</location>
 		<location type="ccf" code="DAG" url="http://www.crh.noaa.gov/data/VEF/CCFVEF">Daggett</location>
 		<location type="ccf" code="FAT" url="http://www.crh.noaa.gov/data/HNX/CCFHNX">Fresno</location>

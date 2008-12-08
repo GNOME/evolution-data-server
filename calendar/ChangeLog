@@ -1,3 +1,9 @@
+2008-12-08  Ian Weisser  <ian@korinthianviolins.com>
+
+	** Fix for bug #451734
+
+	* backends/weather/Locations.xml.in: Correctly set Blythe, CA URL
+
 2008-12-03  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #352287
