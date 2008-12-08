@@ -172,7 +172,7 @@ e_book_backend_file_create_unique_id (void)
 static void
 set_revision (EContact *contact)
 {
-	char time_string[25] = {0};
+	char time_string[100] = {0};
 	const struct tm *tm = NULL;
 	GTimeVal tv;
 
