@@ -74,9 +74,6 @@ struct _ECalBackendCalDAVPrivate {
 	/* TRUE after caldav_open */
 	gboolean loaded;
 
-	/* the open status  */
-	ECalBackendSyncStatus ostatus;
-
 	/* lock to protect cache */
 	GMutex *lock;
 
@@ -87,7 +84,7 @@ struct _ECalBackendCalDAVPrivate {
 	GCond *slave_gone_cond;
 
 	/* BG synch thread */
-	GThread *synch_slave;
+	const GThread *synch_slave; /* just for a reference, whether thread exists */
 	SlaveCommand slave_cmd;
 	GTimeVal refresh_time;
 	gboolean do_synch;
@@ -127,6 +124,7 @@ struct _ECalBackendCalDAVPrivate {
 #define DEBUG_MESSAGE "message"
 #define DEBUG_MESSAGE_HEADER "message:header"
 #define DEBUG_MESSAGE_BODY "message:body"
+#define DEBUG_SERVER_ITEMS "items"
 
 static gboolean caldav_debug_all = FALSE;
 static GHashTable *caldav_debug_table = NULL;
@@ -155,7 +153,7 @@ add_debug_key (const char *start, const char *end)
 			     debug_key,
 			     debug_value);
 
-	g_debug ("Adding %s to enabled debugging keys", debug_key);
+	d(g_debug ("Adding %s to enabled debugging keys", debug_key));
 }
 
 static gpointer
@@ -168,7 +166,7 @@ caldav_debug_init_once (gpointer data)
 	if (dbg) {
 		const char *ptr;
 
-		g_debug ("Got debug env variable: [%s]", dbg);
+		d(g_debug ("Got debug env variable: [%s]", dbg));
 
 		caldav_debug_table = g_hash_table_new (g_str_hash,
 						       g_str_equal);
@@ -470,7 +468,7 @@ check_state (ECalBackendCalDAV *cbdav, gboolean *online)
 
 	*online = FALSE;
 
-	if (priv->loaded != TRUE) {
+	if (!priv->loaded) {
 		return GNOME_Evolution_Calendar_OtherError;
 	}
 
@@ -580,7 +578,9 @@ xp_object_get_href (xmlXPathObjectPtr result)
 		}
 
 		ret = g_strdup (ret);
-		d(g_debug ("found href: %s", ret));
+
+		if (caldav_debug_show (DEBUG_SERVER_ITEMS))
+			printf ("CalDAV found href: %s\n", ret);
 	}
 
 	xmlXPathFreeObject (result);
@@ -622,7 +622,7 @@ xp_object_get_status (xmlXPathObjectPtr result)
 							&ret,
 							NULL);
 
-		if (res != TRUE) {
+		if (!res) {
 			ret = 0;
 		}
 	}
@@ -1186,7 +1186,9 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 
 	/* Check the result */
 	if (message->status_code != 207) {
-		g_warning ("Sever did not response with 207, but with code %d\n", message->status_code);
+		g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+
+		g_object_unref (message);
 		return FALSE;
 	}
 
@@ -1403,7 +1405,7 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 			comp = e_cal_component_new ();
 			res = e_cal_component_set_icalcomponent (comp,
 						   icalcomponent_new_clone (subcomp));
-			if (res == TRUE) {
+			if (res) {
 				icaltimezone *zone = icaltimezone_new ();
 
 				e_cal_component_set_href (comp, object->href);
@@ -1429,7 +1431,7 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 
 	icalcomponent_free (icomp);
 
-	if (res == FALSE) {
+	if (!res) {
 		return res;
 	}
 
@@ -1480,11 +1482,8 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 
 	res = caldav_server_list_objects (cbdav, &sobjs, &len);
 
-	if (res == FALSE) {
-		/* FIXME: bloek! */
-		g_warning ("Could not synch server BLehh!");
+	if (!res)
 		return;
-	}
 
 	hindex = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	cobjs = e_cal_backend_cache_get_components (bcache);
@@ -1527,7 +1526,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 			res = synchronize_object (cbdav, object, ccomp, &created, &modified);
 		}
 
-		if (res == TRUE) {
+		if (res) {
 			cobjs = g_list_remove (cobjs, ccomp);
 		}
 
@@ -1635,6 +1634,8 @@ synch_slave_loop (gpointer data)
 	/* signal we are done */
 	g_cond_signal (priv->slave_gone_cond);
 
+	priv->synch_slave = NULL;
+
 	/* we got killed ... */
 	g_mutex_unlock (priv->lock);
 	return NULL;
@@ -1712,7 +1713,6 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	ECalBackendSyncStatus     result;
 	ECalBackendCalDAVPrivate *priv;
 	ESource                  *source;
-	GThread			 *slave;
 	const char		 *os_val;
 	const char               *uri;
 	gsize                     len;
@@ -1730,14 +1730,13 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	}
 
 	os_val = e_source_get_property (source, "auth");
-
-	if (os_val) {
-		priv->need_auth = TRUE;
-	}
+	priv->need_auth = os_val != NULL;
 
 	os_val = e_source_get_property(source, "ssl");
 	uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbdav));
 
+	g_free (priv->uri);
+	priv->uri = NULL;
 	if (g_str_has_prefix (uri, "caldav://")) {
 		const char *proto;
 
@@ -1799,17 +1798,20 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	refresh = e_source_get_property (source, "refresh");
 	priv->refresh_time.tv_sec  = (refresh && atoi (refresh) > 0) ? (60 * atoi (refresh)) : (DEFAULT_REFRESH_TIME);
 
-	priv->slave_cmd = SLAVE_SHOULD_SLEEP;
-	slave = g_thread_create (synch_slave_loop, cbdav, FALSE, NULL);
+	if (!priv->synch_slave) {
+		GThread *slave;
 
-	if (slave == NULL) {
-		g_warning ("Could not create synch slave");
-		result = GNOME_Evolution_Calendar_OtherError;
+		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		slave = g_thread_create (synch_slave_loop, cbdav, FALSE, NULL);
+
+		if (slave == NULL) {
+			g_warning ("Could not create synch slave");
+			result = GNOME_Evolution_Calendar_OtherError;
+		}
+
+		priv->report_changes = TRUE;
+		priv->synch_slave = slave;
 	}
-
-	priv->report_changes = TRUE;
-	priv->synch_slave = slave;
-	priv->loaded = TRUE;
 out:
 	return result;
 }
@@ -1837,31 +1839,33 @@ caldav_do_open (ECalBackendSync *backend,
 	priv->ctag = NULL;
 	priv->ctag_supported = TRUE;
 
-	if (priv->loaded != TRUE) {
-		priv->ostatus = initialize_backend (cbdav);
+	if (!priv->loaded) {
+		status = initialize_backend (cbdav);
 	}
 
-	if (priv->ostatus != GNOME_Evolution_Calendar_Success) {
+	if (status != GNOME_Evolution_Calendar_Success) {
 		g_mutex_unlock (priv->lock);
 		return status;
 	}
 
-
-	if (priv->need_auth == TRUE) {
+	if (priv->need_auth) {
 		if ((username == NULL || password == NULL)) {
 			g_mutex_unlock (priv->lock);
 			return GNOME_Evolution_Calendar_AuthenticationRequired;
 		}
 
+		g_free (priv->username);
 		priv->username = g_strdup (username);
+		g_free (priv->password);
 		priv->password = g_strdup (password);
-		priv->need_auth = FALSE;
 	}
 
-	if (! priv->do_offline && priv->mode == CAL_MODE_LOCAL) {
+	if (!priv->do_offline && priv->mode == CAL_MODE_LOCAL) {
 		g_mutex_unlock (priv->lock);
 		return GNOME_Evolution_Calendar_RepositoryOffline;
 	}
+
+	priv->loaded = TRUE;
 
 	if (priv->mode == CAL_MODE_REMOTE) {
 		/* set forward proxy */
@@ -1896,7 +1900,7 @@ caldav_remove (ECalBackendSync *backend,
 
 	g_mutex_lock (priv->lock);
 
-	if (priv->loaded != TRUE) {
+	if (!priv->loaded) {
 		g_mutex_unlock (priv->lock);
 		return GNOME_Evolution_Calendar_Success;
 	}
@@ -1911,7 +1915,14 @@ caldav_remove (ECalBackendSync *backend,
 	priv->cache  = NULL;
 	priv->loaded = FALSE;
 	priv->slave_cmd = SLAVE_SHOULD_DIE;
-	g_cond_signal (priv->cond);
+
+	if (priv->synch_slave) {
+		g_cond_signal (priv->cond);
+
+		/* wait until the slave died */
+		g_cond_wait (priv->slave_gone_cond, priv->lock);
+	}
+
 	g_mutex_unlock (priv->lock);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -2780,7 +2791,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	for (iter = list; iter; iter = g_list_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
 
-		if (do_search == FALSE ||
+		if (!do_search ||
 		    e_cal_backend_sexp_match_comp (sexp, comp, bkend)) {
 			char *str = e_cal_component_get_as_string (comp);
 			*objects = g_list_prepend (*objects, str);
@@ -2831,7 +2842,7 @@ caldav_start_query (ECalBackend  *backend,
 	for (iter = list; iter; iter = g_list_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
 
-		if (do_search == FALSE ||
+		if (!do_search ||
 		    e_cal_backend_sexp_match_comp (sexp, comp, bkend)) {
 			char *str = e_cal_component_get_as_string (comp);
 			e_data_cal_view_notify_objects_added_1 (query, str);
@@ -2878,14 +2889,14 @@ caldav_get_changes (ECalBackendSync  *backend,
 
 static gboolean
 caldav_is_loaded (ECalBackend *backend)
+{
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
 
-{	ECalBackendCalDAV        *cbdav;
-ECalBackendCalDAVPrivate *priv;
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-cbdav = E_CAL_BACKEND_CALDAV (backend);
-priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-return priv->loaded;
+	return priv->loaded;
 }
 
 static CalMode
@@ -2918,9 +2929,11 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 		e_cal_backend_notify_mode (backend,
 					   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
 					   cal_mode_to_corba (mode));
+		g_mutex_unlock (priv->lock);
+		return;
 	}
 
-	if (priv->mode == mode || priv->loaded == FALSE) {
+	if (priv->mode == mode || !priv->loaded) {
 		priv->mode = mode;
 		e_cal_backend_notify_mode (backend,
 					   GNOME_Evolution_Calendar_CalListener_MODE_SET,
@@ -2928,6 +2941,8 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 		g_mutex_unlock (priv->lock);
 		return;
 	}
+
+	priv->mode = mode;
 
 	if (mode == CAL_MODE_REMOTE) {
 		/* Wake up the slave thread */
@@ -2995,17 +3010,19 @@ e_cal_backend_caldav_dispose (GObject *object)
 
 	g_mutex_lock (priv->lock);
 
-	if (priv->disposed == TRUE) {
+	if (priv->disposed) {
 		g_mutex_unlock (priv->lock);
 		return;
 	}
 
 	/* stop the slave  */
 	priv->slave_cmd = SLAVE_SHOULD_DIE;
-	g_cond_signal (priv->cond);
+	if (priv->synch_slave) {
+		g_cond_signal (priv->cond);
 
-	/* wait until the slave died */
-	g_cond_wait (priv->slave_gone_cond, priv->lock);
+		/* wait until the slave died */
+		g_cond_wait (priv->slave_gone_cond, priv->lock);
+	}
 
 	g_object_unref (priv->session);
 

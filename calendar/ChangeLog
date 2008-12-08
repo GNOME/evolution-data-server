@@ -1,3 +1,11 @@
+2008-12-08  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #562567
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_set_mode):
+	Remember local/remote mode correctly. Also done various cleanups,
+	less debug output and waits for the slave thread only if exists.
+
 2008-12-08  Ian Weisser  <ian@korinthianviolins.com>
 
 	** Fix for bug #451734
