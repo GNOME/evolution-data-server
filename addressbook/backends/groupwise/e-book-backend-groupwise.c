@@ -2824,7 +2824,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	EContact *contact;
 	EGwFilter *filter;
 	time_t mod_time;
-	char cache_time_string[25], *status_msg;
+	char cache_time_string[100], *status_msg;
 	const struct tm *tm;
 	struct stat buf;
 	char *cache_file_name;

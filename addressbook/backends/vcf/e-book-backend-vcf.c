@@ -216,7 +216,7 @@ vcf_flush_file (gpointer data)
 static void
 set_revision (EContact *contact)
 {
-	char time_string[25] = {0};
+	char time_string[100] = {0};
 	const struct tm *tm = NULL;
 	GTimeVal tv;
 

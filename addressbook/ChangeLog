@@ -1,3 +1,13 @@
+2008-12-08  Frederic van Starbmann  <fredericvanstarbmann@hotmail.com>
+
+	** Fix for bug #561561
+
+	* backends/file/e-book-backend-file.c (set_revision):
+	* backends/groupwise/e-book-backend-groupwise.c (update_cache):
+	* backends/vcf/e-book-backend-vcf.c (set_revision):
+	Use a sufficiently large buffer for strings used as an operand
+	in strftime()
+
 2008-12-05  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for BNC bug #435632
