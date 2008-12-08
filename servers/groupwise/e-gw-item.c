@@ -307,6 +307,11 @@ e_gw_item_dispose (GObject *object)
 			priv->classification = NULL;
 		}
 
+		if (priv->security) {
+			g_free (priv->security);
+			priv->security = NULL;
+		}
+
 		if (priv->accept_level) {
 			g_free (priv->accept_level);
 			priv->accept_level = NULL;
