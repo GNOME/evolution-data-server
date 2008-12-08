@@ -456,7 +456,7 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 	if (!cdb)
 		return ret;
 	
-	d(g_print ("\n%s:\n%s \n", __FUNCTION__, stmt));
+	d(g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
 	g_mutex_lock (cdb->lock);
 
 	START(stmt);

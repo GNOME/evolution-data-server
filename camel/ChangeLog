@@ -1,3 +1,8 @@
+2008-12-08  Jeff Cai <jeff.cai@sun.com>
+
+	* camel-db.c: (camel_db_select):
+	Replace __FUNCTION__ with G_STRFUNC.
+
 2008-11-20  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #558883
