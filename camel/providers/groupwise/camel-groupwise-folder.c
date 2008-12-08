@@ -1446,8 +1446,12 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				time_t time;
 				time_t actual_time;
 				temp_date = e_gw_item_get_creation_date (item);
-				time = e_gw_connection_get_date_from_string (temp_date);
-				actual_time = camel_header_decode_date (ctime(&time), NULL);
+				if (temp_date) {
+						/* Creation date can be returned as null for auto-generated meetings */
+						time = e_gw_connection_get_date_from_string (temp_date);
+						actual_time = camel_header_decode_date (ctime(&time), NULL);
+				} else
+					actual_time = (time_t) 0;
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		}
