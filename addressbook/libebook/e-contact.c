@@ -273,7 +273,15 @@ static const EContactFieldInfo field_info[] = {
 	/* Geo information */
 	STRUCT_FIELD	(E_CONTACT_GEO,  EVC_GEO, "geo",  N_("Geographic Information"),  FALSE, geo_getter, geo_setter, e_contact_geo_get_type),
 
-	MULTI_LIST_FIELD     (E_CONTACT_TEL,      EVC_TEL,        "phone",      N_("Telephone"),      FALSE)
+	MULTI_LIST_FIELD     (E_CONTACT_TEL,      EVC_TEL,        "phone",      N_("Telephone"),      FALSE),
+
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_HOME_1,  EVC_X_SKYPE,  "im_skype_home_1",  N_("Skype Home Name 1"),         FALSE, "HOME", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_HOME_2,  EVC_X_SKYPE,  "im_skype_home_2",  N_("Skype Home Name 2"),         FALSE, "HOME", 1),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_HOME_3,  EVC_X_SKYPE,  "im_skype_home_3",  N_("Skype Home Name 3"),         FALSE, "HOME", 2),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_1,  EVC_X_SKYPE,  "im_skype_work_1",  N_("Skype Work Name 1"),         FALSE, "WORK", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_2,  EVC_X_SKYPE,  "im_skype_work_2",  N_("Skype Work Name 2"),         FALSE, "WORK", 1),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_3,  EVC_X_SKYPE,  "im_skype_work_3",  N_("Skype Work Name 3"),         FALSE, "WORK", 2),
+	MULTI_LIST_FIELD (E_CONTACT_IM_SKYPE,  	  EVC_X_SKYPE,     "im_skype",     N_("Skype Name List"),         FALSE)
 };
 
 #undef LIST_ELEM_STR_FIELD

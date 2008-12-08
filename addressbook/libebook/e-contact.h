@@ -199,6 +199,14 @@ typedef enum {
 
 	E_CONTACT_TEL, /* list of strings */
 
+	E_CONTACT_IM_SKYPE_HOME_1,     /* Synthetic string field */
+	E_CONTACT_IM_SKYPE_HOME_2,     /* Synthetic string field */
+	E_CONTACT_IM_SKYPE_HOME_3,     /* Synthetic string field */
+	E_CONTACT_IM_SKYPE_WORK_1,     /* Synthetic string field */
+	E_CONTACT_IM_SKYPE_WORK_2,     /* Synthetic string field */
+	E_CONTACT_IM_SKYPE_WORK_3,     /* Synthetic string field */
+	E_CONTACT_IM_SKYPE,    	 	/* Multi-valued */
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
 

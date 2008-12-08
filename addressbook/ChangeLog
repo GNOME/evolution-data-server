@@ -1,3 +1,19 @@
+2008-12-08 Sasa Ostrouska <saxa@droplinegnome.org>
+
+	** Fix for bug #270376
+
+	* libebook/e-vcard.h: (EVC_X_SKYPE)
+	* libebook/e-contact.h: (enum EContactField):
+	* libebook/e-contact.c: (EContactFieldInfo field_info[]):
+	* backends/groupwise/e-book-backend-groupwise.c: (populate_ims),
+	(set_ims_in_gw_item): (e_book_backend_groupwise_get_supported_fields):
+	* backends/google/e-book-backend-google.c:
+	(e_book_backend_google_get_supported_fields):
+	* libedata-book/e-book-backend-sexp.c: (compare_im_skype),
+	(struct prop_info): Added skype contact field to the following files.
+
+	Skype name field added to the list of IM information.
+
 2008-12-08  Frederic van Starbmann  <fredericvanstarbmann@hotmail.com>
 
 	** Fix for bug #561561

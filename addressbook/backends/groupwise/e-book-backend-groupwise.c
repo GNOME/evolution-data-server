@@ -178,6 +178,7 @@ populate_ims (EContact *contact, gpointer data)
 	GList *yahoo_list = NULL;
 	GList *gadugadu_list = NULL;
 	GList *msn_list = NULL;
+	GList *skype_list = NULL;
 	GList *jabber_list = NULL;
 	GList *groupwise_list = NULL;
 	IMAddress *address;
@@ -204,9 +205,13 @@ populate_ims (EContact *contact, gpointer data)
 			im_field_id = E_CONTACT_IM_AIM;
 			im_attr_list = &aim_list;
 		}
-		else if ( g_str_equal (address->service, "msn")) {
+		else if (g_str_equal (address->service, "msn")) {
 			im_field_id = E_CONTACT_IM_MSN;
 			im_attr_list = &msn_list;
+		}
+		else if (g_str_equal (address->service, "skype")) {
+			im_field_id = E_CONTACT_IM_SKYPE;
+			im_attr_list = &skype_list;
 		}
 		else if (g_str_equal (address->service, "yahoo")) {
 			im_field_id = E_CONTACT_IM_YAHOO;
@@ -240,6 +245,7 @@ populate_ims (EContact *contact, gpointer data)
 	e_contact_set_attributes (contact, E_CONTACT_IM_YAHOO, yahoo_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_GADUGADU, gadugadu_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_MSN, msn_list);
+	e_contact_set_attributes (contact, E_CONTACT_IM_SKYPE, skype_list);
 	e_contact_set_attributes (contact, E_CONTACT_IM_GROUPWISE, groupwise_list);
 
 	free_attr_list (aim_list);
@@ -248,6 +254,7 @@ populate_ims (EContact *contact, gpointer data)
 	free_attr_list (yahoo_list);
 	free_attr_list (gadugadu_list);
 	free_attr_list (msn_list);
+	free_attr_list (skype_list);
 	free_attr_list (groupwise_list);
 }
 
@@ -280,6 +287,7 @@ set_ims_in_gw_item (EGwItem *item, gpointer data)
 	append_ims_to_list (&im_list, contact, "gadu-gadu", E_CONTACT_IM_GADUGADU);
 	append_ims_to_list (&im_list, contact, "icq", E_CONTACT_IM_ICQ);
 	append_ims_to_list (&im_list, contact, "msn", E_CONTACT_IM_MSN);
+	append_ims_to_list (&im_list, contact, "skype", E_CONTACT_IM_SKYPE);
 	append_ims_to_list (&im_list, contact, "jabber", E_CONTACT_IM_JABBER);
 	append_ims_to_list (&im_list, contact, "nov", E_CONTACT_IM_GROUPWISE);
 	if (im_list)
@@ -3457,6 +3465,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_YAHOO)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_GADUGADU)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_MSN)));
+	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_SKYPE)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_JABBER)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_IM_GROUPWISE)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_ADDRESS_WORK)));

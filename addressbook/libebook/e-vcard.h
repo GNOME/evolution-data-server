@@ -81,6 +81,7 @@ G_BEGIN_DECLS
 #define EVC_X_LIST          	"X-EVOLUTION-LIST"
 #define EVC_X_MANAGER       	"X-EVOLUTION-MANAGER"
 #define EVC_X_MSN           	"X-MSN"
+#define EVC_X_SKYPE           	"X-SKYPE"
 #define EVC_X_RADIO         	"X-EVOLUTION-RADIO"
 #define EVC_X_SPOUSE        	"X-EVOLUTION-SPOUSE"
 #define EVC_X_TELEX         	"X-EVOLUTION-TELEX"
@@ -88,7 +89,7 @@ G_BEGIN_DECLS
 #define EVC_X_VIDEO_URL     	"X-EVOLUTION-VIDEO-URL"
 #define EVC_X_WANTS_HTML    	"X-MOZILLA-HTML"
 #define EVC_X_YAHOO         	"X-YAHOO"
-#define EVC_X_GADUGADU        "X-GADUGADU"
+#define EVC_X_GADUGADU          "X-GADUGADU"
 #define EVC_X_GROUPWISE     	"X-GROUPWISE"
 #define EVC_X_BOOK_URI     	"X-EVOLUTION-BOOK-URI"
 
