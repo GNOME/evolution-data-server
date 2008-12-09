@@ -573,6 +573,25 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const char *err
 	return status;
 }
 
+/* ensures the returned text will be valid UTF-8 text, thus gtk functions expecting
+   only valid UTF-8 texts will not crash. Returned pointer should be freed with g_free. */
+static gchar *
+ensure_utf8 (const char *text)
+{
+	gchar *res = g_strdup (text), *p;
+
+	if (!text)
+		return res;
+
+	p = res;
+	while (!g_utf8_validate (p, -1, (const gchar **) &p)) {
+		/* make all invalid characters appear as question marks */
+		*p = '?';
+	}
+
+	return res;
+}
+
 static gboolean
 pop3_connect (CamelService *service, CamelException *ex)
 {
@@ -609,7 +628,9 @@ pop3_connect (CamelService *service, CamelException *ex)
 		
 		/* we only re-prompt if we failed to authenticate, any other error and we just abort */
 		if (status == 0 && camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE) {
-			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
+			char *tmp = ensure_utf8 (camel_exception_get_description (ex));
+			errbuf = g_markup_printf_escaped ("%s\n\n", tmp);
+			g_free (tmp);
 			camel_exception_clear (ex);
 
 			camel_session_forget_password (session, service, NULL, "password", ex);
