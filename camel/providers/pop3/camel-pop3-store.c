@@ -50,6 +50,7 @@
 #include "camel-tcp-stream-raw.h"
 #include "camel-tcp-stream.h"
 #include "camel-url.h"
+#include "camel-utf8.h"
 
 #ifdef HAVE_SSL
 #include "camel-tcp-stream-ssl.h"
@@ -610,7 +611,9 @@ pop3_connect (CamelService *service, CamelException *ex)
 		
 		/* we only re-prompt if we failed to authenticate, any other error and we just abort */
 		if (status == 0 && camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE) {
-			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
+			char *tmp = camel_utf8_make_valid (camel_exception_get_description (ex));
+			errbuf = g_markup_printf_escaped ("%s\n\n", tmp);
+			g_free (tmp);
 			camel_exception_clear (ex);
 
 			camel_session_forget_password (session, service, NULL, "password", ex);

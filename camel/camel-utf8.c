@@ -399,3 +399,27 @@ char *camel_ucs2_utf8(const char *ptr)
 
 	return out;
 }
+
+/**
+ * camel_utf8_make_valid:
+ * @text: 
+ *
+ * Ensures the returned text will be valid UTF-8 string, with incorrect letters
+ * changed to question marks. Returned pointer should be freed with g_free.
+ **/
+char *
+camel_utf8_make_valid (const char *text)
+{
+	gchar *res = g_strdup (text), *p;
+
+	if (!res)
+		return res;
+
+	p = res;
+	while (!g_utf8_validate (p, -1, (const gchar **) &p)) {
+		/* make all invalid characters appear as question marks */
+		*p = '?';
+	}
+
+	return res;
+}

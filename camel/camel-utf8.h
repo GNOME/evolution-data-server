@@ -40,6 +40,9 @@ char *camel_utf8_utf7(const char *ptr);
 char *camel_utf8_ucs2(const char *ptr);
 char *camel_ucs2_utf8(const char *ptr);
 
+/* make valid utf8 string */
+char *camel_utf8_make_valid (const char *text);
+
 G_END_DECLS
 
 #endif /* ! _CAMEL_UTF8_H */

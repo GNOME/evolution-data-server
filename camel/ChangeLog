@@ -1,3 +1,10 @@
+2008-12-09  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #552986
+
+	* camel-utf8.h: (camel_utf8_make_valid):
+	* camel-utf8.c: (camel_utf8_make_valid): New utility function.
+
 2008-12-08  Jeff Cai <jeff.cai@sun.com>
 
 	* camel-db.c: (camel_db_select):
