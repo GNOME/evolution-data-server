@@ -14,7 +14,7 @@ INCLUDES =						\
 	-DWEATHER_DATADIR=\""$(weatherdatadir)"\"	\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(SOUP_CFLAGS)					\
-	`pkg-config --cflags gweather`
+	$(LIBGWEATHER_CFLAGS)
 
 extension_LTLIBRARIES = libecalbackendweather.la
 
@@ -32,14 +32,14 @@ libecalbackendweather_la_LIBADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
-	$(top_builddir)/libebackend/libebackend-1.2.la			\
+	$(top_builddir)/libebackend/libebackend-1.2.la				\
 	$(EVOLUTION_CALENDAR_LIBS)						\
 	$(SOUP_LIBS)								\
-	-lgweather
+	$(LIBGWEATHER_LIBS)
 
 libecalbackendweather_la_LDFLAGS =		\
 	-module -avoid-version $(NO_UNDEFINED)	\
-	`pkg-config --libs gweather`
+	$(LIBGWEATHER_LIBS)
 	
 
 weatherdata_in_files = Locations.xml.in
