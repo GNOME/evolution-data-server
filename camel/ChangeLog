@@ -1,5 +1,9 @@
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-folder.c: (get_uids): Fix some stupidity.
+
+2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Major changes for better vfolders.
 
 	* camel-db.c: (camel_db_open),
