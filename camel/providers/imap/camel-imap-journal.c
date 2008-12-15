@@ -160,6 +160,25 @@ free_uids (GPtrArray *array)
 }
 
 static GPtrArray *
+copy_uids_array (GPtrArray *array)
+{
+	GPtrArray *res;
+	guint i, sz;
+
+	if (!array)
+		return NULL;
+
+	sz = array->len;
+	res = g_ptr_array_sized_new (sz);
+
+	for (i = 0; i < sz; i++) {
+		g_ptr_array_add (res, g_strdup (g_ptr_array_index (array, i)));
+	}
+
+	return res;
+}
+
+static GPtrArray *
 decode_uids (FILE *file)
 {
 	GPtrArray *uids;
@@ -413,20 +432,20 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 		{
 			GPtrArray *uids = va_arg (ap, GPtrArray *);
 			
-			entry->uids = uids;
+			entry->uids = copy_uids_array (uids);
 			break;
 		}
 		case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 		{
 			char *uid = va_arg (ap, char *);
-			entry->append_uid = uid;
+			entry->append_uid = g_strdup (uid);
 			break;
 		}
 		case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 		{
 			CamelFolder *dest = va_arg (ap, CamelFolder *);
 			
-			entry->uids = va_arg (ap, GPtrArray *);
+			entry->uids = copy_uids_array (va_arg (ap, GPtrArray *));
 			entry->move = va_arg (ap, gboolean);
 			entry->dest_folder_name = g_strdup (dest->full_name);
 			break;

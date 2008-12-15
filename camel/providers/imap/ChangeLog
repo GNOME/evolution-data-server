@@ -1,3 +1,10 @@
+2008-12-15  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #558744
+
+	* camel-imap-journal.c: (copy_uids_array), (camel_imap_journal_log):
+	Make own copy of the parameters, caller will free it for sure.
+
 2008-12-05  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #545834
