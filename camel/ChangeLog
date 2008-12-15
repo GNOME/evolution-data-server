@@ -1,3 +1,8 @@
+2008-12-15  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-folder-summary.c:
+	#include "camel-debug.h"
+
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-folder.c: (get_uids): Fix some stupidity.
