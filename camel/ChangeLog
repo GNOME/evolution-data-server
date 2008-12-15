@@ -1,4 +1,8 @@
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-folder.c: (get_uids): Fix some stupidity.
+
+2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 	
 	** Fix for bug #558926 and #546637
 
