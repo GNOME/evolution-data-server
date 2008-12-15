@@ -1,5 +1,13 @@
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 
+	** Fix for BNC bug #455939
+
+	* libedata-book/e-book-backend.c: (idle_remove_client),
+	(listener_died_cb): Don't do orbit broken connection on the same
+	thread, idle them away.
+
+2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for BNC bug #440265
 
 	* addressbook/backends/groupwise/e-book-backend-groupwise.c: Fix a

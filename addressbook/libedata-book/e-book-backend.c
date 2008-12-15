@@ -476,12 +476,21 @@ book_destroy_cb (gpointer data, GObject *where_book_was)
 	e_book_backend_remove_client (backend, (EDataBook *)where_book_was);
 }
 
+static gboolean
+idle_remove_client (gpointer data)
+{
+	EDataBook *book = (EDataBook *) data;
+
+	e_book_backend_remove_client (e_data_book_get_backend (book), book);
+	g_object_unref ((GObject *) book);
+
+	return FALSE;
+}
 static void
 listener_died_cb (gpointer cnx, gpointer user_data)
 {
-	EDataBook *book = E_DATA_BOOK (user_data);
-
-	e_book_backend_remove_client (e_data_book_get_backend (book), book);
+	g_object_ref ((GObject *)user_data);
+	g_idle_add (idle_remove_client, user_data);
 }
 
 static void
