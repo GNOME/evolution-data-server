@@ -372,6 +372,8 @@ find_contact_by_view_and_uid (EContactStore *contact_store, EBookView *find_view
 	GPtrArray     *contacts;
 	gint           i;
 
+	g_return_val_if_fail (find_uid != NULL, -1);
+
 	source_index = find_contact_source_by_view (contact_store, find_view);
 	if (source_index < 0)
 		return -1;
@@ -387,7 +389,7 @@ find_contact_by_view_and_uid (EContactStore *contact_store, EBookView *find_view
 		EContact    *contact = g_ptr_array_index (contacts, i);
 		const gchar *uid     = e_contact_get_const (contact, E_CONTACT_UID);
 
-		if (!strcmp (find_uid, uid))
+		if (uid && !strcmp (find_uid, uid))
 			return i;
 	}
 
