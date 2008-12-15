@@ -1,3 +1,10 @@
+2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* docs/reference/addressbook/libebook/tmpl/e-contact.sgml:
+	* docs/reference/camel/tmpl/camel-unused.sgml:
+
 2008-12-10  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #352287

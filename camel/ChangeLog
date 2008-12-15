@@ -1,4 +1,12 @@
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Fix for bug #558926 and #546637
+
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-summary.c:
+	* camel/camel-vtrash-folder.c:
+
+2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Major changes for better vfolders.
 

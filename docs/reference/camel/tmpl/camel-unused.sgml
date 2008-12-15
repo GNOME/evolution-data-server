@@ -186,6 +186,30 @@ camel-nntp-types
 camel-search-private
 
 
+<!-- ##### SECTION ./tmpl/camel-search-sql-sexp.h.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-search-sql-sexp.h.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-search-sql-sexp.h.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-search-sql-sexp.h.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-search-sql-sexp.h.sgml:Title ##### -->
+camel-search-sql-sexp.h
+
+
 <!-- ##### SECTION ./tmpl/camel-types.sgml:Long_Description ##### -->
 <para>
 

@@ -151,7 +151,7 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 						guint32 flags;
 
 						vinfo = (CamelVeeMessageInfo *) info;
-						flags = vinfo->old_flags ? vinfo->old_flags : camel_message_info_flags(info);
+						flags = vinfo->old_flags;// ? vinfo->old_flags : camel_message_info_flags(info);
 
 						if ((flags & (CAMEL_MESSAGE_SEEN)) == 0)
 							unread++;
