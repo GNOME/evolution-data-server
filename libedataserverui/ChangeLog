@@ -1,3 +1,10 @@
+2008-12-15  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #555230
+
+	* e-contact-store.c: (find_contact_by_view_and_uid):
+	Do not crash when passed invalid arguments in.
+
 2008-11-03  Sankar P  <psankar@novell.com>
 
 License Changes
