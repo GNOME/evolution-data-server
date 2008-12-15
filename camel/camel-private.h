@@ -128,6 +128,7 @@ struct _CamelFolderSummaryPrivate {
 	GMutex *filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
 	GMutex *alloc_lock;	/* for setting up and using allocators */
 	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
+	GHashTable *flag_cache;
 };
 
 #define CAMEL_SUMMARY_LOCK(f, l) \

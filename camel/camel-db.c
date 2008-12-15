@@ -124,7 +124,6 @@ camel_db_open (const char *path, CamelException *ex)
 		cache = g_strdup ("PRAGMA cache_size=100");
 
 	camel_db_command (cdb, cache, NULL);
-
 	g_free (cache);
 
 	sqlite3_busy_timeout (cdb->db, CAMEL_DB_SLEEP_INTERVAL);
@@ -559,6 +558,53 @@ camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, char *folder_name, ch
 	sqlite3_free (del_query);
 
 	return ret;
+}
+
+struct _db_data_uids_flags {
+	GPtrArray *uids;
+	GPtrArray *flags;
+};
+static int
+read_uids_flags_callback (void *ref, int ncol, char ** cols, char ** name)
+{
+	struct _db_data_uids_flags *data= (struct _db_data_uids_flags *) ref;
+	 
+	int i;
+	for (i = 0; i < ncol; ++i) {
+		if (!strcmp (name [i], "uid"))
+			g_ptr_array_add (data->uids, (char *) (camel_pstring_strdup(cols [i])));
+		else if (!strcmp (name [i], "flags"))
+			g_ptr_array_add (data->flags, GUINT_TO_POINTER(strtoul (cols [i], NULL, 10)));
+	}
+	 
+	 return 0;
+}
+
+int
+camel_db_get_folder_uids_flags (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *summary, GHashTable *table, CamelException *ex)
+{
+	 GPtrArray *uids = summary;
+	 GPtrArray *flags = g_ptr_array_new ();
+	 char *sel_query;
+	 int ret;
+	 struct _db_data_uids_flags data;
+	 int i;
+	
+	 data.uids = uids;
+	 data.flags = flags;
+
+
+	 sel_query = sqlite3_mprintf("SELECT uid,flags FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");	 
+
+	 ret = camel_db_select (db, sel_query, read_uids_flags_callback, &data, ex);
+	 sqlite3_free (sel_query);
+
+	 for (i=0; i<uids->len; i++) {
+		 g_hash_table_insert (table, uids->pdata[i], flags->pdata[i]);
+	 }
+
+	 g_ptr_array_free (flags, TRUE);
+	 return ret;
 }
 
 static int

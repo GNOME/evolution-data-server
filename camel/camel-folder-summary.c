@@ -67,6 +67,7 @@
 
 /* Make 5 minutes as default cache drop */
 #define SUMMARY_CACHE_DROP 300
+#define dd(x) if (camel_debug("sync")) x
 
 static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -78,7 +79,6 @@ static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
 /* this should probably be conditional on it existing */
 #define USE_BSEARCH
 
-#define dd(x)
 #define d(x)
 #define io(x)			/* io debug */
 #define w(x)
@@ -154,6 +154,7 @@ camel_folder_summary_init (CamelFolderSummary *s)
 
 	s->message_info_size = sizeof(CamelMessageInfoBase);
 	s->content_info_size = sizeof(CamelMessageContentInfo);
+	p->flag_cache = g_hash_table_new (g_str_hash, g_str_equal);
 
 	s->message_info_chunks = NULL;
 	s->content_info_chunks = NULL;
@@ -199,7 +200,7 @@ camel_folder_summary_finalize (CamelObject *obj)
 	CamelFolderSummary *s = (CamelFolderSummary *)obj;
 
 	p = _PRIVATE(obj);
-
+	g_hash_table_destroy (p->flag_cache);
 	if (s->timeout_handle)
 		g_source_remove (s->timeout_handle);
 	//camel_folder_summary_clear(s);
@@ -823,16 +824,17 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 	CamelFolderSummary *s = m->summary;
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-	
+	if (g_getenv("CAMEL_SYNC_SUMMARY"))
+		camel_folder_sync (s->folder, FALSE, NULL);
+
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
 	
-	d(printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), s->loaded_infos));
-	#warning "hack. fix it"
+	dd(printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), s->loaded_infos));
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
 	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, s);
 	CAMEL_SUMMARY_UNLOCK (s, summary_lock);
-	d(printf("done .. now %d\n",g_hash_table_size (s->loaded_infos)));
+	dd(printf("done .. now %d\n",g_hash_table_size (s->loaded_infos)));
 
 	s->cache_load_time = time(NULL);
 	
@@ -929,14 +931,23 @@ camel_folder_summary_dump (CamelFolderSummary *s)
 	printf("\n");
 }
 
+GHashTable *
+camel_folder_summary_get_flag_cache (CamelFolderSummary *summary)
+{
+	struct _CamelFolderSummaryPrivate *p = _PRIVATE(summary);
+	
+	return p->flag_cache;
+}
+
 int
 camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelDB *cdb;
 	char *folder_name;
 	int ret = 0;
+	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
+
 	/* struct _db_pass_data data; */
-	
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
 
@@ -948,7 +959,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	folder_name = s->folder->full_name;
 	cdb = s->folder->parent_store->cdb_r;
 
-	ret = camel_db_get_folder_uids (cdb, folder_name, (char *)s->sort_by, (char *)s->collate, s->uids, ex);
+	ret = camel_db_get_folder_uids_flags (cdb, folder_name, (char *)s->sort_by, (char *)s->collate, s->uids, p->flag_cache, ex);
 	/* camel_folder_summary_dump (s); */
 
 #if 0
@@ -1378,7 +1389,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 	if (!count) 
 		return camel_folder_summary_header_save_to_db (s, ex);
 
-	d(printf("Saving %d/%d dirty records of %s\n", count, g_hash_table_size (s->loaded_infos), s->folder->full_name));
+	dd(printf("Saving %d/%d dirty records of %s\n", count, g_hash_table_size (s->loaded_infos), s->folder->full_name));
 
 	camel_db_begin_transaction (cdb, ex);
 

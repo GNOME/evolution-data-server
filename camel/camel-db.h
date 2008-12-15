@@ -156,6 +156,7 @@ int camel_db_add_to_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelEx
 int camel_db_add_to_vfolder_transaction (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
 
 int camel_db_get_folder_uids (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *array, CamelException *ex);
+int camel_db_get_folder_uids_flags (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *summary, GHashTable *table, CamelException *ex);
 
 GPtrArray * camel_db_get_folder_junk_uids (CamelDB *db, char *folder_name, CamelException *ex);
 GPtrArray * camel_db_get_folder_deleted_uids (CamelDB *db, char *folder_name, CamelException *ex);
