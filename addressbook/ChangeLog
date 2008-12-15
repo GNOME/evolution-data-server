@@ -1,3 +1,10 @@
+2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for BNC bug #440265
+
+	* addressbook/backends/groupwise/e-book-backend-groupwise.c: Fix a
+	regression in my previous patch.
+
 2008-12-08  Frederic van Starbmann  <fredericvanstarbmann@hotmail.com>
 
 	** Fix for bug #561561

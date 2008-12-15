@@ -44,6 +44,7 @@
 #include "libedataserver/e-flag.h"
 #include "libedataserver/e-url.h"
 #include "libebook/e-contact.h"
+#include "libebook/e-destination.h"
 #include "libedata-book/e-book-backend-sexp.h"
 #include "libedata-book/e-data-book.h"
 #include "libedata-book/e-data-book-view.h"
@@ -798,7 +799,7 @@ populate_contact_members (EContact *contact, gpointer data)
 static void
 set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise *egwb)
 {
-  	GList  *members, *temp, *items, *p, *emails_without_ids;
+  	GList  *members, *temp, *dtemp, *items, *p, *emails_without_ids, *dest_without_ids;
 	GList *group_members;
 	char *email;
 	EGwFilter *filter;
@@ -816,10 +817,12 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	filter = e_gw_filter_new ();
 	group_members = NULL;
 	emails_without_ids = NULL;
+	dest_without_ids = NULL;
 
 	for ( ;temp != NULL; temp = g_list_next (temp)) {
 		EVCardAttribute *attr = temp->data;
 		id = email = NULL;
+		EDestination *dest = e_destination_new ();
 
 		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
 			EVCardAttributeParam *param = p->data;
@@ -856,8 +859,11 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 			member->id = g_strdup (id);
 			group_members = g_list_append (group_members, member);
 		} else if (email) {
+			e_destination_set_raw (dest, email);
 			e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "emailList/@primary", email);
 			emails_without_ids = g_list_append (emails_without_ids, g_strdup (email));
+			dest_without_ids = g_list_append (dest_without_ids, dest);
+		
 			count++;
 		}
 	}
@@ -874,8 +880,15 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		temp_item = E_GW_ITEM (items->data);
 		emails = e_gw_item_get_email_list (temp_item);
 		if (emails_without_ids && (ptr = g_list_find_custom (emails_without_ids, emails->data, (GCompareFunc)strcasecmp ))) {
+			int pos = g_list_position (emails_without_ids, ptr);
 			emails_without_ids = g_list_remove_link (emails_without_ids, ptr);
 			g_list_free (ptr);
+
+			ptr = g_list_nth (dest_without_ids, pos);
+			dest_without_ids = g_list_remove_link (dest_without_ids, ptr);
+			g_object_unref (ptr->data);
+			g_list_free (ptr);
+
 			id = g_strdup (e_gw_item_get_id (temp_item));
 			member = g_new0 (EGroupMember , 1);
 			member->id = id;
@@ -893,19 +906,21 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	 */
 
 	temp = emails_without_ids ;
-	for (; temp != NULL; temp = g_list_next (temp)) {
+	dtemp = dest_without_ids;
+	for (; temp != NULL && dtemp != NULL ; temp = g_list_next (temp), dtemp = g_list_next(dtemp)) {
 		EContact *new_contact = e_contact_new ();
 		EGwItem *new_item = e_gw_item_new_empty ();
 		FullName *full_name;
+		EDestination *tdest = (EDestination *)dtemp->data;
 
-		e_contact_set (new_contact,E_CONTACT_FULL_NAME, e_contact_name_from_string (strdup (temp->data)));
-		e_contact_set (new_contact, E_CONTACT_EMAIL_1, strdup (temp->data));
+		e_contact_set (new_contact,E_CONTACT_FULL_NAME, e_contact_name_from_string (strdup (e_destination_get_email(tdest))));
+		e_contact_set (new_contact, E_CONTACT_EMAIL_1, strdup (e_destination_get_email(tdest)));
 		e_contact_set (new_contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (FALSE));
 		e_gw_item_set_item_type (new_item, E_GW_ITEM_TYPE_CONTACT);
 		e_gw_item_set_container_id (new_item, g_strdup(egwb->priv->container_id));
 		full_name = g_new0 (FullName, 1);
 		full_name->name_prefix = NULL;
-		full_name->first_name = g_strdup(temp->data);
+		full_name->first_name = g_strdup(e_destination_get_name(tdest));
 		full_name->middle_name = NULL;
 		full_name->last_name = NULL;
 		full_name->name_suffix = NULL;
@@ -959,6 +974,9 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	g_list_free (members);
 	g_list_foreach (emails_without_ids, (GFunc) g_free, NULL);
 	g_list_free (emails_without_ids);
+	g_list_foreach (dest_without_ids, (GFunc) g_object_unref, NULL);
+	g_list_free (dest_without_ids);
+
 	g_list_free (items);
        	e_gw_item_set_member_list (item, group_members);
 }
