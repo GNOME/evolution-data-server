@@ -150,7 +150,7 @@ camel_vee_folder_new(CamelStore *parent_store, const char *full, guint32 flags)
 		camel_vee_folder_construct(vf, parent_store, full, name, flags);
 	}
 
-	d(printf("returning folder %s %p, count = %d\n", name, vf, camel_folder_get_message_count((CamelFolder *)vf)));
+	d(printf("returning folder %s %p, count = %d\n", full, vf, camel_folder_get_message_count((CamelFolder *)vf)));
 
 	if (vf) {
 		tmp = g_strdup_printf("%s/%s.cmeta", ((CamelService *)parent_store)->url->path, full);
@@ -2017,13 +2017,14 @@ summary_reloaded(CamelObject *o, void *event_data, void *data)
 		camel_object_unhook_event((CamelObject *)o, "summary_reloaded", (CamelObjectEventHookFunc) summary_reloaded, data);
 	}
 	
+	/*
 	m = camel_session_thread_msg_new(session, &folder_flags_ops, sizeof(*m));
 	m->sub = summary->folder;
 	camel_object_ref((CamelObject *)summary->folder);
 	m->vf = vf;
 	camel_object_ref((CamelObject *)vf);
 	camel_session_thread_queue(session, &m->msg, 0);
-	
+	*/
 }
 
 /* vfolder base implementaitons */
@@ -2098,12 +2099,102 @@ vee_set_expression(CamelVeeFolder *vf, const char *query)
 	CAMEL_VEE_FOLDER_UNLOCK(vf, subfolder_lock);
 }
 
+/* This entire code will be useless, since we sync the counts always. */
+static int
+vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
+{
+	CamelFolder *folder = (CamelFolder *)object;
+	int i;
+	guint32 tag;
+	int unread = -1, deleted = 0, junked = 0, visible = 0, count = -1, junked_not_deleted = -1;
+
+	for (i=0;i<args->argc;i++) {
+		CamelArgGet *arg = &args->argv[i];
+
+		tag = arg->tag;
+
+		/* NB: this is a copy of camel-folder.c with the unread count logic altered.
+		   makes sure its still atomically calculated */
+		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_FOLDER_ARG_UNREAD:
+		case CAMEL_FOLDER_ARG_DELETED:
+		case CAMEL_FOLDER_ARG_JUNKED:
+		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:	
+		case CAMEL_FOLDER_ARG_VISIBLE:
+			
+			/* This is so we can get the values atomically, and also so we can calculate them only once */
+			if (unread == -1) {
+				int j;
+				CamelMessageInfoBase *info;
+				CamelVeeMessageInfo *vinfo;
+
+				unread = deleted = visible = junked = junked_not_deleted = 0;
+				count = camel_folder_summary_count(folder->summary);
+				for (j=0; j<count; j++) {
+					if ((info = (CamelMessageInfoBase *) camel_folder_summary_index(folder->summary, j))) {
+						guint32 flags;
+
+						vinfo = (CamelVeeMessageInfo *) info;
+						flags = vinfo->old_flags;// ? vinfo->old_flags : camel_message_info_flags(info);
+
+						if ((flags & (CAMEL_MESSAGE_SEEN)) == 0)
+							unread++;
+						if (flags & CAMEL_MESSAGE_DELETED)
+							deleted++;
+						if (flags & CAMEL_MESSAGE_JUNK) {
+							junked++;
+								if (! (flags & CAMEL_MESSAGE_DELETED))
+									junked_not_deleted++;						
+						}
+						if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
+							visible++;
+						camel_message_info_free(info);
+					}
+				}
+			}
+
+			switch (tag & CAMEL_ARG_TAG) {
+			case CAMEL_FOLDER_ARG_UNREAD:
+				count = unread == -1 ? 0 : unread;
+				break;
+			case CAMEL_FOLDER_ARG_DELETED:
+				count = deleted == -1 ? 0 : deleted;
+				break;
+			case CAMEL_FOLDER_ARG_JUNKED:
+				count = junked == -1 ? 0 : junked;
+				break;
+			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
+				count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
+				break;				
+			case CAMEL_FOLDER_ARG_VISIBLE:
+				count = visible == -1 ? 0 : visible;
+				break;
+			}
+			folder->summary->unread_count = unread == -1 ? 0 : unread;
+			folder->summary->deleted_count = deleted == -1 ? 0 : deleted;
+			junked = folder->summary->junk_count = junked == -1 ? 0 : junked;
+			folder->summary->junk_not_deleted_count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
+			folder->summary->visible_count = visible == -1 ? 0 : visible;			
+			*arg->ca_int = count;
+			break;
+		default:
+			continue;
+		}
+
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	}
+
+	return ((CamelObjectClass *)camel_vee_folder_parent)->getv(object, ex, args);
+}
+
 static void
 camel_vee_folder_class_init (CamelVeeFolderClass *klass)
 {
 	CamelFolderClass *folder_class = (CamelFolderClass *) klass;
 
 	camel_vee_folder_parent = CAMEL_FOLDER_CLASS(camel_type_get_global_classfuncs (camel_folder_get_type ()));
+
+	((CamelObjectClass *)klass)->getv = vf_getv; 
 
 	folder_class->refresh_info = vee_refresh_info;
 	folder_class->sync = vee_sync;

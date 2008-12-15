@@ -15,20 +15,12 @@
 	* camel-private.h:
 
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
+	
+	** Fix for bug #558926 and #546637
 
-	reviewed by: <delete if not using a buddy>
-
-	* camel-db.c: (camel_db_open),
-	(camel_db_delete_uid_from_vfolder_transaction),
-	(read_uids_flags_callback), (camel_db_get_folder_uids_flags):
-	* camel-db.h:
-	* camel-folder-summary.c: (camel_folder_summary_init),
-	(camel_folder_summary_finalize), (remove_cache),
-	(camel_folder_summary_get_flag_cache),
-	(camel_folder_summary_load_from_db),
-	(camel_folder_summary_save_to_db):
-	* camel-folder-summary.h:
-	* camel-private.h:
+	* camel/camel-vee-folder.c:
+	* camel/camel-vee-summary.c:
+	* camel/camel-vtrash-folder.c:
 
 2008-11-20  Milan Crha  <mcrha@redhat.com>
 

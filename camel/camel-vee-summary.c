@@ -176,19 +176,32 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 {
 	int res = FALSE;
 	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
-	const char *exp = g_getenv("CAMEL_VFOLDER_UNREAD_EXP");
+	static char *exp = NULL;
+	static only_once = FALSE;
 	gboolean hacked_unread_folder = FALSE;
+	char *meta = NULL;
 
 	/* HACK: Ugliest of all hacks. Its virtually not possible now
 	 * to maintain counts and the non matching uids of unread vfolder here.
 	 * So, I hardcode unread vfolder expression and hack it. */
+	if (!only_once) {
+		exp =  g_getenv("CAMEL_VFOLDER_UNREAD_EXP") ? g_strcompress(g_getenv("CAMEL_VFOLDER_UNREAD_EXP")) : NULL;
+		only_once = TRUE;
+	}
+
 	if (!exp || !*exp)
-		exp = unread_str;
+		exp = g_strcompress(unread_str);
+
 	if (camel_debug("vfolderexp"))
 		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
 
 	if (strstr(exp, vf->expression) &&  (vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL) == 0)
 		hacked_unread_folder = TRUE;
+
+	meta = camel_object_meta_get (mi->summary->folder, "vfolder:unread");
+	if (!hacked_unread_folder && meta && strcmp (meta, "true") == 0)
+		hacked_unread_folder = TRUE;
+	g_free(meta);
 
 	if (mi->uid) {
 		guint32 old_visible, old_unread, old_deleted, old_junked, old_junked_not_deleted;
@@ -417,7 +430,7 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 {
 	CamelVeeMessageInfo *mi;
 	char *vuid;
-
+	GHashTable * fcache;
 	vuid = g_malloc(strlen(uid)+9);
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
@@ -440,6 +453,8 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 
 	mi = (CamelVeeMessageInfo *)camel_message_info_new(&s->summary);
 	mi->summary = summary;
+	fcache = camel_folder_summary_get_flag_cache(summary);
+	mi->old_flags = GPOINTER_TO_UINT(g_hash_table_lookup (fcache, uid));
 	/* We would do lazy loading of flags, when the folders are loaded to memory through folder_reloaded signal */
 	camel_object_ref (summary);
 	mi->info.uid = (char *) camel_pstring_strdup (vuid);
