@@ -1,3 +1,28 @@
+Evolution-Data-Server 2.25.3 2008-12-15
+---------------------------------------
+
+Bug Fixes:
+	#270376: Skype name field added to the  list of IM information (Sasa Ostrouska)
+	#348299: New files implement category completion (Matthew Barnes)
+	#352287: Share locations and forecast rertieving with libgweather (Milan Crha)
+	#357948: Show preview of the selected image file when choosing new icon (Milan Crha)
+	#435632: (Novell Bugzilla) Don't unref when things aren't reffed (Srinivasa Ragavan)
+	#440265, #447121: (Novell Bugzilla) Fix some stupidity (Srinivasa Ragavan)
+	#451734: Correctly set Blythe, CA URL (Ian Weisser)
+	#503662: Use last '@' in the address part to be the delimiter between user name and server address, not the first one (Milan Crha)
+	#545834: Update mailing list information after full retrieval if necessary (Milan Crha)
+	#552986: Ensure error description is valid UTF-8 text before using it (Milan Crha)
+	#558883: Don't do DB sort from IMAP (Srinivasa Ragavan)
+	#561081: Delete mails for XGWMOVE when mails are moved (Srinivasa Ragavan)
+	#561561: Use a sufficiently large buffer for  strings used as an operand in strftime() (Federic van Starbann)
+	#562228: Always store correct owa_path when validating, without trailing slash and without mailbox name (Milan Crha)
+	#562567: Remember local/remote mode correctly. Also done various cleanups, less debug output and waits for the slave thread only if exists (Milan Crha)
+
+Updated Translations:
+	Kjartan Maraas (nb)
+	Luca Ferretti (it)
+	Gabor Kelemen (hu)
+
 Evolution-Data-Server 2.25.2 2008-12-01
 ---------------------------------------
 
