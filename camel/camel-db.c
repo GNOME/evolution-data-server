@@ -47,6 +47,8 @@ struct _CamelDBPrivate {
 
 static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;	
 
+static int write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex, gboolean delete_old_record);
+
 static int 
 cdb_sql_exec (sqlite3 *db, const char* stmt, CamelException *ex) 
 {
@@ -812,12 +814,28 @@ camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, Came
 	return ret;
 }
 
+
+int 
+camel_db_write_fresh_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex)
+{
+	return write_mir (cdb, folder_name, record, ex, FALSE);
+}
+
+
 int
 camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex)
+{
+	return write_mir (cdb, folder_name, record, ex, TRUE);
+}
+
+static int 
+write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex, gboolean delete_old_record)
 {
 	int ret;
 	char *del_query;
 	char *ins_query;
+
+	/* FIXME: We should migrate from this DELETE followed by INSERT model to an INSERT OR REPLACE model as pointed out by pvanhoof */
 
 	/* NB: UGLIEST Hack. We can't modify the schema now. We are using msg_security (an unsed one to notify of FLAGGED/Dirty infos */
 
@@ -832,7 +850,8 @@ camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, Camel
 			record->part, record->labels, record->usertags,
 			record->cinfo, record->bdata);
 
-	del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid);
+	if (delete_old_record)
+			del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid);
 
 #if 0
 	char *upd_query;
@@ -842,12 +861,14 @@ camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, Camel
 	g_free (upd_query);
 #else
 
-	ret = camel_db_add_to_transaction (cdb, del_query, ex);
+	if (delete_old_record)
+			ret = camel_db_add_to_transaction (cdb, del_query, ex);
 	ret = camel_db_add_to_transaction (cdb, ins_query, ex);
 
 #endif
 
-	sqlite3_free (del_query);
+	if (delete_old_record)
+			sqlite3_free (del_query);
 	sqlite3_free (ins_query);
 
 	return ret;
@@ -1197,4 +1218,40 @@ camel_db_migrate_vfolders_to_14 (CamelDB *cdb, const char *folder, CamelExceptio
 	
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	return ret;		
+}
+
+int camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex)
+{
+	int ret;
+	char *cmd = sqlite3_mprintf ("ATTACH DATABASE ':memory:' AS %s", CAMEL_DB_IN_MEMORY_DB);
+
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+
+	cmd = sqlite3_mprintf ("CREATE TEMPORARY TABLE %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , msg_security INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT )", CAMEL_DB_IN_MEMORY_TABLE);
+	ret = camel_db_command (cdb, cmd, ex);
+	if (ret != 0 )
+		abort ();
+	sqlite3_free (cmd);
+	
+	return ret;
+}
+
+int camel_db_flush_in_memory_transactions (CamelDB *cdb, const char * folder_name, CamelException *ex)
+{
+	int ret;
+	char *cmd = sqlite3_mprintf ("INSERT INTO %Q SELECT * FROM %Q", folder_name, CAMEL_DB_IN_MEMORY_TABLE);
+
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+
+	cmd = sqlite3_mprintf ("DROP TABLE %Q", CAMEL_DB_IN_MEMORY_TABLE);
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+
+	cmd = sqlite3_mprintf ("DETACH %Q", CAMEL_DB_IN_MEMORY_DB);
+	ret = camel_db_command (cdb, cmd, ex);
+	sqlite3_free (cmd);
+
+	return ret;
 }

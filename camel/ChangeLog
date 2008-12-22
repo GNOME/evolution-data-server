@@ -1,3 +1,15 @@
+2008-12-22  Sankar P  <psankar@novell.com>
+
+	** Part of Fix for bug #559153
+
+	* camel/camel-db.c:
+	* camel/camel-db.h:
+	* camel/camel-folder-summary.c:
+	* camel/camel-store.c:
+	* camel/camel-store.h:
+	* camel/providers/local/camel-local-folder.c:
+	Migration improvements
+
 2008-12-15  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-folder-summary.c:

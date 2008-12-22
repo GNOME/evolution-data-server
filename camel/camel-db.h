@@ -4,7 +4,13 @@
 #define __CAMEL_DB_H
 #include <sqlite3.h>
 #include <glib.h>
+
 #define CAMEL_DB_FILE "folders.db"
+
+/* Hopefully no one will create a folder named EVO_IN_meM_hAnDlE */
+#define CAMEL_DB_IN_MEMORY_TABLE "EVO_IN_meM_hAnDlE.temp" 
+#define CAMEL_DB_IN_MEMORY_DB "EVO_IN_meM_hAnDlE" 
+#define CAMEL_DB_IN_MEMORY_TABLE_LIMIT 100000
 
 #include "camel-exception.h"
 
@@ -132,6 +138,7 @@ int camel_db_read_folder_info_record (CamelDB *cdb, const char *folder_name, Cam
 int camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, CamelException *ex);
 
 int camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex);
+int camel_db_write_fresh_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex);
 int camel_db_read_message_info_records (CamelDB *cdb, const char *folder_name, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex);
 int camel_db_read_message_info_record_with_uid (CamelDB *cdb, const char *folder_name, const char *uid, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex);
 
@@ -168,5 +175,9 @@ char * camel_db_get_column_name (const char *raw_name);
 int camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelDBCollate func);
 /* Migration APIS */
 int camel_db_migrate_vfolders_to_14(CamelDB *cdb, const char *folder, CamelException *ex);
+
+int camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex);
+int camel_db_flush_in_memory_transactions (CamelDB *cdb, const char * folder_name, CamelException *ex);
+
 #endif
 

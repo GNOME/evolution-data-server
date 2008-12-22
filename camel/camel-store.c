@@ -322,6 +322,21 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 	}
 
 	if (!folder) {
+
+		if (flags & CAMEL_STORE_IS_MIGRATING) {
+				if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
+						if (store->folders) 
+								camel_object_bag_abort(store->folders, folder_name);
+						return NULL;
+				}
+
+				if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {
+						if (store->folders) 
+								camel_object_bag_abort(store->folders, folder_name);
+						return NULL;
+				}
+		}
+
 		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp(folder_name, CAMEL_VTRASH_NAME) == 0) {
 			folder = CS_CLASS(store)->get_trash(store, ex);
 		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp(folder_name, CAMEL_VJUNK_NAME) == 0) {

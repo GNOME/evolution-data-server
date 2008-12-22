@@ -129,7 +129,7 @@ static CamelMessageContentInfo * content_info_load(CamelFolderSummary *, FILE *)
 static int		         content_info_save(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
 static void		         content_info_free(CamelFolderSummary *, CamelMessageContentInfo *);
 
-static int save_message_infos_to_db (CamelFolderSummary *s, CamelException *ex);
+static int save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mir, CamelException *ex);
 static int camel_read_mir_callback (void * ref, int ncol, char ** cols, char ** name);
 
 static char *next_uid_string(CamelFolderSummary *s);
@@ -1237,23 +1237,20 @@ camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 	if (fclose (in) != 0)
 		return -1;
 
-
-	camel_db_begin_transaction (cdb, &ex);
-
-	ret = save_message_infos_to_db (s, &ex);
-
-	if (ret != 0) {
-		camel_db_abort_transaction (cdb, &ex);
-		return -1;
-	}
-	camel_db_end_transaction (cdb, &ex);
-
 	record = (((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->summary_header_to_db (s, &ex));
 	if (!record) {
 		return -1;
 	}
+
+	ret = save_message_infos_to_db (s, TRUE, &ex);
+
+	if (ret != 0) {
+		return -1;
+	}
 	
+	camel_db_begin_transaction (cdb, &ex);
 	ret = camel_db_write_folder_info_record (cdb, record, &ex);
+	camel_db_end_transaction (cdb, &ex);
 
 	g_free (record->bdata);
 	g_free (record);
@@ -1321,17 +1318,24 @@ perform_content_info_save(CamelFolderSummary *s, FILE *out, CamelMessageContentI
 	return 0;
 }
 
+typedef struct {
+	CamelException *ex;
+	gboolean migration;
+	int progress;
+} SaveToDBArgs;
+
 static void
 save_to_db_cb (gpointer key, gpointer value, gpointer data)
 {
-	CamelException *ex = (CamelException *)data;
+	SaveToDBArgs *args = (SaveToDBArgs *) data;
+	CamelException *ex = args->ex;
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)value;	
 	CamelFolderSummary *s = (CamelFolderSummary *)mi->summary;
 	char *folder_name = s->folder->full_name;
 	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	CamelMIRecord *mir;
 
-	if (!mi->dirty)
+	if (!args->migration && !mi->dirty)
 		return;
 
 	mir = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_to_db (s, (CamelMessageInfo *)mi);
@@ -1345,22 +1349,44 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 		}
 	}
 
-	if (camel_db_write_message_info_record (cdb, folder_name, mir, ex) != 0) {
-		camel_db_camel_mir_free (mir);
-		return;
+	if (!args->migration) {
+			if (camel_db_write_message_info_record (cdb, folder_name, mir, ex) != 0) {
+					camel_db_camel_mir_free (mir);
+					return;
+			}
+	} else {
+			if (camel_db_write_fresh_message_info_record (cdb, CAMEL_DB_IN_MEMORY_TABLE, mir, ex) != 0) {
+					camel_db_camel_mir_free (mir);
+					return;
+			}
+
+			if (args->progress > CAMEL_DB_IN_MEMORY_TABLE_LIMIT) {
+			    g_print ("BULK INsert limit reached \n");
+				camel_db_flush_in_memory_transactions (cdb, folder_name, ex);
+				camel_db_start_in_memory_transactions (cdb, ex);
+				args->progress = 0;
+			} else {
+				args->progress ++;
+			}
 	}
 
 	/* Reset the flags */
 	mi->dirty = FALSE;
+	mi->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 	
 	camel_db_camel_mir_free (mir);	
 }
 
 static int
-save_message_infos_to_db (CamelFolderSummary *s, CamelException *ex)
+save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mirs, CamelException *ex)
 {
 	CamelDB *cdb = s->folder->parent_store->cdb_w;
 	char *folder_name;
+	SaveToDBArgs args;
+
+	args.ex = ex;
+	args.migration = fresh_mirs;
+	args.progress = 0;
 
 	folder_name = s->folder->full_name;
 	if (camel_db_prepare_message_info_table (cdb, folder_name, ex) != 0) {
@@ -1368,7 +1394,7 @@ save_message_infos_to_db (CamelFolderSummary *s, CamelException *ex)
 	}
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 	/* Push MessageInfo-es */
-	g_hash_table_foreach (s->loaded_infos, save_to_db_cb, ex);
+	g_hash_table_foreach (s->loaded_infos, save_to_db_cb, &args);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 /* FIXME[disk-summary] make sure we free the message infos that are loaded
  * are freed if not used anymore or should we leave that to the timer? */
@@ -1398,7 +1424,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 
 	camel_db_begin_transaction (cdb, ex);
 
-	ret = save_message_infos_to_db (s, ex);
+	ret = save_message_infos_to_db (s, FALSE, ex);
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, ex);
 		/* Failed, so lets reset the flag */
