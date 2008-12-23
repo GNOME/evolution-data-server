@@ -1,3 +1,10 @@
+2008-12-23  Bharath Acharya  <abharath@novell.com>
+
+	** Fix for bnc bug #449916
+
+	* camel-groupwise-folder.c: (convert_to_task), (convert_to_note): 
+	Display multiple lines of an assigned task or shared memo.
+
 2008-12-08  Sankar P  <psankar@novell.com>
 
 	* camel-groupwise-folder.c (gw_update_cache):
