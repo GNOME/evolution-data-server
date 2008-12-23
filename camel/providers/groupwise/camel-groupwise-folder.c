@@ -2684,7 +2684,21 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
 	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
-	g_string_append_printf (gstr, "DESCRIPTION:%s\n", e_gw_item_get_message (item));
+
+	temp = e_gw_item_get_message (item);
+	if (temp) {
+		g_string_append(gstr, "DESCRIPTION:");
+		while (*temp) {
+			if (*temp == '\n')
+				g_string_append(gstr, "\\n");
+			else
+				g_string_append_c(gstr, *temp);
+			temp++;
+		}
+		g_string_append(gstr, "\n");	
+	}
+	temp = NULL;
+
 	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
 	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));
 	g_string_append_printf (gstr, "X-GWSHOW-AS:BUSY\n");
@@ -2739,6 +2753,7 @@ convert_to_note (EGwItem *item, char **str, int *len)
 	EGwItemOrganizer *org = NULL;
 	GString *gstr = g_string_new (NULL);
 	char **tmp = NULL;
+	const char *temp = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -2748,7 +2763,21 @@ convert_to_note (EGwItem *item, char **str, int *len)
 	g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
 	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
-	g_string_append_printf (gstr, "DESCRIPTION:%s\n", e_gw_item_get_message (item));
+
+	temp = e_gw_item_get_message (item);
+	if (temp) {
+		g_string_append(gstr, "DESCRIPTION:");
+		while (*temp) {
+			if (*temp == '\n')
+				g_string_append(gstr, "\\n");
+			else
+				g_string_append_c(gstr, *temp);
+			temp++;
+		}
+		g_string_append(gstr, "\n");	
+	}
+	temp = NULL;
+
 	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
 	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));
 	g_string_append_printf (gstr, "X-GWRECORDID:%s\n", tmp[0]);
