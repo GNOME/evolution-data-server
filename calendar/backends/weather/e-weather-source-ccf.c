@@ -106,7 +106,7 @@ find_location (const gchar *code_name, gboolean is_old)
 
 	gtk_tree_model_foreach (model, (GtkTreeModelForeachFunc) find_location_func, &search);
 
-	g_object_unref (model);
+	gweather_xml_free_locations (model);
 	g_strfreev (ids);
 
 done:

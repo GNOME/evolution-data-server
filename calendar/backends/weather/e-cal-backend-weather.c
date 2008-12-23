@@ -278,13 +278,15 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	icalcomponent             *ical_comp;
 	struct icaltimetype        itt;
 	ECalComponentDateTime      dt;
-	const char                *uid;
+	char                	  *uid;
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
 	ESource                   *source;
 	gboolean                   metric;
 	const char                *tmp;
 	time_t			   update_time;
+	icaltimezone		  *update_zone = NULL;
+	const WeatherLocation     *location;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
 
@@ -318,25 +320,42 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	/* set uid */
 	uid = e_cal_component_gen_uid ();
 	e_cal_component_set_uid (cal_comp, uid);
+	g_free (uid);
 
-	/* Set all-day event's date from forecast data */
-	itt = icaltime_from_timet (update_time, 1);
+	/* use timezone of the location to determine date for which this is set */
+	location = weather_info_get_location (report);
+	if (location && location->tz_hint && *location->tz_hint)
+		update_zone = icaltimezone_get_builtin_timezone (location->tz_hint);
+
+	if (!update_zone)
+		update_zone = priv->default_zone;
+
+	/* Set all-day event's date from forecast data - cannot set is_date,
+	   because in that case no timezone conversion is done */
+	itt = icaltime_from_timet_with_zone (update_time, 0, update_zone);
+	itt.hour = 0;
+	itt.minute = 0;
+	itt.second = 0;
+	itt.is_date = 1;
+
 	dt.value = &itt;
-	dt.tzid = NULL;
+	if (update_zone)
+		dt.tzid = icaltimezone_get_tzid (update_zone);
+	else
+		dt.tzid = NULL;
+
 	e_cal_component_set_dtstart (cal_comp, &dt);
 
-	itt = icaltime_from_timet (update_time, 1);
 	icaltime_adjust (&itt, 1, 0, 0, 0);
-	dt.value = &itt;
-	dt.tzid = NULL;
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
 	e_cal_component_set_dtend (cal_comp, &dt);
 
 	if (is_forecast) {
-		gdouble tmin, tmax;
+		gdouble tmin = 0.0, tmax = 0.0;
 
 		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) && 
-		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax)) {
+		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
+		    tmin != tmax) {
 			/* because weather_info_get_temp* uses one internal buffer, thus finally
 			   the last value is shown for both, which is obviously wrong */
 			GString *str = g_string_new (priv->city);
@@ -351,14 +370,15 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 			comp_summary.value = g_strdup_printf ("%s : %s", priv->city, weather_info_get_temp (report));
 		}
 	} else {
-		gdouble tmin, tmax;
+		gdouble tmin = 0.0, tmax = 0.0;
 		/* because weather_info_get_temp* uses one internal buffer, thus finally
 		   the last value is shown for both, which is obviously wrong */
 		GString *str = g_string_new (priv->city);
 
 		g_string_append (str, " : ");
 		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) && 
-		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax)) {
+		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
+		    tmin != tmax) {
 			g_string_append (str, weather_info_get_temp_min (report));
 			g_string_append (str, "/");
 			g_string_append (str, weather_info_get_temp_max (report));
@@ -370,14 +390,17 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	}
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
+	g_free ((char *)comp_summary.value);
 
 	tmp = weather_info_get_forecast (report);
+	comp_summary.value = weather_info_get_weather_summary (report);
 
 	description = g_new0 (ECalComponentText, 1);
-	description->value = g_strconcat (is_forecast ? "" : weather_info_get_weather_summary (report), is_forecast ? "" : "\n", tmp ? _("Forecast") : "", tmp ? ":" : "", tmp && !is_forecast ? "\n" : "", tmp ? tmp : "", NULL);
+	description->value = g_strconcat (is_forecast ? "" : comp_summary.value, is_forecast ? "" : "\n", tmp ? _("Forecast") : "", tmp ? ":" : "", tmp && !is_forecast ? "\n" : "", tmp ? tmp : "", NULL);
 	description->altrep = "";
 	text_list = g_slist_append (text_list, description);
 	e_cal_component_set_description_list (cal_comp, text_list);
+	g_free ((char *)comp_summary.value);
 
 	/* Set category and visibility */
 	e_cal_component_set_categories (cal_comp, getCategory (report));

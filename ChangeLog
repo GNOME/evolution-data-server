@@ -1,3 +1,10 @@
+2008-12-23  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #564652
+
+	* configure.in: Bump of libgweather version to 2.25.4 because
+	of new function 'gweather_xml_free_locations'.
+
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS: Evolution Data Server 2.25.3 release

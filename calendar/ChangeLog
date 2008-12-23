@@ -1,3 +1,12 @@
+2008-12-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #564652
+
+	* backends/weather/e-cal-backend-weather.c: (create_weather):
+	Convert time from UTC properly. Leak a bit less.
+	* backends/weather/e-weather-source-ccf.c: (find_location):
+	Leak a bit less.
+
 2008-12-10  Suman Manjunath  <msuman@novell.com>
 
 	* backends/Makefile.am:
