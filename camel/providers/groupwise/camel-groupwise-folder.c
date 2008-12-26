@@ -1796,7 +1796,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 									gsize len_iter = 0;
 									char *temp = NULL;
 	
-									temp = g_base64_decode(t_attach, &len_iter);
+									temp = (char *) g_base64_decode(t_attach, &len_iter);
 									gstr = g_string_append_len (gstr, temp, len_iter);
 									g_free (temp);
 									len += len_iter;
@@ -1940,7 +1940,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 								gsize len_iter = 0;
 								char *temp = NULL;
 
-								temp = g_base64_decode(t_attach, &len_iter);
+								temp = (char *) g_base64_decode(t_attach, &len_iter);
 								gstr = g_string_append_len (gstr, temp, len_iter);
 								g_free (temp);
 								len += len_iter;
