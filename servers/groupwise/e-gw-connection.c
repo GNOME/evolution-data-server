@@ -1813,39 +1813,41 @@ e_gw_connection_get_server_time (EGwConnection *cnc)
 static time_t
 timet_from_string (const char *str)
 {
-	struct tm date;
-        int len, i;
+		struct tm date;
+		int len, i;
 
-        g_return_val_if_fail (str != NULL, -1);
+		g_return_val_if_fail (str != NULL, -1);
 
-	/* yyyymmdd[Thhmmss[Z]] */
-        len = strlen (str);
+		/* yyyymmdd[Thhmmss[Z]] */
+		len = strlen (str);
 
-        if (!(len == 8 || len == 15 || len == 16))
-                return -1;
+		if (!(len == 8 || len == 15 || len == 16))
+				return -1;
 
-        for (i = 0; i < len; i++)
-                if (!((i != 8 && i != 15 && isdigit (str[i]))
-                      || (i == 8 && str[i] == 'T')
-                      || (i == 15 && str[i] == 'Z')))
-                        return -1;
+		for (i = 0; i < len; i++)
+				if (!((i != 8 && i != 15 && isdigit (str[i]))
+										|| (i == 8 && str[i] == 'T')
+										|| (i == 15 && str[i] == 'Z')))
+						return -1;
 
 #define digit_at(x,y) (x[y] - '0')
 
-	date.tm_year = digit_at (str, 0) * 1000
-                + digit_at (str, 1) * 100
-                + digit_at (str, 2) * 10
-                + digit_at (str, 3) -1900;
-        date.tm_mon = digit_at (str, 4) * 10 + digit_at (str, 5) -1;
-        date.tm_mday = digit_at (str, 6) * 10 + digit_at (str, 7);
-        if (len > 8) {
-                date.tm_hour = digit_at (str, 9) * 10 + digit_at (str, 10);
-                date.tm_min  = digit_at (str, 11) * 10 + digit_at (str, 12);
-                date.tm_sec  = digit_at (str, 13) * 10 + digit_at (str, 14);
-        } else
-		date.tm_hour = date.tm_min = date.tm_sec = 0;
+		date.tm_year = digit_at (str, 0) * 1000
+				+ digit_at (str, 1) * 100
+				+ digit_at (str, 2) * 10
+				+ digit_at (str, 3) -1900;
+		date.tm_mon = digit_at (str, 4) * 10 + digit_at (str, 5) -1;
+		date.tm_mday = digit_at (str, 6) * 10 + digit_at (str, 7);
+		if (len > 8) {
+				date.tm_hour = digit_at (str, 9) * 10 + digit_at (str, 10);
+				date.tm_min  = digit_at (str, 11) * 10 + digit_at (str, 12);
+				date.tm_sec  = digit_at (str, 13) * 10 + digit_at (str, 14);
+		} else
+				date.tm_hour = date.tm_min = date.tm_sec = 0;
 
-	return mktime (&date);
+		date.tm_wday = date.tm_yday = date.tm_isdst = 0;
+
+		return mktime (&date);
 }
 
 char *
