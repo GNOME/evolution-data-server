@@ -925,7 +925,13 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	done = FALSE;
 	m->slist = NULL;
 
-	while (!done && !camel_application_is_exiting) {
+	while (!done) {
+
+		if (camel_application_is_exiting) {
+				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+				return ;
+		}
+
 		item_list = NULL;
 		status = e_gw_connection_get_all_mail_uids (m->cnc, m->container_id, cursor, FALSE, READ_CURSOR_MAX_IDS, position, &item_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
