@@ -1430,6 +1430,17 @@ groupwise_get_trash (CamelStore *store, CamelException *ex)
 		return NULL;
 }
 
+static gboolean
+groupwise_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	gboolean res;
+
+	res = CAMEL_STORE_CLASS(parent_class)->can_refresh_folder (store, info, ex) ||
+	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL);
+
+	return res;
+}
+
 /*
  * Function to check if we are both connected and are _actually_
  * online. Based on an equivalient function in IMAP
@@ -1498,6 +1509,7 @@ camel_groupwise_store_class_init (CamelGroupwiseStoreClass *camel_groupwise_stor
 	camel_store_class->get_folder_info = groupwise_get_folder_info;
 	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
 	camel_store_class->get_trash = groupwise_get_trash;
+	camel_store_class->can_refresh_folder = groupwise_can_refresh_folder;
 }
 
 
@@ -1597,3 +1609,4 @@ camel_groupwise_store_get_type (void)
 	
 	return camel_groupwise_store_type;
 }
+
