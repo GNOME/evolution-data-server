@@ -1279,7 +1279,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 	int folder_needs_caching;
 
-	camel_object_get (folder, NULL, CAMEL_OFFLINE_FOLDER_ARG_SYNC_OFFLINE, &folder_needs_caching, NULL);
+	camel_object_get (folder, NULL, CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE, &folder_needs_caching, NULL);
 
 	changes = camel_folder_change_info_new ();
 	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
