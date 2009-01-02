@@ -1,3 +1,11 @@
+2009-01-02  Sankar P  <psankar@novell.com>
+
+	** Fix for bnc bug #446290
+
+	* camel-groupwise-folder.c (groupwise_refresh_folder),
+	(gw_update_cache):
+	Groupwise parallel clients and (un)read counts
+
 2008-12-29  Sankar P  <psankar@novell.com>
 
 	** Patch committed on behalf of Simon Brys <sbrys@novell.com>
