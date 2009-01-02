@@ -840,7 +840,7 @@ e_gw_connection_get_container (EGwConnection *cnc, const char * uid)
 		}
 
 		e_gw_message_write_string_parameter (msg, "uid", NULL, uid);
-		e_gw_message_write_string_parameter (msg, "view", NULL, "count");
+		e_gw_message_write_string_parameter (msg, "view", NULL, "count unreadCount");
 		e_gw_message_write_footer (msg);
 
 		/* send message to server */
@@ -2772,7 +2772,7 @@ e_gw_connection_get_attachment (EGwConnection *cnc, const char *id, int offset, 
 
 	if (buffer && buf_length && atoi (buf_length) > 0) {
 		gsize len = atoi (buf_length) ;
-		*attachment = g_base64_decode (buffer,&len) ;
+		*attachment = (char *) g_base64_decode (buffer,&len) ;
 		*attach_length = len ;
 	} else {
 		*attachment = NULL;

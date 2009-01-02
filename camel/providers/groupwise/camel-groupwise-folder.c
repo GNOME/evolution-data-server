@@ -1200,10 +1200,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		if (gw_store->current_folder != folder) {
 			gw_store->current_folder = folder;
 		}
-
-		if (list) {
-			gw_update_cache (folder, list, ex, FALSE);
-		}
 		
 		if (check_all && !is_proxy) {
 				EGwContainer *container;
@@ -1214,7 +1210,14 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 				if (camel_folder_summary_count (folder->summary) == e_gw_container_get_total_count (container))
 						check_all = FALSE;
+
+				folder->summary->unread_count = e_gw_container_get_unread_count (container);
+				folder->summary->visible_count = e_gw_container_get_total_count (container);
 				g_object_unref (container);
+		}
+
+		if (list) {
+			gw_update_cache (folder, list, ex, FALSE);
 		}
 	}
 
@@ -1352,6 +1355,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				mi->info.content->type = camel_content_type_new ("multipart", "mixed");	
 			}
 
+			mi->info.flags = 0;
+
 			if (type == E_GW_ITEM_TYPE_APPOINTMENT || type == E_GW_ITEM_TYPE_TASK || type == E_GW_ITEM_TYPE_NOTE)
 				camel_message_info_set_user_flag ((CamelMessageInfo*)mi, "$has_cal", TRUE);
 		}
@@ -1368,16 +1373,12 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 		item_status = e_gw_item_get_item_status (item);
 		if (item_status & E_GW_ITEM_STAT_READ)
-			status_flags |= CAMEL_MESSAGE_SEEN;
+			mi->info.flags |= CAMEL_MESSAGE_SEEN;
 		else 
 			mi->info.flags &= ~CAMEL_MESSAGE_SEEN;
 
 		if (item_status & E_GW_ITEM_STAT_REPLIED)
-			status_flags |= CAMEL_MESSAGE_ANSWERED;
-		if (exists) 
-			mi->info.flags |= status_flags;
-		else 
-			mi->info.flags = status_flags;
+			mi->info.flags |= CAMEL_MESSAGE_ANSWERED;
 
 		priority = e_gw_item_get_priority (item);
 		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
@@ -1468,6 +1469,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			}
 		}
 
+		mi->info.dirty = TRUE;
 		if (exists) {
 			camel_folder_change_info_change_uid (changes, mi->info.uid);
 			camel_message_info_free (pmi);
@@ -1475,12 +1477,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			mi->info.uid = camel_pstring_strdup (e_gw_item_get_id(item));
 			mi->info.size = e_gw_item_get_mail_size (item);	
 			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
-			mi->info.dirty = TRUE;
 			
-			folder->summary->visible_count ++;
-			if (!(mi->info.flags & CAMEL_MESSAGE_SEEN))
-					folder->summary->unread_count ++;
-
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
 			camel_folder_change_info_add_uid (changes, mi->info.uid);
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
