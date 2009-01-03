@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-09-05 02:06+0900\n"
-"PO-Revision-Date: 2008-09-05 02:42+0900\n"
+"PO-Revision-Date: 2009-01-04 03:49+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -1367,7 +1367,7 @@ msgstr "이 암호 방식은 서명을 지원하지 않습니다"
 
 #: ../camel/camel-cipher-context.c:128
 msgid "Signing message"
-msgstr "메세지 서명"
+msgstr "메시지 서명"
 
 #: ../camel/camel-cipher-context.c:145
 msgid "Verifying is not supported by this cipher"
@@ -1375,7 +1375,7 @@ msgstr "이 암호 방식은 서명 확인을 지원하지 않습니다"
 
 #: ../camel/camel-cipher-context.c:171
 msgid "Verifying message"
-msgstr "메세지 확인"
+msgstr "메시지 확인"
 
 #: ../camel/camel-cipher-context.c:189
 msgid "Encryption is not supported by this cipher"
@@ -1383,7 +1383,7 @@ msgstr "이 암호 방식은 암호화를 지원하지 않습니다"
 
 #: ../camel/camel-cipher-context.c:215
 msgid "Encrypting message"
-msgstr "메세지 암호화"
+msgstr "메시지 암호화"
 
 #: ../camel/camel-cipher-context.c:232
 msgid "Decryption is not supported by this cipher"
@@ -1391,7 +1391,7 @@ msgstr "이 암호 방식은 암호화 해독을 지원하지 않습니다"
 
 #: ../camel/camel-cipher-context.c:254
 msgid "Decrypting message"
-msgstr "메세지 암호화 해제"
+msgstr "메시지 암호화 해제"
 
 #: ../camel/camel-cipher-context.c:271
 msgid "You may not import keys with this cipher"
@@ -1447,7 +1447,7 @@ msgstr "오프라인 작업을 위해 폴더 내용을 로컬에서 복사합니
 
 #: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:111
 msgid "Downloading new messages for offline mode"
-msgstr "오프라인 모드를 위한 새 메세지를 다운로드하는 중입니다"
+msgstr "오프라인 모드를 위한 새 메시지를 다운로드하는 중입니다"
 
 #: ../camel/camel-disco-folder.c:469
 #, c-format
@@ -1474,7 +1474,7 @@ msgstr "하위 프로세스 '%s' 프로세스를 만드는 데 실패했습니�
 #: ../camel/camel-filter-driver.c:827
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "%s에서 잘못된 메세지 스트림을 받았습니다: %s"
+msgstr "%s에서 잘못된 메시지 스트림을 받았습니다: %s"
 
 #: ../camel/camel-filter-driver.c:1016 ../camel/camel-filter-driver.c:1025
 msgid "Syncing folders"
@@ -1501,16 +1501,16 @@ msgstr "메일 모음 폴더를 진행할 수 없습니다"
 #: ../camel/camel-filter-driver.c:1236
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr "메세지 %d개(%d%%)를 가져오는 중"
+msgstr "메시지 %d개(%d%%)를 가져오는 중"
 
 #: ../camel/camel-filter-driver.c:1240
 msgid "Cannot open message"
-msgstr "메세지를 열 수 없음"
+msgstr "메시지를 열 수 없음"
 
 #: ../camel/camel-filter-driver.c:1241 ../camel/camel-filter-driver.c:1259
 #, c-format
 msgid "Failed on message %d"
-msgstr "메세지 %d개에서 실패"
+msgstr "메시지 %d개에서 실패"
 
 #: ../camel/camel-filter-driver.c:1273 ../camel/camel-filter-driver.c:1364
 msgid "Syncing folder"
@@ -1532,7 +1532,7 @@ msgstr "%2$d개 중에서 메시지 %1$d에서 실패"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
-msgstr "메세지를 가져오는 데 실패했습니다"
+msgstr "메시지를 가져오는 데 실패했습니다"
 
 #: ../camel/camel-filter-search.c:401
 msgid "Invalid arguments to (system-flag)"
@@ -1604,7 +1604,7 @@ msgstr "알 수 없는 헤더에 대해 질의를 수행하는 중입니다: %s"
 #: ../camel/camel-folder.c:693
 #, c-format
 msgid "Unsupported operation: append message: for %s"
-msgstr "지원하지 않는 동작: 메세지 추가: %s"
+msgstr "지원하지 않는 동작: 메시지 추가: %s"
 
 #: ../camel/camel-folder.c:1349
 #, c-format
@@ -1618,7 +1618,7 @@ msgstr "지원하지 않는 동작: UID로 찾기: %s에 대해"
 
 #: ../camel/camel-folder.c:1506
 msgid "Moving messages"
-msgstr "메세지 옮기는 중입니다"
+msgstr "메시지 옮기는 중입니다"
 
 #: ../camel/camel-folder.c:1506
 msgid "Copying messages"
@@ -1634,7 +1634,7 @@ msgstr "정크가 아닌 메일을 학습하는 중입니다"
 
 #: ../camel/camel-folder.c:1888
 msgid "Filtering new message(s)"
-msgstr "새 메세지 필터링하는 중입니다"
+msgstr "새 메시지 필터링하는 중입니다"
 
 #: ../camel/camel-gpg-context.c:755
 #, c-format
@@ -1643,7 +1643,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"예기치 않은 GnuPG 상태 메세지가 나왔습니다:\n"
+"예기치 않은 GnuPG 상태 메시지가 나왔습니다:\n"
 "\n"
 "%s"
 
@@ -1725,12 +1725,12 @@ msgstr "This is a digitally signed message part"
 #: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
 #: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr "메세지 서명을 확인할 수 없습니다: 메세지 형식이 틀렸습니다"
+msgstr "메시지 서명을 확인할 수 없습니다: 메시지 형식이 틀렸습니다"
 
 #: ../camel/camel-gpg-context.c:1519
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "메세지 서명을 확인할 수 없습니다. 임시 파일을 만들 수 없습니다: %s"
+msgstr "메시지 서명을 확인할 수 없습니다. 임시 파일을 만들 수 없습니다: %s"
 
 #: ../camel/camel-gpg-context.c:1602
 #, c-format
@@ -1739,12 +1739,12 @@ msgstr "암호화 데이터를 만들 수 없습니다: %s"
 
 #: ../camel/camel-gpg-context.c:1652
 msgid "This is a digitally encrypted message part"
-msgstr "디지탈 암호화된 메세지 부분입니다"
+msgstr "디지탈 암호화된 메시지 부분입니다"
 
 #: ../camel/camel-gpg-context.c:1705 ../camel/camel-gpg-context.c:1713
 #: ../camel/camel-gpg-context.c:1732
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr "메세지의 암호화를 풀 수 없습니다: 메세지 형식이 틀렸습니다"
+msgstr "메시지의 암호화를 풀 수 없습니다: 메시지 형식이 틀렸습니다"
 
 #: ../camel/camel-gpg-context.c:1722
 msgid "Failed to decrypt MIME part: protocol error"
@@ -1756,7 +1756,7 @@ msgstr "암호화된 내용"
 
 #: ../camel/camel-gpg-context.c:1806
 msgid "Unable to parse message content"
-msgstr "메세지 내용을 파싱할 수 없습니다"
+msgstr "메시지 내용을 파싱할 수 없습니다"
 
 #: ../camel/camel-gpg-context.c:1830 ../camel/camel-gpg-context.c:1875
 #: ../camel/camel-tcp-stream-openssl.c:635
@@ -1907,7 +1907,7 @@ msgstr "이름 찾기 실패: %s"
 #: ../camel/camel-offline-folder.c:254
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "'%s' 폴더의 메세지를 디스크와 동기화하는 중입니다"
+msgstr "'%s' 폴더의 메시지를 디스크와 동기화하는 중입니다"
 
 #: ../camel/camel-offline-journal.c:164 ../camel/camel-offline-journal.c:187
 #, c-format
@@ -2213,7 +2213,7 @@ msgstr "'%s'에 대한 인증서를 찾을 수 없습니다"
 
 #: ../camel/camel-smime-context.c:240
 msgid "Cannot create CMS message"
-msgstr "CMS 메세지를 만들 수 없습니다"
+msgstr "CMS 메시지를 만들 수 없습니다"
 
 #: ../camel/camel-smime-context.c:245
 msgid "Cannot create CMS signed data"
@@ -2326,7 +2326,7 @@ msgstr "요약문을 계산할 수 없습니다"
 
 #: ../camel/camel-smime-context.c:577
 msgid "Cannot set message digests"
-msgstr "메세지 요약문을 설정할 수 없습니다"
+msgstr "메시지 요약문을 설정할 수 없습니다"
 
 #: ../camel/camel-smime-context.c:587 ../camel/camel-smime-context.c:592
 msgid "Certificate import failed"
@@ -2335,12 +2335,12 @@ msgstr "인증서 가져오기가 실패했습니다"
 #: ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr "메세지가 인증서밖에 없습니다. 인증서를 확인할 수 없습니다"
+msgstr "메시지가 인증서밖에 없습니다. 인증서를 확인할 수 없습니다"
 
 #: ../camel/camel-smime-context.c:605
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr "메세지가 인증서밖에 없습니다. 인증서를 가져왔고 확인했습니다"
+msgstr "메시지가 인증서밖에 없습니다. 인증서를 가져왔고 확인했습니다"
 
 #: ../camel/camel-smime-context.c:609
 msgid "Cannot find signature digests"
@@ -2366,7 +2366,7 @@ msgstr "암호화 벌크 키에 필요한 슬롯을 할당할 수 없습니다"
 
 #: ../camel/camel-smime-context.c:805
 msgid "Cannot create CMS Message"
-msgstr "CMS 메세지를 만들 수 없습니다"
+msgstr "CMS 메시지를 만들 수 없습니다"
 
 #: ../camel/camel-smime-context.c:811
 msgid "Cannot create CMS Enveloped data"
@@ -2672,11 +2672,11 @@ msgstr "'%s'을(를) 저장하는 데 오류가 발생했습니다: %s"
 #: ../camel/camel-vee-folder.c:638
 #, c-format
 msgid "No such message %s in %s"
-msgstr "%2$s에 %1$s(이)라는 메세지는 없습니다"
+msgstr "%2$s에 %1$s(이)라는 메시지는 없습니다"
 
 #: ../camel/camel-vee-folder.c:761 ../camel/camel-vee-folder.c:767
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr "메세지를 가상 폴더에 복사할/옮길 수 없습니다"
+msgstr "메시지를 가상 폴더에 복사할/옮길 수 없습니다"
 
 #: ../camel/camel-vee-store.c:114 ../camel/camel-vee-store.c:115
 #: ../camel/camel-vee-store.c:360
@@ -2695,11 +2695,11 @@ msgstr "폴더 이름을 바꿀 수 없습니다: %s: 그런 폴더가 없습니
 
 #: ../camel/camel-vtrash-folder.c:54
 msgid "Cannot copy messages to the Trash folder"
-msgstr "휴지통 폴더로 메세지를 복사할 수 없습니다"
+msgstr "휴지통 폴더로 메시지를 복사할 수 없습니다"
 
 #: ../camel/camel-vtrash-folder.c:56
 msgid "Cannot copy messages to the Junk folder"
-msgstr "정크메일 폴더로 메세지를 복사할 수 없습니다"
+msgstr "정크메일 폴더로 메시지를 복사할 수 없습니다"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
 #, c-format
@@ -2707,7 +2707,7 @@ msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
-"메세지를 얻을 수 없습니다: %s\n"
+"메시지를 얻을 수 없습니다: %s\n"
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:116
@@ -2715,7 +2715,7 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-folder.c:348
 #: ../camel/providers/local/camel-mh-folder.c:204
 msgid "No such message"
-msgstr "그런 메세지 없음"
+msgstr "그런 메시지 없음"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:128
 #: ../camel/providers/imap4/camel-imap4-folder.c:812
@@ -2742,7 +2742,7 @@ msgstr "사용자가 취소"
 #: ../camel/providers/pop3/camel-pop3-folder.c:642
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr "%s 메세지를 얻을 수 없습니다: %s"
+msgstr "%s 메시지를 얻을 수 없습니다: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:152
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:160
@@ -2756,7 +2756,7 @@ msgstr "이 메시지는 오프라인 모드에서는 사용할 수 없습니다
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1696
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
 msgid "Could not get message"
-msgstr "메세지를 가져올 수 없습니다"
+msgstr "메시지를 가져올 수 없습니다"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:818
 #: ../camel/providers/imap/camel-imap-folder.c:248
@@ -2775,18 +2775,18 @@ msgstr "휴지통 폴더가 가득 찼습니다. 휴지통을 비우십시오."
 #: ../camel/providers/imap/camel-imap-folder.c:3260
 #, c-format
 msgid "Fetching summary information for new messages in %s"
-msgstr "%s에 있는 새 메세지의 요약 정보를 가져오는 중입니다"
+msgstr "%s에 있는 새 메시지의 요약 정보를 가져오는 중입니다"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2031
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2073
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
-msgstr "'%s' 폴더에 메세지를 추가할 수 없습니다: %s"
+msgstr "'%s' 폴더에 메시지를 추가할 수 없습니다: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2061
 #, c-format
 msgid "Cannot create message: %s"
-msgstr "메세지를 만들 수 없습니다: %s"
+msgstr "메시지를 만들 수 없습니다: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:285
 #, c-format
@@ -2797,7 +2797,7 @@ msgstr "%s 폴더 컨테이너를 얻을 수 없습니다"
 #: ../camel/providers/imap4/camel-imap4-journal.c:319
 msgid "Cannot append message in offline mode: cache unavailable"
 msgstr ""
-"오프라인 모드에서 메세지를 덧붙일 수 없습니다: 캐시를 사용할 수 없습니다"
+"오프라인 모드에서 메시지를 덧붙일 수 없습니다: 캐시를 사용할 수 없습니다"
 
 #: ../camel/providers/groupwise/camel-groupwise-journal.c:365
 #: ../camel/providers/imap4/camel-imap4-journal.c:335
@@ -2815,7 +2815,7 @@ msgstr "새 메일 확인중"
 #: ../camel/providers/imap/camel-imap-provider.c:46
 #: ../camel/providers/imap4/camel-imap4-provider.c:41
 msgid "C_heck for new messages in all folders"
-msgstr "모든 폴더에서 새 메세지 확인(_H)"
+msgstr "모든 폴더에서 새 메시지 확인(_H)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:68
@@ -2828,11 +2828,11 @@ msgstr "옵션"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:62
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr "이 서버의 받은 편지함에 있는 새 메세지에 필터 적용(_A)"
+msgstr "이 서버의 받은 편지함에 있는 새 메시지에 필터 적용(_A)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:64
 msgid "Check new messages for J_unk contents"
-msgstr "새로 받은 메세지 내용이 정크메일인지 확인(_U)"
+msgstr "새로 받은 메시지 내용이 정크메일인지 확인(_U)"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:66
 #: ../camel/providers/imap/camel-imap-provider.c:74
@@ -2929,7 +2929,7 @@ msgstr "%s 서버를 통한 그룹와이즈 메일 배달"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:167
 msgid "Sending Message"
-msgstr "메세지를 보내는 중입니다"
+msgstr "메시지를 보내는 중입니다"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:221
 msgid ""
@@ -2937,14 +2937,14 @@ msgid ""
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
-"계정의 제한 용량을 넘어갔습니다. 메세지는 보낸 편지함에 저장됩니다. 메일을 지"
+"계정의 제한 용량을 넘어갔습니다. 메시지는 보낸 편지함에 저장됩니다. 메일을 지"
 "우거나 아카이브로 만든 다음 보내고 받기 단추를 눌러 다시 보내십시오.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:209
 #, c-format
 msgid "Could not send message: %s"
-msgstr "메세지를 보낼 수 없음: %s"
+msgstr "메시지를 보낼 수 없음: %s"
 
 #: ../camel/providers/hula/camel-hula-provider.c:49
 #: ../camel/providers/imap/camel-imap-provider.c:44
@@ -3074,7 +3074,7 @@ msgstr "%s 디렉토리를 만들 수 없습니다: %s"
 #: ../camel/providers/imap/camel-imap-folder.c:843
 #, c-format
 msgid "Scanning for changed messages in %s"
-msgstr "%s에 있는 바뀐 메세지를 검사하는 중입니다"
+msgstr "%s에 있는 바뀐 메시지를 검사하는 중입니다"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1860
 #, c-format
@@ -3092,16 +3092,16 @@ msgstr "APPEND 명령 중에 알 수 없는 오류가 발생했습니다!"
 #: ../camel/providers/imap/camel-imap-folder.c:2729
 #, c-format
 msgid "Unable to retrieve message: %s"
-msgstr "메세지를 가져올 수 없습니다: %s"
+msgstr "메시지를 가져올 수 없습니다: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2770
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
-msgstr "메세지 ID가 %s인 메세지를 얻을 수 없습니다: %s"
+msgstr "메시지 ID가 %s인 메시지를 얻을 수 없습니다: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2771
 msgid "No such message available."
-msgstr "그런 메세지가 없습니다."
+msgstr "그런 메시지가 없습니다."
 
 #: ../camel/providers/imap/camel-imap-folder.c:2810
 #: ../camel/providers/imap/camel-imap-folder.c:3562
@@ -3112,16 +3112,16 @@ msgstr "이 메시지는 현재 보여줄 수가 없습니다"
 #: ../camel/providers/imap/camel-imap-folder.c:3389
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
-msgstr "서버 응답이 불완전합니다: %d번 메세지에 대한 정보가 없습니다"
+msgstr "서버 응답이 불완전합니다: %d번 메시지에 대한 정보가 없습니다"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3397
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
-msgstr "서버 응답이 불완전합니다: %d번 메세지에 대한 UID가 없습니다"
+msgstr "서버 응답이 불완전합니다: %d번 메시지에 대한 UID가 없습니다"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3600
 msgid "Could not find message body in FETCH response."
-msgstr "FETCH 응답에서 메세지 본문을 찾을 수 없습니다."
+msgstr "FETCH 응답에서 메시지 본문을 찾을 수 없습니다."
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:160
 #: ../camel/providers/imap/camel-imap-message-cache.c:220
@@ -3135,7 +3135,7 @@ msgstr "캐시 디렉토리를 열 수 없습니다: %s"
 #: ../camel/providers/imap/camel-imap-message-cache.c:427
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr "메세지 %s을(를) 캐시하는 데 실패했습니다: %s"
+msgstr "메시지 %s을(를) 캐시하는 데 실패했습니다: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:478
 #, c-format
@@ -3144,7 +3144,7 @@ msgstr "%s을(를) 캐시하는 데 실패했습니다: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr "구독한 폴더에서 새 메세지 확인(_E)"
+msgstr "구독한 폴더에서 새 메시지 확인(_E)"
 
 # namespace -> 이름 공간, Microsoft Office XP 참고
 #: ../camel/providers/imap/camel-imap-provider.c:66
@@ -3155,11 +3155,11 @@ msgstr "이름 공간:"
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:54
 msgid "_Apply filters to new messages in INBOX on this server"
-msgstr "이 서버의 INBOX에 있는 새 메세지에 필터를 적용(_A)"
+msgstr "이 서버의 INBOX에 있는 새 메시지에 필터를 적용(_A)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 msgid "Check new messages for Jun_k contents"
-msgstr "새로 받은 메세지가 정크메일인지 확인(_K)"
+msgstr "새로 받은 메시지가 정크메일인지 확인(_K)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:76
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
@@ -3371,11 +3371,11 @@ msgstr "확장 Mailing-List 헤더 감지 기능 사용, 일부 필터 및 가�
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:90
 msgid "Expire cached messages that haven't been read in X seconds"
-msgstr "지정한 초동안 읽지 않은 메세지는 캐시에서 만료"
+msgstr "지정한 초동안 읽지 않은 메시지는 캐시에서 만료"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:91
 msgid "Expire cached messages older than X seconds"
-msgstr "지정한 초보다 오래 된 메세지는 캐시에서 만료"
+msgstr "지정한 초보다 오래 된 메시지는 캐시에서 만료"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:423
 #, c-format
@@ -3405,51 +3405,51 @@ msgstr "'%s' 폴더를 지울 수 없습니다: 명령어가 틀렸습니다"
 #: ../camel/providers/imap4/camel-imap4-folder.c:889
 #, c-format
 msgid "Cannot get message %s from folder '%s': No such message"
-msgstr "'%2$s' 폴더에서 %1$s 메세지를 가져올 수 없습니다: 그런 메세지가 없습니다"
+msgstr "'%2$s' 폴더에서 %1$s 메시지를 가져올 수 없습니다: 그런 메시지가 없습니다"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:894
 #, c-format
 msgid "Cannot get message %s from folder '%s': Bad command"
-msgstr "'%2$s' 폴더에서 %1$s 메세지를 가져올 수 없습니다: 명령어가 틀렸습니다"
+msgstr "'%2$s' 폴더에서 %1$s 메시지를 가져올 수 없습니다: 명령어가 틀렸습니다"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:938
 #, c-format
 msgid "Cannot append message to folder '%s': Folder is read-only"
-msgstr "'%s' 폴더에 메세지를 추가할 수 없습니다: 폴더가 읽기 전용입니다"
+msgstr "'%s' 폴더에 메시지를 추가할 수 없습니다: 폴더가 읽기 전용입니다"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1031
 #, c-format
 msgid "Cannot append message to folder '%s': Unknown error"
-msgstr "'%s' 폴더에 메세지를 더할 수 없습니다: 알 수 없는 오류"
+msgstr "'%s' 폴더에 메시지를 더할 수 없습니다: 알 수 없는 오류"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1061
 #, c-format
 msgid "Cannot append message to folder '%s': Bad command"
-msgstr "'%s' 폴더에 메세지를 더할 수 없습니다: 명령어가 틀렸습니다"
+msgstr "'%s' 폴더에 메시지를 더할 수 없습니다: 명령어가 틀렸습니다"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1181
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
-msgstr "'%s' 폴더에서 '%s' 폴더로 메세지를 옮길 수 없습니다: 알 수 없는 오류"
+msgstr "'%s' 폴더에서 '%s' 폴더로 메시지를 옮길 수 없습니다: 알 수 없는 오류"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1185
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
-msgstr "'%s' 폴더에서 '%s' 폴더로 메세지를 복사할 수 없습니다: 알 수 없는 오류"
+msgstr "'%s' 폴더에서 '%s' 폴더로 메시지를 복사할 수 없습니다: 알 수 없는 오류"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1193
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-msgstr "'%s' 폴더에서 '%s' 폴더로 메세지를 옮길 수 없습니다: 명령어가 틀렸습니다"
+msgstr "'%s' 폴더에서 '%s' 폴더로 메시지를 옮길 수 없습니다: 명령어가 틀렸습니다"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1197
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-msgstr "'%s' 폴더에서 '%s' 폴더로 메세지를 복사할 수 없습니다: 명령어가 틀렸습니다"
+msgstr "'%s' 폴더에서 '%s' 폴더로 메시지를 복사할 수 없습니다: 명령어가 틀렸습니다"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:56
 msgid "Check new messages for _Junk contents"
-msgstr "새로 받은 메세지가 정크메일인지 확인(_J)"
+msgstr "새로 받은 메시지가 정크메일인지 확인(_J)"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:58
 msgid "Only check for Junk messa_ges in the INBOX folder"
@@ -3607,7 +3607,7 @@ msgstr "'%s' 폴더를 구독 해제할 수 없습니다: 명령어가 틀렸습
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1596
 msgid "Scanning for changed messages"
-msgstr "바뀐 메세지를 검사합니다"
+msgstr "바뀐 메시지를 검사합니다"
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1617
 #, c-format
@@ -3616,7 +3616,7 @@ msgstr "IMAP 서버 %s의 상태가 불안정합니다."
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1644
 msgid "Fetching envelopes of new messages"
-msgstr "새 메세지의 봉투를 가져오는 중입니다"
+msgstr "새 메시지의 봉투를 가져오는 중입니다"
 
 #: ../camel/providers/imap4/camel-imap4-utils.c:437
 #, c-format
@@ -3635,7 +3635,7 @@ msgstr "IMAP server %s의 연결이 예상치 못하게 끊겼습니다: %s"
 #: ../camel/providers/imapp/camel-imapp-provider.c:41
 #: ../camel/providers/pop3/camel-pop3-provider.c:41
 msgid "Message storage"
-msgstr "메세지 저장고"
+msgstr "메시지 저장고"
 
 #: ../camel/providers/imapp/camel-imapp-provider.c:49
 msgid "IMAP+"
@@ -3666,7 +3666,7 @@ msgstr "POP 서버 %s에 연결할 수 없습니다"
 
 #: ../camel/providers/local/camel-local-folder.c:174
 msgid "Index message body data"
-msgstr "메세지 본문의 데이터를 인덱스로 만들기"
+msgstr "메시지 본문의 데이터를 인덱스로 만들기"
 
 #. $HOME relative path + protocol string
 #: ../camel/providers/local/camel-local-folder.c:390
@@ -3714,7 +3714,7 @@ msgstr ""
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "_Apply filters to new messages in INBOX"
-msgstr "필터를 받은 편지함의 새 메세지에 적용(_A)"
+msgstr "필터를 받은 편지함의 새 메시지에 적용(_A)"
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
@@ -3796,16 +3796,16 @@ msgstr "폴더 메타 파일 '%s'을(를) 지울 수 없습니다: %s"
 
 #: ../camel/providers/local/camel-local-summary.c:506
 msgid "Unable to add message to summary: unknown reason"
-msgstr "메세지를 요약에 더할 수 없습니다: 알 수 없는 이유"
+msgstr "메시지를 요약에 더할 수 없습니다: 알 수 없는 이유"
 
 #: ../camel/providers/local/camel-maildir-folder.c:220
 msgid "Maildir append message canceled"
-msgstr "메일폴더에 메세지 덧붙이기를 취소했습니다"
+msgstr "메일폴더에 메시지 덧붙이기를 취소했습니다"
 
 #: ../camel/providers/local/camel-maildir-folder.c:223
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
-msgstr "메일폴더에 메세지를 덧붙일 수 없습니다: %s: %s"
+msgstr "메일폴더에 메시지를 덧붙일 수 없습니다: %s: %s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:250
 #: ../camel/providers/local/camel-maildir-folder.c:264
@@ -3822,12 +3822,12 @@ msgid ""
 "Cannot get message: %s from folder %s\n"
 "  %s"
 msgstr ""
-"메세지를 얻을 수 없음: %2$s 폴더에서 %1$s\n"
+"메시지를 얻을 수 없음: %2$s 폴더에서 %1$s\n"
 "  %3$s"
 
 #: ../camel/providers/local/camel-maildir-folder.c:274
 msgid "Invalid message contents"
-msgstr "잘못된 메세지 내용"
+msgstr "잘못된 메시지 내용"
 
 #: ../camel/providers/local/camel-maildir-store.c:148
 #: ../camel/providers/local/camel-maildir-store.c:173
@@ -3886,7 +3886,7 @@ msgstr "폴더의 일관성을 확인 중입니다"
 
 #: ../camel/providers/local/camel-maildir-summary.c:650
 msgid "Checking for new messages"
-msgstr "새 메세지를 확인하는 중입니다"
+msgstr "새 메시지를 확인하는 중입니다"
 
 #: ../camel/providers/local/camel-maildir-summary.c:736
 #: ../camel/providers/local/camel-mbox-summary.c:534
@@ -3914,7 +3914,7 @@ msgstr "메일 덧붙이기를 취소했습니다"
 #: ../camel/providers/local/camel-mbox-folder.c:281
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
-msgstr "메일함에 메세지를 덧붙일 수 없습니다: %s: %s"
+msgstr "메일함에 메시지를 덧붙일 수 없습니다: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-folder.c:400
 msgid "The folder appears to be irrecoverably corrupted."
@@ -3923,7 +3923,7 @@ msgstr "폴더가 복구 불능 상태로 손상된 것으로 보입니다."
 #: ../camel/providers/local/camel-mbox-folder.c:408
 #: ../camel/providers/local/camel-mh-folder.c:224
 msgid "Message construction failed."
-msgstr "메세지 만들기가 실패했습니다."
+msgstr "메시지 만들기가 실패했습니다."
 
 #: ../camel/providers/local/camel-mbox-store.c:166
 #: ../camel/providers/local/camel-mbox-store.c:365
@@ -4066,12 +4066,12 @@ msgstr "임시 메일함에 쓰는 데 실패했습니다: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:176
 msgid "MH append message canceled"
-msgstr "MH 메세지 추가를 취소했습니다"
+msgstr "MH 메시지 추가를 취소했습니다"
 
 #: ../camel/providers/local/camel-mh-folder.c:179
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
-msgstr "MH 폴더에 메세지를 추가할 수 없습니다: %s: %s"
+msgstr "MH 폴더에 메시지를 추가할 수 없습니다: %s: %s"
 
 #: ../camel/providers/local/camel-mh-store.c:232
 #, c-format
@@ -4192,11 +4192,11 @@ msgstr "게시가 실패했습니다: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:395
 msgid "You cannot post NNTP messages while working offline!"
-msgstr "오프라인으로 작업하는 중에는 NNTP 메세지를 올릴 수 없습니다!"
+msgstr "오프라인으로 작업하는 중에는 NNTP 메시지를 올릴 수 없습니다!"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:406
 msgid "You cannot copy messages from a NNTP folder!"
-msgstr "NNTP 폴더에서 메세지를 복사할 수 없습니다!"
+msgstr "NNTP 폴더에서 메시지를 복사할 수 없습니다!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid ""
@@ -4225,7 +4225,7 @@ msgstr "이 옵션을 켜면 일반 텍스트 암호를 이용해 NNTP 서버에
 #: ../camel/providers/nntp/camel-nntp-store.c:217
 #, c-format
 msgid "Could not read greeting from %s: %s"
-msgstr "%s에서 초기 메세지를 읽을 수 없습니다: %s"
+msgstr "%s에서 초기 메시지를 읽을 수 없습니다: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:229
 #, c-format
@@ -4339,23 +4339,23 @@ msgstr "POP 요약을 가져올 수 없습니다: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:312
 msgid "Expunging old messages"
-msgstr "오래 된 메세지를 비웁니다"
+msgstr "오래 된 메시지를 비웁니다"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:320
 msgid "Expunging deleted messages"
-msgstr "지운 메세지를 비웁니다"
+msgstr "지운 메시지를 비웁니다"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:534
 #, c-format
 msgid "No message with UID %s"
-msgstr "UID %s의 메세지가 없습니다"
+msgstr "UID %s의 메시지가 없습니다"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
 #: ../camel/providers/pop3/camel-pop3-folder.c:541
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr "POP 메세지 %d개를 가져오는 중입니다"
+msgstr "POP 메시지 %d개를 가져오는 중입니다"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:631
 msgid "Unknown reason"
@@ -4363,7 +4363,7 @@ msgstr "알 수 없는 이유"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:43
 msgid "_Leave messages on server"
-msgstr "서버에 메세지 남기기(_L)"
+msgstr "서버에 메시지 남기기(_L)"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 #, c-format
@@ -4682,23 +4682,23 @@ msgstr "%s 서버를 통한 SMTP 메일"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:717
 msgid "Cannot send message: service not connected."
-msgstr "메세지를 보낼 수 없습니다: 서비스에 연결되지 않았습니다."
+msgstr "메시지를 보낼 수 없습니다: 서비스에 연결되지 않았습니다."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:723
 msgid "Cannot send message: sender address not valid."
-msgstr "메세지를 보낼 수 없습니다. 보내는 사람 주소가 올바르지 않습니다."
+msgstr "메시지를 보낼 수 없습니다. 보내는 사람 주소가 올바르지 않습니다."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:727
 msgid "Sending message"
-msgstr "메세지를 보냄"
+msgstr "메시지를 보냄"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:742
 msgid "Cannot send message: no recipients defined."
-msgstr "메세지를 보낼 수 없습니다: 받는 사람이 정의되지 않았습니다."
+msgstr "메시지를 보낼 수 없습니다: 받는 사람이 정의되지 않았습니다."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:753
 msgid "Cannot send message: one or more invalid recipients"
-msgstr "메세지를 보낼 수 없습니다: 받는 사람 중에 한 명 이상이 잘못되었습니다"
+msgstr "메시지를 보낼 수 없습니다: 받는 사람 중에 한 명 이상이 잘못되었습니다"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:982
 msgid "SMTP Greeting"
@@ -5383,7 +5383,7 @@ msgstr "렌더링할 색"
 
 #~ msgid ""
 #~ "Unexpected server response: Identical UIDs provided for messages %d and %d"
-#~ msgstr "서버 응답이 갑작스럽습니다: 메세지 %d번 및 %d번의 UID가 같습니다"
+#~ msgstr "서버 응답이 갑작스럽습니다: 메시지 %d번 및 %d번의 UID가 같습니다"
 
 #~ msgid "Could not save summary: %s: %s"
 #~ msgstr "요약을 저장할 수 없습니다: %s: %s"
