@@ -5,8 +5,9 @@
 
 	Just add all of include/evolution-data-server-@BASE_VERSION@
 	instead of bothering to list the subdirectories. (libebackend was
-	missing.) The intent is that one builds into a fresh empty target
-	prefix anyway when one wants to build for distribution.
+	missing.) Ditto for lib/pkgconfig and share/gtk-doc. The intent is
+	that one does make install into a fresh empty target prefix anyway
+	when one wants to build for distribution.
 
 2009-01-05  Suman Manjunath  <msuman@novell.com>
 
