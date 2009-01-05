@@ -1,3 +1,10 @@
+2009-01-05  Ashish Shrivastava  <shashish@novell.com>
+
+	** Fix for bnc bug #458127
+
+	* camel-groupwise-provider.c: Keyboard shortcut for
+	SOAP port in Evolution setup assistant.
+
 2009-01-02  Sankar P  <psankar@novell.com>
 
 	** Fix for bnc bug #446290

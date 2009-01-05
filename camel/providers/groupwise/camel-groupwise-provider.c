@@ -73,7 +73,7 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 	  N_("SOAP Settings") },
 
 	{ CAMEL_PROVIDER_CONF_ENTRY, "soap_port", NULL,
-	  N_("Post Office Agent SOAP Port:"), "7191" },
+	  N_("Post Office Agent SOAP _Port:"), "7191" },
 
 	{ CAMEL_PROVIDER_CONF_HIDDEN, "auth-domain", NULL,
 	  NULL, "Groupwise" },
