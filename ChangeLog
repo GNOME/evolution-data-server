@@ -1,3 +1,8 @@
+2009-01-05  Tor Lillqvist  <tml@novell.com>
+
+	* evolution-data-server-zip.in: Add libebackend binary, import
+	library and pkg-config file.
+
 2009-01-05  Suman Manjunath  <msuman@novell.com>
 
 	** Patch from Thomas <tmstaedt@t-mittelstaedt.de>
