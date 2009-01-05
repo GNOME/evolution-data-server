@@ -3119,7 +3119,7 @@ static CamelMessageInfo *
 message_info_load(CamelFolderSummary *s, FILE *in)
 {
 	CamelMessageInfoBase *mi;
-	guint count;
+	guint32 count;
 	int i;
 	char *subject, *from, *to, *cc, *mlist, *uid;
 

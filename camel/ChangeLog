@@ -1,3 +1,10 @@
+2009-01-05  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	* camel/camel-folder-summary.c: (message_info_load): Change to
+	guint to guint32 to avoid crash in 64 bit.
+
+	committing the patch from Michael Meeks <mmeeks@novell.com>
+
 2008-12-22  Sankar P  <psankar@novell.com>
 
 	** Part of Fix for bug #559153
