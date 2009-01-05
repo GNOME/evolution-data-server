@@ -706,7 +706,7 @@ e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
 		r->value.time = t->value.time;
 		break;
 	case ESEXP_TERM_IFUNC:
-		if (t->value.func.sym->f.ifunc)
+		if (t->value.func.sym && t->value.func.sym->f.ifunc)
 			r = t->value.func.sym->f.ifunc(f, t->value.func.termcount, t->value.func.terms, t->value.func.sym->data);
 		break;
 	case ESEXP_TERM_FUNC:
