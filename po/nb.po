@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 1.11.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-09 23:43+0100\n"
-"PO-Revision-Date: 2008-12-09 23:50+0100\n"
+"POT-Creation-Date: 2009-01-05 07:12+0100\n"
+"PO-Revision-Date: 2009-01-05 07:13+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -16,29 +16,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:560
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2378
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2396
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "Laster..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:563
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2309
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2331
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2376
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2349
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2394
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4288
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Søker..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2746
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2764
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4452
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Laster ned kontakter (%d)..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2895
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3080
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3124
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2913
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3098
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3142
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Oppdaterer buffer for kontakter (%d)..."
@@ -669,32 +669,31 @@ msgstr "Telefon"
 
 #: ../addressbook/libebook/e-contact.c:278
 msgid "Skype Home Name 1"
-msgstr ""
+msgstr "Skype-navn hjemme 1"
 
 #: ../addressbook/libebook/e-contact.c:279
 msgid "Skype Home Name 2"
-msgstr ""
+msgstr "Skype-navn hjemme 2"
 
 #: ../addressbook/libebook/e-contact.c:280
 msgid "Skype Home Name 3"
-msgstr ""
+msgstr "Skype-navn hjemme 3"
 
 #: ../addressbook/libebook/e-contact.c:281
 msgid "Skype Work Name 1"
-msgstr ""
+msgstr "Skype-navn arbeid 1"
 
 #: ../addressbook/libebook/e-contact.c:282
 msgid "Skype Work Name 2"
-msgstr ""
+msgstr "Skype-navn arbeid 2"
 
 #: ../addressbook/libebook/e-contact.c:283
 msgid "Skype Work Name 3"
-msgstr ""
+msgstr "Skype-navn arbeid 3"
 
 #: ../addressbook/libebook/e-contact.c:284
-#, fuzzy
 msgid "Skype Name List"
-msgstr "Liste over skjermnavn for AIM"
+msgstr "Liste med Skype-navn"
 
 #: ../addressbook/libebook/e-contact.c:1507
 #: ../addressbook/libebook/e-destination.c:761
@@ -734,7 +733,7 @@ msgstr "Kunne ikke opprette tråd for å få deltaer"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
 #: ../calendar/backends/http/e-cal-backend-http.c:582
-#: ../calendar/backends/weather/e-cal-backend-weather.c:461
+#: ../calendar/backends/weather/e-cal-backend-weather.c:484
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
 
@@ -744,12 +743,12 @@ msgid "Could not create thread for populating cache"
 msgstr "Kunne ikke opprette tråd for å populere buffer"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1854
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1863
 msgid "Reply Requested: by "
 msgstr "Svar etterspurt: innen "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1061
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1859
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1868
 msgid "Reply Requested: When convenient"
 msgstr "Svar etterspurt: Når det passer"
 
@@ -772,9 +771,9 @@ msgstr "Ugyldig URI for tjener"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
 #: ../calendar/libecal/e-cal.c:5091
 #: ../calendar/libedata-cal/e-cal-backend-util.c:109
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1098
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1130
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1107
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1139
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1177
 #: ../camel/providers/groupwise/camel-groupwise-store.c:580
 #: ../camel/providers/groupwise/camel-groupwise-store.c:745
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -834,7 +833,7 @@ msgstr "Vær: Klar natt"
 msgid "Weather: Thunderstorms"
 msgstr "Vær: Tordenvær"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:377
+#: ../calendar/backends/weather/e-cal-backend-weather.c:399
 msgid "Forecast"
 msgstr "Værmelding"
 
@@ -1289,7 +1288,7 @@ msgstr "Kunne ikke opprette sti til buffer"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Kunne ikke fjerne cache-oppføring: %s: %s"
 
-#: ../camel/camel-db.c:99
+#: ../camel/camel-db.c:101
 msgid "Insufficient memory"
 msgstr "Ikke nok minne"
 
@@ -1305,7 +1304,7 @@ msgstr ""
 "du kobler til dette nettverket igjen."
 
 #: ../camel/camel-disco-diary.c:261
-#: ../camel/providers/imap/camel-imap-journal.c:299
+#: ../camel/providers/imap/camel-imap-journal.c:318
 #, c-format
 msgid ""
 "Could not open '%s':\n"
@@ -1488,38 +1487,38 @@ msgstr "Utfører spørring på ukjent header: %s"
 msgid "Unsupported operation: append message: for %s"
 msgstr "Ustøttet operasjon: legg til melding: for %s"
 
-#: ../camel/camel-folder.c:1331
+#: ../camel/camel-folder.c:1316
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Ustøttet operasjon: søk etter uttrykk: etter %s"
 
-#: ../camel/camel-folder.c:1373
+#: ../camel/camel-folder.c:1358
 #, c-format
 msgid "Unsupported operation: count by expression: for %s"
 msgstr "Ustøttet operasjon: antall etter uttrykk: etter %s"
 
-#: ../camel/camel-folder.c:1413
+#: ../camel/camel-folder.c:1398
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "Ustøttet operasjon: søk på UID: etter %s"
 
-#: ../camel/camel-folder.c:1529
+#: ../camel/camel-folder.c:1514
 msgid "Moving messages"
 msgstr "Flytter meldinger"
 
-#: ../camel/camel-folder.c:1529
+#: ../camel/camel-folder.c:1514
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#: ../camel/camel-folder.c:1875
+#: ../camel/camel-folder.c:1860
 msgid "Learning junk"
 msgstr "Oppdaterer data om søppel"
 
-#: ../camel/camel-folder.c:1892
+#: ../camel/camel-folder.c:1877
 msgid "Learning non-junk"
 msgstr "Oppdaterer data om gyldige meldinger"
 
-#: ../camel/camel-folder.c:1911
+#: ../camel/camel-folder.c:1896
 msgid "Filtering new message(s)"
 msgstr "Filtrerer ny(e) melding(er)"
 
@@ -2311,35 +2310,35 @@ msgstr "Kan ikke finne mappe: Ugyldig operasjon på dette lageret"
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Kan ikke opprette mappe «%s»: mappen eksisterer"
 
-#: ../camel/camel-store.c:380
+#: ../camel/camel-store.c:395
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Kan ikke opprette mappe: Ugyldig operasjon på dette lageret"
 
-#: ../camel/camel-store.c:408
+#: ../camel/camel-store.c:423
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kan ikke opprette mappe: «%s»: mappen eksisterer"
 
-#: ../camel/camel-store.c:472 ../camel/camel-vee-store.c:388
+#: ../camel/camel-store.c:487 ../camel/camel-vee-store.c:384
 #: ../camel/providers/local/camel-maildir-store.c:219
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kan ikke slette mappe: %s: Ugyldig operasjon"
 
-#: ../camel/camel-store.c:529 ../camel/camel-vee-store.c:425
+#: ../camel/camel-store.c:544 ../camel/camel-vee-store.c:421
 #: ../camel/providers/local/camel-maildir-store.c:291
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kan ikke endre navn på mappe: %s: Ugyldig operasjon"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:884 ../camel/camel-vtrash-folder.c:54
+#: ../camel/camel-store.c:899 ../camel/camel-vtrash-folder.c:54
 #: ../camel/providers/imap/camel-imap-store.c:1061
 msgid "Trash"
 msgstr "Papirkurv"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:887 ../camel/camel-vtrash-folder.c:56
+#: ../camel/camel-store.c:902 ../camel/camel-vtrash-folder.c:56
 msgid "Junk"
 msgstr "Søppel"
 
@@ -2573,17 +2572,17 @@ msgstr "Ingen slik melding %s i %s"
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Kan ikke kopiere eller flytte meldinger inn i en virtuell mappe"
 
-#: ../camel/camel-vee-store.c:116 ../camel/camel-vee-store.c:117
-#: ../camel/camel-vee-store.c:364
+#: ../camel/camel-vee-store.c:114 ../camel/camel-vee-store.c:115
+#: ../camel/camel-vee-store.c:360
 msgid "Unmatched"
 msgstr "Ingen treff"
 
-#: ../camel/camel-vee-store.c:411
+#: ../camel/camel-vee-store.c:407
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Kan ikke slette mappe: %s: Ingen slik mappe"
 
-#: ../camel/camel-vee-store.c:433
+#: ../camel/camel-vee-store.c:429
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Kan ikke endre navn på mappe: %s: Ingen slik mappe"
@@ -2641,29 +2640,29 @@ msgstr "Kan ikke hente melding %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:155
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:163
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2232
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2241
 #: ../camel/providers/imap4/camel-imap4-folder.c:835
 msgid "This message is not available in offline mode."
 msgstr "Denne meldingen er ikke tilgjengelig i frakoblet modus."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:175
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1755
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1806
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1764
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1815
 msgid "Could not get message"
 msgstr "Kunne ikke hente melding"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:841
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:844
 #: ../camel/providers/imap/camel-imap-folder.c:251
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Kunne ikke laste sammendrag for %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1094
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1103
 msgid "Trash Folder Full. Please Empty."
 msgstr "Papirkurven er full. Vennligst tøm den."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1287
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1299
 #: ../camel/providers/groupwise/camel-groupwise-store.c:609
 #: ../camel/providers/groupwise/camel-groupwise-store.c:735
 #: ../camel/providers/imap/camel-imap-folder.c:3258
@@ -2672,13 +2671,13 @@ msgstr "Papirkurven er full. Vennligst tøm den."
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2090
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2132
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2099
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2141
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "Kan ikke legge til melding i mappe «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2120
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2129
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Kan ikke opprette melding: %s"
