@@ -1,3 +1,14 @@
+2009-01-05  Lubomir Rintel  <lkundrak@v3.sk>
+
+	** Fix for bug #566627
+
+	* backends/caldav/e-cal-backend-caldav.c:
+	(caldav_server_open_calendar), (check_calendar_changed_on_server),
+	(caldav_server_list_objects), (caldav_server_get_object),
+	(caldav_server_put_object), (caldav_server_delete_object):
+	* backends/http/e-cal-backend-http.c: (begin_retrieval_cb):
+	Check return value of soup_message_new before accessing it.
+
 2008-12-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #564652

@@ -483,6 +483,11 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	/* create message to be sent to server */
 	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
+	if (soup_message == NULL) {
+		priv->is_loading = FALSE;
+		return FALSE;
+	}
+
 	soup_message_headers_append (soup_message->request_headers, "User-Agent",
 				     "Evolution/" VERSION);
 	soup_message_set_flags (soup_message, SOUP_MESSAGE_NO_REDIRECT);

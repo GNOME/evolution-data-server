@@ -939,6 +939,8 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	/* FIXME: setup text_uri */
 
 	message = soup_message_new (SOUP_METHOD_OPTIONS, priv->uri);
+	if (message == NULL)
+		return GNOME_Evolution_Calendar_NoSuchCal;
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
@@ -1052,6 +1054,11 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 	if (!priv->ctag_supported)
 		return TRUE;
 
+	/* Prepare the soup message */
+	message = soup_message_new ("PROPFIND", priv->uri);
+	if (message == NULL)
+		return FALSE;
+
 	doc = xmlNewDoc ((xmlChar *) "1.0");
 	root = xmlNewNode (NULL, (xmlChar *) "propfind");
 	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", NULL);
@@ -1065,8 +1072,6 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 	xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
 	xmlOutputBufferFlush (buf);
 
-	/* Prepare the soup message */
-	message = soup_message_new ("PROPFIND", priv->uri);
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 	soup_message_headers_append (message->request_headers,
@@ -1126,6 +1131,10 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	gboolean             result;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	/* Allocate the soup message */
+	message = soup_message_new ("REPORT", priv->uri);
+	if (message == NULL)
+		return FALSE;
 
 	/* Maybe we should just do a g_strdup_printf here? */
 	/* Prepare request body */
@@ -1165,7 +1174,6 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	xmlOutputBufferFlush (buf);
 
 	/* Prepare the soup message */
-	message = soup_message_new ("REPORT", priv->uri);
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 	soup_message_headers_append (message->request_headers,
@@ -1217,6 +1225,8 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_GET, uri);
 	g_free (uri);
+	if (message == NULL)
+		return GNOME_Evolution_Calendar_NoSuchCal;
 
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
@@ -1273,6 +1283,8 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_PUT, uri);
 	g_free (uri);
+	if (message == NULL)
+		return GNOME_Evolution_Calendar_NoSuchCal;
 
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
@@ -1344,6 +1356,8 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_DELETE, uri);
 	g_free (uri);
+	if (message == NULL)
+		return GNOME_Evolution_Calendar_NoSuchCal;
 
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
