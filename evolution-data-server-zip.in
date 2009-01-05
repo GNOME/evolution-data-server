@@ -19,12 +19,14 @@ LIBEGROUPWISE_CURRENT_MINUS_AGE=`expr @LIBEGROUPWISE_CURRENT@ - @LIBEGROUPWISE_A
 LIBEXCHANGE_STORAGE_CURRENT_MINUS_AGE=`expr @LIBEXCHANGE_STORAGE_CURRENT@ - @LIBEXCHANGE_STORAGE_AGE@`
 LIBGDATA_CURRENT_MINUS_AGE=`expr @LIBGDATA_CURRENT@ - @LIBGDATA_AGE@`
 LIBGDATA_GOOGLE_CURRENT_MINUS_AGE=`expr @LIBGDATA_GOOGLE_CURRENT@ - @LIBGDATA_GOOGLE_AGE@`
+LIBEBACKEND_CURRENT_MINUS_AGE=`expr @LIBEBACKEND_CURRENT@ - @LIBEBACKEND_AGE@`
 
 cd @prefix@
 rm $ZIP
 zip $ZIP -@ <<EOF
 bin/libcamel-1.2-$LIBCAMEL_CURRENT_MINUS_AGE.dll
 bin/libcamel-provider-1.2-$LIBCAMEL_CURRENT_MINUS_AGE.dll
+bin/libebackend-1.2-$LIBEBACKEND_CURRENT_MINUS_AGE.dll
 bin/libebook-1.2-$LIBEBOOK_CURRENT_MINUS_AGE.dll
 bin/libecal-1.2-$LIBECAL_CURRENT_MINUS_AGE.dll
 bin/libedata-book-1.2-$LIBEDATABOOK_CURRENT_MINUS_AGE.dll
@@ -93,6 +95,7 @@ lib/libgdata-google-1.2.dll.a
 lib/pkgconfig/camel-1.2.pc
 lib/pkgconfig/camel-provider-1.2.pc
 lib/pkgconfig/evolution-data-server-1.2.pc
+lib/pkgconfig/libebackend-1.2.pc
 lib/pkgconfig/libebook-1.2.pc
 lib/pkgconfig/libecal-1.2.pc
 lib/pkgconfig/libedata-book-1.2.pc
