@@ -1,3 +1,18 @@
+Evolution-Data-Server 2.25.4 2009-01-05
+---------------------------------------
+
+Bug Fixes:
+	#209514: (Novell Bugzilla) Addresses some missing mails issues. Optimization fixed (Sankar P)
+	#446290: Parallel clients support and (un)read count handling (Sankar P)
+	#448079: (Novell Bugzilla) Avoid invalid reads by validating optional fields (Sankar P, Simon Brys)
+	#449916: (Novell Bugzilla) Display multiple lines of an assinged asks or shared memo. (Bharath Acharya)
+	#462575: (Novell Bugzilla) Extend function to honor "Check in all folders" setting (Simon Brys)
+	#559153: Migration improvements (Sankar P)
+	#564652: Convert time from UTC properly. Leak a bit less (Milan Crha)
+
+Updated Translations:
+	Jorge Gonzalez (es)
+
 Evolution-Data-Server 2.25.3 2008-12-15
 ---------------------------------------
 

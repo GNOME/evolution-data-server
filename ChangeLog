@@ -1,3 +1,7 @@
+2009-01-05  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* news: evolution data server 2.25.4 release
+
 2009-01-05  Tor Lillqvist  <tml@novell.com>
 
 	* evolution-data-server-zip.in: Add libebackend binary, import
