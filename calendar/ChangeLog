@@ -5,6 +5,7 @@
 	* backends/groupwise/e-cal-backend-groupwise-utils.c
 	(e_gw_connection_get_freebusy_info): Send a 'Free' block to the 
 	frontend if there are no 'Busy' blocks.
+	Also set the start/end of the Free/Busy range. 
 
 2009-01-05  Lubomir Rintel  <lkundrak@v3.sk>
 

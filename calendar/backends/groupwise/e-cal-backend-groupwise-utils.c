@@ -1785,6 +1785,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		ECalComponentAttendee attendee;
 		GSList *attendee_list = NULL;
 		icalcomponent *icalcomp = NULL;
+		icaltimetype start_time, end_time;
 
 		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
 		if (tmp)
@@ -1800,6 +1801,11 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY);
 		e_cal_component_commit_sequence (comp);
 		icalcomp = e_cal_component_get_icalcomponent (comp);
+
+		start_time = icaltime_from_timet_with_zone (start, 0, default_zone ? default_zone : NULL);
+		end_time = icaltime_from_timet_with_zone (end, 0, default_zone ? default_zone : NULL);
+		icalcomponent_set_dtstart (icalcomp, start_time);
+		icalcomponent_set_dtend (icalcomp, end_time);
 
 		memset (&attendee, 0, sizeof (ECalComponentAttendee));
 		if (name)
