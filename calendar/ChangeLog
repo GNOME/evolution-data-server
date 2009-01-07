@@ -1,3 +1,11 @@
+2009-01-07  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #443544 (bugzilla.novell.com)
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_connection_get_freebusy_info): Send a 'Free' block to the 
+	frontend if there are no 'Busy' blocks.
+
 2009-01-05  Lubomir Rintel  <lkundrak@v3.sk>
 
 	** Fix for bug #566627

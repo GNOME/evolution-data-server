@@ -1829,7 +1829,24 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 		}
 
-		for (subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
+		subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
+		/* The GW server only returns 'Busy', 'OOF' and 'Tentative' periods. The rest are 
+		 * assumed to be 'Free' periods. In case of an attendee having only 'Free' periods, 
+		 * ensure to send a block to the frontend saying so. */
+		if (subparam_block == NULL) {
+			struct icalperiodtype ipt;
+			icaltimetype sitt, eitt;
+			icalproperty *icalprop;
+			sitt = icaltime_from_timet_with_zone (start, 0, default_zone ? default_zone : NULL);
+			ipt.start = sitt;
+			eitt = icaltime_from_timet_with_zone (end, 0, default_zone ? default_zone : NULL);
+			ipt.end = eitt;
+			icalprop = icalproperty_new_freebusy (ipt);
+			icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "FREE");
+			icalcomponent_add_property(icalcomp, icalprop);
+		}
+
+		for (;
 		     subparam_block != NULL;
 		     subparam_block = soup_soap_parameter_get_next_child_by_name (subparam_block, "block")) {
 
