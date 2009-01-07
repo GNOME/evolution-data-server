@@ -1,3 +1,11 @@
+2009-01-07  Ashish Shrivastava  <shashish@novell.com>
+
+	** Fix for BNC bug #435599
+
+	* backends/groupwise/e-book-backend-groupwise.c: (fill_contact_from_gw_item),
+	(e_book_backend_groupwise_modify_contact): Don't do to displaying and creation 
+	of organization's contact in evolution.
+
 2008-12-15  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for BNC bug #455939

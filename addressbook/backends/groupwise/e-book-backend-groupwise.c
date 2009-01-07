@@ -1197,8 +1197,11 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 	int element_type;
 	int i;
 	gboolean is_contact_list;
+	gboolean is_organization;
 
+	is_organization = e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_ORGANISATION ? TRUE: FALSE;
 	is_contact_list = e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_GROUP ? TRUE: FALSE;
+
 	e_contact_set (contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (is_contact_list));
 	if (is_contact_list)
 		e_contact_set (contact, E_CONTACT_LIST_SHOW_ADDRESSES, GINT_TO_POINTER (TRUE));
@@ -1208,9 +1211,11 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 
 		if(element_type == ELEMENT_TYPE_SIMPLE) {
 			if (mappings[i].field_id != E_CONTACT_BOOK_URI) {
-				value = e_gw_item_get_field_value (item, mappings[i].element_name);
-				if(value != NULL)
-					e_contact_set (contact, mappings[i].field_id, value);
+				if (!is_organization) {
+					value = e_gw_item_get_field_value (item, mappings[i].element_name);
+					if(value != NULL)
+						e_contact_set (contact, mappings[i].field_id, value);
+				}				
 			}
 		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
 			if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
@@ -1280,10 +1285,6 @@ e_book_backend_groupwise_create_contact (EBookBackend *backend,
 			element_type = mappings[i].element_type;
 			if (element_type == ELEMENT_TYPE_SIMPLE)  {
 				value =  e_contact_get(contact, mappings[i].field_id);
-				if (mappings[i].field_id == E_CONTACT_ORG) {
-					set_organization_in_gw_item (item, contact, egwb);
-					continue;
-				}
 				if (value != NULL)
 					e_gw_item_set_field_value (item, mappings[i].element_name, value);
 			} else if (element_type == ELEMENT_TYPE_COMPLEX) {
@@ -1482,13 +1483,6 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 
 		if (e_contact_get (contact, E_CONTACT_IS_LIST))
 			set_member_changes (new_item, old_item, egwb);
-		new_org = e_gw_item_get_field_value (new_item, "organization");
-		old_org = e_gw_item_get_field_value (old_item, "organization");
-		if (new_org && *new_org) {
-
-			if ((old_org == NULL) || (old_org && strcmp (new_org, old_org)) != 0)
-				set_organization_in_gw_item (new_item, contact, egwb);
-		}
 
 		set_changes_in_gw_item (new_item, old_item);
 
