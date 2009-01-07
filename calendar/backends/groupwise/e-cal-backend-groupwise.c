@@ -2581,8 +2581,12 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 				e_cal_component_free_id (id);
 			} else {
 				char *comp_str = NULL;
+				ECalComponentTransparency transp;
 
 				change_status (component, pstatus, e_gw_connection_get_user_email (priv->cnc));
+				e_cal_component_get_transparency (comp, &transp);
+				e_cal_component_set_transparency (component, transp);
+				
 				e_cal_backend_cache_put_component (priv->cache, component);
 				comp_str = e_cal_component_get_as_string (component);
 
