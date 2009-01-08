@@ -7,11 +7,12 @@ LIBDB = libdb
 endif
 
 if ENABLE_CALENDAR
-CALENDAR_DIR = calendar
+CALENDAR_DIR = calendar src
 endif
 
-SUBDIRS = $(LIBDB) win32 libedataserver libebackend servers camel addressbook $(CALENDAR_DIR) libedataserverui src docs art po
-DIST_SUBDIRS = win32 libedataserver libebackend servers camel addressbook calendar libedataserverui src docs art po
+SUBDIRS = $(LIBDB) win32 libedataserver libebackend servers camel addressbook $(CALENDAR_DIR) libedataserverui docs art po
+DIST_SUBDIRS = win32 libedataserver libebackend servers camel addressbook calendar libedataserverui docs art po
+
 changelogs =			\
 	ChangeLog
 
