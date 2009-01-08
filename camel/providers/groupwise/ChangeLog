@@ -1,3 +1,10 @@
+2009-01-08  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #554182
+
+	* camel-groupwise-provider.c: (groupwise_url_hash),
+	(groupwise_url_equal): Don't use 'authmech' for URL comparision.
+
 2009-01-05  Ashish Shrivastava  <shashish@novell.com>
 
 	** Fix for bnc bug #458127

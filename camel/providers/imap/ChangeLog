@@ -1,3 +1,10 @@
+2009-01-08  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #554182
+
+	* camel-imap-provider.c: (imap_url_hash), (imap_url_equal):
+	Don't use 'authmech' for URL comparision.
+
 2008-12-15  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #558744

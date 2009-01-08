@@ -133,7 +133,6 @@ imap_url_hash (gconstpointer key)
 	guint hash = 0;
 
 	add_hash (&hash, u->user);
-	add_hash (&hash, u->authmech);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
 	
@@ -163,7 +162,6 @@ imap_url_equal (gconstpointer a, gconstpointer b)
 	
 	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
-		&& check_equal (u1->authmech, u2->authmech)
 		&& check_equal (u1->host, u2->host)
 		&& u1->port == u2->port;
 }

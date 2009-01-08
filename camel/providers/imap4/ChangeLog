@@ -1,3 +1,10 @@
+2009-01-08  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #554182
+
+	* camel-imap4-provider.c: (imap4_url_hash), (imap4_url_equal):
+	Don't use 'authmech' for URL comparision.
+
 2008-08-31  Leonardo Ferreira Fontenelle  <leonardof@gnome.org>
 
 	* camel-imap4-store.c: (imap4_get_folder_info): Added translator
