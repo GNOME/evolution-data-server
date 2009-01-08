@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <inttypes.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -67,6 +68,7 @@ static void mbox_unlock(CamelLocalFolder *lf);
 static void mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo * info,	char **appended_uid, CamelException *ex);
 static CamelMimeMessage *mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex);
 static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
+static char* mbox_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 static void mbox_finalise(CamelObject * object);
 
@@ -83,6 +85,7 @@ camel_mbox_folder_class_init(CamelMboxFolderClass * camel_mbox_folder_class)
 	/* virtual method overload */
 	camel_folder_class->append_message = mbox_append_message;
 	camel_folder_class->get_message = mbox_get_message;
+	camel_folder_class->get_filename = mbox_get_filename;
 
 	lclass->create_summary = mbox_create_summary;
 	lclass->lock = mbox_lock;
@@ -313,6 +316,54 @@ fail:
 		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
+}
+
+static char* 
+mbox_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelMboxMessageInfo *info;
+	off_t frompos;
+	char *filename = NULL;
+
+	d(printf("Getting message %s\n", uid));
+
+	/* lock the folder first, burn if we can't, need write lock for summary check */
+	if (camel_local_folder_lock(lf, CAMEL_LOCK_WRITE, ex) == -1)
+		return NULL;
+
+	/* check for new messages always */
+	if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {
+		camel_local_folder_unlock(lf);
+		return NULL;
+	}
+	
+	/* get the message summary info */
+	info = (CamelMboxMessageInfo *) camel_folder_summary_uid(folder->summary, uid);
+
+	if (info == NULL) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				     _("Cannot get message: %s from folder %s\n  %s"),
+				     uid, lf->folder_path, _("No such message"));
+		goto fail;
+	}
+
+	if (info->frompos == -1) {
+		camel_message_info_free((CamelMessageInfo *)info);
+		goto fail;
+	}
+
+	frompos = info->frompos;
+	camel_message_info_free((CamelMessageInfo *)info);
+
+
+	filename = g_strdup_printf ("%s%s!%" PRId64, lf->folder_path, G_DIR_SEPARATOR_S, (long long) frompos);
+
+fail:
+	/* and unlock now we're finished with it */
+	camel_local_folder_unlock(lf);
+
+	return filename;
 }
 
 static CamelMimeMessage *

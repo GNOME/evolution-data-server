@@ -86,6 +86,11 @@ CamelStream *camel_imap_message_cache_get    (CamelImapMessageCache *cache,
 					      const char *part_spec,
 					      CamelException *ex);
 
+char*       camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
+					      const char *uid,
+					      const char *part_spec,
+					      CamelException *ex);
+
 void         camel_imap_message_cache_remove (CamelImapMessageCache *cache,
 					      const char *uid);
 

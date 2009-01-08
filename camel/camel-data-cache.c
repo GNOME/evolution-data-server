@@ -350,6 +350,28 @@ camel_data_cache_get(CamelDataCache *cdc, const char *path, const char *key, Cam
 	return stream;
 }
 
+
+/**
+ * camel_data_cache_get_filename:
+ * @cdc: A #CamelDataCache
+ * @path: Path to the (sub) cache the item exists in.
+ * @key: Key for the cache item.
+ * @ex: 
+ * 
+ * Lookup the filename for an item in the cache
+ * 
+ * Return value: The filename for a cache item
+ **/
+gchar *
+camel_data_cache_get_filename (CamelDataCache *cdc, const char *path, const char *key, CamelException *ex)
+{
+	char *real;
+
+	real = data_cache_path(cdc, FALSE, path, key);
+
+	return real;
+}
+
 /**
  * camel_data_cache_remove:
  * @cdc: A #CamelDataCache

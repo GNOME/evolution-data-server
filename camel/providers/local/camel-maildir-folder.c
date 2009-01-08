@@ -56,6 +56,7 @@ static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const cha
 
 static void maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, char **appended_uid, CamelException * ex);
 static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex);
+static char* maildir_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 static void maildir_finalize(CamelObject * object);
 
@@ -102,6 +103,7 @@ static void camel_maildir_folder_class_init(CamelObjectClass * camel_maildir_fol
 
 	camel_folder_class->append_message = maildir_append_message;
 	camel_folder_class->get_message = maildir_get_message;
+	camel_folder_class->get_filename = maildir_get_filename;
 
 	lclass->create_summary = maildir_create_summary;
 }
@@ -231,6 +233,28 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	g_free (name);
 	g_free (dest);
 }
+
+static char* 
+maildir_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	CamelMaildirMessageInfo *mdi;
+	CamelMessageInfo *info;
+
+	/* get the message summary info */
+	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				     _("Cannot get message: %s from folder %s\n  %s"),
+				     uid, lf->folder_path, _("No such message"));
+		return NULL;
+	}
+
+	mdi = (CamelMaildirMessageInfo *)info;
+
+	/* what do we do if the message flags (and :info data) changes?  filename mismatch - need to recheck I guess */
+	return g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename(mdi));
+}
+
 
 static CamelMimeMessage *
 maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)

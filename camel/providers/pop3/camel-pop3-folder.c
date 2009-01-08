@@ -54,6 +54,7 @@ static gint pop3_get_message_count (CamelFolder *folder);
 static GPtrArray *pop3_get_uids (CamelFolder *folder);
 static CamelMimeMessage *pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex);
 static gboolean pop3_set_message_flags (CamelFolder *folder, const char *uid, guint32 flags, guint32 set);
+static char* pop3_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 static void
 camel_pop3_folder_class_init (CamelPOP3FolderClass *camel_pop3_folder_class)
@@ -69,7 +70,8 @@ camel_pop3_folder_class_init (CamelPOP3FolderClass *camel_pop3_folder_class)
 	camel_folder_class->get_message_count = pop3_get_message_count;
 	camel_folder_class->get_uids = pop3_get_uids;
 	camel_folder_class->free_uids = camel_folder_free_shallow;
-	
+	camel_folder_class->get_filename = pop3_get_filename;
+
 	camel_folder_class->get_message = pop3_get_message;
 	camel_folder_class->set_message_flags = pop3_set_message_flags;
 }
@@ -513,6 +515,23 @@ done:
 	
 	camel_object_unref((CamelObject *)fi->stream);
 	fi->stream = NULL;
+}
+
+static char*
+pop3_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelPOP3Folder *pop3_folder = (CamelPOP3Folder *)folder;
+	CamelPOP3Store *pop3_store = (CamelPOP3Store *)((CamelFolder *)pop3_folder)->parent_store;
+	CamelPOP3FolderInfo *fi;
+
+	fi = g_hash_table_lookup(pop3_folder->uids_uid, uid);
+	if (fi == NULL) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				      _("No message with UID %s"), uid);
+		return NULL;
+	}
+
+	return camel_data_cache_get_filename (pop3_store->cache, "cache", fi->uid, NULL);
 }
 
 static CamelMimeMessage *

@@ -211,6 +211,7 @@ typedef struct {
 	
 	CamelFolderQuotaInfo * (*get_quota_info) (CamelFolder *folder);
 	guint32	(*count_by_expression) (CamelFolder *, const char *, CamelException *);
+	char * (*get_filename) (CamelFolder *, const char *uid, CamelException *);
 } CamelFolderClass;
 
 /* Standard Camel function */
@@ -352,6 +353,8 @@ void                  camel_folder_quota_info_free  (CamelFolderQuotaInfo *info)
 void camel_folder_free_nop     (CamelFolder *folder, GPtrArray *array);
 void camel_folder_free_shallow (CamelFolder *folder, GPtrArray *array);
 void camel_folder_free_deep    (CamelFolder *folder, GPtrArray *array);
+
+char * camel_folder_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 /* update functions for change info */
 CamelFolderChangeInfo *	camel_folder_change_info_new		(void);

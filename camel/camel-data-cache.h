@@ -85,6 +85,9 @@ int             camel_data_cache_remove(CamelDataCache *cdc,
 int             camel_data_cache_clear(CamelDataCache *cache,
 				       const char *path, CamelException *ex);
 
+gchar *         camel_data_cache_get_filename(CamelDataCache *cdc, 
+					      const char *path, const char *key, CamelException *ex);
+
 /* Standard Camel function */
 CamelType camel_data_cache_get_type (void);
 

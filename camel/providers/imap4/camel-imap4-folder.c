@@ -78,7 +78,7 @@ static void imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, Camel
 static GPtrArray *imap4_search_by_expression (CamelFolder *folder, const char *expr, CamelException *ex);
 static GPtrArray *imap4_search_by_uids (CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex);
 static void imap4_search_free (CamelFolder *folder, GPtrArray *uids);
-
+static char* imap4_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 static CamelOfflineFolderClass *parent_class = NULL;
 
@@ -139,6 +139,7 @@ camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass)
 	folder_class->search_by_expression = imap4_search_by_expression;
 	folder_class->search_by_uids = imap4_search_by_uids;
 	folder_class->search_free = imap4_search_free;
+	folder_class->get_filename = imap4_get_filename;
 }
 
 static void
@@ -168,6 +169,14 @@ camel_imap4_folder_finalize (CamelObject *object)
 	
 	g_free (folder->utf7_name);
 	g_free (folder->cachedir);
+}
+
+static char*
+imap4_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
+
+	return camel_data_cache_get_filename (imap4_folder->cache, "cache", uid, ex);
 }
 
 static int

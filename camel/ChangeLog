@@ -1,3 +1,23 @@
+2009-01-08  Philip Van Hoof  <philip@codeminded.be>
+
+	* providers/nntp/camel-nntp-folder.c
+	* providers/pop3/camel-pop3-folder.c
+	* providers/groupwise/camel-groupwise-folder.c
+	* providers/imap/camel-imap-folder.c
+	* providers/imap/camel-imap-message-cache.c
+	* providers/imap/camel-imap-message-cache.h
+	* providers/imap4/camel-imap4-folder.c
+	* providers/local/camel-mbox-folder.c
+	* providers/local/camel-maildir-folder.c
+	* providers/local/camel-mh-folder.c
+	* camel-folder.c
+	* camel-folder.h
+	* camel-data-cache.c
+	* camel-data-cache.h:
+
+	Bugfix for Bug #566279. Introduces a new API in Camel needed for
+	implementing EPlugin of Bug #565091
+
 2009-01-08  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #565376

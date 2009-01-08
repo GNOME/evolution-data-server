@@ -121,6 +121,10 @@ static gboolean        is_frozen             (CamelFolder *folder);
 static gboolean        folder_changed        (CamelObject *object,
 					      gpointer event_data);
 
+static char*           get_filename          (CamelFolder *folder, 
+					      const char *uid, 
+					      CamelException *ex);
+
 static CamelFolderQuotaInfo *get_quota_info  (CamelFolder *folder);
 
 static void
@@ -166,6 +170,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->thaw = thaw;
 	camel_folder_class->is_frozen = is_frozen;
 	camel_folder_class->get_quota_info = get_quota_info;
+	camel_folder_class->get_filename = get_filename;
 
 	/* virtual method overload */
 	camel_object_class->getv = folder_getv;
@@ -233,6 +238,19 @@ camel_folder_get_type (void)
 	return camel_folder_type;
 }
 
+static char*
+get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	w(g_warning ("CamelFolder::get_filename not implemented for '%s'",
+		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
+	return g_strdup ("/dev/null");
+}
+
+char *
+camel_folder_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	return CF_CLASS (folder)->get_filename (folder, uid, ex);
+}
 
 /**
  * camel_folder_construct:

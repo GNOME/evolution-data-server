@@ -123,6 +123,25 @@ nntp_folder_set_message_flags (CamelFolder *folder, const char *uid, guint32 fla
         return ((CamelFolderClass *) folder_class)->set_message_flags (folder, uid, flags, set);
 }
 
+static char*
+nntp_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelNNTPStore *nntp_store = (CamelNNTPStore *) folder->parent_store;
+	char *article, *msgid;
+
+	article = alloca(strlen(uid)+1);
+	strcpy(article, uid);
+	msgid = strchr (article, ',');
+	if (msgid == NULL) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Internal error: UID in invalid format: %s"), uid);
+		return NULL;
+	}
+	*msgid++ = 0;
+
+	return camel_data_cache_get_filename (nntp_store->cache, "cache", msgid, ex);
+}
+
 static CamelStream *
 nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const char *id, const char *msgid, CamelException *ex)
 {
@@ -483,6 +502,7 @@ nntp_folder_class_init (CamelNNTPFolderClass *camel_nntp_folder_class)
 	camel_folder_class->count_by_expression = nntp_folder_count_by_expression;
 	camel_folder_class->search_by_uids = nntp_folder_search_by_uids;
 	camel_folder_class->search_free = nntp_folder_search_free;
+	camel_folder_class->get_filename = nntp_get_filename;
 }
 
 CamelType

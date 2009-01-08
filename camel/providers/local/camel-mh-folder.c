@@ -55,6 +55,7 @@ static CamelLocalSummary *mh_create_summary(CamelLocalFolder *lf, const char *pa
 
 static void mh_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, char **appended_uid, CamelException * ex);
 static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex);
+static char* mh_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 static void mh_finalize(CamelObject * object);
 
@@ -70,6 +71,7 @@ static void camel_mh_folder_class_init(CamelObjectClass * camel_mh_folder_class)
 	/* virtual method overload */
 	camel_folder_class->append_message = mh_append_message;
 	camel_folder_class->get_message = mh_get_message;
+	camel_folder_class->get_filename = mh_get_filename;
 
 	lclass->create_summary = mh_create_summary;
 }
@@ -186,6 +188,14 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	
 	g_free (name);
 }
+
+static char* mh_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+
+	return g_strdup_printf("%s/%s", lf->folder_path, uid);
+}
+
 
 static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)
 {

@@ -438,6 +438,35 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 	}
 }
 
+/**
+ * camel_imap_message_cache_get_filename:
+ * @cache: the cache
+ * @uid: the UID of the data to get
+ * @part_spec: the part_spec of the data to get
+ * @ex: exception
+ *
+ * Return value: the filename of a cache item
+ **/
+char*
+camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
+				       const char *uid,
+				       const char *part_spec,
+				       CamelException *ex)
+{
+	char *path;
+	
+	if (uid[0] == 0)
+		return NULL;
+	
+#ifdef G_OS_WIN32
+	/* See comment in insert_setup() */
+	if (!*part_spec)
+		part_spec = "~";
+#endif
+	path = g_strdup_printf ("%s/%s.%s", cache->path, uid, part_spec);
+
+	return path;
+}
 
 /**
  * camel_imap_message_cache_get:

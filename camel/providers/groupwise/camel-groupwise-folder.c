@@ -89,12 +89,22 @@ static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMult
 static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item);
 static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelException *ex, gboolean uid_flag);
 static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
+static char* groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 
 #define d(x)  
 
 const char * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
 const char * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
+
+static char* 
+groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
+
+	return camel_data_cache_get_filename (gw_folder->cache, "cache", uid, ex);
+}
+
 
 static CamelMimeMessage *
 groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelException *ex )
@@ -2488,6 +2498,7 @@ camel_groupwise_folder_class_init (CamelGroupwiseFolderClass *camel_groupwise_fo
 	camel_folder_class->sync = groupwise_sync;
 	camel_folder_class->expunge = groupwise_expunge;
 	camel_folder_class->transfer_messages_to = groupwise_transfer_messages_to;
+	camel_folder_class->get_filename = groupwise_get_filename;
 }
 
 static void

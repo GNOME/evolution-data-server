@@ -102,6 +102,7 @@ static void imap_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, Cam
 static void imap_expunge (CamelFolder *folder, CamelException *ex);
 //static void imap_cache_message (CamelDiscoFolder *disco_folder, const char *uid, CamelException *ex);
 static void imap_rename (CamelFolder *folder, const char *new);
+static char* imap_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 /* message manipulation */
 static CamelMimeMessage *imap_get_message (CamelFolder *folder, const gchar *uid,
@@ -167,6 +168,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *camel_imap_folder_class)
 	camel_folder_class->sync= imap_sync;
 	camel_folder_class->append_message = imap_append_online;
 	camel_folder_class->transfer_messages_to = imap_transfer_online;
+	camel_folder_class->get_filename = imap_get_filename;
 }
 
 static void
@@ -444,6 +446,14 @@ imap_finalize (CamelObject *object)
 	}
 
 	g_free(imap_folder->priv);
+}
+
+static char*
+imap_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelImapFolder *imap_folder = (CamelImapFolder*) folder;
+
+	return camel_imap_message_cache_get_filename (imap_folder->cache, uid, "", ex);
 }
 
 static int
