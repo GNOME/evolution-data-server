@@ -74,6 +74,9 @@ struct _CamelFolderSearchClass {
 	/* (body-contains "string1" "string2" ...) Returns a list of matches, or true if in single-message mode */
 	ESExpResult * (*body_contains)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
+	/* (body-regex "regex") Returns a list of matches, or true if in single-message mode */
+	ESExpResult * (*body_regex)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+
 	/* (header-contains "headername" "string1" ...) List of matches, or true if in single-message mode */
 	ESExpResult * (*header_contains)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 	
@@ -89,6 +92,15 @@ struct _CamelFolderSearchClass {
 	/* (header-exists "headername") */
 	ESExpResult * (*header_exists)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 	
+	/* (header-soundex "headername" "string") */
+	ESExpResult * (*header_soundex)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+
+	/* (header-regex "headername" "regex_string") */
+	ESExpResult * (*header_regex)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+
+	/* (header-full-regex "regex") */
+	ESExpResult * (*header_full_regex)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+
 	/* (user-flag "flagname" "flagname" ...) If one of user-flag set */
 	ESExpResult * (*user_flag)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
@@ -112,6 +124,10 @@ struct _CamelFolderSearchClass {
 
 	/* (uid "uid" ...) True if the uid is in the list */
 	ESExpResult * (*uid)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	
+	/* (message-location "folder_string") True if the message is in the folder's full name "folder_string" */
+	ESExpResult * (*message_location)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	
 };
 
 CamelType		camel_folder_search_get_type	(void);

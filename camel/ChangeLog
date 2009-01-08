@@ -1,3 +1,10 @@
+2009-01-08  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #565376
+
+	* camel-folder-search.h: (struct _CamelFolderSearchClass):
+	* camel-folder-search.c: Support more search options.
+
 2009-01-05  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	* camel/camel-folder-summary.c: (message_info_load): Change to
