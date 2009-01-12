@@ -247,8 +247,7 @@ static void
 offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex)
 {
 	CamelFolder *folder = (CamelFolder *) offline;
-	CamelMimeMessage *message;
-	GPtrArray *uids;
+	GPtrArray *uids, *uncached_uids = NULL;
 	int i;
 	
 	camel_operation_start (NULL, _("Syncing messages in folder '%s' to disk"), folder->full_name);
@@ -257,27 +256,29 @@ offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, Ca
 		uids = camel_folder_search_by_expression (folder, expression, ex);
 	else
 		uids = camel_folder_get_uids (folder);
-	
-	if (!uids) {
-		camel_operation_end (NULL);
-		return;
+
+	if (!uids)
+	  	goto done;
+	uncached_uids = camel_folder_get_uncached_uids(folder, uids, ex);
+	if (uids) {
+		if (expression)
+			camel_folder_search_free (folder, uids);
+		else
+			camel_folder_free_uids (folder, uids);
 	}
 	
-	for (i = 0; i < uids->len; i++) {
-		int pc = i * 100 / uids->len;
-		
-		message = camel_folder_get_message (folder, uids->pdata[i], ex);
+	if (!uncached_uids)
+		goto done;
+	
+	for (i = 0; i < uncached_uids->len; i++) {
+		int pc = i * 100 / uncached_uids->len;
+		camel_folder_sync_message (folder, uncached_uids->pdata[i], ex);
 		camel_operation_progress (NULL, pc);
-		if (message == NULL)
-			break;
-		
-		camel_object_unref (message);
 	}
-	
-	if (expression)
-		camel_folder_search_free (folder, uids);
-	else
-		camel_folder_free_uids (folder, uids);
+
+done:
+	if (uncached_uids)
+		camel_folder_free_uids(folder, uncached_uids);
 	
 	camel_operation_end (NULL);
 }

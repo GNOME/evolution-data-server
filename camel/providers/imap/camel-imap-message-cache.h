@@ -41,6 +41,13 @@ struct _CamelImapMessageCache {
 	CamelObject parent_object;
 
 	char *path;
+        /* parts contains two sorts of objects.
+         * If the key contains '.' then it is a stream (also reverse-indexed in
+         * cached).
+         * Otherwise it is a g_ptr_array containing the subparts the message
+         * has. (e.g. 0., or 0.MIME.1).
+         */
+        /* cached contains streams for recently accessed messages */
 	GHashTable *parts, *cached;
 	guint32 max_uid;
 };
@@ -103,6 +110,9 @@ void         camel_imap_message_cache_copy   (CamelImapMessageCache *source,
 					      CamelException *ex);
 gboolean     camel_imap_message_cache_delete (const char *path, 
 					      CamelException *ex);
+GPtrArray *  camel_imap_message_cache_filter_cached(CamelImapMessageCache *,
+                                              GPtrArray *uids,
+                                              CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_imap_message_cache_get_type (void);

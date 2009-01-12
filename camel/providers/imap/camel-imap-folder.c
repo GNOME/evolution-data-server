@@ -102,11 +102,14 @@ static void imap_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, Cam
 static void imap_expunge (CamelFolder *folder, CamelException *ex);
 //static void imap_cache_message (CamelDiscoFolder *disco_folder, const char *uid, CamelException *ex);
 static void imap_rename (CamelFolder *folder, const char *new);
+static GPtrArray * imap_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex);
 static char* imap_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 
 /* message manipulation */
 static CamelMimeMessage *imap_get_message (CamelFolder *folder, const gchar *uid,
 					   CamelException *ex);
+static void imap_sync_message (CamelFolder *folder, const gchar *uid,
+			       CamelException *ex);
 static void imap_append_online (CamelFolder *folder, CamelMimeMessage *message,
 				const CamelMessageInfo *info, char **appended_uid,
 				CamelException *ex);
@@ -135,6 +138,12 @@ static CamelFolderQuotaInfo *imap_get_quota_info (CamelFolder *folder);
 static CamelObjectClass *parent_class;
 
 static GData *parse_fetch_response (CamelImapFolder *imap_folder, char *msg_att);
+
+/* internal helpers */
+static CamelImapMessageInfo * imap_folder_summary_uid_or_error(
+	CamelFolderSummary *summary,
+	const char * uid,
+	CamelException *ex);
 
 #ifdef G_OS_WIN32
 /* The strtok() in Microsoft's C library is MT-safe (but still uses
@@ -167,7 +176,9 @@ camel_imap_folder_class_init (CamelImapFolderClass *camel_imap_folder_class)
 	camel_folder_class->expunge = imap_expunge;
 	camel_folder_class->sync= imap_sync;
 	camel_folder_class->append_message = imap_append_online;
+	camel_folder_class->sync_message = imap_sync_message;
 	camel_folder_class->transfer_messages_to = imap_transfer_online;
+	camel_folder_class->get_uncached_uids = imap_get_uncached_uids;
 	camel_folder_class->get_filename = imap_get_filename;
 }
 
@@ -2826,6 +2837,20 @@ content_info_incomplete (CamelMessageContentInfo *ci)
 	return FALSE;
 }
 
+static CamelImapMessageInfo *
+imap_folder_summary_uid_or_error(CamelFolderSummary *summary, const char * uid, CamelException *ex)
+{
+  	CamelImapMessageInfo *mi;
+	mi = (CamelImapMessageInfo *)camel_folder_summary_uid (summary, uid);
+	if (mi == NULL) {
+		camel_exception_setv (
+                	ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+			_("Cannot get message with message ID %s: %s"),
+			uid, _("No such message available."));
+	}
+	return mi;
+}
+
 static CamelMimeMessage *
 imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 {
@@ -2836,14 +2861,9 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	CamelStream *stream = NULL;
 	int retry;
 
-	mi = (CamelImapMessageInfo *)camel_folder_summary_uid (folder->summary, uid);
-	if (mi == NULL) {
-		camel_exception_setv (
-                	ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-			_("Cannot get message with message ID %s: %s"),
-			uid, _("No such message available."));
-		return NULL;
-	}
+	mi = imap_folder_summary_uid_or_error(folder->summary, uid, ex);
+	if (!mi)
+	  return NULL;
 
 	/* If its cached in full, just get it as is, this is only a shortcut,
 	   since we get stuff from the cache anyway.  It affects a busted connection though. */
@@ -2962,6 +2982,44 @@ fail:
 	camel_message_info_free(&mi->info);
 
 	return msg;
+}
+
+/**
+ * imap_sync_message
+ *
+ * Ensure that a message is cached locally, but don't retrieve the content if
+ * it is already local.
+ */
+static void
+imap_sync_message (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
+	CamelImapMessageInfo *mi;
+	CamelMimeMessage *msg = NULL;
+	CamelStream *stream = NULL;
+
+	mi = imap_folder_summary_uid_or_error(folder->summary, uid, ex);
+	if (!mi)
+	  /* No such UID - is this duplicate work? The sync process selects
+	   * UIDs to start with.
+	   */
+	  return;
+	camel_message_info_free(&mi->info);
+
+	/* If we can get a stream, assume its fully cached. This may be false
+	 * if partial streams are saved elsewhere in the code - but that seems
+	 * best solved by knowning more about whether a given message is fully
+	 * available locally or not,
+	 */
+	/* If its cached in full, just get it as is, this is only a shortcut,
+	   since we get stuff from the cache anyway.  It affects a busted connection though. */
+	if ((stream = camel_imap_folder_fetch_data(imap_folder, uid, "", TRUE, NULL))) {
+		camel_object_unref (stream);
+		return;
+	}
+	msg = imap_get_message(folder, uid, ex);
+	if (msg)
+		camel_object_unref(msg);
 }
 
 /* FIXME Remove it after confirming
@@ -3938,3 +3996,19 @@ done:
 	CAMEL_SERVICE_REC_UNLOCK (imap_store, connect_lock);
 	return res;
 }
+
+/**
+ * Scan for messages that are local and return the rest.
+ */
+static GPtrArray *
+imap_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
+{
+	GPtrArray *result;
+	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
+
+	CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
+	result = camel_imap_message_cache_filter_cached (imap_folder->cache, uids, ex);
+	CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
+	return result;
+}
+
