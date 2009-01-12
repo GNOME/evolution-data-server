@@ -39,6 +39,9 @@
 #define d(x) if (camel_debug("sqlite")) x
 #define START(stmt) 	if (camel_debug("dbtime")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
 #define END 	if (camel_debug("dbtime")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
+#define STARTTS(stmt) 	if (camel_debug("dbtimets")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
+#define ENDTS 	if (camel_debug("dbtimets")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
+
 
 struct _CamelDBPrivate {
 	GTimer *timer;
@@ -127,6 +130,12 @@ camel_db_open (const char *path, CamelException *ex)
 
 	camel_db_command (cdb, cache, NULL);
 	g_free (cache);
+	if (g_getenv("CAMEL_SQLITE_IN_MEMORY") != NULL) {
+		/* Optionally turn off Journaling, this gets over fsync issues, but could be risky */
+		camel_db_command (cdb, "PRAGMA main.journal_mode = off", NULL);
+		camel_db_command (cdb, "PRAGMA temp_store = memory", NULL);
+	}
+
 
 	sqlite3_busy_timeout (cdb->db, CAMEL_DB_SLEEP_INTERVAL);
 
@@ -195,6 +204,8 @@ camel_db_begin_transaction (CamelDB *cdb, CamelException *ex)
 		g_static_rec_mutex_lock (&trans_lock);
 
 	g_mutex_lock (cdb->lock);
+	STARTTS("BEGIN");
+
 	return (cdb_sql_exec (cdb->db, "BEGIN", ex));
 }
 
@@ -205,9 +216,8 @@ camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 	if (!cdb)
 		return -1;
 
-	START("COMMIT");
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
-	END;
+	ENDTS;
 	g_mutex_unlock (cdb->lock);
 	if (g_getenv("SQLITE_TRANSLOCK"))
 		g_static_rec_mutex_unlock (&trans_lock);
@@ -250,7 +260,7 @@ camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex
 		return -1;
 
 	g_mutex_lock (cdb->lock);
-	START("BEGIN");
+	STARTTS("BEGIN");
 	ret = cdb_sql_exec (cdb->db, "BEGIN", ex);
 	if (ret)
 		goto end;
@@ -265,7 +275,7 @@ camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex
 	}
 
 	ret = cdb_sql_exec (cdb->db, "COMMIT", ex);
-	END;
+	ENDTS;
 end:
 	g_mutex_unlock (cdb->lock);
 	return ret;
@@ -839,7 +849,7 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 
 	/* NB: UGLIEST Hack. We can't modify the schema now. We are using msg_security (an unsed one to notify of FLAGGED/Dirty infos */
 
-	ins_query = sqlite3_mprintf ("INSERT INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %ld, %ld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q )", 
+	ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %ld, %ld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q )", 
 			folder_name, record->uid, record->flags,
 			record->msg_type, record->read, record->deleted, record->replied,
 			record->important, record->junk, record->attachment, record->dirty,
@@ -850,8 +860,8 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 			record->part, record->labels, record->usertags,
 			record->cinfo, record->bdata);
 
-	if (delete_old_record)
-			del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid);
+	//if (delete_old_record)
+	//		del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid);
 
 #if 0
 	char *upd_query;
@@ -861,14 +871,14 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 	g_free (upd_query);
 #else
 
-	if (delete_old_record)
-			ret = camel_db_add_to_transaction (cdb, del_query, ex);
+	//if (delete_old_record)
+	//		ret = camel_db_add_to_transaction (cdb, del_query, ex);
 	ret = camel_db_add_to_transaction (cdb, ins_query, ex);
 
 #endif
 
-	if (delete_old_record)
-			sqlite3_free (del_query);
+	//if (delete_old_record)
+	//		sqlite3_free (del_query);
 	sqlite3_free (ins_query);
 
 	return ret;

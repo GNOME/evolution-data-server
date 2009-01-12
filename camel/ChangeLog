@@ -1,3 +1,9 @@
+2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-db.c: (camel_db_open), (camel_db_begin_transaction),
+	(camel_db_end_transaction), (camel_db_transaction_command),
+	(write_mir): DB Logging and DB Optimizations
+
 2009-01-12  Robert Collins  <robertc@robertcollins.net>
 
 	** Fix for bug #564339
