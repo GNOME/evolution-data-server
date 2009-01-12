@@ -4648,7 +4648,8 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 		if (((junk && !(mi->flags & CAMEL_MESSAGE_DELETED)))||  (deleted && !(mi->flags & CAMEL_MESSAGE_JUNK)) )
 			mi->summary->visible_count -= junk ? junk : deleted;
 	}
-
+	if (mi->uid)
+		g_hash_table_replace (_PRIVATE(mi->summary)->flag_cache, mi->uid, mi->flags);
 	if (mi->summary && mi->summary->folder && mi->uid) {
 		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
 
