@@ -953,6 +953,13 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 			continue;
 
 		info = camel_folder_summary_uid (folder->summary, uid);
+		if (!info) {
+			if (g_getenv("CRASH_IMAP")) { /* Debug logs to tackle on hard to get imap crasher */
+				printf("CRASH: %s: %s", folder->full_name, uid);
+				g_assert(0);
+			} else
+				continue;
+		}
 
 		iinfo = (CamelImapMessageInfo *)info;
 
@@ -3502,6 +3509,8 @@ imap_update_summary (CamelFolder *folder, int exists,
 		   messages will be filtered even after saw by other software earlier */
 		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT) != 0 || getenv ("FILTER_RECENT") == NULL)
 			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
+		printf("NEW: %s: %s(%d)\n", ((CamelMessageInfoBase *)mi)->from, ((CamelMessageInfoBase *)mi)->subject, ((CamelMessageInfoBase *)mi)->refcount);
+
 	}
 
 	g_ptr_array_free (messages, TRUE);
