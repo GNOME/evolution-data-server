@@ -1,3 +1,11 @@
+2009-01-12  Chow Loong Jin  <hyperair@gmail.com>
+
+	** Fix for bug #518920
+
+	* servers/exchange/lib/e2k-context.c (e2k_context_fba):
+	Handle relative URIs in value of action attribute of form in 
+	form-based authentication.
+
 2008-12-02  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #562228
