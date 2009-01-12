@@ -1,3 +1,12 @@
+2009-01-12  Philip Van Hoof  <philip@codeminded.be>
+
+	* camel-db.c: Allowing the developer to add migration code for in
+	case the schema of Camel's summary SQLite data format changes.
+
+	Also adds two columns, modified and created, to the summary data being
+	stored and renames the column msg_security to dirty as requested by
+	Srinivasa Ragavan and Sankar P.
+
 2009-01-12  Matt McCutchen 2  <matt@mattmccutchen.net>
 
 	** Fix for bug #564954

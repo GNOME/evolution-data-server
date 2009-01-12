@@ -130,6 +130,9 @@ camel_db_open (const char *path, CamelException *ex)
 
 	camel_db_command (cdb, cache, NULL);
 	g_free (cache);
+
+	camel_db_command (cdb, "ATTACH DATABASE ':memory:' AS mem", NULL);
+
 	if (g_getenv("CAMEL_SQLITE_IN_MEMORY") != NULL) {
 		/* Optionally turn off Journaling, this gets over fsync issues, but could be risky */
 		camel_db_command (cdb, "PRAGMA main.journal_mode = off", NULL);
@@ -779,18 +782,17 @@ camel_db_create_folders_table (CamelDB *cdb, CamelException *ex)
 	return ((camel_db_command (cdb, query, ex)));
 }
 
-int 
-camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, CamelException *ex)
+
+
+static int
+camel_db_create_message_info_table (CamelDB *cdb, const char *folder_name, CamelException *ex)
 {
 	int ret;
 	char *table_creation_query, *safe_index;
 
 	/* README: It is possible to compress all system flags into a single column and use just as userflags but that makes querying for other applications difficult an d bloats the parsing code. Instead, it is better to bloat the tables. Sqlite should have some optimizations for sparse columns etc. */
-
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , msg_security INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT )", folder_name);
-
+	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT, created TEXT, modified TEXT )", folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
-
 	sqlite3_free (table_creation_query);
 
 	/* FIXME: sqlize folder_name before you create the index */
@@ -820,17 +822,140 @@ camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, Came
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
-	
+
 	return ret;
 }
 
+static int
+camel_db_migrate_folder_prepare (CamelDB *cdb, const char *folder_name, gint version, CamelException *ex)
+{
+	int ret = 0;
+	char *table_creation_query;
+
+	/* Migration stage one: storing the old data */
+
+	if (version < 1) {
+		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS 'mem.%q'", folder_name);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+		sqlite3_free (table_creation_query);
+
+		table_creation_query = sqlite3_mprintf ("CREATE TEMP TABLE IF NOT EXISTS 'mem.%q' (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT, created TEXT, modified TEXT )", folder_name);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+		sqlite3_free (table_creation_query);
+
+		table_creation_query = sqlite3_mprintf ("INSERT INTO 'mem.%q' SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata , strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') FROM %Q", folder_name, folder_name);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+		sqlite3_free (table_creation_query);
+
+		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS %Q", folder_name);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+		sqlite3_free (table_creation_query);
+
+		ret = camel_db_create_message_info_table (cdb, folder_name, ex);
+	}
+
+	/* Add later version migrations here */
+
+	return ret;
+}
+
+static int
+camel_db_migrate_folder_recreate (CamelDB *cdb, const char *folder_name, gint version, CamelException *ex)
+{
+	int ret = 0;
+	char *table_creation_query;
+
+	/* Migration stage two: writing back the old data */
+
+	if (version < 1) {
+		table_creation_query = sqlite3_mprintf ("INSERT INTO %Q SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata, created, modified FROM 'mem.%q'", folder_name, folder_name);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+		sqlite3_free (table_creation_query);
+
+		table_creation_query = sqlite3_mprintf ("DROP TABLE 'mem.%q'", folder_name);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+		sqlite3_free (table_creation_query);
+	}
+
+	/* Add later version migrations here */
+
+	return ret;
+}
+
+static int
+camel_db_write_folder_version (CamelDB *cdb, const char *folder_name, int old_version, CamelException *ex)
+{
+	int ret = 0;
+	char *version_creation_query;
+	char *version_insert_query;
+
+	version_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_version' ( version TEXT )", folder_name);
+
+	if (old_version == -1)
+		version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('1')", folder_name);
+	else
+		version_insert_query = sqlite3_mprintf ("UPDATE '%q_version' SET version='1'", folder_name);
+
+	ret = camel_db_add_to_transaction (cdb, version_creation_query, ex);
+	ret = camel_db_add_to_transaction (cdb, version_insert_query, ex);
+
+	sqlite3_free (version_creation_query);
+	sqlite3_free (version_insert_query);
+
+	return ret;
+}
+
+static int
+camel_db_get_folder_version (CamelDB *cdb, const char *folder_name, CamelException *ex)
+{
+	int version = -1, ret;
+	char *query;
+	sqlite3_stmt *stmt = NULL;
+
+	query = sqlite3_mprintf ("SELECT version FROM '%q_version'", folder_name);
+
+	ret = sqlite3_prepare_v2 (cdb->db, query, -1, &stmt, NULL);
+
+	if (ret == SQLITE_OK)
+		ret = sqlite3_step (stmt);
+	if (ret == SQLITE_ROW || ret == SQLITE_OK)
+		version = sqlite3_column_int (stmt, 0);
+
+	sqlite3_finalize (stmt);
+
+	sqlite3_free (query);
+
+	return version;
+}
+
+int 
+camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, CamelException *ex)
+{
+	int ret, current_version;
+
+	/* Make sure we have the table already */
+	ret = camel_db_create_message_info_table (cdb, folder_name, ex);
+
+	/* Migration stage zero: version fetch */
+	current_version = camel_db_get_folder_version (cdb, folder_name, ex);
+
+	/* Migration stage one: storing the old data if necessary */
+	ret = camel_db_migrate_folder_prepare (cdb, folder_name, current_version, ex);
+
+	/* Migration stage two: rewriting the old data if necessary */
+	ret = camel_db_migrate_folder_recreate (cdb, folder_name, current_version, ex);
+
+	/* Final step: (over)write the current version label */
+	ret = camel_db_write_folder_version (cdb, folder_name, current_version, ex);
+
+	return ret;
+}
 
 int 
 camel_db_write_fresh_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex)
 {
 	return write_mir (cdb, folder_name, record, ex, FALSE);
 }
-
 
 int
 camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex)
@@ -847,9 +972,9 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 
 	/* FIXME: We should migrate from this DELETE followed by INSERT model to an INSERT OR REPLACE model as pointed out by pvanhoof */
 
-	/* NB: UGLIEST Hack. We can't modify the schema now. We are using msg_security (an unsed one to notify of FLAGGED/Dirty infos */
+	/* NB: UGLIEST Hack. We can't modify the schema now. We are using dirty (an unsed one to notify of FLAGGED/Dirty infos */
 
-	ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %ld, %ld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q )", 
+	ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %ld, %ld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') )", 
 			folder_name, record->uid, record->flags,
 			record->msg_type, record->read, record->deleted, record->replied,
 			record->important, record->junk, record->attachment, record->dirty,
@@ -1012,14 +1137,51 @@ camel_db_read_message_info_records (CamelDB *cdb, const char *folder_name, gpoin
 	return (ret);
 }
 
+static int
+camel_db_create_deleted_table (CamelDB *cdb, CamelException *ex)
+{
+	int ret;
+	char *table_creation_query;
+	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS Deletes (id INTEGER primary key AUTOINCREMENT not null, uid TEXT, time TEXT, mailbox TEXT)");
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	sqlite3_free (table_creation_query);
+	return ret;
+}
+
+static int
+camel_db_trim_deleted_table (CamelDB *cdb, CamelException *ex)
+{
+	int ret = 0;
+
+	/* TODO: We need a mechanism to get rid of very old deletes, or something
+	 * that keeps the list trimmed at a certain max (deleting upfront when
+	 * appending at the back) */
+
+	return ret;
+}
+
 int
 camel_db_delete_uid (CamelDB *cdb, const char *folder, const char *uid, CamelException *ex)
 {
-	char *tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder, uid);
+	char *tab;
 	int ret;
 
-	ret = camel_db_command (cdb, tab, ex);
+	camel_db_begin_transaction (cdb, ex);
+
+	ret = camel_db_create_deleted_table (cdb, ex);
+
+	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q WHERE uid = %Q", folder, folder, uid);
+	ret = camel_db_add_to_transaction (cdb, tab, ex);
 	sqlite3_free (tab);
+
+	ret = camel_db_trim_deleted_table (cdb, ex);
+
+	tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder, uid);
+	ret = camel_db_add_to_transaction (cdb, tab, ex);
+	sqlite3_free (tab);
+
+	ret = camel_db_end_transaction (cdb, ex);
+
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	return ret;
 }
@@ -1029,9 +1191,19 @@ cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_
 {
 	char *tmp;
 	int ret;
+	char *tab;
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
 	GSList *iterator;
+	GString *ins_str = g_string_new ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, ");
+
+	camel_db_begin_transaction (cdb, ex);
+
+	ret = camel_db_create_deleted_table (cdb, ex);
+
+	tab = sqlite3_mprintf ("%Q, strftime(\"%%s\", 'now') FROM %Q WHERE %s IN (", folder_name, folder_name, field);
+	g_string_append_printf (ins_str, "%s ", tab);
+	sqlite3_free (tab);
 
 	tmp = sqlite3_mprintf ("%Q WHERE %s IN (", folder_name, field); 
 	g_string_append_printf (str, "%s ", tmp);
@@ -1047,17 +1219,30 @@ cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_
 
 		if (first == TRUE) {
 			g_string_append_printf (str, " %s ", tmp);
+			g_string_append_printf (ins_str, " %s ", tmp);
 			first = FALSE;
-		} else
+		} else {
 			g_string_append_printf (str, ", %s ", tmp);
+			g_string_append_printf (ins_str, ", %s ", tmp);
+		}
 
 		sqlite3_free (tmp);
 	}
 
 	g_string_append (str, ")");
+	g_string_append (ins_str, ")");
 
-	ret = camel_db_command (cdb, str->str, ex);
+	ret = camel_db_add_to_transaction (cdb, ins_str->str, ex);
+
+	ret = camel_db_trim_deleted_table (cdb, ex);
+
+	ret = camel_db_add_to_transaction (cdb, str->str, ex);
+
+	ret = camel_db_end_transaction (cdb, ex);
+
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+
+	g_string_free (ins_str, TRUE);
 	g_string_free (str, TRUE);
 
 	return ret;
@@ -1082,13 +1267,24 @@ camel_db_clear_folder_summary (CamelDB *cdb, char *folder, CamelException *ex)
 
 	char *folders_del;
 	char *msginfo_del;
+	char *tab;
 
 	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
 	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder);
 
 	camel_db_begin_transaction (cdb, ex);
+
+	ret = camel_db_create_deleted_table (cdb, ex);
+
+	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q", folder, folder);
+	ret = camel_db_add_to_transaction (cdb, tab, ex);
+	sqlite3_free (tab);
+
+	ret = camel_db_trim_deleted_table (cdb, ex);
+
 	camel_db_add_to_transaction (cdb, msginfo_del, ex);
 	camel_db_add_to_transaction (cdb, folders_del, ex);
+
 	ret = camel_db_end_transaction (cdb, ex);
 
 	sqlite3_free (folders_del);
@@ -1102,14 +1298,27 @@ camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex)
 {
 	int ret;
 	char *del;
+	char *tab;
+
+	camel_db_begin_transaction (cdb, ex);
+
+	ret = camel_db_create_deleted_table (cdb, ex);
+
+	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q", folder, folder);
+	ret = camel_db_add_to_transaction (cdb, tab, ex);
+	sqlite3_free (tab);
+
+	ret = camel_db_trim_deleted_table (cdb, ex);
 
 	del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
-	ret = camel_db_command (cdb, del, ex);
+	ret = camel_db_add_to_transaction (cdb, del, ex);
 	sqlite3_free (del);
 	
 	del = sqlite3_mprintf ("DROP TABLE %Q ", folder);
-	ret = camel_db_command (cdb, del, ex);
+	ret = camel_db_add_to_transaction (cdb, del, ex);
 	sqlite3_free (del);
+
+	ret = camel_db_end_transaction (cdb, ex);
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	return ret;	
@@ -1119,16 +1328,32 @@ int
 camel_db_rename_folder (CamelDB *cdb, const char *old_folder, const char *new_folder, CamelException *ex)
 {
 	int ret;
-	char *cmd;
+	char *cmd, *tab;
+
+	camel_db_begin_transaction (cdb, ex);
+
+	ret = camel_db_create_deleted_table (cdb, ex);
+
+	tab = sqlite3_mprintf ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q", old_folder, old_folder);
+	ret = camel_db_add_to_transaction (cdb, tab, ex);
+	sqlite3_free (tab);
+
+	ret = camel_db_trim_deleted_table (cdb, ex);
 
 	cmd = sqlite3_mprintf ("ALTER TABLE %Q RENAME TO  %Q", old_folder, new_folder);
-	ret = camel_db_command (cdb, cmd, ex);
+	ret = camel_db_add_to_transaction (cdb, cmd, ex);
+	sqlite3_free (cmd);
+
+	cmd = sqlite3_mprintf ("UPDATE %Q SET modified=strftime(\"%%s\", 'now'), created=strftime(\"%%s\", 'now')", new_folder);
+	ret = camel_db_add_to_transaction (cdb, cmd, ex);
 	sqlite3_free (cmd);
 
 	cmd = sqlite3_mprintf ("UPDATE folders SET folder_name = %Q WHERE folder_name = %Q", new_folder, old_folder);
-	ret = camel_db_command (cdb, cmd, ex);
+	ret = camel_db_add_to_transaction (cdb, cmd, ex);
 	sqlite3_free (cmd);
-	
+
+	ret = camel_db_end_transaction (cdb, ex);
+
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	return ret;	
 }
@@ -1174,7 +1399,7 @@ camel_db_free_sqlized_string (char *string)
 flags INTEGER ,
 msg_type INTEGER ,
 replied INTEGER ,
-msg_security INTEGER ,
+dirty INTEGER ,
 size INTEGER ,
 dsent NUMERIC ,
 dreceived NUMERIC ,
@@ -1238,7 +1463,7 @@ int camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex)
 	ret = camel_db_command (cdb, cmd, ex);
 	sqlite3_free (cmd);
 
-	cmd = sqlite3_mprintf ("CREATE TEMPORARY TABLE %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , msg_security INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT )", CAMEL_DB_IN_MEMORY_TABLE);
+	cmd = sqlite3_mprintf ("CREATE TEMPORARY TABLE %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT )", CAMEL_DB_IN_MEMORY_TABLE);
 	ret = camel_db_command (cdb, cmd, ex);
 	if (ret != 0 )
 		abort ();
