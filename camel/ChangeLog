@@ -1,3 +1,7 @@
+2009-01-12  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-folder-summary.c: Fix build breakage.
+
 2009-01-12  Matt McCutchen 2  <matt@mattmccutchen.net>
 
 	** Fix for bug #564954

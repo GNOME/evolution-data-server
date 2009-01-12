@@ -48,6 +48,9 @@ CamelFolderSummary
 @meta_summary: 
 @cache_load_time: 
 @timeout_handle: 
+@collate: 
+@sort_by: 
+@later: 
 
 <!-- ##### STRUCT CamelMessageInfo ##### -->
 <para>

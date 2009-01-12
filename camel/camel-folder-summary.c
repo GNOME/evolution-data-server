@@ -40,6 +40,7 @@
 
 #include <libedataserver/e-memory.h>
 
+#include "camel-debug.h"
 #include "camel-db.h"
 #include "camel-file-utils.h"
 #include "camel-folder-summary.h"

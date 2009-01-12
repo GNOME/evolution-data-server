@@ -25,9 +25,11 @@ CamelStore
 @parent_object: 
 @priv: 
 @folders: 
-@cdb: 
+@cdb_r: 
+@cdb_w: 
 @flags: 
 @mode: 
+@later: 
 
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>
