@@ -1,3 +1,16 @@
+2009-01-09  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #562200
+
+	* e-source-selector.c: (e_cell_renderer_safe_toggle_get_type),
+	(safe_toggle_activate), (e_cell_renderer_safe_toggle_class_init),
+	(e_cell_renderer_safe_toggle_init), (e_cell_renderer_safe_toggle_new):
+	Define subclass of a GtkCellRendererToggle, which toggles itself only
+	when user clicks over the toggle cell and not in any other case.
+	* e-source-selector.c: (e_source_selector_init): Use new subclass
+	of a GtkCellRendererToggle to prevent unnecessary toggling in a source
+	selector when source itself doesn't have defined its color.
+
 2008-12-15  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #555230

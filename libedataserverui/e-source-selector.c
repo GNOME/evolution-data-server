@@ -75,6 +75,63 @@ static unsigned int signals[NUM_SIGNALS] = { 0 };
 
 G_DEFINE_TYPE (ESourceSelector, e_source_selector, GTK_TYPE_TREE_VIEW)
 
+/* safe-toggle-renderer definition - it'll not call 'toggled' signal on 'activate', when mouse is not over the toggle */
+
+typedef struct _ECellRendererSafeToggle {
+	GtkCellRendererToggle parent;
+} ECellRendererSafeToggle;
+
+typedef struct _ECellRendererSafeToggleClass {
+	GtkCellRendererToggleClass parent_class;
+} ECellRendererSafeToggleClass;
+
+GType e_cell_renderer_safe_toggle_get_type (void);
+
+G_DEFINE_TYPE (ECellRendererSafeToggle, e_cell_renderer_safe_toggle, GTK_TYPE_CELL_RENDERER_TOGGLE)
+
+static gboolean
+safe_toggle_activate (GtkCellRenderer      *cell,
+		      GdkEvent             *event,
+		      GtkWidget            *widget,
+		      const gchar          *path,
+		      GdkRectangle         *background_area,
+		      GdkRectangle         *cell_area,
+		      GtkCellRendererState  flags)
+{
+	if (event->type == GDK_BUTTON_PRESS && cell_area) {
+		GdkRegion *reg = gdk_region_rectangle (cell_area);
+
+		if (!gdk_region_point_in (reg, event->button.x, event->button.y)) {
+			gdk_region_destroy (reg);
+			return FALSE;
+		}
+
+		gdk_region_destroy (reg);
+	}
+
+	return GTK_CELL_RENDERER_CLASS (e_cell_renderer_safe_toggle_parent_class)->activate (cell, event, widget, path, background_area, cell_area, flags);
+}
+
+static void
+e_cell_renderer_safe_toggle_class_init (ECellRendererSafeToggleClass *klass)
+{
+	GtkCellRendererClass *rndr_class;
+	
+	rndr_class = GTK_CELL_RENDERER_CLASS (klass);
+	rndr_class->activate = safe_toggle_activate;
+}
+
+static void
+e_cell_renderer_safe_toggle_init (ECellRendererSafeToggle *obj)
+{
+}
+
+static GtkCellRenderer *
+e_cell_renderer_safe_toggle_new (void)
+{
+	return g_object_new (e_cell_renderer_safe_toggle_get_type (), NULL);
+}
+
 /* Selection management.  */
 
 static GHashTable *
@@ -1120,7 +1177,7 @@ e_source_selector_init (ESourceSelector *selector)
 	g_object_set (G_OBJECT (cell_renderer), "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE, NULL);
 	gtk_tree_view_column_pack_start (column, cell_renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) pixbuf_cell_data_func, selector, NULL);
-	cell_renderer = gtk_cell_renderer_toggle_new ();
+	cell_renderer = e_cell_renderer_safe_toggle_new ();
 	gtk_tree_view_column_pack_start (column, cell_renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func (column, cell_renderer, (GtkTreeCellDataFunc) toggle_cell_data_func, selector, NULL);
 	g_signal_connect (cell_renderer, "toggled", G_CALLBACK (cell_toggled_callback), selector);
