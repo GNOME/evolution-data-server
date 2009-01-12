@@ -211,6 +211,10 @@ typedef struct {
 	
 	CamelFolderQuotaInfo * (*get_quota_info) (CamelFolder *folder);
 	guint32	(*count_by_expression) (CamelFolder *, const char *, CamelException *);
+	void (*sync_message)  (CamelFolder *folder,
+                               const char *uid, 
+                               CamelException *ex);
+        GPtrArray * (*get_uncached_uids)(CamelFolder *, GPtrArray * uids, CamelException *);
 } CamelFolderClass;
 
 /* Standard Camel function */
@@ -303,12 +307,18 @@ void               camel_folder_free_summary          (CamelFolder *folder,
 CamelMimeMessage * camel_folder_get_message           (CamelFolder *folder, 
 						       const char *uid, 
 						       CamelException *ex);
+void               camel_folder_sync_message          (CamelFolder *folder, 
+						       const char *uid, 
+						       CamelException *ex);
 #define camel_folder_delete_message(folder, uid) \
 	camel_folder_set_message_flags (folder, uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN)
 
 GPtrArray *        camel_folder_get_uids              (CamelFolder *folder);
 void               camel_folder_free_uids             (CamelFolder *folder,
 						       GPtrArray *array);
+GPtrArray *        camel_folder_get_uncached_uids     (CamelFolder *,
+                                                       GPtrArray * uids,
+                                                       CamelException *);
 void               camel_folder_sort_uids             (CamelFolder *folder,
 						       GPtrArray *uids);
 

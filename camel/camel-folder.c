@@ -88,6 +88,7 @@ static void append_message (CamelFolder *folder, CamelMimeMessage *message,
 			    CamelException *ex);
 
 static GPtrArray        *get_uids            (CamelFolder *folder);
+static GPtrArray 	*get_uncached_uids   (CamelFolder *, GPtrArray * uids, CamelException *);
 static void              free_uids           (CamelFolder *folder,
 					      GPtrArray *array);
 static void              sort_uids           (CamelFolder *folder,
@@ -148,6 +149,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->set_message_user_tag = set_message_user_tag;
 	camel_folder_class->get_message = get_message;
 	camel_folder_class->get_uids = get_uids;
+	camel_folder_class->get_uncached_uids = get_uncached_uids;
 	camel_folder_class->free_uids = free_uids;
 	camel_folder_class->sort_uids = sort_uids;
 	camel_folder_class->get_summary = get_summary;
@@ -163,6 +165,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->delete = delete;
 	camel_folder_class->rename = folder_rename;
 	camel_folder_class->freeze = freeze;
+	camel_folder_class->sync_message = NULL;
 	camel_folder_class->thaw = thaw;
 	camel_folder_class->is_frozen = is_frozen;
 	camel_folder_class->get_quota_info = get_quota_info;
@@ -1133,6 +1136,35 @@ camel_folder_get_message (CamelFolder *folder, const char *uid, CamelException *
 	return ret;
 }
 
+/**
+ * camel_folder_sync_message:
+ * @folder: a #CamelFolder object
+ * @uid: the UID
+ * @ex: a #CamelException
+ *
+ * Ensure that a message identified by UID has been synced in the folder (so
+ * that camel_folder_get_message on it later will work in offline mode).
+ *
+ * Returns: void.
+ **/
+void
+camel_folder_sync_message (CamelFolder *folder, const char *uid, CamelException *ex)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	CAMEL_FOLDER_REC_LOCK(folder, lock);
+
+	/* Use the sync_message method if the class implements it. */
+	if (CF_CLASS (folder)->sync_message)
+		CF_CLASS (folder)->sync_message (folder, uid, ex);
+	else {
+		CamelMimeMessage *message;
+		message = CF_CLASS (folder)->get_message (folder, uid, ex);
+		if (message)
+			  camel_object_unref(message);
+	}
+	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
+}
+
 static GPtrArray *
 get_uids(CamelFolder *folder)
 {
@@ -1193,6 +1225,41 @@ camel_folder_free_uids (CamelFolder *folder, GPtrArray *array)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	CF_CLASS (folder)->free_uids (folder, array);
+}
+
+
+/**
+ * Default: return the uids we are given.
+ */
+static GPtrArray *
+get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
+{
+	GPtrArray *result;
+	int i;
+
+	result = g_ptr_array_new();
+
+	g_ptr_array_set_size(result, uids->len);
+	for (i = 0; i < uids->len; i++)
+	    result->pdata[i] = (char *)camel_pstring_strdup(uids->pdata[i]);
+	return result;
+}
+
+/**
+ * camel_folder_get_uncached_uids:
+ * @folder: a #CamelFolder object
+ * @uids: the array of uids to filter down to uncached ones.
+ *
+ * Returns the known-uncached uids from a list of uids. It may return uids
+ * which are locally cached but should never filter out a uid which is not
+ * locally cached. Free the result by called #camel_folder_free_uids.
+ * Frees the array of UIDs returned by #camel_folder_get_uids.
+ **/
+GPtrArray *
+camel_folder_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	return CF_CLASS (folder)->get_uncached_uids(folder, uids, ex);
 }
 
 

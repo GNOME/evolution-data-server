@@ -35,6 +35,7 @@
 #include "camel-data-wrapper.h"
 #include "camel-exception.h"
 #include "camel-stream-fs.h"
+#include "camel-string-utils.h"
 
 #include "camel-imap-message-cache.h"
 
@@ -42,8 +43,26 @@
 #define O_BINARY 0
 #endif
 
+/* Common define to start reducing duplication of base-part handling on win32.
+ */
+#ifdef G_OS_WIN32
+/* See comment in insert_setup() */
+#define BASE_PART_SUFFIX ".~"
+#else
+#define BASE_PART_SUFFIX "."
+#endif
+
 static void finalize (CamelImapMessageCache *cache);
 static void stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data);
+
+struct _part_find {
+	/* UID name on disk - e.g. "0." or "0.HEADERS". On windows "0." is
+	 * stored as "0.~"
+	 */
+	char *disk_part_name;
+	/* Was the part found? */
+	int found;
+};
 
 
 CamelType
@@ -142,6 +161,8 @@ cache_put (CamelImapMessageCache *cache, const char *uid, const char *key,
  * Return value: a new CamelImapMessageCache object using @path for
  * storage. If cache files already exist in @path, then any that do not
  * correspond to messages in @summary will be deleted.
+ * @path is scanned for its contents, which means creating a cache object can be
+ * expensive, but the parts hash is immediately usable.
  **/
 CamelImapMessageCache *
 camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
@@ -590,4 +611,68 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 			camel_object_unref (CAMEL_OBJECT (stream));
 		}
 	}
+}
+
+
+static void
+_match_part(gpointer part_name, gpointer user_data)
+{
+	struct _part_find *part_find = (struct _part_find *) user_data;
+	if (g_str_equal(part_name, part_find->disk_part_name))
+		part_find->found = 1;
+}
+
+/**
+ * Filter uids by the uids cached in cache.
+ * The intent is that only uids fully cached are returned, but that may not be
+ * what is achieved. An additional constraint is that this check should be
+ * cheap, so that going offline is not an expensive operation. Filtering all
+ * uids is inefficient in the first place; significant processing per uid 
+ * makes synchronisation very expensive. At the suggestion of Srinivasa Ragavan
+ * (see http://bugzilla.gnome.org/show_bug.cgi?id=564339) the cache->parts hash
+ * table is consulted. If there is a parts-list in the hash table containing
+ * the part "", then we assume the message has been completely downloaded. This
+ * is incorrect (see http://bugzilla.gnome.org/show_bug.cgi?id=561211 for the
+ * symptoms). The code this replaces, a loop over all uids asking for the ""
+ * part of the message has the same flaw: it is no /less/ accurate to assess
+ * 'cached' in the manner this method does (assuming no concurrent process is
+ * removing messages from the cache).
+ *
+ * In the future, fixing bug 561211 needs a check for *all* the parts of a
+ * given uid. If the complete list of parts is available in the folder summary
+ * information then it can be done cheaply, otherwise some redesign will be
+ * needed.
+ */
+GPtrArray *
+camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *uids, CamelException *ex)
+{
+	GPtrArray *result, *parts_list;
+	int i;
+	struct _part_find part_find;
+	/* Look for a part "" for each uid. */
+	result = g_ptr_array_sized_new(uids->len);
+	for (i = 0; i < uids->len; i++) {
+		if ((parts_list = g_hash_table_lookup(cache->parts, uids->pdata[i]))) {
+			/* At least one part locally present; look for "" (the
+			 * HEADERS part can be present without anything else,
+			 * and that part is not useful for users wanting to
+			 * read the message).
+			 */
+			part_find.found = 0;
+			part_find.disk_part_name = g_strdup_printf("%s" BASE_PART_SUFFIX,
+								   (char *)uids->pdata[i]);
+			g_ptr_array_foreach(parts_list, _match_part, &part_find);
+			g_free(part_find.disk_part_name);
+			if (part_find.found)
+				/* The message is cached locally, do not
+				 * include it in the result.
+				 */
+				continue;
+		}
+		/* No message parts, or message part "" not found: include the
+		 * uid in the result.
+		 */
+		g_ptr_array_add(result, (char *)camel_pstring_strdup(uids->pdata[i]));
+	}
+	return result;
 }

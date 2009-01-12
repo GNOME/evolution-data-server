@@ -1,3 +1,15 @@
+2009-01-12  Robert Collins  <robertc@robertcollins.net>
+
+	** Fix for bug #564339
+
+	* camel-folder.c (camel_folder_class_init),
+	(camel_folder_sync_message), (camel_folder_free_uids),
+	(get_uncached_uids), (camel_folder_get_uncached_uids):
+	* camel-folder.h:
+	* camel-offline-folder.c (offline_folder_downsync):
+	Reduce the IO done during sync by not reading into memory 
+	locally cached files.
+
 2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-vee-summary.c: (vee_info_set_flags): Fix for better flag sync

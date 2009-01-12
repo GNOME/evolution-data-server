@@ -1,3 +1,16 @@
+2009-01-12  Robert Collins  <robertc@robertcollins.net>
+
+	** Fix for bug #564339
+
+	* camel-imap-folder.c (camel_imap_folder_class_init),
+	(imap_folder_summary_uid_or_error), (imap_get_message),
+	(imap_sync_message), (imap_get_uncached_uids):
+	* camel-imap-message-cache.c (camel_imap_message_cache_copy),
+	(_match_part), (camel_imap_message_cache_filter_cached):
+	* camel-imap-message-cache.h:
+	Reduce the IO done during sync by not reading into memory 
+	locally cached files.
+
 2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-imap-folder.c: (imap_rescan), (imap_update_summary): Fix and
