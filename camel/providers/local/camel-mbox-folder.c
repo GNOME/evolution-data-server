@@ -372,10 +372,13 @@ mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex)
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMimeMessage *message = NULL;
 	CamelMboxMessageInfo *info;
+	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
+	char *xev;
 	CamelMimeParser *parser = NULL;
 	int fd, retval;
 	int retried = FALSE;
 	off_t frompos;
+	guint32 flags;
 
 	d(printf("Getting message %s\n", uid));
 
@@ -475,6 +478,14 @@ fail:
 		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
-	
+
+	/* Give out messages always with XEV. */
+	flags = mi->flags;
+	mi->flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED);
+	xev = camel_local_summary_encode_x_evolution(folder->summary, mi);
+	camel_medium_set_header((CamelMedium *)message, "X-Evolution", xev);
+	g_free(xev);
+	mi->flags = flags;
+
 	return message;
 }
