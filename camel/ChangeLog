@@ -1,5 +1,10 @@
 2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-folder-summary.c: (info_set_flags): Fix for better vfolder
+	flag syncing.
+
+2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #557348 from  Matt McCutchen
 	* camel-vee-folder.c: (vee_sync), (expression_is_correlating),
 	(vee_folder_remove_folder), (folder_added_uid),
