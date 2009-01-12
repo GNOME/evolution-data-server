@@ -1,5 +1,9 @@
 2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-mbox-folder.c: (mbox_get_message): Revert previous fix
+
+2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-mbox-folder.c: (mbox_get_message): Fix for better flag sync.
 	Always send XEV headers with messages.
 
