@@ -515,6 +515,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
 	CamelDB *db;
 	char *table_name;
+	guint32 visible, unread, deleted, junked, junked_not_deleted;
 
 	/* We do this during write, so lets use write handle, though we gonna read */
 	db = s->folder->parent_store->cdb_w;
@@ -529,7 +530,14 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	record->time = s->time;
 
 	record->saved_count = s->uids->len;
-	if (!(((CamelVeeSummary *) s)->force_counts) && !g_getenv("FORCE_VFOLDER_COUNT")) {
+	camel_object_get(s->folder, NULL,
+				 CAMEL_FOLDER_DELETED, &deleted,
+				 CAMEL_FOLDER_VISIBLE, &visible,
+				 CAMEL_FOLDER_JUNKED, &junked,
+				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &junked_not_deleted,
+				 CAMEL_FOLDER_UNREAD, &unread, NULL);
+	if (1) { /* We always would do this. Just refactor the code again. */ 
+		//!(((CamelVeeSummary *) s)->force_counts) && !g_getenv("FORCE_VFOLDER_COUNT")) {
 		/* We should be in sync always. so use the count. Don't search.*/
 		record->junk_count = s->junk_count;
 		record->deleted_count = s->deleted_count;

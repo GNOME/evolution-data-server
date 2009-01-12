@@ -1,5 +1,10 @@
 2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-vee-folder.c: (summary_header_to_db): Sync flags using
+	counting.
+
+2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-folder-summary.c: (info_set_flags): Fix for better flag sync
 	for vfolder.
 
