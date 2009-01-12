@@ -297,11 +297,11 @@ match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	ESExpResult *r;
 
 	d(printf("executing match-all: %d", argc));
-	if (argv[0]->type != ESEXP_TERM_TIME)
+	if (argv[0]->type != ESEXP_TERM_BOOL)
 		r = e_sexp_term_eval(f, argv[0]);
 	else {
 		r = e_sexp_result_new(f, ESEXP_RES_STRING);
-		r->value.string = g_strdup("");
+		r->value.string = g_strdup(argv[0]->value.bool ? "1" : "0");
 	}
 
 	return r;
@@ -562,7 +562,7 @@ sql_exp (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 static struct {
 	char *name;
 	ESExpFunc *func;
-	int builtin :1;
+	int immediate :1;
 } symbols[] = {
 	{ "and", (ESExpFunc *) func_and, 1 },
 	{ "or", (ESExpFunc *) func_or, 1},
@@ -571,8 +571,8 @@ static struct {
 	{ ">", (ESExpFunc *)eval_gt, 1},
 	{ "<", (ESExpFunc *)eval_lt, 1},
 
-	{ "match-all", (ESExpFunc *)match_all, 0 },
-	{ "match-threads", (ESExpFunc *)match_threads, 0 },
+	{ "match-all", (ESExpFunc *)match_all, 1 },
+	{ "match-threads", (ESExpFunc *)match_threads, 1 },
 /* 	{ "body-contains", body_contains}, */ /* We don't store body on the db. */
 	{ "header-contains", header_contains, 0},
 	{ "header-matches", header_matches, 0},
@@ -603,8 +603,12 @@ camel_sexp_to_sql_sexp (const char *sql)
 	sexp = e_sexp_new();
 
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
-		e_sexp_add_function(sexp, 0, symbols[i].name,
-				    symbols[i].func, NULL);
+		if (symbols[i].immediate)
+			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
+					    symbols[i].func, NULL);
+		else
+			e_sexp_add_function(sexp, 0, symbols[i].name,
+					    symbols[i].func, NULL);
 	}
 
 	e_sexp_input_text (sexp, sql, strlen (sql));
