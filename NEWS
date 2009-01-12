@@ -1,3 +1,40 @@
+Evolution-Data-Server 2.24.3 2009-01-12
+-----------------------------------------
+
+Bug Fixes:
+	#451734: Weather calendar getting wrong data for Blythe, California (Ian Weisser)
+	#545834: IMAP summary headers are not updated on full message download (Milan Crha)
+	#546637: Mail opened from the "Unread mails" displays empty list (Srinivasa Ragavan)
+	#552986: Fix for a crash in pop3_connect (Milan Crha)
+	#554182: GSSAPI not working with 2.24.0 (Milan Crha)
+	#555230: Autocompletion crash on broken vCard (Milan Crha)
+	#557348: Search folders with "Include threads" do not update reliably (Matt McCutchen 2)
+	#558744: Fix for a crash when started in offline mode (Milan Crha)
+	#558883: Evolution 2.24 is terribly slow with large IMAP folders (Srinivasa Ragavan)
+	#558926: Unread message count in virtual folders is wrong (Srinivasa Ragavan)
+	#559153: Migration fixes from Evolution 2.22 to Evolution 2.24 (Sankar P)
+	#559272: Infinite loop using a CalDAV source (Milan Crha)
+	#561081: "Moving" emails is broken (Srinivasa Ragavan)
+	#561561: Use sufficiently large buffers for strftime (Frederic van Starbmann)
+	#562200: Left click of mouse disables calendar (Milan Crha)
+	#562228: Login to exchange fails if "mailbox" is filled manually in the config wizard (Milan Crha)
+	#564339: IMAP syncing performs too much local I/O (Robert Collins)
+	#564541: Fix for a crash doing a search in vFolders (Thomas)
+	#564954: "Match All" search folder shows no messages (Matt McCutchen 2)
+	#209514: (bugzilla.novell.com) Evolution Groupwise missing mails (Sankar P)
+	#435632: (bugzilla.novell.com) Fix for a crash when moving contacts to a different addressbook (Srinivasa Ragavan)
+	#440265: (bugzilla.novell.com) Groupwise Address Book Contact Lists Are Not Saved (Srinivasa Ragavan)
+	#446290: (bugzilla.novell.com) GW Parallel clients & (un)read counts problems (Sankar P)
+	#447121: (bugzilla.novell.com) Fix for a memory corruption in GroupWise (Srinivasa Ragavan)
+	#448079: (bugzilla.novell.com) Instability in GroupWise on x86_64 (Simon Brys)
+	#449916: (bugzilla.novell.com) Loss of data in Messages related to shared memos and Assigned tasks (Bharath Acharya)
+	#455939: (bugzilla.novell.com) Fix for a deadlock in evolution-data-server (Srinivasa Ragavan)
+	#462575: (bugzilla.novell.com) Evolution does not honor the "Check for new messages in all folders" setting for GroupWise SOAP accounts (Simon Brys)
+
+Updated Translations:
+	Changwoo Ryu (ko)
+	Gabor Kelemen (hu)
+
 Evolution-Data-Server 2.24.2 2008-11-24
 -----------------------------------------
 
