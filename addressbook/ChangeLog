@@ -1,3 +1,11 @@
+2009-01-11  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #567384
+
+	* backends/groupwise/e-book-backend-groupwise.c
+	(e_book_backend_groupwise_modify_contact):
+	Remove unused variables.
+
 2009-01-07  Ashish Shrivastava  <shashish@novell.com>
 
 	** Fix for BNC bug #435599

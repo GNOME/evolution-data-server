@@ -2006,8 +2006,8 @@ summary_reloaded(CamelObject *o, void *event_data, void *data)
 	CamelFolderSummary *summary = event_data;
 	CamelVeeFolder *vf = (CamelVeeFolder *)data;
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);	
-	struct _folder_flags_msg *m;
-	CamelSession *session = ((CamelService *)((CamelFolder *)vf)->parent_store)->session;
+	/*struct _folder_flags_msg *m;*/
+	/*CamelSession *session = ((CamelService *)((CamelFolder *)vf)->parent_store)->session;*/
 
 	if (p->destroyed)
 		return; 

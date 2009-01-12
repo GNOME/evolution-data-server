@@ -1,3 +1,14 @@
+2009-01-11  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #567384
+
+	* camel-folder.c (camel_folder_get_message):
+	Remove unused variables.
+
+	* camel-vee-folder.c (summary_reloaded):
+	Comment out variables that are used by commented out code to
+	silence compiler warnings.
+
 2009-01-08  Philip Van Hoof  <philip@codeminded.be>
 
 	* providers/nntp/camel-nntp-folder.c

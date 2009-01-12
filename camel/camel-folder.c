@@ -1158,9 +1158,6 @@ camel_folder_get_message (CamelFolder *folder, const char *uid, CamelException *
 static GPtrArray *
 get_uids(CamelFolder *folder)
 {
-	GPtrArray *array;
-	int i, j, count;
-
 	g_return_val_if_fail(folder->summary != NULL, g_ptr_array_new ());
 
 	return camel_folder_summary_array (folder->summary);

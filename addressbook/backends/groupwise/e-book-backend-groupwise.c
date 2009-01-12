@@ -1424,7 +1424,6 @@ e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 	EGwItem *old_item;
 	int element_type;
 	char* value;
-	char *new_org, *old_org;
 	int i;
 
 	if (enable_debug)
