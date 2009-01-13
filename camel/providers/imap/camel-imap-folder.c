@@ -3577,7 +3577,6 @@ imap_update_summary (CamelFolder *folder, int exists,
 		   messages will be filtered even after saw by other software earlier */
 		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT) != 0 || getenv ("FILTER_RECENT") == NULL)
 			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
-		printf("NEW: %s: %s(%d)\n", ((CamelMessageInfoBase *)mi)->from, ((CamelMessageInfoBase *)mi)->subject, ((CamelMessageInfoBase *)mi)->refcount);
 
 	}
 
