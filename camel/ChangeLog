@@ -1,3 +1,8 @@
+2009-01-13  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/camel-db.c: Speed up total-count info, by counting indexed
+	read.
+
 2009-01-12  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-folder-summary.c: Fix build breakage.
