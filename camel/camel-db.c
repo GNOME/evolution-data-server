@@ -452,7 +452,7 @@ camel_db_count_total_message_info (CamelDB *cdb, const char *table_name, guint32
 	if (!cdb)
 		return -1;
 	
-	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q", table_name);
+	query = sqlite3_mprintf ("SELECT COUNT (*) FROM %Q where read=0 or read=1", table_name);
 
 	ret = camel_db_count_message_info (cdb, query, count, ex);
 	sqlite3_free (query);
