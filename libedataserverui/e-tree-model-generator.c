@@ -770,7 +770,7 @@ e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator)
 void
 e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_generator,
 					  ETreeModelGeneratorGenerateFunc func,
-					  gpointer data, GtkDestroyNotify destroy)
+					  gpointer data, GDestroyNotify destroy)
 {
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 
@@ -793,7 +793,7 @@ e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_genera
 void
 e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generator,
 					ETreeModelGeneratorModifyFunc func,
-					gpointer data, GtkDestroyNotify destroy)
+					gpointer data, GDestroyNotify destroy)
 {
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 

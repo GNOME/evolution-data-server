@@ -1,3 +1,10 @@
+2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #564543
+
+	* backends/caldav/e-cal-backend-caldav.c (caldav_debug_setup):
+	Call soup_session_add_feature() instead of soup_logger_attach().
+
 2009-01-07  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	** Fix for bug #439986 (bugzilla.novell.com)

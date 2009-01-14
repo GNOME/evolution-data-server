@@ -30,18 +30,30 @@
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-tree-model-generator.h>
 
-G_BEGIN_DECLS
-
-#define E_TYPE_NAME_SELECTOR_ENTRY            (e_name_selector_entry_get_type ())
-#define E_NAME_SELECTOR_ENTRY(obj)            (GTK_CHECK_CAST ((obj), e_name_selector_entry_get_type (), ENameSelectorEntry))
-#define E_NAME_SELECTOR_ENTRY_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), e_name_selector_entry_get_type (), ENameSelectorEntryClass))
-#define E_IS_NAME_SELECTOR_ENTRY(obj)         (GTK_CHECK_TYPE (obj, e_name_selector_entry_get_type ()))
-#define E_IS_NAME_SELECTOR_ENTRY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), e_name_selector_entry_get_type ()))
-#define E_NAME_SELECTOR_ENTRY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_ENTRY_TYPE, ENameSelectorEntryClass))
+/* Standard GObject macros */
+#define E_TYPE_NAME_SELECTOR_ENTRY \
+	(e_name_selector_entry_get_type ())
+#define E_NAME_SELECTOR_ENTRY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntry))
+#define E_NAME_SELECTOR_ENTRY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryClass))
+#define E_IS_NAME_SELECTOR_ENTRY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_NAME_SELECTOR_ENTRY))
+#define E_IS_NAME_SELECTOR_ENTRY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_NAME_SELECTOR_ENTRY))
+#define E_NAME_SELECTOR_ENTRY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryClass))
 
 #define MINIMUM_QUERY_LENGTH "/apps/evolution/addressbook/completion/minimum_query_length"
 #define FORCE_SHOW_ADDRESS   "/apps/evolution/addressbook/completion/show_address"
 #define USER_QUERY_FIELDS "/apps/evolution/addressbook/completion/user_query_fields"
+
+G_BEGIN_DECLS
 
 typedef struct _ENameSelectorEntry      ENameSelectorEntry;
 typedef struct _ENameSelectorEntryClass ENameSelectorEntryClass;

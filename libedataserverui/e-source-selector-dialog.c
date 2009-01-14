@@ -86,18 +86,23 @@ static void
 e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
 {
 	ESourceSelectorDialogPrivate *priv;
+	GtkWidget *action_area;
+	GtkWidget *content_area;
 
 	priv = g_new0 (ESourceSelectorDialogPrivate, 1);
 	priv->selected_source = NULL;
 	dialog->priv = priv;
+
+	action_area = gtk_dialog_get_action_area (GTK_DIALOG (dialog));
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
 	/* prepare the dialog */
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Select destination"));
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 320, 240);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_widget_ensure_style (GTK_WIDGET (dialog));
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 0);
-	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (dialog)->action_area), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
+	gtk_container_set_border_width (GTK_CONTAINER (action_area), 12);
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK,
@@ -135,14 +140,17 @@ static GtkWidget *
 setup_dialog (GtkWindow *parent, ESourceSelectorDialog *dialog, ESourceList *source_list)
 {
 	GtkWidget *vbox, *label, *scroll, *hbox, *spacer;
+	GtkWidget *content_area;
 	char *label_text;
 	ESourceSelectorDialogPrivate *priv = dialog->priv;
 
 	priv->source_list = g_object_ref (source_list);
 
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), vbox);
+	gtk_container_add (GTK_CONTAINER (content_area), vbox);
 	gtk_widget_show (vbox);
 
 	label_text = g_strdup_printf ("<b>%s</b>", _("_Destination"));

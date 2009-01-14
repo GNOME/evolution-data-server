@@ -239,7 +239,7 @@ caldav_debug_setup (SoupSession *session)
 		level = SOUP_LOGGER_LOG_MINIMAL;
 
 	logger = soup_logger_new (level, DEBUG_MAX_BODY_SIZE);
-	soup_logger_attach (logger, session);
+	soup_session_add_feature (session, SOUP_SESSION_FEATURE (logger));
 	g_object_unref (logger);
 }
 

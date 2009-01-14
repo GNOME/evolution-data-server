@@ -29,14 +29,26 @@
 #include <libebook/e-book-query.h>
 #include <libebook/e-book-types.h>
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_CONTACT_STORE \
+	(e_contact_store_get_type ())
+#define E_CONTACT_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CONTACT_STORE, EContactStore))
+#define E_CONTACT_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CONTACT_STORE, EContactStoreClass))
+#define E_IS_CONTACT_STORE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CONTACT_STORE))
+#define E_IS_CONTACT_STORE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CONTACT_STORE))
+#define E_CONTACT_STORE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CONTACT_STORE, EContactStoreClass))
 
-#define E_TYPE_CONTACT_STORE            (e_contact_store_get_type ())
-#define E_CONTACT_STORE(obj)	        (GTK_CHECK_CAST ((obj), E_TYPE_CONTACT_STORE, EContactStore))
-#define E_CONTACT_STORE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_CONTACT_STORE, EContactStoreClass))
-#define E_IS_CONTACT_STORE(obj)         (GTK_CHECK_TYPE ((obj), E_TYPE_CONTACT_STORE))
-#define E_IS_CONTACT_STORE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_CONTACT_STORE))
-#define E_CONTACT_STORE_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), E_TYPE_CONTACT_STORE, EContactStoreClass))
+G_BEGIN_DECLS
 
 typedef struct _EContactStore       EContactStore;
 typedef struct _EContactStoreClass  EContactStoreClass;
@@ -55,7 +67,7 @@ struct _EContactStore {
 	GArray     *contact_sources;
 };
 
-GtkType        e_contact_store_get_type     (void);
+GType          e_contact_store_get_type     (void);
 EContactStore *e_contact_store_new          (void);
 
 EBook         *e_contact_store_get_book     (EContactStore *contact_store, GtkTreeIter *iter);

@@ -1,3 +1,10 @@
+2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #564543
+
+	* gdata-google-service.c (gdata_google_service_authenticate):
+	Call soup_form_encode_hash() instead of soup_form_encode_urlencoded().
+
 2008-08-16  Jörgen Scheibengruber  <mfcn@gmx.de>
 
 	* gdata-google-service.c (gdata_google_service_insert_entry):

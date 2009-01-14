@@ -472,6 +472,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkEntryCompletion *completion;
 	GtkTreeViewColumn *column;
 	GtkWidget *main_widget;
+	GtkWidget *content_area;
 	char *gladefile;
 
 	priv = g_new0 (ECategoriesDialogPrivate, 1);
@@ -490,8 +491,10 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 		return;
 	}
 
+	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
 	main_widget = glade_xml_get_widget (priv->gui, "table-categories");
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), main_widget, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), main_widget, TRUE, TRUE, 0);
 
 	priv->categories_entry = glade_xml_get_widget (priv->gui, "entry-categories");
 	priv->categories_list = glade_xml_get_widget (priv->gui, "categories-list");

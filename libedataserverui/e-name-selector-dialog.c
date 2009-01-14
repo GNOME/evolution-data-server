@@ -132,7 +132,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkCellRenderer   *cell_renderer;
 	GtkWidget         *widget;
 	GtkWidget         *container;
+	GtkWidget         *content_area;
 	GtkWidget	  *label;
+	GtkWidget         *parent;
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
 	char              *gladefile;
@@ -168,9 +170,13 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Reparent it to inside ourselves */
 
+	content_area = gtk_dialog_get_content_area (
+		GTK_DIALOG (name_selector_dialog));
+
 	g_object_ref (widget);
-	gtk_container_remove (GTK_CONTAINER (widget->parent), widget);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (name_selector_dialog)->vbox), widget, TRUE, TRUE, 0);
+	parent = gtk_widget_get_parent (widget);
+	gtk_container_remove (GTK_CONTAINER (parent), widget);
+	gtk_box_pack_start (GTK_BOX (content_area), widget, TRUE, TRUE, 0);
 	g_object_unref (widget);
 
 	/* Store pointers to relevant widgets */

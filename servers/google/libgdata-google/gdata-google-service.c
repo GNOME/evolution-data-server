@@ -689,7 +689,7 @@ gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
 	g_hash_table_insert (request_form, "service", priv->name);
 	g_hash_table_insert (request_form, "source", priv->agent);
 	g_hash_table_insert (request_form, "accountType", "HOSTED_OR_GOOGLE");
-	request_body = soup_form_encode_urlencoded (request_form);
+	request_body = soup_form_encode_hash (request_form);
 	g_hash_table_destroy (request_form);
 
 	msg = soup_message_new(SOUP_METHOD_POST, GOOGLE_CLIENT_LOGIN);

@@ -1,3 +1,13 @@
+2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #564543
+
+	* lib/e2k-context.c (e2k_context_set_auth):
+	Call soup_session_add_feature() instead of soup_logger_attach().
+
+	* lib/e2k-context.c (e2k_context_fba):
+	Call soup_form_encode_hash() instead of soup_form_encode_urlencoded().
+
 2009-01-12  Chow Loong Jin  <hyperair@gmail.com>
 
 	** Fix for bug #518920

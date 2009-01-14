@@ -466,8 +466,10 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 		soup_logger_set_request_filter (logger, e2k_debug_request_filter, NULL, NULL);
 		soup_logger_set_response_filter (logger, e2k_debug_response_filter, NULL, NULL);
 	}
-	soup_logger_attach (logger, ctx->priv->session);
-	soup_logger_attach (logger, ctx->priv->async_session);
+	soup_session_add_feature (
+		ctx->priv->session, SOUP_SESSION_FEATURE (logger));
+	soup_session_add_feature (
+		ctx->priv->async_session, SOUP_SESSION_FEATURE (logger));
 #endif
 }
 
@@ -673,7 +675,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	xmlFreeDoc (doc);
 	doc = NULL;
 
-	form_body = soup_form_encode_urlencoded (form_data);
+	form_body = soup_form_encode_hash (form_data);
 	g_hash_table_destroy (form_data);
 
 	post_msg = e2k_soup_message_new_full (ctx, action, "POST",

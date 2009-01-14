@@ -126,7 +126,7 @@ populate (ESourceOptionMenu *option_menu)
 
 		gtk_widget_set_sensitive (item1, FALSE);
 		gtk_widget_show (item1);
-		gtk_menu_append (GTK_MENU (menu), item1);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item1);
 
 		i ++;
 

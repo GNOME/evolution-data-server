@@ -71,10 +71,12 @@ enl_popup_size (ENameSelectorList *list)
 static void
 enl_popup_position (ENameSelectorList *list)
 {
+	GdkWindow *window;
 	int x,y;
 
 	enl_popup_size (list);
-	gdk_window_get_origin (((GtkWidget *)list)->window, &x, &y);
+	window = gtk_widget_get_window (GTK_WIDGET (list));
+	gdk_window_get_origin (window, &x, &y);
 	y = y +((GtkWidget *)list)->allocation.height;
 
 	gtk_window_move (list->popup, x, y);
@@ -83,17 +85,20 @@ enl_popup_position (ENameSelectorList *list)
 static void
 enl_popup_grab (ENameSelectorList *list)
 {
+	GdkWindow *window;
 	int len;
+
+	window = gtk_widget_get_window (GTK_WIDGET (list->popup));
 
 	gtk_grab_add (GTK_WIDGET (list->popup));
 
-	gdk_pointer_grab (((GtkWidget *)list->popup)->window, TRUE,
+	gdk_pointer_grab (window, TRUE,
                     	  GDK_BUTTON_PRESS_MASK |
                     	  GDK_BUTTON_RELEASE_MASK |
                     	  GDK_POINTER_MOTION_MASK,
                 	  NULL, NULL, GDK_CURRENT_TIME);
 
-    	gdk_keyboard_grab (((GtkWidget *)list->popup)->window, TRUE, GDK_CURRENT_TIME);
+    	gdk_keyboard_grab (window, TRUE, GDK_CURRENT_TIME);
 	gtk_widget_grab_focus ((GtkWidget *)list);
 
 	/* Build the listview from the model */
@@ -610,7 +615,9 @@ e_name_selector_list_init (ENameSelectorList *list)
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
                                        	     GTK_SHADOW_NONE);
-	gtk_widget_set_size_request (GTK_SCROLLED_WINDOW (scroll)->vscrollbar, -1, 0);
+	gtk_widget_set_size_request (
+		gtk_scrolled_window_get_vscrollbar (
+		GTK_SCROLLED_WINDOW (scroll)), -1, 0);
 
 	list->popup =  GTK_WINDOW (gtk_window_new (GTK_WINDOW_POPUP));
  	gtk_window_set_resizable (GTK_WINDOW (list->popup), FALSE);

@@ -25,14 +25,26 @@
 
 #include <gtk/gtk.h>
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_TREE_MODEL_GENERATOR \
+	(e_tree_model_generator_get_type ())
+#define E_TREE_MODEL_GENERATOR(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGenerator))
+#define E_TREE_MODEL_GENERATOR_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGeneratorClass))
+#define E_IS_TREE_MODEL_GENERATOR(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_TREE_MODEL_GENERATOR))
+#define E_IS_TREE_MODEL_GENERATOR_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_TREE_MODEL_GENERATOR))
+#define E_TREE_MODEL_GENERATOR_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGeneratorClass))
 
-#define E_TYPE_TREE_MODEL_GENERATOR            (e_tree_model_generator_get_type ())
-#define E_TREE_MODEL_GENERATOR(obj)	       (GTK_CHECK_CAST ((obj), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGenerator))
-#define E_TREE_MODEL_GENERATOR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGeneratorClass))
-#define E_IS_TREE_MODEL_GENERATOR(obj)         (GTK_CHECK_TYPE ((obj), E_TYPE_TREE_MODEL_GENERATOR))
-#define E_IS_TREE_MODEL_GENERATOR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_TREE_MODEL_GENERATOR))
-#define E_TREE_MODEL_GENERATOR_GET_CLASS(obj)  (GTK_CHECK_GET_CLASS ((obj), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGeneratorClass))
+G_BEGIN_DECLS
 
 typedef gint (*ETreeModelGeneratorGenerateFunc) (GtkTreeModel *model, GtkTreeIter *child_iter,
 						 gpointer data);
@@ -63,17 +75,17 @@ struct _ETreeModelGenerator {
 	gpointer                         modify_func_data;
 };
 
-GtkType              e_tree_model_generator_get_type                   (void);
+GType                e_tree_model_generator_get_type                   (void);
 
 ETreeModelGenerator *e_tree_model_generator_new                        (GtkTreeModel *child_model);
 GtkTreeModel        *e_tree_model_generator_get_model                  (ETreeModelGenerator *tree_model_generator);
 
 void                 e_tree_model_generator_set_generate_func          (ETreeModelGenerator *tree_model_generator,
 									ETreeModelGeneratorGenerateFunc func,
-									gpointer data, GtkDestroyNotify destroy);
+									gpointer data, GDestroyNotify destroy);
 void                 e_tree_model_generator_set_modify_func            (ETreeModelGenerator *tree_model_generator,
 									ETreeModelGeneratorModifyFunc func,
-									gpointer data, GtkDestroyNotify destroy);
+									gpointer data, GDestroyNotify destroy);
 
 GtkTreePath         *e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_model_generator,
 									GtkTreePath *child_path);

@@ -1103,6 +1103,8 @@ ep_ask_password (EPassMsg *msg)
 {
 	GtkWidget *widget;
 	GtkWidget *container;
+	GtkWidget *action_area;
+	GtkWidget *content_area;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
 	guint noreply = msg->noreply;
 	gboolean visible;
@@ -1124,13 +1126,14 @@ ep_ask_password (EPassMsg *msg)
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 12);
 	password_dialog = GTK_DIALOG (widget);
 
+	action_area = gtk_dialog_get_action_area (password_dialog);
+	content_area = gtk_dialog_get_content_area (password_dialog);
+
 	/* Override GtkDialog defaults */
-	widget = password_dialog->vbox;
-	gtk_box_set_spacing (GTK_BOX (widget), 12);
-	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);
-	widget = password_dialog->action_area;
-	gtk_box_set_spacing (GTK_BOX (widget), 12);
-	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);
+	gtk_box_set_spacing (GTK_BOX (action_area), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (action_area), 0);
+	gtk_box_set_spacing (GTK_BOX (content_area), 12);
+	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 
 	/* Table */
 	container = gtk_table_new (2, 3, FALSE);
@@ -1141,8 +1144,7 @@ ep_ask_password (EPassMsg *msg)
 	gtk_widget_show (container);
 
 	gtk_box_pack_start (
-		GTK_BOX (password_dialog->vbox),
-		container, FALSE, TRUE, 0);
+		GTK_BOX (content_area), container, FALSE, TRUE, 0);
 
 	/* Password Image */
 	widget = gtk_image_new_from_icon_name (

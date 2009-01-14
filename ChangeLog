@@ -1,3 +1,10 @@
+2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes part of bug #564543
+
+	* configure.in:
+	Bump gtk_minimum_version to 2.14.0.
+
 2009-01-12  Philip Van Hoof  <philip@codeminded.be>
 
 	* camel/camel-db.c: Allowing the developer to add migration code for in

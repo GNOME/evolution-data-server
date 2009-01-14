@@ -30,14 +30,26 @@
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-name-selector-model.h>
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_NAME_SELECTOR_DIALOG \
+	(e_name_selector_dialog_get_type ())
+#define E_NAME_SELECTOR_DIALOG(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialog))
+#define E_NAME_SELECTOR_DIALOG_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogClass))
+#define E_IS_NAME_SELECTOR_DIALOG(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	(obj, E_TYPE_NAME_SELECTOR_DIALOG))
+#define E_IS_NAME_SELECTOR_DIALOG_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_NAME_SELECTOR_DIALOG))
+#define E_NAME_SELECTOR_DIALOG_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogClass))
 
-#define E_TYPE_NAME_SELECTOR_DIALOG            (e_name_selector_dialog_get_type ())
-#define E_NAME_SELECTOR_DIALOG(obj)            (GTK_CHECK_CAST ((obj), e_name_selector_dialog_get_type (), ENameSelectorDialog))
-#define E_NAME_SELECTOR_DIALOG_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), e_name_selector_dialog_get_type (), ENameSelectorDialogClass))
-#define E_IS_NAME_SELECTOR_DIALOG(obj)         (GTK_CHECK_TYPE (obj, e_name_selector_dialog_get_type ()))
-#define E_IS_NAME_SELECTOR_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), e_name_selector_dialog_get_type ()))
-#define E_NAME_SELECTOR_DIALOG_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_DIALOG_TYPE, ENameSelectorDialogClass))
+G_BEGIN_DECLS
 
 typedef struct _ENameSelectorDialog      ENameSelectorDialog;
 typedef struct _ENameSelectorDialogClass ENameSelectorDialogClass;
