@@ -667,6 +667,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			continue;
 		flags = camel_message_info_flags (info);	
 
+		if (!(flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
+				camel_message_info_free(info);
+				continue;
+		}
+
 		if ((flags & CAMEL_MESSAGE_JUNK) && strcmp(camel_folder_get_name(folder), JUNK_FOLDER)) { 
 			/*marked a message junk*/
 			move_to_junk (folder, info, ex);
@@ -1065,6 +1070,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	char *time_string = NULL, *t_str = NULL;
 	struct _folder_update_msg *msg;
 	gboolean check_all = FALSE;
+	int new_items = 0;
 
 	/* Sync-up the (un)read changes before getting updates,
 	so that the getFolderList will reflect the most recent changes too */
@@ -1159,7 +1165,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		   for ( sl = slist ; sl != NULL; sl = sl->next) 
 		   list = g_list_append (list, sl->data);*/
 
-		if (slist && g_slist_length(slist) != 0)
+		if (slist && (new_items = g_slist_length(slist)) != 0)
 			check_all = TRUE;
 
 		g_slist_free (slist);
@@ -1203,16 +1209,28 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		
 		if (check_all && !is_proxy) {
 				EGwContainer *container;
-				container = e_gw_connection_get_container (cnc, container_id);
+				int i=0;
 
-				d(printf ("Evolution's folder summary length is : %u\tserver has %u items",
-										camel_folder_summary_count (folder->summary), e_gw_container_get_total_count (container)));
+				do {
+						/* HACK: Refer to Novell bugzilla bug #464379 */ 
+						container = e_gw_connection_get_container (cnc, container_id);
+						++i;
+						if (!strcmp (folder->full_name, e_gw_container_get_name (container))) 
+								i = 10;
+				} while (i < 2);
 
-				if (camel_folder_summary_count (folder->summary) == e_gw_container_get_total_count (container))
-						check_all = FALSE;
+				if (i == 10) {
+						/* HACK: Refer to Novell bugzilla bug #464379 */ 
+						d(printf ("Evolution's folder summary length is : %u\tserver has %u items",
+												camel_folder_summary_count (folder->summary), e_gw_container_get_total_count (container)));
 
-				folder->summary->unread_count = e_gw_container_get_unread_count (container);
-				folder->summary->visible_count = e_gw_container_get_total_count (container);
+						if ((camel_folder_summary_count (folder->summary) + new_items) == e_gw_container_get_total_count (container))
+								check_all = FALSE;
+
+						folder->summary->unread_count = e_gw_container_get_unread_count (container);
+						folder->summary->visible_count = e_gw_container_get_total_count (container);
+				} else
+					check_all = FALSE;
 				g_object_unref (container);
 		}
 
@@ -2303,6 +2321,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			}
 		}
 
+
 		if (destination_is_trash) {
 				e_gw_connection_remove_item (cnc, source_container_id, (const char*) uids->pdata[index]);
 				camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
@@ -2329,6 +2348,10 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 								/*if ( !strcmp(source->full_name, SENT) ) {
 								  camel_folder_delete_message(source, uids->pdata[index]);
 								  } else {*/
+
+								if (!(gw_info->info.flags & CAMEL_MESSAGE_SEEN))
+										source->summary->unread_count --;
+
 								camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
 								camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
 								//}

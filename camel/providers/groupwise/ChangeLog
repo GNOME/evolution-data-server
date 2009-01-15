@@ -1,3 +1,13 @@
+2009-01-15  Sankar P  <psankar@novell.com>
+
+	* camel-groupwise-folder.c (groupwise_sync),
+	(groupwise_refresh_folder), (groupwise_transfer_messages_to):
+	* camel-groupwise-journal.h:
+	* camel-groupwise-summary.c (gw_info_set_flags):
+	* camel-groupwise-summary.h:
+	Manage GroupWise counts better. fix bugs in read-cursor elimination.
+	A brand new flags handling code for GroupWise provider.
+
 2009-01-08  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #554182
