@@ -372,13 +372,10 @@ mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex)
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMimeMessage *message = NULL;
 	CamelMboxMessageInfo *info;
-	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
-	char *xev;
 	CamelMimeParser *parser = NULL;
 	int fd, retval;
 	int retried = FALSE;
 	off_t frompos;
-	guint32 flags;
 
 	d(printf("Getting message %s\n", uid));
 
