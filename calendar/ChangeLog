@@ -1,5 +1,21 @@
 2009-01-15  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #501298
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	(struct _ECalBackendContactsPrivate), (init_sources_cb),
+	(e_cal_backend_contacts_open), (e_cal_backend_contacts_finalize),
+	(e_cal_backend_contacts_init): Make _open function quick as much
+	as possible, to not block the sync_backend lock for long, thus other
+	threads can work with it too.
+	* backends/contacts/e-cal-backend-contacts.c: (book_record_new),
+	(add_source): Do not search a book when it wasn't opened correctly.
+	* backends/contacts/e-cal-backend-contacts.c: (contact_record_new),
+	(contact_record_free), (contact_record_cb_new): Do not ref/unref
+	backend in a structure which backend holds itself.
+
+2009-01-15  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fix for bug #303738
 
 	* backends/caldav/e-cal-backend-caldav.c: (status_code_to_result),

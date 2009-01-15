@@ -32,6 +32,7 @@
 
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-xml-hash-utils.h"
+#include "libedataserver/e-flag.h"
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libedata-cal/e-cal-backend-util.h>
@@ -55,6 +56,8 @@ struct _ECalBackendContactsPrivate {
 
 	GHashTable *zones;
 	icaltimezone *default_zone;
+
+	EFlag   *init_done_flag; /* is set, when the init thread gone */
 };
 
 typedef struct _BookRecord {
@@ -91,9 +94,17 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         EBookQuery *query;
         EBookView  *book_view;
         BookRecord *br;
+	GError     *error = NULL;
 
 	book = e_book_new (source, NULL);
-        e_book_open (book, TRUE, NULL);
+        if (!book || !e_book_open (book, TRUE, &error) || error) {
+		g_object_unref (book);
+		if (error) {
+			g_warning ("%s: Failed to open book, error: %s", G_STRFUNC, error->message);
+			g_error_free (error);
+		}
+		return NULL;
+	}
 
         /* Create book view */
         fields = g_list_append (fields, (char*)e_contact_field_name (E_CONTACT_FILE_AS));
@@ -142,7 +153,7 @@ contact_record_new (ECalBackendContacts *cbc, EContact *contact)
         ContactRecord *cr = g_new0 (ContactRecord, 1);
 	char *comp_str;
 
-        cr->cbc = g_object_ref (cbc);
+        cr->cbc = cbc;
         cr->contact = contact;
         cr->comp_birthday = create_birthday (cbc, contact);
         cr->comp_anniversary = create_anniversary (cbc, contact);
@@ -198,7 +209,6 @@ contact_record_free (ContactRecord *cr)
 		g_object_unref (G_OBJECT (cr->comp_anniversary));
 	}
 
-	g_object_unref (cr->cbc);
         g_free (cr);
 }
 
@@ -214,7 +224,7 @@ contact_record_cb_new (ECalBackendContacts *cbc, ECalBackendSExp *sexp)
 {
         ContactRecordCB *cb_data = g_new (ContactRecordCB, 1);
 
-        cb_data->cbc = g_object_ref (cbc);
+        cb_data->cbc = cbc;
         cb_data->sexp = sexp;
         cb_data->result = NULL;
 
@@ -253,6 +263,9 @@ add_source (ECalBackendContacts *cbc, ESource *source)
 {
         BookRecord *br = book_record_new (cbc, source);
         const char *uid = e_source_peek_uid (source);
+
+	if (!br)
+		return;
 
         g_hash_table_insert (cbc->priv->addressbooks, g_strdup (uid), br);
 }
@@ -721,6 +734,32 @@ e_cal_backend_contacts_is_read_only (ECalBackendSync *backend, EDataCal *cal,
 	return GNOME_Evolution_Calendar_Success;
 }
 
+static gpointer
+init_sources_cb (ECalBackendContacts *cbc)
+{
+        ECalBackendContactsPrivate *priv;
+        GSList *i;
+
+	g_return_val_if_fail (cbc != NULL, FALSE);
+
+	priv = cbc->priv;
+
+	/* Create address books for existing sources */
+        for (i = e_source_list_peek_groups (priv->addressbook_sources); i; i = i->next) {
+                ESourceGroup *source_group = E_SOURCE_GROUP (i->data);
+
+                source_group_added_cb (priv->addressbook_sources, source_group, cbc);
+        }
+
+        /* Listen for source list changes */
+        g_signal_connect (priv->addressbook_sources, "group_added", G_CALLBACK (source_group_added_cb), cbc);
+        g_signal_connect (priv->addressbook_sources, "group_removed", G_CALLBACK (source_group_removed_cb), cbc);
+
+	e_flag_set (priv->init_done_flag);
+
+	return NULL;
+}
+
 static ECalBackendSyncStatus
 e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 			     gboolean only_if_exists,
@@ -728,8 +767,7 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
         ECalBackendContactsPrivate *priv = cbc->priv;
-
-        GSList *i;
+	GError *error = NULL;
 
         if (priv->addressbook_loaded)
                 return GNOME_Evolution_Calendar_Success;
@@ -743,18 +781,18 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal,
 		g_hash_table_insert (priv->zones, g_strdup (icaltimezone_get_tzid (zone)), zone);
 	}
 
-	/* Create address books for existing sources */
-        for (i = e_source_list_peek_groups (priv->addressbook_sources); i; i = i->next) {
-                ESourceGroup *source_group = E_SOURCE_GROUP (i->data);
+	/* initialize addressbook sources in new thread to make this function quick as much as possible */
+	if (!g_thread_create ((GThreadFunc)init_sources_cb, cbc, FALSE, &error)) {
+		e_flag_set (priv->init_done_flag);
+		g_warning ("%s: Cannot create thread to initialize sources! (%s)", G_STRFUNC, error ? error->message : "Unknown error");
+		if (error)
+			g_error_free (error);
 
-                source_group_added_cb (priv->addressbook_sources, source_group, cbc);
-        }
-
-        /* Listen for source list changes */
-        g_signal_connect (priv->addressbook_sources, "group_added", G_CALLBACK (source_group_added_cb), cbc);
-        g_signal_connect (priv->addressbook_sources, "group_removed", G_CALLBACK (source_group_removed_cb), cbc);
+		return GNOME_Evolution_Calendar_OtherError;
+	}
 
         priv->addressbook_loaded = TRUE;
+
         return GNOME_Evolution_Calendar_Success;
 }
 
@@ -948,6 +986,12 @@ e_cal_backend_contacts_finalize (GObject *object)
 	cbc = E_CAL_BACKEND_CONTACTS (object);
 	priv = cbc->priv;
 
+	if (priv->init_done_flag) {
+		e_flag_wait (priv->init_done_flag);
+		e_flag_free (priv->init_done_flag);
+		priv->init_done_flag = NULL;
+	}
+
 	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 		icaltimezone_free (priv->default_zone, 1);
 	}
@@ -982,6 +1026,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass 
 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
 	priv->default_zone = icaltimezone_get_utc_timezone ();
+	priv->init_done_flag = e_flag_new ();
 
 	cbc->priv = priv;
 
