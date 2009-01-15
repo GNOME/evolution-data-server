@@ -54,7 +54,7 @@ enum {
 struct _CamelGroupwiseJournalEntry {
 	CamelDListNode node;
 	
-	int type;
+	guint32 type;
 
 	char *uid;
 	char *original_uid;

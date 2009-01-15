@@ -47,6 +47,8 @@
 #define EXTRACT_FIRST_DIGIT(val) part ? val=strtoul (part, &part, 10) : 0;
 #define EXTRACT_DIGIT(val) part++; part ? val=strtoul (part, &part, 10) : 0;
 
+#define d(x) 
+
 /*Prototypes*/
 static int gw_summary_header_load (CamelFolderSummary *, FILE *);
 static int gw_summary_header_save (CamelFolderSummary *, FILE *);
@@ -362,70 +364,66 @@ gw_content_info_save (CamelFolderSummary *s, FILE *out,
 static gboolean
 gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 {
-	guint32 old;
-	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
+		guint32 old;
+		CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
+		int read = 0 , deleted = 0;
 
-	/* TODO: locking? */
+		int junk_flag = 0, junk_learn_flag = 0;
 
-	old = mi->flags;
-	/* we don't set flags which aren't appropriate for the folder*/
-	if ((set == (CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN|CAMEL_MESSAGE_SEEN)) && (old & CAMEL_GW_MESSAGE_JUNK))
-		return FALSE;
-	
-	mi->flags = (old & ~flags) | (set & flags);
-	if (old != mi->flags) {
-		mi->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+		/* TODO: locking? */
 
-		if (mi->summary) {
+		if (flags & CAMEL_MESSAGE_SEEN && ((set & CAMEL_MESSAGE_SEEN) != (mi->flags & CAMEL_MESSAGE_SEEN)))
+		{ read = set & CAMEL_MESSAGE_SEEN ? 1 : -1; d(printf("Setting read as %d\n", set & CAMEL_MESSAGE_SEEN ? 1 : 0));}
 
-				if ((set & CAMEL_MESSAGE_SEEN) && !(old & CAMEL_MESSAGE_SEEN)) {
-						mi->summary->unread_count -- ;
-				} else if ( (!(set & CAMEL_MESSAGE_SEEN)) && (old & CAMEL_MESSAGE_SEEN) ) {
-						mi->summary->unread_count ++ ;
-				}
+		if (flags & CAMEL_MESSAGE_DELETED && ((set & CAMEL_MESSAGE_DELETED) != (mi->flags & CAMEL_MESSAGE_DELETED)))
+		{ deleted = set & CAMEL_MESSAGE_DELETED ? 1 : -1; d(printf("Setting deleted as %d\n", set & CAMEL_MESSAGE_DELETED ? 1 : 0));}
 
-				if ((flags & CAMEL_MESSAGE_DELETED) && !(old & CAMEL_MESSAGE_DELETED)) {
-						mi->summary->deleted_count ++ ;
+		old = mi->flags;
+		mi->flags = (old & ~flags) | (set & flags);
 
-						/* FIXME[disk-summary] What to do when the user has set to show-deleted-messages */
-						mi->summary->visible_count -- ;
-
-						if (!(flags & CAMEL_MESSAGE_SEEN))
-							mi->summary->unread_count -- ;
-				}
-
+		if (old != mi->flags) {
+				mi->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 				mi->dirty = TRUE;
+
+				if (((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) )
+						return FALSE;
+
+				if (mi->summary) {
+						mi->summary->deleted_count += deleted;
+						mi->summary->unread_count -= read;
+						camel_folder_summary_touch(mi->summary);
+				}
+		}
+
+		junk_flag = ((flags & CAMEL_MESSAGE_JUNK) && (set & CAMEL_MESSAGE_JUNK));
+		junk_learn_flag = ((flags & CAMEL_MESSAGE_JUNK_LEARN) && (set & CAMEL_MESSAGE_JUNK_LEARN));
+
+		/* This is a hack, we are using CAMEL_MESSAGE_JUNK justo to hide the item
+		 * we make sure this doesn't have any side effects*/
+
+		if (junk_learn_flag && !junk_flag  && (old & CAMEL_GW_MESSAGE_JUNK)) {
+				/* 
+				   This has ugly side-effects. Evo will never learn unjunk. 
+				   We need to create one CAMEL_MESSAGE_HIDDEN flag which must be
+				   used for all hiding operations. We must also get rid of the seperate file 
+				   that is maintained somewhere in evolution/mail/em-folder-browser.c for hidden messages
+				 */
+				mi->flags |= CAMEL_GW_MESSAGE_NOJUNK | CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK_LEARN;
+		} else if (junk_learn_flag && junk_flag && !(old & CAMEL_GW_MESSAGE_JUNK)) {
+				mi->flags |= CAMEL_GW_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK_LEARN;
+		}
+
+
+		if (mi->summary && mi->summary->folder && mi->uid) {
+				CamelFolderChangeInfo *changes = camel_folder_change_info_new();
+
+				camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
+				camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
+				camel_folder_change_info_free(changes);
 				camel_folder_summary_touch(mi->summary);
 		}
-	}
-	/* This is a hack, we are using CAMEL_MESSAGE_JUNK justo to hide the item
-	 * we make sure this doesn't have any side effects*/
-	
-	if ((set == CAMEL_MESSAGE_JUNK_LEARN) && (old & CAMEL_GW_MESSAGE_JUNK)) {
-		mi->flags |= CAMEL_GW_MESSAGE_NOJUNK | CAMEL_MESSAGE_JUNK;
 
-		/* This has ugly side-effects. Evo will never learn unjunk. 
-
-		   We need to create one CAMEL_MESSAGE_HIDDEN flag which must be used for all hiding operations. We must also get rid of the seperate file that is maintained somewhere in evolution/mail/em-folder-browser.c for hidden messages
-		 */
-
-		if (mi->summary) {
-			camel_folder_summary_touch(mi->summary);
-		}
-
-	} else	if ((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) 
-		return FALSE;
-
-	if (mi->summary && mi->summary->folder && mi->uid) {
-		CamelFolderChangeInfo *changes = camel_folder_change_info_new();
-
-		camel_folder_change_info_change_uid(changes, camel_message_info_uid(info));
-		camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
-		camel_folder_change_info_free(changes);
-	}
-
-	return TRUE;
-
+		return TRUE;
 }
 
 
