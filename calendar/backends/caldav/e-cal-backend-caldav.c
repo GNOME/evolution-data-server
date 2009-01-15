@@ -428,7 +428,7 @@ quote_etag (const char *etag)
 /* ************************************************************************* */
 
 static ECalBackendSyncStatus
-status_code_to_result (guint status_code)
+status_code_to_result (guint status_code, ECalBackendCalDAVPrivate  *priv)
 {
 	ECalBackendSyncStatus result;
 
@@ -447,7 +447,10 @@ status_code_to_result (guint status_code)
 		break;
 
 	case 401:
-		result = GNOME_Evolution_Calendar_AuthenticationRequired;
+		if (priv && priv->need_auth)
+			result = GNOME_Evolution_Calendar_AuthenticationFailed;
+		else
+			result = GNOME_Evolution_Calendar_AuthenticationRequired;
 		break;
 
 	default:
@@ -951,7 +954,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 
 		g_object_unref (message);
 
-		return status_code_to_result (status_code);
+		return status_code_to_result (status_code, priv);
 	}
 
 	/* parse the dav header, we are intreseted in the
@@ -1234,7 +1237,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		result = status_code_to_result (message->status_code);
+		result = status_code_to_result (message->status_code, priv);
 		g_object_unref (message);
 		g_warning ("Could not fetch object from server\n");
 		return result;
@@ -1322,7 +1325,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	}
 
 	/* FIXME: sepcial case precondition errors ?*/
-	result = status_code_to_result (message->status_code);
+	result = status_code_to_result (message->status_code, priv);
 
 	if (result == GNOME_Evolution_Calendar_Success) {
 		hdr = soup_message_headers_get (message->response_headers,
@@ -1369,7 +1372,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	send_and_handle_redirection (priv->session, message, NULL);
 
-	result = status_code_to_result (message->status_code);
+	result = status_code_to_result (message->status_code, priv);
 
 	g_object_unref (message);
 

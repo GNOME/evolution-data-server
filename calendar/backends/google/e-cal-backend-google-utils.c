@@ -305,7 +305,9 @@ e_cal_backend_google_utils_connect (ECalBackendGoogle *cbgo)
 
 	if (!feed) {
 		g_critical ("%s, Authentication Failed \n ", G_STRLOC);
-		return GNOME_Evolution_Calendar_AuthenticationFailed;
+		if (username || password)
+			return GNOME_Evolution_Calendar_AuthenticationFailed;
+		return GNOME_Evolution_Calendar_AuthenticationRequired;
 	}
 
 	entries = gdata_feed_get_entries (feed);

@@ -1,3 +1,15 @@
+2009-01-15  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #303738
+
+	* backends/caldav/e-cal-backend-caldav.c: (status_code_to_result),
+	(caldav_server_open_calendar), (caldav_server_get_object),
+	(caldav_server_put_object), (caldav_server_delete_object):
+	* backends/google/e-cal-backend-google-utils.c:
+	(e_cal_backend_google_utils_connect):
+	Return AuthFailed when need auth, to ask for a password again, or
+	return AuthRequired to indicate we require authentication.
+
 2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #564543
