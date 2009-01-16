@@ -1857,7 +1857,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 	e_cal_component_set_icalcomponent (comp, icalcomp);
 
 	/* Set the created and last modified times on the component */
-	current = icaltime_from_timet (time (NULL), 0);
+	current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	e_cal_component_set_created (comp, &current);
 	e_cal_component_set_last_modified (comp, &current);
 
@@ -1963,7 +1963,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	e_cal_component_set_icalcomponent (comp, icalcomp);
 
 	/* Set the last modified time on the component */
-	current = icaltime_from_timet (time (NULL), 0);
+	current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	e_cal_component_set_last_modified (comp, &current);
 
 	/* sanitize the component*/
@@ -2567,7 +2567,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		e_cal_component_set_icalcomponent (comp, subcomp);
 
 		/* Set the created and last modified times on the component */
-		current = icaltime_from_timet (time (NULL), 0);
+		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 		e_cal_component_set_created (comp, &current);
 		e_cal_component_set_last_modified (comp, &current);
 

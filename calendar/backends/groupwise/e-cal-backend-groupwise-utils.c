@@ -1085,18 +1085,13 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	t = e_gw_item_get_creation_date (item);
 	if (t) {
 		itt_utc = icaltime_from_string (t);
-		if (!icaltime_get_timezone (itt_utc))
-			icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone());
-		if (default_zone) {
-			itt = icaltime_convert_to_zone (itt_utc, default_zone);
-			icaltime_set_timezone (&itt, default_zone);
-			e_cal_component_set_created (comp, &itt);
-			e_cal_component_set_dtstamp (comp, &itt);
 
-		} else {
-			e_cal_component_set_created (comp, &itt_utc);
-			e_cal_component_set_dtstamp (comp, &itt_utc);
-		}
+		/* RFC 2445 - CREATED/DTSTAMP/LAST-MODIFIED always in UTC */
+		icaltimezone_convert_time (&itt_utc, (icaltimezone*) icaltime_get_timezone (itt_utc), icaltimezone_get_utc_timezone ());
+		icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
+
+		e_cal_component_set_created (comp, &itt_utc);
+		e_cal_component_set_dtstamp (comp, &itt_utc);
 	}
 
 	/* categories */

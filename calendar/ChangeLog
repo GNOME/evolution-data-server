@@ -1,3 +1,17 @@
+2009-01-16  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #360813
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_create_object),
+	(e_cal_backend_file_modify_object),
+	(e_cal_backend_file_receive_objects):
+	* backends/groupwise/e-cal-backend-groupwise-utils.c:
+	(e_gw_item_to_cal_component):
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_create_object),
+	(caldav_modify_object), (process_object):
+	RFC 2445 - CREATED/DTSTAMP/LAST-MODIFIED always in UTC.
+
 2009-01-16  Suman Manjunath  <msuman@novell.com>
 
 	** Fix for bug #443296 (bugzilla.novell.com)

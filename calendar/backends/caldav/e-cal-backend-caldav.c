@@ -1844,7 +1844,7 @@ caldav_create_object (ECalBackendSync  *backend,
 	}
 
 	/* Set the created and last modified times on the component */
-	current = icaltime_from_timet (time (NULL), 0);
+	current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	e_cal_component_set_created (comp, &current);
 	e_cal_component_set_last_modified (comp, &current);
 
@@ -1927,7 +1927,7 @@ caldav_modify_object (ECalBackendSync  *backend,
 	}
 
 	/* Set the last modified time on the component */
-	current = icaltime_from_timet (time (NULL), 0);
+	current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	e_cal_component_set_last_modified (comp, &current);
 
 	/* sanitize the component*/
@@ -2135,7 +2135,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 	backend = E_CAL_BACKEND (cbdav);
 
 	/* ctime, mtime */
-	now = icaltime_from_timet (time (NULL), 0);
+	now = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	e_cal_component_set_created (ecomp, &now);
 	e_cal_component_set_last_modified (ecomp, &now);
 
