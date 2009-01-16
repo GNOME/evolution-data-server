@@ -1,3 +1,11 @@
+2009-01-16  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #443296 (bugzilla.novell.com)
+
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_cal_backend_groupwise_set_attachments_from_comp): Free memory only
+	after it is duped. 
+
 2009-01-15  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #501298
