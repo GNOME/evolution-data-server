@@ -319,8 +319,13 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	guint32 type=0;
 	
 	if (part) {
-		EXTRACT_FIRST_DIGIT (type);
+		if (*part == ' ')
+			part++;
+		if (part) {
+			EXTRACT_FIRST_DIGIT (type);
+		}
 	}
+	mir->cinfo = part;
 	if (type)
 		return camel_groupwise_summary_parent->content_info_from_db (s, mir);
 	else
