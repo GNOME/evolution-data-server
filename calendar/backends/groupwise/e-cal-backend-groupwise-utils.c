@@ -326,8 +326,6 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 			continue;
 		}
 
-		g_free (attach_filename_full);
-
 		attach_item = g_new0 (EGwItemAttachment, 1);
 		/* FIXME the member does not follow the naming convention.
 		 * Should be fixed in e-gw-item*/
@@ -340,6 +338,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		attach_item->data = encoded_data;
 		attach_item->size = strlen (encoded_data);
 
+		g_free (attach_filename_full);
 		g_free (file_contents);
 		attach_list = g_slist_append (attach_list, attach_item);
 	}
