@@ -1,3 +1,7 @@
+2009-01-17  Luca Ferretti  <elle.uca@libero.it>
+
+	* it.po: Removed a spurious %s from a non c-format message.
+
 2009-01-13  Wadim Dziedzic  <wdziedzic@aviary.pl>
 
 	* pl.po: Updated Polish translation

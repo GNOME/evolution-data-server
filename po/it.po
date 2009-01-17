@@ -24,7 +24,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.23.x\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-09 11:50+0100\n"
-"PO-Revision-Date: 2008-12-09 12:10+0100\n"
+"PO-Revision-Date: 2009-01-17 13:20+0100\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -5084,7 +5084,7 @@ msgstr "Comando RSET non riuscito: %s"
 # GNOME-2-24
 #: ../camel/providers/smtp/camel-smtp-transport.c:1474
 msgid "RSET command failed"
-msgstr "Comando RSET non riuscito: %s"
+msgstr "Comando RSET non riuscito"
 
 # GNOME-2-24
 #: ../camel/providers/smtp/camel-smtp-transport.c:1497
