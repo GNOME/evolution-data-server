@@ -1,3 +1,7 @@
+2009-01-18  Yair Hershkovitz  <yairhr@gmail.com>
+
+	* he.po: Updated Hebrew translation.
+
 2009-01-17  Luca Ferretti  <elle.uca@libero.it>
 
 	* it.po: Removed a spurious %s from a non c-format message.
