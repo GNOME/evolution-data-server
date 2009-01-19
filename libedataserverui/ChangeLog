@@ -1,3 +1,11 @@
+2009-01-19  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #448349 (bugzilla.novell.com)
+
+	* e-source-combo-box.c (source_list_changed_cb): Avoid erroneous signal
+	emissions by not clearing the list-store in order to re-fill it. 
+	Instead, replace the original entries with new ones. 
+
 2009-01-09  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #562200
