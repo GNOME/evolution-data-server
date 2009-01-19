@@ -1,3 +1,13 @@
+2009-01-19  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #204891
+
+	* camel-session.h: (camel_session_forward_to):
+	* camel-session.c: (camel_session_init), (session_forward_to),
+	(camel_session_forward_to):
+	* camel-filter-driver.c: (do_forward_to):
+	Be able to forward messages in a filter, passing it to a session.
+
 2009-01-19  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-folder-summary.c: (info_set_flags): Fix a compiler warning

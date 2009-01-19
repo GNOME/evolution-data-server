@@ -48,6 +48,8 @@
 #include "camel-string-utils.h"
 #include "camel-transport.h"
 #include "camel-url.h"
+#include "camel-folder.h"
+#include "camel-mime-message.h"
 
 #define d(x)
 
@@ -66,6 +68,7 @@ static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg
 static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags);
 static void session_thread_wait(CamelSession *session, int id);
 static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const char *text, int pc);
+static void session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex);
 
 static void
 camel_session_init (CamelSession *session)
@@ -119,6 +122,8 @@ camel_session_class_init (CamelSessionClass *camel_session_class)
 	camel_session_class->thread_queue = session_thread_queue;
 	camel_session_class->thread_wait = session_thread_wait;
 	camel_session_class->thread_status = session_thread_status;
+
+	camel_session_class->forward_to = session_forward_to;
 
 	camel_object_class_add_event((CamelObjectClass *)camel_session_class, "online", NULL);
 }
@@ -808,4 +813,28 @@ camel_session_get_junk_headers (CamelSession *session)
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return session->priv->junk_headers;
+}
+
+static void
+session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex)
+{
+	if (ex)
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Camel session doesn't support forwarding of a message."));
+}
+
+/**
+ * camel_session_forward_to:
+ * Forwards message to some address(es) in a given type. The meaning of the forward_type defines session itself.
+ * @session #CameSession. 
+ * @folder #CamelFolder where is @message located.
+ * @message Message to forward.
+ * @address Where forward to.
+ * @ex Exception.
+ **/
+void
+camel_session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	
+	CS_CLASS (session)->forward_to (session, folder, message, address, ex);
 }

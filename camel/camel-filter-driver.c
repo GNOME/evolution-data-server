@@ -101,7 +101,6 @@ struct _CamelFilterDriverPrivate {
 	/* run-time data */
 	GHashTable *folders;       /* folders that message has been copied to */
 	int closed;		   /* close count */
-	GHashTable *forwards;      /* addresses that have been forwarded the message */
 	GHashTable *only_once;     /* actions to run only-once */
 	
 	gboolean terminated;       /* message processing was terminated */
@@ -137,7 +136,7 @@ static CamelFolder *open_folder (CamelFilterDriver *d, const char *folder_url);
 static int close_folders (CamelFilterDriver *d);
 
 static ESExpResult *do_delete (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *mark_forward (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static ESExpResult *do_forward_to (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_copy (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_stop (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
@@ -161,7 +160,7 @@ static struct {
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "delete",            (ESExpFunc *) do_delete,    0 },
-	{ "forward-to",        (ESExpFunc *) mark_forward, 0 },
+	{ "forward-to",        (ESExpFunc *) do_forward_to, 0 },
 	{ "copy-to",           (ESExpFunc *) do_copy,      0 },
 	{ "move-to",           (ESExpFunc *) do_move,      0 },
 	{ "stop",              (ESExpFunc *) do_stop,      0 },
@@ -447,14 +446,25 @@ do_delete (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-mark_forward (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_forward_to (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
 {
-	/*struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);*/
-	
+	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
+
 	d(fprintf (stderr, "marking message for forwarding\n"));
-	/* FIXME: do stuff here */
-	camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Forward");
-	
+
+	/* requires one parameter, string with a destination address */
+	if (argc < 1 || argv[0]->type != ESEXP_RES_STRING)
+		return NULL;
+
+	/* make sure we have the message... */
+	if (p->message == NULL) {
+		if (!(p->message = camel_folder_get_message (p->source, p->uid, p->ex)))
+			return NULL;
+	}
+
+	camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Forward message to '%s'", argv[0]->value.string);
+	camel_session_forward_to (p->session, p->source, p->message, argv[0]->value.string, p->ex);
+
 	return NULL;
 }
 

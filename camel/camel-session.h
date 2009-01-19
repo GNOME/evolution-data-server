@@ -118,6 +118,11 @@ typedef struct {
 					      int pc);
 	gboolean        (*lookup_addressbook)(CamelSession *session,
 					      const char *name);
+	void		(*forward_to)        (CamelSession *session,
+					      struct _CamelFolder *folder,
+					      struct _CamelMimeMessage *message,
+					      const char *address,
+					      CamelException *ex);
 } CamelSessionClass;
 
 
@@ -223,6 +228,12 @@ void               camel_session_set_junk_headers   (CamelSession *session,
 						     int len);
 gboolean           camel_session_lookup_addressbook (CamelSession *session,
 						     const char *name);
+
+void		   camel_session_forward_to         (CamelSession *session,
+						     struct _CamelFolder *folder,
+					             struct _CamelMimeMessage *message,
+						     const char *address,
+						     CamelException *ex);
 
 G_END_DECLS
 
