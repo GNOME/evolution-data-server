@@ -35,6 +35,8 @@ gboolean e_cal_backend_mail_account_is_valid (char *user, char **name);
 
 const char *e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status);
 
+gboolean e_cal_backend_user_declined (icalcomponent *icalcomp);
+
 G_END_DECLS
 
 #endif

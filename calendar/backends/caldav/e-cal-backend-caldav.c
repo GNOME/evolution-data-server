@@ -2344,6 +2344,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 	char                     *rid;
 	char                     *ostr;
 	char                     *oostr;
+	gboolean                  is_declined;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	backend = E_CAL_BACKEND (cbdav);
@@ -2374,6 +2375,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 		case ICAL_METHOD_REQUEST:
 		case ICAL_METHOD_REPLY:
 
+		is_declined = e_cal_backend_user_declined (e_cal_component_get_icalcomponent (ecomp));
 		if (online) {
 			CalDAVObject object = { NULL, };
 
@@ -2387,21 +2389,31 @@ process_object (ECalBackendCalDAV   *cbdav,
 				object.href  = href;
 				object.etag  = etag;
 
-			} else {
+			} else if (!is_declined) {
 				object.href = e_cal_component_gen_href (ecomp);
 			}
 
-			object.cdata = pack_cobj (cbdav, ecomp);
-			status = caldav_server_put_object (cbdav, &object);
-			e_cal_component_set_href (ecomp, object.href);
-			e_cal_component_set_etag (ecomp, object.etag);
-			caldav_object_free (&object, FALSE);
+			if (!is_declined || ccomp) {
+				if (!is_declined) {
+					object.cdata = pack_cobj (cbdav, ecomp);
+					status = caldav_server_put_object (cbdav, &object);
+				} else {
+					object.cdata = NULL;
+					status = caldav_server_delete_object (cbdav, &object);
+				}
+				e_cal_component_set_href (ecomp, object.href);
+				e_cal_component_set_etag (ecomp, object.etag);
+				caldav_object_free (&object, FALSE);
+			}
 		} else {
-			ECalComponentSyncState sstate;
+			ECalComponentSyncState sstate = E_CAL_COMPONENT_IN_SYNCH;
 
 			if (ccomp) {
-				sstate = E_CAL_COMPONENT_LOCALLY_MODIFIED;
-			} else {
+				if (!is_declined)
+					sstate = E_CAL_COMPONENT_LOCALLY_MODIFIED;
+				else
+					sstate = E_CAL_COMPONENT_LOCALLY_DELETED;
+			} else if (!is_declined) {
 				sstate = E_CAL_COMPONENT_LOCALLY_CREATED;
 			}
 
@@ -2413,18 +2425,21 @@ process_object (ECalBackendCalDAV   *cbdav,
 			break;
 		}
 
-		e_cal_backend_cache_put_component (priv->cache, ecomp);
+		if (!is_declined)
+			e_cal_backend_cache_put_component (priv->cache, ecomp);
+		else
+			e_cal_backend_cache_remove_component (priv->cache, uid, rid);
 
 		if (ccomp) {
-
-			e_cal_backend_notify_object_modified (backend,
-							      ostr,
-							      oostr);
-
-		} else {
-
-			e_cal_backend_notify_object_created (backend,
-							     ostr);
+			if (!is_declined)
+				e_cal_backend_notify_object_modified (backend, ostr, oostr);
+			else {
+				id = e_cal_component_get_id (ccomp);
+				e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, oostr, NULL);
+				e_cal_component_free_id (id);
+			}
+		} else if (!is_declined) {
+			e_cal_backend_notify_object_created (backend, ostr);
 		}
 
 		break;
@@ -2472,11 +2487,11 @@ process_object (ECalBackendCalDAV   *cbdav,
 							      rid);
 
 			id = e_cal_component_get_id (ccomp);
-
 			e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend),
 							     id,
 							     oostr,
 							     ostr);
+			e_cal_component_free_id (id);
 			break;
 
 		default:

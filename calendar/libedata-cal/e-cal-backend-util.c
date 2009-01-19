@@ -44,9 +44,13 @@ e_cal_backend_mail_account_get_default (char **address, char **name)
 {
 	const EAccount *account;
 
-	/* FIXME I think this leaks the gconf client */
-	if (accounts == NULL)
-		accounts = e_account_list_new(gconf_client_get_default());
+	if (accounts == NULL) {
+		GConfClient *gconf = gconf_client_get_default ();
+
+		accounts = e_account_list_new (gconf);
+
+		g_object_unref (gconf);
+	}
 
 	account = e_account_list_get_default(accounts);
 	if (account) {
@@ -71,9 +75,13 @@ e_cal_backend_mail_account_is_valid (char *user, char **name)
 {
 	const EAccount *account;
 
-	/* FIXME I think this leaks the gconf client */
-	if (accounts == NULL)
-		accounts = e_account_list_new(gconf_client_get_default());
+	if (accounts == NULL) {
+		GConfClient *gconf = gconf_client_get_default ();
+
+		accounts = e_account_list_new (gconf);
+
+		g_object_unref (gconf);
+	}
 
 	account = e_account_list_find(accounts, E_ACCOUNT_FIND_ID_ADDRESS, user);
 	if (account)
@@ -142,3 +150,90 @@ e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)
 
 	return NULL;
 }
+
+/**
+ * is_attendee_declined:
+ * @param icalcomp Component where to check the attendee list.
+ * @param email Attendee's email to look for.
+ * @return Whether the required attendee declined or not.
+ *         It's not necessary to have this attendee in the list.
+ **/
+static gboolean
+is_attendee_declined (icalcomponent *icalcomp, const char *email)
+{
+	icalproperty *prop;
+	icalparameter *param;
+
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+	g_return_val_if_fail (email != NULL, FALSE);
+
+	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
+	     prop != NULL;
+	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
+		const char *attendee;
+		char *text = NULL;
+
+		attendee = icalproperty_get_value_as_string (prop);
+		if (!attendee)
+			continue;
+
+		if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
+			text = g_strdup (attendee + 7);
+		text = g_strstrip (text);
+
+		if (!g_ascii_strcasecmp (email, text)) {
+			g_free (text);
+			break;
+		}
+		g_free (text);
+	}
+
+	if (!prop)
+		return FALSE;
+
+	param = icalproperty_get_first_parameter (prop, ICAL_PARTSTAT_PARAMETER);
+
+	return param && icalparameter_get_partstat (param) == ICAL_PARTSTAT_DECLINED;
+}
+
+/**
+ * e_cal_backend_user_declined:
+ * @param icalcomp Component where to check.
+ * @return Whether icalcomp contains attendee with a mail same as any of configured
+ *         enabled mail account and whether this user declined.
+ **/
+gboolean
+e_cal_backend_user_declined (icalcomponent *icalcomp)
+{
+	gboolean res = FALSE;
+	EAccountList *accounts;
+	GConfClient *gconf;
+
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+
+	gconf = gconf_client_get_default ();
+	accounts = e_account_list_new (gconf);
+
+	if (accounts) {
+		EIterator *it;
+
+		for (it = e_list_get_iterator (E_LIST (accounts)); e_iterator_is_valid (it); e_iterator_next (it)) {
+			EAccount *account = (EAccount *) e_iterator_get (it);
+
+			if (account && account->enabled && e_account_get_string (account, E_ACCOUNT_ID_ADDRESS)) {
+				res = is_attendee_declined (icalcomp, e_account_get_string (account, E_ACCOUNT_ID_ADDRESS));
+
+				if (res)
+					break;
+			}
+		}
+
+		g_object_unref (it);
+		g_object_unref (accounts);
+	}
+
+	g_object_unref (gconf);
+
+	return res;
+}
+

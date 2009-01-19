@@ -2559,6 +2559,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		const char *uid;
 		char *object, *old_object, *rid, *new_object;
 		ECalBackendFileObject *obj_data;
+		gboolean is_declined;
 
 		subcomp = l->data;
 
@@ -2583,8 +2584,10 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 		case ICAL_METHOD_PUBLISH:
 		case ICAL_METHOD_REQUEST:
 		case ICAL_METHOD_REPLY:
+			is_declined = e_cal_backend_user_declined (subcomp);
+
 			/* handle attachments */
-			if (e_cal_component_has_attachments (comp))
+			if (!is_declined && e_cal_component_has_attachments (comp))
 				fetch_attachments (backend, comp);
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
@@ -2593,13 +2596,27 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 					remove_instance (cbfile, obj_data, rid);
 				else
 					remove_component (cbfile, uid, obj_data);
-				add_component (cbfile, comp, FALSE);
+
+				if (!is_declined)
+					add_component (cbfile, comp, FALSE);
 
 				object = e_cal_component_get_as_string (comp);
-				e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old_object, object);
+				if (!is_declined)
+					e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old_object, object);
+				else {
+					ECalComponentId *id = e_cal_component_get_id (comp);
+
+					if (rid)
+						e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, old_object, object);
+					else
+						e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, old_object, NULL);
+
+					e_cal_component_free_id (id);
+				}
+
 				g_free (object);
 				g_free (old_object);
-			} else {
+			} else if (!is_declined) {
 				add_component (cbfile, comp, FALSE);
 
 				object = e_cal_component_get_as_string (comp);

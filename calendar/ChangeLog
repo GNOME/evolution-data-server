@@ -1,5 +1,23 @@
 2009-01-19  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #272932
+
+	* libedata-cal/e-cal-backend-util.c:
+	(e_cal_backend_mail_account_get_default),
+	(e_cal_backend_mail_account_is_valid): Do not leak GConfClient.
+	* libedata-cal/e-cal-backend-util.h: (e_cal_backend_user_declined):
+	* libedata-cal/e-cal-backend-util.c: (e_cal_backend_user_declined),
+	(is_attendee_declined): New helper function to check whether user
+	declined the meeting or not. It looks into all configured and enabled
+	mail accounts and checks with attendees in the icalcomponent.
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_receive_objects):
+	* backends/caldav/e-cal-backend-caldav.c: (process_object):
+	* backends/google/e-cal-backend-google.c: (receive_object):
+	Recognize declined objects and do not add them to the calendar.
+
+2009-01-19  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #260853
 
 	* backends/contacts/e-cal-backend-contacts.c:

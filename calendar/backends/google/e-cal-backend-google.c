@@ -544,8 +544,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 	GSList *comps = NULL, *l = NULL;
 	icalproperty_method method;
 	icalproperty *icalprop;
-	gboolean instances = TRUE, found = FALSE;
-	icalparameter_partstat pstatus = 0;
+	gboolean instances = TRUE, found = FALSE, is_declined;
 
 	priv = cbgo->priv;
 	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);	
@@ -561,15 +560,17 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 		}
 		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
 	}
-	
+
+	is_declined = e_cal_backend_user_declined (icalcomp);
+
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 	method = icalcomponent_get_method (icalcomp);	
 
 	/* Attachments */
-	if (e_cal_component_has_attachments (comp)) 
+	if (!is_declined && e_cal_component_has_attachments (comp))
 		fetch_attachments (cbgo, comp);
-	 
+
 	/* Sent to Server */
 	item = e_go_item_from_cal_component (cbgo, comp);	
 	entry =	e_go_item_get_entry (item);
@@ -617,7 +618,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 	for (l = comps; l != NULL; l = l->next) {
 		ECalComponent *component = E_CAL_COMPONENT (l->data);
 
-		if (pstatus == ICAL_PARTSTAT_DECLINED) {
+		if (is_declined) {
 			ECalComponentId *id = e_cal_component_get_id (component);
 
 			if (e_cal_backend_cache_remove_component (priv->cache, id->uid, id->rid)) {
