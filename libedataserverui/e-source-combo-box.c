@@ -108,14 +108,13 @@ source_list_changed_cb (ESourceList *source_list,
 	gboolean iter_valid;
 
 	priv = source_combo_box->priv;
-	g_hash_table_remove_all (priv->uid_index);
 
 	combo_box = GTK_COMBO_BOX (source_combo_box);
-	gtk_combo_box_set_active (combo_box, -1);
 
 	model = gtk_combo_box_get_model (combo_box);
 	store = GTK_LIST_STORE (model);
-	gtk_list_store_clear (store);
+
+	gtk_tree_model_get_iter_first (model, &iter);
 
 	for (groups = e_source_list_peek_groups (source_list);
 		groups != NULL; groups = groups->next) {
@@ -125,7 +124,8 @@ source_list_changed_cb (ESourceList *source_list,
 			continue;
 
 		name = e_source_group_peek_name (groups->data);
-		gtk_list_store_append (store, &iter);
+		if (!gtk_list_store_iter_is_valid (store, &iter))
+			gtk_list_store_append (store, &iter);
 		gtk_list_store_set (
 			store, &iter,
 			COLUMN_COLOR, NULL,
@@ -133,6 +133,7 @@ source_list_changed_cb (ESourceList *source_list,
 			COLUMN_SENSITIVE, FALSE,
 			COLUMN_SOURCE, groups->data,
 			-1);
+		gtk_tree_model_iter_next (model, &iter);
 
 		sources = get_sorted_sources (e_source_group_peek_sources (groups->data));
 		for (s = sources; s != NULL; s = s->next) {
@@ -148,7 +149,8 @@ source_list_changed_cb (ESourceList *source_list,
 				visible = TRUE;
 			}
 
-			gtk_list_store_append (store, &iter);
+			if (!gtk_list_store_iter_is_valid (store, &iter))
+				gtk_list_store_append (store, &iter);
 			gtk_list_store_set (
 				store, &iter,
 				COLUMN_COLOR, color_spec ? &color : NULL,
@@ -159,15 +161,20 @@ source_list_changed_cb (ESourceList *source_list,
 
 			uid = e_source_peek_uid (s->data);
 			path = gtk_tree_model_get_path (model, &iter);
-			g_hash_table_insert (
+			g_hash_table_replace (
 				priv->uid_index, g_strdup (uid),
 				gtk_tree_row_reference_new (model, path));
 			gtk_tree_path_free (path);
+			gtk_tree_model_iter_next (model, &iter);
 
 			g_free (indented_name);
 		}
 		g_slist_free (sources);
 	}
+
+	/* Remove any extra references that might be leftover from the original model */
+	while (gtk_list_store_iter_is_valid (store, &iter))
+		gtk_list_store_remove (store, &iter);
 
 	/* Set the visible column based on whether we've seen a color. */
 	iter_valid = gtk_tree_model_get_iter_first (model, &iter);
