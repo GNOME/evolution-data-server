@@ -31,6 +31,7 @@
 #include "e-cal-backend-contacts.h"
 
 #include <glib/gi18n-lib.h>
+#include <gconf/gconf-client.h>
 #include "libedataserver/e-xml-hash-utils.h"
 #include "libedataserver/e-flag.h"
 #include <libecal/e-cal-recur.h>
@@ -43,6 +44,13 @@
 #include "libedataserver/e-source-list.h"
 
 static ECalBackendSyncClass *parent_class;
+
+typedef enum
+{
+	CAL_DAYS,
+	CAL_HOURS,
+	CAL_MINUTES
+} CalUnits;
 
 /* Private part of the ECalBackendContacts structure */
 struct _ECalBackendContactsPrivate {
@@ -58,6 +66,16 @@ struct _ECalBackendContactsPrivate {
 	icaltimezone *default_zone;
 
 	EFlag   *init_done_flag; /* is set, when the init thread gone */
+
+	/* properties related to track alarm settings for this backend */
+	GConfClient *conf_client;
+	guint notifyid1;
+	guint notifyid2;
+	guint notifyid3;
+	guint update_alarms_id;
+	gboolean alarm_enabled;
+	int alarm_interval;
+	CalUnits alarm_units;
 };
 
 typedef struct _BookRecord {
@@ -82,8 +100,8 @@ static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *c
 static void contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_added_cb   (EBookView *book_view, const GList *contacts, gpointer user_data);
 static void contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer user_data);
-static ECalBackendSyncStatus
-e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
+static ECalBackendSyncStatus e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
+static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 
 /* BookRecord methods */
 static BookRecord *
@@ -416,6 +434,161 @@ cdate_to_icaltime (EContactDate *cdate)
 	return ret;
 }
 
+static void
+manage_comp_alarm_update (ECalBackendContacts *cbc, ECalComponent *comp)
+{
+	char *old_comp, *new_comp;
+
+	g_return_if_fail (cbc != NULL);
+	g_return_if_fail (comp != NULL);
+
+	old_comp = e_cal_component_get_as_string (comp);
+	setup_alarm (cbc, comp);
+	new_comp = e_cal_component_get_as_string (comp);
+
+	/* check if component changed and notify if so */
+	if (old_comp && new_comp && !g_str_equal (old_comp, new_comp))
+		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbc), old_comp, new_comp);
+
+	g_free (old_comp);
+	g_free (new_comp);
+}
+
+static void
+update_alarm_cb (gpointer key, gpointer value, gpointer user_data)
+{
+	ECalBackendContacts *cbc = user_data;
+        ContactRecord   *record = value;
+
+	g_return_if_fail (cbc != NULL);
+	g_return_if_fail (record != NULL);
+
+        if (record->comp_birthday)
+		manage_comp_alarm_update (cbc, record->comp_birthday);
+
+        if (record->comp_anniversary)
+                manage_comp_alarm_update (cbc, record->comp_anniversary);
+}
+
+static gboolean
+update_tracked_alarms_cb (gpointer user_data)
+{
+	ECalBackendContacts *cbc = user_data;
+
+	g_return_val_if_fail (cbc != NULL, FALSE);
+
+	g_hash_table_foreach (cbc->priv->tracked_contacts, update_alarm_cb, cbc);
+	cbc->priv->update_alarms_id = 0;
+
+	return FALSE;
+}
+
+static void
+alarm_config_changed_cb (GConfClient *client, guint cnxn_id, GConfEntry *entry, gpointer user_data)
+{
+	ECalBackendContacts *cbc = user_data;
+
+	g_return_if_fail (cbc != NULL);
+
+	setup_alarm (cbc, NULL);
+
+	if (!cbc->priv->update_alarms_id)
+		cbc->priv->update_alarms_id = g_idle_add (update_tracked_alarms_cb, cbc);
+}
+
+/* When called with NULL, then just refresh local static variables on setup change from the user. */
+static void
+setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp)
+{
+	ECalComponentAlarm *alarm;
+	ECalComponentAlarmTrigger trigger;
+	ECalComponentText summary;
+
+	g_return_if_fail (cbc != NULL);
+
+	if (!comp || cbc->priv->alarm_interval == -1) {
+		char *str;
+
+		#define BA_CONF_DIR		"/apps/evolution/calendar/other"
+		#define BA_CONF_ENABLED		BA_CONF_DIR "/use_ba_reminder"
+		#define BA_CONF_INTERVAL	BA_CONF_DIR "/ba_reminder_interval"
+		#define BA_CONF_UNITS		BA_CONF_DIR "/ba_reminder_units"
+
+		if (cbc->priv->alarm_interval == -1) {
+			/* initial setup, hook callback for changes too */
+			gconf_client_add_dir (cbc->priv->conf_client, BA_CONF_DIR, GCONF_CLIENT_PRELOAD_NONE, NULL);
+			cbc->priv->notifyid1 = gconf_client_notify_add (cbc->priv->conf_client, BA_CONF_ENABLED,  alarm_config_changed_cb, cbc, NULL, NULL);
+			cbc->priv->notifyid2 = gconf_client_notify_add (cbc->priv->conf_client, BA_CONF_INTERVAL, alarm_config_changed_cb, cbc, NULL, NULL);
+			cbc->priv->notifyid3 = gconf_client_notify_add (cbc->priv->conf_client, BA_CONF_UNITS,    alarm_config_changed_cb, cbc, NULL, NULL);
+		}
+
+		cbc->priv->alarm_enabled = gconf_client_get_bool (cbc->priv->conf_client, BA_CONF_ENABLED, NULL);
+		cbc->priv->alarm_interval = gconf_client_get_int (cbc->priv->conf_client, BA_CONF_INTERVAL, NULL);
+
+		str = gconf_client_get_string (cbc->priv->conf_client, BA_CONF_UNITS, NULL);
+		if (str && !strcmp (str, "days"))
+			cbc->priv->alarm_units = CAL_DAYS;
+		else if (str && !strcmp (str, "hours"))
+			cbc->priv->alarm_units = CAL_HOURS;
+		else
+			cbc->priv->alarm_units = CAL_MINUTES;
+
+		g_free (str);
+
+		if (cbc->priv->alarm_interval <= 0)
+			cbc->priv->alarm_interval = 1;
+
+		if (!comp)
+			return;
+
+		#undef BA_CONF_DIR
+		#undef BA_CONF_ENABLED
+		#undef BA_CONF_INTERVAL
+		#undef BA_CONF_UNITS
+	}
+
+	/* ensure no alarms left */
+	e_cal_component_remove_all_alarms (comp);
+
+	/* do not want alarms, return */
+	if (!cbc->priv->alarm_enabled)
+		return;
+
+	alarm = e_cal_component_alarm_new ();
+	e_cal_component_get_summary (comp, &summary);
+	e_cal_component_alarm_set_description (alarm, &summary);
+	e_cal_component_alarm_set_action (alarm, E_CAL_COMPONENT_ALARM_DISPLAY);
+
+	trigger.type = E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START;
+
+	memset (&trigger.u.rel_duration, 0, sizeof (trigger.u.rel_duration));
+
+	trigger.u.rel_duration.is_neg = TRUE;
+
+	switch (cbc->priv->alarm_units) {
+	case CAL_MINUTES:
+		trigger.u.rel_duration.minutes = cbc->priv->alarm_interval;
+		break;
+
+	case CAL_HOURS:
+		trigger.u.rel_duration.hours = cbc->priv->alarm_interval;
+		break;
+
+	case CAL_DAYS:
+		trigger.u.rel_duration.days = cbc->priv->alarm_interval;
+		break;
+
+	default:
+		g_warning ("%s: wrong units %d\n", G_STRFUNC, cbc->priv->alarm_units);
+		e_cal_component_alarm_free (alarm);
+		return;
+	}
+
+	e_cal_component_alarm_set_trigger (alarm, trigger);
+	e_cal_component_add_alarm (comp, alarm);
+	e_cal_component_alarm_free (alarm);
+}
+
 /* Contact -> Event creator */
 static ECalComponent *
 create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate, const char *summary)
@@ -479,6 +652,9 @@ create_component (ECalBackendContacts *cbc, const char *uid, EContactDate *cdate
 
 	/* Birthdays/anniversaries are shown as free time */
 	e_cal_component_set_transparency (cal_comp, E_CAL_COMPONENT_TRANSP_TRANSPARENT);
+
+	/* setup alarms if required */
+	setup_alarm (cbc, cal_comp);
 
         /* Don't forget to call commit()! */
 	e_cal_component_commit_sequence (cal_comp);
@@ -992,6 +1168,11 @@ e_cal_backend_contacts_finalize (GObject *object)
 		priv->init_done_flag = NULL;
 	}
 
+	if (priv->update_alarms_id) {
+		g_source_remove (priv->update_alarms_id);
+		priv->update_alarms_id = 0;
+	}
+
 	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 		icaltimezone_free (priv->default_zone, 1);
 	}
@@ -1001,6 +1182,14 @@ e_cal_backend_contacts_finalize (GObject *object)
 	g_hash_table_destroy (priv->addressbooks);
         g_hash_table_destroy (priv->tracked_contacts);
         g_hash_table_destroy (priv->zones);
+	if (priv->notifyid1)
+		gconf_client_notify_remove (priv->conf_client, priv->notifyid1);
+	if (priv->notifyid2)
+		gconf_client_notify_remove (priv->conf_client, priv->notifyid2);
+	if (priv->notifyid3)
+		gconf_client_notify_remove (priv->conf_client, priv->notifyid3);
+
+	g_object_unref (priv->conf_client);
 
 	g_free (priv);
 	cbc->priv = NULL;
@@ -1027,6 +1216,14 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
 	priv->default_zone = icaltimezone_get_utc_timezone ();
 	priv->init_done_flag = e_flag_new ();
+	priv->conf_client = gconf_client_get_default ();
+	priv->notifyid1 = 0;
+	priv->notifyid2 = 0;
+	priv->notifyid3 = 0;
+	priv->update_alarms_id = 0;
+	priv->alarm_enabled = FALSE;
+	priv->alarm_interval = -1;
+	priv->alarm_units = CAL_MINUTES;
 
 	cbc->priv = priv;
 

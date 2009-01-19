@@ -1,3 +1,15 @@
+2009-01-19  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #260853
+
+	* backends/contacts/e-cal-backend-contacts.c:
+	(struct _ECalBackendContactsPrivate), (setup_alarm),
+	(manage_comp_alarm_update), (update_alarm_cb),
+	(update_tracked_alarms_cb), (alarm_config_changed_cb),
+	(create_component), (e_cal_backend_contacts_finalize),
+	(e_cal_backend_contacts_init): Use and listen to changes
+	on the Birthdays and Anniversaries reminder setup.
+
 2009-01-16  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #360813
