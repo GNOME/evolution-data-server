@@ -1,3 +1,7 @@
+2009-01-19  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-folder-summary.c: (info_set_flags): Fix a compiler warning
+
 2009-01-13  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/camel-db.c: Speed up total-count info, by counting indexed
