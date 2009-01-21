@@ -61,7 +61,7 @@ evolution_data_server_LDADD =                     			\
 
 install-evolution-data-servers:
 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
-	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
+	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server@EXEEXT@ $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)@EXEEXT@
 
 SERVER_IN_FILE=GNOME_Evolution_DataServer.server.in.in
 
@@ -83,7 +83,7 @@ CLEANFILES = $(BUILT_SOURCES)
 install-exec-local: install-evolution-data-servers
 
 uninstall-local:
-	rm -f $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
+	rm -f $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)@EXEEXT@
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
@@ -93,7 +93,7 @@ PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAG
 
 all-local: evolution-data-server.pure
 
-evolution-data-server.pure: evolution-data-server
+evolution-data-server.pure: evolution-data-server@EXEEXT@
 	@rm -f evolution-data-server.pure
 	$(PLINK) $(evolution_data_server_LDFLAGS) $(evolution_data_server_OBJECTS) $(evolution_data_server_LDADD) $(LIBS)
 

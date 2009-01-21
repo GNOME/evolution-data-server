@@ -307,20 +307,18 @@ have_iconv=no
 AC_ARG_WITH(libiconv, 
   AC_HELP_STRING( [--with-libiconv],
 		  [Prefix where libiconv is installed]))
-case $withval in
-/*)
+if test -d $withval; then
     ICONV_CFLAGS="-I$withval/include"
     ICONV_LIBS="-L$withval/lib"
-    ;;
-esac
+fi
 
 save_CFLAGS="$CFLAGS"
 save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $ICONV_CFLAGS"
 LIBS="$LIBS $ICONV_LIBS -liconv"
-AC_CACHE_CHECK(for iconv in -liconv, ac_cv_libiconv, AC_TRY_RUN([
+AC_CACHE_CHECK(for iconv in -liconv, ac_cv_libiconv, AC_TRY_LINK([
 #include <iconv.h>
-#include <stdlib.h>
+#include <stdlib.h>],[
 
 int main (int argc, char **argv)
 {
@@ -328,7 +326,7 @@ int main (int argc, char **argv)
 	cd = iconv_open ("UTF-8", "ISO-8859-1");
 	exit (0);
 }
-], ac_cv_libiconv=yes, ac_cv_libiconv=no, ac_cv_libiconv=no))
+], ac_cv_libiconv=yes, ac_cv_libiconv=no))
 if test $ac_cv_libiconv = yes; then
 	ICONV_LIBS="$ICONV_LIBS -liconv"
 	if test $os_win32 = yes; then
@@ -379,7 +377,7 @@ int main (int argc, char **argv)
 		exit (1);
 
 	exit (0);
-}], ac_cv_libiconv_utf8=yes, [ac_cv_libiconv_utf8=no; have_iconv=no], [ac_cv_libiconv_utf8=no; have_iconv=no]))
+}], ac_cv_libiconv_utf8=yes, [ac_cv_libiconv_utf8=no; have_iconv=no], ac_cv_libiconv_utf8=HOPEFULLY))
 fi
 
 if test "$have_iconv" = no; then
@@ -404,7 +402,24 @@ AC_TRY_RUN([
 	*** iconv library. It is suggested that you install a
 	*** working iconv library such as the one found at
 	*** ftp://ftp.gnu.org/pub/gnu/libiconv
-	])
+])
+],[
+  if test x$os_win32 = xyes; then
+    AC_MSG_RESULT(using cached win32 result)
+    echo "/* This is an auto-generated header, DO NOT EDIT! */" > iconv-detect.h
+    echo "" >>iconv-detect.h
+    echo "#define ICONV_ISO_D_FORMAT \"iso-%d-%d\"" >>iconv-detect.h
+    echo "#define ICONV_ISO_S_FORMAT \"iso-%d-%s\"" >>iconv-detect.h
+    echo "#define ICONV_10646 \"UCS-4BE\"" >>iconv-detect.h
+  else
+	AC_MSG_RESULT(unknown)
+	AC_WARN([
+	*** The iconv-detect program was unable to determine the
+	*** preferred charset formats recognized by your system
+	*** iconv library. You are crosscompiling and supposed
+	*** to know what you are doing. (:-)
+    ])
+  fi
 ])
 
 CFLAGS="$save_CFLAGS"
@@ -723,6 +738,8 @@ AC_SUBST(MANUAL_NSPR_LIBS)
 AC_SUBST(MANUAL_NSS_CFLAGS)
 AC_SUBST(MANUAL_NSS_LIBS)
 
+if test $os_win32 != yes; then
+
 dnl check for socklen_t (in Unix98)
 AC_MSG_CHECKING(for socklen_t)
 AC_TRY_COMPILE([#include <sys/types.h>
@@ -737,6 +754,8 @@ AC_MSG_RESULT(size_t)
 AC_DEFINE(socklen_t,size_t,[Define to appropriate type if socklen_t is not defined])], [
 AC_MSG_RESULT(int)
 AC_DEFINE(socklen_t,int)])])
+
+fi
 
 dnl
 dnl system mail stuff
@@ -1462,7 +1481,7 @@ case $CFLAGS in
 esac
 
 PKG_CHECK_MODULES(ORBIT, ORBit-2.0 >= ORBit_minimum_version)
-ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
+test x$ORBIT_IDL = x && ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
 AC_SUBST(ORBIT_CFLAGS)
 AC_SUBST(ORBIT_LIBS)
 AC_SUBST(ORBIT_IDL)

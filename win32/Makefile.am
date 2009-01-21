@@ -14,6 +14,6 @@ libedataserverui_current_minus_age = `expr $(LIBEDATASERVERUI_CURRENT) - $(LIBED
 libedataserverui-1.2.la: dummy.la libedataserverui.def
 	sed -e s!%DLL%!libedataserverui-1.2-$(libedataserverui_current_minus_age)! -e s!%LIB%!libedataserverui-1.2! -e s!%PFX%!$(prefix)! <dummy.la >$@
 	mkdir -p .libs
-	dlltool --output-lib=.libs/libedataserverui-1.2.dll.a --dllname=libedataserverui-1.2-$(libedataserverui_current_minus_age).dll --input-def=libedataserverui.def
+	$(DLLTOOL) --output-lib=.libs/libedataserverui-1.2.dll.a --dllname=libedataserverui-1.2-$(libedataserverui_current_minus_age).dll --input-def=libedataserverui.def
 
 CLEANFILES = $(BOOTSTRAP_LIBS)

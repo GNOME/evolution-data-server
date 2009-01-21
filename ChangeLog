@@ -1,3 +1,9 @@
+2009-01-21  Fridrich Strba <fstrba@novell.com>
+
+	* configure.in, calendar/backends/caldav/Makefile.am,
+	src/Makefile.am, win32/Makefile.am: Allow cross-compiling
+	e-d-s for windows + fix some win32 hickups.
+
 2009-01-21  Srinivasa Ragavan <sragavan@novell.com>
 
 	* NEWS: Evolution Data Server 2.25.5 release
