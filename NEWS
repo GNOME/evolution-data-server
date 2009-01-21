@@ -1,3 +1,42 @@
+Evolution-Data-Server 2.25.5 2009-01-19
+---------------------------------------
+
+Updated Translations:
+	Andre Klapper (de)
+	Kjartan Maraas (nb)
+	Luca Ferretti (it)
+	Wadim Dziedzic (pl)
+
+Bug Fixes:
+	#303738 : Return AuthFailed when need auth, to ask for a password again, or return AuthRequired to indicate we require authentication. (Milan Crha)
+	#360813 : RFC 2445 - CREATED/DTSTAMP/LAST-MODIFIED always in UTC.  (Milan Crha)
+	#435599 : Don't do to displaying and creation of organization's contact in evolution.  (Ashish Shrivastava)
+	#439986 (bugzilla.novell.com) : Set the transparency on the cached object. (Chenthill Palanisamy)
+	#443296 (bugzilla.novell.com) : Free memory only after it is duped.  (Suman Manjunath)
+	#443544 (bugzilla.novell.com) : Send a 'Free' block to the frontend if there are no 'Busy' blocks. Also set the start/end of the Free/Busy range. (Suman Manjunath)
+	#463095 : Fix cinfo parsing logic (Simon Brys)
+	#501298 : Make _open function quick as much as possible, to not block the sync_backend lock for long, thus other threads can work with it too. Do not search a book when it wasn't opened correctly. Do not ref/unref backend in a structure which backend holds itself. (Milan Crha)
+	#518920 : Handle relative URIs in value of action attribute of form in form-based authentication. (Chow Loong Jin)
+	#554182 : Don't use 'authmech' for URL comparision. (Milan Crha)
+	#557348 : Re-did bits of threaded vfolder (Matt McCutchen)
+	#562200 : Define subclass of a GtkCellRendererToggle, which toggles itself only when user clicks over the toggle cell and not in any other case. of a GtkCellRendererToggle to prevent unnecessary toggling in a source selector when source itself doesn't have defined its color. (Milan Crha)
+	#564339 : Reduce the IO done during sync by not reading into memory locally cached files. (Robert Collins)
+	#564543 : Bump gtk_minimum_version to 2.14.0. (Matthew Barnes)
+	#564543 : Call soup_form_encode_hash() instead of soup_form_encode_urlencoded(). Call soup_session_add_feature() instead of soup_logger_attach(). Fix what we can with GSEAL_ENABLE defined. (Matthew Barnes)
+	#564954 : Fix SQL-ization of booleans and immediate-function confusion. (Matt McCutchen)
+	#566279 : Introduces a new API in Camel needed for implementing EPlugin of Bug #565091 (Philip Van Hoof  )
+	#565376 : Support more search options (Milan Crha)
+	#567384 : Remove unused variables. Comment out variables that are used by commented out code to silence compiler warnings. (Matthew Barnes)
+
+Other contributions:
+	DB Logging and DB Optimizations  (Srinivasa Ragavan  )
+	Manage GroupWise counts better. fix bugs in read-cursor elimination. A brand new flags handling code for GroupWise provider. (Sankar P)
+	Always send XEV headers with messages. (Srinivasa Ragavan)
+	Allowing devleoper to add migration code for in case the schema of Camel's summary SQLite data format changes. Also adds two columns, modified and created, to the summary data being stored and renames the column msg_security to dirty as requested by Srinivasa Ragavan and Sankar P.  (Philip Van Hoof)
+	Hack and debug log to get one hard to get imap crash. (Srinivasa Ragavan)
+	Fix for better vfolder flag syncing and count (Srinivasa Ragavan)
+	Sync using counting manually than the old approach (Srinivasa Ragavan)
+
 Evolution-Data-Server 2.25.4 2009-01-05
 ---------------------------------------
 
