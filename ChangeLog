@@ -1,3 +1,15 @@
+2009-01-21  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #541209
+
+	** Drop the libical fork in evolution-data-server
+	** Related changes in Makefiles
+
+	* configure.in:
+	* docs/reference/calendar/libecal/Makefile.am:
+	* docs/reference/calendar/libedata-cal/Makefile.am:
+	* src/Makefile.am:
+
 2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #564543

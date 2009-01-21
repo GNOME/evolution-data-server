@@ -4,10 +4,7 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
-	-I$(top_srcdir)/calendar/libical/src		\
-	-I$(top_builddir)/calendar/libical/src		\
-	-I$(top_srcdir)/calendar/libical/src/libical	\
-	-I$(top_builddir)/calendar/libical/src/libical	\
+	$(LIBICAL_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 EXTRA_DIST =                          \
@@ -27,7 +24,7 @@ test_ecal_INCLUDES =			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
 test_ecal_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(LIBICAL_LIBS)								\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_recur_SOURCES = test-recur.c
@@ -36,7 +33,7 @@ test_recur_INCLUDES =			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
 test_recur_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(LIBICAL_LIBS)								\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_search_SOURCES = test-search.c
@@ -45,5 +42,5 @@ test_search_INCLUDES =			\
 	-DG_LOG_DOMAIN=\"test-ecal\"
 test_search_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la	\
+	$(LIBICAL_LIBS)								\
 	$(EVOLUTION_CALENDAR_LIBS)

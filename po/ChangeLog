@@ -1,3 +1,12 @@
+2009-01-21  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #541209
+
+	** Drop the libical fork in evolution-data-server
+	** Related changes in Makefiles
+
+	* POTFILES.skip:
+
 2009-01-19  Jorge Gonzalez  <jorgegonz@svn.gnome.org>
 
 	* es.po: Updated Spanish translation.

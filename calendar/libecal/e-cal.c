@@ -4109,7 +4109,7 @@ foreach_tzid_callback (icalparameter *param, void *cbdata)
 	if (!vtimezone_comp)
 		return;
 
-	vtimezone_as_string = icalcomponent_as_ical_string (vtimezone_comp);
+	vtimezone_as_string = icalcomponent_as_ical_string_r (vtimezone_comp);
 
 	g_hash_table_insert (data->timezone_hash, (char*) tzid,
 			     vtimezone_as_string);
@@ -4190,7 +4190,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 			      vcal_string);
 
 	/* Get the string for the VEVENT/VTODO. */
-	obj_string = icalcomponent_as_ical_string (icalcomp);
+	obj_string = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* If there were any timezones to send, create a complete VCALENDAR,
 	   else just send the VEVENT/VTODO string. */
@@ -4271,7 +4271,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 
 	CORBA_exception_init (&ev);
 
-	obj = icalcomponent_as_ical_string (icalcomp);
+	obj = icalcomponent_as_ical_string_r (icalcomp);
 	GNOME_Evolution_Calendar_Cal_createObject (priv->cal, obj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
@@ -4352,7 +4352,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 
 	CORBA_exception_init (&ev);
 
-	obj = icalcomponent_as_ical_string (icalcomp);
+	obj = icalcomponent_as_ical_string_r (icalcomp);
 	GNOME_Evolution_Calendar_Cal_modifyObject (priv->cal, obj, mod, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
@@ -4519,7 +4519,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 
 	CORBA_exception_init (&ev);
 
-	obj = icalcomponent_as_ical_string (icalcomp);
+	obj = icalcomponent_as_ical_string_r (icalcomp);
 	GNOME_Evolution_Calendar_Cal_receiveObjects (priv->cal, obj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
@@ -4591,7 +4591,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 
 	CORBA_exception_init (&ev);
 
-	obj = icalcomponent_as_ical_string (icalcomp);
+	obj = icalcomponent_as_ical_string_r (icalcomp);
 	GNOME_Evolution_Calendar_Cal_sendObjects (priv->cal, obj, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_calendar_remove_op (ecal, our_op);
@@ -4858,7 +4858,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	}
 
 	/* convert icaltimezone into a string */
-	tzobj = icalcomponent_as_ical_string (icalcomp);
+	tzobj = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* call the backend */
 	CORBA_exception_init (&ev);
@@ -5009,7 +5009,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	}
 
 	/* convert icaltimezone into a string */
-	tzobj = icalcomponent_as_ical_string (icalcomp);
+	tzobj = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* call the backend */
 	CORBA_exception_init (&ev);

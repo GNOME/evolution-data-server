@@ -6,10 +6,7 @@ INCLUDES =						\
 	-I.. 						\
 	-I$(top_builddir)				\
 	-I$(top_builddir)/calendar/libecal		\
-	-I$(top_srcdir)/calendar/libical/src		\
-	-I$(top_builddir)/calendar/libical/src		\
-	-I$(top_srcdir)/calendar/libical/src/libical	\
-	-I$(top_builddir)/calendar/libical/src/libical	\
+	$(LIBICAL_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 # The corba stubs and skels
@@ -55,14 +52,12 @@ libecal_1_2_la_SOURCES =	\
 	e-cal-view-listener.h	\
 	e-cal-view-private.h
 
-libecal_1_2_la_LIBADD =									\
-	$(top_builddir)/calendar/libical/src/libical/libical-evolution.la		\
-	$(top_builddir)/calendar/libical/src/libicalvcal/libicalvcal-evolution.la	\
-	$(top_builddir)/calendar/libical/src/libicalss/libicalss-evolution.la		\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+libecal_1_2_la_LIBADD = 					\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
+	$(LIBICAL_LIBS)						\
 	$(EVOLUTION_CALENDAR_LIBS)
 
-libecal_1_2_la_LDFLAGS = 								\
+libecal_1_2_la_LDFLAGS = 					\
 	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE) $(NO_UNDEFINED)
 
 libecalincludedir = $(privincludedir)/libecal

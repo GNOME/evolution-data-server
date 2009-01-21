@@ -1,3 +1,99 @@
+2009-01-21  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #541209
+
+	** Drop the libical fork in evolution-data-server
+	** Related changes in Makefiles
+	** Adapt to the new APIs from upstream libical. Changes made include
+	using the "_r" counterpart for the following APIs:
+	+ icalproperty_as_ical_string ()
+	+ icalvalue_as_ical_string ()
+	+ icalcomponent_as_ical_string ()
+	+ icalparameter_as_ical_string ()
+	+ icaldurationtype_as_ical_string ()
+	+ icalenum_reqstat_code ()
+	+ icallangbind_property_eval_string ()
+	+ icallangbind_quote_as_ical ()
+	+ icalmime_text_end_part ()
+	+ icalperiodtype_as_ical_string ()
+	+ icalproperty_enum_to_string ()
+	+ icalproperty_get_parameter_as_string ()
+	+ icalproperty_get_value_as_string ()
+	+ icalproperty_get_property_name ()
+	+ icalrecurrencetype_as_string ()
+	+ icaltime_as_ical_string ()
+	+ icalreqstattype_as_string ()
+	+ icalvalue_binary_as_ical_string ()
+	+ icalvalue_int_as_ical_string ()
+	+ icalvalue_utcoffset_as_ical_string ()
+	+ icalvalue_string_as_ical_string ()
+	+ icalvalue_recur_as_ical_string ()
+	+ icalvalue_text_as_ical_string ()
+	+ icalvalue_attach_as_ical_string ()
+	+ icalvalue_duration_as_ical_string ()
+	+ icalvalue_date_as_ical_string ()
+	+ icalvalue_datetime_as_ical_string ()
+	+ icalvalue_float_as_ical_string ()
+	+ icalvalue_geo_as_ical_string ()
+	+ icalvalue_datetimeperiod_as_ical_string ()
+	+ icalvalue_period_as_ical_string ()
+	+ icalvalue_trigger_as_ical_string ()
+	+ icalvalue_as_ical_string ()
+
+	* Makefile.am:
+	* backends/caldav/Makefile.am:
+	* backends/caldav/e-cal-backend-caldav.c (icomp_x_prop_get),
+	(pack_cobj), (caldav_get_timezone):
+	* backends/contacts/Makefile.am:
+	* backends/contacts/e-cal-backend-contacts.c
+	(e_cal_backend_contacts_get_free_busy),
+	(e_cal_backend_contacts_get_timezone):
+	* backends/file/Makefile.am:
+	* backends/file/e-cal-backend-file.c (save_file_when_idle),
+	(notify_removals_cb), (notify_adds_modifies_cb),
+	(e_cal_backend_file_get_object), (e_cal_backend_file_get_timezone),
+	(e_cal_backend_file_get_free_busy):
+	* backends/google/Makefile.am:
+	* backends/google/e-cal-backend-google.c
+	(e_cal_backend_google_get_timezone):
+	* backends/groupwise/Makefile.am:
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(add_send_options_data_to_item), (set_rrule_from_comp),
+	(set_properties_from_cal_component), (start_freebusy_session),
+	(e_cal_backend_groupwise_store_settings):
+	* backends/groupwise/e-cal-backend-groupwise.c (get_deltas),
+	(e_cal_backend_groupwise_get_timezone):
+	* backends/http/Makefile.am:
+	* backends/http/e-cal-backend-http.c (retrieval_done),
+	(e_cal_backend_http_get_default_object),
+	(e_cal_backend_http_get_timezone),
+	(e_cal_backend_http_get_free_busy):
+	* backends/weather/Makefile.am:
+	* backends/weather/e-cal-backend-weather.c (finished_retrieval_cb),
+	(e_cal_backend_weather_get_timezone),
+	(e_cal_backend_weather_get_free_busy):
+	* libecal/Makefile.am:
+	* libecal/e-cal-check-timezones.c (e_cal_check_timezones):
+	* libecal/e-cal-component.c (e_cal_component_get_as_string),
+	(e_cal_component_get_recurid_as_string):
+	* libecal/e-cal-recur.c (e_cal_recur_set_rule_end_date):
+	* libecal/e-cal.c (foreach_tzid_callback),
+	(e_cal_get_component_as_string_internal), (e_cal_create_object),
+	(e_cal_modify_object), (e_cal_receive_objects),
+	(e_cal_send_objects), (e_cal_add_timezone),
+	(e_cal_set_default_timezone):
+	* libecal/libecal.pc.in:
+	* libedata-cal/Makefile.am:
+	* libedata-cal/e-cal-backend-cache.c
+	(e_cal_backend_cache_put_timezone),
+	(e_cal_backend_cache_put_default_timezone):
+	* libedata-cal/e-cal-backend-sync.c (_e_cal_backend_get_timezone):
+	* libedata-cal/e-cal-backend-util.c (is_attendee_declined):
+	* libedata-cal/libedata-cal.pc.in:
+	* tests/ecal/Makefile.am:
+	* tests/ecal/test-ecal.c (list_uids), (test_get_default_object),
+	(test_get_object):
+
 2009-01-19  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #272932

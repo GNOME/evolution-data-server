@@ -4004,7 +4004,7 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 	utc_zone = icaltimezone_get_utc_timezone ();
 	icaltime = icaltime_from_timet_with_zone (end_date, FALSE, utc_zone);
 	value = icalvalue_new_datetime (icaltime);
-	end_date_string = icalvalue_as_ical_string (value);
+	end_date_string = icalvalue_as_ical_string_r (value);
 	icalvalue_free (value);
 
 	/* If we already have an X-EVOLUTION-ENDDATE parameter, set the value

@@ -21,12 +21,9 @@ IGNORE_HFILES = \
 GTKDOC_CFLAGS = \
 	-I$(top_srcdir) 				\
 	-I$(top_srcdir)/calendar			\
-	-I$(top_srcdir)/calendar/libical/src		\
-	-I$(top_srcdir)/calendar/libical/src/libical	\
 	-I$(top_builddir)				\
 	-I$(top_builddir)/calendar			\
-	-I$(top_builddir)/calendar/libical/src		\
-	-I$(top_builddir)/calendar/libical/src/libical	\
+	$(LIBICAL_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 GTKDOC_LIBS = \

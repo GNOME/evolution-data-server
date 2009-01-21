@@ -842,7 +842,7 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal,
 	icalcomponent_set_dtstart (vfb, icaltime_from_timet_with_zone (start, FALSE, utc_zone));
 	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
 
-	calobj = icalcomponent_as_ical_string (vfb);
+	calobj = icalcomponent_as_ical_string_r (vfb);
 	*freebusy = g_list_append (NULL, calobj);
 	icalcomponent_free (vfb);
 
@@ -1002,7 +1002,7 @@ e_cal_backend_contacts_get_timezone (ECalBackendSync *backend, EDataCal *cal, co
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	*object = icalcomponent_as_ical_string (icalcomp);
+	*object = icalcomponent_as_ical_string_r (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

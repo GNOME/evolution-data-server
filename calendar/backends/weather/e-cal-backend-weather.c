@@ -159,7 +159,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 		icomp = e_cal_component_get_icalcomponent (E_CAL_COMPONENT (l->data));
 		id = e_cal_component_get_id (E_CAL_COMPONENT (l->data));
 
-		obj = icalcomponent_as_ical_string (icomp);
+		obj = icalcomponent_as_ical_string_r (icomp);
 		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbw),
 			id,
 			obj,
@@ -178,7 +178,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 
 		e_cal_backend_cache_put_component (priv->cache, comp);
 		icomp = e_cal_component_get_icalcomponent (comp);
-		obj = icalcomponent_as_ical_string (icomp);
+		obj = icalcomponent_as_ical_string_r (icomp);
 		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
 		g_free (obj);
 
@@ -195,7 +195,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 					if (comp) {
 						e_cal_backend_cache_put_component (priv->cache, comp);
 						icomp = e_cal_component_get_icalcomponent (comp);
-						obj = icalcomponent_as_ical_string (icomp);
+						obj = icalcomponent_as_ical_string_r (icomp);
 						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
 						g_free (obj);
 					}
@@ -606,7 +606,7 @@ e_cal_backend_weather_get_timezone (ECalBackendSync *backend, EDataCal *cal, con
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	*object = icalcomponent_as_ical_string (icalcomp);
+	*object = icalcomponent_as_ical_string_r (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -688,7 +688,7 @@ e_cal_backend_weather_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GL
 	icalcomponent_set_dtstart (vfb, icaltime_from_timet_with_zone (start, FALSE, utc_zone));
 	icalcomponent_set_dtend (vfb, icaltime_from_timet_with_zone (end, FALSE, utc_zone));
 
-	calobj = icalcomponent_as_ical_string (vfb);
+	calobj = icalcomponent_as_ical_string_r (vfb);
 	*freebusy = g_list_append (NULL, calobj);
 	icalcomponent_free (vfb);
 

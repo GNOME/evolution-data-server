@@ -618,7 +618,7 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	if (!icalcomp)
 		return FALSE;
 
-	obj = icalcomponent_as_ical_string (icalcomp);
+	obj = icalcomponent_as_ical_string_r (icalcomp);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), icaltimezone_get_tzid ((icaltimezone *)zone))) {
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache),
 						      icaltimezone_get_tzid ((icaltimezone *)zone),
@@ -667,7 +667,7 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone 
 	if (!icalcomp)
 		return FALSE;
 
-	obj = icalcomponent_as_ical_string (icalcomp);
+	obj = icalcomponent_as_ical_string_r (icalcomp);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), "default_zone")) {
 		retval = e_file_cache_replace_object (E_FILE_CACHE (cache), "default_zone",
 						      obj);

@@ -17,18 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef HANDLE_LIBICAL_MEMORY
-# define HANDLE_LIBICAL_MEMORY 1
-#endif
 #include <libical/ical.h>
-
-#ifdef LIBICAL_MEMFIXES
-/* avoid dependency on icalstrdup.h, works when compiling as part of EDS >= 2.22 */
-# define ical_strdup(_x) (_x)
-#else
-/* use icalstrdup.h to get runtime detection of memory fix patch */
-# include "libical/icalstrdup.h"
-#endif
 
 #include "e-cal-check-timezones.h"
 #include <libecal/e-cal.h>
@@ -298,7 +287,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                 } else {
                     int counter;
 
-                    zonestr = ical_strdup(icalcomponent_as_ical_string(subcomp));
+                    zonestr = icalcomponent_as_ical_string_r(subcomp);
 
                     /* check for collisions with existing timezones */
                     for (counter = 0;
@@ -321,7 +310,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                             }
                         }
                         g_free(buffer);
-                        buffer = ical_strdup(icalcomponent_as_ical_string(icaltimezone_get_component(existing_zone)));
+                        buffer = icalcomponent_as_ical_string_r(icaltimezone_get_component(existing_zone));
 
                         if (counter) {
                             char *fulltzid = g_strdup_printf("TZID:%s", value);

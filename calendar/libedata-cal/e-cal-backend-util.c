@@ -173,7 +173,7 @@ is_attendee_declined (icalcomponent *icalcomp, const char *email)
 		const char *attendee;
 		char *text = NULL;
 
-		attendee = icalproperty_get_value_as_string (prop);
+		attendee = icalproperty_get_value_as_string_r (prop);
 		if (!attendee)
 			continue;
 

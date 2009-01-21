@@ -115,7 +115,7 @@ list_uids (ECal *client)
 		printf ("\n");
 
 		for (l = objects; l; l = l->next) {
-			char *obj = icalcomponent_as_ical_string (l->data);
+			char *obj = icalcomponent_as_ical_string_r (l->data);
 			printf ("------------------------------\n");
 			printf ("%s", obj);
 			printf ("------------------------------\n");
@@ -537,7 +537,7 @@ test_get_default_object (ECal *client)
 	GError *error = NULL;
 	char *ical_string;
 	if (e_cal_get_default_object (client, &icalcomp, &error)) {
-		ical_string = icalcomponent_as_ical_string (icalcomp);
+		ical_string = icalcomponent_as_ical_string_r (icalcomp);
 		cl_printf (client, "Obtained default object: %s\n", ical_string);
 		g_free (ical_string);
 		tests_passed++;
@@ -594,7 +594,7 @@ test_get_object (ECal *client)
 		return error->message;
 	}
 
-	actual = icalcomponent_as_ical_string (icalcomp);
+	actual = icalcomponent_as_ical_string_r (icalcomp);
 	compare = !strcmp (actual, EXPECTED);
 
 	g_free (actual);

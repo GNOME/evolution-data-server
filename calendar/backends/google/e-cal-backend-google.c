@@ -249,7 +249,7 @@ e_cal_backend_google_get_timezone (ECalBackendSync *backend, EDataCal *cal, cons
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-	*object = icalcomponent_as_ical_string (icalcomp);
+	*object = icalcomponent_as_ical_string_r (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

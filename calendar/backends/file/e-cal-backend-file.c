@@ -171,7 +171,7 @@ save_file_when_idle (gpointer user_data)
 		goto error;
 	}
 
-	buf = icalcomponent_as_ical_string (priv->icalcomp);
+	buf = icalcomponent_as_ical_string_r (priv->icalcomp);
 	g_output_stream_write_all (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (char), NULL, NULL, &e);
 	g_free (buf);
 
@@ -738,7 +738,7 @@ notify_removals_cb (gpointer key, gpointer value, gpointer data)
 		if (!old_icomp)
 			return;
 
-		old_obj_str = icalcomponent_as_ical_string (old_icomp);
+		old_obj_str = icalcomponent_as_ical_string_r (old_icomp);
 		if (!old_obj_str)
 			return;
 
@@ -773,7 +773,7 @@ notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
 		if (!new_icomp)
 			return;
 
-		new_obj_str = icalcomponent_as_ical_string (new_icomp);
+		new_obj_str = icalcomponent_as_ical_string_r (new_icomp);
 		if (!new_obj_str)
 			return;
 
@@ -785,8 +785,8 @@ notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
 		if (!old_icomp || !new_icomp)
 			return;
 
-		old_obj_str = icalcomponent_as_ical_string (old_icomp);
-		new_obj_str = icalcomponent_as_ical_string (new_icomp);
+		old_obj_str = icalcomponent_as_ical_string_r (old_icomp);
+		new_obj_str = icalcomponent_as_ical_string_r (new_icomp);
 		if (!old_obj_str || !new_obj_str)
 			return;
 
@@ -1145,7 +1145,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 				return GNOME_Evolution_Calendar_ObjectNotFound;
                         }
 
-			*object = icalcomponent_as_ical_string (icalcomp);
+			*object = icalcomponent_as_ical_string_r (icalcomp);
 
 			icalcomponent_free (icalcomp);
 		}
@@ -1162,7 +1162,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			/* add all detached recurrences */
 			g_hash_table_foreach (obj_data->recurrences, (GHFunc) add_detached_recur_to_vcalendar, icalcomp);
 
-			*object = icalcomponent_as_ical_string (icalcomp);
+			*object = icalcomponent_as_ical_string_r (icalcomp);
 
 			icalcomponent_free (icalcomp);
 		} else
@@ -1209,7 +1209,7 @@ e_cal_backend_file_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
-	*object = icalcomponent_as_ical_string (icalcomp);
+	*object = icalcomponent_as_ical_string_r (icalcomp);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
@@ -1556,7 +1556,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	if (users == NULL) {
 		if (e_cal_backend_mail_account_get_default (&address, &name)) {
 			vfb = create_user_free_busy (cbfile, address, name, start, end);
-			calobj = icalcomponent_as_ical_string (vfb);
+			calobj = icalcomponent_as_ical_string_r (vfb);
 			*freebusy = g_list_append (*freebusy, calobj);
 			icalcomponent_free (vfb);
 			g_free (address);
@@ -1567,7 +1567,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 			address = l->data;
 			if (e_cal_backend_mail_account_is_valid (address, &name)) {
 				vfb = create_user_free_busy (cbfile, address, name, start, end);
-				calobj = icalcomponent_as_ical_string (vfb);
+				calobj = icalcomponent_as_ical_string_r (vfb);
 				*freebusy = g_list_append (*freebusy, calobj);
 				icalcomponent_free (vfb);
 				g_free (name);

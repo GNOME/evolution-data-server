@@ -176,7 +176,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 				icaltime_adjust (&temp, i, 0, 0, 0);
 				icaltime_set_timezone (&temp, default_zone);
 				temp = icaltime_convert_to_zone (temp, utc);
-				value = icaltime_as_ical_string (temp);
+				value = icaltime_as_ical_string_r (temp);
 				e_gw_item_set_reply_within (item, value);
 				g_free (value);
 			}
@@ -187,7 +187,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 			icaltime_adjust (&temp, atoi (x_val), 0, 0, 0);
 			icaltime_set_timezone (&temp, default_zone);
 			temp = icaltime_convert_to_zone (temp, utc);
-			expire = icaltime_as_ical_string (temp);
+			expire = icaltime_as_ical_string_r (temp);
 			e_gw_item_set_expires (item, expire);
 			g_free (expire);
 
@@ -197,7 +197,7 @@ add_send_options_data_to_item (EGwItem *item, ECalComponent *comp, icaltimezone 
 			temp = icaltime_from_string (x_val);
 			icaltime_set_timezone (&temp, default_zone);
 			temp = icaltime_convert_to_zone (temp, utc);
-			delay = icaltime_as_ical_string (temp);
+			delay = icaltime_as_ical_string_r (temp);
 			e_gw_item_set_delay_until (item, delay);
 			g_free (delay);
 
@@ -508,7 +508,7 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 		if (ical_recur->count != 0)
 			item_rrule->count = ical_recur->count;
 		else
-			item_rrule->until =  icaltime_as_ical_string (ical_recur->until);
+			item_rrule->until =  icaltime_as_ical_string_r (ical_recur->until);
 
 		item_rrule->interval = ical_recur->interval;
 
@@ -540,7 +540,7 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 					if (!icaltime_get_timezone (*(dt->value)))
 						icaltime_set_timezone (dt->value, default_zone ? default_zone : utc);
 					itt_utc = icaltime_convert_to_zone (*dt->value, utc);
-					item_exdate_list = g_slist_append (item_exdate_list, icaltime_as_ical_string (itt_utc));
+					item_exdate_list = g_slist_append (item_exdate_list, icaltime_as_ical_string_r (itt_utc));
 				}
 			}
 			e_gw_item_set_exdate_list (item, item_exdate_list);
@@ -611,7 +611,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			if (!icaltime_get_timezone (*dt.value))
 				icaltime_set_timezone (dt.value, default_zone ? default_zone : utc);
 			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
-			value = icaltime_as_ical_string (itt_utc);
+			value = icaltime_as_ical_string_r (itt_utc);
 			e_gw_item_set_end_date (item, value);
 			g_free (value);
 			e_cal_component_free_datetime (&dt);
@@ -628,7 +628,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			if (!icaltime_get_timezone (*dt.value))
 				icaltime_set_timezone (dt.value, default_zone);
 			itt_utc = icaltime_convert_to_zone (*dt.value, utc);
-			value = icaltime_as_ical_string (itt_utc);
+			value = icaltime_as_ical_string_r (itt_utc);
 			e_gw_item_set_due_date (item,  value);
 			g_free (value);
 			e_cal_component_free_datetime (&dt);
@@ -706,7 +706,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		if (!icaltime_get_timezone (*dt.value))
 			icaltime_set_timezone (dt.value, default_zone);
 		itt_utc = icaltime_convert_to_zone (*dt.value, utc);
-		value = icaltime_as_ical_string (itt_utc);
+		value = icaltime_as_ical_string_r (itt_utc);
 		e_gw_item_set_start_date (item, value);
 		g_free (value);
 	} else if (e_gw_item_get_item_type (item) == E_GW_ITEM_TYPE_APPOINTMENT) {
@@ -729,14 +729,14 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		if (!icaltime_get_timezone (*dt.value))
 			icaltime_set_timezone (dt.value, default_zone);
 		itt_utc = icaltime_convert_to_zone (*dt.value, utc);
-		value = icaltime_as_ical_string (itt_utc);
+		value = icaltime_as_ical_string_r (itt_utc);
 		e_gw_item_set_creation_date (item, value);
 		g_free (value);
 	} else {
 		struct icaltimetype itt;
 
 		e_cal_component_get_dtstamp (comp, &itt);
-		value = icaltime_as_ical_string (itt);
+		value = icaltime_as_ical_string_r (itt);
 		e_gw_item_set_creation_date (item, value);
 		g_free (value);
 	}
@@ -1619,10 +1619,10 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
 
 	utc = icaltimezone_get_utc_timezone ();
 	icaltime = icaltime_from_timet_with_zone (start, FALSE, utc);
-	start_date = icaltime_as_ical_string (icaltime);
+	start_date = icaltime_as_ical_string_r (icaltime);
 
 	icaltime = icaltime_from_timet_with_zone (end, FALSE, utc);
-	end_date = icaltime_as_ical_string (icaltime);
+	end_date = icaltime_as_ical_string_r (icaltime);
 
         e_gw_message_write_string_parameter (msg, "startDate", NULL, start_date);
         e_gw_message_write_string_parameter (msg, "endDate", NULL, end_date);
@@ -2105,7 +2105,7 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 			char *value;
 			tt = icaltime_today ();
 			icaltime_adjust (&tt, gopts->delay_until, 0, 0, 0);
-			value = icaltime_as_ical_string (tt);
+			value = icaltime_as_ical_string_r (tt);
 		} else
 			value = g_strdup ("none");
 		e_source_set_property (source, "delay-delivery", value);

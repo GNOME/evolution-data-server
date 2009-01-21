@@ -1,13 +1,11 @@
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libedata-cal\"			\
+	-DBASE_VERSION=\""$(BASE_VERSION)"\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
-	-I$(top_srcdir)/calendar/libical/src		\
-	-I$(top_builddir)/calendar/libical/src		\
-	-I$(top_srcdir)/calendar/libical/src/libical	\
-	-I$(top_builddir)/calendar/libical/src/libical	\
+	$(LIBICAL_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 CORBA_GENERATED_H =				\
@@ -48,8 +46,9 @@ libedata_cal_1_2_la_SOURCES =		\
 
 libedata_cal_1_2_la_LIBADD =					\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la \
-	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
+	$(top_builddir)/libebackend/libebackend-1.2.la 		\
+	$(LIBICAL_LIBS)						\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 libedata_cal_1_2_la_LDFLAGS = 								\

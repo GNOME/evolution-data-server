@@ -299,7 +299,7 @@ icomp_x_prop_get (icalcomponent *comp, const char *key)
 	}
 
 	if (xprop) {
-		return icalproperty_get_value_as_string (xprop);
+		return icalproperty_get_value_as_string_r (xprop);
 	}
 
 	return NULL;
@@ -1970,7 +1970,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, ECalComponent *ecomp)
 		calcomp = icalcomponent_new_clone (icomp);
 	}
 
-	objstr = icalcomponent_as_ical_string (calcomp);
+	objstr = icalcomponent_as_ical_string_r (calcomp);
 
 	g_assert (objstr);
 
@@ -2708,7 +2708,7 @@ caldav_get_timezone (ECalBackendSync  *backend,
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
-	*object = icalcomponent_as_ical_string (icalcomp);
+	*object = icalcomponent_as_ical_string_r (icalcomp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

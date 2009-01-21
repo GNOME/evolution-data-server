@@ -1263,7 +1263,7 @@ e_cal_component_get_as_string (ECalComponent *comp)
 	/* Ensure that the user has committed the new SEQUENCE */
 	g_return_val_if_fail (priv->need_sequence_inc == FALSE, NULL);
 
-	str = icalcomponent_as_ical_string (priv->icalcomp);
+	str = icalcomponent_as_ical_string_r (priv->icalcomp);
 
 	return str;
 }
@@ -3588,7 +3588,7 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
         e_cal_component_free_range (&range);
 
         return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
-                icaltime_as_ical_string (tt) : g_strdup ("0");
+                icaltime_as_ical_string_r (tt) : g_strdup ("0");
 }
 
 /**

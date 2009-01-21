@@ -545,7 +545,7 @@ get_deltas (gpointer handle)
 			if (!tt.is_date) {
 				tt = icaltime_convert_to_zone (tt, priv->default_zone);
 				icaltime_set_timezone (&tt, priv->default_zone);
-				rid = icaltime_as_ical_string (tt);
+				rid = icaltime_as_ical_string_r (tt);
 				temp = rid;
 			} else
 				rid = calid->ical_id;
@@ -1574,7 +1574,7 @@ e_cal_backend_groupwise_get_timezone (ECalBackendSync *backend, EDataCal *cal, c
         if (!icalcomp)
                 return GNOME_Evolution_Calendar_InvalidObject;
 
-        *object = icalcomponent_as_ical_string (icalcomp);
+        *object = icalcomponent_as_ical_string_r (icalcomp);
 
         return GNOME_Evolution_Calendar_Success;
 }

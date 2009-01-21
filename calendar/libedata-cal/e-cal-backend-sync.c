@@ -906,7 +906,7 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 						/* change tzid to our, because the component has the buildin tzid */
 						icalproperty_set_tzid (prop, tzid);
 
-						object = icalcomponent_as_ical_string (clone);
+						object = icalcomponent_as_ical_string_r (clone);
 					}
 					icalcomponent_free (clone);
 				}
