@@ -243,10 +243,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
          libxml-2.0 >= libxml_minimum_version
          libsoup-2.4 >= libsoup_minimum_version])
 
-dnl **************************************************
-dnl Check for libical
-dnl **************************************************
-PKG_CHECK_MODULES(LIBICAL, libical >= libical_minimum_version)
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)
 
@@ -1538,7 +1534,7 @@ AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 
 dnl --- evolution-calendar flags
 if test "x${enable_calendar}" = "xyes"; then
-	EVOLUTION_CALENDAR_DEPS="libxml-2.0 libbonobo-2.0 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
+	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 libbonobo-2.0 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
 	EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, $EVOLUTION_CALENDAR_DEPS)
 	AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
@@ -1548,7 +1544,9 @@ fi
 dnl --- factory flags
 
 E_FACTORY_DEPS="libgnome-2.0 $mozilla_nspr"
-
+if test "x${enable_calendar}" = "xyes"; then
+   E_FACTORY_DEPS="$E_FACTORY_DEPS libical"
+fi
 EVO_SET_COMPILE_FLAGS(E_FACTORY, $E_FACTORY_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_FACTORY_CFLAGS)
 AC_SUBST(E_FACTORY_LIBS)

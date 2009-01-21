@@ -1,3 +1,10 @@
+2009-01-21  Ross Burton  <ross@linux.intel.com>
+
+	* configure.in:
+	Add libical to the calendar and server deps to ensure that it is
+	available everywhere it is needed, and not checked if we're not
+	building the calendar.
+
 2009-01-21  Fridrich Strba <fstrba@novell.com>
 
 	* configure.in, calendar/backends/caldav/Makefile.am,
