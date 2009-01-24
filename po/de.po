@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-01-11 00:39+0100\n"
-"PO-Revision-Date: 2009-01-11 00:42+0100\n"
+"PO-Revision-Date: 2009-01-24 17:42+0100\n"
 "Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1325,11 +1325,11 @@ msgid ""
 msgstr ""
 "»%s« konnte nicht geöffnet werden:\n"
 "%s\n"
-"Änderungen an diesem Ordner werden nicht resynchronisiert werden."
+"Änderungen an diesem Ordner werden nicht neu abgeglichen werden."
 
 #: ../camel/camel-disco-diary.c:297
 msgid "Resynchronizing with server"
-msgstr "Resynchronisieren mit dem Server"
+msgstr "Neu abgleichen mit dem Server"
 
 #: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:52
 msgid "Copy folder content locally for offline operation"
@@ -1369,7 +1369,7 @@ msgstr "Ungültiger Nachrichten-Datenstrom von %s erhalten: %s"
 
 #: ../camel/camel-filter-driver.c:1016 ../camel/camel-filter-driver.c:1025
 msgid "Syncing folders"
-msgstr "Ordner werden synchronisiert"
+msgstr "Ordner werden abgeglichen"
 
 #: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1520
 #, c-format
@@ -1405,7 +1405,7 @@ msgstr "Fehlgeschlagen bei Nachricht %d"
 
 #: ../camel/camel-filter-driver.c:1273 ../camel/camel-filter-driver.c:1364
 msgid "Syncing folder"
-msgstr "Ordner wird synchronisiert"
+msgstr "Ordner wird abgeglichen"
 
 #: ../camel/camel-filter-driver.c:1277 ../camel/camel-filter-driver.c:1369
 msgid "Complete"
@@ -2784,7 +2784,7 @@ msgstr "A_usschließlich den Eingangsordner auf unerwünschte Nachrichten prüfe
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:68
 msgid "Automatically synchroni_ze account locally"
-msgstr "Konto automatisch lokal syn_chronisieren"
+msgstr "Konto automatisch lokal a_bgleichen"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:73
 msgid "SOAP Settings"
@@ -3113,7 +3113,7 @@ msgstr "Neue Nachrichten auf _unerwünschten Inhalt prüfen"
 #: ../camel/providers/imap/camel-imap-provider.c:76
 #: ../camel/providers/imap4/camel-imap4-provider.c:60
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Entfernte E-Mails automatisch lokal s_ynchronisieren"
+msgstr "Entfernte E-Mails automatisch lokal a_bgleichen"
 
 #: ../camel/providers/imap/camel-imap-provider.c:83
 msgid "IMAP"
@@ -3342,13 +3342,13 @@ msgstr "Auf den Ordner »%s« konnte nicht zugegriffen werden: %s"
 #, c-format
 msgid "Cannot sync flags to folder '%s': Unknown error"
 msgstr ""
-"Flags konnten nicht mit Ordner »%s« synchronisiert werden: Unbekannter Fehler"
+"Flags konnten nicht mit Ordner »%s« abgeglichen werden: Unbekannter Fehler"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:497
 #, c-format
 msgid "Cannot sync flags to folder '%s': Bad command"
 msgstr ""
-"Flags konnten nicht mit Ordner »%s« synchronisiert werden: Ungültiger Befehl"
+"Flags konnten nicht mit Ordner »%s« abgeglichen werden: Ungültiger Befehl"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:637
 #, c-format
@@ -4043,8 +4043,8 @@ msgstr "Ordner konnte nicht gespeichert werden: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:1135
 msgid "Summary and folder mismatch, even after a sync"
 msgstr ""
-"Zusammenfassung und Ordner stimmen nicht überein, sogar nach einer "
-"Synchronisierung"
+"Zusammenfassung und Ordner stimmen nicht überein, sogar nach einem "
+"Datenabgleich"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1060
 #: ../camel/providers/local/camel-spool-summary.c:357
@@ -4157,12 +4157,12 @@ msgstr "Spool-Ordner können nicht gelöscht werden"
 #: ../camel/providers/local/camel-spool-summary.c:222
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
-msgstr "Temporärer Ordner %s konnte nicht synchronisiert werden: %s"
+msgstr "Temporärer Ordner %s konnte nicht abgeglichen werden: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:238
 #, c-format
 msgid "Could not sync spool folder %s: %s"
-msgstr "Spool-Ordner %s konnte nicht synchronisiert werden: %s"
+msgstr "Spool-Ordner %s konnte nicht abgeglichen werden: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:269
 #: ../camel/providers/local/camel-spool-summary.c:286
@@ -4172,7 +4172,7 @@ msgid ""
 "Could not sync spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in '%s'"
 msgstr ""
-"Spool-Ordner %s konnte nicht synchronisiert werden: %s\n"
+"Spool-Ordner %s konnte nicht abgeglichen werden: %s\n"
 "Ordner könnte fehlerhaft sein, Kopie in »%s« gespeichert"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:137
