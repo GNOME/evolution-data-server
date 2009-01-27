@@ -460,7 +460,7 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 	 * punctuation, so strip any trailing
 	 * punctuation off. Also strip off any closing
 	 * double-quotes. */
-	while (inptr > pos && strchr (",.:;?!-|}]\"", inptr[-1]))
+	while (inptr > pos && strchr (",.:;?!-|}])\"", inptr[-1]))
 		inptr--;
 
 
