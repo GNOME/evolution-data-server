@@ -526,6 +526,7 @@ static void
 update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 {
 	gchar **email = NULL, *from = NULL;	
+	int index = 0;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
@@ -535,18 +536,25 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 
 	email = g_strsplit_set (from, "<>", -1);
 
-	if (!email || !email[1])
+	if (from [0] == '<') {
+		/* g_strsplit_set will add a dummy empty string as the first string if the first character in the 
+		original string is one of the delimiters that you want to suppress. 
+		Refer to g_strsplit_set documentation */
+		index = 1;
+	}
+
+	if (!email || !email[index])
 		goto error;
 
 	if (flag == ADD_JUNK_ENTRY)
-		e_gw_connection_create_junk_entry (cnc, email[1], "email", "junk");
+		e_gw_connection_create_junk_entry (cnc, email[index], "email", "junk");
 	else if (flag == REMOVE_JUNK_ENTRY) {
 		GList *list = NULL;
 		EGwJunkEntry *entry;
 		if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
 			while (list) {
 				entry = list->data;
-				if (!g_ascii_strcasecmp (entry->match, email[1])) { 
+				if (!g_ascii_strcasecmp (entry->match, email[index])) { 
 					e_gw_connection_remove_junk_entry (cnc, entry->id);
 				}
 				list = list->next;
