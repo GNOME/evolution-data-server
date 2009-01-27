@@ -1,3 +1,9 @@
+2009-01-28  Tor Lillqvist  <tml@novell.com>
+
+	* src/Makefile.am (evolution_data_server_LDFLAGS): Build as a
+	"GUI" executable on Windows to avoid console windows that annoy
+	end-users.
+
 2009-01-21  Ross Burton  <ross@linux.intel.com>
 
 	* configure.in:
