@@ -481,6 +481,9 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 		}
 	}
 	
+	if (n == 0)
+		return 0;
+	
 	nread = camel_mime_parser_read (http->parser, &parser_buf, n);
 	
 	if (nread > 0)
@@ -540,13 +543,7 @@ camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 	g_return_val_if_fail (CAMEL_IS_HTTP_STREAM (http_stream), NULL);
 
 	if (!http_stream->content_type && !http_stream->raw) {
-		if (http_connect (http_stream, http_stream->proxy ? http_stream->proxy : http_stream->url) == NULL)
-			return NULL;
-
-		if (http_method_invoke (http_stream) == -1)
-			return NULL;
-
-		if (http_get_headers (http_stream) == -1)
+		if (stream_read (CAMEL_STREAM (http_stream), NULL, 0) == -1)
 			return NULL;
 	}
 
