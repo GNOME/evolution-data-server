@@ -1,3 +1,24 @@
+2009-01-27  Simon Brys  <sbrys@novell.com>
+
+	** Fix for bug #467075 (BNC)
+
+	* camel-url-scanner.c (camel_url_web_end): Exclude the closing bracket
+	while searching for links.
+
+	Bug Report:
+
+	Incorrect url is displayed in Evolution plain text mails when the url is
+	surrounded by brackets
+
+	Steps to duplicate:
+	- In Evolution, send yourself a plain text mail with something like this 
+	as the mail contents:
+
+	Please read the doc (see http://a.b.c/d)
+	
+	- When displaying the mail, Evolution detects the url, but it includes 
+	the closing bracket. So clicking the url does not open the correct link.
+
 2009-01-19  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #204891
