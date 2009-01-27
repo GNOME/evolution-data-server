@@ -1,3 +1,12 @@
+2009-01-28  Hiroyuki Ikezoe  <poincare@ikezoe.net>
+
+	* camel-local-provider.[ch]: Move frompos_sort from
+	camel-mbox-summary.c, and rename to camel_local_frompos_sort.
+	And just return substraction a2 from a1.
+
+	* camel-mbox-summary.c, camel-spool-summary.c: Use
+	camel_local_frompos_sort for camel_db_set_collate.
+
 2009-01-12  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-mbox-folder.c: (mbox_get_message): Revert previous fix
