@@ -1,5 +1,17 @@
 2009-01-27  Simon Brys  <sbrys@novell.com>
 
+	** Fix for bug #464878 (BNC)
+
+	* camel-http-stream.c (stream_read),
+	(camel_http_stream_get_content_type): http_get_statuscode () should 
+	get us the status code and handle redirects better.
+
+	Bug Report:
+	When an HTML attachment contains an image tag with a source that 
+	returns a "HTTP/302 Moved Temporarily", that image is not displayed
+
+2009-01-27  Simon Brys  <sbrys@novell.com>
+
 	** Fix for bug #467075 (BNC)
 
 	* camel-url-scanner.c (camel_url_web_end): Exclude the closing bracket
