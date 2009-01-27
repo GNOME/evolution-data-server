@@ -46,6 +46,7 @@
 #include "camel-string-utils.h"
 #include "camel-store.h"
 #include "camel-folder.h"
+#include "camel-local-private.h"
 
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
@@ -211,29 +212,6 @@ camel_mbox_summary_finalise(CamelObject *obj)
 {
 	/*CamelMboxSummary *mbs = CAMEL_MBOX_SUMMARY(obj);*/
 }
-static int 
-frompos_sort (void *enc, int len1, void * data1, int len2, void *data2)
-{
-	static char *sa1=NULL, *sa2=NULL;
-	static int l1=0, l2=0;
-	int a1, a2;
-
-	if (l1 < len1+1) {
-		sa1 = g_realloc (sa1, len1+1);
-		l1 = len1+1;
-	}
-	if (l2 < len2+1) {
-		sa2 = g_realloc (sa2, len2+1);
-		l2 = len2+1;
-	}
-	strncpy (sa1, data1, len1);sa1[len1] = 0;
-	strncpy (sa2, data2, len2);sa2[len2] = 0;
-
-	a1 = strtoul (sa1, NULL, 10);
-	a2 = strtoul (sa2, NULL, 10);
-
-	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
-}
 
 /**
  * camel_mbox_summary_new:
@@ -252,7 +230,7 @@ camel_mbox_summary_new(struct _CamelFolder *folder, const char *filename, const 
 		CamelFolderSummary *summary = (CamelFolderSummary *)new;
 
 		/* Set the functions for db sorting */
-		camel_db_set_collate (folder->parent_store->cdb_r, "bdata", "mbox_frompos_sort", (CamelDBCollate)frompos_sort);
+		camel_db_set_collate (folder->parent_store->cdb_r, "bdata", "mbox_frompos_sort", (CamelDBCollate)camel_local_frompos_sort);
 		summary->sort_by = "bdata";
 		summary->collate = "mbox_frompos_sort";
 

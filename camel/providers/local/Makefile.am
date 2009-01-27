@@ -29,6 +29,7 @@ libcamellocal_la_SOURCES = 			\
 	camel-local-folder.c			\
 	camel-local-store.c			\
 	camel-local-summary.c			\
+	camel-local-private.c			\
 	camel-local-provider.c			\
 	camel-mbox-folder.c			\
 	camel-mbox-store.c			\
