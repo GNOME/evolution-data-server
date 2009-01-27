@@ -63,6 +63,10 @@ evolution_data_server_LDADD =                     			\
         $(E_FACTORY_LIBS)						\
 	$(E_DATA_SERVER_LIBS)
 
+if OS_WIN32
+evolution_data_server_LDFLAGS = -mwindows
+endif
+
 install-evolution-data-servers:
 	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
 	$(LIBTOOL) --mode=install $(INSTALL_PROGRAM) evolution-data-server $(DESTDIR)$(libexecdir)/evolution-data-server-$(BASE_VERSION)
