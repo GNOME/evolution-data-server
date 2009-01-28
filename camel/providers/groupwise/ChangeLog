@@ -1,3 +1,11 @@
+2009-01-28  Sankar P  <psankar@novell.com>
+
+	** Fix for bnc bug #467638
+
+	* camel/providers/groupwise/camel-groupwise-store.c:
+	Fix the broken current_folder handling code. Lots of 
+	issues are fixed. some may remain yet.
+
 2009-01-27  Sankar P  <psankar@novell.com>
 
 	** Fix for bnc bug #464758
