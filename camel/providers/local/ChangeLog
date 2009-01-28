@@ -1,3 +1,10 @@
+2009-01-28  Suman Manjunath  <msuman@novell.com>
+
+	* camel-local-private.c:
+	* camel-local-private.h:
+	Include appropriate headers which otherwise cause build failures
+	with strict compiler settings.
+
 2009-01-28  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	* camel-local-provider.[ch]: Move frompos_sort from
