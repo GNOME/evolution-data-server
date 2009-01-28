@@ -1,3 +1,12 @@
+2009-01-28  Sankar P  <psankar@novell.com>
+
+	** Fix for bnc bug #470143
+
+	* servers/groupwise/e-gw-connection.c:
+	The server does not like when the name and id view 
+	elements are not passed to the getFolderRequest call. 
+	Also fixes a bug with the empty container element crash.
+
 2009-01-02  Sankar P  <psankar@novell.com>
 
 	** Fix for bnc bug #446290
