@@ -578,8 +578,10 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 
 	
 		ret = camel_db_read_message_info_record_with_uid (cdb, folder_name, uid, &data, camel_read_mir_callback, &ex);
-		if (ret != 0)
+		if (ret != 0) {
+			camel_exception_clear (&ex);
 			return NULL;
+		}
 		
 		CAMEL_SUMMARY_LOCK(s, summary_lock);
 		CAMEL_SUMMARY_LOCK(s, ref_lock);
