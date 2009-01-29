@@ -36,6 +36,350 @@
 
 #include "camel-debug.h"
 
+/* how long to wait before invoking sync on the file; in miliseconds */
+#define SYNC_TIMEOUT 5000
+
+static sqlite3_vfs *old_vfs = NULL;
+
+GStaticRecMutex sync_queue_lock = G_STATIC_REC_MUTEX_INIT;
+#define LockQueue()   g_static_rec_mutex_lock   (&sync_queue_lock)
+#define UnlockQueue() g_static_rec_mutex_unlock (&sync_queue_lock)
+
+/* 'sync_queue' is using keys sqlite3_file to sync_queue_data structures.
+   Access to this is guarded with LockQueue/UnlockQueue function. */
+static GHashTable *sync_queue = NULL;
+
+typedef struct _sync_queue_data {
+	guint timeout_source; /* id of the source */
+	GThread *running_thread;
+
+	int sync_flags; 
+} sync_queue_data;
+
+struct CamelSqlite3File
+{
+	sqlite3_file parent;
+	sqlite3_file *old_vfs_file; /* pointer to old_vfs' file */
+};
+
+static int
+call_old_file_Sync (sqlite3_file *pFile, int flags)
+{
+	struct CamelSqlite3File *cFile;
+
+	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
+	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);
+
+	cFile = (struct CamelSqlite3File *)pFile;
+	return cFile->old_vfs_file->pMethods->xSync (cFile->old_vfs_file, flags);
+}
+
+static gboolean prepare_to_run_sync_in_thread (gpointer pFile);
+
+static gpointer
+run_sync_in_thread (gpointer pFile)
+{
+	int sync_flags = 0;
+	sync_queue_data *data;
+
+	g_return_val_if_fail (pFile != NULL, NULL);
+	g_return_val_if_fail (sync_queue != NULL, NULL);
+
+	LockQueue ();
+	data = g_hash_table_lookup (sync_queue, pFile);
+	if (data) {
+		/* sync_flags can change while we are running */
+		sync_flags = data->sync_flags;
+		data->sync_flags = 0;
+	}
+	UnlockQueue ();
+
+	/* this should not happen, once we are in a thread, the datas are ours */
+	g_return_val_if_fail (data != NULL, NULL);
+
+	/* do the sync itself, but do not block the sync_queue;
+	   any error here is silently ignored. */
+	call_old_file_Sync (/*sqlite3_file*/pFile, sync_flags);
+
+	LockQueue ();
+	if (data->timeout_source == -1) {
+		/* new sync request arrived meanwhile, indicate thread finished... */
+		data->running_thread = NULL;
+		/* ...and reschedule */
+		data->timeout_source = g_timeout_add (SYNC_TIMEOUT, prepare_to_run_sync_in_thread, pFile);
+	} else {
+		/* remove it from a sync_queue and free memory */
+		g_hash_table_remove (sync_queue, pFile);
+		g_free (data);
+	}
+	UnlockQueue ();
+
+	return NULL;
+}
+
+static gboolean
+prepare_to_run_sync_in_thread (gpointer pFile)
+{
+	sync_queue_data *data;
+
+	g_return_val_if_fail (pFile != NULL, FALSE);
+	g_return_val_if_fail (sync_queue != NULL, FALSE);
+
+	LockQueue ();
+
+	data = g_hash_table_lookup (sync_queue, pFile);
+	/* check if still tracking this file and if didn't get rescheduled */
+	if (data && data->timeout_source == g_source_get_id (g_main_current_source ())) {
+		/* run the thread */
+		data->running_thread = g_thread_create (run_sync_in_thread, pFile, TRUE, NULL);
+		data->timeout_source = 0;
+	}
+
+	UnlockQueue ();
+
+	return FALSE;
+}
+
+/*
+   Adds sync on this file to the queue. Flags are just bit-OR-ed,
+   which will not hopefully hurt. In case the file is waiting for
+   it's sync, we just postpone it once again.
+   In case file is syncing just in call of this, we schedule other
+   sync after that.
+ */
+static void
+queue_sync (sqlite3_file *pFile, int flags)
+{
+	sync_queue_data *data;
+
+	g_return_if_fail (pFile != NULL);
+	g_return_if_fail (flags != 0);
+
+	LockQueue ();
+
+	if (!sync_queue)
+		sync_queue = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	data = g_hash_table_lookup (sync_queue, pFile);
+	if (data) {
+		/* There is a sync request for this file already. */
+		if (data->running_thread) {
+			/* -1 indicates to reschedule after the actual sync finishes */
+			data->timeout_source = -1;
+			/* start with new flags - thread set it to 0; next time just add others */
+			data->sync_flags = data->sync_flags | flags;
+		} else {
+			data->sync_flags = data->sync_flags | flags;
+
+			/* reschedule */
+			g_source_remove (data->timeout_source);
+			data->timeout_source = g_timeout_add (SYNC_TIMEOUT, prepare_to_run_sync_in_thread, pFile);
+		}
+	} else {
+		data = g_malloc0 (sizeof (sync_queue_data));
+		data->sync_flags = flags;
+		data->running_thread = NULL;
+		data->timeout_source = g_timeout_add (SYNC_TIMEOUT, prepare_to_run_sync_in_thread, pFile);
+
+		g_hash_table_insert (sync_queue, pFile, data);
+	}
+
+	UnlockQueue ();
+}
+
+/*
+   If file is not in a queue, it does nothing, otherwise it removes
+   it from a queue, and calls sync immediately.
+   If file is syncing at the moment, it waits until the previous sync finishes.
+ */
+static void
+dequeue_sync (sqlite3_file *pFile)
+{
+	sync_queue_data *data;
+
+	g_return_if_fail (pFile != NULL);
+
+	LockQueue ();
+
+	if (!sync_queue) {
+		/* closing file which wasn't requested to sync, and none
+		   before it too. */
+		UnlockQueue ();
+		return;
+	}
+
+	data = g_hash_table_lookup (sync_queue, pFile);
+	if (data) {
+		int sync_flags = data->sync_flags;
+
+		if (data->timeout_source) {
+			if (data->timeout_source != -1)
+				g_source_remove (data->timeout_source);
+			data->timeout_source = 0;
+		}
+
+		if (data->running_thread) {
+			GThread *thread = data->running_thread;
+
+			/* do not do anything later */
+			data = NULL;
+
+			/* unlock here, thus the thread can hold the lock again */
+			UnlockQueue ();
+
+			/* it's running at the moment, wait for a finish.
+			   it'll remove structure from a sync_queue too. */
+			g_thread_join (thread);
+		} else {
+			g_hash_table_remove (sync_queue, pFile);
+		}
+
+		if (data) {
+			static gboolean no_sync_on_close = FALSE, iKnow = FALSE;
+
+			if (!iKnow) {
+				iKnow = TRUE;
+				no_sync_on_close = getenv ("CAMEL_NO_SYNC_ON_CLOSE") != NULL;
+			}
+
+			/* do not block queue on while syncing */
+			UnlockQueue ();
+
+			if (!no_sync_on_close) {
+				/* sync on close */
+				call_old_file_Sync (pFile, sync_flags);
+			}
+
+			g_free (data);
+		}
+	} else {
+		UnlockQueue ();
+	}
+}
+
+#define def_subclassed(_nm, _params, _call)			\
+static int							\
+camel_sqlite3_file_ ## _nm _params				\
+{								\
+	struct CamelSqlite3File *cFile;				\
+								\
+	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);	\
+	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);	\
+								\
+	cFile = (struct CamelSqlite3File *) pFile;		\
+	return cFile->old_vfs_file->pMethods->_nm _call;	\
+}
+
+def_subclassed (xRead, (sqlite3_file *pFile, void *pBuf, int iAmt, sqlite3_int64 iOfst), (cFile->old_vfs_file, pBuf, iAmt, iOfst))
+def_subclassed (xWrite, (sqlite3_file *pFile, const void *pBuf, int iAmt, sqlite3_int64 iOfst), (cFile->old_vfs_file, pBuf, iAmt, iOfst))
+def_subclassed (xTruncate, (sqlite3_file *pFile, sqlite3_int64 size), (cFile->old_vfs_file, size))
+def_subclassed (xFileSize, (sqlite3_file *pFile, sqlite3_int64 *pSize), (cFile->old_vfs_file, pSize))
+def_subclassed (xLock, (sqlite3_file *pFile, int lockType), (cFile->old_vfs_file, lockType))
+def_subclassed (xUnlock, (sqlite3_file *pFile, int lockType), (cFile->old_vfs_file, lockType))
+#if SQLITE_VERSION_NUMBER < 3006000
+def_subclassed (xCheckReservedLock, (sqlite3_file *pFile), (cFile->old_vfs_file))
+#else
+def_subclassed (xCheckReservedLock, (sqlite3_file *pFile, int *pResOut), (cFile->old_vfs_file, pResOut))
+#endif
+def_subclassed (xFileControl, (sqlite3_file *pFile, int op, void *pArg), (cFile->old_vfs_file, op, pArg))
+def_subclassed (xSectorSize, (sqlite3_file *pFile), (cFile->old_vfs_file))
+def_subclassed (xDeviceCharacteristics, (sqlite3_file *pFile), (cFile->old_vfs_file))
+
+#undef def_subclassed
+
+static int
+camel_sqlite3_file_xClose (sqlite3_file *pFile)
+{
+	struct CamelSqlite3File *cFile;
+	int res;
+
+	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
+	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);
+
+	dequeue_sync (pFile);
+
+	cFile = (struct CamelSqlite3File *) pFile;
+	res = cFile->old_vfs_file->pMethods->xClose (cFile->old_vfs_file);
+
+	g_free (cFile->old_vfs_file);
+	cFile->old_vfs_file = NULL;
+
+	return res;
+}
+
+static int 
+camel_sqlite3_file_xSync (sqlite3_file *pFile, int flags)
+{
+	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
+	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);
+
+	queue_sync (pFile, flags);
+
+	return SQLITE_OK;
+}
+
+static int
+camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFile, int flags, int *pOutFlags)
+{
+	static sqlite3_io_methods io_methods = {0};
+	struct CamelSqlite3File *cFile;
+	int res;
+
+	g_return_val_if_fail (old_vfs != NULL, -1);
+	g_return_val_if_fail (pFile != NULL, -1);
+
+	cFile = (struct CamelSqlite3File *)pFile;
+	cFile->old_vfs_file = g_malloc0 (old_vfs->szOsFile);
+
+	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);
+
+	if (io_methods.xClose == NULL) {
+		/* initialize our subclass function only once */
+		io_methods.iVersion = cFile->old_vfs_file->pMethods->iVersion;
+
+		#define use_subclassed(x) io_methods.x = camel_sqlite3_file_ ## x
+		use_subclassed (xClose);
+		use_subclassed (xRead);
+		use_subclassed (xWrite);
+		use_subclassed (xTruncate);
+		use_subclassed (xSync);
+		use_subclassed (xFileSize);
+		use_subclassed (xLock);
+		use_subclassed (xUnlock);
+		use_subclassed (xCheckReservedLock);
+		use_subclassed (xFileControl);
+		use_subclassed (xSectorSize);
+		use_subclassed (xDeviceCharacteristics);
+		#undef use_subclassed
+	}
+
+	cFile->parent.pMethods = &io_methods;
+
+	return res;
+}
+
+static void
+init_sqlite_vfs (void)
+{
+	static sqlite3_vfs vfs = { 0 };
+
+	if (old_vfs)
+		return;
+
+	//sqlite3_initialize ();
+
+	old_vfs = sqlite3_vfs_find (NULL);
+	g_return_if_fail (old_vfs != NULL);
+
+	memcpy (&vfs, old_vfs, sizeof (sqlite3_vfs));
+
+	vfs.szOsFile = sizeof (struct CamelSqlite3File);
+	vfs.zName = "camel_sqlite3_vfs";
+	vfs.xOpen = camel_sqlite3_vfs_xOpen;
+
+	sqlite3_vfs_register (&vfs, 1);
+}
+
 #define d(x) if (camel_debug("sqlite")) x
 #define START(stmt) 	if (camel_debug("dbtime")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
 #define END 	if (camel_debug("dbtime")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
@@ -94,6 +438,8 @@ camel_db_open (const char *path, CamelException *ex)
 	sqlite3 *db;
 	char *cache;
 	int ret;
+
+	init_sqlite_vfs ();
 
 	CAMEL_DB_USE_SHARED_CACHE;
 	
