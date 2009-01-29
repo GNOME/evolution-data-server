@@ -16,7 +16,7 @@
 #include "e-cal-backend-loader-factory.h"
 
 static GObjectClass *parent_class = NULL;
-	
+
 static void
 e_cal_backend_loader_factory_instance_init (ECalBackendLoaderFactory *factory)
 {

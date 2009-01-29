@@ -475,7 +475,7 @@ e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactor
 
 	for (l= methods; l != NULL; l = g_slist_next (l)) {
 		char *method_str;
-		
+
 		method = l->data;
 
 		method_str = g_ascii_strdown (method, -1);
