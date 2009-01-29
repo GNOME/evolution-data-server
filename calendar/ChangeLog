@@ -1,6 +1,11 @@
 2009-01-29  Ross Burton  <ross@linux.intel.com>
 
 	* libedata-cal/e-cal-backend.c:
+	Use GObject private data instead of g_new().
+
+2009-01-29  Ross Burton  <ross@linux.intel.com>
+
+	* libedata-cal/e-cal-backend.c:
 	* libedata-cal/e-cal-backend-loader-factory.c:
 	* libedata-cal/e-data-cal-factory.c:
 	Remove some trailing whitespace.

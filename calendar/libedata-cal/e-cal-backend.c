@@ -57,6 +57,8 @@ struct _ECalBackendPrivate {
 	int last_percent_notified;
 };
 
+#define E_CAL_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
+
 /* Property IDs */
 enum props {
 	PROP_0,
@@ -268,6 +270,8 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	class->get_timezone = NULL;
 	class->add_timezone = NULL;
 	class->set_default_timezone = NULL;
+
+	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
 }
 
 /* Object initialization func for the calendar backend */
@@ -276,7 +280,7 @@ e_cal_backend_init (ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
 
-	priv = g_new0 (ECalBackendPrivate, 1);
+	priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 	backend->priv = priv;
 
 	priv->clients = NULL;
@@ -305,7 +309,6 @@ e_cal_backend_finalize (GObject *object)
 
 	g_free (priv->uri);
 	g_object_unref (priv->source);
-	g_free (priv);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
