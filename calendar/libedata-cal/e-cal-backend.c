@@ -30,6 +30,8 @@
 
 
 
+G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
+
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
 	/* The source for this backend */
@@ -59,6 +61,9 @@ struct _ECalBackendPrivate {
 
 #define E_CAL_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
 
+/* For convenience */
+#define CLASS(backend) (E_CAL_BACKEND_GET_CLASS(backend))
+
 /* Property IDs */
 enum props {
 	PROP_0,
@@ -76,45 +81,9 @@ enum {
 };
 static guint e_cal_backend_signals[LAST_SIGNAL];
 
-static void e_cal_backend_class_init (ECalBackendClass *class);
-static void e_cal_backend_init (ECalBackend *backend);
 static void e_cal_backend_finalize (GObject *object);
 
-#define CLASS(backend) (E_CAL_BACKEND_CLASS (G_OBJECT_GET_CLASS (backend)))
-
-static GObjectClass *parent_class;
-
 
-
-/**
- * e_cal_backend_get_type:
- *
- * Registers the #ECalBackend class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackend class.
- **/
-GType
-e_cal_backend_get_type (void)
-{
-	static GType e_cal_backend_type = 0;
-
-	if (!e_cal_backend_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackend),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_init,
-                };
-		e_cal_backend_type = g_type_register_static (G_TYPE_OBJECT, "ECalBackend", &info, 0);
-	}
-
-	return e_cal_backend_type;
-}
 
 static void
 e_cal_backend_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
@@ -191,8 +160,6 @@ static void
 e_cal_backend_class_init (ECalBackendClass *class)
 {
 	GObjectClass *object_class;
-
-	parent_class = (GObjectClass *) g_type_class_peek_parent (class);
 
 	object_class = (GObjectClass *) class;
 
@@ -310,7 +277,7 @@ e_cal_backend_finalize (GObject *object)
 	g_free (priv->uri);
 	g_object_unref (priv->source);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
 }
 
 

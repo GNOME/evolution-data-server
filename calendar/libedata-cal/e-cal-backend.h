@@ -42,6 +42,7 @@ G_BEGIN_DECLS
 				     ECalBackendClass))
 #define E_IS_CAL_BACKEND(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_BACKEND))
 #define E_IS_CAL_BACKEND_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND))
+#define E_CAL_BACKEND_GET_CLASS(obj) (E_CAL_BACKEND_CLASS (G_OBJECT_GET_CLASS (obj)))
 
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
 
