@@ -1,5 +1,9 @@
 2009-01-29  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-db.c: (camel_db_delete_uids): Don't empty null set.
+
+2009-01-29  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #568561
 
 	* camel-folder-summary.c: (camel_folder_summary_reload_from_db),

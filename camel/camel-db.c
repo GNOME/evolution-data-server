@@ -1065,6 +1065,9 @@ cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_
 int
 camel_db_delete_uids (CamelDB *cdb, const char * folder_name, GSList *uids, CamelException *ex)
 {
+	if(!uids || !uids->data)
+		return 0;
+
 	return cdb_delete_ids (cdb, folder_name, uids, "", "uid", ex);
 }
 
