@@ -1,3 +1,14 @@
+2009-01-29  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #568561
+
+	* camel-folder-summary.c: (camel_folder_summary_reload_from_db),
+	(camel_folder_summary_class_init):
+	* camel-vee-folder.c: (camel_vee_folder_add_folder),
+	(camel_vee_folder_remove_folder), (vee_sync),
+	(camel_vee_folder_init), (vee_folder_stop_folder),
+	(camel_vee_folder_finalise):
+
 2009-01-28  Sankar P  <psankar@novell.com>
 
 	** Part of Fix for bug bnc #390198

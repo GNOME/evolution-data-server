@@ -918,8 +918,6 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle) 
 		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
 
-	d(printf("Triggering summary_reloaded on %s %p\n", s->folder->full_name, s));
-	camel_object_trigger_event(s, "summary_reloaded", s);
 	return ret == 0 ? 0 : -1;
 }
 
@@ -4871,7 +4869,5 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 	klass->info_set_user_tag = info_set_user_tag;
 
 	klass->info_set_flags = info_set_flags;
-	
-	camel_object_class_add_event(camel_object_class, "summary_reloaded", NULL);
 	
 }
