@@ -1,3 +1,10 @@
+2009-01-29  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #568332
+
+	* camel-db.c: New camel_sqlite3_vfs and CamelSqlite3File subclasses,
+	doing fsync not so often as the original Sqlite3 vfs does.
+
 2009-01-29  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-db.c: (camel_db_delete_uids): Don't empty null set.
