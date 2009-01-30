@@ -611,7 +611,27 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 		CAMEL_VEE_FOLDER_UNLOCK(vf, changed_lock);
 	}
 #endif
+	if (vf->priv->unread_vfolder == 1) {
+		/* Cleanup Junk/Trash uids */
+		int i, count;
+		count = folder->summary->uids->len;
+		GSList *del = NULL;
 
+		for (i=0; i < count; i++) {
+			CamelVeeMessageInfo *mi = camel_folder_summary_index (folder->summary, i);
+			if (mi->old_flags & CAMEL_MESSAGE_DELETED) {
+				del = g_slist_prepend (del, (gpointer) camel_pstring_strdup(((CamelMessageInfo *)mi)->uid));
+				camel_folder_summary_remove_index_fast (folder->summary, i);
+				count--;
+				i--;
+
+			}
+			camel_message_info_free (mi);
+		}
+		camel_db_delete_vuids (folder->parent_store->cdb_w, folder->full_name, "", del, ex);
+		g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
+		g_slist_free (del);			
+	}
 	CAMEL_VEE_FOLDER_UNLOCK(vf, subfolder_lock);
 
 	camel_object_state_write(vf);
@@ -2029,7 +2049,7 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				break;				
 			case CAMEL_FOLDER_ARG_VISIBLE:
 				if (vf->priv->unread_vfolder == 1)
-					count = unread == -1 ? 0 : unread - deleted - junked_not_deleted;
+					count = unread == -1 ? 0 : unread - junked_not_deleted;
 				else
 					count = visible == -1 ? 0 : visible;
 
