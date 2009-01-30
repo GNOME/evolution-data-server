@@ -1,5 +1,9 @@
 2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-vee-folder.c: (vf_getv): Some more fix for counting.
+
+2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
+
 	* camel-private.h: Added a priv variable to vfolder.
 	* camel-vee-folder.c: (vf_getv), (camel_vee_folder_init):
 	* camel-vee-summary.c: Make unread vfolder counts better.

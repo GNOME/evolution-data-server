@@ -2014,7 +2014,10 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 			switch (tag & CAMEL_ARG_TAG) {
 			case CAMEL_FOLDER_ARG_UNREAD:
-				count = unread == -1 ? 0 : unread;
+				if (vf->priv->unread_vfolder == 1)
+					count = unread == -1 ? 0 : unread - junked_not_deleted;
+				else
+					count = unread == -1 ? 0 : unread;
 				break;
 			case CAMEL_FOLDER_ARG_DELETED:
 				count = deleted == -1 ? 0 : deleted;
@@ -2027,7 +2030,7 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				break;				
 			case CAMEL_FOLDER_ARG_VISIBLE:
 				if (vf->priv->unread_vfolder == 1)
-					count = unread == -1 ? 0 : unread;
+					count = unread == -1 ? 0 : unread - deleted - junked_not_deleted;
 				else
 					count = visible == -1 ? 0 : visible;
 
