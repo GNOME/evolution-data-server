@@ -1958,9 +1958,11 @@ static int
 vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
+	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
 	int i;
 	guint32 tag;
 	int unread = -1, deleted = 0, junked = 0, visible = 0, count = -1, junked_not_deleted = -1;
+
 
 	for (i=0;i<args->argc;i++) {
 		CamelArgGet *arg = &args->argv[i];
@@ -1975,7 +1977,10 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_JUNKED:
 		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:	
 		case CAMEL_FOLDER_ARG_VISIBLE:
-			
+
+			if (vf->expression && vf->priv->unread_vfolder == -1)
+				camel_vee_summary_load_check_unread_vfolder (vf);
+		
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 			if (unread == -1) {
 				int j;
@@ -2021,7 +2026,11 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
 				break;				
 			case CAMEL_FOLDER_ARG_VISIBLE:
-				count = visible == -1 ? 0 : visible;
+				if (vf->priv->unread_vfolder == 1)
+					count = unread == -1 ? 0 : unread;
+				else
+					count = visible == -1 ? 0 : visible;
+
 				break;
 			}
 			folder->summary->unread_count = unread == -1 ? 0 : unread;
@@ -2103,6 +2112,7 @@ camel_vee_folder_init (CamelVeeFolder *obj)
 	p->summary_lock = g_mutex_new();
 	p->subfolder_lock = g_mutex_new();
 	p->changed_lock = g_mutex_new();
+	p->unread_vfolder = -1;
 }
 
 void

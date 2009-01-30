@@ -171,15 +171,13 @@ vee_info_set_user_tag(CamelMessageInfo *mi, const char *name, const char *value)
 	return res;
 }
 
-static gboolean
-vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
+void
+camel_vee_summary_load_check_unread_vfolder (CamelVeeFolder *vf)
 {
-	int res = FALSE;
-	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
-	static char *exp = NULL;
 	static only_once = FALSE;
+	static char *exp = NULL;
+	char *meta;
 	gboolean hacked_unread_folder = FALSE;
-	char *meta = NULL;
 
 	/* HACK: Ugliest of all hacks. Its virtually not possible now
 	 * to maintain counts and the non matching uids of unread vfolder here.
@@ -192,16 +190,41 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 	if (!exp || !*exp)
 		exp = g_strcompress(unread_str);
 
-	if (camel_debug("vfolderexp"))
-		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
-
-	if (strstr(exp, vf->expression) &&  (vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL) == 0)
+	if (vf->expression && strstr(exp, vf->expression) &&  (vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL) == 0)
 		hacked_unread_folder = TRUE;
 
-	meta = camel_object_meta_get (mi->summary->folder, "vfolder:unread");
+	meta = camel_object_meta_get (vf, "vfolder:unread");
 	if (!hacked_unread_folder && meta && strcmp (meta, "true") == 0)
 		hacked_unread_folder = TRUE;
 	g_free(meta);
+
+	if (hacked_unread_folder)
+		vf->priv->unread_vfolder = 1;
+	else
+		vf->priv->unread_vfolder = 0;
+}
+
+static gboolean
+vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
+{
+	int res = FALSE;
+	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
+	gboolean hacked_unread_folder = FALSE;
+
+	if (camel_debug("vfolderexp"))
+		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
+
+	if (vf->priv->unread_vfolder == -1)
+		camel_vee_summary_load_check_unread_vfolder (vf);
+
+	if (vf->priv->unread_vfolder == 1)
+		hacked_unread_folder = TRUE;
+	else {
+		char *meta = camel_object_meta_get (mi->summary->folder, "vfolder:unread");
+		if (meta && strcmp (meta, "true") == 0)
+			hacked_unread_folder = TRUE;
+		g_free(meta);
+	}
 
 	if (mi->uid) {
 		guint32 old_visible, old_unread, old_deleted, old_junked, old_junked_not_deleted;
