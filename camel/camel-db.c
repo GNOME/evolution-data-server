@@ -41,6 +41,7 @@
 
 static sqlite3_vfs *old_vfs = NULL;
 
+GStaticRecMutex only_once_lock = G_STATIC_REC_MUTEX_INIT;
 GStaticRecMutex sync_queue_lock = G_STATIC_REC_MUTEX_INIT;
 #define LockQueue()   g_static_rec_mutex_lock   (&sync_queue_lock)
 #define UnlockQueue() g_static_rec_mutex_unlock (&sync_queue_lock)
@@ -71,6 +72,7 @@ call_old_file_Sync (sqlite3_file *pFile, int flags)
 	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);
 
 	cFile = (struct CamelSqlite3File *)pFile;
+	g_return_val_if_fail (cFile->old_vfs_file->pMethods != NULL, SQLITE_ERROR);
 	return cFile->old_vfs_file->pMethods->xSync (cFile->old_vfs_file, flags);
 }
 
@@ -267,6 +269,7 @@ camel_sqlite3_file_ ## _nm _params				\
 	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);	\
 								\
 	cFile = (struct CamelSqlite3File *) pFile;		\
+	g_return_val_if_fail (cFile->old_vfs_file->pMethods != NULL, SQLITE_ERROR);	\
 	return cFile->old_vfs_file->pMethods->_nm _call;	\
 }
 
@@ -299,7 +302,10 @@ camel_sqlite3_file_xClose (sqlite3_file *pFile)
 	dequeue_sync (pFile);
 
 	cFile = (struct CamelSqlite3File *) pFile;
-	res = cFile->old_vfs_file->pMethods->xClose (cFile->old_vfs_file);
+	if (cFile->old_vfs_file->pMethods)
+		res = cFile->old_vfs_file->pMethods->xClose (cFile->old_vfs_file);
+	else
+		res = SQLITE_OK;
 
 	g_free (cFile->old_vfs_file);
 	cFile->old_vfs_file = NULL;
@@ -333,7 +339,11 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFi
 
 	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);
 
-	if (io_methods.xClose == NULL) {
+	g_static_rec_mutex_lock (&only_once_lock);
+
+	/* cFile->old_vfs_file->pMethods is NULL when open failed for some reason,
+	   thus do not initialize our structure when do not know the version */
+	if (io_methods.xClose == NULL && cFile->old_vfs_file->pMethods) {
 		/* initialize our subclass function only once */
 		io_methods.iVersion = cFile->old_vfs_file->pMethods->iVersion;
 
@@ -353,6 +363,8 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFi
 		#undef use_subclassed
 	}
 
+	g_static_rec_mutex_unlock (&only_once_lock);
+
 	cFile->parent.pMethods = &io_methods;
 
 	return res;
@@ -363,13 +375,18 @@ init_sqlite_vfs (void)
 {
 	static sqlite3_vfs vfs = { 0 };
 
-	if (old_vfs)
+	g_static_rec_mutex_lock (&only_once_lock);
+	if (old_vfs) {
+		g_static_rec_mutex_unlock (&only_once_lock);
 		return;
-
-	//sqlite3_initialize ();
+	}
 
 	old_vfs = sqlite3_vfs_find (NULL);
-	g_return_if_fail (old_vfs != NULL);
+	if (!old_vfs) {
+		g_static_rec_mutex_unlock (&only_once_lock);
+		g_return_if_fail (old_vfs != NULL);
+		return;
+	}
 
 	memcpy (&vfs, old_vfs, sizeof (sqlite3_vfs));
 
@@ -378,6 +395,8 @@ init_sqlite_vfs (void)
 	vfs.xOpen = camel_sqlite3_vfs_xOpen;
 
 	sqlite3_vfs_register (&vfs, 1);
+
+	g_static_rec_mutex_unlock (&only_once_lock);
 }
 
 #define d(x) if (camel_debug("sqlite")) x
