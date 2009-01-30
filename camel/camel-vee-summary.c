@@ -216,7 +216,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
 
 	if (vf->priv->unread_vfolder == -1)
-		camel_vee_summary_load_check_unread_vfolder (vf);
+		camel_vee_summary_load_check_unread_vfolder (mi->summary);
 
 	if (vf->priv->unread_vfolder == 1)
 		hacked_unread_folder = TRUE;
