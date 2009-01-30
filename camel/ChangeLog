@@ -1,4 +1,13 @@
-2009-01-31  Srinivasa Ragavan  <sragavan@novell.com>
+2009-01-30  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #569742
+
+	* camel-db.c: (call_old_file_Sync), (camel_sqlite3_file_ xx),
+	(camel_sqlite3_file_xClose), (camel_sqlite3_vfs_xOpen),
+	(init_sqlite_vfs): Do not crash when open of the file failed.
+	Also be thread safe with respect of filling global variables.
+
+2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-folder-summary.c: (camel_folder_summary_update_flag_cache):
 	Fix compiler warning
