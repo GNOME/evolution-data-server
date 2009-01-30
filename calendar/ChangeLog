@@ -1,3 +1,10 @@
+2009-01-30 Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #347287
+	* calendar/libecal/e-cal.c: avoid unnecessary ipc
+	calls to get instances. Store the current operation
+	going on. 
+
 2009-01-16  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #360813

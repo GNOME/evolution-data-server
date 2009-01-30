@@ -60,6 +60,7 @@ typedef struct {
 	gboolean bool;
 	char *string;
 
+	char *op_str;
 	ECalView *query;
 	ECalViewListener *listener;
 } ECalendarOp;
@@ -300,13 +301,14 @@ convert_type (ECalSourceType type)
 /* EBookOp calls */
 
 static ECalendarOp*
-e_calendar_new_op (ECal *ecal)
+e_calendar_new_op (ECal *ecal, const char *str)
 {
 	ECalendarOp *op = g_new0 (ECalendarOp, 1);
 
 	op->done = e_flag_new ();
 
 	ecal->priv->current_op = op;
+	op->op_str = g_strdup (str);
 
 	return op;
 }
@@ -327,6 +329,7 @@ e_calendar_free_op (ECalendarOp *op)
 {
 	/* XXX more stuff here */
 	e_flag_free (op->done);
+	g_free (op->op_str);
 	g_free (op);
 }
 
@@ -1634,7 +1637,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 	/* start the open operation */
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "open_calendar");
 
 	g_mutex_unlock (priv->mutex);
 
@@ -1889,7 +1892,7 @@ e_cal_remove (ECal *ecal, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "cal_remove");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2144,7 +2147,7 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_read_only");
 
 	/* set it to true so that op does not emit cond signals for all notifications
 	   from the backend */
@@ -2217,7 +2220,7 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 		}
 
-		our_op = e_calendar_new_op (ecal);
+		our_op = e_calendar_new_op (ecal, "get_cal_address");
 
 		g_mutex_unlock (ecal->priv->mutex);
 
@@ -2288,7 +2291,7 @@ e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_alarm_address");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2355,7 +2358,7 @@ e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_ldap_attribute");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2412,7 +2415,7 @@ load_static_capabilities (ECal *ecal, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "load_static_capabilities");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2645,7 +2648,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_default_object");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2720,7 +2723,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GS
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_attachments_for_comp");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2791,7 +2794,7 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_object");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -2902,7 +2905,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_objects_for_uid");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -3045,7 +3048,7 @@ e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_changes");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -3139,7 +3142,7 @@ e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_object_list");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -3266,7 +3269,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_freebusy");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -3735,6 +3738,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	ECalComponentDateTime datetime;
 	icaltimezone *start_zone;
 	struct instances_info *instances_hold;
+	gboolean is_single_instance = FALSE;
 
 	g_return_if_fail (E_IS_CAL (ecal));
 	g_return_if_fail (start >= 0);
@@ -3746,9 +3750,12 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 
+	if (!e_cal_component_has_recurrences (comp))
+		is_single_instance = TRUE;
+
 	/*If the backend stores it as individual instances and does not
 	 * have a master object - do not expand*/
-	if (e_cal_get_static_capability (ecal, CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
+	if (is_single_instance || e_cal_get_static_capability (ecal, CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
 
 		/*return the same instance */
 		result = (* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), ecal->priv->default_zone),
@@ -4015,7 +4022,7 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError *
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "discard_alarm");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4256,7 +4263,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **e
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "create_object");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4337,7 +4344,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "modify_object");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4415,7 +4422,7 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "remove_object_with_mod");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4504,7 +4511,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "receive_objects");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4576,7 +4583,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "send_objects");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4663,7 +4670,7 @@ e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_timezone");
 
 	g_mutex_unlock (priv->mutex);
 
@@ -4827,7 +4834,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "add_timezone");
 
 	g_mutex_unlock (priv->mutex);
 
@@ -4914,7 +4921,7 @@ e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "get_query");
 
 	g_mutex_unlock (ecal->priv->mutex);
 
@@ -4986,7 +4993,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_BUSY, error);
 	}
 
-	our_op = e_calendar_new_op (ecal);
+	our_op = e_calendar_new_op (ecal, "set_default_timezone");
 
 	g_mutex_unlock (priv->mutex);
 
