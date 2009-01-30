@@ -1,3 +1,10 @@
+2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fix for bug #557348
+
+	* camel-local-summary.c: (local_summary_add): Set the flags and update
+	cache.
+
 2009-01-28  Hiroyuki Ikezoe  <poincare@ikezoe.net>
 
 	* camel-local-provider.[ch]: Move frompos_sort from

@@ -408,6 +408,7 @@ GPtrArray *camel_folder_summary_array(CamelFolderSummary *summary);
 GHashTable *camel_folder_summary_get_hashtable(CamelFolderSummary *s);
 void camel_folder_summary_free_hashtable (GHashTable *ht);
 GHashTable *camel_folder_summary_get_flag_cache (CamelFolderSummary *summary);
+void camel_folder_summary_update_flag_cache (CamelFolderSummary *s, const char *uid, guint32 flag);
 
 /* basically like strings, but certain keywords can be compressed and de-cased */
 int camel_folder_summary_encode_token(FILE *out, const char *str);

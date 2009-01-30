@@ -1771,7 +1771,8 @@ camel_folder_summary_add (CamelFolderSummary *s, CamelMessageInfo *info)
 	#warning "FIXME: SHould we ref it or redesign it later on"
 	/* The uid array should have its own memory. We will unload the infos when not reqd.*/
 	g_ptr_array_add (s->uids, (gpointer) camel_pstring_strdup((camel_message_info_uid(info))));
-	
+	g_hash_table_replace (_PRIVATE(s)->flag_cache, (char *)info->uid, GUINT_TO_POINTER(camel_message_info_flags(info)));
+
 	g_hash_table_insert (s->loaded_infos, (gpointer) camel_message_info_uid (info), info);
 	s->flags |= CAMEL_SUMMARY_DIRTY;
 
@@ -1802,9 +1803,13 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 		g_ptr_array_add (s->uids, (char *) camel_pstring_strdup(camel_message_info_uid(info)));
 	
 	g_hash_table_insert (s->loaded_infos, (char *) camel_message_info_uid (info), info);
+	if (load) {
+		g_hash_table_replace (_PRIVATE(s)->flag_cache, (char *)info->uid, GUINT_TO_POINTER(camel_message_info_flags(info)));
+	}
+
 	if (!load)
 		s->flags |= CAMEL_SUMMARY_DIRTY;
-
+	
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);	
 }
 
@@ -4665,7 +4670,11 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 	return TRUE;
 }
 
-
+void
+camel_folder_summary_update_flag_cache (CamelFolderSummary *s, const char *uid, guint32 flag)
+{
+	g_hash_table_replace (_PRIVATE(s)->flag_cache, uid, flag);	
+}
 /**
  * camel_message_info_set_flags:
  * @mi: a #CamelMessageInfo
