@@ -50,7 +50,7 @@
 #include <libecal/e-cal-time-util.h>
 
 
-#include <libical/icaltimezone.h>
+#include <icaltimezone.h>
 #include <libsoup/soup-misc.h>
 
 #include "e-cal-backend-google.h"

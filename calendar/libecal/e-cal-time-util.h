@@ -13,7 +13,7 @@
 
 
 #include <time.h>
-#include <libical/ical.h>
+#include <ical.h>
 #include <glib.h>
 
 G_BEGIN_DECLS

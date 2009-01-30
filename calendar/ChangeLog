@@ -1,3 +1,18 @@
+2009-01-30  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #569459.
+	Patch from  Michael Monreal <michael.monreal@gmx.net>
+	* calendar/backends/google/e-cal-backend-google-utils.c:
+	* calendar/libecal/e-cal-check-timezones.c:
+	* calendar/libecal/e-cal-check-timezones.h:
+	* calendar/libecal/e-cal-component.h:
+	* calendar/libecal/e-cal-time-util.h:
+	* calendar/libecal/e-cal-util.h:
+	* calendar/libedata-cal/e-data-cal-factory.h:
+	* calendar/libedata-cal/e-data-cal.c:
+	* calendar/tests/ecal/test-ecal.c: Chnage include path
+	for ical.h. removed libical/ from #include.
+
 2009-01-29  Ross Burton  <ross@linux.intel.com>
 
 	* libedata-cal/e-cal-backend.c:

@@ -27,7 +27,7 @@
 #include <libecal/e-cal.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-time-util.h>
-#include <libical/ical.h>
+#include <ical.h>
 
 /* start_testing_scaffold */
 #define mu_assert(message, test) do { if (!(test)) return message; else { tests_passed++; return NULL;}} while (0)

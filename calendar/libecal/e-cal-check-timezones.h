@@ -20,7 +20,7 @@
 #ifndef E_CAL_CHECK_TIMEZONES_H
 #define E_CAL_CHECK_TIMEZONES_H
 
-#include <libical/ical.h>
+#include <ical.h>
 #include <glib.h>
 
 G_BEGIN_DECLS

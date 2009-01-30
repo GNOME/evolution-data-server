@@ -23,7 +23,7 @@
 
 #include <time.h>
 #include <glib-object.h>
-#include <libical/ical.h>
+#include <ical.h>
 
 G_BEGIN_DECLS
 

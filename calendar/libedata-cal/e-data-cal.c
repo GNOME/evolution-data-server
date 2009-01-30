@@ -23,7 +23,7 @@
 #include <config.h>
 #endif
 
-#include <libical/ical.h>
+#include <ical.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-exception.h>
 #include <libedata-cal/e-cal-backend.h>
