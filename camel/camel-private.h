@@ -158,6 +158,7 @@ struct _CamelVeeFolderPrivate {
 	GMutex *summary_lock;		/* for locking vfolder summary */
 	GMutex *subfolder_lock;		/* for locking the subfolder list */
 	GMutex *changed_lock;		/* for locking the folders-changed list */
+	int unread_vfolder;
 };
 
 #define CAMEL_VEE_FOLDER_LOCK(f, l) \
