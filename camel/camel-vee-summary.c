@@ -172,12 +172,13 @@ vee_info_set_user_tag(CamelMessageInfo *mi, const char *name, const char *value)
 }
 
 void
-camel_vee_summary_load_check_unread_vfolder (CamelVeeFolder *vf)
+camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 {
-	static only_once = FALSE;
+	static int only_once = FALSE;
 	static char *exp = NULL;
 	char *meta;
 	gboolean hacked_unread_folder = FALSE;
+	CamelVeeFolder *vf = (CamelVeeFolder *) ((CamelFolderSummary *)vs)->folder;
 
 	/* HACK: Ugliest of all hacks. Its virtually not possible now
 	 * to maintain counts and the non matching uids of unread vfolder here.
