@@ -1,5 +1,10 @@
 2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
 
+	* camel-vee-folder.c: (vee_sync), (vf_getv): Removed unused stuff from
+	db.
+
+2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
+
 	** Fix for bug #557348
 
 	* camel-folder-summary.c: (camel_folder_summary_add),
