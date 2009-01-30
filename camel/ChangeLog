@@ -1,3 +1,8 @@
+2009-01-31  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel-folder-summary.c: (camel_folder_summary_update_flag_cache):
+	Fix compiler warning
+
 2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-vee-folder.c: (vf_getv): Fix some implicit warnings

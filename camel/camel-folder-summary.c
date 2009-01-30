@@ -4708,7 +4708,7 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 void
 camel_folder_summary_update_flag_cache (CamelFolderSummary *s, const char *uid, guint32 flag)
 {
-	g_hash_table_replace (_PRIVATE(s)->flag_cache, uid, flag);	
+	g_hash_table_replace (_PRIVATE(s)->flag_cache, (char *) uid, GUINT_TO_POINTER(flag));	
 }
 /**
  * camel_message_info_set_flags:
