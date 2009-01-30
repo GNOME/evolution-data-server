@@ -1999,7 +1999,7 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_VISIBLE:
 
 			if (vf->expression && vf->priv->unread_vfolder == -1)
-				camel_vee_summary_load_check_unread_vfolder (vf);
+				camel_vee_summary_load_check_unread_vfolder ((CamelVeeSummary *)folder->summary);
 		
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 			if (unread == -1) {
