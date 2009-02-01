@@ -47,7 +47,7 @@
 #include "camel-groupwise-journal.h"
 #include "camel-groupwise-store.h"
 
-#define d(x) x
+#define d(x)
 
 
 static void camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *klass);

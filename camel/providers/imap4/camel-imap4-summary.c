@@ -53,7 +53,7 @@
 #include "camel-imap4-summary.h"
 #include "camel-imap4-utils.h"
 
-#define d(x) x
+#define d(x)
 
 #define CAMEL_IMAP4_SUMMARY_VERSION  3
 

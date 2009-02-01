@@ -19,7 +19,7 @@
 #include <camel/camel-stream-filter.h>
 #include <camel/camel-mime-filter-tohtml.h>
 
-#define d(x) x
+#define d(x)
 
 #define CHUNK_SIZE 4096
 
