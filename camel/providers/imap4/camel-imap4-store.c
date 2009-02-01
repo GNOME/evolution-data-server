@@ -50,7 +50,7 @@
 #include "camel-imap4-summary.h"
 #include "camel-imap4-utils.h"
 
-#define d(x) x
+#define d(x)
 
 static void camel_imap4_store_class_init (CamelIMAP4StoreClass *klass);
 static void camel_imap4_store_init (CamelIMAP4Store *store, CamelIMAP4StoreClass *klass);

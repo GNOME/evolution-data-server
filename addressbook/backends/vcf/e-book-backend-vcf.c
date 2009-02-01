@@ -54,7 +54,7 @@
 #define PAS_ID_PREFIX "pas-id-"
 #define FILE_FLUSH_TIMEOUT 5000
 
-#define d(x) x
+#define d(x)
 
 G_DEFINE_TYPE (EBookBackendVCF, e_book_backend_vcf, E_TYPE_BOOK_BACKEND_SYNC);
 

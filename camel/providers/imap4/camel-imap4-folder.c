@@ -58,7 +58,7 @@
 #include "camel-imap4-summary.h"
 #include "camel-imap4-search.h"
 
-#define d(x) x
+#define d(x)
 
 static void camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass);
 static void camel_imap4_folder_init (CamelIMAP4Folder *folder, CamelIMAP4FolderClass *klass);

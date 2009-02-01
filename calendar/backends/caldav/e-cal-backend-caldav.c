@@ -46,7 +46,7 @@
 
 #include "e-cal-backend-caldav.h"
 
-#define d(x) x
+#define d(x)
 
 /* in seconds */
 #define DEFAULT_REFRESH_TIME 60

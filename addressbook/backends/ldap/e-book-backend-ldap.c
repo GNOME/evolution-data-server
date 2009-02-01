@@ -52,7 +52,7 @@
 #include "openldap-extract.h"
 #endif
 
-#define d(x) x
+#define d(x)
 
 #ifndef G_OS_WIN32
 

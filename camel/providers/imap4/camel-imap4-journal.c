@@ -43,7 +43,7 @@
 #include "camel-imap4-folder.h"
 #include "camel-imap4-journal.h"
 
-#define d(x) x
+#define d(x)
 
 
 static void camel_imap4_journal_class_init (CamelIMAP4JournalClass *klass);

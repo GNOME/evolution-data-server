@@ -40,7 +40,7 @@
 #include "camel-imap4-summary.h"
 #include "camel-imap4-utils.h"
 
-#define d(x) x
+#define d(x)
 
 
 static void camel_imap4_engine_class_init (CamelIMAP4EngineClass *klass);

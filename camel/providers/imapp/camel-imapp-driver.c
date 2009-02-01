@@ -24,7 +24,7 @@
 #include "camel-imapp-summary.h"
 #include "camel-imapp-utils.h"
 
-#define d(x) x
+#define d(x)
 
 static int driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
 static int driver_resp_expunge(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);

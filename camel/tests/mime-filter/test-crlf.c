@@ -14,7 +14,7 @@
 #include <camel/camel-stream-filter.h>
 #include <camel/camel-mime-filter-crlf.h>
 
-#define d(x) x
+#define d(x)
 
 #define NUM_CASES 1
 #define CHUNK_SIZE 4096
