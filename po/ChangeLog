@@ -1,3 +1,7 @@
+2009-02-01  Matthew Barnes  <mbarnes@redhat.com>
+
+	* POTFILES.in: Add libedataserverui/e-category-completion.c
+
 2009-01-31  Gabor Kelemen  <kelemeng@gnome.hu>
 
 	* hu.po: Translation updated.
