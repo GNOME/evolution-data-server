@@ -1,3 +1,11 @@
+2009-02-02  Petr Tomasek  <tomasek@etf.cuni.cz>
+
+	** Fix for bug #429317
+
+	* backends/http/e-cal-backend-http.c (retrieval_done),
+	(begin_retrieval_cb): Use the relative URI returned if the server 
+	re-directs a request.
+
 2009-01-30 Chenthill Palanisamy <pchenthill@novell.com>
 	
 	Fixes #347287
