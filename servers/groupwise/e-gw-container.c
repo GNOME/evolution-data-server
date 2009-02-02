@@ -205,24 +205,25 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	/* retrieve the name */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "name");
 	if (!subparam) {
-		g_warning (G_STRLOC ": found container with no name");
-		return FALSE;
+			/* GroupWise 7.X servers does not return the name field. 
+			This is not an issue with Bonsai 8.X . So, keep this code for 
+			working well with the broken GW 7.X series */
+			e_gw_container_set_name (container, "");
+	} else {
+			value = soup_soap_parameter_get_string_value (subparam);
+			e_gw_container_set_name (container, (const char *) value);
+			g_free (value);
 	}
-
-	value = soup_soap_parameter_get_string_value (subparam);
-	e_gw_container_set_name (container, (const char *) value);
-	g_free (value);
 
 	/* retrieve the ID */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "id");
 	if (!subparam) {
-		g_warning (G_STRLOC ": found container with no ID");
-		return FALSE;
+			e_gw_container_set_id (container, "");
+	} else {
+			value = soup_soap_parameter_get_string_value (subparam);
+			e_gw_container_set_id (container, (const char *) value);
+			g_free (value);
 	}
-
-	value = soup_soap_parameter_get_string_value (subparam);
-	e_gw_container_set_id (container, (const char *) value);
-	g_free (value);
 
 	/* retrieve the parent container id */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "parent");
