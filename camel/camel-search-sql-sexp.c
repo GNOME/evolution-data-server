@@ -371,7 +371,7 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 					value = get_db_safe_string (tstr);
 					g_free (tstr);
 				}
-				str = g_strdup_printf("(%s LIKE %s)", headername, value);
+				str = g_strdup_printf("(%s IS NOT NULL AND %s LIKE %s)", headername, headername, value);
 				g_free(value);
 			}
 		}
