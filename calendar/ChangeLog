@@ -1,3 +1,11 @@
+2009-02-02  James Bottomley  <jejbev@hansenpartnership.com>
+
+	** Fix for bug #566809
+
+	* libecal/e-cal-recur.c (generate_instances_for_chunk),
+	(cal_object_get_rdate_end): Don't process UTC periods in RDATES as 
+	though they were in local timezone.
+
 2009-01-30  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #347287

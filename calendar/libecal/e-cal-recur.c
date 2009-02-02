@@ -285,7 +285,8 @@ static void	e_cal_recur_free			(ECalRecurrence	*r);
 
 
 static gboolean cal_object_get_rdate_end	(CalObjTime	*occ,
-						 GArray		*rdate_periods);
+						 GArray		*rdate_periods,
+						 icaltimezone	*zone);
 static void	cal_object_compute_duration	(CalObjTime	*start,
 						 CalObjTime	*end,
 						 gint		*days,
@@ -1203,18 +1204,17 @@ generate_instances_for_chunk (ECalComponent	*comp,
 	for (elem = rdates; elem; elem = elem->next) {
 		ECalComponentPeriod *p;
 		CalObjRecurrenceDate rdate;
+		struct icaltimetype tt;
 
 		p = elem->data;
 
-		/* FIXME: We currently assume RDATEs are in the same timezone
-		   as DTSTART. We should get the RDATE timezone and convert
-		   to the DTSTART timezone first. */
-		cotime.year     = p->start.year;
-		cotime.month    = p->start.month - 1;
-		cotime.day      = p->start.day;
-		cotime.hour     = p->start.hour;
-		cotime.minute   = p->start.minute;
-		cotime.second   = p->start.second;
+		tt = icaltime_convert_to_zone(p->start, zone);
+		cotime.year     = tt.year;
+		cotime.month    = tt.month - 1;
+		cotime.day      = tt.day;
+		cotime.hour     = tt.hour;
+		cotime.minute   = tt.minute;
+		cotime.second   = tt.second;
 		cotime.flags    = FALSE;
 
 		/* If the rdate is after the current chunk we set finished
@@ -1345,7 +1345,7 @@ generate_instances_for_chunk (ECalComponent	*comp,
 			/* If it is an RDATE, we see if the end date or
 			   duration was set. If not, we use the same duration
 			   as the original occurrence. */
-			if (!cal_object_get_rdate_end (occ, rdate_periods)) {
+			if (!cal_object_get_rdate_end (occ, rdate_periods, zone)) {
 				cal_obj_time_add_days (occ, duration_days);
 				cal_obj_time_add_seconds (occ,
 							  duration_seconds);
@@ -1400,7 +1400,8 @@ generate_instances_for_chunk (ECalComponent	*comp,
    is set it returns FALSE and the default duration will be used. */
 static gboolean
 cal_object_get_rdate_end	(CalObjTime	*occ,
-				 GArray		*rdate_periods)
+				 GArray		*rdate_periods,
+				 icaltimezone	*zone)
 {
 	CalObjRecurrenceDate *rdate = NULL;
 	ECalComponentPeriod *p;
@@ -1433,15 +1434,14 @@ cal_object_get_rdate_end	(CalObjTime	*occ,
 
 	p = rdate->period;
 	if (p->type == E_CAL_COMPONENT_PERIOD_DATETIME) {
-		/* FIXME: We currently assume RDATEs are in the same timezone
-		   as DTSTART. We should get the RDATE timezone and convert
-		   to the DTSTART timezone first. */
-		occ->year     = p->u.end.year;
-		occ->month    = p->u.end.month - 1;
-		occ->day      = p->u.end.day;
-		occ->hour     = p->u.end.hour;
-		occ->minute   = p->u.end.minute;
-		occ->second   = p->u.end.second;
+		struct icaltimetype tt =
+			icaltime_convert_to_zone(p->u.end, zone);
+		occ->year     = tt.year;
+		occ->month    = tt.month - 1;
+		occ->day      = tt.day;
+		occ->hour     = tt.hour;
+		occ->minute   = tt.minute;
+		occ->second   = tt.second;
 		occ->flags    = FALSE;
 	} else {
 		cal_obj_time_add_days (occ, p->u.duration.weeks * 7
