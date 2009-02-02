@@ -10,6 +10,7 @@
     <title>Evolution-Data-Server Manual: Graphical Utilities (libedataserverui)</title>
     <xi:include href="xml/e-book-auth-util.xml"/>
     <xi:include href="xml/e-categories-dialog.xml"/>
+    <xi:include href="xml/e-category-completion.xml"/>
     <xi:include href="xml/e-cell-renderer-color.xml"/>
     <xi:include href="xml/e-contact-store.xml"/>
     <xi:include href="xml/e-data-server-ui-marshal.xml"/>

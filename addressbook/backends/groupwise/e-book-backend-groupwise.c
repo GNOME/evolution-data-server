@@ -829,8 +829,10 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 
 	for ( ;temp != NULL; temp = g_list_next (temp)) {
 		EVCardAttribute *attr = temp->data;
+		EDestination *dest;
 		id = email = NULL;
-		EDestination *dest = e_destination_new ();
+
+		dest = e_destination_new ();
 
 		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
 			EVCardAttributeParam *param = p->data;

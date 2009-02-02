@@ -180,6 +180,7 @@ E_IS_CAL_BACKEND
 E_TYPE_CAL_BACKEND
 E_CAL_BACKEND_CLASS
 E_IS_CAL_BACKEND_CLASS
+E_CAL_BACKEND_GET_CLASS
 <SUBSECTION Private>
 ECalBackendPrivate
 e_cal_backend_get_type
@@ -274,6 +275,7 @@ e_data_cal_get_type
 e_cal_backend_mail_account_get_default
 e_cal_backend_mail_account_is_valid
 e_cal_backend_status_to_string
+e_cal_backend_user_declined
 </SECTION>
 
 <SECTION>

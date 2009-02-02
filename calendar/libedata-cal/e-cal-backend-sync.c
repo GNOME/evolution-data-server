@@ -536,7 +536,7 @@ e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 	/* Old backends might be using the set_default_timezone */
 	if (!E_CAL_BACKEND_SYNC_GET_CLASS (backend)->set_default_zone_sync) {
 		icalcomponent *icalcomp = icalparser_parse_string (tz);
-		char *tzid = NULL;
+		const char *tzid = NULL;
 		icaltimezone *zone = icaltimezone_new ();
 
 		if (icalcomp) {

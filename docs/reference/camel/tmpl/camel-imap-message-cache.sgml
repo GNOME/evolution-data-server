@@ -107,6 +107,18 @@ CamelImapMessageCache
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_imap_message_cache_get_filename ##### -->
+<para>
+
+</para>
+
+@cache: 
+@uid: 
+@part_spec: 
+@ex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_imap_message_cache_remove ##### -->
 <para>
 
@@ -142,6 +154,17 @@ CamelImapMessageCache
 </para>
 
 @path: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_imap_message_cache_filter_cached ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@uids: 
 @ex: 
 @Returns: 
 

@@ -600,6 +600,25 @@ CamelFolderSummary
 @ht: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_get_flag_cache ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_update_flag_cache ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
+@flag: 
+
+
 <!-- ##### FUNCTION camel_folder_summary_encode_token ##### -->
 <para>
 

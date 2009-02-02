@@ -157,6 +157,7 @@ camel_data_cache_add
 camel_data_cache_get
 camel_data_cache_remove
 camel_data_cache_clear
+camel_data_cache_get_filename
 <SUBSECTION Standard>
 CAMEL_DATA_CACHE
 CAMEL_IS_DATA_CACHE
@@ -194,6 +195,9 @@ camel_data_wrapper_get_type
 <FILE>camel-db</FILE>
 <TITLE>CamelDB</TITLE>
 CAMEL_DB_FILE
+CAMEL_DB_IN_MEMORY_TABLE
+CAMEL_DB_IN_MEMORY_DB
+CAMEL_DB_IN_MEMORY_TABLE_LIMIT
 CAMEL_DB_FREE_CACHE_SIZE
 CAMEL_DB_SLEEP_INTERVAL
 CAMEL_DB_RELEASE_SQLITE_MEMORY
@@ -224,6 +228,7 @@ camel_db_write_folder_info_record
 camel_db_read_folder_info_record
 camel_db_prepare_message_info_table
 camel_db_write_message_info_record
+camel_db_write_fresh_message_info_record
 camel_db_read_message_info_records
 camel_db_read_message_info_record_with_uid
 camel_db_count_junk_message_info
@@ -243,6 +248,7 @@ camel_db_get_vuids_from_vfolder
 camel_db_add_to_vfolder
 camel_db_add_to_vfolder_transaction
 camel_db_get_folder_uids
+camel_db_get_folder_uids_flags
 camel_db_get_folder_junk_uids
 camel_db_get_folder_deleted_uids
 camel_db_sqlize_string
@@ -250,6 +256,8 @@ camel_db_free_sqlized_string
 camel_db_get_column_name
 camel_db_set_collate
 camel_db_migrate_vfolders_to_14
+camel_db_start_in_memory_transactions
+camel_db_flush_in_memory_transactions
 <SUBSECTION Private>
 CamelDBPrivate
 </SECTION>
@@ -402,9 +410,11 @@ camel_folder_get_deleted_message_count
 camel_folder_get_summary
 camel_folder_free_summary
 camel_folder_get_message
+camel_folder_sync_message
 camel_folder_delete_message
 camel_folder_get_uids
 camel_folder_free_uids
+camel_folder_get_uncached_uids
 camel_folder_sort_uids
 camel_folder_has_search_capability
 camel_folder_search_by_expression
@@ -427,6 +437,7 @@ camel_folder_quota_info_free
 camel_folder_free_nop
 camel_folder_free_shallow
 camel_folder_free_deep
+camel_folder_get_filename
 camel_folder_change_info_new
 camel_folder_change_info_clear
 camel_folder_change_info_free
@@ -534,6 +545,8 @@ camel_folder_summary_check_uid
 camel_folder_summary_array
 camel_folder_summary_get_hashtable
 camel_folder_summary_free_hashtable
+camel_folder_summary_get_flag_cache
+camel_folder_summary_update_flag_cache
 camel_folder_summary_encode_token
 camel_folder_summary_decode_token
 camel_flag_get
@@ -1687,6 +1700,7 @@ camel_session_set_network_state
 camel_session_get_junk_headers
 camel_session_set_junk_headers
 camel_session_lookup_addressbook
+camel_session_forward_to
 <SUBSECTION Standard>
 CAMEL_SESSION
 CAMEL_IS_SESSION
@@ -1792,6 +1806,7 @@ CAMEL_STORE_VTRASH
 CAMEL_STORE_FILTER_INBOX
 CAMEL_STORE_VJUNK
 CAMEL_STORE_PROXY
+CAMEL_STORE_IS_MIGRATING
 CAMEL_STORE_FOLDER_CREATE
 CAMEL_STORE_FOLDER_EXCL
 CAMEL_STORE_FOLDER_BODY_INDEX
@@ -2147,6 +2162,7 @@ CamelVeeMessageInfo
 camel_vee_summary_new
 camel_vee_summary_add
 camel_vee_summary_get_ids
+camel_vee_summary_load_check_unread_vfolder
 <SUBSECTION Standard>
 CAMEL_VEE_SUMMARY
 CAMEL_IS_VEE_SUMMARY
@@ -2320,10 +2336,12 @@ camel_imap_message_cache_insert
 camel_imap_message_cache_insert_stream
 camel_imap_message_cache_insert_wrapper
 camel_imap_message_cache_get
+camel_imap_message_cache_get_filename
 camel_imap_message_cache_remove
 camel_imap_message_cache_clear
 camel_imap_message_cache_copy
 camel_imap_message_cache_delete
+camel_imap_message_cache_filter_cached
 <SUBSECTION Standard>
 CAMEL_IMAP_MESSAGE_CACHE
 CAMEL_IS_IMAP_MESSAGE_CACHE
@@ -3878,6 +3896,7 @@ camel_utf7_utf8
 camel_utf8_utf7
 camel_utf8_ucs2
 camel_ucs2_utf8
+camel_utf8_make_valid
 </SECTION>
 
 <SECTION>

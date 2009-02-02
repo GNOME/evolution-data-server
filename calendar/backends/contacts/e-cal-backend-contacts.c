@@ -1015,7 +1015,7 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, co
 	ECalBackendContactsPrivate *priv;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
-	char *tzid;
+	const char *tzid;
 
 	cbcontacts = (ECalBackendContacts *) backend;
 

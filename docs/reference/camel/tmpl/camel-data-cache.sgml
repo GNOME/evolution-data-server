@@ -117,3 +117,15 @@ CamelDataCache
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_data_cache_get_filename ##### -->
+<para>
+
+</para>
+
+@cdc: 
+@path: 
+@key: 
+@ex: 
+@Returns: 
+
+

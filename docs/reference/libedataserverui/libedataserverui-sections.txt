@@ -1,4 +1,22 @@
 <SECTION>
+<FILE>e-category-completion</FILE>
+<TITLE>ECategoryCompletion</TITLE>
+ECategoryCompletion
+e_category_completion_new
+<SUBSECTION Standard>
+E_TYPE_CATEGORY_COMPLETION
+E_CATEGORY_COMPLETION
+E_CATEGORY_COMPLETION_CLASS
+E_IS_CATEGORY_COMPLETION
+E_IS_CATEGORY_COMPLETION_CLASS
+E_CATEGORY_COMPLETION_GET_CLASS
+ECategoryCompletionClass
+<SUBSECTION Private>
+ECategoryCompletionPrivate
+e_category_completion_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-cell-renderer-color</FILE>
 <TITLE>ECellRendererColor</TITLE>
 ECellRendererColor

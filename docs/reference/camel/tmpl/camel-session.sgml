@@ -318,3 +318,15 @@ CamelSession
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_session_forward_to ##### -->
+<para>
+
+</para>
+
+@session: 
+@folder: 
+@message: 
+@address: 
+@ex: 
+
+
