@@ -1200,6 +1200,12 @@ camel_db_migrate_folder_prepare (CamelDB *cdb, const char *folder_name, gint ver
 	/* Migration stage one: storing the old data */
 
 	if (version < 1) {
+		/* Between version 0-1 the following things are changed
+		 * ADDED: created: time
+		 * ADDED: modified: time
+		 * RENAMED: msg_security to dirty 
+		 * */
+
 		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS 'mem.%q'", folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 		sqlite3_free (table_creation_query);
@@ -1208,7 +1214,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb, const char *folder_name, gint ver
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 		sqlite3_free (table_creation_query);
 
-		table_creation_query = sqlite3_mprintf ("INSERT INTO 'mem.%q' SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata , strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') FROM %Q", folder_name, folder_name);
+		table_creation_query = sqlite3_mprintf ("INSERT INTO 'mem.%q' SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , msg_security , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata , strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') FROM %Q", folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 		sqlite3_free (table_creation_query);
 
@@ -1217,6 +1223,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb, const char *folder_name, gint ver
 		sqlite3_free (table_creation_query);
 
 		ret = camel_db_create_message_info_table (cdb, folder_name, ex);
+		camel_exception_clear (ex);
 	}
 
 	/* Add later version migrations here */
@@ -1560,15 +1567,21 @@ cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
 	GSList *iterator;
-	GString *ins_str = g_string_new ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, ");
+	GString *ins_str = NULL;
+		
+	if (strcmp (field, "vuid") != 0)
+		ins_str = g_string_new ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, ");
 
 	camel_db_begin_transaction (cdb, ex);
 
-	ret = camel_db_create_deleted_table (cdb, ex);
+	if (ins_str)
+		ret = camel_db_create_deleted_table (cdb, ex);
 
-	tab = sqlite3_mprintf ("%Q, strftime(\"%%s\", 'now') FROM %Q WHERE %s IN (", folder_name, folder_name, field);
-	g_string_append_printf (ins_str, "%s ", tab);
-	sqlite3_free (tab);
+	if (ins_str) {
+		tab = sqlite3_mprintf ("%Q, strftime(\"%%s\", 'now') FROM %Q WHERE %s IN (", folder_name, folder_name, field);
+		g_string_append_printf (ins_str, "%s ", tab);
+		sqlite3_free (tab);
+	}
 
 	tmp = sqlite3_mprintf ("%Q WHERE %s IN (", folder_name, field); 
 	g_string_append_printf (str, "%s ", tmp);
@@ -1584,22 +1597,24 @@ cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_
 
 		if (first == TRUE) {
 			g_string_append_printf (str, " %s ", tmp);
-			g_string_append_printf (ins_str, " %s ", tmp);
+			if (ins_str)
+				g_string_append_printf (ins_str, " %s ", tmp);	
 			first = FALSE;
 		} else {
 			g_string_append_printf (str, ", %s ", tmp);
-			g_string_append_printf (ins_str, ", %s ", tmp);
+			if (ins_str)
+				g_string_append_printf (ins_str, ", %s ", tmp);
 		}
 
 		sqlite3_free (tmp);
 	}
 
 	g_string_append (str, ")");
-	g_string_append (ins_str, ")");
-
-	ret = camel_db_add_to_transaction (cdb, ins_str->str, ex);
-
-	ret = camel_db_trim_deleted_table (cdb, ex);
+	if (ins_str) {
+		g_string_append (ins_str, ")");
+		ret = camel_db_add_to_transaction (cdb, ins_str->str, ex);
+		ret = camel_db_trim_deleted_table (cdb, ex);
+	}
 
 	ret = camel_db_add_to_transaction (cdb, str->str, ex);
 
@@ -1607,7 +1622,8 @@ cdb_delete_ids (CamelDB *cdb, const char * folder_name, GSList *uids, char *uid_
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
-	g_string_free (ins_str, TRUE);
+	if (ins_str)
+		g_string_free (ins_str, TRUE);
 	g_string_free (str, TRUE);
 
 	return ret;
