@@ -1,3 +1,33 @@
+Evolution-Data-Server 2.24.4 2009-01-30
+-----------------------------------------
+
+Updated Translations:
+	Luca Ferretti (it)
+
+Bug Fixes:
+	#360813 : RFC 2445 - CREATED/DTSTAMP/LAST-MODIFIED always in UTC. (Milan Crha)
+	#390198 : Free the exception object which was leaking. (Sankar P)
+	#443296 (BNC) : Free memory only after it is duped. (Suman Manjunath)
+	#448349 (BNC) : emissions by not clearing the list-store in order to re-fill it. Instead, replace the original entries with new ones. (Suman Manjunath)
+	#463095 : Fix cinfo parsing logic (simon brys)
+	#464758 : g_strsplit_set will add a dummy string if one of the delimiters is the first character in the source string. Fix a crash. (Sankar P)
+	#464878 (BNC) : http_get_statuscode () should get us the status code and handle redirects better. Bug Report: When an HTML attachment contains an image tag with a source that returns a "HTTP/302 Moved Temporarily", that image is not displayed (Simon Brys)
+	#467075 (BNC) : Incorrect url is displayed in Evolution plain text mails when the url is surrounded by brackets  (Simon Brys)
+	#467638 (BNC) : Fix the broken current_folder handling code. Lots of issues are fixed. some may remain yet. (Sankar P)
+	#470143 (BNC) : GroupWise Container Crash (Sankar P)
+	#501298 : Make _open function quick as much as possible, to not block the sync_backend lock for long (Milan Crha)
+	#518920 : Handle relative URIs in value of action attribute of form in form-based authentication. (Chow Loong Jin)
+	#550414 : Corruption of MBOX and failure to expunge (Hiroyuki Ikezoe)
+	#568332 : doing fsync not so often as the original Sqlite3 vfs does. (Milan Crha)
+	#568561 : Crash on summary_reloaded (Srinivasa Ragavan)
+
+Other contributions:
+	Sqlite-VFS backend for async disk sync (Milan Crha)
+	Performance issues on folder-switch with sqlite optimizations. (Srinivasa Ragavan)
+	Manage GroupWise counts better. fix bugs in read-cursor elimination. A brand new flags handling code for GroupWise provider. (Sankar P)
+	"GUI" executable on Windows to avoid console windows that annoy end-users. (Tor Lillqvist)
+
+
 Evolution-Data-Server 2.24.3 2009-01-12
 -----------------------------------------
 
