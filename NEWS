@@ -1,3 +1,43 @@
+Evolution-Data-Server 2.25.90 2009-02-02
+----------------------------------------
+
+Updated Translations:
+	Andre Klapper (de)
+	Changwoo Ryu (ko)
+	David Planella (ca)
+	Gabor Kelemen (hu)
+	Laurent Coudeur and Claude Paroz (fr)
+	Matthew Barnes (PO)
+	Yair Hershkovitz (he)
+
+Bug Fixes:
+	#390198 : Free the exception object which was leaking. (Sankar P)
+	#464758 : Evolution crashes while moving mails to Junk in Groupwise (Sankar P)
+	#464878 (BNC) : When an HTML attachment contains an image tag with a source that returns a "HTTP/302 Moved Temporarily", that image is not displayed (Simon Brys)
+	#467075 (BNC) : Incorrect url is displayed in Evolution plain text mails when the url is surrounded by brackets (Simon Brys)
+	#467638 (BNC) : Fix the broken current_folder handling code. Lots of issues are fixed. some may remain yet. (Sankar P)
+	#470143	: GroupWise Container Crash (Sankar P)
+	#557348 : Search folders with "Include threads" do not update reliably (Srinivasa Ragavan)
+	#568332 : Sqlite vfs for async disk wrigte (Milan Crha)
+	#568561 : crash in summary_reloaded (Srinivasa Ragavan)
+	#569405 : Negated header criterion fails to match messages without the header (Matt McCutchen 2)
+	#569742 : Do not crash when open of the file failed. Also be thread safe with respect of filling global variables. (Milan Crha)
+	#569874 : Crash while deleting messages  (Srinivasa Ragavan)
+	#347287 : MVC for calendar. Store the current operation going on. (Chenthill Palanisamy)
+	#550414 : Corruption of mbox and failure to expunge (Hiroyuki Ikezoe)
+
+
+Other contributions:
+	Add libical to the calendar and server deps to ensure that it is available everywhere it is needed, and not checked if we're not building the calendar. (Ross Burton)
+	Fix compiler warning (Srinivasa Ragavan)
+	"GUI" executable on Windows to avoid console windows that annoy end-users. (Tor Lillqvist)
+	Include appropriate headers which otherwise cause build failures with strict compiler settings. (Suman Manjunath)
+	Remove some trailing whitespace. (Ross Burton)
+	Allow cross-compiling e-d-s for windows fix some win32 hickups. (Fridrich Strba)
+	Use G_DEFINE_TYPE. (Ross Burton)
+	Use GObject private data instead of g_new(). (Ross Burton)
+
+
 Evolution-Data-Server 2.25.5 2009-01-19
 ---------------------------------------
 
