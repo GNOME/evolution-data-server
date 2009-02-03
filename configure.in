@@ -1027,7 +1027,7 @@ dnl Weather calendar backend support
 dnl **************************************************
 AC_MSG_CHECKING(if we should build the weather calendar backend)
 AC_ARG_WITH([weather], 
-  [AS_HELP_STRING([--with-weather], [Build the weather calendar backend (default=yes)])],
+  [AC_HELP_STRING([--with-weather], [Build the weather calendar backend (default=yes)])],
   [use_gweather=$withval], 
   [use_gweather=yes])
 if test $enable_calendar = no; then

@@ -1,3 +1,10 @@
+2009-02-03  Tor Lillqvist  <tml@novell.com>
+
+	* configure.in: Use the more traditional and reliable
+	AC_HELP_STRING instead of AS_HELP_STRING which doesn't work for me
+	at least... And the file uses AC_HELP_STRING in all other places
+	already anyway.
+
 2009-02-02  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* NEWS: Evolution Data Server 2.25.90 release
