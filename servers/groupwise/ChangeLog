@@ -1,3 +1,8 @@
+2009-02-04  Sankar P  <psankar@novell.com>
+
+	* servers/groupwise/e-gw-connection.c:
+	Use correct server parameter for getting folder information
+
 2009-02-02  Sankar P  <psankar@novell.com>
 
 	** Part of fix for bnc bug #470143
