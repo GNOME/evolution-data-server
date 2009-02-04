@@ -839,7 +839,7 @@ e_gw_connection_get_container (EGwConnection *cnc, const char * uid)
 				return NULL;
 		}
 
-		e_gw_message_write_string_parameter (msg, "uid", NULL, uid);
+		e_gw_message_write_string_parameter (msg, "id", NULL, uid);
 		/* The server does not feel good if the name, id view elements are not passed */
 		e_gw_message_write_string_parameter (msg, "view", NULL, "name id uid count unreadCount");
 		e_gw_message_write_footer (msg);

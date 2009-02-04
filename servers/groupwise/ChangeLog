@@ -1,3 +1,9 @@
+2009-02-04  Sankar P  <psankar@novell.com>
+
+	* e-gw-connection.c (e_gw_connection_get_container):
+	Use the correct parameter name while getting
+	folder information
+
 2009-02-02  Sankar P  <psankar@novell.com>
 
 	** Part of fix for bnc bug #470143
