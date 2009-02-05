@@ -1,3 +1,21 @@
+2009-02-05  Suman Manjunath  <msuman@novell.com>
+
+	** Fix for bug #569459
+
+	* backends/google/e-cal-backend-google-utils.c:
+	* libecal/e-cal-check-timezones.c:
+	* libecal/e-cal-check-timezones.h:
+	* libecal/e-cal-component.h:
+	* libecal/e-cal-time-util.h:
+	* libecal/e-cal-util.h:
+	* libecal/libecal.pc.in:
+	* libedata-cal/e-data-cal-factory.h:
+	* libedata-cal/e-data-cal.c:
+	* tests/ecal/test-ecal.c:
+	Revert back to including <libical/ical*.h>. This is what is 
+	suggested by the upstream folks. Since libical.pc (in 0.43)
+	has a problem with its CFlags, make necessary adjustments. 
+
 2009-02-02  James Bottomley  <jejbev@hansenpartnership.com>
 
 	** Fix for bug #566809
@@ -25,7 +43,7 @@
 	* calendar/libecal/e-cal-util.h:
 	* calendar/libedata-cal/e-data-cal-factory.h:
 	* calendar/libedata-cal/e-data-cal.c:
-	* calendar/tests/ecal/test-ecal.c: Chnage include path
+	* calendar/tests/ecal/test-ecal.c: Change include path
 	for ical.h. removed libical/ from #include.
 
 2009-01-29  Ross Burton  <ross@linux.intel.com>

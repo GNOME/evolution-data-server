@@ -22,7 +22,7 @@
 #define E_DATA_CAL_FACTORY_H
 
 #include <bonobo/bonobo-object.h>
-#include <ical.h>
+#include <libical/ical.h>
 #include <libedata-cal/Evolution-DataServer-Calendar.h>
 #include <libedata-cal/e-cal-backend-loader-factory.h>
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <ical.h>
+#include <libical/ical.h>
 
 #include "e-cal-check-timezones.h"
 #include <libecal/e-cal.h>

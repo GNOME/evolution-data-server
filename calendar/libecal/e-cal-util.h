@@ -21,7 +21,7 @@
 #ifndef E_CAL_UTIL_H
 #define E_CAL_UTIL_H
 
-#include <ical.h>
+#include <libical/ical.h>
 #include <time.h>
 #include <glib.h>
 #include <libecal/e-cal-component.h>

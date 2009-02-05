@@ -15,4 +15,4 @@ Description: Client library for evolution calendars
 Version: @VERSION@
 Requires: libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libical >= @LIBICAL_REQUIRED@ libedataserver-1.2
 Libs: -L${libdir} -lecal-1.2
-Cflags: -I${privincludedir}
+Cflags: -I${privincludedir} @LIBICAL_EXTRA_CFLAGS@
