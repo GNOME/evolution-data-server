@@ -1,5 +1,12 @@
 2009-02-09  Milan Crha  <mcrha@redhat.com>
 
+	** Part of fix for bug #567861
+
+	* libedataserver/e-source.c: (e_source_equal):
+	Two sources also differ when one has set color_spec and the other not.
+
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #555888
 
 	* libedataserver/e-proxy.h:

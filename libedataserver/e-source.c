@@ -810,6 +810,8 @@ e_source_equal (ESource *a, ESource *b)
 	g_return_val_if_fail (E_IS_SOURCE (a), FALSE); 
 	g_return_val_if_fail (E_IS_SOURCE (b), FALSE); 
 
+	#define ONLY_ONE_NULL(aa, bb) (((aa) == NULL && (bb) != NULL) || ((aa) != NULL && (bb) == NULL))
+
 	/* Compare source stuff */
 	if (a->priv->uid 
 	 && b->priv->uid 
@@ -831,9 +833,10 @@ e_source_equal (ESource *a, ESource *b)
 	 && g_ascii_strcasecmp (a->priv->absolute_uri, b->priv->absolute_uri))
 		return FALSE; 
 
-	if (a->priv->color_spec 
+	if ((a->priv->color_spec 
 	 && b->priv->color_spec 
-	 && g_ascii_strcasecmp (a->priv->color_spec, b->priv->color_spec))
+	 && g_ascii_strcasecmp (a->priv->color_spec, b->priv->color_spec)) ||
+	 (ONLY_ONE_NULL (a->priv->color_spec, b->priv->color_spec)))
 		return FALSE; 
 
 	if (a->priv->readonly != b->priv->readonly)
@@ -841,6 +844,8 @@ e_source_equal (ESource *a, ESource *b)
 
 	if (!compare_str_hashes (a->priv->properties, b->priv->properties))
 		return FALSE; 
+
+	#undef ONLY_ONE_NULL
 
 	return TRUE; 
 }
