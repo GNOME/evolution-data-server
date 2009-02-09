@@ -145,7 +145,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 	if (!e_proxy_require_proxy_for_uri (proxy, ctx->priv->owa_uri))
 		proxy_uri = NULL;
 	else
-		proxy_uri = e_proxy_peek_uri (proxy);
+		proxy_uri = e_proxy_peek_uri_for (proxy, ctx->priv->owa_uri);
 
 	if (ctx->priv->session)
 		g_object_set (ctx->priv->session, SOUP_SESSION_PROXY_URI,
@@ -436,7 +436,7 @@ e2k_context_set_auth (E2kContext *ctx, const char *username,
 
 	/* Check do we need a proxy to contact the server? */
         if (e_proxy_require_proxy_for_uri (ctx->priv->proxy, ctx->priv->owa_uri))
-                uri = e_proxy_peek_uri (ctx->priv->proxy);
+                uri = e_proxy_peek_uri_for (ctx->priv->proxy, ctx->priv->owa_uri);
 
 	ctx->priv->session = soup_session_sync_new_with_options (
 		SOUP_SESSION_USE_NTLM, !authmech || !strcmp (authmech, "NTLM"),

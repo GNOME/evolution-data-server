@@ -28,6 +28,7 @@
 #include <gconf/gconf-client.h>
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-xml-hash-utils.h"
+#include "libedataserver/e-proxy.h"
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>
@@ -91,6 +92,7 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* The main soup session  */
 	SoupSession *session;
+	EProxy *proxy;
 
 	/* well, guess what */
 	gboolean read_only;
@@ -789,75 +791,6 @@ soup_authenticate (SoupSession  *session,
 	if (!retrying)
 		soup_auth_authenticate (auth, priv->username, priv->password);
 }
-
-static gint
-caldav_ignore_host(gconstpointer a, gconstpointer b)
-{
-	gchar *hostname = (gchar*)a,
-	      *ignore = (gchar*)b;
-
-	if (hostname && ignore)
-	  return strcmp(hostname, ignore);
-        return -1;
-}
-
-static void
-caldav_set_session_proxy(ECalBackendCalDAVPrivate *priv)
-{
-	GConfClient *conf_client;
-	SoupURI *uri_base;
-
- 	if (priv->session == NULL)
- 		return;
-
-	uri_base = soup_uri_new (priv->uri);
-	if (uri_base == NULL)
-		return;
-
-	/* set the outbound HTTP proxy, if configuration is set to do so */
-	conf_client = gconf_client_get_default ();
-	if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
-		char *server, *proxy_uri;
-		int port;
- 		GSList *ignore = gconf_client_get_list (conf_client,
-  							"/system/http_proxy/ignore_hosts",
-  		                                	GCONF_VALUE_STRING, NULL);
-  		if (ignore == NULL ||
-  		    g_slist_find_custom(ignore, uri_base->host, caldav_ignore_host) == NULL) {
-  			server = gconf_client_get_string (conf_client, "/system/http_proxy/host", NULL);
-			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
-
-			if (server && server[0]) {
-				SoupURI *suri;
-				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
-					char *user, *password;
-					user = gconf_client_get_string (conf_client,
-									"/system/http_proxy/authentication_user",
-									NULL);
-					password = gconf_client_get_string (conf_client,
-									    "/system/http_proxy/authentication_password",
-									    NULL);
-
-					proxy_uri = g_strdup_printf("http://%s:%s@%s:%d", user, password, server, port);
-					g_free (user);
-					g_free (password);
-				} else
-					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
-
-				suri = soup_uri_new (proxy_uri);
-				g_object_set (G_OBJECT (priv->session), SOUP_SESSION_PROXY_URI, suri, NULL);
-
-				soup_uri_free (suri);
-				g_free (server);
-				g_free (proxy_uri);
-			}
-		}
- 		g_slist_foreach(ignore, (GFunc) g_free, NULL);
-		g_slist_free(ignore);
-	}
-	soup_uri_free (uri_base);
-}
-
 
 /* ************************************************************************* */
 /* direct CalDAV server access functions */
@@ -1833,6 +1766,23 @@ out:
 	return result;
 }
 
+static void
+proxy_settings_changed (EProxy *proxy, gpointer user_data)
+{
+	SoupURI *proxy_uri = NULL;
+	ECalBackendCalDAVPrivate *priv = (ECalBackendCalDAVPrivate *) user_data;
+
+	if (!priv || !priv->uri || !priv->session)
+		return;
+
+	/* use proxy if necessary */
+	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
+		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
+	}
+
+	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+}
+
 static ECalBackendSyncStatus
 caldav_do_open (ECalBackendSync *backend,
 		EDataCal        *cal,
@@ -1886,7 +1836,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 	if (priv->mode == CAL_MODE_REMOTE) {
 		/* set forward proxy */
-		caldav_set_session_proxy (priv);
+		proxy_settings_changed (priv->proxy, priv);
 
 		status = caldav_server_open_calendar (cbdav);
 
@@ -3057,6 +3007,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 	}
 
 	g_object_unref (priv->session);
+	g_object_unref (priv->proxy);
 
 	g_free (priv->username);
 	g_free (priv->password);
@@ -3098,7 +3049,6 @@ e_cal_backend_caldav_finalize (GObject *object)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
-
 static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
@@ -3106,6 +3056,9 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	priv->session = soup_session_sync_new ();
+	priv->proxy = e_proxy_new ();
+	e_proxy_setup_proxy (priv->proxy);
+	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
 
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (priv->session);

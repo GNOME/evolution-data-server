@@ -1,3 +1,12 @@
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #555888
+
+	* libedataserver/e-proxy.h:
+	* libedataserver/e-proxy.c:
+	Read system proxy setting directly and listen to their changes.
+	EProxy API changed, use e_proxy_peek_uri_for now.
+
 2009-02-05  Suman Manjunath  <msuman@novell.com>
 
 	* configure.in: Expose the right CFLAGS for libical headers. We want

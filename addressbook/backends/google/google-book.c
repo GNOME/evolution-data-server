@@ -21,6 +21,7 @@
 
 #include <string.h>
 #include <libedata-book/e-book-backend-cache.h>
+#include <libedataserver/e-proxy.h>
 #include <gdata-service-iface.h>
 #include <gdata-google-service.h>
 
@@ -79,6 +80,7 @@ struct _GoogleBookPrivate
 
     gboolean offline;
     GDataService *service;
+    EProxy *proxy;
     guint refresh_interval;
     char *base_uri;
     /* FIXME - this one should not be needed */
@@ -533,6 +535,10 @@ google_book_dispose (GObject *object)
         g_object_unref (priv->service);
         priv->service = NULL;
     }
+    if (priv->proxy) {
+	g_object_unref (priv->proxy);
+	priv->proxy = NULL;
+    }
     google_book_cache_destroy (GOOGLE_BOOK (object));
 
     if (G_OBJECT_CLASS (google_book_parent_class)->dispose)
@@ -726,6 +732,22 @@ google_book_new (const char *username, gboolean use_cache)
                          NULL);
 }
 
+static void
+proxy_settings_changed (EProxy *proxy, gpointer user_data)
+{
+	SoupURI *proxy_uri = NULL;
+
+	GoogleBookPrivate *priv = (GoogleBookPrivate*) user_data;
+	if (!priv || !priv->base_uri)
+		return;
+
+	/* use proxy if necessary */
+	if (e_proxy_require_proxy_for_uri (proxy, priv->base_uri)) {
+		proxy_uri = e_proxy_peek_uri_for (proxy, priv->base_uri);
+	}
+	gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
+}
+
 gboolean
 google_book_connect_to_google (GoogleBook *book, const char *password, GError **error)
 {
@@ -745,6 +767,12 @@ google_book_connect_to_google (GoogleBook *book, const char *password, GError **
     }
 
     service = (GDataService*)gdata_google_service_new ("cp", "evolution-client-0.0.1");
+    priv->proxy = e_proxy_new ();
+    e_proxy_setup_proxy (priv->proxy);
+    priv->service = service;
+    proxy_settings_changed (priv->proxy, priv);
+    priv->service = NULL;
+
     gdata_service_set_credentials (GDATA_SERVICE (service), priv->username, password);
     gdata_google_service_authenticate (GDATA_GOOGLE_SERVICE (service), &soup_error);
 
@@ -752,8 +780,13 @@ google_book_connect_to_google (GoogleBook *book, const char *password, GError **
         google_book_error_from_soup_error (soup_error, error,
                                            "Connecting to google failed");
         priv->service = NULL;
+	g_object_unref (service);
+	g_object_unref (priv->proxy);
+	priv->proxy = NULL;
         return FALSE;
     }
+
+    g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
     priv->service = service;
 
     return google_book_cache_refresh_if_needed (book, error);
@@ -770,9 +803,15 @@ google_book_set_offline_mode (GoogleBook *book, gboolean offline)
     priv = GET_PRIVATE (book);
 
     priv->offline = offline;
-    if (offline && priv->service) {
-        g_object_unref (priv->service);
-        priv->service = NULL;
+    if (offline) {
+	if (priv->service) {
+		g_object_unref (priv->service);
+		priv->service = NULL;
+	}
+	if (priv->proxy) {
+		g_object_unref (priv->proxy);
+		priv->proxy = NULL;
+	}
     }
     if (offline == FALSE) {
         if (priv->service) {

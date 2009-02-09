@@ -1318,7 +1318,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 
 	/* use proxy if necessary */
 	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
-		proxy_uri = e_proxy_peek_uri (proxy);
+		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
 	}
 	gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
 }
@@ -1500,6 +1500,7 @@ void
 e_cal_backend_google_set_uri (ECalBackendGoogle *cbgo, gchar *uri)
 {
 	ECalBackendGooglePrivate *priv;
+	SoupURI *proxy_uri = NULL;
 
 	g_return_if_fail (cbgo != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND_GOOGLE(cbgo));
@@ -1509,10 +1510,10 @@ e_cal_backend_google_set_uri (ECalBackendGoogle *cbgo, gchar *uri)
 
 	/* use proxy if necessary */
 	if (e_proxy_require_proxy_for_uri (priv->proxy, priv->uri)) {
-		SoupURI *proxy_uri = e_proxy_peek_uri (priv->proxy);
-
-		gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
+		proxy_uri = e_proxy_peek_uri_for (priv->proxy, priv->uri);
 	}
+
+	gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
 }
 
 /**

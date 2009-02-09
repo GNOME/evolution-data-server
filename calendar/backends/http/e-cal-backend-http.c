@@ -27,6 +27,7 @@
 #include <gconf/gconf-client.h>
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-xml-hash-utils.h"
+#include "libedataserver/e-proxy.h"
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>
@@ -424,9 +425,18 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	priv->is_loading = TRUE;
 
+	if (priv->uri == NULL) {
+		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+		const char *secure_prop = e_source_get_property (source, "use_ssl");
+
+		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
+		                                   (secure_prop && g_str_equal(secure_prop, "1")));
+	}
+
 	/* create the Soup session if not already created */
 	if (!priv->soup_session) {
-		GConfClient *conf_client;
+		EProxy *proxy;
+		SoupURI *proxy_uri = NULL;
 
 		priv->soup_session = soup_session_async_new ();
 
@@ -434,51 +444,15 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 				  G_CALLBACK (soup_authenticate), cbhttp);
 
 		/* set the HTTP proxy, if configuration is set to do so */
-		conf_client = gconf_client_get_default ();
-		if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_http_proxy", NULL)) {
-			char *server, *proxy_uri;
-			int port;
-
-			server = gconf_client_get_string (conf_client, "/system/http_proxy/host", NULL);
-			port = gconf_client_get_int (conf_client, "/system/http_proxy/port", NULL);
-
-			if (server && server[0]) {
-				SoupURI *suri;
-				if (gconf_client_get_bool (conf_client, "/system/http_proxy/use_authentication", NULL)) {
-					char *user, *password;
-
-					user = gconf_client_get_string (conf_client,
-									"/system/http_proxy/authentication_user",
-									NULL);
-					password = gconf_client_get_string (conf_client,
-									    "/system/http_proxy/authentication_password",
-									    NULL);
-
-					proxy_uri = g_strdup_printf("http://%s:%s@%s:%d", user, password, server, port);
-
-					g_free (user);
-					g_free (password);
-				} else
-					proxy_uri = g_strdup_printf ("http://%s:%d", server, port);
-
-				suri = soup_uri_new (proxy_uri);
-				g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, suri, NULL);
-
-				soup_uri_free (suri);
-				g_free (server);
-				g_free (proxy_uri);
-			}
+		proxy = e_proxy_new ();
+		e_proxy_setup_proxy (proxy);
+		if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
+			proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
 		}
 
-		g_object_unref (conf_client);
-	}
+		g_object_set (G_OBJECT (priv->soup_session), SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
 
-	if (priv->uri == NULL) {
-		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
-		const char *secure_prop = e_source_get_property (source, "use_ssl");
-
-		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
-		                                   (secure_prop && g_str_equal(secure_prop, "1")));
+		g_object_unref (proxy);
 	}
 
 	/* create message to be sent to server */

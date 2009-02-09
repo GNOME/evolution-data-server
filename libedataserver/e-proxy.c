@@ -48,27 +48,55 @@
 /* Debug */
 #define d(x)
 
-/* GConf paths and keys */
-#define PATH_GCONF_NETWORK_CONFIG "/apps/evolution/shell/network_config"
-#define KEY_GCONF_HTTP_PROXY_PORT (PATH_GCONF_NETWORK_CONFIG "/" "http_port")
-#define KEY_GCONF_HTTP_PROXY_HOST (PATH_GCONF_NETWORK_CONFIG "/" "http_host")
-#define KEY_GCONF_HTTPS_PROXY_PORT (PATH_GCONF_NETWORK_CONFIG "/" "secure_port")
-#define KEY_GCONF_HTTPS_PROXY_HOST (PATH_GCONF_NETWORK_CONFIG "/" "secure_host")
-#define KEY_GCONF_SOCKS_PROXY_PORT (PATH_GCONF_NETWORK_CONFIG "/" "socks_port")
-#define KEY_GCONF_SOCKS_PROXY_HOST (PATH_GCONF_NETWORK_CONFIG "/" "socks_host")
-#define KEY_GCONF_USE_HTTP_PROXY (PATH_GCONF_NETWORK_CONFIG "/" "use_http_proxy")
-#define KEY_GCONF_HTTP_AUTH_USER (PATH_GCONF_NETWORK_CONFIG "/" "authentication_user")
-#define KEY_GCONF_HTTP_AUTH_PW   (PATH_GCONF_NETWORK_CONFIG "/" "authentication_password")
-#define KEY_GCONF_HTTP_USE_AUTH (PATH_GCONF_NETWORK_CONFIG "/" "use_authentication")
+enum ProxyType {
+	PROXY_TYPE_SYSTEM = 0,
+	PROXY_TYPE_NO_PROXY,
+	PROXY_TYPE_MANUAL,
+	PROXY_TYPE_AUTO_URL /* no auto-proxy at the moment */
+};
 
-#define KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS (PATH_GCONF_NETWORK_CONFIG "/" "ignore_hosts")
+/* GConf paths and keys */
+#define PATH_GCONF_EVO_NETWORK_CONFIG "/apps/evolution/shell/network_config"
+#define KEY_GCONF_EVO_PROXY_TYPE       PATH_GCONF_EVO_NETWORK_CONFIG "/proxy_type"
+
+#define KEY_GCONF_EVO_USE_HTTP_PROXY    PATH_GCONF_EVO_NETWORK_CONFIG "/use_http_proxy"
+#define KEY_GCONF_EVO_HTTP_HOST         PATH_GCONF_EVO_NETWORK_CONFIG "/http_host"
+#define KEY_GCONF_EVO_HTTP_PORT         PATH_GCONF_EVO_NETWORK_CONFIG "/http_port"
+#define KEY_GCONF_EVO_HTTP_USE_AUTH     PATH_GCONF_EVO_NETWORK_CONFIG "/use_authentication"
+#define KEY_GCONF_EVO_HTTP_AUTH_USER    PATH_GCONF_EVO_NETWORK_CONFIG "/authentication_user"
+#define KEY_GCONF_EVO_HTTP_AUTH_PWD     PATH_GCONF_EVO_NETWORK_CONFIG "/authentication_password"
+#define KEY_GCONF_EVO_HTTP_IGNORE_HOSTS PATH_GCONF_EVO_NETWORK_CONFIG "/ignore_hosts"
+#define KEY_GCONF_EVO_HTTPS_HOST        PATH_GCONF_EVO_NETWORK_CONFIG "/secure_host"
+#define KEY_GCONF_EVO_HTTPS_PORT        PATH_GCONF_EVO_NETWORK_CONFIG "/secure_port"
+#define KEY_GCONF_EVO_SOCKS_HOST        PATH_GCONF_EVO_NETWORK_CONFIG "/socks_host"
+#define KEY_GCONF_EVO_SOCKS_PORT        PATH_GCONF_EVO_NETWORK_CONFIG "/socks_port"
+#define KEY_GCONF_EVO_AUTOCONFIG_URL    PATH_GCONF_EVO_NETWORK_CONFIG "/autoconfig_url"
+
+#define PATH_GCONF_SYS_PROXY "/system/proxy"
+#define PATH_GCONF_SYS_HTTP_PROXY "/system/http_proxy"
+
+#define KEY_GCONF_SYS_USE_HTTP_PROXY    PATH_GCONF_SYS_HTTP_PROXY "/use_http_proxy"
+#define KEY_GCONF_SYS_HTTP_HOST         PATH_GCONF_SYS_HTTP_PROXY "/host"
+#define KEY_GCONF_SYS_HTTP_PORT         PATH_GCONF_SYS_HTTP_PROXY "/port"
+#define KEY_GCONF_SYS_HTTP_USE_AUTH     PATH_GCONF_SYS_HTTP_PROXY "/use_authentication"
+#define KEY_GCONF_SYS_HTTP_AUTH_USER    PATH_GCONF_SYS_HTTP_PROXY "/authentication_user"
+#define KEY_GCONF_SYS_HTTP_AUTH_PWD     PATH_GCONF_SYS_HTTP_PROXY "/authentication_password"
+#define KEY_GCONF_SYS_HTTP_IGNORE_HOSTS PATH_GCONF_SYS_HTTP_PROXY "/ignore_hosts"
+#define KEY_GCONF_SYS_HTTPS_HOST        PATH_GCONF_SYS_PROXY "/secure_host"
+#define KEY_GCONF_SYS_HTTPS_PORT        PATH_GCONF_SYS_PROXY "/secure_port"
+#define KEY_GCONF_SYS_SOCKS_HOST        PATH_GCONF_SYS_PROXY "/socks_host"
+#define KEY_GCONF_SYS_SOCKS_PORT        PATH_GCONF_SYS_PROXY "/socks_port"
+#define KEY_GCONF_SYS_AUTOCONFIG_URL    PATH_GCONF_SYS_PROXY "/autoconfig_url"
+
+#define RIGHT_KEY(sufix) (priv->type == PROXY_TYPE_SYSTEM ? KEY_GCONF_SYS_ ## sufix : KEY_GCONF_EVO_ ## sufix)
 
 struct _EProxyPrivate {
-	SoupURI* uri;
-	guint notify_id; 	/* conxn id of gconf_client_notify_add  */
+	SoupURI *uri_http, *uri_https;
+	guint notify_id_evo, notify_id_sys, notify_id_sys_http; /* conxn id of gconf_client_notify_add  */
 	GSList* ign_hosts;	/* List of hostnames. (Strings)		*/
 	GSList* ign_addrs;	/* List of hostaddrs. (ProxyHostAddrs)	*/
-	gboolean use_proxy;	/* Is system-proxy enabled? */
+	gboolean use_proxy;	/* Is our-proxy enabled? */
+	enum ProxyType type;
 };
 
 /* Enum definition is copied from gnome-vfs/modules/http-proxy.c */
@@ -158,9 +186,13 @@ e_proxy_init (EProxy *pxy, EProxyClass *klass)
 	pxy->priv = priv;
 	priv->ign_hosts = NULL;
 	priv->ign_addrs = NULL;
-	priv->uri = NULL;
-	priv->notify_id = 0;
+	priv->uri_http = NULL;
+	priv->uri_https = NULL;
+	priv->notify_id_evo = 0;
+	priv->notify_id_sys = 0;
+	priv->notify_id_sys_http = 0;
 	priv->use_proxy = FALSE;
+	priv->type = PROXY_TYPE_SYSTEM;
 }
 
 static void
@@ -178,13 +210,19 @@ e_proxy_dispose (GObject *object)
 		GConfClient* client = NULL;
 
 		if ((client = gconf_client_get_default ())) {
-			if (priv->notify_id > 0)
-				gconf_client_notify_remove (client, priv->notify_id);
+			if (priv->notify_id_evo > 0)
+				gconf_client_notify_remove (client, priv->notify_id_evo);
+			if (priv->notify_id_sys > 0)
+				gconf_client_notify_remove (client, priv->notify_id_sys);
+			if (priv->notify_id_sys_http > 0)
+				gconf_client_notify_remove (client, priv->notify_id_sys_http);
 			g_object_unref (client);
 		}
 
-		if (priv->uri)
-			soup_uri_free (priv->uri);
+		if (priv->uri_http)
+			soup_uri_free (priv->uri_http);
+		if (priv->uri_https)
+			soup_uri_free (priv->uri_https);
 
 		if (priv->ign_hosts) {
 			g_slist_foreach (priv->ign_hosts, (GFunc) ep_free_proxy_host_addr, NULL);
@@ -196,7 +234,9 @@ e_proxy_dispose (GObject *object)
 			g_slist_free (priv->ign_addrs);
 		}
 		
-		priv->notify_id = 0;
+		priv->notify_id_evo = 0;
+		priv->notify_id_sys = 0;
+		priv->notify_id_sys_http = 0;
 		
 		g_free (priv);
 		priv = NULL;
@@ -226,13 +266,49 @@ e_proxy_get_type (void)
 }
 
 static gboolean
-ep_need_proxy (EProxy* proxy, const char* host)
+ep_is_in_ignored (EProxy *proxy, const char *host)
+{
+	EProxyPrivate *priv;
+	GSList* l;
+	gchar *hn;
+
+	g_return_val_if_fail (proxy != NULL, FALSE);
+	g_return_val_if_fail (host != NULL, FALSE);
+
+	priv = proxy->priv;
+	if (!priv->ign_hosts)
+		return FALSE;
+
+	hn = g_ascii_strdown (host, -1);
+		
+	for (l = priv->ign_hosts; l; l = l->next) {
+		if (*((gchar *)l->data) == '*') {
+			if (g_str_has_suffix (hn, ((gchar *)l->data)+1)) {
+				g_free (hn);
+				return TRUE;
+			}
+		} else if (strcmp (hn, l->data) == 0) {
+				g_free (hn);
+				return TRUE;
+		}
+	}
+	g_free (hn);
+
+	return FALSE;
+}
+
+static gboolean
+ep_need_proxy_http (EProxy* proxy, const char* host)
 {
 	SoupAddress *addr = NULL;
 	EProxyPrivate *priv = proxy->priv;
 	ProxyHostAddr *p_addr = NULL;
 	GSList *l;
 	guint status;
+
+	/* check for ignored first */
+	if (ep_is_in_ignored (proxy, host))
+		return FALSE;
 
 	addr = soup_address_new (host, 0);
 	status = soup_address_resolve_sync (addr, NULL);
@@ -296,26 +372,17 @@ ep_need_proxy (EProxy* proxy, const char* host)
 				}
 			}
 		}
-	} else {
-		GSList* l;
-		gchar* hn = g_ascii_strdown (host, -1);
-		
-		for (l = priv->ign_hosts; l; l = l->next) {
-			if (*((gchar *)l->data) == '*') {
-				if (g_str_has_suffix (hn, ((gchar *)l->data)+1)) {
-					g_free (hn);
-					return FALSE;
-				}
-			} else if (strcmp (hn, l->data) == 0) {
-					g_free (hn);
-					return FALSE;
-			}
-		}
-		g_free (hn);
 	}
-
+	
 	d(g_print ("%s needs a proxy to connect to internet\n", host));
 	return TRUE;
+}
+
+static gboolean
+ep_need_proxy_https (EProxy* proxy, const char* host)
+{
+	/* Can we share ignore list from HTTP at all? */
+	return !ep_is_in_ignored (proxy, host);
 }
 
 static gboolean
@@ -475,112 +542,169 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 	g_object_unref (addr);
 }
 
+static gboolean
+ep_change_uri (SoupURI **soup_uri, const char *uri)
+{
+	gboolean changed = FALSE;
+
+	g_return_val_if_fail (soup_uri != NULL, FALSE);
+
+	if (!uri || !*uri) {
+		if (*soup_uri) {
+			soup_uri_free (*soup_uri);
+			*soup_uri = NULL;
+			changed = TRUE;
+		}			
+	} else if (*soup_uri) {
+		char *old = soup_uri_to_string (*soup_uri, FALSE);
+
+		changed = old && uri && g_ascii_strcasecmp (old, uri) != 0;
+		if (changed) {
+			soup_uri_free (*soup_uri);
+			*soup_uri = soup_uri_new (uri);
+		}
+
+		g_free (old);
+	} else {
+		*soup_uri = soup_uri_new (uri);
+		changed = TRUE;
+	}
+
+	return changed;
+}
+
 static void
 ep_set_proxy (GConfClient *client, 
 	      gpointer user_data, 
-	      gboolean regen_ign_host_list,
-	      gboolean set_auth)
+	      gboolean regen_ign_host_list)
 {
-	char *proxy_server = NULL, *proxy_user = NULL, *proxy_pw = NULL, *uri = NULL;
-	gboolean use_auth;
-	int proxy_port;
+	char *proxy_server, *uri_http = NULL, *uri_https = NULL;
+	int proxy_port, old_type;
 	EProxy* proxy = (EProxy *)user_data;
 	EProxyPrivate* priv = proxy->priv;
 	GSList *ignore;
+	gboolean changed = FALSE;
 
-	priv->use_proxy = gconf_client_get_bool (client, KEY_GCONF_USE_HTTP_PROXY, NULL);
-	if (priv->use_proxy == FALSE) {
-		if (priv->uri) {
-			soup_uri_free (priv->uri);
-			priv->uri = NULL;
-		}
+	old_type = priv->type;
+	priv->type = gconf_client_get_int (client, KEY_GCONF_EVO_PROXY_TYPE, NULL);
+	if (priv->type < PROXY_TYPE_SYSTEM || priv->type > PROXY_TYPE_AUTO_URL)
+		priv->type = PROXY_TYPE_SYSTEM;
+	changed = priv->type != old_type;
+
+	priv->use_proxy = gconf_client_get_bool (client, RIGHT_KEY (USE_HTTP_PROXY), NULL);
+	if (!priv->use_proxy || priv->type == PROXY_TYPE_NO_PROXY) {
+		changed = ep_change_uri (&priv->uri_http, NULL) || changed;
+		changed = ep_change_uri (&priv->uri_https, NULL) || changed;
 		goto emit_signal;
 	}
-	
-	proxy_server = gconf_client_get_string (client, KEY_GCONF_HTTP_PROXY_HOST, NULL);
-	proxy_port = gconf_client_get_int (client, KEY_GCONF_HTTP_PROXY_PORT, NULL);
-	uri = g_strdup_printf ("http://%s:%d", proxy_server, proxy_port);
-	d(g_print ("ep_set_proxy: uri: %s\n", uri));
 
-	if (regen_ign_host_list) {		
+	proxy_server = gconf_client_get_string (client, RIGHT_KEY (HTTP_HOST), NULL);
+	proxy_port = gconf_client_get_int (client, RIGHT_KEY (HTTP_PORT), NULL);
+	uri_http = g_strdup_printf ("http://%s:%d", proxy_server, proxy_port);
+	g_free (proxy_server);
+	d(g_print ("ep_set_proxy: uri_http: %s\n", uri_http));
+
+	proxy_server = gconf_client_get_string (client, RIGHT_KEY (HTTPS_HOST), NULL);
+	proxy_port = gconf_client_get_int (client, RIGHT_KEY (HTTPS_PORT), NULL);
+	uri_https = g_strdup_printf ("https://%s:%d", proxy_server, proxy_port);
+	g_free (proxy_server);
+	d(g_print ("ep_set_proxy: uri_http: %s\n", uri_http));
+
+	if (regen_ign_host_list) {
 		if (priv->ign_hosts) {
 			g_slist_foreach (priv->ign_hosts, (GFunc) g_free, NULL);
 			g_slist_free (priv->ign_hosts);
 			priv->ign_hosts = NULL;
 		}
-		
+
 		if (priv->ign_addrs) {
 			g_slist_foreach (priv->ign_addrs, (GFunc) g_free, NULL);
 			g_slist_free (priv->ign_addrs);
 			priv->ign_addrs = NULL;
 		}
 
-		ignore = gconf_client_get_list (client, KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS, 
-						GCONF_VALUE_STRING, NULL);
+		ignore = gconf_client_get_list (client, RIGHT_KEY (HTTP_IGNORE_HOSTS), GCONF_VALUE_STRING, NULL);
 		if (ignore) {
 			g_slist_foreach (ignore, (GFunc) ep_parse_ignore_host, proxy);
-			g_slist_foreach (ignore, (GFunc) g_free, NULL);	
+			g_slist_foreach (ignore, (GFunc) g_free, NULL);
 			g_slist_free (ignore);
 		}
-	} else if (set_auth) {
-	
-		use_auth = gconf_client_get_bool (client, KEY_GCONF_HTTP_USE_AUTH, NULL);
-		if (use_auth == TRUE) {
-			proxy_user = gconf_client_get_string (client, KEY_GCONF_HTTP_AUTH_USER, NULL);
-			proxy_pw = gconf_client_get_string (client, KEY_GCONF_HTTP_AUTH_PW, NULL);
-		
-			if (uri)
-				g_free (uri);
-
-			uri = g_strdup_printf ("http://%s:%s@%s:%d", proxy_user, proxy_pw, proxy_server, proxy_port);
-		} 
 	}
 
-	if (priv->uri) {
-		soup_uri_free (priv->uri);
-		priv->uri = NULL;
+	if (gconf_client_get_bool (client, RIGHT_KEY (HTTP_USE_AUTH), NULL)) {
+		char *proxy_user, *proxy_pw, *tmp;
+
+		proxy_user = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_USER), NULL);
+		proxy_pw = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_PWD), NULL);
+
+		tmp = uri_http;
+
+		uri_http = g_strdup_printf ("http://%s:%s@%s", proxy_user, proxy_pw, tmp + strlen ("http://"));
+
+		g_free (proxy_user);
+		g_free (proxy_pw);
+		g_free (tmp);
 	}
-	
-	if (uri)
-		priv->uri = soup_uri_new (uri);
-	d(g_print ("system-proxy: uri: %s\n", uri));
 
- emit_signal:	
-	g_signal_emit (proxy, signals[CHANGED], 0);
+	changed = ep_change_uri (&priv->uri_http, uri_http) || changed;
+	changed = ep_change_uri (&priv->uri_https, uri_https) || changed;
+	d(g_print ("system-proxy: uri_http: %s; uri_https: %s\n", uri_http ? uri_http : "[null]", uri_https ? uri_https : "[null]"));
 
-	g_free (uri);
+ emit_signal:
+	if (changed)
+		g_signal_emit (proxy, signals[CHANGED], 0);
+
+	g_free (uri_http);
+	g_free (uri_https);
 
 	return;
 }
 
 static void
-ep_setting_changed (GConfClient *client, guint32 cnxn_id,
-		       GConfEntry *entry, gpointer user_data)
+ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpointer user_data)
 {
-    const char *key;
-    EProxy* proxy = (EProxy *)user_data;
+	const char *key;
+	EProxy* proxy = (EProxy *)user_data;
+	EProxyPrivate *priv;
 
-    if (!proxy || !proxy->priv)
-	    return;
+	if (!proxy || !proxy->priv)
+		return;
 
-    key = gconf_entry_get_key(entry);
+	priv = proxy->priv;
+	key = gconf_entry_get_key (entry);
 
-    if (strcmp(key, KEY_GCONF_USE_HTTP_PROXY) == 0
-        || strcmp(key, KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS) == 0
-        || strcmp(key, KEY_GCONF_HTTP_PROXY_HOST) == 0
-        || strcmp(key, KEY_GCONF_HTTP_PROXY_PORT) == 0) {
-	    gboolean regen_ign_host_list = FALSE;
+	if (g_str_equal (key, KEY_GCONF_EVO_PROXY_TYPE)) {
+		ep_set_proxy (client, user_data, FALSE);
+		d(g_print ("e-proxy.c:ep_settings_changed: proxy type changed\n"));
+	} else if (g_str_equal (key, RIGHT_KEY (USE_HTTP_PROXY)) ||
+		   g_str_equal (key, RIGHT_KEY (HTTP_IGNORE_HOSTS)) ||
+		   g_str_equal (key, RIGHT_KEY (HTTP_HOST)) ||
+		   g_str_equal (key, RIGHT_KEY (HTTP_PORT))) {
+		gboolean regen_ign_host_list = FALSE;
 
-	    if (strcmp(key, KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS) == 0)
-		    regen_ign_host_list = TRUE;
-	    ep_set_proxy (client, user_data, regen_ign_host_list, FALSE);
-	    d(g_print ("e-proxy.c:ep_settings_changed: proxy settings changed\n"));
-    } else if (strcmp(key, KEY_GCONF_HTTP_AUTH_USER) == 0
-               || strcmp(key, KEY_GCONF_HTTP_AUTH_PW) == 0
-               || strcmp(key, KEY_GCONF_HTTP_USE_AUTH) == 0) {
-	    ep_set_proxy (client, user_data, FALSE, TRUE);
-	    d(g_print ("e-proxy.c:ep_settings_changed: auth settings changed\n"));	    
-    }
+		if (g_str_equal (key, RIGHT_KEY (HTTP_IGNORE_HOSTS)))
+			regen_ign_host_list = TRUE;
+
+		ep_set_proxy (client, user_data, regen_ign_host_list);
+		d(g_print ("e-proxy.c:ep_settings_changed: proxy settings changed\n"));
+	} else if (g_str_equal (key, RIGHT_KEY (HTTP_AUTH_USER)) ||
+		   g_str_equal (key, RIGHT_KEY (HTTP_AUTH_PWD)) ||
+		   g_str_equal (key, RIGHT_KEY (HTTP_USE_AUTH))) {
+
+		ep_set_proxy (client, user_data, FALSE);
+		d(g_print ("e-proxy.c:ep_settings_changed: auth settings changed\n"));
+	} else if (g_str_equal (key, RIGHT_KEY (HTTPS_HOST)) ||
+		   g_str_equal (key, RIGHT_KEY (HTTPS_PORT))) {
+
+		ep_set_proxy (client, user_data, FALSE);
+		d(g_print ("e-proxy.c:ep_settings_changed: https\n"));
+	} else if (g_str_equal (key, RIGHT_KEY (SOCKS_HOST)) ||
+		   g_str_equal (key, RIGHT_KEY (SOCKS_PORT)) ||
+		   g_str_equal (key, RIGHT_KEY (AUTOCONFIG_URL))) {
+
+		/* ep_set_proxy (client, user_data, FALSE); */
+		d(g_print ("e-proxy.c:ep_settings_changed: socks/autoconf-url changed\n"));
+	}
 }
 
 EProxy* 
@@ -608,27 +732,45 @@ e_proxy_setup_proxy (EProxy* proxy)
 	if (!proxy || !proxy->priv)
 		return;
 
-	/* Listen to the changes in the evolution-shell path */
-	gconf_client_add_dir (client, PATH_GCONF_NETWORK_CONFIG,
-			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+	if (proxy->priv->notify_id_evo == 0) {
+		/* Listen to the changes in the evolution-shell path */
+		gconf_client_add_dir (client, PATH_GCONF_EVO_NETWORK_CONFIG, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		/* and system proxy setup changes */
+		gconf_client_add_dir (client, PATH_GCONF_SYS_PROXY, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_add_dir (client, PATH_GCONF_SYS_HTTP_PROXY, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 
-	if (proxy->priv->notify_id == 0)
-		proxy->priv->notify_id = gconf_client_notify_add (client, PATH_GCONF_NETWORK_CONFIG,
-								  ep_setting_changed, (gpointer)proxy, 
-								  NULL, NULL);
-	
-	ep_set_proxy (client, proxy, TRUE, TRUE);
+		proxy->priv->notify_id_evo = gconf_client_notify_add (client, PATH_GCONF_EVO_NETWORK_CONFIG,
+								      ep_setting_changed, (gpointer)proxy, 
+								      NULL, NULL);
+		proxy->priv->notify_id_sys = gconf_client_notify_add (client, PATH_GCONF_SYS_PROXY,
+								      ep_setting_changed, (gpointer)proxy, 
+								      NULL, NULL);
+		proxy->priv->notify_id_sys_http = gconf_client_notify_add (client, PATH_GCONF_SYS_HTTP_PROXY,
+								      ep_setting_changed, (gpointer)proxy, 
+								      NULL, NULL);
+	}
+
+	ep_set_proxy (client, proxy, TRUE);
 
 	g_object_unref (client);
 }
 
 SoupURI*
-e_proxy_peek_uri (EProxy* proxy)
+e_proxy_peek_uri_for (EProxy* proxy, const char *uri)
 {
-	if (!proxy || !proxy->priv)
+	SoupURI *suri;
+
+	if (!proxy || !proxy->priv || !uri || !*uri)
 		return NULL;
-	
-	return proxy->priv->uri;
+
+	suri = soup_uri_new (uri);
+	g_return_val_if_fail (suri != NULL, NULL);
+
+	if (suri->scheme == SOUP_URI_SCHEME_HTTPS) {
+		return proxy->priv->uri_https;
+	}
+
+	return proxy->priv->uri_http;
 }
 
 gboolean
@@ -640,16 +782,22 @@ e_proxy_require_proxy_for_uri (EProxy* proxy, const char* uri)
 	if (!uri || !proxy || !proxy->priv)
 		return ret;
 
-	if (!proxy->priv->use_proxy) {
+	if (!proxy->priv->use_proxy || proxy->priv->type == PROXY_TYPE_NO_PROXY) {
 		d(g_print ("[%s] don't need a proxy to connect to internet\n", uri));
 		return ret;
 	}
 
 	srv_uri = soup_uri_new (uri);
-	
-	ret = ep_need_proxy (proxy, srv_uri->host);
 
-	soup_uri_free (srv_uri);
+	if (srv_uri) {
+		if (srv_uri->scheme == SOUP_URI_SCHEME_HTTPS) {
+			ret = ep_need_proxy_https (proxy, srv_uri->host);
+		} else {
+			ret = ep_need_proxy_http (proxy, srv_uri->host);
+		}
+
+		soup_uri_free (srv_uri);
+	}
 
 	return ret;
 }

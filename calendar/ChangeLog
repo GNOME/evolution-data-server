@@ -1,3 +1,17 @@
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #555888
+
+	* backends/http/e-cal-backend-http.c: (begin_retrieval_cb):
+	* backends/caldav/e-cal-backend-caldav.c: (proxy_settings_changed),
+	(caldav_do_open), (e_cal_backend_caldav_dispose),
+	(e_cal_backend_caldav_init):
+	Use proxy configurable within Evolution.
+
+	* backends/google/e-cal-backend-google.c: (proxy_settings_changed),
+	(e_cal_backend_google_set_uri):
+	EProxy API changed, use e_proxy_peek_uri_for now.
+
 2009-02-05  Suman Manjunath  <msuman@novell.com>
 
 	** Fix for bug #569459

@@ -1,3 +1,10 @@
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #555888
+
+	* lib/e2k-context.c: (proxy_settings_changed), (e2k_context_set_auth):
+	EProxy API changed, use e_proxy_peek_uri_for now.
+
 2009-01-14  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #564543

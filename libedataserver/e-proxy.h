@@ -51,7 +51,7 @@ struct _EProxyClass {
 };
 
 EProxy* e_proxy_new (void);
-SoupURI* e_proxy_peek_uri (EProxy* proxy);
+SoupURI* e_proxy_peek_uri_for (EProxy* proxy, const char *uri);
 void e_proxy_setup_proxy (EProxy* proxy);
 GType e_proxy_get_type (void);
 gboolean e_proxy_require_proxy_for_uri (EProxy *proxy, 

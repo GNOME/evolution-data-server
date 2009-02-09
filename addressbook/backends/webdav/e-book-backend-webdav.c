@@ -34,6 +34,7 @@
 
 #include <libedataserver/e-url.h> 
 #include <libedataserver/e-flag.h>
+#include <libedataserver/e-proxy.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-address-western.h>
 
@@ -60,6 +61,7 @@ struct _EBookBackendWebdavPrivate {
 	int                mode;
 	gboolean           marked_for_offline;
 	SoupSession       *session;
+	EProxy		  *proxy;
 	gchar             *uri;
 	char              *username;
 	char              *password;
@@ -960,6 +962,23 @@ static void soup_authenticate(SoupSession *session, SoupMessage *message,
 	}
 }
 
+static void
+proxy_settings_changed (EProxy *proxy, gpointer user_data)
+{
+	SoupURI *proxy_uri = NULL;
+	EBookBackendWebdavPrivate *priv = (EBookBackendWebdavPrivate *) user_data;
+
+	if (!priv || !priv->uri || !priv->session)
+		return;
+
+	/* use proxy if necessary */
+	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
+		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
+	}
+
+	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+}
+
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_webdav_load_source(EBookBackend *backend,
                                   ESource *source, gboolean only_if_exists)
@@ -1017,6 +1036,10 @@ e_book_backend_webdav_load_source(EBookBackend *backend,
 	                 webdav);
 
 	priv->session = session;
+	priv->proxy = e_proxy_new ();
+	e_proxy_setup_proxy (priv->proxy);
+	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
+	proxy_settings_changed (priv->proxy, priv);
 
 	e_book_backend_notify_auth_required(backend);
 	e_book_backend_set_is_loaded(backend, TRUE);
@@ -1092,6 +1115,7 @@ e_book_backend_webdav_dispose(GObject *object)
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 
 	g_object_unref(priv->session);
+	g_object_unref (priv->proxy);
 	g_object_unref(priv->cache);
 	g_free(priv->uri);
 	g_free(priv->username);

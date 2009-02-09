@@ -75,7 +75,7 @@ update_soup_session_proxy_settings (EProxy *proxy, SoupSession* session,
 		return;
 	
 	if (e_proxy_require_proxy_for_uri (proxy, uri))
-		proxy_uri = e_proxy_peek_uri (proxy);
+		proxy_uri = e_proxy_peek_uri_for (proxy, uri);
 
 	g_object_set (session, SOUP_SESSION_PROXY_URI,
 		      proxy_uri, NULL);	

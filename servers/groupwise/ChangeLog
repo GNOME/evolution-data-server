@@ -1,3 +1,10 @@
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #555888
+
+	* e-gw-connection.c: (update_soup_session_proxy_settings):
+	EProxy API changed, use e_proxy_peek_uri_for now.
+
 2009-02-04  Sankar P  <psankar@novell.com>
 
 	* servers/groupwise/e-gw-connection.c:

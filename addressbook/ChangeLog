@@ -1,3 +1,15 @@
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #555888
+
+	* backends/webdav/e-book-backend-webdav.c:
+	(struct _EBookBackendWebdavPrivate), (proxy_settings_changed),
+	(e_book_backend_webdav_load_source), (e_book_backend_webdav_dispose):
+	* backends/google/google-book.c (struct _GoogleBookPrivate),
+	(google_book_dispose), (proxy_settings_changed),
+	(google_book_connect_to_google), (google_book_set_offline_mode):
+	Use proxy configurable within Evolution.
+
 2009-01-11  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #567384
