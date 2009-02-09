@@ -1,3 +1,10 @@
+2009-02-09  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #266147
+
+	* camel-gpg-context.c: (gpg_ctx_parse_status):
+	Verify signature of the encrypted text, if any.
+
 2009-02-02  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-db.c: (camel_db_migrate_folder_prepare), (cdb_delete_ids):

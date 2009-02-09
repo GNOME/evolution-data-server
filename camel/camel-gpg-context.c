@@ -897,6 +897,16 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 				/* FIXME: save this state? */
 			}
 			break;
+		case GPG_CTX_MODE_DECRYPT:
+			if (!strncmp ((char *) status, "BEGIN_DECRYPTION", 16)) {
+				/* nothing to do... but we know to expect data on stdout soon */
+				break;
+			} else if (!strncmp ((char *) status, "END_DECRYPTION", 14)) {
+				/* nothing to do, but we know the end is near? */
+				break;
+			}
+			/* let if fall through to verify possible signatures too */
+			/* break; */
 		case GPG_CTX_MODE_VERIFY:
 			if (!strncmp ((char *) status, "TRUST_", 6)) {
 				status += 6;
@@ -936,13 +946,6 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 						     _("Failed to encrypt: No valid recipients specified."));
 				return -1;
-			}
-			break;
-		case GPG_CTX_MODE_DECRYPT:
-			if (!strncmp ((char *) status, "BEGIN_DECRYPTION", 16)) {
-				/* nothing to do... but we know to expect data on stdout soon */
-			} else if (!strncmp ((char *) status, "END_DECRYPTION", 14)) {
-				/* nothing to do, but we know the end is near? */
 			}
 			break;
 		case GPG_CTX_MODE_IMPORT:
