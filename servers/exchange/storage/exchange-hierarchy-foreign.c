@@ -268,7 +268,6 @@ static struct {
 	{ N_("Sent Items"),	E2K_PR_STD_FOLDER_SENT_ITEMS },
 	{ N_("Tasks"),		E2K_PR_STD_FOLDER_TASKS }
 };
-const static int n_std_folders = sizeof (std_folders) / sizeof (std_folders[0]);
 static ExchangeAccountFolderResult
 create_internal (ExchangeHierarchy *hier, EFolder *parent,
 		 const char *name, const char *type, EFolder **folder_out)
@@ -293,7 +292,7 @@ create_internal (ExchangeHierarchy *hier, EFolder *parent,
 		return EXCHANGE_ACCOUNT_FOLDER_ALREADY_EXISTS;
 	}
 
-	for (i = 0; i < n_std_folders; i++) {
+	for (i = 0; i < G_N_ELEMENTS (std_folders); i++) {
 		if (g_ascii_strcasecmp (std_folders[i].name, name) != 0 &&
 		    g_utf8_collate (_(std_folders[i].name), name) != 0)
 			continue;

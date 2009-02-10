@@ -1,3 +1,10 @@
+2009-02-10  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #570653
+
+	* storage/exchange-hierarchy-foreign.c:
+	Kill n_std_folders and use G_N_ELEMENTS (std_folders) instead.
+
 2009-02-09  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #555888
