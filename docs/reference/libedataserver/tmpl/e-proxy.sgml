@@ -33,15 +33,6 @@ EProxy
 @Returns: 
 
 
-<!-- ##### FUNCTION e_proxy_peek_uri ##### -->
-<para>
-
-</para>
-
-@proxy: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_proxy_require_proxy_for_uri ##### -->
 <para>
 
