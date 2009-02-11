@@ -1409,7 +1409,7 @@ e_cal_backend_google_class_init (ECalBackendGoogleClass *class)
  * Return value: The type id of the #ECalBackendGoogle class.
  **/
 GType
-e_cal_backend_google_get_type ()
+e_cal_backend_google_get_type (void)
 {
 	static	GType e_cal_backend_google_type = 0;
 

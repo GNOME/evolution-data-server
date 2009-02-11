@@ -1313,7 +1313,7 @@ fetch_corba_cal (ECal *ecal, ESource *source, ECalSourceType type)
 
 /* one-time start up for libecal */
 static void
-e_cal_activate ()
+e_cal_activate (void)
 {
 	static GStaticMutex e_cal_lock = G_STATIC_MUTEX_INIT;
 	static gboolean activated = FALSE;

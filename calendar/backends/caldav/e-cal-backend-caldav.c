@@ -203,7 +203,7 @@ caldav_debug_init_once (gpointer data)
 }
 
 static void
-caldav_debug_init ()
+caldav_debug_init (void)
 {
 	static GOnce debug_once = G_ONCE_INIT;
 

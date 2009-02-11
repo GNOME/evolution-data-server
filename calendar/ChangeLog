@@ -1,3 +1,10 @@
+2009-02-11  Andre Klapper  <a9016009@gmx.de>
+
+	* libecal/e-cal.c:
+	* backends/caldav/e-cal-backend-caldav.c:
+	* backends/google/e-cal-backend-google.c:
+	Fix -Wold-style-definition warnings
+
 2009-02-09  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #555888
