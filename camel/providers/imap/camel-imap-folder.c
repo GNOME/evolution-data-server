@@ -199,6 +199,7 @@ camel_imap_folder_init (gpointer object, gpointer klass)
 	g_static_mutex_init(&imap_folder->priv->search_lock);
 	g_static_rec_mutex_init(&imap_folder->priv->cache_lock);
 #endif
+	imap_folder->priv->ignore_recent = NULL;
 
 	imap_folder->journal = NULL;
 	imap_folder->need_rescan = TRUE;
@@ -450,6 +451,8 @@ imap_finalize (CamelObject *object)
 	g_static_mutex_free(&imap_folder->priv->search_lock);
 	g_static_rec_mutex_free(&imap_folder->priv->cache_lock);
 #endif
+	if (imap_folder->priv->ignore_recent)
+		g_hash_table_unref (imap_folder->priv->ignore_recent);
 
 	if (imap_folder->journal) {
 		camel_offline_journal_write (imap_folder->journal, NULL);
@@ -1861,6 +1864,27 @@ imap_append_offline (CamelFolder *folder, CamelMimeMessage *message,
 		g_free (uid);
 }
 
+static void
+imap_folder_add_ignore_recent (CamelImapFolder *imap_folder, const char *uid)
+{
+	g_return_if_fail (imap_folder != NULL);
+	g_return_if_fail (uid != NULL);
+
+	if (!imap_folder->priv->ignore_recent)
+		imap_folder->priv->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+
+	g_hash_table_insert (imap_folder->priv->ignore_recent, g_strdup (uid), GINT_TO_POINTER (1));
+}
+
+static gboolean
+imap_folder_uid_in_ignore_recent (CamelImapFolder *imap_folder, const char *uid)
+{
+	g_return_val_if_fail (imap_folder != NULL, FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	return imap_folder->priv->ignore_recent && g_hash_table_lookup (imap_folder->priv->ignore_recent, uid);
+}
+
 static CamelImapResponse *
 do_append (CamelFolder *folder, CamelMimeMessage *message,
 	   const CamelMessageInfo *info, char **uid,
@@ -1957,6 +1981,9 @@ retry:
 		}
 	} else
 		*uid = NULL;
+
+	if (*uid)
+		imap_folder_add_ignore_recent (CAMEL_IMAP_FOLDER (folder), *uid);
 	
 	return response2;
 }
@@ -2152,6 +2179,8 @@ handle_copyuid (CamelImapResponse *response, CamelFolder *source,
 			camel_imap_message_cache_copy (scache, src->pdata[i],
 						       dcache, dest->pdata[i],
 						       NULL);
+
+			imap_folder_add_ignore_recent (CAMEL_IMAP_FOLDER (destination), dest->pdata[i]);
 		}
 		CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
 		CAMEL_IMAP_FOLDER_REC_UNLOCK (destination, cache_lock);
@@ -3573,15 +3602,22 @@ imap_update_summary (CamelFolder *folder, int exists,
 		update_summary (folder->summary, (CamelMessageInfoBase *)mi);
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 
-		/* report all new messages as recent, even without that flag, thus new
-		   messages will be filtered even after saw by other software earlier */
-		if ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT) != 0 || getenv ("FILTER_RECENT") == NULL)
+		/* Report all new messages as recent, even without that flag, thus new
+		   messages will be filtered even after saw by other software earlier.
+		   Only skip those which we added ourself, like after drag&drop to this folder. */
+		if (!imap_folder_uid_in_ignore_recent (imap_folder, camel_message_info_uid (mi))
+		    && ((mi->info.flags & CAMEL_IMAP_MESSAGE_RECENT) != 0 || getenv ("FILTER_RECENT") == NULL))
 			camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
 
 	}
 
 	g_ptr_array_free (messages, TRUE);
-	
+
+	if (imap_folder->priv->ignore_recent) {
+		g_hash_table_unref (imap_folder->priv->ignore_recent);
+		imap_folder->priv->ignore_recent = NULL;
+	}
+
 	return;
 	
  lose:
@@ -3598,6 +3634,11 @@ imap_update_summary (CamelFolder *folder, int exists,
 				camel_message_info_free(messages->pdata[i]);
 		}
 		g_ptr_array_free (messages, TRUE);
+	}
+
+	if (imap_folder->priv->ignore_recent) {
+		g_hash_table_unref (imap_folder->priv->ignore_recent);
+		imap_folder->priv->ignore_recent = NULL;
 	}
 }
 

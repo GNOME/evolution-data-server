@@ -1,3 +1,14 @@
+2009-02-12  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #534938
+
+	* camel-imap-private.h: (struct _CamelImapFolderPrivate): New property.
+	* camel-imap-folder.c: (camel_imap_folder_init), (imap_finalize),
+	(imap_folder_add_ignore_recent), (imap_folder_uid_in_ignore_recent),
+	(do_append), (handle_copyuid), (imap_update_summary):
+	Remember which IDs we added to the folder and ignore these in report
+	of recent messages, because we know about them already.
+
 2009-01-13  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel-imap-folder.c: (imap_update_summary): Remove a stupid debug
