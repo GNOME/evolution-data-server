@@ -32,11 +32,21 @@
 
 G_BEGIN_DECLS
 
-#define SERVER_TYPE_INTERFACE_CHECK		(server_interface_check_get_type ())
-#define SERVER_INTERFACE_CHECK(obj)		(GTK_CHECK_CAST ((obj), SERVER_TYPE_INTERFACE_CHECK, ServerInterfaceCheck))
-#define SERVER_INTERFACE_CHECK_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), SERVER_TYPE_INTERFACE_CHECK, ServerInterfaceCheckClass))
-#define SERVER_IS_INTERFACE_CHECK(obj)		(GTK_CHECK_TYPE ((obj), SERVER_TYPE_INTERFACE_CHECK))
-#define SERVER_IS_INTERFACE_CHECK_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), SERVER_TYPE_INTERFACE_CHECK))
+/* Standard GObject macros */
+#define SERVER_TYPE_INTERFACE_CHECK \
+	(server_interface_check_get_type ())
+#define SERVER_INTERFACE_CHECK(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), SERVER_TYPE_INTERFACE_CHECK, ServerInterfaceCheck))
+#define SERVER_INTERFACE_CHECK_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), SERVER_TYPE_INTERFACE_CHECK, ServerInterfaceCheckClass))
+#define SERVER_IS_INTERFACE_CHECK(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), SERVER_TYPE_INTERFACE_CHECK))
+#define SERVER_IS_INTERFACE_CHECK_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), SERVER_TYPE_INTERFACE_CHECK))
 
 
 typedef struct _ServerInterfaceCheck        ServerInterfaceCheck;

@@ -34,12 +34,24 @@
 
 G_BEGIN_DECLS
 
-#define E_TYPE_NAME_SELECTOR_LIST            (e_name_selector_list_get_type ())
-#define E_NAME_SELECTOR_LIST(obj)            (GTK_CHECK_CAST ((obj), e_name_selector_list_get_type (), ENameSelectorEntry))
-#define E_NAME_SELECTOR_LIST_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), e_name_selector_list_get_type (), ENameSelectorEntryClass))
-#define E_IS_NAME_SELECTOR_LIST(obj)         (GTK_CHECK_TYPE (obj, e_name_selector_list_get_type ()))
-#define E_IS_NAME_SELECTOR_LIST_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), e_name_selector_list_get_type ()))
-#define E_NAME_SELECTOR_LIST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_NAME_SELECTOR_LIST_TYPE, ENameSelectorEntryClass))
+/* Standard GObject macros */
+#define E_TYPE_NAME_SELECTOR_LIST \
+	(e_name_selector_list_get_type ())
+#define E_NAME_SELECTOR_LIST(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), e_name_selector_list_get_type (), ENameSelectorEntry))
+#define E_NAME_SELECTOR_LIST_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), e_name_selector_list_get_type (), ENameSelectorEntryClass))
+#define E_IS_NAME_SELECTOR_LIST(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), e_name_selector_list_get_type ()))
+#define E_IS_NAME_SELECTOR_LIST_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), e_name_selector_list_get_type ()))
+#define E_NAME_SELECTOR_LIST_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_NAME_SELECTOR_LIST_TYPE, ENameSelectorEntryClass))
 
 typedef struct _ENameSelectorList      ENameSelectorList;
 typedef struct _ENameSelectorListClass ENameSelectorListClass;
