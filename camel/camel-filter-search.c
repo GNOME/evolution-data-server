@@ -578,7 +578,7 @@ run_command (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessa
 		g_ptr_array_free (args, TRUE);
 
 		camel_exception_setv (fms->ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to create create child process '%s': %s"),
+				      _("Failed to create child process '%s': %s"),
 				      argv[0]->value.string, error->message);
 		g_error_free (error);
 		return -1;
