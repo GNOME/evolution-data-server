@@ -17,8 +17,9 @@
 #include "Evolution-DataServer-Addressbook.h"
 #include "e-book-view-listener.h"
 
-/* Creating a new addressbook. */
 EBookView *e_book_view_new (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener);
+
+void e_book_view_set_book (EBookView *book_view, struct _EBook *book);
 
 G_END_DECLS
 

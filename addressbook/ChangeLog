@@ -1,5 +1,11 @@
 2009-02-16  Ross Burton  <ross@linux.intel.com>
 
+	* libebook/e-book-view.h:
+	* libebook/e-book-view-private.h:
+	Move e_book_view_set_book to -private.
+
+2009-02-16  Ross Burton  <ross@linux.intel.com>
+
 	* libebook/e-contact.c:
 	* libebook/e-contact.h:
 	Add e_contact_field_id_from_vcard().
