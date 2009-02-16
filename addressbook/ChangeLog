@@ -1,3 +1,7 @@
+2009-02-16  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* libebook/e-contact.c: Fix a build break
+
 2009-02-16  Ross Burton  <ross@linux.intel.com>
 
 	* libebook/e-book-types.h:

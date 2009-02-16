@@ -281,7 +281,7 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_1,  EVC_X_SKYPE,  "im_skype_work_1",  N_("Skype Work Name 1"),         FALSE, "WORK", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_2,  EVC_X_SKYPE,  "im_skype_work_2",  N_("Skype Work Name 2"),         FALSE, "WORK", 1),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_3,  EVC_X_SKYPE,  "im_skype_work_3",  N_("Skype Work Name 3"),         FALSE, "WORK", 2),
-	MULTI_LIST_FIELD (E_CONTACT_IM_SKYPE,  	  EVC_X_SKYPE,     "im_skype",     N_("Skype Name List"),         FALSE)
+	MULTI_LIST_FIELD (E_CONTACT_IM_SKYPE,  	  EVC_X_SKYPE,     "im_skype",     N_("Skype Name List"),         FALSE),
 
 	MULTI_LIST_FIELD (E_CONTACT_SIP, 	  EVC_X_SIP,    "sip",    N_("SIP address"),          FALSE),
 };
