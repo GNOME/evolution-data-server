@@ -207,6 +207,8 @@ typedef enum {
 	E_CONTACT_IM_SKYPE_WORK_3,     /* Synthetic string field */
 	E_CONTACT_IM_SKYPE,    	 	/* Multi-valued */
 
+	E_CONTACT_SIP,
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
 
