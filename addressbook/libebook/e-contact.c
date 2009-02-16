@@ -1380,6 +1380,32 @@ e_contact_field_id (const char *field_name)
 }
 
 /**
+ * e_contact_field_id_from_vcard:
+ * @vcard_field: a string representing a vCard field
+ *
+ * Gets the #EContactField corresponding to the @vcard_field.
+ *
+ * Return value: An #EContactField corresponding to @vcard_field, or %0 if it doesn't exist.
+ **/
+EContactField
+e_contact_field_id_from_vcard (const char *vcard_field)
+{
+	int i;
+
+	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i ++) {
+		if (field_info[i].vcard_field_name == NULL)
+			continue;
+		if (field_info[i].t & E_CONTACT_FIELD_TYPE_SYNTHETIC)
+			continue;
+		if (!strcmp (field_info[i].vcard_field_name, vcard_field))
+			return field_info[i].field_id;
+	}
+
+	g_warning ("unknown vCard field `%s'", vcard_field);
+	return 0;
+}
+
+/**
  * e_contact_get:
  * @contact: an #EContact
  * @field_id: an #EContactField

@@ -344,6 +344,7 @@ const char*             e_contact_field_name       (EContactField field_id);
 const char*             e_contact_pretty_name      (EContactField field_id);
 const char*             e_contact_vcard_attribute  (EContactField field_id);
 EContactField           e_contact_field_id         (const char *field_name);
+EContactField           e_contact_field_id_from_vcard (const char *vcard_field);
 
 G_END_DECLS
 

@@ -1,6 +1,12 @@
 2009-02-16  Ross Burton  <ross@linux.intel.com>
 
 	* libebook/e-contact.c:
+	* libebook/e-contact.h:
+	Add e_contact_field_id_from_vcard().
+
+2009-02-16  Ross Burton  <ross@linux.intel.com>
+
+	* libebook/e-contact.c:
 	Handle EContactName structures containing NULLs.
 
 2009-02-09  Milan Crha  <mcrha@redhat.com>
