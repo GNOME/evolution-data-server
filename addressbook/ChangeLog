@@ -1,5 +1,10 @@
 2009-02-16  Ross Burton  <ross@linux.intel.com>
 
+	* libebook/e-book-types.h:
+	Add a "no space" error.
+
+2009-02-16  Ross Burton  <ross@linux.intel.com>
+
 	* libebook/e-contact.c:
 	* libebook/e-contact.h:
 	Add EVC_X_SIP and E_CONTACT_SIP.
