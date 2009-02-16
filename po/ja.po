@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-09 17:39+0900\n"
-"PO-Revision-Date: 2009-02-09 17:12+0900\n"
+"POT-Creation-Date: 2009-02-17 08:09+0900\n"
+"PO-Revision-Date: 2009-02-17 08:08+0900\n"
 "Last-Translator: Takeshi AIHANA <takeshi.aihana@gmail.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -698,7 +698,11 @@ msgstr "勤務先の Skype 名 3"
 msgid "Skype Name List"
 msgstr "Skype 名の一覧"
 
-#: ../addressbook/libebook/e-contact.c:1507
+#: ../addressbook/libebook/e-contact.c:286
+msgid "SIP address"
+msgstr "SIP の住所"
+
+#: ../addressbook/libebook/e-contact.c:1535
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "名前なしの一覧"
@@ -735,7 +739,7 @@ msgstr "差分を取得するためのスレッドを生成できませんでし
 #: ../calendar/backends/google/e-cal-backend-google.c:1192
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
-#: ../calendar/backends/http/e-cal-backend-http.c:587
+#: ../calendar/backends/http/e-cal-backend-http.c:561
 #: ../calendar/backends/weather/e-cal-backend-weather.c:484
 msgid "Could not create cache file"
 msgstr "キャッシュ・ファイルを生成できませんでした"
@@ -784,15 +788,15 @@ msgstr "無効なサーバ URI です"
 msgid "Authentication failed"
 msgstr "認証に失敗しました"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:267
+#: ../calendar/backends/http/e-cal-backend-http.c:268
 msgid "Redirected to Invalid URI"
 msgstr "URI へのリダイレクトが無効です"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:288
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "ファイルのフォ−マットが間違っています。"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:294
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
 msgstr "カレンダではありません。"
 
@@ -1348,7 +1352,7 @@ msgstr "この動作を完了するためにオンラインで作業して下さ
 msgid "No description available"
 msgstr "説明なし"
 
-#: ../camel/camel-filter-driver.c:795
+#: ../camel/camel-filter-driver.c:795 ../camel/camel-filter-search.c:581
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "子プロセス '%s' の生成に失敗しました: %s"
@@ -1423,11 +1427,6 @@ msgstr "(system-flag) に対する無効な引数"
 #: ../camel/camel-filter-search.c:416
 msgid "Invalid arguments to (user-tag)"
 msgstr "(user-tag) に対する無効な引数"
-
-#: ../camel/camel-filter-search.c:581
-#, c-format
-msgid "Failed to create create child process '%s': %s"
-msgstr "子プロセス '%s' の生成に失敗しました: %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
 #: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
@@ -1562,7 +1561,7 @@ msgstr ""
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "'%s' に対して GnuPG から想定外の要求がありました"
 
-#: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1068
+#: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1071
 #: ../camel/providers/nntp/camel-nntp-store.c:1287
 msgid "Canceled."
 msgstr "キャンセルしました"
@@ -1576,35 +1575,35 @@ msgstr "秘密鍵の解除に失敗しました: 指定した三つのパスワ�
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG から想定外の応答がありました: %s"
 
-#: ../camel/camel-gpg-context.c:937
+#: ../camel/camel-gpg-context.c:947
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "暗号化に失敗しました: 正しい宛先が指定されていません。"
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1334
-#: ../camel/camel-gpg-context.c:1829 ../camel/camel-gpg-context.c:1874
+#: ../camel/camel-gpg-context.c:1209 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1832 ../camel/camel-gpg-context.c:1877
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "GPG の実行に失敗しました: %s"
 
-#: ../camel/camel-gpg-context.c:1302 ../camel/camel-smime-context.c:392
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:392
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "署名データを生成できませんでした: %s"
 
-#: ../camel/camel-gpg-context.c:1349 ../camel/camel-gpg-context.c:1534
-#: ../camel/camel-gpg-context.c:1619 ../camel/camel-gpg-context.c:1634
-#: ../camel/camel-gpg-context.c:1750 ../camel/camel-gpg-context.c:1765
-#: ../camel/camel-gpg-context.c:1845 ../camel/camel-gpg-context.c:1890
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1537
+#: ../camel/camel-gpg-context.c:1622 ../camel/camel-gpg-context.c:1637
+#: ../camel/camel-gpg-context.c:1753 ../camel/camel-gpg-context.c:1768
+#: ../camel/camel-gpg-context.c:1848 ../camel/camel-gpg-context.c:1893
 msgid "Failed to execute gpg."
 msgstr "GPG の実行に失敗しました"
 
-#: ../camel/camel-gpg-context.c:1368
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "このメッセージにはデジタル署名された部分があります"
 
-#: ../camel/camel-gpg-context.c:1453 ../camel/camel-gpg-context.c:1459
-#: ../camel/camel-gpg-context.c:1465 ../camel/camel-gpg-context.c:1480
+#: ../camel/camel-gpg-context.c:1456 ../camel/camel-gpg-context.c:1462
+#: ../camel/camel-gpg-context.c:1468 ../camel/camel-gpg-context.c:1483
 #: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
 #: ../camel/camel-smime-context.c:713
 msgid "Cannot verify message signature: Incorrect message format"
@@ -1612,40 +1611,40 @@ msgstr ""
 "このメッセージ署名の整合性を確認できません: メッセージの書式が正しくありませ"
 "ん"
 
-#: ../camel/camel-gpg-context.c:1519
+#: ../camel/camel-gpg-context.c:1522
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr ""
 "このメッセージの整合性を確認できません: 作業用ファイルを作成できませんでし"
 "た: %s"
 
-#: ../camel/camel-gpg-context.c:1602
+#: ../camel/camel-gpg-context.c:1605
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "暗号化したデータを生成できませんでした: %s"
 
-#: ../camel/camel-gpg-context.c:1652
+#: ../camel/camel-gpg-context.c:1655
 msgid "This is a digitally encrypted message part"
 msgstr "これはデジタル署名された部分です"
 
-#: ../camel/camel-gpg-context.c:1705 ../camel/camel-gpg-context.c:1713
-#: ../camel/camel-gpg-context.c:1732
+#: ../camel/camel-gpg-context.c:1708 ../camel/camel-gpg-context.c:1716
+#: ../camel/camel-gpg-context.c:1735
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "メッセージを解読できません: メッセージの書式が正しくありません"
 
-#: ../camel/camel-gpg-context.c:1722
+#: ../camel/camel-gpg-context.c:1725
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME 型の暗号解読に失敗しました: プロトコル・エラー"
 
-#: ../camel/camel-gpg-context.c:1787 ../camel/camel-smime-context.c:969
+#: ../camel/camel-gpg-context.c:1790 ../camel/camel-smime-context.c:969
 msgid "Encrypted content"
 msgstr "暗号化した内容"
 
-#: ../camel/camel-gpg-context.c:1806
+#: ../camel/camel-gpg-context.c:1809
 msgid "Unable to parse message content"
 msgstr "メッセージの内容を解析できません"
 
-#: ../camel/camel-gpg-context.c:1830 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1833 ../camel/camel-gpg-context.c:1878
 #: ../camel/camel-tcp-stream-openssl.c:635
 #: ../camel/providers/imap4/camel-imap4-utils.c:624
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
@@ -2656,7 +2655,7 @@ msgid "Could not get message"
 msgstr "メッセージを取得できませんでした"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:867
-#: ../camel/providers/imap/camel-imap-folder.c:264
+#: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s のサマリをロードできませんでした"
@@ -2668,8 +2667,8 @@ msgstr "ゴミ箱フォルダが満杯です。空にして下さい。"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1335
 #: ../camel/providers/groupwise/camel-groupwise-store.c:617
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
-#: ../camel/providers/imap/camel-imap-folder.c:3333
-#: ../camel/providers/imap/camel-imap-folder.c:3409
+#: ../camel/providers/imap/camel-imap-folder.c:3362
+#: ../camel/providers/imap/camel-imap-folder.c:3438
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s にある新着メッセージのサマリ情報の同期中"
@@ -2966,61 +2965,61 @@ msgstr "IMAP サーバから想定外の OK 応答がありました: %s"
 msgid "Always check for new mail in this folder"
 msgstr "常にこのフォルダにある新着メールをチェックする"
 
-#: ../camel/providers/imap/camel-imap-folder.c:245
+#: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "フォルダ %s を作成できませんでした: %s"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:888
+#: ../camel/providers/imap/camel-imap-folder.c:891
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s にあるメッセージの解析中"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1926
+#: ../camel/providers/imap/camel-imap-folder.c:1950
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
 msgstr "APPEND コマンドの後に想定外の応答ステータスがあります: '%s'"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1941
+#: ../camel/providers/imap/camel-imap-folder.c:1965
 msgid "No response on continuation after APPEND command"
 msgstr "APPEND コマンドに続く応答がありません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1983
+#: ../camel/providers/imap/camel-imap-folder.c:2010
 msgid "Unknown error occurred during APPEND command!"
 msgstr "APPEND コマンドの発行中に原因不明のエラーが発生しました！"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2813
+#: ../camel/providers/imap/camel-imap-folder.c:2842
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "メッセージを取得できません: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2848
+#: ../camel/providers/imap/camel-imap-folder.c:2877
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s という ID のメッセージを取得できません: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2849
+#: ../camel/providers/imap/camel-imap-folder.c:2878
 msgid "No such message available."
 msgstr "そのようなメッセージは利用できません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2903
-#: ../camel/providers/imap/camel-imap-folder.c:3712
+#: ../camel/providers/imap/camel-imap-folder.c:2932
+#: ../camel/providers/imap/camel-imap-folder.c:3753
 #: ../camel/providers/nntp/camel-nntp-folder.c:239
 msgid "This message is not currently available"
 msgstr "このメッセージは現在利用できません"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3538
+#: ../camel/providers/imap/camel-imap-folder.c:3567
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "不完全なサーバの応答: メッセージ %d の情報が提供されませんでした"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3546
+#: ../camel/providers/imap/camel-imap-folder.c:3575
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "不完全なサーバの応答: メッセージ %d の UID が提供されませんでした"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3750
+#: ../camel/providers/imap/camel-imap-folder.c:3791
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH 応答にメッセージ本体がありませんでした。"
 
@@ -5304,3 +5303,6 @@ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr ""
 "セグメンテーション・フォルトが複数回発生しました: エラー・ダイアログを表示で"
 "きません\n"
+
+#~ msgid "Failed to create create child process '%s': %s"
+#~ msgstr "子プロセス '%s' の生成に失敗しました: %s"
