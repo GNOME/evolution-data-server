@@ -1,3 +1,8 @@
+2009-02-16  Ross Burton  <ross@linux.intel.com>
+
+	* libebook/e-contact.c:
+	Handle EContactName structures containing NULLs.
+
 2009-02-09  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #555888
