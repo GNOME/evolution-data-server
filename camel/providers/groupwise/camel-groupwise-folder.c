@@ -26,6 +26,12 @@
  */
 
 
+/* This file is broken and suffers from multiple author syndrome. 
+This needs to be rewritten with a lot of functions cleaned up. 
+
+There are a lot of places where code is unneccesarily duplicated, 
+which needs to be better organized via functions */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h> 
 #endif
@@ -106,6 +112,7 @@ groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex
 }
 
 
+/* Get a message from cache if available otherwise get it from server */
 static CamelMimeMessage *
 groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelException *ex )
 {
@@ -219,6 +226,7 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 	return msg;
 }
 
+/* create a mime message out of an gwitem */
 static void
 groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 {
@@ -248,6 +256,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 	}
 }
 
+/* convert an item to a msg body. set content type etc. */
 static void
 groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body)
 {
@@ -312,6 +321,7 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 	camel_object_unref (part);
 }
 
+/* Set the recipients list in the message from the item */
 static void
 groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 {
@@ -371,7 +381,7 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 			}
 		}
 
-		/* README: This entire status-opt code should go away once the new status-tracking code is tested */
+		/* The status tracking code is working fine. someone need to remove this */
 		if (enabled) {
 			camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-gw-status-opt", (const char *)status_opt);
 			g_free (status_opt);
@@ -424,6 +434,7 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 	}
 }
 
+/* code to rename a folder. all the "meta nonsense" code should simply go away */
 static void
 groupwise_folder_rename (CamelFolder *folder, const char *new)
 {
@@ -532,6 +543,8 @@ free_node (EGwJunkEntry *entry)
 	}
 }
 
+/* This is a point of contention. We behave like the GW client and update our junk list
+in the same way as the GroupWise client. Add senders to junk list */
 static void
 update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 {
@@ -634,6 +647,7 @@ groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 	camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 }
 
+/* This may need to be reorganized. */
 static void
 groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
@@ -786,6 +800,8 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	}
 	
 	CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
+
+	/* Do things in bulk. Reduces server calls, network latency etc.  */
 
 	if (deleted_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
@@ -1294,6 +1310,7 @@ end1:
 	return;
 }
 
+/* Update the GroupWise cache with the list of items passed. should happen in thread. */
 static void
 gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean uid_flag) 
 {
@@ -1558,6 +1575,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	camel_folder_change_info_free (changes);
 }
 
+/* Update summary, if there is none existing, create one */
 void
 gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex) 
 {
@@ -1930,6 +1948,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			if (attach->contentid && (is_text_html_embed != TRUE))
 				is_text_html_embed = TRUE;
 
+			/* MIME.822 from server for the weak hearted client programmer */
+
 			if ( (!g_ascii_strcasecmp (attach->name, "TEXT.htm") ||
 			     !g_ascii_strcasecmp (attach->name, "Mime.822") ||
 			     !g_ascii_strcasecmp (attach->name, "Header") ||
@@ -2043,6 +2063,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	}/* if attach_list */
 	/********************/
 
+	
+	/* this is broken for translations. someone should care to fix these hacks. nobody except groupwise users are affected though */
 	if (e_gw_item_get_priority (item))
 		camel_medium_add_header ( CAMEL_MEDIUM (msg), "Priority", e_gw_item_get_priority(item));
 
@@ -2149,6 +2171,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	
 	item = camel_groupwise_util_item_from_message (cnc, message, CAMEL_ADDRESS (message->from));
 	/*Set the source*/
+	/* FIXME: use flags and avoid such name comparisons in future */
 	if (!strcmp (folder->name, RECEIVED))
 		e_gw_item_set_source (item, "received");
 	if (!strcmp (folder->name, SENT))
@@ -2190,6 +2213,8 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 }
 
+/* A function to compare uids, inspired by strcmp .
+This code was used in some other provider also , imap4rev1 iirc */
 static int
 uid_compar (const void *va, const void *vb)
 {
@@ -2206,6 +2231,7 @@ uid_compar (const void *va, const void *vb)
 		return 1;
 }
 
+/* move messages */
 static void
 groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids, 
 		CamelFolder *destination, GPtrArray **transferred_uids, 
