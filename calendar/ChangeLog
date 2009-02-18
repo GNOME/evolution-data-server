@@ -1,3 +1,10 @@
+2009-02-18  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #570765
+
+	* backends/file/e-cal-backend-file.c: (e_cal_backend_file_open):
+	Do not store UTC to the component, it has none inner anyway.
+
 2009-02-11  Andre Klapper  <a9016009@gmx.de>
 
 	* libecal/e-cal.c:

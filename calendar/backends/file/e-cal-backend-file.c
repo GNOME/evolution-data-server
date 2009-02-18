@@ -945,7 +945,7 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	}
 
 	if (status == GNOME_Evolution_Calendar_Success) {
-		if (priv->default_zone) {
+		if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 			icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
 
 			icalcomponent_add_component (priv->icalcomp, icalcomponent_new_clone (icalcomp));
