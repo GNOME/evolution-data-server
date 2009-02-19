@@ -1107,7 +1107,7 @@ else
         msg_hula=no
 fi
 AM_CONDITIONAL(ENABLE_HULA, test x$enable_hula = xyes)
- 
+
 dnl **************************************************
 dnl * File locking
 dnl **************************************************
