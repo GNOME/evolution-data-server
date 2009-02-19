@@ -1367,9 +1367,10 @@ save_to_db_cb (gpointer key, gpointer value, gpointer data)
 			}
 	}
 
-	/* Reset the flags */
+	/* Reset the dirty flag which decides if the changes are synced to the DB or not. 
+	The FOLDER_FLAGGED should be used to check if the changes are synced to the server. 
+	So, dont unset the FOLDER_FLAGGED flag */
 	mi->dirty = FALSE;
-	mi->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 	
 	camel_db_camel_mir_free (mir);	
 }
