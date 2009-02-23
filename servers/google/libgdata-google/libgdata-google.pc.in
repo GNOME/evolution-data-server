@@ -5,14 +5,12 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 
-idldir=@idldir@
-IDL_INCLUDES=-I${idldir} @IDL_INCLUDES@
-
 privincludedir=@privincludedir@
 
 Name: libgdata-google
 Description: Client library for accessing google POA through SOAP interface
 Version: @VERSION@
 Requires: libsoup-2.4 >= @LIBSOUP_REQUIRED@ 
+Requires.private: libgdata-1.2
 Libs: -L${libdir} -lgdata-google-1.2
-Cflags: -I${privincludedir}/google/libgdata -I${privincludedir}/google/libgdata-google
+Cflags: -I${privincludedir}/google/libgdata-google

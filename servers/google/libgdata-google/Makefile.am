@@ -3,8 +3,7 @@ INCLUDES =							\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/servers/google/libgdata			\
-	$(SOUP_CFLAGS)						\
-	$(E_DATA_SERVER_CFLAGS)
+	$(SOUP_CFLAGS)
 
 lib_LTLIBRARIES = libgdata-google-1.2.la
 
@@ -14,7 +13,6 @@ libgdata_google_1_2_la_SOURCES =				\
 
 libgdata_google_1_2_la_LIBADD =					\
 	$(top_builddir)/servers/google/libgdata/libgdata-1.2.la	\
-	$(E_DATA_SERVER_LIBS)					\
 	$(SOUP_LIBS)
 
 libgdata_google_1_2_la_LDFLAGS =	                       \

@@ -2,8 +2,7 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"libgdata\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(SOUP_CFLAGS)					\
-	$(E_DATA_SERVER_CFLAGS)
+	$(SOUP_CFLAGS)
 
 lib_LTLIBRARIES = libgdata-1.2.la
 
@@ -16,7 +15,6 @@ libgdata_1_2_la_SOURCES =			\
 	gdata-service-iface.h			
 
 libgdata_1_2_la_LIBADD =			\
-	$(E_DATA_SERVER_LIBS)			\
 	$(SOUP_LIBS)
 
 libgdata_1_2_la_LDFLAGS =                       \
