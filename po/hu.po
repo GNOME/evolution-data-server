@@ -4251,7 +4251,7 @@ msgstr "Váratlan kiszolgálóválasz a head részéről: %s"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:414
 msgid "Use cancel"
-msgstr "Használja a „mégsem” lehetőséget"
+msgstr "Használja a „mégse” lehetőséget"
 
 #: ../camel/providers/nntp/camel-nntp-summary.c:416
 #, c-format
