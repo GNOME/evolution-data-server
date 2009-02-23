@@ -1,3 +1,9 @@
+2009-02-23  Tobias Mueller  <tobiasmue@svn.gnome.org>
+
+	* libebook/e-book.c: Hand book to kill_remaining_ops rather than 
+	a pointer. Patch by Tom Parker.
+	Fixes bug 566984.
+
 2009-02-16  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* libebook/e-contact.c: Fix a build break

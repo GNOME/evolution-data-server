@@ -3963,12 +3963,13 @@ static void
 kill_remaining_ops (gpointer key, gpointer value, gpointer user_data)
 {
 	EBookOp *op = value;
+	EBook *book = user_data;
 
 	if (!op)
 		return;
 
 	find_key_value (key, value, NULL);
-	e_book_clear_op (op->book, op);
+	e_book_clear_op (book, op);
 }
 
 static void
@@ -4026,7 +4027,7 @@ e_book_dispose (GObject *object)
 			g_object_unref (book->priv->source);
 
 		g_mutex_lock (book->priv->mutex);
-		g_hash_table_foreach (book->priv->id_to_op, kill_remaining_ops, NULL);
+		g_hash_table_foreach (book->priv->id_to_op, kill_remaining_ops, book);
 		g_hash_table_destroy (book->priv->id_to_op);
 		g_mutex_unlock (book->priv->mutex);
 
