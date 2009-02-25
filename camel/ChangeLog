@@ -1,6 +1,11 @@
 2009-02-25  Milan Crha  <mcrha@redhat.com>
 
 	* camel-smime-context.c: (nss_error_to_string):
+	Do compile recent error codes conditionally, and hide even more.
+
+2009-02-25  Milan Crha  <mcrha@redhat.com>
+
+	* camel-smime-context.c: (nss_error_to_string):
 	Comment too recent error codes.
 
 2009-02-25  Milan Crha  <mcrha@redhat.com>
