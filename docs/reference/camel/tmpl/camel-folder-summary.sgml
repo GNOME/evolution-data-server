@@ -328,6 +328,16 @@ CamelFolderSummary
 @info: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_peek_info ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_summary_get_changed ##### -->
 <para>
 
@@ -571,6 +581,42 @@ CamelFolderSummary
 
 @summary: 
 @Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_get_hashtable ##### -->
+<para>
+
+</para>
+
+@s: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_free_hashtable ##### -->
+<para>
+
+</para>
+
+@ht: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_get_flag_cache ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_update_flag_cache ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
+@flag: 
 
 
 <!-- ##### FUNCTION camel_folder_summary_encode_token ##### -->

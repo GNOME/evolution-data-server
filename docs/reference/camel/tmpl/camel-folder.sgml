@@ -321,6 +321,16 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_sync_message ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid: 
+@ex: 
+
+
 <!-- ##### MACRO camel_folder_delete_message ##### -->
 <para>
 
@@ -346,6 +356,17 @@ CamelFolder
 
 @folder: 
 @array: 
+
+
+<!-- ##### FUNCTION camel_folder_get_uncached_uids ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@uids: 
+@Param3: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_sort_uids ##### -->
@@ -396,6 +417,17 @@ CamelFolder
 
 @folder: 
 @result: 
+
+
+<!-- ##### FUNCTION camel_folder_count_by_expression ##### -->
+<para>
+
+</para>
+
+@folder: 
+@expression: 
+@ex: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_folder_get_message_info ##### -->

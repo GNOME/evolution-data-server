@@ -87,6 +87,7 @@
 <!ENTITY CamelSASLPlain SYSTEM "xml/camel-sasl-plain.xml">
 <!ENTITY CamelSASLPOPb4SMTP SYSTEM "xml/camel-sasl-popb4smtp.xml">
 <!ENTITY CamelSearchSQL SYSTEM "xml/camel-search-sql.xml">
+<!ENTITY CamelSearchSQLSexp SYSTEM "xml/camel-search-sql-sexp.xml">
 <!ENTITY CamelService SYSTEM "xml/camel-service.xml">
 <!ENTITY CamelSession SYSTEM "xml/camel-session.xml">
 <!ENTITY CamelSMIMEContext SYSTEM "xml/camel-smime-context.xml">
@@ -303,6 +304,7 @@
       &CamelMsgPort;
       &CamelNetUtils;
       &CamelSearchSQL;
+      &CamelSearchSQLSexp;
       &CamelStringUtils;
       &CamelTrie;
       &CamelUIDCache;

@@ -229,6 +229,13 @@ CamelStore
 
 
 
+<!-- ##### MACRO CAMEL_STORE_IS_MIGRATING ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE ##### -->
 <para>
 

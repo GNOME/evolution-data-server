@@ -146,3 +146,14 @@ CamelImapMessageCache
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_imap_message_cache_filter_cached ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@uids: 
+@ex: 
+@Returns: 
+
+
