@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.26\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-14 23:13+0000\n"
-"PO-Revision-Date: 2008-09-14 23:20+0000\n"
+"POT-Creation-Date: 2009-02-25 00:35+0000\n"
+"PO-Revision-Date: 2008-09-25 00:35+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -696,7 +696,11 @@ msgstr "Alcunha Profissional Skype 3"
 msgid "Skype Name List"
 msgstr "Lista de Alcunhas Skype"
 
-#: ../addressbook/libebook/e-contact.c:1507
+#: ../addressbook/libebook/e-contact.c:286
+msgid "SIP address"
+msgstr "Endereço SIP"
+
+#: ../addressbook/libebook/e-contact.c:1535
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "Lista Sem Nome"
@@ -744,12 +748,12 @@ msgid "Could not create thread for populating cache"
 msgstr "Incapaz de criar thread para popular a cache"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1055
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1899
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1917
 msgid "Reply Requested: by "
 msgstr "Resposta Pedida: até "
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1060
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1904
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1922
 msgid "Reply Requested: When convenient"
 msgstr "Resposta Pedida: Quando possível "
 
@@ -772,9 +776,9 @@ msgstr "URI de servidor inválido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
 #: ../calendar/libecal/e-cal.c:5098
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1131
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1163
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1201
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1147
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1179
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1217
 #: ../camel/providers/groupwise/camel-groupwise-store.c:588
 #: ../camel/providers/groupwise/camel-groupwise-store.c:753
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
@@ -1349,7 +1353,7 @@ msgstr "Tem de estar a trabalhar ligado para terminar esta operação"
 msgid "No description available"
 msgstr "Nenhuma descrição disponível"
 
-#: ../camel/camel-filter-driver.c:795
+#: ../camel/camel-filter-driver.c:795 ../camel/camel-filter-search.c:581
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Falha ao criar o processo filho '%s': %s"
@@ -1424,11 +1428,6 @@ msgstr "Argumentos inválidos para (parâmetro-sistema)"
 #: ../camel/camel-filter-search.c:416
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argumentos inválidos para (etiqueta-utilizador)"
-
-#: ../camel/camel-filter-search.c:581
-#, c-format
-msgid "Failed to create create child process '%s': %s"
-msgstr "Falha ao criar o processo filho '%s': %s"
 
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
 #: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
@@ -2605,7 +2604,7 @@ msgstr "Incapaz de copiar as mensagens para a pasta de Lixo"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Incapaz de copiar as mensagens para a pasta de Não Solicitado"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2614,7 +2613,7 @@ msgstr ""
 "Incapaz de obter a mensagem: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:129
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
 #: ../camel/providers/local/camel-maildir-folder.c:248
 #: ../camel/providers/local/camel-maildir-folder.c:275
 #: ../camel/providers/local/camel-mbox-folder.c:347
@@ -2623,7 +2622,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Mensagem inexistente"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:141
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
 #: ../camel/providers/imap4/camel-imap4-folder.c:821
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:251
@@ -2635,7 +2634,7 @@ msgstr "Mensagem inexistente"
 msgid "User canceled"
 msgstr "Cancelado pelo utilizador"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:155
 #: ../camel/providers/imap4/camel-imap4-folder.c:826
 #: ../camel/providers/nntp/camel-nntp-folder.c:166
 #: ../camel/providers/nntp/camel-nntp-folder.c:168
@@ -2650,31 +2649,31 @@ msgstr "Cancelado pelo utilizador"
 msgid "Cannot get message %s: %s"
 msgstr "Incapaz de obter a mensagem %s: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:165
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2277
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2303
 #: ../camel/providers/imap4/camel-imap4-folder.c:844
 msgid "This message is not available in offline mode."
 msgstr "Esta mensagem não está disponível em modo desligado."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:185
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:192
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1800
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1851
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1818
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1869
 msgid "Could not get message"
 msgstr "Incapaz de obter a mensagem"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:867
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:883
 #: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Incapaz de ler o resumo para %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1127
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1143
 msgid "Trash Folder Full. Please Empty."
 msgstr "Pasta de Lixo Cheia. Esvazie-a."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1335
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1352
 #: ../camel/providers/groupwise/camel-groupwise-store.c:617
 #: ../camel/providers/groupwise/camel-groupwise-store.c:743
 #: ../camel/providers/imap/camel-imap-folder.c:3362
@@ -2683,13 +2682,13 @@ msgstr "Pasta de Lixo Cheia. Esvazie-a."
 msgid "Fetching summary information for new messages in %s"
 msgstr "A obter a informação de resumo para novas mensagens em %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2135
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2177
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2157
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2200
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "Incapaz de adicionar a mensagem à pasta '%s': %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2165
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2188
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Incapaz de criar a mensagem: %s"
@@ -5335,6 +5334,9 @@ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
 msgstr ""
 "Ocorreram múltiplas falhas de segmentação; incapaz de apresentar o diálogo "
 "de erro\n"
+
+#~ msgid "Failed to create create child process '%s': %s"
+#~ msgstr "Falha ao criar o processo filho '%s': %s"
 
 #~ msgid "Fair"
 #~ msgstr "Ameno"
