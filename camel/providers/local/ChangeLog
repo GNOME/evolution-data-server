@@ -1,3 +1,16 @@
+2009-02-25  Jeff Cai <jeff.cai@sun.com>
+
+	** Fix for bug #567008
+
+	* camel-local-summary.c: (camel_local_summary_class_init),
+	(camel_local_summary_load), (local_summary_need_index):
+	* camel-local-summary.h:
+	* camel-spool-summary.c: (camel_spool_summary_class_init),
+	(spool_summary_need_index):
+
+	Avoiding the clearing of the uids in the spool summary if 
+	forceindex is true.
+
 2009-01-30  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #557348

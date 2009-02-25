@@ -70,6 +70,7 @@ struct _CamelLocalSummaryClass {
 
 	char *(*encode_x_evolution)(CamelLocalSummary *cls, const CamelLocalMessageInfo *info);
 	int (*decode_x_evolution)(CamelLocalSummary *cls, const char *xev, CamelLocalMessageInfo *info);
+	int (*need_index)();
 };
 
 CamelType	camel_local_summary_get_type	(void);
