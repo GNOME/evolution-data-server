@@ -85,8 +85,15 @@ enum {
 
 static guint e_book_signals [LAST_SIGNAL];
 
+typedef enum {
+	STATE_WAITING,
+	STATE_PROCESSING,
+	STATE_CANCELLING
+} EBookOpState;
+
 typedef struct {
 	gint32 opid;
+	EBookOpState opstate;
 	gint idle_id;
 	gboolean synchronous;
 	EFlag *flag;
@@ -174,6 +181,7 @@ e_book_new_op (EBook *book, gboolean sync)
 	EBookOp *op = g_new0 (EBookOp, 1);
 
 	op->flag = e_flag_new ();
+	op->opstate = STATE_WAITING;
 
 	op->synchronous = sync;
 	if (sync)
@@ -198,6 +206,26 @@ static EBookOp*
 e_book_get_current_sync_op (EBook *book)
 {
 	return e_book_get_op (book, 0);
+}
+
+static EBookOp *
+e_book_find_op (EBook *book, guint32 opid, const char *func_name)
+{
+	EBookOp *op;
+
+	op = e_book_get_op (book, opid);
+
+	if (op == NULL) {
+		g_warning ("%s: Cannot find operation", func_name);
+	} else if (op->opstate != STATE_WAITING) {
+		/* returns only operations, which are waiting */
+		op = NULL;
+	} else {
+		/* set opstate to processing, thus it will not be canceled meanwhile */
+		op->opstate = STATE_PROCESSING;
+	}
+
+	return op;
 }
 
 static void
@@ -421,11 +449,10 @@ e_book_response_add_contact (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_add_contact: Cannot find operation ");
 		return;
 	}
 
@@ -907,11 +934,10 @@ e_book_response_get_required_fields (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_required_fields: Cannot find operation ");
 		return;
 	}
 
@@ -949,11 +975,10 @@ e_book_response_get_supported_fields (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_supported_fields: Cannot find operation ");
 		return;
 	}
 
@@ -1130,11 +1155,10 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_supported_auth_methods: Cannot find operation ");
 		return;
 	}
 
@@ -1503,11 +1527,10 @@ e_book_response_get_contact (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_contact: Cannot find operation ");
 		return;
 	}
 
@@ -1983,11 +2006,10 @@ e_book_response_get_book_view (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_book_view: Cannot find operation ");
 		return;
 	}
 
@@ -2195,11 +2217,10 @@ e_book_response_get_contacts (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_contacts: Cannot find operation ");
 		return;
 	}
 
@@ -2398,11 +2419,10 @@ e_book_response_get_changes (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_get_changes: Cannot find operation ");
 		return;
 	}
 
@@ -2474,11 +2494,10 @@ e_book_response_generic (EBook       *book,
 	d(printf("e_book_response_generic\n"));
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_generic: Cannot find operation ");
 		return;
 	}
 
@@ -2517,6 +2536,11 @@ do_cancel (EBook *book, GError **error, EBookOp *op, const char *func_name)
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_CORBA_EXCEPTION,
 			     _("CORBA exception making \"%s\" call"),
 			     "Book::cancelOperation");
+		e_flag_set (op->flag);
+
+		g_mutex_lock (book->priv->mutex);
+		e_book_clear_op (book, op);
+		g_mutex_unlock (book->priv->mutex);
 		return FALSE;
 	}
 
@@ -2524,7 +2548,6 @@ do_cancel (EBook *book, GError **error, EBookOp *op, const char *func_name)
 
 	if (status == E_BOOK_ERROR_OK) {
 		op->status = E_BOOK_ERROR_CANCELLED;
-		e_flag_set (op->flag);
 		rv = TRUE;
 	}
 	else {
@@ -2532,6 +2555,13 @@ do_cancel (EBook *book, GError **error, EBookOp *op, const char *func_name)
 			     _("%s: could not cancel"), func_name);
 		rv = FALSE;
 	}
+	/* Always trigger the operation, we cannot put it back to queue, because
+	   the result could come just few ticks before, in the other thread. */
+	e_flag_set (op->flag);
+
+	g_mutex_lock (book->priv->mutex);
+	e_book_clear_op (book, op);
+	g_mutex_unlock (book->priv->mutex);
 
 	return rv;
 }
@@ -2563,6 +2593,16 @@ e_book_cancel (EBook   *book,
 
 	g_mutex_lock (book->priv->mutex);
 	op = e_book_get_current_sync_op (book);
+	if (op) {
+		if (op->opstate != STATE_WAITING) {
+			g_mutex_unlock (book->priv->mutex);
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
+				_("%s: could not cancel"), G_STRFUNC);
+			return FALSE;
+		}
+
+		op->opstate = STATE_CANCELLING;
+	}
 	g_mutex_unlock (book->priv->mutex);
 
 	return do_cancel (book, error, op, "e_book_cancel");
@@ -2590,6 +2630,17 @@ e_book_cancel_async_op (EBook *book, GError **error)
 
 		if (op && op->synchronous)
 			op = NULL;
+	}
+
+	if (op) {
+		if (op->opstate != STATE_WAITING) {
+			g_mutex_unlock (book->priv->mutex);
+			g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
+				_("%s: could not cancel"), G_STRFUNC);
+			return FALSE;
+		}
+
+		op->opstate = STATE_CANCELLING;
 	}
 
 	g_mutex_unlock (book->priv->mutex);
@@ -2792,11 +2843,10 @@ e_book_response_open (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_open: Cannot find operation ");
 		return;
 	}
 
@@ -2944,11 +2994,10 @@ e_book_response_remove (EBook       *book,
 
 	g_mutex_lock (book->priv->mutex);
 
-	op = e_book_get_op (book, opid);
+	op = e_book_find_op (book, opid, G_STRFUNC);
 
 	if (op == NULL) {
 		g_mutex_unlock (book->priv->mutex);
-		g_warning ("e_book_response_remove: Cannot find operation ");
 		return;
 	}
 

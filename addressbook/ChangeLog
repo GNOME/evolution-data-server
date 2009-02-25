@@ -1,3 +1,14 @@
+2009-02-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #563212
+
+	* libebook/e-book.c: (EBookOpState), (struct _EBookPrivate),
+	(e_book_new_op), (e_book_find_op), (do_cancel), (e_book_cancel),
+	(e_book_cancel_async_op):
+	Track state of the operation, three states WAITING, PROCESSING,
+	CANCELLING and cancel or process only those WAITING. Free the
+	operation after cancel and trigger always the operation flag here.
+
 2009-02-23  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	* libebook/e-book.c: Hand book to kill_remaining_ops rather than 
