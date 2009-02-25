@@ -1,5 +1,12 @@
 2009-02-25  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #273233
+
+	* camel-smime-context.c: (nss_error_to_string), (set_nss_error):
+	Show to user also reason why the operation failed.
+
+2009-02-25  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #571046
 
 	* camel-gpg-context.c: (gpg_verify):

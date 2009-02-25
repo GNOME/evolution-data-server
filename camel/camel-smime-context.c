@@ -38,6 +38,7 @@
 #include <certdb.h>
 #include <pkcs11.h>
 #include <smime.h>
+#include <secerr.h>
 #include <pkcs11t.h>
 #include <pk11func.h>
 
@@ -216,6 +217,211 @@ sm_id_to_hash(CamelCipherContext *context, const char *id)
 	return CAMEL_CIPHER_HASH_DEFAULT;
 }
 
+static const char *
+nss_error_to_string (long errorcode)
+{
+	#define cs(a,b) case a: return b;
+	
+	switch (errorcode) {
+	cs (SEC_ERROR_IO, "An I/O error occurred during security authorization.")
+	cs (SEC_ERROR_LIBRARY_FAILURE, "security library failure.")
+	cs (SEC_ERROR_BAD_DATA, "security library: received bad data.")
+	cs (SEC_ERROR_OUTPUT_LEN, "security library: output length error.")
+	cs (SEC_ERROR_INPUT_LEN, "security library has experienced an input length error.")
+	cs (SEC_ERROR_INVALID_ARGS, "security library: invalid arguments.")
+	cs (SEC_ERROR_INVALID_ALGORITHM, "security library: invalid algorithm.")
+	cs (SEC_ERROR_INVALID_AVA, "security library: invalid AVA.")
+	cs (SEC_ERROR_INVALID_TIME, "Improperly formatted time string.")
+	cs (SEC_ERROR_BAD_DER, "security library: improperly formatted DER-encoded message.")
+	cs (SEC_ERROR_BAD_SIGNATURE, "Peer's certificate has an invalid signature.")
+	cs (SEC_ERROR_EXPIRED_CERTIFICATE, "Peer's Certificate has expired.")
+	cs (SEC_ERROR_REVOKED_CERTIFICATE, "Peer's Certificate has been revoked.")
+	cs (SEC_ERROR_UNKNOWN_ISSUER, "Peer's Certificate issuer is not recognized.")
+	cs (SEC_ERROR_BAD_KEY, "Peer's public key is invalid.")
+	cs (SEC_ERROR_BAD_PASSWORD, "The security password entered is incorrect.")
+	cs (SEC_ERROR_RETRY_PASSWORD, "New password entered incorrectly.  Please try again.")
+	cs (SEC_ERROR_NO_NODELOCK, "security library: no nodelock.")
+	cs (SEC_ERROR_BAD_DATABASE, "security library: bad database.")
+	cs (SEC_ERROR_NO_MEMORY, "security library: memory allocation failure.")
+	cs (SEC_ERROR_UNTRUSTED_ISSUER, "Peer's certificate issuer has been marked as not trusted by the user.")
+	cs (SEC_ERROR_UNTRUSTED_CERT, "Peer's certificate has been marked as not trusted by the user.")
+	cs (SEC_ERROR_DUPLICATE_CERT, "Certificate already exists in your database.")
+	cs (SEC_ERROR_DUPLICATE_CERT_NAME, "Downloaded certificate's name duplicates one already in your database.")
+	cs (SEC_ERROR_ADDING_CERT, "Error adding certificate to database.")
+	cs (SEC_ERROR_FILING_KEY, "Error refiling the key for this certificate.")
+	cs (SEC_ERROR_NO_KEY, "The private key for this certificate cannot be found in key database")
+	cs (SEC_ERROR_CERT_VALID, "This certificate is valid.")
+	cs (SEC_ERROR_CERT_NOT_VALID, "This certificate is not valid.")
+	cs (SEC_ERROR_CERT_NO_RESPONSE, "Cert Library: No Response")
+	cs (SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE, "The certificate issuer's certificate has expired.  Check your system date and time.")
+	cs (SEC_ERROR_CRL_EXPIRED, "The CRL for the certificate's issuer has expired.  Update it or check your system date and time.")
+	cs (SEC_ERROR_CRL_BAD_SIGNATURE, "The CRL for the certificate's issuer has an invalid signature.")
+ 	cs (SEC_ERROR_CRL_INVALID, "New CRL has an invalid format.")
+	cs (SEC_ERROR_EXTENSION_VALUE_INVALID, "Certificate extension value is invalid.")
+	cs (SEC_ERROR_EXTENSION_NOT_FOUND, "Certificate extension not found.")
+	cs (SEC_ERROR_CA_CERT_INVALID, "Issuer certificate is invalid.")
+	cs (SEC_ERROR_PATH_LEN_CONSTRAINT_INVALID, "Certificate path length constraint is invalid.")
+	cs (SEC_ERROR_CERT_USAGES_INVALID, "Certificate usages field is invalid.")
+	cs (SEC_INTERNAL_ONLY, "**Internal ONLY module**")
+	cs (SEC_ERROR_INVALID_KEY, "The key does not support the requested operation.")
+	cs (SEC_ERROR_UNKNOWN_CRITICAL_EXTENSION, "Certificate contains unknown critical extension.")
+	cs (SEC_ERROR_OLD_CRL, "New CRL is not later than the current one.")
+	cs (SEC_ERROR_NO_EMAIL_CERT, "Not encrypted or signed: you do not yet have an email certificate.")
+	cs (SEC_ERROR_NO_RECIPIENT_CERTS_QUERY, "Not encrypted: you do not have certificates for each of the recipients.")
+	cs (SEC_ERROR_NOT_A_RECIPIENT, "Cannot decrypt: you are not a recipient, or matching certificate and private key not found.")
+	cs (SEC_ERROR_PKCS7_KEYALG_MISMATCH, "Cannot decrypt: key encryption algorithm does not match your certificate.")
+	cs (SEC_ERROR_PKCS7_BAD_SIGNATURE, "Signature verification failed: no signer found, too many signers found, or improper or corrupted data.")
+	cs (SEC_ERROR_UNSUPPORTED_KEYALG, "Unsupported or unknown key algorithm.")
+	cs (SEC_ERROR_DECRYPTION_DISALLOWED, "Cannot decrypt: encrypted using a disallowed algorithm or key size.")
+	cs (XP_SEC_FORTEZZA_BAD_CARD, "Fortezza card has not been properly initialized.  Please remove it and return it to your issuer.")
+	cs (XP_SEC_FORTEZZA_NO_CARD, "No Fortezza cards Found")
+	cs (XP_SEC_FORTEZZA_NONE_SELECTED, "No Fortezza card selected")
+	cs (XP_SEC_FORTEZZA_MORE_INFO, "Please select a personality to get more info on")
+	cs (XP_SEC_FORTEZZA_PERSON_NOT_FOUND, "Personality not found")
+	cs (XP_SEC_FORTEZZA_NO_MORE_INFO, "No more information on that Personality")
+	cs (XP_SEC_FORTEZZA_BAD_PIN, "Invalid Pin")
+	cs (XP_SEC_FORTEZZA_PERSON_ERROR, "Couldn't initialize Fortezza personalities.")
+	cs (SEC_ERROR_NO_KRL, "No KRL for this site's certificate has been found.")
+	cs (SEC_ERROR_KRL_EXPIRED, "The KRL for this site's certificate has expired.")
+	cs (SEC_ERROR_KRL_BAD_SIGNATURE, "The KRL for this site's certificate has an invalid signature.")
+	cs (SEC_ERROR_REVOKED_KEY, "The key for this site's certificate has been revoked.")
+	cs (SEC_ERROR_KRL_INVALID, "New KRL has an invalid format.")
+	cs (SEC_ERROR_NEED_RANDOM, "security library: need random data.")
+	cs (SEC_ERROR_NO_MODULE, "security library: no security module can perform the requested operation.")
+	cs (SEC_ERROR_NO_TOKEN, "The security card or token does not exist, needs to be initialized, or has been removed.")
+	cs (SEC_ERROR_READ_ONLY, "security library: read-only database.")
+	cs (SEC_ERROR_NO_SLOT_SELECTED, "No slot or token was selected.")
+	cs (SEC_ERROR_CERT_NICKNAME_COLLISION, "A certificate with the same nickname already exists.")
+	cs (SEC_ERROR_KEY_NICKNAME_COLLISION, "A key with the same nickname already exists.")
+	cs (SEC_ERROR_SAFE_NOT_CREATED, "error while creating safe object")
+	cs (SEC_ERROR_BAGGAGE_NOT_CREATED, "error while creating baggage object")
+	cs (XP_JAVA_REMOVE_PRINCIPAL_ERROR, "Couldn't remove the principal")
+	cs (XP_JAVA_DELETE_PRIVILEGE_ERROR, "Couldn't delete the privilege")
+	cs (XP_JAVA_CERT_NOT_EXISTS_ERROR, "This principal doesn't have a certificate")
+	cs (SEC_ERROR_BAD_EXPORT_ALGORITHM, "Required algorithm is not allowed.")
+	cs (SEC_ERROR_EXPORTING_CERTIFICATES, "Error attempting to export certificates.")
+	cs (SEC_ERROR_IMPORTING_CERTIFICATES, "Error attempting to import certificates.")
+	cs (SEC_ERROR_PKCS12_DECODING_PFX, "Unable to import.  Decoding error.  File not valid.")
+	cs (SEC_ERROR_PKCS12_INVALID_MAC, "Unable to import.  Invalid MAC.  Incorrect password or corrupt file.")
+	cs (SEC_ERROR_PKCS12_UNSUPPORTED_MAC_ALGORITHM, "Unable to import.  MAC algorithm not supported.")
+	cs (SEC_ERROR_PKCS12_UNSUPPORTED_TRANSPORT_MODE, "Unable to import.  Only password integrity and privacy modes supported.")
+	cs (SEC_ERROR_PKCS12_CORRUPT_PFX_STRUCTURE, "Unable to import.  File structure is corrupt.")
+	cs (SEC_ERROR_PKCS12_UNSUPPORTED_PBE_ALGORITHM, "Unable to import.  Encryption algorithm not supported.")
+	cs (SEC_ERROR_PKCS12_UNSUPPORTED_VERSION, "Unable to import.  File version not supported.")
+	cs (SEC_ERROR_PKCS12_PRIVACY_PASSWORD_INCORRECT, "Unable to import.  Incorrect privacy password.")
+	cs (SEC_ERROR_PKCS12_CERT_COLLISION, "Unable to import.  Same nickname already exists in database.")
+	cs (SEC_ERROR_USER_CANCELLED, "The user pressed cancel.")
+	cs (SEC_ERROR_PKCS12_DUPLICATE_DATA, "Not imported, already in database.")
+	cs (SEC_ERROR_MESSAGE_SEND_ABORTED, "Message not sent.")
+	cs (SEC_ERROR_INADEQUATE_KEY_USAGE, "Certificate key usage inadequate for attempted operation.")
+	cs (SEC_ERROR_INADEQUATE_CERT_TYPE, "Certificate type not approved for application.")
+	cs (SEC_ERROR_CERT_ADDR_MISMATCH, "Address in signing certificate does not match address in message headers.")
+	cs (SEC_ERROR_PKCS12_UNABLE_TO_IMPORT_KEY, "Unable to import.  Error attempting to import private key.")
+	cs (SEC_ERROR_PKCS12_IMPORTING_CERT_CHAIN, "Unable to import.  Error attempting to import certificate chain.")
+	cs (SEC_ERROR_PKCS12_UNABLE_TO_LOCATE_OBJECT_BY_NAME, "Unable to export.  Unable to locate certificate or key by nickname.")
+	cs (SEC_ERROR_PKCS12_UNABLE_TO_EXPORT_KEY, "Unable to export.  Private Key could not be located and exported.")
+	cs (SEC_ERROR_PKCS12_UNABLE_TO_WRITE, "Unable to export.  Unable to write the export file.")
+	cs (SEC_ERROR_PKCS12_UNABLE_TO_READ, "Unable to import.  Unable to read the import file.")
+	cs (SEC_ERROR_PKCS12_KEY_DATABASE_NOT_INITIALIZED, "Unable to export.  Key database corrupt or deleted.")
+	cs (SEC_ERROR_KEYGEN_FAIL, "Unable to generate public/private key pair.")
+	cs (SEC_ERROR_INVALID_PASSWORD, "Password entered is invalid.  Please pick a different one.")
+	cs (SEC_ERROR_RETRY_OLD_PASSWORD, "Old password entered incorrectly.  Please try again.")
+	cs (SEC_ERROR_BAD_NICKNAME, "Certificate nickname already in use.")
+	cs (SEC_ERROR_NOT_FORTEZZA_ISSUER, "Peer FORTEZZA chain has a non-FORTEZZA Certificate.")
+	cs (SEC_ERROR_CANNOT_MOVE_SENSITIVE_KEY, "A sensitive key cannot be moved to the slot where it is needed.")
+	cs (SEC_ERROR_JS_INVALID_MODULE_NAME, "Invalid module name.")
+	cs (SEC_ERROR_JS_INVALID_DLL, "Invalid module path/filename")
+	cs (SEC_ERROR_JS_ADD_MOD_FAILURE, "Unable to add module")
+	cs (SEC_ERROR_JS_DEL_MOD_FAILURE, "Unable to delete module")
+	cs (SEC_ERROR_OLD_KRL, "New KRL is not later than the current one.")
+	cs (SEC_ERROR_CKL_CONFLICT, "New CKL has different issuer than current CKL.  Delete current CKL.")
+	cs (SEC_ERROR_CERT_NOT_IN_NAME_SPACE, "The Certifying Authority for this certificate is not permitted to issue a certificate with this name.")
+	cs (SEC_ERROR_KRL_NOT_YET_VALID, "The key revocation list for this certificate is not yet valid.")
+	cs (SEC_ERROR_CRL_NOT_YET_VALID, "The certificate revocation list for this certificate is not yet valid.")
+	cs (SEC_ERROR_UNKNOWN_CERT, "The requested certificate could not be found.")
+	cs (SEC_ERROR_UNKNOWN_SIGNER, "The signer's certificate could not be found.")
+	cs (SEC_ERROR_CERT_BAD_ACCESS_LOCATION,	 "The location for the certificate status server has invalid format.")
+	cs (SEC_ERROR_OCSP_UNKNOWN_RESPONSE_TYPE, "The OCSP response cannot be fully decoded; it is of an unknown type.")
+	cs (SEC_ERROR_OCSP_BAD_HTTP_RESPONSE, "The OCSP server returned unexpected/invalid HTTP data.")
+	cs (SEC_ERROR_OCSP_MALFORMED_REQUEST, "The OCSP server found the request to be corrupted or improperly formed.")
+	cs (SEC_ERROR_OCSP_SERVER_ERROR, "The OCSP server experienced an internal error.")
+	cs (SEC_ERROR_OCSP_TRY_SERVER_LATER, "The OCSP server suggests trying again later.")
+	cs (SEC_ERROR_OCSP_REQUEST_NEEDS_SIG, "The OCSP server requires a signature on this request.")
+	cs (SEC_ERROR_OCSP_UNAUTHORIZED_REQUEST, "The OCSP server has refused this request as unauthorized.")
+	cs (SEC_ERROR_OCSP_UNKNOWN_RESPONSE_STATUS, "The OCSP server returned an unrecognizable status.")
+	cs (SEC_ERROR_OCSP_UNKNOWN_CERT, "The OCSP server has no status for the certificate.")
+	cs (SEC_ERROR_OCSP_NOT_ENABLED, "You must enable OCSP before performing this operation.")
+	cs (SEC_ERROR_OCSP_NO_DEFAULT_RESPONDER, "You must set the OCSP default responder before performing this operation.")
+	cs (SEC_ERROR_OCSP_MALFORMED_RESPONSE, "The response from the OCSP server was corrupted or improperly formed.")
+	cs (SEC_ERROR_OCSP_UNAUTHORIZED_RESPONSE, "The signer of the OCSP response is not authorized to give status for this certificate.")
+	cs (SEC_ERROR_OCSP_FUTURE_RESPONSE, "The OCSP response is not yet valid (contains a date in the future).")
+	cs (SEC_ERROR_OCSP_OLD_RESPONSE, "The OCSP response contains out-of-date information.")
+	cs (SEC_ERROR_DIGEST_NOT_FOUND, "The CMS or PKCS #7 Digest was not found in signed message.")
+	cs (SEC_ERROR_UNSUPPORTED_MESSAGE_TYPE, "The CMS or PKCS #7 Message type is unsupported.")
+	cs (SEC_ERROR_MODULE_STUCK, "PKCS #11 module could not be removed because it is still in use.")
+	cs (SEC_ERROR_BAD_TEMPLATE, "Could not decode ASN.1 data. Specified template was invalid.")
+	cs (SEC_ERROR_CRL_NOT_FOUND, "No matching CRL was found.")
+	cs (SEC_ERROR_REUSED_ISSUER_AND_SERIAL, "You are attempting to import a cert with the same issuer/serial as an existing cert, but that is not the same cert.")
+	cs (SEC_ERROR_BUSY, "NSS could not shutdown. Objects are still in use.")
+	cs (SEC_ERROR_EXTRA_INPUT, "DER-encoded message contained extra unused data.")
+	cs (SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE, "Unsupported elliptic curve.")
+	cs (SEC_ERROR_UNSUPPORTED_EC_POINT_FORM, "Unsupported elliptic curve point form.")
+	cs (SEC_ERROR_UNRECOGNIZED_OID, "Unrecognized Object Identifier.")
+	cs (SEC_ERROR_OCSP_INVALID_SIGNING_CERT, "Invalid OCSP signing certificate in OCSP response.")
+	cs (SEC_ERROR_REVOKED_CERTIFICATE_CRL, "Certificate is revoked in issuer's certificate revocation list.")
+	cs (SEC_ERROR_REVOKED_CERTIFICATE_OCSP, "Issuer's OCSP responder reports certificate is revoked.")
+	cs (SEC_ERROR_CRL_INVALID_VERSION, "Issuer's Certificate Revocation List has an unknown version number.")
+	cs (SEC_ERROR_CRL_V1_CRITICAL_EXTENSION, "Issuer's V1 Certificate Revocation List has a critical extension.")
+	cs (SEC_ERROR_CRL_UNKNOWN_CRITICAL_EXTENSION, "Issuer's V2 Certificate Revocation List has an unknown critical extension.")
+	cs (SEC_ERROR_UNKNOWN_OBJECT_TYPE, "Unknown object type specified.")
+	cs (SEC_ERROR_INCOMPATIBLE_PKCS11, "PKCS #11 driver violates the spec in an incompatible way.")
+	cs (SEC_ERROR_NO_EVENT, "No new slot event is available at this time.")
+	cs (SEC_ERROR_CRL_ALREADY_EXISTS, "CRL already exists.")
+	cs (SEC_ERROR_NOT_INITIALIZED, "NSS is not initialized.")
+	cs (SEC_ERROR_TOKEN_NOT_LOGGED_IN, "The operation failed because the PKCS#11 token is not logged in.")
+	cs (SEC_ERROR_OCSP_RESPONDER_CERT_INVALID, "Configured OCSP responder's certificate is invalid.")
+	cs (SEC_ERROR_OCSP_BAD_SIGNATURE, "OCSP response has an invalid signature.")
+	cs (SEC_ERROR_OUT_OF_SEARCH_LIMITS, "Cert validation search is out of search limits")
+	cs (SEC_ERROR_INVALID_POLICY_MAPPING, "Policy mapping contains anypolicy")
+	cs (SEC_ERROR_POLICY_VALIDATION_FAILED, "Cert chain fails policy validation")
+	cs (SEC_ERROR_UNKNOWN_AIA_LOCATION_TYPE, "Unknown location type in cert AIA extension")
+	cs (SEC_ERROR_BAD_HTTP_RESPONSE, "Server returned bad HTTP response")
+	cs (SEC_ERROR_BAD_LDAP_RESPONSE, "Server returned bad LDAP response")
+	cs (SEC_ERROR_FAILED_TO_ENCODE_DATA, "Failed to encode data with ASN1 encoder")
+	cs (SEC_ERROR_BAD_INFO_ACCESS_LOCATION, "Bad information access location in cert extension")
+	cs (SEC_ERROR_LIBPKIX_INTERNAL, "Libpkix internal error occured during cert validation.")
+	cs (SEC_ERROR_PKCS11_GENERAL_ERROR, "A PKCS #11 module returned CKR_GENERAL_ERROR, indicating that an unrecoverable error has occurred.")
+	cs (SEC_ERROR_PKCS11_FUNCTION_FAILED, "A PKCS #11 module returned CKR_FUNCTION_FAILED, indicating that the requested function could not be performed.  Trying the same operation again might succeed.")
+	cs (SEC_ERROR_PKCS11_DEVICE_ERROR, "A PKCS #11 module returned CKR_DEVICE_ERROR, indicating that a problem has occurred with the token or slot.")
+	}
+
+	#undef cs
+
+	return NULL;
+}
+
+static void
+set_nss_error (CamelException *ex, const char *def_error)
+{
+	long err_code;
+
+	g_return_if_fail (def_error != NULL);
+
+	err_code = PORT_GetError ();
+
+	if (!err_code) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, def_error);
+	} else {
+		const char *err_str;
+
+		err_str = nss_error_to_string (err_code);
+		if (!err_str)
+			err_str = "Uknown error.";
+
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s (%d) - %s", err_str, (int) err_code, def_error);
+	}
+}
+
 static NSSCMSMessage *
 sm_signing_cmsmessage(CamelSMIMEContext *context, const char *nick, SECOidTag hash, int detached, CamelException *ex)
 {
@@ -237,43 +443,43 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const char *nick, SECOidTag ha
 
 	cmsg = NSS_CMSMessage_Create(NULL); /* create a message on its own pool */
 	if (cmsg == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create CMS message"));
+		set_nss_error (ex, _("Cannot create CMS message"));
 		goto fail;
 	}
 
 	if ((sigd = NSS_CMSSignedData_Create(cmsg)) == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create CMS signed data"));
+		set_nss_error (ex, _("Cannot create CMS signed data"));
 		goto fail;
 	}
 
 	cinfo = NSS_CMSMessage_GetContentInfo(cmsg);
 	if (NSS_CMSContentInfo_SetContent_SignedData(cmsg, cinfo, sigd) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot attach CMS signed data"));
+		set_nss_error (ex, _("Cannot attach CMS signed data"));
 		goto fail;
 	}
 
 	/* if !detatched, the contentinfo will alloc a data item for us */
 	cinfo = NSS_CMSSignedData_GetContentInfo(sigd);
 	if (NSS_CMSContentInfo_SetContent_Data(cmsg, cinfo, NULL, detached) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot attach CMS data"));
+		set_nss_error (ex, _("Cannot attach CMS data"));
 		goto fail;
 	}
 
 	signerinfo = NSS_CMSSignerInfo_Create(cmsg, cert, hash);
 	if (signerinfo == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create CMS Signer information"));
+		set_nss_error (ex, _("Cannot create CMS Signer information"));
 		goto fail;
 	}
 
 	/* we want the cert chain included for this one */
 	if (NSS_CMSSignerInfo_IncludeCerts(signerinfo, NSSCMSCM_CertChain, certUsageEmailSigner) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot find certificate chain"));
+		set_nss_error (ex, _("Cannot find certificate chain"));
 		goto fail;
 	}
 
 	/* SMIME RFC says signing time should always be added */
 	if (NSS_CMSSignerInfo_AddSigningTime(signerinfo, PR_Now()) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot add CMS Signing time"));
+		set_nss_error (ex, _("Cannot add CMS Signing time"));
 		goto fail;
 	}
 
@@ -314,23 +520,23 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const char *nick, SECOidTag ha
 		}
 
 		if (NSS_CMSSignerInfo_AddSMIMEEncKeyPrefs(signerinfo, enccert, p->certdb) != SECSuccess) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot add SMIMEEncKeyPrefs attribute"));
+			set_nss_error (ex, _("Cannot add SMIMEEncKeyPrefs attribute"));
 			goto fail;
 		}
 
 		if (NSS_CMSSignerInfo_AddMSSMIMEEncKeyPrefs(signerinfo, enccert, p->certdb) != SECSuccess) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot add MS SMIMEEncKeyPrefs attribute"));
+			set_nss_error (ex, _("Cannot add MS SMIMEEncKeyPrefs attribute"));
 			goto fail;
 		}
 
 		if (ekpcert != NULL && NSS_CMSSignedData_AddCertificate(sigd, ekpcert) != SECSuccess) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot add encryption certificate"));
+			set_nss_error (ex, _("Cannot add encryption certificate"));
 			goto fail;
 		}
 	}
 
 	if (NSS_CMSSignedData_AddSignerInfo(sigd, signerinfo) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot add CMS Signer information"));
+		set_nss_error (ex, _("Cannot add CMS Signer information"));
 		goto fail;
 	}
 
@@ -400,18 +606,18 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 				   NULL, NULL,     /* decrypt key callback */
 				   NULL, NULL );   /* detached digests    */
 	if (!enc) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create encoder context"));
+		set_nss_error (ex, _("Cannot create encoder context"));
 		goto fail;
 	}
 
 	if (NSS_CMSEncoder_Update(enc, (char *) ((CamelStreamMem *)istream)->buffer->data, ((CamelStreamMem *)istream)->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to add data to CMS encoder"));
+		set_nss_error (ex, _("Failed to add data to CMS encoder"));
 		goto fail;
 	}
 
 	if (NSS_CMSEncoder_Finish(enc) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to encode data"));
+		set_nss_error (ex, _("Failed to encode data"));
 		goto fail;
 	}
 
@@ -539,19 +745,19 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 		case SEC_OID_PKCS7_SIGNED_DATA:
 			sigd = (NSSCMSSignedData *)NSS_CMSContentInfo_GetContent(cinfo);
 			if (sigd == NULL) {
-				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("No signed data in signature"));
+				set_nss_error (ex, _("No signed data in signature"));
 				goto fail;
 			}
 
 			/* need to build digests of the content */
 			if (!NSS_CMSSignedData_HasDigests(sigd)) {
 				if (extstream == NULL) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Digests missing from enveloped data"));
+					set_nss_error (ex, _("Digests missing from enveloped data"));
 					goto fail;
 				}
 
 				if ((poolp = PORT_NewArena(1024)) == NULL) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, g_strerror (ENOMEM));
+					set_nss_error (ex, g_strerror (ENOMEM));
 					goto fail;
 				}
 
@@ -559,7 +765,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 				
 				digcx = NSS_CMSDigestContext_StartMultiple(digestalgs);
 				if (digcx == NULL) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot calculate digests"));
+					set_nss_error (ex, _("Cannot calculate digests"));
 					goto fail;
 				}
 
@@ -569,12 +775,12 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 				camel_object_unref(mem);
 
 				if (NSS_CMSDigestContext_FinishMultiple(digcx, poolp, &digests) != SECSuccess) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot calculate digests"));
+					set_nss_error (ex, _("Cannot calculate digests"));
 					goto fail;
 				}
 
 				if (NSS_CMSSignedData_SetDigests(sigd, digestalgs, digests) != SECSuccess) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot set message digests"));
+					set_nss_error (ex, _("Cannot set message digests"));
 					goto fail;
 				}
 
@@ -584,12 +790,12 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 
 			/* import all certificates present */
 			if (NSS_CMSSignedData_ImportCerts(sigd, p->certdb, certUsageEmailSigner, PR_TRUE) != SECSuccess) {
-				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Certificate import failed"));
+				set_nss_error (ex, _("Certificate import failed"));
 				goto fail;
 			}
 
 			if (NSS_CMSSignedData_ImportCerts(sigd, p->certdb, certUsageEmailRecipient, PR_TRUE) != SECSuccess) {
-				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Certificate import failed"));
+				set_nss_error (ex, _("Certificate import failed"));
 				goto fail;
 			}
 
@@ -606,7 +812,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 				}
 			} else {
 				if (!NSS_CMSSignedData_HasDigests(sigd)) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot find signature digests"));
+					set_nss_error (ex, _("Cannot find signature digests"));
 					goto fail;
 				}
 
@@ -723,10 +929,10 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 	(void)NSS_CMSDecoder_Update(dec, (char *) mem->buffer->data, mem->buffer->len);
 	cmsg = NSS_CMSDecoder_Finish(dec);
 	if (cmsg == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Decoder failed"));
+		set_nss_error (ex, _("Decoder failed"));
 		goto fail;
 	}
-	
+
 	valid = sm_verify_cmsg(context, cmsg, constream, ex);
 	
 	NSS_CMSMessage_Destroy(cmsg);
@@ -761,14 +967,14 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 
 	poolp = PORT_NewArena(1024);
 	if (poolp == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, g_strerror (ENOMEM));
+		set_nss_error (ex, g_strerror (ENOMEM));
 		return -1;
 	}
 
 	/* Lookup all recipients certs, for later working */
 	recipient_certs = (CERTCertificate **)PORT_ArenaZAlloc(poolp, sizeof(*recipient_certs[0])*(recipients->len + 1));
 	if (recipient_certs == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, g_strerror (ENOMEM));
+		set_nss_error (ex, g_strerror (ENOMEM));
 		goto fail;
 	}
 
@@ -782,7 +988,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 
 	/* Find a common algorithm, probably 3DES anyway ... */
 	if (NSS_SMIMEUtil_FindBulkAlgForRecipients(recipient_certs, &bulkalgtag, &bulkkeysize) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot find common bulk encryption algorithm"));
+		set_nss_error (ex, _("Cannot find common bulk encryption algorithm"));
 		goto fail;
 	}
 
@@ -790,8 +996,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	type = PK11_AlgtagToMechanism(bulkalgtag);
 	slot = PK11_GetBestSlot(type, context);
 	if (slot == NULL) {
-		/* PORT_GetError(); ?? */
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot allocate slot for encryption bulk key"));
+		set_nss_error (ex, _("Cannot allocate slot for encryption bulk key"));
 		goto fail;
 	}
 
@@ -802,25 +1007,25 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	/* msg->envelopedData->data */
 	cmsg = NSS_CMSMessage_Create(NULL);
 	if (cmsg == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create CMS Message"));
+		set_nss_error (ex, _("Cannot create CMS Message"));
 		goto fail;
 	}
 
 	envd = NSS_CMSEnvelopedData_Create(cmsg, bulkalgtag, bulkkeysize);
 	if (envd == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create CMS Enveloped data"));
+		set_nss_error (ex, _("Cannot create CMS Enveloped data"));
 		goto fail;
 	}
 
 	cinfo = NSS_CMSMessage_GetContentInfo(cmsg);
 	if (NSS_CMSContentInfo_SetContent_EnvelopedData(cmsg, cinfo, envd) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot attach CMS Enveloped data"));
+		set_nss_error (ex, _("Cannot attach CMS Enveloped data"));
 		goto fail;
 	}
 
 	cinfo = NSS_CMSEnvelopedData_GetContentInfo(envd);
 	if (NSS_CMSContentInfo_SetContent_Data(cmsg, cinfo, NULL, PR_FALSE) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot attach CMS data object"));
+		set_nss_error (ex, _("Cannot attach CMS data object"));
 		goto fail;
 	}
 
@@ -829,12 +1034,12 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 		NSSCMSRecipientInfo *ri = NSS_CMSRecipientInfo_Create(cmsg, recipient_certs[i]);
 
 		if (ri == NULL) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create CMS Recipient information"));
+			set_nss_error (ex, _("Cannot create CMS Recipient information"));
 			goto fail;
 		}
 
 		if (NSS_CMSEnvelopedData_AddRecipient(envd, ri) != SECSuccess) {
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot add CMS Recipient information"));
+			set_nss_error (ex, _("Cannot add CMS Recipient information"));
 			goto fail;
 		}
 	}
@@ -848,7 +1053,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 				   sm_decrypt_key, bulkkey,
 				   NULL, NULL);
 	if (enc == NULL) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot create encoder context"));
+		set_nss_error (ex, _("Cannot create encoder context"));
 		goto fail;
 	}
 
@@ -859,13 +1064,13 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	if (NSS_CMSEncoder_Update(enc, (char *) mem->buffer->data, mem->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
 		camel_object_unref(mem);
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to add data to encoder"));
+		set_nss_error (ex, _("Failed to add data to encoder"));
 		goto fail;
 	}
 	camel_object_unref(mem);
 
 	if (NSS_CMSEncoder_Finish(enc) != SECSuccess) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Failed to encode data"));
+		set_nss_error (ex, _("Failed to encode data"));
 		goto fail;
 	}
 
@@ -940,20 +1145,22 @@ sm_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *opa
 				   NULL, NULL); /* decrypt key callback */
 
 	if (NSS_CMSDecoder_Update(dec, (char *) istream->buffer->data, istream->buffer->len) != SECSuccess) {
-		printf("decoder update failed\n");
+		cmsg = NULL;
+	} else {
+		cmsg = NSS_CMSDecoder_Finish(dec);
 	}
+
 	camel_object_unref(istream);
 
-	cmsg = NSS_CMSDecoder_Finish(dec);
 	if (cmsg == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Decoder failed, error %d"), PORT_GetError());
+		set_nss_error (ex, _("Decoder failed"));
 		goto fail;
 	}
 
 #if 0
 	/* not sure if we really care about this? */
 	if (!NSS_CMSMessage_IsEncrypted(cmsg)) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("S/MIME Decrypt: No encrypted content found"));
+		set_nss_error (ex, _("S/MIME Decrypt: No encrypted content found"));
 		NSS_CMSMessage_Destroy(cmsg);
 		goto fail;
 	}
