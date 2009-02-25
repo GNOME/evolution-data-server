@@ -1,3 +1,10 @@
+2009-02-25  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #572268
+
+	* camel-nntp-store.c: (nntp_store_get_cached_folder_info):
+	Do not create duplicate folder infos.
+
 2008-10-21  Srinivasa Ragavan  <sragavan@novell.com>
 
 	** Fix for bug #556119

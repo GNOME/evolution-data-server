@@ -561,7 +561,7 @@ nntp_store_info_update(CamelNNTPStore *store, char *line)
 		}
 	}
 
-	printf("store info update '%s' first '%u' last '%u'\n", line, first, last);
+	dd(printf("store info update '%s' first '%u' last '%u'\n", line, first, last));
 
 	if (si->last) {
 		if (last > si->last)
@@ -650,7 +650,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const char *orig_top, 
 	    root_or_flag = (orig_top == NULL || orig_top[0] == '\0') ? 1 : 0,
 	    recursive_flag = flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 	CamelStoreInfo *si;
-	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
+	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL, *l;
 	char *tmpname;
 	char *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
 	int toplen = strlen(top);
@@ -677,6 +677,9 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const char *orig_top, 
 					tmpname = g_strdup(si->path);
 					*(strchr(tmpname + toplen, '.')) = '\0';
 					fi = nntp_folder_info_from_name(store, FALSE, tmpname);
+					if (!fi)
+						continue;
+
 					fi->flags |= CAMEL_FOLDER_NOSELECT;
 					if (store->folder_hierarchy_relative) {
 						g_free(fi->name);
@@ -687,6 +690,20 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store, const char *orig_top, 
 					continue;
 				}
 			}
+
+			for (l = first; l; l = l->next) {
+				if (l->full_name && fi->full_name && g_str_equal (l->full_name, fi->full_name)) {
+					/* it's there already, do not add it twice */
+					camel_folder_info_free (fi);
+					break;
+				}
+			}
+
+			if (l) {
+				/* a duplicate has been found above */
+				continue;
+			}
+
 			if (last)
 				last->next = fi;
 			else
