@@ -65,6 +65,7 @@ static int local_summary_load(CamelLocalSummary *cls, int forceindex, CamelExcep
 static int local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 static int local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 static CamelMessageInfo *local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
+static int local_summary_need_index();
 
 static void camel_local_summary_class_init (CamelLocalSummaryClass *klass);
 static void camel_local_summary_init       (CamelLocalSummary *obj);
@@ -111,6 +112,7 @@ camel_local_summary_class_init(CamelLocalSummaryClass *klass)
 
 	klass->encode_x_evolution = local_summary_encode_x_evolution;
 	klass->decode_x_evolution = local_summary_decode_x_evolution;
+	klass->need_index = local_summary_need_index;
 }
 
 static void
@@ -160,7 +162,7 @@ camel_local_summary_load(CamelLocalSummary *cls, int forceindex, CamelException 
 {
 	d(printf("Loading summary ...\n"));
 
-	if (forceindex
+	if ((forceindex && ((CamelLocalSummaryClass *)(CAMEL_OBJECT_GET_CLASS(cls)))->need_index())
 	    || ((CamelLocalSummaryClass *)(CAMEL_OBJECT_GET_CLASS(cls)))->load(cls, forceindex, ex) == -1) {
 		w(g_warning("Could not load summary: flags may be reset"));
 		camel_folder_summary_clear((CamelFolderSummary *)cls);
@@ -420,6 +422,11 @@ local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 		g_warning ("Could not sync index for %s: %s", cls->folder_path, strerror (errno));
 
 	return ret;
+}
+
+static int
+local_summary_need_index() {
+	return 1;
 }
 
 static void
