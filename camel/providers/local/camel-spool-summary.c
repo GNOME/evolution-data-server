@@ -52,7 +52,7 @@ static int spool_summary_load(CamelLocalSummary *cls, int forceindex, CamelExcep
 static int spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 
 static int spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-static int spool_summary_need_index();
+static int spool_summary_need_index(void);
 
 static void camel_spool_summary_class_init (CamelSpoolSummaryClass *klass);
 static void camel_spool_summary_init       (CamelSpoolSummary *obj);
@@ -346,6 +346,6 @@ spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, C
 }
 
 static int
-spool_summary_need_index() {
+spool_summary_need_index(void) {
 	return 0;
 }
