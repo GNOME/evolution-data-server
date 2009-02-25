@@ -1437,9 +1437,11 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	char *sigfile = NULL;
 	CamelContentType *ct;
 	CamelMimePart *sigpart;
-	CamelStream *istream = NULL;
+	CamelStream *istream = NULL, *canon_stream;
 	CamelMultipart *mps;
-	
+	CamelStreamFilter *filter;
+	CamelMimeFilter *canon;
+
 	mps = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)ipart);
 	ct = ((CamelDataWrapper *)mps)->mime_type;
 	
@@ -1526,11 +1528,26 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	}
 	
 	camel_stream_reset(istream);
+	canon_stream = camel_stream_mem_new ();
+
+	/* strip trailing white-spaces */
+	filter = camel_stream_filter_new_with_stream (canon_stream);
+	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP);
+	camel_stream_filter_add (filter, canon);
+	camel_object_unref (canon);
+
+	camel_stream_write_to_stream (istream, (CamelStream *)filter);
+
+	camel_object_unref (filter);
+	camel_stream_reset (istream);
+
+	camel_stream_reset (canon_stream);
+
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_VERIFY);
 	if (sigfile)
                 gpg_ctx_set_sigfile (gpg, sigfile);
-	gpg_ctx_set_istream (gpg, istream);
+	gpg_ctx_set_istream (gpg, canon_stream);
 	
 	if (gpg_ctx_op_start (gpg) == -1) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1567,6 +1584,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		g_free (sigfile);
 	}
 	camel_object_unref(istream);
+	camel_object_unref (canon_stream);
 	
 	return validity;
 	
