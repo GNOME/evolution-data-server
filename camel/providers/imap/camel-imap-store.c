@@ -3033,14 +3033,16 @@ camel_imap_store_readline (CamelImapStore *store, char **dest, CamelException *e
 	}
 
 	if (nread <= 0) {
-		if (errno == EINTR)
+		if (errno == EINTR) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Operation cancelled"));
-		else
+		} else {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					      _("Server unexpectedly disconnected: %s"),
 					      g_strerror (errno));
 		
-		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+		}
+
 		g_byte_array_free (ba, TRUE);
 		return -1;
 	}

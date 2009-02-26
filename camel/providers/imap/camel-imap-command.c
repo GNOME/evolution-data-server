@@ -232,8 +232,9 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 		else
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					     g_strerror (errno));
-		
-		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+
+		if (g_str_has_prefix (cmd, "LOGIN"))
+			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 		return FALSE;
 	}
 	
@@ -275,13 +276,14 @@ camel_imap_command_continuation (CamelImapStore *store, const char *cmd,
 
 	if (camel_stream_write (store->ostream, cmd, cmdlen) == -1 ||
 	    camel_stream_write (store->ostream, "\r\n", 2) == -1) {
-		if (errno == EINTR)
+		if (errno == EINTR) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 					     _("Operation cancelled"));
-		else
+		} else {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					     g_strerror (errno));
-		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+		}
 		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 		return NULL;
 	}
@@ -489,13 +491,15 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		
 		do {
 			if ((n = camel_stream_read (store->istream, str->str + nread + 1, length - nread)) == -1) {
-				if (errno == EINTR)
+				if (errno == EINTR) {
 					camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
 							     _("Operation cancelled"));
-				else
+				} else {
 					camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 							     g_strerror (errno));
-				camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+					camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
+				}
+
 				g_string_free (str, TRUE);
 				goto lose;
 			}
