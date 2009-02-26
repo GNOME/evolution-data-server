@@ -190,7 +190,8 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url, GEr
 	soup_session_send_message (soup_session, msg);
 	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
-					 msg->status_code, msg->reason_phrase);
+					 msg->status_code, "%s", msg->reason_phrase);
+
 		g_object_unref (msg);
 		return NULL;
 	}
@@ -262,7 +263,7 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 
 	if (msg->status_code != 201) {
 		g_set_error (error, SOUP_HTTP_ERROR,
-					 msg->status_code, msg->reason_phrase);
+					 msg->status_code, "%s", msg->reason_phrase);
 		g_object_unref (msg);
 		return NULL;
 	}
@@ -324,7 +325,7 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GEr
 
     	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
-					 msg->status_code, msg->reason_phrase);
+					 msg->status_code, "%s", msg->reason_phrase);
 	} else {
 		retval = TRUE;
 	}
@@ -408,7 +409,7 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 
     	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
-					 msg->status_code, msg->reason_phrase);
+					 msg->status_code, "%s", msg->reason_phrase);
 		g_object_unref (msg);
 		return updated_entry;
 	}
@@ -702,7 +703,7 @@ gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
 
     	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
-					 msg->status_code, msg->reason_phrase);
+					 msg->status_code, "%s", msg->reason_phrase);
 		g_object_unref(msg);
 		return (NULL != token);
 	}
