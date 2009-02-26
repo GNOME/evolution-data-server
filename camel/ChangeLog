@@ -1,3 +1,10 @@
+2009-02-26  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-smime-context.c (sm_verify_cmsg):
+	Recompute digests from the signed message content before verifying
+	the S/MIME signature.  Lets us to detect corrupted or altered data.
+	Patch by Nalin Dahyabhai.
+
 2009-02-26  Milan Crha  <mcrha@redhat.com>
 
 	* camel-smime-context.c: (nss_error_to_string):

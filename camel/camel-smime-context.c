@@ -41,6 +41,7 @@
 #include <secerr.h>
 #include <pkcs11t.h>
 #include <pk11func.h>
+#include <secoid.h>
 
 #include <errno.h>
 
@@ -754,6 +755,11 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 
 			/* need to build digests of the content */
 			if (!NSS_CMSSignedData_HasDigests(sigd)) {
+				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot set message digests"));
+				goto fail;
+			} else {
+				int which_digest;
+
 				if (extstream == NULL) {
 					set_nss_error (ex, _("Digests missing from enveloped data"));
 					goto fail;
@@ -782,9 +788,16 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 					goto fail;
 				}
 
-				if (NSS_CMSSignedData_SetDigests(sigd, digestalgs, digests) != SECSuccess) {
-					set_nss_error (ex, _("Cannot set message digests"));
-					goto fail;
+				for (which_digest = 0; digests[which_digest] != NULL; which_digest++) {
+					SECOidData *digest_alg = SECOID_FindOID (&digestalgs[which_digest]->algorithm);
+					if (digest_alg == NULL) {
+						set_nss_error (ex, _("Cannot set message digests"));
+						goto fail;
+					}
+					if (NSS_CMSSignedData_SetDigestValue (sigd, digest_alg->offset, digests[which_digest]) != SECSuccess) {
+						set_nss_error (ex, _("Cannot set message digests"));
+						goto fail;
+					}
 				}
 
 				PORT_FreeArena(poolp, PR_FALSE);
