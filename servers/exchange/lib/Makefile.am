@@ -2,13 +2,13 @@
 
 INCLUDES =                                                      \
 	-DCONNECTOR_PREFIX=\""$(prefix)"\"			\
+	-I$(top_srcdir)						\
+	-I$(top_srcdir)/servers/exchange/xntlm			\
 	$(LDAP_CFLAGS)						\
 	$(KRB5_CFLAGS)						\
 	$(SOUP_CFLAGS)						\
 	$(E_DATA_SERVER_CFLAGS)					\
-	$(E_DATA_SERVER_UI_CFLAGS)				\
-	-I$(top_srcdir)						\
-	-I$(top_srcdir)/servers/exchange/xntlm
+	$(E_DATA_SERVER_UI_CFLAGS)
 
 noinst_LTLIBRARIES =						\
 	libexchange.la

@@ -13,15 +13,15 @@ INCLUDES =							\
 	-DLIBDIR=\""$(datadir)"\"	 			\
 	-DCONNECTOR_LOCALEDIR=\""$(localedir)\""		\
 	-DCONNECTOR_GLADEDIR=\""$(gladedir)"\"			\
+	-I$(top_builddir)/servers/exchange/lib			\
+	-I$(top_srcdir)						\
+	-I$(top_srcdir)/servers/exchange/lib			\
+	-I$(top_srcdir)/servers/exchange/xntlm			\
 	$(KRB5_CFLAGS)						\
 	$(LDAP_CFLAGS)						\
 	$(SOUP_CFLAGS)						\
 	$(E_DATA_SERVER_CFLAGS)					\
-	$(E_DATA_SERVER_UI_CFLAGS)				\
-	-I$(top_builddir)/servers/exchange/lib			\
-	-I$(top_srcdir)						\
-	-I$(top_srcdir)/servers/exchange/lib			\
-	-I$(top_srcdir)/servers/exchange/xntlm
+	$(E_DATA_SERVER_UI_CFLAGS)
 
 lib_LTLIBRARIES =						\
 	libexchange-storage-1.2.la
