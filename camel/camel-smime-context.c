@@ -382,7 +382,7 @@ nss_error_to_string (long errorcode)
 	cs (SEC_ERROR_OCSP_RESPONDER_CERT_INVALID, "Configured OCSP responder's certificate is invalid.")
 	cs (SEC_ERROR_OCSP_BAD_SIGNATURE, "OCSP response has an invalid signature.")
 
-	#if defined(NSS_VMAJOR) && defined(NSS_VMINOR) && (NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR >= 12))
+	#if defined(NSS_VMAJOR) && defined(NSS_VMINOR) && defined(NSS_VPATCH) && (NSS_VMAJOR > 3 || (NSS_VMAJOR == 3 && NSS_VMINOR > 12) || (NSS_VMAJOR == 3 && NSS_VMINOR == 12 && NSS_VPATCH >= 2))
 	cs (SEC_ERROR_OUT_OF_SEARCH_LIMITS, "Cert validation search is out of search limits")
 	cs (SEC_ERROR_INVALID_POLICY_MAPPING, "Policy mapping contains anypolicy")
 	cs (SEC_ERROR_POLICY_VALIDATION_FAILED, "Cert chain fails policy validation")
