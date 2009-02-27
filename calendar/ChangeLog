@@ -1,3 +1,16 @@
+2009-02-27  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #572566
+
+	* backends/caldav/e-cal-backend-caldav.c: (e_cal_component_set_href),
+	(e_cal_component_get_href), (e_cal_component_set_etag),
+	(e_cal_component_get_etag): Do not set/access NULL pointers.
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_server_put_object):
+	When no ETag is returned, try to GET it first, before giving up.
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_create_object),
+	(caldav_modify_object), (caldav_remove_object), (process_object):
+	Set etag/href on success only.
+
 2009-02-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Fixes part of bug #572950

@@ -313,7 +313,10 @@ e_cal_component_set_href (ECalComponent *comp, const char *href)
 {
 	icalcomponent *icomp;
 
+	g_return_if_fail (href != NULL);
+
 	icomp = e_cal_component_get_icalcomponent (comp);
+	g_return_if_fail (icomp != NULL);
 
 	icomp_x_prop_set (icomp, X_E_CALDAV "HREF", href);
 }
@@ -326,6 +329,7 @@ e_cal_component_get_href (ECalComponent *comp)
 
 	str = NULL;
 	icomp = e_cal_component_get_icalcomponent (comp);
+	g_return_val_if_fail (icomp != NULL, NULL);
 
 	str =  icomp_x_prop_get (icomp, X_E_CALDAV "HREF");
 
@@ -338,11 +342,12 @@ e_cal_component_set_etag (ECalComponent *comp, const char *etag)
 {
 	icalcomponent *icomp;
 
+	g_return_if_fail (etag != NULL);
+
 	icomp = e_cal_component_get_icalcomponent (comp);
+	g_return_if_fail (icomp != NULL);
 
 	icomp_x_prop_set (icomp, X_E_CALDAV "ETAG", etag);
-
-
 }
 
 static char *
@@ -353,6 +358,7 @@ e_cal_component_get_etag (ECalComponent *comp)
 
 	str = NULL;
 	icomp = e_cal_component_get_icalcomponent (comp);
+	g_return_val_if_fail (icomp != NULL, NULL);
 
 	str =  icomp_x_prop_get (icomp, X_E_CALDAV "ETAG");
 
@@ -1261,15 +1267,25 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	result = status_code_to_result (message->status_code, priv);
 
 	if (result == GNOME_Evolution_Calendar_Success) {
-		hdr = soup_message_headers_get (message->response_headers,
-						"ETag");
-	}
+		hdr = soup_message_headers_get (message->response_headers, "ETag");
+		if (hdr != NULL) {
+			g_free (object->etag);
+			object->etag = quote_etag (hdr);
+		} else {
+			/* no ETag header returned, check for it with a GET */
+			hdr = soup_message_headers_get (message->response_headers, "Location");
+			if (hdr) {
+				/* reflect possible href change first */
+				char *file = strrchr (hdr, '/');
 
-	if (hdr != NULL) {
-		g_free (object->etag);
-		object->etag = quote_etag (hdr);
-	} else {
-		g_warning ("Ups no Etag in put response");
+				if (file) {
+					g_free (object->href);
+					object->href = soup_uri_encode (file + 1, NULL);
+				}
+			}
+
+			result = caldav_server_get_object (cbdav, object);
+		}
 	}
 
 	g_object_unref (message);
@@ -2018,7 +2034,6 @@ caldav_create_object (ECalBackendSync  *backend,
 
 	if (online) {
 		CalDAVObject object;
-		const char *id = NULL;
 
 		href = e_cal_component_gen_href (comp);
 		
@@ -2027,12 +2042,12 @@ caldav_create_object (ECalBackendSync  *backend,
 		object.cdata = pack_cobj (cbdav, comp);
 
 		status = caldav_server_put_object (cbdav, &object);
+		if (status == GNOME_Evolution_Calendar_Success) {
+			e_cal_component_set_href (comp, object.href);
+			e_cal_component_set_etag (comp, object.etag);
+		}
 
-		e_cal_component_get_uid (comp, &id);
-		e_cal_component_set_href (comp, object.href);
-		e_cal_component_set_etag (comp, object.etag);
 		caldav_object_free (&object, FALSE);
-
 	} else {
 		/* mark component as out of synch */
 		e_cal_component_set_synch_state (comp,
@@ -2114,11 +2129,12 @@ caldav_modify_object (ECalBackendSync  *backend,
 		object.cdata = pack_cobj (cbdav, comp);
 
 		status = caldav_server_put_object (cbdav, &object);
+		if (status == GNOME_Evolution_Calendar_Success) {
+			e_cal_component_set_href (comp, object.href);
+			e_cal_component_set_etag (comp, object.etag);
+		}
 
-		e_cal_component_set_href (comp, object.href);
-		e_cal_component_set_etag (comp, object.etag);
 		caldav_object_free (&object, FALSE);
-
 	} else {
 		/* mark component as out of synch */
 		e_cal_component_set_synch_state (comp,
@@ -2197,8 +2213,10 @@ caldav_remove_object (ECalBackendSync  *backend,
 			caldav_object.cdata = pack_cobj (cbdav, cache_comp);
 
 			status = caldav_server_put_object (cbdav, &caldav_object);
-			e_cal_component_set_href (cache_comp, caldav_object.href);
-			e_cal_component_set_etag (cache_comp, caldav_object.etag);
+			if (status == GNOME_Evolution_Calendar_Success) {
+				e_cal_component_set_href (cache_comp, caldav_object.href);
+				e_cal_component_set_etag (cache_comp, caldav_object.etag);
+			}
 		} else
 			status = caldav_server_delete_object (cbdav, &caldav_object);
 
@@ -2347,12 +2365,15 @@ process_object (ECalBackendCalDAV   *cbdav,
 				if (!is_declined) {
 					object.cdata = pack_cobj (cbdav, ecomp);
 					status = caldav_server_put_object (cbdav, &object);
+
+					if (status == GNOME_Evolution_Calendar_Success) {
+						e_cal_component_set_href (ecomp, object.href);
+						e_cal_component_set_etag (ecomp, object.etag);
+					}
 				} else {
 					object.cdata = NULL;
 					status = caldav_server_delete_object (cbdav, &object);
 				}
-				e_cal_component_set_href (ecomp, object.href);
-				e_cal_component_set_etag (ecomp, object.etag);
 				caldav_object_free (&object, FALSE);
 			}
 		} else {
