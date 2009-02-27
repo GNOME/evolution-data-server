@@ -1,3 +1,10 @@
+2009-02-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Fixes bug #570696
+
+	* Makefile.am:
+	Replace SOUP_CFLAGS and SOUP_LIBS with GDATA_CFLAGS and GDATA_LIBS.
+
 2009-02-26  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	** Fixes bug #573175

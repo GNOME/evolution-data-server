@@ -1,3 +1,11 @@
+2009-02-27  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Re-fixes bug #570696
+
+	* configure.in:
+	Define GDATA_CFLAGS and GDATA_LIBS and explicitly require
+	libsoup-2.4 and libxml-2.0.
+
 2009-02-23  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	* servers/google/libgdata-google/libgdata-google.pc.in
