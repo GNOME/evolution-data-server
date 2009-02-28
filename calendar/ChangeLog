@@ -1,3 +1,17 @@
+2009-02-28  Tobias Mueller  <tobiasmue@svn.gnome.org>
+
+	** Fix for bug #573497
+
+	* libecal/e-cal.c: (E_CALENDAR_CHECK_STATUS):
+	Use "%s" as format-string to g_set_error.
+	* libecal/e-cal.c: (e_calendar_get_op), (e_calendar_remove_op), 
+	(destroy_factories), (destroy_cal), (cal_alarm_address_cb), 
+	(cal_ldap_attribute_cb), (cal_static_capabilities_cb), 
+	(cal_opened_cb), (cal_removed_cb), (cal_object_created_cb):
+	Use "%s" as format-string to g_warning or g_message.
+	* libecal/e-cal-time-util.c: (isodate_from_time_t):
+	Use a fixed sized format-string instead of a const char*
+	
 2009-02-27  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #572566

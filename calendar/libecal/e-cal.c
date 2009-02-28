@@ -180,7 +180,7 @@ static GObjectClass *parent_class;
 	else {                                                          \
                 const char *msg;                                        \
                 msg = e_cal_get_error_message ((status));          \
-		g_set_error ((error), E_CALENDAR_ERROR, (status), msg, (status));	\
+		g_set_error ((error), E_CALENDAR_ERROR, (status), "%s", msg, (status));	\
 		return FALSE;						\
 	}				}G_STMT_END
 
@@ -317,7 +317,7 @@ static ECalendarOp*
 e_calendar_get_op (ECal *ecal)
 {
 	if (!ecal->priv->current_op) {
-		g_warning (G_STRLOC ": Unexpected response");
+		g_warning ("%s", G_STRLOC ": Unexpected response");
 		return NULL;
 	}
 
@@ -337,7 +337,7 @@ static void
 e_calendar_remove_op (ECal *ecal, ECalendarOp *op)
 {
 	if (ecal->priv->current_op != op)
-		g_warning (G_STRLOC ": Cannot remove op, it's not current");
+		g_warning ("%s", G_STRLOC ": Cannot remove op, it's not current");
 
 	ecal->priv->current_op = NULL;
 }
@@ -361,7 +361,7 @@ destroy_factories (ECal *ecal)
 
 		result = CORBA_Object_is_nil (factory, &ev);
 		if (BONOBO_EX (&ev)) {
-			g_message (G_STRLOC ": could not see if a factory was nil");
+			g_message ("%s", G_STRLOC ": could not see if a factory was nil");
 			CORBA_exception_free (&ev);
 
 			continue;
@@ -372,7 +372,7 @@ destroy_factories (ECal *ecal)
 
 		CORBA_Object_release (factory, &ev);
 		if (BONOBO_EX (&ev)) {
-			g_message (G_STRLOC ": could not release a factory");
+			g_message ("%s", G_STRLOC ": could not release a factory");
 			CORBA_exception_free (&ev);
 		}
 	}
@@ -394,7 +394,7 @@ destroy_cal (ECal *ecal)
 	CORBA_exception_init (&ev);
 	result = CORBA_Object_is_nil (priv->cal, &ev);
 	if (BONOBO_EX (&ev)) {
-		g_message (G_STRLOC ": could not see if the "
+		g_message ("%s", G_STRLOC ": could not see if the "
 			   "calendar ecal interface object was nil");
 		priv->cal = CORBA_OBJECT_NIL;
 		CORBA_exception_free (&ev);
@@ -487,7 +487,7 @@ cal_alarm_address_cb (ECalListener *listener, ECalendarStatus status, const char
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		g_warning ("%s", G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
@@ -506,7 +506,7 @@ cal_ldap_attribute_cb (ECalListener *listener, ECalendarStatus status, const cha
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		g_warning ("%s", G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
@@ -525,7 +525,7 @@ cal_static_capabilities_cb (ECalListener *listener, ECalendarStatus status, cons
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		g_warning ("%s", G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
@@ -544,7 +544,7 @@ cal_opened_cb (ECalListener *listener, ECalendarStatus status, gpointer data)
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		g_warning ("%s", G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
@@ -562,7 +562,7 @@ cal_removed_cb (ECalListener *listener, ECalendarStatus status, gpointer data)
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		g_warning ("%s", G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
@@ -580,7 +580,7 @@ cal_object_created_cb (ECalListener *listener, ECalendarStatus status, const cha
 	op = e_calendar_get_op (ecal);
 
 	if (op == NULL) {
-		g_warning (G_STRLOC ": Cannot find operation ");
+		g_warning ("%s", G_STRLOC ": Cannot find operation ");
 		return;
 	}
 
