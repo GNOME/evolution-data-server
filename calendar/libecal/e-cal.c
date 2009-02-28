@@ -180,7 +180,7 @@ static GObjectClass *parent_class;
 	else {                                                          \
                 const char *msg;                                        \
                 msg = e_cal_get_error_message ((status));          \
-		g_set_error ((error), E_CALENDAR_ERROR, (status), "%s", msg, (status));	\
+		g_set_error ((error), E_CALENDAR_ERROR, (status), "%s", msg);	\
 		return FALSE;						\
 	}				}G_STMT_END
 
