@@ -1,3 +1,8 @@
+2009-03-01  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* camel/providers/local/camel-local-folder.c: Fix for a deadlock,
+	while recovering from folder-summary mismatch.
+
 2009-02-27  Tobias Mueller <tobiasmue@svn.gnome.org>
 
 	** Fixes bug 573183
