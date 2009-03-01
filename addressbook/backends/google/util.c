@@ -410,7 +410,7 @@ _google_rel_from_types (GList *types,
                         const struct RelTypeMap rel_type_map[],
                         int map_len)
 {
-    const char *format = "http://schemas.google.com/g/2005#%s";
+    const char format[] = "http://schemas.google.com/g/2005#%s";
 
     while (types) {
         int i;
@@ -485,7 +485,7 @@ field_name_from_google_im_protocol (const char* google_protocol)
 static char*
 google_im_protocol_from_field_name (const char* field_name)
 {
-    const char *format = "http://schemas.google.com/g/2005#%s";
+    const char format[] = "http://schemas.google.com/g/2005#%s";
 
     if (NULL == field_name ||
         strlen (field_name) < 3) {

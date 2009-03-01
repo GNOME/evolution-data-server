@@ -1,3 +1,11 @@
+2009-02-29  Tobias Mueller  <tobiasmue@svn.gnome.org>
+
+	* backends/google/util.c: (_google_rel_from_types). (google_im_protocol_from_field_name):
+	* backends/google/google-book.c (google_book_construct_base_uri): 
+	Use a const char[] instead of a const char* for a fixed sized 
+	format-string to increase auditability.
+	** Fixes bug 573494
+    
 2009-02-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #563212

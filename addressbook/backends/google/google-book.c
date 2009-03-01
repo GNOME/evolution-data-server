@@ -448,7 +448,7 @@ google_book_cache_destroy (GoogleBook *book)
 static void
 google_book_construct_base_uri (GoogleBook *book, gboolean use_ssl)
 {
-    const char *format = "%swww.google.com/m8/feeds/contacts/%s/base";
+    const char format[] = "%swww.google.com/m8/feeds/contacts/%s/base";
     char *esc_username;
     GoogleBookPrivate *priv = GET_PRIVATE (book);
 
