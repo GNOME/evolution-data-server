@@ -168,9 +168,9 @@ e_list_iterator_get_type
 <TITLE>EProxy</TITLE>
 EProxy
 e_proxy_new
-e_proxy_peek_uri
-e_proxy_require_proxy_for_uri
+e_proxy_peek_uri_for
 e_proxy_setup_proxy
+e_proxy_require_proxy_for_uri
 <SUBSECTION Standard>
 E_TYPE_PROXY
 E_PROXY

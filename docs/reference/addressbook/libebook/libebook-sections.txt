@@ -169,6 +169,7 @@ e_contact_address_free
 e_contact_field_name
 e_contact_pretty_name
 e_contact_field_id
+e_contact_field_id_from_vcard
 e_contact_cert_free
 e_contact_get_attributes
 e_contact_set_attributes
@@ -294,7 +295,6 @@ EVC_X_LIST
 EVC_X_MANAGER
 EVC_X_MSN
 EVC_X_SKYPE
-EVC_X_SPOUSE
 EVC_X_WANTS_HTML
 EVC_X_YAHOO
 EVC_X_BOOK_URI
@@ -308,6 +308,8 @@ EVC_X_DEST_NAME
 EVC_X_DEST_SOURCE_UID
 EVC_X_GROUPWISE
 EVC_X_RADIO
+EVC_X_SIP
+EVC_X_SPOUSE
 EVC_X_TELEX
 EVC_X_TTYTDD
 EVC_X_VIDEO_URL

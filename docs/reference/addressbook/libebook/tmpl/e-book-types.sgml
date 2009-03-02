@@ -62,6 +62,7 @@ Evolution:BookListener interface.
 @E_BOOK_ERROR_OTHER_ERROR: 
 @E_BOOK_ERROR_INVALID_SERVER_VERSION: 
 @E_BOOK_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD: 
+@E_BOOK_ERROR_NO_SPACE: 
 
 <!-- ##### ENUM EBookViewStatus ##### -->
 <para>

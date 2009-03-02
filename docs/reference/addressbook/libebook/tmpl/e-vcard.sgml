@@ -761,13 +761,6 @@ MSN ID
 
 
 
-<!-- ##### MACRO EVC_X_SPOUSE ##### -->
-<para>
-Spouse
-</para>
-
-
-
 <!-- ##### MACRO EVC_X_WANTS_HTML ##### -->
 <para>
 Wants HTML mail
@@ -855,6 +848,20 @@ Yahoo ID
 <!-- ##### MACRO EVC_X_RADIO ##### -->
 <para>
 
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_SIP ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_SPOUSE ##### -->
+<para>
+Spouse
 </para>
 
 
