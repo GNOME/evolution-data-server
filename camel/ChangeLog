@@ -1,3 +1,10 @@
+2009-03-02  Matt McCutchen  <matt@mattmccutchen.net>
+
+	* evolution-data-server/camel/camel-mime-filter-tohtml.c:
+	(append_string_verbatim), (html_convert): Entity-encode the text and
+	target URL of links when formatting plain text mail to HTML for display.
+	** Part of fix for bug 549838
+
 2009-02-26  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-smime-context.c (sm_verify_cmsg):

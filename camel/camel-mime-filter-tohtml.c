@@ -134,6 +134,18 @@ check_size (CamelMimeFilter *filter, char *outptr, char **outend, size_t len)
 	return filter->outbuf + offset;
 }
 
+static char *
+append_string_verbatim (CamelMimeFilter *filter, const char *str, char *outptr, char **outend)
+{
+	size_t len = strlen (str);
+
+	outptr = check_size (filter, outptr, outend, len);
+	memcpy(outptr, str, len);
+	outptr += len;
+
+	return outptr;
+}
+
 static int
 citation_depth (const char *in)
 {
@@ -303,7 +315,7 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 		
 #define CONVERT_URLS (CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS | CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES)
 		if (html->flags & CONVERT_URLS) {
-			size_t matchlen, buflen, len;
+			size_t matchlen, len;
 			urlmatch_t match;
 			
 			len = inptr - start;
@@ -319,25 +331,30 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 					
 					matchlen = match.um_eo - match.um_so;
 					
-					buflen = 20 + strlen (match.prefix) + matchlen + matchlen;
-					outptr = check_size (filter, outptr, &outend, buflen);
-					
 					/* write out the href tag */
-					outptr = g_stpcpy (outptr, "<a href=\"");
-					outptr = g_stpcpy (outptr, match.prefix);
-					memcpy (outptr, start, matchlen);
-					outptr += matchlen;
-					outptr = g_stpcpy (outptr, "\">");
+					outptr = append_string_verbatim (filter, "<a href=\"", outptr, &outend);
+					/* prefix shouldn't need escaping, but let's be safe */
+					outptr = writeln (filter,
+							(const unsigned char *)match.prefix,
+							(const unsigned char *)match.prefix + strlen (match.prefix),
+							outptr, &outend);
+					outptr = writeln (filter,
+							(const unsigned char *)start,
+							(const unsigned char *)start + matchlen,
+							outptr, &outend);
+					outptr = append_string_verbatim (filter, "\">", outptr, &outend);
 					
 					/* now write the matched string */
-					memcpy (outptr, start, matchlen);
+					outptr = writeln (filter,
+							(const unsigned char *)start,
+							(const unsigned char *)start + matchlen,
+							outptr, &outend);
 					html->column += matchlen;
-					outptr += matchlen;
 					start += matchlen;
 					len -= matchlen;
 					
 					/* close the href tag */
-					outptr = g_stpcpy (outptr, "</a>");
+					outptr = append_string_verbatim (filter, "</a>", outptr, &outend);
 				} else {
 					/* nothing matched so write out the remainder of this line buffer */
 					outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)start + len, outptr, &outend);
