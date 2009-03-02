@@ -1,3 +1,10 @@
+Evolution-Data-Server 2.24.5 2009-02-25
+---------------------------------------
+
+Bug Fixes:
+»·······#477535 : Randomly mail status changes were not getting stored in server. Fixed the issue by unsetting correct flags. (Sankar P)
+»·······#567008 : Avoiding the clearing of the uids in the spool summary if forceindex is true. (Jeff Cai)
+
 Evolution-Data-Server 2.24.4 2009-01-30
 -----------------------------------------
 
