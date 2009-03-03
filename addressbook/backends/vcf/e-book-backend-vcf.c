@@ -218,10 +218,10 @@ set_revision (EContact *contact)
 {
 	char time_string[100] = {0};
 	const struct tm *tm = NULL;
-	GTimeVal tv;
+	time_t t;
 
-	g_get_current_time (&tv);
-	tm = gmtime (&tv.tv_sec);
+	t = time(NULL);
+	tm = gmtime (&t);
 	if (tm)
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 	e_contact_set (contact, E_CONTACT_REV, time_string);

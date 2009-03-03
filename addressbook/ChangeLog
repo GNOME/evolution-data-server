@@ -1,3 +1,11 @@
+2009-03-03  Tobias Mueller  <tobiasmue@svn.gnome.org>
+
+	* backends/vcf/e-book-backend-vcf.c (set_revision):
+	* backends/file/e-book-backend-file.c (set_revision):
+	Don't assume that GTimeVal is a long and use time_t instead
+	Patch by Matthias Drochner.
+	** Fixes bug 569108
+
 2009-03-01  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	* backends/google/util.c: (_google_rel_from_types). (google_im_protocol_from_field_name):
