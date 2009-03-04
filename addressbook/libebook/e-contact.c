@@ -599,11 +599,11 @@ n_setter (EContact *contact, EVCardAttribute *attr, void *data)
 {
 	EContactName *name = data;
 
-	e_vcard_attribute_add_value (attr, name->family ?: "");
-	e_vcard_attribute_add_value (attr, name->given ?: "");
-	e_vcard_attribute_add_value (attr, name->additional ?: "");
-	e_vcard_attribute_add_value (attr, name->prefixes ?: "");
-	e_vcard_attribute_add_value (attr, name->suffixes ?: "");
+	e_vcard_attribute_add_value (attr, name->family ? name->family : "");
+	e_vcard_attribute_add_value (attr, name->given ? name->given : "");
+	e_vcard_attribute_add_value (attr, name->additional ? name->additional : "");
+	e_vcard_attribute_add_value (attr, name->prefixes ? name->prefixes : "");
+	e_vcard_attribute_add_value (attr, name->suffixes ? name->suffixes : "");
 
 	/* now find the attribute for FileAs.  if it's not present, fill it in */
 	attr = e_contact_get_first_attr (contact, EVC_X_FILE_AS);

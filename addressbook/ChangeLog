@@ -1,3 +1,9 @@
+2009-03-04  Jeff Cai <jeff.cai@sun.com>
+
+	* libebook/e-contact.c: (n_setter): 
+	Use the standard confitional if sentence.
+	** Fixes bug 573870
+
 2009-03-03  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	* backends/vcf/e-book-backend-vcf.c (set_revision):
