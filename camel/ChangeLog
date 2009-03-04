@@ -1,3 +1,10 @@
+2009-03-04  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Re-fixes bug #564465  (Patch by Milan Crha)
+
+	* camel-smime-context.c (sm_verify_cmsg):
+	Accept signed messages that don't list the digest algorithms.
+
 2009-03-04  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #573198

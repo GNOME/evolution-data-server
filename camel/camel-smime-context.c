@@ -744,6 +744,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 	for (i = 0; i < count; i++) {
 		NSSCMSContentInfo *cinfo = NSS_CMSMessage_ContentLevel(cmsg, i);
 		SECOidTag typetag = NSS_CMSContentInfo_GetContentTypeTag(cinfo);
+		int which_digest;
 
 		switch (typetag) {
 		case SEC_OID_PKCS7_SIGNED_DATA:
@@ -753,56 +754,48 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 				goto fail;
 			}
 
-			/* need to build digests of the content */
-			if (!NSS_CMSSignedData_HasDigests(sigd)) {
-				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot set message digests"));
+			if (extstream == NULL) {
+				set_nss_error (ex, _("Digests missing from enveloped data"));
 				goto fail;
-			} else {
-				int which_digest;
-
-				if (extstream == NULL) {
-					set_nss_error (ex, _("Digests missing from enveloped data"));
-					goto fail;
-				}
-
-				if ((poolp = PORT_NewArena(1024)) == NULL) {
-					set_nss_error (ex, g_strerror (ENOMEM));
-					goto fail;
-				}
-
-				digestalgs = NSS_CMSSignedData_GetDigestAlgs(sigd);
-				
-				digcx = NSS_CMSDigestContext_StartMultiple(digestalgs);
-				if (digcx == NULL) {
-					set_nss_error (ex, _("Cannot calculate digests"));
-					goto fail;
-				}
-
-				mem = (CamelStreamMem *)camel_stream_mem_new();
-				camel_stream_write_to_stream(extstream, (CamelStream *)mem);
-				NSS_CMSDigestContext_Update(digcx, mem->buffer->data, mem->buffer->len);
-				camel_object_unref(mem);
-
-				if (NSS_CMSDigestContext_FinishMultiple(digcx, poolp, &digests) != SECSuccess) {
-					set_nss_error (ex, _("Cannot calculate digests"));
-					goto fail;
-				}
-
-				for (which_digest = 0; digests[which_digest] != NULL; which_digest++) {
-					SECOidData *digest_alg = SECOID_FindOID (&digestalgs[which_digest]->algorithm);
-					if (digest_alg == NULL) {
-						set_nss_error (ex, _("Cannot set message digests"));
-						goto fail;
-					}
-					if (NSS_CMSSignedData_SetDigestValue (sigd, digest_alg->offset, digests[which_digest]) != SECSuccess) {
-						set_nss_error (ex, _("Cannot set message digests"));
-						goto fail;
-					}
-				}
-
-				PORT_FreeArena(poolp, PR_FALSE);
-				poolp = NULL;
 			}
+
+			if ((poolp = PORT_NewArena(1024)) == NULL) {
+				set_nss_error (ex, g_strerror (ENOMEM));
+				goto fail;
+			}
+
+			digestalgs = NSS_CMSSignedData_GetDigestAlgs(sigd);
+			
+			digcx = NSS_CMSDigestContext_StartMultiple(digestalgs);
+			if (digcx == NULL) {
+				set_nss_error (ex, _("Cannot calculate digests"));
+				goto fail;
+			}
+
+			mem = (CamelStreamMem *)camel_stream_mem_new();
+			camel_stream_write_to_stream(extstream, (CamelStream *)mem);
+			NSS_CMSDigestContext_Update(digcx, mem->buffer->data, mem->buffer->len);
+			camel_object_unref(mem);
+
+			if (NSS_CMSDigestContext_FinishMultiple(digcx, poolp, &digests) != SECSuccess) {
+				set_nss_error (ex, _("Cannot calculate digests"));
+				goto fail;
+			}
+
+			for (which_digest = 0; digests[which_digest] != NULL; which_digest++) {
+				SECOidData *digest_alg = SECOID_FindOID (&digestalgs[which_digest]->algorithm);
+				if (digest_alg == NULL) {
+					set_nss_error (ex, _("Cannot set message digests"));
+					goto fail;
+				}
+				if (NSS_CMSSignedData_SetDigestValue (sigd, digest_alg->offset, digests[which_digest]) != SECSuccess) {
+					set_nss_error (ex, _("Cannot set message digests"));
+					goto fail;
+				}
+			}
+
+			PORT_FreeArena(poolp, PR_FALSE);
+			poolp = NULL;
 
 			/* import all certificates present */
 			if (NSS_CMSSignedData_ImportCerts(sigd, p->certdb, certUsageEmailSigner, PR_TRUE) != SECSuccess) {
