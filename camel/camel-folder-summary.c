@@ -3680,7 +3680,7 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 		if (!calendar_header)
 			calendar_header = camel_mime_parser_header (mp, "X-Calendar-Attachment", NULL);
 
-		if (calendar_header)
+		if (calendar_header || camel_content_type_is (ct, "text", "calendar"))
 			camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);
 
 		if (p->index && camel_content_type_is(ct, "text", "*")) {
@@ -3855,7 +3855,7 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 			break;
 	}
 
-	if (header)
+	if (header || camel_content_type_is (ct, "text", "calendar"))
 		camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);
 
 	/* using the object types is more accurate than using the mime/types */

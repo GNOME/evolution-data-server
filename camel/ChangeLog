@@ -1,3 +1,11 @@
+2009-03-04  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #573198
+
+	* camel-folder-summary.c: (summary_build_content_info),
+	(summary_build_content_info_message): Tag messages with "$has_cal"
+	also when content-type is set to text/calendar.
+
 2009-03-02  Matt McCutchen  <matt@mattmccutchen.net>
 
 	* evolution-data-server/camel/camel-mime-filter-tohtml.c:
