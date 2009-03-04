@@ -1346,11 +1346,11 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 
 	/* NB: UGLIEST Hack. We can't modify the schema now. We are using dirty (an unsed one to notify of FLAGGED/Dirty infos */
 
-	ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %ld, %ld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') )", 
+	ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %lld, %lld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') )", 
 			folder_name, record->uid, record->flags,
 			record->msg_type, record->read, record->deleted, record->replied,
 			record->important, record->junk, record->attachment, record->dirty,
-			record->size, record->dsent, record->dreceived,
+			record->size, (long long) record->dsent, (long long) record->dreceived,
 			record->subject, record->from, record->to,
 			record->cc, record->mlist, record->followup_flag,
 			record->followup_completed_on, record->followup_due_by, 
