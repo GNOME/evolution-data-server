@@ -1,3 +1,10 @@
+2009-03-05  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #465364
+	* e-gw-connection.c (e_gw_connection_get_date_from_string): Removed
+	the timet_from_string function and used glib GTime api to convert
+	iso date string to timet value.								    
+
 2009-02-09  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #555888

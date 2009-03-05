@@ -1811,46 +1811,6 @@ e_gw_connection_get_server_time (EGwConnection *cnc)
 	return (const char *) cnc->priv->server_time ;
 }
 
-static time_t
-timet_from_string (const char *str)
-{
-		struct tm date;
-		int len, i;
-
-		g_return_val_if_fail (str != NULL, -1);
-
-		/* yyyymmdd[Thhmmss[Z]] */
-		len = strlen (str);
-
-		if (!(len == 8 || len == 15 || len == 16))
-				return -1;
-
-		for (i = 0; i < len; i++)
-				if (!((i != 8 && i != 15 && isdigit (str[i]))
-										|| (i == 8 && str[i] == 'T')
-										|| (i == 15 && str[i] == 'Z')))
-						return -1;
-
-#define digit_at(x,y) (x[y] - '0')
-
-		date.tm_year = digit_at (str, 0) * 1000
-				+ digit_at (str, 1) * 100
-				+ digit_at (str, 2) * 10
-				+ digit_at (str, 3) -1900;
-		date.tm_mon = digit_at (str, 4) * 10 + digit_at (str, 5) -1;
-		date.tm_mday = digit_at (str, 6) * 10 + digit_at (str, 7);
-		if (len > 8) {
-				date.tm_hour = digit_at (str, 9) * 10 + digit_at (str, 10);
-				date.tm_min  = digit_at (str, 11) * 10 + digit_at (str, 12);
-				date.tm_sec  = digit_at (str, 13) * 10 + digit_at (str, 14);
-		} else
-				date.tm_hour = date.tm_min = date.tm_sec = 0;
-
-		date.tm_wday = date.tm_yday = date.tm_isdst = 0;
-
-		return mktime (&date);
-}
-
 char *
 e_gw_connection_format_date_string (const char *dtstring)
 {
@@ -1875,24 +1835,35 @@ e_gw_connection_format_date_string (const char *dtstring)
 time_t
 e_gw_connection_get_date_from_string (const char *dtstring)
 {
-        char *str2;
-	int i, j, len;
-	time_t t;
+	time_t t = 0;
+	GTimeVal t_val;
 
 	g_return_val_if_fail (dtstring != NULL, 0);
 
-	len = strlen (dtstring);
-        str2 = g_malloc0 (len+1);
-        for (i = 0,j = 0; i < len; i++) {
-                if ((dtstring[i] != '-') && (dtstring[i] != ':')) {
-			str2[j] = dtstring[i];
-			j++;
-                }
-        }
+	if (g_time_val_from_iso8601 (dtstring, &t_val)) {
+		t = (time_t) t_val.tv_sec;
+	} else if (strlen (dtstring) == 8) {
+		/* It might be a date value */
+		GDate date;
+		struct tm tt;
 
-	str2[j] = '\0';
-	t = timet_from_string (str2);
-	g_free (str2);
+		g_date_clear (&date, 1);
+#define digit_at(x,y) (x[y] - '0')
+		guint16 year = digit_at (dtstring, 0) * 1000
+				+ digit_at (dtstring, 1) * 100
+				+ digit_at (dtstring, 2) * 10
+				+ digit_at (dtstring, 3);
+		guint month = digit_at (dtstring, 4) * 10 + digit_at (dtstring, 5);
+		guint8 day = digit_at (dtstring, 6) * 10 + digit_at (dtstring, 7);
+		g_date_set_year (&date, year);
+		g_date_set_month (&date, month);
+		g_date_set_day (&date, day);
+
+		g_date_to_struct_tm (&date, &tt);
+		t = mktime (&tt);
+
+	} else 
+		g_warning ("Could not parse the string \n");
 
         return t;
 }

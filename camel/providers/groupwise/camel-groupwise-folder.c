@@ -230,17 +230,27 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 static void
 groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 {
+	EGwItemType type;
 	char *dtstring = NULL;
 	char *temp_str = NULL;
 
 	temp_str = (char *)e_gw_item_get_subject(item);
 	if(temp_str)
 		camel_mime_message_set_subject (msg, temp_str);
+	type = e_gw_item_get_item_type (item);
+
+	if (type == E_GW_ITEM_TYPE_APPOINTMENT  || type == E_GW_ITEM_TYPE_NOTE || type == E_GW_ITEM_TYPE_TASK) {
+		int offset = 0;
+		dtstring = e_gw_item_get_start_date (item);
+		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
+		camel_mime_message_set_date (msg, actual_time, offset);
+		return;
+	}
+
 	dtstring = e_gw_item_get_delivered_date (item);
 	if(dtstring) {
 		int offset = 0;
-		time_t time = e_gw_connection_get_date_from_string (dtstring);
-		time_t actual_time = camel_header_decode_date (ctime(&time), &offset);
+		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
 		camel_mime_message_set_date (msg, actual_time, offset);
 	} else {
 		time_t time;
@@ -248,8 +258,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 		int offset = 0;
 		dtstring = e_gw_item_get_creation_date (item);
 		if (dtstring) {
-				time = e_gw_connection_get_date_from_string (dtstring);
-				actual_time = camel_header_decode_date (ctime(&time), NULL);
+				actual_time = e_gw_connection_get_date_from_string (dtstring);
 		} else
 				actual_time = (time_t) 0;
 		camel_mime_message_set_date (msg, actual_time, offset);
@@ -1498,24 +1507,20 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 				|| type ==  E_GW_ITEM_TYPE_TASK ) {
 			temp_date = e_gw_item_get_start_date (item);
 			if (temp_date) {
-				time_t time = e_gw_connection_get_date_from_string (temp_date);
-				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
+				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			}
 		} else {
 			temp_date = e_gw_item_get_delivered_date(item);
 			if (temp_date) {
-				time_t time = e_gw_connection_get_date_from_string (temp_date);
-				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
+				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			} else {
-				time_t time;
 				time_t actual_time;
 				temp_date = e_gw_item_get_creation_date (item);
 				if (temp_date) {
 						/* Creation date can be returned as null for auto-generated meetings */
-						time = e_gw_connection_get_date_from_string (temp_date);
-						actual_time = camel_header_decode_date (ctime(&time), NULL);
+						actual_time = e_gw_connection_get_date_from_string (temp_date);
 				} else
 					actual_time = (time_t) 0;
 				mi->info.date_sent = mi->info.date_received = actual_time;
@@ -1720,23 +1725,19 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		    type ==  E_GW_ITEM_TYPE_TASK ) {
 			temp_date = e_gw_item_get_start_date (item);
 			if (temp_date) {
-				time_t time = e_gw_connection_get_date_from_string (temp_date);
-				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
+				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			} 
 		} else {
 			temp_date = e_gw_item_get_delivered_date(item);
 			if (temp_date) {
-				time_t time = e_gw_connection_get_date_from_string (temp_date);
-				time_t actual_time = camel_header_decode_date (ctime(&time), NULL);
+				time_t actual_time = e_gw_connection_get_date_from_string (temp_date);
 				mi->info.date_sent = mi->info.date_received = actual_time;
 			} else {
-				time_t time;
 				time_t actual_time;
 				temp_date = e_gw_item_get_creation_date (item);
 				if (temp_date) {
-						time = e_gw_connection_get_date_from_string (temp_date);
-						actual_time = camel_header_decode_date (ctime(&time), NULL);
+						actual_time = e_gw_connection_get_date_from_string (temp_date);
 				} else
 						actual_time = (time_t) 0;
 				mi->info.date_sent = mi->info.date_received = actual_time;
