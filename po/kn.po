@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.kn\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2009-02-25 12:08+0000\n"
-"PO-Revision-Date: 2009-03-04 15:29+0530\n"
+"PO-Revision-Date: 2009-03-05 09:34+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -209,19 +209,19 @@ msgstr "ಅಡ್ಡಹೆಸರು"
 #. Email fields
 #: ../addressbook/libebook/e-contact.c:128
 msgid "Email 1"
-msgstr "ಇಮೈಲ್ 1"
+msgstr "ಇಮೈಲ್ ೧"
 
 #: ../addressbook/libebook/e-contact.c:129
 msgid "Email 2"
-msgstr "ಇಮೈಲ್ 2"
+msgstr "ಇಮೈಲ್ ೨"
 
 #: ../addressbook/libebook/e-contact.c:130
 msgid "Email 3"
-msgstr "ಇಮೈಲ್ 3"
+msgstr "ಇಮೈಲ್ ೩"
 
 #: ../addressbook/libebook/e-contact.c:131
 msgid "Email 4"
-msgstr "ಇಮೈಲ್ 4"
+msgstr "ಇಮೈಲ್ ೪"
 
 #: ../addressbook/libebook/e-contact.c:133
 msgid "Mailer"
@@ -251,7 +251,7 @@ msgstr "ವ್ಯವಹಾರದ ದೂರವಾಣಿ"
 
 #: ../addressbook/libebook/e-contact.c:143
 msgid "Business Phone 2"
-msgstr "ವ್ಯವಹಾರದ ದೂರವಾಣಿ 2"
+msgstr "ವ್ಯವಹಾರದ ದೂರವಾಣಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:144
 msgid "Business Fax"
@@ -275,7 +275,7 @@ msgstr "ಮನೆಯ ದೂರವಾಣಿ ಸಂಖ್ಯೆ"
 
 #: ../addressbook/libebook/e-contact.c:149
 msgid "Home Phone 2"
-msgstr "ಮನೆಯ ದೂರವಾಣಿ 2"
+msgstr "ಮನೆಯ ದೂರವಾಣಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:150
 msgid "Home Fax"
@@ -391,139 +391,139 @@ msgstr "ಟಿಪ್ಪಣಿ"
 #. Instant messaging fields
 #: ../addressbook/libebook/e-contact.c:189
 msgid "AIM Home Screen Name 1"
-msgstr "AIM ಹೋಮ್ ತೆರೆಯ ಹೆಸರು 1"
+msgstr "AIM ಹೋಮ್ ತೆರೆಯ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:190
 msgid "AIM Home Screen Name 2"
-msgstr "AIM ಹೋಮ್ ತೆರೆಯ ಹೆಸರು 2"
+msgstr "AIM ಹೋಮ್ ತೆರೆಯ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:191
 msgid "AIM Home Screen Name 3"
-msgstr "AIM ಹೋಮ್ ತೆರೆಯ ಹೆಸರು 3"
+msgstr "AIM ಹೋಮ್ ತೆರೆಯ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "AIM Work Screen Name 1"
-msgstr "AIM ಕೆಲಸ ತೆರೆ ಹೆಸರು 1"
+msgstr "AIM ಕೆಲಸ ತೆರೆ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "AIM Work Screen Name 2"
-msgstr "AIM ಕೆಲಸ ತೆರೆ ಹೆಸರು 2"
+msgstr "AIM ಕೆಲಸ ತೆರೆ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 3"
-msgstr "AIM ಕೆಲಸ ತೆರೆ ಹೆಸರು 3"
+msgstr "AIM ಕೆಲಸ ತೆರೆ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "GroupWise Home Screen Name 1"
-msgstr "ಗ್ರೂಪ್‌ವೈಸ್ ಹೋಮ್ ತೆರೆ ಹೆಸರು 1"
+msgstr "GroupWise ಮನೆ ತೆರೆ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "GroupWise Home Screen Name 2"
-msgstr "ಗ್ರೂಪ್‌ವೈಸ್ ಹೋಮ್ ತೆರೆ ಹೆಸರು 2"
+msgstr "GroupWise ಮನೆ ತೆರೆ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 3"
-msgstr "ಗ್ರೂಪ್‌ವೈಸ್ ಹೋಮ್ ತೆರೆ ಹೆಸರು 3"
+msgstr "GroupWise ಮನೆ ತೆರೆ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:198
 msgid "GroupWise Work Screen Name 1"
-msgstr "ಗ್ರೂಪ್‌ವೈಸ್ ಕೆಲಸ ತೆರೆ ಹೆಸರು 1"
+msgstr "GroupWise ಕೆಲಸ ತೆರೆ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:199
 msgid "GroupWise Work Screen Name 2"
-msgstr "ಗ್ರೂಪ್‌ವೈಸ್ ಕೆಲಸ ತೆರೆ ಹೆಸರು 2"
+msgstr "GroupWise ಕೆಲಸ ತೆರೆ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 3"
-msgstr "ಗ್ರೂಪ್‌ವೈಸ್ ಕೆಲಸ ತೆರೆ ಹೆಸರು 3"
+msgstr "GroupWise ಕೆಲಸ ತೆರೆ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:201
 msgid "Jabber Home Id 1"
-msgstr "ಜಬ್ಬಾರ್ ಹೋಮ್ ಐಡಿ 1"
+msgstr "Jabber ಹೋಮ್ ಐಡಿ ೧"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "Jabber Home Id 2"
-msgstr "ಜಬ್ಬಾರ್ ಹೋಮ್ ಐಡಿ 2"
+msgstr "Jabber ಹೋಮ್ ಐಡಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home Id 3"
-msgstr "ಜಬ್ಬಾರ್ ಹೋಮ್ ಐಡಿ 3"
+msgstr "Jabber ಹೋಮ್ ಐಡಿ ೩"
 
 #: ../addressbook/libebook/e-contact.c:204
 msgid "Jabber Work Id 1"
-msgstr "ಜಬ್ಬಾರ್ ಕೆಲಸ ಐಡಿ 1"
+msgstr "Jabber ಕೆಲಸ ಐಡಿ ೧"
 
 #: ../addressbook/libebook/e-contact.c:205
 msgid "Jabber Work Id 2"
-msgstr "ಜಬ್ಬಾರ್ ಕೆಲಸ ಐಡಿ 2"
+msgstr "Jabber ಕೆಲಸ ಐಡಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work Id 3"
-msgstr "ಜಬ್ಬಾರ್ ಕೆಲಸ ಐಡಿ 3"
+msgstr "Jabber ಕೆಲಸ ಐಡಿ ೩"
 
 #: ../addressbook/libebook/e-contact.c:207
 msgid "Yahoo! Home Screen Name 1"
-msgstr "ಯಾಹೂ! ಹೋಮ್ ತೆರೆ ಹೆಸರು 1"
+msgstr "ಯಾಹೂ! ಹೋಮ್ ತೆರೆ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:208
 msgid "Yahoo! Home Screen Name 2"
-msgstr "ಯಾಹೂ! ಹೋಮ್ ತೆರೆ ಹೆಸರು 2"
+msgstr "ಯಾಹೂ! ಹೋಮ್ ತೆರೆ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 3"
-msgstr "ಯಾಹೂ! ಹೋಮ್ ತೆರೆ ಹೆಸರು 3"
+msgstr "ಯಾಹೂ! ಹೋಮ್ ತೆರೆ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:210
 msgid "Yahoo! Work Screen Name 1"
-msgstr "ಯಾಹೂ! ಕೆಲಸ ತೆರೆ ಹೆಸರು 1"
+msgstr "ಯಾಹೂ! ಕೆಲಸ ತೆರೆ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:211
 msgid "Yahoo! Work Screen Name 2"
-msgstr "ಯಾಹೂ! ಕೆಲಸ ತೆರೆ ಹೆಸರು 2"
+msgstr "ಯಾಹೂ! ಕೆಲಸ ತೆರೆ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 3"
-msgstr "ಯಾಹೂ! ಕೆಲಸ ತೆರೆ ಹೆಸರು 3"
+msgstr "ಯಾಹೂ! ಕೆಲಸ ತೆರೆ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "MSN Home Screen Name 1"
-msgstr "MSN ಹೋಮ್ ತೆರೆಯ ಹೆಸರು 1"
+msgstr "MSN ಹೋಮ್ ತೆರೆಯ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:214
 msgid "MSN Home Screen Name 2"
-msgstr "MSN ಹೋಮ್ ತೆರೆಯ ಹೆಸರು 2"
+msgstr "MSN ಹೋಮ್ ತೆರೆಯ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 3"
-msgstr "MSN ಹೋಮ್ ತೆರೆಯ ಹೆಸರು 3"
+msgstr "MSN ಹೋಮ್ ತೆರೆಯ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:216
 msgid "MSN Work Screen Name 1"
-msgstr "MSN ಕೆಲಸ ತೆರೆ ಹೆಸರು 1"
+msgstr "MSN ಕೆಲಸ ತೆರೆ ಹೆಸರು ೧"
 
 #: ../addressbook/libebook/e-contact.c:217
 msgid "MSN Work Screen Name 2"
-msgstr "MSN ಕೆಲಸ ತೆರೆ ಹೆಸರು 2"
+msgstr "MSN ಕೆಲಸ ತೆರೆ ಹೆಸರು ೨"
 
 #: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 3"
-msgstr "MSN ಕೆಲಸ ತೆರೆ ಹೆಸರು 3"
+msgstr "MSN ಕೆಲಸ ತೆರೆ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:219
 msgid "ICQ Home Id 1"
-msgstr "ICQ ಹೋಮ್ ಐಡಿ 1"
+msgstr "ICQ ಹೋಮ್ ಐಡಿ ೧"
 
 #: ../addressbook/libebook/e-contact.c:220
 msgid "ICQ Home Id 2"
-msgstr "ICQ ಹೋ ಐಡಿ 2"
+msgstr "ICQ ಹೋ ಐಡಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home Id 3"
-msgstr "ICQ ಹೋ ಐಡಿ 3"
+msgstr "ICQ ಹೋ ಐಡಿ ೩"
 
 #: ../addressbook/libebook/e-contact.c:222
 msgid "ICQ Work Id 1"
-msgstr "ICQ ಕೆಲಸದ ಐಡಿ 1"
+msgstr "ICQ ಕೆಲಸದ ಐಡಿ ೧"
 
 #: ../addressbook/libebook/e-contact.c:223
 msgid "ICQ Work Id 2"
@@ -531,7 +531,7 @@ msgstr "ICQ ಕೆಲಸದ ಐಡಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work Id 3"
-msgstr "ICQ ಕೆಲಸದ ಐಡಿ 3"
+msgstr "ICQ ಕೆಲಸದ ಐಡಿ ೩"
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:227
@@ -588,7 +588,7 @@ msgstr "AIM ತೆರೆ ಹೆಸರ ಪಟ್ಟಿ"
 
 #: ../addressbook/libebook/e-contact.c:248
 msgid "GroupWise Id List"
-msgstr "ಗುಂಪುಕ್ರಮದಲ್ಲಿ ಐಡಿ ಪಟ್ಟಿ"
+msgstr "GroupWise ಐಡಿ ಪಟ್ಟಿ"
 
 #: ../addressbook/libebook/e-contact.c:249
 msgid "Jabber Id List"
@@ -635,27 +635,27 @@ msgstr "X.509 ಪ್ರಮಾಣಪತ್ರ"
 
 #: ../addressbook/libebook/e-contact.c:265
 msgid "Gadu-Gadu Home Id 1"
-msgstr "ಗಾಡು-ಗಾಡು ಹೋಮ್ ಐಡಿ 1"
+msgstr "ಗಾಡು-ಗಾಡು ಹೋಮ್ ಐಡಿ ೧"
 
 #: ../addressbook/libebook/e-contact.c:266
 msgid "Gadu-Gadu Home Id 2"
-msgstr "ಗಾಡು-ಗಾಡು ಹೋಮ್ ಐಡಿ 2"
+msgstr "ಗಾಡು-ಗಾಡು ಹೋಮ್ ಐಡಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:267
 msgid "Gadu-Gadu Home Id 3"
-msgstr "ಗಾಡು-ಗಾಡು ಹೋಮ್ ಐಡಿ 3"
+msgstr "ಗಾಡು-ಗಾಡು ಹೋಮ್ ಐಡಿ ೩"
 
 #: ../addressbook/libebook/e-contact.c:268
 msgid "Gadu-Gadu Work Id 1"
-msgstr "ಗಾಡು-ಗಾಡು ಕೆಲಸದ ಐಡಿ 1"
+msgstr "ಗಾಡು-ಗಾಡು ಕೆಲಸದ ಐಡಿ ೧"
 
 #: ../addressbook/libebook/e-contact.c:269
 msgid "Gadu-Gadu Work Id 2"
-msgstr "ಗಾಡು-ಗಾಡು ಕೆಲಸದ ಐಡಿ 2"
+msgstr "ಗಾಡು-ಗಾಡು ಕೆಲಸದ ಐಡಿ ೨"
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work Id 3"
-msgstr "ಗಾಡು-ಗಾಡು ಕೆಲಸದ ಐಡಿ 3"
+msgstr "ಗಾಡು-ಗಾಡು ಕೆಲಸದ ಐಡಿ ೩"
 
 #: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Id List"
@@ -698,7 +698,7 @@ msgstr "Skype ಕೆಲಸ ಹೆಸರು ೨"
 #: ../addressbook/libebook/e-contact.c:283
 #| msgid "MSN Work Screen Name 3"
 msgid "Skype Work Name 3"
-msgstr "Skype ಕೆಲಸ ಹೆಸರು 3"
+msgstr "Skype ಕೆಲಸ ಹೆಸರು ೩"
 
 #: ../addressbook/libebook/e-contact.c:284
 #| msgid "AIM Screen Name List"
@@ -732,7 +732,7 @@ msgstr "ವಾರ್ಷಿಕೋತ್ಸವ: %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:212
 msgid "Cannot save calendar data: Malformed URI."
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ಮಾಹಿತಿಯನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ: ತಪ್ಪಾಗಿರುವ ಯುಆರ್ಐ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ಮಾಹಿತಿಯನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ: ತಪ್ಪಾಗಿರುವ ಯುಆರ್ಐ."
 
 #: ../calendar/backends/file/e-cal-backend-file.c:219
 #: ../calendar/backends/file/e-cal-backend-file.c:225
@@ -810,7 +810,7 @@ msgstr "ಒಂದು ಕ್ಯಾಲೆಂಡರ್ ಅಲ್ಲ."
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:149
 msgid "Could not retrieve weather data"
-msgstr "ಹವಾಮಾನ ದತ್ತಾಂಶವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
+msgstr "ಹವಾಮಾನ ದತ್ತಾಂಶವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:246
 msgid "Weather: Fog"
@@ -862,127 +862,127 @@ msgstr "ಶೀರ್ಷಿಕೆಯಿಲ್ಲದ ಅಪಾಯಿಂಟ್‍�
 
 #: ../calendar/libecal/e-cal-recur.c:4041
 msgid "1st"
-msgstr "1ನೆಯ"
+msgstr "೧ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4042
 msgid "2nd"
-msgstr "2ನೆಯ"
+msgstr "೨ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4043
 msgid "3rd"
-msgstr "3ನೆಯ"
+msgstr "೩ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4044
 msgid "4th"
-msgstr "4ನೆಯ"
+msgstr "೪ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4045
 msgid "5th"
-msgstr "5ನೆಯ"
+msgstr "೫ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4046
 msgid "6th"
-msgstr "6ನೆಯ"
+msgstr "೬ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4047
 msgid "7th"
-msgstr "7ನೆಯ"
+msgstr "೭ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4048
 msgid "8th"
-msgstr "8ನೆಯ"
+msgstr "೮ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4049
 msgid "9th"
-msgstr "9ನೆಯ"
+msgstr "೯ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4050
 msgid "10th"
-msgstr "10ನೆಯ"
+msgstr "೧೦ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4051
 msgid "11th"
-msgstr "11ನೆಯ"
+msgstr "೧೧ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4052
 msgid "12th"
-msgstr "12ನೆಯ"
+msgstr "೧೨ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4053
 msgid "13th"
-msgstr "13ನೆಯ"
+msgstr "೧೩ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4054
 msgid "14th"
-msgstr "14ನೆಯ"
+msgstr "೧೪ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4055
 msgid "15th"
-msgstr "15ನೆಯ"
+msgstr "೧೫ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4056
 msgid "16th"
-msgstr "16ನೆಯ"
+msgstr "೧೬ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4057
 msgid "17th"
-msgstr "17ನೆಯ"
+msgstr "೧೭ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4058
 msgid "18th"
-msgstr "18ನೆಯ"
+msgstr "೧೮ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4059
 msgid "19th"
-msgstr "19ನೆಯ"
+msgstr "೧೯ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4060
 msgid "20th"
-msgstr "20ನೆಯ"
+msgstr "೨೦ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4061
 msgid "21st"
-msgstr "21ನೆಯ"
+msgstr "೨೧ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4062
 msgid "22nd"
-msgstr "22ನೆಯ"
+msgstr "೨೨ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4063
 msgid "23rd"
-msgstr "23ನೆಯ"
+msgstr "೨೩ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4064
 msgid "24th"
-msgstr "24ನೆಯ"
+msgstr "೨೪ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4065
 msgid "25th"
-msgstr "25ನೆಯ"
+msgstr "೨೫ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4066
 msgid "26th"
-msgstr "26ನೆಯ"
+msgstr "೨೬ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4067
 msgid "27th"
-msgstr "27ನೆಯ"
+msgstr "೨೭ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4068
 msgid "28th"
-msgstr "28ನೆಯ"
+msgstr "೨೮ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4069
 msgid "29th"
-msgstr "29ನೆಯ"
+msgstr "೨೯ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4070
 msgid "30th"
-msgstr "30ನೆಯ"
+msgstr "೩೦ನೆಯ"
 
 #: ../calendar/libecal/e-cal-recur.c:4071
 msgid "31st"
-msgstr "31ನೆಯ"
+msgstr "೩೧ನೆಯ"
 
 #: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:713
 msgid "High"
@@ -1237,7 +1237,7 @@ msgstr "TSL ಲಭ್ಯವಿಲ್ಲ"
 #: ../calendar/libedata-cal/e-cal-backend-util.c:133
 #| msgid "Offline unavailable"
 msgid "Offline mode unavailable"
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮವು ಲಭ್ಯವಿಲ್ಲ"
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯು ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:135
 msgid "Search size limit exceeded"
@@ -1480,7 +1480,7 @@ msgstr "(%s) %s ನ ಒಳಗೆ ಅನುಮತಿ ಇಲ್ಲ"
 #: ../camel/camel-folder-search.c:912 ../camel/camel-folder-search.c:919
 #, c-format
 msgid "(%s) requires a match type string"
-msgstr ""
+msgstr "(%s) ಗಾಗಿ ಒಂದು ತಾಳೆಯಾಗುವ ಬಗೆಯ ವಾಕ್ಯದ ಅಗತ್ಯವಿದೆ"
 
 #: ../camel/camel-folder-search.c:946
 #, c-format
@@ -1814,7 +1814,7 @@ msgstr "ವರ್ಚುವಲ್ ಪೋಲ್ಡರಿನ ಇಮೈಲ್ ಸೇ
 
 #: ../camel/camel-provider.c:62
 msgid "For reading mail as a query of another set of folders"
-msgstr "ಮೈಲ್ ಅನ್ನು ಮತ್ತೊಂದು ಕಂತಿನ ಪೋಲ್ಡರುಗಳ ಪ್ರಶ್ನೆಯಾಗಿ ಓದಲು."
+msgstr "ಮೈಲ್ ಅನ್ನು ಮತ್ತೊಂದು ಕಂತಿನ ಪೋಲ್ಡರುಗಳ ಪ್ರಶ್ನೆಯಾಗಿ ಓದಲು"
 
 #: ../camel/camel-provider.c:184
 #, c-format
@@ -1897,7 +1897,7 @@ msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ನೀವು ಒಂದು ಸ�
 
 #: ../camel/camel-sasl-digest-md5.c:845
 msgid "Server challenge too long (>2048 octets)"
-msgstr "ಪರಿಚಾರಕದ ಚಾಲೆಂಜ್ ಬಹಳ ಉದ್ದವಾಗಿದೆ (>2048 ಆಕ್ಟೆಟುಗಳು)"
+msgstr "ಪರಿಚಾರಕದ ಚಾಲೆಂಜ್ ಬಹಳ ಉದ್ದವಾಗಿದೆ (>೨೦೪೮ ಆಕ್ಟೆಟುಗಳು)"
 
 #: ../camel/camel-sasl-digest-md5.c:854
 msgid "Server challenge invalid\n"
@@ -1925,7 +1925,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:66
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ 5 ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
+msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ ೫ ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
 
 #: ../camel/camel-sasl-gssapi.c:164
 msgid ""
@@ -1959,7 +1959,7 @@ msgstr "input_token ಒಂದು ಅಮಾನ್ಯವಾದಂತಹ ಸಹಿ�
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
-msgstr ""
+msgstr "ಸನ್ನಿವೇಶವನ್ನು ಆರಂಭಿಸಲು ಒದಗಿಸಲಾದ ಪರಿಚಯಪತ್ರಗಳು ಮಾನ್ಯವಾಗಿಲ್ಲ, ಅಥವ ಪರಿಚಯಪತ್ರದ ಹ್ಯಾಂಡಲ್ ಯಾವುದೆ ಪರಿಚಯಪತ್ರಗಳನ್ನು ಉಲ್ಲೇಖಿಸಿಲ್ಲ."
 
 #: ../camel/camel-sasl-gssapi.c:190
 msgid "The supplied context handle did not refer to a valid context."
@@ -1990,11 +1990,11 @@ msgstr "ಬೆಂಬಲವಿಲ್ಲದ ಸುರಕ್ಷತಾ ಲೇಯರ�
 
 #: ../camel/camel-sasl-kerberos4.c:47
 msgid "Kerberos 4"
-msgstr "ಕರ್ಬರೋಸ್ 4"
+msgstr "ಕರ್ಬರೋಸ್ ೪"
 
 #: ../camel/camel-sasl-kerberos4.c:49
 msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ 4 ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
+msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ ೪ ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
 
 #: ../camel/camel-sasl-kerberos4.c:174
 #, c-format
@@ -2775,7 +2775,7 @@ msgstr "%s ನಂತಹ ಯಾವುದೆ ಫೋಲ್ಡರ್ ಇಲ್ಲ"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1241
 msgid "Cannot create GroupWise folders in offline mode."
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮದಲ್ಲಿ GroupWise ಫೋಲ್ಡರುಗಳನ್ನು ರಚಿಸುವಂತಿಲ್ಲ."
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ GroupWise ಫೋಲ್ಡರುಗಳನ್ನು ರಚಿಸುವಂತಿಲ್ಲ."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1255
 #: ../camel/providers/imap/camel-imap-store.c:1924
@@ -2961,7 +2961,7 @@ msgstr "APPEND ಆಜ್ಞೆಯ ನಂತರ ಮುಂದುವರೆದಾಗ
 
 #: ../camel/providers/imap/camel-imap-folder.c:2010
 msgid "Unknown error occurred during APPEND command!"
-msgstr "APPEND ಆಜ್ಞೆಯ ಸಮಯದಲ್ಲಿ ತಿಳಿಯದ ದೋಷ ಎದುರಾಗಿದೆ"
+msgstr "APPEND ಆಜ್ಞೆಯ ಸಮಯದಲ್ಲಿ ತಿಳಿಯದ ದೋಷ ಎದುರಾಗಿದೆ!"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2842
 #, c-format
@@ -3050,7 +3050,7 @@ msgstr "IMAP ಪರಿಚಾರಕಗಳಲ್ಲಿ ಮೈಲ್‌ಗಳನ್
 #: ../camel/providers/imap/camel-imap-provider.c:102
 #: ../camel/providers/imapp/camel-imapp-provider.c:69
 msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಸರಳಪಠ್ಯ ಗುಪ್ತಪದದ ಮೂಲಕ IMAP ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸಲು ಸಹಾಯವಾಗುತ್ತದೆ.."
+msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಸರಳಪಠ್ಯ ಗುಪ್ತಪದದ ಮೂಲಕ IMAP ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಸಾಧಿಸಲು ಸಹಾಯವಾಗುತ್ತದೆ."
 
 #: ../camel/providers/imap/camel-imap-store.c:437
 #: ../camel/providers/imap4/camel-imap4-store.c:214
@@ -3373,7 +3373,7 @@ msgstr "%s IMAP ಪರಿಚಾರಕಕ್ಕೆ %s ಬಳಸಿಕೊಂಡು
 #: ../camel/providers/imap4/camel-imap4-store.c:701
 #: ../camel/providers/imap4/camel-imap4-store.c:969
 msgid "Cannot create IMAP folders in offline mode."
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮದಲ್ಲಿ IMAP ಫೋಲ್ಡರನ್ನು ರಚಿಸುವಂತಿಲ್ಲ."
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ IMAP ಫೋಲ್ಡರನ್ನು ರಚಿಸುವಂತಿಲ್ಲ."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:740
 #, c-format
@@ -3407,7 +3407,7 @@ msgstr "ಫೋಲ್ಡರ್ '%s' ಅನ್ನು ಅಳಿಸಲು ಸಾಧ�
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1020
 msgid "Cannot delete IMAP folders in offline mode."
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮದಲ್ಲಿ IMAP ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಅಳಿಸುವಂತಿಲ್ಲ."
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ IMAP ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಅಳಿಸುವಂತಿಲ್ಲ."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1079
 #, c-format
@@ -3426,7 +3426,7 @@ msgstr "ಫೋಲ್ಡರ್ '%s' ನ ಹೆಸರನ್ನು '%s' ಗೆ ಬ�
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1111
 msgid "Cannot rename IMAP folders in offline mode."
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮದಲ್ಲಿ IMAP ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸುವಂತಿಲ್ಲ."
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ IMAP ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸುವಂತಿಲ್ಲ."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1142
 #, c-format
@@ -3447,7 +3447,7 @@ msgstr "%s ಮಾಹಿತಿಯನ್ನು ವಿನ್ಯಾಸ '%s' ಕ್�
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1638
 msgid "Cannot subscribe to IMAP folders in offline mode."
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮದಲ್ಲಿ IMAP ಫೋಲ್ಡರಿಗೆ ಚಂದಾದಾರನಾಗಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ IMAP ಫೋಲ್ಡರಿಗೆ ಚಂದಾದಾರನಾಗಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1683
 #, c-format
@@ -3461,7 +3461,7 @@ msgstr "ಫೋಲ್ಡರ್ '%s' ಗೆ ಚಂದಾದಾರನಾಗಲು �
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1710
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "ಆಫ್‌ಲೈನ್ ಕ್ರಮದಲ್ಲಿ IMAP ಫೋಲ್ಡರಿನ ಚಂದಾದಾರಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
+msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯಲ್ಲಿ IMAP ಫೋಲ್ಡರಿನ ಚಂದಾದಾರಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1755
 #, c-format
@@ -3574,7 +3574,7 @@ msgstr "ಸ್ಥಳೀಯ ರವಾನೆ"
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
-msgstr ""
+msgstr "ಮಾನಕವಾದ mbox-ರಚನಾಕ್ರಮದ ಸ್ಪೂಲ್‌ಗಳಿಂದ Evolution ನಿಂದ ನಿರ್ವಹಿಸಲಾಗುವ ಫೋಲ್ಡರುಗಳಿಗೆ ಹಿಂಪಡೆದುಕೊಳ್ಳಲು (ಜರುಗಿಸಲು)."
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
@@ -3603,6 +3603,8 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
+"ಹೊರಗಿನ ಮಾನಕ mbox ಸ್ಪೂಲ್‌ ಕಡತಗಳಲ್ಲಿ ಮೈಲ್‌ಗಳನ್ನು ಓದಲು ಹಾಗು ಶೇಖರಸಿಡಲು.\n"
+"Elm, Pine, or Mutt ಶೈಲಿಯ ಫೋಲ್ಡರುಗಳನ್ನು ಸಹ ಓದಲು ಬಳಸಬಹುದಾಗಿದೆ."
 
 #: ../camel/providers/local/camel-local-provider.c:126
 msgid "Standard Unix mbox spool directory"
@@ -4086,7 +4088,7 @@ msgstr "ಈ ಸೇವಾಕರ್ತರುಗಳ ಮೂಲಕ USENET ಸುದ�
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
-msgstr ""
+msgstr "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಸರಳಪಠ್ಯ ಗುಪ್ತಪದದ ಮೂಲಕ NNTP ಪರಿಚಾರಕದೊಂದಿಗೆ ದೃಢೀಕರಿಸಲು ಸಹಾಯವಾಗುತ್ತದೆ."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:217
 #, c-format
@@ -4260,7 +4262,7 @@ msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
-msgstr ""
+msgstr "ಈ ಆಯ್ಕೆಯು ಒಂದು APOP ಪ್ರೋಟೋಕಾಲ್ ಮೂಲಕ ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ಗುಪ್ತಪದವನ್ನು ಬಳಸಿಕೊಂಡು POP ಪರಿಚಾರಕದೊಂದಿಗೆ ಸಂಪರ್ಕಹೊಂದುತ್ತದೆ. ಆದರೆ ಇದನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ ಎಂದು ಹೇಳಿಕೊಳ್ಳುವ ಪರಿಚಾರಕದಲ್ಲಿಯೂ ಸಹ ಇದು ಎಲ್ಲಾ ಬಳಕೆದಾರರಿಗೂ ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:209
 #, c-format
@@ -4316,7 +4318,7 @@ msgstr "POP ಪರಿಚಾರಕ %s ದಲ್ಲಿ ದೃಢೀಕರಿಸಲ
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr ""
+msgstr "POP ಪರಿಚಾರಕ %s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ:\tಅಮಾನ್ಯವಾದ APOP ID ಅನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಕದಿಯುವ ಹೊಂಚಾಗಿರಬಹುದು. ದಯವಿಟ್ಟು ನಿಮ್ಮ ವ್ಯವಸ್ಥಾಪಕರನ್ನು ಸಂಪರ್ಕಿಸಿ."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:551
 #: ../camel/providers/pop3/camel-pop3-store.c:564
@@ -4350,7 +4352,7 @@ msgstr "ಸೆಂಡ್‌ಮೈಲ್"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
+msgstr "ಸ್ಥಳೀಯ ಗಣಕದಲ್ಲಿ \"sendmail\" ಪ್ರೊಗ್ರಾಮಿಗೆ ಕಳುಹಿಸುವುದರಿಂದ ಮೈಲನ್ನು ರವಾನಿಸುವ ಸಲುವಾಗಿ."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:115
 msgid "Could not parse recipient list"
@@ -4395,7 +4397,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr "SMTP ಅನ್ನು ಬಳಸಿಕೊಂಡು ದೂರಸ್ಥ ಮೇಲ್‌ಹಬ್‌ಗೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸಿ ಮೇಲ್ ಅನ್ನು ತಲುಪಿಸಲು"
+msgstr "SMTP ಅನ್ನು ಬಳಸಿಕೊಂಡು ದೂರಸ್ಥ ಮೇಲ್‌ಹಬ್‌ಗೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸಿ ಮೇಲ್ ಅನ್ನು ತಲುಪಿಸಲು."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:168
 msgid "Syntax error, command unrecognized"
@@ -4471,7 +4473,7 @@ msgstr "ಮನವಿ ಸಲ್ಲಿಸಲಾದ ಕಾರ್ಯವನ್ನು 
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:204
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr ""
+msgstr "ಮೈಲ್ ಇನ್‌ಪುಟ್‌ ಅನ್ನು ಆರಂಭಿಸು; <CRLF>.<CRLF> ನೊಂದಿಗೆ ಕೊನೆಗೊಳ್ಳುತ್ತದೆ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:206
 msgid "Transaction failed"
@@ -5141,7 +5143,7 @@ msgstr "ಸೂಚಿಸಲಾದ ಫೋಲ್ಡರನ್ನು ಮಾರ್ಪ�
 
 #: ../servers/exchange/storage/e-storage.c:579
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
+msgstr "ಒಂದು ಫೋಲ್ಡರನ್ನು ಅದರದ್ದೆ ಉಪಫೋಲ್ಡರುಗಳು ಚೈಲ್ಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
 #: ../servers/exchange/storage/e-storage.c:581
 msgid "Cannot create a folder with that name"
@@ -5236,5 +5238,5 @@ msgstr "ಇವಲ್ಯೂಶನ್ ದತ್ತಾಂಶ ಪರಿಚಾರಕ�
 #: ../src/server.c:109
 #, c-format
 msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-msgstr ""
+msgstr "ಅನೇಕ ಸೆಗ್‌ಮೆಂಟೇಶನ್ ವಿಫಲತೆ ಎದುರಾಗಿದೆ; ದೋಷ ಸಂವಾದವನ್ನು ತೋರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ\n"
 
