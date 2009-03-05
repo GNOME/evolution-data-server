@@ -1863,7 +1863,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				start = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (start);
-				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
+				itt = icaltime_from_timet_with_zone (t, 0, icaltimezone_get_utc_timezone ());
 				ipt.start = itt;
 				g_free (start);
 			}
@@ -1872,7 +1872,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 			if (tmp) {
 				end = soup_soap_parameter_get_string_value (tmp);
 				t = e_gw_connection_get_date_from_string (end);
-				itt = icaltime_from_timet_with_zone (t, 0, default_zone ? default_zone : NULL);
+				itt = icaltime_from_timet_with_zone (t, 0, icaltimezone_get_utc_timezone ());
 				ipt.end = itt;
 				g_free (end);
 			}

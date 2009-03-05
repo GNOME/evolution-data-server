@@ -1,3 +1,11 @@
+2009-03-05  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #479908
+	* backends/groupwise/e-cal-backend-groupwise-utils.c
+	(e_gw_connection_get_freebusy_info): Convert the freebusy
+	time to utc time zone and leave it to evolution for interpreting
+	in default zone.					     
+
 2009-02-28  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	** Fix for bug #573497
