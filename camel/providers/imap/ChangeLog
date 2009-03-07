@@ -1,11 +1,7 @@
-2009-02-26  Milan Crha  <mcrha@redhat.com>
+2009-03-07  Matthew Barnes  <mbarnes@redhat.com>
 
-	** Fix for bug #573240
-
-	* camel-imap-store.c: (camel_imap_store_readline):
-	* camel-imap-command.c: (imap_command_start),
-	(camel_imap_command_continuation), (imap_read_untagged):
-	Do not disconnect on user canceled.
+	** Revert changes for bug #534938 because it breaks message
+	   loading in IMAP and can cause summary database corruption.
 
 2009-02-12  Milan Crha  <mcrha@redhat.com>
 
