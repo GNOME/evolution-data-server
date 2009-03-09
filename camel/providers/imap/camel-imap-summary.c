@@ -212,7 +212,7 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 		if it cannot be loaded, for some random reason.
 		We need to pass the ex and find out why it is not loaded etc. ? */
 		camel_folder_summary_clear_db (summary);
-		g_warning ("Unable to load summary %s\n", camel_exception_get_description (&ex));
+		g_message ("Unable to load summary: %s\n", camel_exception_get_description (&ex));
 		camel_exception_clear (&ex);
 	}
 

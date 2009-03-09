@@ -1,3 +1,11 @@
+2009-03-09  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-imap-summary.c (camel_imap_summary_new):
+	Change log level of "Unable to load summary: no such table" from
+	warning to message, so that G_DEBUG=fatal_warnings becomes useful
+	again.  These are just nuisance messages that get emitted during
+	normal operation.  Whatever is triggering them still needs fixed.
+
 2009-03-07  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Revert changes for bug #534938 because it breaks message
