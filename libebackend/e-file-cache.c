@@ -263,16 +263,24 @@ e_file_cache_clean (EFileCache *cache)
 {
 	EFileCachePrivate *priv;
 	GSList *keys = NULL;
+	gboolean iFroze;
 
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), FALSE);
 
 	priv = cache->priv;
+	iFroze = !priv->frozen;
+
+	if (iFroze)
+		e_file_cache_freeze_changes (cache);
 
 	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_slist, &keys);
 	while (keys != NULL) {
 		e_file_cache_remove_object (cache, (const char *) keys->data);
 		keys = g_slist_remove (keys, keys->data);
 	}
+
+	if (iFroze)
+		e_file_cache_thaw_changes (cache);
 
 	return TRUE;
 }
