@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-06 22:45+0200\n"
-"PO-Revision-Date: 2009-03-06 22:53+0200\n"
+"PO-Revision-Date: 2009-03-11 00:00+0200\n"
 "Last-Translator: Žygimantas Beručka <zygis@gnome.org>\n"
 "Language-Team: Lithuanian <gnome-lt@lists.akl.lt>\n"
 "MIME-Version: 1.0\n"
@@ -2111,7 +2111,7 @@ msgstr "Nepavyko rasti „%s“ sertifikato"
 
 #: ../camel/camel-smime-context.c:450
 msgid "Cannot create CMS message"
-msgstr "Nepavyko sukurti CMS žinutės"
+msgstr "Nepavyko sukurti CMS laiško"
 
 #: ../camel/camel-smime-context.c:455
 msgid "Cannot create CMS signed data"
@@ -2233,13 +2233,13 @@ msgstr "Sertifikato importuoti nepavyko"
 #: ../camel/camel-smime-context.c:817
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr "Sertifikatas yra vienintelė žinutė, negalima patikrinti sertifikatų"
+msgstr "Sertifikatas yra vienintelis laiškas, negalima patikrinti sertifikatų"
 
 #: ../camel/camel-smime-context.c:820
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
-"Sertifikatas yra vienintelė žinutė, sertifikatai importuoti ir patikrinti"
+"Sertifikatas yra vienintelis laiškas, sertifikatai importuoti ir patikrinti"
 
 #: ../camel/camel-smime-context.c:824
 msgid "Cannot find signature digests"
@@ -2264,7 +2264,7 @@ msgstr "Nepavyko paskirti vietos šifravimo raktui"
 
 #: ../camel/camel-smime-context.c:1019
 msgid "Cannot create CMS Message"
-msgstr "Nepavyko sukurti CMS žinutės"
+msgstr "Nepavyko sukurti CMS laiško"
 
 #: ../camel/camel-smime-context.c:1025
 msgid "Cannot create CMS Enveloped data"
@@ -4492,7 +4492,7 @@ msgstr "Žinyno žinutė"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:180
 msgid "Service ready"
-msgstr "Paslauga pasiruošusi"
+msgstr "Paslauga paruošta"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:182
 msgid "Service closing transmission channel"
@@ -4802,7 +4802,7 @@ msgstr "Laukiama"
 #. time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1644 ../libedataserver/e-time-utils.c:1911
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr "%a %Y/%m/%d %I:%M:%S %p"
+msgstr "%a %Y-%m-%d %I:%M:%S %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format.
@@ -4810,7 +4810,7 @@ msgstr "%a %Y/%m/%d %I:%M:%S %p"
 #. time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1649 ../libedataserver/e-time-utils.c:1902
 msgid "%a %m/%d/%Y %H:%M:%S"
-msgstr "%a %Y/%m/%d %H:%M:%S"
+msgstr "%a %Y-%m-%d %H:%M:%S"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without seconds.
@@ -4818,7 +4818,7 @@ msgstr "%a %Y/%m/%d %H:%M:%S"
 #. time, in 12-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1654 ../libedataserver/e-time-utils.c:1907
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr "%a %Y/%m/%d %I:%M %p"
+msgstr "%a %Y-%m-%d %I:%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without seconds.
@@ -4826,66 +4826,66 @@ msgstr "%a %Y/%m/%d %I:%M %p"
 #. time, in 24-hour format, without seconds.
 #: ../libedataserver/e-time-utils.c:1659 ../libedataserver/e-time-utils.c:1898
 msgid "%a %m/%d/%Y %H:%M"
-msgstr "%a %Y/%m/%d %H:%M"
+msgstr "%a %Y-%m-%d %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1664
 msgid "%a %m/%d/%Y %I %p"
-msgstr "%a %Y/%m/%d %I %p"
+msgstr "%a %Y-%m-%d %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. in 24-hour format, without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1669
 msgid "%a %m/%d/%Y %H"
-msgstr "%a %Y/%m/%d %H"
+msgstr "%a %Y-%m-%d %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
 #: ../libedataserver/e-time-utils.c:1672 ../libedataserver/e-time-utils.c:1773
 #: ../libedataserver/e-time-utils.c:1893
 msgid "%a %m/%d/%Y"
-msgstr "%a %Y/%m/%d"
+msgstr "%a %Y-%m-%d"
 
 #. strptime format of a date and a time, in 12-hour format.
 #: ../libedataserver/e-time-utils.c:1680
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr "%Y/%m/%d %I:%M:%S %p"
+msgstr "%Y-%m-%d %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../libedataserver/e-time-utils.c:1684
 msgid "%m/%d/%Y %H:%M:%S"
-msgstr "%Y/%m/%d %H:%M:%S"
+msgstr "%Y-%m-%d %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1689
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%Y/%m/%d %I:%M %p"
+msgstr "%Y-%m-%d %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without seconds.
 #: ../libedataserver/e-time-utils.c:1694
 msgid "%m/%d/%Y %H:%M"
-msgstr "%Y/%m/%d %H:%M"
+msgstr "%Y-%m-%d %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1699
 msgid "%m/%d/%Y %I %p"
-msgstr "%Y/%m/%d %I %p"
+msgstr "%Y-%m-%d %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. without minutes or seconds.
 #: ../libedataserver/e-time-utils.c:1704
 msgid "%m/%d/%Y %H"
-msgstr "%Y/%m/%d %H"
+msgstr "%Y-%m-%d %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
 #: ../libedataserver/e-time-utils.c:1707 ../libedataserver/e-time-utils.c:1776
 msgid "%m/%d/%Y"
-msgstr "%Y/%m/%d"
+msgstr "%Y-%m-%d"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
