@@ -74,9 +74,8 @@ camel_sasl_ntlm_get_type (void)
 
 #define NTLM_REQUEST "NTLMSSP\x00\x01\x00\x00\x00\x06\x82\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00\x00\x00\x00\x00\x30\x00\x00\x00"
 
-#define NTLM_CHALLENGE_NONCE_OFFSET      24
-#define NTLM_CHALLENGE_DOMAIN_OFFSET     48
-#define NTLM_CHALLENGE_DOMAIN_LEN_OFFSET 44
+#define NTLM_CHALLENGE_DOMAIN_OFFSET		12
+#define NTLM_CHALLENGE_NONCE_OFFSET		24
 
 #define NTLM_RESPONSE_HEADER         "NTLMSSP\x00\x03\x00\x00\x00"
 #define NTLM_RESPONSE_FLAGS          "\x82\x01"
@@ -93,22 +92,60 @@ static void ntlm_calc_response   (const guchar key[21],
 				  guchar results[24]);
 static void ntlm_lanmanager_hash (const char *password, char hash[21]);
 static void ntlm_nt_hash         (const char *password, char hash[21]);
-static void ntlm_set_string      (GByteArray *ba, int offset,
-				  const char *data, int len);
+
+typedef struct {
+	guint16 length;
+	guint16 allocated;
+	guint32 offset;
+} SecurityBuffer;
+
+static GString *
+ntlm_get_string (GByteArray *ba, int offset)
+{
+	SecurityBuffer *secbuf;
+	GString *string;
+	gchar *buf_string;
+	guint16 buf_length;
+	guint32 buf_offset;
+
+	secbuf = (SecurityBuffer *) &ba->data[offset];
+	buf_length = GUINT16_FROM_LE (secbuf->length);
+	buf_offset = GUINT32_FROM_LE (secbuf->offset);
+
+	if (ba->len < buf_offset + buf_length)
+		return NULL;
+
+	string = g_string_sized_new (buf_length);
+	buf_string = (gchar *) &ba->data[buf_offset];
+	g_string_append_len (string, buf_string, buf_length);
+
+	return string;
+}
+
+static void
+ntlm_set_string (GByteArray *ba, int offset, const char *data, int len)
+{
+	SecurityBuffer *secbuf;
+
+	secbuf = (SecurityBuffer *) &ba->data[offset];
+	secbuf->length = GUINT16_TO_LE (len);
+	secbuf->offset = GUINT32_TO_LE (ba->len);
+	secbuf->allocated = secbuf->length;
+
+	g_byte_array_append (ba, (guint8 *) data, len);
+}
 
 static GByteArray *
 ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 {
 	GByteArray *ret;
 	guchar nonce[8], hash[21], lm_resp[24], nt_resp[24];
+	GString *domain;
 
 	ret = g_byte_array_new ();
 
-	if (!token || !token->len) {
-		g_byte_array_append (ret, (guint8 *) NTLM_REQUEST,
-				     sizeof (NTLM_REQUEST) - 1);
-		return ret;
-	}
+	if (!token || token->len < NTLM_CHALLENGE_NONCE_OFFSET + 8)
+		goto fail;
 
 	memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
 	ntlm_lanmanager_hash (sasl->service->url->passwd, (char *) hash);
@@ -116,7 +153,11 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	ntlm_nt_hash (sasl->service->url->passwd, (char *) hash);
 	ntlm_calc_response (hash, nonce, nt_resp);
 
-	ret = g_byte_array_new ();
+	domain = ntlm_get_string (token, NTLM_CHALLENGE_DOMAIN_OFFSET);
+	if (domain == NULL)
+		goto fail;
+
+	/* Don't jump to 'fail' label after this point. */
 	g_byte_array_set_size (ret, NTLM_RESPONSE_BASE_SIZE);
 	memset (ret->data, 0, NTLM_RESPONSE_BASE_SIZE);
 	memcpy (ret->data, NTLM_RESPONSE_HEADER,
@@ -125,8 +166,7 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		NTLM_RESPONSE_FLAGS, sizeof (NTLM_RESPONSE_FLAGS) - 1);
 
 	ntlm_set_string (ret, NTLM_RESPONSE_DOMAIN_OFFSET,
-			 (const char *) token->data + NTLM_CHALLENGE_DOMAIN_OFFSET,
-			 atoi ((char *) token->data + NTLM_CHALLENGE_DOMAIN_LEN_OFFSET));
+			 domain->str, domain->len);
 	ntlm_set_string (ret, NTLM_RESPONSE_USER_OFFSET,
 			 sasl->service->url->user,
 			 strlen (sasl->service->url->user));
@@ -138,6 +178,18 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			 (const char *) nt_resp, sizeof (nt_resp));
 
 	sasl->authenticated = TRUE;
+
+	g_string_free (domain, TRUE);
+
+	goto exit;
+
+fail:
+	/* If the challenge is malformed, restart authentication.
+	 * XXX A malicious server could make this loop indefinitely. */
+	g_byte_array_append (ret, (guint8 *) NTLM_REQUEST,
+			     sizeof (NTLM_REQUEST) - 1);
+
+exit:
 	return ret;
 }
 
@@ -200,17 +252,6 @@ ntlm_nt_hash (const char *password, char hash[21])
 
 	g_free (buf);
 }
-
-static void
-ntlm_set_string (GByteArray *ba, int offset, const char *data, int len)
-{
-	ba->data[offset    ] = ba->data[offset + 2] =  len       & 0xFF;
-	ba->data[offset + 1] = ba->data[offset + 3] = (len >> 8) & 0xFF;
-	ba->data[offset + 4] =  ba->len       & 0xFF;
-	ba->data[offset + 5] = (ba->len >> 8) & 0xFF;
-	g_byte_array_append (ba, (guint8 *) data, len);
-}
-
 
 #define KEYBITS(k,s) \
         (((k[(s)/8] << ((s)%8)) & 0xFF) | (k[(s)/8+1] >> (8-(s)%8)))

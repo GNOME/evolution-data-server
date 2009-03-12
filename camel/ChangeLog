@@ -1,3 +1,9 @@
+2009-03-12  Matthew Barnes  <mbarnes@redhat.com>
+
+	* camel-sasl-ntlm.c (ntlm_challenge):
+	CVE-2009-0852: Add stricter checking of NTLM authentication
+	challenges, and extract the domain length value properly.
+
 2009-03-04  Tobias Mueller  <tobiasmue@svn.gnome.org>
 
 	* camel/camel-db.c (write_mir):
