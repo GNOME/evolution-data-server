@@ -1,5 +1,12 @@
 2009-03-12  Matthew Barnes  <mbarnes@redhat.com>
 
+	* camel-db.c:
+	Rework the SQLite fsync() workaround to use a simpler thread
+	design and fix a thread leak that caused Evolution to effectively
+	stop working after several hours.
+
+2009-03-12  Matthew Barnes  <mbarnes@redhat.com>
+
 	* camel-sasl-ntlm.c (ntlm_challenge):
 	CVE-2009-0852: Add stricter checking of NTLM authentication
 	challenges, and extract the domain length value properly.
