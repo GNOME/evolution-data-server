@@ -1,3 +1,15 @@
+Evolution-Data-Server 2.26.0 2009-03-16	
+----------------------------------------
+
+What is in 2.26.0?
+
+	Support CalDAV for VTODO and VJOURNAL (Milan Crha)
+	Improved Camel/Sqlite support
+	Dropped libical fork and uses upstream libical
+	Exchange MAPI support for Exchange 2007 connectivity.
+	Mail summary database restructured for use by Tracker/Beagle
+	Loads of bug fixes
+
 Evolution-Data-Server 2.25.92 2009-03-02
 ----------------------------------------
 
