@@ -1243,13 +1243,12 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		if (!check_all && slist && g_slist_length(slist) != 0)
 			check_all = TRUE;
 
+		if (gw_store->current_folder != folder)
+			groupwise_store_set_current_folder (gw_store, folder);
+
 		g_slist_free (slist);
 		slist = NULL;
 
-		if (gw_store->current_folder != folder) {
-			gw_store->current_folder = folder;
-		}
-		
 		if (check_all && !is_proxy) {
 				EGwContainer *container;
 				int i=0;
@@ -2426,7 +2425,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	camel_folder_summary_touch (source->summary);
 	camel_folder_summary_touch (destination->summary);
 
-	gw_store->current_folder = source;
+	groupwise_store_set_current_folder (gw_store, source);
 
 	CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
 }

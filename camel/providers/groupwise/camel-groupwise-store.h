@@ -79,6 +79,7 @@ const char *groupwise_base_url_lookup (CamelGroupwiseStorePrivate *priv);
 CamelFolderInfo * create_junk_folder (CamelStore *store);
 gboolean camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex);
 void gw_store_reload_folder (CamelGroupwiseStore *store, CamelFolder *folder, guint32 flags, CamelException *ex);
+void groupwise_store_set_current_folder (CamelGroupwiseStore *groupwise_store, CamelFolder *folder);
 
 G_END_DECLS
 
