@@ -1,3 +1,10 @@
+2009-03-19  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #477697
+	* camel/providers/groupwise/camel-groupwise-folder.c: Set the
+	display name. cleaned up the code which set it to null string 
+	if display name appears in the form of email id.
+
 2009-03-14  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #480091

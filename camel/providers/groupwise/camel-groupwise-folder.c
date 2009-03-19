@@ -96,6 +96,7 @@ static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *it
 static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelException *ex, gboolean uid_flag);
 static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
 static char* groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
+static const char *get_from_from_org (EGwItemOrganizer *org);
 
 
 #define d(x)  
@@ -420,20 +421,14 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 
 	if (org) {
 		if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
-				int i;
-				for (i = 0; org->display_name[i] != '<' && 
-						org->display_name[i] != '\0';
-						i++);
-
-				org->display_name[i] = '\0';
-		}
-		if (org->display_name && org->email) 
+			org->display_name = g_strdelimit (org->display_name, "<>", ' ');
 			ha=camel_header_address_new_name(org->display_name, org->email);
+		} else if (org->email) 
+			ha=camel_header_address_new_name(org->email, org->email);
 		else if (org->display_name)
 			ha=camel_header_address_new_group(org->display_name);
 		else
 			ha = NULL;
-
 		if (ha) {
 			subs_email = camel_header_address_list_encode (ha);	
 			camel_medium_set_header (CAMEL_MEDIUM (msg), "From", subs_email);
@@ -1454,32 +1449,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		mi->server_flags = mi->info.flags;
 
 		org = e_gw_item_get_organizer (item); 
-
-		if (org) {
-				GString *str;
-				int i;
-				str = g_string_new ("");
-
-				if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
-						for (i = 0; org->display_name[i] != '<' && 
-										org->display_name[i] != '\0'; 
-										i++);
-
-						org->display_name[i] = '\0';
-						str = g_string_append (str, org->display_name);
-						str = g_string_append (str, " ");
-				}
-
-				if (org->email && org->email[0]) { 
-						g_string_append (str, "<");
-						str = g_string_append (str, org->email);
-						g_string_append (str, ">");
-				}
-
-
-				mi->info.from = camel_pstring_strdup (str->str);
-				g_string_free (str, TRUE);
-		}
+		mi->info.from = get_from_from_org (org);
 
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
@@ -1577,6 +1547,37 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
 	camel_folder_change_info_free (changes);
+}
+
+static const char *
+get_from_from_org (EGwItemOrganizer *org)
+{
+	const char *ret = NULL;
+
+	if (org) {
+		GString *str;
+		
+		str = g_string_new ("");
+		if (org->display_name && org->display_name[0]) {
+			org->display_name = g_strdelimit (org->display_name, "<>", ' ');
+			str = g_string_append (str, org->display_name);
+			str = g_string_append (str, " ");
+		} else if (org->email && org->email [0]) {
+			str = g_string_append (str, org->email);
+			str = g_string_append (str, " ");
+		}
+
+		if (org->email && org->email[0]) { 
+			g_string_append (str, "<");
+			str = g_string_append (str, org->email);
+			g_string_append (str, ">");
+		}
+		ret = camel_pstring_strdup (str->str);
+		g_string_free (str, TRUE);
+
+		return ret;
+	} else
+	       return camel_pstring_strdup ("");
 }
 
 /* Update summary, if there is none existing, create one */
@@ -1679,28 +1680,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		mi->server_flags = mi->info.flags;
 
 		org = e_gw_item_get_organizer (item); 
-		if (org) {
-			GString *str;
-			int i;
-			str = g_string_new ("");
-			if (org->display_name && org->display_name[0] && org->email != NULL && org->email[0] != '\0') {
-				for (i = 0; org->display_name[i] != '<' && 
-						org->display_name[i] != '\0'; 
-						i++);
+		mi->info.from = get_from_from_org (org);
 
-				org->display_name[i] = '\0';
-				str = g_string_append (str, org->display_name);
-				str = g_string_append (str, " ");
-			}
-
-			if (org->email && org->email[0]) { 
-				g_string_append (str, "<");
-				str = g_string_append (str, org->email);
-				g_string_append (str, ">");
-			}
-			mi->info.from = camel_pstring_strdup (str->str);
-			g_string_free (str, TRUE);
-		}
 		g_string_truncate (str, 0);
 		recp_list = e_gw_item_get_recipient_list (item);
 		if (recp_list) {
