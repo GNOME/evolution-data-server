@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2009-02-16 13:27+0000\n"
-"PO-Revision-Date: 2009-02-24 15:06+0100\n"
+"PO-Revision-Date: 2009-03-22 20:44+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1779,12 +1779,12 @@ msgstr "Resolviendo: %s"
 
 #: ../camel/camel-net-utils.c:693
 msgid "Host lookup failed"
-msgstr "No es posible resolver el equipo remoto"
+msgstr "No se pudo resolver el equipo remoto"
 
 #: ../camel/camel-net-utils.c:695
 #, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr "No es posible resolver el equipo remoto: %s: %s"
+msgstr "No se pudo resolver el equipo remoto: %s: %s"
 
 #: ../camel/camel-net-utils.c:803
 msgid "Resolving address"
@@ -1792,12 +1792,12 @@ msgstr "Resolviendo dirección"
 
 #: ../camel/camel-net-utils.c:823
 msgid "Name lookup failed"
-msgstr "No es posible resolver el nombre"
+msgstr "No se pudo resolver el nombre"
 
 #: ../camel/camel-net-utils.c:826
 #, c-format
 msgid "Name lookup failed: %s"
-msgstr "No es posible resolver el nombre: %s"
+msgstr "No se pudo resolver el nombre: %s"
 
 #: ../camel/camel-offline-folder.c:253
 #, c-format
@@ -1821,18 +1821,18 @@ msgstr "Para leer correo como una búsqueda de otro conjunto de carpetas"
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
-"No es posible cargar %s: La carga de módulos no está implementada en este "
+"No se pudo cargar %s: La carga de módulos no está implementada en este "
 "sistema."
 
 #: ../camel/camel-provider.c:193
 #, c-format
 msgid "Could not load %s: %s"
-msgstr "No es posible cargar %s: %s"
+msgstr "No se pudo cargar %s: %s"
 
 #: ../camel/camel-provider.c:201
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr "No es posible cargar %s: No hay código de inicialización en el módulo."
+msgstr "No se pudo cargar %s: No hay código de inicialización en el módulo."
 
 #: ../camel/camel-provider.c:373 ../camel/camel-session.c:182
 #, c-format
