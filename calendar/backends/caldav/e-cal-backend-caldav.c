@@ -2471,7 +2471,6 @@ process_object (ECalBackendCalDAV   *cbdav,
 			break;
 	}
 
-	g_object_unref (ecomp);
 	g_free (ostr);
 	g_free (oostr);
 	g_free (rid);
@@ -2522,9 +2521,13 @@ caldav_receive_objects (ECalBackendSync *backend,
 
 	if (status == GNOME_Evolution_Calendar_Success) {
 		for (iter = timezones; iter; iter = iter->next) {
-			icaltimezone *zone = iter->data;
+			icaltimezone *zone = icaltimezone_new ();
 
-			e_cal_backend_cache_put_timezone (priv->cache, zone);
+			if (icaltimezone_set_component (zone, iter->data))
+				e_cal_backend_cache_put_timezone (priv->cache, zone);
+			else
+				icalcomponent_free (iter->data);
+
 			icaltimezone_free (zone, TRUE);
 		}
 	}

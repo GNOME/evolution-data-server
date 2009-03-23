@@ -1,3 +1,11 @@
+2009-03-23  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #576424
+
+	* backends/caldav/e-cal-backend-caldav.c: (process_object),
+	(caldav_receive_objects): Do not unref object twice and
+	treat icalcomponent as it, not as icaltimezone.
+
 2009-03-05  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #479908
