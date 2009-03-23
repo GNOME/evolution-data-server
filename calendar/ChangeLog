@@ -1,5 +1,12 @@
 2009-03-23  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #573187
+
+	* backends/caldav/e-cal-backend-caldav.c: (synchronize_cache):
+	Do not leak unchanged components.
+
+2009-03-23  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #576424
 
 	* backends/caldav/e-cal-backend-caldav.c: (process_object),

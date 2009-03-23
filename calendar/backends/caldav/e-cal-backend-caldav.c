@@ -1494,6 +1494,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 
 		if (res) {
 			cobjs = g_list_remove (cobjs, ccomp);
+			g_object_unref (ccomp);
 		}
 
 		caldav_object_free (object, FALSE);
