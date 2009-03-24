@@ -1,3 +1,11 @@
+2009-03-24  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #573187
+
+	* backends/caldav/e-cal-backend-caldav.c: (caldav_server_list_objects),
+	(check_calendar_changed_on_server), (synchronize_cache), (pack_cobj):
+	More leak fixes.
+
 2009-03-23  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #573187

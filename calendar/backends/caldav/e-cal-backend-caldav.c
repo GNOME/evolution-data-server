@@ -1002,7 +1002,8 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 		return FALSE;
 
 	doc = xmlNewDoc ((xmlChar *) "1.0");
-	root = xmlNewNode (NULL, (xmlChar *) "propfind");
+	root = xmlNewDocNode (doc, NULL, (xmlChar *) "propfind", NULL);
+	xmlDocSetRootElement (doc, root);
 	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", NULL);
 	ns = xmlNewNs (root, (xmlChar *) "http://calendarserver.org/ns/", (xmlChar *) "CS");
 
@@ -1081,10 +1082,10 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, int *
 	/* Maybe we should just do a g_strdup_printf here? */
 	/* Prepare request body */
 	doc = xmlNewDoc ((xmlChar *) "1.0");
-	root = xmlNewNode (NULL, (xmlChar *) "calendar-query");
-	nscd = xmlNewNs (root, (xmlChar *) "urn:ietf:params:xml:ns:caldav",
-			 (xmlChar *) "C");
+	root = xmlNewDocNode (doc, NULL, (xmlChar *) "calendar-query", NULL);
+	nscd = xmlNewNs (root, (xmlChar *) "urn:ietf:params:xml:ns:caldav", (xmlChar *) "C");
 	xmlSetNs (root, nscd);
+	xmlDocSetRootElement (doc, root);
 
 	/* Add webdav tags */
 	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", (xmlChar *) "D");
@@ -1494,7 +1495,8 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 
 		if (res) {
 			cobjs = g_list_remove (cobjs, ccomp);
-			g_object_unref (ccomp);
+			if (ccomp)
+				g_object_unref (ccomp);
 		}
 
 		caldav_object_free (object, FALSE);
@@ -1938,6 +1940,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, ECalComponent *ecomp)
 	}
 
 	objstr = icalcomponent_as_ical_string_r (calcomp);
+	icalcomponent_free (calcomp);
 
 	g_assert (objstr);
 
