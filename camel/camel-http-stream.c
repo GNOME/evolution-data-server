@@ -425,14 +425,20 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 		if (http_connect (http, http->proxy ? http->proxy : http->url) == NULL)
 			return -1;
 		
-		if (http_method_invoke (http) == -1)
+		if (http_method_invoke (http) == -1) {
+			http_disconnect(http);
 			return -1;
+		}
 		
-		if (http_get_statuscode (http) == -1)
+		if (http_get_statuscode (http) == -1) {
+			http_disconnect(http);
 			return -1;
+		}
 		
-		if (http_get_headers (http) == -1)
+		if (http_get_headers (http) == -1) {
+			http_disconnect(http);
 			return -1;
+		}
 		
 		switch (http->statuscode) {
 		case 200:
