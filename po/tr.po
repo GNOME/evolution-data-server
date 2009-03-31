@@ -2,45 +2,45 @@
 # Turkish translation of Evolution-data-server
 #
 # Görkem �Getin <gorkem@gelecek.com.tr>, 2002, 2003.
-# Baris Cicek <baris@teamforce.name.tr>, 2004, 2005, 2008.
+# Baris Cicek <baris@teamforce.name.tr>, 2004, 2005, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-09 10:52+0300\n"
-"PO-Revision-Date: 2008-09-07 08:01+0300\n"
+"POT-Creation-Date: 2009-03-31 22:01+0300\n"
+"PO-Revision-Date: 2009-02-22 18:07+0200\n"
 "Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type:  text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=1; plural=0;\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:555
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2360
+#: ../addressbook/backends/file/e-book-backend-file.c:560
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2391
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:558
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2293
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2315
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2358
+#: ../addressbook/backends/file/e-book-backend-file.c:563
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2344
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2389
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4288
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Aranıyor..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2725
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2759
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4452
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Bağlantılar (%d) indiriliyor..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2874
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3059
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3103
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2908
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3093
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3137
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Bağlantı önbelleği (%d) güncelleniyor..."
@@ -81,92 +81,93 @@ msgstr "Arama yaparken bir hata oluştu"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:252 ../addressbook/libebook/e-book.c:256
-#: ../addressbook/libebook/e-book.c:461 ../addressbook/libebook/e-book.c:465
-#: ../addressbook/libebook/e-book.c:604 ../addressbook/libebook/e-book.c:608
-#: ../addressbook/libebook/e-book.c:695 ../addressbook/libebook/e-book.c:699
-#: ../addressbook/libebook/e-book.c:995 ../addressbook/libebook/e-book.c:1000
-#: ../addressbook/libebook/e-book.c:1179 ../addressbook/libebook/e-book.c:1183
-#: ../addressbook/libebook/e-book.c:1338 ../addressbook/libebook/e-book.c:1342
-#: ../addressbook/libebook/e-book.c:1544 ../addressbook/libebook/e-book.c:1548
-#: ../addressbook/libebook/e-book.c:1787 ../addressbook/libebook/e-book.c:1791
-#: ../addressbook/libebook/e-book.c:2025 ../addressbook/libebook/e-book.c:2029
-#: ../addressbook/libebook/e-book.c:2234 ../addressbook/libebook/e-book.c:2238
-#: ../addressbook/libebook/e-book.c:3364
+#: ../addressbook/libebook/e-book.c:288 ../addressbook/libebook/e-book.c:292
+#: ../addressbook/libebook/e-book.c:496 ../addressbook/libebook/e-book.c:500
+#: ../addressbook/libebook/e-book.c:639 ../addressbook/libebook/e-book.c:643
+#: ../addressbook/libebook/e-book.c:730 ../addressbook/libebook/e-book.c:734
+#: ../addressbook/libebook/e-book.c:1028 ../addressbook/libebook/e-book.c:1033
+#: ../addressbook/libebook/e-book.c:1211 ../addressbook/libebook/e-book.c:1215
+#: ../addressbook/libebook/e-book.c:1370 ../addressbook/libebook/e-book.c:1374
+#: ../addressbook/libebook/e-book.c:1575 ../addressbook/libebook/e-book.c:1579
+#: ../addressbook/libebook/e-book.c:1818 ../addressbook/libebook/e-book.c:1822
+#: ../addressbook/libebook/e-book.c:2055 ../addressbook/libebook/e-book.c:2059
+#: ../addressbook/libebook/e-book.c:2263 ../addressbook/libebook/e-book.c:2267
+#: ../addressbook/libebook/e-book.c:3454
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%2$s\" öncesi defterde \"%1$s\""
 
-#: ../addressbook/libebook/e-book.c:265 ../addressbook/libebook/e-book.c:474
-#: ../addressbook/libebook/e-book.c:617 ../addressbook/libebook/e-book.c:708
-#: ../addressbook/libebook/e-book.c:1010 ../addressbook/libebook/e-book.c:1193
-#: ../addressbook/libebook/e-book.c:1352 ../addressbook/libebook/e-book.c:1557
-#: ../addressbook/libebook/e-book.c:1800 ../addressbook/libebook/e-book.c:2039
-#: ../addressbook/libebook/e-book.c:2247 ../addressbook/libebook/e-book.c:2593
-#: ../addressbook/libebook/e-book.c:2792
+#: ../addressbook/libebook/e-book.c:301 ../addressbook/libebook/e-book.c:509
+#: ../addressbook/libebook/e-book.c:652 ../addressbook/libebook/e-book.c:743
+#: ../addressbook/libebook/e-book.c:1043 ../addressbook/libebook/e-book.c:1225
+#: ../addressbook/libebook/e-book.c:1384 ../addressbook/libebook/e-book.c:1588
+#: ../addressbook/libebook/e-book.c:1831 ../addressbook/libebook/e-book.c:2069
+#: ../addressbook/libebook/e-book.c:2276 ../addressbook/libebook/e-book.c:2685
+#: ../addressbook/libebook/e-book.c:2883
 #, c-format
 msgid "book busy"
 msgstr "defter meşgul"
 
-#: ../addressbook/libebook/e-book.c:296 ../addressbook/libebook/e-book.c:300
-#: ../addressbook/libebook/e-book.c:505 ../addressbook/libebook/e-book.c:509
-#: ../addressbook/libebook/e-book.c:644 ../addressbook/libebook/e-book.c:648
-#: ../addressbook/libebook/e-book.c:735 ../addressbook/libebook/e-book.c:739
-#: ../addressbook/libebook/e-book.c:1037 ../addressbook/libebook/e-book.c:1040
-#: ../addressbook/libebook/e-book.c:1223 ../addressbook/libebook/e-book.c:1226
-#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1383
-#: ../addressbook/libebook/e-book.c:1593 ../addressbook/libebook/e-book.c:1597
-#: ../addressbook/libebook/e-book.c:1847 ../addressbook/libebook/e-book.c:1851
-#: ../addressbook/libebook/e-book.c:2069 ../addressbook/libebook/e-book.c:2073
-#: ../addressbook/libebook/e-book.c:2273 ../addressbook/libebook/e-book.c:2277
-#: ../addressbook/libebook/e-book.c:2538 ../addressbook/libebook/e-book.c:2619
-#: ../addressbook/libebook/e-book.c:2623 ../addressbook/libebook/e-book.c:2818
-#: ../addressbook/libebook/e-book.c:2822 ../addressbook/libebook/e-book.c:3373
+#: ../addressbook/libebook/e-book.c:332 ../addressbook/libebook/e-book.c:336
+#: ../addressbook/libebook/e-book.c:540 ../addressbook/libebook/e-book.c:544
+#: ../addressbook/libebook/e-book.c:679 ../addressbook/libebook/e-book.c:683
+#: ../addressbook/libebook/e-book.c:770 ../addressbook/libebook/e-book.c:774
+#: ../addressbook/libebook/e-book.c:1070 ../addressbook/libebook/e-book.c:1073
+#: ../addressbook/libebook/e-book.c:1255 ../addressbook/libebook/e-book.c:1258
+#: ../addressbook/libebook/e-book.c:1411 ../addressbook/libebook/e-book.c:1415
+#: ../addressbook/libebook/e-book.c:1624 ../addressbook/libebook/e-book.c:1628
+#: ../addressbook/libebook/e-book.c:1878 ../addressbook/libebook/e-book.c:1882
+#: ../addressbook/libebook/e-book.c:2099 ../addressbook/libebook/e-book.c:2103
+#: ../addressbook/libebook/e-book.c:2302 ../addressbook/libebook/e-book.c:2306
+#: ../addressbook/libebook/e-book.c:2537 ../addressbook/libebook/e-book.c:2711
+#: ../addressbook/libebook/e-book.c:2715 ../addressbook/libebook/e-book.c:2909
+#: ../addressbook/libebook/e-book.c:2913 ../addressbook/libebook/e-book.c:3463
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA istisnası \"%s\" cağrısı yapıyor"
 
-#: ../addressbook/libebook/e-book.c:2523
+#: ../addressbook/libebook/e-book.c:2526
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: mevcut bir işlem yok"
 
-#: ../addressbook/libebook/e-book.c:2552
+#: ../addressbook/libebook/e-book.c:2555 ../addressbook/libebook/e-book.c:2600
+#: ../addressbook/libebook/e-book.c:2639
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: iptal edilemedi"
 
-#: ../addressbook/libebook/e-book.c:2579 ../addressbook/libebook/e-book.c:2583
+#: ../addressbook/libebook/e-book.c:2671 ../addressbook/libebook/e-book.c:2675
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%2$s\" sonrası defterde \"%1$s\""
 
-#: ../addressbook/libebook/e-book.c:2647
+#: ../addressbook/libebook/e-book.c:2739
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: iptal edildi"
 
-#: ../addressbook/libebook/e-book.c:3228
+#: ../addressbook/libebook/e-book.c:3318
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: geçersiz kaynak."
 
-#: ../addressbook/libebook/e-book.c:3236 ../addressbook/libebook/e-book.c:3302
+#: ../addressbook/libebook/e-book.c:3326 ../addressbook/libebook/e-book.c:3392
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: `%s' URI'si için hiçbir üretici mevcut değil"
 
-#: ../addressbook/libebook/e-book.c:3248
+#: ../addressbook/libebook/e-book.c:3338
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: EBookListener oluşturulamadı"
 
-#: ../addressbook/libebook/e-book.c:3515
+#: ../addressbook/libebook/e-book.c:3605
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: hiçbir kendinden bağlantı UID'i gconf içinde kayıtlı değil"
 
-#: ../addressbook/libebook/e-book.c:3648
+#: ../addressbook/libebook/e-book.c:3738
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: `%s' uid'i için hiçbir kaynak gconf içinde kayıtlı değil."
@@ -357,7 +358,7 @@ msgstr "Web günlüğü URL'si"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:426
+#: ../libedataserverui/e-categories-dialog.c:517
 msgid "Categories"
 msgstr "Kategoriler"
 
@@ -622,7 +623,7 @@ msgid "Birth Date"
 msgstr "Doğum Günü"
 
 #: ../addressbook/libebook/e-contact.c:260
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:461
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:647
 #: ../libedataserver/e-categories.c:43
 msgid "Anniversary"
 msgstr "Yıldönümü"
@@ -669,60 +670,92 @@ msgstr "Coğrafik Bilgi"
 msgid "Telephone"
 msgstr "Telefon"
 
-#: ../addressbook/libebook/e-contact.c:1499
+#: ../addressbook/libebook/e-contact.c:278
+msgid "Skype Home Name 1"
+msgstr "Skype Ev Hesap İsmi 1"
+
+#: ../addressbook/libebook/e-contact.c:279
+msgid "Skype Home Name 2"
+msgstr "Skype Ev Hesap İsmi 2"
+
+#: ../addressbook/libebook/e-contact.c:280
+msgid "Skype Home Name 3"
+msgstr "Skype Ev Hesap İsmi 3"
+
+#: ../addressbook/libebook/e-contact.c:281
+msgid "Skype Work Name 1"
+msgstr "Skype İş Hesap İsmi 1"
+
+#: ../addressbook/libebook/e-contact.c:282
+msgid "Skype Work Name 2"
+msgstr "Skype İş Hesap İsmi 2"
+
+#: ../addressbook/libebook/e-contact.c:283
+msgid "Skype Work Name 3"
+msgstr "Skype İş Hesap İsmi 3"
+
+#: ../addressbook/libebook/e-contact.c:284
+msgid "Skype Name List"
+msgstr "Skype İsim Listesi"
+
+#: ../addressbook/libebook/e-contact.c:286
+msgid "SIP address"
+msgstr "SIP adresi"
+
+#: ../addressbook/libebook/e-contact.c:1535
 #: ../addressbook/libebook/e-destination.c:761
 msgid "Unnamed List"
 msgstr "İsimsiz Liste"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:463
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:649
 #: ../libedataserver/e-categories.c:44
 msgid "Birthday"
 msgstr "Doğum günü"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:489
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:678
 #, c-format
 msgid "Birthday: %s"
 msgstr "Doğum günü: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:513
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:702
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Yıldönümü: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:214
+#: ../calendar/backends/file/e-cal-backend-file.c:212
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Takvim verisi kaydedilemedi: Hatalı URI."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:221
-#: ../calendar/backends/file/e-cal-backend-file.c:227
+#: ../calendar/backends/file/e-cal-backend-file.c:219
+#: ../calendar/backends/file/e-cal-backend-file.c:225
 msgid "Cannot save calendar data"
 msgstr "Takvim verisi kaydedilemedi"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:335
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:337
 msgid "Could not create thread for getting deltas"
 msgstr "Farkları almak için dal oluşturulamadı"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:367
-#: ../calendar/backends/google/e-cal-backend-google.c:1194
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:369
+#: ../calendar/backends/google/e-cal-backend-google.c:1192
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1053
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1352
-#: ../calendar/backends/http/e-cal-backend-http.c:584
-#: ../calendar/backends/weather/e-cal-backend-weather.c:466
+#: ../calendar/backends/http/e-cal-backend-http.c:561
+#: ../calendar/backends/weather/e-cal-backend-weather.c:484
 msgid "Could not create cache file"
 msgstr "Önbellek dosyası oluşturulamadı"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:380
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:382
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1065
 msgid "Could not create thread for populating cache"
 msgstr "Güncelleme önbelleği için dal oluşturulamadı"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1056
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1795
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1055
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1898
 msgid "Reply Requested: by "
 msgstr "Cevap İstendi: isteyen "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1061
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1800
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1060
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1903
 msgid "Reply Requested: When convenient"
 msgstr "Cevap İstendi: Mümkün olunduğunda"
 
@@ -743,222 +776,73 @@ msgstr "Geçersiz sunucu URI'si"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:966
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:975
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
-#: ../calendar/libecal/e-cal.c:5082
-#: ../calendar/libedata-cal/e-cal-backend-util.c:109
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1075
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1107
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1145
-#: ../camel/providers/groupwise/camel-groupwise-store.c:594
-#: ../camel/providers/groupwise/camel-groupwise-store.c:746
+#: ../calendar/libecal/e-cal.c:5098
+#: ../calendar/libedata-cal/e-cal-backend-util.c:117
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1151
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1183
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1221
+#: ../camel/providers/groupwise/camel-groupwise-store.c:600
+#: ../camel/providers/groupwise/camel-groupwise-store.c:764
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
 msgstr "Kimlik doğrulaması başarısız"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:269
+#: ../calendar/backends/http/e-cal-backend-http.c:268
 msgid "Redirected to Invalid URI"
 msgstr "Geçersiz URI'ye Yönlendirildi"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:290
+#: ../calendar/backends/http/e-cal-backend-http.c:289
 msgid "Bad file format."
 msgstr "Geçersiz dosya biçimi."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:296
+#: ../calendar/backends/http/e-cal-backend-http.c:295
 msgid "Not a calendar."
 msgstr "Takvim değil."
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:144
+#: ../calendar/backends/weather/e-cal-backend-weather.c:149
 msgid "Could not retrieve weather data"
 msgstr "Hava durumu verisi alınamadı"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:216
-msgid "Fair"
-msgstr "Açık"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:217
-msgid "Snow showers"
-msgstr "Kar serpintisi"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:218
-msgid "Snow"
-msgstr "Karlı"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:219
-msgid "Partly cloudy"
-msgstr "Parçalı bulutlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:220
-msgid "Smoke"
-msgstr "Sisli"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:221
-msgid "Thunderstorms"
-msgstr "Gök gürültülü"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:222
-msgid "Cloudy"
-msgstr "Bulutlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:223
-msgid "Drizzle"
-msgstr "Hafif yağmurlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:224
-msgid "Sunny"
-msgstr "Güneşli"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:225
-msgid "Dust"
-msgstr "Tozlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:226
-msgid "Clear"
-msgstr "Açık"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:227
-msgid "Mostly cloudy"
-msgstr "Kapalı"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:228
-msgid "Windy"
-msgstr "Rüzgarlı"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:229
-msgid "Rain showers"
-msgstr "Yağmur serpintili"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:230
-msgid "Foggy"
-msgstr "Sisli"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:231
-msgid "Rain/snow mixed"
-msgstr "Karla karışık yağmurlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:232
-msgid "Sleet"
-msgstr "Sulu kar"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:233
-msgid "Very hot/humid"
-msgstr "Çok sıcak/nemli"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:234
-msgid "Blizzard"
-msgstr "Fırtınalı"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:235
-msgid "Freezing rain"
-msgstr "Dondurucu yağmurlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:236
-msgid "Haze"
-msgstr "Kapalı"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:237
-msgid "Blowing snow"
-msgstr "Karlı"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:238
-msgid "Freezing drizzle"
-msgstr "Dondurucu yağmur"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:239
-msgid "Very cold/wind chill"
-msgstr "Çok soğuk/rüzgar esintili"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:240
-msgid "Rain"
-msgstr "Yağmurlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
-#: ../calendar/backends/weather/e-cal-backend-weather.c:260
-#: ../calendar/backends/weather/e-cal-backend-weather.c:267
-msgid "Weather: Sunny"
-msgstr "Hava durumu: Güneşli"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:251
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
-#: ../calendar/backends/weather/e-cal-backend-weather.c:268
-#: ../calendar/backends/weather/e-cal-backend-weather.c:271
-msgid "Weather: Snow"
-msgstr "Hava durumu: Yağmulu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
-msgid "Weather: Partly Cloudy"
-msgstr "Hava durumu: Parçalı Bulutlu"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
-#: ../calendar/backends/weather/e-cal-backend-weather.c:259
-#: ../calendar/backends/weather/e-cal-backend-weather.c:264
-#: ../calendar/backends/weather/e-cal-backend-weather.c:270
+#: ../calendar/backends/weather/e-cal-backend-weather.c:246
 msgid "Weather: Fog"
 msgstr "Hava durumu: Sisli"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
-msgid "Weather: Thunderstorms"
-msgstr "Hava durumu: Gök Gürültülü"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:256
-#: ../calendar/backends/weather/e-cal-backend-weather.c:261
+#: ../calendar/backends/weather/e-cal-backend-weather.c:247
 msgid "Weather: Cloudy"
 msgstr "Hava durumu: Bulutlu"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:257
-#: ../calendar/backends/weather/e-cal-backend-weather.c:263
-#: ../calendar/backends/weather/e-cal-backend-weather.c:265
-#: ../calendar/backends/weather/e-cal-backend-weather.c:266
-#: ../calendar/backends/weather/e-cal-backend-weather.c:269
-#: ../calendar/backends/weather/e-cal-backend-weather.c:272
-#: ../calendar/backends/weather/e-cal-backend-weather.c:274
-msgid "Weather: Rain"
-msgstr "Hava durumu: Yağmurlu"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+msgid "Weather: Cloudy Night"
+msgstr "Hava durumu: Bulutlu Gece"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:349
-#, c-format
-msgid "%.1f°C - %s"
-msgstr "%.1f°C - %s"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+msgid "Weather: Overcast"
+msgstr "Hava durumu: Kapalı"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:351
-#, c-format
-msgid "%.1f°F - %s"
-msgstr "%.1f°F - %s"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+msgid "Weather: Showers"
+msgstr "Hava durumu: Hafif Yağışlı"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:354
-#, c-format
-msgid "%.1f/%.1f°C - %s"
-msgstr "%.1f/%.1f°C - %s"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+msgid "Weather: Snow"
+msgstr "Hava durumu: Yağmulu"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:356
-#, c-format
-msgid "%.1f/%.1f°F - %s"
-msgstr "%.1f/%.1f°F - %s"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+msgid "Weather: Sunny"
+msgstr "Hava durumu: Güneşli"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:362
-#, c-format
-msgid "%d%% chance of precipitation\n"
-msgstr "%%%d ihtimalde yağış\n"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+msgid "Weather: Clear Night"
+msgstr "Hava durumu: Açık Gece"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:369
-#, c-format
-msgid "%.1fcm snow\n"
-msgstr "%.1fcm kar\n"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+msgid "Weather: Thunderstorms"
+msgstr "Hava durumu: Gök Gürültülü"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:371
-#, c-format
-msgid "%.1fin snow\n"
-msgstr "%.1fin kar\n"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:374
-#, c-format
-msgid "%.1f-%.1fcm snow\n"
-msgstr "%.1f-%.1fcm kar\n"
-
-#: ../calendar/backends/weather/e-cal-backend-weather.c:376
-#, c-format
-msgid "%.1f-%.1fin snow\n"
-msgstr "%.1f-%.1fin kar\n"
+#: ../calendar/backends/weather/e-cal-backend-weather.c:399
+msgid "Forecast"
+msgstr "Tahmin"
 
 #: ../calendar/libecal/e-cal-component.c:1322
 msgid "Untitled appointment"
@@ -1105,7 +989,7 @@ msgstr "Düşük"
 msgid "Undefined"
 msgstr "Tanımsız"
 
-#: ../calendar/libecal/e-cal.c:1665 ../libedataserverui/e-book-auth-util.c:199
+#: ../calendar/libecal/e-cal.c:1677 ../libedataserverui/e-book-auth-util.c:199
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s için parolayı girin (%s kullanıcısı)"
@@ -1114,94 +998,94 @@ msgstr "%s için parolayı girin (%s kullanıcısı)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1679
+#: ../calendar/libecal/e-cal.c:1691
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%2$s kullanıcısına vekili etkin kılmak için %1$s için parola girin"
 
-#: ../calendar/libecal/e-cal.c:5054
+#: ../calendar/libecal/e-cal.c:5070
 msgid "Invalid argument"
 msgstr "Geçersiz parametre"
 
-#: ../calendar/libecal/e-cal.c:5056
+#: ../calendar/libecal/e-cal.c:5072
 msgid "Backend is busy"
 msgstr "Araç meşgul"
 
-#: ../calendar/libecal/e-cal.c:5058
-#: ../calendar/libedata-cal/e-cal-backend-util.c:97
+#: ../calendar/libecal/e-cal.c:5074
+#: ../calendar/libedata-cal/e-cal-backend-util.c:105
 msgid "Repository is offline"
 msgstr "Depo çevrim dışı"
 
-#: ../calendar/libecal/e-cal.c:5060
-#: ../calendar/libedata-cal/e-cal-backend-util.c:121
+#: ../calendar/libecal/e-cal.c:5076
+#: ../calendar/libedata-cal/e-cal-backend-util.c:129
 msgid "No such calendar"
 msgstr "Bu isimde bir takvim yok"
 
-#: ../calendar/libecal/e-cal.c:5062
-#: ../calendar/libedata-cal/e-cal-backend-util.c:103
+#: ../calendar/libecal/e-cal.c:5078
+#: ../calendar/libedata-cal/e-cal-backend-util.c:111
 #: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "Nesne bulunamadı"
 
-#: ../calendar/libecal/e-cal.c:5064
-#: ../calendar/libedata-cal/e-cal-backend-util.c:105
+#: ../calendar/libecal/e-cal.c:5080
+#: ../calendar/libedata-cal/e-cal-backend-util.c:113
 #: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "Geçersiz nesne"
 
-#: ../calendar/libecal/e-cal.c:5066
+#: ../calendar/libecal/e-cal.c:5082
 msgid "URI not loaded"
 msgstr "URI yüklü değil"
 
-#: ../calendar/libecal/e-cal.c:5068
+#: ../calendar/libecal/e-cal.c:5084
 msgid "URI already loaded"
 msgstr "URI zaten yüklü"
 
-#: ../calendar/libecal/e-cal.c:5070
-#: ../calendar/libedata-cal/e-cal-backend-util.c:99
+#: ../calendar/libecal/e-cal.c:5086
+#: ../calendar/libedata-cal/e-cal-backend-util.c:107
 #: ../servers/exchange/storage/e-storage.c:571
 msgid "Permission denied"
 msgstr "İzin verilmedi"
 
-#: ../calendar/libecal/e-cal.c:5072
-#: ../calendar/libedata-cal/e-cal-backend-util.c:123
+#: ../calendar/libecal/e-cal.c:5088
+#: ../calendar/libedata-cal/e-cal-backend-util.c:131
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "Bilinmeyen Kullanıcı"
 
-#: ../calendar/libecal/e-cal.c:5074
-#: ../calendar/libedata-cal/e-cal-backend-util.c:107
+#: ../calendar/libecal/e-cal.c:5090
+#: ../calendar/libedata-cal/e-cal-backend-util.c:115
 msgid "Object ID already exists"
 msgstr "Nesne ID'si zaten mevcut"
 
-#: ../calendar/libecal/e-cal.c:5076
+#: ../calendar/libecal/e-cal.c:5092
 msgid "Protocol not supported"
 msgstr "Protokol desteklenmiyor"
 
-#: ../calendar/libecal/e-cal.c:5078
+#: ../calendar/libecal/e-cal.c:5094
 msgid "Operation has been canceled"
 msgstr "İşlem iptal edildi"
 
-#: ../calendar/libecal/e-cal.c:5080
-#: ../calendar/libedata-cal/e-cal-backend-util.c:136
+#: ../calendar/libecal/e-cal.c:5096
+#: ../calendar/libedata-cal/e-cal-backend-util.c:143
 msgid "Could not cancel operation"
 msgstr "İşlem iptal edilemedi"
 
-#: ../calendar/libecal/e-cal.c:5084
-#: ../calendar/libedata-cal/e-cal-backend-util.c:111
+#: ../calendar/libecal/e-cal.c:5100
+#: ../calendar/libedata-cal/e-cal-backend-util.c:119
 #: ../camel/providers/smtp/camel-smtp-transport.c:218
 msgid "Authentication required"
 msgstr "Kimlik doğrulaması gerekli"
 
-#: ../calendar/libecal/e-cal.c:5086
+#: ../calendar/libecal/e-cal.c:5102
 msgid "A CORBA exception has occurred"
 msgstr "Bir CORBA istisnası oluştu"
 
-#: ../calendar/libecal/e-cal.c:5088
-#: ../calendar/libedata-cal/e-cal-backend-util.c:139
+#: ../calendar/libecal/e-cal.c:5104
+#: ../calendar/libedata-cal/e-cal-backend-util.c:146
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/imap/camel-imap-command.c:434
-#: ../camel/providers/imap/camel-imap-store.c:742
+#: ../camel/providers/imap/camel-imap-store.c:743
 #: ../camel/providers/imap4/camel-imap4-engine.c:1570
 #: ../camel/providers/imap4/camel-imap4-engine.c:1609
 #: ../camel/providers/imap4/camel-imap4-engine.c:1654
@@ -1209,16 +1093,16 @@ msgstr "Bir CORBA istisnası oluştu"
 #: ../camel/providers/imap4/camel-imap4-store.c:315
 #: ../camel/providers/imap4/camel-imap4-store.c:823
 #: ../camel/providers/imap4/camel-imap4-store.c:1579
-#: ../camel/providers/pop3/camel-pop3-store.c:553
-#: ../camel/providers/pop3/camel-pop3-store.c:560
-#: ../camel/providers/pop3/camel-pop3-store.c:566
+#: ../camel/providers/pop3/camel-pop3-store.c:554
+#: ../camel/providers/pop3/camel-pop3-store.c:561
+#: ../camel/providers/pop3/camel-pop3-store.c:567
 #: ../servers/exchange/storage/e-storage.c:585
 #: ../servers/groupwise/e-gw-connection.c:241
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: ../calendar/libecal/e-cal.c:5090
-#: ../calendar/libedata-cal/e-cal-backend-util.c:95
+#: ../calendar/libecal/e-cal.c:5106
+#: ../calendar/libedata-cal/e-cal-backend-util.c:103
 #: ../servers/exchange/storage/e-storage.c:553
 msgid "No error"
 msgstr "Hata yok"
@@ -1319,48 +1203,47 @@ msgstr ""
 "\"%s\" tüm parametrelerin dizgi olmasını ve sadece bir tane parametrenin "
 "bool değeri false (#f) olmasını istiyor"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:101
+#: ../calendar/libedata-cal/e-cal-backend-util.c:109
 msgid "Invalid range"
 msgstr "Geçersiz aralık"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:113
+#: ../calendar/libedata-cal/e-cal-backend-util.c:121
 msgid "Unsupported field"
 msgstr "Desteklenmeyen alan"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:115
+#: ../calendar/libedata-cal/e-cal-backend-util.c:123
 msgid "Unsupported method"
 msgstr "Desteklenmeyen yöntem"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:117
+#: ../calendar/libedata-cal/e-cal-backend-util.c:125
 msgid "Unsupported authentication method"
 msgstr "Desteklenmeyen kimlik denetimi yöntemi"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:119
+#: ../calendar/libedata-cal/e-cal-backend-util.c:127
 msgid "TLS not available"
 msgstr "TLS mevcut değil"
 
-#. Translators: This means "Offline mode unavailable"
-#: ../calendar/libedata-cal/e-cal-backend-util.c:126
-msgid "Offline unavailable"
-msgstr "Çevirim dışı mevcut değil"
+#: ../calendar/libedata-cal/e-cal-backend-util.c:133
+msgid "Offline mode unavailable"
+msgstr "Çevirim dışı kip mevcut değil"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:128
+#: ../calendar/libedata-cal/e-cal-backend-util.c:135
 msgid "Search size limit exceeded"
 msgstr "Arama boyutu sınırı geçildi"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:130
+#: ../calendar/libedata-cal/e-cal-backend-util.c:137
 msgid "Search time limit exceeded"
 msgstr "Arama zamanı sınır geçildi"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:132
+#: ../calendar/libedata-cal/e-cal-backend-util.c:139
 msgid "Invalid query"
 msgstr "Geçersiz sorgu"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:134
+#: ../calendar/libedata-cal/e-cal-backend-util.c:141
 msgid "Query refused"
 msgstr "Sorgu reddedildi"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:141
+#: ../calendar/libedata-cal/e-cal-backend-util.c:148
 msgid "Invalid server version"
 msgstr "Geçersiz sunucu sürümü"
 
@@ -1408,12 +1291,12 @@ msgstr "Bu şifreleyici ile anahtarlarınızı dışa aktaramayabilirsiniz"
 msgid "Unable to create cache path"
 msgstr "Önbellek yolu oluşturulamadı"
 
-#: ../camel/camel-data-cache.c:381
+#: ../camel/camel-data-cache.c:403
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Önbellek girdisi silinemedi: %s: %s"
 
-#: ../camel/camel-db.c:104
+#: ../camel/camel-db.c:390
 msgid "Insufficient memory"
 msgstr "Yetersiz bellek"
 
@@ -1429,7 +1312,7 @@ msgstr ""
 "tekrardan yapılamayacak."
 
 #: ../camel/camel-disco-diary.c:261
-#: ../camel/providers/imap/camel-imap-journal.c:299
+#: ../camel/providers/imap/camel-imap-journal.c:318
 #, c-format
 msgid ""
 "Could not open '%s':\n"
@@ -1458,10 +1341,11 @@ msgid "Preparing folder '%s' for offline"
 msgstr "'%s' klasörü çevirim dışı için hazırlanıyor"
 
 #: ../camel/camel-disco-store.c:403
-#: ../camel/providers/imap/camel-imap-store.c:1002
-#: ../camel/providers/imap/camel-imap-store.c:1810
-#: ../camel/providers/imap/camel-imap-store.c:2226
-#: ../camel/providers/imap/camel-imap-store.c:2994
+#: ../camel/providers/groupwise/camel-groupwise-store.c:226
+#: ../camel/providers/imap/camel-imap-store.c:1003
+#: ../camel/providers/imap/camel-imap-store.c:1813
+#: ../camel/providers/imap/camel-imap-store.c:2229
+#: ../camel/providers/imap/camel-imap-store.c:2997
 msgid "You must be working online to complete this operation"
 msgstr "Bu işlemi tamamlayabilmek için çevirim içi çalışmanız gerekiyor"
 
@@ -1469,66 +1353,66 @@ msgstr "Bu işlemi tamamlayabilmek için çevirim içi çalışmanız gerekiyor"
 msgid "No description available"
 msgstr "Hiçbir tanım mevcut değil"
 
-#: ../camel/camel-filter-driver.c:785
+#: ../camel/camel-filter-driver.c:795 ../camel/camel-filter-search.c:581
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "'%s' alt süreci oluşturulamadı: %s"
 
-#: ../camel/camel-filter-driver.c:827
+#: ../camel/camel-filter-driver.c:837
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s adresinden geçersiz ileti alındı: %s"
 
-#: ../camel/camel-filter-driver.c:1016 ../camel/camel-filter-driver.c:1025
+#: ../camel/camel-filter-driver.c:1026 ../camel/camel-filter-driver.c:1035
 msgid "Syncing folders"
 msgstr "Dizinler eşzamanlı hale getiriliyor"
 
-#: ../camel/camel-filter-driver.c:1114 ../camel/camel-filter-driver.c:1520
+#: ../camel/camel-filter-driver.c:1124 ../camel/camel-filter-driver.c:1530
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "%s filtresini ayrıştırırken hata oluştu: %s"
 
-#: ../camel/camel-filter-driver.c:1123 ../camel/camel-filter-driver.c:1529
+#: ../camel/camel-filter-driver.c:1133 ../camel/camel-filter-driver.c:1539
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "%s filtresini çalıştırırken hata oluştu: %s"
 
-#: ../camel/camel-filter-driver.c:1211
+#: ../camel/camel-filter-driver.c:1221
 msgid "Unable to open spool folder"
 msgstr "Spool klasörü açılamadı"
 
-#: ../camel/camel-filter-driver.c:1220
+#: ../camel/camel-filter-driver.c:1230
 msgid "Unable to process spool folder"
 msgstr "Spool klasörü işlenemedi"
 
-#: ../camel/camel-filter-driver.c:1236
+#: ../camel/camel-filter-driver.c:1246
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "%d (%%%d) iletisi alınıyor"
 
-#: ../camel/camel-filter-driver.c:1240
+#: ../camel/camel-filter-driver.c:1250
 msgid "Cannot open message"
 msgstr "İleti açılamadı"
 
-#: ../camel/camel-filter-driver.c:1241 ../camel/camel-filter-driver.c:1259
+#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1269
 #, c-format
 msgid "Failed on message %d"
 msgstr "%d iletisinde hata"
 
-#: ../camel/camel-filter-driver.c:1273 ../camel/camel-filter-driver.c:1364
+#: ../camel/camel-filter-driver.c:1283 ../camel/camel-filter-driver.c:1374
 msgid "Syncing folder"
 msgstr "Klasör eşzamanlı hale getiriliyor"
 
-#: ../camel/camel-filter-driver.c:1277 ../camel/camel-filter-driver.c:1369
+#: ../camel/camel-filter-driver.c:1287 ../camel/camel-filter-driver.c:1379
 msgid "Complete"
 msgstr "Tamamlandı"
 
-#: ../camel/camel-filter-driver.c:1334
+#: ../camel/camel-filter-driver.c:1344
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%d/%d ileti alınıyor"
 
-#: ../camel/camel-filter-driver.c:1349
+#: ../camel/camel-filter-driver.c:1359
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%d/%d iletisinde hata"
@@ -1545,18 +1429,14 @@ msgstr "(sistem-imine) geçersiz parametreler"
 msgid "Invalid arguments to (user-tag)"
 msgstr "(kullanıcı-imine) geçersiz parametreler"
 
-#: ../camel/camel-filter-search.c:581
-#, c-format
-msgid "Failed to create create child process '%s': %s"
-msgstr "'%s' alt süreci oluşturulamadı: %s"
-
 #. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
 #: ../camel/camel-filter-search.c:737 ../camel/camel-filter-search.c:745
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "%s filtre taramasını çalıştırırken hata oldu: %s"
 
-#: ../camel/camel-folder-search.c:333 ../camel/camel-folder-search.c:445
+#: ../camel/camel-folder-search.c:351 ../camel/camel-folder-search.c:453
+#: ../camel/camel-folder-search.c:608
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1565,7 +1445,8 @@ msgstr ""
 "Arama ifadesi ayrıştırılamadı: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:343 ../camel/camel-folder-search.c:455
+#: ../camel/camel-folder-search.c:361 ../camel/camel-folder-search.c:463
+#: ../camel/camel-folder-search.c:618
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1574,68 +1455,68 @@ msgstr ""
 "Arama ifadesi çalıştırılamadı: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:647 ../camel/camel-folder-search.c:691
+#: ../camel/camel-folder-search.c:810 ../camel/camel-folder-search.c:853
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) mantıksal değer sonucu istiyor"
 
-#: ../camel/camel-folder-search.c:744
+#: ../camel/camel-folder-search.c:906
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) %s içinde izin verilmedi"
 
-#: ../camel/camel-folder-search.c:750 ../camel/camel-folder-search.c:757
+#: ../camel/camel-folder-search.c:912 ../camel/camel-folder-search.c:919
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) dizgi eşleme türü gerektiriyor"
 
-#: ../camel/camel-folder-search.c:784
+#: ../camel/camel-folder-search.c:946
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) dizi sonuç bekliyor"
 
-#: ../camel/camel-folder-search.c:793
+#: ../camel/camel-folder-search.c:955
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) klasör ayarı gerektiriyor"
 
-#: ../camel/camel-folder-search.c:888
-#, c-format
-msgid "Performing query on unknown header: %s"
-msgstr "Bilinmeyen başlık üzerinde arama yapılıyor: %s"
-
-#: ../camel/camel-folder.c:693
+#: ../camel/camel-folder.c:696
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Desteklenmeyen işlem: iletiye ekle: %s için"
 
-#: ../camel/camel-folder.c:1349
+#: ../camel/camel-folder.c:1398
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Desteklenmeyen işlem: ifade ile ara: %s için"
 
-#: ../camel/camel-folder.c:1390
+#: ../camel/camel-folder.c:1440
+#, c-format
+msgid "Unsupported operation: count by expression: for %s"
+msgstr "Desteklenmeyen işlem: ifade ile sayım: %s için"
+
+#: ../camel/camel-folder.c:1480
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "Desteklenmeyen işlem: UID ile ara: %s için"
 
-#: ../camel/camel-folder.c:1506
+#: ../camel/camel-folder.c:1596
 msgid "Moving messages"
 msgstr "İletiler taşınıyor"
 
-#: ../camel/camel-folder.c:1506
+#: ../camel/camel-folder.c:1596
 msgid "Copying messages"
 msgstr "İletiler kopyalanıyor"
 
-#: ../camel/camel-folder.c:1852
+#: ../camel/camel-folder.c:1942
 msgid "Learning junk"
 msgstr "Gereksiz öğreniliyor"
 
-#: ../camel/camel-folder.c:1869
+#: ../camel/camel-folder.c:1959
 msgid "Learning non-junk"
 msgstr "Gereksiz olmayan öğreniliyor"
 
-#: ../camel/camel-folder.c:1888
+#: ../camel/camel-folder.c:1978
 msgid "Filtering new message(s)"
 msgstr "Yeni ileti(ler) filtreleniyor"
 
@@ -1681,8 +1562,8 @@ msgstr ""
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "'%s' için GnuPG'den beklenmeyen cevap"
 
-#: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1068
-#: ../camel/providers/nntp/camel-nntp-store.c:1281
+#: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1071
+#: ../camel/providers/nntp/camel-nntp-store.c:1304
 msgid "Canceled."
 msgstr "İptal edildi."
 
@@ -1695,72 +1576,72 @@ msgstr "Gizli anahtarın kilidi kaldırılamadı: 3 yanlış parola metni girild
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG'den beklenmeyen cevap: %s"
 
-#: ../camel/camel-gpg-context.c:937
+#: ../camel/camel-gpg-context.c:947
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Şifreleme başarısız: Geçerli alıcı belirtilmedi."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1334
-#: ../camel/camel-gpg-context.c:1829 ../camel/camel-gpg-context.c:1874
+#: ../camel/camel-gpg-context.c:1209 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1850 ../camel/camel-gpg-context.c:1895
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg çalıştırılamadı: %s"
 
-#: ../camel/camel-gpg-context.c:1302 ../camel/camel-smime-context.c:392
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "İmza verisi oluşturulamadı: %s"
 
-#: ../camel/camel-gpg-context.c:1349 ../camel/camel-gpg-context.c:1534
-#: ../camel/camel-gpg-context.c:1619 ../camel/camel-gpg-context.c:1634
-#: ../camel/camel-gpg-context.c:1750 ../camel/camel-gpg-context.c:1765
-#: ../camel/camel-gpg-context.c:1845 ../camel/camel-gpg-context.c:1890
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1554
+#: ../camel/camel-gpg-context.c:1640 ../camel/camel-gpg-context.c:1655
+#: ../camel/camel-gpg-context.c:1771 ../camel/camel-gpg-context.c:1786
+#: ../camel/camel-gpg-context.c:1866 ../camel/camel-gpg-context.c:1911
 msgid "Failed to execute gpg."
 msgstr "gpg çalıştırılamadı."
 
-#: ../camel/camel-gpg-context.c:1368
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "Bu dijital olarak imzalanmış ileti parçasıdır"
 
-#: ../camel/camel-gpg-context.c:1453 ../camel/camel-gpg-context.c:1459
-#: ../camel/camel-gpg-context.c:1465 ../camel/camel-gpg-context.c:1480
-#: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
-#: ../camel/camel-smime-context.c:713
+#: ../camel/camel-gpg-context.c:1458 ../camel/camel-gpg-context.c:1464
+#: ../camel/camel-gpg-context.c:1470 ../camel/camel-gpg-context.c:1485
+#: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
+#: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "İleti imzası doğrulanamadı: Geçersiz ileti biçimi"
 
-#: ../camel/camel-gpg-context.c:1519
+#: ../camel/camel-gpg-context.c:1524
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "İleti imzası doğrulanamadı: geçici dosya oluşturulamadı: %s"
 
-#: ../camel/camel-gpg-context.c:1602
+#: ../camel/camel-gpg-context.c:1623
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Şifreleme verisi oluşturulamadı: %s"
 
-#: ../camel/camel-gpg-context.c:1652
+#: ../camel/camel-gpg-context.c:1673
 msgid "This is a digitally encrypted message part"
 msgstr "Bu dijital olarak şifrelenmiş ileti parçasıdır"
 
-#: ../camel/camel-gpg-context.c:1705 ../camel/camel-gpg-context.c:1713
-#: ../camel/camel-gpg-context.c:1732
+#: ../camel/camel-gpg-context.c:1726 ../camel/camel-gpg-context.c:1734
+#: ../camel/camel-gpg-context.c:1753
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "İletinin şifresi çözülemedi: Geçersiz ileti biçimi"
 
-#: ../camel/camel-gpg-context.c:1722
+#: ../camel/camel-gpg-context.c:1743
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME parçasının şifresi çözülürken hata: protokol hatası"
 
-#: ../camel/camel-gpg-context.c:1787 ../camel/camel-smime-context.c:969
+#: ../camel/camel-gpg-context.c:1808 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "Şifrelenmiş içerik"
 
-#: ../camel/camel-gpg-context.c:1806
+#: ../camel/camel-gpg-context.c:1827
 msgid "Unable to parse message content"
 msgstr "İleti içeriği ayrıştırılamadı"
 
-#: ../camel/camel-gpg-context.c:1830 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1851 ../camel/camel-gpg-context.c:1896
 #: ../camel/camel-tcp-stream-openssl.c:635
 #: ../camel/providers/imap4/camel-imap4-utils.c:624
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
@@ -1870,8 +1751,8 @@ msgstr "ayrıştırma hatası"
 
 #: ../camel/camel-net-utils.c:505 ../camel/camel-net-utils.c:667
 #: ../camel/camel-net-utils.c:799
-#: ../camel/providers/pop3/camel-pop3-store.c:447
-#: ../camel/providers/pop3/camel-pop3-store.c:547
+#: ../camel/providers/pop3/camel-pop3-store.c:448
+#: ../camel/providers/pop3/camel-pop3-store.c:548
 msgid "Canceled"
 msgstr "İptal edildi"
 
@@ -1906,7 +1787,7 @@ msgstr "İsim sorgulaması başarısız"
 msgid "Name lookup failed: %s"
 msgstr "İsim sorgulaması başarısız: %s"
 
-#: ../camel/camel-offline-folder.c:254
+#: ../camel/camel-offline-folder.c:253
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "'%s' klasöründeki iletiler disketle eşzamanlandırılıyor"
@@ -1939,7 +1820,7 @@ msgstr "%s yüklenemedi: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s yüklenemedi: Modülde başlangıç kodu bulunamadı."
 
-#: ../camel/camel-provider.c:373 ../camel/camel-session.c:177
+#: ../camel/camel-provider.c:373 ../camel/camel-session.c:182
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "'%s' protokolü için sağlayıcı yok"
@@ -2102,7 +1983,7 @@ msgstr "Yönlendirilen koşulların zamanı doldu."
 #: ../camel/camel-sasl-gssapi.c:205 ../camel/camel-sasl-gssapi.c:253
 #: ../camel/camel-sasl-gssapi.c:289 ../camel/camel-sasl-gssapi.c:304
 #: ../camel/camel-sasl-kerberos4.c:231
-#: ../camel/providers/imap/camel-imap-store.c:1272
+#: ../camel/providers/imap/camel-imap-store.c:1273
 msgid "Bad authentication response from server."
 msgstr "Sunucudan hatalı kimlik doğrulama yanıtı."
 
@@ -2196,7 +2077,7 @@ msgstr "'%s' URL'sinde makine adı bilgisi bulunmuyor"
 msgid "URL '%s' needs a path component"
 msgstr "'%s' URL'sinde yol bilgisi bulunmuyor"
 
-#: ../camel/camel-session.c:303
+#: ../camel/camel-session.c:308
 #, c-format
 msgid ""
 "Could not create directory %s:\n"
@@ -2205,253 +2086,251 @@ msgstr ""
 "%s dizini yaratılamadı:\n"
 "%s"
 
-#: ../camel/camel-session.c:478
+#: ../camel/camel-session.c:483
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Lütfen %3$s makinesindeki %2$s için %1$s parolasını girin."
 
-#: ../camel/camel-smime-context.c:234 ../camel/camel-smime-context.c:778
+#: ../camel/camel-session.c:822
+msgid "Camel session doesn't support forwarding of a message."
+msgstr "Camel oturumu iletinin yönlendirilmesini desteklemiyor."
+
+#: ../camel/camel-smime-context.c:444 ../camel/camel-smime-context.c:993
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "`%s' için sertifika bulunamadı"
 
-#: ../camel/camel-smime-context.c:240
+#: ../camel/camel-smime-context.c:450
 msgid "Cannot create CMS message"
 msgstr "CMS iletisi yaratılamadı"
 
-#: ../camel/camel-smime-context.c:245
+#: ../camel/camel-smime-context.c:455
 msgid "Cannot create CMS signed data"
 msgstr "CMS imzalı veri oluşturulamıyor"
 
-#: ../camel/camel-smime-context.c:251
+#: ../camel/camel-smime-context.c:461
 msgid "Cannot attach CMS signed data"
 msgstr "CMS imzalı veri eklenemiyor"
 
-#: ../camel/camel-smime-context.c:258
+#: ../camel/camel-smime-context.c:468
 msgid "Cannot attach CMS data"
 msgstr "CMS verisi eklenemedi"
 
-#: ../camel/camel-smime-context.c:264
+#: ../camel/camel-smime-context.c:474
 msgid "Cannot create CMS Signer information"
 msgstr "CMS İmzalayan bilgisi oluşturulamıyor"
 
-#: ../camel/camel-smime-context.c:270
+#: ../camel/camel-smime-context.c:480
 msgid "Cannot find certificate chain"
 msgstr "Sertifika halkası bulunamıyor"
 
-#: ../camel/camel-smime-context.c:276
+#: ../camel/camel-smime-context.c:486
 msgid "Cannot add CMS Signing time"
 msgstr "CMS İmzalama zamanı eklenemiyor"
 
-#: ../camel/camel-smime-context.c:298 ../camel/camel-smime-context.c:310
+#: ../camel/camel-smime-context.c:508 ../camel/camel-smime-context.c:520
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "'%s' için şifreleme sertifikası bulunmuyor"
 
-#: ../camel/camel-smime-context.c:317
+#: ../camel/camel-smime-context.c:527
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "SMIMEEncKeyPrefs özniteliği eklenemedi"
 
-#: ../camel/camel-smime-context.c:322
+#: ../camel/camel-smime-context.c:532
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "MS SMIMEEncKeyPrefs özniteliği eklenemedi"
 
-#: ../camel/camel-smime-context.c:327
+#: ../camel/camel-smime-context.c:537
 msgid "Cannot add encryption certificate"
 msgstr "Şifreleme sertifikası eklenemedi"
 
-#: ../camel/camel-smime-context.c:333
+#: ../camel/camel-smime-context.c:543
 msgid "Cannot add CMS Signer information"
 msgstr "CMS İmzalayan bilgisi eklenemiyor"
 
-#: ../camel/camel-smime-context.c:403 ../camel/camel-smime-context.c:851
+#: ../camel/camel-smime-context.c:613 ../camel/camel-smime-context.c:1065
 msgid "Cannot create encoder context"
 msgstr "Kodlayıcı içeriği yaratılamadı"
 
-#: ../camel/camel-smime-context.c:409
+#: ../camel/camel-smime-context.c:619
 msgid "Failed to add data to CMS encoder"
 msgstr "CMS kodlayıcısına veri eklenemedi"
 
-#: ../camel/camel-smime-context.c:414 ../camel/camel-smime-context.c:868
+#: ../camel/camel-smime-context.c:624 ../camel/camel-smime-context.c:1082
 msgid "Failed to encode data"
 msgstr "Veri kodlanırken başarısız olundu"
 
-#: ../camel/camel-smime-context.c:487
+#: ../camel/camel-smime-context.c:697
 msgid "Unverified"
 msgstr "Tanımsız"
 
-#: ../camel/camel-smime-context.c:489
+#: ../camel/camel-smime-context.c:699
 msgid "Good signature"
 msgstr "İyi imza"
 
-#: ../camel/camel-smime-context.c:491
+#: ../camel/camel-smime-context.c:701
 msgid "Bad signature"
 msgstr "Kötü imza"
 
-#: ../camel/camel-smime-context.c:493
+#: ../camel/camel-smime-context.c:703
 msgid "Content tampered with or altered in transit"
 msgstr "İçerik iletim sırasında bozulmuş ya da değiştirilmiş"
 
-#: ../camel/camel-smime-context.c:495
+#: ../camel/camel-smime-context.c:705
 msgid "Signing certificate not found"
 msgstr "İmzalama sertifikası bulunamadı"
 
-#: ../camel/camel-smime-context.c:497
+#: ../camel/camel-smime-context.c:707
 msgid "Signing certificate not trusted"
 msgstr "İmzalama sertifikası güvenilir değil"
 
-#: ../camel/camel-smime-context.c:499
+#: ../camel/camel-smime-context.c:709
 msgid "Signature algorithm unknown"
 msgstr "İmzalama algoritması bilinmiyor"
 
-#: ../camel/camel-smime-context.c:501
+#: ../camel/camel-smime-context.c:711
 msgid "Signature algorithm unsupported"
 msgstr "İmzalama algoritması desteklenmiyor"
 
-#: ../camel/camel-smime-context.c:503
+#: ../camel/camel-smime-context.c:713
 msgid "Malformed signature"
 msgstr "Bozulmuş imza"
 
-#: ../camel/camel-smime-context.c:505
+#: ../camel/camel-smime-context.c:715
 msgid "Processing error"
 msgstr "İşleme hatası"
 
-#: ../camel/camel-smime-context.c:542
+#: ../camel/camel-smime-context.c:753
 msgid "No signed data in signature"
 msgstr "İmzada imzalanmış veri yok"
 
-#: ../camel/camel-smime-context.c:549
+#: ../camel/camel-smime-context.c:758
 msgid "Digests missing from enveloped data"
 msgstr "Zarflanmış veride eksik içerik"
 
-#: ../camel/camel-smime-context.c:562 ../camel/camel-smime-context.c:572
+#: ../camel/camel-smime-context.c:771 ../camel/camel-smime-context.c:781
 msgid "Cannot calculate digests"
 msgstr "İçerikler hesaplanamıyor"
 
-#: ../camel/camel-smime-context.c:577
+#: ../camel/camel-smime-context.c:788 ../camel/camel-smime-context.c:792
 msgid "Cannot set message digests"
 msgstr "İleti içeriği atanamıyor"
 
-#: ../camel/camel-smime-context.c:587 ../camel/camel-smime-context.c:592
+#: ../camel/camel-smime-context.c:802 ../camel/camel-smime-context.c:807
 msgid "Certificate import failed"
 msgstr "Sertifika aktarımı başarısız"
 
-#: ../camel/camel-smime-context.c:602
+#: ../camel/camel-smime-context.c:817
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Sadece sertifikadan oluşan ileti, sertifikalar denetlenemiyor"
 
-#: ../camel/camel-smime-context.c:605
+#: ../camel/camel-smime-context.c:820
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr "Sadece sertifikadan oluşan ileti, sertifikalar aktarıldı ve denetlendi"
 
-#: ../camel/camel-smime-context.c:609
+#: ../camel/camel-smime-context.c:824
 msgid "Cannot find signature digests"
 msgstr "İmza içeriği bulunamadı"
 
-#: ../camel/camel-smime-context.c:625
+#: ../camel/camel-smime-context.c:840
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "İmzalayan: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:726
+#: ../camel/camel-smime-context.c:941 ../camel/camel-smime-context.c:1165
 msgid "Decoder failed"
 msgstr "Kod çözme başarısız"
 
-#: ../camel/camel-smime-context.c:785
+#: ../camel/camel-smime-context.c:1000
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Ortak çoklu eme algoritması bulunamadı"
 
-#. PORT_GetError(); ??
-#: ../camel/camel-smime-context.c:794
+#: ../camel/camel-smime-context.c:1008
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Çoklu şifreleme anahtarı için slot ayrılamadı"
 
-#: ../camel/camel-smime-context.c:805
+#: ../camel/camel-smime-context.c:1019
 msgid "Cannot create CMS Message"
 msgstr "CMS Message oluşturulamadı"
 
-#: ../camel/camel-smime-context.c:811
+#: ../camel/camel-smime-context.c:1025
 msgid "Cannot create CMS Enveloped data"
 msgstr "CMS Mektup verisi oluşturulamıyor"
 
-#: ../camel/camel-smime-context.c:817
+#: ../camel/camel-smime-context.c:1031
 msgid "Cannot attach CMS Enveloped data"
 msgstr "CMS Mektup verisi eklenemiyor"
 
-#: ../camel/camel-smime-context.c:823
+#: ../camel/camel-smime-context.c:1037
 msgid "Cannot attach CMS data object"
 msgstr "CMS veri nesnesi eklenemedi"
 
-#: ../camel/camel-smime-context.c:832
+#: ../camel/camel-smime-context.c:1046
 msgid "Cannot create CMS Recipient information"
 msgstr "CMS Alıcı bilgisi oluşturulamıyor"
 
-#: ../camel/camel-smime-context.c:837
+#: ../camel/camel-smime-context.c:1051
 msgid "Cannot add CMS Recipient information"
 msgstr "CMS Alıcı bilgisi eklenemiyor"
 
-#: ../camel/camel-smime-context.c:862
+#: ../camel/camel-smime-context.c:1076
 msgid "Failed to add data to encoder"
 msgstr "Kodlayıcıya veri eklenemedi"
 
-#: ../camel/camel-smime-context.c:949
-#, c-format
-msgid "Decoder failed, error %d"
-msgstr "Kod çözümleme başarısız, hata %d"
-
-#: ../camel/camel-smime-context.c:956
+#: ../camel/camel-smime-context.c:1172
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Şifre çözümü: Şifrelenemiş içerik bulunamadı"
 
-#: ../camel/camel-smime-context.c:983
+#: ../camel/camel-smime-context.c:1200
 msgid "import keys: unimplemented"
 msgstr "anahtar aktarımı: tamamlanmamış işlem"
 
-#: ../camel/camel-smime-context.c:991
+#: ../camel/camel-smime-context.c:1208
 msgid "export keys: unimplemented"
 msgstr "anahtar dışa aktarımı: tamamlanmamış işlem"
 
-#: ../camel/camel-store.c:272
+#: ../camel/camel-store.c:283
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:174
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Klasör alınamadı: Bu alanda geçersiz işlem"
 
-#: ../camel/camel-store.c:305
+#: ../camel/camel-store.c:316
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "'%s' klasörü oluşturulamadı: klasör zaten mevcut"
 
-#: ../camel/camel-store.c:369
+#: ../camel/camel-store.c:395
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Klasör oluşturulamadı: Bu alanda geçersiz işlem"
 
-#: ../camel/camel-store.c:397
+#: ../camel/camel-store.c:423
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Klasör olşuturulamadı: %s: klasör zaten mevcut"
 
-#: ../camel/camel-store.c:461 ../camel/camel-vee-store.c:384
+#: ../camel/camel-store.c:487 ../camel/camel-vee-store.c:384
 #: ../camel/providers/local/camel-maildir-store.c:219
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Klasör silinemedi: %s: Geçersiz işlem"
 
-#: ../camel/camel-store.c:513 ../camel/camel-vee-store.c:421
+#: ../camel/camel-store.c:544 ../camel/camel-vee-store.c:421
 #: ../camel/providers/local/camel-maildir-store.c:291
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Klasör yeniden adlandırılamadı: %s: Geçersiz işlem"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:856 ../camel/camel-vtrash-folder.c:53
-#: ../camel/providers/imap/camel-imap-store.c:1060
+#: ../camel/camel-store.c:899 ../camel/camel-vtrash-folder.c:54
+#: ../camel/providers/imap/camel-imap-store.c:1061
 msgid "Trash"
 msgstr "Çöp"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:859 ../camel/camel-vtrash-folder.c:55
+#: ../camel/camel-store.c:902 ../camel/camel-vtrash-folder.c:56
 msgid "Junk"
 msgstr "Gereksiz"
 
@@ -2668,17 +2547,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "URL '%s' ayrıştırılamadı"
 
-#: ../camel/camel-vee-folder.c:586
+#: ../camel/camel-vee-folder.c:582
 #, c-format
 msgid "Error storing '%s': %s"
 msgstr "'%s' saklanırken hata: %s"
 
-#: ../camel/camel-vee-folder.c:641
+#: ../camel/camel-vee-folder.c:660
 #, c-format
 msgid "No such message %s in %s"
 msgstr "%s içerisinde %s iletisi yok"
 
-#: ../camel/camel-vee-folder.c:764 ../camel/camel-vee-folder.c:770
+#: ../camel/camel-vee-folder.c:820 ../camel/camel-vee-folder.c:826
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "İletiler Sanal Klasöre kopyalanamıyor ya da taşınamıyor"
 
@@ -2697,15 +2576,15 @@ msgstr "Klasör silinemiyor: %s: Böyle bir klasör yok"
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Klasör yeniden adlandırılamıyor: %s: Bu isimde bir klasör yok"
 
-#: ../camel/camel-vtrash-folder.c:54
+#: ../camel/camel-vtrash-folder.c:55
 msgid "Cannot copy messages to the Trash folder"
 msgstr "İletiler Çöp klasörüne kopyalanamıyor"
 
-#: ../camel/camel-vtrash-folder.c:56
+#: ../camel/camel-vtrash-folder.c:57
 msgid "Cannot copy messages to the Junk folder"
 msgstr "İletiler Gereksiz klasörüne kopyalanamıyor"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2714,80 +2593,82 @@ msgstr ""
 "İleti alınamadı: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:116
-#: ../camel/providers/local/camel-maildir-folder.c:251
-#: ../camel/providers/local/camel-mbox-folder.c:348
-#: ../camel/providers/local/camel-mh-folder.c:204
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
+#: ../camel/providers/local/camel-maildir-folder.c:248
+#: ../camel/providers/local/camel-maildir-folder.c:275
+#: ../camel/providers/local/camel-mbox-folder.c:347
+#: ../camel/providers/local/camel-mbox-folder.c:399
+#: ../camel/providers/local/camel-mh-folder.c:214
 msgid "No such message"
 msgstr "İleti bulunmuyor"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:128
-#: ../camel/providers/imap4/camel-imap4-folder.c:812
-#: ../camel/providers/nntp/camel-nntp-folder.c:156
-#: ../camel/providers/nntp/camel-nntp-folder.c:232
-#: ../camel/providers/nntp/camel-nntp-folder.c:373
-#: ../camel/providers/pop3/camel-pop3-folder.c:266
-#: ../camel/providers/pop3/camel-pop3-folder.c:559
-#: ../camel/providers/pop3/camel-pop3-folder.c:620
-#: ../camel/providers/pop3/camel-pop3-folder.c:638
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
+#: ../camel/providers/imap4/camel-imap4-folder.c:821
+#: ../camel/providers/nntp/camel-nntp-folder.c:175
+#: ../camel/providers/nntp/camel-nntp-folder.c:251
+#: ../camel/providers/nntp/camel-nntp-folder.c:411
+#: ../camel/providers/pop3/camel-pop3-folder.c:268
+#: ../camel/providers/pop3/camel-pop3-folder.c:578
+#: ../camel/providers/pop3/camel-pop3-folder.c:639
+#: ../camel/providers/pop3/camel-pop3-folder.c:657
 msgid "User canceled"
 msgstr "Kullanıcı iptal etti"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:135
-#: ../camel/providers/imap4/camel-imap4-folder.c:817
-#: ../camel/providers/nntp/camel-nntp-folder.c:147
-#: ../camel/providers/nntp/camel-nntp-folder.c:149
-#: ../camel/providers/nntp/camel-nntp-folder.c:158
-#: ../camel/providers/nntp/camel-nntp-folder.c:234
-#: ../camel/providers/pop3/camel-pop3-folder.c:386
-#: ../camel/providers/pop3/camel-pop3-folder.c:562
-#: ../camel/providers/pop3/camel-pop3-folder.c:623
-#: ../camel/providers/pop3/camel-pop3-folder.c:630
-#: ../camel/providers/pop3/camel-pop3-folder.c:641
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
+#: ../camel/providers/imap4/camel-imap4-folder.c:826
+#: ../camel/providers/nntp/camel-nntp-folder.c:166
+#: ../camel/providers/nntp/camel-nntp-folder.c:168
+#: ../camel/providers/nntp/camel-nntp-folder.c:177
+#: ../camel/providers/nntp/camel-nntp-folder.c:253
+#: ../camel/providers/pop3/camel-pop3-folder.c:388
+#: ../camel/providers/pop3/camel-pop3-folder.c:581
+#: ../camel/providers/pop3/camel-pop3-folder.c:642
+#: ../camel/providers/pop3/camel-pop3-folder.c:649
+#: ../camel/providers/pop3/camel-pop3-folder.c:660
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "İleti %s alınamıyor: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:152
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:160
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2164
-#: ../camel/providers/imap4/camel-imap4-folder.c:835
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2284
+#: ../camel/providers/imap4/camel-imap4-folder.c:844
 msgid "This message is not available in offline mode."
 msgstr "Bu ileti çevrim dışı kipte mevcut değil."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:179
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1696
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1747
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:193
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:200
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1799
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1850
 msgid "Could not get message"
 msgstr "İleti alınamadı"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:818
-#: ../camel/providers/imap/camel-imap-folder.c:248
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:887
+#: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "%s için özet bilgisi yüklenemedi"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1071
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1147
 msgid "Trash Folder Full. Please Empty."
 msgstr "Çöp Klasörü Dolu. Lütfen Boşaltın."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
-#: ../camel/providers/groupwise/camel-groupwise-store.c:623
-#: ../camel/providers/groupwise/camel-groupwise-store.c:736
-#: ../camel/providers/imap/camel-imap-folder.c:3183
-#: ../camel/providers/imap/camel-imap-folder.c:3260
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1355
+#: ../camel/providers/groupwise/camel-groupwise-store.c:629
+#: ../camel/providers/groupwise/camel-groupwise-store.c:754
+#: ../camel/providers/imap/camel-imap-folder.c:3362
+#: ../camel/providers/imap/camel-imap-folder.c:3438
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s içerisindeki yeni iletiler için özel bilgileri alınıyor"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2031
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2073
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2138
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2181
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "'%s' klasörüne ileti eklenemedi: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2061
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2169
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "İleti oluşturulamadı: %s"
@@ -2853,8 +2734,8 @@ msgid "SOAP Settings"
 msgstr "SOAP Ayarları"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:76
-msgid "Post Office Agent SOAP Port:"
-msgstr "Posta Ofisi Aracı SOAP Portu:"
+msgid "Post Office Agent SOAP _Port:"
+msgstr "Posta Ofisi Aracı SOAP _Portu:"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:89
 msgid "Novell GroupWise"
@@ -2881,49 +2762,49 @@ msgstr ""
 "Bu seçenek GroupWise sunucusuna düz metin parola kullanarak bağlantı "
 "kurulmasını sağlar."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:103
+#: ../camel/providers/groupwise/camel-groupwise-store.c:104
 msgid "Host or user not available in url"
 msgstr "URL'deki makine ya da kullanıcı mevcut değil"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:206
-#: ../camel/providers/imap/camel-imap-store.c:1356
+#: ../camel/providers/groupwise/camel-groupwise-store.c:207
+#: ../camel/providers/imap/camel-imap-store.c:1357
 msgid "You did not enter a password."
 msgstr "Bir parola girmediniz."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:302
+#: ../camel/providers/groupwise/camel-groupwise-store.c:323
 msgid "Some features may not work correctly with your current server version"
 msgstr "Mevcut sunucu sürümünüzde bağzı özellikle düzgün çalışmayabilir"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:532
-#: ../camel/providers/imap/camel-imap-store.c:1846
-#: ../camel/providers/imap/camel-imap-store.c:2044
+#: ../camel/providers/groupwise/camel-groupwise-store.c:541
+#: ../camel/providers/imap/camel-imap-store.c:1849
+#: ../camel/providers/imap/camel-imap-store.c:2047
 #, c-format
 msgid "No such folder %s"
 msgstr "%s klasörü yok"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1219
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1252
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Çevrim dışı kipte GroupWise klasörleri oluşturulamıyor."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1233
-#: ../camel/providers/imap/camel-imap-store.c:1921
-#: ../camel/providers/imap/camel-imap-store.c:2301
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1266
+#: ../camel/providers/imap/camel-imap-store.c:1924
+#: ../camel/providers/imap/camel-imap-store.c:2304
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Ana klasör alt klasör barındırmaya izin vermiyor"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1309
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1330
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1341
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1364
 #, c-format
-msgid "Cannot rename Groupwise folder '%s' to '%s'"
-msgstr "'%s' Groupwise klasörü '%s' olarak yeniden adlandırılamıyor"
+msgid "Cannot rename GroupWise folder '%s' to '%s'"
+msgstr "'%s' GroupWise klasörü '%s' olarak yeniden adlandırılamıyor"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1362
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1396
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise sunucusu %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1364
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1398
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "%2$s üzerindeki %1$s için GroupWise sunucusu"
@@ -3023,12 +2904,12 @@ msgstr "Girdi akışı yok"
 #: ../camel/providers/imap/camel-imap-command.c:231
 #: ../camel/providers/imap/camel-imap-command.c:280
 #: ../camel/providers/imap/camel-imap-command.c:494
-#: ../camel/providers/imap/camel-imap-store.c:3034
+#: ../camel/providers/imap/camel-imap-store.c:3037
 msgid "Operation cancelled"
 msgstr "İşlem iptal edildi"
 
 #: ../camel/providers/imap/camel-imap-command.c:333
-#: ../camel/providers/imap/camel-imap-store.c:3037
+#: ../camel/providers/imap/camel-imap-store.c:3040
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Sunucu beklenmedik bir şekilde bağlantıyı kesti: %s"
@@ -3068,83 +2949,83 @@ msgstr "IMAP sunucu cevabı %s bilgisini içermiyor"
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP sunucusundan beklenmeyen OK cevabı: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:88
+#: ../camel/providers/imap/camel-imap-folder.c:89
 msgid "Always check for new mail in this folder"
 msgstr "Bu klasördeki yeni mektupları her zaman kontrol et"
 
-#: ../camel/providers/imap/camel-imap-folder.c:229
+#: ../camel/providers/imap/camel-imap-folder.c:246
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "%s dizini yaratılamadı: %s"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:843
+#: ../camel/providers/imap/camel-imap-folder.c:891
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s içerisindeki değiştirilen iletiler taranıyor"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1860
+#: ../camel/providers/imap/camel-imap-folder.c:1950
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
 msgstr "APPEND komutu sonrası beklenmeyen cevap durumu '%s'"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1875
+#: ../camel/providers/imap/camel-imap-folder.c:1965
 msgid "No response on continuation after APPEND command"
 msgstr "APPEND komutu sonrası devam için hiçbir cevap yok"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1917
+#: ../camel/providers/imap/camel-imap-folder.c:2010
 msgid "Unknown error occurred during APPEND command!"
 msgstr "APPEND komutu esnasında bilinmeyen hata oluştu!"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2729
+#: ../camel/providers/imap/camel-imap-folder.c:2842
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "İleti alınamadı: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2770
+#: ../camel/providers/imap/camel-imap-folder.c:2877
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s ileti ID'sine sahip ileti alınamıyor: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2771
+#: ../camel/providers/imap/camel-imap-folder.c:2878
 msgid "No such message available."
 msgstr "Böyle bir ileti mevcut değil."
 
-#: ../camel/providers/imap/camel-imap-folder.c:2810
-#: ../camel/providers/imap/camel-imap-folder.c:3562
-#: ../camel/providers/nntp/camel-nntp-folder.c:220
+#: ../camel/providers/imap/camel-imap-folder.c:2932
+#: ../camel/providers/imap/camel-imap-folder.c:3753
+#: ../camel/providers/nntp/camel-nntp-folder.c:239
 msgid "This message is not currently available"
 msgstr "Bu ileti kullanılabilir değil"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3389
+#: ../camel/providers/imap/camel-imap-folder.c:3567
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Eksik sunucu cevabı: ileti %d için hiçbir bilgi belirtilmemiş"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3397
+#: ../camel/providers/imap/camel-imap-folder.c:3575
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Eksik sunucu cevabı: ileti %d için UID belirtilmemiş"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3600
+#: ../camel/providers/imap/camel-imap-folder.c:3791
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH cevabında ileti gövdesi bulunamadı."
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:160
-#: ../camel/providers/imap/camel-imap-message-cache.c:220
+#: ../camel/providers/imap/camel-imap-message-cache.c:182
+#: ../camel/providers/imap/camel-imap-message-cache.c:246
 #, c-format
 msgid "Could not open cache directory: %s"
 msgstr "Önbellek dizini açılamadı: %s"
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:307
-#: ../camel/providers/imap/camel-imap-message-cache.c:364
-#: ../camel/providers/imap/camel-imap-message-cache.c:395
-#: ../camel/providers/imap/camel-imap-message-cache.c:427
+#: ../camel/providers/imap/camel-imap-message-cache.c:333
+#: ../camel/providers/imap/camel-imap-message-cache.c:390
+#: ../camel/providers/imap/camel-imap-message-cache.c:421
+#: ../camel/providers/imap/camel-imap-message-cache.c:453
 #, c-format
 msgid "Failed to cache message %s: %s"
 msgstr "%s iletisi önbelleğe yazılamadı: %s"
 
-#: ../camel/providers/imap/camel-imap-message-cache.c:478
+#: ../camel/providers/imap/camel-imap-message-cache.c:533
 #, c-format
 msgid "Failed to cache %s: %s"
 msgstr "%s önbelleğe yazılamadı: %s"
@@ -3188,49 +3069,49 @@ msgstr ""
 "Bu seçenek IMAP sunucusuna düz metin parola kullanarak bağlantı kurulmasını "
 "sağlar."
 
-#: ../camel/providers/imap/camel-imap-store.c:436
+#: ../camel/providers/imap/camel-imap-store.c:437
 #: ../camel/providers/imap4/camel-imap4-store.c:214
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP sunucu %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:438
+#: ../camel/providers/imap/camel-imap-store.c:439
 #: ../camel/providers/imap4/camel-imap4-store.c:216
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "%2$s üzerindeki %1$s IMAP sunucusu için"
 
-#: ../camel/providers/imap/camel-imap-store.c:567
-#: ../camel/providers/imap/camel-imap-store.c:582
+#: ../camel/providers/imap/camel-imap-store.c:568
+#: ../camel/providers/imap/camel-imap-store.c:583
 #: ../camel/providers/imap4/camel-imap4-store.c:251
 #: ../camel/providers/imap4/camel-imap4-store.c:266
 #: ../camel/providers/nntp/camel-nntp-store.c:183
 #: ../camel/providers/nntp/camel-nntp-store.c:198
-#: ../camel/providers/pop3/camel-pop3-store.c:171
-#: ../camel/providers/pop3/camel-pop3-store.c:185
+#: ../camel/providers/pop3/camel-pop3-store.c:172
+#: ../camel/providers/pop3/camel-pop3-store.c:186
 #: ../camel/providers/smtp/camel-smtp-transport.c:260
 #: ../camel/providers/smtp/camel-smtp-transport.c:275
 #, c-format
 msgid "Could not connect to %s: %s"
 msgstr "%s adresine bağlantı kurulamadı: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:568
+#: ../camel/providers/imap/camel-imap-store.c:569
 #: ../camel/providers/imap4/camel-imap4-store.c:252
 #: ../camel/providers/nntp/camel-nntp-store.c:184
-#: ../camel/providers/pop3/camel-pop3-store.c:172
+#: ../camel/providers/pop3/camel-pop3-store.c:173
 #: ../camel/providers/smtp/camel-smtp-transport.c:261
 msgid "SSL unavailable"
 msgstr "SSL kullanılamıyor"
 
-#: ../camel/providers/imap/camel-imap-store.c:579
-#: ../camel/providers/imap/camel-imap-store.c:861
+#: ../camel/providers/imap/camel-imap-store.c:580
+#: ../camel/providers/imap/camel-imap-store.c:862
 msgid "Connection cancelled"
 msgstr "Bağlantı iptal edildi"
 
-#: ../camel/providers/imap/camel-imap-store.c:690
-#: ../camel/providers/imap/camel-imap-store.c:709
-#: ../camel/providers/imap/camel-imap-store.c:715
-#: ../camel/providers/imap/camel-imap-store.c:741
+#: ../camel/providers/imap/camel-imap-store.c:691
+#: ../camel/providers/imap/camel-imap-store.c:710
+#: ../camel/providers/imap/camel-imap-store.c:716
+#: ../camel/providers/imap/camel-imap-store.c:742
 #: ../camel/providers/imap4/camel-imap4-store.c:314
 #: ../camel/providers/imap4/camel-imap4-store.c:329
 #: ../camel/providers/imap4/camel-imap4-store.c:338
@@ -3238,32 +3119,32 @@ msgstr "Bağlantı iptal edildi"
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "%s IMAP sunucusuna güvenli kipte bağlantı başarısız oldu: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:691
+#: ../camel/providers/imap/camel-imap-store.c:692
 #: ../camel/providers/smtp/camel-smtp-transport.c:333
 msgid "STARTTLS not supported"
 msgstr "STARTTLS desteklenmiyor"
 
-#: ../camel/providers/imap/camel-imap-store.c:710
+#: ../camel/providers/imap/camel-imap-store.c:711
 msgid "SSL negotiations failed"
 msgstr "SSL haberleşmesi başarısız"
 
-#: ../camel/providers/imap/camel-imap-store.c:716
+#: ../camel/providers/imap/camel-imap-store.c:717
 #: ../camel/providers/imap4/camel-imap4-store.c:339
 #: ../camel/providers/smtp/camel-smtp-transport.c:372
 msgid "SSL is not available in this build"
 msgstr "Bu derlemede SSL mevcut değil"
 
-#: ../camel/providers/imap/camel-imap-store.c:864
+#: ../camel/providers/imap/camel-imap-store.c:865
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "\"%s\" komutu ile bağlantı kurulamadı: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:1052
-#: ../camel/providers/imap/camel-imap-store.c:2397
+#: ../camel/providers/imap/camel-imap-store.c:1053
+#: ../camel/providers/imap/camel-imap-store.c:2400
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:368
 #: ../camel/providers/imap4/camel-imap4-store.c:1408
-#: ../camel/providers/local/camel-maildir-folder.c:77
+#: ../camel/providers/local/camel-maildir-folder.c:78
 #: ../camel/providers/local/camel-maildir-store.c:219
 #: ../camel/providers/local/camel-maildir-store.c:291
 #: ../camel/providers/local/camel-maildir-store.c:517
@@ -3273,31 +3154,31 @@ msgstr "\"%s\" komutu ile bağlantı kurulamadı: %s"
 msgid "Inbox"
 msgstr "Gelenler"
 
-#: ../camel/providers/imap/camel-imap-store.c:1054
+#: ../camel/providers/imap/camel-imap-store.c:1055
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
 msgstr "Taslaklar"
 
-#: ../camel/providers/imap/camel-imap-store.c:1056
+#: ../camel/providers/imap/camel-imap-store.c:1057
 msgid "Sent"
 msgstr "Gönderilenler"
 
-#: ../camel/providers/imap/camel-imap-store.c:1058
+#: ../camel/providers/imap/camel-imap-store.c:1059
 msgid "Templates"
 msgstr "Şablomlar"
 
-#: ../camel/providers/imap/camel-imap-store.c:1303
+#: ../camel/providers/imap/camel-imap-store.c:1304
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "%s IMAP sunucusu %s kimlik doğrulama yöntemini desteklemiyor"
 
-#: ../camel/providers/imap/camel-imap-store.c:1313
+#: ../camel/providers/imap/camel-imap-store.c:1314
 #: ../camel/providers/smtp/camel-smtp-transport.c:507
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "%s kimlik doğrulama yöntemi desteklenmiyor"
 
-#: ../camel/providers/imap/camel-imap-store.c:1385
+#: ../camel/providers/imap/camel-imap-store.c:1388
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3308,15 +3189,15 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1858
-#: ../camel/providers/imap/camel-imap-store.c:2239
+#: ../camel/providers/imap/camel-imap-store.c:1861
+#: ../camel/providers/imap/camel-imap-store.c:2242
 #: ../camel/providers/imap4/camel-imap4-store.c:959
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "\"%s\" klasör adı geçerli değil, çünkü \"%c\" karakteri içeriyor"
 
-#: ../camel/providers/imap/camel-imap-store.c:1975
+#: ../camel/providers/imap/camel-imap-store.c:1978
 #: ../camel/providers/local/camel-maildir-store.c:192
 #: ../camel/providers/local/camel-mbox-store.c:204
 #: ../camel/providers/local/camel-mh-store.c:249
@@ -3324,7 +3205,7 @@ msgstr "\"%s\" klasör adı geçerli değil, çünkü \"%c\" karakteri içeriyor
 msgid "Cannot create folder '%s': folder exists."
 msgstr "'%s' klasörü oluşturulamıyor: klasör zaten mevcut."
 
-#: ../camel/providers/imap/camel-imap-store.c:2250
+#: ../camel/providers/imap/camel-imap-store.c:2253
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Bilinmeyen ana klasör: %s"
@@ -3388,73 +3269,73 @@ msgstr "X saniye içerisinde okunmamış iletilerin önbelleğini sona erdir"
 msgid "Expire cached messages older than X seconds"
 msgstr "X saniyeden daha eski iletilerin önbelleğini sonra erdir"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:423
+#: ../camel/providers/imap4/camel-imap4-folder.c:432
 #, c-format
 msgid "Cannot access folder '%s': %s"
 msgstr "'%s' klasörüne erişilemiyor: %s"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:482
+#: ../camel/providers/imap4/camel-imap4-folder.c:491
 #, c-format
 msgid "Cannot sync flags to folder '%s': Unknown error"
 msgstr "'%s' klasörü ile imler eşleştirilemedi: Bilinmeyen hata"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:488
+#: ../camel/providers/imap4/camel-imap4-folder.c:497
 #, c-format
 msgid "Cannot sync flags to folder '%s': Bad command"
 msgstr "'%s' klasörü ile imler eşleştirilemedi: Geçersiz komut"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:628
+#: ../camel/providers/imap4/camel-imap4-folder.c:637
 #, c-format
 msgid "Cannot expunge folder '%s': Unknown error"
 msgstr "'%s' klasörü temizlenemedi: Bilinmeyen hata"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:633
+#: ../camel/providers/imap4/camel-imap4-folder.c:642
 #, c-format
 msgid "Cannot expunge folder '%s': Bad command"
 msgstr "'%s' klasörü temizlenemedi: Geçersiz komut"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:889
+#: ../camel/providers/imap4/camel-imap4-folder.c:898
 #, c-format
 msgid "Cannot get message %s from folder '%s': No such message"
 msgstr "%s iletisi '%s' klasöründen alınamadı: Böyle bir ileti yok"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:894
+#: ../camel/providers/imap4/camel-imap4-folder.c:903
 #, c-format
 msgid "Cannot get message %s from folder '%s': Bad command"
 msgstr "%s iletisi '%s' klasöründen alınamadı: Geçersiz komut"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:938
+#: ../camel/providers/imap4/camel-imap4-folder.c:947
 #, c-format
 msgid "Cannot append message to folder '%s': Folder is read-only"
 msgstr "'%s' klasörüne ileti eklenemedi: Klasör salt okunur"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1031
+#: ../camel/providers/imap4/camel-imap4-folder.c:1040
 #, c-format
 msgid "Cannot append message to folder '%s': Unknown error"
 msgstr "İleti '%s' klasörüne eklenemedi: Bilinmeyen hata"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1061
+#: ../camel/providers/imap4/camel-imap4-folder.c:1070
 #, c-format
 msgid "Cannot append message to folder '%s': Bad command"
 msgstr "İleti '%s' klasörüne eklenemedi: Geçersiz komut"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1181
+#: ../camel/providers/imap4/camel-imap4-folder.c:1190
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 msgstr "İletiler '%s' klasöründen '%s' klasörüne taşınamıyor: Bilinmeyen hata"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1185
+#: ../camel/providers/imap4/camel-imap4-folder.c:1194
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 msgstr ""
 "İletiler '%s' klasöründen '%s' klasörüne kopyalanamıyor: Bilinmeyen hata"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1193
+#: ../camel/providers/imap4/camel-imap4-folder.c:1202
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
 msgstr "İletiler '%s' klasöründen '%s' klasörüne taşınamıyor: Geçersiz komut"
 
-#: ../camel/providers/imap4/camel-imap4-folder.c:1197
+#: ../camel/providers/imap4/camel-imap4-folder.c:1206
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
 msgstr "İletiler '%s' klasöründen '%s' klasörüne kopyalanamıyor: Geçersiz hata"
@@ -3485,7 +3366,7 @@ msgstr ""
 #: ../camel/providers/imapp/camel-imapp-store.c:249
 #: ../camel/providers/nntp/camel-nntp-store.c:195
 #: ../camel/providers/nntp/camel-nntp-store.c:214
-#: ../camel/providers/pop3/camel-pop3-store.c:182
+#: ../camel/providers/pop3/camel-pop3-store.c:183
 #: ../camel/providers/smtp/camel-smtp-transport.c:272
 msgid "Connection canceled"
 msgstr "Bağlantı iptal edildi"
@@ -3500,7 +3381,7 @@ msgstr ""
 "desteklemiyor"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:330
-#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/pop3/camel-pop3-store.c:251
 msgid "TLS negotiations failed"
 msgstr "TLS haberleşmesi başarısız"
 
@@ -3681,25 +3562,25 @@ msgstr "%s (port %s) adresine bağlantı kurulamadı: %s"
 msgid "Could not connect to POP server on %s"
 msgstr "%s POP sunucusuna bağlantı kurulamadı"
 
-#: ../camel/providers/local/camel-local-folder.c:174
+#: ../camel/providers/local/camel-local-folder.c:176
 msgid "Index message body data"
 msgstr "İleti verilerini indeksle"
 
 #. $HOME relative path + protocol string
-#: ../camel/providers/local/camel-local-folder.c:390
+#: ../camel/providers/local/camel-local-folder.c:392
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
 #. /var/spool/mail relative path + protocol
-#: ../camel/providers/local/camel-local-folder.c:394
-#: ../camel/providers/local/camel-local-folder.c:397
+#: ../camel/providers/local/camel-local-folder.c:396
+#: ../camel/providers/local/camel-local-folder.c:399
 #, c-format
 msgid "mailbox:%s (%s)"
 msgstr "posta kutusu:%s (%s)"
 
 #. a full path + protocol
-#: ../camel/providers/local/camel-local-folder.c:401
+#: ../camel/providers/local/camel-local-folder.c:403
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3764,80 +3645,82 @@ msgstr ""
 msgid "Standard Unix mbox spool directory"
 msgstr "Standart Unix mbox dizini"
 
-#: ../camel/providers/local/camel-local-store.c:171
-#: ../camel/providers/local/camel-local-store.c:282
+#: ../camel/providers/local/camel-local-store.c:165
+#: ../camel/providers/local/camel-local-store.c:276
 #: ../camel/providers/local/camel-mbox-store.c:359
 #: ../camel/providers/local/camel-spool-store.c:129
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "%s saklama kökü mutlak bir yol değil"
 
-#: ../camel/providers/local/camel-local-store.c:178
+#: ../camel/providers/local/camel-local-store.c:172
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "%s saklama kökü doğru bir dizin değil"
 
-#: ../camel/providers/local/camel-local-store.c:187
-#: ../camel/providers/local/camel-local-store.c:195
-#: ../camel/providers/local/camel-local-store.c:293
+#: ../camel/providers/local/camel-local-store.c:181
+#: ../camel/providers/local/camel-local-store.c:189
+#: ../camel/providers/local/camel-local-store.c:287
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Klasör alınamıyor: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:207
+#: ../camel/providers/local/camel-local-store.c:201
 msgid "Local stores do not have an inbox"
 msgstr "Yerel kayıtlar bir gelen kutusuna sahip değil"
 
-#: ../camel/providers/local/camel-local-store.c:253
+#: ../camel/providers/local/camel-local-store.c:247
 #, c-format
 msgid "Local mail file %s"
 msgstr "Yerel mektup dosyası %s"
 
-#: ../camel/providers/local/camel-local-store.c:348
+#: ../camel/providers/local/camel-local-store.c:342
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "%s klasörü %s olarak yeniden adlandırılamadı: %s"
 
-#: ../camel/providers/local/camel-local-store.c:416
+#: ../camel/providers/local/camel-local-store.c:410
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "'%s' yeniden adlandırılamadı: %s"
 
-#: ../camel/providers/local/camel-local-store.c:441
+#: ../camel/providers/local/camel-local-store.c:435
 #: ../camel/providers/local/camel-mbox-store.c:300
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "'%s' klasör indeks dosyası silinemedi: %s"
 
-#: ../camel/providers/local/camel-local-store.c:464
+#: ../camel/providers/local/camel-local-store.c:458
 #: ../camel/providers/local/camel-mbox-store.c:324
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "'%s' klasör meta dosyası silinemedi: %s"
 
-#: ../camel/providers/local/camel-local-summary.c:506
+#: ../camel/providers/local/camel-local-summary.c:515
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Özete ileti eklenemedi: bilinmeyen neden"
 
-#: ../camel/providers/local/camel-maildir-folder.c:220
+#: ../camel/providers/local/camel-maildir-folder.c:222
 msgid "Maildir append message canceled"
 msgstr "Maildir ileti ekleme iptal edildi"
 
-#: ../camel/providers/local/camel-maildir-folder.c:223
+#: ../camel/providers/local/camel-maildir-folder.c:225
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "Maildir klasörüne ileti eklenemiyor: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:250
-#: ../camel/providers/local/camel-maildir-folder.c:264
-#: ../camel/providers/local/camel-maildir-folder.c:273
-#: ../camel/providers/local/camel-mbox-folder.c:347
-#: ../camel/providers/local/camel-mbox-folder.c:368
-#: ../camel/providers/local/camel-mbox-folder.c:399
-#: ../camel/providers/local/camel-mbox-folder.c:407
-#: ../camel/providers/local/camel-mh-folder.c:203
-#: ../camel/providers/local/camel-mh-folder.c:214
-#: ../camel/providers/local/camel-mh-folder.c:223
+#: ../camel/providers/local/camel-maildir-folder.c:247
+#: ../camel/providers/local/camel-maildir-folder.c:274
+#: ../camel/providers/local/camel-maildir-folder.c:288
+#: ../camel/providers/local/camel-maildir-folder.c:297
+#: ../camel/providers/local/camel-mbox-folder.c:346
+#: ../camel/providers/local/camel-mbox-folder.c:398
+#: ../camel/providers/local/camel-mbox-folder.c:419
+#: ../camel/providers/local/camel-mbox-folder.c:450
+#: ../camel/providers/local/camel-mbox-folder.c:458
+#: ../camel/providers/local/camel-mh-folder.c:213
+#: ../camel/providers/local/camel-mh-folder.c:224
+#: ../camel/providers/local/camel-mh-folder.c:233
 #, c-format
 msgid ""
 "Cannot get message: %s from folder %s\n"
@@ -3846,7 +3729,7 @@ msgstr ""
 "%s iletisi %s klasöründen alınamadı\n"
 "  %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:274
+#: ../camel/providers/local/camel-maildir-folder.c:298
 msgid "Invalid message contents"
 msgstr "Geçersiz ileti içeriği"
 
@@ -3895,54 +3778,54 @@ msgstr "maildir dizini değil"
 msgid "Could not scan folder '%s': %s"
 msgstr "'%s' klasörü taranamadı: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:434
-#: ../camel/providers/local/camel-maildir-summary.c:553
+#: ../camel/providers/local/camel-maildir-summary.c:439
+#: ../camel/providers/local/camel-maildir-summary.c:558
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Maildir dizin yolu açılamadı: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:546
+#: ../camel/providers/local/camel-maildir-summary.c:551
 msgid "Checking folder consistency"
 msgstr "Klasör bütünlüğü kontrol ediliyor"
 
-#: ../camel/providers/local/camel-maildir-summary.c:650
+#: ../camel/providers/local/camel-maildir-summary.c:656
 msgid "Checking for new messages"
 msgstr "Yeni iletiler denetleniyor"
 
-#: ../camel/providers/local/camel-maildir-summary.c:736
-#: ../camel/providers/local/camel-mbox-summary.c:534
-#: ../camel/providers/local/camel-mbox-summary.c:714
-#: ../camel/providers/local/camel-mbox-summary.c:810
-#: ../camel/providers/local/camel-spool-summary.c:158
+#: ../camel/providers/local/camel-maildir-summary.c:742
+#: ../camel/providers/local/camel-mbox-summary.c:529
+#: ../camel/providers/local/camel-mbox-summary.c:711
+#: ../camel/providers/local/camel-mbox-summary.c:831
+#: ../camel/providers/local/camel-spool-summary.c:150
 msgid "Storing folder"
 msgstr "Klasör saklanıyor"
 
-#: ../camel/providers/local/camel-mbox-folder.c:156
+#: ../camel/providers/local/camel-mbox-folder.c:159
 #: ../camel/providers/local/camel-spool-folder.c:150
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
 msgstr "%s üzerinde klasör kilidi yaratılamadı: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:217
+#: ../camel/providers/local/camel-mbox-folder.c:220
 #, c-format
 msgid "Cannot open mailbox: %s: %s\n"
 msgstr "%s posta kutusu açılamadı: %s\n"
 
-#: ../camel/providers/local/camel-mbox-folder.c:278
+#: ../camel/providers/local/camel-mbox-folder.c:281
 msgid "Mail append canceled"
 msgstr "Mektup ekleme iptal edildi"
 
-#: ../camel/providers/local/camel-mbox-folder.c:281
+#: ../camel/providers/local/camel-mbox-folder.c:284
 #, c-format
 msgid "Cannot append message to mbox file: %s: %s"
 msgstr "İleti mbox dosyasına eklenemedi: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:451
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Klasör onarılamayacak şekilde bozulmuş."
 
-#: ../camel/providers/local/camel-mbox-folder.c:408
-#: ../camel/providers/local/camel-mh-folder.c:224
+#: ../camel/providers/local/camel-mbox-folder.c:459
+#: ../camel/providers/local/camel-mh-folder.c:234
 msgid "Message construction failed."
 msgstr "İleti oluşturma başarısız."
 
@@ -4011,85 +3894,85 @@ msgstr "'%s' yeniden adlandırılamadı: '%s': %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "`%s' %s olarak yeniden adlandırılamadı: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:540
+#: ../camel/providers/local/camel-mbox-summary.c:535
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Klsör açılamadı: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:588
+#: ../camel/providers/local/camel-mbox-summary.c:585
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
 msgstr "%2$s klasöründe %1$ld pozisyonunda önemli mektup ayrıştırma hatası"
 
-#: ../camel/providers/local/camel-mbox-summary.c:651
+#: ../camel/providers/local/camel-mbox-summary.c:648
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Klasör kontrol edilemiyor: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:719
-#: ../camel/providers/local/camel-mbox-summary.c:815
-#: ../camel/providers/local/camel-spool-summary.c:163
+#: ../camel/providers/local/camel-mbox-summary.c:716
+#: ../camel/providers/local/camel-mbox-summary.c:836
+#: ../camel/providers/local/camel-spool-summary.c:155
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Dosya açılamadı: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:731
-#: ../camel/providers/local/camel-spool-summary.c:176
+#: ../camel/providers/local/camel-mbox-summary.c:728
+#: ../camel/providers/local/camel-spool-summary.c:168
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Geçici posta kutusu açılamıyor: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:744
-#: ../camel/providers/local/camel-mbox-summary.c:920
+#: ../camel/providers/local/camel-mbox-summary.c:741
+#: ../camel/providers/local/camel-mbox-summary.c:945
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Kaynak klasör %s açılamadı: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:753
+#: ../camel/providers/local/camel-mbox-summary.c:750
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Geçici klasör kapatılamadı: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:768
+#: ../camel/providers/local/camel-mbox-summary.c:765
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Klasör yeniden adlandırılamadı: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:826
-#: ../camel/providers/local/camel-mbox-summary.c:1050
+#: ../camel/providers/local/camel-mbox-summary.c:847
+#: ../camel/providers/local/camel-mbox-summary.c:1075
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Klasör kaydedilemedi: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:862
-#: ../camel/providers/local/camel-mbox-summary.c:870
-#: ../camel/providers/local/camel-mbox-summary.c:1080
-#: ../camel/providers/local/camel-mbox-summary.c:1088
+#: ../camel/providers/local/camel-mbox-summary.c:886
+#: ../camel/providers/local/camel-mbox-summary.c:894
+#: ../camel/providers/local/camel-mbox-summary.c:1105
+#: ../camel/providers/local/camel-mbox-summary.c:1113
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Özet ve klasör eşleşmiyor, eşzamanlandırmadan sonra bile"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1013
-#: ../camel/providers/local/camel-spool-summary.c:344
+#: ../camel/providers/local/camel-mbox-summary.c:1038
+#: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Bilinmeyen hata: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1156
-#: ../camel/providers/local/camel-mbox-summary.c:1182
+#: ../camel/providers/local/camel-mbox-summary.c:1181
+#: ../camel/providers/local/camel-mbox-summary.c:1207
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Geçici posta kutusuna yazma işlemi başarısız: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1173
+#: ../camel/providers/local/camel-mbox-summary.c:1198
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Geçici posta kutusuna yazma işlemi başarısız: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:176
+#: ../camel/providers/local/camel-mh-folder.c:178
 msgid "MH append message canceled"
 msgstr "MH ileti ekleme iptal edildi"
 
-#: ../camel/providers/local/camel-mh-folder.c:179
+#: ../camel/providers/local/camel-mh-folder.c:181
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
 msgstr "mh klasörüne ileti eklenemedi: %s: %s"
@@ -4104,7 +3987,7 @@ msgstr "'%s' klasörü oluşturulamıyor: %s"
 msgid "Cannot get folder '%s': not a directory."
 msgstr "'%s' klasörü alınamıyor: bir dizin değil."
 
-#: ../camel/providers/local/camel-mh-summary.c:248
+#: ../camel/providers/local/camel-mh-summary.c:264
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "MH dizin yolu açılamıyor: %s: %s"
@@ -4174,21 +4057,21 @@ msgstr "Depo klasörleri yeniden adlandırılamaz"
 msgid "Spool folders cannot be deleted"
 msgstr "Depo klasörleri silinemez"
 
-#: ../camel/providers/local/camel-spool-summary.c:189
-#: ../camel/providers/local/camel-spool-summary.c:199
-#: ../camel/providers/local/camel-spool-summary.c:209
+#: ../camel/providers/local/camel-spool-summary.c:181
+#: ../camel/providers/local/camel-spool-summary.c:191
+#: ../camel/providers/local/camel-spool-summary.c:201
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
 msgstr "Geçici klasör %s eş zamanlandırılamadı: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:225
+#: ../camel/providers/local/camel-spool-summary.c:217
 #, c-format
 msgid "Could not sync spool folder %s: %s"
 msgstr "Depo klasör %s eş zamanlandırılamadı: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:256
-#: ../camel/providers/local/camel-spool-summary.c:273
-#: ../camel/providers/local/camel-spool-summary.c:284
+#: ../camel/providers/local/camel-spool-summary.c:248
+#: ../camel/providers/local/camel-spool-summary.c:265
+#: ../camel/providers/local/camel-spool-summary.c:276
 #, c-format
 msgid ""
 "Could not sync spool folder %s: %s\n"
@@ -4197,25 +4080,26 @@ msgstr ""
 "Geçici klasör %s eş zamanlandırılamadı: %s\n"
 "Klasör bozuk olabilir, kopya '%s' içine kaydedildi"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:176
-#: ../camel/providers/nntp/camel-nntp-folder.c:208
+#: ../camel/providers/nntp/camel-nntp-folder.c:137
+#: ../camel/providers/nntp/camel-nntp-folder.c:195
+#: ../camel/providers/nntp/camel-nntp-folder.c:227
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Dahili hata: UID geçersiz biçimde: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:330
-#: ../camel/providers/nntp/camel-nntp-folder.c:333
-#: ../camel/providers/nntp/camel-nntp-folder.c:375
-#: ../camel/providers/nntp/camel-nntp-folder.c:377
+#: ../camel/providers/nntp/camel-nntp-folder.c:368
+#: ../camel/providers/nntp/camel-nntp-folder.c:371
+#: ../camel/providers/nntp/camel-nntp-folder.c:413
+#: ../camel/providers/nntp/camel-nntp-folder.c:415
 #, c-format
 msgid "Posting failed: %s"
 msgstr "Gönderme başarısız oldu: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:395
+#: ../camel/providers/nntp/camel-nntp-folder.c:433
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "NNTP iletilerini çevirim dışı olduğunuz zaman gönderemezsiniz!"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:406
+#: ../camel/providers/nntp/camel-nntp-folder.c:444
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "NNTP klasöründen iletileri kopyalayamazsınız!"
 
@@ -4260,7 +4144,7 @@ msgstr "NNTP sunucusu %s hata kodu %d verdi: %s"
 msgid "USENET News via %s"
 msgstr "%s aracılığıla USENET Haber Grubu"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:798
+#: ../camel/providers/nntp/camel-nntp-store.c:815
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4271,7 +4155,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:892
+#: ../camel/providers/nntp/camel-nntp-store.c:909
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4281,7 +4165,7 @@ msgstr ""
 "\n"
 "Böyle bir haber grubu yok. Seçilen öğe muhtemelen bir ana klasör."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:924
+#: ../camel/providers/nntp/camel-nntp-store.c:941
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4291,96 +4175,97 @@ msgstr ""
 "\n"
 "haber grubu mevcut değil!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:949
+#: ../camel/providers/nntp/camel-nntp-store.c:966
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Haber grubu kaydında klasör oluşturamazsınız: onun yerine kaydolun."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:957
+#: ../camel/providers/nntp/camel-nntp-store.c:974
 msgid "You cannot rename a folder in a News store."
 msgstr "Haber grubu kaydında yeniden adlandırma yapamazsınız."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:965
+#: ../camel/providers/nntp/camel-nntp-store.c:982
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Haber grubu kaydında klasör silemezsini: onun yerine kaydınızı silin."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1154
+#: ../camel/providers/nntp/camel-nntp-store.c:1171
 msgid "Authentication requested but no username provided"
 msgstr "Kimlik doğrulaması istendi fakat kullanıcı adı belirtilmedi"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1166
+#: ../camel/providers/nntp/camel-nntp-store.c:1183
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Sunucuya kimlik doğrulaması yapılamıyor: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1283
+#: ../camel/providers/nntp/camel-nntp-store.c:1306
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP komutu başarısız oldu: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1337
+#: ../camel/providers/nntp/camel-nntp-store.c:1360
 msgid "Not connected."
 msgstr "Bağlı değil."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1390
+#: ../camel/providers/nntp/camel-nntp-store.c:1413
 #, c-format
 msgid "No such folder: %s"
 msgstr "Bu isimde bir klasör yok: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:273
-#: ../camel/providers/nntp/camel-nntp-summary.c:369
+#: ../camel/providers/nntp/camel-nntp-summary.c:271
+#: ../camel/providers/nntp/camel-nntp-summary.c:364
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Yeni iletiler taranıyor"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:280
+#: ../camel/providers/nntp/camel-nntp-summary.c:278
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Xover'den beklenmeyen sunucu cevabı: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:383
+#: ../camel/providers/nntp/camel-nntp-summary.c:378
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Head'den beklenmeyen sunucu cevabı: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:423
+#: ../camel/providers/nntp/camel-nntp-summary.c:414
 msgid "Use cancel"
 msgstr "İptal'i kullanın"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:425
+#: ../camel/providers/nntp/camel-nntp-summary.c:416
 #, c-format
 msgid "Operation failed: %s"
 msgstr "İşlem başarısız oldu: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:251
+#: ../camel/providers/pop3/camel-pop3-folder.c:253
 msgid "Retrieving POP summary"
 msgstr "POP özeti alınıyor"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:269
+#: ../camel/providers/pop3/camel-pop3-folder.c:271
 #, c-format
 msgid "Cannot get POP summary: %s"
 msgstr "POP özeti alınamıyor: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:312
+#: ../camel/providers/pop3/camel-pop3-folder.c:314
 msgid "Expunging old messages"
 msgstr "Eski iletiler yokediliyor"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:320
+#: ../camel/providers/pop3/camel-pop3-folder.c:322
 msgid "Expunging deleted messages"
 msgstr "Silinen iletiler yokediliyor"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:533
+#: ../camel/providers/pop3/camel-pop3-folder.c:530
+#: ../camel/providers/pop3/camel-pop3-folder.c:552
 #, c-format
 msgid "No message with UID %s"
 msgstr "%s UID'li ileti yok"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:540
+#: ../camel/providers/pop3/camel-pop3-folder.c:559
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "POP iletisi %d alınıyor"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:630
+#: ../camel/providers/pop3/camel-pop3-folder.c:649
 msgid "Unknown reason"
 msgstr "Bilinmeyen sebep"
 
@@ -4423,34 +4308,34 @@ msgstr ""
 "Bu desteklediğini iddia eden sunucularda bile tüm kullanıcılar için "
 "çalışmayabilir."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:208
+#: ../camel/providers/pop3/camel-pop3-store.c:209
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "%s POP sunucusundan geçerli karşılama okunamadı"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:225
-#: ../camel/providers/pop3/camel-pop3-store.c:239
-#: ../camel/providers/pop3/camel-pop3-store.c:249
-#: ../camel/providers/pop3/camel-pop3-store.c:255
+#: ../camel/providers/pop3/camel-pop3-store.c:226
+#: ../camel/providers/pop3/camel-pop3-store.c:240
+#: ../camel/providers/pop3/camel-pop3-store.c:250
+#: ../camel/providers/pop3/camel-pop3-store.c:256
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "%s POP sunucusuna güvenli kipta bağlantı başarısız oldu: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:226
+#: ../camel/providers/pop3/camel-pop3-store.c:227
 msgid "STLS not supported by server"
 msgstr "STLS sunucu tarafından desteklenmiyor"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:256
+#: ../camel/providers/pop3/camel-pop3-store.c:257
 msgid "TLS is not available in this build"
 msgstr "Bu derlemede TLS mevcut değil"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:362
+#: ../camel/providers/pop3/camel-pop3-store.c:363
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "%s POP sunucusuna bağlantı kurulamadı"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:403
-#: ../camel/providers/pop3/camel-pop3-store.c:536
+#: ../camel/providers/pop3/camel-pop3-store.c:404
+#: ../camel/providers/pop3/camel-pop3-store.c:537
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4459,22 +4344,22 @@ msgstr ""
 "%s POP sunucusuyla bağlantı kurulamadı: Belirtilen kimlik doğrulama "
 "mekanizmasıdesteklenmiyor."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:419
+#: ../camel/providers/pop3/camel-pop3-store.c:420
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s: %s"
 msgstr "SASL '%s' %s POP sunucusuna giriş başarısız oldu: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:431
+#: ../camel/providers/pop3/camel-pop3-store.c:432
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "%s POP sunucusuna bağlanılamadı: SASL Protokol hatası"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:450
+#: ../camel/providers/pop3/camel-pop3-store.c:451
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "%s POP sunucusuyla kimlik doğulaması başarısız oldu: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:509
+#: ../camel/providers/pop3/camel-pop3-store.c:510
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4484,8 +4369,8 @@ msgstr ""
 "Geçersiz APOP ID alındı. Başkası gibi görünme saldırısından süphelenildi. "
 "Lütfen sistem yöneticinizle bağlantıya geçin."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:550
-#: ../camel/providers/pop3/camel-pop3-store.c:563
+#: ../camel/providers/pop3/camel-pop3-store.c:551
+#: ../camel/providers/pop3/camel-pop3-store.c:564
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4494,7 +4379,7 @@ msgstr ""
 "%s POP sunucusuyla bağlantı kurulamadı.\n"
 "Parola iletiminde hata: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:557
+#: ../camel/providers/pop3/camel-pop3-store.c:558
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4503,7 +4388,7 @@ msgstr ""
 "%s POP sunucusuyla bağlantı kurulamadı.\n"
 "Kullanıcı adı iletiminde hata: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:663
+#: ../camel/providers/pop3/camel-pop3-store.c:671
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Böyle bir klasör yok: '%s'."
@@ -4685,7 +4570,7 @@ msgstr "STARTTLS komutu başarısız oldu"
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "%s SMTP sunucusu %s kimlik doğrulama yöntemini desteklemiyor."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:564
+#: ../camel/providers/smtp/camel-smtp-transport.c:568
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4696,93 +4581,93 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:697
+#: ../camel/providers/smtp/camel-smtp-transport.c:701
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP sunucu %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:699
+#: ../camel/providers/smtp/camel-smtp-transport.c:703
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "%s üzerinden STMP mektup gönderimi"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:717
+#: ../camel/providers/smtp/camel-smtp-transport.c:721
 msgid "Cannot send message: service not connected."
 msgstr "İleti gönderilemiyor: servis bağlı değil."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:723
+#: ../camel/providers/smtp/camel-smtp-transport.c:727
 msgid "Cannot send message: sender address not valid."
 msgstr "İleti gönderilemiyor: gönderen adresi geçerli değil."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:727
+#: ../camel/providers/smtp/camel-smtp-transport.c:731
 msgid "Sending message"
 msgstr "İletiler gönderiliyor"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:742
+#: ../camel/providers/smtp/camel-smtp-transport.c:746
 msgid "Cannot send message: no recipients defined."
 msgstr "İleti gönderilemiyor: hiçbir alıcı belirtilmemiş."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:753
+#: ../camel/providers/smtp/camel-smtp-transport.c:757
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "İleti gönderilemiyor: bir ya da daha fazla hatalı alıcı"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:982
+#: ../camel/providers/smtp/camel-smtp-transport.c:986
 msgid "SMTP Greeting"
 msgstr "SMTP Karşılaması"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1007
+#: ../camel/providers/smtp/camel-smtp-transport.c:1011
 #, c-format
 msgid "HELO command failed: %s"
 msgstr "HELO komutu başarısız oldu: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1024
+#: ../camel/providers/smtp/camel-smtp-transport.c:1028
 msgid "HELO command failed"
 msgstr "HELO komutu başarısız"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1090
+#: ../camel/providers/smtp/camel-smtp-transport.c:1094
 msgid "SMTP Authentication"
 msgstr "SMTP Kimlik Doğrulama"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1096
+#: ../camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Error creating SASL authentication object."
 msgstr "SASL kimlik doğrulama nesnesi oluşturulamadı."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1113
-#: ../camel/providers/smtp/camel-smtp-transport.c:1124
+#: ../camel/providers/smtp/camel-smtp-transport.c:1117
+#: ../camel/providers/smtp/camel-smtp-transport.c:1128
 #, c-format
 msgid "AUTH command failed: %s"
 msgstr "AUTH komutu başarısız oldu: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1130
+#: ../camel/providers/smtp/camel-smtp-transport.c:1134
 msgid "AUTH command failed"
 msgstr "AUTH komutu başarısız"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1200
+#: ../camel/providers/smtp/camel-smtp-transport.c:1204
 msgid "Bad authentication response from server.\n"
 msgstr "Sunucudan hatalı kimlik doğrulama yanıtı.\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1227
+#: ../camel/providers/smtp/camel-smtp-transport.c:1231
 #, c-format
 msgid "MAIL FROM command failed: %s: mail not sent"
 msgstr "MAIL FROM komutu başarısız oldu: %s: mektup gönderilmedi"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1244
+#: ../camel/providers/smtp/camel-smtp-transport.c:1248
 msgid "MAIL FROM command failed"
 msgstr "MAIL FROM komutu başarısız"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1268
+#: ../camel/providers/smtp/camel-smtp-transport.c:1272
 #, c-format
 msgid "RCPT TO command failed: %s: mail not sent"
 msgstr "RCPT TO komutu başarısız oldu: %s: mektup gönderilmedi"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1287
+#: ../camel/providers/smtp/camel-smtp-transport.c:1291
 #, c-format
 msgid "RCPT TO <%s> failed"
 msgstr "RCPT TO <%s> başarısız"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1327
-#: ../camel/providers/smtp/camel-smtp-transport.c:1396
-#: ../camel/providers/smtp/camel-smtp-transport.c:1415
+#: ../camel/providers/smtp/camel-smtp-transport.c:1331
+#: ../camel/providers/smtp/camel-smtp-transport.c:1400
+#: ../camel/providers/smtp/camel-smtp-transport.c:1419
 #, c-format
 msgid "DATA command failed: %s: mail not sent"
 msgstr "DATA komutu başarısız oldu: %s: mektup gönderilmedi"
@@ -4790,26 +4675,26 @@ msgstr "DATA komutu başarısız oldu: %s: mektup gönderilmedi"
 #. we should have gotten instructions on how to use the DATA command:
 #. * 354 Enter mail, end with "." on a line by itself
 #.
-#: ../camel/providers/smtp/camel-smtp-transport.c:1344
-#: ../camel/providers/smtp/camel-smtp-transport.c:1431
+#: ../camel/providers/smtp/camel-smtp-transport.c:1348
+#: ../camel/providers/smtp/camel-smtp-transport.c:1435
 msgid "DATA command failed"
 msgstr "DATA komutu başarısız"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1454
+#: ../camel/providers/smtp/camel-smtp-transport.c:1458
 #, c-format
 msgid "RSET command failed: %s"
 msgstr "RSET komutu başarısız oldu: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1470
+#: ../camel/providers/smtp/camel-smtp-transport.c:1474
 msgid "RSET command failed"
 msgstr "RSET komutu başarısız"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1493
+#: ../camel/providers/smtp/camel-smtp-transport.c:1497
 #, c-format
 msgid "QUIT command failed: %s"
 msgstr "QUIT komutu başarısız oldu: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1507
+#: ../camel/providers/smtp/camel-smtp-transport.c:1511
 msgid "QUIT command failed"
 msgstr "QUIT komutu başarısız"
 
@@ -5031,7 +4916,7 @@ msgstr "LDAP sunucusuna anonim olarak ulaşılıyor"
 msgid "Failed to authenticate.\n"
 msgstr "Kimlik doğrulaması başarısız oldu.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:261
+#: ../libedataserverui/e-categories-dialog.c:362
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -5039,11 +4924,11 @@ msgid ""
 msgstr ""
 "Yapılandırmada '%s' kategorisi zaten mevcut. Lütfen başka bir ad kullanın"
 
-#: ../libedataserverui/e-categories-dialog.c:466
+#: ../libedataserverui/e-categories-dialog.c:526
 msgid "Icon"
 msgstr "Simge"
 
-#: ../libedataserverui/e-categories-dialog.c:471
+#: ../libedataserverui/e-categories-dialog.c:531
 msgid "Category"
 msgstr "Kategori"
 
@@ -5079,19 +4964,32 @@ msgstr "_Düzenle"
 msgid "categories"
 msgstr "kategoriler"
 
-#: ../libedataserverui/e-name-selector-dialog.c:272
+#: ../libedataserverui/e-category-completion.c:290
+#, c-format
+msgid "Create category \"%s\""
+msgstr "Kategori \"%s\" oluştur"
+
+#: ../libedataserverui/e-cell-renderer-color.c:222
+msgid "Color Info"
+msgstr "Renk Bilgisi"
+
+#: ../libedataserverui/e-cell-renderer-color.c:223
+msgid "The color to render"
+msgstr "Taranacak renk"
+
+#: ../libedataserverui/e-name-selector-dialog.c:278
 msgid "Select Contacts from Address Book"
 msgstr "Bağlantıları Adres Defterinden Seç"
 
-#: ../libedataserverui/e-name-selector-dialog.c:559
+#: ../libedataserverui/e-name-selector-dialog.c:565
 msgid "_Add"
 msgstr "_Ekle"
 
-#: ../libedataserverui/e-name-selector-dialog.c:584
+#: ../libedataserverui/e-name-selector-dialog.c:590
 msgid "_Remove"
 msgstr "_Sil"
 
-#: ../libedataserverui/e-name-selector-dialog.c:761
+#: ../libedataserverui/e-name-selector-dialog.c:767
 #: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Any Category"
 msgstr "Herhangi Bir Kategori"
@@ -5134,77 +5032,77 @@ msgid "_Search:"
 msgstr "_Ara:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2369
+#: ../libedataserverui/e-name-selector-entry.c:2456
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "Satır Arasında %s _Aç"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2384
+#: ../libedataserverui/e-name-selector-entry.c:2471
 #, c-format
 msgid "Cop_y %s"
 msgstr "_Kopyala %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2394
+#: ../libedataserverui/e-name-selector-entry.c:2481
 #, c-format
 msgid "C_ut %s"
 msgstr "_Kes %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2411
+#: ../libedataserverui/e-name-selector-entry.c:2498
 #, c-format
 msgid "_Edit %s"
 msgstr "%s Öğesini _Düzenle"
 
-#: ../libedataserverui/e-name-selector-list.c:466
+#: ../libedataserverui/e-name-selector-list.c:472
 #, c-format
 msgid "_Delete %s"
 msgstr "_Sil %s"
 
-#: ../libedataserverui/e-passwords.c:218
+#: ../libedataserverui/e-passwords.c:234
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
 msgstr ""
 "Anatharlık anahtarı kullanabilir değil: kullanıcı ya da makine ismi yok"
 
-#: ../libedataserverui/e-passwords.c:1055
+#: ../libedataserverui/e-passwords.c:1094
 msgid "You have the Caps Lock key on."
 msgstr "Caps Lock tuşunuz açık durumda."
 
-#: ../libedataserverui/e-passwords.c:1175
+#: ../libedataserverui/e-passwords.c:1216
 msgid "_Remember this passphrase"
 msgstr "_Bu parola metnini hatırla"
 
-#: ../libedataserverui/e-passwords.c:1176
+#: ../libedataserverui/e-passwords.c:1217
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "B_u parola metnini oturumun geri kalanında hatırla"
 
-#: ../libedataserverui/e-passwords.c:1181
+#: ../libedataserverui/e-passwords.c:1222
 msgid "_Remember this password"
 msgstr "_Bu parolayı hatırla"
 
-#: ../libedataserverui/e-passwords.c:1182
+#: ../libedataserverui/e-passwords.c:1223
 msgid "_Remember this password for the remainder of this session"
 msgstr "B_u parolayı oturumun geri kalanında hatırla"
 
 #. prepare the dialog
-#: ../libedataserverui/e-source-selector-dialog.c:95
+#: ../libedataserverui/e-source-selector-dialog.c:100
 msgid "Select destination"
 msgstr "Hedef seçin"
 
-#: ../libedataserverui/e-source-selector-dialog.c:148
+#: ../libedataserverui/e-source-selector-dialog.c:156
 msgid "_Destination"
 msgstr "_Hedef"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1683
-#: ../servers/exchange/storage/exchange-account.c:953
+#: ../servers/exchange/lib/e2k-autoconfig.c:1698
+#: ../servers/exchange/storage/exchange-account.c:959
 #, c-format
 msgid "Enter password for %s"
 msgstr "%s için parolayı girin"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1684
-#: ../servers/exchange/storage/exchange-account.c:958
+#: ../servers/exchange/lib/e2k-autoconfig.c:1699
+#: ../servers/exchange/storage/exchange-account.c:964
 msgid "Enter password"
 msgstr "Parola girin"
 
@@ -5308,26 +5206,26 @@ msgstr "Bu işlem çevirim dışı kipte gerçekleştirilemez"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:644
+#: ../servers/exchange/storage/exchange-account.c:642
 #, c-format
 msgid "%s's Folders"
 msgstr "%s Kullanıcısı Klasörleri"
 
-#: ../servers/exchange/storage/exchange-account.c:1259
+#: ../servers/exchange/storage/exchange-account.c:1265
 msgid "Personal Folders"
 msgstr "Kişisel Klasörler"
 
-#: ../servers/exchange/storage/exchange-account.c:1274
+#: ../servers/exchange/storage/exchange-account.c:1280
 msgid "Favorite Public Folders"
 msgstr "Sık Kullanılan Genel Klasörler"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1297
 msgid "All Public Folders"
 msgstr "Tüm Genel Klasörler"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1305
+#: ../servers/exchange/storage/exchange-account.c:1311
 msgid "Global Address List"
 msgstr "Genel Adres Listesi"
 
@@ -5395,13 +5293,119 @@ msgstr ""
 "Birden fazla kesimleme (segmentation) hatası oluştu; hata penceresi "
 "gösterilemiyor\n"
 
-#: ../libedataserverui/e-cell-renderer-color.c:210
-msgid "Color Info"
-msgstr "Renk Bilgisi"
+#~ msgid "Decoder failed, error %d"
+#~ msgstr "Kod çözümleme başarısız, hata %d"
 
-#: ../libedataserverui/e-cell-renderer-color.c:211
-msgid "The color to render"
-msgstr "Taranacak renk"
+#~ msgid "Fair"
+#~ msgstr "Açık"
+
+#~ msgid "Snow showers"
+#~ msgstr "Kar serpintisi"
+
+#~ msgid "Snow"
+#~ msgstr "Karlı"
+
+#~ msgid "Partly cloudy"
+#~ msgstr "Parçalı bulutlu"
+
+#~ msgid "Smoke"
+#~ msgstr "Sisli"
+
+#~ msgid "Thunderstorms"
+#~ msgstr "Gök gürültülü"
+
+#~ msgid "Cloudy"
+#~ msgstr "Bulutlu"
+
+#~ msgid "Drizzle"
+#~ msgstr "Hafif yağmurlu"
+
+#~ msgid "Sunny"
+#~ msgstr "Güneşli"
+
+#~ msgid "Dust"
+#~ msgstr "Tozlu"
+
+#~ msgid "Clear"
+#~ msgstr "Açık"
+
+#~ msgid "Mostly cloudy"
+#~ msgstr "Kapalı"
+
+#~ msgid "Windy"
+#~ msgstr "Rüzgarlı"
+
+#~ msgid "Rain showers"
+#~ msgstr "Yağmur serpintili"
+
+#~ msgid "Foggy"
+#~ msgstr "Sisli"
+
+#~ msgid "Rain/snow mixed"
+#~ msgstr "Karla karışık yağmurlu"
+
+#~ msgid "Sleet"
+#~ msgstr "Sulu kar"
+
+#~ msgid "Very hot/humid"
+#~ msgstr "Çok sıcak/nemli"
+
+#~ msgid "Blizzard"
+#~ msgstr "Fırtınalı"
+
+#~ msgid "Freezing rain"
+#~ msgstr "Dondurucu yağmurlu"
+
+#~ msgid "Haze"
+#~ msgstr "Kapalı"
+
+#~ msgid "Blowing snow"
+#~ msgstr "Karlı"
+
+#~ msgid "Freezing drizzle"
+#~ msgstr "Dondurucu yağmur"
+
+#~ msgid "Very cold/wind chill"
+#~ msgstr "Çok soğuk/rüzgar esintili"
+
+#~ msgid "Rain"
+#~ msgstr "Yağmurlu"
+
+#~ msgid "Weather: Partly Cloudy"
+#~ msgstr "Hava durumu: Parçalı Bulutlu"
+
+#~ msgid "%.1f°C - %s"
+#~ msgstr "%.1f°C - %s"
+
+#~ msgid "%.1f°F - %s"
+#~ msgstr "%.1f°F - %s"
+
+#~ msgid "%.1f/%.1f°C - %s"
+#~ msgstr "%.1f/%.1f°C - %s"
+
+#~ msgid "%.1f/%.1f°F - %s"
+#~ msgstr "%.1f/%.1f°F - %s"
+
+#~ msgid "%d%% chance of precipitation\n"
+#~ msgstr "%%%d ihtimalde yağış\n"
+
+#~ msgid "%.1fcm snow\n"
+#~ msgstr "%.1fcm kar\n"
+
+#~ msgid "%.1fin snow\n"
+#~ msgstr "%.1fin kar\n"
+
+#~ msgid "%.1f-%.1fcm snow\n"
+#~ msgstr "%.1f-%.1fcm kar\n"
+
+#~ msgid "%.1f-%.1fin snow\n"
+#~ msgstr "%.1f-%.1fin kar\n"
+
+#~ msgid "Failed to create create child process '%s': %s"
+#~ msgstr "'%s' alt süreci oluşturulamadı: %s"
+
+#~ msgid "Performing query on unknown header: %s"
+#~ msgstr "Bilinmeyen başlık üzerinde arama yapılıyor: %s"
 
 #~ msgid "Cannot find certificate for `%s'"
 #~ msgstr "`%s' için sertifika bulunamadı"
