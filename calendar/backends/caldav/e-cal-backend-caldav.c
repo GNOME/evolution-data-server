@@ -1167,20 +1167,23 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_GET, uri);
-	g_free (uri);
-	if (message == NULL)
+	if (message == NULL) {
+		g_free (uri);
 		return GNOME_Evolution_Calendar_NoSuchCal;
+	}
 
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
 	send_and_handle_redirection (priv->session, message, NULL);
 
-	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		result = status_code_to_result (message->status_code, priv);
+	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		guint status_code = message->status_code;
 		g_object_unref (message);
-		g_warning ("Could not fetch object from server\n");
-		return result;
+
+		g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, status_code, soup_status_get_phrase (status_code) ? soup_status_get_phrase (status_code) : "Unknown code");
+		g_free (uri);
+		return status_code_to_result (status_code, priv);
 	}
 
 	hdr = soup_message_headers_get (message->response_headers, "Content-Type");
@@ -1188,7 +1191,8 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	if (hdr == NULL || g_ascii_strncasecmp (hdr, "text/calendar", 13)) {
 		result = GNOME_Evolution_Calendar_InvalidObject;
 		g_object_unref (message);
-		g_warning ("Object to fetch not of type text/calendar");
+		g_warning ("Object to fetch '%s' not of type text/calendar", uri);
+		g_free (uri);
 		return result;
 	}
 
@@ -1198,8 +1202,9 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 		g_free (object->etag);
 		object->etag = quote_etag (hdr);
 	} else if (!object->etag) {
-		g_warning ("UUHH no ETag, now that's bad!");
+		g_warning ("UUHH no ETag, now that's bad! (at '%s')", uri);
 	}
+	g_free (uri);
 
 	g_free (object->cdata);
 	object->cdata = g_strdup (message->response_body->data);
@@ -1351,10 +1356,8 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 	res  = TRUE;
 	result  = caldav_server_get_object (cbdav, object);
 
-	if (result != GNOME_Evolution_Calendar_Success) {
-		g_warning ("Could not fetch object from server");
+	if (result != GNOME_Evolution_Calendar_Success)
 		return FALSE;
-	}
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
@@ -1718,6 +1721,28 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		priv->uri = g_strconcat (proto, uri + 9, NULL);
 	} else {
 		priv->uri = g_strdup (uri);
+	}
+
+	if (priv->uri) {
+		char *p = strstr (priv->uri, "://");
+		char *tmp, *old = priv->uri;
+
+		/* properly encode uri */
+		tmp = soup_uri_encode (p ? p + 3 : priv->uri, NULL);
+
+		priv->uri = soup_uri_normalize (tmp, "/");
+		g_free (tmp);
+
+		if (p) {
+			/* prepend protocol */
+			tmp = priv->uri;
+			p [3] = 0;
+
+			priv->uri = g_strconcat (old, tmp, NULL);
+			g_free (tmp);
+		}
+
+		g_free (old);
 	}
 
 	/* remove trailing slashes... */

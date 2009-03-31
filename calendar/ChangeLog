@@ -1,3 +1,14 @@
+2009-03-31  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #573880
+
+	* backends/caldav/e-cal-backend-caldav.c: (initialize_backend):
+	Properly encode given uri before using it.
+
+	* backends/caldav/e-cal-backend-caldav.c: (synchronize_object),
+	(caldav_server_get_object): Print more detailed information
+	on error and do not duplicate error messages.
+
 2009-03-24  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #573187
