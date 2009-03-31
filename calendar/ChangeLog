@@ -3,6 +3,13 @@
 	** Fix for bug #573880
 
 	* backends/caldav/e-cal-backend-caldav.c: (initialize_backend):
+	Encode only path and use SoupURI to do this.
+
+2009-03-31  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #573880
+
+	* backends/caldav/e-cal-backend-caldav.c: (initialize_backend):
 	Properly encode given uri before using it.
 
 	* backends/caldav/e-cal-backend-caldav.c: (synchronize_object),

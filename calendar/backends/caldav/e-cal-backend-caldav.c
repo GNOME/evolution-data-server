@@ -1724,25 +1724,23 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	}
 
 	if (priv->uri) {
-		char *p = strstr (priv->uri, "://");
-		char *tmp, *old = priv->uri;
+		SoupURI *suri = soup_uri_new (priv->uri);
 
 		/* properly encode uri */
-		tmp = soup_uri_encode (p ? p + 3 : priv->uri, NULL);
+		if (suri && suri->path) {
+			char *tmp = soup_uri_encode (suri->path, NULL);
+			char *path = soup_uri_normalize (tmp, "/");
 
-		priv->uri = soup_uri_normalize (tmp, "/");
-		g_free (tmp);
+			soup_uri_set_path (suri, path);
 
-		if (p) {
-			/* prepend protocol */
-			tmp = priv->uri;
-			p [3] = 0;
-
-			priv->uri = g_strconcat (old, tmp, NULL);
 			g_free (tmp);
+			g_free (path);
+			g_free (priv->uri);
+
+			priv->uri = soup_uri_to_string (suri, FALSE);
 		}
 
-		g_free (old);
+		soup_uri_free (suri);
 	}
 
 	/* remove trailing slashes... */
