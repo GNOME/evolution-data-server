@@ -1179,7 +1179,8 @@ sm_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *opa
 	camel_data_wrapper_construct_from_stream((CamelDataWrapper *)opart, ostream);
 
 	if (NSS_CMSMessage_IsSigned(cmsg)) {
-		valid = sm_verify_cmsg(context, cmsg, NULL, ex);
+		camel_stream_reset (ostream);
+		valid = sm_verify_cmsg (context, cmsg, ostream, ex);
 	} else {
 		valid = camel_cipher_validity_new();
 		valid->encrypt.description = g_strdup(_("Encrypted content"));

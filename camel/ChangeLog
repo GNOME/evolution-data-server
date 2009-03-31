@@ -1,3 +1,10 @@
+2009-03-31  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #564465
+
+	* camel-smime-context.c: (sm_decrypt):
+	Pass correct body for signature verification.
+
 2009-03-27  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #569700
