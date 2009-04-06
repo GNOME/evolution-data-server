@@ -1,3 +1,10 @@
+2009-04-06  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #571677
+
+	* backends/file/e-cal-backend-file.c: (e_cal_backend_file_open),
+	(add_timezone): Do not duplicate timezones in a file on open.
+
 2009-03-31  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #573880

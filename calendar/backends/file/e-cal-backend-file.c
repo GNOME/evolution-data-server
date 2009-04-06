@@ -907,6 +907,104 @@ get_uri_string (ECalBackend *backend)
 	return full_uri;
 }
 
+static gboolean
+add_timezone (icalcomponent *icalcomp, icaltimezone *tzone)
+{
+	GSList *to_remove = NULL, *r;
+	icalcomponent *subcomp;
+	icaltimezone *zone;
+	gboolean add = TRUE, have_same = FALSE;
+	const char *tzid;
+	char *cmp;
+
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+
+	/* it's fine to have passed in NULL tzcomp; for example UTC timezone does this */
+	if (!tzone || !icaltimezone_get_component (tzone))
+		return FALSE;
+
+	tzid = icaltimezone_get_tzid (tzone);
+	if (!tzid)
+		return FALSE;
+
+	cmp = icalcomponent_as_ical_string_r (icaltimezone_get_component (tzone));
+	zone = icaltimezone_new ();
+
+	for (subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VTIMEZONE_COMPONENT);
+	     subcomp;
+	     subcomp = icalcomponent_get_next_component (icalcomp, ICAL_VTIMEZONE_COMPONENT)) {
+		if (!icaltimezone_set_component (zone, icalcomponent_new_clone (subcomp))) {
+			to_remove = g_slist_prepend (to_remove, subcomp);
+		} else if (icaltimezone_get_tzid (zone) && g_str_equal (tzid, icaltimezone_get_tzid (zone))) {
+			/* there is a timezone component with the same tzid already */
+			if (have_same) {
+				to_remove = g_slist_prepend (to_remove, subcomp);
+			} else {
+				char *str = icalcomponent_as_ical_string_r (subcomp);
+
+				/* not the best way how to compare two components, but don't have better */
+				if (str && g_str_equal (cmp, str)) {
+					have_same = TRUE;
+					add = FALSE;
+				} else {
+					to_remove = g_slist_prepend (to_remove, subcomp);
+				}
+
+				g_free (str);
+			}
+		}
+	}
+
+	g_free (cmp);
+
+	for (r = to_remove; r; r = r->next) {
+		icalcomponent_remove_component (icalcomp, r->data);
+	}
+
+	if (g_slist_length (to_remove) > 1) {
+		/* there were more than once tzid as this,
+		   thus check for duplicities for all of timezones there */
+		GHashTable *known = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		GSList *rem2 = NULL;
+
+		for (subcomp = icalcomponent_get_first_component (icalcomp, ICAL_VTIMEZONE_COMPONENT);
+		     subcomp;
+		     subcomp = icalcomponent_get_next_component (icalcomp, ICAL_VTIMEZONE_COMPONENT)) {
+			if (!icaltimezone_set_component (zone, icalcomponent_new_clone (subcomp))) {
+				rem2 = g_slist_prepend (rem2, subcomp);
+			} else {
+				const char *tzid2 = icaltimezone_get_tzid (zone);
+
+				/* check all but not the one which was checked above */
+				if (tzid2 && !g_str_equal (tzid, tzid2)) {
+					if (g_hash_table_lookup (known, tzid2) == NULL) {
+						/* the first component of this tzid, keep it */
+						g_hash_table_insert (known, g_strdup (tzid2), GINT_TO_POINTER (1));
+					} else {
+						/* it's there already, remove it */
+						rem2 = g_slist_prepend (rem2, subcomp);
+					}
+				}
+			}
+		}
+
+		for (r = rem2; r; r = r->next) {
+			icalcomponent_remove_component (icalcomp, r->data);
+		}
+
+		g_slist_free (rem2);
+		g_hash_table_unref (known);
+	}
+
+	icaltimezone_free (zone, TRUE);
+	g_slist_free (to_remove);
+
+	if (add)
+		icalcomponent_add_component (icalcomp, icalcomponent_new_clone (icaltimezone_get_component (tzone)));
+
+	return add || to_remove != NULL;
+}
+
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
@@ -945,10 +1043,7 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	}
 
 	if (status == GNOME_Evolution_Calendar_Success) {
-		if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
-			icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
-
-			icalcomponent_add_component (priv->icalcomp, icalcomponent_new_clone (icalcomp));
+		if (priv->default_zone && add_timezone (priv->icalcomp, priv->default_zone)) {
 			save (cbfile);
 		}
 	}
