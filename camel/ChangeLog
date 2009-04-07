@@ -1,3 +1,12 @@
+2009-04-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #575084
+
+	* camel-db.c: (camel_sqlite3_file_xCheckReservedLock),
+	(camel_sqlite3_vfs_xOpen): Check for actual SQLite3 version in runtime
+	to call xCheckReservedLock with correct number parameters as expected
+	by the actual SQLite3 version it is running, not was compiled.
+
 2009-03-31  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #564465

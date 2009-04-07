@@ -152,16 +152,29 @@ def_subclassed (xTruncate, (sqlite3_file *pFile, sqlite3_int64 size), (cFile->ol
 def_subclassed (xFileSize, (sqlite3_file *pFile, sqlite3_int64 *pSize), (cFile->old_vfs_file, pSize))
 def_subclassed (xLock, (sqlite3_file *pFile, int lockType), (cFile->old_vfs_file, lockType))
 def_subclassed (xUnlock, (sqlite3_file *pFile, int lockType), (cFile->old_vfs_file, lockType))
-#if SQLITE_VERSION_NUMBER < 3006000
-def_subclassed (xCheckReservedLock, (sqlite3_file *pFile), (cFile->old_vfs_file))
-#else
-def_subclassed (xCheckReservedLock, (sqlite3_file *pFile, int *pResOut), (cFile->old_vfs_file, pResOut))
-#endif
 def_subclassed (xFileControl, (sqlite3_file *pFile, int op, void *pArg), (cFile->old_vfs_file, op, pArg))
 def_subclassed (xSectorSize, (sqlite3_file *pFile), (cFile->old_vfs_file))
 def_subclassed (xDeviceCharacteristics, (sqlite3_file *pFile), (cFile->old_vfs_file))
 
 #undef def_subclassed
+
+static int
+camel_sqlite3_file_xCheckReservedLock (sqlite3_file *pFile, int *pResOut)
+{
+	CamelSqlite3File *cFile;
+
+	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
+	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);
+
+	cFile = (CamelSqlite3File *) pFile;
+	g_return_val_if_fail (cFile->old_vfs_file->pMethods != NULL, SQLITE_ERROR);
+
+	/* check version in runtime */
+	if (sqlite3_libversion_number () < 3006000)
+		return ((int (*)(sqlite3_file *)) (cFile->old_vfs_file->pMethods->xCheckReservedLock)) (cFile->old_vfs_file);
+	else
+		return ((int (*)(sqlite3_file *, int *)) (cFile->old_vfs_file->pMethods->xCheckReservedLock)) (cFile->old_vfs_file, pResOut);
+}
 
 static int
 camel_sqlite3_file_xClose (sqlite3_file *pFile)
@@ -277,6 +290,13 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFi
 		/* initialize our subclass function only once */
 		io_methods.iVersion = cFile->old_vfs_file->pMethods->iVersion;
 
+		/* check version in compile time */
+		#if SQLITE_VERSION_NUMBER < 3006000
+		io_methods.xCheckReservedLock = (int (*)(sqlite3_file *)) camel_sqlite3_file_xCheckReservedLock;
+		#else
+		io_methods.xCheckReservedLock = camel_sqlite3_file_xCheckReservedLock;
+		#endif
+
 		#define use_subclassed(x) io_methods.x = camel_sqlite3_file_ ## x
 		use_subclassed (xClose);
 		use_subclassed (xRead);
@@ -286,7 +306,6 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const char *zPath, sqlite3_file *pFi
 		use_subclassed (xFileSize);
 		use_subclassed (xLock);
 		use_subclassed (xUnlock);
-		use_subclassed (xCheckReservedLock);
 		use_subclassed (xFileControl);
 		use_subclassed (xSectorSize);
 		use_subclassed (xDeviceCharacteristics);
