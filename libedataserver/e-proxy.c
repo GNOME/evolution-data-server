@@ -225,12 +225,12 @@ e_proxy_dispose (GObject *object)
 			soup_uri_free (priv->uri_https);
 
 		if (priv->ign_hosts) {
-			g_slist_foreach (priv->ign_hosts, (GFunc) ep_free_proxy_host_addr, NULL);
+			g_slist_foreach (priv->ign_hosts, (GFunc) g_free, NULL);
 			g_slist_free (priv->ign_hosts);
 		}
 
 		if (priv->ign_addrs) {
-			g_slist_foreach (priv->ign_addrs, (GFunc) g_free, NULL);
+			g_slist_foreach (priv->ign_addrs, (GFunc) ep_free_proxy_host_addr, NULL);
 			g_slist_free (priv->ign_addrs);
 		}
 		
@@ -618,7 +618,7 @@ ep_set_proxy (GConfClient *client,
 		}
 
 		if (priv->ign_addrs) {
-			g_slist_foreach (priv->ign_addrs, (GFunc) g_free, NULL);
+			g_slist_foreach (priv->ign_addrs, (GFunc) ep_free_proxy_host_addr, NULL);
 			g_slist_free (priv->ign_addrs);
 			priv->ign_addrs = NULL;
 		}
