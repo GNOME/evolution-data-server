@@ -248,11 +248,13 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 
 	if (xover_setup(store, ex) == -1)
 		goto fail;
-	
-	path = g_build_filename (store->storage_path, ".ev-journal", NULL);
-	disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
-	g_free (path);	
-	
+
+	if (!disco_store->diary) {
+		path = g_build_filename (store->storage_path, ".ev-journal", NULL);
+		disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
+		g_free (path);
+	}
+
 	retval = TRUE;
 
 	g_free(store->current_folder);
@@ -342,7 +344,10 @@ nntp_connect_offline (CamelService *service, CamelException *ex)
 		camel_data_cache_set_expire_age (nntp_store->cache, 60*60*24*14);
 		camel_data_cache_set_expire_access (nntp_store->cache, 60*60*24*5);
 	}	
-	
+
+	if (disco_store->diary)
+		return TRUE;
+
 	path = g_build_filename (nntp_store->storage_path, ".ev-journal", NULL);
 	disco_store->diary = camel_disco_diary_new (disco_store, path, ex);
 	g_free (path);
@@ -988,6 +993,7 @@ nntp_store_finalize (CamelObject *object)
 {
 	/* call base finalize */
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
+	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
 	struct _CamelNNTPStorePrivate *p = nntp_store->priv;
 	struct _xover_header *xover, *xn;
 	
@@ -1017,7 +1023,12 @@ nntp_store_finalize (CamelObject *object)
 
 	if (nntp_store->cache)
 		camel_object_unref(nntp_store->cache);
-	
+
+	if (disco_store->diary) {
+		camel_object_unref (disco_store->diary);
+		disco_store->diary = NULL;
+	}
+
 	g_free(p);
 }
 

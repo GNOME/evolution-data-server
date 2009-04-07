@@ -1,3 +1,10 @@
+2009-04-07  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #577002
+
+	* camel-nntp-store.c: (connect_to_server), (nntp_connect_offline),
+	(nntp_store_finalize): Do not leak ".ev-journal" file handles.
+
 2009-02-25  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #572268
