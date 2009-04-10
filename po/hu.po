@@ -1517,7 +1517,7 @@ msgstr "Nem levélszemét tanulása"
 
 #: ../camel/camel-folder.c:1978
 msgid "Filtering new message(s)"
-msgstr "Új üzenet(ek) szűrése"
+msgstr "Új üzenetek szűrése"
 
 #: ../camel/camel-gpg-context.c:755
 #, c-format
