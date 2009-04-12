@@ -190,7 +190,6 @@ static EDListNode *e_dlist_remove(EDListNode *n)
 }
 
 
-/* fucking glib... */
 static const char *
 e_strdown (char *str)
 {

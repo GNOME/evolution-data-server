@@ -40,7 +40,7 @@
 
 #define d(x)
 
-/* dunno where this fucking thing is got from */
+/* dunno where this thing is got from */
 /* see also camel-lock.c */
 #define _(x) (x)
 
@@ -138,7 +138,6 @@ static int camel_lock_helper_init(CamelException *ex)
 		for (i=3;i<255;i++)
 			     close(i);
 		execl(CAMEL_LIBEXECDIR "/camel-lock-helper-" API_VERSION, "camel-lock-helper", NULL);
-		d(fprintf(stderr, "shit, couldn't exec lock helper!\n"));
 		/* it'll pick this up when it tries to use us */
 		exit(255);
 	default:

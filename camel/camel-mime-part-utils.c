@@ -94,7 +94,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	switch (camel_mime_parser_state (mp)) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		d(printf("Creating body part\n"));
-		/* multipart/signed is some fucked up type that we must treat as binary data, fun huh, idiots. */
+		/* multipart/signed is some type that we must treat as binary data. */
 		if (camel_content_type_is (ct, "multipart", "signed")) {
 			content = (CamelDataWrapper *) camel_multipart_signed_new ();
 			camel_multipart_construct_from_parser ((CamelMultipart *) content, mp);

@@ -3000,8 +3000,6 @@ camel_imap_store_connected (CamelImapStore *store, CamelException *ex)
 }
 
 
-/* FIXME: please god, when will the hurting stop? Thus function is so
-   fucking broken it's not even funny. */
 ssize_t
 camel_imap_store_readline (CamelImapStore *store, char **dest, CamelException *ex)
 {

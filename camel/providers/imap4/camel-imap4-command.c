@@ -678,7 +678,6 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 			
 		unexpected:
 			
-			/* no fucking clue what we got... */
 			if (camel_imap4_engine_line (engine, &linebuf, &len, &ic->ex) == -1)
 				goto exception;
 			

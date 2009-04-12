@@ -1271,24 +1271,24 @@ search_header_full_regex (struct _ESExp *f, int argc, struct _ESExpResult **argv
 }
 
 /* this is just to OR results together */
-struct _glib_sux_donkeys {
+struct IterData {
 	int count;
 	GPtrArray *uids;
 };
 
 /* or, store all unique values */
 static void
-g_lib_sux_htor(char *key, int value, struct _glib_sux_donkeys *fuckup)
+htor(char *key, int value, struct IterData *iter_data)
 {
-	g_ptr_array_add(fuckup->uids, key);
+	g_ptr_array_add(iter_data->uids, key);
 }
 
 /* and, only store duplicates */
 static void
-g_lib_sux_htand(char *key, int value, struct _glib_sux_donkeys *fuckup)
+htand(char *key, int value, struct IterData *iter_data)
 {
-	if (value == fuckup->count)
-		g_ptr_array_add(fuckup->uids, key);
+	if (value == iter_data->count)
+		g_ptr_array_add(iter_data->uids, key);
 }
 
 static int
@@ -1333,7 +1333,7 @@ match_words_index(CamelFolderSearch *search, struct _camel_search_words *words, 
 {
 	GPtrArray *result = g_ptr_array_new();
 	GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
-	struct _glib_sux_donkeys lambdafoo;
+	struct IterData lambdafoo;
 	CamelIndexCursor *wc, *nc;
 	const char *word, *name;
 	int i;
@@ -1363,7 +1363,7 @@ match_words_index(CamelFolderSearch *search, struct _camel_search_words *words, 
 
 		lambdafoo.uids = result;
 		lambdafoo.count = (1<<words->len) - 1;
-		g_hash_table_foreach(ht, (GHFunc)g_lib_sux_htand, &lambdafoo);
+		g_hash_table_foreach(ht, (GHFunc)htand, &lambdafoo);
 		g_hash_table_destroy(ht);
 	}
 
@@ -1480,7 +1480,7 @@ search_body_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 	CamelException *ex = search->priv->ex;
 	struct _camel_search_words *words;
 	ESExpResult *r;
-	struct _glib_sux_donkeys lambdafoo;
+	struct IterData lambdafoo;
 
 	if (search->current) {	
 		int truth = FALSE;
@@ -1537,7 +1537,7 @@ search_body_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 				}
 			}
 			lambdafoo.uids = r->value.ptrarray;
-			g_hash_table_foreach(ht, (GHFunc)g_lib_sux_htor, &lambdafoo);
+			g_hash_table_foreach(ht, (GHFunc)htor, &lambdafoo);
 			g_hash_table_destroy(ht);
 		}
 	}

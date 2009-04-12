@@ -68,7 +68,7 @@ CamelType        camel_mime_filter_tohtml_get_type (void);
 CamelMimeFilter *camel_mime_filter_tohtml_new (guint32 flags, guint32 colour);
 
 
-/* utility functions to replace e_text_to_html shit */
+/* utility functions to replace e_text_to_html */
 
 char *camel_text_to_html (const char *in, guint32 flags, guint32 colour);
 

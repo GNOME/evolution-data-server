@@ -3683,7 +3683,6 @@ static unsigned char camel_datetok_table[256] = {
 	111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,
 };
 
-/* hrm, is there a library for this shit? */
 static struct {
 	char *name;
 	int offset;

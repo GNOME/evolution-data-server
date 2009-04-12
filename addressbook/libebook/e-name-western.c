@@ -105,9 +105,6 @@ e_name_western_get_words_at_idx (char *str, int idx, int num_words)
 	return g_string_free (words, FALSE);
 }
 
-/*
- * What the fuck is wrong with glib's MAX macro.
- */
 static int
 e_name_western_max (const int a, const int b)
 {

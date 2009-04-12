@@ -361,7 +361,7 @@ xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
 			changed |= xml_set_prop (node, "uid", &id->sig_uid);
 			if (!id->sig_uid) {
 
-				/* WTF is this shit doing here?  Migrate is supposed to "handle this" */
+				/* XXX Migrate is supposed to "handle this" */
 
 				/* set a fake sig uid so the migrate code can handle this */
 				gboolean autogen = FALSE;

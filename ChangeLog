@@ -1,3 +1,8 @@
+2009-04-12  Matthew Barnes  <mbarnes@redhat.com>
+
+	** Remove a bunch of juvenile comments.  Source code should
+	   look professional, even if some developers are not.
+
 2009-04-07  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #574522

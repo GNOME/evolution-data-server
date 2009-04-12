@@ -214,27 +214,26 @@ e_sexp_resultv_free(struct _ESExp *f, int argc, struct _ESExpResult **argv)
 
 /* implementations for the builtin functions */
 
-/* can you tell, i dont like glib? */
 /* we can only itereate a hashtable from a called function */
-struct _glib_sux_donkeys {
+struct IterData {
 	int count;
 	GPtrArray *uids;
 };
 
 /* ok, store any values that are in all sets */
 static void
-g_lib_sux_htand(char *key, int value, struct _glib_sux_donkeys *fuckup)
+htand(char *key, int value, struct IterData *iter_data)
 {
-	if (value == fuckup->count) {
-		g_ptr_array_add(fuckup->uids, key);
+	if (value == iter_data->count) {
+		g_ptr_array_add(iter_data->uids, key);
 	}
 }
 
 /* or, store all unique values */
 static void
-g_lib_sux_htor(char *key, int value, struct _glib_sux_donkeys *fuckup)
+htor(char *key, int value, struct IterData *iter_data)
 {
-	g_ptr_array_add(fuckup->uids, key);
+	g_ptr_array_add(iter_data->uids, key);
 }
 
 static ESExpResult *
@@ -242,7 +241,7 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 {
 	struct _ESExpResult *r, *r1;
 	GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
-	struct _glib_sux_donkeys lambdafoo;
+	struct IterData lambdafoo;
 	int type=-1;
 	int bool = TRUE;
 	int i;
@@ -286,7 +285,7 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	if (type == ESEXP_RES_ARRAY_PTR) {
 		lambdafoo.count = argc;
 		lambdafoo.uids = g_ptr_array_new();
-		g_hash_table_foreach(ht, (GHFunc)g_lib_sux_htand, &lambdafoo);
+		g_hash_table_foreach(ht, (GHFunc)htand, &lambdafoo);
 		r->type = ESEXP_RES_ARRAY_PTR;
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
@@ -305,7 +304,7 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 {
 	struct _ESExpResult *r, *r1;
 	GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
-	struct _glib_sux_donkeys lambdafoo;
+	struct IterData lambdafoo;
 	int type = -1;
 	int bool = FALSE;
 	int i;
@@ -345,7 +344,7 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	if (type == ESEXP_RES_ARRAY_PTR) {
 		lambdafoo.count = argc;
 		lambdafoo.uids = g_ptr_array_new();
-		g_hash_table_foreach(ht, (GHFunc)g_lib_sux_htor, &lambdafoo);
+		g_hash_table_foreach(ht, (GHFunc)htor, &lambdafoo);
 		r->type = ESEXP_RES_ARRAY_PTR;
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {

@@ -47,7 +47,7 @@ enum {
 typedef struct _CamelMaildirMessageInfo {
 	CamelLocalMessageInfo info;
 
-	char *filename;		/* maildir has this annoying status shit on the end of the filename, use this to get the real message id */
+	char *filename;		/* maildir has this annoying status on the end of the filename, use this to get the real message id */
 } CamelMaildirMessageInfo;
 
 struct _CamelMaildirSummary {

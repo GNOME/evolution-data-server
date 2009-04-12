@@ -193,7 +193,6 @@ static CamelDListNode *camel_dlist_remove(CamelDListNode *n)
 }
 
 
-/* fucking glib... */
 static const char *
 e_strdown (char *str)
 {

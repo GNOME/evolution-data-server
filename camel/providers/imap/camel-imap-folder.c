@@ -327,8 +327,9 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 		} else if (!g_ascii_strncasecmp (resp, "OK [PERMANENTFLAGS ", 19)) {
 			resp += 19;
 			
-			/* workaround for broken IMAP servers that send "* OK [PERMANENTFLAGS ()] Permanent flags"
-			 * even tho they do allow storing flags. *Sigh* So many fucking broken IMAP servers out there. */
+			/* workaround for broken IMAP servers that send
+			 * "* OK [PERMANENTFLAGS ()] Permanent flags"
+			 * even tho they do allow storing flags. */
 			imap_parse_flag_list (&resp, &perm_flags, NULL);
 			if (perm_flags != 0)
 				folder->permanent_flags = perm_flags;
@@ -3515,8 +3516,6 @@ imap_update_summary (CamelFolder *folder, int exists,
 			}
 			
 			if (pmi == NULL) {
-				/* Server response is *really* fucked up,
-				   I guess we just pretend it never happened? */
 				continue;
 			}
 			

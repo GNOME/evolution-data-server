@@ -753,7 +753,7 @@ imap4_fetch_all_free (struct imap4_fetch_all_t *fetch)
 }
 
 static void
-courier_imap_is_a_piece_of_shit (CamelFolderSummary *summary, guint32 msg)
+courier_imap_show_error (CamelFolderSummary *summary, guint32 msg)
 {
 	CamelSession *session = ((CamelService *) summary->folder->parent_store)->session;
 	char *warning;
@@ -791,7 +791,7 @@ imap4_fetch_all_add (struct imap4_fetch_all_t *fetch, gboolean complete)
 	for (i = 0; i < fetch->added->len; i++) {
 		if (!(envelope = fetch->added->pdata[i])) {
 			if (complete)
-				courier_imap_is_a_piece_of_shit (fetch->summary, i + fetch->first);
+				courier_imap_show_error (fetch->summary, i + fetch->first);
 			break;
 		}
 		
@@ -883,7 +883,7 @@ imap4_fetch_all_update (struct imap4_fetch_all_t *fetch)
 	
 	for (i = 0; i < fetch->added->len; i++) {
 		if (!(envelope = fetch->added->pdata[i])) {
-			courier_imap_is_a_piece_of_shit (fetch->summary, i + fetch->first);
+			courier_imap_show_error (fetch->summary, i + fetch->first);
 			continue;
 		}
 		
