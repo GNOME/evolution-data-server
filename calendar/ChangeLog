@@ -1,5 +1,11 @@
 2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes #488632 (bnc)
+	* calendar/backends/groupwise/e-cal-backend-groupwise-utils.c: Creates
+	the right number of recurring instances on server.
+
+2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #241604 (bnc)
 	* calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:
 	* servers/groupwise/e-gw-item.c:

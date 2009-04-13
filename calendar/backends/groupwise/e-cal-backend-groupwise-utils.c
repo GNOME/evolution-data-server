@@ -59,6 +59,16 @@ get_recur_instance (ECalComponent *comp, time_t instance_start, time_t instance_
 	return TRUE;
 }
 
+static gboolean
+get_recur_count (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)
+{
+	int *count = (int *) data;
+
+	*count = *count + 1;
+
+	return TRUE;
+}
+
 static icaltimezone *
 resolve_tzid_cb (const char *tzid, gpointer data)
 {
@@ -473,6 +483,24 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 
 }
 
+static int 
+get_actual_count (ECalComponent *comp, ECalBackendGroupwise *cbgw)
+{
+	int count = 0;	
+	icaltimezone *dzone, *utc;
+
+
+	dzone = e_cal_backend_groupwise_get_default_zone (cbgw);
+	utc = icaltimezone_get_utc_timezone ();
+
+	if (dzone)
+		e_cal_recur_generate_instances (comp, -1, -1,get_recur_count, &count, resolve_tzid_cb, NULL, (icaltimezone *) dzone);
+	else
+		e_cal_recur_generate_instances (comp, -1, -1,get_recur_count, &count, resolve_tzid_cb, NULL, utc);
+
+	return count;
+}
+
 static void
 set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *cbgw)
 {
@@ -505,9 +533,13 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 			default:
 				break;
 		}
-		if (ical_recur->count != 0)
-			item_rrule->count = ical_recur->count;
-		else
+
+		if (ical_recur->count != 0) {
+			if (ical_recur->freq != ICAL_DAILY_RECURRENCE)
+				item_rrule->count = get_actual_count (comp, cbgw);
+			else
+				item_rrule->count = ical_recur->count;
+		} else
 			item_rrule->until =  icaltime_as_ical_string_r (ical_recur->until);
 
 		item_rrule->interval = ical_recur->interval;
