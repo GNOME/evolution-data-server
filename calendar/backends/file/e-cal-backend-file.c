@@ -2175,62 +2175,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		rid = NULL;
 		break;
 	case CALOBJ_MOD_ALL :
-		/* in this case, we blow away all recurrences, and start over
-		   with a clean component */
-
-		if (e_cal_util_component_has_recurrences (icalcomp) && rid && *rid) {
-			icaltimetype start, recur = icaltime_from_string (rid);
-
-			start = icalcomponent_get_dtstart (icalcomp);
-
-			/* This means its a instance generated from master object. So replace
-			    the dates stored dates from the master object */
-			if (!recur.zone)
-				recur.zone = start.zone;
-
-			if (icaltime_compare_date_only (start, recur) == 0) {
-				icaltimetype end = icalcomponent_get_dtend (icalcomp);
-				ECalComponentDateTime m_sdate, m_endate;
-
-				e_cal_component_get_dtstart (obj_data->full_object, &m_sdate);
-				e_cal_component_get_dtend (obj_data->full_object, &m_endate);
-
-				if (icaltime_compare (start, recur) != 0 ||
-				    !m_endate.value ||
-				    icaltime_compare (end, *(m_endate.value)) != 0) {
-
-					m_sdate.value->hour = start.hour;
-					m_sdate.value->minute = start.minute;
-					m_sdate.value->second = start.second;
-
-					if (!m_endate.value) {
-						/* create one if not exists and make same date
-						   and time zone like start */
-						m_endate.value = g_new (struct icaltimetype, 1);
-						*m_endate.value = *m_sdate.value;
-
-						if (m_endate.tzid)
-							g_free ((char*)m_endate.tzid);
-
-						m_endate.tzid = g_strdup (m_sdate.tzid);
-					}
-
-					m_endate.value->hour = end.hour;
-					m_endate.value->minute = end.minute;
-					m_endate.value->second = end.second;
-				}
-
-				e_cal_component_set_dtstart (comp, &m_sdate);
-				e_cal_component_set_dtend (comp, &m_endate);
-				e_cal_component_set_recurid (comp, NULL);
-				e_cal_component_commit_sequence (comp);
-
-				e_cal_component_free_datetime (&m_sdate);
-				e_cal_component_free_datetime (&m_endate);
-			}
-			e_cal_component_set_recurid (comp, NULL);
-			*new_object = e_cal_component_get_as_string (comp);
-		}
+		*new_object = e_cal_component_get_as_string (comp);
 
 		/* Remove the old version */
 		if (old_object)
