@@ -1,3 +1,11 @@
+2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #241604 (bnc)
+	* calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:
+	* servers/groupwise/e-gw-item.c:
+	* servers/groupwise/e-gw-recur-utils.h: Fixes monthly recurring 
+	appointments to appear on proper dates.
+
 2009-04-06  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #571677

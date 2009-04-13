@@ -521,6 +521,8 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 			item_rrule->by_year_day[i] = ical_recur->by_year_day[i];
 		for (i = 0; i < ICAL_BY_MONTH_SIZE; i++)
 			item_rrule->by_month[i] = ical_recur->by_month[i];
+		for (i = 0; i < ICAL_BY_SETPOS_SIZE; i++)
+			item_rrule->by_setpos[i] = ical_recur->by_set_pos[i];
 
 		e_gw_item_set_rrule (item, item_rrule);
 

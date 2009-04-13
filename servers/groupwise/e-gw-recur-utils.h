@@ -50,6 +50,7 @@
 #define E_GW_ITEM_BY_MONTHDAY_SIZE 32
 #define E_GW_ITEM_BY_YEARDAY_SIZE 367
 #define E_GW_ITEM_BY_MONTH_SIZE 13
+#define E_GW_ITEM_BY_SETPOS_SIZE 367
 
 typedef struct {
 	char *frequency;
@@ -60,6 +61,7 @@ typedef struct {
 	short by_month_day[E_GW_ITEM_BY_MONTHDAY_SIZE];
 	short by_year_day[E_GW_ITEM_BY_YEARDAY_SIZE];
 	short by_month[E_GW_ITEM_BY_MONTH_SIZE];
+	short by_setpos [E_GW_ITEM_BY_SETPOS_SIZE];
 } EGwItemRecurrenceRule;
 
 

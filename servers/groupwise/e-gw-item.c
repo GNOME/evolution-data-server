@@ -3119,12 +3119,20 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 			max_elements = sizeof (rrule->by_day) / sizeof (rrule->by_day[0]);
 			/* expand into  a sequence of 'day' here  */
 			for (i = 0; i < max_elements && rrule->by_day [i] != E_GW_ITEM_RECUR_END_MARKER; i++) {
-				/*TODO occurence attribute */
-				e_gw_message_write_string_parameter (msg, "day", NULL,
-						e_gw_recur_get_day_of_week (rrule->by_day [i]));
+				const char *dow = e_gw_recur_get_day_of_week (rrule->by_day [i]);
+
+				if (rrule->by_setpos [i] == E_GW_ITEM_RECUR_END_MARKER)
+					e_gw_message_write_string_parameter (msg, "day", NULL, dow);
+				else {
+					char occur [3];
+
+					g_sprintf (occur, "%d", rrule->by_setpos [i]);
+					e_gw_message_write_string_parameter_with_attribute (msg, "day", NULL, dow, "occurrence", occur);
+				}
 			}
 			soup_soap_message_end_element (msg);
 		}
+
 		/* byMonthDay*/
 		if (rrule->by_month_day) {
 			int i, max_elements;
