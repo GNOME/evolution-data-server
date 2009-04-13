@@ -1,5 +1,11 @@
 2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
+	Fixes #573205
+	* calendar/libedata-cal/e-cal-backend-sync.c: Use the util function
+	to load the system timezone if its not part of libical builtin timezone.
+
+2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
 	Fixes #561312
 	* calendar/backends/file/e-cal-backend-file.c: Need not
 	merge master event dates as evo handles it now.

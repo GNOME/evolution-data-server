@@ -11,6 +11,7 @@
 #endif
 
 #include "e-cal-backend-sync.h"
+#include <icaltz-util.h>
 
 struct _ECalBackendSyncPrivate {
 	GMutex *sync_mutex;
@@ -892,25 +893,35 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 		}
 
 		if (slashes == 1) {
+			icalcomponent *icalcomp = NULL, *free_comp = NULL;
+
 			icaltimezone *zone = icaltimezone_get_builtin_timezone (tzid);
-
-			if (zone) {
-				icalcomponent *icalcomp = icaltimezone_get_component (zone);
-
-				if (icalcomp) {
-					icalcomponent *clone = icalcomponent_new_clone (icalcomp);
-					icalproperty *prop;
-
-					prop = icalcomponent_get_first_property (clone, ICAL_TZID_PROPERTY);
-					if (prop) {
-						/* change tzid to our, because the component has the buildin tzid */
-						icalproperty_set_tzid (prop, tzid);
-
-						object = icalcomponent_as_ical_string_r (clone);
-					}
-					icalcomponent_free (clone);
-				}
+			if (!zone) {
+				/* Try fetching the timezone from zone directory. There are some timezones like MST, US/Pacific etc. which do not appear in
+				zone.tab, so they will not be available in the libical builtin timezone */
+				icalcomp = free_comp = icaltzutil_fetch_timezone (tzid);
 			}
+
+			if (zone)
+				icalcomp = icaltimezone_get_component (zone);
+
+			if (icalcomp) {
+				icalcomponent *clone = icalcomponent_new_clone (icalcomp);
+				icalproperty *prop;
+
+				prop = icalcomponent_get_first_property (clone, ICAL_TZID_PROPERTY);
+				if (prop) {
+					/* change tzid to our, because the component has the buildin tzid */
+					icalproperty_set_tzid (prop, tzid);
+
+					object = icalcomponent_as_ical_string_r (clone);
+					status = GNOME_Evolution_Calendar_Success;
+				}
+				icalcomponent_free (clone);
+			}
+			
+			if (free_comp)	
+				icalcomponent_free (free_comp);
 		}
 
 		/* also cache this timezone to backend */
