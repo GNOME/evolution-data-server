@@ -1,3 +1,11 @@
+2009-04-13  Johnny Jacob  <jjohnny@novell.com>
+
+	** Committing for Srinivasa Ragavan  <sragavan@novell.com>
+
+	** Fixes 556116 – unmatched search folder missing in 2.24
+
+	* camel-vee-store.c (construct): Adds back Unmatched vfolder support.
+
 2009-04-07  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #575084

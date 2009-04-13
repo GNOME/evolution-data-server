@@ -102,17 +102,17 @@ camel_vee_store_init (CamelVeeStore *obj)
 static void
 construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
-	/*  CamelStore *store = (CamelStore *)service;
-	 CamelVeeStore *obj = (CamelVeeStore *)service; */
+	 CamelStore *store = (CamelStore *)service;
+	 CamelVeeStore *obj = (CamelVeeStore *)service; 
 	 
 	 ((CamelServiceClass *) camel_vee_store_parent)->construct(service, session, provider, url, ex);
 	 
 	/* Set up unmatched folder */
-#ifdef VEE_UNMATCHED_ENABLE
+#ifndef VEE_UNMATCHED_ENABLE
 	obj->unmatched_uids = g_hash_table_new (g_str_hash, g_str_equal);
 	obj->folder_unmatched = (CamelVeeFolder *)camel_object_new (camel_vee_folder_get_type ());
 	camel_vee_folder_construct (obj->folder_unmatched, store, CAMEL_UNMATCHED_NAME, _("Unmatched"), CAMEL_STORE_FOLDER_PRIVATE);
-	camel_db_create_vfolder (store->cdb, _("Unmatched"), NULL);
+	camel_db_create_vfolder (store->cdb_r, _("Unmatched"), NULL);
 #endif
 	 
 }
@@ -348,7 +348,7 @@ vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExce
 
 	/* and always add UNMATCHED, if scanning from top/etc */
 	/* FIXME[disk-summary] comment it out well */
-	if (0 && (top == NULL || top[0] == 0 || strncmp(top, CAMEL_UNMATCHED_NAME, strlen(CAMEL_UNMATCHED_NAME)) == 0)) {
+	if ((top == NULL || top[0] == 0 || strncmp(top, CAMEL_UNMATCHED_NAME, strlen(CAMEL_UNMATCHED_NAME)) == 0)) {
 		info = camel_folder_info_new ();
 		url = camel_url_new("vfolder:", NULL);
 		camel_url_set_path(url, ((CamelService *)store)->url->path);
