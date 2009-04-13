@@ -1,3 +1,9 @@
+2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
+
+	Fixes #471083 (bnc)
+	* camel/providers/groupwise/camel-groupwise-store.c: Sets the
+	System folder flag for system folders.
+
 2009-03-19  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #477697

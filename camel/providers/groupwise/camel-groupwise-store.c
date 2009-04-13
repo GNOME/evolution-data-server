@@ -485,7 +485,11 @@ groupwise_build_folder_info(CamelGroupwiseStore *gw_store, const char *parent_na
 		fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
 	else if (!strcmp (folder_name, "Junk Mail"))
 		fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
-		
+
+	if (groupwise_is_system_folder (folder_name))
+		fi->flags |= CAMEL_FOLDER_SYSTEM;
+	
+
 	fi->name = g_strdup(name);
 	return fi;
 }
@@ -1302,6 +1306,12 @@ groupwise_delete_folder(CamelStore *store,
 	const char * container;
 
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
+
+	if (groupwise_is_system_folder (folder_name)) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot delete GroupWise system folder '%s'"),
+				      folder_name);
+		return;
+	}
 
 	if (!camel_groupwise_store_connected (groupwise_store, ex)) {
 		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
