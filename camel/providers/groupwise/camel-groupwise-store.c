@@ -1307,12 +1307,6 @@ groupwise_delete_folder(CamelStore *store,
 
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
-	if (groupwise_is_system_folder (folder_name)) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot delete GroupWise system folder '%s'"),
-				      folder_name);
-		return;
-	}
-
 	if (!camel_groupwise_store_connected (groupwise_store, ex)) {
 		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 		return;
