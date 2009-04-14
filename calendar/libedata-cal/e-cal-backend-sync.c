@@ -11,7 +11,7 @@
 #endif
 
 #include "e-cal-backend-sync.h"
-#include <icaltz-util.h>
+#include <libical/icaltz-util.h>
 
 struct _ECalBackendSyncPrivate {
 	GMutex *sync_mutex;

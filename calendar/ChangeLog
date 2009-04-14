@@ -1,3 +1,8 @@
+2009-04-13  Matthew Barnes  <mbarnes@redhat.com>
+
+	* libedata-cal/e-cal-backend-sync.c:
+	Fix build break: #include <libical/icaltz-util.h>
+
 2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	Fixes #573205
