@@ -28,6 +28,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include "camel-db.h"
 #include "camel-exception.h"
 #include "camel-private.h"
 #include "camel-vee-folder.h"
