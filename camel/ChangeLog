@@ -1,3 +1,10 @@
+2009-04-15  Sergio Villar Senin  <svillar@igalia.com>
+
+	** Fix for bug #578823 – invalid condition
+	
+	* camel-disco-diary.c (camel_disco_diary_log): fixed a wrong
+	condition
+
 2009-04-13  Johnny Jacob  <jjohnny@novell.com>
 
 	** Committing for Srinivasa Ragavan  <sragavan@novell.com>
