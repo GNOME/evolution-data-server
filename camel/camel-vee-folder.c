@@ -1803,15 +1803,16 @@ subfolder_renamed_update(CamelVeeFolder *vf, CamelFolder *sub, char hash[8])
 			count--;
 
 			vinfo = vee_folder_add_uid(vf, sub, uid+8, hash);
-			if (vinfo)
+			if (vinfo) {
 				camel_folder_change_info_add_uid(vf->changes, camel_message_info_uid(vinfo));
 
-			/* check unmatched uid's table for any matches */
-			if (vf == folder_unmatched
-			    && g_hash_table_lookup_extended(unmatched_uids, uid, (void **)&oldkey, &oldval)) {
-				g_hash_table_remove(unmatched_uids, oldkey);
-				g_hash_table_insert(unmatched_uids, g_strdup(camel_message_info_uid(vinfo)), oldval);
-				g_free(oldkey);
+				/* check unmatched uid's table for any matches */
+				if (vf == folder_unmatched
+				    && g_hash_table_lookup_extended(unmatched_uids, uid, (void **)&oldkey, &oldval)) {
+					g_hash_table_remove(unmatched_uids, oldkey);
+					g_hash_table_insert(unmatched_uids, g_strdup(camel_message_info_uid(vinfo)), oldval);
+					g_free(oldkey);
+				}
 			}
 		}
 
