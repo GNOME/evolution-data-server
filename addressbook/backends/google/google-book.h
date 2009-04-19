@@ -45,7 +45,6 @@ G_BEGIN_DECLS
 
 typedef struct _GoogleBook      GoogleBook;
 typedef struct _GoogleBookClass GoogleBookClass;
-typedef enum   _GoogleBookError GoogleBookError;
 
 struct _GoogleBook
 {
@@ -63,20 +62,6 @@ struct _GoogleBookClass
 
     void (*auth_required) (void);
 };
-
-enum _GoogleBookError
-{
-    GOOGLE_BOOK_ERROR_NONE,
-    GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND,
-    GOOGLE_BOOK_ERROR_INVALID_CONTACT,
-    GOOGLE_BOOK_ERROR_CONFLICT,
-    GOOGLE_BOOK_ERROR_AUTH_FAILED,
-    GOOGLE_BOOK_ERROR_AUTH_REQUIRED,
-    GOOGLE_BOOK_ERROR_NETWORK_ERROR,
-    GOOGLE_BOOK_ERROR_HTTP_ERROR
-};
-
-#define GOOGLE_BOOK_ERROR (g_quark_from_string ("GoogleBookError"))
 
 typedef void (*GoogleBookContactRetrievedCallback) (EContact *contact, gpointer user_data);
 

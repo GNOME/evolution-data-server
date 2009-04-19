@@ -1,6 +1,7 @@
 /* goggle-book.c - Google contact list abstraction with caching.
  *
  * Copyright (C) 2008 Joergen Scheibengruber
+ * Copyright (C) 2010 Philip Withnall
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -16,19 +17,24 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * Author: Joergen Scheibengruber <joergen.scheibengruber AT googlemail.com>
+ * Author: Joergen Scheibengruber <joergen.scheibengruber AT googlemail.com>,
+ * Philip Withnall <philip@tecnocode.co.uk>
  */
 
 #include <string.h>
 #include <libedata-book/e-book-backend-cache.h>
 #include <libedataserver/e-proxy.h>
-#include <gdata-service-iface.h>
-#include <gdata-google-service.h>
+#include <gdata/gdata-service.h>
+#include <gdata/services/contacts/gdata-contacts-service.h>
+#include <gdata/services/contacts/gdata-contacts-query.h>
+#include <gdata/services/contacts/gdata-contacts-contact.h>
 
 #include "util.h"
 #include "google-book.h"
 
 G_DEFINE_TYPE (GoogleBook, google_book, G_TYPE_OBJECT)
+
+#define URI_GET_CONTACTS "://www.google.com/m8/feeds/contacts/default/full"
 
 #define GET_PRIVATE(o) \
     (G_TYPE_INSTANCE_GET_PRIVATE ((o), TYPE_GOOGLE_BOOK, GoogleBookPrivate))
@@ -82,9 +88,7 @@ struct _GoogleBookPrivate
     GDataService *service;
     EProxy *proxy;
     guint refresh_interval;
-    gchar *base_uri;
-    /* FIXME - this one should not be needed */
-    gchar *add_base_uri;
+    gboolean use_ssl;
 
     gboolean live_mode;
 
@@ -98,11 +102,6 @@ static gboolean
 google_book_get_new_contacts_in_chunks (GoogleBook *book,
                                         gint         chunk_size,
                                         GError    **error);
-
-static void
-google_book_error_from_soup_error      (GError *soup_error,
-                                        GError **error,
-                                        const gchar *message);
 
 static void
 google_book_cache_init (GoogleBook *book, gboolean on_disk)
@@ -145,6 +144,7 @@ google_book_cache_add_contact (GoogleBook *book, GDataEntry *entry)
                              g_strdup (uid), g_object_ref (entry));
         return contact;
     case NO_CACHE:
+    default:
         break;
     }
     return NULL;
@@ -163,7 +163,25 @@ google_book_cache_remove_contact (GoogleBook *book, const gchar *uid)
         success = g_hash_table_remove (priv->cache.in_memory.contacts, uid);
         return success && g_hash_table_remove (priv->cache.in_memory.gdata_entries, uid);
     case NO_CACHE:
-    break;
+    default:
+        break;
+    }
+    return FALSE;
+}
+
+static gboolean
+google_book_cache_has_contact (GoogleBook *book, const gchar *uid)
+{
+    GoogleBookPrivate *priv = GET_PRIVATE (book);
+
+    switch (priv->cache_type) {
+    case ON_DISK_CACHE:
+        return e_book_backend_cache_check_contact (priv->cache.on_disk, uid);
+    case IN_MEMORY_CACHE:
+        return g_hash_table_lookup (priv->cache.in_memory.contacts, uid) ? TRUE : FALSE;
+    case NO_CACHE:
+    default:
+        break;
     }
     return FALSE;
 }
@@ -179,9 +197,16 @@ google_book_cache_get_contact (GoogleBook *book, const gchar *uid, GDataEntry **
         contact = e_book_backend_cache_get_contact (priv->cache.on_disk, uid);
         if (contact) {
             if (entry) {
-                const gchar *entry_xml;
-                entry_xml = _e_contact_get_gdata_entry_xml (contact);
-                *entry = gdata_entry_new_from_xml (entry_xml);
+                const gchar *entry_xml, *edit_link;
+
+                entry_xml = _e_contact_get_gdata_entry_xml (contact, &edit_link);
+                *entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT, entry_xml, -1, NULL));
+
+                if (*entry != NULL) {
+                    GDataLink *link = gdata_link_new (edit_link, GDATA_LINK_EDIT);
+                    gdata_entry_add_link (*entry, link);
+                    g_object_unref (link);
+                }
             }
             _e_contact_remove_gdata_entry_xml (contact);
         }
@@ -199,6 +224,7 @@ google_book_cache_get_contact (GoogleBook *book, const gchar *uid, GDataEntry **
         }
         return contact;
     case NO_CACHE:
+    default:
         break;
     }
     return NULL;
@@ -238,6 +264,7 @@ google_book_cache_get_contacts (GoogleBook *book)
     case IN_MEMORY_CACHE:
         return _g_hash_table_to_list (priv->cache.in_memory.contacts);
     case NO_CACHE:
+    default:
         break;
     }
         return NULL;
@@ -272,11 +299,11 @@ google_book_cache_get_last_update (GoogleBook *book)
     case ON_DISK_CACHE:
         return e_book_backend_cache_get_time (priv->cache.on_disk);
     case IN_MEMORY_CACHE:
-        if (priv->cache.in_memory.contacts) {
+        if (priv->cache.in_memory.contacts)
             return g_time_val_to_iso8601 (&priv->cache.in_memory.last_updated);
-        }
         break;
     case NO_CACHE:
+    default:
         break;
     }
     return NULL;
@@ -299,6 +326,7 @@ google_book_cache_get_last_update_tv (GoogleBook *book, GTimeVal *tv)
         memcpy (tv, &priv->cache.in_memory.last_updated, sizeof (GTimeVal));
         return priv->cache.in_memory.contacts != NULL;
     case NO_CACHE:
+    default:
         break;
     }
     return FALSE;
@@ -308,19 +336,20 @@ static void
 google_book_cache_set_last_update (GoogleBook *book, GTimeVal *tv)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
-    gchar *time;
+    gchar *_time;
 
     switch (priv->cache_type) {
     case ON_DISK_CACHE:
-        time = g_time_val_to_iso8601 (tv);
+        _time = g_time_val_to_iso8601 (tv);
         /* Work around a bug in EBookBackendCache */
         e_file_cache_remove_object (E_FILE_CACHE (priv->cache.on_disk), "last_update_time");
-        e_book_backend_cache_set_time (priv->cache.on_disk, time);
-        g_free (time);
+        e_book_backend_cache_set_time (priv->cache.on_disk, _time);
+        g_free (_time);
         return;
     case IN_MEMORY_CACHE:
         memcpy (&priv->cache.in_memory.last_updated, tv, sizeof (GTimeVal));
     case NO_CACHE:
+    default:
         break;
     }
 }
@@ -439,30 +468,10 @@ google_book_cache_destroy (GoogleBook *book)
         g_hash_table_destroy (priv->cache.in_memory.gdata_entries);
         break;
     case NO_CACHE:
+    default:
         break;
     }
     priv->cache_type = NO_CACHE;
-}
-
-static void
-google_book_construct_base_uri (GoogleBook *book, gboolean use_ssl)
-{
-    const gchar format[] = "%swww.google.com/m8/feeds/contacts/%s/base";
-    gchar *esc_username;
-    GoogleBookPrivate *priv = GET_PRIVATE (book);
-
-    __debug__ (G_STRFUNC);
-    g_free (priv->base_uri);
-    g_free (priv->add_base_uri);
-
-    esc_username = g_uri_escape_string (priv->username, NULL, FALSE);
-    priv->base_uri = g_strdup_printf (format, use_ssl ? "https://" : "http://", esc_username);
-    /* FIXME - always use non ssl mode when adding entries. Somehow this does not
-     * work on SSL; i.e. get duplicate entries and SOUP returns error 7 - connection
-     * terminated unexpectedly
-     */
-    priv->add_base_uri = g_strdup_printf (format, "http://", esc_username);
-    g_free (esc_username);
 }
 
 static void
@@ -470,7 +479,6 @@ google_book_get_property (GObject *object, guint property_id,
                           GValue *value,   GParamSpec *pspec)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (object);
-    gboolean use_ssl = FALSE;
 
     switch (property_id) {
     case PROP_USERNAME:
@@ -483,12 +491,7 @@ google_book_get_property (GObject *object, guint property_id,
         g_value_set_uint (value, priv->refresh_interval);
         break;
     case PROP_USE_SSL:
-        if (priv->base_uri) {
-            if (strstr (priv->base_uri, "https://")) {
-                use_ssl = TRUE;
-            }
-        }
-        g_value_set_boolean (value, use_ssl);
+        g_value_set_boolean (value, priv->use_ssl);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -510,10 +513,15 @@ google_book_set_property (GObject *object, guint property_id,
         break;
     case PROP_REFRESH_INTERVAL:
         priv->refresh_interval = g_value_get_uint (value);
-        /* FIXME - actually apply this */
+
+        /* Remove and re-add the timeout */
+        if (priv->refresh_id != 0) {
+            g_source_remove (priv->refresh_id);
+            priv->refresh_id = g_timeout_add_seconds (priv->refresh_interval, on_refresh_timeout, GOOGLE_BOOK (object));
+        }
         break;
     case PROP_USE_SSL:
-        google_book_construct_base_uri (GOOGLE_BOOK (object), g_value_get_boolean (value));
+        priv->use_ssl = g_value_get_boolean (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -530,14 +538,14 @@ google_book_dispose (GObject *object)
         priv->idle_id = 0;
     }
 
-    if (priv->service) {
+    if (priv->service)
         g_object_unref (priv->service);
-        priv->service = NULL;
-    }
-    if (priv->proxy) {
+    priv->service = NULL;
+
+    if (priv->proxy)
 	g_object_unref (priv->proxy);
-	priv->proxy = NULL;
-    }
+    priv->proxy = NULL;
+
     google_book_cache_destroy (GOOGLE_BOOK (object));
 
     if (G_OBJECT_CLASS (google_book_parent_class)->dispose)
@@ -549,8 +557,6 @@ google_book_finalize (GObject *object)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (object);
 
-    g_free (priv->base_uri);
-    g_free (priv->add_base_uri);
     g_free (priv->username);
 
     if (G_OBJECT_CLASS (google_book_parent_class)->finalize)
@@ -636,21 +642,21 @@ google_book_class_init (GoogleBookClass *klass)
                                      PROP_USERNAME,
                                      g_param_spec_string ("username",
                                                           "Username",
-                                                          "The username",
+                                                          "The username.",
                                                           NULL,
                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE));
 
     g_object_class_install_property (object_class,
                                      PROP_USE_CACHE,
                                      g_param_spec_boolean ("use-cache",
-                                                           "UseCache",
-                                                           "Whether a on-disk cache should be used",
+                                                           "Use Cache?",
+                                                           "Whether an on-disk cache should be used.",
                                                            TRUE,
                                                            G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE));
     g_object_class_install_property (object_class,
                                      PROP_REFRESH_INTERVAL,
                                      g_param_spec_uint ("refresh-interval",
-                                                        "RefreshInterval",
+                                                        "Refresh Interval",
                                                         "Specifies the number of seconds until "
                                                         "the local cache is updated from the "
                                                         "server. 0 means no updates.",
@@ -659,8 +665,8 @@ google_book_class_init (GoogleBookClass *klass)
     g_object_class_install_property (object_class,
                                      PROP_USE_SSL,
                                      g_param_spec_boolean ("use-ssl",
-                                                           "UseSSL",
-                                                           "Whether SSL should be used or not",
+                                                           "Use SSL?",
+                                                           "Whether SSL should be used.",
                                                            TRUE,
                                                            G_PARAM_READWRITE));
     google_book_signals [CONTACT_CHANGED] =
@@ -734,24 +740,27 @@ static void
 proxy_settings_changed (EProxy *proxy, gpointer user_data)
 {
 	SoupURI *proxy_uri = NULL;
-
+	gchar *uri;
 	GoogleBookPrivate *priv = (GoogleBookPrivate*) user_data;
-	if (!priv || !priv->base_uri)
+
+	if (!priv || !priv->service)
 		return;
 
+	/* Build the URI which libgdata would use to query contacts */
+	uri = g_strconcat (priv->use_ssl ? "https" : "http", URI_GET_CONTACTS, NULL);
+
 	/* use proxy if necessary */
-	if (e_proxy_require_proxy_for_uri (proxy, priv->base_uri)) {
-		proxy_uri = e_proxy_peek_uri_for (proxy, priv->base_uri);
-	}
-	gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
+	if (e_proxy_require_proxy_for_uri (proxy, uri))
+		proxy_uri = e_proxy_peek_uri_for (proxy, uri);
+	gdata_service_set_proxy_uri (GDATA_SERVICE (priv->service), proxy_uri);
+
+	g_free (uri);
 }
 
 gboolean
 google_book_connect_to_google (GoogleBook *book, const gchar *password, GError **error)
 {
     GoogleBookPrivate *priv;
-    GDataService *service;
-    GError *soup_error = NULL;
 
     __debug__ (G_STRFUNC);
     g_return_val_if_fail (IS_GOOGLE_BOOK (book), FALSE);
@@ -760,32 +769,24 @@ google_book_connect_to_google (GoogleBook *book, const gchar *password, GError *
     priv = GET_PRIVATE (book);
 
     if (priv->service) {
-        g_warning ("Connection to google already established.");
+        g_warning ("Connection to Google already established.");
         return TRUE;
     }
 
-    service = (GDataService*)gdata_google_service_new ("cp", "evolution-client-0.0.1");
+    priv->service = GDATA_SERVICE (gdata_contacts_service_new ("evolution-client-0.0.1"));
     priv->proxy = e_proxy_new ();
     e_proxy_setup_proxy (priv->proxy);
-    priv->service = service;
     proxy_settings_changed (priv->proxy, priv);
-    priv->service = NULL;
 
-    gdata_service_set_credentials (GDATA_SERVICE (service), priv->username, password);
-    gdata_google_service_authenticate (GDATA_GOOGLE_SERVICE (service), &soup_error);
-
-    if (soup_error) {
-        google_book_error_from_soup_error (soup_error, error,
-                                           "Connecting to google failed");
-        priv->service = NULL;
-	g_object_unref (service);
+    if (!gdata_service_authenticate (priv->service, priv->username, password, NULL, error)) {
+	g_object_unref (priv->service);
+	priv->service = NULL;
 	g_object_unref (priv->proxy);
 	priv->proxy = NULL;
         return FALSE;
     }
 
     g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
-    priv->service = service;
 
     return google_book_cache_refresh_if_needed (book, error);
 }
@@ -802,21 +803,18 @@ google_book_set_offline_mode (GoogleBook *book, gboolean offline)
 
     priv->offline = offline;
     if (offline) {
-	if (priv->service) {
+        /* Going offline, so we can free our service and proxy */
+	if (priv->service)
 		g_object_unref (priv->service);
-		priv->service = NULL;
-	}
-	if (priv->proxy) {
+	priv->service = NULL;
+
+	if (priv->proxy)
 		g_object_unref (priv->proxy);
-		priv->proxy = NULL;
-	}
-    }
-    if (offline == FALSE) {
-        if (priv->service) {
-            google_book_cache_refresh_if_needed (book, NULL);
-        } else {
-            google_book_emit_auth_required (book);
-        }
+	priv->proxy = NULL;
+    } else {
+        /* Going online, so we need to re-authenticate and re-create the service and proxy.
+         * This is done in google_book_connect_to_google(), which is called by EBookBackendGoogle when it gets the authentication data. */
+        google_book_emit_auth_required (book);
     }
 }
 
@@ -828,7 +826,7 @@ google_book_add_contact (GoogleBook *book,
 {
     GoogleBookPrivate *priv;
     GDataEntry *entry, *new_entry;
-    GError *soup_error = NULL;
+    gchar *xml;
 
     *out_contact = NULL;
 
@@ -840,18 +838,17 @@ google_book_add_contact (GoogleBook *book,
     g_return_val_if_fail (priv->service, FALSE);
 
     entry = _gdata_entry_new_from_e_contact (contact);
-    __debug__ ("new entry with xml: %s", gdata_entry_generate_xml (entry));
-    new_entry = gdata_service_insert_entry (GDATA_SERVICE (priv->service),
-                                            priv->add_base_uri, entry, &soup_error);
+    xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+    __debug__ ("new entry with xml: %s", xml);
+    g_free (xml);
+
+    new_entry = GDATA_ENTRY (gdata_contacts_service_insert_contact (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry),
+                                                                    NULL, error));
     g_object_unref (entry);
-    if (soup_error) {
-        google_book_error_from_soup_error (soup_error, error,
-                                           "Adding entry failed");
+    if (!new_entry)
         return FALSE;
-    }
 
     *out_contact = google_book_cache_add_contact (book, new_entry);
-
     g_object_unref (new_entry);
 
     return TRUE;
@@ -865,8 +862,8 @@ google_book_update_contact (GoogleBook *book,
 {
     GoogleBookPrivate *priv;
     GDataEntry *entry, *new_entry;
-    GError *soup_error = NULL;
     EContact *cached_contact;
+    gchar *xml;
     const gchar *uid;
 
     *out_contact = NULL;
@@ -884,27 +881,32 @@ google_book_update_contact (GoogleBook *book,
     cached_contact = google_book_cache_get_contact (book, uid, &entry);
     if (NULL == cached_contact) {
         g_set_error (error,
-                    GOOGLE_BOOK_ERROR,
-                    GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND,
-                    "Contact with uid %s not found in cache.", uid);
+                     GDATA_SERVICE_ERROR,
+                     GDATA_SERVICE_ERROR_NOT_FOUND,
+                     "Contact with uid %s not found in cache.", uid);
         return FALSE;
     }
     g_object_unref (cached_contact);
     _gdata_entry_update_from_e_contact (entry, contact);
 
-    __debug__ ("Before:\n%s", gdata_entry_generate_xml (entry));
-    new_entry = gdata_service_update_entry (GDATA_SERVICE (priv->service), entry, &soup_error);
+    xml = gdata_parsable_get_xml (GDATA_PARSABLE (entry));
+    __debug__ ("Before:\n%s", xml);
+    g_free (xml);
+
+    new_entry = GDATA_ENTRY (gdata_contacts_service_update_contact (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry),
+                                                                    NULL, error));
     g_object_unref (entry);
 
-    if (soup_error) {
-        google_book_error_from_soup_error (soup_error, error,
-                                           "Updating entry failed");
+    if (!new_entry)
         return FALSE;
-    }
-    __debug__ ("After:\n%s", new_entry ? gdata_entry_generate_xml (new_entry) : NULL);
+
+    xml = NULL;
+    if (new_entry)
+        xml = gdata_parsable_get_xml (GDATA_PARSABLE (new_entry));
+    __debug__ ("After:\n%s", xml);
+    g_free (xml);
 
     *out_contact = google_book_cache_add_contact (book, new_entry);
-
     g_object_unref (new_entry);
 
     return TRUE;
@@ -915,8 +917,8 @@ google_book_remove_contact (GoogleBook *book, const gchar *uid, GError **error)
 {
     GoogleBookPrivate *priv;
     GDataEntry *entry = NULL;
-    GError *soup_error = NULL;
     EContact *cached_contact;
+    gboolean success;
 
     __debug__ (G_STRFUNC);
     g_return_val_if_fail (IS_GOOGLE_BOOK (book), FALSE);
@@ -927,25 +929,16 @@ google_book_remove_contact (GoogleBook *book, const gchar *uid, GError **error)
 
     cached_contact = google_book_cache_get_contact (book, uid, &entry);
     if (NULL == cached_contact) {
-        g_set_error (error,
-                    GOOGLE_BOOK_ERROR,
-                    GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND,
-                    "Contact with uid %s not found in cache.", uid);
+        g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND, "Contact with uid %s not found in cache.", uid);
         return FALSE;
     }
 
     google_book_cache_remove_contact (book, uid);
-    gdata_service_delete_entry (GDATA_SERVICE (priv->service), entry, &soup_error);
+    success = gdata_service_delete_entry (GDATA_SERVICE (priv->service), entry, NULL, error);
     g_object_unref (entry);
     g_object_unref (cached_contact);
 
-    if (soup_error) {
-        google_book_error_from_soup_error (soup_error, error,
-                                           "Removing entry failed");
-        return FALSE;
-    }
-
-    return TRUE;
+    return success;
 }
 
 static void
@@ -954,20 +947,19 @@ process_subsequent_entry (gpointer list_data, gpointer user_data)
     GoogleBookPrivate *priv;
     GoogleBook *book = user_data;
     GDataEntry *entry;
-    EContact *cached_contact;
-    gboolean is_deleted;
+    gboolean is_deleted, is_cached;
     const gchar *uid;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (book);
     entry = GDATA_ENTRY (list_data);
     uid = gdata_entry_get_id (entry);
-    is_deleted = gdata_entry_is_deleted (entry);
+    is_deleted = gdata_contacts_contact_is_deleted (GDATA_CONTACTS_CONTACT (entry));
 
-    cached_contact = google_book_cache_get_contact (book, uid, NULL);
+    is_cached = google_book_cache_has_contact (book, uid);
     if (is_deleted) {
         /* Do we have this item in our cache? */
-        if (NULL != cached_contact) {
+        if (is_cached) {
             google_book_cache_remove_contact (book, uid);
             google_book_emit_contact_removed (book, uid);
         }
@@ -976,15 +968,12 @@ process_subsequent_entry (gpointer list_data, gpointer user_data)
 
         contact = google_book_cache_add_contact (book, entry);
 
-        if (cached_contact) {
+        if (is_cached) {
             google_book_emit_contact_changed (book, contact);
         } else {
             google_book_emit_contact_added (book, contact);
         }
         g_object_unref (contact);
-    }
-    if (cached_contact) {
-        g_object_unref (cached_contact);
     }
 }
 
@@ -994,13 +983,11 @@ process_initial_entry (gpointer list_data, gpointer user_data)
     GoogleBookPrivate *priv;
     GoogleBook *book = user_data;
     GDataEntry *entry;
-    const gchar * uid;
     EContact *contact;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (book);
     entry = GDATA_ENTRY (list_data);
-    uid = gdata_entry_get_id (entry);
 
     contact = google_book_cache_add_contact (book, entry);
 
@@ -1014,10 +1001,13 @@ google_book_get_new_contacts_in_chunks (GoogleBook *book,
                                         GError    **error)
 {
     GoogleBookPrivate *priv;
-    gint start_index = 1;
+    GDataFeed *feed;
+    GDataQuery *query;
     gchar *last_updated;
     GError *our_error = NULL;
     gboolean rv = TRUE;
+    GTimeVal current_time;
+    int results;
 
     priv = GET_PRIVATE (book);
 
@@ -1028,28 +1018,24 @@ google_book_get_new_contacts_in_chunks (GoogleBook *book,
 
     google_book_cache_freeze (book);
 
-    while (start_index > 0) {
-        GDataFeed *feed;
-        GSList *entries;
-        GString *uri;
-        gint results;
-        GError *soup_error = NULL;
+    /* Build our query */
+    query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 1, chunk_size));
+    if (last_updated) {
+        GTimeVal updated;
 
-        uri = g_string_new (priv->base_uri);
-        g_string_append_printf (uri, "?max-results=%d&start-index=%d",
-                                chunk_size, start_index);
-        if (last_updated) {
-            g_string_append_printf (uri, "&updated-min=%s&showdeleted=true",
-                                    last_updated);
-        }
+        g_assert (g_time_val_from_iso8601 (last_updated, &updated) == TRUE);
+        gdata_query_set_updated_min (query, &updated);
+        gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
+    }
 
-        __debug__ ("URI is '%s'", uri->str);
-        feed = gdata_service_get_feed (priv->service, uri->str, &soup_error);
-        g_string_free (uri, TRUE);
+    /* Get the paginated results */
+    do {
+        GList *entries;
 
-        if (soup_error) {
-            google_book_error_from_soup_error (soup_error, &our_error,
-                                               "Downloading feed failed");
+        /* Run the query */
+        feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (priv->service), query, NULL, NULL, NULL, &our_error);
+
+        if (our_error) {
             google_book_emit_sequence_complete (book, our_error);
             g_propagate_error (error, our_error);
 
@@ -1058,27 +1044,25 @@ google_book_get_new_contacts_in_chunks (GoogleBook *book,
         }
 
         entries = gdata_feed_get_entries (feed);
-        results = entries ? g_slist_length (entries) : 0;
+        results = entries ? g_list_length (entries) : 0;
         __debug__ ("Feed has %d entries", results);
 
-        if (last_updated) {
-            g_slist_foreach (entries, process_subsequent_entry, book);
-        } else {
-            g_slist_foreach (entries, process_initial_entry, book);
-        }
-
-        if (results == chunk_size) {
-            start_index += results;
-        } else {
-            GTimeVal current_time;
-
-            start_index = -1;
-            g_get_current_time (&current_time);
-            google_book_cache_set_last_update (book, &current_time);
-            google_book_emit_sequence_complete (book, NULL);
-        }
+        /* Process the entries from this page */
+        if (last_updated)
+            g_list_foreach (entries, process_subsequent_entry, book);
+        else
+            g_list_foreach (entries, process_initial_entry, book);
         g_object_unref (feed);
-    }
+
+        /* Move to the next page */
+        gdata_query_next_page (query);
+    } while (results == chunk_size);
+
+    /* Finish updating the cache */
+    g_get_current_time (&current_time);
+    google_book_cache_set_last_update (book, &current_time);
+    google_book_emit_sequence_complete (book, NULL);
+
 out:
     g_free (last_updated);
     google_book_cache_thaw (book);
@@ -1093,30 +1077,30 @@ google_book_get_contact (GoogleBook *book,
 {
     GoogleBookPrivate *priv;
     EContact *contact;
+    GError *child_error = NULL;
 
     priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
     g_return_val_if_fail (IS_GOOGLE_BOOK (book), NULL);
 
-    google_book_cache_refresh_if_needed (book, error);
+    google_book_cache_refresh_if_needed (book, &child_error);
 
     contact = google_book_cache_get_contact (book, uid, NULL);
 
     if (contact) {
-        if (*error) {
+        if (child_error) {
             /* We found the contact, so forget about errors during refresh */
-            g_clear_error (error);
+            g_error_free (child_error);
         }
         return contact;
-    } else {
-        if (NULL == *error) {
-            g_set_error (error,
-                        GOOGLE_BOOK_ERROR,
-                        GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND,
-                        "Contact with uid %s not found in cache.", uid);
-        }
     }
+
+    if (!child_error)
+        g_propagate_error (error, child_error);
+    else
+        g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND, "Contact with uid %s not found in cache.", uid);
+
     return NULL;
 }
 
@@ -1126,23 +1110,26 @@ google_book_get_all_contacts (GoogleBook *book,
 {
     GoogleBookPrivate *priv;
     GList *contacts;
+    GError *child_error = NULL;
 
     priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
     g_return_val_if_fail (IS_GOOGLE_BOOK (book), NULL);
 
-    google_book_cache_refresh_if_needed (book, error);
+    google_book_cache_refresh_if_needed (book, &child_error);
 
     contacts = google_book_cache_get_contacts (book);
 
     if (contacts) {
-        if (*error) {
+        if (child_error) {
             /* We found the contact, so forget about errors during refresh */
-            g_clear_error (error);
+            g_error_free (child_error);
         }
         return contacts;
     }
+
+    g_propagate_error (error, child_error);
     return NULL;
 }
 
@@ -1209,46 +1196,3 @@ google_book_set_live_mode (GoogleBook *book, gboolean live_mode)
         google_book_cache_refresh_if_needed (book, NULL);
     }
 }
-
-static void
-google_book_error_from_soup_error (GError     *soup_error,
-                                   GError    **error,
-                                   const gchar *message)
-{
-    GoogleBookError code;
-
-    g_assert (soup_error);
-
-    if (soup_error->code < 100) {
-        code = GOOGLE_BOOK_ERROR_NETWORK_ERROR;
-    } else
-    if (soup_error->code == 200) {
-        code = GOOGLE_BOOK_ERROR_NONE;
-    } else
-    if (soup_error->code == 400) {
-        code = GOOGLE_BOOK_ERROR_INVALID_CONTACT;
-    } else
-    if (soup_error->code == 401) {
-        code = GOOGLE_BOOK_ERROR_AUTH_REQUIRED;
-    } else
-    if (soup_error->code == 403) {
-        code = GOOGLE_BOOK_ERROR_AUTH_FAILED;
-    } else
-    if (soup_error->code == 404) {
-        code = GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND;
-    } else
-    if (soup_error->code == 409) {
-        code = GOOGLE_BOOK_ERROR_CONFLICT;
-    } else {
-        code = GOOGLE_BOOK_ERROR_HTTP_ERROR;
-    }
-    g_set_error (error,
-                GOOGLE_BOOK_ERROR,
-                code,
-                "%s due to '%s' (HTTP code %d)",
-                message ? message : "Action failed",
-                soup_error->message,
-                soup_error->code);
-    g_clear_error (&soup_error);
-}
-

@@ -2,6 +2,7 @@
 /*
  * Authors :
  *  Ebby Wiselyn <ebbywiselyn@gmail.com>
+ *  Philip Withnall <philip@tecnocode.co.uk>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
@@ -25,28 +26,19 @@
 #endif
 #include <e-cal-backend-google.h>
 #include <libecal/e-cal-component.h>
-#include <servers/google/libgdata/gdata-entry.h>
-#include <servers/google/libgdata/gdata-feed.h>
-#include <servers/google/libgdata-google/gdata-google-service.h>
-#include <servers/google/libgdata/gdata-service-iface.h>
+#include <gdata/services/calendar/gdata-calendar-event.h>
 
 ECalComponent *
-e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo);
+e_gdata_event_to_cal_component (GDataCalendarEvent *event, ECalBackendGoogle *cbgo);
+
+GDataCalendarEvent *
+e_gdata_event_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp);
 
 void
-e_go_item_set_entry (EGoItem *item, GDataEntry *entry);
-
-GDataEntry *
-e_go_item_get_entry (EGoItem *item);
-
-EGoItem *
-e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp);
+e_gdata_event_update_from_cal_component (ECalBackendGoogle *cbgo, GDataCalendarEvent *event, ECalComponent *comp);
 
 gpointer
 e_cal_backend_google_utils_update (gpointer handle);
-
-GDataEntry *
-gdata_entry_get_entry_by_id (GSList *entries, const gchar *id);
 
 ECalBackendSyncStatus
 e_cal_backend_google_utils_connect (ECalBackendGoogle *cbgo);

@@ -37,6 +37,7 @@ m4_define([gtk_minimum_version], [2.20.0])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
+m4_define([libgdata_minimum_version], [0.6.3])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([gweather_minimum_version], [2.25.4])
@@ -87,14 +88,6 @@ LIBCAMEL_CURRENT=15
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 
-LIBGDATA_CURRENT=1
-LIBGDATA_REVISION=0
-LIBGDATA_AGE=0
-
-LIBGDATA_GOOGLE_CURRENT=1
-LIBGDATA_GOOGLE_REVISION=0
-LIBGDATA_GOOGLE_AGE=0
-
 LIBEBACKEND_CURRENT=0
 LIBEBACKEND_REVISION=1
 LIBEBACKEND_AGE=0
@@ -126,12 +119,6 @@ AC_SUBST(LIBEGROUPWISE_AGE)
 AC_SUBST(LIBCAMEL_CURRENT)
 AC_SUBST(LIBCAMEL_REVISION)
 AC_SUBST(LIBCAMEL_AGE)
-AC_SUBST(LIBGDATA_CURRENT)
-AC_SUBST(LIBGDATA_REVISION)
-AC_SUBST(LIBGDATA_AGE)
-AC_SUBST(LIBGDATA_GOOGLE_CURRENT)
-AC_SUBST(LIBGDATA_GOOGLE_REVISION)
-AC_SUBST(LIBGDATA_GOOGLE_AGE)
 AC_SUBST(LIBEBACKEND_CURRENT)
 AC_SUBST(LIBEBACKEND_REVISION)
 AC_SUBST(LIBEBACKEND_AGE)
@@ -295,7 +282,8 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	gtk+-2.0 >= gtk_minimum_version
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
-	libsoup-2.4 >= libsoup_minimum_version])
+	libsoup-2.4 >= libsoup_minimum_version
+	libgdata >= libgdata_minimum_version])
 
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)
@@ -1223,8 +1211,10 @@ fi
 dnl ******************************
 dnl Google flags
 dnl ******************************
-GDATA_DEPS="libsoup-2.4 libxml-2.0"
-EVO_SET_COMPILE_FLAGS(GDATA, $GDATA_DEPS)
+LIBGDATA_REQUIRED=libgdata_minimum_version
+AC_SUBST(LIBGDATA_REQUIRED)
+
+EVO_SET_COMPILE_FLAGS(GDATA, libgdata)
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
@@ -1450,11 +1440,6 @@ libedataserverui/libedataserverui.pc
 servers/Makefile
 servers/groupwise/Makefile
 servers/groupwise/libegroupwise.pc
-servers/google/Makefile
-servers/google/libgdata/Makefile
-servers/google/libgdata/libgdata.pc
-servers/google/libgdata-google/Makefile
-servers/google/libgdata-google/libgdata-google.pc
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
