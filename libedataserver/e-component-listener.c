@@ -36,18 +36,17 @@ static guint comp_listener_signals[LAST_SIGNAL];
 static void
 connection_listen_cb (gpointer object, gpointer user_data)
 {
-	GList *l, *next = NULL;
 	EComponentListener *cl;
 
 	g_static_rec_mutex_lock (&watched_lock);
 
-	for (l = watched_connections; l != NULL; l = next) {
-		next = l->next;
-		cl = l->data;
-
-		switch (ORBit_small_get_connection_status (cl->priv->component)) {
+	cl = (EComponentListener *)user_data;
+	/* cl can be removed in e_component_listener_finalize */
+	if (g_list_find (watched_connections, cl) == NULL)
+		g_static_rec_mutex_unlock (&watched_lock);
+	switch (ORBit_small_get_connection_status (cl->priv->component)) {
 		case ORBIT_CONNECTION_DISCONNECTED :
-			watched_connections = g_list_delete_link (watched_connections, l);
+			watched_connections = g_list_remove (watched_connections, cl);
 
 			g_object_ref (cl);
 			g_signal_emit (cl, comp_listener_signals[COMPONENT_DIED], 0);
@@ -56,7 +55,6 @@ connection_listen_cb (gpointer object, gpointer user_data)
 			break;
 		default :
 			break;
-		}
 	}
 
 	g_static_rec_mutex_unlock (&watched_lock);

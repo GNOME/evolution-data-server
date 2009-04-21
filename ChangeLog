@@ -1,3 +1,10 @@
+2009-04-21  Wang Xin  <jedy.wang@sun.com>
+
+	** Fix for bug #578210
+
+	* libedataserver/e-component-listener.c: (connection_listen_cb): Updated
+	the code to handle re-entrant problem.
+
 2009-04-12  Matthew Barnes  <mbarnes@redhat.com>
 
 	** Remove a bunch of juvenile comments.  Source code should
