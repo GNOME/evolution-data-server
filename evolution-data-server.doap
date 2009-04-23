@@ -5,7 +5,7 @@
          xmlns="http://usefulinc.com/ns/doap#">
 
   <name xml:lang="en">evolution-data-server</name>
-  <shortdesc xml:lang="en">Centralized storage of appointments and contacts</shortdesc>
+  <shortdesc xml:lang="en">Centralized access to appointments and contacts</shortdesc>
   <homepage rdf:resource="http://projects.gnome.org/evolution" />
   <mailing-list rdf:resource="http://mail.gnome.org/mailman/listinfo/evolution-list" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
