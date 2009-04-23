@@ -3851,7 +3851,7 @@ msgstr "फोल्डर खोल्न सकेन: %s: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:487
 #, c-format
 msgid "Fatal mail parser error near position %ld in folder %s"
-msgstr "%s फोल्डर भित्र %ld स्थान नजिक घातक पत्र पद वर्णक त्रुटि"
+msgstr "%2$s फोल्डर भित्र %1$ld स्थान नजिक घातक पत्र पद वर्णक त्रुटि"
 
 #: ../camel/providers/local/camel-mbox-summary.c:543
 #, c-format
