@@ -1,3 +1,10 @@
+2009-04-24  Sergio Villar Senin  <svillar@igalia.com>
+
+	** Fix for bug #578822 - fixed potential invalid dereference
+	
+	* camel-mime-parser.c (folder_scan_header): fixed a potential
+	invalid dereference
+
 2009-04-22  Sergio Villar Senin  <svillar@igalia.com>
 	
 	** Fix for bug #578817 - fixed potential invalid dereference
