@@ -40,6 +40,7 @@ gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);
 const gchar *e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle);
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
 int	     e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2);
+gchar       *e_util_utf8_remove_accents (const char *str);
 guint64      e_util_pthread_id (pthread_t t);
 void         e_filename_make_safe (gchar *string);
 

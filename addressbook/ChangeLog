@@ -1,3 +1,13 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #343505
+
+	* libedata-book/e-book-backend-summary.c: (contains_helper),
+	(func_contains), (is_helper), (endswith_helper), (beginswith_helper):
+	* libedata-book/e-book-backend-sexp.c: (chars_to_unistring_lowercase),
+	(is_helper), (endswith_helper), (beginswith_helper), (exists_helper),
+	(func_exists): Compare texts without accents.
+
 2009-03-04  Jeff Cai <jeff.cai@sun.com>
 
 	* libebook/e-contact.c: (n_setter): 

@@ -445,13 +445,17 @@ try_contains_word (const gchar *s1, GSList *word)
    returns newly allocated GString
 */
 static GString *
-chars_to_unistring_lowercase (const char *str)
+chars_to_unistring_lowercase (const char *pstr)
 {
 	GString *res;
 	gunichar unich;
-	gchar *p;
+	gchar *p, *str;
 
-	if (str == NULL)
+	if (pstr == NULL)
+		return NULL;
+
+	str = e_util_utf8_remove_accents (pstr);
+	if (!str)
 		return NULL;
 
 	res = g_string_new ("");
@@ -459,6 +463,8 @@ chars_to_unistring_lowercase (const char *str)
 	for (p = e_util_unicode_get_utf8 (str, &unich); p && unich; p = e_util_unicode_get_utf8 (p, &unich)) {
 		g_string_append_unichar (res, g_unichar_tolower (unich));
 	}
+
+	g_free (str);
 
 	/* it was invalid unichar string */
 	if (p == NULL) {
@@ -572,12 +578,22 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static char *
-is_helper (const char *s1, const char *s2)
+is_helper (const char *ps1, const char *ps2)
 {
+	char *s1, *s2, *res;
+
+	s1 = e_util_utf8_remove_accents (ps1);
+	s2 = e_util_utf8_remove_accents (ps2);
+
 	if (!e_util_utf8_strcasecmp (s1, s2))
-		return (char*)s1;
+		res = (char*)ps1;
 	else
-		return NULL;
+		res = NULL;
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
@@ -589,15 +605,23 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static char *
-endswith_helper (const char *s1, const char *s2)
+endswith_helper (const char *ps1, const char *ps2)
 {
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+	char *res;
 	glong s1len = g_utf8_strlen (s1, -1);
 	glong s2len = g_utf8_strlen (s2, -1);
 
 	if (s1len < s2len)
-		return NULL;
+		res = NULL;
+	else
+		res = (char *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
 
-	return (char *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
@@ -609,14 +633,22 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static char *
-beginswith_helper (const char *s1, const char *s2)
+beginswith_helper (const char *ps1, const char *ps2)
 {
-	char *p;
+	char *p, *res;
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+
 	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
 	    && (p == s1))
-		return p;
+		res = (char *)ps1;
 	else
-		return NULL;
+		res = NULL;
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
@@ -625,6 +657,21 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 	SearchContext *ctx = data;
 
 	return entry_compare (ctx, f, argc, argv, beginswith_helper);
+}
+
+static char *
+exists_helper (const char *ps1, const char *ps2)
+{
+	char *res;
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+
+	res = (char *)e_util_utf8_strstrcase (s1, s2);
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
@@ -660,7 +707,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				}
 				else if (info->prop_type == PROP_TYPE_LIST) {
 				/* the special searches that match any of the list elements */
-					truth = info->list_compare (ctx->contact, "", (char *(*)(const char*, const char*)) e_util_utf8_strstrcase);
+					truth = info->list_compare (ctx->contact, "", exists_helper);
 				}
 
 				break;

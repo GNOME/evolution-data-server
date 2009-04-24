@@ -1,3 +1,11 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #343505
+
+	* libedataserver/e-data-server-util.h: (e_util_utf8_remove_accents):
+	* libedataserver/e-data-server-util.c: (e_util_utf8_remove_accents):
+	Helper function to remove accents from a UTF-8 string.
+
 2009-04-21  Wang Xin  <jedy.wang@sun.com>
 
 	** Fix for bug #578210

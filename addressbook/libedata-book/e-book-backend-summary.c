@@ -1076,21 +1076,45 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 	return r;
 }
 
+static char *
+contains_helper (const char *ps1, const char *ps2)
+{
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+	char *res;
+
+	res = (char *) e_util_utf8_strstrcase (s1, s2);
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
+}
+
 static ESExpResult *
 func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	EBookBackendSummary *summary = data;
 
-	return do_compare (summary, f, argc, argv, (char *(*)(const char*, const char*)) e_util_utf8_strstrcase);
+	return do_compare (summary, f, argc, argv, contains_helper);
 }
 
 static char *
-is_helper (const char *s1, const char *s2)
+is_helper (const char *ps1, const char *ps2)
 {
-	if (!e_util_utf8_strcasecmp(s1, s2))
-		return (char*)s1;
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+	char *res;
+
+	if (!e_util_utf8_strcasecmp (s1, s2))
+		res = (char*)ps1;
 	else
-		return NULL;
+		res = NULL;
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
@@ -1102,14 +1126,23 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static char *
-endswith_helper (const char *s1, const char *s2)
+endswith_helper (const char *ps1, const char *ps2)
 {
-	char *p;
-	if ((p = (char*)e_util_utf8_strstrcase(s1, s2))
-	    && (strlen(p) == strlen(s2)))
-		return p;
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+	char *res;
+	glong s1len = g_utf8_strlen (s1, -1);
+	glong s2len = g_utf8_strlen (s2, -1);
+
+	if (s1len < s2len)
+		res = NULL;
 	else
-		return NULL;
+		res = (char *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
@@ -1121,14 +1154,22 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static char *
-beginswith_helper (const char *s1, const char *s2)
+beginswith_helper (const char *ps1, const char *ps2)
 {
-	char *p;
-	if ((p = (char*)e_util_utf8_strstrcase(s1, s2))
+	char *p, *res;
+	char *s1 = e_util_utf8_remove_accents (ps1);
+	char *s2 = e_util_utf8_remove_accents (ps2);
+
+	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
 	    && (p == s1))
-		return p;
+		res = (char *)ps1;
 	else
-		return NULL;
+		res = NULL;
+
+	g_free (s1);
+	g_free (s2);
+
+	return res;
 }
 
 static ESExpResult *
