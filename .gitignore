@@ -1,0 +1,14 @@
+*.swp
+
+Makefile
+Makefile.in
+*.lo
+*.o
+.deps
+.libs
+*.la
+po/*.gmo
+*.pc
+
+stamp-h1
+libtool
