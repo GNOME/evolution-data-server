@@ -440,6 +440,11 @@ e_source_list_peek_group_by_uid (ESourceList *list,
 	return NULL;
 }
 
+#ifndef EDS_DISABLE_DEPRECATED
+/**
+ * Note: This function isn't safe with respect of localized names,
+ * use e_source_list_peek_group_by_base_uri instead.
+ **/
 ESourceGroup *
 e_source_list_peek_group_by_name (ESourceList *list,
 				  const char *name)
@@ -455,6 +460,103 @@ e_source_list_peek_group_by_name (ESourceList *list,
 		if (strcmp (e_source_group_peek_name (group), name) == 0)
 			return group;
 	}
+
+	return NULL;
+}
+#endif
+
+/**
+ * e_source_list_peek_group_by_base_uri:
+ * Returns the first group which base uri begins with a base_uri.
+ **/
+ESourceGroup *
+e_source_list_peek_group_by_base_uri (ESourceList *list, const char *base_uri)
+{
+	GSList *p;
+	int len;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
+	g_return_val_if_fail (base_uri != NULL, NULL);
+
+	len = strlen (base_uri);
+
+	for (p = list->priv->groups; p != NULL; p = p->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (p->data);
+		const char *buri = e_source_group_peek_base_uri (group);
+
+		if (buri && g_ascii_strncasecmp (buri, base_uri, len) == 0)
+			return group;
+	}
+
+	return NULL;
+}
+
+struct property_check_struct {
+	ESourceGroup *group;
+	gboolean same;
+};
+
+static void
+check_group_property (const char *property_name, const char *property_value, struct property_check_struct *pcs)
+{
+	char *value;
+
+	g_return_if_fail (property_name != NULL);
+	g_return_if_fail (property_value != NULL);
+	g_return_if_fail (pcs != NULL);
+	g_return_if_fail (pcs->group != NULL);
+
+	value = e_source_group_get_property (pcs->group, property_name);
+	pcs->same = pcs->same && value && g_ascii_strcasecmp (property_value, value) == 0;
+	g_free (value);
+}
+
+/**
+ * e_source_list_peek_group_by_properties:
+ * Peeks group by its properties. Parameters are pairs of strings
+ * property_name, property_value, terminated by NULL! ESourceGroup
+ * is returned only if matches all the properties. Values are compared
+ * case insensitively.
+ **/
+ESourceGroup *
+e_source_list_peek_group_by_properties (ESourceList *list, const char *property_name, ...)
+{
+	GSList *p;
+	va_list ap;
+	GHashTable *props;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
+	g_return_val_if_fail (property_name != NULL, NULL);
+
+	props = g_hash_table_new (g_str_hash, g_str_equal);
+
+	va_start (ap, property_name);
+	while (property_name) {
+		const char *value = va_arg (ap, const char *);
+
+		if (!value)
+			break;
+
+		g_hash_table_insert (props, (gpointer)property_name, (gpointer)value);
+		property_name = va_arg (ap, const char *);
+	}
+	va_end (ap);
+
+	for (p = list->priv->groups; p != NULL; p = p->next) {
+		struct property_check_struct pcs;
+
+		pcs.group = E_SOURCE_GROUP (p->data);
+		pcs.same = TRUE;
+
+		g_hash_table_foreach (props, (GHFunc) check_group_property, &pcs);
+
+		if (pcs.same) {
+			g_hash_table_unref (props);
+			return pcs.group;
+		}
+	}
+
+	g_hash_table_unref (props);
 
 	return NULL;
 }
@@ -546,6 +648,70 @@ e_source_list_remove_group_by_uid (ESourceList *list,
 
 	group = e_source_list_peek_group_by_uid (list, uid);
 	if (group== NULL)
+		return FALSE;
+
+	remove_group (list, group);
+	return TRUE;
+}
+
+/**
+ * e_source_list_ensure_group:
+ * Ensures group with the @base_uri will exists in the @list and its name will be @name.
+ * If ret_it will be TRUE the group will be also returned, in that case caller should
+ * g_object_unref the group. Otherwise it returns NULL.
+ **/
+ESourceGroup *
+e_source_list_ensure_group (ESourceList *list, const char *name, const char *base_uri, gboolean ret_it)
+{
+	ESourceGroup *group;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (base_uri != NULL, NULL);
+
+	group = e_source_list_peek_group_by_base_uri (list, base_uri);
+	if (group) {
+		e_source_group_set_name (group, name);
+		if (ret_it)
+			g_object_ref (group);
+		else
+			group = NULL;
+	} else {
+		group = e_source_group_new (name, base_uri);
+
+		if (!e_source_list_add_group (list, group, -1)) {
+			g_warning ("Could not add source group %s with base uri %s to a source list", name, base_uri);
+			g_object_unref (group);
+			group = NULL;
+		} else {
+			/* save it now */
+			e_source_list_sync (list, NULL);
+
+			if (!ret_it) {
+				g_object_unref (group);
+				group = NULL;
+			}
+		}
+	}
+
+	return group;
+}
+
+/**
+ * e_source_list_remove_group_by_base_uri:
+ * Removes group with given base_uri.
+ * Returns TRUE if group was found.
+ **/
+gboolean
+e_source_list_remove_group_by_base_uri (ESourceList *list, const char *base_uri)
+{
+	ESourceGroup *group;
+
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
+	g_return_val_if_fail (base_uri != NULL, FALSE);
+
+	group = e_source_list_peek_group_by_base_uri (list, base_uri);
+	if (group == NULL)
 		return FALSE;
 
 	remove_group (list, group);

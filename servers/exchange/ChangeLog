@@ -1,3 +1,12 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #569652
+
+	* storage/exchange-esource.c: (find_account_group),
+	(add_folder_esource): Do not use deprecated
+	e_source_list_peek_group_by_name and add
+	account's uid as a group property.
+
 2009-04-08  Milan Crha  <mcrha@redhat.com>
 
 	* storage/exchange-esource.c: (add_folder_esource):

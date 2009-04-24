@@ -32,6 +32,41 @@
 
 static gboolean is_offline (void);
 
+static ESourceGroup *
+find_account_group (ESourceList *source_list, ExchangeAccount *exa)
+{
+	ESourceGroup *group;
+	EAccount *account;
+
+	g_return_val_if_fail (exa != NULL, NULL);
+	g_return_val_if_fail (exa->account_name != NULL, NULL);
+	g_return_val_if_fail (source_list != NULL, NULL);
+
+	account = exchange_account_fetch (exa);
+	g_return_val_if_fail (account != NULL, NULL);
+	g_return_val_if_fail (account->uid != NULL, NULL);
+
+	group = e_source_list_peek_group_by_properties (source_list, "account-uid", account->uid, NULL);
+	if (!group) {
+		/* check whether is stored only with an account name - the old style */
+		GSList *g;
+
+		for (g = e_source_list_peek_groups (source_list); g != NULL; g = g->next) {
+			group = E_SOURCE_GROUP (g->data);
+
+			if (strcmp (e_source_group_peek_name (group), exa->account_name) == 0)
+				break;
+
+			group = NULL;
+		}
+
+		if (group)
+			e_source_group_set_property (group, "account-uid", account->uid);
+	}
+
+	return group;
+}
+
 void
 add_folder_esource (ExchangeAccount *account,
 	     	    FolderType folder_type,
@@ -91,8 +126,7 @@ add_folder_esource (ExchangeAccount *account,
 	useremail = exchange_account_get_email_id (account);
 	authtype = exchange_account_get_authtype (account);
 
-        if ((source_group = e_source_list_peek_group_by_name (source_list,
-					account->account_name)) == NULL) {
+        if ((source_group = find_account_group (source_list, account)) == NULL) {
 		source_group = e_source_group_new (account->account_name,
 						   EXCHANGE_URI_PREFIX);
 		if (!e_source_list_add_group (source_list, source_group, -1)) {
@@ -105,6 +139,8 @@ add_folder_esource (ExchangeAccount *account,
 				g_free (authtype);
 			return;
 		}
+		e_source_group_set_property (source_group, "account-uid", exchange_account_fetch (account)->uid);
+		
 		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
 			char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
 

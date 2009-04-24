@@ -1,5 +1,20 @@
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
+	** Fix for bug #569652
+
+	* libedataserver/e-source-list.h: (e_source_list_peek_group_by_name):
+	* libedataserver/e-source-list.c: (e_source_list_peek_group_by_name):
+	Deprecated since now, it's not safe for localized names.
+
+	* libedataserver/e-source-list.h: (e_source_list_ensure_group),
+	(e_source_list_peek_group_by_base_uri),
+	(e_source_list_peek_group_by_properties),
+	(e_source_list_remove_group_by_base_uri):
+	* libedataserver/e-source-list.c: (check_group_property):
+	New API functions.
+
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fix for bug #343505
 
 	* libedataserver/e-data-server-util.h: (e_util_utf8_remove_accents):

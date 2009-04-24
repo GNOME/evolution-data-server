@@ -69,11 +69,17 @@ ESourceList *e_source_list_new_for_gconf_default  (const char  *path);
 GSList       *e_source_list_peek_groups         (ESourceList *list);
 ESourceGroup *e_source_list_peek_group_by_uid   (ESourceList *list,
 						 const char  *uid);
+#ifndef EDS_DISABLE_DEPRECATED
 ESourceGroup *e_source_list_peek_group_by_name  (ESourceList *list,
 						 const char *name);
+#endif
+ESourceGroup *e_source_list_peek_group_by_base_uri (ESourceList *list, const char *base_uri);
+ESourceGroup *e_source_list_peek_group_by_properties (ESourceList *list, const char *property_name, ...);
+
 ESource      *e_source_list_peek_source_by_uid  (ESourceList *list,
 						 const char  *uid);
 ESource      *e_source_list_peek_source_any     (ESourceList *list);
+
 gboolean  e_source_list_add_group             (ESourceList  *list,
 					       ESourceGroup *group,
 					       int           position);
@@ -81,6 +87,10 @@ gboolean  e_source_list_remove_group          (ESourceList  *list,
 					       ESourceGroup *group);
 gboolean  e_source_list_remove_group_by_uid   (ESourceList  *list,
 					       const char   *uid);
+
+ESourceGroup *e_source_list_ensure_group (ESourceList *list, const char *name, const char *base_uri, gboolean ret_it);
+gboolean e_source_list_remove_group_by_base_uri (ESourceList *list, const char *base_uri);
+
 gboolean  e_source_list_remove_source_by_uid  (ESourceList  *list,
 					       const char   *uidj);
 
