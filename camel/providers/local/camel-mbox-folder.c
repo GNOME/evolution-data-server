@@ -69,6 +69,8 @@ static void mbox_append_message(CamelFolder *folder, CamelMimeMessage * message,
 static CamelMimeMessage *mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex);
 static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
 static char* mbox_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
+static gint mbox_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2);
+static void mbox_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
 static void mbox_finalise(CamelObject * object);
 
@@ -86,6 +88,8 @@ camel_mbox_folder_class_init(CamelMboxFolderClass * camel_mbox_folder_class)
 	camel_folder_class->append_message = mbox_append_message;
 	camel_folder_class->get_message = mbox_get_message;
 	camel_folder_class->get_filename = mbox_get_filename;
+	camel_folder_class->cmp_uids = mbox_cmp_uids;
+	camel_folder_class->sort_uids = mbox_sort_uids;
 
 	lclass->create_summary = mbox_create_summary;
 	lclass->lock = mbox_lock;
@@ -477,4 +481,43 @@ fail:
 	}
 
 	return message;
+}
+
+static gint
+mbox_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+{
+	CamelMboxMessageInfo *a, *b;
+
+	g_return_val_if_fail (folder != NULL, 0);
+	g_return_val_if_fail (folder->summary != NULL, 0);
+
+	a = (CamelMboxMessageInfo *) camel_folder_summary_uid (folder->summary, uid1);
+	b = (CamelMboxMessageInfo *) camel_folder_summary_uid (folder->summary, uid2);
+
+	g_return_val_if_fail (a != NULL, 0);
+	g_return_val_if_fail (b != NULL, 0);
+
+	return a->frompos < b->frompos ? -1 : a->frompos == b->frompos ? 0 : 1;
+}
+
+static void
+mbox_sort_uids (CamelFolder *folder, GPtrArray *uids)
+{
+	g_return_if_fail (parent_class != NULL);
+	g_return_if_fail (folder != NULL);
+
+	if (uids && uids->len > 1) {
+		CamelException ex;
+
+		camel_exception_init (&ex);
+
+		camel_folder_summary_ensure_infos_loaded (folder->summary, uids->len, &ex);
+
+		if (camel_exception_is_set (&ex))
+			g_warning ("%s: %s", G_STRFUNC, camel_exception_get_description (&ex));
+
+		camel_exception_clear (&ex);
+	}
+
+	CAMEL_FOLDER_CLASS (parent_class)->sort_uids (folder, uids);
 }

@@ -57,6 +57,8 @@ static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const cha
 static void maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, char **appended_uid, CamelException * ex);
 static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex);
 static char* maildir_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
+static gint maildir_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2);
+static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
 static void maildir_finalize(CamelObject * object);
 
@@ -104,6 +106,8 @@ static void camel_maildir_folder_class_init(CamelObjectClass * camel_maildir_fol
 	camel_folder_class->append_message = maildir_append_message;
 	camel_folder_class->get_message = maildir_get_message;
 	camel_folder_class->get_filename = maildir_get_filename;
+	camel_folder_class->cmp_uids = maildir_cmp_uids;
+	camel_folder_class->sort_uids = maildir_sort_uids;
 
 	lclass->create_summary = maildir_create_summary;
 }
@@ -306,4 +310,47 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 	g_free(name);
 
 	return message;
+}
+
+static gint
+maildir_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+{
+	CamelMessageInfo *a, *b;
+	time_t tma, tmb;
+
+	g_return_val_if_fail (folder != NULL, 0);
+	g_return_val_if_fail (folder->summary != NULL, 0);
+
+	a = camel_folder_summary_uid (folder->summary, uid1);
+	b = camel_folder_summary_uid (folder->summary, uid2);
+
+	g_return_val_if_fail (a != NULL, 0);
+	g_return_val_if_fail (b != NULL, 0);
+
+	tma = camel_message_info_date_received (a);
+	tmb = camel_message_info_date_received (b);
+
+	return tma < tmb ? -1 : tma == tmb ? 0 : 1;
+}
+
+static void
+maildir_sort_uids (CamelFolder *folder, GPtrArray *uids)
+{
+	g_return_if_fail (parent_class != NULL);
+	g_return_if_fail (folder != NULL);
+
+	if (uids && uids->len > 1) {
+		CamelException ex;
+
+		camel_exception_init (&ex);
+
+		camel_folder_summary_ensure_infos_loaded (folder->summary, uids->len, &ex);
+
+		if (camel_exception_is_set (&ex))
+			g_warning ("%s: %s", G_STRFUNC, camel_exception_get_description (&ex));
+
+		camel_exception_clear (&ex);
+	}
+
+	CAMEL_FOLDER_CLASS (parent_class)->sort_uids (folder, uids);
 }

@@ -365,6 +365,8 @@ GPtrArray * camel_folder_summary_get_changed (CamelFolderSummary *s);
 int camel_folder_summary_cache_size (CamelFolderSummary *s);
 /* reload the summary at any required point if required */
 int camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex);
+/* ensures all CamelMessagesInfos loaded in memory */
+void camel_folder_summary_ensure_infos_loaded (CamelFolderSummary *s, int at_least, CamelException *ex);
 /* insert mi to summary */
 void camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboolean load);
 

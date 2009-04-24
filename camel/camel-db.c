@@ -901,7 +901,7 @@ read_uids_flags_callback (void *ref, int ncol, char ** cols, char ** name)
 }
 
 int
-camel_db_get_folder_uids_flags (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *summary, GHashTable *table, CamelException *ex)
+camel_db_get_folder_uids_flags (CamelDB *db, const char *folder_name, const char *sort_by, const char *collate, GPtrArray *summary, GHashTable *table, CamelException *ex)
 {
 	 GPtrArray *uids = summary;
 	 GPtrArray *flags = g_ptr_array_new ();
@@ -946,7 +946,7 @@ read_uids_callback (void *ref, int ncol, char ** cols, char ** name)
 }
 
 int
-camel_db_get_folder_uids (CamelDB *db, char *folder_name, char *sort_by, char *collate, GPtrArray *array, CamelException *ex)
+camel_db_get_folder_uids (CamelDB *db, const char *folder_name, const char *sort_by, const char *collate, GPtrArray *array, CamelException *ex)
 {
 	 char *sel_query;
 	 int ret;

@@ -924,6 +924,30 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	return ret == 0 ? 0 : -1;
 }
 
+/**
+ * camel_folder_summary_ensure_infos_loaded:
+ * @s: #CamelFolderSummary object
+ * @at_least: How many infos already loaded are considered fine to not reload all of them.
+ *    Use -1 to force reload of all of them if not in memory yet.
+ * @ex: #CamelException object.
+ *
+ * Loads all infos into memory, if they are not yet.
+ **/
+void
+camel_folder_summary_ensure_infos_loaded (CamelFolderSummary *s, int at_least, CamelException *ex)
+{
+	guint loaded, known;
+
+	g_return_if_fail (s != NULL);
+
+	loaded = camel_folder_summary_cache_size (s);
+	known = camel_folder_summary_count (s);
+
+	if ((at_least == -1 && known != loaded) || at_least > loaded) {
+		camel_folder_summary_reload_from_db (s, ex);
+	}
+}
+
 static void 
 camel_folder_summary_dump (CamelFolderSummary *s)
 {
@@ -963,7 +987,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	folder_name = s->folder->full_name;
 	cdb = s->folder->parent_store->cdb_r;
 
-	ret = camel_db_get_folder_uids_flags (cdb, folder_name, (char *)s->sort_by, (char *)s->collate, s->uids, p->flag_cache, ex);
+	ret = camel_db_get_folder_uids_flags (cdb, folder_name, s->sort_by, s->collate, s->uids, p->flag_cache, ex);
 	/* camel_folder_summary_dump (s); */
 
 #if 0

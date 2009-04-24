@@ -98,7 +98,6 @@ static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGw
 static char* groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
 static const char *get_from_from_org (EGwItemOrganizer *org);
 
-
 #define d(x)  
 
 const char * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
@@ -2516,6 +2515,15 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	camel_folder_change_info_free (changes);
 }
 
+static gint
+groupwise_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+{
+	g_return_val_if_fail (uid1 != NULL, 0);
+	g_return_val_if_fail (uid2 != NULL, 0);
+
+	return strcmp (uid1, uid2);
+}
+
 static void
 camel_groupwise_folder_class_init (CamelGroupwiseFolderClass *camel_groupwise_folder_class)
 {
@@ -2529,6 +2537,7 @@ camel_groupwise_folder_class_init (CamelGroupwiseFolderClass *camel_groupwise_fo
 	camel_folder_class->rename = groupwise_folder_rename;
 	camel_folder_class->search_by_expression = groupwise_folder_search_by_expression;
 	camel_folder_class->count_by_expression = groupwise_folder_count_by_expression;
+	camel_folder_class->cmp_uids = groupwise_cmp_uids;
 	camel_folder_class->search_by_uids = groupwise_folder_search_by_uids; 
 	camel_folder_class->search_free = groupwise_folder_search_free;
 	camel_folder_class->append_message = groupwise_append_message;

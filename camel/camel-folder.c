@@ -91,6 +91,7 @@ static GPtrArray        *get_uids            (CamelFolder *folder);
 static GPtrArray 	*get_uncached_uids   (CamelFolder *, GPtrArray * uids, CamelException *);
 static void              free_uids           (CamelFolder *folder,
 					      GPtrArray *array);
+static gint cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2);
 static void              sort_uids           (CamelFolder *folder,
 					      GPtrArray *uids);
 static GPtrArray        *get_summary         (CamelFolder *folder);
@@ -155,6 +156,7 @@ camel_folder_class_init (CamelFolderClass *camel_folder_class)
 	camel_folder_class->get_uids = get_uids;
 	camel_folder_class->get_uncached_uids = get_uncached_uids;
 	camel_folder_class->free_uids = free_uids;
+	camel_folder_class->cmp_uids = cmp_uids;
 	camel_folder_class->sort_uids = sort_uids;
 	camel_folder_class->get_summary = get_summary;
 	camel_folder_class->free_summary = free_summary;
@@ -1281,27 +1283,52 @@ camel_folder_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelExce
 	return CF_CLASS (folder)->get_uncached_uids(folder, uids, ex);
 }
 
-
-static int
-uidcmp (const void *v0, const void *v1)
+static gint
+cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
 {
-	const char *str0 = *(const char **) v0;
-	const char *str1 = *(const char **) v1;
-	guint32 uid0 = strtoul (str0, NULL, 10);
-	guint32 uid1 = strtoul (str1, NULL, 10);
-	
-	if (uid0 < uid1)
-		return -1;
-	else if (uid0 == uid1)
-		return 0;
-	else
-		return 1;
+	g_return_val_if_fail (uid1 != NULL, 0);
+	g_return_val_if_fail (uid2 != NULL, 0);
+
+	return strtoul (uid1, NULL, 10) - strtoul (uid2, NULL, 10);
+}
+
+/**
+ * camel_folder_cmp_uids:
+ * @folder: a #CamelFolder object
+ * @uid1: The first uid.
+ * @uid2: the second uid.
+ *
+ * Compares two uids. The return value meaning is the same as in any other compare function.
+ *
+ * Note that the default compare function expects a decimal number at the beginning of a uid,
+ * thus if provider uses different uid values, then it should subclass this function.
+ **/
+gint
+camel_folder_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
+	g_return_val_if_fail (uid1 != NULL, 0);
+	g_return_val_if_fail (uid2 != NULL, 0);
+
+	return CF_CLASS (folder)->cmp_uids (folder, uid1, uid2);
+}
+
+static gint
+cmp_array_uids (gconstpointer a, gconstpointer b, gpointer user_data)
+{
+	const char *uid1 = *(const char **) a;
+	const char *uid2 = *(const char **) b;
+	CamelFolder *folder = user_data;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
+
+	return camel_folder_cmp_uids (folder, uid1, uid2);
 }
 
 static void
 sort_uids (CamelFolder *folder, GPtrArray *uids)
 {
-	qsort (uids->pdata, uids->len, sizeof (void *), uidcmp);
+	g_qsort_with_data (uids->pdata, uids->len, sizeof (void *), cmp_array_uids, folder);
 }
 
 

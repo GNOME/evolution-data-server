@@ -1,3 +1,11 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #563954
+
+	* camel-groupwise-folder.c: (groupwise_cmp_uids),
+	(camel_groupwise_folder_class_init):
+	Define its own compare function for UIDs.
+
 2009-04-13  Chenthill Palanisamy  <pchenthill@novell.com>
 
 	

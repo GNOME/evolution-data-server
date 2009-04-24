@@ -1,5 +1,24 @@
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
+	** Part of fix for bug #563954
+
+	* camel-folder.h: (camel_folder_cmp_uids), (struct CamelFolder):
+	* camel-folder.c: (cmp_uids), (camel_folder_class_init),
+	(camel_folder_cmp_uids), (cmp_array_uids), (sort_uids):
+	Define camel_folder_cmp_uids to compare UIDs properly.
+	* camel-folder-summary.h: (camel_folder_summary_ensure_infos_loaded):
+	* camel-folder-summary.c: (camel_folder_summary_ensure_infos_loaded):
+	Define new function.
+
+	* camel-db.h: (camel_db_get_folder_uids),
+	(camel_db_get_folder_uids_flags):
+	* camel-db.c: (camel_db_get_folder_uids),
+	(camel_db_get_folder_uids_flags):
+	* camel-folder-summary.c: (camel_folder_summary_load_from_db):
+	Functions prototype cleanup.
+
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fix for bug #571206
 
 	* camel-vee-folder.c: (camel_vee_folder_add_folder), (vee_sync):

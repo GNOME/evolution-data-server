@@ -1,5 +1,19 @@
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
+	** Part of fix for bug #563954
+
+	* camel-mh-summary.c: (sort_uid_cmp), (camel_mh_summary_new):
+	Little cleanup.
+	* camel-mbox-folder.c: (mbox_cmp_uids), (mbox_sort_uids),
+	(camel_mbox_folder_class_init):
+	* camel-maildir-folder.c: (maildir_cmp_uids),
+	(maildir_sort_uids), (camel_maildir_folder_class_init):
+	Subslass sort and compare uids functions to compare based on the
+	position in the mbox file or a received date for maildir, instead
+	of uid values.
+
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
 	** Fix for bug #571206
 
 	* camel-maildir-summary.c: (message_info_new_from_header):
