@@ -93,7 +93,7 @@ _ ## p ##_factory_get_type (GTypeModule *module) \
 { \
 	GType type; \
 \
-	GTypeInfo info = { \
+	const GTypeInfo info = { \
 		sizeof (EBookBackend##t##FactoryClass), \
 		NULL, /* base_class_init */ \
 		NULL, /* base_class_finalize */ \
