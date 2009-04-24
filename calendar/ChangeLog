@@ -1,5 +1,20 @@
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
+	** Part of fix for bug #381132
+
+	* libecal/Makefile.am:
+	* libecal/e-cal-system-timezone.h:
+	* libecal/e-cal-system-timezone.c:
+	New files for obtaining system timezone location,
+	based on gnome-panel's clock-applet system-timezone.c.
+	* libecal/e-cal-util.h: (e_cal_util_get_system_timezone_location),
+	(e_cal_util_get_system_timezone):
+	* libecal/e-cal-util.c: (): (e_cal_util_get_system_timezone_location),
+	(e_cal_util_get_system_timezone):
+	New API functions to obtain system timezone.
+
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
 	** Part of fix for bug #478692
 
 	* backends/caldav/create-account.c: Removed unused file.

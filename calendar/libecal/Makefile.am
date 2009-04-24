@@ -46,6 +46,8 @@ libecal_1_2_la_SOURCES =	\
 	e-cal-recur.c		\
 	e-cal-time-util.c	\
         e-cal-check-timezones.c \
+	e-cal-system-timezone.c	\
+	e-cal-system-timezone.h	\
 	e-cal-util.c		\
 	e-cal-view.c		\
 	e-cal-view-listener.c	\

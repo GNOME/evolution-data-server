@@ -26,6 +26,7 @@
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-data-server-util.h"
 #include "e-cal-util.h"
+#include "e-cal-system-timezone.h"
 
 
 
@@ -1138,4 +1139,38 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 
 		icalrecur_iterator_free (iter);
 	}
+}
+
+/**
+ * e_cal_util_get_system_timezone_location:
+ *
+ * Returns system timezone location string, NULL on an error.
+ * Returned pointer should be freed with g_free().
+ **/
+char *
+e_cal_util_get_system_timezone_location (void)
+{
+	return e_cal_system_timezone_get_location ();
+}
+
+/**
+ * e_cal_util_get_system_timezone:
+ *
+ * Returns icaltimezone object of the system timezone. NULL on an error.
+ * Returned pointer is part of the built-in timezones, thus do not free it.
+ **/
+icaltimezone *
+e_cal_util_get_system_timezone (void)
+{
+	char *location;
+	icaltimezone *zone;
+
+	location = e_cal_system_timezone_get_location ();
+	g_return_val_if_fail (location != NULL, NULL);
+
+	zone = icaltimezone_get_builtin_timezone (location);
+
+	g_free (location);
+
+	return zone;
 }

@@ -135,7 +135,9 @@ void           e_cal_util_remove_instances (icalcomponent *icalcomp,
 					  struct icaltimetype rid,
 					  CalObjModType mod);
 
+char *e_cal_util_get_system_timezone_location (void);
+icaltimezone *e_cal_util_get_system_timezone (void);
+
 G_END_DECLS
 
 #endif
-
