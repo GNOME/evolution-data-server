@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE node SYSTEM "dbus.dtd">
+
+<!--
+  Author: Ross Burton <ross@linux.intel.com>
+  Copyright (C) 2005 Opened Hand Ltd
+  Copyright (C) 2009 Intel Corporation
+-->
+<node>
+
+  <interface name="org.gnome.evolution.dataserver.addressbook.Book">
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataBook"/>
+
+    <signal name="writable">
+    	<arg name="value" type="b"/>
+    </signal>
+    <signal name="connection">
+    	<arg name="connected" type="b"/>
+    </signal>
+    <signal name="auth_required"/>
+
+    <method name="open">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_open"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="only_if_exists" type="b" direction="in"/>
+    </method>
+
+    <method name="remove">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_remove"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    </method>
+
+    <method name="getContact">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getContact"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="uid" type="s" direction="in"/>
+      <arg name="vcard" type="s" direction="out"/>
+    </method>
+
+    <method name="getContactList">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getContactList"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="query" type="s" direction="in"/>
+      <arg name="vcards" type="as" direction="out"/>
+    </method>
+
+    <method name="authenticateUser">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_authenticateUser"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="user" type="s" direction="in"/>
+      <arg name="passwd" type="s" direction="in"/>
+      <arg name="auth_method" type="s" direction="in"/>
+    </method>
+
+    <method name="addContact">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_addContact"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="vcard" type="s" direction="in"/>
+      <arg name="uid" type="s" direction="out"/>
+    </method>
+
+    <method name="removeContacts">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_removeContacts"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="list" type="as" direction="in"/>
+    </method>
+
+    <method name="modifyContact">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_modifyContact"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="vcard" type="s" direction="in"/>
+    </method>
+
+    <method name="getStaticCapabilities">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getStaticCapabilities"/>
+      <arg name="capabilities" type="s" direction="out"/>
+    </method>
+
+    <method name="getRequiredFields">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getRequiredFields"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="fields" type="as" direction="out"/>
+    </method>
+
+    <method name="getSupportedFields">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getSupportedFields"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="fields" type="as" direction="out"/>
+    </method>
+
+    <method name="getSupportedAuthMethods">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getSupportedAuthMethods"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="auth_methods" type="as" direction="out"/>
+    </method>
+
+    <method name="getBookView">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getBookView"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="query" type="s" direction="in"/>
+      <!-- <arg name="fields" type="as" direction="in"/> -->
+      <arg name="max_results" type="u" direction="in"/>
+      <arg name="view" type="o" direction="out"/>
+    </method>
+
+    <method name="getChanges">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_getChanges"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <arg name="change_id" type="s" direction="in"/>
+      <arg name="changes" type="a(us)" direction="out"/>
+    </method>
+
+    <method name="cancelOperation">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_cancelOperation"/>
+    </method>
+    
+    <method name="close">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_AddressBook_Book_close"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+    </method>
+  </interface>
+
+</node>

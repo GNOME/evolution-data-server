@@ -1,0 +1,57 @@
+<?xml version ="1.0" ?>
+
+<!ENTITY % name.attr
+        "name         CDATA           #REQUIRED">
+
+<!ELEMENT node (interface+)>
+<!ATTLIST node
+ %name.attr;
+>
+
+<!ELEMENT interface (annotation?, (method|signal|property)*)>
+<!ATTLIST interface
+ %name.attr;
+>
+
+<!ELEMENT annotation EMPTY>
+<!ATTLIST annotation
+ name (org.freedesktop.DBus.GLib.CSymbol|org.freedesktop.DBus.Deprecated) #REQUIRED
+ value CDATA #REQUIRED
+>
+
+<!ELEMENT method (annotation?, arg*)>
+<!ATTLIST method
+ %name.attr;
+>
+
+<!ELEMENT signal (arg*)>
+<!ATTLIST signal
+ %name.attr;
+>
+
+<!--
+The types:
+byte: y
+boolean: b
+int16: n
+uint16: q
+int32: i
+unit32: u
+int64: x
+uint64: t
+double: d
+string: s
+object path: o
+signature: g
+array: a
+variant: v
+struct: r
+dict entry: e
+-->
+
+<!ELEMENT arg EMPTY>
+<!ATTLIST arg
+ %name.attr;
+ type (y|b|n|q|i|u|x|t|d|s|o|g|a|v|r|e) #REQUIRED
+ direction (in|out) #IMPLIED
+>
