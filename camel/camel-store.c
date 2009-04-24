@@ -577,40 +577,42 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 	CS_CLASS (store)->rename_folder (store, old_name, new_name, ex);
 
 	/* If it worked, update all open folders/unlock them */
-	if (folders && !camel_exception_is_set(ex)) {
-		guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
-		CamelRenameInfo reninfo;
+	if (folders) {
+		if (!camel_exception_is_set(ex)) {
+			guint32 flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
+			CamelRenameInfo reninfo;
 
-		for (i=0;i<folders->len;i++) {
-			char *new;
+			for (i=0;i<folders->len;i++) {
+				char *new;
 
-			folder = folders->pdata[i];
+				folder = folders->pdata[i];
 
-			new = g_strdup_printf("%s%s", new_name, folder->full_name+strlen(old_name));
-			camel_object_bag_rekey(store->folders, folder, new);
-			camel_folder_rename(folder, new);
-			g_free(new);
+				new = g_strdup_printf("%s%s", new_name, folder->full_name+strlen(old_name));
+				camel_object_bag_rekey(store->folders, folder, new);
+				camel_folder_rename(folder, new);
+				g_free(new);
 
-			CAMEL_FOLDER_REC_UNLOCK(folder, lock);
-			camel_object_unref(folder);
-		}
+				CAMEL_FOLDER_REC_UNLOCK(folder, lock);
+				camel_object_unref(folder);
+			}
 
-		/* Emit renamed signal */
-		if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
-			flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
+			/* Emit renamed signal */
+			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
+				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
 		
-		reninfo.old_base = (char *)old_name;
-		reninfo.new = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder_info(store, new_name, flags, ex);
-		if (reninfo.new != NULL) {
-			camel_object_trigger_event (store, "folder_renamed", &reninfo);
-			((CamelStoreClass *)((CamelObject *)store)->klass)->free_folder_info(store, reninfo.new);
-		}
-	} else {
-		/* Failed, just unlock our folders for re-use */
-		for (i=0;i<folders->len;i++) {
-			folder = folders->pdata[i];
-			CAMEL_FOLDER_REC_UNLOCK(folder, lock);
-			camel_object_unref(folder);
+			reninfo.old_base = (char *)old_name;
+			reninfo.new = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder_info(store, new_name, flags, ex);
+			if (reninfo.new != NULL) {
+				camel_object_trigger_event (store, "folder_renamed", &reninfo);
+				((CamelStoreClass *)((CamelObject *)store)->klass)->free_folder_info(store, reninfo.new);
+			}
+		} else {
+			/* Failed, just unlock our folders for re-use */
+			for (i=0;i<folders->len;i++) {
+				folder = folders->pdata[i];
+				CAMEL_FOLDER_REC_UNLOCK(folder, lock);
+				camel_object_unref(folder);
+			}
 		}
 	}
 
