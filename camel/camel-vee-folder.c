@@ -177,7 +177,7 @@ void
 camel_vee_folder_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 {
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);
-	int i, cache;
+	int i;
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 	
 	if (vf == (CamelVeeFolder *)sub) {
@@ -618,7 +618,7 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 		GSList *del = NULL;
 
 		for (i=0; i < count; i++) {
-			CamelVeeMessageInfo *mi = camel_folder_summary_index (folder->summary, i);
+			CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
 			if (mi->old_flags & CAMEL_MESSAGE_DELETED) {
 				del = g_slist_prepend (del, (gpointer) camel_pstring_strdup(((CamelMessageInfo *)mi)->uid));
 				camel_folder_summary_remove_index_fast (folder->summary, i);

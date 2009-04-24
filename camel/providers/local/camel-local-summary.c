@@ -65,7 +65,7 @@ static int local_summary_load(CamelLocalSummary *cls, int forceindex, CamelExcep
 static int local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 static int local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 static CamelMessageInfo *local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
-static int local_summary_need_index();
+static int local_summary_need_index(void);
 
 static void camel_local_summary_class_init (CamelLocalSummaryClass *klass);
 static void camel_local_summary_init       (CamelLocalSummary *obj);
@@ -425,7 +425,7 @@ local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 }
 
 static int
-local_summary_need_index() {
+local_summary_need_index(void) {
 	return 1;
 }
 

@@ -178,7 +178,11 @@ camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 	static char *exp = NULL;
 	char *meta;
 	gboolean hacked_unread_folder = FALSE;
-	CamelVeeFolder *vf = (CamelVeeFolder *) ((CamelFolderSummary *)vs)->folder;
+	CamelVeeFolder *vf;
+
+	g_return_if_fail (vs != NULL);
+
+	vf = (CamelVeeFolder *) ((CamelFolderSummary *)vs)->folder;
 
 	/* HACK: Ugliest of all hacks. Its virtually not possible now
 	 * to maintain counts and the non matching uids of unread vfolder here.
@@ -216,7 +220,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
 
 	if (vf->priv->unread_vfolder == -1)
-		camel_vee_summary_load_check_unread_vfolder (mi->summary);
+		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
 
 	if (vf->priv->unread_vfolder == 1)
 		hacked_unread_folder = TRUE;

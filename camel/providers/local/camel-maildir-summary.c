@@ -294,7 +294,7 @@ static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary * s, st
 			mdi->info.info.uid = camel_pstring_add (camel_folder_summary_next_uid_string(s), TRUE);
 
 		/* handle 'duplicates' */
-		info = camel_folder_summary_uid(s, uid);
+		info = camel_folder_summary_peek_info (s, uid);
 		if (info) {
 			d(printf("already seen uid '%s', just summarising instead\n", uid));
 			camel_message_info_free(mi);
@@ -566,7 +566,11 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new(g_str_hash, g_str_equal);
-	count = camel_folder_summary_count((CamelFolderSummary *)cls);
+	count = camel_folder_summary_count (s);
+	if (count != camel_folder_summary_cache_size (s)) {
+		camel_folder_summary_reload_from_db (s, ex);
+		count = camel_folder_summary_count (s);
+	}
 	forceindex = count == 0;
 	for (i=0;i<count;i++) {
 		info = camel_folder_summary_index((CamelFolderSummary *)cls, i);

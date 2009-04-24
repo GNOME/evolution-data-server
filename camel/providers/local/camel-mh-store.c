@@ -336,7 +336,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		path = g_strdup_printf("%s/%s.ev-summary", root, fi->full_name);
 		folderpath = g_strdup_printf("%s/%s", root, fi->full_name);
 		s = (CamelFolderSummary *)camel_mh_summary_new(NULL, path, folderpath, NULL);
-		if (camel_folder_summary_header_load(s) != -1) {
+		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL) != -1) {
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
 		}

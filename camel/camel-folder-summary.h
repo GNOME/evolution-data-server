@@ -394,7 +394,6 @@ void camel_folder_summary_remove_range(CamelFolderSummary *summary, int start, i
 void camel_folder_summary_clear(CamelFolderSummary *summary);
 void camel_folder_summary_clear_db (CamelFolderSummary *s);
 
-int camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex);
 int camel_folder_summary_cache_size (CamelFolderSummary *s);
 
 /* lookup functions */

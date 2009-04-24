@@ -1,3 +1,16 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #571206
+
+	* camel-vee-folder.c: (camel_vee_folder_add_folder), (vee_sync):
+	* camel-vee-summary.c: (camel_vee_summary_load_check_unread_vfolder),
+	(vee_info_set_flags):
+	* camel-folder-summary.c: (camel_folder_summary_class_init):
+	Various compiler warning cleanup.
+
+	* camel-folder-summary.h: (camel_folder_summary_reload_from_db):
+	Function prototype double-declared.
+
 2009-04-24  Sergio Villar Senin  <svillar@igalia.com>
 
 	** Fix for bug #578822 - fixed potential invalid dereference

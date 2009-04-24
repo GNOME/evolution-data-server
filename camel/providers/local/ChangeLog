@@ -1,3 +1,20 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Fix for bug #571206
+
+	* camel-maildir-summary.c: (message_info_new_from_header):
+	Peek info from summary.
+	* camel-maildir-summary.c: (maildir_summary_check),
+	Reload summary from db if necessary.
+	* camel-maildir-store.c: (fill_fi):
+	* camel-mh-store.c: (fill_fi):
+	Use 'camel_folder_summary_header_load_from_db'.
+
+	* camel-local-summary.h: (struct _CamelLocalSummaryClass):
+	* camel-local-summary.c: (local_summary_need_index):
+	* camel-spool-summary.c: (spool_summary_need_index):
+	Declare function prototype properly.
+
 2009-04-24  Sergio Villar Senin  <svillar@igalia.com>
 
 	** Fixes bug #573183

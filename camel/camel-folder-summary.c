@@ -4866,7 +4866,6 @@ camel_message_info_dump (CamelMessageInfo *mi)
 static void
 camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 {
-	CamelObjectClass *camel_object_class = CAMEL_OBJECT_CLASS (klass);
 	camel_folder_summary_parent = camel_type_get_global_classfuncs (camel_object_get_type ());
 
 	klass->summary_header_load = summary_header_load;
