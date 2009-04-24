@@ -1,3 +1,11 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #552583
+
+	* camel-pop3-provider.c: (pop3_url_hash), (pop3_url_equal),
+	(camel_provider_module_init), (add_hash), (check_equal):
+	Compare URLs only on protocol, user, host and port.
+
 2008-12-09  Milan Crha  <mcrha@redhat.com>
 
 	** Fix for bug #552986
