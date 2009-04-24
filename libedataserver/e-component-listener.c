@@ -42,8 +42,10 @@ connection_listen_cb (gpointer object, gpointer user_data)
 
 	cl = (EComponentListener *)user_data;
 	/* cl can be removed in e_component_listener_finalize */
-	if (g_list_find (watched_connections, cl) == NULL)
+	if (g_list_find (watched_connections, cl) == NULL) {
 		g_static_rec_mutex_unlock (&watched_lock);
+		return;
+	}
 	switch (ORBit_small_get_connection_status (cl->priv->component)) {
 		case ORBIT_CONNECTION_DISCONNECTED :
 			watched_connections = g_list_remove (watched_connections, cl);
