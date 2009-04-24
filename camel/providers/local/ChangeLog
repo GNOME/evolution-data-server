@@ -1,3 +1,10 @@
+2009-04-24  Sergio Villar Senin  <svillar@igalia.com>
+
+	** Fixes bug #573183
+	
+	* camel-maildir-summary.c (maildir_summary_check): only do
+	closedir() if directory is not NULL
+
 2009-03-01  Srinivasa Ragavan  <sragavan@novell.com>
 
 	* camel/providers/local/camel-local-folder.c: Fix for a deadlock,
