@@ -1,3 +1,9 @@
+2009-04-24  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #478692
+
+	* backends/caldav/create-account.c: Removed unused file.
+
 2009-04-13  Matthew Barnes  <mbarnes@redhat.com>
 
 	* libedata-cal/e-cal-backend-sync.c:
