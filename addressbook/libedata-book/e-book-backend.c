@@ -883,9 +883,9 @@ e_book_backend_foreach_view (EBookBackend *backend,
 	while (e_iterator_is_valid (iter)) {
 		view = (EDataBookView*)e_iterator_get (iter);
 
-		bonobo_object_ref (view);
+		e_data_book_view_ref (view);
 		callback (view, user_data);
-		bonobo_object_unref (view);
+		e_data_book_view_unref (view);
 
 		e_iterator_next (iter);
 	}
