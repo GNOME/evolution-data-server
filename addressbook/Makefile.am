@@ -1,1 +1,1 @@
-SUBDIRS = idl libebook libedata-book backends tests
+SUBDIRS = libebook libedata-book backends

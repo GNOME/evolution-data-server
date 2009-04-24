@@ -1747,7 +1747,6 @@ Makefile
 evolution-data-server-zip
 evolution-data-server.pc
 addressbook/Makefile
-addressbook/idl/Makefile
 addressbook/libebook/Makefile
 addressbook/libebook/libebook.pc
 addressbook/libedata-book/Makefile
