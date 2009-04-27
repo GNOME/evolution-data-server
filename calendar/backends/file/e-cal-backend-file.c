@@ -2087,6 +2087,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 			save (cbfile);
 
+			if (new_object)
+				*new_object = e_cal_component_get_as_string (comp);
+
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_free (rid);
 			return GNOME_Evolution_Calendar_Success;
@@ -2175,8 +2178,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		rid = NULL;
 		break;
 	case CALOBJ_MOD_ALL :
-		*new_object = e_cal_component_get_as_string (comp);
-
 		/* Remove the old version */
 		if (old_object)
 			*old_object = e_cal_component_get_as_string (obj_data->full_object);
@@ -2219,6 +2220,9 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 
 	save (cbfile);
 	g_free (rid);
+
+	if (new_object)
+		*new_object = e_cal_component_get_as_string (comp);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;

@@ -1,3 +1,11 @@
+2009-04-27  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #575773
+
+	* backends/file/e-cal-backend-file.c:
+	(e_cal_backend_file_modify_object):
+	Always set a new object properly, as a backend modifies it.
+
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #381132
