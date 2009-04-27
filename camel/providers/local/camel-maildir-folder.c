@@ -180,7 +180,10 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
 		return;
-	
+
+	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
+
 	mdi = (CamelMaildirMessageInfo *)mi;
 
 	d(printf("Appending message: uid is %s filename is %s\n", camel_message_info_uid(mi), mdi->filename));

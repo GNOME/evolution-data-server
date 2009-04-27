@@ -1,3 +1,12 @@
+2009-04-27  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #478239
+
+	* camel-mime-message.h: (camel_mime_message_has_attachment):
+	* camel-mime-message.c: (camel_mime_message_has_attachment),
+	(find_attachment): New helper function to check whether
+	message contains any 'attachment' part.
+
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #563954

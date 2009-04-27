@@ -1,3 +1,12 @@
+2009-04-27  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #478239
+
+	* camel-mbox-folder.c: (mbox_append_message):
+	* camel-maildir-folder.c: (maildir_append_message):
+	* camel-mh-folder.c: (mh_append_message):
+	Check whether message has really attachment part when claiming so.
+
 2009-04-24  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #563954

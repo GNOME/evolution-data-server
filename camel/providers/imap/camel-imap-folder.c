@@ -3007,6 +3007,14 @@ done:
 					camel_folder_summary_touch (mi->info.summary);
 			}
 		}
+
+		if ((mi->info.flags & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (msg)) {
+			mi->info.flags = mi->info.flags & ~CAMEL_MESSAGE_ATTACHMENTS;
+			mi->info.dirty = TRUE;
+
+			if (mi->info.summary)
+				camel_folder_summary_touch (mi->info.summary);
+		}
 	}
 fail:
 	camel_message_info_free(&mi->info);

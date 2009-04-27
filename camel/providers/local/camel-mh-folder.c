@@ -140,7 +140,10 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
 		return;
-	
+
+	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
+
 	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
 	
 	/* write it out, use the uid we got from the summary */

@@ -128,6 +128,8 @@ CamelMimePart              *camel_mime_message_get_part_by_content_id (CamelMime
 
 char                       *camel_mime_message_build_mbox_from    (CamelMimeMessage           *message);
 
+gboolean		    camel_mime_message_has_attachment     (CamelMimeMessage           *message);
+
 void camel_mime_message_dump(CamelMimeMessage *msg, int body);
 
 G_END_DECLS

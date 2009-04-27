@@ -1169,6 +1169,47 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 	return ret;
 }
 
+static gboolean
+find_attachment (CamelMimeMessage *msg, CamelMimePart *part, void *data)
+{
+	const char *disp;
+	gboolean *found = (gboolean *)data;
+
+	g_return_val_if_fail (part != NULL, FALSE);
+
+	disp = camel_mime_part_get_disposition (part);
+
+	if (disp) {
+		CamelContentDisposition *cd = camel_content_disposition_decode (disp);
+
+		if (cd) {
+			*found = (cd->disposition && g_ascii_strcasecmp (cd->disposition, "attachment") == 0);
+
+			camel_content_disposition_unref (cd);
+		}
+	}
+
+	return ! (*found);
+}
+
+/**
+ * camel_mime_message_has_attachment:
+ * @message: a #CamelMimeMessage object
+ *
+ * Returns whether message contains at least one attachment part.
+ **/
+gboolean
+camel_mime_message_has_attachment (CamelMimeMessage *message)
+{
+	gboolean found = FALSE;
+
+	g_return_val_if_fail (message != NULL, FALSE);
+
+	camel_mime_message_foreach_part (message, find_attachment, &found);
+
+	return found;
+}
+
 static void
 cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, int body, int depth)
 {

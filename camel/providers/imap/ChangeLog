@@ -1,3 +1,10 @@
+2009-04-27  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #478239
+
+	* camel-imap-folder.c: (imap_get_message):
+	Check whether message has really attachment part when claiming so.
+
 2009-03-09  Matthew Barnes  <mbarnes@redhat.com>
 
 	* camel-imap-summary.c (camel_imap_summary_new):

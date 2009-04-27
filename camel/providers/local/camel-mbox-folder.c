@@ -218,6 +218,9 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 
 	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
 
+	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
+
 	output_stream = camel_stream_fs_new_with_name(lf->folder_path, O_WRONLY | O_APPEND | O_LARGEFILE, 0666);
 	if (output_stream == NULL) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
