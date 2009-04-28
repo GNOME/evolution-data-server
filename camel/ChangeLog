@@ -1,3 +1,12 @@
+2009-05-07  Sergio Villar Senin  <svillar@igalia.com>
+
+	** Fix for bug #580620
+
+	* camel.c (camel_init, camel_shutdown): protect calls to NSS_Init
+	and NSS_Shutdown to avoid simultaneous calls from multiple
+	threads. Do not unconditionally cleanup NSS if it was externally
+	initialized.
+
 2009-05-06  Jeff Cai <jeff.cai@sun.com>
 
 	** Fix for bug #581420

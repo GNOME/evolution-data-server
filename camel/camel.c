@@ -44,6 +44,18 @@
 #include "camel-provider.h"
 #include "camel-private.h"
 
+#ifdef HAVE_NSS
+/* To protect NSS initialization and shutdown. This prevents
+   concurrent calls to shutdown() and init() by different threads */
+PRLock *nss_initlock = NULL;
+
+/* Whether or not Camel has initialized the NSS library. We cannot
+   unconditionally call NSS_Shutdown() if NSS was initialized by other
+   library before. This boolean ensures that we only perform a cleanup
+   if and only if Camel is the one that previously initialized NSS */
+volatile gboolean nss_initialized = FALSE;
+#endif
+
 static int initialised = FALSE;
 
 int camel_application_is_exiting = FALSE;
@@ -70,7 +82,11 @@ camel_init (const char *configdir, gboolean nss_init)
 		char *nss_configdir;
 		PRUint16 indx;
 
-		PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
+		if (nss_initlock == NULL) {
+			PR_Init(PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
+			nss_initlock = PR_NewLock();
+		}
+		PR_Lock (nss_initlock);
 		
 #ifndef G_OS_WIN32
 		nss_configdir = g_strdup (configdir);
@@ -78,16 +94,25 @@ camel_init (const char *configdir, gboolean nss_init)
 		nss_configdir = g_win32_locale_filename_from_utf8 (configdir);
 #endif
 
-		if (NSS_InitReadWrite (nss_configdir) == SECFailure) {
-			/* fall back on using volatile dbs? */
-			if (NSS_NoDB_Init (nss_configdir) == SECFailure) {
-				g_free (nss_configdir);
-				g_warning ("Failed to initialize NSS");
-				return -1;
+		if (!NSS_IsInitialized()) {
+			nss_initialized = 1;
+
+			if (NSS_InitReadWrite (nss_configdir) == SECFailure) {
+				/* fall back on using volatile dbs? */
+				if (NSS_NoDB_Init (nss_configdir) == SECFailure) {
+					g_free (nss_configdir);
+					g_warning ("Failed to initialize NSS");
+					nss_initialized = 0;
+					PR_Unlock(nss_initlock);
+					return -1;
+				}
 			}
 		}
 
 		NSS_SetDomesticPolicy ();
+
+		PR_Unlock(nss_initlock);
+
 		/* we must enable all ciphersuites */
 		for (indx = 0; indx < SSL_NumImplementedCiphers; indx++) {
 			if (!SSL_IS_SSL2_CIPHER(SSL_ImplementedCiphers[indx]))
@@ -138,7 +163,10 @@ camel_shutdown (void)
 	/* These next calls must come last. */
 
 #if defined (HAVE_NSS)
-	NSS_Shutdown ();
+	PR_Lock(nss_initlock);
+	if (nss_initialized)
+		NSS_Shutdown ();
+	PR_Unlock(nss_initlock);
 #endif /* HAVE_NSS */
 
 	initialised = FALSE;
