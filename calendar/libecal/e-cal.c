@@ -951,6 +951,21 @@ cal_set_mode_cb (ECalListener *listener,
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_SET_MODE],
 		       0, ecal_status, mode);
 
+	if (ecal_status == E_CAL_SET_MODE_SUCCESS && ecal->priv->load_state == E_CAL_LOAD_LOADED) {
+		/* the mode has been changed, recheck whether readonly or not */
+		GError *error = NULL;
+		gboolean read_only = TRUE;
+
+		if (get_read_only (ecal, &read_only, &error)) {
+			priv->read_only = read_only;
+		}
+
+		if (error) {
+			g_warning ("%s: get_read_only failed: %s", G_STRFUNC, error->message);
+			g_error_free (error);
+		}
+	}
+
 	g_object_unref (G_OBJECT (ecal));
 }
 

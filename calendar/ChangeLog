@@ -1,3 +1,10 @@
+2009-04-28  Milan Crha  <mcrha@redhat.com>
+
+	** Part of fix for bug #553932
+
+	* libecal/e-cal.c: (cal_set_mode_cb): Recheck readonly state for
+	loaded ECal-s when changing online/offline mode.
+
 2009-04-27  Milan Crha  <mcrha@redhat.com>
 
 	** Part of fix for bug #575773
