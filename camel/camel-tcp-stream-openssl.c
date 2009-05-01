@@ -587,14 +587,14 @@ x509_strerror (int err)
 	case X509_V_ERR_CERT_HAS_EXPIRED:
 		return _("Certificate has expired");
 	case X509_V_ERR_CRL_NOT_YET_VALID:
-		return _("CRL not yet valid");
+		return _("Certificate Revocation List (CRL) not yet valid");
 	case X509_V_ERR_CRL_HAS_EXPIRED:
-		return _("CRL has expired");
+		return _("Certificate Revocation List (CRL) has expired");
 	case X509_V_ERR_ERROR_IN_CERT_NOT_BEFORE_FIELD:
 	case X509_V_ERR_ERROR_IN_CERT_NOT_AFTER_FIELD:
 	case X509_V_ERR_ERROR_IN_CRL_LAST_UPDATE_FIELD:
 	case X509_V_ERR_ERROR_IN_CRL_NEXT_UPDATE_FIELD:
-		return _("Error in CRL");
+		return _("Error in Certificate Revocation List (CRL)");
 	case X509_V_ERR_OUT_OF_MEM:
 		return _("Out of memory");
 	case X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
