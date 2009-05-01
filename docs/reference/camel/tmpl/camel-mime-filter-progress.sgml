@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterProgress
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT CamelMimeFilterProgress ##### -->
+<para>
+
+</para>
+
+@parent: 
+@operation: 
+@total: 
+@count: 
+
+<!-- ##### FUNCTION camel_mime_filter_progress_new ##### -->
+<para>
+
+</para>
+
+@operation: 
+@total: 
+@Returns: 
+
+

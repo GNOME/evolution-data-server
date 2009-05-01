@@ -1,0 +1,35 @@
+<!-- ##### SECTION Title ##### -->
+CamelMimeFilterPgp
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT CamelMimeFilterPgp ##### -->
+<para>
+
+</para>
+
+@filter: 
+@state: 
+
+<!-- ##### FUNCTION camel_mime_filter_pgp_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

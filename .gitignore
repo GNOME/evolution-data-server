@@ -1,14 +1,29 @@
-*.swp
-
-Makefile
+# for all subdirectories
 Makefile.in
-*.lo
-*.o
-.deps
+Makefile
 .libs
+.deps
+*.o
+*.lo
 *.la
-po/*.gmo
-*.pc
+.*.swp
 
-stamp-h1
+# autofoo stuff here
+aclocal.m4
+autom4te.cache
+compile
+config.*
+configure
+depcomp
+gtk-doc.make
+install-sh
+intltool-*.in
 libtool
+ltmain.sh
+missing
+mkinstalldirs
+stamp-*
+
+# misc generated stuff
+*.pc
+*.server

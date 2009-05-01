@@ -1,0 +1,459 @@
+<!-- ##### SECTION Title ##### -->
+e-msgport
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EDListNode ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+
+<!-- ##### STRUCT EDList ##### -->
+<para>
+
+</para>
+
+@head: 
+@tail: 
+@tailpred: 
+
+<!-- ##### MACRO E_DLIST_INITIALISER ##### -->
+<para>
+
+</para>
+
+@l: 
+
+
+<!-- ##### FUNCTION e_dlist_init ##### -->
+<para>
+
+</para>
+
+@v: 
+
+
+<!-- ##### FUNCTION e_dlist_addhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_dlist_addtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_dlist_remove ##### -->
+<para>
+
+</para>
+
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_dlist_remhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_dlist_remtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_dlist_empty ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_dlist_length ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+
+<!-- ##### STRUCT EMCache ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EMCacheNode ##### -->
+<para>
+
+</para>
+
+@next: 
+@prev: 
+@key: 
+@ref_count: 
+@stamp: 
+
+<!-- ##### FUNCTION em_cache_new ##### -->
+<para>
+
+</para>
+
+@timeout: 
+@nodesize: 
+@nodefree: 
+@Returns: 
+
+
+<!-- ##### FUNCTION em_cache_destroy ##### -->
+<para>
+
+</para>
+
+@emc: 
+
+
+<!-- ##### FUNCTION em_cache_lookup ##### -->
+<para>
+
+</para>
+
+@emc: 
+@key: 
+@Returns: 
+
+
+<!-- ##### FUNCTION em_cache_node_new ##### -->
+<para>
+
+</para>
+
+@emc: 
+@key: 
+@Returns: 
+
+
+<!-- ##### FUNCTION em_cache_node_unref ##### -->
+<para>
+
+</para>
+
+@emc: 
+@n: 
+
+
+<!-- ##### FUNCTION em_cache_add ##### -->
+<para>
+
+</para>
+
+@emc: 
+@n: 
+
+
+<!-- ##### FUNCTION em_cache_clear ##### -->
+<para>
+
+</para>
+
+@emc: 
+
+
+<!-- ##### STRUCT EMsgPort ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT EMsg ##### -->
+<para>
+
+</para>
+
+@ln: 
+@reply_port: 
+@flags: 
+
+<!-- ##### FUNCTION e_msgport_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_msgport_destroy ##### -->
+<para>
+
+</para>
+
+@mp: 
+
+
+<!-- ##### FUNCTION e_msgport_fd ##### -->
+<para>
+
+</para>
+
+@mp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_msgport_prfd ##### -->
+<para>
+
+</para>
+
+@mp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_msgport_put ##### -->
+<para>
+
+</para>
+
+@mp: 
+@msg: 
+
+
+<!-- ##### FUNCTION e_msgport_wait ##### -->
+<para>
+
+</para>
+
+@mp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_msgport_get ##### -->
+<para>
+
+</para>
+
+@mp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_msgport_reply ##### -->
+<para>
+
+</para>
+
+@msg: 
+
+
+<!-- ##### STRUCT EThread ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM e_thread_t ##### -->
+<para>
+
+</para>
+
+@E_THREAD_QUEUE: 
+@E_THREAD_DROP: 
+@E_THREAD_NEW: 
+
+<!-- ##### USER_FUNCTION EThreadFunc ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Param2: 
+@data: 
+
+
+<!-- ##### FUNCTION e_thread_new ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_thread_destroy ##### -->
+<para>
+
+</para>
+
+@e: 
+
+
+<!-- ##### FUNCTION e_thread_set_queue_limit ##### -->
+<para>
+
+</para>
+
+@e: 
+@limit: 
+
+
+<!-- ##### FUNCTION e_thread_set_msg_lost ##### -->
+<para>
+
+</para>
+
+@e: 
+@destroy: 
+@data: 
+
+
+<!-- ##### FUNCTION e_thread_set_msg_destroy ##### -->
+<para>
+
+</para>
+
+@e: 
+@destroy: 
+@data: 
+
+
+<!-- ##### FUNCTION e_thread_set_reply_port ##### -->
+<para>
+
+</para>
+
+@e: 
+@reply_port: 
+
+
+<!-- ##### FUNCTION e_thread_set_msg_received ##### -->
+<para>
+
+</para>
+
+@e: 
+@received: 
+@data: 
+
+
+<!-- ##### FUNCTION e_thread_put ##### -->
+<para>
+
+</para>
+
+@e: 
+@msg: 
+
+
+<!-- ##### FUNCTION e_thread_busy ##### -->
+<para>
+
+</para>
+
+@e: 
+@Returns: 
+
+
+<!-- ##### STRUCT EMutex ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM e_mutex_t ##### -->
+<para>
+
+</para>
+
+@E_MUTEX_SIMPLE: 
+@E_MUTEX_REC: 
+
+<!-- ##### FUNCTION e_mutex_new ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mutex_destroy ##### -->
+<para>
+
+</para>
+
+@m: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mutex_lock ##### -->
+<para>
+
+</para>
+
+@m: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mutex_unlock ##### -->
+<para>
+
+</para>
+
+@m: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mutex_assert_locked ##### -->
+<para>
+
+</para>
+
+@m: 
+
+
+<!-- ##### FUNCTION e_mutex_cond_wait ##### -->
+<para>
+
+</para>
+
+@cond: 
+@m: 
+@Returns: 
+
+

@@ -1,0 +1,280 @@
+<!-- ##### SECTION Title ##### -->
+e-memory
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT EMemChunk ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_memchunk_new ##### -->
+<para>
+
+</para>
+
+@atomcount: 
+@atomsize: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_memchunk_alloc ##### -->
+<para>
+
+</para>
+
+@m: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_memchunk_alloc0 ##### -->
+<para>
+
+</para>
+
+@m: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_memchunk_free ##### -->
+<para>
+
+</para>
+
+@m: 
+@mem: 
+
+
+<!-- ##### FUNCTION e_memchunk_empty ##### -->
+<para>
+
+</para>
+
+@m: 
+
+
+<!-- ##### FUNCTION e_memchunk_clean ##### -->
+<para>
+
+</para>
+
+@m: 
+
+
+<!-- ##### FUNCTION e_memchunk_destroy ##### -->
+<para>
+
+</para>
+
+@m: 
+
+
+<!-- ##### STRUCT EMemPool ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM EMemPoolFlags ##### -->
+<para>
+
+</para>
+
+@E_MEMPOOL_ALIGN_STRUCT: 
+@E_MEMPOOL_ALIGN_WORD: 
+@E_MEMPOOL_ALIGN_BYTE: 
+@E_MEMPOOL_ALIGN_MASK: 
+
+<!-- ##### FUNCTION e_mempool_new ##### -->
+<para>
+
+</para>
+
+@blocksize: 
+@threshold: 
+@flags: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mempool_alloc ##### -->
+<para>
+
+</para>
+
+@pool: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mempool_strdup ##### -->
+<para>
+
+</para>
+
+@pool: 
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_mempool_flush ##### -->
+<para>
+
+</para>
+
+@pool: 
+@freeall: 
+
+
+<!-- ##### FUNCTION e_mempool_destroy ##### -->
+<para>
+
+</para>
+
+@pool: 
+
+
+<!-- ##### STRUCT EStrv ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_strv_new ##### -->
+<para>
+
+</para>
+
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strv_set_ref ##### -->
+<para>
+
+</para>
+
+@strv: 
+@index: 
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strv_set_ref_free ##### -->
+<para>
+
+</para>
+
+@strv: 
+@index: 
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strv_set ##### -->
+<para>
+
+</para>
+
+@strv: 
+@index: 
+@str: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strv_pack ##### -->
+<para>
+
+</para>
+
+@strv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strv_get ##### -->
+<para>
+
+</para>
+
+@strv: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_strv_destroy ##### -->
+<para>
+
+</para>
+
+@strv: 
+
+
+<!-- ##### STRUCT EPoolv ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_poolv_new ##### -->
+<para>
+
+</para>
+
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_poolv_cpy ##### -->
+<para>
+
+</para>
+
+@dest: 
+@src: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_poolv_set ##### -->
+<para>
+
+</para>
+
+@poolv: 
+@index: 
+@str: 
+@freeit: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_poolv_get ##### -->
+<para>
+
+</para>
+
+@poolv: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_poolv_destroy ##### -->
+<para>
+
+</para>
+
+@poolv: 
+
+
