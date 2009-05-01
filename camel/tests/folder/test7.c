@@ -2,6 +2,7 @@
 
 #include "camel-test.h"
 #include "camel-test-provider.h"
+#include "folders.h"
 #include "messages.h"
 #include "session.h"
 
