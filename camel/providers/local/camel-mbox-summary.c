@@ -530,7 +530,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 
 	fd = g_open(cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
-		d(printf("%s failed to open: %s\n", cls->folder_path, strerror (errno)));
+		d(printf("%s failed to open: %s\n", cls->folder_path, g_strerror (errno)));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not open folder: %s: %s"),
 				      cls->folder_path, g_strerror (errno));
@@ -736,7 +736,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	d(printf("Closing folders\n"));
 
 	if (close(fd) == -1) {
-		g_warning("Cannot close source folder: %s", strerror (errno));
+		g_warning("Cannot close source folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not close source folder %s: %s"),
 				      cls->folder_path, g_strerror (errno));
@@ -745,7 +745,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 	}
 
 	if (close(fdout) == -1) {
-		g_warning("Cannot close temporary folder: %s", strerror (errno));
+		g_warning("Cannot close temporary folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not close temporary folder: %s"),
 				      g_strerror (errno));
@@ -760,7 +760,7 @@ mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChang
 		g_warning ("Cannot remove %s: %s", cls->folder_path, g_strerror (errno));
 #endif
 	if (g_rename(tmpname, cls->folder_path) == -1) {
-		g_warning("Cannot rename folder: %s", strerror (errno));
+		g_warning("Cannot rename folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not rename folder: %s"),
 				      g_strerror (errno));
@@ -940,7 +940,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	d(printf("Closing folders\n"));
 
 	if (close(fd) == -1) {
-		g_warning ("Cannot close source folder: %s", strerror (errno));
+		g_warning ("Cannot close source folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not close source folder %s: %s"),
 				      cls->folder_path, g_strerror (errno));

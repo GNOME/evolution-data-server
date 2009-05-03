@@ -184,7 +184,7 @@ static int camel_mh_summary_add(CamelLocalSummary *cls, const char *name, int fo
 
 	fd = open(filename, O_RDONLY|O_LARGEFILE);
 	if (fd == -1) {
-		g_warning ("Cannot summarise/index: %s: %s", filename, strerror (errno));
+		g_warning ("Cannot summarise/index: %s: %s", filename, g_strerror (errno));
 		g_free(filename);
 		return -1;
 	}

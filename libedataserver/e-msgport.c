@@ -1143,7 +1143,7 @@ void e_thread_put(EThread *e, EMsg *msg)
 		int err;
 
 		if ((err = pthread_create(&e->id, NULL, thread_dispatch, e)) != 0) {
-			g_warning("Could not create dispatcher thread, message queued?: %s", strerror(err));
+			g_warning("Could not create dispatcher thread, message queued?: %s", g_strerror(err));
 		} else {
 			e->have_thread = TRUE;
 		}
@@ -1205,16 +1205,16 @@ int e_mutex_destroy(EMutex *m)
 	case E_MUTEX_SIMPLE:
 		ret = pthread_mutex_destroy(&m->mutex);
 		if (ret == -1)
-			g_warning("EMutex destroy failed: %s", strerror(errno));
+			g_warning("EMutex destroy failed: %s", g_strerror(errno));
 		g_free(m);
 		break;
 	case E_MUTEX_REC:
 		ret = pthread_mutex_destroy(&m->mutex);
 		if (ret == -1)
-			g_warning("EMutex destroy failed: %s", strerror(errno));
+			g_warning("EMutex destroy failed: %s", g_strerror(errno));
 		ret = pthread_cond_destroy(&m->cond);
 		if (ret == -1)
-			g_warning("EMutex destroy failed: %s", strerror(errno));
+			g_warning("EMutex destroy failed: %s", g_strerror(errno));
 		g_free(m);
 
 	}

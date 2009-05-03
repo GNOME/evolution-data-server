@@ -289,7 +289,7 @@ camel_certdb_load (CamelCertDB *certdb)
 	
  error:
 	
-	g_warning ("Cannot load certificate database: %s", strerror (ferror (in)));
+	g_warning ("Cannot load certificate database: %s", g_strerror (ferror (in)));
 	
 	CAMEL_CERTDB_UNLOCK (certdb, io_lock);
 	
@@ -400,7 +400,7 @@ camel_certdb_save (CamelCertDB *certdb)
 	
  error:
 	
-	g_warning ("Cannot save certificate database: %s", strerror (ferror (out)));
+	g_warning ("Cannot save certificate database: %s", g_strerror (ferror (out)));
 	
 	CAMEL_CERTDB_UNLOCK (certdb, io_lock);
 	

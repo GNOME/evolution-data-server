@@ -66,7 +66,7 @@ stream_fill(CamelNNTPStream *is)
 		} else {
 			if (left == 0)
 				errno = ECONNRESET;
-			dd(printf("NNTP_STREAM_FILL(ERROR): %d - '%s'\n", left, strerror(errno)));
+			dd(printf("NNTP_STREAM_FILL(ERROR): %d - '%s'\n", left, g_strerror(errno)));
 			return -1;
 		}
 	}

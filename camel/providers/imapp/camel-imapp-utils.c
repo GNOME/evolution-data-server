@@ -185,21 +185,21 @@ imap_write_flags(CamelStream *stream, guint32 flags)
 
 	/* all this ugly exception throwing goes away once camel streams throw their own? */
 	if (camel_stream_write(stream, "(", 1) == -1)
-		camel_exception_throw(1, "io error: %s", strerror(errno));
+		camel_exception_throw(1, "io error: %s", g_strerror(errno));
 
 	for (i=0;flags!=0 && i<(int)(sizeof(flag_table)/sizeof(flag_table[0]));i++) {
 		if (flag_table[i].flag & flags) {
 			if (camel_stream_write(stream, flag_table[i].name, strlen(flag_table[i].name)) == -1)
-				camel_exception_throw(1, "io error: %s", strerror(errno));
+				camel_exception_throw(1, "io error: %s", g_strerror(errno));
 			flags &= ~flag_table[i].flag;
 			if (flags != 0)
 				if (camel_stream_write(stream, " ", 1) == -1)
-					camel_exception_throw(1, "io error: %s", strerror(errno));
+					camel_exception_throw(1, "io error: %s", g_strerror(errno));
 		}
 	}
 
 	if (camel_stream_write(stream, ")", 1) == -1)
-		camel_exception_throw(1, "io error: %s", strerror(errno));
+		camel_exception_throw(1, "io error: %s", g_strerror(errno));
 }
 
 /*

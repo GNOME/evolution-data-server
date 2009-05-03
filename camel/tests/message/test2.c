@@ -61,7 +61,7 @@ static char *convert(const char *in, const char *from, const char *to)
 		noutp = nout = g_malloc(outlen);
 		if (iconv(ic, &inp, &inlen, &noutp, &outlen) == -1
 		    || iconv(ic, NULL, 0, &noutp, &outlen) == -1) {
-			g_warning("Cannot convert '%s' \n from %s to %s: %s\n", in, to, from, strerror(errno));
+			g_warning("Cannot convert '%s' \n from %s to %s: %s\n", in, to, from, g_strerror(errno));
 		}
 		iconv_close(ic);
 	}

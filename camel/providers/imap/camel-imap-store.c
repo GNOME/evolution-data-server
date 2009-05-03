@@ -2201,7 +2201,7 @@ rename_folder (CamelStore *store, const char *old_name, const char *new_name_in,
 	/* So do we care if this didn't work?  Its just a cache? */
 	if (g_rename (oldpath, newpath) == -1) {
 		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
-			   oldpath, newpath, strerror (errno));
+			   oldpath, newpath, g_strerror (errno));
 	}
 	
 	g_free (oldpath);

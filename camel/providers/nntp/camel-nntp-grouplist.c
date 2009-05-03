@@ -103,7 +103,7 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				      _("Unable to load grouplist file for %s: %s"),
 				      CAMEL_SERVICE(store)->url->host,
-				      strerror(errno));
+				      g_strerror(errno));
 		return NULL;
 	}
 
@@ -112,7 +112,7 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				      _("Unable to load grouplist file for %s: %s"),
 				      CAMEL_SERVICE(store)->url->host,
-				      strerror(errno));
+				      g_strerror(errno));
 		fclose (fp);
 		return NULL;
 	}
@@ -163,7 +163,7 @@ camel_nntp_grouplist_save (CamelNNTPGroupList *group_list, CamelException *ex)
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 				      _("Unable to save grouplist file for %s: %s"),
 				      CAMEL_SERVICE(group_list->store)->url->host,
-				      strerror(errno));
+				      g_strerror(errno));
 		return;
 	}
 

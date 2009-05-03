@@ -881,7 +881,7 @@ camel_iconv_strndup (iconv_t cd, const char *string, size_t n)
 	
 	errnosav = errno;
 	
-	w(g_warning ("camel_iconv_strndup: %s at byte %lu", strerror (errno), n - inleft));
+	w(g_warning ("camel_iconv_strndup: %s at byte %lu", g_strerror (errno), n - inleft));
 	
 	g_free (out);
 	
@@ -1169,7 +1169,7 @@ append_8bit (GString *out, const char *inbuf, size_t inlen, const char *charset)
 	outbuf = outbase = g_malloc(outlen);
 	
 	if (camel_iconv (ic, &inbuf, &inlen, &outbuf, &outlen) == (size_t) -1) {
-		w(g_warning("Conversion to '%s' failed: %s", charset, strerror (errno)));
+		w(g_warning("Conversion to '%s' failed: %s", charset, g_strerror (errno)));
 		g_free(outbase);
 		camel_iconv_close (ic);
 		return FALSE;
@@ -1439,7 +1439,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			convlen = MIN(inlen, CAMEL_FOLD_PREENCODED);
 			p = inptr;
 			if (camel_iconv (ic, &inptr, &convlen, &out, &outlen) == (size_t) -1 && errno != EINVAL) {
-				w(g_warning("Conversion problem: conversion truncated: %s", strerror (errno)));
+				w(g_warning("Conversion problem: conversion truncated: %s", g_strerror (errno)));
 				/* blah, we include it anyway, better than infinite loop ... */
 				inptr += convlen;
 			} else {

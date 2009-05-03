@@ -589,7 +589,7 @@ put (E2kContext *ctx, const char *file, const char *uri)
 
 	fd = open (file, O_RDONLY);
 	if (fd == -1 || fstat (fd, &st) == -1) {
-		fprintf (stderr, "%s\n", strerror (errno));
+		fprintf (stderr, "%s\n", g_strerror (errno));
 		exit (1);
 	}
 	buf = g_malloc (st.st_size);

@@ -508,7 +508,7 @@ cmd_tocache(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 done:
 	if (n == -1) {
 		fi->err = errno;
-		g_warning("POP3 retrieval failed: %s", strerror(errno));
+		g_warning("POP3 retrieval failed: %s", g_strerror(errno));
 	} else {
 		fi->err = 0;
 	}

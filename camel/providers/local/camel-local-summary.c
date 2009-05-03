@@ -419,7 +419,7 @@ local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 	}
 
 	if (cls->index && camel_index_sync(cls->index) == -1)
-		g_warning ("Could not sync index for %s: %s", cls->folder_path, strerror (errno));
+		g_warning ("Could not sync index for %s: %s", cls->folder_path, g_strerror (errno));
 
 	return ret;
 }

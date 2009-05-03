@@ -250,7 +250,7 @@ connect_to_server (CamelService *service, int ssl_mode, int try_starttls)
 			else
 				camel_exception_throw(CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 						      _("Could not connect to %s (port %s): %s"),
-						      service->url->host, serv, strerror(errno));
+						      service->url->host, serv, g_strerror(errno));
 		}
 
 		imap_stream = (CamelIMAPPStream *)camel_imapp_stream_new(tcp_stream);

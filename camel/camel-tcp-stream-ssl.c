@@ -796,7 +796,7 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 	dir = g_build_filename (g_get_home_dir (), ".camel_certs", NULL);
 #endif
 	if (g_stat (dir, &st) == -1 && g_mkdir (dir, 0700) == -1) {
-		g_warning ("Could not create cert directory '%s': %s", dir, strerror (errno));
+		g_warning ("Could not create cert directory '%s': %s", dir, g_strerror (errno));
 		g_free (dir);
 		return;
 	}
@@ -807,13 +807,13 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 	stream = camel_stream_fs_new_with_name (path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (stream != NULL) {
 		if (camel_stream_write (stream, (const char *) ccert->rawcert->data, ccert->rawcert->len) == -1) {
-			g_warning ("Could not save cert: %s: %s", path, strerror (errno));
+			g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
 			g_unlink (path);
 		}
 		camel_stream_close (stream);
 		camel_object_unref (stream);
 	} else {
-		g_warning ("Could not save cert: %s: %s", path, strerror (errno));
+		g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
 	}
 	
 	g_free (path);

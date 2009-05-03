@@ -176,7 +176,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 
 	/* sync out content */
 	if (fsync(fdout) == -1) {
-		g_warning("Cannot sync temporary folder: %s", strerror (errno));
+		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not sync temporary folder %s: %s"),
 				      ((CamelLocalSummary *)cls)->folder_path,
@@ -186,7 +186,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 
 	/* see if we can write this much to the spool file */
 	if (fstat(fd, &st) == -1) {
-		g_warning("Cannot sync temporary folder: %s", strerror (errno));
+		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not sync temporary folder %s: %s"),
 				      ((CamelLocalSummary *)cls)->folder_path,
@@ -196,7 +196,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 	spoollen = st.st_size;
 
 	if (fstat(fdout, &st) == -1) {
-		g_warning("Cannot sync temporary folder: %s", strerror (errno));
+		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not sync temporary folder %s: %s"),
 				      ((CamelLocalSummary *)cls)->folder_path,
@@ -212,7 +212,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 		|| fsync(fd) == -1
 		|| lseek(fd, 0, SEEK_SET) == -1
 		|| lseek(fdout, 0, SEEK_SET) == -1)) {
-		g_warning("Cannot sync spool folder: %s", strerror (errno));
+		g_warning("Cannot sync spool folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not sync spool folder %s: %s"),
 				      ((CamelLocalSummary *)cls)->folder_path,
@@ -271,7 +271,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 	}
 
 	if (close(fd) == -1) {
-		g_warning("Cannot close source folder: %s", strerror (errno));
+		g_warning("Cannot close source folder: %s", g_strerror (errno));
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not sync spool folder %s: %s\n"
 					"Folder may be corrupt, copy saved in '%s'"),

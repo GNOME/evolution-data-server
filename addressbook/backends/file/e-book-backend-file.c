@@ -1181,7 +1181,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			db->close (db, 0);
 			rv = g_mkdir_with_parents (dirname, 0777);
 			if (rv == -1 && errno != EEXIST) {
-				g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
+				g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
 				g_free (dirname);
 				g_free (filename);
 				if (errno == EACCES || errno == EPERM)
@@ -1305,7 +1305,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	g_object_unref (bf->priv->summary);
 	bf->priv->summary = NULL;
 	if (-1 == g_unlink (bf->priv->summary_filename))
-		g_warning ("failed to remove summary file `%s`: %s", bf->priv->summary_filename, strerror (errno));
+		g_warning ("failed to remove summary file `%s`: %s", bf->priv->summary_filename, g_strerror (errno));
 
 	dir = g_dir_open (bf->priv->dirname, 0, NULL);
 	if (dir) {
@@ -1315,7 +1315,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 			if (select_changes (name)) {
 				char *full_path = g_build_filename (bf->priv->dirname, name, NULL);
 				if (-1 == g_unlink (full_path)) {
-					g_warning ("failed to remove change db `%s': %s", full_path, strerror (errno));
+					g_warning ("failed to remove change db `%s': %s", full_path, g_strerror (errno));
 				}
 				g_free (full_path);
 			}
@@ -1325,7 +1325,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	}
 
 	if (-1 == g_rmdir (bf->priv->dirname))
-		g_warning ("failed to remove directory `%s`: %s", bf->priv->dirname, strerror (errno));
+		g_warning ("failed to remove directory `%s`: %s", bf->priv->dirname, g_strerror (errno));
 
 	/* we may not have actually succeeded in removing the
 	   backend's files/dirs, but there's nothing we can do about

@@ -395,7 +395,7 @@ camel_store_summary_load(CamelStoreSummary *s)
 
 error:
 	i = ferror (in);
-	g_warning ("Cannot load summary file: %s", strerror (ferror (in)));
+	g_warning ("Cannot load summary file: %s", g_strerror (ferror (in)));
 	CAMEL_STORE_SUMMARY_UNLOCK(s, io_lock);
 	fclose (in);
 	s->flags |= ~CAMEL_STORE_SUMMARY_DIRTY;
@@ -434,14 +434,14 @@ camel_store_summary_save(CamelStoreSummary *s)
 
 	fd = g_open(s->summary_path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
 	if (fd == -1) {
-		io(printf("**  open error: %s\n", strerror (errno)));
+		io(printf("**  open error: %s\n", g_strerror (errno)));
 		return -1;
 	}
 
 	out = fdopen(fd, "wb");
 	if ( out == NULL ) {
 		i = errno;
-		printf("**  fdopen error: %s\n", strerror (errno));
+		printf("**  fdopen error: %s\n", g_strerror (errno));
 		close(fd);
 		errno = i;
 		return -1;

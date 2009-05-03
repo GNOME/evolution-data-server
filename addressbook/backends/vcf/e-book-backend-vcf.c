@@ -178,7 +178,7 @@ save_file (EBookBackendVCF *vcf)
 	}
 
 	if (0 > g_rename (new_path, vcf->priv->filename)) {
-		g_warning ("Failed to rename %s: %s\n", vcf->priv->filename, strerror(errno));
+		g_warning ("Failed to rename %s: %s\n", vcf->priv->filename, g_strerror(errno));
 		g_unlink (new_path);
 		goto out;
 	}
@@ -621,7 +621,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 			   directory then the .vcf file */
 			rv = g_mkdir_with_parents (dirname, 0777);
 			if (rv == -1 && errno != EEXIST) {
-				g_warning ("failed to make directory %s: %s", dirname, strerror (errno));
+				g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
 				if (errno == EACCES || errno == EPERM)
 					return GNOME_Evolution_Addressbook_PermissionDenied;
 				else
@@ -648,7 +648,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 
 	if (fd == -1) {
 		g_warning ("Failed to open addressbook at uri `%s'", uri);
-		g_warning ("error == %s", strerror(errno));
+		g_warning ("error == %s", g_strerror(errno));
 		g_free (uri);
 		return GNOME_Evolution_Addressbook_OtherError;
 	}

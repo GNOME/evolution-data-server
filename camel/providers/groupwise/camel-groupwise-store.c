@@ -1385,7 +1385,7 @@ groupwise_rename_folder(CamelStore *store,
 	/*XXX: make sure the summary is also renamed*/
 	if (g_rename (oldpath, newpath) == -1) {
 		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
-				oldpath, newpath, strerror (errno));
+				oldpath, newpath, g_strerror (errno));
 	}
 
 	g_free (oldpath);

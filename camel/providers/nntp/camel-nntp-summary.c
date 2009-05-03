@@ -413,7 +413,7 @@ error:
 		if (errno == EINTR)
 			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Use cancel"));
 		else
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Operation failed: %s"), strerror(errno));
+			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Operation failed: %s"), g_strerror(errno));
 	}
 ioerror:
 

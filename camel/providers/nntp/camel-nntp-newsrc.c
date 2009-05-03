@@ -621,7 +621,7 @@ camel_nntp_newsrc_read_for_server (const char *server)
 	}
 
 	if (fstat (fd, &sb) == -1) {
-		g_warning ("failed fstat on ~/.newsrc-%s: %s\n", server, strerror(errno));
+		g_warning ("failed fstat on ~/.newsrc-%s: %s\n", server, g_strerror(errno));
 		close (fd);
 		return newsrc;
 	}

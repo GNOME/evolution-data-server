@@ -437,7 +437,7 @@ camel_imapp_stream_nstring_stream(CamelIMAPPStream *is, CamelStream **stream)
 			camel_imapp_stream_set_literal(is, len);
 			mem = camel_stream_mem_new();
 			if (camel_stream_write_to_stream((CamelStream *)is, mem) == -1)
-				camel_exception_throw(1, "nstring: io error: %s", strerror(errno));
+				camel_exception_throw(1, "nstring: io error: %s", g_strerror(errno));
 			camel_stream_reset(mem);
 			*stream = mem;
 			break;
@@ -499,7 +499,7 @@ camel_imapp_stream_text(CamelIMAPPStream *is, unsigned char **text)
 		do {
 			tok = camel_imapp_stream_gets(is, &token, &len);
 			if (tok < 0)
-				camel_exception_throw(1, "io error: %s", strerror(errno));
+				camel_exception_throw(1, "io error: %s", g_strerror(errno));
 			if (len)
 				g_byte_array_append(build, token, len);
 		} while (tok > 0);

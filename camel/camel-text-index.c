@@ -186,12 +186,12 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 			wordid = camel_key_table_add(p->word_index, word, 0, 0);
 			if (wordid == 0){
 				g_warning ("Could not create key entry for word '%s': %s\n",
-					   word, strerror (errno));
+					   word, g_strerror (errno));
 				return;
 			}
 			if (camel_partition_table_add(p->word_hash, word, wordid) == -1) {
 				g_warning ("Could not create hash entry for word '%s': %s\n",
-					   word, strerror (errno));
+					   word, g_strerror (errno));
 				return;
 			}
 			rb->words++;
@@ -200,7 +200,7 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 			data = camel_key_table_lookup(p->word_index, wordid, NULL, NULL);
 			if (data == 0) {
 				g_warning ("Could not find key entry for word '%s': %s\n",
-					   word, strerror (errno));
+					   word, g_strerror (errno));
 				return;
 			}
 		}
@@ -924,14 +924,14 @@ camel_text_index_check(const char *path)
 	sprintf(block, "%s.index", path);
 	blocks = camel_block_file_new(block, O_RDONLY, CAMEL_TEXT_INDEX_VERSION, CAMEL_BLOCK_SIZE);
 	if (blocks == NULL) {
-		io(printf("Check failed: No block file: %s\n", strerror (errno)));
+		io(printf("Check failed: No block file: %s\n", g_strerror (errno)));
 		return -1;
 	}
 	key = alloca(strlen(path)+12);
 	sprintf(key, "%s.index.data", path);
 	keys = camel_key_file_new(key, O_RDONLY, CAMEL_TEXT_INDEX_KEY_VERSION);
 	if (keys == NULL) {
-		io(printf("Check failed: No key file: %s\n", strerror (errno)));
+		io(printf("Check failed: No key file: %s\n", g_strerror (errno)));
 		camel_object_unref((CamelObject *)blocks);
 		return -1;
 	}
