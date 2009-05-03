@@ -393,10 +393,10 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else if ((tmp = "/var/spool/mail") && strncmp(tmp, path, strlen(tmp)) == 0)
 					/* /var/spool/mail relative path + protocol */
-					folder->description = g_strdup_printf(_("mailbox:%s (%s)"), path+strlen(tmp),
+					folder->description = g_strdup_printf(_("mailbox: %s (%s)"), path+strlen(tmp),
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else if ((tmp = "/var/mail") && strncmp(tmp, path, strlen(tmp)) == 0)
-					folder->description = g_strdup_printf(_("mailbox:%s (%s)"), path+strlen(tmp),
+					folder->description = g_strdup_printf(_("mailbox: %s (%s)"), path+strlen(tmp),
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else
 					/* a full path + protocol */
