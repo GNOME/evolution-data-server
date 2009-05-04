@@ -2652,6 +2652,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	int recur_key = 0;
 	char **tmp = NULL;
 	const char *temp = NULL;
+	const char *tmp_dt = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -2670,7 +2671,9 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 		g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
 
 	g_string_append_printf (gstr, "X-GWITEM-TYPE:APPOINTMENT\n");
-	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
+	tmp_dt = e_gw_item_get_start_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTSTART:%s\n", tmp_dt);
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
 
 	temp = e_gw_item_get_message (item);
@@ -2686,7 +2689,9 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 		g_string_append(gstr, "\n");	
 	}
 
-	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
+	tmp_dt = e_gw_item_get_creation_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTSTAMP:%s\n", tmp_dt);
 	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));
 	g_string_append_printf (gstr, "X-GWSHOW-AS:BUSY\n");
 	g_string_append_printf (gstr, "X-GWRECORDID:%s\n", tmp[0]);
@@ -2708,7 +2713,9 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 		}
 	}
 
-	g_string_append_printf (gstr, "DTEND:%s\n", e_gw_item_get_end_date (item));
+	tmp_dt = e_gw_item_get_end_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTEND:%s\n", tmp_dt);
 
 	temp = NULL;
 	temp = e_gw_item_get_place (item);
@@ -2748,6 +2755,7 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	GString *gstr = g_string_new (NULL);
 	char **tmp = NULL;
 	const char *temp = NULL;
+	const char *tmp_dt = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -2755,7 +2763,9 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "METHOD:REQUEST\n");
 	gstr = g_string_append (gstr, "BEGIN:VTODO\n");
 	g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
-	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
+	tmp_dt = e_gw_item_get_start_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTSTART:%s\n", tmp_dt);
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
 
 	temp = e_gw_item_get_message (item);
@@ -2772,7 +2782,9 @@ convert_to_task (EGwItem *item, char **str, int *len)
 	}
 	temp = NULL;
 
-	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
+	tmp_dt = e_gw_item_get_creation_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTSTAMP:%s\n", tmp_dt);
 	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));
 	g_string_append_printf (gstr, "X-GWSHOW-AS:BUSY\n");
 	g_string_append_printf (gstr, "X-GWRECORDID:%s\n", tmp[0]);
@@ -2794,7 +2806,9 @@ convert_to_task (EGwItem *item, char **str, int *len)
 		}
 	}
 
-	g_string_append_printf (gstr, "DTEND:%s\n", e_gw_item_get_end_date (item));
+	tmp_dt = e_gw_item_get_end_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTEND:%s\n", tmp_dt);
 
 	temp = e_gw_item_get_place (item);
 	if (temp)
@@ -2827,6 +2841,7 @@ convert_to_note (EGwItem *item, char **str, int *len)
 	GString *gstr = g_string_new (NULL);
 	char **tmp = NULL;
 	const char *temp = NULL;
+	const char *tmp_dt = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -2834,7 +2849,9 @@ convert_to_note (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "METHOD:PUBLISH\n");
 	gstr = g_string_append (gstr, "BEGIN:VJOURNAL\n");
 	g_string_append_printf (gstr, "UID:%s\n",e_gw_item_get_icalid (item));
-	g_string_append_printf (gstr, "DTSTART:%s\n",e_gw_item_get_start_date (item));
+	tmp_dt = e_gw_item_get_start_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTSTART:%s\n", tmp_dt);
 	g_string_append_printf (gstr, "SUMMARY:%s\n", e_gw_item_get_subject (item));
 
 	temp = e_gw_item_get_message (item);
@@ -2851,7 +2868,9 @@ convert_to_note (EGwItem *item, char **str, int *len)
 	}
 	temp = NULL;
 
-	g_string_append_printf (gstr, "DTSTAMP:%s\n", e_gw_item_get_creation_date (item));
+	tmp_dt = e_gw_item_get_creation_date (item);
+	if (tmp_dt)
+		g_string_append_printf (gstr, "DTSTAMP:%s\n", tmp_dt);
 	g_string_append_printf (gstr, "X-GWMESSAGEID:%s\n", e_gw_item_get_id (item));
 	g_string_append_printf (gstr, "X-GWRECORDID:%s\n", tmp[0]);
 
