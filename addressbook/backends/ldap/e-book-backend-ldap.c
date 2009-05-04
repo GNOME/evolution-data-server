@@ -50,6 +50,43 @@
 #undef interface
 #include <winldap.h>
 #include "openldap-extract.h"
+
+/* map between the WinLDAP API and OpenLDAP API */
+#  ifndef ldap_msgtype
+#    define ldap_msgtype(m) ((m)->lm_msgtype)
+#  endif
+
+#  ifndef ldap_first_message
+#    define ldap_first_message ldap_first_entry
+#  endif
+
+#  ifndef ldap_next_message
+#    define ldap_next_message ldap_next_entry
+#  endif
+
+#  ifndef LDAP_RES_MODDN
+#    define LDAP_RES_MODDN LDAP_RES_MODRDN
+#  endif
+
+#  ifdef ldap_compare_ext
+#    undef ldap_compare_ext
+#  endif
+#  ifdef ldap_search_ext
+#    undef ldap_search_ext
+#  endif
+
+#  ifdef UNICODE
+#    define ldap_compare_ext(ld,dn,a,v,sc,cc,msg) \
+        ldap_compare_extW(ld,dn,a,0,v,sc,cc,msg)
+#    define ldap_search_ext(ld,base,scope,f,a,o,sc,cc,(t),s,msg) \
+        ldap_search_extW(ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL)t)?((PLDAP_TIMEVAL)t)->tv_sec:0,s,msg)
+#  else /* !UNICODE */
+#    define ldap_compare_ext(ld,dn,a,v,sc,cc,msg) \
+        ldap_compare_extA(ld,dn,a,0,v,sc,cc,msg)
+#    define ldap_search_ext(ld,base,scope,f,a,o,sc,cc,t,s,msg) \
+        ldap_search_extA(ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL)t)?((PLDAP_TIMEVAL)t)->tv_sec:0,s,msg)
+#  endif /* UNICODE */
+
 #endif
 
 #define d(x)
@@ -837,7 +874,6 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 			bl->priv->ldap_v3 = TRUE;
 
 		if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
-			int tls_level;
 
 			if (!bl->priv->ldap_v3 && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 				g_message ("TLS not available (fatal version), v3 protocol could not be established (ldap_error 0x%02x)", ldap_error);
@@ -860,11 +896,10 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				}
 #else
 #if defined (LDAP_OPT_X_TLS_HARD) && defined (LDAP_OPT_X_TLS)
-				tls_level = LDAP_OPT_X_TLS_HARD;
+				int tls_level = LDAP_OPT_X_TLS_HARD;
 				ldap_set_option (blpriv->ldap, LDAP_OPT_X_TLS, &tls_level);
 #elif defined (G_OS_WIN32)
-				tls_level = LDAP_OPT_ON;
-				ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, &tls_level);
+				ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON);
 #else
 				g_message ("TLS option not available");
 #endif
