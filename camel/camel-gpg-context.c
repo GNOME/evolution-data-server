@@ -48,7 +48,6 @@
 
 #ifndef G_OS_WIN32
 #include <sys/ioctl.h>
-#include <sys/poll.h>
 #include <sys/wait.h>
 #include <termios.h>
 #endif
@@ -1025,7 +1024,7 @@ static int
 gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 {
 #ifndef G_OS_WIN32
-	struct pollfd polls[6];
+	GPollFD polls[6];
 	int status, i, cancel_fd;
 	
 	for (i=0;i<6;i++) {
@@ -1035,31 +1034,31 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	
 	if (!gpg->seen_eof1) {
 		polls[0].fd = gpg->stdout_fd;
-		polls[0].events = POLLIN;
+		polls[0].events = G_IO_IN;
 	}
 	
 	if (!gpg->seen_eof2) {
 		polls[1].fd = gpg->stderr_fd;
-		polls[1].events = POLLIN;
+		polls[1].events = G_IO_IN;
 	}
 	
 	if (!gpg->complete) {
 		polls[2].fd = gpg->status_fd;
-		polls[2].events = POLLIN;
+		polls[2].events = G_IO_IN;
 	}
 	
 	polls[3].fd = gpg->stdin_fd;
-	polls[3].events = POLLOUT;
+	polls[3].events = G_IO_OUT;
 	polls[4].fd = gpg->passwd_fd;
-	polls[4].events = POLLOUT;
+	polls[4].events = G_IO_OUT;
 	cancel_fd = camel_operation_cancel_fd(NULL);
 	polls[5].fd = cancel_fd;
-	polls[5].events = POLLIN;
+	polls[5].events = G_IO_IN;
 	
 	do {
 		for (i=0;i<6;i++)
 			polls[i].revents = 0;
-		status = poll(polls, 6, 30*1000);
+		status = g_poll(polls, 6, 30*1000);
 	} while (status == -1 && errno == EINTR);
 	
 	if (status == 0)
@@ -1067,7 +1066,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	else if (status == -1)
 		goto exception;
 	
-	if ((polls[5].revents & POLLIN) && camel_operation_cancel_check(NULL)) {
+	if ((polls[5].revents & G_IO_IN) && camel_operation_cancel_check(NULL)) {
 		camel_exception_set(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled."));
 		gpg_ctx_op_cancel(gpg);
 		return -1;
@@ -1079,7 +1078,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	   can to all of them. If one fails along the way, return
 	   -1. */
 	
-	if (polls[2].revents & (POLLIN|POLLHUP)) {
+	if (polls[2].revents & (G_IO_IN|G_IO_HUP)) {
 		/* read the status message and decide what to do... */
 		char buffer[4096];
 		ssize_t nread;
@@ -1102,7 +1101,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		}
 	}
 	
-	if ((polls[0].revents & (POLLIN|POLLHUP)) && gpg->ostream) {
+	if ((polls[0].revents & (G_IO_IN|G_IO_HUP)) && gpg->ostream) {
 		char buffer[4096];
 		ssize_t nread;
 		
@@ -1122,7 +1121,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		}
 	}
 	
-	if (polls[1].revents & (POLLIN|POLLHUP)) {
+	if (polls[1].revents & (G_IO_IN|G_IO_HUP)) {
 		char buffer[4096];
 		ssize_t nread;
 		
@@ -1141,7 +1140,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		}
 	}
 	
-	if ((polls[4].revents & (POLLOUT|POLLHUP)) && gpg->need_passwd && gpg->send_passwd) {
+	if ((polls[4].revents & (G_IO_OUT|G_IO_HUP)) && gpg->need_passwd && gpg->send_passwd) {
 		ssize_t w, nwritten = 0;
 		size_t n;
 		
@@ -1169,7 +1168,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		gpg->send_passwd = FALSE;
 	}
 	
-	if ((polls[3].revents & (POLLOUT|POLLHUP)) && gpg->istream) {
+	if ((polls[3].revents & (G_IO_OUT|G_IO_HUP)) && gpg->istream) {
 		char buffer[4096];
 		ssize_t nread;
 		

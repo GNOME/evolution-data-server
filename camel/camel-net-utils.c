@@ -32,10 +32,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#ifndef G_OS_WIN32
-#include <sys/poll.h>
-#endif
-
 #include "camel-exception.h"
 #include "camel-msgport.h"
 #include "camel-net-utils.h"
@@ -463,18 +459,18 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 	if ((err = pthread_create(&id, NULL, worker, msg)) == 0) {
 		int status;
 #ifndef G_OS_WIN32
-		struct pollfd polls[2];
+		GPollFD polls[2];
 
 		polls[0].fd = fd;
-		polls[0].events = POLLIN;
+		polls[0].events = G_IO_IN;
 		polls[1].fd = cancel_fd;
-		polls[1].events = POLLIN;
+		polls[1].events = G_IO_IN;
 
 		d(printf("waiting for name return/cancellation in main process\n"));
 		do {
 			polls[0].revents = 0;
 			polls[1].revents = 0;
-			status = poll(polls, 2, -1);
+			status = g_poll(polls, 2, -1);
 		} while (status == -1 && errno == EINTR);
 #else
 		fd_set read_set;
@@ -488,7 +484,7 @@ cs_waitinfo(void *(worker)(void *), struct _addrinfo_msg *msg, const char *error
 
 		if (status == -1 ||
 #ifndef G_OS_WIN32
-		    (polls[1].revents & POLLIN)
+		    (polls[1].revents & G_IO_IN)
 #else
 		    FD_ISSET (cancel_fd, &read_set)
 #endif
