@@ -1,3 +1,56 @@
+Evolution-Data-Server 2.27.1 2009-05-04
+----------------------------------------
+
+Bug fixes:
+	#480091 (bnc) - Crash From Filters Moving To Sub-Folders 
+	#477697 (bnc) - Evolution GroupWise Sender column is blank
+	#576424 - Do not unref object twice and treat icalcomponent as it, not as icaltimezone.
+	#573187 - Do not leak unchanged components.
+	#569700 - Disconnect properly on a failure
+	#564465 - Pass correct body for signature verification
+	#573880 - Properly encode given uri before using it
+	#571677 - Do not duplicate timezones in a file on open
+	#575084 - Check for actual SQLite3 version in runtime
+	#577002 - Do not leak ".ev-journal" file handles
+	#574522 - Free list's members of e-proxy properly
+	#241604 (bnc) - Fixes monthly recurring appointments to be created on correct dates
+	#471083 (bnc) - Do not allow deletion of system folders
+	#488632 (bnc) - Fixes the number of instances created on server
+	#561312 - Need not merge master event dates as evo handles it now
+	#573205 - Use the util function to load the system timezone if its not
+	#556116 - support for unmatched search folder
+	#578823 - fixed a wrong condition
+	#578210 - fix the code to handle re-entrant problem
+	#578817 - fixed potential invalid dereference
+	#578822 - fixed potential invalid dereference
+	#578818 - only do closedir() if directory is not NULL
+	#343505 - Make Search ignore accents for address book summary searches
+	#381132 - Allow getting system timezone information in libecal
+	#552583 - Compare URLs only on protocol, user, host and port for smtp and pop3
+	#569652 - Deprecate e_source_list_peek_group_by_name
+	#571206 - Index files on Maildir accounts are not updated
+	#563954 - Define camel_folder_cmp_uids to compare UIDs properly
+	#478239 - Unset attachment icon if no attachment found
+	#575773 - Set new object properly on object modify in a file calendar backend
+	#553932 - Ask calendar on a readonly state after changing its mode
+	#567731 – Redundant declarations in camel-folder-summary.h
+	#577485 – CRL strings suck: explain the abbrevation
+	#572977 – Use g_strerror() instead of strerror()
+	#577491 – "mailbox:%s (%s)" typo
+	#573170 - Add back support for vfolder of vfolders
+
+Updated translation:
+
+	Kjartan Maraas (nb)
+	Anas Afif Emad (ar)
+	Manoj Kumar (or)
+	Jorge Gonzalez (es)
+	Baris Cicek (tr)
+	Gabor Kelemen (hu)
+	Milo Casagrande (it)
+	Philip Withnall (ne)
+	
+
 Evolution-Data-Server 2.26.0 2009-03-16	
 ----------------------------------------
 
