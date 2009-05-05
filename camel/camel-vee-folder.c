@@ -1052,7 +1052,8 @@ unmatched_check_uid(char *uidin, void *value, struct _update_data *u)
 	} else {
 		CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_uid(((CamelFolder *)u->folder_unmatched)->summary, uid);
 		if (mi) {
-			camel_folder_summary_remove(((CamelFolder *)u->folder_unmatched)->summary, (CamelMessageInfo *)mi);
+			camel_db_delete_uid_from_vfolder_transaction (((CamelFolder *)u->folder_unmatched)->parent_store->cdb_w, ((CamelFolder *)u->folder_unmatched)->full_name, uid, NULL);
+			camel_folder_summary_remove_uid_fast (((CamelFolder *)u->folder_unmatched)->summary, uid);
 			camel_folder_change_info_remove_uid(u->folder_unmatched->changes, uid);
 			camel_message_info_free((CamelMessageInfo *)mi);
 		}
@@ -1340,7 +1341,8 @@ folder_changed_add_uid(CamelFolder *sub, const char *uid, const char hash[8], Ca
 		vinfo = (CamelVeeMessageInfo *)camel_folder_get_message_info((CamelFolder *)folder_unmatched, vuid);
 		if (vinfo) {
 			camel_folder_change_info_remove_uid(folder_unmatched->changes, vuid);
-			camel_folder_summary_remove(((CamelFolder *)folder_unmatched)->summary, (CamelMessageInfo *)vinfo);
+			camel_db_delete_uid_from_vfolder_transaction (folder->parent_store->cdb_w, ((CamelFolder *)folder_unmatched)->full_name, vuid, NULL);
+			camel_folder_summary_remove_uid_fast(((CamelFolder *)folder_unmatched)->summary, vuid);
 			camel_folder_free_message_info((CamelFolder *)folder_unmatched, (CamelMessageInfo *)vinfo);
 		}
 	}
@@ -1392,7 +1394,8 @@ folder_changed_remove_uid(CamelFolder *sub, const char *uid, const char hash[8],
 			vinfo = (CamelVeeMessageInfo *)camel_folder_get_message_info((CamelFolder *)folder_unmatched, vuid);
 			if (vinfo) {
 				camel_folder_change_info_remove_uid(folder_unmatched->changes, vuid);
-				camel_folder_summary_remove_uid(((CamelFolder *)folder_unmatched)->summary, vuid);
+				camel_db_delete_uid_from_vfolder_transaction (folder->parent_store->cdb_w, ((CamelFolder *)folder_unmatched)->full_name, vuid, NULL);
+				camel_folder_summary_remove_uid_fast(((CamelFolder *)folder_unmatched)->summary, vuid);
 				camel_folder_free_message_info((CamelFolder *)folder_unmatched, (CamelMessageInfo *)vinfo);
 			}
 		}
