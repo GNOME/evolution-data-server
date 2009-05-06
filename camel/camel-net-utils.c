@@ -638,6 +638,15 @@ cs_getaddrinfo(void *data)
 	struct _addrinfo_msg *info = data;
 
 	info->result = getaddrinfo(info->name, info->service, info->hints, info->res);
+
+	/* On Solaris, the service name 'http' or 'https' is not defined. 
+	   Use the port as the service name directly. */
+	if (info->result && info->service) {
+		if (strcmp (info->service, "http") == 0)
+			info->result = getaddrinfo(info->name, "80", info->hints, info->res);
+		else if (strcmp (info->service, "https") == 0)
+			info->result = getaddrinfo(info->name, "443", info->hints, info->res);
+	}
 	
 	if (info->cancelled) {
 		cs_freeinfo(info);
