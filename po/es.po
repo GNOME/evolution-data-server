@@ -9,14 +9,14 @@
 # Héctor García Álvarez <hector@scouts-es.org>, 2000, 20001, 2002.
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>,2003 (revisión).
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2005, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-05-01 15:36+0000\n"
-"PO-Revision-Date: 2009-05-01 19:40+0200\n"
+"POT-Creation-Date: 2009-05-07 10:33+0000\n"
+"PO-Revision-Date: 2009-05-08 20:17+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,13 +35,13 @@ msgstr "Cargando…"
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2344
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2389
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4288
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4323
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Buscando…"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2759
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4452
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4487
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
@@ -53,35 +53,35 @@ msgstr "Descargando contactos (%d)…"
 msgid "Updating contacts cache (%d)... "
 msgstr "Actualizando caché de contactos (%d)…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:751
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:788
 msgid "Using Distinguished Name (DN)"
 msgstr "Usando nombre distintivo (ND)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:754
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:791
 msgid "Using Email Address"
 msgstr "Usando dirección de correo"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1019
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1054
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1617
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1652
 msgid "Adding contact to LDAP server..."
 msgstr "Añadiendo contacto al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1752
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1787
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2064
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2099
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4148
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4183
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4310
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4345
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
@@ -1529,7 +1529,7 @@ msgstr "Aprendiendo no SPAM"
 msgid "Filtering new message(s)"
 msgstr "Filtrando mensajes(s) nuevo(s)"
 
-#: ../camel/camel-gpg-context.c:755
+#: ../camel/camel-gpg-context.c:754
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1540,15 +1540,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:770
+#: ../camel/camel-gpg-context.c:769
 msgid "Failed to parse gpg userid hint."
 msgstr "Falló al analizar el id del usuario gpg."
 
-#: ../camel/camel-gpg-context.c:794 ../camel/camel-gpg-context.c:808
+#: ../camel/camel-gpg-context.c:793 ../camel/camel-gpg-context.c:807
 msgid "Failed to parse gpg passphrase request."
 msgstr "Falló al analizar la solicitud de contraseña gpg."
 
-#: ../camel/camel-gpg-context.c:828
+#: ../camel/camel-gpg-context.c:827
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1557,7 +1557,7 @@ msgstr ""
 "Necesita un NIP para desbloquear la clave para su \n"
 "SmartCard: «%s»"
 
-#: ../camel/camel-gpg-context.c:832
+#: ../camel/camel-gpg-context.c:831
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1566,94 +1566,94 @@ msgstr ""
 "Necesita una contraseña para desbloquear la clave para \n"
 "el usuario: «%s»"
 
-#: ../camel/camel-gpg-context.c:837
+#: ../camel/camel-gpg-context.c:836
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Solicitud inesperada de GnuPG para «%s»"
 
-#: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1071
+#: ../camel/camel-gpg-context.c:861 ../camel/camel-gpg-context.c:1070
 #: ../camel/providers/nntp/camel-nntp-store.c:1315
 msgid "Canceled."
 msgstr "Cancelado."
 
-#: ../camel/camel-gpg-context.c:876
+#: ../camel/camel-gpg-context.c:875
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Falló al desbloquear la clave secreta: se dieron 3 contraseñas falsas."
 
-#: ../camel/camel-gpg-context.c:884
+#: ../camel/camel-gpg-context.c:883
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Respuesta inesperada del GNUPG: %s"
 
-#: ../camel/camel-gpg-context.c:947
+#: ../camel/camel-gpg-context.c:946
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "No se pudo cifrar este mensaje: no hay destinatarios."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1209 ../camel/camel-gpg-context.c:1337
-#: ../camel/camel-gpg-context.c:1850 ../camel/camel-gpg-context.c:1895
+#: ../camel/camel-gpg-context.c:1208 ../camel/camel-gpg-context.c:1336
+#: ../camel/camel-gpg-context.c:1849 ../camel/camel-gpg-context.c:1894
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Error al ejecutar gpg: %s"
 
-#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1304 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "No se pudo generar los datos de la firma: %s"
 
-#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1554
-#: ../camel/camel-gpg-context.c:1640 ../camel/camel-gpg-context.c:1655
-#: ../camel/camel-gpg-context.c:1771 ../camel/camel-gpg-context.c:1786
-#: ../camel/camel-gpg-context.c:1866 ../camel/camel-gpg-context.c:1911
+#: ../camel/camel-gpg-context.c:1351 ../camel/camel-gpg-context.c:1553
+#: ../camel/camel-gpg-context.c:1639 ../camel/camel-gpg-context.c:1654
+#: ../camel/camel-gpg-context.c:1770 ../camel/camel-gpg-context.c:1785
+#: ../camel/camel-gpg-context.c:1865 ../camel/camel-gpg-context.c:1910
 msgid "Failed to execute gpg."
 msgstr "Falló al ejecutar gpg."
 
-#: ../camel/camel-gpg-context.c:1371
+#: ../camel/camel-gpg-context.c:1370
 msgid "This is a digitally signed message part"
 msgstr "Esta parte del mensaje está firmada digitalmente"
 
-#: ../camel/camel-gpg-context.c:1458 ../camel/camel-gpg-context.c:1464
-#: ../camel/camel-gpg-context.c:1470 ../camel/camel-gpg-context.c:1485
+#: ../camel/camel-gpg-context.c:1457 ../camel/camel-gpg-context.c:1463
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1484
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 "No se pudo verificar la firma del mensaje: Formato de mensaje incorrecto"
 
-#: ../camel/camel-gpg-context.c:1524
+#: ../camel/camel-gpg-context.c:1523
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr ""
 "No se pudo verificar la firma del mensaje: no pude crear un archivo "
 "temporal: %s"
 
-#: ../camel/camel-gpg-context.c:1623
+#: ../camel/camel-gpg-context.c:1622
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "No se pudo generar los datos de cifrado: %s"
 
-#: ../camel/camel-gpg-context.c:1673
+#: ../camel/camel-gpg-context.c:1672
 msgid "This is a digitally encrypted message part"
 msgstr "Esta parte del mensaje está cifrada digitalmente"
 
-#: ../camel/camel-gpg-context.c:1726 ../camel/camel-gpg-context.c:1734
-#: ../camel/camel-gpg-context.c:1753
+#: ../camel/camel-gpg-context.c:1725 ../camel/camel-gpg-context.c:1733
+#: ../camel/camel-gpg-context.c:1752
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "No se pudo descifrar el mensaje: Formato de mensaje incorrecto"
 
-#: ../camel/camel-gpg-context.c:1743
+#: ../camel/camel-gpg-context.c:1742
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Falló al descifrar la parte MIME: error del protocolo"
 
-#: ../camel/camel-gpg-context.c:1808 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1807 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "Contenido cifrado"
 
-#: ../camel/camel-gpg-context.c:1827
+#: ../camel/camel-gpg-context.c:1826
 msgid "Unable to parse message content"
 msgstr "No se pudo interpretar el contenido del mensaje"
 
-#: ../camel/camel-gpg-context.c:1851 ../camel/camel-gpg-context.c:1896
+#: ../camel/camel-gpg-context.c:1850 ../camel/camel-gpg-context.c:1895
 #: ../camel/camel-tcp-stream-openssl.c:635
 #: ../camel/providers/imap4/camel-imap4-utils.c:624
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
@@ -1761,40 +1761,40 @@ msgstr "Error copiando el correo al archivo temporal: %s"
 msgid "parse error"
 msgstr "error de análisis sintáctico"
 
-#: ../camel/camel-net-utils.c:505 ../camel/camel-net-utils.c:667
-#: ../camel/camel-net-utils.c:799
+#: ../camel/camel-net-utils.c:501 ../camel/camel-net-utils.c:672
+#: ../camel/camel-net-utils.c:804
 #: ../camel/providers/pop3/camel-pop3-store.c:448
 #: ../camel/providers/pop3/camel-pop3-store.c:548
 msgid "Canceled"
 msgstr "Cancelado"
 
-#: ../camel/camel-net-utils.c:524
+#: ../camel/camel-net-utils.c:520
 msgid "cannot create thread"
 msgstr "no se puede crear el hilo"
 
-#: ../camel/camel-net-utils.c:671
+#: ../camel/camel-net-utils.c:676
 #, c-format
 msgid "Resolving: %s"
 msgstr "Resolviendo: %s"
 
-#: ../camel/camel-net-utils.c:693
+#: ../camel/camel-net-utils.c:698
 msgid "Host lookup failed"
 msgstr "No se pudo resolver el equipo remoto"
 
-#: ../camel/camel-net-utils.c:695
+#: ../camel/camel-net-utils.c:700
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "No se pudo resolver el equipo remoto: %s: %s"
 
-#: ../camel/camel-net-utils.c:803
+#: ../camel/camel-net-utils.c:808
 msgid "Resolving address"
 msgstr "Resolviendo dirección"
 
-#: ../camel/camel-net-utils.c:823
+#: ../camel/camel-net-utils.c:828
 msgid "Name lookup failed"
 msgstr "No se pudo resolver el nombre"
 
-#: ../camel/camel-net-utils.c:826
+#: ../camel/camel-net-utils.c:831
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "No se pudo resolver el nombre: %s"
@@ -2390,17 +2390,14 @@ msgid "Certificate has expired"
 msgstr "El certificado ha caducado"
 
 #: ../camel/camel-tcp-stream-openssl.c:590
-#| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) not yet valid"
 msgstr "La Lista de Revocación de Certificados (CRL) aún no es válida"
 
 #: ../camel/camel-tcp-stream-openssl.c:592
-#| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) has expired"
 msgstr "La Lista de Revocación de Certificados (CRL) ha caducado"
 
 #: ../camel/camel-tcp-stream-openssl.c:597
-#| msgid "Unable to get Certificate Revocation List"
 msgid "Error in Certificate Revocation List (CRL)"
 msgstr "Error en la Lista de Revocación de Certificados (CRL)"
 
@@ -2579,7 +2576,7 @@ msgstr "Error guardando «%s»: %s"
 msgid "No such message %s in %s"
 msgstr "No existe el mensaje %s en %s"
 
-#: ../camel/camel-vee-folder.c:820 ../camel/camel-vee-folder.c:826
+#: ../camel/camel-vee-folder.c:821 ../camel/camel-vee-folder.c:827
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "No se pueden copiar o mover mensajes a una Carpeta Virtual"
 
@@ -3618,7 +3615,8 @@ msgstr "~%s (%s)"
 #: ../camel/providers/local/camel-local-folder.c:396
 #: ../camel/providers/local/camel-local-folder.c:399
 #, c-format
-msgid "mailbox:%s (%s)"
+#| msgid "mailbox:%s (%s)"
+msgid "mailbox: %s (%s)"
 msgstr "buzón: %s: (%s)"
 
 #. a full path + protocol
