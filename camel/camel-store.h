@@ -148,6 +148,11 @@ struct _CamelStore {
 #define CAMEL_STORE_FOLDER_INFO_RECURSIVE  (1 << 1)
 #define CAMEL_STORE_FOLDER_INFO_SUBSCRIBED (1 << 2)
 #define CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL (1 << 3)  /* don't include vTrash/vJunk folders */
+/* Fetch only the subscription list. Clients should use this */
+/* flag for requesting the list of folders available for  */
+/* subscription. Used in Exchange / IMAP  connectors for public */
+/* folder fetching */
+#define CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST (1 << 4)
 
 typedef struct {
 	CamelServiceClass parent_class;
