@@ -35,7 +35,7 @@ impl_GNOME_Evolution_Addressbook_Book_open (PortableServer_Servant servant,
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
 
-	printf ("impl_GNOME_Evolution_Addressbook_Book_open (%p)\n", book);
+	printf ("impl_GNOME_Evolution_Addressbook_Book_open (%p)\n", (gpointer) book);
 
 	e_book_backend_open (e_data_book_get_backend (book), book, opid, only_if_exists);
 }
@@ -1013,4 +1013,4 @@ BONOBO_TYPE_FUNC_FULL (
 		       EDataBook,
 		       GNOME_Evolution_Addressbook_Book,
 		       BONOBO_TYPE_OBJECT,
-		       e_data_book);
+		       e_data_book)

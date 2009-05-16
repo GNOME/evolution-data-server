@@ -62,7 +62,7 @@ connection_listen_cb (gpointer object, gpointer user_data)
 	g_static_rec_mutex_unlock (&watched_lock);
 }
 
-G_DEFINE_TYPE (EComponentListener, e_component_listener, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EComponentListener, e_component_listener, G_TYPE_OBJECT)
 
 static void
 e_component_listener_class_init (EComponentListenerClass *klass)

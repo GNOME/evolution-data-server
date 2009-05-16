@@ -74,7 +74,7 @@ enum _ESExpTermType {
 	ESEXP_TERM_TIME,	/* time_t literal (number of seconds past the epoch) */
 	ESEXP_TERM_FUNC,	/* normal function, arguments are evaluated before calling */
 	ESEXP_TERM_IFUNC,	/* immediate function, raw terms are arguments */
-	ESEXP_TERM_VAR,		/* variable reference */
+	ESEXP_TERM_VAR		/* variable reference */
 };
 
 struct _ESExpSymbol {

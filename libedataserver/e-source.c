@@ -72,7 +72,7 @@ group_weak_notify (ESource *source,
 
 /* GObject methods.  */
 
-G_DEFINE_TYPE (ESource, e_source, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ESource, e_source, G_TYPE_OBJECT)
 
 static void
 impl_finalize (GObject *object)

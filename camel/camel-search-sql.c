@@ -187,7 +187,7 @@ g_node_dump (GList *l)
 
 	while (l) {
 		node = l->data;
-		printf("%p (%d %d '%s')\t", node, node->ref, node->level, node->exact_token);
+		printf("%p (%d %d '%s')\t", (gpointer) node, node->ref, node->level, node->exact_token);
 		l = l->next;
 	}
 	printf("\n");
@@ -393,14 +393,14 @@ camel_sexp_to_sql (const char *txt)
 					} else {
 						d(printf("str %s\n", scanner->value.v_string));
 						if (g_ascii_strcasecmp (scanner->value.v_string, "get-current-date") == 0) {
-							lval = time(NULL); //Make this 12:00 am
+							lval = time(NULL); /* Make this 12:00 am */
 						} else
 							lval = atol (scanner->value.v_string);
 						d(printf("str %d\n", lval));
 					}
 					token = g_scanner_get_next_token (scanner);
 				}
-				// (> (get-sent-date) (- (get-current-date) 100))) )
+				/* (> (get-sent-date) (- (get-current-date) 100))) ) */
 				d(printf("lvl = %d %ld\n", lvl, lval));
 				bstr = g_strdup_printf ("%d", lval);
 			}
@@ -440,14 +440,14 @@ camel_sexp_to_sql (const char *txt)
 				} else {
 					d(printf("str %s\n", scanner->value.v_string));
 					if (g_ascii_strcasecmp (scanner->value.v_string, "get-current-date") == 0) {
-						lval = time(NULL); //Make this 12:00 am
+						lval = time(NULL); /* Make this 12:00 am */
 					} else
 						lval = atol (scanner->value.v_string);
 					d(printf("str %d\n", lval));
 				}
 				token = g_scanner_get_next_token (scanner);
 			}
-			// (> (get-sent-date) (- (get-current-date) 100))) )
+			/* (> (get-sent-date) (- (get-current-date) 100))) ) */
 			d(printf("lvl = %ld\n", lval));
 			node = g_new0 (Node, 1);
 			node->token = bstr;
@@ -461,9 +461,9 @@ camel_sexp_to_sql (const char *txt)
 			operands = g_list_prepend (operands, node);	
 			all = g_list_prepend (all, node);
 			level--;
-				//g_node_dump (all);printf("\n\n");
-				//g_node_dump (operands);printf("\n\n");
-				//g_node_dump (operators);printf("\n\n");
+				/* g_node_dump (all);printf("\n\n"); */
+				/* g_node_dump (operands);printf("\n\n"); */
+				/* g_node_dump (operators);printf("\n\n"); */
 			
 		} else if (token == '>' || token == '<') {
 			
@@ -495,9 +495,9 @@ camel_sexp_to_sql (const char *txt)
 			all = g_list_prepend (all, node);
 			
 		}
-				//g_node_dump (all);printf("\n\n");
-				//g_node_dump (operands);printf("\n\n");
-				//g_node_dump (operators);printf("\n\n");
+				/* g_node_dump (all);printf("\n\n"); */
+				/* g_node_dump (operands);printf("\n\n"); */
+				/* g_node_dump (operators);printf("\n\n"); */
 
 		if (operands) {
 			mnode = operands->data;
@@ -631,7 +631,7 @@ camel_sexp_to_sql (const char *txt)
 					sqstr = g_strdup_printf("%c%s%c", n3->pre_token, n1->exact_token, n3->post_token);
 					escstr = escape_values(sqstr);
 					str = g_strdup_printf("(%s %s%s %s %s)", n3->ignore_lhs ? "":n2->exact_token, prefix ? prefix : " ", temp_op, n3->exact_token, escstr);
-					//printf("str %s\n", str);
+					/* printf("str %s\n", str); */
 
 					g_free (n3->exact_token);
 					g_free (sqstr);
@@ -658,14 +658,14 @@ camel_sexp_to_sql (const char *txt)
 						free_node(opnode); free_node(opnode);
 						operators = g_list_delete_link (operators, operators);
 						all = g_list_delete_link (all, all);
-						//g_node_dump (operators);
+						/* g_node_dump (operators); */
 					}
 
 					if (n2->execute) {
 						Node *popnode=NULL;
 						gboolean dbl = FALSE;
 						
-						//g_node_dump (operators);
+						/* g_node_dump (operators); */
 						if (n2->prefix) {
 							if (operators && operators->next)
 								popnode = operators->next->data;

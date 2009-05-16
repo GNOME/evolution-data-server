@@ -763,4 +763,4 @@ BONOBO_TYPE_FUNC_FULL (
 		       EDataBookView,
 		       GNOME_Evolution_Addressbook_BookView,
 		       BONOBO_TYPE_OBJECT,
-		       e_data_book_view);
+		       e_data_book_view)

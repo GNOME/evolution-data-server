@@ -106,9 +106,9 @@ backend_factory_get_type_ ## _type (GTypeModule *module)			\
 	return type;								\
 }										\
 
-declare_functions (VEVENT,   "ECalBackendCalDAVEventsFactory");
-declare_functions (VTODO,    "ECalBackendCalDAVTodosFactory");
-declare_functions (VJOURNAL, "ECalBackendCalDAVMemosFactory");
+declare_functions (VEVENT,   "ECalBackendCalDAVEventsFactory")
+declare_functions (VTODO,    "ECalBackendCalDAVTodosFactory")
+declare_functions (VJOURNAL, "ECalBackendCalDAVMemosFactory")
 
 static GType caldav_types[3];
 

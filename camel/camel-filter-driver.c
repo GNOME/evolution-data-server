@@ -62,7 +62,7 @@ enum filter_log_t {
 	FILTER_LOG_NONE,
 	FILTER_LOG_START,       /* start of new log entry */
 	FILTER_LOG_ACTION,      /* an action performed */
-	FILTER_LOG_END,	        /* end of log */
+	FILTER_LOG_END          /* end of log */
 };
 
 /* list of rule nodes */

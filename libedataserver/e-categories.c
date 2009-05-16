@@ -106,7 +106,7 @@ e_changed_listener_init (EChangedListener *changed)
 {
 }
 
-G_DEFINE_TYPE (EChangedListener, e_changed_listener, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EChangedListener, e_changed_listener, G_TYPE_OBJECT)
 
 /* ------------------------------------------------------------------------- */
 

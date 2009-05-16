@@ -1186,7 +1186,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          msg = e_gw_message_new_with_header (cnc->priv->uri, cnc->priv->session_id, "getDeltaRequest");
          if (!msg) {
                  g_warning (G_STRLOC ": Could not build SOAP message");
-		 // g_object_unref (cnc);
+		 /* g_object_unref (cnc); */
                  return E_GW_CONNECTION_STATUS_UNKNOWN;
          }
 
@@ -1199,7 +1199,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          response = e_gw_connection_send_message (cnc, msg);
          if (!response) {
                  g_object_unref (msg);
-		 // g_object_unref (cnc);
+		 /* g_object_unref (cnc); */
                  return E_GW_CONNECTION_STATUS_NO_RESPONSE;
          }
 
@@ -1207,7 +1207,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (status != E_GW_CONNECTION_STATUS_OK) {
  		g_object_unref (response);
 		g_object_unref (msg);
-		//	g_object_unref (cnc);
+		/* g_object_unref (cnc); */
  		return status;
  	}
 
@@ -1216,7 +1216,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (!param) {
                  g_object_unref (response);
                  g_object_unref (msg);
-		 // g_object_unref (cnc);
+		 /* g_object_unref (cnc); */
                  return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
          }
 
@@ -1224,7 +1224,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
 	if (!g_ascii_strcasecmp (tmp, "0")) {
 		g_free (tmp);
                  g_message ("No deltas");
-		 // g_object_unref (cnc);
+		 /* g_object_unref (cnc); */
                  return E_GW_CONNECTION_STATUS_OK;
         }
 
@@ -1234,8 +1234,8 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
          if (!param) {
                  g_object_unref (response);
                  g_object_unref (msg);
-		 // g_object_unref (cnc);
-//                 return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
+		/* g_object_unref (cnc); */
+		/* return E_GW_CONNECTION_STATUS_INVALID_RESPONSE; */
 		/* getting around the server behavior that deltas can be null
 		 * though changes is true */
 		 return E_GW_CONNECTION_STATUS_OK;
@@ -1255,7 +1255,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
                                  if (!param_id) {
                                          g_object_unref (response);
                                          g_object_unref (msg);
-					 // g_object_unref (cnc);
+					/* g_object_unref (cnc); */
                                  }
                                  uid = (char *)soup_soap_parameter_get_string_value (param_id);
                                  /*if (!e_cal_backend_cache_remove_component (cache, uid, NULL))
@@ -1277,7 +1277,7 @@ e_gw_connection_get_deltas ( EGwConnection *cnc, GSList **adds, GSList **deletes
                                 if (!item) {
                                          g_object_unref (response);
                                          g_object_unref (msg);
-					 // g_object_unref (cnc);
+					/* g_object_unref (cnc); */
  					return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
                                  }
                                  /*if (!e_cal_backend_cache_put_component (cache, comp))
@@ -1348,7 +1348,7 @@ e_gw_connection_send_item (EGwConnection *cnc, EGwItem *item, GSList **id_list)
 		SoupSoapParameter *param;
 
 		/* get the generated ID from the SOAP response */
-		// for loop here to populate the list_ids.
+		/* for loop here to populate the list_ids. */
 		for (param = soup_soap_response_get_first_parameter_by_name (response, "id");
 			param; param = soup_soap_response_get_next_parameter_by_name (response, param, "id")) {
 

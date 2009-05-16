@@ -39,7 +39,7 @@ typedef struct _CamelGroupwiseStoreInfo CamelGroupwiseStoreInfo;
 
 enum {
 	CAMEL_GW_STORE_INFO_FULL_NAME = CAMEL_STORE_INFO_LAST,
-	CAMEL_GW_STORE_INFO_LAST,
+	CAMEL_GW_STORE_INFO_LAST
 };
 
 struct _CamelGroupwiseStoreInfo {

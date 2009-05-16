@@ -151,11 +151,6 @@ static void destroy_entries(gpointer data, gpointer user_data)
 	g_object_unref(G_OBJECT(entry));
 }
 
-enum {
-	PROP_0,
-
-};
-
 static void
 gdata_feed_init(GTypeInstance *instance,
 		gpointer      g_class)

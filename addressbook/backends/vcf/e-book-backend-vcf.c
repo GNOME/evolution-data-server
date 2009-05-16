@@ -56,7 +56,7 @@
 
 #define d(x)
 
-G_DEFINE_TYPE (EBookBackendVCF, e_book_backend_vcf, E_TYPE_BOOK_BACKEND_SYNC);
+G_DEFINE_TYPE (EBookBackendVCF, e_book_backend_vcf, E_TYPE_BOOK_BACKEND_SYNC)
 
 typedef struct _EBookBackendVCFBookView EBookBackendVCFBookView;
 typedef struct _EBookBackendVCFSearchContext EBookBackendVCFSearchContext;

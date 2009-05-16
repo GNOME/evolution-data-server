@@ -265,12 +265,14 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 		if (hacked_unread_folder && !vsummary->fake_visible_count)
 			vsummary->fake_visible_count = mi->summary->visible_count;
 
+#if 0
 		/* Keep the summary in sync */
-		//mi->summary->unread_count += unread - old_unread;
-		//mi->summary->deleted_count += deleted - old_deleted;
-		//mi->summary->junk_count += junked - old_junked;
-		//mi->summary->junk_not_deleted_count += junked_not_deleted - old_junked_not_deleted;
-		//mi->summary->visible_count += visible - old_visible;
+		mi->summary->unread_count += unread - old_unread;
+		mi->summary->deleted_count += deleted - old_deleted;
+		mi->summary->junk_count += junked - old_junked;
+		mi->summary->junk_not_deleted_count += junked_not_deleted - old_junked_not_deleted;
+		mi->summary->visible_count += visible - old_visible;
+#endif
 
 		if (vsummary->fake_visible_count || hacked_unread_folder)
 			vsummary->fake_visible_count += visible - old_visible;

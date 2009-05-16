@@ -44,7 +44,7 @@ static guint signals[LAST_SIGNAL];
 
 static void finalize (GObject *);
 
-G_DEFINE_TYPE (EAccount, e_account, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EAccount, e_account, G_TYPE_OBJECT)
 
 /*
 lock mail accounts	Relatively difficult -- involves redesign of the XML blobs which describe accounts
@@ -726,7 +726,7 @@ enum {
 	EAP_LOCK_DEFAULT_FOLDERS,
 	EAP_LOCK_SAVE_PASSWD,
 	EAP_LOCK_SOURCE,
-	EAP_LOCK_TRANSPORT,
+	EAP_LOCK_TRANSPORT
 };
 
 static struct _system_info {

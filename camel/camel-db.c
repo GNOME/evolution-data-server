@@ -476,7 +476,7 @@ camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelD
 			return 0;
 
 		g_mutex_lock (cdb->lock);
-		d(g_print("Creating Collation %s on %s with %p\n", collate, col, func));
+		d(g_print("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
 		if (collate && func)
 			ret = sqlite3_create_collation(cdb->db, collate, SQLITE_UTF8,  NULL, func);
 		g_mutex_unlock (cdb->lock);
@@ -768,8 +768,8 @@ camel_db_count_total_message_info (CamelDB *cdb, const char *table_name, guint32
 int
 camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpointer data, CamelException *ex) 
 {
-  	char *errmsg = NULL;
-  	//int nrecs = 0;
+	char *errmsg = NULL;
+	/*int nrecs = 0;*/
 	int ret = -1;
 
 	if (!cdb)
@@ -1297,8 +1297,8 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 			record->part, record->labels, record->usertags,
 			record->cinfo, record->bdata);
 
-	//if (delete_old_record)
-	//		del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid);
+	/* if (delete_old_record)
+			del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid); */
 
 #if 0
 	char *upd_query;
@@ -1308,14 +1308,14 @@ write_mir (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelEx
 	g_free (upd_query);
 #else
 
-	//if (delete_old_record)
-	//		ret = camel_db_add_to_transaction (cdb, del_query, ex);
+	/* if (delete_old_record)
+			ret = camel_db_add_to_transaction (cdb, del_query, ex); */
 	ret = camel_db_add_to_transaction (cdb, ins_query, ex);
 
 #endif
 
-	//if (delete_old_record)
-	//		sqlite3_free (del_query);
+	/* if (delete_old_record)
+			sqlite3_free (del_query); */
 	sqlite3_free (ins_query);
 
 	return ret;

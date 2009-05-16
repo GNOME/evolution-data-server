@@ -1491,8 +1491,8 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 				 E2K_AUTOCONFIG_USE_EITHER);
 
 	e2k_operation_init (&op);
-	// e2k_autoconfig_set_gc_server (ac, ad_server, gal_limit) FIXME
-	// e2k_autoconfig_set_gc_server (ac, NULL, -1);
+	/* e2k_autoconfig_set_gc_server (ac, ad_server, gal_limit) FIXME */
+	/* e2k_autoconfig_set_gc_server (ac, NULL, -1); */
 	*result = e2k_autoconfig_check_exchange (ac, &op);
 
 	if (*result == E2K_AUTOCONFIG_OK) {

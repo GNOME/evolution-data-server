@@ -72,7 +72,7 @@ enum {
 
 /* enable/disable flags for the engine itself */
 enum {
-	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1<<0,
+	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1<<0
 };
 
 typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data);

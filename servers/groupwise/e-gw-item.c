@@ -3256,7 +3256,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			char *str_len ;
 
 			str = g_base64_encode (priv->message, strlen (priv->message));
-			//str = g_strdup (priv->message);
+			/*str = g_strdup (priv->message);*/
 			str_len = g_strdup_printf ("%d", str ? (int)strlen (str) : 0);
 			soup_soap_message_start_element (msg, "part", NULL, NULL);
 			soup_soap_message_add_attribute (msg, "length", str_len, NULL, NULL);

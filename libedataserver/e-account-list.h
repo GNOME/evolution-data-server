@@ -40,7 +40,7 @@ typedef enum _e_account_find_t {
 	E_ACCOUNT_FIND_UID,
 	E_ACCOUNT_FIND_ID_NAME,
 	E_ACCOUNT_FIND_ID_ADDRESS,
-	E_ACCOUNT_FIND_PARENT_UID,
+	E_ACCOUNT_FIND_PARENT_UID
 } e_account_find_t;
 
 typedef struct _EAccountList {

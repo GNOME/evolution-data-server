@@ -1078,7 +1078,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 			}
 			camel_store_summary_info_free ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary, si);
 		}
-		//camel_folder_summary_save_to_db (folder->summary, ex);
+		/* camel_folder_summary_save_to_db (folder->summary, ex); */
 		camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 	} else {
 		/* We probably could not get the messages the first time. (get_folder) failed???!
@@ -1111,7 +1111,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/* Sync-up the (un)read changes before getting updates,
 	so that the getFolderList will reflect the most recent changes too */
-	//groupwise_sync (folder, FALSE, ex);
+	/*groupwise_sync (folder, FALSE, ex);*/
 
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		g_warning ("In offline mode. Cannot refresh!!!\n");
@@ -1191,7 +1191,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 			g_free (summary->time_string);
 
 
-		//summary->time_string = g_strdup (t_str);
+		/*summary->time_string = g_strdup (t_str);*/
 		((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (t_str);
 		camel_folder_summary_touch (folder->summary);
 		groupwise_sync_summary (folder, ex);
@@ -1781,7 +1781,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 	attach_list = e_gw_item_get_attach_id_list (item);
 	if (attach_list) {
-		//int attach_count = g_slist_length (attach_list);
+		/*int attach_count = g_slist_length (attach_list);*/
 		GSList *al = attach_list;
 		EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 		char *attachment = NULL;
@@ -1804,8 +1804,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					g_free (attachment);
 					is_text_html = TRUE;
 				} 
-			}//if attachment and len
-		} // if Mime.822 or TEXT.htm
+			}/* if attachment and len */
+		} /* if Mime.822 or TEXT.htm */
 
 		if (!ignore_mime_822) {
 			for (al = attach_list ; al != NULL ; al = al->next) {
@@ -1858,7 +1858,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			}
 		}
 
-	}//if attach_list
+	} /* if attach_list */
 
 
 	msg = camel_mime_message_new ();
@@ -2019,7 +2019,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 						camel_mime_part_set_content_id (part, attach->contentid);
 					}
 
-					//camel_mime_part_set_filename(part, g_strdup(attach->name));
+					/*camel_mime_part_set_filename(part, g_strdup(attach->name));*/
 					if (attach->contentType) {
 						if (is_base64_encoded)
 							camel_mime_part_set_encoding (part, CAMEL_TRANSFER_ENCODING_BASE64);
@@ -2385,7 +2385,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 								camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
 								camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
-								//}
+								/*}*/
 						}
 				} else {
 						g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);

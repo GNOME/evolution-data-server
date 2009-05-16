@@ -231,8 +231,8 @@ test_object_modification (ECal *client, char *uid)
 		return error->message;
 	}
 
-	// modify one property of the icalcomp and save it. Now retrieve it and
-	// check the field.
+	/* Modify one property of the icalcomp and save it.
+	 * Now retrieve it and check the field. */
 	icalcomponent_set_summary (icalcomp, summary);
 	if (!e_cal_modify_object  (client, icalcomp, CALOBJ_MOD_THIS, &error)) {
 		cl_printf (client, "Test Modify object : Could not modify the object: %s\n", error->message);
@@ -497,7 +497,7 @@ test_new_system_memos(void)
 static char *
 test_get_free_busy (ECal *client)
 {
-	// TODO uses NULL for users and currently specific to file backend.
+	/* TODO uses NULL for users and currently specific to file backend. */
 	GList *l, *freebusy = NULL;
 	GError *error = NULL;
 	icaltimezone *utc;
@@ -644,13 +644,15 @@ all_tests(ECal *client, const gchar *uri)
 	mu_run_test (test_get_free_busy (client));
 	mu_run_test (test_object_creation (client, &uid));
 	mu_run_test (test_object_modification (client, uid));
-//	mu_run_test (test_object_removal (client));
+	/* mu_run_test (test_object_removal (client)); */
 	mu_run_test (test_get_alarms_in_range (client));
 
-//	tmp = g_strconcat (uri, "_tmp", NULL);
-//	mu_run_test (test_e_cal_new (&ecal, tmp));
-//	mu_run_test (test_e_cal_remove (ecal, tmp));
-//	g_free (tmp);
+#if 0
+	tmp = g_strconcat (uri, "_tmp", NULL);
+	mu_run_test (test_e_cal_new (&ecal, tmp));
+	mu_run_test (test_e_cal_remove (ecal, tmp));
+	g_free (tmp);
+#endif
 
 	test_timezones (client);
 

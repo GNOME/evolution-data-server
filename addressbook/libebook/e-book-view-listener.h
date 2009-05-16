@@ -63,7 +63,7 @@ typedef enum {
 	ContactsRemovedEvent,
 	ContactsModifiedEvent,
 	SequenceCompleteEvent,
-	StatusMessageEvent,
+	StatusMessageEvent
 } EBookViewListenerOperation;
 
 struct _EBookViewListenerResponse {

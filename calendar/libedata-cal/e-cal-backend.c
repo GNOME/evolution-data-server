@@ -30,7 +30,7 @@
 
 
 
-G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT)
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {

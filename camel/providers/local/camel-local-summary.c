@@ -474,7 +474,7 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 	
 	mi = (CamelLocalMessageInfo *)camel_folder_summary_add_from_message((CamelFolderSummary *)cls, msg);
 	if (mi) {
-		//d(printf("Added, uid = %s\n", mi->uid));
+		/*d(printf("Added, uid = %s\n", mi->uid));*/
 		if (info) {
 			const CamelTag *tag = camel_message_info_user_tags(info);
 			const CamelFlag *flag = camel_message_info_user_flags(info);

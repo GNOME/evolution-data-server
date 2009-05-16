@@ -151,7 +151,7 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 						guint32 flags;
 
 						vinfo = (CamelVeeMessageInfo *) info;
-						flags = vinfo->old_flags;// ? vinfo->old_flags : camel_message_info_flags(info);
+						flags = vinfo->old_flags;/* ? vinfo->old_flags : camel_message_info_flags(info); */
 
 						if ((flags & (CAMEL_MESSAGE_SEEN)) == 0)
 							unread++;
@@ -334,7 +334,7 @@ vtrash_search_by_expression(CamelFolder *folder, const char *expression, CamelEx
 			CamelVeeMessageInfo  *vmi = (CamelVeeMessageInfo *) camel_folder_summary_uid (folder->summary, infos->pdata[i]);
 			if (!vmi)
 				continue;
-			//if (camel_message_info_flags(mi) & ((CamelVTrashFolder *)folder)->bit)
+			/* if (camel_message_info_flags(mi) & ((CamelVTrashFolder *)folder)->bit) */
 			if (vmi->summary == f->summary) /* Belongs to this folder */
 				g_ptr_array_add(uids, (void *)camel_pstring_strdup(infos->pdata[i]+8));
 			camel_message_info_free (vmi);
@@ -387,22 +387,24 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 
 		/* map the vfolder uid's to the source folder uid's first */
 		/* FIXME[disk-summary] check this. is it uids od folder_uids */
-		//g_ptr_array_set_size(uids, 0);
+		/*g_ptr_array_set_size(uids, 0);*/
 		g_ptr_array_set_size (folder_uids, 0);
 		for (i=0;i<uids->len;i++) {
 			char *uid = uids->pdata[i];
 			
-			//if (strlen(uid) >= 8 && strncmp(uid, hash, 8) == 0) {
-			if (strncmp(uid, hash, 8) == 0) {				
-				//CamelMessageInfo *mi;
+			/*if (strlen(uid) >= 8 && strncmp(uid, hash, 8) == 0) {*/
+			if (strncmp(uid, hash, 8) == 0) {			
+#if 0
+				CamelMessageInfo *mi;
 				/* FIXME[disk-summary] is it really reqd, if
 				 * so uncomment it */
-				//mi = camel_folder_get_message_info(f, uid+8);
-				//if (mi) {
-				//	if(camel_message_info_flags(mi) & ((CamelVTrashFolder *)folder)->bit)
+				mi = camel_folder_get_message_info(f, uid+8);
+				if (mi) {
+					if(camel_message_info_flags(mi) & ((CamelVTrashFolder *)folder)->bit)
 						g_ptr_array_add(folder_uids, uid+8);
-				//	camel_folder_free_message_info(f, mi);
-				//}
+					camel_folder_free_message_info(f, mi);
+				}
+#endif
 			}
 		}
 
@@ -663,10 +665,11 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *klass)
 	/* Not required, lets use the base class search function */
 	/* folder_class->search_by_expression = vtrash_search_by_expression; */
 	/* folder_class->search_by_uids = vtrash_search_by_uids; */
+#if 0
+	((CamelVeeFolderClass *)klass)->add_folder = vtrash_add_folder;
+	((CamelVeeFolderClass *)klass)->remove_folder = vtrash_remove_folder;
+	((CamelVeeFolderClass *)klass)->rebuild_folder = vtrash_rebuild_folder;
 
-	//((CamelVeeFolderClass *)klass)->add_folder = vtrash_add_folder;
-	//((CamelVeeFolderClass *)klass)->remove_folder = vtrash_remove_folder;
-	//((CamelVeeFolderClass *)klass)->rebuild_folder = vtrash_rebuild_folder;
-
-	//((CamelVeeFolderClass *)klass)->folder_changed = vtrash_folder_changed;
+	((CamelVeeFolderClass *)klass)->folder_changed = vtrash_folder_changed;
+#endif
 }

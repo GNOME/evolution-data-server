@@ -57,7 +57,7 @@ static void  e_name_selector_finalize   (GObject                 *object);
  * Class/object setup *
  * ------------------ */
 
-G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT)
 
 static void
 source_books_destroy (GArray *source_books)

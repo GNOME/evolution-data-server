@@ -92,7 +92,7 @@ typedef enum {
 typedef enum {
 	MAPI_ACTION_FLAG_REPLIED_TO_SENDER = 102,
 	MAPI_ACTION_FLAG_REPLIED_TO_ALL    = 103,
-	MAPI_ACTION_FLAG_FORWARDED         = 104,
+	MAPI_ACTION_FLAG_FORWARDED         = 104
 } MapiPrActionFlag;
 
 typedef enum {

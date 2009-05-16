@@ -80,7 +80,7 @@ typedef struct _EThread EThread;
 typedef enum {
 	E_THREAD_QUEUE = 0,	/* run one by one, until done, if the queue_limit is reached, discard new request */
 	E_THREAD_DROP,		/* run one by one, until done, if the queue_limit is reached, discard oldest requests */
-	E_THREAD_NEW,		/* always run in a new thread, if the queue limit is reached, new requests are
+	E_THREAD_NEW		/* always run in a new thread, if the queue limit is reached, new requests are
 				   stored in the queue until a thread becomes available for it, creating a thread pool */
 } e_thread_t;
 
@@ -103,7 +103,7 @@ typedef struct _EMutex EMutex;
 
 typedef enum _e_mutex_t {
 	E_MUTEX_SIMPLE,		/* == pthread_mutex */
-	E_MUTEX_REC,		/* recursive mutex */
+	E_MUTEX_REC		/* recursive mutex */
 } e_mutex_t;
 
 EMutex *e_mutex_new(e_mutex_t type);

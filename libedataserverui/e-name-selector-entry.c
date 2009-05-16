@@ -42,7 +42,7 @@ static guint COMPLETION_CUE_MIN_LEN = 0;
 static gboolean COMPLETION_FORCE_SHOW_ADDRESS = FALSE;
 #define ENS_DEBUG(x)
 
-G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY);
+G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY)
 
 typedef struct _ENameSelectorEntryPrivate	ENameSelectorEntryPrivate;
 struct _ENameSelectorEntryPrivate

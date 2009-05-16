@@ -65,7 +65,7 @@
 #define PAS_ID_PREFIX "pas-id-"
 #define SUMMARY_FLUSH_TIMEOUT 5000
 
-G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC);
+G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 
 struct _EBookBackendFilePrivate {
 	char     *dirname;

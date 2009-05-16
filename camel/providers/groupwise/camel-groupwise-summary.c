@@ -494,7 +494,7 @@ groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 	}
 
 	camel_folder_summary_clear_db (summary);
-	//camel_folder_summary_save (summary);
+	/*camel_folder_summary_save (summary);*/
 
 	if (uncache)
 		camel_data_cache_clear (((CamelGroupwiseFolder *) summary->folder)->cache, "cache", NULL);

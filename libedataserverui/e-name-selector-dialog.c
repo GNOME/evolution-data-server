@@ -82,7 +82,7 @@ static void     destination_column_formatter  (GtkTreeViewColumn *column, GtkCel
  * Class/object setup *
  * ------------------ */
 
-G_DEFINE_TYPE (ENameSelectorDialog, e_name_selector_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (ENameSelectorDialog, e_name_selector_dialog, GTK_TYPE_DIALOG)
 
 #define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))

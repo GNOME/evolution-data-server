@@ -63,7 +63,7 @@ struct _GDataGoogleServicePrivate {
 enum {
 	PROP_0,
 	PROP_NAME,
-	PROP_AGENT,
+	PROP_AGENT
 };
 
 

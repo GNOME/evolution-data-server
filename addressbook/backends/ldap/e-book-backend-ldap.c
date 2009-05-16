@@ -131,7 +131,7 @@
 typedef enum {
 	E_BOOK_BACKEND_LDAP_TLS_NO,
 	E_BOOK_BACKEND_LDAP_TLS_ALWAYS,
-	E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE,
+	E_BOOK_BACKEND_LDAP_TLS_WHEN_POSSIBLE
 } EBookBackendLDAPUseTLS;
 
 /* interval for our poll_ldap timeout */
@@ -158,7 +158,7 @@ static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char 
 
 typedef struct LDAPOp LDAPOp;
 
-G_DEFINE_TYPE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND);
+G_DEFINE_TYPE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND)
 
 struct _EBookBackendLDAPPrivate {
 	gboolean connected;
@@ -3951,7 +3951,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 					break;
 				}
 
-			printf ("info = %p\n", info);
+			printf ("info = %p\n", (gpointer) info);
 
 			if (info) {
 				if (info->prop_type & PROP_WRITE_ONLY) {
@@ -4238,7 +4238,6 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 	}
 	else {
 		g_warning ("unhandled search result type %d returned", msg_type);
-		//e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_OtherError);
 		e_data_book_view_notify_complete (view, GNOME_Evolution_Addressbook_InvalidQuery);
 		ldap_op_finished (op);
 	}

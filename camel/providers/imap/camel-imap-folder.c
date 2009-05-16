@@ -100,7 +100,7 @@ static void imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex
 static void imap_expunge_uids_online (CamelFolder *folder, GPtrArray *uids, CamelException *ex);
 static void imap_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, CamelException *ex);
 static void imap_expunge (CamelFolder *folder, CamelException *ex);
-//static void imap_cache_message (CamelDiscoFolder *disco_folder, const char *uid, CamelException *ex);
+/*static void imap_cache_message (CamelDiscoFolder *disco_folder, const char *uid, CamelException *ex);*/
 static void imap_rename (CamelFolder *folder, const char *new);
 static GPtrArray * imap_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex);
 static char* imap_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);

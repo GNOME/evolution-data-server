@@ -43,7 +43,7 @@ enum {
 	PROP_FILENAME
 };
 
-G_DEFINE_TYPE (EFileCache, e_file_cache, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EFileCache, e_file_cache, G_TYPE_OBJECT)
 
 static void
 e_file_cache_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)

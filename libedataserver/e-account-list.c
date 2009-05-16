@@ -43,7 +43,7 @@ static guint signals [LAST_SIGNAL] = { 0 };
 static void dispose (GObject *);
 static void finalize (GObject *);
 
-G_DEFINE_TYPE (EAccountList, e_account_list, E_TYPE_LIST);
+G_DEFINE_TYPE (EAccountList, e_account_list, E_TYPE_LIST)
 
 static void
 e_account_list_class_init (EAccountListClass *klass)

@@ -1912,13 +1912,13 @@ object_class_dump_tree_rec(CamelType root, int depth)
 #ifdef CAMEL_OBJECT_TRACK_INSTANCES
 		o = root->instances;
 		while (o) {
-			printf("%s instance %p [%d]\n", p, o, o->ref_count);
+			printf("%s instance %p [%d]\n", p, (gpointer) o, o->ref_count);
 			/* todo: should lock hooks while it scans them */
 			if (o->hooks) {
 				CamelHookPair *pair = o->hooks->list;
 
 				while (pair) {
-					printf("%s  hook '%s' func %p data %p\n", p, pair->name, pair->func.event, pair->data);
+					printf("%s  hook '%s' func %p data %p\n", p, pair->name, (gpointer) pair->func.event, (gpointer) pair->data);
 					pair = pair->next;
 				}
 			}

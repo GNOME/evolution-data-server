@@ -174,10 +174,6 @@ static void destroy_postal_address (gpointer data, gpointer user_data)
 }
 
 
-enum {
-	PROP_0,
-};
-
 static void gdata_entry_init (GTypeInstance *instance,
 		gpointer      g_class)
 {

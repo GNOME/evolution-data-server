@@ -56,7 +56,7 @@
 #include "e-gw-item.h"
 #include "e-gw-filter.h"
 
-G_DEFINE_TYPE (EBookBackendGroupwise, e_book_backend_groupwise, E_TYPE_BOOK_BACKEND);
+G_DEFINE_TYPE (EBookBackendGroupwise, e_book_backend_groupwise, E_TYPE_BOOK_BACKEND)
 
 typedef struct {
         GCond *cond;

@@ -33,7 +33,7 @@
 #include <glib.h>
 #include "camel-search-sql-sexp.h"
 #include "libedataserver/e-sexp.h"
-#define d(x) //x;printf("\n");
+#define d(x) /* x;printf("\n"); */
 
 #ifdef TEST_MAIN
 #include <sqlite3.h>
@@ -653,7 +653,7 @@ dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-curr
 
 char * camel_db_get_column_name (const char *raw_name)
 {
-	//d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name));
+	/* d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name)); */
 	if (!g_ascii_strcasecmp (raw_name, "Subject"))
 		return g_strdup ("subject");
 	else if (!g_ascii_strcasecmp (raw_name, "from"))

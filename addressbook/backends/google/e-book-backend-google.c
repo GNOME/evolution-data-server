@@ -32,7 +32,7 @@
 #include "google-book.h"
 #include "util.h"
 
-G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_BACKEND_SYNC);
+G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_BACKEND_SYNC)
 
 struct _EBookBackendGooglePrivate
 {
@@ -625,8 +625,6 @@ e_book_backend_google_dispose (GObject *object)
 static void
 e_book_backend_google_finalize (GObject *object)
 {
-    //EBookBackendGooglePrivate *priv = GET_PRIVATE (object);
-
     __debug__ (G_STRFUNC);
 
     G_OBJECT_CLASS (e_book_backend_google_parent_class)->finalize (object);

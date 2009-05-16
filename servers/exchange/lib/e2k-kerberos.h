@@ -19,7 +19,7 @@ typedef enum {
 	E2K_KERBEROS_KDC_UNREACHABLE,
 	E2K_KERBEROS_TIME_SKEW,
 
-	E2K_KERBEROS_FAILED,
+	E2K_KERBEROS_FAILED
 } E2kKerberosResult;
 
 E2kKerberosResult e2k_kerberos_check_password  (const char *user,

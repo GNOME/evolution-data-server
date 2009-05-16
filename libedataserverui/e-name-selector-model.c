@@ -58,7 +58,7 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (ENameSelectorModel, e_name_selector_model, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ENameSelectorModel, e_name_selector_model, G_TYPE_OBJECT)
 
 static void
 e_name_selector_model_init (ENameSelectorModel *name_selector_model)

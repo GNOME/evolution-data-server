@@ -702,7 +702,7 @@ e_data_cal_init (EDataCal *cal, EDataCalClass *klass)
 						    (GDestroyNotify) bonobo_object_unref);
 }
 
-BONOBO_TYPE_FUNC_FULL (EDataCal, GNOME_Evolution_Calendar_Cal, PARENT_TYPE, e_data_cal);
+BONOBO_TYPE_FUNC_FULL (EDataCal, GNOME_Evolution_Calendar_Cal, PARENT_TYPE, e_data_cal)
 
 /**
  * e_data_cal_notify_read_only:

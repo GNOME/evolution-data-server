@@ -636,8 +636,6 @@ parse (EVCard *evc, const char *str)
 
 	buf = make_valid_utf8 (str);
 
-	//buf = fold_lines (buf);
-
 	d(printf ("BEFORE FOLDING:\n"));
 	d(printf (str));
 	d(printf ("\n\nAFTER FOLDING:\n"));

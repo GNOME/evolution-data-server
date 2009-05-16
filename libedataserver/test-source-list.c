@@ -125,7 +125,8 @@ dump_group (ESourceGroup *group)
 
 		if (e_source_peek_group (source) != group)
 			g_warning ("\t\t** ERROR ** parent pointer is %p, should be %p",
-				   e_source_peek_group (source), group);
+				   (gpointer) e_source_peek_group (source),
+				   (gpointer) group);
 	}
 }
 

@@ -89,8 +89,6 @@ e_cal_backend_file_events_class_init (ECalBackendFileEventsClass *klass)
 
 	object_class->dispose = e_cal_backend_file_events_dispose;
 	object_class->finalize = e_cal_backend_file_events_finalize;
-
-//	backend_class->get_uri = e_cal_backend_file_events_get_uri;
 }
 
 /* Object initialization function for the file backend */

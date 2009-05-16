@@ -374,7 +374,7 @@ typedef enum {
 	/* local changes */
 	E_CAL_COMPONENT_LOCALLY_CREATED,
 	E_CAL_COMPONENT_LOCALLY_DELETED,
-	E_CAL_COMPONENT_LOCALLY_MODIFIED,
+	E_CAL_COMPONENT_LOCALLY_MODIFIED
 
 } ECalComponentSyncState;
 
@@ -750,7 +750,6 @@ parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, int *len)
 		xpres = xpath_eval (xpctx,XPATH_STATUS , i + 1);
 		object->status = xp_object_get_status (xpres);
 
-		//dump_xp_object (xpres);
 		if (object->status && object->status != 200) {
 			continue;
 		}
@@ -3030,7 +3029,7 @@ caldav_internal_get_timezone (ECalBackend *backend,
 /* ************************************************************************* */
 /* ***************************** GObject Foo ******************************* */
 
-G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_BACKEND_SYNC);
+G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_BACKEND_SYNC)
 
 static void
 e_cal_backend_caldav_dispose (GObject *object)

@@ -200,7 +200,7 @@ camel_exception_xfer (CamelException *ex_dst,
 		      CamelException *ex_src)
 {
 	if (ex_src == NULL) {
-		w(g_warning ("camel_exception_xfer: trying to transfer NULL exception to %p\n", ex_dst));
+		w(g_warning ("camel_exception_xfer: trying to transfer NULL exception to %p\n", (gpointer) ex_dst));
 		return;
 	}
 

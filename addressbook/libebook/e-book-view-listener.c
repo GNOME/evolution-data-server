@@ -402,4 +402,4 @@ BONOBO_TYPE_FUNC_FULL (
 		       EBookViewListener,
 		       GNOME_Evolution_Addressbook_BookViewListener,
 		       BONOBO_TYPE_OBJECT,
-		       e_book_view_listener);
+		       e_book_view_listener)

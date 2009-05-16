@@ -1105,7 +1105,7 @@ lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 		maxAge = strtod (val, NULL);
 	}
 
-	//g_hash_table_insert (gc->priv->server_cache, g_strdup (dn), hostname); FIXME?
+	/*g_hash_table_insert (gc->priv->server_cache, g_strdup (dn), hostname); FIXME? */
 
 	E2K_GC_DEBUG_MSG(("GC:   maxPwdAge = %f\n", maxAge));
 

@@ -89,8 +89,6 @@ e_cal_backend_file_todos_class_init (ECalBackendFileTodosClass *klass)
 
 	object_class->dispose = e_cal_backend_file_todos_dispose;
 	object_class->finalize = e_cal_backend_file_todos_finalize;
-
-//	backend_class->get_uri = e_cal_backend_file_todos_get_uri;
 }
 
 /* Object initialization function for the file backend */

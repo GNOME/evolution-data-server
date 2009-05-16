@@ -204,7 +204,7 @@ camel_folder_summary_finalize (CamelObject *obj)
 	g_hash_table_destroy (p->flag_cache);
 	if (s->timeout_handle)
 		g_source_remove (s->timeout_handle);
-	//camel_folder_summary_clear(s);
+	/*camel_folder_summary_clear(s);*/
 	g_ptr_array_foreach (s->uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (s->uids, TRUE);
 	g_hash_table_destroy (s->loaded_infos);
@@ -800,7 +800,7 @@ cfs_count_dirty (CamelFolderSummary *s)
 static gboolean
 remove_item (char *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
 {
-	d(printf("%d(%d)\t", info->refcount, info->dirty)); //camel_message_info_dump (info);
+	d(printf("%d(%d)\t", info->refcount, info->dirty)); /* camel_message_info_dump (info); */
 	CAMEL_SUMMARY_LOCK(info->summary, ref_lock);
 	if (info->refcount == 1 && !info->dirty && !(info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 		CAMEL_SUMMARY_UNLOCK(info->summary, ref_lock);
@@ -834,7 +834,7 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
 	
-	dd(printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), s->loaded_infos));
+	dd(printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), (gpointer) s->loaded_infos));
 	/* FIXME[disk-summary] hack. fix it */
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
 	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, s);
@@ -1796,7 +1796,7 @@ camel_folder_summary_add (CamelFolderSummary *s, CamelMessageInfo *info)
 #endif
 
 	/* Summary always holds a ref for the loaded infos */
-	//camel_message_info_ref(info); //FIXME: Check how things are loaded.
+	/* camel_message_info_ref(info); FIXME: Check how things are loaded. */
 	/* FIXME[disk-summary] SHould we ref it or redesign it later on */
 	/* The uid array should have its own memory. We will unload the infos when not reqd.*/
 	g_ptr_array_add (s->uids, (gpointer) camel_pstring_strdup((camel_message_info_uid(info))));
@@ -1825,7 +1825,7 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 #endif
 
 	/* Summary always holds a ref for the loaded infos */
-	//camel_message_info_ref(info); //FIXME: Check how things are loaded.
+	/* camel_message_info_ref(info); FIXME: Check how things are loaded. */
 	/* FIXME[disk-summary] SHould we ref it or redesign it later on */
 	/* The uid array should have its own memory. We will unload the infos when not reqd.*/
 	if (!load)
@@ -1858,7 +1858,7 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
 	if (flags & CAMEL_MESSAGE_JUNK)
 		junk = 1;
 
-	dd(printf("%p: %d %d %d | %d %d %d \n", summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
+	dd(printf("%p: %d %d %d | %d %d %d \n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
 	info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 	info->dirty = TRUE;
 
@@ -1880,7 +1880,7 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
 		camel_folder_summary_touch(summary);
 	}
 
-	dd(printf("%p: %d %d %d | %d %d %d\n", summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
+	dd(printf("%p: %d %d %d | %d %d %d\n", (gpointer) summary, unread, deleted, junk, summary->unread_count, summary->visible_count, summary->saved_count));
 
 }
 
@@ -2389,7 +2389,7 @@ camel_folder_summary_remove_range (CamelFolderSummary *s, int start, int end)
 
 		int i;
 		CamelDB *cdb;
-		CamelException ex;// May be this should come from the caller 
+		CamelException ex; /* May be this should come from the caller  */
 		char *folder_name;
 		GSList *uids = NULL;
 

@@ -376,7 +376,7 @@ e_data_cal_factory_init (EDataCalFactory *factory, EDataCalFactoryClass *klass)
 BONOBO_TYPE_FUNC_FULL (EDataCalFactory,
 		       GNOME_Evolution_Calendar_CalFactory,
 		       PARENT_TYPE,
-		       e_data_cal_factory);
+		       e_data_cal_factory)
 
 /**
  * e_data_cal_factory_register_storage:
@@ -557,7 +557,7 @@ dump_backend (gpointer key, gpointer value, gpointer data)
 	uri = key;
 	backend = value;
 
-	g_message ("  %s: %p", uri, backend);
+	g_message ("  %s: %p", uri, (gpointer) backend);
 }
 
 /**

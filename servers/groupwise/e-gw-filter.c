@@ -198,7 +198,7 @@ e_gw_filter_append_to_soap_message (EGwFilter *filter, SoupSoapMessage *msg)
 		}
 		else
 			append_child_component (filter_component, msg);
-	soup_soap_message_end_element (msg); //end filter
+	soup_soap_message_end_element (msg); /* end filter */
 
 	}
 }

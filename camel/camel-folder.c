@@ -431,7 +431,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 					 * vfolders summary storage, does it
 					 * harm ? */
 					if (unread == -1) {
-						//unread = folder->summary->unread_count;
+						/*unread = folder->summary->unread_count;*/
 						/*
 						folder->summary->junk_count = junked;
 						folder->summary->deleted_count = deleted;
@@ -477,7 +477,7 @@ folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				}
 			}
 			*arg->ca_ptr = array;*/
-			// WTH this is reqd ?, let it crash to find out who uses this
+			/* WTH this is reqd ?, let it crash to find out who uses this */
 			g_assert (0);
 			break; }
 		case CAMEL_FOLDER_ARG_INFO_ARRAY:

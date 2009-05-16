@@ -177,7 +177,7 @@ dump_active_server_map_entry (gpointer key, gpointer value, gpointer data)
 	uri = key;
 	backend = E_BOOK_BACKEND (value);
 
-	g_message ("  %s: %p", uri, backend);
+	g_message ("  %s: %p", uri, (gpointer) backend);
 }
 
 /**
@@ -366,7 +366,7 @@ impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant    
 
 	g_object_unref (source);
 	if (book)
-		printf (" => %p\n", book);
+		printf (" => %p\n", (gpointer) book);
 	return corba_book;
 }
 
@@ -573,4 +573,4 @@ BONOBO_TYPE_FUNC_FULL (
 		       EDataBookFactory,
 		       GNOME_Evolution_Addressbook_BookFactory,
 		       BONOBO_TYPE_OBJECT,
-		       e_data_book_factory);
+		       e_data_book_factory)

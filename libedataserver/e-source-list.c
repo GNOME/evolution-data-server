@@ -228,7 +228,7 @@ conf_changed_callback (GConfClient *client,
 
 /* GObject methods.  */
 
-G_DEFINE_TYPE (ESourceList, e_source_list, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ESourceList, e_source_list, G_TYPE_OBJECT)
 
 static void
 impl_dispose (GObject *object)

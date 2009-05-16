@@ -71,7 +71,7 @@ source_changed_callback (ESource *source,
 
 /* GObject methods.  */
 
-G_DEFINE_TYPE (ESourceGroup, e_source_group, G_TYPE_OBJECT);
+G_DEFINE_TYPE (ESourceGroup, e_source_group, G_TYPE_OBJECT)
 
 static void
 impl_dispose (GObject *object)

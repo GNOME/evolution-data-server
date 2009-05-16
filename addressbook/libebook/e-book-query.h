@@ -14,7 +14,7 @@ typedef enum {
   E_BOOK_QUERY_IS,
   E_BOOK_QUERY_CONTAINS,
   E_BOOK_QUERY_BEGINS_WITH,
-  E_BOOK_QUERY_ENDS_WITH,
+  E_BOOK_QUERY_ENDS_WITH
 
   /*
     Consider these "coming soon".

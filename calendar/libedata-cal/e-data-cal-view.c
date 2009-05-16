@@ -71,7 +71,7 @@ static BonoboObjectClass *parent_class;
 BONOBO_TYPE_FUNC_FULL (EDataCalView,
 		       GNOME_Evolution_Calendar_CalView,
 		       BONOBO_TYPE_OBJECT,
-		       e_data_cal_view);
+		       e_data_cal_view)
 
 /* Property IDs */
 enum props {

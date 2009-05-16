@@ -51,7 +51,7 @@ static gboolean
 idle_cb (gpointer data)
 {
 	add_account ("/apps/evolution/addressbook/sources", arg_hostname, arg_username, arg_password);
-//	add_account ("/apps/evolution/tasks/sources", arg_hostname, arg_username, arg_password);
+/*	add_account ("/apps/evolution/tasks/sources", arg_hostname, arg_username, arg_password); */
 
 	g_main_loop_quit (main_loop);
 

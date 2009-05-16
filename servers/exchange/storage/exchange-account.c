@@ -951,7 +951,7 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 
 	password = e_passwords_get_password ("Exchange", account->priv->password_key);
 #if 0
-	// SURF : if (exchange_component_is_interactive (global_exchange_component)) {
+	if (exchange_component_is_interactive (global_exchange_component)) {
 		gboolean remember, oldremember;
 		if (!password) {
 			char *prompt;

@@ -240,7 +240,7 @@ e_folder_type_registry_set_handler_for_type  (EFolderTypeRegistry *folder_type_r
 					      GObject *handler)
 {
 	g_return_val_if_fail (E_IS_FOLDER_TYPE_REGISTRY (folder_type_registry), FALSE);
-	//g_return_val_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (handler), FALSE);
+	/* g_return_val_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (handler), FALSE); */
 
 	return set_handler (folder_type_registry, type_name, handler);
 }

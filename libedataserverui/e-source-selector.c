@@ -1625,7 +1625,8 @@ e_source_selector_set_primary_selection (ESourceSelector *selector, ESource *sou
 		gtk_tree_path_free (path);
 	} else {
 		g_warning (G_STRLOC ": Cannot find source %p (%s) in selector %p",
-			   source, e_source_peek_name (source), selector);
+			   (gpointer) source, e_source_peek_name (source),
+			   (gpointer) selector);
 	}
 }
 

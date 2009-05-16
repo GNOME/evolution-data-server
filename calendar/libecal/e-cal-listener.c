@@ -975,7 +975,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 BONOBO_TYPE_FUNC_FULL (ECalListener,
 		       GNOME_Evolution_Calendar_CalListener,
 		       BONOBO_TYPE_OBJECT,
-		       e_cal_listener);
+		       e_cal_listener)
 
 /**
  * e_cal_listener_construct:

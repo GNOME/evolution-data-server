@@ -20,7 +20,7 @@ enum {
 
 static guint e_iterator_signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (EIterator, e_iterator, G_TYPE_OBJECT);
+G_DEFINE_TYPE (EIterator, e_iterator, G_TYPE_OBJECT)
 
 static void
 e_iterator_class_init (EIteratorClass *klass)

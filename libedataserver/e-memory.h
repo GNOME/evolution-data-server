@@ -45,7 +45,7 @@ typedef enum {
 	E_MEMPOOL_ALIGN_STRUCT = 0,	/* allocate to native structure alignment */
 	E_MEMPOOL_ALIGN_WORD = 1,	/* allocate to words - 16 bit alignment */
 	E_MEMPOOL_ALIGN_BYTE = 2,	/* allocate to bytes - 8 bit alignment */
-	E_MEMPOOL_ALIGN_MASK = 3, /* which bits determine the alignment information */
+	E_MEMPOOL_ALIGN_MASK = 3	/* which bits determine the alignment information */
 } EMemPoolFlags;
 
 EMemPool *e_mempool_new(int blocksize, int threshold, EMemPoolFlags flags);

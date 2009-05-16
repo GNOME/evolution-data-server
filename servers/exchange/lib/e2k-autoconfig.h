@@ -24,7 +24,7 @@ typedef enum {
 typedef enum {
 	E2K_AUTOCONFIG_USE_BASIC,
 	E2K_AUTOCONFIG_USE_NTLM,
-	E2K_AUTOCONFIG_USE_EITHER,
+	E2K_AUTOCONFIG_USE_EITHER
 } E2kAutoconfigAuthPref;
 
 typedef struct {

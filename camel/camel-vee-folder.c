@@ -525,7 +525,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 				 CAMEL_FOLDER_JUNKED_NOT_DELETED, &junked_not_deleted,
 				 CAMEL_FOLDER_UNREAD, &unread, NULL);
 	if (1) { /* We always would do this. Just refactor the code again. */ 
-		//!(((CamelVeeSummary *) s)->force_counts) && !g_getenv("FORCE_VFOLDER_COUNT")) {
+		/*!(((CamelVeeSummary *) s)->force_counts) && !g_getenv("FORCE_VFOLDER_COUNT")) {*/
 		/* We should be in sync always. so use the count. Don't search.*/
 		record->junk_count = s->junk_count;
 		record->deleted_count = s->deleted_count;
@@ -2019,7 +2019,7 @@ vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 						guint32 flags;
 
 						vinfo = (CamelVeeMessageInfo *) info;
-						flags = vinfo->old_flags;// ? vinfo->old_flags : camel_message_info_flags(info);
+						flags = vinfo->old_flags; /* ? vinfo->old_flags : camel_message_info_flags(info); */
 
 						if ((flags & (CAMEL_MESSAGE_SEEN)) == 0)
 							unread++;

@@ -5,7 +5,7 @@
 #define __EXCHANGE_HIERARCHY_WEBDAV_H__
 
 #include "exchange-hierarchy.h"
-//#include "exchange-folder-size.h"
+/* #include "exchange-folder-size.h" */
 
 #ifdef __cplusplus
 extern "C" {

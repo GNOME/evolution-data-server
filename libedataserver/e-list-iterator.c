@@ -30,7 +30,7 @@ static void        e_list_iterator_last       (EIterator *iterator);
 static const void *e_list_iterator_get        (EIterator *iterator);
 static void        e_list_iterator_dispose    (GObject *object);
 
-G_DEFINE_TYPE(EListIterator, e_list_iterator, E_TYPE_ITERATOR);
+G_DEFINE_TYPE(EListIterator, e_list_iterator, E_TYPE_ITERATOR)
 
 static void
 e_list_iterator_class_init (EListIteratorClass *klass)
