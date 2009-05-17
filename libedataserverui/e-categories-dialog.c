@@ -22,8 +22,9 @@
 #endif
 
 #include <string.h>
-#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
+#include <glib/gi18n-lib.h>
 #include <glade/glade-xml.h>
 #include "libedataserver/e-categories.h"
 #include "libedataserver/libedataserver-private.h"
@@ -43,6 +44,8 @@ struct _ECategoriesDialogPrivate {
 	GtkWidget *delete_button;
 
 	GHashTable *selected_categories;
+
+	guint ignore_category_changes : 1;
 };
 
 enum {
@@ -205,6 +208,11 @@ static void
 categories_dialog_listener_cb (gpointer useless_pointer,
                                ECategoriesDialog *dialog)
 {
+	/* Don't rebuild the model if we're in
+	 * the middle of changing it ourselves. */
+	if (dialog->priv->ignore_category_changes)
+		return;
+
 	categories_dialog_build_model (dialog);
 }
 
@@ -347,26 +355,28 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	ECategoriesDialog *dialog;
 	ECategoriesDialogPrivate *priv;
 	CategoryPropertiesDialog *prop_dialog;
+	GtkTreeSelection *selection;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
+	GtkTreeView *tree_view;
+	GList *selected;
 	char *category_name;
 	const char *icon_file;
 
 	dialog = user_data;
 	priv = dialog->priv;
 
-	/* get the currently selected item */
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
-
-	if (!gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->categories_list)),
-					      NULL, &iter))
-		return;
+	tree_view = GTK_TREE_VIEW (dialog->priv->categories_list);
+	selection = gtk_tree_view_get_selection (tree_view);
+	selected = gtk_tree_selection_get_selected_rows (selection, &model);
+	g_return_if_fail (g_list_length (selected) == 1);
 
 	/* load the properties dialog */
 	prop_dialog = load_properties_dialog (dialog);
 	if (!prop_dialog)
 		return;
 
+	gtk_tree_model_get_iter (model, &iter, selected->data);
 	gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &category_name, -1);
 	gtk_entry_set_text (GTK_ENTRY (prop_dialog->category_name), category_name);
 	gtk_widget_set_sensitive (prop_dialog->category_name, FALSE);
@@ -396,29 +406,93 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 
 	g_free (category_name);
 	free_properties_dialog (prop_dialog);
+
+	g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected);
 }
 
 static void
-delete_button_clicked_cb (GtkButton *button, gpointer user_data)
+categories_dialog_delete_cb (ECategoriesDialog *dialog)
 {
-	ECategoriesDialog *dialog;
-	ECategoriesDialogPrivate *priv;
-	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
 	GtkTreeModel *model;
-	char *category_name;
+	GList *selected, *item;
 
-	dialog = user_data;
-	priv = dialog->priv;
+	tree_view = GTK_TREE_VIEW (dialog->priv->categories_list);
+	selection = gtk_tree_view_get_selection (tree_view);
+	selected = gtk_tree_selection_get_selected_rows (selection, &model);
 
-	/* get the currently selected item */
-	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
+	/* Remove categories in reverse order to avoid invalidating
+	 * tree paths as we iterate over the list.  Note, the list is
+	 * probably already sorted but we sort again just to be safe. */
+	selected = g_list_reverse (g_list_sort (
+		selected, (GCompareFunc) gtk_tree_path_compare));
 
-	if (!gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->categories_list)),
-					      NULL, &iter))
-		return;
+	/* Prevent the model from being rebuilt every time we
+	 * remove a category, since we're already modifying it. */
+	dialog->priv->ignore_category_changes = TRUE;
 
-	gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &category_name, -1);
-	e_categories_remove (category_name);
+	for (item = selected; item != NULL; item = item->next) {
+		GtkTreePath *path = item->data;
+		GtkTreeIter iter;
+		gchar *category;
+		gint column_id;
+
+		column_id = COLUMN_CATEGORY;
+		gtk_tree_model_get_iter (model, &iter, path);
+		gtk_tree_model_get (model, &iter, column_id, &category, -1);
+		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+		e_categories_remove (category);
+		g_free (category);
+	}
+
+	dialog->priv->ignore_category_changes = FALSE;
+
+	/* If we only removed one category, try to select another. */
+	if (g_list_length (selected) == 1) {
+		GtkTreePath *path = selected->data;
+
+		gtk_tree_selection_select_path (selection, path);
+		if (!gtk_tree_selection_path_is_selected (selection, path))
+			if (gtk_tree_path_prev (path))
+				gtk_tree_selection_select_path (selection, path);
+	}
+
+	g_list_foreach (selected, (GFunc) gtk_tree_path_free, NULL);
+	g_list_free (selected);
+}
+
+static void
+categories_dialog_selection_changed_cb (ECategoriesDialog *dialog,
+                                        GtkTreeSelection *selection)
+{
+	GtkWidget *widget;
+	gint n_rows;
+
+	n_rows = gtk_tree_selection_count_selected_rows (selection);
+
+	widget = dialog->priv->edit_button;
+	gtk_widget_set_sensitive (widget, n_rows == 1);
+
+	widget = dialog->priv->delete_button;
+	gtk_widget_set_sensitive (widget, n_rows >= 1);
+}
+
+static gboolean
+categories_dialog_key_press_event (ECategoriesDialog *dialog,
+                                   GdkEventKey *event)
+{
+	GtkButton *button;
+
+	button = GTK_BUTTON (dialog->priv->delete_button);
+
+	if (event->keyval == GDK_Delete) {
+		gtk_button_clicked (button);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void
@@ -474,6 +548,8 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
 	GtkTreeViewColumn *column;
+	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
 	GtkWidget *main_widget;
 	GtkWidget *content_area;
 	char *gladefile;
@@ -501,6 +577,18 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	dialog->priv->categories_entry = glade_xml_get_widget (dialog->priv->gui, "entry-categories");
 	dialog->priv->categories_list = glade_xml_get_widget (dialog->priv->gui, "categories-list");
 
+	tree_view = GTK_TREE_VIEW (dialog->priv->categories_list);
+	selection = gtk_tree_view_get_selection (tree_view);
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
+
+	g_signal_connect_swapped (
+		selection, "changed",
+		G_CALLBACK (categories_dialog_selection_changed_cb), dialog);
+
+	g_signal_connect_swapped (
+		dialog->priv->categories_list, "key-press-event",
+		G_CALLBACK (categories_dialog_key_press_event), dialog);
+
 	completion = e_category_completion_new ();
 	gtk_entry_set_completion (GTK_ENTRY (dialog->priv->categories_entry), completion);
 	g_object_unref (completion);
@@ -510,7 +598,9 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	dialog->priv->edit_button = glade_xml_get_widget (dialog->priv->gui, "button-edit");
 	g_signal_connect (G_OBJECT (dialog->priv->edit_button), "clicked", G_CALLBACK (edit_button_clicked_cb), dialog);
 	dialog->priv->delete_button = glade_xml_get_widget (dialog->priv->gui, "button-delete");
-	g_signal_connect (G_OBJECT (dialog->priv->delete_button), "clicked", G_CALLBACK (delete_button_clicked_cb), dialog);
+	g_signal_connect_swapped (
+		G_OBJECT (dialog->priv->delete_button), "clicked",
+		G_CALLBACK (categories_dialog_delete_cb), dialog);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
@@ -576,13 +666,13 @@ e_categories_dialog_get_type (void)
  * Returns: a new #ECategoriesDialog
  **/
 GtkWidget *
-e_categories_dialog_new (const char *initial_category_list)
+e_categories_dialog_new (const char *categories)
 {
 	ECategoriesDialog *dialog;
 
 	dialog = E_CATEGORIES_DIALOG (g_object_new (E_TYPE_CATEGORIES_DIALOG, NULL));
-	if (initial_category_list)
-		e_categories_dialog_set_categories (dialog, initial_category_list);
+	if (categories)
+		e_categories_dialog_set_categories (dialog, categories);
 
 	g_signal_connect (G_OBJECT (dialog->priv->categories_entry), "changed",
 			  G_CALLBACK (entry_changed_cb), dialog);
