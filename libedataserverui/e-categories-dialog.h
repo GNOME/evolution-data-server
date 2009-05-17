@@ -17,22 +17,35 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __E_CATEGORIES_DIALOG__
-#define __E_CATEGORIES_DIALOG__
+#ifndef E_CATEGORIES_DIALOG_H
+#define E_CATEGORIES_DIALOG_H
 
 #include <gtk/gtk.h>
 
+/* Standard GObject macros */
+#define E_TYPE_CATEGORIES_DIALOG \
+	(e_categories_dialog_get_type ())
+#define E_CATEGORIES_DIALOG(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialog))
+#define E_CATEGORIES_DIALOG_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogClass))
+#define E_IS_CATEGORIES_DIALOG(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CATEGORIES_DIALOG))
+#define E_IS_CATEGORIES_DIALOG_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CATEGORIES_DIALOG))
+#define E_CATEGORIES_DIALOG_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_CATEGORIES_DIALOG            (e_categories_dialog_get_type ())
-#define E_CATEGORIES_DIALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialog))
-#define E_CATEGORIES_DIALOG_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogClass))
-#define E_IS_CATEGORIES_DIALOG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CATEGORIES_DIALOG))
-#define E_IS_CATEGORIES_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_CATEGORIES_DIALOG))
-
-typedef struct _ECategoriesDialog        ECategoriesDialog;
+typedef struct _ECategoriesDialog ECategoriesDialog;
+typedef struct _ECategoriesDialogClass ECategoriesDialogClass;
 typedef struct _ECategoriesDialogPrivate ECategoriesDialogPrivate;
-typedef struct _ECategoriesDialogClass   ECategoriesDialogClass;
 
 struct _ECategoriesDialog {
 	GtkDialog parent;
@@ -43,12 +56,14 @@ struct _ECategoriesDialogClass {
 	GtkDialogClass parent_class;
 };
 
-GType       e_categories_dialog_get_type (void);
-
-GtkWidget  *e_categories_dialog_new (const char *initial_category_list);
-const char *e_categories_dialog_get_categories (ECategoriesDialog *dialog);
-void        e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categories);
+GType		e_categories_dialog_get_type	(void);
+GtkWidget *	e_categories_dialog_new		(const gchar *categories);
+const gchar *	e_categories_dialog_get_categories
+						(ECategoriesDialog *dialog);
+void		e_categories_dialog_set_categories
+						(ECategoriesDialog *dialog,
+						 const gchar *categories);
 
 G_END_DECLS
 
-#endif
+#endif /* E_CATEGORIES_DIALOG_H */

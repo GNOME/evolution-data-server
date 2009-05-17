@@ -30,12 +30,9 @@
 #include "e-categories-dialog.h"
 #include "e-category-completion.h"
 
-enum {
-	COLUMN_ACTIVE,
-	COLUMN_ICON,
-	COLUMN_CATEGORY,
-	N_COLUMNS
-};
+#define E_CATEGORIES_DIALOG_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate))
 
 struct _ECategoriesDialogPrivate {
 	GladeXML *gui;
@@ -48,7 +45,14 @@ struct _ECategoriesDialogPrivate {
 	GHashTable *selected_categories;
 };
 
-static GObjectClass *parent_class = NULL;
+enum {
+	COLUMN_ACTIVE,
+	COLUMN_ICON,
+	COLUMN_CATEGORY,
+	N_COLUMNS
+};
+
+static gpointer parent_class;
 
 /* Category properties dialog */
 
@@ -140,10 +144,6 @@ free_properties_dialog (CategoryPropertiesDialog *prop_dialog)
 	g_free (prop_dialog);
 }
 
-/* GObject methods */
-
-G_DEFINE_TYPE (ECategoriesDialog, e_categories_dialog, GTK_TYPE_DIALOG)
-
 static void
 categories_dialog_build_model (ECategoriesDialog *dialog)
 {
@@ -206,49 +206,6 @@ categories_dialog_listener_cb (gpointer useless_pointer,
                                ECategoriesDialog *dialog)
 {
 	categories_dialog_build_model (dialog);
-}
-
-static void
-e_categories_dialog_dispose (GObject *object)
-{
-	ECategoriesDialogPrivate *priv = E_CATEGORIES_DIALOG (object)->priv;
-
-	if (priv->gui) {
-		g_object_unref (priv->gui);
-		priv->gui = NULL;
-	}
-
-	if (priv->selected_categories) {
-		g_hash_table_destroy (priv->selected_categories);
-		priv->selected_categories = NULL;
-	}
-
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
-}
-
-static void
-e_categories_dialog_finalize (GObject *object)
-{
-	ECategoriesDialogPrivate *priv = E_CATEGORIES_DIALOG (object)->priv;
-
-	e_categories_unregister_change_listener (
-		G_CALLBACK (categories_dialog_listener_cb), object);
-
-	g_free (priv);
-	E_CATEGORIES_DIALOG (object)->priv = NULL;
-
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
-}
-
-static void
-e_categories_dialog_class_init (ECategoriesDialogClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	object_class->dispose = e_categories_dialog_dispose;
-	object_class->finalize = e_categories_dialog_finalize;
-
-	parent_class = g_type_class_peek_parent (klass);
 }
 
 static void
@@ -465,9 +422,55 @@ delete_button_clicked_cb (GtkButton *button, gpointer user_data)
 }
 
 static void
-e_categories_dialog_init (ECategoriesDialog *dialog)
+categories_dialog_dispose (GObject *object)
 {
 	ECategoriesDialogPrivate *priv;
+
+	priv = E_CATEGORIES_DIALOG_GET_PRIVATE (object);
+
+	if (priv->gui != NULL) {
+		g_object_unref (priv->gui);
+		priv->gui = NULL;
+	}
+
+	g_hash_table_remove_all (priv->selected_categories);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+static void
+categories_dialog_finalize (GObject *object)
+{
+	ECategoriesDialogPrivate *priv;
+
+	priv = E_CATEGORIES_DIALOG_GET_PRIVATE (object);
+
+	e_categories_unregister_change_listener (
+		G_CALLBACK (categories_dialog_listener_cb), object);
+
+	g_hash_table_destroy (priv->selected_categories);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+categories_dialog_class_init (ECategoriesDialogClass *class)
+{
+	GObjectClass *object_class;
+
+	parent_class = g_type_class_peek_parent (class);
+	g_type_class_add_private (class, sizeof (ECategoriesDialogPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = categories_dialog_dispose;
+	object_class->finalize = categories_dialog_finalize;
+}
+
+static void
+categories_dialog_init (ECategoriesDialog *dialog)
+{
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
 	GtkTreeViewColumn *column;
@@ -475,40 +478,39 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkWidget *content_area;
 	char *gladefile;
 
-	priv = g_new0 (ECategoriesDialogPrivate, 1);
-	priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	dialog->priv = priv;
+	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
+	dialog->priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	/* load the UI from our Glade file */
 	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
 				      "e-categories-dialog.glade",
 				      NULL);
-	priv->gui = glade_xml_new (gladefile, "table-categories", GETTEXT_PACKAGE);
+	dialog->priv->gui = glade_xml_new (gladefile, "table-categories", GETTEXT_PACKAGE);
 	g_free (gladefile);
 
-	if (!priv->gui) {
+	if (!dialog->priv->gui) {
 		g_warning (G_STRLOC ": can't load e-categories-dialog.glade file");
 		return;
 	}
 
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
-	main_widget = glade_xml_get_widget (priv->gui, "table-categories");
+	main_widget = glade_xml_get_widget (dialog->priv->gui, "table-categories");
 	gtk_box_pack_start (GTK_BOX (content_area), main_widget, TRUE, TRUE, 0);
 
-	priv->categories_entry = glade_xml_get_widget (priv->gui, "entry-categories");
-	priv->categories_list = glade_xml_get_widget (priv->gui, "categories-list");
+	dialog->priv->categories_entry = glade_xml_get_widget (dialog->priv->gui, "entry-categories");
+	dialog->priv->categories_list = glade_xml_get_widget (dialog->priv->gui, "categories-list");
 
 	completion = e_category_completion_new ();
-	gtk_entry_set_completion (GTK_ENTRY (priv->categories_entry), completion);
+	gtk_entry_set_completion (GTK_ENTRY (dialog->priv->categories_entry), completion);
 	g_object_unref (completion);
 
-	priv->new_button = glade_xml_get_widget (priv->gui, "button-new");
-	g_signal_connect (G_OBJECT (priv->new_button), "clicked", G_CALLBACK (new_button_clicked_cb), dialog);
-	priv->edit_button = glade_xml_get_widget (priv->gui, "button-edit");
-	g_signal_connect (G_OBJECT (priv->edit_button), "clicked", G_CALLBACK (edit_button_clicked_cb), dialog);
-	priv->delete_button = glade_xml_get_widget (priv->gui, "button-delete");
-	g_signal_connect (G_OBJECT (priv->delete_button), "clicked", G_CALLBACK (delete_button_clicked_cb), dialog);
+	dialog->priv->new_button = glade_xml_get_widget (dialog->priv->gui, "button-new");
+	g_signal_connect (G_OBJECT (dialog->priv->new_button), "clicked", G_CALLBACK (new_button_clicked_cb), dialog);
+	dialog->priv->edit_button = glade_xml_get_widget (dialog->priv->gui, "button-edit");
+	g_signal_connect (G_OBJECT (dialog->priv->edit_button), "clicked", G_CALLBACK (edit_button_clicked_cb), dialog);
+	dialog->priv->delete_button = glade_xml_get_widget (dialog->priv->gui, "button-delete");
+	g_signal_connect (G_OBJECT (dialog->priv->delete_button), "clicked", G_CALLBACK (delete_button_clicked_cb), dialog);
 
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
@@ -520,17 +522,17 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	g_signal_connect (G_OBJECT (renderer), "toggled", G_CALLBACK (category_toggled_cb), dialog);
 	column = gtk_tree_view_column_new_with_attributes ("?", renderer,
 							   "active", COLUMN_ACTIVE, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (dialog->priv->categories_list), column);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	column = gtk_tree_view_column_new_with_attributes (_("Icon"), renderer,
 							   "pixbuf", COLUMN_ICON, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (dialog->priv->categories_list), column);
 
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes (_("Category"), renderer,
 							   "text", COLUMN_CATEGORY, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (priv->categories_list), column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (dialog->priv->categories_list), column);
 
 	categories_dialog_build_model (dialog);
 
@@ -538,13 +540,40 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 		G_CALLBACK (categories_dialog_listener_cb), dialog);
 }
 
+GType
+e_categories_dialog_get_type (void)
+{
+	static GType type = 0;
+
+	if (G_UNLIKELY (type == 0)) {
+		static const GTypeInfo type_info = {
+			sizeof (ECategoriesDialogClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) categories_dialog_class_init,
+			(GClassFinalizeFunc) NULL,
+			NULL,  /* class_data */
+			sizeof (ECategoriesDialog),
+			0,     /* n_preallocs */
+			(GInstanceInitFunc) categories_dialog_init,
+			NULL   /* value_table */
+		};
+
+		type = g_type_register_static (
+			GTK_TYPE_DIALOG, "ECategoriesDialog", &type_info, 0);
+	}
+
+	return type;
+}
+
 /**
  * e_categories_dialog_new:
- * @initial_category_list: Comma-separated list of initial categories.
+ * @categories: Comma-separated list of categories
  *
- * Creates a new #ECategoriesDialog widget.
+ * Creates a new #ECategoriesDialog widget and sets the initial selection
+ * to @categories.
  *
- * Return value: A pointer to the newly created #ECategoriesDialog widget.
+ * Returns: a new #ECategoriesDialog
  **/
 GtkWidget *
 e_categories_dialog_new (const char *initial_category_list)
@@ -563,33 +592,35 @@ e_categories_dialog_new (const char *initial_category_list)
 
 /**
  * e_categories_dialog_get_categories:
- * @dialog: An #ECategoriesDialog widget.
+ * @dialog: An #ECategoriesDialog
  *
- * Gets a comma-separated list of the categories currently selected on the dialog.
+ * Gets a comma-separated list of the categories currently selected
+ * in the dialog.
  *
- * Return value: comma-separated list of categories.
+ * Returns: a comma-separated list of categories
  **/
-const char *
+const gchar *
 e_categories_dialog_get_categories (ECategoriesDialog *dialog)
 {
-	ECategoriesDialogPrivate *priv;
+	GtkEntry *entry;
 
 	g_return_val_if_fail (E_IS_CATEGORIES_DIALOG (dialog), NULL);
 
-	priv = dialog->priv;
+	entry = GTK_ENTRY (dialog->priv->categories_entry);
 
-	return gtk_entry_get_text (GTK_ENTRY (priv->categories_entry));
+	return gtk_entry_get_text (entry);
 }
 
 /**
  * e_categories_dialog_set_categories:
- * @dialog: An #ECategoriesDialog widget.
- * @categories: Comma-separated list of categories.
+ * @dialog: An #ECategoriesDialog
+ * @categories: Comma-separated list of categories
  *
  * Sets the list of categories selected on the dialog.
  **/
 void
-e_categories_dialog_set_categories (ECategoriesDialog *dialog, const char *categories)
+e_categories_dialog_set_categories (ECategoriesDialog *dialog,
+                                    const gchar *categories)
 {
 	ECategoriesDialogPrivate *priv;
 	gchar **arr;
