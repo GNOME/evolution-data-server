@@ -27,7 +27,6 @@ m4_define([ORBit_minimum_version], [2.9.8])
 m4_define([libbonobo_minimum_version], [2.20.3])
 m4_define([gconf_minimum_version], [2.0.0])             # XXX Just a Guess
 m4_define([libglade_minimum_version], [2.0.0])          # XXX Just a Guess
-m4_define([libgnome_minimum_version], [2.0.0])          # XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])            # XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
@@ -239,7 +238,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
          libbonobo-2.0 >= libbonobo_minimum_version
          gconf-2.0 >= gconf_minimum_version
          libglade-2.0 >= libglade_minimum_version
-         libgnome-2.0 >= libgnome_minimum_version
          libxml-2.0 >= libxml_minimum_version
          libsoup-2.4 >= libsoup_minimum_version])
 
@@ -1487,11 +1485,6 @@ IDL_INCLUDES="-I"`pkg-config --variable=idldir libbonobo-2.0`" -I"`pkg-config --
 AC_MSG_RESULT($IDL_INCLUDES)
 AC_SUBST(IDL_INCLUDES)
 
-AC_MSG_CHECKING(for libgnomeui server directory)
-GNOMEUI_SERVERDIR="`$PKG_CONFIG --variable=libgnomeui_serverdir libgnomeui-2.0`"
-AC_MSG_RESULT($GNOMEUI_SERVERDIR)
-AC_DEFINE_UNQUOTED(GNOMEUI_SERVERDIR, "$GNOMEUI_SERVERDIR", [Path where we can find gnome_segv2])
-
 dnl Utility macro to set compiler flags for a specific lib.
 dnl  EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
 AC_DEFUN([EVO_SET_COMPILE_FLAGS], [
@@ -1555,7 +1548,7 @@ fi
 
 dnl --- factory flags
 
-E_FACTORY_DEPS="libgnome-2.0 $mozilla_nspr"
+E_FACTORY_DEPS="$mozilla_nspr"
 if test "x${enable_calendar}" = "xyes"; then
    E_FACTORY_DEPS="$E_FACTORY_DEPS libical"
 fi

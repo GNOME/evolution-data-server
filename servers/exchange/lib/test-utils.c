@@ -26,7 +26,7 @@
 #include <unistd.h>
 
 #include <libedataserverui/e-passwords.h>
-#include <libgnome/gnome-util.h>
+#include <gtk/gtk.h>
 
 #include "e2k-context.h"
 #include "e2k-global-catalog.h"
@@ -246,8 +246,7 @@ idle_run (gpointer data)
 int
 main (int argc, char **argv)
 {
-	gnome_program_init (test_program_name, VERSION, LIBGNOME_MODULE,
-			    argc, argv, NULL);
+	gtk_init (&argc, &argv);
 
 	global_argc = argc;
 	global_argv = argv;

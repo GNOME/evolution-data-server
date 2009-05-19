@@ -35,7 +35,6 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <libgnome/gnome-init.h>
 #include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-exception.h>
@@ -82,61 +81,6 @@ static ServerInterfaceCheck *interface_check_iface;
 static guint termination_handler_id;
 
 static GStaticMutex termination_lock = G_STATIC_MUTEX_INIT;
-
-#ifndef G_OS_WIN32
-static pthread_mutex_t segv_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_t main_thread;
-
-static void
-gnome_segv_handler (int signo)
-{
-	const char *gnome_segv_path;
-	static int in_segv = 0;
-	char *exec;
-
-	if (pthread_self() != main_thread) {
-		/* deadlock intentionally in the sub-threads */
-		pthread_kill(main_thread, signo);
-		pthread_mutex_lock(&segv_mutex);
-	}
-
-	in_segv++;
-	if (in_segv > 2) {
-                /* The fprintf() was segfaulting, we are just totally hosed */
-                _exit (1);
-        } else if (in_segv > 1) {
-                /* dialog display isn't working out */
-                fprintf (stderr, _("Multiple segmentation faults occurred; cannot display error dialog\n"));
-                _exit (1);
-        }
-
-	gnome_segv_path = GNOMEUI_SERVERDIR "/gnome_segv2";
-
-	exec = g_strdup_printf ("%s \"" PACKAGE "-" BASE_VERSION "\" %d \"" VERSION "\"",
-				gnome_segv_path, signo);
-	system (exec);
-	g_free (exec);
-
-	_exit(1);
-}
-
-static void
-setup_segv_handler (void)
-{
-	struct sigaction sa;
-
-	sa.sa_flags = 0;
-	sigemptyset (&sa.sa_mask);
-	sa.sa_handler = gnome_segv_handler;
-	sigaction (SIGSEGV, &sa, NULL);
-	sigaction (SIGBUS, &sa, NULL);
-	sigaction (SIGFPE, &sa, NULL);
-
-	main_thread = pthread_self();
-	pthread_mutex_lock(&segv_mutex);
-}
-
-#endif
 
 /* Termination */
 
@@ -363,18 +307,11 @@ main (int argc, char **argv)
 	signal (SIGUSR2, dump_backends);
 #endif
 
-       	gnome_program_init (PACKAGE, VERSION,
-			    LIBGNOME_MODULE,
-			    argc, argv,
-			    GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
-
 	bonobo_init_full (&argc, argv,
 			  bonobo_activation_orb_get(),
 			  CORBA_OBJECT_NIL,
 			  CORBA_OBJECT_NIL);
-#ifndef G_OS_WIN32
-	setup_segv_handler ();
-#endif
+
 	e_data_server_module_init ();
 
 	if (!( (did_books = setup_books ())
