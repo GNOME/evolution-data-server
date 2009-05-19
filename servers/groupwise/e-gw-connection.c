@@ -803,6 +803,8 @@ e_gw_connection_get_container_id (EGwConnection *cnc, const char *name)
 	g_return_val_if_fail (name != NULL, NULL);
 
         status = e_gw_connection_get_container_list (cnc, "folders", &container_list);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+        	status = e_gw_connection_get_container_list (cnc, "folders", &container_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		e_gw_connection_free_container_list (container_list);
                 return NULL;

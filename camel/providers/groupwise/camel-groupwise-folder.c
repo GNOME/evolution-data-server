@@ -286,6 +286,10 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 			status = e_gw_connection_get_attachment (cnc, 
 					e_gw_item_get_msg_body_id (item), 0, -1, 
 					(const char **)&temp_body, &len);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_get_attachment (cnc, 
+					e_gw_item_get_msg_body_id (item), 0, -1, 
+					(const char **)&temp_body, &len);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_warning ("Could not get Messagebody\n");
 			}
@@ -558,6 +562,7 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
+	EGwConnectionStatus status;
 
 	if (!(from = g_strdup (camel_message_info_from (info))))
 		goto error;
@@ -574,12 +579,19 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
 	if (!email || !email[index])
 		goto error;
 
-	if (flag == ADD_JUNK_ENTRY)
-		e_gw_connection_create_junk_entry (cnc, email[index], "email", "junk");
-	else if (flag == REMOVE_JUNK_ENTRY) {
+	if (flag == ADD_JUNK_ENTRY) {
+		status = e_gw_connection_create_junk_entry (cnc, email[index], "email", "junk");
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_create_junk_entry (cnc, email[index], "email", "junk");
+		
+	} else if (flag == REMOVE_JUNK_ENTRY) {
 		GList *list = NULL;
 		EGwJunkEntry *entry;
-		if (e_gw_connection_get_junk_entries (cnc, &list)== E_GW_CONNECTION_STATUS_OK){
+		status = e_gw_connection_get_junk_entries (cnc, &list);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_get_junk_entries (cnc, &list);
+
+		if (status == E_GW_CONNECTION_STATUS_OK){
 			while (list) {
 				entry = list->data;
 				if (!g_ascii_strcasecmp (entry->match, email[index])) { 
@@ -1005,6 +1017,8 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	camel_operation_start (NULL, _("Checking for deleted messages %s"), m->folder->name);
 
 	status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning ("ERROR update update\n");
 		goto end1;
@@ -1226,6 +1240,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"peek id",
 				&t_str, "New", NULL, source, -1, &slist);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_get_quick_messages (cnc, container_id,
+					"peek id",
+					&t_str, "New", NULL, source, -1, &slist);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end2;
@@ -1263,7 +1281,10 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"peek id",
 				&t_str, "Modified", NULL, source, -1, &slist);
-
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_get_quick_messages (cnc, container_id,
+					"peek id",
+					&t_str, "Modified", NULL, source, -1, &slist);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end3;

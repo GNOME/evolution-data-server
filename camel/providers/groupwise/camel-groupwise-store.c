@@ -624,6 +624,12 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 				CREATE_CURSOR_VIEW,
 				NULL,
 				&cursor);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_create_cursor (priv->cnc, container_id, 
+				CREATE_CURSOR_VIEW,
+				NULL,
+				&cursor);
+
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 			g_free (container_id);
@@ -745,6 +751,11 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	if(!summary_count || !summary->time_string) {
 			d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
 
+					status = e_gw_connection_create_cursor (priv->cnc, container_id, 
+									CREATE_CURSOR_VIEW,
+									NULL,
+									&cursor);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 					status = e_gw_connection_create_cursor (priv->cnc, container_id, 
 									CREATE_CURSOR_VIEW,
 									NULL,
@@ -946,6 +957,8 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 	}
 
 	status = e_gw_connection_get_container_list (priv->cnc, "folders", &folder_list);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_container_list (priv->cnc, "folders", &folder_list);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning ("Could not get folder list..\n");
 		return;
@@ -1222,6 +1235,8 @@ create_junk_folder (CamelStore *store)
 		
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	status = e_gw_connection_modify_junk_settings (priv->cnc, JUNK_ENABLE, 0, 0,  JUNK_PERSISTENCE);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_modify_junk_settings (priv->cnc, JUNK_ENABLE, 0, 0,  JUNK_PERSISTENCE);
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		root = groupwise_build_folder_info(groupwise_store, parent_name, folder_name);
 		camel_store_summary_save((CamelStoreSummary *)groupwise_store->summary);
@@ -1281,6 +1296,8 @@ groupwise_create_folder(CamelStore *store,
 	}
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 	status = e_gw_connection_create_folder(priv->cnc,parent_id,folder_name, &child_container_id);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_create_folder(priv->cnc,parent_id,folder_name, &child_container_id);
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		root = groupwise_build_folder_info(groupwise_store, parent_name,folder_name);
 		camel_store_summary_save((CamelStoreSummary *)groupwise_store->summary);
@@ -1315,6 +1332,8 @@ groupwise_delete_folder(CamelStore *store,
 	container = g_hash_table_lookup (priv->name_hash, folder_name);
 
 	status = e_gw_connection_remove_item (priv->cnc, container, container);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_remove_item (priv->cnc, container, container);
 
 	if (status == E_GW_CONNECTION_STATUS_OK) {
 		groupwise_store_set_current_folder (groupwise_store, NULL);
