@@ -1,3 +1,23 @@
+Evolution-Data-Server 2.26.2 2009-05-18	
+----------------------------------------
+
+Bug fixes:
+	#581420 - On Solaris, the service name 'http' or 'https' is not defined (Jeff Cai)
+	#579360 - Problem with vfolders/hang with unmatched folders. (Srinivasa Ragavan)
+	#573170 - Add back support for vfolder of vfolders. (Srinivasa Ragavan)
+	#556116 - support for unmatched search folder (Srinivasa Ragavan)
+	#578823 – invalid condition (Sergio Villar Senin)
+	#578821 - More invalid conditions (Sergio Villar Senin)
+
+Updated Translations:
+	Milo Casagrande (it)
+	Christian Kirbach (de)
+
+Other fixes:
+	dolt has some link issues with library dependency (Marc-André Lureau)
+	Map WinLDAP to openLDAP api in win32 (Fridrich Strba)
+
+
 Evolution-Data-Server 2.26.0 2009-03-16	
 ----------------------------------------
 
