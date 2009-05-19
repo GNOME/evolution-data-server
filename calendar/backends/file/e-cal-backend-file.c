@@ -1231,6 +1231,11 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			icalcomponent *icalcomp;
 			struct icaltimetype itt;
 
+			if (!obj_data->full_object) {
+				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+				return GNOME_Evolution_Calendar_ObjectNotFound;
+			}
+
 			itt = icaltime_from_string (rid);
 			icalcomp = e_cal_util_construct_instance (
 				e_cal_component_get_icalcomponent (obj_data->full_object),
@@ -1250,9 +1255,12 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 
 			/* if we have detached recurrences, return a VCALENDAR */
 			icalcomp = e_cal_util_new_top_level ();
-			icalcomponent_add_component (
-				icalcomp,
-				icalcomponent_new_clone (e_cal_component_get_icalcomponent (obj_data->full_object)));
+
+			/* detached recurrences don't have full_object */
+			if (obj_data->full_object)
+				icalcomponent_add_component (
+					icalcomp,
+					icalcomponent_new_clone (e_cal_component_get_icalcomponent (obj_data->full_object)));
 
 			/* add all detached recurrences */
 			g_hash_table_foreach (obj_data->recurrences, (GHFunc) add_detached_recur_to_vcalendar, icalcomp);
@@ -1260,7 +1268,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 			*object = icalcomponent_as_ical_string_r (icalcomp);
 
 			icalcomponent_free (icalcomp);
-		} else
+		} else if (obj_data->full_object)
 			*object = e_cal_component_get_as_string (obj_data->full_object);
 	}
 
@@ -2069,16 +2077,19 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	switch (mod) {
 	case CALOBJ_MOD_THIS :
 		if (!rid || !*rid) {
-			if (old_object)
+			if (old_object && obj_data->full_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
 
 			/* replace only the full object */
-			icalcomponent_remove_component (priv->icalcomp,
+			if (obj_data->full_object) {
+				icalcomponent_remove_component (priv->icalcomp,
 							e_cal_component_get_icalcomponent (obj_data->full_object));
-			priv->comp = g_list_remove (priv->comp, obj_data->full_object);
+				priv->comp = g_list_remove (priv->comp, obj_data->full_object);
+
+				g_object_unref (obj_data->full_object);
+			}
 
 			/* add the new object */
-			g_object_unref (obj_data->full_object);
 			obj_data->full_object = comp;
 
 			icalcomponent_add_component (priv->icalcomp,
@@ -2120,7 +2131,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
 		if (!rid || !*rid) {
-			if (old_object)
+			if (old_object && obj_data->full_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
 
 			remove_component (cbfile, comp_uid, obj_data);
@@ -2133,9 +2144,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		}
 
 		/* remove the component from our data, temporarily */
-		icalcomponent_remove_component (priv->icalcomp,
+		if (obj_data->full_object) {
+			icalcomponent_remove_component (priv->icalcomp,
 						e_cal_component_get_icalcomponent (obj_data->full_object));
-		priv->comp = g_list_remove (priv->comp, obj_data->full_object);
+			priv->comp = g_list_remove (priv->comp, obj_data->full_object);
+		}
 
 		/* now deal with the detached recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
@@ -2150,7 +2163,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 			g_hash_table_remove (obj_data->recurrences, rid);
 		} else {
-			if (old_object)
+			if (old_object && obj_data->full_object)
 				*old_object = e_cal_component_get_as_string (obj_data->full_object);
 		}
 
@@ -2163,9 +2176,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		/* add the modified object to the beginning of the list,
 		   so that it's always before any detached instance we
 		   might have */
-		icalcomponent_add_component (priv->icalcomp,
+		if (obj_data->full_object) {
+			icalcomponent_add_component (priv->icalcomp,
 					     e_cal_component_get_icalcomponent (obj_data->full_object));
-		priv->comp = g_list_prepend (priv->comp, obj_data->full_object);
+			priv->comp = g_list_prepend (priv->comp, obj_data->full_object);
+		}
 
 		/* add the new detached recurrence */
 		g_hash_table_insert (obj_data->recurrences,
@@ -2179,7 +2194,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 		break;
 	case CALOBJ_MOD_ALL :
 		/* Remove the old version */
-		if (old_object)
+		if (old_object && obj_data->full_object)
 			*old_object = e_cal_component_get_as_string (obj_data->full_object);
 
 		if (obj_data->recurrences_list) {
@@ -2246,6 +2261,9 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 		g_hash_table_remove (obj_data->recurrences, rid);
 	}
 
+	if (!obj_data->full_object)
+		return;
+
 	/* remove the component from our data, temporarily */
 	icalcomponent_remove_component (cbfile->priv->icalcomp,
 					e_cal_component_get_icalcomponent (obj_data->full_object));
@@ -2267,6 +2285,9 @@ get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const char *
 {
 	ECalComponent *comp = obj_data->full_object;
 	char *real_rid;
+
+	if (!comp)
+		return NULL;
 
 	if (!rid) {
 		return e_cal_component_get_as_string (comp);
@@ -2345,15 +2366,17 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			return GNOME_Evolution_Calendar_ObjectNotFound;
 		}
 
-		*old_object = e_cal_component_get_as_string (comp);
+		if (comp) {
+			*old_object = e_cal_component_get_as_string (comp);
 
-		/* remove the component from our data, temporarily */
-		icalcomponent_remove_component (priv->icalcomp,
+			/* remove the component from our data, temporarily */
+			icalcomponent_remove_component (priv->icalcomp,
 						e_cal_component_get_icalcomponent (comp));
-		priv->comp = g_list_remove (priv->comp, comp);
+			priv->comp = g_list_remove (priv->comp, comp);
 
-		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (comp),
+			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (comp),
 					     icaltime_from_string (recur_id), mod);
+		}
 
 		/* now remove all detached instances */
 		rrdata.cbfile = cbfile;
@@ -2365,9 +2388,11 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		/* add the modified object to the beginning of the list,
 		   so that it's always before any detached instance we
 		   might have */
-		priv->comp = g_list_prepend (priv->comp, comp);
+		if (comp)
+			priv->comp = g_list_prepend (priv->comp, comp);
 
-		*object = e_cal_component_get_as_string (obj_data->full_object);
+		if (obj_data->full_object)
+			*object = e_cal_component_get_as_string (obj_data->full_object);
 		break;
 	}
 
@@ -2402,13 +2427,15 @@ cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp, char *
 		return FALSE;
 	}
 
-	*old_object = e_cal_component_get_as_string (obj_data->full_object);
+	if (obj_data->full_object)
+		*old_object = e_cal_component_get_as_string (obj_data->full_object);
 
 	/* new_object is kept NULL if not removing the instance */
 	rid = e_cal_component_get_recurid_as_string (comp);
 	if (rid && *rid) {
 		remove_instance (cbfile, obj_data, rid);
-		*new_object = e_cal_component_get_as_string (obj_data->full_object);
+		if (obj_data->full_object)
+			*new_object = e_cal_component_get_as_string (obj_data->full_object);
 	} else
 		remove_component (cbfile, icalcomponent_get_uid (icalcomp), obj_data);
 
@@ -2635,7 +2662,8 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 				fetch_attachments (backend, comp);
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
-				old_object = e_cal_component_get_as_string (obj_data->full_object);
+				if (obj_data->full_object)
+					old_object = e_cal_component_get_as_string (obj_data->full_object);
 				if (rid)
 					remove_instance (cbfile, obj_data, rid);
 				else
