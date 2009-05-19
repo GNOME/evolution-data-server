@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-05-07 10:33+0000\n"
-"PO-Revision-Date: 2009-05-08 20:17+0200\n"
+"POT-Creation-Date: 2009-05-19 15:45+0000\n"
+"PO-Revision-Date: 2009-05-19 20:34+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,13 +35,13 @@ msgstr "Cargando…"
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2344
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2389
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4323
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4322
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Buscando…"
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2759
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4487
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4486
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Descargando contactos (%d)…"
@@ -81,7 +81,7 @@ msgstr "Modificando contacto del servidor LDAP…"
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4345
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4344
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
@@ -366,7 +366,7 @@ msgstr "URL de weblog"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:517
+#: ../libedataserverui/e-categories-dialog.c:609
 msgid "Categories"
 msgstr "Categorías"
 
@@ -758,12 +758,12 @@ msgid "Could not create thread for populating cache"
 msgstr "No se pudo crear el hilo para la llenar la caché"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1089
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1897
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1967
 msgid "Reply Requested: by "
 msgstr "Respuesta solicitada: por"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1094
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1902
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1972
 msgid "Reply Requested: When convenient"
 msgstr "Respuesta solicitada: Cuando convenga"
 
@@ -786,11 +786,11 @@ msgstr "URI del servidor inválido"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
 #: ../calendar/libecal/e-cal.c:5113
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1150
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1182
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1220
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1212
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1248
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1289
 #: ../camel/providers/groupwise/camel-groupwise-store.c:604
-#: ../camel/providers/groupwise/camel-groupwise-store.c:768
+#: ../camel/providers/groupwise/camel-groupwise-store.c:779
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
@@ -1834,7 +1834,7 @@ msgstr "No se pudo cargar %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "No se pudo cargar %s: No hay código de inicialización en el módulo."
 
-#: ../camel/camel-provider.c:373 ../camel/camel-session.c:182
+#: ../camel/camel-provider.c:378 ../camel/camel-session.c:182
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "No hay proveedor disponible para el protocolo «%s»"
@@ -2650,44 +2650,50 @@ msgstr "No se puede obtener el mensaje %s: %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:172
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2283
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2353
 #: ../camel/providers/imap4/camel-imap4-folder.c:844
 msgid "This message is not available in offline mode."
 msgstr "Este mensaje no está disponible en modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:192
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1798
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1849
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:194
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:201
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1868
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1919
 msgid "Could not get message"
 msgstr "No se puede obtener el mensaje"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:886
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:942
 #: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "No se puede cargar la recopilación de %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1146
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1017
+#, c-format
+#| msgid "Checking for new messages"
+msgid "Checking for deleted messages %s"
+msgstr "Comprobando los mensajes borrados %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1208
 msgid "Trash Folder Full. Please Empty."
 msgstr "La papelera está llena. Por favor vacíela."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1354
-#: ../camel/providers/groupwise/camel-groupwise-store.c:633
-#: ../camel/providers/groupwise/camel-groupwise-store.c:758
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1424
+#: ../camel/providers/groupwise/camel-groupwise-store.c:639
+#: ../camel/providers/groupwise/camel-groupwise-store.c:769
 #: ../camel/providers/imap/camel-imap-folder.c:3371
 #: ../camel/providers/imap/camel-imap-folder.c:3447
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2137
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2180
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2207
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2250
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "No se pudo añadir el mensaje a la carpeta «%s»: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2168
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2238
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "No se pudo crear el mensaje: %s"
@@ -2804,29 +2810,29 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1256
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1271
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "No se pueden crear las carpetas GroupWise en modo desconectado."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1270
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1285
 #: ../camel/providers/imap/camel-imap-store.c:1924
 #: ../camel/providers/imap/camel-imap-store.c:2304
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "No está permitido que la carpeta raíz contenga subcarpetas"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1345
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1368
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1364
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1387
 #, c-format
 msgid "Cannot rename GroupWise folder '%s' to '%s'"
 msgstr "No se puede renombrar la carpeta Groupwise de «%s» a «%s»"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1400
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1419
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "Servidor GroupWise %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1402
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1421
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "Servicio GroupWise para %s en %s"
@@ -3615,7 +3621,6 @@ msgstr "~%s (%s)"
 #: ../camel/providers/local/camel-local-folder.c:396
 #: ../camel/providers/local/camel-local-folder.c:399
 #, c-format
-#| msgid "mailbox:%s (%s)"
 msgid "mailbox: %s (%s)"
 msgstr "buzón: %s: (%s)"
 
@@ -4963,7 +4968,7 @@ msgstr "Acceder a un servidor LDAP anónimamente"
 msgid "Failed to authenticate.\n"
 msgstr "Falló al autenticarme.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:362
+#: ../libedataserverui/e-categories-dialog.c:327
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4971,11 +4976,11 @@ msgid ""
 msgstr ""
 "Ya hay una categoría «%s» en la configuración. Por favor, use otro nombre"
 
-#: ../libedataserverui/e-categories-dialog.c:526
+#: ../libedataserverui/e-categories-dialog.c:618
 msgid "Icon"
 msgstr "Icono"
 
-#: ../libedataserverui/e-categories-dialog.c:531
+#: ../libedataserverui/e-categories-dialog.c:623
 msgid "Category"
 msgstr "Categoría"
 
@@ -5333,13 +5338,10 @@ msgstr "Servicio de comprobación del interfaz de Evolution Data Server"
 msgid "Evolution Data Server logging service"
 msgstr "Servicio de registro de Evolution Data Server"
 
-#. dialog display isn't working out
-#: ../src/server.c:109
-#, c-format
-msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-msgstr ""
-"Han ocurrido fallos de segmentación múltiples; no se puede mostrar el "
-"diálogo de error\n"
+#~ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
+#~ msgstr ""
+#~ "Han ocurrido fallos de segmentación múltiples; no se puede mostrar el "
+#~ "diálogo de error\n"
 
 #~ msgid "Decoder failed, error %d"
 #~ msgstr "El decodificador ha fallado, error %d"
