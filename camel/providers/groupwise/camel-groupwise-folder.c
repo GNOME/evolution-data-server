@@ -187,6 +187,8 @@ groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelExcepti
 	cnc = cnc_lookup (priv);
 	
 	status = e_gw_connection_get_item (cnc, container_id, uid, GET_ITEM_VIEW_WITH_CACHE, &item);
+	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+		status = e_gw_connection_get_item (cnc, container_id, uid, GET_ITEM_VIEW_WITH_CACHE, &item);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_free (container_id);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
@@ -650,6 +652,30 @@ groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 	camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 }
 
+static void
+sync_flags (CamelFolder *folder, GList *uids)
+{
+	GList *l;
+	CamelMessageInfo *info = NULL;
+	CamelGroupwiseMessageInfo *gw_info;
+
+	for (l = uids; l != NULL; l = g_list_next (l)) 
+	{
+		info = camel_folder_summary_uid (folder->summary, l->data);
+		gw_info = (CamelGroupwiseMessageInfo *) info;
+
+		if (!info)
+			continue;
+	
+		gw_info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+		gw_info->info.dirty = 1;
+		gw_info->server_flags = gw_info->info.flags;
+		camel_folder_summary_touch (folder->summary);
+
+		camel_message_info_free (info);
+	}
+}
+
 /* This may need to be reorganized. */
 static void
 groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
@@ -736,10 +762,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 			} else {
 				const char *uid;
 
-				gw_info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-				gw_info->info.dirty = 1;
-				camel_folder_summary_touch (folder->summary);
-				gw_info->server_flags = gw_info->info.flags;
 				uid = camel_message_info_uid (info);
 				if (diff.bits & CAMEL_MESSAGE_DELETED) {
 
@@ -771,12 +793,16 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 							and errors are not returned always either */
 
 							status = e_gw_connection_mark_read (cnc, deleted_read_items);
+							if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+								status = e_gw_connection_mark_read (cnc, deleted_read_items);
 							g_list_free (deleted_read_items);
 							deleted_read_items = NULL;
 						}
 
 						/* And now delete the messages */
 						status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+						if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+							status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 						CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
 							char *uid;
@@ -810,8 +836,12 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 		if (!strcmp (folder->full_name, "Trash")) {
 			status = e_gw_connection_purge_selected_items (cnc, deleted_items);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_purge_selected_items (cnc, deleted_items);
 		} else {
 			status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 		}
 		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -832,16 +862,30 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	if (read_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
-		e_gw_connection_mark_read (cnc, read_items);
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		status = e_gw_connection_mark_read (cnc, read_items);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_mark_read (cnc, read_items);
+		
+		if (status == E_GW_CONNECTION_STATUS_OK)
+			sync_flags (folder, read_items);
+
 		g_list_free (read_items);
+		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	}
+	
+
 
 	if (unread_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
-		e_gw_connection_mark_unread (cnc, unread_items);
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		status = e_gw_connection_mark_unread (cnc, unread_items);
+		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+			status = e_gw_connection_mark_unread (cnc, unread_items);
+		
+		if (status == E_GW_CONNECTION_STATUS_OK)
+			sync_flags (folder, unread_items);
+
 		g_list_free (unread_items);
+		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	}
 
 	if (expunge) {
@@ -958,6 +1002,8 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 		goto end1;
 	}
 
+	camel_operation_start (NULL, _("Checking for deleted messages %s"), m->folder->name);
+
 	status = e_gw_connection_create_cursor (m->cnc, m->container_id, "id", NULL, &cursor);
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		g_warning ("ERROR update update\n");
@@ -1024,10 +1070,12 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
 	gw_update_all_items (m->folder, items_full_list, ex);
+	camel_operation_end (NULL);
 
 	return;
  end1:
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	camel_operation_end (NULL);
 	if (items_full_list) {
 		g_list_foreach (items_full_list, (GFunc)g_free, NULL);
 		g_list_free (items_full_list);
@@ -1265,14 +1313,15 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 						folder->summary->unread_count = e_gw_container_get_unread_count (container);
 						folder->summary->visible_count = e_gw_container_get_total_count (container);
+
 				} else
 					check_all = FALSE;
 				g_object_unref (container);
 		}
 
-		if (list) {
+		if (list) 
 			gw_update_cache (folder, list, ex, FALSE);
-		}
+						
 	}
 
 
@@ -1938,7 +1987,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 			if ( (attach->item_reference) && (!g_ascii_strcasecmp (attach->item_reference, "1")) ) {
 				CamelMimeMessage *temp_msg = NULL;
-				status = e_gw_connection_get_item (cnc, container_id, attach->id, "default distribution recipient message attachments subject notification created recipientStatus status startDate", &temp_item);
+				status = e_gw_connection_get_item (cnc, container_id, attach->id, GET_ITEM_VIEW_WITH_CACHE, &temp_item);
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_warning ("Could not get attachment\n");
 					continue;
