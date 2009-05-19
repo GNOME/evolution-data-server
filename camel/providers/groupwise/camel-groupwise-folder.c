@@ -2374,6 +2374,12 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		count = camel_folder_summary_count (destination->summary);
 
 		info = camel_folder_summary_uid (source->summary, uids->pdata[index]);
+		if (!info) {
+			g_warning ("Could not find the message: its either deleted or moved already");
+			index++;
+			continue;
+		}
+
 		gw_info = (CamelGroupwiseMessageInfo *) info;
 		if (gw_info && (gw_info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			do_flags_diff (&diff, gw_info->server_flags, gw_info->info.flags);
