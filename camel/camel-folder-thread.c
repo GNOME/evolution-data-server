@@ -289,7 +289,7 @@ group_root_set(CamelFolderThread *thread, CamelFolderThreadNode **cp)
 				d(printf("container is not re\n"));
 				remove_node(cp, container, &clast);
 				container_add_child(c, container);
-			} else if (c->re && container->re) {
+			} else {
 				d(printf("subjects are common %p and %p\n", c, container));
 
 				/* build a phantom node */
