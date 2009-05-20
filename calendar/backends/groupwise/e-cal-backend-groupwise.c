@@ -420,6 +420,7 @@ get_deltas (gpointer handle)
 		EGwItem *item = NULL;
 		ECalComponent *modified_comp = NULL, *cache_comp = NULL;
 		char *cache_comp_str = NULL, *modif_comp_str, *rid = NULL;
+		icaltimetype *tt = NULL, *c_tt = NULL;
 		const char *uid;
 		int r_key;
 
@@ -435,20 +436,41 @@ get_deltas (gpointer handle)
 		e_cal_component_get_uid (modified_comp, &uid);
 		cache_comp = e_cal_backend_cache_get_component (cache, uid, rid);
 		e_cal_component_commit_sequence (modified_comp);
-		e_cal_component_commit_sequence (cache_comp);
 
-		cache_comp_str = e_cal_component_get_as_string (cache_comp);
-		modif_comp_str = e_cal_component_get_as_string (modified_comp);
-		e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, modif_comp_str);
-		g_free (modif_comp_str);
-		g_free (cache_comp_str);
-		g_free (rid);
-		cache_comp_str = NULL;
-		e_cal_backend_cache_put_component (cache, modified_comp);
+		e_cal_component_get_last_modified (modified_comp, &tt);
+		
+		if (cache_comp) {
+			e_cal_component_get_last_modified (cache_comp, &c_tt);
+			e_cal_component_commit_sequence (cache_comp);
+		}
 
+		if (!c_tt || icaltime_compare (*tt, *c_tt) == 1)
+		{
+			modif_comp_str = e_cal_component_get_as_string (modified_comp);
+			
+			if (cache_comp) {
+				cache_comp_str = e_cal_component_get_as_string (cache_comp);
+				e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, modif_comp_str);
+			} else {
+				e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), modif_comp_str);
+			}
+
+			g_free (modif_comp_str);
+			g_free (cache_comp_str);
+			g_free (rid);
+			cache_comp_str = NULL;
+			e_cal_backend_cache_put_component (cache, modified_comp);
+		}
+
+		e_cal_component_free_icaltimetype (tt);
+		
+		if (c_tt)
+			e_cal_component_free_icaltimetype (c_tt);
 		g_object_unref (item);
 		g_object_unref (modified_comp);
-		g_object_unref (cache_comp);
+		
+		if (cache_comp)
+			g_object_unref (cache_comp);
 	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 
@@ -1936,6 +1958,65 @@ sanitize_component (ECalBackendSync *backend, ECalComponent *comp, char *server_
 	g_string_free (str, TRUE);
 }
 
+static EGwConnectionStatus
+update_from_server (ECalBackendGroupwise *cbgw, GSList *uid_list, char **calobj, ECalComponent *comp)
+{
+	EGwConnectionStatus stat;
+	ECalBackendGroupwisePrivate *priv;
+	ECalBackendSync *backend;
+	GList *list = NULL, *tmp;
+	GSList *l;
+	GPtrArray *uid_array = g_ptr_array_new ();
+	int i;
+
+	priv = cbgw->priv;
+	backend = E_CAL_BACKEND_SYNC (cbgw);
+
+	for (l = uid_list; l; l = g_slist_next (l)) {
+		g_ptr_array_add (uid_array, l->data);
+	}
+
+	/* convert uid_list to GPtrArray and get the items in a list */
+	stat = e_gw_connection_get_items_from_ids (priv->cnc,
+			priv->container_id,
+			"attachments recipients message recipientStatus default peek",
+			uid_array, &list);
+
+	if (stat != E_GW_CONNECTION_STATUS_OK || (list == NULL) || (g_list_length (list) == 0)) {
+		g_ptr_array_free (uid_array, TRUE);
+		return GNOME_Evolution_Calendar_OtherError;
+	}
+
+	comp = g_object_ref ( (ECalComponent *) list->data );
+	/* convert items into components and add them to the cache */
+	for (i=0, tmp = list; tmp ; tmp = g_list_next (tmp), i++) {
+		ECalComponent *e_cal_comp;
+		EGwItem *item;
+
+		item = (EGwItem *) tmp->data;
+		e_cal_comp = e_gw_item_to_cal_component (item, cbgw);
+		e_cal_component_commit_sequence (e_cal_comp);
+		sanitize_component (backend, e_cal_comp, g_ptr_array_index (uid_array, i));
+		e_cal_backend_cache_put_component (priv->cache, e_cal_comp);
+
+		if (i == 0) {
+			*calobj = e_cal_component_get_as_string (e_cal_comp);
+		}
+
+		if (i != 0) {
+			char *temp;
+			temp = e_cal_component_get_as_string (e_cal_comp);
+			e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), temp);
+			g_free (temp);
+		}
+
+		g_object_unref (e_cal_comp);
+	}
+	g_ptr_array_free (uid_array, TRUE);
+
+	return E_GW_CONNECTION_STATUS_OK;
+}
+
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
 {
@@ -1944,9 +2025,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 	icalcomponent *icalcomp;
 	ECalComponent *comp;
 	EGwConnectionStatus status;
-	char *server_uid = NULL;
-	GSList *uid_list = NULL, *l;
-	int i;
+	GSList *uid_list = NULL;
 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
@@ -1998,59 +2077,11 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 			return GNOME_Evolution_Calendar_Success;
 		}
 
-		if (g_slist_length (uid_list) == 1) {
-			server_uid = (char *) uid_list->data;
-			sanitize_component (backend, comp, server_uid);
-			g_free (server_uid);
-			/* if successful, update the cache */
-			e_cal_backend_cache_put_component (priv->cache, comp);
-			*calobj = e_cal_component_get_as_string (comp);
-		} else {
-			EGwConnectionStatus stat;
-			GList *list = NULL, *tmp;
-			GPtrArray *uid_array = g_ptr_array_new ();
-			for (l = uid_list; l; l = g_slist_next (l)) {
-				g_ptr_array_add (uid_array, l->data);
-			}
+		/* Get the item back from server to update the last-modified time */
+		status = update_from_server (cbgw, uid_list, calobj, comp);
+		if (status != E_GW_CONNECTION_STATUS_OK)
+			return GNOME_Evolution_Calendar_OtherError;
 
-			/* convert uid_list to GPtrArray and get the items in a list */
-			stat = e_gw_connection_get_items_from_ids (priv->cnc,
-					priv->container_id,
-					"attachments recipients message recipientStatus default peek",
-					uid_array, &list);
-
-			if (stat != E_GW_CONNECTION_STATUS_OK || (list == NULL) || (g_list_length (list) == 0)) {
-				g_ptr_array_free (uid_array, TRUE);
-				return GNOME_Evolution_Calendar_OtherError;
-			}
-
-			comp = g_object_ref ( (ECalComponent *) list->data );
-			/* convert items into components and add them to the cache */
-			for (i=0, tmp = list; tmp ; tmp = g_list_next (tmp), i++) {
-				ECalComponent *e_cal_comp;
-				EGwItem *item;
-
-				item = (EGwItem *) tmp->data;
-				e_cal_comp = e_gw_item_to_cal_component (item, cbgw);
-				e_cal_component_commit_sequence (e_cal_comp);
-				sanitize_component (backend, e_cal_comp, g_ptr_array_index (uid_array, i));
-				e_cal_backend_cache_put_component (priv->cache, e_cal_comp);
-
-				if (i == 0) {
-					*calobj = e_cal_component_get_as_string (e_cal_comp);
-				}
-
-				if (i != 0) {
-					char *temp;
-					temp = e_cal_component_get_as_string (e_cal_comp);
-					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbgw), temp);
-					g_free (temp);
-				}
-
-				g_object_unref (e_cal_comp);
-			}
-			g_ptr_array_free (uid_array, TRUE);
-		}
 		break;
 	default :
 		break;

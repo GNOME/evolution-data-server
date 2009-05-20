@@ -766,6 +766,7 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		value = icaltime_as_ical_string_r (itt_utc);
 		e_gw_item_set_creation_date (item, value);
 		g_free (value);
+		e_cal_component_free_icaltimetype (dt.value);
 	} else {
 		struct icaltimetype itt;
 
@@ -775,7 +776,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		g_free (value);
 	}
 
-	e_cal_component_free_icaltimetype (dt.value);
 	dt.value = NULL;
 
 	/* classification */
@@ -1126,6 +1126,16 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 		e_cal_component_set_created (comp, &itt_utc);
 		e_cal_component_set_dtstamp (comp, &itt_utc);
+	}
+	
+	t = e_gw_item_get_modified_date (item);
+	if (t) {
+		itt_utc = icaltime_from_string (t);
+		
+		icaltimezone_convert_time (&itt_utc, (icaltimezone*) icaltime_get_timezone (itt_utc), icaltimezone_get_utc_timezone ());
+		icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
+		
+		e_cal_component_set_last_modified (comp, &itt_utc);
 	}
 
 	/* categories */

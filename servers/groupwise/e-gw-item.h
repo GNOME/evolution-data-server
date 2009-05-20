@@ -173,6 +173,8 @@ char       *e_gw_item_get_creation_date (EGwItem *item);
 void        e_gw_item_set_creation_date (EGwItem *item, const char *new_date);
 char       *e_gw_item_get_delivered_date (EGwItem *item);
 void        e_gw_item_set_delivered_date (EGwItem *item, const char *new_date);
+const char  *e_gw_item_get_modified_date (EGwItem *item);
+void        e_gw_item_set_modified_date (EGwItem *item, const char *new_date);
 char       *e_gw_item_get_start_date (EGwItem *item);
 void        e_gw_item_set_start_date (EGwItem *item, const char *new_date);
 char       *e_gw_item_get_completed_date (EGwItem *item);

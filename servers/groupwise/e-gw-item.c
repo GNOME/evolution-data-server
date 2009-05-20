@@ -45,6 +45,7 @@ struct _EGwItemPrivate {
 	char *end_date;
 	char *due_date;
 	char *completed_date;
+	char *modified_date;
 	gboolean completed;
 	gboolean is_allday_event;
 	char *subject;
@@ -467,6 +468,11 @@ e_gw_item_dispose (GObject *object)
 			priv->delivered_date = NULL;
 		}
 
+		if (priv->modified_date) {
+			g_free (priv->modified_date);
+			priv->modified_date = NULL;
+		}
+
 		if (priv->start_date) {
 			g_free (priv->start_date);
 			priv->start_date = NULL;
@@ -526,6 +532,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->item_type = E_GW_ITEM_TYPE_UNKNOWN;
 	priv->creation_date = NULL;
 	priv->delivered_date = NULL;
+	priv->modified_date = NULL;
 	priv->start_date = NULL;
 	priv->end_date = NULL;
 	priv->due_date = NULL;
@@ -1848,6 +1855,13 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 			g_free (value);
 			g_free (formatted_date);
 
+		} else if (!g_ascii_strcasecmp (name, "modified")) {
+			char *formatted_date;
+			value = soup_soap_parameter_get_string_value (child);
+			formatted_date = e_gw_connection_format_date_string (value);
+			e_gw_item_set_modified_date (item, formatted_date);
+			g_free (value);
+			g_free (formatted_date);
 		} else if (!g_ascii_strcasecmp (name, "distribution")) {
 			SoupSoapParameter *tp;
 
@@ -2205,6 +2219,24 @@ e_gw_item_set_delivered_date (EGwItem *item, const char *new_date)
 	if (item->priv->delivered_date)
 		g_free (item->priv->delivered_date);
 	item->priv->delivered_date = g_strdup (new_date);
+}
+
+const char *
+e_gw_item_get_modified_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->modified_date;
+}
+
+void
+e_gw_item_set_modified_date (EGwItem *item, const char *new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->modified_date)
+		g_free (item->priv->modified_date);
+	item->priv->modified_date = g_strdup (new_date);
 }
 
 char *
