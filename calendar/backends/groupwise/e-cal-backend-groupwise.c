@@ -1023,15 +1023,11 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 
 	if (priv->cnc ) {
 		if (priv->cache && priv->container_id) {
-			char *utc_str;
 			priv->mode = CAL_MODE_REMOTE;
 			if (priv->mode_changed && !priv->dthread) {
 				priv->mode_changed = FALSE;
 				fetch_deltas (cbgw);
 			}
-
-			utc_str = (char *) e_gw_connection_get_server_time (priv->cnc);
-			e_cal_backend_cache_put_server_utc_time (priv->cache, utc_str);
 
 			return GNOME_Evolution_Calendar_Success;
 		}
