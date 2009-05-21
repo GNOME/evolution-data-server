@@ -7,7 +7,7 @@ test -z "$srcdir" && srcdir=.
 PKG_NAME="evolution-data-server"
 REQUIRED_AUTOMAKE_VERSION=1.6
 
-(test -f $srcdir/configure.in \
+(test -f $srcdir/configure.ac \
   && test -f $srcdir/ChangeLog \
   && test -d $srcdir/calendar) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
