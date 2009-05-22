@@ -61,6 +61,7 @@
 #include "camel-string-utils.h"
 #include "camel-store.h"
 #include "camel-vee-folder.h"
+#include "camel-mime-part-utils.h"
 
 /* To switch between e-memchunk and g-alloc */
 #define ALWAYS_ALLOC 1
@@ -159,7 +160,8 @@ camel_folder_summary_init (CamelFolderSummary *s)
 
 	s->message_info_chunks = NULL;
 	s->content_info_chunks = NULL;
-
+	p->need_preview = FALSE;
+	p->preview_updates = g_hash_table_new (g_str_hash, g_str_equal);
 #if defined (DOESTRV) || defined (DOEPOOLV)
 	s->message_info_strings = CAMEL_MESSAGE_INFO_LAST;
 #endif
@@ -895,6 +897,99 @@ camel_folder_summary_cache_size (CamelFolderSummary *s)
 		return s->uids->len;
 }
 
+/* Update preview of cached messages */
+
+struct _preview_update_msg {
+	CamelSessionThreadMsg msg;
+
+	CamelFolder *folder;
+	CamelException ex;
+};
+
+static void
+msg_update_preview (const char *uid, gpointer value, CamelFolder *folder)
+{
+	CamelMessageInfoBase *info = (CamelMessageInfoBase *)camel_folder_summary_uid (folder->summary, uid);
+	CamelMimeMessage *msg;
+	CamelException ex;
+
+	camel_exception_init(&ex);
+	msg = camel_folder_get_message (folder, uid, &ex);
+	if (camel_exception_is_set(&ex))
+		g_warning ("Error fetching message: %s", camel_exception_get_description(&ex));
+	else {
+		if (camel_mime_message_build_preview ((CamelMimePart *)msg, (CamelMessageInfo *)info) && info->preview)
+			camel_db_write_preview_record (folder->parent_store->cdb_w, folder->full_name, info->uid, info->preview, NULL);
+	}
+	camel_exception_clear(&ex);
+	camel_message_info_free(info);
+}
+
+static void
+pick_uids (const char *uid, CamelMessageInfoBase *mi, GPtrArray *array)
+{
+	if (mi->preview)
+		g_ptr_array_add (array, (char *)camel_pstring_strdup(uid));
+}
+
+static gboolean
+fill_mi (const char *uid, const char *msg, CamelFolder *folder)
+{
+	CamelMessageInfoBase *info;
+
+	info = g_hash_table_lookup (folder->summary->loaded_infos, uid);
+	if (info) /* We re assign the memory of msg */
+		info->preview = (char *)msg;
+	camel_pstring_free (uid); /* unref the uid */
+
+	return TRUE;
+}
+
+static void
+preview_update_exec (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+	struct _preview_update_msg *m = (struct _preview_update_msg *)msg;
+	/* FIXME: Either lock & use or copy & use.*/
+	GPtrArray *uids_uncached= camel_folder_get_uncached_uids (m->folder, m->folder->summary->uids, NULL);
+	GHashTable *hash = camel_folder_summary_get_hashtable (m->folder->summary);
+	GHashTable *preview_data;
+	int i;
+
+	preview_data = camel_db_get_folder_preview (m->folder->parent_store->cdb_r, m->folder->full_name, NULL);
+	if (preview_data) {
+		g_hash_table_foreach_remove (preview_data, (GHRFunc)fill_mi, m->folder);
+		g_hash_table_destroy (preview_data);
+	}
+
+	CAMEL_SUMMARY_LOCK (m->folder->summary, summary_lock);
+	g_hash_table_foreach (m->folder->summary->loaded_infos, (GHFunc)pick_uids, uids_uncached);
+	CAMEL_SUMMARY_UNLOCK (m->folder->summary, summary_lock);
+	
+	for (i=0; i < uids_uncached->len; i++) {
+		g_hash_table_remove (hash, uids_uncached->pdata[i]);
+		camel_pstring_free (uids_uncached->pdata[i]); /* unref the hash table key */
+	}
+	
+	camel_db_begin_transaction (m->folder->parent_store->cdb_w, NULL);
+	g_hash_table_foreach (hash, (GHFunc)msg_update_preview, m->folder);
+	camel_db_end_transaction (m->folder->parent_store->cdb_w, NULL);
+	camel_folder_free_uids(m->folder, uids_uncached);
+	camel_folder_summary_free_hashtable (hash);
+}
+
+static void
+preview_update_free (CamelSession *session, CamelSessionThreadMsg *msg)
+{
+	struct _preview_update_msg *m = (struct _preview_update_msg *)msg;
+
+	m=m;
+}
+static CamelSessionThreadOps preview_update_ops = {
+	preview_update_exec,
+	preview_update_free,
+};
+
+/* end */
 int
 camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -921,7 +1016,24 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	if (!g_getenv("CAMEL_FREE_INFOS") && !s->timeout_handle) 
 		s->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
 
+	if (_PRIVATE(s)->need_preview) {
+		struct _preview_update_msg *m;	
+
+		m = camel_session_thread_msg_new(((CamelService *)s->folder->parent_store)->session, &preview_update_ops, sizeof(*m));
+		m->folder = s->folder;
+		camel_exception_init(&m->ex);
+		camel_session_thread_queue(((CamelService *)s->folder->parent_store)->session, &m->msg, 0);
+	}
+	
 	return ret == 0 ? 0 : -1;
+}
+
+void
+camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
+{
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+	g_hash_table_insert (_PRIVATE(s)->preview_updates, (char *)info->uid, ((CamelMessageInfoBase *)info)->preview);
+	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 }
 
 /**
@@ -1427,6 +1539,12 @@ save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mirs, CamelExcep
 	return 0;
 }
 
+static void
+msg_save_preview (const char *uid, gpointer value, CamelFolder *folder)
+{
+	camel_db_write_preview_record (folder->parent_store->cdb_w, folder->full_name, uid, (char *)value, NULL);
+}
+
 int
 camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -1435,6 +1553,14 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 	int ret, count;
 
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
+	if (_PRIVATE(s)->need_preview && g_hash_table_size(_PRIVATE(s)->preview_updates)) {
+		camel_db_begin_transaction (s->folder->parent_store->cdb_w, NULL);
+		CAMEL_SUMMARY_LOCK(s, summary_lock);
+		g_hash_table_foreach (_PRIVATE(s)->preview_updates, (GHFunc)msg_save_preview, s->folder);
+		g_hash_table_remove_all (_PRIVATE(s)->preview_updates);
+		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+		camel_db_end_transaction (s->folder->parent_store->cdb_w, NULL);
+	}
 
 	if (!(s->flags & CAMEL_SUMMARY_DIRTY))
 		return 0;
@@ -3393,6 +3519,7 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 	camel_pstring_free(mi->cc);
 	camel_pstring_free(mi->mlist);
 	g_free(mi->references);
+	g_free (mi->preview);
 	camel_flag_list_free(&mi->user_flags);
 	camel_tag_list_free(&mi->user_tags);
 	if (mi->headers)
@@ -4456,7 +4583,7 @@ message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 	to->cc = camel_pstring_strdup(from->cc);
 	to->mlist = camel_pstring_strdup(from->mlist);
 	memcpy(&to->message_id, &from->message_id, sizeof(to->message_id));
-
+	to->preview = g_strdup (from->preview);
 	if (from->references) {
 		int len = sizeof(*from->references) + ((from->references->size-1) * sizeof(from->references->references[0]));
 
@@ -4527,6 +4654,9 @@ info_ptr(const CamelMessageInfo *mi, int id)
 		return ((const CamelMessageInfoBase *)mi)->user_tags;
 	case CAMEL_MESSAGE_INFO_HEADERS:
 		return ((const CamelMessageInfoBase *)mi)->headers;
+	case CAMEL_MESSAGE_INFO_PREVIEW:
+		return ((const CamelMessageInfoBase *)mi)->preview;
+	
 	default:
 		abort();
 	}
@@ -4939,3 +5069,18 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 	klass->info_set_flags = info_set_flags;
 	
 }
+
+/* Utils */
+void
+camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolean preview)
+{
+	_PRIVATE(summary)->need_preview = preview;
+}
+
+gboolean
+camel_folder_summary_get_need_preview (CamelFolderSummary *summary)
+{
+	return _PRIVATE(summary)->need_preview;
+}
+
+

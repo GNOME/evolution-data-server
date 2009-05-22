@@ -179,5 +179,8 @@ int camel_db_migrate_vfolders_to_14(CamelDB *cdb, const char *folder, CamelExcep
 int camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex);
 int camel_db_flush_in_memory_transactions (CamelDB *cdb, const char * folder_name, CamelException *ex);
 
+GHashTable *
+camel_db_get_folder_preview (CamelDB *db, char *folder_name, CamelException *ex);
+int camel_db_write_preview_record (CamelDB *db, char *folder_name, const char *uid, const char *msg, CamelException *ex);
 #endif
 

@@ -41,9 +41,13 @@
 #include "camel/camel-exception.h"
 #include "camel/camel-mime-filter-from.h"
 #include "camel/camel-mime-message.h"
+#include "camel/camel-mime-part-utils.h"
 #include "camel/camel-private.h"
 #include "camel/camel-stream-filter.h"
 #include "camel/camel-stream-fs.h"
+#include <camel/camel-stream-mem.h>
+#include <camel/camel-stream-buffer.h>
+#include <camel/camel-multipart.h>
 
 #include "camel-mbox-folder.h"
 #include "camel-mbox-store.h"
@@ -140,7 +144,7 @@ camel_mbox_folder_new(CamelStore *parent_store, const char *full_name, guint32 f
 	folder = (CamelFolder *)camel_object_new(CAMEL_MBOX_FOLDER_TYPE);
 	folder = (CamelFolder *)camel_local_folder_construct((CamelLocalFolder *)folder,
 							     parent_store, full_name, flags, ex);
-
+	
 	return folder;
 }
 
@@ -261,6 +265,11 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 	camel_object_unref (filter_stream);
 	camel_object_unref (output_stream);
 	g_free(fromline);
+	
+	if (!((CamelMessageInfoBase *)mi)->preview && camel_folder_summary_get_need_preview(folder->summary)) {
+		if (camel_mime_message_build_preview ((CamelMimePart *)message, mi) && ((CamelMessageInfoBase *)mi)->preview)
+			camel_folder_summary_add_preview (folder->summary, mi);
+	}
 
 	/* now we 'fudge' the summary  to tell it its uptodate, because its idea of uptodate has just changed */
 	/* the stat really shouldn't fail, we just wrote to it */
@@ -468,8 +477,9 @@ retry:
 		message = NULL;
 		goto fail;
 	}
-
+	
 	camel_medium_remove_header((CamelMedium *)message, "X-Evolution");
+
 fail:
 	/* and unlock now we're finished with it */
 	camel_local_folder_unlock(lf);

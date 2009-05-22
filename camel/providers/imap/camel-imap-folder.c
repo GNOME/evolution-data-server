@@ -49,6 +49,7 @@
 #include "camel-mime-filter-from.h"
 #include "camel-mime-message.h"
 #include "camel-mime-utils.h"
+#include "camel-mime-part-utils.h"
 #include "camel-multipart-encrypted.h"
 #include "camel-multipart-signed.h"
 #include "camel-multipart.h"
@@ -2913,7 +2914,14 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		    || store->braindamaged
 		    || mi->info.size < IMAP_SMALL_BODY_SIZE
 		    || (!content_info_incomplete(mi->info.content) && !mi->info.content->childs)) {
+			CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (folder->summary, uid);
 			msg = get_message_simple (imap_folder, uid, NULL, ex);
+			if (info && !info->preview && msg && camel_folder_summary_get_need_preview(folder->summary)) {
+				if (camel_mime_message_build_preview ((CamelMimePart *)msg, (CamelMessageInfo *)info) && info->preview)
+					camel_folder_summary_add_preview (folder->summary, (CamelMessageInfo *)info);
+			}
+				
+			camel_message_info_free (info);	
 		} else {
 			if (content_info_incomplete (mi->info.content)) {
 				/* For larger messages, fetch the structure and build a message
@@ -2983,6 +2991,15 @@ imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 				msg = get_message_simple (imap_folder, uid, NULL, ex);
 			else
 				msg = get_message (imap_folder, uid, mi->info.content, ex);
+			if (msg && camel_folder_summary_get_need_preview(folder->summary)) {
+				CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (folder->summary, uid);
+				if (info && !info->preview) {
+					if (camel_mime_message_build_preview ((CamelMimePart *)msg, (CamelMessageInfo *)info) && info->preview)
+						camel_folder_summary_add_preview (folder->summary, (CamelMessageInfo *)info);
+				}
+				camel_message_info_free (info);	
+			}
+				
 		}
 	} while (msg == NULL
 		 && retry < 2

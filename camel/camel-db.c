@@ -1000,6 +1000,60 @@ camel_db_get_folder_deleted_uids (CamelDB *db, char *folder_name, CamelException
 }
 
 static int
+read_preview_callback (void *ref, int ncol, char ** cols, char ** name)
+{
+	GHashTable *hash = (GHashTable *)ref;
+	const char *uid=NULL;
+	char *msg=NULL;
+	int i;
+
+	for (i = 0; i < ncol; ++i) {
+		if (!strcmp (name [i], "uid"))
+			uid = camel_pstring_strdup(cols [i]);
+		else if (!strcmp (name [i], "preview"))
+			msg = g_strdup(cols[i]);
+	}
+	 
+	g_hash_table_insert(hash, (char *)uid, msg);
+
+	return 0;
+}
+
+GHashTable *
+camel_db_get_folder_preview (CamelDB *db, char *folder_name, CamelException *ex)
+{
+	 char *sel_query;
+	 int ret;
+	 GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+	 sel_query = sqlite3_mprintf("SELECT uid, preview FROM '%s_preview'", folder_name);
+
+	 ret = camel_db_select (db, sel_query, read_preview_callback, hash, ex);
+	 sqlite3_free (sel_query);
+
+	 if (!g_hash_table_size (hash) || ret != 0) {
+		 g_hash_table_destroy (hash);
+		 hash = NULL;
+	 }
+		 
+	 return hash;
+}
+
+int
+camel_db_write_preview_record (CamelDB *db, char *folder_name, const char *uid, const char *msg, CamelException *ex)
+{
+	char *query;
+	int ret;
+
+	query = sqlite3_mprintf("INSERT OR REPLACE INTO '%s_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
+
+	ret = camel_db_add_to_transaction (db, query, ex);
+	sqlite3_free (query);
+
+	return ret;
+}
+
+static int
 read_vuids_callback (void *ref, int ncol, char ** cols, char ** name)
 {
 	 GPtrArray *array = (GPtrArray *)ref;
@@ -1100,9 +1154,21 @@ camel_db_create_message_info_table (CamelDB *cdb, const char *folder_name, Camel
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	sqlite3_free (table_creation_query);
 
+	/* Create message preview table. */
+	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%s_preview' (  uid TEXT PRIMARY KEY , preview TEXT)", folder_name);
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	sqlite3_free (table_creation_query);
+
 	/* FIXME: sqlize folder_name before you create the index */
 	safe_index = g_strdup_printf("SINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (uid, flags, size, dsent, dreceived, subject, mail_from, mail_to, mail_cc, mlist, part, labels, usertags, cinfo, bdata)", safe_index, folder_name);
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	g_free (safe_index);
+	sqlite3_free (table_creation_query);
+
+	/* INDEX on preview */
+	safe_index = g_strdup_printf("SINDEX-%s-preview", folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON '%s_preview' (uid, preview)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);

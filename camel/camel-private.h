@@ -129,6 +129,9 @@ struct _CamelFolderSummaryPrivate {
 	GMutex *alloc_lock;	/* for setting up and using allocators */
 	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before summary_lock */
 	GHashTable *flag_cache;
+
+	gboolean need_preview;
+	GHashTable *preview_updates;
 };
 
 #define CAMEL_SUMMARY_LOCK(f, l) \

@@ -28,10 +28,12 @@
 #define CAMEL_MIME_PART_UTILS_H 1
 
 #include <camel/camel-mime-part.h>
+#include <camel/camel-folder-summary.h>
 
 G_BEGIN_DECLS
 
 void camel_mime_part_construct_content_from_parser(CamelMimePart *, CamelMimeParser *mp);
+gboolean camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info);
 
 G_END_DECLS
 

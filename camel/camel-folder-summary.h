@@ -141,7 +141,7 @@ enum {
 	CAMEL_MESSAGE_INFO_USER_TAGS,
 
 	CAMEL_MESSAGE_INFO_HEADERS,
-
+	CAMEL_MESSAGE_INFO_PREVIEW,
 	CAMEL_MESSAGE_INFO_LAST
 };
 
@@ -187,7 +187,7 @@ struct _CamelMessageInfoBase {
 	/* tree of content description - NULL if it is not available */
 	CamelMessageContentInfo *content;
 	struct _camel_header_param *headers;
-
+	char *preview;
 
 };
 
@@ -446,6 +446,7 @@ time_t camel_message_info_time(const CamelMessageInfo *mi, int id);
 #define camel_message_info_uid(mi) ((const char *)((const CamelMessageInfo *)mi)->uid)
 
 #define camel_message_info_subject(mi) ((const char *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_SUBJECT))
+#define camel_message_info_preview(mi) ((const char *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_PREVIEW))
 #define camel_message_info_from(mi) ((const char *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_FROM))
 #define camel_message_info_to(mi) ((const char *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_TO))
 #define camel_message_info_cc(mi) ((const char *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_CC))
@@ -470,6 +471,10 @@ const char *camel_message_info_user_tag(const CamelMessageInfo *mi, const char *
 gboolean camel_message_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set);
 gboolean camel_message_info_set_user_flag(CamelMessageInfo *mi, const char *id, gboolean state);
 gboolean camel_message_info_set_user_tag(CamelMessageInfo *mi, const char *id, const char *val);
+
+void camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolean preview);
+void camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info);
+gboolean camel_folder_summary_get_need_preview (CamelFolderSummary *summary);
 
 /* debugging functions */
 void camel_content_info_dump (CamelMessageContentInfo *ci, int depth);

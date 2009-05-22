@@ -84,6 +84,7 @@ static GPtrArray *local_search_by_expression(CamelFolder *folder, const char *ex
 static guint32 local_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
 static GPtrArray *local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 static void local_search_free(CamelFolder *folder, GPtrArray * result);
+static GPtrArray * local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex);
 
 static void local_delete(CamelFolder *folder);
 static void local_rename(CamelFolder *folder, const char *newname);
@@ -105,6 +106,7 @@ camel_local_folder_class_init(CamelLocalFolderClass * camel_local_folder_class)
 	camel_folder_class->refresh_info = local_refresh_info;
 	camel_folder_class->sync = local_sync;
 	camel_folder_class->expunge = local_expunge;
+	camel_folder_class->get_uncached_uids = local_get_uncached_uids;
 
 	camel_folder_class->search_by_expression = local_search_by_expression;
 	camel_folder_class->count_by_expression = local_count_by_expression;
@@ -499,6 +501,14 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 		camel_folder_change_info_clear(lf->changes);
 	}
 	
+}
+
+static GPtrArray *
+local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
+{
+	GPtrArray *result = g_ptr_array_new ();
+	/* By default, we would have everything local. No need to fetch from anywhere. */
+	return result;
 }
 
 static void
