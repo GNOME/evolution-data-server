@@ -1,3 +1,40 @@
+Evolution-Data-Server 2.27.2 2009-05-25
+---------------------------------------
+
+Bug Fixes:
+
+	#549094 – provider_table might not be initialized in
+                  camel_provider_list (Tobia Mueller)
+	#576413 – Cannot delete multiple categories at once (Matthew Barnes)
+	#579176 – crashes when accepting meeting invitation (Milan Crha)
+	#579360 – Problem with vfolders in latest svn trunk version
+                  (Srinivasa Ragavan)
+	#580154 – Use e_data_book_view_{ref,_unref} transition functions
+                  (Rob Bradford)
+	#580419 – Remove deprecated libgnome dependency (Milan Crha)
+	#581420 – Cannot retrieve html images on Solaris (Jeff Cai)
+	#581424 – Personal folder tree appears besides Public folder when
+                  you go to Folder > Subscription (Johnny Jacob)
+	#582110 – build: dolt has some link issues with library dependency
+                  (Marc-André Lureau)
+	#184554 – (bnc) multiple groupwise open notices (Chenthill Palanisamy)
+	#494490 – (bnc) Fixes a crash while moving messages twice
+                  (Chenthill Palanisamy)
+	#498712 – (bnc) meetings are not deleted properly sometimes
+                  (Chenthill Palanisamy)
+	#498745 – (bnc) Read/Unread count is not syncronized properly
+                  (Chenthill Palanisamy)
+	#499105 – (bnc) do not update the server utc time when the
+                  calendar opens (Chenthill Palanisamy)
+	#500133 – (bnc) show mails with same subject in a single thread
+                  (Chenthill Palanisamy)
+
+Updated Translations:
+
+	Jorge Gonzalez (es)
+	Ivar Smolin (et)
+	drtvasudevan (ta)
+
 Evolution-Data-Server 2.27.1 2009-05-04
 ----------------------------------------
 
