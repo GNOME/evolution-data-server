@@ -12,9 +12,6 @@
 #include "e-list.h"
 
 
-static void        e_list_iterator_init       (EListIterator *list);
-static void        e_list_iterator_class_init (EListIteratorClass *klass);
-
 static void        e_list_iterator_invalidate (EIterator *iterator);
 static gboolean    e_list_iterator_is_valid   (EIterator *iterator);
 static void        e_list_iterator_set        (EIterator  *iterator,

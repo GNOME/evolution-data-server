@@ -10,9 +10,6 @@
 
 #include "e-iterator.h"
 
-static void e_iterator_init (EIterator *card);
-static void e_iterator_class_init (EIteratorClass *klass);
-
 enum {
 	INVALIDATE,
 	LAST_SIGNAL

@@ -11,8 +11,6 @@
 #include "e-list.h"
 #include "e-list-iterator.h"
 
-static void e_list_init (EList *list);
-static void e_list_class_init (EListClass *klass);
 static void e_list_dispose (GObject *object);
 
 G_DEFINE_TYPE (EList, e_list, G_TYPE_OBJECT)

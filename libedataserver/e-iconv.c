@@ -97,8 +97,8 @@ static char *locale_charset = NULL;
 static char *locale_lang = NULL;
 
 static const struct {
-	char *charset;
-	char *iconv_name;
+	const char *charset;
+	const char *iconv_name;
 } known_iconv_charsets[] = {
 	/* charset name (lowercase!), iconv-friendly name (sometimes case sensitive) */
 	{ "utf-8",           "UTF-8"      },
@@ -584,8 +584,8 @@ e_iconv_locale_language (void)
  * e_iconv_charset_name() so that we don't have to keep track of all
  * the aliases too. */
 static const struct {
-	char *charset;
-	char *lang;
+	const char *charset;
+	const char *lang;
 } cjkr_lang_map[] = {
 	{ "Big5",        "zh" },
 	{ "BIG5HKSCS",   "zh" },

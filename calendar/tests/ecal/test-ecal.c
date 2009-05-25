@@ -31,7 +31,7 @@
 
 /* start_testing_scaffold */
 #define mu_assert(message, test) do { if (!(test)) return message; else { tests_passed++; return NULL;}} while (0)
-#define mu_run_test(test) do { char *message = test; tests_run++; \
+#define mu_run_test(test) do { const char *message = test; tests_run++; \
                                 if (message) { cl_printf (client, "***Error***\n%s\n", message); break;} } while (0)
 
 static int tests_run = 0;
@@ -141,7 +141,7 @@ client_destroy_cb (gpointer data, GObject *object)
 		g_main_loop_quit (loop);
 }
 
-static char *
+static const char *
 test_object_creation (ECal *client,  char **uid)
 {
 	ECalComponent *comp, *comp_retrieved;
@@ -217,7 +217,7 @@ test_object_creation (ECal *client,  char **uid)
 	return NULL;
 }
 
-static char *
+static const char *
 test_object_modification (ECal *client, char *uid)
 {
 	const char *summary = "This summary was modified";
@@ -299,7 +299,7 @@ test_object_removal (ECal *client)
 }
 #endif
 
-static char *
+static const char *
 test_get_alarms_in_range (ECal *client)
 {
 	GSList *alarms;
@@ -320,7 +320,7 @@ test_get_alarms_in_range (ECal *client)
 	return NULL;
 }
 
-static char *
+static const char *
 test_set_uri (ECal *client, const gchar *uri)
 {
 	/* The uri is set as part of create_client call. This method merely
@@ -337,7 +337,7 @@ test_set_uri (ECal *client, const gchar *uri)
 	return NULL;
 }
 
-static char *
+static const char *
 test_cal_loaded (ECal *client)
 {
 	/* Test one loaded calendar and another that is not loaded. */
@@ -348,7 +348,7 @@ test_cal_loaded (ECal *client)
 	return NULL;
 }
 
-static char *
+static const char *
 test_get_source (ECal *client, const gchar *expected)
 {
 	ESource *source;
@@ -367,7 +367,7 @@ test_get_source (ECal *client, const gchar *expected)
 	return NULL;
 }
 
-static char *
+static const char *
 test_query (ECal *client, const char *query, int expected)
 {
 	/* This uses pre-loaded data. Hence its results are valid only
@@ -443,7 +443,7 @@ test_e_cal_remove (ECal *ecal, const char *uri)
 }
 #endif
 
-static char *
+static const char *
 test_new_system_calendar(void)
 {
 	ECal *cal;
@@ -460,7 +460,7 @@ test_new_system_calendar(void)
 	return NULL;
 }
 
-static char *
+static const char *
 test_new_system_tasks(void)
 {
 	ECal *cal;
@@ -477,7 +477,7 @@ test_new_system_tasks(void)
 	return NULL;
 }
 
-static char *
+static const char *
 test_new_system_memos(void)
 {
 	ECal *cal;
@@ -580,7 +580,7 @@ ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=OPT-PARTICIPANT;PARTSTAT=NEEDS-ACTION;\
 LAST-MODIFIED:20040213T055647Z\
 END:VEVENT"
 
-static char *
+static const char *
 test_get_object (ECal *client)
 {
 	const char *uid = "20040213T055519Z-15802-500-1-3@testcal";
@@ -620,7 +620,7 @@ test_timezones (ECal *client)
 	return NULL;
 }
 
-static char *
+static const char *
 all_tests(ECal *client, const gchar *uri)
 {
 	char *uid;
@@ -663,7 +663,7 @@ all_tests(ECal *client, const gchar *uri)
 static void
 create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean only_if_exists)
 {
-	char *results;
+	const char *results;
 	ECalView *query;
 	char *cal_uri;
 	GError *error = NULL;

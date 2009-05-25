@@ -169,7 +169,7 @@ void		e_sexp_encode_bool	(GString *s, gboolean state);
 void		e_sexp_encode_string	(GString *s, const char *string);
 
 /* only to be called from inside a callback to signal a fatal execution error */
-void		e_sexp_fatal_error	(struct _ESExp *f, char *why, ...);
+void		e_sexp_fatal_error	(struct _ESExp *f, const char *why, ...) G_GNUC_NORETURN;
 
 /* return the error string */
 const char     *e_sexp_error		(struct _ESExp *f);

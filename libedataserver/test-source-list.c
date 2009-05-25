@@ -38,7 +38,7 @@ static int idle_dump_id = 0;
 
 static gboolean listen = FALSE;
 static gboolean dump = FALSE;
-static char *key_arg = "/apps/evolution/test/source_list";
+static char *key_arg = (char *) "/apps/evolution/test/source_list";
 static char *source_arg = NULL;
 static char *group_arg = NULL;
 static char *add_group_arg = NULL;

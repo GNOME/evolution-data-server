@@ -31,15 +31,17 @@
 #include "libedataserver-private.h"
 
 typedef struct {
-	char *category;
-	char *icon_file;
-	#ifndef EDS_DISABLE_DEPRECATED
-	char *color;
-	#endif
+	gchar *category;
+	gchar *icon_file;
 	gboolean searchable;
 } CategoryInfo;
 
-static CategoryInfo default_categories[] = {
+typedef struct {
+	const gchar *category;
+	const gchar *icon_file;
+} DefaultCategory;
+
+static DefaultCategory default_categories[] = {
 	{ N_("Anniversary") },
 	{ N_("Birthday"), "category_birthday_16.png" },
 	{ N_("Business"), "category_business_16.png" },
@@ -81,6 +83,8 @@ typedef struct {
 
 static GType e_changed_listener_get_type (void);
 
+G_DEFINE_TYPE (EChangedListener, e_changed_listener, G_TYPE_OBJECT)
+
 enum {
 	CHANGED,
 	LAST_SIGNAL
@@ -102,11 +106,9 @@ e_changed_listener_class_init (EChangedListenerClass *klass)
 }
 
 static void
-e_changed_listener_init (EChangedListener *changed)
+e_changed_listener_init (EChangedListener *listener)
 {
 }
-
-G_DEFINE_TYPE (EChangedListener, e_changed_listener, G_TYPE_OBJECT)
 
 /* ------------------------------------------------------------------------- */
 
@@ -129,9 +131,6 @@ free_category_info (CategoryInfo *cat_info)
 {
 	g_free (cat_info->category);
 	g_free (cat_info->icon_file);
-	#ifndef EDS_DISABLE_DEPRECATED
-	g_free (cat_info->color);
-	#endif
 	g_free (cat_info);
 }
 
@@ -182,12 +181,6 @@ hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
 	if (cat_info->icon_file != NULL)
 		g_string_append_printf (
 			string, " icon=\"%s\"", cat_info->icon_file);
-
-	#ifndef EDS_DISABLE_DEPRECATED
-	if (cat_info->color != NULL)
-		g_string_append_printf (
-			string, " color=\"%s\"", cat_info->color);
-	#endif
 
 	g_string_append_printf (
 		string, " searchable=\"%d\"", cat_info->searchable);
@@ -395,21 +388,17 @@ exit:
 static void
 load_default_categories (void)
 {
-	CategoryInfo *cat_info = default_categories;
+	DefaultCategory *cat_info = default_categories;
+	gchar *icon_file = NULL;
 
 	/* Note: All default categories are searchable. */
 	while (cat_info->category != NULL) {
 		if (cat_info->icon_file != NULL)
-			cat_info->icon_file = g_build_filename (E_DATA_SERVER_IMAGESDIR, cat_info->icon_file, NULL);
+			icon_file = g_build_filename (E_DATA_SERVER_IMAGESDIR, cat_info->icon_file, NULL);
 		e_categories_add (
 			gettext (cat_info->category),
-			#ifndef EDS_DISABLE_DEPRECATED
-			cat_info->color,
-			#else
-			NULL,
-			#endif
-			cat_info->icon_file, TRUE);
-		g_free (cat_info->icon_file);
+			NULL, icon_file, TRUE);
+		g_free (icon_file);
 		cat_info++;
 	}
 }
@@ -528,9 +517,6 @@ e_categories_add (const char *category, const char *unused, const char *icon_fil
 	/* add the new category */
 	cat_info = g_new0 (CategoryInfo, 1);
 	cat_info->category = g_strdup (category);
-#ifndef EDS_DISABLE_DEPRECATED
-	cat_info->color = g_strdup (unused);
-#endif
 	cat_info->icon_file = g_strdup (icon_file);
 	cat_info->searchable = searchable;
 
@@ -584,27 +570,14 @@ e_categories_exist (const char *category)
  * e_categories_get_color_for:
  * @category: category to retrieve the color for.
  *
- * Gets the color associated with the given category.
- *
- * Return value: a string representation of the color.
+ * Returns: %NULL, always
  *
  * DEPRECATED!
  */
 const char *
 e_categories_get_color_for (const char *category)
 {
-	CategoryInfo *cat_info;
-
-	g_return_val_if_fail (category != NULL, NULL);
-
-	if (!initialized)
-		initialize_categories ();
-
-	cat_info = g_hash_table_lookup (categories_table, category);
-	if (cat_info == NULL)
-		return NULL;
-
-	return cat_info->color;
+	return NULL;
 }
 
 /**
@@ -612,27 +585,13 @@ e_categories_get_color_for (const char *category)
  * @category: category to set the color for.
  * @color: X color.
  *
- * Sets the color associated with the given category.
+ * This function does nothing.
  *
  * DEPRECATED!
  */
 void
 e_categories_set_color_for (const char *category, const char *color)
 {
-	CategoryInfo *cat_info;
-
-	g_return_if_fail (category != NULL);
-
-	if (!initialized)
-		initialize_categories ();
-
-	cat_info = g_hash_table_lookup (categories_table, category);
-	g_return_if_fail (cat_info != NULL);
-
-	g_free (cat_info->color);
-	cat_info->color = g_strdup (color);
-	changed = TRUE;
-	save_categories ();
 }
 #endif /* EDS_DISABLE_DEPRECATED */
 

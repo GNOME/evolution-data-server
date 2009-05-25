@@ -86,6 +86,7 @@ CamelFolderSummary
 @user_tags: 
 @content: 
 @headers: 
+@preview: 
 
 <!-- ##### STRUCT CamelFolderMetaSummary ##### -->
 <para>

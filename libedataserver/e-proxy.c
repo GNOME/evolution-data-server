@@ -587,7 +587,7 @@ ep_set_proxy (GConfClient *client,
 
 	old_type = priv->type;
 	priv->type = gconf_client_get_int (client, KEY_GCONF_EVO_PROXY_TYPE, NULL);
-	if (priv->type < PROXY_TYPE_SYSTEM || priv->type > PROXY_TYPE_AUTO_URL)
+	if (priv->type > PROXY_TYPE_AUTO_URL)
 		priv->type = PROXY_TYPE_SYSTEM;
 	changed = priv->type != old_type;
 

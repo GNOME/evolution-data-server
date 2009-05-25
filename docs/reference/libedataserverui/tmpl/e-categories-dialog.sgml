@@ -28,7 +28,7 @@ ECategoriesDialog
 
 </para>
 
-@initial_category_list: 
+@categories: 
 @Returns: 
 
 

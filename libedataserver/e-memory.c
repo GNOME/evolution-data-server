@@ -792,7 +792,7 @@ e_strv_pack(struct _EStrv *strv)
  *
  * Return value:
  **/
-char *
+const char *
 e_strv_get(struct _EStrv *strv, int index)
 {
 	struct _e_strvunpacked *s;

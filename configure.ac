@@ -166,8 +166,8 @@ AC_SUBST(WARNING_FLAGS)
 # Other useful compiler warnings for test builds only.
 # These may produce warnings we have no control over.
 #
-#»······-Wmissing-format-attribute
-#»······-Wshadow
+#	Wmissing-format-attribute
+#	Wshadow
 
 CFLAGS="$CFLAGS $WARNING_FLAGS"
 

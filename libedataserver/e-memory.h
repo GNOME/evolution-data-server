@@ -63,7 +63,7 @@ EStrv *e_strv_set_ref(EStrv *strv, int index, char *str);
 EStrv *e_strv_set_ref_free(EStrv *strv, int index, char *str);
 EStrv *e_strv_set(EStrv *strv, int index, const char *str);
 EStrv *e_strv_pack(EStrv *strv);
-char *e_strv_get(EStrv *strv, int index);
+const char *e_strv_get(EStrv *strv, int index);
 void e_strv_destroy(EStrv *strv);
 
 /* poolv's are similar to strv's, but they store common strings */

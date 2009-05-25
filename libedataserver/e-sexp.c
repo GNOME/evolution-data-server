@@ -148,7 +148,7 @@ static const GScannerConfig scanner_config =
 
 /* jumps back to the caller of f->failenv, only to be called from inside a callback */
 void
-e_sexp_fatal_error(struct _ESExp *f, char *why, ...)
+e_sexp_fatal_error(struct _ESExp *f, const char *why, ...)
 {
 	va_list args;
 
@@ -245,14 +245,14 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int type=-1;
 	int bool = TRUE;
 	int i;
-	char *oper;
+	const char *oper;
 
 	r(printf("( and\n"));
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
 
 	oper = "AND";
-	f->operators = g_slist_prepend (f->operators, oper);
+	f->operators = g_slist_prepend (f->operators, (gpointer) oper);
 
 	for (i=0;bool && i<argc;i++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
@@ -308,12 +308,12 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int type = -1;
 	int bool = FALSE;
 	int i;
-	char *oper;
+	const char *oper;
 
 	r(printf("(or \n"));
 
 	oper = "OR";
-	f->operators = g_slist_prepend (f->operators, oper);
+	f->operators = g_slist_prepend (f->operators, (gpointer) oper);
 
 	r = e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
 
@@ -1065,7 +1065,7 @@ e_sexp_class_init (ESExpClass *klass)
 
 /* 'builtin' functions */
 static const struct {
-	char *name;
+	const char *name;
 	ESExpFunc *func;
 	int type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -1126,9 +1126,9 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(s, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, (void *)&symbols[i]);
+			e_sexp_add_ifunction(s, 0, (char *) symbols[i].name, (ESExpIFunc *)symbols[i].func, (void *)&symbols[i]);
 		} else {
-			e_sexp_add_function(s, 0, symbols[i].name, symbols[i].func, (void *)&symbols[i]);
+			e_sexp_add_function(s, 0, (char *) symbols[i].name, symbols[i].func, (void *)&symbols[i]);
 		}
 	}
 

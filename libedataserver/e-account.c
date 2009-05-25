@@ -282,7 +282,7 @@ str_to_receipt_policy (const xmlChar *str)
 static xmlChar*
 receipt_policy_to_str (EAccountReceiptPolicy val)
 {
-	char *ret = NULL;
+	const char *ret = NULL;
 
 	switch (val) {
 	case E_ACCOUNT_RECEIPT_NEVER:
@@ -807,7 +807,7 @@ static GHashTable *ea_system_table;
 static guint32 ea_perms;
 
 static struct _option_info {
-	char *key;
+	const char *key;
 	guint32 perms;
 } ea_option_list[] = {
 	{ "imap_use_lsub", 1<<EAP_IMAP_SUBSCRIBED },
@@ -859,7 +859,7 @@ ea_setting_setup (void)
 
 	ea_option_table = g_hash_table_new(g_str_hash, g_str_equal);
 	for (i=0;i<sizeof(ea_option_list)/sizeof(ea_option_list[0]);i++)
-		g_hash_table_insert(ea_option_table, ea_option_list[i].key, &ea_option_list[i]);
+		g_hash_table_insert(ea_option_table, (gpointer) ea_option_list[i].key, &ea_option_list[i]);
 
 	gconf_client_add_dir(gconf, LOCK_BASE, GCONF_CLIENT_PRELOAD_NONE, NULL);
 
