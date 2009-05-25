@@ -144,6 +144,33 @@ AC_SUBST(LIBEBACKEND_AGE)
 dnl Put the ACLOCAL flags in the Makefile
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
+# Compiler Warning Flags
+
+AS_COMPILER_FLAGS(WARNING_FLAGS,
+	"-DG_DISABLE_DEPRECATED
+	-DPANGO_DISABLE_DEPRECATED
+	-DGDK_DISABLE_DEPRECATED
+	-DGDK_PIXBUF_DISABLE_DEPRECATED
+	-Wall -Wextra
+	-Wno-missing-field-initializers
+	-Wno-sign-compare
+	-Wno-unused-parameter
+	-Wdeclaration-after-statement
+	-Werror-implicit-function-declaration
+	-Wformat-nonliteral -Wformat-security -Winit-self
+	-Wmissing-declarations -Wmissing-include-dirs
+	-Wmissing-noreturn -Wnested-externs -Wpointer-arith
+	-Wredundant-decls -Wundef -Wwrite-strings")
+AC_SUBST(WARNING_FLAGS)
+
+# Other useful compiler warnings for test builds only.
+# These may produce warnings we have no control over.
+#
+#»······-Wmissing-format-attribute
+#»······-Wshadow
+
+CFLAGS="$CFLAGS $WARNING_FLAGS"
+
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
@@ -1454,25 +1481,6 @@ THREADS_CFLAGS="$PTHREAD_CFLAGS"
 AC_SUBST(THREADS_LIBS)
 AC_SUBST(THREADS_CFLAGS)
 AC_DEFINE(ENABLE_THREADS,1,[Required])
-
-dnl *************************
-dnl CFLAGS and LIBS and stuff
-dnl *************************
-
-GNOME_COMPILE_WARNINGS(yes)
-CFLAGS="$CFLAGS $WARN_CFLAGS"
-case $CFLAGS in
-*-Wall*)
-	# Turn off the annoying "comparison between signed and unsigned"
-	# warning in gcc 3.3
-	if $CC --help -v 2>&1 | grep Wsign-compare >/dev/null; then
-		CFLAGS="$CFLAGS -Wno-sign-compare"
-	fi
-	if $CC --help -v 2>&1 | grep Wpointer-sign >/dev/null; then
-		CFLAGS="$CFLAGS -Wno-pointer-sign"
-	fi
-	;;
-esac
 
 PKG_CHECK_MODULES(ORBIT, ORBit-2.0 >= ORBit_minimum_version)
 test x$ORBIT_IDL = x && ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
