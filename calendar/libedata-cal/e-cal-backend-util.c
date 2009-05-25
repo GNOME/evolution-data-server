@@ -170,7 +170,7 @@ is_attendee_declined (icalcomponent *icalcomp, const char *email)
 	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
 	     prop != NULL;
 	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
-		const char *attendee;
+		char *attendee;
 		char *text = NULL;
 
 		attendee = icalproperty_get_value_as_string_r (prop);
@@ -183,9 +183,11 @@ is_attendee_declined (icalcomponent *icalcomp, const char *email)
 
 		if (!g_ascii_strcasecmp (email, text)) {
 			g_free (text);
+			g_free (attendee);
 			break;
 		}
 		g_free (text);
+		g_free (attendee);
 	}
 
 	if (!prop)
