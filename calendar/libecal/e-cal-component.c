@@ -3434,6 +3434,56 @@ e_cal_component_get_percent (ECalComponent *comp, int **percent)
 		*percent = NULL;
 }
 
+void
+e_cal_component_set_percent_as_int (ECalComponent *comp, int percent)
+{
+	ECalComponentPrivate *priv;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
+
+	priv = comp->priv;
+	g_return_if_fail (priv->icalcomp != NULL);
+
+	if (percent == -1) {
+		if (priv->percent) {
+			icalcomponent_remove_property (priv->icalcomp, priv->percent);
+			icalproperty_free (priv->percent);
+			priv->percent = NULL;
+		}
+
+		return;
+	}
+
+	g_return_if_fail (percent >= 0 && percent <= 100);
+
+	if (priv->percent)
+		icalproperty_set_percentcomplete (priv->percent, percent);
+	else {
+		priv->percent = icalproperty_new_percentcomplete (percent);
+		icalcomponent_add_property (priv->icalcomp, priv->percent);
+	}
+
+	
+}
+
+int
+e_cal_component_get_percent_as_int (ECalComponent *comp)
+{
+	ECalComponentPrivate *priv;
+	int percent;
+
+	priv = comp->priv;
+	g_return_val_if_fail (priv->icalcomp != NULL, -1);
+
+	if (priv->percent) {
+		percent = icalproperty_get_percentcomplete (priv->percent);
+	} else
+		percent = -1;
+
+	return percent;
+}
+
 /**
  * e_cal_component_set_percent:
  * @comp: A calendar component object.

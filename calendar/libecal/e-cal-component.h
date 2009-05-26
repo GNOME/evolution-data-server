@@ -283,6 +283,9 @@ void e_cal_component_get_organizer (ECalComponent *comp, ECalComponentOrganizer 
 void e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *organizer);
 gboolean e_cal_component_has_organizer (ECalComponent *comp);
 
+int  e_cal_component_get_percent_as_int (ECalComponent *comp);
+void e_cal_component_set_percent_as_int (ECalComponent *comp, int percent);
+
 void e_cal_component_get_percent (ECalComponent *comp, int **percent);
 void e_cal_component_set_percent (ECalComponent *comp, int *percent);
 
