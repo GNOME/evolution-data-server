@@ -1513,8 +1513,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			mi = (CamelGroupwiseMessageInfo *)pmi;
 		}
 
+		type = e_gw_item_get_item_type (item);
 		if (!exists) {
-			type = e_gw_item_get_item_type (item);
 			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
 				exists = FALSE;
 				continue;
