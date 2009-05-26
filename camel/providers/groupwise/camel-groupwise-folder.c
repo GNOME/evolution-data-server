@@ -255,7 +255,6 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
 		camel_mime_message_set_date (msg, actual_time, offset);
 	} else {
-		time_t time;
 		time_t actual_time;
 		int offset = 0;
 		dtstring = e_gw_item_get_creation_date (item);
@@ -1151,6 +1150,89 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	}
 }
 
+static int 
+check_for_new_mails_count (CamelGroupwiseSummary *gw_summary, GSList *ids)
+{
+	CamelFolderSummary *summary = (CamelFolderSummary *) gw_summary;
+	GSList *l = NULL;
+	int count = 0;
+
+	for (l = ids; l != NULL; l = g_slist_next (l)) {
+		EGwItem *item = l->data;
+		const char *id = e_gw_item_get_id (item);
+		CamelMessageInfo *info	= camel_folder_summary_uid (summary, id);
+
+		if (!info)
+			count++;
+		else
+			camel_message_info_free (info);
+	}
+
+	return count;
+}
+
+static int
+compare_ids (gpointer a, gpointer b, gpointer data)
+{
+	EGwItem *item1 = (EGwItem *) a;
+	EGwItem *item2 = (EGwItem *) b;	
+	const char *id1 = NULL, *id2 = NULL;
+
+	id1 = e_gw_item_get_id (item1);
+	id2 = e_gw_item_get_id (item2);
+
+	return strcmp (id1, id2);
+}
+
+static int
+get_merge_lists_new_count (CamelGroupwiseSummary *summary, GSList *new, GSList *modified, GSList **merged)
+{
+	GSList *l, *element;
+	int count = 0;
+
+	if (new == NULL && modified == NULL){
+		*merged = NULL;
+		return 0;	
+	} if (new == NULL) {
+		*merged = modified;
+
+		return check_for_new_mails_count (summary, modified);
+	} else if (modified == NULL) {
+		*merged = new;
+		
+		return check_for_new_mails_count (summary, new);
+	}
+
+	/* now merge both the lists */
+	for (l = new; l != NULL; l = g_slist_next (l)) {
+		element = g_slist_find_custom (modified, l->data, (GCompareFunc) compare_ids);
+		if (element != NULL) {
+			g_object_unref (element->data);
+			element->data = NULL;
+			modified = g_slist_delete_link (modified, element);
+		}
+	}
+
+	/* There might some new items which come through modified also */
+	*merged = g_slist_concat (new, modified);
+	count = check_for_new_mails_count (summary, *merged);
+
+	return count;
+}
+
+static void
+update_summary_string (CamelFolder *folder, const char *time_string, CamelException *ex)
+{
+	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *) folder->summary;
+
+	if (summary->time_string)
+		g_free (summary->time_string);
+
+	((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (time_string);
+	camel_folder_summary_touch (folder->summary);
+	groupwise_sync_summary (folder, ex);
+}
+
 void
 groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 {
@@ -1164,12 +1246,13 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	gboolean is_locked = TRUE;
 	int status;
 	GList *list = NULL;
-	GSList *slist = NULL, *sl;
+	GSList *new_items = NULL, *modified_items = NULL, *merged = NULL;
 	char *container_id = NULL;
-	char *time_string = NULL, *t_str = NULL;
+	char *old_sync_time = NULL, *new_sync_time = NULL, *modified_sync_time = NULL;
 	struct _folder_update_msg *msg;
-	gboolean check_all = FALSE;
-	int new_items = 0;
+	gboolean sync_deleted = FALSE;
+	EGwContainer *container;
+	int new_item_count = 0;
 
 	/* Sync-up the (un)read changes before getting updates,
 	so that the getFolderList will reflect the most recent changes too */
@@ -1224,8 +1307,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		is_proxy = TRUE;
 	}
 
-	time_string =  g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
-	t_str = g_strdup (time_string); 
 
 	/*Get the New Items*/
 	if (!is_proxy) {
@@ -1237,112 +1318,75 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 			source = "sent received";
 		}
 
+		old_sync_time = g_strdup (((CamelGroupwiseSummary *) folder->summary)->time_string);
+		new_sync_time = g_strdup (old_sync_time); 
+
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"peek id",
-				&t_str, "New", NULL, source, -1, &slist);
+				&new_sync_time, "New", NULL, source, -1, &new_items);
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_get_quick_messages (cnc, container_id,
 					"peek id",
-					&t_str, "New", NULL, source, -1, &slist);
+					&new_sync_time, "New", NULL, source, -1, &new_items);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end2;
 		}
 
-		/*
-		 * The value in t_str is the one that has to be used for the next set of calls. 
-		 * so store this value in the summary.
-		 */
-		if (summary->time_string)
-			g_free (summary->time_string);
-
-
-		/*summary->time_string = g_strdup (t_str);*/
-		((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (t_str);
-		camel_folder_summary_touch (folder->summary);
-		groupwise_sync_summary (folder, ex);
-		g_free (t_str);	
-		t_str = NULL;
-
-		/*
-		   for ( sl = slist ; sl != NULL; sl = sl->next) 
-		   list = g_list_append (list, sl->data);*/
-
-		if (slist && (new_items = g_slist_length(slist)) != 0)
-			check_all = TRUE;
-
-		g_slist_free (slist);
-		slist = NULL;
-
-		t_str = g_strdup (time_string);
+		modified_sync_time = g_strdup (old_sync_time);
 
 		/*Get those items which have been modifed*/
-
 		status = e_gw_connection_get_quick_messages (cnc, container_id,
 				"peek id",
-				&t_str, "Modified", NULL, source, -1, &slist);
+				&modified_sync_time, "Modified", NULL, source, -1, &modified_items);
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_get_quick_messages (cnc, container_id,
 					"peek id",
-					&t_str, "Modified", NULL, source, -1, &slist);
+					&modified_sync_time, "Modified", NULL, source, -1, &modified_items);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Authentication failed"));
 			goto end3;
 		}
-
-		/* The storing of time-stamp to summary code below should be commented if the 
-		   above commented code is uncommented */
-
-		/*	if (summary->time_string)
-			g_free (summary->time_string);
-
-			summary->time_string = g_strdup (t_str);
-
-			g_free (t_str), t_str = NULL;*/
-
-		for ( sl = slist ; sl != NULL; sl = sl->next) 
-			list = g_list_prepend (list, sl->data);
-
-		if (!check_all && slist && g_slist_length(slist) != 0)
-			check_all = TRUE;
+		
 
 		if (gw_store->current_folder != folder)
 			groupwise_store_set_current_folder (gw_store, folder);
 
-		g_slist_free (slist);
-		slist = NULL;
+		new_item_count = get_merge_lists_new_count (summary, new_items, modified_items, &merged);
 
-		if (check_all && !is_proxy) {
-				EGwContainer *container;
-				int i=0;
+		/* FIXME need to cleanup the code which uses GList. Ideally GSList would just suffice. */
+		if (merged != NULL) {
+			GSList *sl = NULL;
 
-				do {
-						/* HACK: Refer to Novell bugzilla bug #464379 */ 
-						container = e_gw_connection_get_container (cnc, container_id);
-						++i;
-						if (!strcmp (folder->full_name, e_gw_container_get_name (container))) 
-								i = 10;
-				} while (i < 2);
-
-				if (i == 10) {
-						/* HACK: Refer to Novell bugzilla bug #464379 */ 
-						d(printf ("Evolution's folder summary length is : %u\tserver has %u items",
-												camel_folder_summary_count (folder->summary), e_gw_container_get_total_count (container)));
-
-						if ((camel_folder_summary_count (folder->summary) + new_items) == e_gw_container_get_total_count (container))
-								check_all = FALSE;
-
-						folder->summary->unread_count = e_gw_container_get_unread_count (container);
-						folder->summary->visible_count = e_gw_container_get_total_count (container);
-
-				} else
-					check_all = FALSE;
-				g_object_unref (container);
+			for (sl = merged; sl != NULL; sl = g_slist_next (sl))
+				list = g_list_prepend (list, sl->data);
 		}
+		g_slist_free (merged);
+
+		container = e_gw_connection_get_container (cnc, container_id);
+		if (container) {
+			/* HACK: Refer to Novell bugzilla bug #464379 */ 
+			g_message ("Evolution's folder summary length with new items is : %u new items received from server %u \tserver has %u items",
+						camel_folder_summary_count (folder->summary), new_item_count, e_gw_container_get_total_count (container));
+
+			g_message ("Unread count on server %u items ", e_gw_container_get_unread_count (container));
+
+			if ((camel_folder_summary_count (folder->summary) + new_item_count) == e_gw_container_get_total_count (container))
+				sync_deleted = FALSE;
+			else 
+				sync_deleted = TRUE;
+
+		} else
+			sync_deleted = FALSE;
+
+		g_object_unref (container);
+
 
 		if (list) 
 			gw_update_cache (folder, list, ex, FALSE);
-						
+		
+		/* update the new_sync_time to summary */
+		update_summary_string (folder, new_sync_time, ex);
 	}
 
 
@@ -1351,15 +1395,15 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/*
 	 * The New and Modified items in the server have been updated in the summary. 
-	 * Now we have to make sure that all the delted items in the server are deleted
+	 * Now we have to make sure that all the deleted items in the server are deleted
 	 * from Evolution as well. So we get the id's of all the items on the sever in 
 	 * this folder, and update the summary.
 	 */
 	/*create a new session thread for the update all operation*/
-	if (check_all || is_proxy) {
+	if (sync_deleted || is_proxy) {
 		msg = camel_session_thread_msg_new (session, &update_ops, sizeof(*msg));
 		msg->cnc = cnc;
-		msg->t_str = g_strdup (time_string);
+		msg->t_str = g_strdup (old_sync_time);
 		msg->container_id = g_strdup (container_id);
 		msg->folder = folder;
 		camel_object_ref (folder);
@@ -1373,8 +1417,9 @@ end3:
 	g_list_free (list);
 	list = NULL;
 end2:
-	g_free (t_str);
-	g_free (time_string);
+	g_free (old_sync_time);
+	g_free (new_sync_time);
+	g_free (modified_sync_time);
 	g_free (container_id);
 end1:
 	if (is_locked)
@@ -1453,6 +1498,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			status = e_gw_connection_get_item (cnc, container_id, id, GET_ITEM_VIEW_WITHOUT_CACHE, &item);
 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
+			g_message ("Could not get the item from the server, item id %s \n", id);
 			i++;
 			continue;
 		}
