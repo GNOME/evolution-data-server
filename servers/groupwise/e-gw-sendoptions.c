@@ -53,7 +53,7 @@ e_gw_sendoptions_get_general_options (EGwSendOptions *opts)
 }
 
 EGwSendOptionsStatusTracking*
-e_gw_sendoptions_get_status_tracking_options (EGwSendOptions *opts, char *type)
+e_gw_sendoptions_get_status_tracking_options (EGwSendOptions *opts, const gchar *type)
 {
 	g_return_val_if_fail (opts != NULL || E_IS_GW_SENDOPTIONS (opts), NULL);
 	g_return_val_if_fail (type != NULL, NULL);

@@ -295,9 +295,6 @@ EGwItemRecurrenceRule *e_gw_item_get_rrule (EGwItem *item);
 int e_gw_item_get_recurrence_key (EGwItem *item);
 void e_gw_item_set_recurrence_key (EGwItem *item, int recurrence_key);
 
-GSList * e_gw_item_get_attach_id_list (EGwItem *item) ;
-void e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list) ;
-
 void e_gw_item_set_source (EGwItem *item, char *source) ;
 
 int e_gw_item_get_trigger (EGwItem *item);

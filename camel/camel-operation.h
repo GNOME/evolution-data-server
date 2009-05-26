@@ -59,8 +59,8 @@ struct PRFileDesc *camel_operation_cancel_prfd(CamelOperation *cc);
 /* return the registered operation for this thread, if there is one */
 CamelOperation *camel_operation_registered(void);
 
-void camel_operation_start(CamelOperation *cc, char *what, ...);
-void camel_operation_start_transient(CamelOperation *cc, char *what, ...);
+void camel_operation_start(CamelOperation *cc, const gchar *what, ...);
+void camel_operation_start_transient(CamelOperation *cc, const gchar *what, ...);
 void camel_operation_progress(CamelOperation *cc, int pc);
 void camel_operation_progress_count(CamelOperation *cc, int sofar);
 void camel_operation_end(CamelOperation *cc);

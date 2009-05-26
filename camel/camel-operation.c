@@ -488,7 +488,7 @@ camel_operation_cancel_prfd (CamelOperation *cc)
  * similar end operations.
  **/
 void
-camel_operation_start (CamelOperation *cc, char *what, ...)
+camel_operation_start (CamelOperation *cc, const gchar *what, ...)
 {
 	va_list ap;
 	char *msg;
@@ -535,7 +535,7 @@ camel_operation_start (CamelOperation *cc, char *what, ...)
  * previous state when finished.
  **/
 void
-camel_operation_start_transient (CamelOperation *cc, char *what, ...)
+camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 {
 	va_list ap;
 	char *msg;

@@ -238,8 +238,6 @@ void  gdata_entry_set_im_addresses (GDataEntry *entry, GSList *ims);
 
 void  gdata_entry_set_organizations (GDataEntry *entry, GSList *orgs);
 
-void  gdata_entry_set_phone_numbers (GDataEntry *entry, GSList *numbers);
-
 void  gdata_entry_set_postal_addresses (GDataEntry *entry, GSList *pas);
 
 void gdata_entry_set_attendee_list (GDataEntry *entry, GSList *attendee);
@@ -255,8 +253,6 @@ GSList * gdata_entry_get_organizations (GDataEntry *entry);
 GSList * gdata_entry_get_phone_numbers (GDataEntry *entry);
 
 GSList * gdata_entry_get_postal_addresses (GDataEntry *entry);
-
-gboolean gdata_entry_is_deleted (GDataEntry *entry);
 
 GDataEntryEmailAddress * gdata_entry_get_primary_email_address (GDataEntry *entry);
 
