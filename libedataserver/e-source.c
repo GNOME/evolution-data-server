@@ -801,53 +801,53 @@ e_source_to_standalone_xml (ESource *source)
  *
  * Compares if @a is equivalent to @b.
  *
- * Return value: %TRUE if @a is equivalent to @b, 
+ * Return value: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
  **/
-gboolean 
+gboolean
 e_source_equal (ESource *a, ESource *b)
 {
-	g_return_val_if_fail (E_IS_SOURCE (a), FALSE); 
-	g_return_val_if_fail (E_IS_SOURCE (b), FALSE); 
+	g_return_val_if_fail (E_IS_SOURCE (a), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (b), FALSE);
 
 	#define ONLY_ONE_NULL(aa, bb) (((aa) == NULL && (bb) != NULL) || ((aa) != NULL && (bb) == NULL))
 
 	/* Compare source stuff */
-	if (a->priv->uid 
-	 && b->priv->uid 
+	if (a->priv->uid
+	 && b->priv->uid
 	 && g_ascii_strcasecmp (a->priv->uid, b->priv->uid))
-		return FALSE; 
+		return FALSE;
 
-	if (a->priv->name 
-	 && b->priv->name 
+	if (a->priv->name
+	 && b->priv->name
 	 && g_ascii_strcasecmp (a->priv->name, b->priv->name))
-		return FALSE; 
+		return FALSE;
 
-	if (a->priv->relative_uri 
-	 && b->priv->relative_uri 
+	if (a->priv->relative_uri
+	 && b->priv->relative_uri
 	 && g_ascii_strcasecmp (a->priv->relative_uri, b->priv->relative_uri))
-		return FALSE; 
+		return FALSE;
 
-	if (a->priv->absolute_uri 
-	 && b->priv->absolute_uri 
+	if (a->priv->absolute_uri
+	 && b->priv->absolute_uri
 	 && g_ascii_strcasecmp (a->priv->absolute_uri, b->priv->absolute_uri))
-		return FALSE; 
+		return FALSE;
 
-	if ((a->priv->color_spec 
-	 && b->priv->color_spec 
+	if ((a->priv->color_spec
+	 && b->priv->color_spec
 	 && g_ascii_strcasecmp (a->priv->color_spec, b->priv->color_spec)) ||
 	 (ONLY_ONE_NULL (a->priv->color_spec, b->priv->color_spec)))
-		return FALSE; 
+		return FALSE;
 
 	if (a->priv->readonly != b->priv->readonly)
-		return FALSE; 
+		return FALSE;
 
 	if (!compare_str_hashes (a->priv->properties, b->priv->properties))
-		return FALSE; 
+		return FALSE;
 
 	#undef ONLY_ONE_NULL
 
-	return TRUE; 
+	return TRUE;
 }
 
 /**
@@ -857,24 +857,24 @@ e_source_equal (ESource *a, ESource *b)
  *
  * Compares if @a is equivalent to @b.
  *
- * Return value: %TRUE if @a is equivalent to @b, 
+ * Return value: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
  **/
-gboolean 
+gboolean
 e_source_xmlstr_equal (const gchar *a, const gchar *b)
 {
-	ESource *srca, *srcb; 
-	gboolean retval; 
+	ESource *srca, *srcb;
+	gboolean retval;
 
-	srca = e_source_new_from_standalone_xml (a); 
-	srcb = e_source_new_from_standalone_xml (b); 
+	srca = e_source_new_from_standalone_xml (a);
+	srcb = e_source_new_from_standalone_xml (b);
 
-	retval = e_source_equal (srca, srcb); 
+	retval = e_source_equal (srca, srcb);
 
-	g_object_unref (srca); 
-	g_object_unref (srcb); 
+	g_object_unref (srca);
+	g_object_unref (srcb);
 
-	return retval; 
+	return retval;
 }
 
 ESource *

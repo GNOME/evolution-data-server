@@ -2082,7 +2082,7 @@ exchange_account_get_username (ExchangeAccount *account)
   * exchange_account_get_windows_domain :
   * @account : #ExchangeAccount
   *
-  * Returns the Windows domain 
+  * Returns the Windows domain
   *
   * Return value : Windows domain
   **/
@@ -2090,7 +2090,7 @@ char *
 exchange_account_get_windows_domain (ExchangeAccount *account)
 {
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
-	
+
 	return account->priv->windows_domain;
 }
 

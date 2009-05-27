@@ -707,7 +707,7 @@ gdata_feed_get_timezone (GDataFeed *feed)
 
 	g_return_val_if_fail (feed != NULL, NULL);
 	g_return_val_if_fail (GDATA_IS_FEED (feed), NULL);
-	
+
 	priv = GDATA_FEED_GET_PRIVATE (feed);
 
 	return priv->timezone;

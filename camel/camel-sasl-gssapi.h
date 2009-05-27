@@ -39,14 +39,14 @@ typedef struct _CamelSaslGssapiClass CamelSaslGssapiClass;
 
 struct _CamelSaslGssapi {
 	CamelSasl parent_object;
-	
+
 	struct _CamelSaslGssapiPrivate *priv;
-	
+
 };
 
 struct _CamelSaslGssapiClass {
 	CamelSaslClass parent_class;
-	
+
 };
 
 /* Standard Camel function */

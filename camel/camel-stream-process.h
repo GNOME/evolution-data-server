@@ -36,7 +36,7 @@ typedef struct _CamelStreamProcess CamelStreamProcess;
 
 struct _CamelStreamProcess {
 	CamelStream parent;
-	
+
 	int sockfd;
 	pid_t childpid;
 };

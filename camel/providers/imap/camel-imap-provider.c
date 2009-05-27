@@ -98,10 +98,10 @@ static CamelProvider imap_provider = {
 
 CamelServiceAuthType camel_imap_password_authtype = {
 	N_("Password"),
-	
+
 	N_("This option will connect to the IMAP server using a "
 	   "plaintext password."),
-	
+
 	"",
 	TRUE
 };
@@ -135,7 +135,7 @@ imap_url_hash (gconstpointer key)
 	add_hash (&hash, u->user);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
-	
+
 	return hash;
 }
 
@@ -148,10 +148,10 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-	
+
 	if (s2 == NULL)
 		return FALSE;
-	
+
 	return strcmp (s1, s2) == 0;
 }
 
@@ -159,7 +159,7 @@ static int
 imap_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
-	
+
 	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->host, u2->host)

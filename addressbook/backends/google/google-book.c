@@ -379,7 +379,7 @@ google_book_cache_refresh_if_needed (GoogleBook *book, GError **error)
     __debug__ (G_STRFUNC);
 
     if (priv->offline || NULL == priv->service) {
-        __debug__ ("We are not connected to Google%s.", 
+        __debug__ ("We are not connected to Google%s.",
                    priv->offline ? " (offline mode)" : "");
         return TRUE;
     }
@@ -398,7 +398,7 @@ google_book_cache_refresh_if_needed (GoogleBook *book, GError **error)
         }
     } else {
         if (install_timeout) {
-            __debug__ ("Installing timeout with %d seconds", 
+            __debug__ ("Installing timeout with %d seconds",
                        remaining_secs);
             priv->refresh_id =
                 g_timeout_add_seconds (remaining_secs,

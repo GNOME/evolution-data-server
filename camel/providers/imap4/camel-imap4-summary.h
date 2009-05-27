@@ -51,33 +51,33 @@ enum {
 
 struct _CamelIMAP4MessageInfo {
 	CamelMessageInfoBase info;
-	
+
 	guint32 server_flags;
 };
 
 struct _CamelIMAP4MessageContentInfo {
 	CamelMessageContentInfo info;
-	
+
 };
 
 struct _CamelIMAP4Summary {
 	CamelFolderSummary parent_object;
-	
+
 	guint32 version;
-	
+
 	guint32 exists;
 	guint32 recent;
 	guint32 unseen;
-	
+
 	guint32 uidvalidity;
-	
+
 	guint uidvalidity_changed:1;
 	guint update_flags:1;
 };
 
 struct _CamelIMAP4SummaryClass {
 	CamelFolderSummaryClass parent_class;
-	
+
 };
 
 

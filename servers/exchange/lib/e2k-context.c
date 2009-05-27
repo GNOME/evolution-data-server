@@ -137,7 +137,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 {
 	SoupURI *proxy_uri = NULL;
 	E2kContext* ctx = (E2kContext *)user_data;
-	if (!ctx || !ctx->priv || 
+	if (!ctx || !ctx->priv ||
 	    (!ctx->priv->session && !ctx->priv->async_session) ||
 	    (!ctx->priv->owa_uri))
 		return;
@@ -154,7 +154,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 		g_object_set (ctx->priv->async_session, SOUP_SESSION_PROXY_URI,
 			      proxy_uri, NULL);
 }
- 
+
 static void
 init (GObject *object)
 {
@@ -221,7 +221,7 @@ dispose (GObject *object)
 		}
 		g_free (ctx->priv);
 		ctx->priv = NULL;
-		
+
 	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);

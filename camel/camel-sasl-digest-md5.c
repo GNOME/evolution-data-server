@@ -172,9 +172,9 @@ static void
 camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *camel_sasl_digest_md5_class)
 {
 	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_digest_md5_class);
-	
+
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-	
+
 	/* virtual method overload */
 	camel_sasl_class->challenge = digest_md5_challenge;
 }
@@ -183,7 +183,7 @@ static void
 camel_sasl_digest_md5_init (gpointer object, gpointer klass)
 {
 	CamelSaslDigestMd5 *sasl_digest = CAMEL_SASL_DIGEST_MD5 (object);
-	
+
 	sasl_digest->priv = g_new0 (struct _CamelSaslDigestMd5Private, 1);
 }
 
@@ -195,18 +195,18 @@ camel_sasl_digest_md5_finalize (CamelObject *object)
 	struct _DigestResponse *r = sasl->priv->response;
 	GList *p;
 	int i;
-	
+
 	if (c != NULL) {
 		for (i = 0; i < c->realms->len; i++)
 			g_free (c->realms->pdata[i]);
 		g_ptr_array_free (c->realms, TRUE);
-		
+
 		g_free (c->nonce);
 		g_free (c->charset);
 		g_free (c->algorithm);
 		for (p = c->params; p; p = p->next) {
 			struct _param *param = p->data;
-			
+
 			g_free (param->name);
 			g_free (param->value);
 			g_free (param);
@@ -214,7 +214,7 @@ camel_sasl_digest_md5_finalize (CamelObject *object)
 		g_list_free (c->params);
 		g_free (c);
 	}
-	
+
 	if (r != NULL) {
 		g_free (r->username);
 		g_free (r->realm);
@@ -230,7 +230,7 @@ camel_sasl_digest_md5_finalize (CamelObject *object)
 		g_free (r->param);
 		g_free (r);
 	}
-	
+
 	g_free (sasl->priv);
 }
 
@@ -239,7 +239,7 @@ CamelType
 camel_sasl_digest_md5_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_sasl_get_type (),
 					    "CamelSaslDigestMd5",
@@ -250,7 +250,7 @@ camel_sasl_digest_md5_get_type (void)
 					    (CamelObjectInitFunc) camel_sasl_digest_md5_init,
 					    (CamelObjectFinalizeFunc) camel_sasl_digest_md5_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -258,10 +258,10 @@ static void
 decode_lwsp (const char **in)
 {
 	const char *inptr = *in;
-	
+
 	while (isspace (*inptr))
 		inptr++;
-	
+
 	*in = inptr;
 }
 
@@ -272,12 +272,12 @@ decode_quoted_string (const char **in)
 	char *out = NULL, *outptr;
 	int outlen;
 	int c;
-	
+
 	decode_lwsp (&inptr);
 	if (*inptr == '"') {
 		const char *intmp;
 		int skip = 0;
-		
+
 		/* first, calc length */
 		inptr++;
 		intmp = inptr;
@@ -287,10 +287,10 @@ decode_quoted_string (const char **in)
 				skip++;
 			}
 		}
-		
+
 		outlen = intmp - inptr - skip;
 		out = outptr = g_malloc (outlen + 1);
-		
+
 		while ((c = *inptr++) && c != '"') {
 			if (c == '\\' && *inptr) {
 				c = *inptr++;
@@ -299,9 +299,9 @@ decode_quoted_string (const char **in)
 		}
 		*outptr = '\0';
 	}
-	
+
 	*in = inptr;
-	
+
 	return out;
 }
 
@@ -310,13 +310,13 @@ decode_token (const char **in)
 {
 	const char *inptr = *in;
 	const char *start;
-	
+
 	decode_lwsp (&inptr);
 	start = inptr;
-	
+
 	while (*inptr && *inptr != '=' && *inptr != ',')
 		inptr++;
-	
+
 	if (inptr > start) {
 		*in = inptr;
 		return g_strndup (start, inptr - start);
@@ -329,7 +329,7 @@ static char *
 decode_value (const char **in)
 {
 	const char *inptr = *in;
-	
+
 	decode_lwsp (&inptr);
 	if (*inptr == '"') {
 		d(printf ("decoding quoted string token\n"));
@@ -346,7 +346,7 @@ parse_param_list (const char *tokens)
 	GList *params = NULL;
 	struct _param *param;
 	const char *ptr;
-	
+
 	for (ptr = tokens; ptr && *ptr; ) {
 		param = g_new0 (struct _param, 1);
 		param->name = decode_token (&ptr);
@@ -354,13 +354,13 @@ parse_param_list (const char *tokens)
 			ptr++;
 			param->value = decode_value (&ptr);
 		}
-		
+
 		params = g_list_prepend (params, param);
-		
+
 		if (*ptr == ',')
 			ptr++;
 	}
-	
+
 	return params;
 }
 
@@ -368,12 +368,12 @@ static guint
 decode_data_type (DataType *dtype, const char *name)
 {
 	int i;
-	
+
 	for (i = 0; dtype[i].name; i++) {
 		if (!g_ascii_strcasecmp (dtype[i].name, name))
 			break;
 	}
-	
+
 	return dtype[i].type;
 }
 
@@ -385,12 +385,12 @@ static const char *
 type_to_string (DataType *dtype, guint type)
 {
 	int i;
-	
+
 	for (i = 0; dtype[i].name; i++) {
 		if (dtype[i].type == type)
 			break;
 	}
-	
+
 	return dtype[i].name;
 }
 
@@ -417,33 +417,33 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 	gboolean got_maxbuf = FALSE;
 	gboolean got_charset = FALSE;
 #endif /* PARANOID */
-	
+
 	params = parse_param_list (tokens);
 	if (!params) {
 		*abort = TRUE;
 		return NULL;
 	}
-	
+
 	*abort = FALSE;
-	
+
 	challenge = g_new0 (struct _DigestChallenge, 1);
 	challenge->realms = g_ptr_array_new ();
 	challenge->maxbuf = 65536;
-	
+
 	for (p = params; p; p = p->next) {
 		struct _param *param = p->data;
 		int type;
-		
+
 		type = get_digest_arg (param->name);
 		switch (type) {
 		case DIGEST_REALM:
 			for (ptr = param->value; ptr && *ptr; ) {
 				char *token;
-				
+
 				token = decode_token (&ptr);
 				if (token)
 					g_ptr_array_add (challenge->realms, token);
-				
+
 				if (*ptr == ',')
 					ptr++;
 			}
@@ -460,15 +460,15 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 		case DIGEST_QOP:
 			for (ptr = param->value; ptr && *ptr; ) {
 				char *token;
-				
+
 				token = decode_token (&ptr);
 				if (token)
 					challenge->qop |= decode_qop (token);
-				
+
 				if (*ptr == ',')
 					ptr++;
 			}
-			
+
 			if (challenge->qop & QOP_INVALID)
 				challenge->qop = QOP_INVALID;
 			g_free (param->value);
@@ -512,11 +512,11 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 		case DIGEST_CIPHER:
 			for (ptr = param->value; ptr && *ptr; ) {
 				char *token;
-				
+
 				token = decode_token (&ptr);
 				if (token)
 					challenge->cipher |= decode_cipher (token);
-				
+
 				if (*ptr == ',')
 					ptr++;
 			}
@@ -531,9 +531,9 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 			break;
 		}
 	}
-	
+
 	g_list_free (params);
-	
+
 	return challenge;
 }
 
@@ -665,9 +665,9 @@ generate_response (struct _DigestChallenge *challenge, const char *host,
 		resp->realm = g_strdup (challenge->realms->pdata[0]);
 	else
 		resp->realm = g_strdup ("");
-	
+
 	resp->nonce = g_strdup (challenge->nonce);
-	
+
 	/* generate the cnonce */
 	bgen = g_strdup_printf ("%p:%lu:%lu", (void *) resp,
 				(unsigned long) getpid (),
@@ -724,7 +724,7 @@ digest_response (struct _DigestResponse *resp)
 	GByteArray *buffer;
 	const char *str;
 	char *buf;
-	
+
 	buffer = g_byte_array_new ();
 	g_byte_array_append (buffer, (guint8 *) "username=\"", 10);
 	if (resp->charset) {
@@ -831,13 +831,13 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	guchar out[33];
 	char *tokens;
 	struct addrinfo *ai, hints;
-	
+
 	/* Need to wait for the server */
 	if (!token)
 		return NULL;
-	
+
 	g_return_val_if_fail (sasl->service->url->passwd != NULL, NULL);
-	
+
 	switch (priv->state) {
 	case STATE_AUTH:
 		if (token->len > 2048) {
@@ -854,7 +854,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 					      _("Server challenge invalid\n"));
 			return NULL;
 		}
-		
+
 		if (priv->challenge->qop == QOP_INVALID) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					      _("Server challenge contained invalid "
@@ -900,7 +900,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			rspauth->value = decode_value (&ptr);
 		}
 		g_free (tokens);
-		
+
 		if (!rspauth->value) {
 			g_free (rspauth->name);
 			g_free (rspauth);
@@ -908,7 +908,7 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 					      _("Server response contained incomplete authorization data"));
 			return NULL;
 		}
-		
+
 		compute_response (priv->response, sasl->service->url->passwd, FALSE, out);
 		if (memcmp (out, rspauth->value, 32) != 0) {
 			g_free (rspauth->name);
@@ -917,22 +917,22 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					      _("Server response does not match"));
 			sasl->authenticated = TRUE;
-			
+
 			return NULL;
 		}
-		
+
 		g_free (rspauth->name);
 		g_free (rspauth->value);
 		g_free (rspauth);
-		
+
 		ret = g_byte_array_new ();
-		
+
 		sasl->authenticated = TRUE;
 	default:
 		break;
 	}
-	
+
 	priv->state++;
-	
+
 	return ret;
 }

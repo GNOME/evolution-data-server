@@ -36,7 +36,7 @@
 #include "camel-imapp-exception.h"
 #include "camel-imapp-stream.h"
 
-#define t(x) 
+#define t(x)
 #define io(x) x
 
 static CamelObjectClass *parent_class = NULL;
@@ -71,7 +71,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 	}
 
 	is->literal -= max;
-	
+
 	return max;
 }
 

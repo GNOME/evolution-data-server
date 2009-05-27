@@ -10,7 +10,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with the program; if not, see <http://www.gnu.org/licenses/>  
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
  *
  * Authors:
@@ -54,7 +54,7 @@ EProxy* e_proxy_new (void);
 SoupURI* e_proxy_peek_uri_for (EProxy* proxy, const char *uri);
 void e_proxy_setup_proxy (EProxy* proxy);
 GType e_proxy_get_type (void);
-gboolean e_proxy_require_proxy_for_uri (EProxy *proxy, 
+gboolean e_proxy_require_proxy_for_uri (EProxy *proxy,
 					const char* uri);
 
 G_END_DECLS

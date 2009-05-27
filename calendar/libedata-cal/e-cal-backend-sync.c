@@ -919,8 +919,8 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 				}
 				icalcomponent_free (clone);
 			}
-			
-			if (free_comp)	
+
+			if (free_comp)
 				icalcomponent_free (free_comp);
 		}
 

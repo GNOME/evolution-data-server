@@ -218,15 +218,15 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 	CamelStreamFs *stream_fs = CAMEL_STREAM_FS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
 	ssize_t nread;
-	
+
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
-	
+
 	if ((nread = camel_read (stream_fs->fd, buffer, n)) > 0)
 		seekable->position += nread;
 	else if (nread == 0)
 		stream->eos = TRUE;
-	
+
 	return nread;
 }
 
@@ -236,13 +236,13 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 	CamelStreamFs *stream_fs = CAMEL_STREAM_FS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
 	ssize_t nwritten;
-	
+
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
-	
+
 	if ((nwritten = camel_write (stream_fs->fd, buffer, n)) > 0)
 		seekable->position += nwritten;
-	
+
 	return nwritten;
 }
 
@@ -257,7 +257,7 @@ stream_close (CamelStream *stream)
 {
 	if (close (((CamelStreamFs *)stream)->fd) == -1)
 		return -1;
-	
+
 	((CamelStreamFs *)stream)->fd = -1;
 	return 0;
 }

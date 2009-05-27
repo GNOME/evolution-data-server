@@ -54,7 +54,7 @@ struct _CamelLocalSummary {
 	guint32 version;	/* file version being loaded */
 
 	char *folder_path;	/* name of matching folder */
-	
+
 	CamelIndex *index;
 	unsigned int index_force:1; /* do we force index during creation? */
 	unsigned int check_force:1; /* does a check force a full check? */

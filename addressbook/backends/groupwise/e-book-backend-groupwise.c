@@ -873,7 +873,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 			e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "emailList/@primary", email);
 			emails_without_ids = g_list_append (emails_without_ids, g_strdup (email));
 			dest_without_ids = g_list_append (dest_without_ids, dest);
-		
+
 			count++;
 		}
 	}
@@ -1217,7 +1217,7 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 					value = e_gw_item_get_field_value (item, mappings[i].element_name);
 					if(value != NULL)
 						e_contact_set (contact, mappings[i].field_id, value);
-				}				
+				}
 			}
 		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
 			if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
@@ -2290,9 +2290,9 @@ book_view_thread (gpointer data)
 				e_data_book_view_unref (book_view);
 				if (filter)
 					g_object_unref (filter);
-				return NULL; 
+				return NULL;
  		}
- 		else 
+ 		else
  			status =  E_GW_CONNECTION_STATUS_OK;
 
 		/* Check if the data is found on summary */
@@ -2371,16 +2371,16 @@ book_view_thread (gpointer data)
 				if (temp_list)
 					g_list_free (temp_list);
 				e_data_book_view_unref (book_view);
-				
-				if (filter)	
+
+				if (filter)
 					g_object_unref (filter);
 
 				if (ids)
 					g_ptr_array_free (ids, TRUE);
 
 				return NULL;
-			} 
-		
+			}
+
 			/* no summary information found, read from server */
 			if (enable_debug)
 				printf ("summary not found, reading the contacts from server\n");
@@ -2738,7 +2738,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 		}
 
 		if (status != E_GW_CONNECTION_STATUS_OK)
-		       	 break;	
+		       	 break;
 
 		for (l = gw_items; l != NULL; l = g_list_next (l)) {
 			contact_num++;
@@ -3312,10 +3312,10 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			priv->cnc = e_gw_connection_new (http_uri, user, passwd);
 			g_free (http_uri);
 		}
-	
+
 		if (!E_IS_GW_CONNECTION(priv->cnc)) {
 
-			if (error.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD) 
+			if (error.status == E_GW_CONNECTION_STATUS_INVALID_PASSWORD)
 				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_AuthenticationFailed);
 			else
 				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_OtherError);
@@ -3371,7 +3371,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 
 			if (!e_book_backend_summary_load (priv->summary))
 				build_summary (ebgw);
-			
+
 			ebgw->priv->is_cache_ready = TRUE;
 			ebgw->priv->is_summary_ready = TRUE;
 

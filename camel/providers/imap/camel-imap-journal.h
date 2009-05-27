@@ -55,10 +55,10 @@ typedef enum {
 
 struct _CamelIMAPJournalEntry {
 	CamelDListNode node;
-	
+
 	CamelOfflineAction type;
 
-	GPtrArray *uids;	
+	GPtrArray *uids;
 
 	char *append_uid;
 	char *dest_folder_name;
@@ -69,13 +69,13 @@ struct _CamelIMAPJournal {
 	CamelOfflineJournal parent_object;
 
 	GHashTable *folders;
-	GHashTable *uidmap;	
+	GHashTable *uidmap;
 	gboolean rp_in_progress;
 };
 
 struct _CamelIMAPJournalClass {
 	CamelOfflineJournalClass parent_class;
-	
+
 };
 
 

@@ -194,7 +194,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
 
 	g_return_val_if_fail (G_IS_INPUT_STREAM (stream_vfs->stream), 0);
-	
+
 	nread = g_input_stream_read (G_INPUT_STREAM (stream_vfs->stream), buffer, n, NULL, &error);
 
 	if (nread == 0 || error)

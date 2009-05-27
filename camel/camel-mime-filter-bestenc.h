@@ -48,7 +48,7 @@ typedef enum _CamelBestencEncoding {
 	CAMEL_BESTENC_7BIT,
 	CAMEL_BESTENC_8BIT,
 	CAMEL_BESTENC_BINARY,
-	
+
 	/* is the content stream to be treated as text? */
 	CAMEL_BESTENC_TEXT = 1<<8
 } CamelBestencEncoding;

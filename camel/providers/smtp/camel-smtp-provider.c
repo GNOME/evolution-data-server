@@ -62,7 +62,7 @@ camel_provider_module_init(void)
 	smtp_provider.url_hash = smtp_url_hash;
 	smtp_provider.url_equal = smtp_url_equal;
 	smtp_provider.translation_domain = GETTEXT_PACKAGE;
-	
+
 	camel_provider_register(&smtp_provider);
 }
 
@@ -82,7 +82,7 @@ smtp_url_hash (gconstpointer key)
 	add_hash (&hash, u->user);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
-	
+
 	return hash;
 }
 
@@ -95,7 +95,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-	
+
 	if (s2 == NULL)
 		return FALSE;
 
@@ -106,7 +106,7 @@ static gint
 smtp_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
-	
+
 	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->host, u2->host)

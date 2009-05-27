@@ -5,8 +5,8 @@
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -99,7 +99,7 @@ struct _CamelSessionPrivate {
 
 	GHashTable *thread_msg_op;
 	GHashTable *junk_headers;
-	
+
 };
 
 #define CAMEL_SESSION_LOCK(f, l) \
@@ -122,7 +122,7 @@ struct _CamelFolderSummaryPrivate {
 	struct _CamelStreamFilter *filter_stream;
 
 	struct _CamelIndex *index;
-	
+
 	GMutex *summary_lock;	/* for the summary hashtable/array */
 	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
 	GMutex *filter_lock;	/* for accessing any of the filtering/indexing stuff, since we share them */
@@ -157,7 +157,7 @@ struct _CamelVeeFolderPrivate {
 	gboolean destroyed;
 	GList *folders;			/* lock using subfolder_lock before changing/accessing */
 	GList *folders_changed;		/* for list of folders that have changed between updates */
-	
+
 	GMutex *summary_lock;		/* for locking vfolder summary */
 	GMutex *subfolder_lock;		/* for locking the subfolder list */
 	GMutex *changed_lock;		/* for locking the folders-changed list */

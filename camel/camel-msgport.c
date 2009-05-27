@@ -70,10 +70,10 @@ msgport_pipe (int *fds)
 #ifndef G_OS_WIN32
 	if (pipe (fds) != -1)
 		return 0;
-	
+
 	fds[0] = -1;
 	fds[1] = -1;
-	
+
 	return -1;
 #else
 	SOCKET temp, socket1 = -1, socket2 = -1;
@@ -84,11 +84,11 @@ msgport_pipe (int *fds)
 	struct timeval tv;
 
 	temp = socket (AF_INET, SOCK_STREAM, 0);
-	
+
 	if (temp == INVALID_SOCKET) {
 		goto out0;
 	}
-  	
+
 	arg = 1;
 	if (ioctlsocket (temp, FIONBIO, &arg) == SOCKET_ERROR) {
 		goto out0;
@@ -113,13 +113,13 @@ msgport_pipe (int *fds)
 	}
 
 	socket1 = socket (AF_INET, SOCK_STREAM, 0);
-	
+
 	if (socket1 == INVALID_SOCKET) {
 		goto out0;
 	}
 
 	arg = 1;
-	if (ioctlsocket (socket1, FIONBIO, &arg) == SOCKET_ERROR) { 
+	if (ioctlsocket (socket1, FIONBIO, &arg) == SOCKET_ERROR) {
 		goto out1;
 	}
 
@@ -185,10 +185,10 @@ out1:
 out0:
 	closesocket (temp);
 	errno = EMFILE;		/* FIXME: use the real syscall errno? */
-	
+
 	fds[0] = -1;
 	fds[1] = -1;
-	
+
 	return -1;
 
 #endif
@@ -205,10 +205,10 @@ msgport_prpipe (PRFileDesc **fds)
 	if (PR_CreatePipe (&fds[0], &fds[1]) != PR_FAILURE)
 		return 0;
 #endif
-	
+
 	fds[0] = NULL;
 	fds[1] = NULL;
-	
+
 	return -1;
 }
 #endif

@@ -38,7 +38,7 @@ typedef struct _CamelMimeFilterSaveClass CamelMimeFilterSaveClass;
 
 struct _CamelMimeFilterSave {
 	CamelMimeFilter parent;
-	
+
 	CamelStream *stream;
 };
 

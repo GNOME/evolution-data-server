@@ -572,7 +572,7 @@ soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer)
 
 	SoupSoapResponsePrivate *priv = SOUP_SOAP_RESPONSE_GET_PRIVATE (response);
 	xmlDocDumpFormatMemory(priv->xmldoc, &xmlbuff, &buffersize, 1);
-	
+
 	ret = fputs ((char *) xmlbuff, buffer);
 	xmlFree (xmlbuff);
 

@@ -49,10 +49,10 @@ typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
    describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
 	struct _CamelMessageContentInfo *next;
-	
+
 	struct _CamelMessageContentInfo *childs;
 	struct _CamelMessageContentInfo *parent;
-	
+
 	CamelContentType *type;
 	char *id;
 	char *description;
@@ -67,7 +67,7 @@ typedef enum _CamelMessageFlags {
 	CAMEL_MESSAGE_DRAFT = 1<<2,
 	CAMEL_MESSAGE_FLAGGED = 1<<3,
 	CAMEL_MESSAGE_SEEN = 1<<4,
-	
+
 	/* these aren't really system flag bits, but are convenience flags */
 	CAMEL_MESSAGE_ATTACHMENTS = 1<<5,
 	CAMEL_MESSAGE_ANSWERED_ALL = 1<<6,
@@ -165,7 +165,7 @@ struct _CamelMessageInfoBase {
 	const char *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
 	int dirty:1;
-	
+
 	const char *subject;
 	const char *from;
 	const char *to;
@@ -191,7 +191,7 @@ struct _CamelMessageInfoBase {
 
 };
 
-/* probably do this as well, removing CamelFolderChangeInfo and interfaces 
+/* probably do this as well, removing CamelFolderChangeInfo and interfaces
 typedef struct _CamelChangeInfo CamelChangeInfo;
 struct _CamelChangeInfo {
 	GPtrArray *added;
@@ -221,7 +221,7 @@ struct _CamelFolderSummary {
 	guint32 junk_count;
 	guint32 junk_not_deleted_count;
 	guint32 visible_count;
-	
+
 	/* sizes of memory objects */
 	guint32 message_info_size;
 	guint32 content_info_size;
@@ -246,7 +246,7 @@ struct _CamelFolderSummary {
 	struct _CamelFolderMetaSummary *meta_summary; /* Meta summary */
 	time_t cache_load_time;
 	guint timeout_handle;
-	
+
 	const char *collate;
 	const char *sort_by;
 
@@ -271,7 +271,7 @@ struct _CamelFolderSummaryClass {
 	struct _CamelMIRecord * (*message_info_to_db) (CamelFolderSummary *, CamelMessageInfo *);
 	CamelMessageContentInfo * (*content_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
 	int (*content_info_to_db) (CamelFolderSummary *, CamelMessageContentInfo *, struct _CamelMIRecord *);
-	
+
 	/* create/save/load an individual message info */
 	CamelMessageInfo * (*message_info_new_from_header)(CamelFolderSummary *, struct _camel_header_raw *);
 	CamelMessageInfo * (*message_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);

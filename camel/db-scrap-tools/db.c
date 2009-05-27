@@ -6,7 +6,7 @@
 
 sqlite3 *db;
 
-static int 
+static int
 callback (void *data, int argc, char **argv, char **azColName)
 {
   	int i;
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('1102', 100, 123, 'nice subject', 'mlistbinary')");
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('214', 100, 123, 'nice subject', 'mlistbinary')");
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('3161', 0, 1123, '12nice subject', '123mlistbinary')");
-	
+
 //	select_stmt ("select * from table1 where uid collate uidsort order by uid collate uidsort");
 	select_stmt ("select * from table1 where uid == 5120 collate uidcmp");
 	printf ("\n\aFrom teh C File: [%s] \n\a", subject_san);

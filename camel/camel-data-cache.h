@@ -5,8 +5,8 @@
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -85,7 +85,7 @@ int             camel_data_cache_remove(CamelDataCache *cdc,
 int             camel_data_cache_clear(CamelDataCache *cache,
 				       const char *path, CamelException *ex);
 
-gchar *         camel_data_cache_get_filename(CamelDataCache *cdc, 
+gchar *         camel_data_cache_get_filename(CamelDataCache *cdc,
 					      const char *path, const char *key, CamelException *ex);
 
 /* Standard Camel function */

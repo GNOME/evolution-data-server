@@ -40,7 +40,7 @@ typedef enum {
 
 typedef struct _CamelSaslAnonymous {
 	CamelSasl parent_object;
-	
+
 	char *trace_info;
 	CamelSaslAnonTraceType type;
 } CamelSaslAnonymous;
@@ -48,7 +48,7 @@ typedef struct _CamelSaslAnonymous {
 
 typedef struct _CamelSaslAnonymousClass {
 	CamelSaslClass parent_class;
-	
+
 } CamelSaslAnonymousClass;
 
 

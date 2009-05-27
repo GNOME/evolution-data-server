@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-pop3-provider.c: pop3 provider registration code */
 
-/* 
+/*
  * Authors :
  *   Dan Winship <danw@ximian.com>
  *   Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -53,20 +53,20 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 
 static CamelProvider pop3_provider = {
 	"pop",
-	
+
 	N_("POP"),
-	
+
 	N_("For connecting to and downloading mail from POP servers."),
-	
+
 	"mail",
-	
+
 	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
 	CAMEL_PROVIDER_SUPPORTS_SSL,
-	
+
 	CAMEL_URL_NEED_USER | CAMEL_URL_NEED_HOST | CAMEL_URL_ALLOW_AUTH,
-	
+
 	pop3_conf_entries,
-	
+
 	/* ... */
 };
 
@@ -127,7 +127,7 @@ pop3_url_hash (gconstpointer key)
 	add_hash (&hash, u->user);
 	add_hash (&hash, u->host);
 	hash ^= u->port;
-	
+
 	return hash;
 }
 
@@ -140,7 +140,7 @@ check_equal (char *s1, char *s2)
 		else
 			return FALSE;
 	}
-	
+
 	if (s2 == NULL)
 		return FALSE;
 
@@ -151,7 +151,7 @@ static gint
 pop3_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
-	
+
 	return check_equal (u1->protocol, u2->protocol)
 		&& check_equal (u1->user, u2->user)
 		&& check_equal (u1->host, u2->host)

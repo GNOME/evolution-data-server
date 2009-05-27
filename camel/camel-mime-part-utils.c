@@ -7,8 +7,8 @@
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -92,7 +92,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	ct = camel_mime_parser_content_type (mp);
 
 	encoding = camel_content_transfer_encoding_decode (camel_mime_parser_header (mp, "Content-Transfer-Encoding", NULL));
-	
+
 	switch (camel_mime_parser_state (mp)) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		d(printf("Creating body part\n"));
@@ -118,14 +118,14 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 			content = (CamelDataWrapper *) camel_multipart_signed_new ();
 		else
 			content = (CamelDataWrapper *) camel_multipart_new ();
-		
+
 		camel_multipart_construct_from_parser((CamelMultipart *)content, mp);
 		d(printf("Created multi-part\n"));
 		break;
 	default:
 		g_warning("Invalid state encountered???: %u", camel_mime_parser_state (mp));
 	}
-	
+
 	if (content) {
 		if (encoding)
 			content->encoding = camel_transfer_encoding_from_string (encoding);
@@ -151,7 +151,7 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 	if (camel_content_type_is (dw->mime_type, "multipart", "*")) {
 		int i, nparts;
 		CamelMultipart *mp = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)msg);
-		
+
 		if (!CAMEL_IS_MULTIPART(mp))
 			g_assert (0);
 		nparts = camel_multipart_get_number(mp);
@@ -159,7 +159,7 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 			CamelMimePart *part = camel_multipart_get_part(mp, i);
 			got_plain = camel_mime_message_build_preview (part, info);
 		}
-			
+
 	} else if (camel_content_type_is (dw->mime_type, "text", "*") &&
 		//    !camel_content_type_is (dw->mime_type, "text", "html") &&
 		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
@@ -172,7 +172,7 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 
 			camel_stream_reset (mstream);
 			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ|CAMEL_STREAM_BUFFER_BUFFER);
-			
+
 			/* We should fetch just 200 unquoted lines. */
 			while ((line = camel_stream_buffer_read_line((CamelStreamBuffer *)bstream)) && !stop && str->len < 200) {
 				char *tmp = line;
@@ -195,7 +195,7 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 					g_free(tmp);
 					continue;
 				}
-				
+
 				g_string_append (str, " ");
 				g_string_append (str, line);
 				g_free(tmp);
@@ -207,7 +207,7 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 			/* We don't mark dirty, as we don't store these */
 			((CamelMessageInfoBase *) info)->preview = camel_utf8_make_valid(str->str);
 			g_string_free(str, TRUE);
-		
+
 			camel_object_unref (bstream);
 		}
 		camel_object_unref (mstream);

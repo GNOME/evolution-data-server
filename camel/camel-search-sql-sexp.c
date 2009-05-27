@@ -46,13 +46,13 @@ typedef enum {
 } camel_search_match_t;
 char * camel_db_get_column_name (const char *raw_name);
 
-char * 
+char *
 camel_db_sqlize_string (const char *string)
 {
 	return sqlite3_mprintf ("%Q", string);
 }
 
-void 
+void
 camel_db_free_sqlized_string (char *string)
 {
 	sqlite3_free (string);
@@ -120,7 +120,7 @@ func_or(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	int i;
 
 	d(printf("executing or: %d", argc));
-	
+
 	string = g_string_new("( ");
 	for (i = 0; i < argc; i ++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
@@ -147,13 +147,13 @@ func_not(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 	d(printf("executing not: %d", argc));
 	r1 = e_sexp_term_eval(f, argv[0]);
-	
+
 	if (r1->type == ESEXP_RES_STRING) {
 		r = e_sexp_result_new(f, ESEXP_RES_STRING);
 		/* HACK: Fix and handle completed-on better. */
 		if (strcmp(r1->value.string, "( (usertags LIKE '%completed-on 0%' AND usertags LIKE '%completed-on%') )") == 0)
 			r->value.string = g_strdup ("( (not (usertags LIKE '%completed-on 0%')) AND usertags LIKE '%completed-on%' )");
-		else			
+		else
 			r->value.string = g_strdup_printf ("(NOT (%s))",
 							   r1->value.string);
 	}
@@ -167,14 +167,14 @@ static ESExpResult *
 eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 {
 	struct _ESExpResult *r, *r1, *r2;
-	
+
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 
 	if (argc == 2) {
 		GString *str = g_string_new("( ");
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
-		
+
 		if (r1->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r1->value.number);
 		else if (r1->type == ESEXP_RES_TIME)
@@ -194,7 +194,7 @@ eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 			if (r2->type == ESEXP_RES_INT)
 				g_string_append_printf(str, "%d", r2->value.number);
 			if (r2->type == ESEXP_RES_BOOL)
-				g_string_append_printf(str, "%d", r2->value.bool);				
+				g_string_append_printf(str, "%d", r2->value.bool);
 			else if (r2->type == ESEXP_RES_TIME)
 				g_string_append_printf(str, "%ld", r2->value.time);
 			else if (r2->type == ESEXP_RES_STRING) {
@@ -218,14 +218,14 @@ static ESExpResult *
 eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 {
 	struct _ESExpResult *r, *r1, *r2;
-	
+
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 
 	if (argc == 2) {
 		GString *str = g_string_new("( ");
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
-		
+
 		if (r1->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r1->value.number);
 		else if (r1->type == ESEXP_RES_TIME)
@@ -237,7 +237,7 @@ eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		if (r2->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r2->value.number);
 		if (r2->type == ESEXP_RES_BOOL)
-			g_string_append_printf(str, "%d", r2->value.bool);		
+			g_string_append_printf(str, "%d", r2->value.bool);
 		else if (r2->type == ESEXP_RES_TIME)
 			g_string_append_printf(str, "%ld", r2->value.time);
 		else if (r2->type == ESEXP_RES_STRING)
@@ -245,7 +245,7 @@ eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		e_sexp_result_free(f, r1);
 		e_sexp_result_free(f, r2);
 		g_string_append (str, " )");
-		
+
 		r->value.string = str->str;
 		g_string_free(str, FALSE);
 	}
@@ -257,14 +257,14 @@ static ESExpResult *
 eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 {
 	struct _ESExpResult *r, *r1, *r2;
-	
+
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 
 	if (argc == 2) {
 		GString *str = g_string_new("( ");
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
-		
+
 		if (r1->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r1->value.number);
 		else if (r1->type == ESEXP_RES_TIME)
@@ -276,7 +276,7 @@ eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		if (r2->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r2->value.number);
 		if (r2->type == ESEXP_RES_BOOL)
-			g_string_append_printf(str, "%d", r2->value.bool);			
+			g_string_append_printf(str, "%d", r2->value.bool);
 		else if (r2->type == ESEXP_RES_TIME)
 			g_string_append_printf(str, "%ld", r2->value.time);
 		else if (r2->type == ESEXP_RES_STRING)
@@ -284,7 +284,7 @@ eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 		e_sexp_result_free(f, r1);
 		e_sexp_result_free(f, r2);
 		g_string_append (str, " )");
-		
+
 		r->value.string = str->str;
 		g_string_free(str, FALSE);
 	}
@@ -317,7 +317,7 @@ match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 	GString *str = g_string_new ("( ");
 
 	d(printf("executing match-threads: %d", argc));
-	
+
 	for (i=1;i<argc;i++) {
 		r = e_sexp_term_eval(f, argv[i]);
 		g_string_append_printf(str, "%s%s", r->value.string, ((argc>1) && (i != argc-1)) ?  " AND ":"");
@@ -389,7 +389,7 @@ static ESExpResult *
 header_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	d(printf("executing header-contains: %d", argc));
-	
+
 	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_CONTAINS);
 }
 
@@ -397,7 +397,7 @@ static ESExpResult *
 header_matches(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	d(printf("executing header-matches: %d", argc));
-	
+
 	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_EXACT);
 }
 
@@ -405,7 +405,7 @@ static ESExpResult *
 header_starts_with (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	d(printf("executing header-starts-with: %d", argc));
-	
+
 	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_STARTS);
 }
 
@@ -413,7 +413,7 @@ static ESExpResult *
 header_ends_with (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	d(printf("executing header-ends-with: %d", argc));
-	
+
 	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_ENDS);
 }
 
@@ -425,10 +425,10 @@ header_exists (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 	char *headername;
 
 	d(printf("executing header-exists: %d", argc));
-	
+
 	headername = camel_db_get_column_name (argv[0]->value.string);
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
-	r->value.string = g_strdup_printf ("(%s NOTNULL)", headername);	
+	r->value.string = g_strdup_printf ("(%s NOTNULL)", headername);
 	g_free (headername);
 	return r;
 }
@@ -439,7 +439,7 @@ user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	ESExpResult *r;
 
 	d(printf("executing user-tag: %d", argc));
-	
+
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 	/* Hacks no otherway to fix these really :( */
 	if (strcmp(argv[0]->value.string, "completed-on") == 0)
@@ -448,7 +448,7 @@ user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 		r->value.string = g_strdup_printf("usertags NOT LIKE '%cfollow-up%c'", '%', '%');
 	else
 		r->value.string = g_strdup("usertags");
-	
+
 	return r;
 }
 
@@ -460,7 +460,7 @@ user_flag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	char *tstr, *qstr;
 
 	d(printf("executing user-flag: %d", argc));
-	
+
 	tstr = g_strdup_printf("%c%s%c", '%', argv[0]->value.string, '%');
 	qstr = get_db_safe_string(tstr);
 	g_free(tstr);
@@ -478,12 +478,12 @@ system_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	char *tstr;
 
 	d(printf("executing system-flag: %d", argc));
-	
+
 	tstr = camel_db_get_column_name(argv[0]->value.string);
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 	r->value.string = g_strdup_printf("(%s = 1)", tstr);
 	g_free(tstr);
-	
+
 	return r;
 }
 
@@ -529,12 +529,12 @@ static ESExpResult *
 get_size (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 {
 	ESExpResult *r;
-	
+
 	d(printf("executing get-size\n"));
 
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 	r->value.string = g_strdup("size");
-	
+
 	return r;
 }
 
@@ -554,7 +554,7 @@ sql_exp (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	}
 	r->value.string = str->str;
 	g_string_free (str, FALSE);
-	
+
 	return r;
 }
 
@@ -587,7 +587,7 @@ static struct {
 	{ "get-current-date", get_current_date, 0},
 	{ "get-size", get_size, 0},
 	{ "sql-exp", sql_exp, 0},
-	
+
 /*	{ "uid", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, uid), 1 },	*/
 };
 
@@ -599,7 +599,7 @@ camel_sexp_to_sql_sexp (const char *sql)
 	ESExpResult *r;
 	int i;
 	char *res;
-	
+
 	sexp = e_sexp_new();
 
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
@@ -619,9 +619,9 @@ camel_sexp_to_sql_sexp (const char *sql)
 		return NULL;
 	if (r->type == ESEXP_RES_STRING) {
 		res = g_strdup (r->value.string);
-	} else 
+	} else
 		g_assert(0);
-	
+
 	e_sexp_result_free(sexp, r);
 	e_sexp_unref (sexp);
 	return res;
@@ -633,19 +633,19 @@ camel_sexp_to_sql_sexp (const char *sql)
 
 (and (match-all (and (not (system-flag "deleted")) (not (system-flag "junk"))))
  (and   (or
-  
+
      (match-all (not (system-flag "Attachments")))
-    
+
   )
  ))
- 
+
 "
 replied INTEGER ,                (match-all (system-flag  "Answered"))
 size INTEGER ,                   (match-all (< (get-size) 100))
 dsent NUMERIC ,                  (match-all (< (get-sent-date) (- (get-current-date) 10)))
 dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-current-date) 10)))
 //mlist TEXT ,                      x-camel-mlist   (match-all (header-matches "x-camel-mlist"  "gnome.org"))
-//attachment,                      system-flag "Attachments"   (match-all (system-flag "Attachments")) 
+//attachment,                      system-flag "Attachments"   (match-all (system-flag "Attachments"))
 //followup_flag TEXT ,             (match-all (not (= (user-tag "follow-up") "")))
 //followup_completed_on TEXT ,      (match-all (not (= (user-tag "completed-on") "")))
 //followup_due_by TEXT ," //NOTREQD
@@ -669,21 +669,21 @@ char * camel_db_get_column_name (const char *raw_name)
 	else if (!g_ascii_strcasecmp (raw_name, "junk"))
 		return g_strdup ("junk");
 	else if (!g_ascii_strcasecmp (raw_name, "Answered"))
-		return g_strdup ("replied");	
+		return g_strdup ("replied");
 	else if (!g_ascii_strcasecmp (raw_name, "Seen"))
 		return g_strdup ("read");
 	else if (!g_ascii_strcasecmp (raw_name, "user-tag"))
-		return g_strdup ("usertags");	
+		return g_strdup ("usertags");
 	else if (!g_ascii_strcasecmp (raw_name, "user-flag"))
-		return g_strdup ("labels");	
+		return g_strdup ("labels");
 	else if (!g_ascii_strcasecmp (raw_name, "Attachments"))
 		return g_strdup ("attachment");
 	else if (!g_ascii_strcasecmp (raw_name, "x-camel-mlist"))
-		return g_strdup ("mlist");	
+		return g_strdup ("mlist");
 	else {
-		/* Let it crash for all unknown columns for now. 
-		We need to load the messages into memory and search etc. 
-		We should extend this for camel-folder-search system flags search as well 
+		/* Let it crash for all unknown columns for now.
+		We need to load the messages into memory and search etc.
+		We should extend this for camel-folder-search system flags search as well
 		otherwise, search-for-signed-messages will not work etc.*/
 
 		return g_strdup (raw_name);
@@ -696,23 +696,23 @@ int main ()
 
 	int i=0;
 	char *txt[] = {
-#if 0		
+#if 0
 	"(match-all (header-contains \"From\"  \"org\"))",
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (match-all (or (= (user-tag \"label\")  \"work\")  (user-flag  \"work\"))) )))", 
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (match-all (or (= (user-tag \"label\")  \"work\")  (user-flag  \"work\"))) )))",
 
 	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))",
 
-	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))", 
-	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))", 
+	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))",
+	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"org\")) (match-all (header-contains \"From\"  \"org\")) (match-all (system-flag  \"Flagged\")) (match-all (system-flag  \"Seen\")) )))",
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (= (user-tag \"label\")  \"work\") )))", 
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (user-flag  \"work\") )))", 
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (= (user-tag \"label\")  \"work\") )))",
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (user-flag  \"work\") )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (user-flag  (+ \"$Label\"  \"work\")) )))"
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (not (= (user-tag \"follow-up\") \"\"))) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (user-tag \"follow-up\") \"\")) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (not (= (user-tag \"completed-on\") \"\"))) )))",
-	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",	
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (user-flag  \"important\"))) )))",		
+	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (user-flag  \"important\"))) )))",
 	"(or (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")) (not (system-flag \"Attachments\")) (not (system-flag \"Answered\")))) (and   (or (match-all (= (user-tag \"completed-on\") \"\")) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (user-tag \"completed-on\") \"\")) (match-all (= (user-tag \"follow-up\") \"\")) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (> (get-sent-date) (- (get-current-date) 100))) )))",
@@ -724,9 +724,9 @@ int main ()
 	"(match-all (system-flag \"seen\"))",
 	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",
 	"(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))",
-	
-	"(and (or (match-all (header-contains \"Subject\"  \"lin\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\"))))))", 
-	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\"))))))", 
+
+	"(and (or (match-all (header-contains \"Subject\"  \"lin\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\"))))))",
+	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\"))))))",
 	"(and  (or (match-all (header-contains \"Subject\"  \"[LDTP-NOSIP]\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"vamsi\")) (match-all (header-contains \"From\"  \"vamsi\"))))))",
 	/* Last one doesn't work so well and fails on one case. But I doubt, you can create a query like that in Evo. */
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))",
@@ -739,13 +739,13 @@ int main ()
 	"and ((match-all (system-flag \"Deleted\")) (match-all (system-flag  \"junk\")))",
 	"(and (match-threads \"replies_parents\" (and (match-all (or (header-matches \"to\" \"maw@ximian.com\")))))))",
 	"(and (sql-exp \"folder_key = 'ASDGASd' AND folder_key = 'DSFWEA'\") (match-threads \"replies_parents\" (and (match-all (or (header-matches \"to\" \"maw@ximian.com\")))))))"
-#endif	
+#endif
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or  (match-all list-post.*zypp-devel)  ) ))"
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
 		char *sql = NULL;
-		printf("Q: %s\n\"%c\"\n", txt[i], 40);		
+		printf("Q: %s\n\"%c\"\n", txt[i], 40);
 		sql = camel_sexp_to_sql_sexp (txt[i]);
 		printf("A: %s\n\n\n", sql);
 		g_free (sql);

@@ -2520,7 +2520,7 @@ do_cancel (EBook *book, GError **error, EBookOp *op, const char *func_name)
 	EBookStatus status;
 	gboolean rv;
 	CORBA_Environment ev;
-	
+
 	if (op == NULL) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_COULD_NOT_CANCEL,
 			     _("%s: there is no current operation"), func_name);
@@ -3232,8 +3232,8 @@ static void
 backend_died_cb (EComponentListener *cl, gpointer user_data)
 {
 	EBook *book = (EBook *)user_data;
-	
-	d(printf ("backend_died_cb\n"));	
+
+	d(printf ("backend_died_cb\n"));
 
 	g_mutex_lock (book->priv->mutex);
 	g_hash_table_foreach (book->priv->id_to_op, find_key_value, NULL);

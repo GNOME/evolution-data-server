@@ -45,7 +45,7 @@ CamelType
 camel_mime_filter_windows_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (),
 					    "CamelMimeFilterWindows",
@@ -56,7 +56,7 @@ camel_mime_filter_windows_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_windows_init,
 					    (CamelObjectFinalizeFunc) camel_mime_filter_windows_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -64,7 +64,7 @@ static void
 camel_mime_filter_windows_finalize (CamelObject *o)
 {
 	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) o;
-	
+
 	g_free (windows->claimed_charset);
 }
 
@@ -72,7 +72,7 @@ static void
 camel_mime_filter_windows_init (CamelObject *o)
 {
 	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) o;
-	
+
 	windows->is_windows = FALSE;
 	windows->claimed_charset = NULL;
 }
@@ -84,14 +84,14 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) filter;
 	register unsigned char *inptr;
 	unsigned char *inend;
-	
+
 	if (!windows->is_windows) {
 		inptr = (unsigned char *) in;
 		inend = inptr + len;
-		
+
 		while (inptr < inend) {
 			register unsigned char c = *inptr++;
-			
+
 			if (c >= 128 && c <= 159) {
 				w(g_warning ("Encountered Windows charset masquerading as %s",
 					     windows->claimed_charset));
@@ -100,13 +100,13 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 			}
 		}
 	}
-	
+
 	*out = in;
 	*outlen = len;
 	*outprespace = prespace;
 }
 
-static void 
+static void
 filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		 char **out, size_t *outlen, size_t *outprespace)
 {
@@ -117,7 +117,7 @@ static void
 filter_reset (CamelMimeFilter *filter)
 {
 	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) filter;
-	
+
 	windows->is_windows = FALSE;
 }
 
@@ -125,9 +125,9 @@ static void
 camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
-	
+
 	filter_class->reset = filter_reset;
 	filter_class->filter = filter_filter;
 	filter_class->complete = filter_complete;
@@ -147,13 +147,13 @@ CamelMimeFilter *
 camel_mime_filter_windows_new (const char *claimed_charset)
 {
 	CamelMimeFilterWindows *new;
-	
+
 	g_return_val_if_fail (claimed_charset != NULL, NULL);
-	
+
 	new = CAMEL_MIME_FILTER_WINDOWS (camel_object_new (camel_mime_filter_windows_get_type ()));
-	
+
 	new->claimed_charset = g_strdup (claimed_charset);
-	
+
 	return CAMEL_MIME_FILTER (new);
 }
 
@@ -173,7 +173,7 @@ gboolean
 camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_WINDOWS (filter), FALSE);
-	
+
 	return filter->is_windows;
 }
 
@@ -193,7 +193,7 @@ const char *
 camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_WINDOWS (filter), NULL);
-	
+
 	if (filter->is_windows)
 		return camel_charset_iso_to_windows (filter->claimed_charset);
 	else

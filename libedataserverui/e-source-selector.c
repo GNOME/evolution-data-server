@@ -116,7 +116,7 @@ static void
 e_cell_renderer_safe_toggle_class_init (ECellRendererSafeToggleClass *klass)
 {
 	GtkCellRendererClass *rndr_class;
-	
+
 	rndr_class = GTK_CELL_RENDERER_CLASS (klass);
 	rndr_class->activate = safe_toggle_activate;
 }

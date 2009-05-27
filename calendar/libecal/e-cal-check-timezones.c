@@ -328,7 +328,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                             }
                             g_free(fulltzid);
                         }
-                            
+
 
                         /*
                          * If the strings are identical, then the
@@ -399,7 +399,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
      * that the VCALENDAR remains consistent
      */
     g_hash_table_foreach(systemtzids, addsystemtz, comp);
-    
+
     goto done;
  nomem:
     /* set gerror for "out of memory" if possible, otherwise abort via g_error() */
@@ -425,7 +425,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
     g_free(buffer);
     g_free(key);
     g_free(value);
-    
+
     return success;
 }
 

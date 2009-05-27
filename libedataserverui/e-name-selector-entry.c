@@ -1633,11 +1633,11 @@ entry_height (GtkWidget *widget)
 	int bound;
 
 	g_return_val_if_fail (widget != NULL, 0);
-	
+
 	layout = gtk_widget_create_pango_layout (widget, NULL);
 
 	pango_layout_get_pixel_size (layout, NULL, &bound);
-	
+
 	return bound;
 }
 
@@ -2642,7 +2642,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
   g_signal_connect (name_selector_entry, "button-press-event", G_CALLBACK (prepare_popup_destination), name_selector_entry);
   g_signal_connect (name_selector_entry, "populate-popup", G_CALLBACK (populate_popup), name_selector_entry);
-  
+
 	/* Clipboard signals */
 	g_signal_connect (name_selector_entry, "copy-clipboard", G_CALLBACK (copy_clipboard), name_selector_entry);
 	g_signal_connect (name_selector_entry, "cut-clipboard", G_CALLBACK (cut_clipboard), name_selector_entry);

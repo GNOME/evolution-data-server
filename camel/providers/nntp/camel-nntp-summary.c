@@ -80,7 +80,7 @@ CamelType
 camel_nntp_summary_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_folder_summary_get_type(), "CamelNNTPSummary",
 					   sizeof (CamelNNTPSummary),
@@ -90,7 +90,7 @@ camel_nntp_summary_get_type(void)
 					   (CamelObjectInitFunc) camel_nntp_summary_init,
 					   (CamelObjectFinalizeFunc) camel_nntp_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -98,7 +98,7 @@ static void
 camel_nntp_summary_class_init(CamelNNTPSummaryClass *klass)
 {
 	CamelFolderSummaryClass *sklass = (CamelFolderSummaryClass *) klass;
-	
+
 	camel_nntp_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
 
 	sklass->message_info_new_from_header  = message_info_new_from_header;
@@ -141,7 +141,7 @@ camel_nntp_summary_new(struct _CamelFolder *folder, const char *path)
 
 	camel_folder_summary_set_filename((CamelFolderSummary *)cns, path);
 	camel_folder_summary_set_build_content((CamelFolderSummary *)cns, FALSE);
-	
+
 	return cns;
 }
 
@@ -162,7 +162,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 		g_free(cns->priv->uid);
 		cns->priv->uid = NULL;
 	}
-	
+
 	return (CamelMessageInfo *)mi;
 }
 
@@ -172,7 +172,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
 	char *part;
 
-	
+
 	if (camel_nntp_summary_parent->summary_header_from_db (s, mir) == -1)
 		return -1;
 
@@ -181,7 +181,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	if (part) {
 		EXTRACT_FIRST_DIGIT (cns->version)
 	}
-	
+
 	if (part) {
 		EXTRACT_DIGIT (cns->high)
 	}
@@ -229,7 +229,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
 	struct _CamelFIRecord *fir;
-	
+
 	fir = camel_nntp_summary_parent->summary_header_to_db (s, ex);
 	if (!fir)
 		return NULL;
@@ -382,7 +382,7 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, 
 		n = strtoul(line, &line, 10);
 		if (n != i)
 			g_warning("retrieved message '%u' when i expected '%u'?\n", n, i);
-		
+
 		/* FIXME: use camel-mime-utils.c function for parsing msgid? */
 		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))){
 			line[1] = 0;
@@ -523,7 +523,7 @@ update:
 
 		count = camel_folder_summary_count (s);
 		camel_db_count_unread_message_info (s->folder->parent_store->cdb_r, s->folder->full_name, &unread, ex);
-		
+
 		if (si->info.unread != unread
 		    || si->info.total != count
 		    || si->first != f

@@ -86,9 +86,9 @@ camel_partition_table_finalise(CamelPartitionTable *cpi)
 
 		camel_object_unref((CamelObject *)cpi->blocks);
 	}
-	
+
 	pthread_mutex_destroy(&p->lock);
-	
+
 	g_free(p);
 
 }
@@ -97,7 +97,7 @@ CamelType
 camel_partition_table_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelPartitionTable",
 					   sizeof (CamelPartitionTable),
@@ -107,7 +107,7 @@ camel_partition_table_get_type(void)
 					   (CamelObjectInitFunc) camel_partition_table_init,
 					   (CamelObjectFinalizeFunc) camel_partition_table_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -249,9 +249,9 @@ camel_partition_table_sync(CamelPartitionTable *cpi)
 {
 	CamelBlock *bl, *bn;
 	int ret = 0;
-	
+
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
-	
+
 	if (cpi->blocks) {
 		bl = (CamelBlock *)cpi->partition.head;
 		bn = bl->next;
@@ -307,7 +307,7 @@ camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const char *k
 	}
 
 	CAMEL_PARTITION_TABLE_UNLOCK(cpi, lock);
-	
+
 	camel_block_file_unref_block(cpi->blocks, block);
 
 	return keyid;
@@ -324,7 +324,7 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
 	hashid = hash_key(key);
 
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
-	
+
 	ptblock = find_partition(cpi, hashid, &index);
 	if (ptblock == NULL) {
 		CAMEL_PARTITION_TABLE_UNLOCK(cpi, lock);
@@ -343,7 +343,7 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
 		if (pkb->keys[i].hashid == hashid) {
 			/* !! need to: lookup and compare string value */
 			/* get_key() if key == key ... */
-			
+
 			/* remove this key */
 			pkb->used--;
 			for (;i<pkb->used;i++) {
@@ -356,7 +356,7 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
 	}
 
 	CAMEL_PARTITION_TABLE_UNLOCK(cpi, lock);
-	
+
 	camel_block_file_unref_block(cpi->blocks, block);
 }
 
@@ -625,9 +625,9 @@ camel_key_table_finalise(CamelKeyTable *ki)
 		camel_block_file_sync(ki->blocks);
 		camel_object_unref((CamelObject *)ki->blocks);
 	}
-	
+
 	pthread_mutex_destroy(&p->lock);
-	
+
 	g_free(p);
 
 }
@@ -636,7 +636,7 @@ CamelType
 camel_key_table_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_object_get_type(), "CamelKeyTable",
 					   sizeof (CamelKeyTable),
@@ -646,7 +646,7 @@ camel_key_table_get_type(void)
 					   (CamelObjectInitFunc) camel_key_table_init,
 					   (CamelObjectFinalizeFunc) camel_key_table_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -945,7 +945,7 @@ camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned 
 	do {
 		blockid =  next & (~(CAMEL_BLOCK_SIZE-1));
 		index = next & (CAMEL_BLOCK_SIZE-1);
-		
+
 		bl = camel_block_file_get_block(ki->blocks, blockid);
 		if (bl == NULL) {
 			CAMEL_KEY_TABLE_UNLOCK(ki, lock);

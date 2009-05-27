@@ -896,7 +896,7 @@ parse_values(ESExp *f, int *len)
 	return terms;
 }
 
-ESExpTerm * e_sexp_parse_value (ESExp *f) 
+ESExpTerm * e_sexp_parse_value (ESExp *f)
 {
 	return parse_value (f);
 }

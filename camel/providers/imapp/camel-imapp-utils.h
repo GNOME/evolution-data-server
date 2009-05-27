@@ -117,7 +117,7 @@ void imap_free_status(struct _status_info *sinfo);
 
 /* ********************************************************************** */
 
-/* should this just return a FolderInfo? 
+/* should this just return a FolderInfo?
    should this just return the name & flags & separator by reference? */
 struct _list_info {
 	guint32 flags:24;

@@ -972,7 +972,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		if(ldap_error == LDAP_INSUFFICIENT_ACCESS)
 			ldap_error = LDAP_SUCCESS;
-		else    
+		else
 			ldap_error = query_ldap_root_dse (bl);
 		/* query_ldap_root_dse will cause the actual
 		   connect(), so any tcpip problems will show up
@@ -3855,7 +3855,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 			g_list_foreach (data.list, (GFunc)g_free, NULL);
 		}
 		else {
-			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter 
+			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter
 				&& g_ascii_strncasecmp(bl->priv->ldap_search_filter,"(objectClass=*)",sizeof(bl->priv->ldap_search_filter))){
 				strings = g_new0(char*, 5);
 				strings[0] = g_strdup ("(&");

@@ -438,7 +438,7 @@ get_deltas (gpointer handle)
 		e_cal_component_commit_sequence (modified_comp);
 
 		e_cal_component_get_last_modified (modified_comp, &tt);
-		
+
 		if (cache_comp) {
 			e_cal_component_get_last_modified (cache_comp, &c_tt);
 			e_cal_component_commit_sequence (cache_comp);
@@ -447,7 +447,7 @@ get_deltas (gpointer handle)
 		if (!c_tt || icaltime_compare (*tt, *c_tt) == 1)
 		{
 			modif_comp_str = e_cal_component_get_as_string (modified_comp);
-			
+
 			if (cache_comp) {
 				cache_comp_str = e_cal_component_get_as_string (cache_comp);
 				e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbgw), cache_comp_str, modif_comp_str);
@@ -463,12 +463,12 @@ get_deltas (gpointer handle)
 		}
 
 		e_cal_component_free_icaltimetype (tt);
-		
+
 		if (c_tt)
 			e_cal_component_free_icaltimetype (c_tt);
 		g_object_unref (item);
 		g_object_unref (modified_comp);
-		
+
 		if (cache_comp)
 			g_object_unref (cache_comp);
 	}
@@ -479,7 +479,7 @@ get_deltas (gpointer handle)
 	gmtime_r (&current_time, &tm);
 
 	time_interval = get_cache_refresh_interval (cbgw) / 60000;
-	
+
 	if (attempts) {
 		tm.tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
 		e_cal_backend_cache_put_key_value (cache, key, NULL);
@@ -682,12 +682,12 @@ get_cache_refresh_interval (ECalBackendGroupwise *cbgw)
 	char *temp = NULL;
 	ECalBackend *backend = E_CAL_BACKEND (cbgw);
 	ESource *source;
-	
+
 	time_interval = CACHE_REFRESH_INTERVAL;
 	source = e_cal_backend_get_source (backend);
-	
+
 	time_interval_string = g_getenv ("GETQM_TIME_INTERVAL");
-	
+
 	if (!time_interval_string)
 		time_interval_string = temp = e_source_get_duped_property (source, "refresh");
 
@@ -697,7 +697,7 @@ get_cache_refresh_interval (ECalBackendGroupwise *cbgw)
 	}
 
 	g_free (temp);
-		
+
 	return time_interval;
 }
 
@@ -716,21 +716,21 @@ delta_thread (gpointer data)
 
 		g_mutex_lock (priv->dlock->mutex);
 
-		if (!succeeded || priv->dlock->exit) 
+		if (!succeeded || priv->dlock->exit)
 			break;
 
 		g_get_current_time (&timeout);
 		g_time_val_add (&timeout, get_cache_refresh_interval (cbgw) * 1000);
 		g_cond_timed_wait (priv->dlock->cond, priv->dlock->mutex, &timeout);
-		
-		if (priv->dlock->exit) 
-			break;	
-		
+
+		if (priv->dlock->exit)
+			break;
+
 		g_mutex_unlock (priv->dlock->mutex);
 	}
 
 	g_mutex_unlock (priv->dlock->mutex);
-	priv->dthread = NULL;	
+	priv->dthread = NULL;
 	return NULL;
 }
 
@@ -740,16 +740,16 @@ fetch_deltas (ECalBackendGroupwise *cbgw)
 	ECalBackendGroupwisePrivate *priv = cbgw->priv;
 	GError *error = NULL;
 
-	/* If the thread is already running just return back */	
-	if (priv->dthread) 
+	/* If the thread is already running just return back */
+	if (priv->dthread)
 		return FALSE;
-	
+
 	if (!priv->dlock) {
 		priv->dlock = g_new0 (SyncDelta, 1);
 		priv->dlock->mutex = g_mutex_new ();
 		priv->dlock->cond = g_cond_new ();
 	}
-	
+
 	priv->dlock->exit = FALSE;
 	priv->dthread = g_thread_create ((GThreadFunc) delta_thread, cbgw, TRUE, &error);
 	if (!priv->dthread) {
@@ -827,7 +827,7 @@ form_uri (ESource *source)
 
 }
 
-static gpointer 
+static gpointer
 cache_init (ECalBackendGroupwise *cbgw)
 {
 	ECalBackendGroupwisePrivate *priv = cbgw->priv;
@@ -1134,12 +1134,12 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		g_mutex_lock (priv->dlock->mutex);
 		priv->dlock->exit = TRUE;
 		g_mutex_unlock (priv->dlock->mutex);
-		
+
 		g_cond_signal (priv->dlock->cond);
 
 		if (priv->dthread)
 			g_thread_join (priv->dthread);
-		
+
 		g_mutex_free (priv->dlock->mutex);
 		g_cond_free (priv->dlock->cond);
 		g_free (priv->dlock);
@@ -1297,7 +1297,7 @@ in_offline (ECalBackendGroupwise *cbgw) {
 		g_mutex_unlock (priv->dlock->mutex);
 
 		g_cond_signal (priv->dlock->cond);
-	}	
+	}
 
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
@@ -2459,7 +2459,7 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
 
-	for (l = new_attach_list; l != NULL; l = l->next) 
+	for (l = new_attach_list; l != NULL; l = l->next)
 		g_free (l->data);
 	g_slist_free (new_attach_list);
 
@@ -2612,7 +2612,7 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 				change_status (component, pstatus, e_gw_connection_get_user_email (priv->cnc));
 				e_cal_component_get_transparency (comp, &transp);
 				e_cal_component_set_transparency (component, transp);
-				
+
 				e_cal_backend_cache_put_component (priv->cache, component);
 				comp_str = e_cal_component_get_as_string (component);
 

@@ -44,7 +44,7 @@ CamelType
 camel_mime_filter_charset_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterCharset",
 					    sizeof (CamelMimeFilterCharset),
@@ -54,7 +54,7 @@ camel_mime_filter_charset_get_type (void)
 					    (CamelObjectInitFunc) camel_mime_filter_charset_init,
 					    (CamelObjectFinalizeFunc) camel_mime_filter_charset_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -78,7 +78,7 @@ reset(CamelMimeFilter *mf)
 	char buf[16];
 	char *buffer;
 	size_t outlen = 16;
-	
+
 	/* what happens with the output bytes if this resets the state? */
 	if (f->ic != (iconv_t) -1) {
 		buffer = buf;
@@ -93,17 +93,17 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 	size_t inleft, outleft, converted = 0;
 	const char *inbuf;
 	char *outbuf;
-	
+
 	if (charset->ic == (iconv_t) -1)
 		goto noop;
-	
+
 	camel_mime_filter_set_size (mf, len * 5 + 16, FALSE);
 	outbuf = mf->outbuf;
 	outleft = mf->outsize;
-	
+
 	inbuf = in;
 	inleft = len;
-	
+
 	if (inleft > 0) {
 		do {
 			converted = camel_iconv (charset->ic, &inbuf, &inleft, &outbuf, &outleft);
@@ -114,7 +114,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 					 *
 					 * We just need to grow our outbuffer and try again.
 					 */
-					
+
 					converted = outbuf - mf->outbuf;
 					camel_mime_filter_set_size (mf, inleft * 5 + mf->outsize + 16, TRUE);
 					outbuf = mf->outbuf + converted;
@@ -126,7 +126,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 					 *
 					 * What we do here is eat the invalid bytes in the sequence and continue
 					 */
-					
+
 					inbuf++;
 					inleft--;
 				} else if (errno == EINVAL) {
@@ -137,25 +137,25 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 					 * We assume that this can only happen if we've run out of
 					 * bytes for a multibyte sequence, if not we're in trouble.
 					 */
-					
+
 					break;
 				} else
 					goto noop;
 			}
 		} while (((int) inleft) > 0);
 	}
-	
+
 	/* flush the iconv conversion */
 	camel_iconv (charset->ic, NULL, NULL, &outbuf, &outleft);
-	
+
 	*out = mf->outbuf;
 	*outlen = mf->outsize - outleft;
 	*outprespace = mf->outpre;
-	
+
 	return;
-	
+
  noop:
-	
+
 	*out = in;
 	*outlen = len;
 	*outprespace = prespace;
@@ -168,23 +168,23 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 	size_t inleft, outleft, converted = 0;
 	const char *inbuf;
 	char *outbuf;
-	
+
 	if (charset->ic == (iconv_t) -1)
 		goto noop;
-	
+
 	camel_mime_filter_set_size (mf, len * 5 + 16, FALSE);
 	outbuf = mf->outbuf + converted;
 	outleft = mf->outsize - converted;
-	
+
 	inbuf = in;
 	inleft = len;
-	
+
 	do {
 		converted = camel_iconv (charset->ic, &inbuf, &inleft, &outbuf, &outleft);
 		if (converted == (size_t) -1) {
 			if (errno == E2BIG || errno == EINVAL)
 				break;
-			
+
 			if (errno == EILSEQ) {
 				/*
 				 * EILSEQ An invalid multibyte sequence has been  encountered
@@ -192,7 +192,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 				 *
 				 * What we do here is eat the invalid bytes in the sequence and continue
 				 */
-				
+
 				inbuf++;
 				inleft--;
 			} else {
@@ -201,22 +201,22 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 			}
 		}
 	} while (((int) inleft) > 0);
-	
+
 	if (((int) inleft) > 0) {
 		/* We've either got an E2BIG or EINVAL. Save the
                    remainder of the buffer as we'll process this next
                    time through */
 		camel_mime_filter_backup (mf, inbuf, inleft);
 	}
-	
+
 	*out = mf->outbuf;
 	*outlen = outbuf - mf->outbuf;
 	*outprespace = mf->outpre;
-	
+
 	return;
-	
+
  noop:
-	
+
 	*out = in;
 	*outlen = len;
 	*outprespace = prespace;
@@ -226,7 +226,7 @@ static void
 camel_mime_filter_charset_class_init (CamelMimeFilterCharsetClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-	
+
 	camel_mime_filter_charset_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
 	filter_class->reset = reset;
@@ -245,7 +245,7 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *obj)
  * camel_mime_filter_charset_new:
  *
  * Create a new #CamelMimeFilterCharset object.
- * 
+ *
  * Returns: a new #CamelMimeFilterCharset object
  **/
 CamelMimeFilterCharset *
@@ -269,9 +269,9 @@ CamelMimeFilterCharset *
 camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_charset)
 {
 	CamelMimeFilterCharset *new;
-	
+
 	new = CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
-	
+
 	new->ic = camel_iconv_open (to_charset, from_charset);
 	if (new->ic == (iconv_t) -1) {
 		w(g_warning ("Cannot create charset conversion from %s to %s: %s",
@@ -284,6 +284,6 @@ camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_
 		new->from = g_strdup (from_charset);
 		new->to = g_strdup (to_charset);
 	}
-	
+
 	return new;
 }

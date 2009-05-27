@@ -3464,7 +3464,7 @@ e_cal_component_set_percent_as_int (ECalComponent *comp, int percent)
 		icalcomponent_add_property (priv->icalcomp, priv->percent);
 	}
 
-	
+
 }
 
 int

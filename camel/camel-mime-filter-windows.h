@@ -37,14 +37,14 @@ typedef struct _CamelMimeFilterWindows CamelMimeFilterWindows;
 
 struct _CamelMimeFilterWindows {
 	CamelMimeFilter parent;
-	
+
 	gboolean is_windows;
 	char *claimed_charset;
 };
 
 struct _CamelMimeFilterWindowsClass {
 	CamelMimeFilterClass parent_class;
-	
+
 };
 
 

@@ -48,11 +48,11 @@ typedef enum _camel_mime_parser_state_t {
 	CAMEL_MIME_PARSER_STATE_BODY,           /* scanning body of message */
 	CAMEL_MIME_PARSER_STATE_MULTIPART,      /* got multipart header */
 	CAMEL_MIME_PARSER_STATE_MESSAGE,        /* rfc822 message */
-	
+
 	CAMEL_MIME_PARSER_STATE_PART,           /* part of a multipart */
-	
+
 	CAMEL_MIME_PARSER_STATE_END = 8,        /* bit mask for 'end' flags */
-	
+
 	CAMEL_MIME_PARSER_STATE_EOF = 8,        /* end of file */
 	CAMEL_MIME_PARSER_STATE_PRE_FROM_END,   /* pre from end */
 	CAMEL_MIME_PARSER_STATE_FROM_END,       /* end of whole from bracket */

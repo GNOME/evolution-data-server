@@ -421,7 +421,7 @@ e_book_backend_db_cache_is_populated (DB *db)
 	}
 }
 
-void 
+void
 e_book_backend_db_cache_set_time(DB *db, const char *t)
 {
 	DBT uid_dbt, vcard_dbt;

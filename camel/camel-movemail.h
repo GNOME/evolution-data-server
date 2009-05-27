@@ -1,8 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-movemail.h: mbox copy function */
 
-/* 
- * Author: 
+/*
+ * Author:
  *  Dan Winship <danw@ximian.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)

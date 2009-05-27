@@ -33,20 +33,20 @@
 #include <glib.h>
 #include "camel-search-sql.h"
 
-#define d(x) 
+#define d(x)
 
 #ifdef TEST_MAIN
 #include <sqlite3.h>
 
 char * camel_db_get_column_name (const char *raw_name);
 
-char * 
+char *
 camel_db_sqlize_string (const char *string)
 {
 	return sqlite3_mprintf ("%Q", string);
 }
 
-void 
+void
 camel_db_free_sqlized_string (char *string)
 {
 	sqlite3_free (string);
@@ -113,7 +113,7 @@ typedef struct Node {
 	int ref;
 }Node;
 
-/* 
+/*
  * Design of the sexp parser
  *
  * Every node is a operator/operand (sysnode operand[like known headers] or normal operand)
@@ -133,12 +133,12 @@ typedef struct Node {
  * */
 
 /* Configuration of your sexp expression */
-static Node elements[] =  { {"header-contains", "LIKE", 3, '%', '%', 0, 0, 0 , 1, 0, 0, 0, 0, 0}, 
-			    {"system-flag", "=", 2, ' ', ' ', '1', 0, 1, 1, 0, 0, 0, 0, 0}, 
+static Node elements[] =  { {"header-contains", "LIKE", 3, '%', '%', 0, 0, 0 , 1, 0, 0, 0, 0, 0},
+			    {"system-flag", "=", 2, ' ', ' ', '1', 0, 1, 1, 0, 0, 0, 0, 0},
 			    {"match-all", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
-			    {"cast-int", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0}, 			    
-			    { "header-matches", "LIKE", 3, '%', '%', 0, 0, 1, 1, 0, 0, 0, 0, 0}, 
-			    { "header-ends-with", "LIKE", 3, '%', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0}, 
+			    {"cast-int", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			    { "header-matches", "LIKE", 3, '%', '%', 0, 0, 1, 1, 0, 0, 0, 0, 0},
+			    { "header-ends-with", "LIKE", 3, '%', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 			    { "header-exists", "NOTNULL", 2, ' ', ' ', ' ', 0, 0, 1, 0, 0, 0, 0, 0},
 			    { "user-tag", "usertags", 3, '%', '%', 0, 0, 1, 1, 1, 0, 0, 0, 0},
 			    { "user-flag", "labels LIKE", 2, '%', '%', 0, 0, 0, 1, 0, 1, 0, 0, 0},
@@ -146,9 +146,9 @@ static Node elements[] =  { {"header-contains", "LIKE", 3, '%', '%', 0, 0, 0 , 1
 			    { "get-sent-date", "dsent", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
 			    { "get-received-date", "dreceived", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
 			    { "get-size", "size", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1},
-			    {"match-threads", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},			    
+			    {"match-threads", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 };
-#if 0		 
+#if 0
 	{ "get-sent-date", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, get_sent_date), 1 },
 	{ "get-received-date", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, get_received_date), 1 },
 	{ "get-current-date", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, get_current_date), 1 },
@@ -164,7 +164,7 @@ free_node (Node *node)
 
 	if (node->ref)
 		return;
-	
+
 	d(printf("freeing %s %s %p\n", node->token, node->exact_token, node));
 	g_free (node->token);
 	g_free (node->exact_token);
@@ -202,20 +202,20 @@ escape_values (char *str)
 
 	 camel_db_free_sqlized_string (sql);
 	 /* I dont want to manage sql strings here */
-	 
+
 	 return ret;
 }
 
 /**
  * camel_search_sexp_to_sql:
  * @txt: A valid sexp expression
- * 
+ *
  * Converts a valid sexp expression to a sql statement with table fields converted into it.
  * This is very specific to Evolution. It might crash is the sexp is invalid. The callers must ensure that the sexp is valid
  **/
 
 char *
-camel_sexp_to_sql (const char *txt) 
+camel_sexp_to_sql (const char *txt)
 {
 	GScanner *scanner = g_scanner_new (&config);
 	char *sql=NULL;
@@ -226,9 +226,9 @@ camel_sexp_to_sql (const char *txt)
 	Node *n1=NULL, *n2=NULL, *n3=NULL, *op=NULL, *last, *lastoper=NULL;
 	GList *res=NULL;
 	gboolean last_sysnode = FALSE;
-	
+
 	d(printf("len = %d\n", strlen (txt)));
-	
+
 	if (!txt || !*txt)
 		return NULL;
 
@@ -237,7 +237,7 @@ camel_sexp_to_sql (const char *txt)
 		Node *mnode;
 		int new_level = -1;
 		guint token = g_scanner_get_next_token (scanner);
-		
+
 		/* Extract and identify tokens */
 		if (token == G_TOKEN_IDENTIFIER || token == G_TOKEN_STRING) {
 			char *token = scanner->value.v_string;
@@ -248,7 +248,7 @@ camel_sexp_to_sql (const char *txt)
 					g_ascii_strcasecmp (token, "not") == 0) {
 				/* operator */
 				Node *node = g_new0 (Node, 1);
-				
+
 				node->token = g_strdup (token);
 				node->exact_token =  g_strdup (token);
 				node->level = level;
@@ -260,27 +260,27 @@ camel_sexp_to_sql (const char *txt)
 				/* Should be operand*/
 				int i;
 				Node *node;
-				
+
 				for (i=0; i < G_N_ELEMENTS(elements); i++) {
 					if (g_ascii_strcasecmp (elements[i].token, token) == 0) {
-						 
+
 						if (!*elements[i].exact_token) /* Skip match-all */ {
 							if (g_ascii_strcasecmp (elements[i].token, "match-threads") == 0) {
 								Node *node;
 
 								/* remove next node also. We dont support it*/
 								g_scanner_get_next_token (scanner);
-								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading  
+								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading
 								   operator */
 								node = g_new0 (Node, 1);
-								
+
 								node->token = g_strdup ("or");
 								node->exact_token =  g_strdup ("or");
 								node->level = level;
 								node->operator = 1;
 								node->ref = 2;
 								operators = g_list_prepend (operators, node);
-								all = g_list_prepend (all, node);								
+								all = g_list_prepend (all, node);
 							} else if (g_ascii_strcasecmp (elements[i].token, "match-all") == 0) {
 								guint token = g_scanner_peek_next_token (scanner);
 
@@ -289,11 +289,11 @@ camel_sexp_to_sql (const char *txt)
 									token = g_scanner_get_next_token (scanner);
 									token = g_scanner_get_next_token (scanner);
 								}
-									
+
 							}
 							break;
 						}
-						
+
 						node = g_new0 (Node, 1);
 						node->token = g_strdup (elements[i].token);
 						node->exact_token = g_strdup (elements[i].exact_token);
@@ -313,7 +313,7 @@ camel_sexp_to_sql (const char *txt)
 						operands = g_list_prepend (operands, node);
 						all = g_list_prepend (all, node);
 						last_sysnode = TRUE;
-						
+
 						break;
 					}
 				}
@@ -321,7 +321,7 @@ camel_sexp_to_sql (const char *txt)
 				/* These should be normal tokens */
 				if (i >= G_N_ELEMENTS(elements)) {
 					Node *pnode = operands->data;
-					
+
 					node = g_new0 (Node, 1);
 					node->token = g_strdup (token);
 					if (last_sysnode) {
@@ -329,7 +329,7 @@ camel_sexp_to_sql (const char *txt)
 						 node->exact_token = camel_db_get_column_name (token);
 					} else
 						 node->exact_token = g_strdup (token);
-					
+
 					node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
 					node->prefix = 0;
 					node->rval = ' ';
@@ -350,13 +350,13 @@ camel_sexp_to_sql (const char *txt)
 			d(printf(")\n"));
 			level--;
 		} else if (token == G_TOKEN_EQUAL_SIGN) {
-			Node *node = g_new0 (Node, 1); 
+			Node *node = g_new0 (Node, 1);
 
 			node->token = g_strdup ("=");
 			node->exact_token =  g_strdup ("=");
 			node->level = level;
 			node->ref = 2;
-			operators = g_list_prepend (operators, node);		
+			operators = g_list_prepend (operators, node);
 			all = g_list_prepend (all, node);
 		} else if (token == '+') {
 			char *astr=NULL, *bstr=NULL;
@@ -404,7 +404,7 @@ camel_sexp_to_sql (const char *txt)
 				d(printf("lvl = %d %ld\n", lvl, lval));
 				bstr = g_strdup_printf ("%d", lval);
 			}
-			
+
 			node = g_new0 (Node, 1);
 			node->token = bstr;
 			node->exact_token = g_strdup(bstr);
@@ -414,7 +414,7 @@ camel_sexp_to_sql (const char *txt)
 			node->level = new_level == -1 ? level : new_level;
 			node->sys_node = 0;
 			node->ref = 2;
-			operands = g_list_prepend (operands, node);	
+			operands = g_list_prepend (operands, node);
 			all = g_list_prepend (all, node);
 			new_level = -1;
 			level--;
@@ -422,7 +422,7 @@ camel_sexp_to_sql (const char *txt)
 			char *bstr=NULL;
 			Node *node, *pnode = operands->data;
 			int lvl=0, lval=0;
-			
+
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
 			token = g_scanner_get_next_token (scanner) ;
 			while (token >= 0 && !g_scanner_eof(scanner) && lvl >=0 ) {
@@ -458,25 +458,25 @@ camel_sexp_to_sql (const char *txt)
 			node->level = level;
 			node->sys_node = 0;
 			node->ref = 2;
-			operands = g_list_prepend (operands, node);	
+			operands = g_list_prepend (operands, node);
 			all = g_list_prepend (all, node);
 			level--;
 				/* g_node_dump (all);printf("\n\n"); */
 				/* g_node_dump (operands);printf("\n\n"); */
 				/* g_node_dump (operators);printf("\n\n"); */
-			
+
 		} else if (token == '>' || token == '<') {
-			
+
 				/* operator */
 				Node *node = g_new0 (Node, 1);
-				
+
 				node->token = g_strdup_printf ("%c", token);
 				node->exact_token =  g_strdup_printf ("%c", token);
 				node->level = level;
 				node->operator = 1;
 				node->ref = 2;
 				operators = g_list_prepend (operators, node);
-				all = g_list_prepend (all, node);			
+				all = g_list_prepend (all, node);
 		} else if (token == G_TOKEN_INT) {
 			Node *pnode = operands->data, *node;
 
@@ -493,7 +493,7 @@ camel_sexp_to_sql (const char *txt)
 			node->ref = 2;
 			operands = g_list_prepend (operands, node);
 			all = g_list_prepend (all, node);
-			
+
 		}
 				/* g_node_dump (all);printf("\n\n"); */
 				/* g_node_dump (operands);printf("\n\n"); */
@@ -502,14 +502,14 @@ camel_sexp_to_sql (const char *txt)
 		if (operands) {
 			mnode = operands->data;
 			d(printf("recalculating ? %d\n", mnode->nodes));
-			
+
 			/* If we reach the operating level, which is the exec min for last seen sys-header */
 			if (mnode->nodes == 1) {
 				/* lets evaluate */
 				int len = 2;
 				Node *pnode;
 
-					
+
 				n1=NULL; n2=NULL; n3=NULL;
 				tmp = operands;
 				n1 = operands->data;
@@ -517,15 +517,15 @@ camel_sexp_to_sql (const char *txt)
 				all = g_list_delete_link (all, all);
 				tmp = operands;
 				n2 = operands->data;
-				operands = g_list_delete_link(operands, operands);		
+				operands = g_list_delete_link(operands, operands);
 				all = g_list_delete_link (all, all);
-				
+
 				/* If it is a sysnode, then it is double operand */
 				if (!n2->sys_node) {
 					/* This has to be a sysnode if not panic */
 					n3 = operands->data;
 					operands = g_list_delete_link(operands, operands);
-					/* this is a triple operand */					
+					/* this is a triple operand */
 					len = 3;
 					all = g_list_delete_link (all, all);
 
@@ -533,21 +533,21 @@ camel_sexp_to_sql (const char *txt)
 
 				if (operands)
 					pnode  = operands->data;
-				else	
+				else
 					pnode = NULL;
-				
+
 				if (len == 3) {
 					char *prefix = NULL;
 					char *str, *sqstr, *escstr;
 					int dyn_lvl;
 					Node *opnode = operators->data;
 					char *temp_op="";
-					
+
 					if (n3->level < n2->level)
 						dyn_lvl = n2->level;
 					else
 						dyn_lvl = n3->level;
-					
+
 
 					if (n3->prefix && g_ascii_strcasecmp (opnode->token, "=") == 0) {
 						/* see if '=' was a last operator. if so take care of it */
@@ -570,7 +570,7 @@ camel_sexp_to_sql (const char *txt)
 								temp_op = "LIKE";
 							else
 								temp_op = "NOT LIKE";
-							prefix="";	
+							prefix="";
 						} else {
 							/* user tags like important */
 							g_free(n2->exact_token);
@@ -580,8 +580,8 @@ camel_sexp_to_sql (const char *txt)
 							n3->ignore_lhs = 0;
 							dyn_lvl = opnode->level;
 						}
-						
-							
+
+
 					}
 					if (n3->prefix && ((g_ascii_strcasecmp (opnode->token, ">") == 0) || (g_ascii_strcasecmp (opnode->token, ">") == 0) )) {
 						/* see if '=' was a last operator. if so take care of it */
@@ -604,7 +604,7 @@ camel_sexp_to_sql (const char *txt)
 								temp_op = "LIKE";
 							else
 								temp_op = "NOT LIKE";
-							prefix="";	
+							prefix="";
 						} else {
 							/* user tags like important */
 							g_free(n2->exact_token);
@@ -613,10 +613,10 @@ camel_sexp_to_sql (const char *txt)
 							temp_op = "LIKE";
 							n3->ignore_lhs = 0;
 						}
-						
-							
-					} 					
-					
+
+
+					}
+
 					/* Handle if 'not' was a last sysnode, if so take care of it */
 					if (n3->prefix && g_ascii_strcasecmp (opnode->token, "not") == 0) {
 						if (!prefix)
@@ -625,8 +625,8 @@ camel_sexp_to_sql (const char *txt)
 						free_node(opnode);
 						operators = g_list_delete_link (operators, operators);
 						all = g_list_delete_link (all, all);
-					} 
-					
+					}
+
 					/* n2 needs to be db specific */
 					sqstr = g_strdup_printf("%c%s%c", n3->pre_token, n1->exact_token, n3->post_token);
 					escstr = escape_values(sqstr);
@@ -636,7 +636,7 @@ camel_sexp_to_sql (const char *txt)
 					g_free (n3->exact_token);
 					g_free (sqstr);
 					g_free (escstr);
-					
+
 					n3->exact_token = str;
 					n3->prefix = 0;
 					n3->nodes = (pnode ? pnode->nodes : 0 ) > 0 ? pnode->nodes -1 : 0;
@@ -664,7 +664,7 @@ camel_sexp_to_sql (const char *txt)
 					if (n2->execute) {
 						Node *popnode=NULL;
 						gboolean dbl = FALSE;
-						
+
 						/* g_node_dump (operators); */
 						if (n2->prefix) {
 							if (operators && operators->next)
@@ -686,9 +686,9 @@ camel_sexp_to_sql (const char *txt)
 						all = g_list_delete_link (all, all);
 						if (dbl && operators) {
 							operators = g_list_delete_link (operators, operators);
-							all = g_list_delete_link (all, all);							
+							all = g_list_delete_link (all, all);
 						}
-						
+
 					} else {
 						if (!n2->swap) {
 							str = g_strdup_printf("(%s %c%s %c)", n1->exact_token, prefix ? prefix : ' ', n2->exact_token, n2->rval);
@@ -701,29 +701,29 @@ camel_sexp_to_sql (const char *txt)
 						}
 					}
 					g_free (n2->exact_token);
-					
+
 					n2->exact_token = str;
 					n2->prefix = 0;
 					n2->nodes = (pnode ? pnode->nodes : 0 )> 0 ? pnode->nodes -1 : 0;
 					n2->level = dyn_lvl;
 					operands = g_list_prepend (operands, n2);
-					d(printf("Pushed %s\n", n2->exact_token));					
+					d(printf("Pushed %s\n", n2->exact_token));
 					free_node(n1);
 					free_node(n1);
 
 					all = g_list_prepend (all, n2);
 				}
-					
+
 			}
 		}
-	
+
 
 	}
-	
+
 	tmp = operands;
 	d(g_node_dump (operands));
 	while (tmp) {
-		 free_node(tmp->data); 
+		 free_node(tmp->data);
 		 tmp = tmp->next;
 	}
 	d(g_node_dump (operands));
@@ -733,15 +733,15 @@ camel_sexp_to_sql (const char *txt)
 	d(g_node_dump (operators));
 	tmp = operators;
 	while (tmp) {
-		 free_node(tmp->data); 
+		 free_node(tmp->data);
 		 tmp = tmp->next;
-	}	
+	}
 	g_list_free (operators);
 	d(printf("\n\n\n"));
 	d(g_node_dump (all));
 	d(printf("\n\n\n"));
-	
-	
+
+
 	res=NULL;
 	tmp = all;
 	op=NULL; n1=NULL;
@@ -750,7 +750,7 @@ camel_sexp_to_sql (const char *txt)
 	tmp = all;
 	if (g_list_length (all) == 1) {
 		n1 = all->data;
-		
+
 		sql = g_strdup (n1->exact_token);
 		free_node(n1);
 		g_list_free (all);
@@ -758,7 +758,7 @@ camel_sexp_to_sql (const char *txt)
 		return sql;
 	}
 
-	last = NULL;	
+	last = NULL;
 	while (all) {
 		 n1 = tmp->data;
 		 all = g_list_delete_link (all, all);
@@ -785,7 +785,7 @@ camel_sexp_to_sql (const char *txt)
 				   g_free (n->exact_token);
 				   n->exact_token = s->str;
 				   g_string_free (s, FALSE);
-				   all = g_list_prepend (all, n); 
+				   all = g_list_prepend (all, n);
 				   if (preserve) {
 					   GList *foo;
 					   foo = preserve;
@@ -812,7 +812,7 @@ camel_sexp_to_sql (const char *txt)
 					   char *str = g_strdup_printf("NOT ( %s )", n->exact_token);
 					   g_free (n->exact_token);
 					   n->exact_token = str;
-				   	   all = g_list_prepend (all, n); 
+				   	   all = g_list_prepend (all, n);
 					   if (preserve) {
 						   GList *foo;
 						   foo = preserve;
@@ -824,10 +824,10 @@ camel_sexp_to_sql (const char *txt)
 						   preserve = NULL;
 					   }
 					   n->level = n1->level;
-					   last = NULL;			  
+					   last = NULL;
 				  }
 			  }
-			
+
 			  if (!lastoper)
 			  	free_node (n1);
 			  g_list_free (res);
@@ -837,17 +837,17 @@ camel_sexp_to_sql (const char *txt)
 			  if (!last || last->level >= n1->level)
 				  res = g_list_prepend (res, n1); /* same or less level */
 			  else {
-				if (!preserve)  
-					preserve = g_list_reverse(res); 
+				if (!preserve)
+					preserve = g_list_reverse(res);
 				else {
 					GList *foo;
 					foo = preserve;
 					while (foo->next)
 						foo = foo->next;
 					foo->next = g_list_reverse(res);
-					
+
 				}
-					
+
 				res = NULL;
 				res = g_list_prepend (res, n1);
 				d(printf("preserving %d\n", g_list_length(preserve)));
@@ -856,7 +856,7 @@ camel_sexp_to_sql (const char *txt)
 			  d(printf("app %s %d\n", n1->exact_token, n1->level));
 		 }
 	}
-	
+
 	if (res) {
 		n1 = res->data;
 		if (preserve && lastoper) {
@@ -869,12 +869,12 @@ camel_sexp_to_sql (const char *txt)
 				tmp = tmp->next;
 			}
 			sql = g_strdup_printf ("%s %s (%s)", n1->exact_token, lastoper->exact_token, str->str);
-		} else 
+		} else
 			sql = g_strdup (n1->exact_token);
 		free_node (n1);
 		g_list_free (res);
 	}
-	
+
 	tlist = all;
 	while (tlist) {
 		free_node (tlist->data);
@@ -893,19 +893,19 @@ camel_sexp_to_sql (const char *txt)
 
 (and (match-all (and (not (system-flag "deleted")) (not (system-flag "junk"))))
  (and   (or
-  
+
      (match-all (not (system-flag "Attachments")))
-    
+
   )
  ))
- 
+
 "
 replied INTEGER ,                (match-all (system-flag  "Answered"))
 size INTEGER ,                   (match-all (< (get-size) 100))
 dsent NUMERIC ,                  (match-all (< (get-sent-date) (- (get-current-date) 10)))
 dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-current-date) 10)))
 //mlist TEXT ,                      x-camel-mlist   (match-all (header-matches "x-camel-mlist"  "gnome.org"))
-//attachment,                      system-flag "Attachments"   (match-all (system-flag "Attachments")) 
+//attachment,                      system-flag "Attachments"   (match-all (system-flag "Attachments"))
 //followup_flag TEXT ,             (match-all (not (= (user-tag "follow-up") "")))
 //followup_completed_on TEXT ,      (match-all (not (= (user-tag "completed-on") "")))
 //followup_due_by TEXT ," //NOTREQD
@@ -929,21 +929,21 @@ char * camel_db_get_column_name (const char *raw_name)
 	else if (!g_ascii_strcasecmp (raw_name, "junk"))
 		return g_strdup ("junk");
 	else if (!g_ascii_strcasecmp (raw_name, "Answered"))
-		return g_strdup ("replied");	
+		return g_strdup ("replied");
 	else if (!g_ascii_strcasecmp (raw_name, "Seen"))
 		return g_strdup ("read");
 	else if (!g_ascii_strcasecmp (raw_name, "user-tag"))
-		return g_strdup ("usertags");	
+		return g_strdup ("usertags");
 	else if (!g_ascii_strcasecmp (raw_name, "user-flag"))
-		return g_strdup ("labels");	
+		return g_strdup ("labels");
 	else if (!g_ascii_strcasecmp (raw_name, "Attachments"))
 		return g_strdup ("attachment");
 	else if (!g_ascii_strcasecmp (raw_name, "x-camel-mlist"))
-		return g_strdup ("mlist");	
+		return g_strdup ("mlist");
 	else {
-		/* Let it crash for all unknown columns for now. 
-		We need to load the messages into memory and search etc. 
-		We should extend this for camel-folder-search system flags search as well 
+		/* Let it crash for all unknown columns for now.
+		We need to load the messages into memory and search etc.
+		We should extend this for camel-folder-search system flags search as well
 		otherwise, search-for-signed-messages will not work etc.*/
 
 		return g_strdup (raw_name);
@@ -956,19 +956,19 @@ int main ()
 
 	int i=0;
 	char *txt[] = {
-	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))", 
-	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))", 
-	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))", 
+	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))",
+	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))",
+	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"org\")) (match-all (header-contains \"From\"  \"org\")) (match-all (system-flag  \"Flagged\")) (match-all (system-flag  \"Seen\")) )))",
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (match-all (or (= (user-tag \"label\")  \"work\")  (user-flag  \"work\"))) )))", 
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) ((= (user-tag \"label\")  \"work\") ) )))", 
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (user-flag  \"work\") )))", 
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (match-all (or (= (user-tag \"label\")  \"work\")  (user-flag  \"work\"))) )))",
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) ((= (user-tag \"label\")  \"work\") ) )))",
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (user-flag  \"work\") )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (user-flag  (+ \"$Label\"  \"work\")) )))",
 
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (not (= (user-tag \"follow-up\") \"\"))) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (user-tag \"follow-up\") \"\")) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (not (= (user-tag \"completed-on\") \"\"))) )))",
-	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (user-flag  \"important\"))) ))",		
+	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (= (user-tag \"label\")  \"important\") (user-flag (+ \"$Label\"  \"important\")) (user-flag  \"important\"))) ))",
 	"(or (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")) (not (system-flag \"Attachments\")) (not (system-flag \"Answered\")))) (and   (or (match-all (= (user-tag \"completed-on\") \"\")) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (= (user-tag \"completed-on\") \"\")) (match-all (= (user-tag \"follow-up\") \"\")) )))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (> (get-sent-date) (- (get-current-date) 100))) )))",
@@ -980,9 +980,9 @@ int main ()
 	"(match-all (system-flag \"seen\"))",
 	"(match-all (and  (match-all #t) (system-flag \"deleted\")))",
 	"(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))",
-	
-	"(and ( (or (match-all (header-contains \"Subject\"  \"lin\")) )) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\")))))))", 
-	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\")))))))", 
+
+	"(and ( (or (match-all (header-contains \"Subject\"  \"lin\")) )) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"case\")) (match-all (header-contains \"From\"  \"case\")))))))",
+	"(and ( match-all(or (match-all (header-contains \"Subject\"  \"lin\")) (match-all (header-contains \"From\"  \"in\")))) ((and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"proc\")) (match-all (header-contains \"From\"  \"proc\")))))))",
 	"(and  (or (match-all (header-contains \"Subject\"  \"[LDTP-NOSIP]\")) ) (and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (header-contains \"Subject\"  \"vamsi\")) (match-all (header-contains \"From\"  \"vamsi\"))))))",
 	/* Last one doesn't work so well and fails on one case. But I doubt, you can create a query like that in Evo. */
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (match-all (or (= (user-tag \"label\") \"_office\") (user-flag \"$Label_office\") (user-flag \"_office\"))))",
@@ -991,12 +991,12 @@ int main ()
 	"(and (or  (match-all (or (= (user-tag \"label\") \"important\") (user-flag (+ \"$Label\" \"important\")) (user-flag \"important\")))    (match-all (or (= (user-tag \"label\") \"work\") (user-flag (+ \"$Label\" \"work\")) (user-flag \"work\")))    (match-all (or (= (user-tag \"label\") \"personal\") (user-flag (+ \"$Label\" \"personal\")) (user-flag \"personal\")))    (match-all (or (= (user-tag \"label\") \"todo\") (user-flag (+ \"$Label\" \"todo\")) (user-flag \"todo\")))    (match-all (or (= (user-tag \"label\") \"later\") (user-flag (+ \"$Label\" \"later\")) (user-flag \"later\")))  )  (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))))",
 	"(or (header-matches \"to\" \"maw@ximian.com\") (header-matches \"to\" \"mw@ximian.com\")   (header-matches \"to\" \"maw@novell.com\")   (header-matches \"to\" \"maw.AMERICAS3.AMERICAS@novell.com\") (header-matches \"cc\" \"maw@ximian.com\") (header-matches \"cc\" \"mw@ximian.com\")     (header-matches \"cc\" \"maw@novell.com\")   (header-matches \"cc\" \"maw.AMERICAS3.AMERICAS@novell.com\"))",
 	"(not (or (header-matches \"from\" \"bugzilla-daemon@bugzilla.ximian.com\") (header-matches \"from\" \"bugzilla-daemon@bugzilla.gnome.org\") (header-matches \"from\" \"bugzilla_noreply@novell.com\") (header-matches \"from\" \"bugzilla-daemon@mozilla.org\") (header-matches \"from\" \"root@dist.suse.de\") (header-matches \"from\" \"root@hilbert3.suse.de\") (header-matches \"from\" \"root@hilbert4.suse.de\") (header-matches \"from\" \"root@hilbert5.suse.de\") (header-matches \"from\" \"root@hilbert6.suse.de\") (header-matches \"from\" \"root@suse.de\") (header-matches \"from\" \"swamp_noreply@suse.de\") (and (header-matches \"from\" \"hermes@opensuse.org\") (header-starts-with \"subject\" \"submit-Request\"))))"
-	
+
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
 		char *sql;
-		printf("Q: %s\n\n", txt[i]);		
+		printf("Q: %s\n\n", txt[i]);
 		sql = camel_sexp_to_sql (txt[i]);
 		printf("A: %s\n\n\n", sql);
 		g_free (sql);

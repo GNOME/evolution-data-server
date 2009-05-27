@@ -1544,10 +1544,10 @@ correct_two_digit_year (struct tm *result, gboolean *two_digit_year)
 	if (result->tm_year < 0 && result->tm_year < -1800) {
 		time_t t = time (NULL);
 		struct tm *today_tm = localtime (&t);
-		
+
 		/* This should convert it into a value from 0 to 99. */
 		result->tm_year += 1900;
-		
+
 		/* Now add on the century. */
 		result->tm_year += today_tm->tm_year
 			- (today_tm->tm_year % 100);
@@ -1708,7 +1708,7 @@ e_time_parse_date_and_time_ex		(const char	*value,
 
 	if (two_digit_year)
 		*two_digit_year = FALSE;
-	
+
 	status = parse_with_strptime (value, result, format, num_formats);
 
 	if (status == E_TIME_PARSE_OK && !has_correct_date (result))
@@ -2028,7 +2028,7 @@ char *
 e_time_get_d_fmt_with_4digit_year (void)
 {
 	char *p;
-	char *res = 
+	char *res =
 	#if defined(__linux__)
 		g_strdup (nl_langinfo (D_FMT) );
 	/*#elif defined(G_OS_WIN32)

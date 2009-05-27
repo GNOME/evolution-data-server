@@ -76,7 +76,7 @@ CamelType
 camel_local_summary_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_folder_summary_get_type(), "CamelLocalSummary",
 					   sizeof (CamelLocalSummary),
@@ -86,7 +86,7 @@ camel_local_summary_get_type(void)
 					   (CamelObjectInitFunc) camel_local_summary_init,
 					   (CamelObjectFinalizeFunc) camel_local_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -94,15 +94,15 @@ static void
 camel_local_summary_class_init(CamelLocalSummaryClass *klass)
 {
 	CamelFolderSummaryClass *sklass = (CamelFolderSummaryClass *) klass;
-	
+
 	camel_local_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
 
 	sklass->summary_header_load = summary_header_load;
 	sklass->summary_header_save = summary_header_save;
-	
+
 	sklass->summary_header_from_db = summary_header_from_db;
 	sklass->summary_header_to_db = summary_header_to_db;
-	
+
 	sklass->message_info_new_from_header  = message_info_new_from_header;
 
 	klass->load = local_summary_load;
@@ -289,7 +289,7 @@ camel_local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changei
 		}
 
 		printf("\nMemory used by summary:\n\n");
-		printf("Total of %d messages\n", camel_folder_summary_count(s)); 
+		printf("Total of %d messages\n", camel_folder_summary_count(s));
 		printf("Total: %d bytes (ave %f)\n", stats.citotal + stats.mitotal,
 		       (double)(stats.citotal+stats.mitotal)/(double)camel_folder_summary_count(s));
 		printf("Message Info: %d (ave %f)\n", stats.mitotal, (double)stats.mitotal/(double)stats.micount);
@@ -314,17 +314,17 @@ camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const Cam
 
 /**
  * camel_local_summary_write_headers:
- * @fd: 
- * @header: 
- * @xevline: 
+ * @fd:
+ * @header:
+ * @xevline:
  * @status:
  * @xstatus:
- * 
+ *
  * Write a bunch of headers to the file @fd.  IF xevline is non NULL, then
  * an X-Evolution header line is created at the end of all of the headers.
  * If @status is non NULL, then a Status header line is also written.
  * The headers written are termianted with a blank line.
- * 
+ *
  * Return value: -1 on error, otherwise the number of bytes written.
  **/
 int
@@ -438,17 +438,17 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info, CamelMe
 
 	if ((flags & CAMEL_MESSAGE_SEEN) != (oldflags & CAMEL_MESSAGE_SEEN))
 		unread = (oldflags & CAMEL_MESSAGE_SEEN) ? 1 : -1;
-	
+
 	if ((flags & CAMEL_MESSAGE_DELETED) != (oldflags & CAMEL_MESSAGE_DELETED))
 		deleted = (oldflags & CAMEL_MESSAGE_DELETED) ? 1 : -1;
 
 	if ((flags & CAMEL_MESSAGE_JUNK) != (oldflags & CAMEL_MESSAGE_JUNK))
 		junk = (oldflags & CAMEL_MESSAGE_JUNK) ? 1 : -1;
-	
+
 	/* Things would already be flagged */
-	
+
 	if (summary) {
-		
+
 		if (unread)
 			summary->unread_count -= unread;
 		if (deleted)
@@ -457,7 +457,7 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info, CamelMe
 			summary->junk_count += junk;
 		if (junk && !deleted)
 			summary->junk_not_deleted_count += junk;
-		if (junk ||  deleted) 
+		if (junk ||  deleted)
 			summary->visible_count -= junk ? junk : deleted;
 	}
 
@@ -471,7 +471,7 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 	char *xev;
 
 	d(printf("Adding message to summary\n"));
-	
+
 	mi = (CamelLocalMessageInfo *)camel_folder_summary_add_from_message((CamelFolderSummary *)cls, msg);
 	if (mi) {
 		/*d(printf("Added, uid = %s\n", mi->uid));*/
@@ -483,12 +483,12 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 				camel_message_info_set_user_flag((CamelMessageInfo *)mi, flag->name, TRUE);
 				flag = flag->next;
 			}
-			
+
 			while (tag) {
 				camel_message_info_set_user_tag((CamelMessageInfo *)mi, tag->name, tag->value);
 				tag = tag->next;
 			}
-			
+
 			update_summary (s, (CamelMessageInfoBase *) mi, (CamelMessageInfoBase *) info);
 			mi->info.flags |= (camel_message_info_flags(info) & 0xffff);
 			camel_folder_summary_update_flag_cache (s, mi->info.uid, mi->info.flags);
@@ -542,7 +542,7 @@ local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelLocalMessage
 
 	if (flag || tag) {
 		val = g_string_new ("");
-		
+
 		if (flag) {
 			while (flag) {
 				g_string_append (val, flag->name);
@@ -570,7 +570,7 @@ local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelLocalMessage
 	}
 	ret = out->str;
 	g_string_free (out, FALSE);
-	
+
 	return ret;
 }
 
@@ -600,7 +600,7 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelL
 	if (mi == NULL)
 		return 0;
 
-	/* check for additional data */	
+	/* check for additional data */
 	header = strchr(xev, ';');
 	if (header) {
 		params = camel_header_param_list_decode(header+1);
@@ -638,7 +638,7 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelL
 }
 
 
-static int 
+static int
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)s;
@@ -681,18 +681,18 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 	return camel_file_util_decode_fixed_int32(in, &cls->version);
 }
 
-static struct _CamelFIRecord * 
+static struct _CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	struct _CamelFIRecord *fir;
-	
+
 	fir = ((CamelFolderSummaryClass *)camel_local_summary_parent)->summary_header_to_db (s, ex);
 	if (fir)
 		fir->bdata = g_strdup_printf ("%d", CAMEL_LOCAL_SUMMARY_VERSION);
-	
+
 	return fir;
 }
- 
+
 static int
 summary_header_save(CamelFolderSummary *s, FILE *out)
 {
@@ -725,7 +725,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 			/* shortcut, no need to look it up in the index library */
 			doindex = TRUE;
 		}
-		
+
 		if (cls->index
 		    && (doindex
 			|| cls->index_force
@@ -737,6 +737,6 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 			camel_folder_summary_set_index(s, NULL);
 		}
 	}
-	
+
 	return (CamelMessageInfo *)mi;
 }

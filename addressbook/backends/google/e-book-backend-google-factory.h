@@ -50,4 +50,4 @@ GType e_book_backend_google_factory_get_type (GTypeModule *module);
 G_END_DECLS
 
 #endif /* __E_BOOK_BACKEND_GOOGLE_FACTORY_H__ */
- 
+

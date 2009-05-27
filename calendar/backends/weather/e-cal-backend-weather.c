@@ -353,7 +353,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	if (is_forecast) {
 		gdouble tmin = 0.0, tmax = 0.0;
 
-		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) && 
+		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) &&
 		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
 		    tmin != tmax) {
 			/* because weather_info_get_temp* uses one internal buffer, thus finally
@@ -376,7 +376,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 		GString *str = g_string_new (priv->city);
 
 		g_string_append (str, " : ");
-		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) && 
+		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) &&
 		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
 		    tmin != tmax) {
 			g_string_append (str, weather_info_get_temp_min (report));

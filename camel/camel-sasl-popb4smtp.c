@@ -65,9 +65,9 @@ static void
 camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *camel_sasl_popb4smtp_class)
 {
 	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_popb4smtp_class);
-	
+
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-	
+
 	/* virtual method overload */
 	camel_sasl_class->challenge = popb4smtp_challenge;
 
@@ -78,7 +78,7 @@ CamelType
 camel_sasl_popb4smtp_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_sasl_get_type (),
 					    "CamelSaslPOPB4SMTP",
@@ -89,7 +89,7 @@ camel_sasl_popb4smtp_get_type (void)
 					    NULL,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -148,6 +148,6 @@ popb4smtp_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	POPB4SMTP_UNLOCK(lock);
 
 	g_free(popuri);
-	
+
 	return NULL;
 }

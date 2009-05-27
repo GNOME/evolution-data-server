@@ -35,7 +35,7 @@ typedef struct _CamelMimeFilterLinewrapClass CamelMimeFilterLinewrapClass;
 
 struct _CamelMimeFilterLinewrap {
 	CamelMimeFilter parent;
-	
+
 	guint wrap_len;
 	guint max_len;
 	char indent;

@@ -58,12 +58,12 @@ typedef enum {
 
 typedef struct {
 	guint32 refcount;
-	
+
 	char *issuer;
 	char *subject;
 	char *hostname;
 	char *fingerprint;
-	
+
 	CamelCertTrust trust;
 	GByteArray *rawcert;
 } CamelCert;
@@ -71,32 +71,32 @@ typedef struct {
 struct _CamelCertDB {
 	CamelObject parent_object;
 	struct _CamelCertDBPrivate *priv;
-	
+
 	char *filename;
 	guint32 version;
 	guint32 saved_certs;
 	guint32 flags;
-	
+
 	guint32 cert_size;
-	
+
 	struct _EMemChunk *cert_chunks;
-	
+
 	GPtrArray *certs;
 	GHashTable *cert_hash;
 };
 
 struct _CamelCertDBClass {
 	CamelObjectClass parent_class;
-	
+
 	int (*header_load) (CamelCertDB *certdb, FILE *istream);
 	int (*header_save) (CamelCertDB *certdb, FILE *ostream);
-	
+
 	CamelCert * (*cert_load) (CamelCertDB *certdb, FILE *istream);
 	int (*cert_save) (CamelCertDB *certdb, CamelCert *cert, FILE *ostream);
-	
+
 	CamelCert *  (*cert_new) (CamelCertDB *certdb);
 	void        (*cert_free) (CamelCertDB *certdb, CamelCert *cert);
-	
+
 	const char * (*cert_get_string) (CamelCertDB *certdb, CamelCert *cert, int string);
 	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, int string, const char *value);
 };

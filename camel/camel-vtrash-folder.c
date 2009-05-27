@@ -71,7 +71,7 @@ CamelType
 camel_vtrash_folder_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register (camel_vee_folder_get_type (),
 					    "CamelVTrashFolder",
@@ -82,7 +82,7 @@ camel_vtrash_folder_get_type (void)
 					    (CamelObjectInitFunc) camel_vtrash_folder_init,
 					    NULL);
 	}
-	
+
 	return type;
 }
 
@@ -100,7 +100,7 @@ CamelFolder *
 camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
 {
 	CamelVTrashFolder *vtrash;
-	
+
 	g_assert(type < CAMEL_VTRASH_FOLDER_LAST);
 
 	vtrash = (CamelVTrashFolder *)camel_object_new(camel_vtrash_folder_get_type());
@@ -135,9 +135,9 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		case CAMEL_FOLDER_ARG_UNREAD:
 		case CAMEL_FOLDER_ARG_DELETED:
 		case CAMEL_FOLDER_ARG_JUNKED:
-		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:	
+		case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
 		case CAMEL_FOLDER_ARG_VISIBLE:
-			
+
 			/* This is so we can get the values atomically, and also so we can calculate them only once */
 			if (unread == -1) {
 				int j;
@@ -160,7 +160,7 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 						if (flags & CAMEL_MESSAGE_JUNK) {
 							junked++;
 								if (! (flags & CAMEL_MESSAGE_DELETED))
-									junked_not_deleted++;						
+									junked_not_deleted++;
 						}
 						if ((flags & (CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_JUNK)) == 0)
 							visible++;
@@ -181,7 +181,7 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				break;
 			case CAMEL_FOLDER_ARG_JUNKED_NOT_DELETED:
 				count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
-				break;				
+				break;
 			case CAMEL_FOLDER_ARG_VISIBLE:
 				count = visible == -1 ? 0 : visible;
 				break;
@@ -190,7 +190,7 @@ vtrash_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			folder->summary->deleted_count = deleted == -1 ? 0 : deleted;
 			junked = folder->summary->junk_count = junked == -1 ? 0 : junked;
 			folder->summary->junk_not_deleted_count = junked_not_deleted == -1 ? 0 : junked_not_deleted;
-			folder->summary->visible_count = visible == -1 ? 0 : visible;			
+			folder->summary->visible_count = visible == -1 ? 0 : visible;
 			*arg->ca_int = count;
 			break;
 		default:
@@ -280,7 +280,7 @@ vtrash_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			g_warning ("Cannot find uid %s in source folder during transfer", (char *) uids->pdata[i]);
 			continue;
 		}
-		
+
 		if (dest == mi->summary->folder) {
 			/* Just unset the flag on the original message */
 			camel_folder_set_message_flags (source, uids->pdata[i], sbit, 0);
@@ -374,7 +374,7 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 	GList *node;
 	GPtrArray *matches, *result = g_ptr_array_new(), *folder_uids = g_ptr_array_new();
 	struct _CamelVeeFolderPrivate *p = ((CamelVeeFolder *)folder)->priv;
-	
+
 	CAMEL_VEE_FOLDER_LOCK(folder, subfolder_lock);
 
 	node = p->folders;
@@ -382,7 +382,7 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 		CamelFolder *f = node->data;
 		int i;
 		char hash[8];
-		
+
 		camel_vee_folder_hash_folder(f, hash);
 
 		/* map the vfolder uid's to the source folder uid's first */
@@ -391,9 +391,9 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 		g_ptr_array_set_size (folder_uids, 0);
 		for (i=0;i<uids->len;i++) {
 			char *uid = uids->pdata[i];
-			
+
 			/*if (strlen(uid) >= 8 && strncmp(uid, hash, 8) == 0) {*/
-			if (strncmp(uid, hash, 8) == 0) {			
+			if (strncmp(uid, hash, 8) == 0) {
 #if 0
 				CamelMessageInfo *mi;
 				/* FIXME[disk-summary] is it really reqd, if
@@ -412,7 +412,7 @@ vtrash_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *ui
 		    && (matches = camel_folder_search_by_uids(f, expression, folder_uids, ex))) {
 			for (i = 0; i < matches->len; i++) {
 				char *uid = matches->pdata[i], *vuid;
-				
+
 				vuid = g_malloc(strlen(uid)+9);
 				memcpy(vuid, hash, 8);
 				strcpy(vuid+8, uid);
@@ -515,7 +515,7 @@ vtrash_folder_changed(CamelVeeFolder *vf, CamelFolder *sub, CamelFolderChangeInf
 	}
 
 	CAMEL_VEE_FOLDER_UNLOCK(vf, summary_lock);
-	
+
 	if (vf_changes) {
 		camel_object_trigger_event(vf, "folder_changed", vf_changes);
 		camel_folder_change_info_free(vf_changes);
@@ -534,7 +534,7 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
 	if (!g_hash_table_lookup (vf->hashes, shash))
 		g_hash_table_insert (vf->hashes, g_strdup(shash), sub->summary);
-	
+
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 
 	if (((CamelVTrashFolder *)vf)->bit == CAMEL_MESSAGE_DELETED) {
@@ -552,12 +552,12 @@ vtrash_add_folder(CamelVeeFolder *vf, CamelFolder *sub)
 		g_free (shash);
 		return;
 	}
-	
+
 	for (i=0;i<infos->len;i++) {
 		char *uid = infos->pdata[i];
 		vtrash_uid_added((CamelVTrashFolder *)vf, uid, sub->summary, hash);
 	}
-	
+
 	g_ptr_array_foreach (infos, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (infos, TRUE);
 
@@ -636,7 +636,7 @@ vtrash_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
 	if (g_hash_table_lookup (vf->hashes, shash))
 		g_hash_table_remove (vf->hashes, shash);
-	g_free(shash);	
+	g_free(shash);
 	if (vf_changes) {
 		camel_object_trigger_event(vf, "folder_changed", vf_changes);
 		camel_folder_change_info_free(vf_changes);
@@ -654,12 +654,12 @@ static void
 camel_vtrash_folder_class_init (CamelVTrashFolderClass *klass)
 {
 	CamelFolderClass *folder_class = (CamelFolderClass *) klass;
-	
+
 	camel_vtrash_folder_parent = CAMEL_VEE_FOLDER_CLASS(camel_vee_folder_get_type());
 
 	/* Not required from here on. We don't count */
-	((CamelObjectClass *)klass)->getv = vtrash_getv; 
-	
+	((CamelObjectClass *)klass)->getv = vtrash_getv;
+
 	folder_class->append_message = vtrash_append_message;
 	folder_class->transfer_messages_to = vtrash_transfer_messages_to;
 	/* Not required, lets use the base class search function */

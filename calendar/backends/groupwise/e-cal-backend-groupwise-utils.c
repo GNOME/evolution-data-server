@@ -483,10 +483,10 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 
 }
 
-static int 
+static int
 get_actual_count (ECalComponent *comp, ECalBackendGroupwise *cbgw)
 {
-	int count = 0;	
+	int count = 0;
 	icaltimezone *dzone, *utc;
 
 
@@ -931,7 +931,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 
 	e_cal_component_set_attachment_list (comp, comp_attachment_list);
 
-	for (l = comp_attachment_list; l != NULL; l = l->next) 
+	for (l = comp_attachment_list; l != NULL; l = l->next)
 		g_free (l->data);
 	g_slist_free (comp_attachment_list);
 }
@@ -1004,19 +1004,19 @@ set_default_alarms (ECalComponent *comp)
 
 static char *
 get_cn_from_display_name (char *display_name)
-{	
+{
 	char *dn;
-	
+
 	/* Strip the name part alone as the display name might contain email also*/
 	dn = g_strstr_len (display_name, strlen (display_name), " <");
 
 	if (!dn)
 		return g_strdup (display_name);
-	else { 
+	else {
 		dn = g_strndup (display_name, (dn - display_name));
 		dn = g_strdelimit (dn, "\"", ' ');
 		return dn;
-	}	
+	}
 }
 
 ECalComponent *
@@ -1127,14 +1127,14 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		e_cal_component_set_created (comp, &itt_utc);
 		e_cal_component_set_dtstamp (comp, &itt_utc);
 	}
-	
+
 	t = e_gw_item_get_modified_date (item);
 	if (t) {
 		itt_utc = icaltime_from_string (t);
-		
+
 		icaltimezone_convert_time (&itt_utc, (icaltimezone*) icaltime_get_timezone (itt_utc), icaltimezone_get_utc_timezone ());
 		icaltime_set_timezone (&itt_utc, icaltimezone_get_utc_timezone ());
-		
+
 		e_cal_component_set_last_modified (comp, &itt_utc);
 	}
 
@@ -1874,8 +1874,8 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		}
 
 		subparam_block = soup_soap_parameter_get_first_child_by_name (param_blocks, "block");
-		/* The GW server only returns 'Busy', 'OOF' and 'Tentative' periods. The rest are 
-		 * assumed to be 'Free' periods. In case of an attendee having only 'Free' periods, 
+		/* The GW server only returns 'Busy', 'OOF' and 'Tentative' periods. The rest are
+		 * assumed to be 'Free' periods. In case of an attendee having only 'Free' periods,
 		 * ensure to send a block to the frontend saying so. */
 		if (subparam_block == NULL) {
 			struct icalperiodtype ipt;

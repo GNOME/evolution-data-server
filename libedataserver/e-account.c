@@ -928,7 +928,7 @@ void
 e_account_set_string (EAccount *ea, e_account_item_t type, const char *val)
 {
 	char **p;
-	
+
 	g_return_if_fail (ea != NULL);
 
 	if (!e_account_writable(ea, type)) {
@@ -950,7 +950,7 @@ void
 e_account_set_int (EAccount *ea, e_account_item_t type, int val)
 {
 	g_return_if_fail (ea != NULL);
-	
+
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
@@ -968,7 +968,7 @@ void
 e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
 {
 	g_return_if_fail (ea != NULL);
-	
+
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {

@@ -27,7 +27,7 @@ finalize (GObject *object)
 {
 	SoupSoapMessagePrivate *priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (object);
 
-	if (priv->doc) 
+	if (priv->doc)
 		xmlFreeDoc (priv->doc);
 	if (priv->action)
 		g_free (priv->action);
@@ -66,7 +66,7 @@ fetch_ns (SoupSoapMessage *msg, const char *prefix, const char *ns_uri)
 {
 	SoupSoapMessagePrivate *priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
         xmlNsPtr ns = NULL;
-                                                                                
+
         if (prefix && ns_uri)
                 ns = xmlNewNs (priv->last_node, (const xmlChar *)ns_uri, (const xmlChar *)prefix);
         else if (prefix && !ns_uri) {
@@ -74,7 +74,7 @@ fetch_ns (SoupSoapMessage *msg, const char *prefix, const char *ns_uri)
                 if (!ns)
 			ns = xmlNewNs (priv->last_node, (const xmlChar *)"", (const xmlChar *)prefix);
         }
-                                                                                
+
         return ns;
 }
 
@@ -373,7 +373,7 @@ soup_soap_message_start_fault_detail (SoupSoapMessage *msg)
 
         g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
 	priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
-                                                                                
+
         priv->last_node = xmlNewChild (priv->last_node,
 				       priv->soap_ns,
 				       (const xmlChar *)"detail",

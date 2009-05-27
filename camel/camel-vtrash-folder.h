@@ -54,7 +54,7 @@ struct _CamelVTrashFolder {
 
 struct _CamelVTrashFolderClass {
 	CamelVeeFolderClass parent_class;
-	
+
 };
 
 CamelType       camel_vtrash_folder_get_type    (void);

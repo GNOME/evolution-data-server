@@ -49,13 +49,13 @@ enum {
 
 struct _CamelOfflineStore {
 	CamelStore parent_object;
-	
+
 	int state;
 };
 
 struct _CamelOfflineStoreClass {
 	CamelStoreClass parent_class;
-	
+
 	void (* set_network_state) (CamelOfflineStore *store, int state, CamelException *ex);
 };
 

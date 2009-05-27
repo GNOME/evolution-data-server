@@ -37,7 +37,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSasl {
 	CamelObject parent_object;
-	
+
 	char *service_name;
 	char *mech;		/* mechanism */
 	CamelService *service;
@@ -47,7 +47,7 @@ typedef struct _CamelSasl {
 
 typedef struct _CamelSaslClass {
 	CamelObjectClass parent_class;
-	
+
 	GByteArray *    (*challenge)   (CamelSasl *sasl, GByteArray *token, CamelException *ex);
 
 } CamelSaslClass;

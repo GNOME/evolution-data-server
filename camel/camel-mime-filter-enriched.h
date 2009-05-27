@@ -40,14 +40,14 @@ typedef struct _CamelMimeFilterEnrichedClass CamelMimeFilterEnrichedClass;
 
 struct _CamelMimeFilterEnriched {
 	CamelMimeFilter parent_object;
-	
+
 	guint32 flags;
 	int nofill;
 };
 
 struct _CamelMimeFilterEnrichedClass {
 	CamelMimeFilterClass parent_class;
-	
+
 };
 
 CamelType        camel_mime_filter_enriched_get_type (void);

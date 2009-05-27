@@ -38,13 +38,13 @@ typedef struct _CamelGpgContextClass CamelGpgContextClass;
 
 struct _CamelGpgContext {
 	CamelCipherContext parent_object;
-	
+
 	gboolean always_trust;
 };
 
 struct _CamelGpgContextClass {
 	CamelCipherContextClass parent_class;
-	
+
 };
 
 

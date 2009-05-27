@@ -417,11 +417,11 @@ solaris_header_write(int fd, struct _camel_header_raw *header)
 			iv[0].iov_len = strlen(header->name);
 			iv[2].iov_base = header->value;
 			iv[2].iov_len = strlen(header->value);
-		
+
 			do {
 				len = writev(fd, iv, 4);
 			} while (len == -1 && errno == EINTR);
-			
+
 			if (len == -1)
 				return -1;
 			outlen += len;

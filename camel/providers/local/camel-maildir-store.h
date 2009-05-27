@@ -4,8 +4,8 @@
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -33,12 +33,12 @@ G_BEGIN_DECLS
 
 typedef struct {
 	CamelLocalStore parent_object;
-	
+
 } CamelMaildirStore;
 
 typedef struct {
 	CamelLocalStoreClass parent_class;
-	
+
 } CamelMaildirStoreClass;
 
 /* public methods */

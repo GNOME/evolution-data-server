@@ -475,7 +475,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 
 	/* Attendees */
 	go_attendee_list = gdata_entry_get_attendee_list (item->entry);
-		
+
 	if (go_attendee_list != NULL) {
 
 		for (l = go_attendee_list; l != NULL; l = l->next) {
@@ -498,25 +498,25 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 			if (go_attendee->attendee_rel) {
 				gchar *val;
 				val = strstr ((const gchar *)go_attendee->attendee_rel, (const gchar *)"organizer");
-				if (val != NULL && !strcmp ("organizer", val)) {	
-					org = g_new0 (ECalComponentOrganizer, 1);	
+				if (val != NULL && !strcmp ("organizer", val)) {
+					org = g_new0 (ECalComponentOrganizer, 1);
 
-					if (go_attendee->attendee_email) 
+					if (go_attendee->attendee_email)
 						org->value = g_strconcat("MAILTO:", go_attendee->attendee_email, NULL);
-					if (go_attendee->attendee_value) 
+					if (go_attendee->attendee_value)
 						org->cn =  g_strdup (go_attendee->attendee_value);
-				}	
+				}
 			}
-			
-			attendee_list = g_slist_prepend (attendee_list, attendee);	
+
+			attendee_list = g_slist_prepend (attendee_list, attendee);
 		}
 		e_cal_component_set_attendee_list (comp, attendee_list);
 	}
-	
+
 	/* Set the organizer if any */
 	if (org)
 		e_cal_component_set_organizer (comp, org);
-	
+
 	/* Location */
 	e_cal_component_set_location (comp, gdata_entry_get_location (item->entry));
 

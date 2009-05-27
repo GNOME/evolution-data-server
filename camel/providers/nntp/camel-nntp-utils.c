@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-nntp-utils.c : utilities used by the nntp code. */
 
-/* 
- * Author : Chris Toshok <toshok@ximian.com> 
+/*
+ * Author : Chris Toshok <toshok@ximian.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU Lesser General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -77,7 +77,7 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				date = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_DATE].index];
 				message_id = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_MESSAGE_ID].index];
 				bytes = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_BYTES].index];
-				
+
 				/* if the overview format flagged this
                                    field as "full", skip over the
                                    preceding field name and colon */
@@ -164,7 +164,7 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				char *line;
 				int line_length;
 
-				line = camel_stream_buffer_read_line ( 
+				line = camel_stream_buffer_read_line (
 						      CAMEL_STREAM_BUFFER ( nntp_istream ));
 				line_length = strlen ( line );
 
@@ -232,7 +232,7 @@ uid_num (CamelFolderSummary *summary, int index)
 	char *tmp;
 	char *brk;
 	int ret;
-	
+
 	tmp = camel_folder_summary_uid_from_index(summary, index);
 
 	if((brk = strchr(tmp, ',')) == NULL)
@@ -241,9 +241,9 @@ uid_num (CamelFolderSummary *summary, int index)
 		*brk = 0;
 		ret = atoi(tmp);
 	}
-	
+
 	g_free(tmp);
-	
+
 	return ret;
 }
 
@@ -271,19 +271,19 @@ camel_nntp_get_headers (CamelStore *store,
 		if(last_summary < first_message)
 			camel_folder_summary_clear(folder->summary);
 		else {
-			while(uid_num(folder->summary, 0) < first_message) 
+			while(uid_num(folder->summary, 0) < first_message)
 				camel_folder_summary_remove_index(folder->summary, 0);
-			
+
 			if(last_summary >= last_message)
 				return;
-			
+
 			first_message = last_summary;
 		}
 	}
-			
+
 	if (status == NNTP_NO_SUCH_GROUP) {
 		/* XXX throw invalid group exception */
-		camel_exception_setv (ex, 
+		camel_exception_setv (ex,
 				      CAMEL_EXCEPTION_FOLDER_INVALID,
 				      "group %s not found on server",
 				      folder->name);
@@ -299,6 +299,6 @@ camel_nntp_get_headers (CamelStore *store,
 #if 0
 		get_HEAD_headers (nntp_store, folder, first_message, last_message, ex);
 #endif
-	}		
+	}
 
 }

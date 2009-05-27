@@ -76,7 +76,7 @@ camel_session_init (CamelSession *session)
 	session->online = TRUE;
 	session->network_state = TRUE;
 	session->priv = g_malloc0(sizeof(*session->priv));
-	
+
 	session->priv->lock = g_mutex_new();
 	session->priv->thread_lock = g_mutex_new();
 	session->priv->thread_id = 1;
@@ -90,7 +90,7 @@ camel_session_finalise (CamelObject *o)
 {
 	CamelSession *session = (CamelSession *)o;
 	GThreadPool *thread_pool = session->priv->thread_pool;
-	
+
 	g_hash_table_destroy(session->priv->thread_active);
 
 	if (thread_pool != NULL) {
@@ -116,7 +116,7 @@ camel_session_class_init (CamelSessionClass *camel_session_class)
 	/* virtual method definition */
 	camel_session_class->get_service = get_service;
 	camel_session_class->get_storage_path = get_storage_path;
-	
+
 	camel_session_class->thread_msg_new = session_thread_msg_new;
 	camel_session_class->thread_msg_free = session_thread_msg_free;
 	camel_session_class->thread_queue = session_thread_queue;
@@ -169,7 +169,7 @@ get_service (CamelSession *session, const char *url_string,
 	CamelProvider *provider;
 	CamelService *service;
 	CamelException internal_ex;
-	
+
 	url = camel_url_new (url_string, ex);
 	if (!url)
 		return NULL;
@@ -183,7 +183,7 @@ get_service (CamelSession *session, const char *url_string,
 				      url->protocol);
 		provider = NULL;
 	}
-	
+
 	if (!provider) {
 		camel_url_free (url);
 		return NULL;
@@ -194,7 +194,7 @@ get_service (CamelSession *session, const char *url_string,
 	 */
 	if (url->path && !CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_PATH))
 		camel_url_set_path (url, NULL);
-	
+
 	/* Now look up the service in the provider's cache */
 	service = camel_object_bag_reserve(provider->service_cache[type], url);
 	if (service == NULL) {
@@ -296,7 +296,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
 	path = g_strdup_printf ("%s/%s", session->storage_path, p);
 	g_free (p);
 
-#ifdef G_OS_WIN32 
+#ifdef G_OS_WIN32
 	if (g_access (path, F_OK) == 0)
 #else
 	if (access (path, F_OK) == 0)
@@ -365,7 +365,7 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  * If #CAMEL_SESSION_PASSWORD_STATIC is set, it means the password returned
  * will be stored statically by the caller automatically, for the current
  * session.
- * 
+ *
  * The authenticator should set @ex to #CAMEL_EXCEPTION_USER_CANCEL if
  * the user did not provide the information. The caller must #g_free
  * the information returned when it is done with it.
@@ -381,7 +381,7 @@ camel_session_get_password (CamelSession *session, CamelService *service,
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (prompt != NULL, NULL);
 	g_return_val_if_fail (item != NULL, NULL);
-	
+
 	return CS_CLASS (session)->get_password (session, service, domain, prompt, item, flags, ex);
 }
 
@@ -576,7 +576,7 @@ session_thread_msg_free (CamelSession *session,
 	CAMEL_SESSION_UNLOCK(session, thread_lock);
 
 	d(printf("free msg, ops->free = %p\n", msg->ops->free));
-	
+
 	if (msg->ops->free)
 		msg->ops->free(session, msg);
 	if (msg->op)
@@ -655,7 +655,7 @@ session_thread_status (CamelSession *session,
  * @session: a #CamelSession object
  * @ops: thread operations
  * @size: number of bytes
- * 
+ *
  * Create a new thread message, using ops as the receive/reply/free
  * ops, of @size bytes.
  *
@@ -680,7 +680,7 @@ camel_session_thread_msg_new (CamelSession *session,
  * camel_session_thread_msg_free:
  * @session: a #CamelSession object
  * @msg: a #CamelSessionThreadMsg
- * 
+ *
  * Free a @msg.  Note that the message must have been allocated using
  * msg_new, and must nto have been submitted to any queue function.
  **/
@@ -699,11 +699,11 @@ camel_session_thread_msg_free (CamelSession *session,
  * @session: a #CamelSession object
  * @msg: a #CamelSessionThreadMsg
  * @flags: queue type flags, currently 0.
- * 
+ *
  * Queue a thread message in another thread for processing.
  * The operation should be (but needn't) run in a queued manner
  * with other operations queued in this manner.
- * 
+ *
  * Returns: the id of the operation queued
  **/
 int
@@ -739,7 +739,7 @@ camel_session_thread_wait (CamelSession *session,
 /**
  * camel_session_check_junk:
  * @session: a #CamelSession object
- * 
+ *
  * Do we have to check incoming messages to be junk?
  *
  * Returns: whether or not we are checking incoming messages for junk
@@ -756,7 +756,7 @@ camel_session_check_junk (CamelSession *session)
  * camel_session_set_check_junk:
  * @session: a #CamelSession object
  * @check_junk: state
- * 
+ *
  * Set check_junk flag, if set, incoming mail will be checked for being junk.
  **/
 void
@@ -825,7 +825,7 @@ session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage
 /**
  * camel_session_forward_to:
  * Forwards message to some address(es) in a given type. The meaning of the forward_type defines session itself.
- * @session #CameSession. 
+ * @session #CameSession.
  * @folder #CamelFolder where is @message located.
  * @message Message to forward.
  * @address Where forward to.
@@ -835,6 +835,6 @@ void
 camel_session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
-	
+
 	CS_CLASS (session)->forward_to (session, folder, message, address, ex);
 }

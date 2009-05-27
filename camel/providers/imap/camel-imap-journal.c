@@ -46,7 +46,7 @@
 #include "camel-imap-journal.h"
 #include "camel-imap-folder.h"
 
-#define d(x) 
+#define d(x)
 
 static void camel_imap_journal_class_init (CamelIMAPJournalClass *klass);
 static void camel_imap_journal_init (CamelIMAPJournal *journal, CamelIMAPJournalClass *klass);
@@ -67,7 +67,7 @@ CamelType
 camel_imap_journal_get_type (void)
 {
 	static CamelType type = 0;
-	
+
 	if (!type) {
 		type = camel_type_register (camel_offline_journal_get_type (),
 					    "CamelIMAPJournal",
@@ -78,7 +78,7 @@ camel_imap_journal_get_type (void)
 					    (CamelObjectInitFunc) camel_imap_journal_init,
 					    (CamelObjectFinalizeFunc) camel_imap_journal_finalize);
 	}
-	
+
 	return type;
 }
 
@@ -86,9 +86,9 @@ static void
 camel_imap_journal_class_init (CamelIMAPJournalClass *klass)
 {
 	CamelOfflineJournalClass *journal_class = (CamelOfflineJournalClass *) klass;
-	
+
 	parent_class = (CamelOfflineJournalClass *) camel_type_get_global_classfuncs (CAMEL_TYPE_OFFLINE_JOURNAL);
-	
+
 	journal_class->entry_free = imap_entry_free;
 	journal_class->entry_load = imap_entry_load;
 	journal_class->entry_write = imap_entry_write;
@@ -135,14 +135,14 @@ static void
 imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
-	
+
 	switch (imap_entry->type) {
 		case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 			free_uids (imap_entry->uids);
 			break;
 		case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 			g_free (imap_entry->append_uid);
-			break;		
+			break;
 		case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 			free_uids (imap_entry->uids);
 			g_free (imap_entry->dest_folder_name);
@@ -203,15 +203,15 @@ static CamelDListNode *
 imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 {
 	CamelIMAPJournalEntry *entry;
-	
-	
+
+
 	d(g_print ("DEBUG: Loading to  the journal \n"));
-	
+
 	entry = g_malloc0 (sizeof (CamelIMAPJournalEntry));
-	
+
 	if (camel_file_util_decode_uint32 (in, &entry->type) == -1)
 		goto exception;
-	
+
 	switch (entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 		entry->uids = decode_uids (in);
@@ -220,7 +220,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 		if (camel_file_util_decode_string (in, &entry->append_uid) == -1)
 			goto exception;
-		
+
 		break;
 	case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 		if (camel_file_util_decode_string (in, &entry->dest_folder_name) == -1)
@@ -228,7 +228,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 		entry->uids = decode_uids (in);
 		if (!entry->uids)
 			goto exception;
-		if (camel_file_util_decode_uint32 (in, &entry->move) == -1) 
+		if (camel_file_util_decode_uint32 (in, &entry->move) == -1)
 			goto exception;
 		break;
 	default:
@@ -236,7 +236,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 	}
 
 	return (CamelDListNode *) entry;
-	
+
  exception:
 	switch (entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
@@ -245,9 +245,9 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 	default:
 		break;
 	}
-	
+
 	g_free (entry);
-	
+
 	return NULL;
 }
 
@@ -267,10 +267,10 @@ imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 	GPtrArray *uids = NULL;
-	
+
 	if (camel_file_util_encode_uint32 (out, imap_entry->type) == -1)
 		return -1;
-	
+
 	d(g_print ("DEBUG: Writing to  the journal \n"));
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
@@ -281,7 +281,7 @@ imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 		if (camel_file_util_encode_string (out, imap_entry->append_uid))
 			return -1;
-		
+
 		break;
 	case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 		if (camel_file_util_encode_string (out, imap_entry->dest_folder_name))
@@ -332,7 +332,7 @@ int
 imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
-	
+
 	d(g_print ("DEBUG: PLaying the journal \n"));
 
 	switch (imap_entry->type) {
@@ -346,9 +346,9 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 		CamelMessageInfo *info;
 
 		message = camel_folder_get_message (journal->folder, imap_entry->append_uid, NULL);
-		if (!message) 
+		if (!message)
 			return -1;
-		
+
 		info = camel_folder_get_message_info (journal->folder, imap_entry->append_uid);
 		imap_append_resyncing (journal->folder, message, info, &ret_uid, ex);
 		camel_folder_free_message_info (journal->folder, info);
@@ -357,8 +357,8 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 			camel_imap_journal_uidmap_add ((CamelIMAPJournal *)journal, imap_entry->append_uid, ret_uid);
 			g_free (ret_uid);
 		}
-		
-		return 0; 
+
+		return 0;
 	}
 	case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 	{
@@ -402,13 +402,13 @@ CamelOfflineJournal *
 camel_imap_journal_new (CamelImapFolder *folder, const char *filename)
 {
 	CamelOfflineJournal *journal;
-	
+
 	g_return_val_if_fail (CAMEL_IS_IMAP_FOLDER (folder), NULL);
 
 	d(g_print ("Creating the journal \n"));
 	journal = (CamelOfflineJournal *) camel_object_new (camel_imap_journal_get_type ());
 	camel_offline_journal_construct (journal, (CamelFolder *) folder, filename);
-	
+
 	return journal;
 }
 
@@ -417,7 +417,7 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 {
 	CamelIMAPJournalEntry *entry;
 	va_list ap;
-	
+
 	if (!journal)
 		return;
 
@@ -425,13 +425,13 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 	entry->type = action;
 
 	d(g_print ("logging the journal \n"));
-	
+
 	va_start (ap, action);
 	switch (entry->type) {
 		case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 		{
 			GPtrArray *uids = va_arg (ap, GPtrArray *);
-			
+
 			entry->uids = copy_uids_array (uids);
 			break;
 		}
@@ -444,14 +444,14 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 		case CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER:
 		{
 			CamelFolder *dest = va_arg (ap, CamelFolder *);
-			
+
 			entry->uids = copy_uids_array (va_arg (ap, GPtrArray *));
 			entry->move = va_arg (ap, gboolean);
 			entry->dest_folder_name = g_strdup (dest->full_name);
 			break;
 		}
 	}
-	
+
 	va_end (ap);
 
 	camel_dlist_addtail (&journal->queue, (CamelDListNode *) entry);
@@ -469,10 +469,10 @@ close_folder (gpointer name, gpointer folder, gpointer data)
 void
 camel_imap_journal_close_folders (CamelIMAPJournal *journal)
 {
-	
+
 	if (!journal->folders)
 		return;
-	
+
 	g_hash_table_foreach (journal->folders, close_folder, journal);
 	g_hash_table_remove_all (journal->folders);
 }

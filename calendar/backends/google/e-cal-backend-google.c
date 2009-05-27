@@ -75,7 +75,7 @@ struct _ECalBackendGooglePrivate {
 	gchar *password;
 	gchar *uri;
 	gchar *feed;
-	gchar *local_attachments_store;	
+	gchar *local_attachments_store;
 
 	gboolean read_only;
 	gboolean mode_changed;
@@ -476,41 +476,41 @@ in_offline (ECalBackendGoogle *cbgo)
 	/* Remove the Connection Object */
 	if (priv->service) {
 		g_object_unref (priv->service);
-		priv->service = NULL;	
+		priv->service = NULL;
 	}
 }
 
 static void
-fetch_attachments (ECalBackendGoogle *cbgo, ECalComponent *comp) 
+fetch_attachments (ECalBackendGoogle *cbgo, ECalComponent *comp)
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l = NULL;
-	const char *uid;	
+	const char *uid;
 	gchar *attach_store, *dest_file, *dest_url;
-	int fd;	
+	int fd;
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
-	
+
 	attach_store = g_strdup(e_cal_backend_google_get_local_attachments_store (cbgo));
 
-	for (l = attach_list; l; l = l->next) {	
+	for (l = attach_list; l; l = l->next) {
 		char *sfname = (char *)l->data;
 		char *filename, *new_filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;
-	
+
 		mapped_file = g_mapped_file_new (sfname, FALSE, &error);
-		if (!mapped_file) {	
-			g_message ("DEBUG: could not map %s: %s \n", 
+		if (!mapped_file) {
+			g_message ("DEBUG: could not map %s: %s \n",
 			sfname, error->message);
 			g_error_free (error);
 			continue;
 		}
-	
+
 		filename = g_path_get_basename (sfname);
 		new_filename = g_strconcat (uid, "-", filename, NULL);
-		g_free (filename);	
+		g_free (filename);
 		dest_file = g_build_filename (attach_store, new_filename, NULL);
 		g_free (new_filename);
 		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
@@ -525,16 +525,16 @@ fetch_attachments (ECalBackendGoogle *cbgo, ECalComponent *comp)
 
 		g_mapped_file_free (mapped_file);
 		if (fd != -1)
-			close (fd);	
+			close (fd);
 		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
 		g_free (dest_url);
-		new_attach_list = g_slist_append (new_attach_list, dest_url);	 
-	}	
+		new_attach_list = g_slist_append (new_attach_list, dest_url);
+	}
 	g_free (attach_store);
 	e_cal_component_set_attachment_list (comp, new_attach_list);
-}	
+}
 
-ECalBackendSyncStatus 
+ECalBackendSyncStatus
 static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp)
 {
 	ECalBackendGooglePrivate *priv;
@@ -547,15 +547,15 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 	gboolean instances = TRUE, found = FALSE, is_declined;
 
 	priv = cbgo->priv;
-	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);	
+	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
 	while (icalprop) {
 		const char *x_name;
 		x_name	= icalproperty_get_x_name (icalprop);
-		
-		/* FIXME Set the Property for Google */	
+
+		/* FIXME Set the Property for Google */
 		if (!strcmp (x_name, "X-GW-RECUR-INSTANCES-MOD-TYPE")) {
-			instances = TRUE;	
-			icalcomponent_remove_property (icalcomp, icalprop);	
+			instances = TRUE;
+			icalcomponent_remove_property (icalcomp, icalprop);
 			break;
 		}
 		icalprop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY);
@@ -565,24 +565,24 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
-	method = icalcomponent_get_method (icalcomp);	
+	method = icalcomponent_get_method (icalcomp);
 
 	/* Attachments */
 	if (!is_declined && e_cal_component_has_attachments (comp))
 		fetch_attachments (cbgo, comp);
 
 	/* Sent to Server */
-	item = e_go_item_from_cal_component (cbgo, comp);	
+	item = e_go_item_from_cal_component (cbgo, comp);
 	entry =	e_go_item_get_entry (item);
 
 	if (!GDATA_IS_ENTRY(entry))
-		return GNOME_Evolution_Calendar_InvalidObject;	
+		return GNOME_Evolution_Calendar_InvalidObject;
 
 	updated_entry = gdata_service_insert_entry (GDATA_SERVICE(priv->service), priv->uri, entry, NULL);
 
 	if (updated_entry) {
 		/* FIXME */
-		g_object_unref (updated_entry);	
+		g_object_unref (updated_entry);
 	}
 
 	/* Update the Cache */
@@ -590,14 +590,14 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 	modif_comp = g_object_ref (comp);
 	if (instances) {
 		const char *uid;
-		found = FALSE;	
+		found = FALSE;
 
 		e_cal_component_get_uid (modif_comp, &uid);
 		comps = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
 
-		if (!comps) 	
+		if (!comps)
 			comps = g_slist_append (comps, g_object_ref (modif_comp));
-		else	
+		else
 			found = TRUE;
 	} else {
 		ECalComponentId *id = e_cal_component_get_id (modif_comp);
@@ -612,7 +612,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 			found = TRUE;
 		}
 
-		e_cal_component_free_id (id);	
+		e_cal_component_free_id (id);
 	}
 
 	for (l = comps; l != NULL; l = l->next) {
@@ -628,7 +628,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 
 			}
 
-		} 
+		}
 		else {
 			char *comp_str = NULL;
 
@@ -661,7 +661,7 @@ e_cal_backend_google_receive_objects (ECalBackendSync *backend, EDataCal *cal, c
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_Success;
-		
+
 	cbgo = (ECalBackendGoogle *)backend;
 	priv = cbgo->priv;
 
@@ -669,34 +669,34 @@ e_cal_backend_google_receive_objects (ECalBackendSync *backend, EDataCal *cal, c
 		in_offline (cbgo);
 		return GNOME_Evolution_Calendar_RepositoryOffline;
 	}
-	
-	icalcomp = icalparser_parse_string (calobj);	
+
+	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
 	kind = icalcomponent_isa (icalcomp);
 	if (kind == ICAL_VCALENDAR_COMPONENT) {
 		subcomp = icalcomponent_get_first_component (icalcomp, e_cal_backend_get_kind (E_CAL_BACKEND(backend)));
-		
+
 		while (subcomp) {
 			icalcomponent_set_method (subcomp, icalcomponent_get_method (icalcomp));
-			status = receive_object (cbgo, cal, subcomp);	
-		
-			if (status != GNOME_Evolution_Calendar_Success)	
+			status = receive_object (cbgo, cal, subcomp);
+
+			if (status != GNOME_Evolution_Calendar_Success)
 				break;
 			subcomp = icalcomponent_get_next_component (icalcomp, e_cal_backend_get_kind (E_CAL_BACKEND(backend)));
 		}
-	} else if (kind == e_cal_backend_get_kind (E_CAL_BACKEND(backend))) {	
+	} else if (kind == e_cal_backend_get_kind (E_CAL_BACKEND(backend))) {
 		status = receive_object (cbgo, cal, icalcomp);
-	} else 
-		status = GNOME_Evolution_Calendar_InvalidObject;	
+	} else
+		status = GNOME_Evolution_Calendar_InvalidObject;
 
 	icalcomponent_free (icalcomp);
 
 	return status;
 }
 
-static ECalBackendSyncStatus 
+static ECalBackendSyncStatus
 send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, icalproperty_method method)
 {
 	ECalComponent *comp, *found_comp = NULL;
@@ -706,7 +706,7 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 
 	priv = cbgo->priv;
 	comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));	
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 
 	e_cal_component_get_uid (comp, (const char **)&uid);
 	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
@@ -716,18 +716,18 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 		return GNOME_Evolution_Calendar_InvalidObject;
 	}
 
-	status = GNOME_Evolution_Calendar_Success;	
+	status = GNOME_Evolution_Calendar_Success;
 	/* TODO Check if connection exists */
 	switch (priv->mode) {
 		case CAL_MODE_ANY:
-		case CAL_MODE_REMOTE: 	
+		case CAL_MODE_REMOTE:
 			if (method == ICAL_METHOD_CANCEL) {
 				gboolean instances = FALSE;
 				if (instances) {
 					char *old_object = NULL;
 					GSList *l = NULL, *comp_list;
 					comp_list = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
-		
+
 					for (l = comp_list; l; l = l->next) {
 						ECalComponent *component = E_CAL_COMPONENT (l->data);
 						ECalComponentId *cid = e_cal_component_get_id (component);
@@ -741,8 +741,8 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 						g_free (object);
 						g_object_unref (component);
 					}
-						
-					g_slist_free (comp_list);	
+
+					g_slist_free (comp_list);
 					g_free (old_object);
 				} else {
 					ECalComponentId *cid;
@@ -760,13 +760,13 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 
 					g_free (object);
 					e_cal_component_free_id (cid);
-				}	
+				}
 			}
 			break;
 		case CAL_MODE_LOCAL:
 			status = GNOME_Evolution_Calendar_RepositoryOffline;
 			break;
-		default: 
+		default:
 			break;
 	}
 
@@ -785,7 +785,7 @@ e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, cons
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	icalproperty_method method;
-		
+
 	cbgo = E_CAL_BACKEND_GOOGLE(backend);
 	priv = cbgo->priv;
 	if (priv->mode == CAL_MODE_LOCAL) {
@@ -796,23 +796,23 @@ e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, cons
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return GNOME_Evolution_Calendar_InvalidObject;
-	
+
 	method = icalcomponent_get_method (icalcomp);
 	kind = icalcomponent_isa (icalcomp);
-	
-	if (kind == ICAL_VCALENDAR_COMPONENT) {		
+
+	if (kind == ICAL_VCALENDAR_COMPONENT) {
 		subcomp = icalcomponent_get_first_component (icalcomp, e_cal_backend_get_kind(E_CAL_BACKEND(backend)));
 		while (subcomp) {
 			status = send_object (cbgo, cal, subcomp, method);
-				
+
 			if (status != GNOME_Evolution_Calendar_Success)
 				break;
 			subcomp = icalcomponent_get_next_component (icalcomp, e_cal_backend_get_kind (E_CAL_BACKEND(backend)));
 		}
 	} else if (kind == e_cal_backend_get_kind (E_CAL_BACKEND(backend))) {
-		status = send_object (cbgo, cal, icalcomp, method);	
-	} else 
-		status = GNOME_Evolution_Calendar_InvalidObject;		
+		status = send_object (cbgo, cal, icalcomp, method);
+	} else
+		status = GNOME_Evolution_Calendar_InvalidObject;
 	if (status == GNOME_Evolution_Calendar_Success) {
 		ECalComponent *comp;
 
@@ -833,8 +833,8 @@ e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, cons
 		}
 		*modified_calobj = g_strdup (calobj);
 	}
-	g_printf ("\n %s, %s \n", *modified_calobj, G_STRLOC);	
-	icalcomponent_free (icalcomp);	
+	g_printf ("\n %s, %s \n", *modified_calobj, G_STRLOC);
+	icalcomponent_free (icalcomp);
 
 	return status;
 }
@@ -946,11 +946,11 @@ e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, con
 			}
 
 			edit_link = gdata_entry_get_edit_link (entry_from_server);
-			updated_entry = gdata_service_update_entry_with_link (GDATA_SERVICE (priv->service), 
+			updated_entry = gdata_service_update_entry_with_link (GDATA_SERVICE (priv->service),
 					entry, edit_link, NULL);
 
 			if (updated_entry) {
-				/* FIXME Response from server contains, additional info about GDataEntry 
+				/* FIXME Response from server contains, additional info about GDataEntry
 				 * Store and use them later
 				 */
 			}
@@ -1214,8 +1214,8 @@ e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean onl
 			mangled_uri[i] = '_';
 		}
 	}
-	
-	filename = g_build_filename (g_get_home_dir (), 
+
+	filename = g_build_filename (g_get_home_dir (),
 				     ".evolution/cache", source,
 				     mangled_uri,
 			             NULL);
@@ -1322,7 +1322,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 	}
 	gdata_service_set_proxy (GDATA_SERVICE (priv->service), proxy_uri);
 }
- 
+
 /* Object initialisation function for google backend */
 static void
 e_cal_backend_google_init (ECalBackendGoogle *cbgo, ECalBackendGoogleClass *class)
@@ -1741,7 +1741,7 @@ gchar *
 e_cal_backend_google_get_local_attachments_store (ECalBackendGoogle *cbgo)
 {
 	ECalBackendGooglePrivate *priv;
-	
+
 	g_return_val_if_fail (cbgo != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GOOGLE(cbgo), NULL);
 

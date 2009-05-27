@@ -77,7 +77,7 @@ vee_info_ptr (const CamelMessageInfo *mi, int id)
 	CamelVeeMessageInfo *vmi = (CamelVeeMessageInfo *) mi;
 	CamelMessageInfo *rmi;
 	gpointer p;
-	
+
 	rmi = camel_folder_summary_uid (vmi->summary, mi->uid+8);
 	HANDLE_NULL_INFO(NULL);
 	p = (gpointer) camel_message_info_ptr(rmi, id);
@@ -91,7 +91,7 @@ vee_info_uint32(const CamelMessageInfo *mi, int id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 	guint32 ret;
-	
+
 	HANDLE_NULL_INFO(0);
 	ret = camel_message_info_uint32 (rmi, id);
 	if (id == CAMEL_MESSAGE_INFO_FLAGS)
@@ -107,7 +107,7 @@ vee_info_time(const CamelMessageInfo *mi, int id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 	time_t ret;
-	
+
 	HANDLE_NULL_INFO(0);
 	ret = camel_message_info_time (rmi, id);
 	camel_message_info_free (rmi);
@@ -120,7 +120,7 @@ vee_info_user_flag(const CamelMessageInfo *mi, const char *id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 	gboolean ret;
-	
+
 	HANDLE_NULL_INFO(FALSE);
 	ret = 	camel_message_info_user_flag (rmi, id);
 	camel_message_info_free (rmi);
@@ -133,7 +133,7 @@ vee_info_user_tag(const CamelMessageInfo *mi, const char *id)
 {
 	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 	const char *ret;
-	
+
 	HANDLE_NULL_INFO("");
 	ret = camel_message_info_user_tag (rmi, id);
 	camel_message_info_free (rmi);
@@ -150,9 +150,9 @@ vee_info_set_user_flag(CamelMessageInfo *mi, const char *name, gboolean value)
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 		HANDLE_NULL_INFO(FALSE);
 		res = camel_message_info_set_user_flag(rmi, name, value);
-		camel_message_info_free (rmi);		
+		camel_message_info_free (rmi);
 	}
- 
+
 	return res;
 }
 
@@ -163,11 +163,11 @@ vee_info_set_user_tag(CamelMessageInfo *mi, const char *name, const char *value)
 
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-		HANDLE_NULL_INFO(FALSE);		
+		HANDLE_NULL_INFO(FALSE);
 		res = camel_message_info_set_user_tag(rmi, name, value);
-		camel_message_info_free (rmi);			
+		camel_message_info_free (rmi);
 	}
- 
+
 	return res;
 }
 
@@ -286,7 +286,7 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 
 			camel_folder_change_info_change_uid(changes, mi->uid);
 
-			array = g_ptr_array_new (); 
+			array = g_ptr_array_new ();
 			g_ptr_array_add (array, (gpointer)rmi->uid);
 
 			match = camel_folder_search_by_uids (rmi->summary->folder, vf->expression, array, NULL);
@@ -302,10 +302,10 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 
 			camel_object_trigger_event(mi->summary->folder, "folder_changed", changes);
 			camel_folder_change_info_free(changes);
-		}		
+		}
 		camel_message_info_free (rmi);
 	}
- 
+
 	return res;
 }
 
@@ -326,7 +326,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 
 	CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-	
+
 	if (!info) {
 		CamelVeeMessageInfo *vinfo;
 		char tmphash[9];
@@ -340,7 +340,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 			d(g_message ("Unable to find %s in the summary of %s", uid, s->folder->full_name));
 			return NULL;
 		}
-		
+
 		/* Create the info and load it, its so easy. */
 		info = camel_message_info_new (s);
 		camel_message_info_ref(info);
@@ -353,7 +353,7 @@ message_info_from_uid (CamelFolderSummary *s, const char *uid)
 		camel_object_ref (vinfo->summary);
 		camel_folder_summary_insert (s, info, FALSE);
 	}
-	return info;	
+	return info;
 }
 
 static void
@@ -450,7 +450,7 @@ camel_vee_summary_get_ids (CamelVeeSummary *summary, char hash[8])
 
 	/* FIXME[disk-summary] fix exception passing */
 	array = camel_db_get_vuids_from_vfolder(cfs->folder->parent_store->cdb_r, cfs->folder->full_name, shash, NULL);
-	
+
 	g_free(shash);
 
 	return array;
@@ -467,7 +467,7 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 	strcpy(vuid+8, uid);
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	mi = (CamelVeeMessageInfo *) g_hash_table_lookup(((CamelFolderSummary *) s)->loaded_infos, vuid); 
+	mi = (CamelVeeMessageInfo *) g_hash_table_lookup(((CamelFolderSummary *) s)->loaded_infos, vuid);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	if (mi) {
@@ -498,6 +498,6 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const cha
 		camel_message_info_free (rmi);
 	}*/
 	camel_folder_summary_insert(&s->summary, (CamelMessageInfo *)mi, FALSE);
-	
+
 	return mi;
 }

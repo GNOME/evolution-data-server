@@ -66,19 +66,19 @@ struct _EGwConnectionPrivate {
 };
 
 static void
-update_soup_session_proxy_settings (EProxy *proxy, SoupSession* session, 
+update_soup_session_proxy_settings (EProxy *proxy, SoupSession* session,
 				    const char* uri)
 {
 	SoupURI *proxy_uri = NULL;
-	
+
 	if (!session || !uri || !proxy)
 		return;
-	
+
 	if (e_proxy_require_proxy_for_uri (proxy, uri))
 		proxy_uri = e_proxy_peek_uri_for (proxy, uri);
 
 	g_object_set (session, SOUP_SESSION_PROXY_URI,
-		      proxy_uri, NULL);	
+		      proxy_uri, NULL);
 }
 
 static void
@@ -88,7 +88,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 	if (!conn || !conn->priv || !conn->priv->soup_session)
 		return;
 
-	update_soup_session_proxy_settings (proxy, 
+	update_soup_session_proxy_settings (proxy,
 					    conn->priv->soup_session,
 					    conn->priv->uri);
 }
@@ -161,7 +161,7 @@ reauthenticate (EGwConnection *cnc)
 
 }
 
-static gboolean 
+static gboolean
 e_gw_connection_response_parse_status_and_description (SoupSoapResponse *response, int *status, char **description)
 {
 	SoupSoapParameter *param, *subparam;
@@ -179,7 +179,7 @@ e_gw_connection_response_parse_status_and_description (SoupSoapResponse *respons
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "description");
 	if (!subparam)
 		return FALSE;
-	
+
 	*description =  soup_soap_parameter_get_string_value (subparam);
 
 	return TRUE;
@@ -518,7 +518,7 @@ e_gw_connection_new_with_error_handler (const char *uri, const char *username, c
 	int code;
 	char *description = NULL;
 
-	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;	
+	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
 
 
 	g_static_mutex_lock (&connecting);
@@ -543,9 +543,9 @@ e_gw_connection_new_with_error_handler (const char *uri, const char *username, c
 	/* not found, so create a new connection */
 	cnc = g_object_new (E_TYPE_GW_CONNECTION, NULL);
 
-	/* Set proxy details for the Soup session before any 
+	/* Set proxy details for the Soup session before any
 	   communication. */
-	update_soup_session_proxy_settings (cnc->priv->proxy, 
+	update_soup_session_proxy_settings (cnc->priv->proxy,
 					    cnc->priv->soup_session,
 					    uri);
 
@@ -638,7 +638,7 @@ e_gw_connection_new_with_error_handler (const char *uri, const char *username, c
 		param_value = soup_soap_parameter_get_string_value (param);
 		cnc->priv->version = param_value;
 	} else
-		cnc->priv->version = NULL;	
+		cnc->priv->version = NULL;
 
 	param = soup_soap_response_get_first_parameter_by_name (response, "serverUTCTime");
 	if (param)
@@ -699,7 +699,7 @@ e_gw_connection_send_message (EGwConnection *cnc, SoupSoapMessage *msg)
 
 	/* process response */
 	response = soup_soap_message_parse_response (msg);
-	
+
 	if (response && g_getenv ("GROUPWISE_DEBUG")) {
 
 		/* README: The stdout can be replaced with Evolution's
@@ -1864,7 +1864,7 @@ e_gw_connection_get_date_from_string (const char *dtstring)
 		g_date_to_struct_tm (&date, &tt);
 		t = mktime (&tt);
 
-	} else 
+	} else
 		g_warning ("Could not parse the string \n");
 
         return t;
@@ -2819,9 +2819,9 @@ e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const char *id, int o
 		int len = atoi (buf_length) ;
 		*attachment = g_strdup (buffer);
 		*attach_length = len;
-		if (len && o_return) 
+		if (len && o_return)
 			*offset_r = atoi (o_return);
-		else 
+		else
 			*offset_r = 0;
 	} else {
 		*attachment = NULL;

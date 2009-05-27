@@ -168,9 +168,9 @@ local_finalize(CamelObject * object)
 	g_free(local_folder->index_path);
 
 	camel_folder_change_info_free(local_folder->changes);
-	
+
 	g_mutex_free(local_folder->priv->search_lock);
-	
+
 	g_free(local_folder->priv);
 }
 
@@ -219,7 +219,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	int forceindex, len;
 	CamelURL *url;
 	CamelLocalStore *ls = (CamelLocalStore *)parent_store;
-	
+
 	folder = (CamelFolder *)lf;
 
 	name = g_path_get_basename(full_name);
@@ -299,7 +299,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 				camel_object_unref (CAMEL_OBJECT (folder));
 				g_free(name);
 				return NULL;
-			}		
+			}
 		}
 	}
 
@@ -402,7 +402,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else
 					/* a full path + protocol */
-					folder->description = g_strdup_printf(_("%s (%s)"), path, 
+					folder->description = g_strdup_printf(_("%s (%s)"), path,
 									      ((CamelService *)folder->parent_store)->url->protocol);
 			}
 			*arg->ca_str = folder->description;
@@ -483,8 +483,8 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 
-	/* 
-	 * Banner: This is a very very ugly hack to get over the summary mismatch. This needs to 
+	/*
+	 * Banner: This is a very very ugly hack to get over the summary mismatch. This needs to
 	 * be done better. Im postponing this post-disk summary.
 	 * */
 
@@ -500,7 +500,7 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
-	
+
 }
 
 static GPtrArray *
@@ -547,7 +547,7 @@ static void
 local_delete(CamelFolder *folder)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
-	
+
 	if (lf->index)
 		camel_index_delete(lf->index);
 

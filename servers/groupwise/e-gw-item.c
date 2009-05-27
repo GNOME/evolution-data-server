@@ -2020,7 +2020,7 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 					attach->date = soup_soap_parameter_get_string_value (temp) ;
 
 				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "hidden") ;
-				if (temp) 
+				if (temp)
 					if (soup_soap_parameter_get_int_value (temp) == 1)
 						attach->hidden = TRUE;
 

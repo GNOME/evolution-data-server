@@ -45,16 +45,16 @@ typedef enum {
 
 struct _CamelMimeFilterGZip {
 	CamelMimeFilter parent_object;
-	
+
 	struct _CamelMimeFilterGZipPrivate *priv;
-	
+
 	CamelMimeFilterGZipMode mode;
 	int level;
 };
 
 struct _CamelMimeFilterGZipClass {
 	CamelMimeFilterClass parent_class;
-	
+
 };
 
 

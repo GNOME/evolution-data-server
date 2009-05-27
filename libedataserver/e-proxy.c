@@ -10,7 +10,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with the program; if not, see <http://www.gnu.org/licenses/>  
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
  *
  * Authors:
@@ -126,7 +126,7 @@ static void 	ep_setting_changed 	(GConfClient *client, guint32 cnxn_id,
 					 GConfEntry *entry, gpointer user_data);
 static void 	e_proxy_dispose 	(GObject* object);
 
-static void 	ipv6_network_addr	(const struct in6_addr *addr, 
+static void 	ipv6_network_addr	(const struct in6_addr *addr,
 					 const struct in6_addr *mask,
 					 struct in6_addr *res);
 
@@ -200,7 +200,7 @@ e_proxy_dispose (GObject *object)
 {
 	EProxy *proxy = (EProxy *)object;
 	EProxyPrivate *priv;
-	
+
 	if (!E_IS_PROXY (proxy))
 		return;
 
@@ -233,11 +233,11 @@ e_proxy_dispose (GObject *object)
 			g_slist_foreach (priv->ign_addrs, (GFunc) ep_free_proxy_host_addr, NULL);
 			g_slist_free (priv->ign_addrs);
 		}
-		
+
 		priv->notify_id_evo = 0;
 		priv->notify_id_sys = 0;
 		priv->notify_id_sys_http = 0;
-		
+
 		g_free (priv);
 		priv = NULL;
 	}
@@ -280,7 +280,7 @@ ep_is_in_ignored (EProxy *proxy, const char *host)
 		return FALSE;
 
 	hn = g_ascii_strdown (host, -1);
-		
+
 	for (l = priv->ign_hosts; l; l = l->next) {
 		if (*((gchar *)l->data) == '*') {
 			if (g_str_has_suffix (hn, ((gchar *)l->data)+1)) {
@@ -315,7 +315,7 @@ ep_need_proxy_http (EProxy* proxy, const char* host)
 	if (status == SOUP_STATUS_OK) {
 		gint addr_len;
 		struct sockaddr* so_addr = NULL;
-		
+
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
@@ -326,14 +326,14 @@ ep_need_proxy_http (EProxy* proxy, const char* host)
 
 		if (so_addr->sa_family == AF_INET) {
 			struct in_addr in, *mask, *addr_in;
-			
+
 			in = ((struct sockaddr_in *)so_addr)->sin_addr;
 			for (l = priv->ign_addrs; l; l = l->next) {
 				p_addr = (ProxyHostAddr *)l->data;
 				if (p_addr->type == PROXY_IPV4) {
 					addr_in =  ((struct in_addr *)p_addr->addr);
 					mask = ((struct in_addr *)p_addr->mask);
-					d(g_print ("ep_need_proxy:ipv4: in: %ul\t mask: %ul\t addr: %ul\n", 
+					d(g_print ("ep_need_proxy:ipv4: in: %ul\t mask: %ul\t addr: %ul\n",
 						   in.s_addr, mask->s_addr, addr_in->s_addr));
 					if ((in.s_addr & mask->s_addr) == addr_in->s_addr) {
 						d(g_print ("Host [%s] doesn't require proxy\n", host));
@@ -344,7 +344,7 @@ ep_need_proxy_http (EProxy* proxy, const char* host)
 		} else {
 			struct in6_addr in6, net6;
 			struct in_addr *addr_in, *mask;
-			
+
 			in6 = ((struct sockaddr_in6 *)so_addr)->sin6_addr;
 			for (l = priv->ign_addrs; l; l = l->next) {
 				p_addr = (ProxyHostAddr *)l->data;
@@ -361,9 +361,9 @@ ep_need_proxy_http (EProxy* proxy, const char* host)
 					addr_in =  ((struct in_addr *)p_addr->addr);
 					mask = ((struct in_addr *)p_addr->mask);
 
-					v4addr = net6.s6_addr[12] << 24 
-						| net6.s6_addr[13] << 16 
-						| net6.s6_addr[14] << 8 
+					v4addr = net6.s6_addr[12] << 24
+						| net6.s6_addr[13] << 16
+						| net6.s6_addr[14] << 8
 						| net6.s6_addr[15];
 					if ((v4addr & mask->s_addr) != addr_in->s_addr) {
 						d(g_print ("Host [%s] doesn't require proxy\n", host));
@@ -373,7 +373,7 @@ ep_need_proxy_http (EProxy* proxy, const char* host)
 			}
 		}
 	}
-	
+
 	d(g_print ("%s needs a proxy to connect to internet\n", host));
 	return TRUE;
 }
@@ -386,8 +386,8 @@ ep_need_proxy_https (EProxy* proxy, const char* host)
 }
 
 static gboolean
-ep_manipulate_ipv4 (ProxyHostAddr *host_addr, 
-		    struct in_addr *addr_in, 
+ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
+		    struct in_addr *addr_in,
 		    gchar* netmask)
 {
 	gboolean has_error = FALSE;
@@ -404,7 +404,7 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 	if (netmask) {
 		gchar *endptr;
 		gint width = strtol (netmask, &endptr, 10);
-			
+
 		if (*endptr != '\0' || width < 0 || width > 32) {
 			has_error = TRUE;
 		}
@@ -413,8 +413,8 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 	} else {
 		mask->s_addr = 0xFFFFFFFF;
 	}
-	
-	d(g_print ("ep_manipulate_ipv4: addr_in: %ul, addr: %ul, mask: %ul\n", 
+
+	d(g_print ("ep_manipulate_ipv4: addr_in: %ul, addr: %ul, mask: %ul\n",
 		   addr_in->s_addr, addr->s_addr, mask->s_addr));
 
 	host_addr->addr = addr;
@@ -436,13 +436,13 @@ ipv6_network_addr(const struct in6_addr *addr, const struct in6_addr *mask,
 
 static gboolean
 ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
-		    struct in6_addr *addr_in6, 
+		    struct in6_addr *addr_in6,
 		    gchar* netmask)
 {
 	gboolean has_error = FALSE;
 	struct in6_addr *addr, *mask;
 	int i;
-	
+
 	if (!addr_in6)
 		return has_error;
 
@@ -474,7 +474,7 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 			mask->s6_addr[i] = 0xff;
 		}
         }
-	
+
 	host_addr->addr = addr;
 	host_addr->mask = mask;
 
@@ -503,16 +503,16 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 		++netmask;
 	} else {
 		hostname = g_ascii_strdown (input, -1);
-	} 
+	}
 
 	addr = soup_address_new (hostname, 0);
 	status = soup_address_resolve_sync (addr, NULL);
 	if (status == SOUP_STATUS_OK) {
 		gint addr_len;
 		struct sockaddr* so_addr = NULL;
-		
+
 		host_addr = g_new0 (ProxyHostAddr, 1);
-		
+
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
@@ -522,14 +522,14 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 			goto error;
 
 		if (so_addr->sa_family == AF_INET)
-			has_error = ep_manipulate_ipv4 (host_addr, 
-							&((struct sockaddr_in *)so_addr)->sin_addr, 
+			has_error = ep_manipulate_ipv4 (host_addr,
+							&((struct sockaddr_in *)so_addr)->sin_addr,
 							netmask);
-		else	
-			has_error = ep_manipulate_ipv6 (host_addr, 
-							&((struct sockaddr_in6 *)so_addr)->sin6_addr, 
+		else
+			has_error = ep_manipulate_ipv6 (host_addr,
+							&((struct sockaddr_in6 *)so_addr)->sin6_addr,
 							netmask);
-		
+
 		if (!has_error)
 			priv->ign_addrs = g_slist_append (priv->ign_addrs, host_addr);
 
@@ -554,7 +554,7 @@ ep_change_uri (SoupURI **soup_uri, const char *uri)
 			soup_uri_free (*soup_uri);
 			*soup_uri = NULL;
 			changed = TRUE;
-		}			
+		}
 	} else if (*soup_uri) {
 		char *old = soup_uri_to_string (*soup_uri, FALSE);
 
@@ -574,8 +574,8 @@ ep_change_uri (SoupURI **soup_uri, const char *uri)
 }
 
 static void
-ep_set_proxy (GConfClient *client, 
-	      gpointer user_data, 
+ep_set_proxy (GConfClient *client,
+	      gpointer user_data,
 	      gboolean regen_ign_host_list)
 {
 	char *proxy_server, *uri_http = NULL, *uri_https = NULL;
@@ -707,11 +707,11 @@ ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpo
 	}
 }
 
-EProxy* 
+EProxy*
 e_proxy_new (void)
 {
 	EProxy *proxy = NULL;
-	
+
 	proxy = g_object_new (E_TYPE_PROXY, NULL);
 
 	return proxy;
@@ -721,11 +721,11 @@ void
 e_proxy_setup_proxy (EProxy* proxy)
 {
 	GConfClient *client;
-	
+
 	/* We get the evolution-shell proxy keys here
 	   set soup up to use the proxy,
 	   and listen to any changes */
-	
+
 	if (!(client = gconf_client_get_default ()))
 		return;
 
@@ -740,13 +740,13 @@ e_proxy_setup_proxy (EProxy* proxy)
 		gconf_client_add_dir (client, PATH_GCONF_SYS_HTTP_PROXY, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 
 		proxy->priv->notify_id_evo = gconf_client_notify_add (client, PATH_GCONF_EVO_NETWORK_CONFIG,
-								      ep_setting_changed, (gpointer)proxy, 
+								      ep_setting_changed, (gpointer)proxy,
 								      NULL, NULL);
 		proxy->priv->notify_id_sys = gconf_client_notify_add (client, PATH_GCONF_SYS_PROXY,
-								      ep_setting_changed, (gpointer)proxy, 
+								      ep_setting_changed, (gpointer)proxy,
 								      NULL, NULL);
 		proxy->priv->notify_id_sys_http = gconf_client_notify_add (client, PATH_GCONF_SYS_HTTP_PROXY,
-								      ep_setting_changed, (gpointer)proxy, 
+								      ep_setting_changed, (gpointer)proxy,
 								      NULL, NULL);
 	}
 

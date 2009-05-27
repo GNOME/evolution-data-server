@@ -4,7 +4,7 @@
  *
  *  Authors:
  * 	parthasrathi susarla <sparthasrathi@novell.com>
- * Based on the IMAP summary class implementation by: 
+ * Based on the IMAP summary class implementation by:
  *    Michael Zucchi <notzed@ximian.com>
  *    Dan Winship <danw@ximian.com>
  *
@@ -47,7 +47,7 @@
 #define EXTRACT_FIRST_DIGIT(val) part ? val=strtoul (part, &part, 10) : 0;
 #define EXTRACT_DIGIT(val) part++; part ? val=strtoul (part, &part, 10) : 0;
 
-#define d(x) 
+#define d(x)
 
 /*Prototypes*/
 static int gw_summary_header_load (CamelFolderSummary *, FILE *);
@@ -58,7 +58,7 @@ static CamelMessageInfo *gw_message_info_load (CamelFolderSummary *s, FILE *in) 
 static int gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info) ;
 static CamelMessageContentInfo * gw_content_info_load (CamelFolderSummary *s, FILE *in) ;
 static int gw_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info) ;
-static gboolean gw_info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set);		
+static gboolean gw_info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set);
 
 static int summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
@@ -133,7 +133,7 @@ camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass)
 	cfs_class->message_info_from_db = message_info_from_db;
 	cfs_class->content_info_to_db = content_info_to_db;
 	cfs_class->content_info_from_db = content_info_from_db;
-	
+
 }
 
 
@@ -145,7 +145,7 @@ camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
 	/* subclasses need to set the right instance data sizes */
 	s->message_info_size = sizeof(CamelGroupwiseMessageInfo);
 	s->content_info_size = sizeof(CamelGroupwiseMessageContentInfo);
-	
+
 	/* Meta-summary - Overriding UID len */
 	s->meta_summary->uid_len = 2048;
 }
@@ -166,7 +166,7 @@ camel_groupwise_summary_new (struct _CamelFolder *folder, const char *filename)
 	CamelException ex;
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (
 			camel_object_new (camel_groupwise_summary_get_type ()));
-	
+
 	summary->folder = folder ;
 	camel_folder_summary_set_build_content (summary, TRUE);
 	camel_folder_summary_set_filename (summary, filename);
@@ -199,7 +199,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	if (part && part++) {
 		gms->time_string = g_strdup (part);
 	}
-		
+
 	return 0;
 }
 
@@ -214,7 +214,7 @@ gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 	if (camel_file_util_decode_fixed_int32(in, &gms->version) == -1
 			|| camel_file_util_decode_fixed_int32(in, &gms->validity) == -1)
 		return -1;
-	
+
 	if (camel_file_util_decode_string (in, &gms->time_string) == -1)
 		return -1;
 	return 0 ;
@@ -229,15 +229,15 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelGroupwiseSummary *ims = CAMEL_GROUPWISE_SUMMARY(s);
 	struct _CamelFIRecord *fir;
-	
+
 	fir = camel_groupwise_summary_parent->summary_header_to_db (s, ex);
 	if (!fir)
 		return NULL;
-	
+
 	fir->bdata = g_strdup_printf ("%d %d %s", CAMEL_GW_SUMMARY_VERSION, ims->validity, ims->time_string);
 
 	return fir;
-	
+
 }
 
 static int
@@ -253,7 +253,7 @@ gw_summary_header_save (CamelFolderSummary *s, FILE *out)
 	return camel_file_util_encode_string (out, gms->time_string);
 }
 
-static CamelMessageInfo * 
+static CamelMessageInfo *
 message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 {
 	CamelMessageInfo *info;
@@ -288,17 +288,17 @@ error:
 	return NULL ;
 }
 
-static CamelMIRecord * 
+static CamelMIRecord *
 message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 {
 	CamelGroupwiseMessageInfo *iinfo = (CamelGroupwiseMessageInfo *)info;
 	struct _CamelMIRecord *mir;
 
 	mir = camel_groupwise_summary_parent->message_info_to_db (s, info);
-	if (mir) 
+	if (mir)
 		mir->bdata = g_strdup_printf ("%u", iinfo->server_flags);
 
-	return mir;	
+	return mir;
 }
 
 static int
@@ -312,12 +312,12 @@ gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 	return camel_file_util_encode_uint32 (out, gw_info->server_flags);
 }
 
-static CamelMessageContentInfo * 
+static CamelMessageContentInfo *
 content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 {
 	char *part = mir->cinfo;
 	guint32 type=0;
-	
+
 	if (part) {
 		if (*part == ' ')
 			part++;
@@ -335,14 +335,14 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 
 static CamelMessageContentInfo *
 gw_content_info_load (CamelFolderSummary *s, FILE *in)
-{       
+{
 	if (fgetc (in))
 		return camel_groupwise_summary_parent->content_info_load (s, in);
 	else
 		return camel_folder_summary_content_info_new (s);
 }
 
-static int 
+static int
 content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir)
 {
 
@@ -407,10 +407,10 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 		 * we make sure this doesn't have any side effects*/
 
 		if (junk_learn_flag && !junk_flag  && (old & CAMEL_GW_MESSAGE_JUNK)) {
-				/* 
-				   This has ugly side-effects. Evo will never learn unjunk. 
+				/*
+				   This has ugly side-effects. Evo will never learn unjunk.
 				   We need to create one CAMEL_MESSAGE_HIDDEN flag which must be
-				   used for all hiding operations. We must also get rid of the seperate file 
+				   used for all hiding operations. We must also get rid of the seperate file
 				   that is maintained somewhere in evolution/mail/em-folder-browser.c for hidden messages
 				 */
 				mi->flags |= CAMEL_GW_MESSAGE_NOJUNK | CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK_LEARN;
@@ -435,7 +435,7 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 void
 camel_gw_summary_add_offline (CamelFolderSummary *summary, const char *uid, CamelMimeMessage *message, const CamelMessageInfo *info)
 {
-	CamelGroupwiseMessageInfo *mi ; 
+	CamelGroupwiseMessageInfo *mi ;
 	const CamelFlag *flag ;
 	const CamelTag *tag ;
 
@@ -486,7 +486,7 @@ groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 	for (i = 0; i < count; i++) {
 		if (!(info = camel_folder_summary_index (summary, i)))
 			continue;
-  		
+
 		uid = camel_message_info_uid (info);
 		camel_folder_change_info_remove_uid (changes, uid);
 		camel_folder_summary_remove_uid (summary, uid);

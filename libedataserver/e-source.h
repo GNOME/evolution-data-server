@@ -120,7 +120,7 @@ void         e_source_foreach_property (ESource *source,
 char *e_source_get_duped_property (ESource *source, const char *property);
 char *e_source_build_absolute_uri (ESource *source);
 
-gboolean e_source_equal (ESource *a, ESource *b); 
+gboolean e_source_equal (ESource *a, ESource *b);
 gboolean e_source_xmlstr_equal (const gchar *a, const gchar *b);
 
 G_END_DECLS

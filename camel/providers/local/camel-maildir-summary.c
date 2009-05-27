@@ -83,7 +83,7 @@ CamelType
 camel_maildir_summary_get_type (void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		type = camel_type_register(camel_local_summary_get_type (), "CamelMaildirSummary",
 					   sizeof(CamelMaildirSummary),
@@ -93,7 +93,7 @@ camel_maildir_summary_get_type (void)
 					   (CamelObjectInitFunc)camel_maildir_summary_init,
 					   (CamelObjectFinalizeFunc)camel_maildir_summary_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -161,7 +161,7 @@ camel_maildir_summary_finalise(CamelObject *obj)
  * @index: Index if one is reqiured.
  *
  * Create a new CamelMaildirSummary object.
- * 
+ *
  * Return value: A new #CamelMaildirSummary object.
  **/
 CamelMaildirSummary
@@ -208,7 +208,7 @@ char *camel_maildir_summary_info_to_name(const CamelMaildirMessageInfo *info)
 	}
 
 	*p = 0;
-	
+
 	return g_strdup(buf);
 }
 
@@ -448,7 +448,7 @@ static int maildir_summary_load(CamelLocalSummary *cls, int forceindex, CamelExc
 	while ( (d = readdir(dir)) ) {
 		if (d->d_name[0] == '.')
 			continue;
-		
+
 		/* map the filename -> uid */
 		uid = strchr(d->d_name, ':');
 		if (uid) {
@@ -603,7 +603,7 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 			uid = g_strndup(d->d_name, uid-d->d_name);
 		else
 			uid = g_strdup(d->d_name);
-		
+
 		info = g_hash_table_lookup(left, uid);
 		if (info) {
 			camel_message_info_free(info);
@@ -641,7 +641,7 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 #else
 # ifdef DOEPOOLV
 				info->strings = e_poolv_set(info->strings, CAMEL_MAILDIR_INFO_FILENAME, d->d_name, FALSE);
-# else	
+# else
 				g_free(mdi->filename);
 				mdi->filename = g_strdup(d->d_name);
 # endif

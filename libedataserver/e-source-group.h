@@ -113,8 +113,8 @@ void         e_source_group_foreach_property (ESourceGroup *source,
 
 char *e_source_group_to_xml (ESourceGroup *group);
 
-gboolean e_source_group_equal (ESourceGroup *a, ESourceGroup *b); 
-gboolean e_source_group_xmlstr_equal (const gchar *a, const gchar *b); 
+gboolean e_source_group_equal (ESourceGroup *a, ESourceGroup *b);
+gboolean e_source_group_xmlstr_equal (const gchar *a, const gchar *b);
 
 G_END_DECLS
 

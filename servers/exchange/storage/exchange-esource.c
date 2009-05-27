@@ -140,7 +140,7 @@ add_folder_esource (ExchangeAccount *account,
 			return;
 		}
 		e_source_group_set_property (source_group, "account-uid", exchange_account_fetch (account)->uid);
-		
+
 		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
 			char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
 

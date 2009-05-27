@@ -205,8 +205,8 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	/* retrieve the name */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "name");
 	if (!subparam) {
-			/* GroupWise 7.X servers does not return the name field. 
-			This is not an issue with Bonsai 8.X . So, keep this code for 
+			/* GroupWise 7.X servers does not return the name field.
+			This is not an issue with Bonsai 8.X . So, keep this code for
 			working well with the broken GW 7.X series */
 			e_gw_container_set_name (container, "");
 	} else {

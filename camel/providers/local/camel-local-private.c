@@ -28,7 +28,7 @@
 
 #include "camel-local-private.h"
 
-int 
+int
 camel_local_frompos_sort (void *enc, int len1, void * data1, int len2, void *data2)
 {
 	static char *sa1=NULL, *sa2=NULL;

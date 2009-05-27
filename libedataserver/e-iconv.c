@@ -111,7 +111,7 @@ static const struct {
 	{ "iso-10646",       "UCS-2BE"    },
 	{ "iso_10646",       "UCS-2BE"    },
 	{ "iso10646",        "UCS-2BE"    },
-	
+
 	/* Korean charsets */
 	/* Note: according to http://www.iana.org/assignments/character-sets,
 	 * ks_c_5601-1987 should really map to ISO-2022-KR, but the EUC-KR
@@ -124,7 +124,7 @@ static const struct {
 	{ "ksc-5601_1987",   "EUC-KR"     },
 	{ "ks_c_5861-1992",  "EUC-KR"     },
 	{ "euckr-0",         "EUC-KR"     },
-	
+
 	/* Chinese charsets */
 	{ "big5-0",          "BIG5"       },
 	{ "big5.eten-0",     "BIG5"       },
@@ -142,7 +142,7 @@ static const struct {
 	{ "euc-cn",          "GBK"        },
 	{ "gb18030-0",       "gb18030"    },
 	{ "gbk-0",           "GBK"        },
-	
+
 	/* Japanese charsets */
 	{ "eucjp-0",         "eucJP"  	  },  /* should this map to "EUC-JP" instead? */
 	{ "ujis-0",          "ujis"  	  },  /* we might want to map this to EUC-JP */

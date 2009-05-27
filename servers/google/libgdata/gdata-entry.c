@@ -738,7 +738,7 @@ email_address_to_xmlnode (GDataEntryEmailAddress *email)
 
 	if (email->label)
 		xmlSetProp (email_node, (xmlChar *)"label", (xmlChar *)email->label);
-	
+
 	if (email->primary)
 		xmlSetProp (email_node, (xmlChar *)"primary", (xmlChar *)"true");
 
@@ -764,7 +764,7 @@ im_address_to_xmlnode (GDataEntryIMAddress *im)
 
 	if (im->label)
 		xmlSetProp (im_node, (xmlChar *)"label", (xmlChar *)im->label);
-	
+
 	if (im->primary)
 		xmlSetProp (im_node, (xmlChar *)"primary", (xmlChar *)"true");
 
@@ -784,7 +784,7 @@ organization_to_xmlnode (GDataEntryOrganization *organization)
 
 	if (organization->label)
 		xmlSetProp (organization_node, (xmlChar *)"label", (xmlChar *)organization->label);
-	
+
 	if (organization->primary)
 		xmlSetProp (organization_node, (xmlChar *)"primary", (xmlChar *)"true");
 
@@ -813,7 +813,7 @@ phone_number_to_xmlnode (GDataEntryPhoneNumber *number)
 
 	if (number->label)
 		xmlSetProp (number_node, (xmlChar *)"label", (xmlChar *)number->label);
-	
+
 	if (number->primary)
 		xmlSetProp (number_node, (xmlChar *)"primary", (xmlChar *)"true");
 
@@ -836,7 +836,7 @@ postal_address_to_xmlnode (GDataEntryPostalAddress *address)
 
 	if (address->label)
 		xmlSetProp (address_node, (xmlChar *)"label", (xmlChar *)address->label);
-	
+
 	if (address->primary)
 		xmlSetProp (address_node, (xmlChar *)"primary", (xmlChar *)"true");
 
@@ -1112,7 +1112,7 @@ gdata_entry_generate_xml (GDataEntry *entry)
 		xmlAddChild(root, cur_child);
 		list = g_slist_next(list);
 	}
-	
+
 	list = priv->links;
 	while (list) {
 		cur_child = link_to_xmlnode(list->data);
@@ -1597,7 +1597,7 @@ gdata_entry_get_primary_organization (GDataEntry *entry)
 		GDataEntryOrganization *org = itr->data;
 		if (org->primary) {
 			g_slist_free (itr);
-			return org;	
+			return org;
 		}
 		itr = itr->next;
 	}

@@ -118,7 +118,7 @@ camel_imap_summary_class_init (CamelImapSummaryClass *klass)
 	cfs_class->message_info_save = message_info_save;
 	cfs_class->content_info_load = content_info_load;
 	cfs_class->content_info_save = content_info_save;
-	
+
 	cfs_class->summary_header_to_db = summary_header_to_db;
 	cfs_class->summary_header_from_db = summary_header_from_db;
 	cfs_class->message_info_to_db = message_info_to_db;
@@ -139,7 +139,7 @@ camel_imap_summary_init (CamelImapSummary *obj)
 	s->content_info_size = sizeof(CamelImapMessageContentInfo);
 }
 
-static int 
+static int
 sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
 {
 	static char *sa1=NULL, *sa2=NULL;
@@ -155,7 +155,7 @@ sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
 		l2 = len2+1;
 	}
 	strncpy (sa1, data1, len1);sa1[len1] = 0;
-	strncpy (sa2, data2, len2);sa2[len2] = 0;	
+	strncpy (sa2, data2, len2);sa2[len2] = 0;
 
 	a1 = strtoul (sa1, NULL, 10);
 	a2 = strtoul (sa2, NULL, 10);
@@ -216,7 +216,7 @@ camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
 		camel_exception_clear (&ex);
 	}
 
-	g_ptr_array_sort (summary->uids, (GCompareFunc) uid_compare); 
+	g_ptr_array_sort (summary->uids, (GCompareFunc) uid_compare);
 
 	return summary;
 }
@@ -235,11 +235,11 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	if (part) {
 		EXTRACT_FIRST_DIGIT (ims->version)
 	}
-	
+
 	if (part) {
 		EXTRACT_DIGIT (ims->validity)
 	}
-	
+
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
 		g_warning("Unkown summary version\n");
 		errno = EINVAL;
@@ -253,7 +253,7 @@ static int
 summary_header_load (CamelFolderSummary *s, FILE *in)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
-	
+
 	if (camel_imap_summary_parent->summary_header_load (s, in) == -1)
 		return -1;
 
@@ -264,18 +264,18 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 	/* Version 1 */
 	if (camel_file_util_decode_fixed_int32(in, &ims->version) == -1)
 		return -1;
-	
+
 	if (ims->version == 2) {
 		/* Version 2: for compat with version 2 of the imap4 summary files */
 		int have_mlist;
-		
+
 		if (camel_file_util_decode_fixed_int32 (in, &have_mlist) == -1)
 			return -1;
 	}
-	
+
 	if (camel_file_util_decode_fixed_int32(in, &ims->validity) == -1)
 		return -1;
-	
+
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
 		g_warning("Unkown summary version\n");
 		errno = EINVAL;
@@ -290,7 +290,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY(s);
 	struct _CamelFIRecord *fir;
-	
+
 	fir = camel_imap_summary_parent->summary_header_to_db (s, ex);
 	if (!fir)
 		return NULL;
@@ -357,7 +357,7 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 	struct _CamelMIRecord *mir;
 
 	mir = camel_imap_summary_parent->message_info_to_db (s, info);
-	if (mir) 
+	if (mir)
 		mir->bdata = g_strdup_printf ("%u", iinfo->server_flags);
 
 	return mir;
@@ -393,7 +393,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 {
 	char *part = mir->cinfo;
 	guint32 type=0;
-	
+
 	if (part) {
 		if (*part == ' ')
 			part++;

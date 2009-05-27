@@ -38,7 +38,7 @@ typedef struct _CamelMimeFilterProgress CamelMimeFilterProgress;
 
 struct _CamelMimeFilterProgress {
 	CamelMimeFilter parent;
-	
+
 	CamelOperation *operation;
 	size_t total;
         size_t count;
@@ -46,7 +46,7 @@ struct _CamelMimeFilterProgress {
 
 struct _CamelMimeFilterProgressClass {
 	CamelMimeFilterClass parent_class;
-	
+
 };
 
 

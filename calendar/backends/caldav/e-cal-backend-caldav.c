@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with the program; if not, see <http://www.gnu.org/licenses/>  
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
  *
  * Authors:
@@ -1521,7 +1521,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 			g_free (href);
 			continue;
 		}
-		
+
 		g_hash_table_insert (hindex, (gpointer) href, ccomp);
 	}
 
@@ -2669,7 +2669,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const char *calobj, CalObjModType mo
 				*old_object = e_cal_component_get_as_string (old_instance);
 				g_object_unref (old_instance);
 			}
-		} 
+		}
 
 		if (!*old_object) {
 			icalcomponent *master = get_master_comp (cbdav, cache_comp);
@@ -2958,7 +2958,7 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 	ECalBackendCalDAVPrivate *priv;
 	GList *timezones = NULL, *iter;
 	icaltimezone *zone;
-	
+
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (icomp != NULL, FALSE);
 

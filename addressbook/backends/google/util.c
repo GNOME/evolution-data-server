@@ -145,7 +145,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
                                                 number);
             }
         } else
-        
+
         /* LABEL */
         if (0 == g_ascii_strcasecmp (name, EVC_LABEL)) {
             GDataEntryPostalAddress *address;
@@ -157,7 +157,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
                                                    address);
             }
         } else
-    
+
         /* X-IM */
         if (0 == g_ascii_strncasecmp (name, "X-", 2) &&
             is_known_google_im_protocol (name + 2)) {
@@ -212,7 +212,7 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
     /* UID */
     attr = e_vcard_attribute_new (NULL, EVC_UID);
     e_vcard_add_attribute_with_value (vcard, attr, uid);
-    
+
     /* FN - TODO: get title */
     name = gdata_entry_get_title (entry);
     if (name) {

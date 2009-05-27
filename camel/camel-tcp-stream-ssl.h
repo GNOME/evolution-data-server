@@ -41,15 +41,15 @@ struct _CamelSession;
 
 struct _CamelTcpStreamSSL {
 	CamelTcpStream parent_object;
-	
+
 	struct _CamelTcpStreamSSLPrivate *priv;
 };
 
 typedef struct {
 	CamelTcpStreamClass parent_class;
-	
+
 	/* virtual functions */
-	
+
 } CamelTcpStreamSSLClass;
 
 /* Standard Camel function */

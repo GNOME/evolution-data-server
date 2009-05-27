@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* 
+/*
  * camel-iconv.c
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
@@ -42,7 +42,7 @@
 #include "camel-iconv.h"
 #include "iconv-detect.h"
 
-#define cd(x) 
+#define cd(x)
 
 #ifdef G_THREADS_ENABLED
 static GStaticMutex lock = G_STATIC_MUTEX_INIT;
@@ -197,13 +197,13 @@ static const char *
 e_strdown (char *str)
 {
 	register char *s = str;
-	
+
 	while (*s) {
 		if (*s >= 'A' && *s <= 'Z')
 			*s += 0x20;
 		s++;
 	}
-	
+
 	return str;
 }
 
@@ -211,13 +211,13 @@ static const char *
 e_strup (char *str)
 {
 	register char *s = str;
-	
+
 	while (*s) {
 		if (*s >= 'a' && *s <= 'z')
 			*s -= 0x20;
 		s++;
 	}
-	
+
 	return str;
 }
 
@@ -226,18 +226,18 @@ static void
 locale_parse_lang (const char *locale)
 {
 	char *codeset, *lang;
-	
+
 	if ((codeset = strchr (locale, '.')))
 		lang = g_strndup (locale, codeset - locale);
 	else
 		lang = g_strdup (locale);
-	
+
 	/* validate the language */
 	if (strlen (lang) >= 2) {
 		if (lang[2] == '-' || lang[2] == '_') {
 			/* canonicalise the lang */
 			e_strdown (lang);
-			
+
 			/* validate the country code */
 			if (strlen (lang + 3) > 2) {
 				/* invalid country code */
@@ -251,7 +251,7 @@ locale_parse_lang (const char *locale)
 			g_free (lang);
 			lang = NULL;
 		}
-		
+
 		locale_lang = lang;
 	} else {
 		/* invalid language */
@@ -276,7 +276,7 @@ camel_iconv_init(int keep)
 	}
 
 	iconv_charsets = g_hash_table_new(g_str_hash, g_str_equal);
-	
+
 	for (i = 0; known_iconv_charsets[i].charset != NULL; i++) {
 		from = g_strdup(known_iconv_charsets[i].charset);
 		to = g_strdup(known_iconv_charsets[i].iconv_name);
@@ -287,19 +287,19 @@ camel_iconv_init(int keep)
 	camel_dlist_init(&iconv_cache_list);
 	iconv_cache = g_hash_table_new(g_str_hash, g_str_equal);
 	iconv_cache_open = g_hash_table_new(NULL, NULL);
-	
+
 #ifndef G_OS_WIN32
 	locale = setlocale (LC_ALL, NULL);
 #else
 	locale = g_win32_getlocale ();
 #endif
-	
+
 	if (!locale || !strcmp (locale, "C") || !strcmp (locale, "POSIX")) {
 		/* The locale "C"  or  "POSIX"  is  a  portable  locale;  its
 		 * LC_CTYPE  part  corresponds  to  the 7-bit ASCII character
 		 * set.
 		 */
-		
+
 		locale_charset = NULL;
 		locale_lang = NULL;
 	} else {
@@ -319,11 +319,11 @@ camel_iconv_init(int keep)
 		 * ISO-8859-1 or UTF-8.
 		 */
 		char *codeset, *p;
-		
+
 		codeset = strchr (locale, '.');
 		if (codeset) {
 			codeset++;
-			
+
 			/* ; is a hack for debian systems and / is a hack for Solaris systems */
 			for (p = codeset; *p && !strchr ("@;/", *p); p++);
 			locale_charset = g_strndup (codeset, p - codeset);
@@ -332,9 +332,9 @@ camel_iconv_init(int keep)
 			/* charset unknown */
 			locale_charset = NULL;
 		}
-#endif		
+#endif
 #endif	/* !G_OS_WIN32 */
-		
+
 		/* parse the locale lang */
 		locale_parse_lang (locale);
 
@@ -358,7 +358,7 @@ camel_iconv_charset_name (const gchar *charset)
 	name = g_alloca (strlen (charset) + 1);
 	strcpy (name, charset);
 	e_strdown (name);
-	
+
 	camel_iconv_init(TRUE);
 	ret = g_hash_table_lookup(iconv_charsets, name);
 	if (ret != NULL) {
@@ -371,13 +371,13 @@ camel_iconv_charset_name (const gchar *charset)
 		/* Convert iso-nnnn-n or isonnnn-n or iso_nnnn-n to iso-nnnn-n or isonnnn-n */
 		int iso, codepage;
 		char *p;
-		
+
 		tmp = name + 3;
 		if (*tmp == '-' || *tmp == '_')
 			tmp++;
-		
+
 		iso = strtoul (tmp, &p, 10);
-		
+
 		if (iso == 10646) {
 			/* they all become ICONV_10646 */
 			ret = g_strdup (ICONV_10646);
@@ -385,9 +385,9 @@ camel_iconv_charset_name (const gchar *charset)
 			tmp = p;
 			if (*tmp == '-' || *tmp == '_')
 				tmp++;
-			
+
 			codepage = strtoul (tmp, &p, 10);
-			
+
 			if (p > tmp) {
 				/* codepage is numeric */
 #ifdef __aix__
@@ -412,7 +412,7 @@ camel_iconv_charset_name (const gchar *charset)
 		tmp = name+10;
 		if (!strncmp(tmp, "cp", 2))
 			tmp+=2;
-		ret = g_strdup_printf("CP%s", tmp);	
+		ret = g_strdup_printf("CP%s", tmp);
 	} else {
 		/* Just assume its ok enough as is, case and all */
 		ret = g_strdup(charset);
@@ -459,7 +459,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		errno = EINVAL;
 		return (iconv_t) -1;
 	}
-	
+
 	to = camel_iconv_charset_name (oto);
 	from = camel_iconv_charset_name (ofrom);
 	tofrom = g_alloca (strlen (to) + strlen (from) + 2);
@@ -489,7 +489,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		}
 
 		iconv_cache_size++;
-		
+
 		ic = g_malloc(sizeof(*ic));
 		camel_dlist_init(&ic->open);
 		ic->conv = g_strdup(tofrom);
@@ -505,8 +505,8 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 		cd(printf("using existing iconv converter '%s'\n", ic->conv));
 		ip = in->ip;
 		if (ip != (iconv_t)-1) {
-			/* work around some broken iconv implementations 
-			 * that die if the length arguments are NULL 
+			/* work around some broken iconv implementations
+			 * that die if the length arguments are NULL
 			 */
 			size_t buggy_iconv_len = 0;
 			char *buggy_iconv_buf = NULL;
@@ -583,7 +583,7 @@ const gchar *
 camel_iconv_locale_language (void)
 {
 	camel_iconv_init (FALSE);
-	
+
 	return locale_lang;
 }
 
@@ -615,15 +615,15 @@ const gchar *
 camel_iconv_charset_language (const gchar *charset)
 {
 	int i;
-	
+
 	if (!charset)
 		return NULL;
-	
+
 	charset = camel_iconv_charset_name (charset);
 	for (i = 0; i < G_N_ELEMENTS (cjkr_lang_map); i++) {
 		if (!g_ascii_strcasecmp (cjkr_lang_map[i].charset, charset))
 			return cjkr_lang_map[i].lang;
 	}
-	
+
 	return NULL;
 }

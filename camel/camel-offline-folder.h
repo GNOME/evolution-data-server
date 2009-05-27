@@ -47,13 +47,13 @@ enum {
 
 struct _CamelOfflineFolder {
 	CamelFolder parent_object;
-	
+
 	unsigned int sync_offline:1;
 };
 
 struct _CamelOfflineFolderClass {
 	CamelFolderClass parent_class;
-	
+
 	void (* downsync) (CamelOfflineFolder *folder, const char *expression, CamelException *ex);
 };
 

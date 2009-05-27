@@ -40,7 +40,7 @@ typedef struct _CamelSaslPlain {
 
 typedef struct _CamelSaslPlainClass {
 	CamelSaslClass parent_class;
-	
+
 } CamelSaslPlainClass;
 
 

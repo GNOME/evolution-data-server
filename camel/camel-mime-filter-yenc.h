@@ -64,11 +64,11 @@ typedef enum {
 
 struct _CamelMimeFilterYenc {
 	CamelMimeFilter parent_object;
-	
+
 	CamelMimeFilterYencDirection direction;
-	
+
 	int part;
-	
+
 	int state;
 	guint32 pcrc;
 	guint32 crc;
@@ -76,7 +76,7 @@ struct _CamelMimeFilterYenc {
 
 struct _CamelMimeFilterYencClass {
 	CamelMimeFilterClass parent_class;
-	
+
 };
 
 
