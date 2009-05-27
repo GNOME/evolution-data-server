@@ -46,7 +46,7 @@ static char *
 get_filename_from_uri (const char *uri, ECalSourceType source_type)
 {
 	char *mangled_uri, *filename;
-	char *source = NULL;
+	const char *source = NULL;
 	int i;
 
 	switch (source_type) {
@@ -832,6 +832,14 @@ e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
        	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
 }
 
+static char *
+get_keys_key (const char *key)
+{
+	g_return_val_if_fail (key != NULL, NULL);
+
+	return g_strconcat ("keys::", key, NULL);
+}
+
 /**
  * e_cal_backend_cache_put_key_value:
  * @cache: An #ECalBackendCache object.
@@ -843,17 +851,22 @@ e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 gboolean
 e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, const char *value)
 {
+	char *real_key;
 	gboolean ret_val = FALSE;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 
-	if (value) {
-		e_file_cache_remove_object (E_FILE_CACHE (cache), key);
+	real_key = get_keys_key (key);
+	if (!value) {
+		e_file_cache_remove_object (E_FILE_CACHE (cache), real_key);
+		g_free (real_key);
 		return TRUE;
 	}
 
-	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), key, value)))
-		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), key, value);
+	if (!(ret_val = e_file_cache_add_object (E_FILE_CACHE (cache), real_key, value)))
+		ret_val = e_file_cache_replace_object (E_FILE_CACHE (cache), real_key, value);
+
+	g_free (real_key);
 
 	return ret_val;
 }
@@ -867,8 +880,14 @@ e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, con
 const char *
 e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const char *key)
 {
+	char *real_key;
+	const char *value;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
 
-       	return	e_file_cache_get_object (E_FILE_CACHE (cache), key);
+	real_key = get_keys_key (key);
+	value = e_file_cache_get_object (E_FILE_CACHE (cache), real_key);
+	g_free (real_key);
+
+	return value;
 }

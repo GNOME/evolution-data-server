@@ -49,6 +49,8 @@
 
 #define d(x)
 
+#define CALDAV_CTAG_KEY "CALDAV_CTAG"
+
 /* in seconds */
 #define DEFAULT_REFRESH_TIME 60
 
@@ -112,7 +114,6 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
-	gchar *ctag;
 };
 
 /* ************************************************************************* */
@@ -1037,14 +1038,16 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 		char *ctag = NULL;
 
 		if (parse_getctag_response (message, &ctag)) {
-			if (ctag && priv->ctag && g_str_equal (ctag, priv->ctag)) {
+			const char *my_ctag = e_cal_backend_cache_get_key_value (priv->cache, CALDAV_CTAG_KEY);
+
+			if (ctag && my_ctag && g_str_equal (ctag, my_ctag)) {
 				/* ctag is same, no change in the calendar */
 				result = FALSE;
-				g_free (ctag);
 			} else {
-				g_free (priv->ctag);
-				priv->ctag = ctag;
+				e_cal_backend_cache_put_key_value (priv->cache, CALDAV_CTAG_KEY, ctag);
 			}
+
+			g_free (ctag);
 		} else {
 			priv->ctag_supported = FALSE;
 		}
@@ -1896,8 +1899,6 @@ caldav_do_open (ECalBackendSync *backend,
 	g_mutex_lock (priv->lock);
 
 	/* let it decide the 'getctag' extension availability again */
-	g_free (priv->ctag);
-	priv->ctag = NULL;
 	priv->ctag_supported = TRUE;
 
 	if (!priv->loaded) {
@@ -3655,9 +3656,6 @@ e_cal_backend_caldav_finalize (GObject *object)
 	cbdav = E_CAL_BACKEND_CALDAV (object);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_free (priv->ctag);
-	priv->ctag = NULL;
-
 	g_mutex_free (priv->lock);
 	g_cond_free (priv->cond);
 	g_cond_free (priv->slave_gone_cond);
@@ -3693,7 +3691,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
 	priv->ctag_supported = TRUE;
-	priv->ctag = NULL;
 
 	priv->lock = g_mutex_new ();
 	priv->cond = g_cond_new ();
