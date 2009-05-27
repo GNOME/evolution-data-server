@@ -3542,8 +3542,23 @@ generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
 
 	/* Generate objects */
 	if (uid && *uid) {
-		if (!e_cal_get_objects_for_uid (ecal, uid, &objects, NULL))
+		GError *error = NULL;
+		gint tries = 0;
+
+try_again:
+		if (!e_cal_get_objects_for_uid (ecal, uid, &objects, &error)) {
+			if (error->code == E_CALENDAR_STATUS_BUSY && tries >= 10) {
+				tries++;
+				g_usleep (500);
+				g_clear_error (&error);
+
+				goto try_again;
+			}
+
+			g_message ("Failed to get recurrence objects for uid %s \n", error->message);
+			g_clear_error (&error);
 			return;
+		}
 	}
 	else {
 		iso_start = isodate_from_time_t (start);
