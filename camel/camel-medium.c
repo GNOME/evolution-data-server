@@ -292,10 +292,10 @@ get_content_object(CamelMedium *medium)
  * camel_medium_get_content_object:
  * @medium: a #CamelMedium object
  *
- * Getss a data wrapper that represents the content of the medium,
+ * Gets a data wrapper that represents the content of the medium,
  * without its headers.
  *
- * Returns: a #CamelDataWrapper containing @medium's content
+ * Returns: a #CamelDataWrapper containing @medium's content. Can return NULL.
  **/
 CamelDataWrapper *
 camel_medium_get_content_object (CamelMedium *medium)
