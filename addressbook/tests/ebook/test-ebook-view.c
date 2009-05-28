@@ -10,13 +10,13 @@ print_contact (EContact *contact)
 {
 	GList *emails, *e;
 
-	printf ("Contact: %s\n", (char*)e_contact_get_const (contact, E_CONTACT_FILE_AS));
-	printf ("UID: %s\n", (char*)e_contact_get_const (contact, E_CONTACT_UID));
+	printf ("Contact: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	printf ("UID: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
 	printf ("Email addresses:\n");
 
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		printf ("\t%s\n",  (char*)e->data);
+		printf ("\t%s\n",  (gchar *)e->data);
 	}
 	g_list_foreach (emails, (GFunc)g_free, NULL);
 	g_list_free (emails);
@@ -40,7 +40,7 @@ contacts_removed (EBookView *book_view, const GList *ids)
   GList *l;
 
   for (l = (GList*)ids; l; l = l->next) {
-    printf ("Removed contact: %s\n", (char*)l->data);
+    printf ("Removed contact: %s\n", (gchar *)l->data);
   }
 }
 
@@ -52,8 +52,8 @@ sequence_complete (EBookView *book_view, EBookViewStatus status)
   g_main_loop_quit (loop);
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EBook *book;
 	gboolean status;

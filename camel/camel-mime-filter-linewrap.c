@@ -29,10 +29,10 @@
 #include "camel-mime-filter-linewrap.h"
 
 
-static void filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-		    char **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, char *in, size_t len,
-		      size_t prespace, char **out, size_t *outlen,
+static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+		    gchar **out, size_t *outlen, size_t *outprespace);
+static void complete (CamelMimeFilter *f, gchar *in, size_t len,
+		      size_t prespace, gchar **out, size_t *outlen,
 		      size_t *outprespace);
 static void reset (CamelMimeFilter *f);
 
@@ -67,12 +67,12 @@ camel_mime_filter_linewrap_get_type (void)
 }
 
 static void
-filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-	char **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+	gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterLinewrap *linewrap = (CamelMimeFilterLinewrap *)f;
-	char *inend, *p, *q;
-	int nchars = linewrap->nchars;
+	gchar *inend, *p, *q;
+	gint nchars = linewrap->nchars;
 
 	/* we'll be adding chars here so we need a bigger buffer */
 	camel_mime_filter_set_size (f, 3 * len, FALSE);
@@ -114,8 +114,8 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 }
 
 static void
-complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-	  char **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+	  gchar **out, size_t *outlen, size_t *outprespace)
 {
 	if (len)
 		filter (f, in, len, prespace, out, outlen, outprespace);
@@ -130,7 +130,7 @@ reset (CamelMimeFilter *f)
 }
 
 CamelMimeFilter *
-camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, char indent_char)
+camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent_char)
 {
 	CamelMimeFilterLinewrap *linewrap =
 		CAMEL_MIME_FILTER_LINEWRAP (camel_object_new (CAMEL_MIME_FILTER_LINEWRAP_TYPE));

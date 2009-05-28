@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,17 +24,17 @@ static const char revid[] = "$Id$";
  * __memp_trickle --
  *	Keep a specified percentage of the buffers clean.
  *
- * PUBLIC: int __memp_trickle __P((DB_ENV *, int, int *));
+ * PUBLIC: gint __memp_trickle __P((DB_ENV *, int, gint *));
  */
-int
+gint
 __memp_trickle(dbenv, pct, nwrotep)
 	DB_ENV *dbenv;
-	int pct, *nwrotep;
+	gint pct, *nwrotep;
 {
 	DB_MPOOL *dbmp;
 	MPOOL *c_mp, *mp;
 	u_int32_t clean, dirty, i, total, dtmp;
-	int ret, wrote;
+	gint ret, wrote;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,

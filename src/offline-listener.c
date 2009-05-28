@@ -67,7 +67,7 @@ set_online_status (OfflineListener *offline_listener, gboolean is_offline)
 }
 
 static void
-online_status_changed (GConfClient *client, int cnxn_id, GConfEntry *entry, gpointer data)
+online_status_changed (GConfClient *client, gint cnxn_id, GConfEntry *entry, gpointer data)
 {
 	GConfValue *value;
 	gboolean offline;

@@ -26,10 +26,10 @@
 
 #define d(x)
 
-static int driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
-static int driver_resp_expunge(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
-static int driver_resp_exists(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
-static int driver_resp_list(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
+static gint driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
+static gint driver_resp_expunge(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
+static gint driver_resp_exists(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
+static gint driver_resp_list(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata);
 
 static void driver_status(CamelIMAPPEngine *ie, struct _status_info *sinfo, CamelIMAPPDriver *sdata);
 
@@ -96,14 +96,14 @@ camel_imapp_driver_new(CamelIMAPPStream *stream)
 }
 
 void
-camel_imapp_driver_set_sasl_factory(CamelIMAPPDriver *id, CamelIMAPPSASLFunc get_sasl, void *sasl_data)
+camel_imapp_driver_set_sasl_factory(CamelIMAPPDriver *id, CamelIMAPPSASLFunc get_sasl, gpointer sasl_data)
 {
 	id->get_sasl = get_sasl;
 	id->get_sasl_data = sasl_data;
 }
 
 void
-camel_imapp_driver_set_login_query(CamelIMAPPDriver *id, CamelIMAPPLoginFunc get_login, void *login_data)
+camel_imapp_driver_set_login_query(CamelIMAPPDriver *id, CamelIMAPPLoginFunc get_login, gpointer login_data)
 {
 	id->get_login = get_login;
 	id->get_login_data = login_data;
@@ -127,7 +127,7 @@ camel_imapp_driver_login(CamelIMAPPDriver *id)
 			ic = camel_imapp_engine_command_new(id->engine, "AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
 			camel_object_unref(sasl);
 		} else {
-			char *user, *pass;
+			gchar *user, *pass;
 
 			g_assert(id->get_login);
 			id->get_login(id, &user, &pass, id->get_login_data);
@@ -277,7 +277,7 @@ camel_imapp_driver_update(CamelIMAPPDriver *id, CamelIMAPPFolder *folder)
 
 /* FIXME: this is basically a copy of the same in camel-imapp-utils.c */
 static struct {
-	char *name;
+	gchar *name;
 	guint32 flag;
 } flag_table[] = {
 	{ "\\ANSWERED", CAMEL_MESSAGE_ANSWERED },
@@ -311,7 +311,7 @@ imapp_write_flags(CamelIMAPPDriver *id, guint32 orset, gboolean on, CamelFolderS
 
 	count = camel_folder_summary_count(summary);
 	for (j=0;j<sizeof(flag_table)/sizeof(flag_table[0]);j++) {
-		int flush;
+		gint flush;
 
 		if ((orset & flag_table[j].flag) == 0)
 			continue;
@@ -443,14 +443,14 @@ fetch_data_free(CamelIMAPPFetch *fd)
 }
 #endif
 
-struct _CamelStream *	camel_imapp_driver_fetch(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const char *uid, const char *body)
+struct _CamelStream *	camel_imapp_driver_fetch(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const gchar *uid, const gchar *body)
 {
 	return NULL;
 }
 
 #if 0
 void
-camel_imapp_driver_fetch(CamelIMAPPDriver *id, CamelIMAPPFolder *folder, const char *uid, const char *section, CamelIMAPPFetchFunc done, void *data)
+camel_imapp_driver_fetch(CamelIMAPPDriver *id, CamelIMAPPFolder *folder, const gchar *uid, const gchar *section, CamelIMAPPFetchFunc done, gpointer data)
 {
 	struct _fetch_data *fd;
 	CamelIMAPPCommand *ic;
@@ -485,7 +485,7 @@ camel_imapp_driver_fetch(CamelIMAPPDriver *id, CamelIMAPPFolder *folder, const c
 #endif
 
 GPtrArray *
-camel_imapp_driver_list(CamelIMAPPDriver *id, const char *name, guint32 flags)
+camel_imapp_driver_list(CamelIMAPPDriver *id, const gchar *name, guint32 flags)
 {
 	CamelIMAPPCommand * volatile ic;
 	GPtrArray *res;
@@ -522,7 +522,7 @@ camel_imapp_driver_list(CamelIMAPPDriver *id, const char *name, guint32 flags)
 		}
 	} CAMEL_CATCH(e) {
 		GSList *top = id->list_commands;
-		int i;
+		gint i;
 
 		camel_imapp_engine_command_free(id->engine, ic);
 
@@ -565,9 +565,9 @@ driver_resp_list(CamelIMAPPEngine *ie, guint32 idx, CamelIMAPPDriver *id)
 		if ((linfo->flags & CAMEL_FOLDER_NOINFERIORS) == 0
 		    && (id->list_flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
 		    && linfo->separator) {
-			int depth = 0;
-			char *p = linfo->name;
-			char c = linfo->separator;
+			gint depth = 0;
+			gchar *p = linfo->name;
+			gchar c = linfo->separator;
 
 			/* this is expensive ... but if we've listed this deep we're going slow anyway */
 			while (*p && depth < 10) {
@@ -671,7 +671,7 @@ driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 {
 	struct _fetch_info *finfo = NULL;
 	CamelIMAPPMessageInfo *info, *uinfo;
-	unsigned int i;
+	guint i;
 	CamelFolderSummary *summary;
 
 	printf("got fetch response %d\n", id);
@@ -704,7 +704,7 @@ driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 				printf("inserting new info @ %u\n", i);
 				info->info.uid = g_strdup(finfo->uid);
 			} else {
-				char uidtmp[32];
+				gchar uidtmp[32];
 
 				sprintf(uidtmp, "blank-%u", i);
 				info->info.uid = g_strdup(uidtmp);
@@ -802,13 +802,13 @@ struct _CamelIMAPPMsg {
 	union {
 		struct {
 			struct _CamelIMAPPFolder *folder;
-			char *uid;
-			char *section;
+			gchar *uid;
+			gchar *section;
 			struct _CamelStream *body;
 			struct _CamelIMAPPCommand *ic;
 		} fetch;
 		struct {
-			char *name;
+			gchar *name;
 			guint32 flags;
 			GPtrArray *result;
 			GSList *ics;
@@ -818,7 +818,7 @@ struct _CamelIMAPPMsg {
 		} quit;
 		struct {
 			struct _CamelIMAPPFolder *folder;
-			char *search;
+			gchar *search;
 			GPtrArray *results;
 		} search;
 		struct {
@@ -852,11 +852,11 @@ camel_imapp_msg_new(camel_imapp_msg_t type, struct _CamelException *ex, struct _
 	case CAMEL_IMAPP_MSG_FETCH:
 		m->data.fetch.folder = va_arg(ap, struct _CamelIMAPPFolder *);
 		camel_object_ref(m->data.fetch.folder);
-		m->data.fetch.uid = g_strdup(va_arg(ap, char *));
-		m->data.fetch.section = g_strdup(va_arg(ap, char *));
+		m->data.fetch.uid = g_strdup(va_arg(ap, gchar *));
+		m->data.fetch.section = g_strdup(va_arg(ap, gchar *));
 		break;
 	case CAMEL_IMAPP_MSG_LIST:
-		m->data.list.name = g_strdup(va_arg(ap, char *));
+		m->data.list.name = g_strdup(va_arg(ap, gchar *));
 		m->data.list.flags = va_arg(ap, guint32);
 		break;
 	case CAMEL_IMAPP_MSG_QUIT:
@@ -865,7 +865,7 @@ camel_imapp_msg_new(camel_imapp_msg_t type, struct _CamelException *ex, struct _
 	case CAMEL_IMAPP_MSG_SEARCH:
 		m->data.search.folder = va_arg(ap, struct _CamelIMAPPFolder *);
 		camel_object_ref(m->data.search.folder);
-		m->data.search.search = g_strdup(va_arg(ap, char *));
+		m->data.search.search = g_strdup(va_arg(ap, gchar *));
 		break;
 	case CAMEL_IMAPP_MSG_SYNC:
 		m->data.sync.folder = va_arg(ap, struct _CamelIMAPPFolder *);
@@ -925,7 +925,7 @@ void
 camel_imapp_driver_worker(CamelIMAPPDriver *id)
 {
 	CamelIMAPPMsg *m;
-	int go = TRUE;
+	gint go = TRUE;
 
 	do {
 		/*m = (CamelIMAPPMsg *)camel_msgport_try_pop(id->queue);*/

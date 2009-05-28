@@ -107,19 +107,19 @@ typedef struct _CamelIMAP4RespCode {
 	camel_imap4_resp_code_t code;
 	union {
 		guint32 flags;
-		char *parse;
+		gchar *parse;
 		guint32 uidnext;
 		guint32 uidvalidity;
 		guint32 unseen;
-		char *newname[2];
+		gchar *newname[2];
 		struct {
 			guint32 uidvalidity;
 			guint32 uid;
 		} appenduid;
 		struct {
 			guint32 uidvalidity;
-			char *srcset;
-			char *destset;
+			gchar *srcset;
+			gchar *destset;
 		} copyuid;
 	} v;
 } CamelIMAP4RespCode;
@@ -135,8 +135,8 @@ enum {
 
 typedef struct _CamelIMAP4Namespace {
 	struct _CamelIMAP4Namespace *next;
-	char *path;
-	char sep;
+	gchar *path;
+	gchar sep;
 } CamelIMAP4Namespace;
 
 typedef struct _CamelIMAP4NamespaceList {
@@ -175,9 +175,9 @@ struct _CamelIMAP4Engine {
 	struct _CamelIMAP4Stream *istream;
 	CamelStream *ostream;
 
-	unsigned char tagprefix;             /* 'A'..'Z' */
-	unsigned int tag;                    /* next command tag */
-	int nextid;
+	guchar tagprefix;             /* 'A'..'Z' */
+	guint tag;                    /* next command tag */
+	gint nextid;
 
 	struct _CamelIMAP4Folder *folder;    /* currently selected folder */
 
@@ -188,7 +188,7 @@ struct _CamelIMAP4Engine {
 struct _CamelIMAP4EngineClass {
 	CamelObjectClass parent_class;
 
-	unsigned char tagprefix;
+	guchar tagprefix;
 };
 
 
@@ -197,39 +197,39 @@ CamelType camel_imap4_engine_get_type (void);
 CamelIMAP4Engine *camel_imap4_engine_new (CamelService *service, CamelIMAP4ReconnectFunc reconnect);
 
 /* returns 0 on success or -1 on error */
-int camel_imap4_engine_take_stream (CamelIMAP4Engine *engine, CamelStream *stream, CamelException *ex);
+gint camel_imap4_engine_take_stream (CamelIMAP4Engine *engine, CamelStream *stream, CamelException *ex);
 
 void camel_imap4_engine_disconnect (CamelIMAP4Engine *engine);
 
-int camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex);
-int camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex);
+gint camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex);
+gint camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex);
 
-int camel_imap4_engine_select_folder (CamelIMAP4Engine *engine, CamelFolder *folder, CamelException *ex);
+gint camel_imap4_engine_select_folder (CamelIMAP4Engine *engine, CamelFolder *folder, CamelException *ex);
 
 struct _CamelIMAP4Command *camel_imap4_engine_queue (CamelIMAP4Engine *engine, CamelFolder *folder,
-						     const char *format, ...);
+						     const gchar *format, ...);
 struct _CamelIMAP4Command *camel_imap4_engine_prequeue (CamelIMAP4Engine *engine, CamelFolder *folder,
-							const char *format, ...);
+							const gchar *format, ...);
 
 void camel_imap4_engine_dequeue (CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic);
 
-int camel_imap4_engine_iterate (CamelIMAP4Engine *engine);
+gint camel_imap4_engine_iterate (CamelIMAP4Engine *engine);
 
 
 /* untagged response utility functions */
-int camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token, CamelException *ex);
+gint camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token, CamelException *ex);
 void camel_imap4_engine_handle_untagged (CamelIMAP4Engine *engine, CamelException *ex);
 
 /* stream wrapper utility functions */
-int camel_imap4_engine_next_token (CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token, CamelException *ex);
-int camel_imap4_engine_line (CamelIMAP4Engine *engine, unsigned char **line, size_t *len, CamelException *ex);
-int camel_imap4_engine_literal (CamelIMAP4Engine *engine, unsigned char **literal, size_t *len, CamelException *ex);
-int camel_imap4_engine_nstring (CamelIMAP4Engine *engine, unsigned char **nstring, CamelException *ex);
-int camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex);
+gint camel_imap4_engine_next_token (CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token, CamelException *ex);
+gint camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, size_t *len, CamelException *ex);
+gint camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, size_t *len, CamelException *ex);
+gint camel_imap4_engine_nstring (CamelIMAP4Engine *engine, guchar **nstring, CamelException *ex);
+gint camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex);
 
 
 /* response code stuff */
-int camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex);
+gint camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex);
 void camel_imap4_resp_code_free (CamelIMAP4RespCode *rcode);
 
 G_END_DECLS

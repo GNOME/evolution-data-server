@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,12 +21,12 @@ static const char revid[] = "$Id$";
  *	Send a signal to the current process.
  *
  * PUBLIC: #ifndef HAVE_RAISE
- * PUBLIC: int raise __P((int));
+ * PUBLIC: gint raise __P((int));
  * PUBLIC: #endif
  */
-int
+gint
 raise(s)
-	int s;
+	gint s;
 {
 	/*
 	 * Do not use __os_id(), as it may not return the process ID -- any

@@ -11,7 +11,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -53,7 +53,7 @@ __db_hmac(k, data, data_len, mac)
 	u_int8_t ipad[HMAC_BLOCK_SIZE];
 	u_int8_t opad[HMAC_BLOCK_SIZE];
 	u_int8_t tmp[HMAC_OUTPUT_SIZE];
-	int i;
+	gint i;
 
 	memset(key, 0x00, HMAC_BLOCK_SIZE);
 	memset(ipad, 0x36, HMAC_BLOCK_SIZE);
@@ -90,7 +90,7 @@ __db_chksum(data, data_len, mac_key, store)
 	u_int8_t *mac_key;
 	u_int8_t *store;
 {
-	int sumlen;
+	gint sumlen;
 	u_int32_t hash4;
 	u_int8_t tmp[DB_MAC_KEY];
 
@@ -146,19 +146,19 @@ __db_derive_mac(passwd, plen, mac_key)
  *
  *	Return 0 on success, >0 (errno) on error, -1 on checksum mismatch.
  *
- * PUBLIC: int __db_check_chksum __P((DB_ENV *,
- * PUBLIC:     DB_CIPHER *, u_int8_t *, void *, size_t, int));
+ * PUBLIC: gint __db_check_chksum __P((DB_ENV *,
+ * PUBLIC:     DB_CIPHER *, u_int8_t *, gpointer , size_t, int));
  */
-int
+gint
 __db_check_chksum(dbenv, db_cipher, chksum, data, data_len, is_hmac)
 	DB_ENV *dbenv;
 	DB_CIPHER *db_cipher;
 	u_int8_t *chksum;
-	void *data;
+	gpointer data;
 	size_t data_len;
-	int is_hmac;
+	gint is_hmac;
 {
-	int ret;
+	gint ret;
 	size_t sum_len;
 	u_int32_t hash4;
 	u_int8_t *mac_key, old[DB_MAC_KEY], new[DB_MAC_KEY];

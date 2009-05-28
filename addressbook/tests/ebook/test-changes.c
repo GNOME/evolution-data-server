@@ -10,8 +10,8 @@ EMAIL;INTERNET:toshok@ximian.com\n\
 ORG:Ximian, Inc.;\n\
 END:VCARD"
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EBook *book;
 	EContact *contact;
@@ -82,7 +82,7 @@ main (int argc, char **argv)
 		exit(0);
 	}
 
-	printf ("got changed vcard back: %s\n", (char*)e_contact_get_const (change->contact, E_CONTACT_UID));
+	printf ("got changed vcard back: %s\n", (gchar *)e_contact_get_const (change->contact, E_CONTACT_UID));
 
 	e_book_free_change_list (changes);
 

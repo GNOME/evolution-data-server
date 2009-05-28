@@ -92,7 +92,7 @@ typedef struct __sh_dbt {
 	ssize_t   off;			/* Region offset. */
 } SH_DBT;
 
-#define	SH_DBT_PTR(p)	((void *)(((u_int8_t *)(p)) + (p)->off))
+#define	SH_DBT_PTR(p)	((gpointer)(((u_int8_t *)(p)) + (p)->off))
 
 /*
  * Object structures;  these live in the object hash table.

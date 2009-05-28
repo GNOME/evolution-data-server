@@ -49,22 +49,22 @@ static CamelFolderClass *parent_class = NULL;
 
 static void digest_refresh_info (CamelFolder *folder, CamelException *ex);
 static void digest_sync (CamelFolder *folder, gboolean expunge, CamelException *ex);
-static const char *digest_get_full_name (CamelFolder *folder);
+static const gchar *digest_get_full_name (CamelFolder *folder);
 static void digest_expunge (CamelFolder *folder, CamelException *ex);
 
 /* message manipulation */
 static CamelMimeMessage *digest_get_message (CamelFolder *folder, const gchar *uid,
 					     CamelException *ex);
 static void digest_append_message (CamelFolder *folder, CamelMimeMessage *message,
-				   const CamelMessageInfo *info, char **appended_uid, CamelException *ex);
+				   const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex);
 static void digest_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					 CamelFolder *dest, GPtrArray **transferred_uids,
 					 gboolean delete_originals, CamelException *ex);
 
-static GPtrArray *digest_search_by_expression (CamelFolder *folder, const char *expression,
+static GPtrArray *digest_search_by_expression (CamelFolder *folder, const gchar *expression,
 					       CamelException *ex);
 
-static GPtrArray *digest_search_by_uids (CamelFolder *folder, const char *expression,
+static GPtrArray *digest_search_by_uids (CamelFolder *folder, const gchar *expression,
 					 GPtrArray *uids, CamelException *ex);
 
 static void digest_search_free (CamelFolder *folder, GPtrArray *result);
@@ -155,7 +155,7 @@ multipart_contains_message_parts (CamelMultipart *multipart)
 	gboolean has_message_parts = FALSE;
 	CamelDataWrapper *wrapper;
 	CamelMimePart *part;
-	int i, parts;
+	gint i, parts;
 
 	parts = camel_multipart_get_number (multipart);
 	for (i = 0; i < parts && !has_message_parts; i++) {
@@ -172,17 +172,17 @@ multipart_contains_message_parts (CamelMultipart *multipart)
 }
 
 static void
-digest_add_multipart (CamelFolder *folder, CamelMultipart *multipart, const char *preuid)
+digest_add_multipart (CamelFolder *folder, CamelMultipart *multipart, const gchar *preuid)
 {
 	CamelDataWrapper *wrapper;
 	CamelMessageInfo *info;
 	CamelMimePart *part;
-	int parts, i;
-	char *uid;
+	gint parts, i;
+	gchar *uid;
 
 	parts = camel_multipart_get_number (multipart);
 	for (i = 0; i < parts; i++) {
-		char *tmp;
+		gchar *tmp;
 		part = camel_multipart_get_part (multipart, i);
 
 		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
@@ -259,7 +259,7 @@ digest_expunge (CamelFolder *folder, CamelException *ex)
 	/* no-op */
 }
 
-static const char *
+static const gchar *
 digest_get_full_name (CamelFolder *folder)
 {
 	return folder->full_name;
@@ -267,7 +267,7 @@ digest_get_full_name (CamelFolder *folder)
 
 static void
 digest_append_message (CamelFolder *folder, CamelMimeMessage *message,
-		       const CamelMessageInfo *info, char **appended_uid,
+		       const CamelMessageInfo *info, gchar **appended_uid,
 		       CamelException *ex)
 {
 	/* no-op */
@@ -286,14 +286,14 @@ digest_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 }
 
 static CamelMimeMessage *
-digest_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
+digest_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelDigestFolder *digest = CAMEL_DIGEST_FOLDER (folder);
 	CamelDataWrapper *wrapper;
 	CamelMimeMessage *message;
 	CamelMimePart *part;
-	char *subuid;
-	int id;
+	gchar *subuid;
+	gint id;
 
 	part = CAMEL_MIME_PART (digest->priv->message);
 	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
@@ -318,7 +318,7 @@ digest_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 }
 
 static GPtrArray *
-digest_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+digest_search_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelDigestFolder *df = (CamelDigestFolder *) folder;
 	GPtrArray *matches;
@@ -337,7 +337,7 @@ digest_search_by_expression (CamelFolder *folder, const char *expression, CamelE
 }
 
 static GPtrArray *
-digest_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+digest_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
 {
 	CamelDigestFolder *df = (CamelDigestFolder *) folder;
 	GPtrArray *matches;

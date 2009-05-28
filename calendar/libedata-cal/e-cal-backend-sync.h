@@ -34,37 +34,37 @@ struct _ECalBackendSyncClass {
 
 	/* Virtual methods */
 	ECalBackendSyncStatus (*is_read_only_sync)  (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only);
-	ECalBackendSyncStatus (*get_cal_address_sync)  (ECalBackendSync *backend, EDataCal *cal, char **address);
-	ECalBackendSyncStatus (*get_alarm_email_address_sync)  (ECalBackendSync *backend, EDataCal *cal, char **address);
-	ECalBackendSyncStatus (*get_ldap_attribute_sync)  (ECalBackendSync *backend, EDataCal *cal, char **attribute);
-	ECalBackendSyncStatus (*get_static_capabilities_sync)  (ECalBackendSync *backend, EDataCal *cal, char **capabilities);
+	ECalBackendSyncStatus (*get_cal_address_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **address);
+	ECalBackendSyncStatus (*get_alarm_email_address_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **address);
+	ECalBackendSyncStatus (*get_ldap_attribute_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **attribute);
+	ECalBackendSyncStatus (*get_static_capabilities_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities);
 
-	ECalBackendSyncStatus (*open_sync)  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists, const char *username, const char *password);
+	ECalBackendSyncStatus (*open_sync)  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists, const gchar *username, const gchar *password);
 	ECalBackendSyncStatus (*remove_sync)  (ECalBackendSync *backend, EDataCal *cal);
 
-	ECalBackendSyncStatus (*create_object_sync)  (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid);
-	ECalBackendSyncStatus (*modify_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj, CalObjModType mod, char **old_object, char **new_object);
-	ECalBackendSyncStatus (*remove_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, CalObjModType mod, char **old_object, char **object);
+	ECalBackendSyncStatus (*create_object_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid);
+	ECalBackendSyncStatus (*modify_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object);
+	ECalBackendSyncStatus (*remove_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object);
 
-	ECalBackendSyncStatus (*discard_alarm_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);
+	ECalBackendSyncStatus (*discard_alarm_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid);
 
-	ECalBackendSyncStatus (*receive_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj);
-	ECalBackendSyncStatus (*send_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
-						     char **modified_calobj);
+	ECalBackendSyncStatus (*receive_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj);
+	ECalBackendSyncStatus (*send_objects_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
+						     gchar **modified_calobj);
 
-	ECalBackendSyncStatus (*get_default_object_sync)  (ECalBackendSync *backend, EDataCal *cal, char **object);
-	ECalBackendSyncStatus (*get_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object);
-	ECalBackendSyncStatus (*get_object_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects);
+	ECalBackendSyncStatus (*get_default_object_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **object);
+	ECalBackendSyncStatus (*get_object_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object);
+	ECalBackendSyncStatus (*get_object_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects);
 
-	ECalBackendSyncStatus (*get_attachment_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **attachments);
+	ECalBackendSyncStatus (*get_attachment_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **attachments);
 
 
-	ECalBackendSyncStatus (*get_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object);
-	ECalBackendSyncStatus (*add_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
-	ECalBackendSyncStatus (*set_default_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tzid);
-	ECalBackendSyncStatus (*set_default_zone_sync) (ECalBackendSync *backend, EDataCal *cal, const char *tz);
+	ECalBackendSyncStatus (*get_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object);
+	ECalBackendSyncStatus (*add_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
+	ECalBackendSyncStatus (*set_default_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid);
+	ECalBackendSyncStatus (*set_default_zone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tz);
 
-	ECalBackendSyncStatus (*get_changes_sync) (ECalBackendSync *backend, EDataCal *cal, const char *change_id, GList **adds, GList **modifies, GList **deletes);
+	ECalBackendSyncStatus (*get_changes_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id, GList **adds, GList **modifies, GList **deletes);
 	ECalBackendSyncStatus (*get_freebusy_sync) (ECalBackendSync *backend, EDataCal *cal, GList *users, time_t start, time_t end, GList **freebusy);
 
 	/* Padding for future expansion */
@@ -85,77 +85,77 @@ ECalBackendSyncStatus e_cal_backend_sync_is_read_only            (ECalBackendSyn
 							       gboolean        *read_only);
 ECalBackendSyncStatus e_cal_backend_sync_get_cal_address         (ECalBackendSync  *backend,
 							       EDataCal             *cal,
-							       char           **address);
+							       gchar           **address);
 ECalBackendSyncStatus e_cal_backend_sync_get_alarm_email_address (ECalBackendSync  *backend,
 							       EDataCal             *cal,
-							       char           **address);
+							       gchar           **address);
 ECalBackendSyncStatus e_cal_backend_sync_get_ldap_attribute      (ECalBackendSync  *backend,
 							       EDataCal             *cal,
-							       char           **attribute);
+							       gchar           **attribute);
 ECalBackendSyncStatus e_cal_backend_sync_get_static_capabilities (ECalBackendSync  *backend,
 							       EDataCal             *cal,
-							       char           **capabiliites);
+							       gchar           **capabiliites);
 ECalBackendSyncStatus e_cal_backend_sync_open                    (ECalBackendSync  *backend,
 								  EDataCal             *cal,
 								  gboolean         only_if_exists,
-								  const char *username,
-								  const char *password);
+								  const gchar *username,
+								  const gchar *password);
 ECalBackendSyncStatus e_cal_backend_sync_remove                  (ECalBackendSync  *backend,
 							       EDataCal             *cal);
 ECalBackendSyncStatus e_cal_backend_sync_create_object           (ECalBackendSync  *backend,
 								  EDataCal             *cal,
-								  char           **calobj,
-								  char           **uid);
+								  gchar           **calobj,
+								  gchar           **uid);
 ECalBackendSyncStatus e_cal_backend_sync_modify_object           (ECalBackendSync  *backend,
 							       EDataCal             *cal,
-							       const char      *calobj,
+							       const gchar      *calobj,
 							       CalObjModType    mod,
-							       char           **old_object,
-							       char           **new_object);
+							       gchar           **old_object,
+							       gchar           **new_object);
 ECalBackendSyncStatus e_cal_backend_sync_remove_object           (ECalBackendSync  *backend,
 							       EDataCal             *cal,
-							       const char      *uid,
-							       const char      *rid,
+							       const gchar      *uid,
+							       const gchar      *rid,
 							       CalObjModType    mod,
-							       char **old_object,
-							       char **object);
+							       gchar **old_object,
+							       gchar **object);
 ECalBackendSyncStatus	e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend,
 								EDataCal *cal,
-								const char *uid,
-								const char *rid,
+								const gchar *uid,
+								const gchar *rid,
 								GSList **attachments);
 
-ECalBackendSyncStatus e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid);
+ECalBackendSyncStatus e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid);
 
 ECalBackendSyncStatus e_cal_backend_sync_receive_objects         (ECalBackendSync  *backend,
 								  EDataCal         *cal,
-								  const char       *calobj);
+								  const gchar       *calobj);
 ECalBackendSyncStatus e_cal_backend_sync_send_objects            (ECalBackendSync  *backend,
 								  EDataCal         *cal,
-								  const char       *calobj,
+								  const gchar       *calobj,
 								  GList **users,
-								  char **modified_calobj);
+								  gchar **modified_calobj);
 ECalBackendSyncStatus e_cal_backend_sync_get_default_object         (ECalBackendSync  *backend,
 								     EDataCal         *cal,
-								     char            **object);
+								     gchar            **object);
 
 ECalBackendSyncStatus e_cal_backend_sync_get_object         (ECalBackendSync  *backend,
 							     EDataCal             *cal,
-							     const char *uid,
-							     const char *rid,
-							     char           **object);
+							     const gchar *uid,
+							     const gchar *rid,
+							     gchar           **object);
 
 ECalBackendSyncStatus e_cal_backend_sync_get_object_list         (ECalBackendSync  *backend,
 								  EDataCal             *cal,
-								  const char      *sexp,
+								  const gchar      *sexp,
 								  GList          **objects);
 
-ECalBackendSyncStatus e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object);
-ECalBackendSyncStatus e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
-ECalBackendSyncStatus e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid);
-ECalBackendSyncStatus e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
+ECalBackendSyncStatus e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object);
+ECalBackendSyncStatus e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
+ECalBackendSyncStatus e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid);
+ECalBackendSyncStatus e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
 
-ECalBackendSyncStatus e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id, GList **adds, GList **modifies, GList **deletes);
+ECalBackendSyncStatus e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id, GList **adds, GList **modifies, GList **deletes);
 ECalBackendSyncStatus e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users, time_t start, time_t end, GList **freebusy);
 
 G_END_DECLS

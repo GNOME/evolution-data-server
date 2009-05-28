@@ -67,7 +67,7 @@ cal_obj_uid_list_free (GList *list)
 	GList *l;
 
 	for (l = list; l; l = l->next) {
-		char *uid;
+		gchar *uid;
 
 		uid = l->data;
 
@@ -132,10 +132,10 @@ e_cal_util_new_component (icalcomponent_kind kind)
 	return comp;
 }
 
-static char *
-read_line (const char *string)
+static gchar *
+read_line (const gchar *string)
 {
-	char *line;
+	gchar *line;
 	GString *line_str = NULL;
 
 	for (; *string; string++) {
@@ -166,9 +166,9 @@ read_line (const char *string)
  * valid iCalendar string.
  */
 icalcomponent *
-e_cal_util_parse_ics_string (const char *string)
+e_cal_util_parse_ics_string (const gchar *string)
 {
-	char *s;
+	gchar *s;
 	icalcomponent *icalcomp = NULL;
 
 	g_return_val_if_fail (string != NULL, NULL);
@@ -178,7 +178,7 @@ e_cal_util_parse_ics_string (const char *string)
 		GString *comp_str = NULL;
 
 		while (*s) {
-			char *line = read_line (s);
+			gchar *line = read_line (s);
 			if (line) {
 				if (!comp_str)
 					comp_str = g_string_new (line);
@@ -212,8 +212,8 @@ e_cal_util_parse_ics_string (const char *string)
 	return icalcomp;
 }
 
-static char *
-get_line_fn (char *buf, size_t size, void *file)
+static gchar *
+get_line_fn (gchar *buf, size_t size, gpointer file)
 {
 	return fgets (buf, size, file);
 }
@@ -229,7 +229,7 @@ get_line_fn (char *buf, size_t size, void *file)
  * contain a valid iCalendar object.
  */
 icalcomponent *
-e_cal_util_parse_ics_file (const char *filename)
+e_cal_util_parse_ics_file (const gchar *filename)
 {
 	icalparser *parser;
 	icalcomponent *icalcomp;
@@ -265,7 +265,7 @@ compute_alarm_range (ECalComponent *comp, GList *alarm_uids, time_t start, time_
 	repeat_time = 0;
 
 	for (l = alarm_uids; l; l = l->next) {
-		const char *auid;
+		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmTrigger trigger;
 		struct icaldurationtype *dur;
@@ -291,7 +291,7 @@ compute_alarm_range (ECalComponent *comp, GList *alarm_uids, time_t start, time_
 			dur_time = icaldurationtype_as_int (*dur);
 
 			if (repeat.repetitions != 0) {
-				int rdur;
+				gint rdur;
 
 				rdur = repeat.repetitions * icaldurationtype_as_int (repeat.duration);
 				repeat_time = MAX (repeat_time, rdur);
@@ -328,11 +328,11 @@ struct alarm_occurrence_data {
 
 	/* This is what we compute */
 	GSList *triggers;
-	int n_triggers;
+	gint n_triggers;
 };
 
 static void
-add_trigger (struct alarm_occurrence_data *aod, const char *auid, time_t trigger,
+add_trigger (struct alarm_occurrence_data *aod, const gchar *auid, time_t trigger,
 	     time_t occur_start, time_t occur_end)
 {
 	ECalComponentAlarmInstance *instance;
@@ -359,7 +359,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 	aod = data;
 
 	for (l = aod->alarm_uids; l; l = l->next) {
-		const char *auid;
+		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmAction action;
 		ECalComponentAlarmTrigger trigger;
@@ -367,7 +367,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 		struct icaldurationtype *dur;
 		time_t dur_time;
 		time_t occur_time, trigger_time;
-		int i;
+		gint i;
 
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
@@ -408,7 +408,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 		/* Add repeating alarms */
 
 		if (repeat.repetitions != 0) {
-			int i;
+			gint i;
 			time_t repeat_time;
 
 			repeat_time = icaldurationtype_as_int (repeat.duration);
@@ -446,7 +446,7 @@ generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *a
 	e_cal_component_get_dtend (comp, &dt_end);
 
 	for (l = aod->alarm_uids; l; l = l->next) {
-		const char *auid;
+		const gchar *auid;
 		ECalComponentAlarm *alarm;
 		ECalComponentAlarmAction action;
 		ECalComponentAlarmRepeat repeat;
@@ -454,7 +454,7 @@ generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *a
 		time_t abs_time;
 		time_t occur_start, occur_end;
 		icaltimezone *zone;
-		int i;
+		gint i;
 
 		auid = l->data;
 		alarm = e_cal_component_get_alarm (comp, auid);
@@ -505,7 +505,7 @@ generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *a
 		/* Add repeating alarms */
 
 		if (repeat.repetitions != 0) {
-			int i;
+			gint i;
 			time_t repeat_time;
 
 			repeat_time = icaldurationtype_as_int (repeat.duration);
@@ -633,7 +633,7 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  *
  * Return value: the number of elements it added to the list.
  */
-int
+gint
 e_cal_util_generate_alarms_for_list (GList *comps,
 				     time_t start,
 				     time_t end,
@@ -644,7 +644,7 @@ e_cal_util_generate_alarms_for_list (GList *comps,
 				     icaltimezone *default_timezone)
 {
 	GList *l;
-	int n;
+	gint n;
 
 	n = 0;
 
@@ -675,10 +675,10 @@ e_cal_util_generate_alarms_for_list (GList *comps,
  * Return value: a string representing the PRIORITY value. This value is a
  * constant, so it should never be freed.
  */
-char *
-e_cal_util_priority_to_string (int priority)
+gchar *
+e_cal_util_priority_to_string (gint priority)
 {
-	char *retval;
+	gchar *retval;
 
 	if (priority <= 0)
 		retval = "";
@@ -703,10 +703,10 @@ e_cal_util_priority_to_string (int priority)
  *
  * Return value: the priority (0-9) or -1 if the priority string is not valid.
 */
-int
-e_cal_util_priority_from_string (const char *string)
+gint
+e_cal_util_priority_from_string (const gchar *string)
 {
-	int priority;
+	gint priority;
 
 	/* An empty string is the same as 'None'. */
 	if (!string || !string[0] || !e_util_utf8_strcasecmp (string, _("Undefined")))
@@ -730,10 +730,10 @@ typedef struct {
 } ForeachTzidData;
 
 static void
-add_timezone_cb (icalparameter *param, void *data)
+add_timezone_cb (icalparameter *param, gpointer data)
 {
 	icaltimezone *tz;
-	const char *tzid;
+	const gchar *tzid;
 	icalcomponent *vtz_comp;
 	ForeachTzidData *f_data = (ForeachTzidData *) data;
 
@@ -978,7 +978,7 @@ struct instance_data {
 };
 
 static void
-check_instance (icalcomponent *comp, struct icaltime_span *span, void *data)
+check_instance (icalcomponent *comp, struct icaltime_span *span, gpointer data)
 {
 	struct instance_data *instance = data;
 
@@ -1032,7 +1032,7 @@ e_cal_util_construct_instance (icalcomponent *icalcomp,
 static inline gboolean
 time_matches_rid (struct icaltimetype itt, struct icaltimetype rid, CalObjModType mod)
 {
-	int compare;
+	gint compare;
 
 	compare = icaltime_compare (itt, rid);
 	if (compare == 0)
@@ -1147,7 +1147,7 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
  * Returns system timezone location string, NULL on an error.
  * Returned pointer should be freed with g_free().
  **/
-char *
+gchar *
 e_cal_util_get_system_timezone_location (void)
 {
 	return e_cal_system_timezone_get_location ();
@@ -1162,7 +1162,7 @@ e_cal_util_get_system_timezone_location (void)
 icaltimezone *
 e_cal_util_get_system_timezone (void)
 {
-	char *location;
+	gchar *location;
 	icaltimezone *zone;
 
 	location = e_cal_system_timezone_get_location ();

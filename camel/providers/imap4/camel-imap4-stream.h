@@ -47,7 +47,7 @@ enum {
 	CAMEL_IMAP4_TOKEN_NUMBER        = -3,
 	CAMEL_IMAP4_TOKEN_QSTRING       = -2,
 	CAMEL_IMAP4_TOKEN_LITERAL       = -1,
-	/* CAMEL_IMAP4_TOKEN_CHAR would just be the char we got */
+	/* CAMEL_IMAP4_TOKEN_CHAR would just be the gchar we got */
 	CAMEL_IMAP4_TOKEN_EOLN          = '\n',
 	CAMEL_IMAP4_TOKEN_LPAREN        = '(',
 	CAMEL_IMAP4_TOKEN_RPAREN        = ')',
@@ -58,11 +58,11 @@ enum {
 };
 
 typedef struct _camel_imap4_token_t {
-	int token;
+	gint token;
 	union {
-		char *atom;
-		char *flag;
-		char *qstring;
+		gchar *atom;
+		gchar *flag;
+		gchar *qstring;
 		size_t literal;
 		guint32 number;
 	} v;
@@ -86,15 +86,15 @@ struct _CamelIMAP4Stream {
 	size_t literal;
 
 	/* i/o buffers */
-	unsigned char realbuf[IMAP4_READ_PRELEN + IMAP4_READ_BUFLEN + 1];
-	unsigned char *inbuf;
-	unsigned char *inptr;
-	unsigned char *inend;
+	guchar realbuf[IMAP4_READ_PRELEN + IMAP4_READ_BUFLEN + 1];
+	guchar *inbuf;
+	guchar *inptr;
+	guchar *inend;
 
 	/* token buffers */
-	unsigned char *tokenbuf;
-	unsigned char *tokenptr;
-	unsigned int tokenleft;
+	guchar *tokenbuf;
+	guchar *tokenptr;
+	guint tokenleft;
 
 	camel_imap4_token_t unget;
 };
@@ -111,11 +111,11 @@ CamelType camel_imap4_stream_get_type (void);
 
 CamelStream *camel_imap4_stream_new (CamelStream *stream);
 
-int camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token);
-int camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token);
+gint camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token);
+gint camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token);
 
-int camel_imap4_stream_line (CamelIMAP4Stream *stream, unsigned char **line, size_t *len);
-int camel_imap4_stream_literal (CamelIMAP4Stream *stream, unsigned char **literal, size_t *len);
+gint camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, size_t *len);
+gint camel_imap4_stream_literal (CamelIMAP4Stream *stream, guchar **literal, size_t *len);
 
 G_END_DECLS
 

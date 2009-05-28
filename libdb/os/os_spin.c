@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,7 +24,7 @@ static const char revid[] = "$Id$";
 #include "db_int.h"
 
 #if defined(HAVE_PSTAT_GETDYNAMIC)
-static int __os_pstat_getdynamic __P((void));
+static gint __os_pstat_getdynamic __P((void));
 
 /*
  * __os_pstat_getdynamic --
@@ -41,7 +41,7 @@ __os_pstat_getdynamic()
 #endif
 
 #if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
-static int __os_sysconf __P((void));
+static gint __os_sysconf __P((void));
 
 /*
  * __os_sysconf --
@@ -60,9 +60,9 @@ __os_sysconf()
  * __os_spin --
  *	Return the number of default spins before blocking.
  *
- * PUBLIC: int __os_spin __P((DB_ENV *));
+ * PUBLIC: gint __os_spin __P((DB_ENV *));
  */
-int
+gint
 __os_spin(dbenv)
 	DB_ENV *dbenv;
 {

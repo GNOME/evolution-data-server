@@ -73,8 +73,8 @@ camel_mime_filter_progress_init (CamelObject *o)
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-	       char **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+	       gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterProgress *progress = (CamelMimeFilterProgress *) filter;
 	double percent;
@@ -94,8 +94,8 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-		 char **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+		 gchar **out, size_t *outlen, size_t *outprespace)
 {
 	filter_filter (filter, in, len, prespace, out, outlen, outprespace);
 }

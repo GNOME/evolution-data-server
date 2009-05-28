@@ -47,15 +47,15 @@ struct _CamelIMAPPStream {
 	CamelStream *source;
 
 	/*int state;*/
-	unsigned char *buf, *ptr, *end;
-	unsigned int literal;
+	guchar *buf, *ptr, *end;
+	guint literal;
 
-	unsigned int unget;
+	guint unget;
 	camel_imapp_token_t unget_tok;
-	unsigned char *unget_token;
-	unsigned int unget_len;
+	guchar *unget_token;
+	guint unget_len;
 
-	unsigned char *tokenbuf, *tokenptr, *tokenend;
+	guchar *tokenbuf, *tokenptr, *tokenend;
 };
 
 struct _CamelIMAPPStreamClass {
@@ -66,25 +66,25 @@ CamelType	 camel_imapp_stream_get_type	(void);
 
 CamelStream     *camel_imapp_stream_new		(CamelStream *source);
 
-camel_imapp_token_t camel_imapp_stream_token	(CamelIMAPPStream *is, unsigned char **start, unsigned int *len); /* throws IO,PARSE exception */
-void		 camel_imapp_stream_ungettoken	(CamelIMAPPStream *is, camel_imapp_token_t tok, unsigned char *token, unsigned int len);
+camel_imapp_token_t camel_imapp_stream_token	(CamelIMAPPStream *is, guchar **start, guint *len); /* throws IO,PARSE exception */
+void		 camel_imapp_stream_ungettoken	(CamelIMAPPStream *is, camel_imapp_token_t tok, guchar *token, guint len);
 
-void		 camel_imapp_stream_set_literal	(CamelIMAPPStream *is, unsigned int literal);
-int		 camel_imapp_stream_gets		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
-int		 camel_imapp_stream_getl		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
+void		 camel_imapp_stream_set_literal	(CamelIMAPPStream *is, guint literal);
+int		 camel_imapp_stream_gets		(CamelIMAPPStream *is, guchar **start, guint *len);
+int		 camel_imapp_stream_getl		(CamelIMAPPStream *is, guchar **start, guint *len);
 
 /* all throw IO,PARSE exceptions */
 
 /* gets an atom, upper-cases */
-int		 camel_imapp_stream_atom		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
+int		 camel_imapp_stream_atom		(CamelIMAPPStream *is, guchar **start, guint *len);
 /* gets an atom or string */
-int		 camel_imapp_stream_astring	(CamelIMAPPStream *is, unsigned char **start);
+int		 camel_imapp_stream_astring	(CamelIMAPPStream *is, guchar **start);
 /* gets a NIL or a string, start==NULL if NIL */
-int		 camel_imapp_stream_nstring	(CamelIMAPPStream *is, unsigned char **start);
+int		 camel_imapp_stream_nstring	(CamelIMAPPStream *is, guchar **start);
 /* gets a NIL or string into a stream, stream==NULL if NIL */
 int		 camel_imapp_stream_nstring_stream(CamelIMAPPStream *is, CamelStream **stream);
 /* gets 'text' */
-int		 camel_imapp_stream_text		(CamelIMAPPStream *is, unsigned char **text);
+int		 camel_imapp_stream_text		(CamelIMAPPStream *is, guchar **text);
 
 /* gets a 'number' */
 guint32		 camel_imapp_stream_number(CamelIMAPPStream *is);

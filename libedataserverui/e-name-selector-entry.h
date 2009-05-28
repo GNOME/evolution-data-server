@@ -60,9 +60,9 @@ typedef struct _ENameSelectorEntryClass ENameSelectorEntryClass;
 
 struct _ENameSelectorEntryClass {
 	GtkEntryClass parent_class;
-	void (*updated) (ENameSelectorEntry *entry, char *email);
-	void *reserved1;
-	void *reserved2;
+	void (*updated) (ENameSelectorEntry *entry, gchar *email);
+	gpointer reserved1;
+	gpointer reserved2;
 };
 
 struct _ENameSelectorEntry {
@@ -104,7 +104,7 @@ void                e_name_selector_entry_set_contact_editor_func      (ENameSel
 void                e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry,
 									gpointer func);
 
-gchar *ens_util_populate_user_query_fields (GSList *user_query_fields, const char *cue_str, const char *encoded_cue_str);
+gchar *ens_util_populate_user_query_fields (GSList *user_query_fields, const gchar *cue_str, const gchar *encoded_cue_str);
 
 G_END_DECLS
 

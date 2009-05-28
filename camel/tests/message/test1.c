@@ -31,8 +31,8 @@
 #include <camel/camel-stream-mem.h>
 
 struct _text {
-	char *text;
-	int len;
+	gchar *text;
+	gint len;
 };
 
 #define MAX_TEXTS (14)
@@ -41,8 +41,8 @@ struct _text texts[MAX_TEXTS];
 static void
 setup(void)
 {
-	int i, j;
-	char *p;
+	gint i, j;
+	gchar *p;
 
 	/* setup various edge and other general cases */
 	texts[0].text = "";
@@ -97,19 +97,19 @@ setup(void)
 
 static void cleanup(void)
 {
-	int i;
+	gint i;
 
 	for (i=6;i<14;i++) {
 		g_free(texts[i].text);
 	}
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelMimeMessage *msg, *msg2;
-	int i, j;
-	char *text;
-	int len;
+	gint i, j;
+	gchar *text;
+	gint len;
 
 	camel_test_init(argc, argv);
 

@@ -47,7 +47,7 @@ struct _CamelDataWrapper {
 	CamelContentType *mime_type;
 	CamelStream *stream;
 
-	unsigned int offline:1;
+	guint offline:1;
 };
 
 typedef struct {
@@ -55,8 +55,8 @@ typedef struct {
 
 	/* Virtual methods */
 	void                (*set_mime_type)          (CamelDataWrapper *data_wrapper,
-						       const char *mime_type);
-	char *              (*get_mime_type)          (CamelDataWrapper *data_wrapper);
+						       const gchar *mime_type);
+	gchar *              (*get_mime_type)          (CamelDataWrapper *data_wrapper);
 	CamelContentType *  (*get_mime_type_field)    (CamelDataWrapper *data_wrapper);
 	void                (*set_mime_type_field)    (CamelDataWrapper *data_wrapper,
 						       CamelContentType *mime_type_field);
@@ -67,7 +67,7 @@ typedef struct {
 	ssize_t             (*decode_to_stream)       (CamelDataWrapper *data_wrapper,
 						       CamelStream *stream);
 
-	int                 (*construct_from_stream)  (CamelDataWrapper *data_wrapper,
+	gint                 (*construct_from_stream)  (CamelDataWrapper *data_wrapper,
 						       CamelStream *);
 
 	gboolean            (*is_offline)             (CamelDataWrapper *data_wrapper);
@@ -84,13 +84,13 @@ ssize_t           camel_data_wrapper_decode_to_stream       (CamelDataWrapper *d
 							     CamelStream *stream);
 
 void              camel_data_wrapper_set_mime_type          (CamelDataWrapper *data_wrapper,
-							     const char *mime_type);
-char             *camel_data_wrapper_get_mime_type          (CamelDataWrapper *data_wrapper);
+							     const gchar *mime_type);
+gchar             *camel_data_wrapper_get_mime_type          (CamelDataWrapper *data_wrapper);
 CamelContentType *camel_data_wrapper_get_mime_type_field    (CamelDataWrapper *data_wrapper);
 void              camel_data_wrapper_set_mime_type_field    (CamelDataWrapper *data_wrapper,
 							     CamelContentType *mime_type);
 
-int               camel_data_wrapper_construct_from_stream  (CamelDataWrapper *data_wrapper,
+gint               camel_data_wrapper_construct_from_stream  (CamelDataWrapper *data_wrapper,
 							     CamelStream *stream);
 
 gboolean          camel_data_wrapper_is_offline             (CamelDataWrapper *data_wrapper);

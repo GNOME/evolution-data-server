@@ -10,7 +10,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,35 +30,35 @@ static const char revid[] = "$Id$";
 #include "dbinc/qam.h"
 #include "dbinc/txn.h"
 
-static int  __db_guesspgsize __P((DB_ENV *, DB_FH *));
-static int  __db_is_valid_magicno __P((u_int32_t, DBTYPE *));
-static int  __db_is_valid_pagetype __P((u_int32_t));
-static int  __db_meta2pgset
+static gint  __db_guesspgsize __P((DB_ENV *, DB_FH *));
+static gint  __db_is_valid_magicno __P((u_int32_t, DBTYPE *));
+static gint  __db_is_valid_pagetype __P((u_int32_t));
+static gint  __db_meta2pgset
 		__P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t, DB *));
-static int __db_salvage __P((DB *, VRFY_DBINFO *, db_pgno_t,
-		PAGE *, void *, int (*)(void *, const void *), u_int32_t));
-static int __db_salvage_subdbpg __P((DB *, VRFY_DBINFO *,
-		PAGE *, void *, int (*)(void *, const void *), u_int32_t));
-static int  __db_salvage_subdbs
-		__P((DB *, VRFY_DBINFO *, void *,
-		int(*)(void *, const void *), u_int32_t, int *));
-static int  __db_salvage_unknowns
-		__P((DB *, VRFY_DBINFO *, void *,
-		int (*)(void *, const void *), u_int32_t));
-static int  __db_vrfy_common
+static gint __db_salvage __P((DB *, VRFY_DBINFO *, db_pgno_t,
+		PAGE *, gpointer , gint (*)(gpointer , gconstpointer ), u_int32_t));
+static gint __db_salvage_subdbpg __P((DB *, VRFY_DBINFO *,
+		PAGE *, gpointer , gint (*)(gpointer , gconstpointer ), u_int32_t));
+static gint  __db_salvage_subdbs
+		__P((DB *, VRFY_DBINFO *, gpointer ,
+		int(*)(gpointer , gconstpointer ), u_int32_t, gint *));
+static gint  __db_salvage_unknowns
+		__P((DB *, VRFY_DBINFO *, gpointer ,
+		gint (*)(gpointer , gconstpointer ), u_int32_t));
+static gint  __db_vrfy_common
 		__P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t, u_int32_t));
-static int  __db_vrfy_freelist __P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t));
-static int  __db_vrfy_invalid
+static gint  __db_vrfy_freelist __P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t));
+static gint  __db_vrfy_invalid
 		__P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t, u_int32_t));
-static int  __db_vrfy_orderchkonly __P((DB *,
-		VRFY_DBINFO *, const char *, const char *, u_int32_t));
-static int  __db_vrfy_pagezero __P((DB *, VRFY_DBINFO *, DB_FH *, u_int32_t));
-static int  __db_vrfy_subdbs
-		__P((DB *, VRFY_DBINFO *, const char *, u_int32_t));
-static int  __db_vrfy_structure
-		__P((DB *, VRFY_DBINFO *, const char *, db_pgno_t, u_int32_t));
-static int  __db_vrfy_walkpages
-		__P((DB *, VRFY_DBINFO *, void *, int (*)(void *, const void *),
+static gint  __db_vrfy_orderchkonly __P((DB *,
+		VRFY_DBINFO *, const gchar *, const gchar *, u_int32_t));
+static gint  __db_vrfy_pagezero __P((DB *, VRFY_DBINFO *, DB_FH *, u_int32_t));
+static gint  __db_vrfy_subdbs
+		__P((DB *, VRFY_DBINFO *, const gchar *, u_int32_t));
+static gint  __db_vrfy_structure
+		__P((DB *, VRFY_DBINFO *, const gchar *, db_pgno_t, u_int32_t));
+static gint  __db_vrfy_walkpages
+		__P((DB *, VRFY_DBINFO *, gpointer , gint (*)(gpointer , gconstpointer ),
 		u_int32_t));
 
 /*
@@ -86,13 +86,13 @@ static int  __db_vrfy_walkpages
  *	which lets us pass appropriate equivalents to FILE * in from the
  *	non-C APIs.
  *
- * PUBLIC: int __db_verify
- * PUBLIC:     __P((DB *, const char *, const char *, FILE *, u_int32_t));
+ * PUBLIC: gint __db_verify
+ * PUBLIC:     __P((DB *, const gchar *, const gchar *, FILE *, u_int32_t));
  */
-int
+gint
 __db_verify(dbp, file, database, outfile, flags)
 	DB *dbp;
-	const char *file, *database;
+	const gchar *file, *database;
 	FILE *outfile;
 	u_int32_t flags;
 {
@@ -105,17 +105,17 @@ __db_verify(dbp, file, database, outfile, flags)
  * __db_verify_callback --
  *	Callback function for using pr_* functions from C.
  *
- * PUBLIC: int  __db_verify_callback __P((void *, const void *));
+ * PUBLIC: gint  __db_verify_callback __P((gpointer , gconstpointer ));
  */
-int
+gint
 __db_verify_callback(handle, str_arg)
-	void *handle;
-	const void *str_arg;
+	gpointer handle;
+	gconstpointer str_arg;
 {
-	char *str;
+	gchar *str;
 	FILE *f;
 
-	str = (char *)str_arg;
+	str = (gchar *)str_arg;
 	f = (FILE *)handle;
 
 	if (fprintf(f, "%s", str) != (int)strlen(str))
@@ -128,23 +128,23 @@ __db_verify_callback(handle, str_arg)
  * __db_verify_internal --
  *	Inner meat of __db_verify.
  *
- * PUBLIC: int __db_verify_internal __P((DB *, const char *,
- * PUBLIC:     const char *, void *, int (*)(void *, const void *), u_int32_t));
+ * PUBLIC: gint __db_verify_internal __P((DB *, const gchar *,
+ * PUBLIC:     const gchar *, gpointer , gint (*)(gpointer , gconstpointer ), u_int32_t));
  */
-int
+gint
 __db_verify_internal(dbp_orig, name, subdb, handle, callback, flags)
 	DB *dbp_orig;
-	const char *name, *subdb;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	const gchar *name, *subdb;
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	DB *dbp;
 	DB_ENV *dbenv;
 	DB_FH fh, *fhp;
 	VRFY_DBINFO *vdp;
-	int has, ret, isbad;
-	char *real_name;
+	gint has, ret, isbad;
+	gchar *real_name;
 
 	dbenv = dbp_orig->dbenv;
 	vdp = NULL;
@@ -429,7 +429,7 @@ __db_vrfy_pagezero(dbp, vdp, fhp, flags)
 	VRFY_PAGEINFO *pip;
 	db_pgno_t freelist;
 	size_t nr;
-	int isbad, ret, swapped;
+	gint isbad, ret, swapped;
 	u_int8_t mbuf[DBMETASIZE];
 
 	isbad = ret = swapped = 0;
@@ -603,15 +603,15 @@ static int
 __db_vrfy_walkpages(dbp, vdp, handle, callback, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t i;
-	int ret, t_ret, isbad;
+	gint ret, t_ret, isbad;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -782,7 +782,7 @@ static int
 __db_vrfy_structure(dbp, vdp, dbname, meta_pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
-	const char *dbname;
+	const gchar *dbname;
 	db_pgno_t meta_pgno;
 	u_int32_t flags;
 {
@@ -790,7 +790,7 @@ __db_vrfy_structure(dbp, vdp, dbname, meta_pgno, flags)
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
 	db_pgno_t i;
-	int ret, isbad, hassubs, p;
+	gint ret, isbad, hassubs, p;
 
 	isbad = 0;
 	pip = NULL;
@@ -993,7 +993,7 @@ __db_vrfy_common(dbp, vdp, h, pgno, flags)
 {
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
-	int ret, t_ret;
+	gint ret, t_ret;
 	u_int8_t *p;
 
 	dbenv = dbp->dbenv;
@@ -1067,7 +1067,7 @@ __db_vrfy_invalid(dbp, vdp, h, pgno, flags)
 {
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbenv = dbp->dbenv;
 
@@ -1097,10 +1097,10 @@ __db_vrfy_invalid(dbp, vdp, h, pgno, flags)
  *	all-page-type-common elements of pip have been verified and filled
  *	in.
  *
- * PUBLIC: int __db_vrfy_datapage
+ * PUBLIC: gint __db_vrfy_datapage
  * PUBLIC:     __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t, u_int32_t));
  */
-int
+gint
 __db_vrfy_datapage(dbp, vdp, h, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -1110,7 +1110,7 @@ __db_vrfy_datapage(dbp, vdp, h, pgno, flags)
 {
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
-	int isbad, ret, t_ret;
+	gint isbad, ret, t_ret;
 
 	dbenv = dbp->dbenv;
 
@@ -1212,10 +1212,10 @@ __db_vrfy_datapage(dbp, vdp, h, pgno, flags)
  *	Verify the access-method common parts of a meta page, using
  *	normal mpool routines.
  *
- * PUBLIC: int __db_vrfy_meta
+ * PUBLIC: gint __db_vrfy_meta
  * PUBLIC:     __P((DB *, VRFY_DBINFO *, DBMETA *, db_pgno_t, u_int32_t));
  */
-int
+gint
 __db_vrfy_meta(dbp, vdp, meta, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -1226,7 +1226,7 @@ __db_vrfy_meta(dbp, vdp, meta, pgno, flags)
 	DB_ENV *dbenv;
 	DBTYPE dbtype, magtype;
 	VRFY_PAGEINFO *pip;
-	int isbad, ret, t_ret;
+	gint isbad, ret, t_ret;
 
 	isbad = 0;
 	dbenv = dbp->dbenv;
@@ -1338,7 +1338,7 @@ __db_vrfy_freelist(dbp, vdp, meta, flags)
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
 	db_pgno_t cur_pgno, next_pgno;
-	int p, ret, t_ret;
+	gint p, ret, t_ret;
 
 	pgset = vdp->pgset;
 	DB_ASSERT(pgset != NULL);
@@ -1398,7 +1398,7 @@ static int
 __db_vrfy_subdbs(dbp, vdp, dbname, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
-	const char *dbname;
+	const gchar *dbname;
 	u_int32_t flags;
 {
 	DB *mdbp;
@@ -1407,7 +1407,7 @@ __db_vrfy_subdbs(dbp, vdp, dbname, flags)
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
 	db_pgno_t meta_pgno;
-	int ret, t_ret, isbad;
+	gint ret, t_ret, isbad;
 	u_int8_t type;
 
 	isbad = 0;
@@ -1503,7 +1503,7 @@ __db_vrfy_struct_feedback(dbp, vdp)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 {
-	int progress;
+	gint progress;
 
 	if (dbp->db_feedback == NULL)
 		return;
@@ -1524,7 +1524,7 @@ static int
 __db_vrfy_orderchkonly(dbp, vdp, name, subdb, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	u_int32_t flags;
 {
 	BTMETA *btmeta;
@@ -1538,7 +1538,7 @@ __db_vrfy_orderchkonly(dbp, vdp, name, subdb, flags)
 	PAGE *h, *currpg;
 	db_pgno_t meta_pgno, p, pgno;
 	u_int32_t bucket;
-	int t_ret, ret;
+	gint t_ret, ret;
 
 	pgset = NULL;
 	pgsc = NULL;
@@ -1555,7 +1555,7 @@ __db_vrfy_orderchkonly(dbp, vdp, name, subdb, flags)
 		goto err;
 
 	memset(&key, 0, sizeof(key));
-	key.data = (void *)subdb;
+	key.data = (gpointer)subdb;
 	key.size = (u_int32_t)strlen(subdb);
 	memset(&data, 0, sizeof(data));
 	if ((ret = mdbp->get(mdbp, NULL, &key, &data, 0)) != 0)
@@ -1692,8 +1692,8 @@ __db_salvage(dbp, vdp, pgno, h, handle, callback, flags)
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
 	PAGE *h;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	DB_ASSERT(LF_ISSET(DB_SALVAGE));
@@ -1752,8 +1752,8 @@ static int
 __db_salvage_unknowns(dbp, vdp, handle, callback, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	DBT unkdbt, key, *dbt;
@@ -1762,8 +1762,8 @@ __db_salvage_unknowns(dbp, vdp, handle, callback, flags)
 	PAGE *h;
 	db_pgno_t pgno;
 	u_int32_t pgtype;
-	int ret, err_ret;
-	void *ovflbuf;
+	gint ret, err_ret;
+	gpointer ovflbuf;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -1854,16 +1854,16 @@ __db_salvage_unknowns(dbp, vdp, handle, callback, flags)
  *	since verification can't continue from there;  returns DB_VERIFY_BAD
  *	if anything else is wrong.
  *
- * PUBLIC: int __db_vrfy_inpitem __P((DB *, PAGE *,
+ * PUBLIC: gint __db_vrfy_inpitem __P((DB *, PAGE *,
  * PUBLIC:     db_pgno_t, u_int32_t, int, u_int32_t, u_int32_t *, u_int32_t *));
  */
-int
+gint
 __db_vrfy_inpitem(dbp, h, pgno, i, is_btree, flags, himarkp, offsetp)
 	DB *dbp;
 	PAGE *h;
 	db_pgno_t pgno;
 	u_int32_t i;
-	int is_btree;
+	gint is_btree;
 	u_int32_t flags, *himarkp, *offsetp;
 {
 	BKEYDATA *bk;
@@ -1950,10 +1950,10 @@ __db_vrfy_inpitem(dbp, h, pgno, i, is_btree, flags, himarkp, offsetp)
  *	verify that the dup tree type is correct--i.e., it's a recno
  *	if DUPSORT is not set and a btree if it is.
  *
- * PUBLIC: int __db_vrfy_duptype
+ * PUBLIC: gint __db_vrfy_duptype
  * PUBLIC:     __P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t));
  */
-int
+gint
 __db_vrfy_duptype(dbp, vdp, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -1962,7 +1962,7 @@ __db_vrfy_duptype(dbp, vdp, pgno, flags)
 {
 	DB_ENV *dbenv;
 	VRFY_PAGEINFO *pip;
-	int ret, isbad;
+	gint ret, isbad;
 
 	dbenv = dbp->dbenv;
 	isbad = 0;
@@ -2030,22 +2030,22 @@ __db_vrfy_duptype(dbp, vdp, pgno, flags)
  *	done, so each page gets printed exactly once and we don't get caught
  *	in any cycles.
  *
- * PUBLIC: int __db_salvage_duptree __P((DB *, VRFY_DBINFO *, db_pgno_t,
- * PUBLIC:     DBT *, void *, int (*)(void *, const void *), u_int32_t));
+ * PUBLIC: gint __db_salvage_duptree __P((DB *, VRFY_DBINFO *, db_pgno_t,
+ * PUBLIC:     DBT *, gpointer , gint (*)(gpointer , gconstpointer ), u_int32_t));
  */
-int
+gint
 __db_salvage_duptree(dbp, vdp, pgno, key, handle, callback, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
 	DBT *key;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	mpf = dbp->mpf;
 
@@ -2098,10 +2098,10 @@ static int
 __db_salvage_subdbs(dbp, vdp, handle, callback, flags, hassubsp)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
-	int *hassubsp;
+	gint *hassubsp;
 {
 	BTMETA *btmeta;
 	DB *pgset;
@@ -2109,7 +2109,7 @@ __db_salvage_subdbs(dbp, vdp, handle, callback, flags, hassubsp)
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t p, meta_pgno;
-	int ret, err_ret;
+	gint ret, err_ret;
 
 	pgset = NULL;
 	pgsc = NULL;
@@ -2207,8 +2207,8 @@ __db_salvage_subdbpg(dbp, vdp, master, handle, callback, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	PAGE *master;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	BKEYDATA *bkkey, *bkdata;
@@ -2221,8 +2221,8 @@ __db_salvage_subdbpg(dbp, vdp, master, handle, callback, flags)
 	PAGE *subpg;
 	db_indx_t i;
 	db_pgno_t meta_pgno, p;
-	int ret, err_ret, t_ret;
-	char *subdbname;
+	gint ret, err_ret, t_ret;
+	gchar *subdbname;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -2248,7 +2248,7 @@ __db_salvage_subdbpg(dbp, vdp, master, handle, callback, flags)
 			 */
 			bo = (BOVERFLOW *)bkkey;
 			if ((ret = __db_safe_goff(dbp, vdp, bo->pgno, &key,
-			    (void **)&subdbname, flags)) != 0) {
+			    (gpointer *)&subdbname, flags)) != 0) {
 				err_ret = DB_VERIFY_BAD;
 				continue;
 			}
@@ -2390,7 +2390,7 @@ __db_meta2pgset(dbp, vdp, pgno, flags, pgset)
 {
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	mpf = dbp->mpf;
 

@@ -37,13 +37,13 @@ E2kGlobalCatalog *gc;
 E2kOperation op;
 
 static void
-do_lookup (E2kGlobalCatalog *gc, const char *user)
+do_lookup (E2kGlobalCatalog *gc, const gchar *user)
 {
 	E2kGlobalCatalogStatus status;
 	E2kGlobalCatalogEntry *entry;
 	E2kGlobalCatalogLookupType type;
 	guint32 flags;
-	int i, pwd_exp_days;
+	gint i, pwd_exp_days;
 	double maxAge;
 
 	if (*user == '/')
@@ -99,12 +99,12 @@ do_lookup (E2kGlobalCatalog *gc, const char *user)
 	if (entry->delegates) {
 		printf ("  delegates:\n");
 		for (i = 0; i < entry->delegates->len; i++)
-			printf ("    %s\n", (char *)entry->delegates->pdata[i]);
+			printf ("    %s\n", (gchar *)entry->delegates->pdata[i]);
 	}
 	if (entry->delegators) {
 		printf ("  delegators:\n");
 		for (i = 0; i < entry->delegators->len; i++)
-			printf ("    %s\n", (char *)entry->delegators->pdata[i]);
+			printf ("    %s\n", (gchar *)entry->delegators->pdata[i]);
 	}
 
 	if (entry->quota_warn || entry->quota_nosend || entry->quota_norecv )
@@ -130,13 +130,13 @@ do_lookup (E2kGlobalCatalog *gc, const char *user)
 	test_quit ();
 }
 
-static char *
-lookup_dn (E2kGlobalCatalog *gc, const char *id)
+static gchar *
+lookup_dn (E2kGlobalCatalog *gc, const gchar *id)
 {
 	E2kGlobalCatalogEntry *entry;
 	E2kGlobalCatalogLookupType type;
 	E2kGlobalCatalogStatus status;
-	char *dn;
+	gchar *dn;
 
 	if (id[0] == '/')
 		type = E2K_GLOBAL_CATALOG_LOOKUP_BY_LEGACY_EXCHANGE_DN;
@@ -169,10 +169,10 @@ lookup_dn (E2kGlobalCatalog *gc, const char *id)
 }
 
 static void
-do_modify (E2kGlobalCatalog *gc, const char *user,
-	   int deleg_op, const char *delegate)
+do_modify (E2kGlobalCatalog *gc, const gchar *user,
+	   gint deleg_op, const gchar *delegate)
 {
-	char *self_dn, *deleg_dn;
+	gchar *self_dn, *deleg_dn;
 	E2kGlobalCatalogStatus status;
 
 	self_dn = lookup_dn (gc, user);
@@ -206,15 +206,15 @@ do_modify (E2kGlobalCatalog *gc, const char *user,
 	test_quit ();
 }
 
-static void *
-cancel (void *data)
+static gpointer
+cancel (gpointer data)
 {
 	e2k_operation_cancel (&op);
 	return NULL;
 }
 
 static void
-quit (int sig)
+quit (gint sig)
 {
 	static pthread_t cancel_thread;
 
@@ -224,12 +224,12 @@ quit (int sig)
 		exit (0);
 }
 
-const char *test_program_name = "gctest";
+const gchar *test_program_name = "gctest";
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
-	const char *server;
+	const gchar *server;
 
 	if (argc < 3 || argc > 4 ||
 	    (argc == 4 && argv[3][0] != '+' && argv[3][0] != '-')) {

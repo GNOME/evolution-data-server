@@ -35,9 +35,9 @@
 
 static void
 get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
-		  int first_message, int last_message, CamelException *ex)
+		  gint first_message, gint last_message, CamelException *ex)
 {
-	int status;
+	gint status;
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	guint8 *digest;
 	gsize length;
@@ -54,7 +54,7 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 		gboolean done = FALSE;
 
 		while (!done) {
-			char *line;
+			gchar *line;
 
 			if (camel_remote_store_recv_line (CAMEL_REMOTE_STORE (nntp_store), &line, ex) < 0) {
 				g_warning ("failed to recv_line while building OVER header list\n");
@@ -68,9 +68,9 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 			else {
 				CamelMessageInfo *new_info = camel_folder_summary_info_new(folder->summary);
 				GChecksum *checksum;
-				char **split_line = g_strsplit (line, "\t", 7);
-				char *subject, *from, *date, *message_id, *bytes;
-				char *uid;
+				gchar **split_line = g_strsplit (line, "\t", 7);
+				gchar *subject, *from, *date, *message_id, *bytes;
+				gchar *uid;
 
 				subject = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_SUBJECT].index];
 				from = split_line [nntp_store->overview_field [CAMEL_NNTP_OVER_FROM].index];
@@ -131,10 +131,10 @@ get_XOVER_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 #if 0
 static GArray*
 get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
-		 int first_message, int last_message, CamelException *ex)
+		 gint first_message, gint last_message, CamelException *ex)
 {
-	int i;
-	int status;
+	gint i;
+	gint status;
 
 	for (i = first_message; i < last_message; i ++) {
 		status = camel_nntp_command (nntp_store, ex, NULL,
@@ -142,10 +142,10 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 
 		if (status == NNTP_HEAD_FOLLOWS) {
 			gboolean done = FALSE;
-			char *buf;
-			int buf_len;
-			int buf_alloc;
-			int h;
+			gchar *buf;
+			gint buf_len;
+			gint buf_alloc;
+			gint h;
 			CamelStream *header_stream;
 			GArray *header_array;
 			CamelStream *nntp_istream;
@@ -161,8 +161,8 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 			nntp_istream = nntp_store->istream;
 
 			while (!done) {
-				char *line;
-				int line_length;
+				gchar *line;
+				gint line_length;
 
 				line = camel_stream_buffer_read_line (
 						      CAMEL_STREAM_BUFFER ( nntp_istream ));
@@ -200,7 +200,7 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 				else if (!g_ascii_strcasecmp(header->name, "Subject"))
 					new_info->subject = g_strdup(header->value);
 				else if (!g_ascii_strcasecmp(header->name, "Message-ID")) {
-					char *uid = g_strdup_printf("%d,%s", i, header->value);
+					gchar *uid = g_strdup_printf("%d,%s", i, header->value);
 
 					new_info->uid = camel_pstring_strdup (uid);
 					g_free (uid);
@@ -227,11 +227,11 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 #endif
 
 static inline int
-uid_num (CamelFolderSummary *summary, int index)
+uid_num (CamelFolderSummary *summary, gint index)
 {
-	char *tmp;
-	char *brk;
-	int ret;
+	gchar *tmp;
+	gchar *brk;
+	gint ret;
 
 	tmp = camel_folder_summary_uid_from_index(summary, index);
 
@@ -254,10 +254,10 @@ camel_nntp_get_headers (CamelStore *store,
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolder *folder = CAMEL_FOLDER (nntp_folder);
-	char *ret;
-	int first_message, nb_message, last_message, last_summary;
-	int status;
-	int i;
+	gchar *ret;
+	gint first_message, nb_message, last_message, last_summary;
+	gint status;
+	gint i;
 
 	status = camel_nntp_command (nntp_store, ex, &ret,
 				     "GROUP %s", folder->name);

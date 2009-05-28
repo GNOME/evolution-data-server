@@ -74,21 +74,21 @@ camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
 
 
 gboolean
-camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, urlmatch_t *match)
+camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, size_t inlen, urlmatch_t *match)
 {
-	const char *pos;
-	const unsigned char *inptr, *inend;
+	const gchar *pos;
+	const guchar *inptr, *inend;
 	urlpattern_t *pat;
-	int pattern;
+	gint pattern;
 
 	g_return_val_if_fail (scanner != NULL, FALSE);
 	g_return_val_if_fail (in != NULL, FALSE);
 
-	inptr = (const unsigned char *) in;
+	inptr = (const guchar *) in;
 	inend = inptr + inlen;
 
 	do {
-		if (!(pos = camel_trie_search (scanner->trie, (const char *)inptr, inlen, &pattern)))
+		if (!(pos = camel_trie_search (scanner->trie, (const gchar *)inptr, inlen, &pattern)))
 			return FALSE;
 
 		pat = g_ptr_array_index (scanner->patterns, pattern);
@@ -96,10 +96,10 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, 
 		match->pattern = pat->pattern;
 		match->prefix = pat->prefix;
 
-		if (pat->start (in, pos, (const char *)inend, match) && pat->end (in, pos, (const char *)inend, match))
+		if (pat->start (in, pos, (const gchar *)inend, match) && pat->end (in, pos, (const gchar *)inend, match))
 			return TRUE;
 
-		inptr = (const unsigned char *) pos;
+		inptr = (const guchar *) pos;
 		if (camel_utf8_getc_limit (&inptr, inend) == 0xffff)
 			break;
 
@@ -110,7 +110,7 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, 
 }
 
 
-static unsigned char url_scanner_table[256] = {
+static guchar url_scanner_table[256] = {
 	  1,  1,  1,  1,  1,  1,  1,  1,  1,  9,  9,  1,  1,  9,  1,  1,
 	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
 	 24,128,160,128,128,128,128,128,160,160,128,128,160,192,160,160,
@@ -150,8 +150,8 @@ enum {
 
 
 static const struct {
-	const char open;
-	const char close;
+	const gchar open;
+	const gchar close;
 } url_braces[] = {
 	{ '(', ')' },
 	{ '{', '}' },
@@ -162,9 +162,9 @@ static const struct {
 };
 
 static gboolean
-is_open_brace (char c)
+is_open_brace (gchar c)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < G_N_ELEMENTS (url_braces); i++) {
 		if (c == url_braces[i].open)
@@ -175,9 +175,9 @@ is_open_brace (char c)
 }
 
 static char
-url_stop_at_brace (const char *in, size_t so, char *open_brace)
+url_stop_at_brace (const gchar *in, size_t so, gchar *open_brace)
 {
-	int i;
+	gint i;
 
 	if (open_brace != NULL)
 		*open_brace = '\0';
@@ -197,9 +197,9 @@ url_stop_at_brace (const char *in, size_t so, char *open_brace)
 
 
 gboolean
-camel_url_addrspec_start (const char *in, const char *pos, const char *inend, urlmatch_t *match)
+camel_url_addrspec_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
 {
-	register const char *inptr = pos;
+	register const gchar *inptr = pos;
 
 	g_assert (*inptr == '@');
 
@@ -231,10 +231,10 @@ camel_url_addrspec_start (const char *in, const char *pos, const char *inend, ur
 }
 
 gboolean
-camel_url_addrspec_end (const char *in, const char *pos, const char *inend, urlmatch_t *match)
+camel_url_addrspec_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
 {
-	const char *inptr = pos;
-	int parts = 0, digits;
+	const gchar *inptr = pos;
+	gint parts = 0, digits;
 	gboolean got_dot = FALSE;
 
 	g_assert (*inptr == '@');
@@ -292,7 +292,7 @@ camel_url_addrspec_end (const char *in, const char *pos, const char *inend, urlm
 }
 
 gboolean
-camel_url_file_start (const char *in, const char *pos, const char *inend, urlmatch_t *match)
+camel_url_file_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
 {
 	match->um_so = (pos - in);
 
@@ -300,10 +300,10 @@ camel_url_file_start (const char *in, const char *pos, const char *inend, urlmat
 }
 
 gboolean
-camel_url_file_end (const char *in, const char *pos, const char *inend, urlmatch_t *match)
+camel_url_file_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
 {
-	register const char *inptr = pos;
-	char close_brace;
+	register const gchar *inptr = pos;
+	gchar close_brace;
 
 	inptr += strlen (match->pattern);
 
@@ -324,7 +324,7 @@ camel_url_file_end (const char *in, const char *pos, const char *inend, urlmatch
 }
 
 gboolean
-camel_url_web_start (const char *in, const char *pos, const char *inend, urlmatch_t *match)
+camel_url_web_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
 {
 	if (pos > in && !strncmp (pos, "www", 3)) {
 		/* make sure we aren't actually part of another word */
@@ -338,14 +338,14 @@ camel_url_web_start (const char *in, const char *pos, const char *inend, urlmatc
 }
 
 gboolean
-camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_t *match)
+camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
 {
-	register const char *inptr = pos;
+	register const gchar *inptr = pos;
 	gboolean passwd = FALSE;
-	const char *save;
-	char close_brace, open_brace;
-	int brace_stack = 0;
-	int port;
+	const gchar *save;
+	gchar close_brace, open_brace;
+	gint brace_stack = 0;
+	gint port;
 
 	inptr += strlen (match->pattern);
 
@@ -484,9 +484,9 @@ camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_
 
 
 static void
-table_init_bits (unsigned int mask, const unsigned char *vals)
+table_init_bits (guint mask, const guchar *vals)
 {
-	int i;
+	gint i;
 
 	for (i = 0; vals[i] != '\0'; i++)
 		url_scanner_table[vals[i]] |= mask;
@@ -495,7 +495,7 @@ table_init_bits (unsigned int mask, const unsigned char *vals)
 static void
 url_scanner_table_init (void)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < 256; i++) {
 		url_scanner_table[i] = 0;
@@ -514,7 +514,7 @@ url_scanner_table_init (void)
 
 	/* not defined to be special in rfc0822, but when scanning
            backwards to find the beginning of the email address we do
-           not want to include this char if we come accross it - so
+           not want to include this gchar if we come accross it - so
            this is kind of a hack */
 	url_scanner_table['/'] |= IS_SPECIAL;
 
@@ -523,13 +523,13 @@ url_scanner_table_init (void)
 	table_init_bits (IS_URLSAFE, CHARS_URLSAFE);
 }
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 
 	url_scanner_table_init ();
 
-	printf ("static unsigned char url_scanner_table[256] = {");
+	printf ("static guchar url_scanner_table[256] = {");
 	for (i = 0; i < 256; i++) {
 		printf ("%s%3d%s", (i % 16) ? "" : "\n\t",
 			url_scanner_table[i], i != 255 ? "," : "\n");

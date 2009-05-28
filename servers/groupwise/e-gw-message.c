@@ -27,7 +27,7 @@
 #include "e-gw-message.h"
 
 SoupSoapMessage *
-e_gw_message_new_with_header (const char *uri, const char *session_id, const char *method_name)
+e_gw_message_new_with_header (const gchar *uri, const gchar *session_id, const gchar *method_name)
 {
 	SoupSoapMessage *msg;
 
@@ -63,7 +63,7 @@ e_gw_message_new_with_header (const char *uri, const char *session_id, const cha
 }
 
 void
-e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, const char *value)
+e_gw_message_write_string_parameter (SoupSoapMessage *msg, const gchar *name, const gchar *prefix, const gchar *value)
 {
 	soup_soap_message_start_element (msg, name, prefix, NULL);
 	soup_soap_message_write_string (msg, value);
@@ -72,11 +72,11 @@ e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name, con
 
 void
 e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg,
-						    const char *name,
-						    const char *prefix,
-						    const char *value,
-						    const char *attribute_name,
-						    const char *attribute_value)
+						    const gchar *name,
+						    const gchar *prefix,
+						    const gchar *value,
+						    const gchar *attribute_name,
+						    const gchar *attribute_value)
 {
 	soup_soap_message_start_element (msg, name, prefix, NULL);
 	soup_soap_message_add_attribute (msg, attribute_name, attribute_value, NULL, NULL);
@@ -85,7 +85,7 @@ e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg,
 }
 
 void
-e_gw_message_write_base64_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, const char *value)
+e_gw_message_write_base64_parameter (SoupSoapMessage *msg, const gchar *name, const gchar *prefix, const gchar *value)
 {
 	soup_soap_message_start_element (msg, name, prefix, NULL);
 	soup_soap_message_write_base64 (msg, value, strlen (value));
@@ -93,7 +93,7 @@ e_gw_message_write_base64_parameter (SoupSoapMessage *msg, const char *name, con
 }
 
 void
-e_gw_message_write_int_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, long value)
+e_gw_message_write_int_parameter (SoupSoapMessage *msg, const gchar *name, const gchar *prefix, long value)
 {
 	soup_soap_message_start_element (msg, name, prefix, NULL);
 	soup_soap_message_write_int (msg, value);
@@ -110,7 +110,7 @@ e_gw_message_write_footer (SoupSoapMessage *msg)
 	soup_soap_message_persist (msg);
 
 	if (g_getenv ("GROUPWISE_DEBUG") && (atoi (g_getenv ("GROUPWISE_DEBUG")) == 1)) {
-		const char *header = soup_message_headers_get (SOUP_MESSAGE (msg)->request_headers, "SOAPAction");
+		const gchar *header = soup_message_headers_get (SOUP_MESSAGE (msg)->request_headers, "SOAPAction");
 
 		soup_buffer_free (soup_message_body_flatten (SOUP_MESSAGE (msg)->request_body));
 		if (header && g_str_equal (header, "loginRequest")) {

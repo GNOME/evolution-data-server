@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -36,24 +36,24 @@ static const char revid[] = "$Id$";
 #include "dbinc/rep.h"
 #include "dbinc/txn.h"
 
-static int __log_encrypt_record __P((DB_ENV *, DBT *, HDR *, u_int32_t));
-static int __log_fill __P((DB_LOG *, DB_LSN *, void *, u_int32_t));
-static int __log_flush_commit __P((DB_ENV *, const DB_LSN *, u_int32_t));
-static int __log_flush_int __P((DB_LOG *, const DB_LSN *, int));
-static int __log_newfh __P((DB_LOG *));
-static int __log_put_next __P((DB_ENV *,
+static gint __log_encrypt_record __P((DB_ENV *, DBT *, HDR *, u_int32_t));
+static gint __log_fill __P((DB_LOG *, DB_LSN *, gpointer , u_int32_t));
+static gint __log_flush_commit __P((DB_ENV *, const DB_LSN *, u_int32_t));
+static gint __log_flush_int __P((DB_LOG *, const DB_LSN *, int));
+static gint __log_newfh __P((DB_LOG *));
+static gint __log_put_next __P((DB_ENV *,
     DB_LSN *, const DBT *, HDR *, DB_LSN *));
-static int __log_putr __P((DB_LOG *,
+static gint __log_putr __P((DB_LOG *,
     DB_LSN *, const DBT *, u_int32_t, HDR *));
-static int __log_write __P((DB_LOG *, void *, u_int32_t));
+static gint __log_write __P((DB_LOG *, gpointer , u_int32_t));
 
 /*
  * __log_put --
  *	Write a log record.  This is the public interface, DB_ENV->log_put.
  *
- * PUBLIC: int __log_put __P((DB_ENV *, DB_LSN *, const DBT *, u_int32_t));
+ * PUBLIC: gint __log_put __P((DB_ENV *, DB_LSN *, const DBT *, u_int32_t));
  */
-int
+gint
 __log_put(dbenv, lsnp, udbt, flags)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
@@ -67,7 +67,7 @@ __log_put(dbenv, lsnp, udbt, flags)
 	HDR hdr;
 	LOG *lp;
 	u_int32_t do_flush, op, writeonly;
-	int lock_held, need_free, ret;
+	gint lock_held, need_free, ret;
 	u_int8_t *key;
 
 	PANIC_CHECK(dbenv);
@@ -291,7 +291,7 @@ __log_put_next(dbenv, lsn, dbt, hdr, old_lsnp)
 	DB_LOG *dblp;
 	DB_LSN old_lsn;
 	LOG *lp;
-	int newfile, ret;
+	gint newfile, ret;
 
 	dblp = dbenv->lg_handle;
 	lp = dblp->reginfo.primary;
@@ -360,7 +360,7 @@ __log_flush_commit(dbenv, lsnp, flags)
 	DB_LOG *dblp;
 	DB_LSN flush_lsn;
 	LOG *lp;
-	int ret;
+	gint ret;
 	u_int32_t op;
 
 	dblp = dbenv->lg_handle;
@@ -405,9 +405,9 @@ __log_flush_commit(dbenv, lsnp, flags)
  *	Initialize and switch to a new log file.  (Note that this is
  * called both when no log yet exists and when we fill a log file.)
  *
- * PUBLIC: int __log_newfile __P((DB_LOG *, DB_LSN *));
+ * PUBLIC: gint __log_newfile __P((DB_LOG *, DB_LSN *));
  */
-int
+gint
 __log_newfile(dblp, lsnp)
 	DB_LOG *dblp;
 	DB_LSN *lsnp;
@@ -418,7 +418,7 @@ __log_newfile(dblp, lsnp)
 	DBT t;
 	HDR hdr;
 	LOG *lp;
-	int need_free, ret;
+	gint need_free, ret;
 	u_int32_t lastoff;
 	size_t tsize;
 	u_int8_t *tmp;
@@ -520,7 +520,7 @@ __log_putr(dblp, lsn, dbt, prev, h)
 	DB_LSN f_lsn;
 	LOG *lp;
 	HDR tmp, *hdr;
-	int ret, t_ret;
+	gint ret, t_ret;
 	size_t b_off, nr;
 	u_int32_t w_off;
 
@@ -607,15 +607,15 @@ err:
  * __log_flush --
  *	Write all records less than or equal to the specified LSN.
  *
- * PUBLIC: int __log_flush __P((DB_ENV *, const DB_LSN *));
+ * PUBLIC: gint __log_flush __P((DB_ENV *, const DB_LSN *));
  */
-int
+gint
 __log_flush(dbenv, lsn)
 	DB_ENV *dbenv;
 	const DB_LSN *lsn;
 {
 	DB_LOG *dblp;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -637,13 +637,13 @@ static int
 __log_flush_int(dblp, lsnp, release)
 	DB_LOG *dblp;
 	const DB_LSN *lsnp;
-	int release;
+	gint release;
 {
 	DB_ENV *dbenv;
 	DB_LSN flush_lsn, f_lsn;
 	DB_MUTEX *flush_mutexp;
 	LOG *lp;
-	int current, do_flush, first, ret;
+	gint current, do_flush, first, ret;
 	size_t b_off;
 	struct __db_commit *commit;
 	u_int32_t ncommit, w_off;
@@ -887,13 +887,13 @@ static int
 __log_fill(dblp, lsn, addr, len)
 	DB_LOG *dblp;
 	DB_LSN *lsn;
-	void *addr;
+	gpointer addr;
 	u_int32_t len;
 {
 	LOG *lp;
 	u_int32_t bsize, nrec;
 	size_t nw, remain;
-	int ret;
+	gint ret;
 
 	lp = dblp->reginfo.primary;
 	bsize = lp->buffer_size;
@@ -948,13 +948,13 @@ __log_fill(dblp, lsn, addr, len)
 static int
 __log_write(dblp, addr, len)
 	DB_LOG *dblp;
-	void *addr;
+	gpointer addr;
 	u_int32_t len;
 {
 	DB_ENV *dbenv;
 	LOG *lp;
 	size_t nw;
-	int ret;
+	gint ret;
 
 	dbenv = dblp->dbenv;
 	lp = dblp->reginfo.primary;
@@ -998,18 +998,18 @@ __log_write(dblp, addr, len)
  * __log_file --
  *	Map a DB_LSN to a file name.
  *
- * PUBLIC: int __log_file __P((DB_ENV *, const DB_LSN *, char *, size_t));
+ * PUBLIC: gint __log_file __P((DB_ENV *, const DB_LSN *, gchar *, size_t));
  */
-int
+gint
 __log_file(dbenv, lsn, namep, len)
 	DB_ENV *dbenv;
 	const DB_LSN *lsn;
-	char *namep;
+	gchar *namep;
 	size_t len;
 {
 	DB_LOG *dblp;
-	int ret;
-	char *name;
+	gint ret;
+	gchar *name;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -1044,8 +1044,8 @@ __log_newfh(dblp)
 {
 	DB_ENV *dbenv;
 	LOG *lp;
-	int ret;
-	char *name;
+	gint ret;
+	gchar *name;
 
 	dbenv = dblp->dbenv;
 	lp = dblp->reginfo.primary;
@@ -1085,21 +1085,21 @@ __log_newfh(dblp)
  * __log_name --
  *	Return the log name for a particular file, and optionally open it.
  *
- * PUBLIC: int __log_name __P((DB_LOG *,
- * PUBLIC:     u_int32_t, char **, DB_FH *, u_int32_t));
+ * PUBLIC: gint __log_name __P((DB_LOG *,
+ * PUBLIC:     u_int32_t, gchar **, DB_FH *, u_int32_t));
  */
-int
+gint
 __log_name(dblp, filenumber, namep, fhp, flags)
 	DB_LOG *dblp;
 	u_int32_t filenumber, flags;
-	char **namep;
+	gchar **namep;
 	DB_FH *fhp;
 {
 	DB_ENV *dbenv;
 	LOG *lp;
-	int ret;
-	char *oname;
-	char old[sizeof(LFPREFIX) + 5 + 20], new[sizeof(LFPREFIX) + 10 + 20];
+	gint ret;
+	gchar *oname;
+	gchar old[sizeof(LFPREFIX) + 5 + 20], new[sizeof(LFPREFIX) + 10 + 20];
 
 	dbenv = dblp->dbenv;
 	lp = dblp->reginfo.primary;
@@ -1180,9 +1180,9 @@ err:	__os_free(dbenv, oname);
  *
  * Note that the log region mutex should be held when this is called.
  *
- * PUBLIC: int __log_rep_put __P((DB_ENV *, DB_LSN *, const DBT *));
+ * PUBLIC: gint __log_rep_put __P((DB_ENV *, DB_LSN *, const DBT *));
  */
-int
+gint
 __log_rep_put(dbenv, lsnp, rec)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
@@ -1193,7 +1193,7 @@ __log_rep_put(dbenv, lsnp, rec)
 	HDR hdr;
 	DBT *dbt, t;
 	LOG *lp;
-	int need_free, ret;
+	gint need_free, ret;
 
 	dblp = dbenv->lg_handle;
 	lp = dblp->reginfo.primary;
@@ -1231,7 +1231,7 @@ __log_encrypt_record(dbenv, dbt, hdr, orig)
 	u_int32_t orig;
 {
 	DB_CIPHER *db_cipher;
-	int ret;
+	gint ret;
 
 	if (CRYPTO_ON(dbenv)) {
 		db_cipher = (DB_CIPHER *)dbenv->crypto_handle;

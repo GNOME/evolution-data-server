@@ -22,12 +22,12 @@
 
 #include "ex_repquote.h"
 
-static void *check_loop __P((void *));
-static void *display_loop __P((void *));
-static int print_stocks __P((DBC *));
+static gpointer check_loop __P((gpointer));
+static gpointer display_loop __P((gpointer));
+static gint print_stocks __P((DBC *));
 
 typedef struct {
-	const char *progname;
+	const gchar *progname;
 	DB_ENV *dbenv;
 } disploop_args;
 
@@ -36,34 +36,34 @@ typedef struct {
 	machtab_t *machtab;
 } checkloop_args;
 
-int
+gint
 doclient(dbenv, progname, machtab)
 	DB_ENV *dbenv;
-	const char *progname;
+	const gchar *progname;
 	machtab_t *machtab;
 {
 	checkloop_args cargs;
 	disploop_args dargs;
 	pthread_t check_thr, disp_thr;
-	void *cstatus, *dstatus;
-	int rval, s;
+	gpointer cstatus, *dstatus;
+	gint rval, s;
 
 	rval = EXIT_SUCCESS;
 	s = -1;
 
 	memset(&dargs, 0, sizeof(dargs));
-	dstatus = (void *)EXIT_FAILURE;
+	dstatus = (gpointer)EXIT_FAILURE;
 
 	dargs.progname = progname;
 	dargs.dbenv = dbenv;
-	if (pthread_create(&disp_thr, NULL, display_loop, (void *)&dargs)) {
+	if (pthread_create(&disp_thr, NULL, display_loop, (gpointer)&dargs)) {
 		dbenv->err(dbenv, errno, "display_loop pthread_create failed");
 		goto err;
 	}
 
 	cargs.dbenv = dbenv;
 	cargs.machtab = machtab;
-	if (pthread_create(&check_thr, NULL, check_loop, (void *)&cargs)) {
+	if (pthread_create(&check_thr, NULL, check_loop, (gpointer)&cargs)) {
 		dbenv->err(dbenv, errno, "check_thread pthread_create failed");
 		goto err;
 	}
@@ -86,14 +86,14 @@ err:		rval = EXIT_FAILURE;
  * to identify itself (that would be a call to rep_start).  If that fails,
  * we trigger an election.
  */
-static void *
+static gpointer
 check_loop(args)
-	void *args;
+	gpointer args;
 {
 	DB_ENV *dbenv;
 	DBT dbt;
 	checkloop_args *cargs;
-	int count, n, pri;
+	gint count, n, pri;
 	machtab_t *machtab;
 	u_int32_t timeout;
 
@@ -125,19 +125,19 @@ check_loop(args)
 		sleep(IDLE_INTERVAL);
 	}
 
-	return ((void *)EXIT_SUCCESS);
+	return ((gpointer)EXIT_SUCCESS);
 }
 
-static void *
+static gpointer
 display_loop(args)
-	void *args;
+	gpointer args;
 {
 	DB *dbp;
 	DB_ENV *dbenv;
 	DBC *dbc;
-	const char *progname;
+	const gchar *progname;
 	disploop_args *dargs;
-	int ret, rval;
+	gint ret, rval;
 
 	dargs = (disploop_args *)args;
 	progname = dargs->progname;
@@ -154,7 +154,7 @@ display_loop(args)
 		if (dbp == NULL) {
 			if ((ret = db_create(&dbp, dbenv, 0)) != 0) {
 				dbenv->err(dbenv, ret, "db_create");
-				return ((void *)EXIT_FAILURE);
+				return ((gpointer)EXIT_FAILURE);
 			}
 
 			if ((ret = dbp->open(dbp, NULL,
@@ -209,10 +209,10 @@ err:		rval = EXIT_FAILURE;
 
 	if (dbp != NULL && (ret = dbp->close(dbp, 0)) != 0) {
 		dbenv->err(dbenv, ret, "DB->close");
-		return ((void *)EXIT_FAILURE);
+		return ((gpointer)EXIT_FAILURE);
 	}
 
-	return ((void *)rval);
+	return ((gpointer)rval);
 }
 
 static int
@@ -222,8 +222,8 @@ print_stocks(dbc)
 	DBT key, data;
 #define	MAXKEYSIZE	10
 #define	MAXDATASIZE	20
-	char keybuf[MAXKEYSIZE + 1], databuf[MAXDATASIZE + 1];
-	int ret;
+	gchar keybuf[MAXKEYSIZE + 1], databuf[MAXDATASIZE + 1];
+	gint ret;
 	u_int32_t keysize, datasize;
 
 	memset(&key, 0, sizeof(key));

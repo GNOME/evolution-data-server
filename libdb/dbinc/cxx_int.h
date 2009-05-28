@@ -15,9 +15,9 @@
 //
 // Using FooImp classes will allow the implementation to change in the
 // future without any modification to user code or even to header files
-// that the user includes. FooImp * is just like void * except that it
+// that the user includes. FooImp * is just like gpointer  except that it
 // provides a little extra protection, since you cannot randomly assign
-// any old pointer to a FooImp* as you can with void *.  Currently, a
+// any old pointer to a FooImp* as you can with gpointer .  Currently, a
 // pointer to such an opaque class is always just a pointer to the
 // appropriate underlying implementation struct.  These are converted
 // back and forth using the various overloaded wrap()/unwrap() methods.
@@ -33,18 +33,18 @@
 	inline _WRAPPED_TYPE unwrap(_WRAPPER_CLASS *val)                   \
 	{                                                                  \
 		if (!val) return (0);                                      \
-		return ((_WRAPPED_TYPE)((void *)(val->imp())));            \
+		return ((_WRAPPED_TYPE)((gpointer)(val->imp())));            \
 	}                                                                  \
 									   \
 	inline const _WRAPPED_TYPE unwrapConst(const _WRAPPER_CLASS *val)  \
 	{                                                                  \
 		if (!val) return (0);                                      \
-		return ((const _WRAPPED_TYPE)((void *)(val->constimp()))); \
+		return ((const _WRAPPED_TYPE)((gpointer)(val->constimp()))); \
 	}                                                                  \
 									   \
 	inline _IMP_CLASS *wrap(_WRAPPED_TYPE val)                         \
 	{                                                                  \
-		return ((_IMP_CLASS*)((void *)val));                       \
+		return ((_IMP_CLASS*)((gpointer)val));                       \
 	}
 
 WRAPPED_CLASS(DbMpoolFile, DbMpoolFileImp, DB_MPOOLFILE*)
@@ -55,7 +55,7 @@ WRAPPED_CLASS(DbTxn, DbTxnImp, DB_TXN*)
 // A tristate integer value used by the DB_ERROR macro below.
 // We chose not to make this an enumerated type so it can
 // be kept private, even though methods that return the
-// tristate int can be declared in db_cxx.h .
+// tristate gint can be declared in db_cxx.h .
 //
 #define	ON_ERROR_THROW     1
 #define	ON_ERROR_RETURN    0

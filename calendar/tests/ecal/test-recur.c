@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <libecal/e-cal.h>
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	ECal *ecal;
 

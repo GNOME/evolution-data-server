@@ -29,7 +29,7 @@
 #include <string.h>
 
 
-static unsigned char NTLM_NEGOTIATE_MESSAGE[] = {
+static guchar NTLM_NEGOTIATE_MESSAGE[] = {
 	 'N',  'T',  'L',  'M',  'S',  'S',  'P', 0x00,
 	0x01, 0x00, 0x00, 0x00, 0x06, 0x82, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -59,10 +59,10 @@ xntlm_negotiate (void)
 
 #define GET_SHORTY(p) ((p)[0] + ((p)[1] << 8))
 
-static char *
-strip_dup (unsigned char *mem, int len)
+static gchar *
+strip_dup (guchar *mem, gint len)
 {
-	char *buf = g_malloc (len / 2 + 1), *p = buf;
+	gchar *buf = g_malloc (len / 2 + 1), *p = buf;
 
 	while (len > 0) {
 		*p = (char)*mem;
@@ -104,11 +104,11 @@ strip_dup (unsigned char *mem, int len)
  * %FALSE otherwise.
  **/
 gboolean
-xntlm_parse_challenge (gpointer challenge, int len, char **nonce,
-		       char **nt_domain, char **w2k_domain)
+xntlm_parse_challenge (gpointer challenge, gint len, gchar **nonce,
+		       gchar **nt_domain, gchar **w2k_domain)
 {
-	unsigned char *chall = (unsigned char *)challenge;
-	int off, dlen, doff, type;
+	guchar *chall = (guchar *)challenge;
+	gint off, dlen, doff, type;
 
 	if (len < NTLM_CHALLENGE_BASE_SIZE)
 		return FALSE;
@@ -152,7 +152,7 @@ xntlm_parse_challenge (gpointer challenge, int len, char **nonce,
 
 
 static void
-ntlm_set_string (GByteArray *ba, int offset, const char *data, int len)
+ntlm_set_string (GByteArray *ba, gint offset, const gchar *data, gint len)
 {
 	ba->data[offset    ] = ba->data[offset + 2] =  len       & 0xFF;
 	ba->data[offset + 1] = ba->data[offset + 3] = (len >> 8) & 0xFF;
@@ -161,13 +161,13 @@ ntlm_set_string (GByteArray *ba, int offset, const char *data, int len)
 	g_byte_array_append (ba, data, len);
 }
 
-static void ntlm_lanmanager_hash (const char *password, char hash[21]);
-static void ntlm_nt_hash         (const char *password, char hash[21]);
+static void ntlm_lanmanager_hash (const gchar *password, gchar hash[21]);
+static void ntlm_nt_hash         (const gchar *password, gchar hash[21]);
 static void ntlm_calc_response   (const guchar key[21],
 				  const guchar plaintext[8],
 				  guchar results[24]);
 
-static unsigned char NTLM_RESPONSE_MESSAGE_HEADER[] = {
+static guchar NTLM_RESPONSE_MESSAGE_HEADER[] = {
 	 'N',  'T',  'L',  'M',  'S',  'S',  'P', 0x00,
 	0x03, 0x00, 0x00, 0x00, 0x02, 0x82, 0x00, 0x00
 };
@@ -195,9 +195,9 @@ static unsigned char NTLM_RESPONSE_MESSAGE_HEADER[] = {
  * Return value: the NTLM Type 3 message
  **/
 GByteArray *
-xntlm_authenticate (const char *nonce, const char *domain,
-		    const char *user, const char *password,
-		    const char *workstation)
+xntlm_authenticate (const gchar *nonce, const gchar *domain,
+		    const gchar *user, const gchar *password,
+		    const gchar *workstation)
 {
 	GByteArray *message;
 	guchar hash[21], lm_resp[24], nt_resp[24];
@@ -236,7 +236,7 @@ static void
 setup_schedule (const guchar *key_56, XNTLM_DES_KS ks)
 {
 	guchar key[8];
-	int i, c, bit;
+	gint i, c, bit;
 
 	key[0] = (key_56[0])                                 ;
 	key[1] = (key_56[1] >> 1) | ((key_56[0] << 7) & 0xFF);
@@ -259,18 +259,18 @@ setup_schedule (const guchar *key_56, XNTLM_DES_KS ks)
         xntlm_deskey (ks, key, XNTLM_DES_ENCRYPT);
 }
 
-static unsigned char LM_PASSWORD_MAGIC[] = {
+static guchar LM_PASSWORD_MAGIC[] = {
 	0x4B, 0x47, 0x53, 0x21, 0x40, 0x23, 0x24, 0x25,
 	0x4B, 0x47, 0x53, 0x21, 0x40, 0x23, 0x24, 0x25,
 	0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 static void
-ntlm_lanmanager_hash (const char *password, char hash[21])
+ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
 {
 	guchar lm_password [15];
 	XNTLM_DES_KS ks;
-	unsigned int i;
+	guint i;
 
 	for (i = 0; i < 14 && password [i]; i++)
 		lm_password [i] = toupper ((unsigned char) password [i]);
@@ -288,9 +288,9 @@ ntlm_lanmanager_hash (const char *password, char hash[21])
 }
 
 static void
-ntlm_nt_hash (const char *password, char hash[21])
+ntlm_nt_hash (const gchar *password, gchar hash[21])
 {
-	unsigned char *buf, *p;
+	guchar *buf, *p;
 
 	p = buf = g_malloc (strlen (password) * 2);
 

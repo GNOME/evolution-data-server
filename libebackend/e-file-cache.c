@@ -31,7 +31,7 @@
 #include "libedataserver/e-xml-hash-utils.h"
 
 struct _EFileCachePrivate {
-	char *filename;
+	gchar *filename;
 	EXmlHash *xml_hash;
 	gboolean dirty;
 	gboolean frozen;
@@ -50,8 +50,8 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 {
 	EFileCache *cache;
 	EFileCachePrivate *priv;
-	char *dirname;
-	int result;
+	gchar *dirname;
+	gint result;
 
 	cache = E_FILE_CACHE (object);
 	priv = cache->priv;
@@ -173,7 +173,7 @@ e_file_cache_init (EFileCache *cache)
  * Return value: The newly created object.
  */
 EFileCache *
-e_file_cache_new (const char *filename)
+e_file_cache_new (const gchar *filename)
 {
 	EFileCache *cache;
 
@@ -200,8 +200,8 @@ e_file_cache_remove (EFileCache *cache)
 	priv = cache->priv;
 
 	if (priv->filename) {
-		char *dirname, *full_path;
-		const char *fname;
+		gchar *dirname, *full_path;
+		const gchar *fname;
 		GDir *dir;
 		gboolean success;
 
@@ -243,11 +243,11 @@ e_file_cache_remove (EFileCache *cache)
 }
 
 static void
-add_key_to_slist (const char *key, const char *value, gpointer user_data)
+add_key_to_slist (const gchar *key, const gchar *value, gpointer user_data)
 {
 	GSList **keys = user_data;
 
-	*keys = g_slist_append (*keys, (char *) key);
+	*keys = g_slist_append (*keys, (gchar *) key);
 }
 
 /**
@@ -275,7 +275,7 @@ e_file_cache_clean (EFileCache *cache)
 
 	e_xmlhash_foreach_key (priv->xml_hash, (EXmlHashFunc) add_key_to_slist, &keys);
 	while (keys != NULL) {
-		e_file_cache_remove_object (cache, (const char *) keys->data);
+		e_file_cache_remove_object (cache, (const gchar *) keys->data);
 		keys = g_slist_remove (keys, keys->data);
 	}
 
@@ -286,9 +286,9 @@ e_file_cache_clean (EFileCache *cache)
 }
 
 typedef struct {
-	const char *key;
+	const gchar *key;
 	gboolean found;
-	const char *found_value;
+	const gchar *found_value;
 } CacheFindData;
 
 static void
@@ -299,17 +299,17 @@ find_object_in_hash (gpointer key, gpointer value, gpointer user_data)
 	if (find_data->found)
 		return;
 
-	if (!strcmp (find_data->key, (const char *) key)) {
+	if (!strcmp (find_data->key, (const gchar *) key)) {
 		find_data->found = TRUE;
-		find_data->found_value = (const char *) value;
+		find_data->found_value = (const gchar *) value;
 	}
 }
 
 /**
  * e_file_cache_get_object:
  */
-const char *
-e_file_cache_get_object (EFileCache *cache, const char *key)
+const gchar *
+e_file_cache_get_object (EFileCache *cache, const gchar *key)
 {
 	CacheFindData find_data;
 	EFileCachePrivate *priv;
@@ -329,11 +329,11 @@ e_file_cache_get_object (EFileCache *cache, const char *key)
 }
 
 static void
-add_object_to_slist (const char *key, const char *value, gpointer user_data)
+add_object_to_slist (const gchar *key, const gchar *value, gpointer user_data)
 {
 	GSList **list = user_data;
 
-	*list = g_slist_prepend (*list, (char *) value);
+	*list = g_slist_prepend (*list, (gchar *) value);
 }
 
 /**
@@ -376,7 +376,7 @@ e_file_cache_get_keys (EFileCache *cache)
  * e_file_cache_add_object:
  */
 gboolean
-e_file_cache_add_object (EFileCache *cache, const char *key, const char *value)
+e_file_cache_add_object (EFileCache *cache, const gchar *key, const gchar *value)
 {
 	EFileCachePrivate *priv;
 
@@ -403,7 +403,7 @@ e_file_cache_add_object (EFileCache *cache, const char *key, const char *value)
  * e_file_cache_replace_object:
  */
 gboolean
-e_file_cache_replace_object (EFileCache *cache, const char *key, const char *new_value)
+e_file_cache_replace_object (EFileCache *cache, const gchar *key, const gchar *new_value)
 {
 	EFileCachePrivate *priv;
 
@@ -425,7 +425,7 @@ e_file_cache_replace_object (EFileCache *cache, const char *key, const char *new
  * e_file_cache_remove_object:
  */
 gboolean
-e_file_cache_remove_object (EFileCache *cache, const char *key)
+e_file_cache_remove_object (EFileCache *cache, const gchar *key)
 {
 	EFileCachePrivate *priv;
 
@@ -496,10 +496,10 @@ e_file_cache_thaw_changes (EFileCache *cache)
  *
  * Return value: The name of the cache.
  */
-const char *
+const gchar *
 e_file_cache_get_filename (EFileCache *cache)
 {
 	g_return_val_if_fail (E_IS_FILE_CACHE (cache), NULL);
-	return (const char *) cache->priv->filename;
+	return (const gchar *) cache->priv->filename;
 }
 

@@ -92,7 +92,7 @@ CamelServiceAuthType camel_imap4_password_authtype = {
 
 
 static void
-add_hash (guint *hash, char *s)
+add_hash (guint *hash, gchar *s)
 {
 	if (s)
 		*hash ^= g_str_hash(s);
@@ -112,7 +112,7 @@ imap4_url_hash (gconstpointer key)
 }
 
 static int
-check_equal (char *s1, char *s2)
+check_equal (gchar *s1, gchar *s2)
 {
 	if (s1 == NULL) {
 		if (s2 == NULL)

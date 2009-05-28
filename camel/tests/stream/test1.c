@@ -10,14 +10,14 @@
 
 #include "camel/camel-stream-fs.h"
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;
-	int i;
-	int fd = -1;
+	gint i;
+	gint fd = -1;
 	struct stat st;
-	int size;
-	char buffer[1024];
+	gint size;
+	gchar buffer[1024];
 
 	camel_test_init(argc, argv);
 

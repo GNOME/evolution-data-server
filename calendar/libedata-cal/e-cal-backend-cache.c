@@ -28,7 +28,7 @@
 #include "e-cal-backend-cache.h"
 
 struct _ECalBackendCachePrivate {
-	char *uri;
+	gchar *uri;
 	ECalSourceType source_type;
 	GHashTable *timezones;
 };
@@ -42,12 +42,12 @@ enum {
 
 static GObjectClass *parent_class = NULL;
 
-static char *
-get_filename_from_uri (const char *uri, ECalSourceType source_type)
+static gchar *
+get_filename_from_uri (const gchar *uri, ECalSourceType source_type)
 {
-	char *mangled_uri, *filename;
-	const char *source = NULL;
-	int i;
+	gchar *mangled_uri, *filename;
+	const gchar *source = NULL;
+	gint i;
 
 	switch (source_type) {
 		case E_CAL_SOURCE_TYPE_EVENT :
@@ -89,7 +89,7 @@ e_cal_backend_cache_set_property (GObject *object, guint property_id, const GVal
 {
 	ECalBackendCache *cache;
 	ECalBackendCachePrivate *priv;
-	char *cache_file;
+	gchar *cache_file;
 	ECalSourceType source_type;
 
 	cache = E_CAL_BACKEND_CACHE (object);
@@ -170,7 +170,7 @@ e_cal_backend_cache_constructor (GType type,
                                  GObjectConstructParam *construct_properties)
 {
 	GObject *obj;
-	const char *uri;
+	const gchar *uri;
 	ECalSourceType source_type = E_CAL_SOURCE_TYPE_EVENT;
 	ECalBackendCacheClass *klass;
 	GObjectClass *parent_class;
@@ -186,7 +186,7 @@ e_cal_backend_cache_constructor (GType type,
 		source_type = g_value_get_enum (construct_properties->value);
 	/* extract uid */
 	if (!g_ascii_strcasecmp ( g_param_spec_get_name (construct_properties->pspec), "uri")) {
-		char *cache_file;
+		gchar *cache_file;
 
 		uri = g_value_get_string (construct_properties->value);
 		cache_file = get_filename_from_uri (uri, source_type);
@@ -290,7 +290,7 @@ e_cal_backend_cache_get_type (void)
  * Return value: The newly created object.
  */
 ECalBackendCache *
-e_cal_backend_cache_new (const char *uri, ECalSourceType source_type)
+e_cal_backend_cache_new (const gchar *uri, ECalSourceType source_type)
 {
 	ECalBackendCache *cache;
 
@@ -299,11 +299,11 @@ e_cal_backend_cache_new (const char *uri, ECalSourceType source_type)
         return cache;
 }
 
-static char *
-get_key (const char *uid, const char *rid)
+static gchar *
+get_key (const gchar *uid, const gchar *rid)
 {
 	GString *real_key;
-	char *retval;
+	gchar *retval;
 
 	real_key = g_string_new (uid);
 	if (rid && *rid) {
@@ -330,10 +330,10 @@ get_key (const char *uid, const char *rid)
  * or %NULL if it was not found in the cache.
  */
 ECalComponent *
-e_cal_backend_cache_get_component (ECalBackendCache *cache, const char *uid, const char *rid)
+e_cal_backend_cache_get_component (ECalBackendCache *cache, const gchar *uid, const gchar *rid)
 {
-	char *real_key;
-	const char *comp_str;
+	gchar *real_key;
+	const gchar *comp_str;
 	icalcomponent *icalcomp;
 	ECalComponent *comp = NULL;
 
@@ -376,8 +376,8 @@ gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
 				   ECalComponent *comp)
 {
-	char *real_key, *uid, *comp_str;
-	char *rid;
+	gchar *real_key, *uid, *comp_str;
+	gchar *rid;
 	gboolean retval;
 	ECalBackendCachePrivate *priv;
 
@@ -386,7 +386,7 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
 
 	priv = cache->priv;
 
-	e_cal_component_get_uid (comp, (const char **) &uid);
+	e_cal_component_get_uid (comp, (const gchar **) &uid);
 	if (e_cal_component_is_instance (comp)) {
 		rid = e_cal_component_get_recurid_as_string (comp);
 	} else
@@ -420,10 +420,10 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
  */
 gboolean
 e_cal_backend_cache_remove_component (ECalBackendCache *cache,
-				      const char *uid,
-				      const char *rid)
+				      const gchar *uid,
+				      const gchar *rid)
 {
-	char *real_key;
+	gchar *real_key;
 	gboolean retval;
 	ECalBackendCachePrivate *priv;
 
@@ -456,7 +456,7 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
 GList *
 e_cal_backend_cache_get_components (ECalBackendCache *cache)
 {
-        char *comp_str;
+        gchar *comp_str;
         GSList *l;
 	GList *list = NULL;
 	icalcomponent *icalcomp;
@@ -503,9 +503,9 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
  * Return value: The list of calendar components if found, or NULL otherwise.
  */
 GSList *
-e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *uid)
+e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar *uid)
 {
-        char *comp_str;
+        gchar *comp_str;
         GSList *l;
 	GSList *list = NULL;
 	icalcomponent *icalcomp;
@@ -552,10 +552,10 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *
  * Return value: The timezone if found, or NULL otherwise.
  */
 const icaltimezone *
-e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid)
+e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid)
 {
 	icaltimezone *zone;
-	const char *comp_str;
+	const gchar *comp_str;
 	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
@@ -606,7 +606,7 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
 	icaltimezone *new_zone;
 	icalcomponent *icalcomp;
 	gboolean retval;
-	char *obj;
+	gchar *obj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
@@ -656,7 +656,7 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone 
 	ECalBackendCachePrivate *priv;
 	icalcomponent *icalcomp;
 	gboolean retval;
-	char *obj;
+	gchar *obj;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 
@@ -698,7 +698,7 @@ icaltimezone *
 e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
 {
 	icaltimezone *zone;
-	const char *comp_str;
+	const gchar *comp_str;
 	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
@@ -735,7 +735,7 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
  * Return value: TRUE if the timezone was removed, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid)
+e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const gchar *tzid)
 {
 	ECalBackendCachePrivate *priv;
 
@@ -788,7 +788,7 @@ e_cal_backend_cache_set_marker (ECalBackendCache *cache)
  *
  * Return value: The value of the marker or NULL if the cache is still empty.
  */
-const char *
+const gchar *
 e_cal_backend_cache_get_marker (ECalBackendCache *cache)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
@@ -805,7 +805,7 @@ e_cal_backend_cache_get_marker (ECalBackendCache *cache)
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const char *utc_str)
+e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const gchar *utc_str)
 {
 	gboolean ret_val = FALSE;
 
@@ -823,7 +823,7 @@ e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const char *ut
  *
  * Return value: The server's UTC string.
  */
-const char *
+const gchar *
 e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 {
 
@@ -832,8 +832,8 @@ e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
 }
 
-static char *
-get_keys_key (const char *key)
+static gchar *
+get_keys_key (const gchar *key)
 {
 	g_return_val_if_fail (key != NULL, NULL);
 
@@ -849,9 +849,9 @@ get_keys_key (const char *key)
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, const char *value)
+e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, const gchar *value)
 {
-	char *real_key;
+	gchar *real_key;
 	gboolean ret_val = FALSE;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
@@ -877,11 +877,11 @@ e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, con
  *
  * Return value: The value.
  */
-const char *
-e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const char *key)
+const gchar *
+e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key)
 {
-	char *real_key;
-	const char *value;
+	gchar *real_key;
+	const gchar *value;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
 

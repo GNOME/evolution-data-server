@@ -56,8 +56,8 @@ static void camel_groupwise_journal_finalize (CamelObject *object);
 
 static void groupwise_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
 static CamelDListNode *groupwise_entry_load (CamelOfflineJournal *journal, FILE *in);
-static int groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-static int groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
+static gint groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+static gint groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
 
 static CamelOfflineJournalClass *parent_class = NULL;
@@ -253,7 +253,7 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 	GPtrArray *xuids, *uids;
 	CamelException lex;
 	CamelFolder *src;
-	const char *name;
+	const gchar *name;
 
 	if (!(info = (CamelMessageInfoBase *) camel_folder_summary_uid (folder->summary, entry->uid))) {
 		/* Note: this should never happen, but rather than crash lets make a new info */
@@ -320,7 +320,7 @@ groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, Camel
 
 
 CamelOfflineJournal *
-camel_groupwise_journal_new (CamelGroupwiseFolder *folder, const char *filename)
+camel_groupwise_journal_new (CamelGroupwiseFolder *folder, const gchar *filename)
 {
 	CamelOfflineJournal *journal;
 
@@ -334,7 +334,7 @@ camel_groupwise_journal_new (CamelGroupwiseFolder *folder, const char *filename)
 
 static gboolean
 update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *message,
-	      const CamelMessageInfo *mi, char **updated_uid, CamelException *ex)
+	      const CamelMessageInfo *mi, gchar **updated_uid, CamelException *ex)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
 	CamelGroupwiseFolder *groupwise_folder = (CamelGroupwiseFolder *) journal->folder;
@@ -342,7 +342,7 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 	CamelMessageInfo *info;
 	CamelStream *cache;
 	guint32 nextuid;
-	char *uid;
+	gchar *uid;
 
 	if (groupwise_folder->cache == NULL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -391,11 +391,11 @@ update_cache (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *messag
 
 void
 camel_groupwise_journal_append (CamelGroupwiseJournal *groupwise_journal, CamelMimeMessage *message,
-				const CamelMessageInfo *mi, char **appended_uid, CamelException *ex)
+				const CamelMessageInfo *mi, gchar **appended_uid, CamelException *ex)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
 	CamelGroupwiseJournalEntry *entry;
-	char *uid;
+	gchar *uid;
 
 	if (!update_cache (groupwise_journal, message, mi, &uid, ex))
 		return;
@@ -413,13 +413,13 @@ camel_groupwise_journal_append (CamelGroupwiseJournal *groupwise_journal, CamelM
 void
 camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, CamelGroupwiseFolder *source_folder,
 				  CamelMimeMessage *message,  const CamelMessageInfo *mi,
-				  const char *original_uid, char **transferred_uid,
+				  const gchar *original_uid, gchar **transferred_uid,
 				  CamelException *ex)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(journal->folder->parent_store) ;
 	CamelGroupwiseJournalEntry *entry;
-	char *uid;
+	gchar *uid;
 
 	if (!update_cache (groupwise_journal, message, mi, &uid, ex))
 		return;

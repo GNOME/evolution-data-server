@@ -49,7 +49,7 @@ struct _CamelMultipartEncrypted {
 	CamelMimePart *content;
 	CamelMimePart *decrypted;
 
-	char *protocol;
+	gchar *protocol;
 };
 
 struct _CamelMultipartEncryptedClass {

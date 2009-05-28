@@ -44,16 +44,16 @@
 
 #define _PRIVATE(o) (((CamelIMAPPStoreSummary *)(o))->priv)
 
-static int summary_header_load(CamelStoreSummary *, FILE *);
-static int summary_header_save(CamelStoreSummary *, FILE *);
+static gint summary_header_load(CamelStoreSummary *, FILE *);
+static gint summary_header_save(CamelStoreSummary *, FILE *);
 
-/*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const char *);*/
+/*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);*/
 static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
 static int		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 
-static const char *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
-static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const char *);
+static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
+static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 static void camel_imapp_store_summary_class_init (CamelIMAPPStoreSummaryClass *klass);
 static void camel_imapp_store_summary_init       (CamelIMAPPStoreSummary *obj);
@@ -148,9 +148,9 @@ camel_imapp_store_summary_new (void)
  * It must be freed using camel_store_summary_info_free().
  **/
 CamelIMAPPStoreInfo *
-camel_imapp_store_summary_full_name(CamelIMAPPStoreSummary *s, const char *full_name)
+camel_imapp_store_summary_full_name(CamelIMAPPStoreSummary *s, const gchar *full_name)
 {
-	int count, i;
+	gint count, i;
 	CamelIMAPPStoreInfo *info;
 
 	count = camel_store_summary_count((CamelStoreSummary *)s);
@@ -166,12 +166,12 @@ camel_imapp_store_summary_full_name(CamelIMAPPStoreSummary *s, const char *full_
 	return NULL;
 }
 
-char *
-camel_imapp_store_summary_full_to_path(CamelIMAPPStoreSummary *s, const char *full_name, char dir_sep)
+gchar *
+camel_imapp_store_summary_full_to_path(CamelIMAPPStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
-	char *path, *p;
-	int c;
-	const char *f;
+	gchar *path, *p;
+	gint c;
+	const gchar *f;
 
 	if (dir_sep != '/') {
 		p = path = alloca(strlen(full_name)*3+1);
@@ -186,7 +186,7 @@ camel_imapp_store_summary_full_to_path(CamelIMAPPStoreSummary *s, const char *fu
 		}
 		*p = 0;
 	} else
-		path = (char *)full_name;
+		path = (gchar *)full_name;
 
 	return camel_utf7_utf8(path);
 }
@@ -201,14 +201,14 @@ static guint32 hexnib(guint32 c)
 		return 0;
 }
 
-char *
-camel_imapp_store_summary_path_to_full(CamelIMAPPStoreSummary *s, const char *path, char dir_sep)
+gchar *
+camel_imapp_store_summary_path_to_full(CamelIMAPPStoreSummary *s, const gchar *path, gchar dir_sep)
 {
-	unsigned char *full, *f;
+	guchar *full, *f;
 	guint32 c, v = 0;
-	const char *p;
-	int state=0;
-	char *subpath, *last = NULL;
+	const gchar *p;
+	gint state=0;
+	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 	CamelIMAPPStoreNamespace *ns;
 
@@ -241,7 +241,7 @@ camel_imapp_store_summary_path_to_full(CamelIMAPPStoreSummary *s, const char *pa
 	else
 		p = path;
 
-	while ( (c = camel_utf8_getc((const unsigned char **)&p)) ) {
+	while ( (c = camel_utf8_getc((const guchar **)&p)) ) {
 		switch(state) {
 		case 0:
 			if (c == '%')
@@ -282,12 +282,12 @@ camel_imapp_store_summary_path_to_full(CamelIMAPPStoreSummary *s, const char *pa
 }
 
 CamelIMAPPStoreInfo *
-camel_imapp_store_summary_add_from_full(CamelIMAPPStoreSummary *s, const char *full, char dir_sep)
+camel_imapp_store_summary_add_from_full(CamelIMAPPStoreSummary *s, const gchar *full, gchar dir_sep)
 {
 	CamelIMAPPStoreInfo *info;
-	char *pathu8, *prefix;
-	int len;
-	char *full_name;
+	gchar *pathu8, *prefix;
+	gint len;
+	gchar *full_name;
 	CamelIMAPPStoreNamespace *ns;
 
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
@@ -341,11 +341,11 @@ camel_imapp_store_summary_add_from_full(CamelIMAPPStoreSummary *s, const char *f
 
 /* should this be const? */
 /* TODO: deprecate/merge this function with path_to_full */
-char *
-camel_imapp_store_summary_full_from_path(CamelIMAPPStoreSummary *s, const char *path)
+gchar *
+camel_imapp_store_summary_full_from_path(CamelIMAPPStoreSummary *s, const gchar *path)
 {
 	CamelIMAPPStoreNamespace *ns;
-	char *name = NULL;
+	gchar *name = NULL;
 
 	ns = camel_imapp_store_summary_namespace_find_path(s, path);
 	if (ns)
@@ -357,11 +357,11 @@ camel_imapp_store_summary_full_from_path(CamelIMAPPStoreSummary *s, const char *
 }
 
 /* TODO: this api needs some more work */
-CamelIMAPPStoreNamespace *camel_imapp_store_summary_namespace_new(CamelIMAPPStoreSummary *s, const char *full_name, char dir_sep)
+CamelIMAPPStoreNamespace *camel_imapp_store_summary_namespace_new(CamelIMAPPStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
 	CamelIMAPPStoreNamespace *ns;
-	char *p;
-	int len;
+	gchar *p;
+	gint len;
 
 	ns = g_malloc0(sizeof(*ns));
 	ns->full_name = g_strdup(full_name);
@@ -391,9 +391,9 @@ void camel_imapp_store_summary_namespace_set(CamelIMAPPStoreSummary *s, CamelIMA
 }
 
 CamelIMAPPStoreNamespace *
-camel_imapp_store_summary_namespace_find_path(CamelIMAPPStoreSummary *s, const char *path)
+camel_imapp_store_summary_namespace_find_path(CamelIMAPPStoreSummary *s, const gchar *path)
 {
-	int len;
+	gint len;
 	CamelIMAPPStoreNamespace *ns;
 
 	/* NB: this currently only compares against 1 namespace, in future compare against others */
@@ -412,9 +412,9 @@ camel_imapp_store_summary_namespace_find_path(CamelIMAPPStoreSummary *s, const c
 }
 
 CamelIMAPPStoreNamespace *
-camel_imapp_store_summary_namespace_find_full(CamelIMAPPStoreSummary *s, const char *full)
+camel_imapp_store_summary_namespace_find_full(CamelIMAPPStoreSummary *s, const gchar *full)
 {
-	int len;
+	gint len;
 	CamelIMAPPStoreNamespace *ns;
 
 	/* NB: this currently only compares against 1 namespace, in future compare against others */
@@ -573,8 +573,8 @@ store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi)
 	camel_imapp_store_summary_parent->store_info_free(s, mi);
 }
 
-static const char *
-store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
+static const gchar *
+store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 {
 	CamelIMAPPStoreInfo *isi = (CamelIMAPPStoreInfo *)mi;
 
@@ -591,7 +591,7 @@ store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
 }
 
 static void
-store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, int type, const char *str)
+store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
 {
 	CamelIMAPPStoreInfo *isi = (CamelIMAPPStoreInfo *)mi;
 

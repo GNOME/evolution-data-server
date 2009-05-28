@@ -61,7 +61,7 @@
 #include "camel-tcp-stream-ssl.h"
 #endif
 
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 #define d(x) (camel_verbose_debug ? (x) : 0)
 
 /* Specified in RFC 821 */
@@ -78,21 +78,21 @@ static void smtp_construct (CamelService *service, CamelSession *session,
 			    CamelException *ex);
 static gboolean smtp_connect (CamelService *service, CamelException *ex);
 static gboolean smtp_disconnect (CamelService *service, gboolean clean, CamelException *ex);
-static GHashTable *esmtp_get_authtypes (const unsigned char *buffer);
+static GHashTable *esmtp_get_authtypes (const guchar *buffer);
 static GList *query_auth_types (CamelService *service, CamelException *ex);
-static char *get_name (CamelService *service, gboolean brief);
+static gchar *get_name (CamelService *service, gboolean brief);
 
 static gboolean smtp_helo (CamelSmtpTransport *transport, CamelException *ex);
-static gboolean smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex);
-static gboolean smtp_mail (CamelSmtpTransport *transport, const char *sender,
+static gboolean smtp_auth (CamelSmtpTransport *transport, const gchar *mech, CamelException *ex);
+static gboolean smtp_mail (CamelSmtpTransport *transport, const gchar *sender,
 			   gboolean has_8bit_parts, CamelException *ex);
-static gboolean smtp_rcpt (CamelSmtpTransport *transport, const char *recipient, CamelException *ex);
+static gboolean smtp_rcpt (CamelSmtpTransport *transport, const gchar *recipient, CamelException *ex);
 static gboolean smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelException *ex);
 static gboolean smtp_rset (CamelSmtpTransport *transport, CamelException *ex);
 static gboolean smtp_quit (CamelSmtpTransport *transport, CamelException *ex);
 
-static void smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const char *respbuf,
-				const char *message, CamelException *ex);
+static void smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const gchar *respbuf,
+				const gchar *message, CamelException *ex);
 
 /* private data members */
 static CamelTransportClass *parent_class = NULL;
@@ -153,8 +153,8 @@ smtp_construct (CamelService *service, CamelSession *session,
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
 }
 
-static const char *
-smtp_error_string (int error)
+static const gchar *
+smtp_error_string (gint error)
 {
 	/* SMTP error codes grabbed from rfc821 */
 	switch (error) {
@@ -234,12 +234,12 @@ enum {
 #endif
 
 static gboolean
-connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, CamelException *ex)
+connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, CamelException *ex)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelStream *tcp_stream;
-	char *respbuf = NULL;
-	int ret;
+	gchar *respbuf = NULL;
+	gint ret;
 
 	if (!CAMEL_SERVICE_CLASS (parent_class)->connect (service, ex))
 		return FALSE;
@@ -396,10 +396,10 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 }
 
 static struct {
-	char *value;
-	char *serv;
-	char *port;
-	int mode;
+	gchar *value;
+	gchar *serv;
+	gchar *port;
+	gint mode;
 } ssl_options[] = {
 	{ "",              "smtps", SMTPS_PORT, MODE_SSL   },  /* really old (1.x) */
 	{ "always",        "smtps", SMTPS_PORT, MODE_SSL   },
@@ -412,10 +412,10 @@ static gboolean
 connect_to_server_wrapper (CamelService *service, CamelException *ex)
 {
 	struct addrinfo hints, *ai;
-	const char *ssl_mode;
-	int mode, ret, i;
-	char *serv;
-	const char *port;
+	const gchar *ssl_mode;
+	gint mode, ret, i;
+	gchar *serv;
+	const gchar *port;
 
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
@@ -463,7 +463,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 
 	/* We (probably) need to check popb4smtp before we connect ... */
 	if (service->url->authmech && !strcmp (service->url->authmech, "POPB4SMTP")) {
-		int truth;
+		gint truth;
 		GByteArray *chal;
 		CamelSasl *sasl;
 
@@ -490,7 +490,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 		CamelServiceAuthType *authtype;
 		gboolean authenticated = FALSE;
 		guint32 password_flags;
-		char *errbuf = NULL;
+		gchar *errbuf = NULL;
 
 		if (!g_hash_table_lookup (transport->authtypes, service->url->authmech)) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
@@ -532,8 +532,8 @@ smtp_connect (CamelService *service, CamelException *ex)
 			}
 
 			if (!service->url->passwd) {
-				char *base_prompt;
-				char *full_prompt;
+				gchar *base_prompt;
+				gchar *full_prompt;
 
 				base_prompt = camel_session_build_password_prompt (
 					"SMTP", service->url->user, service->url->host);
@@ -633,9 +633,9 @@ smtp_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 }
 
 static GHashTable *
-esmtp_get_authtypes (const unsigned char *buffer)
+esmtp_get_authtypes (const guchar *buffer)
 {
-	const unsigned char *start, *end;
+	const guchar *start, *end;
 	GHashTable *table = NULL;
 
 	/* advance to the first token */
@@ -649,14 +649,14 @@ esmtp_get_authtypes (const unsigned char *buffer)
 	table = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for ( ; *start; ) {
-		char *type;
+		gchar *type;
 
 		/* advance to the end of the token */
 		end = start;
 		while (*end && !isspace ((int) *end))
 			end++;
 
-		type = g_strndup ((gchar*) start, end - start);
+		type = g_strndup ((gchar *) start, end - start);
 		g_hash_table_insert (table, type, type);
 
 		/* advance to the next token */
@@ -694,7 +694,7 @@ query_auth_types (CamelService *service, CamelException *ex)
 	return types;
 }
 
-static char *
+static gchar *
 get_name (CamelService *service, gboolean brief)
 {
 	if (brief)
@@ -713,8 +713,8 @@ smtp_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	CamelSmtpTransport *smtp_transport = CAMEL_SMTP_TRANSPORT (transport);
 	const CamelInternetAddress *cia;
 	gboolean has_8bit_parts;
-	const char *addr;
-	int i, len;
+	const gchar *addr;
+	gint i, len;
 
 	if (!smtp_transport->connected) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_NOT_CONNECTED,
@@ -750,7 +750,7 @@ smtp_send_to (CamelTransport *transport, CamelMimeMessage *message,
 
 	cia = CAMEL_INTERNET_ADDRESS (recipients);
 	for (i = 0; i < len; i++) {
-		char *enc;
+		gchar *enc;
 
 		if (!camel_internet_address_get (cia, i, NULL, &addr)) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -782,19 +782,19 @@ smtp_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	return TRUE;
 }
 
-static const char *
-smtp_next_token (const char *buf)
+static const gchar *
+smtp_next_token (const gchar *buf)
 {
-	const unsigned char *token;
+	const guchar *token;
 
-	token = (const unsigned char *) buf;
+	token = (const guchar *) buf;
 	while (*token && !isspace ((int) *token))
 		token++;
 
 	while (*token && isspace ((int) *token))
 		token++;
 
-	return (const char *) token;
+	return (const gchar *) token;
 }
 
 #define HEXVAL(c) (isdigit (c) ? (c) - '0' : (c) - 'A' + 10)
@@ -821,17 +821,17 @@ smtp_next_token (const char *buf)
  *   hexchar = ASCII "+" immediately followed by two upper case
  *        hexadecimal digits
  */
-static char *
-smtp_decode_status_code (const char *in, size_t len)
+static gchar *
+smtp_decode_status_code (const gchar *in, size_t len)
 {
-	unsigned char *inptr, *outptr;
-	const unsigned char *inend;
-	char *outbuf;
+	guchar *inptr, *outptr;
+	const guchar *inend;
+	gchar *outbuf;
 
-	outbuf = (char *) g_malloc (len + 1);
-	outptr = (unsigned char *) outbuf;
+	outbuf = (gchar *) g_malloc (len + 1);
+	outptr = (guchar *) outbuf;
 
-	inptr = (unsigned char *) in;
+	inptr = (guchar *) in;
 	inend = inptr + len;
 	while (inptr < inend) {
 		if (*inptr == '+') {
@@ -858,12 +858,12 @@ smtp_decode_status_code (const char *in, size_t len)
 static void
 convert_to_local (GString *str)
 {
-	char *buf;
+	gchar *buf;
 
 	buf = g_locale_from_utf8 (str->str, str->len, NULL, NULL, NULL);
 
 	if (!buf) {
-		int i;
+		gint i;
 		gchar c;
 		GString *s = g_string_new_len (str->str, str->len);
 
@@ -888,12 +888,12 @@ convert_to_local (GString *str)
 }
 
 static void
-smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const char *respbuf, const char *message, CamelException *ex)
+smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const gchar *respbuf, const gchar *message, CamelException *ex)
 {
-	const char *token, *rbuf = respbuf;
-	char *buffer = NULL;
+	const gchar *token, *rbuf = respbuf;
+	gchar *buffer = NULL;
 	GString *string;
-	int error;
+	gint error;
 
 	if (!respbuf) {
 	fake_status_code:
@@ -966,8 +966,8 @@ smtp_set_exception (CamelSmtpTransport *transport, gboolean disconnect, const ch
 static gboolean
 smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 {
-	char *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
-	const char *token, *numeric = NULL;
+	gchar *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
+	const gchar *token, *numeric = NULL;
 	struct sockaddr *addr;
 	socklen_t addrlen;
 
@@ -1069,7 +1069,7 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 						g_hash_table_destroy (transport->authtypes);
 					}
 
-					transport->authtypes = esmtp_get_authtypes ((const unsigned char *) token);
+					transport->authtypes = esmtp_get_authtypes ((const guchar *) token);
 				}
 			}
 		}
@@ -1082,10 +1082,10 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 }
 
 static gboolean
-smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
+smtp_auth (CamelSmtpTransport *transport, const gchar *mech, CamelException *ex)
 {
 	CamelService *service;
-	char *cmdbuf, *respbuf = NULL, *challenge;
+	gchar *cmdbuf, *respbuf = NULL, *challenge;
 	gboolean auth_challenge = FALSE;
 	CamelSasl *sasl = NULL;
 
@@ -1213,10 +1213,10 @@ smtp_auth (CamelSmtpTransport *transport, const char *mech, CamelException *ex)
 }
 
 static gboolean
-smtp_mail (CamelSmtpTransport *transport, const char *sender, gboolean has_8bit_parts, CamelException *ex)
+smtp_mail (CamelSmtpTransport *transport, const gchar *sender, gboolean has_8bit_parts, CamelException *ex)
 {
 	/* we gotta tell the smtp server who we are. (our email addy) */
-	char *cmdbuf, *respbuf = NULL;
+	gchar *cmdbuf, *respbuf = NULL;
 
 	if (transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME && has_8bit_parts)
 		cmdbuf = g_strdup_printf ("MAIL FROM:<%s> BODY=8BITMIME\r\n", sender);
@@ -1256,11 +1256,11 @@ smtp_mail (CamelSmtpTransport *transport, const char *sender, gboolean has_8bit_
 }
 
 static gboolean
-smtp_rcpt (CamelSmtpTransport *transport, const char *recipient, CamelException *ex)
+smtp_rcpt (CamelSmtpTransport *transport, const gchar *recipient, CamelException *ex)
 {
 	/* we gotta tell the smtp server who we are going to be sending
 	 * our email to */
-	char *cmdbuf, *respbuf = NULL;
+	gchar *cmdbuf, *respbuf = NULL;
 
 	cmdbuf = g_strdup_printf ("RCPT TO:<%s>\r\n", recipient);
 
@@ -1286,7 +1286,7 @@ smtp_rcpt (CamelSmtpTransport *transport, const char *recipient, CamelException 
 		d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
 
 		if (!respbuf || strncmp (respbuf, "250", 3)) {
-			char *message;
+			gchar *message;
 
 			message = g_strdup_printf (_("RCPT TO <%s> failed"), recipient);
 			smtp_set_exception (transport, TRUE, respbuf, message, ex);
@@ -1306,10 +1306,10 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
 	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
 	CamelStreamFilter *filtered_stream;
-	char *cmdbuf, *respbuf = NULL;
+	gchar *cmdbuf, *respbuf = NULL;
 	CamelMimeFilter *filter;
 	CamelStreamNull *null;
-	int ret;
+	gint ret;
 
 	/* If the server doesn't support 8BITMIME, set our required encoding to be 7bit */
 	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME))
@@ -1446,7 +1446,7 @@ static gboolean
 smtp_rset (CamelSmtpTransport *transport, CamelException *ex)
 {
 	/* we are going to reset the smtp server (just to be nice) */
-	char *cmdbuf, *respbuf = NULL;
+	gchar *cmdbuf, *respbuf = NULL;
 
 	cmdbuf = g_strdup ("RSET\r\n");
 
@@ -1485,7 +1485,7 @@ static gboolean
 smtp_quit (CamelSmtpTransport *transport, CamelException *ex)
 {
 	/* we are going to reset the smtp server (just to be nice) */
-	char *cmdbuf, *respbuf = NULL;
+	gchar *cmdbuf, *respbuf = NULL;
 
 	cmdbuf = g_strdup ("QUIT\r\n");
 

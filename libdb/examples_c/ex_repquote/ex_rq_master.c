@@ -21,16 +21,16 @@
 
 #include "ex_repquote.h"
 
-static void *master_loop __P((void *));
+static gpointer master_loop __P((gpointer));
 
 #define	BUFSIZE 1024
 
-int
+gint
 domaster(dbenv, progname)
 	DB_ENV *dbenv;
-	const char *progname;
+	const gchar *progname;
 {
-	int ret, t_ret;
+	gint ret, t_ret;
 	pthread_t interface_thr;
 	pthread_attr_t attr;
 
@@ -43,7 +43,7 @@ domaster(dbenv, progname)
 		goto err;
 
 	if ((ret = pthread_create(&interface_thr,
-	    &attr, master_loop, (void *)dbenv)) != 0)
+	    &attr, master_loop, (gpointer)dbenv)) != 0)
 		goto err;
 
 err:	if ((t_ret = pthread_attr_destroy(&attr)) != 0 && ret == 0)
@@ -52,16 +52,16 @@ err:	if ((t_ret = pthread_attr_destroy(&attr)) != 0 && ret == 0)
 	return (ret);
 }
 
-static void *
+static gpointer
 master_loop(dbenvv)
-	void *dbenvv;
+	gpointer dbenvv;
 {
 	DB *dbp;
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	DBT key, data;
-	char buf[BUFSIZE], *rbuf;
-	int ret;
+	gchar buf[BUFSIZE], *rbuf;
+	gint ret;
 
 	dbp = NULL;
 	txn = NULL;
@@ -81,7 +81,7 @@ master_loop(dbenvv)
 			return (ret);
 #endif
 		if ((ret = db_create(&dbp, dbenv, 0)) != 0)
-			return ((void *)ret);
+			return ((gpointer)ret);
 
 		if ((ret = dbenv->txn_begin(dbenv, NULL, &txn, 0)) != 0)
 			goto err;
@@ -161,5 +161,5 @@ err:	if (txn != NULL)
 	if (dbp != NULL)
 		(void)dbp->close(dbp, DB_NOSYNC);
 
-	return ((void *)ret);
+	return ((gpointer)ret);
 }

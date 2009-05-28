@@ -109,7 +109,7 @@ camel_disco_diary_get_type (void)
 static int
 diary_encode_uids (CamelDiscoDiary *diary, GPtrArray *uids)
 {
-	int i, status;
+	gint i, status;
 
 	status = camel_file_util_encode_uint32 (diary->file, uids->len);
 	for (i = 0; status != -1 && i < uids->len; i++)
@@ -122,7 +122,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 		       ...)
 {
 	va_list ap;
-	int status;
+	gint status;
 
 	d(printf("diary log: %s\n", diary->file?"ok":"no file!"));
 
@@ -152,7 +152,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 	case CAMEL_DISCO_DIARY_FOLDER_APPEND:
 	{
 		CamelFolder *folder = va_arg (ap, CamelFolder *);
-		char *uid = va_arg (ap, char *);
+		gchar *uid = va_arg (ap, gchar *);
 
 		d(printf(" folder append '%s'\n", folder->full_name));
 
@@ -193,7 +193,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 
  lose:
 	if (status == -1) {
-		char *msg;
+		gchar *msg;
 
 		msg = g_strdup_printf (_("Could not write log entry: %s\n"
 					 "Further operations on this server "
@@ -222,7 +222,7 @@ static GPtrArray *
 diary_decode_uids (CamelDiscoDiary *diary)
 {
 	GPtrArray *uids;
-	char *uid;
+	gchar *uid;
 	guint32 i;
 
 	if (camel_file_util_decode_uint32 (diary->file, &i) == -1)
@@ -243,14 +243,14 @@ static CamelFolder *
 diary_decode_folder (CamelDiscoDiary *diary)
 {
 	CamelFolder *folder;
-	char *name;
+	gchar *name;
 
 	if (camel_file_util_decode_string (diary->file, &name) == -1)
 		return NULL;
 	folder = g_hash_table_lookup (diary->folders, name);
 	if (!folder) {
 		CamelException ex;
-		char *msg;
+		gchar *msg;
 
 		camel_exception_init (&ex);
 		folder = camel_store_get_folder (CAMEL_STORE (diary->store),
@@ -324,7 +324,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 		case CAMEL_DISCO_DIARY_FOLDER_APPEND:
 		{
 			CamelFolder *folder;
-			char *uid, *ret_uid;
+			gchar *uid, *ret_uid;
 			CamelMimeMessage *message;
 			CamelMessageInfo *info;
 
@@ -362,7 +362,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 			CamelFolder *source, *destination;
 			GPtrArray *uids, *ret_uids;
 			guint32 delete_originals;
-			int i;
+			gint i;
 
 			source = diary_decode_folder (diary);
 			destination = diary_decode_folder (diary);
@@ -408,7 +408,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 }
 
 CamelDiscoDiary *
-camel_disco_diary_new (CamelDiscoStore *store, const char *filename, CamelException *ex)
+camel_disco_diary_new (CamelDiscoStore *store, const gchar *filename, CamelException *ex)
 {
 	CamelDiscoDiary *diary;
 
@@ -455,15 +455,15 @@ camel_disco_diary_empty  (CamelDiscoDiary *diary)
 }
 
 void
-camel_disco_diary_uidmap_add (CamelDiscoDiary *diary, const char *old_uid,
-			      const char *new_uid)
+camel_disco_diary_uidmap_add (CamelDiscoDiary *diary, const gchar *old_uid,
+			      const gchar *new_uid)
 {
 	g_hash_table_insert (diary->uidmap, g_strdup (old_uid),
 			     g_strdup (new_uid));
 }
 
-const char *
-camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary, const char *uid)
+const gchar *
+camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary, const gchar *uid)
 {
 	return g_hash_table_lookup (diary->uidmap, uid);
 }

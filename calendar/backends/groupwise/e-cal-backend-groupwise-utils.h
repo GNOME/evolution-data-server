@@ -43,7 +43,7 @@ G_BEGIN_DECLS
 /*
  * Items management
  */
-EGwItem       *e_gw_item_new_from_cal_component (const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp);
+EGwItem       *e_gw_item_new_from_cal_component (const gchar *container, ECalBackendGroupwise *cbgw, ECalComponent *comp);
 EGwItem  *e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *comp);
 ECalComponent *e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw);
 void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
@@ -51,19 +51,19 @@ void          e_gw_item_set_changes (EGwItem *item, EGwItem *cached_item);
 /*
  * Connection-related utility functions
  */
-EGwConnectionStatus e_gw_connection_create_appointment (EGwConnection *cnc, const char *container, ECalBackendGroupwise *cbgw, ECalComponent *comp, GSList **id_list);
-EGwConnectionStatus e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const char *container, ECalComponent *comp, icalproperty_method method, gboolean all_instances, ECalComponent **created_comp, icalparameter_partstat *pstatus);
+EGwConnectionStatus e_gw_connection_create_appointment (EGwConnection *cnc, const gchar *container, ECalBackendGroupwise *cbgw, ECalComponent *comp, GSList **id_list);
+EGwConnectionStatus e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const gchar *container, ECalComponent *comp, icalproperty_method method, gboolean all_instances, ECalComponent **created_comp, icalparameter_partstat *pstatus);
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone);
 gboolean e_cal_backend_groupwise_store_settings (GwSettings *hold);
 EGwItem * e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *comp);
-gboolean e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *email);
+gboolean e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const gchar *email);
 
 
 /*
  * Component related utility functions
  */
 
-const char *e_cal_component_get_gw_id (ECalComponent *comp);
+const gchar *e_cal_component_get_gw_id (ECalComponent *comp);
 G_END_DECLS
 
 #endif

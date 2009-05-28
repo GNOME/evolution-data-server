@@ -40,7 +40,7 @@
 #endif
 
 xmlDocPtr
-e_xml_parse_file (const char *filename)
+e_xml_parse_file (const gchar *filename)
 {
 	xmlDocPtr result = NULL;
 
@@ -55,14 +55,14 @@ e_xml_parse_file (const char *filename)
 	return result;
 }
 
-int
-e_xml_save_file (const char *filename, xmlDocPtr doc)
+gint
+e_xml_save_file (const gchar *filename, xmlDocPtr doc)
 {
-	char *filesave;
+	gchar *filesave;
 	xmlChar *xmlbuf;
 	size_t n, written = 0;
-	int ret, fd, size;
-	int errnosave;
+	gint ret, fd, size;
+	gint errnosave;
 	ssize_t w;
 	gchar *dirname = g_path_get_dirname (filename);
 	gchar *basename = g_path_get_basename (filename);

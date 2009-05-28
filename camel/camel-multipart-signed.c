@@ -61,8 +61,8 @@ static guint signed_get_number (CamelMultipart *multipart);
 
 static ssize_t write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
 static void set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type);
-static int construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
-static int signed_construct_from_parser (CamelMultipart *multipart, struct _CamelMimeParser *mp);
+static gint construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
+static gint signed_construct_from_parser (CamelMultipart *multipart, struct _CamelMimeParser *mp);
 
 static CamelMultipartClass *parent_class = NULL;
 
@@ -183,9 +183,9 @@ camel_multipart_signed_new (void)
 static int
 skip_content(CamelMimeParser *cmp)
 {
-	char *buf;
+	gchar *buf;
 	size_t len;
-	int state;
+	gint state;
 
 	switch (camel_mime_parser_state(cmp)) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
@@ -230,10 +230,10 @@ parse_content(CamelMultipartSigned *mps)
 	CamelMimeParser *cmp;
 	CamelMultipart *mp = (CamelMultipart *)mps;
 	CamelStreamMem *mem;
-	const char *boundary;
-	char *buf;
+	const gchar *boundary;
+	gchar *buf;
 	size_t len;
-	int state;
+	gint state;
 
 	boundary = camel_multipart_get_boundary(mp);
 	if (boundary == NULL) {
@@ -304,7 +304,7 @@ set_mime_type_field(CamelDataWrapper *data_wrapper, CamelContentType *mime_type)
 
 	((CamelDataWrapperClass *)parent_class)->set_mime_type_field(data_wrapper, mime_type);
 	if (mime_type) {
-		const char *micalg, *protocol;
+		const gchar *micalg, *protocol;
 
 		protocol = camel_content_type_param(mime_type, "protocol");
 		g_free(mps->protocol);
@@ -458,10 +458,10 @@ construct_from_stream(CamelDataWrapper *data_wrapper, CamelStream *stream)
 static int
 signed_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
-	int err;
+	gint err;
 	CamelContentType *content_type;
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)multipart;
-	char *buf;
+	gchar *buf;
 	size_t len;
 	CamelStream *mem;
 
@@ -492,7 +492,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelMultipart *mp = (CamelMultipart *)mps;
-	const char *boundary;
+	const gchar *boundary;
 	ssize_t total = 0;
 	ssize_t count;
 

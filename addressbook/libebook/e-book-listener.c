@@ -72,7 +72,7 @@ static void
 impl_BookListener_respond_create_contact (PortableServer_Servant servant,
 					  const CORBA_long opid,
 					  const GNOME_Evolution_Addressbook_CallStatus status,
-					  const CORBA_char* id,
+					  const CORBA_char * id,
 					  CORBA_Environment *ev)
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
@@ -124,7 +124,7 @@ static void
 impl_BookListener_respond_get_contact (PortableServer_Servant servant,
 				       const CORBA_long opid,
 				       const GNOME_Evolution_Addressbook_CallStatus status,
-				       const CORBA_char* card,
+				       const CORBA_char * card,
 				       CORBA_Environment *ev)
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
@@ -149,7 +149,7 @@ impl_BookListener_respond_get_contact_list (PortableServer_Servant servant,
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
-	int i;
+	gint i;
 
 	if (listener->priv->stopped)
 		return;
@@ -201,7 +201,7 @@ impl_BookListener_respond_get_changes (PortableServer_Servant servant,
 {
 	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
-	int i;
+	gint i;
 
 	response.op     = GetChangesResponse;
 	response.opid   = opid;
@@ -288,7 +288,7 @@ impl_BookListener_respond_get_required_fields (PortableServer_Servant servant,
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
-	int i;
+	gint i;
 
 	response.op     = GetRequiredFieldsResponse;
 	response.opid   = opid;
@@ -311,7 +311,7 @@ impl_BookListener_respond_get_supported_fields (PortableServer_Servant servant,
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
-	int i;
+	gint i;
 
 	response.op     = GetSupportedFieldsResponse;
 	response.opid   = opid;
@@ -333,7 +333,7 @@ impl_BookListener_respond_get_supported_auth_methods (PortableServer_Servant ser
 {
 	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	EBookListenerResponse response;
-	int i;
+	gint i;
 
 	response.op     = GetSupportedAuthMethodsResponse;
 	response.opid   = opid;

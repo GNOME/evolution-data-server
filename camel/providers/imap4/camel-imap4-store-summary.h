@@ -79,7 +79,7 @@ void camel_imap4_store_summary_note_info (CamelIMAP4StoreSummary *s, struct _Cam
 
 void camel_imap4_store_summary_unnote_info (CamelIMAP4StoreSummary *s, struct _CamelFolderInfo *fi);
 
-struct _CamelFolderInfo *camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const char *top, guint32 flags);
+struct _CamelFolderInfo *camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const gchar *top, guint32 flags);
 
 G_END_DECLS
 

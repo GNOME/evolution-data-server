@@ -42,7 +42,7 @@
 #include "camel-uid-cache.h"
 
 struct _uid_state {
-	int level;
+	gint level;
 	gboolean save;
 };
 
@@ -58,12 +58,12 @@ struct _uid_state {
  * Return value: a new UID cache, or %NULL
  **/
 CamelUIDCache *
-camel_uid_cache_new (const char *filename)
+camel_uid_cache_new (const gchar *filename)
 {
 	CamelUIDCache *cache;
 	struct stat st;
-	char *dirname, *buf, **uids;
-	int fd, i;
+	gchar *dirname, *buf, **uids;
+	gint fd, i;
 
 	dirname = g_path_get_dirname (filename);
 	if (g_mkdir_with_parents (dirname, 0777) == -1) {
@@ -154,9 +154,9 @@ maybe_write_uid (gpointer key, gpointer value, gpointer data)
 gboolean
 camel_uid_cache_save (CamelUIDCache *cache)
 {
-	char *filename;
-	int errnosav;
-	int fd;
+	gchar *filename;
+	gint errnosav;
+	gint fd;
 
 	filename = g_strdup_printf ("%s~", cache->filename);
 	if ((fd = g_open (filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0666)) == -1) {
@@ -274,8 +274,8 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
 {
 	GPtrArray *new_uids;
 	gpointer old_uid;
-	char *uid;
-	int i;
+	gchar *uid;
+	gint i;
 
 	new_uids = g_ptr_array_new ();
 	cache->level++;
@@ -284,7 +284,7 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
 		struct _uid_state *state;
 
 		uid = uids->pdata[i];
-		if (g_hash_table_lookup_extended (cache->uids, uid, (void **)&old_uid, (void **)&state)) {
+		if (g_hash_table_lookup_extended (cache->uids, uid, (gpointer *)&old_uid, (gpointer *)&state)) {
 			g_hash_table_remove (cache->uids, uid);
 			g_free (old_uid);
 		} else {
@@ -309,14 +309,14 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
  * Marks a uid for saving.
  **/
 void
-camel_uid_cache_save_uid (CamelUIDCache *cache, const char *uid)
+camel_uid_cache_save_uid (CamelUIDCache *cache, const gchar *uid)
 {
 	struct _uid_state *state;
 	gpointer old_uid;
 
 	g_return_if_fail (uid != NULL);
 
-	if (g_hash_table_lookup_extended (cache->uids, uid, (void **)&old_uid, (void **)&state)) {
+	if (g_hash_table_lookup_extended (cache->uids, uid, (gpointer *)&old_uid, (gpointer *)&state)) {
 		state->save = TRUE;
 		state->level = cache->level;
 	} else {
@@ -338,7 +338,7 @@ camel_uid_cache_save_uid (CamelUIDCache *cache, const char *uid)
 void
 camel_uid_cache_free_uids (GPtrArray *uids)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < uids->len; i++)
 		g_free (uids->pdata[i]);

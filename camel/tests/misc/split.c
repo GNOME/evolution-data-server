@@ -14,11 +14,11 @@
 /* TODO: should put utf8 stuff here too */
 
 static struct {
-	char *word;
-	int count;
+	gchar *word;
+	gint count;
 	struct {
-		char *word;
-		int type;
+		gchar *word;
+		gint type;
 	} splits[5];
 } split_tests[] = {
 	{ "simple", 1, { { "simple", CAMEL_SEARCH_WORD_SIMPLE } } },
@@ -36,11 +36,11 @@ static struct {
 #define SPLIT_LENGTH (sizeof(split_tests)/sizeof(split_tests[0]))
 
 static struct {
-	char *word;
-	int count;
+	gchar *word;
+	gint count;
 	struct {
-		char *word;
-		int type;
+		gchar *word;
+		gint type;
 	} splits[5];
 } simple_tests[] = {
 	{ "simple", 1, { {"simple", CAMEL_SEARCH_WORD_SIMPLE } } },
@@ -55,10 +55,10 @@ static struct {
 
 #define SIMPLE_LENGTH (sizeof(simple_tests)/sizeof(simple_tests[0]))
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	int i, j;
+	gint i, j;
 	struct _camel_search_words *words, *tmp;
 
 	camel_test_init(argc, argv);

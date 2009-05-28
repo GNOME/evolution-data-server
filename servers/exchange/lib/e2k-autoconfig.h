@@ -29,43 +29,43 @@ typedef enum {
 
 typedef struct {
 	/* Input data. (gc_server is optional) */
-	char *owa_uri, *gc_server;
-	char *username, *password;
-	int gal_limit;
+	gchar *owa_uri, *gc_server;
+	gchar *username, *password;
+	gint gal_limit;
 	E2kAutoconfigGalAuthPref gal_auth;
 
 	/* Output data */
 	E2kExchangeVersion version;
-	char *display_name, *email;
-	char *account_uri, *exchange_server;
-	char *timezone;
+	gchar *display_name, *email;
+	gchar *account_uri, *exchange_server;
+	gchar *timezone;
 
 	/* Private-ish members */
-	char *nt_domain, *w2k_domain;
-	char *home_uri, *exchange_dn;
-	char *pf_server;
+	gchar *nt_domain, *w2k_domain;
+	gchar *home_uri, *exchange_dn;
+	gchar *pf_server;
 	E2kAutoconfigAuthPref auth_pref;
 	gboolean require_ntlm, use_ntlm;
 	gboolean saw_basic, saw_ntlm;
 	gboolean nt_domain_defaulted, gc_server_autodetected;
 } E2kAutoconfig;
 
-E2kAutoconfig       *e2k_autoconfig_new                  (const char *owa_uri,
-							  const char *username,
-							  const char *password,
+E2kAutoconfig       *e2k_autoconfig_new                  (const gchar *owa_uri,
+							  const gchar *username,
+							  const gchar *password,
 							  E2kAutoconfigAuthPref auth_pref);
 void                 e2k_autoconfig_free                 (E2kAutoconfig *ac);
 
 void                 e2k_autoconfig_set_owa_uri          (E2kAutoconfig *ac,
-							  const char *owa_uri);
+							  const gchar *owa_uri);
 void                 e2k_autoconfig_set_gc_server        (E2kAutoconfig *ac,
-							  const char *gc_server,
-							  int gal_limit,
+							  const gchar *gc_server,
+							  gint gal_limit,
 							  E2kAutoconfigGalAuthPref gal_auth);
 void                 e2k_autoconfig_set_username         (E2kAutoconfig *ac,
-							  const char *username);
+							  const gchar *username);
 void                 e2k_autoconfig_set_password         (E2kAutoconfig *ac,
-							  const char *password);
+							  const gchar *password);
 
 E2kContext          *e2k_autoconfig_get_context          (E2kAutoconfig *ac,
 							  E2kOperation *op,
@@ -78,7 +78,7 @@ E2kAutoconfigResult  e2k_autoconfig_check_global_catalog (E2kAutoconfig *ac,
 							  E2kOperation *op);
 
 
-const char          *e2k_autoconfig_lookup_option        (const char *option);
+const gchar          *e2k_autoconfig_lookup_option        (const gchar *option);
 
 #ifdef __cplusplus
 }

@@ -73,7 +73,7 @@ typedef enum {
 	E2K_PERMISSIONS_ROLE_CUSTOM = -1
 } E2kPermissionsRole;
 
-const char        *e2k_permissions_role_get_name  (E2kPermissionsRole role);
+const gchar        *e2k_permissions_role_get_name  (E2kPermissionsRole role);
 guint32            e2k_permissions_role_get_perms (E2kPermissionsRole role);
 
 E2kPermissionsRole e2k_permissions_role_find      (guint perms);

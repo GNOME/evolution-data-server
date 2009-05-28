@@ -165,7 +165,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 CamelDataWrapper *
 camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 			CamelContentType *type, CamelTransferEncoding encoding,
-			const char *uid, const char *part_spec,
+			const gchar *uid, const gchar *part_spec,
 			CamelMimePart *part)
 {
 	CamelImapWrapper *imap_wrapper;

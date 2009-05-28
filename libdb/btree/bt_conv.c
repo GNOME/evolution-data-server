@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,14 +25,14 @@ static const char revid[] = "$Id$";
  *	Convert host-specific page layout from the host-independent format
  *	stored on disk.
  *
- * PUBLIC: int __bam_pgin __P((DB_ENV *, DB *, db_pgno_t, void *, DBT *));
+ * PUBLIC: gint __bam_pgin __P((DB_ENV *, DB *, db_pgno_t, gpointer , DBT *));
  */
-int
+gint
 __bam_pgin(dbenv, dummydbp, pg, pp, cookie)
 	DB_ENV *dbenv;
 	DB *dummydbp;
 	db_pgno_t pg;
-	void *pp;
+	gpointer pp;
 	DBT *cookie;
 {
 	DB_PGINFO *pginfo;
@@ -52,14 +52,14 @@ __bam_pgin(dbenv, dummydbp, pg, pp, cookie)
  *	Convert host-specific page layout to the host-independent format
  *	stored on disk.
  *
- * PUBLIC: int __bam_pgout __P((DB_ENV *, DB *, db_pgno_t, void *, DBT *));
+ * PUBLIC: gint __bam_pgout __P((DB_ENV *, DB *, db_pgno_t, gpointer , DBT *));
  */
-int
+gint
 __bam_pgout(dbenv, dummydbp, pg, pp, cookie)
 	DB_ENV *dbenv;
 	DB *dummydbp;
 	db_pgno_t pg;
-	void *pp;
+	gpointer pp;
 	DBT *cookie;
 {
 	DB_PGINFO *pginfo;
@@ -78,9 +78,9 @@ __bam_pgout(dbenv, dummydbp, pg, pp, cookie)
  * __bam_mswap --
  *	Swap the bytes on the btree metadata page.
  *
- * PUBLIC: int __bam_mswap __P((PAGE *));
+ * PUBLIC: gint __bam_mswap __P((PAGE *));
  */
-int
+gint
 __bam_mswap(pg)
 	PAGE *pg;
 {

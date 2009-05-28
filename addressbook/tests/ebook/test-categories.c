@@ -2,12 +2,12 @@
 #include <string.h>
 #include <libebook/e-book.h>
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EContact *contact;
 	GList *category_list;
-	char *categories;
+	gchar *categories;
 
 	g_type_init ();
 
@@ -45,9 +45,9 @@ main (int argc, char **argv)
 	if (g_list_length (category_list) != 3)
 	  printf ("failed conversion from string to list\n");
 	else {
-	  if (!strcmp ("Birthday", (char*)g_list_nth_data (category_list, 0)) &&
-	      !strcmp ("Business", (char*)g_list_nth_data (category_list, 1)) &&
-	      !strcmp ("Competition", (char*)g_list_nth_data (category_list, 2)))
+	  if (!strcmp ("Birthday", (gchar *)g_list_nth_data (category_list, 0)) &&
+	      !strcmp ("Business", (gchar *)g_list_nth_data (category_list, 1)) &&
+	      !strcmp ("Competition", (gchar *)g_list_nth_data (category_list, 2)))
 	    printf ("passed conversion from string to list\n");
 	  else
 	    printf ("failed conversion from string to list\n");

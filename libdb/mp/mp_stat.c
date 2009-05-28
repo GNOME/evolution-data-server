@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -33,10 +33,10 @@ static void __memp_stat_wait __P((REGINFO *, MPOOL *, DB_MPOOL_STAT *, int));
  * __memp_stat --
  *	Display MPOOL statistics.
  *
- * PUBLIC: int __memp_stat
+ * PUBLIC: gint __memp_stat
  * PUBLIC:     __P((DB_ENV *, DB_MPOOL_STAT **, DB_MPOOL_FSTAT ***, u_int32_t));
  */
-int
+gint
 __memp_stat(dbenv, gspp, fspp, flags)
 	DB_ENV *dbenv;
 	DB_MPOOL_STAT **gspp;
@@ -50,8 +50,8 @@ __memp_stat(dbenv, gspp, fspp, flags)
 	MPOOLFILE *mfp;
 	size_t len, nlen, pagesize;
 	u_int32_t pages, i;
-	int ret;
-	char *name, *tname;
+	gint ret;
+	gchar *name, *tname;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -200,7 +200,7 @@ __memp_stat(dbenv, gspp, fspp, flags)
 		 */
 		tfsp = *fspp;
 		tstruct = (DB_MPOOL_FSTAT *)(tfsp + i + 1);
-		tname = (char *)(tstruct + i);
+		tname = (gchar *)(tstruct + i);
 
 		/*
 		 * Files may have been opened since we counted, don't walk
@@ -240,12 +240,12 @@ __memp_stat(dbenv, gspp, fspp, flags)
  * __memp_dump_region --
  *	Display MPOOL structures.
  *
- * PUBLIC: int __memp_dump_region __P((DB_ENV *, char *, FILE *));
+ * PUBLIC: gint __memp_dump_region __P((DB_ENV *, gchar *, FILE *));
  */
-int
+gint
 __memp_dump_region(dbenv, area, fp)
 	DB_ENV *dbenv;
-	char *area;
+	gchar *area;
 	FILE *fp;
 {
 	static const FN fn[] = {
@@ -263,7 +263,7 @@ __memp_dump_region(dbenv, area, fp)
 	MPOOLFILE *mfp;
 	size_t fmap[FMAP_ENTRIES + 1];
 	u_int32_t i, flags;
-	int cnt;
+	gint cnt;
 	u_int8_t *p;
 
 	PANIC_CHECK(dbenv);
@@ -363,7 +363,7 @@ __memp_dumpcache(dbenv, dbmp, reginfo, fmap, fp, flags)
 	BH *bhp;
 	DB_MPOOL_HASH *hp;
 	MPOOL *c_mp;
-	int bucket;
+	gint bucket;
 
 	c_mp = reginfo->primary;
 
@@ -413,7 +413,7 @@ __memp_pbh(dbmp, bhp, fmap, fp)
 		{ BH_TRASH,		"trash" },
 		{ 0,			NULL }
 	};
-	int i;
+	gint i;
 
 	for (i = 0; i < FMAP_ENTRIES; ++i)
 		if (fmap[i] == INVALID_ROFF || fmap[i] == bhp->mf_offset)
@@ -451,7 +451,7 @@ __memp_stat_hash(reginfo, mp, dirtyp)
 {
 	DB_MPOOL_HASH *hp;
 	u_int32_t dirty;
-	int i;
+	gint i;
 
 	hp = R_ADDR(reginfo, mp->htab);
 	for (i = 0, dirty = 0; i < mp->htab_buckets; i++, hp++)
@@ -468,11 +468,11 @@ __memp_stat_wait(reginfo, mp, mstat, flags)
 	REGINFO *reginfo;
 	MPOOL *mp;
 	DB_MPOOL_STAT *mstat;
-	int flags;
+	gint flags;
 {
 	DB_MPOOL_HASH *hp;
 	DB_MUTEX *mutexp;
-	int i;
+	gint i;
 
 	mstat->st_hash_max_wait = 0;
 	hp = R_ADDR(reginfo, mp->htab);

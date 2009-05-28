@@ -69,7 +69,7 @@ struct _ENameSelectorList {
 	GtkWidget *tree_view;
 	GtkWidget *menu;
 	EDestinationStore *store;
-	int rows;
+	gint rows;
 };
 
 GType		 e_name_selector_list_get_type (void);

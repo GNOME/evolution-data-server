@@ -70,16 +70,16 @@ reset(CamelMimeFilter *mf)
 }
 
 static void
-filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
-	register unsigned char *p, *pend;
+	register guchar *p, *pend;
 
 	if (len == 0)
 		goto donothing;
 
 	if (f->flags & CAMEL_BESTENC_GET_ENCODING) {
-		register unsigned int /* hopefully reg's are assinged in the order they appear? */
+		register guint /* hopefully reg's are assinged in the order they appear? */
 			c,
 			lastc=f->lastc,
 			countline=f->countline,
@@ -102,7 +102,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		f->startofline = FALSE;
 
 		/* See rfc2045 section 2 for definitions of 7bit/8bit/binary */
-		p = (unsigned char *) in;
+		p = (guchar *) in;
 		pend = p + len;
 		while (p<pend) {
 			c = *p++;
@@ -130,7 +130,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 					/* Check for "^From " lines */
 					if ((f->flags & CAMEL_BESTENC_NO_FROM) && !f->hadfrom) {
 						if (pend-p >= 5) {
-							f->hadfrom = strncmp((char *) p, (char *) "From ", 5) == 0;
+							f->hadfrom = strncmp((gchar *) p, (gchar *) "From ", 5) == 0;
 						} else if (pend-p == 0) {
 							f->startofline = TRUE;
 						} else {
@@ -164,7 +164,7 @@ donothing:
 }
 
 static void
-complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
 
@@ -202,7 +202,7 @@ camel_mime_filter_bestenc_init (CamelMimeFilter *f)
  * Returns: a new #CamelMimeFilterBestenc object
  **/
 CamelMimeFilterBestenc *
-camel_mime_filter_bestenc_new (unsigned int flags)
+camel_mime_filter_bestenc_new (guint flags)
 {
 	CamelMimeFilterBestenc *new = (CamelMimeFilterBestenc *)camel_object_new(camel_mime_filter_bestenc_get_type());
 	new->flags = flags;
@@ -224,7 +224,7 @@ CamelTransferEncoding
 camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required)
 {
 	CamelTransferEncoding bestenc;
-	int istext;
+	gint istext;
 
 	istext = (required & CAMEL_BESTENC_TEXT) ? 1 : 0;
 	required = required & ~CAMEL_BESTENC_TEXT;
@@ -282,7 +282,7 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
  * Returns: the name of the best charset to use to encode the input
  * text filtered by @filter
  **/
-const char *
+const gchar *
 camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
 {
 	return camel_charset_best_name(&filter->charset);
@@ -297,7 +297,7 @@ camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
  * Set the flags for subsequent operations.
  **/
 void
-camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, unsigned int flags)
+camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint flags)
 {
 	filter->flags = flags;
 }

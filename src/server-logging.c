@@ -31,7 +31,7 @@
 static BonoboEventSourceClass *parent_class = NULL;
 
 typedef struct {
-	char *domain;
+	gchar *domain;
 	guint id;
 } ServerLoggingHandler;
 
@@ -152,7 +152,7 @@ server_log_handler(const gchar *domain,
 
 void
 server_logging_register_domain (ServerLogging *logging,
-				const char *domain)
+				const gchar *domain)
 {
 	ServerLoggingPrivate *priv;
 	guint handler_id;

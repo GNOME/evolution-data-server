@@ -48,7 +48,7 @@ typedef struct {
 } ArticleRange;
 
 typedef struct {
-	char *name;
+	gchar *name;
 	GArray *ranges;
 	gboolean subscribed;
 } NewsrcGroup;
@@ -62,7 +62,7 @@ struct CamelNNTPNewsrc {
 
 
 static NewsrcGroup *
-camel_nntp_newsrc_group_add (CamelNNTPNewsrc *newsrc, const char *group_name, gboolean subscribed)
+camel_nntp_newsrc_group_add (CamelNNTPNewsrc *newsrc, const gchar *group_name, gboolean subscribed)
 {
 	NewsrcGroup *new_group = g_malloc(sizeof(NewsrcGroup));
 
@@ -89,8 +89,8 @@ camel_nntp_newsrc_group_get_highest_article_read(CamelNNTPNewsrc *newsrc, Newsrc
 static int
 camel_nntp_newsrc_group_get_num_articles_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group)
 {
-	int i;
-	int count = 0;
+	gint i;
+	gint count = 0;
 
 	if (group == NULL)
 		return 0;
@@ -106,7 +106,7 @@ camel_nntp_newsrc_group_get_num_articles_read(CamelNNTPNewsrc *newsrc, NewsrcGro
 static void
 camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group, long low, long high)
 {
-	int i;
+	gint i;
 
 	if (group->ranges->len == 1
 	    && g_array_index (group->ranges, ArticleRange, 0).low == 0
@@ -188,11 +188,11 @@ camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *gr
 	}
 }
 
-int
-camel_nntp_newsrc_get_highest_article_read (CamelNNTPNewsrc *newsrc, const char *group_name)
+gint
+camel_nntp_newsrc_get_highest_article_read (CamelNNTPNewsrc *newsrc, const gchar *group_name)
 {
 	NewsrcGroup *group;
-	int ret;
+	gint ret;
 
 	NEWSRC_LOCK(newsrc, lock);
 
@@ -208,11 +208,11 @@ camel_nntp_newsrc_get_highest_article_read (CamelNNTPNewsrc *newsrc, const char 
 	return ret;
 }
 
-int
-camel_nntp_newsrc_get_num_articles_read (CamelNNTPNewsrc *newsrc, const char *group_name)
+gint
+camel_nntp_newsrc_get_num_articles_read (CamelNNTPNewsrc *newsrc, const gchar *group_name)
 {
 	NewsrcGroup *group;
-	int ret;
+	gint ret;
 
 	NEWSRC_LOCK(newsrc, lock);
 
@@ -229,13 +229,13 @@ camel_nntp_newsrc_get_num_articles_read (CamelNNTPNewsrc *newsrc, const char *gr
 }
 
 void
-camel_nntp_newsrc_mark_article_read (CamelNNTPNewsrc *newsrc, const char *group_name, int num)
+camel_nntp_newsrc_mark_article_read (CamelNNTPNewsrc *newsrc, const gchar *group_name, gint num)
 {
 	camel_nntp_newsrc_mark_range_read (newsrc, group_name, num, num);
 }
 
 void
-camel_nntp_newsrc_mark_range_read(CamelNNTPNewsrc *newsrc, const char *group_name, long low, long high)
+camel_nntp_newsrc_mark_range_read(CamelNNTPNewsrc *newsrc, const gchar *group_name, long low, long high)
 {
 	NewsrcGroup *group;
 
@@ -257,11 +257,11 @@ camel_nntp_newsrc_mark_range_read(CamelNNTPNewsrc *newsrc, const char *group_nam
 }
 
 gboolean
-camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const char *group_name, long num)
+camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const gchar *group_name, long num)
 {
-	int i;
+	gint i;
 	NewsrcGroup *group;
-	int ret = FALSE;
+	gint ret = FALSE;
 
 	NEWSRC_LOCK(newsrc, lock);
 	group = g_hash_table_lookup (newsrc->groups, group_name);
@@ -282,10 +282,10 @@ camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const char *group_na
 }
 
 gboolean
-camel_nntp_newsrc_group_is_subscribed (CamelNNTPNewsrc *newsrc, const char *group_name)
+camel_nntp_newsrc_group_is_subscribed (CamelNNTPNewsrc *newsrc, const gchar *group_name)
 {
 	NewsrcGroup *group;
-	int ret = FALSE;
+	gint ret = FALSE;
 
 	NEWSRC_LOCK(newsrc, lock);
 
@@ -301,7 +301,7 @@ camel_nntp_newsrc_group_is_subscribed (CamelNNTPNewsrc *newsrc, const char *grou
 }
 
 void
-camel_nntp_newsrc_subscribe_group (CamelNNTPNewsrc *newsrc, const char *group_name)
+camel_nntp_newsrc_subscribe_group (CamelNNTPNewsrc *newsrc, const gchar *group_name)
 {
 	NewsrcGroup *group;
 
@@ -322,7 +322,7 @@ camel_nntp_newsrc_subscribe_group (CamelNNTPNewsrc *newsrc, const char *group_na
 }
 
 void
-camel_nntp_newsrc_unsubscribe_group (CamelNNTPNewsrc *newsrc, const char *group_name)
+camel_nntp_newsrc_unsubscribe_group (CamelNNTPNewsrc *newsrc, const gchar *group_name)
 {
 	NewsrcGroup *group;
 
@@ -348,7 +348,7 @@ struct newsrc_ptr_array {
 
 /* this needs to strdup the grup_name, if the group array is likely to change */
 static void
-get_group_foreach (char *group_name, NewsrcGroup *group, struct newsrc_ptr_array *npa)
+get_group_foreach (gchar *group_name, NewsrcGroup *group, struct newsrc_ptr_array *npa)
 {
 	if (group->subscribed || !npa->subscribed_only) {
 		g_ptr_array_add (npa->ptr_array, group_name);
@@ -411,7 +411,7 @@ camel_nntp_newsrc_write_group_line(gpointer key, NewsrcGroup *group, struct news
 {
 	CamelNNTPNewsrc *newsrc;
 	FILE *fp;
-	int i;
+	gint i;
 
 	fp = newsrc_fp->fp;
 	newsrc = newsrc_fp->newsrc;
@@ -433,7 +433,7 @@ camel_nntp_newsrc_write_group_line(gpointer key, NewsrcGroup *group, struct news
 	fprintf (fp, " ");
 
 	for (i = 0; i < group->ranges->len; i ++) {
-		char range_buffer[100];
+		gchar range_buffer[100];
 		guint low = g_array_index (group->ranges, ArticleRange, i).low;
 		guint high = g_array_index (group->ranges, ArticleRange, i).high;
 
@@ -501,9 +501,9 @@ camel_nntp_newsrc_write(CamelNNTPNewsrc *newsrc)
 }
 
 static void
-camel_nntp_newsrc_parse_line(CamelNNTPNewsrc *newsrc, char *line)
+camel_nntp_newsrc_parse_line(CamelNNTPNewsrc *newsrc, gchar *line)
 {
-	char *p, *comma, *dash;
+	gchar *p, *comma, *dash;
 	gboolean is_subscribed;
 	NewsrcGroup *group;
 
@@ -555,11 +555,11 @@ camel_nntp_newsrc_parse_line(CamelNNTPNewsrc *newsrc, char *line)
 	} while(comma);
 }
 
-static char*
-get_line (char *buf, char **p)
+static gchar *
+get_line (gchar *buf, gchar **p)
 {
-	char *l;
-	char *line;
+	gchar *l;
+	gchar *line;
 
 	g_assert (*p == NULL || **p == '\n' || **p == '\0');
 
@@ -597,15 +597,15 @@ get_line (char *buf, char **p)
 }
 
 CamelNNTPNewsrc *
-camel_nntp_newsrc_read_for_server (const char *server)
+camel_nntp_newsrc_read_for_server (const gchar *server)
 {
-	int fd;
-	char buf[1024];
-	char *file_contents, *line, *p;
-	char *filename;
+	gint fd;
+	gchar buf[1024];
+	gchar *file_contents, *line, *p;
+	gchar *filename;
 	CamelNNTPNewsrc *newsrc;
-	int newsrc_len;
-	int len_read = 0;
+	gint newsrc_len;
+	gint len_read = 0;
 	struct stat sb;
 
 	filename = g_strdup_printf ("%s/.newsrc-%s", g_get_home_dir(), server);
@@ -630,7 +630,7 @@ camel_nntp_newsrc_read_for_server (const char *server)
 	file_contents = g_malloc (newsrc_len + 1);
 
 	while (len_read < newsrc_len) {
-		int c = read (fd, buf, sizeof (buf));
+		gint c = read (fd, buf, sizeof (buf));
 
 		if (c == -1)
 			break;

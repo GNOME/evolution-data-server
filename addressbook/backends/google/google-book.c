@@ -67,7 +67,7 @@ typedef enum
 
 struct _GoogleBookPrivate
 {
-    char *username;
+    gchar *username;
     CacheType cache_type;
     union {
         EBookBackendCache *on_disk;
@@ -82,9 +82,9 @@ struct _GoogleBookPrivate
     GDataService *service;
     EProxy *proxy;
     guint refresh_interval;
-    char *base_uri;
+    gchar *base_uri;
     /* FIXME - this one should not be needed */
-    char *add_base_uri;
+    gchar *add_base_uri;
 
     gboolean live_mode;
 
@@ -96,13 +96,13 @@ struct _GoogleBookPrivate
 
 static gboolean
 google_book_get_new_contacts_in_chunks (GoogleBook *book,
-                                        int         chunk_size,
+                                        gint         chunk_size,
                                         GError    **error);
 
 static void
 google_book_error_from_soup_error      (GError *soup_error,
                                         GError **error,
-                                        const char *message);
+                                        const gchar *message);
 
 static void
 google_book_cache_init (GoogleBook *book, gboolean on_disk)
@@ -127,7 +127,7 @@ google_book_cache_add_contact (GoogleBook *book, GDataEntry *entry)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
     EContact *contact;
-    const char *uid;
+    const gchar *uid;
 
     switch (priv->cache_type) {
     case ON_DISK_CACHE:
@@ -151,7 +151,7 @@ google_book_cache_add_contact (GoogleBook *book, GDataEntry *entry)
 }
 
 static gboolean
-google_book_cache_remove_contact (GoogleBook *book, const char *uid)
+google_book_cache_remove_contact (GoogleBook *book, const gchar *uid)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
     gboolean success = TRUE;
@@ -169,7 +169,7 @@ google_book_cache_remove_contact (GoogleBook *book, const char *uid)
 }
 
 static EContact*
-google_book_cache_get_contact (GoogleBook *book, const char *uid, GDataEntry **entry)
+google_book_cache_get_contact (GoogleBook *book, const gchar *uid, GDataEntry **entry)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
     EContact *contact;
@@ -179,7 +179,7 @@ google_book_cache_get_contact (GoogleBook *book, const char *uid, GDataEntry **e
         contact = e_book_backend_cache_get_contact (priv->cache.on_disk, uid);
         if (contact) {
             if (entry) {
-                const char *entry_xml;
+                const gchar *entry_xml;
                 entry_xml = _e_contact_get_gdata_entry_xml (contact);
                 *entry = gdata_entry_new_from_xml (entry_xml);
             }
@@ -263,7 +263,7 @@ google_book_cache_thaw (GoogleBook *book)
     }
 }
 
-static char*
+static gchar *
 google_book_cache_get_last_update (GoogleBook *book)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
@@ -286,8 +286,8 @@ static gboolean
 google_book_cache_get_last_update_tv (GoogleBook *book, GTimeVal *tv)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
-    char *last_update;
-    int rv;
+    gchar *last_update;
+    gint rv;
 
     switch (priv->cache_type) {
     case ON_DISK_CACHE:
@@ -308,7 +308,7 @@ static void
 google_book_cache_set_last_update (GoogleBook *book, GTimeVal *tv)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
-    char *time;
+    gchar *time;
 
     switch (priv->cache_type) {
     case ON_DISK_CACHE:
@@ -373,7 +373,7 @@ google_book_cache_refresh_if_needed (GoogleBook *book, GError **error)
 {
     GoogleBookPrivate *priv = GET_PRIVATE (book);
     guint remaining_secs;
-    int rv = TRUE;
+    gint rv = TRUE;
     gboolean install_timeout;
 
     __debug__ (G_STRFUNC);
@@ -448,8 +448,8 @@ google_book_cache_destroy (GoogleBook *book)
 static void
 google_book_construct_base_uri (GoogleBook *book, gboolean use_ssl)
 {
-    const char format[] = "%swww.google.com/m8/feeds/contacts/%s/base";
-    char *esc_username;
+    const gchar format[] = "%swww.google.com/m8/feeds/contacts/%s/base";
+    gchar *esc_username;
     GoogleBookPrivate *priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
@@ -585,7 +585,7 @@ google_book_emit_contact_changed (GoogleBook *book, EContact *contact)
 }
 
 static void
-google_book_emit_contact_removed (GoogleBook *book, const char *uid)
+google_book_emit_contact_removed (GoogleBook *book, const gchar *uid)
 {
     GoogleBookPrivate *priv;
 
@@ -722,7 +722,7 @@ google_book_init (GoogleBook *self)
 }
 
 GoogleBook*
-google_book_new (const char *username, gboolean use_cache)
+google_book_new (const gchar *username, gboolean use_cache)
 {
     return g_object_new (TYPE_GOOGLE_BOOK,
                          "username", username,
@@ -749,7 +749,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 }
 
 gboolean
-google_book_connect_to_google (GoogleBook *book, const char *password, GError **error)
+google_book_connect_to_google (GoogleBook *book, const gchar *password, GError **error)
 {
     GoogleBookPrivate *priv;
     GDataService *service;
@@ -869,7 +869,7 @@ google_book_update_contact (GoogleBook *book,
     GDataEntry *entry, *new_entry;
     GError *soup_error = NULL;
     EContact *cached_contact;
-    const char *uid;
+    const gchar *uid;
 
     *out_contact = NULL;
 
@@ -913,7 +913,7 @@ google_book_update_contact (GoogleBook *book,
 }
 
 gboolean
-google_book_remove_contact (GoogleBook *book, const char *uid, GError **error)
+google_book_remove_contact (GoogleBook *book, const gchar *uid, GError **error)
 {
     GoogleBookPrivate *priv;
     GDataEntry *entry = NULL;
@@ -958,7 +958,7 @@ process_subsequent_entry (gpointer list_data, gpointer user_data)
     GDataEntry *entry;
     EContact *cached_contact;
     gboolean is_deleted;
-    const char *uid;
+    const gchar *uid;
 
     __debug__ (G_STRFUNC);
     priv = GET_PRIVATE (book);
@@ -996,7 +996,7 @@ process_initial_entry (gpointer list_data, gpointer user_data)
     GoogleBookPrivate *priv;
     GoogleBook *book = user_data;
     GDataEntry *entry;
-    const char* uid;
+    const gchar * uid;
     EContact *contact;
 
     __debug__ (G_STRFUNC);
@@ -1012,12 +1012,12 @@ process_initial_entry (gpointer list_data, gpointer user_data)
 
 static gboolean
 google_book_get_new_contacts_in_chunks (GoogleBook *book,
-                                        int         chunk_size,
+                                        gint         chunk_size,
                                         GError    **error)
 {
     GoogleBookPrivate *priv;
-    int start_index = 1;
-    char *last_updated;
+    gint start_index = 1;
+    gchar *last_updated;
     GError *our_error = NULL;
     gboolean rv = TRUE;
 
@@ -1034,7 +1034,7 @@ google_book_get_new_contacts_in_chunks (GoogleBook *book,
         GDataFeed *feed;
         GSList *entries;
         GString *uri;
-        int results;
+        gint results;
         GError *soup_error = NULL;
 
         uri = g_string_new (priv->base_uri);
@@ -1091,7 +1091,7 @@ out:
 
 EContact*
 google_book_get_contact (GoogleBook *book,
-                         const char *uid,
+                         const gchar *uid,
                          GError    **error)
 {
     GoogleBookPrivate *priv;
@@ -1216,7 +1216,7 @@ google_book_set_live_mode (GoogleBook *book, gboolean live_mode)
 static void
 google_book_error_from_soup_error (GError     *soup_error,
                                    GError    **error,
-                                   const char *message)
+                                   const gchar *message)
 {
     GoogleBookError code;
 

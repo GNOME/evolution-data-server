@@ -37,8 +37,8 @@ static CamelServiceClass *parent_class = NULL;
 /* Returns the class for a CamelTransport */
 #define CT_CLASS(so) CAMEL_TRANSPORT_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static int transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static int transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 
 static void

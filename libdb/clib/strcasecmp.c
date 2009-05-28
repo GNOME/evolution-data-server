@@ -34,7 +34,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -46,7 +46,7 @@ static const char revid[] = "$Id$";
  * together for a case independent comparison.  The mappings are
  * based upon ascii character sequences.
  */
-static const unsigned char charmap[] = {
+static const guchar charmap[] = {
 	'\000', '\001', '\002', '\003', '\004', '\005', '\006', '\007',
 	'\010', '\011', '\012', '\013', '\014', '\015', '\016', '\017',
 	'\020', '\021', '\022', '\023', '\024', '\025', '\026', '\027',
@@ -86,16 +86,16 @@ static const unsigned char charmap[] = {
  *	Do strcmp(3) in a case-insensitive manner.
  *
  * PUBLIC: #ifndef HAVE_STRCASECMP
- * PUBLIC: int strcasecmp __P((const char *, const char *));
+ * PUBLIC: gint strcasecmp __P((const gchar *, const gchar *));
  * PUBLIC: #endif
  */
-int
+gint
 strcasecmp(s1, s2)
-	const char *s1, *s2;
+	const gchar *s1, *s2;
 {
-	register const unsigned char *cm = charmap,
-			*us1 = (const unsigned char *)s1,
-			*us2 = (const unsigned char *)s2;
+	register const guchar *cm = charmap,
+			*us1 = (const guchar *)s1,
+			*us2 = (const guchar *)s2;
 
 	while (cm[*us1] == cm[*us2++])
 		if (*us1++ == '\0')
@@ -108,18 +108,18 @@ strcasecmp(s1, s2)
  *	Do strncmp(3) in a case-insensitive manner.
  *
  * PUBLIC: #ifndef HAVE_STRCASECMP
- * PUBLIC: int strncasecmp __P((const char *, const char *, size_t));
+ * PUBLIC: gint strncasecmp __P((const gchar *, const gchar *, size_t));
  * PUBLIC: #endif
  */
-int
+gint
 strncasecmp(s1, s2, n)
-	const char *s1, *s2;
+	const gchar *s1, *s2;
 	register size_t n;
 {
 	if (n != 0) {
-		register const unsigned char *cm = charmap,
-				*us1 = (const unsigned char *)s1,
-				*us2 = (const unsigned char *)s2;
+		register const guchar *cm = charmap,
+				*us1 = (const guchar *)s1,
+				*us2 = (const guchar *)s2;
 
 		do {
 			if (cm[*us1] != cm[*us2++])

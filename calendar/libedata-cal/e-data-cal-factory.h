@@ -60,15 +60,15 @@ struct _EDataCalFactoryClass {
 GType       e_data_cal_factory_get_type        (void);
 EDataCalFactory *e_data_cal_factory_new             (void);
 
-gboolean    e_data_cal_factory_register_storage (EDataCalFactory *factory, const char *iid);
+gboolean    e_data_cal_factory_register_storage (EDataCalFactory *factory, const gchar *iid);
 void        e_data_cal_factory_register_backend  (EDataCalFactory *factory,
 						  ECalBackendFactory *backend_factory);
 
 void	    e_data_cal_factory_register_backends    (EDataCalFactory    *factory);
 
-int         e_data_cal_factory_get_n_backends       (EDataCalFactory *factory);
+gint         e_data_cal_factory_get_n_backends       (EDataCalFactory *factory);
 void        e_data_cal_factory_dump_active_backends (EDataCalFactory *factory);
-void        e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode);
+void        e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, gint mode);
 
 G_END_DECLS
 

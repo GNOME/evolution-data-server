@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,8 +27,8 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static int __memp_set_cachesize __P((DB_ENV *, u_int32_t, u_int32_t, int));
-static int __memp_set_mp_mmapsize __P((DB_ENV *, size_t));
+static gint __memp_set_cachesize __P((DB_ENV *, u_int32_t, u_int32_t, int));
+static gint __memp_set_mp_mmapsize __P((DB_ENV *, size_t));
 
 /*
  * __memp_dbenv_create --
@@ -91,7 +91,7 @@ static int
 __memp_set_cachesize(dbenv, gbytes, bytes, ncache)
 	DB_ENV *dbenv;
 	u_int32_t gbytes, bytes;
-	int ncache;
+	gint ncache;
 {
 	ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_cachesize");
 

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifdef HAVE_RPC
@@ -29,16 +29,16 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 
 /*
- * PUBLIC: int __dbcl_env_close_ret
+ * PUBLIC: gint __dbcl_env_close_ret
  * PUBLIC:     __P((DB_ENV *, u_int32_t, __env_close_reply *));
  */
-int
+gint
 __dbcl_env_close_ret(dbenv, flags, replyp)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 	__env_close_reply *replyp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(flags, 0);
 
@@ -51,10 +51,10 @@ __dbcl_env_close_ret(dbenv, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_env_create_ret
+ * PUBLIC: gint __dbcl_env_create_ret
  * PUBLIC:     __P((DB_ENV *, long, __env_create_reply *));
  */
-int
+gint
 __dbcl_env_create_ret(dbenv, timeout, replyp)
 	DB_ENV * dbenv;
 	long timeout;
@@ -70,19 +70,19 @@ __dbcl_env_create_ret(dbenv, timeout, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_env_open_ret __P((DB_ENV *,
- * PUBLIC:     const char *, u_int32_t, int, __env_open_reply *));
+ * PUBLIC: gint __dbcl_env_open_ret __P((DB_ENV *,
+ * PUBLIC:     const gchar *, u_int32_t, int, __env_open_reply *));
  */
-int
+gint
 __dbcl_env_open_ret(dbenv, home, flags, mode, replyp)
 	DB_ENV *dbenv;
-	const char *home;
+	const gchar *home;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	__env_open_reply *replyp;
 {
 	DB_TXNMGR *tmgrp;
-	int ret;
+	gint ret;
 
 	COMPQUIET(home, NULL);
 	COMPQUIET(mode, 0);
@@ -111,17 +111,17 @@ __dbcl_env_open_ret(dbenv, home, flags, mode, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_env_remove_ret
- * PUBLIC:     __P((DB_ENV *, const char *, u_int32_t, __env_remove_reply *));
+ * PUBLIC: gint __dbcl_env_remove_ret
+ * PUBLIC:     __P((DB_ENV *, const gchar *, u_int32_t, __env_remove_reply *));
  */
-int
+gint
 __dbcl_env_remove_ret(dbenv, home, flags, replyp)
 	DB_ENV *dbenv;
-	const char *home;
+	const gchar *home;
 	u_int32_t flags;
 	__env_remove_reply *replyp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(home, NULL);
 	COMPQUIET(flags, 0);
@@ -135,9 +135,9 @@ __dbcl_env_remove_ret(dbenv, home, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_txn_abort_ret __P((DB_TXN *, __txn_abort_reply *));
+ * PUBLIC: gint __dbcl_txn_abort_ret __P((DB_TXN *, __txn_abort_reply *));
  */
-int
+gint
 __dbcl_txn_abort_ret(txnp, replyp)
 	DB_TXN *txnp;
 	__txn_abort_reply *replyp;
@@ -147,10 +147,10 @@ __dbcl_txn_abort_ret(txnp, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_txn_begin_ret __P((DB_ENV *,
+ * PUBLIC: gint __dbcl_txn_begin_ret __P((DB_ENV *,
  * PUBLIC:     DB_TXN *, DB_TXN **, u_int32_t, __txn_begin_reply *));
  */
-int
+gint
 __dbcl_txn_begin_ret(envp, parent, txnpp, flags, replyp)
 	DB_ENV *envp;
 	DB_TXN *parent, **txnpp;
@@ -158,7 +158,7 @@ __dbcl_txn_begin_ret(envp, parent, txnpp, flags, replyp)
 	__txn_begin_reply *replyp;
 {
 	DB_TXN *txn;
-	int ret;
+	gint ret;
 
 	COMPQUIET(flags, 0);
 
@@ -173,10 +173,10 @@ __dbcl_txn_begin_ret(envp, parent, txnpp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_txn_commit_ret
+ * PUBLIC: gint __dbcl_txn_commit_ret
  * PUBLIC:     __P((DB_TXN *, u_int32_t, __txn_commit_reply *));
  */
-int
+gint
 __dbcl_txn_commit_ret(txnp, flags, replyp)
 	DB_TXN *txnp;
 	u_int32_t flags;
@@ -189,10 +189,10 @@ __dbcl_txn_commit_ret(txnp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_txn_discard_ret __P((DB_TXN *, u_int32_t,
+ * PUBLIC: gint __dbcl_txn_discard_ret __P((DB_TXN *, u_int32_t,
  * PUBLIC:      __txn_discard_reply *));
  */
-int
+gint
 __dbcl_txn_discard_ret(txnp, flags, replyp)
 	DB_TXN * txnp;
 	u_int32_t flags;
@@ -205,10 +205,10 @@ __dbcl_txn_discard_ret(txnp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_txn_recover_ret __P((DB_ENV *, DB_PREPLIST *, long,
+ * PUBLIC: gint __dbcl_txn_recover_ret __P((DB_ENV *, DB_PREPLIST *, long,
  * PUBLIC:      long *, u_int32_t, __txn_recover_reply *));
  */
-int
+gint
 __dbcl_txn_recover_ret(dbenv, preplist, count, retp, flags, replyp)
 	DB_ENV * dbenv;
 	DB_PREPLIST * preplist;
@@ -220,7 +220,7 @@ __dbcl_txn_recover_ret(dbenv, preplist, count, retp, flags, replyp)
 	DB_PREPLIST *prep;
 	DB_TXN *txnarray, *txn;
 	u_int32_t i, *txnid;
-	int ret;
+	gint ret;
 	u_int8_t *gid;
 
 	COMPQUIET(flags, 0);
@@ -263,15 +263,15 @@ __dbcl_txn_recover_ret(dbenv, preplist, count, retp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_close_ret __P((DB *, u_int32_t, __db_close_reply *));
+ * PUBLIC: gint __dbcl_db_close_ret __P((DB *, u_int32_t, __db_close_reply *));
  */
-int
+gint
 __dbcl_db_close_ret(dbp, flags, replyp)
 	DB *dbp;
 	u_int32_t flags;
 	__db_close_reply *replyp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(flags, 0);
 
@@ -284,10 +284,10 @@ __dbcl_db_close_ret(dbp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_create_ret
+ * PUBLIC: gint __dbcl_db_create_ret
  * PUBLIC:     __P((DB *, DB_ENV *, u_int32_t, __db_create_reply *));
  */
-int
+gint
 __dbcl_db_create_ret(dbp, dbenv, flags, replyp)
 	DB * dbp;
 	DB_ENV * dbenv;
@@ -304,10 +304,10 @@ __dbcl_db_create_ret(dbp, dbenv, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_get_ret
+ * PUBLIC: gint __dbcl_db_get_ret
  * PUBLIC:     __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t, __db_get_reply *));
  */
-int
+gint
 __dbcl_db_get_ret(dbp, txnp, key, data, flags, replyp)
 	DB *dbp;
 	DB_TXN *txnp;
@@ -316,8 +316,8 @@ __dbcl_db_get_ret(dbp, txnp, key, data, flags, replyp)
 	__db_get_reply *replyp;
 {
 	DB_ENV *dbenv;
-	int ret;
-	void *oldkey;
+	gint ret;
+	gpointer oldkey;
 
 	COMPQUIET(txnp, NULL);
 	COMPQUIET(flags, 0);
@@ -347,10 +347,10 @@ __dbcl_db_get_ret(dbp, txnp, key, data, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_key_range_ret __P((DB *, DB_TXN *,
+ * PUBLIC: gint __dbcl_db_key_range_ret __P((DB *, DB_TXN *,
  * PUBLIC:     DBT *, DB_KEY_RANGE *, u_int32_t, __db_key_range_reply *));
  */
-int
+gint
 __dbcl_db_key_range_ret(dbp, txnp, key, range, flags, replyp)
 	DB *dbp;
 	DB_TXN *txnp;
@@ -373,17 +373,17 @@ __dbcl_db_key_range_ret(dbp, txnp, key, range, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_open_ret __P((DB *, DB_TXN *, const char *,
- * PUBLIC:     const char *, DBTYPE, u_int32_t, int, __db_open_reply *));
+ * PUBLIC: gint __dbcl_db_open_ret __P((DB *, DB_TXN *, const gchar *,
+ * PUBLIC:     const gchar *, DBTYPE, u_int32_t, int, __db_open_reply *));
  */
-int
+gint
 __dbcl_db_open_ret(dbp, txn, name, subdb, type, flags, mode, replyp)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	DBTYPE type;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	__db_open_reply *replyp;
 {
 	COMPQUIET(txn, NULL);
@@ -419,10 +419,10 @@ __dbcl_db_open_ret(dbp, txn, name, subdb, type, flags, mode, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_pget_ret __P((DB *, DB_TXN *, DBT *, DBT *, DBT *,
+ * PUBLIC: gint __dbcl_db_pget_ret __P((DB *, DB_TXN *, DBT *, DBT *, DBT *,
  * PUBLIC:      u_int32_t, __db_pget_reply *));
  */
-int
+gint
 __dbcl_db_pget_ret(dbp, txnp, skey, pkey, data, flags, replyp)
 	DB * dbp;
 	DB_TXN * txnp;
@@ -433,8 +433,8 @@ __dbcl_db_pget_ret(dbp, txnp, skey, pkey, data, flags, replyp)
 	__db_pget_reply *replyp;
 {
 	DB_ENV *dbenv;
-	int ret;
-	void *oldskey, *oldpkey;
+	gint ret;
+	gpointer oldskey, *oldpkey;
 
 	COMPQUIET(txnp, NULL);
 	COMPQUIET(flags, 0);
@@ -477,10 +477,10 @@ __dbcl_db_pget_ret(dbp, txnp, skey, pkey, data, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_put_ret
+ * PUBLIC: gint __dbcl_db_put_ret
  * PUBLIC:     __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t, __db_put_reply *));
  */
-int
+gint
 __dbcl_db_put_ret(dbp, txnp, key, data, flags, replyp)
 	DB *dbp;
 	DB_TXN *txnp;
@@ -488,7 +488,7 @@ __dbcl_db_put_ret(dbp, txnp, key, data, flags, replyp)
 	u_int32_t flags;
 	__db_put_reply *replyp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(dbp, NULL);
 	COMPQUIET(txnp, NULL);
@@ -502,17 +502,17 @@ __dbcl_db_put_ret(dbp, txnp, key, data, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_remove_ret __P((DB *,
- * PUBLIC:     const char *, const char *, u_int32_t, __db_remove_reply *));
+ * PUBLIC: gint __dbcl_db_remove_ret __P((DB *,
+ * PUBLIC:     const gchar *, const gchar *, u_int32_t, __db_remove_reply *));
  */
-int
+gint
 __dbcl_db_remove_ret(dbp, name, subdb, flags, replyp)
 	DB *dbp;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	u_int32_t flags;
 	__db_remove_reply *replyp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(name, 0);
 	COMPQUIET(subdb, 0);
@@ -527,17 +527,17 @@ __dbcl_db_remove_ret(dbp, name, subdb, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_rename_ret __P((DB *, const char *,
- * PUBLIC:     const char *, const char *, u_int32_t, __db_rename_reply *));
+ * PUBLIC: gint __dbcl_db_rename_ret __P((DB *, const gchar *,
+ * PUBLIC:     const gchar *, const gchar *, u_int32_t, __db_rename_reply *));
  */
-int
+gint
 __dbcl_db_rename_ret(dbp, name, subdb, newname, flags, replyp)
 	DB *dbp;
-	const char *name, *subdb, *newname;
+	const gchar *name, *subdb, *newname;
 	u_int32_t flags;
 	__db_rename_reply *replyp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(name, 0);
 	COMPQUIET(subdb, 0);
@@ -553,17 +553,17 @@ __dbcl_db_rename_ret(dbp, name, subdb, newname, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_stat_ret
- * PUBLIC:     __P((DB *, void *, u_int32_t, __db_stat_reply *));
+ * PUBLIC: gint __dbcl_db_stat_ret
+ * PUBLIC:     __P((DB *, gpointer , u_int32_t, __db_stat_reply *));
  */
-int
+gint
 __dbcl_db_stat_ret(dbp, sp, flags, replyp)
 	DB *dbp;
-	void *sp;
+	gpointer sp;
 	u_int32_t flags;
 	__db_stat_reply *replyp;
 {
-	int len, ret;
+	gint len, ret;
 	u_int32_t i, *q, *p, *retsp;
 
 	COMPQUIET(flags, 0);
@@ -582,10 +582,10 @@ __dbcl_db_stat_ret(dbp, sp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_truncate_ret __P((DB *, DB_TXN *, u_int32_t  *,
+ * PUBLIC: gint __dbcl_db_truncate_ret __P((DB *, DB_TXN *, u_int32_t  *,
  * PUBLIC:      u_int32_t, __db_truncate_reply *));
  */
-int
+gint
 __dbcl_db_truncate_ret(dbp, txnp, countp, flags, replyp)
 	DB *dbp;
 	DB_TXN *txnp;
@@ -604,10 +604,10 @@ __dbcl_db_truncate_ret(dbp, txnp, countp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_cursor_ret
+ * PUBLIC: gint __dbcl_db_cursor_ret
  * PUBLIC:     __P((DB *, DB_TXN *, DBC **, u_int32_t, __db_cursor_reply *));
  */
-int
+gint
 __dbcl_db_cursor_ret(dbp, txnp, dbcp, flags, replyp)
 	DB *dbp;
 	DB_TXN *txnp;
@@ -625,10 +625,10 @@ __dbcl_db_cursor_ret(dbp, txnp, dbcp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_db_join_ret
+ * PUBLIC: gint __dbcl_db_join_ret
  * PUBLIC:     __P((DB *, DBC **, DBC **, u_int32_t, __db_join_reply *));
  */
-int
+gint
 __dbcl_db_join_ret(dbp, curs, dbcp, flags, replyp)
 	DB *dbp;
 	DBC **curs, **dbcp;
@@ -652,9 +652,9 @@ __dbcl_db_join_ret(dbp, curs, dbcp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_dbc_close_ret __P((DBC *, __dbc_close_reply *));
+ * PUBLIC: gint __dbcl_dbc_close_ret __P((DBC *, __dbc_close_reply *));
  */
-int
+gint
 __dbcl_dbc_close_ret(dbc, replyp)
 	DBC *dbc;
 	__dbc_close_reply *replyp;
@@ -664,10 +664,10 @@ __dbcl_dbc_close_ret(dbc, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_dbc_count_ret
+ * PUBLIC: gint __dbcl_dbc_count_ret
  * PUBLIC:     __P((DBC *, db_recno_t *, u_int32_t, __dbc_count_reply *));
  */
-int
+gint
 __dbcl_dbc_count_ret(dbc, countp, flags, replyp)
 	DBC *dbc;
 	db_recno_t *countp;
@@ -685,10 +685,10 @@ __dbcl_dbc_count_ret(dbc, countp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_dbc_dup_ret
+ * PUBLIC: gint __dbcl_dbc_dup_ret
  * PUBLIC:     __P((DBC *, DBC **, u_int32_t, __dbc_dup_reply *));
  */
-int
+gint
 __dbcl_dbc_dup_ret(dbc, dbcp, flags, replyp)
 	DBC *dbc, **dbcp;
 	u_int32_t flags;
@@ -703,10 +703,10 @@ __dbcl_dbc_dup_ret(dbc, dbcp, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_dbc_get_ret
+ * PUBLIC: gint __dbcl_dbc_get_ret
  * PUBLIC:     __P((DBC *, DBT *, DBT *, u_int32_t, __dbc_get_reply *));
  */
-int
+gint
 __dbcl_dbc_get_ret(dbc, key, data, flags, replyp)
 	DBC *dbc;
 	DBT *key, *data;
@@ -714,8 +714,8 @@ __dbcl_dbc_get_ret(dbc, key, data, flags, replyp)
 	__dbc_get_reply *replyp;
 {
 	DB_ENV *dbenv;
-	int ret;
-	void *oldkey;
+	gint ret;
+	gpointer oldkey;
 
 	COMPQUIET(flags, 0);
 
@@ -744,10 +744,10 @@ __dbcl_dbc_get_ret(dbc, key, data, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_dbc_pget_ret __P((DBC *, DBT *, DBT *, DBT *, u_int32_t,
+ * PUBLIC: gint __dbcl_dbc_pget_ret __P((DBC *, DBT *, DBT *, DBT *, u_int32_t,
  * PUBLIC:      __dbc_pget_reply *));
  */
-int
+gint
 __dbcl_dbc_pget_ret(dbc, skey, pkey, data, flags, replyp)
 	DBC * dbc;
 	DBT * skey;
@@ -757,8 +757,8 @@ __dbcl_dbc_pget_ret(dbc, skey, pkey, data, flags, replyp)
 	__dbc_pget_reply *replyp;
 {
 	DB_ENV *dbenv;
-	int ret;
-	void *oldskey, *oldpkey;
+	gint ret;
+	gpointer oldskey, *oldpkey;
 
 	COMPQUIET(flags, 0);
 
@@ -800,10 +800,10 @@ __dbcl_dbc_pget_ret(dbc, skey, pkey, data, flags, replyp)
 }
 
 /*
- * PUBLIC: int __dbcl_dbc_put_ret
+ * PUBLIC: gint __dbcl_dbc_put_ret
  * PUBLIC:     __P((DBC *, DBT *, DBT *, u_int32_t, __dbc_put_reply *));
  */
-int
+gint
 __dbcl_dbc_put_ret(dbc, key, data, flags, replyp)
 	DBC *dbc;
 	DBT *key, *data;

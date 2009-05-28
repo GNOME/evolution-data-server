@@ -33,7 +33,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterPgp {
 	CamelMimeFilter filter;
-	int state;
+	gint state;
 } CamelMimeFilterPgp;
 
 typedef struct _CamelMimeFilterPgpClass {

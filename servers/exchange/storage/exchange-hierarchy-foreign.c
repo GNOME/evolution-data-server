@@ -51,7 +51,7 @@ struct _ExchangeHierarchyForeignPrivate {
 	gboolean checked_hide_private;
 };
 
-extern const char *exchange_localfreebusy_path;
+extern const gchar *exchange_localfreebusy_path;
 
 #define PARENT_TYPE EXCHANGE_TYPE_HIERARCHY_SOMEDAV
 static ExchangeHierarchySomeDAVClass *parent_class = NULL;
@@ -59,13 +59,13 @@ static ExchangeHierarchySomeDAVClass *parent_class = NULL;
 static GPtrArray *get_hrefs (ExchangeHierarchySomeDAV *hsd);
 static ExchangeAccountFolderResult create_folder (ExchangeHierarchy *hier,
 						  EFolder *parent,
-						  const char *name,
-						  const char *type);
+						  const gchar *name,
+						  const gchar *type);
 static ExchangeAccountFolderResult remove_folder (ExchangeHierarchy *hier,
 						  EFolder *folder);
 static ExchangeAccountFolderResult scan_subtree (ExchangeHierarchy *hier,
 						 EFolder *folder,
-						 int mode);
+						 gint mode);
 static void finalize (GObject *object);
 
 static void
@@ -112,11 +112,11 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (exchange_hierarchy_foreign, ExchangeHierarchyForeign, class_init, init, PARENT_TYPE)
 
-static const char *privacy_props[] = {
+static const gchar *privacy_props[] = {
 	PR_DELEGATES_ENTRYIDS,
 	PR_DELEGATES_SEE_PRIVATE,
 };
-static const int n_privacy_props = sizeof (privacy_props) / sizeof (privacy_props[0]);
+static const gint n_privacy_props = sizeof (privacy_props) / sizeof (privacy_props[0]);
 
 static void
 check_hide_private (ExchangeHierarchy *hier)
@@ -125,11 +125,11 @@ check_hide_private (ExchangeHierarchy *hier)
 	E2kContext *ctx;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults = 0, i;
+	gint nresults = 0, i;
 	GPtrArray *entryids, *privflags;
 	GByteArray *entryid;
-	const char *my_dn, *delegate_dn;
-	char *uri;
+	const gchar *my_dn, *delegate_dn;
+	gchar *uri;
 
 	g_mutex_lock (hfor->priv->hide_private_lock);
 
@@ -192,7 +192,7 @@ remove_all_cb (ExchangeHierarchy *hier, EFolder *folder, gpointer user_data)
 static void
 hierarchy_foreign_cleanup (ExchangeHierarchy *hier)
 {
-	char *mf_path;
+	gchar *mf_path;
 
 	exchange_hierarchy_webdav_offline_scan_subtree (hier, remove_all_cb,
 							NULL);
@@ -204,24 +204,24 @@ hierarchy_foreign_cleanup (ExchangeHierarchy *hier)
 	exchange_hierarchy_removed_folder (hier, hier->toplevel);
 }
 
-static const char *folder_props[] = {
+static const gchar *folder_props[] = {
 	E2K_PR_EXCHANGE_FOLDER_CLASS,
 	E2K_PR_HTTPMAIL_UNREAD_COUNT,
 	E2K_PR_DAV_DISPLAY_NAME,
 	PR_ACCESS
 };
-static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
+static const gint n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
 
 static ExchangeAccountFolderResult
-find_folder (ExchangeHierarchy *hier, const char *uri, EFolder **folder_out)
+find_folder (ExchangeHierarchy *hier, const gchar *uri, EFolder **folder_out)
 {
 	ExchangeHierarchyWebDAV *hwd = EXCHANGE_HIERARCHY_WEBDAV (hier);
 	E2kContext *ctx = exchange_account_get_context (hier->account);
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults = 0;
+	gint nresults = 0;
 	EFolder *folder;
-	const char *access;
+	const gchar *access;
 
 	status = e2k_context_propfind (ctx, NULL, uri,
 				       folder_props, n_folder_props,
@@ -255,7 +255,7 @@ find_folder (ExchangeHierarchy *hier, const char *uri, EFolder **folder_out)
 }
 
 static struct {
-	const char *name, *prop;
+	const gchar *name, *prop;
 } std_folders[] = {
 	{ N_("Calendar"),	E2K_PR_STD_FOLDER_CALENDAR },
 	{ N_("Contacts"),	E2K_PR_STD_FOLDER_CONTACTS },
@@ -270,12 +270,12 @@ static struct {
 };
 static ExchangeAccountFolderResult
 create_internal (ExchangeHierarchy *hier, EFolder *parent,
-		 const char *name, const char *type, EFolder **folder_out)
+		 const gchar *name, const gchar *type, EFolder **folder_out)
 {
 	ExchangeAccountFolderResult result;
-	char *literal_uri = NULL, *standard_uri = NULL;
-	const char *home_uri;
-	int i;
+	gchar *literal_uri = NULL, *standard_uri = NULL;
+	const gchar *home_uri;
+	gint i;
 
 	/* For now, no nesting */
 	if (parent != hier->toplevel || strchr (name + 1, '/'))
@@ -337,7 +337,7 @@ create_internal (ExchangeHierarchy *hier, EFolder *parent,
 
 static ExchangeAccountFolderResult
 create_folder (ExchangeHierarchy *hier, EFolder *parent,
-	       const char *name, const char *type)
+	       const gchar *name, const gchar *type)
 {
 	return create_internal (hier, parent, name, type, NULL);
 }
@@ -345,7 +345,7 @@ create_folder (ExchangeHierarchy *hier, EFolder *parent,
 static ExchangeAccountFolderResult
 remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 {
-	const char *folder_type, *physical_uri;
+	const gchar *folder_type, *physical_uri;
 
 	/* Temp Fix for remove fav folders. see #59168 */
         /* remove ESources */
@@ -377,7 +377,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 }
 
 static ExchangeAccountFolderResult
-scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
+scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint mode)
 {
 	ExchangeAccountFolderResult folder_result;
 
@@ -394,7 +394,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
 static void
 add_href (ExchangeHierarchy *hier, EFolder *folder, gpointer hrefs)
 {
-	char *uri = g_strdup (e_folder_exchange_get_internal_uri (folder));
+	gchar *uri = g_strdup (e_folder_exchange_get_internal_uri (folder));
 
 	g_ptr_array_add (hrefs, (gpointer) uri);
 }
@@ -421,13 +421,13 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
  **/
 ExchangeAccountFolderResult
 exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
-				       const char *folder_name,
+				       const gchar *folder_name,
 				       EFolder **folder)
 {
 	ExchangeAccountFolderResult result;
-	const char *folder_type = NULL;
-	const char *physical_uri = NULL;
-	char *new_folder_name;
+	const gchar *folder_type = NULL;
+	const gchar *physical_uri = NULL;
+	gchar *new_folder_name;
 	guint folder_mask = 0;
 
 	result =  create_internal (hier, hier->toplevel, folder_name, NULL, folder);
@@ -470,12 +470,12 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 
 static ExchangeHierarchy *
 hierarchy_foreign_new (ExchangeAccount *account,
-		       const char *hierarchy_name,
-		       const char *physical_uri_prefix,
-		       const char *internal_uri_prefix,
-		       const char *owner_name,
-		       const char *owner_email,
-		       const char *source_uri)
+		       const gchar *hierarchy_name,
+		       const gchar *physical_uri_prefix,
+		       const gchar *internal_uri_prefix,
+		       const gchar *owner_name,
+		       const gchar *owner_email,
+		       const gchar *source_uri)
 {
 	ExchangeHierarchyForeign *hfor;
 
@@ -513,15 +513,15 @@ hierarchy_foreign_new (ExchangeAccount *account,
  **/
 ExchangeHierarchy *
 exchange_hierarchy_foreign_new (ExchangeAccount *account,
-				const char *hierarchy_name,
-				const char *physical_uri_prefix,
-				const char *internal_uri_prefix,
-				const char *owner_name,
-				const char *owner_email,
-				const char *source_uri)
+				const gchar *hierarchy_name,
+				const gchar *physical_uri_prefix,
+				const gchar *internal_uri_prefix,
+				const gchar *owner_name,
+				const gchar *owner_email,
+				const gchar *source_uri)
 {
 	ExchangeHierarchy *hier;
-	char *mf_path;
+	gchar *mf_path;
 	GHashTable *props;
 	xmlDoc *doc;
 
@@ -534,14 +534,14 @@ exchange_hierarchy_foreign_new (ExchangeAccount *account,
 				      source_uri);
 
 	props = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (props, "name", (char *)hierarchy_name);
+	g_hash_table_insert (props, "name", (gchar *)hierarchy_name);
 	g_hash_table_insert (props, "physical_uri_prefix",
-			     (char *)physical_uri_prefix);
+			     (gchar *)physical_uri_prefix);
 	g_hash_table_insert (props, "internal_uri_prefix",
-			     (char *)internal_uri_prefix);
-	g_hash_table_insert (props, "owner_name", (char *)owner_name);
-	g_hash_table_insert (props, "owner_email", (char *)owner_email);
-	g_hash_table_insert (props, "source_uri", (char *)source_uri);
+			     (gchar *)internal_uri_prefix);
+	g_hash_table_insert (props, "owner_name", (gchar *)owner_name);
+	g_hash_table_insert (props, "owner_email", (gchar *)owner_email);
+	g_hash_table_insert (props, "source_uri", (gchar *)source_uri);
 
 	mf_path = e_folder_exchange_get_storage_file (hier->toplevel, "hierarchy.xml");
 	doc = e_xml_from_hash (props, E_XML_HASH_TYPE_PROPERTY,
@@ -565,10 +565,10 @@ exchange_hierarchy_foreign_new (ExchangeAccount *account,
  **/
 ExchangeHierarchy *
 exchange_hierarchy_foreign_new_from_dir (ExchangeAccount *account,
-					 const char *folder_path)
+					 const gchar *folder_path)
 {
 	ExchangeHierarchy *hier;
-	char *mf_path;
+	gchar *mf_path;
 	GHashTable *props;
 	xmlDoc *doc;
 

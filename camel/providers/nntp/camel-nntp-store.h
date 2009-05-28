@@ -61,8 +61,8 @@ typedef enum _xover_t {
 struct _xover_header {
 	struct _xover_header *next;
 
-	const char *name;
-	unsigned int skip:8;
+	const gchar *name;
+	guint skip:8;
 	xover_t type:8;
 };
 
@@ -73,9 +73,9 @@ struct _CamelNNTPStore {
 
 	guint32 extensions;
 
-	unsigned int posting_allowed:1;
-	unsigned int do_short_folder_notation:1;
-	unsigned int folder_hierarchy_relative:1;
+	guint posting_allowed:1;
+	guint do_short_folder_notation:1;
+	guint folder_hierarchy_relative:1;
 
 	struct _CamelNNTPStoreSummary *summary;
 
@@ -84,7 +84,7 @@ struct _CamelNNTPStore {
 
 	struct _CamelDataCache *cache;
 
-	char *current_folder, *storage_path, *base_url;
+	gchar *current_folder, *storage_path, *base_url;
 
 	struct _xover_header *xover;
 };
@@ -97,10 +97,10 @@ struct _CamelNNTPStoreClass {
 /* Standard Camel function */
 CamelType camel_nntp_store_get_type (void);
 
-int camel_nntp_raw_commandv (CamelNNTPStore *store, struct _CamelException *ex, char **line, const char *fmt, va_list ap);
-int camel_nntp_raw_command(CamelNNTPStore *store, struct _CamelException *ex, char **line, const char *fmt, ...);
-int camel_nntp_raw_command_auth(CamelNNTPStore *store, struct _CamelException *ex, char **line, const char *fmt, ...);
-int camel_nntp_command (CamelNNTPStore *store, struct _CamelException *ex, struct _CamelNNTPFolder *folder, char **line, const char *fmt, ...);
+gint camel_nntp_raw_commandv (CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, va_list ap);
+gint camel_nntp_raw_command(CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, ...);
+gint camel_nntp_raw_command_auth(CamelNNTPStore *store, struct _CamelException *ex, gchar **line, const gchar *fmt, ...);
+gint camel_nntp_command (CamelNNTPStore *store, struct _CamelException *ex, struct _CamelNNTPFolder *folder, gchar **line, const gchar *fmt, ...);
 
 G_END_DECLS
 

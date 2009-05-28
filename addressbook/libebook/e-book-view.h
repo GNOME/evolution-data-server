@@ -46,7 +46,7 @@ struct _EBookViewClass {
 	void (* contacts_removed)  (EBookView *book_view, const GList *ids);
 	void (* contacts_added)    (EBookView *book_view, const GList *contacts);
 	void (* sequence_complete) (EBookView *book_view, EBookViewStatus status);
-	void (* status_message)    (EBookView *book_view, const char *message);
+	void (* status_message)    (EBookView *book_view, const gchar *message);
 
 	/* Padding for future expansion */
 	void (*_ebook_reserved0) (void);

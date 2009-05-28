@@ -58,7 +58,7 @@ struct _GoogleBookClass
 
     void (*contact_added) (EContact* contact);
     void (*contact_changed) (EContact* contact);
-    void (*contact_removed) (const char *uid);
+    void (*contact_removed) (const gchar *uid);
     void (*sequence_complete) (GError *error);
 
     void (*auth_required) (void);
@@ -82,18 +82,18 @@ typedef void (*GoogleBookContactRetrievedCallback) (EContact *contact, gpointer 
 
 GType google_book_get_type (void);
 
-GoogleBook* google_book_new (const char *username, gboolean use_cache);
+GoogleBook* google_book_new (const gchar *username, gboolean use_cache);
 
-gboolean google_book_connect_to_google (GoogleBook *book, const char *password, GError **error);
+gboolean google_book_connect_to_google (GoogleBook *book, const gchar *password, GError **error);
 
 void google_book_set_offline_mode (GoogleBook *book, gboolean offline);
 void google_book_set_live_mode    (GoogleBook *book, gboolean live_mode);
 
 gboolean google_book_add_contact    (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error);
 gboolean google_book_update_contact (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error);
-gboolean google_book_remove_contact (GoogleBook *book, const char *uid, GError **error);
+gboolean google_book_remove_contact (GoogleBook *book, const gchar *uid, GError **error);
 
-EContact *google_book_get_contact                   (GoogleBook *book, const char* uid, GError **error);
+EContact *google_book_get_contact                   (GoogleBook *book, const gchar * uid, GError **error);
 GList    *google_book_get_all_contacts              (GoogleBook *book, GError **error);
 GList    *google_book_get_all_contacts_in_live_mode (GoogleBook *book);
 

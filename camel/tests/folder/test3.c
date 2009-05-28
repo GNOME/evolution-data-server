@@ -19,12 +19,12 @@
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
 static void
-test_folder_search_sub(CamelFolder *folder, const char *expr, int expected)
+test_folder_search_sub(CamelFolder *folder, const gchar *expr, gint expected)
 {
 	CamelException *ex = camel_exception_new();
 	GPtrArray *uids;
 	GHashTable *hash;
-	int i;
+	gint i;
 
 	uids = camel_folder_search_by_expression(folder, expr, ex);
 	check(uids != NULL);
@@ -45,9 +45,9 @@ test_folder_search_sub(CamelFolder *folder, const char *expr, int expected)
 }
 
 static void
-test_folder_search(CamelFolder *folder, const char *expr, int expected)
+test_folder_search(CamelFolder *folder, const gchar *expr, gint expected)
 {
-	char *matchall;
+	gchar *matchall;
 
 #if 0
 	/* FIXME: ??? */
@@ -66,8 +66,8 @@ test_folder_search(CamelFolder *folder, const char *expr, int expected)
 }
 
 static struct {
-	int counts[3];
-	char *expr;
+	gint counts[3];
+	gchar *expr;
 } searches[] = {
 	{ { 1, 1, 0 }, "(header-matches \"subject\" \"Test1 message99 subject\")" },
 
@@ -117,9 +117,9 @@ static struct {
 };
 
 static void
-run_search(CamelFolder *folder, int m)
+run_search(CamelFolder *folder, gint m)
 {
-	int i, j = 0;
+	gint i, j = 0;
 
 	check(m == 50 || m == 100 || m == 0);
 
@@ -138,23 +138,23 @@ run_search(CamelFolder *folder, int m)
 	pull();
 }
 
-static const char *local_drivers[] = { "local" };
+static const gchar *local_drivers[] = { "local" };
 
-static char *stores[] = {
+static gchar *stores[] = {
 	"mbox:///tmp/camel-test/mbox",
 	"mh:///tmp/camel-test/mh",
 	"maildir:///tmp/camel-test/maildir"
 };
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelStore *store;
 	CamelException *ex;
 	CamelFolder *folder;
 	CamelMimeMessage *msg;
-	int i, j;
-	int indexed;
+	gint i, j;
+	gint indexed;
 	GPtrArray *uids;
 
 	camel_test_init(argc, argv);
@@ -172,10 +172,10 @@ int main(int argc, char **argv)
 
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
 	for (i=0;i<ARRAY_LEN(stores);i++) {
-		char *name = stores[i];
+		gchar *name = stores[i];
 		for (indexed = 0;indexed<2;indexed++) {
-			char *what = g_strdup_printf("folder search: %s (%sindexed)", name, indexed?"":"non-");
-			int flags;
+			gchar *what = g_strdup_printf("folder search: %s (%sindexed)", name, indexed?"":"non-");
+			gint flags;
 
 			camel_test_start(what);
 			test_free(what);
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 			/* append a bunch of messages with specific content */
 			push("appending 100 test messages");
 			for (j=0;j<100;j++) {
-				char *content, *subject;
+				gchar *content, *subject;
 
 				push("creating test message");
 				msg = test_message_create_simple();
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 			uids = camel_folder_get_uids(folder);
 			check(uids->len == 100);
 			for (j=0;j<100;j++) {
-				char *uid = uids->pdata[j];
+				gchar *uid = uids->pdata[j];
 
 				if ((j/13)*13 == j) {
 					camel_folder_set_message_user_flag(folder, uid, "every13", TRUE);
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 					camel_folder_set_message_user_flag(folder, uid, "every17", TRUE);
 				}
 				if ((j/7)*7 == j) {
-					char *tag = g_strdup_printf("7tag%d", j/7);
+					gchar *tag = g_strdup_printf("7tag%d", j/7);
 					camel_folder_set_message_user_tag(folder, uid, "every7", tag);
 					test_free(tag);
 				}

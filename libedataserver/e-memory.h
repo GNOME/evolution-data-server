@@ -30,10 +30,10 @@ G_BEGIN_DECLS
 /* this is like gmemchunk, only faster and less overhead (only 4 bytes for every atomcount allocations) */
 typedef struct _EMemChunk EMemChunk;
 
-EMemChunk *e_memchunk_new(int atomcount, int atomsize);
-void *e_memchunk_alloc(EMemChunk *m);
-void *e_memchunk_alloc0(EMemChunk *m);
-void e_memchunk_free(EMemChunk *m, void *mem);
+EMemChunk *e_memchunk_new(gint atomcount, gint atomsize);
+gpointer e_memchunk_alloc(EMemChunk *m);
+gpointer e_memchunk_alloc0(EMemChunk *m);
+void e_memchunk_free(EMemChunk *m, gpointer mem);
 void e_memchunk_empty(EMemChunk *m);
 void e_memchunk_clean(EMemChunk *m);
 void e_memchunk_destroy(EMemChunk *m);
@@ -48,31 +48,31 @@ typedef enum {
 	E_MEMPOOL_ALIGN_MASK = 3	/* which bits determine the alignment information */
 } EMemPoolFlags;
 
-EMemPool *e_mempool_new(int blocksize, int threshold, EMemPoolFlags flags);
-void *e_mempool_alloc(EMemPool *pool, int size);
-char *e_mempool_strdup(EMemPool *pool, const char *str);
-void e_mempool_flush(EMemPool *pool, int freeall);
+EMemPool *e_mempool_new(gint blocksize, gint threshold, EMemPoolFlags flags);
+gpointer e_mempool_alloc(EMemPool *pool, gint size);
+gchar *e_mempool_strdup(EMemPool *pool, const gchar *str);
+void e_mempool_flush(EMemPool *pool, gint freeall);
 void e_mempool_destroy(EMemPool *pool);
 
 /* strv's string arrays that can be efficiently modified and then compressed mainly for retrival */
 /* building is relatively fast, once compressed it takes the minimum amount of memory possible to store */
 typedef struct _EStrv EStrv;
 
-EStrv *e_strv_new(int size);
-EStrv *e_strv_set_ref(EStrv *strv, int index, char *str);
-EStrv *e_strv_set_ref_free(EStrv *strv, int index, char *str);
-EStrv *e_strv_set(EStrv *strv, int index, const char *str);
+EStrv *e_strv_new(gint size);
+EStrv *e_strv_set_ref(EStrv *strv, gint index, gchar *str);
+EStrv *e_strv_set_ref_free(EStrv *strv, gint index, gchar *str);
+EStrv *e_strv_set(EStrv *strv, gint index, const gchar *str);
 EStrv *e_strv_pack(EStrv *strv);
-const char *e_strv_get(EStrv *strv, int index);
+const gchar *e_strv_get(EStrv *strv, gint index);
 void e_strv_destroy(EStrv *strv);
 
 /* poolv's are similar to strv's, but they store common strings */
 typedef struct _EPoolv EPoolv;
 
-EPoolv *e_poolv_new(unsigned int size);
+EPoolv *e_poolv_new(guint size);
 EPoolv *e_poolv_cpy(EPoolv *dest, const EPoolv *src);
-EPoolv *e_poolv_set(EPoolv *poolv, int index, char *str, int freeit);
-const char *e_poolv_get(EPoolv *poolv, int index);
+EPoolv *e_poolv_set(EPoolv *poolv, gint index, gchar *str, gint freeit);
+const gchar *e_poolv_get(EPoolv *poolv, gint index);
 void e_poolv_destroy(EPoolv *poolv);
 
 G_END_DECLS

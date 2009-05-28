@@ -49,13 +49,13 @@
 
 struct timeval timeit_start;
 
-static time_start(const char *desc)
+static time_start(const gchar *desc)
 {
 	gettimeofday(&timeit_start, NULL);
 	printf("starting: %s\n", desc);
 }
 
-static time_end(const char *desc)
+static time_end(const gchar *desc)
 {
 	unsigned long diff;
 	struct timeval end;
@@ -75,10 +75,10 @@ static time_end(const char *desc)
 #include <mcheck.h>
 #include <stdio.h>
 static void
-checkmem(void *p)
+checkmem(gpointer p)
 {
 	if (p) {
-		int status = mprobe(p);
+		gint status = mprobe(p);
 
 		switch (status) {
 		case MCHECK_HEAD:
@@ -93,7 +93,7 @@ checkmem(void *p)
 		}
 	}
 }
-#define MPROBE(x) checkmem((void *)(x))
+#define MPROBE(x) checkmem((gpointer)(x))
 #else
 #define MPROBE(x)
 #endif
@@ -102,12 +102,12 @@ checkmem(void *p)
 
 typedef struct _MemChunkFreeNode {
 	struct _MemChunkFreeNode *next;
-	unsigned int atoms;
+	guint atoms;
 } MemChunkFreeNode;
 
 typedef struct _EMemChunk {
-	unsigned int blocksize;	/* number of atoms in a block */
-	unsigned int atomsize;	/* size of each atom */
+	guint blocksize;	/* number of atoms in a block */
+	guint atomsize;	/* size of each atom */
 	GPtrArray *blocks;	/* blocks of raw memory */
 	struct _MemChunkFreeNode *free;
 } MemChunk;
@@ -125,7 +125,7 @@ typedef struct _EMemChunk {
  *
  * Return value: The new header.
  **/
-MemChunk *e_memchunk_new(int atomcount, int atomsize)
+MemChunk *e_memchunk_new(gint atomcount, gint atomsize)
 {
 	MemChunk *m = g_malloc(sizeof(*m));
 
@@ -143,17 +143,17 @@ MemChunk *e_memchunk_new(int atomcount, int atomsize)
  *
  * Allocate a new atom size block of memory from a memchunk.
  **/
-void *e_memchunk_alloc(MemChunk *m)
+gpointer e_memchunk_alloc(MemChunk *m)
 {
-	char *b;
+	gchar *b;
 	MemChunkFreeNode *f;
-	void *mem;
+	gpointer mem;
 
 	f = m->free;
 	if (f) {
 		f->atoms--;
 		if (f->atoms > 0) {
-			mem = ((char *)f) + (f->atoms*m->atomsize);
+			mem = ((gchar *)f) + (f->atoms*m->atomsize);
 		} else {
 			mem = f;
 			m->free = m->free->next;
@@ -170,9 +170,9 @@ void *e_memchunk_alloc(MemChunk *m)
 	}
 }
 
-void *e_memchunk_alloc0(EMemChunk *m)
+gpointer e_memchunk_alloc0(EMemChunk *m)
 {
-	void *mem;
+	gpointer mem;
 
 	mem = e_memchunk_alloc(m);
 	memset(mem, 0, m->atomsize);
@@ -189,7 +189,7 @@ void *e_memchunk_alloc0(EMemChunk *m)
  * memchunk.
  **/
 void
-e_memchunk_free(MemChunk *m, void *mem)
+e_memchunk_free(MemChunk *m, gpointer mem)
 {
 	MemChunkFreeNode *f;
 
@@ -217,7 +217,7 @@ e_memchunk_free(MemChunk *m, void *mem)
 void
 e_memchunk_empty(MemChunk *m)
 {
-	int i;
+	gint i;
 	MemChunkFreeNode *f, *h = NULL;
 
 	for (i=0;i<m->blocks->len;i++) {
@@ -231,12 +231,12 @@ e_memchunk_empty(MemChunk *m)
 
 struct _cleaninfo {
 	struct _cleaninfo *next;
-	char *base;
-	int count;
-	int size;		/* just so tree_search has it, sigh */
+	gchar *base;
+	gint count;
+	gint size;		/* just so tree_search has it, sigh */
 };
 
-static int tree_compare(struct _cleaninfo *a, struct _cleaninfo *b)
+static gint tree_compare(struct _cleaninfo *a, struct _cleaninfo *b)
 {
 	if (a->base < b->base)
 		return -1;
@@ -245,7 +245,7 @@ static int tree_compare(struct _cleaninfo *a, struct _cleaninfo *b)
 	return 0;
 }
 
-static int tree_search(struct _cleaninfo *a, char *mem)
+static gint tree_search(struct _cleaninfo *a, gchar *mem)
 {
 	if (a->base <= mem) {
 		if (mem < &a->base[a->size])
@@ -270,7 +270,7 @@ void
 e_memchunk_clean(MemChunk *m)
 {
 	GTree *tree;
-	int i;
+	gint i;
 	MemChunkFreeNode *f;
 	struct _cleaninfo *ci, *hi = NULL;
 
@@ -309,7 +309,7 @@ e_memchunk_clean(MemChunk *m)
 
 			f = m->free;
 			while (f) {
-				if (tree_search (ci, (void *) f) == 0) {
+				if (tree_search (ci, (gpointer) f) == 0) {
 					/* prune this node from our free-node list */
 					if (prev)
 						prev->next = f->next;
@@ -340,7 +340,7 @@ e_memchunk_clean(MemChunk *m)
 void
 e_memchunk_destroy(MemChunk *m)
 {
-	int i;
+	gint i;
 
 	if (m == NULL)
 		return;
@@ -354,7 +354,7 @@ e_memchunk_destroy(MemChunk *m)
 typedef struct _MemPoolNode {
 	struct _MemPoolNode *next;
 
-	int free;
+	gint free;
 } MemPoolNode;
 
 typedef struct _MemPoolThresholdNode {
@@ -364,9 +364,9 @@ typedef struct _MemPoolThresholdNode {
 #define ALIGNED_SIZEOF(t)	((sizeof (t) + G_MEM_ALIGN - 1) & -G_MEM_ALIGN)
 
 typedef struct _EMemPool {
-	int blocksize;
-	int threshold;
-	unsigned int align;
+	gint blocksize;
+	gint threshold;
+	guint align;
 	struct _MemPoolNode *blocks;
 	struct _MemPoolThresholdNode *threshold_blocks;
 } MemPool;
@@ -399,7 +399,7 @@ static GStaticMutex mempool_mutex = G_STATIC_MUTEX_INIT;
  *
  * Return value:
  **/
-MemPool *e_mempool_new(int blocksize, int threshold, EMemPoolFlags flags)
+MemPool *e_mempool_new(gint blocksize, gint threshold, EMemPoolFlags flags)
 {
 	MemPool *pool;
 
@@ -443,7 +443,7 @@ MemPool *e_mempool_new(int blocksize, int threshold, EMemPoolFlags flags)
  * be rounded up to the mempool's alignment restrictions
  * before being used.
  **/
-void *e_mempool_alloc(MemPool *pool, register int size)
+gpointer e_mempool_alloc(MemPool *pool, register gint size)
 {
 	size = (size + pool->align) & (~(pool->align));
 	if (size>=pool->threshold) {
@@ -452,14 +452,14 @@ void *e_mempool_alloc(MemPool *pool, register int size)
 		n = g_malloc(ALIGNED_SIZEOF(*n) + size);
 		n->next = pool->threshold_blocks;
 		pool->threshold_blocks = n;
-		return (char *) n + ALIGNED_SIZEOF(*n);
+		return (gchar *) n + ALIGNED_SIZEOF(*n);
 	} else {
 		register MemPoolNode *n;
 
 		n = pool->blocks;
 		if (n && n->free >= size) {
 			n->free -= size;
-			return (char *) n + ALIGNED_SIZEOF(*n) + n->free;
+			return (gchar *) n + ALIGNED_SIZEOF(*n) + n->free;
 		}
 
 		/* maybe we could do some sort of the free blocks based on size, but
@@ -469,13 +469,13 @@ void *e_mempool_alloc(MemPool *pool, register int size)
 		n->next = pool->blocks;
 		pool->blocks = n;
 		n->free = pool->blocksize - size;
-		return (char *) n + ALIGNED_SIZEOF(*n) + n->free;
+		return (gchar *) n + ALIGNED_SIZEOF(*n) + n->free;
 	}
 }
 
-char *e_mempool_strdup(EMemPool *pool, const char *str)
+gchar *e_mempool_strdup(EMemPool *pool, const gchar *str)
 {
-	char *out;
+	gchar *out;
 
 	out = e_mempool_alloc(pool, strlen(str)+1);
 	strcpy(out, str);
@@ -494,7 +494,7 @@ char *e_mempool_strdup(EMemPool *pool, const char *str)
  * as well.  Otherwise only blocks above the threshold are
  * actually freed, and the others are simply marked as empty.
  **/
-void e_mempool_flush(MemPool *pool, int freeall)
+void e_mempool_flush(MemPool *pool, gint freeall)
 {
 	MemPoolThresholdNode *tn, *tw;
 	MemPoolNode *pw, *pn;
@@ -552,20 +552,20 @@ void e_mempool_destroy(MemPool *pool)
 #define STRV_UNPACKED ((unsigned char)(~0))
 
 struct _EStrv {
-	unsigned char length;	/* how many entries we have (or the token STRV_UNPACKED) */
-	char data[1];		/* data follows */
+	guchar length;	/* how many entries we have (or the token STRV_UNPACKED) */
+	gchar data[1];		/* data follows */
 };
 
 struct _s_strv_string {
-	char *string;		/* the string to output */
-	char *free;		/* a string to free, if we referenced it */
+	gchar *string;		/* the string to output */
+	gchar *free;		/* a string to free, if we referenced it */
 };
 
 struct _e_strvunpacked {
-	unsigned char type;	/* we overload last to indicate this is unpacked */
+	guchar type;	/* we overload last to indicate this is unpacked */
 	MemPool *pool;		/* pool of memory for strings */
 	struct _EStrv *source;	/* if we were converted from a packed one, keep the source around for a while */
-	unsigned int length;
+	guint length;
 	struct _s_strv_string strings[1]; /* the string array data follows */
 };
 
@@ -587,14 +587,14 @@ struct _e_strvunpacked {
  * Return value:
  **/
 struct _EStrv *
-e_strv_new(int size)
+e_strv_new(gint size)
 {
 	struct _e_strvunpacked *s;
 
 	g_assert(size<255);
 
 	s = g_malloc(sizeof(*s) + (size-1)*sizeof(s->strings[0]));
-	s(printf("new strv=%p, size = %d bytes\n", s, sizeof(*s) + (size-1)*sizeof(char *)));
+	s(printf("new strv=%p, size = %d bytes\n", s, sizeof(*s) + (size-1)*sizeof(gchar *)));
 	s->type = STRV_UNPACKED;
 	s->pool = NULL;
 	s->length = size;
@@ -608,8 +608,8 @@ static struct _e_strvunpacked *
 strv_unpack(struct _EStrv *strv)
 {
 	struct _e_strvunpacked *s;
-	register char *p;
-	int i;
+	register gchar *p;
+	gint i;
 
 	s(printf("unpacking\n"));
 
@@ -645,7 +645,7 @@ strv_unpack(struct _EStrv *strv)
  * been packed, otherwise @strv.
  **/
 struct _EStrv *
-e_strv_set_ref(struct _EStrv *strv, int index, char *str)
+e_strv_set_ref(struct _EStrv *strv, gint index, gchar *str)
 {
 	struct _e_strvunpacked *s;
 
@@ -678,7 +678,7 @@ e_strv_set_ref(struct _EStrv *strv, int index, char *str)
  * EStrv.
  **/
 struct _EStrv *
-e_strv_set_ref_free(struct _EStrv *strv, int index, char *str)
+e_strv_set_ref_free(struct _EStrv *strv, gint index, gchar *str)
 {
 	struct _e_strvunpacked *s;
 
@@ -715,7 +715,7 @@ e_strv_set_ref_free(struct _EStrv *strv, int index, char *str)
  * been packed, otherwise @strv.
  **/
 struct _EStrv *
-e_strv_set(struct _EStrv *strv, int index, const char *str)
+e_strv_set(struct _EStrv *strv, gint index, const gchar *str)
 {
 	struct _e_strvunpacked *s;
 
@@ -752,8 +752,8 @@ struct _EStrv *
 e_strv_pack(struct _EStrv *strv)
 {
 	struct _e_strvunpacked *s;
-	int len, i;
-	register char *src, *dst;
+	gint len, i;
+	register gchar *src, *dst;
 
 	if (strv->length == STRV_UNPACKED) {
 		s = (struct _e_strvunpacked *)strv;
@@ -792,11 +792,11 @@ e_strv_pack(struct _EStrv *strv)
  *
  * Return value:
  **/
-const char *
-e_strv_get(struct _EStrv *strv, int index)
+const gchar *
+e_strv_get(struct _EStrv *strv, gint index)
 {
 	struct _e_strvunpacked *s;
-	char *p;
+	gchar *p;
 
 	if (strv->length != STRV_UNPACKED) {
 		g_assert(index>=0 && index < strv->length);
@@ -825,7 +825,7 @@ void
 e_strv_destroy(struct _EStrv *strv)
 {
 	struct _e_strvunpacked *s;
-	int i;
+	gint i;
 
 	s(printf("freeing strv\n"));
 
@@ -883,8 +883,8 @@ static GStaticMutex poolv_mutex = G_STATIC_MUTEX_INIT;
 #endif
 
 struct _EPoolv {
-	unsigned char length;
-	char *s[1];
+	guchar length;
+	gchar *s[1];
 };
 
 /**
@@ -904,13 +904,13 @@ struct _EPoolv {
  * Return value: new pooled string vector
  **/
 EPoolv *
-e_poolv_new(unsigned int size)
+e_poolv_new(guint size)
 {
 	EPoolv *poolv;
 
 	g_assert(size < 255);
 
-	poolv = g_malloc0(sizeof (*poolv) + (size - 1) * sizeof (char *));
+	poolv = g_malloc0(sizeof (*poolv) + (size - 1) * sizeof (gchar *));
 	poolv->length = size;
 
 #ifdef G_THREADS_ENABLED
@@ -924,7 +924,7 @@ e_poolv_new(unsigned int size)
 
 #ifdef MALLOC_CHECK
 	{
-		int i;
+		gint i;
 
 		if (poolv_table == NULL)
 			poolv_table = g_ptr_array_new();
@@ -940,7 +940,7 @@ e_poolv_new(unsigned int size)
 	g_static_mutex_unlock(&poolv_mutex);
 #endif
 
-	p(printf("new poolv=%p\tsize=%d\n", poolv, sizeof(*poolv) + (size-1)*sizeof(char *)));
+	p(printf("new poolv=%p\tsize=%d\n", poolv, sizeof(*poolv) + (size-1)*sizeof(gchar *)));
 
 #ifdef PROFILE_POOLV
 	poolv_count++;
@@ -962,9 +962,9 @@ EPoolv *
 e_poolv_cpy(EPoolv *dest, const EPoolv *src)
 {
 #ifdef POOLV_REFCNT
-	int i;
-	unsigned int ref;
-	char *key;
+	gint i;
+	guint ref;
+	gchar *key;
 #endif
 
 	p2(g_return_val_if_fail (dest != NULL, NULL));
@@ -985,8 +985,8 @@ e_poolv_cpy(EPoolv *dest, const EPoolv *src)
 	/* ref new copies */
 	for (i=0;i<src->length;i++) {
 		if (src->s[i]) {
-			if (g_hash_table_lookup_extended(poolv_pool, src->s[i], (void **)&key, (void **)&ref)) {
-				g_hash_table_insert(poolv_pool, key, (void *)(ref+1));
+			if (g_hash_table_lookup_extended(poolv_pool, src->s[i], (gpointer *)&key, (gpointer *)&ref)) {
+				g_hash_table_insert(poolv_pool, key, (gpointer)(ref+1));
 			} else {
 				g_assert_not_reached();
 			}
@@ -996,10 +996,10 @@ e_poolv_cpy(EPoolv *dest, const EPoolv *src)
 	/* unref the old ones */
 	for (i=0;i<dest->length;i++) {
 		if (dest->s[i]) {
-			if (g_hash_table_lookup_extended(poolv_pool, dest->s[i], (void **)&key, (void **)&ref)) {
+			if (g_hash_table_lookup_extended(poolv_pool, dest->s[i], (gpointer *)&key, (gpointer *)&ref)) {
 				/* if ref == 1 free it */
 				g_assert(ref > 0);
-				g_hash_table_insert(poolv_pool, key, (void *)(ref-1));
+				g_hash_table_insert(poolv_pool, key, (gpointer)(ref-1));
 			} else {
 				g_assert_not_reached();
 			}
@@ -1010,7 +1010,7 @@ e_poolv_cpy(EPoolv *dest, const EPoolv *src)
 #endif
 #endif
 
-	memcpy(dest->s, src->s, src->length * sizeof (char *));
+	memcpy(dest->s, src->s, src->length * sizeof (gchar *));
 
 	return dest;
 }
@@ -1050,11 +1050,11 @@ poolv_profile_update (void)
  * Return value: @poolv
  **/
 EPoolv *
-e_poolv_set (EPoolv *poolv, int index, char *str, int freeit)
+e_poolv_set (EPoolv *poolv, gint index, gchar *str, gint freeit)
 {
 #ifdef POOLV_REFCNT
-	unsigned int ref;
-	char *key;
+	guint ref;
+	gchar *key;
 #endif
 
 	p2(g_return_val_if_fail (poolv != NULL, NULL));
@@ -1068,9 +1068,9 @@ e_poolv_set (EPoolv *poolv, int index, char *str, int freeit)
 	if (!str) {
 #ifdef POOLV_REFCNT
 		if (poolv->s[index]) {
-			if (g_hash_table_lookup_extended(poolv_pool, poolv->s[index], (void **)&key, (void **)&ref)) {
+			if (g_hash_table_lookup_extended(poolv_pool, poolv->s[index], (gpointer *)&key, (gpointer *)&ref)) {
 				g_assert(ref > 0);
-				g_hash_table_insert(poolv_pool, key, (void *)(ref-1));
+				g_hash_table_insert(poolv_pool, key, (gpointer)(ref-1));
 			} else {
 				g_assert_not_reached();
 			}
@@ -1085,8 +1085,8 @@ e_poolv_set (EPoolv *poolv, int index, char *str, int freeit)
 #endif
 
 #ifdef POOLV_REFCNT
-	if (g_hash_table_lookup_extended(poolv_pool, str, (void **)&key, (void **)&ref)) {
-		g_hash_table_insert(poolv_pool, key, (void *)(ref+1));
+	if (g_hash_table_lookup_extended(poolv_pool, str, (gpointer *)&key, (gpointer *)&ref)) {
+		g_hash_table_insert(poolv_pool, key, (gpointer)(ref+1));
 		poolv->s[index] = key;
 # ifdef PROFILE_POOLV
 		poolv_hits++;
@@ -1099,7 +1099,7 @@ e_poolv_set (EPoolv *poolv, int index, char *str, int freeit)
 		poolv_profile_update ();
 # endif
 		poolv->s[index] = e_mempool_strdup(poolv_mempool, str);
-		g_hash_table_insert(poolv_pool, poolv->s[index], (void *)1);
+		g_hash_table_insert(poolv_pool, poolv->s[index], (gpointer)1);
 	}
 
 #else  /* !POOLV_REFCNT */
@@ -1141,8 +1141,8 @@ e_poolv_set (EPoolv *poolv, int index, char *str, int freeit)
  *
  * Return value: string at that index.
  **/
-const char *
-e_poolv_get(EPoolv *poolv, int index)
+const gchar *
+e_poolv_get(EPoolv *poolv, gint index)
 {
 	g_assert(poolv != NULL);
 	g_assert(index>= 0 && index < poolv->length);
@@ -1165,9 +1165,9 @@ void
 e_poolv_destroy(EPoolv *poolv)
 {
 #ifdef POOLV_REFCNT
-	int i;
-	unsigned int ref;
-	char *key;
+	gint i;
+	guint ref;
+	gchar *key;
 
 	MPROBE(poolv);
 
@@ -1184,10 +1184,10 @@ e_poolv_destroy(EPoolv *poolv)
 
 	for (i=0;i<poolv->length;i++) {
 		if (poolv->s[i]) {
-			if (g_hash_table_lookup_extended(poolv_pool, poolv->s[i], (void **)&key, (void **)&ref)) {
+			if (g_hash_table_lookup_extended(poolv_pool, poolv->s[i], (gpointer *)&key, (gpointer *)&ref)) {
 				/* if ref == 1 free it */
 				g_assert(ref > 0);
-				g_hash_table_insert(poolv_pool, key, (void *)(ref-1));
+				g_hash_table_insert(poolv_pool, key, (gpointer)(ref-1));
 			} else {
 				g_assert_not_reached();
 			}
@@ -1213,9 +1213,9 @@ e_poolv_destroy(EPoolv *poolv)
 
 main()
 {
-	int i;
+	gint i;
 	MemChunk *mc;
-	void *mem, *last;
+	gpointer mem, *last;
 	GMemChunk *gmc;
 	struct _EStrv *s;
 

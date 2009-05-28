@@ -37,8 +37,8 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	const char *name;
-	const char *value;
+	const gchar *name;
+	const gchar *value;
 } CamelMediumHeader;
 
 struct _CamelMedium {
@@ -55,10 +55,10 @@ typedef struct {
 	CamelDataWrapperClass parent_class;
 
 	/* Virtual methods */
-	void  (*add_header) (CamelMedium *medium, const char *name, const void *value);
-	void  (*set_header) (CamelMedium *medium, const char *name, const void *value);
-	void  (*remove_header) (CamelMedium *medium, const char *name);
-	const void * (*get_header) (CamelMedium *medium,  const char *name);
+	void  (*add_header) (CamelMedium *medium, const gchar *name, gconstpointer value);
+	void  (*set_header) (CamelMedium *medium, const gchar *name, gconstpointer value);
+	void  (*remove_header) (CamelMedium *medium, const gchar *name);
+	gconstpointer  (*get_header) (CamelMedium *medium,  const gchar *name);
 
 	GArray * (*get_headers) (CamelMedium *medium);
 	void (*free_headers) (CamelMedium *medium, GArray *headers);
@@ -71,10 +71,10 @@ typedef struct {
 CamelType camel_medium_get_type (void);
 
 /* Header get/set interface */
-void camel_medium_add_header (CamelMedium *medium, const char *name, const void *value);
-void camel_medium_set_header (CamelMedium *medium, const char *name, const void *value);
-void camel_medium_remove_header (CamelMedium *medium, const char *name);
-const void *camel_medium_get_header (CamelMedium *medium, const char *name);
+void camel_medium_add_header (CamelMedium *medium, const gchar *name, gconstpointer value);
+void camel_medium_set_header (CamelMedium *medium, const gchar *name, gconstpointer value);
+void camel_medium_remove_header (CamelMedium *medium, const gchar *name);
+gconstpointer camel_medium_get_header (CamelMedium *medium, const gchar *name);
 
 GArray *camel_medium_get_headers (CamelMedium *medium);
 void camel_medium_free_headers (CamelMedium *medium, GArray *headers);

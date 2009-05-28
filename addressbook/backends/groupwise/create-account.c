@@ -6,15 +6,15 @@
 
 static GConfClient *conf_client;
 static GMainLoop *main_loop;
-static char *arg_hostname, *arg_username, *arg_password;
+static gchar *arg_hostname, *arg_username, *arg_password;
 
 static void
-add_account (const char *conf_key, const char *hostname, const char *username, const char *password)
+add_account (const gchar *conf_key, const gchar *hostname, const gchar *username, const gchar *password)
 {
 	ESourceList *source_list;
 	ESourceGroup *group;
 	ESource *source;
-	char *group_name;
+	gchar *group_name;
 
 	source_list = e_source_list_new_for_gconf (conf_client, conf_key);
 
@@ -58,8 +58,8 @@ idle_cb (gpointer data)
 	return FALSE;
 }
 
-int
-main (int argc, char *argv[])
+gint
+main (gint argc, gchar *argv[])
 {
 	g_type_init ();
 

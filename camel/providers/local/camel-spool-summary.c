@@ -48,11 +48,11 @@
 
 #define CAMEL_SPOOL_SUMMARY_VERSION (0x400)
 
-static int spool_summary_load(CamelLocalSummary *cls, int forceindex, CamelException *ex);
-static int spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+static gint spool_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex);
+static gint spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 
-static int spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-static int spool_summary_need_index(void);
+static gint spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+static gint spool_summary_need_index(void);
 
 static void camel_spool_summary_class_init (CamelSpoolSummaryClass *klass);
 static void camel_spool_summary_init       (CamelSpoolSummary *obj);
@@ -111,7 +111,7 @@ camel_spool_summary_finalise(CamelObject *obj)
 }
 
 CamelSpoolSummary *
-camel_spool_summary_new(struct _CamelFolder *folder, const char *mbox_name)
+camel_spool_summary_new(struct _CamelFolder *folder, const gchar *mbox_name)
 {
 	CamelSpoolSummary *new = (CamelSpoolSummary *)camel_object_new(camel_spool_summary_get_type());
 
@@ -127,7 +127,7 @@ camel_spool_summary_new(struct _CamelFolder *folder, const char *mbox_name)
 }
 
 static int
-spool_summary_load(CamelLocalSummary *cls, int forceindex, CamelException *ex)
+spool_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex)
 {
 	g_warning("spool summary - not loading anything\n");
 	return 0;
@@ -137,11 +137,11 @@ spool_summary_load(CamelLocalSummary *cls, int forceindex, CamelException *ex)
 static int
 spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
-	int fd = -1, fdout = -1;
-	char tmpname[64] = { '\0' };
-	char *buffer, *p;
+	gint fd = -1, fdout = -1;
+	gchar tmpname[64] = { '\0' };
+	gchar *buffer, *p;
 	off_t spoollen, outlen;
-	int size, sizeout;
+	gint size, sizeout;
 	struct stat st;
 	guint32 flags = (expunge?1:0);
 
@@ -308,7 +308,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 static int
 spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
-	int i, work, count;
+	gint i, work, count;
 	struct stat st;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
 

@@ -40,8 +40,8 @@ typedef struct {
 	guint32 size;
 	guint32 flags;
 	guint32 index;		/* index of request */
-	char *uid;
-	int err;
+	gchar *uid;
+	gint err;
 	struct _CamelPOP3Command *cmd;
 	struct _CamelStream *stream;
 } CamelPOP3FolderInfo;
@@ -67,7 +67,7 @@ CamelFolder *camel_pop3_folder_new (CamelStore *parent, CamelException *ex);
 /* Standard Camel function */
 CamelType camel_pop3_folder_get_type (void);
 
-int camel_pop3_delete_old(CamelFolder *folder, int days_to_delete, CamelException *ex);
+gint camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete, CamelException *ex);
 
 G_END_DECLS
 

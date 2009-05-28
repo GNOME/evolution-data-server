@@ -28,7 +28,7 @@ G_BEGIN_DECLS
 
 void eds_module_initialize (GTypeModule *module);
 void eds_module_shutdown   (void);
-void eds_module_list_types (const GType **types, int *num_types);
+void eds_module_list_types (const GType **types, gint *num_types);
 
 G_END_DECLS
 

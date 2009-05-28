@@ -107,7 +107,7 @@ e_cal_backend_google_utils_populate_cache (ECalBackendGoogle *cbgo)
 			e_cal_component_commit_sequence (comp);
 			comp_str = e_cal_component_get_as_string (comp);
 
-			e_cal_backend_notify_object_created (E_CAL_BACKEND(cbgo), (const char *)comp_str);
+			e_cal_backend_notify_object_created (E_CAL_BACKEND(cbgo), (const gchar *)comp_str);
 			e_cal_backend_cache_put_component (cache, comp);
 			g_object_unref (comp);
 			g_free (comp_str);
@@ -129,7 +129,7 @@ static gpointer
 e_cal_backend_google_utils_create_cache (ECalBackendGoogle *cbgo)
 {
 	ESource *source;
-	int x;
+	gint x;
 	const gchar *refresh_interval = NULL;
 	ECalBackendCache *cache;
 
@@ -405,7 +405,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	ECalComponentDateTime dt;
 	ECalComponentOrganizer *org = NULL;
 	icaltimezone *default_zone;
-	const char *description, *uid, *temp;
+	const gchar *description, *uid, *temp;
 	struct icaltimetype itt;
 	GSList *category_ids;
 	GSList *go_attendee_list = NULL, *l = NULL, *attendee_list = NULL;
@@ -531,7 +531,7 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	e_cal_component_set_dtend (comp, &dt);
 
 	uid = gdata_entry_get_id (item->entry);
-	e_cal_component_set_uid (comp, (const char *)uid);
+	e_cal_component_set_uid (comp, (const gchar *)uid);
 	e_cal_component_commit_sequence (comp);
 
 	return comp;
@@ -556,8 +556,8 @@ e_go_item_from_cal_component (ECalBackendGoogle *cbgo, ECalComponent *comp)
 	gchar *temp, *term = NULL;
 	icaltimezone *default_zone;
 	icaltimetype itt;
-	const char *uid;
-	const char *location;
+	const gchar *uid;
+	const gchar *location;
 	GSList *list = NULL;
 	GDataEntry *entry;
 	ECalComponentText *t;
@@ -688,7 +688,7 @@ gdata_entry_get_entry_by_id (GSList *entries, const gchar *id)
 static gint
 utils_compare_ids (gconstpointer cache_id, gconstpointer modified_cache_id)
 {
-	return strcmp ((char *)cache_id, (char *)modified_cache_id);
+	return strcmp ((gchar *)cache_id, (gchar *)modified_cache_id);
 }
 
 static gchar *
@@ -754,13 +754,13 @@ utils_update_deletion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, GSList 
 
 	for (list = cache_keys; list; list = g_slist_next (list)) {
 		ECalComponentId *id = NULL;
-		char *comp_str = NULL;
-		comp = e_cal_backend_cache_get_component (cache, (const char *)list->data, NULL);
+		gchar *comp_str = NULL;
+		comp = e_cal_backend_cache_get_component (cache, (const gchar *)list->data, NULL);
 		comp_str = e_cal_component_get_as_string (comp);
 		id = e_cal_component_get_id (comp);
 
 		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbgo), id, comp_str, NULL);
-		e_cal_backend_cache_remove_component (cache, (const char *) id->uid, id->rid);
+		e_cal_backend_cache_remove_component (cache, (const gchar *) id->uid, id->rid);
 
 		e_cal_component_free_id (id);
 		g_object_unref (comp);
@@ -776,7 +776,7 @@ utils_update_deletion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, GSList 
 gchar *
 get_date (ECalComponentDateTime dt)
 {
-	char *temp;
+	gchar *temp;
 	struct icaltimetype itt;
 	struct icaltimetype *itt_u;
 	gchar *month;
@@ -845,7 +845,7 @@ static gboolean
 gd_date_to_ical (EGoItem *item, const gchar *google_time_string, struct icaltimetype *itt, ECalComponentDateTime *dt, icaltimezone *default_zone)
 {
 	gchar *s, *string, *dup;
-	int count = 0;
+	gint count = 0;
 	gboolean is_utc = TRUE;
 
 	g_return_val_if_fail (itt != NULL, FALSE);
@@ -883,7 +883,7 @@ gd_date_to_ical (EGoItem *item, const gchar *google_time_string, struct icaltime
 	*itt = icaltime_from_string (dup);
 
 	if (!is_utc) {
-		const char *zone_name = item->feed ? gdata_feed_get_timezone (item->feed) : NULL;
+		const gchar *zone_name = item->feed ? gdata_feed_get_timezone (item->feed) : NULL;
 
 		if (zone_name) {
 			icaltimezone *zone = icaltimezone_get_builtin_timezone (zone_name);

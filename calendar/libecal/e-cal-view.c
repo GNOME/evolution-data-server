@@ -105,7 +105,7 @@ objects_removed_cb (ECalViewListener *listener, GList *ids, gpointer data)
 }
 
 static void
-view_progress_cb (ECalViewListener *listener, const char *message, int percent, gpointer data)
+view_progress_cb (ECalViewListener *listener, const gchar *message, gint percent, gpointer data)
 {
 	ECalView *view;
 

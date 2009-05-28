@@ -19,7 +19,7 @@ typedef enum {
 
 struct EBookQuery {
 	EBookQueryType type;
-	int ref_count;
+	gint ref_count;
 
 	union {
 		struct {
@@ -33,26 +33,26 @@ struct EBookQuery {
 
 		struct {
 			EBookQueryTest test;
-			char          *field_name;
-			char          *value;
+			gchar          *field_name;
+			gchar          *value;
 		} field_test;
 
 		struct {
 			EContactField  field;
-			char          *vcard_field;
+			gchar          *vcard_field;
 		} exist;
 
 		struct {
-			char          *value;
+			gchar          *value;
 		} any_field_contains;
 	} query;
 };
 
 static EBookQuery *
-conjoin (EBookQueryType type, int nqs, EBookQuery **qs, gboolean unref)
+conjoin (EBookQueryType type, gint nqs, EBookQuery **qs, gboolean unref)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
-	int i;
+	gint i;
 
 	ret->type = type;
 	ret->query.andor.nqs = nqs;
@@ -77,7 +77,7 @@ conjoin (EBookQueryType type, int nqs, EBookQuery **qs, gboolean unref)
  * Return value: A new #EBookQuery
  **/
 EBookQuery *
-e_book_query_and (int nqs, EBookQuery **qs, gboolean unref)
+e_book_query_and (gint nqs, EBookQuery **qs, gboolean unref)
 {
 	return conjoin (E_BOOK_QUERY_TYPE_AND, nqs, qs, unref);
 }
@@ -93,7 +93,7 @@ e_book_query_and (int nqs, EBookQuery **qs, gboolean unref)
  * Return value: A new #EBookQuery
  **/
 EBookQuery *
-e_book_query_or (int nqs, EBookQuery **qs, gboolean unref)
+e_book_query_or (gint nqs, EBookQuery **qs, gboolean unref)
 {
 	return conjoin (E_BOOK_QUERY_TYPE_OR, nqs, qs, unref);
 }
@@ -190,7 +190,7 @@ e_book_query_not (EBookQuery *q, gboolean unref)
 EBookQuery *
 e_book_query_field_test (EContactField field,
 			 EBookQueryTest test,
-			 const char *value)
+			 const gchar *value)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -213,9 +213,9 @@ e_book_query_field_test (EContactField field,
  * Return value: the new #EBookQuery
  **/
 EBookQuery *
-e_book_query_vcard_field_test (const char     *field,
+e_book_query_vcard_field_test (const gchar     *field,
 			       EBookQueryTest  test,
-			       const char     *value)
+			       const gchar     *value)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -255,7 +255,7 @@ e_book_query_field_exists (EContactField field)
  * Return value: the new #EBookQuery
  **/
 EBookQuery *
-e_book_query_vcard_field_exists (const char *field)
+e_book_query_vcard_field_exists (const gchar *field)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -275,7 +275,7 @@ e_book_query_vcard_field_exists (const char *field)
  * Return value: the new #EBookQuery
  **/
 EBookQuery *
-e_book_query_any_field_contains (const char *value)
+e_book_query_any_field_contains (const gchar *value)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -295,7 +295,7 @@ e_book_query_any_field_contains (const char *value)
 void
 e_book_query_unref (EBookQuery *q)
 {
-	int i;
+	gint i;
 
 	if (q->ref_count--)
 		return;
@@ -347,14 +347,14 @@ e_book_query_ref (EBookQuery *q)
 }
 
 static ESExpResult *
-func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
 	EBookQuery **qs;
 
 	if (argc > 0) {
-		int i;
+		gint i;
 
 		qs = g_new0(EBookQuery*, argc);
 
@@ -379,14 +379,14 @@ func_and(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
 	EBookQuery **qs;
 
 	if (argc > 0) {
-		int i;
+		gint i;
 
 		qs = g_new0(EBookQuery*, argc);
 
@@ -411,7 +411,7 @@ func_or(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -429,7 +429,7 @@ func_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -437,8 +437,8 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
 
 		if (!strcmp (propname, "x-evolution-any-field")) {
 			*list = g_list_prepend (*list, e_book_query_any_field_contains (str));
@@ -464,7 +464,7 @@ func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -472,8 +472,8 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
 		EContactField field = e_contact_field_id (propname);
 
 		if (field)
@@ -493,7 +493,7 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -501,8 +501,8 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
 		EContactField field = e_contact_field_id (propname);
 
 		if (field)
@@ -522,7 +522,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -530,8 +530,8 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
 		EContactField field = e_contact_field_id (propname);
 
 		if (field)
@@ -551,14 +551,14 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static ESExpResult *
-func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
 
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
+		gchar *propname = argv[0]->value.string;
 		EContactField field = e_contact_field_id (propname);
 
 		if (field)
@@ -575,9 +575,9 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 /* 'builtin' functions */
 static const struct {
-	char *name;
+	gchar *name;
 	ESExpFunc *func;
-	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "and", func_and, 0 },
@@ -599,13 +599,13 @@ static const struct {
  * Return value: the new #EBookQuery.
  **/
 EBookQuery*
-e_book_query_from_string  (const char *query_string)
+e_book_query_from_string  (const gchar *query_string)
 {
 	ESExp *sexp;
 	ESExpResult *r;
 	EBookQuery *retval;
 	GList *list = NULL;
-	int i;
+	gint i;
 
 	sexp = e_sexp_new();
 
@@ -655,13 +655,13 @@ e_book_query_from_string  (const char *query_string)
  * Return value: The string form of the query. This string should be freed when
  * finished with.
  **/
-char*
+gchar *
 e_book_query_to_string    (EBookQuery *q)
 {
 	GString *str = g_string_new ("(");
 	GString *encoded = g_string_new ("");
-	int i;
-	char *s = NULL;
+	gint i;
+	gchar *s = NULL;
 
 	switch (q->type) {
 	case E_BOOK_QUERY_TYPE_AND:
@@ -749,7 +749,7 @@ e_book_query_get_type (void)
 EBookQuery*
 e_book_query_copy (EBookQuery *q)
 {
-	char *str = e_book_query_to_string (q);
+	gchar *str = e_book_query_to_string (q);
 	EBookQuery *nq = e_book_query_from_string (str);
 
 	g_free (str);

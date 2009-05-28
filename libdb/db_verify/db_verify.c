@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -25,24 +25,24 @@ static const char revid[] =
 
 #include "db_int.h"
 
-int main __P((int, char *[]));
-int usage __P((void));
-int version_check __P((const char *));
+gint main __P((int, gchar *[]));
+gint usage __P((void));
+gint version_check __P((const gchar *));
 
-int
+gint
 main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind;
-	const char *progname = "db_verify";
+	extern gchar *optarg;
+	extern gint optind;
+	const gchar *progname = "db_verify";
 	DB *dbp, *dbp1;
 	DB_ENV *dbenv;
 	u_int32_t cache;
-	int ch, d_close, e_close, exitval, nflag, oflag, private;
-	int quiet, resize, ret, t_ret;
-	char *home, *passwd;
+	gint ch, d_close, e_close, exitval, nflag, oflag, private;
+	gint quiet, resize, ret, t_ret;
+	gchar *home, *passwd;
 
 	if ((ret = version_check(progname)) != 0)
 		return (ret);
@@ -220,7 +220,7 @@ shutdown:	exitval = 1;
 	return (exitval == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-int
+gint
 usage()
 {
 	fprintf(stderr, "%s\n",
@@ -228,11 +228,11 @@ usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

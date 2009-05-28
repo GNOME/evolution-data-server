@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -31,14 +31,14 @@ static const char revid[] = "$Id$";
  *	this function cannot be used as a sort function; its purpose is to
  *	be used as a hash comparison function.
  *
- * PUBLIC: int __lock_cmp __P((const DBT *, DB_LOCKOBJ *));
+ * PUBLIC: gint __lock_cmp __P((const DBT *, DB_LOCKOBJ *));
  */
-int
+gint
 __lock_cmp(dbt, lock_obj)
 	const DBT *dbt;
 	DB_LOCKOBJ *lock_obj;
 {
-	void *obj_data;
+	gpointer obj_data;
 
 	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
 	return (dbt->size == lock_obj->lockobj.size &&
@@ -46,9 +46,9 @@ __lock_cmp(dbt, lock_obj)
 }
 
 /*
- * PUBLIC: int __lock_locker_cmp __P((u_int32_t, DB_LOCKER *));
+ * PUBLIC: gint __lock_locker_cmp __P((u_int32_t, DB_LOCKER *));
  */
-int
+gint
 __lock_locker_cmp(locker, sh_locker)
 	u_int32_t locker;
 	DB_LOCKER *sh_locker;
@@ -112,7 +112,7 @@ u_int32_t
 __lock_lhash(lock_obj)
 	DB_LOCKOBJ *lock_obj;
 {
-	void *obj_data;
+	gpointer obj_data;
 
 	obj_data = SH_DBT_PTR(&lock_obj->lockobj);
 

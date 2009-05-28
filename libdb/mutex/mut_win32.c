@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,7 +28,7 @@ static const char revid[] = "$Id$";
 #undef MUTEX_DIAG
 
 #define	GET_HANDLE(mutexp, event) do {					\
-	char idbuf[13];							\
+	gchar idbuf[13];							\
 									\
 	snprintf(idbuf, sizeof idbuf, "db.m%08x", mutexp->id);		\
 	event = CreateEvent(NULL, FALSE, FALSE, idbuf);			\
@@ -40,9 +40,9 @@ static const char revid[] = "$Id$";
  * __db_win32_mutex_init --
  *	Initialize a DB_MUTEX.
  *
- * PUBLIC: int __db_win32_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t));
+ * PUBLIC: gint __db_win32_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t));
  */
-int
+gint
 __db_win32_mutex_init(dbenv, mutexp, flags)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
@@ -84,15 +84,15 @@ __db_win32_mutex_init(dbenv, mutexp, flags)
  * __db_win32_mutex_lock
  *	Lock on a mutex, logically blocking if necessary.
  *
- * PUBLIC: int __db_win32_mutex_lock __P((DB_ENV *, DB_MUTEX *));
+ * PUBLIC: gint __db_win32_mutex_lock __P((DB_ENV *, DB_MUTEX *));
  */
-int
+gint
 __db_win32_mutex_lock(dbenv, mutexp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
 {
 	HANDLE event;
-	int ret, ms, nspins;
+	gint ret, ms, nspins;
 #ifdef MUTEX_DIAG
 	LARGE_INTEGER now;
 #endif
@@ -163,14 +163,14 @@ loop:	/* Attempt to acquire the resource for N spins. */
  * __db_win32_mutex_unlock --
  *	Release a lock.
  *
- * PUBLIC: int __db_win32_mutex_unlock __P((DB_ENV *, DB_MUTEX *));
+ * PUBLIC: gint __db_win32_mutex_unlock __P((DB_ENV *, DB_MUTEX *));
  */
-int
+gint
 __db_win32_mutex_unlock(dbenv, mutexp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
 {
-	int ret;
+	gint ret;
 	HANDLE event;
 #ifdef MUTEX_DIAG
 		LARGE_INTEGER now;
@@ -217,9 +217,9 @@ __db_win32_mutex_unlock(dbenv, mutexp)
  * __db_win32_mutex_destroy --
  *	Destroy a DB_MUTEX - noop with this implementation.
  *
- * PUBLIC: int __db_win32_mutex_destroy __P((DB_MUTEX *));
+ * PUBLIC: gint __db_win32_mutex_destroy __P((DB_MUTEX *));
  */
-int
+gint
 __db_win32_mutex_destroy(mutexp)
 	DB_MUTEX *mutexp;
 {

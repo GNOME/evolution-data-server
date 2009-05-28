@@ -44,10 +44,10 @@ struct _CamelNNTPStream {
 	CamelStream *source;
 
 	camel_nntp_stream_mode_t mode;
-	int state;
+	gint state;
 
-	unsigned char *buf, *ptr, *end;
-	unsigned char *linebuf, *lineptr, *lineend;
+	guchar *buf, *ptr, *end;
+	guchar *linebuf, *lineptr, *lineend;
 };
 
 struct _CamelNNTPStreamClass {
@@ -61,9 +61,9 @@ CamelStream     *camel_nntp_stream_new		(CamelStream *source);
 
 void		 camel_nntp_stream_set_mode     (CamelNNTPStream *is, camel_nntp_stream_mode_t mode);
 
-int              camel_nntp_stream_line		(CamelNNTPStream *is, unsigned char **data, unsigned int *len);
-int		 camel_nntp_stream_gets		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
-int		 camel_nntp_stream_getd		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
+gint              camel_nntp_stream_line		(CamelNNTPStream *is, guchar **data, guint *len);
+int		 camel_nntp_stream_gets		(CamelNNTPStream *is, guchar **start, guint *len);
+int		 camel_nntp_stream_getd		(CamelNNTPStream *is, guchar **start, guint *len);
 
 G_END_DECLS
 

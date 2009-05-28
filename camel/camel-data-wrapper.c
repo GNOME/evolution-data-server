@@ -42,10 +42,10 @@ static CamelObjectClass *parent_class = NULL;
 /* Returns the class for a CamelDataWrapper */
 #define CDW_CLASS(so) CAMEL_DATA_WRAPPER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static int construct_from_stream(CamelDataWrapper *, CamelStream *);
+static gint construct_from_stream(CamelDataWrapper *, CamelStream *);
 static ssize_t write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
 static ssize_t decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
-static void set_mime_type (CamelDataWrapper *data_wrapper, const char *mime_type);
+static void set_mime_type (CamelDataWrapper *data_wrapper, const gchar *mime_type);
 static gchar *get_mime_type (CamelDataWrapper *data_wrapper);
 static CamelContentType *get_mime_type_field (CamelDataWrapper *data_wrapper);
 static void set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type);
@@ -260,7 +260,7 @@ construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 					  CamelStream *stream)
 {
@@ -272,7 +272,7 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 
 
 static void
-set_mime_type (CamelDataWrapper *data_wrapper, const char *mime_type)
+set_mime_type (CamelDataWrapper *data_wrapper, const gchar *mime_type)
 {
 	if (data_wrapper->mime_type)
 		camel_content_type_unref (data_wrapper->mime_type);
@@ -295,7 +295,7 @@ set_mime_type (CamelDataWrapper *data_wrapper, const char *mime_type)
  **/
 void
 camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
-				  const char *mime_type)
+				  const gchar *mime_type)
 {
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
 	g_return_if_fail (mime_type != NULL);
@@ -303,7 +303,7 @@ camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
 	CDW_CLASS (data_wrapper)->set_mime_type (data_wrapper, mime_type);
 }
 
-static char *
+static gchar *
 get_mime_type (CamelDataWrapper *data_wrapper)
 {
 	return camel_content_type_simple (data_wrapper->mime_type);
@@ -316,7 +316,7 @@ get_mime_type (CamelDataWrapper *data_wrapper)
  *
  * Returns: the MIME type which must be freed by the caller
  **/
-char *
+gchar *
 camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
 {
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), NULL);

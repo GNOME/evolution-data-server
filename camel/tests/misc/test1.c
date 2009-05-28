@@ -11,8 +11,8 @@
 #include "camel-test.h"
 
 struct {
-	char *header;
-	char *values[5];
+	gchar *header;
+	gchar *values[5];
 } test1[] = {
 	{ "<test@camel.host>", { "test@camel.host" } },
 	{ "(this is a comment) <test@camel.host>", { "test@camel.host" } },
@@ -27,10 +27,10 @@ struct {
 	  { "test.groupwise@bug.novell", "test@camel.host", "test.groupwise@bug.novell" } },
 };
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	int i, j;
+	gint i, j;
 
 	camel_test_init(argc, argv);
 

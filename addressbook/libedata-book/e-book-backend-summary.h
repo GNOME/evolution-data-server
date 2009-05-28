@@ -49,8 +49,8 @@ struct _EBookBackendSummaryClass{
 	GObjectClass parent_class;
 };
 
-EBookBackendSummary* e_book_backend_summary_new              (const char *summary_path,
-							 int flush_timeout_millis);
+EBookBackendSummary* e_book_backend_summary_new              (const gchar *summary_path,
+							 gint flush_timeout_millis);
 GType              e_book_backend_summary_get_type         (void);
 
 /* returns FALSE if the load fails for any reason (including that the
@@ -60,17 +60,17 @@ gboolean           e_book_backend_summary_load             (EBookBackendSummary 
 gboolean           e_book_backend_summary_save              (EBookBackendSummary *summary);
 
 void               e_book_backend_summary_add_contact       (EBookBackendSummary *summary, EContact *contact);
-void               e_book_backend_summary_remove_contact    (EBookBackendSummary *summary, const char *id);
-gboolean           e_book_backend_summary_check_contact     (EBookBackendSummary *summary, const char *id);
+void               e_book_backend_summary_remove_contact    (EBookBackendSummary *summary, const gchar *id);
+gboolean           e_book_backend_summary_check_contact     (EBookBackendSummary *summary, const gchar *id);
 
 void               e_book_backend_summary_touch             (EBookBackendSummary *summary);
 
 /* returns TRUE if the summary's mtime is >= @t. */
 gboolean           e_book_backend_summary_is_up_to_date     (EBookBackendSummary *summary, time_t t);
 
-gboolean           e_book_backend_summary_is_summary_query  (EBookBackendSummary *summary, const char *query);
-GPtrArray*         e_book_backend_summary_search            (EBookBackendSummary *summary, const char *query);
-char*              e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary, const char *id);
+gboolean           e_book_backend_summary_is_summary_query  (EBookBackendSummary *summary, const gchar *query);
+GPtrArray*         e_book_backend_summary_search            (EBookBackendSummary *summary, const gchar *query);
+gchar *              e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary, const gchar *id);
 
 G_END_DECLS
 

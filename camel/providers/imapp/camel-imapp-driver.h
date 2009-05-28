@@ -19,9 +19,9 @@ typedef struct _CamelIMAPPDriverClass CamelIMAPPDriverClass;
 
 typedef struct _CamelIMAPPFetch CamelIMAPPFetch;
 
-typedef int (*CamelIMAPPDriverFunc)(struct _CamelIMAPPDriver *driver, void *data);
-typedef struct _CamelSasl * (*CamelIMAPPSASLFunc)(struct _CamelIMAPPDriver *driver, void *data);
-typedef void (*CamelIMAPPLoginFunc)(struct _CamelIMAPPDriver *driver, char **login, char **pass, void *data);
+typedef gint (*CamelIMAPPDriverFunc)(struct _CamelIMAPPDriver *driver, gpointer data);
+typedef struct _CamelSasl * (*CamelIMAPPSASLFunc)(struct _CamelIMAPPDriver *driver, gpointer data);
+typedef void (*CamelIMAPPLoginFunc)(struct _CamelIMAPPDriver *driver, gchar **login, gchar **pass, gpointer data);
 
 typedef void (*CamelIMAPPFetchFunc)(struct _CamelIMAPPDriver *driver, CamelIMAPPFetch *);
 
@@ -32,11 +32,11 @@ struct _CamelIMAPPFetch {
 	CamelStream *body;	/* the content fetched */
 
 	struct _CamelIMAPPFolder *folder;
-	char *uid;
-	char *section;
+	gchar *uid;
+	gchar *section;
 
 	CamelIMAPPFetchFunc done;
-	void *data;
+	gpointer data;
 };
 
 struct _CamelMimeMessage;
@@ -69,11 +69,11 @@ struct _CamelIMAPPDriver {
 
 	/* factory to get an appropriate sasl mech */
 	CamelIMAPPSASLFunc get_sasl;
-	void *get_sasl_data;
+	gpointer get_sasl_data;
 
 	/* callbacks, get login username/pass */
 	CamelIMAPPLoginFunc get_login;
-	void *get_login_data;
+	gpointer get_login_data;
 };
 
 struct _CamelIMAPPDriverClass {
@@ -84,8 +84,8 @@ CamelType	camel_imapp_driver_get_type (void);
 
 CamelIMAPPDriver *	camel_imapp_driver_new(CamelIMAPPStream *stream);
 
-void			camel_imapp_driver_set_sasl_factory(CamelIMAPPDriver *id, CamelIMAPPSASLFunc get_sasl, void *sasl_data);
-void			camel_imapp_driver_set_login_query(CamelIMAPPDriver *id, CamelIMAPPLoginFunc get_login, void *login_data);
+void			camel_imapp_driver_set_sasl_factory(CamelIMAPPDriver *id, CamelIMAPPSASLFunc get_sasl, gpointer sasl_data);
+void			camel_imapp_driver_set_login_query(CamelIMAPPDriver *id, CamelIMAPPLoginFunc get_login, gpointer login_data);
 
 void			camel_imapp_driver_login(CamelIMAPPDriver *id);
 
@@ -93,11 +93,11 @@ void			camel_imapp_driver_select(CamelIMAPPDriver *id, struct _CamelIMAPPFolder 
 void			camel_imapp_driver_update(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder);
 void			camel_imapp_driver_sync(CamelIMAPPDriver *id, gboolean expunge, struct _CamelIMAPPFolder *folder);
 
-struct _CamelStream *	camel_imapp_driver_fetch(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const char *uid, const char *body);
+struct _CamelStream *	camel_imapp_driver_fetch(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const gchar *uid, const gchar *body);
 
-GPtrArray *		camel_imapp_driver_list(CamelIMAPPDriver *id, const char *name, guint32 flags);
+GPtrArray *		camel_imapp_driver_list(CamelIMAPPDriver *id, const gchar *name, guint32 flags);
 
-struct _CamelStream *camel_imapp_driver_get(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const char *uid);
+struct _CamelStream *camel_imapp_driver_get(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, const gchar *uid);
 void camel_imapp_driver_append(CamelIMAPPDriver *id, struct _CamelIMAPPFolder *folder, struct _CamelDataWrapper *);
 
 G_END_DECLS

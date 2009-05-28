@@ -44,17 +44,17 @@ struct _EDataBookViewClass {
 
 EDataBookView *e_data_book_view_new                  (EBookBackend                 *backend,
 						      GNOME_Evolution_Addressbook_BookViewListener  listener,
-						      const char                   *card_query,
+						      const gchar                   *card_query,
 						      EBookBackendSExp             *card_sexp,
-						      int                           max_results);
+						      gint                           max_results);
 
 void              e_data_book_view_set_thresholds    (EDataBookView *book_view,
-						      int minimum_grouping_threshold,
-						      int maximum_grouping_threshold);
+						      gint minimum_grouping_threshold,
+						      gint maximum_grouping_threshold);
 
-const char*       e_data_book_view_get_card_query    (EDataBookView                *book_view);
+const gchar *       e_data_book_view_get_card_query    (EDataBookView                *book_view);
 EBookBackendSExp* e_data_book_view_get_card_sexp     (EDataBookView                *book_view);
-int               e_data_book_view_get_max_results   (EDataBookView                *book_view);
+gint               e_data_book_view_get_max_results   (EDataBookView                *book_view);
 EBookBackend*     e_data_book_view_get_backend       (EDataBookView                *book_view);
 GNOME_Evolution_Addressbook_BookViewListener e_data_book_view_get_listener (EDataBookView  *book_view);
 GMutex*           e_data_book_view_get_mutex         (EDataBookView                *book_view);
@@ -63,17 +63,17 @@ void         e_data_book_view_notify_update          (EDataBookView             
 						      EContact                     *contact);
 
 void         e_data_book_view_notify_update_vcard    (EDataBookView                *book_view,
-						      char                         *vcard);
+						      gchar                         *vcard);
 void         e_data_book_view_notify_update_prefiltered_vcard (EDataBookView       *book_view,
-                                                               const char          *id,
-                                                               char                *vcard);
+                                                               const gchar          *id,
+                                                               gchar                *vcard);
 
 void         e_data_book_view_notify_remove          (EDataBookView                *book_view,
-						      const char                   *id);
+						      const gchar                   *id);
 void         e_data_book_view_notify_complete        (EDataBookView                *book_view,
 						      GNOME_Evolution_Addressbook_CallStatus);
 void         e_data_book_view_notify_status_message  (EDataBookView                *book_view,
-						      const char                   *message);
+						      const gchar                   *message);
 void         e_data_book_view_ref                    (EDataBookView                *book_view);
 void         e_data_book_view_unref                  (EDataBookView                *book_view);
 

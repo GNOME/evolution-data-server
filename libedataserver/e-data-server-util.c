@@ -46,8 +46,8 @@
  *
  * Returns: 0 on success; -1 on failure.
  **/
-int
-e_util_mkdir_hier (const char *path, mode_t mode)
+gint
+e_util_mkdir_hier (const gchar *path, mode_t mode)
 {
 	return g_mkdir_with_parents (path, mode);
 }
@@ -141,7 +141,7 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
         for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
                 gunichar sc;
                 sc = g_unichar_tolower (unival);
-                /* We have valid stripped char */
+                /* We have valid stripped gchar */
                 if (sc == nuni[0]) {
                         const gchar *q = p;
                         gint npos = 1;
@@ -240,7 +240,7 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
                 gunichar sc;
                 sc = stripped_char (unival);
                 if (sc) {
-                        /* We have valid stripped char */
+                        /* We have valid stripped gchar */
                         if (sc == nuni[0]) {
                                 const gchar *q = p;
                                 gint npos = 1;
@@ -262,11 +262,11 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle)
         return NULL;
 }
 
-int
+gint
 e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
 {
 	gchar *folded_s1, *folded_s2;
-	int retval;
+	gint retval;
 
 	g_return_val_if_fail (s1 != NULL && s2 != NULL, -1);
 
@@ -290,10 +290,10 @@ e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
  * Returns newly allocates string, copy of 'str', without accents.
  **/
 gchar *
-e_util_utf8_remove_accents (const char *str)
+e_util_utf8_remove_accents (const gchar *str)
 {
-	char *res;
-	int i, j;
+	gchar *res;
+	gint i, j;
 
 	if (!str)
 		return NULL;
@@ -328,13 +328,13 @@ e_util_utf8_remove_accents (const char *str)
  *
  * Returns: The number of characters placed in @s.
  **/
-size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
+size_t e_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm)
 {
 	size_t ret;
 #ifdef HAVE_LKSTRFTIME
 	ret = strftime(s, max, fmt, tm);
 #else
-	char *c, *ffmt, *ff;
+	gchar *c, *ffmt, *ff;
 
 	ffmt = g_strdup(fmt);
 	ff = ffmt;
@@ -378,10 +378,10 @@ size_t e_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
  * Returns: The number of characters placed in @s.
  **/
 size_t
-e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
+e_utf8_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm)
 {
 	size_t sz, ret;
-	char *locale_fmt, *buf;
+	gchar *locale_fmt, *buf;
 
 	locale_fmt = g_locale_from_utf8(fmt, -1, NULL, &sz, NULL);
 	if (!locale_fmt)
@@ -400,7 +400,7 @@ e_utf8_strftime(char *s, size_t max, const char *fmt, const struct tm *tm)
 	}
 
 	if (sz >= max) {
-		char *tmp = buf + max - 1;
+		gchar *tmp = buf + max - 1;
 		tmp = g_utf8_find_prev_char(buf, tmp);
 		if (tmp)
 			sz = tmp - buf;
@@ -490,9 +490,9 @@ e_filename_make_safe (gchar *string)
 	gchar *p, *ts;
 	gunichar c;
 #ifdef G_OS_WIN32
-	const char *unsafe_chars = " /'\"`&();|<>$%{}!\\:*?#";
+	const gchar *unsafe_chars = " /'\"`&();|<>$%{}!\\:*?#";
 #else
-	const char *unsafe_chars = " /'\"`&();|<>$%{}!#";
+	const gchar *unsafe_chars = " /'\"`&();|<>$%{}!#";
 #endif
 
 	g_return_if_fail (string != NULL);
@@ -548,11 +548,11 @@ e_filename_make_safe (gchar *string)
  */
 static void
 get_prefixes (gpointer  hmodule,
-	      char    **full_prefix,
-	      char    **cp_prefix)
+	      gchar    **full_prefix,
+	      gchar    **cp_prefix)
 {
         wchar_t wcbfr[1000];
-        char cpbfr[1000];
+        gchar cpbfr[1000];
 
         g_return_if_fail (full_prefix != NULL);
         g_return_if_fail (cp_prefix != NULL);
@@ -599,13 +599,13 @@ get_prefixes (gpointer  hmodule,
         }
 }
 
-static const char *prefix = NULL;
-static const char *cp_prefix;
+static const gchar *prefix = NULL;
+static const gchar *cp_prefix;
 
-static const char *localedir;
-static const char *extensiondir;
-static const char *imagesdir;
-static const char *ui_gladedir;
+static const gchar *localedir;
+static const gchar *extensiondir;
+static const gchar *imagesdir;
+static const gchar *ui_gladedir;
 
 static HMODULE hmodule;
 G_LOCK_DEFINE_STATIC (mutex);
@@ -629,14 +629,14 @@ DllMain (HINSTANCE hinstDLL,
         return TRUE;
 }
 
-char *
-e_util_replace_prefix (const char *configure_time_prefix,
-		       const char *runtime_prefix,
-		       const char *configure_time_path)
+gchar *
+e_util_replace_prefix (const gchar *configure_time_prefix,
+		       const gchar *runtime_prefix,
+		       const gchar *configure_time_path)
 {
-	char *c_t_prefix_slash = g_strconcat (configure_time_prefix, "/",
+	gchar *c_t_prefix_slash = g_strconcat (configure_time_prefix, "/",
 					      NULL);
-	char *retval;
+	gchar *retval;
 
         if (runtime_prefix &&
             g_str_has_prefix (configure_time_path, c_t_prefix_slash)) {
@@ -651,9 +651,9 @@ e_util_replace_prefix (const char *configure_time_prefix,
 	return retval;
 }
 
-static char *
-replace_prefix (const char *runtime_prefix,
-		const char *configure_time_path)
+static gchar *
+replace_prefix (const gchar *runtime_prefix,
+		const gchar *configure_time_path)
 {
 	return e_util_replace_prefix (E_DATA_SERVER_PREFIX,
 				      runtime_prefix,
@@ -663,8 +663,8 @@ replace_prefix (const char *runtime_prefix,
 static void
 setup (void)
 {
-	char *full_pfx;
-	char *cp_pfx;
+	gchar *full_pfx;
+	gchar *cp_pfx;
 
         G_LOCK (mutex);
         if (prefix != NULL) {
@@ -698,12 +698,12 @@ setup (void)
 }
 
 #define PRIVATE_GETTER(varbl)			\
-const char *					\
+const gchar *					\
 _libedataserver_get_##varbl (void)		\
 	GETTER_IMPL(varbl)
 
 #define PUBLIC_GETTER(varbl)			\
-const char *					\
+const gchar *					\
 e_util_get_##varbl (void)			\
 	GETTER_IMPL(varbl)
 

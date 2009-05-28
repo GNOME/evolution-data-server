@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -51,13 +51,13 @@ typedef struct {
 	db_pgno_t	pgno;
 } locker_info;
 
-static int  __dd_abort __P((DB_ENV *, locker_info *));
-static int  __dd_build __P((DB_ENV *,
+static gint  __dd_abort __P((DB_ENV *, locker_info *));
+static gint  __dd_build __P((DB_ENV *,
 	    u_int32_t, u_int32_t **, u_int32_t *, u_int32_t *, locker_info **));
-static int  __dd_find __P((DB_ENV *,
+static gint  __dd_find __P((DB_ENV *,
 	    u_int32_t *, locker_info *, u_int32_t, u_int32_t, u_int32_t ***));
-static int  __dd_isolder __P((u_int32_t, u_int32_t, u_int32_t, u_int32_t));
-static int __dd_verify __P((locker_info *, u_int32_t *, u_int32_t *,
+static gint  __dd_isolder __P((u_int32_t, u_int32_t, u_int32_t, u_int32_t));
+static gint __dd_verify __P((locker_info *, u_int32_t *, u_int32_t *,
 	    u_int32_t *, u_int32_t, u_int32_t, u_int32_t));
 
 #ifdef DIAGNOSTIC
@@ -68,13 +68,13 @@ static void __dd_debug
 /*
  * lock_detect --
  *
- * PUBLIC: int __lock_detect __P((DB_ENV *, u_int32_t, u_int32_t, int *));
+ * PUBLIC: gint __lock_detect __P((DB_ENV *, u_int32_t, u_int32_t, gint *));
  */
-int
+gint
 __lock_detect(dbenv, flags, atype, abortp)
 	DB_ENV *dbenv;
 	u_int32_t flags, atype;
-	int *abortp;
+	gint *abortp;
 {
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
@@ -83,7 +83,7 @@ __lock_detect(dbenv, flags, atype, abortp)
 	u_int32_t *bitmap, *copymap, **deadp, **free_me, *tmpmap;
 	u_int32_t i, keeper, killid, limit, nalloc, nlockers;
 	u_int32_t lock_max, txn_max;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -328,7 +328,7 @@ __dd_build(dbenv, atype, bmp, nlockers, allocp, idmap)
 	db_timeval_t now;
 	u_int32_t *bitmap, count, dd, *entryp, id, ndx, nentries, *tmpmap;
 	u_int8_t *pptr;
-	int expire_only, is_first, need_timeout, ret;
+	gint expire_only, is_first, need_timeout, ret;
 
 	lt = dbenv->lk_handle;
 	region = lt->reginfo.primary;
@@ -615,7 +615,7 @@ __dd_find(dbenv, bmp, idmap, nlockers, nalloc, deadp)
 {
 	u_int32_t i, j, k, *mymap, *tmpmap;
 	u_int32_t **retp;
-	int ndead, ndeadalloc, ret;
+	gint ndead, ndeadalloc, ret;
 
 #undef	INITIAL_DEAD_ALLOC
 #define	INITIAL_DEAD_ALLOC	8
@@ -683,7 +683,7 @@ __dd_abort(dbenv, info)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	u_int32_t ndx;
-	int ret;
+	gint ret;
 
 	lt = dbenv->lk_handle;
 	region = lt->reginfo.primary;
@@ -747,7 +747,7 @@ __dd_debug(dbenv, idmap, bitmap, nlockers, nalloc)
 	u_int32_t *bitmap, nlockers, nalloc;
 {
 	u_int32_t i, j, *mymap;
-	char *msgbuf;
+	gchar *msgbuf;
 
 	__db_err(dbenv, "Waitsfor array\nWaiter:\tWaiting on:");
 
@@ -794,7 +794,7 @@ __dd_verify(idmap, deadmap, tmpmap, origmap, nlockers, nalloc, which)
 {
 	u_int32_t *tmap;
 	u_int32_t j;
-	int count;
+	gint count;
 
 	memset(tmpmap, 0, sizeof(u_int32_t) * nalloc);
 

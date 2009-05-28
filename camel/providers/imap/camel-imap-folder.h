@@ -62,10 +62,10 @@ struct _CamelImapFolder {
 	CamelImapMessageCache *cache;
 	CamelOfflineJournal *journal;
 
-	unsigned int need_rescan:1;
-	unsigned int need_refresh:1;
-	unsigned int read_only:1;
-	unsigned int check_folder:1;
+	guint need_rescan:1;
+	guint need_refresh:1;
+	guint read_only:1;
+	guint check_folder:1;
 };
 
 struct _CamelImapFolderClass {
@@ -78,25 +78,25 @@ struct _CamelImapFolderClass {
 
 /* public methods */
 CamelFolder *camel_imap_folder_new (CamelStore *parent,
-				    const char *folder_name,
-				    const char *folder_dir,
+				    const gchar *folder_name,
+				    const gchar *folder_dir,
 				    CamelException *ex);
 
 void camel_imap_folder_selected (CamelFolder *folder,
 				 CamelImapResponse *response,
 				 CamelException *ex);
 
-void camel_imap_folder_changed (CamelFolder *folder, int exists,
+void camel_imap_folder_changed (CamelFolder *folder, gint exists,
 				GArray *expunged, CamelException *ex);
 
 CamelStream *camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
-					   const char *uid,
-					   const char *section_text,
+					   const gchar *uid,
+					   const gchar *section_text,
 					   gboolean cache_only,
 					   CamelException *ex);
 void
 imap_append_resyncing (CamelFolder *folder, CamelMimeMessage *message,
-		       const CamelMessageInfo *info, char **appended_uid,
+		       const CamelMessageInfo *info, gchar **appended_uid,
 		       CamelException *ex);
 void
 imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,

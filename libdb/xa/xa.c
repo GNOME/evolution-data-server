@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,16 +21,16 @@ static const char revid[] = "$Id$";
 #include "db_int.h"
 #include "dbinc/txn.h"
 
-static int  __db_xa_close __P((char *, int, long));
-static int  __db_xa_commit __P((XID *, int, long));
-static int  __db_xa_complete __P((int *, int *, int, long));
-static int  __db_xa_end __P((XID *, int, long));
-static int  __db_xa_forget __P((XID *, int, long));
-static int  __db_xa_open __P((char *, int, long));
-static int  __db_xa_prepare __P((XID *, int, long));
-static int  __db_xa_recover __P((XID *, long, int, long));
-static int  __db_xa_rollback __P((XID *, int, long));
-static int  __db_xa_start __P((XID *, int, long));
+static gint  __db_xa_close __P((gchar *, int, long));
+static gint  __db_xa_commit __P((XID *, int, long));
+static gint  __db_xa_complete __P((gint *, gint *, int, long));
+static gint  __db_xa_end __P((XID *, int, long));
+static gint  __db_xa_forget __P((XID *, int, long));
+static gint  __db_xa_open __P((gchar *, int, long));
+static gint  __db_xa_prepare __P((XID *, int, long));
+static gint  __db_xa_recover __P((XID *, long, int, long));
+static gint  __db_xa_rollback __P((XID *, int, long));
+static gint  __db_xa_start __P((XID *, int, long));
 static void __xa_txn_end __P((DB_TXN *));
 
 /*
@@ -75,8 +75,8 @@ const struct xa_switch_t db_xa_switch = {
  */
 static int
 __db_xa_open(xa_info, rmid, flags)
-	char *xa_info;
-	int rmid;
+	gchar *xa_info;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
@@ -126,12 +126,12 @@ err:	(void)env->close(env, 0);
  */
 static int
 __db_xa_close(xa_info, rmid, flags)
-	char *xa_info;
-	int rmid;
+	gchar *xa_info;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	COMPQUIET(xa_info, NULL);
 
@@ -169,13 +169,13 @@ __db_xa_close(xa_info, rmid, flags)
 static int
 __db_xa_start(xid, rmid, flags)
 	XID *xid;
-	int rmid;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
 	TXN_DETAIL *td;
 	size_t off;
-	int is_known;
+	gint is_known;
 
 #define	OK_FLAGS	(TMJOIN | TMRESUME | TMNOWAIT | TMASYNC | TMNOFLAGS)
 	if (LF_ISSET(~OK_FLAGS))
@@ -236,7 +236,7 @@ __db_xa_start(xid, rmid, flags)
 static int
 __db_xa_end(xid, rmid, flags)
 	XID *xid;
-	int rmid;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
@@ -290,7 +290,7 @@ __db_xa_end(xid, rmid, flags)
 static int
 __db_xa_prepare(xid, rmid, flags)
 	XID *xid;
-	int rmid;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
@@ -341,7 +341,7 @@ __db_xa_prepare(xid, rmid, flags)
 static int
 __db_xa_commit(xid, rmid, flags)
 	XID *xid;
-	int rmid;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
@@ -402,7 +402,7 @@ static int
 __db_xa_recover(xids, count, rmid, flags)
 	XID *xids;
 	long count, flags;
-	int rmid;
+	gint rmid;
 {
 	DB_ENV *env;
 	u_int32_t newflags;
@@ -433,7 +433,7 @@ __db_xa_recover(xids, count, rmid, flags)
 static int
 __db_xa_rollback(xid, rmid, flags)
 	XID *xid;
-	int rmid;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
@@ -482,7 +482,7 @@ __db_xa_rollback(xid, rmid, flags)
 static int
 __db_xa_forget(xid, rmid, flags)
 	XID *xid;
-	int rmid;
+	gint rmid;
 	long flags;
 {
 	DB_ENV *env;
@@ -515,7 +515,7 @@ __db_xa_forget(xid, rmid, flags)
  */
 static int
 __db_xa_complete(handle, retval, rmid, flags)
-	int *handle, *retval, rmid;
+	gint *handle, *retval, rmid;
 	long flags;
 {
 	COMPQUIET(handle, NULL);

@@ -36,9 +36,9 @@ struct E2kProperties {
 };
 
 typedef struct {
-	char *name;
-	const char *namespace;
-	const char *short_name;
+	gchar *name;
+	const gchar *namespace;
+	const gchar *short_name;
 
 	E2kPropType type;
 	guint32 proptag;
@@ -69,7 +69,7 @@ e2k_properties_new (void)
 static void
 copy_prop (gpointer key, gpointer value, gpointer data)
 {
-	const char *name = key;
+	const gchar *name = key;
 	GHashTable *props_copy = data;
 	gpointer value_copy;
 	E2kPropInfo *pi;
@@ -83,7 +83,7 @@ copy_prop (gpointer key, gpointer value, gpointer data)
 	{
 		GPtrArray *orig = value, *copy;
 		GByteArray *new, *old;
-		int i;
+		gint i;
 
 		copy = g_ptr_array_new ();
 		for (i = 0; i < orig->len; i++) {
@@ -99,7 +99,7 @@ copy_prop (gpointer key, gpointer value, gpointer data)
 	case E2K_PROP_TYPE_STRING_ARRAY:
 	{
 		GPtrArray *orig = value, *copy;
-		int i;
+		gint i;
 
 		copy = g_ptr_array_new ();
 		for (i = 0; i < orig->len; i++)
@@ -162,7 +162,7 @@ free_prop (E2kPropInfo *pi, gpointer value)
 	case E2K_PROP_TYPE_BINARY_ARRAY:
 	{
 		GPtrArray *array = value;
-		int i;
+		gint i;
 
 		for (i = 0; i < array->len; i++)
 			g_byte_array_free (array->pdata[i], TRUE);
@@ -174,7 +174,7 @@ free_prop (E2kPropInfo *pi, gpointer value)
 	case E2K_PROP_TYPE_INT_ARRAY:
 	{
 		GPtrArray *array = value;
-		int i;
+		gint i;
 
 		for (i = 0; i < array->len; i++)
 			g_free (array->pdata[i]);
@@ -238,7 +238,7 @@ e2k_properties_free (E2kProperties *props)
  * @props.
  **/
 gpointer
-e2k_properties_get_prop (E2kProperties *props, const char *propname)
+e2k_properties_get_prop (E2kProperties *props, const gchar *propname)
 {
 	g_return_val_if_fail (props != NULL, NULL);
 
@@ -263,10 +263,10 @@ e2k_properties_empty (E2kProperties *props)
 }
 
 
-extern char e2k_des_key[8];
+extern gchar e2k_des_key[8];
 
 static E2kPropInfo *
-get_propinfo (const char *propname, E2kPropType type)
+get_propinfo (const gchar *propname, E2kPropType type)
 {
 	E2kPropInfo *pi;
 
@@ -400,7 +400,7 @@ get_propinfo (const char *propname, E2kPropType type)
 #define E2K_PROPERTIES_SETTER(fname, valuetype, pitype, data)		\
 void									\
 e2k_properties_set_ ## fname (E2kProperties *props,			\
-			      const char    *propname,			\
+			      const gchar    *propname,			\
 			      valuetype      value)			\
 {									\
 	E2kPropInfo *pi;						\
@@ -411,7 +411,7 @@ e2k_properties_set_ ## fname (E2kProperties *props,			\
 	g_hash_table_remove (props->removed, pi->name);			\
 }
 
-E2K_PROPERTIES_SETTER (string, char *, STRING, value)
+E2K_PROPERTIES_SETTER (string, gchar *, STRING, value)
 E2K_PROPERTIES_SETTER (string_array, GPtrArray *, STRING_ARRAY, value)
 E2K_PROPERTIES_SETTER (binary, GByteArray *, BINARY, value)
 E2K_PROPERTIES_SETTER (binary_array, GPtrArray *, BINARY_ARRAY, value)
@@ -421,7 +421,7 @@ E2K_PROPERTIES_SETTER (int, int, INT, g_strdup_printf ("%d", value))
 E2K_PROPERTIES_SETTER (int_array, GPtrArray *, INT_ARRAY, value)
 E2K_PROPERTIES_SETTER (float, float, FLOAT, g_strdup_printf ("%f", value))
 E2K_PROPERTIES_SETTER (bool, gboolean, BOOL, g_strdup_printf ("%d", value != FALSE))
-E2K_PROPERTIES_SETTER (date, char *, DATE, value)
+E2K_PROPERTIES_SETTER (date, gchar *, DATE, value)
 
 
 
@@ -450,7 +450,7 @@ E2K_PROPERTIES_SETTER (date, char *, DATE, value)
 #define E2K_PROPERTIES_SETTER_AS(fname, valuetype)			\
 void									\
 e2k_properties_set_type_as_ ## fname (E2kProperties *props,		\
-				      const char    *propname,		\
+				      const gchar    *propname,		\
 				      E2kPropType    type,		\
 				      valuetype      value)		\
 {									\
@@ -462,7 +462,7 @@ e2k_properties_set_type_as_ ## fname (E2kProperties *props,		\
 	g_hash_table_remove (props->removed, pi->name);			\
 }
 
-E2K_PROPERTIES_SETTER_AS (string, char *)
+E2K_PROPERTIES_SETTER_AS (string, gchar *)
 E2K_PROPERTIES_SETTER_AS (string_array, GPtrArray *)
 
 /**
@@ -476,7 +476,7 @@ E2K_PROPERTIES_SETTER_AS (string_array, GPtrArray *)
  * this frees the old value.
  **/
 void
-e2k_properties_remove (E2kProperties *props, const char *propname)
+e2k_properties_remove (E2kProperties *props, const gchar *propname)
 {
 	E2kPropInfo *pi;
 
@@ -566,7 +566,7 @@ foreach_namespace_callback (gpointer key, gpointer value, gpointer data)
 {
 	struct foreach_namespace_data *fnd = data;
 	E2kPropInfo *pi;
-	const char *name;
+	const gchar *name;
 
 	g_static_mutex_lock (&known_properties_lock);
 	pi = g_hash_table_lookup (known_properties, key);
@@ -577,7 +577,7 @@ foreach_namespace_callback (gpointer key, gpointer value, gpointer data)
 	name = e2k_prop_namespace_name (pi->name);
 	if (!g_hash_table_lookup (fnd->seen_namespaces, name)) {
 		g_hash_table_insert (fnd->seen_namespaces,
-				     (char *)name, (char *)name);
+				     (gchar *)name, (gchar *)name);
 		fnd->callback (name, e2k_prop_namespace_abbrev (pi->name),
 			       fnd->user_data);
 	}
@@ -640,13 +640,13 @@ e2k_properties_foreach_namespace (E2kProperties *props,
 
 
 static GHashTable *namespaces;
-static int next_namespace = 'a';
+static gint next_namespace = 'a';
 static GStaticMutex namespaces_lock = G_STATIC_MUTEX_INIT;
 
-static const char *
-get_div (const char *propname)
+static const gchar *
+get_div (const gchar *propname)
 {
-	const char *div;
+	const gchar *div;
 
 	div = strrchr (propname, '/');
 	if (div)
@@ -657,8 +657,8 @@ get_div (const char *propname)
 static gint
 prop_equal (gconstpointer v1, gconstpointer v2)
 {
-	const char *s1 = (const char *)v1, *s2 = (const char *)v2;
-	const char *d1 = get_div (s1), *d2 = get_div (s2);
+	const gchar *s1 = (const gchar *)v1, *s2 = (const gchar *)v2;
+	const gchar *d1 = get_div (s1), *d2 = get_div (s2);
 
 	return (d1 - s1 == d2 - s2) && !g_ascii_strncasecmp (s1, s2, d1 - s1);
 }
@@ -666,8 +666,8 @@ prop_equal (gconstpointer v1, gconstpointer v2)
 static guint
 prop_hash (gconstpointer v)
 {
-	const char *d = get_div (v);
-	const char *p = v;
+	const gchar *d = get_div (v);
+	const gchar *p = v;
 	guint h = g_ascii_tolower (*p);
 
 	for (p += 1; p < d; p++)
@@ -690,12 +690,12 @@ setup_namespaces (void)
  *
  * Return value: the URI of @prop's namespace
  **/
-const char *
-e2k_prop_namespace_name (const char *prop)
+const gchar *
+e2k_prop_namespace_name (const gchar *prop)
 {
-	const char *div = get_div (prop);
+	const gchar *div = get_div (prop);
 	gpointer key, value;
-	char *name;
+	gchar *name;
 
 	g_static_mutex_lock (&namespaces_lock);
 	if (!namespaces)
@@ -723,11 +723,11 @@ e2k_prop_namespace_name (const char *prop)
  * Return value: the abbreviation used for prop's namespace
  **/
 char
-e2k_prop_namespace_abbrev (const char *prop)
+e2k_prop_namespace_abbrev (const gchar *prop)
 {
-	const char *div = get_div (prop);
+	const gchar *div = get_div (prop);
 	gpointer key, value;
-	char *name, res;
+	gchar *name, res;
 
 	g_static_mutex_lock (&namespaces_lock);
 	if (!namespaces)
@@ -754,8 +754,8 @@ e2k_prop_namespace_abbrev (const char *prop)
  *
  * Return value: the non-namespaced name of @prop
  **/
-const char *
-e2k_prop_property_name (const char *prop)
+const gchar *
+e2k_prop_property_name (const gchar *prop)
 {
 	return get_div (prop) + 1;
 }
@@ -770,7 +770,7 @@ e2k_prop_property_name (const char *prop)
  * Return value: the MAPI proptag value
  **/
 guint32
-e2k_prop_proptag (const char *prop)
+e2k_prop_proptag (const gchar *prop)
 {
 	E2kPropInfo *pi;
 
@@ -787,11 +787,11 @@ e2k_prop_proptag (const char *prop)
  *
  * Return value: the WebDAV property name associated with @proptag
  **/
-const char *
+const gchar *
 e2k_proptag_prop (guint32 proptag)
 {
 	E2kPropInfo *pi;
-	char *tmpname;
+	gchar *tmpname;
 
 	tmpname = g_strdup_printf (E2K_NS_MAPI_PROPTAG "x%08x",
 				   (unsigned)proptag);

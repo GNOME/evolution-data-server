@@ -33,15 +33,15 @@
 
 /* text/enriched is rfc1896 */
 
-typedef char * (*EnrichedParamParser) (const char *inptr, int inlen);
+typedef gchar * (*EnrichedParamParser) (const gchar *inptr, gint inlen);
 
-static char *param_parse_colour (const char *inptr, int inlen);
-static char *param_parse_font (const char *inptr, int inlen);
-static char *param_parse_lang (const char *inptr, int inlen);
+static gchar *param_parse_colour (const gchar *inptr, gint inlen);
+static gchar *param_parse_font (const gchar *inptr, gint inlen);
+static gchar *param_parse_lang (const gchar *inptr, gint inlen);
 
 static struct {
-	char *enriched;
-	char *html;
+	gchar *enriched;
+	gchar *html;
 	gboolean needs_param;
 	EnrichedParamParser parse_param; /* parses *and* validates the input */
 } enriched_tags[] = {
@@ -98,10 +98,10 @@ static void camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass 
 static void camel_mime_filter_enriched_init       (CamelMimeFilterEnriched *filter);
 static void camel_mime_filter_enriched_finalize   (CamelObject *obj);
 
-static void filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-			   char **out, size_t *outlen, size_t *outprespace);
-static void filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-			     char **out, size_t *outlen, size_t *outprespace);
+static void filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+			   gchar **out, size_t *outlen, size_t *outprespace);
+static void filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+			     gchar **out, size_t *outlen, size_t *outprespace);
 static void filter_reset (CamelMimeFilter *filter);
 
 
@@ -131,7 +131,7 @@ static void
 camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *klass)
 {
 	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-	int i;
+	gint i;
 
 	parent_class = CAMEL_MIME_FILTER_CLASS (camel_mime_filter_get_type ());
 
@@ -163,9 +163,9 @@ camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 
 #if 0
 static gboolean
-enriched_tag_needs_param (const char *tag)
+enriched_tag_needs_param (const gchar *tag)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < NUM_ENRICHED_TAGS; i++)
 		if (!g_ascii_strcasecmp (tag, enriched_tags[i].enriched))
@@ -176,24 +176,24 @@ enriched_tag_needs_param (const char *tag)
 #endif
 
 static gboolean
-html_tag_needs_param (const char *tag)
+html_tag_needs_param (const gchar *tag)
 {
 	return strstr (tag, "%s") != NULL;
 }
 
-static const char *valid_colours[] = {
+static const gchar *valid_colours[] = {
 	"red", "green", "blue", "yellow", "cyan", "magenta", "black", "white"
 };
 
 #define NUM_VALID_COLOURS  (sizeof (valid_colours) / sizeof (valid_colours[0]))
 
-static char *
-param_parse_colour (const char *inptr, int inlen)
+static gchar *
+param_parse_colour (const gchar *inptr, gint inlen)
 {
-	const char *inend, *end;
+	const gchar *inend, *end;
 	guint32 rgb = 0;
 	guint v;
-	int i;
+	gint i;
 
 	for (i = 0; i < NUM_VALID_COLOURS; i++) {
 		if (!g_ascii_strncasecmp (inptr, valid_colours[i], inlen))
@@ -214,7 +214,7 @@ param_parse_colour (const char *inptr, int inlen)
 	}
 
 	for (i = 0; i < 3; i++) {
-		v = strtoul (inptr, (char **) &end, 16);
+		v = strtoul (inptr, (gchar **) &end, 16);
 		if (end != inptr + 4)
 			goto invalid_format;
 
@@ -232,11 +232,11 @@ param_parse_colour (const char *inptr, int inlen)
 	return g_strdup ("black");
 }
 
-static char *
-param_parse_font (const char *fontfamily, int inlen)
+static gchar *
+param_parse_font (const gchar *fontfamily, gint inlen)
 {
-	register const char *inptr = fontfamily;
-	const char *inend = inptr + inlen;
+	register const gchar *inptr = fontfamily;
+	const gchar *inend = inptr + inlen;
 
 	/* don't allow any of '"', '<', nor '>' */
 	while (inptr < inend && *inptr != '"' && *inptr != '<' && *inptr != '>')
@@ -245,11 +245,11 @@ param_parse_font (const char *fontfamily, int inlen)
 	return g_strndup (fontfamily, inptr - fontfamily);
 }
 
-static char *
-param_parse_lang (const char *lang, int inlen)
+static gchar *
+param_parse_lang (const gchar *lang, gint inlen)
 {
-	register const char *inptr = lang;
-	const char *inend = inptr + inlen;
+	register const gchar *inptr = lang;
+	const gchar *inend = inptr + inlen;
 
 	/* don't allow any of '"', '<', nor '>' */
 	while (inptr < inend && *inptr != '"' && *inptr != '<' && *inptr != '>')
@@ -258,10 +258,10 @@ param_parse_lang (const char *lang, int inlen)
 	return g_strndup (lang, inptr - lang);
 }
 
-static char *
-param_parse (const char *enriched, const char *inptr, int inlen)
+static gchar *
+param_parse (const gchar *enriched, const gchar *inptr, gint inlen)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < NUM_ENRICHED_TAGS; i++) {
 		if (!g_ascii_strcasecmp (enriched, enriched_tags[i].enriched))
@@ -276,13 +276,13 @@ param_parse (const char *enriched, const char *inptr, int inlen)
 #define IS_RICHTEXT CAMEL_MIME_FILTER_ENRICHED_IS_RICHTEXT
 
 static void
-enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
-		  char **out, size_t *outlen, size_t *outprespace, gboolean flush)
+enriched_to_html (CamelMimeFilter *filter, gchar *in, size_t inlen, size_t prespace,
+		  gchar **out, size_t *outlen, size_t *outprespace, gboolean flush)
 {
 	CamelMimeFilterEnriched *enriched = (CamelMimeFilterEnriched *) filter;
-	const char *tag, *inend, *outend;
-	register const char *inptr;
-	register char *outptr;
+	const gchar *tag, *inend, *outend;
+	register const gchar *inptr;
+	register gchar *outptr;
 
 	camel_mime_filter_set_size (filter, inlen * 2 + 6, FALSE);
 
@@ -420,9 +420,9 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 					goto backup;
 				}
 			} else {
-				const char *html_tag;
-				char *enriched_tag;
-				int len;
+				const gchar *html_tag;
+				gchar *enriched_tag;
+				gint len;
 
 				len = inptr - tag;
 				enriched_tag = g_alloca (len + 1);
@@ -433,8 +433,8 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 
 				if (html_tag) {
 					if (html_tag_needs_param (html_tag)) {
-						const char *start;
-						char *param;
+						const gchar *start;
+						gchar *param;
 
 						while (inptr < inend && *inptr != '<')
 							inptr++;
@@ -541,15 +541,15 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-	       char **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+	       gchar **out, size_t *outlen, size_t *outprespace)
 {
 	enriched_to_html (filter, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-		 char **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+		 gchar **out, size_t *outlen, size_t *outprespace)
 {
 	enriched_to_html (filter, in, len, prespace, out, outlen, outprespace, TRUE);
 }
@@ -595,19 +595,19 @@ camel_mime_filter_enriched_new (guint32 flags)
  * Returns: a newly allocated string containing the enriched or
  * richtext version of @in.
  **/
-char *
-camel_enriched_to_html(const char *in, guint32 flags)
+gchar *
+camel_enriched_to_html(const gchar *in, guint32 flags)
 {
 	CamelMimeFilter *filter;
 	size_t outlen, outpre;
-	char *outbuf;
+	gchar *outbuf;
 
 	if (in == NULL)
 		return NULL;
 
 	filter = camel_mime_filter_enriched_new(flags);
 
-	camel_mime_filter_complete(filter, (char *)in, strlen(in), 0, &outbuf, &outlen, &outpre);
+	camel_mime_filter_complete(filter, (gchar *)in, strlen(in), 0, &outbuf, &outlen, &outpre);
 	outbuf = g_strndup (outbuf, outlen);
 	camel_object_unref (filter);
 

@@ -16,17 +16,17 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *nntp_drivers[] = { "nntp" };
-static char *remote_providers[] = {
+static const gchar *nntp_drivers[] = { "nntp" };
+static gchar *remote_providers[] = {
 	"NNTP_TEST_URL",
 };
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelException *ex;
-	int i;
-	char *path;
+	gint i;
+	gchar *path;
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, nntp_drivers);

@@ -85,26 +85,26 @@ struct _CamelGroupwiseFolderPrivate {
 
 /*prototypes*/
 static void groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *destination, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex);
-static int gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
-void convert_to_calendar (EGwItem *item, char **str, int *len);
-static void convert_to_task (EGwItem *item, char **str, int *len);
-static void convert_to_note (EGwItem *item, char **str, int *len);
+static gint gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+void convert_to_calendar (EGwItem *item, gchar **str, gint *len);
+static void convert_to_task (EGwItem *item, gchar **str, gint *len);
+static void convert_to_note (EGwItem *item, gchar **str, gint *len);
 static void gw_update_all_items ( CamelFolder *folder, GList *item_list, CamelException *ex);
 static void groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item);
-static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body);
+static void groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, gchar *body);
 static void groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item);
 static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelException *ex, gboolean uid_flag);
 static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
-static char* groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
-static const char *get_from_from_org (EGwItemOrganizer *org);
+static gchar * groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static const gchar *get_from_from_org (EGwItemOrganizer *org);
 
 #define d(x)
 
-const char * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
-const char * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
+const gchar * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
+const gchar * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
 
-static char*
-groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+static gchar *
+groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 
@@ -114,19 +114,19 @@ groupwise_get_filename (CamelFolder *folder, const char *uid, CamelException *ex
 
 /* Get a message from cache if available otherwise get it from server */
 static CamelMimeMessage *
-groupwise_folder_get_message( CamelFolder *folder, const char *uid, CamelException *ex )
+groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelException *ex )
 {
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelGroupwiseMessageInfo *mi = NULL;
-	char *container_id;
+	gchar *container_id;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	EGwItem *item;
 	CamelStream *stream, *cache_stream;
-	int errno;
+	gint errno;
 
 	/* see if it is there in cache */
 
@@ -233,16 +233,16 @@ static void
 groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 {
 	EGwItemType type;
-	char *dtstring = NULL;
-	char *temp_str = NULL;
+	gchar *dtstring = NULL;
+	gchar *temp_str = NULL;
 
-	temp_str = (char *)e_gw_item_get_subject(item);
+	temp_str = (gchar *)e_gw_item_get_subject(item);
 	if(temp_str)
 		camel_mime_message_set_subject (msg, temp_str);
 	type = e_gw_item_get_item_type (item);
 
 	if (type == E_GW_ITEM_TYPE_APPOINTMENT  || type == E_GW_ITEM_TYPE_NOTE || type == E_GW_ITEM_TYPE_TASK) {
-		int offset = 0;
+		gint offset = 0;
 		dtstring = e_gw_item_get_start_date (item);
 		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
 		camel_mime_message_set_date (msg, actual_time, offset);
@@ -251,12 +251,12 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 
 	dtstring = e_gw_item_get_delivered_date (item);
 	if(dtstring) {
-		int offset = 0;
+		gint offset = 0;
 		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
 		camel_mime_message_set_date (msg, actual_time, offset);
 	} else {
 		time_t actual_time;
-		int offset = 0;
+		gint offset = 0;
 		dtstring = e_gw_item_get_creation_date (item);
 		if (dtstring) {
 				actual_time = e_gw_connection_get_date_from_string (dtstring);
@@ -268,11 +268,11 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 
 /* convert an item to a msg body. set content type etc. */
 static void
-groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, char *body)
+groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multipart, EGwItem *item, gchar *body)
 {
 	CamelMimePart *part;
 	EGwItemType type;
-	const char *temp_body = NULL;
+	const gchar *temp_body = NULL;
 
 	part = camel_mime_part_new ();
 	camel_mime_part_set_encoding(part, CAMEL_TRANSFER_ENCODING_8BIT);
@@ -280,15 +280,15 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 	if (!body) {
 		temp_body = e_gw_item_get_message (item);
 		if(!temp_body){
-			int len = 0;
+			gint len = 0;
 			EGwConnectionStatus status;
 			status = e_gw_connection_get_attachment (cnc,
 					e_gw_item_get_msg_body_id (item), 0, -1,
-					(const char **)&temp_body, &len);
+					(const gchar **)&temp_body, &len);
 			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 				status = e_gw_connection_get_attachment (cnc,
 					e_gw_item_get_msg_body_id (item), 0, -1,
-					(const char **)&temp_body, &len);
+					(const gchar **)&temp_body, &len);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_warning ("Could not get Messagebody\n");
 			}
@@ -302,8 +302,8 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 		case E_GW_ITEM_TYPE_TASK:
 		case E_GW_ITEM_TYPE_NOTE:
 			{
-				char *cal_buffer = NULL;
-				int len = 0;
+				gchar *cal_buffer = NULL;
+				gint len = 0;
 				if (type==E_GW_ITEM_TYPE_APPOINTMENT)
 					convert_to_calendar (item, &cal_buffer, &len);
 				else if (type == E_GW_ITEM_TYPE_TASK)
@@ -342,7 +342,7 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 	GSList *recipient_list;
 	EGwItemOrganizer *org;
 	struct _camel_header_address *ha;
-	char *subs_email;
+	gchar *subs_email;
 	struct _camel_header_address *to_list = NULL, *cc_list = NULL, *bcc_list=NULL;
 
 	org = e_gw_item_get_organizer (item);
@@ -350,7 +350,7 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 
 	if (recipient_list) {
 		GSList *rl;
-		char *status_opt = NULL;
+		gchar *status_opt = NULL;
 		gboolean enabled;
 
 		for (rl = recipient_list ; rl != NULL ; rl = rl->next) {
@@ -397,7 +397,7 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 
 		/* The status tracking code is working fine. someone need to remove this */
 		if (enabled) {
-			camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-gw-status-opt", (const char *)status_opt);
+			camel_medium_add_header ( CAMEL_MEDIUM (msg), "X-gw-status-opt", (const gchar *)status_opt);
 			g_free (status_opt);
 		}
 	}
@@ -444,14 +444,14 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 
 /* code to rename a folder. all the "meta nonsense" code should simply go away */
 static void
-groupwise_folder_rename (CamelFolder *folder, const char *new)
+groupwise_folder_rename (CamelFolder *folder, const gchar *new)
 {
 	CamelGroupwiseFolder *gw_folder = (CamelGroupwiseFolder *)folder;
 	CamelGroupwiseStore *gw_store = (CamelGroupwiseStore *) folder->parent_store;
 	CamelGroupwiseStorePrivate *priv = gw_store->priv;
 
-	char *folder_dir, *summary_path, *state_file, *storage_path = storage_path_lookup (priv);
-	char *folders;
+	gchar *folder_dir, *summary_path, *state_file, *storage_path = storage_path_lookup (priv);
+	gchar *folders;
 
 	folders = g_strconcat (storage_path, "/folders", NULL);
 	folder_dir = e_path_to_physical (folders, new);
@@ -476,7 +476,7 @@ groupwise_folder_rename (CamelFolder *folder, const char *new)
 }
 
 static GPtrArray *
-groupwise_folder_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+groupwise_folder_search_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	GPtrArray *matches;
@@ -490,7 +490,7 @@ groupwise_folder_search_by_expression (CamelFolder *folder, const char *expressi
 }
 
 static guint32
-groupwise_folder_count_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+groupwise_folder_count_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	guint32 matches;
@@ -504,7 +504,7 @@ groupwise_folder_count_by_expression (CamelFolder *folder, const char *expressio
 }
 
 static GPtrArray *
-groupwise_folder_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+groupwise_folder_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER(folder);
 	GPtrArray *matches;
@@ -554,10 +554,10 @@ free_node (EGwJunkEntry *entry)
 /* This is a point of contention. We behave like the GW client and update our junk list
 in the same way as the GroupWise client. Add senders to junk list */
 static void
-update_junk_list (CamelStore *store, CamelMessageInfo *info, int flag)
+update_junk_list (CamelStore *store, CamelMessageInfo *info, gint flag)
 {
 	gchar **email = NULL, *from = NULL;
-	int index = 0;
+	gint index = 0;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	EGwConnection *cnc = cnc_lookup (priv);
@@ -612,7 +612,7 @@ move_to_mailbox (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex
 {
 	CamelFolder *dest;
 	GPtrArray *uids;
-	const char *uid = camel_message_info_uid (info);
+	const gchar *uid = camel_message_info_uid (info);
 
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
@@ -633,7 +633,7 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 	CamelFolder *dest;
 	CamelFolderInfo *fi;
 	GPtrArray *uids;
-	const char *uid = camel_message_info_uid (info);
+	const gchar *uid = camel_message_info_uid (info);
 
 	uids = g_ptr_array_new ();
 	g_ptr_array_add (uids, (gpointer) uid);
@@ -698,10 +698,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelGroupwiseMessageInfo *gw_info;
 	GList *read_items = NULL, *deleted_read_items = NULL, *unread_items = NULL;
 	flags_diff_t diff, unset_flags;
-	const char *container_id;
+	const gchar *container_id;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
-	int count, i;
+	gint count, i;
 
 	GList *deleted_items, *deleted_head;
 
@@ -771,21 +771,21 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 				camel_message_info_free(info);
 				continue;
 			} else {
-				const char *uid;
+				const gchar *uid;
 
 				uid = camel_message_info_uid (info);
 				if (diff.bits & CAMEL_MESSAGE_DELETED) {
 
 					/* In case a new message is READ and then deleted immediately */
 					if (diff.bits & CAMEL_MESSAGE_SEEN)
-						deleted_read_items = g_list_prepend (deleted_read_items, (char *) uid);
+						deleted_read_items = g_list_prepend (deleted_read_items, (gchar *) uid);
 
 					if (deleted_items)
-						deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
+						deleted_items = g_list_prepend (deleted_items, (gchar *)camel_message_info_uid (info));
 					else {
 						g_list_free (deleted_head);
 						deleted_head = NULL;
-						deleted_head = deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
+						deleted_head = deleted_items = g_list_prepend (deleted_items, (gchar *)camel_message_info_uid (info));
 					}
 
 					if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
@@ -816,9 +816,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 							status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 						CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
-							char *uid;
+							gchar *uid;
 							while (deleted_items) {
-								uid = (char *)deleted_items->data;
+								uid = (gchar *)deleted_items->data;
 								CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 								camel_folder_summary_remove_uid (folder->summary, uid);
 								camel_data_cache_remove(gw_folder->cache, "cache", uid, NULL);
@@ -830,9 +830,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 						}
 					}
 				} else if (diff.bits & CAMEL_MESSAGE_SEEN) {
-					read_items = g_list_prepend (read_items, (char *)uid);
+					read_items = g_list_prepend (read_items, (gchar *)uid);
 				} else if (unset_flags.bits & CAMEL_MESSAGE_SEEN) {
-					unread_items = g_list_prepend (unread_items, (char *)uid);
+					unread_items = g_list_prepend (unread_items, (gchar *)uid);
 				}
 			}
 		}
@@ -856,9 +856,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		}
 		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
-			char *uid;
+			gchar *uid;
 			while (deleted_items) {
-				uid = (char *)deleted_items->data;
+				uid = (gchar *)deleted_items->data;
 				CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 				camel_folder_summary_remove_uid (folder->summary, uid);
 				camel_data_cache_remove(gw_folder->cache, "cache", uid, NULL);
@@ -914,12 +914,12 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 }
 
 CamelFolder *
-camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *folder_dir, CamelException *ex)
+camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *folder_dir, CamelException *ex)
 {
 	CamelFolder *folder;
 	CamelGroupwiseFolder *gw_folder;
-	char *summary_file, *state_file, *journal_file;
-	char *short_name;
+	gchar *summary_file, *state_file, *journal_file;
+	gchar *short_name;
 
 
 	folder = CAMEL_FOLDER (camel_object_new(camel_groupwise_folder_get_type ()) );
@@ -929,7 +929,7 @@ camel_gw_folder_new(CamelStore *store, const char *folder_name, const char *fold
 	if (short_name)
 		short_name++;
 	else
-		short_name = (char *) folder_name;
+		short_name = (gchar *) folder_name;
 	camel_folder_construct (folder, store, folder_name, short_name);
 
 	summary_file = g_strdup_printf ("%s/summary",folder_dir);
@@ -982,8 +982,8 @@ struct _folder_update_msg {
 
 	EGwConnection *cnc;
 	CamelFolder *folder;
-	char *container_id;
-	char *t_str;
+	gchar *container_id;
+	gchar *t_str;
 	GSList *slist;
 };
 
@@ -991,7 +991,7 @@ static void
 update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 {
 
-	extern int camel_application_is_exiting;
+	extern gint camel_application_is_exiting;
 
 	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
 	EGwConnectionStatus status;
@@ -999,8 +999,8 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (m->folder->parent_store);
 
 	GList *item_list, *items_full_list = NULL, *last_element=NULL;
-	int cursor = 0;
-	const char *position = E_GW_CURSOR_POSITION_END;
+	gint cursor = 0;
+	const gchar *position = E_GW_CURSOR_POSITION_END;
 	gboolean done;
 
 	/* Hold the connect_lock.
@@ -1066,19 +1066,19 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	   to be unique only until that symbol */
 
 	/*if (items_full_list) {
-	  int i;
+	  gint i;
 	  item_list = items_full_list;
 
 	  while (item_list->next) {
 	  i = 0;
-	  while (((const char *)item_list->data)[i++]!='@');
-	  ((char *)item_list->data)[i-1] = '\0';
+	  while (((const gchar *)item_list->data)[i++]!='@');
+	  ((gchar *)item_list->data)[i-1] = '\0';
 	  item_list = item_list->next;
 	  }
 
 	  i = 0;
-	  while (((const char *)item_list->data)[i++]!='@');
-	  ((char *)item_list->data)[i-1] = '\0';
+	  while (((const gchar *)item_list->data)[i++]!='@');
+	  ((gchar *)item_list->data)[i-1] = '\0';
 	  }*/
 
 	g_print ("\nNumber of items in the folder: %d \n", g_list_length(items_full_list));
@@ -1155,11 +1155,11 @@ check_for_new_mails_count (CamelGroupwiseSummary *gw_summary, GSList *ids)
 {
 	CamelFolderSummary *summary = (CamelFolderSummary *) gw_summary;
 	GSList *l = NULL;
-	int count = 0;
+	gint count = 0;
 
 	for (l = ids; l != NULL; l = g_slist_next (l)) {
 		EGwItem *item = l->data;
-		const char *id = e_gw_item_get_id (item);
+		const gchar *id = e_gw_item_get_id (item);
 		CamelMessageInfo *info	= camel_folder_summary_uid (summary, id);
 
 		if (!info)
@@ -1176,7 +1176,7 @@ compare_ids (gpointer a, gpointer b, gpointer data)
 {
 	EGwItem *item1 = (EGwItem *) a;
 	EGwItem *item2 = (EGwItem *) b;
-	const char *id1 = NULL, *id2 = NULL;
+	const gchar *id1 = NULL, *id2 = NULL;
 
 	id1 = e_gw_item_get_id (item1);
 	id2 = e_gw_item_get_id (item2);
@@ -1188,7 +1188,7 @@ static int
 get_merge_lists_new_count (CamelGroupwiseSummary *summary, GSList *new, GSList *modified, GSList **merged)
 {
 	GSList *l, *element;
-	int count = 0;
+	gint count = 0;
 
 	if (new == NULL && modified == NULL){
 		*merged = NULL;
@@ -1221,7 +1221,7 @@ get_merge_lists_new_count (CamelGroupwiseSummary *summary, GSList *new, GSList *
 }
 
 static void
-update_summary_string (CamelFolder *folder, const char *time_string, CamelException *ex)
+update_summary_string (CamelFolder *folder, const gchar *time_string, CamelException *ex)
 {
 	CamelGroupwiseSummary *summary = (CamelGroupwiseSummary *) folder->summary;
 
@@ -1244,15 +1244,15 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	CamelSession *session = ((CamelService *)folder->parent_store)->session;
 	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_PROXY;
 	gboolean is_locked = TRUE;
-	int status;
+	gint status;
 	GList *list = NULL;
 	GSList *new_items = NULL, *modified_items = NULL, *merged = NULL;
-	char *container_id = NULL;
-	char *old_sync_time = NULL, *new_sync_time = NULL, *modified_sync_time = NULL;
+	gchar *container_id = NULL;
+	gchar *old_sync_time = NULL, *new_sync_time = NULL, *modified_sync_time = NULL;
 	struct _folder_update_msg *msg;
 	gboolean sync_deleted = FALSE;
 	EGwContainer *container;
-	int new_item_count = 0;
+	gint new_item_count = 0;
 
 	/* Sync-up the (un)read changes before getting updates,
 	so that the getFolderList will reflect the most recent changes too */
@@ -1310,7 +1310,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/*Get the New Items*/
 	if (!is_proxy) {
-		char *source;
+		gchar *source;
 
 		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) {
 			source = NULL;
@@ -1441,16 +1441,16 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;
 	GString *str = g_string_new (NULL);
-	const char *priority = NULL;
-	char *container_id = NULL;
+	const gchar *priority = NULL;
+	gchar *container_id = NULL;
 	gboolean is_junk = FALSE;
 	EGwConnectionStatus status;
 	GList *item_list = list;
-	int total_items = g_list_length (item_list), i=0;
+	gint total_items = g_list_length (item_list), i=0;
 
 	gboolean is_proxy = folder->parent_store->flags & CAMEL_STORE_WRITE;
 
-	int folder_needs_caching;
+	gint folder_needs_caching;
 
 	camel_object_get (folder, NULL, CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE, &folder_needs_caching, NULL);
 
@@ -1473,13 +1473,13 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		EGwItem *item;
 		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
-		char *temp_date = NULL;
-		const char *id;
+		gchar *temp_date = NULL;
+		const gchar *id;
 		GSList *recp_list = NULL;
 		CamelStream *cache_stream, *t_cache_stream;
 		CamelMimeMessage *mail_msg = NULL;
-		const char *recurrence_key = NULL;
-		int rk;
+		const gchar *recurrence_key = NULL;
+		gint rk;
 
 		exists = FALSE;
 		status_flags = 0;
@@ -1488,7 +1488,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			temp_item = (EGwItem *)item_list->data;
 			id = e_gw_item_get_id (temp_item);
 		} else
-			id = (char *) item_list->data;
+			id = (gchar *) item_list->data;
 
 		camel_operation_progress (NULL, (100*i)/total_items);
 
@@ -1570,7 +1570,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		recp_list = e_gw_item_get_recipient_list (item);
 		if (recp_list) {
 			GSList *rl;
-			int i = 0;
+			gint i = 0;
 			for (rl = recp_list; rl != NULL; rl = rl->next) {
 				EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 				if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
@@ -1664,10 +1664,10 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	camel_folder_change_info_free (changes);
 }
 
-static const char *
+static const gchar *
 get_from_from_org (EGwItemOrganizer *org)
 {
-	const char *ret = NULL;
+	const gchar *ret = NULL;
 
 	if (org) {
 		GString *str;
@@ -1705,8 +1705,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean exists = FALSE;
 	GString *str = g_string_new (NULL);
-	const char *priority = NULL;
-	char *container_id = NULL;
+	const gchar *priority = NULL;
+	gchar *container_id = NULL;
 	gboolean is_junk = FALSE;
 	GList *item_list = list;
 
@@ -1729,11 +1729,11 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		EGwItem *item = (EGwItem *)item_list->data;
 		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
-		char *temp_date = NULL;
-		const char *id;
+		gchar *temp_date = NULL;
+		const gchar *id;
 		GSList *recp_list = NULL;
-		const char *recurrence_key = NULL;
-		int rk;
+		const gchar *recurrence_key = NULL;
+		gint rk;
 
 		status_flags = 0;
 		id = e_gw_item_get_id (item);
@@ -1801,7 +1801,7 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		recp_list = e_gw_item_get_recipient_list (item);
 		if (recp_list) {
 			GSList *rl;
-			int i = 0;
+			gint i = 0;
 			for (rl = recp_list; rl != NULL; rl = rl->next) {
 				EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 				if (recp->type == E_GW_ITEM_RECIPIENT_TO) {
@@ -1870,16 +1870,16 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	CamelMimeMessage *msg = NULL;
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
-	const char *container_id = NULL;
+	const gchar *container_id = NULL;
 	GSList *attach_list = NULL;
 	EGwItemType type;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	CamelMultipart *multipart = NULL;
-	int errno;
-	char *body = NULL;
-	int body_len = 0;
-	const char *uid = NULL;
+	gint errno;
+	gchar *body = NULL;
+	gint body_len = 0;
+	const gchar *uid = NULL;
 	gboolean is_text_html = FALSE;
 	gboolean has_mime_822 = FALSE, ignore_mime_822 = FALSE;
 	gboolean is_text_html_embed = FALSE;
@@ -1900,15 +1900,15 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		/*int attach_count = g_slist_length (attach_list);*/
 		GSList *al = attach_list;
 		EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-		char *attachment = NULL;
-		int len = 0;
+		gchar *attachment = NULL;
+		gint len = 0;
 
 		if (!g_ascii_strcasecmp (attach->name, "Text.htm") ||
 		    !g_ascii_strcasecmp (attach->name, "Header")) {
 
 			status = e_gw_connection_get_attachment (cnc,
 					attach->id, 0, -1,
-					(const char **)&attachment, &len);
+					(const gchar **)&attachment, &len);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				g_warning ("Could not get attachment\n");
 				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
@@ -1928,22 +1928,22 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 				if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
 					if (attach->size > MAX_ATTACHMENT_SIZE) {
-						int t_len , offset = 0, t_offset = 0;
-						char *t_attach = NULL;
+						gint t_len , offset = 0, t_offset = 0;
+						gchar *t_attach = NULL;
 						GString *gstr = g_string_new (NULL);
 
 						len = 0;
 						do {
 							status = e_gw_connection_get_attachment_base64 (cnc,
 									attach->id, t_offset, MAX_ATTACHMENT_SIZE,
-									(const char **)&t_attach, &t_len, &offset);
+									(const gchar **)&t_attach, &t_len, &offset);
 							if (status == E_GW_CONNECTION_STATUS_OK) {
 
 								if (t_len) {
 									gsize len_iter = 0;
-									char *temp = NULL;
+									gchar *temp = NULL;
 
-									temp = (char *) g_base64_decode(t_attach, &len_iter);
+									temp = (gchar *) g_base64_decode(t_attach, &len_iter);
 									gstr = g_string_append_len (gstr, temp, len_iter);
 									g_free (temp);
 									len += len_iter;
@@ -1959,7 +1959,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					} else {
 						status = e_gw_connection_get_attachment (cnc,
 								attach->id, 0, -1,
-								(const char **)&attachment, &len);
+								(const gchar **)&attachment, &len);
 						if (status != E_GW_CONNECTION_STATUS_OK) {
 							g_warning ("Could not get attachment\n");
 							camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_INVALID, _("Could not get message"));
@@ -1998,25 +1998,25 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	/*If the reply-requested flag is set. Append the mail message with the
 	 *          * approprite detail*/
 	if (e_gw_item_get_reply_request (item)) {
-		char *reply_within;
-		const char *mess = e_gw_item_get_message (item);
-		char *value;
+		gchar *reply_within;
+		const gchar *mess = e_gw_item_get_message (item);
+		gchar *value;
 
 		reply_within = e_gw_item_get_reply_within (item);
 		if (reply_within) {
 			time_t t;
-			char *temp;
+			gchar *temp;
 
 			t = e_gw_connection_get_date_from_string (reply_within);
 			temp = ctime (&t);
 			temp [strlen (temp)-1] = '\0';
 			value = g_strconcat (N_("Reply Requested: by "), temp, "\n\n", mess ? mess : "", NULL);
-			e_gw_item_set_message (item, (const char *) value);
+			e_gw_item_set_message (item, (const gchar *) value);
 			g_free (value);
 
 		} else {
 			value = g_strconcat (N_("Reply Requested: When convenient"), "\n\n", mess ? mess : "", NULL);
-			e_gw_item_set_message (item, (const char *) value);
+			e_gw_item_set_message (item, (const gchar *) value);
 			g_free (value);
 		}
 	}
@@ -2035,8 +2035,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 		for (al = attach_list ; al != NULL ; al = al->next) {
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
-			char *attachment = NULL;
-			int len = 0;
+			gchar *attachment = NULL;
+			gint len = 0;
 			CamelMimePart *part;
 			EGwItem *temp_item;
 			is_base64_encoded = FALSE;
@@ -2074,22 +2074,22 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				g_object_unref (temp_item);
 			} else {
 				if (attach->size > MAX_ATTACHMENT_SIZE) {
-					int t_len=0, offset=0, t_offset=0;
-					char *t_attach = NULL;
+					gint t_len=0, offset=0, t_offset=0;
+					gchar *t_attach = NULL;
 					GString *gstr = g_string_new (NULL);
 
 					len = 0;
 					do {
 						status = e_gw_connection_get_attachment_base64 (cnc,
 								attach->id, t_offset, MAX_ATTACHMENT_SIZE,
-								(const char **)&t_attach, &t_len, &offset);
+								(const gchar **)&t_attach, &t_len, &offset);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
 
 							if (t_len) {
 								gsize len_iter = 0;
-								char *temp = NULL;
+								gchar *temp = NULL;
 
-								temp = (char *) g_base64_decode(t_attach, &len_iter);
+								temp = (gchar *) g_base64_decode(t_attach, &len_iter);
 								gstr = g_string_append_len (gstr, temp, len_iter);
 								g_free (temp);
 								len += len_iter;
@@ -2106,7 +2106,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 				} else {
 					status = e_gw_connection_get_attachment (cnc,
 							attach->id, 0, -1,
-							(const char **)&attachment, &len);
+							(const gchar **)&attachment, &len);
 				}
 				if (status != E_GW_CONNECTION_STATUS_OK) {
 					g_warning ("Could not get attachment\n");
@@ -2182,10 +2182,10 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (folder);
 	GPtrArray *summary = NULL;
-	int index = 0;
+	gint index = 0;
 	GList *temp;
 	CamelFolderChangeInfo *changes = NULL;
-	char *uid;
+	gchar *uid;
 
 	changes = camel_folder_change_info_new ();
 
@@ -2198,7 +2198,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 		temp = NULL;
 
 		if (item_list) {
-			temp = g_list_find_custom (item_list, (const char *)uid, (GCompareFunc) strcmp);
+			temp = g_list_find_custom (item_list, (const gchar *)uid, (GCompareFunc) strcmp);
 		}
 
 		if (!temp) {
@@ -2231,17 +2231,17 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 
 static void
 groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
-		const CamelMessageInfo *info, char **appended_uid,
+		const CamelMessageInfo *info, gchar **appended_uid,
 		CamelException *ex)
 {
-	const char *container_id = NULL;
+	const gchar *container_id = NULL;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(folder->parent_store);
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	EGwConnectionStatus status = { 0, };
 	EGwConnection *cnc;
 	EGwItem *item;
-	char *id;
+	gchar *id;
 	gboolean is_ok = FALSE;
 
 	if (!strcmp (folder->name, RECEIVED))
@@ -2312,9 +2312,9 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 /* A function to compare uids, inspired by strcmp .
 This code was used in some other provider also , imap4rev1 iirc */
 static int
-uid_compar (const void *va, const void *vb)
+uid_compar (gconstpointer va, gconstpointer vb)
 {
-	const char **sa = (const char **)va, **sb = (const char **)vb;
+	const gchar **sa = (const gchar **)va, **sb = (const gchar **)vb;
 	unsigned long a, b;
 
 	a = strtoul (*sa, NULL, 10);
@@ -2333,9 +2333,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		CamelFolder *destination, GPtrArray **transferred_uids,
 		gboolean delete_originals, CamelException *ex)
 {
-	int count, index = 0;
+	gint count, index = 0;
 	GList *item_ids = NULL;
-	const char *source_container_id = NULL, *dest_container_id = NULL;
+	const gchar *source_container_id = NULL, *dest_container_id = NULL;
 	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(source->parent_store);
 	CamelOfflineStore *offline = (CamelOfflineStore *) destination->parent_store;
 	CamelGroupwiseStorePrivate  *priv = gw_store->priv;
@@ -2350,7 +2350,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		destination_is_trash = FALSE;
 
 	count = camel_folder_summary_count (destination->summary);
-	qsort (uids->pdata, uids->len, sizeof (void *), uid_compar);
+	qsort (uids->pdata, uids->len, sizeof (gpointer), uid_compar);
 
 	changes = camel_folder_change_info_new ();
 	while (index < uids->len) {
@@ -2373,7 +2373,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		CamelGroupwiseJournal *journal = (CamelGroupwiseJournal *) ((CamelGroupwiseFolder *) destination)->journal;
 		CamelMimeMessage *message;
 		GList *l;
-		int i;
+		gint i;
 
 		if (destination_is_trash)
 			delete_originals = TRUE;
@@ -2416,7 +2416,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		CamelMessageInfo *info = NULL;
 		CamelGroupwiseMessageInfo *gw_info = NULL;
 		flags_diff_t diff, unset_flags;
-		int count;
+		gint count;
 		count = camel_folder_summary_count (destination->summary);
 
 		info = camel_folder_summary_uid (source->summary, uids->pdata[index]);
@@ -2434,7 +2434,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 			/* sync the read changes */
 			if (diff.changed) {
-				const char *uid = camel_message_info_uid (info);
+				const gchar *uid = camel_message_info_uid (info);
 				GList *wrapper = NULL;
 				gw_info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				gw_info->server_flags = gw_info->info.flags;
@@ -2447,7 +2447,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					need/use for a e_gw_connection_mark_ITEM_[un]read
 					*/
 
-					wrapper = g_list_prepend (wrapper, (char *)uid);
+					wrapper = g_list_prepend (wrapper, (gchar *)uid);
 					CAMEL_SERVICE_REC_LOCK (source->parent_store, connect_lock);
 					e_gw_connection_mark_read (cnc, wrapper);
 					CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
@@ -2464,7 +2464,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				*/
 
 				if (unset_flags.bits & CAMEL_MESSAGE_SEEN) {
-					wrapper = g_list_prepend (wrapper, (char *)uid);
+					wrapper = g_list_prepend (wrapper, (gchar *)uid);
 					CAMEL_SERVICE_REC_LOCK (source->parent_store, connect_lock);
 					e_gw_connection_mark_unread (cnc, wrapper);
 					CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
@@ -2476,24 +2476,24 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 
 		if (destination_is_trash) {
-				e_gw_connection_remove_item (cnc, source_container_id, (const char*) uids->pdata[index]);
+				e_gw_connection_remove_item (cnc, source_container_id, (const gchar *) uids->pdata[index]);
 				camel_folder_summary_remove_uid (source->summary, uids->pdata[index]);
 				camel_folder_change_info_remove_uid (changes, uids->pdata[index]);
 		} else {
 				if (delete_originals) {
 						if (strcmp(source->full_name, "Sent Items")) {
-								status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
+								status = e_gw_connection_move_item (cnc, (const gchar *)uids->pdata[index],
 												dest_container_id, source_container_id);
 						} else {
-								char *container_id = NULL;
+								gchar *container_id = NULL;
 								container_id = e_gw_connection_get_container_id (cnc, "Mailbox");
-								status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
+								status = e_gw_connection_move_item (cnc, (const gchar *)uids->pdata[index],
 												dest_container_id, container_id);
 								g_free (container_id);
 						}
 
 				} else
-						status = e_gw_connection_move_item (cnc, (const char *)uids->pdata[index],
+						status = e_gw_connection_move_item (cnc, (const gchar *)uids->pdata[index],
 										dest_container_id, NULL);
 
 				if (status == E_GW_CONNECTION_STATUS_OK) {
@@ -2510,7 +2510,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 								/*}*/
 						}
 				} else {
-						g_warning ("Warning!! Could not move item : %s\n", (char *)uids->pdata[index]);
+						g_warning ("Warning!! Could not move item : %s\n", (gchar *)uids->pdata[index]);
 				}
 
 		}
@@ -2540,11 +2540,11 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
 	CamelGroupwiseMessageInfo *ginfo;
 	CamelMessageInfo *info;
-	char *container_id;
+	gchar *container_id;
 	EGwConnection *cnc;
 	EGwConnectionStatus status;
 	CamelFolderChangeInfo *changes;
-	int i, max;
+	gint i, max;
 	gboolean delete = FALSE;
 	GList *deleted_items, *deleted_head;
 
@@ -2578,11 +2578,11 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 		if (ginfo && (ginfo->info.flags & CAMEL_MESSAGE_DELETED)) {
 
 			if (deleted_items)
-				deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
+				deleted_items = g_list_prepend (deleted_items, (gchar *)camel_message_info_uid (info));
 			else {
 				g_list_free (deleted_head);
 				deleted_head = NULL;
-				deleted_head = deleted_items = g_list_prepend (deleted_items, (char *)camel_message_info_uid (info));
+				deleted_head = deleted_items = g_list_prepend (deleted_items, (gchar *)camel_message_info_uid (info));
 			}
 			if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
 				/* Read the FIXME below */
@@ -2590,9 +2590,9 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 				status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 				CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 				if (status == E_GW_CONNECTION_STATUS_OK) {
-					char *uid;
+					gchar *uid;
 					while (deleted_items) {
-						uid = (char *)deleted_items->data;
+						uid = (gchar *)deleted_items->data;
 						CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 						camel_folder_change_info_remove_uid (changes, uid);
 						camel_folder_summary_remove_uid (folder->summary, uid);
@@ -2615,9 +2615,9 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 		status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
-			char *uid;
+			gchar *uid;
 			while (deleted_items) {
-				uid = (char *)deleted_items->data;
+				uid = (gchar *)deleted_items->data;
 				CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 				camel_folder_change_info_remove_uid (changes, uid);
 				camel_folder_summary_remove_uid (folder->summary, uid);
@@ -2638,7 +2638,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 }
 
 static gint
-groupwise_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+groupwise_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
 {
 	g_return_val_if_fail (uid1 != NULL, 0);
 	g_return_val_if_fail (uid2 != NULL, 0);
@@ -2731,7 +2731,7 @@ static int
 gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
-	int i, count = 0;
+	gint i, count = 0;
 	guint32 tag;
 
 	for (i=0 ; i<args->argc ; i++) {
@@ -2765,16 +2765,16 @@ gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 }
 
 void
-convert_to_calendar (EGwItem *item, char **str, int *len)
+convert_to_calendar (EGwItem *item, gchar **str, gint *len)
 {
 	EGwItemOrganizer *org = NULL;
 	GSList *recp_list = NULL;
 	GSList *attach_list = NULL;
 	GString *gstr = g_string_new (NULL);
-	int recur_key = 0;
-	char **tmp = NULL;
-	const char *temp = NULL;
-	const char *tmp_dt = NULL;
+	gint recur_key = 0;
+	gchar **tmp = NULL;
+	const gchar *temp = NULL;
+	const gchar *tmp_dt = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -2783,7 +2783,7 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 	gstr = g_string_append (gstr, "BEGIN:VEVENT\n");
 
 	if ((recur_key = e_gw_item_get_recurrence_key (item)) != 0) {
-		char *recur_k = g_strdup_printf ("%d", recur_key);
+		gchar *recur_k = g_strdup_printf ("%d", recur_key);
 
 		g_string_append_printf (gstr, "UID:%s\n", recur_k);
 		g_string_append_printf (gstr, "X-GW-RECURRENCE-KEY:%s\n", recur_k);
@@ -2870,14 +2870,14 @@ convert_to_calendar (EGwItem *item, char **str, int *len)
 }
 
 static void
-convert_to_task (EGwItem *item, char **str, int *len)
+convert_to_task (EGwItem *item, gchar **str, gint *len)
 {
 	EGwItemOrganizer *org = NULL;
 	GSList *recp_list = NULL;
 	GString *gstr = g_string_new (NULL);
-	char **tmp = NULL;
-	const char *temp = NULL;
-	const char *tmp_dt = NULL;
+	gchar **tmp = NULL;
+	const gchar *temp = NULL;
+	const gchar *tmp_dt = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 
@@ -2957,13 +2957,13 @@ convert_to_task (EGwItem *item, char **str, int *len)
 }
 
 static void
-convert_to_note (EGwItem *item, char **str, int *len)
+convert_to_note (EGwItem *item, gchar **str, gint *len)
 {
 	EGwItemOrganizer *org = NULL;
 	GString *gstr = g_string_new (NULL);
-	char **tmp = NULL;
-	const char *temp = NULL;
-	const char *tmp_dt = NULL;
+	gchar **tmp = NULL;
+	const gchar *temp = NULL;
+	const gchar *tmp_dt = NULL;
 
 	tmp = g_strsplit (e_gw_item_get_id (item), "@", -1);
 

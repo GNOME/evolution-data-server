@@ -33,7 +33,7 @@ typedef gboolean (* ECalRecurInstanceFn) (ECalComponent *comp,
 					 time_t        instance_end,
 					 gpointer      data);
 
-typedef icaltimezone* (* ECalRecurResolveTimezoneFn)	(const char   *tzid,
+typedef icaltimezone* (* ECalRecurResolveTimezoneFn)	(const gchar   *tzid,
 							 gpointer      data);
 
 void	e_cal_recur_generate_instances	(ECalComponent		*comp,
@@ -47,10 +47,10 @@ void	e_cal_recur_generate_instances	(ECalComponent		*comp,
 
 /* Localized nth-day-of-month strings. (Use with _() ) */
 #ifdef G_OS_WIN32
-extern const char **e_cal_get_recur_nth (void);
+extern const gchar **e_cal_get_recur_nth (void);
 #define e_cal_recur_nth (e_cal_get_recur_nth ())
 #else
-extern const char *e_cal_recur_nth[31];
+extern const gchar *e_cal_recur_nth[31];
 #endif
 
 G_END_DECLS

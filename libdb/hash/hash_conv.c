@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,14 +24,14 @@ static const char revid[] = "$Id$";
  *	Convert host-specific page layout from the host-independent format
  *	stored on disk.
  *
- * PUBLIC: int __ham_pgin __P((DB_ENV *, DB *, db_pgno_t, void *, DBT *));
+ * PUBLIC: gint __ham_pgin __P((DB_ENV *, DB *, db_pgno_t, gpointer , DBT *));
  */
-int
+gint
 __ham_pgin(dbenv, dummydbp, pg, pp, cookie)
 	DB_ENV *dbenv;
 	DB *dummydbp;
 	db_pgno_t pg;
-	void *pp;
+	gpointer pp;
 	DBT *cookie;
 {
 	DB_PGINFO *pginfo;
@@ -63,14 +63,14 @@ __ham_pgin(dbenv, dummydbp, pg, pp, cookie)
  *	Convert host-specific page layout to the host-independent format
  *	stored on disk.
  *
- * PUBLIC: int __ham_pgout __P((DB_ENV *, DB *, db_pgno_t, void *, DBT *));
+ * PUBLIC: gint __ham_pgout __P((DB_ENV *, DB *, db_pgno_t, gpointer , DBT *));
  */
-int
+gint
 __ham_pgout(dbenv, dummydbp, pg, pp, cookie)
 	DB_ENV *dbenv;
 	DB *dummydbp;
 	db_pgno_t pg;
-	void *pp;
+	gpointer pp;
 	DBT *cookie;
 {
 	DB_PGINFO *pginfo;
@@ -89,14 +89,14 @@ __ham_pgout(dbenv, dummydbp, pg, pp, cookie)
  * __ham_mswap --
  *	Swap the bytes on the hash metadata page.
  *
- * PUBLIC: int __ham_mswap __P((void *));
+ * PUBLIC: gint __ham_mswap __P((gpointer));
  */
-int
+gint
 __ham_mswap(pg)
-	void *pg;
+	gpointer pg;
 {
 	u_int8_t *p;
-	int i;
+	gint i;
 
 	__db_metaswap(pg);
 

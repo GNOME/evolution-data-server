@@ -40,7 +40,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -64,11 +64,11 @@ static const char revid[] = "$Id$";
 #include "dbinc/qam.h"
 #include "dbinc/txn.h"
 
-static int __db_disassociate __P((DB *));
+static gint __db_disassociate __P((DB *));
 #if CONFIG_TEST
-static void __db_makecopy __P((const char *, const char *));
-static int  __db_testdocopy __P((DB_ENV *, const char *));
-static int  __qam_testdocopy __P((DB *, const char *));
+static void __db_makecopy __P((const gchar *, const gchar *));
+static gint  __db_testdocopy __P((DB_ENV *, const gchar *));
+static gint  __qam_testdocopy __P((DB *, const gchar *));
 #endif
 
 /*
@@ -80,20 +80,20 @@ static int  __qam_testdocopy __P((DB *, const char *));
  * __db_master_open --
  *	Open up a handle on a master database.
  *
- * PUBLIC: int __db_master_open __P((DB *,
- * PUBLIC:     DB_TXN *, const char *, u_int32_t, int, DB **));
+ * PUBLIC: gint __db_master_open __P((DB *,
+ * PUBLIC:     DB_TXN *, const gchar *, u_int32_t, int, DB **));
  */
-int
+gint
 __db_master_open(subdbp, txn, name, flags, mode, dbpp)
 	DB *subdbp;
 	DB_TXN *txn;
-	const char *name;
+	const gchar *name;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	DB **dbpp;
 {
 	DB *dbp;
-	int ret;
+	gint ret;
 
 	/* Open up a handle on the main database. */
 	if ((ret = db_create(&dbp, subdbp->dbenv, 0)) != 0)
@@ -153,17 +153,17 @@ err:
  * __db_master_update --
  *	Add/Open/Remove a subdatabase from a master database.
  *
- * PUBLIC: int __db_master_update __P((DB *, DB *, DB_TXN *, const char *,
- * PUBLIC:     DBTYPE, mu_action, const char *, u_int32_t));
+ * PUBLIC: gint __db_master_update __P((DB *, DB *, DB_TXN *, const gchar *,
+ * PUBLIC:     DBTYPE, mu_action, const gchar *, u_int32_t));
  */
-int
+gint
 __db_master_update(mdbp, sdbp, txn, subdb, type, action, newname, flags)
 	DB *mdbp, *sdbp;
 	DB_TXN *txn;
-	const char *subdb;
+	const gchar *subdb;
 	DBTYPE type;
 	mu_action action;
-	const char *newname;
+	const gchar *newname;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
@@ -171,7 +171,7 @@ __db_master_update(mdbp, sdbp, txn, subdb, type, action, newname, flags)
 	DBT key, data, ndata;
 	PAGE *p;
 	db_pgno_t t_pgno;
-	int modify, ret, t_ret;
+	gint modify, ret, t_ret;
 
 	dbenv = mdbp->dbenv;
 	dbc = ndbc = NULL;
@@ -204,7 +204,7 @@ __db_master_update(mdbp, sdbp, txn, subdb, type, action, newname, flags)
 	 * !!!
 	 * We don't include the name's nul termination in the database.
 	 */
-	key.data = (void *)subdb;
+	key.data = (gpointer)subdb;
 	key.size = (u_int32_t)strlen(subdb);
 	F_SET(&data, DB_DBT_MALLOC);
 
@@ -267,7 +267,7 @@ __db_master_update(mdbp, sdbp, txn, subdb, type, action, newname, flags)
 		if ((ret = mdbp->cursor(mdbp, txn, &ndbc, 0)) != 0)
 			goto err;
 		DB_ASSERT(newname != NULL);
-		key.data = (void *)newname;
+		key.data = (gpointer)newname;
 		key.size = (u_int32_t)strlen(newname);
 
 		/*
@@ -400,14 +400,14 @@ done:	/*
  * __db_dbenv_setup --
  *	Set up the underlying environment during a db_open.
  *
- * PUBLIC: int __db_dbenv_setup __P((DB *,
- * PUBLIC:     DB_TXN *, const char *, u_int32_t, u_int32_t));
+ * PUBLIC: gint __db_dbenv_setup __P((DB *,
+ * PUBLIC:     DB_TXN *, const gchar *, u_int32_t, u_int32_t));
  */
-int
+gint
 __db_dbenv_setup(dbp, txn, name, id, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name;
+	const gchar *name;
 	u_int32_t id;
 	u_int32_t flags;
 {
@@ -418,7 +418,7 @@ __db_dbenv_setup(dbp, txn, name, id, flags)
 	DB_MPOOLFILE *mpf;
 	DB_PGINFO pginfo;
 	u_int32_t maxid;
-	int ftype, ret;
+	gint ftype, ret;
 
 	dbenv = dbp->dbenv;
 
@@ -601,9 +601,9 @@ __db_dbenv_setup(dbp, txn, name, id, flags)
  * __db_close --
  *	DB destructor.
  *
- * PUBLIC: int __db_close __P((DB *, u_int32_t));
+ * PUBLIC: gint __db_close __P((DB *, u_int32_t));
  */
-int
+gint
 __db_close(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
@@ -625,16 +625,16 @@ __db_close(dbp, flags)
  * __db_close_i --
  *	Internal DB destructor.
  *
- * PUBLIC: int __db_close_i __P((DB *, DB_TXN *, u_int32_t));
+ * PUBLIC: gint __db_close_i __P((DB *, DB_TXN *, u_int32_t));
  */
-int
+gint
 __db_close_i(dbp, txn, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbenv = dbp->dbenv;
 	ret = 0;
@@ -689,9 +689,9 @@ __db_close_i(dbp, txn, flags)
  * the actual handle) and during abort processing, we may have a
  * fully opened handle.
  *
- * PUBLIC: int __db_refresh __P((DB *, DB_TXN *, u_int32_t));
+ * PUBLIC: gint __db_refresh __P((DB *, DB_TXN *, u_int32_t));
  */
-int
+gint
 __db_refresh(dbp, txn, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -702,7 +702,7 @@ __db_refresh(dbp, txn, flags)
 	DB_ENV *dbenv;
 	DB_LOCKREQ lreq;
 	DB_MPOOL *dbmp;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = 0;
 
@@ -913,9 +913,9 @@ never_opened:
  * __db_log_page
  *	Log a meta-data or root page during a subdatabase create operation.
  *
- * PUBLIC: int __db_log_page __P((DB *, DB_TXN *, DB_LSN *, db_pgno_t, PAGE *));
+ * PUBLIC: gint __db_log_page __P((DB *, DB_TXN *, DB_LSN *, db_pgno_t, PAGE *));
  */
-int
+gint
 __db_log_page(dbp, txn, lsn, pgno, page)
 	DB *dbp;
 	DB_TXN *txn;
@@ -925,7 +925,7 @@ __db_log_page(dbp, txn, lsn, pgno, page)
 {
 	DBT page_dbt;
 	DB_LSN new_lsn;
-	int ret;
+	gint ret;
 
 	if (!LOGGING_ON(dbp->dbenv) || txn == NULL)
 		return (0);
@@ -945,8 +945,8 @@ __db_log_page(dbp, txn, lsn, pgno, page)
  * __db_backup_name
  *	Create the backup file name for a given file.
  *
- * PUBLIC: int __db_backup_name __P((DB_ENV *,
- * PUBLIC:     const char *, DB_TXN *, char **));
+ * PUBLIC: gint __db_backup_name __P((DB_ENV *,
+ * PUBLIC:     const gchar *, DB_TXN *, gchar **));
  */
 #undef	BACKUP_PREFIX
 #define	BACKUP_PREFIX	"__db."
@@ -954,17 +954,17 @@ __db_log_page(dbp, txn, lsn, pgno, page)
 #undef	MAX_LSN_TO_TEXT
 #define	MAX_LSN_TO_TEXT	17
 
-int
+gint
 __db_backup_name(dbenv, name, txn, backup)
 	DB_ENV *dbenv;
-	const char *name;
+	const gchar *name;
 	DB_TXN *txn;
-	char **backup;
+	gchar **backup;
 {
 	DB_LSN lsn;
 	size_t len;
-	int plen, ret;
-	char *p, *retp;
+	gint plen, ret;
+	gchar *p, *retp;
 
 	/*
 	 * Create the name.  Backup file names are in one of two forms:
@@ -1066,7 +1066,7 @@ __db_disassociate(sdbp)
 	DB *sdbp;
 {
 	DBC *dbc;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = 0;
 
@@ -1102,14 +1102,14 @@ __db_disassociate(sdbp)
  *	Create a copy of all backup files and our "main" DB.
  *
  * PUBLIC: #if CONFIG_TEST
- * PUBLIC: int __db_testcopy __P((DB_ENV *, DB *, const char *));
+ * PUBLIC: gint __db_testcopy __P((DB_ENV *, DB *, const gchar *));
  * PUBLIC: #endif
  */
-int
+gint
 __db_testcopy(dbenv, dbp, name)
 	DB_ENV *dbenv;
 	DB *dbp;
-	const char *name;
+	const gchar *name;
 {
 	DB_MPOOLFILE *mpf;
 
@@ -1129,11 +1129,11 @@ __db_testcopy(dbenv, dbp, name)
 static int
 __qam_testdocopy(dbp, name)
 	DB *dbp;
-	const char *name;
+	const gchar *name;
 {
 	QUEUE_FILELIST *filelist, *fp;
-	char buf[256], *dir;
-	int ret;
+	gchar buf[256], *dir;
+	gint ret;
 
 	filelist = NULL;
 	if ((ret = __db_testdocopy(dbp->dbenv, name)) != 0)
@@ -1164,11 +1164,11 @@ __qam_testdocopy(dbp, name)
 static int
 __db_testdocopy(dbenv, name)
 	DB_ENV *dbenv;
-	const char *name;
+	const gchar *name;
 {
 	size_t len;
-	int dircnt, i, ret;
-	char **namesp, *backup, *copy, *dir, *p, *real_name;
+	gint dircnt, i, ret;
+	gchar **namesp, *backup, *copy, *dir, *p, *real_name;
 	real_name = NULL;
 	/* Get the real backing file name. */
 	if ((ret = __db_appname(dbenv,
@@ -1275,11 +1275,11 @@ out:
 
 static void
 __db_makecopy(src, dest)
-	const char *src, *dest;
+	const gchar *src, *dest;
 {
 	DB_FH rfh, wfh;
 	size_t rcnt, wcnt;
-	char *buf;
+	gchar *buf;
 
 	memset(&rfh, 0, sizeof(rfh));
 	memset(&wfh, 0, sizeof(wfh));

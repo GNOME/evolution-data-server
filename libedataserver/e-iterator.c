@@ -58,7 +58,7 @@ e_iterator_init (EIterator *card)
 /*
  * Virtual functions:
  */
-const void *
+gconstpointer
 e_iterator_get      (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS(iterator)->get)
@@ -107,7 +107,7 @@ e_iterator_delete   (EIterator *iterator)
 }
 
 void           e_iterator_insert     (EIterator  *iterator,
-				      const void *object,
+				      gconstpointer object,
 				      gboolean    before)
 {
 	if (E_ITERATOR_GET_CLASS(iterator)->insert)

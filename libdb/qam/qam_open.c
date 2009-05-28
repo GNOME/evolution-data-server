@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,21 +27,21 @@ static const char revid[] = "$Id$";
 #include "dbinc/qam.h"
 #include "dbinc/fop.h"
 
-static int __qam_init_meta __P((DB *, QMETA *));
+static gint __qam_init_meta __P((DB *, QMETA *));
 
 /*
  * __qam_open
  *
- * PUBLIC: int __qam_open __P((DB *,
- * PUBLIC:     DB_TXN *, const char *, db_pgno_t, int, u_int32_t));
+ * PUBLIC: gint __qam_open __P((DB *,
+ * PUBLIC:     DB_TXN *, const gchar *, db_pgno_t, int, u_int32_t));
  */
-int
+gint
 __qam_open(dbp, txn, name, base_pgno, mode, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name;
+	const gchar *name;
 	db_pgno_t base_pgno;
-	int mode;
+	gint mode;
 	u_int32_t flags;
 {
 	DBC *dbc;
@@ -50,7 +50,7 @@ __qam_open(dbp, txn, name, base_pgno, mode, flags)
 	DB_MPOOLFILE *mpf;
 	QMETA *qmeta;
 	QUEUE *t;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -147,17 +147,17 @@ err:	if (qmeta != NULL && (t_ret = mpf->put(mpf, qmeta, 0)) != 0 && ret == 0)
 /*
  * __qam_metachk --
  *
- * PUBLIC: int __qam_metachk __P((DB *, const char *, QMETA *));
+ * PUBLIC: gint __qam_metachk __P((DB *, const gchar *, QMETA *));
  */
-int
+gint
 __qam_metachk(dbp, name, qmeta)
 	DB *dbp;
-	const char *name;
+	const gchar *name;
 	QMETA *qmeta;
 {
 	DB_ENV *dbenv;
 	u_int32_t vers;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 	ret = 0;
@@ -267,14 +267,14 @@ __qam_init_meta(dbp, meta)
  * memory or calls mpf->get), 2) the initialization, and 3) the "put page"
  * chunk which either does a fop write or an mpf->put.
  *
- * PUBLIC: int __qam_new_file __P((DB *, DB_TXN *, DB_FH *, const char *));
+ * PUBLIC: gint __qam_new_file __P((DB *, DB_TXN *, DB_FH *, const gchar *));
  */
-int
+gint
 __qam_new_file(dbp, txn, fhp, name)
 	DB *dbp;
 	DB_TXN *txn;
 	DB_FH *fhp;
-	const char *name;
+	const gchar *name;
 {
 	QMETA *meta;
 	DB_ENV *dbenv;
@@ -282,8 +282,8 @@ __qam_new_file(dbp, txn, fhp, name)
 	DB_PGINFO pginfo;
 	DBT pdbt;
 	db_pgno_t pgno;
-	int ret;
-	void *buf;
+	gint ret;
+	gpointer buf;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;

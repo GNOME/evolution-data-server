@@ -66,9 +66,9 @@ e_weather_source_get_type (void)
 	return e_weather_source_type;
 }
 
-EWeatherSource*	e_weather_source_new (const char *uri)
+EWeatherSource*	e_weather_source_new (const gchar *uri)
 {
-	const char *base = uri + 10; /* skip weather:// */
+	const gchar *base = uri + 10; /* skip weather:// */
 
 	return e_weather_source_ccf_new (base);
 }

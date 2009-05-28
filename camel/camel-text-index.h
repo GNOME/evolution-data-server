@@ -44,7 +44,7 @@ typedef struct _CamelTextIndexCursorClass CamelTextIndexCursorClass;
 typedef struct _CamelTextIndexKeyCursor      CamelTextIndexKeyCursor;
 typedef struct _CamelTextIndexKeyCursorClass CamelTextIndexKeyCursorClass;
 
-typedef void (*CamelTextIndexFunc)(CamelTextIndex *idx, const char *word, char *buffer);
+typedef void (*CamelTextIndexFunc)(CamelTextIndex *idx, const gchar *word, gchar *buffer);
 
 /* ********************************************************************** */
 
@@ -101,12 +101,12 @@ struct _CamelTextIndexClass {
 };
 
 CamelType		   camel_text_index_get_type	(void);
-CamelTextIndex    *camel_text_index_new(const char *path, int flags);
+CamelTextIndex    *camel_text_index_new(const gchar *path, gint flags);
 
 /* static utility functions */
-int camel_text_index_check(const char *path);
-int camel_text_index_rename(const char *old, const char *new);
-int camel_text_index_remove(const char *old);
+gint camel_text_index_check(const gchar *path);
+gint camel_text_index_rename(const gchar *old, const gchar *new);
+gint camel_text_index_remove(const gchar *old);
 
 void camel_text_index_dump(CamelTextIndex *idx);
 void camel_text_index_info(CamelTextIndex *idx);

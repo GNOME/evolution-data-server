@@ -89,17 +89,17 @@ typedef struct {
 	GList *   (*query_auth_types)  (CamelService *service,
 					CamelException *ex);
 
-	char *    (*get_name)          (CamelService *service,
+	gchar *    (*get_name)          (CamelService *service,
 					gboolean brief);
-	char *    (*get_path)          (CamelService *service);
+	gchar *    (*get_path)          (CamelService *service);
 
 } CamelServiceClass;
 
 /* query_auth_types returns a GList of these */
 typedef struct {
-	char *name;               /* user-friendly name */
-	char *description;
-	char *authproto;
+	gchar *name;               /* user-friendly name */
+	gchar *description;
+	gchar *authproto;
 
 	gboolean need_password;   /* needs a password to authenticate */
 } CamelServiceAuthType;
@@ -116,10 +116,10 @@ gboolean            camel_service_disconnect         (CamelService *service,
 						      gboolean clean,
 						      CamelException *ex);
 void                camel_service_cancel_connect     (CamelService *service);
-char *              camel_service_get_url            (CamelService *service);
-char *              camel_service_get_name           (CamelService *service,
+gchar *              camel_service_get_url            (CamelService *service);
+gchar *              camel_service_get_name           (CamelService *service,
 						      gboolean brief);
-char *              camel_service_get_path           (CamelService *service);
+gchar *              camel_service_get_path           (CamelService *service);
 CamelSession *      camel_service_get_session        (CamelService *service);
 CamelProvider *     camel_service_get_provider       (CamelService *service);
 GList *             camel_service_query_auth_types   (CamelService *service,

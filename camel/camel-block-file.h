@@ -46,7 +46,7 @@ typedef struct _CamelBlockFileClass CamelBlockFileClass;
 #define CAMEL_BLOCK_DETACHED (1<<1)
 
 struct _CamelBlockRoot {
-	char version[8];	/* version number */
+	gchar version[8];	/* version number */
 
 	guint32 flags;		/* flags for file */
 	guint32 block_size;	/* block size of this file */
@@ -66,7 +66,7 @@ struct _CamelBlock {
 	guint32 refcount;
 	guint32 align00;
 
-	unsigned char data[CAMEL_BLOCK_SIZE];
+	guchar data[CAMEL_BLOCK_SIZE];
 };
 
 struct _CamelBlockFile {
@@ -74,19 +74,19 @@ struct _CamelBlockFile {
 
 	struct _CamelBlockFilePrivate *priv;
 
-	char version[8];
-	char *path;
-	int flags;
+	gchar version[8];
+	gchar *path;
+	gint flags;
 
-	int fd;
+	gint fd;
 	size_t block_size;
 
 	CamelBlockRoot *root;
 	CamelBlock *root_block;
 
 	/* make private? */
-	int block_cache_limit;
-	int block_cache_count;
+	gint block_cache_limit;
+	gint block_cache_count;
 	CamelDList block_cache;
 	GHashTable *blocks;
 };
@@ -94,25 +94,25 @@ struct _CamelBlockFile {
 struct _CamelBlockFileClass {
 	CamelObjectClass parent;
 
-	int (*validate_root)(CamelBlockFile *);
-	int (*init_root)(CamelBlockFile *);
+	gint (*validate_root)(CamelBlockFile *);
+	gint (*init_root)(CamelBlockFile *);
 };
 
 CamelType camel_block_file_get_type(void);
 
-CamelBlockFile *camel_block_file_new(const char *path, int flags, const char version[8], size_t block_size);
-int camel_block_file_rename(CamelBlockFile *bs, const char *path);
-int camel_block_file_delete(CamelBlockFile *kf);
+CamelBlockFile *camel_block_file_new(const gchar *path, gint flags, const gchar version[8], size_t block_size);
+gint camel_block_file_rename(CamelBlockFile *bs, const gchar *path);
+gint camel_block_file_delete(CamelBlockFile *kf);
 
 CamelBlock *camel_block_file_new_block(CamelBlockFile *bs);
-int camel_block_file_free_block(CamelBlockFile *bs, camel_block_t id);
+gint camel_block_file_free_block(CamelBlockFile *bs, camel_block_t id);
 CamelBlock *camel_block_file_get_block(CamelBlockFile *bs, camel_block_t id);
 void camel_block_file_detach_block(CamelBlockFile *bs, CamelBlock *bl);
 void camel_block_file_attach_block(CamelBlockFile *bs, CamelBlock *bl);
 void camel_block_file_touch_block(CamelBlockFile *bs, CamelBlock *bl);
 void camel_block_file_unref_block(CamelBlockFile *bs, CamelBlock *bl);
-int camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl);
-int camel_block_file_sync(CamelBlockFile *bs);
+gint camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl);
+gint camel_block_file_sync(CamelBlockFile *bs);
 
 /* ********************************************************************** */
 
@@ -125,8 +125,8 @@ struct _CamelKeyFile {
 	struct _CamelKeyFilePrivate *priv;
 
 	FILE *fp;
-	char *path;
-	int flags;
+	gchar *path;
+	gint flags;
 	off_t last;
 };
 
@@ -136,12 +136,12 @@ struct _CamelKeyFileClass {
 
 CamelType      camel_key_file_get_type(void);
 
-CamelKeyFile * camel_key_file_new(const char *path, int flags, const char version[8]);
-int	       camel_key_file_rename(CamelKeyFile *kf, const char *path);
+CamelKeyFile * camel_key_file_new(const gchar *path, gint flags, const gchar version[8]);
+int	       camel_key_file_rename(CamelKeyFile *kf, const gchar *path);
 int	       camel_key_file_delete(CamelKeyFile *kf);
 
-int            camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_key_t *records);
-int            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, size_t *len, camel_key_t **records);
+gint            camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_key_t *records);
+gint            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, size_t *len, camel_key_t **records);
 
 G_END_DECLS
 

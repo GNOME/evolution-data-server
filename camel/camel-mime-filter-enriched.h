@@ -42,7 +42,7 @@ struct _CamelMimeFilterEnriched {
 	CamelMimeFilter parent_object;
 
 	guint32 flags;
-	int nofill;
+	gint nofill;
 };
 
 struct _CamelMimeFilterEnrichedClass {
@@ -53,7 +53,7 @@ struct _CamelMimeFilterEnrichedClass {
 CamelType        camel_mime_filter_enriched_get_type (void);
 
 CamelMimeFilter *camel_mime_filter_enriched_new (guint32 flags);
-char *camel_enriched_to_html(const char *in, guint32 flags);
+gchar *camel_enriched_to_html(const gchar *in, guint32 flags);
 
 G_END_DECLS
 

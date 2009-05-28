@@ -40,7 +40,7 @@ typedef struct {
 	ESourceOptionMenu *option_menu;
 	ESource *source;
 	ESource *found_source;
-	int i;
+	gint i;
 } ForeachMenuItemData;
 
 enum {
@@ -114,9 +114,9 @@ populate (ESourceOptionMenu *option_menu)
 	GSList *groups = e_source_list_peek_groups (option_menu->priv->source_list);
 	GSList *p;
 	ESource *first_source = NULL;
-	int first_source_item = -1;
-	int selected_item = -1;
-	int i;
+	gint first_source_item = -1;
+	gint selected_item = -1;
+	gint i;
 
 	i = 0;
 	for (p = groups; p != NULL; p = p->next) {
@@ -132,8 +132,8 @@ populate (ESourceOptionMenu *option_menu)
 
 		for (q = e_source_group_peek_sources (group); q != NULL; q = q->next) {
 			ESource *source = E_SOURCE (q->data);
-			char *label = g_strconcat ("    ", e_source_peek_name (source), NULL);
-			const char *colour = e_source_peek_color_spec (source);
+			gchar *label = g_strconcat ("    ", e_source_peek_name (source), NULL);
+			const gchar *colour = e_source_peek_color_spec (source);
 			GtkWidget *item2 = gtk_image_menu_item_new_with_label (label);
 			g_free (label);
 

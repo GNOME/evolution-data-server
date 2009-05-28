@@ -58,7 +58,7 @@ struct _CamelGroupwiseMessageContentInfo {
 struct _CamelGroupwiseSummary {
 	CamelFolderSummary parent;
 
-	char *time_string;
+	gchar *time_string;
 	gint32 version;
 	gint32 validity;
 } ;
@@ -71,11 +71,11 @@ struct _CamelGroupwiseSummaryClass {
 
 CamelType camel_groupwise_summary_get_type (void) ;
 
-CamelFolderSummary *camel_groupwise_summary_new (struct _CamelFolder *folder, const char *filename) ;
+CamelFolderSummary *camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename) ;
 
-void camel_gw_summary_add_offline (CamelFolderSummary *summary, const char *uid, CamelMimeMessage *messgae, const CamelMessageInfo *info) ;
+void camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *messgae, const CamelMessageInfo *info) ;
 
-void camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const char *uid, const CamelMessageInfo *info) ;
+void camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid, const CamelMessageInfo *info) ;
 void groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache);
 
 G_END_DECLS

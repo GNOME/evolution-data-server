@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -27,7 +27,7 @@ struct verify_callback_struct {
 	JNIEnv *env;
 	jobject streamobj;
 	jbyteArray bytes;
-	int nbytes;
+	gint nbytes;
 	jmethodID writemid;
 };
 
@@ -59,7 +59,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_one_1time_1init
 JNIEXPORT void JNICALL Java_com_sleepycat_db_Db__1init
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbEnv*/ jobject jdbenv, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_JAVAINFO *dbinfo;
 	DB_ENV *dbenv;
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db__1associate
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db__1close
   (JNIEnv *jnienv, /*Db*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_JAVAINFO *dbinfo;
 
@@ -179,7 +179,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_bt_1prefix_1changed
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Db_cursor
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid, jint flags)
 {
-	int err;
+	gint err;
 	DBC *dbc;
 	DB *db = get_DB(jnienv, jthis);
 	DB_TXN *dbtxnid = get_DB_TXN(jnienv, txnid);
@@ -195,7 +195,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_del
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid,
    /*Dbt*/ jobject key, jint dbflags)
 {
-	int err;
+	gint err;
 	DB_TXN *dbtxnid;
 	DB *db;
 	LOCKED_DBT lkey;
@@ -270,8 +270,8 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_errx
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_fd
   (JNIEnv *jnienv, /*Db*/ jobject jthis)
 {
-	int err;
-	int return_value = 0;
+	gint err;
+	gint return_value = 0;
 	DB *db = get_DB(jnienv, jthis);
 
 	if (!verify_non_null(jnienv, db))
@@ -286,7 +286,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_fd
 JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_set_1encrypt
   (JNIEnv *jnienv, /*Db*/ jobject jthis, jstring jpasswd, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	LOCKED_STRING ls_passwd;
 
@@ -320,7 +320,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_get
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid,
    /*Dbt*/ jobject key, /*Dbt*/ jobject data, jint flags)
 {
-	int err, op_flags, retry;
+	gint err, op_flags, retry;
 	DB *db;
 	DB_ENV *dbenv;
 	OpKind keyop, dataop;
@@ -396,13 +396,13 @@ JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Db_join
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*Dbc[]*/ jobjectArray curslist,
    jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
-	int count;
+	gint count;
 	DBC **newlist;
 	DBC *dbc;
-	int i;
-	int size;
+	gint i;
+	gint size;
 
 	db = get_DB(jnienv, jthis);
 	count = (*jnienv)->GetArrayLength(jnienv, curslist);
@@ -444,7 +444,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_key_1range
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid,
    /*Dbt*/ jobject jkey, jobject /*DbKeyRange*/ range, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_TXN *dbtxnid;
 	LOCKED_DBT lkey;
@@ -480,7 +480,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_pget
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid,
    /*Dbt*/ jobject key, /*Dbt*/ jobject rkey, /*Dbt*/ jobject data, jint flags)
 {
-	int err, op_flags, retry;
+	gint err, op_flags, retry;
 	DB *db;
 	DB_ENV *dbenv;
 	OpKind keyop, rkeyop, dataop;
@@ -550,7 +550,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_put
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid,
    /*Dbt*/ jobject key, /*Dbt*/ jobject data, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_ENV *dbenv;
 	DB_TXN *dbtxnid;
@@ -597,7 +597,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db__1remove
   (JNIEnv *jnienv, /*Db*/ jobject jthis,
    jstring file, jstring database, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_JAVAINFO *dbinfo;
 	LOCKED_STRING ls_file;
@@ -629,7 +629,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db__1rename
   (JNIEnv *jnienv, /*Db*/ jobject jthis,
    jstring file, jstring database, jstring newname, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_JAVAINFO *dbinfo;
 	LOCKED_STRING ls_file;
@@ -675,7 +675,7 @@ JNIEXPORT void JNICALL
   Java_com_sleepycat_db_Db_set_1re_1source
   (JNIEnv *jnienv, /*Db*/ jobject jthis, jstring re_source)
 {
-	int err;
+	gint err;
 	DB *db;
 
 	db = get_DB(jnienv, jthis);
@@ -703,7 +703,7 @@ JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Db_stat
 	jobject retval;
 	jclass dbclass;
 	size_t bytesize;
-	void *statp;
+	gpointer statp;
 
 	bytesize = 0;
 	retval = NULL;
@@ -777,7 +777,7 @@ JNIEXPORT jboolean JNICALL Java_com_sleepycat_db_Db_get_1byteswapped
   (JNIEnv *jnienv, /*Db*/ jobject jthis)
 {
 	DB *db;
-	int err, isbyteswapped;
+	gint err, isbyteswapped;
 
 	/* This value should never be seen, because of the exception. */
 	isbyteswapped = 0;
@@ -796,7 +796,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_get_1type
   (JNIEnv *jnienv, /*Db*/ jobject jthis)
 {
 	DB *db;
-	int err;
+	gint err;
 	DBTYPE dbtype;
 
 	/* This value should never be seen, because of the exception. */
@@ -816,7 +816,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db__1open
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject txnid,
    jstring file, jstring database, jint type, jint flags, jint mode)
 {
-	int err;
+	gint err;
 	DB *db;
 	DB_TXN *dbtxnid;
 	LOCKED_STRING ls_file;
@@ -846,7 +846,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db__1open
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_Db_truncate
   (JNIEnv *jnienv, /*Db*/ jobject jthis, /*DbTxn*/ jobject jtxnid, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	u_int32_t count;
 	DB_TXN *dbtxnid;
@@ -865,7 +865,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_upgrade
   (JNIEnv *jnienv, /*Db*/ jobject jthis, jstring name,
    jint flags)
 {
-	int err;
+	gint err;
 	DB *db = get_DB(jnienv, jthis);
 	LOCKED_STRING ls_name;
 
@@ -879,14 +879,14 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_upgrade
 	locked_string_put(&ls_name, jnienv);
 }
 
-static int java_verify_callback(void *handle, const void *str_arg)
+static gint java_verify_callback(gpointer handle, gconstpointer str_arg)
 {
-	char *str;
+	gchar *str;
 	struct verify_callback_struct *vc;
-	int len;
+	gint len;
 	JNIEnv *jnienv;
 
-	str = (char *)str_arg;
+	str = (gchar *)str_arg;
 	vc = (struct verify_callback_struct *)handle;
 	jnienv = vc->env;
 	len = strlen(str)+1;
@@ -912,7 +912,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Db_verify
   (JNIEnv *jnienv, /*Db*/ jobject jthis, jstring name,
    jstring subdb, jobject stream, jint flags)
 {
-	int err;
+	gint err;
 	DB *db;
 	LOCKED_STRING ls_name;
 	LOCKED_STRING ls_subdb;

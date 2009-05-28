@@ -45,22 +45,22 @@
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
 #define EXTRACT_DIGIT(val) if (*part) part++; val=strtoul (part, &part, 10);
 
-static int summary_header_load (CamelFolderSummary *, FILE *);
-static int summary_header_save (CamelFolderSummary *, FILE *);
+static gint summary_header_load (CamelFolderSummary *, FILE *);
+static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo *message_info_load (CamelFolderSummary *s, FILE *in);
-static int message_info_save (CamelFolderSummary *s, FILE *out,
+static gint message_info_save (CamelFolderSummary *s, FILE *out,
 			      CamelMessageInfo *info);
-static gboolean info_set_user_flag (CamelMessageInfo *info, const char *id, gboolean state);
+static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
 static CamelMessageContentInfo *content_info_load (CamelFolderSummary *s, FILE *in);
-static int content_info_save (CamelFolderSummary *s, FILE *out,
+static gint content_info_save (CamelFolderSummary *s, FILE *out,
 			      CamelMessageContentInfo *info);
 
-static int summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
+static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
 static CamelMIRecord * message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info);
 static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
-static int content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
+static gint content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
 static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
 
 
@@ -140,11 +140,11 @@ camel_imap_summary_init (CamelImapSummary *obj)
 }
 
 static int
-sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
+sort_uid_cmp (gpointer enc, gint len1, gpointer  data1, gint len2, gpointer data2)
 {
-	static char *sa1=NULL, *sa2=NULL;
-	static int l1=0, l2=0;
-	int a1, a2;
+	static gchar *sa1=NULL, *sa2=NULL;
+	static gint l1=0, l2=0;
+	gint a1, a2;
 
 	if (l1 < len1+1) {
 		sa1 = g_realloc (sa1, len1+1);
@@ -164,9 +164,9 @@ sort_uid_cmp (void *enc, int len1, void * data1, int len2, void *data2)
 }
 
 static int
-uid_compare (const void *va, const void *vb)
+uid_compare (gconstpointer va, gconstpointer vb)
 {
-	const char **sa = (const char **)va, **sb = (const char **)vb;
+	const gchar **sa = (const gchar **)va, **sb = (const gchar **)vb;
 	unsigned long a, b;
 
 	a = strtoul (*sa, NULL, 10);
@@ -190,7 +190,7 @@ uid_compare (const void *va, const void *vb)
  * Return value: A new CamelImapSummary object.
  **/
 CamelFolderSummary *
-camel_imap_summary_new (struct _CamelFolder *folder, const char *filename)
+camel_imap_summary_new (struct _CamelFolder *folder, const gchar *filename)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (camel_object_new (camel_imap_summary_get_type ()));
 	CamelException ex;
@@ -225,7 +225,7 @@ static int
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
-	char *part;
+	gchar *part;
 
 	if (camel_imap_summary_parent->summary_header_from_db (s, mir) == -1)
 		return -1;
@@ -267,7 +267,7 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 
 	if (ims->version == 2) {
 		/* Version 2: for compat with version 2 of the imap4 summary files */
-		int have_mlist;
+		gint have_mlist;
 
 		if (camel_file_util_decode_fixed_int32 (in, &have_mlist) == -1)
 			return -1;
@@ -320,7 +320,7 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 
 	info = camel_imap_summary_parent->message_info_from_db (s, mir);
 	if (info) {
-		char *part = g_strdup (mir->bdata), *tmp;
+		gchar *part = g_strdup (mir->bdata), *tmp;
 		tmp = part;
 		iinfo = (CamelImapMessageInfo *)info;
 		EXTRACT_FIRST_DIGIT (iinfo->server_flags)
@@ -375,7 +375,7 @@ message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 }
 
 static gboolean
-info_set_user_flag (CamelMessageInfo *info, const char *id, gboolean state)
+info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state)
 {
 	gboolean res;
 
@@ -391,7 +391,7 @@ info_set_user_flag (CamelMessageInfo *info, const char *id, gboolean state)
 static CamelMessageContentInfo *
 content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 {
-	char *part = mir->cinfo;
+	gchar *part = mir->cinfo;
 	guint32 type=0;
 
 	if (part) {
@@ -420,7 +420,7 @@ content_info_load (CamelFolderSummary *s, FILE *in)
 static int
 content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir)
 {
-	char *oldr;
+	gchar *oldr;
 	if (info->type) {
 		oldr = mir->cinfo;
 		mir->cinfo = oldr ? g_strdup_printf("%s 1", oldr) : g_strdup ("1");
@@ -446,7 +446,7 @@ content_info_save (CamelFolderSummary *s, FILE *out,
 }
 
 void
-camel_imap_summary_add_offline (CamelFolderSummary *summary, const char *uid,
+camel_imap_summary_add_offline (CamelFolderSummary *summary, const gchar *uid,
 				CamelMimeMessage *message,
 				const CamelMessageInfo *info)
 {
@@ -478,7 +478,7 @@ camel_imap_summary_add_offline (CamelFolderSummary *summary, const char *uid,
 }
 
 void
-camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, const char *uid,
+camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid,
 					 const CamelMessageInfo *info)
 {
 	CamelImapMessageInfo *mi;

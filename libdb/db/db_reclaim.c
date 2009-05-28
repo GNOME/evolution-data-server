@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,19 +30,19 @@ static const char revid[] = "$Id$";
  * where did_put is a return value indicating if the page in question has
  * already been returned to the mpool.
  *
- * PUBLIC: int __db_traverse_big __P((DB *,
- * PUBLIC:     db_pgno_t, int (*)(DB *, PAGE *, void *, int *), void *));
+ * PUBLIC: gint __db_traverse_big __P((DB *,
+ * PUBLIC:     db_pgno_t, gint (*)(DB *, PAGE *, gpointer , gint *), gpointer ));
  */
-int
+gint
 __db_traverse_big(dbp, pgno, callback, cookie)
 	DB *dbp;
 	db_pgno_t pgno;
-	int (*callback) __P((DB *, PAGE *, void *, int *));
-	void *cookie;
+	gint (*callback) __P((DB *, PAGE *, gpointer , gint *));
+	gpointer cookie;
 {
 	DB_MPOOLFILE *mpf;
 	PAGE *p;
-	int did_put, ret;
+	gint did_put, ret;
 
 	mpf = dbp->mpf;
 
@@ -68,16 +68,16 @@ __db_traverse_big(dbp, pgno, callback, cookie)
  * actual free.  The reason that this is callback is because hash uses
  * the same traversal code for statistics gathering.
  *
- * PUBLIC: int __db_reclaim_callback __P((DB *, PAGE *, void *, int *));
+ * PUBLIC: gint __db_reclaim_callback __P((DB *, PAGE *, gpointer , gint *));
  */
-int
+gint
 __db_reclaim_callback(dbp, p, cookie, putp)
 	DB *dbp;
 	PAGE *p;
-	void *cookie;
-	int *putp;
+	gpointer cookie;
+	gint *putp;
 {
-	int ret;
+	gint ret;
 
 	COMPQUIET(dbp, NULL);
 
@@ -94,14 +94,14 @@ __db_reclaim_callback(dbp, p, cookie, putp)
  * we are traversing a btree or hash table and trying to free all the
  * pages.
  *
- * PUBLIC: int __db_truncate_callback __P((DB *, PAGE *, void *, int *));
+ * PUBLIC: gint __db_truncate_callback __P((DB *, PAGE *, gpointer , gint *));
  */
-int
+gint
 __db_truncate_callback(dbp, p, cookie, putp)
 	DB *dbp;
 	PAGE *p;
-	void *cookie;
-	int *putp;
+	gpointer cookie;
+	gint *putp;
 {
 	DBMETA *meta;
 	DBT ldbt;
@@ -111,7 +111,7 @@ __db_truncate_callback(dbp, p, cookie, putp)
 	db_pgno_t pgno;
 	db_trunc_param *param;
 	u_int8_t *hk, type;
-	int ret;
+	gint ret;
 
 	top = NUM_ENT(p);
 	mpf = dbp->mpf;

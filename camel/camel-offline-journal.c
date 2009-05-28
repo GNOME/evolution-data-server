@@ -109,7 +109,7 @@ camel_offline_journal_finalize (CamelObject *object)
  * Constructs a journal object.
  **/
 void
-camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *folder, const char *filename)
+camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *folder, const gchar *filename)
 {
 	CamelDListNode *entry;
 	FILE *fp;
@@ -134,7 +134,7 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
  * Set the filename where the journal should load/save from.
  **/
 void
-camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *filename)
+camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *filename)
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_JOURNAL (journal));
 
@@ -152,12 +152,12 @@ camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *fi
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 {
 	CamelDListNode *entry;
 	FILE *fp;
-	int fd;
+	gint fd;
 
 	if ((fd = g_open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -202,12 +202,12 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
  *
  * Returns: %0 on success (no entry failed to replay) or %-1 on fail
  **/
-int
+gint
 camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
 {
 	CamelDListNode *entry, *next;
 	CamelException lex;
-	int failed = 0;
+	gint failed = 0;
 
 	camel_exception_init (&lex);
 

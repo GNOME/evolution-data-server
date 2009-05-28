@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,16 +24,16 @@ static const char revid[] = "$Id$";
  * __db_rpath --
  *	Return the last path separator in the path or NULL if none found.
  *
- * PUBLIC: char *__db_rpath __P((const char *));
+ * PUBLIC: gchar *__db_rpath __P((const gchar *));
  */
-char *
+gchar *
 __db_rpath(path)
-	const char *path;
+	const gchar *path;
 {
-	const char *s, *last;
+	const gchar *s, *last;
 #ifdef HAVE_VXWORKS
 	DEV_HDR *dummy;
-	char *ptail;
+	gchar *ptail;
 
 	/*
 	 * VxWorks devices can be rooted at any name.  We want to
@@ -48,7 +48,7 @@ __db_rpath(path)
 	 * We do not support the first usage here.
 	 * XXX
 	 */
-	if ((dummy = iosDevFind((char *)path, &ptail)) == NULL)
+	if ((dummy = iosDevFind((gchar *)path, &ptail)) == NULL)
 		s = path;
 	else
 		s = ptail;
@@ -65,5 +65,5 @@ __db_rpath(path)
 		for (; s[0] != '\0'; ++s)
 			if (s[0] == PATH_SEPARATOR[0])
 				last = s;
-	return ((char *)last);
+	return ((gchar *)last);
 }

@@ -11,18 +11,18 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *imap_drivers[] = { "imap4" };
+static const gchar *imap_drivers[] = { "imap4" };
 
-static char *remote_providers[] = {
+static gchar *remote_providers[] = {
 	"IMAP_TEST_URL",
 };
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelException *ex;
-	int i;
-	char *path;
+	gint i;
+	gchar *path;
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, imap_drivers);

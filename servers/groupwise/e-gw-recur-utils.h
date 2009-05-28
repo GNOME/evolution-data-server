@@ -23,6 +23,7 @@
 #ifndef E_GW_RECUR_UTILS_H
 #define E_GW_RECUR_UTILS_H
 
+#include <glib.h>
 
 #define E_GW_ITEM_RECURRENCE_FREQUENCY_DAILY "Daily"
 #define E_GW_ITEM_RECURRENCE_FREQUENCY_WEEKLY "Weekly"
@@ -53,10 +54,10 @@
 #define E_GW_ITEM_BY_SETPOS_SIZE 367
 
 typedef struct {
-	char *frequency;
-	char *until;
-	int count;
-	int interval;
+	gchar *frequency;
+	gchar *until;
+	gint count;
+	gint interval;
 	short by_day[E_GW_ITEM_BY_DAY_SIZE];
 	short by_month_day[E_GW_ITEM_BY_MONTHDAY_SIZE];
 	short by_year_day[E_GW_ITEM_BY_YEARDAY_SIZE];
@@ -69,6 +70,6 @@ typedef struct {
 
 
 
-const char *e_gw_recur_get_day_of_week (short day);
+const gchar *e_gw_recur_get_day_of_week (short day);
 
 #endif

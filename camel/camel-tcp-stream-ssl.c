@@ -72,16 +72,16 @@ static CamelTcpStreamClass *parent_class = NULL;
 /* Returns the class for a CamelTcpStreamSSL */
 #define CTSS_CLASS(so) CAMEL_TCP_STREAM_SSL_CLASS (CAMEL_OBJECT_GET_CLASS (so))
 
-static ssize_t stream_read (CamelStream *stream, char *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const char *buffer, size_t n);
-static int stream_flush  (CamelStream *stream);
-static int stream_close  (CamelStream *stream);
+static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gint stream_flush  (CamelStream *stream);
+static gint stream_close  (CamelStream *stream);
 
 static PRFileDesc *enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd);
 
-static int stream_connect    (CamelTcpStream *stream, struct addrinfo *host);
-static int stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
-static int stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
+static gint stream_connect    (CamelTcpStream *stream, struct addrinfo *host);
+static gint stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
+static gint stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
 static struct sockaddr *stream_get_local_address (CamelTcpStream *stream, socklen_t *len);
 static struct sockaddr *stream_get_remote_address (CamelTcpStream *stream, socklen_t *len);
 
@@ -89,7 +89,7 @@ struct _CamelTcpStreamSSLPrivate {
 	PRFileDesc *sockfd;
 
 	struct _CamelSession *session;
-	char *expected_host;
+	gchar *expected_host;
 	gboolean ssl_mode;
 	guint32 flags;
 };
@@ -180,7 +180,7 @@ camel_tcp_stream_ssl_get_type (void)
  * Returns: a new #CamelTcpStreamSSL stream preset in SSL mode
  **/
 CamelStream *
-camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, guint32 flags)
 {
 	CamelTcpStreamSSL *stream;
 
@@ -214,7 +214,7 @@ camel_tcp_stream_ssl_new (CamelSession *session, const char *expected_host, guin
  * Returns: a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
  **/
 CamelStream *
-camel_tcp_stream_ssl_new_raw (CamelSession *session, const char *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new_raw (CamelSession *session, const gchar *expected_host, guint32 flags)
 {
 	CamelTcpStreamSSL *stream;
 
@@ -233,7 +233,7 @@ camel_tcp_stream_ssl_new_raw (CamelSession *session, const char *expected_host, 
 
 
 static void
-set_errno (int code)
+set_errno (gint code)
 {
 	/* FIXME: this should handle more. */
 	switch (code) {
@@ -303,7 +303,7 @@ set_errno (int code)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 {
 	PRFileDesc *fd;
@@ -336,7 +336,7 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	PRFileDesc *cancel_fd;
@@ -360,7 +360,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 		PRSocketOptionData sockopts;
 		PRPollDesc pollfds[2];
 		gboolean nonblock;
-		int error;
+		gint error;
 
 		/* get O_NONBLOCK options */
 		sockopts.option = PR_SockOpt_Nonblocking;
@@ -419,7 +419,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	ssize_t w, written = 0;
@@ -448,7 +448,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 		PRSocketOptionData sockopts;
 		PRPollDesc pollfds[2];
 		gboolean nonblock;
-		int error;
+		gint error;
 
 		/* get O_NONBLOCK options */
 		sockopts.option = PR_SockOpt_Nonblocking;
@@ -540,7 +540,7 @@ stream_close (CamelStream *stream)
 #if 0
 /* Since this is default implementation, let NSS handle it. */
 static SECStatus
-ssl_get_client_auth (void *data, PRFileDesc *sockfd,
+ssl_get_client_auth (gpointer data, PRFileDesc *sockfd,
 		     struct CERTDistNamesStr *caNames,
 		     struct CERTCertificateStr **pRetCert,
 		     struct SECKEYPrivateKeyStr **pRetKey)
@@ -548,12 +548,12 @@ ssl_get_client_auth (void *data, PRFileDesc *sockfd,
 	SECStatus status = SECFailure;
 	SECKEYPrivateKey *privkey;
 	CERTCertificate *cert;
-	void *proto_win;
+	gpointer proto_win;
 
 	proto_win = SSL_RevealPinArg (sockfd);
 
-	if ((char *) data) {
-		cert = PK11_FindCertFromNickname ((char *) data, proto_win);
+	if ((gchar *) data) {
+		cert = PK11_FindCertFromNickname ((gchar *) data, proto_win);
 		if (cert) {
 			privKey = PK11_FindKeyByAnyCert (cert, proto_win);
 			if (privkey) {
@@ -565,7 +565,7 @@ ssl_get_client_auth (void *data, PRFileDesc *sockfd,
 	} else {
 		/* no nickname given, automatically find the right cert */
 		CERTCertNicknames *names;
-		int i;
+		gint i;
 
 		names = CERT_GetCertNicknames (CERT_GetDefaultCertDB (),
 					       SEC_CERT_NICKNAMES_USER,
@@ -611,12 +611,12 @@ ssl_get_client_auth (void *data, PRFileDesc *sockfd,
 #if 0
 /* Since this is the default NSS implementation, no need for us to use this. */
 static SECStatus
-ssl_auth_cert (void *data, PRFileDesc *sockfd, PRBool checksig, PRBool is_server)
+ssl_auth_cert (gpointer data, PRFileDesc *sockfd, PRBool checksig, PRBool is_server)
 {
 	CERTCertificate *cert;
 	SECStatus status;
-	void *pinarg;
-	char *host;
+	gpointer pinarg;
+	gchar *host;
 
 	cert = SSL_PeerCertificate (sockfd);
 	pinarg = SSL_RevealPinArg (sockfd);
@@ -653,15 +653,15 @@ CamelCert *camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert)
 CamelCert *camel_certdb_nss_cert_add(CamelCertDB *certdb, CERTCertificate *cert);
 void camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate *cert);
 
-static char *
+static gchar *
 cert_fingerprint(CERTCertificate *cert)
 {
 	GChecksum *checksum;
 	guint8 *digest;
 	gsize length;
-	unsigned char fingerprint[50], *f;
-	int i;
-	const char tohex[16] = "0123456789abcdef";
+	guchar fingerprint[50], *f;
+	gint i;
+	const gchar tohex[16] = "0123456789abcdef";
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -672,7 +672,7 @@ cert_fingerprint(CERTCertificate *cert)
 	g_checksum_free (checksum);
 
 	for (i=0,f = fingerprint; i < length; i++) {
-		unsigned int c = digest[i];
+		guint c = digest[i];
 
 		*f++ = tohex[(c >> 4) & 0xf];
 		*f++ = tohex[c & 0xf];
@@ -688,14 +688,14 @@ cert_fingerprint(CERTCertificate *cert)
 
 	fingerprint[47] = 0;
 
-	return g_strdup((char*) fingerprint);
+	return g_strdup((gchar *) fingerprint);
 }
 
 /* lookup a cert uses fingerprint to index an on-disk file */
 CamelCert *
 camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert)
 {
-	char *fingerprint;
+	gchar *fingerprint;
 	CamelCert *ccert;
 
 	fingerprint = cert_fingerprint (cert);
@@ -754,7 +754,7 @@ CamelCert *
 camel_certdb_nss_cert_add(CamelCertDB *certdb, CERTCertificate *cert)
 {
 	CamelCert *ccert;
-	char *fingerprint;
+	gchar *fingerprint;
 
 	fingerprint = cert_fingerprint(cert);
 
@@ -778,7 +778,7 @@ camel_certdb_nss_cert_add(CamelCertDB *certdb, CERTCertificate *cert)
 void
 camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate *cert)
 {
-	char *dir, *path, *fingerprint;
+	gchar *dir, *path, *fingerprint;
 	CamelStream *stream;
 	struct stat st;
 
@@ -806,7 +806,7 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 
 	stream = camel_stream_fs_new_with_name (path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (stream != NULL) {
-		if (camel_stream_write (stream, (const char *) ccert->rawcert->data, ccert->rawcert->len) == -1) {
+		if (camel_stream_write (stream, (const gchar *) ccert->rawcert->data, ccert->rawcert->len) == -1) {
 			g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
 			g_unlink (path);
 		}
@@ -822,11 +822,11 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 
 #if 0
 /* used by the mozilla-like code below */
-static char *
+static gchar *
 get_nickname(CERTCertificate *cert)
 {
-	char *server, *nick = NULL;
-	int i;
+	gchar *server, *nick = NULL;
+	gint i;
 	PRBool status = PR_TRUE;
 
 	server = CERT_GetCommonName(&cert->subject);
@@ -848,12 +848,12 @@ get_nickname(CERTCertificate *cert)
 #endif
 
 static SECStatus
-ssl_bad_cert (void *data, PRFileDesc *sockfd)
+ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 {
 	gboolean accept;
 	CamelCertDB *certdb = NULL;
 	CamelCert *ccert = NULL;
-	char *prompt, *cert_str, *fingerprint;
+	gchar *prompt, *cert_str, *fingerprint;
 	CamelTcpStreamSSL *ssl;
 	CERTCertificate *cert;
 	SECStatus status = SECFailure;
@@ -909,18 +909,18 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 	return accept ? SECSuccess : SECFailure;
 
 #if 0
-	int i, error;
+	gint i, error;
 	CERTCertTrust trust;
 	SECItem *certs[1];
-	int go = 1;
-	char *host, *nick;
+	gint go = 1;
+	gchar *host, *nick;
 
 	error = PR_GetError();
 
 	/* This code is basically what mozilla does - however it doesn't seem to work here
 	   very reliably :-/ */
 	while (go && status != SECSuccess) {
-		char *prompt = NULL;
+		gchar *prompt = NULL;
 
 		printf("looping, error '%d'\n", error);
 
@@ -956,7 +956,7 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 
 				printf(" cert type %08x\n", cert->nsCertType);
 
-				memset((void*)&trust, 0, sizeof(trust));
+				memset((gpointer)&trust, 0, sizeof(trust));
 				if (CERT_GetCertTrust(cert, &trust) != SECSuccess) {
 					CERT_DecodeTrustString(&trust, "P");
 				}
@@ -1074,8 +1074,8 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 
 	SSL_SetURL (ssl_fd, ssl->priv->expected_host);
 
-	/*SSL_GetClientAuthDataHook (sslSocket, ssl_get_client_auth, (void *) certNickname);*/
-	/*SSL_AuthCertificateHook (ssl_fd, ssl_auth_cert, (void *) CERT_GetDefaultCertDB ());*/
+	/*SSL_GetClientAuthDataHook (sslSocket, ssl_get_client_auth, (gpointer) certNickname);*/
+	/*SSL_AuthCertificateHook (ssl_fd, ssl_auth_cert, (gpointer) CERT_GetDefaultCertDB ());*/
 	SSL_BadCertHook (ssl_fd, ssl_bad_cert, ssl);
 
 	ssl->priv->ssl_mode = TRUE;
@@ -1084,7 +1084,7 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 }
 
 static int
-sockaddr_to_praddr(struct sockaddr *s, int len, PRNetAddr *addr)
+sockaddr_to_praddr(struct sockaddr *s, gint len, PRNetAddr *addr)
 {
 	/* We assume the ip addresses are the same size - they have to be anyway.
 	   We could probably just use memcpy *shrug* */
@@ -1146,7 +1146,7 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 
 		ssl_fd = enable_ssl (ssl, fd);
 		if (ssl_fd == NULL) {
-			int errnosave;
+			gint errnosave;
 
 			set_errno (PR_GetError ());
 			errnosave = errno;
@@ -1163,7 +1163,7 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 	cancel_fd = camel_operation_cancel_prfd(NULL);
 
 	if (PR_Connect (fd, &netaddr, cancel_fd?0:CONNECT_TIMEOUT) == PR_FAILURE) {
-		int errnosave;
+		gint errnosave;
 
 		set_errno (PR_GetError ());
 		if (PR_GetError () == PR_IN_PROGRESS_ERROR ||
@@ -1235,13 +1235,13 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	PRSocketOptionData sodata;
 
-	memset ((void *) &sodata, 0, sizeof (sodata));
-	memcpy ((void *) &sodata, (void *) data, sizeof (CamelSockOptData));
+	memset ((gpointer) &sodata, 0, sizeof (sodata));
+	memcpy ((gpointer) &sodata, (gpointer) data, sizeof (CamelSockOptData));
 
 	if (PR_GetSocketOption (((CamelTcpStreamSSL *)stream)->priv->sockfd, &sodata) == PR_FAILURE)
 		return -1;
 
-	memcpy ((void *) data, (void *) &sodata, sizeof (CamelSockOptData));
+	memcpy ((gpointer) data, (gpointer) &sodata, sizeof (CamelSockOptData));
 
 	return 0;
 }
@@ -1251,8 +1251,8 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	PRSocketOptionData sodata;
 
-	memset ((void *) &sodata, 0, sizeof (sodata));
-	memcpy ((void *) &sodata, (void *) data, sizeof (CamelSockOptData));
+	memset ((gpointer) &sodata, 0, sizeof (sodata));
+	memcpy ((gpointer) &sodata, (gpointer) data, sizeof (CamelSockOptData));
 
 	if (PR_SetSocketOption (((CamelTcpStreamSSL *)stream)->priv->sockfd, &sodata) == PR_FAILURE)
 		return -1;

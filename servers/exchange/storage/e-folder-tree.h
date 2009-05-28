@@ -27,8 +27,8 @@
 
 typedef struct EFolderTree EFolderTree;
 
-typedef void (* EFolderDestroyNotify)   (EFolderTree *tree, const char *path, void *data, void *closure);
-typedef void (* EFolderTreeForeachFunc) (EFolderTree *tree, const char *path, void *data, void *closure);
+typedef void (* EFolderDestroyNotify)   (EFolderTree *tree, const gchar *path, gpointer data, gpointer closure);
+typedef void (* EFolderTreeForeachFunc) (EFolderTree *tree, const gchar *path, gpointer data, gpointer closure);
 
 EFolderTree *e_folder_tree_new               (EFolderDestroyNotify    folder_destroy_notify,
 					      void                   *closure);
@@ -36,23 +36,23 @@ EFolderTree *e_folder_tree_new               (EFolderDestroyNotify    folder_des
 void        e_folder_tree_destroy            (EFolderTree            *folder_tree);
 
 gboolean    e_folder_tree_add                (EFolderTree            *folder_tree,
-					      const char             *path,
+					      const gchar             *path,
 					      void                   *data);
 gboolean    e_folder_tree_remove             (EFolderTree            *folder_tree,
-					      const char             *path);
+					      const gchar             *path);
 
-int         e_folder_tree_get_count          (EFolderTree            *folder_tree);
+gint         e_folder_tree_get_count          (EFolderTree            *folder_tree);
 
 void       *e_folder_tree_get_folder         (EFolderTree            *folder_tree,
-					      const char             *path);
+					      const gchar             *path);
 GList      *e_folder_tree_get_subfolders     (EFolderTree            *folder_tree,
-					      const char             *path);
+					      const gchar             *path);
 
 void        e_folder_tree_foreach            (EFolderTree            *folder_tree,
 					      EFolderTreeForeachFunc  foreach_func,
 					      void                   *data);
 
-const char *e_folder_tree_get_path_for_data  (EFolderTree            *folder_tree,
+const gchar *e_folder_tree_get_path_for_data  (EFolderTree            *folder_tree,
 					      const void             *data);
 
 #endif /* _E_FOLDER_TREE_H_ */

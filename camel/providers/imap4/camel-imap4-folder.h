@@ -64,11 +64,11 @@ struct _CamelIMAP4Folder {
 	CamelOfflineJournal *journal;
 	CamelDataCache *cache;
 
-	char *cachedir;
-	char *utf7_name;
+	gchar *cachedir;
+	gchar *utf7_name;
 
-	unsigned int read_only:1;
-	unsigned int enable_mlist:1;
+	guint read_only:1;
+	guint enable_mlist:1;
 };
 
 struct _CamelIMAP4FolderClass {
@@ -79,9 +79,9 @@ struct _CamelIMAP4FolderClass {
 
 CamelType camel_imap4_folder_get_type (void);
 
-CamelFolder *camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException *ex);
+CamelFolder *camel_imap4_folder_new (CamelStore *store, const gchar *full_name, CamelException *ex);
 
-const char *camel_imap4_folder_utf7_name (CamelIMAP4Folder *folder);
+const gchar *camel_imap4_folder_utf7_name (CamelIMAP4Folder *folder);
 
 G_END_DECLS
 

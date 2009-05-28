@@ -49,7 +49,7 @@ struct _CamelMhSummaryClass {
 };
 
 CamelType	 camel_mh_summary_get_type	(void);
-CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *, const char *filename, const char *mhdir, CamelIndex *index);
+CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *, const gchar *filename, const gchar *mhdir, CamelIndex *index);
 
 G_END_DECLS
 

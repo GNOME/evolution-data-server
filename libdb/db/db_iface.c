@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,10 +19,10 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_page.h"
 #include "dbinc/db_am.h"
 
-static int __db_curinval __P((const DB_ENV *));
-static int __db_fnl __P((const DB_ENV *, const char *));
-static int __db_rdonly __P((const DB_ENV *, const char *));
-static int __dbt_ferr __P((const DB *, const char *, const DBT *, int));
+static gint __db_curinval __P((const DB_ENV *));
+static gint __db_fnl __P((const DB_ENV *, const gchar *));
+static gint __db_rdonly __P((const DB_ENV *, const gchar *));
+static gint __dbt_ferr __P((const DB *, const gchar *, const DBT *, int));
 
 /*
  * A database should be required to be readonly if it's been explicitly
@@ -38,9 +38,9 @@ static int __dbt_ferr __P((const DB *, const char *, const DBT *, int));
  * __db_cursorchk --
  *	Common cursor argument checking routine.
  *
- * PUBLIC: int __db_cursorchk __P((const DB *, u_int32_t));
+ * PUBLIC: gint __db_cursorchk __P((const DB *, u_int32_t));
  */
-int
+gint
 __db_cursorchk(dbp, flags)
 	const DB *dbp;
 	u_int32_t flags;
@@ -77,13 +77,13 @@ __db_cursorchk(dbp, flags)
  * __db_ccountchk --
  *	Common cursor count argument checking routine.
  *
- * PUBLIC: int __db_ccountchk __P((const DB *, u_int32_t, int));
+ * PUBLIC: gint __db_ccountchk __P((const DB *, u_int32_t, int));
  */
-int
+gint
 __db_ccountchk(dbp, flags, isvalid)
 	const DB *dbp;
 	u_int32_t flags;
-	int isvalid;
+	gint isvalid;
 {
 	/* Check for invalid function flags. */
 	switch (flags) {
@@ -104,13 +104,13 @@ __db_ccountchk(dbp, flags, isvalid)
  * __db_cdelchk --
  *	Common cursor delete argument checking routine.
  *
- * PUBLIC: int __db_cdelchk __P((const DB *, u_int32_t, int));
+ * PUBLIC: gint __db_cdelchk __P((const DB *, u_int32_t, int));
  */
-int
+gint
 __db_cdelchk(dbp, flags, isvalid)
 	const DB *dbp;
 	u_int32_t flags;
-	int isvalid;
+	gint isvalid;
 {
 	/* Check for changes to a read-only tree. */
 	if (IS_READONLY(dbp))
@@ -138,16 +138,16 @@ __db_cdelchk(dbp, flags, isvalid)
  * __db_cgetchk --
  *	Common cursor get argument checking routine.
  *
- * PUBLIC: int __db_cgetchk __P((const DB *, DBT *, DBT *, u_int32_t, int));
+ * PUBLIC: gint __db_cgetchk __P((const DB *, DBT *, DBT *, u_int32_t, int));
  */
-int
+gint
 __db_cgetchk(dbp, key, data, flags, isvalid)
 	const DB *dbp;
 	DBT *key, *data;
 	u_int32_t flags;
-	int isvalid;
+	gint isvalid;
 {
-	int dirty, multi, ret;
+	gint dirty, multi, ret;
 
 	/*
 	 * Check for read-modify-write validity.  DB_RMW doesn't make sense
@@ -258,18 +258,18 @@ err:		return (__db_ferr(dbp->dbenv, "DBcursor->c_get", 0));
  * __db_cputchk --
  *	Common cursor put argument checking routine.
  *
- * PUBLIC: int __db_cputchk __P((const DB *,
+ * PUBLIC: gint __db_cputchk __P((const DB *,
  * PUBLIC:    const DBT *, DBT *, u_int32_t, int));
  */
-int
+gint
 __db_cputchk(dbp, key, data, flags, isvalid)
 	const DB *dbp;
 	const DBT *key;
 	DBT *data;
 	u_int32_t flags;
-	int isvalid;
+	gint isvalid;
 {
-	int key_flags, ret;
+	gint key_flags, ret;
 
 	key_flags = 0;
 
@@ -351,17 +351,17 @@ err:		return (__db_ferr(dbp->dbenv, "DBcursor->c_put", 0));
  * __db_pgetchk --
  *	DB->pget flag check.
  *
- * PUBLIC: int __db_pgetchk __P((const DB *, const DBT *, DBT *, DBT *,
+ * PUBLIC: gint __db_pgetchk __P((const DB *, const DBT *, DBT *, DBT *,
  * PUBLIC:	u_int32_t));
  */
-int
+gint
 __db_pgetchk(dbp, skey, pkey, data, flags)
 	const DB *dbp;
 	const DBT *skey;
 	DBT *pkey, *data;
 	u_int32_t flags;
 {
-	int ret;
+	gint ret;
 	u_int32_t save_flags;
 
 	save_flags = flags;
@@ -411,17 +411,17 @@ __db_pgetchk(dbp, skey, pkey, data, flags)
  * __db_cpgetchk --
  *	Secondary-index cursor get argument checking routine.
  *
- * PUBLIC: int __db_cpgetchk __P((const DB *,
+ * PUBLIC: gint __db_cpgetchk __P((const DB *,
  * PUBLIC:     DBT *, DBT *, DBT *, u_int32_t, int));
  */
-int
+gint
 __db_cpgetchk(dbp, skey, pkey, data, flags, isvalid)
 	const DB *dbp;
 	DBT *skey, *pkey, *data;
 	u_int32_t flags;
-	int isvalid;
+	gint isvalid;
 {
-	int ret;
+	gint ret;
 	u_int32_t save_flags;
 
 	save_flags = flags;
@@ -479,9 +479,9 @@ __db_cpgetchk(dbp, skey, pkey, data, flags, isvalid)
  * __db_delchk --
  *	Common delete argument checking routine.
  *
- * PUBLIC: int __db_delchk __P((const DB *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_delchk __P((const DB *, DBT *, u_int32_t));
  */
-int
+gint
 __db_delchk(dbp, key, flags)
 	const DB *dbp;
 	DBT *key;
@@ -509,16 +509,16 @@ __db_delchk(dbp, key, flags)
  * __db_getchk --
  *	Common get argument checking routine.
  *
- * PUBLIC: int __db_getchk __P((const DB *, const DBT *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_getchk __P((const DB *, const DBT *, DBT *, u_int32_t));
  */
-int
+gint
 __db_getchk(dbp, key, data, flags)
 	const DB *dbp;
 	const DBT *key;
 	DBT *data;
 	u_int32_t flags;
 {
-	int dirty, multi, ret;
+	gint dirty, multi, ret;
 
 	/*
 	 * Check for read-modify-write validity.  DB_RMW doesn't make sense
@@ -600,16 +600,16 @@ err:		return (__db_ferr(dbp->dbenv, "DB->get", 0));
  * __db_joinchk --
  *	Common join argument checking routine.
  *
- * PUBLIC: int __db_joinchk __P((const DB *, DBC * const *, u_int32_t));
+ * PUBLIC: gint __db_joinchk __P((const DB *, DBC * const *, u_int32_t));
  */
-int
+gint
 __db_joinchk(dbp, curslist, flags)
 	const DB *dbp;
 	DBC * const *curslist;
 	u_int32_t flags;
 {
 	DB_TXN *txn;
-	int i;
+	gint i;
 
 	switch (flags) {
 	case 0:
@@ -640,9 +640,9 @@ __db_joinchk(dbp, curslist, flags)
  * __db_joingetchk --
  *	Common join_get argument checking routine.
  *
- * PUBLIC: int __db_joingetchk __P((const DB *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_joingetchk __P((const DB *, DBT *, u_int32_t));
  */
-int
+gint
 __db_joingetchk(dbp, key, flags)
 	const DB *dbp;
 	DBT *key;
@@ -688,18 +688,18 @@ __db_joingetchk(dbp, key, flags)
  * __db_putchk --
  *	Common put argument checking routine.
  *
- * PUBLIC: int __db_putchk
+ * PUBLIC: gint __db_putchk
  * PUBLIC:    __P((const DB *, DBT *, const DBT *, u_int32_t, int));
  */
-int
+gint
 __db_putchk(dbp, key, data, flags, isdup)
 	const DB *dbp;
 	DBT *key;
 	const DBT *data;
 	u_int32_t flags;
-	int isdup;
+	gint isdup;
 {
-	int ret, returnkey;
+	gint ret, returnkey;
 
 	returnkey = 0;
 
@@ -752,9 +752,9 @@ err:		return (__db_ferr(dbp->dbenv, "DB->put", 0));
  * __db_statchk --
  *	Common stat argument checking routine.
  *
- * PUBLIC: int __db_statchk __P((const DB *, u_int32_t));
+ * PUBLIC: gint __db_statchk __P((const DB *, u_int32_t));
  */
-int
+gint
 __db_statchk(dbp, flags)
 	const DB *dbp;
 	u_int32_t flags;
@@ -782,9 +782,9 @@ err:		return (__db_ferr(dbp->dbenv, "DB->stat", 0));
  * __db_syncchk --
  *	Common sync argument checking routine.
  *
- * PUBLIC: int __db_syncchk __P((const DB *, u_int32_t));
+ * PUBLIC: gint __db_syncchk __P((const DB *, u_int32_t));
  */
-int
+gint
 __db_syncchk(dbp, flags)
 	const DB *dbp;
 	u_int32_t flags;
@@ -807,12 +807,12 @@ __db_syncchk(dbp, flags)
 static int
 __dbt_ferr(dbp, name, dbt, check_thread)
 	const DB *dbp;
-	const char *name;
+	const gchar *name;
 	const DBT *dbt;
-	int check_thread;
+	gint check_thread;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 
@@ -854,7 +854,7 @@ __dbt_ferr(dbp, name, dbt, check_thread)
 static int
 __db_rdonly(dbenv, name)
 	const DB_ENV *dbenv;
-	const char *name;
+	const gchar *name;
 {
 	__db_err(dbenv, "%s: attempt to modify a read-only tree", name);
 	return (EACCES);
@@ -867,7 +867,7 @@ __db_rdonly(dbenv, name)
 static int
 __db_fnl(dbenv, name)
 	const DB_ENV *dbenv;
-	const char *name;
+	const gchar *name;
 {
 	__db_err(dbenv,
 	    "%s: the DB_DIRTY_READ and DB_RMW flags require locking", name);
@@ -892,9 +892,9 @@ __db_curinval(dbenv)
  *	Report that a secondary index appears corrupt, as it has a record
  * that does not correspond to a record in the primary.
  *
- * PUBLIC: int __db_secondary_corrupt __P((DB *));
+ * PUBLIC: gint __db_secondary_corrupt __P((DB *));
  */
-int
+gint
 __db_secondary_corrupt(dbp)
 	DB *dbp;
 {
@@ -908,13 +908,13 @@ __db_secondary_corrupt(dbp)
  * __db_associatechk --
  *	Argument checking routine for DB->associate().
  *
- * PUBLIC: int __db_associatechk __P((DB *, DB *,
- * PUBLIC:     int (*)(DB *, const DBT *, const DBT *, DBT *), u_int32_t));
+ * PUBLIC: gint __db_associatechk __P((DB *, DB *,
+ * PUBLIC:     gint (*)(DB *, const DBT *, const DBT *, DBT *), u_int32_t));
  */
-int
+gint
 __db_associatechk(dbp, sdbp, callback, flags)
 	DB *dbp, *sdbp;
-	int (*callback) __P((DB *, const DBT *, const DBT *, DBT *));
+	gint (*callback) __P((DB *, const DBT *, const DBT *, DBT *));
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
@@ -956,9 +956,9 @@ __db_associatechk(dbp, sdbp, callback, flags)
  * __db_txn_auto --
  *	Handle DB_AUTO_COMMIT initialization.
  *
- * PUBLIC: int __db_txn_auto __P((DB *, DB_TXN **));
+ * PUBLIC: gint __db_txn_auto __P((DB *, DB_TXN **));
  */
-int
+gint
 __db_txn_auto(dbp, txnidp)
 	DB *dbp;
 	DB_TXN **txnidp;

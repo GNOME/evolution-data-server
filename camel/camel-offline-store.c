@@ -110,7 +110,7 @@ offline_store_construct (CamelService *service, CamelSession *session,
  * Return the network state either #CAMEL_OFFLINE_STORE_NETWORK_AVAIL
  * or #CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL.
  **/
-int
+gint
 camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex)
 {
 	return store->state;
@@ -126,7 +126,7 @@ camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException 
  * or #CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL.
  **/
 void
-camel_offline_store_set_network_state (CamelOfflineStore *store, int state, CamelException *ex)
+camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, CamelException *ex)
 {
 	CamelException lex;
 	CamelService *service = CAMEL_SERVICE (store);
@@ -142,7 +142,7 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, int state, Came
 			if (((CamelStore *) store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
-				int i, sync;
+				gint i, sync;
 
 				sync = camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL;
 
@@ -193,7 +193,7 @@ camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelExceptio
 			if (((CamelStore *) store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
-				int i, sync;
+				gint i, sync;
 
 				sync = camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL;
 

@@ -50,8 +50,8 @@ CamelType			camel_stream_filter_get_type	(void);
 
 CamelStreamFilter      *camel_stream_filter_new_with_stream	(CamelStream *stream);
 
-int camel_stream_filter_add	(CamelStreamFilter *stream, CamelMimeFilter *filter);
-void camel_stream_filter_remove	(CamelStreamFilter *stream, int id);
+gint camel_stream_filter_add	(CamelStreamFilter *stream, CamelMimeFilter *filter);
+void camel_stream_filter_remove	(CamelStreamFilter *stream, gint id);
 
 G_END_DECLS
 

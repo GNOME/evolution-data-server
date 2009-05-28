@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,22 +26,22 @@ static const char revid[] = "$Id$";
  * __db_util_cache --
  *	Compute if we have enough cache.
  *
- * PUBLIC: int __db_util_cache __P((DB_ENV *, DB *, u_int32_t *, int *));
+ * PUBLIC: gint __db_util_cache __P((DB_ENV *, DB *, u_int32_t *, gint *));
  */
-int
+gint
 __db_util_cache(dbenv, dbp, cachep, resizep)
 	DB_ENV *dbenv;
 	DB *dbp;
 	u_int32_t *cachep;
-	int *resizep;
+	gint *resizep;
 {
 	DBTYPE type;
 	DB_BTREE_STAT *bsp;
 	DB_HASH_STAT *hsp;
 	DB_QUEUE_STAT *qsp;
 	u_int32_t pgsize;
-	int ret;
-	void *sp;
+	gint ret;
+	gpointer sp;
 
 	/*
 	 * The current cache size is in cachep.  If it's insufficient, set the

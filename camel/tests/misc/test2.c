@@ -14,9 +14,9 @@
 /* NB: We know which order the params will be decoded in, plain in the order they come,
    and rfc2184 encoded following those, sorted lexigraphically */
 struct {
-	char *list;
-	int count;
-	char *params[8];
+	gchar *list;
+	gint count;
+	gchar *params[8];
 } test1[] = {
 	{ "; charset=\"iso-8859-1\"",
 	  1,
@@ -46,9 +46,9 @@ struct {
 };
 
 struct {
-	int count;
-	char *params[8];
-	char *list;
+	gint count;
+	gchar *params[8];
+	gchar *list;
 } test2[] = {
 	{ 1,
 	  { "name", "Doul\xC3\xADk01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123457890123456789123456789" },
@@ -64,10 +64,10 @@ struct {
 	  "; name*=ISO-8859-1''%22%25$#%40%20special%20chars%3F%3B%3B%20!%ED" },
 };
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	int i, j;
+	gint i, j;
 
 	camel_test_init(argc, argv);
 
@@ -97,7 +97,7 @@ main (int argc, char **argv)
 
 	for (i=0;i<sizeof(test2)/sizeof(test2[0]);i++) {
 		struct _camel_header_param *head = NULL, *scan;
-		char *text;
+		gchar *text;
 
 		camel_test_push("param encoding[%d]", i);
 

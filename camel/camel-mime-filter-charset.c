@@ -75,8 +75,8 @@ static void
 reset(CamelMimeFilter *mf)
 {
 	CamelMimeFilterCharset *f = (CamelMimeFilterCharset *)mf;
-	char buf[16];
-	char *buffer;
+	gchar buf[16];
+	gchar *buffer;
 	size_t outlen = 16;
 
 	/* what happens with the output bytes if this resets the state? */
@@ -87,12 +87,12 @@ reset(CamelMimeFilter *mf)
 }
 
 static void
-complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterCharset *charset = (CamelMimeFilterCharset *)mf;
 	size_t inleft, outleft, converted = 0;
-	const char *inbuf;
-	char *outbuf;
+	const gchar *inbuf;
+	gchar *outbuf;
 
 	if (charset->ic == (iconv_t) -1)
 		goto noop;
@@ -162,12 +162,12 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 }
 
 static void
-filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterCharset *charset = (CamelMimeFilterCharset *)mf;
 	size_t inleft, outleft, converted = 0;
-	const char *inbuf;
-	char *outbuf;
+	const gchar *inbuf;
+	gchar *outbuf;
 
 	if (charset->ic == (iconv_t) -1)
 		goto noop;
@@ -266,7 +266,7 @@ camel_mime_filter_charset_new (void)
  * Returns: a new #CamelMimeFilterCharset object
  **/
 CamelMimeFilterCharset *
-camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_charset)
+camel_mime_filter_charset_new_convert (const gchar *from_charset, const gchar *to_charset)
 {
 	CamelMimeFilterCharset *new;
 

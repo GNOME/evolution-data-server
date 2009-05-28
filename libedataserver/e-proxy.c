@@ -107,8 +107,8 @@ typedef enum {
 
 typedef struct {
 	ProxyAddrType type;	/* Specifies whether IPV4 or IPV6 */
-	void* addr;		/* Either in_addr* or in6_addr* */
-	void* mask;		/* Either in_addr* or in6_addr* */
+	gpointer  addr;		/* Either in_addr* or in6_addr* */
+	gpointer  mask;		/* Either in_addr* or in6_addr* */
 } ProxyHostAddr;
 
 /* Signals.  */
@@ -118,7 +118,7 @@ enum {
 };
 
 static GObjectClass *parent_class;
-static unsigned int signals[LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 /* Forward declarations.  */
 
@@ -266,7 +266,7 @@ e_proxy_get_type (void)
 }
 
 static gboolean
-ep_is_in_ignored (EProxy *proxy, const char *host)
+ep_is_in_ignored (EProxy *proxy, const gchar *host)
 {
 	EProxyPrivate *priv;
 	GSList* l;
@@ -298,7 +298,7 @@ ep_is_in_ignored (EProxy *proxy, const char *host)
 }
 
 static gboolean
-ep_need_proxy_http (EProxy* proxy, const char* host)
+ep_need_proxy_http (EProxy* proxy, const gchar * host)
 {
 	SoupAddress *addr = NULL;
 	EProxyPrivate *priv = proxy->priv;
@@ -379,7 +379,7 @@ ep_need_proxy_http (EProxy* proxy, const char* host)
 }
 
 static gboolean
-ep_need_proxy_https (EProxy* proxy, const char* host)
+ep_need_proxy_https (EProxy* proxy, const gchar * host)
 {
 	/* Can we share ignore list from HTTP at all? */
 	return !ep_is_in_ignored (proxy, host);
@@ -388,7 +388,7 @@ ep_need_proxy_https (EProxy* proxy, const char* host)
 static gboolean
 ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 		    struct in_addr *addr_in,
-		    gchar* netmask)
+		    gchar * netmask)
 {
 	gboolean has_error = FALSE;
 	struct in_addr *addr, *mask;
@@ -437,11 +437,11 @@ ipv6_network_addr(const struct in6_addr *addr, const struct in6_addr *mask,
 static gboolean
 ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 		    struct in6_addr *addr_in6,
-		    gchar* netmask)
+		    gchar * netmask)
 {
 	gboolean has_error = FALSE;
 	struct in6_addr *addr, *mask;
-	int i;
+	gint i;
 
 	if (!addr_in6)
 		return has_error;
@@ -543,7 +543,7 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 }
 
 static gboolean
-ep_change_uri (SoupURI **soup_uri, const char *uri)
+ep_change_uri (SoupURI **soup_uri, const gchar *uri)
 {
 	gboolean changed = FALSE;
 
@@ -556,7 +556,7 @@ ep_change_uri (SoupURI **soup_uri, const char *uri)
 			changed = TRUE;
 		}
 	} else if (*soup_uri) {
-		char *old = soup_uri_to_string (*soup_uri, FALSE);
+		gchar *old = soup_uri_to_string (*soup_uri, FALSE);
 
 		changed = old && uri && g_ascii_strcasecmp (old, uri) != 0;
 		if (changed) {
@@ -578,8 +578,8 @@ ep_set_proxy (GConfClient *client,
 	      gpointer user_data,
 	      gboolean regen_ign_host_list)
 {
-	char *proxy_server, *uri_http = NULL, *uri_https = NULL;
-	int proxy_port, old_type;
+	gchar *proxy_server, *uri_http = NULL, *uri_https = NULL;
+	gint proxy_port, old_type;
 	EProxy* proxy = (EProxy *)user_data;
 	EProxyPrivate* priv = proxy->priv;
 	GSList *ignore;
@@ -632,7 +632,7 @@ ep_set_proxy (GConfClient *client,
 	}
 
 	if (gconf_client_get_bool (client, RIGHT_KEY (HTTP_USE_AUTH), NULL)) {
-		char *proxy_user, *proxy_pw, *tmp;
+		gchar *proxy_user, *proxy_pw, *tmp;
 
 		proxy_user = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_USER), NULL);
 		proxy_pw = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_PWD), NULL);
@@ -663,7 +663,7 @@ ep_set_proxy (GConfClient *client,
 static void
 ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpointer user_data)
 {
-	const char *key;
+	const gchar *key;
 	EProxy* proxy = (EProxy *)user_data;
 	EProxyPrivate *priv;
 
@@ -756,7 +756,7 @@ e_proxy_setup_proxy (EProxy* proxy)
 }
 
 SoupURI*
-e_proxy_peek_uri_for (EProxy* proxy, const char *uri)
+e_proxy_peek_uri_for (EProxy* proxy, const gchar *uri)
 {
 	SoupURI *suri;
 
@@ -774,7 +774,7 @@ e_proxy_peek_uri_for (EProxy* proxy, const char *uri)
 }
 
 gboolean
-e_proxy_require_proxy_for_uri (EProxy* proxy, const char* uri)
+e_proxy_require_proxy_for_uri (EProxy* proxy, const gchar * uri)
 {
 	SoupURI *srv_uri = NULL;
 	gboolean ret = FALSE;

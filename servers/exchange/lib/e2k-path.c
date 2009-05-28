@@ -48,14 +48,14 @@
  *
  * Return value: the expanded path
  **/
-char *
-e_path_to_physical (const char *prefix, const char *vpath)
+gchar *
+e_path_to_physical (const gchar *prefix, const gchar *vpath)
 {
-	const char *p, *newp;
-	char *dp;
-	char *ppath;
-	int ppath_len;
-	int prefix_len;
+	const gchar *p, *newp;
+	gchar *dp;
+	gchar *ppath;
+	gint ppath_len;
+	gint prefix_len;
 
 	while (*vpath == '/')
 		vpath++;
@@ -125,11 +125,11 @@ e_path_to_physical (const char *prefix, const char *vpath)
 
 
 static gboolean
-find_folders_recursive (const char *physical_path, const char *path,
+find_folders_recursive (const gchar *physical_path, const gchar *path,
 			EPathFindFoldersCallback callback, gpointer data)
 {
 	GDir *dir;
-	char *subfolder_directory_path;
+	gchar *subfolder_directory_path;
 	gboolean ok;
 
 	if (*path) {
@@ -155,9 +155,9 @@ find_folders_recursive (const char *physical_path, const char *path,
 	ok = TRUE;
 	while (ok) {
 		struct stat file_stat;
-		const char *dirent;
-		char *file_path;
-		char *new_path;
+		const gchar *dirent;
+		gchar *file_path;
+		gchar *new_path;
 
 		dirent = g_dir_read_name (dir);
 		if (dirent == NULL)
@@ -198,7 +198,7 @@ find_folders_recursive (const char *physical_path, const char *path,
  * Return value: %TRUE on success, %FALSE if an error occurs at any point
  **/
 gboolean
-e_path_find_folders (const char *prefix,
+e_path_find_folders (const gchar *prefix,
 		     EPathFindFoldersCallback callback,
 		     gpointer data)
 {
@@ -219,10 +219,10 @@ e_path_find_folders (const char *prefix,
  * specified directory. 0 otherwise, whether or not it removed
  * the parent directory.
  **/
-int
-e_path_rmdir (const char *prefix, const char *vpath)
+gint
+e_path_rmdir (const gchar *prefix, const gchar *vpath)
 {
-	char *physical_path, *p;
+	gchar *physical_path, *p;
 
 	/* Remove the directory itself */
 	physical_path = e_path_to_physical (prefix, vpath);

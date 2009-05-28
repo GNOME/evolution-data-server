@@ -28,7 +28,7 @@
 #include "e-book-backend-sexp.h"
 
 struct _EBookBackendCachePrivate {
-	char *uri;
+	gchar *uri;
 };
 
 /* Property IDs */
@@ -39,11 +39,11 @@ enum {
 
 static GObjectClass *parent_class = NULL;
 
-static char *
-get_filename_from_uri (const char *uri)
+static gchar *
+get_filename_from_uri (const gchar *uri)
 {
-	char *mangled_uri, *filename;
-	int i;
+	gchar *mangled_uri, *filename;
+	gint i;
 
 	/* mangle the URI to not contain invalid characters */
 	mangled_uri = g_strdup (uri);
@@ -70,7 +70,7 @@ e_book_backend_cache_set_property (GObject *object, guint property_id, const GVa
 {
 	EBookBackendCache *cache;
 	EBookBackendCachePrivate *priv;
-	char *cache_file;
+	gchar *cache_file;
 
 	cache = E_BOOK_BACKEND_CACHE (object);
 	priv = cache->priv;
@@ -141,8 +141,8 @@ e_book_backend_cache_constructor (GType type,
                                  GObjectConstructParam *construct_properties)
 {
 	GObject *obj;
-	const char *uri;
-	char *cache_file;
+	const gchar *uri;
+	gchar *cache_file;
 
 	/* Invoke parent constructor. */
 	obj = parent_class->constructor (type,
@@ -224,7 +224,7 @@ e_book_backend_cache_get_type (void)
  * Return value: A new #EBookBackendCache.
  */
 EBookBackendCache *
-e_book_backend_cache_new (const char *uri)
+e_book_backend_cache_new (const gchar *uri)
 {
 	EBookBackendCache *cache;
 
@@ -245,9 +245,9 @@ e_book_backend_cache_new (const char *uri)
  * Return value: A cached #EContact, or %NULL if @uid is not cached.
  **/
 EContact *
-e_book_backend_cache_get_contact (EBookBackendCache *cache, const char *uid)
+e_book_backend_cache_get_contact (EBookBackendCache *cache, const gchar *uid)
 {
-	const char *vcard_str;
+	const gchar *vcard_str;
 	EContact *contact = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), NULL);
@@ -276,8 +276,8 @@ gboolean
 e_book_backend_cache_add_contact (EBookBackendCache *cache,
 				   EContact *contact)
 {
-	char *vcard_str;
-	const char *uid;
+	gchar *vcard_str;
+	const gchar *uid;
 	gboolean retval;
 	EBookBackendCachePrivate *priv;
 
@@ -310,7 +310,7 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
  **/
 gboolean
 e_book_backend_cache_remove_contact (EBookBackendCache *cache,
-				    const char *uid)
+				    const gchar *uid)
 
 {
 	gboolean retval;
@@ -342,7 +342,7 @@ e_book_backend_cache_remove_contact (EBookBackendCache *cache,
  * Return value: %TRUE if the cache contains the contact, %FALSE otherwise.
  **/
 gboolean
-e_book_backend_cache_check_contact (EBookBackendCache *cache, const char *uid)
+e_book_backend_cache_check_contact (EBookBackendCache *cache, const gchar *uid)
 {
 
 	gboolean retval;
@@ -371,14 +371,14 @@ e_book_backend_cache_check_contact (EBookBackendCache *cache, const char *uid)
  * Return value: A #GList of pointers to #EContact.
  **/
 GList *
-e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
+e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query)
 {
-        char *vcard_str;
+        gchar *vcard_str;
         GSList *l, *lcache;
 	GList *list = NULL;
 	EContact *contact;
         EBookBackendSExp *sexp = NULL;
-	const char *uid;
+	const gchar *uid;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), NULL);
 	if (query) {
@@ -422,7 +422,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query)
  * Return value: A #GPtrArray of pointers to contact ID strings.
  **/
 GPtrArray *
-e_book_backend_cache_search (EBookBackendCache *cache, const char *query)
+e_book_backend_cache_search (EBookBackendCache *cache, const gchar *query)
 {
 	GList *matching_contacts, *temp;
 	GPtrArray *ptr_array;
@@ -449,9 +449,9 @@ e_book_backend_cache_search (EBookBackendCache *cache, const char *query)
  * Return value: %TRUE if cache exists, %FALSE if not.
  **/
 gboolean
-e_book_backend_cache_exists (const char *uri)
+e_book_backend_cache_exists (const gchar *uri)
 {
-	char *file_name;
+	gchar *file_name;
 	gboolean exists = FALSE;
 	file_name = get_filename_from_uri (uri);
 
@@ -496,13 +496,13 @@ e_book_backend_cache_is_populated (EBookBackendCache *cache)
 }
 
 void
-e_book_backend_cache_set_time (EBookBackendCache *cache, const char *t)
+e_book_backend_cache_set_time (EBookBackendCache *cache, const gchar *t)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_CACHE (cache));
 	e_file_cache_add_object (E_FILE_CACHE (cache), "last_update_time", t);
 }
 
-char *
+gchar *
 e_book_backend_cache_get_time (EBookBackendCache *cache)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), NULL);

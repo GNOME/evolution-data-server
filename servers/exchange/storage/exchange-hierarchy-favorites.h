@@ -31,13 +31,13 @@ struct _ExchangeHierarchyFavoritesClass {
 GType              exchange_hierarchy_favorites_get_type (void);
 
 ExchangeHierarchy *exchange_hierarchy_favorites_new (ExchangeAccount *account,
-						     const char *hierarchy_name,
-						     const char *physical_uri_prefix,
-						     const char *home_uri,
-						     const char *public_uri,
-						     const char *owner_name,
-						     const char *owner_email,
-						     const char *source_uri);
+						     const gchar *hierarchy_name,
+						     const gchar *physical_uri_prefix,
+						     const gchar *home_uri,
+						     const gchar *public_uri,
+						     const gchar *owner_name,
+						     const gchar *owner_email,
+						     const gchar *source_uri);
 
 ExchangeAccountFolderResult  exchange_hierarchy_favorites_add_folder (ExchangeHierarchy *hier,
 								      EFolder *folder);

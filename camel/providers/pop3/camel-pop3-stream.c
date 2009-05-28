@@ -36,7 +36,7 @@
 
 #include "camel-pop3-stream.h"
 
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
 
 static CamelObjectClass *parent_class = NULL;
@@ -50,14 +50,14 @@ static CamelObjectClass *parent_class = NULL;
 static int
 stream_fill(CamelPOP3Stream *is)
 {
-	int left = 0;
+	gint left = 0;
 
 	if (is->source) {
 		left = is->end - is->ptr;
 		memmove(is->buf, is->ptr, left);
 		is->end = is->buf + left;
 		is->ptr = is->buf;
-		left = camel_stream_read(is->source, (char *) is->end, CAMEL_POP3_STREAM_SIZE - (is->end - is->buf));
+		left = camel_stream_read(is->source, (gchar *) is->end, CAMEL_POP3_STREAM_SIZE - (is->end - is->buf));
 		if (left > 0) {
 			is->end += left;
 			is->end[0] = '\n';
@@ -72,12 +72,12 @@ stream_fill(CamelPOP3Stream *is)
 }
 
 static ssize_t
-stream_read(CamelStream *stream, char *buffer, size_t n)
+stream_read(CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
-	char *o, *oe;
-	unsigned char *p, *e, c;
-	int state;
+	gchar *o, *oe;
+	guchar *p, *e, c;
+	gint state;
 
 	if (is->mode != CAMEL_POP3_STREAM_DATA || n == 0)
 		return 0;
@@ -144,7 +144,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write(CamelStream *stream, const char *buffer, size_t n)
+stream_write(CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
 
@@ -265,12 +265,12 @@ camel_pop3_stream_new(CamelStream *source)
 }
 
 /* Get one line from the pop3 stream */
-int
-camel_pop3_stream_line(CamelPOP3Stream *is, unsigned char **data, unsigned int *len)
+gint
+camel_pop3_stream_line(CamelPOP3Stream *is, guchar **data, guint *len)
 {
-	register unsigned char c, *p, *o, *oe;
-	int newlen, oldlen;
-	unsigned char *e;
+	register guchar c, *p, *o, *oe;
+	gint newlen, oldlen;
+	guchar *e;
 
 	if (is->mode == CAMEL_POP3_STREAM_EOD) {
 		*data = is->linebuf;
@@ -350,10 +350,10 @@ camel_pop3_stream_line(CamelPOP3Stream *is, unsigned char **data, unsigned int *
 }
 
 /* returns -1 on error, 0 if last lot of data, >0 if more remaining */
-int camel_pop3_stream_gets(CamelPOP3Stream *is, unsigned char **start, unsigned int *len)
+gint camel_pop3_stream_gets(CamelPOP3Stream *is, guchar **start, guint *len)
 {
-	int max;
-	unsigned char *end;
+	gint max;
+	guchar *end;
 
 	*len = 0;
 
@@ -383,10 +383,10 @@ void camel_pop3_stream_set_mode(CamelPOP3Stream *is, camel_pop3_stream_mode_t mo
 }
 
 /* returns -1 on erorr, 0 if last data, >0 if more data left */
-int camel_pop3_stream_getd(CamelPOP3Stream *is, unsigned char **start, unsigned int *len)
+gint camel_pop3_stream_getd(CamelPOP3Stream *is, guchar **start, guint *len)
 {
-	unsigned char *p, *e, *s;
-	int state;
+	guchar *p, *e, *s;
+	gint state;
 
 	*len = 0;
 

@@ -8,18 +8,18 @@ G_BEGIN_DECLS
 typedef struct {
 
 	/* Public */
-	char *prefix;
-	char *first;
-	char *middle;
-	char *nick;
-	char *last;
-	char *suffix;
+	gchar *prefix;
+	gchar *first;
+	gchar *middle;
+	gchar *nick;
+	gchar *last;
+	gchar *suffix;
 
 	/* Private */
-	char *full;
+	gchar *full;
 } ENameWestern;
 
-ENameWestern *e_name_western_parse (const char   *full_name);
+ENameWestern *e_name_western_parse (const gchar   *full_name);
 void          e_name_western_free  (ENameWestern *w);
 
 G_END_DECLS

@@ -34,9 +34,9 @@
 /* Private members.  */
 
 struct _ESourceGroupPrivate {
-	char *uid;
-	char *name;
-	char *base_uri;
+	gchar *uid;
+	gchar *name;
+	gchar *base_uri;
 
 	GSList *sources;
 
@@ -55,7 +55,7 @@ enum {
 	SOURCE_ADDED,
 	LAST_SIGNAL
 };
-static unsigned int signals[LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 
 /* Callbacks.  */
@@ -233,8 +233,8 @@ property_dump_cb (const gchar *key, const gchar *value, xmlNodePtr root)
 /* Public methods.  */
 
 ESourceGroup *
-e_source_group_new (const char *name,
-		    const char *base_uri)
+e_source_group_new (const gchar *name,
+		    const gchar *base_uri)
 {
 	ESourceGroup *new;
 
@@ -251,7 +251,7 @@ e_source_group_new (const char *name,
 }
 
 ESourceGroup *
-e_source_group_new_from_xml (const char *xml)
+e_source_group_new_from_xml (const gchar *xml)
 {
 	xmlDocPtr doc;
 	ESourceGroup *group;
@@ -336,7 +336,7 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 
 gboolean
 e_source_group_update_from_xml (ESourceGroup *group,
-				const char *xml,
+				const gchar *xml,
 				gboolean *changed_return)
 {
 	xmlDocPtr xmldoc;
@@ -420,7 +420,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 
 	for (nodep = root->children; nodep != NULL; nodep = nodep->next) {
 		ESource *existing_source;
-		char *uid;
+		gchar *uid;
 
 		if (!nodep->name)
 			continue;
@@ -519,12 +519,12 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	return TRUE;		/* Success. */
 }
 
-char *
+gchar *
 e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 {
 	xmlNodePtr root = doc->children;
 	xmlChar *name;
-	char *retval;
+	gchar *retval;
 
 	if (root && root->name) {
 		if (strcmp (GC root->name, "group") != 0)
@@ -544,7 +544,7 @@ e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 
 void
 e_source_group_set_name (ESourceGroup *group,
-			 const char *name)
+			 const gchar *name)
 {
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 	g_return_if_fail (name != NULL);
@@ -563,7 +563,7 @@ e_source_group_set_name (ESourceGroup *group,
 }
 
 void e_source_group_set_base_uri (ESourceGroup *group,
-				  const char *base_uri)
+				  const gchar *base_uri)
 {
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 	g_return_if_fail (base_uri != NULL);
@@ -600,7 +600,7 @@ void e_source_group_set_readonly (ESourceGroup *group,
 	g_signal_emit (group, signals[CHANGED], 0);
 }
 
-const char *
+const gchar *
 e_source_group_peek_uid (ESourceGroup *group)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), NULL);
@@ -608,7 +608,7 @@ e_source_group_peek_uid (ESourceGroup *group)
 	return group->priv->uid;
 }
 
-const char *
+const gchar *
 e_source_group_peek_name (ESourceGroup *group)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), NULL);
@@ -616,7 +616,7 @@ e_source_group_peek_name (ESourceGroup *group)
 	return group->priv->name;
 }
 
-const char *
+const gchar *
 e_source_group_peek_base_uri (ESourceGroup *group)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), NULL);
@@ -642,7 +642,7 @@ e_source_group_peek_sources (ESourceGroup *group)
 
 ESource *
 e_source_group_peek_source_by_uid (ESourceGroup *group,
-				   const char *uid)
+				   const gchar *uid)
 {
 	GSList *p;
 
@@ -656,7 +656,7 @@ e_source_group_peek_source_by_uid (ESourceGroup *group,
 
 ESource *
 e_source_group_peek_source_by_name (ESourceGroup *group,
-				    const char *name)
+				    const gchar *name)
 {
 	GSList *p;
 
@@ -671,7 +671,7 @@ e_source_group_peek_source_by_name (ESourceGroup *group,
 gboolean
 e_source_group_add_source (ESourceGroup *group,
 			   ESource *source,
-			   int position)
+			   gint position)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
@@ -724,7 +724,7 @@ e_source_group_remove_source (ESourceGroup *group,
 
 gboolean
 e_source_group_remove_source_by_uid (ESourceGroup *group,
-				     const char *uid)
+				     const gchar *uid)
 {
 	GSList *p;
 
@@ -753,14 +753,14 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 }
 
 
-char *
+gchar *
 e_source_group_to_xml (ESourceGroup *group)
 {
 	xmlDocPtr doc;
 	xmlNodePtr root;
 	xmlChar *xml_buffer;
-	char *returned_buffer;
-	int xml_buffer_size;
+	gchar *returned_buffer;
+	gint xml_buffer_size;
 	GSList *p;
 
 	doc = xmlNewDoc (XC "1.0");

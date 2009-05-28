@@ -44,16 +44,16 @@ typedef enum {
 	CAMEL_SEARCH_MATCH_ENDS,
 	CAMEL_SEARCH_MATCH_SOUNDEX
 } camel_search_match_t;
-char * camel_db_get_column_name (const char *raw_name);
+gchar * camel_db_get_column_name (const gchar *raw_name);
 
-char *
-camel_db_sqlize_string (const char *string)
+gchar *
+camel_db_sqlize_string (const gchar *string)
 {
 	return sqlite3_mprintf ("%Q", string);
 }
 
 void
-camel_db_free_sqlized_string (char *string)
+camel_db_free_sqlized_string (gchar *string)
 {
 	sqlite3_free (string);
 	string = NULL;
@@ -65,11 +65,11 @@ camel_db_free_sqlized_string (char *string)
 #include "camel-search-private.h"
 #endif
 
-static char *
-get_db_safe_string (const char *str)
+static gchar *
+get_db_safe_string (const gchar *str)
 {
-	char *tmp = camel_db_sqlize_string (str);
-	char *ret;
+	gchar *tmp = camel_db_sqlize_string (str);
+	gchar *ret;
 
 	ret = g_strdup(tmp);
 	camel_db_free_sqlized_string (tmp);
@@ -80,11 +80,11 @@ get_db_safe_string (const char *str)
 /* Configuration of your sexp expression */
 
 static ESExpResult *
-func_and(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+func_and(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r, *r1;
 	GString *string;
-	int i;
+	gint i;
 
 	d(printf("executing and: %d", argc));
 
@@ -113,11 +113,11 @@ func_and(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-func_or(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+func_or(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r, *r1;
 	GString *string;
-	int i;
+	gint i;
 
 	d(printf("executing or: %d", argc));
 
@@ -141,7 +141,7 @@ func_or(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-func_not(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+func_not(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r=NULL, *r1;
 
@@ -164,7 +164,7 @@ func_not(ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 /* this should support all arguments ...? */
 static ESExpResult *
-eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -198,8 +198,8 @@ eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 			else if (r2->type == ESEXP_RES_TIME)
 				g_string_append_printf(str, "%ld", r2->value.time);
 			else if (r2->type == ESEXP_RES_STRING) {
-				char *tmp = g_strdup_printf("%c%s%c", ut ? '%':' ', r2->value.string, ut?'%':' ');
-				char *safe = get_db_safe_string(tmp);
+				gchar *tmp = g_strdup_printf("%c%s%c", ut ? '%':' ', r2->value.string, ut?'%':' ');
+				gchar *safe = get_db_safe_string(tmp);
 				g_string_append_printf(str, "%s", safe);
 				g_free(safe);
 				g_free(tmp);
@@ -215,7 +215,7 @@ eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+eval_lt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -254,7 +254,7 @@ eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 /* this should support all arguments ...? */
 static ESExpResult *
-eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+eval_gt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -292,7 +292,7 @@ eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -310,10 +310,10 @@ match_all(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 
 static ESExpResult *
-match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	ESExpResult *r;
-	int i;
+	gint i;
 	GString *str = g_string_new ("( ");
 
 	d(printf("executing match-threads: %d", argc));
@@ -333,17 +333,17 @@ match_threads(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data, camel_search_match_t how)
+check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data, camel_search_match_t how)
 {
 	ESExpResult *r;
-	char *str=NULL;
+	gchar *str=NULL;
 
 	d(printf("executing check-header %d\n", how));
 
 	/* are we inside a match-all? */
 	if (argc>1 && argv[0]->type == ESEXP_RES_STRING) {
-		char *headername;
-		int i;
+		gchar *headername;
+		gint i;
 
 		/* only a subset of headers are supported .. */
 		headername = camel_db_get_column_name (argv[0]->value.string);
@@ -351,7 +351,7 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 		/* performs an OR of all words */
 		for (i=1;i<argc;i++) {
 			if (argv[i]->type == ESEXP_RES_STRING) {
-				char *value=NULL, *tstr=NULL;
+				gchar *value=NULL, *tstr=NULL;
 				if (argv[i]->value.string[0] == 0)
 					continue;
 				if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
@@ -386,7 +386,7 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static ESExpResult *
-header_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+header_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	d(printf("executing header-contains: %d", argc));
 
@@ -394,7 +394,7 @@ header_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 }
 
 static ESExpResult *
-header_matches(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+header_matches(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	d(printf("executing header-matches: %d", argc));
 
@@ -402,7 +402,7 @@ header_matches(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 }
 
 static ESExpResult *
-header_starts_with (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+header_starts_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	d(printf("executing header-starts-with: %d", argc));
 
@@ -410,7 +410,7 @@ header_starts_with (struct _ESExp *f, int argc, struct _ESExpResult **argv, void
 }
 
 static ESExpResult *
-header_ends_with (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+header_ends_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	d(printf("executing header-ends-with: %d", argc));
 
@@ -419,10 +419,10 @@ header_ends_with (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *
 
 
 static ESExpResult *
-header_exists (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
-	char *headername;
+	gchar *headername;
 
 	d(printf("executing header-exists: %d", argc));
 
@@ -434,7 +434,7 @@ header_exists (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 }
 
 static ESExpResult *
-user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -454,10 +454,10 @@ user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 
 static ESExpResult *
-user_flag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
-	char *tstr, *qstr;
+	gchar *tstr, *qstr;
 
 	d(printf("executing user-flag: %d", argc));
 
@@ -472,10 +472,10 @@ user_flag(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-system_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
-	char *tstr;
+	gchar *tstr;
 
 	d(printf("executing system-flag: %d", argc));
 
@@ -488,7 +488,7 @@ system_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-get_sent_date(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+get_sent_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -501,7 +501,7 @@ get_sent_date(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static ESExpResult *
-get_received_date(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+get_received_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -514,7 +514,7 @@ get_received_date(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *
 }
 
 static ESExpResult *
-get_current_date(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+get_current_date(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -526,7 +526,7 @@ get_current_date(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *d
 }
 
 static ESExpResult *
-get_size (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 
@@ -539,10 +539,10 @@ get_size (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-sql_exp (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+sql_exp (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
-	int i;
+	gint i;
 	GString *str = g_string_new (NULL);
 
 	d(printf("executing sql-exp\n"));
@@ -560,9 +560,9 @@ sql_exp (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 /* 'builtin' functions */
 static struct {
-	char *name;
+	gchar *name;
 	ESExpFunc *func;
-	int immediate :1;
+	gint immediate :1;
 } symbols[] = {
 	{ "and", (ESExpFunc *) func_and, 1 },
 	{ "or", (ESExpFunc *) func_or, 1},
@@ -592,13 +592,13 @@ static struct {
 };
 
 
-char *
-camel_sexp_to_sql_sexp (const char *sql)
+gchar *
+camel_sexp_to_sql_sexp (const gchar *sql)
 {
 	ESExp *sexp;
 	ESExpResult *r;
-	int i;
-	char *res;
+	gint i;
+	gchar *res;
 
 	sexp = e_sexp_new();
 
@@ -651,7 +651,7 @@ dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-curr
 //followup_due_by TEXT ," //NOTREQD
 */
 
-char * camel_db_get_column_name (const char *raw_name)
+gchar * camel_db_get_column_name (const gchar *raw_name)
 {
 	/* d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name)); */
 	if (!g_ascii_strcasecmp (raw_name, "Subject"))
@@ -691,11 +691,11 @@ char * camel_db_get_column_name (const char *raw_name)
 
 }
 
-int main ()
+gint main ()
 {
 
-	int i=0;
-	char *txt[] = {
+	gint i=0;
+	gchar *txt[] = {
 #if 0
 	"(match-all (header-contains \"From\"  \"org\"))",
 	"(and (match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\")))) (and   (or (match-all (or (header-ends-with \"To\"  \"novell.com\") (header-ends-with \"Cc\"  \"novell.com\"))) (match-all (or (= (user-tag \"label\")  \"work\")  (user-flag  \"work\"))) )))",
@@ -744,7 +744,7 @@ int main ()
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
-		char *sql = NULL;
+		gchar *sql = NULL;
 		printf("Q: %s\n\"%c\"\n", txt[i], 40);
 		sql = camel_sexp_to_sql_sexp (txt[i]);
 		printf("A: %s\n\n\n", sql);

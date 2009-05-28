@@ -56,7 +56,7 @@ gdata_entry_postal_address_from_attribute (EVCardAttribute         *attr,
                                            gboolean                *primary);
 
 static gboolean
-is_known_google_im_protocol (const char *protocol);
+is_known_google_im_protocol (const gchar *protocol);
 
 GDataEntry*
 _gdata_entry_new_from_e_contact (EContact *contact)
@@ -84,7 +84,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
                                     EContact   *contact)
 {
     GList *attributes, *iter;
-    char *fullname = NULL;
+    gchar *fullname = NULL;
     GSList *email_addresses = NULL;
     GSList *im_addresses = NULL;
     GSList *phone_numbers = NULL;
@@ -109,7 +109,7 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
     iter = g_list_last (attributes);
     for (; iter; iter = iter->prev) {
         EVCardAttribute *attr;
-        const char *name;
+        const gchar *name;
 
         attr = iter->data;
         name = e_vcard_attribute_get_name (attr);
@@ -173,8 +173,8 @@ _gdata_entry_update_from_e_contact (GDataEntry *entry,
             GList *values;
 
             values = e_vcard_attribute_get_values (attr);
-            if (values && values->data && ((char*)values->data)[0]) {
-                __debug__ ("unsupported vcard field: %s: %s", name, (char*)values->data);
+            if (values && values->data && ((gchar *)values->data)[0]) {
+                __debug__ ("unsupported vcard field: %s: %s", name, (gchar *)values->data);
             }
         }
     }
@@ -194,8 +194,8 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
     EVCard *vcard;
     EVCardAttribute *attr;
     GSList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses;
-    const char *name;
-    const char *uid;
+    const gchar *name;
+    const gchar *uid;
     GSList *itr;
     GDataEntryEmailAddress *email;
     GDataEntryIMAddress *im;
@@ -216,7 +216,7 @@ _e_contact_new_from_gdata_entry (GDataEntry *entry)
     /* FN - TODO: get title */
     name = gdata_entry_get_title (entry);
     if (name) {
-        e_contact_set (E_CONTACT (vcard), E_CONTACT_FULL_NAME, (const gpointer)name);
+        e_contact_set (E_CONTACT (vcard), E_CONTACT_FULL_NAME, (gconstpointer)name);
     }
 
     /* EMAIL - primary first */
@@ -297,7 +297,7 @@ void
 _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry)
 {
     EVCardAttribute *attr;
-    const char* entry_xml;
+    const gchar * entry_xml;
 
     entry_xml = gdata_entry_generate_xml (entry);
 
@@ -312,7 +312,7 @@ _e_contact_remove_gdata_entry_xml (EContact *contact)
     e_vcard_remove_attributes (E_VCARD (contact), NULL, GDATA_ENTRY_XML_ATTR);
 }
 
-const char*
+const gchar *
 _e_contact_get_gdata_entry_xml (EContact *contact)
 {
     EVCardAttribute *attr;
@@ -325,8 +325,8 @@ _e_contact_get_gdata_entry_xml (EContact *contact)
 }
 
 struct RelTypeMap {
-    const char* rel;
-    const char* types[3];
+    const gchar * rel;
+    const gchar * types[3];
 };
 
 const struct RelTypeMap rel_type_map_phone[] = {
@@ -349,11 +349,11 @@ const struct RelTypeMap rel_type_map_others[] = {
 static gboolean
 _add_type_param_from_google_rel (EVCardAttribute *attr,
                                  const struct RelTypeMap rel_type_map[],
-                                 int map_len,
-                                 const char *rel)
+                                 gint map_len,
+                                 const gchar *rel)
 {
-    const char* field;
-    int i;
+    const gchar * field;
+    gint i;
 
     field = strstr (rel ? rel : "", "#");
     if (NULL == field)
@@ -363,7 +363,7 @@ _add_type_param_from_google_rel (EVCardAttribute *attr,
     for (i = 0; i < map_len; i++) {
         if (0 == g_ascii_strcasecmp (rel_type_map[i].rel, field)) {
             EVCardAttributeParam *param;
-            const char * const * type;
+            const gchar * const * type;
             param = e_vcard_attribute_param_new ("TYPE");
             for (type = rel_type_map[i].types; *type; type++) {
                 e_vcard_attribute_param_add_value (param, *type);
@@ -378,7 +378,7 @@ _add_type_param_from_google_rel (EVCardAttribute *attr,
 }
 
 static gboolean
-add_type_param_from_google_rel_phone (EVCardAttribute *attr, const char *rel)
+add_type_param_from_google_rel_phone (EVCardAttribute *attr, const gchar *rel)
 {
     return _add_type_param_from_google_rel (attr,
                                             rel_type_map_phone,
@@ -387,7 +387,7 @@ add_type_param_from_google_rel_phone (EVCardAttribute *attr, const char *rel)
 }
 
 static gboolean
-add_type_param_from_google_rel (EVCardAttribute *attr, const char *rel)
+add_type_param_from_google_rel (EVCardAttribute *attr, const gchar *rel)
 {
     return _add_type_param_from_google_rel (attr,
                                             rel_type_map_others,
@@ -396,7 +396,7 @@ add_type_param_from_google_rel (EVCardAttribute *attr, const char *rel)
 }
 
 static void
-add_label_param (EVCardAttribute *attr, const char *label)
+add_label_param (EVCardAttribute *attr, const gchar *label)
 {
     if (label && label[0] != '\0') {
         EVCardAttributeParam *param;
@@ -405,15 +405,15 @@ add_label_param (EVCardAttribute *attr, const char *label)
     }
 }
 
-static char*
+static gchar *
 _google_rel_from_types (GList *types,
                         const struct RelTypeMap rel_type_map[],
-                        int map_len)
+                        gint map_len)
 {
-    const char format[] = "http://schemas.google.com/g/2005#%s";
+    const gchar format[] = "http://schemas.google.com/g/2005#%s";
 
     while (types) {
-        int i;
+        gint i;
         GList *cur = types;
         types = types->next;
 
@@ -433,7 +433,7 @@ _google_rel_from_types (GList *types,
     return g_strdup_printf (format, "other");
 }
 
-static char*
+static gchar *
 google_rel_from_types (GList *types)
 {
     return _google_rel_from_types (types,
@@ -441,7 +441,7 @@ google_rel_from_types (GList *types)
                                    G_N_ELEMENTS (rel_type_map_others));
 }
 
-static char*
+static gchar *
 google_rel_from_types_phone (GList *types)
 {
     return _google_rel_from_types (types,
@@ -450,14 +450,14 @@ google_rel_from_types_phone (GList *types)
 }
 
 static gboolean
-is_known_google_im_protocol (const char *protocol)
+is_known_google_im_protocol (const gchar *protocol)
 {
-    const char *known_protocols[] =
+    const gchar *known_protocols[] =
     {
         "AIM", "MSN", "YAHOO", "SKYPE", "QQ",
         "GOOGLE_TALK", "ICQ", "JABBER"
     };
-    int i;
+    gint i;
 
     if (NULL == protocol)
         return FALSE;
@@ -469,10 +469,10 @@ is_known_google_im_protocol (const char *protocol)
     return FALSE;
 }
 
-static char*
-field_name_from_google_im_protocol (const char* google_protocol)
+static gchar *
+field_name_from_google_im_protocol (const gchar * google_protocol)
 {
-    char *protocol;
+    gchar *protocol;
     if (NULL == google_protocol)
         return NULL;
 
@@ -482,10 +482,10 @@ field_name_from_google_im_protocol (const char* google_protocol)
     return g_strdup_printf ("X-%s", protocol + 1);
 }
 
-static char*
-google_im_protocol_from_field_name (const char* field_name)
+static gchar *
+google_im_protocol_from_field_name (const gchar * field_name)
 {
-    const char format[] = "http://schemas.google.com/g/2005#%s";
+    const gchar format[] = "http://schemas.google.com/g/2005#%s";
 
     if (NULL == field_name ||
         strlen (field_name) < 3) {
@@ -510,7 +510,7 @@ add_primary_param (EVCardAttribute *attr, gboolean has_type)
 static GList*
 get_google_primary_type_label (EVCardAttribute *attr,
                                gboolean *primary,
-                               const char **label)
+                               const gchar **label)
 {
     GList *params;
     GList *types = NULL;
@@ -519,7 +519,7 @@ get_google_primary_type_label (EVCardAttribute *attr,
     *label = NULL;
     params = e_vcard_attribute_get_params (attr);
     while (params) {
-        const char *name;
+        const gchar *name;
 
         name = e_vcard_attribute_param_get_name (params->data);
         if (0 == g_ascii_strcasecmp (name, GOOGLE_PRIMARY_PARAM)) {
@@ -527,7 +527,7 @@ get_google_primary_type_label (EVCardAttribute *attr,
 
             values = e_vcard_attribute_param_get_values (params->data);
             if (values && values->data &&
-                (((const char*)values->data)[0] == '1' ||
+                (((const gchar *)values->data)[0] == '1' ||
                  0 == g_ascii_strcasecmp (values->data, "yes"))) {
                 *primary = TRUE;
             }
@@ -571,7 +571,7 @@ attribute_from_gdata_entry_im_address (GDataEntryIMAddress *im)
 {
     EVCardAttribute *attr;
     gboolean has_type;
-    char *field_name;
+    gchar *field_name;
 
     if (NULL == im || NULL == im->address)
         return NULL;;
@@ -637,7 +637,7 @@ gdata_entry_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_
     values = e_vcard_attribute_get_values (attr);
     if (values) {
         GList *types;
-        const char *label;
+        const gchar *label;
         gboolean primary;
 
         types = get_google_primary_type_label (attr, &primary, &label);
@@ -667,14 +667,14 @@ gdata_entry_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_pri
 {
     GDataEntryIMAddress *im = NULL;
     GList *values;
-    const char *name;
+    const gchar *name;
 
     name = e_vcard_attribute_get_name (attr);
 
     values = e_vcard_attribute_get_values (attr);
     if (values) {
         GList *types;
-        const char *label;
+        const gchar *label;
         gboolean primary;
 
         types = get_google_primary_type_label (attr, &primary, &label);
@@ -711,7 +711,7 @@ gdata_entry_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_p
     if (values) {
         GList *types;
         gboolean primary;
-        const char *label;
+        const gchar *label;
 
         types = get_google_primary_type_label (attr, &primary, &label);
         if (FALSE == *have_primary) {
@@ -744,7 +744,7 @@ gdata_entry_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have
     values = e_vcard_attribute_get_values (attr);
     if (values) {
         GList *types;
-        const char *label;
+        const gchar *label;
         gboolean primary;
 
         types = get_google_primary_type_label (attr, &primary, &label);

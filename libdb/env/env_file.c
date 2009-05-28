@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,28 +19,28 @@ static const char revid[] = "$Id$";
 
 #include "db_int.h"
 
-static int __db_overwrite_pass __P((DB_ENV *,
-	       const char *, DB_FH *, u_int32_t, u_int32_t, u_int32_t));
+static gint __db_overwrite_pass __P((DB_ENV *,
+	       const gchar *, DB_FH *, u_int32_t, u_int32_t, u_int32_t));
 
 /*
  * __db_fileinit --
  *	Initialize a regular file, optionally zero-filling it as well.
  *
- * PUBLIC: int __db_fileinit __P((DB_ENV *, DB_FH *, size_t, int));
+ * PUBLIC: gint __db_fileinit __P((DB_ENV *, DB_FH *, size_t, int));
  */
-int
+gint
 __db_fileinit(dbenv, fhp, size, zerofill)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 	size_t size;
-	int zerofill;
+	gint zerofill;
 {
 	db_pgno_t pages;
 	size_t i;
 	size_t nw;
 	u_int32_t relative;
-	int ret;
-	char buf[OS_VMPAGESIZE];
+	gint ret;
+	gchar buf[OS_VMPAGESIZE];
 
 	/* Write nuls to the new bytes. */
 	memset(buf, 0, sizeof(buf));
@@ -91,16 +91,16 @@ __db_fileinit(dbenv, fhp, size, zerofill)
  * __db_overwrite  --
  *	Overwrite a file.
  *
- * PUBLIC: int __db_overwrite __P((DB_ENV *, const char *));
+ * PUBLIC: gint __db_overwrite __P((DB_ENV *, const gchar *));
  */
-int
+gint
 __db_overwrite(dbenv, path)
 	DB_ENV *dbenv;
-	const char *path;
+	const gchar *path;
 {
 	DB_FH fh, *fhp;
 	u_int32_t mbytes, bytes;
-	int ret;
+	gint ret;
 
 	fhp = &fh;
 	if ((ret = __os_open(dbenv, path, DB_OSO_REGION, 0, fhp)) == 0 &&
@@ -135,13 +135,13 @@ err:	if (F_ISSET(fhp, DB_FH_VALID))
 static int
 __db_overwrite_pass(dbenv, path, fhp, mbytes, bytes, pattern)
 	DB_ENV *dbenv;
-	const char *path;
+	const gchar *path;
 	DB_FH *fhp;
 	u_int32_t mbytes, bytes, pattern;
 {
 	size_t len, nw;
-	int i, ret;
-	char buf[8 * 1024];
+	gint i, ret;
+	gchar buf[8 * 1024];
 
 	if ((ret = __os_seek(dbenv, fhp, 0, 0, 0, 0, DB_OS_SEEK_SET)) != 0)
 		goto err;

@@ -7,40 +7,40 @@ extern "C" {
 #endif
 
 #ifndef HAVE_GETCWD
-char *getcwd __P((char *, size_t));
+gchar *getcwd __P((gchar *, size_t));
 #endif
 #ifndef HAVE_GETOPT
-int getopt __P((int, char * const *, const char *));
+gint getopt __P((int, gchar * const *, const gchar *));
 #endif
 #ifndef HAVE_MEMCMP
-int memcmp __P((const void *, const void *, size_t));
+gint memcmp __P((gconstpointer , gconstpointer , size_t));
 #endif
 #ifndef HAVE_MEMCPY
-void *memcpy __P((void *, const void *, size_t));
+gpointer memcpy __P((gpointer , gconstpointer , size_t));
 #endif
 #ifndef HAVE_MEMMOVE
-void *memmove __P((void *, const void *, size_t));
+gpointer memmove __P((gpointer , gconstpointer , size_t));
 #endif
 #ifndef HAVE_RAISE
-int raise __P((int));
+gint raise __P((int));
 #endif
 #ifndef HAVE_SNPRINTF
-int snprintf __P((char *, size_t, const char *, ...));
+gint snprintf __P((gchar *, size_t, const gchar *, ...));
 #endif
 #ifndef HAVE_STRCASECMP
-int strcasecmp __P((const char *, const char *));
+gint strcasecmp __P((const gchar *, const gchar *));
 #endif
 #ifndef HAVE_STRCASECMP
-int strncasecmp __P((const char *, const char *, size_t));
+gint strncasecmp __P((const gchar *, const gchar *, size_t));
 #endif
 #ifndef HAVE_STRDUP
-char *strdup __P((const char *));
+gchar *strdup __P((const gchar *));
 #endif
 #ifndef HAVE_STRERROR
-char *strerror __P((int));
+gchar *strerror __P((int));
 #endif
 #ifndef HAVE_VSNPRINTF
-int vsnprintf __P((char *, size_t, const char *, va_list));
+gint vsnprintf __P((gchar *, size_t, const gchar *, va_list));
 #endif
 
 #if defined(__cplusplus)

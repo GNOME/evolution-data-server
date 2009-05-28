@@ -55,11 +55,11 @@ camel_mime_filter_from_get_type (void)
 
 struct fromnode {
 	struct fromnode *next;
-	char *pointer;
+	gchar *pointer;
 };
 
 static void
-complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	*out = in;
 	*outlen = len;
@@ -68,15 +68,15 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 
 /* Yes, it is complicated ... */
 static void
-filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterFrom *f = (CamelMimeFilterFrom *)mf;
-	register char *inptr, *inend;
-	int left;
-	int midline = f->midline;
-	int fromcount = 0;
+	register gchar *inptr, *inend;
+	gint left;
+	gint midline = f->midline;
+	gint fromcount = 0;
 	struct fromnode *head = NULL, *tail = (struct fromnode *)&head, *node;
-	char *outptr;
+	gchar *outptr;
 
 	inptr = in;
 	inend = inptr+len;
@@ -85,7 +85,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 
 	/* first, see if we need to escape any from's */
 	while (inptr<inend) {
-		register int c = -1;
+		register gint c = -1;
 
 		if (midline)
 			while (inptr < inend && (c = *inptr++) != '\n')
@@ -188,11 +188,11 @@ camel_mime_filter_from_new (void)
 
 #include <stdio.h>
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelMimeFilterFrom *f;
-	char *buffer;
-	int len, prespace;
+	gchar *buffer;
+	gint len, prespace;
 
 	g_tk_init(&argc, &argv);
 

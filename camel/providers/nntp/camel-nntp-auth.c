@@ -33,12 +33,12 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-resp-codes.h"
 
-int
+gint
 camel_nntp_auth_authenticate (CamelNNTPStore *store, CamelException *ex)
 {
 	CamelService *service = CAMEL_SERVICE (store);
 	CamelSession *session = camel_service_get_session (service);
-	int resp;
+	gint resp;
 
 	if (!service->url->authmech && !service->url->passwd) {
 		gchar *prompt;

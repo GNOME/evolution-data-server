@@ -20,17 +20,17 @@
 
 #define CHUNK_SIZE 4096
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	ssize_t comp_progress, comp_correct_chunk, comp_filter_chunk;
-	char comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
+	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
 	CamelStream *source;
 	CamelStream *correct;
 	CamelStreamFilter *filter;
 	CamelMimeFilter *f;
 	struct dirent *dent;
-	int i, test = 0;
+	gint i, test = 0;
 	DIR *dir;
 
 	camel_test_init(argc, argv);
@@ -40,8 +40,8 @@ main (int argc, char **argv)
 		return 1;
 
 	while ((dent = readdir (dir))) {
-		char *infile, *outfile, *charset, *work;
-		const char *ext;
+		gchar *infile, *outfile, *charset, *work;
+		const gchar *ext;
 
 		ext = strrchr (dent->d_name, '.');
 		if (!(!strncmp (dent->d_name, "charset-", 8) && ext && !strcmp (ext, ".in")))
@@ -75,7 +75,7 @@ main (int argc, char **argv)
 
 		charset = g_strdup (dent->d_name + 8);
 		ext = strchr (charset, '.');
-		*((char *) ext) = '\0';
+		*((gchar *) ext) = '\0';
 
 		if (!(f = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "UTF-8"))) {
 			camel_test_fail ("Couldn't create CamelMimeFilterCharset??");

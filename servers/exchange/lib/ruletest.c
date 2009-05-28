@@ -32,21 +32,21 @@
 #include "e2k-rule-xml.h"
 #include "test-utils.h"
 
-const char *test_program_name = "ruletest";
+const gchar *test_program_name = "ruletest";
 
-static const char *rules_props[] = {
+static const gchar *rules_props[] = {
 	PR_RULES_DATA,
 };
-static const int n_rules_props = sizeof (rules_props) / sizeof (rules_props[0]);
+static const gint n_rules_props = sizeof (rules_props) / sizeof (rules_props[0]);
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
-	const char *url;
+	const gchar *url;
 	E2kContext *ctx;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults;
+	gint nresults;
 	GByteArray *ba;
 	E2kRules *rules;
 	xmlDoc *doc;

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,15 +25,15 @@ static const char revid[] = "$Id$";
  * __os_fsync --
  *	Flush a file descriptor.
  *
- * PUBLIC: int __os_fsync __P((DB_ENV *, DB_FH *));
+ * PUBLIC: gint __os_fsync __P((DB_ENV *, DB_FH *));
  */
-int
+gint
 __os_fsync(dbenv, fhp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 {
 	BOOL success;
-	int ret;
+	gint ret;
 
 	/*
 	 * Do nothing if the file descriptor has been marked as not requiring

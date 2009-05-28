@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,11 +21,11 @@ static const char revid[] = "$Id$";
  * __os_abspath --
  *	Return if a path is an absolute path.
  *
- * PUBLIC: int __os_abspath __P((const char *));
+ * PUBLIC: gint __os_abspath __P((const gchar *));
  */
-int
+gint
 __os_abspath(path)
-	const char *path;
+	const gchar *path;
 {
 	return (path[0] == '/');
 }

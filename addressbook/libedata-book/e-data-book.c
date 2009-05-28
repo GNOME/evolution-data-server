@@ -81,9 +81,9 @@ impl_GNOME_Evolution_Addressbook_Book_getContactList (PortableServer_Servant ser
 static void
 impl_GNOME_Evolution_Addressbook_Book_authenticateUser (PortableServer_Servant servant,
 							const CORBA_long opid,
-							const char* user,
-							const char* passwd,
-							const char* auth_method,
+							const gchar * user,
+							const gchar * passwd,
+							const gchar * auth_method,
 							CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
@@ -110,7 +110,7 @@ impl_GNOME_Evolution_Addressbook_Book_removeContacts (PortableServer_Servant ser
 						      CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
-	int i;
+	gint i;
 	GList *id_list = NULL;
 
 	for (i = 0; i < ids->_length; i ++)
@@ -184,13 +184,13 @@ impl_GNOME_Evolution_Addressbook_Book_getChanges (PortableServer_Servant servant
 	e_book_backend_get_changes (e_data_book_get_backend (book), book, opid, change_id);
 }
 
-static char *
+static gchar *
 impl_GNOME_Evolution_Addressbook_Book_getStaticCapabilities (PortableServer_Servant servant,
 							     CORBA_Environment *ev)
 {
 	EDataBook *book = E_DATA_BOOK (bonobo_object (servant));
-	char *temp;
-	char *ret_val;
+	gchar *temp;
+	gchar *ret_val;
 
 	temp = e_book_backend_get_static_capabilities (book->priv->backend);
 	ret_val = CORBA_string_dup(temp);
@@ -502,8 +502,8 @@ e_data_book_respond_get_required_fields (EDataBook                              
 
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
-	int num_fields;
-	int i;
+	gint num_fields;
+	gint i;
 	GList *iter;
 
 	CORBA_exception_init (&ev);
@@ -515,7 +515,7 @@ e_data_book_respond_get_required_fields (EDataBook                              
 	stringlist._length = num_fields;
 
 	for (i = 0, iter = fields; iter; iter = iter->next, i ++) {
-		stringlist._buffer[i] = CORBA_string_dup ((char*)iter->data);
+		stringlist._buffer[i] = CORBA_string_dup ((gchar *)iter->data);
 	}
 
 	printf ("calling GNOME_Evolution_Addressbook_BookListener_notifyRequiredFields\n");
@@ -548,8 +548,8 @@ e_data_book_respond_get_supported_fields (EDataBook                             
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
-	int num_fields;
-	int i;
+	gint num_fields;
+	gint i;
 	GList *iter;
 
 	CORBA_exception_init (&ev);
@@ -561,7 +561,7 @@ e_data_book_respond_get_supported_fields (EDataBook                             
 	stringlist._length = num_fields;
 
 	for (i = 0, iter = fields; iter; iter = iter->next, i ++) {
-		stringlist._buffer[i] = CORBA_string_dup ((char*)iter->data);
+		stringlist._buffer[i] = CORBA_string_dup ((gchar *)iter->data);
 	}
 
 	printf ("calling GNOME_Evolution_Addressbook_BookListener_notifySupportedFields\n");
@@ -594,9 +594,9 @@ e_data_book_respond_get_supported_auth_methods (EDataBook                       
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
-	int num_auth_methods;
+	gint num_auth_methods;
 	GList *iter;
-	int i;
+	gint i;
 
 	CORBA_exception_init (&ev);
 
@@ -607,7 +607,7 @@ e_data_book_respond_get_supported_auth_methods (EDataBook                       
 	stringlist._length = num_auth_methods;
 
 	for (i = 0, iter = auth_methods; iter; iter = iter->next, i ++) {
-		stringlist._buffer[i] = CORBA_string_dup ((char*)iter->data);
+		stringlist._buffer[i] = CORBA_string_dup ((gchar *)iter->data);
 	}
 
 	GNOME_Evolution_Addressbook_BookListener_notifySupportedAuthMethods (
@@ -681,7 +681,7 @@ void
 e_data_book_respond_get_contact (EDataBook                              *book,
 				 guint32                                 opid,
 				 GNOME_Evolution_Addressbook_CallStatus  status,
-				 char                                   *vcard)
+				 gchar                                   *vcard)
 {
 	CORBA_Environment ev;
 
@@ -717,8 +717,8 @@ e_data_book_respond_get_contact_list (EDataBook                              *bo
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_stringlist stringlist;
-	int num_cards;
-	int i;
+	gint num_cards;
+	gint i;
 	GList *l;
 
 	CORBA_exception_init (&ev);
@@ -768,8 +768,8 @@ e_data_book_respond_get_changes (EDataBook                              *book,
 {
 	CORBA_Environment ev;
 	GNOME_Evolution_Addressbook_BookChangeList changelist;
-	int num_changes;
-	int i;
+	gint num_changes;
+	gint i;
 	GList *l;
 
 	CORBA_exception_init (&ev);

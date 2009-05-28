@@ -13,11 +13,11 @@
  */
 
 typedef struct {
-	const char *name;
+	const gchar *name;
 	guint32     proptag;
 } E2kRuleProp;
 
-void e2k_rule_prop_set (E2kRuleProp *prop, const char *propname);
+void e2k_rule_prop_set (E2kRuleProp *prop, const gchar *propname);
 
 typedef struct {
 	E2kRuleProp  prop;
@@ -43,7 +43,7 @@ struct _E2kRestriction {
 	/*< private >*/
 
 	E2kRestrictionType type;
-	int ref_count;
+	gint ref_count;
 
 	union {
 		struct {
@@ -186,7 +186,7 @@ typedef enum {
 } E2kRuleState;
 
 typedef struct {
-	char           *name;
+	gchar           *name;
 	guint32         sequence;
 	guint32         state;
 	guint32         user_flags;
@@ -194,7 +194,7 @@ typedef struct {
 	guint32         condition_lcid;
 	E2kRestriction *condition;
 	GPtrArray      *actions;
-	char           *provider;
+	gchar           *provider;
 	GByteArray     *provider_data;
 } E2kRule;
 
@@ -214,37 +214,37 @@ void        e2k_rule_free         (E2kRule    *rule);
 void     e2k_rule_write_uint32      (guint8 *ptr, guint32 val);
 void     e2k_rule_append_uint32     (GByteArray *ba, guint32 val);
 guint32  e2k_rule_read_uint32       (guint8 *ptr);
-gboolean e2k_rule_extract_uint32    (guint8 **ptr, int *len,
+gboolean e2k_rule_extract_uint32    (guint8 **ptr, gint *len,
 				     guint32 *val);
 
 void     e2k_rule_write_uint16      (guint8 *ptr, guint16 val);
 void     e2k_rule_append_uint16     (GByteArray *ba, guint16 val);
 guint16  e2k_rule_read_uint16       (guint8 *ptr);
-gboolean e2k_rule_extract_uint16    (guint8 **ptr, int *len,
+gboolean e2k_rule_extract_uint16    (guint8 **ptr, gint *len,
 				     guint16 *val);
 
 void     e2k_rule_append_byte       (GByteArray *ba, guint8 val);
-gboolean e2k_rule_extract_byte      (guint8 **ptr, int *len,
+gboolean e2k_rule_extract_byte      (guint8 **ptr, gint *len,
 				     guint8 *val);
 
-void     e2k_rule_append_string     (GByteArray *ba, const char *str);
-gboolean e2k_rule_extract_string    (guint8 **ptr, int *len,
-				     char **str);
+void     e2k_rule_append_string     (GByteArray *ba, const gchar *str);
+gboolean e2k_rule_extract_string    (guint8 **ptr, gint *len,
+				     gchar **str);
 
-void     e2k_rule_append_unicode    (GByteArray *ba, const char *str);
-gboolean e2k_rule_extract_unicode   (guint8 **ptr, int *len,
-				     char **str);
+void     e2k_rule_append_unicode    (GByteArray *ba, const gchar *str);
+gboolean e2k_rule_extract_unicode   (guint8 **ptr, gint *len,
+				     gchar **str);
 
 void     e2k_rule_append_binary     (GByteArray *ba, GByteArray *data);
-gboolean e2k_rule_extract_binary    (guint8 **ptr, int *len,
+gboolean e2k_rule_extract_binary    (guint8 **ptr, gint *len,
 				     GByteArray **data);
 
 void     e2k_rule_append_proptag    (GByteArray *ba, E2kRuleProp *prop);
-gboolean e2k_rule_extract_proptag   (guint8 **ptr, int *len,
+gboolean e2k_rule_extract_proptag   (guint8 **ptr, gint *len,
 				     E2kRuleProp *prop);
 
 void     e2k_rule_append_propvalue  (GByteArray *ba, E2kPropValue *pv);
-gboolean e2k_rule_extract_propvalue (guint8 **ptr, int *len,
+gboolean e2k_rule_extract_propvalue (guint8 **ptr, gint *len,
 				     E2kPropValue *pv);
 void     e2k_rule_free_propvalue    (E2kPropValue *pv);
 

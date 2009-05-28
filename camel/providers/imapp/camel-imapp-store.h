@@ -51,7 +51,7 @@ typedef struct {
 	struct _CamelDataCache *cache;
 
 	/* if we had a login error, what to show to user */
-	char *login_error;
+	gchar *login_error;
 
 	GPtrArray *pending_list;
 } CamelIMAPPStore;

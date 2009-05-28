@@ -13,7 +13,7 @@
 #include "e-book-backend-sync.h"
 
 struct _EBookBackendSyncPrivate {
-  int mumble;
+  gint mumble;
 };
 
 static GObjectClass *parent_class;
@@ -48,7 +48,7 @@ EBookBackendSyncStatus
 e_book_backend_sync_create_contact (EBookBackendSync *backend,
 				    EDataBook *book,
 				    guint32 opid,
-				    const char *vcard,
+				    const gchar *vcard,
 				    EContact **contact)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
@@ -133,7 +133,7 @@ EBookBackendSyncStatus
 e_book_backend_sync_modify_contact (EBookBackendSync *backend,
 				    EDataBook *book,
 				    guint32 opid,
-				    const char *vcard,
+				    const gchar *vcard,
 				    EContact **contact)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
@@ -162,8 +162,8 @@ EBookBackendSyncStatus
 e_book_backend_sync_get_contact (EBookBackendSync *backend,
 				 EDataBook *book,
 				 guint32 opid,
-				 const char *id,
-				 char **vcard)
+				 const gchar *id,
+				 gchar **vcard)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
@@ -192,7 +192,7 @@ EBookBackendSyncStatus
 e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
 				      EDataBook *book,
 				      guint32 opid,
-				      const char *query,
+				      const gchar *query,
 				      GList **contacts)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
@@ -223,7 +223,7 @@ EBookBackendSyncStatus
 e_book_backend_sync_get_changes (EBookBackendSync *backend,
 				 EDataBook *book,
 				 guint32 opid,
-				 const char *change_id,
+				 const gchar *change_id,
 				 GList **changes)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
@@ -253,9 +253,9 @@ EBookBackendSyncStatus
 e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
 				       EDataBook *book,
 				       guint32 opid,
-				       const char *user,
-				       const char *passwd,
-				       const char *auth_method)
+				       const gchar *user,
+				       const gchar *passwd,
+				       const gchar *auth_method)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), GNOME_Evolution_Addressbook_OtherError);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), GNOME_Evolution_Addressbook_OtherError);
@@ -366,7 +366,7 @@ static void
 _e_book_backend_create_contact (EBookBackend *backend,
 				EDataBook    *book,
 				guint32       opid,
-				const char   *vcard)
+				const gchar   *vcard)
 {
 	EBookBackendSyncStatus status;
 	EContact *contact = NULL;
@@ -400,7 +400,7 @@ static void
 _e_book_backend_modify_contact (EBookBackend *backend,
 				EDataBook    *book,
 				guint32       opid,
-				const char   *vcard)
+				const gchar   *vcard)
 {
 	EBookBackendSyncStatus status;
 	EContact *contact = NULL;
@@ -417,10 +417,10 @@ static void
 _e_book_backend_get_contact (EBookBackend *backend,
 			     EDataBook    *book,
 			     guint32       opid,
-			     const char   *id)
+			     const gchar   *id)
 {
 	EBookBackendSyncStatus status;
-	char *vcard = NULL;
+	gchar *vcard = NULL;
 
 	status = e_book_backend_sync_get_contact (E_BOOK_BACKEND_SYNC (backend), book, opid, id, &vcard);
 
@@ -434,7 +434,7 @@ static void
 _e_book_backend_get_contact_list (EBookBackend *backend,
 				  EDataBook    *book,
 				  guint32       opid,
-				  const char   *query)
+				  const gchar   *query)
 {
 	EBookBackendSyncStatus status;
 	GList *cards = NULL;
@@ -448,7 +448,7 @@ static void
 _e_book_backend_get_changes (EBookBackend *backend,
 			     EDataBook    *book,
 			     guint32       opid,
-			     const char   *change_id)
+			     const gchar   *change_id)
 {
 	EBookBackendSyncStatus status;
 	GList *changes = NULL;
@@ -462,9 +462,9 @@ static void
 _e_book_backend_authenticate_user (EBookBackend *backend,
 				   EDataBook    *book,
 				   guint32       opid,
-				   const char   *user,
-				   const char   *passwd,
-				   const char   *auth_method)
+				   const gchar   *user,
+				   const gchar   *passwd,
+				   const gchar   *auth_method)
 {
 	EBookBackendSyncStatus status;
 

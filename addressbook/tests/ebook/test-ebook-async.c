@@ -8,8 +8,8 @@ static GMainLoop *loop;
 static void
 print_email (EContact *contact)
 {
-	const char *file_as = e_contact_get_const (contact, E_CONTACT_FILE_AS);
-	const char *name_or_org = e_contact_get_const (contact, E_CONTACT_NAME_OR_ORG);
+	const gchar *file_as = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+	const gchar *name_or_org = e_contact_get_const (contact, E_CONTACT_NAME_OR_ORG);
 	GList *emails, *e;
 
 	printf ("Contact: %s\n", file_as);
@@ -17,7 +17,7 @@ print_email (EContact *contact)
 	printf ("Email addresses:\n");
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		printf ("\t%s\n",  (char*)e->data);
+		printf ("\t%s\n",  (gchar *)e->data);
 	}
 	g_list_foreach (emails, (GFunc)g_free, NULL);
 	g_list_free (emails);
@@ -79,8 +79,8 @@ book_loaded_cb (EBook *book, EBookStatus status, gpointer data)
 	print_one_email (book);
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EBook *book;
 

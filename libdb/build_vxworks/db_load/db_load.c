@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -29,7 +29,7 @@ static const char revid[] =
 #include "dbinc/db_am.h"
 
 typedef struct {			/* XXX: Globals. */
-	const char *progname;		/* Program name. */
+	const gchar *progname;		/* Program name. */
 	char	*hdrbuf;		/* Input file header. */
 	u_long	lineno;			/* Input file line number. */
 	u_long	origline;		/* Original file line number. */
@@ -44,19 +44,19 @@ typedef struct {			/* XXX: Globals. */
 
 void	db_load_badend __P((DB_ENV *));
 void	db_load_badnum __P((DB_ENV *));
-int	db_load_configure __P((DB_ENV *, DB *, char **, char **, int *));
-int	db_load_convprintable __P((DB_ENV *, char *, char **));
-int	db_load_db_init __P((DB_ENV *, char *, u_int32_t, int *));
+int	db_load_configure __P((DB_ENV *, DB *, gchar **, gchar **, gint *));
+int	db_load_convprintable __P((DB_ENV *, gchar *, gchar **));
+int	db_load_db_init __P((DB_ENV *, gchar *, u_int32_t, gint *));
 int	db_load_dbt_rdump __P((DB_ENV *, DBT *));
 int	db_load_dbt_rprint __P((DB_ENV *, DBT *));
 int	db_load_dbt_rrecno __P((DB_ENV *, DBT *, int));
-int	db_load_digitize __P((DB_ENV *, int, int *));
+int	db_load_digitize __P((DB_ENV *, int, gint *));
 int	db_load_env_create __P((DB_ENV **, LDG *));
-int	db_load_load __P((DB_ENV *, char *, DBTYPE, char **, u_int, LDG *, int *));
-int	db_load_main __P((int, char *[]));
-int	db_load_rheader __P((DB_ENV *, DB *, DBTYPE *, char **, int *, int *));
+int	db_load_load __P((DB_ENV *, gchar *, DBTYPE, gchar **, u_int, LDG *, gint *));
+int	db_load_main __P((int, gchar *[]));
+int	db_load_rheader __P((DB_ENV *, DB *, DBTYPE *, gchar **, gint *, gint *));
 int	db_load_usage __P((void));
-int	db_load_version_check __P((const char *));
+int	db_load_version_check __P((const gchar *));
 
 #define	G(f)	((LDG *)dbenv->app_private)->f
 
@@ -65,12 +65,12 @@ int	db_load_version_check __P((const char *));
 #define	LDF_NOOVERWRITE	0x02		/* Don't overwrite existing rows. */
 #define	LDF_PASSWORD	0x04		/* Encrypt created databases. */
 
-int
+gint
 db_load(args)
-	char *args;
+	gchar *args;
 {
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 
 	__db_util_arg("db_load", args, &argc, &argv);
 	return (db_load_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -79,19 +79,19 @@ db_load(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-int
+gint
 db_load_main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind, __db_getopt_reset;
+	extern gchar *optarg;
+	extern gint optind, __db_getopt_reset;
 	DBTYPE dbtype;
 	DB_ENV	*dbenv;
 	LDG ldg;
 	u_int32_t ldf;
-	int ch, existed, exitval, ret;
-	char **clist, **clp;
+	gint ch, existed, exitval, ret;
+	gchar **clist, **clp;
 
 	ldg.progname = "db_load";
 	ldg.lineno = 0;
@@ -110,7 +110,7 @@ db_load_main(argc, argv)
 	dbtype = DB_UNKNOWN;
 
 	/* Allocate enough room for configuration arguments. */
-	if ((clp = clist = (char **)calloc(argc + 1, sizeof(char *))) == NULL) {
+	if ((clp = clist = (gchar **)calloc(argc + 1, sizeof(gchar *))) == NULL) {
 		fprintf(stderr, "%s: %s\n", ldg.progname, strerror(ENOMEM));
 		return (EXIT_FAILURE);
 	}
@@ -220,14 +220,14 @@ shutdown:	exitval = 1;
  * load --
  *	Load a database.
  */
-int
+gint
 db_load_load(dbenv, name, argtype, clist, flags, ldg, existedp)
 	DB_ENV *dbenv;
-	char *name, **clist;
+	gchar *name, **clist;
 	DBTYPE argtype;
 	u_int flags;
 	LDG *ldg;
-	int *existedp;
+	gint *existedp;
 {
 	DB *dbp;
 	DBT key, rkey, data, *readp, *writep;
@@ -235,8 +235,8 @@ db_load_load(dbenv, name, argtype, clist, flags, ldg, existedp)
 	DB_TXN *ctxn, *txn;
 	db_recno_t recno, datarecno;
 	u_int32_t put_flags;
-	int ascii_recno, checkprint, hexkeys, keyflag, keys, resize, ret, rval;
-	char *subdb;
+	gint ascii_recno, checkprint, hexkeys, keyflag, keys, resize, ret, rval;
+	gchar *subdb;
 
 	*existedp = 0;
 
@@ -380,11 +380,11 @@ retry_db:
 			key.data = &recno;
 	} else
 key_data:	if ((readp->data =
-		    (void *)malloc(readp->ulen = 1024)) == NULL) {
+		    (gpointer)malloc(readp->ulen = 1024)) == NULL) {
 			dbenv->err(dbenv, ENOMEM, NULL);
 			goto err;
 		}
-	if ((data.data = (void *)malloc(data.ulen = 1024)) == NULL) {
+	if ((data.data = (gpointer)malloc(data.ulen = 1024)) == NULL) {
 		dbenv->err(dbenv, ENOMEM, NULL);
 		goto err;
 	}
@@ -518,15 +518,15 @@ err:		rval = 1;
  * db_init --
  *	Initialize the environment.
  */
-int
+gint
 db_load_db_init(dbenv, home, cache, is_private)
 	DB_ENV *dbenv;
-	char *home;
+	gchar *home;
 	u_int32_t cache;
-	int *is_private;
+	gint *is_private;
 {
 	u_int32_t flags;
-	int ret;
+	gint ret;
 
 	*is_private = 0;
 	/* We may be loading into a live environment.  Try and join. */
@@ -600,16 +600,16 @@ db_load_db_init(dbenv, home, cache, is_private)
  * configure --
  *	Handle command-line configuration options.
  */
-int
+gint
 db_load_configure(dbenv, dbp, clp, subdbp, keysp)
 	DB_ENV *dbenv;
 	DB *dbp;
-	char **clp, **subdbp;
-	int *keysp;
+	gchar **clp, **subdbp;
+	gint *keysp;
 {
 	long val;
-	int ret, savech;
-	char *name, *value;
+	gint ret, savech;
+	gchar *name, *value;
 
 	for (; (name = *clp) != NULL; *--value = savech, ++clp) {
 		if ((value = strchr(name, '=')) == NULL) {
@@ -673,17 +673,17 @@ nameerr:
  * rheader --
  *	Read the header message.
  */
-int
+gint
 db_load_rheader(dbenv, dbp, dbtypep, subdbp, checkprintp, keysp)
 	DB_ENV *dbenv;
 	DB *dbp;
 	DBTYPE *dbtypep;
-	char **subdbp;
-	int *checkprintp, *keysp;
+	gchar **subdbp;
+	gint *checkprintp, *keysp;
 {
 	long val;
-	int ch, first, hdr, linelen, buflen, ret, start;
-	char *buf, *name, *p, *value;
+	gint ch, first, hdr, linelen, buflen, ret, start;
+	gchar *buf, *name, *p, *value;
 
 	*dbtypep = DB_UNKNOWN;
 	*checkprintp = 0;
@@ -696,7 +696,7 @@ db_load_rheader(dbenv, dbp, dbtypep, subdbp, checkprintp, keysp)
 	buflen = 4096;
 	if (G(hdrbuf) == NULL) {
 		hdr = 0;
-		if ((buf = (char *)malloc(buflen)) == NULL) {
+		if ((buf = (gchar *)malloc(buflen)) == NULL) {
 memerr:			dbp->errx(dbp, "could not allocate buffer %d", buflen);
 			return (1);
 		}
@@ -731,7 +731,7 @@ memerr:			dbp->errx(dbp, "could not allocate buffer %d", buflen);
 
 				/* If the buffer is too small, double it. */
 				if (linelen + start == buflen) {
-					G(hdrbuf) = (char *)realloc(G(hdrbuf),
+					G(hdrbuf) = (gchar *)realloc(G(hdrbuf),
 					    buflen *= 2);
 					if (G(hdrbuf) == NULL)
 						goto memerr;
@@ -881,23 +881,23 @@ badfmt:
  * allocations that aren't likely to be a problem here), and this has fewer
  * special cases to deal with.
  *
- * Note that despite the printable encoding, the char * interface to this
+ * Note that despite the printable encoding, the gchar * interface to this
  * function (which is, not coincidentally, also used for database naming)
  * means that outstr cannot contain any nuls.
  */
-int
+gint
 db_load_convprintable(dbenv, instr, outstrp)
 	DB_ENV *dbenv;
-	char *instr, **outstrp;
+	gchar *instr, **outstrp;
 {
-	char c, *outstr;
-	int e1, e2;
+	gchar c, *outstr;
+	gint e1, e2;
 
 	/*
 	 * Just malloc a string big enough for the whole input string;
 	 * the output string will be smaller (or of equal length).
 	 */
-	if ((outstr = (char *)malloc(strlen(instr))) == NULL)
+	if ((outstr = (gchar *)malloc(strlen(instr))) == NULL)
 		return (ENOMEM);
 
 	*outstrp = outstr;
@@ -929,15 +929,15 @@ db_load_convprintable(dbenv, instr, outstrp)
  * dbt_rprint --
  *	Read a printable line into a DBT structure.
  */
-int
+gint
 db_load_dbt_rprint(dbenv, dbtp)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 {
 	u_int32_t len;
 	u_int8_t *p;
-	int c1, c2, e, escape, first;
-	char buf[32];
+	gint c1, c2, e, escape, first;
+	gchar buf[32];
 
 	++G(lineno);
 
@@ -989,7 +989,7 @@ db_load_dbt_rprint(dbenv, dbtp)
 		if (len >= dbtp->ulen - 10) {
 			dbtp->ulen *= 2;
 			if ((dbtp->data =
-			    (void *)realloc(dbtp->data, dbtp->ulen)) == NULL) {
+			    (gpointer)realloc(dbtp->data, dbtp->ulen)) == NULL) {
 				dbenv->err(dbenv, ENOMEM, NULL);
 				return (1);
 			}
@@ -1007,15 +1007,15 @@ db_load_dbt_rprint(dbenv, dbtp)
  * dbt_rdump --
  *	Read a byte dump line into a DBT structure.
  */
-int
+gint
 db_load_dbt_rdump(dbenv, dbtp)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 {
 	u_int32_t len;
 	u_int8_t *p;
-	int c1, c2, e, first;
-	char buf[32];
+	gint c1, c2, e, first;
+	gchar buf[32];
 
 	++G(lineno);
 
@@ -1054,7 +1054,7 @@ db_load_dbt_rdump(dbenv, dbtp)
 		if (len >= dbtp->ulen - 10) {
 			dbtp->ulen *= 2;
 			if ((dbtp->data =
-			    (void *)realloc(dbtp->data, dbtp->ulen)) == NULL) {
+			    (gpointer)realloc(dbtp->data, dbtp->ulen)) == NULL) {
 				dbenv->err(dbenv, ENOMEM, NULL);
 				return (1);
 			}
@@ -1074,13 +1074,13 @@ db_load_dbt_rdump(dbenv, dbtp)
  * dbt_rrecno --
  *	Read a record number dump line into a DBT structure.
  */
-int
+gint
 db_load_dbt_rrecno(dbenv, dbtp, ishex)
 	DB_ENV *dbenv;
 	DBT *dbtp;
-	int ishex;
+	gint ishex;
 {
-	char buf[32], *p, *q;
+	gchar buf[32], *p, *q;
 
 	++G(lineno);
 
@@ -1133,10 +1133,10 @@ bad:		db_load_badend(dbenv);
  * digitize --
  *	Convert a character to an integer.
  */
-int
+gint
 db_load_digitize(dbenv, c, errorp)
 	DB_ENV *dbenv;
-	int c, *errorp;
+	gint c, *errorp;
 {
 	switch (c) {			/* Don't depend on ASCII ordering. */
 	case '0': return (0);
@@ -1190,7 +1190,7 @@ db_load_badend(dbenv)
  * usage --
  *	Display the usage message.
  */
-int
+gint
 db_load_usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
@@ -1199,11 +1199,11 @@ db_load_usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 db_load_version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);
@@ -1218,13 +1218,13 @@ db_load_version_check(progname)
 	return (0);
 }
 
-int
+gint
 db_load_env_create(dbenvp, ldg)
 	DB_ENV **dbenvp;
 	LDG *ldg;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	if ((ret = db_env_create(dbenvp, 0)) != 0) {
 		fprintf(stderr,

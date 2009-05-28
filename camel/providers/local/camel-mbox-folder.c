@@ -66,14 +66,14 @@ static CamelLocalFolderClass *parent_class = NULL;
 #define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 #define CMBOXS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static int mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
+static gint mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void mbox_unlock(CamelLocalFolder *lf);
 
-static void mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo * info,	char **appended_uid, CamelException *ex);
+static void mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo * info,	gchar **appended_uid, CamelException *ex);
 static CamelMimeMessage *mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex);
-static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
-static char* mbox_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
-static gint mbox_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2);
+static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
+static gchar * mbox_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static gint mbox_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void mbox_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
 static void mbox_finalise(CamelObject * object);
@@ -135,7 +135,7 @@ CamelType camel_mbox_folder_get_type(void)
 }
 
 CamelFolder *
-camel_mbox_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex)
+camel_mbox_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
 {
 	CamelFolder *folder;
 
@@ -148,12 +148,12 @@ camel_mbox_folder_new(CamelStore *parent_store, const char *full_name, guint32 f
 	return folder;
 }
 
-static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index)
+static CamelLocalSummary *mbox_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index)
 {
 	return (CamelLocalSummary *)camel_mbox_summary_new((CamelFolder *)lf, path, folder, index);
 }
 
-static int mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
+static gint mbox_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 {
 #ifndef G_OS_WIN32
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
@@ -191,18 +191,18 @@ static void mbox_unlock(CamelLocalFolder *lf)
 }
 
 static void
-mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo * info, char **appended_uid, CamelException *ex)
+mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo * info, gchar **appended_uid, CamelException *ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream = NULL, *filter_stream = NULL;
 	CamelMimeFilter *filter_from;
 	CamelMboxSummary *mbs = (CamelMboxSummary *)folder->summary;
 	CamelMessageInfo *mi;
-	char *fromline = NULL;
+	gchar *fromline = NULL;
 	struct stat st;
-	int retval;
+	gint retval;
 #if 0
-	char *xev;
+	gchar *xev;
 #endif
 	/* If we can't lock, dont do anything */
 	if (camel_local_folder_lock(lf, CAMEL_LOCK_WRITE, ex) == -1)
@@ -334,13 +334,13 @@ fail:
 	}
 }
 
-static char*
-mbox_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+static gchar *
+mbox_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMboxMessageInfo *info;
 	off_t frompos;
-	char *filename = NULL;
+	gchar *filename = NULL;
 
 	d(printf("Getting message %s\n", uid));
 
@@ -389,8 +389,8 @@ mbox_get_message(CamelFolder *folder, const gchar * uid, CamelException *ex)
 	CamelMimeMessage *message = NULL;
 	CamelMboxMessageInfo *info;
 	CamelMimeParser *parser = NULL;
-	int fd, retval;
-	int retried = FALSE;
+	gint fd, retval;
+	gint retried = FALSE;
 	off_t frompos;
 
 	d(printf("Getting message %s\n", uid));
@@ -497,7 +497,7 @@ fail:
 }
 
 static gint
-mbox_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+mbox_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
 {
 	CamelMboxMessageInfo *a, *b;
 

@@ -44,16 +44,16 @@
 
 static void namespace_clear(CamelStoreSummary *s);
 
-static int summary_header_load(CamelStoreSummary *, FILE *);
-static int summary_header_save(CamelStoreSummary *, FILE *);
+static gint summary_header_load(CamelStoreSummary *, FILE *);
+static gint summary_header_save(CamelStoreSummary *, FILE *);
 
 static CamelStoreInfo *store_info_load(CamelStoreSummary *s, FILE *in) ;
-static int store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi) ;
+static gint store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi) ;
 static void store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi) ;
-static void store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, int type, const char *str) ;
+static void store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str) ;
 
-static const char *store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type) ;
-CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s, const char *full) ;
+static const gchar *store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type) ;
+CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s, const gchar *full) ;
 
 static void camel_groupwise_store_summary_class_init (CamelGroupwiseStoreSummaryClass *klass);
 static void camel_groupwise_store_summary_init       (CamelGroupwiseStoreSummary *obj);
@@ -125,9 +125,9 @@ camel_groupwise_store_summary_new (void)
 
 
 CamelGroupwiseStoreInfo *
-camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const char *full_name)
+camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const gchar *full_name)
 {
-	int count, i;
+	gint count, i;
 	CamelGroupwiseStoreInfo *info;
 
 	count = camel_store_summary_count((CamelStoreSummary *)s);
@@ -143,12 +143,12 @@ camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const cha
 	return NULL;
 }
 
-char *
-camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const char *full_name, char dir_sep)
+gchar *
+camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
-	char *path, *p;
-	int c;
-	const char *f;
+	gchar *path, *p;
+	gint c;
+	const gchar *f;
 
 	if (dir_sep != '/') {
 		p = path = alloca(strlen(full_name)*3+1);
@@ -163,7 +163,7 @@ camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const 
 		}
 		*p = 0;
 	} else
-		path = (char *)full_name;
+		path = (gchar *)full_name;
 
 	return g_strdup (path);
 }
@@ -225,14 +225,14 @@ namespace_load(CamelStoreSummary *s, FILE *in)
 	return ns;
 }
 
-char *
-camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const char *path, char dir_sep)
+gchar *
+camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const gchar *path, gchar dir_sep)
 {
-	unsigned char *full, *f;
+	guchar *full, *f;
 	guint32 c, v = 0;
-	const char *p;
-	int state=0;
-	char *subpath, *last = NULL;
+	const gchar *p;
+	gint state=0;
+	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 	CamelGroupwiseStoreNamespace *ns;
 
@@ -265,7 +265,7 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 	else
 		p = path;
 
-	while ( (c = camel_utf8_getc((const unsigned char **)&p)) ) {
+	while ( (c = camel_utf8_getc((const guchar **)&p)) ) {
 		switch(state) {
 			case 0:
 				if (c == '%')
@@ -305,9 +305,9 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 }
 
 CamelGroupwiseStoreNamespace *
-camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s, const char *full)
+camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s, const gchar *full)
 {
-	int len;
+	gint len;
 	CamelGroupwiseStoreNamespace *ns;
 
 	/* NB: this currently only compares against 1 namespace, in future compare against others */
@@ -327,12 +327,12 @@ camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s,
 }
 
 CamelGroupwiseStoreInfo *
-camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const char *full, char dir_sep)
+camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const gchar *full, gchar dir_sep)
 {
 	CamelGroupwiseStoreInfo *info;
-	char *pathu8, *prefix;
-	int len;
-	char *full_name;
+	gchar *pathu8, *prefix;
+	gint len;
+	gchar *full_name;
 	CamelGroupwiseStoreNamespace *ns;
 
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
@@ -384,11 +384,11 @@ camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const
 	return info;
 }
 
-char *
-camel_groupwise_store_summary_full_from_path(CamelGroupwiseStoreSummary *s, const char *path)
+gchar *
+camel_groupwise_store_summary_full_from_path(CamelGroupwiseStoreSummary *s, const gchar *path)
 {
 	CamelGroupwiseStoreNamespace *ns;
-	char *name = NULL;
+	gchar *name = NULL;
 
 	ns = camel_groupwise_store_summary_namespace_find_path(s, path);
 	if (ns)
@@ -400,11 +400,11 @@ camel_groupwise_store_summary_full_from_path(CamelGroupwiseStoreSummary *s, cons
 }
 
 CamelGroupwiseStoreNamespace *
-camel_groupwise_store_summary_namespace_new(CamelGroupwiseStoreSummary *s, const char *full_name, char dir_sep)
+camel_groupwise_store_summary_namespace_new(CamelGroupwiseStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
 	CamelGroupwiseStoreNamespace *ns;
-	char *p, *o, c;
-	int len;
+	gchar *p, *o, c;
+	gint len;
 
 	ns = g_malloc0(sizeof(*ns));
 	ns->full_name = g_strdup(full_name);
@@ -436,9 +436,9 @@ camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, Camel
 }
 
 CamelGroupwiseStoreNamespace *
-camel_groupwise_store_summary_namespace_find_path(CamelGroupwiseStoreSummary *s, const char *path)
+camel_groupwise_store_summary_namespace_find_path(CamelGroupwiseStoreSummary *s, const gchar *path)
 {
-	int len;
+	gint len;
 	CamelGroupwiseStoreNamespace *ns;
 
 	/* NB: this currently only compares against 1 namespace, in future compare against others */
@@ -548,8 +548,8 @@ store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi)
 
 
 
-static const char *
-store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
+static const gchar *
+store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 {
 	CamelGroupwiseStoreInfo *isi = (CamelGroupwiseStoreInfo *)mi;
 
@@ -566,7 +566,7 @@ store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
 }
 
 static void
-store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, int type, const char *str)
+store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
 {
 	CamelGroupwiseStoreInfo *isi = (CamelGroupwiseStoreInfo *)mi;
 

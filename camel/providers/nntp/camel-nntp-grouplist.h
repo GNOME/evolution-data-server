@@ -30,7 +30,7 @@
 G_BEGIN_DECLS
 
 struct CamelNNTPGroupListEntry {
-	char *group_name;
+	gchar *group_name;
 	guint32 low;
 	guint32 high;
 	guint32 flags;

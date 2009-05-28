@@ -34,7 +34,7 @@
 #include "camel-test.h"
 
 struct {
-	char *text, *url;
+	gchar *text, *url;
 } url_tests[] = {
 	{ "bob@foo.com", "mailto:bob@foo.com" },
 	{ "Ends with bob@foo.com", "mailto:bob@foo.com" },
@@ -83,12 +83,12 @@ struct {
 
 };
 
-static int num_url_tests = G_N_ELEMENTS (url_tests);
+static gint num_url_tests = G_N_ELEMENTS (url_tests);
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
-	char *html, *url, *p;
-	int i, errors = 0;
+	gchar *html, *url, *p;
+	gint i, errors = 0;
 	guint32 flags;
 
 	camel_test_init (argc, argv);

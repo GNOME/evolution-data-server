@@ -26,9 +26,9 @@ typedef struct _CamelTestSessionClass {
 } CamelTestSessionClass;
 
 
-static char *get_password (CamelSession *session, const char *prompt,
+static gchar *get_password (CamelSession *session, const gchar *prompt,
 			   guint32 flags, CamelService *service,
-			   const char *item, CamelException *ex);
+			   const gchar *item, CamelException *ex);
 
 static void
 init (CamelTestSession *session)
@@ -66,15 +66,15 @@ camel_test_session_get_type (void)
 	return type;
 }
 
-static char *
-get_password (CamelSession *session, const char *prompt, guint32 flags,
-	      CamelService *service, const char *item, CamelException *ex)
+static gchar *
+get_password (CamelSession *session, const gchar *prompt, guint32 flags,
+	      CamelService *service, const gchar *item, CamelException *ex)
 {
 	return g_strdup ("S/MIME v3 is rfc263x, now go and read them.");
 }
 
 static CamelSession *
-camel_test_session_new (const char *path)
+camel_test_session_new (const gchar *path)
 {
 	CamelSession *session;
 
@@ -86,7 +86,7 @@ camel_test_session_new (const char *path)
 }
 
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelSMimeContext *ctx;
@@ -95,7 +95,7 @@ int main (int argc, char **argv)
 	CamelStream *stream1, *stream2, *stream3;
 	GPtrArray *recipients;
 	GByteArray *buf;
-	char *before, *after;
+	gchar *before, *after;
 
 	camel_test_init (argc, argv);
 

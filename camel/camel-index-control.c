@@ -21,7 +21,7 @@
 #include "camel-text-index.h"
 
 static void
-do_usage(char *argv0)
+do_usage(gchar *argv0)
 {
 	fprintf(stderr, "Usage: %s [ compress | dump | info ] file(s) ...\n", argv0);
 	fprintf(stderr, " compress - compress (an) index file(s)\n");
@@ -31,9 +31,9 @@ do_usage(char *argv0)
 }
 
 static int
-do_compress(int argc, char **argv)
+do_compress(gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 	CamelIndex *idx;
 
 	for (i=2;i<argc;i++) {
@@ -55,9 +55,9 @@ do_compress(int argc, char **argv)
 }
 
 static int
-do_dump(int argc, char **argv)
+do_dump(gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 	CamelIndex *idx;
 
 	for (i=2;i<argc;i++) {
@@ -76,9 +76,9 @@ do_dump(int argc, char **argv)
 }
 
 static int
-do_info(int argc, char **argv)
+do_info(gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 	CamelIndex *idx;
 
 	for (i=2;i<argc;i++) {
@@ -96,9 +96,9 @@ do_info(int argc, char **argv)
 }
 
 static int
-do_check(int argc, char **argv)
+do_check(gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 	CamelIndex *idx;
 
 	for (i=2;i<argc;i++) {
@@ -115,11 +115,11 @@ do_check(int argc, char **argv)
 	return 1;
 }
 
-static int do_perf(int argc, char **argv);
+static gint do_perf(gint argc, gchar **argv);
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
-	extern int camel_init(const char *certdb_dir, gboolean nss_init);
+	extern gint camel_init(const gchar *certdb_dir, gboolean nss_init);
 
 	if (argc<2)
 		do_usage(argv[0]);
@@ -150,15 +150,15 @@ int main(int argc, char **argv)
 #include "camel-stream-fs.h"
 
 static int
-do_perf(int argc, char **argv)
+do_perf(gint argc, gchar **argv)
 {
 	CamelIndex *idx;
 	DIR *dir;
-	char *path = "/home/notzed/evolution/local/Inbox/mbox/cur";
+	gchar *path = "/home/notzed/evolution/local/Inbox/mbox/cur";
 	struct dirent *d;
 	CamelStream *null, *filter, *stream;
 	CamelMimeFilterIndex *filter_index;
-	char *name;
+	gchar *name;
 	CamelIndexName *idn;
 
 	dir = opendir(path);

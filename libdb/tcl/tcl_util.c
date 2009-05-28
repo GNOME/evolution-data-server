@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,21 +26,21 @@ static const char revid[] = "$Id$";
 /*
  * Prototypes for procedures defined later in this file:
  */
-static int mutex_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+static gint mutex_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
 
 /*
  * bdb_RandCommand --
  *	Implements rand* functions.
  *
- * PUBLIC: int bdb_RandCommand __P((Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: gint bdb_RandCommand __P((Tcl_Interp *, int, Tcl_Obj * CONST*));
  */
-int
+gint
 bdb_RandCommand(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *rcmds[] = {
+	static gchar *rcmds[] = {
 		"rand",	"random_int",	"srand",
 		NULL
 	};
@@ -48,9 +48,9 @@ bdb_RandCommand(interp, objc, objv)
 		RRAND, RRAND_INT, RSRAND
 	};
 	long t;
-	int cmdindex, hi, lo, result, ret;
+	gint cmdindex, hi, lo, result, ret;
 	Tcl_Obj *res;
-	char msg[MSG_SIZE];
+	gchar msg[MSG_SIZE];
 
 	result = TCL_OK;
 	/*
@@ -136,13 +136,13 @@ bdb_RandCommand(interp, objc, objv)
  * tcl_Mutex --
  *	Opens an env mutex.
  *
- * PUBLIC: int tcl_Mutex __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *,
+ * PUBLIC: gint tcl_Mutex __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *,
  * PUBLIC:    DBTCL_INFO *));
  */
-int
+gint
 tcl_Mutex(interp, objc, objv, envp, envip)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 	DBTCL_INFO *envip;		/* Info pointer */
@@ -150,8 +150,8 @@ tcl_Mutex(interp, objc, objv, envp, envip)
 	DBTCL_INFO *ip;
 	Tcl_Obj *res;
 	_MUTEX_DATA *md;
-	int i, mode, nitems, result, ret;
-	char newname[MSG_SIZE];
+	gint i, mode, nitems, result, ret;
+	gchar newname[MSG_SIZE];
 
 	md = NULL;
 	result = TCL_OK;
@@ -250,10 +250,10 @@ static int
 mutex_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Mutex handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *mxcmds[] = {
+	static gchar *mxcmds[] = {
 		"close",
 		"get",
 		"getval",
@@ -272,11 +272,11 @@ mutex_Cmd(clientData, interp, objc, objv)
 	DBTCL_INFO *envip, *mpip;
 	_MUTEX_DATA *mp;
 	Tcl_Obj *res;
-	int cmdindex, id, result, newval;
+	gint cmdindex, id, result, newval;
 
 	Tcl_ResetResult(interp);
 	mp = (_MUTEX_DATA *)clientData;
-	mpip = _PtrToInfo((void *)mp);
+	mpip = _PtrToInfo((gpointer)mp);
 	envip = mpip->i_parent;
 	dbenv = envip->i_envp;
 	result = TCL_OK;

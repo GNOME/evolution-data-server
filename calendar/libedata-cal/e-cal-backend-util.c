@@ -40,7 +40,7 @@ static EAccountList *accounts;
  * Return value: TRUE if there is a default account, FALSE otherwise.
  */
 gboolean
-e_cal_backend_mail_account_get_default (char **address, char **name)
+e_cal_backend_mail_account_get_default (gchar **address, gchar **name)
 {
 	const EAccount *account;
 
@@ -71,7 +71,7 @@ e_cal_backend_mail_account_get_default (char **address, char **name)
  * Return value: TRUE if the account is valid, FALSE if not.
  */
 gboolean
-e_cal_backend_mail_account_is_valid (char *user, char **name)
+e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
 {
 	const EAccount *account;
 
@@ -95,7 +95,7 @@ e_cal_backend_mail_account_is_valid (char *user, char **name)
  *
  * Converts status code to string.
  **/
-const char *
+const gchar *
 e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)
 {
 	switch (status) {
@@ -159,7 +159,7 @@ e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)
  *         It's not necessary to have this attendee in the list.
  **/
 static gboolean
-is_attendee_declined (icalcomponent *icalcomp, const char *email)
+is_attendee_declined (icalcomponent *icalcomp, const gchar *email)
 {
 	icalproperty *prop;
 	icalparameter *param;
@@ -170,8 +170,8 @@ is_attendee_declined (icalcomponent *icalcomp, const char *email)
 	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
 	     prop != NULL;
 	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
-		char *attendee;
-		char *text = NULL;
+		gchar *attendee;
+		gchar *text = NULL;
 
 		attendee = icalproperty_get_value_as_string_r (prop);
 		if (!attendee)

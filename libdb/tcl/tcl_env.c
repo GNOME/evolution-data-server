@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,23 +26,23 @@ static const char revid[] = "$Id$";
  * Prototypes for procedures defined later in this file:
  */
 static void _EnvInfoDelete __P((Tcl_Interp *, DBTCL_INFO *));
-static int  env_DbRemove __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
-static int  env_DbRename __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+static gint  env_DbRemove __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+static gint  env_DbRename __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
 
 /*
- * PUBLIC: int env_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: gint env_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
  *
  * env_Cmd --
  *	Implements the "env" command.
  */
-int
+gint
 env_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Env handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *envcmds[] = {
+	static gchar *envcmds[] = {
 #if CONFIG_TEST
 		"attributes",
 		"lock_detect",
@@ -137,8 +137,8 @@ env_Cmd(clientData, interp, objc, objv)
 	DB_ENV *dbenv;
 	DB_LOGC *logc;
 	Tcl_Obj *res;
-	char newname[MSG_SIZE];
-	int cmdindex, result, ret;
+	gchar newname[MSG_SIZE];
+	gint cmdindex, result, ret;
 	u_int32_t newval;
 #if CONFIG_TEST
 	u_int32_t otherval;
@@ -146,7 +146,7 @@ env_Cmd(clientData, interp, objc, objv)
 
 	Tcl_ResetResult(interp);
 	dbenv = (DB_ENV *)clientData;
-	envip = _PtrToInfo((void *)dbenv);
+	envip = _PtrToInfo((gpointer)dbenv);
 	result = TCL_OK;
 	memset(newname, 0, MSG_SIZE);
 
@@ -419,20 +419,20 @@ env_Cmd(clientData, interp, objc, objv)
 }
 
 /*
- * PUBLIC: int tcl_EnvRemove __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
+ * PUBLIC: gint tcl_EnvRemove __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
  * PUBLIC:      DB_ENV *, DBTCL_INFO *));
  *
  * tcl_EnvRemove --
  */
-int
+gint
 tcl_EnvRemove(interp, objc, objv, dbenv, envip)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Env pointer */
 	DBTCL_INFO *envip;		/* Info pointer */
 {
-	static char *envremopts[] = {
+	static gchar *envremopts[] = {
 #if CONFIG_TEST
 		"-overwrite",
 		"-server",
@@ -465,8 +465,8 @@ tcl_EnvRemove(interp, objc, objv, dbenv, envip)
 	};
 	DB_ENV *e;
 	u_int32_t cflag, enc_flag, flag, forceflag, sflag;
-	int i, optindex, result, ret;
-	char *datadir, *home, *logdir, *passwd, *server, *tmpdir;
+	gint i, optindex, result, ret;
+	gchar *datadir, *home, *logdir, *passwd, *server, *tmpdir;
 
 	result = TCL_OK;
 	cflag = flag = forceflag = sflag = 0;
@@ -716,19 +716,19 @@ _EnvInfoDelete(interp, envip)
 
 #if CONFIG_TEST
 /*
- * PUBLIC: int tcl_EnvVerbose __P((Tcl_Interp *, DB_ENV *, Tcl_Obj *,
+ * PUBLIC: gint tcl_EnvVerbose __P((Tcl_Interp *, DB_ENV *, Tcl_Obj *,
  * PUBLIC:    Tcl_Obj *));
  *
  * tcl_EnvVerbose --
  */
-int
+gint
 tcl_EnvVerbose(interp, dbenv, which, onoff)
 	Tcl_Interp *interp;		/* Interpreter */
 	DB_ENV *dbenv;			/* Env pointer */
 	Tcl_Obj *which;			/* Which subsystem */
 	Tcl_Obj *onoff;			/* On or off */
 {
-	static char *verbwhich[] = {
+	static gchar *verbwhich[] = {
 		"chkpt",
 		"deadlock",
 		"recovery",
@@ -743,7 +743,7 @@ tcl_EnvVerbose(interp, dbenv, which, onoff)
 		ENVVERB_REP,
 		ENVVERB_WAIT
 	};
-	static char *verbonoff[] = {
+	static gchar *verbonoff[] = {
 		"off",
 		"on",
 		NULL
@@ -752,7 +752,7 @@ tcl_EnvVerbose(interp, dbenv, which, onoff)
 		ENVVERB_OFF,
 		ENVVERB_ON
 	};
-	int on, optindex, ret;
+	gint on, optindex, ret;
 	u_int32_t wh;
 
 	if (Tcl_GetIndexFromObj(interp, which, verbwhich, "option",
@@ -799,19 +799,19 @@ tcl_EnvVerbose(interp, dbenv, which, onoff)
 
 #if	CONFIG_TEST
 /*
- * PUBLIC: int tcl_EnvAttr __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+ * PUBLIC: gint tcl_EnvAttr __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
  *
  * tcl_EnvAttr --
  *	Return a list of the env's attributes
  */
-int
+gint
 tcl_EnvAttr(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Env pointer */
 {
-	int result;
+	gint result;
 	Tcl_Obj *myobj, *retlist;
 
 	result = TCL_OK;
@@ -882,18 +882,18 @@ err:
 }
 
 /*
- * PUBLIC: int tcl_EnvTest __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+ * PUBLIC: gint tcl_EnvTest __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
  *
  * tcl_EnvTest --
  */
-int
+gint
 tcl_EnvTest(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Env pointer */
 {
-	static char *envtestcmd[] = {
+	static gchar *envtestcmd[] = {
 		"abort",
 		"copy",
 		NULL
@@ -902,7 +902,7 @@ tcl_EnvTest(interp, objc, objv, dbenv)
 		ENVTEST_ABORT,
 		ENVTEST_COPY
 	};
-	static char *envtestat[] = {
+	static gchar *envtestat[] = {
 		"electinit",
 		"electsend",
 		"electvote1",
@@ -937,7 +937,7 @@ tcl_EnvTest(interp, objc, objv, dbenv)
 		ENVTEST_POSTSYNC,
 		ENVTEST_SUBDB_LOCKS
 	};
-	int *loc, optindex, result, testval;
+	gint *loc, optindex, result, testval;
 
 	result = TCL_OK;
 	loc = NULL;
@@ -1046,11 +1046,11 @@ tcl_EnvTest(interp, objc, objv, dbenv)
 static int
 env_DbRemove(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;
 {
-	static char *envdbrem[] = {
+	static gchar *envdbrem[] = {
 		"-auto_commit",
 		"-txn",
 		"--",
@@ -1063,9 +1063,9 @@ env_DbRemove(interp, objc, objv, dbenv)
 	};
 	DB_TXN *txn;
 	u_int32_t flag;
-	int endarg, i, optindex, result, ret, subdblen;
+	gint endarg, i, optindex, result, ret, subdblen;
 	u_char *subdbtmp;
-	char *arg, *db, *subdb, msg[MSG_SIZE];
+	gchar *arg, *db, *subdb, msg[MSG_SIZE];
 
 	txn = NULL;
 	result = TCL_OK;
@@ -1174,11 +1174,11 @@ error:
 static int
 env_DbRename(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;
 {
-	static char *envdbmv[] = {
+	static gchar *envdbmv[] = {
 		"-auto_commit",
 		"-txn",
 		"--",
@@ -1191,9 +1191,9 @@ env_DbRename(interp, objc, objv, dbenv)
 	};
 	DB_TXN *txn;
 	u_int32_t flag;
-	int endarg, i, newlen, optindex, result, ret, subdblen;
+	gint endarg, i, newlen, optindex, result, ret, subdblen;
 	u_char *subdbtmp;
-	char *arg, *db, *newname, *subdb, msg[MSG_SIZE];
+	gchar *arg, *db, *newname, *subdb, msg[MSG_SIZE];
 
 	txn = NULL;
 	result = TCL_OK;

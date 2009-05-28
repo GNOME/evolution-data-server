@@ -33,14 +33,14 @@ struct _CamelMimeMessage;
 struct _CamelJunkPlugin
 {
 	/* junk filter human readable name, translated */
-	const char * (*get_name) (struct _CamelJunkPlugin *csp);
+	const gchar * (*get_name) (struct _CamelJunkPlugin *csp);
 
 	/* should be set to 1 */
-	int api_version;
+	gint api_version;
 
 	/* when called, it should return TRUE if message is identified as junk,
 	   FALSE otherwise */
-	int (*check_junk) (struct _CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
+	gint (*check_junk) (struct _CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 
 	/* called when user identified a message to be junk */
 	void (*report_junk) (struct _CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
@@ -55,8 +55,8 @@ struct _CamelJunkPlugin
 	void (*init) (struct _CamelJunkPlugin *csp);
 };
 
-const char * camel_junk_plugin_get_name (CamelJunkPlugin *csp);
-int camel_junk_plugin_check_junk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
+const gchar * camel_junk_plugin_get_name (CamelJunkPlugin *csp);
+gint camel_junk_plugin_check_junk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 void camel_junk_plugin_report_junk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 void camel_junk_plugin_report_notjunk (CamelJunkPlugin *csp, struct _CamelMimeMessage *message);
 void camel_junk_plugin_commit_reports (CamelJunkPlugin *csp);

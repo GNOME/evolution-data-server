@@ -38,16 +38,16 @@
 #ifdef TEST_MAIN
 #include <sqlite3.h>
 
-char * camel_db_get_column_name (const char *raw_name);
+gchar * camel_db_get_column_name (const gchar *raw_name);
 
-char *
-camel_db_sqlize_string (const char *string)
+gchar *
+camel_db_sqlize_string (const gchar *string)
 {
 	return sqlite3_mprintf ("%Q", string);
 }
 
 void
-camel_db_free_sqlized_string (char *string)
+camel_db_free_sqlized_string (gchar *string)
 {
 	sqlite3_free (string);
 	string = NULL;
@@ -55,7 +55,7 @@ camel_db_free_sqlized_string (char *string)
 #else
 #include "camel-db.h"
 #endif
-char * escape_values (char *str);
+gchar * escape_values (gchar *str);
 
 static GScannerConfig config =
         {
@@ -96,21 +96,21 @@ static GScannerConfig config =
         };
 
 typedef struct Node {
-	char *token; /* Token to search*/
-	char *exact_token; /* Token to substitute */
-	int nodes; /* Number of nodes to process */
-	char pre_token; /* Pre token to prepend with value substitute*/
-	char post_token; /* post token to apppend with substitute */
-	char rval; /* rhs value for binary ops */
-	int level; /* depth in the hier */
-	int prefix:1 ; /* unary operator to be searched ?*/
-	int sys_node:1 ; /* is it a predefined term ? */
-	int ignore_lhs:1; /* ignore lhs value ?*/
-	int swap :1;
-	int prenode :1;
-	int operator:1;
-	int execute:1;
-	int ref;
+	gchar *token; /* Token to search*/
+	gchar *exact_token; /* Token to substitute */
+	gint nodes; /* Number of nodes to process */
+	gchar pre_token; /* Pre token to prepend with value substitute*/
+	gchar post_token; /* post token to apppend with substitute */
+	gchar rval; /* rhs value for binary ops */
+	gint level; /* depth in the hier */
+	gint prefix:1 ; /* unary operator to be searched ?*/
+	gint sys_node:1 ; /* is it a predefined term ? */
+	gint ignore_lhs:1; /* ignore lhs value ?*/
+	gint swap :1;
+	gint prenode :1;
+	gint operator:1;
+	gint execute:1;
+	gint ref;
 }Node;
 
 /*
@@ -175,7 +175,7 @@ static void
 g_list_dump (GList *l)
 {
 	while (l) {
-		 printf("%s\t", (char *)l->data);
+		 printf("%s\t", (gchar *)l->data);
 		l = l->next;
 	}
 }
@@ -194,11 +194,11 @@ g_node_dump (GList *l)
 
 }
 
-char *
-escape_values (char *str)
+gchar *
+escape_values (gchar *str)
 {
-	char *sql = camel_db_sqlize_string (g_strstrip(str));
-	 char *ret = g_strdup (sql);
+	gchar *sql = camel_db_sqlize_string (g_strstrip(str));
+	 gchar *ret = g_strdup (sql);
 
 	 camel_db_free_sqlized_string (sql);
 	 /* I dont want to manage sql strings here */
@@ -214,12 +214,12 @@ escape_values (char *str)
  * This is very specific to Evolution. It might crash is the sexp is invalid. The callers must ensure that the sexp is valid
  **/
 
-char *
-camel_sexp_to_sql (const char *txt)
+gchar *
+camel_sexp_to_sql (const gchar *txt)
 {
 	GScanner *scanner = g_scanner_new (&config);
-	char *sql=NULL;
-	int level = 0;
+	gchar *sql=NULL;
+	gint level = 0;
 	GList *tlist;
 	GList *operators=NULL, *operands=NULL, *all=NULL, *preserve=NULL;
 	GList *tmp;
@@ -235,12 +235,12 @@ camel_sexp_to_sql (const char *txt)
 	g_scanner_input_text (scanner, txt, strlen(txt));
 	while (!g_scanner_eof (scanner)) {
 		Node *mnode;
-		int new_level = -1;
+		gint new_level = -1;
 		guint token = g_scanner_get_next_token (scanner);
 
 		/* Extract and identify tokens */
 		if (token == G_TOKEN_IDENTIFIER || token == G_TOKEN_STRING) {
-			char *token = scanner->value.v_string;
+			gchar *token = scanner->value.v_string;
 
 			d(printf("token %s\n", token));
 			if (g_ascii_strcasecmp (token, "and") == 0 ||
@@ -258,7 +258,7 @@ camel_sexp_to_sql (const char *txt)
 				all = g_list_prepend (all, node);
 			} else {
 				/* Should be operand*/
-				int i;
+				gint i;
 				Node *node;
 
 				for (i=0; i < G_N_ELEMENTS(elements); i++) {
@@ -359,9 +359,9 @@ camel_sexp_to_sql (const char *txt)
 			operators = g_list_prepend (operators, node);
 			all = g_list_prepend (all, node);
 		} else if (token == '+') {
-			char *astr=NULL, *bstr=NULL;
+			gchar *astr=NULL, *bstr=NULL;
 			Node *node, *pnode = operands->data;
-			int lvl=0, lval=0;
+			gint lvl=0, lval=0;
 
 			if (g_ascii_strcasecmp (pnode->token, "user-flag") == 0) {
 				    /* Colloct all after '+' and append them to one token. Go till you find ')' */
@@ -419,9 +419,9 @@ camel_sexp_to_sql (const char *txt)
 			new_level = -1;
 			level--;
 		} else if (token == '-') {
-			char *bstr=NULL;
+			gchar *bstr=NULL;
 			Node *node, *pnode = operands->data;
-			int lvl=0, lval=0;
+			gint lvl=0, lval=0;
 
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
 			token = g_scanner_get_next_token (scanner) ;
@@ -506,7 +506,7 @@ camel_sexp_to_sql (const char *txt)
 			/* If we reach the operating level, which is the exec min for last seen sys-header */
 			if (mnode->nodes == 1) {
 				/* lets evaluate */
-				int len = 2;
+				gint len = 2;
 				Node *pnode;
 
 
@@ -537,11 +537,11 @@ camel_sexp_to_sql (const char *txt)
 					pnode = NULL;
 
 				if (len == 3) {
-					char *prefix = NULL;
-					char *str, *sqstr, *escstr;
-					int dyn_lvl;
+					gchar *prefix = NULL;
+					gchar *str, *sqstr, *escstr;
+					gint dyn_lvl;
 					Node *opnode = operators->data;
-					char *temp_op="";
+					gchar *temp_op="";
 
 					if (n3->level < n2->level)
 						dyn_lvl = n2->level;
@@ -559,7 +559,7 @@ camel_sexp_to_sql (const char *txt)
 						if ((g_ascii_strcasecmp (n2->exact_token,  "follow-up") == 0) ||
 						    (g_ascii_strcasecmp (n2->exact_token,  "completed-on") == 0)) {
 							/* swap */
-							char *temp = n2->exact_token;
+							gchar *temp = n2->exact_token;
 							n2->exact_token = n1->exact_token;
 							n1->exact_token = temp;
 							temp = n2->exact_token;
@@ -593,7 +593,7 @@ camel_sexp_to_sql (const char *txt)
 						if ((g_ascii_strcasecmp (n2->exact_token,  "follow-up") == 0) ||
 						    (g_ascii_strcasecmp (n2->exact_token,  "completed-on") == 0)) {
 							/* swap */
-							char *temp = n2->exact_token;
+							gchar *temp = n2->exact_token;
 							n2->exact_token = n1->exact_token;
 							n1->exact_token = temp;
 							temp = n2->exact_token;
@@ -647,10 +647,10 @@ camel_sexp_to_sql (const char *txt)
 					d(printf("Pushed %s\n", n3->exact_token));
 					all = g_list_prepend (all, n3);
 				} else {
-					char prefix = 0;
-					char *str, *estr;
+					gchar prefix = 0;
+					gchar *str, *estr;
 					Node *opnode = operators ? operators->data : NULL;
-					int dyn_lvl = n1->level;
+					gint dyn_lvl = n1->level;
 
 					if (n2->prefix && opnode && g_ascii_strcasecmp (opnode->token, "not") == 0) {
 						prefix = '!';
@@ -809,7 +809,7 @@ camel_sexp_to_sql (const char *txt)
 				  } else {
 					  /* 'not' is a valid single operand */
 					   Node *n = res->data;
-					   char *str = g_strdup_printf("NOT ( %s )", n->exact_token);
+					   gchar *str = g_strdup_printf("NOT ( %s )", n->exact_token);
 					   g_free (n->exact_token);
 					   n->exact_token = str;
 					   all = g_list_prepend (all, n);
@@ -911,7 +911,7 @@ dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-curr
 //followup_due_by TEXT ," //NOTREQD
 */
 
-char * camel_db_get_column_name (const char *raw_name)
+gchar * camel_db_get_column_name (const gchar *raw_name)
 {
 	d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name));
 	if (!g_ascii_strcasecmp (raw_name, "Subject"))
@@ -951,11 +951,11 @@ char * camel_db_get_column_name (const char *raw_name)
 
 }
 
-int main ()
+gint main ()
 {
 
-	int i=0;
-	char *txt[] = {
+	gint i=0;
+	gchar *txt[] = {
 	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))",
 	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))",
 	"(and  (and   (match-all (header-exists \"From\"))   )  (match-all (not (system-flag \"junk\"))))",
@@ -995,7 +995,7 @@ int main ()
 	};
 
 	for (i=0; i < G_N_ELEMENTS(txt); i++) {
-		char *sql;
+		gchar *sql;
 		printf("Q: %s\n\n", txt[i]);
 		sql = camel_sexp_to_sql (txt[i]);
 		printf("A: %s\n\n\n", sql);

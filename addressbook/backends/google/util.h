@@ -40,6 +40,6 @@ EContact*   _e_contact_new_from_gdata_entry    (GDataEntry *entry);
 void        _e_contact_add_gdata_entry_xml     (EContact   *contact,
                                                 GDataEntry *entry);
 void        _e_contact_remove_gdata_entry_xml  (EContact   *contact);
-const char* _e_contact_get_gdata_entry_xml     (EContact *contact);
+const gchar * _e_contact_get_gdata_entry_xml     (EContact *contact);
 
 #endif

@@ -64,21 +64,21 @@ static void camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass);
 static void camel_imap4_folder_init (CamelIMAP4Folder *folder, CamelIMAP4FolderClass *klass);
 static void camel_imap4_folder_finalize (CamelObject *object);
 
-static int imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
-static int imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
 
 static void imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex);
 static void imap4_refresh_info (CamelFolder *folder, CamelException *ex);
 static void imap4_expunge (CamelFolder *folder, CamelException *ex);
-static CamelMimeMessage *imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex);
+static CamelMimeMessage *imap4_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex);
 static void imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
-				  const CamelMessageInfo *info, char **appended_uid, CamelException *ex);
+				  const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex);
 static void imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest,
 					GPtrArray **transferred_uids, gboolean move, CamelException *ex);
-static GPtrArray *imap4_search_by_expression (CamelFolder *folder, const char *expr, CamelException *ex);
-static GPtrArray *imap4_search_by_uids (CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex);
+static GPtrArray *imap4_search_by_expression (CamelFolder *folder, const gchar *expr, CamelException *ex);
+static GPtrArray *imap4_search_by_uids (CamelFolder *folder, const gchar *expr, GPtrArray *uids, CamelException *ex);
 static void imap4_search_free (CamelFolder *folder, GPtrArray *uids);
-static char* imap4_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
+static gchar * imap4_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
 
 static CamelOfflineFolderClass *parent_class = NULL;
 
@@ -116,7 +116,7 @@ camel_imap4_folder_class_init (CamelIMAP4FolderClass *klass)
 {
 	CamelFolderClass *folder_class = (CamelFolderClass *) klass;
 	CamelObjectClass *object_class = (CamelObjectClass *) klass;
-	int i;
+	gint i;
 
 	parent_class = (CamelOfflineFolderClass *) camel_type_get_global_classfuncs (CAMEL_OFFLINE_FOLDER_TYPE);
 
@@ -171,8 +171,8 @@ camel_imap4_folder_finalize (CamelObject *object)
 	g_free (folder->cachedir);
 }
 
-static char*
-imap4_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+static gchar *
+imap4_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 
@@ -184,7 +184,7 @@ imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
 	CamelArgGetV props;
-	int i, count = 0;
+	gint i, count = 0;
 	guint32 tag;
 
 	for (i = 0; i < args->argc; i++) {
@@ -230,7 +230,7 @@ imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 	CamelDataCache *cache = folder->cache;
 	gboolean save = FALSE;
 	guint32 tag;
-	int i;
+	gint i;
 
 	for (i = 0; i < args->argc; i++) {
 		CamelArg *arg = &args->argv[i];
@@ -270,26 +270,26 @@ imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 }
 
 
-static char *
-imap4_get_summary_filename (const char *path)
+static gchar *
+imap4_get_summary_filename (const gchar *path)
 {
 	/* /path/to/imap/summary */
 	return g_build_filename (path, "summary", NULL);
 }
 
-static char *
-imap4_get_journal_filename (const char *path)
+static gchar *
+imap4_get_journal_filename (const gchar *path)
 {
 	/* /path/to/imap/journal */
 	return g_build_filename (path, "journal", NULL);
 }
 
-static char *
-imap4_build_filename (const char *toplevel_dir, const char *full_name)
+static gchar *
+imap4_build_filename (const gchar *toplevel_dir, const gchar *full_name)
 {
-	const char *inptr = full_name;
-	int subdirs = 0;
-	char *path, *p;
+	const gchar *inptr = full_name;
+	gint subdirs = 0;
+	gchar *path, *p;
 
 	if (*full_name == '\0')
 		return g_strdup (toplevel_dir);
@@ -326,12 +326,12 @@ imap4_build_filename (const char *toplevel_dir, const char *full_name)
 	return path;
 }
 
-static char *
-imap4_store_build_filename (void *store, const char *full_name)
+static gchar *
+imap4_store_build_filename (gpointer store, const gchar *full_name)
 {
 	CamelIMAP4Store *imap4_store = (CamelIMAP4Store *) store;
-	char *toplevel_dir;
-	char *path;
+	gchar *toplevel_dir;
+	gchar *path;
 
 	toplevel_dir = g_strdup_printf ("%s/folders", imap4_store->storage_path);
 	path = imap4_build_filename (toplevel_dir, full_name);
@@ -342,16 +342,16 @@ imap4_store_build_filename (void *store, const char *full_name)
 
 
 CamelFolder *
-camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException *ex)
+camel_imap4_folder_new (CamelStore *store, const gchar *full_name, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder;
-	char *utf7_name, *name, *p;
+	gchar *utf7_name, *name, *p;
 	CamelFolder *folder;
-	char *path;
-	char sep;
+	gchar *path;
+	gchar sep;
 
 	if (!(p = strrchr (full_name, '/')))
-		p = (char *) full_name;
+		p = (gchar *) full_name;
 	else
 		p++;
 
@@ -440,7 +440,7 @@ camel_imap4_folder_new (CamelStore *store, const char *full_name, CamelException
 	return folder;
 }
 
-const char *
+const gchar *
 camel_imap4_folder_utf7_name (CamelIMAP4Folder *folder)
 {
 	return folder->utf7_name;
@@ -448,7 +448,7 @@ camel_imap4_folder_utf7_name (CamelIMAP4Folder *folder)
 
 
 static struct {
-	const char *name;
+	const gchar *name;
 	guint32 flag;
 } imap4_flags[] = {
 	{ "\\Answered", CAMEL_MESSAGE_ANSWERED  },
@@ -461,12 +461,12 @@ static struct {
 
 
 static int
-imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, char onoff, const char *flag, CamelException *ex)
+imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, gchar onoff, const gchar *flag, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 	CamelIMAP4Command *ic;
-	int i, id, retval = 0;
-	char *set = NULL;
+	gint i, id, retval = 0;
+	gchar *set = NULL;
 
 	for (i = 0; i < infos->len; ) {
 		i += camel_imap4_get_uid_set (engine, folder->summary, infos, i, 30 + strlen (flag), &set);
@@ -516,8 +516,8 @@ imap4_sync_changes (CamelFolder *folder, GPtrArray *sync, CamelException *ex)
 	GPtrArray *on_set, *off_set;
 	CamelMessageInfo *info;
 	flags_diff_t diff;
-	int retval = 0;
-	int i, j;
+	gint retval = 0;
+	gint i, j;
 
 	on_set = g_ptr_array_new ();
 	off_set = g_ptr_array_new ();
@@ -579,8 +579,8 @@ imap4_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CamelIMAP4Command *ic;
 	flags_diff_t diff;
 	GPtrArray *sync;
-	int id, max, i;
-	int retval;
+	gint id, max, i;
+	gint retval;
 
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
@@ -669,7 +669,7 @@ imap4_refresh_info (CamelFolder *folder, CamelException *ex)
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
 	CamelFolder *selected = (CamelFolder *) engine->folder;
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
@@ -800,7 +800,7 @@ untagged_fetch (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, 
 }
 
 static CamelMimeMessage *
-imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
+imap4_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
@@ -808,7 +808,7 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	CamelMimeMessage *message = NULL;
 	CamelStream *stream, *cache;
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 
 	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
 
@@ -916,14 +916,14 @@ imap4_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	return message;
 }
 
-static char *tm_months[] = {
+static gchar *tm_months[] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
 static void
 imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
-		      const CamelMessageInfo *info, char **appended_uid, CamelException *ex)
+		      const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 	CamelOfflineStore *offline = (CamelOfflineStore *) folder->parent_store;
@@ -934,10 +934,10 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CamelIMAP4Command *ic;
 	CamelFolderInfo *fi;
 	CamelException lex;
-	char flags[100], *p;
-	char date[50];
+	gchar flags[100], *p;
+	gchar date[50];
 	struct tm tm;
-	int id, i;
+	gint id, i;
 
 	if (appended_uid)
 		*appended_uid = NULL;
@@ -975,7 +975,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 	/* construct the optional date_time string */
 	if (iinfo->info.date_received > (time_t) 0) {
-		int tzone;
+		gint tzone;
 
 #ifdef HAVE_LOCALTIME_R
 		localtime_r (&iinfo->info.date_received, &tm);
@@ -1043,7 +1043,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		for (i = 0; i < ic->resp_codes->len; i++) {
 			resp = ic->resp_codes->pdata[i];
 			if (resp->code == CAMEL_IMAP4_RESP_CODE_TRYCREATE) {
-				char *parent_name, *p;
+				gchar *parent_name, *p;
 
 				parent_name = g_alloca (strlen (folder->full_name) + 1);
 				strcpy (parent_name, folder->full_name);
@@ -1101,12 +1101,12 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) src->parent_store)->engine;
 	CamelOfflineStore *offline = (CamelOfflineStore *) src->parent_store;
-	int i, j, n, id, dest_namelen;
+	gint i, j, n, id, dest_namelen;
 	CamelMessageInfo *info;
 	CamelIMAP4Command *ic;
 	CamelException lex;
 	GPtrArray *infos;
-	char *set;
+	gchar *set;
 
 	if (transferred_uids)
 		*transferred_uids = NULL;
@@ -1233,7 +1233,7 @@ imap4_transfer_messages_to (CamelFolder *src, GPtrArray *uids, CamelFolder *dest
 }
 
 static GPtrArray *
-imap4_search_by_expression (CamelFolder *folder, const char *expr, CamelException *ex)
+imap4_search_by_expression (CamelFolder *folder, const gchar *expr, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 	GPtrArray *matches;
@@ -1249,7 +1249,7 @@ imap4_search_by_expression (CamelFolder *folder, const char *expr, CamelExceptio
 }
 
 static GPtrArray *
-imap4_search_by_uids (CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex)
+imap4_search_by_uids (CamelFolder *folder, const gchar *expr, GPtrArray *uids, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) folder;
 	GPtrArray *matches;

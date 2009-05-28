@@ -40,11 +40,11 @@ static CamelDataWrapperClass *parent_class = NULL;
 #define CM_CLASS(so) CAMEL_MEDIUM_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 static gboolean is_offline (CamelDataWrapper *data_wrapper);
-static void add_header (CamelMedium *medium, const char *name,
-			const void *value);
-static void set_header (CamelMedium *medium, const char *name, const void *value);
-static void remove_header (CamelMedium *medium, const char *name);
-static const void *get_header (CamelMedium *medium, const char *name);
+static void add_header (CamelMedium *medium, const gchar *name,
+			gconstpointer value);
+static void set_header (CamelMedium *medium, const gchar *name, gconstpointer value);
+static void remove_header (CamelMedium *medium, const gchar *name);
+static gconstpointer get_header (CamelMedium *medium, const gchar *name);
 
 static GArray *get_headers (CamelMedium *medium);
 static void free_headers (CamelMedium *medium, GArray *headers);
@@ -121,7 +121,7 @@ is_offline (CamelDataWrapper *data_wrapper)
 }
 
 static void
-add_header (CamelMedium *medium, const char *name, const void *value)
+add_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	g_warning("No %s::add_header implemented, adding %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
@@ -136,7 +136,7 @@ add_header (CamelMedium *medium, const char *name, const void *value)
  * Adds a header to a #CamelMedium.
  **/
 void
-camel_medium_add_header (CamelMedium *medium, const char *name, const void *value)
+camel_medium_add_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	g_return_if_fail (CAMEL_IS_MEDIUM (medium));
 	g_return_if_fail (name != NULL);
@@ -146,7 +146,7 @@ camel_medium_add_header (CamelMedium *medium, const char *name, const void *valu
 }
 
 static void
-set_header (CamelMedium *medium, const char *name, const void *value)
+set_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	g_warning("No %s::set_header implemented, setting %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
@@ -163,7 +163,7 @@ set_header (CamelMedium *medium, const char *name, const void *value)
  * the header also.
  **/
 void
-camel_medium_set_header (CamelMedium *medium, const char *name, const void *value)
+camel_medium_set_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	g_return_if_fail (CAMEL_IS_MEDIUM (medium));
 	g_return_if_fail (name != NULL);
@@ -175,7 +175,7 @@ camel_medium_set_header (CamelMedium *medium, const char *name, const void *valu
 }
 
 static void
-remove_header(CamelMedium *medium, const char *name)
+remove_header(CamelMedium *medium, const gchar *name)
 {
 	g_warning("No %s::remove_header implemented, removing %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
@@ -190,7 +190,7 @@ remove_header(CamelMedium *medium, const char *name)
  * header are removed.
  **/
 void
-camel_medium_remove_header(CamelMedium *medium, const char *name)
+camel_medium_remove_header(CamelMedium *medium, const gchar *name)
 {
 	g_return_if_fail (CAMEL_IS_MEDIUM (medium));
 	g_return_if_fail (name != NULL);
@@ -199,8 +199,8 @@ camel_medium_remove_header(CamelMedium *medium, const char *name)
 }
 
 
-static const void *
-get_header(CamelMedium *medium, const char *name)
+static gconstpointer
+get_header(CamelMedium *medium, const gchar *name)
 {
 	g_warning("No %s::get_header implemented, getting %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 	return NULL;
@@ -221,8 +221,8 @@ get_header(CamelMedium *medium, const char *name)
  *
  * Returns: the value of the named header, or %NULL
  **/
-const void *
-camel_medium_get_header(CamelMedium *medium, const char *name)
+gconstpointer
+camel_medium_get_header(CamelMedium *medium, const gchar *name)
 {
 	g_return_val_if_fail (CAMEL_IS_MEDIUM (medium), NULL);
 	g_return_val_if_fail (name != NULL, NULL);

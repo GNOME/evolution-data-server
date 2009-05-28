@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,15 +24,15 @@ static const char revid[] = "$Id$";
  *	Bounded version of vsprintf.
  *
  * PUBLIC: #ifndef HAVE_VSNPRINTF
- * PUBLIC: int vsnprintf __P((char *, size_t, const char *, va_list));
+ * PUBLIC: gint vsnprintf __P((gchar *, size_t, const gchar *, va_list));
  * PUBLIC: #endif
  */
 #ifndef HAVE_VSNPRINTF
-int
+gint
 vsnprintf(str, n, fmt, ap)
-	char *str;
+	gchar *str;
 	size_t n;
-	const char *fmt;
+	const gchar *fmt;
 	va_list ap;
 {
 	COMPQUIET(n, 0);

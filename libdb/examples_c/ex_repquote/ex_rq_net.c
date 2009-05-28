@@ -28,8 +28,8 @@
 
 #include "ex_repquote.h"
 
-int machtab_add __P((machtab_t *, int, u_int32_t, int, int *));
-ssize_t readn __P((int, void *, size_t));
+gint machtab_add __P((machtab_t *, int, u_int32_t, int, gint *));
+ssize_t readn __P((int, gpointer , size_t));
 
 /*
  * This file defines the communication infrastructure for the ex_repquote
@@ -66,28 +66,28 @@ ssize_t readn __P((int, void *, size_t));
 
 struct __machtab {
 	LIST_HEAD(__machlist, __member) machlist;
-	int nextid;
+	gint nextid;
 	pthread_mutex_t mtmutex;
 	u_int32_t timeout_time;
-	int current;
-	int max;
-	int nsites;
-	int priority;
+	gint current;
+	gint max;
+	gint nsites;
+	gint priority;
 };
 
 /* Data structure that describes each entry in the machtab. */
 struct __member {
 	u_int32_t hostaddr;	/* Host IP address. */
-	int port;		/* Port number. */
-	int eid;		/* Application-specific machine id. */
-	int fd;			/* File descriptor for the socket. */
+	gint port;		/* Port number. */
+	gint eid;		/* Application-specific machine id. */
+	gint fd;			/* File descriptor for the socket. */
 	LIST_ENTRY(__member) links;
 				/* For linked list of all members we know of. */
 };
 
-static int quote_send_broadcast __P((machtab_t *,
+static gint quote_send_broadcast __P((machtab_t *,
     const DBT *, const DBT *, u_int32_t));
-static int quote_send_one __P((const DBT *, const DBT *, int, u_int32_t));
+static gint quote_send_one __P((const DBT *, const DBT *, int, u_int32_t));
 
 /*
  * machtab_init --
@@ -96,12 +96,12 @@ static int quote_send_one __P((const DBT *, const DBT *, int, u_int32_t));
  * number we've ever had on the list at one time.  We probably
  * want to make that smarter.
  */
-int
+gint
 machtab_init(machtabp, pri, nsites)
 	machtab_t **machtabp;
-	int pri, nsites;
+	gint pri, nsites;
 {
-	int ret;
+	gint ret;
 	machtab_t *machtab;
 
 	if ((machtab = malloc(sizeof(machtab_t))) == NULL)
@@ -128,14 +128,14 @@ machtab_init(machtabp, pri, nsites)
  *	Add a file descriptor to the table of machines, returning
  *  a new machine ID.
  */
-int
+gint
 machtab_add(machtab, fd, hostaddr, port, idp)
 	machtab_t *machtab;
-	int fd;
+	gint fd;
 	u_int32_t hostaddr;
-	int port, *idp;
+	gint port, *idp;
 {
-	int ret;
+	gint ret;
 	member_t *m, *member;
 
 	if ((member = malloc(sizeof(member_t))) == NULL)
@@ -178,14 +178,14 @@ machtab_add(machtab, fd, hostaddr, port, idp)
  * machtab_getinfo --
  *	Return host and port information for a particular machine id.
  */
-int
+gint
 machtab_getinfo(machtab, eid, hostp, portp)
 	machtab_t *machtab;
-	int eid;
+	gint eid;
 	u_int32_t *hostp;
-	int *portp;
+	gint *portp;
 {
-	int ret;
+	gint ret;
 	member_t *member;
 
 	if ((ret = pthread_mutex_lock(&machtab->mtmutex)) != 0)
@@ -212,13 +212,13 @@ machtab_getinfo(machtab, eid, hostp, portp)
  * whether we need to lock the machtab or not (0 indicates we do not
  * need to lock; non-zero indicates that we do need to lock).
  */
-int
+gint
 machtab_rem(machtab, eid, lock)
 	machtab_t *machtab;
-	int eid;
-	int lock;
+	gint eid;
+	gint lock;
 {
-	int found, ret;
+	gint found, ret;
 	member_t *member;
 
 	ret = 0;
@@ -249,7 +249,7 @@ machtab_rem(machtab, eid, lock)
 void
 machtab_parm(machtab, nump, prip, timeoutp)
 	machtab_t *machtab;
-	int *nump, *prip;
+	gint *nump, *prip;
 	u_int32_t *timeoutp;
 {
 	if (machtab->nsites == 0)
@@ -266,12 +266,12 @@ machtab_parm(machtab, nump, prip, timeoutp)
  *	a file descriptor for the socket, ready for an accept() call
  *	in a thread that we're happy to let block.
  */
-int
+gint
 listen_socket_init(progname, port)
-	const char *progname;
-	int port;
+	const gchar *progname;
+	gint port;
 {
-	int s;
+	gint s;
 	struct protoent *proto;
 	struct sockaddr_in si;
 
@@ -304,15 +304,15 @@ err:	fprintf(stderr, "%s: %s", progname, strerror(errno));
  *	Accept a connection on a socket.  This is essentially just a wrapper
  *	for accept(3).
  */
-int
+gint
 listen_socket_accept(machtab, progname, s, eidp)
 	machtab_t *machtab;
-	const char *progname;
-	int s, *eidp;
+	const gchar *progname;
+	gint s, *eidp;
 {
 	struct sockaddr_in si;
-	int si_len;
-	int host, ns, port, ret;
+	gint si_len;
+	gint host, ns, port, ret;
 
 	COMPQUIET(progname, NULL);
 
@@ -339,15 +339,15 @@ err:	close(ns);
  *	Listen on the specified port, and return a file descriptor
  *	when we have accepted a connection on it.
  */
-int
+gint
 get_accepted_socket(progname, port)
-	const char *progname;
-	int port;
+	const gchar *progname;
+	gint port;
 {
 	struct protoent *proto;
 	struct sockaddr_in si;
-	int si_len;
-	int s, ns;
+	gint si_len;
+	gint s, ns;
 
 	if ((proto = getprotobyname("tcp")) == NULL)
 		return (-1);
@@ -385,13 +385,13 @@ err:	fprintf(stderr, "%s: %s", progname, strerror(errno));
  *	open to this machine, then don't create another one, return the eid
  *	of the connection (in *eidp) and set is_open to 1.  Return 0.
  */
-int
+gint
 get_connected_socket(machtab, progname, remotehost, port, is_open, eidp)
 	machtab_t *machtab;
-	const char *progname, *remotehost;
-	int port, *is_open, *eidp;
+	const gchar *progname, *remotehost;
+	gint port, *is_open, *eidp;
 {
-	int ret, s;
+	gint ret, s;
 	struct hostent *hp;
 	struct protoent *proto;
 	struct sockaddr_in si;
@@ -411,7 +411,7 @@ get_connected_socket(machtab, progname, remotehost, port, is_open, eidp)
 	if ((s = socket(AF_INET, SOCK_STREAM, proto->p_proto)) < 0)
 		return (-1);
 	memset(&si, 0, sizeof(si));
-	memcpy((char *)&si.sin_addr, hp->h_addr, hp->h_length);
+	memcpy((gchar *)&si.sin_addr, hp->h_addr, hp->h_length);
 	addr = ntohl(si.sin_addr.s_addr);
 	ret = machtab_add(machtab, s, addr, port, eidp);
 	if (ret == EEXIST) {
@@ -443,9 +443,9 @@ get_connected_socket(machtab, progname, remotehost, port, is_open, eidp)
  * This function is called in a loop by both clients and masters, and
  * the resulting DBTs are manually dispatched to DB_ENV->rep_process_message().
  */
-int
+gint
 get_next_message(fd, rec, control)
-	int fd;
+	gint fd;
 	DBT *rec, *control;
 {
 	size_t nr;
@@ -510,13 +510,13 @@ get_next_message(fd, rec, control)
  */
 ssize_t
 readn(fd, vptr, n)
-	int fd;
-	void *vptr;
+	gint fd;
+	gpointer vptr;
 	size_t n;
 {
 	size_t nleft;
 	ssize_t nread;
-	char *ptr;
+	gchar *ptr;
 
 	ptr = vptr;
 	nleft = n;
@@ -544,14 +544,14 @@ readn(fd, vptr, n)
  * quote_send --
  * The f_send function for DB_ENV->set_rep_transport.
  */
-int
+gint
 quote_send(dbenv, control, rec, eid, flags)
 	DB_ENV *dbenv;
 	const DBT *control, *rec;
-	int eid;
+	gint eid;
 	u_int32_t flags;
 {
-	int fd, n, ret, t_ret;
+	gint fd, n, ret, t_ret;
 	machtab_t *machtab;
 	member_t *m;
 
@@ -608,7 +608,7 @@ quote_send_broadcast(machtab, rec, control, flags)
 	const DBT *rec, *control;
 	u_int32_t flags;
 {
-	int ret, sent;
+	gint ret, sent;
 	member_t *m, *next;
 
 	if ((ret = pthread_mutex_lock(&machtab->mtmutex)) != 0)
@@ -642,11 +642,11 @@ quote_send_broadcast(machtab, rec, control, flags)
 static int
 quote_send_one(rec, control, fd, flags)
 	const DBT *rec, *control;
-	int fd;
+	gint fd;
 	u_int32_t flags;
 
 {
-	int retry;
+	gint retry;
 	ssize_t bytes_left, nw;
 	u_int8_t *wp;
 

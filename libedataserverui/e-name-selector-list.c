@@ -51,7 +51,7 @@ static void e_name_selector_list_finalize   (GObject *object);
 static void
 enl_popup_size (ENameSelectorList *list)
 {
-	int height = 0, count;
+	gint height = 0, count;
 	GtkTreeViewColumn *column = NULL;
 
 	column = gtk_tree_view_get_column ( GTK_TREE_VIEW (list->tree_view), 0);
@@ -72,7 +72,7 @@ static void
 enl_popup_position (ENameSelectorList *list)
 {
 	GdkWindow *window;
-	int x,y;
+	gint x,y;
 
 	enl_popup_size (list);
 	window = gtk_widget_get_window (GTK_WIDGET (list));
@@ -86,7 +86,7 @@ static void
 enl_popup_grab (ENameSelectorList *list)
 {
 	GdkWindow *window;
-	int len;
+	gint len;
 
 	window = gtk_widget_get_window (GTK_WIDGET (list->popup));
 
@@ -123,7 +123,7 @@ enl_popup_ungrab (ENameSelectorList *list)
 static gboolean
 enl_entry_focus_in (ENameSelectorList *list, GdkEventFocus *event, gpointer dummy)
 {
-	int len;
+	gint len;
 
 	/* FIXME: Dont select every thing by default- Code is there but still it does */
 	len = strlen(gtk_entry_get_text(GTK_ENTRY(list)));
@@ -182,7 +182,7 @@ enl_popup_enter_notify (GtkWidget        *widget,
 
 static void
 enl_tree_select_node (ENameSelectorList *list,
-		      int n)
+		      gint n)
 {
 	GtkTreeSelection *selection;
 	GtkTreeIter iter;
@@ -225,7 +225,7 @@ static void
 delete_row (GtkTreePath *path, ENameSelectorList *list)
 {
 	GtkTreeIter   iter;
-	int n, len;
+	gint n, len;
 	GtkTreeSelection *selection;
 
 	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (E_NAME_SELECTOR_ENTRY (list)->destination_store), &iter, path))
@@ -307,7 +307,7 @@ destination_set_list (GtkWidget *item, EDestination *destination)
 static void
 destination_set_email (GtkWidget *item, EDestination *destination)
 {
-	int email_num;
+	gint email_num;
 	EContact *contact;
 
 	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
@@ -351,7 +351,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 	GList        *email_list = NULL, *l;
 	gint          i;
 	int	      email_num, len;
-	char         *delete_label;
+	gchar         *delete_label;
 	GSList	     *group = NULL;
 	gboolean      is_list;
 	gboolean      show_menu = FALSE;
@@ -401,11 +401,11 @@ enl_tree_button_press_event (GtkWidget *widget,
 	if (is_list) {
 		const GList *dests = e_destination_list_get_dests (destination);
 		GList *iters;
-		int length = g_list_length ((GList *)dests);
+		gint length = g_list_length ((GList *)dests);
 
 		for (iters = (GList *)dests; iters; iters = iters->next) {
 			EDestination *dest = (EDestination *) iters->data;
-			const char *email = e_destination_get_email (dest);
+			const gchar *email = e_destination_get_email (dest);
 
 			if (!email || *email == '\0')
 				continue;
@@ -469,7 +469,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
 	}
 
-	delete_label = g_strdup_printf(_("_Delete %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	delete_label = g_strdup_printf(_("_Delete %s"), (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
 	menu_item = gtk_menu_item_new_with_mnemonic (delete_label);
 	g_free (delete_label);
 	gtk_widget_show (menu_item);

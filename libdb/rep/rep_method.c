@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -34,33 +34,33 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static int __rep_abort_prepared __P((DB_ENV *));
-static int __rep_bt_cmp __P((DB *, const DBT *, const DBT *));
-static int __rep_client_dbinit __P((DB_ENV *, int));
-static int __rep_elect __P((DB_ENV *, int, int, u_int32_t, int *));
-static int __rep_elect_init __P((DB_ENV *, DB_LSN *, int, int, int, int *));
-static int __rep_flush __P((DB_ENV *));
-static int __rep_restore_prepared __P((DB_ENV *));
-static int __rep_set_limit __P((DB_ENV *, u_int32_t, u_int32_t));
-static int __rep_set_request __P((DB_ENV *, u_int32_t, u_int32_t));
-static int __rep_set_rep_transport __P((DB_ENV *, int,
-    int (*)(DB_ENV *, const DBT *, const DBT *, int, u_int32_t)));
-static int __rep_start __P((DB_ENV *, DBT *, u_int32_t));
-static int __rep_stat __P((DB_ENV *, DB_REP_STAT **, u_int32_t));
-static int __rep_wait __P((DB_ENV *, u_int32_t, int *, u_int32_t));
+static gint __rep_abort_prepared __P((DB_ENV *));
+static gint __rep_bt_cmp __P((DB *, const DBT *, const DBT *));
+static gint __rep_client_dbinit __P((DB_ENV *, int));
+static gint __rep_elect __P((DB_ENV *, int, int, u_int32_t, gint *));
+static gint __rep_elect_init __P((DB_ENV *, DB_LSN *, int, int, int, gint *));
+static gint __rep_flush __P((DB_ENV *));
+static gint __rep_restore_prepared __P((DB_ENV *));
+static gint __rep_set_limit __P((DB_ENV *, u_int32_t, u_int32_t));
+static gint __rep_set_request __P((DB_ENV *, u_int32_t, u_int32_t));
+static gint __rep_set_rep_transport __P((DB_ENV *, int,
+    gint (*)(DB_ENV *, const DBT *, const DBT *, int, u_int32_t)));
+static gint __rep_start __P((DB_ENV *, DBT *, u_int32_t));
+static gint __rep_stat __P((DB_ENV *, DB_REP_STAT **, u_int32_t));
+static gint __rep_wait __P((DB_ENV *, u_int32_t, gint *, u_int32_t));
 
 /*
  * __rep_dbenv_create --
  *	Replication-specific initialization of the DB_ENV structure.
  *
- * PUBLIC: int __rep_dbenv_create __P((DB_ENV *));
+ * PUBLIC: gint __rep_dbenv_create __P((DB_ENV *));
  */
-int
+gint
 __rep_dbenv_create(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_REP *db_rep;
-	int ret;
+	gint ret;
 
 #ifdef HAVE_RPC
 	if (F_ISSET(dbenv, DB_ENV_RPCCLIENT)) {
@@ -120,7 +120,7 @@ __rep_start(dbenv, dbt, flags)
 	DB_LSN lsn;
 	DB_REP *db_rep;
 	REP *rep;
-	int announce, init_db, redo_prepared, ret;
+	gint announce, init_db, redo_prepared, ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_ILLEGAL_BEFORE_OPEN(dbenv, "rep_start");
@@ -288,11 +288,11 @@ __rep_start(dbenv, dbt, flags)
 static int
 __rep_client_dbinit(dbenv, startup)
 	DB_ENV *dbenv;
-	int startup;
+	gint startup;
 {
 	DB_REP *db_rep;
 	DB *dbp;
-	int ret, t_ret;
+	gint ret, t_ret;
 	u_int32_t flags;
 
 	PANIC_CHECK(dbenv);
@@ -400,7 +400,7 @@ __rep_abort_prepared(dbenv)
 	DB_PREPLIST prep[PREPLISTSIZE], *p;
 	DB_TXNMGR *mgr;
 	DB_TXNREGION *region;
-	int do_aborts, ret;
+	gint do_aborts, ret;
 	long count, i;
 	u_int32_t op;
 
@@ -451,9 +451,9 @@ __rep_restore_prepared(dbenv)
 	__txn_ckp_args *ckp_args;
 	__txn_regop_args *regop_args;
 	__txn_xa_regop_args *prep_args;
-	int ret, t_ret;
+	gint ret, t_ret;
 	u_int32_t hi_txn, low_txn, rectype;
-	void *txninfo;
+	gpointer txninfo;
 
 	txninfo = NULL;
 	ckp_args = NULL;
@@ -709,8 +709,8 @@ __rep_set_request(dbenv, min, max)
 static int
 __rep_set_rep_transport(dbenv, eid, f_send)
 	DB_ENV *dbenv;
-	int eid;
-	int (*f_send) __P((DB_ENV *, const DBT *, const DBT *, int, u_int32_t));
+	gint eid;
+	gint (*f_send) __P((DB_ENV *, const DBT *, const DBT *, int, u_int32_t));
 {
 	DB_REP *db_rep;
 
@@ -748,15 +748,15 @@ __rep_set_rep_transport(dbenv, eid, f_send)
 static int
 __rep_elect(dbenv, nsites, priority, timeout, eidp)
 	DB_ENV *dbenv;
-	int nsites, priority;
+	gint nsites, priority;
 	u_int32_t timeout;
-	int *eidp;
+	gint *eidp;
 {
 	DB_LOG *dblp;
 	DB_LSN lsn;
 	DB_REP *db_rep;
 	REP *rep;
-	int in_progress, ret, send_vote, tiebreaker;
+	gint in_progress, ret, send_vote, tiebreaker;
 	u_int32_t pid, sec, usec;
 
 	PANIC_CHECK(dbenv);
@@ -900,11 +900,11 @@ static int
 __rep_elect_init(dbenv, lsnp, nsites, priority, tiebreaker, beginp)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
-	int nsites, priority, tiebreaker, *beginp;
+	gint nsites, priority, tiebreaker, *beginp;
 {
 	DB_REP *db_rep;
 	REP *rep;
-	int ret, *tally;
+	gint ret, *tally;
 
 	db_rep = dbenv->rep_handle;
 	rep = db_rep->region;
@@ -970,12 +970,12 @@ static int
 __rep_wait(dbenv, timeout, eidp, flags)
 	DB_ENV *dbenv;
 	u_int32_t timeout;
-	int *eidp;
+	gint *eidp;
 	u_int32_t flags;
 {
 	DB_REP *db_rep;
 	REP *rep;
-	int done, ret;
+	gint done, ret;
 	u_int32_t sleeptime;
 
 	done = 0;
@@ -1022,7 +1022,7 @@ __rep_flush(dbenv)
 	DBT rec;
 	DB_LOGC *logc;
 	DB_LSN lsn;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, "rep_stat", DB_INIT_TXN);
@@ -1060,7 +1060,7 @@ __rep_stat(dbenv, statp, flags)
 	LOG *lp;
 	REP *rep;
 	u_int32_t queued;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, "rep_stat", DB_INIT_TXN);

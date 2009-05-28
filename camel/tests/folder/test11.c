@@ -19,7 +19,7 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *local_drivers[] = { "local" };
+static const gchar *local_drivers[] = { "local" };
 
 static CamelSession *session;
 
@@ -48,7 +48,7 @@ static CamelFolderInfo fi_list_3[] = {
 };
 
 static int
-cmp_fi(const void *a, const void *b)
+cmp_fi(gconstpointer a, gconstpointer b)
 {
 	const CamelFolderInfo *fa = ((const CamelFolderInfo **)a)[0];
 	const CamelFolderInfo *fb = ((const CamelFolderInfo **)b)[0];
@@ -68,10 +68,10 @@ add_fi(GPtrArray *folders, CamelFolderInfo *fi)
 }
 
 static void
-check_fi(CamelFolderInfo *fi, CamelFolderInfo *list, int len)
+check_fi(CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
 {
 	GPtrArray *folders = g_ptr_array_new();
-	int i;
+	gint i;
 
 	add_fi(folders, fi);
 	check_msg(folders->len == len, "unexpected number of folders returned from folderinfo");
@@ -99,7 +99,7 @@ check_fi(CamelFolderInfo *fi, CamelFolderInfo *list, int len)
 	g_ptr_array_free(folders, TRUE);
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelException *ex;
 	CamelFolder *f1, *f2;

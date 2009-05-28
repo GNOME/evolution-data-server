@@ -51,9 +51,9 @@ enum {
 };
 
 static int
-imap4_string_get_type (const char *str)
+imap4_string_get_type (const gchar *str)
 {
-	int type = 0;
+	gint type = 0;
 
 	while (*str) {
 		if (!is_atom (*str)) {
@@ -70,7 +70,7 @@ imap4_string_get_type (const char *str)
 
 #if 0
 static gboolean
-imap4_string_is_atom_safe (const char *str)
+imap4_string_is_atom_safe (const gchar *str)
 {
 	while (is_atom (*str))
 		str++;
@@ -79,7 +79,7 @@ imap4_string_is_atom_safe (const char *str)
 }
 
 static gboolean
-imap4_string_is_quote_safe (const char *str)
+imap4_string_is_quote_safe (const gchar *str)
 {
 	while (is_qsafe (*str))
 		str++;
@@ -140,12 +140,12 @@ command_part_new (void)
 }
 
 static void
-imap4_command_append_string (CamelIMAP4Engine *engine, CamelIMAP4CommandPart **tail, GString *str, const char *string)
+imap4_command_append_string (CamelIMAP4Engine *engine, CamelIMAP4CommandPart **tail, GString *str, const gchar *string)
 {
 	CamelIMAP4CommandPart *part;
 	CamelIMAP4Literal *literal;
-	register const char *inptr;
-	const char *start;
+	register const gchar *inptr;
+	const gchar *start;
 
 	switch (imap4_string_get_type (string)) {
 	case IMAP4_STRING_ATOM:
@@ -201,11 +201,11 @@ imap4_command_append_string (CamelIMAP4Engine *engine, CamelIMAP4CommandPart **t
 }
 
 CamelIMAP4Command *
-camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_folder, const char *format, va_list args)
+camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_folder, const gchar *format, va_list args)
 {
 	CamelIMAP4CommandPart *parts, *part, *tail;
 	CamelIMAP4Command *ic;
-	const char *start;
+	const gchar *start;
 	GString *str;
 
 	tail = parts = command_part_new ();
@@ -214,17 +214,17 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 	start = format;
 
 	while (*format) {
-		register char ch = *format++;
+		register gchar ch = *format++;
 
 		if (ch == '%') {
 			CamelIMAP4Literal *literal;
 			CamelIMAP4Folder *folder;
-			char *function, **strv;
-			unsigned int u;
-			char *string;
+			gchar *function, **strv;
+			guint u;
+			gchar *string;
 			size_t len;
-			void *obj;
-			int c, d;
+			gpointer obj;
+			gint c, d;
 
 			g_string_append_len (str, start, format - start - 1);
 
@@ -251,12 +251,12 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 			case 'F':
 				/* CamelIMAP4Folder */
 				folder = va_arg (args, CamelIMAP4Folder *);
-				string = (char *) camel_imap4_folder_utf7_name (folder);
+				string = (gchar *) camel_imap4_folder_utf7_name (folder);
 				imap4_command_append_string (engine, &tail, str, string);
 				break;
 			case 'L':
 				/* Literal */
-				obj = va_arg (args, void *);
+				obj = va_arg (args, gpointer );
 
 				literal = g_new (CamelIMAP4Literal, 1);
 				if (CAMEL_IS_DATA_WRAPPER (obj)) {
@@ -295,7 +295,7 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 
 				function = g_strdup (function);
 
-				strv = va_arg (args, char **);
+				strv = va_arg (args, gchar **);
 				for (d = 0; strv[d]; d++) {
 					if (d > 0)
 						g_string_append (str, function);
@@ -306,12 +306,12 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 				break;
 			case 'S':
 				/* string which may need to be quoted or made into a literal */
-				string = va_arg (args, char *);
+				string = va_arg (args, gchar *);
 				imap4_command_append_string (engine, &tail, str, string);
 				break;
 			case 's':
 				/* safe atom string */
-				string = va_arg (args, char *);
+				string = va_arg (args, gchar *);
 				g_string_append (str, string);
 				break;
 			default:
@@ -363,7 +363,7 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 }
 
 CamelIMAP4Command *
-camel_imap4_command_new (CamelIMAP4Engine *engine, CamelIMAP4Folder *folder, const char *format, ...)
+camel_imap4_command_new (CamelIMAP4Engine *engine, CamelIMAP4Folder *folder, const gchar *format, ...)
 {
 	CamelIMAP4Command *command;
 	va_list args;
@@ -376,7 +376,7 @@ camel_imap4_command_new (CamelIMAP4Engine *engine, CamelIMAP4Folder *folder, con
 }
 
 void
-camel_imap4_command_register_untagged (CamelIMAP4Command *ic, const char *atom, CamelIMAP4UntaggedCallback untagged)
+camel_imap4_command_register_untagged (CamelIMAP4Command *ic, const gchar *atom, CamelIMAP4UntaggedCallback untagged)
 {
 	g_hash_table_insert (ic->untagged, g_strdup (atom), untagged);
 }
@@ -391,7 +391,7 @@ void
 camel_imap4_command_unref (CamelIMAP4Command *ic)
 {
 	CamelIMAP4CommandPart *part, *next;
-	int i;
+	gint i;
 
 	if (ic == NULL)
 		return;
@@ -451,7 +451,7 @@ imap4_literal_write_to_stream (CamelIMAP4Literal *literal, CamelStream *stream)
 	CamelStream *istream, *ostream = NULL;
 	CamelDataWrapper *wrapper;
 	CamelMimeFilter *crlf;
-	char *string;
+	gchar *string;
 
 	if (literal->type == CAMEL_IMAP4_LITERAL_STRING) {
 		string = literal->literal.string;
@@ -526,14 +526,14 @@ unexpected_token (camel_imap4_token_t *token)
 	}
 }
 
-int
+gint
 camel_imap4_command_step (CamelIMAP4Command *ic)
 {
 	CamelIMAP4Engine *engine = ic->engine;
-	int result = CAMEL_IMAP4_RESULT_NONE;
+	gint result = CAMEL_IMAP4_RESULT_NONE;
 	CamelIMAP4Literal *literal;
 	camel_imap4_token_t token;
-	unsigned char *linebuf;
+	guchar *linebuf;
 	size_t len;
 
 	g_assert (ic->part != NULL);
@@ -545,8 +545,8 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 	}
 
 	if (camel_debug ("imap4:command")) {
-		int sending = ic->part != ic->parts;
-		unsigned char *eoln, *eob;
+		gint sending = ic->part != ic->parts;
+		guchar *eoln, *eob;
 
 		linebuf = ic->part->buffer;
 		eob = linebuf + ic->part->buflen;
@@ -714,7 +714,7 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 void
 camel_imap4_command_reset (CamelIMAP4Command *ic)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < ic->resp_codes->len; i++)
 		camel_imap4_resp_code_free (ic->resp_codes->pdata[i]);

@@ -56,9 +56,9 @@ struct _CamelGroupwiseJournalEntry {
 
 	guint32 type;
 
-	char *uid;
-	char *original_uid;
-	char *source_container;
+	gchar *uid;
+	gchar *original_uid;
+	gchar *source_container;
 };
 
 struct _CamelGroupwiseJournal {
@@ -74,13 +74,13 @@ struct _CamelGroupwiseJournalClass {
 
 CamelType camel_groupwise_journal_get_type (void);
 
-CamelOfflineJournal *camel_groupwise_journal_new (struct _CamelGroupwiseFolder *folder, const char *filename);
+CamelOfflineJournal *camel_groupwise_journal_new (struct _CamelGroupwiseFolder *folder, const gchar *filename);
 
 /* interfaces for adding a journal entry */
 void camel_groupwise_journal_append (CamelGroupwiseJournal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,
-				     char **appended_uid, CamelException *ex);
+				     gchar **appended_uid, CamelException *ex);
 void camel_groupwise_journal_transfer (CamelGroupwiseJournal *journal, CamelGroupwiseFolder *source_folder, CamelMimeMessage *message,
-				       const CamelMessageInfo *mi, const char *orginal_uid, char **transferred_uid, CamelException *ex);
+				       const CamelMessageInfo *mi, const gchar *orginal_uid, gchar **transferred_uid, CamelException *ex);
 
 G_END_DECLS
 

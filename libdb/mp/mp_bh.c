@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,29 +23,29 @@ static const char revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/db_page.h"
 
-static int __memp_pgwrite
+static gint __memp_pgwrite
 	   __P((DB_MPOOL *, DB_MPOOLFILE *, DB_MPOOL_HASH *, BH *));
-static int __memp_upgrade __P((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
+static gint __memp_upgrade __P((DB_MPOOL *, DB_MPOOLFILE *, MPOOLFILE *));
 
 /*
  * __memp_bhwrite --
  *	Write the page associated with a given buffer header.
  *
- * PUBLIC: int __memp_bhwrite __P((DB_MPOOL *,
+ * PUBLIC: gint __memp_bhwrite __P((DB_MPOOL *,
  * PUBLIC:      DB_MPOOL_HASH *, MPOOLFILE *, BH *, int));
  */
-int
+gint
 __memp_bhwrite(dbmp, hp, mfp, bhp, open_extents)
 	DB_MPOOL *dbmp;
 	DB_MPOOL_HASH *hp;
 	MPOOLFILE *mfp;
 	BH *bhp;
-	int open_extents;
+	gint open_extents;
 {
 	DB_ENV *dbenv;
 	DB_MPOOLFILE *dbmfp;
 	DB_MPREG *mpreg;
-	int local_open, incremented, ret;
+	gint local_open, incremented, ret;
 
 	dbenv = dbmp->dbenv;
 	local_open = incremented = 0;
@@ -173,21 +173,21 @@ found:	ret = __memp_pgwrite(dbmp, dbmfp, hp, bhp);
  * __memp_pgread --
  *	Read a page from a file.
  *
- * PUBLIC: int __memp_pgread __P((DB_MPOOLFILE *, DB_MUTEX *, BH *, int));
+ * PUBLIC: gint __memp_pgread __P((DB_MPOOLFILE *, DB_MUTEX *, BH *, int));
  */
-int
+gint
 __memp_pgread(dbmfp, mutexp, bhp, can_create)
 	DB_MPOOLFILE *dbmfp;
 	DB_MUTEX *mutexp;
 	BH *bhp;
-	int can_create;
+	gint can_create;
 {
 	DB_IO db_io;
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
 	MPOOLFILE *mfp;
 	size_t len, nr, pagesize;
-	int ret;
+	gint ret;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
@@ -286,7 +286,7 @@ __memp_pgwrite(dbmp, dbmfp, hp, bhp)
 	DB_LSN lsn;
 	MPOOLFILE *mfp;
 	size_t nw;
-	int callpgin, ret;
+	gint callpgin, ret;
 
 	dbenv = dbmp->dbenv;
 	mfp = dbmfp == NULL ? NULL : dbmfp->mfp;
@@ -447,20 +447,20 @@ file_dead:
  * __memp_pg --
  *	Call the pgin/pgout routine.
  *
- * PUBLIC: int __memp_pg __P((DB_MPOOLFILE *, BH *, int));
+ * PUBLIC: gint __memp_pg __P((DB_MPOOLFILE *, BH *, int));
  */
-int
+gint
 __memp_pg(dbmfp, bhp, is_pgin)
 	DB_MPOOLFILE *dbmfp;
 	BH *bhp;
-	int is_pgin;
+	gint is_pgin;
 {
 	DBT dbt, *dbtp;
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
 	DB_MPREG *mpreg;
 	MPOOLFILE *mfp;
-	int ftype, ret;
+	gint ftype, ret;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
@@ -517,7 +517,7 @@ __memp_bhfree(dbmp, hp, bhp, free_mem)
 	DB_MPOOL *dbmp;
 	DB_MPOOL_HASH *hp;
 	BH *bhp;
-	int free_mem;
+	gint free_mem;
 {
 	DB_ENV *dbenv;
 	MPOOL *c_mp, *mp;
@@ -591,8 +591,8 @@ __memp_upgrade(dbmp, dbmfp, mfp)
 {
 	DB_ENV *dbenv;
 	DB_FH *fhp, *tfhp;
-	int ret;
-	char *rpath;
+	gint ret;
+	gchar *rpath;
 
 	dbenv = dbmp->dbenv;
 	fhp = NULL;

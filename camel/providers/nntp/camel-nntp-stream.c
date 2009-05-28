@@ -51,14 +51,14 @@ static CamelObjectClass *parent_class = NULL;
 static int
 stream_fill(CamelNNTPStream *is)
 {
-	int left = 0;
+	gint left = 0;
 
 	if (is->source) {
 		left = is->end - is->ptr;
 		memcpy(is->buf, is->ptr, left);
 		is->end = is->buf + left;
 		is->ptr = is->buf;
-		left = camel_stream_read(is->source, (char *) is->end, CAMEL_NNTP_STREAM_SIZE - (is->end - is->buf));
+		left = camel_stream_read(is->source, (gchar *) is->end, CAMEL_NNTP_STREAM_SIZE - (is->end - is->buf));
 		if (left > 0) {
 			is->end += left;
 			is->end[0] = '\n';
@@ -75,12 +75,12 @@ stream_fill(CamelNNTPStream *is)
 }
 
 static ssize_t
-stream_read(CamelStream *stream, char *buffer, size_t n)
+stream_read(CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelNNTPStream *is = (CamelNNTPStream *)stream;
-	char *o, *oe;
-	unsigned char *p, *e, c;
-	int state;
+	gchar *o, *oe;
+	guchar *p, *e, c;
+	gint state;
 
 	if (is->mode != CAMEL_NNTP_STREAM_DATA || n == 0)
 		return 0;
@@ -147,7 +147,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write(CamelStream *stream, const char *buffer, size_t n)
+stream_write(CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelNNTPStream *is = (CamelNNTPStream *)stream;
 
@@ -263,12 +263,12 @@ camel_nntp_stream_new(CamelStream *source)
 }
 
 /* Get one line from the nntp stream */
-int
-camel_nntp_stream_line(CamelNNTPStream *is, unsigned char **data, unsigned int *len)
+gint
+camel_nntp_stream_line(CamelNNTPStream *is, guchar **data, guint *len)
 {
-	register unsigned char c, *p, *o, *oe;
-	int newlen, oldlen;
-	unsigned char *e;
+	register guchar c, *p, *o, *oe;
+	gint newlen, oldlen;
+	guchar *e;
 
 	if (is->mode == CAMEL_NNTP_STREAM_EOD) {
 		*data = is->linebuf;
@@ -348,10 +348,10 @@ camel_nntp_stream_line(CamelNNTPStream *is, unsigned char **data, unsigned int *
 }
 
 /* returns -1 on error, 0 if last lot of data, >0 if more remaining */
-int camel_nntp_stream_gets(CamelNNTPStream *is, unsigned char **start, unsigned int *len)
+gint camel_nntp_stream_gets(CamelNNTPStream *is, guchar **start, guint *len)
 {
-	int max;
-	unsigned char *end;
+	gint max;
+	guchar *end;
 
 	*len = 0;
 
@@ -381,10 +381,10 @@ void camel_nntp_stream_set_mode(CamelNNTPStream *is, camel_nntp_stream_mode_t mo
 }
 
 /* returns -1 on erorr, 0 if last data, >0 if more data left */
-int camel_nntp_stream_getd(CamelNNTPStream *is, unsigned char **start, unsigned int *len)
+gint camel_nntp_stream_getd(CamelNNTPStream *is, guchar **start, guint *len)
 {
-	unsigned char *p, *e, *s;
-	int state;
+	guchar *p, *e, *s;
+	gint state;
 
 	*len = 0;
 

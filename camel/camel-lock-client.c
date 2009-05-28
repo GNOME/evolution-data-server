@@ -48,14 +48,14 @@ static pthread_mutex_t lock_lock = PTHREAD_MUTEX_INITIALIZER;
 #define LOCK() pthread_mutex_lock(&lock_lock)
 #define UNLOCK() pthread_mutex_unlock(&lock_lock)
 
-static int lock_sequence;
-static int lock_helper_pid = -1;
-static int lock_stdin_pipe[2], lock_stdout_pipe[2];
+static gint lock_sequence;
+static gint lock_helper_pid = -1;
+static gint lock_stdin_pipe[2], lock_stdout_pipe[2];
 
-static int read_n(int fd, void *buffer, int inlen)
+static gint read_n(gint fd, gpointer buffer, gint inlen)
 {
-	char *p = buffer;
-	int len, left = inlen;
+	gchar *p = buffer;
+	gint len, left = inlen;
 
 	do {
 		len = read(fd, p, left);
@@ -71,10 +71,10 @@ static int read_n(int fd, void *buffer, int inlen)
 	return inlen - left;
 }
 
-static int write_n(int fd, void *buffer, int inlen)
+static gint write_n(gint fd, gpointer buffer, gint inlen)
 {
-	char *p = buffer;
-	int len, left = inlen;
+	gchar *p = buffer;
+	gint len, left = inlen;
 
 	do {
 		len = write(fd, p, left);
@@ -90,9 +90,9 @@ static int write_n(int fd, void *buffer, int inlen)
 	return inlen;
 }
 
-static int camel_lock_helper_init(CamelException *ex)
+static gint camel_lock_helper_init(CamelException *ex)
 {
-	int i;
+	gint i;
 
 	lock_stdin_pipe[0] = -1;
 	lock_stdin_pipe[1] = -1;
@@ -152,12 +152,12 @@ static int camel_lock_helper_init(CamelException *ex)
 	return 0;
 }
 
-int camel_lock_helper_lock(const char *path, CamelException *ex)
+gint camel_lock_helper_lock(const gchar *path, CamelException *ex)
 {
 	struct _CamelLockHelperMsg *msg;
-	int len = strlen(path);
-	int res = -1;
-	int retry = 3;
+	gint len = strlen(path);
+	gint res = -1;
+	gint retry = 3;
 
 	LOCK();
 
@@ -234,12 +234,12 @@ fail:
 	return res;
 }
 
-int camel_lock_helper_unlock(int lockid)
+gint camel_lock_helper_unlock(gint lockid)
 {
 	struct _CamelLockHelperMsg *msg;
-	int res = -1;
-	int retry = 3;
-	int len;
+	gint res = -1;
+	gint retry = 3;
+	gint len;
 
 	d(printf("unlocking lock id %d\n", lockid));
 
@@ -308,9 +308,9 @@ fail:
 }
 
 #if 0
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
-	int id1, id2;
+	gint id1, id2;
 
 	d(printf("locking started\n"));
 	camel_lock_helper_init();

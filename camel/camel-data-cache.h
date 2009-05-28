@@ -44,7 +44,7 @@ struct _CamelDataCache {
 
 	struct _CamelDataCachePrivate *priv;
 
-	char *path;
+	gchar *path;
 	guint32 flags;
 
 	time_t expire_age;
@@ -57,36 +57,36 @@ struct _CamelDataCacheClass {
 	/* None are virtual yet */
 #if 0
 	/* Virtual methods */
-	CamelStream *(*add)(CamelDataCache *cmc, const char *path, const char *key, CamelException *ex);
-	CamelStream *(*get)(CamelDataCache *cmc, const char *path, const char *key, CamelException *ex);
-	int (*close)(CamelDataCache *cmc, CamelStream *stream, CamelException *ex);
-	int (*remove)(CamelDataCache *cmc, const char *path, const char *key, CamelException *ex);
+	CamelStream *(*add)(CamelDataCache *cmc, const gchar *path, const gchar *key, CamelException *ex);
+	CamelStream *(*get)(CamelDataCache *cmc, const gchar *path, const gchar *key, CamelException *ex);
+	gint (*close)(CamelDataCache *cmc, CamelStream *stream, CamelException *ex);
+	gint (*remove)(CamelDataCache *cmc, const gchar *path, const gchar *key, CamelException *ex);
 
-	int (*clear)(CamelDataCache *cmc, const char *path, CamelException *ex);
+	gint (*clear)(CamelDataCache *cmc, const gchar *path, CamelException *ex);
 #endif
 };
 
 /* public methods */
-CamelDataCache *camel_data_cache_new(const char *path, guint32 flags, CamelException *ex);
+CamelDataCache *camel_data_cache_new(const gchar *path, guint32 flags, CamelException *ex);
 
 void camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when);
 void camel_data_cache_set_expire_access(CamelDataCache *cdc, time_t when);
 
-int             camel_data_cache_rename(CamelDataCache *cache,
-					const char *old, const char *new, CamelException *ex);
+gint             camel_data_cache_rename(CamelDataCache *cache,
+					const gchar *old, const gchar *new, CamelException *ex);
 
 CamelStream    *camel_data_cache_add(CamelDataCache *cdc,
-				     const char *path, const char *key, CamelException *ex);
+				     const gchar *path, const gchar *key, CamelException *ex);
 CamelStream    *camel_data_cache_get(CamelDataCache *cdc,
-				     const char *path, const char *key, CamelException *ex);
-int             camel_data_cache_remove(CamelDataCache *cdc,
-					const char *path, const char *key, CamelException *ex);
+				     const gchar *path, const gchar *key, CamelException *ex);
+gint             camel_data_cache_remove(CamelDataCache *cdc,
+					const gchar *path, const gchar *key, CamelException *ex);
 
-int             camel_data_cache_clear(CamelDataCache *cache,
-				       const char *path, CamelException *ex);
+gint             camel_data_cache_clear(CamelDataCache *cache,
+				       const gchar *path, CamelException *ex);
 
 gchar *         camel_data_cache_get_filename(CamelDataCache *cdc,
-					      const char *path, const char *key, CamelException *ex);
+					      const gchar *path, const gchar *key, CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_data_cache_get_type (void);

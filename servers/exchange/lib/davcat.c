@@ -41,24 +41,24 @@ print_header (gpointer name, gpointer value, gpointer data)
 {
 	gboolean *isxml = data;
 
-	printf ("%s: %s\n", (char *)name, (char *)value);
+	printf ("%s: %s\n", (gchar *)name, (gchar *)value);
 	if (!g_ascii_strcasecmp (name, "Content-Type") &&
 	    strstr (value, "/xml"))
 		*isxml = TRUE;
 }
 
-const char *test_program_name = "davcat";
+const gchar *test_program_name = "davcat";
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
 	E2kContext *ctx;
 	SoupMessage *msg;
 	GByteArray *input;
-	char buf[1024], *base_uri, *root_uri, *eol, *vers, *p;
-	char *method, *path, *uri;
-	char *name, *value;
-	int nread;
+	gchar buf[1024], *base_uri, *root_uri, *eol, *vers, *p;
+	gchar *method, *path, *uri;
+	gchar *name, *value;
+	gint nread;
 	gboolean isxml = FALSE;
 
 	if (argc != 2) {

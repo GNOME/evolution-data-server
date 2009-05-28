@@ -56,11 +56,11 @@ typedef struct {
 CamelType camel_tcp_stream_ssl_get_type (void);
 
 /* public methods */
-CamelStream *camel_tcp_stream_ssl_new (struct _CamelSession *session, const char *expected_host, guint32 flags);
+CamelStream *camel_tcp_stream_ssl_new (struct _CamelSession *session, const gchar *expected_host, guint32 flags);
 
-CamelStream *camel_tcp_stream_ssl_new_raw (struct _CamelSession *session, const char *expected_host, guint32 flags);
+CamelStream *camel_tcp_stream_ssl_new_raw (struct _CamelSession *session, const gchar *expected_host, guint32 flags);
 
-int camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl);
+gint camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl);
 
 G_END_DECLS
 

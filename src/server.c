@@ -90,7 +90,7 @@ static GStaticMutex termination_lock = G_STATIC_MUTEX_INIT;
 static gboolean
 termination_handler (gpointer data)
 {
-	int count = 0;
+	gint count = 0;
 
 #if ENABLE_CALENDAR
 	count += e_data_cal_factory_get_n_backends (e_data_cal_factory);
@@ -201,7 +201,7 @@ setup_cals (void)
 static gboolean
 setup_logging (void)
 {
-	int result;
+	gint result;
 
 	logging_iface = server_logging_new ();
 
@@ -230,7 +230,7 @@ setup_logging (void)
 static gboolean
 setup_interface_check (void)
 {
-	int result;
+	gint result;
 
 	interface_check_iface = server_interface_check_new ();
 	result = bonobo_activation_active_server_register (E_DATA_SERVER_INTERFACE_CHECK_OAF_ID,
@@ -242,7 +242,7 @@ setup_interface_check (void)
 
 #ifdef DEBUG_BACKENDS
 static void
-dump_backends (int signal)
+dump_backends (gint signal)
 {
 	e_data_book_factory_dump_active_backends (e_data_book_factory);
 #if ENABLE_CALENDAR
@@ -259,7 +259,7 @@ dump_backends (int signal)
 #undef PREFIX
 #define PREFIX e_util_get_prefix ()
 
-static const char *
+static const gchar *
 sysconfdir (void)
 {
 	return e_util_replace_prefix (PREFIX,
@@ -269,7 +269,7 @@ sysconfdir (void)
 #undef SYSCONFDIR
 #define SYSCONFDIR sysconfdir ()
 
-static const char *
+static const gchar *
 datadir (void)
 {
 	return e_util_replace_prefix (PREFIX,
@@ -279,7 +279,7 @@ datadir (void)
 #undef DATADIR
 #define DATADIR datadir ()
 
-static const char *
+static const gchar *
 libdir (void)
 {
 	return e_util_replace_prefix (PREFIX,
@@ -291,8 +291,8 @@ libdir (void)
 
 #endif
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	gboolean did_books=FALSE, did_cals=FALSE;
 	OfflineListener *offline_listener = NULL;

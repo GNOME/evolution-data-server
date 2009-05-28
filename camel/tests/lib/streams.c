@@ -15,15 +15,15 @@
 
 #include "camel-test.h"
 
-static char teststring[] = "\xaa\x55\xc0\x0c\xff\x00";
-static char testbuf[10240];
+static gchar teststring[] = "\xaa\x55\xc0\x0c\xff\x00";
+static gchar testbuf[10240];
 
 /* pass in an empty read/write stream */
 void
 test_stream_seekable_writepart(CamelSeekableStream *s)
 {
 	off_t end;
-	int i;
+	gint i;
 
 	push("seekable stream test, writing ");
 
@@ -58,7 +58,7 @@ void
 test_stream_seekable_readpart(CamelSeekableStream *s)
 {
 	off_t off, new, end;
-	int i, j;
+	gint i, j;
 
 	push("seekable stream test, re-reading");
 
@@ -89,7 +89,7 @@ test_stream_seekable_readpart(CamelSeekableStream *s)
 
 		check(camel_stream_read(CAMEL_STREAM(s), testbuf, i*3) == i*3);
 		for (j=0;j<i*3;j++) {
-			int k = new + j;
+			gint k = new + j;
 
 			if (k==0) {
 				check(testbuf[j] == '\n');
@@ -120,12 +120,12 @@ test_stream_seekable_readpart(CamelSeekableStream *s)
   1 = write to the parent stream at the right spot
 */
 void
-test_seekable_substream_writepart(CamelStream *s, int type)
+test_seekable_substream_writepart(CamelStream *s, gint type)
 {
 	CamelSeekableStream *ss = (CamelSeekableStream *)s;
 	CamelSeekableSubstream *sus = (CamelSeekableSubstream *)s;
 	CamelSeekableStream *sp = sus->parent_stream;
-	int i, len;
+	gint i, len;
 
 	push("writing substream, type %d", type);
 
@@ -175,7 +175,7 @@ test_seekable_substream_readpart(CamelStream *s)
 	CamelSeekableStream *ss = (CamelSeekableStream *)s;
 	CamelSeekableSubstream *sus = (CamelSeekableSubstream *)s;
 	CamelSeekableStream *sp = sus->parent_stream;
-	int i, len;
+	gint i, len;
 
 	push("reading substream");
 

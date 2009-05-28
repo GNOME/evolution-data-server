@@ -37,9 +37,9 @@ struct _CamelTcpStreamRaw
 {
 	CamelTcpStream parent_object;
 
-	int sockfd;
+	gint sockfd;
 #ifdef G_OS_WIN32
-	int is_nonblocking;
+	gint is_nonblocking;
 #endif
 };
 

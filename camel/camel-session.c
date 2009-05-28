@@ -56,19 +56,19 @@
 #define CS_CLASS(so) ((CamelSessionClass *)((CamelObject *)so)->klass)
 
 static CamelService *get_service (CamelSession *session,
-				  const char *url_string,
+				  const gchar *url_string,
 				  CamelProviderType type,
 				  CamelException *ex);
-static char *get_storage_path (CamelSession *session,
+static gchar *get_storage_path (CamelSession *session,
 			       CamelService *service,
 			       CamelException *ex);
 
-static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, unsigned int size);
+static gpointer session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, guint size);
 static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg);
-static int session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, int flags);
-static void session_thread_wait(CamelSession *session, int id);
-static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const char *text, int pc);
-static void session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex);
+static gint session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, gint flags);
+static void session_thread_wait(CamelSession *session, gint id);
+static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const gchar *text, gint pc);
+static void session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex);
 
 static void
 camel_session_init (CamelSession *session)
@@ -156,13 +156,13 @@ camel_session_get_type (void)
  * Constructs @session.
  **/
 void
-camel_session_construct (CamelSession *session, const char *storage_path)
+camel_session_construct (CamelSession *session, const gchar *storage_path)
 {
 	session->storage_path = g_strdup (storage_path);
 }
 
 static CamelService *
-get_service (CamelSession *session, const char *url_string,
+get_service (CamelSession *session, const gchar *url_string,
 	     CamelProviderType type, CamelException *ex)
 {
 	CamelURL *url;
@@ -236,7 +236,7 @@ get_service (CamelSession *session, const char *url_string,
  * Returns: the requested #CamelService, or %NULL
  **/
 CamelService *
-camel_session_get_service (CamelSession *session, const char *url_string,
+camel_session_get_service (CamelSession *session, const gchar *url_string,
 			   CamelProviderType type, CamelException *ex)
 {
 	CamelService *service;
@@ -266,7 +266,7 @@ camel_session_get_service (CamelSession *session, const char *url_string,
  **/
 CamelService *
 camel_session_get_service_connected (CamelSession *session,
-				     const char *url_string,
+				     const gchar *url_string,
 				     CamelProviderType type,
 				     CamelException *ex)
 {
@@ -287,10 +287,10 @@ camel_session_get_service_connected (CamelSession *session,
 }
 
 
-static char *
+static gchar *
 get_storage_path (CamelSession *session, CamelService *service, CamelException *ex)
 {
-	char *path, *p;
+	gchar *path, *p;
 
 	p = camel_service_get_path (service);
 	path = g_strdup_printf ("%s/%s", session->storage_path, p);
@@ -329,7 +329,7 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
  * Returns: the path (which the caller must free), or %NULL if an error
  * occurs.
  **/
-char *
+gchar *
 camel_session_get_storage_path (CamelSession *session, CamelService *service,
 				CamelException *ex)
 {
@@ -372,9 +372,9 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  *
  * Returns: the authentication information or %NULL
  **/
-char *
+gchar *
 camel_session_get_password (CamelSession *session, CamelService *service,
-			    const char *domain, const char *prompt, const char *item,
+			    const gchar *domain, const gchar *prompt, const gchar *item,
 			    guint32 flags,
 			    CamelException *ex)
 {
@@ -404,7 +404,7 @@ camel_session_get_password (CamelSession *session, CamelService *service,
  **/
 void
 camel_session_forget_password (CamelSession *session, CamelService *service,
-			       const char *domain, const char *item, CamelException *ex)
+			       const gchar *domain, const gchar *item, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (item != NULL);
@@ -429,7 +429,7 @@ camel_session_forget_password (CamelSession *session, CamelService *service,
  */
 gboolean
 camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
-			  const char *prompt, gboolean cancel)
+			  const gchar *prompt, gboolean cancel)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 	g_return_val_if_fail (prompt != NULL, FALSE);
@@ -438,7 +438,7 @@ camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
 }
 
 gboolean
-camel_session_lookup_addressbook (CamelSession *session, const char *name)
+camel_session_lookup_addressbook (CamelSession *session, const gchar *name)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
@@ -457,14 +457,14 @@ camel_session_lookup_addressbook (CamelSession *session, const char *name)
  *
  * Returns: a newly-allocated password prompt string
  **/
-char *
-camel_session_build_password_prompt (const char *type,
-                                     const char *user,
-                                     const char *host)
+gchar *
+camel_session_build_password_prompt (const gchar *type,
+                                     const gchar *user,
+                                     const gchar *host)
 {
-	char *user_markup;
-	char *host_markup;
-	char *prompt;
+	gchar *user_markup;
+	gchar *host_markup;
+	gchar *prompt;
 
 	g_return_val_if_fail (type != NULL, NULL);
 	g_return_val_if_fail (user != NULL, NULL);
@@ -527,24 +527,24 @@ camel_session_set_online (CamelSession *session, gboolean online)
  **/
 CamelFilterDriver *
 camel_session_get_filter_driver (CamelSession *session,
-				 const char *type,
+				 const gchar *type,
 				 CamelException *ex)
 {
 	return CS_CLASS (session)->get_filter_driver (session, type, ex);
 }
 
 static void
-cs_thread_status(CamelOperation *op, const char *what, int pc, void *data)
+cs_thread_status(CamelOperation *op, const gchar *what, gint pc, gpointer data)
 {
 	CamelSessionThreadMsg *m = data;
 
 	CS_CLASS(m->session)->thread_status(m->session, m, what, pc);
 }
 
-static void *
+static gpointer
 session_thread_msg_new (CamelSession *session,
                         CamelSessionThreadOps *ops,
-                        unsigned int size)
+                        guint size)
 {
 	CamelSessionThreadMsg *m;
 
@@ -604,10 +604,10 @@ session_thread_proxy (CamelSessionThreadMsg *msg,
 static int
 session_thread_queue (CamelSession *session,
                       CamelSessionThreadMsg *msg,
-                      int flags)
+                      gint flags)
 {
 	GThreadPool *thread_pool;
-	int id;
+	gint id;
 
 	CAMEL_SESSION_LOCK(session, thread_lock);
 	thread_pool = session->priv->thread_pool;
@@ -627,9 +627,9 @@ session_thread_queue (CamelSession *session,
 
 static void
 session_thread_wait (CamelSession *session,
-                     int id)
+                     gint id)
 {
-	int wait;
+	gint wait;
 
 	/* we just busy wait, only other alternative is to setup a reply port? */
 	do {
@@ -645,8 +645,8 @@ session_thread_wait (CamelSession *session,
 static void
 session_thread_status (CamelSession *session,
                        CamelSessionThreadMsg *msg,
-                       const char *text,
-                       int pc)
+                       const gchar *text,
+                       gint pc)
 {
 }
 
@@ -664,10 +664,10 @@ session_thread_status (CamelSession *session,
  *
  * Returns: a new #CamelSessionThreadMsg
  **/
-void *
+gpointer
 camel_session_thread_msg_new (CamelSession *session,
                               CamelSessionThreadOps *ops,
-                              unsigned int size)
+                              guint size)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (ops != NULL, NULL);
@@ -706,10 +706,10 @@ camel_session_thread_msg_free (CamelSession *session,
  *
  * Returns: the id of the operation queued
  **/
-int
+gint
 camel_session_thread_queue (CamelSession *session,
                             CamelSessionThreadMsg *msg,
-                            int flags)
+                            gint flags)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), -1);
 	g_return_val_if_fail (msg != NULL, -1);
@@ -726,7 +726,7 @@ camel_session_thread_queue (CamelSession *session,
  **/
 void
 camel_session_thread_wait (CamelSession *session,
-                           int id)
+                           gint id)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
@@ -787,11 +787,11 @@ camel_session_set_network_state (CamelSession *session,
 
 void
 camel_session_set_junk_headers (CamelSession *session,
-                                const char **headers,
-                                const char **values,
-                                int len)
+                                const gchar **headers,
+                                const gchar **values,
+                                gint len)
 {
-	int i;
+	gint i;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
@@ -816,7 +816,7 @@ camel_session_get_junk_headers (CamelSession *session)
 }
 
 static void
-session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex)
+session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex)
 {
 	if (ex)
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Camel session doesn't support forwarding of a message."));
@@ -832,7 +832,7 @@ session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage
  * @ex Exception.
  **/
 void
-camel_session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const char *address, CamelException *ex)
+camel_session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 

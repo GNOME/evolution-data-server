@@ -60,8 +60,8 @@ struct _CamelVeeSummaryClass {
 CamelType               camel_vee_summary_get_type     (void);
 CamelFolderSummary *camel_vee_summary_new(struct _CamelFolder *parent);
 
-CamelVeeMessageInfo * camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const char *uid, const char hash[8]);
-GPtrArray * camel_vee_summary_get_ids (CamelVeeSummary *summary, char hash[8]);
+CamelVeeMessageInfo * camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gchar *uid, const gchar hash[8]);
+GPtrArray * camel_vee_summary_get_ids (CamelVeeSummary *summary, gchar hash[8]);
 void camel_vee_summary_load_check_unread_vfolder  (CamelVeeSummary *vs);
 
 G_END_DECLS

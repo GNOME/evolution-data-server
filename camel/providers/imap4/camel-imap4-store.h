@@ -44,7 +44,7 @@ struct _CamelIMAP4Store {
 
 	struct _CamelIMAP4StoreSummary *summary;
 	struct _CamelIMAP4Engine *engine;
-	char *storage_path;
+	gchar *storage_path;
 };
 
 struct _CamelIMAP4StoreClass {

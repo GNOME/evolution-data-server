@@ -108,7 +108,7 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend,
 
     for (id_iter = id_list; id_iter; id_iter = id_iter->next) {
 	GError *error = NULL;
-	const char *uid;
+	const gchar *uid;
 
 	uid = id_iter->data;
 	google_book_remove_contact (priv->book, uid, &error);
@@ -224,7 +224,7 @@ e_book_backend_google_get_contact_list (EBookBackendSync *backend,
 
 	contact = all_contacts->data;
 	if (e_book_backend_sexp_match_contact (sexp, contact)) {
-	    char *vcard_str;
+	    gchar *vcard_str;
 	    vcard_str = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 	    *contacts = g_list_append (*contacts, vcard_str);
 	}
@@ -250,7 +250,7 @@ on_google_book_contact_added (GoogleBook *book, EContact *contact, gpointer user
 }
 
 static void
-on_google_book_contact_removed (GoogleBook *book, const char *uid, gpointer user_data)
+on_google_book_contact_removed (GoogleBook *book, const gchar *uid, gpointer user_data)
 {
     EBookBackendGooglePrivate *priv;
     GList *iter;
@@ -351,7 +351,7 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend,
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_Success;
     GError *error = NULL;
-    char *book_username;
+    gchar *book_username;
     gboolean match;
 
     __debug__ (G_STRFUNC);
@@ -395,7 +395,7 @@ e_book_backend_google_get_supported_auth_methods (EBookBackendSync	*backend,
 						  guint32		opid,
 						  GList		**methods)
 {
-    char *auth_method;
+    gchar *auth_method;
 
     __debug__ (G_STRFUNC);
     auth_method = g_strdup_printf ("plain/password");
@@ -422,7 +422,7 @@ e_book_backend_google_get_supported_fields (EBookBackendSync	*backend,
 					    guint32		opid,
 					    GList		**fields_out)
 {
-    const int supported_fields[] =
+    const gint supported_fields[] =
     {
 	E_CONTACT_FULL_NAME,
 	E_CONTACT_EMAIL_1,
@@ -452,12 +452,12 @@ e_book_backend_google_get_supported_fields (EBookBackendSync	*backend,
 	E_CONTACT_ADDRESS_OTHER
     };
     GList *fields = NULL;
-    int i;
+    gint i;
 
     __debug__ (G_STRFUNC);
 
     for (i = 0; i < G_N_ELEMENTS (supported_fields); i++) {
-	const char *field_name;
+	const gchar *field_name;
 
 	field_name = e_contact_field_name (supported_fields[i]);
 	fields = g_list_append (fields, g_strdup (field_name));
@@ -500,10 +500,10 @@ e_book_backend_google_load_source (EBookBackend *backend,
 				   gboolean	only_if_exists)
 {
     EBookBackendGooglePrivate *priv = GET_PRIVATE (backend);
-    const char *refresh_interval_str, *use_ssl_str, *use_cache_str;
+    const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
     guint refresh_interval;
     gboolean use_ssl, use_cache;
-    const char *username;
+    const gchar *username;
 
     if (priv->book) {
 	g_warning ("Source already loaded!");
@@ -564,7 +564,7 @@ e_book_backend_google_load_source (EBookBackend *backend,
     return GNOME_Evolution_Addressbook_Success;
 }
 
-static char *
+static gchar *
 e_book_backend_google_get_static_capabilities (EBookBackend *backend)
 {
     __debug__ (G_STRFUNC);

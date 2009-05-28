@@ -45,16 +45,16 @@
 
 #define _PRIVATE(o) (((CamelNNTPStoreSummary *)(o))->priv)
 
-static int summary_header_load(CamelStoreSummary *, FILE *);
-static int summary_header_save(CamelStoreSummary *, FILE *);
+static gint summary_header_load(CamelStoreSummary *, FILE *);
+static gint summary_header_save(CamelStoreSummary *, FILE *);
 
-/*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const char *);*/
+/*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);*/
 static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
 static int		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 
-static const char *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
-static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const char *);
+static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
+static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 static void camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *klass);
 static void camel_nntp_store_summary_init       (CamelNNTPStoreSummary *obj);
@@ -148,9 +148,9 @@ camel_nntp_store_summary_new (void)
  * It must be freed using camel_store_summary_info_free().
  **/
 CamelNNTPStoreInfo *
-camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const char *full_name)
+camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const gchar *full_name)
 {
-	int count, i;
+	gint count, i;
 	CamelNNTPStoreInfo *info;
 
 	count = camel_store_summary_count ((CamelStoreSummary *) s);
@@ -166,12 +166,12 @@ camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const char *full_na
 	return NULL;
 }
 
-char *
-camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s, const char *full_name, char dir_sep)
+gchar *
+camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep)
 {
-	char *path, *p;
-	int c;
-	const char *f;
+	gchar *path, *p;
+	gint c;
+	const gchar *f;
 
 	if (dir_sep != '/') {
 		p = path = g_alloca (strlen (full_name) * 3 + 1);
@@ -186,7 +186,7 @@ camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s, const char *ful
 		}
 		*p = 0;
 	} else
-		path = (char *) full_name;
+		path = (gchar *) full_name;
 
 	return camel_utf7_utf8 (path);
 }
@@ -202,14 +202,14 @@ hexnib (guint32 c)
 		return 0;
 }
 
-char *
-camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *path, char dir_sep)
+gchar *
+camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const gchar *path, gchar dir_sep)
 {
-	char *full, *f;
+	gchar *full, *f;
 	guint32 c, v = 0;
-	const char *p;
-	int state=0;
-	char *subpath, *last = NULL;
+	const gchar *p;
+	gint state=0;
+	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 
 	/* check to see if we have a subpath of path already defined */
@@ -237,7 +237,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 	else
 		p = path;
 
-	while ((c = camel_utf8_getc ((const unsigned char **) &p))) {
+	while ((c = camel_utf8_getc ((const guchar **) &p))) {
 		switch (state) {
 		case 0:
 			if (c == '%') {
@@ -245,7 +245,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 			} else {
 				if (c == '/')
 					c = dir_sep;
-				camel_utf8_putc((unsigned char **) &f, c);
+				camel_utf8_putc((guchar **) &f, c);
 			}
 			break;
 		case 1:
@@ -255,11 +255,11 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 		case 2:
 			state = 0;
 			v |= hexnib (c);
-			camel_utf8_putc ((unsigned char **) &f, v);
+			camel_utf8_putc ((guchar **) &f, v);
 			break;
 		}
 	}
-	camel_utf8_putc ((unsigned char **) &f, c);
+	camel_utf8_putc ((guchar **) &f, c);
 
 	/* merge old path part if required */
 	f = camel_utf8_utf7 (full);
@@ -274,12 +274,12 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const char *pat
 }
 
 CamelNNTPStoreInfo *
-camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const char *full, char dir_sep)
+camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const gchar *full, gchar dir_sep)
 {
 	CamelNNTPStoreInfo *info;
-	char *pathu8;
-	int len;
-	char *full_name;
+	gchar *pathu8;
+	gint len;
+	gchar *full_name;
 
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
 
@@ -395,8 +395,8 @@ store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
 	camel_nntp_store_summary_parent->store_info_free (s, mi);
 }
 
-static const char *
-store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
+static const gchar *
+store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *)mi;
 
@@ -413,7 +413,7 @@ store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, int type)
 }
 
 static void
-store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, int type, const char *str)
+store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *)mi;
 

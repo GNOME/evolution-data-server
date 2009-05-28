@@ -29,14 +29,14 @@ struct _EDbHash
 	EDbHashPrivate *priv;
 };
 
-typedef void (*EDbHashFunc) (const char *key, gpointer user_data);
+typedef void (*EDbHashFunc) (const gchar *key, gpointer user_data);
 
-EDbHash *e_dbhash_new (const char *filename);
+EDbHash *e_dbhash_new (const gchar *filename);
 
-void e_dbhash_add (EDbHash *edbh, const char *key, const char *data);
-void e_dbhash_remove (EDbHash *edbh, const char *key);
+void e_dbhash_add (EDbHash *edbh, const gchar *key, const gchar *data);
+void e_dbhash_remove (EDbHash *edbh, const gchar *key);
 
-EDbHashStatus e_dbhash_compare (EDbHash *edbh, const char *key, const char *compare_data);
+EDbHashStatus e_dbhash_compare (EDbHash *edbh, const gchar *key, const gchar *compare_data);
 void e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data);
 
 void e_dbhash_write (EDbHash *edbh);

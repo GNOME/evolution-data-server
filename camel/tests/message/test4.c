@@ -39,11 +39,11 @@
 
 #if 0
 static void
-dump_mime_struct (CamelMimePart *mime_part, int depth)
+dump_mime_struct (CamelMimePart *mime_part, gint depth)
 {
 	CamelDataWrapper *content;
-	char *mime_type;
-	int i = 0;
+	gchar *mime_type;
+	gint i = 0;
 
 	while (i < depth) {
 		printf ("   ");
@@ -71,11 +71,11 @@ dump_mime_struct (CamelMimePart *mime_part, int depth)
 }
 #endif
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
 	struct dirent *dent;
 	DIR *dir;
-	int fd;
+	gint fd;
 
 	camel_test_init (argc, argv);
 
@@ -87,7 +87,7 @@ int main (int argc, char **argv)
 	while ((dent = readdir (dir)) != NULL) {
 		CamelMimeMessage *message;
 		CamelStream *stream;
-		char *filename;
+		gchar *filename;
 		struct stat st;
 
 		if (dent->d_name[0] == '.')

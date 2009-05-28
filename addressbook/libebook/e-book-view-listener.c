@@ -127,7 +127,7 @@ e_book_view_listener_queue_idlist_event (EBookViewListener          *listener,
 					 const GNOME_Evolution_Addressbook_ContactIdList *ids)
 {
 	EBookViewListenerResponse *resp;
-	int i;
+	gint i;
 
 	if (listener->priv->stopped)
 		return;
@@ -151,7 +151,7 @@ e_book_view_listener_queue_sequence_event (EBookViewListener          *listener,
 					   const GNOME_Evolution_Addressbook_VCardList  *vcards)
 {
 	EBookViewListenerResponse *resp;
-	int i;
+	gint i;
 
 	if (listener->priv->stopped)
 		return;
@@ -173,7 +173,7 @@ e_book_view_listener_queue_sequence_event (EBookViewListener          *listener,
 static void
 e_book_view_listener_queue_message_event (EBookViewListener          *listener,
 					  EBookViewListenerOperation  op,
-					  const char                 *message)
+					  const gchar                 *message)
 {
 	EBookViewListenerResponse *resp;
 
@@ -242,7 +242,7 @@ impl_BookViewListener_notify_sequence_complete (PortableServer_Servant servant,
 
 static void
 impl_BookViewListener_notify_progress (PortableServer_Servant  servant,
-				       const char             *message,
+				       const gchar             *message,
 				       const CORBA_short       percent,
 				       CORBA_Environment      *ev)
 {

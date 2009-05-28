@@ -126,7 +126,7 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 	EAccount *account;
 	EList *old_accounts;
 	EIterator *iter;
-	char *uid;
+	gchar *uid;
 
 	old_accounts = e_list_duplicate (E_LIST (account_list));
 
@@ -193,8 +193,8 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 	g_object_unref (old_accounts);
 }
 
-static void *
-copy_func (const void *data, void *closure)
+static gpointer
+copy_func (gconstpointer data, gpointer closure)
 {
 	GObject *object = (GObject *)data;
 
@@ -203,7 +203,7 @@ copy_func (const void *data, void *closure)
 }
 
 static void
-free_func (void *data, void *closure)
+free_func (gpointer data, gpointer closure)
 {
 	g_object_unref (data);
 }
@@ -271,7 +271,7 @@ e_account_list_save (EAccountList *account_list)
 	GSList *list = NULL;
 	EAccount *account;
 	EIterator *iter;
-	char *xmlbuf;
+	gchar *xmlbuf;
 
 	for (iter = e_list_get_iterator (E_LIST (account_list));
 	     e_iterator_is_valid (iter);
@@ -327,7 +327,7 @@ e_account_list_remove_account_proxies (EAccountList *accounts, EAccount *account
 	e_account_list_save (accounts);
 }
 
-int
+gint
 e_account_list_account_has_proxies (EAccountList *accounts, EAccount *account)
 {
 	if (e_account_list_find (accounts, E_ACCOUNT_FIND_PARENT_UID, account->uid))
@@ -401,7 +401,7 @@ e_account_list_remove(EAccountList *accounts, EAccount *account)
 const EAccount *
 e_account_list_get_default(EAccountList *accounts)
 {
-	char *uid;
+	gchar *uid;
 	EIterator *it;
 	const EAccount *account = NULL;
 
@@ -460,9 +460,9 @@ e_account_list_set_default(EAccountList *accounts, EAccount *account)
  * Return value: The account or NULL if it doesn't exist.
  **/
 const EAccount *
-e_account_list_find(EAccountList *accounts, e_account_find_t type, const char *key)
+e_account_list_find(EAccountList *accounts, e_account_find_t type, const gchar *key)
 {
-	char *val;
+	gchar *val;
 	EIterator *it;
 	const EAccount *account = NULL;
 
@@ -475,7 +475,7 @@ e_account_list_find(EAccountList *accounts, e_account_find_t type, const char *k
 	for (it = e_list_get_iterator ((EList *)accounts);
 	     e_iterator_is_valid (it);
 	     e_iterator_next (it)) {
-		int found = 0;
+		gint found = 0;
 
 		account = (const EAccount *)e_iterator_get (it);
 

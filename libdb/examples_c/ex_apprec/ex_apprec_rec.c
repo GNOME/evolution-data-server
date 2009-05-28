@@ -28,19 +28,19 @@
  * ex_apprec_mkdir_recover --
  *	Recovery function for mkdir.
  *
- * PUBLIC: int ex_apprec_mkdir_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint ex_apprec_mkdir_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 ex_apprec_mkdir_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	ex_apprec_mkdir_args *argp;
-	int ret;
+	gint ret;
 
 	argp = NULL;
 
@@ -62,7 +62,7 @@ ex_apprec_mkdir_recover(dbenv, dbtp, lsnp, op, info)
 		 * exists.  We log the trailing zero in pathnames, so we can
 		 * simply pass the data part of the DBT into rmdir as a string.
 		 * (Note that we don't have any alignment guarantees, but for
-		 * a char * this doesn't matter.)
+		 * a gchar * this doesn't matter.)
 		 *
 		 * Ignore all errors other than ENOENT;  DB may attempt to undo
 		 * or redo operations without knowing whether they have already

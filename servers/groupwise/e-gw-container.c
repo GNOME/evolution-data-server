@@ -29,15 +29,15 @@
 #include "e-gw-message.h"
 
 struct _EGwContainerPrivate {
-	char *name;
-	char *id;
-	char *parent;
+	gchar *name;
+	gchar *id;
+	gchar *parent;
 	guint32 unread ;
 	guint32 total ;
-	int sequence;
-	char *owner;
+	gint sequence;
+	gchar *owner;
 	GList *user_list;
-	char *modified;
+	gchar *modified;
 	EGwContainerType type ;
 	gboolean is_root ;
 	gboolean is_writable;
@@ -49,9 +49,9 @@ struct _EGwContainerPrivate {
 
 static GObjectClass *parent_class = NULL;
 
-static void e_gw_container_set_sequence (EGwContainer *container, int sequence);
-static void e_gw_container_set_modified (EGwContainer *container, const char *modified);
-static void e_gw_container_set_owner(EGwContainer *container, const char *owner);
+static void e_gw_container_set_sequence (EGwContainer *container, gint sequence);
+static void e_gw_container_set_modified (EGwContainer *container, const gchar *modified);
+static void e_gw_container_set_owner(EGwContainer *container, const gchar *owner);
 static void e_gw_container_set_is_shared_by_me (EGwContainer *container, gboolean is_shared_by_me);
 static void e_gw_container_set_is_shared_to_me (EGwContainer *container, gboolean is_shared_to_me);
 
@@ -189,9 +189,9 @@ e_gw_container_new_from_soap_parameter (SoupSoapParameter *param)
 gboolean
 e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParameter *param)
 {
-	char *value;
-	int int_value;
-	int rights = 0;
+	gchar *value;
+	gint int_value;
+	gint rights = 0;
 	gboolean byme = FALSE;
 	gboolean tome = FALSE;
 	SoupSoapParameter *subparam;
@@ -211,7 +211,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			e_gw_container_set_name (container, "");
 	} else {
 			value = soup_soap_parameter_get_string_value (subparam);
-			e_gw_container_set_name (container, (const char *) value);
+			e_gw_container_set_name (container, (const gchar *) value);
 			g_free (value);
 	}
 
@@ -221,7 +221,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 			e_gw_container_set_id (container, "");
 	} else {
 			value = soup_soap_parameter_get_string_value (subparam);
-			e_gw_container_set_id (container, (const char *) value);
+			e_gw_container_set_id (container, (const gchar *) value);
 			g_free (value);
 	}
 
@@ -233,7 +233,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	} else {
 
 		value = soup_soap_parameter_get_string_value (subparam);
-		e_gw_container_set_parent_id (container, (const char *) value);
+		e_gw_container_set_parent_id (container, (const gchar *) value);
 		g_free (value) ;
 	}
 
@@ -396,7 +396,7 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 
 		if (subparam) {
 			value = soup_soap_parameter_get_string_value (subparam);
-			e_gw_container_set_modified (container, (const char *) value);
+			e_gw_container_set_modified (container, (const gchar *) value);
 			g_free (value);
 		}
 
@@ -420,7 +420,7 @@ e_gw_container_get_user_list (EGwContainer *container, GList **user_list)
 
 }
 
-int
+gint
 e_gw_container_get_sequence (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), 0);
@@ -429,22 +429,22 @@ e_gw_container_get_sequence (EGwContainer *container)
 }
 
 static  void
-e_gw_container_set_sequence (EGwContainer *container, int sequence)
+e_gw_container_set_sequence (EGwContainer *container, gint sequence)
 {
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
 	container->priv->sequence = sequence;
 }
 
-const char *
+const gchar *
 e_gw_container_get_modified (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), NULL);
 
-	return (const char *) container->priv->modified;
+	return (const gchar *) container->priv->modified;
 }
 
 static void
-e_gw_container_set_modified (EGwContainer *container, const char *modified)
+e_gw_container_set_modified (EGwContainer *container, const gchar *modified)
 {
 	EGwContainerPrivate *priv;
 
@@ -459,7 +459,7 @@ e_gw_container_set_modified (EGwContainer *container, const char *modified)
 }
 
 static void
-e_gw_container_set_owner(EGwContainer *container, const char *owner)
+e_gw_container_set_owner(EGwContainer *container, const gchar *owner)
 {
 	EGwContainerPrivate *priv;
 
@@ -472,15 +472,15 @@ e_gw_container_set_owner(EGwContainer *container, const char *owner)
 	container->priv->owner = g_strdup (owner);
 }
 
-const char *
+const gchar *
 e_gw_container_get_owner (EGwContainer *container)
 {
 	g_return_val_if_fail (E_GW_CONTAINER (container), NULL);
 
-	return (const char *) container->priv->owner;
+	return (const gchar *) container->priv->owner;
 }
 
-int
+gint
 e_gw_container_get_rights (EGwContainer *container, gchar *email)
 {
 	GList *user_list = NULL;
@@ -548,16 +548,16 @@ e_gw_container_set_is_system_folder (EGwContainer *container, gboolean is_system
 	container->priv->is_system_folder = is_system_folder;
 }
 
-const char *
+const gchar *
 e_gw_container_get_name (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), NULL);
 
-	return (const char *) container->priv->name;
+	return (const gchar *) container->priv->name;
 }
 
 void
-e_gw_container_set_name (EGwContainer *container, const char *new_name)
+e_gw_container_set_name (EGwContainer *container, const gchar *new_name)
 {
 	EGwContainerPrivate *priv;
 
@@ -571,16 +571,16 @@ e_gw_container_set_name (EGwContainer *container, const char *new_name)
 	priv->name = g_strdup (new_name);
 }
 
-const char *
+const gchar *
 e_gw_container_get_id (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), NULL);
 
-	return (const char *) container->priv->id;
+	return (const gchar *) container->priv->id;
 }
 
 void
-e_gw_container_set_id (EGwContainer *container, const char *new_id)
+e_gw_container_set_id (EGwContainer *container, const gchar *new_id)
 {
 	EGwContainerPrivate *priv;
 
@@ -594,16 +594,16 @@ e_gw_container_set_id (EGwContainer *container, const char *new_id)
 	priv->id = g_strdup (new_id);
 }
 
-const char *
+const gchar *
 e_gw_container_get_parent_id (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), NULL);
 
-	return (const char *) container->priv->parent;
+	return (const gchar *) container->priv->parent;
 }
 
 void
-e_gw_container_set_parent_id (EGwContainer *container, const char *parent_id)
+e_gw_container_set_parent_id (EGwContainer *container, const gchar *parent_id)
 {
 	EGwContainerPrivate *priv ;
 
@@ -691,7 +691,7 @@ e_gw_container_get_container_type (EGwContainer *container)
  * flag = 0 :add to acl
  */
 void
-e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const char *sub, const char *mesg, int flag)
+e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const gchar *sub, const gchar *mesg, gint flag)
 {
 	gboolean add, edit, del;
 	gchar *email = NULL;

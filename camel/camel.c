@@ -56,15 +56,15 @@ PRLock *nss_initlock = NULL;
 volatile gboolean nss_initialized = FALSE;
 #endif
 
-static int initialised = FALSE;
+static gint initialised = FALSE;
 
-int camel_application_is_exiting = FALSE;
+gint camel_application_is_exiting = FALSE;
 
-int
-camel_init (const char *configdir, gboolean nss_init)
+gint
+camel_init (const gchar *configdir, gboolean nss_init)
 {
 	CamelCertDB *certdb;
-	char *path;
+	gchar *path;
 
 	if (initialised)
 		return 0;
@@ -79,7 +79,7 @@ camel_init (const char *configdir, gboolean nss_init)
 
 #ifdef HAVE_NSS
 	if (nss_init) {
-		char *nss_configdir;
+		gchar *nss_configdir;
 		PRUint16 indx;
 
 		if (nss_initlock == NULL) {

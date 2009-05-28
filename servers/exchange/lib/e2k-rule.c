@@ -38,7 +38,7 @@
  * fields of @prop.
  **/
 void
-e2k_rule_prop_set (E2kRuleProp *prop, const char *propname)
+e2k_rule_prop_set (E2kRuleProp *prop, const gchar *propname)
 {
 	prop->name = propname;
 	prop->proptag = e2k_prop_proptag (propname);
@@ -100,7 +100,7 @@ e2k_rule_read_uint32 (guint8 *ptr)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_uint32 (guint8 **ptr, int *len, guint32 *val)
+e2k_rule_extract_uint32 (guint8 **ptr, gint *len, guint32 *val)
 {
 	if (*len < 4)
 		return FALSE;
@@ -166,7 +166,7 @@ e2k_rule_read_uint16 (guint8 *ptr)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_uint16 (guint8 **ptr, int *len, guint16 *val)
+e2k_rule_extract_uint16 (guint8 **ptr, gint *len, guint16 *val)
 {
 	if (*len < 2)
 		return FALSE;
@@ -203,7 +203,7 @@ e2k_rule_append_byte (GByteArray *ba, guint8 val)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_byte (guint8 **ptr, int *len, guint8 *val)
+e2k_rule_extract_byte (guint8 **ptr, gint *len, guint8 *val)
 {
 	if (*len < 1)
 		return FALSE;
@@ -223,7 +223,7 @@ e2k_rule_extract_byte (guint8 **ptr, int *len, guint8 *val)
  * Appends @str to the rule in @ba
  **/
 void
-e2k_rule_append_string (GByteArray *ba, const char *str)
+e2k_rule_append_string (GByteArray *ba, const gchar *str)
 {
 	/* FIXME: verify encoding */
 	g_byte_array_append (ba, str, strlen (str) + 1);
@@ -241,9 +241,9 @@ e2k_rule_append_string (GByteArray *ba, const char *str)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_string (guint8 **ptr, int *len, char **str)
+e2k_rule_extract_string (guint8 **ptr, gint *len, gchar **str)
 {
-	int slen;
+	gint slen;
 
 	for (slen = 0; slen < *len; slen++) {
 		if ((*ptr)[slen] == '\0') {
@@ -265,10 +265,10 @@ e2k_rule_extract_string (guint8 **ptr, int *len, char **str)
  * Appends @str to the rule in @ba
  **/
 void
-e2k_rule_append_unicode (GByteArray *ba, const char *str)
+e2k_rule_append_unicode (GByteArray *ba, const gchar *str)
 {
 	gunichar2 *utf16;
-	int i;
+	gint i;
 
 	utf16 = g_utf8_to_utf16 (str, -1, NULL, NULL, NULL);
 	g_return_if_fail (utf16 != NULL);
@@ -291,7 +291,7 @@ e2k_rule_append_unicode (GByteArray *ba, const char *str)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_unicode (guint8 **ptr, int *len, char **str)
+e2k_rule_extract_unicode (guint8 **ptr, gint *len, gchar **str)
 {
 	guint8 *start, *end;
 	gunichar2 *utf16;
@@ -339,7 +339,7 @@ e2k_rule_append_binary (GByteArray *ba, GByteArray *data)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_binary (guint8 **ptr, int *len, GByteArray **data)
+e2k_rule_extract_binary (guint8 **ptr, gint *len, GByteArray **data)
 {
 	guint16 datalen;
 
@@ -390,7 +390,7 @@ e2k_rule_append_proptag (GByteArray *ba, E2kRuleProp *prop)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_proptag (guint8 **ptr, int *len, E2kRuleProp *prop)
+e2k_rule_extract_proptag (guint8 **ptr, gint *len, E2kRuleProp *prop)
 {
 	if (!e2k_rule_extract_uint32 (ptr, len, &prop->proptag))
 		return FALSE;
@@ -454,7 +454,7 @@ e2k_rule_append_propvalue (GByteArray *ba, E2kPropValue *pv)
  * Return value: success or failure
  **/
 gboolean
-e2k_rule_extract_propvalue (guint8 **ptr, int *len, E2kPropValue *pv)
+e2k_rule_extract_propvalue (guint8 **ptr, gint *len, E2kPropValue *pv)
 {
 	if (!e2k_rule_extract_proptag (ptr, len, &pv->prop))
 		return FALSE;
@@ -463,7 +463,7 @@ e2k_rule_extract_propvalue (guint8 **ptr, int *len, E2kPropValue *pv)
 	case E2K_PT_UNICODE:
 	case E2K_PT_STRING8:
 		pv->type = E2K_PROP_TYPE_STRING;
-		return e2k_rule_extract_unicode (ptr, len, (char **)&pv->value);
+		return e2k_rule_extract_unicode (ptr, len, (gchar **)&pv->value);
 
 	case E2K_PT_BINARY:
 		pv->type = E2K_PROP_TYPE_BINARY;
@@ -561,7 +561,7 @@ e2k_rule_free (E2kRule *rule)
 void
 e2k_rules_free (E2kRules *rules)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < rules->rules->len; i++)
 		e2k_rule_free (rules->rules->pdata[i]);
@@ -582,7 +582,7 @@ E2kRules *
 e2k_rules_from_binary (GByteArray *rules_data)
 {
 	guint8 *data;
-	int len, i;
+	gint len, i;
 	guint32 nrules, pdlen;
 	E2kRules *rules;
 	E2kRule *rule;
@@ -656,7 +656,7 @@ e2k_rules_to_binary (E2kRules *rules)
 {
 	GByteArray *ba;
 	E2kRule *rule;
-	int i;
+	gint i;
 
 	ba = g_byte_array_new ();
 	e2k_rule_append_byte (ba, rules->version);

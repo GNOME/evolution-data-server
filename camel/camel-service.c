@@ -59,11 +59,11 @@ static gboolean service_disconnect(CamelService *service, gboolean clean,
 				   CamelException *ex);
 static void cancel_connect (CamelService *service);
 static GList *query_auth_types (CamelService *service, CamelException *ex);
-static char *get_name (CamelService *service, gboolean brief);
-static char *get_path (CamelService *service);
+static gchar *get_name (CamelService *service, gboolean brief);
+static gchar *get_path (CamelService *service);
 
-static int service_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static int service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint service_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 
 static void
@@ -88,7 +88,7 @@ camel_service_class_init (CamelServiceClass *camel_service_class)
 }
 
 static void
-camel_service_init (void *o, void *k)
+camel_service_init (gpointer o, gpointer k)
 {
 	CamelService *service = o;
 
@@ -155,7 +155,7 @@ service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 	CamelURL *url = service->url;
 	gboolean reconnect = FALSE;
 	guint32 tag;
-	int i;
+	gint i;
 
 	for (i = 0; i < args->argc; i++) {
 		tag = args->argv[i].tag;
@@ -220,7 +220,7 @@ service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	CamelService *service = (CamelService *) object;
 	CamelURL *url = service->url;
 	guint32 tag;
-	int i;
+	gint i;
 
 	for (i = 0; i < args->argc; i++) {
 		tag = args->argv[i].tag;
@@ -263,7 +263,7 @@ service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 static void
 construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
-	char *err, *url_string;
+	gchar *err, *url_string;
 
 	if (CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_USER) &&
 	    (url->user == NULL || url->user[0] == '\0')) {
@@ -415,7 +415,7 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 			  CamelException *ex)
 {
 	gboolean res = TRUE;
-	int unreg = FALSE;
+	gint unreg = FALSE;
 
 	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
 
@@ -482,14 +482,14 @@ camel_service_cancel_connect (CamelService *service)
  *
  * Returns: the URL representing @service
  **/
-char *
+gchar *
 camel_service_get_url (CamelService *service)
 {
 	return camel_url_to_string (service->url, CAMEL_URL_HIDE_PASSWORD);
 }
 
 
-static char *
+static gchar *
 get_name (CamelService *service, gboolean brief)
 {
 	w(g_warning ("CamelService::get_name not implemented for '%s'",
@@ -510,7 +510,7 @@ get_name (CamelService *service, gboolean brief)
  *
  * Returns: a description of the service which the caller must free
  **/
-char *
+gchar *
 camel_service_get_name (CamelService *service, gboolean brief)
 {
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
@@ -520,13 +520,13 @@ camel_service_get_name (CamelService *service, gboolean brief)
 }
 
 
-static char *
+static gchar *
 get_path (CamelService *service)
 {
 	CamelProvider *prov = service->provider;
 	CamelURL *url = service->url;
 	GString *gpath;
-	char *path;
+	gchar *path;
 
 	/* A sort of ad-hoc default implementation that works for our
 	 * current set of services.
@@ -575,7 +575,7 @@ get_path (CamelService *service)
  *
  * Returns: the path, which the caller must free
  **/
-char *
+gchar *
 camel_service_get_path (CamelService *service)
 {
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);

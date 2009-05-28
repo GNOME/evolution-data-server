@@ -36,7 +36,7 @@
 static GObjectClass *parent_class = NULL;
 
 typedef struct {
-        char *folder_name;
+        gchar *folder_name;
         gdouble folder_size;
 } folder_info;
 
@@ -137,7 +137,7 @@ exchange_folder_size_new (void)
 
 void
 exchange_folder_size_update (ExchangeFolderSize *fsize,
-				const char *folder_name,
+				const gchar *folder_name,
 				gdouble folder_size)
 {
 	folder_info *f_info, *cached_info;
@@ -191,7 +191,7 @@ exchange_folder_size_update (ExchangeFolderSize *fsize,
 
 void
 exchange_folder_size_remove (ExchangeFolderSize *fsize,
-				const char *folder_name)
+				const gchar *folder_name)
 {
 	ExchangeFolderSizePrivate *priv;
 	GHashTable *folder_size_table;
@@ -221,7 +221,7 @@ exchange_folder_size_remove (ExchangeFolderSize *fsize,
 
 gdouble
 exchange_folder_size_get (ExchangeFolderSize *fsize,
-			  const char *folder_name)
+			  const gchar *folder_name)
 {
 	ExchangeFolderSizePrivate *priv;
 	GHashTable *folder_size_table;

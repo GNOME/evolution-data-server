@@ -44,15 +44,15 @@ struct _CamelAddress {
 struct _CamelAddressClass {
 	CamelObjectClass parent_class;
 
-	int   (*decode)		(CamelAddress *, const char *raw);
-	char *(*encode)		(CamelAddress *);
+	gint   (*decode)		(CamelAddress *, const gchar *raw);
+	gchar *(*encode)		(CamelAddress *);
 
-	int   (*unformat)	(CamelAddress *, const char *raw);
-	char *(*format)		(CamelAddress *);
+	gint   (*unformat)	(CamelAddress *, const gchar *raw);
+	gchar *(*format)		(CamelAddress *);
 
-	int   (*cat)		(CamelAddress *, const CamelAddress *);
+	gint   (*cat)		(CamelAddress *, const CamelAddress *);
 
-	void  (*remove)		(CamelAddress *, int index);
+	void  (*remove)		(CamelAddress *, gint index);
 };
 
 CamelType	camel_address_get_type	(void);
@@ -60,15 +60,15 @@ CamelAddress   *camel_address_new	(void);
 CamelAddress   *camel_address_new_clone	(const CamelAddress *addr);
 int		camel_address_length	(CamelAddress *addr);
 
-int		camel_address_decode	(CamelAddress *addr, const char *raw);
+int		camel_address_decode	(CamelAddress *addr, const gchar *raw);
 char	       *camel_address_encode	(CamelAddress *addr);
-int		camel_address_unformat	(CamelAddress *addr, const char *raw);
+int		camel_address_unformat	(CamelAddress *addr, const gchar *raw);
 char	       *camel_address_format	(CamelAddress *addr);
 
 int		camel_address_cat	(CamelAddress *dest, const CamelAddress *source);
 int		camel_address_copy	(CamelAddress *dest, const CamelAddress *source);
 
-void		camel_address_remove	(CamelAddress *addr, int index);
+void		camel_address_remove	(CamelAddress *addr, gint index);
 
 G_END_DECLS
 

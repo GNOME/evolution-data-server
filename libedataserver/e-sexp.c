@@ -36,7 +36,7 @@
   bool = (or bool*)
 	perform a boolean OR of boolean values.
 
-  int = (+ int*)
+  gint = (+ int*)
 	Add integers.
 
   string = (+ string*)
@@ -45,13 +45,13 @@
   time_t = (+ time_t*)
 	Add time_t values.
 
-  int = (- int int*)
+  gint = (- gint int*)
 	Subtract integers from the first.
 
   time_t = (- time_t*)
 	Subtract time_t values from the first.
 
-  int = (cast-int string|int|bool)
+  gint = (cast-int string|int|bool)
         Cast to an integer value.
 
   string = (cast-string string|int|bool)
@@ -59,9 +59,9 @@
 
   Comparison operators:
 
-  bool = (< int int)
-  bool = (> int int)
-  bool = (= int int)
+  bool = (< gint int)
+  bool = (> gint int)
+  bool = (= gint int)
 
   bool = (< string string)
   bool = (> string string)
@@ -100,10 +100,10 @@
 #define d(x)			/* general debug */
 
 
-static struct _ESExpTerm * parse_list(ESExp *f, int gotbrace);
+static struct _ESExpTerm * parse_list(ESExp *f, gint gotbrace);
 static struct _ESExpTerm * parse_value(ESExp *f);
 
-static void parse_dump_term(struct _ESExpTerm *t, int depth);
+static void parse_dump_term(struct _ESExpTerm *t, gint depth);
 
 #ifdef E_SEXP_IS_G_OBJECT
 static GObjectClass *parent_class;
@@ -148,7 +148,7 @@ static const GScannerConfig scanner_config =
 
 /* jumps back to the caller of f->failenv, only to be called from inside a callback */
 void
-e_sexp_fatal_error(struct _ESExp *f, const char *why, ...)
+e_sexp_fatal_error(struct _ESExp *f, const gchar *why, ...)
 {
 	va_list args;
 
@@ -162,14 +162,14 @@ e_sexp_fatal_error(struct _ESExp *f, const char *why, ...)
 	longjmp(f->failenv, 1);
 }
 
-const char *
+const gchar *
 e_sexp_error(struct _ESExp *f)
 {
 	return f->error;
 }
 
 struct _ESExpResult *
-e_sexp_result_new(struct _ESExp *f, int type)
+e_sexp_result_new(struct _ESExp *f, gint type)
 {
 	struct _ESExpResult *r = e_memchunk_alloc0(f->result_chunks);
 	r->type = type;
@@ -203,9 +203,9 @@ e_sexp_result_free(struct _ESExp *f, struct _ESExpResult *t)
 
 /* used in normal functions if they have to abort, and free their arguments */
 void
-e_sexp_resultv_free(struct _ESExp *f, int argc, struct _ESExpResult **argv)
+e_sexp_resultv_free(struct _ESExp *f, gint argc, struct _ESExpResult **argv)
 {
-	int i;
+	gint i;
 
 	for (i=0;i<argc;i++) {
 		e_sexp_result_free(f, argv[i]);
@@ -216,13 +216,13 @@ e_sexp_resultv_free(struct _ESExp *f, int argc, struct _ESExpResult **argv)
 
 /* we can only itereate a hashtable from a called function */
 struct IterData {
-	int count;
+	gint count;
 	GPtrArray *uids;
 };
 
 /* ok, store any values that are in all sets */
 static void
-htand(char *key, int value, struct IterData *iter_data)
+htand(gchar *key, gint value, struct IterData *iter_data)
 {
 	if (value == iter_data->count) {
 		g_ptr_array_add(iter_data->uids, key);
@@ -231,21 +231,21 @@ htand(char *key, int value, struct IterData *iter_data)
 
 /* or, store all unique values */
 static void
-htor(char *key, int value, struct IterData *iter_data)
+htor(gchar *key, gint value, struct IterData *iter_data)
 {
 	g_ptr_array_add(iter_data->uids, key);
 }
 
 static ESExpResult *
-term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_and(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1;
 	GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
 	struct IterData lambdafoo;
-	int type=-1;
-	int bool = TRUE;
-	int i;
-	const char *oper;
+	gint type=-1;
+	gint bool = TRUE;
+	gint i;
+	const gchar *oper;
 
 	r(printf("( and\n"));
 
@@ -264,14 +264,14 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 			g_hash_table_destroy(ht);
 			e_sexp_fatal_error(f, "Invalid types in AND");
 		} else if (r1->type == ESEXP_RES_ARRAY_PTR) {
-			char **a1;
-			int l1, j;
+			gchar **a1;
+			gint l1, j;
 
-			a1 = (char **)r1->value.ptrarray->pdata;
+			a1 = (gchar **)r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
 				gpointer ptr;
-				int n;
+				gint n;
 				ptr = g_hash_table_lookup(ht, a1[j]);
 				n = GPOINTER_TO_INT(ptr);
 				g_hash_table_insert(ht, a1[j], GINT_TO_POINTER(n+1));
@@ -300,15 +300,15 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_or(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1;
 	GHashTable *ht = g_hash_table_new(g_str_hash, g_str_equal);
 	struct IterData lambdafoo;
-	int type = -1;
-	int bool = FALSE;
-	int i;
-	const char *oper;
+	gint type = -1;
+	gint bool = FALSE;
+	gint i;
+	const gchar *oper;
 
 	r(printf("(or \n"));
 
@@ -327,13 +327,13 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 			g_hash_table_destroy(ht);
 			e_sexp_fatal_error(f, "Invalid types in OR");
 		} else if (r1->type == ESEXP_RES_ARRAY_PTR) {
-			char **a1;
-			int l1, j;
+			gchar **a1;
+			gint l1, j;
 
-			a1 = (char **)r1->value.ptrarray->pdata;
+			a1 = (gchar **)r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
-				g_hash_table_insert(ht, a1[j], (void *)1);
+				g_hash_table_insert(ht, a1[j], (gpointer)1);
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
 			bool |= r1->value.bool;
@@ -358,9 +358,9 @@ term_eval_or(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-term_eval_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+term_eval_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
-	int res = TRUE;
+	gint res = TRUE;
 	ESExpResult *r;
 
 	if (argc>0) {
@@ -375,7 +375,7 @@ term_eval_not(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 
 /* this should support all arguments ...? */
 static ESExpResult *
-term_eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_lt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -407,7 +407,7 @@ term_eval_lt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 /* this should support all arguments ...? */
 static ESExpResult *
-term_eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_gt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -439,7 +439,7 @@ term_eval_gt(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 /* this should support all arguments ...? */
 static ESExpResult *
-term_eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -466,17 +466,17 @@ term_eval_eq(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 }
 
 static ESExpResult *
-term_eval_plus(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+term_eval_plus(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	struct _ESExpResult *r=NULL;
-	int type;
-	int i;
+	gint type;
+	gint i;
 
 	if (argc>0) {
 		type = argv[0]->type;
 		switch(type) {
 		case ESEXP_RES_INT: {
-			int total = argv[0]->value.number;
+			gint total = argv[0]->value.number;
 			for (i=1;i<argc && argv[i]->type == ESEXP_RES_INT;i++) {
 				total += argv[i]->value.number;
 			}
@@ -527,17 +527,17 @@ term_eval_plus(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 }
 
 static ESExpResult *
-term_eval_sub(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+term_eval_sub(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	struct _ESExpResult *r=NULL;
-	int type;
-	int i;
+	gint type;
+	gint i;
 
 	if (argc>0) {
 		type = argv[0]->type;
 		switch(type) {
 		case ESEXP_RES_INT: {
-			int total = argv[0]->value.number;
+			gint total = argv[0]->value.number;
 			for (i=1;i<argc && argv[i]->type == ESEXP_RES_INT;i++) {
 				total -= argv[i]->value.number;
 			}
@@ -574,14 +574,14 @@ term_eval_sub(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 	return r;
 }
 
-/* cast to int */
+/* cast to gint */
 static ESExpResult *
-term_eval_castint(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+term_eval_castint(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	struct _ESExpResult *r;
 
 	if (argc != 1)
-		e_sexp_fatal_error(f, "Incorrect argument count to (int )");
+		e_sexp_fatal_error(f, "Incorrect argument count to (gint )");
 
 	r = e_sexp_result_new(f, ESEXP_RES_INT);
 	switch (argv[0]->type) {
@@ -604,7 +604,7 @@ term_eval_castint(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *
 
 /* cast to string */
 static ESExpResult *
-term_eval_caststring(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+term_eval_caststring(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	struct _ESExpResult *r;
 
@@ -624,7 +624,7 @@ term_eval_caststring(struct _ESExp *f, int argc, struct _ESExpResult **argv, voi
 		break;
 	default:
 		e_sexp_result_free(f, r);
-		e_sexp_fatal_error(f, "Invalid type in (int )");
+		e_sexp_fatal_error(f, "Invalid type in (gint )");
 	}
 
 	return r;
@@ -632,10 +632,10 @@ term_eval_caststring(struct _ESExp *f, int argc, struct _ESExpResult **argv, voi
 
 /* implements 'if' function */
 static ESExpResult *
-term_eval_if(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_if(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r;
-	int doit;
+	gint doit;
 
 	if (argc >=2 && argc<=3) {
 		r = e_sexp_term_eval(f, argv[0]);
@@ -652,10 +652,10 @@ term_eval_if(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 
 /* implements 'begin' statement */
 static ESExpResult *
-term_eval_begin(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
+term_eval_begin(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r=NULL;
-	int i;
+	gint i;
 
 	for (i=0;i<argc;i++) {
 		if (r)
@@ -674,7 +674,7 @@ struct _ESExpResult *
 e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
 {
 	struct _ESExpResult *r = NULL;
-	int i;
+	gint i;
 	struct _ESExpResult **argv;
 
 	g_return_val_if_fail(t != NULL, NULL);
@@ -690,12 +690,12 @@ e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
 		r->value.string = g_strdup(t->value.string);
 		break;
 	case ESEXP_TERM_INT:
-		r(printf(" (int %d)\n", t->value.number));
+		r(printf(" (gint %d)\n", t->value.number));
 		r = e_sexp_result_new(f, ESEXP_RES_INT);
 		r->value.number = t->value.number;
 		break;
 	case ESEXP_TERM_BOOL:
-		r(printf(" (int %d)\n", t->value.number));
+		r(printf(" (gint %d)\n", t->value.number));
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 		r->value.bool = t->value.bool;
 		break;
@@ -732,9 +732,9 @@ e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
 
 #ifdef TESTER
 static void
-eval_dump_result(ESExpResult *r, int depth)
+eval_dump_result(ESExpResult *r, gint depth)
 {
-	int i;
+	gint i;
 
 	if (r==NULL) {
 		printf("null result???\n");
@@ -769,9 +769,9 @@ eval_dump_result(ESExpResult *r, int depth)
 #endif
 
 static void
-parse_dump_term(struct _ESExpTerm *t, int depth)
+parse_dump_term(struct _ESExpTerm *t, gint depth)
 {
-	int i;
+	gint i;
 
 	if (t==NULL) {
 		printf("null term??\n");
@@ -820,7 +820,7 @@ parse_dump_term(struct _ESExpTerm *t, int depth)
 */
 
 static struct _ESExpTerm *
-parse_term_new(struct _ESExp *f, int type)
+parse_term_new(struct _ESExp *f, gint type)
 {
 	struct _ESExpTerm *s = e_memchunk_alloc0(f->term_chunks);
 	s->type = type;
@@ -830,7 +830,7 @@ parse_term_new(struct _ESExp *f, int type)
 static void
 parse_term_free(struct _ESExp *f, struct _ESExpTerm *t)
 {
-	int i;
+	gint i;
 
 	if (t==NULL) {
 		return;
@@ -862,11 +862,11 @@ parse_term_free(struct _ESExp *f, struct _ESExpTerm *t)
 }
 
 static struct _ESExpTerm **
-parse_values(ESExp *f, int *len)
+parse_values(ESExp *f, gint *len)
 {
-	int token;
+	gint token;
 	struct _ESExpTerm **terms;
-	int i, size = 0;
+	gint i, size = 0;
 	GScanner *gs = f->scanner;
 	GSList *list = NULL, *l;
 
@@ -905,7 +905,7 @@ ESExpTerm * e_sexp_parse_value (ESExp *f)
 static struct _ESExpTerm *
 parse_value(ESExp *f)
 {
-	int token, negative = FALSE;
+	gint token, negative = FALSE;
 	struct _ESExpTerm *t = NULL;
 	GScanner *gs = f->scanner;
 	struct _ESExpSymbol *s;
@@ -939,10 +939,10 @@ parse_value(ESExp *f)
 		t->value.number = g_scanner_cur_value(gs).v_int;
 		if (negative)
 			t->value.number = -t->value.number;
-		p(printf("got int %d\n", t->value.number));
+		p(printf("got gint %d\n", t->value.number));
 		break;
 	case '#': {
-		char *str;
+		gchar *str;
 
 		p(printf("got bool?\n"));
 		token = g_scanner_get_next_token(gs);
@@ -995,9 +995,9 @@ parse_value(ESExp *f)
 
 /* FIXME: this needs some robustification */
 static struct _ESExpTerm *
-parse_list(ESExp *f, int gotbrace)
+parse_list(ESExp *f, gint gotbrace)
 {
-	int token;
+	gint token;
 	struct _ESExpTerm *t = NULL;
 	GScanner *gs = f->scanner;
 
@@ -1049,7 +1049,7 @@ parse_list(ESExp *f, int gotbrace)
 	return t;
 }
 
-static void e_sexp_finalise(void *);
+static void e_sexp_finalise(gpointer);
 
 #ifdef E_SEXP_IS_G_OBJECT
 static void
@@ -1065,9 +1065,9 @@ e_sexp_class_init (ESExpClass *klass)
 
 /* 'builtin' functions */
 static const struct {
-	const char *name;
+	const gchar *name;
 	ESExpFunc *func;
-	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "and", (ESExpFunc *)term_eval_and, 1 },
@@ -1085,7 +1085,7 @@ static const struct {
 };
 
 static void
-free_symbol(void *key, void *value, void *data)
+free_symbol(gpointer key, gpointer value, gpointer data)
 {
 	struct _ESExpSymbol *s = value;
 
@@ -1094,7 +1094,7 @@ free_symbol(void *key, void *value, void *data)
 }
 
 static void
-e_sexp_finalise(void *o)
+e_sexp_finalise(gpointer o)
 {
 	ESExp *s = (ESExp *)o;
 
@@ -1117,7 +1117,7 @@ e_sexp_finalise(void *o)
 static void
 e_sexp_init (ESExp *s)
 {
-	int i;
+	gint i;
 
 	s->scanner = g_scanner_new(&scanner_config);
 	s->term_chunks = e_memchunk_new(16, sizeof(struct _ESExpTerm));
@@ -1126,9 +1126,9 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(s, 0, (char *) symbols[i].name, (ESExpIFunc *)symbols[i].func, (void *)&symbols[i]);
+			e_sexp_add_ifunction(s, 0, (gchar *) symbols[i].name, (ESExpIFunc *)symbols[i].func, (gpointer)&symbols[i]);
 		} else {
-			e_sexp_add_function(s, 0, (char *) symbols[i].name, symbols[i].func, (void *)&symbols[i]);
+			e_sexp_add_function(s, 0, (gchar *) symbols[i].name, symbols[i].func, (gpointer)&symbols[i]);
 		}
 	}
 
@@ -1195,7 +1195,7 @@ e_sexp_unref (ESExp *f)
 #endif
 
 void
-e_sexp_add_function(ESExp *f, int scope, char *name, ESExpFunc *func, void *data)
+e_sexp_add_function(ESExp *f, gint scope, gchar *name, ESExpFunc *func, gpointer data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1213,7 +1213,7 @@ e_sexp_add_function(ESExp *f, int scope, char *name, ESExpFunc *func, void *data
 }
 
 void
-e_sexp_add_ifunction(ESExp *f, int scope, char *name, ESExpIFunc *ifunc, void *data)
+e_sexp_add_ifunction(ESExp *f, gint scope, gchar *name, ESExpIFunc *ifunc, gpointer data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1231,7 +1231,7 @@ e_sexp_add_ifunction(ESExp *f, int scope, char *name, ESExpIFunc *ifunc, void *d
 }
 
 void
-e_sexp_add_variable(ESExp *f, int scope, char *name, ESExpTerm *value)
+e_sexp_add_variable(ESExp *f, gint scope, gchar *name, ESExpTerm *value)
 {
 	struct _ESExpSymbol *s;
 
@@ -1246,9 +1246,9 @@ e_sexp_add_variable(ESExp *f, int scope, char *name, ESExpTerm *value)
 }
 
 void
-e_sexp_remove_symbol(ESExp *f, int scope, char *name)
+e_sexp_remove_symbol(ESExp *f, gint scope, gchar *name)
 {
-	int oldscope;
+	gint oldscope;
 	struct _ESExpSymbol *s;
 
 	g_return_if_fail (IS_E_SEXP (f));
@@ -1264,8 +1264,8 @@ e_sexp_remove_symbol(ESExp *f, int scope, char *name)
 	}
 }
 
-int
-e_sexp_set_scope(ESExp *f, int scope)
+gint
+e_sexp_set_scope(ESExp *f, gint scope)
 {
 	g_return_val_if_fail (IS_E_SEXP (f), 0);
 
@@ -1273,7 +1273,7 @@ e_sexp_set_scope(ESExp *f, int scope)
 }
 
 void
-e_sexp_input_text(ESExp *f, const char *text, int len)
+e_sexp_input_text(ESExp *f, const gchar *text, gint len)
 {
 	g_return_if_fail (IS_E_SEXP (f));
 	g_return_if_fail (text != NULL);
@@ -1282,7 +1282,7 @@ e_sexp_input_text(ESExp *f, const char *text, int len)
 }
 
 void
-e_sexp_input_file (ESExp *f, int fd)
+e_sexp_input_file (ESExp *f, gint fd)
 {
 	g_return_if_fail (IS_E_SEXP (f));
 
@@ -1290,7 +1290,7 @@ e_sexp_input_file (ESExp *f, int fd)
 }
 
 /* returns -1 on error */
-int
+gint
 e_sexp_parse(ESExp *f)
 {
 	g_return_val_if_fail (IS_E_SEXP (f), -1);
@@ -1350,10 +1350,10 @@ e_sexp_encode_bool(GString *s, gboolean state)
  * are escaped appropriately.
  **/
 void
-e_sexp_encode_string(GString *s, const char *string)
+e_sexp_encode_string(GString *s, const gchar *string)
 {
-	char c;
-	const char *p;
+	gchar c;
+	const gchar *p;
 
 	if (string == NULL)
 		p = "";
@@ -1369,10 +1369,10 @@ e_sexp_encode_string(GString *s, const char *string)
 }
 
 #ifdef TESTER
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	ESExp *f;
-	char *t = "(+ \"foo\" \"\\\"\" \"bar\" \"\\\\ blah \\x \")";
+	gchar *t = "(+ \"foo\" \"\\\"\" \"bar\" \"\\\\ blah \\x \")";
 	ESExpResult *r;
 
 	g_type_init();

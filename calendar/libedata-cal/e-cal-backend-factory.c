@@ -73,7 +73,7 @@ e_cal_backend_factory_get_kind (ECalBackendFactory *factory)
  *
  * Return value: The protocol.
  */
-const char*
+const gchar *
 e_cal_backend_factory_get_protocol (ECalBackendFactory *factory)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_FACTORY (factory), NULL);

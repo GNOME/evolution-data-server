@@ -33,7 +33,7 @@ e_book_backend_google_factory_instance_init (EBookBackendGoogleFactory *factory)
 {
 }
 
-static const char *
+static const gchar *
 _get_protocol (EBookBackendFactory *factory)
 {
     return "google";
@@ -88,7 +88,7 @@ eds_module_shutdown   (void)
 }
 
 void
-eds_module_list_types (const GType **types, int *num_types)
+eds_module_list_types (const GType **types, gint *num_types)
 {
     *types = &google_type;
     *num_types = 1;

@@ -155,7 +155,7 @@ md5_final (MD5Context *ctx, guchar digest[16])
 	/* Compute number of bytes mod 64 */
 	count = (ctx->bits[0] >> 3) & 0x3F;
 
-	/* Set the first char of padding to 0x80.  This is safe since there is
+	/* Set the first gchar of padding to 0x80.  This is safe since there is
 	   always at least one byte free */
 	p = ctx->in + count;
 	*p++ = 0x80;

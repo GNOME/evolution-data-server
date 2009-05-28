@@ -51,7 +51,7 @@ static gboolean groupwise_send_to (CamelTransport *transport,
 				  CamelException *ex);
 
 static gboolean groupwise_transport_connect (CamelService *service, CamelException *ex);
-static char *groupwise_transport_get_name (CamelService *service, gboolean brief);
+static gchar *groupwise_transport_get_name (CamelService *service, gboolean brief);
 static void groupwise_transport_construct (CamelService *service, CamelSession *session,
 					   CamelProvider *provider, CamelURL *url, CamelException *ex);
 
@@ -115,7 +115,7 @@ camel_groupwise_transport_get_type (void)
 	return camel_groupwise_transport_type;
 }
 
-static char *groupwise_transport_get_name (CamelService *service, gboolean brief)
+static gchar *groupwise_transport_get_name (CamelService *service, gboolean brief)
 {
 	if (brief)
 		return g_strdup_printf (_("GroupWise server %s"), service->url->host);
@@ -149,8 +149,8 @@ groupwise_send_to (CamelTransport *transport,
 	EGwConnection *cnc = NULL;
 	EGwConnectionStatus status = 0;
 	GSList *sent_item_list = NULL;
-	char *url = NULL;
-	const char *reply_request = NULL;
+	gchar *url = NULL;
+	const gchar *reply_request = NULL;
 	EGwItemLinkInfo *info = NULL;
 
 	if (!transport) {
@@ -187,12 +187,12 @@ groupwise_send_to (CamelTransport *transport,
 
 	item = camel_groupwise_util_item_from_message (cnc, message, from);
 
-	reply_request = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
+	reply_request = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
 	if (reply_request) {
-		char *id;
-		int len = strlen (reply_request);
+		gchar *id;
+		gint len = strlen (reply_request);
 
-		id = (char *)g_malloc0 (len-1);
+		id = (gchar *)g_malloc0 (len-1);
 		id = memcpy(id, reply_request+2, len-3);
 		status = e_gw_connection_reply_item (cnc, id, NULL, &temp_item);
 		if (status != E_GW_CONNECTION_STATUS_OK)

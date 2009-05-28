@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,34 +25,34 @@ static const char revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/qam.h"
 
-static int __qam_bulk __P((DBC *, DBT *, u_int32_t));
-static int __qam_c_close __P((DBC *, db_pgno_t, int *));
-static int __qam_c_del __P((DBC *));
-static int __qam_c_destroy __P((DBC *));
-static int __qam_c_get __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-static int __qam_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-static int __qam_consume __P((DBC *, QMETA *, db_recno_t));
-static int __qam_getno __P((DB *, const DBT *, db_recno_t *));
+static gint __qam_bulk __P((DBC *, DBT *, u_int32_t));
+static gint __qam_c_close __P((DBC *, db_pgno_t, gint *));
+static gint __qam_c_del __P((DBC *));
+static gint __qam_c_destroy __P((DBC *));
+static gint __qam_c_get __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+static gint __qam_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+static gint __qam_consume __P((DBC *, QMETA *, db_recno_t));
+static gint __qam_getno __P((DB *, const DBT *, db_recno_t *));
 
 /*
  * __qam_position --
  *	Position a queued access method cursor at a record.  This returns
  *	the page locked.  *exactp will be set if the record is valid.
- * PUBLIC: int __qam_position
- * PUBLIC:       __P((DBC *, db_recno_t *, qam_position_mode, int *));
+ * PUBLIC: gint __qam_position
+ * PUBLIC:       __P((DBC *, db_recno_t *, qam_position_mode, gint *));
  */
-int
+gint
 __qam_position(dbc, recnop, mode, exactp)
 	DBC *dbc;		/* open cursor */
 	db_recno_t *recnop;	/* pointer to recno to find */
 	qam_position_mode mode;/* locking: read or write */
-	int *exactp;		/* indicate if it was found */
+	gint *exactp;		/* indicate if it was found */
 {
 	QUEUE_CURSOR *cp;
 	DB *dbp;
 	QAMDATA  *qp;
 	db_pgno_t pg;
-	int ret;
+	gint ret;
 
 	dbp = dbc->dbp;
 	cp = (QUEUE_CURSOR *)dbc->internal;
@@ -100,10 +100,10 @@ __qam_position(dbc, recnop, mode, exactp)
  *
  *   pagep must be write locked
  *
- * PUBLIC: int __qam_pitem
+ * PUBLIC: gint __qam_pitem
  * PUBLIC:     __P((DBC *,  QPAGE *, u_int32_t, db_recno_t, DBT *));
  */
-int
+gint
 __qam_pitem(dbc, pagep, indx, recno, data)
 	DBC *dbc;
 	QPAGE *pagep;
@@ -117,7 +117,7 @@ __qam_pitem(dbc, pagep, indx, recno, data)
 	QUEUE *t;
 	u_int32_t alloced;
 	u_int8_t *dest, *p;
-	int ret;
+	gint ret;
 
 	alloced = ret = 0;
 
@@ -229,7 +229,7 @@ __qam_c_put(dbc, key, data, flags, pgnop)
 	db_pgno_t pg;
 	db_recno_t new_cur, new_first;
 	u_int32_t opcode;
-	int exact, ret, t_ret;
+	gint exact, ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -359,9 +359,9 @@ __qam_c_put(dbc, key, data, flags, pgnop)
  * __qam_append --
  *	Perform a put(DB_APPEND) in queue.
  *
- * PUBLIC: int __qam_append __P((DBC *, DBT *, DBT *));
+ * PUBLIC: gint __qam_append __P((DBC *, DBT *, DBT *));
  */
-int
+gint
 __qam_append(dbc, key, data)
 	DBC *dbc;
 	DBT *key, *data;
@@ -375,7 +375,7 @@ __qam_append(dbc, key, data)
 	QUEUE_CURSOR *cp;
 	db_pgno_t pg;
 	db_recno_t recno;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -508,7 +508,7 @@ __qam_c_del(dbc)
 	QUEUE_CURSOR *cp;
 	db_pgno_t pg;
 	db_recno_t first;
-	int exact, ret, t_ret;
+	gint exact, ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -633,8 +633,8 @@ __qam_c_get(dbc, key, data, flags, pgnop)
 	db_pgno_t metapno;
 	db_recno_t first;
 	qam_position_mode mode;
-	int exact, is_first, locked, ret, t_ret, wait, with_delete;
-	int put_mode, meta_dirty, retrying;
+	gint exact, is_first, locked, ret, t_ret, wait, with_delete;
+	gint put_mode, meta_dirty, retrying;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -1095,7 +1095,7 @@ __qam_consume(dbc, meta, first)
 	db_pgno_t save_page;
 	db_recno_t current, save_recno;
 	u_int32_t rec_extent;
-	int exact, put_mode, ret, t_ret, wrapped;
+	gint exact, put_mode, ret, t_ret, wrapped;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1271,8 +1271,8 @@ __qam_bulk(dbc, data, flags)
 	qam_position_mode mode;
 	int32_t  *endp, *offp;
 	u_int8_t *dbuf, *dp, *np;
-	int exact, recs, re_len, ret, t_ret, valid;
-	int is_key, need_pg, pagesize, size, space;
+	gint exact, recs, re_len, ret, t_ret, valid;
+	gint is_key, need_pg, pagesize, size, space;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1356,7 +1356,7 @@ get_space:
 						break;
 					}
 					memcpy(dp,
-					    (char *)pg + QPAGE_SZ(dbp), size);
+					    (gchar *)pg + QPAGE_SZ(dbp), size);
 					need_pg = 0;
 					space -= size;
 					np += size;
@@ -1419,7 +1419,7 @@ static int
 __qam_c_close(dbc, root_pgno, rmroot)
 	DBC *dbc;
 	db_pgno_t root_pgno;
-	int *rmroot;
+	gint *rmroot;
 {
 	QUEUE_CURSOR *cp;
 
@@ -1447,9 +1447,9 @@ __qam_c_close(dbc, root_pgno, rmroot)
  *	Duplicate a queue cursor, such that the new one holds appropriate
  *	locks for the position of the original.
  *
- * PUBLIC: int __qam_c_dup __P((DBC *, DBC *));
+ * PUBLIC: gint __qam_c_dup __P((DBC *, DBC *));
  */
-int
+gint
 __qam_c_dup(orig_dbc, new_dbc)
 	DBC *orig_dbc, *new_dbc;
 {
@@ -1472,15 +1472,15 @@ __qam_c_dup(orig_dbc, new_dbc)
 /*
  * __qam_c_init
  *
- * PUBLIC: int __qam_c_init __P((DBC *));
+ * PUBLIC: gint __qam_c_init __P((DBC *));
  */
-int
+gint
 __qam_c_init(dbc)
 	DBC *dbc;
 {
 	QUEUE_CURSOR *cp;
 	DB *dbp;
-	int ret;
+	gint ret;
 
 	dbp = dbc->dbp;
 
@@ -1547,9 +1547,9 @@ __qam_getno(dbp, key, rep)
  * __qam_truncate --
  *	Truncate a queue database
  *
- * PUBLIC: int __qam_truncate __P((DB *, DB_TXN *, u_int32_t *));
+ * PUBLIC: gint __qam_truncate __P((DB *, DB_TXN *, u_int32_t *));
  */
-int
+gint
 __qam_truncate(dbp, txn, countp)
 	DB *dbp;
 	DB_TXN *txn;
@@ -1560,7 +1560,7 @@ __qam_truncate(dbp, txn, countp)
 	DB_MPOOLFILE *mpf;
 	QMETA *meta;
 	db_pgno_t metapno;
-	int count, ret, t_ret;
+	gint count, ret, t_ret;
 
 	mpf = dbp->mpf;
 

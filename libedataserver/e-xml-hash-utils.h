@@ -39,7 +39,7 @@ GHashTable *e_xml_to_hash      (xmlDoc       *doc,
 				EXmlHashType  type);
 xmlDoc     *e_xml_from_hash    (GHashTable   *hash,
 				EXmlHashType  type,
-				const char   *root_node);
+				const gchar   *root_node);
 
 void        e_xml_destroy_hash (GHashTable   *hash);
 
@@ -57,22 +57,22 @@ typedef enum {
 	E_XMLHASH_STATUS_NOT_FOUND
 } EXmlHashStatus;
 
-typedef void (* EXmlHashFunc) (const char *key, const char *value, gpointer user_data);
-typedef gboolean (* EXmlHashRemoveFunc) (const char *key, const char *value, gpointer user_data);
+typedef void (* EXmlHashFunc) (const gchar *key, const gchar *value, gpointer user_data);
+typedef gboolean (* EXmlHashRemoveFunc) (const gchar *key, const gchar *value, gpointer user_data);
 
 typedef struct EXmlHash EXmlHash;
 
-EXmlHash      *e_xmlhash_new         (const char   *filename);
+EXmlHash      *e_xmlhash_new         (const gchar   *filename);
 
 void           e_xmlhash_add         (EXmlHash     *hash,
-				      const char   *key,
-				      const char   *data);
+				      const gchar   *key,
+				      const gchar   *data);
 void           e_xmlhash_remove      (EXmlHash     *hash,
-				      const char   *key);
+				      const gchar   *key);
 
 EXmlHashStatus e_xmlhash_compare     (EXmlHash     *hash,
-				      const char   *key,
-				      const char   *compare_data);
+				      const gchar   *key,
+				      const gchar   *compare_data);
 void           e_xmlhash_foreach_key (EXmlHash     *hash,
 				      EXmlHashFunc  func,
 				      gpointer      user_data);

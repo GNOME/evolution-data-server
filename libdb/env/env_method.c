@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -45,41 +45,41 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static void __dbenv_err __P((const DB_ENV *, int, const char *, ...));
-static void __dbenv_errx __P((const DB_ENV *, const char *, ...));
-static int  __dbenv_init __P((DB_ENV *));
-static int  __dbenv_set_alloc __P((DB_ENV *, void *(*)(size_t),
-    void *(*)(void *, size_t), void (*)(void *)));
-static int  __dbenv_set_app_dispatch __P((DB_ENV *,
-    int (*)(DB_ENV *, DBT *, DB_LSN *, db_recops)));
-static int  __dbenv_set_data_dir __P((DB_ENV *, const char *));
-static int  __dbenv_set_encrypt __P((DB_ENV *, const char *, u_int32_t));
-static void __dbenv_set_errcall __P((DB_ENV *, void (*)(const char *, char *)));
+static void __dbenv_err __P((const DB_ENV *, int, const gchar *, ...));
+static void __dbenv_errx __P((const DB_ENV *, const gchar *, ...));
+static gint  __dbenv_init __P((DB_ENV *));
+static gint  __dbenv_set_alloc __P((DB_ENV *, gpointer (*)(size_t),
+    gpointer (*)(gpointer , size_t), void (*)(gpointer)));
+static gint  __dbenv_set_app_dispatch __P((DB_ENV *,
+    gint (*)(DB_ENV *, DBT *, DB_LSN *, db_recops)));
+static gint  __dbenv_set_data_dir __P((DB_ENV *, const gchar *));
+static gint  __dbenv_set_encrypt __P((DB_ENV *, const gchar *, u_int32_t));
+static void __dbenv_set_errcall __P((DB_ENV *, void (*)(const gchar *, gchar *)));
 static void __dbenv_set_errfile __P((DB_ENV *, FILE *));
-static void __dbenv_set_errpfx __P((DB_ENV *, const char *));
-static int  __dbenv_set_feedback __P((DB_ENV *, void (*)(DB_ENV *, int, int)));
-static int  __dbenv_set_flags __P((DB_ENV *, u_int32_t, int));
-static int  __dbenv_set_paniccall __P((DB_ENV *, void (*)(DB_ENV *, int)));
-static int  __dbenv_set_rpc_server_noclnt
-    __P((DB_ENV *, void *, const char *, long, long, u_int32_t));
-static int  __dbenv_set_shm_key __P((DB_ENV *, long));
-static int  __dbenv_set_tas_spins __P((DB_ENV *, u_int32_t));
-static int  __dbenv_set_tmp_dir __P((DB_ENV *, const char *));
-static int  __dbenv_set_verbose __P((DB_ENV *, u_int32_t, int));
+static void __dbenv_set_errpfx __P((DB_ENV *, const gchar *));
+static gint  __dbenv_set_feedback __P((DB_ENV *, void (*)(DB_ENV *, int, int)));
+static gint  __dbenv_set_flags __P((DB_ENV *, u_int32_t, int));
+static gint  __dbenv_set_paniccall __P((DB_ENV *, void (*)(DB_ENV *, int)));
+static gint  __dbenv_set_rpc_server_noclnt
+    __P((DB_ENV *, gpointer , const gchar *, long, long, u_int32_t));
+static gint  __dbenv_set_shm_key __P((DB_ENV *, long));
+static gint  __dbenv_set_tas_spins __P((DB_ENV *, u_int32_t));
+static gint  __dbenv_set_tmp_dir __P((DB_ENV *, const gchar *));
+static gint  __dbenv_set_verbose __P((DB_ENV *, u_int32_t, int));
 
 /*
  * db_env_create --
  *	DB_ENV constructor.
  *
- * EXTERN: int db_env_create __P((DB_ENV **, u_int32_t));
+ * EXTERN: gint db_env_create __P((DB_ENV **, u_int32_t));
  */
-int
+gint
 db_env_create(dbenvpp, flags)
 	DB_ENV **dbenvpp;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	/*
 	 * !!!
@@ -194,12 +194,12 @@ __dbenv_init(dbenv)
  */
 static void
 #ifdef __STDC__
-__dbenv_err(const DB_ENV *dbenv, int error, const char *fmt, ...)
+__dbenv_err(const DB_ENV *dbenv, gint error, const gchar *fmt, ...)
 #else
 __dbenv_err(dbenv, error, fmt, va_alist)
 	const DB_ENV *dbenv;
-	int error;
-	const char *fmt;
+	gint error;
+	const gchar *fmt;
 	va_dcl
 #endif
 {
@@ -212,11 +212,11 @@ __dbenv_err(dbenv, error, fmt, va_alist)
  */
 static void
 #ifdef __STDC__
-__dbenv_errx(const DB_ENV *dbenv, const char *fmt, ...)
+__dbenv_errx(const DB_ENV *dbenv, const gchar *fmt, ...)
 #else
 __dbenv_errx(dbenv, fmt, va_alist)
 	const DB_ENV *dbenv;
-	const char *fmt;
+	const gchar *fmt;
 	va_dcl
 #endif
 {
@@ -226,9 +226,9 @@ __dbenv_errx(dbenv, fmt, va_alist)
 static int
 __dbenv_set_alloc(dbenv, mal_func, real_func, free_func)
 	DB_ENV *dbenv;
-	void *(*mal_func) __P((size_t));
-	void *(*real_func) __P((void *, size_t));
-	void (*free_func) __P((void *));
+	gpointer (*mal_func) __P((size_t));
+	gpointer (*real_func) __P((gpointer , size_t));
+	void (*free_func) __P((gpointer));
 {
 	ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_alloc");
 
@@ -245,7 +245,7 @@ __dbenv_set_alloc(dbenv, mal_func, real_func, free_func)
 static int
 __dbenv_set_app_dispatch(dbenv, app_dispatch)
 	DB_ENV *dbenv;
-	int (*app_dispatch) __P((DB_ENV *, DBT *, DB_LSN *, db_recops));
+	gint (*app_dispatch) __P((DB_ENV *, DBT *, DB_LSN *, db_recops));
 {
 	ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_app_dispatch");
 
@@ -256,12 +256,12 @@ __dbenv_set_app_dispatch(dbenv, app_dispatch)
 static int
 __dbenv_set_encrypt(dbenv, passwd, flags)
 	DB_ENV *dbenv;
-	const char *passwd;
+	const gchar *passwd;
 	u_int32_t flags;
 {
 #ifdef HAVE_CRYPTO
 	DB_CIPHER *db_cipher;
-	int ret;
+	gint ret;
 
 	ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_encrypt");
 #define	OK_CRYPTO_FLAGS	(DB_ENCRYPT_AES)
@@ -329,7 +329,7 @@ static int
 __dbenv_set_flags(dbenv, flags, onoff)
 	DB_ENV *dbenv;
 	u_int32_t flags;
-	int onoff;
+	gint onoff;
 {
 #define	OK_FLAGS							\
 	(DB_AUTO_COMMIT | DB_CDB_ALLDB | DB_DIRECT_DB | DB_DIRECT_LOG |	\
@@ -427,20 +427,20 @@ __dbenv_set_flags(dbenv, flags, onoff)
 static int
 __dbenv_set_data_dir(dbenv, dir)
 	DB_ENV *dbenv;
-	const char *dir;
+	const gchar *dir;
 {
-	int ret;
+	gint ret;
 
 #define	DATA_INIT_CNT	20			/* Start with 20 data slots. */
 	if (dbenv->db_data_dir == NULL) {
 		if ((ret = __os_calloc(dbenv, DATA_INIT_CNT,
-		    sizeof(char **), &dbenv->db_data_dir)) != 0)
+		    sizeof(gchar **), &dbenv->db_data_dir)) != 0)
 			return (ret);
 		dbenv->data_cnt = DATA_INIT_CNT;
 	} else if (dbenv->data_next == dbenv->data_cnt - 1) {
 		dbenv->data_cnt *= 2;
 		if ((ret = __os_realloc(dbenv,
-		    dbenv->data_cnt * sizeof(char **),
+		    dbenv->data_cnt * sizeof(gchar **),
 		    &dbenv->db_data_dir)) != 0)
 			return (ret);
 	}
@@ -451,7 +451,7 @@ __dbenv_set_data_dir(dbenv, dir)
 static void
 __dbenv_set_errcall(dbenv, errcall)
 	DB_ENV *dbenv;
-	void (*errcall) __P((const char *, char *));
+	void (*errcall) __P((const gchar *, gchar *));
 {
 	dbenv->db_errcall = errcall;
 }
@@ -467,7 +467,7 @@ __dbenv_set_errfile(dbenv, errfile)
 static void
 __dbenv_set_errpfx(dbenv, errpfx)
 	DB_ENV *dbenv;
-	const char *errpfx;
+	const gchar *errpfx;
 {
 	dbenv->db_errpfx = errpfx;
 }
@@ -513,7 +513,7 @@ __dbenv_set_tas_spins(dbenv, tas_spins)
 static int
 __dbenv_set_tmp_dir(dbenv, dir)
 	DB_ENV *dbenv;
-	const char *dir;
+	const gchar *dir;
 {
 	if (dbenv->db_tmp_dir != NULL)
 		__os_free(dbenv, dbenv->db_tmp_dir);
@@ -524,7 +524,7 @@ static int
 __dbenv_set_verbose(dbenv, which, onoff)
 	DB_ENV *dbenv;
 	u_int32_t which;
-	int onoff;
+	gint onoff;
 {
 	switch (which) {
 	case DB_VERB_CHKPOINT:
@@ -547,12 +547,12 @@ __dbenv_set_verbose(dbenv, which, onoff)
  * __db_mi_env --
  *	Method illegally called with public environment.
  *
- * PUBLIC: int __db_mi_env __P((DB_ENV *, const char *));
+ * PUBLIC: gint __db_mi_env __P((DB_ENV *, const gchar *));
  */
-int
+gint
 __db_mi_env(dbenv, name)
 	DB_ENV *dbenv;
-	const char *name;
+	const gchar *name;
 {
 	__db_err(dbenv, "%s: method not permitted in shared environment", name);
 	return (EINVAL);
@@ -562,13 +562,13 @@ __db_mi_env(dbenv, name)
  * __db_mi_open --
  *	Method illegally called after open.
  *
- * PUBLIC: int __db_mi_open __P((DB_ENV *, const char *, int));
+ * PUBLIC: gint __db_mi_open __P((DB_ENV *, const gchar *, int));
  */
-int
+gint
 __db_mi_open(dbenv, name, after)
 	DB_ENV *dbenv;
-	const char *name;
-	int after;
+	const gchar *name;
+	gint after;
 {
 	__db_err(dbenv, "%s: method not permitted %s open",
 	    name, after ? "after" : "before");
@@ -579,15 +579,15 @@ __db_mi_open(dbenv, name, after)
  * __db_env_config --
  *	Method or function called without required configuration.
  *
- * PUBLIC: int __db_env_config __P((DB_ENV *, char *, u_int32_t));
+ * PUBLIC: gint __db_env_config __P((DB_ENV *, gchar *, u_int32_t));
  */
-int
+gint
 __db_env_config(dbenv, i, flags)
 	DB_ENV *dbenv;
-	char *i;
+	gchar *i;
 	u_int32_t flags;
 {
-	char *sub;
+	gchar *sub;
 
 	switch (flags) {
 	case DB_INIT_LOCK:
@@ -615,8 +615,8 @@ __db_env_config(dbenv, i, flags)
 static int
 __dbenv_set_rpc_server_noclnt(dbenv, cl, host, tsec, ssec, flags)
 	DB_ENV *dbenv;
-	void *cl;
-	const char *host;
+	gpointer cl;
+	const gchar *host;
 	long tsec, ssec;
 	u_int32_t flags;
 {

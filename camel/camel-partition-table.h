@@ -72,8 +72,8 @@ struct _CamelPartitionTable {
 	CamelBlockFile *blocks;
 	camel_block_t rootid;
 
-	int (*is_key)(CamelPartitionTable *cpi, const char *key, camel_key_t keyid, void *data);
-	void *is_key_data;
+	gint (*is_key)(CamelPartitionTable *cpi, const gchar *key, camel_key_t keyid, gpointer data);
+	gpointer is_key_data;
 
 	/* we keep a list of partition blocks active at all times */
 	CamelDList partition;
@@ -86,10 +86,10 @@ struct _CamelPartitionTableClass {
 CamelType camel_partition_table_get_type(void);
 
 CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel_block_t root);
-int camel_partition_table_sync(CamelPartitionTable *cpi);
-int camel_partition_table_add(CamelPartitionTable *cpi, const char *key, camel_key_t keyid);
-camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const char *key);
-void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key);
+gint camel_partition_table_sync(CamelPartitionTable *cpi);
+gint camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_t keyid);
+camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const gchar *key);
+void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key);
 
 /* ********************************************************************** */
 
@@ -109,8 +109,8 @@ struct _CamelKeyRootBlock {
 
 struct _CamelKeyKey {
 	camel_block_t data;
-	unsigned int offset:10;
-	unsigned int flags:22;
+	guint offset:10;
+	guint flags:22;
 };
 
 struct _CamelKeyBlock {
@@ -118,7 +118,7 @@ struct _CamelKeyBlock {
 	guint32 used;
 	union {
 		struct _CamelKeyKey keys[(CAMEL_BLOCK_SIZE-8)/sizeof(struct _CamelKeyKey)];
-		char keydata[CAMEL_BLOCK_SIZE-8];
+		gchar keydata[CAMEL_BLOCK_SIZE-8];
 	} u;
 };
 
@@ -144,12 +144,12 @@ struct _CamelKeyTableClass {
 CamelType camel_key_table_get_type(void);
 
 CamelKeyTable * camel_key_table_new(CamelBlockFile *bs, camel_block_t root);
-int camel_key_table_sync(CamelKeyTable *ki);
-camel_key_t camel_key_table_add(CamelKeyTable *ki, const char *key, camel_block_t data, unsigned int flags);
+gint camel_key_table_sync(CamelKeyTable *ki);
+camel_key_t camel_key_table_add(CamelKeyTable *ki, const gchar *key, camel_block_t data, guint flags);
 void camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t data);
-void camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, unsigned int flags, unsigned int set);
-camel_block_t camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, char **key, unsigned int *flags);
-camel_key_t camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned int *flagsp, camel_block_t *datap);
+void camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, guint set);
+camel_block_t camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, gchar **key, guint *flags);
+camel_key_t camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **keyp, guint *flagsp, camel_block_t *datap);
 
 G_END_DECLS
 

@@ -505,7 +505,7 @@ e_categories_get_list (void)
  * configuration database.
  */
 void
-e_categories_add (const char *category, const char *unused, const char *icon_file, gboolean searchable)
+e_categories_add (const gchar *category, const gchar *unused, const gchar *icon_file, gboolean searchable)
 {
 	CategoryInfo *cat_info;
 
@@ -533,7 +533,7 @@ e_categories_add (const char *category, const char *unused, const char *icon_fil
  * Removes the given category from the configuration.
  */
 void
-e_categories_remove (const char *category)
+e_categories_remove (const gchar *category)
 {
 	g_return_if_fail (category != NULL);
 
@@ -555,7 +555,7 @@ e_categories_remove (const char *category)
  * Return value: %TRUE if the category is available, %FALSE otherwise.
  */
 gboolean
-e_categories_exist (const char *category)
+e_categories_exist (const gchar *category)
 {
 	g_return_val_if_fail (category != NULL, FALSE);
 
@@ -574,8 +574,8 @@ e_categories_exist (const char *category)
  *
  * DEPRECATED!
  */
-const char *
-e_categories_get_color_for (const char *category)
+const gchar *
+e_categories_get_color_for (const gchar *category)
 {
 	return NULL;
 }
@@ -590,7 +590,7 @@ e_categories_get_color_for (const char *category)
  * DEPRECATED!
  */
 void
-e_categories_set_color_for (const char *category, const char *color)
+e_categories_set_color_for (const gchar *category, const gchar *color)
 {
 }
 #endif /* EDS_DISABLE_DEPRECATED */
@@ -603,8 +603,8 @@ e_categories_set_color_for (const char *category, const char *color)
  *
  * Return value: icon file name.
  */
-const char *
-e_categories_get_icon_file_for (const char *category)
+const gchar *
+e_categories_get_icon_file_for (const gchar *category)
 {
 	CategoryInfo *cat_info;
 
@@ -628,7 +628,7 @@ e_categories_get_icon_file_for (const char *category)
  * Sets the icon file associated with the given category.
  */
 void
-e_categories_set_icon_file_for (const char *category, const char *icon_file)
+e_categories_set_icon_file_for (const gchar *category, const gchar *icon_file)
 {
 	CategoryInfo *cat_info;
 
@@ -655,7 +655,7 @@ e_categories_set_icon_file_for (const char *category, const char *icon_file)
  * Return value; %TRUE% if the category is searchable, %FALSE% if not.
  */
 gboolean
-e_categories_is_searchable (const char *category)
+e_categories_is_searchable (const gchar *category)
 {
 	CategoryInfo *cat_info;
 

@@ -41,9 +41,9 @@
  * be written to @ptr.  @ptr will be advanced to the next character position.
  **/
 void
-camel_utf8_putc(unsigned char **ptr, guint32 c)
+camel_utf8_putc(guchar **ptr, guint32 c)
 {
-	register unsigned char *p = *ptr;
+	register guchar *p = *ptr;
 
 	if (c <= 0x7f)
 		*p++ = c;
@@ -77,10 +77,10 @@ camel_utf8_putc(unsigned char **ptr, guint32 c)
  * the next character always.
  **/
 guint32
-camel_utf8_getc(const unsigned char **ptr)
+camel_utf8_getc(const guchar **ptr)
 {
-	register unsigned char *p = (unsigned char *)*ptr;
-	register unsigned char c, r;
+	register guchar *p = (guchar *)*ptr;
+	register guchar c, r;
 	register guint32 v, m;
 
 again:
@@ -118,19 +118,19 @@ loop:
  * @ptr:
  * @end: must not be NULL.
  *
- * Get the next utf8 char at @ptr, and return it, advancing @ptr to
+ * Get the next utf8 gchar at @ptr, and return it, advancing @ptr to
  * the next character.  If @end is reached before a full utf8
- * character can be read, then the invalid Unicode char 0xffff is
+ * character can be read, then the invalid Unicode gchar 0xffff is
  * returned as a sentinel (Unicode 3.1, section 2.7), and @ptr is not
  * advanced.
  *
  * Return value: The next utf8 char, or 0xffff.
  **/
 guint32
-camel_utf8_getc_limit(const unsigned char **ptr, const unsigned char *end)
+camel_utf8_getc_limit(const guchar **ptr, const guchar *end)
 {
-	register unsigned char *p = (unsigned char *)*ptr;
-	register unsigned char c, r;
+	register guchar *p = (guchar *)*ptr;
+	register guchar c, r;
 	register guint32 v = 0xffff, m;
 
 again:
@@ -172,18 +172,18 @@ loop:
 void
 g_string_append_u(GString *out, guint32 c)
 {
-	unsigned char buffer[8];
-	unsigned char *p = buffer;
+	guchar buffer[8];
+	guchar *p = buffer;
 
 	camel_utf8_putc(&p, c);
 	*p = 0;
-	g_string_append(out, (const char *) buffer);
+	g_string_append(out, (const gchar *) buffer);
 }
 
-static const char utf7_alphabet[] =
+static const gchar utf7_alphabet[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
 
-static const unsigned char utf7_rank[256] = {
+static const guchar utf7_rank[256] = {
 	0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
 	0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
 	0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x3e,0x3f,0xff,0xff,0xff,
@@ -213,16 +213,16 @@ static const unsigned char utf7_rank[256] = {
  *
  * Return value: The converted string.
  **/
-char *
-camel_utf7_utf8(const char *ptr)
+gchar *
+camel_utf7_utf8(const gchar *ptr)
 {
-	const unsigned char *p = (unsigned char *)ptr;
-	unsigned int c;
+	const guchar *p = (guchar *)ptr;
+	guint c;
 	guint32 v=0, x;
 	GString *out;
-	int i=0;
-	int state = 0;
-	char *ret;
+	gint i=0;
+	gint state = 0;
+	gchar *ret;
 
 	out = g_string_new("");
 	do {
@@ -294,16 +294,16 @@ static void utf7_closeb64(GString *out, guint32 v, guint32 i)
  *
  * Return value:
  **/
-char *
-camel_utf8_utf7(const char *ptr)
+gchar *
+camel_utf8_utf7(const gchar *ptr)
 {
-	const unsigned char *p = (unsigned char *)ptr;
-	unsigned int c;
+	const guchar *p = (guchar *)ptr;
+	guint c;
 	guint32 x, v = 0;
-	int state = 0;
+	gint state = 0;
 	GString *out;
-	int i = 0;
-	char *ret;
+	gint i = 0;
+	gchar *ret;
 
 	out = g_string_new("");
 
@@ -351,23 +351,23 @@ camel_utf8_utf7(const char *ptr)
  *
  * Return value:
  **/
-char *
-camel_utf8_ucs2(const char *pptr)
+gchar *
+camel_utf8_ucs2(const gchar *pptr)
 {
 	GByteArray *work = g_byte_array_new();
 	guint32 c;
-	char *out;
-	const unsigned char *ptr = (const unsigned char *) pptr;
+	gchar *out;
+	const guchar *ptr = (const guchar *) pptr;
 
 	/* what if c is > 0xffff ? */
 
 	while ( (c = camel_utf8_getc(&ptr)) ) {
 		guint16 s = g_htons(c);
 
-		g_byte_array_append(work, (unsigned char *) &s, 2);
+		g_byte_array_append(work, (guchar *) &s, 2);
 	}
 
-	g_byte_array_append(work, (unsigned char *) "\000\000", 2);
+	g_byte_array_append(work, (guchar *) "\000\000", 2);
 	out = g_malloc(work->len);
 	memcpy(out, work->data, work->len);
 	g_byte_array_free(work, TRUE);
@@ -384,12 +384,12 @@ camel_utf8_ucs2(const char *pptr)
  *
  * Return value:
  **/
-char *camel_ucs2_utf8(const char *ptr)
+gchar *camel_ucs2_utf8(const gchar *ptr)
 {
 	guint16 *ucs = (guint16 *)ptr;
 	guint32 c;
 	GString *work = g_string_new("");
-	char *out;
+	gchar *out;
 
 	while ( (c = *ucs++) )
 		g_string_append_u(work, g_ntohs(c));
@@ -407,8 +407,8 @@ char *camel_ucs2_utf8(const char *ptr)
  * Ensures the returned text will be valid UTF-8 string, with incorrect letters
  * changed to question marks. Returned pointer should be freed with g_free.
  **/
-char *
-camel_utf8_make_valid (const char *text)
+gchar *
+camel_utf8_make_valid (const gchar *text)
 {
 	gchar *res = g_strdup (text), *p;
 

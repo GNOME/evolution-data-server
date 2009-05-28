@@ -32,10 +32,10 @@
 
 #include "camel-mime-filter-pgp.h"
 
-static void filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-		    char **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, char *in, size_t len,
-		      size_t prespace, char **out, size_t *outlen,
+static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+		    gchar **out, size_t *outlen, size_t *outprespace);
+static void complete (CamelMimeFilter *f, gchar *in, size_t len,
+		      size_t prespace, gchar **out, size_t *outlen,
 		      size_t *outprespace);
 static void reset (CamelMimeFilter *f);
 
@@ -84,12 +84,12 @@ camel_mime_filter_pgp_get_type (void)
 #define END_PGP_SIGNATURE_LEN        (sizeof (END_PGP_SIGNATURE) - 1)
 
 static void
-filter_run(CamelMimeFilter *f, char *in, size_t inlen, size_t prespace, char **out, size_t *outlen, size_t *outprespace, int last)
+filter_run(CamelMimeFilter *f, gchar *in, size_t inlen, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace, gint last)
 {
 	CamelMimeFilterPgp *pgp = (CamelMimeFilterPgp *) f;
-	const char *start, *inend = in + inlen;
-	register const char *inptr = in;
-	register char *o;
+	const gchar *start, *inend = in + inlen;
+	register const gchar *inptr = in;
+	register gchar *o;
 	gboolean blank;
 	size_t len;
 
@@ -168,13 +168,13 @@ filter_run(CamelMimeFilter *f, char *in, size_t inlen, size_t prespace, char **o
 }
 
 static void
-filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	filter_run (f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	filter_run (f, in, len, prespace, out, outlen, outprespace, TRUE);
 }

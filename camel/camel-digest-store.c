@@ -34,20 +34,20 @@
 
 #define d(x)
 
-static CamelFolder *digest_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex);
-static void digest_delete_folder (CamelStore *store, const char *folder_name, CamelException *ex);
-static void digest_rename_folder (CamelStore *store, const char *old, const char *new, CamelException *ex);
+static CamelFolder *digest_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex);
+static void digest_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
+static void digest_rename_folder (CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
 static CamelFolder *digest_get_trash  (CamelStore *store, CamelException *ex);
 static CamelFolder *digest_get_junk  (CamelStore *store, CamelException *ex);
 
-static CamelFolderInfo *digest_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
+static CamelFolderInfo *digest_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
 
 static void camel_digest_store_class_init (CamelDigestStoreClass *klass);
 static void camel_digest_store_init       (CamelDigestStore *obj);
 static void camel_digest_store_finalise   (CamelObject *obj);
 
-static int digest_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static int digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint digest_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 static CamelStoreClass *parent_class = NULL;
 
@@ -132,7 +132,7 @@ digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
  * Return value: A new CamelDigestStore widget.
  **/
 CamelStore *
-camel_digest_store_new (const char *url)
+camel_digest_store_new (const gchar *url)
 {
 	CamelStore *store;
 	CamelURL *uri;
@@ -148,7 +148,7 @@ camel_digest_store_new (const char *url)
 }
 
 static CamelFolder *
-digest_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+digest_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
 {
 	return NULL;
 }
@@ -166,19 +166,19 @@ digest_get_junk (CamelStore *store, CamelException *ex)
 }
 
 static CamelFolderInfo *
-digest_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+digest_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	return NULL;
 }
 
 static void
-digest_delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
+digest_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 
 }
 
 static void
-digest_rename_folder (CamelStore *store, const char *old, const char *new, CamelException *ex)
+digest_rename_folder (CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
 {
 
 }

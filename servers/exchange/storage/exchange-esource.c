@@ -70,18 +70,18 @@ find_account_group (ESourceList *source_list, ExchangeAccount *exa)
 void
 add_folder_esource (ExchangeAccount *account,
 		    FolderType folder_type,
-		    const char *folder_name,
-		    const char *physical_uri)
+		    const gchar *folder_name,
+		    const gchar *physical_uri)
 {
 	ESource *source = NULL;
 	ESourceGroup *source_group = NULL;
-	char *relative_uri = NULL;
+	gchar *relative_uri = NULL;
 	GSList *ids;
 	GConfClient *client;
 	gboolean is_contacts_folder = TRUE, group_new = FALSE, source_new = FALSE;
-	const char *offline = NULL;
-	char *username, *windows_domain, *useremail, *authtype = NULL;
-	int mode;
+	const gchar *offline = NULL;
+	gchar *username, *windows_domain, *useremail, *authtype = NULL;
+	gint mode;
 	ESourceList *source_list = NULL;
 	gboolean offline_flag, update_selection = TRUE, foriegn_folder;
 
@@ -142,7 +142,7 @@ add_folder_esource (ExchangeAccount *account,
 		e_source_group_set_property (source_group, "account-uid", exchange_account_fetch (account)->uid);
 
 		if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
-			char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
+			gchar *browse = exchange_account_get_account_uri_param (account, "ad_browse");
 
 			source = e_source_new_with_absolute_uri (folder_name,
 								 physical_uri);
@@ -185,7 +185,7 @@ add_folder_esource (ExchangeAccount *account,
 							folder_name)) == NULL) {
 			printf("old group, new source\n");
 			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
-				char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
+				gchar *browse = exchange_account_get_account_uri_param (account, "ad_browse");
 
 				source = e_source_new_with_absolute_uri (
 						folder_name, physical_uri);
@@ -231,8 +231,8 @@ add_folder_esource (ExchangeAccount *account,
 			}
 
 			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
-				char *browse = exchange_account_get_account_uri_param (account, "ad_browse");
-				const char *old_browse = e_source_get_property (source, "can-browse");
+				gchar *browse = exchange_account_get_account_uri_param (account, "ad_browse");
+				const gchar *old_browse = e_source_get_property (source, "can-browse");
 
 				if ((old_browse || browse) && (!old_browse || !browse)) {
 					e_source_set_property (source, "can-browse", browse ? "1" : NULL);
@@ -290,15 +290,15 @@ add_folder_esource (ExchangeAccount *account,
 void
 remove_folder_esource (ExchangeAccount *account,
 		       FolderType folder_type,
-		       const char *physical_uri)
+		       const gchar *physical_uri)
 {
 	ESourceGroup *group;
 	ESource *source;
 	GSList *groups;
 	GSList *sources;
 	gboolean found_group, is_contacts_folder = TRUE;
-	char *read_uri = NULL;
-	const char *source_uid;
+	gchar *read_uri = NULL;
+	const gchar *source_uid;
 	GSList *ids, *temp_ids, *node_to_be_deleted;
 	GConfClient *client;
 	ESourceList *source_list = NULL;

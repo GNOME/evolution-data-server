@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,7 +17,7 @@ static const char revid[] = "$Id$";
  * __os_sleep --
  *	Yield the processor for a period of time.
  */
-int
+gint
 __os_sleep(dbenv, secs, usecs)
 	DB_ENV *dbenv;
 	u_long secs, usecs;		/* Seconds and microseconds. */

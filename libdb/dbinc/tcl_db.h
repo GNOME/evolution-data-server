@@ -34,7 +34,7 @@ typedef struct _mutex_entry {
 		 * real_val might push it over the 32 byte boundary.  The best
 		 * we can do is use a 48 byte boundary.
 		 */
-		char c[48];
+		gchar c[48];
 	} u;
 } _MUTEX_ENTRY;
 
@@ -80,11 +80,11 @@ typedef struct _mutex_data {
 typedef struct dbtcl_info {
 	LIST_ENTRY(dbtcl_info) entries;
 	Tcl_Interp *i_interp;
-	char *i_name;
+	gchar *i_name;
 	enum INFOTYPE i_type;
 	union infop {
 		DB_ENV *envp;
-		void *anyp;
+		gpointer anyp;
 		DB *dbp;
 		DBC *dbcp;
 		DB_TXN *txnp;
@@ -94,17 +94,17 @@ typedef struct dbtcl_info {
 		DB_LOGC *logc;
 	} un;
 	union data {
-		int anydata;
+		gint anydata;
 		db_pgno_t pgno;
 		u_int32_t lockid;
 	} und;
 	union data2 {
-		int anydata;
+		gint anydata;
 		size_t pagesz;
 	} und2;
 	DBT i_lockobj;
 	FILE *i_err;
-	char *i_errpfx;
+	gchar *i_errpfx;
 
 	/* Callbacks--Tcl_Objs containing proc names */
 	Tcl_Obj *i_btcompare;
@@ -147,7 +147,7 @@ typedef struct dbtcl_info {
 
 #define	i_dbdbcid i_otherid[0]
 
-extern int __debug_on, __debug_print, __debug_stop, __debug_test;
+extern gint __debug_on, __debug_print, __debug_stop, __debug_test;
 
 typedef struct dbtcl_global {
 	LIST_HEAD(infohead, dbtcl_info) g_infohead;

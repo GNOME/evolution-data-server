@@ -16,16 +16,16 @@ TEL;FAX:321-321-4321\r\n\
 END:vCard"
 
 static void
-check(gboolean test, char *msg)
+check(gboolean test, gchar *msg)
 {
 	printf ("%s - %s\n", test ? "passed" : "failed", msg);
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EContact *contact;
-	const char *phone;
+	const gchar *phone;
 
 	g_type_init ();
 

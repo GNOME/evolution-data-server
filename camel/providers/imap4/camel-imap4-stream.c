@@ -43,10 +43,10 @@ static void camel_imap4_stream_class_init (CamelIMAP4StreamClass *klass);
 static void camel_imap4_stream_init (CamelIMAP4Stream *stream, CamelIMAP4StreamClass *klass);
 static void camel_imap4_stream_finalize (CamelObject *object);
 
-static ssize_t stream_read (CamelStream *stream, char *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const char *buffer, size_t n);
-static int stream_flush  (CamelStream *stream);
-static int stream_close  (CamelStream *stream);
+static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gint stream_flush  (CamelStream *stream);
+static gint stream_close  (CamelStream *stream);
 static gboolean stream_eos (CamelStream *stream);
 
 
@@ -123,7 +123,7 @@ camel_imap4_stream_finalize (CamelObject *object)
 static ssize_t
 imap4_fill (CamelIMAP4Stream *imap4)
 {
-	unsigned char *inbuf, *inptr, *inend;
+	guchar *inbuf, *inptr, *inend;
 	ssize_t nread;
 	size_t inlen;
 
@@ -172,7 +172,7 @@ imap4_fill (CamelIMAP4Stream *imap4)
 }
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelIMAP4Stream *imap4 = (CamelIMAP4Stream *) stream;
 	ssize_t len, nread = 0;
@@ -211,7 +211,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelIMAP4Stream *imap4 = (CamelIMAP4Stream *) stream;
 	ssize_t nwritten;
@@ -293,7 +293,7 @@ camel_imap4_stream_new (CamelStream *stream)
 
 #define token_save(imap4, start, len) G_STMT_START {                         \
 	if (imap4->tokenleft <= len) {                                       \
-		unsigned int tlen, toff;                                    \
+		guint tlen, toff;                                    \
 									    \
 		tlen = toff = imap4->tokenptr - imap4->tokenbuf;              \
 		tlen = tlen ? tlen : 1;                                     \
@@ -327,15 +327,15 @@ camel_imap4_stream_new (CamelStream *stream)
  *
  * Returns: 0 on success or -1 on fail.
  **/
-int
+gint
 camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token)
 {
-	register unsigned char *inptr;
-	unsigned char *inend, *start, *p;
+	register guchar *inptr;
+	guchar *inend, *start, *p;
 	gboolean escaped = FALSE;
 	size_t literal = 0;
 	guint32 nz_number;
-	int ret;
+	gint ret;
 
 	g_return_val_if_fail (CAMEL_IS_IMAP4_STREAM (stream), -1);
 	g_return_val_if_fail (stream->mode != CAMEL_IMAP4_STREAM_MODE_LITERAL, -1);
@@ -484,7 +484,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 			} else if (*inptr >= '0' && *inptr <= '9') {
 				/* number token */
 				*inend = '\0';
-				nz_number = strtoul ((char *) inptr, (char **) &start, 10);
+				nz_number = strtoul ((gchar *) inptr, (gchar **) &start, 10);
 				if (start == inend)
 					goto refill;
 
@@ -600,7 +600,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
  *
  * Returns: 0 on success or -1 on fail.
  **/
-int
+gint
 camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token)
 {
 	if (stream->have_unget)
@@ -628,11 +628,11 @@ camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *t
  * Returns: -1 on error, 0 if the line read is complete, or 1 if the
  * read is incomplete.
  **/
-int
-camel_imap4_stream_line (CamelIMAP4Stream *stream, unsigned char **line, size_t *len)
+gint
+camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, size_t *len)
 {
-	register unsigned char *inptr;
-	unsigned char *inend;
+	register guchar *inptr;
+	guchar *inend;
 
 	g_return_val_if_fail (CAMEL_IS_IMAP4_STREAM (stream), -1);
 	g_return_val_if_fail (stream->mode != CAMEL_IMAP4_STREAM_MODE_LITERAL, -1);
@@ -690,10 +690,10 @@ camel_imap4_stream_line (CamelIMAP4Stream *stream, unsigned char **line, size_t 
  * Returns: >0 if more literal data exists, 0 if the end of the literal
  * has been reached or -1 on fail.
  **/
-int
-camel_imap4_stream_literal (CamelIMAP4Stream *stream, unsigned char **literal, size_t *len)
+gint
+camel_imap4_stream_literal (CamelIMAP4Stream *stream, guchar **literal, size_t *len)
 {
-	unsigned char *inptr, *inend;
+	guchar *inptr, *inend;
 	size_t nread;
 
 	g_return_val_if_fail (CAMEL_IS_IMAP4_STREAM (stream), -1);

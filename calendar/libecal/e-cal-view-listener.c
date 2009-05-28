@@ -30,7 +30,7 @@
 /* Private part of the CalViewListener structure */
 
 struct _ECalViewListenerPrivate {
-	int dummy;
+	gint dummy;
 };
 
 /* Signal IDs */
@@ -80,7 +80,7 @@ static GList *
 build_object_list (const GNOME_Evolution_Calendar_stringlist *seq)
 {
 	GList *list;
-	int i;
+	gint i;
 
 	list = NULL;
 	for (i = 0; i < seq->_length; i++) {
@@ -100,7 +100,7 @@ static GList *
 build_id_list (const GNOME_Evolution_Calendar_CalObjIDSeq *seq)
 {
 	GList *list;
-	int i;
+	gint i;
 
 	list = NULL;
 	for (i = 0; i < seq->_length; i++) {

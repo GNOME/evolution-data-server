@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,36 +19,36 @@ static const char revid[] = "$Id$";
 #include "dbinc/xa.h"
 #include "dbinc/txn.h"
 
-static int __xa_close __P((DB *, u_int32_t));
-static int __xa_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
-static int __xa_del __P((DB *, DB_TXN *, DBT *, u_int32_t));
-static int __xa_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-static int __xa_open __P((DB *, DB_TXN *,
-	    const char *, const char *, DBTYPE, u_int32_t, int));
-static int __xa_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static gint __xa_close __P((DB *, u_int32_t));
+static gint __xa_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
+static gint __xa_del __P((DB *, DB_TXN *, DBT *, u_int32_t));
+static gint __xa_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static gint __xa_open __P((DB *, DB_TXN *,
+	    const gchar *, const gchar *, DBTYPE, u_int32_t, int));
+static gint __xa_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
 
 typedef struct __xa_methods {
-	int (*close) __P((DB *, u_int32_t));
-	int (*cursor) __P((DB *, DB_TXN *, DBC **, u_int32_t));
-	int (*del) __P((DB *, DB_TXN *, DBT *, u_int32_t));
-	int (*get) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-	int (*open) __P((DB *, DB_TXN *,
-	    const char *, const char *, DBTYPE, u_int32_t, int));
-	int (*put) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+	gint (*close) __P((DB *, u_int32_t));
+	gint (*cursor) __P((DB *, DB_TXN *, DBC **, u_int32_t));
+	gint (*del) __P((DB *, DB_TXN *, DBT *, u_int32_t));
+	gint (*get) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+	gint (*open) __P((DB *, DB_TXN *,
+	    const gchar *, const gchar *, DBTYPE, u_int32_t, int));
+	gint (*put) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
 } XA_METHODS;
 
 /*
  * __db_xa_create --
  *	DB XA constructor.
  *
- * PUBLIC: int __db_xa_create __P((DB *));
+ * PUBLIC: gint __db_xa_create __P((DB *));
  */
-int
+gint
 __db_xa_create(dbp)
 	DB *dbp;
 {
 	XA_METHODS *xam;
-	int ret;
+	gint ret;
 
 	/*
 	 * Interpose XA routines in front of any method that takes a TXN
@@ -75,13 +75,13 @@ static int
 __xa_open(dbp, txn, name, subdb, type, flags, mode)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	DBTYPE type;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 {
 	XA_METHODS *xam;
-	int ret;
+	gint ret;
 
 	xam = (XA_METHODS *)dbp->xa_internal;
 
@@ -137,7 +137,7 @@ __xa_close(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
 {
-	int (*real_close) __P((DB *, u_int32_t));
+	gint (*real_close) __P((DB *, u_int32_t));
 
 	real_close = ((XA_METHODS *)dbp->xa_internal)->close;
 

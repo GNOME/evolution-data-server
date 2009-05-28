@@ -33,20 +33,20 @@
 #include "e2k-global-catalog.h"
 #include "test-utils.h"
 
-const char *test_program_name = "fbtest";
+const gchar *test_program_name = "fbtest";
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
 	E2kGlobalCatalog *gc;
 	E2kGlobalCatalogStatus status;
 	E2kGlobalCatalogEntry *entry;
-	const char *server, *email;
+	const gchar *server, *email;
 	E2kContext *ctx;
 	E2kFreebusy *fb;
 	E2kFreebusyEvent event;
-	int ti, bi, oi;
-	char *public_uri;
+	gint ti, bi, oi;
+	gchar *public_uri;
 	struct tm tm;
 	time_t t;
 

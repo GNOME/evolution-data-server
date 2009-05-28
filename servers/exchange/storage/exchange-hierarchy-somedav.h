@@ -28,7 +28,7 @@ struct _ExchangeHierarchySomeDAVClass {
 	ExchangeHierarchyWebDAVClass parent_class;
 
 	/* signals */
-	void (*href_unreadable) (ExchangeHierarchySomeDAV *hsd, const char *href);
+	void (*href_unreadable) (ExchangeHierarchySomeDAV *hsd, const gchar *href);
 
 	/* methods */
 	GPtrArray *(*get_hrefs) (ExchangeHierarchySomeDAV *hsd);
@@ -39,11 +39,11 @@ GType exchange_hierarchy_somedav_get_type (void);
 
 GPtrArray *exchange_hierarchy_somedav_get_hrefs (ExchangeHierarchySomeDAV *hsd);
 ExchangeAccountFolderResult exchange_hierarchy_somedav_add_folder (ExchangeHierarchySomeDAV *hsd,
-								   const char *uri);
+								   const gchar *uri);
 
 /* signal emitter */
 void exchange_hierarchy_somedav_href_unreadable (ExchangeHierarchySomeDAV *hsd,
-						 const char *href);
+						 const gchar *href);
 
 #ifdef __cplusplus
 }

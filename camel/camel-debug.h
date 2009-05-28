@@ -31,13 +31,13 @@
 G_BEGIN_DECLS
 
 void camel_debug_init(void);
-gboolean camel_debug(const char *mode);
+gboolean camel_debug(const gchar *mode);
 
-gboolean camel_debug_start(const char *mode);
+gboolean camel_debug_start(const gchar *mode);
 void camel_debug_end(void);
 
 #ifndef CAMEL_DISABLE_DEPRECATED
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 #endif
 
 G_END_DECLS

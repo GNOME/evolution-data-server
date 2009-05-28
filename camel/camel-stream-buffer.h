@@ -52,14 +52,14 @@ struct _CamelStreamBuffer
 	/* these are all of course, private */
 	CamelStream *stream;
 
-	unsigned char *buf, *ptr, *end;
-	int size;
+	guchar *buf, *ptr, *end;
+	gint size;
 
-	unsigned char *linebuf;	/* for reading lines at a time */
-	int linesize;
+	guchar *linebuf;	/* for reading lines at a time */
+	gint linesize;
 
 	CamelStreamBufferMode mode;
-	unsigned int flags;	/* internal flags */
+	guint flags;	/* internal flags */
 };
 
 
@@ -71,7 +71,7 @@ typedef struct {
 		      CamelStreamBufferMode mode);
 	void (*init_vbuf) (CamelStreamBuffer *stream_buffer,
 			   CamelStream *stream, CamelStreamBufferMode mode,
-			   char *buf, guint32 size);
+			   gchar *buf, guint32 size);
 
 } CamelStreamBufferClass;
 
@@ -85,15 +85,15 @@ CamelStream *camel_stream_buffer_new (CamelStream *stream,
 				      CamelStreamBufferMode mode);
 CamelStream *camel_stream_buffer_new_with_vbuf (CamelStream *stream,
 						CamelStreamBufferMode mode,
-						char *buf, guint32 size);
+						gchar *buf, guint32 size);
 
 /* unimplemented
-   CamelStream *camel_stream_buffer_set_vbuf (CamelStreamBuffer *b, CamelStreamBufferMode mode, char *buf, guint32 size); */
+   CamelStream *camel_stream_buffer_set_vbuf (CamelStreamBuffer *b, CamelStreamBufferMode mode, gchar *buf, guint32 size); */
 
 /* read a line of characters */
-int camel_stream_buffer_gets (CamelStreamBuffer *sbf, char *buf, unsigned int max);
+gint camel_stream_buffer_gets (CamelStreamBuffer *sbf, gchar *buf, guint max);
 
-char *camel_stream_buffer_read_line (CamelStreamBuffer *sbf);
+gchar *camel_stream_buffer_read_line (CamelStreamBuffer *sbf);
 
 G_END_DECLS
 

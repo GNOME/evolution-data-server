@@ -49,18 +49,18 @@ static gboolean is_empty        (ExchangeHierarchy *hier);
 static void add_to_storage      (ExchangeHierarchy *hier);
 static ExchangeAccountFolderResult scan_subtree  (ExchangeHierarchy *hier,
 						  EFolder *folder,
-						  int mode);
+						  gint mode);
 static void                        rescan        (ExchangeHierarchy *hier);
 static ExchangeAccountFolderResult create_folder (ExchangeHierarchy *hier,
 						  EFolder *parent,
-						  const char *name,
-						  const char *type);
+						  const gchar *name,
+						  const gchar *type);
 static ExchangeAccountFolderResult remove_folder (ExchangeHierarchy *hier,
 						  EFolder *folder);
 static ExchangeAccountFolderResult xfer_folder   (ExchangeHierarchy *hier,
 						  EFolder *source,
 						  EFolder *dest_parent,
-						  const char *dest_name,
+						  const gchar *dest_name,
 						  gboolean remove_source);
 
 static void
@@ -183,7 +183,7 @@ exchange_hierarchy_is_empty (ExchangeHierarchy *hier)
 
 static ExchangeAccountFolderResult
 create_folder (ExchangeHierarchy *hier, EFolder *parent,
-	       const char *name, const char *type)
+	       const gchar *name, const gchar *type)
 {
 	return EXCHANGE_ACCOUNT_FOLDER_PERMISSION_DENIED;
 }
@@ -196,7 +196,7 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 
 static ExchangeAccountFolderResult
 xfer_folder (ExchangeHierarchy *hier, EFolder *source,
-	     EFolder *dest_parent, const char *dest_name,
+	     EFolder *dest_parent, const gchar *dest_name,
 	     gboolean remove_source)
 {
 	return EXCHANGE_ACCOUNT_FOLDER_PERMISSION_DENIED;
@@ -215,7 +215,7 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
  **/
 ExchangeAccountFolderResult
 exchange_hierarchy_create_folder (ExchangeHierarchy *hier, EFolder *parent,
-				  const char *name, const char *type)
+				  const gchar *name, const gchar *type)
 {
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 	g_return_val_if_fail (E_IS_FOLDER (parent), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
@@ -257,7 +257,7 @@ exchange_hierarchy_remove_folder (ExchangeHierarchy *hier, EFolder *folder)
  **/
 ExchangeAccountFolderResult
 exchange_hierarchy_xfer_folder (ExchangeHierarchy *hier, EFolder *source,
-				EFolder *dest_parent, const char *dest_name,
+				EFolder *dest_parent, const gchar *dest_name,
 				gboolean remove_source)
 {
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
@@ -293,7 +293,7 @@ exchange_hierarchy_rescan (ExchangeHierarchy *hier)
 
 
 static ExchangeAccountFolderResult
-scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
+scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint mode)
 {
 	return EXCHANGE_ACCOUNT_FOLDER_OK;
 }
@@ -310,7 +310,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
  * Return value: the result code
  **/
 ExchangeAccountFolderResult
-exchange_hierarchy_scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
+exchange_hierarchy_scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint mode)
 {
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 	g_return_val_if_fail (E_IS_FOLDER (folder), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
@@ -360,9 +360,9 @@ exchange_hierarchy_construct (ExchangeHierarchy *hier,
 			      ExchangeAccount *account,
 			      ExchangeHierarchyType type,
 			      EFolder *toplevel,
-			      const char *owner_name,
-			      const char *owner_email,
-			      const char *source_uri)
+			      const gchar *owner_name,
+			      const gchar *owner_email,
+			      const gchar *source_uri)
 {
 	g_return_if_fail (EXCHANGE_IS_HIERARCHY (hier));
 	g_return_if_fail (EXCHANGE_IS_ACCOUNT (account));

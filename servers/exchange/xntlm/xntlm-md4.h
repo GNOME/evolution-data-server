@@ -4,7 +4,7 @@
 #ifndef _XNTLM_MD4_H
 #define _XNTLM_MD4_H
 
-void xntlm_md4sum (const unsigned char *in, int nbytes,
-		   unsigned char digest[16]);
+void xntlm_md4sum (const guchar *in, gint nbytes,
+		   guchar digest[16]);
 
 #endif /* _XNTLM_MD4_H */

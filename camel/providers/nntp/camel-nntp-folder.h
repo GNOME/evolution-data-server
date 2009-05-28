@@ -48,7 +48,7 @@ struct _CamelNNTPFolder {
 	CamelNNTPFolderPrivate *priv;
 
 	struct _CamelFolderChangeInfo *changes;
-	char *storage_path;
+	gchar *storage_path;
 	CamelFolderSearch *search;
 };
 
@@ -61,9 +61,9 @@ struct _CamelNNTPFolderClass {
 /* Standard Camel function */
 CamelType camel_nntp_folder_get_type (void);
 
-CamelFolder *camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelException *ex);
+CamelFolder *camel_nntp_folder_new (CamelStore *parent, const gchar *folder_name, CamelException *ex);
 
-void camel_nntp_folder_selected(CamelNNTPFolder *folder, char *line, CamelException *ex);
+void camel_nntp_folder_selected(CamelNNTPFolder *folder, gchar *line, CamelException *ex);
 
 G_END_DECLS
 

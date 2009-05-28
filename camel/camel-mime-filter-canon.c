@@ -31,10 +31,10 @@
 
 #include "camel-mime-filter-canon.h"
 
-static void filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-		    char **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, char *in, size_t len,
-		      size_t prespace, char **out, size_t *outlen,
+static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+		    gchar **out, size_t *outlen, size_t *outprespace);
+static void complete (CamelMimeFilter *f, gchar *in, size_t len,
+		      size_t prespace, gchar **out, size_t *outlen,
 		      size_t *outprespace);
 static void reset (CamelMimeFilter *f);
 
@@ -68,20 +68,20 @@ camel_mime_filter_canon_get_type (void)
 }
 
 static void
-filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace, int last)
+filter_run(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace, gint last)
 {
-	register unsigned char *inptr, c;
-	const unsigned char *inend, *start;
-	char *starto;
-	register char *o;
-	int lf = 0;
+	register guchar *inptr, c;
+	const guchar *inend, *start;
+	gchar *starto;
+	register gchar *o;
+	gint lf = 0;
 	guint32 flags;
 
 	flags = ((CamelMimeFilterCanon *)f)->flags;
 
 	/* first, work out how much space we need */
-	inptr = (unsigned char *)in;
-	inend = (const unsigned char *) (in+len);
+	inptr = (guchar *)in;
+	inend = (const guchar *) (in+len);
 	while (inptr < inend)
 		if (*inptr++ == '\n')
 			lf++;
@@ -93,7 +93,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 	camel_mime_filter_set_size(f, len+lf*3+4, FALSE);
 
 	o = f->outbuf;
-	inptr = (unsigned char *)in;
+	inptr = (guchar *)in;
 	start = inptr;
 	starto = o;
 	while (inptr < inend) {
@@ -102,7 +102,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 		if (flags & CAMEL_MIME_FILTER_CANON_FROM && c == 'F') {
 			inptr++;
 			if (inptr < inend-4) {
-				if (strncmp((char*)inptr, "rom ", 4) == 0) {
+				if (strncmp((gchar *)inptr, "rom ", 4) == 0) {
 					strcpy(o, "=46rom ");
 					inptr+=4;
 					o+= 7;
@@ -153,7 +153,7 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 	if (last) {
 		*outlen = o - f->outbuf;
 	} else {
-		camel_mime_filter_backup(f, (const char*)start, inend - start);
+		camel_mime_filter_backup(f, (const gchar *)start, inend - start);
 		*outlen = starto - f->outbuf;
 	}
 
@@ -162,13 +162,13 @@ filter_run(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out
 }
 
 static void
-filter(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	filter_run(f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-complete(CamelMimeFilter *f, char *in, size_t len, size_t prespace, char **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
 {
 	filter_run(f, in, len, prespace, out, outlen, outprespace, TRUE);
 }

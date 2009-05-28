@@ -40,7 +40,7 @@ typedef struct __mpfarray {
 	u_int32_t low_extent;		/* First extent open. */
 	u_int32_t hi_extent;		/* Last extent open. */
 	struct __qmpf {
-		int pinref;
+		gint pinref;
 		DB_MPOOLFILE *mpf;
 	} *mpfarray;			 /* Array of open extents. */
 } MPFARRAY;
@@ -62,10 +62,10 @@ struct __queue {
 	DBT pgcookie;			/* Initialized pgcookie. */
 	DB_PGINFO pginfo;		/* Initialized pginfo struct. */
 
-	char *path;			/* Space allocated to file pathname. */
-	char *name;			/* The name of the file. */
-	char *dir;			/* The dir of the file. */
-	int mode;			/* Mode to open extents. */
+	gchar *path;			/* Space allocated to file pathname. */
+	gchar *name;			/* The name of the file. */
+	gchar *dir;			/* The dir of the file. */
+	gint mode;			/* Mode to open extents. */
 };
 
 /* Format for queue extent names. */

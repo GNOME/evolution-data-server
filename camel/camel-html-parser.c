@@ -47,26 +47,26 @@ static CamelObjectClass *camel_html_parser_parent;
 typedef struct _CamelHTMLParserPrivate CamelHTMLParserPrivate;
 
 struct _CamelHTMLParserPrivate {
-	char *inbuf,
+	gchar *inbuf,
 		*inptr,
 		*inend,
 		*start;
 	enum _camel_html_parser_t state;
-	char *charset;
-	int eof;
+	gchar *charset;
+	gint eof;
 	GString *tag;
 	GString *ent;
-	char ent_utf8[8];
-	int attr;
+	gchar ent_utf8[8];
+	gint attr;
 	GPtrArray *attrs;
 	GPtrArray *values;
-	int quote;
+	gint quote;
 };
 
 static void tokenise_setup(void);
 static CamelHTMLParserPrivate *tokenise_init(void);
 static void tokenise_free(CamelHTMLParserPrivate *p);
-static int tokenise_step(CamelHTMLParserPrivate *p, char **datap, int *lenp);
+static gint tokenise_step(CamelHTMLParserPrivate *p, gchar **datap, gint *lenp);
 
 /* ********************************************************************** */
 
@@ -127,21 +127,21 @@ camel_html_parser_new (void)
 }
 
 
-void camel_html_parser_set_data(CamelHTMLParser *hp, const char *start, int len, int last)
+void camel_html_parser_set_data(CamelHTMLParser *hp, const gchar *start, gint len, gint last)
 {
 	CamelHTMLParserPrivate *p = hp->priv;
 
-	p->inptr = p->inbuf = (char *)start;
-	p->inend = (char *)start+len;
+	p->inptr = p->inbuf = (gchar *)start;
+	p->inend = (gchar *)start+len;
 	p->eof = last;
 }
 
-camel_html_parser_t camel_html_parser_step(CamelHTMLParser *hp, const char **datap, int *lenp)
+camel_html_parser_t camel_html_parser_step(CamelHTMLParser *hp, const gchar **datap, gint *lenp)
 {
-	return tokenise_step(hp->priv, (char **)datap, lenp);
+	return tokenise_step(hp->priv, (gchar **)datap, lenp);
 }
 
-const char *camel_html_parser_left(CamelHTMLParser *hp, int *lenp)
+const gchar *camel_html_parser_left(CamelHTMLParser *hp, gint *lenp)
 {
 	CamelHTMLParserPrivate *p = hp->priv;
 
@@ -151,14 +151,14 @@ const char *camel_html_parser_left(CamelHTMLParser *hp, int *lenp)
 	return p->inptr;
 }
 
-const char *camel_html_parser_tag(CamelHTMLParser *hp)
+const gchar *camel_html_parser_tag(CamelHTMLParser *hp)
 {
 	return hp->priv->tag->str;
 }
 
-const char *camel_html_parser_attr(CamelHTMLParser *hp, const char *name)
+const gchar *camel_html_parser_attr(CamelHTMLParser *hp, const gchar *name)
 {
-	int i;
+	gint i;
 	CamelHTMLParserPrivate *p = hp->priv;
 
 	for (i=0;i<p->attrs->len;i++) {
@@ -180,8 +180,8 @@ const GPtrArray *camel_html_parser_attr_list(CamelHTMLParser *hp, const GPtrArra
 
 /* this map taken out of libxml */
 static struct {
-	unsigned int val;
-	const char *name;
+	guint val;
+	const gchar *name;
 } entity_map[] = {
 /*
  * the 4 absolute ones,
@@ -464,12 +464,12 @@ static GHashTable *entities;
 /* this cannot be called in a thread context */
 static void tokenise_setup(void)
 {
-	int i;
+	gint i;
 
 	if (entities == NULL) {
 		entities = g_hash_table_new(g_str_hash, g_str_equal);
 		for (i=0;i<sizeof(entity_map)/sizeof(entity_map[0]);i++) {
-			g_hash_table_insert(entities, (char *)entity_map[i].name, GUINT_TO_POINTER(entity_map[i].val));
+			g_hash_table_insert(entities, (gchar *)entity_map[i].name, GUINT_TO_POINTER(entity_map[i].val));
 		}
 	}
 }
@@ -496,7 +496,7 @@ static CamelHTMLParserPrivate *tokenise_init(void)
 
 static void tokenise_free(CamelHTMLParserPrivate *p)
 {
-	int i;
+	gint i;
 
 	g_string_free(p->tag, TRUE);
 	g_string_free(p->ent, TRUE);
@@ -511,9 +511,9 @@ static void tokenise_free(CamelHTMLParserPrivate *p)
 	g_free(p);
 }
 
-static int convert_entity(const char *e, char *ent)
+static gint convert_entity(const gchar *e, gchar *ent)
 {
-	unsigned int val;
+	guint val;
 
 	if (e[0] == '#')
 		return g_unichar_to_utf8(atoi(e+1), ent);
@@ -528,7 +528,7 @@ static int convert_entity(const char *e, char *ent)
 #if 0
 static void dump_tag(CamelHTMLParserPrivate *p)
 {
-	int i;
+	gint i;
 
 	printf("got tag: %s\n", p->tag->str);
 	printf("%d attributes:\n", p->attr);
@@ -538,13 +538,13 @@ static void dump_tag(CamelHTMLParserPrivate *p)
 }
 #endif
 
-static int tokenise_step(CamelHTMLParserPrivate *p, char **datap, int *lenp)
+static gint tokenise_step(CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 {
-	char *in = p->inptr;
-	char *inend = p->inend;
-	char c;
-	int state = p->state, ret, len;
-	char *start = p->inptr;
+	gchar *in = p->inptr;
+	gchar *inend = p->inend;
+	gchar c;
+	gint state = p->state, ret, len;
+	gchar *start = p->inptr;
 
 	d(printf("Tokenise step\n"));
 

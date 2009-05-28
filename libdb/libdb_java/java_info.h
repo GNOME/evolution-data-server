@@ -40,7 +40,7 @@ typedef struct _dbt_javainfo
 	jobject dbtref;		/* the java Dbt object */
 	jbyteArray array;	/* the java array object -
 				   this is only valid during the API call */
-	int offset;		/* offset into the Java array */
+	gint offset;		/* offset into the Java array */
 
 #define	DBT_JAVAINFO_LOCKED	0x01	/* a LOCKED_DBT has been created */
 	u_int32_t flags;
@@ -89,8 +89,8 @@ extern void dbjit_destroy(DBT_JAVAINFO *dbjit);
 typedef struct _db_env_javainfo
 {
 	JavaVM *javavm;
-	int is_dbopen;
-	char *errpfx;
+	gint is_dbopen;
+	gchar *errpfx;
 	jobject jenvref;	/* global reference */
 	jobject default_errcall; /* global reference */
 	jobject errcall;	/* global reference */
@@ -108,7 +108,7 @@ DB_ENV_JAVAINFO;	/* used with all 'dbjie' functions */
 extern DB_ENV_JAVAINFO *dbjie_construct(JNIEnv *jnienv,
 		       jobject jenv,
 		       jobject default_errcall,
-		       int is_dbopen);
+		       gint is_dbopen);
 
 /* release all objects held by this this one */
 extern void dbjie_dealloc(DB_ENV_JAVAINFO *, JNIEnv *jnienv);
@@ -128,21 +128,21 @@ extern void dbjie_set_conflict(DB_ENV_JAVAINFO *, u_char *v, size_t sz);
 extern void dbjie_set_feedback_object(DB_ENV_JAVAINFO *, JNIEnv *jnienv,
 				      DB_ENV *dbenv, jobject value);
 extern void dbjie_call_feedback(DB_ENV_JAVAINFO *, DB_ENV *dbenv, jobject jenv,
-				int opcode, int percent);
+				gint opcode, gint percent);
 extern void dbjie_set_recovery_init_object(DB_ENV_JAVAINFO *, JNIEnv *jnienv,
 					   DB_ENV *dbenv, jobject value);
-extern int dbjie_call_recovery_init(DB_ENV_JAVAINFO *, DB_ENV *dbenv,
+extern gint dbjie_call_recovery_init(DB_ENV_JAVAINFO *, DB_ENV *dbenv,
 				    jobject jenv);
 extern void dbjie_set_rep_transport_object(DB_ENV_JAVAINFO *, JNIEnv *jnienv,
-					   DB_ENV *dbenv, int id, jobject obj);
-extern int dbjie_call_rep_transport(DB_ENV_JAVAINFO *, DB_ENV *dbenv,
+					   DB_ENV *dbenv, gint id, jobject obj);
+extern gint dbjie_call_rep_transport(DB_ENV_JAVAINFO *, DB_ENV *dbenv,
 				    jobject jenv, const DBT *control,
-				    const DBT *rec, int envid, int flags);
+				    const DBT *rec, gint envid, gint flags);
 extern void dbjie_set_app_dispatch_object(DB_ENV_JAVAINFO *, JNIEnv *jnienv,
 					DB_ENV *dbenv, jobject value);
-extern int dbjie_call_app_dispatch(DB_ENV_JAVAINFO *,
+extern gint dbjie_call_app_dispatch(DB_ENV_JAVAINFO *,
 				 DB_ENV *dbenv, jobject jenv,
-				 DBT *dbt, DB_LSN *lsn, int recops);
+				 DBT *dbt, DB_LSN *lsn, gint recops);
 extern jobject dbjie_get_errcall(DB_ENV_JAVAINFO *) ;
 extern jint dbjie_is_dbopen(DB_ENV_JAVAINFO *);
 
@@ -195,27 +195,27 @@ extern jint dbji_get_flags();
 
 extern void dbji_set_feedback_object(DB_JAVAINFO *, JNIEnv *jnienv, DB *db, jobject value);
 extern void dbji_call_feedback(DB_JAVAINFO *, DB *db, jobject jdb,
-			       int opcode, int percent);
+			       gint opcode, gint percent);
 
 extern void dbji_set_append_recno_object(DB_JAVAINFO *, JNIEnv *jnienv, DB *db, jobject value);
-extern int dbji_call_append_recno(DB_JAVAINFO *, DB *db, jobject jdb,
+extern gint dbji_call_append_recno(DB_JAVAINFO *, DB *db, jobject jdb,
 				  DBT *dbt, jint recno);
 extern void dbji_set_assoc_object(DB_JAVAINFO *, JNIEnv *jnienv,
 				  DB *db, DB_TXN *txn, DB *second,
-				  jobject value, int flags);
-extern int dbji_call_assoc(DB_JAVAINFO *, DB *db, jobject jdb,
+				  jobject value, gint flags);
+extern gint dbji_call_assoc(DB_JAVAINFO *, DB *db, jobject jdb,
 			   const DBT *key, const DBT* data, DBT *result);
 extern void dbji_set_bt_compare_object(DB_JAVAINFO *, JNIEnv *jnienv, DB *db, jobject value);
-extern int dbji_call_bt_compare(DB_JAVAINFO *, DB *db, jobject jdb,
+extern gint dbji_call_bt_compare(DB_JAVAINFO *, DB *db, jobject jdb,
 				const DBT *dbt1, const DBT *dbt2);
 extern void dbji_set_bt_prefix_object(DB_JAVAINFO *, JNIEnv *jnienv, DB *db, jobject value);
 extern size_t dbji_call_bt_prefix(DB_JAVAINFO *, DB *db, jobject jdb,
 				  const DBT *dbt1, const DBT *dbt2);
 extern void dbji_set_dup_compare_object(DB_JAVAINFO *, JNIEnv *jnienv, DB *db, jobject value);
-extern int dbji_call_dup_compare(DB_JAVAINFO *, DB *db, jobject jdb,
+extern gint dbji_call_dup_compare(DB_JAVAINFO *, DB *db, jobject jdb,
 				 const DBT *dbt1, const DBT *dbt2);
 extern void dbji_set_h_hash_object(DB_JAVAINFO *, JNIEnv *jnienv, DB *db, jobject value);
-extern int dbji_call_h_hash(DB_JAVAINFO *, DB *db, jobject jdb,
-			    const void *data, int len);
+extern gint dbji_call_h_hash(DB_JAVAINFO *, DB *db, jobject jdb,
+			    gconstpointer data, gint len);
 
 #endif /* !_JAVA_INFO_H_ */

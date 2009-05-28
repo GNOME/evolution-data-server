@@ -55,7 +55,7 @@ struct _CamelBlockFilePrivate {
 	pthread_mutex_t cache_lock; /* for refcounting, flag manip, cache manip */
 	pthread_mutex_t io_lock; /* for all io ops */
 
-	unsigned int deleted:1;
+	guint deleted:1;
 };
 
 
@@ -72,20 +72,20 @@ static pthread_mutex_t block_file_lock = PTHREAD_MUTEX_INITIALIZER;
 static CamelDList block_file_list = CAMEL_DLIST_INITIALISER(block_file_list);
 /* list to store block files that are actually intialised */
 static CamelDList block_file_active_list = CAMEL_DLIST_INITIALISER(block_file_active_list);
-static int block_file_count = 0;
-static int block_file_threshhold = 10;
+static gint block_file_count = 0;
+static gint block_file_threshhold = 10;
 
 #define CBF_CLASS(o) ((CamelBlockFileClass *)(((CamelObject *)o)->klass))
 
-static int sync_nolock(CamelBlockFile *bs);
-static int sync_block_nolock(CamelBlockFile *bs, CamelBlock *bl);
+static gint sync_nolock(CamelBlockFile *bs);
+static gint sync_block_nolock(CamelBlockFile *bs, CamelBlock *bl);
 
 static int
 block_file_validate_root(CamelBlockFile *bs)
 {
 	CamelBlockRoot *br;
 	struct stat st;
-	int retval;
+	gint retval;
 
 	br = bs->root;
 
@@ -152,7 +152,7 @@ camel_block_file_class_init(CamelBlockFileClass *klass)
 }
 
 static guint
-block_hash_func(const void *v)
+block_hash_func(gconstpointer v)
 {
 	return ((camel_block_t) GPOINTER_TO_UINT(v)) >> CAMEL_BLOCK_SIZE_BITS;
 }
@@ -263,7 +263,7 @@ block_file_use(CamelBlockFile *bs)
 {
 	struct _CamelBlockFilePrivate *nw, *nn, *p = bs->priv;
 	CamelBlockFile *bf;
-	int err;
+	gint err;
 
 	/* We want to:
 	    remove file from active list
@@ -362,7 +362,7 @@ camel_cache_remove(c, key);
  *
  * Return value: The new block file, or NULL if it could not be created.
  **/
-CamelBlockFile *camel_block_file_new(const char *path, int flags, const char version[8], size_t block_size)
+CamelBlockFile *camel_block_file_new(const gchar *path, gint flags, const gchar version[8], size_t block_size)
 {
 	CamelBlockFile *bs;
 
@@ -404,12 +404,12 @@ CamelBlockFile *camel_block_file_new(const char *path, int flags, const char ver
 	return bs;
 }
 
-int
-camel_block_file_rename(CamelBlockFile *bs, const char *path)
+gint
+camel_block_file_rename(CamelBlockFile *bs, const gchar *path)
 {
-	int ret;
+	gint ret;
 	struct stat st;
-	int err;
+	gint err;
 
 	CAMEL_BLOCK_FILE_LOCK(bs, io_lock);
 
@@ -434,10 +434,10 @@ camel_block_file_rename(CamelBlockFile *bs, const char *path)
 	return ret;
 }
 
-int
+gint
 camel_block_file_delete(CamelBlockFile *bs)
 {
-	int ret;
+	gint ret;
 	struct _CamelBlockFilePrivate *p = bs->priv;
 
 	CAMEL_BLOCK_FILE_LOCK(bs, io_lock);
@@ -503,7 +503,7 @@ fail:
  *
  *
  **/
-int camel_block_file_free_block(CamelBlockFile *bs, camel_block_t id)
+gint camel_block_file_free_block(CamelBlockFile *bs, camel_block_t id)
 {
 	CamelBlock *bl;
 
@@ -563,7 +563,7 @@ CamelBlock *camel_block_file_get_block(CamelBlockFile *bs, camel_block_t id)
 		bl = g_malloc0(sizeof(*bl));
 		bl->id = id;
 		if (lseek(bs->fd, id, SEEK_SET) == -1 ||
-		    camel_read (bs->fd, (char *) bl->data, CAMEL_BLOCK_SIZE) == -1) {
+		    camel_read (bs->fd, (gchar *) bl->data, CAMEL_BLOCK_SIZE) == -1) {
 			block_file_unuse(bs);
 			CAMEL_BLOCK_FILE_UNLOCK(bs, cache_lock);
 			g_free(bl);
@@ -712,7 +712,7 @@ static int
 sync_nolock(CamelBlockFile *bs)
 {
 	CamelBlock *bl, *bn;
-	int work = FALSE;
+	gint work = FALSE;
 
 	bl = (CamelBlock *)bs->block_cache.head;
 	bn = bl->next;
@@ -749,9 +749,9 @@ sync_nolock(CamelBlockFile *bs)
  *
  * Return value: -1 on io error.
  **/
-int camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl)
+gint camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl)
 {
-	int ret;
+	gint ret;
 
 	/* LOCK io_lock */
 	if (block_file_use(bs) == -1)
@@ -772,9 +772,9 @@ int camel_block_file_sync_block(CamelBlockFile *bs, CamelBlock *bl)
  *
  * Return value: -1 on io error.
  **/
-int camel_block_file_sync(CamelBlockFile *bs)
+gint camel_block_file_sync(CamelBlockFile *bs)
 {
-	int ret;
+	gint ret;
 
 	CAMEL_BLOCK_FILE_LOCK(bs, root_lock);
 	CAMEL_BLOCK_FILE_LOCK(bs, cache_lock);
@@ -801,7 +801,7 @@ struct _CamelKeyFilePrivate {
 
 	struct _CamelKeyFile *base;
 	pthread_mutex_t lock;
-	unsigned int deleted:1;
+	guint deleted:1;
 };
 
 #define CAMEL_KEY_FILE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
@@ -813,8 +813,8 @@ static pthread_mutex_t key_file_lock = PTHREAD_MUTEX_INITIALIZER;
 /* lru cache of block files */
 static CamelDList key_file_list = CAMEL_DLIST_INITIALISER(key_file_list);
 static CamelDList key_file_active_list = CAMEL_DLIST_INITIALISER(key_file_active_list);
-static int key_file_count = 0;
-static const int key_file_threshhold = 10;
+static gint key_file_count = 0;
+static const gint key_file_threshhold = 10;
 
 static void
 camel_key_file_class_init(CamelKeyFileClass *klass)
@@ -882,8 +882,8 @@ key_file_use(CamelKeyFile *bs)
 {
 	struct _CamelKeyFilePrivate *nw, *nn, *p = bs->priv;
 	CamelKeyFile *bf;
-	int err, fd;
-	char *flag;
+	gint err, fd;
+	gchar *flag;
 
 	/* We want to:
 	    remove file from active list
@@ -977,11 +977,11 @@ key_file_unuse(CamelKeyFile *bs)
  * be opened/created/initialised.
  **/
 CamelKeyFile *
-camel_key_file_new(const char *path, int flags, const char version[8])
+camel_key_file_new(const gchar *path, gint flags, const gchar version[8])
 {
 	CamelKeyFile *kf;
 	off_t last;
-	int err;
+	gint err;
 
 	d(printf("New key file '%s'\n", path));
 
@@ -1018,12 +1018,12 @@ camel_key_file_new(const char *path, int flags, const char version[8])
 	return kf;
 }
 
-int
-camel_key_file_rename(CamelKeyFile *kf, const char *path)
+gint
+camel_key_file_rename(CamelKeyFile *kf, const gchar *path)
 {
-	int ret;
+	gint ret;
 	struct stat st;
-	int err;
+	gint err;
 
 	CAMEL_KEY_FILE_LOCK(kf, lock);
 
@@ -1048,10 +1048,10 @@ camel_key_file_rename(CamelKeyFile *kf, const char *path)
 	return ret;
 }
 
-int
+gint
 camel_key_file_delete(CamelKeyFile *kf)
 {
-	int ret;
+	gint ret;
 	struct _CamelKeyFilePrivate *p = kf->priv;
 
 	CAMEL_KEY_FILE_LOCK(kf, lock);
@@ -1084,12 +1084,12 @@ camel_key_file_delete(CamelKeyFile *kf)
  *
  * Return value: -1 on io error.  The key file will remain unchanged.
  **/
-int
+gint
 camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_key_t *records)
 {
 	camel_block_t next;
 	guint32 size;
-	int ret = -1;
+	gint ret = -1;
 
 	d(printf("write key %08x len = %d\n", *parent, len));
 
@@ -1139,13 +1139,13 @@ camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_
  *
  * Return value: -1 on io error.
  **/
-int
+gint
 camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, size_t *len, camel_key_t **records)
 {
 	guint32 size;
 	long pos = *start;
 	camel_block_t next;
-	int ret = -1;
+	gint ret = -1;
 
 	if (pos == 0)
 		return 0;

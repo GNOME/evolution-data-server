@@ -525,7 +525,7 @@ gdata_feed_new(void)
 
 
 GDataFeed *
-gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
+gdata_feed_new_from_xml(const gchar * feedXML, const gint length)
 {
 	GDataFeed *feed;
 	GDataFeedPrivate *priv;
@@ -574,12 +574,12 @@ gdata_feed_new_from_xml(const gchar* feedXML, const gint length)
 		}
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"updated")) {
 			value = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-			priv->updated = g_strdup ((gchar*)value);
+			priv->updated = g_strdup ((gchar *)value);
 			xmlFree(value);
 		} else if (!xmlStrcmp(cur->name, (xmlChar *)"timezone")) {
 			value = xmlGetProp (cur, (xmlChar *)"value");
 			g_free (priv->timezone);
-			priv->timezone = g_strdup ((gchar*)value);
+			priv->timezone = g_strdup ((gchar *)value);
 			xmlFree (value);
 		}
 		else if (!xmlStrcmp(cur->name, (xmlChar *)"entry")) {

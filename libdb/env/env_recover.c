@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -40,8 +40,8 @@ static const char revid[] =
 #include "dbinc/txn.h"
 #include "dbinc/db_am.h"
 
-static int    __log_backup __P((DB_ENV *, DB_LOGC *, DB_LSN *, DB_LSN *));
-static int    __log_earliest __P((DB_ENV *, DB_LOGC *, int32_t *, DB_LSN *));
+static gint    __log_backup __P((DB_ENV *, DB_LOGC *, DB_LSN *, DB_LSN *));
+static gint    __log_earliest __P((DB_ENV *, DB_LOGC *, int32_t *, DB_LSN *));
 static double __lsn_diff __P((DB_LSN *, DB_LSN *, DB_LSN *, u_int32_t, int));
 
 /*
@@ -51,9 +51,9 @@ static double __lsn_diff __P((DB_LSN *, DB_LSN *, DB_LSN *, u_int32_t, int));
  * LSN of max_lsn, so we need to roll back sufficiently far for that
  * to work.  See __log_backup for details.
  *
- * PUBLIC: int __db_apprec __P((DB_ENV *, DB_LSN *, u_int32_t));
+ * PUBLIC: gint __db_apprec __P((DB_ENV *, DB_LSN *, u_int32_t));
  */
-int
+gint
 __db_apprec(dbenv, max_lsn, flags)
 	DB_ENV *dbenv;
 	DB_LSN *max_lsn;
@@ -67,12 +67,12 @@ __db_apprec(dbenv, max_lsn, flags)
 	time_t now, tlow;
 	int32_t log_size, low;
 	double nfiles;
-	int have_rec, is_thread, progress, ret, t_ret;
-	int (**dtab) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint have_rec, is_thread, progress, ret, t_ret;
+	gint (**dtab) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t dtabsize;
 	u_int32_t hi_txn, lockid, txnid;
-	char *p, *pass, t1[60], t2[60];
-	void *txninfo;
+	gchar *p, *pass, t1[60], t2[60];
+	gpointer txninfo;
 
 	COMPQUIET(nfiles, (double)0);
 
@@ -593,7 +593,7 @@ static double
 __lsn_diff(low, high, current, max, is_forward)
 	DB_LSN *low, *high, *current;
 	u_int32_t max;
-	int is_forward;
+	gint is_forward;
 {
 	double nf;
 
@@ -645,7 +645,7 @@ __log_backup(dbenv, logc, max_lsn, start_lsn)
 	DB_LSN lsn;
 	DBT data;
 	__txn_ckp_args *ckp_args;
-	int ret;
+	gint ret;
 
 	memset(&data, 0, sizeof(data));
 	ckp_args = NULL;
@@ -695,7 +695,7 @@ __log_earliest(dbenv, logc, lowtime, lowlsn)
 	DBT data;
 	__txn_ckp_args *ckpargs;
 	u_int32_t rectype;
-	int cmp, ret;
+	gint cmp, ret;
 
 	memset(&data, 0, sizeof(data));
 	/*
@@ -735,23 +735,23 @@ __log_earliest(dbenv, logc, lowtime, lowlsn)
  * If we are not doing feedback processing (i.e., we are doing txn_recover
  * processing and in_recovery is zero), then last_lsn can be NULL.
  *
- * PUBLIC: int __env_openfiles __P((DB_ENV *, DB_LOGC *,
- * PUBLIC:     void *, DBT *, DB_LSN *, DB_LSN *, double, int));
+ * PUBLIC: gint __env_openfiles __P((DB_ENV *, DB_LOGC *,
+ * PUBLIC:     gpointer , DBT *, DB_LSN *, DB_LSN *, double, int));
  */
-int
+gint
 __env_openfiles(dbenv, logc, txninfo,
     data, open_lsn, last_lsn, nfiles, in_recovery)
 	DB_ENV *dbenv;
 	DB_LOGC *logc;
-	void *txninfo;
+	gpointer txninfo;
 	DBT *data;
 	DB_LSN *open_lsn, *last_lsn;
-	int in_recovery;
+	gint in_recovery;
 	double nfiles;
 {
 	DB_LSN lsn;
 	u_int32_t log_size;
-	int progress, ret;
+	gint progress, ret;
 
 	/*
 	 * XXX

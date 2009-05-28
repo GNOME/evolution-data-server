@@ -38,7 +38,7 @@ struct _CamelFolderPrivate {
 	GStaticRecMutex lock;
 	GStaticMutex change_lock;
 	/* must require the 'change_lock' to access this */
-	int frozen;
+	gint frozen;
 	struct _CamelFolderChangeInfo *changed_frozen; /* queues changed events */
 };
 
@@ -93,7 +93,7 @@ struct _CamelSessionPrivate {
 	GMutex *lock;		/* for locking everything basically */
 	GMutex *thread_lock;	/* locking threads */
 
-	int thread_id;
+	gint thread_id;
 	GHashTable *thread_active;
 	GThreadPool *thread_pool;
 
@@ -161,7 +161,7 @@ struct _CamelVeeFolderPrivate {
 	GMutex *summary_lock;		/* for locking vfolder summary */
 	GMutex *subfolder_lock;		/* for locking the subfolder list */
 	GMutex *changed_lock;		/* for locking the folders-changed list */
-	int unread_vfolder;
+	gint unread_vfolder;
 };
 
 #define CAMEL_VEE_FOLDER_LOCK(f, l) \
@@ -196,9 +196,9 @@ struct _CamelCertDBPrivate {
 #ifdef G_OS_WIN32
 #define fsync(fd) _commit(fd)
 
-const char *_camel_get_localedir (void) G_GNUC_CONST;
-const char *_camel_get_libexecdir (void) G_GNUC_CONST;
-const char *_camel_get_providerdir (void) G_GNUC_CONST;
+const gchar *_camel_get_localedir (void) G_GNUC_CONST;
+const gchar *_camel_get_libexecdir (void) G_GNUC_CONST;
+const gchar *_camel_get_providerdir (void) G_GNUC_CONST;
 
 #undef EVOLUTION_LOCALEDIR
 #define EVOLUTION_LOCALEDIR _camel_get_localedir ()

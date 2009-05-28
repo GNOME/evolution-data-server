@@ -35,9 +35,9 @@ static CamelStreamClass *parent_class = NULL;
 /* Returns the class for a CamelTcpStream */
 #define CTS_CLASS(so) CAMEL_TCP_STREAM_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static int tcp_connect    (CamelTcpStream *stream, struct addrinfo *host);
-static int tcp_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
-static int tcp_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
+static gint tcp_connect    (CamelTcpStream *stream, struct addrinfo *host);
+static gint tcp_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
+static gint tcp_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
 static struct sockaddr *tcp_get_local_address (CamelTcpStream *stream, socklen_t *len);
 static struct sockaddr *tcp_get_remote_address (CamelTcpStream *stream, socklen_t *len);
 
@@ -57,7 +57,7 @@ camel_tcp_stream_class_init (CamelTcpStreamClass *camel_tcp_stream_class)
 }
 
 static void
-camel_tcp_stream_init (void *o)
+camel_tcp_stream_init (gpointer o)
 {
 	;
 }
@@ -99,7 +99,7 @@ tcp_connect (CamelTcpStream *stream, struct addrinfo *host)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_tcp_stream_connect (CamelTcpStream *stream, struct addrinfo *host)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);
@@ -123,7 +123,7 @@ tcp_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);
@@ -147,7 +147,7 @@ tcp_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM (stream), -1);

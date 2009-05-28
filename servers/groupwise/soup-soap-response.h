@@ -30,38 +30,38 @@ typedef struct {
 GType             soup_soap_response_get_type (void);
 
 SoupSoapResponse *soup_soap_response_new (void);
-SoupSoapResponse *soup_soap_response_new_from_string (const char *xmlstr);
+SoupSoapResponse *soup_soap_response_new_from_string (const gchar *xmlstr);
 
-gboolean          soup_soap_response_from_string (SoupSoapResponse *response, const char *xmlstr);
+gboolean          soup_soap_response_from_string (SoupSoapResponse *response, const gchar *xmlstr);
 
-const char       *soup_soap_response_get_method_name (SoupSoapResponse *response);
+const gchar       *soup_soap_response_get_method_name (SoupSoapResponse *response);
 void              soup_soap_response_set_method_name (SoupSoapResponse *response,
-						      const char *method_name);
+						      const gchar *method_name);
 
 typedef xmlNode SoupSoapParameter;
 
-const char        *soup_soap_parameter_get_name (SoupSoapParameter *param);
-int                soup_soap_parameter_get_int_value (SoupSoapParameter *param);
-char              *soup_soap_parameter_get_string_value (SoupSoapParameter *param);
+const gchar        *soup_soap_parameter_get_name (SoupSoapParameter *param);
+gint                soup_soap_parameter_get_int_value (SoupSoapParameter *param);
+gchar              *soup_soap_parameter_get_string_value (SoupSoapParameter *param);
 SoupSoapParameter *soup_soap_parameter_get_first_child (SoupSoapParameter *param);
 SoupSoapParameter *soup_soap_parameter_get_first_child_by_name (SoupSoapParameter *param,
-								const char *name);
+								const gchar *name);
 SoupSoapParameter *soup_soap_parameter_get_next_child (SoupSoapParameter *param);
 SoupSoapParameter *soup_soap_parameter_get_next_child_by_name (SoupSoapParameter *param,
-							       const char *name);
-char              *soup_soap_parameter_get_property (SoupSoapParameter *param, const char *prop_name);
+							       const gchar *name);
+gchar              *soup_soap_parameter_get_property (SoupSoapParameter *param, const gchar *prop_name);
 
 const GList       *soup_soap_response_get_parameters (SoupSoapResponse *response);
 SoupSoapParameter *soup_soap_response_get_first_parameter (SoupSoapResponse *response);
 SoupSoapParameter *soup_soap_response_get_first_parameter_by_name (SoupSoapResponse *response,
-								   const char *name);
+								   const gchar *name);
 SoupSoapParameter *soup_soap_response_get_next_parameter (SoupSoapResponse *response,
 							  SoupSoapParameter *from);
 SoupSoapParameter *soup_soap_response_get_next_parameter_by_name (SoupSoapResponse *response,
 								  SoupSoapParameter *from,
-								  const char *name);
+								  const gchar *name);
 
-int soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer);
+gint soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer);
 
 
 G_END_DECLS

@@ -135,10 +135,10 @@ static CamelProvider spool_directory_provider = {
 #endif
 
 /* build a canonical 'path' */
-static char *
-make_can_path(char *p, char *o)
+static gchar *
+make_can_path(gchar *p, gchar *o)
 {
-	char c, last, *start = o;
+	gchar c, last, *start = o;
 
 	d(printf("canonical '%s' = ", p));
 
@@ -163,7 +163,7 @@ make_can_path(char *p, char *o)
 #define get_can_path(p) ((p == NULL) ? NULL : (make_can_path ((p), g_alloca (strlen (p) + 1))))
 
 static guint
-local_url_hash (const void *v)
+local_url_hash (gconstpointer v)
 {
 	const CamelURL *u = v;
 	guint hash = 0;
@@ -184,7 +184,7 @@ local_url_hash (const void *v)
 }
 
 static int
-check_equal (char *s1, char *s2)
+check_equal (gchar *s1, gchar *s2)
 {
 	if (s1 == NULL || *s1 == 0) {
 		if (s2 == NULL || *s2 == 0)
@@ -200,10 +200,10 @@ check_equal (char *s1, char *s2)
 }
 
 static int
-local_url_equal(const void *v, const void *v2)
+local_url_equal(gconstpointer v, gconstpointer v2)
 {
 	const CamelURL *u1 = v, *u2 = v2;
-	char *p1, *p2;
+	gchar *p1, *p2;
 
 	p1 = get_can_path(u1->path);
 	p2 = get_can_path(u2->path);
@@ -214,9 +214,9 @@ local_url_equal(const void *v, const void *v2)
 void camel_provider_module_init(void)
 {
 #ifndef G_OS_WIN32
-	char *path;
+	gchar *path;
 #endif
-	static int init = 0;
+	static gint init = 0;
 
 	if (init)
 		abort();

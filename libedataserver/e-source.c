@@ -36,10 +36,10 @@
 struct _ESourcePrivate {
 	ESourceGroup *group;
 
-	char *uid;
-	char *name;
-	char *relative_uri;
-	char *absolute_uri;
+	gchar *uid;
+	gchar *name;
+	gchar *relative_uri;
+	gchar *absolute_uri;
 
 	gboolean readonly;
 
@@ -55,7 +55,7 @@ enum {
 	CHANGED,
 	LAST_SIGNAL
 };
-static unsigned int signals[LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 
 /* Callbacks.  */
@@ -163,8 +163,8 @@ set_color_spec (ESource *source,
 /* Public methods.  */
 
 ESource *
-e_source_new  (const char *name,
-	       const char *relative_uri)
+e_source_new  (const gchar *name,
+	       const gchar *relative_uri)
 {
 	ESource *source;
 
@@ -180,8 +180,8 @@ e_source_new  (const char *name,
 }
 
 ESource *
-e_source_new_with_absolute_uri (const char *name,
-				const char *absolute_uri)
+e_source_new_with_absolute_uri (const gchar *name,
+				const gchar *absolute_uri)
 {
 	ESource *source;
 
@@ -208,7 +208,7 @@ e_source_new_from_xml_node (xmlNodePtr node)
 
 	source = g_object_new (e_source_get_type (), NULL);
 
-	source->priv->uid = g_strdup ((char*)uid);
+	source->priv->uid = g_strdup ((gchar *)uid);
 	xmlFree (uid);
 
 	if (e_source_update_from_xml_node (source, node, NULL))
@@ -228,14 +228,14 @@ import_properties (ESource *source,
 	for (prop_node = prop_root->children; prop_node; prop_node = prop_node->next) {
 		xmlChar *name, *value;
 
-		if (!prop_node->name || strcmp ((char*)prop_node->name, "property"))
+		if (!prop_node->name || strcmp ((gchar *)prop_node->name, "property"))
 			continue;
 
 		name = xmlGetProp (prop_node, (xmlChar*)"name");
 		value = xmlGetProp (prop_node, (xmlChar*)"value");
 
 		if (name && value)
-			g_hash_table_insert (priv->properties, g_strdup ((char*)name), g_strdup ((char*)value));
+			g_hash_table_insert (priv->properties, g_strdup ((gchar *)name), g_strdup ((gchar *)value));
 
 		if (name)
 			xmlFree (name);
@@ -308,28 +308,28 @@ e_source_update_from_xml_node (ESource *source,
 		goto done;
 
 	if (source->priv->name == NULL
-	    || strcmp ((char*)name, source->priv->name) != 0
+	    || strcmp ((gchar *)name, source->priv->name) != 0
 	    || source->priv->relative_uri == NULL
 	    || relative_uri != NULL
-	    || strcmp ((char*)relative_uri, source->priv->relative_uri) != 0) {
+	    || strcmp ((gchar *)relative_uri, source->priv->relative_uri) != 0) {
 		g_free (source->priv->name);
-		source->priv->name = g_strdup ((char*)name);
+		source->priv->name = g_strdup ((gchar *)name);
 
 		g_free (source->priv->relative_uri);
-		source->priv->relative_uri = g_strdup ((char*)relative_uri);
+		source->priv->relative_uri = g_strdup ((gchar *)relative_uri);
 
 		changed = TRUE;
 	}
 
 	if (absolute_uri != NULL) {
 		g_free (source->priv->absolute_uri);
-		source->priv->absolute_uri = g_strdup ((char*)absolute_uri);
+		source->priv->absolute_uri = g_strdup ((gchar *)absolute_uri);
 		changed = TRUE;
 	}
 
 	if (color == NULL) {
 		/* It is okay for color_spec to be NULL. */
-		changed |= set_color_spec (source, (char*)color_spec);
+		changed |= set_color_spec (source, (gchar *)color_spec);
 	} else {
 		gchar buffer[8];
 		g_snprintf (buffer, sizeof (buffer), "#%s", color);
@@ -347,7 +347,7 @@ e_source_update_from_xml_node (ESource *source,
 		if (!node->name)
 			continue;
 
-		if (!strcmp ((char*)node->name, "properties")) {
+		if (!strcmp ((gchar *)node->name, "properties")) {
 			GHashTable *temp = source->priv->properties;
 			source->priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
 									  g_free, g_free);
@@ -392,21 +392,21 @@ e_source_update_from_xml_node (ESource *source,
  * Return value: Name of the source in the specified @node.  The caller must
  * free the string.
  **/
-char *
+gchar *
 e_source_uid_from_xml_node (xmlNodePtr node)
 {
 	xmlChar *uid = xmlGetProp (node, (xmlChar*)"uid");
-	char *retval;
+	gchar *retval;
 
 	if (uid == NULL)
 		return NULL;
 
-	retval = g_strdup ((char*)uid);
+	retval = g_strdup ((gchar *)uid);
 	xmlFree (uid);
 	return retval;
 }
 
-char *
+gchar *
 e_source_build_absolute_uri (ESource *source)
 {
 	const gchar *base_uri_str;
@@ -461,7 +461,7 @@ e_source_set_group (ESource *source,
 
 void
 e_source_set_name (ESource *source,
-		   const char *name)
+		   const gchar *name)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (name != NULL);
@@ -481,9 +481,9 @@ e_source_set_name (ESource *source,
 
 void
 e_source_set_relative_uri (ESource *source,
-			   const char *relative_uri)
+			   const gchar *relative_uri)
 {
-	char *absolute_uri;
+	gchar *absolute_uri;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 
@@ -508,7 +508,7 @@ e_source_set_relative_uri (ESource *source,
 
 void
 e_source_set_absolute_uri (ESource *source,
-			   const char *absolute_uri)
+			   const gchar *absolute_uri)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
@@ -588,7 +588,7 @@ e_source_peek_group (ESource *source)
 	return source->priv->group;
 }
 
-const char *
+const gchar *
 e_source_peek_uid (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -596,7 +596,7 @@ e_source_peek_uid (ESource *source)
 	return source->priv->uid;
 }
 
-const char *
+const gchar *
 e_source_peek_name (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -604,7 +604,7 @@ e_source_peek_name (ESource *source)
 	return source->priv->name;
 }
 
-const char *
+const gchar *
 e_source_peek_relative_uri (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -612,7 +612,7 @@ e_source_peek_relative_uri (ESource *source)
 	return source->priv->relative_uri;
 }
 
-const char *
+const gchar *
 e_source_peek_absolute_uri (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -631,7 +631,7 @@ e_source_peek_absolute_uri (ESource *source)
  *
  * Since: 1.10
  **/
-const char *
+const gchar *
 e_source_peek_color_spec (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -684,7 +684,7 @@ e_source_get_color (ESource *source,
 }
 #endif
 
-char *
+gchar *
 e_source_get_uri (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -720,7 +720,7 @@ dump_common_to_xml_node (ESource *source,
 {
 	ESourcePrivate *priv;
 	xmlNodePtr node;
-	const char *abs_uri = NULL, *relative_uri = NULL;
+	const gchar *abs_uri = NULL, *relative_uri = NULL;
 
 	priv = source->priv;
 
@@ -762,14 +762,14 @@ e_source_dump_to_xml_node (ESource *source,
 }
 
 
-char *
+gchar *
 e_source_to_standalone_xml (ESource *source)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
 	xmlChar *xml_buffer;
-	char *returned_buffer;
-	int xml_buffer_size;
+	gchar *returned_buffer;
+	gint xml_buffer_size;
 	gchar *uri;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -878,7 +878,7 @@ e_source_xmlstr_equal (const gchar *a, const gchar *b)
 }
 
 ESource *
-e_source_new_from_standalone_xml (const char *xml)
+e_source_new_from_standalone_xml (const gchar *xml)
 {
 	xmlDocPtr doc;
 	xmlNodePtr root;
@@ -889,7 +889,7 @@ e_source_new_from_standalone_xml (const char *xml)
 		return NULL;
 
 	root = doc->children;
-	if (strcmp ((char*)root->name, "source") != 0)
+	if (strcmp ((gchar *)root->name, "source") != 0)
 		return NULL;
 
 	source = e_source_new_from_xml_node (root);
@@ -911,8 +911,8 @@ e_source_get_property (ESource *source,
 	return g_hash_table_lookup (priv->properties, property);
 }
 
-char *
-e_source_get_duped_property (ESource *source, const char *property)
+gchar *
+e_source_get_duped_property (ESource *source, const gchar *property)
 {
 	ESourcePrivate *priv;
 

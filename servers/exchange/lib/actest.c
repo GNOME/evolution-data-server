@@ -31,19 +31,19 @@
 #include "e2k-autoconfig.h"
 #include "test-utils.h"
 
-const char *test_program_name = "actest";
+const gchar *test_program_name = "actest";
 
 static E2kOperation op;
 
-static void *
-cancel (void *data)
+static gpointer
+cancel (gpointer data)
 {
 	e2k_operation_cancel (&op);
 	return NULL;
 }
 
 static void
-quit (int sig)
+quit (gint sig)
 {
 	static pthread_t cancel_thread;
 
@@ -54,11 +54,11 @@ quit (int sig)
 }
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
 	E2kAutoconfig *ac;
 	E2kAutoconfigResult result;
-	const char *username, *password, *owa_uri, *gc_server;
+	const gchar *username, *password, *owa_uri, *gc_server;
 
 	signal (SIGINT, quit);
 
@@ -98,7 +98,7 @@ test_main (int argc, char **argv)
 
 	result = e2k_autoconfig_check_exchange (ac, &op);
 	if (result != E2K_AUTOCONFIG_OK) {
-		const char *msg;
+		const gchar *msg;
 		switch (result) {
 		case E2K_AUTOCONFIG_CANT_RESOLVE:
 			msg = "Could not resolve hostname";
@@ -155,7 +155,7 @@ test_main (int argc, char **argv)
 
 	result = e2k_autoconfig_check_global_catalog (ac, &op);
 	if (result != E2K_AUTOCONFIG_OK) {
-		const char *msg;
+		const gchar *msg;
 		switch (result) {
 		case E2K_AUTOCONFIG_CANT_RESOLVE:
 			msg = "Could not resolve GC server";

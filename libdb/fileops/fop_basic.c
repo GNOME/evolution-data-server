@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -35,23 +35,23 @@ static const char revid[] = "$Id$";
  * to create DB files now, potentially blobs, queue extents and anything
  * else you wish to store in a file system object.
  *
- * PUBLIC: int __fop_create __P((DB_ENV *,
- * PUBLIC:     DB_TXN *, DB_FH *, const char *, APPNAME, int));
+ * PUBLIC: gint __fop_create __P((DB_ENV *,
+ * PUBLIC:     DB_TXN *, DB_FH *, const gchar *, APPNAME, int));
  */
-int
+gint
 __fop_create(dbenv, txn, fhp, name, appname, mode)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	DB_FH *fhp;
-	const char *name;
+	const gchar *name;
 	APPNAME appname;
-	int mode;
+	gint mode;
 {
 	DB_FH fh;
 	DB_LSN lsn;
 	DBT data;
-	char *real_name;
-	int do_close, ret;
+	gchar *real_name;
+	gint do_close, ret;
 
 	ret = 0;
 	real_name = NULL;
@@ -73,7 +73,7 @@ __fop_create(dbenv, txn, fhp, name, appname, mode)
 
 	if (DBENV_LOGGING(dbenv)) {
 		memset(&data, 0, sizeof(data));
-		data.data = (void *)name;
+		data.data = (gpointer)name;
 		data.size = (u_int32_t)strlen(name) + 1;
 		if ((ret = __fop_create_log(dbenv,
 		    txn, &lsn, DB_FLUSH, &data, (u_int32_t)appname, mode)) != 0)
@@ -98,21 +98,21 @@ DB_TEST_RECOVERY_LABEL
  * __fop_remove --
  *	Remove a file system object.
  *
- * PUBLIC: int __fop_remove __P((DB_ENV *,
- * PUBLIC:     DB_TXN *, u_int8_t *, const char *, APPNAME));
+ * PUBLIC: gint __fop_remove __P((DB_ENV *,
+ * PUBLIC:     DB_TXN *, u_int8_t *, const gchar *, APPNAME));
  */
-int
+gint
 __fop_remove(dbenv, txn, fileid, name, appname)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	u_int8_t *fileid;
-	const char *name;
+	const gchar *name;
 	APPNAME appname;
 {
 	DB_LSN lsn;
 	DBT fdbt, ndbt;
-	char *real_name;
-	int ret;
+	gchar *real_name;
+	gint ret;
 
 	real_name = NULL;
 
@@ -130,7 +130,7 @@ __fop_remove(dbenv, txn, fileid, name, appname)
 			fdbt.data = fileid;
 			fdbt.size = fileid == NULL ? 0 : DB_FILE_ID_LEN;
 			memset(&ndbt, 0, sizeof(ndbt));
-			ndbt.data = (void *)name;
+			ndbt.data = (gpointer)name;
 			ndbt.size = (u_int32_t)strlen(name) + 1;
 			if ((ret = __fop_remove_log(dbenv,
 			    txn, &lsn, 0, &ndbt, &fdbt, appname)) != 0)
@@ -157,14 +157,14 @@ err:	if (real_name != NULL)
  * handling, then we'll have to zero out regions on abort (and possibly
  * log the before image of the data in the log record).
  *
- * PUBLIC: int __fop_write __P((DB_ENV *, DB_TXN *, const char *, APPNAME,
+ * PUBLIC: gint __fop_write __P((DB_ENV *, DB_TXN *, const gchar *, APPNAME,
  * PUBLIC:     DB_FH *, u_int32_t, u_int8_t *, u_int32_t, u_int32_t));
  */
-int
+gint
 __fop_write(dbenv, txn, name, appname, fhp, off, buf, size, istmp)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	const char *name;
+	const gchar *name;
 	APPNAME appname;
 	DB_FH *fhp;
 	u_int32_t off;
@@ -174,8 +174,8 @@ __fop_write(dbenv, txn, name, appname, fhp, off, buf, size, istmp)
 	DB_FH fh;
 	DB_LSN lsn;
 	DBT data, namedbt;
-	char *real_name;
-	int ret, t_ret, we_opened;
+	gchar *real_name;
+	gint ret, t_ret, we_opened;
 	size_t nbytes;
 
 	ret = 0;
@@ -191,7 +191,7 @@ __fop_write(dbenv, txn, name, appname, fhp, off, buf, size, istmp)
 		data.data = buf;
 		data.size = size;
 		memset(&namedbt, 0, sizeof(namedbt));
-		namedbt.data = (void *)name;
+		namedbt.data = (gpointer)name;
 		namedbt.size = (u_int32_t)strlen(name) + 1;
 		if ((ret = __fop_write_log(dbenv,
 		    txn, &lsn, 0, &namedbt, appname, off, &data, istmp)) != 0)
@@ -228,22 +228,22 @@ err:	if (we_opened)
  * __fop_rename --
  *	Change a file's name.
  *
- * PUBLIC: int __fop_rename __P((DB_ENV *,
- * PUBLIC:      DB_TXN *, const char *, const char *, u_int8_t *, APPNAME));
+ * PUBLIC: gint __fop_rename __P((DB_ENV *,
+ * PUBLIC:      DB_TXN *, const gchar *, const gchar *, u_int8_t *, APPNAME));
  */
-int
+gint
 __fop_rename(dbenv, txn, oldname, newname, fid, appname)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	const char *oldname;
-	const char *newname;
+	const gchar *oldname;
+	const gchar *newname;
 	u_int8_t *fid;
 	APPNAME appname;
 {
 	DB_LSN lsn;
 	DBT fiddbt, new, old;
-	int ret;
-	char *n, *o;
+	gint ret;
+	gchar *n, *o;
 
 	if ((ret = __db_appname(dbenv, appname, oldname, 0, NULL, &o)) != 0)
 		goto err;
@@ -254,9 +254,9 @@ __fop_rename(dbenv, txn, oldname, newname, fid, appname)
 		memset(&old, 0, sizeof(old));
 		memset(&new, 0, sizeof(new));
 		memset(&fiddbt, 0, sizeof(fiddbt));
-		old.data = (void *)oldname;
+		old.data = (gpointer)oldname;
 		old.size = (u_int32_t)strlen(oldname) + 1;
-		new.data = (void *)newname;
+		new.data = (gpointer)newname;
 		new.size = (u_int32_t)strlen(newname) + 1;
 		fiddbt.data = fid;
 		fiddbt.size = DB_FILE_ID_LEN;

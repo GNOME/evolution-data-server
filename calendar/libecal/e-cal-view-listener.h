@@ -54,7 +54,7 @@ struct _ECalViewListenerClass {
 	void (*objects_added) (ECalViewListener *listener, GList *objects);
 	void (*objects_modified) (ECalViewListener *listener, GList *objects);
 	void (*objects_removed) (ECalViewListener *listener, GList *uids);
-	void (*view_progress) (ECalViewListener *listener, const char *message, int percent);
+	void (*view_progress) (ECalViewListener *listener, const gchar *message, gint percent);
 	void (*view_done) (ECalViewListener *listener, ECalendarStatus status);
 };
 

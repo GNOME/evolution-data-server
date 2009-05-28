@@ -39,7 +39,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -96,11 +96,11 @@ typedef enum {
 	TXN_OP_PREPARE
 } txnop_t;
 
-static int  __txn_begin_int __P((DB_TXN *, int));
-static int  __txn_end __P((DB_TXN *, int));
-static int  __txn_isvalid __P((const DB_TXN *, TXN_DETAIL **, txnop_t));
-static int  __txn_set_timeout __P(( DB_TXN *, db_timeout_t, u_int32_t));
-static int  __txn_undo __P((DB_TXN *));
+static gint  __txn_begin_int __P((DB_TXN *, int));
+static gint  __txn_end __P((DB_TXN *, int));
+static gint  __txn_isvalid __P((const DB_TXN *, TXN_DETAIL **, txnop_t));
+static gint  __txn_set_timeout __P(( DB_TXN *, db_timeout_t, u_int32_t));
+static gint  __txn_undo __P((DB_TXN *));
 
 #ifndef db_create
 /*
@@ -123,18 +123,18 @@ static int  __txn_undo __P((DB_TXN *));
  * not generate them for these three functions, and don't include the three
  * functions in libraries built with that configuration option.
  *
- * EXTERN: int txn_abort __P((DB_TXN *));
- * EXTERN: int txn_begin __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
- * EXTERN: int txn_commit __P((DB_TXN *, u_int32_t));
+ * EXTERN: gint txn_abort __P((DB_TXN *));
+ * EXTERN: gint txn_begin __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
+ * EXTERN: gint txn_commit __P((DB_TXN *, u_int32_t));
  */
-int
+gint
 txn_abort(txnp)
 	DB_TXN *txnp;
 {
 	return (txnp->abort(txnp));
 }
 
-int
+gint
 txn_begin(dbenv, parent, txnpp, flags)
 	DB_ENV *dbenv;
 	DB_TXN *parent, **txnpp;
@@ -143,7 +143,7 @@ txn_begin(dbenv, parent, txnpp, flags)
 	return (dbenv->txn_begin(dbenv, parent, txnpp, flags));
 }
 
-int
+gint
 txn_commit(txnp, flags)
 	DB_TXN *txnp;
 	u_int32_t flags;
@@ -163,9 +163,9 @@ txn_commit(txnp, flags)
  * provides access to the transaction ID and the offset in the transaction
  * region of the TXN_DETAIL structure.
  *
- * PUBLIC: int __txn_begin __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
+ * PUBLIC: gint __txn_begin __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
  */
-int
+gint
 __txn_begin(dbenv, parent, txnpp, flags)
 	DB_ENV *dbenv;
 	DB_TXN *parent, **txnpp;
@@ -173,7 +173,7 @@ __txn_begin(dbenv, parent, txnpp, flags)
 {
 	DB_LOCKREGION *region;
 	DB_TXN *txn;
-	int ret;
+	gint ret;
 
 	*txnpp = NULL;
 	PANIC_CHECK(dbenv);
@@ -247,9 +247,9 @@ err:
  * __txn_xa_begin --
  *	XA version of txn_begin.
  *
- * PUBLIC: int __txn_xa_begin __P((DB_ENV *, DB_TXN *));
+ * PUBLIC: gint __txn_xa_begin __P((DB_ENV *, DB_TXN *));
  */
-int
+gint
 __txn_xa_begin(dbenv, txn)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
@@ -271,15 +271,15 @@ __txn_xa_begin(dbenv, txn)
  * that is used only for transactions that must be started to compensate
  * for actions during an abort.  Currently only used for allocations.
  *
- * PUBLIC: int __txn_compensate_begin __P((DB_ENV *, DB_TXN **txnp));
+ * PUBLIC: gint __txn_compensate_begin __P((DB_ENV *, DB_TXN **txnp));
  */
-int
+gint
 __txn_compensate_begin(dbenv, txnpp)
 	DB_ENV *dbenv;
 	DB_TXN **txnpp;
 {
 	DB_TXN *txn;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 
@@ -303,7 +303,7 @@ __txn_compensate_begin(dbenv, txnpp)
 static int
 __txn_begin_int(txn, internal)
 	DB_TXN *txn;
-	int internal;
+	gint internal;
 {
 	DB_ENV *dbenv;
 	DB_LSN begin_lsn, null_lsn;
@@ -312,7 +312,7 @@ __txn_begin_int(txn, internal)
 	TXN_DETAIL *td;
 	size_t off;
 	u_int32_t id, *ids;
-	int nids, ret;
+	gint nids, ret;
 
 	mgr = txn->mgrp;
 	dbenv = mgr->dbenv;
@@ -440,9 +440,9 @@ err:	R_UNLOCK(dbenv, &mgr->reginfo);
  * __txn_commit --
  *	Commit a transaction.
  *
- * PUBLIC: int __txn_commit __P((DB_TXN *, u_int32_t));
+ * PUBLIC: gint __txn_commit __P((DB_TXN *, u_int32_t));
  */
-int
+gint
 __txn_commit(txnp, flags)
 	DB_TXN *txnp;
 	u_int32_t flags;
@@ -452,7 +452,7 @@ __txn_commit(txnp, flags)
 	DB_TXN *kid;
 	TXN_DETAIL *td;
 	u_int32_t lflags;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbenv = txnp->mgrp->dbenv;
 
@@ -578,9 +578,9 @@ err:	/*
  * __txn_abort --
  *	Abort a transaction.
  *
- * PUBLIC: int __txn_abort __P((DB_TXN *));
+ * PUBLIC: gint __txn_abort __P((DB_TXN *));
  */
-int
+gint
 __txn_abort(txnp)
 	DB_TXN *txnp;
 {
@@ -589,7 +589,7 @@ __txn_abort(txnp)
 	DB_TXN *kid;
 	TXN_DETAIL *td;
 	u_int32_t lflags;
-	int ret;
+	gint ret;
 
 	dbenv = txnp->mgrp->dbenv;
 
@@ -658,9 +658,9 @@ __txn_abort(txnp)
  * __txn_discard --
  *	Free the per-process resources associated with this txn handle.
  *
- * PUBLIC: int __txn_discard __P((DB_TXN *, u_int32_t flags));
+ * PUBLIC: gint __txn_discard __P((DB_TXN *, u_int32_t flags));
  */
-int
+gint
 __txn_discard(txnp, flags)
 	DB_TXN *txnp;
 	u_int32_t flags;
@@ -668,7 +668,7 @@ __txn_discard(txnp, flags)
 	DB_ENV *dbenv;
 	DB_TXN *freep;
 	TXN_DETAIL *td;
-	int ret;
+	gint ret;
 
 	COMPQUIET(flags, 0);
 
@@ -702,9 +702,9 @@ __txn_discard(txnp, flags)
  * __txn_prepare --
  *	Flush the log so a future commit is guaranteed to succeed.
  *
- * PUBLIC: int __txn_prepare __P((DB_TXN *, u_int8_t *));
+ * PUBLIC: gint __txn_prepare __P((DB_TXN *, u_int8_t *));
  */
-int
+gint
 __txn_prepare(txnp, gid)
 	DB_TXN *txnp;
 	u_int8_t *gid;
@@ -714,7 +714,7 @@ __txn_prepare(txnp, gid)
 	DB_TXN *kid;
 	TXN_DETAIL *td;
 	u_int32_t lflags;
-	int ret;
+	gint ret;
 
 	dbenv = txnp->mgrp->dbenv;
 
@@ -906,14 +906,14 @@ err:	/*
 static int
 __txn_end(txnp, is_commit)
 	DB_TXN *txnp;
-	int is_commit;
+	gint is_commit;
 {
 	DB_ENV *dbenv;
 	DB_LOCKREQ request;
 	DB_TXNMGR *mgr;
 	DB_TXNREGION *region;
 	TXN_DETAIL *tp;
-	int do_closefiles, ret;
+	gint do_closefiles, ret;
 
 	mgr = txnp->mgrp;
 	dbenv = mgr->dbenv;
@@ -1003,8 +1003,8 @@ __txn_undo(txnp)
 	DB_LSN key_lsn;
 	DB_TXN *ptxn;
 	DB_TXNMGR *mgr;
-	int ret, t_ret;
-	void *txnlist;
+	gint ret, t_ret;
+	gpointer txnlist;
 
 	mgr = txnp->mgrp;
 	dbenv = mgr->dbenv;
@@ -1093,10 +1093,10 @@ err:	if (logc != NULL && (t_ret = logc->close(logc, 0)) != 0 && ret == 0)
  * written after since that point may be involved in a transaction and may
  * therefore need to be undone in the case of an abort.
  *
- * PUBLIC: int __txn_checkpoint
+ * PUBLIC: gint __txn_checkpoint
  * PUBLIC:     __P((DB_ENV *, u_int32_t, u_int32_t, u_int32_t));
  */
-int
+gint
 __txn_checkpoint(dbenv, kbytes, minutes, flags)
 	DB_ENV *dbenv;
 	u_int32_t kbytes, minutes, flags;
@@ -1107,7 +1107,7 @@ __txn_checkpoint(dbenv, kbytes, minutes, flags)
 	TXN_DETAIL *txnp;
 	time_t last_ckp_time, now;
 	u_int32_t bytes, mbytes;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -1218,9 +1218,9 @@ do_ckp:	/* Look through the active transactions for the lowest begin LSN. */
  * __txn_getckp --
  *	Get the LSN of the last transaction checkpoint.
  *
- * PUBLIC: int __txn_getckp __P((DB_ENV *, DB_LSN *));
+ * PUBLIC: gint __txn_getckp __P((DB_ENV *, DB_LSN *));
  */
-int
+gint
 __txn_getckp(dbenv, lsnp)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
@@ -1247,9 +1247,9 @@ __txn_getckp(dbenv, lsnp)
  * __txn_activekids --
  *	Return if this transaction has any active children.
  *
- * PUBLIC: int __txn_activekids __P((DB_ENV *, u_int32_t, DB_TXN *));
+ * PUBLIC: gint __txn_activekids __P((DB_ENV *, u_int32_t, DB_TXN *));
  */
-int
+gint
 __txn_activekids(dbenv, rectype, txnp)
 	DB_ENV *dbenv;
 	u_int32_t rectype;
@@ -1274,9 +1274,9 @@ __txn_activekids(dbenv, rectype, txnp)
  *	Force an abort record into the log if the commit record
  *	failed to get to disk.
  *
- * PUBLIC: int __txn_force_abort __P((DB_ENV *, u_int8_t *));
+ * PUBLIC: gint __txn_force_abort __P((DB_ENV *, u_int8_t *));
  */
-int
+gint
 __txn_force_abort(dbenv, buffer)
 	DB_ENV *dbenv;
 	u_int8_t *buffer;
@@ -1286,7 +1286,7 @@ __txn_force_abort(dbenv, buffer)
 	u_int32_t offset, opcode, rec_len, rec_type, sum_len;
 	u_int8_t *bp, *key, chksum[DB_MAC_KEY];
 	size_t hdrsize;
-	int ret;
+	gint ret;
 
 	db_cipher = dbenv->crypto_handle;
 
@@ -1337,15 +1337,15 @@ __txn_force_abort(dbenv, buffer)
  * were in the midst of taking care of restored transactions.  If
  * so, then we need to close the files that we opened.
  *
- * PUBLIC: int __txn_preclose __P((DB_ENV *));
+ * PUBLIC: gint __txn_preclose __P((DB_ENV *));
  */
-int
+gint
 __txn_preclose(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_TXNMGR *mgr;
 	DB_TXNREGION *region;
-	int do_closefiles, ret;
+	gint do_closefiles, ret;
 
 	mgr = (DB_TXNMGR *)dbenv->tx_handle;
 	region = mgr->reginfo.primary;
@@ -1377,9 +1377,9 @@ __txn_preclose(dbenv)
  * __txn_reset --
  *	Reset the last txnid to its minimum value, and log the reset.
  *
- * PUBLIC: int __txn_reset __P((DB_ENV *));
+ * PUBLIC: gint __txn_reset __P((DB_ENV *));
  */
-int
+gint
 __txn_reset(dbenv)
 	DB_ENV *dbenv;
 {

@@ -40,7 +40,7 @@ G_BEGIN_DECLS
 struct _CamelImapMessageCache {
 	CamelObject parent_object;
 
-	char *path;
+	gchar *path;
         /* parts contains two sorts of objects.
          * If the key contains '.' then it is a stream (also reverse-indexed in
          * cached).
@@ -62,53 +62,53 @@ typedef struct {
 
 
 /* public methods */
-CamelImapMessageCache *camel_imap_message_cache_new (const char *path,
+CamelImapMessageCache *camel_imap_message_cache_new (const gchar *path,
 						     CamelFolderSummary *summary,
 						     CamelException *ex);
 
 void camel_imap_message_cache_set_path (CamelImapMessageCache *cache,
-					const char *path);
+					const gchar *path);
 
 guint32     camel_imap_message_cache_max_uid (CamelImapMessageCache *cache);
 
 CamelStream *camel_imap_message_cache_insert (CamelImapMessageCache *cache,
-					      const char *uid,
-					      const char *part_spec,
-					      const char *data,
-					      int len,
+					      const gchar *uid,
+					      const gchar *part_spec,
+					      const gchar *data,
+					      gint len,
 					      CamelException *ex);
 void camel_imap_message_cache_insert_stream  (CamelImapMessageCache *cache,
-					      const char *uid,
-					      const char *part_spec,
+					      const gchar *uid,
+					      const gchar *part_spec,
 					      CamelStream *data_stream,
 					      CamelException *ex);
 void camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
-					      const char *uid,
-					      const char *part_spec,
+					      const gchar *uid,
+					      const gchar *part_spec,
 					      CamelDataWrapper *wrapper,
 					      CamelException *ex);
 
 CamelStream *camel_imap_message_cache_get    (CamelImapMessageCache *cache,
-					      const char *uid,
-					      const char *part_spec,
+					      const gchar *uid,
+					      const gchar *part_spec,
 					      CamelException *ex);
 
-char*       camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
-					      const char *uid,
-					      const char *part_spec,
+gchar *       camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
+					      const gchar *uid,
+					      const gchar *part_spec,
 					      CamelException *ex);
 
 void         camel_imap_message_cache_remove (CamelImapMessageCache *cache,
-					      const char *uid);
+					      const gchar *uid);
 
 void         camel_imap_message_cache_clear  (CamelImapMessageCache *cache);
 
 void         camel_imap_message_cache_copy   (CamelImapMessageCache *source,
-					      const char *source_uid,
+					      const gchar *source_uid,
 					      CamelImapMessageCache *dest,
-					      const char *dest_uid,
+					      const gchar *dest_uid,
 					      CamelException *ex);
-gboolean     camel_imap_message_cache_delete (const char *path,
+gboolean     camel_imap_message_cache_delete (const gchar *path,
 					      CamelException *ex);
 GPtrArray *  camel_imap_message_cache_filter_cached(CamelImapMessageCache *,
                                               GPtrArray *uids,

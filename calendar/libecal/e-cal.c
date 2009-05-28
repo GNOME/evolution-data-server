@@ -54,13 +54,13 @@ typedef struct {
 	EFlag *done;
 	ECalendarStatus status;
 
-	char *uid;
+	gchar *uid;
 	GList *list;
 	GSList *slist;
 	gboolean bool;
-	char *string;
+	gchar *string;
 
-	char *op_str;
+	gchar *op_str;
 	ECalView *query;
 	ECalViewListener *listener;
 } ECalendarOp;
@@ -74,7 +74,7 @@ struct _ECalPrivate {
 	 * NULL if we are not loaded.
 	 */
 	ESource *source;
-	char *uri;
+	gchar *uri;
 	ECalSourceType type;
 
 	ECalendarOp *current_op;
@@ -82,14 +82,14 @@ struct _ECalPrivate {
 	GMutex *mutex;
 
 	/* Email address associated with this calendar, or NULL */
-	char *cal_address;
-	char *alarm_email_address;
-	char *ldap_attribute;
+	gchar *cal_address;
+	gchar *alarm_email_address;
+	gchar *ldap_attribute;
 
 	/* Scheduling info */
-	char *capabilities;
+	gchar *capabilities;
 
-	int mode;
+	gint mode;
 
 	gboolean read_only;
 
@@ -117,7 +117,7 @@ struct _ECalPrivate {
 	/* The component listener to keep track of the lifetime of backends */
 	EComponentListener *comp_listener;
 
-	char *local_attachment_store;
+	gchar *local_attachment_store;
 };
 
 
@@ -178,7 +178,7 @@ static GObjectClass *parent_class;
 		return TRUE;						\
 	}								\
 	else {                                                          \
-                const char *msg;                                        \
+                const gchar *msg;                                        \
                 msg = e_cal_get_error_message ((status));          \
 		g_set_error ((error), E_CALENDAR_ERROR, (status), "%s", msg);	\
 		return FALSE;						\
@@ -301,7 +301,7 @@ convert_type (ECalSourceType type)
 /* EBookOp calls */
 
 static ECalendarOp*
-e_calendar_new_op (ECal *ecal, const char *str)
+e_calendar_new_op (ECal *ecal, const gchar *str)
 {
 	ECalendarOp *op = g_new0 (ECalendarOp, 1);
 
@@ -349,7 +349,7 @@ destroy_factories (ECal *ecal)
 	ECalPrivate *priv;
 	CORBA_Object factory;
 	CORBA_Environment ev;
-	int result;
+	gint result;
 	GList *f;
 
 	priv = ecal->priv;
@@ -387,7 +387,7 @@ destroy_cal (ECal *ecal)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
-	int result;
+	gint result;
 
 	priv = ecal->priv;
 
@@ -454,7 +454,7 @@ cal_read_only_cb (ECalListener *listener, ECalendarStatus status, gboolean read_
 }
 
 static void
-cal_cal_address_cb (ECalListener *listener, ECalendarStatus status, const char *address, gpointer data)
+cal_cal_address_cb (ECalListener *listener, ECalendarStatus status, const gchar *address, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -479,7 +479,7 @@ cal_cal_address_cb (ECalListener *listener, ECalendarStatus status, const char *
 }
 
 static void
-cal_alarm_address_cb (ECalListener *listener, ECalendarStatus status, const char *address, gpointer data)
+cal_alarm_address_cb (ECalListener *listener, ECalendarStatus status, const gchar *address, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -498,7 +498,7 @@ cal_alarm_address_cb (ECalListener *listener, ECalendarStatus status, const char
 }
 
 static void
-cal_ldap_attribute_cb (ECalListener *listener, ECalendarStatus status, const char *attribute, gpointer data)
+cal_ldap_attribute_cb (ECalListener *listener, ECalendarStatus status, const gchar *attribute, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -517,7 +517,7 @@ cal_ldap_attribute_cb (ECalListener *listener, ECalendarStatus status, const cha
 }
 
 static void
-cal_static_capabilities_cb (ECalListener *listener, ECalendarStatus status, const char *capabilities, gpointer data)
+cal_static_capabilities_cb (ECalListener *listener, ECalendarStatus status, const gchar *capabilities, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -572,7 +572,7 @@ cal_removed_cb (ECalListener *listener, ECalendarStatus status, gpointer data)
 }
 
 static void
-cal_object_created_cb (ECalListener *listener, ECalendarStatus status, const char *uid, gpointer data)
+cal_object_created_cb (ECalListener *listener, ECalendarStatus status, const gchar *uid, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -663,7 +663,7 @@ cal_objects_received_cb (ECalListener *listener, ECalendarStatus status, gpointe
 }
 
 static void
-cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *users, const char *object, gpointer data)
+cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *users, const gchar *object, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -687,7 +687,7 @@ cal_objects_sent_cb (ECalListener *listener, ECalendarStatus status, GList *user
 }
 
 static void
-cal_default_object_requested_cb (ECalListener *listener, ECalendarStatus status, const char *object, gpointer data)
+cal_default_object_requested_cb (ECalListener *listener, ECalendarStatus status, const gchar *object, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -706,7 +706,7 @@ cal_default_object_requested_cb (ECalListener *listener, ECalendarStatus status,
 }
 
 static void
-cal_object_requested_cb (ECalListener *listener, ECalendarStatus status, const char *object, gpointer data)
+cal_object_requested_cb (ECalListener *listener, ECalendarStatus status, const gchar *object, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -767,7 +767,7 @@ cal_attachment_list_cb (ECalListener *listener, ECalendarStatus status, GSList *
 }
 
 static void
-cal_get_timezone_cb (ECalListener *listener, ECalendarStatus status, const char *object, gpointer data)
+cal_get_timezone_cb (ECalListener *listener, ECalendarStatus status, const gchar *object, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -786,7 +786,7 @@ cal_get_timezone_cb (ECalListener *listener, ECalendarStatus status, const char 
 }
 
 static void
-cal_add_timezone_cb (ECalListener *listener, ECalendarStatus status, const char *tzid, gpointer data)
+cal_add_timezone_cb (ECalListener *listener, ECalendarStatus status, const gchar *tzid, gpointer data)
 {
 	ECal *ecal = data;
 	ECalendarOp *op;
@@ -972,7 +972,7 @@ cal_set_mode_cb (ECalListener *listener,
 typedef struct
 {
 	ECal *ecal;
-	char *message;
+	gchar *message;
 }  ECalErrorData;
 
 static gboolean
@@ -991,7 +991,7 @@ backend_error_idle_cb (gpointer data)
 
 /* Handle the error_occurred signal from the listener */
 static void
-backend_error_cb (ECalListener *listener, const char *message, gpointer data)
+backend_error_cb (ECalListener *listener, const gchar *message, gpointer data)
 {
 	ECalErrorData *error_data;
 
@@ -1006,13 +1006,13 @@ backend_error_cb (ECalListener *listener, const char *message, gpointer data)
 
 
 static gboolean
-get_factories (const char *str_uri, GList **factories)
+get_factories (const gchar *str_uri, GList **factories)
 {
 	GNOME_Evolution_Calendar_CalFactory factory;
 	Bonobo_ServerInfoList *servers;
 	EUri *uri;
-	char *query;
-	int i;
+	gchar *query;
+	gint i;
 
 
 	/* Determine the protocol and query for factory supporting that */
@@ -1353,8 +1353,8 @@ static void
 set_local_attachment_store (ECal *ecal)
 {
 	ECalPrivate *priv;
-	char *mangled_uri;
-	int i;
+	gchar *mangled_uri;
+	gint i;
 
 	priv = ecal->priv;
 	mangled_uri = g_strdup (priv->uri);
@@ -1493,8 +1493,8 @@ ECal *
 e_cal_new_system_calendar (void)
 {
 	ECal *ecal;
-	char *filename;
-	char *uri;
+	gchar *filename;
+	gchar *uri;
 
 	filename = g_build_filename (g_get_home_dir (),
 				     ".evolution/calendar/local/system",
@@ -1521,8 +1521,8 @@ ECal *
 e_cal_new_system_tasks (void)
 {
 	ECal *ecal;
-	char *filename;
-	char *uri;
+	gchar *filename;
+	gchar *uri;
 
 	filename = g_build_filename (g_get_home_dir (),
 				     ".evolution/tasks/local/system",
@@ -1549,8 +1549,8 @@ ECal *
 e_cal_new_system_memos (void)
 {
 	ECal *ecal;
-	char *uri;
-	char *filename;
+	gchar *uri;
+	gchar *filename;
 
 	filename = g_build_filename (g_get_home_dir (),
 				     ".evolution/memos/local/system",
@@ -1584,7 +1584,7 @@ e_cal_new_system_memos (void)
  *
  * The authentication function has the following signature
  * (ECalAuthFunc):
- *	char * auth_func (ECal *ecal,
+ *	gchar * auth_func (ECal *ecal,
  *			  const gchar *prompt,
  *			  const gchar *key,
  *			  gpointer user_data)
@@ -1599,11 +1599,11 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 	ecal->priv->auth_user_data = data;
 }
 
-static char *
-build_proxy_pass_key (ECal *ecal, const char* parent_user)
+static gchar *
+build_proxy_pass_key (ECal *ecal, const gchar * parent_user)
 {
-	char *euri_str;
-	const char *uri;
+	gchar *euri_str;
+	const gchar *uri;
 	EUri *euri;
 
 	uri = e_cal_get_uri (ecal);
@@ -1618,11 +1618,11 @@ build_proxy_pass_key (ECal *ecal, const char* parent_user)
 	return euri_str;
 }
 
-static char *
+static gchar *
 build_pass_key (ECal *ecal)
 {
-	char *euri_str;
-	const char *uri;
+	gchar *euri_str;
+	const gchar *uri;
 	EUri *euri;
 
 	uri = e_cal_get_uri (ecal);
@@ -1640,7 +1640,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
-	char *username = NULL, *auth_type = NULL, *password = NULL;
+	gchar *username = NULL, *auth_type = NULL, *password = NULL;
 	gboolean read_only = FALSE;
 
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -1667,8 +1667,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	/* see if the backend needs authentication */
 	if ( (priv->mode !=  CAL_MODE_LOCAL) && e_source_get_property (priv->source, "auth")) {
-		char *prompt, *key;
-		char *parent_user;
+		gchar *prompt, *key;
+		gchar *parent_user;
 
 		priv->load_state = E_CAL_LOAD_AUTHENTICATING;
 
@@ -1806,9 +1806,9 @@ typedef struct {
 	ECal *ecal;
 	gboolean exists;
 	ECalendarStatus status;
-	const char *auth_prompt;
-	const char *auth_key;
-	char *password;
+	const gchar *auth_prompt;
+	const gchar *auth_key;
+	gchar *password;
 } ECalAsyncData;
 
 static gboolean
@@ -1953,7 +1953,7 @@ static GList *
 build_uri_list (GNOME_Evolution_Calendar_StringSeq *seq)
 {
 	GList *uris = NULL;
-	int i;
+	gint i;
 
 	for (i = 0; i < seq->_length; i++)
 		uris = g_list_prepend (uris, g_strdup (seq->_buffer[i]));
@@ -2087,7 +2087,7 @@ e_cal_get_source (ECal *ecal)
  * Return value: The URI of the calendar that is already loaded or is being
  * loaded, or NULL if the client has not started a load request yet.
  **/
-const char *
+const gchar *
 e_cal_get_uri (ECal *ecal)
 {
 	ECalPrivate *priv;
@@ -2112,7 +2112,7 @@ e_cal_get_uri (ECal *ecal)
  * Return value: The URL where the attachments are serialized in the
  * local filesystem.
  **/
-const char *
+const gchar *
 e_cal_get_local_attachment_store (ECal *ecal)
 {
 	ECalPrivate *priv;
@@ -2121,7 +2121,7 @@ e_cal_get_local_attachment_store (ECal *ecal)
 	g_return_val_if_fail (E_IS_CAL (ecal), NULL);
 
 	priv = ecal->priv;
-	return (const char *)priv->local_attachment_store;
+	return (const gchar *)priv->local_attachment_store;
 }
 
 /**
@@ -2220,7 +2220,7 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
  * was an error.
  **/
 gboolean
-e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
+e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -2292,7 +2292,7 @@ e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error)
  * an error while contacting the backend.
  */
 gboolean
-e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
+e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -2359,7 +2359,7 @@ e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error)
  * error contacting the backend.
  */
 gboolean
-e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error)
+e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -2472,7 +2472,7 @@ load_static_capabilities (ECal *ecal, GError **error)
 }
 
 static gboolean
-check_capability (ECal *ecal, const char *cap)
+check_capability (ECal *ecal, const gchar *cap)
 {
 	ECalPrivate *priv;
 
@@ -2549,7 +2549,7 @@ e_cal_get_recurrences_no_master (ECal *ecal)
  * Return value: TRUE if the capability is supported, FALSE otherwise.
  */
 gboolean
-e_cal_get_static_capability (ECal *ecal, const char *cap)
+e_cal_get_static_capability (ECal *ecal, const gchar *cap)
 {
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -2724,7 +2724,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
  * Return value: TRUE if the call was successful, FALSE otherwise.
  **/
 gboolean
-e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GSList **list, GError **error)
+e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, GSList **list, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -2795,7 +2795,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GS
  * Return value: TRUE if the call was successful, FALSE otherwise.
  **/
 gboolean
-e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **icalcomp, GError **error)
+e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent **icalcomp, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -2905,7 +2905,7 @@ e_cal_get_object (ECal *ecal, const char *uid, const char *rid, icalcomponent **
  * Return value: TRUE if the call was successful, FALSE otherwise.
  **/
 gboolean
-e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError **error)
+e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -3021,7 +3021,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const char *uid, GList **objects, GError 
  * it could not be found.
  */
 icaltimezone*
-e_cal_resolve_tzid_cb (const char *tzid, gpointer data)
+e_cal_resolve_tzid_cb (const gchar *tzid, gpointer data)
 {
 	ECal *ecal;
 	icaltimezone *zone = NULL;
@@ -3051,7 +3051,7 @@ e_cal_resolve_tzid_cb (const char *tzid, gpointer data)
  * Return value: TRUE if the call was successful, FALSE otherwise.
  */
 gboolean
-e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **error)
+e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError **error)
 {
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
@@ -3144,7 +3144,7 @@ e_cal_free_change_list (GList *list)
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  **/
 gboolean
-e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **error)
+e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError **error)
 {
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
@@ -3212,7 +3212,7 @@ e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_get_object_list_as_comp (ECal *ecal, const char *query, GList **objects, GError **error)
+e_cal_get_object_list_as_comp (ECal *ecal, const gchar *query, GList **objects, GError **error)
 {
 	GList *ical_objects = NULL;
 	GList *l;
@@ -3277,7 +3277,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	ECalendarStatus status;
 	GNOME_Evolution_Calendar_UserList corba_users;
 	GList *l;
-	int i, len;
+	gint i, len;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -3382,7 +3382,7 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 				itt = icaltime_from_timet (start, datetime.value->is_date);
 
 				if (datetime.tzid) {
-					g_free ((char *) datetime.tzid);
+					g_free ((gchar *) datetime.tzid);
 					datetime.tzid = NULL;
 				}
 			}
@@ -3397,7 +3397,7 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 			e_cal_component_set_recurid (ci->comp, range);
 
 			if (datetime.tzid)
-				g_free ((char *) datetime.tzid);
+				g_free ((gchar *) datetime.tzid);
 			g_free (range);
 		}
 	}
@@ -3432,7 +3432,7 @@ process_detached_instances (GList *instances, GList *detached_instances)
 
 	for (dl = detached_instances; dl != NULL; dl = dl->next) {
 		GList *il;
-		const char *uid;
+		const gchar *uid;
 		gboolean processed;
 		ECalComponentRange recur_id, instance_recur_id;
 
@@ -3444,14 +3444,14 @@ process_detached_instances (GList *instances, GList *detached_instances)
 
 		/* search for coincident instances already expanded */
 		for (il = instances; il != NULL; il = il->next) {
-			const char *instance_uid;
-			int cmp;
+			const gchar *instance_uid;
+			gint cmp;
 
 			ci = il->data;
 			e_cal_component_get_uid (ci->comp, &instance_uid);
 			e_cal_component_get_recurid (ci->comp, &instance_recur_id);
 			if (strcmp (uid, instance_uid) == 0) {
-				char *i_rid = NULL, *d_rid = NULL;
+				gchar *i_rid = NULL, *d_rid = NULL;
 
 				i_rid = e_cal_component_get_recurid_as_string (ci->comp);
 				d_rid = e_cal_component_get_recurid_as_string (cid->comp);
@@ -3528,14 +3528,14 @@ process_detached_instances (GList *instances, GList *detached_instances)
 }
 
 static void
-generate_instances (ECal *ecal, time_t start, time_t end, const char *uid,
+generate_instances (ECal *ecal, time_t start, time_t end, const gchar *uid,
 		    ECalRecurInstanceFn cb, gpointer cb_data)
 {
 	GList *objects = NULL;
 	GList *instances, *detached_instances = NULL;
 	GList *l;
-	char *query;
-	char *iso_start, *iso_end;
+	gchar *query;
+	gchar *iso_start, *iso_end;
 	ECalPrivate *priv;
 
 	priv = ecal->priv;
@@ -3770,8 +3770,8 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 {
 	ECalPrivate *priv;
 	ECalComponent *comp;
-	const char *uid;
-	char *rid;
+	const gchar *uid;
+	gchar *rid;
 	gboolean result;
 	GList *instances = NULL;
 	ECalComponentDateTime datetime;
@@ -3823,7 +3823,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	result = TRUE;
 	while (instances != NULL) {
 		struct comp_instance *ci;
-		char *instance_rid = NULL;
+		gchar *instance_rid = NULL;
 
 		ci = instances->data;
 
@@ -3898,7 +3898,7 @@ e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
 {
 	ECalPrivate *priv;
 	GSList *alarms;
-	char *sexp, *iso_start, *iso_end;
+	gchar *sexp, *iso_start, *iso_end;
 	GList *object_list = NULL;
 
 	g_return_val_if_fail (ecal != NULL, NULL);
@@ -4036,13 +4036,13 @@ e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError **error)
+e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	const char *uid;
+	const gchar *uid;
 
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -4104,14 +4104,14 @@ struct _ForeachTZIDCallbackData {
 /* This adds the VTIMEZONE given by the TZID parameter to the GHashTable in
    data. */
 static void
-foreach_tzid_callback (icalparameter *param, void *cbdata)
+foreach_tzid_callback (icalparameter *param, gpointer cbdata)
 {
 	ForeachTZIDCallbackData *data = cbdata;
 	ECalPrivate *priv;
-	const char *tzid;
+	const gchar *tzid;
 	icaltimezone *zone;
 	icalcomponent *vtimezone_comp;
-	char *vtimezone_as_string;
+	gchar *vtimezone_as_string;
 
 	priv = data->ecal->priv;
 
@@ -4148,7 +4148,7 @@ foreach_tzid_callback (icalparameter *param, void *cbdata)
 
 	vtimezone_as_string = icalcomponent_as_ical_string_r (vtimezone_comp);
 
-	g_hash_table_insert (data->timezone_hash, (char*) tzid,
+	g_hash_table_insert (data->timezone_hash, (gchar *) tzid,
 			     vtimezone_as_string);
 }
 
@@ -4182,16 +4182,16 @@ free_timezone_string (gpointer key, gpointer value, gpointer data)
    If we need to send any timezones to the server, then we have to create a
    complete VCALENDAR object, otherwise we can just send a single VEVENT/VTODO
    as before. */
-static char*
+static gchar *
 e_cal_get_component_as_string_internal (ECal *ecal,
 					icalcomponent *icalcomp,
 					gboolean include_all_timezones)
 {
 	GHashTable *timezone_hash;
 	GString *vcal_string;
-	int initial_vcal_string_len;
+	gint initial_vcal_string_len;
 	ForeachTZIDCallbackData cbdata;
-	char *obj_string;
+	gchar *obj_string;
 	ECalPrivate *priv;
 
 	priv = ecal->priv;
@@ -4258,7 +4258,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
  * Return value: the component as a complete iCalendar string, or NULL on
  * failure. The string should be freed after use.
  **/
-char*
+gchar *
 e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp)
 {
 	return e_cal_get_component_as_string_internal (ecal, icalcomp, TRUE);
@@ -4278,13 +4278,13 @@ e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp)
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **error)
+e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *obj;
+	gchar *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -4364,7 +4364,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *obj;
+	gchar *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4436,8 +4436,8 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
-			      const char *rid, CalObjModType mod, GError **error)
+e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
+			      const gchar *rid, CalObjModType mod, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
@@ -4505,7 +4505,7 @@ e_cal_remove_object_with_mod (ECal *ecal, const char *uid,
  * Return value: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
-e_cal_remove_object (ECal *ecal, const char *uid, GError **error)
+e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error)
 {
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4532,7 +4532,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *obj;
+	gchar *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -4604,7 +4604,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *obj;
+	gchar *obj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
@@ -4683,14 +4683,14 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
  * Return value: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **error)
+e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError **error)
 {
 	ECalPrivate *priv;
 	CORBA_Environment ev;
 	ECalendarStatus status = E_CALENDAR_STATUS_OK;
 	ECalendarOp *our_op;
 	icalcomponent *icalcomp;
-	const char *systzid;
+	const gchar *systzid;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4853,7 +4853,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	CORBA_Environment ev;
 	ECalendarStatus status;
 	ECalendarOp *our_op;
-	char *tzobj;
+	gchar *tzobj;
 	icalcomponent *icalcomp;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -4939,7 +4939,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
  * components are added and removed from the query in the server.
  **/
 gboolean
-e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error)
+e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error)
 {
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
@@ -5014,7 +5014,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 	icalcomponent *icalcomp = NULL;
-	char *tzobj;
+	gchar *tzobj;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
@@ -5092,7 +5092,7 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
  *
  * Returns: the error message.
  */
-const char *
+const gchar *
 e_cal_get_error_message (ECalendarStatus status)
 {
 	switch (status) {
@@ -5273,7 +5273,7 @@ e_cal_set_default (ECal *ecal, GError **error)
 static gboolean
 set_default_source (ESourceList *sources, ESource *source, GError **error)
 {
-	const char *uid;
+	const gchar *uid;
 	GError *err = NULL;
 	GSList *g;
 
@@ -5334,7 +5334,7 @@ e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error)
 }
 
 static gboolean
-get_sources (ESourceList **sources, const char *key, GError **error)
+get_sources (ESourceList **sources, const gchar *key, GError **error)
 {
 	GConfClient *gconf = gconf_client_get_default();
 

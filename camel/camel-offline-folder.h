@@ -48,19 +48,19 @@ enum {
 struct _CamelOfflineFolder {
 	CamelFolder parent_object;
 
-	unsigned int sync_offline:1;
+	guint sync_offline:1;
 };
 
 struct _CamelOfflineFolderClass {
 	CamelFolderClass parent_class;
 
-	void (* downsync) (CamelOfflineFolder *folder, const char *expression, CamelException *ex);
+	void (* downsync) (CamelOfflineFolder *folder, const gchar *expression, CamelException *ex);
 };
 
 
 CamelType camel_offline_folder_get_type (void);
 
-void camel_offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex);
+void camel_offline_folder_downsync (CamelOfflineFolder *offline, const gchar *expression, CamelException *ex);
 
 G_END_DECLS
 

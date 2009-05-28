@@ -60,14 +60,14 @@ static void do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp,
  *
  * Return value: the expanded path
  **/
-char *
-e_path_to_physical (const char *prefix, const char *vpath)
+gchar *
+e_path_to_physical (const gchar *prefix, const gchar *vpath)
 {
-	const char *p, *newp;
-	char *dp;
-	char *ppath;
-	int ppath_len;
-	int prefix_len;
+	const gchar *p, *newp;
+	gchar *dp;
+	gchar *ppath;
+	gint ppath_len;
+	gint prefix_len;
 
 	while (*vpath == '/')
 		vpath++;
@@ -137,11 +137,11 @@ e_path_to_physical (const char *prefix, const char *vpath)
 
 
 static gboolean
-find_folders_recursive (const char *physical_path, const char *path,
+find_folders_recursive (const gchar *physical_path, const gchar *path,
 			EPathFindFoldersCallback callback, gpointer data)
 {
 	GDir *dir;
-	char *subfolder_directory_path;
+	gchar *subfolder_directory_path;
 	gboolean ok;
 
 	if (*path) {
@@ -167,9 +167,9 @@ find_folders_recursive (const char *physical_path, const char *path,
 	ok = TRUE;
 	while (ok) {
 		struct stat file_stat;
-		const char *dirent;
-		char *file_path;
-		char *new_path;
+		const gchar *dirent;
+		gchar *file_path;
+		gchar *new_path;
 
 		dirent = g_dir_read_name (dir);
 		if (dirent == NULL)
@@ -209,7 +209,7 @@ find_folders_recursive (const char *physical_path, const char *path,
  * Return value: %TRUE on success, %FALSE if an error occurs at any point
  **/
 gboolean
-e_path_find_folders (const char *prefix,
+e_path_find_folders (const gchar *prefix,
 		     EPathFindFoldersCallback callback,
 		     gpointer data)
 {
@@ -230,10 +230,10 @@ e_path_find_folders (const char *prefix,
  * specified directory. 0 otherwise, whether or not it removed
  * the parent directory.
  **/
-int
-e_path_rmdir (const char *prefix, const char *vpath)
+gint
+e_path_rmdir (const gchar *prefix, const gchar *vpath)
 {
-	char *physical_path, *p;
+	gchar *physical_path, *p;
 
 	/* Remove the directory itself */
 	physical_path = e_path_to_physical (prefix, vpath);
@@ -264,14 +264,14 @@ e_path_rmdir (const char *prefix, const char *vpath)
 }
 
 static GSList *
-add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_type)
+add_recipients(GSList *recipient_list, CamelAddress *recipients, gint recipient_type)
 {
-	int total_add,i;
+	gint total_add,i;
 	EGwItemRecipient *recipient;
 
 	total_add = camel_address_length (recipients);
 	for (i=0 ; i<total_add ; i++) {
-		const char *name = NULL, *addr = NULL;
+		const gchar *name = NULL, *addr = NULL;
 		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
 
 			recipient = g_new0 (EGwItemRecipient, 1);
@@ -287,7 +287,7 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, int recipient_t
 }
 
 static void
-send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, CamelContentType *type, CamelDataWrapper *dw, const char *filename, const char *cid, GSList **attach_list)
+send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, CamelContentType *type, CamelDataWrapper *dw, const gchar *filename, const gchar *cid, GSList **attach_list)
 {
 	EGwItemLinkInfo *info = NULL;
 	EGwConnectionStatus status;
@@ -302,8 +302,8 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 	if (filename && content->buffer->data) {
 		if (camel_content_type_is (type, "application", "pgp-signature")) {
-			char *temp_str;
-			int temp_len;
+			gchar *temp_str;
+			gint temp_len;
 			temp_str = g_base64_encode (content->buffer->data, content->buffer->len);
 			temp_len = strlen (temp_str);
 			attachment->data = g_strdup (temp_str);
@@ -316,8 +316,8 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			attachment->size = strlen (attachment->data);
 		}
 	} else if (content->buffer->data) {
-		char *temp_str;
-		int temp_len;
+		gchar *temp_str;
+		gint temp_len;
 		if (!strcmp (attachment->contentType, "multipart/digest")) {
 			/* FIXME? */
 		} else {
@@ -343,9 +343,9 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 	attachment->name = g_strdup (filename ? filename : "");
 	if (camel_content_type_is (type, "message", "rfc822")) {
-		const char *message_id;
-		char *msgid;
-		int len;
+		const gchar *message_id;
+		gchar *msgid;
+		gint len;
 
 		message_id = camel_medium_get_header (CAMEL_MEDIUM (dw), "Message-Id");
 		/*
@@ -356,7 +356,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		 */
 
 		len = strlen (message_id);
-		msgid = (char *)g_malloc0 (len-1);
+		msgid = (gchar *)g_malloc0 (len-1);
 		msgid = memcpy(msgid, message_id+2, len-3);
 		g_print ("||| msgid:%s\n", msgid);
 
@@ -390,8 +390,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 {
 	EGwItem *item;
 	EGwItemOrganizer *org = g_new0 (EGwItemOrganizer, 1);
-	const char *display_name = NULL, *email = NULL;
-	char *send_options = NULL;
+	const gchar *display_name = NULL, *email = NULL;
+	gchar *send_options = NULL;
 	CamelMultipart *mp;
 	GSList *recipient_list = NULL, *attach_list = NULL;
 	CamelAddress *recipients;
@@ -433,8 +433,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		if (camel_content_type_is (type, "text", "plain")) {
 			CamelStream *filtered_stream;
 			CamelMimeFilter *filter;
-			const char *charset;
-			char *content_type;
+			const gchar *charset;
+			gchar *content_type;
 
 			content_type = camel_content_type_simple (type);
 			e_gw_item_set_content_type (item, content_type);
@@ -457,7 +457,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			camel_object_unref (filtered_stream);
 
 			camel_stream_write ((CamelStream *) content, "", 1);
-			e_gw_item_set_message (item, (const char *)content->buffer->data);
+			e_gw_item_set_message (item, (const gchar *)content->buffer->data);
 		} else {
 			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
 			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);
@@ -483,23 +483,23 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	/*send options*/
 	e_gw_item_set_sendoptions (item, TRUE);
 
-	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT))
+	if ((gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_CONVENIENT))
 		e_gw_item_set_reply_request (item, TRUE);
 
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_REPLY_WITHIN);
 	if (send_options) {
 		e_gw_item_set_reply_request (item, TRUE);
 		e_gw_item_set_reply_within (item, send_options);
 	}
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message),X_EXPIRE_AFTER);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message),X_EXPIRE_AFTER);
 	if (send_options)
 		e_gw_item_set_expires (item, send_options);
 
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_DELAY_UNTIL);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_DELAY_UNTIL);
 	if (send_options)
 		e_gw_item_set_delay_until (item, send_options);
 
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_TRACK_WHEN);
 
 	/*we check if user has modified the status tracking options, if no then we anyway
 	 * set status tracking all*/
@@ -517,10 +517,10 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	} else
 		e_gw_item_set_track_info (item, E_GW_ITEM_ALL);
 
-	if ((char *)camel_medium_get_header (CAMEL_MEDIUM(message), X_AUTODELETE))
+	if ((gchar *)camel_medium_get_header (CAMEL_MEDIUM(message), X_AUTODELETE))
 		e_gw_item_set_autodelete (item, TRUE);
 
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_OPEN);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_OPEN);
 	if (send_options) {
 		switch (atoi(send_options)) {
 			case 0: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_NONE);
@@ -528,7 +528,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			case 1: e_gw_item_set_notify_opened (item, E_GW_ITEM_NOTIFY_MAIL);
 		}
 	}
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DELETE);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_RETURN_NOTIFY_DELETE);
 	if (send_options) {
 		switch (atoi(send_options)) {
 			case 0: e_gw_item_set_notify_deleted (item, E_GW_ITEM_NOTIFY_NONE);
@@ -537,7 +537,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		}
 	}
 
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_PRIORITY);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_PRIORITY);
 	if (send_options) {
 		switch (atoi(send_options)) {
 			case E_GW_PRIORITY_HIGH: e_gw_item_set_priority(item, "High");
@@ -549,7 +549,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		}
 	}
 
-	send_options = (char *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_SECURITY);
+	send_options = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), X_SEND_OPT_SECURITY);
 	if (send_options) {
 		switch (atoi(send_options)) {
 			case E_GW_SECURITY_NORMAL : e_gw_item_set_security(item, "Normal");
@@ -576,8 +576,8 @@ do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new)
 	diff->bits = _new & diff->changed;
 }
 
-char *
-gw_concat ( const char *prefix, const char *suffix)
+gchar *
+gw_concat ( const gchar *prefix, const gchar *suffix)
 {
 	size_t len;
 
@@ -589,15 +589,15 @@ gw_concat ( const char *prefix, const char *suffix)
 }
 
 void
-strip_lt_gt (char **string, int s_offset, int e_offset)
+strip_lt_gt (gchar **string, gint s_offset, gint e_offset)
 {
-	char *temp = NULL;
-	int len;
+	gchar *temp = NULL;
+	gint len;
 
 	temp = g_strdup (*string);
 	len = strlen (*string);
 
-	*string = (char *)g_malloc0 (len-1);
+	*string = (gchar *)g_malloc0 (len-1);
 	*string = memcpy(*string, temp+s_offset, len-e_offset);
 	g_free (temp);
 }
@@ -607,7 +607,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 {
 	/*contains multiple parts*/
 	guint part_count;
-	int i;
+	gint i;
 
 	part_count = camel_multipart_get_number (mp);
 	for ( i=0 ; i<part_count ; i++) {
@@ -615,8 +615,8 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		CamelMimePart *part;
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
 		CamelDataWrapper *dw = NULL;
-		const char *disposition, *filename;
-		const char *content_id = NULL;
+		const gchar *disposition, *filename;
+		const gchar *content_id = NULL;
 		gboolean is_alternative = FALSE;
 		/*
 		 * XXX:
@@ -639,7 +639,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		if (type->subtype && !strcmp (type->subtype, "alternative")) {
 			/* eh... I don't think this code will ever get hit? */
 			CamelMimePart *temp_part;
-			const char *cid = NULL;
+			const gchar *cid = NULL;
 			CamelStreamMem *temp_content = (CamelStreamMem *)camel_stream_mem_new ();
 			CamelDataWrapper *temp_dw = NULL;
 
@@ -660,8 +660,8 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		if (i == 0 && camel_content_type_is (type, "text", "plain")) {
 			CamelStream *filtered_stream;
 			CamelMimeFilter *filter;
-			const char *charset;
-			char *content_type;
+			const gchar *charset;
+			gchar *content_type;
 
 			content_type = camel_content_type_simple (type);
 			e_gw_item_set_content_type (item, content_type);
@@ -684,7 +684,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			camel_object_unref (filtered_stream);
 
 			camel_stream_write ((CamelStream *) content, "", 1);
-			e_gw_item_set_message (item, (const char *)content->buffer->data);
+			e_gw_item_set_message (item, (const gchar *)content->buffer->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);

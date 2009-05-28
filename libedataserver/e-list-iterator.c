@@ -15,16 +15,16 @@
 static void        e_list_iterator_invalidate (EIterator *iterator);
 static gboolean    e_list_iterator_is_valid   (EIterator *iterator);
 static void        e_list_iterator_set        (EIterator  *iterator,
-					       const void *object);
+					       gconstpointer object);
 static void        e_list_iterator_remove     (EIterator  *iterator);
 static void        e_list_iterator_insert     (EIterator  *iterator,
-					       const void *object,
+					       gconstpointer object,
 					       gboolean    before);
 static gboolean    e_list_iterator_prev       (EIterator  *iterator);
 static gboolean    e_list_iterator_next       (EIterator  *iterator);
 static void        e_list_iterator_reset      (EIterator *iterator);
 static void        e_list_iterator_last       (EIterator *iterator);
-static const void *e_list_iterator_get        (EIterator *iterator);
+static gconstpointer e_list_iterator_get        (EIterator *iterator);
 static void        e_list_iterator_dispose    (GObject *object);
 
 G_DEFINE_TYPE(EListIterator, e_list_iterator, E_TYPE_ITERATOR)
@@ -92,7 +92,7 @@ e_list_iterator_dispose (GObject *object)
 		(* G_OBJECT_CLASS (e_list_iterator_parent_class)->dispose) (object);
 }
 
-static const void *
+static gconstpointer
 e_list_iterator_get      (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR(_iterator);
@@ -140,15 +140,15 @@ e_list_iterator_prev     (EIterator *_iterator)
 
 static void
 e_list_iterator_insert   (EIterator  *_iterator,
-			  const void *object,
+			  gconstpointer object,
 			  gboolean    before)
 {
 	EListIterator *iterator = E_LIST_ITERATOR(_iterator);
-	void *data;
+	gpointer data;
 	if (iterator->list->copy)
 		data = iterator->list->copy(object, iterator->list->closure);
 	else
-		data = (void *) object;
+		data = (gpointer) object;
 	if (iterator->iterator) {
 		if (before) {
 			iterator->list->list = g_list_first(g_list_prepend(iterator->iterator, data));
@@ -184,7 +184,7 @@ e_list_iterator_remove   (EIterator *_iterator)
 
 static void
 e_list_iterator_set      (EIterator  *_iterator,
-			  const void *object)
+			  gconstpointer object)
 {
 	EListIterator *iterator = E_LIST_ITERATOR(_iterator);
 	if (iterator->iterator) {
@@ -193,7 +193,7 @@ e_list_iterator_set      (EIterator  *_iterator,
 		if (iterator->list->copy)
 			iterator->iterator->data = iterator->list->copy(object, iterator->list->closure);
 		else
-			iterator->iterator->data = (void *) object;
+			iterator->iterator->data = (gpointer) object;
 	}
 }
 

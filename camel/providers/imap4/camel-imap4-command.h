@@ -41,18 +41,18 @@ struct _camel_imap4_token_t;
 typedef struct _CamelIMAP4Command CamelIMAP4Command;
 typedef struct _CamelIMAP4Literal CamelIMAP4Literal;
 
-typedef int (* CamelIMAP4PlusCallback) (struct _CamelIMAP4Engine *engine,
+typedef gint (* CamelIMAP4PlusCallback) (struct _CamelIMAP4Engine *engine,
 					CamelIMAP4Command *ic,
-					const unsigned char *linebuf,
+					const guchar *linebuf,
 					size_t linelen, CamelException *ex);
 
-typedef int (* CamelIMAP4UntaggedCallback) (struct _CamelIMAP4Engine *engine,
+typedef gint (* CamelIMAP4UntaggedCallback) (struct _CamelIMAP4Engine *engine,
 					    CamelIMAP4Command *ic,
 					    guint32 index,
 					    struct _camel_imap4_token_t *token,
 					    CamelException *ex);
 
-typedef void (* CamelIMAP4CommandReset) (CamelIMAP4Command *ic, void *user_data);
+typedef void (* CamelIMAP4CommandReset) (CamelIMAP4Command *ic, gpointer user_data);
 
 enum {
 	CAMEL_IMAP4_LITERAL_STRING,
@@ -61,9 +61,9 @@ enum {
 };
 
 struct _CamelIMAP4Literal {
-	int type;
+	gint type;
 	union {
-		char *string;
+		gchar *string;
 		CamelStream *stream;
 		CamelDataWrapper *wrapper;
 	} literal;
@@ -71,7 +71,7 @@ struct _CamelIMAP4Literal {
 
 typedef struct _CamelIMAP4CommandPart {
 	struct _CamelIMAP4CommandPart *next;
-	unsigned char *buffer;
+	guchar *buffer;
 	size_t buflen;
 
 	CamelIMAP4Literal *literal;
@@ -96,12 +96,12 @@ struct _CamelIMAP4Command {
 
 	struct _CamelIMAP4Engine *engine;
 
-	unsigned int ref_count:26;
-	unsigned int status:3;
-	unsigned int result:3;
-	int id;
+	guint ref_count:26;
+	guint status:3;
+	guint result:3;
+	gint id;
 
-	char *tag;
+	gchar *tag;
 
 	GPtrArray *resp_codes;
 
@@ -120,21 +120,21 @@ struct _CamelIMAP4Command {
 	/* '+' callback/data */
 	CamelIMAP4PlusCallback plus;
 	CamelIMAP4CommandReset reset;
-	void *user_data;
+	gpointer user_data;
 };
 
 CamelIMAP4Command *camel_imap4_command_new (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Folder *folder,
-					    const char *format, ...);
+					    const gchar *format, ...);
 CamelIMAP4Command *camel_imap4_command_newv (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Folder *folder,
-					     const char *format, va_list args);
+					     const gchar *format, va_list args);
 
-void camel_imap4_command_register_untagged (CamelIMAP4Command *ic, const char *atom, CamelIMAP4UntaggedCallback untagged);
+void camel_imap4_command_register_untagged (CamelIMAP4Command *ic, const gchar *atom, CamelIMAP4UntaggedCallback untagged);
 
 void camel_imap4_command_ref (CamelIMAP4Command *ic);
 void camel_imap4_command_unref (CamelIMAP4Command *ic);
 
 /* returns 1 when complete, 0 if there is more to do, or -1 on error */
-int camel_imap4_command_step (CamelIMAP4Command *ic);
+gint camel_imap4_command_step (CamelIMAP4Command *ic);
 
 void camel_imap4_command_reset (CamelIMAP4Command *ic);
 

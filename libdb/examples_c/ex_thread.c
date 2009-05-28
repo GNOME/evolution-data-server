@@ -19,7 +19,7 @@
 #include <time.h>
 
 #ifdef _WIN32
-extern int getopt(int, char * const *, const char *);
+extern gint getopt(int, gchar * const *, const gchar *);
 #else
 #include <unistd.h>
 #endif
@@ -30,17 +30,17 @@ extern int getopt(int, char * const *, const char *);
  * NB: This application is written using POSIX 1003.1b-1993 pthreads
  * interfaces, which may not be portable to your system.
  */
-extern int sched_yield __P((void));		/* Pthread yield function. */
+extern gint sched_yield __P((void));		/* Pthread yield function. */
 
-int	db_init __P((const char *));
-void   *deadlock __P((void *));
-void	fatal __P((const char *, int, int));
+int	db_init __P((const gchar *));
+void   *deadlock __P((gpointer));
+void	fatal __P((const gchar *, int, int));
 void	onint __P((int));
-int	main __P((int, char *[]));
+int	main __P((int, gchar *[]));
 int	reader __P((int));
 void	stats __P((void));
-void   *trickle __P((void *));
-void   *tstart __P((void *));
+void   *trickle __P((gpointer));
+void   *tstart __P((gpointer));
 int	usage __P((void));
 void	word __P((void));
 int	writer __P((int));
@@ -48,13 +48,13 @@ int	writer __P((int));
 int	quit;					/* Interrupt handling flag. */
 
 struct _statistics {
-	int aborted;				/* Write. */
-	int aborts;				/* Read/write. */
-	int adds;				/* Write. */
-	int deletes;				/* Write. */
-	int txns;				/* Write. */
-	int found;				/* Read. */
-	int notfound;				/* Read. */
+	gint aborted;				/* Write. */
+	gint aborts;				/* Read/write. */
+	gint adds;				/* Write. */
+	gint deletes;				/* Write. */
+	gint txns;				/* Write. */
+	gint found;				/* Read. */
+	gint notfound;				/* Read. */
 } *perf;
 
 const char
@@ -77,7 +77,7 @@ int	nwriters;				/* -w */
 DB     *dbp;					/* Database handle. */
 DB_ENV *dbenv;					/* Database environment. */
 int	nthreads;				/* Total threads. */
-char  **list;					/* Word list. */
+gchar  **list;					/* Word list. */
 
 /*
  * ex_thread --
@@ -89,18 +89,18 @@ char  **list;					/* Word list. */
  *	% mkdir TESTDIR
  *	% ex_thread -h TESTDIR
  */
-int
+gint
 main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int errno, optind;
+	extern gchar *optarg;
+	extern gint errno, optind;
 	DB_TXN *txnp;
 	pthread_t *tids;
-	int ch, i, ret;
-	const char *home;
-	void *retp;
+	gint ch, i, ret;
+	const gchar *home;
+	gpointer retp;
 
 	txnp = NULL;
 	nlist = 1000;
@@ -188,7 +188,7 @@ main(argc, argv)
 	/* Create reader/writer threads. */
 	for (i = 0; i < nreaders + nwriters; ++i)
 		if ((ret =
-		    pthread_create(&tids[i], NULL, tstart, (void *)i)) != 0)
+		    pthread_create(&tids[i], NULL, tstart, (gpointer)i)) != 0)
 			fatal("pthread_create", ret > 0 ? ret : errno, 1);
 
 	/* Create buffer pool trickle thread. */
@@ -215,13 +215,13 @@ err:	if (txnp != NULL)
 	return (EXIT_SUCCESS);
 }
 
-int
+gint
 reader(id)
-	int id;
+	gint id;
 {
 	DBT key, data;
-	int n, ret;
-	char buf[64];
+	gint n, ret;
+	gchar buf[64];
 
 	/*
 	 * DBT's must use local memory or malloc'd memory if the DB handle
@@ -259,22 +259,22 @@ reader(id)
 			break;
 		default:
 			sprintf(buf,
-			    "reader %d: dbp->get: %s", id, (char *)key.data);
+			    "reader %d: dbp->get: %s", id, (gchar *)key.data);
 			fatal(buf, ret, 0);
 		}
 	}
 	return (0);
 }
 
-int
+gint
 writer(id)
-	int id;
+	gint id;
 {
 	DBT key, data;
 	DB_TXN *tid;
 	time_t now, then;
-	int n, ret;
-	char buf[256], dbuf[10000];
+	gint n, ret;
+	gchar buf[256], dbuf[10000];
 
 	time(&now);
 	then = now;
@@ -407,8 +407,8 @@ commit:		/* The transaction finished, commit it. */
 void
 stats()
 {
-	int id;
-	char *p, buf[8192];
+	gint id;
+	gchar *p, buf[8192];
 
 	p = buf + sprintf(buf, "-------------\n");
 	for (id = 0; id < nreaders + nwriters;)
@@ -431,11 +431,11 @@ stats()
  * db_init --
  *	Initialize the environment.
  */
-int
+gint
 db_init(home)
-	const char *home;
+	const gchar *home;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = db_env_create(&dbenv, 0)) != 0) {
 		fprintf(stderr,
@@ -467,9 +467,9 @@ db_init(home)
  * tstart --
  *	Thread start function for readers and writers.
  */
-void *
+gpointer
 tstart(arg)
-	void *arg;
+	gpointer arg;
 {
 	pthread_t tid;
 	u_int id;
@@ -496,9 +496,9 @@ tstart(arg)
  * deadlock --
  *	Thread start function for DB_ENV->lock_detect.
  */
-void *
+gpointer
 deadlock(arg)
-	void *arg;
+	gpointer arg;
 {
 	struct timeval t;
 	pthread_t tid;
@@ -525,13 +525,13 @@ deadlock(arg)
  * trickle --
  *	Thread start function for memp_trickle.
  */
-void *
+gpointer
 trickle(arg)
-	void *arg;
+	gpointer arg;
 {
 	pthread_t tid;
-	int wrote;
-	char buf[64];
+	gint wrote;
+	gchar buf[64];
 
 	arg = arg;				/* XXX: shut the compiler up. */
 	tid = pthread_self();
@@ -562,13 +562,13 @@ void
 word()
 {
 	FILE *fp;
-	int cnt;
-	char buf[256];
+	gint cnt;
+	gchar buf[256];
 
 	if ((fp = fopen(WORDLIST, "r")) == NULL)
 		fatal(WORDLIST, errno, 1);
 
-	if ((list = malloc(nlist * sizeof(char *))) == NULL)
+	if ((list = malloc(nlist * sizeof(gchar *))) == NULL)
 		fatal(NULL, errno, 1);
 
 	for (cnt = 0; cnt < nlist; ++cnt) {
@@ -586,8 +586,8 @@ word()
  */
 void
 fatal(msg, err, syserr)
-	const char *msg;
-	int err, syserr;
+	const gchar *msg;
+	gint err, syserr;
 {
 	fprintf(stderr, "%s: ", progname);
 	if (msg != NULL) {
@@ -607,7 +607,7 @@ fatal(msg, err, syserr)
  * usage --
  *	Usage message.
  */
-int
+gint
 usage()
 {
 	(void)fprintf(stderr,
@@ -622,7 +622,7 @@ usage()
  */
 void
 onint(signo)
-	int signo;
+	gint signo;
 {
 	signo = 0;		/* Quiet compiler. */
 	quit = 1;

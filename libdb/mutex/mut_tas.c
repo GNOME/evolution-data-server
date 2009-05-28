@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -41,9 +41,9 @@ static const char revid[] = "$Id$";
  * __db_tas_mutex_init --
  *	Initialize a DB_MUTEX.
  *
- * PUBLIC: int __db_tas_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t));
+ * PUBLIC: gint __db_tas_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t));
  */
-int
+gint
 __db_tas_mutex_init(dbenv, mutexp, flags)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
@@ -97,15 +97,15 @@ __db_tas_mutex_init(dbenv, mutexp, flags)
  * __db_tas_mutex_lock
  *	Lock on a mutex, logically blocking if necessary.
  *
- * PUBLIC: int __db_tas_mutex_lock __P((DB_ENV *, DB_MUTEX *));
+ * PUBLIC: gint __db_tas_mutex_lock __P((DB_ENV *, DB_MUTEX *));
  */
-int
+gint
 __db_tas_mutex_lock(dbenv, mutexp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
 {
 	u_long ms;
-	int nspins;
+	gint nspins;
 
 	if (F_ISSET(dbenv, DB_ENV_NOLOCKING) || F_ISSET(mutexp, MUTEX_IGNORE))
 		return (0);
@@ -168,9 +168,9 @@ relock:
  * __db_tas_mutex_unlock --
  *	Release a lock.
  *
- * PUBLIC: int __db_tas_mutex_unlock __P((DB_ENV *, DB_MUTEX *));
+ * PUBLIC: gint __db_tas_mutex_unlock __P((DB_ENV *, DB_MUTEX *));
  */
-int
+gint
 __db_tas_mutex_unlock(dbenv, mutexp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
@@ -196,9 +196,9 @@ __db_tas_mutex_unlock(dbenv, mutexp)
  * __db_tas_mutex_destroy --
  *	Destroy a DB_MUTEX.
  *
- * PUBLIC: int __db_tas_mutex_destroy __P((DB_MUTEX *));
+ * PUBLIC: gint __db_tas_mutex_destroy __P((DB_MUTEX *));
  */
-int
+gint
 __db_tas_mutex_destroy(mutexp)
 	DB_MUTEX *mutexp;
 {

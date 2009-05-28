@@ -39,13 +39,13 @@
  *
  * Returns: The newly-allocated shrouded url.
  **/
-char *
-e_url_shroud (const char *url)
+gchar *
+e_url_shroud (const gchar *url)
 {
-	const char *first_colon = NULL;
-	const char *last_at = NULL;
-	const char *p;
-	char *shrouded;
+	const gchar *first_colon = NULL;
+	const gchar *last_at = NULL;
+	const gchar *p;
+	gchar *shrouded;
 
 	if (url == NULL)
 		return NULL;
@@ -85,10 +85,10 @@ e_url_shroud (const char *url)
  * Returns: %TRUE if the urls are equal, %FALSE if they are not.
  **/
 gboolean
-e_url_equal (const char *url1, const char *url2)
+e_url_equal (const gchar *url1, const gchar *url2)
 {
-	char *shroud1 = e_url_shroud (url1);
-	char *shroud2 = e_url_shroud (url2);
+	gchar *shroud1 = e_url_shroud (url1);
+	gchar *shroud2 = e_url_shroud (url2);
 	gint len1, len2;
 	gboolean rv;
 
@@ -110,7 +110,7 @@ e_url_equal (const char *url1, const char *url2)
 #define HEXVAL(c) (isdigit (c) ? (c) - '0' : tolower (c) - 'a' + 10)
 
 static void
-uri_decode (char *part)
+uri_decode (gchar *part)
 {
 	guchar *s, *d;
 
@@ -137,11 +137,11 @@ uri_decode (char *part)
  * Returns: The newly-allocated #EUri structure.
  **/
 EUri *
-e_uri_new (const char *uri_string)
+e_uri_new (const gchar *uri_string)
 {
 	EUri *uri;
-	const char *end, *hash, *colon, *semi, *at, *slash, *question;
-	const char *p;
+	const gchar *end, *hash, *colon, *semi, *at, *slash, *question;
+	const gchar *p;
 
 	if (!uri_string)
 		return NULL;
@@ -180,7 +180,7 @@ e_uri_new (const char *uri_string)
 		slash = uri_string + strcspn (uri_string, "/#");
 		at = strchr (uri_string, '@');
 		if (at && at < slash) {
-			const char *at2;
+			const gchar *at2;
 			/* this is for cases where username contains '@' at it, like:
 			   http://user@domain.com@server.addr.com/path
 			   We skip all at-s before the slash here. */
@@ -247,8 +247,8 @@ e_uri_new (const char *uri_string)
 	semi = memchr (uri_string, ';', end - uri_string);
 	if (semi) {
 		if (semi[1]) {
-			const char *cur, *ptr, *eq;
-			char *name, *value;
+			const gchar *cur, *ptr, *eq;
+			gchar *name, *value;
 
 			for (cur = semi + 1; cur < end; cur = ptr + 1) {
 				ptr = memchr (cur, ';', end - cur);
@@ -313,8 +313,8 @@ e_uri_free (EUri *uri)
  *
  * Returns: The value of the parameter.
  **/
-const char *
-e_uri_get_param (EUri *uri, const char *name)
+const gchar *
+e_uri_get_param (EUri *uri, const gchar *name)
 {
 	return g_datalist_get_data (&uri->params, name);
 }
@@ -371,10 +371,10 @@ e_uri_copy (EUri *uri)
  *
  * Returns: The string representation of @uri.
  **/
-char *
+gchar *
 e_uri_to_string (EUri *uri, gboolean show_password)
 {
-	char *str_uri = NULL;
+	gchar *str_uri = NULL;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 

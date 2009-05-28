@@ -39,10 +39,10 @@ static void camel_offline_folder_class_init (CamelOfflineFolderClass *klass);
 static void camel_offline_folder_init (CamelOfflineFolder *folder, CamelOfflineFolderClass *klass);
 static void camel_offline_folder_finalize (CamelObject *object);
 
-static int offline_folder_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
-static int offline_folder_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint offline_folder_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint offline_folder_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
 
-static void offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex);
+static void offline_folder_downsync (CamelOfflineFolder *offline, const gchar *expression, CamelException *ex);
 
 static CamelFolderClass *parent_class = NULL;
 
@@ -76,7 +76,7 @@ camel_offline_folder_get_type (void)
 static void
 camel_offline_folder_class_init (CamelOfflineFolderClass *klass)
 {
-	int i;
+	gint i;
 
 	parent_class = (CamelFolderClass *) camel_type_get_global_classfuncs (CAMEL_FOLDER_TYPE);
 
@@ -106,13 +106,13 @@ offline_downsync_sync (CamelSession *session, CamelSessionThreadMsg *mm)
 {
 	struct _offline_downsync_msg *m = (struct _offline_downsync_msg *) mm;
 	CamelMimeMessage *message;
-	int i;
+	gint i;
 
 	camel_operation_start (NULL, _("Downloading new messages for offline mode"));
 
 	if (m->changes) {
 		for (i = 0; i < m->changes->uid_added->len; i++) {
-			int pc = i * 100 / m->changes->uid_added->len;
+			gint pc = i * 100 / m->changes->uid_added->len;
 
 			camel_operation_progress (NULL, pc);
 			if ((message = camel_folder_get_message (m->folder, m->changes->uid_added->pdata[i], &mm->ex)))
@@ -142,7 +142,7 @@ static CamelSessionThreadOps offline_downsync_ops = {
 };
 
 static void
-offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, void *dummy)
+offline_folder_changed (CamelFolder *folder, CamelFolderChangeInfo *changes, gpointer dummy)
 {
 	CamelOfflineFolder *offline = (CamelOfflineFolder *) folder;
 	CamelService *service = (CamelService *) folder->parent_store;
@@ -177,7 +177,7 @@ static int
 offline_folder_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelArgGetV props;
-	int i, count = 0;
+	gint i, count = 0;
 	guint32 tag;
 
 	for (i = 0; i < args->argc; i++) {
@@ -216,7 +216,7 @@ offline_folder_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 	CamelOfflineFolder *folder = (CamelOfflineFolder *) object;
 	gboolean save = FALSE;
 	guint32 tag;
-	int i;
+	gint i;
 
 	for (i = 0; i < args->argc; i++) {
 		CamelArg *arg = &args->argv[i];
@@ -244,11 +244,11 @@ offline_folder_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 }
 
 static void
-offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex)
+offline_folder_downsync (CamelOfflineFolder *offline, const gchar *expression, CamelException *ex)
 {
 	CamelFolder *folder = (CamelFolder *) offline;
 	GPtrArray *uids, *uncached_uids = NULL;
-	int i;
+	gint i;
 
 	camel_operation_start (NULL, _("Syncing messages in folder '%s' to disk"), folder->full_name);
 
@@ -271,7 +271,7 @@ offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, Ca
 		goto done;
 
 	for (i = 0; i < uncached_uids->len; i++) {
-		int pc = i * 100 / uncached_uids->len;
+		gint pc = i * 100 / uncached_uids->len;
 		camel_folder_sync_message (folder, uncached_uids->pdata[i], ex);
 		camel_operation_progress (NULL, pc);
 	}
@@ -294,7 +294,7 @@ done:
  * the local machine for offline availability.
  **/
 void
-camel_offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, CamelException *ex)
+camel_offline_folder_downsync (CamelOfflineFolder *offline, const gchar *expression, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline));
 

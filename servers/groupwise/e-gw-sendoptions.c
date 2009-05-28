@@ -178,7 +178,7 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 			     subparam != NULL ;
 			     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
 
-		char *field = NULL, *val = NULL;
+		gchar *field = NULL, *val = NULL;
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
 		val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
 
@@ -285,7 +285,7 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting") ;
 			     subparam != NULL ;
 			     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
-		char *field = NULL, *val = NULL;
+		gchar *field = NULL, *val = NULL;
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
 		val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
 
@@ -323,8 +323,8 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 					gopts->reply_enabled = TRUE;
 					gopts->reply_convenient = TRUE;
 				} else {
-					char *temp;
-					int i = 0;
+					gchar *temp;
+					gint i = 0;
 
 					val_param = soup_soap_parameter_get_first_child_by_name (val_param, "WithinNDays");
 					temp = soup_soap_parameter_get_string_value (val_param);
@@ -342,7 +342,7 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 				val = soup_soap_parameter_get_string_value (val_param);
 
 			if (val) {
-				int i = atoi (val);
+				gint i = atoi (val);
 				if (i != 0)
 					gopts->expiration_enabled = TRUE;
 				else
@@ -367,7 +367,7 @@ parse_advanced_settings (SoupSoapParameter *group_param, EGwSendOptionsGeneral *
 	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting") ;
 			     subparam != NULL ;
 			     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
-		char *field = NULL, *val = NULL;
+		gchar *field = NULL, *val = NULL;
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
 		val_param = soup_soap_parameter_get_first_child_by_name (subparam, "value");
 
@@ -409,7 +409,7 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 	for (group_param = soup_soap_parameter_get_first_child_by_name(param, "group") ;
 			     group_param != NULL ;
 			     group_param = soup_soap_parameter_get_next_child_by_name (group_param, "group")) {
-		char *temp = NULL;
+		gchar *temp = NULL;
 
 		temp = soup_soap_parameter_get_property (group_param, "type");
 
@@ -437,7 +437,7 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 }
 
 static void
-e_gw_sendoptions_write_settings (SoupSoapMessage *msg, char *field_name, char *value, char *value_name, gboolean value_direct)
+e_gw_sendoptions_write_settings (SoupSoapMessage *msg, gchar *field_name, gchar *value, gchar *value_name, gboolean value_direct)
 {
 	soup_soap_message_start_element (msg, "setting", NULL, NULL);
 
@@ -458,9 +458,9 @@ e_gw_sendoptions_write_settings (SoupSoapMessage *msg, char *field_name, char *v
 }
 
 static void
-set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking *n_sopts, EGwSendOptionsStatusTracking *o_sopts, char *comp)
+set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking *n_sopts, EGwSendOptionsStatusTracking *o_sopts, gchar *comp)
 {
-	char *value, *comp_name = NULL;
+	gchar *value, *comp_name = NULL;
 
 	if (n_sopts->tracking_enabled != o_sopts->tracking_enabled || n_sopts->track_when != o_sopts->track_when) {
 		if (n_sopts->tracking_enabled) {
@@ -556,7 +556,7 @@ set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking 
 static void
 set_general_options_changes (SoupSoapMessage *msg, EGwSendOptionsGeneral *n_gopts, EGwSendOptionsGeneral *o_gopts)
 {
-	char *value;
+	gchar *value;
 
 	if (n_gopts->priority != o_gopts->priority) {
 		if (n_gopts->priority == E_GW_PRIORITY_HIGH)

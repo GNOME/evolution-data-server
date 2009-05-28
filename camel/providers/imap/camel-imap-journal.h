@@ -60,8 +60,8 @@ struct _CamelIMAPJournalEntry {
 
 	GPtrArray *uids;
 
-	char *append_uid;
-	char *dest_folder_name;
+	gchar *append_uid;
+	gchar *dest_folder_name;
 	gboolean move;
 };
 
@@ -81,10 +81,10 @@ struct _CamelIMAPJournalClass {
 
 CamelType camel_imap_journal_get_type (void);
 
-CamelOfflineJournal *camel_imap_journal_new (struct _CamelImapFolder *folder, const char *filename);
+CamelOfflineJournal *camel_imap_journal_new (struct _CamelImapFolder *folder, const gchar *filename);
 void camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action, ...);
-void camel_imap_journal_uidmap_add (CamelIMAPJournal *journal, const char *old_uid, const char *n_uid);
-const char *camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal, const char *uid);
+void camel_imap_journal_uidmap_add (CamelIMAPJournal *journal, const gchar *old_uid, const gchar *n_uid);
+const gchar *camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal, const gchar *uid);
 void camel_imap_journal_close_folders (CamelIMAPJournal *journal);
 
 G_END_DECLS

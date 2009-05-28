@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -85,20 +85,20 @@ static const char revid[] = "$Id$";
  * allocate a id for it later.  (This happens when the handle is on a
  * replication client that later becomes a master.)
  *
- * PUBLIC: int __dbreg_setup __P((DB *, const char *, u_int32_t));
+ * PUBLIC: gint __dbreg_setup __P((DB *, const gchar *, u_int32_t));
  */
-int
+gint
 __dbreg_setup(dbp, name, create_txnid)
 	DB *dbp;
-	const char *name;
+	const gchar *name;
 	u_int32_t create_txnid;
 {
 	DB_ENV *dbenv;
 	DB_LOG *dblp;
 	FNAME *fnp;
-	int ret;
+	gint ret;
 	size_t len;
-	void *namep;
+	gpointer namep;
 
 	dbenv = dbp->dbenv;
 	dblp = dbenv->lg_handle;
@@ -147,9 +147,9 @@ __dbreg_setup(dbp, name, create_txnid)
  * __dbreg_teardown --
  *	Destroy a DB handle's FNAME struct.
  *
- * PUBLIC: int __dbreg_teardown __P((DB *));
+ * PUBLIC: gint __dbreg_teardown __P((DB *));
  */
-int
+gint
 __dbreg_teardown(dbp)
 	DB *dbp;
 {
@@ -186,9 +186,9 @@ __dbreg_teardown(dbp)
  * __dbreg_new_id --
  *	Assign an unused dbreg id to this database handle.
  *
- * PUBLIC: int __dbreg_new_id __P((DB *, DB_TXN *));
+ * PUBLIC: gint __dbreg_new_id __P((DB *, DB_TXN *));
  */
-int
+gint
 __dbreg_new_id(dbp, txn)
 	DB *dbp;
 	DB_TXN *txn;
@@ -200,7 +200,7 @@ __dbreg_new_id(dbp, txn)
 	FNAME *fnp;
 	LOG *lp;
 	int32_t id;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 	dblp = dbenv->lg_handle;
@@ -243,7 +243,7 @@ __dbreg_new_id(dbp, txn)
 	memset(&r_name, 0, sizeof(r_name));
 	if (fnp->name_off != INVALID_ROFF) {
 		r_name.data = R_ADDR(&dblp->reginfo, fnp->name_off);
-		r_name.size = (u_int32_t)strlen((char *)r_name.data) + 1;
+		r_name.size = (u_int32_t)strlen((gchar *)r_name.data) + 1;
 	}
 	fid_dbt.data = dbp->fileid;
 	fid_dbt.size = DB_FILE_ID_LEN;
@@ -266,9 +266,9 @@ err:	MUTEX_UNLOCK(dbenv, &lp->fq_mutex);
  * __dbreg_assign_id --
  *	Assign a particular dbreg id to this database handle.
  *
- * PUBLIC: int __dbreg_assign_id __P((DB *, int32_t));
+ * PUBLIC: gint __dbreg_assign_id __P((DB *, int32_t));
  */
-int
+gint
 __dbreg_assign_id(dbp, id)
 	DB *dbp;
 	int32_t id;
@@ -278,7 +278,7 @@ __dbreg_assign_id(dbp, id)
 	DB_LOG *dblp;
 	FNAME *close_fnp, *fnp;
 	LOG *lp;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 	dblp = dbenv->lg_handle;
@@ -352,19 +352,19 @@ err:	MUTEX_UNLOCK(dbenv, &lp->fq_mutex);
  *	Take a log id away from a dbp, in preparation for closing it,
  *	but without logging the close.
  *
- * PUBLIC: int __dbreg_revoke_id __P((DB *, int));
+ * PUBLIC: gint __dbreg_revoke_id __P((DB *, int));
  */
-int
+gint
 __dbreg_revoke_id(dbp, have_lock)
 	DB *dbp;
-	int have_lock;
+	gint have_lock;
 {
 	DB_ENV *dbenv;
 	DB_LOG *dblp;
 	FNAME *fnp;
 	LOG *lp;
 	int32_t id;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 	dblp = dbenv->lg_handle;
@@ -400,9 +400,9 @@ __dbreg_revoke_id(dbp, have_lock)
  *	Take a dbreg id away from a dbp that we're closing, and log
  * the unregistry.
  *
- * PUBLIC: int __dbreg_close_id __P((DB *, DB_TXN *));
+ * PUBLIC: gint __dbreg_close_id __P((DB *, DB_TXN *));
  */
-int
+gint
 __dbreg_close_id(dbp, txn)
 	DB *dbp;
 	DB_TXN *txn;
@@ -413,7 +413,7 @@ __dbreg_close_id(dbp, txn)
 	DB_LSN r_unused;
 	FNAME *fnp;
 	LOG *lp;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 	dblp = dbenv->lg_handle;
@@ -432,7 +432,7 @@ __dbreg_close_id(dbp, txn)
 		memset(&r_name, 0, sizeof(r_name));
 		r_name.data = R_ADDR(&dblp->reginfo, fnp->name_off);
 		r_name.size =
-		    (u_int32_t)strlen((char *)r_name.data) + 1;
+		    (u_int32_t)strlen((gchar *)r_name.data) + 1;
 		dbtp = &r_name;
 	}
 	memset(&fid_dbt, 0, sizeof(fid_dbt));

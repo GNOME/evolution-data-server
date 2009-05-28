@@ -50,21 +50,21 @@
 #define d(x)
 
 /*Prototypes*/
-static int gw_summary_header_load (CamelFolderSummary *, FILE *);
-static int gw_summary_header_save (CamelFolderSummary *, FILE *);
+static gint gw_summary_header_load (CamelFolderSummary *, FILE *);
+static gint gw_summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo *gw_message_info_load (CamelFolderSummary *s, FILE *in) ;
 
-static int gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info) ;
+static gint gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info) ;
 static CamelMessageContentInfo * gw_content_info_load (CamelFolderSummary *s, FILE *in) ;
-static int gw_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info) ;
+static gint gw_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info) ;
 static gboolean gw_info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set);
 
-static int summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
+static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
 static CamelMIRecord * message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info);
 static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
-static int content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
+static gint content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
 static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
 
 static void camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass);
@@ -161,7 +161,7 @@ camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
  * Return value: A new CamelGroupwiseSummary object.
  **/
 CamelFolderSummary *
-camel_groupwise_summary_new (struct _CamelFolder *folder, const char *filename)
+camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename)
 {
 	CamelException ex;
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (
@@ -183,7 +183,7 @@ static int
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 {
 	CamelGroupwiseSummary *gms = CAMEL_GROUPWISE_SUMMARY (s);
-	char *part;
+	gchar *part;
 
 	if (camel_groupwise_summary_parent->summary_header_from_db (s, mir) == -1)
 		return -1 ;
@@ -261,7 +261,7 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 
 	info = camel_groupwise_summary_parent->message_info_from_db (s, mir);
 	if (info) {
-		char *part = mir->bdata;
+		gchar *part = mir->bdata;
 		iinfo = (CamelGroupwiseMessageInfo *)info;
 		EXTRACT_FIRST_DIGIT (iinfo->server_flags)
 	}
@@ -315,7 +315,7 @@ gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 static CamelMessageContentInfo *
 content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 {
-	char *part = mir->cinfo;
+	gchar *part = mir->cinfo;
 	guint32 type=0;
 
 	if (part) {
@@ -371,9 +371,9 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 {
 		guint32 old;
 		CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
-		int read = 0 , deleted = 0;
+		gint read = 0 , deleted = 0;
 
-		int junk_flag = 0, junk_learn_flag = 0;
+		gint junk_flag = 0, junk_learn_flag = 0;
 
 		/* TODO: locking? */
 
@@ -433,7 +433,7 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 
 
 void
-camel_gw_summary_add_offline (CamelFolderSummary *summary, const char *uid, CamelMimeMessage *message, const CamelMessageInfo *info)
+camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *message, const CamelMessageInfo *info)
 {
 	CamelGroupwiseMessageInfo *mi ;
 	const CamelFlag *flag ;
@@ -464,7 +464,7 @@ camel_gw_summary_add_offline (CamelFolderSummary *summary, const char *uid, Came
 }
 
 void
-camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const char *uid, const CamelMessageInfo *info)
+camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid, const CamelMessageInfo *info)
 {
 	CamelGroupwiseMessageInfo *mi;
 
@@ -478,8 +478,8 @@ groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 {
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
-	int i, count;
-	const char *uid;
+	gint i, count;
+	const gchar *uid;
 
 	changes = camel_folder_change_info_new ();
 	count = camel_folder_summary_count (summary);

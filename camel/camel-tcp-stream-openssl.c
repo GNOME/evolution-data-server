@@ -55,25 +55,25 @@ static CamelTcpStreamClass *parent_class = NULL;
 /* Returns the class for a CamelTcpStreamSSL */
 #define CTSR_CLASS(so) CAMEL_TCP_STREAM_SSL_CLASS (CAMEL_OBJECT_GET_CLASS (so))
 
-static ssize_t stream_read (CamelStream *stream, char *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const char *buffer, size_t n);
-static int stream_flush  (CamelStream *stream);
-static int stream_close  (CamelStream *stream);
+static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gint stream_flush  (CamelStream *stream);
+static gint stream_close  (CamelStream *stream);
 
-static int stream_connect (CamelTcpStream *stream, struct hostent *host, int port);
-static int stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
-static int stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
+static gint stream_connect (CamelTcpStream *stream, struct hostent *host, gint port);
+static gint stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
+static gint stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
 static CamelTcpAddress *stream_get_local_address (CamelTcpStream *stream);
 static CamelTcpAddress *stream_get_remote_address (CamelTcpStream *stream);
 
-static SSL *open_ssl_connection (CamelService *service, int sockfd, CamelTcpStreamSSL *openssl);
+static SSL *open_ssl_connection (CamelService *service, gint sockfd, CamelTcpStreamSSL *openssl);
 
 struct _CamelTcpStreamSSLPrivate {
-	int sockfd;
+	gint sockfd;
 	SSL *ssl;
 
 	CamelService *service;
-	char *expected_host;
+	gchar *expected_host;
 	gboolean ssl_mode;
 	guint32 flags;
 };
@@ -171,7 +171,7 @@ camel_tcp_stream_ssl_get_type (void)
  * Return value: a ssl stream (in ssl mode)
  **/
 CamelStream *
-camel_tcp_stream_ssl_new (CamelService *service, const char *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new (CamelService *service, const gchar *expected_host, guint32 flags)
 {
 	CamelTcpStreamSSL *stream;
 
@@ -199,7 +199,7 @@ camel_tcp_stream_ssl_new (CamelService *service, const char *expected_host, guin
  * Return value: a ssl-capable stream (in non ssl mode)
  **/
 CamelStream *
-camel_tcp_stream_ssl_new_raw (CamelService *service, const char *expected_host, guint32 flags)
+camel_tcp_stream_ssl_new_raw (CamelService *service, const gchar *expected_host, guint32 flags)
 {
 	CamelTcpStreamSSL *stream;
 
@@ -215,7 +215,7 @@ camel_tcp_stream_ssl_new_raw (CamelService *service, const char *expected_host, 
 
 
 static int
-ssl_errno (SSL *ssl, int ret)
+ssl_errno (SSL *ssl, gint ret)
 {
 	switch (SSL_get_error (ssl, ret)) {
 	case SSL_ERROR_NONE:
@@ -249,7 +249,7 @@ ssl_errno (SSL *ssl, int ret)
  *
  * Returns: 0 on success or -1 on fail.
  **/
-int
+gint
 camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *stream)
 {
 	SSL *ssl;
@@ -273,12 +273,12 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *stream)
 
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelTcpStreamSSL *openssl = CAMEL_TCP_STREAM_SSL (stream);
 	SSL *ssl = openssl->priv->ssl;
 	ssize_t nread;
-	int cancel_fd;
+	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -297,7 +297,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 			}
 		} while (nread < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	} else {
-		int error, flags, fdmax;
+		gint error, flags, fdmax;
 		struct timeval timeout;
 		fd_set rdset;
 
@@ -341,12 +341,12 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelTcpStreamSSL *openssl = CAMEL_TCP_STREAM_SSL (stream);
 	SSL *ssl = openssl->priv->ssl;
 	ssize_t w, written = 0;
-	int cancel_fd;
+	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -370,7 +370,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 				written += w;
 		} while (w != -1 && written < n);
 	} else {
-		int error, flags, fdmax;
+		gint error, flags, fdmax;
 		struct timeval timeout;
 		fd_set rdset, wrset;
 
@@ -459,7 +459,7 @@ stream_close (CamelStream *stream)
 /* this is a 'cancellable' connect, cancellable from camel_operation_cancel etc */
 /* returns -1 & errno == EINTR if the connection was cancelled */
 static int
-socket_connect (struct hostent *h, int port)
+socket_connect (struct hostent *h, gint port)
 {
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 sin6;
@@ -468,8 +468,8 @@ socket_connect (struct hostent *h, int port)
 	struct sockaddr *saddr;
 	struct timeval tv;
 	socklen_t len;
-	int cancel_fd;
-	int ret, fd;
+	gint cancel_fd;
+	gint ret, fd;
 
 	/* see if we're cancelled yet */
 	if (camel_operation_cancel_check (NULL)) {
@@ -509,7 +509,7 @@ socket_connect (struct hostent *h, int port)
 		return fd;
 	} else {
 		fd_set rdset, wrset;
-		int flags, fdmax;
+		gint flags, fdmax;
 
 		flags = fcntl (fd, F_GETFL);
 		fcntl (fd, F_SETFL, flags | O_NONBLOCK);
@@ -564,8 +564,8 @@ socket_connect (struct hostent *h, int port)
 	return fd;
 }
 
-static const char *
-x509_strerror (int err)
+static const gchar *
+x509_strerror (gint err)
 {
 	switch (err) {
 	case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
@@ -637,16 +637,16 @@ x509_strerror (int err)
 }
 
 static int
-ssl_verify (int ok, X509_STORE_CTX *ctx)
+ssl_verify (gint ok, X509_STORE_CTX *ctx)
 {
-	unsigned char md5sum[16], fingerprint[40], *f;
+	guchar md5sum[16], fingerprint[40], *f;
 	CamelTcpStreamSSL *stream;
 	CamelService *service;
 	CamelCertDB *certdb = NULL;
 	CamelCert *ccert = NULL;
-	char *prompt, *cert_str;
-	int err, md5len, i;
-	char buf[257];
+	gchar *prompt, *cert_str;
+	gint err, md5len, i;
+	gchar buf[257];
 	X509 *cert;
 	SSL *ssl;
 
@@ -668,13 +668,13 @@ ssl_verify (int ok, X509_STORE_CTX *ctx)
 	md5len = sizeof (md5sum);
 	X509_digest (cert, EVP_md5 (), md5sum, &md5len);
 	for (i = 0, f = fingerprint; i < 16; i++, f += 3)
-		sprintf ((char *) f, "%.2x%c", md5sum[i], i != 15 ? ':' : '\0');
+		sprintf ((gchar *) f, "%.2x%c", md5sum[i], i != 15 ? ':' : '\0');
 
 #define GET_STRING(name) X509_NAME_oneline (name, buf, 256)
 
 	certdb = camel_certdb_get_default ();
 	if (certdb) {
-		ccert = camel_certdb_get_cert (certdb, (const char *) fingerprint);
+		ccert = camel_certdb_get_cert (certdb, (const gchar *) fingerprint);
 		if (ccert) {
 			if (ccert->trust != CAMEL_CERT_TRUST_UNKNOWN) {
 				ok = ccert->trust != CAMEL_CERT_TRUST_NEVER;
@@ -688,8 +688,8 @@ ssl_verify (int ok, X509_STORE_CTX *ctx)
 			ccert = camel_certdb_cert_new (certdb);
 			camel_cert_set_issuer (certdb, ccert, GET_STRING (X509_get_issuer_name (cert)));
 			camel_cert_set_subject (certdb, ccert, GET_STRING (X509_get_subject_name (cert)));
-			camel_cert_set_hostname (certdb, ccert, (const char *) stream->priv->expected_host);
-			camel_cert_set_fingerprint (certdb, ccert, (const char *) fingerprint);
+			camel_cert_set_hostname (certdb, ccert, (const gchar *) stream->priv->expected_host);
+			camel_cert_set_fingerprint (certdb, ccert, (const gchar *) fingerprint);
 			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
 
 			/* Add the certificate to our db */
@@ -726,11 +726,11 @@ ssl_verify (int ok, X509_STORE_CTX *ctx)
 }
 
 static SSL *
-open_ssl_connection (CamelService *service, int sockfd, CamelTcpStreamSSL *openssl)
+open_ssl_connection (CamelService *service, gint sockfd, CamelTcpStreamSSL *openssl)
 {
 	SSL_CTX *ssl_ctx = NULL;
 	SSL *ssl = NULL;
-	int n;
+	gint n;
 
 	/* SSLv23_client_method will negotiate with SSL v2, v3, or TLS v1 */
 	ssl_ctx = SSL_CTX_new (SSLv23_client_method ());
@@ -745,7 +745,7 @@ open_ssl_connection (CamelService *service, int sockfd, CamelTcpStreamSSL *opens
 
 	n = SSL_connect (ssl);
 	if (n != 1) {
-		int errnosave = ssl_errno (ssl, n);
+		gint errnosave = ssl_errno (ssl, n);
 
 		SSL_shutdown (ssl);
 
@@ -764,11 +764,11 @@ open_ssl_connection (CamelService *service, int sockfd, CamelTcpStreamSSL *opens
 }
 
 static int
-stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
+stream_connect (CamelTcpStream *stream, struct hostent *host, gint port)
 {
 	CamelTcpStreamSSL *openssl = CAMEL_TCP_STREAM_SSL (stream);
 	SSL *ssl = NULL;
-	int fd;
+	gint fd;
 
 	g_return_val_if_fail (host != NULL, -1);
 
@@ -831,13 +831,13 @@ get_sockopt_optname (const CamelSockOptData *data)
 static int
 stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
-	int optname, optlen;
+	gint optname, optlen;
 
 	if ((optname = get_sockopt_optname (data)) == -1)
 		return -1;
 
 	if (data->option == CAMEL_SOCKOPT_NONBLOCKING) {
-		int flags;
+		gint flags;
 
 		flags = fcntl (((CamelTcpStreamSSL *) stream)->priv->sockfd, F_GETFL);
 		if (flags == -1)
@@ -851,20 +851,20 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 	return getsockopt (((CamelTcpStreamSSL *) stream)->priv->sockfd,
 			   get_sockopt_level (data),
 			   optname,
-			   (void *) &data->value,
+			   (gpointer) &data->value,
 			   (socklen_t *) &optlen);
 }
 
 static int
 stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
-	int optname;
+	gint optname;
 
 	if ((optname = get_sockopt_optname (data)) == -1)
 		return -1;
 
 	if (data->option == CAMEL_SOCKOPT_NONBLOCKING) {
-		int flags, set;
+		gint flags, set;
 
 		flags = fcntl (((CamelTcpStreamSSL *) stream)->priv->sockfd, F_GETFL);
 		if (flags == -1)
@@ -882,7 +882,7 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 	return setsockopt (((CamelTcpStreamSSL *) stream)->priv->sockfd,
 			   get_sockopt_level (data),
 			   optname,
-			   (void *) &data->value,
+			   (gpointer) &data->value,
 			   sizeof (data->value));
 }
 
@@ -895,7 +895,7 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 static CamelTcpAddress *
 stream_get_local_address (CamelTcpStream *stream)
 {
-	unsigned char buf[MIN_SOCKADDR_BUFLEN];
+	guchar buf[MIN_SOCKADDR_BUFLEN];
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) buf;
 #endif
@@ -903,7 +903,7 @@ stream_get_local_address (CamelTcpStream *stream)
 	struct sockaddr *saddr = (struct sockaddr *) buf;
 	gpointer address;
 	socklen_t len;
-	int family;
+	gint family;
 
 	len = MIN_SOCKADDR_BUFLEN;
 
@@ -927,7 +927,7 @@ stream_get_local_address (CamelTcpStream *stream)
 static CamelTcpAddress *
 stream_get_remote_address (CamelTcpStream *stream)
 {
-	unsigned char buf[MIN_SOCKADDR_BUFLEN];
+	guchar buf[MIN_SOCKADDR_BUFLEN];
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) buf;
 #endif
@@ -935,7 +935,7 @@ stream_get_remote_address (CamelTcpStream *stream)
 	struct sockaddr *saddr = (struct sockaddr *) buf;
 	gpointer address;
 	socklen_t len;
-	int family;
+	gint family;
 
 	len = MIN_SOCKADDR_BUFLEN;
 

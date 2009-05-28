@@ -67,7 +67,7 @@
 #endif
 
 static int
-e_pipe (int *fds)
+e_pipe (gint *fds)
 {
 #ifndef G_OS_WIN32
 	if (pipe (fds) != -1)
@@ -80,7 +80,7 @@ e_pipe (int *fds)
 #else
 	SOCKET temp, socket1 = -1, socket2 = -1;
 	struct sockaddr_in saddr;
-	int len;
+	gint len;
 	u_long arg;
 	fd_set read_set, write_set;
 	struct timeval tv;
@@ -256,15 +256,15 @@ EDListNode *e_dlist_remtail(EDList *l)
 	return NULL;
 }
 
-int e_dlist_empty(EDList *l)
+gint e_dlist_empty(EDList *l)
 {
 	return (l->head == (EDListNode *)&l->tail);
 }
 
-int e_dlist_length(EDList *l)
+gint e_dlist_length(EDList *l)
 {
 	EDListNode *n, *nn;
-	int count = 0;
+	gint count = 0;
 
 	n = l->head;
 	nn = n->next;
@@ -282,7 +282,7 @@ struct _EMCache {
 	GHashTable *key_table;
 	EDList lru_list;
 	size_t node_size;
-	int node_count;
+	gint node_count;
 	time_t timeout;
 	GFreeFunc node_free;
 };
@@ -339,7 +339,7 @@ em_cache_destroy(EMCache *emc)
  * Return value:
  **/
 EMCacheNode *
-em_cache_lookup(EMCache *emc, const char *key)
+em_cache_lookup(EMCache *emc, const gchar *key)
 {
 	EMCacheNode *n;
 
@@ -369,7 +369,7 @@ em_cache_lookup(EMCache *emc, const char *key)
  * Return value:
  **/
 EMCacheNode *
-em_cache_node_new(EMCache *emc, const char *key)
+em_cache_node_new(EMCache *emc, const gchar *key)
 {
 	EMCacheNode *n;
 
@@ -591,7 +591,7 @@ e_msgport_destroy (EMsgPort *msgport)
 	g_slice_free (EMsgPort, msgport);
 }
 
-int
+gint
 e_msgport_fd (EMsgPort *msgport)
 {
 	gint fd;
@@ -735,7 +735,7 @@ e_msgport_reply (EMsg *msg)
 
 struct _thread_info {
 	pthread_t id;
-	int busy;
+	gint busy;
 };
 
 struct _EThread {
@@ -746,21 +746,21 @@ struct _EThread {
 	EMsgPort *reply_port;
 	pthread_mutex_t mutex;
 	e_thread_t type;
-	int queue_limit;
+	gint queue_limit;
 
-	int waiting;		/* if we are waiting for a new message, count of waiting processes */
+	gint waiting;		/* if we are waiting for a new message, count of waiting processes */
 	pthread_t id;		/* our running child thread */
-	int have_thread;
+	gint have_thread;
 	GList *id_list;		/* if THREAD_NEW, then a list of our child threads in thread_info structs */
 
 	EThreadFunc destroy;
-	void *destroy_data;
+	gpointer destroy_data;
 
 	EThreadFunc received;
-	void *received_data;
+	gpointer received_data;
 
 	EThreadFunc lost;
-	void *lost_data;
+	gpointer lost_data;
 };
 
 /* All active threads */
@@ -825,7 +825,7 @@ EThread *e_thread_new(e_thread_t type)
 /* close down the threads & resources etc */
 void e_thread_destroy(EThread *e)
 {
-	int busy = FALSE;
+	gint busy = FALSE;
 	EMsg *msg;
 	struct _thread_info *info;
 	GList *l;
@@ -905,13 +905,13 @@ void e_thread_destroy(EThread *e)
 
 /* set the queue maximum depth, what happens when the queue
    fills up depends on the queue type */
-void e_thread_set_queue_limit(EThread *e, int limit)
+void e_thread_set_queue_limit(EThread *e, gint limit)
 {
 	e->queue_limit = limit;
 }
 
 /* set a msg destroy callback, this can not call any e_thread functions on @e */
-void e_thread_set_msg_destroy(EThread *e, EThreadFunc destroy, void *data)
+void e_thread_set_msg_destroy(EThread *e, EThreadFunc destroy, gpointer data)
 {
 	pthread_mutex_lock(&e->mutex);
 	e->destroy = destroy;
@@ -920,7 +920,7 @@ void e_thread_set_msg_destroy(EThread *e, EThreadFunc destroy, void *data)
 }
 
 /* set a message lost callback, called if any message is discarded */
-void e_thread_set_msg_lost(EThread *e, EThreadFunc lost, void *data)
+void e_thread_set_msg_lost(EThread *e, EThreadFunc lost, gpointer data)
 {
 	pthread_mutex_lock(&e->mutex);
 	e->lost = lost;
@@ -935,7 +935,7 @@ void e_thread_set_reply_port(EThread *e, EMsgPort *reply_port)
 }
 
 /* set a received data callback */
-void e_thread_set_msg_received(EThread *e, EThreadFunc received, void *data)
+void e_thread_set_msg_received(EThread *e, EThreadFunc received, gpointer data)
 {
 	pthread_mutex_lock(&e->mutex);
 	e->received = received;
@@ -944,9 +944,9 @@ void e_thread_set_msg_received(EThread *e, EThreadFunc received, void *data)
 }
 
 /* find out if we're busy doing any work, e==NULL, check for all work */
-int e_thread_busy(EThread *e)
+gint e_thread_busy(EThread *e)
 {
-	int busy = FALSE;
+	gint busy = FALSE;
 
 	if (e == NULL) {
 		pthread_mutex_lock(&ethread_lock);
@@ -977,7 +977,7 @@ static void
 thread_destroy_msg(EThread *e, EMsg *m)
 {
 	EThreadFunc func;
-	void *func_data;
+	gpointer func_data;
 
 	/* we do this so we never get an incomplete/unmatched callback + data */
 	pthread_mutex_lock(&e->mutex);
@@ -993,7 +993,7 @@ static void
 thread_received_msg(EThread *e, EMsg *m)
 {
 	EThreadFunc func;
-	void *func_data;
+	gpointer func_data;
 
 	/* we do this so we never get an incomplete/unmatched callback + data */
 	pthread_mutex_lock(&e->mutex);
@@ -1011,7 +1011,7 @@ static void
 thread_lost_msg(EThread *e, EMsg *m)
 {
 	EThreadFunc func;
-	void *func_data;
+	gpointer func_data;
 
 	/* we do this so we never get an incomplete/unmatched callback + data */
 	pthread_mutex_lock(&e->mutex);
@@ -1024,8 +1024,8 @@ thread_lost_msg(EThread *e, EMsg *m)
 }
 
 /* the actual thread dispatcher */
-static void *
-thread_dispatch(void *din)
+static gpointer
+thread_dispatch(gpointer din)
 {
 	EThread *e = din;
 	EMsg *m;
@@ -1140,7 +1140,7 @@ void e_thread_put(EThread *e, EMsg *msg)
 
 	/* create the thread, if there is none to receive it yet */
 	if (!e->have_thread) {
-		int err;
+		gint err;
 
 		if ((err = pthread_create(&e->id, NULL, thread_dispatch, e)) != 0) {
 			g_warning("Could not create dispatcher thread, message queued?: %s", g_strerror(err));
@@ -1160,9 +1160,9 @@ void e_thread_put(EThread *e, EMsg *msg)
 
 /* yet-another-mutex interface */
 struct _EMutex {
-	int type;
+	gint type;
 	pthread_t owner;
-	int have_owner;
+	gint have_owner;
 	short waiters;
 	short depth;
 	pthread_mutex_t mutex;
@@ -1197,9 +1197,9 @@ EMutex *e_mutex_new(e_mutex_t type)
 	return m;
 }
 
-int e_mutex_destroy(EMutex *m)
+gint e_mutex_destroy(EMutex *m)
 {
-	int ret = 0;
+	gint ret = 0;
 
 	switch (m->type) {
 	case E_MUTEX_SIMPLE:
@@ -1221,10 +1221,10 @@ int e_mutex_destroy(EMutex *m)
 	return ret;
 }
 
-int e_mutex_lock(EMutex *m)
+gint e_mutex_lock(EMutex *m)
 {
 	pthread_t id;
-	int err;
+	gint err;
 
 	switch (m->type) {
 	case E_MUTEX_SIMPLE:
@@ -1255,9 +1255,9 @@ int e_mutex_lock(EMutex *m)
 	return EINVAL;
 }
 
-int e_mutex_unlock(EMutex *m)
+gint e_mutex_unlock(EMutex *m)
 {
-	int err;
+	gint err;
 
 	switch (m->type) {
 	case E_MUTEX_SIMPLE:
@@ -1288,9 +1288,9 @@ void e_mutex_assert_locked(EMutex *m)
 	pthread_mutex_unlock(&m->mutex);
 }
 
-int e_mutex_cond_wait(void *vcond, EMutex *m)
+gint e_mutex_cond_wait(gpointer vcond, EMutex *m)
 {
-	int ret;
+	gint ret;
 	pthread_cond_t *cond = vcond;
 
 	switch(m->type) {
@@ -1313,17 +1313,17 @@ int e_mutex_cond_wait(void *vcond, EMutex *m)
 
 static EMsgPort *server_port;
 
-void *fdserver(void *data)
+gpointer fdserver(gpointer data)
 {
-	int fd;
+	gint fd;
 	EMsg *msg;
-	int id = (int)data;
+	gint id = (int)data;
 	fd_set rfds;
 
 	fd = e_msgport_fd(server_port);
 
 	while (1) {
-		int count = 0;
+		gint count = 0;
 
 		printf("server %d: waiting on fd %d\n", id, fd);
 		FD_ZERO(&rfds);
@@ -1341,10 +1341,10 @@ void *fdserver(void *data)
 	}
 }
 
-void *server(void *data)
+gpointer server(gpointer data)
 {
 	EMsg *msg;
-	int id = (int)data;
+	gint id = (int)data;
 
 	while (1) {
 		printf("server %d: waiting\n", id);
@@ -1361,11 +1361,11 @@ void *server(void *data)
 	return NULL;
 }
 
-void *client(void *data)
+gpointer client(gpointer data)
 {
 	EMsg *msg;
 	EMsgPort *replyport;
-	int i;
+	gint i;
 
 	replyport = e_msgport_new();
 	msg = g_malloc0(sizeof(*msg));
@@ -1399,7 +1399,7 @@ void *client(void *data)
 	return NULL;
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	pthread_t serverid, clientid;
 
@@ -1415,8 +1415,8 @@ int main(int argc, char **argv)
 
 	server_port = e_msgport_new();
 
-	/*pthread_create(&serverid, NULL, server, (void *)1);*/
-	pthread_create(&serverid, NULL, fdserver, (void *)1);
+	/*pthread_create(&serverid, NULL, server, (gpointer)1);*/
+	pthread_create(&serverid, NULL, fdserver, (gpointer)1);
 	pthread_create(&clientid, NULL, client, NULL);
 
 	g_usleep(60000000);

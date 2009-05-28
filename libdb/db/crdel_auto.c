@@ -18,10 +18,10 @@
 #include "dbinc/txn.h"
 
 /*
- * PUBLIC: int __crdel_metasub_log __P((DB *, DB_TXN *, DB_LSN *,
+ * PUBLIC: gint __crdel_metasub_log __P((DB *, DB_TXN *, DB_LSN *,
  * PUBLIC:     u_int32_t, db_pgno_t, const DBT *, DB_LSN *));
  */
-int
+gint
 __crdel_metasub_log(dbp, txnid, ret_lsnp, flags, pgno, page, lsn)
 	DB *dbp;
 	DB_TXN *txnid;
@@ -37,7 +37,7 @@ __crdel_metasub_log(dbp, txnid, ret_lsnp, flags, pgno, page, lsn)
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	dbenv = dbp->dbenv;
@@ -131,16 +131,16 @@ __crdel_metasub_log(dbp, txnid, ret_lsnp, flags, pgno, page, lsn)
 }
 
 /*
- * PUBLIC: int __crdel_metasub_getpgnos __P((DB_ENV *, DBT *,
- * PUBLIC:     DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __crdel_metasub_getpgnos __P((DB_ENV *, DBT *,
+ * PUBLIC:     DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __crdel_metasub_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	DB *dbp;
 	TXN_RECS *t;
@@ -177,21 +177,21 @@ err:	if (argp != NULL)
 }
 
 /*
- * PUBLIC: int __crdel_metasub_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __crdel_metasub_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __crdel_metasub_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__crdel_metasub_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -222,19 +222,19 @@ __crdel_metasub_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __crdel_metasub_read __P((DB_ENV *, void *,
+ * PUBLIC: gint __crdel_metasub_read __P((DB_ENV *, gpointer ,
  * PUBLIC:     __crdel_metasub_args **));
  */
-int
+gint
 __crdel_metasub_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__crdel_metasub_args **argpp;
 {
 	__crdel_metasub_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__crdel_metasub_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -274,16 +274,16 @@ __crdel_metasub_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __crdel_init_print __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __crdel_init_print __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __crdel_init_print(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __crdel_metasub_print, DB___crdel_metasub)) != 0)
@@ -292,17 +292,17 @@ __crdel_init_print(dbenv, dtabp, dtabsizep)
 }
 
 /*
- * PUBLIC: int __crdel_init_getpgnos __P((DB_ENV *,
- * PUBLIC:     int (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *),
+ * PUBLIC: gint __crdel_init_getpgnos __P((DB_ENV *,
+ * PUBLIC:     gint (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ),
  * PUBLIC:     size_t *));
  */
-int
+gint
 __crdel_init_getpgnos(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __crdel_metasub_getpgnos, DB___crdel_metasub)) != 0)
@@ -311,16 +311,16 @@ __crdel_init_getpgnos(dbenv, dtabp, dtabsizep)
 }
 
 /*
- * PUBLIC: int __crdel_init_recover __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __crdel_init_recover __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __crdel_init_recover(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __crdel_metasub_recover, DB___crdel_metasub)) != 0)

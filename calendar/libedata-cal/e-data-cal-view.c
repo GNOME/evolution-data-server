@@ -90,11 +90,11 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static void
-add_object_to_cache (EDataCalView *query, const char *calobj)
+add_object_to_cache (EDataCalView *query, const gchar *calobj)
 {
 	ECalComponent *comp;
-	char *real_uid;
-	const char *uid;
+	gchar *real_uid;
+	const gchar *uid;
 	EDataCalViewPrivate *priv;
 
 	priv = query->priv;
@@ -110,7 +110,7 @@ add_object_to_cache (EDataCalView *query, const char *calobj)
 	}
 
 	if (e_cal_component_is_instance (comp)) {
-		char *str;
+		gchar *str;
 		str = e_cal_component_get_recurid_as_string (comp)	;
 		real_uid = g_strdup_printf ("%s@%s", uid, str);
 		g_free (str);
@@ -131,8 +131,8 @@ uncache_with_id_cb (gpointer key, gpointer value, gpointer user_data)
 {
 	ECalComponent *comp;
 	ECalComponentId *id;
-	const char *this_uid;
-	char *object;
+	const gchar *this_uid;
+	gchar *object;
 	gboolean remove = FALSE;
 
 	id = user_data;
@@ -143,7 +143,7 @@ uncache_with_id_cb (gpointer key, gpointer value, gpointer user_data)
 		e_cal_component_get_uid (comp, &this_uid);
 		if (this_uid && !strcmp (id->uid, this_uid)) {
 			if (id->rid && *id->rid) {
-				char *rid = e_cal_component_get_recurid_as_string (comp);
+				gchar *rid = e_cal_component_get_recurid_as_string (comp);
 
 				if (rid && !strcmp (id->rid, rid))
 					remove = TRUE;
@@ -203,7 +203,7 @@ listener_died_cb (EComponentListener *cl, gpointer data)
 static void
 notify_matched_object_cb (gpointer key, gpointer value, gpointer user_data)
 {
-	char *uid, *object;
+	gchar *uid, *object;
 	EDataCalView *query;
 	EDataCalViewPrivate *priv;
 	GList *l;
@@ -494,7 +494,7 @@ e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalV
  *
  * Return value: the query expression used to search.
  */
-const char *
+const gchar *
 e_data_cal_view_get_text (EDataCalView *query)
 {
 	g_return_val_if_fail (IS_QUERY (query), NULL);
@@ -529,7 +529,7 @@ e_data_cal_view_get_object_sexp (EDataCalView *query)
  * Return value: TRUE if the object matches the expression, FALSE if not.
  */
 gboolean
-e_data_cal_view_object_matches (EDataCalView *query, const char *object)
+e_data_cal_view_object_matches (EDataCalView *query, const gchar *object)
 {
 	EDataCalViewPrivate *priv;
 
@@ -654,7 +654,7 @@ e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
 	GNOME_Evolution_Calendar_stringlist obj_list;
 	CORBA_Environment ev;
 	const GList *l;
-	int num_objs, i;
+	gint num_objs, i;
 
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
@@ -700,7 +700,7 @@ e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
  * Notifies all the query listeners of the addition of a single object.
  */
 void
-e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const char *object)
+e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const gchar *object)
 {
 	EDataCalViewPrivate *priv;
 	GList objects;
@@ -732,7 +732,7 @@ e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objec
 	GNOME_Evolution_Calendar_CalObjUIDSeq obj_list;
 	CORBA_Environment ev;
 	const GList *l;
-	int num_objs, i;
+	gint num_objs, i;
 
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
@@ -778,7 +778,7 @@ e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objec
  * Notifies all query listeners of the modification of a single object.
  */
 void
-e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const char *object)
+e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const gchar *object)
 {
 	EDataCalViewPrivate *priv;
 	GList objects;
@@ -810,7 +810,7 @@ e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *ids)
 	GNOME_Evolution_Calendar_CalObjIDSeq id_list;
 	CORBA_Environment ev;
 	const GList *l;
-	int num_ids, i;
+	gint num_ids, i;
 
 	g_return_if_fail (query != NULL);
 	g_return_if_fail (IS_QUERY (query));
@@ -892,7 +892,7 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const ECalCompone
  * Notifies all query listeners of progress messages.
  */
 void
-e_data_cal_view_notify_progress (EDataCalView *query, const char *message, int percent)
+e_data_cal_view_notify_progress (EDataCalView *query, const gchar *message, gint percent)
 {
 	EDataCalViewPrivate *priv;
 	CORBA_Environment ev;

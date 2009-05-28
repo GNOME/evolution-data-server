@@ -37,7 +37,7 @@ typedef struct _CamelStreamProcess CamelStreamProcess;
 struct _CamelStreamProcess {
 	CamelStream parent;
 
-	int sockfd;
+	gint sockfd;
 	pid_t childpid;
 };
 
@@ -47,7 +47,7 @@ struct _CamelStreamProcessClass {
 
 CamelType		camel_stream_process_get_type	(void);
 CamelStream            *camel_stream_process_new		(void);
-int camel_stream_process_connect(CamelStreamProcess *, const char *, const char **);
+gint camel_stream_process_connect(CamelStreamProcess *, const gchar *, const gchar **);
 
 G_END_DECLS
 

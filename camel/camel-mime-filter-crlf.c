@@ -22,10 +22,10 @@
 
 #include "camel-mime-filter-crlf.h"
 
-static void filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-		    char **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, char *in, size_t len,
-		      size_t prespace, char **out, size_t *outlen,
+static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+		    gchar **out, size_t *outlen, size_t *outprespace);
+static void complete (CamelMimeFilter *f, gchar *in, size_t len,
+		      size_t prespace, gchar **out, size_t *outlen,
 		      size_t *outprespace);
 static void reset (CamelMimeFilter *f);
 
@@ -60,14 +60,14 @@ camel_mime_filter_crlf_get_type (void)
 }
 
 static void
-filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-	char **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+	gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterCRLF *crlf = (CamelMimeFilterCRLF *)f;
-	register const char *inptr;
-	const char *inend;
+	register const gchar *inptr;
+	const gchar *inend;
 	gboolean do_dots;
-	char *outptr;
+	gchar *outptr;
 
 	do_dots = crlf->mode == CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS;
 
@@ -144,8 +144,8 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 }
 
 static void
-complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-	  char **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+	  gchar **out, size_t *outlen, size_t *outprespace)
 {
 	if (len)
 		filter (f, in, len, prespace, out, outlen, outprespace);

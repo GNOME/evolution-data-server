@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -75,13 +75,13 @@ static const struct {
  * __db_tablesize --
  *	Choose a size for the hash table.
  *
- * PUBLIC: int __db_tablesize __P((u_int32_t));
+ * PUBLIC: gint __db_tablesize __P((u_int32_t));
  */
-int
+gint
 __db_tablesize(n_buckets)
 	u_int32_t n_buckets;
 {
-	int i;
+	gint i;
 
 	/*
 	 * We try to be clever about how big we make the hash tables.  Use a
@@ -108,11 +108,11 @@ __db_tablesize(n_buckets)
  * __db_hashinit --
  *	Initialize a hash table that resides in shared memory.
  *
- * PUBLIC: void __db_hashinit __P((void *, u_int32_t));
+ * PUBLIC: void __db_hashinit __P((gpointer , u_int32_t));
  */
 void
 __db_hashinit(begin, nelements)
-	void *begin;
+	gpointer begin;
 	u_int32_t nelements;
 {
 	u_int32_t i;

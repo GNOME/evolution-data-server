@@ -65,7 +65,7 @@ struct _CamelMsgPort {
 };
 
 static int
-msgport_pipe (int *fds)
+msgport_pipe (gint *fds)
 {
 #ifndef G_OS_WIN32
 	if (pipe (fds) != -1)
@@ -78,7 +78,7 @@ msgport_pipe (int *fds)
 #else
 	SOCKET temp, socket1 = -1, socket2 = -1;
 	struct sockaddr_in saddr;
-	int len;
+	gint len;
 	u_long arg;
 	fd_set read_set, write_set;
 	struct timeval tv;

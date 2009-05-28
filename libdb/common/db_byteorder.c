@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,14 +24,14 @@ static const char revid[] = "$Id$";
  *	configuration time so cross-compilation and general embedded
  *	system support is simpler.
  *
- * PUBLIC: int __db_isbigendian __P((void));
+ * PUBLIC: gint __db_isbigendian __P((void));
  */
-int
+gint
 __db_isbigendian()
 {
 	union {					/* From Harbison & Steele.  */
 		long l;
-		char c[sizeof(long)];
+		gchar c[sizeof(long)];
 	} u;
 
 	u.l = 1;
@@ -43,14 +43,14 @@ __db_isbigendian()
  *	Return if we need to do byte swapping, checking for illegal
  *	values.
  *
- * PUBLIC: int __db_byteorder __P((DB_ENV *, int));
+ * PUBLIC: gint __db_byteorder __P((DB_ENV *, int));
  */
-int
+gint
 __db_byteorder(dbenv, lorder)
 	DB_ENV *dbenv;
-	int lorder;
+	gint lorder;
 {
-	int is_bigendian;
+	gint is_bigendian;
 
 	is_bigendian = __db_isbigendian();
 

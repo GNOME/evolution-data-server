@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -36,12 +36,12 @@ static const char revid[] = "$Id$";
  * __db_util_logset --
  *	Log that we're running.
  *
- * PUBLIC: int __db_util_logset __P((const char *, char *));
+ * PUBLIC: gint __db_util_logset __P((const gchar *, gchar *));
  */
-int
+gint
 __db_util_logset(progname, fname)
-	const char *progname;
-	char *fname;
+	const gchar *progname;
+	gchar *fname;
 {
 	FILE *fp;
 	time_t now;

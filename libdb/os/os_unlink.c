@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,16 +24,16 @@ static const char revid[] = "$Id$";
  * __os_region_unlink --
  *	Remove a shared memory object file.
  *
- * PUBLIC: int __os_region_unlink __P((DB_ENV *, const char *));
+ * PUBLIC: gint __os_region_unlink __P((DB_ENV *, const gchar *));
  */
-int
+gint
 __os_region_unlink(dbenv, path)
 	DB_ENV *dbenv;
-	const char *path;
+	const gchar *path;
 {
 #ifdef HAVE_QNX
-	int ret;
-	char *newname;
+	gint ret;
+	gchar *newname;
 
 	if ((ret = __os_shmname(dbenv, path, &newname)) != 0)
 		goto err;
@@ -60,19 +60,19 @@ err:
  * __os_unlink --
  *	Remove a file.
  *
- * PUBLIC: int __os_unlink __P((DB_ENV *, const char *));
+ * PUBLIC: gint __os_unlink __P((DB_ENV *, const gchar *));
  */
-int
+gint
 __os_unlink(dbenv, path)
 	DB_ENV *dbenv;
-	const char *path;
+	const gchar *path;
 {
-	int ret;
+	gint ret;
 
 retry:	ret = DB_GLOBAL(j_unlink) != NULL ?
 	    DB_GLOBAL(j_unlink)(path) :
 #ifdef HAVE_VXWORKS
-	    unlink((char *)path);
+	    unlink((gchar *)path);
 #else
 	    unlink(path);
 #endif

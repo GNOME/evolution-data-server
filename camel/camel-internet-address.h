@@ -45,15 +45,15 @@ struct _CamelInternetAddressClass {
 CamelType		camel_internet_address_get_type	(void);
 CamelInternetAddress   *camel_internet_address_new	(void);
 
-int			camel_internet_address_add	(CamelInternetAddress *addr, const char *name, const char *address);
-gboolean		camel_internet_address_get	(const CamelInternetAddress *addr, int index, const char **namep, const char **addressp);
+int			camel_internet_address_add	(CamelInternetAddress *addr, const gchar *name, const gchar *address);
+gboolean		camel_internet_address_get	(const CamelInternetAddress *addr, gint index, const gchar **namep, const gchar **addressp);
 
-int			camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, const char **addressp);
-int			camel_internet_address_find_address(CamelInternetAddress *addr, const char *address, const char **namep);
+int			camel_internet_address_find_name(CamelInternetAddress *addr, const gchar *name, const gchar **addressp);
+int			camel_internet_address_find_address(CamelInternetAddress *addr, const gchar *address, const gchar **namep);
 
 /* utility functions, for network/display formatting */
-char *			camel_internet_address_encode_address(int *len, const char *name, const char *addr);
-char *			camel_internet_address_format_address(const char *name, const char *addr);
+gchar *			camel_internet_address_encode_address(gint *len, const gchar *name, const gchar *addr);
+gchar *			camel_internet_address_format_address(const gchar *name, const gchar *addr);
 
 G_END_DECLS
 

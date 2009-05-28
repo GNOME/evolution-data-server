@@ -50,20 +50,20 @@
 static E2kContext *ctx;
 static E2kOperation op;
 
-static const char *folder_tree_props[] = {
+static const gchar *folder_tree_props[] = {
 	E2K_PR_DAV_DISPLAY_NAME,
 	E2K_PR_EXCHANGE_FOLDER_CLASS
 };
-static const int n_folder_tree_props = sizeof (folder_tree_props) / sizeof (folder_tree_props[0]);
+static const gint n_folder_tree_props = sizeof (folder_tree_props) / sizeof (folder_tree_props[0]);
 
 static void
-display_folder_tree (E2kContext *ctx, char *top)
+display_folder_tree (E2kContext *ctx, gchar *top)
 {
 	E2kRestriction *rn;
 	E2kResultIter *iter;
 	E2kResult *result;
-	int status;
-	const char *name, *class;
+	gint status;
+	const gchar *name, *class;
 
 	e2k_operation_init (&op);
 	rn = e2k_restriction_prop_bool (E2K_PR_DAV_IS_COLLECTION,
@@ -91,13 +91,13 @@ display_folder_tree (E2kContext *ctx, char *top)
 }
 
 static void
-list_contents (E2kContext *ctx, char *top, gboolean reverse)
+list_contents (E2kContext *ctx, gchar *top, gboolean reverse)
 {
 	E2kRestriction *rn;
 	E2kResultIter *iter;
 	E2kResult *result;
-	const char *prop;
-	int status;
+	const gchar *prop;
+	gint status;
 
 	e2k_operation_init (&op);
 	prop = E2K_PR_DAV_DISPLAY_NAME;
@@ -110,7 +110,7 @@ list_contents (E2kContext *ctx, char *top, gboolean reverse)
 	while ((result = e2k_result_iter_next (iter))) {
 		printf ("%3d %s (%s)\n", e2k_result_iter_get_index (iter),
 			result->href,
-			(char *)e2k_properties_get_prop (result->props,
+			(gchar *)e2k_properties_get_prop (result->props,
 							 E2K_PR_DAV_DISPLAY_NAME));
 	}
 	status = e2k_result_iter_free (iter);
@@ -121,16 +121,16 @@ list_contents (E2kContext *ctx, char *top, gboolean reverse)
 }
 
 static int
-mp_compar (const void *k, const void *m)
+mp_compar (gconstpointer k, gconstpointer m)
 {
-	const char *key = k;
-	struct mapi_proptag *mp = (void *)m;
+	const gchar *key = k;
+	struct mapi_proptag *mp = (gpointer)m;
 
 	return strncmp (key, mp->proptag, 5);
 }
 
 static void
-print_propname (const char *propname)
+print_propname (const gchar *propname)
 {
 	struct mapi_proptag *mp;
 
@@ -149,7 +149,7 @@ print_propname (const char *propname)
 static void
 print_binary (GByteArray *data)
 {
-	unsigned char *start, *end, *p;
+	guchar *start, *end, *p;
 
 	end = data->data + data->len;
 	for (start = data->data; start < end; start += 16) {
@@ -166,16 +166,16 @@ print_binary (GByteArray *data)
 }
 
 typedef struct {
-	const char *propname;
+	const gchar *propname;
 	E2kPropType type;
 	gpointer value;
 } EBrowseProp;
 
 static int
-prop_compar (const void *a, const void *b)
+prop_compar (gconstpointer a, gconstpointer b)
 {
-	EBrowseProp **pa = (void *)a;
-	EBrowseProp **pb = (void *)b;
+	EBrowseProp **pa = (gpointer)a;
+	EBrowseProp **pb = (gpointer)b;
 
 	return strcmp ((*pa)->propname, (*pb)->propname);
 }
@@ -194,17 +194,17 @@ print_prop (EBrowseProp *prop)
 	case E2K_PROP_TYPE_INT_ARRAY:
 	{
 		GPtrArray *array = prop->value;
-		int i;
+		gint i;
 
 		for (i = 0; i < array->len; i++)
-			printf ("    %s\n", (char *)array->pdata[i]);
+			printf ("    %s\n", (gchar *)array->pdata[i]);
 		break;
 	}
 
 	case E2K_PROP_TYPE_BINARY_ARRAY:
 	{
 		GPtrArray *array = prop->value;
-		int i;
+		gint i;
 
 		for (i = 0; i < array->len; i++) {
 			print_binary (array->pdata[i]);
@@ -219,13 +219,13 @@ print_prop (EBrowseProp *prop)
 
 	case E2K_PROP_TYPE_STRING:
 	default:
-		printf ("    %s\n", (char *)prop->value);
+		printf ("    %s\n", (gchar *)prop->value);
 		break;
 	}
 }
 
 static void
-add_prop (const char *propname, E2kPropType type, gpointer value, gpointer props)
+add_prop (const gchar *propname, E2kPropType type, gpointer value, gpointer props)
 {
 	EBrowseProp *prop;
 
@@ -237,10 +237,10 @@ add_prop (const char *propname, E2kPropType type, gpointer value, gpointer props
 }
 
 static void
-print_properties (E2kResult *results, int nresults)
+print_properties (E2kResult *results, gint nresults)
 {
 	GPtrArray *props;
-	int i;
+	gint i;
 
 	if (nresults != 1) {
 		printf ("Got %d results?\n", nresults);
@@ -263,7 +263,7 @@ static void
 got_all_properties (SoupMessage *msg, gpointer ctx)
 {
 	E2kResult *results;
-	int nresults;
+	gint nresults;
 
 	test_abort_if_http_error (msg->status_code);
 
@@ -283,7 +283,7 @@ got_all_properties (SoupMessage *msg, gpointer ctx)
 "</propfind>"
 
 static void
-get_all_properties (E2kContext *ctx, char *uri)
+get_all_properties (E2kContext *ctx, gchar *uri)
 {
 	SoupMessage *msg;
 
@@ -297,11 +297,11 @@ get_all_properties (E2kContext *ctx, char *uri)
 }
 
 static void
-get_property (E2kContext *ctx, char *uri, char *prop)
+get_property (E2kContext *ctx, gchar *uri, gchar *prop)
 {
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults, i;
+	gint nresults, i;
 
 	if (!strncmp (prop, "PR_", 3)) {
 		for (i = 0; i < nmapi_proptags; i++)
@@ -315,7 +315,7 @@ get_property (E2kContext *ctx, char *uri, char *prop)
 
 	e2k_operation_init (&op);
 	status = e2k_context_propfind (ctx, &op, uri,
-				       (const char **)&prop, 1,
+				       (const gchar **)&prop, 1,
 				       &results, &nresults);
 	e2k_operation_free (&op);
 	test_abort_if_http_error (status);
@@ -324,14 +324,14 @@ get_property (E2kContext *ctx, char *uri, char *prop)
 }
 
 static void
-get_fav_properties(E2kContext *ctx, char *uri)
+get_fav_properties(E2kContext *ctx, gchar *uri)
 {
 	E2kRestriction *rn;
 	E2kResultIter *iter;
 	E2kResult *result;
-	const char *prop;
-	int status;
-	char *eml_str, *top = uri, fav_uri[1024];
+	const gchar *prop;
+	gint status;
+	gchar *eml_str, *top = uri, fav_uri[1024];
 
 
 	/* list the contents and search for the favorite properties */
@@ -378,15 +378,15 @@ get_fav_properties(E2kContext *ctx, char *uri)
 }
 
 static void
-get_sd (E2kContext *ctx, char *uri)
+get_sd (E2kContext *ctx, gchar *uri)
 {
-	const char *props[] = {
+	const gchar *props[] = {
 		E2K_PR_EXCHANGE_SD_BINARY,
 		E2K_PR_EXCHANGE_SD_XML,
 	};
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults;
+	gint nresults;
 	xmlNodePtr xml_form;
 	GByteArray *binary_form;
 	E2kSecurityDescriptor *sd;
@@ -444,11 +444,11 @@ get_sd (E2kContext *ctx, char *uri)
 }
 
 static void
-get_body (E2kContext *ctx, char *uri)
+get_body (E2kContext *ctx, gchar *uri)
 {
 	E2kHTTPStatus status;
-	char *body;
-	int len;
+	gchar *body;
+	gint len;
 
 	e2k_operation_init (&op);
 	status = e2k_context_get (ctx, &op, uri, NULL, &body, &len);
@@ -460,7 +460,7 @@ get_body (E2kContext *ctx, char *uri)
 }
 
 static void
-delete (E2kContext *ctx, char *uri)
+delete (E2kContext *ctx, gchar *uri)
 {
 	E2kHTTPStatus status;
 
@@ -472,7 +472,7 @@ delete (E2kContext *ctx, char *uri)
 }
 
 static void
-notify (E2kContext *ctx, const char *uri,
+notify (E2kContext *ctx, const gchar *uri,
 	E2kContextChangeType type, gpointer user_data)
 {
 	switch (type) {
@@ -492,7 +492,7 @@ notify (E2kContext *ctx, const char *uri,
 }
 
 static void
-subscribe (E2kContext *ctx, char *uri)
+subscribe (E2kContext *ctx, gchar *uri)
 {
 	e2k_context_subscribe (ctx, uri,
 			       E2K_CONTEXT_OBJECT_CHANGED, 0,
@@ -509,7 +509,7 @@ subscribe (E2kContext *ctx, char *uri)
 }
 
 static void
-move (E2kContext *ctx, char *from, char *to, gboolean delete)
+move (E2kContext *ctx, gchar *from, gchar *to, gboolean delete)
 {
 	GPtrArray *source_hrefs;
 	E2kResultIter *iter;
@@ -530,7 +530,7 @@ move (E2kContext *ctx, char *from, char *to, gboolean delete)
 			printf ("Failed: %d\n", result->status);
 		else {
 			printf ("moved to %s\n",
-				(char *)e2k_properties_get_prop (result->props,
+				(gchar *)e2k_properties_get_prop (result->props,
 								 E2K_PR_DAV_LOCATION));
 		}
 	}
@@ -542,14 +542,14 @@ move (E2kContext *ctx, char *from, char *to, gboolean delete)
 }
 
 static void
-name (E2kContext *ctx, char *alias, char *uri_prefix)
+name (E2kContext *ctx, gchar *alias, gchar *uri_prefix)
 {
 	E2kHTTPStatus status;
-	char *uri, *body;
-	int len;
+	gchar *uri, *body;
+	gint len;
 	xmlDoc *doc;
 	xmlNode *item, *node;
-	char *data;
+	gchar *data;
 
 	uri = g_strdup_printf ("%s?Cmd=galfind&AN=%s", uri_prefix, alias);
 	e2k_operation_init (&op);
@@ -580,11 +580,11 @@ name (E2kContext *ctx, char *alias, char *uri_prefix)
 }
 
 static void
-put (E2kContext *ctx, const char *file, const char *uri)
+put (E2kContext *ctx, const gchar *file, const gchar *uri)
 {
 	struct stat st;
-	char *buf;
-	int fd;
+	gchar *buf;
+	gint fd;
 	E2kHTTPStatus status;
 
 	fd = open (file, O_RDONLY);
@@ -605,15 +605,15 @@ put (E2kContext *ctx, const char *file, const char *uri)
 	test_quit ();
 }
 
-static void *
-cancel (void *op)
+static gpointer
+cancel (gpointer op)
 {
 	e2k_operation_cancel (op);
 	return NULL;
 }
 
 static void
-quit (int sig)
+quit (gint sig)
 {
 	static pthread_t cancel_thread;
 
@@ -643,12 +643,12 @@ usage (void)
 	exit (1);
 }
 
-const char *test_program_name = "ebrowse";
+const gchar *test_program_name = "ebrowse";
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
-	char *uri;
+	gchar *uri;
 
 	signal (SIGINT, quit);
 

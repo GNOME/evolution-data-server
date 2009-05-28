@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <libecal/e-cal.h>
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	ECal *ecal;
 	GList *l, *objects;
@@ -31,7 +31,7 @@ main (int argc, char **argv)
 	printf ("Received %d objects\n", g_list_length (objects));
 	for (l = objects; l; l = l->next) {
 		ECalComponent *comp = E_CAL_COMPONENT (l->data);
-		char *str;
+		gchar *str;
 
 		str = e_cal_component_get_as_string (comp);
 		printf ("%s\n", str);

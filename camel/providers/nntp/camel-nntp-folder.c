@@ -66,7 +66,7 @@ static CamelDiscoFolderClass *parent_class = NULL;
 #define CNNTPS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 void
-camel_nntp_folder_selected(CamelNNTPFolder *folder, char *line, CamelException *ex)
+camel_nntp_folder_selected(CamelNNTPFolder *folder, gchar *line, CamelException *ex)
 {
 	camel_nntp_summary_check((CamelNNTPSummary *)((CamelFolder *)folder)->summary,
 				 (CamelNNTPStore *)((CamelFolder *)folder)->parent_store,
@@ -79,7 +79,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder, CamelException *ex)
 	CamelNNTPStore *nntp_store;
 	CamelFolderChangeInfo *changes = NULL;
 	CamelNNTPFolder *nntp_folder;
-	char *line;
+	gchar *line;
 
 	nntp_store = (CamelNNTPStore *) folder->parent_store;
 	nntp_folder = (CamelNNTPFolder *) folder;
@@ -118,16 +118,16 @@ nntp_folder_sync_offline (CamelFolder *folder, CamelException *ex)
 }
 
 static gboolean
-nntp_folder_set_message_flags (CamelFolder *folder, const char *uid, guint32 flags, guint32 set)
+nntp_folder_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flags, guint32 set)
 {
         return ((CamelFolderClass *) folder_class)->set_message_flags (folder, uid, flags, set);
 }
 
-static char*
-nntp_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+static gchar *
+nntp_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelNNTPStore *nntp_store = (CamelNNTPStore *) folder->parent_store;
-	char *article, *msgid;
+	gchar *article, *msgid;
 
 	article = alloca(strlen(uid)+1);
 	strcpy(article, uid);
@@ -143,12 +143,12 @@ nntp_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
 }
 
 static CamelStream *
-nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const char *id, const char *msgid, CamelException *ex)
+nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, const gchar *msgid, CamelException *ex)
 {
 	CamelNNTPStore *nntp_store = (CamelNNTPStore *) ((CamelFolder *) nntp_folder)->parent_store;
 	CamelStream *stream = NULL;
-	int ret;
-	char *line;
+	gint ret;
+	gchar *line;
 
 	ret = camel_nntp_command (nntp_store, ex, nntp_folder, &line, "article %s", id);
 	if (ret == 220) {
@@ -181,11 +181,11 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const char *id, cons
 
 
 static void
-nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const char *uid, CamelException *ex)
+nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid, CamelException *ex)
 {
 	CamelNNTPStore *nntp_store = (CamelNNTPStore *)((CamelFolder *) disco_folder)->parent_store;
 	CamelStream *stream;
-	char *article, *msgid;
+	gchar *article, *msgid;
 
 	article = alloca(strlen(uid)+1);
 	strcpy(article, uid);
@@ -207,14 +207,14 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const char *uid, Came
 }
 
 static CamelMimeMessage *
-nntp_folder_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
+nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelMimeMessage *message = NULL;
 	CamelNNTPStore *nntp_store;
 	CamelFolderChangeInfo *changes;
 	CamelNNTPFolder *nntp_folder;
 	CamelStream *stream = NULL;
-	char *article, *msgid;
+	gchar *article, *msgid;
 
 	nntp_store = (CamelNNTPStore *) folder->parent_store;
 	nntp_folder = (CamelNNTPFolder *) folder;
@@ -275,7 +275,7 @@ fail:
 }
 
 static GPtrArray*
-nntp_folder_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+nntp_folder_search_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	GPtrArray *matches;
@@ -294,7 +294,7 @@ nntp_folder_search_by_expression (CamelFolder *folder, const char *expression, C
 }
 
 static guint32
-nntp_folder_count_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+nntp_folder_count_by_expression (CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	guint32 count;
@@ -313,7 +313,7 @@ nntp_folder_count_by_expression (CamelFolder *folder, const char *expression, Ca
 }
 
 static GPtrArray *
-nntp_folder_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+nntp_folder_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
 {
 	CamelNNTPFolder *nntp_folder = (CamelNNTPFolder *) folder;
 	GPtrArray *matches;
@@ -346,17 +346,17 @@ nntp_folder_search_free (CamelFolder *folder, GPtrArray *result)
 
 static void
 nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_message,
-				   const CamelMessageInfo *info, char **appended_uid,
+				   const CamelMessageInfo *info, gchar **appended_uid,
 				   CamelException *ex)
 {
 	CamelNNTPStore *nntp_store = (CamelNNTPStore *) folder->parent_store;
 	CamelStream *stream = (CamelStream*)nntp_store->stream;
 	CamelStreamFilter *filtered_stream;
 	CamelMimeFilter *crlffilter;
-	int ret;
-	unsigned int u;
+	gint ret;
+	guint u;
 	struct _camel_header_raw *header, *savedhdrs, *n, *tail;
-	char *group, *line;
+	gchar *group, *line;
 
 	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
 
@@ -406,7 +406,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 	    || camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (mime_message), CAMEL_STREAM (filtered_stream)) == -1
 	    || camel_stream_flush (CAMEL_STREAM (filtered_stream)) == -1
 	    || camel_stream_write (stream, "\r\n.\r\n", 5) == -1
-	    || (ret = camel_nntp_stream_line (nntp_store->stream, (unsigned char **)&line, &u)) == -1) {
+	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u)) == -1) {
 		if (errno == EINTR)
 			camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
 		else
@@ -426,7 +426,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 
 static void
 nntp_folder_append_message_offline (CamelFolder *folder, CamelMimeMessage *mime_message,
-				    const CamelMessageInfo *info, char **appended_uid,
+				    const CamelMessageInfo *info, gchar **appended_uid,
 				    CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -524,11 +524,11 @@ camel_nntp_folder_get_type (void)
 }
 
 CamelFolder *
-camel_nntp_folder_new (CamelStore *parent, const char *folder_name, CamelException *ex)
+camel_nntp_folder_new (CamelStore *parent, const gchar *folder_name, CamelException *ex)
 {
 	CamelFolder *folder;
 	CamelNNTPFolder *nntp_folder;
-	char *root;
+	gchar *root;
 	CamelService *service;
 	CamelStoreInfo *si;
 	gboolean subscribed = TRUE;

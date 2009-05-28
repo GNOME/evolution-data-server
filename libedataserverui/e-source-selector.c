@@ -43,7 +43,7 @@ struct _ESourceSelectorPrivate {
 	GtkTreeRowReference *saved_primary_selection;
 	ESourceGroup *primary_source_group;
 
-	int rebuild_model_idle_id;
+	gint rebuild_model_idle_id;
 
 	gboolean toggled_last;
 	gboolean checkboxes_shown;
@@ -71,7 +71,7 @@ enum {
 	DATA_DROPPED,
 	NUM_SIGNALS
 };
-static unsigned int signals[NUM_SIGNALS] = { 0 };
+static guint signals[NUM_SIGNALS] = { 0 };
 
 G_DEFINE_TYPE (ESourceSelector, e_source_selector, GTK_TYPE_TREE_VIEW)
 
@@ -220,7 +220,7 @@ find_source_iter (ESourceSelector *selector, ESource *source, GtkTreeIter *paren
 		do {
 			if (gtk_tree_model_iter_children (model, source_iter, parent_iter)) {
 				do {
-					void *data;
+					gpointer data;
 
 					gtk_tree_model_get (model, source_iter, 0, &data, -1);
 					g_assert (E_IS_SOURCE (data));
@@ -245,8 +245,8 @@ static gboolean
 rebuild_existing_cb (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
 {
 	ESourceSelectorRebuildData *rebuild_data = data;
-	void *node;
-	const char *uid;
+	gpointer node;
+	const gchar *uid;
 
 	gtk_tree_model_get (model, iter, 0, &node, -1);
 
@@ -462,7 +462,7 @@ toggle_cell_data_func (GtkTreeViewColumn *column,
 		       GtkTreeIter *iter,
 		       ESourceSelector *selector)
 {
-	void *data;
+	gpointer data;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
 
@@ -488,7 +488,7 @@ text_cell_data_func (GtkTreeViewColumn *column,
 		     GtkTreeIter *iter,
 		     ESourceSelector *selector)
 {
-	void *data;
+	gpointer data;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
 
@@ -521,7 +521,7 @@ pixbuf_cell_data_func (GtkTreeViewColumn *column,
 		       GtkTreeIter *iter,
 		       ESourceSelector *selector)
 {
-	void *data;
+	gpointer data;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
 
@@ -572,7 +572,7 @@ selection_func (GtkTreeSelection *selection,
 		ESourceSelector *selector)
 {
 	GtkTreeIter iter;
-	void *data;
+	gpointer data;
 
 	if (selector->priv->toggled_last) {
 		selector->priv->toggled_last = FALSE;
@@ -630,14 +630,14 @@ text_cell_edited_cb (ESourceSelector *selector,
 
 static void
 cell_toggled_callback (GtkCellRendererToggle *renderer,
-		       const char *path_string,
+		       const gchar *path_string,
 		       ESourceSelector *selector)
 {
 	GtkTreeModel *model = GTK_TREE_MODEL (selector->priv->tree_store);
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
 	GtkTreeIter iter;
 	ESource *source;
-	void *data;
+	gpointer data;
 
 	if (! gtk_tree_model_get_iter (model, &iter, path)) {
 		gtk_tree_path_free (path);
@@ -1029,7 +1029,7 @@ source_selector_popup_menu (GtkWidget *widget)
 
 /* Initialization.  */
 static gboolean
-ess_bool_accumulator(GSignalInvocationHint *ihint, GValue *out, const GValue *in, void *data)
+ess_bool_accumulator(GSignalInvocationHint *ihint, GValue *out, const GValue *in, gpointer data)
 {
 	gboolean val = g_value_get_boolean(in);
 
@@ -1117,8 +1117,8 @@ group_search_function   (GtkTreeModel *model,
 			 GtkTreeIter *iter,
 			 gpointer dummy)
 {
-	void *data;
-	const char *name = NULL;
+	gpointer data;
+	const gchar *name = NULL;
 	gboolean status = TRUE;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
@@ -1531,7 +1531,7 @@ e_source_selector_peek_primary_selection (ESourceSelector *selector)
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	gboolean have_iter = FALSE;
-	void *data = NULL;
+	gpointer data = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE_SELECTOR (selector), NULL);
 

@@ -32,12 +32,12 @@
 #include <string.h>
 
 /* Taken from gal/util/e-util.c */
-static char *
-find_str_case (const char *haystack, const char *needle, const char *end)
+static gchar *
+find_str_case (const gchar *haystack, const gchar *needle, const gchar *end)
 {
 	/* find the needle in the haystack neglecting case */
-	const char *ptr;
-	int len;
+	const gchar *ptr;
+	gint len;
 
 	g_return_val_if_fail (haystack != NULL, NULL);
 	g_return_val_if_fail (needle != NULL, NULL);
@@ -47,11 +47,11 @@ find_str_case (const char *haystack, const char *needle, const char *end)
 		return NULL;
 
 	if (len == 0)
-		return (char *) haystack;
+		return (gchar *) haystack;
 
 	for (ptr = haystack; ptr + len < end; ptr++)
 		if (!g_ascii_strncasecmp (ptr, needle, len))
-			return (char *) ptr;
+			return (gchar *) ptr;
 
 	return NULL;
 
@@ -70,13 +70,13 @@ find_str_case (const char *haystack, const char *needle, const char *end)
  * occurred.
  **/
 gboolean
-exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
+exchange_oof_get (ExchangeAccount *account, gboolean *oof, gchar **message)
 {
 	E2kContext *ctx;
 	E2kHTTPStatus status;
-	char *url, *p = NULL, *checked, *ta_start, *ta_end;
+	gchar *url, *p = NULL, *checked, *ta_start, *ta_end;
 	SoupBuffer *response = NULL;
-	const char *body, *end;
+	const gchar *body, *end;
 
 	ctx = exchange_account_get_context (account);
 	if (!ctx)
@@ -84,9 +84,9 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
 
 	if (!message) {
 		/* Do this the easy way */
-		const char *prop = E2K_PR_EXCHANGE_OOF_STATE;
+		const gchar *prop = E2K_PR_EXCHANGE_OOF_STATE;
 		E2kResult *results;
-		int nresults = 0;
+		gint nresults = 0;
 
 		url = e2k_uri_concat (account->home_uri, "NON_IPM_SUBTREE/");
 		status = e2k_context_propfind (ctx, NULL, url, &prop, 1,
@@ -166,7 +166,7 @@ exchange_oof_get (ExchangeAccount *account, gboolean *oof, char **message)
  * error occurred.
  **/
 gboolean
-exchange_oof_set (ExchangeAccount *account, gboolean oof, const char *message)
+exchange_oof_set (ExchangeAccount *account, gboolean oof, const gchar *message)
 {
 	E2kContext *ctx;
 	E2kHTTPStatus status;
@@ -176,7 +176,7 @@ exchange_oof_set (ExchangeAccount *account, gboolean oof, const char *message)
 		return FALSE;
 
 	if (message) {
-		char *body, *message_enc;
+		gchar *body, *message_enc;
 
 		message_enc = e2k_uri_encode (message, FALSE, NULL);
 		body = g_strdup_printf ("Cmd=options&OofState=%d&"
@@ -189,7 +189,7 @@ exchange_oof_set (ExchangeAccount *account, gboolean oof, const char *message)
 		g_free (body);
 	} else {
 		E2kProperties *props;
-		char *url;
+		gchar *url;
 
 		props = e2k_properties_new ();
 		e2k_properties_set_bool (props, E2K_PR_EXCHANGE_OOF_STATE, oof);

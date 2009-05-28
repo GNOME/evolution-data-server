@@ -16,7 +16,7 @@ struct __env_cachesize_msg {
 typedef struct __env_cachesize_msg __env_cachesize_msg;
 
 struct __env_cachesize_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_cachesize_reply __env_cachesize_reply;
 
@@ -27,7 +27,7 @@ struct __env_close_msg {
 typedef struct __env_close_msg __env_close_msg;
 
 struct __env_close_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_close_reply __env_close_reply;
 
@@ -37,7 +37,7 @@ struct __env_create_msg {
 typedef struct __env_create_msg __env_create_msg;
 
 struct __env_create_reply {
-	int status;
+	gint status;
 	u_int envcl_id;
 };
 typedef struct __env_create_reply __env_create_reply;
@@ -45,41 +45,41 @@ typedef struct __env_create_reply __env_create_reply;
 struct __env_dbremove_msg {
 	u_int dbenvcl_id;
 	u_int txnpcl_id;
-	char *name;
-	char *subdb;
+	gchar *name;
+	gchar *subdb;
 	u_int flags;
 };
 typedef struct __env_dbremove_msg __env_dbremove_msg;
 
 struct __env_dbremove_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_dbremove_reply __env_dbremove_reply;
 
 struct __env_dbrename_msg {
 	u_int dbenvcl_id;
 	u_int txnpcl_id;
-	char *name;
-	char *subdb;
-	char *newname;
+	gchar *name;
+	gchar *subdb;
+	gchar *newname;
 	u_int flags;
 };
 typedef struct __env_dbrename_msg __env_dbrename_msg;
 
 struct __env_dbrename_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_dbrename_reply __env_dbrename_reply;
 
 struct __env_encrypt_msg {
 	u_int dbenvcl_id;
-	char *passwd;
+	gchar *passwd;
 	u_int flags;
 };
 typedef struct __env_encrypt_msg __env_encrypt_msg;
 
 struct __env_encrypt_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_encrypt_reply __env_encrypt_reply;
 
@@ -91,33 +91,33 @@ struct __env_flags_msg {
 typedef struct __env_flags_msg __env_flags_msg;
 
 struct __env_flags_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_flags_reply __env_flags_reply;
 
 struct __env_open_msg {
 	u_int dbenvcl_id;
-	char *home;
+	gchar *home;
 	u_int flags;
 	u_int mode;
 };
 typedef struct __env_open_msg __env_open_msg;
 
 struct __env_open_reply {
-	int status;
+	gint status;
 	u_int envcl_id;
 };
 typedef struct __env_open_reply __env_open_reply;
 
 struct __env_remove_msg {
 	u_int dbenvcl_id;
-	char *home;
+	gchar *home;
 	u_int flags;
 };
 typedef struct __env_remove_msg __env_remove_msg;
 
 struct __env_remove_reply {
-	int status;
+	gint status;
 };
 typedef struct __env_remove_reply __env_remove_reply;
 
@@ -127,7 +127,7 @@ struct __txn_abort_msg {
 typedef struct __txn_abort_msg __txn_abort_msg;
 
 struct __txn_abort_reply {
-	int status;
+	gint status;
 };
 typedef struct __txn_abort_reply __txn_abort_reply;
 
@@ -139,7 +139,7 @@ struct __txn_begin_msg {
 typedef struct __txn_begin_msg __txn_begin_msg;
 
 struct __txn_begin_reply {
-	int status;
+	gint status;
 	u_int txnidcl_id;
 };
 typedef struct __txn_begin_reply __txn_begin_reply;
@@ -151,7 +151,7 @@ struct __txn_commit_msg {
 typedef struct __txn_commit_msg __txn_commit_msg;
 
 struct __txn_commit_reply {
-	int status;
+	gint status;
 };
 typedef struct __txn_commit_reply __txn_commit_reply;
 
@@ -162,18 +162,18 @@ struct __txn_discard_msg {
 typedef struct __txn_discard_msg __txn_discard_msg;
 
 struct __txn_discard_reply {
-	int status;
+	gint status;
 };
 typedef struct __txn_discard_reply __txn_discard_reply;
 
 struct __txn_prepare_msg {
 	u_int txnpcl_id;
-	char gid[128];
+	gchar gid[128];
 };
 typedef struct __txn_prepare_msg __txn_prepare_msg;
 
 struct __txn_prepare_reply {
-	int status;
+	gint status;
 };
 typedef struct __txn_prepare_reply __txn_prepare_reply;
 
@@ -185,14 +185,14 @@ struct __txn_recover_msg {
 typedef struct __txn_recover_msg __txn_recover_msg;
 
 struct __txn_recover_reply {
-	int status;
+	gint status;
 	struct {
 		u_int txn_len;
 		u_int *txn_val;
 	} txn;
 	struct {
 		u_int gid_len;
-		char *gid_val;
+		gchar *gid_val;
 	} gid;
 	u_int retcount;
 };
@@ -207,7 +207,7 @@ struct __db_associate_msg {
 typedef struct __db_associate_msg __db_associate_msg;
 
 struct __db_associate_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_associate_reply __db_associate_reply;
 
@@ -218,7 +218,7 @@ struct __db_bt_maxkey_msg {
 typedef struct __db_bt_maxkey_msg __db_bt_maxkey_msg;
 
 struct __db_bt_maxkey_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_bt_maxkey_reply __db_bt_maxkey_reply;
 
@@ -229,7 +229,7 @@ struct __db_bt_minkey_msg {
 typedef struct __db_bt_minkey_msg __db_bt_minkey_msg;
 
 struct __db_bt_minkey_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_bt_minkey_reply __db_bt_minkey_reply;
 
@@ -240,7 +240,7 @@ struct __db_close_msg {
 typedef struct __db_close_msg __db_close_msg;
 
 struct __db_close_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_close_reply __db_close_reply;
 
@@ -251,7 +251,7 @@ struct __db_create_msg {
 typedef struct __db_create_msg __db_create_msg;
 
 struct __db_create_reply {
-	int status;
+	gint status;
 	u_int dbcl_id;
 };
 typedef struct __db_create_reply __db_create_reply;
@@ -265,26 +265,26 @@ struct __db_del_msg {
 	u_int keyflags;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	u_int flags;
 };
 typedef struct __db_del_msg __db_del_msg;
 
 struct __db_del_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_del_reply __db_del_reply;
 
 struct __db_encrypt_msg {
 	u_int dbpcl_id;
-	char *passwd;
+	gchar *passwd;
 	u_int flags;
 };
 typedef struct __db_encrypt_msg __db_encrypt_msg;
 
 struct __db_encrypt_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_encrypt_reply __db_encrypt_reply;
 
@@ -295,7 +295,7 @@ struct __db_extentsize_msg {
 typedef struct __db_extentsize_msg __db_extentsize_msg;
 
 struct __db_extentsize_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_extentsize_reply __db_extentsize_reply;
 
@@ -306,7 +306,7 @@ struct __db_flags_msg {
 typedef struct __db_flags_msg __db_flags_msg;
 
 struct __db_flags_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_flags_reply __db_flags_reply;
 
@@ -319,7 +319,7 @@ struct __db_get_msg {
 	u_int keyflags;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	u_int datadlen;
 	u_int datadoff;
@@ -327,21 +327,21 @@ struct __db_get_msg {
 	u_int dataflags;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 	u_int flags;
 };
 typedef struct __db_get_msg __db_get_msg;
 
 struct __db_get_reply {
-	int status;
+	gint status;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 };
 typedef struct __db_get_reply __db_get_reply;
@@ -353,7 +353,7 @@ struct __db_h_ffactor_msg {
 typedef struct __db_h_ffactor_msg __db_h_ffactor_msg;
 
 struct __db_h_ffactor_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_h_ffactor_reply __db_h_ffactor_reply;
 
@@ -364,7 +364,7 @@ struct __db_h_nelem_msg {
 typedef struct __db_h_nelem_msg __db_h_nelem_msg;
 
 struct __db_h_nelem_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_h_nelem_reply __db_h_nelem_reply;
 
@@ -377,14 +377,14 @@ struct __db_key_range_msg {
 	u_int keyflags;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	u_int flags;
 };
 typedef struct __db_key_range_msg __db_key_range_msg;
 
 struct __db_key_range_reply {
-	int status;
+	gint status;
 	double less;
 	double equal;
 	double greater;
@@ -398,15 +398,15 @@ struct __db_lorder_msg {
 typedef struct __db_lorder_msg __db_lorder_msg;
 
 struct __db_lorder_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_lorder_reply __db_lorder_reply;
 
 struct __db_open_msg {
 	u_int dbpcl_id;
 	u_int txnpcl_id;
-	char *name;
-	char *subdb;
+	gchar *name;
+	gchar *subdb;
 	u_int type;
 	u_int flags;
 	u_int mode;
@@ -414,7 +414,7 @@ struct __db_open_msg {
 typedef struct __db_open_msg __db_open_msg;
 
 struct __db_open_reply {
-	int status;
+	gint status;
 	u_int dbcl_id;
 	u_int type;
 	u_int dbflags;
@@ -429,7 +429,7 @@ struct __db_pagesize_msg {
 typedef struct __db_pagesize_msg __db_pagesize_msg;
 
 struct __db_pagesize_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_pagesize_reply __db_pagesize_reply;
 
@@ -442,7 +442,7 @@ struct __db_pget_msg {
 	u_int skeyflags;
 	struct {
 		u_int skeydata_len;
-		char *skeydata_val;
+		gchar *skeydata_val;
 	} skeydata;
 	u_int pkeydlen;
 	u_int pkeydoff;
@@ -450,7 +450,7 @@ struct __db_pget_msg {
 	u_int pkeyflags;
 	struct {
 		u_int pkeydata_len;
-		char *pkeydata_val;
+		gchar *pkeydata_val;
 	} pkeydata;
 	u_int datadlen;
 	u_int datadoff;
@@ -458,25 +458,25 @@ struct __db_pget_msg {
 	u_int dataflags;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 	u_int flags;
 };
 typedef struct __db_pget_msg __db_pget_msg;
 
 struct __db_pget_reply {
-	int status;
+	gint status;
 	struct {
 		u_int skeydata_len;
-		char *skeydata_val;
+		gchar *skeydata_val;
 	} skeydata;
 	struct {
 		u_int pkeydata_len;
-		char *pkeydata_val;
+		gchar *pkeydata_val;
 	} pkeydata;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 };
 typedef struct __db_pget_reply __db_pget_reply;
@@ -490,7 +490,7 @@ struct __db_put_msg {
 	u_int keyflags;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	u_int datadlen;
 	u_int datadoff;
@@ -498,17 +498,17 @@ struct __db_put_msg {
 	u_int dataflags;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 	u_int flags;
 };
 typedef struct __db_put_msg __db_put_msg;
 
 struct __db_put_reply {
-	int status;
+	gint status;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 };
 typedef struct __db_put_reply __db_put_reply;
@@ -520,7 +520,7 @@ struct __db_re_delim_msg {
 typedef struct __db_re_delim_msg __db_re_delim_msg;
 
 struct __db_re_delim_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_re_delim_reply __db_re_delim_reply;
 
@@ -531,7 +531,7 @@ struct __db_re_len_msg {
 typedef struct __db_re_len_msg __db_re_len_msg;
 
 struct __db_re_len_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_re_len_reply __db_re_len_reply;
 
@@ -542,34 +542,34 @@ struct __db_re_pad_msg {
 typedef struct __db_re_pad_msg __db_re_pad_msg;
 
 struct __db_re_pad_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_re_pad_reply __db_re_pad_reply;
 
 struct __db_remove_msg {
 	u_int dbpcl_id;
-	char *name;
-	char *subdb;
+	gchar *name;
+	gchar *subdb;
 	u_int flags;
 };
 typedef struct __db_remove_msg __db_remove_msg;
 
 struct __db_remove_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_remove_reply __db_remove_reply;
 
 struct __db_rename_msg {
 	u_int dbpcl_id;
-	char *name;
-	char *subdb;
-	char *newname;
+	gchar *name;
+	gchar *subdb;
+	gchar *newname;
 	u_int flags;
 };
 typedef struct __db_rename_msg __db_rename_msg;
 
 struct __db_rename_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_rename_reply __db_rename_reply;
 
@@ -580,7 +580,7 @@ struct __db_stat_msg {
 typedef struct __db_stat_msg __db_stat_msg;
 
 struct __db_stat_reply {
-	int status;
+	gint status;
 	struct {
 		u_int stats_len;
 		u_int *stats_val;
@@ -595,7 +595,7 @@ struct __db_sync_msg {
 typedef struct __db_sync_msg __db_sync_msg;
 
 struct __db_sync_reply {
-	int status;
+	gint status;
 };
 typedef struct __db_sync_reply __db_sync_reply;
 
@@ -607,7 +607,7 @@ struct __db_truncate_msg {
 typedef struct __db_truncate_msg __db_truncate_msg;
 
 struct __db_truncate_reply {
-	int status;
+	gint status;
 	u_int count;
 };
 typedef struct __db_truncate_reply __db_truncate_reply;
@@ -620,7 +620,7 @@ struct __db_cursor_msg {
 typedef struct __db_cursor_msg __db_cursor_msg;
 
 struct __db_cursor_reply {
-	int status;
+	gint status;
 	u_int dbcidcl_id;
 };
 typedef struct __db_cursor_reply __db_cursor_reply;
@@ -636,7 +636,7 @@ struct __db_join_msg {
 typedef struct __db_join_msg __db_join_msg;
 
 struct __db_join_reply {
-	int status;
+	gint status;
 	u_int dbcidcl_id;
 };
 typedef struct __db_join_reply __db_join_reply;
@@ -647,7 +647,7 @@ struct __dbc_close_msg {
 typedef struct __dbc_close_msg __dbc_close_msg;
 
 struct __dbc_close_reply {
-	int status;
+	gint status;
 };
 typedef struct __dbc_close_reply __dbc_close_reply;
 
@@ -658,7 +658,7 @@ struct __dbc_count_msg {
 typedef struct __dbc_count_msg __dbc_count_msg;
 
 struct __dbc_count_reply {
-	int status;
+	gint status;
 	u_int dupcount;
 };
 typedef struct __dbc_count_reply __dbc_count_reply;
@@ -670,7 +670,7 @@ struct __dbc_del_msg {
 typedef struct __dbc_del_msg __dbc_del_msg;
 
 struct __dbc_del_reply {
-	int status;
+	gint status;
 };
 typedef struct __dbc_del_reply __dbc_del_reply;
 
@@ -681,7 +681,7 @@ struct __dbc_dup_msg {
 typedef struct __dbc_dup_msg __dbc_dup_msg;
 
 struct __dbc_dup_reply {
-	int status;
+	gint status;
 	u_int dbcidcl_id;
 };
 typedef struct __dbc_dup_reply __dbc_dup_reply;
@@ -694,7 +694,7 @@ struct __dbc_get_msg {
 	u_int keyflags;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	u_int datadlen;
 	u_int datadoff;
@@ -702,21 +702,21 @@ struct __dbc_get_msg {
 	u_int dataflags;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 	u_int flags;
 };
 typedef struct __dbc_get_msg __dbc_get_msg;
 
 struct __dbc_get_reply {
-	int status;
+	gint status;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 };
 typedef struct __dbc_get_reply __dbc_get_reply;
@@ -729,7 +729,7 @@ struct __dbc_pget_msg {
 	u_int skeyflags;
 	struct {
 		u_int skeydata_len;
-		char *skeydata_val;
+		gchar *skeydata_val;
 	} skeydata;
 	u_int pkeydlen;
 	u_int pkeydoff;
@@ -737,7 +737,7 @@ struct __dbc_pget_msg {
 	u_int pkeyflags;
 	struct {
 		u_int pkeydata_len;
-		char *pkeydata_val;
+		gchar *pkeydata_val;
 	} pkeydata;
 	u_int datadlen;
 	u_int datadoff;
@@ -745,25 +745,25 @@ struct __dbc_pget_msg {
 	u_int dataflags;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 	u_int flags;
 };
 typedef struct __dbc_pget_msg __dbc_pget_msg;
 
 struct __dbc_pget_reply {
-	int status;
+	gint status;
 	struct {
 		u_int skeydata_len;
-		char *skeydata_val;
+		gchar *skeydata_val;
 	} skeydata;
 	struct {
 		u_int pkeydata_len;
-		char *pkeydata_val;
+		gchar *pkeydata_val;
 	} pkeydata;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 };
 typedef struct __dbc_pget_reply __dbc_pget_reply;
@@ -776,7 +776,7 @@ struct __dbc_put_msg {
 	u_int keyflags;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 	u_int datadlen;
 	u_int datadoff;
@@ -784,17 +784,17 @@ struct __dbc_put_msg {
 	u_int dataflags;
 	struct {
 		u_int datadata_len;
-		char *datadata_val;
+		gchar *datadata_val;
 	} datadata;
 	u_int flags;
 };
 typedef struct __dbc_put_msg __dbc_put_msg;
 
 struct __dbc_put_reply {
-	int status;
+	gint status;
 	struct {
 		u_int keydata_len;
-		char *keydata_val;
+		gchar *keydata_val;
 	} keydata;
 };
 typedef struct __dbc_put_reply __dbc_put_reply;
@@ -899,7 +899,7 @@ extern  __dbc_get_reply * __db_dbc_get_4001();
 extern  __dbc_pget_reply * __db_dbc_pget_4001();
 #define	__DB_dbc_put ((unsigned long)(50))
 extern  __dbc_put_reply * __db_dbc_put_4001();
-extern int db_rpc_serverprog_4001_freeresult();
+extern gint db_rpc_serverprog_4001_freeresult();
 
 /* the xdr functions */
 extern bool_t xdr___env_cachesize_msg();

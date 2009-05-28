@@ -26,9 +26,9 @@ struct _ExchangeHierarchy {
 	ExchangeHierarchyType type;
 	EFolder *toplevel;
 
-	char *owner_name;
-	char *owner_email;
-	char *source_uri;
+	gchar *owner_name;
+	gchar *owner_email;
+	gchar *source_uri;
 
 	gboolean hide_private_items;
 };
@@ -43,18 +43,18 @@ struct _ExchangeHierarchyClass {
 	void (*rescan) (ExchangeHierarchy *hier);
 	ExchangeAccountFolderResult (*scan_subtree)  (ExchangeHierarchy *hier,
 						      EFolder *folder,
-						      int mode);
+						      gint mode);
 
 	ExchangeAccountFolderResult (*create_folder) (ExchangeHierarchy *hier,
 						      EFolder *parent,
-						      const char *name,
-						      const char *type);
+						      const gchar *name,
+						      const gchar *type);
 	ExchangeAccountFolderResult (*remove_folder) (ExchangeHierarchy *hier,
 						      EFolder *folder);
 	ExchangeAccountFolderResult (*xfer_folder)   (ExchangeHierarchy *hier,
 						      EFolder *source,
 						      EFolder *dest_parent,
-						      const char *dest_name,
+						      const gchar *dest_name,
 						      gboolean remove_source);
 
 	/* signals */
@@ -70,9 +70,9 @@ void     exchange_hierarchy_construct           (ExchangeHierarchy *hier,
 						 ExchangeAccount   *account,
 						 ExchangeHierarchyType type,
 						 EFolder           *toplevel,
-						 const char        *owner_name,
-						 const char        *owner_email,
-						 const char        *source_uri);
+						 const gchar        *owner_name,
+						 const gchar        *owner_email,
+						 const gchar        *source_uri);
 
 void     exchange_hierarchy_new_folder          (ExchangeHierarchy *hier,
 						 EFolder           *folder);
@@ -89,14 +89,14 @@ ExchangeAccountFolderResult exchange_hierarchy_scan_subtree   (ExchangeHierarchy
 
 ExchangeAccountFolderResult exchange_hierarchy_create_folder (ExchangeHierarchy *hier,
 							      EFolder           *parent,
-							      const char        *name,
-							      const char        *type);
+							      const gchar        *name,
+							      const gchar        *type);
 ExchangeAccountFolderResult exchange_hierarchy_remove_folder (ExchangeHierarchy *hier,
 							      EFolder           *folder);
 ExchangeAccountFolderResult exchange_hierarchy_xfer_folder   (ExchangeHierarchy *hier,
 							      EFolder           *source,
 							      EFolder           *dest_parent,
-							      const char        *dest_name,
+							      const gchar        *dest_name,
 							      gboolean           remove_source);
 
 #ifdef __cplusplus

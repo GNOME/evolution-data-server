@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -20,18 +20,18 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_shash.h"
 #include "dbinc/mp.h"
 
-static int  __memp_fclose __P((DB_MPOOLFILE *, u_int32_t));
-static int  __memp_fopen __P((DB_MPOOLFILE *,
-		const char *, u_int32_t, int, size_t));
+static gint  __memp_fclose __P((DB_MPOOLFILE *, u_int32_t));
+static gint  __memp_fopen __P((DB_MPOOLFILE *,
+		const gchar *, u_int32_t, int, size_t));
 static void __memp_get_fileid __P((DB_MPOOLFILE *, u_int8_t *));
 static void __memp_last_pgno __P((DB_MPOOLFILE *, db_pgno_t *));
 static void __memp_refcnt __P((DB_MPOOLFILE *, db_pgno_t *));
-static int  __memp_set_clear_len __P((DB_MPOOLFILE *, u_int32_t));
-static int  __memp_set_fileid __P((DB_MPOOLFILE *, u_int8_t *));
-static int  __memp_set_ftype __P((DB_MPOOLFILE *, int));
-static int  __memp_set_lsn_offset __P((DB_MPOOLFILE *, int32_t));
-static int  __memp_set_pgcookie __P((DB_MPOOLFILE *, DBT *));
-static int  __memp_set_priority __P((DB_MPOOLFILE *, DB_CACHE_PRIORITY));
+static gint  __memp_set_clear_len __P((DB_MPOOLFILE *, u_int32_t));
+static gint  __memp_set_fileid __P((DB_MPOOLFILE *, u_int8_t *));
+static gint  __memp_set_ftype __P((DB_MPOOLFILE *, int));
+static gint  __memp_set_lsn_offset __P((DB_MPOOLFILE *, int32_t));
+static gint  __memp_set_pgcookie __P((DB_MPOOLFILE *, DBT *));
+static gint  __memp_set_priority __P((DB_MPOOLFILE *, DB_CACHE_PRIORITY));
 static void __memp_set_unlink __P((DB_MPOOLFILE *, int));
 
 /* Initialization methods cannot be called after open is called. */
@@ -43,9 +43,9 @@ static void __memp_set_unlink __P((DB_MPOOLFILE *, int));
  * __memp_fcreate --
  *	Create a DB_MPOOLFILE handle.
  *
- * PUBLIC: int __memp_fcreate __P((DB_ENV *, DB_MPOOLFILE **, u_int32_t));
+ * PUBLIC: gint __memp_fcreate __P((DB_ENV *, DB_MPOOLFILE **, u_int32_t));
  */
-int
+gint
 __memp_fcreate(dbenv, retp, flags)
 	DB_ENV *dbenv;
 	DB_MPOOLFILE **retp;
@@ -53,7 +53,7 @@ __memp_fcreate(dbenv, retp, flags)
 {
 	DB_MPOOL *dbmp;
 	DB_MPOOLFILE *dbmfp;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -152,7 +152,7 @@ __memp_set_fileid(dbmfp, fileid)
 static int
 __memp_set_ftype(dbmfp, ftype)
 	DB_MPOOLFILE *dbmfp;
-	int ftype;
+	gint ftype;
 {
 	MPF_ILLEGAL_AFTER_OPEN(dbmfp, "set_ftype");
 
@@ -231,14 +231,14 @@ __memp_set_priority(dbmfp, priority)
 static int
 __memp_fopen(dbmfp, path, flags, mode, pagesize)
 	DB_MPOOLFILE *dbmfp;
-	const char *path;
+	const gchar *path;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	size_t pagesize;
 {
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
-	int ret;
+	gint ret;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
@@ -280,16 +280,16 @@ __memp_fopen(dbmfp, path, flags, mode, pagesize)
  * __memp_fopen_int --
  *	Open a backing file for the memory pool; internal version.
  *
- * PUBLIC: int __memp_fopen_int __P((DB_MPOOLFILE *,
- * PUBLIC:     MPOOLFILE *, const char *, u_int32_t, int, size_t));
+ * PUBLIC: gint __memp_fopen_int __P((DB_MPOOLFILE *,
+ * PUBLIC:     MPOOLFILE *, const gchar *, u_int32_t, int, size_t));
  */
-int
+gint
 __memp_fopen_int(dbmfp, mfp, path, flags, mode, pagesize)
 	DB_MPOOLFILE *dbmfp;
 	MPOOLFILE *mfp;
-	const char *path;
+	const gchar *path;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	size_t pagesize;
 {
 	DB_ENV *dbenv;
@@ -298,10 +298,10 @@ __memp_fopen_int(dbmfp, mfp, path, flags, mode, pagesize)
 	db_pgno_t last_pgno;
 	size_t maxmap;
 	u_int32_t mbytes, bytes, oflags;
-	int mfp_alloc, ret;
+	gint mfp_alloc, ret;
 	u_int8_t idbuf[DB_FILE_ID_LEN];
-	char *rpath;
-	void *p;
+	gchar *rpath;
+	gpointer p;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
@@ -722,7 +722,7 @@ __memp_refcnt(dbmfp, cntp)
 static void
 __memp_set_unlink(dbmpf, set)
 	DB_MPOOLFILE *dbmpf;
-	int set;
+	gint set;
 {
 	DB_ENV *dbenv;
 
@@ -746,7 +746,7 @@ __memp_fclose(dbmfp, flags)
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbenv = dbmfp->dbmp->dbenv;
 
@@ -768,9 +768,9 @@ __memp_fclose(dbmfp, flags)
  * __memp_fclose_int --
  *	Internal version of __memp_fclose.
  *
- * PUBLIC: int __memp_fclose_int __P((DB_MPOOLFILE *, u_int32_t));
+ * PUBLIC: gint __memp_fclose_int __P((DB_MPOOLFILE *, u_int32_t));
  */
-int
+gint
 __memp_fclose_int(dbmfp, flags)
 	DB_MPOOLFILE *dbmfp;
 	u_int32_t flags;
@@ -778,8 +778,8 @@ __memp_fclose_int(dbmfp, flags)
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
 	MPOOLFILE *mfp;
-	char *rpath;
-	int deleted, ret, t_ret;
+	gchar *rpath;
+	gint deleted, ret, t_ret;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
@@ -906,9 +906,9 @@ done:	__os_free(dbenv, dbmfp->fhp);
  * __memp_mf_discard --
  *	Discard an MPOOLFILE.
  *
- * PUBLIC: int __memp_mf_discard __P((DB_MPOOL *, MPOOLFILE *));
+ * PUBLIC: gint __memp_mf_discard __P((DB_MPOOL *, MPOOLFILE *));
  */
-int
+gint
 __memp_mf_discard(dbmp, mfp)
 	DB_MPOOL *dbmp;
 	MPOOLFILE *mfp;
@@ -917,8 +917,8 @@ __memp_mf_discard(dbmp, mfp)
 	DB_FH fh;
 	DB_MPOOL_STAT *sp;
 	MPOOL *mp;
-	char *rpath;
-	int ret;
+	gchar *rpath;
+	gint ret;
 
 	dbenv = dbmp->dbenv;
 	mp = dbmp->reginfo[0].primary;
@@ -990,9 +990,9 @@ __memp_mf_discard(dbmp, mfp)
  * __memp_fn --
  *	On errors we print whatever is available as the file name.
  *
- * PUBLIC: char * __memp_fn __P((DB_MPOOLFILE *));
+ * PUBLIC: gchar * __memp_fn __P((DB_MPOOLFILE *));
  */
-char *
+gchar *
 __memp_fn(dbmfp)
 	DB_MPOOLFILE *dbmfp;
 {
@@ -1003,16 +1003,16 @@ __memp_fn(dbmfp)
  * __memp_fns --
  *	On errors we print whatever is available as the file name.
  *
- * PUBLIC: char * __memp_fns __P((DB_MPOOL *, MPOOLFILE *));
+ * PUBLIC: gchar * __memp_fns __P((DB_MPOOL *, MPOOLFILE *));
  *
  */
-char *
+gchar *
 __memp_fns(dbmp, mfp)
 	DB_MPOOL *dbmp;
 	MPOOLFILE *mfp;
 {
 	if (mfp->path_off == 0)
-		return ((char *)"temporary");
+		return ((gchar *)"temporary");
 
-	return ((char *)R_ADDR(dbmp->reginfo, mfp->path_off));
+	return ((gchar *)R_ADDR(dbmp->reginfo, mfp->path_off));
 }

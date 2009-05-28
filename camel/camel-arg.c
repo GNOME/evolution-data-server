@@ -28,12 +28,12 @@
 
 #include "camel-arg.h"
 
-int camel_argv_build(CamelArgV *tv)
+gint camel_argv_build(CamelArgV *tv)
 {
 	register guint32 tag;
-	register int i;
+	register gint i;
 	register CamelArg *a;
-	int more = TRUE;
+	gint more = TRUE;
 
 	for (i=0;i<CAMEL_ARGV_MAX;i++) {
 		a = &tv->argv[i];
@@ -47,7 +47,7 @@ int camel_argv_build(CamelArgV *tv)
 
 		switch((tag & CAMEL_ARG_TYPE)) {
 		case CAMEL_ARG_OBJ:
-			a->ca_object = va_arg(tv->ap, void *);
+			a->ca_object = va_arg(tv->ap, gpointer );
 			break;
 		case CAMEL_ARG_INT:
 			a->ca_int = va_arg(tv->ap, int);
@@ -56,10 +56,10 @@ int camel_argv_build(CamelArgV *tv)
 			a->ca_double = va_arg(tv->ap, double);
 			break;
 		case CAMEL_ARG_STR:
-			a->ca_str = va_arg(tv->ap, char *);
+			a->ca_str = va_arg(tv->ap, gchar *);
 			break;
 		case CAMEL_ARG_PTR:
-			a->ca_ptr = va_arg(tv->ap, void *);
+			a->ca_ptr = va_arg(tv->ap, gpointer );
 			break;
 		case CAMEL_ARG_BOO:
 			a->ca_int = va_arg(tv->ap, int) != 0;
@@ -77,12 +77,12 @@ fail:
 	return more;
 }
 
-int camel_arggetv_build(CamelArgGetV *tv)
+gint camel_arggetv_build(CamelArgGetV *tv)
 {
 	register guint32 tag;
-	register int i;
+	register gint i;
 	register CamelArgGet *a;
-	int more = TRUE;
+	gint more = TRUE;
 
 	for (i=0;i<CAMEL_ARGV_MAX;i++) {
 		a = &tv->argv[i];
@@ -96,12 +96,12 @@ int camel_arggetv_build(CamelArgGetV *tv)
 
 		switch((tag & CAMEL_ARG_TYPE)) {
 		case CAMEL_ARG_OBJ:
-			a->ca_object = va_arg(tv->ap, void **);
+			a->ca_object = va_arg(tv->ap, gpointer *);
 			*a->ca_object = NULL;
 			break;
 		case CAMEL_ARG_INT:
 		case CAMEL_ARG_BOO:
-			a->ca_int = va_arg(tv->ap, int *);
+			a->ca_int = va_arg(tv->ap, gint *);
 			*a->ca_int = 0;
 			break;
 		case CAMEL_ARG_DBL:
@@ -109,11 +109,11 @@ int camel_arggetv_build(CamelArgGetV *tv)
 			*a->ca_double = 0.0;
 			break;
 		case CAMEL_ARG_STR:
-			a->ca_str = va_arg(tv->ap, char **);
+			a->ca_str = va_arg(tv->ap, gchar **);
 			*a->ca_str = NULL;
 			break;
 		case CAMEL_ARG_PTR:
-			a->ca_ptr = va_arg(tv->ap, void **);
+			a->ca_ptr = va_arg(tv->ap, gpointer *);
 			*a->ca_ptr = NULL;
 			break;
 		default:

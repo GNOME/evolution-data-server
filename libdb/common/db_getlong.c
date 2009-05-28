@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,18 +25,18 @@ static const char revid[] = "$Id$";
  * __db_getlong --
  *	Return a long value inside of basic parameters.
  *
- * PUBLIC: int __db_getlong
- * PUBLIC:     __P((DB *, const char *, char *, long, long, long *));
+ * PUBLIC: gint __db_getlong
+ * PUBLIC:     __P((DB *, const gchar *, gchar *, long, long, long *));
  */
-int
+gint
 __db_getlong(dbp, progname, p, min, max, storep)
 	DB *dbp;
-	const char *progname;
-	char *p;
+	const gchar *progname;
+	gchar *p;
 	long min, max, *storep;
 {
 	long val;
-	char *end;
+	gchar *end;
 
 	__os_set_errno(0);
 	val = strtol(p, &end, 10);
@@ -85,14 +85,14 @@ __db_getlong(dbp, progname, p, min, max, storep)
  * __db_getulong --
  *	Return an unsigned long value inside of basic parameters.
  *
- * PUBLIC: int __db_getulong
- * PUBLIC:     __P((DB *, const char *, char *, u_long, u_long, u_long *));
+ * PUBLIC: gint __db_getulong
+ * PUBLIC:     __P((DB *, const gchar *, gchar *, u_long, u_long, u_long *));
  */
-int
+gint
 __db_getulong(dbp, progname, p, min, max, storep)
 	DB *dbp;
-	const char *progname;
-	char *p;
+	const gchar *progname;
+	gchar *p;
 	u_long min, max, *storep;
 {
 #if !defined(HAVE_STRTOUL)
@@ -101,7 +101,7 @@ __db_getulong(dbp, progname, p, min, max, storep)
 	return (__db_getlong(dbp, progname, p, 0, max, (long *)storep));
 #else
 	u_long val;
-	char *end;
+	gchar *end;
 
 	__os_set_errno(0);
 	val = strtoul(p, &end, 10);

@@ -40,8 +40,8 @@ typedef struct {
 struct _E2kSidPrivate {
 	E2kSidType type;
 	E2kSid_SID *binary_sid;
-	char *string_sid;
-	char *display_name;
+	gchar *string_sid;
+	gchar *display_name;
 };
 
 #define PARENT_TYPE G_TYPE_OBJECT
@@ -87,8 +87,8 @@ dispose (GObject *object)
 E2K_MAKE_TYPE (e2k_sid, E2kSid, class_init, init, PARENT_TYPE)
 
 static E2kSid *
-sid_new_internal (E2kSidType type, const char *display_name,
-		  const char *string_sid, const guint8 *binary_sid)
+sid_new_internal (E2kSidType type, const gchar *display_name,
+		  const gchar *string_sid, const guint8 *binary_sid)
 {
 	E2kSid *sid;
 
@@ -129,8 +129,8 @@ sid_new_internal (E2kSidType type, const char *display_name,
  * Return value: the new SID
  **/
 E2kSid *
-e2k_sid_new_from_string_sid (E2kSidType type, const char *string_sid,
-			     const char *display_name)
+e2k_sid_new_from_string_sid (E2kSidType type, const gchar *string_sid,
+			     const gchar *display_name)
 {
 	g_return_val_if_fail (string_sid != NULL, NULL);
 
@@ -154,7 +154,7 @@ e2k_sid_new_from_string_sid (E2kSidType type, const char *string_sid,
 E2kSid *
 e2k_sid_new_from_binary_sid (E2kSidType    type,
 			     const guint8 *binary_sid,
-			     const char   *display_name)
+			     const gchar   *display_name)
 {
 	g_return_val_if_fail (binary_sid != NULL, NULL);
 
@@ -185,14 +185,14 @@ e2k_sid_get_sid_type (E2kSid *sid)
  *
  * Return value: the string SID
  **/
-const char *
+const gchar *
 e2k_sid_get_string_sid (E2kSid *sid)
 {
 	g_return_val_if_fail (E2K_IS_SID (sid), NULL);
 
 	if (!sid->priv->string_sid) {
 		GString *string;
-		int sa;
+		gint sa;
 
 		string = g_string_new (NULL);
 
@@ -230,9 +230,9 @@ e2k_sid_get_binary_sid (E2kSid *sid)
 	g_return_val_if_fail (E2K_IS_SID (sid), NULL);
 
 	if (!sid->priv->binary_sid) {
-		int sa, subauth_count;
+		gint sa, subauth_count;
 		guint32 subauthority;
-		char *p;
+		gchar *p;
 
 		p = sid->priv->string_sid + 4;
 		subauth_count = 0;
@@ -265,7 +265,7 @@ e2k_sid_get_binary_sid (E2kSid *sid)
  *
  * Return value: the UTF-8 display name
  **/
-const char *
+const gchar *
 e2k_sid_get_display_name (E2kSid *sid)
 {
 	g_return_val_if_fail (E2K_IS_SID (sid), NULL);

@@ -47,18 +47,18 @@
 #include "camel-imap-store.h"
 #include "camel-imap-utils.h"
 
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 
 static gboolean imap_command_start (CamelImapStore *store, CamelFolder *folder,
-				    const char *cmd, CamelException *ex);
+				    const gchar *cmd, CamelException *ex);
 static CamelImapResponse *imap_read_response (CamelImapStore *store,
 					      CamelException *ex);
-static char *imap_read_untagged (CamelImapStore *store, char *line,
+static gchar *imap_read_untagged (CamelImapStore *store, gchar *line,
 				 CamelException *ex);
-static char *imap_command_strdup_vprintf (CamelImapStore *store,
-					  const char *fmt, va_list ap);
-static char *imap_command_strdup_printf (CamelImapStore *store,
-					 const char *fmt, ...);
+static gchar *imap_command_strdup_vprintf (CamelImapStore *store,
+					  const gchar *fmt, va_list ap);
+static gchar *imap_command_strdup_printf (CamelImapStore *store,
+					 const gchar *fmt, ...);
 
 /**
  * camel_imap_command:
@@ -89,10 +89,10 @@ static char *imap_command_strdup_printf (CamelImapStore *store,
  **/
 CamelImapResponse *
 camel_imap_command (CamelImapStore *store, CamelFolder *folder,
-		    CamelException *ex, const char *fmt, ...)
+		    CamelException *ex, const gchar *fmt, ...)
 {
 	va_list ap;
-	char *cmd;
+	gchar *cmd;
 
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
@@ -154,10 +154,10 @@ camel_imap_command (CamelImapStore *store, CamelFolder *folder,
  **/
 gboolean
 camel_imap_command_start (CamelImapStore *store, CamelFolder *folder,
-			  CamelException *ex, const char *fmt, ...)
+			  CamelException *ex, const gchar *fmt, ...)
 {
 	va_list ap;
-	char *cmd;
+	gchar *cmd;
 	gboolean ok;
 
 	va_start (ap, fmt);
@@ -175,7 +175,7 @@ camel_imap_command_start (CamelImapStore *store, CamelFolder *folder,
 
 static gboolean
 imap_command_start (CamelImapStore *store, CamelFolder *folder,
-		    const char *cmd, CamelException *ex)
+		    const gchar *cmd, CamelException *ex)
 {
 	ssize_t nwritten;
 
@@ -208,7 +208,7 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 
 	/* Send the command */
 	if (camel_verbose_debug) {
-		const char *mask;
+		const gchar *mask;
 
 		if (!strncmp ("LOGIN \"", cmd, 7))
 			mask = "LOGIN \"xxx\" xxx";
@@ -257,7 +257,7 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
  * connect_lock will be released.
  **/
 CamelImapResponse *
-camel_imap_command_continuation (CamelImapStore *store, const char *cmd,
+camel_imap_command_continuation (CamelImapStore *store, const gchar *cmd,
 				 size_t cmdlen, CamelException *ex)
 {
 	if (!camel_imap_store_connected (store, ex))
@@ -305,11 +305,11 @@ camel_imap_command_continuation (CamelImapStore *store, const char *cmd,
  * command lock will be unlocked.
  **/
 CamelImapResponseType
-camel_imap_command_response (CamelImapStore *store, char **response,
+camel_imap_command_response (CamelImapStore *store, gchar **response,
 			     CamelException *ex)
 {
 	CamelImapResponseType type;
-	char *respbuf;
+	gchar *respbuf;
 
 	if (camel_imap_store_readline (store, &respbuf, ex) < 0) {
 		CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
@@ -319,7 +319,7 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 	switch (*respbuf) {
 	case '*':
 		if (!g_ascii_strncasecmp (respbuf, "* BYE", 5)) {
-			const char *err = NULL;
+			const gchar *err = NULL;
 
 			if (respbuf [5] && g_ascii_strncasecmp (respbuf + 6, "[ALERT] ", 8) == 0)
 				err = respbuf + 14;
@@ -347,7 +347,7 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 		else if (!g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12)
 			 || !g_ascii_strncasecmp (respbuf, "* NO [ALERT]", 12)
 			 || !g_ascii_strncasecmp (respbuf, "* BAD [ALERT]", 13)) {
-			char *msg;
+			gchar *msg;
 
 			/* for imap ALERT codes, account user@host */
 			/* we might get a ']' from a BAD response since we +12, but who cares? */
@@ -379,7 +379,7 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 {
 	CamelImapResponse *response;
 	CamelImapResponseType type;
-	char *respbuf, *p;
+	gchar *respbuf, *p;
 
 	/* Get another lock so that when we reach the tagged
 	 * response and camel_imap_command_response unlocks,
@@ -440,14 +440,14 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
  * return the complete response, which may include an arbitrary number
  * of literals.
  */
-static char *
-imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
+static gchar *
+imap_read_untagged (CamelImapStore *store, gchar *line, CamelException *ex)
 {
-	int fulllen, ldigits, nread, n, i, sexp = 0;
-	unsigned int length;
+	gint fulllen, ldigits, nread, n, i, sexp = 0;
+	guint length;
 	GPtrArray *data;
 	GString *str;
-	char *end, *p, *s, *d;
+	gchar *end, *p, *s, *d;
 
 	p = strrchr (line, '{');
 	if (!p)
@@ -600,9 +600,9 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 void
 camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 {
-	int i, number, exists = 0;
+	gint i, number, exists = 0;
 	GArray *expunged = NULL;
-	char *resp, *p;
+	gchar *resp, *p;
 
 	if (!response)
 		return;
@@ -684,14 +684,14 @@ camel_imap_response_free_without_processing (CamelImapStore *store,
  *
  * Return value: the desired response string, which the caller must free.
  **/
-char *
+gchar *
 camel_imap_response_extract (CamelImapStore *store,
 			     CamelImapResponse *response,
-			     const char *type,
+			     const gchar *type,
 			     CamelException *ex)
 {
-	int len = strlen (type), i;
-	char *resp;
+	gint len = strlen (type), i;
+	gchar *resp;
 
 	len = strlen (type);
 
@@ -700,7 +700,7 @@ camel_imap_response_extract (CamelImapStore *store,
 		/* Skip "* ", and initial sequence number, if present */
 		strtoul (resp + 2, &resp, 10);
 		if (*resp == ' ')
-			resp = (char *) imap_next_word (resp);
+			resp = (gchar *) imap_next_word (resp);
 
 		if (!g_ascii_strncasecmp (resp, type, len))
 			break;
@@ -733,12 +733,12 @@ camel_imap_response_extract (CamelImapStore *store,
  *
  * Return value: the desired response string, which the caller must free.
  **/
-char *
+gchar *
 camel_imap_response_extract_continuation (CamelImapStore *store,
 					  CamelImapResponse *response,
 					  CamelException *ex)
 {
-	char *status;
+	gchar *status;
 
 	if (response->status && *response->status == '+') {
 		status = response->status;
@@ -754,14 +754,14 @@ camel_imap_response_extract_continuation (CamelImapStore *store,
 	return NULL;
 }
 
-static char *
-imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
+static gchar *
+imap_command_strdup_vprintf (CamelImapStore *store, const gchar *fmt,
 			     va_list ap)
 {
 	GPtrArray *args;
-	const char *p, *start;
-	char *out, *outptr, *string;
-	int num, len, i, arglen;
+	const gchar *p, *start;
+	gchar *out, *outptr, *string;
+	gint num, len, i, arglen;
 
 	args = g_ptr_array_new ();
 
@@ -781,7 +781,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 			len += 10;
 			break;
 		case 's':
-			string = va_arg (ap, char *);
+			string = va_arg (ap, gchar *);
 			g_ptr_array_add (args, string);
 			start = p + 1;
 			len += strlen (string);
@@ -789,10 +789,10 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 		case 'S':
 		case 'F':
 		case 'G':
-			string = va_arg (ap, char *);
+			string = va_arg (ap, gchar *);
 			/* NB: string is freed during output for %F and %G */
 			if (*p == 'F') {
-				char *s = camel_imap_store_summary_full_from_path(store->summary, string);
+				gchar *s = camel_imap_store_summary_full_from_path(store->summary, string);
 				if (s) {
 					string = camel_utf8_utf7(s);
 					g_free(s);
@@ -861,7 +861,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 				if (len && store->capabilities & IMAP_CAPABILITY_LITERALPLUS) {
 					outptr += sprintf (outptr, "{%d+}\r\n%s", len, string);
 				} else {
-					char *quoted = imap_quote_string (string);
+					gchar *quoted = imap_quote_string (string);
 
 					outptr += sprintf (outptr, "%s", quoted);
 					g_free (quoted);
@@ -884,11 +884,11 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 	return out;
 }
 
-static char *
-imap_command_strdup_printf (CamelImapStore *store, const char *fmt, ...)
+static gchar *
+imap_command_strdup_printf (CamelImapStore *store, const gchar *fmt, ...)
 {
 	va_list ap;
-	char *result;
+	gchar *result;
 
 	va_start (ap, fmt);
 	result = imap_command_strdup_vprintf (store, fmt, ap);

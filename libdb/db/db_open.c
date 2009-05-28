@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -33,27 +33,27 @@ static const char revid[] = "$Id$";
 #include "dbinc/qam.h"
 #include "dbinc/txn.h"
 
-static int __db_openchk __P((DB *,
-    DB_TXN *, const char *, const char *, DBTYPE, u_int32_t));
+static gint __db_openchk __P((DB *,
+    DB_TXN *, const gchar *, const gchar *, DBTYPE, u_int32_t));
 
 /*
  * __db_open --
  *	Main library interface to the DB access methods.
  *
- * PUBLIC: int __db_open __P((DB *, DB_TXN *,
- * PUBLIC:     const char *, const char *, DBTYPE, u_int32_t, int));
+ * PUBLIC: gint __db_open __P((DB *, DB_TXN *,
+ * PUBLIC:     const gchar *, const gchar *, DBTYPE, u_int32_t, int));
  */
-int
+gint
 __db_open(dbp, txn, name, subdb, type, flags, mode)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	DBTYPE type;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 {
 	DB_ENV *dbenv;
-	int remove_master, remove_me, ret, t_ret, txn_local;
+	gint remove_master, remove_me, ret, t_ret, txn_local;
 
 	dbenv = dbp->dbenv;
 	remove_me = remove_master = txn_local = 0;
@@ -178,20 +178,20 @@ err:	/* If we were successful, don't discard the file on close. */
  *    name will be non-NULL, subname mqy be NULL and meta-pgno will be
  *    a valid pgno (i.e., not PGNO_BASE_MD).
  *
- * PUBLIC: int __db_dbopen __P((DB *, DB_TXN *,
- * PUBLIC:     const char *, const char *, u_int32_t, int, db_pgno_t));
+ * PUBLIC: gint __db_dbopen __P((DB *, DB_TXN *,
+ * PUBLIC:     const gchar *, const gchar *, u_int32_t, int, db_pgno_t));
  */
-int
+gint
 __db_dbopen(dbp, txn, name, subdb, flags, mode, meta_pgno)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	db_pgno_t meta_pgno;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 	u_int32_t id;
 
 	dbenv = dbp->dbenv;
@@ -331,16 +331,16 @@ err:
  * __db_new_file --
  *	Create a new database file.
  *
- * PUBLIC: int __db_new_file __P((DB *, DB_TXN *, DB_FH *, const char *));
+ * PUBLIC: gint __db_new_file __P((DB *, DB_TXN *, DB_FH *, const gchar *));
  */
-int
+gint
 __db_new_file(dbp, txn, fhp, name)
 	DB *dbp;
 	DB_TXN *txn;
 	DB_FH *fhp;
-	const char *name;
+	const gchar *name;
 {
-	int ret;
+	gint ret;
 
 	switch (dbp->type) {
 	case DB_BTREE:
@@ -375,17 +375,17 @@ DB_TEST_RECOVERY_LABEL
  * __db_init_subdb --
  *	Initialize the dbp for a subdb.
  *
- * PUBLIC: int __db_init_subdb __P((DB *, DB *, const char *, DB_TXN *));
+ * PUBLIC: gint __db_init_subdb __P((DB *, DB *, const gchar *, DB_TXN *));
  */
-int
+gint
 __db_init_subdb(mdbp, dbp, name, txn)
 	DB *mdbp, *dbp;
-	const char *name;
+	const gchar *name;
 	DB_TXN *txn;
 {
 	DBMETA *meta;
 	DB_MPOOLFILE *mpf;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = 0;
 	if (!F_ISSET(dbp, DB_AM_CREATED)) {
@@ -433,16 +433,16 @@ err:	return (ret);
  *
  *	Return 0 on success, >0 (errno) on error, -1 on checksum mismatch.
  *
- * PUBLIC: int __db_chk_meta __P((DB_ENV *, DB *, DBMETA *, int));
+ * PUBLIC: gint __db_chk_meta __P((DB_ENV *, DB *, DBMETA *, int));
  */
-int
+gint
 __db_chk_meta(dbenv, dbp, meta, do_metachk)
 	DB_ENV *dbenv;
 	DB *dbp;
 	DBMETA *meta;
-	int do_metachk;
+	gint do_metachk;
 {
-	int is_hmac, ret;
+	gint is_hmac, ret;
 	u_int8_t *chksum;
 
 	ret = 0;
@@ -471,20 +471,20 @@ __db_chk_meta(dbenv, dbp, meta, do_metachk)
  * Take a buffer containing a meta-data page and figure out if it's
  * valid, and if so, initialize the dbp from the meta-data page.
  *
- * PUBLIC: int __db_meta_setup __P((DB_ENV *,
- * PUBLIC:     DB *, const char *, DBMETA *, u_int32_t, int));
+ * PUBLIC: gint __db_meta_setup __P((DB_ENV *,
+ * PUBLIC:     DB *, const gchar *, DBMETA *, u_int32_t, int));
  */
-int
+gint
 __db_meta_setup(dbenv, dbp, name, meta, oflags, do_metachk)
 	DB_ENV *dbenv;
 	DB *dbp;
-	const char *name;
+	const gchar *name;
 	DBMETA *meta;
 	u_int32_t oflags;
-	int do_metachk;
+	gint do_metachk;
 {
 	u_int32_t flags, magic;
-	int ret;
+	gint ret;
 
 	ret = 0;
 
@@ -586,12 +586,12 @@ static int
 __db_openchk(dbp, txn, name, subdb, type, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	DBTYPE type;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 	u_int32_t ok_flags;
 
 	dbenv = dbp->dbenv;

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -43,9 +43,9 @@ static void __lock_printheader __P((void));
  * __lock_stat --
  *	Return LOCK statistics.
  *
- * PUBLIC: int __lock_stat __P((DB_ENV *, DB_LOCK_STAT **, u_int32_t));
+ * PUBLIC: gint __lock_stat __P((DB_ENV *, DB_LOCK_STAT **, u_int32_t));
  */
-int
+gint
 __lock_stat(dbenv, statp, flags)
 	DB_ENV *dbenv;
 	DB_LOCK_STAT **statp;
@@ -54,7 +54,7 @@ __lock_stat(dbenv, statp, flags)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	DB_LOCK_STAT *stats, tmp;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -119,12 +119,12 @@ __lock_stat(dbenv, statp, flags)
 /*
  * __lock_dump_region --
  *
- * PUBLIC: int __lock_dump_region __P((DB_ENV *, char *, FILE *));
+ * PUBLIC: gint __lock_dump_region __P((DB_ENV *, gchar *, FILE *));
  */
-int
+gint
 __lock_dump_region(dbenv, area, fp)
 	DB_ENV *dbenv;
-	char *area;
+	gchar *area;
 	FILE *fp;
 {
 	DB_LOCKER *lip;
@@ -229,7 +229,7 @@ __lock_dump_locker(lt, lip, fp)
 {
 	struct __db_lock *lp;
 	time_t s;
-	char buf[64];
+	gchar buf[64];
 
 	fprintf(fp, "%8lx dd=%2ld locks held %-4d write locks %-4d",
 	    (u_long)lip->id, (long)lip->dd_id, lip->nlocks, lip->nwrites);
@@ -301,14 +301,14 @@ void
 __lock_printlock(lt, lp, ispgno)
 	DB_LOCKTAB *lt;
 	struct __db_lock *lp;
-	int ispgno;
+	gint ispgno;
 {
 	DB_LOCKOBJ *lockobj;
 	db_pgno_t pgno;
 	u_int32_t *fidp, type;
 	u_int8_t *ptr;
-	char *namep;
-	const char *mode, *status;
+	gchar *namep;
+	const gchar *mode, *status;
 
 	switch (lp->mode) {
 	case DB_LOCK_DIRTY:

@@ -37,12 +37,12 @@ static CamelObjectClass *parent_class = NULL;
 #define CS_CLASS(so) CAMEL_STREAM_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
 /* default implementations, do very little */
-static ssize_t   stream_read       (CamelStream *stream, char *buffer, size_t n) { return 0; }
-static ssize_t   stream_write      (CamelStream *stream, const char *buffer, size_t n) { return n; }
-static int       stream_close      (CamelStream *stream) { return 0; }
-static int       stream_flush      (CamelStream *stream) { return 0; }
+static ssize_t   stream_read       (CamelStream *stream, gchar *buffer, size_t n) { return 0; }
+static ssize_t   stream_write      (CamelStream *stream, const gchar *buffer, size_t n) { return n; }
+static gint       stream_close      (CamelStream *stream) { return 0; }
+static gint       stream_flush      (CamelStream *stream) { return 0; }
 static gboolean  stream_eos        (CamelStream *stream) { return stream->eos; }
-static int       stream_reset      (CamelStream *stream) { return 0; }
+static gint       stream_reset      (CamelStream *stream) { return 0; }
 
 static void
 camel_stream_class_init (CamelStreamClass *camel_stream_class)
@@ -90,7 +90,7 @@ camel_stream_get_type (void)
  * errno.
  **/
 ssize_t
-camel_stream_read (CamelStream *stream, char *buffer, size_t n)
+camel_stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (n == 0 || buffer, -1);
@@ -111,7 +111,7 @@ camel_stream_read (CamelStream *stream, char *buffer, size_t n)
  * along with setting errno.
  **/
 ssize_t
-camel_stream_write (CamelStream *stream, const char *buffer, size_t n)
+camel_stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (n == 0 || buffer, -1);
@@ -129,7 +129,7 @@ camel_stream_write (CamelStream *stream, const char *buffer, size_t n)
  *
  * Returns: %0 on success or %-1 on fail along with setting errno.
  **/
-int
+gint
 camel_stream_flush (CamelStream *stream)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -146,7 +146,7 @@ camel_stream_flush (CamelStream *stream)
  *
  * Returns: %0 on success or %-1 on error.
  **/
-int
+gint
 camel_stream_close (CamelStream *stream)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -182,7 +182,7 @@ camel_stream_eos (CamelStream *stream)
  *
  * Returns: %0 on success or %-1 on error along with setting errno.
  **/
-int
+gint
 camel_stream_reset (CamelStream *stream)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -202,7 +202,7 @@ camel_stream_reset (CamelStream *stream)
  * Returns: the number of characters written or %-1 on error.
  **/
 ssize_t
-camel_stream_write_string (CamelStream *stream, const char *string)
+camel_stream_write_string (CamelStream *stream, const gchar *string)
 {
 	return camel_stream_write (stream, string, strlen (string));
 }
@@ -218,10 +218,10 @@ camel_stream_write_string (CamelStream *stream, const char *string)
  * Returns: the number of characters written or %-1 on error.
  **/
 ssize_t
-camel_stream_printf (CamelStream *stream, const char *fmt, ... )
+camel_stream_printf (CamelStream *stream, const gchar *fmt, ... )
 {
 	va_list args;
-	char *string;
+	gchar *string;
 	ssize_t ret;
 
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
@@ -253,7 +253,7 @@ camel_stream_printf (CamelStream *stream, const char *fmt, ... )
 ssize_t
 camel_stream_write_to_stream (CamelStream *stream, CamelStream *output_stream)
 {
-	char tmp_buf[4096];
+	gchar tmp_buf[4096];
 	ssize_t total = 0;
 	ssize_t nb_read;
 	ssize_t nb_written;

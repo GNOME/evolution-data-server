@@ -39,7 +39,7 @@ struct _CamelMimeFilterWindows {
 	CamelMimeFilter parent;
 
 	gboolean is_windows;
-	char *claimed_charset;
+	gchar *claimed_charset;
 };
 
 struct _CamelMimeFilterWindowsClass {
@@ -50,10 +50,10 @@ struct _CamelMimeFilterWindowsClass {
 
 CamelType camel_mime_filter_windows_get_type (void);
 
-CamelMimeFilter *camel_mime_filter_windows_new (const char *claimed_charset);
+CamelMimeFilter *camel_mime_filter_windows_new (const gchar *claimed_charset);
 
 gboolean camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter);
-const char *camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter);
+const gchar *camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter);
 
 G_END_DECLS
 

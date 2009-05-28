@@ -42,7 +42,7 @@
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendHttpPrivate {
 	/* URI to get remote calendar data from */
-	char *uri;
+	gchar *uri;
 
 	/* Local/remote mode */
 	CalMode mode;
@@ -67,8 +67,8 @@ struct _ECalBackendHttpPrivate {
 	/* Flags */
 	gboolean opened;
 
-	char *username;
-	char *password;
+	gchar *username;
+	gchar *password;
 };
 
 
@@ -79,7 +79,7 @@ static void e_cal_backend_http_dispose (GObject *object);
 static void e_cal_backend_http_finalize (GObject *object);
 static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
 static ECalBackendSyncStatus
-e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj);
+e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
 
 static ECalBackendSyncClass *parent_class;
 
@@ -166,7 +166,7 @@ e_cal_backend_http_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboole
 
 /* Get_email_address handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_get_cal_address (ECalBackendSync *backend, EDataCal *cal, char **address)
+e_cal_backend_http_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {
 	/* A HTTP backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
@@ -177,7 +177,7 @@ e_cal_backend_http_get_cal_address (ECalBackendSync *backend, EDataCal *cal, cha
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, char **attribute)
+e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, gchar **attribute)
 {
 	*attribute = NULL;
 
@@ -185,7 +185,7 @@ e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, char **address)
+e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {
 	/* A HTTP backend has no particular email address associated
 	 * with it (although that would be a useful feature some day).
@@ -196,7 +196,7 @@ e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
+e_cal_backend_http_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities)
 {
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
 
@@ -221,7 +221,7 @@ webcal_to_http_method (const gchar *webcal_str, gboolean secure)
 static gboolean
 notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
 {
-	const char *calobj = value;
+	const gchar *calobj = value;
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (user_data);
 	ECalComponent *comp = e_cal_component_new_from_string (calobj);
 	ECalComponentId *id = e_cal_component_get_id (comp);
@@ -241,7 +241,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
-	const char *newuri;
+	const gchar *newuri;
 	GHashTable *old_cache;
 	GList *comps_in_cache;
 
@@ -302,7 +302,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 	comps_in_cache = e_cal_backend_cache_get_components (priv->cache);
 	while (comps_in_cache != NULL) {
-		const char *uid;
+		const gchar *uid;
 		ECalComponent *comp = comps_in_cache->data;
 
 		e_cal_component_get_uid (comp, &uid);
@@ -331,14 +331,14 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 		if (subcomp_kind == kind) {
 			comp = e_cal_component_new ();
 			if (e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp))) {
-				const char *uid, *orig_key, *orig_value;
-				char *obj;
+				const gchar *uid, *orig_key, *orig_value;
+				gchar *obj;
 
 				e_cal_backend_cache_put_component (priv->cache, comp);
 
 				e_cal_component_get_uid (comp, &uid);
-				/* middle (void*) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
-				if (g_hash_table_lookup_extended (old_cache, uid, (void **)(void*)&orig_key, (void **)(void*)&orig_value)) {
+				/* middle (gpointer) cast only because of 'dereferencing type-punned pointer will break strict-aliasing rules' */
+				if (g_hash_table_lookup_extended (old_cache, uid, (gpointer *)(gpointer)&orig_key, (gpointer *)(gpointer)&orig_value)) {
 					obj = icalcomponent_as_ical_string_r (subcomp);
 					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp),
 									      orig_value,
@@ -427,7 +427,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	if (priv->uri == NULL) {
 		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
-		const char *secure_prop = e_source_get_property (source, "use_ssl");
+		const gchar *secure_prop = e_source_get_property (source, "use_ssl");
 
 		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
 						   (secure_prop && g_str_equal(secure_prop, "1")));
@@ -520,7 +520,7 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
-			 const char *username, const char *password)
+			 const gchar *username, const gchar *password)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -673,7 +673,7 @@ e_cal_backend_http_set_mode (ECalBackend *backend, CalMode mode)
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
+e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -693,7 +693,7 @@ e_cal_backend_http_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
 
 /* Get_object_component handler for the http backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
+e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -719,7 +719,7 @@ e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
 
 /* Get_timezone_object handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
+e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -750,7 +750,7 @@ e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 
 /* Add_timezone handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -781,7 +781,7 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_http_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
 {
 	icalcomponent *tz_comp;
 	ECalBackendHttp *cbhttp;
@@ -814,7 +814,7 @@ e_cal_backend_http_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 
 /* Get_objects_in_range handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
+e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -888,7 +888,7 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 
 
 static icaltimezone *
-resolve_tzid (const char *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid, gpointer user_data)
 {
         icalcomponent *vcalendar_comp = user_data;
 
@@ -932,7 +932,7 @@ free_busy_instance (ECalComponent *comp,
 }
 
 static icalcomponent *
-create_user_free_busy (ECalBackendHttp *cbhttp, const char *address, const char *cn,
+create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gchar *cn,
                        time_t start, time_t end)
 {
         GList *list = NULL, *l;
@@ -941,7 +941,7 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const char *address, const char 
         ECalBackendSExp *obj_sexp;
         ECalBackendHttpPrivate *priv;
         ECalBackendCache *cache;
-        char *query, *iso_start, *iso_end;
+        gchar *query, *iso_start, *iso_end;
 
         priv = cbhttp->priv;
         cache = priv->cache;
@@ -1029,7 +1029,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	ECalBackendHttpPrivate *priv;
 	gchar *address, *name;
 	icalcomponent *vfb;
-	char *calobj;
+	gchar *calobj;
 
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
@@ -1069,7 +1069,7 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 
 /* Get_changes handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
+e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
 				GList **adds, GList **modifies, GList **deletes)
 {
 	ECalBackendHttp *cbhttp;
@@ -1086,7 +1086,7 @@ e_cal_backend_http_get_changes (ECalBackendSync *backend, EDataCal *cal, const c
 
 /* Discard_alarm handler for the file backend */
 static ECalBackendSyncStatus
-e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
+e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1099,7 +1099,7 @@ e_cal_backend_http_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
+e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1111,8 +1111,8 @@ e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, char 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj,
-				CalObjModType mod, char **old_object, char **new_object)
+e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj,
+				CalObjModType mod, gchar **old_object, gchar **new_object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1128,9 +1128,9 @@ e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, const
 /* Remove_object handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
-				const char *uid, const char *rid,
-				CalObjModType mod, char **old_object,
-				char **object)
+				const gchar *uid, const gchar *rid,
+				CalObjModType mod, gchar **old_object,
+				gchar **object)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1147,7 +1147,7 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal,
 
 /* Update_objects handler for the file backend. */
 static ECalBackendSyncStatus
-e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1161,8 +1161,8 @@ e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
-				 char **modified_calobj)
+e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
+				 gchar **modified_calobj)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1192,7 +1192,7 @@ e_cal_backend_http_internal_get_default_timezone (ECalBackend *backend)
 }
 
 static icaltimezone *
-e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const char *tzid)
+e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;

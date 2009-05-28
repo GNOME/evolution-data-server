@@ -34,7 +34,7 @@ typedef struct _locked_dbt
 {
 	/* these are accessed externally to locked_dbt_ functions */
 	DBT_JAVAINFO *javainfo;
-	unsigned int java_array_len;
+	guint java_array_len;
 	jobject jdbt;
 
 	/* these are for used internally by locked_dbt_ functions */
@@ -49,19 +49,19 @@ typedef struct _locked_dbt
 } LOCKED_DBT;
 
 /* Fill the LOCKED_DBT struct and lock the Java byte array */
-extern int locked_dbt_get(LOCKED_DBT *, JNIEnv *, DB_ENV *, jobject, OpKind);
+extern gint locked_dbt_get(LOCKED_DBT *, JNIEnv *, DB_ENV *, jobject, OpKind);
 
 /* unlock the Java byte array */
 extern void locked_dbt_put(LOCKED_DBT *, JNIEnv *, DB_ENV *);
 
 /* realloc the Java byte array */
-extern int locked_dbt_realloc(LOCKED_DBT *, JNIEnv *, DB_ENV *);
+extern gint locked_dbt_realloc(LOCKED_DBT *, JNIEnv *, DB_ENV *);
 
 /*
  * LOCKED_STRING
  *
  * A LOCKED_STRING exists temporarily to convert a java jstring object
- * to a char *.  Because the memory for the char * string is
+ * to a gchar *.  Because the memory for the gchar * string is
  * managed by the JVM, it must be released when we are done
  * looking at it.  Typically, locked_string_get() is called at the
  * beginning of a function for each jstring object, and locked_string_put
@@ -70,13 +70,13 @@ extern int locked_dbt_realloc(LOCKED_DBT *, JNIEnv *, DB_ENV *);
 typedef struct _locked_string
 {
 	/* this accessed externally to locked_string_ functions */
-	const char *string;
+	const gchar *string;
 
 	/* this is used internally by locked_string_ functions */
 	jstring jstr;
 } LOCKED_STRING;
 
-extern int locked_string_get(LOCKED_STRING *, JNIEnv *jnienv, jstring jstr);
+extern gint locked_string_get(LOCKED_STRING *, JNIEnv *jnienv, jstring jstr);
 extern void locked_string_put(LOCKED_STRING *, JNIEnv *jnienv);  /* this unlocks and frees mem */
 
 #endif /* !_JAVA_LOCKED_H_ */

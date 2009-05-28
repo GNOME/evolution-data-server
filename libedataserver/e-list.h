@@ -27,8 +27,8 @@ G_BEGIN_DECLS
 #define E_IS_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_LIST))
 #define E_LIST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_LIST, EListClass))
 
-typedef void *(*EListCopyFunc) (const void *data, void *closure);
-typedef void (*EListFreeFunc) (void *data, void *closure);
+typedef gpointer (*EListCopyFunc) (gconstpointer data, gpointer closure);
+typedef void (*EListFreeFunc) (gpointer data, gpointer closure);
 
 struct _EList {
 	GObject      object;
@@ -56,7 +56,7 @@ void       e_list_append               (EList         *list,
 					const void    *data);
 void       e_list_remove               (EList         *list,
 					const void    *data);
-int        e_list_length               (EList         *list);
+gint        e_list_length               (EList         *list);
 
 /* For iterators to call. */
 void       e_list_remove_link          (EList         *list,

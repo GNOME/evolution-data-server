@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,20 +22,20 @@ static const char revid[] = "$Id$";
  * memp_register --
  *	Register a file type's pgin, pgout routines.
  *
- * PUBLIC: int __memp_register __P((DB_ENV *, int,
- * PUBLIC:     int (*)(DB_ENV *, db_pgno_t, void *, DBT *),
- * PUBLIC:     int (*)(DB_ENV *, db_pgno_t, void *, DBT *)));
+ * PUBLIC: gint __memp_register __P((DB_ENV *, int,
+ * PUBLIC:     gint (*)(DB_ENV *, db_pgno_t, gpointer , DBT *),
+ * PUBLIC:     gint (*)(DB_ENV *, db_pgno_t, gpointer , DBT *)));
  */
-int
+gint
 __memp_register(dbenv, ftype, pgin, pgout)
 	DB_ENV *dbenv;
-	int ftype;
-	int (*pgin) __P((DB_ENV *, db_pgno_t, void *, DBT *));
-	int (*pgout) __P((DB_ENV *, db_pgno_t, void *, DBT *));
+	gint ftype;
+	gint (*pgin) __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
+	gint (*pgout) __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
 {
 	DB_MPOOL *dbmp;
 	DB_MPREG *mpreg;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,

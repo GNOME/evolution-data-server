@@ -174,7 +174,7 @@ void
 e_book_backend_create_contact (EBookBackend *backend,
 			       EDataBook    *book,
 			       guint32       opid,
-			       const char   *vcard)
+			       const gchar   *vcard)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -224,7 +224,7 @@ void
 e_book_backend_modify_contact (EBookBackend *backend,
 			       EDataBook    *book,
 			       guint32       opid,
-			       const char   *vcard)
+			       const gchar   *vcard)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -249,7 +249,7 @@ void
 e_book_backend_get_contact (EBookBackend *backend,
 			    EDataBook    *book,
 			    guint32       opid,
-			    const char   *id)
+			    const gchar   *id)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -274,7 +274,7 @@ void
 e_book_backend_get_contact_list (EBookBackend *backend,
 				 EDataBook    *book,
 				 guint32       opid,
-				 const char   *query)
+				 const gchar   *query)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -339,7 +339,7 @@ void
 e_book_backend_get_changes (EBookBackend *backend,
 			    EDataBook    *book,
 			    guint32       opid,
-			    const char   *change_id)
+			    const gchar   *change_id)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -366,9 +366,9 @@ void
 e_book_backend_authenticate_user (EBookBackend *backend,
 				  EDataBook    *book,
 				  guint32       opid,
-				  const char   *user,
-				  const char   *passwd,
-				  const char   *auth_method)
+				  const gchar   *user,
+				  const gchar   *passwd,
+				  const gchar   *auth_method)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -662,7 +662,7 @@ e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
  *
  * Return value: A string listing the capabilities.
  **/
-char *
+gchar *
 e_book_backend_get_static_capabilities (EBookBackend *backend)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
@@ -816,7 +816,7 @@ e_book_backend_sync (EBookBackend *backend)
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 GNOME_Evolution_Addressbook_BookChangeItem*
-e_book_backend_change_add_new     (const char *vcard)
+e_book_backend_change_add_new     (const gchar *vcard)
 {
 	GNOME_Evolution_Addressbook_BookChangeItem* new_change = GNOME_Evolution_Addressbook_BookChangeItem__alloc();
 
@@ -836,7 +836,7 @@ e_book_backend_change_add_new     (const char *vcard)
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 GNOME_Evolution_Addressbook_BookChangeItem*
-e_book_backend_change_modify_new  (const char *vcard)
+e_book_backend_change_modify_new  (const gchar *vcard)
 {
 	GNOME_Evolution_Addressbook_BookChangeItem* new_change = GNOME_Evolution_Addressbook_BookChangeItem__alloc();
 
@@ -856,7 +856,7 @@ e_book_backend_change_modify_new  (const char *vcard)
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 GNOME_Evolution_Addressbook_BookChangeItem*
-e_book_backend_change_delete_new  (const char *vcard)
+e_book_backend_change_delete_new  (const gchar *vcard)
 {
 	GNOME_Evolution_Addressbook_BookChangeItem* new_change = GNOME_Evolution_Addressbook_BookChangeItem__alloc();
 
@@ -939,7 +939,7 @@ view_notify_remove (EDataBookView *view, gpointer id)
  * another (non-PAS-using) client.
  **/
 void
-e_book_backend_notify_remove (EBookBackend *backend, const char *id)
+e_book_backend_notify_remove (EBookBackend *backend, const gchar *id)
 {
 	e_book_backend_foreach_view (backend, view_notify_remove, (gpointer)id);
 }

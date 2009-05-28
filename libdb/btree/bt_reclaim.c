@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,15 +25,15 @@ static const char revid[] = "$Id$";
  * __bam_reclaim --
  *	Free a database.
  *
- * PUBLIC: int __bam_reclaim __P((DB *, DB_TXN *));
+ * PUBLIC: gint __bam_reclaim __P((DB *, DB_TXN *));
  */
-int
+gint
 __bam_reclaim(dbp, txn)
 	DB *dbp;
 	DB_TXN *txn;
 {
 	DBC *dbc;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	/* Acquire a cursor. */
 	if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
@@ -54,9 +54,9 @@ __bam_reclaim(dbp, txn)
  * __bam_truncate --
  *	Truncate a database.
  *
- * PUBLIC: int __bam_truncate __P((DB *, DB_TXN *, u_int32_t *));
+ * PUBLIC: gint __bam_truncate __P((DB *, DB_TXN *, u_int32_t *));
  */
-int
+gint
 __bam_truncate(dbp, txn, countp)
 	DB *dbp;
 	DB_TXN *txn;
@@ -64,7 +64,7 @@ __bam_truncate(dbp, txn, countp)
 {
 	DBC *dbc;
 	db_trunc_param trunc;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	/* Acquire a cursor. */
 	if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)

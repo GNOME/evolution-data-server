@@ -84,13 +84,13 @@ struct _ECalClass {
 	void (* cal_opened) (ECal *ecal, ECalendarStatus status);
 	void (* cal_set_mode) (ECal *ecal, ECalSetModeStatus status, CalMode mode);
 
-	void (* backend_error) (ECal *ecal, const char *message);
+	void (* backend_error) (ECal *ecal, const gchar *message);
 	void (* backend_died) (ECal *ecal);
 };
 
-typedef char * (* ECalAuthFunc) (ECal *ecal,
-				 const char *prompt,
-				 const char *key,
+typedef gchar * (* ECalAuthFunc) (ECal *ecal,
+				 const gchar *prompt,
+				 const gchar *key,
 				 gpointer user_data);
 
 GType e_cal_get_type (void);
@@ -118,17 +118,17 @@ ECalSourceType e_cal_get_source_type (ECal *ecal);
 ECalLoadState e_cal_get_load_state (ECal *ecal);
 
 ESource *e_cal_get_source (ECal *ecal);
-const char *e_cal_get_uri (ECal *ecal);
+const gchar *e_cal_get_uri (ECal *ecal);
 
 gboolean e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error);
-gboolean e_cal_get_cal_address (ECal *ecal, char **cal_address, GError **error);
-gboolean e_cal_get_alarm_email_address (ECal *ecal, char **alarm_address, GError **error);
-gboolean e_cal_get_ldap_attribute (ECal *ecal, char **ldap_attribute, GError **error);
+gboolean e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error);
+gboolean e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error);
+gboolean e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error);
 
 gboolean e_cal_get_one_alarm_only (ECal *ecal);
 gboolean e_cal_get_organizer_must_attend (ECal *ecal);
 gboolean e_cal_get_save_schedules (ECal *ecal);
-gboolean e_cal_get_static_capability (ECal *ecal, const char *cap);
+gboolean e_cal_get_static_capability (ECal *ecal, const gchar *cap);
 gboolean e_cal_get_organizer_must_accept (ECal *ecal);
 
 gboolean e_cal_set_mode (ECal *ecal, CalMode mode);
@@ -137,20 +137,20 @@ gboolean e_cal_get_default_object (ECal *ecal,
 				   icalcomponent **icalcomp, GError **error);
 
 gboolean e_cal_get_object (ECal *ecal,
-			   const char *uid,
-			   const char *rid,
+			   const gchar *uid,
+			   const gchar *rid,
 			   icalcomponent **icalcomp,
 			   GError **error);
 gboolean e_cal_get_objects_for_uid (ECal *ecal,
-				    const char *uid,
+				    const gchar *uid,
 				    GList **objects,
 				    GError **error);
 
-gboolean e_cal_get_changes (ECal *ecal, const char *change_id, GList **changes, GError **error);
+gboolean e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError **error);
 void e_cal_free_change_list (GList *list);
 
-gboolean e_cal_get_object_list (ECal *ecal, const char *query, GList **objects, GError **error);
-gboolean e_cal_get_object_list_as_comp (ECal *ecal, const char *query, GList **objects, GError **error);
+gboolean e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError **error);
+gboolean e_cal_get_object_list_as_comp (ECal *ecal, const gchar *query, GList **objects, GError **error);
 void e_cal_free_object_list (GList *objects);
 
 gboolean e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
@@ -170,17 +170,17 @@ gboolean e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
 				      time_t start, time_t end,
 				      ECalComponentAlarms **alarms);
 
-gboolean e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, char **uid, GError **error);
+gboolean e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error);
 gboolean e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GError **error);
-gboolean e_cal_remove_object (ECal *ecal, const char *uid, GError **error);
-gboolean e_cal_remove_object_with_mod (ECal *ecal, const char *uid, const char *rid, CalObjModType mod, GError **error);
+gboolean e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error);
+gboolean e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid, const gchar *rid, CalObjModType mod, GError **error);
 
-gboolean e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const char *auid, GError **error);
+gboolean e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError **error);
 
 gboolean e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error);
 gboolean e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomponent **modified_icalcomp, GError **error);
 
-gboolean e_cal_get_timezone (ECal *ecal, const char *tzid, icaltimezone **zone, GError **error);
+gboolean e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError **error);
 gboolean e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error);
 /* Sets the default timezone to use to resolve DATE and floating DATE-TIME
    values. This will typically be from the user's timezone setting. Call this
@@ -188,25 +188,25 @@ gboolean e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error);
    the server. Returns TRUE on success. */
 gboolean e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error);
 
-gboolean e_cal_get_query (ECal *ecal, const char *sexp, ECalView **query, GError **error);
+gboolean e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error);
 
 /* Resolves TZIDs for the recurrence generator. */
-icaltimezone *e_cal_resolve_tzid_cb (const char *tzid, gpointer data);
+icaltimezone *e_cal_resolve_tzid_cb (const gchar *tzid, gpointer data);
 
 /* Returns a complete VCALENDAR for a VEVENT/VTODO including all VTIMEZONEs
    used by the component. It also includes a 'METHOD:PUBLISH' property. */
-char* e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
+gchar * e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
 
-const char * e_cal_get_error_message (ECalendarStatus status);
+const gchar * e_cal_get_error_message (ECalendarStatus status);
 
 /* Calendar/Tasks Discovery */
 gboolean    e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error);
 gboolean    e_cal_set_default (ECal  *ecal, GError **error);
 gboolean    e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error);
 gboolean    e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error);
-const char * e_cal_get_local_attachment_store (ECal *ecal);
+const gchar * e_cal_get_local_attachment_store (ECal *ecal);
 gboolean e_cal_get_recurrences_no_master (ECal *ecal);
-gboolean e_cal_get_attachments_for_comp (ECal *ecal, const char *uid, const char *rid, GSList **list, GError **error);
+gboolean e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, GSList **list, GError **error);
 
 G_END_DECLS
 

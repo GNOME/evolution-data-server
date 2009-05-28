@@ -22,14 +22,14 @@ typedef enum {
 	E2K_KERBEROS_FAILED
 } E2kKerberosResult;
 
-E2kKerberosResult e2k_kerberos_check_password  (const char *user,
-						const char *domain,
-						const char *password);
+E2kKerberosResult e2k_kerberos_check_password  (const gchar *user,
+						const gchar *domain,
+						const gchar *password);
 
-E2kKerberosResult e2k_kerberos_change_password (const char *user,
-						const char *domain,
-						const char *old_password,
-						const char *new_password);
+E2kKerberosResult e2k_kerberos_change_password (const gchar *user,
+						const gchar *domain,
+						const gchar *old_password,
+						const gchar *new_password);
 
 #ifdef __cplusplus
 }

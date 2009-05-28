@@ -58,14 +58,14 @@
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
+gint
 camel_file_util_encode_uint32 (FILE *out, guint32 value)
 {
-	int i;
+	gint i;
 
 	for (i = 28; i > 0; i -= 7) {
 		if (value >= (1 << i)) {
-			unsigned int c = (value >> i) & 0x7f;
+			guint c = (value >> i) & 0x7f;
 			if (fputc (c, out) == -1)
 				return -1;
 		}
@@ -84,11 +84,11 @@ camel_file_util_encode_uint32 (FILE *out, guint32 value)
  * Return value: %0 on success, %-1 on error.  @*dest will contain the
  * decoded value.
  **/
-int
+gint
 camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
 {
         guint32 value = 0;
-	int v;
+	gint v;
 
         /* until we get the last byte, keep decoding 7 bits at a time */
         while ( ((v = fgetc (in)) & 0x80) == 0 && v!=EOF) {
@@ -115,7 +115,7 @@ camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
+gint
 camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
 {
 	guint32 save;
@@ -136,7 +136,7 @@ camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
+gint
 camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
 {
 	guint32 save;
@@ -153,7 +153,7 @@ camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
 int									\
 camel_file_util_encode_##type(FILE *out, type value)			\
 {									\
-	int i;								\
+	gint i;								\
 									\
 	for (i = sizeof (type) - 1; i >= 0; i--) {			\
 		if (fputc((value >> (i * 8)) & 0xff, out) == -1)	\
@@ -167,8 +167,8 @@ int							\
 camel_file_util_decode_##type(FILE *in, type *dest)	\
 {							\
 	type save = 0;					\
-	int i = sizeof(type) - 1;			\
-	int v = EOF;					\
+	gint i = sizeof(type) - 1;			\
+	gint v = EOF;					\
 							\
         while (i >= 0 && (v = fgetc (in)) != EOF) {	\
 		save |= ((type)v) << (i * 8);		\
@@ -259,10 +259,10 @@ CFU_DECODE_T(size_t)
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
-camel_file_util_encode_string (FILE *out, const char *str)
+gint
+camel_file_util_encode_string (FILE *out, const gchar *str)
 {
-	register int len;
+	register gint len;
 
 	if (str == NULL)
 		return camel_file_util_encode_uint32 (out, 1);
@@ -287,11 +287,11 @@ camel_file_util_encode_string (FILE *out, const char *str)
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
-camel_file_util_decode_string (FILE *in, char **str)
+gint
+camel_file_util_decode_string (FILE *in, gchar **str)
 {
 	guint32 len;
-	register char *ret;
+	register gchar *ret;
 
 	if (camel_file_util_decode_uint32 (in, &len) == -1) {
 		*str = NULL;
@@ -328,10 +328,10 @@ camel_file_util_decode_string (FILE *in, char **str)
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
-camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
+gint
+camel_file_util_encode_fixed_string (FILE *out, const gchar *str, size_t len)
 {
-	char buf[len];
+	gchar buf[len];
 
 	/* Don't allow empty strings to be written */
 	if (len < 1)
@@ -361,10 +361,10 @@ camel_file_util_encode_fixed_string (FILE *out, const char *str, size_t len)
  *
  * Return value: %0 on success, %-1 on error.
  **/
-int
-camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len)
+gint
+camel_file_util_decode_fixed_string (FILE *in, gchar **str, size_t len)
 {
-	register char *ret;
+	register gchar *ret;
 
 	if (len > 65536) {
 		*str = NULL;
@@ -392,13 +392,13 @@ camel_file_util_decode_fixed_string (FILE *in, char **str, size_t len)
  *
  * Returns: a safe filename string.
  **/
-char *
-camel_file_util_safe_filename (const char *name)
+gchar *
+camel_file_util_safe_filename (const gchar *name)
 {
 #ifdef G_OS_WIN32
-	const char *unsafe_chars = "/?()'*<>:\"\\|";
+	const gchar *unsafe_chars = "/?()'*<>:\"\\|";
 #else
-	const char *unsafe_chars = "/?()'*";
+	const gchar *unsafe_chars = "/?()'*";
 #endif
 
 	if (name == NULL)
@@ -425,10 +425,10 @@ camel_file_util_safe_filename (const char *name)
  * be set appropriately.
  **/
 ssize_t
-camel_read (int fd, char *buf, size_t n)
+camel_read (gint fd, gchar *buf, size_t n)
 {
 	ssize_t nread;
-	int cancel_fd;
+	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -445,7 +445,7 @@ camel_read (int fd, char *buf, size_t n)
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	} else {
 #ifndef G_OS_WIN32
-		int errnosav, flags, fdmax;
+		gint errnosav, flags, fdmax;
 		fd_set rdset;
 
 		flags = fcntl (fd, F_GETFL);
@@ -453,7 +453,7 @@ camel_read (int fd, char *buf, size_t n)
 
 		do {
 			struct timeval tv;
-			int res;
+			gint res;
 
 			FD_ZERO (&rdset);
 			FD_SET (fd, &rdset);
@@ -503,10 +503,10 @@ camel_read (int fd, char *buf, size_t n)
  * be set appropriately.
  **/
 ssize_t
-camel_write (int fd, const char *buf, size_t n)
+camel_write (gint fd, const gchar *buf, size_t n)
 {
 	ssize_t w, written = 0;
-	int cancel_fd;
+	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -527,7 +527,7 @@ camel_write (int fd, const char *buf, size_t n)
 		} while (w != -1 && written < n);
 	} else {
 #ifndef G_OS_WIN32
-		int errnosav, flags, fdmax;
+		gint errnosav, flags, fdmax;
 		fd_set rdset, wrset;
 
 		flags = fcntl (fd, F_GETFL);
@@ -536,7 +536,7 @@ camel_write (int fd, const char *buf, size_t n)
 		fdmax = MAX (fd, cancel_fd) + 1;
 		do {
 			struct timeval tv;
-			int res;
+			gint res;
 
 			FD_ZERO (&rdset);
 			FD_ZERO (&wrset);
@@ -594,13 +594,13 @@ camel_write (int fd, const char *buf, size_t n)
  * camel_read_socket() will retry the read until it gets something.
  **/
 ssize_t
-camel_read_socket (int fd, char *buf, size_t n)
+camel_read_socket (gint fd, gchar *buf, size_t n)
 {
 #ifndef G_OS_WIN32
 	return camel_read (fd, buf, n);
 #else
 	ssize_t nread;
-	int cancel_fd;
+	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -613,7 +613,7 @@ camel_read_socket (int fd, char *buf, size_t n)
 			nread = recv (fd, buf, n, 0);
 		} while (nread == SOCKET_ERROR && WSAGetLastError () == WSAEWOULDBLOCK);
 	} else {
-		int fdmax;
+		gint fdmax;
 		fd_set rdset;
 		u_long yes = 1;
 
@@ -621,7 +621,7 @@ camel_read_socket (int fd, char *buf, size_t n)
 		fdmax = MAX (fd, cancel_fd) + 1;
 		do {
 			struct timeval tv;
-			int res;
+			gint res;
 
 			FD_ZERO (&rdset);
 			FD_SET (fd, &rdset);
@@ -664,13 +664,13 @@ camel_read_socket (int fd, char *buf, size_t n)
  * be set appropriately.
  **/
 ssize_t
-camel_write_socket (int fd, const char *buf, size_t n)
+camel_write_socket (gint fd, const gchar *buf, size_t n)
 {
 #ifndef G_OS_WIN32
 	return camel_write (fd, buf, n);
 #else
 	ssize_t w, written = 0;
-	int cancel_fd;
+	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -687,7 +687,7 @@ camel_write_socket (int fd, const char *buf, size_t n)
 				written += w;
 		} while (w != -1 && written < n);
 	} else {
-		int fdmax;
+		gint fdmax;
 		fd_set rdset, wrset;
 		u_long arg = 1;
 
@@ -695,7 +695,7 @@ camel_write_socket (int fd, const char *buf, size_t n)
 		fdmax = MAX (fd, cancel_fd) + 1;
 		do {
 			struct timeval tv;
-			int res;
+			gint res;
 
 			FD_ZERO (&rdset);
 			FD_ZERO (&wrset);
@@ -743,18 +743,18 @@ camel_write_socket (int fd, const char *buf, size_t n)
  *
  * Return value: The new pathname.  It must be free'd with g_free().
  **/
-char *
-camel_file_util_savename(const char *filename)
+gchar *
+camel_file_util_savename(const gchar *filename)
 {
-	char *dirname, *retval;
+	gchar *dirname, *retval;
 
 	dirname = g_path_get_dirname(filename);
 
 	if (strcmp (dirname, ".") == 0) {
 		retval = g_strconcat (".#", filename, NULL);
 	} else {
-		char *basename = g_path_get_basename(filename);
-		char *newbasename = g_strconcat (".#", basename, NULL);
+		gchar *basename = g_path_get_basename(filename);
+		gchar *newbasename = g_strconcat (".#", basename, NULL);
 
 		retval = g_build_filename (dirname, newbasename, NULL);
 

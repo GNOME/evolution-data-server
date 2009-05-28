@@ -23,8 +23,8 @@ extern "C" {
 struct _E2kGlobalCatalog {
 	GObject parent;
 
-	char *domain;
-	int response_limit;
+	gchar *domain;
+	gint response_limit;
 
 	E2kGlobalCatalogPrivate *priv;
 };
@@ -35,11 +35,11 @@ struct _E2kGlobalCatalogClass {
 };
 
 GType             e2k_global_catalog_get_type        (void);
-E2kGlobalCatalog *e2k_global_catalog_new             (const char *server,
-						      int response_limit,
-						      const char *user,
-						      const char *domain,
-						      const char *password,
+E2kGlobalCatalog *e2k_global_catalog_new             (const gchar *server,
+						      gint response_limit,
+						      const gchar *user,
+						      const gchar *domain,
+						      const gchar *password,
 						      E2kAutoconfigGalAuthPref use_auth);
 
 
@@ -72,12 +72,12 @@ typedef enum {
 } E2kGlobalCatalogLookupFlags;
 
 typedef struct {
-	char *dn, *display_name;
+	gchar *dn, *display_name;
 	E2kSid *sid;
-	char *email, *exchange_server, *mailbox, *legacy_exchange_dn;
+	gchar *email, *exchange_server, *mailbox, *legacy_exchange_dn;
 	GPtrArray *delegates, *delegators;
-	int quota_warn, quota_nosend, quota_norecv;
-	int user_account_control;
+	gint quota_warn, quota_nosend, quota_norecv;
+	gint user_account_control;
 
 	E2kGlobalCatalogLookupFlags mask;
 } E2kGlobalCatalogEntry;
@@ -85,7 +85,7 @@ typedef struct {
 E2kGlobalCatalogStatus e2k_global_catalog_lookup (E2kGlobalCatalog *gc,
 						  E2kOperation     *op,
 						  E2kGlobalCatalogLookupType type,
-						  const char *key,
+						  const gchar *key,
 						  E2kGlobalCatalogLookupFlags flags,
 						  E2kGlobalCatalogEntry **entry_p);
 
@@ -97,7 +97,7 @@ typedef void         (*E2kGlobalCatalogCallback) (E2kGlobalCatalog *gc,
 void             e2k_global_catalog_async_lookup (E2kGlobalCatalog *gc,
 						  E2kOperation     *op,
 						  E2kGlobalCatalogLookupType type,
-						  const char *key,
+						  const gchar *key,
 						  E2kGlobalCatalogLookupFlags flags,
 						  E2kGlobalCatalogCallback callback,
 						  gpointer user_data);
@@ -110,12 +110,12 @@ double		lookup_passwd_max_age (E2kGlobalCatalog *gc,
 
 E2kGlobalCatalogStatus e2k_global_catalog_add_delegate    (E2kGlobalCatalog *gc,
 							   E2kOperation     *op,
-							   const char *self_dn,
-							   const char *delegate_dn);
+							   const gchar *self_dn,
+							   const gchar *delegate_dn);
 E2kGlobalCatalogStatus e2k_global_catalog_remove_delegate (E2kGlobalCatalog *gc,
 							   E2kOperation     *op,
-							   const char *self_dn,
-							   const char *delegate_dn);
+							   const gchar *self_dn,
+							   const gchar *delegate_dn);
 
 #ifdef __cplusplus
 }

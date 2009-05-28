@@ -31,10 +31,10 @@
 #include <krb5.h>
 
 static krb5_context
-e2k_kerberos_context_new (const char *domain)
+e2k_kerberos_context_new (const gchar *domain)
 {
 	krb5_context ctx;
-	char *realm;
+	gchar *realm;
 
 	if (krb5_init_context (&ctx) != 0)
 		return NULL;
@@ -47,7 +47,7 @@ e2k_kerberos_context_new (const char *domain)
 }
 
 static E2kKerberosResult
-krb5_result_to_e2k_kerberos_result (int result)
+krb5_result_to_e2k_kerberos_result (gint result)
 {
 	switch (result) {
 	case 0:
@@ -76,8 +76,8 @@ krb5_result_to_e2k_kerberos_result (int result)
 }
 
 static E2kKerberosResult
-get_init_cred (krb5_context ctx, const char *usr_name, const char *passwd,
-	       const char *in_tkt_service, krb5_creds *cred)
+get_init_cred (krb5_context ctx, const gchar *usr_name, const gchar *passwd,
+	       const gchar *in_tkt_service, krb5_creds *cred)
 {
 	krb5_principal principal;
 	krb5_get_init_creds_opt opt;
@@ -94,9 +94,9 @@ get_init_cred (krb5_context ctx, const char *usr_name, const char *passwd,
 	krb5_get_init_creds_opt_set_proxiable (&opt, 0);
 
 	result = krb5_get_init_creds_password (ctx, cred, principal,
-					       (char *) passwd,
+					       (gchar *) passwd,
 					       NULL, NULL, 0,
-					       (char *) in_tkt_service, &opt);
+					       (gchar *) in_tkt_service, &opt);
 	krb5_free_principal (ctx, principal);
 
 	return krb5_result_to_e2k_kerberos_result (result);
@@ -114,14 +114,14 @@ get_init_cred (krb5_context ctx, const char *usr_name, const char *passwd,
  * Return value: an #E2kKerberosResult
  **/
 E2kKerberosResult
-e2k_kerberos_change_password (const char *user, const char *domain,
-			      const char *old_password, const char *new_password)
+e2k_kerberos_change_password (const gchar *user, const gchar *domain,
+			      const gchar *old_password, const gchar *new_password)
 {
 	krb5_context ctx;
 	krb5_creds creds;
 	krb5_data res_code_string, res_string;
 	E2kKerberosResult result;
-	int res_code;
+	gint res_code;
 
 	ctx = e2k_kerberos_context_new (domain);
 	if (!ctx)
@@ -134,7 +134,7 @@ e2k_kerberos_change_password (const char *user, const char *domain,
 		return result;
 	}
 
-	result = krb5_change_password (ctx, &creds, (char *)new_password,
+	result = krb5_change_password (ctx, &creds, (gchar *)new_password,
 				       &res_code, &res_code_string, &res_string);
 	krb5_free_cred_contents (ctx, &creds);
 	krb5_free_data_contents (ctx, &res_code_string);
@@ -162,8 +162,8 @@ e2k_kerberos_change_password (const char *user, const char *domain,
  * or %E2K_KERBEROS_FAILED (for unknown errors)
  **/
 E2kKerberosResult
-e2k_kerberos_check_password (const char *user, const char *domain,
-			     const char *password)
+e2k_kerberos_check_password (const gchar *user, const gchar *domain,
+			     const gchar *password)
 {
 	krb5_context ctx;
 	krb5_creds creds;

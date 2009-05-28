@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,16 +25,16 @@ static const char revid[] = "$Id$";
  * __db_truncate
  *	truncate method for DB.
  *
- * PUBLIC: int __db_truncate __P((DB *, DB_TXN *, u_int32_t *, u_int32_t));
+ * PUBLIC: gint __db_truncate __P((DB *, DB_TXN *, u_int32_t *, u_int32_t));
  */
-int
+gint
 __db_truncate(dbp, txn, countp, flags)
 	DB *dbp;
 	DB_TXN *txn;
 	u_int32_t *countp, flags;
 {
 	DB_ENV *dbenv;
-	int ret, t_ret, txn_local;
+	gint ret, t_ret, txn_local;
 
 	dbenv = dbp->dbenv;
 	ret = txn_local = 0;

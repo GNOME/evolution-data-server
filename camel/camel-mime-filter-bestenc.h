@@ -56,23 +56,23 @@ typedef enum _CamelBestencEncoding {
 struct _CamelMimeFilterBestenc {
 	CamelMimeFilter parent;
 
-	unsigned int flags;	/* our creation flags, see above */
+	guint flags;	/* our creation flags, see above */
 
-	unsigned int count0;	/* count of NUL characters */
-	unsigned int count8;	/* count of 8 bit characters */
-	unsigned int total;	/* total characters read */
+	guint count0;	/* count of NUL characters */
+	guint count8;	/* count of 8 bit characters */
+	guint total;	/* total characters read */
 
-	unsigned int lastc;	/* the last character read */
-	int crlfnoorder;	/* if crlf's occured where they shouldn't have */
+	guint lastc;	/* the last character read */
+	gint crlfnoorder;	/* if crlf's occured where they shouldn't have */
 
-	int startofline;	/* are we at the start of a new line? */
+	gint startofline;	/* are we at the start of a new line? */
 
-	int fromcount;
-	char fromsave[6];	/* save a few characters if we found an \n near the end of the buffer */
-	int hadfrom;		/* did we encounter a "\nFrom " in the data? */
+	gint fromcount;
+	gchar fromsave[6];	/* save a few characters if we found an \n near the end of the buffer */
+	gint hadfrom;		/* did we encounter a "\nFrom " in the data? */
 
-	unsigned int countline;	/* current count of characters on a given line */
-	unsigned int maxline;	/* max length of any line */
+	guint countline;	/* current count of characters on a given line */
+	guint maxline;	/* max length of any line */
 
 	CamelCharset charset;	/* used to determine the best charset to use */
 };
@@ -82,12 +82,12 @@ struct _CamelMimeFilterBestencClass {
 };
 
 CamelType		camel_mime_filter_bestenc_get_type	(void);
-CamelMimeFilterBestenc      *camel_mime_filter_bestenc_new	(unsigned int flags);
+CamelMimeFilterBestenc      *camel_mime_filter_bestenc_new	(guint flags);
 
 
 CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required);
-const char *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
-void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, unsigned int flags);
+const gchar *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
+void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint flags);
 
 G_END_DECLS
 

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,14 +28,14 @@ static const char revid[] = "$Id$";
  *
  * Calculate which extent the page is in, open and create if necessary.
  *
- * PUBLIC: int __qam_fprobe
- * PUBLIC:	   __P((DB *, db_pgno_t, void *, qam_probe_mode, u_int32_t));
+ * PUBLIC: gint __qam_fprobe
+ * PUBLIC:	   __P((DB *, db_pgno_t, gpointer , qam_probe_mode, u_int32_t));
  */
-int
+gint
 __qam_fprobe(dbp, pgno, addrp, mode, flags)
 	DB *dbp;
 	db_pgno_t pgno;
-	void *addrp;
+	gpointer addrp;
 	qam_probe_mode mode;
 	u_int32_t flags;
 {
@@ -45,8 +45,8 @@ __qam_fprobe(dbp, pgno, addrp, mode, flags)
 	QUEUE *qp;
 	u_int8_t fid[DB_FILE_ID_LEN];
 	u_int32_t extid, maxext, openflags;
-	char buf[MAXPATHLEN];
-	int numext, offset, oldext, ret;
+	gchar buf[MAXPATHLEN];
+	gint numext, offset, oldext, ret;
 
 	dbenv = dbp->dbenv;
 	qp = (QUEUE *)dbp->q_internal;
@@ -247,9 +247,9 @@ err:
  * Calculate which extent the page is in and close it.
  * We assume the mpf entry is present.
  *
- * PUBLIC: int __qam_fclose __P((DB *, db_pgno_t));
+ * PUBLIC: gint __qam_fclose __P((DB *, db_pgno_t));
  */
-int
+gint
 __qam_fclose(dbp, pgnoaddr)
 	DB *dbp;
 	db_pgno_t pgnoaddr;
@@ -259,7 +259,7 @@ __qam_fclose(dbp, pgnoaddr)
 	MPFARRAY *array;
 	QUEUE *qp;
 	u_int32_t extid;
-	int offset, ret;
+	gint offset, ret;
 
 	ret = 0;
 	dbenv = dbp->dbenv;
@@ -295,9 +295,9 @@ done:
  * to remove an extent without probing it first and seeing that is is empty
  * so we assume the mpf entry is present.
  *
- * PUBLIC: int __qam_fremove __P((DB *, db_pgno_t));
+ * PUBLIC: gint __qam_fremove __P((DB *, db_pgno_t));
  */
-int
+gint
 __qam_fremove(dbp, pgnoaddr)
 	DB *dbp;
 	db_pgno_t pgnoaddr;
@@ -308,9 +308,9 @@ __qam_fremove(dbp, pgnoaddr)
 	QUEUE *qp;
 	u_int32_t extid;
 #if CONFIG_TEST
-	char buf[MAXPATHLEN], *real_name;
+	gchar buf[MAXPATHLEN], *real_name;
 #endif
-	int offset, ret;
+	gint offset, ret;
 
 	qp = (QUEUE *)dbp->q_internal;
 	dbenv = dbp->dbenv;
@@ -378,9 +378,9 @@ err:
  * __qam_sync --
  *	Flush the database cache.
  *
- * PUBLIC: int __qam_sync __P((DB *, u_int32_t));
+ * PUBLIC: gint __qam_sync __P((DB *, u_int32_t));
  */
-int
+gint
 __qam_sync(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
@@ -392,7 +392,7 @@ __qam_sync(dbp, flags)
 	QUEUE_FILELIST *filelist;
 	struct __qmpf *mpfp;
 	u_int32_t i;
-	int done, ret;
+	gint done, ret;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -466,9 +466,9 @@ err:
  *	Another thread may close the handle so this should only
  *	be used single threaded or with care.
  *
- * PUBLIC: int __qam_gen_filelist __P(( DB *, QUEUE_FILELIST **));
+ * PUBLIC: gint __qam_gen_filelist __P(( DB *, QUEUE_FILELIST **));
  */
-int
+gint
 __qam_gen_filelist(dbp, filelistp)
 	DB *dbp;
 	QUEUE_FILELIST **filelistp;
@@ -480,7 +480,7 @@ __qam_gen_filelist(dbp, filelistp)
 	db_pgno_t i, last, start;
 	db_recno_t current, first;
 	QUEUE_FILELIST *fp;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -542,19 +542,19 @@ again:	for (; i <= last; i += qp->page_ext) {
 /*
  * __qam_extent_names -- generate a list of extent files names.
  *
- * PUBLIC: int __qam_extent_names __P((DB_ENV *, char *, char ***));
+ * PUBLIC: gint __qam_extent_names __P((DB_ENV *, gchar *, gchar ***));
  */
-int
+gint
 __qam_extent_names(dbenv, name, namelistp)
 	DB_ENV *dbenv;
-	char *name;
-	char ***namelistp;
+	gchar *name;
+	gchar ***namelistp;
 {
 	DB *dbp;
 	QUEUE *qp;
 	QUEUE_FILELIST *filelist, *fp;
-	char buf[MAXPATHLEN], *dir, **cp, *freep;
-	int cnt, len, ret;
+	gchar buf[MAXPATHLEN], *dir, **cp, *freep;
+	gint cnt, len, ret;
 
 	*namelistp = NULL;
 	filelist = NULL;
@@ -587,7 +587,7 @@ __qam_extent_names(dbenv, name, namelistp)
 	    __os_malloc(dbp->dbenv, len, namelistp)) != 0)
 		goto done;
 	cp = *namelistp;
-	freep = (char *)(cp + cnt + 1);
+	freep = (gchar *)(cp + cnt + 1);
 	for (fp = filelist; fp->mpf != NULL; fp++) {
 		snprintf(buf, sizeof(buf),
 		    QUEUE_EXTENT, dir, PATH_SEPARATOR[0], name, fp->id);
@@ -626,7 +626,7 @@ __qam_exid(dbp, fidp, exnum)
 	u_int8_t *fidp;
 	u_int32_t exnum;
 {
-	int i;
+	gint i;
 	u_int8_t *p;
 
 	/* Copy the fileid from the master. */

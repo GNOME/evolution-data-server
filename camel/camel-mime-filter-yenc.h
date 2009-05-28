@@ -67,9 +67,9 @@ struct _CamelMimeFilterYenc {
 
 	CamelMimeFilterYencDirection direction;
 
-	int part;
+	gint part;
 
-	int state;
+	gint state;
 	guint32 pcrc;
 	guint32 crc;
 };
@@ -84,7 +84,7 @@ CamelType camel_mime_filter_yenc_get_type (void);
 
 CamelMimeFilter *camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction);
 
-void camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, int state);
+void camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, gint state);
 void camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc);
 
 /*int     camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc);*/
@@ -92,12 +92,12 @@ guint32 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc);
 guint32 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc);
 
 
-size_t camel_ydecode_step  (const unsigned char *in, size_t inlen, unsigned char *out,
-			    int *state, guint32 *pcrc, guint32 *crc);
-size_t camel_yencode_step  (const unsigned char *in, size_t inlen, unsigned char *out,
-			    int *state, guint32 *pcrc, guint32 *crc);
-size_t camel_yencode_close (const unsigned char *in, size_t inlen, unsigned char *out,
-			    int *state, guint32 *pcrc, guint32 *crc);
+size_t camel_ydecode_step  (const guchar *in, size_t inlen, guchar *out,
+			    gint *state, guint32 *pcrc, guint32 *crc);
+size_t camel_yencode_step  (const guchar *in, size_t inlen, guchar *out,
+			    gint *state, guint32 *pcrc, guint32 *crc);
+size_t camel_yencode_close (const guchar *in, size_t inlen, guchar *out,
+			    gint *state, guint32 *pcrc, guint32 *crc);
 
 G_END_DECLS
 

@@ -36,15 +36,15 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
-const char *e_iconv_charset_name(const char *charset);
-iconv_t e_iconv_open(const char *oto, const char *ofrom);
-size_t e_iconv(iconv_t cd, const char **inbuf, size_t *inbytesleft, char ** outbuf, size_t *outbytesleft);
+const gchar *e_iconv_charset_name(const gchar *charset);
+iconv_t e_iconv_open(const gchar *oto, const gchar *ofrom);
+size_t e_iconv(iconv_t cd, const gchar **inbuf, size_t *inbytesleft, gchar ** outbuf, size_t *outbytesleft);
 void e_iconv_close(iconv_t ip);
-const char *e_iconv_locale_charset(void);
+const gchar *e_iconv_locale_charset(void);
 
 /* languages */
-const char *e_iconv_locale_language (void);
-const char *e_iconv_charset_language (const char *charset);
+const gchar *e_iconv_locale_language (void);
+const gchar *e_iconv_charset_language (const gchar *charset);
 
 #ifdef __cplusplus
 }

@@ -38,7 +38,7 @@ struct _ECalBackendPrivate {
 	ESource *source;
 
 	/* URI, from source. This is cached, since we return const. */
-	char *uri;
+	gchar *uri;
 
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
@@ -56,7 +56,7 @@ struct _ECalBackendPrivate {
 	/* used when notifying clients about progress of some operation,
 	 * we do not send multiple notifications with the same percent
 	 * value */
-	int last_percent_notified;
+	gint last_percent_notified;
 };
 
 #define E_CAL_BACKEND_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
@@ -312,7 +312,7 @@ e_cal_backend_get_source (ECalBackend *backend)
  *
  * Return value: The URI where the calendar is stored.
  **/
-const char *
+const gchar *
 e_cal_backend_get_uri (ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
@@ -527,7 +527,7 @@ e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only)
 }
 
 void
-e_cal_backend_notify_cal_address (ECalBackend *backend, char *address)
+e_cal_backend_notify_cal_address (ECalBackend *backend, gchar *address)
 {
 	ECalBackendPrivate *priv;
 	GList *l;
@@ -604,7 +604,7 @@ e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
  */
 void
 e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists,
-		    const char *username, const char *password)
+		    const gchar *username, const gchar *password)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -756,7 +756,7 @@ e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal)
  * identifier and its recurrence ID (if a recurrent appointment).
  */
 void
-e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid)
+e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -775,7 +775,7 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid, 
  * Calls the get_object_list method on the given backend.
  */
 void
-e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *sexp)
+e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const gchar *sexp)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -795,7 +795,7 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *
  * on its unique identifier and its recurrence ID (if a recurrent appointment).
  */
 void
-e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid)
+e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -837,7 +837,7 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, 
  * the last time the give change_id was seen
  */
 void
-e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const char *change_id)
+e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const gchar *change_id)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -858,7 +858,7 @@ e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const char *chan
  * to do whatever is needed to really discard the alarm.
  */
 void
-e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const char *uid, const char *auid)
+e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -878,7 +878,7 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const char *ui
  * Calls the create_object method on the given backend.
  */
 void
-e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -900,7 +900,7 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *ca
  * Calls the modify_object method on the given backend.
  */
 void
-e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *calobj, CalObjModType mod)
+e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -924,7 +924,7 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *ca
  * clients about the change.
  */
 void
-e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid, CalObjModType mod)
+e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -943,7 +943,7 @@ e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *ui
  * Calls the receive_objects method on the given backend.
  */
 void
-e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -962,7 +962,7 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const char *
  * Calls the send_objects method on the given backend.
  */
 void
-e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -983,7 +983,7 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char *cal
  * can't be found.
  */
 void
-e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid)
+e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1003,7 +1003,7 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tzi
  * DATE and floating DATE-TIME values.
  */
 void
-e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const gchar *tzobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1027,7 +1027,7 @@ e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char 
  *
  */
 void
-e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid)
+e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1045,7 +1045,7 @@ e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const c
  * Add a timezone object to the given backend.
  */
 void
-e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzobj)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobj != NULL);
@@ -1077,7 +1077,7 @@ e_cal_backend_internal_get_default_timezone (ECalBackend *backend)
  * Calls the internal_get_timezone method on the given backend.
  */
 icaltimezone *
-e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid)
+e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
@@ -1117,7 +1117,7 @@ e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy)
  * created by non-EDS clients.
  **/
 void
-e_cal_backend_notify_object_created (ECalBackend *backend, const char *calobj)
+e_cal_backend_notify_object_created (ECalBackend *backend, const gchar *calobj)
 {
 	ECalBackendPrivate *priv;
 	EList *queries;
@@ -1148,7 +1148,7 @@ e_cal_backend_notify_object_created (ECalBackend *backend, const char *calobj)
 }
 
 static void
-match_query_and_notify (EDataCalView *query, const char *old_object, const char *object)
+match_query_and_notify (EDataCalView *query, const gchar *old_object, const gchar *object)
 {
 	gboolean old_match = FALSE, new_match = FALSE;
 
@@ -1201,7 +1201,7 @@ e_cal_backend_notify_view_progress_start (ECalBackend *backend)
  * Notifies each of the backend's listeners about the view_progress in downloading the items.
  **/
 void
-e_cal_backend_notify_view_progress (ECalBackend *backend, const char *message, int percent)
+e_cal_backend_notify_view_progress (ECalBackend *backend, const gchar *message, gint percent)
 {
 	ECalBackendPrivate *priv;
 	EList *queries;
@@ -1290,7 +1290,7 @@ e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_C
  **/
 void
 e_cal_backend_notify_object_modified (ECalBackend *backend,
-				      const char *old_object, const char *object)
+				      const gchar *old_object, const gchar *object)
 {
 	ECalBackendPrivate *priv;
 	EList *queries;
@@ -1336,7 +1336,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
  **/
 void
 e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId *id,
-				     const char *old_object, const char *object)
+				     const gchar *old_object, const gchar *object)
 {
 	ECalBackendPrivate *priv;
 	EList *queries;
@@ -1443,7 +1443,7 @@ e_cal_backend_notify_auth_required (ECalBackend *backend)
  * Notifies each of the backend's listeners about an error
  **/
 void
-e_cal_backend_notify_error (ECalBackend *backend, const char *message)
+e_cal_backend_notify_error (ECalBackend *backend, const gchar *message)
 {
 	ECalBackendPrivate *priv = backend->priv;
 	GList *l;

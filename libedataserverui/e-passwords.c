@@ -92,14 +92,14 @@ static gint idle_id;
 static gint ep_online_state = TRUE;
 
 #ifdef WITH_GNOME_KEYRING
-static char *default_keyring = NULL;
+static gchar *default_keyring = NULL;
 #endif
 
 #define KEY_FILE_GROUP_PREFIX "Passwords-"
 static GKeyFile *key_file = NULL;
 
 static gboolean
-check_key_file (const char *funcname)
+check_key_file (const gchar *funcname)
 {
 	if (!key_file)
 		g_message ("%s: Failed to create key file!", funcname);
@@ -451,7 +451,7 @@ ep_password_decode (const gchar *encoded_password)
 }
 
 static gboolean
-ep_idle_dispatch (void *data)
+ep_idle_dispatch (gpointer data)
 {
 	EPassMsg *msg;
 
@@ -1014,7 +1014,7 @@ ep_add_password (EPassMsg *msg)
 static void ep_ask_password (EPassMsg *msg);
 
 static void
-pass_response (GtkDialog *dialog, gint response, void *data)
+pass_response (GtkDialog *dialog, gint response, gpointer data)
 {
 	EPassMsg *msg = data;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
@@ -1415,7 +1415,7 @@ e_passwords_forget_password (const gchar *component_name, const gchar *key)
  * Return value: the password associated with @key, or %NULL.  Caller
  * must free the returned password.
  **/
-char *
+gchar *
 e_passwords_get_password (const gchar *component_name, const gchar *key)
 {
 	EPassMsg *msg;
@@ -1481,7 +1481,7 @@ e_passwords_add_password (const gchar *key, const gchar *passwd)
  * return value is non-%NULL and @remember_type is not
  * E_PASSWORDS_DO_NOT_REMEMBER.
  **/
-char *
+gchar *
 e_passwords_ask_password (const gchar *title, const gchar *component_name,
 			  const gchar *key,
 			  const gchar *prompt,

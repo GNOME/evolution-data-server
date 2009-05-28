@@ -40,7 +40,7 @@ static void camel_imap4_search_class_init (CamelIMAP4SearchClass *klass);
 static void camel_imap4_search_init (CamelIMAP4Search *search, CamelIMAP4SearchClass *klass);
 static void camel_imap4_search_finalize (CamelObject *object);
 
-static ESExpResult *imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *search);
+static ESExpResult *imap4_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
 
 
 static CamelFolderSearchClass *parent_class = NULL;
@@ -89,7 +89,7 @@ camel_imap4_search_finalize (CamelObject *object)
 
 
 CamelFolderSearch *
-camel_imap4_search_new (CamelIMAP4Engine *engine, const char *cachedir)
+camel_imap4_search_new (CamelIMAP4Engine *engine, const gchar *cachedir)
 {
 	CamelIMAP4Search *search;
 
@@ -107,7 +107,7 @@ untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 	CamelFolderSummary *summary = ((CamelFolder *) engine->folder)->summary;
 	GPtrArray *matches = ic->user_data;
 	CamelMessageInfo *info;
-	char uid[12];
+	gchar uid[12];
 
 	while (1) {
 		if (camel_imap4_engine_next_token (engine, token, ex) == -1)
@@ -121,7 +121,7 @@ untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 
 		sprintf (uid, "%u", token->v.number);
 		if ((info = camel_folder_summary_uid (summary, uid))) {
-			g_ptr_array_add (matches, (char *) camel_message_info_uid (info));
+			g_ptr_array_add (matches, (gchar *) camel_message_info_uid (info));
 			camel_message_info_free (info);
 		}
 	}
@@ -136,21 +136,21 @@ untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 }
 
 static ESExpResult *
-imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+imap4_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
 	CamelIMAP4Search *imap4_search = (CamelIMAP4Search *) search;
 	CamelIMAP4Engine *engine = imap4_search->engine;
 	GPtrArray *strings, *matches, *infos;
-	register const unsigned char *inptr;
+	register const guchar *inptr;
 	gboolean utf8_search = FALSE;
 	GPtrArray *summary_set;
 	CamelMessageInfo *info;
 	CamelIMAP4Command *ic;
-	const char *expr;
+	const gchar *expr;
 	ESExpResult *r;
-	int id, i, n;
+	gint id, i, n;
 	size_t used;
-	char *set;
+	gchar *set;
 
 	if (((CamelOfflineStore *) engine->service)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return parent_class->body_contains (f, argc, argv, search);
@@ -181,7 +181,7 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 			r->value.ptrarray->len = summary_set->len;
 			for (i = 0; i < summary_set->len; i++) {
 				info = g_ptr_array_index (summary_set, i);
-				r->value.ptrarray->pdata[i] = (char *) camel_message_info_uid (info);
+				r->value.ptrarray->pdata[i] = (gchar *) camel_message_info_uid (info);
 			}
 		}
 
@@ -193,7 +193,7 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 		if (argv[i]->type == ESEXP_RES_STRING && argv[i]->value.string[0] != '\0') {
 			g_ptr_array_add (strings, argv[i]->value.string);
 			if (!utf8_search) {
-				inptr = (unsigned char *) argv[i]->value.string;
+				inptr = (guchar *) argv[i]->value.string;
 				while (*inptr != '\0') {
 					if (!isascii ((int) *inptr)) {
 						utf8_search = TRUE;
@@ -220,7 +220,7 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 			r->value.ptrarray->len = summary_set->len;
 			for (i = 0; i < summary_set->len; i++) {
 				info = g_ptr_array_index (summary_set, i);
-				r->value.ptrarray->pdata[i] = (char *) camel_message_info_uid (info);
+				r->value.ptrarray->pdata[i] = (gchar *) camel_message_info_uid (info);
 			}
 		}
 
@@ -266,7 +266,7 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 
 
 		if (ic->result == CAMEL_IMAP4_RESULT_NO && utf8_search && (engine->capa & CAMEL_IMAP4_CAPABILITY_utf8_search)) {
-			int j;
+			gint j;
 
 			/* might be because the server is lame and doesn't support UTF-8 */
 			for (j = 0; j < ic->resp_codes->len; j++) {
@@ -294,7 +294,7 @@ imap4_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, Cam
 	g_ptr_array_free (infos, TRUE);
 
 	if (search->current) {
-		const char *uid;
+		const gchar *uid;
 
 		uid = camel_message_info_uid (search->current);
 		r = e_sexp_result_new (f, ESEXP_RES_BOOL);

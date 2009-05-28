@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,9 +23,9 @@ static const char revid[] = "$Id$";
  * __rep_region_init --
  *	Initialize the shared memory state for the replication system.
  *
- * PUBLIC: int __rep_region_init __P((DB_ENV *));
+ * PUBLIC: gint __rep_region_init __P((DB_ENV *));
  */
-int
+gint
 __rep_region_init(dbenv)
 	DB_ENV *dbenv;
 {
@@ -34,7 +34,7 @@ __rep_region_init(dbenv)
 	DB_MUTEX *db_mutexp;
 	DB_REP *db_rep;
 	REP *rep;
-	int ret;
+	gint ret;
 
 	db_rep = dbenv->rep_handle;
 	infop = dbenv->reginfo;
@@ -106,14 +106,14 @@ err:	MUTEX_UNLOCK(dbenv, &renv->mutex);
  * __rep_region_destroy --
  *	Destroy any system resources allocated in the replication region.
  *
- * PUBLIC: int __rep_region_destroy __P((DB_ENV *));
+ * PUBLIC: gint __rep_region_destroy __P((DB_ENV *));
  */
-int
+gint
 __rep_region_destroy(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_REP *db_rep;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = t_ret = 0;
 	db_rep = (DB_REP *)dbenv->rep_handle;
@@ -132,9 +132,9 @@ __rep_region_destroy(dbenv)
  * __rep_dbenv_close --
  *	Replication-specific destruction of the DB_ENV structure.
  *
- * PUBLIC: int __rep_dbenv_close __P((DB_ENV *));
+ * PUBLIC: gint __rep_dbenv_close __P((DB_ENV *));
  */
-int
+gint
 __rep_dbenv_close(dbenv)
 	DB_ENV *dbenv;
 {
@@ -156,16 +156,16 @@ __rep_dbenv_close(dbenv)
  * actually closing the environment, close all databases we've opened
  * while applying messages.
  *
- * PUBLIC: int __rep_preclose __P((DB_ENV *, int));
+ * PUBLIC: gint __rep_preclose __P((DB_ENV *, int));
  */
-int
+gint
 __rep_preclose(dbenv, do_closefiles)
 	DB_ENV *dbenv;
-	int do_closefiles;
+	gint do_closefiles;
 {
 	DB *dbp;
 	DB_REP *db_rep;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = t_ret = 0;
 

@@ -33,9 +33,9 @@
 
 
 pid_t
-camel_process_fork (const char *path, char **argv, int *infd, int *outfd, int *errfd, CamelException *ex)
+camel_process_fork (const gchar *path, gchar **argv, gint *infd, gint *outfd, gint *errfd, CamelException *ex)
 {
-	int errnosav, fd[6], i;
+	gint errnosav, fd[6], i;
 	pid_t pid;
 
 	for (i = 0; i < 6; i++)
@@ -62,7 +62,7 @@ camel_process_fork (const char *path, char **argv, int *infd, int *outfd, int *e
 
 	if (!(pid = fork ())) {
 		/* child process */
-		int maxfd, nullfd = -1;
+		gint maxfd, nullfd = -1;
 
 		if (!outfd || !errfd)
 			nullfd = open ("/dev/null", O_WRONLY);
@@ -118,11 +118,11 @@ camel_process_fork (const char *path, char **argv, int *infd, int *outfd, int *e
 }
 
 
-int
+gint
 camel_process_wait (pid_t pid)
 {
 	sigset_t mask, omask;
-	int status;
+	gint status;
 	pid_t r;
 
 	sigemptyset (&mask);

@@ -44,7 +44,7 @@ struct _CamelIMAPPFetchStreamClass {
 
 CamelType	 camel_imapp_fetch_stream_get_type	(void);
 
-CamelStream     *camel_imapp_fetch_stream_new		(struct _CamelIMAPPEngine *src, const char *uid, const char *spec);
+CamelStream     *camel_imapp_fetch_stream_new		(struct _CamelIMAPPEngine *src, const gchar *uid, const gchar *spec);
 
 G_END_DECLS
 

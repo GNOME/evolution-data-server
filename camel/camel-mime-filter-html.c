@@ -52,8 +52,8 @@ struct _CamelMimeFilterHTMLPrivate {
 #define ARRAY_LEN(x) (sizeof(x)/sizeof((x)[0]))
 
 static struct {
-	char *element;
-	char *remap;
+	gchar *element;
+	gchar *remap;
 } map_start[] = {
 	{ "p", "\n\n" },
 	{ "br", "\n" },
@@ -62,8 +62,8 @@ static struct {
 
 
 static struct {
-	char *element;
-	char *remap;
+	gchar *element;
+	gchar *remap;
 } map_end[] = {
 	{ "h1", "\n" }, { "h2", "\n" }, { "h3", "\n" }, { "h4", "\n" }, { "h5", "\n" }, { "h6", "\n" },
 };
@@ -110,11 +110,11 @@ camel_mime_filter_html_init       (CamelObject *o)
 }
 
 static void
-run(CamelMimeFilter *mf, char *in, size_t inlen, size_t prespace, char **out, size_t *outlenptr, size_t *outprespace, int last)
+run(CamelMimeFilter *mf, gchar *in, size_t inlen, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace, gint last)
 {
 	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *) mf;
 	camel_html_parser_t state;
-	char *outp;
+	gchar *outp;
 
 	d(printf("converting html:\n%.*s\n", (int)inlen, in));
 
@@ -124,8 +124,8 @@ run(CamelMimeFilter *mf, char *in, size_t inlen, size_t prespace, char **out, si
 
 	camel_html_parser_set_data (f->priv->ctxt, in, inlen, last);
 	do {
-		const char *data;
-		int len;
+		const gchar *data;
+		gint len;
 
 		state = camel_html_parser_step(f->priv->ctxt, &data, &len);
 
@@ -152,13 +152,13 @@ run(CamelMimeFilter *mf, char *in, size_t inlen, size_t prespace, char **out, si
 }
 
 static void
-complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlenptr, size_t *outprespace)
+complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace)
 {
 	run(mf, in, len, prespace, out, outlenptr, outprespace, TRUE);
 }
 
 static void
-filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, size_t *outlenptr, size_t *outprespace)
+filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace)
 {
 	run(mf, in, len, prespace, out, outlenptr, outprespace, FALSE);
 }

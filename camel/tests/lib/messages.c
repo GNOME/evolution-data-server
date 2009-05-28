@@ -37,13 +37,13 @@ test_message_create_simple(void)
 }
 
 static void
-content_finalise(CamelObject *folder, void *crap, void *ba)
+content_finalise(CamelObject *folder, gpointer crap, gpointer ba)
 {
 	g_byte_array_free(ba, TRUE);
 }
 
 void
-test_message_set_content_simple(CamelMimePart *part, int how, const char *type, const char *text, int len)
+test_message_set_content_simple(CamelMimePart *part, gint how, const gchar *type, const gchar *text, gint len)
 {
 	CamelStreamMem *content = NULL;
 	CamelDataWrapper *dw;
@@ -90,11 +90,11 @@ test_message_set_content_simple(CamelMimePart *part, int how, const char *type, 
 	}
 }
 
-int
-test_message_write_file(CamelMimeMessage *msg, const char *name)
+gint
+test_message_write_file(CamelMimeMessage *msg, const gchar *name)
 {
 	CamelStreamFs *file;
-	int ret;
+	gint ret;
 
 	file = (CamelStreamFs *)camel_stream_fs_new_with_name(name, O_CREAT|O_WRONLY, 0600);
 	camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)file);
@@ -107,7 +107,7 @@ test_message_write_file(CamelMimeMessage *msg, const char *name)
 }
 
 CamelMimeMessage *
-test_message_read_file(const char *name)
+test_message_read_file(const gchar *name)
 {
 	CamelStreamFs *file;
 	CamelMimeMessage *msg2;
@@ -124,11 +124,11 @@ test_message_read_file(const char *name)
 }
 
 static void
-hexdump (const unsigned char *in, int inlen)
+hexdump (const guchar *in, gint inlen)
 {
-	const unsigned char *inptr = in, *start = inptr;
-	const unsigned char *inend = in + inlen;
-	int octets;
+	const guchar *inptr = in, *start = inptr;
+	const guchar *inend = in + inlen;
+	gint octets;
 
 	while (inptr < inend) {
 		octets = 0;
@@ -153,8 +153,8 @@ hexdump (const unsigned char *in, int inlen)
 	}
 }
 
-int
-test_message_compare_content(CamelDataWrapper *dw, const char *text, int len)
+gint
+test_message_compare_content(CamelDataWrapper *dw, const gchar *text, gint len)
 {
 	CamelStreamMem *content;
 
@@ -182,7 +182,7 @@ test_message_compare_content(CamelDataWrapper *dw, const char *text, int len)
 	return 0;
 }
 
-int
+gint
 test_message_compare (CamelMimeMessage *msg)
 {
 	CamelMimeMessage *msg2;
@@ -228,25 +228,25 @@ test_message_compare (CamelMimeMessage *msg)
 	return 0;
 }
 
-int
+gint
 test_message_compare_header(CamelMimeMessage *m1, CamelMimeMessage *m2)
 {
 	return 0;
 }
 
-int
+gint
 test_message_compare_messages(CamelMimeMessage *m1, CamelMimeMessage *m2)
 {
 	return 0;
 }
 
 static void
-message_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, int depth)
+message_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint depth)
 {
 	CamelDataWrapper *containee;
-	int parts, i;
-	char *s;
-	char *mime_type;
+	gint parts, i;
+	gchar *s;
+	gchar *mime_type;
 
 	s = alloca(depth+1);
 	memset(s, ' ', depth);

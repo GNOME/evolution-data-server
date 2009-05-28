@@ -8,9 +8,9 @@
 void
 test_address_compare(CamelInternetAddress *addr, CamelInternetAddress *addr2)
 {
-	const char *r1, *r2, *a1, *a2;
-	char *e1, *e2, *f1, *f2;
-	int j;
+	const gchar *r1, *r2, *a1, *a2;
+	gchar *e1, *e2, *f1, *f2;
+	gint j;
 
 	check(camel_address_length(CAMEL_ADDRESS(addr)) == camel_address_length(CAMEL_ADDRESS(addr2)));
 	for (j=0;j<camel_address_length(CAMEL_ADDRESS(addr));j++) {

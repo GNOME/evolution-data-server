@@ -28,18 +28,18 @@
 #endif
 #endif
 
-int	db_setup __P((const char *, const char *, FILE *, const char *));
-int	db_teardown __P((const char *, const char *, FILE *, const char *));
+int	db_setup __P((const gchar *, const gchar *, FILE *, const gchar *));
+int	db_teardown __P((const gchar *, const gchar *, FILE *, const gchar *));
 int	main __P((void));
 
 /*
  * An example of a program creating/configuring a Berkeley DB environment.
  */
-int
+gint
 main()
 {
-	const char *data_dir, *home;
-	const char *progname = "ex_env";		/* Program name. */
+	const gchar *data_dir, *home;
+	const gchar *progname = "ex_env";		/* Program name. */
 
 	/*
 	 * All of the shared database files live in DATABASE_HOME, but
@@ -59,13 +59,13 @@ main()
 	return (EXIT_SUCCESS);
 }
 
-int
+gint
 db_setup(home, data_dir, errfp, progname)
-	const char *home, *data_dir, *progname;
+	const gchar *home, *data_dir, *progname;
 	FILE *errfp;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	/*
 	 * Create an environment object and initialize it for error
@@ -110,13 +110,13 @@ db_setup(home, data_dir, errfp, progname)
 	return (0);
 }
 
-int
+gint
 db_teardown(home, data_dir, errfp, progname)
-	const char *home, *data_dir, *progname;
+	const gchar *home, *data_dir, *progname;
 	FILE *errfp;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	/* Remove the shared database regions. */
 	if ((ret = db_env_create(&dbenv, 0)) != 0) {

@@ -59,9 +59,9 @@ struct _CamelGroupwiseFolder {
 	CamelOfflineJournal *journal;
 	CamelDataCache *cache;
 
-	unsigned int need_rescan:1;
-	unsigned int need_refresh:1;
-	unsigned int read_only:1;
+	guint need_rescan:1;
+	guint need_refresh:1;
+	guint read_only:1;
 
 
 };
@@ -78,7 +78,7 @@ struct _CamelGroupwiseFolderClass {
 CamelType camel_groupwise_folder_get_type (void);
 
 /* implemented */
-CamelFolder * camel_gw_folder_new(CamelStore *store, const char *folder_dir, const char *folder_name, CamelException *ex) ;
+CamelFolder * camel_gw_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex) ;
 void gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) ;
 void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
 

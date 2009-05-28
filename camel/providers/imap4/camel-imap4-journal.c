@@ -52,8 +52,8 @@ static void camel_imap4_journal_finalize (CamelObject *object);
 
 static void imap4_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
 static CamelDListNode *imap4_entry_load (CamelOfflineJournal *journal, FILE *in);
-static int imap4_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-static int imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
+static gint imap4_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+static gint imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
 
 static CamelOfflineJournalClass *parent_class = NULL;
@@ -101,7 +101,7 @@ static void
 camel_imap4_journal_finalize (CamelObject *object)
 {
 	CamelIMAP4Journal *journal = (CamelIMAP4Journal *) object;
-	int i;
+	gint i;
 
 	if (journal->failed) {
 		for (i = 0; i < journal->failed->len; i++)
@@ -197,7 +197,7 @@ imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *e
 	CamelMimeMessage *message;
 	CamelStream *stream;
 	CamelException lex;
-	char *uid = NULL;
+	gchar *uid = NULL;
 
 	/* if the message isn't in the cache, the user went behind our backs so "not our problem" */
 	if (!imap4_folder->cache || !(stream = camel_data_cache_get (imap4_folder->cache, "cache", entry->v.append_uid, ex)))
@@ -275,7 +275,7 @@ imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExce
 
 
 CamelOfflineJournal *
-camel_imap4_journal_new (CamelIMAP4Folder *folder, const char *filename)
+camel_imap4_journal_new (CamelIMAP4Folder *folder, const gchar *filename)
 {
 	CamelOfflineJournal *journal;
 
@@ -292,7 +292,7 @@ void
 camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal)
 {
 	CamelFolderSummary *summary = ((CamelOfflineJournal *) journal)->folder->summary;
-	int i;
+	gint i;
 
 	for (i = 0; i < journal->failed->len; i++)
 		camel_folder_summary_add (summary, journal->failed->pdata[i]);
@@ -303,7 +303,7 @@ camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal)
 
 void
 camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *message,
-			    const CamelMessageInfo *mi, char **appended_uid, CamelException *ex)
+			    const CamelMessageInfo *mi, gchar **appended_uid, CamelException *ex)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) imap4_journal;
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) journal->folder;
@@ -312,7 +312,7 @@ camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *
 	CamelMessageInfo *info;
 	CamelStream *cache;
 	guint32 nextuid;
-	char *uid;
+	gchar *uid;
 
 	if (imap4_folder->cache == NULL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,

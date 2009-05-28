@@ -33,11 +33,11 @@
 #include "e2k-uri.h"
 #include "test-utils.h"
 
-const char *test_program_name = "urltest";
+const gchar *test_program_name = "urltest";
 
 static void
 dump_uri (E2kUri *euri) {
-	const char *temp;
+	const gchar *temp;
 
 	printf ("URI contents \n");
 	printf ("==================== \n");
@@ -141,9 +141,9 @@ dump_uri (E2kUri *euri) {
 }
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
-	const char *url;
+	const gchar *url;
 	E2kUri *euri;
 
 	if (argc != 2) {

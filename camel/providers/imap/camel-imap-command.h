@@ -42,15 +42,15 @@ typedef enum {
 struct _CamelImapResponse {
 	CamelFolder *folder;
 	GPtrArray *untagged;
-	char *status;
+	gchar *status;
 };
 
 CamelImapResponse *camel_imap_command              (CamelImapStore *store,
 						    CamelFolder *folder,
 						    CamelException *ex,
-						    const char *fmt, ...);
+						    const gchar *fmt, ...);
 CamelImapResponse *camel_imap_command_continuation (CamelImapStore *store,
-						    const char *cmd,
+						    const gchar *cmd,
 						    size_t cmdlen,
 						    CamelException *ex);
 
@@ -58,20 +58,20 @@ void  camel_imap_response_free                     (CamelImapStore *store,
 						    CamelImapResponse *response);
 void  camel_imap_response_free_without_processing  (CamelImapStore *store,
 						    CamelImapResponse *response);
-char *camel_imap_response_extract                  (CamelImapStore *store,
+gchar *camel_imap_response_extract                  (CamelImapStore *store,
 						    CamelImapResponse *response,
-						    const char *type,
+						    const gchar *type,
 						    CamelException *ex);
-char *camel_imap_response_extract_continuation     (CamelImapStore *store,
+gchar *camel_imap_response_extract_continuation     (CamelImapStore *store,
 						    CamelImapResponse *response,
 						    CamelException *ex);
 
 gboolean           camel_imap_command_start        (CamelImapStore *store,
 						    CamelFolder *folder,
 						    CamelException *ex,
-						    const char *fmt, ...);
+						    const gchar *fmt, ...);
 CamelImapResponseType camel_imap_command_response  (CamelImapStore *store,
-						    char **response,
+						    gchar **response,
 						    CamelException *ex);
 
 G_END_DECLS

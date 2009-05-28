@@ -52,12 +52,12 @@ static CamelMimePart *       get_part          (CamelMultipart *multipart,
 						guint index);
 static guint                 get_number        (CamelMultipart *multipart);
 static void                  set_boundary      (CamelMultipart *multipart,
-						const char *boundary);
+						const gchar *boundary);
 static const gchar *         get_boundary      (CamelMultipart *multipart);
 static ssize_t               write_to_stream   (CamelDataWrapper *data_wrapper,
 						CamelStream *stream);
 
-static int construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp);
+static gint construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp);
 
 static CamelDataWrapperClass *parent_class = NULL;
 
@@ -345,13 +345,13 @@ camel_multipart_get_number (CamelMultipart *multipart)
 
 
 static void
-set_boundary (CamelMultipart *multipart, const char *boundary)
+set_boundary (CamelMultipart *multipart, const gchar *boundary)
 {
 	CamelDataWrapper *cdw = CAMEL_DATA_WRAPPER (multipart);
-	char *bgen, bbuf[27], *p;
+	gchar *bgen, bbuf[27], *p;
 	guint8 *digest;
 	gsize length;
-	int state, save;
+	gint state, save;
 
 	g_return_if_fail (cdw->mime_type != NULL);
 
@@ -362,7 +362,7 @@ set_boundary (CamelMultipart *multipart, const char *boundary)
 		GChecksum *checksum;
 
 		/* Generate a fairly random boundary string. */
-		bgen = g_strdup_printf ("%p:%lu:%lu", (void *) multipart,
+		bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) multipart,
 					(unsigned long) getpid(),
 					(unsigned long) time(NULL));
 
@@ -396,7 +396,7 @@ set_boundary (CamelMultipart *multipart, const char *boundary)
  * be used.
  **/
 void
-camel_multipart_set_boundary (CamelMultipart *multipart, const char *boundary)
+camel_multipart_set_boundary (CamelMultipart *multipart, const gchar *boundary)
 {
 	g_return_if_fail (CAMEL_IS_MULTIPART (multipart));
 
@@ -419,7 +419,7 @@ get_boundary (CamelMultipart *multipart)
  *
  * Returns: the boundary
  **/
-const char *
+const gchar *
 camel_multipart_get_boundary (CamelMultipart *multipart)
 {
 	return CMP_CLASS (multipart)->get_boundary (multipart);
@@ -516,7 +516,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  * be relatively short, and will be ignored by any MIME mail client.
  **/
 void
-camel_multipart_set_preface(CamelMultipart *multipart, const char *preface)
+camel_multipart_set_preface(CamelMultipart *multipart, const gchar *preface)
 {
 	if (multipart->preface != preface) {
 		g_free(multipart->preface);
@@ -539,7 +539,7 @@ camel_multipart_set_preface(CamelMultipart *multipart, const char *preface)
  * Generally postface texts should not be sent with multipart messages.
  **/
 void
-camel_multipart_set_postface(CamelMultipart *multipart, const char *postface)
+camel_multipart_set_postface(CamelMultipart *multipart, const gchar *postface)
 {
 	if (multipart->postface != postface) {
 		g_free(multipart->postface);
@@ -553,10 +553,10 @@ camel_multipart_set_postface(CamelMultipart *multipart, const char *postface)
 static int
 construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
-	int err;
+	gint err;
 	CamelContentType *content_type;
 	CamelMimePart *bodypart;
-	char *buf;
+	gchar *buf;
 	size_t len;
 
 	g_assert(camel_mime_parser_state(mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
@@ -598,7 +598,7 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
 	g_return_val_if_fail(CAMEL_IS_MULTIPART(multipart), -1);

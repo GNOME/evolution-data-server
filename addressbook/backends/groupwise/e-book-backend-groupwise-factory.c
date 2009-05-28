@@ -45,7 +45,7 @@ eds_module_shutdown   (void)
 }
 
 void
-eds_module_list_types (const GType **types, int *num_types)
+eds_module_list_types (const GType **types, gint *num_types)
 {
 	*types = & groupwise_type;
 	*num_types = 1;

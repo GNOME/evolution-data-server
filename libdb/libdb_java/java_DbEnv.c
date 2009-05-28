@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -36,7 +36,7 @@ JAVADB_SET_METH(DbEnv, jint, lk_1max_1objects, DB_ENV, lk_max_objects)
 JAVADB_SET_METH_STR(DbEnv,   tmp_1dir, DB_ENV, tmp_dir)
 JAVADB_SET_METH(DbEnv, jint, tx_1max, DB_ENV, tx_max)
 
-static void DbEnv_errcall_callback(const char *prefix, char *message)
+static void DbEnv_errcall_callback(const gchar *prefix, gchar *message)
 {
 	JNIEnv *jnienv;
 	DB_ENV_JAVAINFO *envinfo = (DB_ENV_JAVAINFO *)prefix;
@@ -78,7 +78,7 @@ static void DbEnv_errcall_callback(const char *prefix, char *message)
 static void DbEnv_initialize(JNIEnv *jnienv, DB_ENV *dbenv,
 			     /*DbEnv*/ jobject jenv,
 			     /*DbErrcall*/ jobject jerrcall,
-			     int is_dbopen)
+			     gint is_dbopen)
 {
 	DB_ENV_JAVAINFO *envinfo;
 
@@ -86,7 +86,7 @@ static void DbEnv_initialize(JNIEnv *jnienv, DB_ENV *dbenv,
 	DB_ASSERT(envinfo == NULL);
 	envinfo = dbjie_construct(jnienv, jenv, jerrcall, is_dbopen);
 	set_private_info(jnienv, name_DB_ENV, jenv, envinfo);
-	dbenv->set_errpfx(dbenv, (const char*)envinfo);
+	dbenv->set_errpfx(dbenv, (const gchar *)envinfo);
 	dbenv->set_errcall(dbenv, DbEnv_errcall_callback);
 	dbenv->api2_internal = envinfo;
 	set_private_dbobj(jnienv, name_DB_ENV, jenv, dbenv);
@@ -129,7 +129,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv__1init
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jobject /*DbErrcall*/ jerrcall,
    jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 
 	err = db_env_create(&dbenv, flags);
@@ -153,7 +153,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_open
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jstring db_home,
    jint flags, jint mode)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	LOCKED_STRING ls_home;
 	DB_ENV_JAVAINFO *dbenvinfo;
@@ -181,7 +181,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_remove
 	DB_ENV *dbenv;
 	DB_ENV_JAVAINFO *dbenvinfo;
 	LOCKED_STRING ls_home;
-	int err = 0;
+	gint err = 0;
 
 	dbenv = get_DB_ENV(jnienv, jthis);
 	dbenvinfo = get_DB_ENV_JAVAINFO(jnienv, jthis);
@@ -204,7 +204,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_remove
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv__1close
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_ENV_JAVAINFO *dbenvinfo;
 
@@ -230,7 +230,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_dbremove
 	LOCKED_STRING ls_name, ls_subdb;
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	int err;
+	gint err;
 
 	dbenv = get_DB_ENV(jnienv, jthis);
 	if (!verify_non_null(jnienv, dbenv))
@@ -258,7 +258,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_dbrename
 	LOCKED_STRING ls_name, ls_subdb, ls_newname;
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	int err;
+	gint err;
 
 	dbenv = get_DB_ENV(jnienv, jthis);
 	if (!verify_non_null(jnienv, dbenv))
@@ -322,7 +322,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_errx
 JNIEXPORT jstring JNICALL Java_com_sleepycat_db_DbEnv_strerror
   (JNIEnv *jnienv, jclass jthis_class, jint ecode)
 {
-	const char *message;
+	const gchar *message;
 
 	COMPQUIET(jthis_class, NULL);
 	message = db_strerror(ecode);
@@ -336,7 +336,7 @@ JAVADB_METHOD(DbEnv_set_1cachesize,
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_set_1encrypt
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jstring jpasswd, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	LOCKED_STRING ls_passwd;
 
@@ -371,10 +371,10 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_set_1lk_1conflicts
 {
 	DB_ENV *dbenv;
 	DB_ENV_JAVAINFO *dbenvinfo;
-	int err;
+	gint err;
 	jsize i, len;
 	u_char *newarr;
-	int bytesize;
+	gint bytesize;
 
 	dbenv = get_DB_ENV(jnienv, jthis);
 	dbenvinfo = get_DB_ENV_JAVAINFO(jnienv, jthis);
@@ -408,7 +408,7 @@ JNIEXPORT jint JNICALL
    jint timeout)
 {
 	DB_ENV *dbenv;
-	int err, id;
+	gint err, id;
 
 	if (!verify_non_null(jnienv, jthis))
 		return (DB_EID_INVALID);
@@ -429,7 +429,7 @@ JNIEXPORT jint JNICALL
 {
 	DB_ENV *dbenv;
 	LOCKED_DBT cdbt, rdbt;
-	int err, envid;
+	gint err, envid;
 
 	if (!verify_non_null(jnienv, jthis) || !verify_non_null(jnienv, result))
 		return (-1);
@@ -469,7 +469,7 @@ JNIEXPORT void JNICALL
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	LOCKED_DBT ldbt;
-	int err;
+	gint err;
 
 	if (!verify_non_null(jnienv, jthis))
 		return;
@@ -494,7 +494,7 @@ out:	if (cookie != NULL)
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_rep_1stat
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
 	DB_REP_STAT *statp = NULL;
 	jobject retval = NULL;
@@ -522,7 +522,7 @@ Java_com_sleepycat_db_DbEnv_set_1rep_1limit
   (JNIEnv *jnienv, /* DbEnv */ jobject jthis, jint gbytes, jint bytes)
 {
 	DB_ENV *dbenv;
-	int err;
+	gint err;
 
 	dbenv = get_DB_ENV(jnienv, jthis);
 
@@ -557,9 +557,9 @@ JNIEXPORT void JNICALL
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, /*DbClient*/ jobject jclient,
    jstring jhost, jlong tsec, jlong ssec, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
-	const char *host = (*jnienv)->GetStringUTFChars(jnienv, jhost, NULL);
+	const gchar *host = (*jnienv)->GetStringUTFChars(jnienv, jhost, NULL);
 
 	if (jclient != NULL) {
 		report_exception(jnienv, "DbEnv.set_rpc_server client arg "
@@ -583,7 +583,7 @@ JNIEXPORT void JNICALL
   Java_com_sleepycat_db_DbEnv__1set_1tx_1timestamp
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jlong seconds)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
 	time_t time = seconds;
 
@@ -641,7 +641,7 @@ JNIEXPORT jstring JNICALL Java_com_sleepycat_db_DbEnv_get_1version_1string
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbEnv_lock_1id
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis)
 {
-	int err;
+	gint err;
 	u_int32_t id;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
 
@@ -658,7 +658,7 @@ JAVADB_METHOD(DbEnv_lock_1id_1free, (JAVADB_ARGS, jint id), DB_ENV,
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_lock_1stat
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
 	DB_LOCK_STAT *statp = NULL;
 	jobject retval = NULL;
@@ -684,9 +684,9 @@ err:		__os_ufree(dbenv, statp);
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbEnv_lock_1detect
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint atype, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
-	int aborted;
+	gint aborted;
 
 	if (!verify_non_null(jnienv, dbenv))
 		return (0);
@@ -699,7 +699,7 @@ JNIEXPORT /*DbLock*/ jobject JNICALL Java_com_sleepycat_db_DbEnv_lock_1get
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, /*u_int32_t*/ jint locker,
    jint flags, /*const Dbt*/ jobject obj, /*db_lockmode_t*/ jint lock_mode)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_LOCK *dblock;
 	LOCKED_DBT lobj;
@@ -747,16 +747,16 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_lock_1vec
 	DB_LOCKREQ *failedreq;
 	DB_LOCK *lockp;
 	LOCKED_DBT *locked_dbts;
-	int err;
-	int alloc_err;
-	int i;
+	gint err;
+	gint alloc_err;
+	gint i;
 	size_t bytesize;
 	size_t ldbtsize;
 	jobject jlockreq;
 	db_lockop_t op;
 	jobject jobj;
 	jobject jlock;
-	int completed;
+	gint completed;
 
 	dbenv = get_DB_ENV(jnienv, jthis);
 	if (!verify_non_null(jnienv, dbenv))
@@ -931,7 +931,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_lock_1vec
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_lock_1put
   (JNIEnv *jnienv, jobject jthis, /*DbLock*/ jobject jlock)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_LOCK *dblock;
 
@@ -959,8 +959,8 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_lock_1put
 JNIEXPORT jobjectArray JNICALL Java_com_sleepycat_db_DbEnv_log_1archive
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err, len, i;
-	char** ret;
+	gint err, len, i;
+	gchar ** ret;
 	jclass stringClass;
 	jobjectArray strarray;
 	DB_ENV *dbenv;
@@ -1007,7 +1007,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbEnv_log_1compare
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_log_1cursor
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_LOGC *dblogc;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
 
@@ -1021,10 +1021,10 @@ JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_log_1cursor
 JNIEXPORT jstring JNICALL Java_com_sleepycat_db_DbEnv_log_1file
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, /*DbLsn*/ jobject lsn)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
 	DB_LSN *dblsn = get_DB_LSN(jnienv, lsn);
-	char filename[FILENAME_MAX+1] = "";
+	gchar filename[FILENAME_MAX+1] = "";
 
 	if (!verify_non_null(jnienv, dbenv))
 		return (NULL);
@@ -1043,7 +1043,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_log_1put
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, /*DbLsn*/ jobject lsn,
    /*DbDbt*/ jobject data, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_LSN *dblsn;
 	LOCKED_DBT ldata;
@@ -1069,7 +1069,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_log_1put
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_log_1stat
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_LOG_STAT *statp;
 	jobject retval;
@@ -1098,7 +1098,7 @@ err:		__os_ufree(dbenv, statp);
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_memp_1stat
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	jclass dbclass;
 	DB_ENV *dbenv;
 	DB_MPOOL_STAT *statp;
@@ -1127,7 +1127,7 @@ err:		__os_ufree(dbenv, statp);
 JNIEXPORT jobjectArray JNICALL Java_com_sleepycat_db_DbEnv_memp_1fstat
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err, i, len;
+	gint err, i, len;
 	jclass fstat_class;
 	DB_ENV *dbenv;
 	DB_MPOOL_FSTAT **fstatp;
@@ -1190,9 +1190,9 @@ err:		__os_ufree(dbenv, fstatp);
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbEnv_memp_1trickle
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint pct)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv = get_DB_ENV(jnienv, jthis);
-	int result = 0;
+	gint result = 0;
 
 	if (verify_non_null(jnienv, dbenv)) {
 		err = dbenv->memp_trickle(dbenv, pct, &result);
@@ -1204,7 +1204,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbEnv_memp_1trickle
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_txn_1begin
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, /*DbTxn*/ jobject pid, jint flags)
 {
-	int err;
+	gint err;
 	DB_TXN *dbpid, *result;
 	DB_ENV *dbenv;
 
@@ -1243,12 +1243,12 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_DbEnv_app_1dispatch_1changed
 JNIEXPORT jobjectArray JNICALL Java_com_sleepycat_db_DbEnv_txn_1recover
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint count, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_PREPLIST *preps;
 	long retcount;
-	int i;
-	char signature[128];
+	gint i;
+	gchar signature[128];
 	size_t bytesize;
 	jobject retval;
 	jobject obj;
@@ -1328,15 +1328,15 @@ out:	return (retval);
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_DbEnv_txn_1stat
   (JNIEnv *jnienv, /*DbEnv*/ jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_ENV *dbenv;
 	DB_TXN_STAT *statp;
 	jobject retval, obj;
 	jclass dbclass, active_class;
-	char active_signature[512];
+	gchar active_signature[512];
 	jfieldID arrid;
 	jobjectArray actives;
-	unsigned int i;
+	guint i;
 
 	retval = NULL;
 	statp = NULL;

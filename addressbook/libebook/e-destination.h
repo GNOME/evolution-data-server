@@ -75,20 +75,20 @@ gboolean       e_destination_empty              (const EDestination *dest);
 gboolean       e_destination_equal              (const EDestination *a, const EDestination *b);
 
 /* for use with EDestinations that wrap a particular contact */
-void           e_destination_set_contact        (EDestination *dest, EContact *contact, int email_num);
-void           e_destination_set_contact_uid    (EDestination *dest, const char *uid, gint email_num);
+void           e_destination_set_contact        (EDestination *dest, EContact *contact, gint email_num);
+void           e_destination_set_contact_uid    (EDestination *dest, const gchar *uid, gint email_num);
 void           e_destination_set_book           (EDestination *dest, EBook *book);
 EContact      *e_destination_get_contact        (const EDestination *dest);
-const char    *e_destination_get_source_uid     (const EDestination *dest);
-const char    *e_destination_get_contact_uid    (const EDestination *dest);
-int            e_destination_get_email_num      (const EDestination *dest);
+const gchar    *e_destination_get_source_uid     (const EDestination *dest);
+const gchar    *e_destination_get_contact_uid    (const EDestination *dest);
+gint            e_destination_get_email_num      (const EDestination *dest);
 
 /* for use with EDestinations built up from strings (not corresponding to contacts in a user's address books) */
-void           e_destination_set_name           (EDestination *dest, const char *name);
-void           e_destination_set_email          (EDestination *dest, const char *email);
-const char    *e_destination_get_name           (const EDestination *dest);  /* "Jane Smith" */
-const char    *e_destination_get_email          (const EDestination *dest);  /* "jane@assbarn.com" */
-const char    *e_destination_get_address        (const EDestination *dest);  /* "Jane Smith <jane@assbarn.com>" (or a comma-sep set of such for a list) */
+void           e_destination_set_name           (EDestination *dest, const gchar *name);
+void           e_destination_set_email          (EDestination *dest, const gchar *email);
+const gchar    *e_destination_get_name           (const EDestination *dest);  /* "Jane Smith" */
+const gchar    *e_destination_get_email          (const EDestination *dest);  /* "jane@assbarn.com" */
+const gchar    *e_destination_get_address        (const EDestination *dest);  /* "Jane Smith <jane@assbarn.com>" (or a comma-sep set of such for a list) */
 
 gboolean       e_destination_is_evolution_list   (const EDestination *dest);
 gboolean       e_destination_list_show_addresses (const EDestination *dest);
@@ -108,17 +108,17 @@ gboolean       e_destination_is_auto_recipient  (const EDestination *dest);
 void           e_destination_set_auto_recipient (EDestination *dest, gboolean value);
 
 /* parse out an EDestination (name/email, not contact) from a free form string. */
-void           e_destination_set_raw            (EDestination *dest, const char *raw);
+void           e_destination_set_raw            (EDestination *dest, const gchar *raw);
 
 /* generate a plain-text representation of an EDestination* or EDestination** */
-const char    *e_destination_get_textrep        (const EDestination *dest, gboolean include_email);  /* "Jane Smith" or "jane@assbarn.com" */
-char          *e_destination_get_textrepv       (EDestination **destv);
+const gchar    *e_destination_get_textrep        (const EDestination *dest, gboolean include_email);  /* "Jane Smith" or "jane@assbarn.com" */
+gchar          *e_destination_get_textrepv       (EDestination **destv);
 
 /* XML export/import routines. */
-char          *e_destination_export             (const EDestination *dest);
-char          *e_destination_exportv            (EDestination **destv);
-EDestination  *e_destination_import             (const char *str);
-EDestination **e_destination_importv            (const char *str);
+gchar          *e_destination_export             (const EDestination *dest);
+gchar          *e_destination_exportv            (EDestination **destv);
+EDestination  *e_destination_import             (const gchar *str);
+EDestination **e_destination_importv            (const gchar *str);
 
 /* EVCard "export" routines */
 void          e_destination_export_to_vcard_attribute   (EDestination *dest, EVCardAttribute *attr);

@@ -55,7 +55,7 @@ static CamelSaslClass *parent_class = NULL;
 static GByteArray *login_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex);
 
 struct _CamelSaslLoginPrivate {
-	int state;
+	gint state;
 };
 
 static void

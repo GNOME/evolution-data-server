@@ -84,7 +84,7 @@ struct _ECalBackendGooglePrivate {
 };
 
 gint compare_ids (gconstpointer cache_id, gconstpointer modified_cache_id);
-gchar * form_query (const char *query);
+gchar * form_query (const gchar *query);
 
 gint
 compare_ids (gconstpointer cache_id, gconstpointer modified_cache_id)
@@ -95,7 +95,7 @@ compare_ids (gconstpointer cache_id, gconstpointer modified_cache_id)
 /************************************************** Calendar Backend Methods **********************************/
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **list)
+e_cal_backend_google_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **list)
 {
 	/* TODO implement this function */
 	return GNOME_Evolution_Calendar_Success;
@@ -109,7 +109,7 @@ e_cal_backend_google_internal_get_default_timezone (ECalBackend *backend)
 }
 
 static icaltimezone *
-e_cal_backend_google_internal_get_timezone (ECalBackend *backend, const char *tzid)
+e_cal_backend_google_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
 	icaltimezone *zone;
 
@@ -174,7 +174,7 @@ e_cal_backend_google_is_loaded (ECalBackend *backend)
 
 
 static ECalBackendSyncStatus
-e_cal_backend_google_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_google_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -206,7 +206,7 @@ e_cal_backend_google_add_timezone (ECalBackendSync *backend, EDataCal *cal, cons
 }
 
 static ECalBackendSyncStatus
- e_cal_backend_google_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
+ e_cal_backend_google_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
 {
 	return GNOME_Evolution_Calendar_OtherError;
 }
@@ -224,7 +224,7 @@ e_cal_backend_google_get_mode (ECalBackend *backend)
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
+e_cal_backend_google_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -255,7 +255,7 @@ e_cal_backend_google_get_timezone (ECalBackendSync *backend, EDataCal *cal, cons
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
+e_cal_backend_google_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object)
 {
 	ECalComponent *comp;
 	ECalBackendGooglePrivate *priv;
@@ -290,7 +290,7 @@ e_cal_backend_google_get_object (ECalBackendSync *backend, EDataCal *cal, const 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
+e_cal_backend_google_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -364,7 +364,7 @@ e_cal_backend_google_start_query (ECalBackend *backend, EDataCalView *query)
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
+e_cal_backend_google_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object)
 {
 	ECalComponent *comp;
 
@@ -389,7 +389,7 @@ e_cal_backend_google_get_default_object (ECalBackendSync *backend, EDataCal *cal
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_google_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
 {
 	icalcomponent *tz_comp;
 	ECalBackendGoogle *cbgo;
@@ -485,9 +485,9 @@ fetch_attachments (ECalBackendGoogle *cbgo, ECalComponent *comp)
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l = NULL;
-	const char *uid;
+	const gchar *uid;
 	gchar *attach_store, *dest_file, *dest_url;
-	int fd;
+	gint fd;
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
@@ -495,8 +495,8 @@ fetch_attachments (ECalBackendGoogle *cbgo, ECalComponent *comp)
 	attach_store = g_strdup(e_cal_backend_google_get_local_attachments_store (cbgo));
 
 	for (l = attach_list; l; l = l->next) {
-		char *sfname = (char *)l->data;
-		char *filename, *new_filename;
+		gchar *sfname = (gchar *)l->data;
+		gchar *filename, *new_filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;
 
@@ -549,7 +549,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 	priv = cbgo->priv;
 	icalprop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
 	while (icalprop) {
-		const char *x_name;
+		const gchar *x_name;
 		x_name	= icalproperty_get_x_name (icalprop);
 
 		/* FIXME Set the Property for Google */
@@ -589,7 +589,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 
 	modif_comp = g_object_ref (comp);
 	if (instances) {
-		const char *uid;
+		const gchar *uid;
 		found = FALSE;
 
 		e_cal_component_get_uid (modif_comp, &uid);
@@ -630,7 +630,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 
 		}
 		else {
-			char *comp_str = NULL;
+			gchar *comp_str = NULL;
 
 			/* change_status (component, pstatus, e_gw_connection_get_user_email (priv->cnc)); */
 			e_cal_backend_cache_put_component (priv->cache, component);
@@ -654,7 +654,7 @@ static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *ic
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_google_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -702,13 +702,13 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 	ECalComponent *comp, *found_comp = NULL;
 	ECalBackendGooglePrivate *priv;
 	ECalBackendSyncStatus status = GNOME_Evolution_Calendar_OtherError;
-	const char *uid;
+	const gchar *uid;
 
 	priv = cbgo->priv;
 	comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
 
-	e_cal_component_get_uid (comp, (const char **)&uid);
+	e_cal_component_get_uid (comp, (const gchar **)&uid);
 	found_comp = e_cal_backend_cache_get_component (priv->cache, uid, NULL);
 
 	if (!found_comp) {
@@ -724,14 +724,14 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 			if (method == ICAL_METHOD_CANCEL) {
 				gboolean instances = FALSE;
 				if (instances) {
-					char *old_object = NULL;
+					gchar *old_object = NULL;
 					GSList *l = NULL, *comp_list;
 					comp_list = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
 
 					for (l = comp_list; l; l = l->next) {
 						ECalComponent *component = E_CAL_COMPONENT (l->data);
 						ECalComponentId *cid = e_cal_component_get_id (component);
-						char *object = e_cal_component_get_as_string (component);
+						gchar *object = e_cal_component_get_as_string (component);
 
 						if (e_cal_backend_cache_remove_component (priv->cache, cid->uid,
 									cid->rid))
@@ -746,7 +746,7 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 					g_free (old_object);
 				} else {
 					ECalComponentId *cid;
-					char * object;
+					gchar * object;
 
 					cid = e_cal_component_get_id (comp);
 					icalcomp = e_cal_component_get_icalcomponent (comp);
@@ -777,7 +777,7 @@ send_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp, ic
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users, char **modified_calobj)
+e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users, gchar **modified_calobj)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -823,7 +823,7 @@ e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, cons
 			e_cal_component_get_attendee_list (comp, &attendee_list);
 			/* convert this into GList */
 			for (tmp = attendee_list; tmp; tmp = g_slist_next (tmp)) {
-				const char *attendee = tmp->data;
+				const gchar *attendee = tmp->data;
 
 				if (attendee)
 					*users = g_list_append (*users, g_strdup (attendee));
@@ -840,7 +840,7 @@ e_cal_backend_google_send_objects (ECalBackendSync *backend, EDataCal *cal, cons
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id, GList **adds, GList **modifies, GList **deletes)
+e_cal_backend_google_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id, GList **adds, GList **modifies, GList **deletes)
 {
 	/* FIXME Not Implemented */
 	return GNOME_Evolution_Calendar_Success;
@@ -859,7 +859,7 @@ e_cal_backend_google_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboo
 
 /* Returns the email address of the person who opened the calendar */
 static ECalBackendSyncStatus
-e_cal_backend_google_get_cal_address (ECalBackendSync *backend, EDataCal *cal, char **address)
+e_cal_backend_google_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -873,7 +873,7 @@ e_cal_backend_google_get_cal_address (ECalBackendSync *backend, EDataCal *cal, c
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, char **address)
+e_cal_backend_google_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {
 	/* Support email based alarms ? */
 
@@ -883,14 +883,14 @@ e_cal_backend_google_get_alarm_email_address (ECalBackendSync *backend, EDataCal
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj, CalObjModType mod, char **old_object, char **new_object)
+e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
 	icalcomponent *icalcomp;
 	ECalComponent *comp = NULL, *cache_comp = NULL;
 	EGoItem *item;
-	const char *uid=NULL, *rid=NULL;
+	const gchar *uid=NULL, *rid=NULL;
 	GDataEntry *entry, *entry_from_server=NULL, *updated_entry=NULL;
 	gchar *edit_link;
 	GSList *l;
@@ -973,15 +973,15 @@ e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, con
 
 static ECalBackendSyncStatus
 e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
-				       const char *uid, const char *rid,
-				       CalObjModType mod, char **old_object,
-				       char **object)
+				       const gchar *uid, const gchar *rid,
+				       CalObjModType mod, gchar **old_object,
+				       gchar **object)
 {
 	ECalBackendGoogle *cbgo;
 	GDataEntry *entry;
 	ECalBackendGooglePrivate *priv;
 	ECalComponent *comp = NULL;
-	char *calobj = NULL;
+	gchar *calobj = NULL;
 	GSList *entries = NULL;
 	EGoItem *item;
 
@@ -999,7 +999,7 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 		ECalBackendSyncStatus status;
 		icalcomponent *icalcomp;
 		ECalComponentId *id;
-		char *comp_str;
+		gchar *comp_str;
 
 		status = e_cal_backend_google_get_object (backend, cal, uid, rid, &calobj);
 
@@ -1050,7 +1050,7 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
+e_cal_backend_google_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
@@ -1119,7 +1119,7 @@ e_cal_backend_google_create_object (ECalBackendSync *backend, EDataCal *cal, cha
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, char **attribute)
+e_cal_backend_google_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, gchar **attribute)
 {
 	/* ldap attribute is specific to Sun ONE connector to get free busy information*/
 	/* return NULL here as google backend know how to get free busy information */
@@ -1131,7 +1131,7 @@ e_cal_backend_google_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal
 
 
 static ECalBackendSyncStatus
-e_cal_backend_google_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
+e_cal_backend_google_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities)
 {
 	/* FIXME */
 	*capabilities = NULL;
@@ -1139,14 +1139,14 @@ e_cal_backend_google_get_static_capabilities (ECalBackendSync *backend, EDataCal
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,const char *username, const char *password)
+e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,const gchar *username, const gchar *password)
 {
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
 	ECalBackendSyncStatus status;
 	ECalSourceType source_type;
 	gchar *source = NULL, *mangled_uri = NULL, *filename = NULL;
-	int i;
+	gint i;
 
 	cbgo = E_CAL_BACKEND_GOOGLE(backend);
 	priv = cbgo->priv;
@@ -1173,7 +1173,7 @@ e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean onl
 	/* Not for remote */
 	if (priv->mode == CAL_MODE_LOCAL) {
 		ESource *esource;
-		const char *display_contents = NULL;
+		const gchar *display_contents = NULL;
 
 		cbgo->priv->read_only = TRUE;
 		esource = e_cal_backend_get_source (E_CAL_BACKEND(cbgo));

@@ -33,21 +33,21 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	char *filename;
+	gchar *filename;
 	GHashTable *uids;
-	unsigned int level;
+	guint level;
 	size_t expired;
 	size_t size;
-	int fd;
+	gint fd;
 } CamelUIDCache;
 
-CamelUIDCache *camel_uid_cache_new (const char *filename);
+CamelUIDCache *camel_uid_cache_new (const gchar *filename);
 gboolean camel_uid_cache_save (CamelUIDCache *cache);
 void camel_uid_cache_destroy (CamelUIDCache *cache);
 
 GPtrArray *camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids);
 
-void camel_uid_cache_save_uid (CamelUIDCache *cache, const char *uid);
+void camel_uid_cache_save_uid (CamelUIDCache *cache, const gchar *uid);
 void camel_uid_cache_free_uids (GPtrArray *uids);
 
 G_END_DECLS

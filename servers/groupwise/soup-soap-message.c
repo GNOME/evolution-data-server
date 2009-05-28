@@ -62,7 +62,7 @@ soup_soap_message_init (SoupSoapMessage *msg)
 
 
 static xmlNsPtr
-fetch_ns (SoupSoapMessage *msg, const char *prefix, const char *ns_uri)
+fetch_ns (SoupSoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
         xmlNsPtr ns = NULL;
@@ -93,9 +93,9 @@ fetch_ns (SoupSoapMessage *msg, const char *prefix, const char *ns_uri)
  * parsed).
  */
 SoupSoapMessage *
-soup_soap_message_new (const char *method, const char *uri_string,
-		       gboolean standalone, const char *xml_encoding,
-		       const char *env_prefix, const char *env_uri)
+soup_soap_message_new (const gchar *method, const gchar *uri_string,
+		       gboolean standalone, const gchar *xml_encoding,
+		       const gchar *env_prefix, const gchar *env_uri)
 {
 	SoupSoapMessage *msg;
 	SoupURI *uri;
@@ -126,9 +126,9 @@ soup_soap_message_new (const char *method, const char *uri_string,
  * Returns: the new #SoupSoapMessage
  */
 SoupSoapMessage *
-soup_soap_message_new_from_uri (const char *method, SoupURI *uri,
-				gboolean standalone, const char *xml_encoding,
-				const char *env_prefix, const char *env_uri)
+soup_soap_message_new_from_uri (const gchar *method, SoupURI *uri,
+				gboolean standalone, const gchar *xml_encoding,
+				const gchar *env_prefix, const gchar *env_uri)
 {
 	SoupSoapMessage *msg;
 	SoupSoapMessagePrivate *priv;
@@ -272,9 +272,9 @@ soup_soap_message_end_body (SoupSoapMessage *msg)
  */
 void
 soup_soap_message_start_element (SoupSoapMessage *msg,
-				 const char *name,
-				 const char *prefix,
-				 const char *ns_uri)
+				 const gchar *name,
+				 const gchar *prefix,
+				 const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -323,9 +323,9 @@ soup_soap_message_end_element (SoupSoapMessage *msg)
  */
 void
 soup_soap_message_start_fault (SoupSoapMessage *msg,
-			       const char *faultcode,
-			       const char *faultstring,
-			       const char *faultfactor)
+			       const gchar *faultcode,
+			       const gchar *faultstring,
+			       const gchar *faultfactor)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -442,11 +442,11 @@ soup_soap_message_end_header (SoupSoapMessage *msg)
  */
 void
 soup_soap_message_start_header_element (SoupSoapMessage *msg,
-					const char *name,
+					const gchar *name,
 					gboolean must_understand,
-					const char *actor_uri,
-					const char *prefix,
-					const char *ns_uri)
+					const gchar *actor_uri,
+					const gchar *prefix,
+					const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -482,7 +482,7 @@ soup_soap_message_end_header_element (SoupSoapMessage *msg)
 void
 soup_soap_message_write_int (SoupSoapMessage *msg, glong i)
 {
-	char *str = g_strdup_printf ("%ld", i);
+	gchar *str = g_strdup_printf ("%ld", i);
 	soup_soap_message_write_string (msg, str);
 	g_free (str);
 }
@@ -497,7 +497,7 @@ soup_soap_message_write_int (SoupSoapMessage *msg, glong i)
 void
 soup_soap_message_write_double (SoupSoapMessage *msg, double d)
 {
-	char *str = g_strdup_printf ("%f", d);
+	gchar *str = g_strdup_printf ("%f", d);
 	soup_soap_message_write_string (msg, str);
 	g_free (str);
 }
@@ -512,7 +512,7 @@ soup_soap_message_write_double (SoupSoapMessage *msg, double d)
  * element's content.
  **/
 void
-soup_soap_message_write_base64 (SoupSoapMessage *msg, const char *string, int len)
+soup_soap_message_write_base64 (SoupSoapMessage *msg, const gchar *string, gint len)
 {
         gchar *str = g_base64_encode ((const guchar *)string, len);
         soup_soap_message_write_string (msg, str);
@@ -542,7 +542,7 @@ soup_soap_message_write_time (SoupSoapMessage *msg, const time_t *timeval)
  * Writes the @string as the current element's content.
  */
 void
-soup_soap_message_write_string (SoupSoapMessage *msg, const char *string)
+soup_soap_message_write_string (SoupSoapMessage *msg, const gchar *string)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -562,7 +562,7 @@ soup_soap_message_write_string (SoupSoapMessage *msg, const char *string)
  * element's content.
  */
 void
-soup_soap_message_write_buffer (SoupSoapMessage *msg, const char *buffer, int len)
+soup_soap_message_write_buffer (SoupSoapMessage *msg, const gchar *buffer, gint len)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -581,7 +581,7 @@ soup_soap_message_write_buffer (SoupSoapMessage *msg, const char *buffer, int le
  * specifies the element's type name.
  */
 void
-soup_soap_message_set_element_type (SoupSoapMessage *msg, const char *xsi_type)
+soup_soap_message_set_element_type (SoupSoapMessage *msg, const gchar *xsi_type)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -620,10 +620,10 @@ soup_soap_message_set_null (SoupSoapMessage *msg)
  */
 void
 soup_soap_message_add_attribute (SoupSoapMessage *msg,
-				 const char *name,
-				 const char *value,
-				 const char *prefix,
-				 const char *ns_uri)
+				 const gchar *name,
+				 const gchar *value,
+				 const gchar *prefix,
+				 const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -644,7 +644,7 @@ soup_soap_message_add_attribute (SoupSoapMessage *msg,
  * Adds a new XML namespace to the current element.
  */
 void
-soup_soap_message_add_namespace (SoupSoapMessage *msg, const char *prefix, const char *ns_uri)
+soup_soap_message_add_namespace (SoupSoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -664,7 +664,7 @@ soup_soap_message_add_namespace (SoupSoapMessage *msg, const char *prefix, const
  * namespaced child elements fall into.
  */
 void
-soup_soap_message_set_default_namespace (SoupSoapMessage *msg, const char *ns_uri)
+soup_soap_message_set_default_namespace (SoupSoapMessage *msg, const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -683,7 +683,7 @@ soup_soap_message_set_default_namespace (SoupSoapMessage *msg, const char *ns_ur
  * value of @enc_style.
  */
 void
-soup_soap_message_set_encoding_style (SoupSoapMessage *msg, const char *enc_style)
+soup_soap_message_set_encoding_style (SoupSoapMessage *msg, const gchar *enc_style)
 {
 	SoupSoapMessagePrivate *priv;
 
@@ -735,7 +735,7 @@ soup_soap_message_persist (SoupSoapMessage *msg)
 {
 	SoupSoapMessagePrivate *priv;
 	xmlChar *body;
-	int len;
+	gint len;
 
 	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
 	priv = SOUP_SOAP_MESSAGE_GET_PRIVATE (msg);
@@ -744,7 +744,7 @@ soup_soap_message_persist (SoupSoapMessage *msg)
 
 	/* serialize to SoupMessage class */
 	soup_message_set_request (SOUP_MESSAGE (msg), "text/xml",
-				  SOUP_MEMORY_TAKE, (char *)body, len);
+				  SOUP_MEMORY_TAKE, (gchar *)body, len);
 }
 
 /**
@@ -758,8 +758,8 @@ soup_soap_message_persist (SoupSoapMessage *msg)
  * Return value: The namespace prefix, or %NULL if no namespace exists
  * for the URI given.
  */
-const char *
-soup_soap_message_get_namespace_prefix (SoupSoapMessage *msg, const char *ns_uri)
+const gchar *
+soup_soap_message_get_namespace_prefix (SoupSoapMessage *msg, const gchar *ns_uri)
 {
 	SoupSoapMessagePrivate *priv;
 	xmlNsPtr ns = NULL;
@@ -771,7 +771,7 @@ soup_soap_message_get_namespace_prefix (SoupSoapMessage *msg, const char *ns_uri
 	ns = xmlSearchNsByHref (priv->doc, priv->last_node, (const xmlChar *)ns_uri);
 	if (ns) {
 		if (ns->prefix)
-			return (const char *)ns->prefix;
+			return (const gchar *)ns->prefix;
 		else
 			return "";
 	}

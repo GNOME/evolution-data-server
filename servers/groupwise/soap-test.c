@@ -3,7 +3,7 @@
 #include "e-gw-connection.h"
 
 static GMainLoop *main_loop;
-static char *arg_hostname, *arg_username, *arg_password;
+static gchar *arg_hostname, *arg_username, *arg_password;
 
 static void
 display_container (EGwContainer *container)
@@ -45,8 +45,8 @@ idle_cb (gpointer data)
 	return FALSE;
 }
 
-int
-main (int argc, char *argv[])
+gint
+main (gint argc, gchar *argv[])
 {
 	g_type_init ();
 	g_thread_init (NULL);

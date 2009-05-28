@@ -20,20 +20,20 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *local_drivers[] = { "local" };
+static const gchar *local_drivers[] = { "local" };
 
-static char *local_providers[] = {
+static gchar *local_providers[] = {
 	"mbox",
 	"mh",
 	"maildir"
 };
 
 static void
-test_add_message(CamelFolder *folder, int j)
+test_add_message(CamelFolder *folder, gint j)
 {
 	CamelMimeMessage *msg;
-	char *content;
-	char *subject;
+	gchar *content;
+	gchar *subject;
 	CamelException ex;
 
 	camel_exception_init(&ex);
@@ -57,16 +57,16 @@ test_add_message(CamelFolder *folder, int j)
 }
 
 struct _threadinfo {
-	int id;
+	gint id;
 	CamelFolder *folder;
 };
 
-static void *
-worker(void *d)
+static gpointer
+worker(gpointer d)
 {
 	struct _threadinfo *info = d;
-	int i, j, id = info->id;
-	char *sub, *content;
+	gint i, j, id = info->id;
+	gchar *sub, *content;
 	GPtrArray *res;
 	CamelException *ex = camel_exception_new();
 	CamelMimeMessage *msg;
@@ -86,7 +86,7 @@ worker(void *d)
 		pull();
 
 		push("getting message '%s'", res->pdata[0]);
-		msg = camel_folder_get_message(info->folder, (char *)res->pdata[0], ex);
+		msg = camel_folder_get_message(info->folder, (gchar *)res->pdata[0], ex);
 		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 		pull();
 
@@ -125,12 +125,12 @@ worker(void *d)
 	return info;
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelException *ex;
-	int i, j, index;
-	char *path;
+	gint i, j, index;
+	gchar *path;
 	CamelStore *store;
 	pthread_t threads[MAX_THREADS];
 	struct _threadinfo *info;
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 			}
 
 			for (i=0;i<MAX_THREADS;i++) {
-				pthread_join(threads[i], (void **)&info);
+				pthread_join(threads[i], (gpointer *)&info);
 				g_free(info);
 			}
 			pull();

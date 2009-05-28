@@ -50,10 +50,10 @@
 
 struct _EFolderExchangePrivate {
 	ExchangeHierarchy *hier;
-	char *internal_uri, *permanent_uri;
-	char *outlook_class, *storage_dir;
-	char *path;
-	long long int folder_size;
+	gchar *internal_uri, *permanent_uri;
+	gchar *outlook_class, *storage_dir;
+	gchar *path;
+	gint64 folder_size;
 	gboolean has_subfolders;
 	gboolean rescan_tree;
 };
@@ -115,11 +115,11 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (e_folder_exchange, EFolderExchange, class_init, init, PARENT_TYPE)
 
-static char *
-sanitize_path (const char *path)
+static gchar *
+sanitize_path (const gchar *path)
 {
 	gchar **comps;
-	char *new_path = NULL;
+	gchar *new_path = NULL;
 
 	if (!path)
 		return g_strdup("");	/* ??? or NULL? */
@@ -148,13 +148,13 @@ sanitize_path (const char *path)
  * Return value: a new #EFolderExchange
  **/
 EFolder *
-e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
-		       const char *type, const char *outlook_class,
-		       const char *physical_uri, const char *internal_uri)
+e_folder_exchange_new (ExchangeHierarchy *hier, const gchar *name,
+		       const gchar *type, const gchar *outlook_class,
+		       const gchar *physical_uri, const gchar *internal_uri)
 {
 	EFolderExchange *efe;
 	EFolder *ef;
-	char *sanitized_path;
+	gchar *sanitized_path;
 
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
@@ -222,7 +222,7 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
  *
  * Return value: @folder's internal (http/https) URI
  **/
-const char *
+const gchar *
 e_folder_exchange_get_internal_uri (EFolder *folder)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
@@ -239,7 +239,7 @@ e_folder_exchange_get_internal_uri (EFolder *folder)
  * from the server.
  **/
 void
-e_folder_exchange_set_internal_uri (EFolder *folder, const char *internal_uri)
+e_folder_exchange_set_internal_uri (EFolder *folder, const gchar *internal_uri)
 {
 	EFolderExchange *efe;
 
@@ -257,7 +257,7 @@ e_folder_exchange_set_internal_uri (EFolder *folder, const char *internal_uri)
  *
  * Return value: @folder's path within its Evolution storage
  **/
-const char *
+const gchar *
 e_folder_exchange_get_path (EFolder *folder)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
@@ -274,7 +274,7 @@ e_folder_exchange_get_path (EFolder *folder)
  *
  * Return value: @folder's permanent URI
  **/
-const char *
+const gchar *
 e_folder_exchange_get_permanent_uri (EFolder *folder)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
@@ -291,7 +291,7 @@ e_folder_exchange_get_permanent_uri (EFolder *folder)
  * previously been unset).
  **/
 void
-e_folder_exchange_set_permanent_uri (EFolder *folder, const char *permanent_uri)
+e_folder_exchange_set_permanent_uri (EFolder *folder, const gchar *permanent_uri)
 {
 	EFolderExchange *efe;
 
@@ -328,7 +328,7 @@ e_folder_exchange_get_folder_size (EFolder *folder)
  * Sets @folder's folder_size
  **/
 void
-e_folder_exchange_set_folder_size (EFolder *folder, long long int folder_size)
+e_folder_exchange_set_folder_size (EFolder *folder, gint64 folder_size)
 {
 	EFolderExchange *efe;
 
@@ -406,7 +406,7 @@ e_folder_exchange_set_rescan_tree (EFolder *folder,
  *
  * Return value: @folder's Outlook IPM class
  **/
-const char *
+const gchar *
 e_folder_exchange_get_outlook_class (EFolder *folder)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
@@ -438,11 +438,11 @@ e_folder_exchange_get_hierarchy (EFolder *folder)
  *
  * Return value: the full filename, which must be freed.
  **/
-char *
-e_folder_exchange_get_storage_file (EFolder *folder, const char *filename)
+gchar *
+e_folder_exchange_get_storage_file (EFolder *folder, const gchar *filename)
 {
 	EFolderExchange *efe;
-	char *path;
+	gchar *path;
 
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
 
@@ -470,15 +470,15 @@ e_folder_exchange_get_storage_file (EFolder *folder, const char *filename)
  * Return value: success or failure
  **/
 gboolean
-e_folder_exchange_save_to_file (EFolder *folder, const char *filename)
+e_folder_exchange_save_to_file (EFolder *folder, const gchar *filename)
 {
 	xmlDoc *doc;
 	xmlNode *root;
-	const char *name, *type, *outlook_class;
-	const char *physical_uri, *internal_uri, *permanent_uri;
-	char *folder_size;
-	long long int fsize;
-	int status;
+	const gchar *name, *type, *outlook_class;
+	const gchar *physical_uri, *internal_uri, *permanent_uri;
+	gchar *folder_size;
+	gint64 fsize;
+	gint status;
 
 	name = e_folder_get_name (folder);
 	type = e_folder_get_type_string (folder);
@@ -531,16 +531,16 @@ e_folder_exchange_save_to_file (EFolder *folder, const char *filename)
  * Return value: the folder, or %NULL on a failed load.
  **/
 EFolder *
-e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const char *filename)
+e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const gchar *filename)
 {
 	EFolder *folder = NULL;
 	xmlDoc *doc;
 	xmlNode *root, *node;
-	char *version, *display_name = NULL;
-	char *type = NULL, *outlook_class = NULL;
-	char *physical_uri = NULL, *internal_uri = NULL;
-	char *permanent_uri = NULL;
-	char *folder_size = NULL;
+	gchar *version, *display_name = NULL;
+	gchar *type = NULL, *outlook_class = NULL;
+	gchar *physical_uri = NULL, *internal_uri = NULL;
+	gchar *permanent_uri = NULL;
+	gchar *folder_size = NULL;
 
 	doc = e_xml_parse_file (filename);
 
@@ -643,8 +643,8 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const char *filename)
  **/
 E2kHTTPStatus
 e_folder_exchange_propfind (EFolder *folder, E2kOperation *op,
-			    const char **props, int nprops,
-			    E2kResult **results, int *nresults)
+			    const gchar **props, gint nprops,
+			    E2kResult **results, gint *nresults)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
 
@@ -671,8 +671,8 @@ e_folder_exchange_propfind (EFolder *folder, E2kOperation *op,
  **/
 E2kResultIter *
 e_folder_exchange_bpropfind_start (EFolder *folder, E2kOperation *op,
-				   const char **hrefs, int nhrefs,
-				   const char **props, int nprops)
+				   const gchar **hrefs, gint nhrefs,
+				   const gchar **props, gint nprops)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
 
@@ -699,8 +699,8 @@ e_folder_exchange_bpropfind_start (EFolder *folder, E2kOperation *op,
  **/
 E2kResultIter *
 e_folder_exchange_search_start (EFolder *folder, E2kOperation *op,
-				const char **props, int nprops,
-				E2kRestriction *rn, const char *orderby,
+				const gchar **props, gint nprops,
+				E2kRestriction *rn, const gchar *orderby,
 				gboolean ascending)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
@@ -727,7 +727,7 @@ e_folder_exchange_search_start (EFolder *folder, E2kOperation *op,
  **/
 void
 e_folder_exchange_subscribe (EFolder *folder,
-			     E2kContextChangeType type, int min_interval,
+			     E2kContextChangeType type, gint min_interval,
 			     E2kContextChangeCallback callback,
 			     gpointer user_data)
 {
@@ -811,12 +811,12 @@ e_folder_exchange_transfer_start (EFolder *source, E2kOperation *op,
 E2kHTTPStatus
 e_folder_exchange_put_new (EFolder *folder,
 			   E2kOperation *op,
-			   const char *object_name,
+			   const gchar *object_name,
 			   E2kContextTestCallback test_callback,
 			   gpointer user_data,
-			   const char *content_type,
-			   const char *body, int length,
-			   char **location, char **repl_uid)
+			   const gchar *content_type,
+			   const gchar *body, gint length,
+			   gchar **location, gchar **repl_uid)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
 
@@ -848,11 +848,11 @@ e_folder_exchange_put_new (EFolder *folder,
  **/
 E2kHTTPStatus
 e_folder_exchange_proppatch_new (EFolder *folder, E2kOperation *op,
-				 const char *object_name,
+				 const gchar *object_name,
 				 E2kContextTestCallback test_callback,
 				 gpointer user_data,
 				 E2kProperties *props,
-				 char **location, char **repl_uid)
+				 gchar **location, gchar **repl_uid)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
 
@@ -880,7 +880,7 @@ e_folder_exchange_proppatch_new (EFolder *folder, E2kOperation *op,
  **/
 E2kResultIter *
 e_folder_exchange_bproppatch_start (EFolder *folder, E2kOperation *op,
-				    const char **hrefs, int nhrefs,
+				    const gchar **hrefs, gint nhrefs,
 				    E2kProperties *props, gboolean create)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
@@ -905,7 +905,7 @@ e_folder_exchange_bproppatch_start (EFolder *folder, E2kOperation *op,
  **/
 E2kResultIter *
 e_folder_exchange_bdelete_start (EFolder *folder, E2kOperation *op,
-				 const char **hrefs, int nhrefs)
+				 const gchar **hrefs, gint nhrefs)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), NULL);
 
@@ -931,7 +931,7 @@ e_folder_exchange_bdelete_start (EFolder *folder, E2kOperation *op,
 E2kHTTPStatus
 e_folder_exchange_mkcol (EFolder *folder, E2kOperation *op,
 			 E2kProperties *props,
-			 char **permanent_url)
+			 gchar **permanent_url)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
 
@@ -954,7 +954,7 @@ E2kHTTPStatus
 e_folder_exchange_delete (EFolder *folder, E2kOperation *op)
 {
 	ExchangeHierarchy *hier;
-	const char *folder_type, *physical_uri;
+	const gchar *folder_type, *physical_uri;
 
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), E2K_HTTP_MALFORMED);
 	/* remove ESources */
@@ -1007,7 +1007,7 @@ e_folder_exchange_delete (EFolder *folder, E2kOperation *op)
 E2kHTTPStatus
 e_folder_exchange_transfer_dir (EFolder *source, E2kOperation *op,
 				EFolder *dest, gboolean delete_original,
-				char **permanent_url)
+				gchar **permanent_url)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (source), E2K_HTTP_MALFORMED);
 

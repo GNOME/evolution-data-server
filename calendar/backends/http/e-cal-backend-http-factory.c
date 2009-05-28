@@ -29,7 +29,7 @@ e_cal_backend_http_factory_instance_init (ECalBackendHttpFactory *factory)
 {
 }
 
-static const char *
+static const gchar *
 _get_protocol (ECalBackendFactory *factory)
 {
 	return "webcal";
@@ -197,7 +197,7 @@ eds_module_shutdown   (void)
 }
 
 void
-eds_module_list_types (const GType **types, int *num_types)
+eds_module_list_types (const GType **types, gint *num_types)
 {
 	*types = http_types;
 	*num_types = 3;

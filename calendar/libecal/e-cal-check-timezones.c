@@ -31,12 +31,12 @@
  * Currently simply strips a suffix introduced by a hyphen,
  * as in "America/Denver-(Standard)".
  */
-static const char *e_cal_match_location(const char *location)
+static const gchar *e_cal_match_location(const gchar *location)
 {
     icaltimezone *icomp;
-    const char *tail;
+    const gchar *tail;
     size_t len;
-    char *buffer;
+    gchar *buffer;
 
     icomp = icaltimezone_get_builtin_timezone (location);
     if (icomp) {
@@ -66,10 +66,10 @@ static const char *e_cal_match_location(const char *location)
  * matches a TZID against the system timezone definitions
  * and returns the matching TZID, or NULL if none found
  */
-const char *e_cal_match_tzid(const char *tzid)
+const gchar *e_cal_match_tzid(const gchar *tzid)
 {
-    const char *location;
-    const char *systzid;
+    const gchar *location;
+    const gchar *systzid;
     size_t len = strlen(tzid);
     ssize_t eostr;
 
@@ -90,7 +90,7 @@ const char *e_cal_match_tzid(const char *tzid)
         eostr--;
     }
     if (eostr + 1 < len) {
-        char *strippedtzid = g_strndup(tzid, eostr + 1);
+        gchar *strippedtzid = g_strndup(tzid, eostr + 1);
         if (strippedtzid) {
             systzid = e_cal_match_tzid(strippedtzid);
             g_free(strippedtzid);
@@ -125,7 +125,7 @@ const char *e_cal_match_tzid(const char *tzid)
 static void patch_tzids(icalcomponent *subcomp,
                         GHashTable *mapping)
 {
-    char *tzid = NULL;
+    gchar *tzid = NULL;
 
     if (icalcomponent_isa(subcomp) != ICAL_VTIMEZONE_COMPONENT) {
         icalproperty *prop = icalcomponent_get_first_property(subcomp,
@@ -134,8 +134,8 @@ static void patch_tzids(icalcomponent *subcomp,
             icalparameter *param = icalproperty_get_first_parameter(prop,
                                                                     ICAL_TZID_PARAMETER);
             while (param) {
-                const char *oldtzid;
-                const char *newtzid;
+                const gchar *oldtzid;
+                const gchar *newtzid;
 
                 g_free(tzid);
                 tzid = g_strdup(icalparameter_get_tzid(param));
@@ -165,7 +165,7 @@ static void addsystemtz(gpointer key,
                         gpointer value,
                         gpointer user_data)
 {
-    const char *tzid = key;
+    const gchar *tzid = key;
     icalcomponent *comp = user_data;
     icaltimezone *zone;
 
@@ -230,19 +230,19 @@ static void addsystemtz(gpointer key,
  */
 gboolean e_cal_check_timezones(icalcomponent *comp,
                                GList *comps,
-                               icaltimezone *(*tzlookup)(const char *tzid,
-                                                         const void *custom,
+                               icaltimezone *(*tzlookup)(const gchar *tzid,
+                                                         gconstpointer custom,
                                                          GError **error),
-                               const void *custom,
+                               gconstpointer custom,
                                GError **error)
 {
     gboolean success = TRUE;
     icalcomponent *subcomp = NULL;
     icaltimezone *zone = icaltimezone_new();
-    char *key = NULL, *value = NULL;
-    char *buffer = NULL;
-    char *zonestr = NULL;
-    char *tzid = NULL;
+    gchar *key = NULL, *value = NULL;
+    gchar *buffer = NULL;
+    gchar *zonestr = NULL;
+    gchar *tzid = NULL;
     GList *l;
 
     /** a hash from old to new tzid; strings dynamically allocated */
@@ -265,7 +265,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
             g_free(tzid);
             tzid = g_strdup(icaltimezone_get_tzid(zone));
             if (tzid) {
-                const char *newtzid = e_cal_match_tzid(tzid);
+                const gchar *newtzid = e_cal_match_tzid(tzid);
                 if (newtzid) {
                     /* matched against system time zone */
                     g_free(key);
@@ -285,7 +285,7 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                     key =
                         value = NULL;
                 } else {
-                    int counter;
+                    gint counter;
 
                     zonestr = icalcomponent_as_ical_string_r(subcomp);
 
@@ -313,10 +313,10 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                         buffer = icalcomponent_as_ical_string_r(icaltimezone_get_component(existing_zone));
 
                         if (counter) {
-                            char *fulltzid = g_strdup_printf("TZID:%s", value);
+                            gchar *fulltzid = g_strdup_printf("TZID:%s", value);
                             size_t baselen = strlen("TZID:") + strlen(tzid);
                             size_t fulllen = strlen(fulltzid);
-                            char *tzidprop;
+                            gchar *tzidprop;
                             /*
                              * Map TZID with counter suffix back to basename.
                              */
@@ -436,8 +436,8 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
  * An implementation of the tzlookup callback which clients
  * can use. Calls #e_cal_get_timezone.
  */
-icaltimezone *e_cal_tzlookup_ecal(const char *tzid,
-                                  const void *custom,
+icaltimezone *e_cal_tzlookup_ecal(const gchar *tzid,
+                                  gconstpointer custom,
                                   GError **error)
 {
     ECal *ecal = (ECal *)custom;
@@ -470,11 +470,11 @@ icaltimezone *e_cal_tzlookup_ecal(const char *tzid,
  * like the file backend can use. Searches for the timezone
  * in the component list.
  */
-icaltimezone *e_cal_tzlookup_icomp(const char *tzid,
-                                   const void *custom,
+icaltimezone *e_cal_tzlookup_icomp(const gchar *tzid,
+                                   gconstpointer custom,
                                    GError **error)
 {
     icalcomponent *icomp = (icalcomponent *)custom;
 
-    return icalcomponent_get_timezone(icomp, (char *)tzid);
+    return icalcomponent_get_timezone(icomp, (gchar *)tzid);
 }

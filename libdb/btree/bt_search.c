@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -62,16 +62,16 @@ static const char revid[] = "$Id$";
  * __bam_search --
  *	Search a btree for a key.
  *
- * PUBLIC: int __bam_search __P((DBC *, db_pgno_t,
- * PUBLIC:     const DBT *, u_int32_t, int, db_recno_t *, int *));
+ * PUBLIC: gint __bam_search __P((DBC *, db_pgno_t,
+ * PUBLIC:     const DBT *, u_int32_t, int, db_recno_t *, gint *));
  */
-int
+gint
 __bam_search(dbc, root_pgno, key, flags, stop, recnop, exactp)
 	DBC *dbc;
 	db_pgno_t root_pgno;
 	const DBT *key;
 	u_int32_t flags;
-	int stop, *exactp;
+	gint stop, *exactp;
 	db_recno_t *recnop;
 {
 	BTREE *t;
@@ -84,8 +84,8 @@ __bam_search(dbc, root_pgno, key, flags, stop, recnop, exactp)
 	db_lockmode_t lock_mode;
 	db_pgno_t pg;
 	db_recno_t recno;
-	int adjust, cmp, deloffset, ret, stack;
-	int (*func) __P((DB *, const DBT *, const DBT *));
+	gint adjust, cmp, deloffset, ret, stack;
+	gint (*func) __P((DB *, const DBT *, const DBT *));
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -393,9 +393,9 @@ err:	BT_STK_POP(cp);
  * __bam_stkrel --
  *	Release all pages currently held in the stack.
  *
- * PUBLIC: int __bam_stkrel __P((DBC *, u_int32_t));
+ * PUBLIC: gint __bam_stkrel __P((DBC *, u_int32_t));
  */
-int
+gint
 __bam_stkrel(dbc, flags)
 	DBC *dbc;
 	u_int32_t flags;
@@ -404,7 +404,7 @@ __bam_stkrel(dbc, flags)
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
 	EPG *epg;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -450,16 +450,16 @@ __bam_stkrel(dbc, flags)
  * __bam_stkgrow --
  *	Grow the stack.
  *
- * PUBLIC: int __bam_stkgrow __P((DB_ENV *, BTREE_CURSOR *));
+ * PUBLIC: gint __bam_stkgrow __P((DB_ENV *, BTREE_CURSOR *));
  */
-int
+gint
 __bam_stkgrow(dbenv, cp)
 	DB_ENV *dbenv;
 	BTREE_CURSOR *cp;
 {
 	EPG *p;
 	size_t entries;
-	int ret;
+	gint ret;
 
 	entries = cp->esp - cp->sp;
 

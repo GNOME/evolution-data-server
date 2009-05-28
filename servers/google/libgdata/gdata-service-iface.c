@@ -32,13 +32,13 @@ gdata_service_set_proxy (GDataService *self, SoupURI *proxy)
 }
 
 void
-gdata_service_set_credentials (GDataService *self, const char *username, const gchar *password)
+gdata_service_set_credentials (GDataService *self, const gchar *username, const gchar *password)
 {
 	GDATA_SERVICE_GET_IFACE(self)->set_credentials(self, username, password);
 }
 
 GDataFeed*
-gdata_service_get_feed (GDataService *self, const char* feedURL, GError **error)
+gdata_service_get_feed (GDataService *self, const gchar * feedURL, GError **error)
 {
 	return GDATA_SERVICE_GET_IFACE(self)->get_feed(self, feedURL, error);
 }

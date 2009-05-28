@@ -41,7 +41,7 @@
 #define CAMEL_POP3_SEND_LIMIT (1024)
 
 
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
 
 static void get_capabilities(CamelPOP3Engine *pe);
@@ -103,16 +103,16 @@ read_greeting (CamelPOP3Engine *pe)
 {
 	extern CamelServiceAuthType camel_pop3_password_authtype;
 	extern CamelServiceAuthType camel_pop3_apop_authtype;
-	unsigned char *line, *apop, *apopend;
-	unsigned int len;
+	guchar *line, *apop, *apopend;
+	guint len;
 
 	/* first, read the greeting */
 	if (camel_pop3_stream_line (pe->stream, &line, &len) == -1
-	    || strncmp ((char *) line, "+OK", 3) != 0)
+	    || strncmp ((gchar *) line, "+OK", 3) != 0)
 		return -1;
 
-	if ((apop = (unsigned char *) strchr ((char *) line + 3, '<'))
-	    && (apopend = (unsigned char *) strchr ((char *) apop, '>'))) {
+	if ((apop = (guchar *) strchr ((gchar *) line + 3, '<'))
+	    && (apopend = (guchar *) strchr ((gchar *) apop, '>'))) {
 		apopend[1] = 0;
 		pe->apop = g_strdup ((gchar *) apop);
 		pe->capa = CAMEL_POP3_CAP_APOP;
@@ -174,7 +174,7 @@ camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
 /* TODO: read implementation too?
    etc? */
 static struct {
-	char *cap;
+	gchar *cap;
 	guint32 flag;
 } capa[] = {
 	{ "APOP" , CAMEL_POP3_CAP_APOP },
@@ -185,12 +185,12 @@ static struct {
 };
 
 static void
-cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
+cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 {
-	unsigned char *line, *tok, *next;
-	unsigned int len;
-	int ret;
-	int i;
+	guchar *line, *tok, *next;
+	guint len;
+	gint ret;
+	gint i;
 	CamelServiceAuthType *auth;
 
 	dd(printf("cmd_capa\n"));
@@ -198,14 +198,14 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	do {
 		ret = camel_pop3_stream_line(stream, &line, &len);
 		if (ret >= 0) {
-			if (strncmp((char *) line, "SASL ", 5) == 0) {
+			if (strncmp((gchar *) line, "SASL ", 5) == 0) {
 				tok = line+5;
 				dd(printf("scanning tokens '%s'\n", tok));
 				while (tok) {
-					next = (unsigned char *) strchr((char *) tok, ' ');
+					next = (guchar *) strchr((gchar *) tok, ' ');
 					if (next)
 						*next++ = 0;
-					auth = camel_sasl_authtype((const char *) tok);
+					auth = camel_sasl_authtype((const gchar *) tok);
 					if (auth) {
 						dd(printf("got auth type '%s'\n", tok));
 						pe->auth = g_list_prepend(pe->auth, auth);
@@ -216,7 +216,7 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 				}
 			} else {
 				for (i=0;i<sizeof(capa)/sizeof(capa[0]);i++) {
-					if (strcmp((char *) capa[i].cap, (char *) line) == 0)
+					if (strcmp((gchar *) capa[i].cap, (gchar *) line) == 0)
 						pe->capa |= capa[i].flag;
 				}
 			}
@@ -278,11 +278,11 @@ engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 }
 
 /* returns -1 on error (sets errno), 0 when no work to do, or >0 if work remaining */
-int
+gint
 camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 {
-	unsigned char *p;
-	unsigned int len;
+	guchar *p;
+	guint len;
 	CamelPOP3Command *pc, *pw, *pn;
 
 	if (pcwait && pcwait->state >= CAMEL_POP3_COMMAND_OK)
@@ -386,7 +386,7 @@ ioerror:
 }
 
 CamelPOP3Command *
-camel_pop3_engine_command_new(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, void *data, const char *fmt, ...)
+camel_pop3_engine_command_new(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, const gchar *fmt, ...)
 {
 	CamelPOP3Command *pc;
 	va_list ap;

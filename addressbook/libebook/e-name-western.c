@@ -19,19 +19,19 @@
 #include "e-name-western-tables.h"
 
 typedef struct {
-	int prefix_idx;
-	int first_idx;
-	int middle_idx;
-	int nick_idx;
-	int last_idx;
-	int suffix_idx;
+	gint prefix_idx;
+	gint first_idx;
+	gint middle_idx;
+	gint nick_idx;
+	gint last_idx;
+	gint suffix_idx;
 } ENameWesternIdxs;
 
 static int
-e_name_western_str_count_words (const char *str)
+e_name_western_str_count_words (const gchar *str)
 {
-	int word_count;
-	const char *p;
+	gint word_count;
+	const gchar *p;
 
 	word_count = 0;
 
@@ -44,10 +44,10 @@ e_name_western_str_count_words (const char *str)
 }
 
 static void
-e_name_western_cleanup_string (char **str)
+e_name_western_cleanup_string (gchar **str)
 {
-	char *newstr;
-	char *p;
+	gchar *newstr;
+	gchar *p;
 
 	if (*str == NULL)
 		return;
@@ -77,12 +77,12 @@ e_name_western_cleanup_string (char **str)
 	*str = newstr;
 }
 
-static char *
-e_name_western_get_words_at_idx (char *str, int idx, int num_words)
+static gchar *
+e_name_western_get_words_at_idx (gchar *str, gint idx, gint num_words)
 {
 	GString *words;
-	char *p;
-	int   word_count;
+	gchar *p;
+	gint   word_count;
 
 	/*
 	 * Walk to the end of the words.
@@ -106,7 +106,7 @@ e_name_western_get_words_at_idx (char *str, int idx, int num_words)
 }
 
 static int
-e_name_western_max (const int a, const int b)
+e_name_western_max (const gint a, const gint b)
 {
 	if (a > b)
 		return a;
@@ -115,9 +115,9 @@ e_name_western_max (const int a, const int b)
 }
 
 static gboolean
-e_name_western_word_is_suffix (char *word)
+e_name_western_word_is_suffix (gchar *word)
 {
-	int i;
+	gint i;
 	gchar *folded_word = g_utf8_casefold (word, -1);
 
 	/* The suffix table is already in lowercase, and we know that
@@ -125,7 +125,7 @@ e_name_western_word_is_suffix (char *word)
 	 * don't need to casefold the suffixes.
 	 */
 	for (i = 0; i < G_N_ELEMENTS (western_sfx_index); i++) {
-		const char *suffix = western_sfx_table + western_sfx_index[i];
+		const gchar *suffix = western_sfx_table + western_sfx_index[i];
 
 		if (!g_utf8_collate (folded_word, suffix)) {
 			g_free (folded_word);
@@ -136,20 +136,20 @@ e_name_western_word_is_suffix (char *word)
 	return FALSE;
 }
 
-static char *
-e_name_western_get_one_prefix_at_str (char *str)
+static gchar *
+e_name_western_get_one_prefix_at_str (gchar *str)
 {
-	char *word;
-	int   i;
+	gchar *word;
+	gint   i;
 
 	/*
 	 * Check for prefixes from our table.
 	 */
 	for (i = 0; i < G_N_ELEMENTS (western_pfx_index); i++) {
-		int pfx_words;
-		const char *prefix;
-		char *words;
-		char *folded_words;
+		gint pfx_words;
+		const gchar *prefix;
+		gchar *words;
+		gchar *folded_words;
 
 		prefix = western_pfx_table + western_pfx_index[i];
 		pfx_words = e_name_western_str_count_words (prefix);
@@ -181,13 +181,13 @@ e_name_western_get_one_prefix_at_str (char *str)
 	return NULL;
 }
 
-static char *
-e_name_western_get_prefix_at_str (char *str)
+static gchar *
+e_name_western_get_prefix_at_str (gchar *str)
 {
-	char *pfx;
-	char *pfx1;
-	char *pfx2;
-	char *p;
+	gchar *pfx;
+	gchar *pfx1;
+	gchar *pfx2;
+	gchar *p;
 
 	/* Get the first prefix. */
 	pfx1 = e_name_western_get_one_prefix_at_str (str);
@@ -203,7 +203,7 @@ e_name_western_get_prefix_at_str (char *str)
 	pfx2 = e_name_western_get_one_prefix_at_str (p);
 
 	if (pfx2 != NULL) {
-		int pfx_len;
+		gint pfx_len;
 
 		pfx_len = (p + strlen (pfx2)) - str;
 		pfx = g_malloc0 (pfx_len + 1);
@@ -221,7 +221,7 @@ e_name_western_get_prefix_at_str (char *str)
 static void
 e_name_western_extract_prefix (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	char *pfx;
+	gchar *pfx;
 
 	pfx = e_name_western_get_prefix_at_str (name->full);
 
@@ -233,13 +233,13 @@ e_name_western_extract_prefix (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static gboolean
-e_name_western_is_complex_last_beginning (char *word)
+e_name_western_is_complex_last_beginning (gchar *word)
 {
-	int i;
-	char *folded_word = g_utf8_casefold (word, -1);
+	gint i;
+	gchar *folded_word = g_utf8_casefold (word, -1);
 
 	for (i = 0; i < G_N_ELEMENTS (western_complex_last_index); i++) {
-		const char *last = western_complex_last_table + western_complex_last_index[i];
+		const gchar *last = western_complex_last_table + western_complex_last_index[i];
 		if (! g_utf8_collate (folded_word, last)) {
 			g_free (folded_word);
 			return TRUE;
@@ -256,8 +256,8 @@ e_name_western_extract_first (ENameWestern *name, ENameWesternIdxs *idxs)
 	 * If there's a prefix, then the first name is right after it.
 	 */
 	if (idxs->prefix_idx != -1) {
-		int   first_idx;
-		char *p;
+		gint   first_idx;
+		gchar *p;
 
 		first_idx = idxs->prefix_idx + strlen (name->prefix);
 
@@ -299,8 +299,8 @@ e_name_western_extract_first (ENameWestern *name, ENameWesternIdxs *idxs)
 static void
 e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	char *word;
-	char *middle;
+	gchar *word;
+	gchar *middle;
 
 	/*
 	 * Middle names can only exist if you have a first name.
@@ -377,8 +377,8 @@ e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 static void
 e_name_western_extract_nickname (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	char *nick;
-	int   start_idx;
+	gchar *nick;
+	gint   start_idx;
 	GString *str;
 
 	if (idxs->first_idx == -1)
@@ -422,7 +422,7 @@ e_name_western_extract_nickname (ENameWestern *name, ENameWesternIdxs *idxs)
 static int
 e_name_western_last_get_max_idx (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	int max_idx = -1;
+	gint max_idx = -1;
 
 	if (name->prefix != NULL)
 		max_idx = e_name_western_max (
@@ -446,9 +446,9 @@ e_name_western_last_get_max_idx (ENameWestern *name, ENameWesternIdxs *idxs)
 static void
 e_name_western_extract_last (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	char *word;
-	int   idx = -1;
-	char *last;
+	gchar *word;
+	gint   idx = -1;
+	gchar *last;
 
 	idx = e_name_western_last_get_max_idx (name, idxs);
 
@@ -505,12 +505,12 @@ e_name_western_extract_last (ENameWestern *name, ENameWesternIdxs *idxs)
 	idxs->last_idx = last - name->full;
 }
 
-static char *
-e_name_western_get_preceding_word (char *str, int idx)
+static gchar *
+e_name_western_get_preceding_word (gchar *str, gint idx)
 {
-	int   word_len;
-	char *word;
-	char *p;
+	gint   word_len;
+	gchar *word;
+	gchar *p;
 
 	p = str + idx;
 
@@ -531,11 +531,11 @@ e_name_western_get_preceding_word (char *str, int idx)
 	return word;
 }
 
-static char *
-e_name_western_get_suffix_at_str_end (char *str)
+static gchar *
+e_name_western_get_suffix_at_str_end (gchar *str)
 {
-	char *suffix;
-	char *p;
+	gchar *suffix;
+	gchar *p;
 
 	/*
 	 * Walk backwards till we reach the beginning of the
@@ -543,8 +543,8 @@ e_name_western_get_suffix_at_str_end (char *str)
 	 */
 	p = str + strlen (str);
 	while (1) {
-		char *nextp;
-		char *word;
+		gchar *nextp;
+		gchar *word;
 
 		word = e_name_western_get_preceding_word (str, p - str);
 		nextp = p - strlen (word);
@@ -593,8 +593,8 @@ e_name_western_extract_suffix (ENameWestern *name, ENameWesternIdxs *idxs)
 static gboolean
 e_name_western_detect_backwards (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	char *comma;
-	char *word;
+	gchar *comma;
+	gchar *word;
 
 	comma = g_utf8_strchr (name->full, -1, ',');
 
@@ -621,14 +621,14 @@ e_name_western_detect_backwards (ENameWestern *name, ENameWesternIdxs *idxs)
 static void
 e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 {
-	char *prefix;
-	char *last;
-	char *suffix;
-	char *firstmidnick;
-	char *newfull;
+	gchar *prefix;
+	gchar *last;
+	gchar *suffix;
+	gchar *firstmidnick;
+	gchar *newfull;
 
-	char *comma;
-	char *p;
+	gchar *comma;
+	gchar *p;
 
 	if (! e_name_western_detect_backwards (name, idxs))
 		return;
@@ -693,7 +693,7 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 		p = g_utf8_next_char (p);
 
 	if (suffix != NULL) {
-		char *q;
+		gchar *q;
 
 		/*
 		 * Point q at the beginning of the suffix.
@@ -735,7 +735,7 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static void
-e_name_western_zap_nil (char **str, int *idx)
+e_name_western_zap_nil (gchar **str, gint *idx)
 {
 	if (*str == NULL)
 		return;
@@ -749,11 +749,11 @@ e_name_western_zap_nil (char **str, int *idx)
 }
 
 #define FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION			\
-	char *last_start = NULL;					\
+	gchar *last_start = NULL;					\
 	if (name->last)							\
 		last_start = g_utf8_strchr (name->last, -1, ' ');	\
 	if (last_start) {						\
-		char *new_last, *new_first;				\
+		gchar *new_last, *new_first;				\
 									\
 		new_last = g_strdup (g_utf8_next_char (last_start));	\
 		*last_start = '\0';					\
@@ -775,7 +775,7 @@ e_name_western_zap_nil (char **str, int *idx)
 									\
 		idxs->middle_idx = -1;					\
 	} else {							\
-		char *new_first;					\
+		gchar *new_first;					\
 									\
 		new_first = g_strdup_printf ("%s %s %s",		\
 					     name->first,		\
@@ -832,12 +832,12 @@ e_name_western_fixup (ENameWestern *name, ENameWesternIdxs *idxs)
 	 */
 	if (idxs->suffix_idx != -1 && idxs->last_idx != -1 &&
 	    idxs->suffix_idx < (idxs->last_idx + strlen (name->last))) {
-		char *sfx;
+		gchar *sfx;
 
 		sfx = name->last + (idxs->suffix_idx - idxs->last_idx);
 		if (sfx != NULL) {
-			char *newlast;
-			char *p;
+			gchar *newlast;
+			gchar *p;
 
 			p = sfx;
 			p = g_utf8_prev_char (p);
@@ -933,13 +933,13 @@ e_name_western_fixup (ENameWestern *name, ENameWesternIdxs *idxs)
  * Return value: A new #ENameWestern struct.
  **/
 ENameWestern *
-e_name_western_parse (const char *full_name)
+e_name_western_parse (const gchar *full_name)
 {
 	ENameWesternIdxs *idxs;
 	ENameWestern *wname;
-	char *end;
+	gchar *end;
 
-	if (!g_utf8_validate (full_name, -1, (const char **)&end)) {
+	if (!g_utf8_validate (full_name, -1, (const gchar **)&end)) {
 		g_warning ("e_name_western_parse passed invalid UTF-8 sequence");
 		*end = '\0';
 	}

@@ -44,7 +44,7 @@
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"
 
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
 #define d(x)
 
@@ -127,7 +127,7 @@ camel_data_cache_get_type(void)
  * be written to.
  **/
 CamelDataCache *
-camel_data_cache_new(const char *path, guint32 flags, CamelException *ex)
+camel_data_cache_new(const gchar *path, guint32 flags, CamelException *ex)
 {
 	CamelDataCache *cdc;
 
@@ -190,10 +190,10 @@ camel_data_cache_set_expire_access(CamelDataCache *cdc, time_t when)
 }
 
 static void
-data_cache_expire(CamelDataCache *cdc, const char *path, const char *keep, time_t now)
+data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, time_t now)
 {
 	GDir *dir;
-	const char *dname;
+	const gchar *dname;
 	GString *s;
 	struct stat st;
 	CamelStream *stream;
@@ -230,10 +230,10 @@ data_cache_expire(CamelDataCache *cdc, const char *path, const char *keep, time_
    lazily expire old data.
    If it is this directories 'turn', and we haven't done it for CYCLE_TIME seconds,
    then we perform an expiry run */
-static char *
-data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *key)
+static gchar *
+data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar *key)
 {
-	char *dir, *real, *tmp;
+	gchar *dir, *real, *tmp;
 	guint32 hash;
 
 	hash = g_str_hash(key);
@@ -287,9 +287,9 @@ data_cache_path(CamelDataCache *cdc, int create, const char *path, const char *k
  * The caller must unref this when finished.
  **/
 CamelStream *
-camel_data_cache_add(CamelDataCache *cdc, const char *path, const char *key, CamelException *ex)
+camel_data_cache_add(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
 {
-	char *real;
+	gchar *real;
 	CamelStream *stream;
 
 	real = data_cache_path(cdc, TRUE, path, key);
@@ -331,9 +331,9 @@ camel_data_cache_add(CamelDataCache *cdc, const char *path, const char *key, Cam
  * Return value: A cache item, or NULL if the cache item does not exist.
  **/
 CamelStream *
-camel_data_cache_get(CamelDataCache *cdc, const char *path, const char *key, CamelException *ex)
+camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
 {
-	char *real;
+	gchar *real;
 	CamelStream *stream;
 
 	real = data_cache_path(cdc, FALSE, path, key);
@@ -363,9 +363,9 @@ camel_data_cache_get(CamelDataCache *cdc, const char *path, const char *key, Cam
  * Return value: The filename for a cache item
  **/
 gchar *
-camel_data_cache_get_filename (CamelDataCache *cdc, const char *path, const char *key, CamelException *ex)
+camel_data_cache_get_filename (CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
 {
-	char *real;
+	gchar *real;
 
 	real = data_cache_path(cdc, FALSE, path, key);
 
@@ -383,12 +383,12 @@ camel_data_cache_get_filename (CamelDataCache *cdc, const char *path, const char
  *
  * Return value:
  **/
-int
-camel_data_cache_remove(CamelDataCache *cdc, const char *path, const char *key, CamelException *ex)
+gint
+camel_data_cache_remove(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
 {
 	CamelStream *stream;
-	char *real;
-	int ret;
+	gchar *real;
+	gint ret;
 
 	real = data_cache_path(cdc, FALSE, path, key);
 	stream = camel_object_bag_get(cdc->priv->busy_bag, real);
@@ -426,8 +426,8 @@ camel_data_cache_remove(CamelDataCache *cdc, const char *path, const char *key, 
  *
  * Return value: -1 on error.
  **/
-int camel_data_cache_rename(CamelDataCache *cache,
-			    const char *old, const char *new, CamelException *ex)
+gint camel_data_cache_rename(CamelDataCache *cache,
+			    const gchar *old, const gchar *new, CamelException *ex)
 {
 	/* blah dont care yet */
 	return -1;
@@ -445,8 +445,8 @@ int camel_data_cache_rename(CamelDataCache *cache,
  *
  * Return value: -1 on error.
  **/
-int
-camel_data_cache_clear(CamelDataCache *cache, const char *path, CamelException *ex)
+gint
+camel_data_cache_clear(CamelDataCache *cache, const gchar *path, CamelException *ex)
 {
 	/* nor for this? */
 	return -1;

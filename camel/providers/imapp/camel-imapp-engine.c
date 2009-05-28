@@ -20,13 +20,13 @@
 #define e(x)
 #define c(x)			/* command build debug */
 
-static void imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const char *fmt, va_list ap);
+static void imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gchar *fmt, va_list ap);
 static void imap_engine_command_complete(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic);
 
 struct _handler {
 	CamelIMAPPEngineFunc func;
-	void *data;
-	char name[1];
+	gpointer data;
+	gchar name[1];
 };
 
 static void
@@ -56,7 +56,7 @@ object_init(CamelIMAPPEngine *ie, CamelIMAPPEngineClass *ieclass)
 }
 
 static void
-handler_free(void *key, void *mem, void *data)
+handler_free(gpointer key, gpointer mem, gpointer data)
 {
 	g_free(mem);
 }
@@ -94,7 +94,7 @@ camel_imapp_engine_get_type (void)
 
 /* FIXME: check this, just taken from old code, not rfc */
 struct {
-	char *name;
+	gchar *name;
 	guint32 flag;
 } capa_table[] = {
 	{ "IMAP4", IMAP_CAPABILITY_IMAP4 },
@@ -114,10 +114,10 @@ capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
                     ;; compatibility MUST list "IMAP4" as the first
                     ;; capability.
 */
-static int resp_capability(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_capability(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
-	int tok, len, i;
-	unsigned char *token, *p, c;
+	gint tok, len, i;
+	guchar *token, *p, c;
 
 	/* FIXME: handle auth types */
 
@@ -152,14 +152,14 @@ static int resp_capability(CamelIMAPPEngine *ie, guint32 id, void *data)
 /* expunge command, id is expunged seq number */
 /* message_data    ::= nz_number SPACE ("EXPUNGE" /
    ("FETCH" SPACE msg_att)) */
-static int resp_expunge(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_expunge(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
 	printf("message expunged: %d\n", id);
 
 	return camel_imapp_engine_skip(ie);
 }
 
-static int resp_flags(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_flags(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
 	guint32 flags;
 
@@ -171,7 +171,7 @@ static int resp_flags(CamelIMAPPEngine *ie, guint32 id, void *data)
 }
 
 /* exists count */
-static int resp_exists(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_exists(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
 	printf("messages exist: %d\n", id);
 
@@ -181,7 +181,7 @@ static int resp_exists(CamelIMAPPEngine *ie, guint32 id, void *data)
 	return camel_imapp_engine_skip(ie);
 }
 
-static int resp_recent(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_recent(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
 	printf("messages recent: %d\n", id);
 
@@ -191,7 +191,7 @@ static int resp_recent(CamelIMAPPEngine *ie, guint32 id, void *data)
 	return camel_imapp_engine_skip(ie);
 }
 
-static int resp_fetch(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_fetch(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
 	struct _fetch_info *finfo;
 
@@ -203,7 +203,7 @@ static int resp_fetch(CamelIMAPPEngine *ie, guint32 id, void *data)
 }
 
 #if 0
-static int resp_list(CamelIMAPPEngine *ie, guint32 id, void *data)
+static gint resp_list(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 {
 	struct _list_info *linfo;
 
@@ -241,9 +241,9 @@ camel_imapp_engine_new(CamelIMAPPStream *stream)
 
 	/* TODO: move this to a driver:connect call? */
 	CAMEL_TRY {
-		unsigned char *token;
-		unsigned int len;
-		int tok;
+		guchar *token;
+		guint len;
+		gint tok;
 
 		tok = camel_imapp_stream_token(stream, &token, &len);
 		if (tok == '*') {
@@ -280,11 +280,11 @@ camel_imapp_engine_new(CamelIMAPPStream *stream)
 }
 
 void
-camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const char *response, CamelIMAPPEngineFunc func, void *data)
+camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const gchar *response, CamelIMAPPEngineFunc func, gpointer data)
 {
 	struct _handler *h;
-	const unsigned char *p;
-	unsigned char *o, c;
+	const guchar *p;
+	guchar *o, c;
 
 	h = g_malloc0(sizeof(*h) + strlen(response));
 	h->func = func;
@@ -299,7 +299,7 @@ camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const char *response, Cam
 	g_hash_table_insert(imap->handlers, h->name, h);
 }
 
-int
+gint
 camel_imapp_engine_capabilities(CamelIMAPPEngine *ie)
 {
 	CamelIMAPPCommand *ic;
@@ -317,12 +317,12 @@ camel_imapp_engine_capabilities(CamelIMAPPEngine *ie)
 }
 
 /* skip the rest of the line of tokens */
-int
+gint
 camel_imapp_engine_skip(CamelIMAPPEngine *imap)
 {
-	int tok;
-	unsigned char *token;
-	unsigned int len;
+	gint tok;
+	guchar *token;
+	guint len;
 
 	do {
 		tok = camel_imapp_stream_token(imap->stream, &token, &len);
@@ -344,9 +344,9 @@ camel_imapp_engine_skip(CamelIMAPPEngine *imap)
 static int
 iterate_untagged(CamelIMAPPEngine *imap)
 {
-	unsigned int id, len;
-	unsigned char *token, *p, c;
-	int tok;
+	guint id, len;
+	guchar *token, *p, c;
+	gint tok;
 	struct _handler *h;
 	struct _status_info *sinfo;
 
@@ -468,9 +468,9 @@ iterate_continuation(CamelIMAPPEngine *imap)
 		break;
 	case CAMEL_IMAPP_COMMAND_AUTH: {
 		CamelException *ex = camel_exception_new();
-		char *resp;
-		unsigned char *token;
-		int tok, len;
+		gchar *resp;
+		guchar *token;
+		gint tok, len;
 
 		tok = camel_imapp_stream_token(imap->stream, &token, &len);
 		resp = camel_sasl_challenge_base64((CamelSasl *)cp->ob, token, ex);
@@ -522,10 +522,10 @@ iterate_continuation(CamelIMAPPEngine *imap)
 
 /* handle a completion line */
 static int
-iterate_completion(CamelIMAPPEngine *imap, unsigned char *token)
+iterate_completion(CamelIMAPPEngine *imap, guchar *token)
 {
 	CamelIMAPPCommand *ic;
-	unsigned int tag;
+	guint tag;
 
 	if (token[0] != imap->tagprefix)
 		camel_exception_throw(1, "Server sent unexpected response: %s", token);
@@ -577,13 +577,13 @@ iterate_completion(CamelIMAPPEngine *imap, unsigned char *token)
 
 
 /* Do work if there's any to do */
-int
+gint
 camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *icwait)
 /* throws IO,PARSE exception */
 {
-	unsigned int len;
-	unsigned char *token;
-	int tok;
+	guint len;
+	guchar *token;
+	gint tok;
 
 	if ((icwait && icwait->status != NULL) || camel_dlist_empty(&imap->active))
 		return 0;
@@ -609,7 +609,7 @@ camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *icwait)
 }
 
 CamelIMAPPCommand *
-camel_imapp_engine_command_new(CamelIMAPPEngine *imap, const char *name, const char *select, const char *fmt, ...)
+camel_imapp_engine_command_new(CamelIMAPPEngine *imap, const gchar *name, const gchar *select, const gchar *fmt, ...)
 {
 	CamelIMAPPCommand *ic;
 	va_list ap;
@@ -631,7 +631,7 @@ camel_imapp_engine_command_new(CamelIMAPPEngine *imap, const char *name, const c
 }
 
 void
-camel_imapp_engine_command_add(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const char *fmt, ...)
+camel_imapp_engine_command_add(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gchar *fmt, ...)
 {
 	va_list ap;
 
@@ -645,7 +645,7 @@ camel_imapp_engine_command_add(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, co
 }
 
 void
-camel_imapp_engine_command_complete(CamelIMAPPEngine *imap, struct _CamelIMAPPCommand *ic, CamelIMAPPCommandFunc func, void *data)
+camel_imapp_engine_command_complete(CamelIMAPPEngine *imap, struct _CamelIMAPPCommand *ic, CamelIMAPPCommandFunc func, gpointer data)
 {
 	ic->complete = func;
 	ic->complete_data = data;
@@ -692,7 +692,7 @@ camel_imapp_engine_command_queue(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 }
 
 CamelIMAPPCommand *
-camel_imapp_engine_command_find (CamelIMAPPEngine *imap, const char *name)
+camel_imapp_engine_command_find (CamelIMAPPEngine *imap, const gchar *name)
 {
 	CamelIMAPPCommand *ic, *in;
 
@@ -714,7 +714,7 @@ camel_imapp_engine_command_find (CamelIMAPPEngine *imap, const char *name)
 }
 
 CamelIMAPPCommand *
-camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, unsigned int tag)
+camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, guint tag)
 {
 	CamelIMAPPCommand *ic, *in;
 
@@ -737,7 +737,7 @@ camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, unsigned int tag)
 /* ********************************************************************** */
 
 CamelIMAPPSelectResponse *
-camel_imapp_engine_select(CamelIMAPPEngine *imap, const char *name)
+camel_imapp_engine_select(CamelIMAPPEngine *imap, const gchar *name)
 {
 	CamelIMAPPSelectResponse * volatile resp;
 	CamelIMAPPCommand * volatile ic = NULL;
@@ -784,7 +784,7 @@ imap_engine_command_add_part(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, came
 {
 	CamelIMAPPCommandPart *cp;
 	CamelStreamNull *null;
-	unsigned int ob_size = 0;
+	guint ob_size = 0;
 
 	switch(type & CAMEL_IMAPP_COMMAND_MASK) {
 	case CAMEL_IMAPP_COMMAND_DATAWRAPPER:
@@ -831,9 +831,9 @@ imap_engine_command_add_part(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, came
 }
 
 #if c(!)0
-static int len(CamelDList *list)
+static gint len(CamelDList *list)
 {
-	int count = 0;
+	gint count = 0;
 	CamelDListNode *n = list->head;
 
 	while (n->next) {
@@ -859,24 +859,24 @@ imap_engine_command_complete(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 }
 
 static void
-imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const char *fmt, va_list ap)
+imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gchar *fmt, va_list ap)
 {
-	const unsigned char *p, *ps, *start;
-	unsigned char c;
-	unsigned int width;
-	char ch;
-	int llong;
-	int left;
-	int fill;
-	int zero;
-	char *s;
-	int d;
-	long int l;
+	const guchar *p, *ps, *start;
+	guchar c;
+	guint width;
+	gchar ch;
+	gint llong;
+	gint left;
+	gint fill;
+	gint zero;
+	gchar *s;
+	gint d;
+	long gint l;
 	guint32 f;
 	CamelStream *S;
 	CamelDataWrapper *D;
 	CamelSasl *A;
-	char buffer[16];
+	gchar buffer[16];
 
 	c(printf("adding command, fmt = '%s'\n", fmt));
 
@@ -936,17 +936,17 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const ch
 					imap_engine_command_add_part(imap, ic, CAMEL_IMAPP_COMMAND_DATAWRAPPER, (CamelObject *)D);
 					break;
 				case 't': /* token */
-					s = va_arg(ap, char *);
+					s = va_arg(ap, gchar *);
 					camel_stream_write((CamelStream *)ic->mem, s, strlen(s));
 					break;
 				case 's': /* simple string */
-					s = va_arg(ap, char *);
+					s = va_arg(ap, gchar *);
 					c(printf("got string '%s'\n", s));
 					/* FIXME: escpae chars, convert to literal or literal+, etc */
 					camel_stream_printf((CamelStream *)ic->mem, "\"%s\"", s);
 					break;
 				case 'f': /* imap folder name */
-					s = va_arg(ap, char *);
+					s = va_arg(ap, gchar *);
 					c(printf("got folder '%s'\n", s));
 					/* FIXME: encode folder name */
 					/* FIXME: namespace? */
@@ -965,13 +965,13 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const ch
 				case 'u':
 					if (llong) {
 						l = va_arg(ap, long int);
-						c(printf("got long int '%d'\n", (int)l));
+						c(printf("got long gint '%d'\n", (int)l));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, l);
 					} else {
 						d = va_arg(ap, int);
-						c(printf("got int '%d'\n", d));
+						c(printf("got gint '%d'\n", d));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, d);
@@ -997,8 +997,8 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const ch
 }
 
 
-static void *
-cie_worker(void *data)
+static gpointer
+cie_worker(gpointer data)
 {
 	CamelIMAPPCommand *ic = data;
 	CamelIMAPPEngine *imap;
@@ -1116,7 +1116,7 @@ camel_exception_throw_ex(CamelException *ex)
 }
 
 void
-camel_exception_throw(int id, char *fmt, ...)
+camel_exception_throw(gint id, gchar *fmt, ...)
 {
 	CamelException *ex;
 	va_list ap;

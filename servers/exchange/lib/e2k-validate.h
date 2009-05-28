@@ -20,11 +20,11 @@ typedef enum {
 } E2kAutoconfigGalAuthPref;
 
 typedef struct {
-        char *host;
-        char *ad_server;
+        gchar *host;
+        gchar *ad_server;
 	E2kAutoconfigGalAuthPref ad_auth;
-        char *mailbox;
-        char *owa_path;
+        gchar *mailbox;
+        gchar *owa_path;
 	gboolean is_ntlm;
 }ExchangeParams;
 
@@ -47,7 +47,7 @@ typedef enum {
 	E2K_AUTOCONFIG_FAILED
 } E2kAutoconfigResult;
 
-gboolean e2k_validate_user (const char *owa_url, char *key, char **user,
+gboolean e2k_validate_user (const gchar *owa_url, gchar *key, gchar **user,
 			    ExchangeParams *exchange_params,
 			    gboolean *remember_password,
 			    E2kAutoconfigResult *result,

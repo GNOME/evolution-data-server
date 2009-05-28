@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,14 +17,14 @@ static const char revid[] = "$Id$";
  * __os_seek --
  *	Seek to a page/byte offset in the file.
  */
-int
+gint
 __os_seek(dbenv, fhp, pgsize, pageno, relative, isrewind, db_whence)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 	size_t pgsize;
 	db_pgno_t pageno;
 	u_int32_t relative;
-	int isrewind;
+	gint isrewind;
 	DB_OS_SEEK db_whence;
 {
 	/* Yes, this really is how Microsoft have designed their API */
@@ -35,7 +35,7 @@ __os_seek(dbenv, fhp, pgsize, pageno, relative, isrewind, db_whence)
 			long high;
 		};
 	} offset;
-	int ret, whence;
+	gint ret, whence;
 	DWORD from;
 
 	if (DB_GLOBAL(j_seek) != NULL) {

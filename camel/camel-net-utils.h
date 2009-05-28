@@ -52,13 +52,13 @@ struct _CamelException;
    version 2.1 of the License, or (at your option) any later version.
 */
 struct addrinfo {
-	int ai_flags;
-	int ai_family;
-	int ai_socktype;
-	int ai_protocol;
+	gint ai_flags;
+	gint ai_family;
+	gint ai_socktype;
+	gint ai_protocol;
 	size_t ai_addrlen;
 	struct sockaddr *ai_addr;
-	char *ai_canonname;
+	gchar *ai_canonname;
 	struct addrinfo *ai_next;
 };
 
@@ -87,11 +87,11 @@ struct addrinfo {
 #endif
 #endif
 
-struct addrinfo *camel_getaddrinfo(const char *name, const char *service,
+struct addrinfo *camel_getaddrinfo(const gchar *name, const gchar *service,
 				   const struct addrinfo *hints, struct _CamelException *ex);
 void camel_freeaddrinfo(struct addrinfo *host);
-int camel_getnameinfo(const struct sockaddr *sa, socklen_t salen, char **host, char **serv,
-		      int flags, struct _CamelException *ex);
+gint camel_getnameinfo(const struct sockaddr *sa, socklen_t salen, gchar **host, gchar **serv,
+		      gint flags, struct _CamelException *ex);
 
 G_END_DECLS
 

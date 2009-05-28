@@ -73,28 +73,28 @@ typedef struct {
 						      CamelException *);
 
 	CamelFolder *     (*get_folder_online)       (CamelStore *store,
-						      const char *name,
+						      const gchar *name,
 						      guint32 flags,
 						      CamelException *ex);
 	CamelFolder *     (*get_folder_offline)      (CamelStore *store,
-						      const char *name,
+						      const gchar *name,
 						      guint32 flags,
 						      CamelException *ex);
 	CamelFolder *     (*get_folder_resyncing)    (CamelStore *store,
-						      const char *name,
+						      const gchar *name,
 						      guint32 flags,
 						      CamelException *ex);
 
 	CamelFolderInfo * (*get_folder_info_online)    (CamelStore *store,
-							const char *top,
+							const gchar *top,
 							guint32 flags,
 							CamelException *ex);
 	CamelFolderInfo * (*get_folder_info_offline)   (CamelStore *store,
-							const char *top,
+							const gchar *top,
 							guint32 flags,
 							CamelException *ex);
 	CamelFolderInfo * (*get_folder_info_resyncing) (CamelStore *store,
-							const char *top,
+							const gchar *top,
 							guint32 flags,
 							CamelException *ex);
 

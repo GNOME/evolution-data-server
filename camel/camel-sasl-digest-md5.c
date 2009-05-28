@@ -67,7 +67,7 @@ enum {
 };
 
 typedef struct {
-	char *name;
+	gchar *name;
 	guint type;
 } DataType;
 
@@ -124,48 +124,48 @@ static DataType cipher_types[] = {
 };
 
 struct _param {
-	char *name;
-	char *value;
+	gchar *name;
+	gchar *value;
 };
 
 struct _DigestChallenge {
 	GPtrArray *realms;
-	char *nonce;
+	gchar *nonce;
 	guint qop;
 	gboolean stale;
 	gint32 maxbuf;
-	char *charset;
-	char *algorithm;
+	gchar *charset;
+	gchar *algorithm;
 	guint cipher;
 	GList *params;
 };
 
 struct _DigestURI {
-	char *type;
-	char *host;
-	char *name;
+	gchar *type;
+	gchar *host;
+	gchar *name;
 };
 
 struct _DigestResponse {
-	char *username;
-	char *realm;
-	char *nonce;
-	char *cnonce;
-	char nc[9];
+	gchar *username;
+	gchar *realm;
+	gchar *nonce;
+	gchar *cnonce;
+	gchar nc[9];
 	guint qop;
 	struct _DigestURI *uri;
-	char resp[33];
+	gchar resp[33];
 	guint32 maxbuf;
-	char *charset;
+	gchar *charset;
 	guint cipher;
-	char *authzid;
-	char *param;
+	gchar *authzid;
+	gchar *param;
 };
 
 struct _CamelSaslDigestMd5Private {
 	struct _DigestChallenge *challenge;
 	struct _DigestResponse *response;
-	int state;
+	gint state;
 };
 
 static void
@@ -194,7 +194,7 @@ camel_sasl_digest_md5_finalize (CamelObject *object)
 	struct _DigestChallenge *c = sasl->priv->challenge;
 	struct _DigestResponse *r = sasl->priv->response;
 	GList *p;
-	int i;
+	gint i;
 
 	if (c != NULL) {
 		for (i = 0; i < c->realms->len; i++)
@@ -255,9 +255,9 @@ camel_sasl_digest_md5_get_type (void)
 }
 
 static void
-decode_lwsp (const char **in)
+decode_lwsp (const gchar **in)
 {
-	const char *inptr = *in;
+	const gchar *inptr = *in;
 
 	while (isspace (*inptr))
 		inptr++;
@@ -265,18 +265,18 @@ decode_lwsp (const char **in)
 	*in = inptr;
 }
 
-static char *
-decode_quoted_string (const char **in)
+static gchar *
+decode_quoted_string (const gchar **in)
 {
-	const char *inptr = *in;
-	char *out = NULL, *outptr;
-	int outlen;
-	int c;
+	const gchar *inptr = *in;
+	gchar *out = NULL, *outptr;
+	gint outlen;
+	gint c;
 
 	decode_lwsp (&inptr);
 	if (*inptr == '"') {
-		const char *intmp;
-		int skip = 0;
+		const gchar *intmp;
+		gint skip = 0;
 
 		/* first, calc length */
 		inptr++;
@@ -305,11 +305,11 @@ decode_quoted_string (const char **in)
 	return out;
 }
 
-static char *
-decode_token (const char **in)
+static gchar *
+decode_token (const gchar **in)
 {
-	const char *inptr = *in;
-	const char *start;
+	const gchar *inptr = *in;
+	const gchar *start;
 
 	decode_lwsp (&inptr);
 	start = inptr;
@@ -325,10 +325,10 @@ decode_token (const char **in)
 	}
 }
 
-static char *
-decode_value (const char **in)
+static gchar *
+decode_value (const gchar **in)
 {
-	const char *inptr = *in;
+	const gchar *inptr = *in;
 
 	decode_lwsp (&inptr);
 	if (*inptr == '"') {
@@ -341,11 +341,11 @@ decode_value (const char **in)
 }
 
 static GList *
-parse_param_list (const char *tokens)
+parse_param_list (const gchar *tokens)
 {
 	GList *params = NULL;
 	struct _param *param;
-	const char *ptr;
+	const gchar *ptr;
 
 	for (ptr = tokens; ptr && *ptr; ) {
 		param = g_new0 (struct _param, 1);
@@ -365,9 +365,9 @@ parse_param_list (const char *tokens)
 }
 
 static guint
-decode_data_type (DataType *dtype, const char *name)
+decode_data_type (DataType *dtype, const gchar *name)
 {
-	int i;
+	gint i;
 
 	for (i = 0; dtype[i].name; i++) {
 		if (!g_ascii_strcasecmp (dtype[i].name, name))
@@ -381,10 +381,10 @@ decode_data_type (DataType *dtype, const char *name)
 #define decode_qop(name)     decode_data_type (qop_types, name)
 #define decode_cipher(name)  decode_data_type (cipher_types, name)
 
-static const char *
+static const gchar *
 type_to_string (DataType *dtype, guint type)
 {
-	int i;
+	gint i;
 
 	for (i = 0; dtype[i].name; i++) {
 		if (dtype[i].type == type)
@@ -406,11 +406,11 @@ digest_abort (gboolean *have_type, gboolean *abort)
 }
 
 static struct _DigestChallenge *
-parse_server_challenge (const char *tokens, gboolean *abort)
+parse_server_challenge (const gchar *tokens, gboolean *abort)
 {
 	struct _DigestChallenge *challenge = NULL;
 	GList *params, *p;
-	const char *ptr;
+	const gchar *ptr;
 #ifdef PARANOID
 	gboolean got_algorithm = FALSE;
 	gboolean got_stale = FALSE;
@@ -432,13 +432,13 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 
 	for (p = params; p; p = p->next) {
 		struct _param *param = p->data;
-		int type;
+		gint type;
 
 		type = get_digest_arg (param->name);
 		switch (type) {
 		case DIGEST_REALM:
 			for (ptr = param->value; ptr && *ptr; ) {
-				char *token;
+				gchar *token;
 
 				token = decode_token (&ptr);
 				if (token)
@@ -459,7 +459,7 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 			break;
 		case DIGEST_QOP:
 			for (ptr = param->value; ptr && *ptr; ) {
-				char *token;
+				gchar *token;
 
 				token = decode_token (&ptr);
 				if (token)
@@ -511,7 +511,7 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 			break;
 		case DIGEST_CIPHER:
 			for (ptr = param->value; ptr && *ptr; ) {
-				char *token;
+				gchar *token;
 
 				token = decode_token (&ptr);
 				if (token)
@@ -537,7 +537,7 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 	return challenge;
 }
 
-static char *
+static gchar *
 digest_uri_to_string (struct _DigestURI *uri)
 {
 	if (uri->name)
@@ -547,7 +547,7 @@ digest_uri_to_string (struct _DigestURI *uri)
 }
 
 static void
-compute_response (struct _DigestResponse *resp, const char *passwd, gboolean client, guchar out[33])
+compute_response (struct _DigestResponse *resp, const gchar *passwd, gboolean client, guchar out[33])
 {
 	GString *buffer;
 	GChecksum *checksum;
@@ -645,8 +645,8 @@ compute_response (struct _DigestResponse *resp, const char *passwd, gboolean cli
 }
 
 static struct _DigestResponse *
-generate_response (struct _DigestChallenge *challenge, const char *host,
-		   const char *protocol, const char *user, const char *passwd)
+generate_response (struct _DigestChallenge *challenge, const gchar *host,
+		   const gchar *protocol, const gchar *user, const gchar *passwd)
 {
 	struct _DigestResponse *resp;
 	struct _DigestURI *uri;
@@ -669,7 +669,7 @@ generate_response (struct _DigestChallenge *challenge, const char *host,
 	resp->nonce = g_strdup (challenge->nonce);
 
 	/* generate the cnonce */
-	bgen = g_strdup_printf ("%p:%lu:%lu", (void *) resp,
+	bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) resp,
 				(unsigned long) getpid (),
 				(unsigned long) time (NULL));
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
@@ -722,17 +722,17 @@ static GByteArray *
 digest_response (struct _DigestResponse *resp)
 {
 	GByteArray *buffer;
-	const char *str;
-	char *buf;
+	const gchar *str;
+	gchar *buf;
 
 	buffer = g_byte_array_new ();
 	g_byte_array_append (buffer, (guint8 *) "username=\"", 10);
 	if (resp->charset) {
 		/* Encode the username using the requested charset */
-		char *username, *outbuf;
-		const char *charset;
+		gchar *username, *outbuf;
+		const gchar *charset;
 		size_t len, outlen;
-		const char *inbuf;
+		const gchar *inbuf;
 		iconv_t cd;
 
 		charset = camel_iconv_locale_charset ();
@@ -798,7 +798,7 @@ digest_response (struct _DigestResponse *resp)
 
 	if (resp->charset) {
 		g_byte_array_append (buffer, (guint8 *) ",charset=", 9);
-		g_byte_array_append (buffer, (guint8 *) resp->charset, strlen ((char *) resp->charset));
+		g_byte_array_append (buffer, (guint8 *) resp->charset, strlen ((gchar *) resp->charset));
 	}
 
 	if (resp->cipher != CIPHER_INVALID) {
@@ -827,9 +827,9 @@ digest_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	struct _param *rspauth;
 	GByteArray *ret = NULL;
 	gboolean abort = FALSE;
-	const char *ptr;
+	const gchar *ptr;
 	guchar out[33];
-	char *tokens;
+	gchar *tokens;
 	struct addrinfo *ai, hints;
 
 	/* Need to wait for the server */

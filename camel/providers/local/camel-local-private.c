@@ -28,12 +28,12 @@
 
 #include "camel-local-private.h"
 
-int
-camel_local_frompos_sort (void *enc, int len1, void * data1, int len2, void *data2)
+gint
+camel_local_frompos_sort (gpointer enc, gint len1, gpointer  data1, gint len2, gpointer data2)
 {
-	static char *sa1=NULL, *sa2=NULL;
-	static int l1=0, l2=0;
-	int a1, a2;
+	static gchar *sa1=NULL, *sa2=NULL;
+	static gint l1=0, l2=0;
+	gint a1, a2;
 
 	if (l1 < len1+1) {
 		sa1 = g_realloc (sa1, len1+1);

@@ -38,8 +38,8 @@ struct _CamelMimeFilterLinewrap {
 
 	guint wrap_len;
 	guint max_len;
-	char indent;
-	int nchars;
+	gchar indent;
+	gint nchars;
 };
 
 struct _CamelMimeFilterLinewrapClass {
@@ -48,7 +48,7 @@ struct _CamelMimeFilterLinewrapClass {
 
 CamelType camel_mime_filter_linewrap_get_type (void);
 
-CamelMimeFilter *camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, char indent_char);
+CamelMimeFilter *camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent_char);
 
 G_END_DECLS
 

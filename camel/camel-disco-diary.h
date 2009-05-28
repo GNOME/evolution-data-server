@@ -69,7 +69,7 @@ typedef struct {
 
 /* public methods */
 CamelDiscoDiary *camel_disco_diary_new    (CamelDiscoStore *store,
-					   const char *filename,
+					   const gchar *filename,
 					   CamelException *ex);
 
 gboolean         camel_disco_diary_empty  (CamelDiscoDiary *diary);
@@ -82,10 +82,10 @@ void             camel_disco_diary_replay (CamelDiscoDiary *diary,
 
 /* Temporary->Permanent UID map stuff */
 void        camel_disco_diary_uidmap_add    (CamelDiscoDiary *diary,
-					     const char *old_uid,
-					     const char *new_uid);
-const char *camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary,
-					     const char *uid);
+					     const gchar *old_uid,
+					     const gchar *new_uid);
+const gchar *camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary,
+					     const gchar *uid);
 
 /* Standard Camel function */
 CamelType camel_disco_diary_get_type (void);

@@ -51,7 +51,7 @@ struct _CamelOfflineJournal {
 	CamelObject parent_object;
 
 	struct _CamelFolder *folder;
-	char *filename;
+	gchar *filename;
 	CamelDList queue;
 };
 
@@ -62,18 +62,18 @@ struct _CamelOfflineJournalClass {
 	void (* entry_free) (CamelOfflineJournal *journal, CamelDListNode *entry);
 
 	CamelDListNode * (* entry_load) (CamelOfflineJournal *journal, FILE *in);
-	int (* entry_write) (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-	int (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
+	gint (* entry_write) (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+	gint (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 };
 
 
 CamelType camel_offline_journal_get_type (void);
 
-void camel_offline_journal_construct (CamelOfflineJournal *journal, struct _CamelFolder *folder, const char *filename);
-void camel_offline_journal_set_filename (CamelOfflineJournal *journal, const char *filename);
+void camel_offline_journal_construct (CamelOfflineJournal *journal, struct _CamelFolder *folder, const gchar *filename);
+void camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *filename);
 
-int camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex);
-int camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex);
+gint camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex);
+gint camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex);
 
 G_END_DECLS
 

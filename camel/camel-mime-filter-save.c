@@ -28,10 +28,10 @@
 #include "camel-mime-filter-save.h"
 #include "camel-stream-mem.h"
 
-static void filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-		    char **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, char *in, size_t len,
-		      size_t prespace, char **out, size_t *outlen,
+static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+		    gchar **out, size_t *outlen, size_t *outprespace);
+static void complete (CamelMimeFilter *f, gchar *in, size_t len,
+		      size_t prespace, gchar **out, size_t *outlen,
 		      size_t *outprespace);
 static void reset (CamelMimeFilter *f);
 
@@ -66,8 +66,8 @@ camel_mime_filter_save_get_type (void)
 }
 
 static void
-filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-	char **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+	gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterSave *save = (CamelMimeFilterSave *) f;
 
@@ -80,8 +80,8 @@ filter (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
 }
 
 static void
-complete (CamelMimeFilter *f, char *in, size_t len, size_t prespace,
-	  char **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
+	  gchar **out, size_t *outlen, size_t *outprespace)
 {
 	if (len)
 		filter (f, in, len, prespace, out, outlen, outprespace);

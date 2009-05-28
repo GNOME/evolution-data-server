@@ -72,7 +72,7 @@ struct _iconv_cache_node {
 
 	struct _iconv_cache *parent;
 
-	int busy;
+	gint busy;
 	iconv_t ip;
 };
 
@@ -80,7 +80,7 @@ struct _iconv_cache {
 	struct _iconv_cache *next;
 	struct _iconv_cache *prev;
 
-	char *conv;
+	gchar *conv;
 
 	CamelDList open;		/* stores iconv_cache_nodes, busy ones up front */
 };
@@ -90,15 +90,15 @@ struct _iconv_cache {
 static CamelDList iconv_cache_list;
 static GHashTable *iconv_cache;
 static GHashTable *iconv_cache_open;
-static unsigned int iconv_cache_size = 0;
+static guint iconv_cache_size = 0;
 
 static GHashTable *iconv_charsets = NULL;
-static char *locale_charset = NULL;
-static char *locale_lang = NULL;
+static gchar *locale_charset = NULL;
+static gchar *locale_lang = NULL;
 
 struct {
-	char *charset;
-	char *iconv_name;
+	gchar *charset;
+	gchar *iconv_name;
 } known_iconv_charsets[] = {
 #if 0
 	/* charset name, iconv-friendly charset name */
@@ -193,10 +193,10 @@ static CamelDListNode *camel_dlist_remove(CamelDListNode *n)
 }
 
 
-static const char *
-e_strdown (char *str)
+static const gchar *
+e_strdown (gchar *str)
 {
-	register char *s = str;
+	register gchar *s = str;
 
 	while (*s) {
 		if (*s >= 'A' && *s <= 'Z')
@@ -207,10 +207,10 @@ e_strdown (char *str)
 	return str;
 }
 
-static const char *
-e_strup (char *str)
+static const gchar *
+e_strup (gchar *str)
 {
-	register char *s = str;
+	register gchar *s = str;
 
 	while (*s) {
 		if (*s >= 'a' && *s <= 'z')
@@ -223,9 +223,9 @@ e_strup (char *str)
 
 
 static void
-locale_parse_lang (const char *locale)
+locale_parse_lang (const gchar *locale)
 {
-	char *codeset, *lang;
+	gchar *codeset, *lang;
 
 	if ((codeset = strchr (locale, '.')))
 		lang = g_strndup (locale, codeset - locale);
@@ -262,10 +262,10 @@ locale_parse_lang (const char *locale)
 
 /* NOTE: Owns the lock on return if keep is TRUE ! */
 static void
-camel_iconv_init(int keep)
+camel_iconv_init(gint keep)
 {
-	char *from, *to, *locale;
-	int i;
+	gchar *from, *to, *locale;
+	gint i;
 
 	LOCK();
 
@@ -318,7 +318,7 @@ camel_iconv_init(int keep)
 		 * codeset  is  a  character  set or encoding identifier like
 		 * ISO-8859-1 or UTF-8.
 		 */
-		char *codeset, *p;
+		gchar *codeset, *p;
 
 		codeset = strchr (locale, '.');
 		if (codeset) {
@@ -350,7 +350,7 @@ camel_iconv_init(int keep)
 const gchar *
 camel_iconv_charset_name (const gchar *charset)
 {
-	char *name, *ret, *tmp;
+	gchar *name, *ret, *tmp;
 
 	if (charset == NULL)
 		return NULL;
@@ -369,8 +369,8 @@ camel_iconv_charset_name (const gchar *charset)
 	/* Unknown, try canonicalise some basic charset types to something that should work */
 	if (strncmp(name, "iso", 3) == 0) {
 		/* Convert iso-nnnn-n or isonnnn-n or iso_nnnn-n to iso-nnnn-n or isonnnn-n */
-		int iso, codepage;
-		char *p;
+		gint iso, codepage;
+		gchar *p;
 
 		tmp = name + 3;
 		if (*tmp == '-' || *tmp == '_')
@@ -448,11 +448,11 @@ flush_entry(struct _iconv_cache *ic)
 iconv_t
 camel_iconv_open (const gchar *oto, const gchar *ofrom)
 {
-	const char *to, *from;
-	char *tofrom;
+	const gchar *to, *from;
+	gchar *tofrom;
 	struct _iconv_cache *ic;
 	struct _iconv_cache_node *in;
-	int errnosav;
+	gint errnosav;
 	iconv_t ip;
 
 	if (oto == NULL || ofrom == NULL) {
@@ -509,7 +509,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			 * that die if the length arguments are NULL
 			 */
 			size_t buggy_iconv_len = 0;
-			char *buggy_iconv_buf = NULL;
+			gchar *buggy_iconv_buf = NULL;
 
 			/* resets the converter */
 			iconv(ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
@@ -544,7 +544,7 @@ gsize
 camel_iconv (iconv_t cd, const gchar **inbuf, gsize *inbytesleft,
              gchar ** outbuf, gsize *outbytesleft)
 {
-	return iconv(cd, (char **) inbuf, inbytesleft, outbuf, outbytesleft);
+	return iconv(cd, (gchar **) inbuf, inbytesleft, outbuf, outbytesleft);
 }
 
 void
@@ -592,8 +592,8 @@ camel_iconv_locale_language (void)
  * camel_iconv_charset_name() so that we don't have to keep track of all
  * the aliases too. */
 static struct {
-	char *charset;
-	char *lang;
+	gchar *charset;
+	gchar *lang;
 } cjkr_lang_map[] = {
 	{ "Big5",        "zh" },
 	{ "BIG5HKSCS",   "zh" },
@@ -614,7 +614,7 @@ static struct {
 const gchar *
 camel_iconv_charset_language (const gchar *charset)
 {
-	int i;
+	gint i;
 
 	if (!charset)
 		return NULL;

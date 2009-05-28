@@ -56,20 +56,20 @@
 #ifdef MOVEMAIL_PATH
 #include <sys/wait.h>
 
-static void movemail_external (const char *source, const char *dest,
+static void movemail_external (const gchar *source, const gchar *dest,
 			       CamelException *ex);
 #endif
 
 #ifdef HAVE_BROKEN_SPOOL
-static int camel_movemail_copy_filter(int fromfd, int tofd, off_t start, size_t bytes, CamelMimeFilter *filter);
-static int camel_movemail_solaris (int oldsfd, int dfd, CamelException *ex);
+static gint camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, size_t bytes, CamelMimeFilter *filter);
+static gint camel_movemail_solaris (gint oldsfd, gint dfd, CamelException *ex);
 #else
 /* these could probably be exposed as a utility? (but only mbox needs it) */
-static int camel_movemail_copy_file(int sfd, int dfd, CamelException *ex);
+static gint camel_movemail_copy_file(gint sfd, gint dfd, CamelException *ex);
 #endif
 
 #if 0
-static int camel_movemail_copy(int fromfd, int tofd, off_t start, size_t bytes);
+static gint camel_movemail_copy(gint fromfd, gint tofd, off_t start, size_t bytes);
 #endif
 
 /**
@@ -85,12 +85,12 @@ static int camel_movemail_copy(int fromfd, int tofd, off_t start, size_t bytes);
  *
  * Return Value: Returns -1 on error.
  **/
-int
-camel_movemail(const char *source, const char *dest, CamelException *ex)
+gint
+camel_movemail(const gchar *source, const gchar *dest, CamelException *ex)
 {
-	int lockid = -1;
-	int res = -1;
-	int sfd, dfd;
+	gint lockid = -1;
+	gint res = -1;
+	gint sfd, dfd;
 	struct stat st;
 
 	/* Stat and then open the spool file. If it doesn't exist or
@@ -168,12 +168,12 @@ camel_movemail(const char *source, const char *dest, CamelException *ex)
 
 #ifdef MOVEMAIL_PATH
 static void
-movemail_external (const char *source, const char *dest, CamelException *ex)
+movemail_external (const gchar *source, const gchar *dest, CamelException *ex)
 {
 	sigset_t mask, omask;
 	pid_t pid;
-	int fd[2], len = 0, nread, status;
-	char buf[BUFSIZ], *output = NULL;
+	gint fd[2], len = 0, nread, status;
+	gchar buf[BUFSIZ], *output = NULL;
 
 	/* Block SIGCHLD so the app can't mess us up. */
 	sigemptyset (&mask);
@@ -242,13 +242,13 @@ movemail_external (const char *source, const char *dest, CamelException *ex)
 
 #ifndef HAVE_BROKEN_SPOOL
 static int
-camel_movemail_copy_file(int sfd, int dfd, CamelException *ex)
+camel_movemail_copy_file(gint sfd, gint dfd, CamelException *ex)
 {
-	int nread, nwrote;
-	char buf[4096];
+	gint nread, nwrote;
+	gchar buf[4096];
 
 	while (1) {
-		int written = 0;
+		gint written = 0;
 
 		nread = read (sfd, buf, sizeof (buf));
 		if (nread == 0)
@@ -283,10 +283,10 @@ camel_movemail_copy_file(int sfd, int dfd, CamelException *ex)
 
 #if 0
 static int
-camel_movemail_copy(int fromfd, int tofd, off_t start, size_t bytes)
+camel_movemail_copy(gint fromfd, gint tofd, off_t start, size_t bytes)
 {
-        char buffer[4096];
-        int written = 0;
+        gchar buffer[4096];
+        gint written = 0;
 
 	d(printf("writing %d bytes ... ", bytes));
 
@@ -294,7 +294,7 @@ camel_movemail_copy(int fromfd, int tofd, off_t start, size_t bytes)
 		return -1;
 
         while (bytes>0) {
-                int toread, towrite;
+                gint toread, towrite;
 
                 toread = bytes;
                 if (bytes>4096)
@@ -335,12 +335,12 @@ camel_movemail_copy(int fromfd, int tofd, off_t start, size_t bytes)
 
 #ifdef HAVE_BROKEN_SPOOL
 static int
-camel_movemail_copy_filter(int fromfd, int tofd, off_t start, size_t bytes, CamelMimeFilter *filter)
+camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, size_t bytes, CamelMimeFilter *filter)
 {
-        char buffer[4096+PRE_SIZE];
-        int written = 0;
-	char *filterbuffer;
-	int filterlen, filterpre;
+        gchar buffer[4096+PRE_SIZE];
+        gint written = 0;
+	gchar *filterbuffer;
+	gint filterlen, filterpre;
 
 	d(printf("writing %d bytes ... ", bytes));
 
@@ -350,7 +350,7 @@ camel_movemail_copy_filter(int fromfd, int tofd, off_t start, size_t bytes, Came
 		return -1;
 
         while (bytes>0) {
-                int toread, towrite;
+                gint toread, towrite;
 
                 toread = bytes;
                 if (bytes>4096)
@@ -401,10 +401,10 @@ camel_movemail_copy_filter(int fromfd, int tofd, off_t start, size_t bytes, Came
 /* write the headers back out again, but not he Content-Length header, because we dont
    want	to maintain it! */
 static int
-solaris_header_write(int fd, struct _camel_header_raw *header)
+solaris_header_write(gint fd, struct _camel_header_raw *header)
 {
         struct iovec iv[4];
-        int outlen = 0, len;
+        gint outlen = 0, len;
 
         iv[1].iov_base = ":";
         iv[1].iov_len = 1;
@@ -447,15 +447,15 @@ solaris_header_write(int fd, struct _camel_header_raw *header)
    we must convert it to a real mbox format.  Thankfully this is
    mostly pretty easy */
 static int
-camel_movemail_solaris (int oldsfd, int dfd, CamelException *ex)
+camel_movemail_solaris (gint oldsfd, gint dfd, CamelException *ex)
 {
 	CamelMimeParser *mp;
-	char *buffer;
-	int len;
-	int sfd;
+	gchar *buffer;
+	gint len;
+	gint sfd;
 	CamelMimeFilterFrom *ffrom;
-	int ret = 1;
-	char *from = NULL;
+	gint ret = 1;
+	gchar *from = NULL;
 
 	/* need to dup as the mime parser will close on finish */
 	sfd = dup(oldsfd);
@@ -476,9 +476,9 @@ camel_movemail_solaris (int oldsfd, int dfd, CamelException *ex)
 		g_assert(camel_mime_parser_from_line(mp));
 		from = g_strdup(camel_mime_parser_from_line(mp));
 		if (camel_mime_parser_step(mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM_END) {
-			const char *cl;
-			int length;
-			int start, body;
+			const gchar *cl;
+			gint length;
+			gint start, body;
 			off_t newpos;
 
 			ret = 0;

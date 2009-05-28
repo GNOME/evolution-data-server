@@ -42,7 +42,7 @@ typedef struct {
 
 	struct _CamelSpoolFolderPrivate *priv;
 
-	int lockid;		/* lock id for dot locking */
+	gint lockid;		/* lock id for dot locking */
 } CamelSpoolFolder;
 
 typedef struct {
@@ -52,7 +52,7 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_spool_folder_get_type(void);
 
-CamelFolder *camel_spool_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex);
+CamelFolder *camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
 G_END_DECLS
 

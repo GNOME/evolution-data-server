@@ -45,33 +45,33 @@
 static GObjectClass *parent_class;
 
 struct _EBookBackendSummaryPrivate {
-	char *summary_path;
+	gchar *summary_path;
 	FILE *fp;
 	guint32 file_version;
 	time_t mtime;
 	gboolean upgraded;
 	gboolean dirty;
-	int flush_timeout_millis;
-	int flush_timeout;
+	gint flush_timeout_millis;
+	gint flush_timeout;
 	GPtrArray *items;
 	GHashTable *id_to_item;
 	guint32 num_items; /* used only for loading */
 #ifdef SUMMARY_STATS
-	int size;
+	gint size;
 #endif
 };
 
 typedef struct {
-	char *id;
-	char *nickname;
-	char *full_name;
-	char *given_name;
-	char *surname;
-	char *file_as;
-	char *email_1;
-	char *email_2;
-	char *email_3;
-	char *email_4;
+	gchar *id;
+	gchar *nickname;
+	gchar *full_name;
+	gchar *given_name;
+	gchar *surname;
+	gchar *file_as;
+	gchar *email_1;
+	gchar *email_2;
+	gchar *email_3;
+	gchar *email_4;
 	gboolean wants_html;
 	gboolean wants_html_set;
 	gboolean list;
@@ -133,8 +133,8 @@ free_summary_item (EBookBackendSummaryItem *item)
 static void
 clear_items (EBookBackendSummary *summary)
 {
-	int i;
-	int num = summary->priv->items->len;
+	gint i;
+	gint num = summary->priv->items->len;
 	for (i = 0; i < num; i++) {
 		EBookBackendSummaryItem *item = g_ptr_array_remove_index_fast (summary->priv->items, 0);
 		if (item) {
@@ -157,7 +157,7 @@ clear_items (EBookBackendSummary *summary)
  * Return value: A new #EBookBackendSummary.
  **/
 EBookBackendSummary*
-e_book_backend_summary_new (const char *summary_path, int flush_timeout_millis)
+e_book_backend_summary_new (const gchar *summary_path, gint flush_timeout_millis)
 {
 	EBookBackendSummary *summary = g_object_new (E_TYPE_BACKEND_SUMMARY, NULL);
 
@@ -265,8 +265,8 @@ e_book_backend_summary_get_type (void)
 static gboolean
 e_book_backend_summary_check_magic (EBookBackendSummary *summary, FILE *fp)
 {
-	char buf [PAS_SUMMARY_MAGIC_LEN + 1];
-	int rv;
+	gchar buf [PAS_SUMMARY_MAGIC_LEN + 1];
+	gint rv;
 
 	memset (buf, 0, sizeof (buf));
 
@@ -283,7 +283,7 @@ static gboolean
 e_book_backend_summary_load_header (EBookBackendSummary *summary, FILE *fp,
 				 EBookBackendSummaryHeader *header)
 {
-	int rv;
+	gint rv;
 
 	rv = fread (&header->file_version, sizeof (header->file_version), 1, fp);
 	if (rv != 1)
@@ -309,11 +309,11 @@ e_book_backend_summary_load_header (EBookBackendSummary *summary, FILE *fp,
 	return TRUE;
 }
 
-static char *
-read_string (FILE *fp, int len)
+static gchar *
+read_string (FILE *fp, gint len)
 {
-	char *buf;
-	int rv;
+	gchar *buf;
+	gint rv;
 
 	buf = g_new0 (char, len + 1);
 
@@ -331,12 +331,12 @@ e_book_backend_summary_load_item (EBookBackendSummary *summary,
 			       EBookBackendSummaryItem **new_item)
 {
 	EBookBackendSummaryItem *item;
-	char *buf;
+	gchar *buf;
 	FILE *fp = summary->priv->fp;
 
 	if (summary->priv->file_version >= PAS_SUMMARY_FILE_VERSION_4_0) {
 		EBookBackendSummaryDiskItem disk_item;
-		int rv = fread (&disk_item, sizeof (disk_item), 1, fp);
+		gint rv = fread (&disk_item, sizeof (disk_item), 1, fp);
 		if (rv != 1)
 			return FALSE;
 
@@ -478,7 +478,7 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 		/* if there's no summary present, look for the .new
 		   file and rename it if it's there, and attempt to
 		   load that */
-		char *new_filename = g_strconcat (summary->priv->summary_path, ".new", NULL);
+		gchar *new_filename = g_strconcat (summary->priv->summary_path, ".new", NULL);
 		if (g_stat (new_filename, &sb) == -1) {
 			g_free (new_filename);
 			return FALSE;
@@ -529,7 +529,7 @@ gboolean
 e_book_backend_summary_load (EBookBackendSummary *summary)
 {
 	EBookBackendSummaryItem *new_item;
-	int i;
+	gint i;
 
 	g_return_val_if_fail (summary != NULL, FALSE);
 
@@ -563,7 +563,7 @@ e_book_backend_summary_load (EBookBackendSummary *summary)
 static gboolean
 e_book_backend_summary_save_magic (FILE *fp)
 {
-	int rv;
+	gint rv;
 	rv = fwrite (PAS_SUMMARY_MAGIC, PAS_SUMMARY_MAGIC_LEN, 1, fp);
 	if (rv != 1)
 		return FALSE;
@@ -575,7 +575,7 @@ static gboolean
 e_book_backend_summary_save_header (EBookBackendSummary *summary, FILE *fp)
 {
 	EBookBackendSummaryHeader header;
-	int rv;
+	gint rv;
 
 	header.file_version = g_htonl (PAS_SUMMARY_FILE_VERSION);
 	header.num_items = g_htonl (summary->priv->items->len);
@@ -589,9 +589,9 @@ e_book_backend_summary_save_header (EBookBackendSummary *summary, FILE *fp)
 }
 
 static gboolean
-save_string (const char *str, FILE *fp)
+save_string (const gchar *str, FILE *fp)
 {
-	int rv;
+	gint rv;
 
 	if (!str || !*str)
 		return TRUE;
@@ -604,8 +604,8 @@ static gboolean
 e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookBackendSummaryItem *item)
 {
 	EBookBackendSummaryDiskItem disk_item;
-	int len;
-	int rv;
+	gint len;
+	gint rv;
 
 	len = item->id ? strlen (item->id) : 0;
 	disk_item.id_len = g_htons (len);
@@ -683,8 +683,8 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
 {
 	struct stat sb;
 	FILE *fp = NULL;
-	char *new_filename = NULL;
-	int i;
+	gchar *new_filename = NULL;
+	gint i;
 
 	g_return_val_if_fail (summary != NULL, FALSE);
 
@@ -763,7 +763,7 @@ void
 e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *contact)
 {
 	EBookBackendSummaryItem *new_item;
-	char *id = NULL;
+	gchar *id = NULL;
 
 	g_return_if_fail (summary != NULL);
 
@@ -824,7 +824,7 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary, EContact *cont
  * Removes the summary of the contact identified by @id from @summary.
  **/
 void
-e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char *id)
+e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const gchar *id)
 {
 	EBookBackendSummaryItem *item;
 
@@ -854,7 +854,7 @@ e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const char 
  * Return value: %TRUE if the summary exists, %FALSE otherwise.
  **/
 gboolean
-e_book_backend_summary_check_contact (EBookBackendSummary *summary, const char *id)
+e_book_backend_summary_check_contact (EBookBackendSummary *summary, const gchar *id)
 {
 	g_return_val_if_fail (summary != NULL, FALSE);
 
@@ -929,15 +929,15 @@ e_book_backend_summary_is_up_to_date (EBookBackendSummary *summary, time_t t)
 /* we only want to do summary queries if the query is over the set fields in the summary */
 
 static ESExpResult *
-func_check(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_check(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
-	int truth = FALSE;
+	gint truth = FALSE;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *query_name = argv[0]->value.string;
+		gchar *query_name = argv[0]->value.string;
 
 		if (!strcmp (query_name, "nickname") ||
 		    !strcmp (query_name, "full_name") ||
@@ -955,9 +955,9 @@ func_check(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 /* 'builtin' functions */
 static const struct {
-	char *name;
+	gchar *name;
 	ESExpFunc *func;
-	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } check_symbols[] = {
 	{ "contains", func_check, 0 },
@@ -978,13 +978,13 @@ static const struct {
  * Return value: %TRUE if the query can be satisfied, %FALSE otherwise.
  **/
 gboolean
-e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const char *query)
+e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const gchar *query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
 	gboolean retval;
-	int i;
-	int esexp_error;
+	gint i;
+	gint esexp_error;
 
 	g_return_val_if_fail (summary != NULL, FALSE);
 
@@ -1022,13 +1022,13 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const cha
 
 /* the actual query mechanics */
 static ESExpResult *
-do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
+do_compare (EBookBackendSummary *summary, struct _ESExp *f, gint argc,
 	    struct _ESExpResult **argv,
-	    char *(*compare)(const char*, const char*))
+	    gchar *(*compare)(const gchar *, const gchar *))
 {
 	GPtrArray *result = g_ptr_array_new ();
 	ESExpResult *r;
-	int i;
+	gint i;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -1037,9 +1037,9 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 		for (i = 0; i < summary->priv->items->len; i ++) {
 			EBookBackendSummaryItem *item = g_ptr_array_index (summary->priv->items, i);
 			if (!strcmp (argv[0]->value.string, "full_name")) {
-				char *given = item->given_name;
-				char *surname = item->surname;
-				char *full_name = item->full_name;
+				gchar *given = item->given_name;
+				gchar *surname = item->surname;
+				gchar *full_name = item->full_name;
 
 				if ((given && compare (given, argv[1]->value.string))
 				    || (surname && compare (surname, argv[1]->value.string))
@@ -1047,10 +1047,10 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 					g_ptr_array_add (result, item->id);
 			}
 			else if (!strcmp (argv[0]->value.string, "email")) {
-				char *email_1 = item->email_1;
-				char *email_2 = item->email_2;
-				char *email_3 = item->email_3;
-				char *email_4 = item->email_4;
+				gchar *email_1 = item->email_1;
+				gchar *email_2 = item->email_2;
+				gchar *email_3 = item->email_3;
+				gchar *email_4 = item->email_4;
 				if ((email_1 && compare (email_1, argv[1]->value.string))
 				    || (email_2 && compare (email_2, argv[1]->value.string))
 				    || (email_3 && compare (email_3, argv[1]->value.string))
@@ -1058,12 +1058,12 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 					g_ptr_array_add (result, item->id);
 			}
 			else if (!strcmp (argv[0]->value.string, "file_as")) {
-				char *file_as = item->file_as;
+				gchar *file_as = item->file_as;
 				if (file_as && compare (file_as, argv[1]->value.string))
 					g_ptr_array_add (result, item->id);
 			}
 			else if (!strcmp (argv[0]->value.string, "nickname")) {
-				char *nickname = item->nickname;
+				gchar *nickname = item->nickname;
 				if (nickname && compare (nickname, argv[1]->value.string))
 					g_ptr_array_add (result, item->id);
 			}
@@ -1076,14 +1076,14 @@ do_compare (EBookBackendSummary *summary, struct _ESExp *f, int argc,
 	return r;
 }
 
-static char *
-contains_helper (const char *ps1, const char *ps2)
+static gchar *
+contains_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
-	char *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *res;
 
-	res = (char *) e_util_utf8_strstrcase (s1, s2);
+	res = (gchar *) e_util_utf8_strstrcase (s1, s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -1092,22 +1092,22 @@ contains_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
 	return do_compare (summary, f, argc, argv, contains_helper);
 }
 
-static char *
-is_helper (const char *ps1, const char *ps2)
+static gchar *
+is_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
-	char *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *res;
 
 	if (!e_util_utf8_strcasecmp (s1, s2))
-		res = (char*)ps1;
+		res = (gchar *)ps1;
 	else
 		res = NULL;
 
@@ -1118,26 +1118,26 @@ is_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
 	return do_compare (summary, f, argc, argv, is_helper);
 }
 
-static char *
-endswith_helper (const char *ps1, const char *ps2)
+static gchar *
+endswith_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
-	char *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *res;
 	glong s1len = g_utf8_strlen (s1, -1);
 	glong s2len = g_utf8_strlen (s2, -1);
 
 	if (s1len < s2len)
 		res = NULL;
 	else
-		res = (char *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+		res = (gchar *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -1146,23 +1146,23 @@ endswith_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
 	return do_compare (summary, f, argc, argv, endswith_helper);
 }
 
-static char *
-beginswith_helper (const char *ps1, const char *ps2)
+static gchar *
+beginswith_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *p, *res;
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *p, *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
+	if ((p = (gchar *) e_util_utf8_strstrcase(s1, s2))
 	    && (p == s1))
-		res = (char *)ps1;
+		res = (gchar *)ps1;
 	else
 		res = NULL;
 
@@ -1173,7 +1173,7 @@ beginswith_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendSummary *summary = data;
 
@@ -1182,9 +1182,9 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 
 /* 'builtin' functions */
 static const struct {
-	char *name;
+	gchar *name;
 	ESExpFunc *func;
-	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "contains", func_contains, 0 },
@@ -1203,13 +1203,13 @@ static const struct {
  * Return value: A #GPtrArray of pointers to contact ID strings.
  **/
 GPtrArray*
-e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
+e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
 	GPtrArray *retval;
-	int i;
-	int esexp_error;
+	gint i;
+	gint esexp_error;
 
 	g_return_val_if_fail (summary != NULL, NULL);
 
@@ -1237,7 +1237,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
 
 	if (r && r->type == ESEXP_RES_ARRAY_PTR && r->value.ptrarray) {
 		GPtrArray *ptrarray = r->value.ptrarray;
-		int i;
+		gint i;
 
 		for (i = 0; i < ptrarray->len; i ++)
 			g_ptr_array_add (retval, g_ptr_array_index (ptrarray, i));
@@ -1260,8 +1260,8 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const char *query)
  *
  * Return value: A new VCard, or %NULL if the contact summary didn't exist.
  **/
-char*
-e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const char *id)
+gchar *
+e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const gchar *id)
 {
 	EBookBackendSummaryItem *item;
 
@@ -1271,7 +1271,7 @@ e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const cha
 
 	if (item) {
 		EContact *contact = e_contact_new ();
-		char *vcard;
+		gchar *vcard;
 
 		e_contact_set (contact, E_CONTACT_UID, item->id);
 		e_contact_set (contact, E_CONTACT_FILE_AS, item->file_as);

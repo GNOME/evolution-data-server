@@ -79,7 +79,7 @@ struct _EBookViewListenerResponse {
 	GList                  *contacts; /* Of type EContact. */
 
 	/* For StatusMessageEvent */
-	char                   *message;
+	gchar                   *message;
 
 };
 

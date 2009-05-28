@@ -96,7 +96,7 @@ camel_sasl_popb4smtp_get_type (void)
 static GByteArray *
 popb4smtp_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 {
-	char *popuri;
+	gchar *popuri;
 	CamelSession *session = sasl->service->session;
 	CamelStore *store;
 	time_t now, *timep;

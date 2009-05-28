@@ -46,11 +46,11 @@ static void camel_imap4_store_summary_class_init (CamelIMAP4StoreSummaryClass *k
 static void camel_imap4_store_summary_init (CamelIMAP4StoreSummary *obj);
 static void camel_imap4_store_summary_finalize (CamelObject *obj);
 
-static int summary_header_load (CamelStoreSummary *s, FILE *in);
-static int summary_header_save (CamelStoreSummary *s, FILE *out);
+static gint summary_header_load (CamelStoreSummary *s, FILE *in);
+static gint summary_header_save (CamelStoreSummary *s, FILE *out);
 
 static CamelStoreInfo *store_info_load (CamelStoreSummary *s, FILE *in);
-static int store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *info);
+static gint store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *info);
 static void store_info_free (CamelStoreSummary *s, CamelStoreInfo *info);
 
 
@@ -140,7 +140,7 @@ load_namespaces (FILE *in)
 
 		for (i = 0; i < n; i++) {
 			guint32 sep;
-			char *path;
+			gchar *path;
 
 			if (camel_file_util_decode_string (in, &path) == -1)
 				goto exception;
@@ -353,7 +353,7 @@ static CamelFolderInfo *
 store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 {
 	CamelFolderInfo *fi;
-	const char *name;
+	const gchar *name;
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (camel_store_info_path (s, si));
@@ -375,14 +375,14 @@ store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 
 
 CamelFolderInfo *
-camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const char *top, guint32 flags)
+camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const gchar *top, guint32 flags)
 {
 	CamelStoreSummary *ss = (CamelStoreSummary *) s;
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	CamelStoreInfo *si;
 	size_t toplen, len;
-	int i;
+	gint i;
 
 	toplen = strlen (top);
 	folders = g_ptr_array_new ();

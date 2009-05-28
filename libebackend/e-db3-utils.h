@@ -15,8 +15,8 @@
 
 G_BEGIN_DECLS
 
-int e_db3_utils_maybe_recover (const char *filename);
-int e_db3_utils_upgrade_format (const char *filename);
+gint e_db3_utils_maybe_recover (const gchar *filename);
+gint e_db3_utils_upgrade_format (const gchar *filename);
 
 G_END_DECLS
 

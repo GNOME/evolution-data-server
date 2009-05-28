@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,24 +22,24 @@ static const char revid[] = "$Id$";
 #include "db_int.h"
 
 #ifdef HAVE_FILESYSTEM_NOTZERO
-static int __os_zerofill __P((DB_ENV *, DB_FH *));
+static gint __os_zerofill __P((DB_ENV *, DB_FH *));
 #endif
-static int __os_physwrite __P((DB_ENV *, DB_FH *, void *, size_t, size_t *));
+static gint __os_physwrite __P((DB_ENV *, DB_FH *, gpointer , size_t, size_t *));
 
 /*
  * __os_io --
  *	Do an I/O.
  *
- * PUBLIC: int __os_io __P((DB_ENV *, DB_IO *, int, size_t *));
+ * PUBLIC: gint __os_io __P((DB_ENV *, DB_IO *, int, size_t *));
  */
-int
+gint
 __os_io(dbenv, db_iop, op, niop)
 	DB_ENV *dbenv;
 	DB_IO *db_iop;
-	int op;
+	gint op;
 	size_t *niop;
 {
-	int ret;
+	gint ret;
 
 	/* Check for illegal usage. */
 	DB_ASSERT(F_ISSET(db_iop->fhp, DB_FH_VALID) && db_iop->fhp->fd != -1);
@@ -93,19 +93,19 @@ err:	MUTEX_THREAD_UNLOCK(dbenv, db_iop->mutexp);
  * __os_read --
  *	Read from a file handle.
  *
- * PUBLIC: int __os_read __P((DB_ENV *, DB_FH *, void *, size_t, size_t *));
+ * PUBLIC: gint __os_read __P((DB_ENV *, DB_FH *, gpointer , size_t, size_t *));
  */
-int
+gint
 __os_read(dbenv, fhp, addr, len, nrp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
-	void *addr;
+	gpointer addr;
 	size_t len;
 	size_t *nrp;
 {
 	size_t offset;
 	ssize_t nr;
-	int ret;
+	gint ret;
 	u_int8_t *taddr;
 
 	/* Check for illegal usage. */
@@ -133,13 +133,13 @@ retry:		if ((nr = DB_GLOBAL(j_read) != NULL ?
  * __os_write --
  *	Write to a file handle.
  *
- * PUBLIC: int __os_write __P((DB_ENV *, DB_FH *, void *, size_t, size_t *));
+ * PUBLIC: gint __os_write __P((DB_ENV *, DB_FH *, gpointer , size_t, size_t *));
  */
-int
+gint
 __os_write(dbenv, fhp, addr, len, nwp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
-	void *addr;
+	gpointer addr;
 	size_t len;
 	size_t *nwp;
 {
@@ -149,7 +149,7 @@ __os_write(dbenv, fhp, addr, len, nwp)
 #ifdef HAVE_FILESYSTEM_NOTZERO
 	/* Zero-fill as necessary. */
 	if (__os_fs_notzero()) {
-		int ret;
+		gint ret;
 		if ((ret = __os_zerofill(dbenv, fhp)) != 0)
 			return (ret);
 	}
@@ -165,13 +165,13 @@ static int
 __os_physwrite(dbenv, fhp, addr, len, nwp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
-	void *addr;
+	gpointer addr;
 	size_t len;
 	size_t *nwp;
 {
 	size_t offset;
 	ssize_t nw;
-	int ret;
+	gint ret;
 	u_int8_t *taddr;
 
 #if defined(HAVE_FILESYSTEM_NOTZERO) && defined(DIAGNOSTIC)
@@ -222,7 +222,7 @@ __os_zerofill(dbenv, fhp)
 	off_t stat_offset, write_offset;
 	size_t blen, nw;
 	u_int32_t bytes, mbytes;
-	int group_sync, need_free, ret;
+	gint group_sync, need_free, ret;
 	u_int8_t buf[8 * 1024], *bp;
 
 	/* Calculate the byte offset of the next write. */

@@ -39,8 +39,8 @@ struct _CamelMimeFilterCharset {
 	struct _CamelMimeFilterCharsetPrivate *priv;
 
 	iconv_t ic;
-	char *from;
-	char *to;
+	gchar *from;
+	gchar *to;
 };
 
 struct _CamelMimeFilterCharsetClass {
@@ -50,7 +50,7 @@ struct _CamelMimeFilterCharsetClass {
 CamelType		camel_mime_filter_charset_get_type	(void);
 CamelMimeFilterCharset      *camel_mime_filter_charset_new	(void);
 
-CamelMimeFilterCharset      *camel_mime_filter_charset_new_convert	(const char *from_charset, const char *to_charset);
+CamelMimeFilterCharset      *camel_mime_filter_charset_new_convert	(const gchar *from_charset, const gchar *to_charset);
 
 G_END_DECLS
 

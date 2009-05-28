@@ -49,9 +49,9 @@
 
 
 struct _proxyHandler {
-    char *uniqueid;
-    char *proxy_name;
-    char *proxy_email;
+    gchar *uniqueid;
+    gchar *proxy_name;
+    gchar *proxy_email;
     guint32 flags;
     guint32 permissions;
 };
@@ -63,5 +63,5 @@ void e_gw_proxy_construct_proxy_list (SoupSoapParameter *param, GList **proxy_in
 void e_gw_proxy_form_proxy_add_msg (SoupSoapMessage *msg, proxyHandler *new_proxy);
 void e_gw_proxy_form_proxy_remove_msg (SoupSoapMessage *msg, proxyHandler *removeProxy);
 void e_gw_proxy_form_modify_proxy_msg (SoupSoapMessage *msg, proxyHandler *new_proxy);
-void e_gw_proxy_parse_proxy_login_response (SoupSoapParameter *param, int *permissions);
+void e_gw_proxy_parse_proxy_login_response (SoupSoapParameter *param, gint *permissions);
 

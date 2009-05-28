@@ -47,7 +47,7 @@ enum {
 struct _CamelDiscoFolder {
 	CamelFolder parent_object;
 
-	unsigned int offline_sync:1;
+	guint offline_sync:1;
 };
 
 typedef struct {
@@ -69,17 +69,17 @@ typedef struct {
 	void (*append_online)    (CamelFolder *folder,
 				  CamelMimeMessage *message,
 				  const CamelMessageInfo *info,
-				  char **appended_uid,
+				  gchar **appended_uid,
 				  CamelException *ex);
 	void (*append_offline)   (CamelFolder *folder,
 				  CamelMimeMessage *message,
 				  const CamelMessageInfo *info,
-				  char **appended_uid,
+				  gchar **appended_uid,
 				  CamelException *ex);
 	void (*append_resyncing) (CamelFolder *folder,
 				  CamelMimeMessage *message,
 				  const CamelMessageInfo *info,
-				  char **appended_uid,
+				  gchar **appended_uid,
 				  CamelException *ex);
 
 	void (*transfer_online)    (CamelFolder *source, GPtrArray *uids,
@@ -99,13 +99,13 @@ typedef struct {
 				    CamelException *ex);
 
 	void (*cache_message)       (CamelDiscoFolder *disco_folder,
-				     const char *uid, CamelException *ex);
+				     const gchar *uid, CamelException *ex);
 	void (*prepare_for_offline) (CamelDiscoFolder *disco_folder,
-				     const char *expression,
+				     const gchar *expression,
 				     CamelException *ex);
 
-	void (*update_uid) (CamelFolder *folder, const char *old_uid,
-			    const char *new_uid);
+	void (*update_uid) (CamelFolder *folder, const gchar *old_uid,
+			    const gchar *new_uid);
 } CamelDiscoFolderClass;
 
 
@@ -114,10 +114,10 @@ void camel_disco_folder_expunge_uids (CamelFolder *folder, GPtrArray *uids,
 				      CamelException *ex);
 
 void camel_disco_folder_cache_message       (CamelDiscoFolder *disco_folder,
-					     const char *uid,
+					     const gchar *uid,
 					     CamelException *ex);
 void camel_disco_folder_prepare_for_offline (CamelDiscoFolder *disco_folder,
-					     const char *expression,
+					     const gchar *expression,
 					     CamelException *ex);
 
 /* Standard Camel function */

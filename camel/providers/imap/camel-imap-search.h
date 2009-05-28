@@ -48,7 +48,7 @@ struct _CamelImapSearch {
 	CamelDataCache *cache;	/* disk-cache for searches */
 
 	/* cache of body search matches */
-	unsigned int matches_count;
+	guint matches_count;
 	CamelDList matches;
 	GHashTable *matches_hash;
 };
@@ -59,7 +59,7 @@ struct _CamelImapSearchClass {
 };
 
 CamelType              camel_imap_search_get_type (void);
-CamelFolderSearch *camel_imap_search_new      (const char *cachedir);
+CamelFolderSearch *camel_imap_search_new      (const gchar *cachedir);
 
 G_END_DECLS
 

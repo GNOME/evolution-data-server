@@ -62,15 +62,15 @@ typedef struct _EBookBackendVCFBookView EBookBackendVCFBookView;
 typedef struct _EBookBackendVCFSearchContext EBookBackendVCFSearchContext;
 
 struct _EBookBackendVCFPrivate {
-	char       *filename;
+	gchar       *filename;
 	GMutex     *mutex;
 	GHashTable *contacts;
 	GList      *contact_list;
 	gboolean    dirty;
-	int         flush_timeout_tag;
+	gint         flush_timeout_tag;
 };
 
-static char *
+static gchar *
 e_book_backend_vcf_create_unique_id (void)
 {
 	/* use a 32 counter and the 32 bit timestamp to make an id.
@@ -81,14 +81,14 @@ e_book_backend_vcf_create_unique_id (void)
 }
 
 static void
-insert_contact (EBookBackendVCF *vcf, char *vcard)
+insert_contact (EBookBackendVCF *vcf, gchar *vcard)
 {
 	EContact *contact = e_contact_new_from_vcard (vcard);
-	char *id;
+	gchar *id;
 
 	id = e_contact_get (contact, E_CONTACT_UID);
 	if (id) {
-		char *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		gchar *vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
 		vcf->priv->contact_list = g_list_prepend (vcf->priv->contact_list, vcard);
 
@@ -99,11 +99,11 @@ insert_contact (EBookBackendVCF *vcf, char *vcard)
 }
 
 static void
-load_file (EBookBackendVCF *vcf, int fd)
+load_file (EBookBackendVCF *vcf, gint fd)
 {
 	FILE *fp;
 	GString *str;
-	char buf[1024];
+	gchar buf[1024];
 
 	fp = fdopen (fd, "rb");
 	if (!fp) {
@@ -140,8 +140,8 @@ save_file (EBookBackendVCF *vcf)
 {
 	gboolean retv = FALSE;
 	GList *l;
-	char *new_path;
-	int fd, rv;
+	gchar *new_path;
+	gint fd, rv;
 
 	g_warning ("EBookBackendVCF flushing file to disk");
 
@@ -156,8 +156,8 @@ save_file (EBookBackendVCF *vcf)
 	}
 
 	for (l = vcf->priv->contact_list; l; l = l->next) {
-		char *vcard_str = l->data;
-		int len = strlen (vcard_str);
+		gchar *vcard_str = l->data;
+		gint len = strlen (vcard_str);
 
 		rv = write (fd, vcard_str, len);
 
@@ -216,7 +216,7 @@ vcf_flush_file (gpointer data)
 static void
 set_revision (EContact *contact)
 {
-	char time_string[100] = {0};
+	gchar time_string[100] = {0};
 	const struct tm *tm = NULL;
 	time_t t;
 
@@ -229,13 +229,13 @@ set_revision (EContact *contact)
 
 static EContact *
 do_create(EBookBackendVCF  *bvcf,
-	  const char     *vcard_req,
+	  const gchar     *vcard_req,
 	  gboolean        dirty_the_file)
 {
-	char           *id;
+	gchar           *id;
 	EContact       *contact;
-	char           *vcard;
-	const char     *rev;
+	gchar           *vcard;
+	const gchar     *rev;
 
 	/* at the very least we need the unique_id generation to be
 	   protected by the lock, even if the actual vcard parsing
@@ -272,7 +272,7 @@ static EBookBackendSyncStatus
 e_book_backend_vcf_create_contact (EBookBackendSync *backend,
 				   EDataBook *book,
 				   guint32 opid,
-				   const char *vcard,
+				   const gchar *vcard,
 				   EContact **contact)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
@@ -297,7 +297,7 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 {
 	/* FIXME: make this handle bulk deletes like the file backend does */
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
-	char *id = id_list->data;
+	gchar *id = id_list->data;
 	GList *elem;
 
 	g_mutex_lock (bvcf->priv->mutex);
@@ -330,12 +330,12 @@ static EBookBackendSyncStatus
 e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
 				   EDataBook *book,
 				   guint32 opid,
-				   const char *vcard,
+				   const gchar *vcard,
 				   EContact **contact)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	GList *elem;
-	const char *id;
+	const gchar *id;
 
 	/* create a new ecard from the request data */
 	*contact = e_contact_new_from_vcard (vcard);
@@ -363,8 +363,8 @@ static EBookBackendSyncStatus
 e_book_backend_vcf_get_contact (EBookBackendSync *backend,
 				EDataBook *book,
 				guint32 opid,
-				const char *id,
-				char **vcard)
+				const gchar *id,
+				gchar **vcard)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	GList *elem;
@@ -389,7 +389,7 @@ typedef struct {
 } GetContactListClosure;
 
 static void
-foreach_get_contact_compare (char *vcard_string, GetContactListClosure *closure)
+foreach_get_contact_compare (gchar *vcard_string, GetContactListClosure *closure)
 {
 	if ((!closure->search_needed) || e_book_backend_sexp_match_vcard  (closure->card_sexp, vcard_string)) {
 		closure->list = g_list_append (closure->list, g_strdup (vcard_string));
@@ -400,11 +400,11 @@ static EBookBackendSyncStatus
 e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
 				     EDataBook *book,
 				     guint32 opid,
-				     const char *query,
+				     const gchar *query,
 				     GList **contacts)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
-	const char *search = query;
+	const gchar *search = query;
 	GetContactListClosure closure;
 
 	closure.bvcf = bvcf;
@@ -462,7 +462,7 @@ book_view_thread (gpointer data)
 {
 	EDataBookView *book_view = data;
 	VCFBackendSearchClosure *closure = get_closure (book_view);
-	const char *query;
+	const gchar *query;
 	GList *l;
 
 	/* ref the book view because it'll be removed and unrefed
@@ -480,7 +480,7 @@ book_view_thread (gpointer data)
 	e_flag_set (closure->running);
 
 	for (l = closure->bvcf->priv->contact_list; l; l = l->next) {
-		char *vcard_string = l->data;
+		gchar *vcard_string = l->data;
 		EContact *contact = e_contact_new_from_vcard (vcard_string);
 		e_data_book_view_notify_update (closure->view, contact);
 		g_object_unref (contact);
@@ -532,8 +532,8 @@ e_book_backend_vcf_stop_book_view (EBookBackend  *backend,
 		g_thread_join (closure->thread);
 }
 
-static char *
-e_book_backend_vcf_extract_path_from_uri (const char *uri)
+static gchar *
+e_book_backend_vcf_extract_path_from_uri (const gchar *uri)
 {
 	g_assert (g_ascii_strncasecmp (uri, "vcf://", 6) == 0);
 
@@ -544,9 +544,9 @@ static EBookBackendSyncStatus
 e_book_backend_vcf_authenticate_user (EBookBackendSync *backend,
 				      EDataBook *book,
 				      guint32 opid,
-				      const char *user,
-				      const char *passwd,
-				      const char *auth_method)
+				      const gchar *user,
+				      const gchar *passwd,
+				      const gchar *auth_method)
 {
 	return GNOME_Evolution_Addressbook_Success;
 }
@@ -571,12 +571,12 @@ e_book_backend_vcf_get_supported_fields (EBookBackendSync *backend,
 					 GList **fields_out)
 {
 	GList *fields = NULL;
-	int i;
+	gint i;
 
 	/* XXX we need a way to say "we support everything", since the
 	   vcf backend does */
 	for (i = 0; i < E_CONTACT_FIELD_LAST; i ++)
-		fields = g_list_append (fields, (char*)e_contact_field_name (i));
+		fields = g_list_append (fields, (gchar *)e_contact_field_name (i));
 
 	*fields_out = fields;
 	return GNOME_Evolution_Addressbook_Success;
@@ -592,10 +592,10 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 				gboolean                  only_if_exists)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
-	char           *dirname;
+	gchar           *dirname;
 	gboolean        writable = FALSE;
 	gchar          *uri;
-	int fd;
+	gint fd;
 
 	uri = e_source_get_uri (source);
 
@@ -615,7 +615,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 		fd = g_open (bvcf->priv->filename, O_RDONLY | O_BINARY, 0);
 
 		if (fd == -1 && !only_if_exists) {
-			int rv;
+			gint rv;
 
 			/* the database didn't exist, so we create the
 			   directory then the .vcf file */
@@ -662,7 +662,7 @@ e_book_backend_vcf_load_source (EBookBackend             *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-static char *
+static gchar *
 e_book_backend_vcf_get_static_capabilities (EBookBackend *backend)
 {
 	return g_strdup("local,do-initial-query,contact-lists");
@@ -675,7 +675,7 @@ e_book_backend_vcf_cancel_operation (EBookBackend *backend, EDataBook *book)
 }
 
 static void
-e_book_backend_vcf_set_mode (EBookBackend *backend, int mode)
+e_book_backend_vcf_set_mode (EBookBackend *backend, gint mode)
 {
 	if (e_book_backend_is_loaded (backend)) {
 		e_book_backend_notify_writable (backend, TRUE);

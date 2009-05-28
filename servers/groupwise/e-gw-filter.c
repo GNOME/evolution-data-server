@@ -31,24 +31,24 @@
 static GObjectClass *parent_class = NULL;
 
 struct _FilterComponent {
-	int operation;
-	char *field_name;
-	char *field_value;
-	int num_of_conditions;
+	gint operation;
+	gchar *field_name;
+	gchar *field_value;
+	gint num_of_conditions;
 };
 
 typedef struct _FilterComponent  FilterComponent;
 
 struct _EGwFilterPrivate {
 	GSList *component_list;
-	int  filter_group_type; /* stores, whether all condtions are to be met or any one of them*/
+	gint  filter_group_type; /* stores, whether all condtions are to be met or any one of them*/
 
 };
 
 
 
 void
-e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, const char *field_name, const char *field_value)
+e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, const gchar *field_name, const gchar *field_value)
 {
 	FilterComponent *component;
 
@@ -65,7 +65,7 @@ e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, 
 }
 
 void
-e_gw_filter_group_conditions (EGwFilter *filter, EGwFilterOpType operation, int num_of_condtions)
+e_gw_filter_group_conditions (EGwFilter *filter, EGwFilterOpType operation, gint num_of_condtions)
 {
 	FilterComponent *component;
 
@@ -82,7 +82,7 @@ static void
 append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 {
 
-	char *operation_name;
+	gchar *operation_name;
 
 	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
 	soup_soap_message_start_element (msg, "element", NULL, NULL);
@@ -143,8 +143,8 @@ static GSList*
 append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 {
 	FilterComponent *filter_component;
-	int num_of_condtions;
-	int i;
+	gint num_of_condtions;
+	gint i;
 
 	filter_component = (FilterComponent* )component_list->data;
 	if (filter_component->operation == E_GW_FILTER_OP_AND || filter_component->operation == E_GW_FILTER_OP_OR

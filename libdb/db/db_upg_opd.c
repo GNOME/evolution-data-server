@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,9 +21,9 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_page.h"
 #include "dbinc/btree.h"
 
-static int __db_build_bi __P((DB *, DB_FH *, PAGE *, PAGE *, u_int32_t, int *));
-static int __db_build_ri __P((DB *, DB_FH *, PAGE *, PAGE *, u_int32_t, int *));
-static int __db_up_ovref __P((DB *, DB_FH *, db_pgno_t));
+static gint __db_build_bi __P((DB *, DB_FH *, PAGE *, PAGE *, u_int32_t, gint *));
+static gint __db_build_ri __P((DB *, DB_FH *, PAGE *, PAGE *, u_int32_t, gint *));
+static gint __db_up_ovref __P((DB *, DB_FH *, db_pgno_t));
 
 #define	GET_PAGE(dbp, fhp, pgno, page) {				\
 	if ((ret = __os_seek(dbp->dbenv,				\
@@ -46,14 +46,14 @@ static int __db_up_ovref __P((DB *, DB_FH *, db_pgno_t));
  * __db_31_offdup --
  *	Convert 3.0 off-page duplicates to 3.1 off-page duplicates.
  *
- * PUBLIC: int __db_31_offdup __P((DB *, char *, DB_FH *, int, db_pgno_t *));
+ * PUBLIC: gint __db_31_offdup __P((DB *, gchar *, DB_FH *, int, db_pgno_t *));
  */
-int
+gint
 __db_31_offdup(dbp, real_name, fhp, sorted, pgnop)
 	DB *dbp;
-	char *real_name;
+	gchar *real_name;
 	DB_FH *fhp;
-	int sorted;
+	gint sorted;
 	db_pgno_t *pgnop;
 {
 	PAGE *ipage, *page;
@@ -62,7 +62,7 @@ __db_31_offdup(dbp, real_name, fhp, sorted, pgnop)
 	db_pgno_t *pgno_next, pgno_max, *tmp;
 	db_recno_t nrecs;
 	size_t n;
-	int level, nomem, ret;
+	gint level, nomem, ret;
 
 	ipage = page = NULL;
 	pgno_cur = pgno_next = NULL;
@@ -205,12 +205,12 @@ __db_build_bi(dbp, fhp, ipage, page, indx, nomemp)
 	DB_FH *fhp;
 	PAGE *ipage, *page;
 	u_int32_t indx;
-	int *nomemp;
+	gint *nomemp;
 {
 	BINTERNAL bi, *child_bi;
 	BKEYDATA *child_bk;
 	u_int8_t *p;
-	int ret;
+	gint ret;
 	db_indx_t *inp;
 
 	inp = P_INP(dbp, ipage);
@@ -304,7 +304,7 @@ __db_build_ri(dbp, fhp, ipage, page, indx, nomemp)
 	DB_FH *fhp;
 	PAGE *ipage, *page;
 	u_int32_t indx;
-	int *nomemp;
+	gint *nomemp;
 {
 	RINTERNAL ri;
 	db_indx_t *inp;
@@ -336,7 +336,7 @@ __db_up_ovref(dbp, fhp, pgno)
 {
 	PAGE *page;
 	size_t n;
-	int ret;
+	gint ret;
 
 	/* Allocate room to hold a page. */
 	if ((ret = __os_malloc(dbp->dbenv, dbp->pgsize, &page)) != 0)

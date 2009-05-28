@@ -19,7 +19,7 @@
 /* These are the keywords that will distinguish the start of an extended
    address. */
 
-static char *extended_keywords[] = {
+static gchar *extended_keywords[] = {
 	"apt", "apartment", "suite", NULL
 };
 
@@ -144,12 +144,12 @@ static gboolean
 e_address_western_is_postal (gchar *line)
 {
 	gboolean retval;
-	int cntr;
+	gint cntr;
 
 	if (strchr (line, ',') == NULL)
 		retval = FALSE;  /* No comma. */
 	else {
-		int index;
+		gint index;
 
 		/* Ensure that the first character after the comma is
 		 a letter. */
@@ -190,7 +190,7 @@ e_address_western_extract_po_box (gchar *line)
 	/* Return everything from the beginning of the line to
 	   the end of the first word that contains a number. */
 
-	int index;
+	gint index;
 
 	index = 0;
 	while (!isdigit(line[index]))
@@ -255,7 +255,7 @@ e_address_western_extract_region (gchar *line)
 static gchar *
 e_address_western_extract_postal_code (gchar *line)
 {
-	int start, end;
+	gint start, end;
 
 	end = strlen (line) - 1;
 	while (isspace(line[end]))
@@ -362,7 +362,7 @@ e_address_western_parse (const gchar *in_address)
 	/* Convert the newlines at the end of each line (except the last,
 	 because it is already NULL terminated) to NULLs. */
 	for (cntr = 0; cntr < (linecntr - 1); cntr++) {
-		char *p;
+		gchar *p;
 		p = strchr (lines[cntr], '\n');
 		if (p)
 			*p = '\0';

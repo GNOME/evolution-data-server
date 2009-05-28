@@ -40,14 +40,14 @@ EDataBookFactory *e_data_book_factory_new                  (void);
 void              e_data_book_factory_register_backend     (EDataBookFactory    *factory,
 							    EBookBackendFactory *backend_factory);
 
-int               e_data_book_factory_get_n_backends       (EDataBookFactory    *factory);
+gint               e_data_book_factory_get_n_backends       (EDataBookFactory    *factory);
 
 void		  e_data_book_factory_register_backends    (EDataBookFactory    *factory);
 
 void              e_data_book_factory_dump_active_backends (EDataBookFactory    *factory);
 
-gboolean          e_data_book_factory_activate             (EDataBookFactory    *factory, const char *iid);
-void              e_data_book_factory_set_backend_mode             (EDataBookFactory    *factory, int mode);
+gboolean          e_data_book_factory_activate             (EDataBookFactory    *factory, const gchar *iid);
+void              e_data_book_factory_set_backend_mode             (EDataBookFactory    *factory, gint mode);
 
 GType             e_data_book_factory_get_type             (void);
 

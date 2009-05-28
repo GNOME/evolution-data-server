@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifdef HAVE_RPC
@@ -34,21 +34,21 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/db_server.h"
 #include "dbinc_auto/rpc_client_ext.h"
 
-static int __dbcl_c_destroy __P((DBC *));
-static int __dbcl_txn_close __P((DB_ENV *));
+static gint __dbcl_c_destroy __P((DBC *));
+static gint __dbcl_txn_close __P((DB_ENV *));
 
 /*
  * __dbcl_envrpcserver --
  *	Initialize an environment's server.
  *
- * PUBLIC: int __dbcl_envrpcserver
- * PUBLIC:     __P((DB_ENV *, void *, const char *, long, long, u_int32_t));
+ * PUBLIC: gint __dbcl_envrpcserver
+ * PUBLIC:     __P((DB_ENV *, gpointer , const gchar *, long, long, u_int32_t));
  */
-int
+gint
 __dbcl_envrpcserver(dbenv, clnt, host, tsec, ssec, flags)
 	DB_ENV *dbenv;
-	void *clnt;
-	const char *host;
+	gpointer clnt;
+	const gchar *host;
 	long tsec, ssec;
 	u_int32_t flags;
 {
@@ -72,15 +72,15 @@ __dbcl_envrpcserver(dbenv, clnt, host, tsec, ssec, flags)
 	 * did not pass us a client structure to begin with.
 	 */
 	if (clnt == NULL) {
-		if ((cl = clnt_create((char *)host, DB_RPC_SERVERPROG,
+		if ((cl = clnt_create((gchar *)host, DB_RPC_SERVERPROG,
 		    DB_RPC_SERVERVERS, "tcp")) == NULL) {
-			__db_err(dbenv, clnt_spcreateerror((char *)host));
+			__db_err(dbenv, clnt_spcreateerror((gchar *)host));
 			return (DB_NOSERVER);
 		}
 		if (tsec != 0) {
 			tp.tv_sec = tsec;
 			tp.tv_usec = 0;
-			(void)clnt_control(cl, CLSET_TIMEOUT, (char *)&tp);
+			(void)clnt_control(cl, CLSET_TIMEOUT, (gchar *)&tp);
 		}
 	} else {
 		cl = (CLIENT *)clnt;
@@ -97,17 +97,17 @@ __dbcl_envrpcserver(dbenv, clnt, host, tsec, ssec, flags)
  *	We need a wrapper function to deal with DB_USE_ENVIRON* flags
  *	and we don't want to complicate the generated code for env_open.
  *
- * PUBLIC: int __dbcl_env_open_wrap
- * PUBLIC:     __P((DB_ENV *, const char *, u_int32_t, int));
+ * PUBLIC: gint __dbcl_env_open_wrap
+ * PUBLIC:     __P((DB_ENV *, const gchar *, u_int32_t, int));
  */
-int
+gint
 __dbcl_env_open_wrap(dbenv, home, flags, mode)
 	DB_ENV * dbenv;
-	const char * home;
+	const gchar * home;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 {
-	int ret;
+	gint ret;
 
 	if (LF_ISSET(DB_THREAD)) {
 		__db_err(dbenv, "DB_THREAD not allowed on RPC clients");
@@ -124,19 +124,19 @@ __dbcl_env_open_wrap(dbenv, home, flags, mode)
  *	We need a wrapper function to error on DB_THREAD flag.
  *	and we don't want to complicate the generated code.
  *
- * PUBLIC: int __dbcl_db_open_wrap
- * PUBLIC:     __P((DB *, DB_TXN *, const char *, const char *,
+ * PUBLIC: gint __dbcl_db_open_wrap
+ * PUBLIC:     __P((DB *, DB_TXN *, const gchar *, const gchar *,
  * PUBLIC:     DBTYPE, u_int32_t, int));
  */
-int
+gint
 __dbcl_db_open_wrap(dbp, txnp, name, subdb, type, flags, mode)
 	DB * dbp;
 	DB_TXN * txnp;
-	const char * name;
-	const char * subdb;
+	const gchar * name;
+	const gchar * subdb;
 	DBTYPE type;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 {
 	if (LF_ISSET(DB_THREAD)) {
 		__db_err(dbp->dbenv, "DB_THREAD not allowed on RPC clients");
@@ -149,14 +149,14 @@ __dbcl_db_open_wrap(dbp, txnp, name, subdb, type, flags, mode)
  * __dbcl_refresh --
  *	Clean up an environment.
  *
- * PUBLIC: int __dbcl_refresh __P((DB_ENV *));
+ * PUBLIC: gint __dbcl_refresh __P((DB_ENV *));
  */
-int
+gint
 __dbcl_refresh(dbenv)
 	DB_ENV *dbenv;
 {
 	CLIENT *cl;
-	int ret;
+	gint ret;
 
 	cl = (CLIENT *)dbenv->cl_handle;
 
@@ -185,19 +185,19 @@ __dbcl_refresh(dbenv)
  *	Copy the returned data into the user's DBT, handling allocation flags,
  *	but not DB_DBT_PARTIAL.
  *
- * PUBLIC: int __dbcl_retcopy __P((DB_ENV *, DBT *,
- * PUBLIC:    void *, u_int32_t, void **, u_int32_t *));
+ * PUBLIC: gint __dbcl_retcopy __P((DB_ENV *, DBT *,
+ * PUBLIC:    gpointer , u_int32_t, gpointer *, u_int32_t *));
  */
-int
+gint
 __dbcl_retcopy(dbenv, dbt, data, len, memp, memsize)
 	DB_ENV *dbenv;
 	DBT *dbt;
-	void *data;
+	gpointer data;
 	u_int32_t len;
-	void **memp;
+	gpointer *memp;
 	u_int32_t *memsize;
 {
-	int ret;
+	gint ret;
 	u_int32_t orig_flags;
 
 	/*
@@ -215,13 +215,13 @@ __dbcl_retcopy(dbenv, dbt, data, len, memp, memsize)
  * __dbcl_txn_close --
  *	Clean up an environment's transactions.
  */
-int
+gint
 __dbcl_txn_close(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_TXN *txnp;
 	DB_TXNMGR *tmgrp;
-	int ret;
+	gint ret;
 
 	ret = 0;
 	tmgrp = dbenv->tx_handle;
@@ -377,16 +377,16 @@ __dbcl_c_refresh(dbc)
  * __dbcl_c_setup --
  *	Allocate a cursor.
  *
- * PUBLIC: int __dbcl_c_setup __P((long, DB *, DBC **));
+ * PUBLIC: gint __dbcl_c_setup __P((long, DB *, DBC **));
  */
-int
+gint
 __dbcl_c_setup(cl_id, dbp, dbcp)
 	long cl_id;
 	DB *dbp;
 	DBC **dbcp;
 {
 	DBC *dbc, tmpdbc;
-	int ret;
+	gint ret;
 
 	if ((dbc = TAILQ_FIRST(&dbp->free_queue)) != NULL)
 		TAILQ_REMOVE(&dbp->free_queue, dbc, links);
@@ -422,13 +422,13 @@ __dbcl_c_setup(cl_id, dbp, dbcp)
  * __dbcl_dbclose_common --
  *	Common code for closing/cleaning a dbp.
  *
- * PUBLIC: int __dbcl_dbclose_common __P((DB *));
+ * PUBLIC: gint __dbcl_dbclose_common __P((DB *));
  */
-int
+gint
 __dbcl_dbclose_common(dbp)
 	DB *dbp;
 {
-	int ret, t_ret;
+	gint ret, t_ret;
 	DBC *dbc;
 
 	/*

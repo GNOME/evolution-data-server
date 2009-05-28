@@ -60,22 +60,22 @@ static void camel_imap4_store_finalize (CamelObject *object);
 static void imap4_construct (CamelService *service, CamelSession *session,
 			     CamelProvider *provider, CamelURL *url,
 			     CamelException *ex);
-static char *imap4_get_name (CamelService *service, gboolean brief);
+static gchar *imap4_get_name (CamelService *service, gboolean brief);
 static gboolean imap4_connect (CamelService *service, CamelException *ex);
 static gboolean imap4_reconnect (CamelIMAP4Engine *engine, CamelException *ex);
 static gboolean imap4_disconnect (CamelService *service, gboolean clean, CamelException *ex);
 static GList *imap4_query_auth_types (CamelService *service, CamelException *ex);
 
 /* store methods */
-static CamelFolder *imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex);
-static CamelFolderInfo *imap4_create_folder (CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex);
-static void imap4_delete_folder (CamelStore *store, const char *folder_name, CamelException *ex);
-static void imap4_rename_folder (CamelStore *store, const char *old_name, const char *new_name, CamelException *ex);
-static CamelFolderInfo *imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
+static CamelFolder *imap4_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex);
+static CamelFolderInfo *imap4_create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex);
+static void imap4_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
+static void imap4_rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex);
+static CamelFolderInfo *imap4_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
 static void imap4_free_folder_info (CamelStore *store, CamelFolderInfo *fi);
-static void imap4_subscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex);
-static void imap4_unsubscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex);
-static gboolean imap4_folder_subscribed (CamelStore *store, const char *folder_name);
+static void imap4_subscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
+static void imap4_unsubscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
+static gboolean imap4_folder_subscribed (CamelStore *store, const gchar *folder_name);
 static void imap4_noop (CamelStore *store, CamelException *ex);
 
 
@@ -180,7 +180,7 @@ static void
 imap4_construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
 	CamelIMAP4Store *store = (CamelIMAP4Store *) service;
-	char *buf;
+	gchar *buf;
 
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
@@ -207,7 +207,7 @@ imap4_construct (CamelService *service, CamelSession *session, CamelProvider *pr
 	camel_store_summary_load ((CamelStoreSummary *) store->summary);
 }
 
-static char *
+static gchar *
 imap4_get_name (CamelService *service, gboolean brief)
 {
 	if (brief)
@@ -229,14 +229,14 @@ enum {
 #endif
 
 static gboolean
-connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, CamelException *ex)
+connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, gint ssl_mode, CamelException *ex)
 {
 	CamelService *service = engine->service;
 	CamelSockOptData sockopt;
 	CamelStream *tcp_stream;
 #ifdef HAVE_SSL
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 #endif
 
 	if (ssl_mode != MODE_CLEAR) {
@@ -343,10 +343,10 @@ connect_to_server (CamelIMAP4Engine *engine, struct addrinfo *ai, int ssl_mode, 
 }
 
 static struct {
-	char *value;
-	char *serv;
-	char *port;
-	int mode;
+	gchar *value;
+	gchar *serv;
+	gchar *port;
+	gint mode;
 } ssl_options[] = {
 	{ "",              "imaps", "993", MODE_SSL   },  /* really old (1.x) */
 	{ "always",        "imaps", "993", MODE_SSL   },
@@ -360,10 +360,10 @@ connect_to_server_wrapper (CamelIMAP4Engine *engine, CamelException *ex)
 {
 	CamelService *service = engine->service;
 	struct addrinfo *ai, hints;
-	const char *ssl_mode;
-	int mode, ret, i;
-	const char *port;
-	char *serv;
+	const gchar *ssl_mode;
+	gint mode, ret, i;
+	const gchar *port;
+	gchar *serv;
 
 	if ((ssl_mode = camel_url_get_param (service->url, "use_ssl"))) {
 		for (i = 0; ssl_options[i].value; i++)
@@ -404,11 +404,11 @@ connect_to_server_wrapper (CamelIMAP4Engine *engine, CamelException *ex)
 }
 
 static int
-sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const unsigned char *linebuf, size_t linelen, CamelException *ex)
+sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const guchar *linebuf, size_t linelen, CamelException *ex)
 {
 	/* Perform a single challenge iteration */
 	CamelSasl *sasl = ic->user_data;
-	char *challenge;
+	gchar *challenge;
 
 	if (camel_sasl_authenticated (sasl)) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
@@ -423,7 +423,7 @@ sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const unsigned char 
 	if (*linebuf == '\0')
 		linebuf = NULL;
 
-	if (!(challenge = camel_sasl_challenge_base64 (sasl, (const char *) linebuf, ex)))
+	if (!(challenge = camel_sasl_challenge_base64 (sasl, (const gchar *) linebuf, ex)))
 		return -1;
 
 	d(fprintf (stderr, "sending : %s\r\n", challenge));
@@ -442,22 +442,22 @@ sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const unsigned char 
 }
 
 static int
-imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const char *errmsg, CamelException *ex)
+imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const gchar *errmsg, CamelException *ex)
 {
 	CamelService *service = engine->service;
 	CamelSession *session = service->session;
 	CamelServiceAuthType *mech = NULL;
 	CamelSasl *sasl = NULL;
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 
 	if (service->url->authmech)
 		mech = g_hash_table_lookup (engine->authtypes, service->url->authmech);
 
 	if ((!mech || (mech && mech->need_password)) && !service->url->passwd) {
 		guint32 flags = CAMEL_SESSION_PASSWORD_SECRET;
-		char *base_prompt;
-		char *full_prompt;
+		gchar *base_prompt;
+		gchar *full_prompt;
 
 		if (reprompt)
 			flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
@@ -524,7 +524,7 @@ imap4_reconnect (CamelIMAP4Engine *engine, CamelException *ex)
 {
 	CamelService *service = engine->service;
 	gboolean reprompt = FALSE;
-	char *errmsg = NULL;
+	gchar *errmsg = NULL;
 	CamelException lex;
 
 	if (!connect_to_server_wrapper (engine, ex))
@@ -590,7 +590,7 @@ imap4_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelIMAP4Store *store = (CamelIMAP4Store *) service;
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -641,12 +641,12 @@ imap4_query_auth_types (CamelService *service, CamelException *ex)
 	return g_list_prepend (sasl_types, &camel_imap4_password_authtype);
 }
 
-static char *
-imap4_folder_utf7_name (CamelStore *store, const char *folder_name, char wildcard)
+static gchar *
+imap4_folder_utf7_name (CamelStore *store, const gchar *folder_name, gchar wildcard)
 {
-	char *real_name, *p;
-	char sep = '\0';
-	int len;
+	gchar *real_name, *p;
+	gchar sep = '\0';
+	gint len;
 
 	if (*folder_name) {
 		sep = camel_imap4_get_path_delim (((CamelIMAP4Store *) store)->summary, folder_name);
@@ -682,7 +682,7 @@ imap4_folder_utf7_name (CamelStore *store, const char *folder_name, char wildcar
 }
 
 static CamelFolder *
-imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+imap4_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolder *folder = NULL;
@@ -690,9 +690,9 @@ imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Cam
 	CamelIMAP4Command *ic;
 	CamelFolderInfo *fi;
 	GPtrArray *array;
-	char *utf7_name;
-	int create;
-	int id, i;
+	gchar *utf7_name;
+	gint create;
+	gint id, i;
 
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
@@ -746,9 +746,9 @@ imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Cam
 	camel_imap4_command_unref (ic);
 
 	if (create) {
-		const char *basename;
-		char *parent;
-		int len;
+		const gchar *basename;
+		gchar *parent;
+		gint len;
 
 		if (!(flags & CAMEL_STORE_FOLDER_CREATE))
 			goto done;
@@ -780,15 +780,15 @@ imap4_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Cam
 
 
 static gboolean
-imap4_folder_can_contain_folders (CamelStore *store, const char *folder_name, CamelException *ex)
+imap4_folder_can_contain_folders (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	guint32 flags = CAMEL_FOLDER_NOINFERIORS;
 	camel_imap4_list_t *list;
 	CamelIMAP4Command *ic;
 	GPtrArray *array;
-	char *utf7_name;
-	int id, i;
+	gchar *utf7_name;
+	gint id, i;
 
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
@@ -851,15 +851,15 @@ imap4_folder_can_contain_folders (CamelStore *store, const char *folder_name, Ca
 }
 
 static CamelFolderInfo *
-imap4_folder_create (CamelStore *store, const char *folder_name, const char *subfolder_hint, CamelException *ex)
+imap4_folder_create (CamelStore *store, const gchar *folder_name, const gchar *subfolder_hint, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolderInfo *fi = NULL;
 	CamelIMAP4Command *ic;
-	char *utf7_name;
+	gchar *utf7_name;
 	CamelURL *url;
-	const char *c;
-	int id;
+	const gchar *c;
+	gint id;
 
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
 
@@ -921,11 +921,11 @@ imap4_folder_create (CamelStore *store, const char *folder_name, const char *sub
 }
 
 static gboolean
-imap4_folder_recreate (CamelStore *store, const char *folder_name, CamelException *ex)
+imap4_folder_recreate (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelFolderInfo *fi = NULL;
-	char hint[2];
-	char sep;
+	gchar hint[2];
+	gchar sep;
 
 	sep = camel_imap4_get_path_delim (((CamelIMAP4Store *) store)->summary, folder_name);
 	sprintf (hint, "%c", sep);
@@ -943,12 +943,12 @@ imap4_folder_recreate (CamelStore *store, const char *folder_name, CamelExceptio
 }
 
 static CamelFolderInfo *
-imap4_create_folder (CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex)
+imap4_create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
 {
 	CamelFolderInfo *fi = NULL;
-	const char *c;
-	char *name;
-	char sep;
+	const gchar *c;
+	gchar *name;
+	gchar sep;
 
 	sep = camel_imap4_get_path_delim (((CamelIMAP4Store *) store)->summary, parent_name);
 
@@ -997,16 +997,16 @@ imap4_create_folder (CamelStore *store, const char *parent_name, const char *fol
 }
 
 static void
-imap4_delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
+imap4_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolder *selected = (CamelFolder *) engine->folder;
 	CamelIMAP4Command *ic, *ic0 = NULL;
 	CamelFolderInfo *fi;
-	char *utf7_name;
+	gchar *utf7_name;
 	CamelURL *url;
-	const char *p;
-	int id;
+	const gchar *p;
+	gint id;
 
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1092,12 +1092,12 @@ imap4_delete_folder (CamelStore *store, const char *folder_name, CamelException 
 }
 
 static void
-imap4_rename_folder (CamelStore *store, const char *old_name, const char *new_name, CamelException *ex)
+imap4_rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
-	char *old_uname, *new_uname;
+	gchar *old_uname, *new_uname;
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 
 	if (!g_ascii_strcasecmp (old_name, "INBOX")) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1164,7 +1164,7 @@ static void
 list_remove_duplicates (GPtrArray *array)
 {
 	camel_imap4_list_t *list, *last;
-	int i;
+	gint i;
 
 	last = array->pdata[0];
 	for (i = 1; i < array->len; i++) {
@@ -1178,10 +1178,10 @@ list_remove_duplicates (GPtrArray *array)
 	}
 }
 
-static char *
+static gchar *
 list_parent (camel_imap4_list_t *mbox)
 {
-	const char *d;
+	const gchar *d;
 
 	if (!(d = strrchr (mbox->name, mbox->delim)))
 		return NULL;
@@ -1191,9 +1191,9 @@ list_parent (camel_imap4_list_t *mbox)
 
 /* bloody glib... GPtrArray doesn't have an insert method */
 static void
-array_insert (GPtrArray *array, int index, void *data)
+array_insert (GPtrArray *array, gint index, gpointer data)
 {
-	int i;
+	gint i;
 
 	if ((index + 1) == array->len) {
 		/* special case, adding to the end of the array */
@@ -1222,8 +1222,8 @@ list_add_ghosts (GPtrArray *array)
 {
 	camel_imap4_list_t *mbox;
 	GHashTable *list_hash;
-	char delim, *parent;
-	int i = 0;
+	gchar delim, *parent;
+	gint i = 0;
 
 	list_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -1264,8 +1264,8 @@ imap4_status (CamelStore *store, CamelFolderInfo *fi)
 	camel_imap4_status_t *status;
 	CamelIMAP4Command *ic;
 	GPtrArray *array;
-	char *mailbox;
-	int id, i;
+	gchar *mailbox;
+	gint id, i;
 
 	mailbox = imap4_folder_utf7_name (store, fi->full_name, '\0');
 	ic = camel_imap4_engine_queue (engine, NULL, "STATUS %S (MESSAGES UNSEEN)\r\n", mailbox);
@@ -1311,8 +1311,8 @@ imap4_subscription_info (CamelStore *store, CamelFolderInfo *fi)
 	camel_imap4_list_t *lsub;
 	CamelIMAP4Command *ic;
 	GPtrArray *array;
-	char *mailbox;
-	int id, i;
+	gchar *mailbox;
+	gint id, i;
 
 	mailbox = imap4_folder_utf7_name (store, fi->full_name, '\0');
 	ic = camel_imap4_engine_queue (engine, NULL, "LSUB \"\" %S\r\n", mailbox);
@@ -1337,16 +1337,16 @@ imap4_subscription_info (CamelStore *store, CamelFolderInfo *fi)
 }
 
 static CamelFolderInfo *
-imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtrArray *array)
+imap4_build_folder_info (CamelStore *store, const gchar *top, guint32 flags, GPtrArray *array)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolder *folder = (CamelFolder *) engine->folder;
 	gboolean lsub = (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED);
 	camel_imap4_list_t *list;
 	CamelFolderInfo *fi;
-	char *name, *p;
+	gchar *name, *p;
 	CamelURL *url;
-	int i;
+	gint i;
 
 	if (array->len == 0) {
 		g_ptr_array_free (array, TRUE);
@@ -1424,18 +1424,18 @@ imap4_build_folder_info (CamelStore *store, const char *top, guint32 flags, GPtr
 }
 
 static CamelFolderInfo *
-imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+imap4_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelIMAP4Command *ic, *ic0 = NULL, *ic1 = NULL;
 	CamelFolderInfo *inbox = NULL, *fi = NULL;
-	const char *base, *namespace;
+	const gchar *base, *namespace;
 	camel_imap4_list_t *list;
 	GPtrArray *array;
-	const char *cmd;
-	char *pattern;
-	char wildcard;
-	int id, i;
+	const gchar *cmd;
+	gchar *pattern;
+	gchar wildcard;
+	gint id, i;
 
 	if (top == NULL)
 		top = "";
@@ -1514,7 +1514,7 @@ imap4_get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelE
 
 	if (*top != '\0') {
 		size_t len;
-		char sep;
+		gchar sep;
 
 		len = strlen (pattern);
 		sep = pattern[len - 2];
@@ -1609,11 +1609,11 @@ imap4_free_folder_info (CamelStore *store, CamelFolderInfo *fi)
 }
 
 static gboolean
-imap4_folder_subscribed (CamelStore *store, const char *folder_name)
+imap4_folder_subscribed (CamelStore *store, const gchar *folder_name)
 {
 	CamelIMAP4Store *imap4_store = (CamelIMAP4Store *) store;
 	CamelStoreInfo *si;
-	int truth = FALSE;
+	gint truth = FALSE;
 
 	if ((si = camel_store_summary_path ((CamelStoreSummary *) imap4_store->summary, folder_name))) {
 		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
@@ -1624,15 +1624,15 @@ imap4_folder_subscribed (CamelStore *store, const char *folder_name)
 }
 
 static void
-imap4_subscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex)
+imap4_subscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelIMAP4Command *ic;
 	CamelFolderInfo *fi;
-	char *utf7_name;
+	gchar *utf7_name;
 	CamelURL *url;
-	const char *p;
-	int id;
+	const gchar *p;
+	gint id;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot subscribe to IMAP folders in offline mode."));
@@ -1696,15 +1696,15 @@ imap4_subscribe_folder (CamelStore *store, const char *folder_name, CamelExcepti
 }
 
 static void
-imap4_unsubscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex)
+imap4_unsubscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelIMAP4Command *ic;
 	CamelFolderInfo *fi;
-	char *utf7_name;
+	gchar *utf7_name;
 	CamelURL *url;
-	const char *p;
-	int id;
+	const gchar *p;
+	gint id;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot unsubscribe from IMAP folders in offline mode."));
@@ -1773,7 +1773,7 @@ imap4_noop (CamelStore *store, CamelException *ex)
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) store)->engine;
 	CamelFolder *folder = (CamelFolder *) engine->folder;
 	CamelIMAP4Command *ic;
-	int id;
+	gint id;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;

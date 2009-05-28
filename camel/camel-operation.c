@@ -45,9 +45,9 @@
 
 struct _status_stack {
 	guint32 flags;
-	char *msg;
-	int pc;				/* last pc reported */
-	unsigned int stamp;		/* last stamp reported */
+	gchar *msg;
+	gint pc;				/* last pc reported */
+	guint stamp;		/* last stamp reported */
 };
 
 struct _CamelOperation {
@@ -56,19 +56,19 @@ struct _CamelOperation {
 
 	pthread_t id;		/* id of running thread */
 	guint32 flags;		/* cancelled ? */
-	int blocked;		/* cancellation blocked depth */
-	int refcount;
+	gint blocked;		/* cancellation blocked depth */
+	gint refcount;
 
 	CamelOperationStatusFunc status;
-	void *status_data;
-	unsigned int status_update;
+	gpointer status_data;
+	guint status_update;
 
 	/* stack of status messages (struct _status_stack *) */
 	GSList *status_stack;
 	struct _status_stack *lastreport;
 
 	CamelMsgPort *cancel_port;
-	int cancel_fd;
+	gint cancel_fd;
 #ifdef HAVE_NSS
 	PRFileDesc *cancel_prfd;
 #endif
@@ -85,7 +85,7 @@ static pthread_mutex_t operation_lock = PTHREAD_MUTEX_INITIALIZER;
 #define UNLOCK() pthread_mutex_unlock(&operation_lock)
 
 
-static unsigned int stamp (void);
+static guint stamp (void);
 static CamelDList operation_list = CAMEL_DLIST_INITIALISER(operation_list);
 static pthread_key_t operation_key;
 static pthread_once_t operation_once = PTHREAD_ONCE_INIT;
@@ -123,7 +123,7 @@ co_getcc(void)
  * Return value: A new operation handle.
  **/
 CamelOperation *
-camel_operation_new (CamelOperationStatusFunc status, void *status_data)
+camel_operation_new (CamelOperationStatusFunc status, gpointer status_data)
 {
 	CamelOperation *cc;
 
@@ -218,7 +218,7 @@ camel_operation_unref (CamelOperation *cc)
 
 		n = cc->status_stack;
 		while (n) {
-			g_warning("Camel operation status stack non empty: %s", (char *)n->data);
+			g_warning("Camel operation status stack non empty: %s", (gchar *)n->data);
 			g_free(n->data);
 			n = n->next;
 		}
@@ -388,7 +388,7 @@ gboolean
 camel_operation_cancel_check (CamelOperation *cc)
 {
 	CamelOperationMsg *msg;
-	int cancelled;
+	gint cancelled;
 
 	d(printf("checking for cancel in thread %d\n", pthread_self()));
 
@@ -428,7 +428,7 @@ camel_operation_cancel_check (CamelOperation *cc)
  * Return value: The fd, or -1 if cancellation is not available
  * (blocked, or has not been registered for this thread).
  **/
-int
+gint
 camel_operation_cancel_fd (CamelOperation *cc)
 {
 	if (cc == NULL)
@@ -491,7 +491,7 @@ void
 camel_operation_start (CamelOperation *cc, const gchar *what, ...)
 {
 	va_list ap;
-	char *msg;
+	gchar *msg;
 	struct _status_stack *s;
 
 	if (cc == NULL)
@@ -538,7 +538,7 @@ void
 camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 {
 	va_list ap;
-	char *msg;
+	gchar *msg;
 	struct _status_stack *s;
 
 	if (cc == NULL)
@@ -566,7 +566,7 @@ camel_operation_start_transient (CamelOperation *cc, const gchar *what, ...)
 	/*cc->status(cc, msg, CAMEL_OPERATION_START, cc->status_data);*/
 }
 
-static unsigned int stamp(void)
+static guint stamp(void)
 {
 	GTimeVal tv;
 
@@ -588,11 +588,11 @@ static unsigned int stamp(void)
  * camel_operation_progress_count().
  **/
 void
-camel_operation_progress (CamelOperation *cc, int pc)
+camel_operation_progress (CamelOperation *cc, gint pc)
 {
-	unsigned int now;
+	guint now;
 	struct _status_stack *s;
-	char *msg = NULL;
+	gchar *msg = NULL;
 
 	if (cc == NULL)
 		cc = co_getcc();
@@ -644,7 +644,7 @@ camel_operation_progress (CamelOperation *cc, int pc)
  *
  **/
 void
-camel_operation_progress_count (CamelOperation *cc, int sofar)
+camel_operation_progress_count (CamelOperation *cc, gint sofar)
 {
 	camel_operation_progress(cc, sofar);
 }
@@ -660,9 +660,9 @@ void
 camel_operation_end (CamelOperation *cc)
 {
 	struct _status_stack *s, *p;
-	unsigned int now;
-	char *msg = NULL;
-	int pc = 0;
+	guint now;
+	gchar *msg = NULL;
+	gint pc = 0;
 
 	if (cc == NULL)
 		cc = co_getcc();

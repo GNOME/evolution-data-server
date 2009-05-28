@@ -137,9 +137,9 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget         *parent;
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
-	char              *gladefile;
+	gchar              *gladefile;
 	GConfClient *gconf_client;
-	char *uid;
+	gchar *uid;
 
 	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	priv->destination_index = 0;

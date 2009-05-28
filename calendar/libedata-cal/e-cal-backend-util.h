@@ -30,10 +30,10 @@ G_BEGIN_DECLS
  * Functions for accessing mail configuration
  */
 
-gboolean e_cal_backend_mail_account_get_default (char **address, char **name);
-gboolean e_cal_backend_mail_account_is_valid (char *user, char **name);
+gboolean e_cal_backend_mail_account_get_default (gchar **address, gchar **name);
+gboolean e_cal_backend_mail_account_is_valid (gchar *user, gchar **name);
 
-const char *e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status);
+const gchar *e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status);
 
 gboolean e_cal_backend_user_declined (icalcomponent *icalcomp);
 

@@ -33,7 +33,7 @@
 #define CHARS_QUOTED_SPECIALS "\\\""
 #define CHARS_LIST_WILDCARDS  "*%"
 
-unsigned char camel_imap4_specials[256] = {
+guchar camel_imap4_specials[256] = {
 	  2,  2,  2,  2,  2,  2,  2,  2,  2,  6,  6,  2,  2,  6,  2,  2,
           2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
          20,  0,  8,  0,  0, 32,  0,  0,  1,  1, 32,  0,  0,  0,  0,  0,
@@ -54,9 +54,9 @@ unsigned char camel_imap4_specials[256] = {
 
 
 static void
-imap4_init_bits (unsigned short bit, unsigned short bitcopy, int remove, unsigned char *vals)
+imap4_init_bits (unsigned short bit, unsigned short bitcopy, gint remove, guchar *vals)
 {
-	int i, len = strlen (vals);
+	gint i, len = strlen (vals);
 
 	if (!remove) {
 		for (i = 0; i < len; i++)
@@ -85,7 +85,7 @@ imap4_init_bits (unsigned short bit, unsigned short bitcopy, int remove, unsigne
 void
 camel_imap4_specials_init (void)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < 256; i++) {
 		camel_imap4_specials[i] = 0;

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,10 +26,10 @@ static const char revid[] = "$Id$";
  * __qam_vrfy_meta --
  *	Verify the queue-specific part of a metadata page.
  *
- * PUBLIC: int __qam_vrfy_meta __P((DB *, VRFY_DBINFO *, QMETA *,
+ * PUBLIC: gint __qam_vrfy_meta __P((DB *, VRFY_DBINFO *, QMETA *,
  * PUBLIC:     db_pgno_t, u_int32_t));
  */
-int
+gint
 __qam_vrfy_meta(dbp, vdp, meta, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -38,7 +38,7 @@ __qam_vrfy_meta(dbp, vdp, meta, pgno, flags)
 	u_int32_t flags;
 {
 	VRFY_PAGEINFO *pip;
-	int isbad, ret, t_ret;
+	gint isbad, ret, t_ret;
 
 	if ((ret = __db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
 		return (ret);
@@ -93,10 +93,10 @@ err:	if ((t_ret =
  * __qam_vrfy_data --
  *	Verify a queue data page.
  *
- * PUBLIC: int __qam_vrfy_data __P((DB *, VRFY_DBINFO *, QPAGE *,
+ * PUBLIC: gint __qam_vrfy_data __P((DB *, VRFY_DBINFO *, QPAGE *,
  * PUBLIC:     db_pgno_t, u_int32_t));
  */
-int
+gint
 __qam_vrfy_data(dbp, vdp, h, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -147,9 +147,9 @@ __qam_vrfy_data(dbp, vdp, h, pgno, flags)
  * __qam_vrfy_structure --
  *	Verify a queue database structure, such as it is.
  *
- * PUBLIC: int __qam_vrfy_structure __P((DB *, VRFY_DBINFO *, u_int32_t));
+ * PUBLIC: gint __qam_vrfy_structure __P((DB *, VRFY_DBINFO *, u_int32_t));
  */
-int
+gint
 __qam_vrfy_structure(dbp, vdp, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -157,7 +157,7 @@ __qam_vrfy_structure(dbp, vdp, flags)
 {
 	VRFY_PAGEINFO *pip;
 	db_pgno_t i;
-	int ret, isbad;
+	gint ret, isbad;
 
 	isbad = 0;
 

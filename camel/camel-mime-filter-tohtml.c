@@ -48,7 +48,7 @@
 #define CONVERT_ADDRSPEC  CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES
 
 static struct {
-	unsigned int mask;
+	guint mask;
 	urlpattern_t pattern;
 } patterns[] = {
 	{ CONVERT_WEB_URLS, { "file://",   "",        camel_url_file_start,     camel_url_file_end     } },
@@ -117,8 +117,8 @@ camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 }
 
 
-static char *
-check_size (CamelMimeFilter *filter, char *outptr, char **outend, size_t len)
+static gchar *
+check_size (CamelMimeFilter *filter, gchar *outptr, gchar **outend, size_t len)
 {
 	size_t offset;
 
@@ -134,8 +134,8 @@ check_size (CamelMimeFilter *filter, char *outptr, char **outend, size_t len)
 	return filter->outbuf + offset;
 }
 
-static char *
-append_string_verbatim (CamelMimeFilter *filter, const char *str, char *outptr, char **outend)
+static gchar *
+append_string_verbatim (CamelMimeFilter *filter, const gchar *str, gchar *outptr, gchar **outend)
 {
 	size_t len = strlen (str);
 
@@ -147,10 +147,10 @@ append_string_verbatim (CamelMimeFilter *filter, const char *str, char *outptr, 
 }
 
 static int
-citation_depth (const char *in)
+citation_depth (const gchar *in)
 {
-	register const char *inptr = in;
-	int depth = 1;
+	register const gchar *inptr = in;
+	gint depth = 1;
 
 	if (*inptr++ != '>')
 		return 0;
@@ -174,11 +174,11 @@ citation_depth (const char *in)
 	return depth;
 }
 
-static char *
-writeln (CamelMimeFilter *filter, const unsigned char *in, const unsigned char *inend, char *outptr, char **outend)
+static gchar *
+writeln (CamelMimeFilter *filter, const guchar *in, const guchar *inend, gchar *outptr, gchar **outend)
 {
 	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
-	const unsigned char *inptr = in;
+	const guchar *inptr = in;
 
 	while (inptr < inend) {
 		guint32 u;
@@ -242,14 +242,14 @@ writeln (CamelMimeFilter *filter, const unsigned char *in, const unsigned char *
 }
 
 static void
-html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
-	      char **out, size_t *outlen, size_t *outprespace, gboolean flush)
+html_convert (CamelMimeFilter *filter, gchar *in, size_t inlen, size_t prespace,
+	      gchar **out, size_t *outlen, size_t *outprespace, gboolean flush)
 {
 	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
-	register char *inptr, *outptr;
-	char *start, *outend;
-	const char *inend;
-	int depth;
+	register gchar *inptr, *outptr;
+	gchar *start, *outend;
+	const gchar *inend;
+	gint depth;
 
 	if (inlen == 0) {
 		if (html->pre_open) {
@@ -323,7 +323,7 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 			do {
 				if (camel_url_scanner_scan (html->scanner, start, len, &match)) {
 					/* write out anything before the first regex match */
-					outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)start + match.um_so,
+					outptr = writeln (filter, (const guchar *)start, (const guchar *)start + match.um_so,
 							  outptr, &outend);
 
 					start += match.um_so;
@@ -335,19 +335,19 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 					outptr = append_string_verbatim (filter, "<a href=\"", outptr, &outend);
 					/* prefix shouldn't need escaping, but let's be safe */
 					outptr = writeln (filter,
-							(const unsigned char *)match.prefix,
-							(const unsigned char *)match.prefix + strlen (match.prefix),
+							(const guchar *)match.prefix,
+							(const guchar *)match.prefix + strlen (match.prefix),
 							outptr, &outend);
 					outptr = writeln (filter,
-							(const unsigned char *)start,
-							(const unsigned char *)start + matchlen,
+							(const guchar *)start,
+							(const guchar *)start + matchlen,
 							outptr, &outend);
 					outptr = append_string_verbatim (filter, "\">", outptr, &outend);
 
 					/* now write the matched string */
 					outptr = writeln (filter,
-							(const unsigned char *)start,
-							(const unsigned char *)start + matchlen,
+							(const guchar *)start,
+							(const guchar *)start + matchlen,
 							outptr, &outend);
 					html->column += matchlen;
 					start += matchlen;
@@ -357,12 +357,12 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 					outptr = append_string_verbatim (filter, "</a>", outptr, &outend);
 				} else {
 					/* nothing matched so write out the remainder of this line buffer */
-					outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)start + len, outptr, &outend);
+					outptr = writeln (filter, (const guchar *)start, (const guchar *)start + len, outptr, &outend);
 					break;
 				}
 			} while (len > 0);
 		} else {
-			outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)inptr, outptr, &outend);
+			outptr = writeln (filter, (const guchar *)start, (const guchar *)inptr, outptr, &outend);
 		}
 
 		if ((html->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) && depth > 0) {
@@ -385,7 +385,7 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 	if (flush) {
 		/* flush the rest of our input buffer */
 		if (start < inend)
-			outptr = writeln (filter, (const unsigned char *)start, (const unsigned char *)inend, outptr, &outend);
+			outptr = writeln (filter, (const guchar *)start, (const guchar *)inend, outptr, &outend);
 
 		if (html->pre_open) {
 			/* close the pre-tag */
@@ -403,15 +403,15 @@ html_convert (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespace,
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-	       char **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+	       gchar **out, size_t *outlen, size_t *outprespace)
 {
 	html_convert (filter, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-		 char **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+		 gchar **out, size_t *outlen, size_t *outprespace)
 {
 	html_convert (filter, in, len, prespace, out, outlen, outprespace, TRUE);
 }
@@ -452,7 +452,7 @@ CamelMimeFilter *
 camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
 {
 	CamelMimeFilterToHTML *new;
-	int i;
+	gint i;
 
 	new = CAMEL_MIME_FILTER_TOHTML (camel_object_new (camel_mime_filter_tohtml_get_type ()));
 
@@ -479,18 +479,18 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
  * Returns: a newly allocated string containing the HTMLified version
  * of @in
  **/
-char *
-camel_text_to_html (const char *in, guint32 flags, guint32 colour)
+gchar *
+camel_text_to_html (const gchar *in, guint32 flags, guint32 colour)
 {
 	CamelMimeFilter *filter;
 	size_t outlen, outpre;
-	char *outbuf;
+	gchar *outbuf;
 
 	g_return_val_if_fail (in != NULL, NULL);
 
 	filter = camel_mime_filter_tohtml_new (flags, colour);
 
-	camel_mime_filter_complete (filter, (char *) in, strlen (in), 0,
+	camel_mime_filter_complete (filter, (gchar *) in, strlen (in), 0,
 				    &outbuf, &outlen, &outpre);
 
 	outbuf = g_strndup (outbuf, outlen);

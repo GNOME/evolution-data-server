@@ -63,7 +63,7 @@ CamelType camel_smime_context_get_type(void);
 CamelCipherContext *camel_smime_context_new(CamelSession *session);
 
 /* nick to use for SMIMEEncKeyPrefs attribute for signed data */
-void camel_smime_context_set_encrypt_key(CamelSMIMEContext *context, gboolean use, const char *key);
+void camel_smime_context_set_encrypt_key(CamelSMIMEContext *context, gboolean use, const gchar *key);
 /* set signing mode, clearsigned multipart/signed or enveloped */
 void camel_smime_context_set_sign_mode(CamelSMIMEContext *context, camel_smime_sign_t type);
 

@@ -20,11 +20,11 @@ struct _EDbHashPrivate
 };
 
 EDbHash *
-e_dbhash_new (const char *filename)
+e_dbhash_new (const gchar *filename)
 {
 	EDbHash *edbh;
 	DB *db;
-	int rv;
+	gint rv;
 
 	/* Attempt to open the database */
 	rv = db_create (&db, NULL, 0);
@@ -50,10 +50,10 @@ e_dbhash_new (const char *filename)
 }
 
 static void
-string_to_dbt(const char *str, DBT *dbt)
+string_to_dbt(const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
-	dbt->data = (void*)str;
+	dbt->data = (gpointer)str;
 	dbt->size = strlen (str) + 1;
 }
 
@@ -61,7 +61,7 @@ static void
 md5_to_dbt(const guint8 str[16], DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
-	dbt->data = (void*)str;
+	dbt->data = (gpointer)str;
 	dbt->size = 16;
 }
 
@@ -103,7 +103,7 @@ e_dbhash_add (EDbHash *edbh, const gchar *key, const gchar *data)
 }
 
 void
-e_dbhash_remove (EDbHash *edbh, const char *key)
+e_dbhash_remove (EDbHash *edbh, const gchar *key)
 {
 	DB *db;
 	DBT dkey;
@@ -128,7 +128,7 @@ e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
 	DBT dkey;
 	DBT ddata;
 	DBC *dbc;
-	int db_error = 0;
+	gint db_error = 0;
 
 	g_return_if_fail (edbh != NULL);
 	g_return_if_fail (edbh->priv != NULL);
@@ -147,7 +147,7 @@ e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
 	db_error = dbc->c_get(dbc, &dkey, &ddata, DB_FIRST);
 
 	while (db_error == 0) {
-		(*func) ((const char *)dkey.data, user_data);
+		(*func) ((const gchar *)dkey.data, user_data);
 
 		db_error = dbc->c_get(dbc, &dkey, &ddata, DB_NEXT);
 	}
@@ -155,7 +155,7 @@ e_dbhash_foreach_key (EDbHash *edbh, EDbHashFunc func, gpointer user_data)
 }
 
 EDbHashStatus
-e_dbhash_compare (EDbHash *edbh, const char *key, const char *compare_data)
+e_dbhash_compare (EDbHash *edbh, const gchar *key, const gchar *compare_data)
 {
 	DB *db;
 	DBT dkey;

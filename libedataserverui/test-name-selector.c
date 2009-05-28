@@ -35,7 +35,7 @@ ENameSelectorDialog *name_selector_dialog;
 GtkWidget           *name_selector_entry_window;
 
 static void
-close_dialog (GtkWidget *widget, int response, gpointer data)
+close_dialog (GtkWidget *widget, gint response, gpointer data)
 {
 	gtk_widget_destroy (GTK_WIDGET (name_selector_dialog));
 	gtk_widget_destroy (name_selector_entry_window);
@@ -79,8 +79,8 @@ start_test (void)
 	return FALSE;
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	gtk_init (&argc, &argv);
 	g_thread_init (NULL);

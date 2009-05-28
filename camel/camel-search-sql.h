@@ -24,7 +24,7 @@
 
 G_BEGIN_DECLS
 
-char * camel_sexp_to_sql (const char *sexp);
+gchar * camel_sexp_to_sql (const gchar *sexp);
 
 G_END_DECLS
 

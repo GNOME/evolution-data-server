@@ -38,8 +38,8 @@ G_BEGIN_DECLS
 typedef struct _CamelSasl {
 	CamelObject parent_object;
 
-	char *service_name;
-	char *mech;		/* mechanism */
+	gchar *service_name;
+	gchar *mech;		/* mechanism */
 	CamelService *service;
 	gboolean authenticated;
 } CamelSasl;
@@ -58,15 +58,15 @@ CamelType  camel_sasl_get_type (void);
 
 /* public methods */
 GByteArray *camel_sasl_challenge        (CamelSasl *sasl, GByteArray *token, CamelException *ex);
-char       *camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException *ex);
+gchar       *camel_sasl_challenge_base64 (CamelSasl *sasl, const gchar *token, CamelException *ex);
 
 gboolean    camel_sasl_authenticated    (CamelSasl *sasl);
 
 /* utility functions */
-CamelSasl  *camel_sasl_new              (const char *service_name, const char *mechanism, CamelService *service);
+CamelSasl  *camel_sasl_new              (const gchar *service_name, const gchar *mechanism, CamelService *service);
 
 GList                *camel_sasl_authtype_list (gboolean include_plain);
-CamelServiceAuthType *camel_sasl_authtype      (const char *mechanism);
+CamelServiceAuthType *camel_sasl_authtype      (const gchar *mechanism);
 
 G_END_DECLS
 

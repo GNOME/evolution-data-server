@@ -51,11 +51,11 @@ static CamelLocalStoreClass *parent_class = NULL;
 #define CMHF_CLASS(so) CAMEL_MH_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 static void construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
-static CamelFolder *get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex);
+static CamelFolder *get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelException * ex);
 static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
-static void delete_folder(CamelStore * store, const char *folder_name, CamelException * ex);
-static void rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
-static CamelFolderInfo * get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
+static void delete_folder(CamelStore * store, const gchar *folder_name, CamelException * ex);
+static void rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
+static CamelFolderInfo * get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
 
 static void camel_mh_store_class_init(CamelObjectClass * camel_mh_store_class)
 {
@@ -113,11 +113,11 @@ enum {
 
 /* update the .folders file if it exists, or create it if it doesn't */
 static void
-folders_update(const char *root, int mode, const char *folder, const char *new)
+folders_update(const gchar *root, gint mode, const gchar *folder, const gchar *new)
 {
-	char *tmp, *tmpnew, *line = NULL;
+	gchar *tmp, *tmpnew, *line = NULL;
 	CamelStream *stream, *in = NULL, *out = NULL;
-	int flen = strlen(folder);
+	gint flen = strlen(folder);
 
 	tmpnew = g_alloca (strlen (root) + 16);
 	sprintf (tmpnew, "%s.folders~", root);
@@ -140,7 +140,7 @@ folders_update(const char *root, int mode, const char *folder, const char *new)
 	}
 
 	while ((line = camel_stream_buffer_read_line((CamelStreamBuffer *)in))) {
-		int copy = TRUE;
+		gint copy = TRUE;
 
 		switch (mode) {
 		case UPDATE_REMOVE:
@@ -158,7 +158,7 @@ folders_update(const char *root, int mode, const char *folder, const char *new)
 			}
 			break;
 		case UPDATE_ADD: {
-			int cmp = strcmp(line, folder);
+			gint cmp = strcmp(line, folder);
 
 			if (cmp > 0) {
 				/* found insertion point */
@@ -201,9 +201,9 @@ fail:
 }
 
 static CamelFolder *
-get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex)
+get_folder(CamelStore * store, const gchar *folder_name, guint32 flags, CamelException * ex)
 {
-	char *name;
+	gchar *name;
 	struct stat st;
 
 	if (!((CamelStoreClass *)parent_class)->get_folder(store, folder_name, flags, ex))
@@ -262,9 +262,9 @@ get_inbox (CamelStore *store, CamelException *ex)
 	return get_folder (store, "inbox", 0, ex);
 }
 
-static void delete_folder(CamelStore * store, const char *folder_name, CamelException * ex)
+static void delete_folder(CamelStore * store, const gchar *folder_name, CamelException * ex)
 {
-	char *name;
+	gchar *name;
 
 	/* remove folder directory - will fail if not empty */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
@@ -286,7 +286,7 @@ static void delete_folder(CamelStore * store, const char *folder_name, CamelExce
 }
 
 static void
-rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex)
+rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
 {
 	CamelException e;
 
@@ -322,9 +322,9 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		fi->total = camel_folder_get_message_count(folder);
 		camel_object_unref(folder);
 	} else {
-		char *path, *folderpath;
+		gchar *path, *folderpath;
 		CamelFolderSummary *s;
-		const char *root;
+		const gchar *root;
 
 		/* This should be fast enough not to have to test for INFO_FAST */
 
@@ -347,11 +347,11 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 }
 
 static CamelFolderInfo *
-folder_info_new (CamelStore *store, CamelURL *url, const char *root, const char *path, guint32 flags)
+folder_info_new (CamelStore *store, CamelURL *url, const gchar *root, const gchar *path, guint32 flags)
 {
 	/* FIXME: need to set fi->flags = CAMEL_FOLDER_NOSELECT (and possibly others) when appropriate */
 	CamelFolderInfo *fi;
-	char *base;
+	gchar *base;
 
 	base = strrchr(path, '/');
 
@@ -379,9 +379,9 @@ struct _inode {
  * root and path should have a trailing "/" if they aren't empty. */
 static void
 recursive_scan (CamelStore *store, CamelURL *url, CamelFolderInfo **fip, CamelFolderInfo *parent,
-		GHashTable *visited, const char *root, const char *path, guint32 flags)
+		GHashTable *visited, const gchar *root, const gchar *path, guint32 flags)
 {
-	char *fullpath, *tmp;
+	gchar *fullpath, *tmp;
 	DIR *dp;
 	struct dirent *d;
 	struct stat st;
@@ -393,7 +393,7 @@ recursive_scan (CamelStore *store, CamelURL *url, CamelFolderInfo **fip, CamelFo
 		fullpath = alloca (strlen (root) + strlen (path) + 2);
 		sprintf (fullpath, "%s/%s", root, path);
 	} else
-		fullpath = (char *)root;
+		fullpath = (gchar *)root;
 
 	if (stat(fullpath, &st) == -1 || !S_ISDIR(st.st_mode))
 		return;
@@ -449,15 +449,15 @@ recursive_scan (CamelStore *store, CamelURL *url, CamelFolderInfo **fip, CamelFo
 
 /* scan a .folders file */
 static void
-folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top, CamelFolderInfo **fip, guint32 flags)
+folders_scan(CamelStore *store, CamelURL *url, const gchar *root, const gchar *top, CamelFolderInfo **fip, guint32 flags)
 {
 	CamelFolderInfo *fi;
-	char  line[512], *path, *tmp;
+	gchar  line[512], *path, *tmp;
 	CamelStream *stream, *in;
 	struct stat st;
 	GPtrArray *folders;
 	GHashTable *visited;
-	int len;
+	gint len;
 
 	tmp = g_alloca (strlen (root) + 16);
 	sprintf (tmp, "%s/.folders", root);
@@ -479,7 +479,7 @@ folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top
 			continue;
 		/* check for invalidly long lines, we abort evreything and fallback */
 		if (line[len-1] != '\n') {
-			int i;
+			gint i;
 
 			for (i=0;i<folders->len;i++)
 				camel_folder_info_free(folders->pdata[i]);
@@ -491,7 +491,7 @@ folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top
 		/* check for \r ? */
 
 		if (top && top[0]) {
-			int toplen = strlen(top);
+			gint toplen = strlen(top);
 
 			/* check is dir or subdir */
 			if (strncmp(top, line, toplen) != 0
@@ -530,31 +530,31 @@ folders_scan(CamelStore *store, CamelURL *url, const char *root, const char *top
 }
 
 /* FIXME: move to camel-local, this is shared with maildir code */
-static guint inode_hash(const void *d)
+static guint inode_hash(gconstpointer d)
 {
 	const struct _inode *v = d;
 
 	return v->inode ^ v->dnode;
 }
 
-static gboolean inode_equal(const void *a, const void *b)
+static gboolean inode_equal(gconstpointer a, gconstpointer b)
 {
 	const struct _inode *v1 = a, *v2 = b;
 
 	return v1->inode == v2->inode && v1->dnode == v2->dnode;
 }
 
-static void inode_free(void *k, void *v, void *d)
+static void inode_free(gpointer k, gpointer v, gpointer d)
 {
 	g_free(k);
 }
 
 static CamelFolderInfo *
-get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelFolderInfo *fi = NULL;
 	CamelURL *url;
-	char *root;
+	gchar *root;
 
 	root = ((CamelService *)store)->url->path;
 

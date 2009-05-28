@@ -32,23 +32,23 @@
 #define d(x)
 
 /* use my malloc debugger? */
-/*extern void g_check(void *mp);*/
+/*extern void g_check(gpointer mp);*/
 #define g_check(x)
 
 struct _filter {
 	struct _filter *next;
-	int id;
+	gint id;
 	CamelMimeFilter *filter;
 };
 
 struct _CamelStreamFilterPrivate {
 	struct _filter *filters;
-	int filterid;		/* next filter id */
+	gint filterid;		/* next filter id */
 
-	char *realbuffer;	/* buffer - READ_PAD */
-	char *buffer;		/* READ_SIZE bytes */
+	gchar *realbuffer;	/* buffer - READ_PAD */
+	gchar *buffer;		/* READ_SIZE bytes */
 
-	char *filtered;		/* the filtered data */
+	gchar *filtered;		/* the filtered data */
 	size_t filteredlen;
 
 	guint last_was_read:1;	/* was the last op read or write? */
@@ -63,12 +63,12 @@ struct _CamelStreamFilterPrivate {
 static void camel_stream_filter_class_init (CamelStreamFilterClass *klass);
 static void camel_stream_filter_init       (CamelStreamFilter *obj);
 
-static	ssize_t   do_read       (CamelStream *stream, char *buffer, size_t n);
-static	ssize_t   do_write      (CamelStream *stream, const char *buffer, size_t n);
-static	int       do_flush      (CamelStream *stream);
-static	int       do_close      (CamelStream *stream);
+static	ssize_t   do_read       (CamelStream *stream, gchar *buffer, size_t n);
+static	ssize_t   do_write      (CamelStream *stream, const gchar *buffer, size_t n);
+static	gint       do_flush      (CamelStream *stream);
+static	gint       do_close      (CamelStream *stream);
 static	gboolean  do_eos        (CamelStream *stream);
-static	int       do_reset      (CamelStream *stream);
+static	gint       do_reset      (CamelStream *stream);
 
 static CamelStreamClass *camel_stream_filter_parent;
 
@@ -168,7 +168,7 @@ camel_stream_filter_new_with_stream(CamelStream *stream)
  *
  * Returns: a filter id for the added @filter.
  **/
-int
+gint
 camel_stream_filter_add (CamelStreamFilter *stream, CamelMimeFilter *filter)
 {
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(stream);
@@ -196,7 +196,7 @@ camel_stream_filter_add (CamelStreamFilter *stream, CamelMimeFilter *filter)
  * Remove a processing filter from the stream by id.
  **/
 void
-camel_stream_filter_remove(CamelStreamFilter *stream, int id)
+camel_stream_filter_remove(CamelStreamFilter *stream, gint id)
 {
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(stream);
 	struct _filter *fn, *f;
@@ -214,7 +214,7 @@ camel_stream_filter_remove(CamelStreamFilter *stream, int id)
 }
 
 static ssize_t
-do_read (CamelStream *stream, char *buffer, size_t n)
+do_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelStreamFilter *filter = (CamelStreamFilter *)stream;
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
@@ -283,13 +283,13 @@ do_read (CamelStream *stream, char *buffer, size_t n)
    write (for 'success'), we return what they asked us to write (for 'success')
    rather than the true number of written bytes */
 static ssize_t
-do_write (CamelStream *stream, const char *buf, size_t n)
+do_write (CamelStream *stream, const gchar *buf, size_t n)
 {
 	CamelStreamFilter *filter = (CamelStreamFilter *)stream;
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
 	struct _filter *f;
 	size_t presize, len, left = n;
-	char *buffer, realbuffer[READ_SIZE+READ_PAD];
+	gchar *buffer, realbuffer[READ_SIZE+READ_PAD];
 
 	p->last_was_read = FALSE;
 
@@ -336,7 +336,7 @@ do_flush (CamelStream *stream)
 	CamelStreamFilter *filter = (CamelStreamFilter *)stream;
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
 	struct _filter *f;
-	char *buffer;
+	gchar *buffer;
 	size_t presize;
 	size_t len;
 

@@ -33,54 +33,54 @@ E2kProperties *e2k_properties_copy              (E2kProperties *props);
 void           e2k_properties_free              (E2kProperties *props);
 
 gpointer       e2k_properties_get_prop          (E2kProperties *props,
-						 const char    *propname);
+						 const gchar    *propname);
 gboolean       e2k_properties_empty             (E2kProperties *props);
 
 void           e2k_properties_set_string        (E2kProperties *props,
-						 const char    *propname,
-						 char          *value);
+						 const gchar    *propname,
+						 gchar          *value);
 void           e2k_properties_set_string_array  (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 GPtrArray     *value);
 void           e2k_properties_set_binary        (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 GByteArray    *value);
 void           e2k_properties_set_binary_array  (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 GPtrArray     *value);
 void           e2k_properties_set_int           (E2kProperties *props,
-						 const char    *propname,
-						 int            value);
+						 const gchar    *propname,
+						 gint            value);
 void           e2k_properties_set_int_array     (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 GPtrArray     *value);
 void           e2k_properties_set_xml           (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 xmlNode       *value);
 void           e2k_properties_set_bool          (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 gboolean       value);
 void           e2k_properties_set_float         (E2kProperties *props,
-						 const char    *propname,
+						 const gchar    *propname,
 						 float          value);
 void           e2k_properties_set_date          (E2kProperties *props,
-						 const char    *propname,
-						 char          *value);
+						 const gchar    *propname,
+						 gchar          *value);
 
 void           e2k_properties_set_type_as_string       (E2kProperties *props,
-							const char    *propname,
+							const gchar    *propname,
 							E2kPropType    type,
-							char          *value);
+							gchar          *value);
 void           e2k_properties_set_type_as_string_array (E2kProperties *props,
-							const char    *propname,
+							const gchar    *propname,
 							E2kPropType    type,
 							GPtrArray     *value);
 
 void           e2k_properties_remove            (E2kProperties *props,
-						 const char    *propname);
+						 const gchar    *propname);
 
 
-typedef void (*E2kPropertiesForeachFunc)        (const char    *propname,
+typedef void (*E2kPropertiesForeachFunc)        (const gchar    *propname,
 						 E2kPropType    type,
 						 gpointer       value,
 						 gpointer       user_data);
@@ -92,19 +92,19 @@ void           e2k_properties_foreach_removed   (E2kProperties *props,
 						 gpointer       user_data);
 
 
-typedef void(*E2kPropertiesForeachNamespaceFunc)(const char    *namespace,
-						 char           abbrev,
+typedef void(*E2kPropertiesForeachNamespaceFunc)(const gchar    *namespace,
+						 gchar           abbrev,
 						 gpointer       user_data);
 void           e2k_properties_foreach_namespace (E2kProperties *props,
 						 E2kPropertiesForeachNamespaceFunc callback,
 						 gpointer user_data);
 
-const char *e2k_prop_namespace_name   (const char *prop);
-char        e2k_prop_namespace_abbrev (const char *prop);
-const char *e2k_prop_property_name    (const char *prop);
+const gchar *e2k_prop_namespace_name   (const gchar *prop);
+gchar        e2k_prop_namespace_abbrev (const gchar *prop);
+const gchar *e2k_prop_property_name    (const gchar *prop);
 
-guint32     e2k_prop_proptag          (const char *prop);
-const char *e2k_proptag_prop          (guint32     proptag);
+guint32     e2k_prop_proptag          (const gchar *prop);
+const gchar *e2k_proptag_prop          (guint32     proptag);
 
 #define E2K_PROPTAG_TYPE(proptag) (proptag & 0xFFFF)
 #define E2K_PROPTAG_ID(proptag) (proptag & 0xFFFF0000)

@@ -38,10 +38,10 @@
 
 #define TZ_MAGIC "TZif"
 
-static char *
-system_timezone_strip_path_if_valid (const char *filename)
+static gchar *
+system_timezone_strip_path_if_valid (const gchar *filename)
 {
-	int skip;
+	gint skip;
 
 	if (!filename || !g_str_has_prefix (filename, SYSTEM_ZONEINFODIR"/"))
 		return NULL;
@@ -61,11 +61,11 @@ system_timezone_strip_path_if_valid (const char *filename)
 }
 
 /* Read the soft symlink from /etc/localtime */
-static char *
+static gchar *
 system_timezone_read_etc_localtime_softlink (void)
 {
-	char *file;
-	char *tz;
+	gchar *file;
+	gchar *tz;
 
 	if (!g_file_test (ETC_LOCALTIME, G_FILE_TEST_IS_SYMLINK))
 		return NULL;
@@ -77,12 +77,12 @@ system_timezone_read_etc_localtime_softlink (void)
 	return tz;
 }
 
-static char *
+static gchar *
 system_timezone_read_etc_timezone (void)
 {
         FILE    *etc_timezone;
         GString *reading;
-        int      c;
+        gint      c;
 
         etc_timezone = g_fopen (ETC_TIMEZONE, "r");
         if (!etc_timezone)
@@ -109,14 +109,14 @@ system_timezone_read_etc_timezone (void)
 
 /* Read a file that looks like a key-file (but there's no need for groups)
  * and get the last value for a specific key */
-static char *
-system_timezone_read_key_file (const char *filename,
-                               const char *key)
+static gchar *
+system_timezone_read_key_file (const gchar *filename,
+                               const gchar *key)
 {
         GIOChannel *channel;
-        char       *key_eq;
-        char       *line;
-        char       *retval;
+        gchar       *key_eq;
+        gchar       *line;
+        gchar       *retval;
 
         if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
                 return NULL;
@@ -131,8 +131,8 @@ system_timezone_read_key_file (const char *filename,
         while (g_io_channel_read_line (channel, &line, NULL,
                                        NULL, NULL) == G_IO_STATUS_NORMAL) {
                 if (g_str_has_prefix (line, key_eq)) {
-                        char *value;
-                        int   len;
+                        gchar *value;
+                        gint   len;
 
                         value = line + strlen (key_eq);
                         g_strstrip (value);
@@ -167,7 +167,7 @@ system_timezone_read_key_file (const char *filename,
 }
 
 /* This works for Fedora and Mandriva */
-static char *
+static gchar *
 system_timezone_read_etc_sysconfig_clock (void)
 {
         return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
@@ -175,7 +175,7 @@ system_timezone_read_etc_sysconfig_clock (void)
 }
 
 /* This works for openSUSE */
-static char *
+static gchar *
 system_timezone_read_etc_sysconfig_clock_alt (void)
 {
         return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
@@ -183,7 +183,7 @@ system_timezone_read_etc_sysconfig_clock_alt (void)
 }
 
 /* This works for Solaris/OpenSolaris */
-static char *
+static gchar *
 system_timezone_read_etc_TIMEZONE (void)
 {
         return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
@@ -191,7 +191,7 @@ system_timezone_read_etc_TIMEZONE (void)
 }
 
 /* This works for Arch Linux */
-static char *
+static gchar *
 system_timezone_read_etc_rc_conf (void)
 {
         return system_timezone_read_key_file (ETC_RC_CONF,
@@ -199,7 +199,7 @@ system_timezone_read_etc_rc_conf (void)
 }
 
 /* This works for old Gentoo */
-static char *
+static gchar *
 system_timezone_read_etc_conf_d_clock (void)
 {
         return system_timezone_read_key_file (ETC_CONF_D_CLOCK,
@@ -208,13 +208,13 @@ system_timezone_read_etc_conf_d_clock (void)
 
 typedef gboolean (*CompareFiles) (struct stat *a_stat,
 				  struct stat *b_stat,
-				  const char  *a_content,
+				  const gchar  *a_content,
 				  gsize	a_content_len,
-				  const char  *b_filename);
+				  const gchar  *b_filename);
 
-static char *
+static gchar *
 recursive_compare (struct stat  *localtime_stat,
-		   const char   *localtime_content,
+		   const gchar   *localtime_content,
 		   gsize	 localtime_content_len,
 		   char	 *file,
 		   CompareFiles  compare_func)
@@ -235,9 +235,9 @@ recursive_compare (struct stat  *localtime_stat,
 			return NULL;
 	} else if (S_ISDIR (file_stat.st_mode)) {
 		GDir       *dir = NULL;
-		char       *ret = NULL;
-		const char *subfile = NULL;
-		char       *subpath = NULL;
+		gchar       *ret = NULL;
+		const gchar *subfile = NULL;
+		gchar       *subpath = NULL;
 
 		dir = g_dir_open (file, 0, NULL);
 		if (dir == NULL)
@@ -270,9 +270,9 @@ recursive_compare (struct stat  *localtime_stat,
 static gboolean
 files_are_identical_inode (struct stat *a_stat,
 			   struct stat *b_stat,
-			   const char  *a_content,
+			   const gchar  *a_content,
 			   gsize	a_content_len,
-			   const char  *b_filename)
+			   const gchar  *b_filename)
 {
 	return (a_stat->st_ino == b_stat->st_ino);
 }
@@ -280,7 +280,7 @@ files_are_identical_inode (struct stat *a_stat,
 
 /* Determine if /etc/localtime is a hard link to some file, by looking at
  * the inodes */
-static char *
+static gchar *
 system_timezone_read_etc_localtime_hardlink (void)
 {
 	struct stat stat_localtime;
@@ -301,13 +301,13 @@ system_timezone_read_etc_localtime_hardlink (void)
 static gboolean
 files_are_identical_content (struct stat *a_stat,
 			     struct stat *b_stat,
-			     const char  *a_content,
+			     const gchar  *a_content,
 			     gsize        a_content_len,
-			     const char  *b_filename)
+			     const gchar  *b_filename)
 {
-	char  *b_content = NULL;
+	gchar  *b_content = NULL;
 	gsize  b_content_len = -1;
-	int    cmp;
+	gint    cmp;
 
 	if (a_stat->st_size != b_stat->st_size)
 		return FALSE;
@@ -328,7 +328,7 @@ files_are_identical_content (struct stat *a_stat,
 }
 
 /* Determine if /etc/localtime is a copy of a timezone file */
-static char *
+static gchar *
 system_timezone_read_etc_localtime_content (void)
 {
 	struct stat  stat_localtime;
@@ -359,7 +359,7 @@ system_timezone_read_etc_localtime_content (void)
 	return retval;
 }
 
-typedef char * (*GetSystemTimezone) (void);
+typedef gchar * (*GetSystemTimezone) (void);
 /* The order of the functions here define the priority of the methods used
  * to find the timezone. First method has higher priority. */
 static GetSystemTimezone get_system_timezone_methods[] = {
@@ -381,9 +381,9 @@ static GetSystemTimezone get_system_timezone_methods[] = {
 };
 
 static gboolean
-system_timezone_is_valid (const char *tz)
+system_timezone_is_valid (const gchar *tz)
 {
-	const char *c;
+	const gchar *c;
 
 	if (!tz)
 		return FALSE;
@@ -397,11 +397,11 @@ system_timezone_is_valid (const char *tz)
 	return TRUE;
 }
 
-static char *
+static gchar *
 system_timezone_find (void)
 {
-	char *tz;
-	int   i;
+	gchar *tz;
+	gint   i;
 
 	for (i = 0; get_system_timezone_methods[i] != NULL; i++) {
 		tz = get_system_timezone_methods[i] ();
@@ -421,7 +421,7 @@ system_timezone_find (void)
  * Returns system timezone location string, NULL on an error.
  * Returned pointer should be freed with g_free().
  **/
-char *
+gchar *
 e_cal_system_timezone_get_location (void)
 {
 	return system_timezone_find ();

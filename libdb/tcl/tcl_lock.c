@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,14 +25,14 @@ static const char revid[] = "$Id$";
 /*
  * Prototypes for procedures defined later in this file:
  */
-static int      lock_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+static gint      lock_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
 static int	_LockMode __P((Tcl_Interp *, Tcl_Obj *, db_lockmode_t *));
 static int	_GetThisLock __P((Tcl_Interp *, DB_ENV *, u_int32_t,
-				     u_int32_t, DBT *, db_lockmode_t, char *));
+				     u_int32_t, DBT *, db_lockmode_t, gchar *));
 static void	_LockPutInfo __P((Tcl_Interp *, db_lockop_t, DB_LOCK *,
 				     u_int32_t, DBT *));
 #if CONFIG_TEST
-static char *lkmode[] = {
+static gchar *lkmode[] = {
 	"ng",
 	"read",
 	"write",
@@ -53,17 +53,17 @@ enum lkmode {
 /*
  * tcl_LockDetect --
  *
- * PUBLIC: int tcl_LockDetect __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_LockDetect __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_LockDetect(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
-	static char *ldopts[] = {
+	static gchar *ldopts[] = {
 		"expire",
 		"default",
 		"maxlocks",
@@ -85,7 +85,7 @@ tcl_LockDetect(interp, objc, objv, envp)
 		LD_YOUNGEST
 	};
 	u_int32_t flag, policy;
-	int i, optindex, result, ret;
+	gint i, optindex, result, ret;
 
 	result = TCL_OK;
 	flag = policy = 0;
@@ -140,17 +140,17 @@ tcl_LockDetect(interp, objc, objv, envp)
 /*
  * tcl_LockGet --
  *
- * PUBLIC: int tcl_LockGet __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_LockGet __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_LockGet(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
-	static char *lgopts[] = {
+	static gchar *lgopts[] = {
 		"-nowait",
 		 NULL
 	};
@@ -159,11 +159,11 @@ tcl_LockGet(interp, objc, objv, envp)
 	};
 	DBT obj;
 	Tcl_Obj *res;
-	void *otmp;
+	gpointer otmp;
 	db_lockmode_t mode;
 	u_int32_t flag, lockid;
-	int freeobj, optindex, result, ret;
-	char newname[MSG_SIZE];
+	gint freeobj, optindex, result, ret;
+	gchar newname[MSG_SIZE];
 
 	result = TCL_OK;
 	freeobj = 0;
@@ -224,19 +224,19 @@ out:
 /*
  * tcl_LockStat --
  *
- * PUBLIC: int tcl_LockStat __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_LockStat __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_LockStat(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	DB_LOCK_STAT *sp;
 	Tcl_Obj *res;
-	int result, ret;
+	gint result, ret;
 
 	result = TCL_OK;
 	/*
@@ -292,18 +292,18 @@ error:
 /*
  * tcl_LockTimeout --
  *
- * PUBLIC: int tcl_LockTimeout __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_LockTimeout __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_LockTimeout(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	long timeout;
-	int result, ret;
+	gint result, ret;
 
 	/*
 	 * One arg, the timeout.
@@ -329,10 +329,10 @@ static int
 lock_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Lock handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *lkcmds[] = {
+	static gchar *lkcmds[] = {
 		"put",
 		NULL
 	};
@@ -342,11 +342,11 @@ lock_Cmd(clientData, interp, objc, objv)
 	DB_ENV *env;
 	DB_LOCK *lock;
 	DBTCL_INFO *lkip;
-	int cmdindex, result, ret;
+	gint cmdindex, result, ret;
 
 	Tcl_ResetResult(interp);
 	lock = (DB_LOCK *)clientData;
-	lkip = _PtrToInfo((void *)lock);
+	lkip = _PtrToInfo((gpointer)lock);
 	result = TCL_OK;
 
 	if (lock == NULL) {
@@ -391,23 +391,23 @@ lock_Cmd(clientData, interp, objc, objv)
 /*
  * tcl_LockVec --
  *
- * PUBLIC: int tcl_LockVec __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+ * PUBLIC: gint tcl_LockVec __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_LockVec(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* environment pointer */
 {
-	static char *lvopts[] = {
+	static gchar *lvopts[] = {
 		"-nowait",
 		 NULL
 	};
 	enum lvopts {
 		LVNOWAIT
 	};
-	static char *lkops[] = {
+	static gchar *lkops[] = {
 		"get",
 		"put",
 		"put_all",
@@ -426,10 +426,10 @@ tcl_LockVec(interp, objc, objv, envp)
 	DB_LOCKREQ list;
 	DBT obj;
 	Tcl_Obj **myobjv, *res, *thisop;
-	void *otmp;
+	gpointer otmp;
 	u_int32_t flag, lockid;
-	int freeobj, i, myobjc, optindex, result, ret;
-	char *lockname, msg[MSG_SIZE], newname[MSG_SIZE];
+	gint freeobj, i, myobjc, optindex, result, ret;
+	gchar *lockname, msg[MSG_SIZE], newname[MSG_SIZE];
 
 	result = TCL_OK;
 	memset(newname, 0, MSG_SIZE);
@@ -615,7 +615,7 @@ _LockMode(interp, obj, mode)
 	Tcl_Obj *obj;
 	db_lockmode_t *mode;
 {
-	int optindex;
+	gint optindex;
 
 	if (Tcl_GetIndexFromObj(interp, obj, lkmode, "option",
 	    TCL_EXACT, &optindex) != TCL_OK)
@@ -652,7 +652,7 @@ _LockPutInfo(interp, op, lock, lockid, objp)
 	DBT *objp;
 {
 	DBTCL_INFO *p, *nextp;
-	int found;
+	gint found;
 
 	for (p = LIST_FIRST(&__db_infohead); p != NULL; p = nextp) {
 		found = 0;
@@ -678,14 +678,14 @@ _GetThisLock(interp, envp, lockid, flag, objp, mode, newname)
 	u_int32_t flag;			/* Lock flag */
 	DBT *objp;			/* Object to lock */
 	db_lockmode_t mode;		/* Lock mode */
-	char *newname;			/* New command name */
+	gchar *newname;			/* New command name */
 {
 	DB_LOCK *lock;
 	DBTCL_INFO *envip, *ip;
-	int result, ret;
+	gint result, ret;
 
 	result = TCL_OK;
-	envip = _PtrToInfo((void *)envp);
+	envip = _PtrToInfo((gpointer)envp);
 	if (envip == NULL) {
 		Tcl_SetResult(interp, "Could not find env info\n", TCL_STATIC);
 		return (TCL_ERROR);

@@ -53,7 +53,7 @@ static CamelFolderClass *parent_class;
 static void imap_finalize (CamelObject *object);
 static void imap_refresh_info (CamelFolder *folder, CamelException *ex);
 static void imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex);
-static CamelMimeMessage *imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex);
+static CamelMimeMessage *imap_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex);
 
 static void
 imap_folder_class_init (CamelIMAPPFolderClass *camel_imapp_folder_class)
@@ -114,10 +114,10 @@ imap_finalize (CamelObject *object)
 }
 
 CamelFolder *
-camel_imapp_folder_new(CamelStore *store, const char *path)
+camel_imapp_folder_new(CamelStore *store, const gchar *path)
 {
 	CamelFolder *folder;
-	char *root;
+	gchar *root;
 
 	d(printf("opening imap folder '%s'\n", path));
 
@@ -130,8 +130,8 @@ camel_imapp_folder_new(CamelStore *store, const char *path)
 
 	root = camel_session_get_storage_path(((CamelService *)store)->session, (CamelService *)store, NULL);
 	if (root) {
-		char *base = g_build_filename(root, path, NULL);
-		char *file = g_build_filename(base, ".ev-summary", NULL);
+		gchar *base = g_build_filename(root, path, NULL);
+		gchar *file = g_build_filename(base, ".ev-summary", NULL);
 
 		g_mkdir_with_parents (base, 0777);
 		g_free(base);
@@ -160,7 +160,7 @@ camel_imapp_folder_delete(CamelIMAPPFolder *folder, CamelException *ex)
 }
 
 void
-camel_imapp_folder_rename(CamelIMAPPFolder *folder, const char *new, CamelException *ex)
+camel_imapp_folder_rename(CamelIMAPPFolder *folder, const gchar *new, CamelException *ex)
 {
 }
 
@@ -183,7 +183,7 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 }
 
 static CamelMimeMessage *
-imap_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
+imap_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelMimeMessage * volatile msg = NULL;
 	CamelStream * volatile stream = NULL;

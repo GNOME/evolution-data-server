@@ -52,7 +52,7 @@ impl_Cal_get_uri (PortableServer_Servant servant,
 {
 	EDataCal *cal;
 	EDataCalPrivate *priv;
-	const char *str_uri;
+	const gchar *str_uri;
 	CORBA_char *str_uri_copy;
 
 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
@@ -283,7 +283,7 @@ impl_Cal_getFreeBusy (PortableServer_Servant servant,
 
 	/* convert the CORBA user list to a GList */
 	if (user_list) {
-		int i;
+		gint i;
 
 		for (i = 0; i < user_list->_length; i++)
 			users = g_list_append (users, user_list->_buffer[i]);
@@ -742,7 +742,7 @@ e_data_cal_notify_read_only (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
  * Notifies listeners of the completion of the get_cal_address method call.
  */
 void
-e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *address)
+e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *address)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -771,7 +771,7 @@ e_data_cal_notify_cal_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
  * Notifies listeners of the completion of the get_alarm_email_address method call.
  */
 void
-e_data_cal_notify_alarm_email_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *address)
+e_data_cal_notify_alarm_email_address (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *address)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -800,7 +800,7 @@ e_data_cal_notify_alarm_email_address (EDataCal *cal, GNOME_Evolution_Calendar_C
  * Notifies listeners of the completion of the get_ldap_attribute method call.
  */
 void
-e_data_cal_notify_ldap_attribute (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *attribute)
+e_data_cal_notify_ldap_attribute (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *attribute)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -829,7 +829,7 @@ e_data_cal_notify_ldap_attribute (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
  * Notifies listeners of the completion of the get_static_capabilities method call.
  */
 void
-e_data_cal_notify_static_capabilities (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *capabilities)
+e_data_cal_notify_static_capabilities (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *capabilities)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -917,7 +917,7 @@ e_data_cal_notify_remove (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus sta
  */
 void
 e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
-				  const char *uid, const char *object)
+				  const gchar *uid, const gchar *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -953,7 +953,7 @@ e_data_cal_notify_object_created (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
  */
 void
 e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
-				   const char *old_object, const char *object)
+				   const gchar *old_object, const gchar *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -989,7 +989,7 @@ e_data_cal_notify_object_modified (EDataCal *cal, GNOME_Evolution_Calendar_CallS
  */
 void
 e_data_cal_notify_object_removed (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status,
-				  const ECalComponentId *id, const char *old_object, const char *object)
+				  const ECalComponentId *id, const gchar *old_object, const gchar *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1078,7 +1078,7 @@ e_data_cal_notify_alarm_discarded (EDataCal *cal, GNOME_Evolution_Calendar_CallS
  * Notifies listeners of the completion of the send_objects method call.
  */
 void
-e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *users, const char *calobj)
+e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, GList *users, const gchar *calobj)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1094,7 +1094,7 @@ e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStat
 	corba_users->_length = g_list_length (users);
 	if (users) {
 		GList *l;
-		int n;
+		gint n;
 
 		corba_users->_buffer = CORBA_sequence_GNOME_Evolution_Calendar_User_allocbuf (corba_users->_length);
 		for (l = users, n = 0; l != NULL; l = l->next, n++)
@@ -1121,7 +1121,7 @@ e_data_cal_notify_objects_sent (EDataCal *cal, GNOME_Evolution_Calendar_CallStat
  * Notifies listeners of the completion of the get_default_object method call.
  */
 void
-e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
+e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1152,7 +1152,7 @@ e_data_cal_notify_default_object (EDataCal *cal, GNOME_Evolution_Calendar_CallSt
  * Notifies listeners of the completion of the get_object method call.
  */
 void
-e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
+e_data_cal_notify_object (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1189,7 +1189,7 @@ e_data_cal_notify_object_list (EDataCal *cal, GNOME_Evolution_Calendar_CallStatu
 	CORBA_Environment ev;
 	GNOME_Evolution_Calendar_stringlist seq;
 	GList *l;
-	int i;
+	gint i;
 
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
@@ -1233,7 +1233,7 @@ e_data_cal_notify_attachment_list (EDataCal *cal, GNOME_Evolution_Calendar_CallS
 	CORBA_Environment ev;
 	GNOME_Evolution_Calendar_stringlist seq;
 	GSList *l;
-	int i;
+	gint i;
 
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
@@ -1300,7 +1300,7 @@ e_data_cal_notify_query (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus stat
  * Notifies listeners of the completion of the get_timezone method call.
  */
 void
-e_data_cal_notify_timezone_requested (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *object)
+e_data_cal_notify_timezone_requested (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *object)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1328,7 +1328,7 @@ e_data_cal_notify_timezone_requested (EDataCal *cal, GNOME_Evolution_Calendar_Ca
  * Notifies listeners of the completion of the add_timezone method call.
  */
 void
-e_data_cal_notify_timezone_added (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const char *tzid)
+e_data_cal_notify_timezone_added (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus status, const gchar *tzid)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1392,7 +1392,7 @@ e_data_cal_notify_changes (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus st
 	CORBA_Environment ev;
 	GNOME_Evolution_Calendar_CalObjChangeSeq seq;
 	GList *l;
-	int n, i;
+	gint n, i;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1452,7 +1452,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, GNOME_Evolution_Calendar_CallStatus 
 	CORBA_Environment ev;
 	GNOME_Evolution_Calendar_CalObjSeq seq;
 	GList *l;
-	int n, i;
+	gint n, i;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
@@ -1545,7 +1545,7 @@ e_data_cal_notify_auth_required (EDataCal *cal)
  * Notify a calendar client of an error occurred in the backend.
  */
 void
-e_data_cal_notify_error (EDataCal *cal, const char *message)
+e_data_cal_notify_error (EDataCal *cal, const gchar *message)
 {
 	EDataCalPrivate *priv;
 	CORBA_Environment ev;
@@ -1558,7 +1558,7 @@ e_data_cal_notify_error (EDataCal *cal, const char *message)
 	g_return_if_fail (priv->listener != CORBA_OBJECT_NIL);
 
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Calendar_CalListener_notifyErrorOccurred (priv->listener, (char *) message, &ev);
+	GNOME_Evolution_Calendar_CalListener_notifyErrorOccurred (priv->listener, (gchar *) message, &ev);
 
 	if (BONOBO_EX (&ev))
 		g_message ("e_data_cal_notify_remove(): could not notify the listener "

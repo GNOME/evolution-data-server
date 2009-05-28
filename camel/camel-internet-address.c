@@ -26,12 +26,12 @@
 
 #define d(x)
 
-static int    internet_decode		(CamelAddress *, const char *raw);
-static char * internet_encode		(CamelAddress *);
-static int    internet_unformat		(CamelAddress *, const char *raw);
-static char * internet_format		(CamelAddress *);
-static int    internet_cat		(CamelAddress *dest, const CamelAddress *source);
-static void   internet_remove		(CamelAddress *, int index);
+static gint    internet_decode		(CamelAddress *, const gchar *raw);
+static gchar * internet_encode		(CamelAddress *);
+static gint    internet_unformat		(CamelAddress *, const gchar *raw);
+static gchar * internet_format		(CamelAddress *);
+static gint    internet_cat		(CamelAddress *dest, const CamelAddress *source);
+static void   internet_remove		(CamelAddress *, gint index);
 
 static void camel_internet_address_class_init (CamelInternetAddressClass *klass);
 static void camel_internet_address_init       (CamelInternetAddress *obj);
@@ -39,8 +39,8 @@ static void camel_internet_address_init       (CamelInternetAddress *obj);
 static CamelAddressClass *camel_internet_address_parent;
 
 struct _address {
-	char *name;
-	char *address;
+	gchar *name;
+	gchar *address;
 };
 
 static void
@@ -82,10 +82,10 @@ camel_internet_address_get_type(void)
 }
 
 static int
-internet_decode	(CamelAddress *a, const char *raw)
+internet_decode	(CamelAddress *a, const gchar *raw)
 {
 	struct _camel_header_address *ha, *n;
-	int count = a->addresses->len;
+	gint count = a->addresses->len;
 
 	/* Should probably use its own decoder or something */
 	ha = camel_header_address_decode(raw, NULL);
@@ -111,13 +111,13 @@ internet_decode	(CamelAddress *a, const char *raw)
 	return a->addresses->len - count;
 }
 
-static char *
+static gchar *
 internet_encode	(CamelAddress *a)
 {
-	int i;
+	gint i;
 	GString *out;
-	char *ret;
-	int len = 6;		/* "From: ", assume longer of the address headers */
+	gchar *ret;
+	gint len = 6;		/* "From: ", assume longer of the address headers */
 
 	if (a->addresses->len == 0)
 		return NULL;
@@ -126,7 +126,7 @@ internet_encode	(CamelAddress *a)
 
 	for (i = 0;i < a->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index(a->addresses, i);
-		char *enc;
+		gchar *enc;
 
 		if (i != 0)
 			g_string_append(out, ", ");
@@ -143,11 +143,11 @@ internet_encode	(CamelAddress *a)
 }
 
 static int
-internet_unformat(CamelAddress *a, const char *raw)
+internet_unformat(CamelAddress *a, const gchar *raw)
 {
-	char *buffer, *p, *name, *addr;
-	int c;
-	int count = a->addresses->len;
+	gchar *buffer, *p, *name, *addr;
+	gint c;
+	gint count = a->addresses->len;
 
 	if (raw == NULL)
 		return 0;
@@ -208,12 +208,12 @@ internet_unformat(CamelAddress *a, const char *raw)
 	return a->addresses->len - count;
 }
 
-static char *
+static gchar *
 internet_format	(CamelAddress *a)
 {
-	int i;
+	gint i;
 	GString *out;
-	char *ret;
+	gchar *ret;
 
 	if (a->addresses->len == 0)
 		return NULL;
@@ -222,7 +222,7 @@ internet_format	(CamelAddress *a)
 
 	for (i = 0;i < a->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index(a->addresses, i);
-		char *enc;
+		gchar *enc;
 
 		if (i != 0)
 			g_string_append(out, ", ");
@@ -241,7 +241,7 @@ internet_format	(CamelAddress *a)
 static int
 internet_cat (CamelAddress *dest, const CamelAddress *source)
 {
-	int i;
+	gint i;
 
 	g_assert(CAMEL_IS_INTERNET_ADDRESS(source));
 
@@ -254,7 +254,7 @@ internet_cat (CamelAddress *dest, const CamelAddress *source)
 }
 
 static void
-internet_remove	(CamelAddress *a, int index)
+internet_remove	(CamelAddress *a, gint index)
 {
 	struct _address *addr;
 
@@ -294,11 +294,11 @@ camel_internet_address_new (void)
  *
  * Returns: the index of added entry
  **/
-int
-camel_internet_address_add (CamelInternetAddress *addr, const char *name, const char *address)
+gint
+camel_internet_address_add (CamelInternetAddress *addr, const gchar *name, const gchar *address)
 {
 	struct _address *new;
-	int index;
+	gint index;
 
 	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
@@ -324,7 +324,7 @@ camel_internet_address_add (CamelInternetAddress *addr, const char *name, const 
  * Returns: %TRUE if such an address exists, or %FALSE otherwise
  **/
 gboolean
-camel_internet_address_get (const CamelInternetAddress *addr, int index, const char **namep, const char **addressp)
+camel_internet_address_get (const CamelInternetAddress *addr, gint index, const gchar **namep, const gchar **addressp)
 {
 	struct _address *a;
 
@@ -353,11 +353,11 @@ camel_internet_address_get (const CamelInternetAddress *addr, int index, const c
  * Returns: the index of the address matching the name, or %-1 if no
  * match was found
  **/
-int
-camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, const char **addressp)
+gint
+camel_internet_address_find_name(CamelInternetAddress *addr, const gchar *name, const gchar **addressp)
 {
 	struct _address *a;
-	int i, len;
+	gint i, len;
 
 	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
@@ -384,11 +384,11 @@ camel_internet_address_find_name(CamelInternetAddress *addr, const char *name, c
  *
  * Returns: the index of the address, or %-1 if not found
  **/
-int
-camel_internet_address_find_address(CamelInternetAddress *addr, const char *address, const char **namep)
+gint
+camel_internet_address_find_address(CamelInternetAddress *addr, const gchar *address, const gchar **namep)
 {
 	struct _address *a;
-	int i, len;
+	gint i, len;
 
 	g_assert(CAMEL_IS_INTERNET_ADDRESS(addr));
 
@@ -405,9 +405,9 @@ camel_internet_address_find_address(CamelInternetAddress *addr, const char *addr
 }
 
 static void
-cia_encode_addrspec(GString *out, const char *addr)
+cia_encode_addrspec(GString *out, const gchar *addr)
 {
-	const char *at, *p;
+	const gchar *at, *p;
 
 	at = strchr(addr, '@');
 	if (at == NULL)
@@ -415,7 +415,7 @@ cia_encode_addrspec(GString *out, const char *addr)
 
 	p = addr;
 	while (p < at) {
-		char c = *p++;
+		gchar c = *p++;
 
 		/* strictly by rfc, we should split local parts on dots.
 		   however i think 2822 changes this, and not many clients grok it, so
@@ -456,12 +456,12 @@ append:
  *
  * Returns: the encoded address
  **/
-char *
-camel_internet_address_encode_address(int *inlen, const char *real, const char *addr)
+gchar *
+camel_internet_address_encode_address(gint *inlen, const gchar *real, const gchar *addr)
 {
-	char *name = camel_header_encode_phrase ((const unsigned char *) real);
-	char *ret = NULL;
-	int len = 0;
+	gchar *name = camel_header_encode_phrase ((const guchar *) real);
+	gchar *ret = NULL;
+	gint len = 0;
 	GString *out = g_string_new("");
 
 	g_assert(addr);
@@ -471,8 +471,8 @@ camel_internet_address_encode_address(int *inlen, const char *real, const char *
 
 	if (name && name[0]) {
 		if (inlen != NULL && (strlen(name) + len) > CAMEL_FOLD_SIZE) {
-			char *folded = camel_header_address_fold(name, len);
-			char *last;
+			gchar *folded = camel_header_address_fold(name, len);
+			gchar *last;
 			g_string_append(out, folded);
 			g_free(folded);
 			last = strrchr(out->str, '\n');
@@ -527,16 +527,16 @@ camel_internet_address_encode_address(int *inlen, const char *real, const char *
  *
  * Returns: a nicely formatted string containing the rfc822 address
  **/
-char *
-camel_internet_address_format_address(const char *name, const char *addr)
+gchar *
+camel_internet_address_format_address(const gchar *name, const gchar *addr)
 {
-	char *ret = NULL;
+	gchar *ret = NULL;
 
 	g_assert(addr);
 
 	if (name && name[0]) {
-		const char *p = name;
-		char *o, c;
+		const gchar *p = name;
+		gchar *o, c;
 
 		while ((c = *p++)) {
 			if (c == '\"' || c == ',') {

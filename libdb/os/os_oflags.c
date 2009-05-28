@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,7 +28,7 @@ static const char revid[] = "$Id$";
  */
 u_int32_t
 __db_oflags(oflags)
-	int oflags;
+	gint oflags;
 {
 	u_int32_t dbflags;
 
@@ -64,13 +64,13 @@ __db_oflags(oflags)
  * __db_omode --
  *	Convert a permission string to the correct open(2) flags.
  *
- * PUBLIC: int __db_omode __P((const char *));
+ * PUBLIC: gint __db_omode __P((const gchar *));
  */
-int
+gint
 __db_omode(perm)
-	const char *perm;
+	const gchar *perm;
 {
-	int mode;
+	gint mode;
 
 #ifdef DB_WIN32
 #ifndef	S_IRUSR

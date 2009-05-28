@@ -25,9 +25,9 @@
 #endif
 #include "e-gw-recur-utils.h"
 
-static const char *days_of_week[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+static const gchar *days_of_week[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
-const char *
+const gchar *
 e_gw_recur_get_day_of_week (short day)
 {
 

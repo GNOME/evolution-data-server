@@ -132,7 +132,7 @@ struct _CamelImapStore {
 	/* broken server - wont let us append with custom flags even if the folder allows them */
 	guint nocustomappend:1;
 
-	char tag_prefix;
+	gchar tag_prefix;
 	guint32 command;
 	CamelFolder *current_folder;
 
@@ -140,13 +140,13 @@ struct _CamelImapStore {
 	CamelImapServerLevel server_level;
 	guint32 capabilities, parameters;
 	/* NB: namespace should be handled by summary->namespace */
-	char *namespace, dir_sep, *base_url, *storage_path;
+	gchar *namespace, dir_sep, *base_url, *storage_path;
 	GHashTable *authtypes;
 
 	time_t refresh_stamp;
 
 	guint32 headers;
-	char *custom_headers;
+	gchar *custom_headers;
 };
 
 typedef struct {
@@ -161,7 +161,7 @@ CamelType camel_imap_store_get_type (void);
 
 gboolean camel_imap_store_connected (CamelImapStore *store, CamelException *ex);
 
-ssize_t camel_imap_store_readline (CamelImapStore *store, char **dest, CamelException *ex);
+ssize_t camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *ex);
 
 G_END_DECLS
 

@@ -37,17 +37,17 @@ struct _EIteratorClass {
 	void         (*invalidate) (EIterator  *iterator);
 
 	/* Virtual functions */
-	const void * (*get)        (EIterator  *iterator);
+	gconstpointer  (*get)        (EIterator  *iterator);
 	void         (*reset)      (EIterator  *iterator);
 	void         (*last)       (EIterator  *iterator);
 	gboolean     (*next)       (EIterator  *iterator);
 	gboolean     (*prev)       (EIterator  *iterator);
 	void         (*remove)     (EIterator  *iterator);
 	void         (*insert)     (EIterator  *iterator,
-				    const void *object,
+				    gconstpointer object,
 				    gboolean	before);
 	void         (*set)        (EIterator  *iterator,
-				    const void *object);
+				    gconstpointer object);
 	gboolean     (*is_valid)   (EIterator  *iterator);
 };
 
@@ -58,10 +58,10 @@ gboolean       e_iterator_next       (EIterator  *iterator);
 gboolean       e_iterator_prev       (EIterator  *iterator);
 void           e_iterator_delete     (EIterator  *iterator);
 void           e_iterator_insert     (EIterator  *iterator,
-				      const void *object,
+				      gconstpointer object,
 				      gboolean    before);
 void           e_iterator_set        (EIterator  *iterator,
-				      const void *object);
+				      gconstpointer object);
 gboolean       e_iterator_is_valid   (EIterator  *iterator);
 
 void           e_iterator_invalidate (EIterator  *iterator);

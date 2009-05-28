@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,34 +26,34 @@ static const char revid[] = "$Id$";
 
 typedef enum { L_ALREADY, L_ACQUIRED, L_NONE } RLOCK;
 
-static int __log_c_close __P((DB_LOGC *, u_int32_t));
-static int __log_c_get __P((DB_LOGC *, DB_LSN *, DBT *, u_int32_t));
-static int __log_c_get_int __P((DB_LOGC *, DB_LSN *, DBT *, u_int32_t));
-static int __log_c_hdrchk __P((DB_LOGC *, HDR *, int *));
-static int __log_c_incursor __P((DB_LOGC *, DB_LSN *, HDR *, u_int8_t **));
-static int __log_c_inregion __P((DB_LOGC *,
+static gint __log_c_close __P((DB_LOGC *, u_int32_t));
+static gint __log_c_get __P((DB_LOGC *, DB_LSN *, DBT *, u_int32_t));
+static gint __log_c_get_int __P((DB_LOGC *, DB_LSN *, DBT *, u_int32_t));
+static gint __log_c_hdrchk __P((DB_LOGC *, HDR *, gint *));
+static gint __log_c_incursor __P((DB_LOGC *, DB_LSN *, HDR *, u_int8_t **));
+static gint __log_c_inregion __P((DB_LOGC *,
 	       DB_LSN *, RLOCK *, DB_LSN *, HDR *, u_int8_t **));
-static int __log_c_io __P((DB_LOGC *,
-	       u_int32_t, u_int32_t, void *, size_t *, int *));
-static int __log_c_ondisk __P((DB_LOGC *,
-	       DB_LSN *, DB_LSN *, int, HDR *, u_int8_t **, int *));
-static int __log_c_set_maxrec __P((DB_LOGC *, char *));
-static int __log_c_shortread __P((DB_LOGC *, int));
+static gint __log_c_io __P((DB_LOGC *,
+	       u_int32_t, u_int32_t, gpointer , size_t *, gint *));
+static gint __log_c_ondisk __P((DB_LOGC *,
+	       DB_LSN *, DB_LSN *, int, HDR *, u_int8_t **, gint *));
+static gint __log_c_set_maxrec __P((DB_LOGC *, gchar *));
+static gint __log_c_shortread __P((DB_LOGC *, int));
 
 /*
  * __log_cursor --
  *	Create a log cursor.
  *
- * PUBLIC: int __log_cursor __P((DB_ENV *, DB_LOGC **, u_int32_t));
+ * PUBLIC: gint __log_cursor __P((DB_ENV *, DB_LOGC **, u_int32_t));
  */
-int
+gint
 __log_cursor(dbenv, logcp, flags)
 	DB_ENV *dbenv;
 	DB_LOGC **logcp;
 	u_int32_t flags;
 {
 	DB_LOGC *logc;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -101,7 +101,7 @@ __log_c_close(logc, flags)
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	dbenv = logc->dbenv;
 
@@ -135,7 +135,7 @@ __log_c_get(logc, alsn, dbt, flags)
 {
 	DB_ENV *dbenv;
 	DB_LSN saved_lsn;
-	int ret;
+	gint ret;
 
 	dbenv = logc->dbenv;
 
@@ -228,7 +228,7 @@ __log_c_get_int(logc, alsn, dbt, flags)
 	logfile_validity status;
 	u_int32_t cnt;
 	u_int8_t *rp;
-	int eof, is_hmac, ret;
+	gint eof, is_hmac, ret;
 
 	dbenv = logc->dbenv;
 	dblp = dbenv->lg_handle;
@@ -574,7 +574,7 @@ __log_c_inregion(logc, lsn, rlockp, last_lsn, hdr, pp)
 	LOG *lp;
 	size_t len, nr;
 	u_int32_t b_disk, b_region;
-	int ret;
+	gint ret;
 	u_int8_t *p;
 
 	dbenv = logc->dbenv;
@@ -747,14 +747,14 @@ static int
 __log_c_ondisk(logc, lsn, last_lsn, flags, hdr, pp, eofp)
 	DB_LOGC *logc;
 	DB_LSN *lsn, *last_lsn;
-	int flags, *eofp;
+	gint flags, *eofp;
 	HDR *hdr;
 	u_int8_t **pp;
 {
 	DB_ENV *dbenv;
 	size_t len, nr;
 	u_int32_t offset;
-	int ret;
+	gint ret;
 
 	dbenv = logc->dbenv;
 	*eofp = 0;
@@ -877,10 +877,10 @@ static int
 __log_c_hdrchk(logc, hdr, eofp)
 	DB_LOGC *logc;
 	HDR *hdr;
-	int *eofp;
+	gint *eofp;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 
 	dbenv = logc->dbenv;
 
@@ -927,14 +927,14 @@ static int
 __log_c_io(logc, fnum, offset, p, nrp, eofp)
 	DB_LOGC *logc;
 	u_int32_t fnum, offset;
-	void *p;
+	gpointer p;
 	size_t *nrp;
-	int *eofp;
+	gint *eofp;
 {
 	DB_ENV *dbenv;
 	DB_LOG *dblp;
-	int ret;
-	char *np;
+	gint ret;
+	gchar *np;
 
 	dbenv = logc->dbenv;
 	dblp = dbenv->lg_handle;
@@ -999,7 +999,7 @@ __log_c_io(logc, fnum, offset, p, nrp, eofp)
 static int
 __log_c_shortread(logc, silent)
 	DB_LOGC *logc;
-	int silent;
+	gint silent;
 {
 	if (!silent || !F_ISSET(logc, DB_LOG_SILENT_ERR))
 		__db_err(logc->dbenv, "DB_LOGC->get: short read");
@@ -1013,13 +1013,13 @@ __log_c_shortread(logc, silent)
 static int
 __log_c_set_maxrec(logc, np)
 	DB_LOGC *logc;
-	char *np;
+	gchar *np;
 {
 	DB_ENV *dbenv;
 	DB_LOG *dblp;
 	LOG *lp;
 	u_int32_t mbytes, bytes;
-	int ret;
+	gint ret;
 
 	dbenv = logc->dbenv;
 	dblp = dbenv->lg_handle;

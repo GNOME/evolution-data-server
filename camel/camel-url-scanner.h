@@ -30,25 +30,25 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	const char *pattern;
-	const char *prefix;
+	const gchar *pattern;
+	const gchar *prefix;
 	off_t um_so;
 	off_t um_eo;
 } urlmatch_t;
 
-typedef gboolean (*CamelUrlScanFunc) (const char *in, const char *pos, const char *inend, urlmatch_t *match);
+typedef gboolean (*CamelUrlScanFunc) (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
 
 /* some default CamelUrlScanFunc's */
-gboolean camel_url_file_start (const char *in, const char *pos, const char *inend, urlmatch_t *match);
-gboolean camel_url_file_end (const char *in, const char *pos, const char *inend, urlmatch_t *match);
-gboolean camel_url_web_start (const char *in, const char *pos, const char *inend, urlmatch_t *match);
-gboolean camel_url_web_end (const char *in, const char *pos, const char *inend, urlmatch_t *match);
-gboolean camel_url_addrspec_start (const char *in, const char *pos, const char *inend, urlmatch_t *match);
-gboolean camel_url_addrspec_end (const char *in, const char *pos, const char *inend, urlmatch_t *match);
+gboolean camel_url_file_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
+gboolean camel_url_file_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
+gboolean camel_url_web_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
+gboolean camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
+gboolean camel_url_addrspec_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
+gboolean camel_url_addrspec_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
 
 typedef struct {
-	char *pattern;
-	char *prefix;
+	gchar *pattern;
+	gchar *prefix;
 	CamelUrlScanFunc start;
 	CamelUrlScanFunc end;
 } urlpattern_t;
@@ -60,7 +60,7 @@ void camel_url_scanner_free (CamelUrlScanner *scanner);
 
 void camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern);
 
-gboolean camel_url_scanner_scan (CamelUrlScanner *scanner, const char *in, size_t inlen, urlmatch_t *match);
+gboolean camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, size_t inlen, urlmatch_t *match);
 
 G_END_DECLS
 

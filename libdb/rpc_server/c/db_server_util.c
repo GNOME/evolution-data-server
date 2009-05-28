@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -42,10 +42,10 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/rpc_server_ext.h"
 #include "dbinc_auto/common_ext.h"
 
-extern int __dbsrv_main	 __P((void));
-static int add_home __P((char *));
-static int add_passwd __P((char *));
-static int env_recover __P((char *));
+extern gint __dbsrv_main	 __P((void));
+static gint add_home __P((gchar *));
+static gint add_passwd __P((gchar *));
+static gint env_recover __P((gchar *));
 static void __dbclear_child __P((ct_entry *));
 
 static LIST_HEAD(cthead, ct_entry) __dbsrv_head;
@@ -53,23 +53,23 @@ static LIST_HEAD(homehead, home_entry) __dbsrv_home;
 static long __dbsrv_defto = DB_SERVER_TIMEOUT;
 static long __dbsrv_maxto = DB_SERVER_MAXTIMEOUT;
 static long __dbsrv_idleto = DB_SERVER_IDLETIMEOUT;
-static char *logfile = NULL;
-static char *prog;
+static gchar *logfile = NULL;
+static gchar *prog;
 
-static void usage __P((char *));
+static void usage __P((gchar *));
 static void version_check __P((void));
 
-int __dbsrv_verbose = 0;
+gint __dbsrv_verbose = 0;
 
-int
+gint
 main(argc, argv)
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 {
-	extern char *optarg;
+	extern gchar *optarg;
 	CLIENT *cl;
-	int ch, ret;
-	char *passwd;
+	gint ch, ret;
+	gchar *passwd;
 
 	prog = argv[0];
 
@@ -191,7 +191,7 @@ main(argc, argv)
 
 static void
 usage(prog)
-	char *prog;
+	gchar *prog;
 {
 	fprintf(stderr, "usage: %s %s\n\t%s\n", prog,
 	    "[-Vv] [-h home] [-P passwd]",
@@ -202,7 +202,7 @@ usage(prog)
 static void
 version_check()
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);
@@ -237,7 +237,7 @@ __dbsrv_settimeout(ctp, to)
  */
 void
 __dbsrv_timeout(force)
-	int force;
+	gint force;
 {
 	static long to_hint = -1;
 	time_t t;
@@ -386,15 +386,15 @@ __dbdel_ctp(parent)
 }
 
 /*
- * PUBLIC: ct_entry *new_ct_ent __P((int *));
+ * PUBLIC: ct_entry *new_ct_ent __P((gint *));
  */
 ct_entry *
 new_ct_ent(errp)
-	int *errp;
+	gint *errp;
 {
 	time_t t;
 	ct_entry *ctp, *octp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(NULL, sizeof(ct_entry), &ctp)) != 0) {
 		*errp = ret;
@@ -443,13 +443,13 @@ get_tableent(id)
 }
 
 /*
- * PUBLIC: ct_entry *__dbsrv_sharedb __P((ct_entry *, const char *,
- * PUBLIC:    const char *, DBTYPE, u_int32_t));
+ * PUBLIC: ct_entry *__dbsrv_sharedb __P((ct_entry *, const gchar *,
+ * PUBLIC:    const gchar *, DBTYPE, u_int32_t));
  */
 ct_entry *
 __dbsrv_sharedb(db_ctp, name, subdb, type, flags)
 	ct_entry *db_ctp;
-	const char *name, *subdb;
+	const gchar *name, *subdb;
 	DBTYPE type;
 	u_int32_t flags;
 {
@@ -574,15 +574,15 @@ __dbsrv_active(ctp)
 }
 
 /*
- * PUBLIC: int __db_close_int __P((long, u_int32_t));
+ * PUBLIC: gint __db_close_int __P((long, u_int32_t));
  */
-int
+gint
 __db_close_int(id, flags)
 	long id;
 	u_int32_t flags;
 {
 	DB *dbp;
-	int ret;
+	gint ret;
 	ct_entry *ctp;
 
 	ret = 0;
@@ -605,14 +605,14 @@ __db_close_int(id, flags)
 }
 
 /*
- * PUBLIC: int __dbc_close_int __P((ct_entry *));
+ * PUBLIC: gint __dbc_close_int __P((ct_entry *));
  */
-int
+gint
 __dbc_close_int(dbc_ctp)
 	ct_entry *dbc_ctp;
 {
 	DBC *dbc;
-	int ret;
+	gint ret;
 	ct_entry *ctp;
 
 	dbc = (DBC *)dbc_ctp->ct_anyp;
@@ -642,16 +642,16 @@ __dbc_close_int(dbc_ctp)
 }
 
 /*
- * PUBLIC: int __dbenv_close_int __P((long, u_int32_t, int));
+ * PUBLIC: gint __dbenv_close_int __P((long, u_int32_t, int));
  */
-int
+gint
 __dbenv_close_int(id, flags, force)
 	long id;
 	u_int32_t flags;
-	int force;
+	gint force;
 {
 	DB_ENV *dbenv;
-	int ret;
+	gint ret;
 	ct_entry *ctp;
 
 	ret = 0;
@@ -679,10 +679,10 @@ __dbenv_close_int(id, flags, force)
 
 static int
 add_home(home)
-	char *home;
+	gchar *home;
 {
 	home_entry *hp, *homep;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(NULL, sizeof(home_entry), &hp)) != 0)
 		return (ret);
@@ -724,7 +724,7 @@ add_home(home)
 
 static int
 add_passwd(passwd)
-	char *passwd;
+	gchar *passwd;
 {
 	home_entry *hp;
 
@@ -745,11 +745,11 @@ add_passwd(passwd)
 }
 
 /*
- * PUBLIC: home_entry *get_home __P((char *));
+ * PUBLIC: home_entry *get_home __P((gchar *));
  */
 home_entry *
 get_home(name)
-	char *name;
+	gchar *name;
 {
 	home_entry *hp;
 
@@ -762,12 +762,12 @@ get_home(name)
 
 static int
 env_recover(progname)
-	char *progname;
+	gchar *progname;
 {
 	DB_ENV *dbenv;
 	home_entry *hp;
 	u_int32_t flags;
-	int exitval, ret;
+	gint exitval, ret;
 
 	for (hp = LIST_FIRST(&__dbsrv_home); hp != NULL;
 	    hp = LIST_NEXT(hp, entries)) {

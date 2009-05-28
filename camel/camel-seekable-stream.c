@@ -35,8 +35,8 @@ static CamelStreamClass *parent_class = NULL;
 static off_t seek        (CamelSeekableStream *stream, off_t offset,
 			  CamelStreamSeekPolicy policy);
 static off_t stream_tell (CamelSeekableStream *stream);
-static int   reset       (CamelStream *stream);
-static int   set_bounds  (CamelSeekableStream *stream, off_t start, off_t end);
+static gint   reset       (CamelStream *stream);
+static gint   set_bounds  (CamelSeekableStream *stream, off_t start, off_t end);
 
 static void
 camel_seekable_stream_class_init (CamelSeekableStreamClass *camel_seekable_stream_class)
@@ -56,7 +56,7 @@ camel_seekable_stream_class_init (CamelSeekableStreamClass *camel_seekable_strea
 }
 
 static void
-camel_seekable_stream_init (void *o)
+camel_seekable_stream_init (gpointer o)
 {
 	CamelSeekableStream *stream = (CamelSeekableStream *)o;
 
@@ -172,7 +172,7 @@ set_bounds (CamelSeekableStream *stream, off_t start, off_t end)
  *
  * Returns: %-1 on error.
  **/
-int
+gint
 camel_seekable_stream_set_bounds (CamelSeekableStream *stream,
 				  off_t start, off_t end)
 {

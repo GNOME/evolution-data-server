@@ -47,23 +47,23 @@
 struct _lock_info {
 	struct _lock_info *next;
 	uid_t uid;
-	int id;
-	int depth;
+	gint id;
+	gint depth;
 	time_t stamp;		/* when last updated */
-	char path[1];
+	gchar path[1];
 };
 
-static int lock_id = 0;
+static gint lock_id = 0;
 static struct _lock_info *lock_info_list;
 static uid_t lock_root_uid = -1;
 static uid_t lock_real_uid = -1;
 
 /* utility functions */
 
-static int read_n(int fd, void *buffer, int inlen)
+static gint read_n(gint fd, gpointer buffer, gint inlen)
 {
-	char *p = buffer;
-	int len, left = inlen;
+	gchar *p = buffer;
+	gint len, left = inlen;
 
 	do {
 		len = read(fd, p, left);
@@ -79,10 +79,10 @@ static int read_n(int fd, void *buffer, int inlen)
 	return inlen - left;
 }
 
-static int write_n(int fd, void *buffer, int inlen)
+static gint write_n(gint fd, gpointer buffer, gint inlen)
 {
-	char *p = buffer;
-	int len, left = inlen;
+	gchar *p = buffer;
+	gint len, left = inlen;
 
 	do {
 		len = write(fd, p, left);
@@ -99,7 +99,7 @@ static int write_n(int fd, void *buffer, int inlen)
 }
 
 void
-camel_exception_setv (CamelException *ex, ExceptionId id, const char *format, ...)
+camel_exception_setv (CamelException *ex, ExceptionId id, const gchar *format, ...)
 {
 	;
 }
@@ -110,18 +110,18 @@ camel_exception_clear (CamelException *exception)
 	;
 }
 
-char *gettext (const char *msgid);
+gchar *gettext (const gchar *msgid);
 
-char *
-gettext (const char *msgid)
+gchar *
+gettext (const gchar *msgid)
 {
 	return NULL;
 }
 
-static int lock_path(const char *path, guint32 *lockid)
+static gint lock_path(const gchar *path, guint32 *lockid)
 {
 	struct _lock_info *info = NULL;
-	int res = CAMEL_LOCK_HELPER_STATUS_OK;
+	gint res = CAMEL_LOCK_HELPER_STATUS_OK;
 	struct stat st;
 
 	d(fprintf(stderr, "locking path '%s' id = %d\n", path, lock_id));
@@ -202,7 +202,7 @@ fail:
 	return res;
 }
 
-static int unlock_id(guint32 lockid)
+static gint unlock_id(guint32 lockid)
 {
 	struct _lock_info *info, *p;
 
@@ -238,9 +238,9 @@ static int unlock_id(guint32 lockid)
 	return CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 }
 
-static void lock_touch(const char *path)
+static void lock_touch(const gchar *path)
 {
-	char *name;
+	gchar *name;
 
 	/* we could also check that we haven't had our lock stolen from us here */
 
@@ -281,12 +281,12 @@ static void setup_process(void)
 #endif
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	struct _CamelLockHelperMsg msg;
-	int len;
-	int res;
-	char *path;
+	gint len;
+	gint res;
+	gchar *path;
 	fd_set rset;
 	struct timeval tv;
 	struct _lock_info *info;

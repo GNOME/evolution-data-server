@@ -39,8 +39,8 @@ static CamelSeekableStreamClass *parent_class = NULL;
 /* Returns the class for a CamelStreamMem */
 #define CSM_CLASS(so) CAMEL_STREAM_MEM_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
-static ssize_t stream_read (CamelStream *stream, char *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const char *buffer, size_t n);
+static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
 static gboolean stream_eos (CamelStream *stream);
 static off_t stream_seek (CamelSeekableStream *stream, off_t offset,
 			  CamelStreamSeekPolicy policy);
@@ -75,9 +75,9 @@ camel_stream_mem_init (CamelObject *object)
 }
 
 /* could probably be a util method */
-static void clear_mem(void *p, size_t len)
+static void clear_mem(gpointer p, size_t len)
 {
-	char *s = p;
+	gchar *s = p;
 
 	/* This also helps debug bad access memory errors */
 	while (len > 4) {
@@ -139,7 +139,7 @@ camel_stream_mem_new (void)
  * Returns: a new #CamelStreamMem
  **/
 CamelStream *
-camel_stream_mem_new_with_buffer (const char *buffer, size_t len)
+camel_stream_mem_new_with_buffer (const gchar *buffer, size_t len)
 {
 	GByteArray *ba;
 
@@ -226,7 +226,7 @@ camel_stream_mem_set_byte_array (CamelStreamMem *mem, GByteArray *buffer)
  * and so may have resource implications to consider.
  **/
 void
-camel_stream_mem_set_buffer (CamelStreamMem *mem, const char *buffer, size_t len)
+camel_stream_mem_set_buffer (CamelStreamMem *mem, const gchar *buffer, size_t len)
 {
 	GByteArray *ba;
 
@@ -252,7 +252,7 @@ camel_stream_mem_finalize (CamelObject *object)
 }
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelStreamMem *camel_stream_mem = CAMEL_STREAM_MEM (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
@@ -272,7 +272,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelStreamMem *stream_mem = CAMEL_STREAM_MEM (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
@@ -332,7 +332,7 @@ stream_seek (CamelSeekableStream *stream, off_t offset,
 		position = MAX (position, stream->bound_start);
 
 	if (position > stream_mem->buffer->len) {
-		int oldlen = stream_mem->buffer->len;
+		gint oldlen = stream_mem->buffer->len;
 		g_byte_array_set_size (stream_mem->buffer, position);
 		memset (stream_mem->buffer->data + oldlen, 0,
 			position - oldlen);

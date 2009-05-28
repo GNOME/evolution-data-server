@@ -101,10 +101,10 @@ void
 camel_provider_init (void)
 {
 	GDir *dir;
-	const char *entry;
-	char *p, *name, buf[80];
+	const gchar *entry;
+	gchar *p, *name, buf[80];
 	CamelProviderModule *m;
-	static int loaded = 0;
+	static gint loaded = 0;
 
 	pthread_once(&setup_once, provider_setup);
 
@@ -149,7 +149,7 @@ camel_provider_init (void)
 				*p = '\0';
 
 			if (*buf) {
-				char *protocol = g_strdup(buf);
+				gchar *protocol = g_strdup(buf);
 
 				m->types = g_slist_prepend(m->types, protocol);
 				g_hash_table_insert(module_table, protocol, m);
@@ -172,7 +172,7 @@ camel_provider_init (void)
  * itself with @session.
  **/
 void
-camel_provider_load(const char *path, CamelException *ex)
+camel_provider_load(const gchar *path, CamelException *ex)
 {
 	GModule *module;
 	CamelProvider *(*camel_provider_module_init) (void);
@@ -216,7 +216,7 @@ camel_provider_load(const char *path, CamelException *ex)
 void
 camel_provider_register(CamelProvider *provider)
 {
-	int i;
+	gint i;
 	CamelProviderConfEntry *conf;
 	GList *l;
 
@@ -343,10 +343,10 @@ camel_provider_list(gboolean load)
  * Return value: the provider, or %NULL, in which case @ex will be set.
  **/
 CamelProvider *
-camel_provider_get(const char *url_string, CamelException *ex)
+camel_provider_get(const gchar *url_string, CamelException *ex)
 {
 	CamelProvider *provider = NULL;
-	char *protocol;
+	gchar *protocol;
 	size_t len;
 
 	g_return_val_if_fail (url_string != NULL, NULL);
@@ -405,7 +405,7 @@ fail:
  *
  * Returns: 0 on success or -1 on fail.
  **/
-int
+gint
 camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 			    GHashTable **auto_detected, CamelException *ex)
 {

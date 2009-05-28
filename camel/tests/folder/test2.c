@@ -20,19 +20,19 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *local_drivers[] = { "local" };
+static const gchar *local_drivers[] = { "local" };
 
-static char *stores[] = {
+static gchar *stores[] = {
 	"mbox:///tmp/camel-test/mbox",
 	"mh:///tmp/camel-test/mh",
 	"maildir:///tmp/camel-test/maildir"
 };
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelException *ex;
-	int i;
+	gint i;
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, local_drivers);
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
 	for (i=0;i<ARRAY_LEN(stores);i++) {
-		char *name = stores[i];
+		gchar *name = stores[i];
 
 		test_folder_message_ops(session, name, TRUE, "testbox");
 	}

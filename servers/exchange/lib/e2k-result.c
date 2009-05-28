@@ -34,7 +34,7 @@
 #include <libxml/xmlmemory.h>
 
 static void
-prop_get_binary_array (E2kResult *result, const char *propname, xmlNode *node)
+prop_get_binary_array (E2kResult *result, const gchar *propname, xmlNode *node)
 {
 	GPtrArray *array;
 
@@ -59,7 +59,7 @@ prop_get_binary_array (E2kResult *result, const char *propname, xmlNode *node)
 }
 
 static void
-prop_get_string_array (E2kResult *result, const char *propname,
+prop_get_string_array (E2kResult *result, const gchar *propname,
 		       E2kPropType real_type, xmlNode *node)
 {
 	GPtrArray *array;
@@ -77,7 +77,7 @@ prop_get_string_array (E2kResult *result, const char *propname,
 }
 
 static void
-prop_get_binary (E2kResult *result, const char *propname, xmlNode *node)
+prop_get_binary (E2kResult *result, const gchar *propname, xmlNode *node)
 {
 	GByteArray *byte_array;
 
@@ -96,10 +96,10 @@ prop_get_binary (E2kResult *result, const char *propname, xmlNode *node)
 }
 
 static void
-prop_get_string (E2kResult *result, const char *propname,
+prop_get_string (E2kResult *result, const gchar *propname,
 		 E2kPropType real_type, xmlNode *node)
 {
-	char *content;
+	gchar *content;
 
 	if (node->xmlChildrenNode && node->xmlChildrenNode->content)
 		content = g_strdup (node->xmlChildrenNode->content);
@@ -111,7 +111,7 @@ prop_get_string (E2kResult *result, const char *propname,
 }
 
 static void
-prop_get_xml (E2kResult *result, const char *propname, xmlNode *node)
+prop_get_xml (E2kResult *result, const gchar *propname, xmlNode *node)
 {
 	e2k_properties_set_xml (result->props, propname,
 				xmlCopyNode (node, TRUE));
@@ -120,7 +120,7 @@ prop_get_xml (E2kResult *result, const char *propname, xmlNode *node)
 static void
 prop_parse (xmlNode *node, E2kResult *result)
 {
-	char *name, *type;
+	gchar *name, *type;
 
 	g_return_if_fail (node->ns != NULL);
 
@@ -213,13 +213,13 @@ e2k_results_array_new (void)
  * always) returned with names that start with '0', which is illegal
  * and makes libxml choke. So we preprocess them to fix that.
  */
-static char *
-sanitize_bad_multistatus (const char *buf, int len)
+static gchar *
+sanitize_bad_multistatus (const gchar *buf, gint len)
 {
 	GString *body;
-	const char *p;
-	int start, end;
-	char ns, badprop[7], *ret;
+	const gchar *p;
+	gint start, end;
+	gchar ns, badprop[7], *ret;
 
 	/* If there are no "mapi/id/{...}" namespace declarations, then
 	 * we don't need any cleanup.
@@ -292,7 +292,7 @@ e2k_results_array_add_from_multistatus (GArray *results_array,
 	xmlDoc *doc;
 	xmlNode *node, *rnode;
 	E2kResult result;
-	char *body;
+	gchar *body;
 
 	g_return_if_fail (msg->status_code == E2K_HTTP_MULTI_STATUS);
 
@@ -377,7 +377,7 @@ e2k_results_array_free (GArray *results_array, gboolean free_results)
  **/
 void
 e2k_results_from_multistatus (SoupMessage *msg,
-			      E2kResult **results, int *nresults)
+			      E2kResult **results, gint *nresults)
 {
 	GArray *results_array;
 
@@ -399,11 +399,11 @@ e2k_results_from_multistatus (SoupMessage *msg,
  * Return value: a copy of @results.
  **/
 E2kResult *
-e2k_results_copy (E2kResult *results, int nresults)
+e2k_results_copy (E2kResult *results, gint nresults)
 {
 	GArray *results_array = NULL;
 	E2kResult result, *new_results;
-	int i;
+	gint i;
 
 	results_array = g_array_new (TRUE, FALSE, sizeof (E2kResult));
 	for (i = 0; i < nresults; i++) {
@@ -427,9 +427,9 @@ e2k_results_copy (E2kResult *results, int nresults)
  * Frees the data in @results.
  **/
 void
-e2k_results_free (E2kResult *results, int nresults)
+e2k_results_free (E2kResult *results, gint nresults)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < nresults; i++)
 		e2k_result_clear (&results[i]);
@@ -444,8 +444,8 @@ struct E2kResultIter {
 	E2kHTTPStatus status;
 
 	E2kResult *results;
-	int nresults, next;
-	int first, total;
+	gint nresults, next;
+	gint first, total;
 	gboolean ascending;
 
 	E2kResultIterFetchFunc fetch_func;
@@ -504,7 +504,7 @@ iter_fetch (E2kResultIter *iter)
  **/
 E2kResultIter *
 e2k_result_iter_new (E2kContext *ctx, E2kOperation *op,
-		     gboolean ascending, int total,
+		     gboolean ascending, gint total,
 		     E2kResultIterFetchFunc fetch_func,
 		     E2kResultIterFreeFunc free_func,
 		     gpointer user_data)
@@ -569,7 +569,7 @@ e2k_result_iter_next (E2kResultIter *iter)
  *
  * Return value: the index of the current result
  **/
-int
+gint
 e2k_result_iter_get_index (E2kResultIter *iter)
 {
 	g_return_val_if_fail (iter != NULL, -1);
@@ -590,7 +590,7 @@ e2k_result_iter_get_index (E2kResultIter *iter)
  *
  * Return value: the total number of results expected
  **/
-int
+gint
 e2k_result_iter_get_total (E2kResultIter *iter)
 {
 	g_return_val_if_fail (iter != NULL, -1);

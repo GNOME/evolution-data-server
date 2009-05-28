@@ -55,37 +55,37 @@ GType                e_folder_type_registry_get_type   (void);
 EFolderTypeRegistry *e_folder_type_registry_new        (void);
 
 gboolean  e_folder_type_registry_register_type         (EFolderTypeRegistry           *folder_type_registry,
-							const char                    *type_name,
-							const char                    *icon_name,
-							const char                    *display_name,
-							const char                    *description,
+							const gchar                    *type_name,
+							const gchar                    *icon_name,
+							const gchar                    *display_name,
+							const gchar                    *description,
 							gboolean                       user_creatable,
-							int                            num_accepted_dnd_types,
-							const char                   **accepted_dnd_types);
+							gint                            num_accepted_dnd_types,
+							const gchar                   **accepted_dnd_types);
 gboolean  e_folder_type_registry_set_handler_for_type  (EFolderTypeRegistry           *folder_type_registry,
-							const char                    *type_name,
+							const gchar                    *type_name,
 							GObject                       *handler);
 
 GList *e_folder_type_registry_get_type_names  (EFolderTypeRegistry *folder_type_registry);
 
 gboolean  e_folder_type_registry_type_registered  (EFolderTypeRegistry *folder_type_registry,
-						   const char          *type_name);
+						   const gchar          *type_name);
 void      e_folder_type_registry_unregister_type  (EFolderTypeRegistry *folder_type_registry,
-						   const char          *type_name);
+						   const gchar          *type_name);
 
-const char                    *e_folder_type_registry_get_icon_name_for_type     (EFolderTypeRegistry *folder_type_registry,
-										  const char          *type_name);
+const gchar                    *e_folder_type_registry_get_icon_name_for_type     (EFolderTypeRegistry *folder_type_registry,
+										  const gchar          *type_name);
 GObject                       *e_folder_type_registry_get_handler_for_type       (EFolderTypeRegistry *folder_type_registry,
-										  const char          *type_name);
+										  const gchar          *type_name);
 gboolean                       e_folder_type_registry_type_is_user_creatable     (EFolderTypeRegistry *folder_type_registry,
-										  const char          *type_name);
-const char                    *e_folder_type_registry_get_display_name_for_type  (EFolderTypeRegistry *folder_type_registry,
-										  const char          *type_name);
-const char                    *e_folder_type_registry_get_description_for_type   (EFolderTypeRegistry *folder_type_registry,
-										  const char          *type_name);
+										  const gchar          *type_name);
+const gchar                    *e_folder_type_registry_get_display_name_for_type  (EFolderTypeRegistry *folder_type_registry,
+										  const gchar          *type_name);
+const gchar                    *e_folder_type_registry_get_description_for_type   (EFolderTypeRegistry *folder_type_registry,
+										  const gchar          *type_name);
 
 GList *e_folder_type_registry_get_accepted_dnd_types_for_type (EFolderTypeRegistry *folder_type_registry,
-							       const char *type_name);
+							       const gchar *type_name);
 
 
 #ifdef __cplusplus

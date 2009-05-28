@@ -14,11 +14,11 @@
 
 #include "address-data.h"
 
-static char *convert(const char *in, const char *from, const char *to)
+static gchar *convert(const gchar *in, const gchar *from, const gchar *to)
 {
 	iconv_t ic = iconv_open(to, from);
-	char *out, *outp;
-	const char *inp;
+	gchar *out, *outp;
+	const gchar *inp;
 	size_t inlen, outlen;
 
 	if (ic == (iconv_t)-1)
@@ -49,7 +49,7 @@ static char *convert(const char *in, const char *from, const char *to)
 #if 0
 	/* lets see if we can convert back again? */
 	{
-		char *nout, *noutp;
+		gchar *nout, *noutp;
 		iconv_t ic = iconv_open(from, to);
 
 		if (ic == (iconv_t)-1)
@@ -82,14 +82,14 @@ fail:
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 	CamelInternetAddress *addr, *addr2;
-	char *name;
-	char *charset;
-	const char *real, *where;
-	char *enc, *enc2, *format, *format2;
+	gchar *name;
+	gchar *charset;
+	const gchar *real, *where;
+	gchar *enc, *enc2, *format, *format2;
 
 	camel_test_init(argc, argv);
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
 	push("Test add many");
 	for (i=1;i<10;i++) {
-		char name[16], a[32];
+		gchar name[16], a[32];
 		sprintf(name, "Zed %d", i);
 		sprintf(a, "nowhere@here-%d.com.au", i);
 		camel_internet_address_add(addr, name, a);

@@ -122,7 +122,7 @@
 typedef struct {
 	icalrecurrencetype_frequency freq;
 
-	int            interval;
+	gint            interval;
 
 	/* Specifies the end of the recurrence, inclusive. No occurrences are
 	   generated after this date. If it is 0, the event recurs forever. */
@@ -481,8 +481,8 @@ static void cal_obj_time_find_first_week	(CalObjTime *cotime,
 static void cal_object_time_from_time		(CalObjTime *cotime,
 						 time_t      t,
 						 icaltimezone *zone);
-static gint cal_obj_date_only_compare_func	(const void *arg1,
-						 const void *arg2);
+static gint cal_obj_date_only_compare_func	(gconstpointer arg1,
+						 gconstpointer arg2);
 
 
 
@@ -507,7 +507,7 @@ static void e_cal_recur_set_rule_end_date		(icalproperty	*prop,
 
 
 #ifdef CAL_OBJ_DEBUG
-static char* cal_obj_time_to_string		(CalObjTime	*cotime);
+static gchar * cal_obj_time_to_string		(CalObjTime	*cotime);
 #endif
 
 
@@ -906,10 +906,10 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
  * struct icalrecurrencetype.
  */
 static GList *
-array_to_list (short *array, int max_elements)
+array_to_list (short *array, gint max_elements)
 {
 	GList *l;
-	int i;
+	gint i;
 
 	l = NULL;
 
@@ -995,7 +995,7 @@ e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 				    sizeof (ir.by_month) / sizeof (ir.by_month[0]));
 	for (elem = r->bymonth; elem; elem = elem->next) {
 		/* We need to convert from 1-12 to 0-11, i.e. subtract 1. */
-		int month = GPOINTER_TO_INT (elem->data) - 1;
+		gint month = GPOINTER_TO_INT (elem->data) - 1;
 		elem->data = GINT_TO_POINTER (month);
 	}
 
@@ -1939,7 +1939,7 @@ cal_obj_sort_occurrences (GArray *occs)
 static void
 cal_obj_remove_duplicates_and_invalid_dates (GArray *occs)
 {
-	static const int days_in_month[12] = {
+	static const gint days_in_month[12] = {
 		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	};
 
@@ -3618,8 +3618,8 @@ cal_obj_time_compare		(CalObjTime *cotime1,
 /* This is the same as the above function, but without the comparison type.
    It is used for qsort(). */
 static gint
-cal_obj_time_compare_func (const void *arg1,
-			   const void *arg2)
+cal_obj_time_compare_func (gconstpointer arg1,
+			   gconstpointer arg2)
 {
 	CalObjTime *cotime1, *cotime2;
 	gint retval;
@@ -3670,8 +3670,8 @@ cal_obj_time_compare_func (const void *arg1,
 
 
 static gint
-cal_obj_date_only_compare_func (const void *arg1,
-				const void *arg2)
+cal_obj_date_only_compare_func (gconstpointer arg1,
+				gconstpointer arg2)
 {
 	CalObjTime *cotime1, *cotime2;
 
@@ -3817,11 +3817,11 @@ cal_object_time_from_time	(CalObjTime	*cotime,
 /* Debugging function to convert a CalObjTime to a string. It uses a static
    buffer so beware. */
 #ifdef CAL_OBJ_DEBUG
-static char*
+static gchar *
 cal_obj_time_to_string		(CalObjTime	*cotime)
 {
-	static char buffer[20];
-	char *weekdays[] = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
+	static gchar buffer[20];
+	gchar *weekdays[] = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 			     "   " };
 	gint weekday;
 
@@ -3958,7 +3958,7 @@ e_cal_recur_get_rule_end_date	(icalproperty	*prop,
 				 icaltimezone	*default_timezone)
 {
 	icalparameter *param;
-	const char *xname, *xvalue;
+	const gchar *xname, *xvalue;
 	icalvalue *value;
 	struct icaltimetype icaltime;
 	icaltimezone *zone;
@@ -3997,8 +3997,8 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 	icalvalue *value;
 	icaltimezone *utc_zone;
 	struct icaltimetype icaltime;
-	const char *xname;
-	char *end_date_string;
+	const gchar *xname;
+	gchar *end_date_string;
 
 	/* We save the value as a UTC DATE-TIME. */
 	utc_zone = icaltimezone_get_utc_timezone ();
@@ -4037,7 +4037,7 @@ static
  * An array of 31 translated strings for each day of the month (i.e. "1st",
  * "2nd", and so on).
  */
-const char *e_cal_recur_nth[31] = {
+const gchar *e_cal_recur_nth[31] = {
 	N_("1st"),
 	N_("2nd"),
 	N_("3rd"),
@@ -4081,7 +4081,7 @@ const char *e_cal_recur_nth[31] = {
  *
  * Returns: a pointer to an array of strings.  This array is static, do not free it.
  */
-const char **
+const gchar **
 e_cal_get_recur_nth (void)
 {
 	return e_cal_recur_nth;

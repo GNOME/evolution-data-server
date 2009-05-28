@@ -66,7 +66,7 @@ extern CamelType camel_object_type;
 
 typedef struct _CamelObjectClass CamelObjectClass;
 typedef struct _CamelObject CamelObject;
-typedef unsigned int CamelObjectHookID;
+typedef guint CamelObjectHookID;
 #ifndef CAMEL_DISABLE_DEPRECATED
 typedef struct _CamelObjectMeta CamelObjectMeta;
 #endif /* CAMEL_DISABLE_DEPRECATED */
@@ -114,8 +114,8 @@ typedef enum _CamelObjectFlags {
 struct _CamelObjectMeta {
 	struct _CamelObjectMeta *next;
 
-	char *value;
-	char name[1];		/* allocated as part of structure */
+	gchar *value;
+	gchar name[1];		/* allocated as part of structure */
 };
 
 /* TODO: create a simpleobject which has no events on it, or an interface for events */
@@ -143,9 +143,9 @@ struct _CamelObjectClass
 
 	struct _CamelObjectClass *next, *child; /* maintain heirarchy, just for kicks */
 
-	const char *name;
+	const gchar *name;
 
-	void *lock;		/* lock when used in threading, else just pads struct */
+	gpointer lock;		/* lock when used in threading, else just pads struct */
 
 	/*unsigned short version, revision;*/
 
@@ -173,18 +173,18 @@ struct _CamelObjectClass
 	/* root-class fields follow, type system above */
 
 	/* get/set interface */
-	int (*setv)(struct _CamelObject *, struct _CamelException *ex, CamelArgV *args);
-	int (*getv)(struct _CamelObject *, struct _CamelException *ex, CamelArgGetV *args);
+	gint (*setv)(struct _CamelObject *, struct _CamelException *ex, CamelArgV *args);
+	gint (*getv)(struct _CamelObject *, struct _CamelException *ex, CamelArgGetV *args);
 	/* we only free 1 at a time, and only pointer types, obviously */
-	void (*free)(struct _CamelObject *, guint32 tag, void *ptr);
+	void (*free)(struct _CamelObject *, guint32 tag, gpointer ptr);
 
 	/* get/set meta-data interface */
-	char *(*meta_get)(struct _CamelObject *, const char * name);
-	gboolean (*meta_set)(struct _CamelObject *, const char * name, const char *value);
+	gchar *(*meta_get)(struct _CamelObject *, const gchar * name);
+	gboolean (*meta_set)(struct _CamelObject *, const gchar * name, const gchar *value);
 
 	/* persistence stuff */
-	int (*state_read)(struct _CamelObject *, FILE *fp);
-	int (*state_write)(struct _CamelObject *, FILE *fp);
+	gint (*state_read)(struct _CamelObject *, FILE *fp);
+	gint (*state_write)(struct _CamelObject *, FILE *fp);
 };
 
 #ifndef CAMEL_DISABLE_DEPRECATED
@@ -196,7 +196,7 @@ struct _CamelInterface {
 
 /* The type system .... it's pretty simple..... */
 void camel_type_init (void);
-CamelType camel_type_register(CamelType parent, const char * name, /*unsigned int ver, unsigned int rev,*/
+CamelType camel_type_register(CamelType parent, const gchar * name, /*guint ver, guint rev,*/
 			      size_t instance_size,
 			      size_t classfuncs_size,
 			      CamelObjectClassInitFunc class_init,
@@ -205,7 +205,7 @@ CamelType camel_type_register(CamelType parent, const char * name, /*unsigned in
 			      CamelObjectFinalizeFunc instance_finalize);
 
 #ifndef CAMEL_DISABLE_DEPRECATED
-CamelType camel_interface_register(CamelType parent, const char *name,
+CamelType camel_interface_register(CamelType parent, const gchar *name,
 				   size_t classfuncs_size,
 				   CamelObjectClassInitFunc class_init,
 				   CamelObjectClassFinalizeFunc class_finalize);
@@ -215,9 +215,9 @@ CamelType camel_interface_register(CamelType parent, const char *name,
 #define camel_type_get_global_classfuncs(x) ((CamelObjectClass *)(x))
 
 /* object class methods (types == classes now) */
-const char *camel_type_to_name (CamelType type);
-CamelType camel_name_to_type (const char *name);
-void camel_object_class_add_event (CamelObjectClass *klass, const char *name, CamelObjectEventPrepFunc prep);
+const gchar *camel_type_to_name (CamelType type);
+CamelType camel_name_to_type (const gchar *name);
+void camel_object_class_add_event (CamelObjectClass *klass, const gchar *name, CamelObjectEventPrepFunc prep);
 #ifndef CAMEL_DISABLE_DEPRECATED
 void camel_object_class_add_interface(CamelObjectClass *klass, CamelType itype);
 #endif /* CAMEL_DISABLE_DEPRECATED */
@@ -240,8 +240,8 @@ CamelType camel_object_get_type (void);
 
 CamelObject *camel_object_new (CamelType type);
 
-void camel_object_ref(void *);
-void camel_object_unref(void *);
+void camel_object_ref(gpointer);
+void camel_object_unref(gpointer);
 
 #ifdef CAMEL_DEBUG
 #define camel_object_ref(o) (printf("%s (%s:%d):ref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_ref(o))
@@ -249,50 +249,50 @@ void camel_object_unref(void *);
 #endif
 
 /* hooks */
-CamelObjectHookID camel_object_hook_event(void *obj, const char *name, CamelObjectEventHookFunc hook, void *data);
-void camel_object_remove_event(void *obj, CamelObjectHookID id);
-void camel_object_unhook_event(void *obj, const char *name, CamelObjectEventHookFunc hook, void *data);
-void camel_object_trigger_event(void *obj, const char *name, void *event_data);
+CamelObjectHookID camel_object_hook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);
+void camel_object_remove_event(gpointer obj, CamelObjectHookID id);
+void camel_object_unhook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);
+void camel_object_trigger_event(gpointer obj, const gchar *name, gpointer event_data);
 
 #ifndef CAMEL_DISABLE_DEPRECATED
 /* interfaces */
-void *camel_object_get_interface(void *vo, CamelType itype);
+gpointer camel_object_get_interface(gpointer vo, CamelType itype);
 #endif /* CAMEL_DISABLE_DEPRECATED */
 
 /* get/set methods */
-int camel_object_set(void *obj, struct _CamelException *ex, ...);
-int camel_object_setv(void *obj, struct _CamelException *ex, CamelArgV *);
-int camel_object_get(void *obj, struct _CamelException *ex, ...);
-int camel_object_getv(void *obj, struct _CamelException *ex, CamelArgGetV *);
+gint camel_object_set(gpointer obj, struct _CamelException *ex, ...);
+gint camel_object_setv(gpointer obj, struct _CamelException *ex, CamelArgV *);
+gint camel_object_get(gpointer obj, struct _CamelException *ex, ...);
+gint camel_object_getv(gpointer obj, struct _CamelException *ex, CamelArgGetV *);
 
 /* not very efficient one-time calls */
-void *camel_object_get_ptr(void *vo, CamelException *ex, int tag);
-int camel_object_get_int(void *vo, CamelException *ex, int tag);
+gpointer camel_object_get_ptr(gpointer vo, CamelException *ex, gint tag);
+gint camel_object_get_int(gpointer vo, CamelException *ex, gint tag);
 
 /* meta-data for user-specific data */
-char *camel_object_meta_get(void *vo, const char * name);
-gboolean camel_object_meta_set(void *vo, const char * name, const char *value);
+gchar *camel_object_meta_get(gpointer vo, const gchar * name);
+gboolean camel_object_meta_set(gpointer vo, const gchar * name, const gchar *value);
 
 /* reads/writes the state from/to the CAMEL_OBJECT_STATE_FILE */
-int camel_object_state_read(void *vo);
-int camel_object_state_write(void *vo);
+gint camel_object_state_read(gpointer vo);
+gint camel_object_state_write(gpointer vo);
 
 /* free a retrieved object.  May be a noop for static data. */
-void camel_object_free(void *vo, guint32 tag, void *value);
+void camel_object_free(gpointer vo, guint32 tag, gpointer value);
 
 /* for managing bags of weakly-ref'd 'child' objects */
 typedef struct _CamelObjectBag CamelObjectBag;
-typedef void *(*CamelCopyFunc)(const void *vo);
+typedef gpointer (*CamelCopyFunc)(gconstpointer vo);
 
 CamelObjectBag *camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree);
-void *camel_object_bag_get(CamelObjectBag *bag, const void *key);
-void *camel_object_bag_peek(CamelObjectBag *bag, const void *key);
-void *camel_object_bag_reserve(CamelObjectBag *bag, const void *key);
-void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *vo);
-void camel_object_bag_abort(CamelObjectBag *bag, const void *key);
-void camel_object_bag_rekey(CamelObjectBag *bag, void *o, const void *newkey);
+gpointer camel_object_bag_get(CamelObjectBag *bag, gconstpointer key);
+gpointer camel_object_bag_peek(CamelObjectBag *bag, gconstpointer key);
+gpointer camel_object_bag_reserve(CamelObjectBag *bag, gconstpointer key);
+void camel_object_bag_add(CamelObjectBag *bag, gconstpointer key, gpointer vo);
+void camel_object_bag_abort(CamelObjectBag *bag, gconstpointer key);
+void camel_object_bag_rekey(CamelObjectBag *bag, gpointer o, gconstpointer newkey);
 GPtrArray *camel_object_bag_list(CamelObjectBag *bag);
-void camel_object_bag_remove(CamelObjectBag *bag, void *o);
+void camel_object_bag_remove(CamelObjectBag *bag, gpointer o);
 void camel_object_bag_destroy(CamelObjectBag *bag);
 
 #define CAMEL_MAKE_CLASS(type, tname, parent, pname)				\
@@ -324,13 +324,13 @@ typedef struct _CamelIterator CamelIterator;
 
 struct _CamelIteratorVTable {
 	/* free fields, dont free base object */
-	void (*free)(void *it);
+	void (*free)(gpointer it);
 	/* go to the next messageinfo */
-	const void *(*next)(void *it, CamelException *ex);
+	gconstpointer (*next)(gpointer it, CamelException *ex);
 	/* go back to the start */
-	void (*reset)(void *it);
+	void (*reset)(gpointer it);
 	/* *ESTIMATE* how many results are in the iterator */
-	int (*length)(void *it);
+	gint (*length)(gpointer it);
 };
 
 struct _CamelIterator {
@@ -339,11 +339,11 @@ struct _CamelIterator {
 	/* subclasses adds new fields afterwards */
 };
 
-void *camel_iterator_new(CamelIteratorVTable *klass, size_t size);
-void camel_iterator_free(void *it);
-const void *camel_iterator_next(void *it, CamelException *ex);
-void camel_iterator_reset(void *it);
-int camel_iterator_length(void *it);
+gpointer camel_iterator_new(CamelIteratorVTable *klass, size_t size);
+void camel_iterator_free(gpointer it);
+gconstpointer camel_iterator_next(gpointer it, CamelException *ex);
+void camel_iterator_reset(gpointer it);
+gint camel_iterator_length(gpointer it);
 #endif /* CAMEL_DISABLE_DEPRECATED */
 
 G_END_DECLS

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,11 +26,11 @@ static const char revid[] = "$Id$";
 
 #define	fsync(fd)	__vx_fsync(fd);
 
-int
+gint
 __vx_fsync(fd)
-	int fd;
+	gint fd;
 {
-	int ret;
+	gint ret;
 
 	/*
 	 * The results of ioctl are driver dependent.  Some will return the
@@ -46,11 +46,11 @@ __vx_fsync(fd)
 #ifdef __hp3000s900
 #define	fsync(fd)	__mpe_fsync(fd);
 
-int
+gint
 __mpe_fsync(fd)
-	int fd;
+	gint fd;
 {
-	extern FCONTROL(short, short, void *);
+	extern FCONTROL(short, short, gpointer );
 
 	FCONTROL(_MPE_FILENO(fd), 2, NULL);	/* Flush the buffers */
 	FCONTROL(_MPE_FILENO(fd), 6, NULL);	/* Write the EOF */
@@ -62,14 +62,14 @@ __mpe_fsync(fd)
  * __os_fsync --
  *	Flush a file descriptor.
  *
- * PUBLIC: int __os_fsync __P((DB_ENV *, DB_FH *));
+ * PUBLIC: gint __os_fsync __P((DB_ENV *, DB_FH *));
  */
-int
+gint
 __os_fsync(dbenv, fhp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 {
-	int ret;
+	gint ret;
 
 	/*
 	 * Do nothing if the file descriptor has been marked as not requiring

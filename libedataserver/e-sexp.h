@@ -52,20 +52,20 @@ struct _ESExpResult {
 	enum _ESExpResultType type;
 	union {
 		GPtrArray *ptrarray;
-		int number;
-		char *string;
-		int bool;
+		gint number;
+		gchar *string;
+		gint bool;
 		time_t time;
 	} value;
 };
 
-typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, int argc,
+typedef struct _ESExpResult *(ESExpFunc)(struct _ESExp *sexp, gint argc,
 					 struct _ESExpResult **argv,
-					 void *data);
+					 gpointer data);
 
-typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp, int argc,
+typedef struct _ESExpResult *(ESExpIFunc)(struct _ESExp *sexp, gint argc,
 					  struct _ESExpTerm **argv,
-					  void *data);
+					  gpointer data);
 
 enum _ESExpTermType {
 	ESEXP_TERM_INT	= 0,	/* integer literal */
@@ -78,9 +78,9 @@ enum _ESExpTermType {
 };
 
 struct _ESExpSymbol {
-	int type;		/* ESEXP_TERM_FUNC or ESEXP_TERM_VAR */
-	char *name;
-	void *data;
+	gint type;		/* ESEXP_TERM_FUNC or ESEXP_TERM_VAR */
+	gchar *name;
+	gpointer data;
 	union {
 		ESExpFunc *func;
 		ESExpIFunc *ifunc;
@@ -90,14 +90,14 @@ struct _ESExpSymbol {
 struct _ESExpTerm {
 	enum _ESExpTermType type;
 	union {
-		char *string;
-		int number;
-		int bool;
+		gchar *string;
+		gint number;
+		gint bool;
 		time_t time;
 		struct {
 			struct _ESExpSymbol *sym;
 			struct _ESExpTerm **terms;
-			int termcount;
+			gint termcount;
 		} func;
 		struct _ESExpSymbol *var;
 	} value;
@@ -109,14 +109,14 @@ struct _ESExp {
 #ifdef E_SEXP_IS_G_OBJECT
 	GObject parent_object;
 #else
-	int refcount;
+	gint refcount;
 #endif
 	GScanner *scanner;	/* for parsing text version */
 	ESExpTerm *tree;	/* root of expression tree */
 
 	/* private stuff */
 	jmp_buf failenv;
-	char *error;
+	gchar *error;
 	GSList *operators;
 
 	/* TODO: may also need a pool allocator for term strings, so we dont lose them
@@ -129,7 +129,7 @@ struct _ESExpClass {
 #ifdef E_SEXP_IS_G_OBJECT
 	GObjectClass parent_class;
 #else
-	int dummy;
+	gint dummy;
 #endif
 };
 
@@ -144,35 +144,35 @@ ESExp	       *e_sexp_new		(void);
 void		e_sexp_ref		(ESExp *f);
 void		e_sexp_unref		(ESExp *f);
 #endif
-void		e_sexp_add_function	(ESExp *f, int scope, char *name, ESExpFunc *func, void *data);
-void		e_sexp_add_ifunction	(ESExp *f, int scope, char *name, ESExpIFunc *func, void *data);
-void		e_sexp_add_variable	(ESExp *f, int scope, char *name, ESExpTerm *value);
-void		e_sexp_remove_symbol	(ESExp *f, int scope, char *name);
-int		e_sexp_set_scope	(ESExp *f, int scope);
+void		e_sexp_add_function	(ESExp *f, gint scope, gchar *name, ESExpFunc *func, gpointer data);
+void		e_sexp_add_ifunction	(ESExp *f, gint scope, gchar *name, ESExpIFunc *func, gpointer data);
+void		e_sexp_add_variable	(ESExp *f, gint scope, gchar *name, ESExpTerm *value);
+void		e_sexp_remove_symbol	(ESExp *f, gint scope, gchar *name);
+int		e_sexp_set_scope	(ESExp *f, gint scope);
 
-void		e_sexp_input_text	(ESExp *f, const char *text, int len);
-void		e_sexp_input_file	(ESExp *f, int fd);
+void		e_sexp_input_text	(ESExp *f, const gchar *text, gint len);
+void		e_sexp_input_file	(ESExp *f, gint fd);
 
 
 int		e_sexp_parse		(ESExp *f);
 ESExpResult    *e_sexp_eval		(ESExp *f);
 
 ESExpResult    *e_sexp_term_eval	(struct _ESExp *f, struct _ESExpTerm *t);
-ESExpResult    *e_sexp_result_new	(struct _ESExp *f, int type);
+ESExpResult    *e_sexp_result_new	(struct _ESExp *f, gint type);
 void		e_sexp_result_free	(struct _ESExp *f, struct _ESExpResult *t);
 
 /* used in normal functions if they have to abort, to free their arguments */
-void		e_sexp_resultv_free	(struct _ESExp *f, int argc, struct _ESExpResult **argv);
+void		e_sexp_resultv_free	(struct _ESExp *f, gint argc, struct _ESExpResult **argv);
 
 /* utility functions for creating s-exp strings. */
 void		e_sexp_encode_bool	(GString *s, gboolean state);
-void		e_sexp_encode_string	(GString *s, const char *string);
+void		e_sexp_encode_string	(GString *s, const gchar *string);
 
 /* only to be called from inside a callback to signal a fatal execution error */
-void		e_sexp_fatal_error	(struct _ESExp *f, const char *why, ...) G_GNUC_NORETURN;
+void		e_sexp_fatal_error	(struct _ESExp *f, const gchar *why, ...) G_GNUC_NORETURN;
 
 /* return the error string */
-const char     *e_sexp_error		(struct _ESExp *f);
+const gchar     *e_sexp_error		(struct _ESExp *f);
 
 ESExpTerm * e_sexp_parse_value(ESExp *f);
 

@@ -53,26 +53,26 @@ struct _CamelMboxSummary {
 	guint32 version;
 	size_t folder_size;	/* size of the mbox file, last sync */
 
-	unsigned int xstatus:1;	/* do we store/honour xstatus/status headers */
+	guint xstatus:1;	/* do we store/honour xstatus/status headers */
 };
 
 struct _CamelMboxSummaryClass {
 	CamelLocalSummaryClass parent_class;
 
 	/* sync in-place */
-	int (*sync_quick)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+	gint (*sync_quick)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 	/* sync requires copy */
-	int (*sync_full)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+	gint (*sync_full)(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 };
 
 CamelType		camel_mbox_summary_get_type	(void);
-CamelMboxSummary      *camel_mbox_summary_new	(struct _CamelFolder *, const char *filename, const char *mbox_name, CamelIndex *index);
+CamelMboxSummary      *camel_mbox_summary_new	(struct _CamelFolder *, const gchar *filename, const gchar *mbox_name, CamelIndex *index);
 
 /* do we honour/use xstatus headers, etc */
-void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, int state);
+void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, gint state);
 
 /* build a new mbox from an existing mbox storing summary information */
-int camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, int fd, int fdout, CamelException *ex);
+gint camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, CamelException *ex);
 
 G_END_DECLS
 

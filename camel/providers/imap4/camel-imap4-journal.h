@@ -52,10 +52,10 @@ enum {
 struct _CamelIMAP4JournalEntry {
 	CamelDListNode node;
 
-	int type;
+	gint type;
 
 	union {
-		char *append_uid;
+		gchar *append_uid;
 	} v;
 };
 
@@ -73,13 +73,13 @@ struct _CamelIMAP4JournalClass {
 
 CamelType camel_imap4_journal_get_type (void);
 
-CamelOfflineJournal *camel_imap4_journal_new (struct _CamelIMAP4Folder *folder, const char *filename);
+CamelOfflineJournal *camel_imap4_journal_new (struct _CamelIMAP4Folder *folder, const gchar *filename);
 
 void camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal);
 
 /* interfaces for adding a journal entry */
 void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *message, const CamelMessageInfo *mi,
-				 char **appended_uid, CamelException *ex);
+				 gchar **appended_uid, CamelException *ex);
 
 G_END_DECLS
 

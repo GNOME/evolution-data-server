@@ -14,10 +14,10 @@ extern "C" {
 
 gboolean      exchange_oof_get              (ExchangeAccount  *account,
 					     gboolean         *oof,
-					     char            **mmsg);
+					     gchar            **mmsg);
 gboolean      exchange_oof_set              (ExchangeAccount  *account,
 					     gboolean          oof,
-					     const char       *msg);
+					     const gchar       *msg);
 
 #ifdef __cplusplus
 }

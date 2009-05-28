@@ -38,7 +38,7 @@
 #include "camel-test.h"
 #include "session.h"
 
-static char test_msg[] = "Since we need to make sure that\nFrom lines work okay, we should test that"
+static gchar test_msg[] = "Since we need to make sure that\nFrom lines work okay, we should test that"
 "as well as test 8bit chars and other fun stuff? 8bit chars: Dra¾en Kaèar\n\nOkay, I guess that covers"
 "the basics at least...\n";
 
@@ -60,9 +60,9 @@ typedef struct _CamelPgpSessionClass {
 } CamelPgpSessionClass;
 
 
-static char *get_password (CamelSession *session, const char *prompt,
+static gchar *get_password (CamelSession *session, const gchar *prompt,
 			   guint32 flags,
-			   CamelService *service, const char *item,
+			   CamelService *service, const gchar *item,
 			   CamelException *ex);
 
 static void
@@ -101,15 +101,15 @@ camel_pgp_session_get_type (void)
 	return type;
 }
 
-static char *
-get_password (CamelSession *session, const char *prompt, guint32 flags,
-	      CamelService *service, const char *item, CamelException *ex)
+static gchar *
+get_password (CamelSession *session, const gchar *prompt, guint32 flags,
+	      CamelService *service, const gchar *item, CamelException *ex)
 {
 	return g_strdup ("no.secret");
 }
 
 static CamelSession *
-camel_pgp_session_new (const char *path)
+camel_pgp_session_new (const gchar *path)
 {
 	CamelSession *session;
 
@@ -121,7 +121,7 @@ camel_pgp_session_new (const char *path)
 }
 
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelCipherContext *ctx;
@@ -131,7 +131,7 @@ int main (int argc, char **argv)
 	CamelMultipartSigned *mps;
 	CamelMultipartEncrypted *mpe;
 	GPtrArray *recipients;
-	int ret;
+	gint ret;
 
 	camel_test_init (argc, argv);
 

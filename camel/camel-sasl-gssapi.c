@@ -84,7 +84,7 @@ enum {
 #define DESIRED_SECURITY_LAYER  GSSAPI_SECURITY_LAYER_NONE
 
 struct _CamelSaslGssapiPrivate {
-	int state;
+	gint state;
 	gss_ctx_id_t ctx;
 	gss_name_t target;
 };
@@ -157,7 +157,7 @@ camel_sasl_gssapi_get_type (void)
 static void
 gssapi_set_exception (OM_uint32 major, OM_uint32 minor, CamelException *ex)
 {
-	const char *str;
+	const gchar *str;
 
 	switch (major) {
 	case GSS_S_BAD_MECH:
@@ -216,10 +216,10 @@ gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	gss_buffer_desc inbuf, outbuf;
 	GByteArray *challenge = NULL;
 	gss_buffer_t input_token;
-	int conf_state;
+	gint conf_state;
 	gss_qop_t qop;
 	gss_OID mech;
-	char *str;
+	gchar *str;
 	struct addrinfo *ai, hints;
 
 	switch (priv->state) {
@@ -309,7 +309,7 @@ gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		}
 
 		/* check that our desired security layer is supported */
-		if ((((unsigned char *) outbuf.value)[0] & DESIRED_SECURITY_LAYER) != DESIRED_SECURITY_LAYER) {
+		if ((((guchar *) outbuf.value)[0] & DESIRED_SECURITY_LAYER) != DESIRED_SECURITY_LAYER) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 					     _("Unsupported security layer."));
 #ifndef HAVE_HEIMDAL_KRB5

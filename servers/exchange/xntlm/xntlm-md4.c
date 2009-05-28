@@ -36,12 +36,12 @@
 #define ROT(val, n) ( ((val) << (n)) | ((val) >> (32 - (n))) )
 
 static void
-md4sum_round (const unsigned char *M,
+md4sum_round (const guchar *M,
 	      guint32 *AA, guint32 *BB,
 	      guint32 *CC, guint32 *DD)
 {
 	guint32 A, B, C, D, X[16];
-	int i;
+	gint i;
 
 	for (i = 0; i < 16; i++) {
 		X[i] =  (M[i*4]) | (M[i*4 + 1] << 8) |
@@ -119,12 +119,12 @@ md4sum_round (const unsigned char *M,
  * Computes the MD4 checksum of @in and puts it in @digest.
  **/
 void
-xntlm_md4sum (const unsigned char *in, int nbytes, unsigned char digest[16])
+xntlm_md4sum (const guchar *in, gint nbytes, guchar digest[16])
 {
-	unsigned char M[128];
+	guchar M[128];
 	guint32 A, B, C, D;
-	int pbytes, nbits = nbytes * 8, remaining_bytes;
-	int total_len, offset;
+	gint pbytes, nbits = nbytes * 8, remaining_bytes;
+	gint total_len, offset;
 
 	pbytes = (120 - (nbytes % 64)) % 64;
 	total_len = nbytes + pbytes + 8;

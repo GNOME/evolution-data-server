@@ -41,17 +41,17 @@ typedef enum {
 } CamelLockType;
 
 /* specific locking strategies */
-int camel_lock_dot(const char *path, CamelException *ex);
-int camel_lock_fcntl(int fd, CamelLockType type, CamelException *ex);
-int camel_lock_flock(int fd, CamelLockType type, CamelException *ex);
+gint camel_lock_dot(const gchar *path, CamelException *ex);
+gint camel_lock_fcntl(gint fd, CamelLockType type, CamelException *ex);
+gint camel_lock_flock(gint fd, CamelLockType type, CamelException *ex);
 
-void camel_unlock_dot(const char *path);
-void camel_unlock_fcntl(int fd);
-void camel_unlock_flock(int fd);
+void camel_unlock_dot(const gchar *path);
+void camel_unlock_fcntl(gint fd);
+void camel_unlock_flock(gint fd);
 
 /* lock a folder in a standard way */
-int camel_lock_folder(const char *path, int fd, CamelLockType type, CamelException *ex);
-void camel_unlock_folder(const char *path, int fd);
+gint camel_lock_folder(const gchar *path, gint fd, CamelLockType type, CamelException *ex);
+void camel_unlock_folder(const gchar *path, gint fd);
 
 G_END_DECLS
 

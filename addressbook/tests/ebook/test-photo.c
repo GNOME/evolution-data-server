@@ -2,7 +2,7 @@
 #include <string.h>
 #include <libebook/e-book.h>
 
-static const char *photo_data =
+static const gchar *photo_data =
 "/9j/4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q/9sAQwAIBgYHB\
 gUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04Mjw\
 uMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyM\
@@ -23,8 +23,8 @@ eor7UoAje18FtmLe9eeQT3EXPcglkJRPbv71EWu7Dajp2o3MGmlRCkjKQ30jPUe1WlrlNW0Rpt\
 TleNB84DnjkD0P9VlxT4Nqck9pmn8JuFp2zo0cgCWFi2e7555/NSHXLadso2m3sU0NxlV65HM+\
 VdTW3rgwvsUpSvAFKUoAUxSlAClKUAKUpQB//2Q==";
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EContact *contact;
 	EContactPhoto *photo, *new_photo;

@@ -105,7 +105,7 @@ camel_address_new_clone (const CamelAddress *addr)
  *
  * Returns: the number of addresses contained in @addr
  **/
-int
+gint
 camel_address_length (CamelAddress *addr)
 {
 	return addr->addresses->len;
@@ -121,8 +121,8 @@ camel_address_length (CamelAddress *addr)
  *
  * Returns: the number of addresses parsed or %-1 on fail
  **/
-int
-camel_address_decode (CamelAddress *addr, const char *raw)
+gint
+camel_address_decode (CamelAddress *addr, const gchar *raw)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), -1);
 
@@ -138,7 +138,7 @@ camel_address_decode (CamelAddress *addr, const char *raw)
  *
  * Returns: the encoded address
  **/
-char *
+gchar *
 camel_address_encode (CamelAddress *addr)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), NULL);
@@ -157,8 +157,8 @@ camel_address_encode (CamelAddress *addr)
  *
  * Returns: the number of addresses parsed or %-1 on fail
  **/
-int
-camel_address_unformat(CamelAddress *addr, const char *raw)
+gint
+camel_address_unformat(CamelAddress *addr, const gchar *raw)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), -1);
 
@@ -174,7 +174,7 @@ camel_address_unformat(CamelAddress *addr, const char *raw)
  *
  * Returns: a newly allocated string containing the formatted addresses
  **/
-char *
+gchar *
 camel_address_format (CamelAddress *addr)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(addr), NULL);
@@ -193,7 +193,7 @@ camel_address_format (CamelAddress *addr)
  *
  * Returns: the number of addresses concatenated
  **/
-int
+gint
 camel_address_cat (CamelAddress *dest, const CamelAddress *source)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(dest), -1);
@@ -212,7 +212,7 @@ camel_address_cat (CamelAddress *dest, const CamelAddress *source)
  *
  * Returns: the number of addresses copied
  **/
-int
+gint
 camel_address_copy (CamelAddress *dest, const CamelAddress *source)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(dest), -1);
@@ -231,7 +231,7 @@ camel_address_copy (CamelAddress *dest, const CamelAddress *source)
  * Remove an address by index, or all addresses.
  **/
 void
-camel_address_remove (CamelAddress *addr, int index)
+camel_address_remove (CamelAddress *addr, gint index)
 {
 	g_return_if_fail(CAMEL_IS_ADDRESS(addr));
 

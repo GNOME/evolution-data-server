@@ -39,7 +39,7 @@
 static CamelNNTPGroupList *
 camel_nntp_get_grouplist_from_server (CamelNNTPStore *store, CamelException *ex)
 {
-	int status;
+	gint status;
 	gboolean done = FALSE;
 	CamelNNTPGroupList *list;
 
@@ -56,7 +56,7 @@ camel_nntp_get_grouplist_from_server (CamelNNTPStore *store, CamelException *ex)
 	list->time = time (NULL);
 
 	while (!done) {
-		char *line;
+		gchar *line;
 
 		if (camel_remote_store_recv_line (CAMEL_REMOTE_STORE (store), &line, ex) < 0) {
 			list->group_list = g_list_reverse(list->group_list);
@@ -68,7 +68,7 @@ camel_nntp_get_grouplist_from_server (CamelNNTPStore *store, CamelException *ex)
 		}
 		else {
 			CamelNNTPGroupListEntry *entry = g_new (CamelNNTPGroupListEntry, 1);
-			char **split_line = g_strsplit (line, " ", 4);
+			gchar **split_line = g_strsplit (line, " ", 4);
 
 			entry->group_name = g_strdup (split_line[0]);
 			entry->high = atoi (split_line[1]);
@@ -92,7 +92,7 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 	gchar *grouplist_file = g_strdup_printf ("%s/grouplist", root_dir);
 	CamelNNTPGroupList *list;
 	FILE *fp;
-	char buf[300];
+	gchar buf[300];
 	unsigned long time;
 
 	g_free (root_dir);
@@ -125,7 +125,7 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 
 	while (fgets (buf, sizeof (buf), fp)) {
 		CamelNNTPGroupListEntry *entry = g_new (CamelNNTPGroupListEntry, 1);
-		char **split_line = g_strsplit (buf, " ", 4);
+		gchar **split_line = g_strsplit (buf, " ", 4);
 
 		entry->group_name = g_strdup (split_line[0]);
 		entry->high = atoi (split_line[1]);
@@ -175,7 +175,7 @@ camel_nntp_grouplist_save (CamelNNTPGroupList *group_list, CamelException *ex)
 }
 
 static void
-free_entry (CamelNNTPGroupListEntry *entry, void *data)
+free_entry (CamelNNTPGroupListEntry *entry, gpointer data)
 {
 	g_free (entry->group_name);
 	g_free (entry);

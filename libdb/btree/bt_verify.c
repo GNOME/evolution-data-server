@@ -10,7 +10,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,12 +24,12 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_verify.h"
 #include "dbinc/btree.h"
 
-static int __bam_safe_getdata __P((DB *, PAGE *, u_int32_t, int, DBT *, int *));
-static int __bam_vrfy_inp __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
+static gint __bam_safe_getdata __P((DB *, PAGE *, u_int32_t, int, DBT *, gint *));
+static gint __bam_vrfy_inp __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
     db_indx_t *, u_int32_t));
-static int __bam_vrfy_treeorder __P((DB *, db_pgno_t, PAGE *, BINTERNAL *,
-    BINTERNAL *, int (*)(DB *, const DBT *, const DBT *), u_int32_t));
-static int __ram_vrfy_inp __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
+static gint __bam_vrfy_treeorder __P((DB *, db_pgno_t, PAGE *, BINTERNAL *,
+    BINTERNAL *, gint (*)(DB *, const DBT *, const DBT *), u_int32_t));
+static gint __ram_vrfy_inp __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
     db_indx_t *, u_int32_t));
 
 #define	OKFLAGS	(DB_AGGRESSIVE | DB_NOORDERCHK | DB_SALVAGE)
@@ -38,10 +38,10 @@ static int __ram_vrfy_inp __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
  * __bam_vrfy_meta --
  *	Verify the btree-specific part of a metadata page.
  *
- * PUBLIC: int __bam_vrfy_meta __P((DB *, VRFY_DBINFO *, BTMETA *,
+ * PUBLIC: gint __bam_vrfy_meta __P((DB *, VRFY_DBINFO *, BTMETA *,
  * PUBLIC:     db_pgno_t, u_int32_t));
  */
-int
+gint
 __bam_vrfy_meta(dbp, vdp, meta, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -50,7 +50,7 @@ __bam_vrfy_meta(dbp, vdp, meta, pgno, flags)
 	u_int32_t flags;
 {
 	VRFY_PAGEINFO *pip;
-	int isbad, t_ret, ret;
+	gint isbad, t_ret, ret;
 	db_indx_t ovflsize;
 
 	if ((ret = __db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
@@ -189,10 +189,10 @@ err:	if ((t_ret =
  * __ram_vrfy_leaf --
  *	Verify a recno leaf page.
  *
- * PUBLIC: int __ram_vrfy_leaf __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
+ * PUBLIC: gint __ram_vrfy_leaf __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
  * PUBLIC:     u_int32_t));
  */
-int
+gint
 __ram_vrfy_leaf(dbp, vdp, h, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -203,7 +203,7 @@ __ram_vrfy_leaf(dbp, vdp, h, pgno, flags)
 	BKEYDATA *bk;
 	VRFY_PAGEINFO *pip;
 	db_indx_t i;
-	int ret, t_ret, isbad;
+	gint ret, t_ret, isbad;
 	u_int32_t re_len_guess, len;
 
 	isbad = 0;
@@ -299,10 +299,10 @@ err:	if ((t_ret =
  * __bam_vrfy --
  *	Verify a btree leaf or internal page.
  *
- * PUBLIC: int __bam_vrfy __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
+ * PUBLIC: gint __bam_vrfy __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
  * PUBLIC:     u_int32_t));
  */
-int
+gint
 __bam_vrfy(dbp, vdp, h, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -311,7 +311,7 @@ __bam_vrfy(dbp, vdp, h, pgno, flags)
 	u_int32_t flags;
 {
 	VRFY_PAGEINFO *pip;
-	int ret, t_ret, isbad;
+	gint ret, t_ret, isbad;
 
 	isbad = 0;
 	if ((ret = __db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
@@ -404,7 +404,7 @@ __ram_vrfy_inp(dbp, vdp, h, pgno, nentriesp, flags)
 	RINTERNAL *ri;
 	VRFY_CHILDINFO child;
 	VRFY_PAGEINFO *pip;
-	int ret, t_ret, isbad;
+	gint ret, t_ret, isbad;
 	u_int32_t himark, i, offset, nentries;
 	db_indx_t *inp;
 	u_int8_t *pagelayout, *p;
@@ -522,7 +522,7 @@ __bam_vrfy_inp(dbp, vdp, h, pgno, nentriesp, flags)
 	BOVERFLOW *bo;
 	VRFY_CHILDINFO child;
 	VRFY_PAGEINFO *pip;
-	int isbad, initem, isdupitem, ret, t_ret;
+	gint isbad, initem, isdupitem, ret, t_ret;
 	u_int32_t himark, offset; /* These would be db_indx_ts but for algnmt.*/
 	u_int32_t i, endoff, nentries;
 	u_int8_t *pagelayout;
@@ -863,17 +863,17 @@ err:	if (nentriesp != NULL)
  *	and we run into an overflow page, carp and return DB_VERIFY_BAD;
  *	we shouldn't be called if any exist.
  *
- * PUBLIC: int __bam_vrfy_itemorder __P((DB *, VRFY_DBINFO *, PAGE *,
+ * PUBLIC: gint __bam_vrfy_itemorder __P((DB *, VRFY_DBINFO *, PAGE *,
  * PUBLIC:     db_pgno_t, u_int32_t, int, int, u_int32_t));
  */
-int
+gint
 __bam_vrfy_itemorder(dbp, vdp, h, pgno, nentries, ovflok, hasdups, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	PAGE *h;
 	db_pgno_t pgno;
 	u_int32_t nentries;
-	int ovflok, hasdups;
+	gint ovflok, hasdups;
 	u_int32_t flags;
 {
 	DBT dbta, dbtb, dup_1, dup_2, *p1, *p2, *tmp;
@@ -883,10 +883,10 @@ __bam_vrfy_itemorder(dbp, vdp, h, pgno, nentries, ovflok, hasdups, flags)
 	BOVERFLOW *bo;
 	VRFY_PAGEINFO *pip;
 	db_indx_t i;
-	int cmp, freedup_1, freedup_2, isbad, ret, t_ret;
-	int (*dupfunc) __P((DB *, const DBT *, const DBT *));
-	int (*func) __P((DB *, const DBT *, const DBT *));
-	void *buf1, *buf2, *tmpbuf;
+	gint cmp, freedup_1, freedup_2, isbad, ret, t_ret;
+	gint (*dupfunc) __P((DB *, const DBT *, const DBT *));
+	gint (*func) __P((DB *, const DBT *, const DBT *));
+	gpointer buf1, *buf2, *tmpbuf;
 
 	/*
 	 * We need to work in the ORDERCHKONLY environment where we might
@@ -1160,10 +1160,10 @@ err:	if (pip != NULL && ((t_ret =
  *	Verify the tree structure of a btree database (including the master
  *	database containing subdbs).
  *
- * PUBLIC: int __bam_vrfy_structure __P((DB *, VRFY_DBINFO *, db_pgno_t,
+ * PUBLIC: gint __bam_vrfy_structure __P((DB *, VRFY_DBINFO *, db_pgno_t,
  * PUBLIC:     u_int32_t));
  */
-int
+gint
 __bam_vrfy_structure(dbp, vdp, meta_pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -1173,7 +1173,7 @@ __bam_vrfy_structure(dbp, vdp, meta_pgno, flags)
 	DB *pgset;
 	VRFY_PAGEINFO *mip, *rip;
 	db_pgno_t root, p;
-	int t_ret, ret;
+	gint t_ret, ret;
 	u_int32_t nrecs, level, relen, stflags;
 
 	mip = rip = 0;
@@ -1182,7 +1182,7 @@ __bam_vrfy_structure(dbp, vdp, meta_pgno, flags)
 	if ((ret = __db_vrfy_getpageinfo(vdp, meta_pgno, &mip)) != 0)
 		return (ret);
 
-	if ((ret = __db_vrfy_pgset_get(pgset, meta_pgno, (int *)&p)) != 0)
+	if ((ret = __db_vrfy_pgset_get(pgset, meta_pgno, (gint *)&p)) != 0)
 		goto err;
 	if (p != 0) {
 		EPRINT((dbp->dbenv,
@@ -1273,16 +1273,16 @@ err:	if (mip != NULL && ((t_ret =
  *	Note that this is public because it must be called to verify
  *	offpage dup trees, including from hash.
  *
- * PUBLIC: int __bam_vrfy_subtree __P((DB *, VRFY_DBINFO *, db_pgno_t, void *,
- * PUBLIC:     void *, u_int32_t, u_int32_t *, u_int32_t *, u_int32_t *));
+ * PUBLIC: gint __bam_vrfy_subtree __P((DB *, VRFY_DBINFO *, db_pgno_t, gpointer ,
+ * PUBLIC:     gpointer , u_int32_t, u_int32_t *, u_int32_t *, u_int32_t *));
  */
-int
+gint
 __bam_vrfy_subtree(dbp,
     vdp, pgno, l, r, flags, levelp, nrecsp, relenp)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
-	void *l, *r;
+	gpointer l, *r;
 	u_int32_t flags, *levelp, *nrecsp, *relenp;
 {
 	BINTERNAL *li, *ri, *lp, *rp;
@@ -1297,8 +1297,8 @@ __bam_vrfy_subtree(dbp,
 	db_recno_t child_nrecs, nrecs;
 	u_int32_t child_level, child_relen, level, relen, stflags;
 	u_int8_t leaf_type;
-	int (*func) __P((DB *, const DBT *, const DBT *));
-	int isbad, p, ret, t_ret, toplevel;
+	gint (*func) __P((DB *, const DBT *, const DBT *));
+	gint isbad, p, ret, t_ret, toplevel;
 
 	mpf = dbp->mpf;
 	ret = isbad = 0;
@@ -1844,13 +1844,13 @@ __bam_vrfy_treeorder(dbp, pgno, h, lp, rp, func, flags)
 	db_pgno_t pgno;
 	PAGE *h;
 	BINTERNAL *lp, *rp;
-	int (*func) __P((DB *, const DBT *, const DBT *));
+	gint (*func) __P((DB *, const DBT *, const DBT *));
 	u_int32_t flags;
 {
 	BOVERFLOW *bo;
 	DBT dbt;
 	db_indx_t last;
-	int ret, cmp;
+	gint ret, cmp;
 
 	memset(&dbt, 0, sizeof(DBT));
 	F_SET(&dbt, DB_DBT_MALLOC);
@@ -1970,19 +1970,19 @@ __bam_vrfy_treeorder(dbp, pgno, h, lp, rp, func, flags)
  *	Safely dump out anything that looks like a key on an alleged
  *	btree leaf page.
  *
- * PUBLIC: int __bam_salvage __P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t,
- * PUBLIC:     PAGE *, void *, int (*)(void *, const void *), DBT *,
+ * PUBLIC: gint __bam_salvage __P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t,
+ * PUBLIC:     PAGE *, gpointer , gint (*)(gpointer , gconstpointer ), DBT *,
  * PUBLIC:     u_int32_t));
  */
-int
+gint
 __bam_salvage(dbp, vdp, pgno, pgtype, h, handle, callback, key, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
 	u_int32_t pgtype;
 	PAGE *h;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	DBT *key;
 	u_int32_t flags;
 {
@@ -1992,8 +1992,8 @@ __bam_salvage(dbp, vdp, pgno, pgtype, h, handle, callback, key, flags)
 	db_indx_t i, beg, end, *inp;
 	u_int32_t himark;
 	u_int8_t *pgmap;
-	void *ovflbuf;
-	int t_ret, ret, err_ret;
+	gpointer ovflbuf;
+	gint t_ret, ret, err_ret;
 
 	/* Shut up lint. */
 	COMPQUIET(end, 0);
@@ -2187,22 +2187,22 @@ err:	if (pgmap != NULL)
  *	Walk a known-good btree or recno internal page which is part of
  *	a dup tree, calling __db_salvage_duptree on each child page.
  *
- * PUBLIC: int __bam_salvage_walkdupint __P((DB *, VRFY_DBINFO *, PAGE *,
- * PUBLIC:     DBT *, void *, int (*)(void *, const void *), u_int32_t));
+ * PUBLIC: gint __bam_salvage_walkdupint __P((DB *, VRFY_DBINFO *, PAGE *,
+ * PUBLIC:     DBT *, gpointer , gint (*)(gpointer , gconstpointer ), u_int32_t));
  */
-int
+gint
 __bam_salvage_walkdupint(dbp, vdp, h, key, handle, callback, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	PAGE *h;
 	DBT *key;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	u_int32_t flags;
 {
 	RINTERNAL *ri;
 	BINTERNAL *bi;
-	int ret, t_ret;
+	gint ret, t_ret;
 	db_indx_t i;
 
 	ret = 0;
@@ -2247,10 +2247,10 @@ __bam_salvage_walkdupint(dbp, vdp, h, key, handle, callback, flags)
  *	trouble of walking internal pages--they just don't matter, except
  *	for the left branch.
  *
- * PUBLIC: int __bam_meta2pgset __P((DB *, VRFY_DBINFO *, BTMETA *,
+ * PUBLIC: gint __bam_meta2pgset __P((DB *, VRFY_DBINFO *, BTMETA *,
  * PUBLIC:     u_int32_t, DB *));
  */
-int
+gint
 __bam_meta2pgset(dbp, vdp, btmeta, flags, pgset)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -2263,7 +2263,7 @@ __bam_meta2pgset(dbp, vdp, btmeta, flags, pgset)
 	PAGE *h;
 	RINTERNAL *ri;
 	db_pgno_t current, p;
-	int err_ret, ret;
+	gint err_ret, ret;
 
 	mpf = dbp->mpf;
 	h = NULL;
@@ -2319,7 +2319,7 @@ traverse:
 			break;
 		}
 
-		if ((ret = __db_vrfy_pgset_get(pgset, current, (int *)&p)) != 0)
+		if ((ret = __db_vrfy_pgset_get(pgset, current, (gint *)&p)) != 0)
 			goto err;
 
 		if (p != 0) {
@@ -2358,9 +2358,9 @@ __bam_safe_getdata(dbp, h, i, ovflok, dbt, freedbtp)
 	DB *dbp;
 	PAGE *h;
 	u_int32_t i;
-	int ovflok;
+	gint ovflok;
 	DBT *dbt;
-	int *freedbtp;
+	gint *freedbtp;
 {
 	BKEYDATA *bk;
 	BOVERFLOW *bo;

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,7 +17,7 @@ static const char revid[] = "$Id$";
  * __os_get_errno --
  *	Return the value of errno.
  */
-int
+gint
 __os_get_errno()
 {
 	/* This routine must be able to return the same value repeatedly. */
@@ -30,7 +30,7 @@ __os_get_errno()
  */
 void
 __os_set_errno(evalue)
-	int evalue;
+	gint evalue;
 {
 	errno = evalue;
 }
@@ -49,14 +49,14 @@ __os_set_errno(evalue)
  *	  here.
  *
  * PUBLIC: #if defined(DB_WIN32)
- * PUBLIC: int __os_win32_errno __P((void));
+ * PUBLIC: gint __os_win32_errno __P((void));
  * PUBLIC: #endif
  */
-int
+gint
 __os_win32_errno(void)
 {
 	DWORD last_error;
-	int ret;
+	gint ret;
 
 	/* Ignore errno - we used to check it here. */
 

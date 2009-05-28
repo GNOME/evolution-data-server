@@ -19,10 +19,10 @@
 #include "dbinc/fop.h"
 
 /*
- * PUBLIC: int __fop_create_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
+ * PUBLIC: gint __fop_create_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
  * PUBLIC:     u_int32_t, const DBT *, u_int32_t, u_int32_t));
  */
-int
+gint
 __fop_create_log(dbenv, txnid, ret_lsnp, flags,
     name, appname, mode)
 	DB_ENV *dbenv;
@@ -38,7 +38,7 @@ __fop_create_log(dbenv, txnid, ret_lsnp, flags,
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	rectype = DB___fop_create;
@@ -119,19 +119,19 @@ __fop_create_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: int __fop_create_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_create_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_create_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	TXN_RECS *t;
-	int ret;
+	gint ret;
 	COMPQUIET(rec, NULL);
 	COMPQUIET(notused1, DB_TXN_ABORT);
 
@@ -152,21 +152,21 @@ __fop_create_getpgnos(dbenv, rec, lsnp, notused1, summary)
 }
 
 /*
- * PUBLIC: int __fop_create_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_create_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_create_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__fop_create_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -195,18 +195,18 @@ __fop_create_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __fop_create_read __P((DB_ENV *, void *, __fop_create_args **));
+ * PUBLIC: gint __fop_create_read __P((DB_ENV *, gpointer , __fop_create_args **));
  */
-int
+gint
 __fop_create_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__fop_create_args **argpp;
 {
 	__fop_create_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__fop_create_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -243,10 +243,10 @@ __fop_create_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __fop_remove_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
+ * PUBLIC: gint __fop_remove_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
  * PUBLIC:     u_int32_t, const DBT *, const DBT *, u_int32_t));
  */
-int
+gint
 __fop_remove_log(dbenv, txnid, ret_lsnp, flags,
     name, fid, appname)
 	DB_ENV *dbenv;
@@ -262,7 +262,7 @@ __fop_remove_log(dbenv, txnid, ret_lsnp, flags,
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	rectype = DB___fop_remove;
@@ -350,19 +350,19 @@ __fop_remove_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: int __fop_remove_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_remove_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_remove_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	TXN_RECS *t;
-	int ret;
+	gint ret;
 	COMPQUIET(rec, NULL);
 	COMPQUIET(notused1, DB_TXN_ABORT);
 
@@ -383,21 +383,21 @@ __fop_remove_getpgnos(dbenv, rec, lsnp, notused1, summary)
 }
 
 /*
- * PUBLIC: int __fop_remove_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_remove_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_remove_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__fop_remove_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -431,18 +431,18 @@ __fop_remove_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __fop_remove_read __P((DB_ENV *, void *, __fop_remove_args **));
+ * PUBLIC: gint __fop_remove_read __P((DB_ENV *, gpointer , __fop_remove_args **));
  */
-int
+gint
 __fop_remove_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__fop_remove_args **argpp;
 {
 	__fop_remove_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__fop_remove_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -481,11 +481,11 @@ __fop_remove_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __fop_write_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
+ * PUBLIC: gint __fop_write_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
  * PUBLIC:     u_int32_t, const DBT *, u_int32_t, u_int32_t, const DBT *,
  * PUBLIC:     u_int32_t));
  */
-int
+gint
 __fop_write_log(dbenv, txnid, ret_lsnp, flags,
     name, appname, offset, page, flag)
 	DB_ENV *dbenv;
@@ -503,7 +503,7 @@ __fop_write_log(dbenv, txnid, ret_lsnp, flags,
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	rectype = DB___fop_write;
@@ -601,19 +601,19 @@ __fop_write_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: int __fop_write_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_write_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_write_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	TXN_RECS *t;
-	int ret;
+	gint ret;
 	COMPQUIET(rec, NULL);
 	COMPQUIET(notused1, DB_TXN_ABORT);
 
@@ -634,21 +634,21 @@ __fop_write_getpgnos(dbenv, rec, lsnp, notused1, summary)
 }
 
 /*
- * PUBLIC: int __fop_write_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_write_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_write_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__fop_write_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -684,18 +684,18 @@ __fop_write_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __fop_write_read __P((DB_ENV *, void *, __fop_write_args **));
+ * PUBLIC: gint __fop_write_read __P((DB_ENV *, gpointer , __fop_write_args **));
  */
-int
+gint
 __fop_write_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__fop_write_args **argpp;
 {
 	__fop_write_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__fop_write_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -742,10 +742,10 @@ __fop_write_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __fop_rename_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
+ * PUBLIC: gint __fop_rename_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
  * PUBLIC:     u_int32_t, const DBT *, const DBT *, const DBT *, u_int32_t));
  */
-int
+gint
 __fop_rename_log(dbenv, txnid, ret_lsnp, flags,
     oldname, newname, fileid, appname)
 	DB_ENV *dbenv;
@@ -762,7 +762,7 @@ __fop_rename_log(dbenv, txnid, ret_lsnp, flags,
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	rectype = DB___fop_rename;
@@ -862,19 +862,19 @@ __fop_rename_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: int __fop_rename_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_rename_getpgnos __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_rename_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	TXN_RECS *t;
-	int ret;
+	gint ret;
 	COMPQUIET(rec, NULL);
 	COMPQUIET(notused1, DB_TXN_ABORT);
 
@@ -895,21 +895,21 @@ __fop_rename_getpgnos(dbenv, rec, lsnp, notused1, summary)
 }
 
 /*
- * PUBLIC: int __fop_rename_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __fop_rename_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __fop_rename_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__fop_rename_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -949,18 +949,18 @@ __fop_rename_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __fop_rename_read __P((DB_ENV *, void *, __fop_rename_args **));
+ * PUBLIC: gint __fop_rename_read __P((DB_ENV *, gpointer , __fop_rename_args **));
  */
-int
+gint
 __fop_rename_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__fop_rename_args **argpp;
 {
 	__fop_rename_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__fop_rename_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -1005,11 +1005,11 @@ __fop_rename_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __fop_file_remove_log __P((DB_ENV *, DB_TXN *,
+ * PUBLIC: gint __fop_file_remove_log __P((DB_ENV *, DB_TXN *,
  * PUBLIC:     DB_LSN *, u_int32_t, const DBT *, const DBT *, const DBT *,
  * PUBLIC:     u_int32_t, u_int32_t));
  */
-int
+gint
 __fop_file_remove_log(dbenv, txnid, ret_lsnp, flags,
     real_fid, tmp_fid, name, appname, child)
 	DB_ENV *dbenv;
@@ -1027,7 +1027,7 @@ __fop_file_remove_log(dbenv, txnid, ret_lsnp, flags,
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	rectype = DB___fop_file_remove;
@@ -1132,19 +1132,19 @@ __fop_file_remove_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: int __fop_file_remove_getpgnos __P((DB_ENV *, DBT *,
- * PUBLIC:     DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __fop_file_remove_getpgnos __P((DB_ENV *, DBT *,
+ * PUBLIC:     DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __fop_file_remove_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	TXN_RECS *t;
-	int ret;
+	gint ret;
 	COMPQUIET(rec, NULL);
 	COMPQUIET(notused1, DB_TXN_ABORT);
 
@@ -1165,21 +1165,21 @@ __fop_file_remove_getpgnos(dbenv, rec, lsnp, notused1, summary)
 }
 
 /*
- * PUBLIC: int __fop_file_remove_print __P((DB_ENV *, DBT *,
- * PUBLIC:     DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __fop_file_remove_print __P((DB_ENV *, DBT *,
+ * PUBLIC:     DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __fop_file_remove_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__fop_file_remove_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -1220,19 +1220,19 @@ __fop_file_remove_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __fop_file_remove_read __P((DB_ENV *, void *,
+ * PUBLIC: gint __fop_file_remove_read __P((DB_ENV *, gpointer ,
  * PUBLIC:     __fop_file_remove_args **));
  */
-int
+gint
 __fop_file_remove_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__fop_file_remove_args **argpp;
 {
 	__fop_file_remove_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__fop_file_remove_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -1281,16 +1281,16 @@ __fop_file_remove_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __fop_init_print __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __fop_init_print __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __fop_init_print(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __fop_create_print, DB___fop_create)) != 0)
@@ -1311,16 +1311,16 @@ __fop_init_print(dbenv, dtabp, dtabsizep)
 }
 
 /*
- * PUBLIC: int __fop_init_getpgnos __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __fop_init_getpgnos __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __fop_init_getpgnos(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __fop_create_getpgnos, DB___fop_create)) != 0)
@@ -1341,16 +1341,16 @@ __fop_init_getpgnos(dbenv, dtabp, dtabsizep)
 }
 
 /*
- * PUBLIC: int __fop_init_recover __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __fop_init_recover __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __fop_init_recover(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __fop_create_recover, DB___fop_create)) != 0)

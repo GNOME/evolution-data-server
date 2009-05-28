@@ -49,7 +49,7 @@ struct _CamelMimeFilterGZip {
 	struct _CamelMimeFilterGZipPrivate *priv;
 
 	CamelMimeFilterGZipMode mode;
-	int level;
+	gint level;
 };
 
 struct _CamelMimeFilterGZipClass {
@@ -60,7 +60,7 @@ struct _CamelMimeFilterGZipClass {
 
 CamelType camel_mime_filter_gzip_get_type (void);
 
-CamelMimeFilter *camel_mime_filter_gzip_new (CamelMimeFilterGZipMode mode, int level);
+CamelMimeFilter *camel_mime_filter_gzip_new (CamelMimeFilterGZipMode mode, gint level);
 
 G_END_DECLS
 

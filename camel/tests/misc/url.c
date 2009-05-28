@@ -9,10 +9,10 @@
 
 #include "camel-test.h"
 
-char *base = "http://a/b/c/d;p?q#f";
+gchar *base = "http://a/b/c/d;p?q#f";
 
 struct {
-	char *url_string, *result;
+	gchar *url_string, *result;
 } tests[] = {
 	{ "g:h", "g:h" },
 	{ "g", "http://a/b/c/g" },
@@ -69,15 +69,15 @@ struct {
 	{ "pop://us%3ar@host", "pop://us%3ar@host" },
 	{ "pop://us%2fr@host", "pop://us%2fr@host" }
 };
-int num_tests = sizeof (tests) / sizeof (tests[0]);
+gint num_tests = sizeof (tests) / sizeof (tests[0]);
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	CamelURL *base_url, *url;
 	CamelException ex;
-	char *url_string;
-	int i;
+	gchar *url_string;
+	gint i;
 
 	camel_test_init (argc, argv);
 

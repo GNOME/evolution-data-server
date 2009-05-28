@@ -28,7 +28,7 @@
 #include <libxml/xmlmemory.h>
 
 static void
-my_xml_parser_error_handler (void *ctx, const char *msg, ...)
+my_xml_parser_error_handler (gpointer ctx, const gchar *msg, ...)
 {
 	;
 }
@@ -43,7 +43,7 @@ my_xml_parser_error_handler (void *ctx, const char *msg, ...)
  * Return value: a pointer to an #xmlDoc
  **/
 xmlDoc *
-e2k_parse_xml (const char *buf, int len)
+e2k_parse_xml (const gchar *buf, gint len)
 {
 	static xmlSAXHandler *sax;
 	xmlParserCtxtPtr ctxt;
@@ -105,7 +105,7 @@ e2k_parse_xml (const char *buf, int len)
  * Return value: a pointer to an #xmlDoc
  **/
 xmlDoc *
-e2k_parse_html (const char *buf, int len)
+e2k_parse_html (const gchar *buf, gint len)
 {
 	xmlDoc *doc;
 #if LIBXML_VERSION > 20600
@@ -140,7 +140,7 @@ e2k_parse_html (const char *buf, int len)
 	htmlFreeParserCtxt (ctxt);
 
 #else /* LIBXML_VERSION <= 20600 */
-	char *buf_copy = g_strndup (buf, len);
+	gchar *buf_copy = g_strndup (buf, len);
 
 	doc = htmlParseDoc (buf_copy, NULL);
 	g_free (buf_copy);
@@ -158,7 +158,7 @@ e2k_parse_html (const char *buf, int len)
  * unencoded in XML text (eg, "<").
  **/
 void
-e2k_g_string_append_xml_escaped (GString *string, const char *value)
+e2k_g_string_append_xml_escaped (GString *string, const gchar *value)
 {
 	while (*value) {
 		switch (*value) {
@@ -200,7 +200,7 @@ e2k_g_string_append_xml_escaped (GString *string, const char *value)
  * there are no more matches.
  **/
 xmlNode *
-e2k_xml_find (xmlNode *node, const char *name)
+e2k_xml_find (xmlNode *node, const gchar *name)
 {
 	return e2k_xml_find_in (node, NULL, name);
 }
@@ -225,7 +225,7 @@ e2k_xml_find (xmlNode *node, const char *name)
  * there are no more matches.
  **/
 xmlNode *
-e2k_xml_find_in (xmlNode *node, xmlNode *top, const char *name)
+e2k_xml_find_in (xmlNode *node, xmlNode *top, const gchar *name)
 {
 	g_return_val_if_fail (name != NULL, NULL);
 

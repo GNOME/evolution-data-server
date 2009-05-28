@@ -57,7 +57,7 @@ e_book_backend_factory_get_type (void)
  *
  * Return value: A string representing a protocol.
  **/
-const char*
+const gchar *
 e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_FACTORY (factory), NULL);

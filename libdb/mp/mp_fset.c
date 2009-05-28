@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,12 +23,12 @@ static const char revid[] = "$Id$";
  * __memp_fset --
  *	Mpool page set-flag routine.
  *
- * PUBLIC: int __memp_fset __P((DB_MPOOLFILE *, void *, u_int32_t));
+ * PUBLIC: gint __memp_fset __P((DB_MPOOLFILE *, gpointer , u_int32_t));
  */
-int
+gint
 __memp_fset(dbmfp, pgaddr, flags)
 	DB_MPOOLFILE *dbmfp;
-	void *pgaddr;
+	gpointer pgaddr;
 	u_int32_t flags;
 {
 	BH *bhp;
@@ -37,7 +37,7 @@ __memp_fset(dbmfp, pgaddr, flags)
 	DB_MPOOL_HASH *hp;
 	MPOOL *c_mp;
 	u_int32_t n_cache;
-	int ret;
+	gint ret;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;

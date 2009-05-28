@@ -40,8 +40,8 @@ E2K_MAKE_TYPE (exchange_hierarchy_gal, ExchangeHierarchyGAL, NULL, NULL, PARENT_
 
 ExchangeHierarchy *
 exchange_hierarchy_gal_new (ExchangeAccount *account,
-			    const char *hierarchy_name,
-			    const char *physical_uri_prefix)
+			    const gchar *hierarchy_name,
+			    const gchar *physical_uri_prefix)
 {
 	ExchangeHierarchy *hier;
 	EFolder *toplevel;

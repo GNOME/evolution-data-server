@@ -45,7 +45,7 @@ typedef struct {
 	ECalBackendFactoryClass parent_class;
 
 	GSList*	   (*get_protocol_list) (ECalBackendLoaderFactory *factory);
-	ECalBackend*	   (*new_backend_with_protocol) (ECalBackendLoaderFactory *factory, ESource *source, const char *protocol);
+	ECalBackend*	   (*new_backend_with_protocol) (ECalBackendLoaderFactory *factory, ESource *source, const gchar *protocol);
 } ECalBackendLoaderFactoryClass;
 
 GType               e_cal_backend_loader_factory_get_type              (void);

@@ -47,7 +47,7 @@ enum {
 typedef struct _CamelMaildirMessageInfo {
 	CamelLocalMessageInfo info;
 
-	char *filename;		/* maildir has this annoying status on the end of the filename, use this to get the real message id */
+	gchar *filename;		/* maildir has this annoying status on the end of the filename, use this to get the real message id */
 } CamelMaildirMessageInfo;
 
 struct _CamelMaildirSummary {
@@ -64,11 +64,11 @@ struct _CamelMaildirSummaryClass {
 };
 
 CamelType	 camel_maildir_summary_get_type	(void);
-CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, const char *filename, const char *maildirdir, CamelIndex *index);
+CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, const gchar *filename, const gchar *maildirdir, CamelIndex *index);
 
 /* convert some info->flags to/from the messageinfo */
-char *camel_maildir_summary_info_to_name(const CamelMaildirMessageInfo *info);
-int camel_maildir_summary_name_to_info(CamelMaildirMessageInfo *info, const char *name);
+gchar *camel_maildir_summary_info_to_name(const CamelMaildirMessageInfo *info);
+gint camel_maildir_summary_name_to_info(CamelMaildirMessageInfo *info, const gchar *name);
 
 /* TODO: could proably use get_string stuff */
 #define camel_maildir_info_filename(x) (((CamelMaildirMessageInfo *)x)->filename)

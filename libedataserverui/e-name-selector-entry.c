@@ -139,7 +139,7 @@ e_name_selector_entry_finalize (GObject *object)
 }
 
 static void
-e_name_selector_entry_updated (ENameSelectorEntry *entry, char *email)
+e_name_selector_entry_updated (ENameSelectorEntry *entry, gchar *email)
 {
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (entry));
 }
@@ -485,7 +485,7 @@ escape_sexp_string (const gchar *string)
  * or NULL if no fields defined.
  **/
 gchar *
-ens_util_populate_user_query_fields (GSList *user_query_fields, const char *cue_str, const char *encoded_cue_str)
+ens_util_populate_user_query_fields (GSList *user_query_fields, const gchar *cue_str, const gchar *encoded_cue_str)
 {
 	GString *user_fields;
 	GSList *s;
@@ -496,7 +496,7 @@ ens_util_populate_user_query_fields (GSList *user_query_fields, const char *cue_
 	user_fields = g_string_new ("");
 
 	for (s = user_query_fields; s; s = s->next) {
-		const char *field = s->data;
+		const gchar *field = s->data;
 
 		if (!field || !*field)
 			continue;
@@ -589,7 +589,7 @@ utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
 {
 	gchar *s1 = g_utf8_casefold(str1, len);
 	gchar *s2 = g_utf8_casefold(str2, len);
-	int rv;
+	gint rv;
 
 	rv = g_utf8_collate (s1, s2);
 
@@ -865,7 +865,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 					 destination_row_changed, name_selector_entry);
 
 	if (textrep_len > range_len) {
-		int i;
+		gint i;
 
 		/* keep character's case as user types */
 		for (i = 0; textrep [i] && cue_str [i]; i++)
@@ -1268,9 +1268,9 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	 * Here, we let the model know about removals. */
 	for (i = index_end; i > index_start; i--) {
 		EDestination *destination = find_destination_by_index (name_selector_entry, i);
-		int range_start, range_end;
-		char *ttext;
-		const char *email=NULL;
+		gint range_start, range_end;
+		gchar *ttext;
+		const gchar *email=NULL;
 		gboolean sel=FALSE;
 
 		if (destination)
@@ -1310,7 +1310,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 	if (end_pos == start_pos +1 &&  index_end == index_start) {
 		/* We could be just deleting the empty text */
-		char *c;
+		gchar *c;
 
 		/* Get the actual deleted text */
 		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos+1);
@@ -1321,7 +1321,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		}
 	} else	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
 		/* We could be just deleting the empty text */
-		char *c;
+		gchar *c;
 
 		/* Get the actual deleted text */
 		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos+1);
@@ -1333,7 +1333,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 	}
 
 	if (del_comma) {
-		int range_start=-1, range_end;
+		gint range_start=-1, range_end;
 		EDestination *dest = find_destination_by_index (name_selector_entry, index_end);
 		/* If we have deleted the last comma, let us autocomplete normally
 		 */
@@ -1341,8 +1341,8 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		if (dest && len - end_pos  != 0) {
 
 			EDestination *destination1  = find_destination_by_index (name_selector_entry, index_start);
-			char *ttext;
-			const char *email=NULL;
+			gchar *ttext;
+			const gchar *email=NULL;
 
 			if (destination1)
 				email = e_destination_get_address (destination1);
@@ -1499,7 +1499,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 
 	if (priv->is_completing) {
-		char *str_context=NULL;
+		gchar *str_context=NULL;
 
 		str_context = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), range_end, range_end+1);
 
@@ -1508,7 +1508,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 			gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &range_end);
 		} else {
 			/* In the middle */
-			int newpos = strlen (text);
+			gint newpos = strlen (text);
 
                         /* Doing this we can make sure that It wont ask for completion again. */
 			gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &newpos);
@@ -1531,7 +1531,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 static void
 sanitize_entry (ENameSelectorEntry *name_selector_entry)
 {
-	int n;
+	gint n;
 	GList *l, *known, *del = NULL;
 	GString *str = g_string_new ("");
 
@@ -1545,7 +1545,7 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 		if (!dest || !e_destination_get_address (dest))
 			del = g_list_prepend (del, GINT_TO_POINTER (n));
 		else {
-			char *text;
+			gchar *text;
 
 			text = get_destination_textrep (dest);
 			if (text) {
@@ -1630,7 +1630,7 @@ static guint
 entry_height (GtkWidget *widget)
 {
 	PangoLayout *layout;
-	int bound;
+	gint bound;
 
 	g_return_val_if_fail (widget != NULL, 0);
 
@@ -2153,10 +2153,10 @@ editor_closed_cb (GtkObject *editor, gpointer data)
 static void
 popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
-	const char *email_list, *text;
+	const gchar *email_list, *text;
 	gchar *sanitized_text;
 	EDestination *destination = name_selector_entry->popup_destination;
-	int position, start, end;
+	gint position, start, end;
 
 	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
 
@@ -2266,8 +2266,8 @@ static void
 popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
 	EDestination *destination;
-	const char *contact_email;
-	char *pemail = NULL;
+	const gchar *contact_email;
+	gchar *pemail = NULL;
 	GtkClipboard *clipboard;
 
 	destination = name_selector_entry->popup_destination;
@@ -2295,8 +2295,8 @@ static void
 popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
 	EDestination *destination;
-	const char *contact_email;
-	char *pemail;
+	const gchar *contact_email;
+	gchar *pemail;
 	GtkClipboard *clipboard;
 
 	destination = name_selector_entry->popup_destination;
@@ -2332,7 +2332,7 @@ destination_set_list (GtkWidget *item, EDestination *destination)
 static void
 destination_set_email (GtkWidget *item, EDestination *destination)
 {
-	int email_num;
+	gint email_num;
 	EContact *contact;
 
 	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
@@ -2356,7 +2356,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	gint          i;
 	char	     *edit_label;
 	char	     *cut_label;
-	char         *copy_label;
+	gchar         *copy_label;
 	int	      email_num, len;
 	GSList	     *group = NULL;
 	gboolean      is_list;
@@ -2384,11 +2384,11 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	if (is_list) {
 		const GList *dests = e_destination_list_get_dests (destination);
 		GList *iter;
-		int length = g_list_length ((GList *)dests);
+		gint length = g_list_length ((GList *)dests);
 
 		for (iter = (GList *)dests; iter; iter = iter->next) {
 			EDestination *dest = (EDestination *) iter->data;
-			const char *email = e_destination_get_email (dest);
+			const gchar *email = e_destination_get_email (dest);
 
 			if (!email || *email == '\0')
 				continue;
@@ -2453,7 +2453,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	/* Expand a list inline */
 	if (is_list) {
 		/* To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List*/
-		edit_label = g_strdup_printf (_("E_xpand %s Inline"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+		edit_label = g_strdup_printf (_("E_xpand %s Inline"), (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
 		menu_item = gtk_menu_item_new_with_mnemonic (edit_label);
 		g_free (edit_label);
 		gtk_widget_show (menu_item);
@@ -2468,7 +2468,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	}
 
 	/* Copy Contact Item */
-	copy_label = g_strdup_printf (_("Cop_y %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	copy_label = g_strdup_printf (_("Cop_y %s"), (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
 	menu_item = gtk_menu_item_new_with_mnemonic (copy_label);
 	g_free (copy_label);
 	gtk_widget_show (menu_item);
@@ -2478,7 +2478,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 				  name_selector_entry);
 
 	/* Cut Contact Item */
-	cut_label = g_strdup_printf (_("C_ut %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	cut_label = g_strdup_printf (_("C_ut %s"), (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
 	menu_item = gtk_menu_item_new_with_mnemonic (cut_label);
 	g_free (cut_label);
 	gtk_widget_show (menu_item);
@@ -2495,7 +2495,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 
 	/* Edit Contact item */
 
-	edit_label = g_strdup_printf (_("_Edit %s"), (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+	edit_label = g_strdup_printf (_("_Edit %s"), (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
 	menu_item = gtk_menu_item_new_with_mnemonic (edit_label);
 	g_free (edit_label);
 	gtk_widget_show (menu_item);
@@ -2530,7 +2530,7 @@ copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry, gboolean is_cut)
 
 	hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 	for (i = start; i <= end; i++) {
-		int index = get_index_at_position (text, i);
+		gint index = get_index_at_position (text, i);
 
 		g_hash_table_insert (hash, GINT_TO_POINTER (index), NULL);
 	}
@@ -2539,7 +2539,7 @@ copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry, gboolean is_cut)
 
 	g_hash_table_iter_init (&iter, hash);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		int index = GPOINTER_TO_INT (key);
+		gint index = GPOINTER_TO_INT (key);
 		EDestination *dest;
 		gint rstart, rend;
 

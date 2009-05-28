@@ -52,7 +52,7 @@ static CamelObjectClass *parent_class = NULL;
 static int
 stream_fill(CamelIMAPPStream *is)
 {
-	int left = 0;
+	gint left = 0;
 
 	if (is->source) {
 		left = is->end - is->ptr;
@@ -76,7 +76,7 @@ stream_fill(CamelIMAPPStream *is)
 }
 
 static ssize_t
-stream_read(CamelStream *stream, char *buffer, size_t n)
+stream_read(CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelIMAPPStream *is = (CamelIMAPPStream *)stream;
 	ssize_t max;
@@ -103,7 +103,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write(CamelStream *stream, const char *buffer, size_t n)
+stream_write(CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelIMAPPStream *is = (CamelIMAPPStream *)stream;
 
@@ -234,7 +234,7 @@ list_wildcards  ::= "%" / "*"
 quoted_specials ::= <"> / "\"
 */
 
-static unsigned char imap_specials[256] = {
+static guchar imap_specials[256] = {
 /* 00 */0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 /* 10 */0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 /* 20 */0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1,
@@ -259,8 +259,8 @@ static unsigned char imap_specials[256] = {
 
 /* could be pregenerated, but this is cheap */
 static struct {
-	unsigned char *chars;
-	unsigned char mask;
+	guchar *chars;
+	guchar mask;
 } is_masks[] = {
 	{ "\n*()[]+", 2 },
 	{ " \r\n()[]+", 4 },
@@ -268,8 +268,8 @@ static struct {
 
 static void setup_table(void)
 {
-	int i;
-	unsigned char *p, c;
+	gint i;
+	guchar *p, c;
 
 	for (i=0;i<(int)(sizeof(is_masks)/sizeof(is_masks[0]));i++) {
 		p = is_masks[i].chars;
@@ -281,10 +281,10 @@ static void setup_table(void)
 #if 0
 
 static int
-skip_ws(CamelIMAPPStream *is, unsigned char *pp, unsigned char *pe)
+skip_ws(CamelIMAPPStream *is, guchar *pp, guchar *pe)
 {
-	register unsigned char c, *p;
-	unsigned char *e;
+	register guchar c, *p;
+	guchar *e;
 
 	p = is->ptr;
 	e = is->end;
@@ -309,10 +309,10 @@ skip_ws(CamelIMAPPStream *is, unsigned char *pp, unsigned char *pe)
 
 /* FIXME: these should probably handle it themselves,
    and get rid of the token interface? */
-int
-camel_imapp_stream_atom(CamelIMAPPStream *is, unsigned char **data, unsigned int *lenp)
+gint
+camel_imapp_stream_atom(CamelIMAPPStream *is, guchar **data, guint *lenp)
 {
-	unsigned char *p, c;
+	guchar *p, c;
 
 	/* this is only 'approximate' atom */
 	switch(camel_imapp_stream_token(is, data, lenp)) {
@@ -332,11 +332,11 @@ camel_imapp_stream_atom(CamelIMAPPStream *is, unsigned char **data, unsigned int
 }
 
 /* gets an atom, a quoted_string, or a literal */
-int
-camel_imapp_stream_astring(CamelIMAPPStream *is, unsigned char **data)
+gint
+camel_imapp_stream_astring(CamelIMAPPStream *is, guchar **data)
 {
-	unsigned char *p, *start;
-	unsigned int len, inlen;
+	guchar *p, *start;
+	guint len, inlen;
 
 	switch(camel_imapp_stream_token(is, data, &len)) {
 	case IMAP_TOK_TOKEN:
@@ -372,11 +372,11 @@ camel_imapp_stream_astring(CamelIMAPPStream *is, unsigned char **data)
 }
 
 /* check for NIL or (small) quoted_string or literal */
-int
-camel_imapp_stream_nstring(CamelIMAPPStream *is, unsigned char **data)
+gint
+camel_imapp_stream_nstring(CamelIMAPPStream *is, guchar **data)
 {
-	unsigned char *p, *start;
-	unsigned int len, inlen;
+	guchar *p, *start;
+	guint len, inlen;
 
 	switch(camel_imapp_stream_token(is, data, &len)) {
 	case IMAP_TOK_STRING:
@@ -415,13 +415,13 @@ camel_imapp_stream_nstring(CamelIMAPPStream *is, unsigned char **data)
 }
 
 /* parse an nstring as a stream */
-int
+gint
 camel_imapp_stream_nstring_stream(CamelIMAPPStream *is, CamelStream **stream)
 /* throws IO,PARSE exception */
 {
-	unsigned char *token;
-	unsigned int len;
-	int ret = 0;
+	guchar *token;
+	guint len;
+	gint ret = 0;
 	CamelStream * volatile mem = NULL;
 
 	*stream = NULL;
@@ -463,8 +463,8 @@ camel_imapp_stream_nstring_stream(CamelIMAPPStream *is, CamelStream **stream)
 guint32
 camel_imapp_stream_number(CamelIMAPPStream *is)
 {
-	unsigned char *token;
-	unsigned int len;
+	guchar *token;
+	guint len;
 
 	if (camel_imapp_stream_token(is, &token, &len) != IMAP_TOK_INT) {
 		camel_exception_throw(1, "expecting number");
@@ -474,13 +474,13 @@ camel_imapp_stream_number(CamelIMAPPStream *is)
 	return strtoul(token, 0, 10);
 }
 
-int
-camel_imapp_stream_text(CamelIMAPPStream *is, unsigned char **text)
+gint
+camel_imapp_stream_text(CamelIMAPPStream *is, guchar **text)
 {
 	GByteArray *build = g_byte_array_new();
-	unsigned char *token;
-	unsigned int len;
-	int tok;
+	guchar *token;
+	guint len;
+	gint tok;
 
 	CAMEL_TRY {
 		while (is->unget > 0) {
@@ -519,12 +519,12 @@ camel_imapp_stream_text(CamelIMAPPStream *is, unsigned char **text)
 /* Get one token from the imap stream */
 camel_imapp_token_t
 /* throws IO,PARSE exception */
-camel_imapp_stream_token(CamelIMAPPStream *is, unsigned char **data, unsigned int *len)
+camel_imapp_stream_token(CamelIMAPPStream *is, guchar **data, guint *len)
 {
-	register unsigned char c, *p, *o, *oe;
-	unsigned char *e;
-	unsigned int literal;
-	int digits;
+	register guchar c, *p, *o, *oe;
+	guchar *e;
+	guint literal;
+	gint digits;
 
 	if (is->unget > 0) {
 		is->unget--;
@@ -587,7 +587,7 @@ camel_imapp_stream_token(CamelIMAPPStream *is, unsigned char **data, unsigned in
 					if (isdigit(c))
 						printf("Protocol error: literal too big\n");
 					else
-						printf("Protocol error: literal contains invalid char %02x '%c'\n", c, isprint(c)?c:c);
+						printf("Protocol error: literal contains invalid gchar %02x '%c'\n", c, isprint(c)?c:c);
 					goto protocol_error;
 				}
 			}
@@ -692,7 +692,7 @@ protocol_error:
 }
 
 void
-camel_imapp_stream_ungettoken(CamelIMAPPStream *is, camel_imapp_token_t tok, unsigned char *token, unsigned int len)
+camel_imapp_stream_ungettoken(CamelIMAPPStream *is, camel_imapp_token_t tok, guchar *token, guint len)
 {
 	/*printf("ungettoken: '%c' '%s'\n", tok, token);*/
 	is->unget_tok = tok;
@@ -702,10 +702,10 @@ camel_imapp_stream_ungettoken(CamelIMAPPStream *is, camel_imapp_token_t tok, uns
 }
 
 /* returns -1 on error, 0 if last lot of data, >0 if more remaining */
-int camel_imapp_stream_gets(CamelIMAPPStream *is, unsigned char **start, unsigned int *len)
+gint camel_imapp_stream_gets(CamelIMAPPStream *is, guchar **start, guint *len)
 {
-	int max;
-	unsigned char *end;
+	gint max;
+	guchar *end;
 
 	*len = 0;
 
@@ -727,15 +727,15 @@ int camel_imapp_stream_gets(CamelIMAPPStream *is, unsigned char **start, unsigne
 	return end == NULL?1:0;
 }
 
-void camel_imapp_stream_set_literal(CamelIMAPPStream *is, unsigned int literal)
+void camel_imapp_stream_set_literal(CamelIMAPPStream *is, guint literal)
 {
 	is->literal = literal;
 }
 
 /* returns -1 on erorr, 0 if last data, >0 if more data left */
-int camel_imapp_stream_getl(CamelIMAPPStream *is, unsigned char **start, unsigned int *len)
+gint camel_imapp_stream_getl(CamelIMAPPStream *is, guchar **start, guint *len)
 {
-	int max;
+	gint max;
 
 	*len = 0;
 

@@ -31,26 +31,26 @@
 
 static GMainLoop *main_loop = NULL;
 static ESourceList *list = NULL;
-static int idle_dump_id = 0;
+static gint idle_dump_id = 0;
 
 
 /* Options.  */
 
 static gboolean listen = FALSE;
 static gboolean dump = FALSE;
-static char *key_arg = (char *) "/apps/evolution/test/source_list";
-static char *source_arg = NULL;
-static char *group_arg = NULL;
-static char *add_group_arg = NULL;
-static char *add_source_arg = NULL;
-static char *remove_group_arg = NULL;
-static char *remove_source_arg = NULL;
-static char *property_arg = NULL;
-static char *set_name_arg = NULL;
-static char *set_base_uri_arg = NULL;
-static char *set_relative_uri_arg = NULL;
-static char *set_color_arg = NULL;
-static char *set_value_arg = NULL;
+static gchar *key_arg = (gchar *) "/apps/evolution/test/source_list";
+static gchar *source_arg = NULL;
+static gchar *group_arg = NULL;
+static gchar *add_group_arg = NULL;
+static gchar *add_source_arg = NULL;
+static gchar *remove_group_arg = NULL;
+static gchar *remove_source_arg = NULL;
+static gchar *property_arg = NULL;
+static gchar *set_name_arg = NULL;
+static gchar *set_base_uri_arg = NULL;
+static gchar *set_relative_uri_arg = NULL;
+static gchar *set_color_arg = NULL;
+static gchar *set_value_arg = NULL;
 static gboolean unset_value = FALSE;
 static gboolean unset_color = FALSE;
 
@@ -90,7 +90,7 @@ dump_property (const gchar *prop, const gchar *value)
 static void
 dump_source (ESource *source)
 {
-	char *uri = e_source_get_uri (source);
+	gchar *uri = e_source_get_uri (source);
 	const gchar *color_spec;
 
 	g_print ("\tSource %s\n", e_source_peek_uid (source));
@@ -147,7 +147,7 @@ dump_list (void)
 
 
 static int
-idle_dump_callback (void *unused_data)
+idle_dump_callback (gpointer unused_data)
 {
 	dump_list ();
 	idle_dump_id = 0;
@@ -166,7 +166,7 @@ dump_on_idle (void)
 static void
 source_changed_callback (ESource *source)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: source \"%s\" changed (%d)\n", e_source_peek_name (source), ++count);
 
@@ -176,7 +176,7 @@ source_changed_callback (ESource *source)
 static void
 group_changed_callback (ESourceGroup *group)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: group \"%s\" changed (%d)\n", e_source_group_peek_name (group), ++count);
 
@@ -186,7 +186,7 @@ group_changed_callback (ESourceGroup *group)
 static void
 list_changed_callback (ESourceGroup *group)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: list changed (%d)\n", ++count);
 
@@ -252,7 +252,7 @@ static void
 source_added_callback (ESourceGroup *group,
 		       ESource *source)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: source \"%s\" added (%d)\n", e_source_peek_name (source), ++count);
 
@@ -264,7 +264,7 @@ static void
 source_removed_callback (ESourceGroup *group,
 			 ESource *source)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: source \"%s\" removed (%d)\n", e_source_peek_name (source), ++count);
 
@@ -276,7 +276,7 @@ static void
 group_added_callback (ESourceList *list,
 		      ESourceGroup *group)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: group \"%s\" added (%d)\n", e_source_group_peek_name (group), ++count);
 
@@ -288,7 +288,7 @@ static void
 group_removed_callback (ESourceList *list,
 			ESourceGroup *group)
 {
-	static int count = 0;
+	static gint count = 0;
 
 	g_print ("** Event: group \"%s\" removed (%d)\n", e_source_group_peek_name (group), ++count);
 
@@ -298,7 +298,7 @@ group_removed_callback (ESourceList *list,
 
 
 static int
-on_idle_do_stuff (void *unused_data)
+on_idle_do_stuff (gpointer unused_data)
 {
 	GConfClient *client = gconf_client_get_default ();
 	ESourceGroup *new_group = NULL;
@@ -537,8 +537,8 @@ on_idle_do_stuff (void *unused_data)
 }
 
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	GOptionContext *context;
 	GError *error = NULL;

@@ -27,21 +27,21 @@ G_BEGIN_DECLS
 
 gboolean e_cal_check_timezones(icalcomponent *comp,
                                GList *comps,
-                               icaltimezone *(*tzlookup)(const char *tzid,
-                                                         const void *custom,
+                               icaltimezone *(*tzlookup)(const gchar *tzid,
+                                                         gconstpointer custom,
                                                          GError **error),
-                               const void *custom,
+                               gconstpointer custom,
                                GError **error);
 
-icaltimezone *e_cal_tzlookup_ecal(const char *tzid,
-                                  const void *custom,
+icaltimezone *e_cal_tzlookup_ecal(const gchar *tzid,
+                                  gconstpointer custom,
                                   GError **error);
 
-icaltimezone *e_cal_tzlookup_icomp(const char *tzid,
-                                   const void *custom,
+icaltimezone *e_cal_tzlookup_icomp(const gchar *tzid,
+                                   gconstpointer custom,
                                    GError **error);
 
-const char *e_cal_match_tzid(const char *tzid);
+const gchar *e_cal_match_tzid(const gchar *tzid);
 
 G_END_DECLS
 

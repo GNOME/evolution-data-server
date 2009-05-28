@@ -31,11 +31,11 @@
 
 /* start_testing_scaffold */
 #define mu_assert(message, test) do { if (!(test)) return message; else { tests_passed++; return NULL;}} while (0)
-#define mu_run_test(test) do { const char *message = test; tests_run++; \
+#define mu_run_test(test) do { const gchar *message = test; tests_run++; \
                                 if (message) { cl_printf (client, "***Error***\n%s\n", message); break;} } while (0)
 
-static int tests_run = 0;
-static int tests_passed = 0;
+static gint tests_run = 0;
+static gint tests_passed = 0;
 /* end_testing_scaffold */
 
 static ECal *client1;
@@ -45,7 +45,7 @@ static GMainLoop *loop;
 
 /* Prints a message with a client identifier */
 static void
-cl_printf (ECal *client, const char *format, ...)
+cl_printf (ECal *client, const gchar *format, ...)
 {
 	va_list args;
 
@@ -106,7 +106,7 @@ list_uids (ECal *client)
 		printf ("none\n");
 	else {
 		for (l = objects; l; l = l->next) {
-			const char *uid;
+			const gchar *uid;
 
 			uid = icalcomponent_get_uid (l->data);
 			printf ("`%s' ", uid);
@@ -115,7 +115,7 @@ list_uids (ECal *client)
 		printf ("\n");
 
 		for (l = objects; l; l = l->next) {
-			char *obj = icalcomponent_as_ical_string_r (l->data);
+			gchar *obj = icalcomponent_as_ical_string_r (l->data);
 			printf ("------------------------------\n");
 			printf ("%s", obj);
 			printf ("------------------------------\n");
@@ -141,8 +141,8 @@ client_destroy_cb (gpointer data, GObject *object)
 		g_main_loop_quit (loop);
 }
 
-static const char *
-test_object_creation (ECal *client,  char **uid)
+static const gchar *
+test_object_creation (ECal *client,  gchar **uid)
 {
 	ECalComponent *comp, *comp_retrieved;
 	icalcomponent *icalcomp, *icalcomp_retrieved;
@@ -217,10 +217,10 @@ test_object_creation (ECal *client,  char **uid)
 	return NULL;
 }
 
-static const char *
-test_object_modification (ECal *client, char *uid)
+static const gchar *
+test_object_modification (ECal *client, gchar *uid)
 {
-	const char *summary = "This summary was modified";
+	const gchar *summary = "This summary was modified";
 	icalcomponent *icalcomp, *icalcomp_modified;
 	gboolean compare;
 	GError *error = NULL;
@@ -259,11 +259,11 @@ test_object_modification (ECal *client, char *uid)
 }
 
 #if 0
-static char *
+static gchar *
 test_object_removal (ECal *client)
 {
 
-	char *uid;
+	gchar *uid;
 	ECalComponent *comp;
 	icalcomponent *icalcomp;
 	gboolean compare = 1;
@@ -299,7 +299,7 @@ test_object_removal (ECal *client)
 }
 #endif
 
-static const char *
+static const gchar *
 test_get_alarms_in_range (ECal *client)
 {
 	GSList *alarms;
@@ -320,13 +320,13 @@ test_get_alarms_in_range (ECal *client)
 	return NULL;
 }
 
-static const char *
+static const gchar *
 test_set_uri (ECal *client, const gchar *uri)
 {
 	/* The uri is set as part of create_client call. This method merely
 	 * verifies it was done correctly.
 	 */
-	char *cal_uri;
+	gchar *cal_uri;
 	gboolean compare = 0;
 	cal_uri = g_strconcat ("file://", uri, NULL);
 	compare = !strcmp (e_cal_get_uri (client), cal_uri);
@@ -337,7 +337,7 @@ test_set_uri (ECal *client, const gchar *uri)
 	return NULL;
 }
 
-static const char *
+static const gchar *
 test_cal_loaded (ECal *client)
 {
 	/* Test one loaded calendar and another that is not loaded. */
@@ -348,12 +348,12 @@ test_cal_loaded (ECal *client)
 	return NULL;
 }
 
-static const char *
+static const gchar *
 test_get_source (ECal *client, const gchar *expected)
 {
 	ESource *source;
-	char *uri;
-	char *cal_uri;
+	gchar *uri;
+	gchar *cal_uri;
 	gboolean compare = 0;
 
 	source = e_cal_get_source (client);
@@ -367,13 +367,13 @@ test_get_source (ECal *client, const gchar *expected)
 	return NULL;
 }
 
-static const char *
-test_query (ECal *client, const char *query, int expected)
+static const gchar *
+test_query (ECal *client, const gchar *query, gint expected)
 {
 	/* This uses pre-loaded data. Hence its results are valid only
 	 * when called before any write operation is performed.
 	 */
-	int i = 0;
+	gint i = 0;
 	GList *objects = NULL;
 
 	if (!e_cal_get_object_list (client, query, &objects, NULL))
@@ -387,11 +387,11 @@ test_query (ECal *client, const char *query, int expected)
 }
 
 #if 0
-static char *
-test_e_cal_new (ECal **cal, const char *uri)
+static gchar *
+test_e_cal_new (ECal **cal, const gchar *uri)
 {
 	GError *error = NULL;
-	char *cal_uri, *cal_file;
+	gchar *cal_uri, *cal_file;
 	gboolean created = 0;
 
 	cal_uri = g_strconcat ("file://", uri, NULL);
@@ -422,10 +422,10 @@ test_e_cal_new (ECal **cal, const char *uri)
 	return NULL;
 }
 
-static char *
-test_e_cal_remove (ECal *ecal, const char *uri)
+static gchar *
+test_e_cal_remove (ECal *ecal, const gchar *uri)
 {
-	char *cal_uri;
+	gchar *cal_uri;
 	GError *error = NULL;
 	gboolean removed = 0;
 
@@ -443,11 +443,11 @@ test_e_cal_remove (ECal *ecal, const char *uri)
 }
 #endif
 
-static const char *
+static const gchar *
 test_new_system_calendar(void)
 {
 	ECal *cal;
-	char *uri;
+	gchar *uri;
 	gboolean created;
 
 	cal = e_cal_new_system_calendar ();
@@ -460,11 +460,11 @@ test_new_system_calendar(void)
 	return NULL;
 }
 
-static const char *
+static const gchar *
 test_new_system_tasks(void)
 {
 	ECal *cal;
-	char *uri;
+	gchar *uri;
 	gboolean created;
 
 	cal = e_cal_new_system_tasks ();
@@ -477,11 +477,11 @@ test_new_system_tasks(void)
 	return NULL;
 }
 
-static const char *
+static const gchar *
 test_new_system_memos(void)
 {
 	ECal *cal;
-	char *uri;
+	gchar *uri;
 	gboolean created;
 
 	cal = e_cal_new_system_memos ();
@@ -494,7 +494,7 @@ test_new_system_memos(void)
 	return NULL;
 }
 
-static char *
+static gchar *
 test_get_free_busy (ECal *client)
 {
 	/* TODO uses NULL for users and currently specific to file backend. */
@@ -514,7 +514,7 @@ test_get_free_busy (ECal *client)
 	if (freebusy) {
 		cl_printf (client, "Printing free busy information\n");
 		for (l = freebusy; l; l = l->next) {
-			char *comp_string;
+			gchar *comp_string;
 			ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
 			comp_string = e_cal_component_get_as_string (comp);
@@ -530,12 +530,12 @@ test_get_free_busy (ECal *client)
 }
 
 
-static char *
+static gchar *
 test_get_default_object (ECal *client)
 {
 	icalcomponent *icalcomp;
 	GError *error = NULL;
-	char *ical_string;
+	gchar *ical_string;
 	if (e_cal_get_default_object (client, &icalcomp, &error)) {
 		ical_string = icalcomponent_as_ical_string_r (icalcomp);
 		cl_printf (client, "Obtained default object: %s\n", ical_string);
@@ -580,11 +580,11 @@ ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=OPT-PARTICIPANT;PARTSTAT=NEEDS-ACTION;\
 LAST-MODIFIED:20040213T055647Z\
 END:VEVENT"
 
-static const char *
+static const gchar *
 test_get_object (ECal *client)
 {
-	const char *uid = "20040213T055519Z-15802-500-1-3@testcal";
-	char *actual;
+	const gchar *uid = "20040213T055519Z-15802-500-1-3@testcal";
+	gchar *actual;
 	icalcomponent *icalcomp;
 	gboolean compare;
 	GError *error = NULL;
@@ -603,7 +603,7 @@ test_get_object (ECal *client)
 	return NULL;
 }
 
-static char *
+static gchar *
 test_timezones (ECal *client)
 {
 	icaltimezone *zone;
@@ -620,10 +620,10 @@ test_timezones (ECal *client)
 	return NULL;
 }
 
-static const char *
+static const gchar *
 all_tests(ECal *client, const gchar *uri)
 {
-	char *uid;
+	gchar *uid;
 
 	mu_run_test (test_new_system_calendar ());
 	mu_run_test (test_new_system_tasks ());
@@ -663,9 +663,9 @@ all_tests(ECal *client, const gchar *uri)
 static void
 create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean only_if_exists)
 {
-	const char *results;
+	const gchar *results;
 	ECalView *query;
-	char *cal_uri;
+	gchar *cal_uri;
 	GError *error = NULL;
 
 	cal_uri = g_strconcat ("file://", uri, NULL);
@@ -714,10 +714,10 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	char *uri;
+	gchar *uri;
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
 

@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EContact *contact;
 	EContactDate date, *dp;

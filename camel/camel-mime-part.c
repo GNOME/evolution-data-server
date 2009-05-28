@@ -78,24 +78,24 @@ static ssize_t         write_to_stream                 (CamelDataWrapper *dw, Ca
 static int	       construct_from_stream	       (CamelDataWrapper *dw, CamelStream *stream);
 
 /* from CamelMedium */
-static void            add_header                      (CamelMedium *medium, const char *name, const void *value);
-static void            set_header                      (CamelMedium *medium, const char *name, const void *value);
-static void            remove_header                   (CamelMedium *medium, const char *name);
-static const void     *get_header                      (CamelMedium *medium, const char *name);
+static void            add_header                      (CamelMedium *medium, const gchar *name, gconstpointer value);
+static void            set_header                      (CamelMedium *medium, const gchar *name, gconstpointer value);
+static void            remove_header                   (CamelMedium *medium, const gchar *name);
+static const void     *get_header                      (CamelMedium *medium, const gchar *name);
 static GArray         *get_headers                     (CamelMedium *medium);
 static void            free_headers                    (CamelMedium *medium, GArray *headers);
 
 static void            set_content_object              (CamelMedium *medium, CamelDataWrapper *content);
 
 /* from camel mime parser */
-static int             construct_from_parser           (CamelMimePart *mime_part, CamelMimeParser *mp);
+static gint             construct_from_parser           (CamelMimePart *mime_part, CamelMimeParser *mp);
 
 /* forward references */
-static void set_disposition (CamelMimePart *mime_part, const char *disposition);
+static void set_disposition (CamelMimePart *mime_part, const gchar *disposition);
 
 /* format output of headers */
 static ssize_t write_references(CamelStream *stream, struct _camel_header_raw *h);
-/*static int write_fold(CamelStream *stream, struct _camel_header_raw *h);*/
+/*static gint write_fold(CamelStream *stream, struct _camel_header_raw *h);*/
 static ssize_t write_raw(CamelStream *stream, struct _camel_header_raw *h);
 
 
@@ -210,12 +210,12 @@ camel_mime_part_get_type (void)
 /* **** */
 
 static gboolean
-process_header(CamelMedium *medium, const char *name, const char *value)
+process_header(CamelMedium *medium, const gchar *name, const gchar *value)
 {
 	CamelMimePart *mime_part = CAMEL_MIME_PART (medium);
 	CamelHeaderType header_type;
-	const char *charset;
-	char *text;
+	const gchar *charset;
+	gchar *text;
 
 	/* Try to parse the header pair. If it corresponds to something   */
 	/* known, the job is done in the parsing routine. If not,         */
@@ -264,7 +264,7 @@ process_header(CamelMedium *medium, const char *name, const char *value)
 }
 
 static void
-set_header (CamelMedium *medium, const char *name, const void *value)
+set_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	CamelMimePart *part = CAMEL_MIME_PART (medium);
 
@@ -273,7 +273,7 @@ set_header (CamelMedium *medium, const char *name, const void *value)
 }
 
 static void
-add_header (CamelMedium *medium, const char *name, const void *value)
+add_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	CamelMimePart *part = CAMEL_MIME_PART (medium);
 
@@ -289,7 +289,7 @@ add_header (CamelMedium *medium, const char *name, const void *value)
 }
 
 static void
-remove_header (CamelMedium *medium, const char *name)
+remove_header (CamelMedium *medium, const gchar *name)
 {
 	CamelMimePart *part = (CamelMimePart *)medium;
 
@@ -297,8 +297,8 @@ remove_header (CamelMedium *medium, const char *name)
 	camel_header_raw_remove(&part->headers, name);
 }
 
-static const void *
-get_header (CamelMedium *medium, const char *name)
+static gconstpointer
+get_header (CamelMedium *medium, const gchar *name)
 {
 	CamelMimePart *part = (CamelMimePart *)medium;
 
@@ -339,9 +339,9 @@ free_headers (CamelMedium *medium, GArray *gheaders)
  * Set a description on the MIME part.
  **/
 void
-camel_mime_part_set_description (CamelMimePart *mime_part, const char *description)
+camel_mime_part_set_description (CamelMimePart *mime_part, const gchar *description)
 {
-	char *text = camel_header_encode_string ((const unsigned char *) description);
+	gchar *text = camel_header_encode_string ((const guchar *) description);
 
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
 				 "Content-Description", text);
@@ -357,7 +357,7 @@ camel_mime_part_set_description (CamelMimePart *mime_part, const char *descripti
  *
  * Returns: the description
  **/
-const char *
+const gchar *
 camel_mime_part_get_description (CamelMimePart *mime_part)
 {
 	return mime_part->description;
@@ -366,7 +366,7 @@ camel_mime_part_get_description (CamelMimePart *mime_part)
 /* **** Content-Disposition */
 
 static void
-set_disposition (CamelMimePart *mime_part, const char *disposition)
+set_disposition (CamelMimePart *mime_part, const gchar *disposition)
 {
 	camel_content_disposition_unref(mime_part->disposition);
 	if (disposition)
@@ -384,9 +384,9 @@ set_disposition (CamelMimePart *mime_part, const char *disposition)
  * Set a disposition on the MIME part.
  **/
 void
-camel_mime_part_set_disposition (CamelMimePart *mime_part, const char *disposition)
+camel_mime_part_set_disposition (CamelMimePart *mime_part, const gchar *disposition)
 {
-	char *text;
+	gchar *text;
 
 	/* we poke in a new disposition (so we dont lose 'filename', etc) */
 	if (mime_part->disposition == NULL) {
@@ -413,7 +413,7 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part, const char *dispositi
  *
  * Returns: the dispisition
  **/
-const char *
+const gchar *
 camel_mime_part_get_disposition (CamelMimePart *mime_part)
 {
 	if (mime_part->disposition)
@@ -433,9 +433,9 @@ camel_mime_part_get_disposition (CamelMimePart *mime_part)
  * Set the filename on a MIME part.
  **/
 void
-camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
+camel_mime_part_set_filename (CamelMimePart *mime_part, const gchar *filename)
 {
-	char *str;
+	gchar *str;
 	CamelDataWrapper *dw;
 
 	if (mime_part->disposition == NULL)
@@ -466,11 +466,11 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const char *filename)
  *
  * Returns: the filename of the MIME part
  **/
-const char *
+const gchar *
 camel_mime_part_get_filename (CamelMimePart *mime_part)
 {
 	if (mime_part->disposition) {
-		const char *name = camel_header_param (mime_part->disposition->params, "filename");
+		const gchar *name = camel_header_param (mime_part->disposition->params, "filename");
 		if (name)
 			return name;
 	}
@@ -489,9 +489,9 @@ camel_mime_part_get_filename (CamelMimePart *mime_part)
  * Set the content-id field on a MIME part.
  **/
 void
-camel_mime_part_set_content_id (CamelMimePart *mime_part, const char *contentid)
+camel_mime_part_set_content_id (CamelMimePart *mime_part, const gchar *contentid)
 {
-	char *cid, *id;
+	gchar *cid, *id;
 
 	if (contentid)
 		id = g_strstrip (g_strdup (contentid));
@@ -513,7 +513,7 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part, const char *contentid)
  *
  * Returns: the content-id field of the MIME part
  **/
-const char *
+const gchar *
 camel_mime_part_get_content_id (CamelMimePart *mime_part)
 {
 	return mime_part->content_id;
@@ -529,7 +529,7 @@ camel_mime_part_get_content_id (CamelMimePart *mime_part)
  * Set the content-md5 field of the MIME part.
  **/
 void
-camel_mime_part_set_content_MD5 (CamelMimePart *mime_part, const char *md5)
+camel_mime_part_set_content_MD5 (CamelMimePart *mime_part, const gchar *md5)
 {
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-MD5", md5);
 }
@@ -543,7 +543,7 @@ camel_mime_part_set_content_MD5 (CamelMimePart *mime_part, const char *md5)
  *
  * Returns: the content-md5 field of the MIME part
  **/
-const char *
+const gchar *
 camel_mime_part_get_content_MD5 (CamelMimePart *mime_part)
 {
 	return mime_part->content_MD5;
@@ -560,7 +560,7 @@ camel_mime_part_get_content_MD5 (CamelMimePart *mime_part)
  * Set the content-location field of the MIME part.
  **/
 void
-camel_mime_part_set_content_location (CamelMimePart *mime_part, const char *location)
+camel_mime_part_set_content_location (CamelMimePart *mime_part, const gchar *location)
 {
 	/* FIXME: this should perform content-location folding */
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-Location", location);
@@ -575,7 +575,7 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part, const char *loca
  *
  * Returns: the content-location field of a MIME part
  **/
-const char *
+const gchar *
 camel_mime_part_get_content_location (CamelMimePart *mime_part)
 {
 	return mime_part->content_location;
@@ -595,7 +595,7 @@ void
 camel_mime_part_set_encoding (CamelMimePart *mime_part,
 			      CamelTransferEncoding encoding)
 {
-	const char *text;
+	const gchar *text;
 
 	text = camel_transfer_encoding_to_string (encoding);
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
@@ -666,7 +666,7 @@ camel_mime_part_get_content_languages (CamelMimePart *mime_part)
  * Set the content-type on a MIME part.
  **/
 void
-camel_mime_part_set_content_type (CamelMimePart *mime_part, const char *content_type)
+camel_mime_part_set_content_type (CamelMimePart *mime_part, const gchar *content_type)
 {
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
 				 "Content-Type", content_type);
@@ -697,7 +697,7 @@ set_content_object (CamelMedium *medium, CamelDataWrapper *content)
 
 	content_type = camel_data_wrapper_get_mime_type_field (content);
 	if (mime_part->mime_type != content_type) {
-		char *txt;
+		gchar *txt;
 
 		txt = camel_content_type_format (content_type);
 		camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-Type", txt);
@@ -711,7 +711,7 @@ static ssize_t
 write_references(CamelStream *stream, struct _camel_header_raw *h)
 {
 	ssize_t len, out, total;
-	char *v, *ids, *ide;
+	gchar *v, *ids, *ide;
 
 	/* this is only approximate, based on the next >, this way it retains any content
 	   from the original which may not be properly formatted, etc.  It also doesn't handle
@@ -754,8 +754,8 @@ write_references(CamelStream *stream, struct _camel_header_raw *h)
 static ssize_t
 write_fold(CamelStream *stream, struct _camel_header_raw *h)
 {
-	char *val;
-	int count;
+	gchar *val;
+	gint count;
 
 	val = camel_header_fold(h->value, strlen(h->name));
 	count = camel_stream_printf(stream, "%s%s%s\n", h->name, isspace(val[0]) ? ":" : ": ", val);
@@ -768,7 +768,7 @@ write_fold(CamelStream *stream, struct _camel_header_raw *h)
 static ssize_t
 write_raw(CamelStream *stream, struct _camel_header_raw *h)
 {
-	char *val = h->value;
+	gchar *val = h->value;
 
 	return camel_stream_printf(stream, "%s%s%s\n", h->name, isspace(val[0]) ? ":" : ": ", val);
 }
@@ -782,7 +782,7 @@ write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 	CamelDataWrapper *content;
 	ssize_t total = 0;
 	ssize_t count;
-	int errnosav;
+	gint errnosav;
 
 	d(printf("mime_part::write_to_stream\n"));
 
@@ -791,7 +791,7 @@ write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 
 	if (mp->headers) {
 		struct _camel_header_raw *h = mp->headers;
-		char *val;
+		gchar *val;
 		ssize_t (*writefn)(CamelStream *stream, struct _camel_header_raw *);
 
 		/* fold/write the headers.   But dont fold headers that are already formatted
@@ -825,10 +825,10 @@ write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 		CamelMimeFilter *filter = NULL;
 		CamelStreamFilter *filter_stream = NULL;
 		CamelMimeFilter *charenc = NULL;
-		const char *content_charset = NULL;
-		const char *part_charset = NULL;
+		const gchar *content_charset = NULL;
+		const gchar *part_charset = NULL;
 		gboolean reencode = FALSE;
-		const char *filename;
+		const gchar *filename;
 
 		if (camel_content_type_is (dw->mime_type, "text", "*")) {
 			content_charset = camel_content_type_param (content->mime_type, "charset");
@@ -930,10 +930,10 @@ construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
 {
 	CamelDataWrapper *dw = (CamelDataWrapper *) mime_part;
 	struct _camel_header_raw *headers;
-	const char *content;
-	char *buf;
+	const gchar *content;
+	gchar *buf;
 	size_t len;
-	int err;
+	gint err;
 
 	d(printf("mime_part::construct_from_parser()\n"));
 
@@ -987,7 +987,7 @@ construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_mime_part_construct_from_parser(CamelMimePart *mime_part, CamelMimeParser *mp)
 {
 	return CMP_CLASS (mime_part)->construct_from_parser (mime_part, mp);
@@ -997,7 +997,7 @@ static int
 construct_from_stream(CamelDataWrapper *dw, CamelStream *s)
 {
 	CamelMimeParser *mp;
-	int ret;
+	gint ret;
 
 	d(printf("mime_part::construct_from_stream()\n"));
 
@@ -1042,8 +1042,8 @@ camel_mime_part_new (void)
  **/
 void
 camel_mime_part_set_content (CamelMimePart *mime_part,
-			     const char *data, int length,
-			     const char *type) /* why on earth is the type last? */
+			     const gchar *data, gint length,
+			     const gchar *type) /* why on earth is the type last? */
 {
 	CamelMedium *medium = CAMEL_MEDIUM (mime_part);
 

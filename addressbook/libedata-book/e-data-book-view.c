@@ -31,19 +31,19 @@ struct _EDataBookViewPrivate {
 	GMutex *pending_mutex;
 
 	CORBA_sequence_GNOME_Evolution_Addressbook_VCard adds;
-	int next_threshold;
-	int threshold_max;
-	int threshold_min;
+	gint next_threshold;
+	gint threshold_max;
+	gint threshold_min;
 
 	CORBA_sequence_GNOME_Evolution_Addressbook_VCard changes;
 	CORBA_sequence_GNOME_Evolution_Addressbook_ContactId removes;
 
 	EBookBackend *backend;
-	char *card_query;
+	gchar *card_query;
 	EBookBackendSExp *card_sexp;
 	GHashTable *ids;
 
-	int max_results;
+	gint max_results;
 };
 
 static void
@@ -147,7 +147,7 @@ CORBA_sequence_ ## type ## _realloc (CORBA_sequence_ ## type *seq,	\
 				     CORBA_unsigned_long      new_max)	\
 {									\
 	type *new_buf;							\
-	int i;								\
+	gint i;								\
 	new_buf = CORBA_sequence_ ## type ## _allocbuf (new_max);	\
 	for (i = 0; i < seq->_maximum; i ++)				\
 		new_buf[i] = CORBA_string_dup (seq->_buffer[i]);	\
@@ -160,7 +160,7 @@ MAKE_REALLOC (GNOME_Evolution_Addressbook_VCard)
 MAKE_REALLOC (GNOME_Evolution_Addressbook_ContactId)
 
 static void
-notify_change (EDataBookView *book_view, const char *vcard)
+notify_change (EDataBookView *book_view, const gchar *vcard)
 {
 	CORBA_sequence_GNOME_Evolution_Addressbook_VCard *changes;
 
@@ -178,7 +178,7 @@ notify_change (EDataBookView *book_view, const char *vcard)
 }
 
 static void
-notify_remove (EDataBookView *book_view, const char *id)
+notify_remove (EDataBookView *book_view, const gchar *id)
 {
 	CORBA_sequence_GNOME_Evolution_Addressbook_ContactId *removes;
 
@@ -197,7 +197,7 @@ notify_remove (EDataBookView *book_view, const char *id)
 }
 
 static void
-notify_add (EDataBookView *book_view, const char *id, const char *vcard)
+notify_add (EDataBookView *book_view, const gchar *id, const gchar *vcard)
 {
 	CORBA_sequence_GNOME_Evolution_Addressbook_VCard *adds;
 	EDataBookViewPrivate *priv = book_view->priv;
@@ -240,8 +240,8 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 			     EContact    *contact)
 {
 	gboolean currently_in_view, want_in_view;
-	const char *id=NULL;
-	char *vcard;
+	const gchar *id=NULL;
+	gchar *vcard;
 
 	g_mutex_lock (book_view->priv->pending_mutex);
 
@@ -289,10 +289,10 @@ e_data_book_view_notify_update (EDataBookView *book_view,
  * representation of a contact is a vCard.
  **/
 void
-e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
+e_data_book_view_notify_update_vcard (EDataBookView *book_view, gchar *vcard)
 {
 	gboolean currently_in_view, want_in_view;
-	const char *id = NULL;
+	const gchar *id = NULL;
 	EContact *contact;
 
 	g_mutex_lock (book_view->priv->pending_mutex);
@@ -347,7 +347,7 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, char *vcard)
  * known to exist in the view.
  **/
 void
-e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const char *id, char *vcard)
+e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const gchar *id, gchar *vcard)
 {
 	gboolean currently_in_view;
 
@@ -375,7 +375,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, cons
  **/
 void
 e_data_book_view_notify_remove (EDataBookView *book_view,
-			     const char  *id)
+			     const gchar  *id)
 {
 	g_mutex_lock (book_view->priv->pending_mutex);
 
@@ -431,7 +431,7 @@ e_data_book_view_notify_complete (EDataBookView *book_view,
  **/
 void
 e_data_book_view_notify_status_message (EDataBookView *book_view,
-				     const char  *message)
+				     const gchar  *message)
 {
 	CORBA_Environment ev;
 
@@ -451,9 +451,9 @@ static void
 e_data_book_view_construct (EDataBookView                *book_view,
 			    EBookBackend                 *backend,
 			    GNOME_Evolution_Addressbook_BookViewListener  listener,
-			    const char                   *card_query,
+			    const gchar                   *card_query,
 			    EBookBackendSExp             *card_sexp,
-			    int                           max_results)
+			    gint                           max_results)
 {
 	EDataBookViewPrivate *priv;
 	CORBA_Environment ev;
@@ -521,7 +521,7 @@ impl_GNOME_Evolution_Addressbook_BookView_dispose (PortableServer_Servant servan
  *
  * Return value: The textual s-expression used.
  **/
-const char*
+const gchar *
 e_data_book_view_get_card_query (EDataBookView *book_view)
 {
 	g_return_val_if_fail (book_view, NULL);
@@ -555,7 +555,7 @@ e_data_book_view_get_card_sexp (EDataBookView *book_view)
  *
  * Return value: The maximum number of results returned.
  **/
-int
+gint
 e_data_book_view_get_max_results (EDataBookView *book_view)
 {
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), 0);
@@ -626,8 +626,8 @@ e_data_book_view_get_listener (EDataBookView  *book_view)
  **/
 void
 e_data_book_view_set_thresholds (EDataBookView *book_view,
-				 int minimum_grouping_threshold,
-				 int maximum_grouping_threshold)
+				 gint minimum_grouping_threshold,
+				 gint maximum_grouping_threshold)
 {
 	book_view->priv->threshold_min = minimum_grouping_threshold;
 	book_view->priv->threshold_max = maximum_grouping_threshold;
@@ -646,9 +646,9 @@ e_data_book_view_set_thresholds (EDataBookView *book_view,
 EDataBookView *
 e_data_book_view_new (EBookBackend *backend,
 		      GNOME_Evolution_Addressbook_BookViewListener  listener,
-		      const char *card_query,
+		      const gchar *card_query,
 		      EBookBackendSExp *card_sexp,
-		      int max_results)
+		      gint max_results)
 {
 	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
 	static PortableServer_POA poa = NULL;

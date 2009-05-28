@@ -60,7 +60,7 @@
 #define CAMEL_TEXT_INDEX_UNLOCK(kf, lock) \
 	(g_static_rec_mutex_unlock(&((CamelTextIndex *)kf)->priv->lock))
 
-static int text_index_compress_nosync(CamelIndex *idx);
+static gint text_index_compress_nosync(CamelIndex *idx);
 
 /* ********************************************************************** */
 
@@ -73,7 +73,7 @@ struct _CamelTextIndexNamePrivate {
 	EMemPool *pool;
 };
 
-CamelTextIndexName *camel_text_index_name_new(CamelTextIndex *idx, const char *name, camel_key_t nameid);
+CamelTextIndexName *camel_text_index_name_new(CamelTextIndex *idx, const gchar *name, camel_key_t nameid);
 
 /* ****************************** */
 
@@ -83,12 +83,12 @@ struct _CamelTextIndexCursorPrivate {
 	camel_block_t first;
 	camel_block_t next;
 
-	int record_index;
+	gint record_index;
 
 	size_t record_count;
 	camel_key_t *records;
 
-	char *current;
+	gchar *current;
 };
 
 CamelTextIndexCursor *camel_text_index_cursor_new(CamelTextIndex *idx, camel_block_t data);
@@ -100,9 +100,9 @@ struct _CamelTextIndexKeyCursorPrivate {
 	CamelKeyTable *table;
 
 	camel_key_t keyid;
-	unsigned int flags;
+	guint flags;
 	camel_block_t data;
-	char *current;
+	gchar *current;
 };
 
 CamelTextIndexKeyCursor *camel_text_index_key_cursor_new(CamelTextIndex *idx, CamelKeyTable *table);
@@ -123,8 +123,8 @@ struct _CamelTextIndexPrivate {
 	CamelPartitionTable *name_hash;
 
 	/* Cache of words to write */
-	int word_cache_limit;
-	int word_cache_count;
+	gint word_cache_limit;
+	gint word_cache_count;
 	CamelDList word_cache;
 	GHashTable *words;
 	GStaticRecMutex lock;
@@ -153,8 +153,8 @@ struct _CamelTextIndexWord {
 
 	camel_block_t data;	/* where the data starts */
 	camel_key_t wordid;
-	char *word;
-	unsigned int used;
+	gchar *word;
+	guint used;
 	camel_key_t names[32];
 };
 
@@ -170,7 +170,7 @@ static CamelObjectClass *camel_text_index_parent;
 
 /* call locked */
 static void
-text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t nameid)
+text_index_add_name_to_word(CamelIndex *idx, const gchar *word, camel_key_t nameid)
 {
 	struct _CamelTextIndexWord *w, *wp, *ww;
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
@@ -259,7 +259,7 @@ text_index_sync(CamelIndex *idx)
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	struct _CamelTextIndexWord *ww;
 	struct _CamelTextIndexRoot *rb;
-	int ret = 0, wfrag, nfrag, work = FALSE;
+	gint ret = 0, wfrag, nfrag, work = FALSE;
 
 	d(printf("sync: blocks = %p\n", p->blocks));
 
@@ -323,9 +323,9 @@ text_index_sync(CamelIndex *idx)
 	return ret;
 }
 
-static void tmp_name(const char *in, char *o)
+static void tmp_name(const gchar *in, gchar *o)
 {
-	char *s;
+	gchar *s;
 
 	s = strrchr(in, '/');
 	if (s) {
@@ -340,7 +340,7 @@ static void tmp_name(const char *in, char *o)
 static int
 text_index_compress(CamelIndex *idx)
 {
-	int ret;
+	gint ret;
 
 	CAMEL_TEXT_INDEX_LOCK(idx, lock);
 
@@ -361,12 +361,12 @@ text_index_compress_nosync(CamelIndex *idx)
 	struct _CamelTextIndexPrivate *newp, *oldp;
 	camel_key_t oldkeyid, newkeyid;
 	GHashTable *remap;
-	unsigned int deleted;
+	guint deleted;
 	camel_block_t data, newdata;
-	int i, ret = -1;
-	char *name = NULL;
-	unsigned int flags;
-	char *newpath, *savepath, *oldpath;
+	gint i, ret = -1;
+	gchar *name = NULL;
+	guint flags;
+	gchar *newpath, *savepath, *oldpath;
 	size_t count, newcount;
 	camel_key_t *records, newrecords[256];
 	struct _CamelTextIndexRoot *rb;
@@ -493,7 +493,7 @@ text_index_compress_nosync(CamelIndex *idx)
 	/* If this fails, we'll pick up something during restart? */
 	ret = camel_index_rename((CamelIndex *)newidx, oldpath);
 
-#define myswap(a, b) { void *tmp = a; a = b; b = tmp; }
+#define myswap(a, b) { gpointer tmp = a; a = b; b = tmp; }
 	/* Poke the private data across to the new object */
 	/* And change the fd's over, etc? */
 	/* Yes: This is a hack */
@@ -529,7 +529,7 @@ static int
 text_index_delete(CamelIndex *idx)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
-	int ret = 0;
+	gint ret = 0;
 
 	if (camel_block_file_delete(p->blocks) == -1)
 		ret = -1;
@@ -540,11 +540,11 @@ text_index_delete(CamelIndex *idx)
 }
 
 static int
-text_index_rename(CamelIndex *idx, const char *path)
+text_index_rename(CamelIndex *idx, const gchar *path)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
-	char *newlink, *newblock;
-	int err, ret;
+	gchar *newlink, *newblock;
+	gint err, ret;
 
 	CAMEL_TEXT_INDEX_LOCK(idx, lock);
 
@@ -576,7 +576,7 @@ text_index_rename(CamelIndex *idx, const char *path)
 }
 
 static int
-text_index_has_name(CamelIndex *idx, const char *name)
+text_index_has_name(CamelIndex *idx, const gchar *name)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 
@@ -584,7 +584,7 @@ text_index_has_name(CamelIndex *idx, const char *name)
 }
 
 static CamelIndexName *
-text_index_add_name(CamelIndex *idx, const char *name)
+text_index_add_name(CamelIndex *idx, const gchar *name)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	camel_key_t keyid;
@@ -629,7 +629,7 @@ text_index_add_name(CamelIndex *idx, const char *name)
 
 /* call locked */
 static void
-hash_write_word(char *word, void *data, CamelIndexName *idn)
+hash_write_word(gchar *word, gpointer data, CamelIndexName *idn)
 {
 	CamelTextIndexName *tin = (CamelTextIndexName *)idn;
 
@@ -655,14 +655,14 @@ text_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 }
 
 static CamelIndexCursor *
-text_index_find_name(CamelIndex *idx, const char *name)
+text_index_find_name(CamelIndex *idx, const gchar *name)
 {
 	/* what was this for, umm */
 	return NULL;
 }
 
 static void
-text_index_delete_name(CamelIndex *idx, const char *name)
+text_index_delete_name(CamelIndex *idx, const gchar *name)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	camel_key_t keyid;
@@ -686,12 +686,12 @@ text_index_delete_name(CamelIndex *idx, const char *name)
 }
 
 static CamelIndexCursor *
-text_index_find(CamelIndex *idx, const char *word)
+text_index_find(CamelIndex *idx, const gchar *word)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	camel_key_t keyid;
 	camel_block_t data = 0;
-	unsigned int flags;
+	guint flags;
 	CamelIndexCursor *idc;
 
 	CAMEL_TEXT_INDEX_LOCK(idx, lock);
@@ -816,10 +816,10 @@ camel_text_index_get_type(void)
 	return type;
 }
 
-static char *
-text_index_normalise(CamelIndex *idx, const char *in, void *data)
+static gchar *
+text_index_normalise(CamelIndex *idx, const gchar *in, gpointer data)
 {
-	char *word;
+	gchar *word;
 
 	/* Sigh, this is really expensive */
 	/*g_utf8_normalize(in, strlen(in), G_NORMALIZE_ALL);*/
@@ -829,12 +829,12 @@ text_index_normalise(CamelIndex *idx, const char *in, void *data)
 }
 
 CamelTextIndex *
-camel_text_index_new(const char *path, int flags)
+camel_text_index_new(const gchar *path, gint flags)
 {
 	CamelTextIndex *idx = (CamelTextIndex *)camel_object_new(camel_text_index_get_type());
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	struct _CamelTextIndexRoot *rb;
-	char *link;
+	gchar *link;
 	CamelBlock *bl;
 
 	camel_index_construct((CamelIndex *)idx, path, flags);
@@ -913,10 +913,10 @@ fail:
 }
 
 /* returns 0 if the index exists, is valid, and synced, -1 otherwise */
-int
-camel_text_index_check(const char *path)
+gint
+camel_text_index_check(const gchar *path)
 {
-	char *block, *key;
+	gchar *block, *key;
 	CamelBlockFile *blocks;
 	CamelKeyFile *keys;
 
@@ -942,11 +942,11 @@ camel_text_index_check(const char *path)
 	return 0;
 }
 
-int
-camel_text_index_rename(const char *old, const char *new)
+gint
+camel_text_index_rename(const gchar *old, const gchar *new)
 {
-	char *oldname, *newname;
-	int err;
+	gchar *oldname, *newname;
+	gint err;
 
 	/* TODO: camel_text_index_rename should find out if we have an active index and use that instead */
 
@@ -973,11 +973,11 @@ camel_text_index_rename(const char *old, const char *new)
 	return 0;
 }
 
-int
-camel_text_index_remove(const char *old)
+gint
+camel_text_index_remove(const gchar *old)
 {
-	char *block, *key;
-	int ret = 0;
+	gchar *block, *key;
+	gint ret = 0;
 
 	/* TODO: needs to poke any active indices to remain unlinked */
 
@@ -1000,7 +1000,7 @@ camel_text_index_info(CamelTextIndex *idx)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	struct _CamelTextIndexRoot *rb = (struct _CamelTextIndexRoot *)p->blocks->root;
-	int frag;
+	gint frag;
 
 	printf("Path: '%s'\n", idx->parent.path);
 	printf("Version: %u\n", idx->parent.version);
@@ -1027,7 +1027,7 @@ camel_text_index_info(CamelTextIndex *idx)
 enum { KEY_ROOT = 1, KEY_DATA = 2, PARTITION_MAP = 4, PARTITION_DATA = 8 };
 
 static void
-add_type(GHashTable *map, camel_block_t id, int type)
+add_type(GHashTable *map, camel_block_t id, gint type)
 {
 	camel_block_t old;
 
@@ -1045,7 +1045,7 @@ add_partition(GHashTable *map, CamelBlockFile *blocks, camel_block_t id)
 {
 	CamelBlock *bl;
 	CamelPartitionMapBlock *pm;
-	int i;
+	gint i;
 
 	while (id) {
 		add_type(map, id, PARTITION_MAP);
@@ -1103,14 +1103,14 @@ add_keys(GHashTable *map, CamelBlockFile *blocks, camel_block_t id)
 }
 
 static void
-dump_raw(GHashTable *map, char *path)
+dump_raw(GHashTable *map, gchar *path)
 {
-	char buf[1024];
-	char line[256];
-	char *p, c, *e, *a, *o;
-	int v, n, len, i, type;
-	char hex[16] = "0123456789ABCDEF";
-	int fd;
+	gchar buf[1024];
+	gchar line[256];
+	gchar *p, c, *e, *a, *o;
+	gint v, n, len, i, type;
+	gchar hex[16] = "0123456789ABCDEF";
+	gint fd;
 	camel_block_t id, total;
 
 	fd = g_open(path, O_RDONLY|O_BINARY, 0);
@@ -1203,9 +1203,9 @@ camel_text_index_dump(CamelTextIndex *idx)
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 #ifndef DUMP_RAW
 	camel_key_t keyid;
-	char *word;
-	const char *name;
-	unsigned int flags;
+	gchar *word;
+	const gchar *name;
+	guint flags;
 	camel_block_t data;
 
 	/* Iterate over all names in the file first */
@@ -1242,7 +1242,7 @@ camel_text_index_dump(CamelTextIndex *idx)
 	GHashTable *block_type = g_hash_table_new(NULL, NULL);
 	camel_block_t id;
 	struct stat st;
-	int type;
+	gint type;
 
 	add_keys(block_type, p->blocks, p->word_index->rootid);
 	add_keys(block_type, p->blocks, p->name_index->rootid);
@@ -1261,11 +1261,11 @@ camel_text_index_validate(CamelTextIndex *idx)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 	camel_key_t keyid;
-	char *word;
-	const char *name;
-	unsigned int flags;
+	gchar *word;
+	const gchar *name;
+	guint flags;
 	camel_block_t data;
-	char *oldword;
+	gchar *oldword;
 	camel_key_t *records;
 	size_t count;
 
@@ -1345,7 +1345,7 @@ camel_text_index_validate(CamelTextIndex *idx)
 			if (g_hash_table_lookup(used, name) != NULL) {
 				printf("word '%s' uses word '%s' more than once\n", word, name);
 			} else {
-				g_hash_table_insert(used, g_strdup(name), (void *)1);
+				g_hash_table_insert(used, g_strdup(name), (gpointer)1);
 			}
 		}
 		camel_object_unref((CamelObject *)idc);
@@ -1389,12 +1389,12 @@ static CamelIndexNameClass *camel_text_index_name_parent;
 #define CIN_PRIVATE(o) (((CamelTextIndexName *)(o))->priv)
 
 static void
-text_index_name_add_word(CamelIndexName *idn, const char *word)
+text_index_name_add_word(CamelIndexName *idn, const gchar *word)
 {
 	struct _CamelTextIndexNamePrivate *p = ((CamelTextIndexName *)idn)->priv;
 
 	if (g_hash_table_lookup(idn->words, word) == NULL) {
-		char *w = e_mempool_strdup(p->pool, word);
+		gchar *w = e_mempool_strdup(p->pool, word);
 
 		g_hash_table_insert(idn->words, w, w);
 	}
@@ -1405,12 +1405,12 @@ text_index_name_add_word(CamelIndexName *idn, const char *word)
    Used to clean up utf8 before it gets further */
 
 static inline guint32
-camel_utf8_next(const unsigned char **ptr, const unsigned char *ptrend)
+camel_utf8_next(const guchar **ptr, const guchar *ptrend)
 {
-	register unsigned char *p = (unsigned char *)*ptr;
-	register unsigned int c;
+	register guchar *p = (guchar *)*ptr;
+	register guint c;
 	register guint32 v;
-	int l;
+	gint l;
 
 	if (p == ptrend)
 		return 0;
@@ -1435,7 +1435,7 @@ camel_utf8_next(const unsigned char **ptr, const unsigned char *ptrend)
 			v = c & 0x01;
 			l = 5;
 		} else
-			/* Invalid, ignore and look for next start char if room */
+			/* Invalid, ignore and look for next start gchar if room */
 			if (p == ptrend) {
 				return 0;
 			} else {
@@ -1452,26 +1452,26 @@ camel_utf8_next(const unsigned char **ptr, const unsigned char *ptrend)
 			v = (v << 6) | (c & 0x3f);
 		}
 
-		/* valid char */
+		/* valid gchar */
 		if (l == 0) {
 			*ptr = p;
 			return v;
 		}
 
-		/* else look for a start char again */
+		/* else look for a start gchar again */
 	}
 
 	return 0;
 }
 
 static size_t
-text_index_name_add_buffer(CamelIndexName *idn, const char *buffer, size_t len)
+text_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, size_t len)
 {
 	CamelTextIndexNamePrivate *p = CIN_PRIVATE(idn);
-	const unsigned char *ptr, *ptrend;
+	const guchar *ptr, *ptrend;
 	guint32 c;
-	char utf8[8];
-	int utf8len;
+	gchar utf8[8];
+	gint utf8len;
 
 	if (buffer == NULL) {
 		if (p->buffer->len) {
@@ -1481,8 +1481,8 @@ text_index_name_add_buffer(CamelIndexName *idn, const char *buffer, size_t len)
 		return 0;
 	}
 
-	ptr = (const unsigned char *) buffer;
-	ptrend = (const unsigned char *) buffer+len;
+	ptr = (const guchar *) buffer;
+	ptrend = (const guchar *) buffer+len;
 	while ((c = camel_utf8_next(&ptr, ptrend))) {
 		if (g_unichar_isalnum(c)) {
 			c = g_unichar_tolower(c);
@@ -1557,7 +1557,7 @@ camel_text_index_name_get_type(void)
 }
 
 CamelTextIndexName *
-camel_text_index_name_new(CamelTextIndex *idx, const char *name, camel_key_t nameid)
+camel_text_index_name_new(CamelTextIndex *idx, const gchar *name, camel_key_t nameid)
 {
 	CamelTextIndexName *idn = (CamelTextIndexName *)camel_object_new(camel_text_index_name_get_type());
 	CamelIndexName *cin = &idn->parent;
@@ -1580,12 +1580,12 @@ static CamelIndexCursorClass *camel_text_index_cursor_parent;
 #define CIC_CLASS(o) ((CamelTextIndexCursorClass *)(((CamelObject *)o)->classfuncs))
 #define CIC_PRIVATE(o) (((CamelTextIndexCursor *)(o))->priv)
 
-static const char *
+static const gchar *
 text_index_cursor_next(CamelIndexCursor *idc)
 {
 	struct _CamelTextIndexCursorPrivate *p = CIC_PRIVATE(idc);
 	struct _CamelTextIndexPrivate *tip = CTI_PRIVATE(idc->index);
-	unsigned int flags;
+	guint flags;
 
 	c(printf("Going to next cursor for word with data '%08x' next %08x\n", p->first, p->next));
 
@@ -1698,7 +1698,7 @@ static CamelIndexCursorClass *camel_text_index_key_cursor_parent;
 #define CIKC_CLASS(o) ((CamelTextIndexKeyCursorClass *)(((CamelObject *)o)->classfuncs))
 #define CIKC_PRIVATE(o) (((CamelTextIndexKeyCursor *)(o))->priv)
 
-static const char *
+static const gchar *
 text_index_key_cursor_next(CamelIndexCursor *idc)
 {
 	struct _CamelTextIndexKeyCursorPrivate *p = CIKC_PRIVATE(idc);
@@ -1815,12 +1815,12 @@ struct _CamelIndexRoot {
 	camel_block_t name_hash_root;
 };
 
-char wordbuffer[] = "This is a buffer of multiple words.  Some of the words are duplicates"
+gchar wordbuffer[] = "This is a buffer of multiple words.  Some of the words are duplicates"
 " while other words are the same, some are in difFerenT Different different case cAsE casE,"
 " with,with:with;with-with'with\"'\"various punctuation as well.  So much for those Words. and 10"
 " numbers in a row too 1,2,3,4,5,6,7,8,9,10!  Yay!.";
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 #if 0
 	CamelBlockFile *bs;
@@ -1829,15 +1829,15 @@ int main(int argc, char **argv)
 	CamelBlock *keyroot, *partroot;
 	struct _CamelIndexRoot *root;
 	FILE *fp;
-	char line[256], *key;
+	gchar line[256], *key;
 	camel_key_t keyid;
-	int index = 0, flags, data;
+	gint index = 0, flags, data;
 #endif
 	CamelIndex *idx;
 	CamelIndexName *idn;
 	CamelIndexCursor *idc;
-	const char *word;
-	int i;
+	const gchar *word;
+	gint i;
 
 	printf("Camel text index tester!\n");
 
@@ -1854,7 +1854,7 @@ int main(int argc, char **argv)
 #endif
 
 	for (i=0;i<100;i++) {
-		char name[16];
+		gchar name[16];
 
 		sprintf(name, "%d", i);
 		printf("Adding words to name '%s'\n", name);

@@ -38,7 +38,7 @@ enum camel_arg_t {
 	CAMEL_ARG_TAG = 0x0fffffff, /* tag field for args */
 
 	CAMEL_ARG_OBJ = 0x00000000, /* object */
-	CAMEL_ARG_INT = 0x10000000, /* int */
+	CAMEL_ARG_INT = 0x10000000, /* gint */
 	CAMEL_ARG_DBL = 0x20000000, /* double */
 	CAMEL_ARG_STR = 0x30000000, /* c string */
 	CAMEL_ARG_PTR = 0x40000000, /* ptr */
@@ -54,21 +54,21 @@ typedef struct _CamelArgGetV CamelArgGetV;
 struct _CamelArg {
 	guint32 tag;
 	union {
-		void *ca_object;
-		int ca_int;
+		gpointer ca_object;
+		gint ca_int;
 		double ca_double;
-		char *ca_str;
-		void *ca_ptr;
+		gchar *ca_str;
+		gpointer ca_ptr;
 	} u;
 };
 struct _CamelArgGet {
 	guint32 tag;
 	union {
-		void **ca_object;
-		int *ca_int;
+		gpointer *ca_object;
+		gint *ca_int;
 		double *ca_double;
-		char **ca_str;
-		void **ca_ptr;
+		gchar **ca_str;
+		gpointer *ca_ptr;
 	} u;
 };
 #define ca_object u.ca_object
@@ -82,20 +82,20 @@ struct _CamelArgGet {
 
 struct _CamelArgV {
 	va_list ap;
-	int argc;
+	gint argc;
 	CamelArg argv[CAMEL_ARGV_MAX];
 };
 
 struct _CamelArgGetV {
 	va_list ap;
-	int argc;
+	gint argc;
 	CamelArgGet argv[CAMEL_ARGV_MAX];
 };
 
 #define camel_argv_start(tv, last) va_start((tv)->ap, last)
 #define camel_argv_end(tv) va_end((tv)->ap)
-int camel_argv_build(CamelArgV *tv);
-int camel_arggetv_build(CamelArgGetV *tv);
+gint camel_argv_build(CamelArgV *tv);
+gint camel_arggetv_build(CamelArgGetV *tv);
 
 /* set an arg ignored */
 #define camel_argv_ignore(tv, i) ((tv)->argv[i].tag = ((tv)->argv[i].tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE)
@@ -105,8 +105,8 @@ typedef struct _CamelProperty CamelProperty;
 
 struct _CamelProperty {
 	guint32 tag;
-	char *name;
-	char *description;
+	gchar *name;
+	gchar *description;
 };
 
 G_END_DECLS

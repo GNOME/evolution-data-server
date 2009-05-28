@@ -8,11 +8,11 @@
 
 /* check the total/unread is what we think it should be */
 void
-test_folder_counts(CamelFolder *folder, int total, int unread)
+test_folder_counts(CamelFolder *folder, gint total, gint unread)
 {
 	GPtrArray *s;
-	int i, myunread;
-	int gettotal, getunread;
+	gint i, myunread;
+	gint gettotal, getunread;
 	CamelMessageInfo *info;
 
 	push("test folder counts %d total %d unread", total, unread);
@@ -53,7 +53,7 @@ test_folder_counts(CamelFolder *folder, int total, int unread)
 }
 
 static int
-safe_strcmp(const char *a, const char *b)
+safe_strcmp(const gchar *a, const gchar *b)
 {
 	if (a == NULL && b == NULL)
 		return 0;
@@ -82,14 +82,14 @@ test_message_info(CamelMimeMessage *msg, const CamelMessageInfo *info)
 
 /* check a message is present */
 void
-test_folder_message(CamelFolder *folder, const char *uid)
+test_folder_message(CamelFolder *folder, const gchar *uid)
 {
 	CamelMimeMessage *msg;
 	CamelMessageInfo *info;
 	GPtrArray *s;
-	int i;
+	gint i;
 	CamelException *ex = camel_exception_new();
-	int found;
+	gint found;
 
 	push("uid %s is in folder", uid);
 
@@ -139,14 +139,14 @@ test_folder_message(CamelFolder *folder, const char *uid)
 
 /* check message not present */
 void
-test_folder_not_message(CamelFolder *folder, const char *uid)
+test_folder_not_message(CamelFolder *folder, const gchar *uid)
 {
 	CamelMimeMessage *msg;
 	CamelMessageInfo *info;
 	GPtrArray *s;
-	int i;
+	gint i;
 	CamelException *ex = camel_exception_new();
-	int found;
+	gint found;
 
 	push("uid '%s' is not in folder", uid);
 
@@ -199,12 +199,12 @@ test_folder_not_message(CamelFolder *folder, const char *uid)
 /* test basic store operations on folders */
 /* TODO: Add subscription stuff */
 void
-test_folder_basic(CamelSession *session, const char *storename, int local, int spool)
+test_folder_basic(CamelSession *session, const gchar *storename, gint local, gint spool)
 {
 	CamelStore *store;
 	CamelException *ex = camel_exception_new();
 	CamelFolder *folder;
-	char *what = g_strdup_printf("testing store: %s", storename);
+	gchar *what = g_strdup_printf("testing store: %s", storename);
 
 	camel_test_start(what);
 	test_free(what);
@@ -322,22 +322,22 @@ test_folder_basic(CamelSession *session, const char *storename, int local, int s
 /* todo: cross-check everything with folder_info checks as well */
 /* this should probably take a folder instead of a session ... */
 void
-test_folder_message_ops(CamelSession *session, const char *name, int local, const char *mailbox)
+test_folder_message_ops(CamelSession *session, const gchar *name, gint local, const gchar *mailbox)
 {
 	CamelStore *store;
 	CamelException *ex = camel_exception_new();
 	CamelFolder *folder;
 	CamelMimeMessage *msg;
-	int j;
-	int indexed, max;
+	gint j;
+	gint indexed, max;
 	GPtrArray *uids;
 	CamelMessageInfo *info;
 
 	max=local?2:1;
 
 	for (indexed = 0;indexed<max;indexed++) {
-		char *what = g_strdup_printf("folder ops: %s %s", name, local?(indexed?"indexed":"non-indexed"):"");
-		int flags;
+		gchar *what = g_strdup_printf("folder ops: %s %s", name, local?(indexed?"indexed":"non-indexed"):"");
+		gint flags;
 
 		camel_test_start(what);
 		test_free(what);
@@ -358,7 +358,7 @@ test_folder_message_ops(CamelSession *session, const char *name, int local, cons
 		/* we can't create mailbox outside of namespace, since we have no api for it, try
 		   using inbox namespace, works for courier */
 		if (folder == NULL) {
-			char *mbox = g_strdup_printf("INBOX/%s", mailbox);
+			gchar *mbox = g_strdup_printf("INBOX/%s", mailbox);
 			mailbox = mbox;
 			camel_exception_clear(ex);
 			folder = camel_store_get_folder(store, mailbox, flags, ex);
@@ -373,7 +373,7 @@ test_folder_message_ops(CamelSession *session, const char *name, int local, cons
 		test_folder_not_message(folder, "");
 
 		for (j=0;j<10;j++) {
-			char *content, *subject;
+			gchar *content, *subject;
 
 			push("creating test message");
 			msg = test_message_create_simple();
@@ -461,7 +461,7 @@ test_folder_message_ops(CamelSession *session, const char *name, int local, cons
 		check(uids != NULL);
 		check(uids->len == 10);
 		for (j=0;j<10;j++) {
-			char *subject = g_strdup_printf("Test message %d", j);
+			gchar *subject = g_strdup_printf("Test message %d", j);
 
 			push("verify reload of %s", subject);
 			test_folder_message(folder, uids->pdata[j]);
@@ -488,7 +488,7 @@ test_folder_message_ops(CamelSession *session, const char *name, int local, cons
 		check(uids != NULL);
 		check(uids->len == 9);
 		for (j=0;j<9;j++) {
-			char *subject = g_strdup_printf("Test message %d", j+1);
+			gchar *subject = g_strdup_printf("Test message %d", j+1);
 
 			push("verify after expunge of %s", subject);
 			test_folder_message(folder, uids->pdata[j]);
@@ -517,7 +517,7 @@ test_folder_message_ops(CamelSession *session, const char *name, int local, cons
 		check(uids != NULL);
 		check(uids->len == 8);
 		for (j=0;j<8;j++) {
-			char *subject = g_strdup_printf("Test message %d", j+1);
+			gchar *subject = g_strdup_printf("Test message %d", j+1);
 
 			push("verify after expunge of %s", subject);
 			test_folder_message(folder, uids->pdata[j]);

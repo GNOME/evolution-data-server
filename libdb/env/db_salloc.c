@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -40,11 +40,11 @@ struct __data {
  * __db_shalloc_init --
  *	Initialize the area as one large chunk.
  *
- * PUBLIC: void __db_shalloc_init __P((void *, size_t));
+ * PUBLIC: void __db_shalloc_init __P((gpointer , size_t));
  */
 void
 __db_shalloc_init(area, size)
-	void *area;
+	gpointer area;
 	size_t size;
 {
 	struct __data *elp;
@@ -62,9 +62,9 @@ __db_shalloc_init(area, size)
  * __db_shalloc_size --
  *	Return the space needed for an allocation, including alignment.
  *
- * PUBLIC: int __db_shalloc_size __P((size_t, size_t));
+ * PUBLIC: gint __db_shalloc_size __P((size_t, size_t));
  */
-int
+gint
 __db_shalloc_size(len, align)
 	size_t len, align;
 {
@@ -88,16 +88,16 @@ __db_shalloc_size(len, align)
  * __db_shalloc --
  *	Allocate some space from the shared region.
  *
- * PUBLIC: int __db_shalloc __P((void *, size_t, size_t, void *));
+ * PUBLIC: gint __db_shalloc __P((gpointer , size_t, size_t, gpointer ));
  */
-int
+gint
 __db_shalloc(p, len, align, retp)
-	void *p, *retp;
+	gpointer p, *retp;
 	size_t len, align;
 {
 	struct __data *elp;
 	size_t *sp;
-	void *rp;
+	gpointer rp;
 
 	/* Never allocate less than the size of a struct __data. */
 	if (len < sizeof(struct __data))
@@ -134,7 +134,7 @@ __db_shalloc(p, len, align, retp)
 		if ((u_int8_t *)rp < (u_int8_t *)&elp->links)
 			continue;
 
-		*(void **)retp = rp;
+		*(gpointer *)retp = rp;
 #ifdef DIAGNOSTIC
 		/*
 		 * At this point, whether or not we still need to split up a
@@ -182,16 +182,16 @@ __db_shalloc(p, len, align, retp)
  * __db_shalloc_free --
  *	Free a shared memory allocation.
  *
- * PUBLIC: void __db_shalloc_free __P((void *, void *));
+ * PUBLIC: void __db_shalloc_free __P((gpointer , gpointer ));
  */
 void
 __db_shalloc_free(regionp, ptr)
-	void *regionp, *ptr;
+	gpointer regionp, *ptr;
 {
 	struct __data *elp, *lastp, *newp;
 	struct __head *hp;
 	size_t free_size, *sp;
-	int merged;
+	gint merged;
 
 	/*
 	 * Step back over flagged length fields to find the beginning of
@@ -237,7 +237,7 @@ __db_shalloc_free(regionp, ptr)
 	 */
 	hp = (struct __head *)regionp;
 	for (elp = SH_LIST_FIRST(hp, __data), lastp = NULL;
-	    elp != NULL && (void *)elp < (void *)ptr;
+	    elp != NULL && (gpointer)elp < (gpointer)ptr;
 	    lastp = elp, elp = SH_LIST_NEXT(elp, links, __data))
 		;
 
@@ -292,11 +292,11 @@ __db_shalloc_free(regionp, ptr)
  * the size of the memory being used, but also the extra alignment bytes
  * in front and, #ifdef DIAGNOSTIC, the guard byte at the end.
  *
- * PUBLIC: size_t __db_shsizeof __P((void *));
+ * PUBLIC: size_t __db_shsizeof __P((gpointer));
  */
 size_t
 __db_shsizeof(ptr)
-	void *ptr;
+	gpointer ptr;
 {
 	struct __data *elp;
 	size_t *sp;
@@ -315,11 +315,11 @@ __db_shsizeof(ptr)
 /*
  * __db_shalloc_dump --
  *
- * PUBLIC: void __db_shalloc_dump __P((void *, FILE *));
+ * PUBLIC: void __db_shalloc_dump __P((gpointer , FILE *));
  */
 void
 __db_shalloc_dump(addr, fp)
-	void *addr;
+	gpointer addr;
 	FILE *fp;
 {
 	struct __data *elp;

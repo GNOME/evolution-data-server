@@ -325,7 +325,7 @@ impl_notifyObjectsSent (PortableServer_Servant servant,
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
 	GList *users = NULL;
-	int i;
+	gint i;
 
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
@@ -382,7 +382,7 @@ static GList *
 build_object_list (const GNOME_Evolution_Calendar_stringlist *seq)
 {
 	GList *list;
-	int i;
+	gint i;
 
 	list = NULL;
 	for (i = 0; i < seq->_length; i++) {
@@ -432,7 +432,7 @@ impl_notifyAttachmentListRequested (PortableServer_Servant servant,
 	ECalListener *listener;
 	ECalListenerPrivate *priv;
 	GSList *a_list = NULL;
-	int i;
+	gint i;
 
 	listener = E_CAL_LISTENER (bonobo_object_from_servant (servant));
 	priv = listener->priv;
@@ -508,7 +508,7 @@ build_change_list (const GNOME_Evolution_Calendar_CalObjChangeSeq *seq)
 {
 	GList *list = NULL;
 	icalcomponent *icalcomp;
-	int i;
+	gint i;
 
 	/* Create the list in reverse order */
 	for (i = 0; i < seq->_length; i++) {
@@ -567,7 +567,7 @@ static GList *
 build_free_busy_list (const GNOME_Evolution_Calendar_CalObjSeq *seq)
 {
 	GList *list = NULL;
-	int i;
+	gint i;
 
 	/* Create the list in reverse order */
 	for (i = 0; i < seq->_length; i++) {

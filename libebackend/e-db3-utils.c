@@ -18,26 +18,26 @@
 
 #include "e-db3-utils.h"
 
-static char *
-get_check_filename (const char *filename)
+static gchar *
+get_check_filename (const gchar *filename)
 {
 	return g_strdup_printf ("%s-upgrading", filename);
 }
 
-static char *
-get_copy_filename (const char *filename)
+static gchar *
+get_copy_filename (const gchar *filename)
 {
 	return g_strdup_printf ("%s-copy", filename);
 }
 
 static int
-cp_file (const char *src, const char *dest)
+cp_file (const gchar *src, const gchar *dest)
 {
-	int i;
-	int o;
-	char buffer[1024];
-	int length;
-	int place;
+	gint i;
+	gint o;
+	gchar buffer[1024];
+	gint length;
+	gint place;
 
 	i = g_open (src, O_RDONLY | O_BINARY, 0);
 	if (i == -1)
@@ -66,7 +66,7 @@ cp_file (const char *src, const char *dest)
 
 		place = 0;
 		while (length != 0) {
-			int count;
+			gint count;
 			count = write (o, buffer + place, length);
 			if (count == -1) {
 				if (errno == EINTR)
@@ -90,9 +90,9 @@ cp_file (const char *src, const char *dest)
 }
 
 static int
-touch_file (const char *file)
+touch_file (const gchar *file)
 {
-	int o;
+	gint o;
 	o = g_open (file, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, S_IREAD | S_IWRITE);
 	if (o == -1)
 		return -1;
@@ -101,10 +101,10 @@ touch_file (const char *file)
 }
 
 static int
-resume_upgrade (const char *filename, const char *copy_filename, const char *check_filename)
+resume_upgrade (const gchar *filename, const gchar *copy_filename, const gchar *check_filename)
 {
 	DB *db;
-	int ret_val;
+	gint ret_val;
 
 	ret_val = db_create (&db, NULL, 0);
 
@@ -124,12 +124,12 @@ resume_upgrade (const char *filename, const char *copy_filename, const char *che
 	return ret_val;
 }
 
-int
-e_db3_utils_maybe_recover (const char *filename)
+gint
+e_db3_utils_maybe_recover (const gchar *filename)
 {
-	int ret_val = 0;
-	char *copy_filename;
-	char *check_filename;
+	gint ret_val = 0;
+	gchar *copy_filename;
+	gchar *check_filename;
 
 	copy_filename = get_copy_filename (filename);
 	check_filename = get_check_filename (filename);
@@ -145,13 +145,13 @@ e_db3_utils_maybe_recover (const char *filename)
 	return ret_val;
 }
 
-int
-e_db3_utils_upgrade_format (const char *filename)
+gint
+e_db3_utils_upgrade_format (const gchar *filename)
 {
-	char *copy_filename;
-	char *check_filename;
+	gchar *copy_filename;
+	gchar *check_filename;
 	DB *db;
-	int ret_val;
+	gint ret_val;
 
 	ret_val = db_create (&db, NULL, 0);
 	if (ret_val != 0)

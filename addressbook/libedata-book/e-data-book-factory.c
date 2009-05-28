@@ -26,7 +26,7 @@
 static BonoboObjectClass          *e_data_book_factory_parent_class;
 
 typedef struct {
-	char                                     *uri;
+	gchar                                     *uri;
 	GNOME_Evolution_Addressbook_BookListener  listener;
 } EDataBookFactoryQueuedRequest;
 
@@ -37,12 +37,12 @@ struct _EDataBookFactoryPrivate {
 	GHashTable *active_server_map;
 
 	/* OAFIID of the factory */
-	char *iid;
+	gchar *iid;
 
 	/* Whether the factory has been registered with OAF yet */
 	guint       registered : 1;
 
-	int mode;
+	gint mode;
 };
 
 /* Signal IDs */
@@ -53,19 +53,19 @@ enum {
 
 static guint factory_signals[LAST_SIGNAL];
 
-static char *
-e_data_book_factory_canonicalize_uri (const char *uri)
+static gchar *
+e_data_book_factory_canonicalize_uri (const gchar *uri)
 {
 	/* FIXME: What do I do here? */
 
 	return g_strdup (uri);
 }
 
-static char *
-e_data_book_factory_extract_proto_from_uri (const char *uri)
+static gchar *
+e_data_book_factory_extract_proto_from_uri (const gchar *uri)
 {
-	char *proto;
-	char *p;
+	gchar *proto;
+	gchar *p;
 
 	p = strchr (uri, ':');
 
@@ -90,7 +90,7 @@ void
 e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
 				      EBookBackendFactory   *backend_factory)
 {
-	const char *proto;
+	const gchar *proto;
 
 	g_return_if_fail (E_IS_DATA_BOOK_FACTORY (book_factory));
 	g_return_if_fail (E_IS_BOOK_BACKEND_FACTORY (backend_factory));
@@ -125,10 +125,10 @@ out_of_proc_check (gpointer key, gpointer value, gpointer data)
  *
  * Return value: Number of running backends.
  **/
-int
+gint
 e_data_book_factory_get_n_backends (EDataBookFactory *factory)
 {
-	int n_backends;
+	gint n_backends;
 	gboolean out_of_proc = FALSE;
 
 	g_return_val_if_fail (factory != NULL, -1);
@@ -171,7 +171,7 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 static void
 dump_active_server_map_entry (gpointer key, gpointer value, gpointer data)
 {
-	char *uri;
+	gchar *uri;
 	EBookBackend *backend;
 
 	uri = key;
@@ -235,11 +235,11 @@ backend_last_client_gone_cb (EBookBackend *backend, gpointer data)
 
 static EBookBackendFactory*
 e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
-					    const char     *uri)
+					    const gchar     *uri)
 {
 	EBookBackendFactory *backend_factory;
-	char                *proto;
-	char                *canonical_uri;
+	gchar                *proto;
+	gchar                *canonical_uri;
 
 	g_assert (factory != NULL);
 	g_assert (E_IS_DATA_BOOK_FACTORY (factory));
@@ -267,7 +267,7 @@ static EBookBackend *
 e_data_book_factory_launch_backend (EDataBookFactory      *book_factory,
 				    EBookBackendFactory   *backend_factory,
 				    GNOME_Evolution_Addressbook_BookListener listener,
-				    const char          *uri)
+				    const gchar          *uri)
 {
 	EBookBackend          *backend;
 
@@ -412,11 +412,11 @@ e_data_book_factory_new (void)
  * Return value: %TRUE for success, %FALSE otherwise.
  **/
 gboolean
-e_data_book_factory_activate (EDataBookFactory *factory, const char *iid)
+e_data_book_factory_activate (EDataBookFactory *factory, const gchar *iid)
 {
 	EDataBookFactoryPrivate *priv;
 	Bonobo_RegistrationResult result;
-	char *tmp_iid;
+	gchar *tmp_iid;
 
 	g_return_val_if_fail (factory != NULL, FALSE);
 	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), FALSE);
@@ -472,7 +472,7 @@ set_backend_online_status (gpointer key, gpointer value, gpointer data)
  * online.
  **/
 void
-e_data_book_factory_set_backend_mode (EDataBookFactory *factory, int mode)
+e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
 {
 	EDataBookFactoryPrivate *priv = factory->priv;
 

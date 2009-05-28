@@ -15,7 +15,7 @@
 #include <camel/camel-stream-mem.h>
 #include "camel/camel-multipart.h"
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelMimeMessage *msg, *msg2, *msg3;
 	CamelMultipart *mp, *mp2;

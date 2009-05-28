@@ -37,7 +37,7 @@ void eds_module_shutdown(void)
 {
 }
 
-void eds_module_list_types(const GType **types, int *num_types)
+void eds_module_list_types(const GType **types, gint *num_types)
 {
 	*types     = &webdav_type;
 	*num_types = 1;

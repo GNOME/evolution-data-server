@@ -49,10 +49,10 @@ struct _EBookBackendSExpClass {
 	GObjectClass parent_class;
 };
 
-EBookBackendSExp *e_book_backend_sexp_new      (const char *text);
+EBookBackendSExp *e_book_backend_sexp_new      (const gchar *text);
 GType               e_book_backend_sexp_get_type (void);
 
-gboolean            e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const char *vcard);
+gboolean            e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const gchar *vcard);
 gboolean            e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact);
 
 G_END_DECLS

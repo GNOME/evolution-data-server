@@ -52,12 +52,12 @@ static CamelLocalFolderClass *parent_class = NULL;
 #define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 #define CMAILDIRS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
+static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static void maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, char **appended_uid, CamelException * ex);
+static void maildir_append_message(CamelFolder * folder, CamelMimeMessage * message, const CamelMessageInfo *info, gchar **appended_uid, CamelException * ex);
 static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex);
-static char* maildir_get_filename (CamelFolder *folder, const char *uid, CamelException *ex);
-static gint maildir_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2);
+static gchar * maildir_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
+static gint maildir_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
 static void maildir_finalize(CamelObject * object);
@@ -66,7 +66,7 @@ static int
 maildir_folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
-	int i;
+	gint i;
 	guint32 tag;
 
 	for (i=0;i<args->argc;i++) {
@@ -141,7 +141,7 @@ CamelType camel_maildir_folder_get_type(void)
 }
 
 CamelFolder *
-camel_maildir_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex)
+camel_maildir_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
 {
 	CamelFolder *folder;
 
@@ -159,20 +159,20 @@ camel_maildir_folder_new(CamelStore *parent_store, const char *full_name, guint3
 	return folder;
 }
 
-static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index)
+static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index)
 {
 	return (CamelLocalSummary *)camel_maildir_summary_new((CamelFolder *)lf, path, folder, index);
 }
 
 static void
-maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, char **appended_uid, CamelException *ex)
+maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
 {
 	CamelMaildirFolder *maildir_folder = (CamelMaildirFolder *)folder;
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream;
 	CamelMessageInfo *mi;
 	CamelMaildirMessageInfo *mdi;
-	char *name, *dest = NULL;
+	gchar *name, *dest = NULL;
 
 	d(printf("Appending message\n"));
 
@@ -241,8 +241,8 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	g_free (dest);
 }
 
-static char*
-maildir_get_filename (CamelFolder *folder, const char *uid, CamelException *ex)
+static gchar *
+maildir_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelMaildirMessageInfo *mdi;
@@ -270,7 +270,7 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 	CamelStream *message_stream = NULL;
 	CamelMimeMessage *message = NULL;
 	CamelMessageInfo *info;
-	char *name;
+	gchar *name;
 	CamelMaildirMessageInfo *mdi;
 
 	d(printf("getting message: %s\n", uid));
@@ -316,7 +316,7 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 }
 
 static gint
-maildir_cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2)
+maildir_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
 {
 	CamelMessageInfo *a, *b;
 	time_t tma, tmb;

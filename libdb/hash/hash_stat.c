@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,18 +22,18 @@ static const char revid[] = "$Id$";
 #include "dbinc/btree.h"
 #include "dbinc/hash.h"
 
-static int __ham_stat_callback __P((DB *, PAGE *, void *, int *));
+static gint __ham_stat_callback __P((DB *, PAGE *, gpointer , gint *));
 
 /*
  * __ham_stat --
  *	Gather/print the hash statistics
  *
- * PUBLIC: int __ham_stat __P((DB *, void *, u_int32_t));
+ * PUBLIC: gint __ham_stat __P((DB *, gpointer , u_int32_t));
  */
-int
+gint
 __ham_stat(dbp, spp, flags)
 	DB *dbp;
-	void *spp;
+	gpointer spp;
 	u_int32_t flags;
 {
 	DBC *dbc;
@@ -43,7 +43,7 @@ __ham_stat(dbp, spp, flags)
 	HASH_CURSOR *hcp;
 	PAGE *h;
 	db_pgno_t pgno;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 
@@ -130,16 +130,16 @@ err:	if (sp != NULL)
  *	 Traverse an entire hash table.  We use the callback so that we
  * can use this both for stat collection and for deallocation.
  *
- * PUBLIC: int __ham_traverse __P((DBC *, db_lockmode_t,
- * PUBLIC:     int (*)(DB *, PAGE *, void *, int *), void *, int));
+ * PUBLIC: gint __ham_traverse __P((DBC *, db_lockmode_t,
+ * PUBLIC:     gint (*)(DB *, PAGE *, gpointer , gint *), gpointer , int));
  */
-int
+gint
 __ham_traverse(dbc, mode, callback, cookie, look_past_max)
 	DBC *dbc;
 	db_lockmode_t mode;
-	int (*callback) __P((DB *, PAGE *, void *, int *));
-	void *cookie;
-	int look_past_max;
+	gint (*callback) __P((DB *, PAGE *, gpointer , gint *));
+	gpointer cookie;
+	gint look_past_max;
 {
 	DB *dbp;
 	DBC *opd;
@@ -147,7 +147,7 @@ __ham_traverse(dbc, mode, callback, cookie, look_past_max)
 	HASH_CURSOR *hcp;
 	HKEYDATA *hk;
 	db_pgno_t pgno, opgno;
-	int did_put, i, ret, t_ret;
+	gint did_put, i, ret, t_ret;
 	u_int32_t bucket, spares_entry;
 
 	dbp = dbc->dbp;
@@ -282,14 +282,14 @@ static int
 __ham_stat_callback(dbp, pagep, cookie, putp)
 	DB *dbp;
 	PAGE *pagep;
-	void *cookie;
-	int *putp;
+	gpointer cookie;
+	gint *putp;
 {
 	DB_HASH_STAT *sp;
 	DB_BTREE_STAT bstat;
 	db_indx_t indx, len, off, tlen, top;
 	u_int8_t *hk;
-	int ret;
+	gint ret;
 
 	*putp = 0;
 	sp = cookie;

@@ -28,7 +28,7 @@
 
 #include "camel-debug.h"
 
-int camel_verbose_debug;
+gint camel_verbose_debug;
 
 static GHashTable *debug_table = NULL;
 
@@ -49,7 +49,7 @@ static GHashTable *debug_table = NULL;
  **/
 void camel_debug_init(void)
 {
-	char *d;
+	gchar *d;
 
 	d = getenv("CAMEL_VERBOSE_DEBUG");
 	if (d)
@@ -57,7 +57,7 @@ void camel_debug_init(void)
 
 	d = g_strdup(getenv("CAMEL_DEBUG"));
 	if (d) {
-		char *p;
+		gchar *p;
 
 		debug_table = g_hash_table_new(g_str_hash, g_str_equal);
 		p = d;
@@ -86,14 +86,14 @@ void camel_debug_init(void)
  *
  * Return value:
  **/
-gboolean camel_debug(const char *mode)
+gboolean camel_debug(const gchar *mode)
 {
 	if (camel_verbose_debug)
 		return TRUE;
 
 	if (debug_table) {
-		char *colon;
-		char *fallback;
+		gchar *colon;
+		gchar *fallback;
 
 		if (g_hash_table_lookup(debug_table, mode))
 			return TRUE;
@@ -130,7 +130,7 @@ static pthread_mutex_t debug_lock = PTHREAD_MUTEX_INITIALIZER;
  * call debug_end when finished any screen output.
  **/
 gboolean
-camel_debug_start(const char *mode)
+camel_debug_start(const gchar *mode)
 {
 	if (camel_debug(mode)) {
 		pthread_mutex_lock(&debug_lock);
@@ -158,7 +158,7 @@ camel_debug_end(void)
 #include <sys/debugreg.h>
 
 static unsigned
-i386_length_and_rw_bits (int len, enum target_hw_bp_type type)
+i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
 {
   unsigned rw;
 
@@ -222,7 +222,7 @@ Invalid hw breakpoint length %d in i386_length_and_rw_bits.\n", len);
 
 /* fine idea, but it doesn't work, crashes in get_dr :-/ */
 void
-camel_debug_hwatch(int wp, void *addr)
+camel_debug_hwatch(gint wp, gpointer addr)
 {
      guint32 control, rw;
 

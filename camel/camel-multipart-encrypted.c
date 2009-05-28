@@ -108,7 +108,7 @@ set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type
 	CamelMultipartEncrypted *mpe = (CamelMultipartEncrypted *) data_wrapper;
 
 	if (mime_type) {
-		const char *protocol;
+		const gchar *protocol;
 
 		protocol = camel_content_type_param (mime_type, "protocol");
 		g_free (mpe->protocol);

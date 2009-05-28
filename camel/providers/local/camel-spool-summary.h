@@ -46,26 +46,26 @@ struct _CamelSpoolSummaryClass {
 };
 
 CamelType	camel_spool_summary_get_type	(void);
-void	camel_spool_summary_construct	(CamelSpoolSummary *new, const char *filename, const char *spool_name, CamelIndex *index);
+void	camel_spool_summary_construct	(CamelSpoolSummary *new, const gchar *filename, const gchar *spool_name, CamelIndex *index);
 
 /* create the summary, in-memory only */
-CamelSpoolSummary *camel_spool_summary_new(struct _CamelFolder *, const char *filename);
+CamelSpoolSummary *camel_spool_summary_new(struct _CamelFolder *, const gchar *filename);
 
 /* load/check the summary */
-int camel_spool_summary_load(CamelSpoolSummary *cls, int forceindex, CamelException *ex);
+gint camel_spool_summary_load(CamelSpoolSummary *cls, gint forceindex, CamelException *ex);
 /* check for new/removed messages */
-int camel_spool_summary_check(CamelSpoolSummary *cls, CamelFolderChangeInfo *, CamelException *ex);
+gint camel_spool_summary_check(CamelSpoolSummary *cls, CamelFolderChangeInfo *, CamelException *ex);
 /* perform a folder sync or expunge, if needed */
-int camel_spool_summary_sync(CamelSpoolSummary *cls, gboolean expunge, CamelFolderChangeInfo *, CamelException *ex);
+gint camel_spool_summary_sync(CamelSpoolSummary *cls, gboolean expunge, CamelFolderChangeInfo *, CamelException *ex);
 /* add a new message to the summary */
 CamelMessageInfo *camel_spool_summary_add(CamelSpoolSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
 
 /* generate an X-Evolution header line */
-char *camel_spool_summary_encode_x_evolution(CamelSpoolSummary *cls, const CamelMessageInfo *info);
-int camel_spool_summary_decode_x_evolution(CamelSpoolSummary *cls, const char *xev, CamelMessageInfo *info);
+gchar *camel_spool_summary_encode_x_evolution(CamelSpoolSummary *cls, const CamelMessageInfo *info);
+gint camel_spool_summary_decode_x_evolution(CamelSpoolSummary *cls, const gchar *xev, CamelMessageInfo *info);
 
 /* utility functions - write headers to a file with optional X-Evolution header */
-int camel_spool_summary_write_headers(int fd, struct _camel_header_raw *header, char *xevline);
+gint camel_spool_summary_write_headers(gint fd, struct _camel_header_raw *header, gchar *xevline);
 
 G_END_DECLS
 

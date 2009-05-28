@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <libebook/e-vcard.h>
 
-int
-main(int argc, char **argv)
+gint
+main(gint argc, gchar **argv)
 {
 	FILE *fp;
 	EVCard *vcard;
 	GString *str = g_string_new ("");
-	char *parsed_vcard;
+	gchar *parsed_vcard;
 
 	if (argc < 2)
 	  return 0;
@@ -19,7 +19,7 @@ main(int argc, char **argv)
 	fp = fopen (argv[1], "r");
 
 	while (!feof (fp)) {
-		char buf[1024];
+		gchar buf[1024];
 		if (fgets (buf, sizeof(buf), fp))
 			str = g_string_append (str, buf);
 	}

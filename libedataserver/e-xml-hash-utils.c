@@ -61,7 +61,7 @@ e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 			continue;
 
 		if (type == E_XML_HASH_TYPE_OBJECT_UID &&
-		    !strcmp ((char*)node->name, "object"))
+		    !strcmp ((gchar *)node->name, "object"))
 			key = xmlGetProp (node, (xmlChar*)"uid");
 		else
 			key = xmlStrdup (node->name);
@@ -78,7 +78,7 @@ e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 			continue;
 		}
 
-		g_hash_table_insert (hash, g_strdup ((char*)key), g_strdup ((char*)value));
+		g_hash_table_insert (hash, g_strdup ((gchar *)key), g_strdup ((gchar *)value));
 		xmlFree (key);
 		xmlFree (value);
 	}
@@ -126,7 +126,7 @@ foreach_save_func (gpointer key, gpointer value, gpointer user_data)
  * Returns: The #xmlDoc created from the data in @hash.
  **/
 xmlDoc *
-e_xml_from_hash (GHashTable *hash, EXmlHashType type, const char *root_name)
+e_xml_from_hash (GHashTable *hash, EXmlHashType type, const gchar *root_name)
 {
 	xmlDoc *doc;
 	struct save_data sd;
@@ -169,7 +169,7 @@ e_xml_destroy_hash (GHashTable *hash)
  * A hash table representation of an XML file.
  **/
 struct EXmlHash {
-	char *filename;
+	gchar *filename;
 	GHashTable *objects;
 };
 
@@ -184,7 +184,7 @@ struct EXmlHash {
  *          @filename.
  **/
 EXmlHash *
-e_xmlhash_new (const char *filename)
+e_xmlhash_new (const gchar *filename)
 {
 	EXmlHash *hash;
 	xmlDoc *doc = NULL;
@@ -219,7 +219,7 @@ e_xmlhash_new (const char *filename)
  * Adds a new key/value pair to the #EXmlHash @hash.
  **/
 void
-e_xmlhash_add (EXmlHash *hash, const char *key, const char *data)
+e_xmlhash_add (EXmlHash *hash, const gchar *key, const gchar *data)
 {
 	g_return_if_fail (hash != NULL);
 	g_return_if_fail (key != NULL);
@@ -237,7 +237,7 @@ e_xmlhash_add (EXmlHash *hash, const char *key, const char *data)
  * Remove the entry in @hash with key equal to @key, if it exists.
  **/
 void
-e_xmlhash_remove (EXmlHash *hash, const char *key)
+e_xmlhash_remove (EXmlHash *hash, const gchar *key)
 {
 	gpointer orig_key;
 	gpointer orig_value;
@@ -267,10 +267,10 @@ e_xmlhash_remove (EXmlHash *hash, const char *key)
  *          its key equal to @key.
  **/
 EXmlHashStatus
-e_xmlhash_compare (EXmlHash *hash, const char *key, const char *compare_data)
+e_xmlhash_compare (EXmlHash *hash, const gchar *key, const gchar *compare_data)
 {
-	char *data;
-	int rc;
+	gchar *data;
+	gint rc;
 
 	g_return_val_if_fail (hash != NULL, E_XMLHASH_STATUS_NOT_FOUND);
 	g_return_val_if_fail (key != NULL, E_XMLHASH_STATUS_NOT_FOUND);
@@ -297,7 +297,7 @@ foreach_hash_func (gpointer  key, gpointer value, gpointer user_data)
 {
 	foreach_data_t *data = (foreach_data_t *) user_data;
 
-	data->func ((const char *) key, (const char *) value, data->user_data);
+	data->func ((const gchar *) key, (const gchar *) value, data->user_data);
 }
 
 /**

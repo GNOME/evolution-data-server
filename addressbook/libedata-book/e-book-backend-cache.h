@@ -46,20 +46,20 @@ typedef struct {
 } EBookBackendCacheClass;
 
 GType e_book_backend_cache_get_type (void);
-EBookBackendCache* e_book_backend_cache_new (const char *uri);
-EContact* e_book_backend_cache_get_contact (EBookBackendCache *cache, const char *uid);
+EBookBackendCache* e_book_backend_cache_new (const gchar *uri);
+EContact* e_book_backend_cache_get_contact (EBookBackendCache *cache, const gchar *uid);
 gboolean e_book_backend_cache_add_contact (EBookBackendCache *cache,
 					   EContact *contact);
 gboolean e_book_backend_cache_remove_contact (EBookBackendCache *cache,
-					      const char *uid);
-gboolean e_book_backend_cache_check_contact (EBookBackendCache *cache, const char *uid);
-GList*   e_book_backend_cache_get_contacts (EBookBackendCache *cache, const char *query);
-gboolean e_book_backend_cache_exists (const char *uri);
+					      const gchar *uid);
+gboolean e_book_backend_cache_check_contact (EBookBackendCache *cache, const gchar *uid);
+GList*   e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query);
+gboolean e_book_backend_cache_exists (const gchar *uri);
 void     e_book_backend_cache_set_populated (EBookBackendCache *cache);
 gboolean e_book_backend_cache_is_populated (EBookBackendCache *cache);
-void e_book_backend_cache_set_time (EBookBackendCache *cache, const char *t);
-char *e_book_backend_cache_get_time (EBookBackendCache *cache);
-GPtrArray* e_book_backend_cache_search (EBookBackendCache *cache, const char *query);
+void e_book_backend_cache_set_time (EBookBackendCache *cache, const gchar *t);
+gchar *e_book_backend_cache_get_time (EBookBackendCache *cache);
+GPtrArray* e_book_backend_cache_search (EBookBackendCache *cache, const gchar *query);
 
 
 

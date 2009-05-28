@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -56,14 +56,14 @@ static const char revid[] = "$Id$";
  * __ham_func2 --
  *	Phong Vo's linear congruential hash.
  *
- * PUBLIC: u_int32_t __ham_func2 __P((DB *, const void *, u_int32_t));
+ * PUBLIC: u_int32_t __ham_func2 __P((DB *, gconstpointer , u_int32_t));
  */
 #define	DCHARHASH(h, c)	((h) = 0x63c63cd9*(h) + 0x9c39c33d + (c))
 
 u_int32_t
 __ham_func2(dbp, key, len)
 	DB *dbp;
-	const void *key;
+	gconstpointer key;
 	u_int32_t len;
 {
 	const u_int8_t *e, *k;
@@ -93,12 +93,12 @@ __ham_func2(dbp, key, len)
  * iteration, perform 8 HASHC's so we handle all 8 bytes.  Essentially, this
  * saves us 7 cmp & branch instructions.
  *
- * PUBLIC: u_int32_t __ham_func3 __P((DB *, const void *, u_int32_t));
+ * PUBLIC: u_int32_t __ham_func3 __P((DB *, gconstpointer , u_int32_t));
  */
 u_int32_t
 __ham_func3(dbp, key, len)
 	DB *dbp;
-	const void *key;
+	gconstpointer key;
 	u_int32_t len;
 {
 	const u_int8_t *k;
@@ -144,12 +144,12 @@ __ham_func3(dbp, key, len)
  *	slightly worse than __ham_func5 on strings, it performs horribly on
  *	numbers.
  *
- * PUBLIC: u_int32_t __ham_func4 __P((DB *, const void *, u_int32_t));
+ * PUBLIC: u_int32_t __ham_func4 __P((DB *, gconstpointer , u_int32_t));
  */
 u_int32_t
 __ham_func4(dbp, key, len)
 	DB *dbp;
-	const void *key;
+	gconstpointer key;
 	u_int32_t len;
 {
 	const u_int8_t *k;
@@ -205,12 +205,12 @@ __ham_func4(dbp, key, len)
  * This hash produces the fewest collisions of any function that we've seen so
  * far, and works well on both numbers and strings.
  *
- * PUBLIC: u_int32_t __ham_func5 __P((DB *, const void *, u_int32_t));
+ * PUBLIC: u_int32_t __ham_func5 __P((DB *, gconstpointer , u_int32_t));
  */
 u_int32_t
 __ham_func5(dbp, key, len)
 	DB *dbp;
-	const void *key;
+	gconstpointer key;
 	u_int32_t len;
 {
 	const u_int8_t *k, *e;
@@ -231,15 +231,15 @@ __ham_func5(dbp, key, len)
 /*
  * __ham_test --
  *
- * PUBLIC: u_int32_t __ham_test __P((DB *, const void *, u_int32_t));
+ * PUBLIC: u_int32_t __ham_test __P((DB *, gconstpointer , u_int32_t));
  */
 u_int32_t
 __ham_test(dbp, key, len)
 	DB *dbp;
-	const void *key;
+	gconstpointer key;
 	u_int32_t len;
 {
 	COMPQUIET(dbp, NULL);
 	COMPQUIET(len, 0);
-	return ((u_int32_t)*(char *)key);
+	return ((u_int32_t)*(gchar *)key);
 }

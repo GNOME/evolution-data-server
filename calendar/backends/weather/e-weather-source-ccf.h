@@ -55,7 +55,7 @@ struct _EWeatherSourceCCFClass {
 	EWeatherSourceClass parent_class;
 };
 
-EWeatherSource*	e_weather_source_ccf_new (const char *uri);
+EWeatherSource*	e_weather_source_ccf_new (const gchar *uri);
 GType		e_weather_source_ccf_get_type (void);
 
 G_END_DECLS

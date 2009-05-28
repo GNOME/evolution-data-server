@@ -32,10 +32,10 @@
 static void camel_mime_filter_yenc_class_init (CamelMimeFilterYencClass *klass);
 static void camel_mime_filter_yenc_init (CamelMimeFilterYenc *filter, CamelMimeFilterYencClass *klass);
 
-static void filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-			   char **out, size_t *outlen, size_t *outprespace);
-static void filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-			     char **out, size_t *outlen, size_t *outprespace);
+static void filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+			   gchar **out, size_t *outlen, size_t *outprespace);
+static void filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+			     gchar **out, size_t *outlen, size_t *outprespace);
 static void filter_reset (CamelMimeFilter *filter);
 
 
@@ -85,8 +85,8 @@ camel_mime_filter_yenc_init (CamelMimeFilterYenc *filter, CamelMimeFilterYencCla
 
 /* here we do all of the basic yEnc filtering */
 static void
-filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-	       char **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+	       gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterYenc *yenc = (CamelMimeFilterYenc *) filter;
 	size_t newlen = 0;
@@ -95,13 +95,13 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		/* won't go to more than 2 * (x + 2) + 62 */
 		camel_mime_filter_set_size (filter, (len + 2) * 2 + 62, FALSE);
-		newlen = camel_yencode_step ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state,
+		newlen = camel_yencode_step ((const guchar *) in, len, (guchar *) filter->outbuf, &yenc->state,
 					     &yenc->pcrc, &yenc->crc);
 		g_assert (newlen <= (len + 2) * 2 + 62);
 		break;
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_DECODE:
 		if (!(yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE)) {
-			register char *inptr, *inend;
+			register gchar *inptr, *inend;
 			size_t left;
 
 			inptr = in;
@@ -166,7 +166,7 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		if ((yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE) && !(yenc->state & CAMEL_MIME_YDECODE_STATE_END)) {
 			/* all yEnc headers have been found so we can now start decoding */
 			camel_mime_filter_set_size (filter, len + 3, FALSE);
-			newlen = camel_ydecode_step ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state, &yenc->pcrc, &yenc->crc);
+			newlen = camel_ydecode_step ((const guchar *) in, len, (guchar *) filter->outbuf, &yenc->state, &yenc->pcrc, &yenc->crc);
 			g_assert (newlen <= len + 3);
 		} else {
 			newlen = 0;
@@ -180,8 +180,8 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-		 char **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+		 gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterYenc *yenc = (CamelMimeFilterYenc *) filter;
 	size_t newlen = 0;
@@ -190,7 +190,7 @@ filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 	case CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE:
 		/* won't go to more than 2 * (x + 2) + 62 */
 		camel_mime_filter_set_size (filter, (len + 2) * 2 + 62, FALSE);
-		newlen = camel_yencode_close ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state,
+		newlen = camel_yencode_close ((const guchar *) in, len, (guchar *) filter->outbuf, &yenc->state,
 					       &yenc->pcrc, &yenc->crc);
 		g_assert (newlen <= (len + 2) * 2 + 62);
 		break;
@@ -198,7 +198,7 @@ filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 		if ((yenc->state & CAMEL_MIME_YDECODE_STATE_DECODE) && !(yenc->state & CAMEL_MIME_YDECODE_STATE_END)) {
 			/* all yEnc headers have been found so we can now start decoding */
 			camel_mime_filter_set_size (filter, len + 3, FALSE);
-			newlen = camel_ydecode_step ((const unsigned char *) in, len, (unsigned char *) filter->outbuf, &yenc->state,
+			newlen = camel_ydecode_step ((const guchar *) in, len, (guchar *) filter->outbuf, &yenc->state,
 						      &yenc->pcrc, &yenc->crc);
 			g_assert (newlen <= len + 3);
 		} else {
@@ -270,7 +270,7 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
  * Sets the current state of the yencoder/ydecoder
  **/
 void
-camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, int state)
+camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, gint state)
 {
 	g_return_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc));
 
@@ -305,7 +305,7 @@ camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc)
  * Returns: the part id of the current decoded yEnc stream or %-1 on
  * fail.
  **/
-int
+gint
 camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc), -1);
@@ -351,7 +351,7 @@ camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc)
 }
 
 
-static const int yenc_crc_table[256] = {
+static const gint yenc_crc_table[256] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
 	0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91,
 	0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de, 0x1adad47d, 0x6ddde4eb, 0xf4d4b551, 0x83d385c7,
@@ -413,14 +413,14 @@ static const int yenc_crc_table[256] = {
  * Returns: the number of bytes decoded
  **/
 size_t
-camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
-		    int *state, guint32 *pcrc, guint32 *crc)
+camel_ydecode_step (const guchar *in, size_t inlen, guchar *out,
+		    gint *state, guint32 *pcrc, guint32 *crc)
 {
-	register const unsigned char *inptr;
-	register unsigned char *outptr;
-	const unsigned char *inend;
-	unsigned char ch;
-	int ystate;
+	register const guchar *inptr;
+	register guchar *outptr;
+	const guchar *inend;
+	guchar ch;
+	gint ystate;
 
 	if (*state & CAMEL_MIME_YDECODE_STATE_END)
 		return 0;
@@ -493,14 +493,14 @@ camel_ydecode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * Returns: the number of bytes encoded
  **/
 size_t
-camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
-		    int *state, guint32 *pcrc, guint32 *crc)
+camel_yencode_step (const guchar *in, size_t inlen, guchar *out,
+		    gint *state, guint32 *pcrc, guint32 *crc)
 {
-	register const unsigned char *inptr;
-	register unsigned char *outptr;
-	const unsigned char *inend;
-	register int already;
-	unsigned char ch;
+	register const guchar *inptr;
+	register guchar *outptr;
+	const guchar *inend;
+	register gint already;
+	guchar ch;
 
 	inend = in + inlen;
 	outptr = out;
@@ -558,10 +558,10 @@ camel_yencode_step (const unsigned char *in, size_t inlen, unsigned char *out,
  * Returns: the number of bytes encoded.
  **/
 size_t
-camel_yencode_close (const unsigned char *in, size_t inlen, unsigned char *out,
-		     int *state, guint32 *pcrc, guint32 *crc)
+camel_yencode_close (const guchar *in, size_t inlen, guchar *out,
+		     gint *state, guint32 *pcrc, guint32 *crc)
 {
-	register unsigned char *outptr;
+	register guchar *outptr;
 
 	outptr = out;
 

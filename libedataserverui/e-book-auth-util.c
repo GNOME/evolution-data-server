@@ -58,7 +58,7 @@ free_load_source_data (LoadSourceData *data)
 static gchar *
 remove_parameters_from_uri (const gchar *uri)
 {
-	char *euri_str;
+	gchar *euri_str;
 	EUri *euri;
 
 	euri = e_uri_new (uri);
@@ -153,8 +153,8 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 	const gchar *auth;
 	const gchar *user;
 	const gchar *component_name;
-	const char *password     = NULL;
-	char *pass_dup           = NULL;
+	const gchar *password     = NULL;
+	gchar *pass_dup           = NULL;
 	const gchar *uri               = e_book_get_uri (book);
         gchar *stripped_uri      = remove_parameters_from_uri (uri);
 	const gchar *auth_domain = e_source_get_property (source, "auth-domain");
@@ -182,10 +182,10 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 		user = "";
 
 	if (!password) {
-		char *prompt;
-		char *password_prompt;
+		gchar *prompt;
+		gchar *password_prompt;
 		gboolean remember;
-		char *failed_auth;
+		gchar *failed_auth;
 		guint32 flags = E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET|E_PASSWORDS_ONLINE;
 
 		if (previous_failure) {

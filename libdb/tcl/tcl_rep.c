@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,17 +27,17 @@ static const char revid[] = "$Id$";
  * tcl_RepElect --
  *	Call DB_ENV->rep_elect().
  *
- * PUBLIC: int tcl_RepElect
+ * PUBLIC: gint tcl_RepElect
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  */
-int
+gint
 tcl_RepElect(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Environment pointer */
 {
-	int eid, nsites, pri, result, ret;
+	gint eid, nsites, pri, result, ret;
 	u_int32_t timeout;
 
 	if (objc != 5) {
@@ -68,17 +68,17 @@ tcl_RepElect(interp, objc, objv, dbenv)
  * tcl_RepFlush --
  *	Call DB_ENV->rep_flush().
  *
- * PUBLIC: int tcl_RepFlush
+ * PUBLIC: gint tcl_RepFlush
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  */
-int
+gint
 tcl_RepFlush(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;
-	int objc;
+	gint objc;
 	Tcl_Obj *CONST objv[];
 	DB_ENV *dbenv;
 {
-	int ret;
+	gint ret;
 
 	if (objc != 2) {
 		Tcl_WrongNumArgs(interp, 2, objv, "");
@@ -95,17 +95,17 @@ tcl_RepFlush(interp, objc, objv, dbenv)
  * tcl_RepLimit --
  *	Call DB_ENV->set_rep_limit().
  *
- * PUBLIC: int tcl_RepLimit
+ * PUBLIC: gint tcl_RepLimit
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  */
-int
+gint
 tcl_RepLimit(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Environment pointer */
 {
-	int result, ret;
+	gint result, ret;
 	u_int32_t bytes, gbytes;
 
 	if (objc != 4) {
@@ -133,17 +133,17 @@ tcl_RepLimit(interp, objc, objv, dbenv)
  * tcl_RepRequest --
  *	Call DB_ENV->set_rep_request().
  *
- * PUBLIC: int tcl_RepRequest
+ * PUBLIC: gint tcl_RepRequest
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  */
-int
+gint
 tcl_RepRequest(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Environment pointer */
 {
-	int result, ret;
+	gint result, ret;
 	u_int32_t min, max;
 
 	if (objc != 4) {
@@ -171,21 +171,21 @@ tcl_RepRequest(interp, objc, objv, dbenv)
  * tcl_RepStart --
  *	Call DB_ENV->rep_start().
  *
- * PUBLIC: int tcl_RepStart
+ * PUBLIC: gint tcl_RepStart
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  *
  *	Note that this normally can/should be achieved as an argument to
  * berkdb env, but we need to test forcible upgrading of clients, which
  * involves calling this on an open environment handle.
  */
-int
+gint
 tcl_RepStart(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;
 {
-	static char *tclrpstrt[] = {
+	static gchar *tclrpstrt[] = {
 		"-client",
 		"-master",
 		NULL
@@ -194,8 +194,8 @@ tcl_RepStart(interp, objc, objv, dbenv)
 		TCL_RPSTRT_CLIENT,
 		TCL_RPSTRT_MASTER
 	};
-	char *arg;
-	int i, optindex, ret;
+	gchar *arg;
+	gint i, optindex, ret;
 	u_int32_t flag;
 
 	flag = 0;
@@ -238,21 +238,21 @@ tcl_RepStart(interp, objc, objv, dbenv)
  * tcl_RepProcessMessage --
  *	Call DB_ENV->rep_process_message().
  *
- * PUBLIC: int tcl_RepProcessMessage
+ * PUBLIC: gint tcl_RepProcessMessage
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  */
-int
+gint
 tcl_RepProcessMessage(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;			/* Environment pointer */
 {
 	DBT control, rec;
 	Tcl_Obj *res;
-	void *ctmp, *rtmp;
-	int eid;
-	int freectl, freerec, result, ret;
+	gpointer ctmp, *rtmp;
+	gint eid;
+	gint freectl, freerec, result, ret;
 
 	if (objc != 5) {
 		Tcl_WrongNumArgs(interp, 5, objv, "id control rec");
@@ -313,21 +313,21 @@ out:
  * tcl_RepStat --
  *	Call DB_ENV->rep_stat().
  *
- * PUBLIC: int tcl_RepStat
+ * PUBLIC: gint tcl_RepStat
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST *, DB_ENV *));
  */
-int
+gint
 tcl_RepStat(interp, objc, objv, dbenv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *dbenv;
 {
 	DB_REP_STAT *sp;
 	Tcl_Obj *myobjv[2], *res, *thislist, *lsnlist;
 	u_int32_t flag;
-	int myobjc, result, ret;
-	char *arg;
+	gint myobjc, result, ret;
+	gchar *arg;
 
 	result = TCL_OK;
 	flag = 0;

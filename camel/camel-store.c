@@ -51,7 +51,7 @@ static CamelServiceClass *parent_class = NULL;
 /* Returns the class for a CamelStore */
 #define CS_CLASS(so) ((CamelStoreClass *)((CamelObject *)(so))->klass)
 
-static CamelFolder *get_folder (CamelStore *store, const char *folder_name,
+static CamelFolder *get_folder (CamelStore *store, const gchar *folder_name,
 				guint32 flags, CamelException *ex);
 static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
 
@@ -59,22 +59,22 @@ static CamelFolder *get_trash (CamelStore *store, CamelException *ex);
 static CamelFolder *get_junk (CamelStore *store, CamelException *ex);
 
 static CamelFolderInfo *create_folder (CamelStore *store,
-				       const char *parent_name,
-				       const char *folder_name,
+				       const gchar *parent_name,
+				       const gchar *folder_name,
 				       CamelException *ex);
-static void delete_folder (CamelStore *store, const char *folder_name,
+static void delete_folder (CamelStore *store, const gchar *folder_name,
 			   CamelException *ex);
-static void rename_folder (CamelStore *store, const char *old_name,
-			   const char *new_name, CamelException *ex);
+static void rename_folder (CamelStore *store, const gchar *old_name,
+			   const gchar *new_name, CamelException *ex);
 
-static void store_sync (CamelStore *store, int expunge, CamelException *ex);
-static CamelFolderInfo *get_folder_info (CamelStore *store, const char *top,
+static void store_sync (CamelStore *store, gint expunge, CamelException *ex);
+static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top,
 					 guint32 flags, CamelException *ex);
 static void free_folder_info (CamelStore *store, CamelFolderInfo *tree);
 
-static gboolean folder_subscribed (CamelStore *store, const char *folder_name);
-static void subscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex);
-static void unsubscribe_folder (CamelStore *store, const char *folder_name, CamelException *ex);
+static gboolean folder_subscribed (CamelStore *store, const gchar *folder_name);
+static void subscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
+static void unsubscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex);
 
 static void noop (CamelStore *store, CamelException *ex);
 
@@ -84,8 +84,8 @@ static void construct (CamelService *service, CamelSession *session,
 		       CamelProvider *provider, CamelURL *url,
 		       CamelException *ex);
 
-static int store_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static int store_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint store_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint store_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 static void
 camel_store_class_init (CamelStoreClass *camel_store_class)
@@ -129,7 +129,7 @@ camel_store_class_init (CamelStoreClass *camel_store_class)
 }
 
 static void
-camel_store_init (void *o)
+camel_store_init (gpointer o)
 {
 	CamelStore *store = o;
 	CamelStoreClass *store_class = (CamelStoreClass *)CAMEL_OBJECT_GET_CLASS (o);
@@ -212,7 +212,7 @@ construct (CamelService *service, CamelSession *session,
 	   CamelException *ex)
 {
 	CamelStore *store = CAMEL_STORE(service);
-	char *store_db_path, *store_path = NULL;
+	gchar *store_db_path, *store_path = NULL;
 
 	parent_class->construct(service, session, provider, url, ex);
 	if (camel_exception_is_set (ex))
@@ -239,7 +239,7 @@ construct (CamelService *service, CamelSession *session,
 	if (camel_debug("sqlite"))
 		printf("store_db_path %s\n", store_db_path);
 	if (camel_exception_is_set (ex)) {
-		char *store_path;
+		gchar *store_path;
 
 		if (camel_debug("sqlite"))
 			g_print ("Failure for store_db_path : [%s]\n", store_db_path);
@@ -274,7 +274,7 @@ construct (CamelService *service, CamelSession *session,
 }
 
 static CamelFolder *
-get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
 {
 	w(g_warning ("CamelStore::get_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -297,7 +297,7 @@ get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelExce
  * Returns: the folder corresponding to the path @folder_name or %NULL.
  **/
 CamelFolder *
-camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+camel_store_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
 {
 	CamelFolder *folder = NULL;
 
@@ -372,9 +372,9 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 	}
 
 	if (camel_debug_start(":store")) {
-		char *u = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_PASSWORD);
+		gchar *u = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_PASSWORD);
 
-		printf("CamelStore('%s'):get_folder('%s', %u) = %p\n", u, folder_name, flags, (void *) folder);
+		printf("CamelStore('%s'):get_folder('%s', %u) = %p\n", u, folder_name, flags, (gpointer) folder);
 		if (ex && ex->id)
 			printf("  failed: '%s'\n", ex->desc);
 		g_free(u);
@@ -385,8 +385,8 @@ camel_store_get_folder (CamelStore *store, const char *folder_name, guint32 flag
 }
 
 static CamelFolderInfo *
-create_folder (CamelStore *store, const char *parent_name,
-	       const char *folder_name, CamelException *ex)
+create_folder (CamelStore *store, const gchar *parent_name,
+	       const gchar *folder_name, CamelException *ex)
 {
 	w(g_warning ("CamelStore::create_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -411,8 +411,8 @@ create_folder (CamelStore *store, const char *parent_name,
  * free with #camel_store_free_folder_info, or %NULL.
  **/
 CamelFolderInfo *
-camel_store_create_folder (CamelStore *store, const char *parent_name,
-			   const char *folder_name, CamelException *ex)
+camel_store_create_folder (CamelStore *store, const gchar *parent_name,
+			   const gchar *folder_name, CamelException *ex)
 {
 	CamelFolderInfo *fi;
 
@@ -433,7 +433,7 @@ camel_store_create_folder (CamelStore *store, const char *parent_name,
 
 /* deletes folder/removes it from the folder cache, if it's there */
 static void
-cs_delete_cached_folder(CamelStore *store, const char *folder_name)
+cs_delete_cached_folder(CamelStore *store, const gchar *folder_name)
 {
 	CamelFolder *folder;
 
@@ -461,7 +461,7 @@ cs_delete_cached_folder(CamelStore *store, const char *folder_name)
 }
 
 static void
-delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
+delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	w(g_warning ("CamelStore::delete_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -476,7 +476,7 @@ delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
  * Deletes the named folder. The folder must be empty.
  **/
 void
-camel_store_delete_folder (CamelStore *store, const char *folder_name, CamelException *ex)
+camel_store_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelException local;
 
@@ -510,7 +510,7 @@ camel_store_delete_folder (CamelStore *store, const char *folder_name, CamelExce
 }
 
 static void
-rename_folder (CamelStore *store, const char *old_name, const char *new_name, CamelException *ex)
+rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_name, CamelException *ex)
 {
 	w(g_warning ("CamelStore::rename_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -526,12 +526,12 @@ rename_folder (CamelStore *store, const char *old_name, const char *new_name, Ca
  * Rename a named folder to a new name.
  **/
 void
-camel_store_rename_folder (CamelStore *store, const char *old_namein, const char *new_name, CamelException *ex)
+camel_store_rename_folder (CamelStore *store, const gchar *old_namein, const gchar *new_name, CamelException *ex)
 {
 	CamelFolder *folder;
-	int i, oldlen, namelen;
+	gint i, oldlen, namelen;
 	GPtrArray *folders = NULL;
-	char *old_name;
+	gchar *old_name;
 
 	d(printf("store rename folder %s '%s' '%s'\n", ((CamelService *)store)->url->protocol, old_name, new_name));
 
@@ -583,7 +583,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 			CamelRenameInfo reninfo;
 
 			for (i=0;i<folders->len;i++) {
-				char *new;
+				gchar *new;
 
 				folder = folders->pdata[i];
 
@@ -600,7 +600,7 @@ camel_store_rename_folder (CamelStore *store, const char *old_namein, const char
 			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
 
-			reninfo.old_base = (char *)old_name;
+			reninfo.old_base = (gchar *)old_name;
 			reninfo.new = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder_info(store, new_name, flags, ex);
 			if (reninfo.new != NULL) {
 				camel_object_trigger_event (store, "folder_renamed", &reninfo);
@@ -657,7 +657,7 @@ get_special(CamelStore *store, camel_vtrash_folder_t type)
 {
 	CamelFolder *folder;
 	GPtrArray *folders;
-	int i;
+	gint i;
 
 	folder = camel_vtrash_folder_new(store, type);
 	folders = camel_object_bag_list(store->folders);
@@ -729,13 +729,13 @@ ignore_no_such_table_exception (CamelException *ex)
 }
 
 static void
-store_sync (CamelStore *store, int expunge, CamelException *ex)
+store_sync (CamelStore *store, gint expunge, CamelException *ex)
 {
 	if (store->folders) {
 		GPtrArray *folders;
 		CamelFolder *folder;
 		CamelException x;
-		int i;
+		gint i;
 
 		/* we don't sync any vFolders, that is used to update certain vfolder queries mainly,
 		   and we're really only interested in storing/expunging the physical mails */
@@ -766,7 +766,7 @@ store_sync (CamelStore *store, int expunge, CamelException *ex)
  * folders with the real store.
  **/
 void
-camel_store_sync(CamelStore *store, int expunge, CamelException *ex)
+camel_store_sync(CamelStore *store, gint expunge, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
@@ -774,7 +774,7 @@ camel_store_sync(CamelStore *store, int expunge, CamelException *ex)
 }
 
 static CamelFolderInfo *
-get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	w(g_warning ("CamelStore::get_folder_info not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -783,10 +783,10 @@ get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelExcepti
 }
 
 static void
-add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, const char *translated, gboolean unread_count, guint32 flags)
+add_special_info (CamelStore *store, CamelFolderInfo *info, const gchar *name, const gchar *translated, gboolean unread_count, guint32 flags)
 {
 	CamelFolderInfo *fi, *vinfo, *parent;
-	char *uri, *path;
+	gchar *uri, *path;
 	CamelURL *url;
 
 	g_return_if_fail (info != NULL);
@@ -840,9 +840,9 @@ add_special_info (CamelStore *store, CamelFolderInfo *info, const char *name, co
 }
 
 static void
-dump_fi(CamelFolderInfo *fi, int depth)
+dump_fi(CamelFolderInfo *fi, gint depth)
 {
-	char *s;
+	gchar *s;
 
 	s = g_alloca(depth+1);
 	memset(s, ' ', depth);
@@ -887,7 +887,7 @@ dump_fi(CamelFolderInfo *fi, int depth)
  * #camel_store_free_folder_info, or %NULL.
  **/
 CamelFolderInfo *
-camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+camel_store_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelFolderInfo *info;
 
@@ -905,8 +905,8 @@ camel_store_get_folder_info(CamelStore *store, const char *top, guint32 flags, C
 	}
 
 	if (camel_debug_start("store:folder_info")) {
-		char *url = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
-		printf("Get folder info(%p:%s, '%s') =\n", (void *) store, url, top?top:"<null>");
+		gchar *url = camel_url_to_string(((CamelService *)store)->url, CAMEL_URL_HIDE_ALL);
+		printf("Get folder info(%p:%s, '%s') =\n", (gpointer) store, url, top?top:"<null>");
 		g_free(url);
 		dump_fi(info, 2);
 		camel_debug_end();
@@ -999,7 +999,7 @@ camel_folder_info_new (void)
 }
 
 static int
-folder_info_cmp (const void *ap, const void *bp)
+folder_info_cmp (gconstpointer ap, gconstpointer bp)
 {
 	const CamelFolderInfo *a = ((CamelFolderInfo **)ap)[0];
 	const CamelFolderInfo *b = ((CamelFolderInfo **)bp)[0];
@@ -1029,13 +1029,13 @@ folder_info_cmp (const void *ap, const void *bp)
  * Returns: the top level of the tree of linked folder info.
  **/
 CamelFolderInfo *
-camel_folder_info_build (GPtrArray *folders, const char *namespace,
-			 char separator, gboolean short_names)
+camel_folder_info_build (GPtrArray *folders, const gchar *namespace,
+			 gchar separator, gboolean short_names)
 {
 	CamelFolderInfo *fi, *pfi, *top = NULL, *tail = NULL;
 	GHashTable *hash;
-	char *p, *pname;
-	int i, nlen;
+	gchar *p, *pname;
+	gint i, nlen;
 
 	if (!namespace)
 		namespace = "";
@@ -1062,9 +1062,9 @@ camel_folder_info_build (GPtrArray *folders, const char *namespace,
 			} else {
 				/* we are missing a folder in the heirarchy so
 				   create a fake folder node */
-				const char *path;
+				const gchar *path;
 				CamelURL *url;
-				char *sep;
+				gchar *sep;
 
 				pfi = camel_folder_info_new ();
 				if (short_names) {
@@ -1190,7 +1190,7 @@ camel_store_supports_subscriptions (CamelStore *store)
 }
 
 static gboolean
-folder_subscribed(CamelStore *store, const char *folder_name)
+folder_subscribed(CamelStore *store, const gchar *folder_name)
 {
 	w(g_warning ("CamelStore::folder_subscribed not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -1208,7 +1208,7 @@ folder_subscribed(CamelStore *store, const char *folder_name)
  * Returns: %TRUE if the folder has been subscribed to or %FALSE otherwise
  **/
 gboolean
-camel_store_folder_subscribed(CamelStore *store, const char *folder_name)
+camel_store_folder_subscribed(CamelStore *store, const gchar *folder_name)
 {
 	gboolean ret;
 
@@ -1225,7 +1225,7 @@ camel_store_folder_subscribed(CamelStore *store, const char *folder_name)
 }
 
 static void
-subscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
+subscribe_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	w(g_warning ("CamelStore::subscribe_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -1240,7 +1240,7 @@ subscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
  * Subscribe to the folder described by @folder_name.
  **/
 void
-camel_store_subscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
+camel_store_subscribe_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS);
@@ -1253,7 +1253,7 @@ camel_store_subscribe_folder(CamelStore *store, const char *folder_name, CamelEx
 }
 
 static void
-unsubscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
+unsubscribe_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	w(g_warning ("CamelStore::unsubscribe_folder not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
@@ -1269,7 +1269,7 @@ unsubscribe_folder(CamelStore *store, const char *folder_name, CamelException *e
  * Unsubscribe from the folder described by @folder_name.
  **/
 void
-camel_store_unsubscribe_folder(CamelStore *store, const char *folder_name, CamelException *ex)
+camel_store_unsubscribe_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelException local;
 
@@ -1321,12 +1321,12 @@ camel_store_noop (CamelStore *store, CamelException *ex)
  *
  * Returns: %TRUE if they are equal or %FALSE otherwise
  **/
-int
-camel_store_folder_uri_equal (CamelStore *store, const char *uri0, const char *uri1)
+gint
+camel_store_folder_uri_equal (CamelStore *store, const gchar *uri0, const gchar *uri1)
 {
 	CamelProvider *provider;
 	CamelURL *url0, *url1;
-	int equal;
+	gint equal;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 	g_return_val_if_fail (uri0 && uri1, FALSE);
@@ -1342,7 +1342,7 @@ camel_store_folder_uri_equal (CamelStore *store, const char *uri0, const char *u
 	}
 
 	if ((equal = provider->url_equal (url0, url1))) {
-		const char *name0, *name1;
+		const gchar *name0, *name1;
 
 		if (provider->url_flags & CAMEL_URL_FRAGMENT_IS_PATH) {
 			name0 = url0->fragment;
@@ -1418,7 +1418,7 @@ CamelType camel_isubscribe_get_type (void)
 	return camel_isubscribe_type;
 }
 
-gboolean camel_isubscribe_subscribed(CamelStore *store, const char *name)
+gboolean camel_isubscribe_subscribed(CamelStore *store, const gchar *name)
 {
 	CamelISubscribe *iface = camel_object_get_interface(store, camel_isubscribe_get_type());
 
@@ -1429,7 +1429,7 @@ gboolean camel_isubscribe_subscribed(CamelStore *store, const char *name)
 	return FALSE;
 }
 
-void camel_isubscribe_subscribe(CamelStore *store, const char *folder_name, CamelException *ex)
+void camel_isubscribe_subscribe(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelISubscribe *iface = camel_object_get_interface(store, camel_isubscribe_get_type());
 
@@ -1441,7 +1441,7 @@ void camel_isubscribe_subscribe(CamelStore *store, const char *folder_name, Came
 	g_warning("Trying to invoke unimplemented subscribe method on a store");
 }
 
-void camel_isubscribe_unsubscribe(CamelStore *store, const char *folder_name, CamelException *ex)
+void camel_isubscribe_unsubscribe(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelISubscribe *iface = camel_object_get_interface(store, camel_isubscribe_get_type());
 

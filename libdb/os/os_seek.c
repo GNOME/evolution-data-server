@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,21 +25,21 @@ static const char revid[] = "$Id$";
  * __os_seek --
  *	Seek to a page/byte offset in the file.
  *
- * PUBLIC: int __os_seek __P((DB_ENV *,
+ * PUBLIC: gint __os_seek __P((DB_ENV *,
  * PUBLIC:      DB_FH *, size_t, db_pgno_t, u_int32_t, int, DB_OS_SEEK));
  */
-int
+gint
 __os_seek(dbenv, fhp, pgsize, pageno, relative, isrewind, db_whence)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 	size_t pgsize;
 	db_pgno_t pageno;
 	u_int32_t relative;
-	int isrewind;
+	gint isrewind;
 	DB_OS_SEEK db_whence;
 {
 	off_t offset;
-	int ret, whence;
+	gint ret, whence;
 
 	switch (db_whence) {
 	case DB_OS_SEEK_CUR:

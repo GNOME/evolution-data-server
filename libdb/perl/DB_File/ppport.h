@@ -62,9 +62,9 @@
 
 #ifndef dTHR
 #  ifdef WIN32
-#	define dTHR extern int Perl___notused
+#	define dTHR extern gint Perl___notused
 #  else
-#	define dTHR extern int errno
+#	define dTHR extern gint errno
 #  endif
 #endif
 
@@ -126,14 +126,14 @@ static SV * newRV_noinc (SV * sv)
 #if defined(NEED_newCONSTSUB)
 static
 #else
-extern void newCONSTSUB _((HV * stash, char * name, SV *sv));
+extern void newCONSTSUB _((HV * stash, gchar * name, SV *sv));
 #endif
 
 #if defined(NEED_newCONSTSUB) || defined(NEED_newCONSTSUB_GLOBAL)
 void
 newCONSTSUB(stash,name,sv)
 HV *stash;
-char *name;
+gchar *name;
 SV *sv;
 {
 	U32 oldhints = PL_hints;
@@ -258,7 +258,7 @@ SV *sv;
 #endif
 
 #ifndef dNOOP
-#  define dNOOP extern int Perl___notused PERL_UNUSED_DECL
+#  define dNOOP extern gint Perl___notused PERL_UNUSED_DECL
 #endif
 
 #define START_MY_CXT	static my_cxt_t my_cxt;

@@ -42,7 +42,7 @@
 #include "camel-file-utils.h"
 #include "camel-stream-process.h"
 
-extern int camel_verbose_debug;
+extern gint camel_verbose_debug;
 
 static CamelObjectClass *parent_class = NULL;
 
@@ -50,10 +50,10 @@ static CamelObjectClass *parent_class = NULL;
 #define CS_CLASS(so) CAMEL_STREAM_PROCESS_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
 /* dummy implementations, for a PROCESS stream */
-static ssize_t   stream_read       (CamelStream *stream, char *buffer, size_t n);
-static ssize_t   stream_write      (CamelStream *stream, const char *buffer, size_t n);
-static int       stream_close      (CamelStream *stream);
-static int       stream_flush      (CamelStream *stream);
+static ssize_t   stream_read       (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t   stream_write      (CamelStream *stream, const gchar *buffer, size_t n);
+static gint       stream_close      (CamelStream *stream);
+static gint       stream_flush      (CamelStream *stream);
 
 static void
 camel_stream_process_finalise (CamelObject *object)
@@ -121,7 +121,7 @@ camel_stream_process_new (void)
 
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
 
@@ -129,7 +129,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
 
@@ -157,7 +157,7 @@ stream_close (CamelStream *object)
 	}
 
 	if (stream->childpid) {
-		int ret, i;
+		gint ret, i;
 		for (i = 0; i < 4; i++) {
 			ret = waitpid (stream->childpid, NULL, WNOHANG);
 			if (camel_verbose_debug)
@@ -192,9 +192,9 @@ stream_close (CamelStream *object)
 }
 
 static void
-do_exec_command (int fd, const char *command, char **env)
+do_exec_command (gint fd, const gchar *command, gchar **env)
 {
-	int i, maxopen;
+	gint i, maxopen;
 
 	/* Not a lot we can do if there's an error other than bail. */
 	if (dup2 (fd, 0) == -1)
@@ -236,10 +236,10 @@ do_exec_command (int fd, const char *command, char **env)
 	exit (1);
 }
 
-int
-camel_stream_process_connect (CamelStreamProcess *stream, const char *command, const char **env)
+gint
+camel_stream_process_connect (CamelStreamProcess *stream, const gchar *command, const gchar **env)
 {
-	int sockfds[2];
+	gint sockfds[2];
 
 	if (stream->sockfd != -1 || stream->childpid)
 		stream_close (CAMEL_STREAM (stream));
@@ -249,7 +249,7 @@ camel_stream_process_connect (CamelStreamProcess *stream, const char *command, c
 
 	stream->childpid = fork ();
 	if (!stream->childpid) {
-		do_exec_command (sockfds[1], command, (char **)env);
+		do_exec_command (sockfds[1], command, (gchar **)env);
 	} else if (stream->childpid == -1) {
 		close (sockfds[0]);
 		close (sockfds[1]);

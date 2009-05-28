@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,18 +25,18 @@ static const char revid[] = "$Id$";
  * __os_openhandle --
  *	Open a file, using POSIX 1003.1 open flags.
  *
- * PUBLIC: int __os_openhandle __P((DB_ENV *, const char *, int, int, DB_FH *));
+ * PUBLIC: gint __os_openhandle __P((DB_ENV *, const gchar *, int, int, DB_FH *));
  */
-int
+gint
 __os_openhandle(dbenv, name, flags, mode, fhp)
 	DB_ENV *dbenv;
-	const char *name;
-	int flags, mode;
+	const gchar *name;
+	gint flags, mode;
 	DB_FH *fhp;
 {
-	int ret, nrepeat;
+	gint ret, nrepeat;
 #ifdef HAVE_VXWORKS
-	int newflags;
+	gint newflags;
 #endif
 
 	memset(fhp, 0, sizeof(*fhp));
@@ -151,14 +151,14 @@ __os_openhandle(dbenv, name, flags, mode, fhp)
  * __os_closehandle --
  *	Close a file.
  *
- * PUBLIC: int __os_closehandle __P((DB_ENV *, DB_FH *));
+ * PUBLIC: gint __os_closehandle __P((DB_ENV *, DB_FH *));
  */
-int
+gint
 __os_closehandle(dbenv, fhp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 {
-	int ret;
+	gint ret;
 
 	/* Don't close file descriptors that were never opened. */
 	DB_ASSERT(F_ISSET(fhp, DB_FH_VALID) && fhp->fd != -1);

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,9 +23,9 @@ static const char revid[] = "$Id$";
  * __os_isroot --
  *	Return if user has special permissions.
  *
- * PUBLIC: int __os_isroot __P((void));
+ * PUBLIC: gint __os_isroot __P((void));
  */
-int
+gint
 __os_isroot()
 {
 #ifdef HAVE_GETUID

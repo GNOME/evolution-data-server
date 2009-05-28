@@ -33,30 +33,30 @@ struct _EFolderExchangeClass {
 GType       e_folder_exchange_get_type      (void);
 
 EFolder    *e_folder_exchange_new           (ExchangeHierarchy     *hier,
-					     const char            *name,
-					     const char            *type,
-					     const char            *outlook_class,
-					     const char            *phys_uri,
-					     const char            *int_uri);
+					     const gchar            *name,
+					     const gchar            *type,
+					     const gchar            *outlook_class,
+					     const gchar            *phys_uri,
+					     const gchar            *int_uri);
 
 EFolder    *e_folder_exchange_new_from_file (ExchangeHierarchy     *hier,
-					     const char            *filename);
+					     const gchar            *filename);
 gboolean    e_folder_exchange_save_to_file  (EFolder               *folder,
-					     const char            *filename);
+					     const gchar            *filename);
 
 
-const char *e_folder_exchange_get_internal_uri     (EFolder    *folder);
+const gchar *e_folder_exchange_get_internal_uri     (EFolder    *folder);
 void        e_folder_exchange_set_internal_uri     (EFolder    *folder,
-						    const char *internal_uri);
+						    const gchar *internal_uri);
 
-const char *e_folder_exchange_get_path             (EFolder    *folder);
+const gchar *e_folder_exchange_get_path             (EFolder    *folder);
 
-const char *e_folder_exchange_get_permanent_uri    (EFolder    *folder);
+const gchar *e_folder_exchange_get_permanent_uri    (EFolder    *folder);
 void        e_folder_exchange_set_permanent_uri    (EFolder    *folder,
-						    const char *permanent_uri);
+						    const gchar *permanent_uri);
 
 long long int	e_folder_exchange_get_folder_size (EFolder *folder);
-void		e_folder_exchange_set_folder_size (EFolder *folder, long long int folder_size);
+void		e_folder_exchange_set_folder_size (EFolder *folder, gint64 folder_size);
 
 gboolean    e_folder_exchange_get_has_subfolders   (EFolder    *folder);
 void        e_folder_exchange_set_has_subfolders   (EFolder    *folder,
@@ -66,10 +66,10 @@ gboolean    e_folder_exchange_get_rescan_tree   (EFolder    *folder);
 void        e_folder_exchange_set_rescan_tree   (EFolder    *folder,
 						 gboolean   has_subfolders);
 
-const char *e_folder_exchange_get_outlook_class    (EFolder    *folder);
+const gchar *e_folder_exchange_get_outlook_class    (EFolder    *folder);
 
-char       *e_folder_exchange_get_storage_file     (EFolder    *folder,
-						    const char *filename);
+gchar       *e_folder_exchange_get_storage_file     (EFolder    *folder,
+						    const gchar *filename);
 
 ExchangeHierarchy *e_folder_exchange_get_hierarchy (EFolder    *folder);
 
@@ -77,28 +77,28 @@ ExchangeHierarchy *e_folder_exchange_get_hierarchy (EFolder    *folder);
 /* E2kContext wrappers */
 E2kHTTPStatus  e_folder_exchange_propfind          (EFolder *folder,
 						    E2kOperation *op,
-						    const char **props,
-						    int nprops,
+						    const gchar **props,
+						    gint nprops,
 						    E2kResult **results,
-						    int *nresults);
+						    gint *nresults);
 E2kResultIter *e_folder_exchange_bpropfind_start   (EFolder *folder,
 						    E2kOperation *op,
-						    const char **hrefs,
-						    int nhrefs,
-						    const char **props,
-						    int nprops);
+						    const gchar **hrefs,
+						    gint nhrefs,
+						    const gchar **props,
+						    gint nprops);
 
 E2kResultIter *e_folder_exchange_search_start      (EFolder *folder,
 						    E2kOperation *op,
-						    const char **props,
-						    int nprops,
+						    const gchar **props,
+						    gint nprops,
 						    E2kRestriction *rn,
-						    const char *orderby,
+						    const gchar *orderby,
 						    gboolean ascending);
 
 void           e_folder_exchange_subscribe         (EFolder *folder,
 						    E2kContextChangeType,
-						    int min_interval,
+						    gint min_interval,
 						    E2kContextChangeCallback,
 						    gpointer user_data);
 void           e_folder_exchange_unsubscribe       (EFolder *folder);
@@ -112,47 +112,47 @@ E2kResultIter *e_folder_exchange_transfer_start    (EFolder *source,
 
 E2kHTTPStatus  e_folder_exchange_put_new           (EFolder *folder,
 						    E2kOperation *op,
-						    const char *object_name,
+						    const gchar *object_name,
 						    E2kContextTestCallback,
 						    gpointer user_data,
-						    const char *content_type,
-						    const char *body,
-						    int length,
-						    char **location,
-						    char **repl_uid);
+						    const gchar *content_type,
+						    const gchar *body,
+						    gint length,
+						    gchar **location,
+						    gchar **repl_uid);
 
 E2kHTTPStatus  e_folder_exchange_proppatch_new     (EFolder *folder,
 						    E2kOperation *op,
-						    const char *object_name,
+						    const gchar *object_name,
 						    E2kContextTestCallback,
 						    gpointer user_data,
 						    E2kProperties *props,
-						    char **location,
-						    char **repl_uid);
+						    gchar **location,
+						    gchar **repl_uid);
 
 E2kResultIter *e_folder_exchange_bproppatch_start  (EFolder *folder,
 						    E2kOperation *op,
-						    const char **hrefs,
-						    int nhrefs,
+						    const gchar **hrefs,
+						    gint nhrefs,
 						    E2kProperties *props,
 						    gboolean create);
 
 E2kResultIter *e_folder_exchange_bdelete_start     (EFolder *folder,
 						    E2kOperation *op,
-						    const char **hrefs,
-						    int nhrefs);
+						    const gchar **hrefs,
+						    gint nhrefs);
 
 E2kHTTPStatus  e_folder_exchange_mkcol             (EFolder *folder,
 						    E2kOperation *op,
 						    E2kProperties *props,
-						    char **permanent_url);
+						    gchar **permanent_url);
 E2kHTTPStatus  e_folder_exchange_delete            (EFolder *folder,
 						    E2kOperation *op);
 E2kHTTPStatus  e_folder_exchange_transfer_dir      (EFolder *source,
 						    E2kOperation *op,
 						    EFolder *dest,
 						    gboolean delete_original,
-						    char **permanent_url);
+						    gchar **permanent_url);
 
 
 #ifdef __cplusplus

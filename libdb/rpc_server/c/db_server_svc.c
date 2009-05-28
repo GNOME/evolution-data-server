@@ -81,322 +81,322 @@ db_rpc_serverprog_4001(rqstp, transp)
 		__dbc_pget_msg __db_dbc_pget_4001_arg;
 		__dbc_put_msg __db_dbc_put_4001_arg;
 	} argument;
-	char *result;
+	gchar *result;
 	bool_t (*xdr_argument)(), (*xdr_result)();
-	char *(*local)();
+	gchar *(*local)();
 
 	switch (rqstp->rq_proc) {
 	case NULLPROC:
 		(void) svc_sendreply(transp, (xdrproc_t)xdr_void,
-			(char *)NULL);
+			(gchar *)NULL);
 		return;
 
 	case __DB_env_cachesize:
 		xdr_argument = xdr___env_cachesize_msg;
 		xdr_result = xdr___env_cachesize_reply;
-		local = (char *(*)()) __db_env_cachesize_4001;
+		local = (gchar *(*)()) __db_env_cachesize_4001;
 		break;
 
 	case __DB_env_close:
 		xdr_argument = xdr___env_close_msg;
 		xdr_result = xdr___env_close_reply;
-		local = (char *(*)()) __db_env_close_4001;
+		local = (gchar *(*)()) __db_env_close_4001;
 		break;
 
 	case __DB_env_create:
 		xdr_argument = xdr___env_create_msg;
 		xdr_result = xdr___env_create_reply;
-		local = (char *(*)()) __db_env_create_4001;
+		local = (gchar *(*)()) __db_env_create_4001;
 		break;
 
 	case __DB_env_dbremove:
 		xdr_argument = xdr___env_dbremove_msg;
 		xdr_result = xdr___env_dbremove_reply;
-		local = (char *(*)()) __db_env_dbremove_4001;
+		local = (gchar *(*)()) __db_env_dbremove_4001;
 		break;
 
 	case __DB_env_dbrename:
 		xdr_argument = xdr___env_dbrename_msg;
 		xdr_result = xdr___env_dbrename_reply;
-		local = (char *(*)()) __db_env_dbrename_4001;
+		local = (gchar *(*)()) __db_env_dbrename_4001;
 		break;
 
 	case __DB_env_encrypt:
 		xdr_argument = xdr___env_encrypt_msg;
 		xdr_result = xdr___env_encrypt_reply;
-		local = (char *(*)()) __db_env_encrypt_4001;
+		local = (gchar *(*)()) __db_env_encrypt_4001;
 		break;
 
 	case __DB_env_flags:
 		xdr_argument = xdr___env_flags_msg;
 		xdr_result = xdr___env_flags_reply;
-		local = (char *(*)()) __db_env_flags_4001;
+		local = (gchar *(*)()) __db_env_flags_4001;
 		break;
 
 	case __DB_env_open:
 		xdr_argument = xdr___env_open_msg;
 		xdr_result = xdr___env_open_reply;
-		local = (char *(*)()) __db_env_open_4001;
+		local = (gchar *(*)()) __db_env_open_4001;
 		break;
 
 	case __DB_env_remove:
 		xdr_argument = xdr___env_remove_msg;
 		xdr_result = xdr___env_remove_reply;
-		local = (char *(*)()) __db_env_remove_4001;
+		local = (gchar *(*)()) __db_env_remove_4001;
 		break;
 
 	case __DB_txn_abort:
 		xdr_argument = xdr___txn_abort_msg;
 		xdr_result = xdr___txn_abort_reply;
-		local = (char *(*)()) __db_txn_abort_4001;
+		local = (gchar *(*)()) __db_txn_abort_4001;
 		break;
 
 	case __DB_txn_begin:
 		xdr_argument = xdr___txn_begin_msg;
 		xdr_result = xdr___txn_begin_reply;
-		local = (char *(*)()) __db_txn_begin_4001;
+		local = (gchar *(*)()) __db_txn_begin_4001;
 		break;
 
 	case __DB_txn_commit:
 		xdr_argument = xdr___txn_commit_msg;
 		xdr_result = xdr___txn_commit_reply;
-		local = (char *(*)()) __db_txn_commit_4001;
+		local = (gchar *(*)()) __db_txn_commit_4001;
 		break;
 
 	case __DB_txn_discard:
 		xdr_argument = xdr___txn_discard_msg;
 		xdr_result = xdr___txn_discard_reply;
-		local = (char *(*)()) __db_txn_discard_4001;
+		local = (gchar *(*)()) __db_txn_discard_4001;
 		break;
 
 	case __DB_txn_prepare:
 		xdr_argument = xdr___txn_prepare_msg;
 		xdr_result = xdr___txn_prepare_reply;
-		local = (char *(*)()) __db_txn_prepare_4001;
+		local = (gchar *(*)()) __db_txn_prepare_4001;
 		break;
 
 	case __DB_txn_recover:
 		xdr_argument = xdr___txn_recover_msg;
 		xdr_result = xdr___txn_recover_reply;
-		local = (char *(*)()) __db_txn_recover_4001;
+		local = (gchar *(*)()) __db_txn_recover_4001;
 		break;
 
 	case __DB_db_associate:
 		xdr_argument = xdr___db_associate_msg;
 		xdr_result = xdr___db_associate_reply;
-		local = (char *(*)()) __db_db_associate_4001;
+		local = (gchar *(*)()) __db_db_associate_4001;
 		break;
 
 	case __DB_db_bt_maxkey:
 		xdr_argument = xdr___db_bt_maxkey_msg;
 		xdr_result = xdr___db_bt_maxkey_reply;
-		local = (char *(*)()) __db_db_bt_maxkey_4001;
+		local = (gchar *(*)()) __db_db_bt_maxkey_4001;
 		break;
 
 	case __DB_db_bt_minkey:
 		xdr_argument = xdr___db_bt_minkey_msg;
 		xdr_result = xdr___db_bt_minkey_reply;
-		local = (char *(*)()) __db_db_bt_minkey_4001;
+		local = (gchar *(*)()) __db_db_bt_minkey_4001;
 		break;
 
 	case __DB_db_close:
 		xdr_argument = xdr___db_close_msg;
 		xdr_result = xdr___db_close_reply;
-		local = (char *(*)()) __db_db_close_4001;
+		local = (gchar *(*)()) __db_db_close_4001;
 		break;
 
 	case __DB_db_create:
 		xdr_argument = xdr___db_create_msg;
 		xdr_result = xdr___db_create_reply;
-		local = (char *(*)()) __db_db_create_4001;
+		local = (gchar *(*)()) __db_db_create_4001;
 		break;
 
 	case __DB_db_del:
 		xdr_argument = xdr___db_del_msg;
 		xdr_result = xdr___db_del_reply;
-		local = (char *(*)()) __db_db_del_4001;
+		local = (gchar *(*)()) __db_db_del_4001;
 		break;
 
 	case __DB_db_encrypt:
 		xdr_argument = xdr___db_encrypt_msg;
 		xdr_result = xdr___db_encrypt_reply;
-		local = (char *(*)()) __db_db_encrypt_4001;
+		local = (gchar *(*)()) __db_db_encrypt_4001;
 		break;
 
 	case __DB_db_extentsize:
 		xdr_argument = xdr___db_extentsize_msg;
 		xdr_result = xdr___db_extentsize_reply;
-		local = (char *(*)()) __db_db_extentsize_4001;
+		local = (gchar *(*)()) __db_db_extentsize_4001;
 		break;
 
 	case __DB_db_flags:
 		xdr_argument = xdr___db_flags_msg;
 		xdr_result = xdr___db_flags_reply;
-		local = (char *(*)()) __db_db_flags_4001;
+		local = (gchar *(*)()) __db_db_flags_4001;
 		break;
 
 	case __DB_db_get:
 		xdr_argument = xdr___db_get_msg;
 		xdr_result = xdr___db_get_reply;
-		local = (char *(*)()) __db_db_get_4001;
+		local = (gchar *(*)()) __db_db_get_4001;
 		break;
 
 	case __DB_db_h_ffactor:
 		xdr_argument = xdr___db_h_ffactor_msg;
 		xdr_result = xdr___db_h_ffactor_reply;
-		local = (char *(*)()) __db_db_h_ffactor_4001;
+		local = (gchar *(*)()) __db_db_h_ffactor_4001;
 		break;
 
 	case __DB_db_h_nelem:
 		xdr_argument = xdr___db_h_nelem_msg;
 		xdr_result = xdr___db_h_nelem_reply;
-		local = (char *(*)()) __db_db_h_nelem_4001;
+		local = (gchar *(*)()) __db_db_h_nelem_4001;
 		break;
 
 	case __DB_db_key_range:
 		xdr_argument = xdr___db_key_range_msg;
 		xdr_result = xdr___db_key_range_reply;
-		local = (char *(*)()) __db_db_key_range_4001;
+		local = (gchar *(*)()) __db_db_key_range_4001;
 		break;
 
 	case __DB_db_lorder:
 		xdr_argument = xdr___db_lorder_msg;
 		xdr_result = xdr___db_lorder_reply;
-		local = (char *(*)()) __db_db_lorder_4001;
+		local = (gchar *(*)()) __db_db_lorder_4001;
 		break;
 
 	case __DB_db_open:
 		xdr_argument = xdr___db_open_msg;
 		xdr_result = xdr___db_open_reply;
-		local = (char *(*)()) __db_db_open_4001;
+		local = (gchar *(*)()) __db_db_open_4001;
 		break;
 
 	case __DB_db_pagesize:
 		xdr_argument = xdr___db_pagesize_msg;
 		xdr_result = xdr___db_pagesize_reply;
-		local = (char *(*)()) __db_db_pagesize_4001;
+		local = (gchar *(*)()) __db_db_pagesize_4001;
 		break;
 
 	case __DB_db_pget:
 		xdr_argument = xdr___db_pget_msg;
 		xdr_result = xdr___db_pget_reply;
-		local = (char *(*)()) __db_db_pget_4001;
+		local = (gchar *(*)()) __db_db_pget_4001;
 		break;
 
 	case __DB_db_put:
 		xdr_argument = xdr___db_put_msg;
 		xdr_result = xdr___db_put_reply;
-		local = (char *(*)()) __db_db_put_4001;
+		local = (gchar *(*)()) __db_db_put_4001;
 		break;
 
 	case __DB_db_re_delim:
 		xdr_argument = xdr___db_re_delim_msg;
 		xdr_result = xdr___db_re_delim_reply;
-		local = (char *(*)()) __db_db_re_delim_4001;
+		local = (gchar *(*)()) __db_db_re_delim_4001;
 		break;
 
 	case __DB_db_re_len:
 		xdr_argument = xdr___db_re_len_msg;
 		xdr_result = xdr___db_re_len_reply;
-		local = (char *(*)()) __db_db_re_len_4001;
+		local = (gchar *(*)()) __db_db_re_len_4001;
 		break;
 
 	case __DB_db_re_pad:
 		xdr_argument = xdr___db_re_pad_msg;
 		xdr_result = xdr___db_re_pad_reply;
-		local = (char *(*)()) __db_db_re_pad_4001;
+		local = (gchar *(*)()) __db_db_re_pad_4001;
 		break;
 
 	case __DB_db_remove:
 		xdr_argument = xdr___db_remove_msg;
 		xdr_result = xdr___db_remove_reply;
-		local = (char *(*)()) __db_db_remove_4001;
+		local = (gchar *(*)()) __db_db_remove_4001;
 		break;
 
 	case __DB_db_rename:
 		xdr_argument = xdr___db_rename_msg;
 		xdr_result = xdr___db_rename_reply;
-		local = (char *(*)()) __db_db_rename_4001;
+		local = (gchar *(*)()) __db_db_rename_4001;
 		break;
 
 	case __DB_db_stat:
 		xdr_argument = xdr___db_stat_msg;
 		xdr_result = xdr___db_stat_reply;
-		local = (char *(*)()) __db_db_stat_4001;
+		local = (gchar *(*)()) __db_db_stat_4001;
 		break;
 
 	case __DB_db_sync:
 		xdr_argument = xdr___db_sync_msg;
 		xdr_result = xdr___db_sync_reply;
-		local = (char *(*)()) __db_db_sync_4001;
+		local = (gchar *(*)()) __db_db_sync_4001;
 		break;
 
 	case __DB_db_truncate:
 		xdr_argument = xdr___db_truncate_msg;
 		xdr_result = xdr___db_truncate_reply;
-		local = (char *(*)()) __db_db_truncate_4001;
+		local = (gchar *(*)()) __db_db_truncate_4001;
 		break;
 
 	case __DB_db_cursor:
 		xdr_argument = xdr___db_cursor_msg;
 		xdr_result = xdr___db_cursor_reply;
-		local = (char *(*)()) __db_db_cursor_4001;
+		local = (gchar *(*)()) __db_db_cursor_4001;
 		break;
 
 	case __DB_db_join:
 		xdr_argument = xdr___db_join_msg;
 		xdr_result = xdr___db_join_reply;
-		local = (char *(*)()) __db_db_join_4001;
+		local = (gchar *(*)()) __db_db_join_4001;
 		break;
 
 	case __DB_dbc_close:
 		xdr_argument = xdr___dbc_close_msg;
 		xdr_result = xdr___dbc_close_reply;
-		local = (char *(*)()) __db_dbc_close_4001;
+		local = (gchar *(*)()) __db_dbc_close_4001;
 		break;
 
 	case __DB_dbc_count:
 		xdr_argument = xdr___dbc_count_msg;
 		xdr_result = xdr___dbc_count_reply;
-		local = (char *(*)()) __db_dbc_count_4001;
+		local = (gchar *(*)()) __db_dbc_count_4001;
 		break;
 
 	case __DB_dbc_del:
 		xdr_argument = xdr___dbc_del_msg;
 		xdr_result = xdr___dbc_del_reply;
-		local = (char *(*)()) __db_dbc_del_4001;
+		local = (gchar *(*)()) __db_dbc_del_4001;
 		break;
 
 	case __DB_dbc_dup:
 		xdr_argument = xdr___dbc_dup_msg;
 		xdr_result = xdr___dbc_dup_reply;
-		local = (char *(*)()) __db_dbc_dup_4001;
+		local = (gchar *(*)()) __db_dbc_dup_4001;
 		break;
 
 	case __DB_dbc_get:
 		xdr_argument = xdr___dbc_get_msg;
 		xdr_result = xdr___dbc_get_reply;
-		local = (char *(*)()) __db_dbc_get_4001;
+		local = (gchar *(*)()) __db_dbc_get_4001;
 		break;
 
 	case __DB_dbc_pget:
 		xdr_argument = xdr___dbc_pget_msg;
 		xdr_result = xdr___dbc_pget_reply;
-		local = (char *(*)()) __db_dbc_pget_4001;
+		local = (gchar *(*)()) __db_dbc_pget_4001;
 		break;
 
 	case __DB_dbc_put:
 		xdr_argument = xdr___dbc_put_msg;
 		xdr_result = xdr___dbc_put_reply;
-		local = (char *(*)()) __db_dbc_put_4001;
+		local = (gchar *(*)()) __db_dbc_put_4001;
 		break;
 
 	default:
 		svcerr_noproc(transp);
 		return;
 	}
-	(void) memset((char *)&argument, 0, sizeof (argument));
-	if (!svc_getargs(transp, (xdrproc_t)xdr_argument, (char *)&argument)) {
+	(void) memset((gchar *)&argument, 0, sizeof (argument));
+	if (!svc_getargs(transp, (xdrproc_t)xdr_argument, (gchar *)&argument)) {
 		svcerr_decode(transp);
 		return;
 	}
@@ -404,7 +404,7 @@ db_rpc_serverprog_4001(rqstp, transp)
 	if (result != NULL && !svc_sendreply(transp, (xdrproc_t)xdr_result, result)) {
 		svcerr_systemerr(transp);
 	}
-	if (!svc_freeargs(transp, (xdrproc_t)xdr_argument, (char *)&argument)) {
+	if (!svc_freeargs(transp, (xdrproc_t)xdr_argument, (gchar *)&argument)) {
 		fprintf(stderr, "unable to free arguments");
 		exit(1);
 	}

@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -31,17 +31,17 @@ static void __memp_reset_lru __P((DB_ENV *, REGINFO *, MPOOL *));
  * __memp_alloc --
  *	Allocate some space from a cache region.
  *
- * PUBLIC: int __memp_alloc __P((DB_MPOOL *,
- * PUBLIC:     REGINFO *, MPOOLFILE *, size_t, roff_t *, void *));
+ * PUBLIC: gint __memp_alloc __P((DB_MPOOL *,
+ * PUBLIC:     REGINFO *, MPOOLFILE *, size_t, roff_t *, gpointer ));
  */
-int
+gint
 __memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
 	DB_MPOOL *dbmp;
 	REGINFO *memreg;
 	MPOOLFILE *mfp;
 	size_t len;
 	roff_t *offsetp;
-	void *retp;
+	gpointer retp;
 {
 	BH *bhp;
 	DB_ENV *dbenv;
@@ -51,8 +51,8 @@ __memp_alloc(dbmp, memreg, mfp, len, offsetp, retp)
 	MPOOLFILE *bh_mfp;
 	size_t freed_space;
 	u_int32_t buckets, buffers, high_priority, max_na, priority;
-	int aggressive, ret;
-	void *p;
+	gint aggressive, ret;
+	gpointer p;
 
 	dbenv = dbmp->dbenv;
 	c_mp = memreg->primary;
@@ -112,7 +112,7 @@ alloc:	if ((ret = __db_shalloc(memreg->addr, len, MUTEX_ALIGN, &p)) == 0) {
 
 found:		if (offsetp != NULL)
 			*offsetp = R_OFFSET(memreg, p);
-		*(void **)retp = p;
+		*(gpointer *)retp = p;
 
 		/*
 		 * Update the search statistics.
@@ -374,7 +374,7 @@ __memp_reset_lru(dbenv, memreg, c_mp)
 {
 	BH *bhp;
 	DB_MPOOL_HASH *hp;
-	int bucket;
+	gint bucket;
 
 	/*
 	 * Update the counter so all future allocations will start at the

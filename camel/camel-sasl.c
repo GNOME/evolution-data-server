@@ -126,11 +126,11 @@ camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
  *
  * Returns: the base64 encoded challenge string
  **/
-char *
-camel_sasl_challenge_base64 (CamelSasl *sasl, const char *token, CamelException *ex)
+gchar *
+camel_sasl_challenge_base64 (CamelSasl *sasl, const gchar *token, CamelException *ex)
 {
 	GByteArray *token_binary, *ret_binary;
-	char *ret;
+	gchar *ret;
 
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 
@@ -187,7 +187,7 @@ camel_sasl_authenticated (CamelSasl *sasl)
  * supported.
  **/
 CamelSasl *
-camel_sasl_new (const char *service_name, const char *mechanism, CamelService *service)
+camel_sasl_new (const gchar *service_name, const gchar *mechanism, CamelService *service)
 {
 	CamelSasl *sasl;
 
@@ -263,7 +263,7 @@ camel_sasl_authtype_list (gboolean include_plain)
  * it is supported.
  **/
 CamelServiceAuthType *
-camel_sasl_authtype (const char *mechanism)
+camel_sasl_authtype (const gchar *mechanism)
 {
 	if (!strcmp (mechanism, "CRAM-MD5"))
 		return &camel_sasl_cram_md5_authtype;

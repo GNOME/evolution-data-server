@@ -40,7 +40,7 @@ e_cal_backend_weather_factory_instance_init (ECalBackendWeatherFactory *factory)
 {
 }
 
-static const char *
+static const gchar *
 _get_protocol (ECalBackendFactory *factory)
 {
 	return "weather";
@@ -106,7 +106,7 @@ eds_module_shutdown (void)
 }
 
 void
-eds_module_list_types (const GType **types, int *num_types)
+eds_module_list_types (const GType **types, gint *num_types)
 {
 	*types = weather_type;
 	*num_types = 1;

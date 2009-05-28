@@ -18,11 +18,11 @@
 #include "dbinc/txn.h"
 
 /*
- * PUBLIC: int __dbreg_register_log __P((DB_ENV *, DB_TXN *,
+ * PUBLIC: gint __dbreg_register_log __P((DB_ENV *, DB_TXN *,
  * PUBLIC:     DB_LSN *, u_int32_t, u_int32_t, const DBT *, const DBT *,
  * PUBLIC:     int32_t, DBTYPE, db_pgno_t, u_int32_t));
  */
-int
+gint
 __dbreg_register_log(dbenv, txnid, ret_lsnp, flags,
     opcode, name, uid, fileid, ftype, meta_pgno,
     id)
@@ -43,7 +43,7 @@ __dbreg_register_log(dbenv, txnid, ret_lsnp, flags,
 	u_int32_t zero;
 	u_int32_t uinttmp;
 	u_int32_t npad, rectype, txn_num;
-	int ret;
+	gint ret;
 	u_int8_t *bp;
 
 	rectype = DB___dbreg_register;
@@ -151,19 +151,19 @@ __dbreg_register_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: int __dbreg_register_getpgnos __P((DB_ENV *, DBT *,
- * PUBLIC:     DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __dbreg_register_getpgnos __P((DB_ENV *, DBT *,
+ * PUBLIC:     DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __dbreg_register_getpgnos(dbenv, rec, lsnp, notused1, summary)
 	DB_ENV *dbenv;
 	DBT *rec;
 	DB_LSN *lsnp;
 	db_recops notused1;
-	void *summary;
+	gpointer summary;
 {
 	TXN_RECS *t;
-	int ret;
+	gint ret;
 	COMPQUIET(rec, NULL);
 	COMPQUIET(notused1, DB_TXN_ABORT);
 
@@ -184,21 +184,21 @@ __dbreg_register_getpgnos(dbenv, rec, lsnp, notused1, summary)
 }
 
 /*
- * PUBLIC: int __dbreg_register_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, void *));
+ * PUBLIC: gint __dbreg_register_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, gpointer ));
  */
-int
+gint
 __dbreg_register_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	void *notused3;
+	gpointer notused3;
 {
 	__dbreg_register_args *argp;
 	u_int32_t i;
-	int ch;
-	int ret;
+	gint ch;
+	gint ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -236,19 +236,19 @@ __dbreg_register_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: int __dbreg_register_read __P((DB_ENV *, void *,
+ * PUBLIC: gint __dbreg_register_read __P((DB_ENV *, gpointer ,
  * PUBLIC:     __dbreg_register_args **));
  */
-int
+gint
 __dbreg_register_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	void *recbuf;
+	gpointer recbuf;
 	__dbreg_register_args **argpp;
 {
 	__dbreg_register_args *argp;
 	u_int32_t uinttmp;
 	u_int8_t *bp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbenv,
 	    sizeof(__dbreg_register_args) + sizeof(DB_TXN), &argp)) != 0)
@@ -303,16 +303,16 @@ __dbreg_register_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: int __dbreg_init_print __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __dbreg_init_print __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __dbreg_init_print(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __dbreg_register_print, DB___dbreg_register)) != 0)
@@ -321,17 +321,17 @@ __dbreg_init_print(dbenv, dtabp, dtabsizep)
 }
 
 /*
- * PUBLIC: int __dbreg_init_getpgnos __P((DB_ENV *,
- * PUBLIC:     int (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *),
+ * PUBLIC: gint __dbreg_init_getpgnos __P((DB_ENV *,
+ * PUBLIC:     gint (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ),
  * PUBLIC:     size_t *));
  */
-int
+gint
 __dbreg_init_getpgnos(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __dbreg_register_getpgnos, DB___dbreg_register)) != 0)
@@ -340,16 +340,16 @@ __dbreg_init_getpgnos(dbenv, dtabp, dtabsizep)
 }
 
 /*
- * PUBLIC: int __dbreg_init_recover __P((DB_ENV *, int (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
+ * PUBLIC: gint __dbreg_init_recover __P((DB_ENV *, gint (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
  */
-int
+gint
 __dbreg_init_recover(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    __dbreg_register_recover, DB___dbreg_register)) != 0)

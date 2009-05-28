@@ -73,11 +73,11 @@ void            e_account_list_remove    (EAccountList *, EAccount *);
 
 const EAccount *e_account_list_get_default(EAccountList *);
 void            e_account_list_set_default(EAccountList *, EAccount *);
-const EAccount *e_account_list_find       (EAccountList *, e_account_find_t type, const char *key);
+const EAccount *e_account_list_find       (EAccountList *, e_account_find_t type, const gchar *key);
 
 void e_account_list_prune_proxies (EAccountList *);
 void e_account_list_remove_account_proxies (EAccountList *, EAccount *);
-int e_account_list_account_has_proxies (EAccountList *, EAccount *);
+gint e_account_list_account_has_proxies (EAccountList *, EAccount *);
 
 G_END_DECLS
 

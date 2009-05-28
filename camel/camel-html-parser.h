@@ -70,11 +70,11 @@ struct _CamelHTMLParserClass {
 CamelType		camel_html_parser_get_type	(void);
 CamelHTMLParser      *camel_html_parser_new	(void);
 
-void camel_html_parser_set_data(CamelHTMLParser *hp, const char *start, int len, int last);
-camel_html_parser_t camel_html_parser_step(CamelHTMLParser *hp, const char **datap, int *lenp);
-const char *camel_html_parser_left(CamelHTMLParser *hp, int *lenp);
-const char *camel_html_parser_tag(CamelHTMLParser *hp);
-const char *camel_html_parser_attr(CamelHTMLParser *hp, const char *name);
+void camel_html_parser_set_data(CamelHTMLParser *hp, const gchar *start, gint len, gint last);
+camel_html_parser_t camel_html_parser_step(CamelHTMLParser *hp, const gchar **datap, gint *lenp);
+const gchar *camel_html_parser_left(CamelHTMLParser *hp, gint *lenp);
+const gchar *camel_html_parser_tag(CamelHTMLParser *hp);
+const gchar *camel_html_parser_attr(CamelHTMLParser *hp, const gchar *name);
 const GPtrArray *camel_html_parser_attr_list(CamelHTMLParser *hp, const GPtrArray **values);
 
 G_END_DECLS

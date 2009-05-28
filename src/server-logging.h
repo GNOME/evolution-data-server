@@ -59,7 +59,7 @@ struct _ServerLoggingClass {
 GType server_logging_get_type  (void);
 ServerLogging *server_logging_new (void);
 
-void server_logging_register_domain (ServerLogging *logging, const char *domain);
+void server_logging_register_domain (ServerLogging *logging, const gchar *domain);
 
 G_END_DECLS
 

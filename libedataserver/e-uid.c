@@ -36,14 +36,14 @@
  * Return value: The newly generated UID.  The caller should free the string
  * when it's done with it.
  **/
-char *
+gchar *
 e_uid_new (void)
 {
-	static int serial;
-	static char *hostname;
+	static gint serial;
+	static gchar *hostname;
 
 	if (!hostname) {
-		hostname = (char *) g_get_host_name ();
+		hostname = (gchar *) g_get_host_name ();
 	}
 
 	return g_strdup_printf ("%lu.%lu.%d@%s",

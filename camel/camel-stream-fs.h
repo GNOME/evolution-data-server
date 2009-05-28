@@ -43,7 +43,7 @@ G_BEGIN_DECLS
 struct _CamelStreamFs {
 	CamelSeekableStream parent_object;
 
-	int fd;             /* file descriptor on the underlying file */
+	gint fd;             /* file descriptor on the underlying file */
 };
 
 typedef struct {
@@ -55,12 +55,12 @@ typedef struct {
 CamelType camel_stream_fs_get_type (void);
 
 /* public methods */
-CamelStream * camel_stream_fs_new_with_name            (const char *name, int flags, mode_t mode);
-CamelStream * camel_stream_fs_new_with_name_and_bounds (const char *name, int flags, mode_t mode,
+CamelStream * camel_stream_fs_new_with_name            (const gchar *name, gint flags, mode_t mode);
+CamelStream * camel_stream_fs_new_with_name_and_bounds (const gchar *name, gint flags, mode_t mode,
 							off_t start, off_t end);
 
-CamelStream * camel_stream_fs_new_with_fd              (int fd);
-CamelStream * camel_stream_fs_new_with_fd_and_bounds   (int fd, off_t start, off_t end);
+CamelStream * camel_stream_fs_new_with_fd              (gint fd);
+CamelStream * camel_stream_fs_new_with_fd_and_bounds   (gint fd, off_t start, off_t end);
 
 G_END_DECLS
 

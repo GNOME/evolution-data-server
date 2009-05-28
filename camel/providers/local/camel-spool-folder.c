@@ -58,9 +58,9 @@ static CamelFolderClass *parent_class = NULL;
 #define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 #define CSPOOLS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static CamelLocalSummary *spool_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
+static CamelLocalSummary *spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
-static int spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
+static gint spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void spool_unlock(CamelLocalFolder *lf);
 
 static void spool_finalize(CamelObject * object);
@@ -109,7 +109,7 @@ CamelType camel_spool_folder_get_type(void)
 }
 
 CamelFolder *
-camel_spool_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex)
+camel_spool_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
 {
 	CamelFolder *folder;
 
@@ -132,7 +132,7 @@ camel_spool_folder_new(CamelStore *parent_store, const char *full_name, guint32 
 }
 
 static CamelLocalSummary *
-spool_create_summary(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index)
+spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index)
 {
 	return (CamelLocalSummary *)camel_spool_summary_new((CamelFolder *)lf, folder);
 }
@@ -140,7 +140,7 @@ spool_create_summary(CamelLocalFolder *lf, const char *path, const char *folder,
 static int
 spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 {
-	int retry = 0;
+	gint retry = 0;
 	CamelMboxFolder *mf = (CamelMboxFolder *)lf;
 	CamelSpoolFolder *sf = (CamelSpoolFolder *)lf;
 

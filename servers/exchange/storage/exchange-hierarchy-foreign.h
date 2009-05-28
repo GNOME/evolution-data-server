@@ -36,17 +36,17 @@ typedef struct _ExchangeHierarchyForeign ExchangeHierarchyForeign;
 GType              exchange_hierarchy_foreign_get_type (void);
 
 ExchangeHierarchy *exchange_hierarchy_foreign_new          (ExchangeAccount *account,
-							    const char *hierarchy_name,
-							    const char *physical_uri_prefix,
-							    const char *internal_uri_prefix,
-							    const char *owner_name,
-							    const char *owner_email,
-							    const char *source_uri);
+							    const gchar *hierarchy_name,
+							    const gchar *physical_uri_prefix,
+							    const gchar *internal_uri_prefix,
+							    const gchar *owner_name,
+							    const gchar *owner_email,
+							    const gchar *source_uri);
 ExchangeHierarchy *exchange_hierarchy_foreign_new_from_dir (ExchangeAccount *account,
-							    const char *folder_path);
+							    const gchar *folder_path);
 
 ExchangeAccountFolderResult  exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
-								    const char *folder_name,
+								    const gchar *folder_name,
 								    EFolder **folder);
 
 #ifdef __cplusplus

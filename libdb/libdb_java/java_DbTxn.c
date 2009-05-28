@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -29,7 +29,7 @@ JAVADB_METHOD(DbTxn_discard, (JAVADB_ARGS, jint flags), DB_TXN,
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbTxn_id
   (JNIEnv *jnienv, jobject jthis)
 {
-	int retval = 0;
+	gint retval = 0;
 	DB_TXN *dbtxn = get_DB_TXN(jnienv, jthis);
 	if (!verify_non_null(jnienv, dbtxn))
 		return (-1);
@@ -42,7 +42,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbTxn_id
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbTxn_prepare
   (JNIEnv *jnienv, jobject jthis, jbyteArray gid)
 {
-	int err;
+	gint err;
 	DB_TXN *dbtxn;
 	jbyte *c_array;
 

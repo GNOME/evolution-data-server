@@ -81,12 +81,12 @@ typedef enum _e_account_access_t {
 } e_account_access_t;
 
 typedef struct _EAccountIdentity {
-	char *name;
-	char *address;
-	char *reply_to;
-	char *organization;
+	gchar *name;
+	gchar *address;
+	gchar *reply_to;
+	gchar *organization;
 
-	char *sig_uid;
+	gchar *sig_uid;
 } EAccountIdentity;
 
 typedef enum _EAccountReceiptPolicy {
@@ -96,10 +96,10 @@ typedef enum _EAccountReceiptPolicy {
 } EAccountReceiptPolicy;
 
 typedef struct _EAccountService {
-	char *url;
+	gchar *url;
 	gboolean keep_on_server;
 	gboolean auto_check;
-	int auto_check_time;
+	gint auto_check_time;
 	gboolean save_passwd;
 	gboolean get_password_canceled;
 } EAccountService;
@@ -107,8 +107,8 @@ typedef struct _EAccountService {
 typedef struct _EAccount {
 	GObject parent_object;
 
-	char *name;
-	char *uid;
+	gchar *name;
+	gchar *uid;
 
 	gboolean enabled;
 
@@ -116,25 +116,25 @@ typedef struct _EAccount {
 	EAccountService *source;
 	EAccountService *transport;
 
-	char *drafts_folder_uri, *sent_folder_uri, *templates_folder_uri;
+	gchar *drafts_folder_uri, *sent_folder_uri, *templates_folder_uri;
 
 	gboolean always_cc;
-	char *cc_addrs;
+	gchar *cc_addrs;
 	gboolean always_bcc;
-	char *bcc_addrs;
+	gchar *bcc_addrs;
 
 	EAccountReceiptPolicy receipt_policy;
 
-	char *pgp_key;
+	gchar *pgp_key;
 	gboolean pgp_encrypt_to_self;
 	gboolean pgp_always_sign;
 	gboolean pgp_no_imip_sign;
 	gboolean pgp_always_trust;
 
-	char *parent_uid;
+	gchar *parent_uid;
 
-	char *smime_sign_key;
-	char *smime_encrypt_key;
+	gchar *smime_sign_key;
+	gchar *smime_encrypt_key;
 	gboolean smime_sign_default;
 	gboolean smime_encrypt_to_self;
 	gboolean smime_encrypt_default;
@@ -143,7 +143,7 @@ typedef struct _EAccount {
 typedef struct {
 	GObjectClass parent_class;
 
-	void (*changed)(EAccount *, int field);
+	void (*changed)(EAccount *, gint field);
 } EAccountClass;
 
 
@@ -151,30 +151,30 @@ GType     e_account_get_type (void);
 
 EAccount *e_account_new          (void);
 
-EAccount *e_account_new_from_xml (const char *xml);
+EAccount *e_account_new_from_xml (const gchar *xml);
 
 gboolean  e_account_set_from_xml (EAccount   *account,
-				  const char *xml);
+				  const gchar *xml);
 
 void      e_account_import       (EAccount   *dest,
 				  EAccount   *src);
 
-char     *e_account_to_xml       (EAccount   *account);
+gchar     *e_account_to_xml       (EAccount   *account);
 
 
-char     *e_account_uid_from_xml (const char *xml);
+gchar     *e_account_uid_from_xml (const gchar *xml);
 
-const char *e_account_get_string (EAccount *,
+const gchar *e_account_get_string (EAccount *,
 				  e_account_item_t type);
 
-int       e_account_get_int      (EAccount *,
+gint       e_account_get_int      (EAccount *,
 				  e_account_item_t type);
 
 gboolean  e_account_get_bool     (EAccount *,
 				  e_account_item_t type);
 
 void      e_account_set_string   (EAccount *,
-				  e_account_item_t type, const char *);
+				  e_account_item_t type, const gchar *);
 
 void      e_account_set_int      (EAccount *,
 				  e_account_item_t type, int);
@@ -186,8 +186,8 @@ gboolean  e_account_writable     (EAccount *ea,
 				  e_account_item_t type);
 
 gboolean  e_account_writable_option (EAccount *ea,
-				  const char *protocol,
-				  const char *option);
+				  const gchar *protocol,
+				  const gchar *option);
 
 G_END_DECLS
 

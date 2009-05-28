@@ -31,7 +31,7 @@ e_cal_backend_file_factory_instance_init (ECalBackendFileFactory *factory)
 {
 }
 
-static const char *
+static const gchar *
 _get_protocol (ECalBackendFactory *factory)
 {
 	return "file";
@@ -199,7 +199,7 @@ eds_module_shutdown   (void)
 }
 
 void
-eds_module_list_types (const GType **types, int *num_types)
+eds_module_list_types (const GType **types, gint *num_types)
 {
 	*types = file_types;
 	*num_types = 3;

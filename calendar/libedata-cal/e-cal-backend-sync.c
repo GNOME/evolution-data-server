@@ -82,7 +82,7 @@ e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gbool
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, char **address)
+e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {
 	ECalBackendSyncStatus status;
 
@@ -105,7 +105,7 @@ e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, ch
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal *cal, char **address)
+e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {
 	ECalBackendSyncStatus status;
 
@@ -128,7 +128,7 @@ e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal 
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal, char **attribute)
+e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal, gchar **attribute)
 {
 	ECalBackendSyncStatus status;
 
@@ -151,7 +151,7 @@ e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal,
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal *cal, char **capabilities)
+e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities)
 {
 	ECalBackendSyncStatus status;
 
@@ -178,7 +178,7 @@ e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal 
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
-			  const char *username, const char *password)
+			  const gchar *username, const gchar *password)
 {
 	ECalBackendSyncStatus status;
 
@@ -222,7 +222,7 @@ e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char **calobj, char **uid)
+e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
 {
 	ECalBackendSyncStatus status;
 
@@ -251,8 +251,8 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, char 
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const char *calobj,
-				  CalObjModType mod, char **old_object, char **new_object)
+e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj,
+				  CalObjModType mod, gchar **old_object, gchar **new_object)
 {
 	ECalBackendSyncStatus status;
 
@@ -284,8 +284,8 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid,
-				  CalObjModType mod, char **old_object, char **object)
+e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid,
+				  CalObjModType mod, gchar **old_object, gchar **object)
 {
 	ECalBackendSyncStatus status;
 
@@ -310,7 +310,7 @@ e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *auid)
+e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
 {
 	ECalBackendSyncStatus status;
 
@@ -334,7 +334,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj)
+e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendSyncStatus status;
 
@@ -360,8 +360,8 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const char *calobj, GList **users,
-				 char **modified_calobj)
+e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
+				 gchar **modified_calobj)
 {
 	ECalBackendSyncStatus status;
 
@@ -385,7 +385,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
+e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object)
 {
 	ECalBackendSyncStatus status;
 
@@ -411,7 +411,7 @@ e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, char **object)
+e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object)
 {
 	ECalBackendSyncStatus status;
 
@@ -435,7 +435,7 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const ch
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, const char *sexp, GList **objects)
+e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects)
 {
 	ECalBackendSyncStatus status;
 
@@ -460,7 +460,7 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const char *uid, const char *rid, GSList **attachments)
+e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **attachments)
 {
 	ECalBackendSyncStatus status;
 
@@ -484,7 +484,7 @@ e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, EDataCal *cal,
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid, char **object)
+e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
 {
 	ECalBackendSyncStatus status;
 
@@ -506,7 +506,7 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzobj)
+e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
 {
 	ECalBackendSyncStatus status;
 
@@ -528,7 +528,7 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const char *tz)
+e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tz)
 {
 	ECalBackendSyncStatus status;
 
@@ -537,7 +537,7 @@ e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 	/* Old backends might be using the set_default_timezone */
 	if (!E_CAL_BACKEND_SYNC_GET_CLASS (backend)->set_default_zone_sync) {
 		icalcomponent *icalcomp = icalparser_parse_string (tz);
-		const char *tzid = NULL;
+		const gchar *tzid = NULL;
 		icaltimezone *zone = icaltimezone_new ();
 
 		if (icalcomp) {
@@ -572,7 +572,7 @@ e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const char *tzid)
+e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid)
 {
 	ECalBackendSyncStatus status;
 
@@ -597,7 +597,7 @@ e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
  * Return value: Status code.
  */
 ECalBackendSyncStatus
-e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const char *change_id,
+e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
 				GList **adds, GList **modifies, GList **deletes)
 {
 	ECalBackendSyncStatus status;
@@ -650,7 +650,7 @@ static void
 _e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendSyncStatus status;
-	char *address = NULL;
+	gchar *address = NULL;
 
 	status = e_cal_backend_sync_get_cal_address (E_CAL_BACKEND_SYNC (backend), cal, &address);
 
@@ -663,7 +663,7 @@ static void
 _e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendSyncStatus status;
-	char *address = NULL;
+	gchar *address = NULL;
 
 	status = e_cal_backend_sync_get_alarm_email_address (E_CAL_BACKEND_SYNC (backend), cal, &address);
 
@@ -676,7 +676,7 @@ static void
 _e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendSyncStatus status;
-	char *attribute = NULL;
+	gchar *attribute = NULL;
 
 	status = e_cal_backend_sync_get_ldap_attribute (E_CAL_BACKEND_SYNC (backend), cal, &attribute);
 
@@ -689,7 +689,7 @@ static void
 _e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendSyncStatus status;
-	char *capabilities = NULL;
+	gchar *capabilities = NULL;
 
 	status = e_cal_backend_sync_get_static_capabilities (E_CAL_BACKEND_SYNC (backend), cal, &capabilities);
 
@@ -700,7 +700,7 @@ _e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
 
 static void
 _e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists,
-		     const char *username, const char *password)
+		     const gchar *username, const gchar *password)
 {
 	ECalBackendSyncStatus status;
 
@@ -720,10 +720,10 @@ _e_cal_backend_remove (ECalBackend *backend, EDataCal *cal)
 }
 
 static void
-_e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *calobj)
+_e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendSyncStatus status;
-	char *uid = NULL, *modified_calobj = (char *) calobj;
+	gchar *uid = NULL, *modified_calobj = (gchar *) calobj;
 
 	status = e_cal_backend_sync_create_object (E_CAL_BACKEND_SYNC (backend), cal, &modified_calobj, &uid);
 
@@ -738,11 +738,11 @@ _e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const char *c
 }
 
 static void
-_e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *calobj, CalObjModType mod)
+_e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod)
 {
 	ECalBackendSyncStatus status;
-	char *old_object = NULL;
-	char *new_object = NULL;
+	gchar *old_object = NULL;
+	gchar *new_object = NULL;
 
 	status = e_cal_backend_sync_modify_object (E_CAL_BACKEND_SYNC (backend), cal,
 						   calobj, mod, &old_object, &new_object);
@@ -757,10 +757,10 @@ _e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const char *c
 }
 
 static void
-_e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid, CalObjModType mod)
+_e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod)
 {
 	ECalBackendSyncStatus status;
-	char *object = NULL, *old_object = NULL;
+	gchar *object = NULL, *old_object = NULL;
 
 	status = e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, mod, &old_object, &object);
 
@@ -786,7 +786,7 @@ _e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const char *u
 }
 
 static void
-_e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const char *uid, const char *auid)
+_e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
 {
 	ECalBackendSyncStatus status;
 
@@ -796,7 +796,7 @@ _e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const char *u
 }
 
 static void
-_e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const char *calobj)
+_e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendSyncStatus status;
 
@@ -806,11 +806,11 @@ _e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const char 
 }
 
 static void
-_e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const char *calobj)
+_e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendSyncStatus status;
 	GList *users = NULL;
-	char *modified_calobj = NULL;
+	gchar *modified_calobj = NULL;
 
 	status = e_cal_backend_sync_send_objects (E_CAL_BACKEND_SYNC (backend), cal, calobj, &users, &modified_calobj);
 	e_data_cal_notify_objects_sent (cal, status, users, modified_calobj);
@@ -824,7 +824,7 @@ static void
 _e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal)
 {
 	ECalBackendSyncStatus status;
-	char *object = NULL;
+	gchar *object = NULL;
 
 	status = e_cal_backend_sync_get_default_object (E_CAL_BACKEND_SYNC (backend), cal, &object);
 
@@ -834,10 +834,10 @@ _e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal)
 }
 
 static void
-_e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid)
+_e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid)
 {
 	ECalBackendSyncStatus status;
-	char *object = NULL;
+	gchar *object = NULL;
 
 	status = e_cal_backend_sync_get_object (E_CAL_BACKEND_SYNC (backend), cal, uid, rid, &object);
 
@@ -847,7 +847,7 @@ _e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const char *uid,
 }
 
 static void
-_e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const char *uid, const char *rid)
+_e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid)
 {
 	ECalBackendSyncStatus status;
 	GSList *list = NULL;
@@ -861,7 +861,7 @@ _e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const c
 }
 
 static void
-_e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char *sexp)
+_e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const gchar *sexp)
 {
 	ECalBackendSyncStatus status;
 	GList *objects = NULL, *l;
@@ -876,16 +876,16 @@ _e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const char 
 }
 
 static void
-_e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid)
+_e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid)
 {
 	ECalBackendSyncStatus status;
-	char *object = NULL;
+	gchar *object = NULL;
 
 	status = e_cal_backend_sync_get_timezone (E_CAL_BACKEND_SYNC (backend), cal, tzid, &object);
 
 	if (!object && tzid) {
 		/* fallback if tzid contains only the location of timezone */
-		int i, slashes = 0;
+		gint i, slashes = 0;
 
 		for (i = 0; tzid [i]; i++) {
 			if (tzid [i] == '/')
@@ -935,7 +935,7 @@ _e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 }
 
 static void
-_e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const char *tzobj)
+_e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzobj)
 {
 	ECalBackendSyncStatus status;
 
@@ -945,9 +945,9 @@ _e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const char *tz
 }
 
 static icaltimezone *
-_e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid)
+_e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
-	int i, slashes = 0;
+	gint i, slashes = 0;
 
 	if (!tzid || !*tzid)
 		return NULL;
@@ -962,7 +962,7 @@ _e_cal_backend_internal_get_timezone (ECalBackend *backend, const char *tzid)
 }
 
 static void
-_e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char *tz)
+_e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const gchar *tz)
 {
 	ECalBackendSyncStatus status;
 
@@ -972,7 +972,7 @@ _e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const char
 }
 
 static void
-_e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const char *tzid)
+_e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid)
 {
 	ECalBackendSyncStatus status;
 
@@ -982,7 +982,7 @@ _e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const 
 }
 
 static void
-_e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const char *change_id)
+_e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const gchar *change_id)
 {
 	ECalBackendSyncStatus status;
 	GList *adds = NULL, *modifies = NULL, *deletes = NULL, *l;

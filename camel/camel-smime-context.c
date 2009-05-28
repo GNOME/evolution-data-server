@@ -65,24 +65,24 @@
 struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
 
-	char *encrypt_key;
+	gchar *encrypt_key;
 	camel_smime_sign_t sign_mode;
 
-	int password_tries;
-	unsigned int send_encrypt_key_prefs:1;
+	gint password_tries;
+	guint send_encrypt_key_prefs:1;
 };
 
 static CamelCipherContextClass *parent_class = NULL;
 
 /* used for decode content callback, for streaming decode */
 static void
-sm_write_stream(void *arg, const char *buf, unsigned long len)
+sm_write_stream(gpointer arg, const gchar *buf, unsigned long len)
 {
 	camel_stream_write((CamelStream *)arg, buf, len);
 }
 
 static PK11SymKey *
-sm_decrypt_key(void *arg, SECAlgorithmID *algid)
+sm_decrypt_key(gpointer arg, SECAlgorithmID *algid)
 {
 	printf("Decrypt key called\n");
 	return (PK11SymKey *)arg;
@@ -114,7 +114,7 @@ camel_smime_context_new(CamelSession *session)
 }
 
 void
-camel_smime_context_set_encrypt_key(CamelSMIMEContext *context, gboolean use, const char *key)
+camel_smime_context_set_encrypt_key(CamelSMIMEContext *context, gboolean use, const gchar *key)
 {
 	context->priv->send_encrypt_key_prefs = use;
 	g_free(context->priv->encrypt_key);
@@ -134,7 +134,7 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 {
 	guint32 flags = 0;
 	CamelContentType *ct;
-	const char *tmp;
+	const gchar *tmp;
 
 	if (!part)
 		return flags;
@@ -162,7 +162,7 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 					   NULL, NULL,	/* password callback    */
 					   NULL, NULL); /* decrypt key callback */
 
-		NSS_CMSDecoder_Update(dec, (char *) istream->buffer->data, istream->buffer->len);
+		NSS_CMSDecoder_Update(dec, (gchar *) istream->buffer->data, istream->buffer->len);
 		camel_object_unref(istream);
 
 		cmsg = NSS_CMSDecoder_Finish(dec);
@@ -191,7 +191,7 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 	return flags;
 }
 
-static const char *
+static const gchar *
 sm_hash_to_id(CamelCipherContext *context, CamelCipherHash hash)
 {
 	switch(hash) {
@@ -206,7 +206,7 @@ sm_hash_to_id(CamelCipherContext *context, CamelCipherHash hash)
 }
 
 static CamelCipherHash
-sm_id_to_hash(CamelCipherContext *context, const char *id)
+sm_id_to_hash(CamelCipherContext *context, const gchar *id)
 {
 	if (id) {
 		if (!strcmp(id, "md5"))
@@ -218,7 +218,7 @@ sm_id_to_hash(CamelCipherContext *context, const char *id)
 	return CAMEL_CIPHER_HASH_DEFAULT;
 }
 
-static const char *
+static const gchar *
 nss_error_to_string (long errorcode)
 {
 	#define cs(a,b) case a: return b;
@@ -405,7 +405,7 @@ nss_error_to_string (long errorcode)
 }
 
 static void
-set_nss_error (CamelException *ex, const char *def_error)
+set_nss_error (CamelException *ex, const gchar *def_error)
 {
 	long err_code;
 
@@ -416,7 +416,7 @@ set_nss_error (CamelException *ex, const char *def_error)
 	if (!err_code) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, def_error);
 	} else {
-		const char *err_str;
+		const gchar *err_str;
 
 		err_str = nss_error_to_string (err_code);
 		if (!err_str)
@@ -427,7 +427,7 @@ set_nss_error (CamelException *ex, const char *def_error)
 }
 
 static NSSCMSMessage *
-sm_signing_cmsmessage(CamelSMIMEContext *context, const char *nick, SECOidTag hash, int detached, CamelException *ex)
+sm_signing_cmsmessage(CamelSMIMEContext *context, const gchar *nick, SECOidTag hash, gint detached, CamelException *ex)
 {
 	struct _CamelSMIMEContextPrivate *p = context->priv;
 	NSSCMSMessage *cmsg = NULL;
@@ -437,7 +437,7 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const char *nick, SECOidTag ha
 	CERTCertificate *cert= NULL, *ekpcert = NULL;
 
 	if ((cert = CERT_FindUserCertByUsage(p->certdb,
-					     (char *)nick,
+					     (gchar *)nick,
 					     certUsageEmailSigner,
 					     PR_FALSE,
 					     NULL)) == NULL) {
@@ -515,7 +515,7 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const char *nick, SECOidTag ha
 		} else {
 			/* encrypt key uses same nick */
 			if ((ekpcert = CERT_FindUserCertByUsage(
-				     p->certdb, (char *)nick,
+				     p->certdb, (gchar *)nick,
 				     certUsageEmailRecipient, PR_FALSE, NULL)) == NULL) {
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Encryption certificate for '%s' does not exist"), nick);
 				goto fail;
@@ -564,9 +564,9 @@ fail:
 }
 
 static int
-sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
+sm_sign(CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
 {
-	int res = -1;
+	gint res = -1;
 	NSSCMSMessage *cmsg;
 	CamelStream *ostream, *istream;
 	SECOidTag sechash;
@@ -614,7 +614,7 @@ sm_sign(CamelCipherContext *context, const char *userid, CamelCipherHash hash, C
 		goto fail;
 	}
 
-	if (NSS_CMSEncoder_Update(enc, (char *) ((CamelStreamMem *)istream)->buffer->data, ((CamelStreamMem *)istream)->buffer->len) != SECSuccess) {
+	if (NSS_CMSEncoder_Update(enc, (gchar *) ((CamelStreamMem *)istream)->buffer->data, ((CamelStreamMem *)istream)->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
 		set_nss_error (ex, _("Failed to add data to CMS encoder"));
 		goto fail;
@@ -685,7 +685,7 @@ fail:
 	return res;
 }
 
-static const char *
+static const gchar *
 sm_status_description(NSSCMSVerificationStatus status)
 {
 	/* could use this but then we can't control i18n? */
@@ -725,7 +725,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 	NSSCMSEncryptedData *encd;
 	SECAlgorithmID **digestalgs;
 	NSSCMSDigestContext *digcx;
-	int count, i, nsigners, j;
+	gint count, i, nsigners, j;
 	SECItem **digests;
 	PLArenaPool *poolp = NULL;
 	CamelStreamMem *mem;
@@ -744,7 +744,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 	for (i = 0; i < count; i++) {
 		NSSCMSContentInfo *cinfo = NSS_CMSMessage_ContentLevel(cmsg, i);
 		SECOidTag typetag = NSS_CMSContentInfo_GetContentTypeTag(cinfo);
-		int which_digest;
+		gint which_digest;
 
 		switch (typetag) {
 		case SEC_OID_PKCS7_SIGNED_DATA:
@@ -827,7 +827,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 
 				for (j = 0; j < nsigners; j++) {
 					NSSCMSSignerInfo *si;
-					char *cn, *em;
+					gchar *cn, *em;
 
 					si = NSS_CMSSignedData_GetSignerInfo(sigd, j);
 					NSS_CMSSignedData_VerifySignerInfo(sigd, j, p->certdb, certUsageEmailSigner);
@@ -888,7 +888,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 	CamelStream *constream = NULL;
 	CamelCipherValidity *valid = NULL;
 	CamelContentType *ct;
-	const char *tmp;
+	const gchar *tmp;
 	CamelMimePart *sigpart;
 	CamelDataWrapper *dw;
 
@@ -935,7 +935,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 				   NULL, NULL); /* decrypt key callback */
 
 	camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)sigpart), (CamelStream *)mem);
-	(void)NSS_CMSDecoder_Update(dec, (char *) mem->buffer->data, mem->buffer->len);
+	(void)NSS_CMSDecoder_Update(dec, (gchar *) mem->buffer->data, mem->buffer->len);
 	cmsg = NSS_CMSDecoder_Finish(dec);
 	if (cmsg == NULL) {
 		set_nss_error (ex, _("Decoder failed"));
@@ -954,7 +954,7 @@ fail:
 }
 
 static int
-sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipients, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
+sm_encrypt(CamelCipherContext *context, const gchar *userid, GPtrArray *recipients, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
 {
 	struct _CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *)context)->priv;
 	/*NSSCMSRecipientInfo **recipient_infos;*/
@@ -962,7 +962,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	NSSCMSContentInfo *cinfo;
 	PK11SymKey *bulkkey = NULL;
 	SECOidTag bulkalgtag;
-	int bulkkeysize, i;
+	gint bulkkeysize, i;
 	CK_MECHANISM_TYPE type;
 	PK11SlotInfo *slot;
 	PLArenaPool *poolp;
@@ -1070,7 +1070,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	/* FIXME: Canonicalise the input? */
 	mem = (CamelStreamMem *)camel_stream_mem_new();
 	camel_data_wrapper_write_to_stream((CamelDataWrapper *)ipart, (CamelStream *)mem);
-	if (NSS_CMSEncoder_Update(enc, (char *) mem->buffer->data, mem->buffer->len) != SECSuccess) {
+	if (NSS_CMSEncoder_Update(enc, (gchar *) mem->buffer->data, mem->buffer->len) != SECSuccess) {
 		NSS_CMSEncoder_Cancel(enc);
 		camel_object_unref(mem);
 		set_nss_error (ex, _("Failed to add data to encoder"));
@@ -1153,7 +1153,7 @@ sm_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *opa
 				   NULL, NULL,
 				   NULL, NULL); /* decrypt key callback */
 
-	if (NSS_CMSDecoder_Update(dec, (char *) istream->buffer->data, istream->buffer->len) != SECSuccess) {
+	if (NSS_CMSDecoder_Update(dec, (gchar *) istream->buffer->data, istream->buffer->len) != SECSuccess) {
 		cmsg = NULL;
 	} else {
 		cmsg = NSS_CMSDecoder_Finish(dec);

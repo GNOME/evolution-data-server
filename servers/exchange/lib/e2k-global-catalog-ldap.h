@@ -27,7 +27,7 @@ extern "C" {
 
 LDAP             *e2k_global_catalog_get_ldap        (E2kGlobalCatalog *gc,
 						      E2kOperation     *op,
-						      int              *ldap_error);
+						      gint              *ldap_error);
 
 #ifdef __cplusplus
 }

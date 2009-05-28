@@ -30,16 +30,16 @@
 
 #include "camel-string-utils.h"
 
-int
+gint
 camel_strcase_equal (gconstpointer a, gconstpointer b)
 {
-	return (g_ascii_strcasecmp ((const char *) a, (const char *) b) == 0);
+	return (g_ascii_strcasecmp ((const gchar *) a, (const gchar *) b) == 0);
 }
 
 guint
 camel_strcase_hash (gconstpointer v)
 {
-	const char *p = (char *) v;
+	const gchar *p = (gchar *) v;
 	guint h = 0, g;
 
 	for ( ; *p != '\0'; p++) {
@@ -70,11 +70,11 @@ camel_string_list_free (GList *string_list)
 	g_list_free (string_list);
 }
 
-char *
-camel_strstrcase (const char *haystack, const char *needle)
+gchar *
+camel_strstrcase (const gchar *haystack, const gchar *needle)
 {
 	/* find the needle in the haystack neglecting case */
-	const char *ptr;
+	const gchar *ptr;
 	guint len;
 
 	g_return_val_if_fail (haystack != NULL, NULL);
@@ -85,20 +85,20 @@ camel_strstrcase (const char *haystack, const char *needle)
 		return NULL;
 
 	if (len == 0)
-		return (char *) haystack;
+		return (gchar *) haystack;
 
 	for (ptr = haystack; *(ptr + len - 1) != '\0'; ptr++)
 		if (!g_ascii_strncasecmp (ptr, needle, len))
-			return (char *) ptr;
+			return (gchar *) ptr;
 
 	return NULL;
 }
 
 
-const char *
-camel_strdown (char *str)
+const gchar *
+camel_strdown (gchar *str)
 {
-	register char *s = str;
+	register gchar *s = str;
 
 	while (*s) {
 		if (*s >= 'A' && *s <= 'Z')
@@ -117,7 +117,7 @@ camel_strdown (char *str)
  *
  * Return value:
  **/
-char camel_tolower(char c)
+gchar camel_tolower(gchar c)
 {
 	if (c >= 'A' && c <= 'Z')
 		c |= 0x20;
@@ -133,7 +133,7 @@ char camel_tolower(char c)
  *
  * Return value:
  **/
-char camel_toupper(char c)
+gchar camel_toupper(gchar c)
 {
 	if (c >= 'a' && c <= 'z')
 		c &= ~0x20;
@@ -157,12 +157,12 @@ static GHashTable *pstring_table = NULL;
  * Return value: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  **/
-const char *
-camel_pstring_add (char *str, gboolean own)
+const gchar *
+camel_pstring_add (gchar *str, gboolean own)
 {
-	void *pcount;
-	char *pstr;
-	int count;
+	gpointer pcount;
+	gchar *pstr;
+	gint count;
 
 	if (str == NULL)
 		return NULL;
@@ -177,7 +177,7 @@ camel_pstring_add (char *str, gboolean own)
 	if (pstring_table == NULL)
 		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
 
-	if (g_hash_table_lookup_extended (pstring_table, str, (void **) &pstr, &pcount)) {
+	if (g_hash_table_lookup_extended (pstring_table, str, (gpointer *) &pstr, &pcount)) {
 		count = GPOINTER_TO_INT (pcount) + 1;
 		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (count));
 		if (own)
@@ -203,11 +203,11 @@ camel_pstring_add (char *str, gboolean own)
  * Return value: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  **/
-const char *
-camel_pstring_peek (const char *str)
+const gchar *
+camel_pstring_peek (const gchar *str)
 {
-	void *pcount;
-	char *pstr;
+	gpointer pcount;
+	gchar *pstr;
 
 	if (str == NULL)
 		return NULL;
@@ -220,7 +220,7 @@ camel_pstring_peek (const char *str)
 	if (pstring_table == NULL)
 		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
 
-	if (!g_hash_table_lookup_extended (pstring_table, str, (void **) &pstr, &pcount)) {
+	if (!g_hash_table_lookup_extended (pstring_table, str, (gpointer *) &pstr, &pcount)) {
 		pstr = g_strdup (str);
 		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
 	}
@@ -243,10 +243,10 @@ camel_pstring_peek (const char *str)
  * Return value: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  **/
-const char *
-camel_pstring_strdup (const char *s)
+const gchar *
+camel_pstring_strdup (const gchar *s)
 {
-	return camel_pstring_add ((char *) s, FALSE);
+	return camel_pstring_add ((gchar *) s, FALSE);
 }
 
 
@@ -259,11 +259,11 @@ camel_pstring_strdup (const char *s)
  * NULL and the empty string are special cased.
  **/
 void
-camel_pstring_free(const char *s)
+camel_pstring_free(const gchar *s)
 {
-	char *p;
-	void *pcount;
-	int count;
+	gchar *p;
+	gpointer pcount;
+	gint count;
 
 	if (pstring_table == NULL)
 		return;
@@ -271,7 +271,7 @@ camel_pstring_free(const char *s)
 		return;
 
 	pthread_mutex_lock(&pstring_lock);
-	if (g_hash_table_lookup_extended(pstring_table, s, (void **)&p, &pcount)) {
+	if (g_hash_table_lookup_extended(pstring_table, s, (gpointer *)&p, &pcount)) {
 		count = GPOINTER_TO_INT(pcount)-1;
 		if (count == 0) {
 			g_hash_table_remove(pstring_table, p);

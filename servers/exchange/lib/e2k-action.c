@@ -235,7 +235,7 @@ e2k_action_delegate (E2kAddrList *list)
  * Return value: the new rule action
  **/
 E2kAction *
-e2k_action_tag (const char *propname, E2kPropType type, gpointer value)
+e2k_action_tag (const gchar *propname, E2kPropType type, gpointer value)
 {
 	E2kAction *act;
 
@@ -278,7 +278,7 @@ e2k_action_delete (void)
  * Return value: the new address list
  **/
 E2kAddrList *
-e2k_addr_list_new (int nentries)
+e2k_addr_list_new (gint nentries)
 {
 	E2kAddrList *list;
 
@@ -291,8 +291,8 @@ e2k_addr_list_new (int nentries)
 
 static void
 addr_entry_set_core (E2kPropValue *pv, GByteArray *entryid,
-		     const char *display_name, const char *email_type,
-		     const char *email_addr)
+		     const gchar *display_name, const gchar *email_type,
+		     const gchar *email_addr)
 {
 	e2k_rule_prop_set (&pv[0].prop, PR_ENTRYID);
 	pv[0].type = E2K_PROP_TYPE_BINARY;
@@ -347,10 +347,10 @@ addr_entry_set_core (E2kPropValue *pv, GByteArray *entryid,
  * local Exchange user.
  **/
 void
-e2k_addr_list_set_local (E2kAddrList *list, int entry_num,
-			 const char *display_name,
-			 const char *exchange_dn,
-			 const char *email)
+e2k_addr_list_set_local (E2kAddrList *list, gint entry_num,
+			 const gchar *display_name,
+			 const gchar *exchange_dn,
+			 const gchar *email)
 {
 	E2kPropValue *pv;
 
@@ -380,8 +380,8 @@ e2k_addr_list_set_local (E2kAddrList *list, int entry_num,
  * "one-off" SMTP user.
  **/
 void
-e2k_addr_list_set_oneoff (E2kAddrList *list, int entry_num,
-			  const char *display_name, const char *email)
+e2k_addr_list_set_oneoff (E2kAddrList *list, gint entry_num,
+			  const gchar *display_name, const gchar *email)
 {
 	E2kPropValue *pv;
 
@@ -409,7 +409,7 @@ e2k_addr_list_set_oneoff (E2kAddrList *list, int entry_num,
 void
 e2k_addr_list_free (E2kAddrList *list)
 {
-	int i, j;
+	gint i, j;
 	E2kAddrEntry *entry;
 
 	for (i = 0; i < list->nentries; i++) {
@@ -478,7 +478,7 @@ e2k_action_free (E2kAction *act)
 void
 e2k_actions_free (GPtrArray *actions)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < actions->len; i++)
 		e2k_action_free (actions->pdata[i]);
@@ -486,9 +486,9 @@ e2k_actions_free (GPtrArray *actions)
 }
 
 static gboolean
-extract_action (guint8 **data, int *len, E2kAction **act_ret)
+extract_action (guint8 **data, gint *len, E2kAction **act_ret)
 {
-	int my_len;
+	gint my_len;
 	guint8 *my_data;
 	guint16 actlen;
 	E2kAction *act;
@@ -590,7 +590,7 @@ extract_action (guint8 **data, int *len, E2kAction **act_ret)
 	case E2K_ACTION_DELEGATE:
 	{
 		guint16 nentries, nvalues;
-		int i, j;
+		gint i, j;
 
 		if (!e2k_rule_extract_uint16 (data, len, &nentries))
 			goto lose;
@@ -657,13 +657,13 @@ extract_action (guint8 **data, int *len, E2kAction **act_ret)
  * Return value: success or failure
  **/
 gboolean
-e2k_actions_extract (guint8 **data, int *len, GPtrArray **actions)
+e2k_actions_extract (guint8 **data, gint *len, GPtrArray **actions)
 {
 	GPtrArray *acts;
 	E2kAction *act;
 	guint32 actlen;
 	guint16 nacts;
-	int i;
+	gint i;
 
 	if (!e2k_rule_extract_uint32 (data, len, &actlen))
 		return FALSE;
@@ -689,8 +689,8 @@ e2k_actions_extract (guint8 **data, int *len, GPtrArray **actions)
 static void
 append_action (GByteArray *ba, E2kAction *act)
 {
-	int actlen_offset, actlen;
-	char type;
+	gint actlen_offset, actlen;
+	gchar type;
 
 	/* Save space for length */
 	actlen_offset = ba->len;
@@ -739,7 +739,7 @@ append_action (GByteArray *ba, E2kAction *act)
 	case E2K_ACTION_FORWARD:
 	case E2K_ACTION_DELEGATE:
 	{
-		int i, j;
+		gint i, j;
 		E2kAddrList *list;
 		E2kAddrEntry *entry;
 
@@ -786,7 +786,7 @@ append_action (GByteArray *ba, E2kAction *act)
 void
 e2k_actions_append (GByteArray *ba, GPtrArray *actions)
 {
-	int actlen_offset, actlen, i;
+	gint actlen_offset, actlen, i;
 
 	/* Save space for length */
 	actlen_offset = ba->len;

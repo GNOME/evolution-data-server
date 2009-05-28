@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,12 +23,12 @@ static const char revid[] = "$Id$";
  * __memp_fput --
  *	Mpool file put function.
  *
- * PUBLIC: int __memp_fput __P((DB_MPOOLFILE *, void *, u_int32_t));
+ * PUBLIC: gint __memp_fput __P((DB_MPOOLFILE *, gpointer , u_int32_t));
  */
-int
+gint
 __memp_fput(dbmfp, pgaddr, flags)
 	DB_MPOOLFILE *dbmfp;
-	void *pgaddr;
+	gpointer pgaddr;
 	u_int32_t flags;
 {
 	BH *argbhp, *bhp, *prev;
@@ -37,7 +37,7 @@ __memp_fput(dbmfp, pgaddr, flags)
 	DB_MPOOL_HASH *hp;
 	MPOOL *c_mp;
 	u_int32_t n_cache;
-	int adjust, ret;
+	gint adjust, ret;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;

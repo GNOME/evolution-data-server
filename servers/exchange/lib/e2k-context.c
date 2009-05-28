@@ -85,19 +85,19 @@ static guint signals [LAST_SIGNAL] = { 0 };
 
 struct _E2kContextPrivate {
 	SoupSession *session, *async_session;
-	char *owa_uri, *username, *password;
+	gchar *owa_uri, *username, *password;
 	time_t last_timestamp;
 
 	/* Notification listener */
 	SoupSocket *get_local_address_sock;
 	GIOChannel *listener_channel;
-	int listener_watch_id;
+	gint listener_watch_id;
 
-	char *notification_uri;
+	gchar *notification_uri;
 	GHashTable *subscriptions_by_id, *subscriptions_by_uri;
 
 	/* Forms-based authentication */
-	char *cookie;
+	gchar *cookie;
 	gboolean cookie_verified;
 	EProxy* proxy;
 };
@@ -113,8 +113,8 @@ struct _E2kContextPrivate {
 #define SOUP_SESSION_PROXY_URI "proxy-uri"
 
 #ifdef E2K_DEBUG
-char *e2k_debug;
-int e2k_debug_level;
+gchar *e2k_debug;
+gint e2k_debug_level;
 
 static SoupLoggerLogLevel e2k_debug_request_filter  (SoupLogger  *logger,
 						     SoupMessage *msg,
@@ -125,7 +125,7 @@ static SoupLoggerLogLevel e2k_debug_response_filter (SoupLogger  *logger,
 #endif
 
 static gboolean renew_subscription (gpointer user_data);
-static void unsubscribe_internal (E2kContext *ctx, const char *uri, GList *sub_list, gboolean destrying);
+static void unsubscribe_internal (E2kContext *ctx, const gchar *uri, GList *sub_list, gboolean destrying);
 static gboolean do_notification (GIOChannel *source, GIOCondition condition, gpointer data);
 
 static void setup_message (SoupSession *session, SoupMessage *msg, SoupSocket *socket, gpointer user_data);
@@ -272,9 +272,9 @@ got_connection (SoupSocket *sock, guint status, gpointer user_data)
 	E2kContext *ctx = user_data;
 	SoupAddress *addr;
 	struct sockaddr_in sin;
-	const char *local_ipaddr;
+	const gchar *local_ipaddr;
 	unsigned short port;
-	int s, ret;
+	gint s, ret;
 
 	ctx->priv->get_local_address_sock = NULL;
 
@@ -339,7 +339,7 @@ got_connection (SoupSocket *sock, guint status, gpointer user_data)
  * Return value: the new context
  **/
 E2kContext *
-e2k_context_new (const char *uri)
+e2k_context_new (const gchar *uri)
 {
 	E2kContext *ctx;
 	SoupURI *suri;
@@ -394,9 +394,9 @@ session_authenticate (SoupSession *session, SoupMessage *msg,
  * side effect of cancelling any pending requests on @ctx.
  **/
 void
-e2k_context_set_auth (E2kContext *ctx, const char *username,
-		      const char *domain, const char *authmech,
-		      const char *password)
+e2k_context_set_auth (E2kContext *ctx, const gchar *username,
+		      const gchar *domain, const gchar *authmech,
+		      const gchar *password)
 {
 	guint timeout = E2K_SOUP_SESSION_TIMEOUT;
 	SoupURI* uri = NULL;
@@ -517,7 +517,7 @@ static SoupLoggerLogLevel
 e2k_debug_response_filter (SoupLogger *logger, SoupMessage *msg,
 			   gpointer user_data)
 {
-	const char *content_type;
+	const gchar *content_type;
 
 	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (msg->status_code))
 		return SOUP_LOGGER_LOG_HEADERS;
@@ -549,14 +549,14 @@ gboolean
 e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 {
 	static gboolean in_fba_auth = FALSE;
-	int status, len;
+	gint status, len;
 	SoupBuffer *response = NULL;
-	char *action, *method, *name, *value;
+	gchar *action, *method, *name, *value;
 	xmlDoc *doc = NULL;
 	xmlNode *node;
 	SoupMessage *post_msg;
 	GHashTable *form_data;
-	char *form_body;
+	gchar *form_body;
 	GString *cookie_str;
 	GSList *cookies, *c;
 
@@ -618,8 +618,8 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 		soup_uri_free (suri);
 	} else if (strncmp(value, "http", 4) != 0) {
 		SoupURI *suri;
-		char *path_end;
-		const char *location;
+		gchar *path_end;
+		const gchar *location;
 
 		location = soup_message_headers_get (failed_msg->response_headers,
 						     "Location");
@@ -743,7 +743,7 @@ static void
 timestamp_handler (SoupMessage *msg, gpointer user_data)
 {
 	E2kContext *ctx = user_data;
-	const char *date;
+	const gchar *date;
 
 	date = soup_message_headers_get (msg->response_headers, "Date");
 	if (date)
@@ -754,9 +754,9 @@ static void
 redirect_handler (SoupMessage *msg, gpointer user_data)
 {
 	E2kContext *ctx = user_data;
-	const char *new_uri;
+	const gchar *new_uri;
 	SoupURI *soup_uri;
-	char *old_uri;
+	gchar *old_uri;
 
 	if (!SOUP_STATUS_IS_REDIRECTION (msg->status_code) ||
 	    (soup_message_get_flags (msg) & SOUP_MESSAGE_NO_REDIRECT))
@@ -812,12 +812,12 @@ setup_message (SoupSession *session, SoupMessage *msg,
  * Return value: a new %SoupMessage, set up for connector use
  **/
 SoupMessage *
-e2k_soup_message_new (E2kContext *ctx, const char *uri, const char *method)
+e2k_soup_message_new (E2kContext *ctx, const gchar *uri, const gchar *method)
 {
 	SoupMessage *msg;
 
 	if (method[0] == 'B') {
-		char *slash_uri = e2k_strdup_with_trailing_slash (uri);
+		gchar *slash_uri = e2k_strdup_with_trailing_slash (uri);
 		msg = soup_message_new (method, slash_uri);
 		if (!msg)
 			g_warning ("Invalid uri '%s'", slash_uri ? slash_uri : "[null]");
@@ -847,9 +847,9 @@ e2k_soup_message_new (E2kContext *ctx, const char *uri, const char *method)
  * connector use
  **/
 SoupMessage *
-e2k_soup_message_new_full (E2kContext *ctx, const char *uri,
-			   const char *method, const char *content_type,
-			   SoupMemoryUse use, const char *body,
+e2k_soup_message_new_full (E2kContext *ctx, const gchar *uri,
+			   const gchar *method, const gchar *content_type,
+			   SoupMemoryUse use, const gchar *body,
 			   gsize length)
 {
 	SoupMessage *msg;
@@ -923,11 +923,11 @@ e2k_context_send_message (E2kContext *ctx, E2kOperation *op, SoupMessage *msg)
 
 static void
 update_unique_uri (E2kContext *ctx, SoupMessage *msg,
-		   const char *folder_uri, const char *encoded_name, int *count,
+		   const gchar *folder_uri, const gchar *encoded_name, gint *count,
 		   E2kContextTestCallback test_callback, gpointer user_data)
 {
 	SoupURI *suri;
-	char *uri = NULL;
+	gchar *uri = NULL;
 
 	do {
 		g_free (uri);
@@ -951,7 +951,7 @@ update_unique_uri (E2kContext *ctx, SoupMessage *msg,
 /* GET */
 
 static SoupMessage *
-get_msg (E2kContext *ctx, const char *uri, gboolean owa, gboolean claim_ie)
+get_msg (E2kContext *ctx, const gchar *uri, gboolean owa, gboolean claim_ie)
 {
 	SoupMessage *msg;
 
@@ -985,8 +985,8 @@ get_msg (E2kContext *ctx, const char *uri, gboolean owa, gboolean claim_ie)
  * Return value: the HTTP status
  **/
 E2kHTTPStatus
-e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
-		 char **content_type, SoupBuffer **response)
+e2k_context_get (E2kContext *ctx, E2kOperation *op, const gchar *uri,
+		 gchar **content_type, SoupBuffer **response)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -999,7 +999,7 @@ e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
 
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status)) {
 		if (content_type) {
-			const char *header;
+			const gchar *header;
 			header = soup_message_headers_get (msg->response_headers,
 							   "Content-Type");
 			*content_type = g_strdup (header);
@@ -1027,7 +1027,7 @@ e2k_context_get (E2kContext *ctx, E2kOperation *op, const char *uri,
  **/
 E2kHTTPStatus
 e2k_context_get_owa (E2kContext *ctx, E2kOperation *op,
-		     const char *uri, gboolean claim_ie,
+		     const gchar *uri, gboolean claim_ie,
 		     SoupBuffer **response)
 {
 	SoupMessage *msg;
@@ -1051,8 +1051,8 @@ e2k_context_get_owa (E2kContext *ctx, E2kOperation *op,
 /* PUT / POST */
 
 static SoupMessage *
-put_msg (E2kContext *ctx, const char *uri, const char *content_type,
-	 SoupMemoryUse buffer_type, const char *body, int length)
+put_msg (E2kContext *ctx, const gchar *uri, const gchar *content_type,
+	 SoupMemoryUse buffer_type, const gchar *body, gint length)
 {
 	SoupMessage *msg;
 
@@ -1064,8 +1064,8 @@ put_msg (E2kContext *ctx, const char *uri, const char *content_type,
 }
 
 static SoupMessage *
-post_msg (E2kContext *ctx, const char *uri, const char *content_type,
-	  SoupMemoryUse buffer_type, const char *body, int length)
+post_msg (E2kContext *ctx, const gchar *uri, const gchar *content_type,
+	  SoupMemoryUse buffer_type, const gchar *body, gint length)
 {
 	SoupMessage *msg;
 
@@ -1077,9 +1077,9 @@ post_msg (E2kContext *ctx, const char *uri, const char *content_type,
 }
 
 static void
-extract_put_results (SoupMessage *msg, char **location, char **repl_uid)
+extract_put_results (SoupMessage *msg, gchar **location, gchar **repl_uid)
 {
-	const char *header;
+	const gchar *header;
 
 	if (!E2K_HTTP_STATUS_IS_SUCCESSFUL (msg->status_code))
 		return;
@@ -1112,9 +1112,9 @@ extract_put_results (SoupMessage *msg, char **location, char **repl_uid)
  * Return value: the HTTP status
  **/
 E2kHTTPStatus
-e2k_context_put (E2kContext *ctx, E2kOperation *op, const char *uri,
-		 const char *content_type, const char *body, int length,
-		 char **repl_uid)
+e2k_context_put (E2kContext *ctx, E2kOperation *op, const gchar *uri,
+		 const gchar *content_type, const gchar *body, gint length,
+		 gchar **repl_uid)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -1159,15 +1159,15 @@ e2k_context_put (E2kContext *ctx, E2kOperation *op, const char *uri,
  **/
 E2kHTTPStatus
 e2k_context_put_new (E2kContext *ctx, E2kOperation *op,
-		     const char *folder_uri, const char *object_name,
+		     const gchar *folder_uri, const gchar *object_name,
 		     E2kContextTestCallback test_callback, gpointer user_data,
-		     const char *content_type, const char *body, int length,
-		     char **location, char **repl_uid)
+		     const gchar *content_type, const gchar *body, gint length,
+		     gchar **location, gchar **repl_uid)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
-	char *slash_uri, *encoded_name;
-	int count;
+	gchar *slash_uri, *encoded_name;
+	gint count;
 
 	g_return_val_if_fail (E2K_IS_CONTEXT (ctx), E2K_HTTP_MALFORMED);
 	g_return_val_if_fail (folder_uri != NULL, E2K_HTTP_MALFORMED);
@@ -1220,9 +1220,9 @@ e2k_context_put_new (E2kContext *ctx, E2kOperation *op,
  * Return value: the HTTP status
  **/
 E2kHTTPStatus
-e2k_context_post (E2kContext *ctx, E2kOperation *op, const char *uri,
-		  const char *content_type, const char *body, int length,
-		  char **location, char **repl_uid)
+e2k_context_post (E2kContext *ctx, E2kOperation *op, const gchar *uri,
+		  const gchar *content_type, const gchar *body, gint length,
+		  gchar **location, gchar **repl_uid)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -1245,7 +1245,7 @@ e2k_context_post (E2kContext *ctx, E2kOperation *op, const char *uri,
 /* PROPPATCH */
 
 static void
-add_namespaces (const char *namespace, char abbrev, gpointer user_data)
+add_namespaces (const gchar *namespace, gchar abbrev, gpointer user_data)
 {
 	GString *propxml = user_data;
 
@@ -1253,15 +1253,15 @@ add_namespaces (const char *namespace, char abbrev, gpointer user_data)
 }
 
 static void
-write_prop (GString *xml, const char *propertyname,
+write_prop (GString *xml, const gchar *propertyname,
 	    E2kPropType type, gpointer value, gboolean set)
 {
-	const char *namespace, *name, *typestr;
-	char *encoded, abbrev;
+	const gchar *namespace, *name, *typestr;
+	gchar *encoded, abbrev;
 	gboolean b64enc, need_type;
 	GByteArray *data;
 	GPtrArray *array;
-	int i;
+	gint i;
 
 	if (set && (value == NULL))
 		return;
@@ -1361,7 +1361,7 @@ write_prop (GString *xml, const char *propertyname,
 }
 
 static void
-add_set_props (const char *propertyname, E2kPropType type,
+add_set_props (const gchar *propertyname, E2kPropType type,
 	       gpointer value, gpointer user_data)
 {
 	GString **props = user_data;
@@ -1373,7 +1373,7 @@ add_set_props (const char *propertyname, E2kPropType type,
 }
 
 static void
-add_remove_props (const char *propertyname, E2kPropType type,
+add_remove_props (const gchar *propertyname, E2kPropType type,
 		  gpointer value, gpointer user_data)
 {
 	GString **props = user_data;
@@ -1385,13 +1385,13 @@ add_remove_props (const char *propertyname, E2kPropType type,
 }
 
 static SoupMessage *
-patch_msg (E2kContext *ctx, const char *uri, const char *method,
-	   const char **hrefs, int nhrefs, E2kProperties *props,
+patch_msg (E2kContext *ctx, const gchar *uri, const gchar *method,
+	   const gchar **hrefs, gint nhrefs, E2kProperties *props,
 	   gboolean create)
 {
 	SoupMessage *msg;
 	GString *propxml, *subxml;
-	int i;
+	gint i;
 
 	propxml = g_string_new (E2K_XML_HEADER);
 	g_string_append (propxml, "<D:propertyupdate xmlns:D=\"DAV:\"");
@@ -1466,8 +1466,8 @@ patch_msg (E2kContext *ctx, const char *uri, const char *method,
  **/
 E2kHTTPStatus
 e2k_context_proppatch (E2kContext *ctx, E2kOperation *op,
-		       const char *uri, E2kProperties *props,
-		       gboolean create, char **repl_uid)
+		       const gchar *uri, E2kProperties *props,
+		       gboolean create, gchar **repl_uid)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -1508,16 +1508,16 @@ e2k_context_proppatch (E2kContext *ctx, E2kOperation *op,
  **/
 E2kHTTPStatus
 e2k_context_proppatch_new (E2kContext *ctx, E2kOperation *op,
-			   const char *folder_uri, const char *object_name,
+			   const gchar *folder_uri, const gchar *object_name,
 			   E2kContextTestCallback test_callback,
 			   gpointer user_data,
 			   E2kProperties *props,
-			   char **location, char **repl_uid)
+			   gchar **location, gchar **repl_uid)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
-	char *slash_uri, *encoded_name;
-	int count;
+	gchar *slash_uri, *encoded_name;
+	gint count;
 
 	g_return_val_if_fail (E2K_IS_CONTEXT (ctx), E2K_HTTP_MALFORMED);
 	g_return_val_if_fail (folder_uri != NULL, E2K_HTTP_MALFORMED);
@@ -1551,8 +1551,8 @@ e2k_context_proppatch_new (E2kContext *ctx, E2kOperation *op,
 static E2kHTTPStatus
 bproppatch_fetch (E2kResultIter *iter,
 		  E2kContext *ctx, E2kOperation *op,
-		  E2kResult **results, int *nresults,
-		  int *first, int *total,
+		  E2kResult **results, gint *nresults,
+		  gint *first, gint *total,
 		  gpointer user_data)
 {
 	SoupMessage *msg = user_data;
@@ -1594,7 +1594,7 @@ bproppatch_free (E2kResultIter *iter, gpointer msg)
  **/
 E2kResultIter *
 e2k_context_bproppatch_start (E2kContext *ctx, E2kOperation *op,
-			      const char *uri, const char **hrefs, int nhrefs,
+			      const gchar *uri, const gchar **hrefs, gint nhrefs,
 			      E2kProperties *props, gboolean create)
 {
 	SoupMessage *msg;
@@ -1612,15 +1612,15 @@ e2k_context_bproppatch_start (E2kContext *ctx, E2kOperation *op,
 /* PROPFIND */
 
 static SoupMessage *
-propfind_msg (E2kContext *ctx, const char *base_uri,
-	      const char **props, int nprops, const char **hrefs, int nhrefs)
+propfind_msg (E2kContext *ctx, const gchar *base_uri,
+	      const gchar **props, gint nprops, const gchar **hrefs, gint nhrefs)
 {
 	SoupMessage *msg;
 	GString *propxml;
 	GData *set_namespaces;
-	const char *name;
-	char abbrev;
-	int i;
+	const gchar *name;
+	gchar abbrev;
+	gint i;
 
 	propxml = g_string_new (E2K_XML_HEADER);
 	g_string_append (propxml, "<D:propfind xmlns:D=\"DAV:\"");
@@ -1687,8 +1687,8 @@ propfind_msg (E2kContext *ctx, const char *base_uri,
  **/
 E2kHTTPStatus
 e2k_context_propfind (E2kContext *ctx, E2kOperation *op,
-		      const char *uri, const char **props, int nprops,
-		      E2kResult **results, int *nresults)
+		      const gchar *uri, const gchar **props, gint nprops,
+		      E2kResult **results, gint *nresults)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -1709,8 +1709,8 @@ e2k_context_propfind (E2kContext *ctx, E2kOperation *op,
 static E2kHTTPStatus
 bpropfind_fetch (E2kResultIter *iter,
 		 E2kContext *ctx, E2kOperation *op,
-		 E2kResult **results, int *nresults,
-		 int *first, int *total,
+		 E2kResult **results, gint *nresults,
+		 gint *first, gint *total,
 		 gpointer user_data)
 {
 	GSList **msgs = user_data;
@@ -1758,12 +1758,12 @@ bpropfind_free (E2kResultIter *iter, gpointer user_data)
  **/
 E2kResultIter *
 e2k_context_bpropfind_start (E2kContext *ctx, E2kOperation *op,
-			     const char *uri, const char **hrefs, int nhrefs,
-			     const char **props, int nprops)
+			     const gchar *uri, const gchar **hrefs, gint nhrefs,
+			     const gchar **props, gint nprops)
 {
 	SoupMessage *msg;
 	GSList **msgs;
-	int i;
+	gint i;
 
 	g_return_val_if_fail (E2K_IS_CONTEXT (ctx), NULL);
 	g_return_val_if_fail (uri != NULL, NULL);
@@ -1785,9 +1785,9 @@ e2k_context_bpropfind_start (E2kContext *ctx, E2kOperation *op,
 /* SEARCH */
 
 static SoupMessage *
-search_msg (E2kContext *ctx, const char *uri,
-	    SoupMemoryUse buffer_type, const char *searchxml,
-	    int size, gboolean ascending, int offset)
+search_msg (E2kContext *ctx, const gchar *uri,
+	    SoupMemoryUse buffer_type, const gchar *searchxml,
+	    gint size, gboolean ascending, gint offset)
 {
 	SoupMessage *msg;
 
@@ -1797,7 +1797,7 @@ search_msg (E2kContext *ctx, const char *uri,
 	soup_message_headers_append (msg->request_headers, "Brief", "t");
 
 	if (size) {
-		char *range;
+		gchar *range;
 
 		if (offset == INT_MAX) {
 			range = g_strdup_printf ("rows=-%u", size);
@@ -1812,13 +1812,13 @@ search_msg (E2kContext *ctx, const char *uri,
 	return msg;
 }
 
-static char *
-search_xml (const char **props, int nprops,
-	    E2kRestriction *rn, const char *orderby)
+static gchar *
+search_xml (const gchar **props, gint nprops,
+	    E2kRestriction *rn, const gchar *orderby)
 {
 	GString *xml;
-	char *ret, *where;
-	int i;
+	gchar *ret, *where;
+	gint i;
 
 	xml = g_string_new (E2K_XML_HEADER);
 	g_string_append (xml, "<searchrequest xmlns=\"DAV:\"><sql>\r\n");
@@ -1858,9 +1858,9 @@ search_xml (const char **props, int nprops,
 }
 
 static gboolean
-search_result_get_range (SoupMessage *msg, int *first, int *total)
+search_result_get_range (SoupMessage *msg, gint *first, gint *total)
 {
-	const char *range, *p;
+	const gchar *range, *p;
 
 	range = soup_message_headers_get (msg->response_headers,
 					  "Content-Range");
@@ -1885,16 +1885,16 @@ search_result_get_range (SoupMessage *msg, int *first, int *total)
 }
 
 typedef struct {
-	char *uri, *xml;
+	gchar *uri, *xml;
 	gboolean ascending;
-	int batch_size, next;
+	gint batch_size, next;
 } E2kSearchData;
 
 static E2kHTTPStatus
 search_fetch (E2kResultIter *iter,
 	      E2kContext *ctx, E2kOperation *op,
-	      E2kResult **results, int *nresults,
-	      int *first, int *total,
+	      E2kResult **results, gint *nresults,
+	      gint *first, gint *total,
 	      gpointer user_data)
 {
 	E2kSearchData *search_data = user_data;
@@ -1964,9 +1964,9 @@ search_free (E2kResultIter *iter, gpointer user_data)
  * Return value: an iterator for returning the search results
  **/
 E2kResultIter *
-e2k_context_search_start (E2kContext *ctx, E2kOperation *op, const char *uri,
-			  const char **props, int nprops, E2kRestriction *rn,
-			  const char *orderby, gboolean ascending)
+e2k_context_search_start (E2kContext *ctx, E2kOperation *op, const gchar *uri,
+			  const gchar **props, gint nprops, E2kRestriction *rn,
+			  const gchar *orderby, gboolean ascending)
 {
 	E2kSearchData *search_data;
 
@@ -1991,7 +1991,7 @@ e2k_context_search_start (E2kContext *ctx, E2kOperation *op, const char *uri,
 /* DELETE */
 
 static SoupMessage *
-delete_msg (E2kContext *ctx, const char *uri)
+delete_msg (E2kContext *ctx, const gchar *uri)
 {
 	return e2k_soup_message_new (ctx, uri, "DELETE");
 }
@@ -2007,7 +2007,7 @@ delete_msg (E2kContext *ctx, const char *uri)
  * Return value: the HTTP status
  **/
 E2kHTTPStatus
-e2k_context_delete (E2kContext *ctx, E2kOperation *op, const char *uri)
+e2k_context_delete (E2kContext *ctx, E2kOperation *op, const gchar *uri)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -2025,11 +2025,11 @@ e2k_context_delete (E2kContext *ctx, E2kOperation *op, const char *uri)
 /* BDELETE */
 
 static SoupMessage *
-bdelete_msg (E2kContext *ctx, const char *uri, const char **hrefs, int nhrefs)
+bdelete_msg (E2kContext *ctx, const gchar *uri, const gchar **hrefs, gint nhrefs)
 {
 	SoupMessage *msg;
 	GString *xml;
-	int i;
+	gint i;
 
 	xml = g_string_new (E2K_XML_HEADER "<delete xmlns=\"DAV:\"><target>");
 
@@ -2052,8 +2052,8 @@ bdelete_msg (E2kContext *ctx, const char *uri, const char **hrefs, int nhrefs)
 static E2kHTTPStatus
 bdelete_fetch (E2kResultIter *iter,
 	       E2kContext *ctx, E2kOperation *op,
-	       E2kResult **results, int *nresults,
-	       int *first, int *total,
+	       E2kResult **results, gint *nresults,
+	       gint *first, gint *total,
 	       gpointer user_data)
 {
 	GSList **msgs = user_data;
@@ -2099,10 +2099,10 @@ bdelete_free (E2kResultIter *iter, gpointer user_data)
  **/
 E2kResultIter *
 e2k_context_bdelete_start (E2kContext *ctx, E2kOperation *op,
-			   const char *uri, const char **hrefs, int nhrefs)
+			   const gchar *uri, const gchar **hrefs, gint nhrefs)
 {
 	GSList **msgs;
-	int i, batchsize;
+	gint i, batchsize;
 	SoupMessage *msg;
 
 	g_return_val_if_fail (E2K_IS_CONTEXT (ctx), NULL);
@@ -2145,8 +2145,8 @@ e2k_context_bdelete_start (E2kContext *ctx, E2kOperation *op,
  **/
 E2kHTTPStatus
 e2k_context_mkcol (E2kContext *ctx, E2kOperation *op,
-		   const char *uri, E2kProperties *props,
-		   char **permanent_url)
+		   const gchar *uri, E2kProperties *props,
+		   gchar **permanent_url)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -2161,7 +2161,7 @@ e2k_context_mkcol (E2kContext *ctx, E2kOperation *op,
 
 	status = e2k_context_send_message (ctx, op, msg);
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status) && permanent_url) {
-		const char *header;
+		const gchar *header;
 
 		header = soup_message_headers_get (msg->response_headers,
 						   "MS-Exchange-Permanent-URL");
@@ -2176,13 +2176,13 @@ e2k_context_mkcol (E2kContext *ctx, E2kOperation *op,
 
 static SoupMessage *
 transfer_msg (E2kContext *ctx,
-	      const char *source_uri, const char *dest_uri,
-	      const char **source_hrefs, int nhrefs,
+	      const gchar *source_uri, const gchar *dest_uri,
+	      const gchar **source_hrefs, gint nhrefs,
 	      gboolean delete_originals)
 {
 	SoupMessage *msg;
 	GString *xml;
-	int i;
+	gint i;
 
 	xml = g_string_new (E2K_XML_HEADER);
 	g_string_append (xml, delete_originals ? "<move" : "<copy");
@@ -2211,8 +2211,8 @@ transfer_msg (E2kContext *ctx,
 static E2kHTTPStatus
 transfer_next (E2kResultIter *iter,
 	       E2kContext *ctx, E2kOperation *op,
-	       E2kResult **results, int *nresults,
-	       int *first, int *total,
+	       E2kResult **results, gint *nresults,
+	       gint *first, gint *total,
 	       gpointer user_data)
 {
 	GSList **msgs = user_data;
@@ -2266,14 +2266,14 @@ transfer_free (E2kResultIter *iter, gpointer user_data)
  **/
 E2kResultIter *
 e2k_context_transfer_start (E2kContext *ctx, E2kOperation *op,
-			    const char *source_folder, const char *dest_folder,
+			    const gchar *source_folder, const gchar *dest_folder,
 			    GPtrArray *source_hrefs, gboolean delete_originals)
 {
 	GSList **msgs;
 	SoupMessage *msg;
-	char *dest_uri;
-	const char **hrefs;
-	int i;
+	gchar *dest_uri;
+	const gchar **hrefs;
+	gint i;
 
 	g_return_val_if_fail (E2K_IS_CONTEXT (ctx), NULL);
 	g_return_val_if_fail (source_folder != NULL, NULL);
@@ -2283,7 +2283,7 @@ e2k_context_transfer_start (E2kContext *ctx, E2kOperation *op,
 	dest_uri = e2k_strdup_with_trailing_slash (dest_folder);
 	if (!dest_uri)
 		return NULL;
-	hrefs = (const char **)source_hrefs->pdata;
+	hrefs = (const gchar **)source_hrefs->pdata;
 
 	msgs = g_new0 (GSList *, 1);
 	for (i = 0; i < source_hrefs->len; i += E2K_CONTEXT_MAX_BATCH_SIZE) {
@@ -2318,9 +2318,9 @@ e2k_context_transfer_start (E2kContext *ctx, E2kOperation *op,
  **/
 E2kHTTPStatus
 e2k_context_transfer_dir (E2kContext *ctx, E2kOperation *op,
-			  const char *source_href, const char *dest_href,
+			  const gchar *source_href, const gchar *dest_href,
 			  gboolean delete_original,
-			  char **permanent_url)
+			  gchar **permanent_url)
 {
 	SoupMessage *msg;
 	E2kHTTPStatus status;
@@ -2335,7 +2335,7 @@ e2k_context_transfer_dir (E2kContext *ctx, E2kOperation *op,
 
 	status = e2k_context_send_message (ctx, op, msg);
 	if (E2K_HTTP_STATUS_IS_SUCCESSFUL (status) && permanent_url) {
-		const char *header;
+		const gchar *header;
 
 		header = soup_message_headers_get (msg->response_headers,
 						   "MS-Exchange-Permanent-URL");
@@ -2351,9 +2351,9 @@ e2k_context_transfer_dir (E2kContext *ctx, E2kOperation *op,
 
 typedef struct {
 	E2kContext *ctx;
-	char *uri, *id;
+	gchar *uri, *id;
 	E2kContextChangeType type;
-	int lifetime, min_interval;
+	gint lifetime, min_interval;
 	time_t last_notification;
 
 	E2kContextChangeCallback callback;
@@ -2380,7 +2380,7 @@ static void
 maybe_notification (E2kSubscription *sub)
 {
 	time_t now = time (NULL);
-	int delay = sub->last_notification + sub->min_interval - now;
+	gint delay = sub->last_notification + sub->min_interval - now;
 
 	if (delay > 0) {
 		if (sub->notification_timeout)
@@ -2401,9 +2401,9 @@ polled (SoupSession *session, SoupMessage *msg, gpointer user_data)
 	E2kSubscription *sub = user_data;
 	E2kContext *ctx = sub->ctx;
 	E2kResult *results;
-	int nresults, i;
+	gint nresults, i;
 	xmlNode *ids;
-	char *id;
+	gchar *id;
 
 	sub->poll_msg = NULL;
 	if (msg->status_code != E2K_HTTP_MULTI_STATUS) {
@@ -2475,7 +2475,7 @@ do_notification (GIOChannel *source, GIOCondition condition, gpointer data)
 {
 	E2kContext *ctx = data;
 	E2kSubscription *sub;
-	char buffer[1024], *id, *lasts;
+	gchar buffer[1024], *id, *lasts;
 	gsize len;
 	GIOStatus status;
 
@@ -2557,7 +2557,7 @@ renew_cb (SoupSession *session, SoupMessage *msg, gpointer user_data)
 #define E2K_SUBSCRIPTION_MAX_LIFETIME     57600 /* 16 hours */
 
 /* This must be kept in sync with E2kSubscriptionType */
-static char *subscription_type[] = {
+static gchar *subscription_type[] = {
 	"update",		/* E2K_SUBSCRIPTION_OBJECT_CHANGED */
 	"update/newmember",	/* E2K_SUBSCRIPTION_OBJECT_ADDED */
 	"delete",		/* E2K_SUBSCRIPTION_OBJECT_REMOVED */
@@ -2569,7 +2569,7 @@ renew_subscription (gpointer user_data)
 {
 	E2kSubscription *sub = user_data;
 	E2kContext *ctx = sub->ctx;
-	char ltbuf[80];
+	gchar ltbuf[80];
 
 	if (!ctx->priv->notification_uri)
 		return FALSE;
@@ -2633,8 +2633,8 @@ renew_subscription (gpointer user_data)
  * and the server, it is possible that all notifications will be lost.
  **/
 void
-e2k_context_subscribe (E2kContext *ctx, const char *uri,
-		       E2kContextChangeType type, int min_interval,
+e2k_context_subscribe (E2kContext *ctx, const gchar *uri,
+		       E2kContextChangeType type, gint min_interval,
 		       E2kContextChangeCallback callback,
 		       gpointer user_data)
 {
@@ -2698,13 +2698,13 @@ unsubscribed (SoupSession *session, SoupMessage *msg, gpointer user_data)
 }
 
 static void
-unsubscribe_internal (E2kContext *ctx, const char *puri, GList *sub_list, gboolean destrying)
+unsubscribe_internal (E2kContext *ctx, const gchar *puri, GList *sub_list, gboolean destrying)
 {
 	GList *l;
 	E2kSubscription *sub;
 	SoupMessage *msg;
 	GString *subscription_ids = NULL;
-	char *uri = g_strdup (puri);
+	gchar *uri = g_strdup (puri);
 	/* puri comes from sub->uri, but we are using it after sub is freed, thus making copy here */
 
 	for (l = sub_list; l; l = l->next) {
@@ -2747,7 +2747,7 @@ unsubscribe_internal (E2kContext *ctx, const char *puri, GList *sub_list, gboole
  * Unsubscribes to all notifications on @ctx for @uri.
  **/
 void
-e2k_context_unsubscribe (E2kContext *ctx, const char *uri)
+e2k_context_unsubscribe (E2kContext *ctx, const gchar *uri)
 {
 	GList *sub_list;
 

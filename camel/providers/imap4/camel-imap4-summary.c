@@ -63,14 +63,14 @@ static void camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass);
 static void camel_imap4_summary_init (CamelIMAP4Summary *summary, CamelIMAP4SummaryClass *klass);
 static void camel_imap4_summary_finalize (CamelObject *object);
 
-static int imap4_header_load (CamelFolderSummary *summary, FILE *fin);
-static int imap4_header_save (CamelFolderSummary *summary, FILE *fout);
+static gint imap4_header_load (CamelFolderSummary *summary, FILE *fin);
+static gint imap4_header_save (CamelFolderSummary *summary, FILE *fout);
 static CamelMessageInfo *imap4_message_info_new_from_header (CamelFolderSummary *summary, struct _camel_header_raw *header);
 static CamelMessageInfo *imap4_message_info_load (CamelFolderSummary *summary, FILE *fin);
-static int imap4_message_info_save (CamelFolderSummary *summary, FILE *fout, CamelMessageInfo *info);
+static gint imap4_message_info_save (CamelFolderSummary *summary, FILE *fout, CamelMessageInfo *info);
 static CamelMessageInfo *imap4_message_info_clone (CamelFolderSummary *summary, const CamelMessageInfo *mi);
 static CamelMessageContentInfo *imap4_content_info_load (CamelFolderSummary *summary, FILE *in);
-static int imap4_content_info_save (CamelFolderSummary *summary, FILE *out, CamelMessageContentInfo *info);
+static gint imap4_content_info_save (CamelFolderSummary *summary, FILE *out, CamelMessageContentInfo *info);
 
 static CamelFolderSummaryClass *parent_class = NULL;
 
@@ -163,7 +163,7 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 
 	if (imap4_summary->version == 2) {
 		/* check that we have Mailing-List info */
-		int have_mlist;
+		gint have_mlist;
 
 		if (camel_file_util_decode_fixed_int32 (fin, &have_mlist) == -1)
 			return -1;
@@ -200,12 +200,12 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 static int
 envelope_decode_address (CamelIMAP4Engine *engine, GString *addrs, CamelException *ex)
 {
-	char *addr, *name = NULL, *user = NULL;
+	gchar *addr, *name = NULL, *user = NULL;
 	struct _camel_header_address *cia;
-	unsigned char *literal = NULL;
+	guchar *literal = NULL;
 	camel_imap4_token_t token;
-	const char *domain = NULL;
-	int part = 0;
+	const gchar *domain = NULL;
+	gint part = 0;
 	size_t n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
@@ -301,7 +301,7 @@ envelope_decode_address (CamelIMAP4Engine *engine, GString *addrs, CamelExceptio
 }
 
 static int
-envelope_decode_addresses (CamelIMAP4Engine *engine, char **addrlist, CamelException *ex)
+envelope_decode_addresses (CamelIMAP4Engine *engine, gchar **addrlist, CamelException *ex)
 {
 	camel_imap4_token_t token;
 	GString *addrs;
@@ -349,9 +349,9 @@ envelope_decode_addresses (CamelIMAP4Engine *engine, char **addrlist, CamelExcep
 static int
 envelope_decode_date (CamelIMAP4Engine *engine, time_t *date, CamelException *ex)
 {
-	unsigned char *literal = NULL;
+	guchar *literal = NULL;
 	camel_imap4_token_t token;
-	const char *nstring;
+	const gchar *nstring;
 	size_t n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
@@ -386,10 +386,10 @@ envelope_decode_date (CamelIMAP4Engine *engine, time_t *date, CamelException *ex
 }
 
 static int
-envelope_decode_nstring (CamelIMAP4Engine *engine, char **nstring, gboolean rfc2047, CamelException *ex)
+envelope_decode_nstring (CamelIMAP4Engine *engine, gchar **nstring, gboolean rfc2047, CamelException *ex)
 {
 	camel_imap4_token_t token;
-	unsigned char *literal;
+	guchar *literal;
 	size_t n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
@@ -431,7 +431,7 @@ envelope_decode_nstring (CamelIMAP4Engine *engine, char **nstring, gboolean rfc2
 }
 
 static CamelSummaryReferences *
-decode_references (const char *refstr, const char *irtstr)
+decode_references (const gchar *refstr, const gchar *irtstr)
 {
 	struct _camel_header_references *refs, *irt, *r;
 	CamelSummaryReferences *references;
@@ -481,7 +481,7 @@ static int
 decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_token_t *token, CamelException *ex)
 {
 	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
-	char *nstring, *msgid;
+	gchar *nstring, *msgid;
 	MD5Context checksum;
 	guint8 digest[16];
 
@@ -584,16 +584,16 @@ decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_t
 	return -1;
 }
 
-static char *tm_months[] = {
+static gchar *tm_months[] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
 static gboolean
-decode_time (const char **in, int *hour, int *min, int *sec)
+decode_time (const gchar **in, gint *hour, gint *min, gint *sec)
 {
-	register const unsigned char *inptr = (const unsigned char *) *in;
-	int *val, colons = 0;
+	register const guchar *inptr = (const guchar *) *in;
+	gint *val, colons = 0;
 
 	*hour = *min = *sec = 0;
 
@@ -647,15 +647,15 @@ mktime_utc (struct tm *tm)
 }
 
 static time_t
-decode_internaldate (const char *in)
+decode_internaldate (const gchar *in)
 {
-	const char *inptr = in;
-	int hour, min, sec, n;
+	const gchar *inptr = in;
+	gint hour, min, sec, n;
 	struct tm tm;
 	time_t date;
-	char *buf;
+	gchar *buf;
 
-	memset ((void *) &tm, 0, sizeof (struct tm));
+	memset ((gpointer) &tm, 0, sizeof (struct tm));
 
 	tm.tm_mday = strtoul (inptr, &buf, 10);
 	if (buf == inptr || *buf != '-')
@@ -736,7 +736,7 @@ static void
 imap4_fetch_all_free (struct imap4_fetch_all_t *fetch)
 {
 	struct imap4_envelope_t *envelope;
-	int i;
+	gint i;
 
 	for (i = 0; i < fetch->added->len; i++) {
 		if (!(envelope = fetch->added->pdata[i]))
@@ -756,7 +756,7 @@ static void
 courier_imap_show_error (CamelFolderSummary *summary, guint32 msg)
 {
 	CamelSession *session = ((CamelService *) summary->folder->parent_store)->session;
-	char *warning;
+	gchar *warning;
 
 	warning = g_strdup_printf ("IMAP server did not respond with an untagged FETCH response "
 				   "for message #%u. This is illegal according to rfc3501 (and "
@@ -853,7 +853,7 @@ imap4_fetch_all_update (struct imap4_fetch_all_t *fetch)
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
 	guint32 flags;
-	int total, i;
+	gint total, i;
 
 	changes = fetch->changes;
 
@@ -911,7 +911,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 	CamelIMAP4MessageInfo *iinfo;
 	CamelMessageInfo *info;
 	guint32 changed = 0;
-	char uid[16];
+	gchar uid[16];
 
 	if (index < fetch->first) {
 		/* This can happen if the connection to the
@@ -920,14 +920,14 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 		 * client expunged messages in the range
 		 * before fetch->first in the period between
 		 * our previous attempt and now. */
-		size_t movelen = added->len * sizeof (void *);
+		size_t movelen = added->len * sizeof (gpointer);
 		size_t extra = index - fetch->first;
-		void *dest;
+		gpointer dest;
 
 		g_assert (fetch->all);
 
 		g_ptr_array_set_size (added, added->len + extra);
-		dest = ((char *) added->pdata) + (extra * sizeof (void *));
+		dest = ((gchar *) added->pdata) + (extra * sizeof (gpointer));
 		memmove (dest, added->pdata, movelen);
 		fetch->total += extra;
 		fetch->first = index;
@@ -976,7 +976,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 				changed |= IMAP4_FETCH_ENVELOPE;
 			} else {
 				CamelMessageInfo *tmp;
-				int rv;
+				gint rv;
 
 				g_warning ("Hmmm, server is sending us ENVELOPE data for a message we didn't ask for (message %u)\n",
 					   index);
@@ -1025,7 +1025,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 
 			changed |= IMAP4_FETCH_RFC822SIZE;
 		} else if (!strcmp (token->v.atom, "UID")) {
-			const char *iuid;
+			const gchar *iuid;
 
 			if (camel_imap4_engine_next_token (engine, token, ex) == -1)
 				goto exception;
@@ -1043,7 +1043,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			} else {
 				g_free (info->uid);
 				info->uid = g_strdup (uid);
-				g_hash_table_insert (fetch->uid_hash, (void *) camel_message_info_uid (info), envelope);
+				g_hash_table_insert (fetch->uid_hash, (gpointer) camel_message_info_uid (info), envelope);
 				changed |= IMAP4_FETCH_UID;
 			}
 		} else if (!strcmp (token->v.atom, "BODY[HEADER.FIELDS")) {
@@ -1051,9 +1051,9 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			CamelContentType *content_type;
 			struct _camel_header_raw *h;
 			CamelMimeParser *parser;
-			unsigned char *literal;
-			const char *refs, *str;
-			char *mlist;
+			guchar *literal;
+			const gchar *refs, *str;
+			gchar *mlist;
 			size_t n;
 
 			/* '(' */
@@ -1192,10 +1192,10 @@ imap4_fetch_all_reset (CamelIMAP4Command *ic, struct imap4_fetch_all_t *fetch)
 	struct imap4_envelope_t *envelope;
 	CamelMessageInfo *info;
 	guint32 seqid, iuid;
-	const char *query;
-	char uid[32];
-	int scount;
-	int i;
+	const gchar *query;
+	gchar uid[32];
+	gint scount;
+	gint i;
 
 	/* sync everything we've gotten so far to the summary */
 	imap4_fetch_all_add (fetch, FALSE);
@@ -1249,14 +1249,14 @@ imap4_fetch_all_reset (CamelIMAP4Command *ic, struct imap4_fetch_all_t *fetch)
 }
 
 static CamelIMAP4Command *
-imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 seqid, const char *uid)
+imap4_summary_fetch_all (CamelFolderSummary *summary, guint32 seqid, const gchar *uid)
 {
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	CamelFolder *folder = summary->folder;
 	struct imap4_fetch_all_t *fetch;
 	CamelIMAP4Engine *engine;
 	CamelIMAP4Command *ic;
-	const char *query;
+	const gchar *query;
 	guint32 total;
 
 	engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
@@ -1297,7 +1297,7 @@ imap4_summary_fetch_flags (CamelFolderSummary *summary)
 	CamelIMAP4Engine *engine;
 	CamelIMAP4Command *ic;
 	guint32 total;
-	int scount;
+	gint scount;
 
 	engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
 
@@ -1466,7 +1466,7 @@ imap4_summary_clear (CamelFolderSummary *summary, gboolean uncache)
 {
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
-	int i, count;
+	gint i, count;
 
 	changes = camel_folder_change_info_new ();
 	count = camel_folder_summary_count (summary);
@@ -1506,12 +1506,12 @@ camel_imap4_summary_set_uidvalidity (CamelFolderSummary *summary, guint32 uidval
 }
 
 void
-camel_imap4_summary_expunge (CamelFolderSummary *summary, int seqid)
+camel_imap4_summary_expunge (CamelFolderSummary *summary, gint seqid)
 {
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
 	CamelFolderChangeInfo *changes;
 	CamelMessageInfo *info;
-	const char *uid;
+	const gchar *uid;
 
 	g_return_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary));
 
@@ -1550,7 +1550,7 @@ info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)
 }
 #endif
 
-int
+gint
 camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) summary->folder;
@@ -1560,8 +1560,8 @@ camel_imap4_summary_flush_updates (CamelFolderSummary *summary, CamelException *
 	CamelMessageInfo *info;
 	CamelIMAP4Command *ic;
 	guint32 iuid, seqid = 0;
-	int scount, id;
-	char uid[16];
+	gint scount, id;
+	gchar uid[16];
 
 	g_return_val_if_fail (CAMEL_IS_IMAP4_SUMMARY (summary), -1);
 

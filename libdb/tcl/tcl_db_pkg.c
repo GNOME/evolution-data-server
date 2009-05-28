@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -49,16 +49,16 @@ static int	bdb_Handles __P((Tcl_Interp *, int, Tcl_Obj * CONST*));
 
 static int	tcl_bt_compare __P((DB *, const DBT *, const DBT *));
 static int	tcl_compare_callback __P((DB *, const DBT *, const DBT *,
-    Tcl_Obj *, char *));
+    Tcl_Obj *, gchar *));
 static int	tcl_dup_compare __P((DB *, const DBT *, const DBT *));
-static u_int32_t tcl_h_hash __P((DB *, const void *, u_int32_t));
+static u_int32_t tcl_h_hash __P((DB *, gconstpointer , u_int32_t));
 static int	tcl_rep_send __P((DB_ENV *,
     const DBT *, const DBT *, int, u_int32_t));
 
 #ifdef TEST_ALLOC
-static void *	tcl_db_malloc __P((size_t));
-static void *	tcl_db_realloc __P((void *, size_t));
-static void	tcl_db_free __P((void *));
+static gpointer 	tcl_db_malloc __P((size_t));
+static gpointer 	tcl_db_realloc __P((gpointer , size_t));
+static void	tcl_db_free __P((gpointer));
 #endif
 
 /*
@@ -69,12 +69,12 @@ static void	tcl_db_free __P((void *));
  * name of the shared library, currently libdb_tcl-X.Y.so, which Tcl uses
  * to determine the name of this function.
  */
-int
+gint
 Db_tcl_Init(interp)
 	Tcl_Interp *interp;		/* Interpreter in which the package is
 					 * to be made available. */
 {
-	int code;
+	gint code;
 
 	code = Tcl_PkgProvide(interp, "Db_tcl", "1.0");
 	if (code != TCL_OK)
@@ -85,12 +85,12 @@ Db_tcl_Init(interp)
 	/*
 	 * Create shared global debugging variables
 	 */
-	Tcl_LinkVar(interp, "__debug_on", (char *)&__debug_on, TCL_LINK_INT);
-	Tcl_LinkVar(interp, "__debug_print", (char *)&__debug_print,
+	Tcl_LinkVar(interp, "__debug_on", (gchar *)&__debug_on, TCL_LINK_INT);
+	Tcl_LinkVar(interp, "__debug_print", (gchar *)&__debug_print,
 	    TCL_LINK_INT);
-	Tcl_LinkVar(interp, "__debug_stop", (char *)&__debug_stop,
+	Tcl_LinkVar(interp, "__debug_stop", (gchar *)&__debug_stop,
 	    TCL_LINK_INT);
-	Tcl_LinkVar(interp, "__debug_test", (char *)&__debug_test,
+	Tcl_LinkVar(interp, "__debug_test", (gchar *)&__debug_test,
 	    TCL_LINK_INT);
 	LIST_INIT(&__db_infohead);
 	return (TCL_OK);
@@ -113,10 +113,10 @@ static int
 berkdb_Cmd(notused, interp, objc, objv)
 	ClientData notused;		/* Not used. */
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *berkdbcmds[] = {
+	static gchar *berkdbcmds[] = {
 #if CONFIG_TEST
 		"dbverify",
 		"handles",
@@ -164,19 +164,19 @@ berkdb_Cmd(notused, interp, objc, objv)
 		BDB_RANDX,	BDB_RAND_INTX,	BDB_SRANDX,
 		BDB_DBGCKX
 	};
-	static int env_id = 0;
-	static int db_id = 0;
+	static gint env_id = 0;
+	static gint db_id = 0;
 
 	DB *dbp;
 #if CONFIG_TEST
 	DBM *ndbmp;
-	static int ndbm_id = 0;
+	static gint ndbm_id = 0;
 #endif
 	DBTCL_INFO *ip;
 	DB_ENV *envp;
 	Tcl_Obj *res;
-	int cmdindex, result;
-	char newname[MSG_SIZE];
+	gint cmdindex, result;
+	gchar newname[MSG_SIZE];
 
 	COMPQUIET(notused, NULL);
 
@@ -337,12 +337,12 @@ berkdb_Cmd(notused, interp, objc, objv)
 static int
 bdb_EnvOpen(interp, objc, objv, ip, env)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DBTCL_INFO *ip;			/* Our internal info */
 	DB_ENV **env;			/* Environment pointer */
 {
-	static char *envopen[] = {
+	static gchar *envopen[] = {
 #if CONFIG_TEST
 		"-auto_commit",
 		"-cdb",
@@ -461,10 +461,10 @@ bdb_EnvOpen(interp, objc, objv, ip, env)
 	u_int32_t detect, gbytes, bytes, ncaches, logbufset, logmaxset;
 	u_int32_t open_flags, rep_flags, set_flags, size, uintarg;
 	u_int8_t *conflicts;
-	int i, intarg, j, mode, myobjc, nmodes, optindex;
-	int result, ret, temp;
+	gint i, intarg, j, mode, myobjc, nmodes, optindex;
+	gint result, ret, temp;
 	long client_to, server_to, shm;
-	char *arg, *home, *passwd, *server;
+	gchar *arg, *home, *passwd, *server;
 
 	result = TCL_OK;
 	mode = 0;
@@ -1252,18 +1252,18 @@ error:	if (result == TCL_ERROR) {
 static int
 bdb_DbOpen(interp, objc, objv, ip, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DBTCL_INFO *ip;			/* Our internal info */
 	DB **dbp;			/* DB handle */
 {
-	static char *bdbenvopen[] = {
+	static gchar *bdbenvopen[] = {
 		"-env",	NULL
 	};
 	enum bdbenvopen {
 		TCL_DB_ENV0
 	};
-	static char *bdbopen[] = {
+	static gchar *bdbopen[] = {
 #if CONFIG_TEST
 		"-btcompare",
 		"-dirty",
@@ -1365,10 +1365,10 @@ bdb_DbOpen(interp, objc, objv, ip, dbp)
 	DB_ENV *envp;
 	Tcl_Obj **myobjv;
 	u_int32_t gbytes, bytes, ncaches, open_flags, uintarg;
-	int endarg, i, intarg, mode, myobjc;
-	int optindex, result, ret, set_err, set_flags, set_pfx, subdblen;
+	gint endarg, i, intarg, mode, myobjc;
+	gint optindex, result, ret, set_err, set_flags, set_pfx, subdblen;
 	u_char *subdbtmp;
-	char *arg, *db, *passwd, *subdb, msg[MSG_SIZE];
+	gchar *arg, *db, *passwd, *subdb, msg[MSG_SIZE];
 
 	type = DB_UNKNOWN;
 	endarg = mode = set_err = set_flags = set_pfx = 0;
@@ -2019,10 +2019,10 @@ error:
 static int
 bdb_DbRemove(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *bdbrem[] = {
+	static gchar *bdbrem[] = {
 		"-auto_commit",
 		"-encrypt",
 		"-encryptaes",
@@ -2044,10 +2044,10 @@ bdb_DbRemove(interp, objc, objv)
 	DB *dbp;
 	DB_ENV *envp;
 	DB_TXN *txn;
-	int endarg, i, optindex, result, ret, subdblen;
+	gint endarg, i, optindex, result, ret, subdblen;
 	u_int32_t enc_flag, iflags, set_flags;
 	u_char *subdbtmp;
-	char *arg, *db, msg[MSG_SIZE], *passwd, *subdb;
+	gchar *arg, *db, msg[MSG_SIZE], *passwd, *subdb;
 
 	db = subdb = NULL;
 	dbp = NULL;
@@ -2225,10 +2225,10 @@ error:
 static int
 bdb_DbRename(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *bdbmv[] = {
+	static gchar *bdbmv[] = {
 		"-auto_commit",
 		"-encrypt",
 		"-encryptaes",
@@ -2251,9 +2251,9 @@ bdb_DbRename(interp, objc, objv)
 	DB_ENV *envp;
 	DB_TXN *txn;
 	u_int32_t enc_flag, iflags, set_flags;
-	int endarg, i, newlen, optindex, result, ret, subdblen;
+	gint endarg, i, newlen, optindex, result, ret, subdblen;
 	u_char *subdbtmp;
-	char *arg, *db, msg[MSG_SIZE], *newname, *passwd, *subdb;
+	gchar *arg, *db, msg[MSG_SIZE], *newname, *passwd, *subdb;
 
 	db = newname = subdb = NULL;
 	dbp = NULL;
@@ -2444,10 +2444,10 @@ error:
 static int
 bdb_DbVerify(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *bdbverify[] = {
+	static gchar *bdbverify[] = {
 		"-encrypt",
 		"-encryptaes",
 		"-encryptany",
@@ -2470,8 +2470,8 @@ bdb_DbVerify(interp, objc, objv)
 	DB *dbp;
 	FILE *errf;
 	u_int32_t enc_flag, flags, set_flags;
-	int endarg, i, optindex, result, ret;
-	char *arg, *db, *errpfx, *passwd;
+	gint endarg, i, optindex, result, ret;
+	gchar *arg, *db, *errpfx, *passwd;
 
 	envp = NULL;
 	dbp = NULL;
@@ -2644,17 +2644,17 @@ error:
 static int
 bdb_Version(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *bdbver[] = {
+	static gchar *bdbver[] = {
 		"-string", NULL
 	};
 	enum bdbver {
 		TCL_VERSTRING
 	};
-	int i, optindex, maj, min, patch, result, string, verobjc;
-	char *arg, *v;
+	gint i, optindex, maj, min, patch, result, string, verobjc;
+	gchar *arg, *v;
 	Tcl_Obj *res, *verobjv[3];
 
 	result = TCL_OK;
@@ -2720,7 +2720,7 @@ error:
 static int
 bdb_Handles(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
 	DBTCL_INFO *p;
@@ -2754,10 +2754,10 @@ bdb_Handles(interp, objc, objv)
 static int
 bdb_DbUpgrade(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *bdbupg[] = {
+	static gchar *bdbupg[] = {
 		"-dupsort", "-env", "--", NULL
 	};
 	enum bdbupg {
@@ -2768,8 +2768,8 @@ bdb_DbUpgrade(interp, objc, objv)
 	DB_ENV *envp;
 	DB *dbp;
 	u_int32_t flags;
-	int endarg, i, optindex, result, ret;
-	char *arg, *db;
+	gint endarg, i, optindex, result, ret;
+	gchar *arg, *db;
 
 	envp = NULL;
 	dbp = NULL;
@@ -2886,12 +2886,12 @@ tcl_compare_callback(dbp, dbta, dbtb, procobj, errname)
 	DB *dbp;
 	const DBT *dbta, *dbtb;
 	Tcl_Obj *procobj;
-	char *errname;
+	gchar *errname;
 {
 	DBTCL_INFO *ip;
 	Tcl_Interp *interp;
 	Tcl_Obj *a, *b, *resobj, *objv[3];
-	int result, cmp;
+	gint result, cmp;
 
 	ip = (DBTCL_INFO *)dbp->api_internal;
 	interp = ip->i_interp;
@@ -2951,13 +2951,13 @@ panic:		__db_err(dbp->dbenv, "Tcl %s callback failed", errname);
 static u_int32_t
 tcl_h_hash(dbp, buf, len)
 	DB *dbp;
-	const void *buf;
+	gconstpointer buf;
 	u_int32_t len;
 {
 	DBTCL_INFO *ip;
 	Tcl_Interp *interp;
 	Tcl_Obj *objv[2];
-	int result, hval;
+	gint result, hval;
 
 	ip = (DBTCL_INFO *)dbp->api_internal;
 	interp = ip->i_interp;
@@ -2966,7 +2966,7 @@ tcl_h_hash(dbp, buf, len)
 	/*
 	 * Create a ByteArray for the buffer.
 	 */
-	objv[1] = Tcl_NewByteArrayObj((void *)buf, len);
+	objv[1] = Tcl_NewByteArrayObj((gpointer)buf, len);
 	Tcl_IncrRefCount(objv[1]);
 	result = Tcl_EvalObjv(interp, 2, objv, 0);
 	if (result != TCL_OK) {
@@ -2996,13 +2996,13 @@ static int
 tcl_rep_send(dbenv, control, rec, eid, flags)
 	DB_ENV *dbenv;
 	const DBT *control, *rec;
-	int eid;
+	gint eid;
 	u_int32_t flags;
 {
 	DBTCL_INFO *ip;
 	Tcl_Interp *interp;
 	Tcl_Obj *control_o, *eid_o, *origobj, *rec_o, *resobj, *objv[5];
-	int result, ret;
+	gint result, ret;
 
 	COMPQUIET(flags, 0);
 
@@ -3065,12 +3065,12 @@ err:		__db_err(dbenv, "Tcl rep_send failure");
  * to exercise umalloc/urealloc/ufree.  Allocate the memory as a Tcl object
  * so we're sure to exacerbate and catch any shared-library issues.
  */
-static void *
+static gpointer
 tcl_db_malloc(size)
 	size_t size;
 {
 	Tcl_Obj *obj;
-	void *buf;
+	gpointer buf;
 
 	obj = Tcl_NewObj();
 	if (obj == NULL)
@@ -3085,9 +3085,9 @@ tcl_db_malloc(size)
 	return (buf);
 }
 
-static void *
+static gpointer
 tcl_db_realloc(ptr, size)
-	void *ptr;
+	gpointer ptr;
 	size_t size;
 {
 	Tcl_Obj *obj;
@@ -3107,7 +3107,7 @@ tcl_db_realloc(ptr, size)
 
 static void
 tcl_db_free(ptr)
-	void *ptr;
+	gpointer ptr;
 {
 	Tcl_Obj *obj;
 

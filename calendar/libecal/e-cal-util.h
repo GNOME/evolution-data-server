@@ -35,7 +35,7 @@ G_BEGIN_DECLS
  * recurrence, or an alarm trigger of a `real' calendar object.
  */
 typedef struct {
-	char *uid;			/* UID of the object */
+	gchar *uid;			/* UID of the object */
 	time_t start;			/* Start time of instance */
 	time_t end;			/* End time of instance */
 } CalObjInstance;
@@ -68,8 +68,8 @@ void cal_obj_uid_list_free (GList *list);
 icalcomponent *e_cal_util_new_top_level (void);
 icalcomponent *e_cal_util_new_component (icalcomponent_kind kind);
 
-icalcomponent *e_cal_util_parse_ics_string (const char *string);
-icalcomponent *e_cal_util_parse_ics_file (const char *filename);
+icalcomponent *e_cal_util_parse_ics_string (const gchar *string);
+icalcomponent *e_cal_util_parse_ics_file (const gchar *filename);
 
 ECalComponentAlarms *e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 						       time_t start,
@@ -78,7 +78,7 @@ ECalComponentAlarms *e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 						       ECalRecurResolveTimezoneFn resolve_tzid,
 						       gpointer user_data,
 						       icaltimezone *default_timezone);
-int e_cal_util_generate_alarms_for_list (GList *comps,
+gint e_cal_util_generate_alarms_for_list (GList *comps,
 				       time_t start,
 				       time_t end,
 				       ECalComponentAlarmAction *omit,
@@ -87,8 +87,8 @@ int e_cal_util_generate_alarms_for_list (GList *comps,
 				       gpointer user_data,
 				       icaltimezone *default_timezone);
 
-char *e_cal_util_priority_to_string (int priority);
-int e_cal_util_priority_from_string (const char *string);
+gchar *e_cal_util_priority_to_string (gint priority);
+gint e_cal_util_priority_from_string (const gchar *string);
 
 void e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
 					    icalcomponent *icalcomp);
@@ -135,7 +135,7 @@ void           e_cal_util_remove_instances (icalcomponent *icalcomp,
 					  struct icaltimetype rid,
 					  CalObjModType mod);
 
-char *e_cal_util_get_system_timezone_location (void);
+gchar *e_cal_util_get_system_timezone_location (void);
 icaltimezone *e_cal_util_get_system_timezone (void);
 
 G_END_DECLS

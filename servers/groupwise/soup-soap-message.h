@@ -31,61 +31,61 @@ typedef struct {
 
 GType             soup_soap_message_get_type (void);
 
-SoupSoapMessage  *soup_soap_message_new (const char *method, const char *uri_string,
-					 gboolean standalone, const char *xml_encoding,
-					 const char *env_prefix, const char *env_uri);
-SoupSoapMessage  *soup_soap_message_new_from_uri (const char *method, SoupURI *uri,
-						  gboolean standalone, const char *xml_encoding,
-						  const char *env_prefix, const char *env_uri);
+SoupSoapMessage  *soup_soap_message_new (const gchar *method, const gchar *uri_string,
+					 gboolean standalone, const gchar *xml_encoding,
+					 const gchar *env_prefix, const gchar *env_uri);
+SoupSoapMessage  *soup_soap_message_new_from_uri (const gchar *method, SoupURI *uri,
+						  gboolean standalone, const gchar *xml_encoding,
+						  const gchar *env_prefix, const gchar *env_uri);
 
 void              soup_soap_message_start_envelope (SoupSoapMessage *msg);
 void              soup_soap_message_end_envelope (SoupSoapMessage *msg);
 void              soup_soap_message_start_body (SoupSoapMessage *msg);
 void              soup_soap_message_end_body (SoupSoapMessage *msg);
 void              soup_soap_message_start_element (SoupSoapMessage *msg,
-						   const char *name,
-						   const char *prefix,
-						   const char *ns_uri);
+						   const gchar *name,
+						   const gchar *prefix,
+						   const gchar *ns_uri);
 void              soup_soap_message_end_element (SoupSoapMessage *msg);
 void              soup_soap_message_start_fault (SoupSoapMessage *msg,
-						 const char *faultcode,
-						 const char *faultstring,
-						 const char *faultfactor);
+						 const gchar *faultcode,
+						 const gchar *faultstring,
+						 const gchar *faultfactor);
 void              soup_soap_message_end_fault (SoupSoapMessage *msg);
 void              soup_soap_message_start_fault_detail (SoupSoapMessage *msg);
 void              soup_soap_message_end_fault_detail (SoupSoapMessage *msg);
 void              soup_soap_message_start_header (SoupSoapMessage *msg);
 void              soup_soap_message_end_header (SoupSoapMessage *msg);
 void              soup_soap_message_start_header_element (SoupSoapMessage *msg,
-							  const char *name,
+							  const gchar *name,
 							  gboolean must_understand,
-							  const char *actor_uri,
-							  const char *prefix,
-							  const char *ns_uri);
+							  const gchar *actor_uri,
+							  const gchar *prefix,
+							  const gchar *ns_uri);
 void              soup_soap_message_end_header_element (SoupSoapMessage *msg);
 void              soup_soap_message_write_int (SoupSoapMessage *msg, glong i);
 void              soup_soap_message_write_double (SoupSoapMessage *msg, double d);
-void              soup_soap_message_write_base64 (SoupSoapMessage *msg, const char *string, int len);
+void              soup_soap_message_write_base64 (SoupSoapMessage *msg, const gchar *string, gint len);
 void              soup_soap_message_write_time (SoupSoapMessage *msg, const time_t *timeval);
-void              soup_soap_message_write_string (SoupSoapMessage *msg, const char *string);
-void              soup_soap_message_write_buffer (SoupSoapMessage *msg, const char *buffer, int len);
-void              soup_soap_message_set_element_type (SoupSoapMessage *msg, const char *xsi_type);
+void              soup_soap_message_write_string (SoupSoapMessage *msg, const gchar *string);
+void              soup_soap_message_write_buffer (SoupSoapMessage *msg, const gchar *buffer, gint len);
+void              soup_soap_message_set_element_type (SoupSoapMessage *msg, const gchar *xsi_type);
 void              soup_soap_message_set_null (SoupSoapMessage *msg);
 void              soup_soap_message_add_attribute (SoupSoapMessage *msg,
-						   const char *name,
-						   const char *value,
-						   const char *prefix,
-						   const char *ns_uri);
+						   const gchar *name,
+						   const gchar *value,
+						   const gchar *prefix,
+						   const gchar *ns_uri);
 void              soup_soap_message_add_namespace (SoupSoapMessage *msg,
-						   const char *prefix,
-						   const char *ns_uri);
+						   const gchar *prefix,
+						   const gchar *ns_uri);
 void              soup_soap_message_set_default_namespace (SoupSoapMessage *msg,
-							   const char *ns_uri);
-void              soup_soap_message_set_encoding_style (SoupSoapMessage *msg, const char *enc_style);
+							   const gchar *ns_uri);
+void              soup_soap_message_set_encoding_style (SoupSoapMessage *msg, const gchar *enc_style);
 void              soup_soap_message_reset (SoupSoapMessage *msg);
 void              soup_soap_message_persist (SoupSoapMessage *msg);
 
-const char       *soup_soap_message_get_namespace_prefix (SoupSoapMessage *msg, const char *ns_uri);
+const gchar       *soup_soap_message_get_namespace_prefix (SoupSoapMessage *msg, const gchar *ns_uri);
 
 xmlDocPtr         soup_soap_message_get_xml_doc (SoupSoapMessage *msg);
 

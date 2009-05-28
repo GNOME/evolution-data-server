@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,15 +22,15 @@ static const char revid[] = "$Id$";
  * __os_r_attach --
  *	Attach to a shared memory region.
  *
- * PUBLIC: int __os_r_attach __P((DB_ENV *, REGINFO *, REGION *));
+ * PUBLIC: gint __os_r_attach __P((DB_ENV *, REGINFO *, REGION *));
  */
-int
+gint
 __os_r_attach(dbenv, infop, rp)
 	DB_ENV *dbenv;
 	REGINFO *infop;
 	REGION *rp;
 {
-	int ret;
+	gint ret;
 	/* Round off the requested size for the underlying VM. */
 	OS_VMROUNDOFF(rp->size);
 
@@ -89,13 +89,13 @@ __os_r_attach(dbenv, infop, rp)
  * __os_r_detach --
  *	Detach from a shared memory region.
  *
- * PUBLIC: int __os_r_detach __P((DB_ENV *, REGINFO *, int));
+ * PUBLIC: gint __os_r_detach __P((DB_ENV *, REGINFO *, int));
  */
-int
+gint
 __os_r_detach(dbenv, infop, destroy)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	int destroy;
+	gint destroy;
 {
 	REGION *rp;
 

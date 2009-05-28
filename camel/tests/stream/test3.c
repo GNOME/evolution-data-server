@@ -35,10 +35,10 @@ struct {
 	{ 10245, CAMEL_STREAM_UNBOUND },
 };
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;
-	int i, j;
+	gint i, j;
 	CamelSeekableSubstream *sus, *sus2;
 
 	camel_test_init(argc, argv);

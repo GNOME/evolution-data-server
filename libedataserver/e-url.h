@@ -32,8 +32,8 @@
 
 G_BEGIN_DECLS
 
-char *e_url_shroud (const char *url);
-gboolean e_url_equal (const char *url1, const char *url2);
+gchar *e_url_shroud (const gchar *url);
+gboolean e_url_equal (const gchar *url1, const gchar *url2);
 
 /**
  * EUri:
@@ -51,23 +51,23 @@ gboolean e_url_equal (const char *url1, const char *url2);
  * A structure representing a URI.
  **/
 typedef struct {
-	char  *protocol;
-	char  *user;
-	char  *authmech;
-	char  *passwd;
-	char  *host;
-	int    port;
-	char  *path;
+	gchar  *protocol;
+	gchar  *user;
+	gchar  *authmech;
+	gchar  *passwd;
+	gchar  *host;
+	gint    port;
+	gchar  *path;
 	GData *params;
-	char  *query;
-	char  *fragment;
+	gchar  *query;
+	gchar  *fragment;
 } EUri;
 
-EUri       *e_uri_new       (const char *uri_string);
+EUri       *e_uri_new       (const gchar *uri_string);
 void        e_uri_free      (EUri *uri);
-const char *e_uri_get_param (EUri *uri, const char *name);
+const gchar *e_uri_get_param (EUri *uri, const gchar *name);
 EUri       *e_uri_copy      (EUri *uri);
-char       *e_uri_to_string (EUri *uri, gboolean show_password);
+gchar       *e_uri_to_string (EUri *uri, gboolean show_password);
 
 G_END_DECLS
 

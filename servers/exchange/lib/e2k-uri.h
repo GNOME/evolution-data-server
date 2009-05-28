@@ -7,36 +7,36 @@
 #include <glib.h>
 
 typedef struct {
-	char  *protocol;
-	char  *user;
-	char  *domain;
-	char  *authmech;
-	char  *passwd;
-	char  *host;
-	int    port;
-	char  *path;
+	gchar  *protocol;
+	gchar  *user;
+	gchar  *domain;
+	gchar  *authmech;
+	gchar  *passwd;
+	gchar  *host;
+	gint    port;
+	gchar  *path;
 	GData *params;
-	char  *query;
-	char  *fragment;
+	gchar  *query;
+	gchar  *fragment;
 } E2kUri;
 
 
-E2kUri *    e2k_uri_new       (const char *uri_string);
+E2kUri *    e2k_uri_new       (const gchar *uri_string);
 void        e2k_uri_free      (E2kUri *uri);
-const char *e2k_uri_get_param (E2kUri *uri, const char *name);
+const gchar *e2k_uri_get_param (E2kUri *uri, const gchar *name);
 
-void        e2k_uri_decode         (char *part);
-char *      e2k_uri_encode         (const char *in,
+void        e2k_uri_decode         (gchar *part);
+gchar *      e2k_uri_encode         (const gchar *in,
 				    gboolean    wss_encode,
-				    const char *extra_enc_chars);
+				    const gchar *extra_enc_chars);
 void        e2k_uri_append_encoded (GString    *str,
-				    const char *in,
+				    const gchar *in,
 				    gboolean    wss_encode,
-				    const char *extra_enc_chars);
+				    const gchar *extra_enc_chars);
 
-const char *e2k_uri_path      (const char *uri_string);
+const gchar *e2k_uri_path      (const gchar *uri_string);
 
-char       *e2k_uri_concat    (const char *uri_prefix, const char *tail);
-const char *e2k_uri_relative  (const char *uri_prefix, const char *uri);
+gchar       *e2k_uri_concat    (const gchar *uri_prefix, const gchar *tail);
+const gchar *e2k_uri_relative  (const gchar *uri_prefix, const gchar *uri);
 
 #endif /* E2K_URI_H */

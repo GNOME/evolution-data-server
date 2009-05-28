@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,14 +23,14 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_join.h"
 #include "dbinc/btree.h"
 
-static int __db_join_close __P((DBC *));
-static int __db_join_cmp __P((const void *, const void *));
-static int __db_join_del __P((DBC *, u_int32_t));
-static int __db_join_get __P((DBC *, DBT *, DBT *, u_int32_t));
-static int __db_join_getnext __P((DBC *, DBT *, DBT *, u_int32_t, u_int32_t));
-static int __db_join_primget __P((DB *,
+static gint __db_join_close __P((DBC *));
+static gint __db_join_cmp __P((gconstpointer , gconstpointer ));
+static gint __db_join_del __P((DBC *, u_int32_t));
+static gint __db_join_get __P((DBC *, DBT *, DBT *, u_int32_t));
+static gint __db_join_getnext __P((DBC *, DBT *, DBT *, u_int32_t, u_int32_t));
+static gint __db_join_primget __P((DB *,
     DB_TXN *, u_int32_t, DBT *, DBT *, u_int32_t));
-static int __db_join_put __P((DBC *, DBT *, DBT *, u_int32_t));
+static gint __db_join_put __P((DBC *, DBT *, DBT *, u_int32_t));
 
 /*
  * Check to see if the Nth secondary cursor of join cursor jc is pointing
@@ -73,9 +73,9 @@ static int __db_join_put __P((DBC *, DBT *, DBT *, u_int32_t));
  * key and data are returned.  When no more items are left in the join
  * set, the  c_next operation off the join cursor will return DB_NOTFOUND.
  *
- * PUBLIC: int __db_join __P((DB *, DBC **, DBC **, u_int32_t));
+ * PUBLIC: gint __db_join __P((DB *, DBC **, DBC **, u_int32_t));
  */
-int
+gint
 __db_join(primary, curslist, dbcp, flags)
 	DB *primary;
 	DBC **curslist, **dbcp;
@@ -84,7 +84,7 @@ __db_join(primary, curslist, dbcp, flags)
 	DB_ENV *dbenv;
 	DBC *dbc;
 	JOIN_CURSOR *jc;
-	int ret;
+	gint ret;
 	u_int32_t i;
 	size_t ncurs, nslots;
 
@@ -283,7 +283,7 @@ __db_join_get(dbc, key_arg, data_arg, flags)
 	DB *dbp;
 	DBC *cp;
 	JOIN_CURSOR *jc;
-	int db_manage_data, ret;
+	gint db_manage_data, ret;
 	u_int32_t i, j, operation, opmods;
 
 	dbp = dbc->dbp;
@@ -622,7 +622,7 @@ __db_join_close(dbc)
 	DB *dbp;
 	DB_ENV *dbenv;
 	JOIN_CURSOR *jc;
-	int ret, t_ret;
+	gint ret, t_ret;
 	u_int32_t i;
 
 	jc = (JOIN_CURSOR *)dbc->internal;
@@ -695,10 +695,10 @@ __db_join_getnext(dbc, key, data, exhausted, opmods)
 	DBT *key, *data;
 	u_int32_t exhausted, opmods;
 {
-	int ret, cmp;
+	gint ret, cmp;
 	DB *dbp;
 	DBT ldata;
-	int (*func) __P((DB *, const DBT *, const DBT *));
+	gint (*func) __P((DB *, const DBT *, const DBT *));
 
 	dbp = dbc->dbp;
 	func = (dbp->dup_compare == NULL) ? __bam_defcmp : dbp->dup_compare;
@@ -752,7 +752,7 @@ __db_join_getnext(dbc, key, data, exhausted, opmods)
  */
 static int
 __db_join_cmp(a, b)
-	const void *a, *b;
+	gconstpointer a, *b;
 {
 	DBC *dbca, *dbcb;
 	db_recno_t counta, countb;
@@ -784,7 +784,7 @@ __db_join_primget(dbp, txn, lockerid, key, data, flags)
 	u_int32_t flags;
 {
 	DBC *dbc;
-	int dirty, ret, rmw, t_ret;
+	gint dirty, ret, rmw, t_ret;
 
 	/*
 	 * The only allowable flags here are the two flags copied into

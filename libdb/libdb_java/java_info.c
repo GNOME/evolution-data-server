@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -23,7 +23,7 @@ static const char revid[] = "$Id$";
  * Callback functions
  */
 
-static int Db_assoc_callback(DB *db,
+static gint Db_assoc_callback(DB *db,
 			     const DBT *key,
 			     const DBT *data,
 			     DBT *retval)
@@ -36,7 +36,7 @@ static int Db_assoc_callback(DB *db,
 	    key, data, retval));
 }
 
-static void Db_feedback_callback(DB *db, int opcode, int percent)
+static void Db_feedback_callback(DB *db, gint opcode, gint percent)
 {
 	DB_JAVAINFO *dbinfo;
 
@@ -45,7 +45,7 @@ static void Db_feedback_callback(DB *db, int opcode, int percent)
 	dbji_call_feedback(dbinfo, db, dbinfo->jdbref, opcode, percent);
 }
 
-static int Db_append_recno_callback(DB *db, DBT *dbt, db_recno_t recno)
+static gint Db_append_recno_callback(DB *db, DBT *dbt, db_recno_t recno)
 {
 	DB_JAVAINFO *dbinfo;
 
@@ -53,7 +53,7 @@ static int Db_append_recno_callback(DB *db, DBT *dbt, db_recno_t recno)
 	return (dbji_call_append_recno(dbinfo, db, dbinfo->jdbref, dbt, recno));
 }
 
-static int Db_bt_compare_callback(DB *db, const DBT *dbt1, const DBT *dbt2)
+static gint Db_bt_compare_callback(DB *db, const DBT *dbt1, const DBT *dbt2)
 {
 	DB_JAVAINFO *dbinfo;
 
@@ -69,7 +69,7 @@ static size_t Db_bt_prefix_callback(DB *db, const DBT *dbt1, const DBT *dbt2)
 	return (dbji_call_bt_prefix(dbinfo, db, dbinfo->jdbref, dbt1, dbt2));
 }
 
-static int Db_dup_compare_callback(DB *db, const DBT *dbt1, const DBT *dbt2)
+static gint Db_dup_compare_callback(DB *db, const DBT *dbt1, const DBT *dbt2)
 {
 	DB_JAVAINFO *dbinfo;
 
@@ -77,7 +77,7 @@ static int Db_dup_compare_callback(DB *db, const DBT *dbt1, const DBT *dbt2)
 	return (dbji_call_dup_compare(dbinfo, db, dbinfo->jdbref, dbt1, dbt2));
 }
 
-static u_int32_t Db_h_hash_callback(DB *db, const void *data, u_int32_t len)
+static u_int32_t Db_h_hash_callback(DB *db, gconstpointer data, u_int32_t len)
 {
 	DB_JAVAINFO *dbinfo;
 
@@ -85,7 +85,7 @@ static u_int32_t Db_h_hash_callback(DB *db, const void *data, u_int32_t len)
 	return (dbji_call_h_hash(dbinfo, db, dbinfo->jdbref, data, len));
 }
 
-static void DbEnv_feedback_callback(DB_ENV *dbenv, int opcode, int percent)
+static void DbEnv_feedback_callback(DB_ENV *dbenv, gint opcode, gint percent)
 {
 	DB_ENV_JAVAINFO *dbinfo;
 
@@ -94,9 +94,9 @@ static void DbEnv_feedback_callback(DB_ENV *dbenv, int opcode, int percent)
 	dbjie_call_feedback(dbinfo, dbenv, dbinfo->jenvref, opcode, percent);
 }
 
-static int DbEnv_rep_transport_callback(DB_ENV *dbenv,
+static gint DbEnv_rep_transport_callback(DB_ENV *dbenv,
 					const DBT *control, const DBT *rec,
-					int envid, u_int32_t flags)
+					gint envid, u_int32_t flags)
 {
 	DB_ENV_JAVAINFO *dbinfo;
 
@@ -105,7 +105,7 @@ static int DbEnv_rep_transport_callback(DB_ENV *dbenv,
 	    dbinfo->jenvref, control, rec, envid, (int)flags));
 }
 
-static int DbEnv_app_dispatch_callback(DB_ENV *dbenv, DBT *dbt,
+static gint DbEnv_app_dispatch_callback(DB_ENV *dbenv, DBT *dbt,
 				     DB_LSN *lsn, db_recops recops)
 {
 	DB_ENV_JAVAINFO *dbinfo;
@@ -124,7 +124,7 @@ DBT_JAVAINFO *
 dbjit_construct()
 {
 	DBT_JAVAINFO *dbjit;
-	int err;
+	gint err;
 
 	/*XXX should return err*/
 	if ((err = __os_malloc(NULL, sizeof(DBT_JAVAINFO), &dbjit)) != 0)
@@ -152,10 +152,10 @@ DB_ENV_JAVAINFO *
 dbjie_construct(JNIEnv *jnienv,
 		jobject jenv,
 		jobject default_errcall,
-		int is_dbopen)
+		gint is_dbopen)
 {
 	DB_ENV_JAVAINFO *dbjie;
-	int err;
+	gint err;
 
 	/*XXX should return err*/
 	if ((err = __os_malloc(NULL, sizeof(DB_ENV_JAVAINFO), &dbjie)) != 0)
@@ -243,10 +243,10 @@ dbjie_get_jnienv(DB_ENV_JAVAINFO *dbjie)
 	 * Different versions of the JNI disagree on the signature
 	 * for AttachCurrentThread.  The most recent documentation
 	 * seems to say that (JNIEnv **) is correct, but newer
-	 * JNIs seem to use (void **), oddly enough.
+	 * JNIs seem to use (gpointer *), oddly enough.
 	 */
 #ifdef JNI_VERSION_1_2
-	void *attachret = 0;
+	gpointer attachret = 0;
 #else
 	JNIEnv *attachret = 0;
 #endif
@@ -306,7 +306,7 @@ dbjie_set_conflict(DB_ENV_JAVAINFO *dbjie, u_char *newarr, size_t size)
 void dbjie_set_feedback_object(DB_ENV_JAVAINFO *dbjie, JNIEnv *jnienv,
 			       DB_ENV *dbenv, jobject jfeedback)
 {
-	int err;
+	gint err;
 
 	if (dbjie->feedback != NULL) {
 		DELETE_GLOBAL_REF(jnienv, dbjie->feedback);
@@ -327,7 +327,7 @@ void dbjie_set_feedback_object(DB_ENV_JAVAINFO *dbjie, JNIEnv *jnienv,
 }
 
 void dbjie_call_feedback(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv, jobject jenv,
-			 int opcode, int percent)
+			 gint opcode, gint percent)
 {
 	JNIEnv *jnienv;
 	jclass feedback_class;
@@ -359,9 +359,9 @@ void dbjie_call_feedback(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv, jobject jenv,
 }
 
 void dbjie_set_rep_transport_object(DB_ENV_JAVAINFO *dbjie, JNIEnv *jnienv,
-				    DB_ENV *dbenv, int id, jobject jtransport)
+				    DB_ENV *dbenv, gint id, jobject jtransport)
 {
-	int err;
+	gint err;
 
 	if (dbjie->rep_transport != NULL)
 		DELETE_GLOBAL_REF(jnienv, dbjie->rep_transport);
@@ -373,9 +373,9 @@ void dbjie_set_rep_transport_object(DB_ENV_JAVAINFO *dbjie, JNIEnv *jnienv,
 	dbjie->rep_transport = NEW_GLOBAL_REF(jnienv, jtransport);
 }
 
-int dbjie_call_rep_transport(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv,
+gint dbjie_call_rep_transport(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv,
 			     jobject jenv, const DBT *control,
-			     const DBT *rec, int flags, int envid)
+			     const DBT *rec, gint flags, gint envid)
 {
 	JNIEnv *jnienv;
 	jclass rep_transport_class;
@@ -416,7 +416,7 @@ int dbjie_call_rep_transport(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv,
 void dbjie_set_app_dispatch_object(DB_ENV_JAVAINFO *dbjie, JNIEnv *jnienv,
 				 DB_ENV *dbenv, jobject japp_dispatch)
 {
-	int err;
+	gint err;
 
 	if (dbjie->app_dispatch != NULL) {
 		DELETE_GLOBAL_REF(jnienv, dbjie->app_dispatch);
@@ -436,8 +436,8 @@ void dbjie_set_app_dispatch_object(DB_ENV_JAVAINFO *dbjie, JNIEnv *jnienv,
 	dbjie->app_dispatch = NEW_GLOBAL_REF(jnienv, japp_dispatch);
 }
 
-int dbjie_call_app_dispatch(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv, jobject jenv,
-			  DBT *dbt, DB_LSN *lsn, int recops)
+gint dbjie_call_app_dispatch(DB_ENV_JAVAINFO *dbjie, DB_ENV *dbenv, jobject jenv,
+			  DBT *dbt, DB_LSN *lsn, gint recops)
 {
 	JNIEnv *jnienv;
 	jclass app_dispatch_class;
@@ -498,7 +498,7 @@ jint dbjie_is_dbopen(DB_ENV_JAVAINFO *dbjie)
 DB_JAVAINFO *dbji_construct(JNIEnv *jnienv, jobject jdb, jint flags)
 {
 	DB_JAVAINFO *dbji;
-	int err;
+	gint err;
 
 	/*XXX should return err*/
 	if ((err = __os_malloc(NULL, sizeof(DB_JAVAINFO), &dbji)) != 0)
@@ -567,10 +567,10 @@ JNIEnv *dbji_get_jnienv(DB_JAVAINFO *dbji)
 	 * Different versions of the JNI disagree on the signature
 	 * for AttachCurrentThread.  The most recent documentation
 	 * seems to say that (JNIEnv **) is correct, but newer
-	 * JNIs seem to use (void **), oddly enough.
+	 * JNIs seem to use (gpointer *), oddly enough.
 	 */
 #ifdef JNI_VERSION_1_2
-	void *attachret = 0;
+	gpointer attachret = 0;
 #else
 	JNIEnv *attachret = 0;
 #endif
@@ -632,7 +632,7 @@ void dbji_set_feedback_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 }
 
 void dbji_call_feedback(DB_JAVAINFO *dbji, DB *db, jobject jdb,
-			int opcode, int percent)
+			gint opcode, gint percent)
 {
 	JNIEnv *jnienv;
 
@@ -689,7 +689,7 @@ void dbji_set_append_recno_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 	dbji->append_recno = NEW_GLOBAL_REF(jnienv, jcallback);
 }
 
-extern int dbji_call_append_recno(DB_JAVAINFO *dbji, DB *db, jobject jdb,
+extern gint dbji_call_append_recno(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 				  DBT *dbt, jint recno)
 {
 	JNIEnv *jnienv;
@@ -698,7 +698,7 @@ extern int dbji_call_append_recno(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 	LOCKED_DBT lresult;
 	DB_ENV *dbenv;
 	u_char *bytearray;
-	int err;
+	gint err;
 
 	jnienv = dbji_get_jnienv(dbji);
 	dbenv = db->dbenv;
@@ -761,10 +761,10 @@ extern int dbji_call_append_recno(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 
 void dbji_set_assoc_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 			       DB *db, DB_TXN *txn, DB *second,
-			       jobject jcallback, int flags)
+			       jobject jcallback, gint flags)
 {
 	jclass assoc_class;
-	int err;
+	gint err;
 
 	if (dbji->assoc_method_id == NULL) {
 		if ((assoc_class =
@@ -804,15 +804,15 @@ void dbji_set_assoc_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 		dbji->assoc = NEW_GLOBAL_REF(jnienv, jcallback);
 }
 
-extern int dbji_call_assoc(DB_JAVAINFO *dbji, DB *db, jobject jdb,
+extern gint dbji_call_assoc(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 			   const DBT *key, const DBT *value, DBT *result)
 {
 	JNIEnv *jnienv;
 	jobject jresult;
 	LOCKED_DBT lresult;
 	DB_ENV *dbenv;
-	int err;
-	int sz;
+	gint err;
+	gint sz;
 	u_char *bytearray;
 	jint retval;
 
@@ -917,7 +917,7 @@ void dbji_set_bt_compare_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 	dbji->bt_compare = NEW_GLOBAL_REF(jnienv, jcompare);
 }
 
-int dbji_call_bt_compare(DB_JAVAINFO *dbji, DB *db, jobject jdb,
+gint dbji_call_bt_compare(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 			 const DBT *dbt1, const DBT *dbt2)
 {
 	JNIEnv *jnienv;
@@ -1041,7 +1041,7 @@ void dbji_set_dup_compare_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 	dbji->dup_compare = NEW_GLOBAL_REF(jnienv, jcompare);
 }
 
-int dbji_call_dup_compare(DB_JAVAINFO *dbji, DB *db, jobject jdb,
+gint dbji_call_dup_compare(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 			 const DBT *dbt1, const DBT *dbt2)
 {
 	JNIEnv *jnienv;
@@ -1101,8 +1101,8 @@ void dbji_set_h_hash_object(DB_JAVAINFO *dbji, JNIEnv *jnienv,
 	dbji->h_hash = NEW_GLOBAL_REF(jnienv, jhash);
 }
 
-int dbji_call_h_hash(DB_JAVAINFO *dbji, DB *db, jobject jdb,
-		     const void *data, int len)
+gint dbji_call_h_hash(DB_JAVAINFO *dbji, DB *db, jobject jdb,
+		     gconstpointer data, gint len)
 {
 	JNIEnv *jnienv;
 	jbyteArray jdata;
@@ -1118,7 +1118,7 @@ int dbji_call_h_hash(DB_JAVAINFO *dbji, DB *db, jobject jdb,
 
 	if ((jdata = (*jnienv)->NewByteArray(jnienv, len)) == NULL)
 		return (0);	/* An exception has been posted by the JVM */
-	(*jnienv)->SetByteArrayRegion(jnienv, jdata, 0, len, (void *)data);
+	(*jnienv)->SetByteArrayRegion(jnienv, jdata, 0, len, (gpointer)data);
 	return (*jnienv)->CallIntMethod(jnienv, dbji->h_hash,
 					dbji->h_hash_method_id,
 					jdb, jdata, len);

@@ -20,9 +20,9 @@
 #define CHUNK_SIZE 4096
 
 struct {
-	int flags;
-	char *in;
-	char *out;
+	gint flags;
+	gchar *in;
+	gchar *out;
 } tests[] = {
 	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF,
 	  "From \nRussia - with love.\n\n",
@@ -53,26 +53,26 @@ struct {
 	  "Tasmiania with fur\r\n=46rom here or there ?\r\n" },
 };
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	CamelStreamFilter *filter;
 	CamelMimeFilter *sh;
-	int i;
+	gint i;
 
 	camel_test_init(argc, argv);
 
 	camel_test_start("canonicalisation filter tests");
 
 	for (i=0;i<sizeof(tests)/sizeof(tests[0]);i++) {
-		int step;
+		gint step;
 
 		camel_test_push("Data test %d '%s'\n", i, tests[i].in);
 
 		/* try all write sizes */
 		for (step=1;step<20;step++) {
 			CamelStreamMem *out;
-			char *p;
+			gchar *p;
 
 			camel_test_push("Chunk size %d\n", step);
 
@@ -84,7 +84,7 @@ main (int argc, char **argv)
 
 			p = tests[i].in;
 			while (*p) {
-				int w = MIN(strlen(p), step);
+				gint w = MIN(strlen(p), step);
 
 				check(camel_stream_write((CamelStream *)filter, p, w) == w);
 				p += w;

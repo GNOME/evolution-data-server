@@ -43,7 +43,7 @@ typedef enum {
 	CAMEL_NUM_PROVIDER_TYPES
 } CamelProviderType;
 
-extern char *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
+extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 
 /* Provider flags:
  *
@@ -135,8 +135,8 @@ typedef enum {
 
 typedef struct {
 	CamelProviderConfType type;
-	char *name, *depname;
-	char *text, *value;
+	gchar *name, *depname;
+	gchar *text, *value;
 } CamelProviderConfEntry;
 
 /* Some defaults */
@@ -144,14 +144,14 @@ typedef struct {
 #define CAMEL_PROVIDER_CONF_DEFAULT_HOSTNAME  { CAMEL_PROVIDER_CONF_LABEL, "hostname", NULL, N_("_Host:"), NULL }
 #define CAMEL_PROVIDER_CONF_DEFAULT_PATH      { CAMEL_PROVIDER_CONF_ENTRY, "path", NULL, N_("_Path:"), "" }
 
-typedef int (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, CamelException *ex);
+typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, CamelException *ex);
 
 typedef struct {
 	/* Provider name used in CamelURLs. */
-	char *protocol;
+	gchar *protocol;
 
 	/* Provider name as used by people. (May be the same as protocol) */
-	char *name;
+	gchar *name;
 
 	/* Description of the provider. A novice user should be able
 	 * to read this description, and the information provided by
@@ -159,16 +159,16 @@ typedef struct {
 	 * this provider is relevant to him, and if so, which
 	 * information goes with it.
 	 */
-	char *description;
+	gchar *description;
 
 	/* The category of message that this provider works with.
 	 * (evolution-mail will only list a provider in the store/transport
 	 * config dialogs if its domain is "mail".)
 	 */
-	char *domain;
+	gchar *domain;
 
 	/* Flags describing the provider, flags describing its URLs */
-	int flags, url_flags;
+	gint flags, url_flags;
 
 	/* The ConfEntry and AutoDetect functions will probably be
 	 * DEPRECATED in a future release */
@@ -197,42 +197,42 @@ typedef struct {
 	/* gettext translation domain (NULL for providers in the
 	 * evolution source tree).
 	 */
-	char *translation_domain;
+	gchar *translation_domain;
 
 	/* This string points to the provider's gconf key value
 	 */
-	const char *license;
+	const gchar *license;
 
 	/* This holds the license file name [ ascii text format ] containing
 	 * the license agreement. This should be the absolute file path. This
 	 * is read only when the HAS_LICENSE flag is set
 	 */
-	const char *license_file;
+	const gchar *license_file;
 
 	/* Private to the provider */
-	void *priv;
+	gpointer priv;
 } CamelProvider;
 
 typedef struct _CamelProviderModule CamelProviderModule;
 
 struct _CamelProviderModule {
-	char *path;
+	gchar *path;
 	GSList *types;
 	guint loaded:1;
 };
 
 void camel_provider_init(void);
 
-void camel_provider_load(const char *path, CamelException *ex);
+void camel_provider_load(const gchar *path, CamelException *ex);
 void camel_provider_register(CamelProvider *provider);
 GList *camel_provider_list(gboolean load);
-CamelProvider *camel_provider_get(const char *url_string, CamelException *ex);
+CamelProvider *camel_provider_get(const gchar *url_string, CamelException *ex);
 
 /* This is defined by each module, not by camel-provider.c. */
 void camel_provider_module_init(void);
 
 
-int camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
+gint camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 				GHashTable **auto_detected, CamelException *ex);
 
 G_END_DECLS

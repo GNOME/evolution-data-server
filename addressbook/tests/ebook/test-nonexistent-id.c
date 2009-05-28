@@ -1,6 +1,6 @@
 #include <libebook/e-book.h>
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
 	GError *err = NULL;
 	EBook *book = NULL;

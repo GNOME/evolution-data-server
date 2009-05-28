@@ -39,7 +39,7 @@ source_changed_cb (ESourceComboBox *combo_box)
 
 
 static int
-on_idle_create_widget (const char *gconf_path)
+on_idle_create_widget (const gchar *gconf_path)
 {
 	GtkWidget *window;
 	GtkWidget *combo_box;
@@ -65,10 +65,10 @@ on_idle_create_widget (const char *gconf_path)
 }
 
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	const char *gconf_path;
+	const gchar *gconf_path;
 
 	gtk_init (&argc, &argv);
 
@@ -77,7 +77,7 @@ main (int argc, char **argv)
 	else
 		gconf_path = argv [1];
 
-	g_idle_add ((GSourceFunc) on_idle_create_widget, (void *) gconf_path);
+	g_idle_add ((GSourceFunc) on_idle_create_widget, (gpointer) gconf_path);
 
 	gtk_main ();
 

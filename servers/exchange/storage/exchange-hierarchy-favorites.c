@@ -40,7 +40,7 @@
 #include <unistd.h>
 
 struct _ExchangeHierarchyFavoritesPrivate {
-	char *public_uri, *shortcuts_uri;
+	gchar *public_uri, *shortcuts_uri;
 	GHashTable *shortcuts;
 };
 
@@ -96,17 +96,17 @@ E2K_MAKE_TYPE (exchange_hierarchy_favorites, ExchangeHierarchyFavorites, class_i
 static void
 add_hrefs (ExchangeHierarchy *hier, EFolder *folder, gpointer hrefs)
 {
-	g_ptr_array_add (hrefs, (char *)e2k_uri_path (e_folder_exchange_get_internal_uri (folder)));
+	g_ptr_array_add (hrefs, (gchar *)e2k_uri_path (e_folder_exchange_get_internal_uri (folder)));
 }
 
-static const char *shortcuts_props[] = {
+static const gchar *shortcuts_props[] = {
 	PR_FAV_DISPLAY_NAME,		/* PR_DISPLAY_NAME of referent */
 	PR_FAV_DISPLAY_ALIAS,		/* if set, user-chosen display name */
 	PR_FAV_PUBLIC_SOURCE_KEY,	/* PR_SOURCE_KEY of referent */
 	PR_FAV_PARENT_SOURCE_KEY,	/* PR_FAV_PUBLIC_SOURCE_KEY of parent */
 	PR_FAV_LEVEL_MASK		/* depth in hierarchy (first level is 1) */
 };
-static const int n_shortcuts_props = G_N_ELEMENTS (shortcuts_props);
+static const gint n_shortcuts_props = G_N_ELEMENTS (shortcuts_props);
 
 static GPtrArray *
 get_hrefs (ExchangeHierarchySomeDAV *hsd)
@@ -119,9 +119,9 @@ get_hrefs (ExchangeHierarchySomeDAV *hsd)
 	E2kResult *result, *results;
 	E2kHTTPStatus status;
 	GByteArray *source_key;
-	const char *prop = E2K_PR_DAV_HREF, *shortcut_uri;
-	char *perm_url, *folder_uri;
-	int i, nresults = 0, mode;
+	const gchar *prop = E2K_PR_DAV_HREF, *shortcut_uri;
+	gchar *perm_url, *folder_uri;
+	gint i, nresults = 0, mode;
 
 	hrefs = g_ptr_array_new ();
 
@@ -185,7 +185,7 @@ exchange_hierarchy_favorites_is_added (ExchangeHierarchy *hier, EFolder *folder)
 {
 	ExchangeHierarchyFavorites *hfav =
 		EXCHANGE_HIERARCHY_FAVORITES (hier);
-	const char *folder_uri, *shortcut_uri;
+	const gchar *folder_uri, *shortcut_uri;
 
 	folder_uri = e_folder_exchange_get_internal_uri (folder);
 	shortcut_uri = g_hash_table_lookup (hfav->priv->shortcuts, folder_uri);
@@ -198,9 +198,9 @@ remove_folder (ExchangeHierarchy *hier, EFolder *folder)
 {
 	ExchangeHierarchyFavorites *hfav =
 		EXCHANGE_HIERARCHY_FAVORITES (hier);
-	const char *folder_uri, *shortcut_uri;
+	const gchar *folder_uri, *shortcut_uri;
 	E2kHTTPStatus status;
-	const char *folder_type, *physical_uri;
+	const gchar *folder_type, *physical_uri;
 
 	folder_uri = e_folder_exchange_get_internal_uri (folder);
 	shortcut_uri = g_hash_table_lookup (hfav->priv->shortcuts, folder_uri);
@@ -256,8 +256,8 @@ exchange_hierarchy_favorites_add_folder (ExchangeHierarchy *hier,
 	ExchangeHierarchyFavorites *hfav;
 	E2kProperties *props;
 	E2kHTTPStatus status;
-	const char *folder_uri, *permanent_uri;
-	char *shortcut_uri;
+	const gchar *folder_uri, *permanent_uri;
+	gchar *shortcut_uri;
 
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY (hier), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
 	g_return_val_if_fail (E_IS_FOLDER (folder), EXCHANGE_ACCOUNT_FOLDER_GENERIC_ERROR);
@@ -309,13 +309,13 @@ exchange_hierarchy_favorites_add_folder (ExchangeHierarchy *hier,
  **/
 ExchangeHierarchy *
 exchange_hierarchy_favorites_new (ExchangeAccount *account,
-				  const char *hierarchy_name,
-				  const char *physical_uri_prefix,
-				  const char *home_uri,
-				  const char *public_uri,
-				  const char *owner_name,
-				  const char *owner_email,
-				  const char *source_uri)
+				  const gchar *hierarchy_name,
+				  const gchar *physical_uri_prefix,
+				  const gchar *home_uri,
+				  const gchar *public_uri,
+				  const gchar *owner_name,
+				  const gchar *owner_email,
+				  const gchar *source_uri)
 {
 	ExchangeHierarchy *hier;
 	ExchangeHierarchyFavorites *hfav;

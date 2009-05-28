@@ -45,10 +45,10 @@ static CamelSeekableStreamClass *parent_class = NULL;
 /* Returns the class for a CamelStreamFS */
 #define CSFS_CLASS(so) CAMEL_STREAM_FS_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static ssize_t stream_read   (CamelStream *stream, char *buffer, size_t n);
-static ssize_t stream_write  (CamelStream *stream, const char *buffer, size_t n);
-static int stream_flush  (CamelStream *stream);
-static int stream_close  (CamelStream *stream);
+static ssize_t stream_read   (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t stream_write  (CamelStream *stream, const gchar *buffer, size_t n);
+static gint stream_flush  (CamelStream *stream);
+static gint stream_close  (CamelStream *stream);
 static off_t stream_seek (CamelSeekableStream *stream, off_t offset,
 			  CamelStreamSeekPolicy policy);
 
@@ -119,7 +119,7 @@ camel_stream_fs_get_type (void)
  * Returns: a new #CamelStreamFs
  **/
 CamelStream *
-camel_stream_fs_new_with_fd (int fd)
+camel_stream_fs_new_with_fd (gint fd)
 {
 	CamelStreamFs *stream_fs;
 	off_t offset;
@@ -149,7 +149,7 @@ camel_stream_fs_new_with_fd (int fd)
  * Returns: the bound stream
  **/
 CamelStream *
-camel_stream_fs_new_with_fd_and_bounds (int fd, off_t start, off_t end)
+camel_stream_fs_new_with_fd_and_bounds (gint fd, off_t start, off_t end)
 {
 	CamelStream *stream;
 
@@ -171,9 +171,9 @@ camel_stream_fs_new_with_fd_and_bounds (int fd, off_t start, off_t end)
  * Returns: the new stream, or %NULL on error.
  **/
 CamelStream *
-camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
+camel_stream_fs_new_with_name (const gchar *name, gint flags, mode_t mode)
 {
-	int fd;
+	gint fd;
 
 	fd = g_open (name, flags|O_BINARY, mode);
 	if (fd == -1) {
@@ -196,7 +196,7 @@ camel_stream_fs_new_with_name (const char *name, int flags, mode_t mode)
  * Returns: the stream, or %NULL on error.
  **/
 CamelStream *
-camel_stream_fs_new_with_name_and_bounds (const char *name, int flags,
+camel_stream_fs_new_with_name_and_bounds (const gchar *name, gint flags,
 					  mode_t mode, off_t start, off_t end)
 {
 	CamelStream *stream;
@@ -213,7 +213,7 @@ camel_stream_fs_new_with_name_and_bounds (const char *name, int flags,
 
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelStreamFs *stream_fs = CAMEL_STREAM_FS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
@@ -231,7 +231,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelStreamFs *stream_fs = CAMEL_STREAM_FS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);

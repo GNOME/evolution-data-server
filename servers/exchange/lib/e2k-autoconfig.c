@@ -76,7 +76,7 @@
 #define CONNECTOR_PREFIX e_util_get_prefix ()
 #endif
 
-static char *find_olson_timezone (const char *windows_timezone);
+static gchar *find_olson_timezone (const gchar *windows_timezone);
 static void set_account_uri_string (E2kAutoconfig *ac);
 
 /**
@@ -92,8 +92,8 @@ static void set_account_uri_string (E2kAutoconfig *ac);
  * Return value: an autoconfig context
  **/
 E2kAutoconfig *
-e2k_autoconfig_new (const char *owa_uri, const char *username,
-		    const char *password, E2kAutoconfigAuthPref auth_pref)
+e2k_autoconfig_new (const gchar *owa_uri, const gchar *username,
+		    const gchar *password, E2kAutoconfigAuthPref auth_pref)
 {
 	E2kAutoconfig *ac;
 
@@ -208,7 +208,7 @@ reset_owa_derived (E2kAutoconfig *ac)
  * the old value of #owa_uri.
  **/
 void
-e2k_autoconfig_set_owa_uri (E2kAutoconfig *ac, const char *owa_uri)
+e2k_autoconfig_set_owa_uri (E2kAutoconfig *ac, const gchar *owa_uri)
 {
 	reset_owa_derived (ac);
 	if (ac->gc_server_autodetected)
@@ -237,10 +237,10 @@ e2k_autoconfig_set_owa_uri (E2kAutoconfig *ac, const char *owa_uri)
  * of #gc_server.
  **/
 void
-e2k_autoconfig_set_gc_server (E2kAutoconfig *ac, const char *gc_server,
-			      int gal_limit, E2kAutoconfigGalAuthPref gal_auth)
+e2k_autoconfig_set_gc_server (E2kAutoconfig *ac, const gchar *gc_server,
+			      gint gal_limit, E2kAutoconfigGalAuthPref gal_auth)
 {
-	const char *default_gal_limit;
+	const gchar *default_gal_limit;
 
 	reset_gc_derived (ac);
 	g_free (ac->gc_server);
@@ -270,9 +270,9 @@ e2k_autoconfig_set_gc_server (E2kAutoconfig *ac, const char *gc_server,
  * set based on the old value of #username.
  **/
 void
-e2k_autoconfig_set_username (E2kAutoconfig *ac, const char *username)
+e2k_autoconfig_set_username (E2kAutoconfig *ac, const gchar *username)
 {
-	int dlen;
+	gint dlen;
 
 	reset_owa_derived (ac);
 	g_free (ac->username);
@@ -299,7 +299,7 @@ e2k_autoconfig_set_username (E2kAutoconfig *ac, const char *username)
  * Sets or clears @ac's #password field.
  **/
 void
-e2k_autoconfig_set_password (E2kAutoconfig *ac, const char *password)
+e2k_autoconfig_set_password (E2kAutoconfig *ac, const gchar *password)
 {
 	g_free (ac->password);
 	ac->password = g_strdup (password);
@@ -310,7 +310,7 @@ get_ctx_auth_handler (SoupMessage *msg, gpointer user_data)
 {
 	E2kAutoconfig *ac = user_data;
 	GSList *headers;
-	const char *challenge_hdr;
+	const gchar *challenge_hdr;
 
 	ac->saw_ntlm = ac->saw_basic = FALSE;
 	headers = e2k_http_get_headers (msg->response_headers,
@@ -394,7 +394,7 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	E2kContext *ctx;
 	SoupMessage *msg;
 	E2kHTTPStatus status;
-	const char *ms_webstorage;
+	const gchar *ms_webstorage;
 	xmlDoc *doc;
 	xmlNode *node;
 	xmlChar *equiv, *content, *href;
@@ -463,8 +463,8 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	 * new server.
 	 */
 	if (E2K_HTTP_STATUS_IS_REDIRECTION (status)) {
-		const char *location;
-		char *new_uri;
+		const gchar *location;
+		gchar *new_uri;
 
 		location = soup_message_headers_get (msg->response_headers,
 						     "Location");
@@ -497,7 +497,7 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	if (status == E2K_HTTP_FORBIDDEN &&
 	    !strncmp (ac->owa_uri, "http:", 5) && msg->response_body->length > 0) {
 		if (strstr (msg->response_body->data, "SSL")) {
-			char *new_uri =
+			gchar *new_uri =
 				g_strconcat ("https:", ac->owa_uri + 5, NULL);
 			e2k_autoconfig_set_owa_uri (ac, new_uri);
 			g_free (new_uri);
@@ -517,7 +517,7 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 		else
 			ac->version = E2K_EXCHANGE_FUTURE;
 	} else {
-		const char *server = soup_message_headers_get (msg->response_headers, "Server");
+		const gchar *server = soup_message_headers_get (msg->response_headers, "Server");
 
 		/* If the server explicitly claims to be something
 		 * other than IIS, then return the "not windows"
@@ -614,11 +614,11 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	return ctx;
 }
 
-static const char *home_properties[] = {
+static const gchar *home_properties[] = {
 	PR_STORE_ENTRYID,
 	E2K_PR_EXCHANGE_TIMEZONE
 };
-static const int n_home_properties = sizeof (home_properties) / sizeof (home_properties[0]);
+static const gint n_home_properties = sizeof (home_properties) / sizeof (home_properties[0]);
 
 /*
  * e2k_autoconfig_check_exchange:
@@ -652,13 +652,13 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 	xmlNode *node;
 	E2kHTTPStatus status;
 	E2kAutoconfigResult result;
-	char *new_uri, *pf_uri;
+	gchar *new_uri, *pf_uri;
 	E2kContext *ctx;
 	gboolean redirected = FALSE;
 	E2kResultIter *iter;
 	E2kResult *results;
 	GByteArray *entryid;
-	const char *exchange_dn, *timezone, *hrefs[] = { "" };
+	const gchar *exchange_dn, *timezone, *hrefs[] = { "" };
 	xmlChar *prop;
 	SoupBuffer *response;
 	E2kUri *euri;
@@ -798,8 +798,8 @@ static void
 find_global_catalog (E2kAutoconfig *ac)
 {
 #ifndef G_OS_WIN32
-	int count, len;
-	unsigned char answer[1024], namebuf[1024], *end, *p;
+	gint count, len;
+	guchar answer[1024], namebuf[1024], *end, *p;
 	guint16 type, qclass, rdlength, priority, weight, port;
 	guint32 ttl;
 	HEADER *header;
@@ -977,7 +977,7 @@ static void
 set_account_uri_string (E2kAutoconfig *ac)
 {
 	E2kUri *owa_uri, *home_uri;
-	char *path, *mailbox;
+	gchar *path, *mailbox;
 	GString *uri;
 
 	owa_uri = e2k_uri_new (ac->owa_uri);
@@ -1006,7 +1006,7 @@ set_account_uri_string (E2kAutoconfig *ac)
 	if (ac->gal_limit != -1)
 		g_string_append_printf (uri, ";ad_limit=%d", ac->gal_limit);
 	if (ac->gal_auth != E2K_AUTOCONFIG_USE_GAL_DEFAULT) {
-		const char *value = NULL;
+		const gchar *value = NULL;
 
 		switch (ac->gal_auth) {
 		case E2K_AUTOCONFIG_USE_GAL_BASIC: value = "basic"; break;
@@ -1052,7 +1052,7 @@ set_account_uri_string (E2kAutoconfig *ac)
  * timezone names. (Actually, we just strip the last two words.)
  */
 static struct {
-	const char *windows_name, *lang, *country, *olson_name;
+	const gchar *windows_name, *lang, *country, *olson_name;
 } zonemap[] = {
 	/* (GMT-12:00) Eniwetok, Kwajalein */
 	{ "Dateline", NULL, NULL, "Pacific/Kwajalein" },
@@ -1321,14 +1321,14 @@ static struct {
 	/* (GMT+13:00) Nuku'alofa */
 	{ "Tonga", NULL, NULL, "Pacific/Tongatapu" }
 };
-static const int n_zone_mappings = sizeof (zonemap) / sizeof (zonemap[0]);
+static const gint n_zone_mappings = sizeof (zonemap) / sizeof (zonemap[0]);
 
-static char *
-find_olson_timezone (const char *windows_timezone)
+static gchar *
+find_olson_timezone (const gchar *windows_timezone)
 {
-	int i, tzlen;
-	const char *locale, *p;
-	char lang[3] = { 0 }, country[3] = { 0 };
+	gint i, tzlen;
+	const gchar *locale, *p;
+	gchar lang[3] = { 0 }, country[3] = { 0 };
 
 	/* Strip " Standard Time" / " Daylight Time" from name */
 	p = windows_timezone + strlen (windows_timezone) - 1;
@@ -1365,7 +1365,7 @@ find_olson_timezone (const char *windows_timezone)
 			strncpy (country, locale, 2);
 	}
 #ifdef G_OS_WIN32
-	g_free ((char *) locale);
+	g_free ((gchar *) locale);
 #endif
 
 	/* Look for an entry where either the country or the
@@ -1395,9 +1395,9 @@ static void
 read_config (void)
 {
 	struct stat st;
-	char *p, *name, *value;
-	char *config_data;
-	int fd = -1;
+	gchar *p, *name, *value;
+	gchar *config_data;
+	gint fd = -1;
 
 	config_options = g_hash_table_new (e2k_ascii_strcase_hash,
 					    e2k_ascii_strcase_equal);
@@ -1469,8 +1469,8 @@ read_config (void)
  *
  * Return value: the string value of the option, or %NULL if it is unset.
  **/
-const char *
-e2k_autoconfig_lookup_option (const char *option)
+const gchar *
+e2k_autoconfig_lookup_option (const gchar *option)
 {
 	if (!config_options)
 		read_config ();
@@ -1478,14 +1478,14 @@ e2k_autoconfig_lookup_option (const char *option)
 }
 
 static gboolean
-validate (const char *owa_url, char *user, char *password, ExchangeParams *exchange_params, E2kAutoconfigResult *result)
+validate (const gchar *owa_url, gchar *user, gchar *password, ExchangeParams *exchange_params, E2kAutoconfigResult *result)
 {
 	E2kAutoconfig *ac;
 	E2kOperation op;        /* FIXME */
 	E2kUri *euri;
 	gboolean valid = FALSE;
-	const char *old, *new;
-	char *path, *mailbox;
+	const gchar *old, *new;
+	gchar *path, *mailbox;
 
 	ac = e2k_autoconfig_new (owa_url, user, password,
 				 E2K_AUTOCONFIG_USE_EITHER);
@@ -1516,7 +1516,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 	}
 
 	if (*result == E2K_AUTOCONFIG_OK) {
-		int len;
+		gint len;
 
 		*result = e2k_autoconfig_check_global_catalog (ac, &op);
 		e2k_operation_free (&op);
@@ -1547,7 +1547,7 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 			exchange_params->mailbox  = g_strdup (mailbox);
 		} else {
 			/* always strip the mailbox part from the path */
-			char *slash = strrchr (path, '/');
+			gchar *slash = strrchr (path, '/');
 
 			if (slash)
 				*slash = '\0';
@@ -1667,15 +1667,15 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 }
 
 gboolean
-e2k_validate_user (const char *owa_url, char *pkey, char **user,
+e2k_validate_user (const gchar *owa_url, gchar *pkey, gchar **user,
 		   ExchangeParams *exchange_params, gboolean *remember_password,
 		   E2kAutoconfigResult *result, GtkWindow *parent)
 {
 	gboolean valid = FALSE, remember=FALSE;
-	char *key, *password, *prompt;
-	char *username;
+	gchar *key, *password, *prompt;
+	gchar *username;
 	gchar **usernames;
-	int try = 0;
+	gint try = 0;
 	EUri *uri;
 
 	uri = e_uri_new (owa_url);

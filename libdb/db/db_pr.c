@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,9 +32,9 @@ static const char revid[] = "$Id$";
 static int	 __db_bmeta __P((DB *, FILE *, BTMETA *, u_int32_t));
 static int	 __db_hmeta __P((DB *, FILE *, HMETA *, u_int32_t));
 static void	 __db_meta __P((DB *, DBMETA *, FILE *, FN const *, u_int32_t));
-static const char *__db_pagetype_to_string __P((u_int32_t));
+static const gchar *__db_pagetype_to_string __P((u_int32_t));
 static void	 __db_prdb __P((DB *, FILE *));
-static void	 __db_proff __P((void *, FILE *));
+static void	 __db_proff __P((gpointer , FILE *));
 static int	 __db_prtree __P((DB *, FILE *, u_int32_t));
 static int	 __db_qmeta __P((DB *, FILE *, QMETA *, u_int32_t));
 
@@ -56,16 +56,16 @@ __db_loadme()
  * __db_dump --
  *	Dump the tree to a file.
  *
- * PUBLIC: int __db_dump __P((DB *, char *, char *));
+ * PUBLIC: gint __db_dump __P((DB *, gchar *, gchar *));
  */
-int
+gint
 __db_dump(dbp, op, name)
 	DB *dbp;
-	char *op, *name;
+	gchar *op, *name;
 {
 	FILE *fp;
 	u_int32_t flags;
-	int ret;
+	gint ret;
 
 	for (flags = 0; *op != '\0'; ++op)
 		switch (*op) {
@@ -106,14 +106,14 @@ __db_dump(dbp, op, name)
  *	Call a callback for printing or other handling of strings associated
  * with whatever in-memory DB structure flags are set.
  *
- * PUBLIC: void __db_inmemdbflags __P((u_int32_t, void *,
- * PUBLIC:     void (*)(u_int32_t, const FN *, void *)));
+ * PUBLIC: void __db_inmemdbflags __P((u_int32_t, gpointer ,
+ * PUBLIC:     void (*)(u_int32_t, const FN *, gpointer )));
  */
 void
 __db_inmemdbflags(flags, cookie, callback)
 	u_int32_t flags;
-	void *cookie;
-	void (*callback) __P((u_int32_t, const FN *, void *));
+	gpointer cookie;
+	void (*callback) __P((u_int32_t, const FN *, gpointer ));
 {
 	static const FN fn[] = {
 		{ DB_AM_CHKSUM,		"checksumming" },
@@ -225,7 +225,7 @@ __db_prtree(dbp, fp, flags)
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t i, last;
-	int ret;
+	gint ret;
 
 	mpf = dbp->mpf;
 
@@ -264,8 +264,8 @@ __db_meta(dbp, dbmeta, fp, fn, flags)
 	PAGE *h;
 	db_pgno_t pgno;
 	u_int8_t *p;
-	int cnt, ret;
-	const char *sep;
+	gint cnt, ret;
+	const gchar *sep;
 
 	mpf = dbp->mpf;
 
@@ -370,7 +370,7 @@ __db_hmeta(dbp, fp, h, flags)
 		{ DB_HASH_SUBDB, "multiple-databases" },
 		{ 0,		 NULL }
 	};
-	int i;
+	gint i;
 
 	__db_meta(dbp, (DBMETA *)h, fp, mfn, flags);
 
@@ -415,9 +415,9 @@ __db_qmeta(dbp, fp, h, flags)
  * __db_prnpage
  *	-- Print out a specific page.
  *
- * PUBLIC: int __db_prnpage __P((DB *, db_pgno_t, FILE *));
+ * PUBLIC: gint __db_prnpage __P((DB *, db_pgno_t, FILE *));
  */
-int
+gint
 __db_prnpage(dbp, pgno, fp)
 	DB *dbp;
 	db_pgno_t pgno;
@@ -425,7 +425,7 @@ __db_prnpage(dbp, pgno, fp)
 {
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	mpf = dbp->mpf;
 
@@ -444,9 +444,9 @@ __db_prnpage(dbp, pgno, fp)
  * __db_prpage
  *	-- Print out a page.
  *
- * PUBLIC: int __db_prpage __P((DB *, PAGE *, FILE *, u_int32_t));
+ * PUBLIC: gint __db_prpage __P((DB *, PAGE *, FILE *, u_int32_t));
  */
-int
+gint
 __db_prpage(dbp, h, fp, flags)
 	DB *dbp;
 	PAGE *h;
@@ -463,9 +463,9 @@ __db_prpage(dbp, h, fp, flags)
 	db_recno_t recno;
 	u_int32_t pagesize, qlen;
 	u_int8_t *ep, *hk, *p;
-	int deleted, ret;
-	const char *s;
-	void *sp;
+	gint deleted, ret;
+	const gchar *s;
+	gpointer sp;
 
 	/*
 	 * If we're doing recovery testing and this page is P_INVALID,
@@ -701,7 +701,7 @@ __db_pr(p, len, fp)
 	FILE *fp;
 {
 	u_int lastch;
-	int i;
+	gint i;
 
 	fprintf(fp, "len: %3lu", (u_long)len);
 	lastch = '.';
@@ -727,25 +727,25 @@ __db_pr(p, len, fp)
  * __db_prdbt --
  *	Print out a DBT data element.
  *
- * PUBLIC: int __db_prdbt __P((DBT *, int, const char *, void *,
- * PUBLIC:     int (*)(void *, const void *), int, VRFY_DBINFO *));
+ * PUBLIC: gint __db_prdbt __P((DBT *, int, const gchar *, gpointer ,
+ * PUBLIC:     gint (*)(gpointer , gconstpointer ), int, VRFY_DBINFO *));
  */
-int
+gint
 __db_prdbt(dbtp, checkprint, prefix, handle, callback, is_recno, vdp)
 	DBT *dbtp;
-	int checkprint;
-	const char *prefix;
-	void *handle;
-	int (*callback) __P((void *, const void *));
-	int is_recno;
+	gint checkprint;
+	const gchar *prefix;
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
+	gint is_recno;
 	VRFY_DBINFO *vdp;
 {
-	static const char hex[] = "0123456789abcdef";
+	static const gchar hex[] = "0123456789abcdef";
 	db_recno_t recno;
 	u_int32_t len;
-	int ret;
+	gint ret;
 #define	DBTBUFLEN	100
-	char *p, *hp, buf[DBTBUFLEN], hbuf[DBTBUFLEN];
+	gchar *p, *hp, buf[DBTBUFLEN], hbuf[DBTBUFLEN];
 
 	if (vdp != NULL) {
 		/*
@@ -835,7 +835,7 @@ __db_prdbt(dbtp, checkprint, prefix, handle, callback, is_recno, vdp)
  */
 static void
 __db_proff(vp, fp)
-	void *vp;
+	gpointer vp;
 	FILE *fp;
 {
 	BOVERFLOW *bo;
@@ -856,21 +856,21 @@ __db_proff(vp, fp)
  * __db_prflags --
  *	Print out flags values.
  *
- * PUBLIC: void __db_prflags __P((u_int32_t, const FN *, void *));
+ * PUBLIC: void __db_prflags __P((u_int32_t, const FN *, gpointer ));
  */
 void
 __db_prflags(flags, fn, vfp)
 	u_int32_t flags;
 	FN const *fn;
-	void *vfp;
+	gpointer vfp;
 {
 	FILE *fp;
 	const FN *fnp;
-	int found;
-	const char *sep;
+	gint found;
+	const gchar *sep;
 
 	/*
-	 * We pass the FILE * through a void * so that we can use
+	 * We pass the FILE * through a gpointer  so that we can use
 	 * this function as as a callback.
 	 */
 	fp = (FILE *)vfp;
@@ -889,9 +889,9 @@ __db_prflags(flags, fn, vfp)
 /*
  * __db_dbtype_to_string --
  *	Return the name of the database type.
- * PUBLIC: const char * __db_dbtype_to_string __P((DBTYPE));
+ * PUBLIC: const gchar * __db_dbtype_to_string __P((DBTYPE));
  */
-const char *
+const gchar *
 __db_dbtype_to_string(type)
 	DBTYPE type;
 {
@@ -914,11 +914,11 @@ __db_dbtype_to_string(type)
  * __db_pagetype_to_string --
  *	Return the name of the specified page type.
  */
-static const char *
+static const gchar *
 __db_pagetype_to_string(type)
 	u_int32_t type;
 {
-	char *s;
+	gchar *s;
 
 	s = NULL;
 	switch (type) {
@@ -969,16 +969,16 @@ __db_pagetype_to_string(type)
  * __db_prheader --
  *	Write out header information in the format expected by db_load.
  *
- * PUBLIC: int	__db_prheader __P((DB *, char *, int, int, void *,
- * PUBLIC:     int (*)(void *, const void *), VRFY_DBINFO *, db_pgno_t));
+ * PUBLIC: int	__db_prheader __P((DB *, gchar *, int, int, gpointer ,
+ * PUBLIC:     gint (*)(gpointer , gconstpointer ), VRFY_DBINFO *, db_pgno_t));
  */
-int
+gint
 __db_prheader(dbp, subname, pflag, keyflag, handle, callback, vdp, meta_pgno)
 	DB *dbp;
-	char *subname;
-	int pflag, keyflag;
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gchar *subname;
+	gint pflag, keyflag;
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 	VRFY_DBINFO *vdp;
 	db_pgno_t meta_pgno;
 {
@@ -988,8 +988,8 @@ __db_prheader(dbp, subname, pflag, keyflag, handle, callback, vdp, meta_pgno)
 	DB_QUEUE_STAT *qsp;
 	DBT dbt;
 	VRFY_PAGEINFO *pip;
-	char *buf;
-	int buflen, ret, t_ret;
+	gchar *buf;
+	gint buflen, ret, t_ret;
 	u_int32_t dbtype;
 
 	btsp = NULL;
@@ -1283,12 +1283,12 @@ err:	if (pip != NULL &&
  *	but for consistency's sake we don't want to put its literal contents
  *	in multiple places.
  *
- * PUBLIC: int __db_prfooter __P((void *, int (*)(void *, const void *)));
+ * PUBLIC: gint __db_prfooter __P((gpointer , gint (*)(gpointer , gconstpointer )));
  */
-int
+gint
 __db_prfooter(handle, callback)
-	void *handle;
-	int (*callback) __P((void *, const void *));
+	gpointer handle;
+	gint (*callback) __P((gpointer , gconstpointer ));
 {
 	return (callback(handle, "DATA=END\n"));
 }

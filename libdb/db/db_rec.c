@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,19 +23,19 @@ static const char revid[] = "$Id$";
 #include "dbinc/hash.h"
 
 /*
- * PUBLIC: int __db_addrem_recover
- * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_addrem_recover
+ * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  *
  * This log message is generated whenever we add or remove a duplicate
  * to/from a duplicate page.  On recover, we just do the opposite.
  */
-int
+gint
 __db_addrem_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_addrem_args *argp;
 	DB *file_dbp;
@@ -43,7 +43,7 @@ __db_addrem_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t change;
-	int cmp_n, cmp_p, ret;
+	gint cmp_n, cmp_p, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -109,16 +109,16 @@ out:	if (pagep != NULL)
 }
 
 /*
- * PUBLIC: int __db_big_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_big_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_big_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_big_args *argp;
 	DB *file_dbp;
@@ -126,7 +126,7 @@ __db_big_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t change;
-	int cmp_n, cmp_p, ret;
+	gint cmp_n, cmp_p, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -281,23 +281,23 @@ out:	if (pagep != NULL)
  * __db_ovref_recover --
  *	Recovery function for __db_ovref().
  *
- * PUBLIC: int __db_ovref_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_ovref_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_ovref_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_ovref_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	int cmp, modified, ret;
+	gint cmp, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -343,23 +343,23 @@ out:	if (pagep != NULL)
  * __db_relink_recover --
  *	Recovery function for relink.
  *
- * PUBLIC: int __db_relink_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_relink_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_relink_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_relink_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	int cmp_n, cmp_p, modified, ret;
+	gint cmp_n, cmp_p, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -480,19 +480,19 @@ out:	if (pagep != NULL)
  * __db_debug_recover --
  *	Recovery function for debug.
  *
- * PUBLIC: int __db_debug_recover __P((DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_debug_recover __P((DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_debug_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_debug_args *argp;
-	int ret;
+	gint ret;
 
 	COMPQUIET(dbenv, NULL);
 	COMPQUIET(op, DB_TXN_ABORT);
@@ -511,16 +511,16 @@ __db_debug_recover(dbenv, dbtp, lsnp, op, info)
  * __db_noop_recover --
  *	Recovery function for noop.
  *
- * PUBLIC: int __db_noop_recover __P((DB_ENV *,
- * PUBLIC:      DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_noop_recover __P((DB_ENV *,
+ * PUBLIC:      DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_noop_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_noop_args *argp;
 	DB *file_dbp;
@@ -528,7 +528,7 @@ __db_noop_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t change;
-	int cmp_n, cmp_p, ret;
+	gint cmp_n, cmp_p, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -562,16 +562,16 @@ out:	if (pagep != NULL)
  * __db_pg_alloc_recover --
  *	Recovery function for pg_alloc.
  *
- * PUBLIC: int __db_pg_alloc_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_pg_alloc_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_pg_alloc_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_pg_alloc_args *argp;
 	DB *file_dbp;
@@ -580,7 +580,7 @@ __db_pg_alloc_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	db_pgno_t pgno;
-	int cmp_n, cmp_p, created, level, modified, ret;
+	gint cmp_n, cmp_p, created, level, modified, ret;
 
 	meta = NULL;
 	pagep = NULL;
@@ -751,16 +751,16 @@ out:	if (pagep != NULL)
  * __db_pg_free_recover --
  *	Recovery function for pg_free.
  *
- * PUBLIC: int __db_pg_free_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_pg_free_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_pg_free_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_pg_free_args *argp;
 	DB *file_dbp;
@@ -770,7 +770,7 @@ __db_pg_free_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	db_pgno_t pgno;
-	int cmp_n, cmp_p, modified, ret;
+	gint cmp_n, cmp_p, modified, ret;
 
 	COMPQUIET(info, NULL);
 	meta = NULL;
@@ -856,20 +856,20 @@ out:	if (pagep != NULL)
  * __db_cksum_recover --
  *	Recovery function for checksum failure log record.
  *
- * PUBLIC: int __db_cksum_recover __P((DB_ENV *,
- * PUBLIC:      DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __db_cksum_recover __P((DB_ENV *,
+ * PUBLIC:      DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __db_cksum_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__db_cksum_args *argp;
 
-	int ret;
+	gint ret;
 
 	COMPQUIET(info, NULL);
 	COMPQUIET(lsnp, NULL);

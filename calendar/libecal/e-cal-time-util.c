@@ -31,7 +31,7 @@
 
 /* Number of days in a month, using 0 (Jan) to 11 (Dec). For leap years,
    add 1 to February (month 1). */
-static const int days_in_month[12] = {
+static const gint days_in_month[12] = {
 	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
@@ -61,7 +61,7 @@ static const int days_in_month[12] = {
  * Return value: a time_t value containing @time plus the days added.
  */
 time_t
-time_add_day (time_t time, int days)
+time_add_day (time_t time, gint days)
 {
 	struct tm *tm;
 
@@ -82,7 +82,7 @@ time_add_day (time_t time, int days)
  * Return value: a time_t value containing @time plus the weeks added.
  */
 time_t
-time_add_week (time_t time, int weeks)
+time_add_week (time_t time, gint weeks)
 {
 	return time_add_day (time, weeks * 7);
 }
@@ -153,7 +153,7 @@ time_day_end (time_t t)
  * Return value: a time_t value containing @time plus the days added.
  */
 time_t
-time_add_day_with_zone (time_t time, int days, icaltimezone *zone)
+time_add_day_with_zone (time_t time, gint days, icaltimezone *zone)
 {
 	struct icaltimetype tt;
 
@@ -183,7 +183,7 @@ time_add_day_with_zone (time_t time, int days, icaltimezone *zone)
  * Return value: a time_t value containing @time plus the weeks added.
  */
 time_t
-time_add_week_with_zone (time_t time, int weeks, icaltimezone *zone)
+time_add_week_with_zone (time_t time, gint weeks, icaltimezone *zone)
 {
 	return time_add_day_with_zone (time, weeks * 7, zone);
 }
@@ -209,10 +209,10 @@ time_add_week_with_zone (time_t time, int weeks, icaltimezone *zone)
  * Return value: a time_t value containing @time plus the months added.
  */
 time_t
-time_add_month_with_zone (time_t time, int months, icaltimezone *zone)
+time_add_month_with_zone (time_t time, gint months, icaltimezone *zone)
 {
 	struct icaltimetype tt;
-	int day, days_in_month;
+	gint day, days_in_month;
 
 	/* Convert to an icaltimetype. */
 	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
@@ -321,10 +321,10 @@ time_month_begin_with_zone (time_t time, icaltimezone *zone)
  * Return value: the beginning of the week.
  */
 time_t
-time_week_begin_with_zone (time_t time, int week_start_day, icaltimezone *zone)
+time_week_begin_with_zone (time_t time, gint week_start_day, icaltimezone *zone)
 {
 	struct icaltimetype tt;
-	int weekday, offset;
+	gint weekday, offset;
 
 	/* Convert to an icaltimetype. */
 	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
@@ -454,10 +454,10 @@ time_to_gdate_with_zone (GDate *date, time_t time, icaltimezone *zone)
  *
  * Return value: number of days in the given month/year.
  */
-int
-time_days_in_month (int year, int month)
+gint
+time_days_in_month (gint year, gint month)
 {
-	int days;
+	gint days;
 
 	g_return_val_if_fail (year >= 1900, 0);
 	g_return_val_if_fail ((month >= 0) && (month < 12), 0);
@@ -481,10 +481,10 @@ time_days_in_month (int year, int month)
  *
  * Return value: the day of the year.
  */
-int
-time_day_of_year (int day, int month, int year)
+gint
+time_day_of_year (gint day, gint month, gint year)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < month; i++) {
 		day += days_in_month[i];
@@ -509,10 +509,10 @@ time_day_of_year (int day, int month, int year)
  *
  * Return value: the day of the week for the given date.
  */
-int
-time_day_of_week (int day, int month, int year)
+gint
+time_day_of_week (gint day, gint month, gint year)
 {
-	int n;
+	gint n;
 
 	n = (year - 1) * 365 + time_leap_years_up_to (year - 1)
 	  + time_day_of_year (day, month, year);
@@ -537,7 +537,7 @@ time_day_of_week (int day, int month, int year)
  * Return value: TRUE if the year is leap, FALSE if not.
  */
 gboolean
-time_is_leap_year (int year)
+time_is_leap_year (gint year)
 {
 	if (year <= 1752)
 		return !(year % 4);
@@ -555,8 +555,8 @@ time_is_leap_year (int year)
  *
  * Return value: number of leap years.
  */
-int
-time_leap_years_up_to (int year)
+gint
+time_leap_years_up_to (gint year)
 {
 	/* There is normally a leap year every 4 years, except at the turn of
 	   centuries since 1700. But there is a leap year on centuries since 1700
@@ -575,12 +575,12 @@ time_leap_years_up_to (int year)
  *
  * Return value: String with the ISO 8601 representation of the UTC time.
  **/
-char *
+gchar *
 isodate_from_time_t (time_t t)
 {
 	gchar *ret;
 	struct tm stm;
-	const char fmt[] = "%04d%02d%02dT%02d%02d%02dZ";
+	const gchar fmt[] = "%04d%02d%02dT%02d%02d%02dZ";
 
 	gmtime_r (&t, &stm);
 	ret = g_malloc (ISODATE_LENGTH);
@@ -599,11 +599,11 @@ isodate_from_time_t (time_t t)
  * Note that we only allow UTC times at present.
  **/
 time_t
-time_from_isodate (const char *str)
+time_from_isodate (const gchar *str)
 {
 	struct icaltimetype tt = icaltime_null_time ();
 	icaltimezone *utc_zone;
-	int len, i;
+	gint len, i;
 
 	g_return_val_if_fail (str != NULL, -1);
 

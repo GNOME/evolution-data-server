@@ -49,19 +49,19 @@ struct _CamelIMAP4StoreSummary;
 struct _CamelIMAP4NamespaceList;
 struct _CamelIMAP4Namespace;
 
-struct _CamelFolderInfo *camel_imap4_build_folder_info_tree (GPtrArray *array, const char *top);
+struct _CamelFolderInfo *camel_imap4_build_folder_info_tree (GPtrArray *array, const gchar *top);
 
 void camel_imap4_namespace_clear (struct _CamelIMAP4Namespace **ns);
 struct _CamelIMAP4NamespaceList *camel_imap4_namespace_list_copy (const struct _CamelIMAP4NamespaceList *nsl);
 void camel_imap4_namespace_list_free (struct _CamelIMAP4NamespaceList *nsl);
 
-char camel_imap4_get_path_delim (struct _CamelIMAP4StoreSummary *s, const char *full_name);
+gchar camel_imap4_get_path_delim (struct _CamelIMAP4StoreSummary *s, const gchar *full_name);
 
-int camel_imap4_get_uid_set (struct _CamelIMAP4Engine *engine, struct _CamelFolderSummary *summary, GPtrArray *infos, int cur, size_t linelen, char **set);
+gint camel_imap4_get_uid_set (struct _CamelIMAP4Engine *engine, struct _CamelFolderSummary *summary, GPtrArray *infos, gint cur, size_t linelen, gchar **set);
 
 void camel_imap4_utils_set_unexpected_token_error (CamelException *ex, struct _CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token);
 
-int camel_imap4_parse_flags_list (struct _CamelIMAP4Engine *engine, guint32 *flags, CamelException *ex);
+gint camel_imap4_parse_flags_list (struct _CamelIMAP4Engine *engine, guint32 *flags, CamelException *ex);
 
 /* Note: make sure these don't clash with any bit flags in camel-store.h */
 #define CAMEL_IMAP4_FOLDER_MARKED   (1 << 17)
@@ -69,11 +69,11 @@ int camel_imap4_parse_flags_list (struct _CamelIMAP4Engine *engine, guint32 *fla
 
 typedef struct {
 	guint32 flags;
-	char delim;
-	char *name;
+	gchar delim;
+	gchar *name;
 } camel_imap4_list_t;
 
-int camel_imap4_untagged_list (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic,
+gint camel_imap4_untagged_list (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic,
 			       guint32 index, struct _camel_imap4_token_t *token, CamelException *ex);
 
 
@@ -94,12 +94,12 @@ typedef struct _camel_imap4_status_attr {
 
 typedef struct {
 	camel_imap4_status_attr_t *attr_list;
-	char *mailbox;
+	gchar *mailbox;
 } camel_imap4_status_t;
 
 void camel_imap4_status_free (camel_imap4_status_t *status);
 
-int camel_imap4_untagged_status (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic,
+gint camel_imap4_untagged_status (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic,
 				 guint32 index, struct _camel_imap4_token_t *token, CamelException *ex);
 
 G_END_DECLS

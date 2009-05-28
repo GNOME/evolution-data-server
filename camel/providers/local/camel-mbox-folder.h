@@ -35,7 +35,7 @@ G_BEGIN_DECLS
 typedef struct {
 	CamelLocalFolder parent_object;
 
-	int lockfd;		/* for when we have a lock on the folder */
+	gint lockfd;		/* for when we have a lock on the folder */
 } CamelMboxFolder;
 
 typedef struct {
@@ -47,7 +47,7 @@ typedef struct {
 
 /* public methods */
 /* flags are taken from CAMEL_STORE_FOLDER_* flags */
-CamelFolder *camel_mbox_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex);
+CamelFolder *camel_mbox_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_mbox_folder_get_type(void);

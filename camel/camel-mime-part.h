@@ -46,11 +46,11 @@ struct _CamelMimePart {
 
 	/* All fields here are -** PRIVATE **- */
 	/* TODO: these should be in a camelcontentinfo */
-	char *description;
+	gchar *description;
 	CamelContentDisposition *disposition;
-	char *content_id;
-	char *content_MD5;
-	char *content_location;
+	gchar *content_id;
+	gchar *content_MD5;
+	gchar *content_location;
 	GList *content_languages;
 	CamelTransferEncoding encoding;
 };
@@ -59,7 +59,7 @@ typedef struct _CamelMimePartClass {
 	CamelMediumClass parent_class;
 
 	/* Virtual methods */
-	int (*construct_from_parser) (CamelMimePart *, CamelMimeParser *);
+	gint (*construct_from_parser) (CamelMimePart *, CamelMimeParser *);
 } CamelMimePartClass;
 
 /* Standard Camel function */
@@ -68,23 +68,23 @@ CamelType camel_mime_part_get_type (void);
 /* public methods */
 CamelMimePart *  camel_mime_part_new                    (void);
 
-void		 camel_mime_part_set_description	(CamelMimePart *mime_part, const char *description);
-const     char  *camel_mime_part_get_description	(CamelMimePart *mime_part);
+void		 camel_mime_part_set_description	(CamelMimePart *mime_part, const gchar *description);
+const     gchar  *camel_mime_part_get_description	(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_disposition	(CamelMimePart *mime_part, const char *disposition);
-const     char  *camel_mime_part_get_disposition	(CamelMimePart *mime_part);
+void		 camel_mime_part_set_disposition	(CamelMimePart *mime_part, const gchar *disposition);
+const     gchar  *camel_mime_part_get_disposition	(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_filename		(CamelMimePart *mime_part, const char *filename);
-const	  char  *camel_mime_part_get_filename		(CamelMimePart *mime_part);
+void		 camel_mime_part_set_filename		(CamelMimePart *mime_part, const gchar *filename);
+const	  gchar  *camel_mime_part_get_filename		(CamelMimePart *mime_part);
 
-void             camel_mime_part_set_content_id		(CamelMimePart *mime_part, const char *contentid);
-const	  char  *camel_mime_part_get_content_id		(CamelMimePart *mime_part);
+void             camel_mime_part_set_content_id		(CamelMimePart *mime_part, const gchar *contentid);
+const	  gchar  *camel_mime_part_get_content_id		(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_content_MD5	(CamelMimePart *mime_part, const char *md5sum);
-const	  char  *camel_mime_part_get_content_MD5	(CamelMimePart *mime_part);
+void		 camel_mime_part_set_content_MD5	(CamelMimePart *mime_part, const gchar *md5sum);
+const	  gchar  *camel_mime_part_get_content_MD5	(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const char *location);
-const	  char  *camel_mime_part_get_content_location	(CamelMimePart *mime_part);
+void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const gchar *location);
+const	  gchar  *camel_mime_part_get_content_location	(CamelMimePart *mime_part);
 
 void		 camel_mime_part_set_encoding		(CamelMimePart *mime_part, CamelTransferEncoding encoding);
 CamelTransferEncoding camel_mime_part_get_encoding	(CamelMimePart *mime_part);
@@ -93,7 +93,7 @@ void		 camel_mime_part_set_content_languages	(CamelMimePart *mime_part, GList *c
 const	  GList *camel_mime_part_get_content_languages	(CamelMimePart *mime_part);
 
 /* FIXME: what about content-type parameters?   what about major/minor parts? */
-void               camel_mime_part_set_content_type	(CamelMimePart *mime_part, const char *content_type);
+void               camel_mime_part_set_content_type	(CamelMimePart *mime_part, const gchar *content_type);
 CamelContentType  *camel_mime_part_get_content_type	(CamelMimePart *mime_part);
 
 /* construction */
@@ -101,7 +101,7 @@ int		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMime
 
 /* utility functions */
 void	camel_mime_part_set_content	       (CamelMimePart *mime_part,
-							const char *data, int length, const char *type);
+							const gchar *data, gint length, const gchar *type);
 
 size_t          camel_mime_part_get_content_size       (CamelMimePart *mime_part);
 

@@ -20,10 +20,10 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *local_drivers[] = { "local" };
+static const gchar *local_drivers[] = { "local" };
 
 struct {
-	char *name;
+	gchar *name;
 	CamelFolder *folder;
 } mailboxes[] = {
 	{ "INBOX", NULL },
@@ -34,7 +34,7 @@ struct {
 };
 
 struct {
-	char *name, *match, *action;
+	gchar *name, *match, *action;
 } rules[] = {
 	{ "empty1", "(match-all (header-contains \"Frobnitz\"))", "(copy-to \"folder1\")" },
 	{ "empty2", "(header-contains \"Frobnitz\")", "(copy-to \"folder2\")" },
@@ -49,7 +49,7 @@ struct {
 
 /* broken match rules */
 struct {
-	char *name, *match, *action;
+	gchar *name, *match, *action;
 } brokens[] = {
 	{ "count1", "(body-contains data50)", "(copy-to \"folder1\")" }, /* non string argument */
 	{ "count1", "(body-contains-stuff \"data3\")", "(move-to-folder \"folder2\")" }, /* invalid function */
@@ -65,7 +65,7 @@ struct {
 
 /* broken action rules */
 struct {
-	char *name, *match, *action;
+	gchar *name, *match, *action;
 } brokena[] = {
 	{ "a", "(body-contains \"data2\")", "(body-contains \"help\")" }, /* rule in action */
 	{ "a", "(body-contains \"data2\")", "(move-to-folder-name \"folder2\")" }, /* unknown function */
@@ -77,9 +77,9 @@ struct {
 	{ "a", "(body-contains \"data2\")", "" }, /* empty */
 };
 
-static CamelFolder *get_folder(CamelFilterDriver *d, const char *uri, void *data, CamelException *ex)
+static CamelFolder *get_folder(CamelFilterDriver *d, const gchar *uri, gpointer data, CamelException *ex)
 {
-	int i;
+	gint i;
 
 	for (i=0;i<ARRAY_LEN(mailboxes);i++)
 		if (!strcmp(mailboxes[i].name, uri)) {
@@ -89,14 +89,14 @@ static CamelFolder *get_folder(CamelFilterDriver *d, const char *uri, void *data
 	return NULL;
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelSession *session;
 	CamelStore *store;
 	CamelException *ex;
 	CamelFolder *folder;
 	CamelMimeMessage *msg;
-	int i, j;
+	gint i, j;
 	CamelStream *mbox;
 	CamelFilterDriver *driver;
 
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	push("creating 100 test message mbox");
 	mbox = camel_stream_fs_new_with_name("/tmp/camel-test/inbox", O_WRONLY|O_CREAT|O_EXCL, 0600);
 	for (j=0;j<100;j++) {
-		char *content, *subject;
+		gchar *content, *subject;
 
 		push("creating test message");
 		msg = test_message_create_simple();

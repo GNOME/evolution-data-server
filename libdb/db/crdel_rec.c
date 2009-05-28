@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,23 +26,23 @@ static const char revid[] = "$Id$";
  * __crdel_metasub_recover --
  *	Recovery function for metasub.
  *
- * PUBLIC: int __crdel_metasub_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+ * PUBLIC: gint __crdel_metasub_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
  */
-int
+gint
 __crdel_metasub_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	void *info;
+	gpointer info;
 {
 	__crdel_metasub_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	int cmp_p, modified, ret;
+	gint cmp_p, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);

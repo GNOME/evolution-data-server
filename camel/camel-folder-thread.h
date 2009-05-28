@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 typedef struct _CamelFolderThreadNode {
 	struct _CamelFolderThreadNode *next, *parent, *child;
 	const CamelMessageInfo *message;
-	char *root_subject;	/* cached root equivalent subject */
+	gchar *root_subject;	/* cached root equivalent subject */
 	guint32 order:31;
 	guint32 re:1;			/* re version of subject? */
 } CamelFolderThreadNode;
@@ -61,7 +61,7 @@ void camel_folder_thread_messages_ref(CamelFolderThread *thread);
 void camel_folder_thread_messages_unref(CamelFolderThread *thread);
 
 /* debugging function only */
-int camel_folder_threaded_messages_dump(CamelFolderThreadNode *c);
+gint camel_folder_threaded_messages_dump(CamelFolderThreadNode *c);
 
 G_END_DECLS
 

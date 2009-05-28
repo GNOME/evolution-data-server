@@ -34,9 +34,9 @@
 #include "camel-session.h"
 #include "camel-url.h"
 
-static void add_hash (guint *hash, char *s);
+static void add_hash (guint *hash, gchar *s);
 static guint imap_url_hash (gconstpointer key);
-static gint check_equal (char *s1, char *s2);
+static gint check_equal (gchar *s1, gchar *s2);
 static gint imap_url_equal (gconstpointer a, gconstpointer b);
 
 CamelProviderConfEntry imap_conf_entries[] = {
@@ -120,7 +120,7 @@ camel_provider_module_init(void)
 }
 
 static void
-add_hash (guint *hash, char *s)
+add_hash (guint *hash, gchar *s)
 {
 	if (s)
 		*hash ^= g_str_hash(s);
@@ -140,7 +140,7 @@ imap_url_hash (gconstpointer key)
 }
 
 static int
-check_equal (char *s1, char *s2)
+check_equal (gchar *s1, gchar *s2)
 {
 	if (s1 == NULL) {
 		if (s2 == NULL)

@@ -45,7 +45,7 @@ static CamelObjectClass *parent_class = NULL;
 #define CS_CLASS(so) CAMEL_IMAPP_FETCH_STREAM_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
 static ssize_t
-stream_read(CamelStream *stream, char *buffer, size_t n)
+stream_read(CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelIMAPPFetchStream *is = (CamelIMAPPFetchStream *)stream;
 	ssize_t max;
@@ -76,7 +76,7 @@ stream_read(CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write(CamelStream *stream, const char *buffer, size_t n)
+stream_write(CamelStream *stream, const gchar *buffer, size_t n)
 {
 	CamelIMAPPFetchStream *is = (CamelIMAPPFetchStream *)stream;
 
@@ -167,7 +167,7 @@ camel_imapp_fetch_stream_get_type (void)
  * Return value: the stream
  **/
 CamelStream *
-camel_imapp_fetch_stream_new(CamelIMAPPEngine *ie, const char *uid, const char *body)
+camel_imapp_fetch_stream_new(CamelIMAPPEngine *ie, const gchar *uid, const gchar *body)
 {
 	CamelIMAPPFetchStream *is;
 

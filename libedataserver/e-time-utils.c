@@ -41,10 +41,10 @@
 #include <windows.h>
 
 static const gchar *
-get_locale_string (int lctype)
+get_locale_string (gint lctype)
 {
-	int nbytes = GetLocaleInfo (GetThreadLocale (), lctype, NULL, 0);
-	char *tem;
+	gint nbytes = GetLocaleInfo (GetThreadLocale (), lctype, NULL, 0);
+	gchar *tem;
 	GQuark quark;
 
 	if (nbytes == 0)
@@ -63,15 +63,15 @@ get_locale_string (int lctype)
 	return g_quark_to_string (quark);
 }
 
-static const char *
-translate_picture (const char *picture)
+static const gchar *
+translate_picture (const gchar *picture)
 {
 	GString *s = g_string_new ("");
 	GQuark quark;
 
 	while (*picture) {
-		const char *q = picture + 1;
-		int count;
+		const gchar *q = picture + 1;
+		gint count;
 
 		while (*picture == *q)
 			q++;
@@ -239,7 +239,7 @@ localtime_r (t, tp)
 #if defined _LIBC && defined __GNUC__ && __GNUC__ >= 2
 # define match_string(cs1, s2) \
   ({ size_t len = strlen (cs1);						      \
-     int result = __strncasecmp_l ((cs1), (s2), len, locale) == 0;	      \
+     gint result = __strncasecmp_l ((cs1), (s2), len, locale) == 0;	      \
      if (result) (s2) += len;						      \
      result; })
 #else
@@ -251,7 +251,7 @@ localtime_r (t, tp)
    lead to problems with the wide character version.  */
 #define get_number(from, to, n) \
   do {									      \
-    int __n = n;							      \
+    gint __n = n;							      \
     val = 0;								      \
     while (*rp == ' ')							      \
       ++rp;								      \
@@ -317,21 +317,21 @@ extern const struct locale_data _nl_C_LC_TIME attribute_hidden;
 
 # define strncasecmp(s1, s2, n) __strncasecmp (s1, s2, n)
 #else
-static char const weekday_name[][10] =
+static gchar const weekday_name[][10] =
   {
     "Sunday", "Monday", "Tuesday", "Wednesday",
     "Thursday", "Friday", "Saturday"
   };
-static char const ab_weekday_name[][4] =
+static gchar const ab_weekday_name[][4] =
   {
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
   };
-static char const month_name[][10] =
+static gchar const month_name[][10] =
   {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   };
-static char const ab_month_name[][4] =
+static gchar const ab_month_name[][4] =
   {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -343,7 +343,7 @@ static char const ab_month_name[][4] =
 # define HERE_T_FMT_AMPM "%I:%M:%S %p"
 # define HERE_T_FMT "%H:%M:%S"
 
-static const unsigned short int __mon_yday[2][13] =
+static const unsigned short gint __mon_yday[2][13] =
   {
     /* Normal years.  */
     { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 },
@@ -396,8 +396,8 @@ day_of_the_week (struct tm *tm)
   /* We know that January 1st 1970 was a Thursday (= 4).  Compute the
      the difference between this data in the one on TM and so determine
      the weekday.  */
-  int corr_year = 1900 + tm->tm_year - (tm->tm_mon < 2);
-  int wday = (-473
+  gint corr_year = 1900 + tm->tm_year - (tm->tm_mon < 2);
+  gint wday = (-473
 	      + (365 * (tm->tm_year - 70))
 	      + (corr_year / 4)
 	      - ((corr_year / 4) / 25) + ((corr_year / 4) % 25 < 0)
@@ -417,34 +417,34 @@ day_of_the_year (struct tm *tm)
 
 
 #ifdef _LIBC
-char *
+gchar *
 internal_function
 #else
-static char *
+static gchar *
 #endif
 __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
-     const char *rp;
-     const char *fmt;
+     const gchar *rp;
+     const gchar *fmt;
      struct tm *tm;
      enum ptime_locale_status *decided;
-     int era_cnt;
+     gint era_cnt;
      LOCALE_PARAM_DECL
 {
 #ifdef _LIBC
   struct locale_data *const current = locale->__locales[LC_TIME];
 #endif
 
-  const char *rp_backup;
-  int cnt;
+  const gchar *rp_backup;
+  gint cnt;
   size_t val;
-  int have_I, is_pm;
-  int century, want_century;
-  int want_era;
-  int have_wday, want_xday;
-  int have_yday;
-  int have_mon, have_mday;
-  int have_uweek, have_wweek;
-  int week_no;
+  gint have_I, is_pm;
+  gint century, want_century;
+  gint want_era;
+  gint have_wday, want_xday;
+  gint have_yday;
+  gint have_mon, have_mday;
+  gint have_uweek, have_wweek;
+  gint week_no;
 #ifdef _NL_CURRENT
   size_t num_eras;
 #endif
@@ -640,12 +640,12 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-	      char *d_t_fmt =
+	      gchar *d_t_fmt =
 		      g_strconcat (get_locale_string (LOCALE_SSHORTDATE),
 				   " ",
 				   get_locale_string (LOCALE_STIMEFORMAT),
 				   NULL);
-	      const char *posix_d_t_fmt = translate_picture (d_t_fmt);
+	      const gchar *posix_d_t_fmt = translate_picture (d_t_fmt);
 
 	      g_free (d_t_fmt);
 
@@ -717,7 +717,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-		const char *posix_d_fmt = translate_picture (get_locale_string (LOCALE_SSHORTDATE));
+		const gchar *posix_d_fmt = translate_picture (get_locale_string (LOCALE_SSHORTDATE));
 		if (!recursive (posix_d_fmt))
 		{
 		  if (*decided == loc)
@@ -853,11 +853,11 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-	      char *t_p_fmt =
+	      gchar *t_p_fmt =
 		      g_strconcat (get_locale_string (LOCALE_STIMEFORMAT),
 				   " tt",
 				   NULL);
-	      const char *posix_t_p_fmt = translate_picture (t_p_fmt);
+	      const gchar *posix_t_p_fmt = translate_picture (t_p_fmt);
 
 	      g_free (t_p_fmt);
 
@@ -935,7 +935,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 #elif defined (G_OS_WIN32)
 	  if (*decided != raw)
 	    {
-	      const char *posix_t_fmt = translate_picture (get_locale_string (LOCALE_STIMEFORMAT));
+	      const gchar *posix_t_fmt = translate_picture (get_locale_string (LOCALE_STIMEFORMAT));
 	      if (!recursive (posix_t_fmt))
 		{
 		  if (*decided == loc)
@@ -1027,7 +1027,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	      /* Match locale's alternate date and time format.  */
 	      if (*decided != raw)
 		{
-		  const char *fmt = _NL_CURRENT (LC_TIME, ERA_D_T_FMT);
+		  const gchar *fmt = _NL_CURRENT (LC_TIME, ERA_D_T_FMT);
 
 		  if (*fmt == '\0')
 		    fmt = _NL_CURRENT (LC_TIME, D_T_FMT);
@@ -1108,10 +1108,10 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		      assert (*decided == loc);
 
 		      era = _nl_select_era_entry (era_cnt HELPER_LOCALE_ARG);
-		      int match = FALSE;
+		      gint match = FALSE;
 		      if (era != NULL)
 			{
-			  int delta = ((tm->tm_year - era->offset)
+			  gint delta = ((tm->tm_year - era->offset)
 				       * era->absolute_direction);
 			  match = (delta >= 0
 				   && delta < (((int64_t) era->stop_date[0]
@@ -1132,7 +1132,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 						  HELPER_LOCALE_ARG);
 		      if (era != NULL)
 			{
-			  int delta = ((tm->tm_year - era->offset)
+			  gint delta = ((tm->tm_year - era->offset)
 				       * era->absolute_direction);
 			  if (delta >= 0
 			      && delta < (((int64_t) era->stop_date[0]
@@ -1192,7 +1192,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	    case 'x':
 	      if (*decided != raw)
 		{
-		  const char *fmt = _NL_CURRENT (LC_TIME, ERA_D_FMT);
+		  const gchar *fmt = _NL_CURRENT (LC_TIME, ERA_D_FMT);
 
 		  if (*fmt == '\0')
 		    fmt = _NL_CURRENT (LC_TIME, D_FMT);
@@ -1218,7 +1218,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	    case 'X':
 	      if (*decided != raw)
 		{
-		  const char *fmt = _NL_CURRENT (LC_TIME, ERA_T_FMT);
+		  const gchar *fmt = _NL_CURRENT (LC_TIME, ERA_T_FMT);
 
 		  if (*fmt == '\0')
 		    fmt = _NL_CURRENT (LC_TIME, T_FMT);
@@ -1374,7 +1374,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
       if ( !(have_mon && have_mday) && have_yday)
 	{
 	  /* We don't have tm_mon and/or tm_mday, compute them.  */
-	  int t_mon = 0;
+	  gint t_mon = 0;
 	  while (__mon_yday[__isleap(1900 + tm->tm_year)][t_mon] <= tm->tm_yday)
 	      t_mon++;
 	  if (!have_mon)
@@ -1392,10 +1392,10 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 
   if ((have_uweek || have_wweek) && have_wday)
     {
-      int save_wday = tm->tm_wday;
-      int save_mday = tm->tm_mday;
-      int save_mon = tm->tm_mon;
-      int w_offset = have_uweek ? 0 : 1;
+      gint save_wday = tm->tm_wday;
+      gint save_mday = tm->tm_mday;
+      gint save_mon = tm->tm_mon;
+      gint w_offset = have_uweek ? 0 : 1;
 
       tm->tm_mday = 1;
       tm->tm_mon = 0;
@@ -1412,7 +1412,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 
       if (!have_mday || !have_mon)
 	{
-	  int t_mon = 0;
+	  gint t_mon = 0;
 	  while (__mon_yday[__isleap(1900 + tm->tm_year)][t_mon]
 		 <= tm->tm_yday)
 	    t_mon++;
@@ -1427,13 +1427,13 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
       tm->tm_wday = save_wday;
     }
 
-  return (char *) rp;
+  return (gchar *) rp;
 }
 
-static char *
+static gchar *
 strptime (buf, format, tm LOCALE_PARAM)
-     const char *buf;
-     const char *format;
+     const gchar *buf;
+     const gchar *format;
      struct tm *tm;
      LOCALE_PARAM_DECL
 {
@@ -1456,9 +1456,9 @@ weak_alias (__strptime_l, strptime_l)
 
 /* Returns whether a string is NULL, empty, or full of whitespace */
 static gboolean
-string_is_empty (const char *value)
+string_is_empty (const gchar *value)
 {
-	const char *p;
+	const gchar *p;
 	gboolean empty = TRUE;
 
 	if (value) {
@@ -1479,13 +1479,13 @@ string_is_empty (const char *value)
  * string with them.
  */
 static ETimeParseStatus
-parse_with_strptime (const char *value, struct tm *result, const char **formats, int n_formats)
+parse_with_strptime (const gchar *value, struct tm *result, const gchar **formats, gint n_formats)
 {
-	const char *parse_end = NULL, *pos;
+	const gchar *parse_end = NULL, *pos;
 	gchar *locale_str;
 	gchar *format_str;
 	ETimeParseStatus parse_ret;
-	int i, n;
+	gint i, n;
 
 	if (string_is_empty (value)) {
 		memset (result, 0, sizeof (*result));
@@ -1495,7 +1495,7 @@ parse_with_strptime (const char *value, struct tm *result, const char **formats,
 
 	parse_ret =  E_TIME_PARSE_INVALID;
 	locale_str = g_locale_from_utf8 (value, -1, NULL, NULL, NULL);
-	pos = (const char *) locale_str;
+	pos = (const gchar *) locale_str;
 
 	if (!locale_str)
 		return E_TIME_PARSE_INVALID;
@@ -1563,7 +1563,7 @@ static gboolean
 locale_supports_12_hour_format (void)
 {
 	struct tm tmp_tm = { 0 };
-	char s[16];
+	gchar s[16];
 
 	e_utf8_strftime (s, sizeof (s), "%p", &tmp_tm);
 	return s[0] != '\0';
@@ -1572,8 +1572,8 @@ locale_supports_12_hour_format (void)
 static gboolean
 has_correct_date (const struct tm *value)
 {
-	const int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	int days, year;
+	const gint days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	gint days, year;
 
 	g_return_val_if_fail (value != NULL, FALSE);
 	g_return_val_if_fail (value->tm_mon >= 0 && value->tm_mon < 12, FALSE);
@@ -1611,8 +1611,8 @@ e_time_parse_date_and_time_ex		(const char	*value,
 {
 	struct tm *today_tm;
 	time_t t;
-	const char *format[16];
-	int num_formats = 0;
+	const gchar *format[16];
+	gint num_formats = 0;
 	gboolean use_12_hour_formats = locale_supports_12_hour_format ();
 	ETimeParseStatus status;
 
@@ -1755,9 +1755,9 @@ e_time_parse_date_and_time		(const char	*value,
  * @value was an empty string, a valid date, or an invalid date.
  **/
 ETimeParseStatus
-e_time_parse_date_ex (const char *value, struct tm *result, gboolean *two_digit_year)
+e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit_year)
 {
-	const char *format[4];
+	const gchar *format[4];
 	ETimeParseStatus status;
 
 	g_return_val_if_fail (value != NULL, E_TIME_PARSE_INVALID);
@@ -1779,7 +1779,7 @@ e_time_parse_date_ex (const char *value, struct tm *result, gboolean *two_digit_
 		/* when we need to know about two digit year, then always first try
 		   full year, because for example nl_NL have format %d-%m-%y and it
 		   changes from two year itself, which isn't what we want */
-		const char *tmp = format [1];
+		const gchar *tmp = format [1];
 		format [1] = format [0];
 		format [0] = tmp;
 		*two_digit_year = FALSE;
@@ -1795,15 +1795,15 @@ e_time_parse_date_ex (const char *value, struct tm *result, gboolean *two_digit_
 	}
 
 	if (two_digit_year)
-		g_free ((char*)format [0]);
+		g_free ((gchar *)format [0]);
 	else
-		g_free ((char*)format [1]);
+		g_free ((gchar *)format [1]);
 
 	return status;
 }
 
 ETimeParseStatus
-e_time_parse_date (const char *value, struct tm *result)
+e_time_parse_date (const gchar *value, struct tm *result)
 {
 	return e_time_parse_date_ex (value, result, NULL);
 }
@@ -1823,10 +1823,10 @@ e_time_parse_date (const char *value, struct tm *result)
  * @value was an empty string, a valid date, or an invalid date.
  **/
 ETimeParseStatus
-e_time_parse_time (const char *value, struct tm *result)
+e_time_parse_time (const gchar *value, struct tm *result)
 {
-	const char *format[7];
-	int num_formats = 0;
+	const gchar *format[7];
+	gint num_formats = 0;
 	gboolean use_12_hour_formats = locale_supports_12_hour_format ();
 
 	if (use_12_hour_formats) {
@@ -1885,7 +1885,7 @@ e_time_format_date_and_time		(struct tm	*date_tm,
 					 char		*buffer,
 					 int		 buffer_size)
 {
-	char *format;
+	gchar *format;
 
 	if (!show_midnight && date_tm->tm_hour == 0
 	    && date_tm->tm_min == 0 && date_tm->tm_sec == 0) {
@@ -1936,7 +1936,7 @@ e_time_format_time			(struct tm	*date_tm,
 					 char		*buffer,
 					 int		 buffer_size)
 {
-	char *format;
+	gchar *format;
 
 	if (use_24_hour_format) {
 		if (!show_zero_seconds && date_tm->tm_sec == 0)
@@ -2006,7 +2006,7 @@ e_mktime_utc (struct tm *tm)
  * seconds from UTC time, stored in @offset.
  **/
 void
-e_localtime_with_offset (time_t tt, struct tm *tm, int *offset)
+e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
 {
 	localtime_r (&tt, tm);
 
@@ -2024,11 +2024,11 @@ e_localtime_with_offset (time_t tt, struct tm *tm, int *offset)
 #endif
 }
 
-char *
+gchar *
 e_time_get_d_fmt_with_4digit_year (void)
 {
-	char *p;
-	char *res =
+	gchar *p;
+	gchar *res =
 	#if defined(__linux__)
 		g_strdup (nl_langinfo (D_FMT) );
 	/*#elif defined(G_OS_WIN32)

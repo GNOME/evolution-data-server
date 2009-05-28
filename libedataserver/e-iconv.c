@@ -72,7 +72,7 @@ struct _iconv_cache_node {
 
 	struct _iconv_cache *parent;
 
-	int busy;
+	gint busy;
 	iconv_t ip;
 };
 
@@ -80,7 +80,7 @@ struct _iconv_cache {
 	struct _iconv_cache *next;
 	struct _iconv_cache *prev;
 
-	char *conv;
+	gchar *conv;
 
 	EDList open;		/* stores iconv_cache_nodes, busy ones up front */
 };
@@ -90,15 +90,15 @@ struct _iconv_cache {
 static EDList iconv_cache_list;
 static GHashTable *iconv_cache;
 static GHashTable *iconv_cache_open;
-static unsigned int iconv_cache_size = 0;
+static guint iconv_cache_size = 0;
 
 static GHashTable *iconv_charsets = NULL;
-static char *locale_charset = NULL;
-static char *locale_lang = NULL;
+static gchar *locale_charset = NULL;
+static gchar *locale_lang = NULL;
 
 static const struct {
-	const char *charset;
-	const char *iconv_name;
+	const gchar *charset;
+	const gchar *iconv_name;
 } known_iconv_charsets[] = {
 	/* charset name (lowercase!), iconv-friendly name (sometimes case sensitive) */
 	{ "utf-8",           "UTF-8"      },
@@ -190,10 +190,10 @@ static EDListNode *e_dlist_remove(EDListNode *n)
 }
 
 
-static const char *
-e_strdown (char *str)
+static const gchar *
+e_strdown (gchar *str)
 {
-	register char *s = str;
+	register gchar *s = str;
 
 	while (*s) {
 		if (*s >= 'A' && *s <= 'Z')
@@ -204,10 +204,10 @@ e_strdown (char *str)
 	return str;
 }
 
-static const char *
-e_strup (char *str)
+static const gchar *
+e_strup (gchar *str)
 {
-	register char *s = str;
+	register gchar *s = str;
 
 	while (*s) {
 		if (*s >= 'a' && *s <= 'z')
@@ -220,9 +220,9 @@ e_strup (char *str)
 
 
 static void
-locale_parse_lang (const char *locale)
+locale_parse_lang (const gchar *locale)
 {
-	char *codeset, *lang;
+	gchar *codeset, *lang;
 
 	if ((codeset = strchr (locale, '.')))
 		lang = g_strndup (locale, codeset - locale);
@@ -259,10 +259,10 @@ locale_parse_lang (const char *locale)
 
 /* NOTE: Owns the lock on return if keep is TRUE ! */
 static void
-e_iconv_init(int keep)
+e_iconv_init(gint keep)
 {
-	char *from, *to, *locale;
-	int i;
+	gchar *from, *to, *locale;
+	gint i;
 
 	LOCK();
 
@@ -315,7 +315,7 @@ e_iconv_init(int keep)
 		 * codeset  is  a  character  set or encoding identifier like
 		 * ISO-8859-1 or UTF-8.
 		 */
-		char *codeset, *p;
+		gchar *codeset, *p;
 
 		codeset = strchr (locale, '.');
 		if (codeset) {
@@ -344,9 +344,9 @@ e_iconv_init(int keep)
 		UNLOCK();
 }
 
-const char *e_iconv_charset_name(const char *charset)
+const gchar *e_iconv_charset_name(const gchar *charset)
 {
-	char *name, *ret, *tmp;
+	gchar *name, *ret, *tmp;
 
 	if (charset == NULL)
 		return NULL;
@@ -365,8 +365,8 @@ const char *e_iconv_charset_name(const char *charset)
 	/* Unknown, try canonicalise some basic charset types to something that should work */
 	if (strncmp(name, "iso", 3) == 0) {
 		/* Convert iso-nnnn-n or isonnnn-n or iso_nnnn-n to iso-nnnn-n or isonnnn-n */
-		int iso, codepage;
-		char *p;
+		gint iso, codepage;
+		gchar *p;
 
 		tmp = name + 3;
 		if (*tmp == '-' || *tmp == '_')
@@ -441,13 +441,13 @@ flush_entry(struct _iconv_cache *ic)
 }
 
 /* This should run pretty quick, its called a lot */
-iconv_t e_iconv_open(const char *oto, const char *ofrom)
+iconv_t e_iconv_open(const gchar *oto, const gchar *ofrom)
 {
-	const char *to, *from;
-	char *tofrom;
+	const gchar *to, *from;
+	gchar *tofrom;
 	struct _iconv_cache *ic;
 	struct _iconv_cache_node *in;
-	int errnosav;
+	gint errnosav;
 	iconv_t ip;
 
 	if (oto == NULL || ofrom == NULL) {
@@ -504,7 +504,7 @@ iconv_t e_iconv_open(const char *oto, const char *ofrom)
 			 * that die if the length arguments are NULL
 			 */
 			size_t buggy_iconv_len = 0;
-			char *buggy_iconv_buf = NULL;
+			gchar *buggy_iconv_buf = NULL;
 
 			/* resets the converter */
 			iconv(ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
@@ -535,9 +535,9 @@ iconv_t e_iconv_open(const char *oto, const char *ofrom)
 	return ip;
 }
 
-size_t e_iconv(iconv_t cd, const char **inbuf, size_t *inbytesleft, char ** outbuf, size_t *outbytesleft)
+size_t e_iconv(iconv_t cd, const gchar **inbuf, size_t *inbytesleft, gchar ** outbuf, size_t *outbytesleft)
 {
-	return iconv(cd, (char **) inbuf, inbytesleft, outbuf, outbytesleft);
+	return iconv(cd, (gchar **) inbuf, inbytesleft, outbuf, outbytesleft);
 }
 
 void
@@ -563,7 +563,7 @@ e_iconv_close(iconv_t ip)
 
 }
 
-const char *e_iconv_locale_charset(void)
+const gchar *e_iconv_locale_charset(void)
 {
 	e_iconv_init(FALSE);
 
@@ -571,7 +571,7 @@ const char *e_iconv_locale_charset(void)
 }
 
 
-const char *
+const gchar *
 e_iconv_locale_language (void)
 {
 	e_iconv_init (FALSE);
@@ -584,8 +584,8 @@ e_iconv_locale_language (void)
  * e_iconv_charset_name() so that we don't have to keep track of all
  * the aliases too. */
 static const struct {
-	const char *charset;
-	const char *lang;
+	const gchar *charset;
+	const gchar *lang;
 } cjkr_lang_map[] = {
 	{ "Big5",        "zh" },
 	{ "BIG5HKSCS",   "zh" },
@@ -605,10 +605,10 @@ static const struct {
 
 #define NUM_CJKR_LANGS (sizeof (cjkr_lang_map) / sizeof (cjkr_lang_map[0]))
 
-const char *
-e_iconv_charset_language (const char *charset)
+const gchar *
+e_iconv_charset_language (const gchar *charset)
 {
-	int i;
+	gint i;
 
 	if (!charset)
 		return NULL;

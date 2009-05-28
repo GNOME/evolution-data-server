@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -29,8 +29,8 @@ static const char revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static int __txn_set_tx_max __P((DB_ENV *, u_int32_t));
-static int __txn_set_tx_timestamp __P((DB_ENV *, time_t *));
+static gint __txn_set_tx_max __P((DB_ENV *, u_int32_t));
+static gint __txn_set_tx_timestamp __P((DB_ENV *, time_t *));
 
 /*
  * __txn_dbenv_create --

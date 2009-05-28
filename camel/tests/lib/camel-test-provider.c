@@ -5,10 +5,10 @@
 
 #include "camel-provider.h"
 
-void camel_test_provider_init(int argc, char **argv)
+void camel_test_provider_init(gint argc, gchar **argv)
 {
-	char *name, *path;
-	int i;
+	gchar *name, *path;
+	gint i;
 	CamelException ex = { 0 };
 
 	for (i=0;i<argc;i++) {

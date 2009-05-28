@@ -43,7 +43,7 @@ struct _CamelLocalFolderPrivate {
 #define CAMEL_LOCAL_FOLDER_LOCK(f, l) (g_mutex_lock(((CamelLocalFolder *)f)->priv->l))
 #define CAMEL_LOCAL_FOLDER_UNLOCK(f, l) (g_mutex_unlock(((CamelLocalFolder *)f)->priv->l))
 
-int camel_local_frompos_sort (void *enc, int len1, void * data1, int len2, void *data2);
+gint camel_local_frompos_sort (gpointer enc, gint len1, gpointer  data1, gint len2, gpointer data2);
 
 G_END_DECLS
 

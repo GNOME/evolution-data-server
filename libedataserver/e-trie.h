@@ -39,9 +39,9 @@ typedef struct _ETrie ETrie;
 ETrie *e_trie_new (gboolean icase);
 void e_trie_free (ETrie *trie);
 
-void e_trie_add (ETrie *trie, const char *pattern, int pattern_id);
+void e_trie_add (ETrie *trie, const gchar *pattern, gint pattern_id);
 
-const char *e_trie_search (ETrie *trie, const char *buffer, size_t buflen, int *matched_id);
+const gchar *e_trie_search (ETrie *trie, const gchar *buffer, size_t buflen, gint *matched_id);
 
 #ifdef __cplusplus
 }

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -78,19 +78,19 @@ _DbInfoDelete(interp, dbip)
 
 /*
  *
- * PUBLIC: int db_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: gint db_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
  *
  * db_Cmd --
  *	Implements the "db" widget.
  */
-int
+gint
 db_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* DB handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *dbcmds[] = {
+	static gchar *dbcmds[] = {
 #if CONFIG_TEST
 		"keyrange",
 		"pget",
@@ -141,12 +141,12 @@ db_Cmd(clientData, interp, objc, objv)
 	DBTCL_INFO *ip;
 	DBTYPE type;
 	Tcl_Obj *res;
-	int cmdindex, isswapped, result, ret;
-	char newname[MSG_SIZE];
+	gint cmdindex, isswapped, result, ret;
+	gchar newname[MSG_SIZE];
 
 	Tcl_ResetResult(interp);
 	dbp = (DB *)clientData;
-	dbip = _PtrToInfo((void *)dbp);
+	dbip = _PtrToInfo((gpointer)dbp);
 	memset(newname, 0, MSG_SIZE);
 	result = TCL_OK;
 	if (objc <= 1) {
@@ -338,19 +338,19 @@ db_Cmd(clientData, interp, objc, objv)
 static int
 tcl_DbStat(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
 	DB_BTREE_STAT *bsp;
 	DB_HASH_STAT *hsp;
 	DB_QUEUE_STAT *qsp;
-	void *sp;
+	gpointer sp;
 	Tcl_Obj *res, *flaglist, *myobjv[2];
 	DBTYPE type;
 	u_int32_t flag;
-	int result, ret;
-	char *arg;
+	gint result, ret;
+	gchar *arg;
 
 	result = TCL_OK;
 	flag = 0;
@@ -482,12 +482,12 @@ error:
 static int
 tcl_DbClose(interp, objc, objv, dbp, dbip)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 	DBTCL_INFO *dbip;		/* Info pointer */
 {
-	static char *dbclose[] = {
+	static gchar *dbclose[] = {
 		"-nosync", "--", NULL
 	};
 	enum dbclose {
@@ -495,8 +495,8 @@ tcl_DbClose(interp, objc, objv, dbp, dbip)
 		TCL_DBCLOSE_ENDARG
 	};
 	u_int32_t flag;
-	int endarg, i, optindex, result, ret;
-	char *arg;
+	gint endarg, i, optindex, result, ret;
+	gchar *arg;
 
 	result = TCL_OK;
 	endarg = 0;
@@ -552,11 +552,11 @@ tcl_DbClose(interp, objc, objv, dbp, dbip)
 static int
 tcl_DbPut(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
-	static char *dbputopts[] = {
+	static gchar *dbputopts[] = {
 #if CONFIG_TEST
 		"-nodupdata",
 #endif
@@ -577,7 +577,7 @@ tcl_DbPut(interp, objc, objv, dbp)
 		DBPUT_PART,
 		DBPUT_TXN
 	};
-	static char *dbputapp[] = {
+	static gchar *dbputapp[] = {
 		"-append",	NULL
 	};
 	enum dbputapp { DBPUT_APPEND0 };
@@ -585,12 +585,12 @@ tcl_DbPut(interp, objc, objv, dbp)
 	DBTYPE type;
 	DB_TXN *txn;
 	Tcl_Obj **elemv, *res;
-	void *dtmp, *ktmp;
+	gpointer dtmp, *ktmp;
 	db_recno_t recno;
 	u_int32_t flag;
-	int auto_commit, elemc, end, freekey, freedata;
-	int i, optindex, result, ret;
-	char *arg, msg[MSG_SIZE];
+	gint auto_commit, elemc, end, freekey, freedata;
+	gint i, optindex, result, ret;
+	gchar *arg, msg[MSG_SIZE];
 
 	txn = NULL;
 	result = TCL_OK;
@@ -775,12 +775,12 @@ out:
 static int
 tcl_DbGet(interp, objc, objv, dbp, ispget)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
-	int ispget;			/* 1 for pget, 0 for get */
+	gint ispget;			/* 1 for pget, 0 for get */
 {
-	static char *dbgetopts[] = {
+	static gchar *dbgetopts[] = {
 #if CONFIG_TEST
 		"-dirty",
 		"-multi",
@@ -816,11 +816,11 @@ tcl_DbGet(interp, objc, objv, dbp, ispget)
 	DBTYPE type;
 	DB_TXN *txn;
 	Tcl_Obj **elemv, *retlist;
-	void *dtmp, *ktmp;
+	gpointer dtmp, *ktmp;
 	u_int32_t flag, cflag, isdup, mflag, rmw;
-	int bufsize, elemc, end, endarg, freekey, freedata, i;
-	int optindex, result, ret, useglob, useprecno, userecno;
-	char *arg, *pattern, *prefix, msg[MSG_SIZE];
+	gint bufsize, elemc, end, endarg, freekey, freedata, i;
+	gint optindex, result, ret, useglob, useprecno, userecno;
+	gchar *arg, *pattern, *prefix, msg[MSG_SIZE];
 	db_recno_t precno, recno;
 
 	result = TCL_OK;
@@ -1365,11 +1365,11 @@ out:
 static int
 tcl_DbDelete(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
-	static char *dbdelopts[] = {
+	static gchar *dbdelopts[] = {
 		"-auto_commit",
 		"-glob",
 		"-txn",
@@ -1384,11 +1384,11 @@ tcl_DbDelete(interp, objc, objv, dbp)
 	DBT key, data;
 	DBTYPE type;
 	DB_TXN *txn;
-	void *ktmp;
+	gpointer ktmp;
 	db_recno_t recno;
-	int freekey, i, optindex, result, ret;
+	gint freekey, i, optindex, result, ret;
 	u_int32_t flag;
-	char *arg, *pattern, *prefix, msg[MSG_SIZE];
+	gchar *arg, *pattern, *prefix, msg[MSG_SIZE];
 
 	result = TCL_OK;
 	freekey = 0;
@@ -1617,12 +1617,12 @@ out:
 static int
 tcl_DbCursor(interp, objc, objv, dbp, dbcp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 	DBC **dbcp;			/* Return cursor pointer */
 {
-	static char *dbcuropts[] = {
+	static gchar *dbcuropts[] = {
 #if CONFIG_TEST
 		"-dirty",
 		"-update",
@@ -1639,8 +1639,8 @@ tcl_DbCursor(interp, objc, objv, dbp, dbcp)
 	};
 	DB_TXN *txn;
 	u_int32_t flag;
-	int i, optindex, result, ret;
-	char *arg, msg[MSG_SIZE];
+	gint i, optindex, result, ret;
+	gchar *arg, msg[MSG_SIZE];
 
 	result = TCL_OK;
 	flag = 0;
@@ -1699,11 +1699,11 @@ out:
 static int
 tcl_DbAssociate(interp, objc, objv, dbp)
 	Tcl_Interp *interp;
-	int objc;
+	gint objc;
 	Tcl_Obj *CONST objv[];
 	DB *dbp;
 {
-	static char *dbaopts[] = {
+	static gchar *dbaopts[] = {
 		"-auto_commit",
 		"-create",
 		"-txn",
@@ -1717,8 +1717,8 @@ tcl_DbAssociate(interp, objc, objv, dbp)
 	DB *sdbp;
 	DB_TXN *txn;
 	DBTCL_INFO *sdbip;
-	int i, optindex, result, ret;
-	char *arg, msg[MSG_SIZE];
+	gint i, optindex, result, ret;
+	gchar *arg, msg[MSG_SIZE];
 	u_int32_t flag;
 
 	txn = NULL;
@@ -1828,8 +1828,8 @@ tcl_second_call(dbp, pkey, data, skey)
 	DBTCL_INFO *ip;
 	Tcl_Interp *interp;
 	Tcl_Obj *pobj, *dobj, *objv[3];
-	int len, result, ret;
-	void *retbuf, *databuf;
+	gint len, result, ret;
+	gpointer retbuf, *databuf;
 
 	ip = (DBTCL_INFO *)dbp->api_internal;
 	interp = ip->i_interp;
@@ -1884,12 +1884,12 @@ tcl_second_call(dbp, pkey, data, skey)
 static int
 tcl_DbJoin(interp, objc, objv, dbp, dbcp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 	DBC **dbcp;			/* Cursor pointer */
 {
-	static char *dbjopts[] = {
+	static gchar *dbjopts[] = {
 		"-nosort",
 		NULL
 	};
@@ -1898,8 +1898,8 @@ tcl_DbJoin(interp, objc, objv, dbp, dbcp)
 	};
 	DBC **listp;
 	u_int32_t flag;
-	int adj, i, j, optindex, size, result, ret;
-	char *arg, msg[MSG_SIZE];
+	gint adj, i, j, optindex, size, result, ret;
+	gchar *arg, msg[MSG_SIZE];
 
 	result = TCL_OK;
 	flag = 0;
@@ -1968,11 +1968,11 @@ out:
 static int
 tcl_DbGetjoin(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
-	static char *dbgetjopts[] = {
+	static gchar *dbgetjopts[] = {
 #if CONFIG_TEST
 		"-nosort",
 #endif
@@ -1991,10 +1991,10 @@ tcl_DbGetjoin(interp, objc, objv, dbp)
 	DBC *dbc;
 	DBT key, data;
 	Tcl_Obj **elemv, *retlist;
-	void *ktmp;
+	gpointer ktmp;
 	u_int32_t flag;
-	int adj, elemc, freekey, i, j, optindex, result, ret, size;
-	char *arg, msg[MSG_SIZE];
+	gint adj, elemc, freekey, i, j, optindex, result, ret, size;
+	gchar *arg, msg[MSG_SIZE];
 
 	result = TCL_OK;
 	flag = 0;
@@ -2142,16 +2142,16 @@ out:
 static int
 tcl_DbCount(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
 	Tcl_Obj *res;
 	DBC *dbc;
 	DBT key, data;
-	void *ktmp;
+	gpointer ktmp;
 	db_recno_t count, recno;
-	int freekey, result, ret;
+	gint freekey, result, ret;
 
 	result = TCL_OK;
 	count = 0;
@@ -2230,11 +2230,11 @@ out:
 static int
 tcl_DbKeyRange(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
-	static char *dbkeyropts[] = {
+	static gchar *dbkeyropts[] = {
 		"-txn",
 		NULL
 	};
@@ -2246,11 +2246,11 @@ tcl_DbKeyRange(interp, objc, objv, dbp)
 	DBT key;
 	DBTYPE type;
 	Tcl_Obj *myobjv[3], *retlist;
-	void *ktmp;
+	gpointer ktmp;
 	db_recno_t recno;
 	u_int32_t flag;
-	int freekey, i, myobjc, optindex, result, ret;
-	char *arg, msg[MSG_SIZE];
+	gint freekey, i, myobjc, optindex, result, ret;
+	gchar *arg, msg[MSG_SIZE];
 
 	result = TCL_OK;
 	flag = 0;
@@ -2350,11 +2350,11 @@ out:
 static int
 tcl_DbTruncate(interp, objc, objv, dbp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB *dbp;			/* Database pointer */
 {
-	static char *dbcuropts[] = {
+	static gchar *dbcuropts[] = {
 		"-auto_commit",
 		"-txn",
 		NULL
@@ -2366,8 +2366,8 @@ tcl_DbTruncate(interp, objc, objv, dbp)
 	DB_TXN *txn;
 	Tcl_Obj *res;
 	u_int32_t count, flag;
-	int i, optindex, result, ret;
-	char *arg, msg[MSG_SIZE];
+	gint i, optindex, result, ret;
+	gchar *arg, msg[MSG_SIZE];
 
 	txn = NULL;
 	flag = 0;

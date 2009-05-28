@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -67,18 +67,18 @@ char	*optarg;		/* argument associated with option */
  *	Parse argc/argv argument vector.
  *
  * PUBLIC: #ifndef HAVE_GETOPT
- * PUBLIC: int getopt __P((int, char * const *, const char *));
+ * PUBLIC: gint getopt __P((int, gchar * const *, const gchar *));
  * PUBLIC: #endif
  */
-int
+gint
 getopt(nargc, nargv, ostr)
-	int nargc;
-	char * const *nargv;
-	const char *ostr;
+	gint nargc;
+	gchar * const *nargv;
+	const gchar *ostr;
 {
-	static char *progname;
-	static char *place = EMSG;		/* option letter processing */
-	char *oli;				/* option letter list index */
+	static gchar *progname;
+	static gchar *place = EMSG;		/* option letter processing */
+	gchar *oli;				/* option letter list index */
 
 	/*
 	 * VxWorks needs to be able to repeatedly call getopt from multiple

@@ -24,28 +24,28 @@ static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 #define CAMEL_TEST_UNLOCK pthread_mutex_unlock(&lock)
 #define CAMEL_TEST_ID (pthread_self())
 
-static int setup;
-static int ok;
+static gint setup;
+static gint ok;
 
 struct _stack {
 	struct _stack *next;
-	int fatal;
-	char *what;
+	gint fatal;
+	gchar *what;
 };
 
 /* per-thread state */
 struct _state {
-	char *test;
-	int nonfatal;
+	gchar *test;
+	gint nonfatal;
 	struct _stack *state;
 };
 
 static GHashTable *info_table;
 
-int camel_test_verbose;
+gint camel_test_verbose;
 
 static void
-dump_action(int id, struct _state *s, void *d)
+dump_action(gint id, struct _state *s, gpointer d)
 {
 	struct _stack *node;
 
@@ -62,9 +62,9 @@ dump_action(int id, struct _state *s, void *d)
 	printf("\tTest: %s\n", s->test);
 }
 
-static void die(int sig)
+static void die(gint sig)
 {
-	static int indie = 0;
+	static gint indie = 0;
 
 	if (!indie) {
 		indie = 1;
@@ -88,20 +88,20 @@ current_state(void)
 	if (info_table == NULL)
 		info_table = g_hash_table_new(0, 0);
 
-	info = g_hash_table_lookup(info_table, (void *)CAMEL_TEST_ID);
+	info = g_hash_table_lookup(info_table, (gpointer)CAMEL_TEST_ID);
 	if (info == NULL) {
 		info = g_malloc0(sizeof(*info));
-		g_hash_table_insert(info_table, (void *)CAMEL_TEST_ID, info);
+		g_hash_table_insert(info_table, (gpointer)CAMEL_TEST_ID, info);
 	}
 	return info;
 }
 
 
-void camel_test_init(int argc, char **argv)
+void camel_test_init(gint argc, gchar **argv)
 {
 	struct stat st;
-	char *path;
-	int i;
+	gchar *path;
+	gint i;
 
 	setup = 1;
 
@@ -145,7 +145,7 @@ void camel_test_init(int argc, char **argv)
 	}
 }
 
-void camel_test_start(const char *what)
+void camel_test_start(const gchar *what)
 {
 	struct _state *s;
 
@@ -168,11 +168,11 @@ void camel_test_start(const char *what)
 	CAMEL_TEST_UNLOCK;
 }
 
-void camel_test_push(const char *what, ...)
+void camel_test_push(const gchar *what, ...)
 {
 	struct _stack *node;
 	va_list ap;
-	char *text;
+	gchar *text;
 	struct _state *s;
 
 	CAMEL_TEST_LOCK;
@@ -226,7 +226,7 @@ void camel_test_break(void)
 {
 }
 
-void camel_test_fail(const char *why, ...)
+void camel_test_fail(const gchar *why, ...)
 {
 	va_list ap;
 
@@ -236,9 +236,9 @@ void camel_test_fail(const char *why, ...)
 }
 
 
-void camel_test_failv(const char *why, va_list ap)
+void camel_test_failv(const gchar *why, va_list ap)
 {
-	char *text;
+	gchar *text;
 	struct _state *s;
 
 	CAMEL_TEST_LOCK;
@@ -273,11 +273,11 @@ void camel_test_failv(const char *why, va_list ap)
 	CAMEL_TEST_UNLOCK;
 }
 
-void camel_test_nonfatal(const char *what, ...)
+void camel_test_nonfatal(const gchar *what, ...)
 {
 	struct _stack *node;
 	va_list ap;
-	char *text;
+	gchar *text;
 	struct _state *s;
 
 	CAMEL_TEST_LOCK;
@@ -322,9 +322,9 @@ void camel_test_end(void)
 
 
 /* compare strings, ignore whitespace though */
-int string_equal(const char *a, const char *b)
+gint string_equal(const gchar *a, const gchar *b)
 {
-	const char *ap, *bp;
+	const gchar *ap, *bp;
 
 	ap = a;
 	bp = b;

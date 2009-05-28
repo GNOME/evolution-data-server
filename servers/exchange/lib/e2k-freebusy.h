@@ -31,7 +31,7 @@ typedef struct {
 typedef struct {
 	/*< private >*/
 	E2kContext *ctx;
-	char *dn, *uri;
+	gchar *dn, *uri;
 
 	time_t start, end;
 
@@ -39,11 +39,11 @@ typedef struct {
 } E2kFreebusy;
 
 E2kFreebusy   *e2k_freebusy_new                   (E2kContext      *ctx,
-						   const char      *public_uri,
-						   const char      *dn);
+						   const gchar      *public_uri,
+						   const gchar      *dn);
 
 void           e2k_freebusy_reset                 (E2kFreebusy     *fb,
-						   int              nmonths);
+						   gint              nmonths);
 
 void           e2k_freebusy_add_interval          (E2kFreebusy     *fb,
 						   E2kBusyStatus    busystatus,
@@ -54,7 +54,7 @@ void           e2k_freebusy_clear_interval        (E2kFreebusy     *fb,
 						   time_t           end);
 
 E2kHTTPStatus  e2k_freebusy_add_from_calendar_uri (E2kFreebusy     *fb,
-						   const char      *uri,
+						   const gchar      *uri,
 						   time_t           start_tt,
 						   time_t           end_tt);
 

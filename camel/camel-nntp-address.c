@@ -26,10 +26,10 @@
 
 #define d(x)
 
-static int    nntp_decode		(CamelAddress *, const char *raw);
-static char * nntp_encode		(CamelAddress *);
-static int    nntp_cat		(CamelAddress *dest, const CamelAddress *source);
-static void   nntp_remove		(CamelAddress *, int index);
+static gint    nntp_decode		(CamelAddress *, const gchar *raw);
+static gchar * nntp_encode		(CamelAddress *);
+static gint    nntp_cat		(CamelAddress *dest, const CamelAddress *source);
+static void   nntp_remove		(CamelAddress *, gint index);
 
 static void camel_nntp_address_class_init (CamelNNTPAddressClass *klass);
 static void camel_nntp_address_init       (CamelNNTPAddress *obj);
@@ -37,8 +37,8 @@ static void camel_nntp_address_init       (CamelNNTPAddress *obj);
 static CamelAddressClass *camel_nntp_address_parent;
 
 struct _address {
-	char *name;
-	char *address;
+	gchar *name;
+	gchar *address;
 };
 
 static void
@@ -81,10 +81,10 @@ camel_nntp_address_get_type(void)
 
 /* since newsgropus are 7bit ascii, decode/unformat are the same */
 static int
-nntp_decode(CamelAddress *a, const char *raw)
+nntp_decode(CamelAddress *a, const gchar *raw)
 {
 	struct _camel_header_newsgroup *ha, *n;
-	int count = a->addresses->len;
+	gint count = a->addresses->len;
 
 	ha = camel_header_newsgroups_decode(raw);
 	if (ha) {
@@ -97,12 +97,12 @@ nntp_decode(CamelAddress *a, const char *raw)
 }
 
 /* since newsgropus are 7bit ascii, encode/format are the same */
-static char *
+static gchar *
 nntp_encode(CamelAddress *a)
 {
-	int i;
+	gint i;
 	GString *out;
-	char *ret;
+	gchar *ret;
 
 	if (a->addresses->len == 0)
 		return NULL;
@@ -125,7 +125,7 @@ nntp_encode(CamelAddress *a)
 static int
 nntp_cat (CamelAddress *dest, const CamelAddress *source)
 {
-	int i;
+	gint i;
 
 	g_assert(CAMEL_IS_NNTP_ADDRESS(source));
 
@@ -136,7 +136,7 @@ nntp_cat (CamelAddress *dest, const CamelAddress *source)
 }
 
 static void
-nntp_remove	(CamelAddress *a, int index)
+nntp_remove	(CamelAddress *a, gint index)
 {
 	if (index < 0 || index >= a->addresses->len)
 		return;
@@ -168,10 +168,10 @@ camel_nntp_address_new (void)
  *
  * Return value: Index of added entry, or existing matching entry.
  **/
-int
-camel_nntp_address_add (CamelNNTPAddress *a, const char *name)
+gint
+camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
 {
-	int index, i;
+	gint index, i;
 
 	g_assert(CAMEL_IS_NNTP_ADDRESS(a));
 
@@ -196,7 +196,7 @@ camel_nntp_address_add (CamelNNTPAddress *a, const char *name)
  * Return value: TRUE if such an address exists, or FALSE otherwise.
  **/
 gboolean
-camel_nntp_address_get (const CamelNNTPAddress *a, int index, const char **namep)
+camel_nntp_address_get (const CamelNNTPAddress *a, gint index, const gchar **namep)
 {
 	g_assert(CAMEL_IS_NNTP_ADDRESS(a));
 

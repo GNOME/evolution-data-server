@@ -14,7 +14,7 @@
 #include <string.h>
 
 #ifdef _WIN32
-extern int getopt(int, char * const *, const char *);
+extern gint getopt(int, gchar * const *, const gchar *);
 #else
 #include <unistd.h>
 #endif
@@ -22,22 +22,22 @@ extern int getopt(int, char * const *, const char *);
 #include <db.h>
 
 #define	DATABASE	"access.db"
-int main __P((int, char *[]));
-int usage __P((void));
+gint main __P((int, gchar *[]));
+gint usage __P((void));
 
-int
+gint
 main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern int optind;
+	extern gint optind;
 	DB *dbp;
 	DBC *dbcp;
 	DBT key, data;
 	u_int32_t len;
-	int ch, ret, rflag;
-	char *database, *p, *t, buf[1024], rbuf[1024];
-	const char *progname = "ex_access";		/* Program name. */
+	gint ch, ret, rflag;
+	gchar *database, *p, *t, buf[1024], rbuf[1024];
+	const gchar *progname = "ex_access";		/* Program name. */
 
 	rflag = 0;
 	while ((ch = getopt(argc, argv, "r")) != EOF)
@@ -130,8 +130,8 @@ main(argc, argv)
 	/* Walk through the database and print out the key/data pairs. */
 	while ((ret = dbcp->c_get(dbcp, &key, &data, DB_NEXT)) == 0)
 		printf("%.*s : %.*s\n",
-		    (int)key.size, (char *)key.data,
-		    (int)data.size, (char *)data.data);
+		    (int)key.size, (gchar *)key.data,
+		    (int)data.size, (gchar *)data.data);
 	if (ret != DB_NOTFOUND) {
 		dbp->err(dbp, ret, "DBcursor->get");
 		goto err2;
@@ -154,7 +154,7 @@ err1:	(void)dbp->close(dbp, 0);
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 usage()
 {
 	(void)fprintf(stderr, "usage: ex_access [-r] [database]\n");

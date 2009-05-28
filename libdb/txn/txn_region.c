@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,22 +32,22 @@ static const char revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/txn.h"
 
-static int __txn_findlastckp __P((DB_ENV *, DB_LSN *));
-static int __txn_init __P((DB_ENV *, DB_TXNMGR *));
+static gint __txn_findlastckp __P((DB_ENV *, DB_LSN *));
+static gint __txn_init __P((DB_ENV *, DB_TXNMGR *));
 static size_t __txn_region_size __P((DB_ENV *));
 
 /*
  * __txn_open --
  *	Open a transaction region.
  *
- * PUBLIC: int __txn_open __P((DB_ENV *));
+ * PUBLIC: gint __txn_open __P((DB_ENV *));
  */
-int
+gint
 __txn_open(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_TXNMGR *tmgrp;
-	int ret;
+	gint ret;
 
 	/* Create/initialize the transaction manager structure. */
 	if ((ret = __os_calloc(dbenv, 1, sizeof(DB_TXNMGR), &tmgrp)) != 0)
@@ -110,7 +110,7 @@ __txn_init(dbenv, tmgrp)
 {
 	DB_LSN last_ckp;
 	DB_TXNREGION *region;
-	int ret;
+	gint ret;
 #ifdef	HAVE_MUTEX_SYSTEM_RESOURCES
 	u_int8_t *addr;
 #endif
@@ -191,7 +191,7 @@ __txn_findlastckp(dbenv, lsnp)
 	DB_LOGC *logc;
 	DB_LSN lsn;
 	DBT dbt;
-	int ret, t_ret;
+	gint ret, t_ret;
 	u_int32_t rectype;
 
 	if ((ret = dbenv->log_cursor(dbenv, &logc, 0)) != 0)
@@ -234,16 +234,16 @@ err:	if ((t_ret = logc->close(logc, 0)) != 0 && ret == 0)
  *	Clean up after the transaction system on a close or failed open.
  * Called only from __dbenv_refresh.  (Formerly called __txn_close.)
  *
- * PUBLIC: int __txn_dbenv_refresh __P((DB_ENV *));
+ * PUBLIC: gint __txn_dbenv_refresh __P((DB_ENV *));
  */
-int
+gint
 __txn_dbenv_refresh(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_TXN *txnp;
 	DB_TXNMGR *tmgrp;
 	u_int32_t txnid;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = 0;
 	tmgrp = dbenv->tx_handle;
@@ -340,16 +340,16 @@ __txn_region_destroy(dbenv, infop)
  *	Set the current transaction ID and current maximum unused ID (for
  *	testing purposes only).
  *
- * PUBLIC: int __txn_id_set __P((DB_ENV *, u_int32_t, u_int32_t));
+ * PUBLIC: gint __txn_id_set __P((DB_ENV *, u_int32_t, u_int32_t));
  */
-int
+gint
 __txn_id_set(dbenv, cur_txnid, max_txnid)
 	DB_ENV *dbenv;
 	u_int32_t cur_txnid, max_txnid;
 {
 	DB_TXNMGR *mgr;
 	DB_TXNREGION *region;
-	int ret;
+	gint ret;
 
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, "txn_id_set", DB_INIT_TXN);
 

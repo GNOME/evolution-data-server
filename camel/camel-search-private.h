@@ -56,14 +56,14 @@ typedef enum {
 } camel_search_t;
 
 /* builds a regex that represents a string search */
-int camel_search_build_match_regex(regex_t *pattern, camel_search_flags_t type, int argc, struct _ESExpResult **argv, CamelException *ex);
+gint camel_search_build_match_regex(regex_t *pattern, camel_search_flags_t type, gint argc, struct _ESExpResult **argv, CamelException *ex);
 gboolean camel_search_message_body_contains(CamelDataWrapper *object, regex_t *pattern);
 
-gboolean camel_search_header_match(const char *value, const char *match, camel_search_match_t how, camel_search_t type, const char *default_charset);
-gboolean camel_search_camel_header_soundex(const char *header, const char *match);
+gboolean camel_search_header_match(const gchar *value, const gchar *match, camel_search_match_t how, camel_search_t type, const gchar *default_charset);
+gboolean camel_search_camel_header_soundex(const gchar *header, const gchar *match);
 
 /* TODO: replace with a real search function */
-const char *camel_ustrstrcase(const char *haystack, const char *needle);
+const gchar *camel_ustrstrcase(const gchar *haystack, const gchar *needle);
 
 /* Some crappy utility functions for handling multiple search words */
 typedef enum _camel_search_word_t {
@@ -74,16 +74,16 @@ typedef enum _camel_search_word_t {
 
 struct _camel_search_word {
 	camel_search_word_t type;
-	char *word;
+	gchar *word;
 };
 
 struct _camel_search_words {
-	int len;
+	gint len;
 	camel_search_word_t type;	/* OR of all word types in list */
 	struct _camel_search_word **words;
 };
 
-struct _camel_search_words *camel_search_words_split(const unsigned char *in);
+struct _camel_search_words *camel_search_words_split(const guchar *in);
 struct _camel_search_words *camel_search_words_simple(struct _camel_search_words *wordin);
 void camel_search_words_free(struct _camel_search_words *);
 

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,12 +28,12 @@ static const char revid[] = "$Id$";
  * __bam_stat --
  *	Gather/print the btree statistics
  *
- * PUBLIC: int __bam_stat __P((DB *, void *, u_int32_t));
+ * PUBLIC: gint __bam_stat __P((DB *, gpointer , u_int32_t));
  */
-int
+gint
 __bam_stat(dbp, spp, flags)
 	DB *dbp;
-	void *spp;
+	gpointer spp;
 	u_int32_t flags;
 {
 	BTMETA *meta;
@@ -45,7 +45,7 @@ __bam_stat(dbp, spp, flags)
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t pgno;
-	int ret, t_ret, write_meta;
+	gint ret, t_ret, write_meta;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->stat");
@@ -200,16 +200,16 @@ err:	/* Discard the second page. */
  * __bam_traverse --
  *	Walk a Btree database.
  *
- * PUBLIC: int __bam_traverse __P((DBC *, db_lockmode_t,
- * PUBLIC:     db_pgno_t, int (*)(DB *, PAGE *, void *, int *), void *));
+ * PUBLIC: gint __bam_traverse __P((DBC *, db_lockmode_t,
+ * PUBLIC:     db_pgno_t, gint (*)(DB *, PAGE *, gpointer , gint *), gpointer ));
  */
-int
+gint
 __bam_traverse(dbc, mode, root_pgno, callback, cookie)
 	DBC *dbc;
 	db_lockmode_t mode;
 	db_pgno_t root_pgno;
-	int (*callback)__P((DB *, PAGE *, void *, int *));
-	void *cookie;
+	gint (*callback)__P((DB *, PAGE *, gpointer , gint *));
+	gpointer cookie;
 {
 	BINTERNAL *bi;
 	BKEYDATA *bk;
@@ -219,7 +219,7 @@ __bam_traverse(dbc, mode, root_pgno, callback, cookie)
 	PAGE *h;
 	RINTERNAL *ri;
 	db_indx_t indx;
-	int already_put, ret, t_ret;
+	gint already_put, ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -301,14 +301,14 @@ err:	if (!already_put && (t_ret = mpf->put(mpf, h, 0)) != 0 && ret != 0)
  * __bam_stat_callback --
  *	Statistics callback.
  *
- * PUBLIC: int __bam_stat_callback __P((DB *, PAGE *, void *, int *));
+ * PUBLIC: gint __bam_stat_callback __P((DB *, PAGE *, gpointer , gint *));
  */
-int
+gint
 __bam_stat_callback(dbp, h, cookie, putp)
 	DB *dbp;
 	PAGE *h;
-	void *cookie;
-	int *putp;
+	gpointer cookie;
+	gint *putp;
 {
 	DB_BTREE_STAT *sp;
 	db_indx_t indx, *inp, top;
@@ -394,10 +394,10 @@ __bam_stat_callback(dbp, h, cookie, putp)
  *	Return proportion of keys relative to given key.  The numbers are
  *	slightly skewed due to on page duplicates.
  *
- * PUBLIC: int __bam_key_range __P((DB *,
+ * PUBLIC: gint __bam_key_range __P((DB *,
  * PUBLIC:     DB_TXN *, DBT *, DB_KEY_RANGE *, u_int32_t));
  */
-int
+gint
 __bam_key_range(dbp, txn, dbt, kp, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -409,7 +409,7 @@ __bam_key_range(dbp, txn, dbt, kp, flags)
 	DBC *dbc;
 	EPG *sp;
 	double factor;
-	int exact, ret, t_ret;
+	gint exact, ret, t_ret;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->key_range");

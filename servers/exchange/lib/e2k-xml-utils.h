@@ -11,14 +11,14 @@
 
 #define E2K_XML_HEADER "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
 
-xmlDoc *e2k_parse_xml  (const char *buf, int len);
-xmlDoc *e2k_parse_html (const char *buf, int len);
+xmlDoc *e2k_parse_xml  (const gchar *buf, gint len);
+xmlDoc *e2k_parse_html (const gchar *buf, gint len);
 
 #define E2K_IS_NODE(node, nspace, nname) (!strcmp (node->name, nname) && node->ns && !strcmp (node->ns->href, nspace))
 
-void  e2k_g_string_append_xml_escaped (GString *string, const char *value);
+void  e2k_g_string_append_xml_escaped (GString *string, const gchar *value);
 
-xmlNode *e2k_xml_find    (xmlNode *node, const char *name);
-xmlNode *e2k_xml_find_in (xmlNode *node, xmlNode *top, const char *name);
+xmlNode *e2k_xml_find    (xmlNode *node, const gchar *name);
+xmlNode *e2k_xml_find_in (xmlNode *node, xmlNode *top, const gchar *name);
 
 #endif

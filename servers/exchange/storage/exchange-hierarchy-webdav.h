@@ -33,12 +33,12 @@ GType              exchange_hierarchy_webdav_get_type (void);
 
 ExchangeHierarchy *exchange_hierarchy_webdav_new (ExchangeAccount *account,
 						  ExchangeHierarchyType type,
-						  const char *hierarchy_name,
-						  const char *physical_uri_prefix,
-						  const char *internal_uri_prefix,
-						  const char *owner_name,
-						  const char *owner_email,
-						  const char *source_uri,
+						  const gchar *hierarchy_name,
+						  const gchar *physical_uri_prefix,
+						  const gchar *internal_uri_prefix,
+						  const gchar *owner_name,
+						  const gchar *owner_email,
+						  const gchar *source_uri,
 						  gboolean deep_searchable);
 
 /* for subclasses */
@@ -50,12 +50,12 @@ EFolder *exchange_hierarchy_webdav_parse_folder (ExchangeHierarchyWebDAV *hwd,
 void exchange_hierarchy_webdav_construct   (ExchangeHierarchyWebDAV *hwd,
 					    ExchangeAccount *account,
 					    ExchangeHierarchyType type,
-					    const char *hierarchy_name,
-					    const char *physical_uri_prefix,
-					    const char *internal_uri_prefix,
-					    const char *owner_name,
-					    const char *owner_email,
-					    const char *source_uri,
+					    const gchar *hierarchy_name,
+					    const gchar *physical_uri_prefix,
+					    const gchar *internal_uri_prefix,
+					    const gchar *owner_name,
+					    const gchar *owner_email,
+					    const gchar *source_uri,
 					    gboolean deep_searchable);
 
 typedef void (*ExchangeHierarchyWebDAVScanCallback)    (ExchangeHierarchy *hier,

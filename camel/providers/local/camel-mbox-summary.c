@@ -57,13 +57,13 @@
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
 
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, CamelException *ex);
-static int summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
+static gint summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 static CamelMessageInfo * message_info_from_db(CamelFolderSummary *s, CamelMIRecord *record);
 static CamelMIRecord * message_info_to_db(CamelFolderSummary *s, CamelMessageInfo *info);
 
 
-static int summary_header_load (CamelFolderSummary *, FILE *);
-static int summary_header_save (CamelFolderSummary *, FILE *);
+static gint summary_header_load (CamelFolderSummary *, FILE *);
+static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
@@ -72,16 +72,16 @@ static int		  message_info_save (CamelFolderSummary *, FILE *, CamelMessageInfo 
 static int		  meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *mi);
 /*static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);*/
 
-static char *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
+static gchar *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
 
-static int mbox_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-static int mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+static gint mbox_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+static gint mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 #ifdef STATUS_PINE
 static CamelMessageInfo *mbox_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *ci, CamelException *ex);
 #endif
 
-static int mbox_summary_sync_quick(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
-static int mbox_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+static gint mbox_summary_sync_quick(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
+static gint mbox_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex);
 
 static void camel_mbox_summary_class_init (CamelMboxSummaryClass *klass);
 static void camel_mbox_summary_init       (CamelMboxSummary *obj);
@@ -92,8 +92,8 @@ static void camel_mbox_summary_finalise   (CamelObject *obj);
 #define STATUS_XSTATUS (CAMEL_MESSAGE_FLAGGED|CAMEL_MESSAGE_ANSWERED|CAMEL_MESSAGE_DELETED)
 #define STATUS_STATUS (CAMEL_MESSAGE_SEEN)
 
-static void encode_status(guint32 flags, char status[8]);
-static guint32 decode_status(const char *status);
+static void encode_status(guint32 flags, gchar status[8]);
+static guint32 decode_status(const gchar *status);
 #endif
 
 static CamelLocalSummaryClass *camel_mbox_summary_parent;
@@ -116,9 +116,9 @@ camel_mbox_summary_get_type(void)
 	return type;
 }
 static gboolean
-mbox_info_set_user_flag(CamelMessageInfo *mi, const char *name, gboolean value)
+mbox_info_set_user_flag(CamelMessageInfo *mi, const gchar *name, gboolean value)
 {
-	int res;
+	gint res;
 
 	res = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->info_set_user_flag(mi, name, value);
 	if (res)
@@ -128,9 +128,9 @@ mbox_info_set_user_flag(CamelMessageInfo *mi, const char *name, gboolean value)
 }
 
 static gboolean
-mbox_info_set_user_tag(CamelMessageInfo *mi, const char *name, const char *value)
+mbox_info_set_user_tag(CamelMessageInfo *mi, const gchar *name, const gchar *value)
 {
-	int res;
+	gint res;
 
 	res = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->info_set_user_tag(mi, name, value);
 	if (res)
@@ -221,7 +221,7 @@ camel_mbox_summary_finalise(CamelObject *obj)
  * Return value: A new CamelMboxSummary widget.
  **/
 CamelMboxSummary *
-camel_mbox_summary_new(struct _CamelFolder *folder, const char *filename, const char *mbox_name, CamelIndex *index)
+camel_mbox_summary_new(struct _CamelFolder *folder, const gchar *filename, const gchar *mbox_name, CamelIndex *index)
 {
 	CamelMboxSummary *new = (CamelMboxSummary *)camel_object_new(camel_mbox_summary_get_type());
 
@@ -239,15 +239,15 @@ camel_mbox_summary_new(struct _CamelFolder *folder, const char *filename, const 
 	return new;
 }
 
-void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, int state)
+void camel_mbox_summary_xstatus(CamelMboxSummary *mbs, gint state)
 {
 	mbs->xstatus = state;
 }
 
-static char *
+static gchar *
 mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi)
 {
-	const char *p, *uidstr;
+	const gchar *p, *uidstr;
 	guint32 uid;
 
 	/* This is busted, it is supposed to encode ALL DATA */
@@ -266,7 +266,7 @@ static int
 summary_header_from_db (CamelFolderSummary *s, struct _CamelFIRecord *fir)
 {
 	CamelMboxSummary *mbs = CAMEL_MBOX_SUMMARY(s);
-	char *part;
+	gchar *part;
 
 	((CamelFolderSummaryClass *)camel_mbox_summary_parent)->summary_header_from_db(s, fir);
 
@@ -305,7 +305,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
 	CamelMboxSummary *mbs = CAMEL_MBOX_SUMMARY(s);
 	struct _CamelFIRecord *fir;
-	char *tmp;
+	gchar *tmp;
 
 	fir = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->summary_header_to_db (s, ex);
 	if (fir) {
@@ -338,11 +338,11 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 
 	mi = (CamelMboxMessageInfo *)((CamelFolderSummaryClass *)camel_mbox_summary_parent)->message_info_new_from_header(s, h);
 	if (mi) {
-		const char *xev, *uid;
+		const gchar *xev, *uid;
 		CamelMboxMessageInfo *info = NULL;
-		int add = 0;	/* bitmask of things to add, 1 assign uid, 2, just add as new, 4 = recent */
+		gint add = 0;	/* bitmask of things to add, 1 assign uid, 2, just add as new, 4 = recent */
 #ifdef STATUS_PINE
-		const char *status = NULL, *xstatus = NULL;
+		const gchar *status = NULL, *xstatus = NULL;
 		guint32 flags = 0;
 
 		if (mbs->xstatus) {
@@ -430,7 +430,7 @@ static CamelMessageInfo *
 message_info_from_db(CamelFolderSummary *s, struct _CamelMIRecord *mir)
 {
 	CamelMessageInfo *mi;
-	char *part;
+	gchar *part;
 
 	mi = ((CamelFolderSummaryClass *)camel_mbox_summary_parent)->message_info_from_db(s, mir);
 
@@ -511,13 +511,13 @@ message_info_save(CamelFolderSummary *s, FILE *out, CamelMessageInfo *mi)
 static int
 summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
-	int i, count;
+	gint i, count;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelMimeParser *mp;
 	CamelMboxMessageInfo *mi;
-	int fd;
-	int ok = 0;
+	gint fd;
+	gint ok = 0;
 	struct stat st;
 	off_t size = 0;
 	GSList *del = NULL;
@@ -636,8 +636,8 @@ mbox_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Camel
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
 	struct stat st;
-	int ret = 0;
-	int i, count;
+	gint ret = 0;
+	gint i, count;
 
 	d(printf("Checking summary\n"));
 
@@ -702,8 +702,8 @@ static int
 mbox_summary_sync_full(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)mbs;
-	int fd = -1, fdout = -1;
-	char *tmpname = NULL;
+	gint fd = -1, fdout = -1;
+	gchar *tmpname = NULL;
 	guint32 flags = (expunge?1:0);
 
 	d(printf("performing full summary/sync\n"));
@@ -791,11 +791,11 @@ cms_sort_frompos (gpointer a, gpointer b, gpointer data)
 {
 	CamelFolderSummary *summary = (CamelFolderSummary *)data;
 	CamelMboxMessageInfo *info1, *info2;
-	int ret = 0;
+	gint ret = 0;
 
 	/* Things are in memory already. Sorting speeds up syncing, if things are sorted by from pos. */
-	info1 = (CamelMboxMessageInfo *)camel_folder_summary_uid (summary, *(char **)a);
-	info2 = (CamelMboxMessageInfo *)camel_folder_summary_uid (summary, *(char **)b);
+	info1 = (CamelMboxMessageInfo *)camel_folder_summary_uid (summary, *(gchar **)a);
+	info2 = (CamelMboxMessageInfo *)camel_folder_summary_uid (summary, *(gchar **)b);
 
 	if (info1->frompos > info2->frompos)
 		ret = 1;
@@ -817,12 +817,12 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	CamelLocalSummary *cls = (CamelLocalSummary *)mbs;
 	CamelFolderSummary *s = (CamelFolderSummary *)mbs;
 	CamelMimeParser *mp = NULL;
-	int i;
+	gint i;
 	CamelMboxMessageInfo *info = NULL;
-	int fd = -1, pfd;
-	char *xevnew, *xevtmp;
-	const char *xev;
-	int len;
+	gint fd = -1, pfd;
+	gchar *xevnew, *xevtmp;
+	const gchar *xev;
+	gint len;
 	off_t lastpos;
 	GPtrArray *summary = NULL;
 
@@ -861,8 +861,8 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		g_ptr_array_sort_with_data (summary, (GCompareDataFunc)cms_sort_frompos, (gpointer) mbs);
 
 	for (i = 0; i < summary->len; i++) {
-		int xevoffset;
-		int pc = (i+1)*100/summary->len;
+		gint xevoffset;
+		gint pc = (i+1)*100/summary->len;
 
 		camel_operation_progress(NULL, pc);
 
@@ -976,9 +976,9 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	struct stat st;
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelFolderSummary *s = (CamelFolderSummary *)cls;
-	int i;
-	int quick = TRUE, work=FALSE;
-	int ret;
+	gint i;
+	gint quick = TRUE, work=FALSE;
+	gint ret;
 	GPtrArray *summary = NULL;
 
 	/* first, sync ourselves up, just to make sure */
@@ -1048,22 +1048,22 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	return ((CamelLocalSummaryClass *)camel_mbox_summary_parent)->sync(cls, expunge, changeinfo, ex);
 }
 
-int
-camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, int fd, int fdout, CamelException *ex)
+gint
+camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderChangeInfo *changeinfo, gint fd, gint fdout, CamelException *ex)
 {
 	CamelMboxSummary *mbs = (CamelMboxSummary *)cls;
 	CamelFolderSummary *s = (CamelFolderSummary *)mbs;
 	CamelMimeParser *mp = NULL;
-	int i, count;
+	gint i, count;
 	CamelMboxMessageInfo *info = NULL;
-	char *buffer, *xevnew = NULL;
+	gchar *buffer, *xevnew = NULL;
 	size_t len;
-	const char *fromline;
-	int lastdel = FALSE;
+	const gchar *fromline;
+	gint lastdel = FALSE;
 	gboolean touched = FALSE;
 	GSList *del=NULL;
 #ifdef STATUS_PINE
-	char statnew[8], xstatnew[8];
+	gchar statnew[8], xstatnew[8];
 #endif
 
 	d(printf("performing full summary/sync\n"));
@@ -1084,7 +1084,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 
 	count = camel_folder_summary_count(s);
 	for (i = 0; i < count; i++) {
-		int pc = (i + 1) * 100 / count;
+		gint pc = (i + 1) * 100 / count;
 
 		camel_operation_progress(NULL, pc);
 
@@ -1116,9 +1116,9 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 
 		lastdel = FALSE;
 		if ((flags&1) && info->info.info.flags & CAMEL_MESSAGE_DELETED) {
-			const char *uid = camel_message_info_uid(info);
+			const gchar *uid = camel_message_info_uid(info);
 			guint32 flags = camel_message_info_flags(info);
-			int read, junk;
+			gint read, junk;
 			d(printf("Deleting %s\n", uid));
 
 			if (((CamelLocalSummary *)cls)->index)
@@ -1266,7 +1266,7 @@ mbox_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessa
 
 	mi = (CamelMboxMessageInfo *)((CamelLocalSummaryClass *)camel_mbox_summary_parent)->add(cls, msg, info, ci, ex);
 	if (mi && ((CamelMboxSummary *)cls)->xstatus) {
-		char status[8];
+		gchar status[8];
 
 		/* we snoop and add status/x-status headers to suit */
 		encode_status(mi->info.info.flags & STATUS_STATUS, status);
@@ -1279,7 +1279,7 @@ mbox_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessa
 }
 
 static struct {
-	char tag;
+	gchar tag;
 	guint32 flag;
 } status_flags[] = {
 	{ 'F', CAMEL_MESSAGE_FLAGGED },
@@ -1289,10 +1289,10 @@ static struct {
 };
 
 static void
-encode_status(guint32 flags, char status[8])
+encode_status(guint32 flags, gchar status[8])
 {
 	size_t i;
-	char *p;
+	gchar *p;
 
 	p = status;
 	for (i = 0; i < G_N_ELEMENTS (status_flags); i++)
@@ -1303,12 +1303,12 @@ encode_status(guint32 flags, char status[8])
 }
 
 static guint32
-decode_status(const char *status)
+decode_status(const gchar *status)
 {
-	const char *p;
+	const gchar *p;
 	guint32 flags = 0;
 	size_t i;
-	char c;
+	gchar c;
 
 	p = status;
 	while ((c = *p++)) {

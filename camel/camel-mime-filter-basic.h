@@ -48,9 +48,9 @@ struct _CamelMimeFilterBasic {
 
 	CamelMimeFilterBasicType type;
 
-	unsigned char uubuf[60];
-	int state;
-	int save;
+	guchar uubuf[60];
+	gint state;
+	gint save;
 };
 
 struct _CamelMimeFilterBasicClass {

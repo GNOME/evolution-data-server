@@ -10,20 +10,20 @@
 #include "e2k-http-utils.h"
 
 typedef struct {
-	char *href;
-	int status;
+	gchar *href;
+	gint status;
 	E2kProperties *props;
 } E2kResult;
 
 void       e2k_results_from_multistatus           (SoupMessage  *msg,
 						   E2kResult   **results,
-						   int          *nresults);
+						   gint          *nresults);
 
 E2kResult *e2k_results_copy                       (E2kResult    *results,
-						   int           nresults);
+						   gint           nresults);
 
 void       e2k_results_free                       (E2kResult    *results,
-						   int           nresults);
+						   gint           nresults);
 
 
 GArray    *e2k_results_array_new                  (void);
@@ -41,9 +41,9 @@ typedef E2kHTTPStatus (*E2kResultIterFetchFunc) (E2kResultIter *iter,
 						 E2kContext *ctx,
 						 E2kOperation *op,
 						 E2kResult **results,
-						 int *nresults,
-						 int *first,
-						 int *total,
+						 gint *nresults,
+						 gint *first,
+						 gint *total,
 						 gpointer user_data);
 typedef void          (*E2kResultIterFreeFunc)  (E2kResultIter *iter,
 						 gpointer user_data);
@@ -51,14 +51,14 @@ typedef void          (*E2kResultIterFreeFunc)  (E2kResultIter *iter,
 E2kResultIter *e2k_result_iter_new         (E2kContext            *ctx,
 					    E2kOperation          *op,
 					    gboolean               ascending,
-					    int                    total,
+					    gint                    total,
 					    E2kResultIterFetchFunc fetch_func,
 					    E2kResultIterFreeFunc  free_func,
 					    gpointer               user_data);
 
 E2kResult     *e2k_result_iter_next        (E2kResultIter         *iter);
-int            e2k_result_iter_get_index   (E2kResultIter         *iter);
-int            e2k_result_iter_get_total   (E2kResultIter         *iter);
+gint            e2k_result_iter_get_index   (E2kResultIter         *iter);
+gint            e2k_result_iter_get_total   (E2kResultIter         *iter);
 E2kHTTPStatus  e2k_result_iter_free        (E2kResultIter         *iter);
 
 #endif /* __E2K_RESULT_H__ */

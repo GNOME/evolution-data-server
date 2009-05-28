@@ -130,10 +130,10 @@ camel_exception_free (CamelException *exception)
  * simply returns.
  **/
 void
-camel_exception_set (CamelException *ex, ExceptionId id, const char *desc)
+camel_exception_set (CamelException *ex, ExceptionId id, const gchar *desc)
 {
 	if (camel_debug("exception"))
-		printf("CamelException.set(%p, %u, '%s')\n", (void *) ex, id, desc);
+		printf("CamelException.set(%p, %u, '%s')\n", (gpointer) ex, id, desc);
 	if (!ex)
 		return;
 	ex->id = id;
@@ -164,17 +164,17 @@ camel_exception_set (CamelException *ex, ExceptionId id, const char *desc)
  * simply returns.
  **/
 void
-camel_exception_setv (CamelException *ex, ExceptionId id, const char *format, ...)
+camel_exception_setv (CamelException *ex, ExceptionId id, const gchar *format, ...)
 {
 	va_list args;
-	char *desc;
+	gchar *desc;
 
 	va_start(args, format);
 	desc = g_strdup_vprintf (format, args);
 	va_end (args);
 
 	if (camel_debug("exception"))
-		printf("CamelException.setv(%p, %u, '%s')\n", (void *) ex, id, desc);
+		printf("CamelException.setv(%p, %u, '%s')\n", (gpointer) ex, id, desc);
 
 	if (!ex) {
 		g_free(desc);
@@ -252,7 +252,7 @@ camel_exception_get_id (CamelException *ex)
 const gchar *
 camel_exception_get_description (CamelException *ex)
 {
-	char *ret = NULL;
+	gchar *ret = NULL;
 
 	if (ex)
 		ret = ex->desc;

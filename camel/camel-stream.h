@@ -49,12 +49,12 @@ typedef struct {
 
 	/* Virtual methods */
 
-	ssize_t   (*read)       (CamelStream *stream, char *buffer, size_t n);
-	ssize_t   (*write)      (CamelStream *stream, const char *buffer, size_t n);
-	int       (*close)      (CamelStream *stream);
-	int       (*flush)      (CamelStream *stream);
+	ssize_t   (*read)       (CamelStream *stream, gchar *buffer, size_t n);
+	ssize_t   (*write)      (CamelStream *stream, const gchar *buffer, size_t n);
+	gint       (*close)      (CamelStream *stream);
+	gint       (*flush)      (CamelStream *stream);
 	gboolean  (*eos)        (CamelStream *stream);
-	int       (*reset)      (CamelStream *stream);
+	gint       (*reset)      (CamelStream *stream);
 
 } CamelStreamClass;
 
@@ -62,17 +62,17 @@ typedef struct {
 CamelType camel_stream_get_type (void);
 
 /* public methods */
-ssize_t    camel_stream_read       (CamelStream *stream, char *buffer, size_t n);
-ssize_t    camel_stream_write      (CamelStream *stream, const char *buffer, size_t n);
-int        camel_stream_flush      (CamelStream *stream);
-int        camel_stream_close      (CamelStream *stream);
+ssize_t    camel_stream_read       (CamelStream *stream, gchar *buffer, size_t n);
+ssize_t    camel_stream_write      (CamelStream *stream, const gchar *buffer, size_t n);
+gint        camel_stream_flush      (CamelStream *stream);
+gint        camel_stream_close      (CamelStream *stream);
 gboolean   camel_stream_eos        (CamelStream *stream);
-int        camel_stream_reset      (CamelStream *stream);
+gint        camel_stream_reset      (CamelStream *stream);
 
 /* utility macros and funcs */
-ssize_t camel_stream_write_string (CamelStream *stream, const char *string);
-ssize_t camel_stream_printf (CamelStream *stream, const char *fmt, ... ) G_GNUC_PRINTF (2, 3);
-ssize_t camel_stream_vprintf (CamelStream *stream, const char *fmt, va_list ap);
+ssize_t camel_stream_write_string (CamelStream *stream, const gchar *string);
+ssize_t camel_stream_printf (CamelStream *stream, const gchar *fmt, ... ) G_GNUC_PRINTF (2, 3);
+ssize_t camel_stream_vprintf (CamelStream *stream, const gchar *fmt, va_list ap);
 
 /* Write a whole stream to another stream, until eof or error on
  * either stream.

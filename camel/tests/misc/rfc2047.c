@@ -35,9 +35,9 @@
 #include "camel-test.h"
 
 struct {
-	const char *encoded;
-	const char *decoded;
-	int dummy;
+	const gchar *encoded;
+	const gchar *decoded;
+	gint dummy;
 } test1[] = {
 	/* the first half are rfc compliant cases (which are the most important) */
 	{ "=?iso-8859-1?q?this=20is=20some=20text?=", "this is some text", 0 },
@@ -66,19 +66,19 @@ struct {
 };
 
 struct {
-	const char *encoded;
-	const char *decoded;
-	int dummy;
+	const gchar *encoded;
+	const gchar *decoded;
+	gint dummy;
 } test2[] = {
 	/* ctext tests */
 	{ "Test of ctext (=?ISO-8859-1?Q?a?= =?ISO-8859-1?Q?b?=)", "Test of ctext (ab)", 1 },
 	{ "ctext with \\\"quoted\\\" pairs", "ctext with \"quoted\" pairs", 1 }
 };
 
-int main (int argc, char ** argv)
+gint main (gint argc, gchar ** argv)
 {
-	char *decoded;
-	int i;
+	gchar *decoded;
+	gint i;
 
 	camel_test_init (argc, argv);
 

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,15 +22,15 @@ static const char revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/txn.h"
 
-static int __dbreg_check_master __P((DB_ENV *, u_int8_t *, char *));
+static gint __dbreg_check_master __P((DB_ENV *, u_int8_t *, gchar *));
 
 /*
  * __dbreg_add_dbentry --
  *	Adds a DB entry to the dbreg DB entry table.
  *
- * PUBLIC: int __dbreg_add_dbentry __P((DB_ENV *, DB_LOG *, DB *, int32_t));
+ * PUBLIC: gint __dbreg_add_dbentry __P((DB_ENV *, DB_LOG *, DB *, int32_t));
  */
-int
+gint
 __dbreg_add_dbentry(dbenv, dblp, dbp, ndx)
 	DB_ENV *dbenv;
 	DB_LOG *dblp;
@@ -38,7 +38,7 @@ __dbreg_add_dbentry(dbenv, dblp, dbp, ndx)
 	int32_t ndx;
 {
 	int32_t i;
-	int ret;
+	gint ret;
 
 	ret = 0;
 
@@ -92,9 +92,9 @@ __dbreg_rem_dbentry(dblp, ndx)
  * __dbreg_open_files --
  *	Put a LOG_CHECKPOINT log record for each open database.
  *
- * PUBLIC: int __dbreg_open_files __P((DB_ENV *));
+ * PUBLIC: gint __dbreg_open_files __P((DB_ENV *));
  */
-int
+gint
 __dbreg_open_files(dbenv)
 	DB_ENV *dbenv;
 {
@@ -103,7 +103,7 @@ __dbreg_open_files(dbenv)
 	DBT *dbtp, fid_dbt, t;
 	FNAME *fnp;
 	LOG *lp;
-	int ret;
+	gint ret;
 
 	dblp = dbenv->lg_handle;
 	lp = dblp->reginfo.primary;
@@ -155,15 +155,15 @@ __dbreg_open_files(dbenv)
  *	db_rename.  We may not have flushed the log_register record that
  *	closes the file.
  *
- * PUBLIC: int __dbreg_close_files __P((DB_ENV *));
+ * PUBLIC: gint __dbreg_close_files __P((DB_ENV *));
  */
-int
+gint
 __dbreg_close_files(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_LOG *dblp;
 	DB *dbp;
-	int ret, t_ret;
+	gint ret, t_ret;
 	int32_t i;
 
 	/* If we haven't initialized logging, we have nothing to do. */
@@ -206,15 +206,15 @@ __dbreg_close_files(dbenv)
  *	Check that there are no open files in the process local table.
  *	Returns 0 if there are no files and EINVAL if there are any.
  *
- * PUBLIC: int __dbreg_nofiles __P((DB_ENV *));
+ * PUBLIC: gint __dbreg_nofiles __P((DB_ENV *));
  */
-int
+gint
 __dbreg_nofiles(dbenv)
 	DB_ENV *dbenv;
 {
 	DB *dbp;
 	DB_LOG *dblp;
-	int ret;
+	gint ret;
 	int32_t i;
 
 	/* If we haven't initialized logging, we have nothing to do. */
@@ -239,15 +239,15 @@ __dbreg_nofiles(dbenv)
  * __dbreg_id_to_db --
  *	Return the DB corresponding to the specified dbreg id.
  *
- * PUBLIC: int __dbreg_id_to_db __P((DB_ENV *, DB_TXN *, DB **, int32_t, int));
+ * PUBLIC: gint __dbreg_id_to_db __P((DB_ENV *, DB_TXN *, DB **, int32_t, int));
  */
-int
+gint
 __dbreg_id_to_db(dbenv, txn, dbpp, ndx, inc)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	DB **dbpp;
 	int32_t ndx;
-	int inc;
+	gint inc;
 {
 	return (__dbreg_id_to_db_int(dbenv, txn, dbpp, ndx, inc, 1));
 }
@@ -262,21 +262,21 @@ __dbreg_id_to_db(dbenv, txn, dbpp, ndx, inc)
  * some processes may not have the files open (e.g., XA), then we also get
  * called from __dbreg_assign_id and it's OK if there is no mapping.
  *
- * PUBLIC: int __dbreg_id_to_db_int __P((DB_ENV *,
+ * PUBLIC: gint __dbreg_id_to_db_int __P((DB_ENV *,
  * PUBLIC:     DB_TXN *, DB **, int32_t, int, int));
  */
-int
+gint
 __dbreg_id_to_db_int(dbenv, txn, dbpp, ndx, inc, tryopen)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	DB **dbpp;
 	int32_t ndx;
-	int inc, tryopen;
+	gint inc, tryopen;
 {
 	DB_LOG *dblp;
 	FNAME *fname;
-	int ret;
-	char *name;
+	gint ret;
+	gchar *name;
 
 	ret = 0;
 	dblp = dbenv->lg_handle;
@@ -362,19 +362,19 @@ err:	MUTEX_THREAD_UNLOCK(dbenv, dblp->mutexp);
  *	Traverse the shared-memory region looking for the entry that
  *	matches the passed dbreg id.  Returns 0 on success; -1 on error.
  *
- * PUBLIC: int __dbreg_id_to_fname __P((DB_LOG *, int32_t, int, FNAME **));
+ * PUBLIC: gint __dbreg_id_to_fname __P((DB_LOG *, int32_t, int, FNAME **));
  */
-int
+gint
 __dbreg_id_to_fname(dblp, lid, have_lock, fnamep)
 	DB_LOG *dblp;
 	int32_t lid;
-	int have_lock;
+	gint have_lock;
 	FNAME **fnamep;
 {
 	DB_ENV *dbenv;
 	FNAME *fnp;
 	LOG *lp;
-	int ret;
+	gint ret;
 
 	dbenv = dblp->dbenv;
 	lp = dblp->reginfo.primary;
@@ -401,19 +401,19 @@ __dbreg_id_to_fname(dblp, lid, have_lock, fnamep)
  *	Traverse the shared-memory region looking for the entry that
  *	matches the passed file unique id.  Returns 0 on success; -1 on error.
  *
- * PUBLIC: int __dbreg_fid_to_fname __P((DB_LOG *, u_int8_t *, int, FNAME **));
+ * PUBLIC: gint __dbreg_fid_to_fname __P((DB_LOG *, u_int8_t *, int, FNAME **));
  */
-int
+gint
 __dbreg_fid_to_fname(dblp, fid, have_lock, fnamep)
 	DB_LOG *dblp;
 	u_int8_t *fid;
-	int have_lock;
+	gint have_lock;
 	FNAME **fnamep;
 {
 	DB_ENV *dbenv;
 	FNAME *fnp;
 	LOG *lp;
-	int ret;
+	gint ret;
 
 	dbenv = dblp->dbenv;
 	lp = dblp->reginfo.primary;
@@ -443,13 +443,13 @@ __dbreg_fid_to_fname(dblp, fid, have_lock, fnamep)
  * and the name passed could be transient unless there is something
  * ensuring that the file cannot be closed.
  *
- * PUBLIC: int __dbreg_get_name __P((DB_ENV *, u_int8_t *, char **));
+ * PUBLIC: gint __dbreg_get_name __P((DB_ENV *, u_int8_t *, gchar **));
  */
-int
+gint
 __dbreg_get_name(dbenv, fid, namep)
 	DB_ENV *dbenv;
 	u_int8_t *fid;
-	char **namep;
+	gchar **namep;
 {
 	DB_LOG *dblp;
 	FNAME *fname;
@@ -468,25 +468,25 @@ __dbreg_get_name(dbenv, fid, namep)
  * __dbreg_do_open --
  *	Open files referenced in the log.  This is the part of the open that
  * is not protected by the thread mutex.
- * PUBLIC: int __dbreg_do_open __P((DB_ENV *, DB_TXN *, DB_LOG *, u_int8_t *,
- * PUBLIC:     char *, DBTYPE, int32_t, db_pgno_t, void *, u_int32_t));
+ * PUBLIC: gint __dbreg_do_open __P((DB_ENV *, DB_TXN *, DB_LOG *, u_int8_t *,
+ * PUBLIC:     gchar *, DBTYPE, int32_t, db_pgno_t, gpointer , u_int32_t));
  */
-int
+gint
 __dbreg_do_open(dbenv,
     txn, lp, uid, name, ftype, ndx, meta_pgno, info, id)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	DB_LOG *lp;
 	u_int8_t *uid;
-	char *name;
+	gchar *name;
 	DBTYPE ftype;
 	int32_t ndx;
 	db_pgno_t meta_pgno;
-	void *info;
+	gpointer info;
 	u_int32_t id;
 {
 	DB *dbp;
-	int ret;
+	gint ret;
 	u_int32_t cstat;
 
 	if ((ret = db_create(&dbp, lp->dbenv, 0)) != 0)
@@ -565,10 +565,10 @@ static int
 __dbreg_check_master(dbenv, uid, name)
 	DB_ENV *dbenv;
 	u_int8_t *uid;
-	char *name;
+	gchar *name;
 {
 	DB *dbp;
-	int ret;
+	gint ret;
 
 	ret = 0;
 	if ((ret = db_create(&dbp, dbenv, 0)) != 0)
@@ -597,15 +597,15 @@ __dbreg_check_master(dbenv, uid, name)
  * at this point we have no way of knowing whether the log record that incited
  * us to call this will be part of a committed transaction.
  *
- * PUBLIC: int __dbreg_lazy_id __P((DB *));
+ * PUBLIC: gint __dbreg_lazy_id __P((DB *));
  */
-int
+gint
 __dbreg_lazy_id(dbp)
 	DB *dbp;
 {
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 
@@ -632,10 +632,10 @@ __dbreg_lazy_id(dbp)
  * The stack is protected by the fq_mutex, and in both functions we assume
  * that this is already locked.
  *
- * PUBLIC: int __dbreg_push_id __P((DB_ENV *, int32_t));
- * PUBLIC: int __dbreg_pop_id __P((DB_ENV *, int32_t *));
+ * PUBLIC: gint __dbreg_push_id __P((DB_ENV *, int32_t));
+ * PUBLIC: gint __dbreg_pop_id __P((DB_ENV *, int32_t *));
  */
-int
+gint
 __dbreg_push_id(dbenv, id)
 	DB_ENV *dbenv;
 	int32_t id;
@@ -643,7 +643,7 @@ __dbreg_push_id(dbenv, id)
 	DB_LOG *dblp;
 	LOG *lp;
 	int32_t *stack, *newstack;
-	int ret;
+	gint ret;
 
 	dblp = dbenv->lg_handle;
 	lp = dblp->reginfo.primary;
@@ -680,7 +680,7 @@ __dbreg_push_id(dbenv, id)
 	return (0);
 }
 
-int
+gint
 __dbreg_pop_id(dbenv, id)
 	DB_ENV *dbenv;
 	int32_t *id;
@@ -711,9 +711,9 @@ __dbreg_pop_id(dbenv, id)
  * Returns success whether or not the particular id was found, and like
  * push and pop, assumes that the fq_mutex is locked.
  *
- * PUBLIC: int __dbreg_pluck_id __P((DB_ENV *, int32_t));
+ * PUBLIC: gint __dbreg_pluck_id __P((DB_ENV *, int32_t));
  */
-int
+gint
 __dbreg_pluck_id(dbenv, id)
 	DB_ENV *dbenv;
 	int32_t id;
@@ -721,7 +721,7 @@ __dbreg_pluck_id(dbenv, id)
 	DB_LOG *dblp;
 	LOG *lp;
 	int32_t *stack;
-	int i;
+	gint i;
 
 	dblp = dbenv->lg_handle;
 	lp = dblp->reginfo.primary;
@@ -760,8 +760,8 @@ __dbreg_print_dblist(dbenv)
 	DB_LOG *dblp;
 	FNAME *fnp;
 	LOG *lp;
-	int del, first;
-	char *name;
+	gint del, first;
+	gchar *name;
 
 	dblp = dbenv->lg_handle;
 	lp = dblp->reginfo.primary;

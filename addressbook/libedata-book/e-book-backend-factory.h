@@ -44,13 +44,13 @@ typedef struct {
 typedef struct {
 	GObjectClass parent_class;
 
-	const char*   (*get_protocol) (EBookBackendFactory *factory);
+	const gchar *   (*get_protocol) (EBookBackendFactory *factory);
 	EBookBackend* (*new_backend)  (EBookBackendFactory *factory);
 } EBookBackendFactoryClass;
 
 GType                e_book_backend_factory_get_type             (void);
 
-const char*          e_book_backend_factory_get_protocol         (EBookBackendFactory *factory);
+const gchar *          e_book_backend_factory_get_protocol         (EBookBackendFactory *factory);
 EBookBackend*        e_book_backend_factory_new_backend          (EBookBackendFactory *factory);
 
 
@@ -69,7 +69,7 @@ _ ## p ##_factory_instance_init (EBookBackend## t ##Factory *factory) \
 { \
 } \
 \
-static const char * \
+static const gchar * \
 _ ## p ##_get_protocol (EBookBackendFactory *factory) \
 { \
 	return #p; \

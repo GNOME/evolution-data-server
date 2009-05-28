@@ -16,4 +16,4 @@ typedef struct _CamelTestSessionClass {
 } CamelTestSessionClass;
 
 CamelType camel_test_session_get_type (void);
-CamelSession *camel_test_session_new (const char *path);
+CamelSession *camel_test_session_new (const gchar *path);

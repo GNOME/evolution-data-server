@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -27,21 +27,21 @@ static const char revid[] =
 #include "dbinc/db_page.h"
 #include "dbinc/db_am.h"
 
-int	 db_dump_db_init __P((DB_ENV *, char *, int, u_int32_t, int *));
+int	 db_dump_db_init __P((DB_ENV *, gchar *, int, u_int32_t, gint *));
 int	 db_dump_dump __P((DB *, int, int));
-int	 db_dump_dump_sub __P((DB_ENV *, DB *, char *, int, int));
-int	 db_dump_is_sub __P((DB *, int *));
-int	 db_dump_main __P((int, char *[]));
+int	 db_dump_dump_sub __P((DB_ENV *, DB *, gchar *, int, int));
+int	 db_dump_is_sub __P((DB *, gint *));
+int	 db_dump_main __P((int, gchar *[]));
 int	 db_dump_show_subs __P((DB *));
 int	 db_dump_usage __P((void));
-int	 db_dump_version_check __P((const char *));
+int	 db_dump_version_check __P((const gchar *));
 
-int
+gint
 db_dump(args)
-	char *args;
+	gchar *args;
 {
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 
 	__db_util_arg("db_dump", args, &argc, &argv);
 	return (db_dump_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -50,21 +50,21 @@ db_dump(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-int
+gint
 db_dump_main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind, __db_getopt_reset;
-	const char *progname = "db_dump";
+	extern gchar *optarg;
+	extern gint optind, __db_getopt_reset;
+	const gchar *progname = "db_dump";
 	DB_ENV	*dbenv;
 	DB *dbp;
 	u_int32_t cache;
-	int ch, d_close;
-	int e_close, exitval, keyflag, lflag, nflag, pflag, private;
-	int ret, Rflag, rflag, resize, subs;
-	char *dopt, *home, *passwd, *subname;
+	gint ch, d_close;
+	gint e_close, exitval, keyflag, lflag, nflag, pflag, private;
+	gint ret, Rflag, rflag, resize, subs;
+	gchar *dopt, *home, *passwd, *subname;
 
 	if ((ret = db_dump_version_check(progname)) != 0)
 		return (ret);
@@ -289,15 +289,15 @@ done:	if (d_close && (ret = dbp->close(dbp, 0)) != 0) {
  * db_init --
  *	Initialize the environment.
  */
-int
+gint
 db_dump_db_init(dbenv, home, is_salvage, cache, is_privatep)
 	DB_ENV *dbenv;
-	char *home;
-	int is_salvage;
+	gchar *home;
+	gint is_salvage;
 	u_int32_t cache;
-	int *is_privatep;
+	gint *is_privatep;
 {
-	int ret;
+	gint ret;
 
 	/*
 	 * Try and use the underlying environment when opening a database.
@@ -347,14 +347,14 @@ db_dump_db_init(dbenv, home, is_salvage, cache, is_privatep)
  * is_sub --
  *	Return if the database contains subdatabases.
  */
-int
+gint
 db_dump_is_sub(dbp, yesno)
 	DB *dbp;
-	int *yesno;
+	gint *yesno;
 {
 	DB_BTREE_STAT *btsp;
 	DB_HASH_STAT *hsp;
-	int ret;
+	gint ret;
 
 	switch (dbp->type) {
 	case DB_BTREE:
@@ -387,18 +387,18 @@ db_dump_is_sub(dbp, yesno)
  * dump_sub --
  *	Dump out the records for a DB containing subdatabases.
  */
-int
+gint
 db_dump_dump_sub(dbenv, parent_dbp, parent_name, pflag, keyflag)
 	DB_ENV *dbenv;
 	DB *parent_dbp;
-	char *parent_name;
-	int pflag, keyflag;
+	gchar *parent_name;
+	gint pflag, keyflag;
 {
 	DB *dbp;
 	DBC *dbcp;
 	DBT key, data;
-	int ret;
-	char *subdb;
+	gint ret;
+	gchar *subdb;
 
 	/*
 	 * Get a cursor and step through the database, dumping out each
@@ -457,13 +457,13 @@ db_dump_dump_sub(dbenv, parent_dbp, parent_name, pflag, keyflag)
  * show_subs --
  *	Display the subdatabases for a database.
  */
-int
+gint
 db_dump_show_subs(dbp)
 	DB *dbp;
 {
 	DBC *dbcp;
 	DBT key, data;
-	int ret;
+	gint ret;
 
 	/*
 	 * Get a cursor and step through the database, printing out the key
@@ -499,17 +499,17 @@ db_dump_show_subs(dbp)
  * dump --
  *	Dump out the records for a DB.
  */
-int
+gint
 db_dump_dump(dbp, pflag, keyflag)
 	DB *dbp;
-	int pflag, keyflag;
+	gint pflag, keyflag;
 {
 	DBC *dbcp;
 	DBT key, data;
 	DBT keyret, dataret;
 	db_recno_t recno;
-	int is_recno, failed, ret;
-	void *pointer;
+	gint is_recno, failed, ret;
+	gpointer pointer;
 
 	/*
 	 * Get a cursor and step through the database, printing out each
@@ -597,7 +597,7 @@ err:	if (data.data != NULL)
  * usage --
  *	Display the usage message.
  */
-int
+gint
 db_dump_usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
@@ -606,11 +606,11 @@ db_dump_usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 db_dump_version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

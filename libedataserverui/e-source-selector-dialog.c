@@ -141,7 +141,7 @@ setup_dialog (GtkWindow *parent, ESourceSelectorDialog *dialog, ESourceList *sou
 {
 	GtkWidget *vbox, *label, *scroll, *hbox, *spacer;
 	GtkWidget *content_area;
-	char *label_text;
+	gchar *label_text;
 	ESourceSelectorDialogPrivate *priv = dialog->priv;
 
 	priv->source_list = g_object_ref (source_list);

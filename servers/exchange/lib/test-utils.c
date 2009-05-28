@@ -34,7 +34,7 @@
 
 #include "test-utils.h"
 
-extern const char *test_program_name;
+extern const gchar *test_program_name;
 
 /**
  * test_ask_password:
@@ -45,13 +45,13 @@ extern const char *test_program_name;
  *
  * Return value: the password (or %NULL if stdin is not a tty).
  **/
-char *
-test_ask_password (const char *prompt)
+gchar *
+test_ask_password (const gchar *prompt)
 {
-	char *password;
+	gchar *password;
 	struct termios t;
-	int old_lflag;
-	char buf[80];
+	gint old_lflag;
+	gchar buf[80];
 
 	if (tcgetattr (STDIN_FILENO, &t) != 0)
 		return NULL;
@@ -88,17 +88,17 @@ test_ask_password (const char *prompt)
  *
  * Return value: the password, or %NULL if it could not be determined.
  **/
-const char *
-test_get_password (const char *user, const char *host)
+const gchar *
+test_get_password (const gchar *user, const gchar *host)
 {
-	static char *password = NULL;
-	char *prompt;
+	static gchar *password = NULL;
+	gchar *prompt;
 
 	if (password)
 		return password;
 
 	if (host) {
-		char *key;
+		gchar *key;
 
 		key = g_strdup_printf ("exchange://%s@%s", user, host);
 		password = e_passwords_get_password ("Exchange", key);
@@ -131,7 +131,7 @@ test_get_password (const char *user, const char *host)
  * test_get_context() will exit the program).
  **/
 E2kContext *
-test_get_context (const char *uri)
+test_get_context (const gchar *uri)
 {
 	E2kContext *ctx;
 	E2kUri *euri;
@@ -166,11 +166,11 @@ test_get_context (const char *uri)
  * test_get_gc() will exit the program).
  **/
 E2kGlobalCatalog *
-test_get_gc (const char *server)
+test_get_gc (const gchar *server)
 {
 	E2kGlobalCatalog *gc;
-	const char *password;
-	char *user, *p;
+	const gchar *password;
+	gchar *user, *p;
 
 	if (strchr (server, '@')) {
 		user = g_strdup (server);
@@ -191,8 +191,8 @@ test_get_gc (const char *server)
 	return gc;
 }
 
-static char **global_argv;
-static int global_argc;
+static gchar **global_argv;
+static gint global_argc;
 static GMainLoop *loop;
 
 /**
@@ -243,8 +243,8 @@ idle_run (gpointer data)
 	return FALSE;
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	gtk_init (&argc, &argv);
 

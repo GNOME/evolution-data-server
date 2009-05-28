@@ -47,11 +47,11 @@
 
 static CamelStreamClass *parent_class = NULL;
 
-static ssize_t stream_read (CamelStream *stream, char *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const char *buffer, size_t n);
-static int stream_flush  (CamelStream *stream);
-static int stream_close  (CamelStream *stream);
-static int stream_reset  (CamelStream *stream);
+static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
+static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gint stream_flush  (CamelStream *stream);
+static gint stream_close  (CamelStream *stream);
+static gint stream_reset  (CamelStream *stream);
 
 static void
 camel_http_stream_class_init (CamelHttpStreamClass *camel_http_stream_class)
@@ -149,7 +149,7 @@ CamelStream *
 camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, CamelURL *url)
 {
 	CamelHttpStream *stream;
-	char *str;
+	gchar *str;
 
 	g_return_val_if_fail(CAMEL_IS_SESSION(session), NULL);
 	g_return_val_if_fail(url != NULL, NULL);
@@ -174,8 +174,8 @@ http_connect (CamelHttpStream *http, CamelURL *url)
 {
 	CamelStream *stream = NULL;
 	struct addrinfo *ai, hints = { 0 };
-	int errsave;
-	char *serv;
+	gint errsave;
+	gchar *serv;
 
 	d(printf("connecting to http stream @ '%s'\n", url->host));
 
@@ -241,10 +241,10 @@ http_disconnect(CamelHttpStream *http)
 	}
 }
 
-static const char *
-http_next_token (const unsigned char *in)
+static const gchar *
+http_next_token (const guchar *in)
 {
-	const unsigned char *inptr = in;
+	const guchar *inptr = in;
 
 	while (*inptr && !isspace ((int) *inptr))
 		inptr++;
@@ -252,14 +252,14 @@ http_next_token (const unsigned char *in)
 	while (*inptr && isspace ((int) *inptr))
 		inptr++;
 
-	return (const char *) inptr;
+	return (const gchar *) inptr;
 }
 
 static int
 http_get_statuscode (CamelHttpStream *http)
 {
-	const char *token;
-	char buffer[4096];
+	const gchar *token;
+	gchar buffer[4096];
 
 	if (camel_stream_buffer_gets ((CamelStreamBuffer *)http->read, buffer, sizeof (buffer)) <= 0)
 		return -1;
@@ -268,7 +268,7 @@ http_get_statuscode (CamelHttpStream *http)
 
 	/* parse the HTTP status code */
 	if (!g_ascii_strncasecmp (buffer, "HTTP/", 5)) {
-		token = http_next_token ((const unsigned char *) buffer);
+		token = http_next_token ((const guchar *) buffer);
 		http->statuscode = camel_header_decode_int (&token);
 		return http->statuscode;
 	}
@@ -282,10 +282,10 @@ static int
 http_get_headers (CamelHttpStream *http)
 {
 	struct _camel_header_raw *headers, *node, *tail;
-	const char *type;
-	char *buf;
+	const gchar *type;
+	gchar *buf;
 	size_t len;
-	int err;
+	gint err;
 
 	if (http->parser)
 		camel_object_unref (http->parser);
@@ -350,8 +350,8 @@ http_get_headers (CamelHttpStream *http)
 static int
 http_method_invoke (CamelHttpStream *http)
 {
-	const char *method = NULL;
-	char *url;
+	const gchar *method = NULL;
+	gchar *url;
 
 	switch (http->method) {
 	case CAMEL_HTTP_METHOD_GET:
@@ -408,10 +408,10 @@ http_method_invoke (CamelHttpStream *http)
 }
 
 static ssize_t
-stream_read (CamelStream *stream, char *buffer, size_t n)
+stream_read (CamelStream *stream, gchar *buffer, size_t n)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
-	const char *parser_buf;
+	const gchar *parser_buf;
 	ssize_t nread;
 
 	if (http->method != CAMEL_HTTP_METHOD_GET && http->method != CAMEL_HTTP_METHOD_HEAD) {
@@ -447,7 +447,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 			break;
 		case 301:
 		case 302: {
-			char *loc;
+			gchar *loc;
 			CamelURL *url;
 
 			camel_content_type_unref (http->content_type);
@@ -501,7 +501,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 }
 
 static ssize_t
-stream_write (CamelStream *stream, const char *buffer, size_t n)
+stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 {
 	return -1;
 }
@@ -560,7 +560,7 @@ camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 }
 
 void
-camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const char *user_agent)
+camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const gchar *user_agent)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 
@@ -569,7 +569,7 @@ camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const char *user
 }
 
 void
-camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url)
+camel_http_stream_set_proxy (CamelHttpStream *http_stream, const gchar *proxy_url)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 
@@ -582,7 +582,7 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url
 		http_stream->proxy = camel_url_new (proxy_url, NULL);
 
 	if (http_stream->proxy && ((http_stream->proxy->user && *http_stream->proxy->user) || (http_stream->proxy->passwd && *http_stream->proxy->passwd))) {
-		char *basic, *basic64;
+		gchar *basic, *basic64;
 
 		basic = g_strdup_printf("%s:%s", http_stream->proxy->user?http_stream->proxy->user:"",
 					http_stream->proxy->passwd?http_stream->proxy->passwd:"");
@@ -598,7 +598,7 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url
 }
 
 void
-camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const char *proxy_authrealm)
+camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const gchar *proxy_authrealm)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 
@@ -607,7 +607,7 @@ camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const char 
 }
 
 void
-camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream, const char *proxy_authpass)
+camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream, const gchar *proxy_authpass)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 

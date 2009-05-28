@@ -22,6 +22,6 @@
 
 #include <libical/ical.h>
 
-char *e_cal_system_timezone_get_location (void);
+gchar *e_cal_system_timezone_get_location (void);
 
 #endif

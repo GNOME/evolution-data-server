@@ -59,7 +59,7 @@ create_text_column_for_field (EContactField field_id)
 }
 
 static gint
-start_test (const char *gconf_path)
+start_test (const gchar *gconf_path)
 {
 	EContactStore *contact_store;
 	GtkTreeModel *model_sort;
@@ -115,10 +115,10 @@ start_test (const char *gconf_path)
 	return FALSE;
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	const char *gconf_path;
+	const gchar *gconf_path;
 
 	gtk_init (&argc, &argv);
 
@@ -127,7 +127,7 @@ main (int argc, char **argv)
 	else
 		gconf_path = argv [1];
 
-	g_idle_add ((GSourceFunc) start_test, (void *) gconf_path);
+	g_idle_add ((GSourceFunc) start_test, (gpointer) gconf_path);
 
 	gtk_main ();
 

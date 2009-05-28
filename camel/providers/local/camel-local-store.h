@@ -35,14 +35,14 @@ G_BEGIN_DECLS
 typedef struct {
 	CamelStore parent_object;
 
-	char *toplevel_dir;
+	gchar *toplevel_dir;
 } CamelLocalStore;
 
 typedef struct {
 	CamelStoreClass parent_class;
 
-	char *(*get_full_path)(CamelLocalStore *ls, const char *full_name);
-	char *(*get_meta_path)(CamelLocalStore *ls, const char *full_name, const char *ext);
+	gchar *(*get_full_path)(CamelLocalStore *ls, const gchar *full_name);
+	gchar *(*get_meta_path)(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 } CamelLocalStoreClass;
 
 /* Standard Camel function */

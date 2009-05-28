@@ -66,11 +66,11 @@ typedef struct {
 
 struct _EBookBackendGroupwisePrivate {
 	EGwConnection *cnc;
-	char *uri;
-	char *container_id;
-	char *book_name;
-	char *original_uri;
-	char *summary_file_name;
+	gchar *uri;
+	gchar *container_id;
+	gchar *book_name;
+	gchar *original_uri;
+	gchar *summary_file_name;
 	gboolean only_if_exists;
 	GHashTable *categories_by_id;
 	GHashTable *categories_by_name;
@@ -78,8 +78,8 @@ struct _EBookBackendGroupwisePrivate {
 	gboolean is_cache_ready;
 	gboolean is_summary_ready;
 	gboolean marked_for_offline;
-	char *use_ssl;
-	int mode;
+	gchar *use_ssl;
+	gint mode;
 	EBookBackendSummary *summary;
 	GMutex *update_cache_mutex;
 	GMutex *update_mutex;
@@ -93,7 +93,7 @@ struct _EBookBackendGroupwisePrivate {
 
 static GStaticMutex global_env_lock = G_STATIC_MUTEX_INIT;
 static struct {
-	int ref_count;
+	gint ref_count;
 	DB_ENV *env;
 } global_env;
 
@@ -125,8 +125,8 @@ static void fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTa
 
 static const struct field_element_mapping {
 	EContactField field_id;
-	int element_type;
-	char *element_name;
+	gint element_type;
+	gchar *element_name;
 	void (*populate_contact_func)(EContact *contact,    gpointer data);
 	void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
 	void (*set_changes) (EGwItem *new_item, EGwItem *old_item);
@@ -191,7 +191,7 @@ populate_ims (EContact *contact, gpointer data)
 	for (; im_list != NULL; im_list = g_list_next (im_list)) {
 		EVCardAttribute *attr;
 		GList **im_attr_list = NULL;
-		int im_field_id = -1;
+		gint im_field_id = -1;
 
 		address = (IMAddress *) (im_list->data);
 		if (address->service == NULL) {
@@ -260,7 +260,7 @@ populate_ims (EContact *contact, gpointer data)
 }
 
 static void
-append_ims_to_list (GList **im_list, EContact *contact,  char *service_name, EContactField field_id)
+append_ims_to_list (GList **im_list, EContact *contact,  gchar *service_name, EContactField field_id)
 {
 	GList *list;
 	IMAddress *address;
@@ -437,12 +437,12 @@ copy_postal_address (PostalAddress *address)
 }
 
 static void
-set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  char *address_type)
+set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  gchar *address_type)
 {
 	PostalAddress *old_postal_address;
 	PostalAddress *new_postal_address;
 	PostalAddress *update_postal_address, *delete_postal_address;
-	char *s1, *s2;
+	gchar *s1, *s2;
 	update_postal_address = g_new0(PostalAddress, 1);
 	delete_postal_address = g_new0 (PostalAddress, 1);
 
@@ -511,7 +511,7 @@ static void
 populate_birth_date (EContact *contact, gpointer data)
 {
 	EGwItem *item;
-	char *value ;
+	gchar *value ;
 	EContactDate *date;
 
 	item = E_GW_ITEM (data);
@@ -528,7 +528,7 @@ set_birth_date_in_gw_item (EGwItem *item, gpointer data)
 {
 	EContact *contact;
 	EContactDate *date;
-	char *date_string;
+	gchar *date_string;
 	contact = E_CONTACT (data);
 	date = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
 	if (date) {
@@ -543,8 +543,8 @@ set_birth_date_in_gw_item (EGwItem *item, gpointer data)
 static void
 set_birth_date_changes (EGwItem *new_item, EGwItem *old_item)
 {
-	char *new_birthday;
-	char *old_birthday;
+	gchar *new_birthday;
+	gchar *old_birthday;
 
 	new_birthday = e_gw_item_get_field_value (new_item, "birthday");
 	old_birthday = e_gw_item_get_field_value (old_item, "birthday");
@@ -561,7 +561,7 @@ set_birth_date_changes (EGwItem *new_item, EGwItem *old_item)
 	}
 }
 
-static const int email_fields[3] = {
+static const gint email_fields[3] = {
 	E_CONTACT_EMAIL_1,
 	E_CONTACT_EMAIL_2,
 	E_CONTACT_EMAIL_3
@@ -573,7 +573,7 @@ populate_emails (EContact *contact, gpointer data)
 {
 	GList *email_list;
 	EGwItem *item;
-	int i;
+	gint i;
 
 	item = E_GW_ITEM (data);
 	email_list = e_gw_item_get_email_list(item);
@@ -590,8 +590,8 @@ set_emails_in_gw_item (EGwItem *item, gpointer data)
 {
 	GList *email_list;
 	EContact *contact;
-	char *email;
-	int i;
+	gchar *email;
+	gint i;
 
 	contact = E_CONTACT (data);
 	email_list = NULL;
@@ -608,7 +608,7 @@ compare_string_lists ( GList *old_list, GList *new_list, GList **additions, GLis
 {
 	GList *temp, *old_list_copy;
 	gboolean strings_matched;
-	char *string1, *string2;
+	gchar *string1, *string2;
 
 	if (old_list && new_list) {
 		old_list_copy = g_list_copy (old_list);
@@ -657,7 +657,7 @@ populate_full_name (EContact *contact, gpointer data)
 {
 	EGwItem *item;
 	FullName  *full_name ;
-	char *full_name_string;
+	gchar *full_name_string;
 
 	item = E_GW_ITEM(data);
 	full_name = e_gw_item_get_full_name (item);
@@ -677,7 +677,7 @@ static void
 set_full_name_in_gw_item (EGwItem *item, gpointer data)
 {
 	EContact *contact;
-	char   *name;
+	gchar   *name;
 	EContactName *contact_name;
 	FullName *full_name;
 
@@ -718,7 +718,7 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 	FullName *old_full_name;
 	FullName *new_full_name;
 	FullName  *update_full_name, *delete_full_name;
-	char *s1, *s2;
+	gchar *s1, *s2;
 	update_full_name = g_new0(FullName, 1);
 	delete_full_name = g_new0 (FullName, 1);
 
@@ -786,8 +786,8 @@ populate_contact_members (EContact *contact, gpointer data)
                                                         e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID),
 							member->id);
 		if (member->name) {
-			int len = strlen (member->name);
-			char *value;
+			gint len = strlen (member->name);
+			gchar *value;
 
 			if (member->name [0] == '\"' && member->name [len - 1] == '\"')
 				value = g_strdup_printf ("%s <%s>", member->name, member->email);
@@ -809,15 +809,15 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 {
 	GList  *members, *temp, *dtemp, *items, *p, *emails_without_ids, *dest_without_ids;
 	GList *group_members;
-	char *email;
+	gchar *email;
 	EGwFilter *filter;
-	int status;
-	char *id;
+	gint status;
+	gchar *id;
 	EGwItem *temp_item;
-	int count = 0;
-	int element_type;
-	int i;
-	char *value;
+	gint count = 0;
+	gint element_type;
+	gint i;
+	gchar *value;
 	EGroupMember *member;
 
 	members = e_contact_get_attributes (contact, E_CONTACT_EMAIL);
@@ -836,7 +836,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 
 		for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
 			EVCardAttributeParam *param = p->data;
-			const char *param_name = e_vcard_attribute_param_get_name (param);
+			const gchar *param_name = e_vcard_attribute_param_get_name (param);
 
 			if (!g_ascii_strcasecmp (param_name,
 						 EVC_X_DEST_CONTACT_UID)) {
@@ -890,7 +890,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		temp_item = E_GW_ITEM (items->data);
 		emails = e_gw_item_get_email_list (temp_item);
 		if (emails_without_ids && (ptr = g_list_find_custom (emails_without_ids, emails->data, (GCompareFunc)strcasecmp ))) {
-			int pos = g_list_position (emails_without_ids, ptr);
+			gint pos = g_list_position (emails_without_ids, ptr);
 			emails_without_ids = g_list_remove_link (emails_without_ids, ptr);
 			g_list_free (ptr);
 
@@ -1027,11 +1027,11 @@ set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise 
 static void
 set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwise *egwb)
 {
-	char *organization_name;
+	gchar *organization_name;
 	EGwItem *org_item, *temp_item;
 	EGwFilter *filter;
-	int status;
-	char *id;
+	gint status;
+	gchar *id;
 	GList *items;
 
 	organization_name = e_contact_get (contact, E_CONTACT_ORG);
@@ -1087,10 +1087,10 @@ set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroup
 static void
 set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 {
-	char *old_value;
-	char *new_value;
-	char *old_org_id;
-	char *new_org_id;
+	gchar *old_value;
+	gchar *new_value;
+	gchar *old_org_id;
+	gchar *new_org_id;
 
 	old_value = e_gw_item_get_field_value (old_item, "organization");
 	new_value = e_gw_item_get_field_value (new_item, "organization");
@@ -1115,8 +1115,8 @@ set_categories_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwi
 {
 	GHashTable *categories_by_name;
 	GList *category_names,  *category_ids;
-	char *id;
-	int status;
+	gchar *id;
+	gint status;
 
 	categories_by_name = egwb->priv->categories_by_name;
 	category_names = e_contact_get (contact, E_CONTACT_CATEGORY_LIST);
@@ -1136,8 +1136,8 @@ set_categories_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwi
 			e_gw_item_set_category_name (category_item, category_names->data);
 			status = e_gw_connection_create_item (egwb->priv->cnc, category_item, &id);
 			if (status == E_GW_CONNECTION_STATUS_OK && id != NULL) {
-				char **components = g_strsplit (id, "@", -1);
-				char *temp_id = components[0];
+				gchar **components = g_strsplit (id, "@", -1);
+				gchar *temp_id = components[0];
 
 				g_hash_table_insert (categories_by_name, g_strdup (category_names->data), g_strdup(temp_id));
 				g_hash_table_insert (egwb->priv->categories_by_id, g_strdup(temp_id), g_strdup (category_names->data));
@@ -1158,7 +1158,7 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 	GList *new_category_list;
 	GList *temp, *old_categories_copy, *added_categories = NULL;
 	gboolean categories_matched;
-	char *category1, *category2;
+	gchar *category1, *category2;
 
 	old_category_list = e_gw_item_get_categories (old_item);
 	new_category_list = e_gw_item_get_categories (new_item);
@@ -1195,9 +1195,9 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 static void
 fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categories_by_ids)
 {
-	char* value;
-	int element_type;
-	int i;
+	gchar * value;
+	gint element_type;
+	gint i;
 	gboolean is_contact_list;
 	gboolean is_organization;
 
@@ -1222,7 +1222,7 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 		} else if (element_type == ELEMENT_TYPE_COMPLEX) {
 			if (mappings[i].field_id == E_CONTACT_CATEGORIES) {
 				GList *category_ids, *category_names;
-				char *name;
+				gchar *name;
 
 				category_names = NULL;
 				category_ids = e_gw_item_get_categories (item);
@@ -1246,16 +1246,16 @@ static void
 e_book_backend_groupwise_create_contact (EBookBackend *backend,
 					 EDataBook *book,
 					 guint32 opid,
-					 const char *vcard )
+					 const gchar *vcard )
 {
 	EContact *contact;
 	EBookBackendGroupwise *egwb;
-	char *id;
-	int status;
+	gchar *id;
+	gint status;
 	EGwItem *item;
-	int element_type;
-	char* value;
-	int i;
+	gint element_type;
+	gchar * value;
+	gint i;
 
 	if (enable_debug)
 		printf("\ne_book_backend_groupwise_create_contact...\n");
@@ -1333,7 +1333,7 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 					  guint32 opid,
 					  GList *id_list)
 {
-	char *id;
+	gchar *id;
 	EBookBackendGroupwise *ebgw;
 	GList *deleted_ids = NULL;
 
@@ -1360,7 +1360,7 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 		}
 
 		for ( ; id_list != NULL; id_list = g_list_next (id_list)) {
-			id = (char*) id_list->data;
+			id = (gchar *) id_list->data;
 			e_gw_connection_remove_item (ebgw->priv->cnc, ebgw->priv->container_id, id);
 			deleted_ids =  g_list_append (deleted_ids, id);
 			e_book_backend_db_cache_remove_contact (ebgw->priv->file_db, id);
@@ -1378,10 +1378,10 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 static void
 set_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 {
-	char* new_value;
-	char *old_value;
-	int element_type;
-	int i;
+	gchar * new_value;
+	gchar *old_value;
+	gint element_type;
+	gint i;
 
 	g_return_if_fail (E_IS_GW_ITEM(new_item));
 	g_return_if_fail (E_IS_GW_ITEM(old_item));
@@ -1416,17 +1416,17 @@ static void
 e_book_backend_groupwise_modify_contact (EBookBackend *backend,
 					 EDataBook    *book,
 					 guint32       opid,
-					 const char   *vcard)
+					 const gchar   *vcard)
 {
 	EContact *contact;
 	EBookBackendGroupwise *egwb;
-	char *id;
-	int status;
+	gchar *id;
+	gint status;
 	EGwItem *new_item;
 	EGwItem *old_item;
-	int element_type;
-	char* value;
-	int i;
+	gint element_type;
+	gchar * value;
+	gint i;
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_modify_contact...\n");
@@ -1512,13 +1512,13 @@ static void
 e_book_backend_groupwise_get_contact (EBookBackend *backend,
 				      EDataBook    *book,
 				      guint32       opid,
-				      const char   *id)
+				      const gchar   *id)
 {
 	EBookBackendGroupwise *gwb;
-	int status ;
+	gint status ;
 	EGwItem *item;
 	EContact *contact;
-	char *vcard;
+	gchar *vcard;
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_contact...\n");
@@ -1571,12 +1571,12 @@ typedef struct {
 	EGwFilter *filter;
 	gboolean is_filter_valid;
 	gboolean is_personal_book;
-	int auto_completion;
-	char *search_string;
+	gint auto_completion;
+	gchar *search_string;
 } EBookBackendGroupwiseSExpData;
 
 static ESExpResult *
-func_and(ESExp *f, int argc, ESExpResult **argv, void *data)
+func_and(ESExp *f, gint argc, ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1593,7 +1593,7 @@ func_and(ESExp *f, int argc, ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_or(ESExp *f, int argc, ESExpResult **argv, void *data)
+func_or(ESExp *f, gint argc, ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1610,7 +1610,7 @@ func_or(ESExp *f, int argc, ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_not(ESExp *f, int argc, ESExpResult **argv, void *data)
+func_not(ESExp *f, gint argc, ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EBookBackendGroupwiseSExpData *sexp_data;
@@ -1624,7 +1624,7 @@ func_not(ESExp *f, int argc, ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1636,9 +1636,9 @@ func_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
-		char *gw_field_name;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
+		gchar *gw_field_name;
 
 		if (g_str_equal (propname, "x-evolution-any-field")) {
 			if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
@@ -1685,7 +1685,7 @@ func_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1697,9 +1697,9 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
-		char *gw_field_name;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
+		gchar *gw_field_name;
 
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name"))
@@ -1743,7 +1743,7 @@ func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 #define AUTO_COMPLETION_QUERY 15
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1755,9 +1755,9 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
-		char *gw_field_name;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
+		gchar *gw_field_name;
 
 		if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
 			/* ignore the NULL query */
@@ -1814,7 +1814,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	EBookBackendGroupwiseSExpData *sexp_data;
 	ESExpResult *r;
@@ -1830,7 +1830,7 @@ func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data
 }
 
 static ESExpResult *
-func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
 	EGwFilter *filter;
@@ -1841,9 +1841,9 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
-		char *propname = argv[0]->value.string;
-		char *str = argv[1]->value.string;
-		char *gw_field_name;
+		gchar *propname = argv[0]->value.string;
+		gchar *str = argv[1]->value.string;
+		gchar *gw_field_name;
 
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name"))
@@ -1883,9 +1883,9 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 
 /* 'builtin' functions */
 static const struct {
-	char *name;
+	gchar *name;
 	ESExpFunc *func;
-	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "and", func_and, 0 },
@@ -1899,13 +1899,13 @@ static const struct {
 };
 
 static EGwFilter*
-e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const char *query, gpointer is_auto_completion, char ** search_string)
+e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const gchar *query, gpointer is_auto_completion, gchar ** search_string)
 {
 	ESExp *sexp;
 	ESExpResult *r;
 	EBookBackendGroupwiseSExpData *sexp_data;
 	EGwFilter *filter;
-	int i;
+	gint i;
 
 	sexp = e_sexp_new();
 	filter = e_gw_filter_new ();
@@ -1952,10 +1952,10 @@ static void
 e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 					   EDataBook    *book,
 					   guint32       opid,
-					   const char   *query )
+					   const gchar   *query )
 {
 	GList *vcard_list;
-	int status;
+	gint status;
 	GList *gw_items, *contacts = NULL, *temp;
 	EContact *contact;
 	EBookBackendGroupwise *egwb;
@@ -1983,13 +1983,13 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 
 		if (egwb->priv->is_summary_ready &&
 		    e_book_backend_summary_is_summary_query (egwb->priv->summary, query)) {
-			int i;
+			gint i;
 			ids = e_book_backend_summary_search (egwb->priv->summary, query);
 			if (!ids)
 				return;
 
 			for (i = 0; i < ids->len; i ++) {
-				char *uid = g_ptr_array_index (ids, i);
+				gchar *uid = g_ptr_array_index (ids, i);
 
 				EContact *contact =
 					e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
@@ -2034,9 +2034,9 @@ e_book_backend_groupwise_get_contact_list (EBookBackend *backend,
 				ids = e_book_backend_summary_search (egwb->priv->summary, query);
 
 				if (!egwb->priv->is_writable) {
-					int i;
+					gint i;
 					for (i = 0; i < ids->len; i ++) {
-						char *uid = g_ptr_array_index (ids, i);
+						gchar *uid = g_ptr_array_index (ids, i);
 						contact = e_book_backend_db_cache_get_contact (egwb->priv->file_db, uid);
 						vcard_list = g_list_append (vcard_list,
                                                             e_vcard_to_string (E_VCARD (contact),
@@ -2153,17 +2153,17 @@ get_closure (EDataBookView *book_view)
 
 static void
 get_contacts_from_cache (EBookBackendGroupwise *ebgw,
-			 const char *query,
+			 const gchar *query,
 			 GPtrArray *ids,
 			 EDataBookView *book_view,
 			 GroupwiseBackendSearchClosure *closure)
 {
-	int i;
+	gint i;
 
 	if (enable_debug)
 		printf ("\nread contacts from cache for the ids found in summary\n");
 	for (i = 0; i < ids->len; i ++) {
-		char *uid;
+		gchar *uid;
 		EContact *contact;
 
                 if (!e_flag_is_set (closure->running))
@@ -2184,18 +2184,18 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
 static gpointer
 book_view_thread (gpointer data)
 {
-	int status, count = 0;
+	gint status, count = 0;
 	GList *gw_items, *temp_list, *contacts;
 	EContact *contact;
 	EBookBackendGroupwise *gwb;
-	const char *query = NULL;
+	const gchar *query = NULL;
 	EGwFilter *filter = NULL;
 	GPtrArray *ids = NULL;
 	EDataBookView *book_view = data;
 	GroupwiseBackendSearchClosure *closure = get_closure (book_view);
-	char *view = NULL;
+	gchar *view = NULL;
 	gboolean is_auto_completion = FALSE;
-	char *search_string = NULL;
+	gchar *search_string = NULL;
 	GTimeVal start, end;
 	unsigned long diff;
 
@@ -2428,7 +2428,7 @@ book_view_thread (gpointer data)
 			if (e_contact_get_const (contact, E_CONTACT_UID))
 				e_data_book_view_notify_update (book_view, contact);
 			else
-				g_critical ("Id missing for item %s\n", (char *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
+				g_critical ("Id missing for item %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FILE_AS));
 			g_object_unref(contact);
 			g_object_unref (gw_items->data);
 		}
@@ -2484,7 +2484,7 @@ static void
 e_book_backend_groupwise_get_changes (EBookBackend *backend,
 				      EDataBook    *book,
 				      guint32       opid,
-				      const char *change_id  )
+				      const gchar *change_id  )
 {
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_changes...\n");
@@ -2494,7 +2494,7 @@ e_book_backend_groupwise_get_changes (EBookBackend *backend,
 }
 
 static void
-book_view_notify_status (EDataBookView *view, const char *status)
+book_view_notify_status (EDataBookView *view, const gchar *status)
 {
 	if (!view)
 		return;
@@ -2538,7 +2538,7 @@ get_sequence_from_cache (DB *db,
 		gdouble *cache_last_po_rebuild_time)
 {
 	DBT uid_dbt, vcard_dbt;
-	int db_error;
+	gint db_error;
 
 	string_to_dbt ("firstSequence", &uid_dbt);
 	memset (&vcard_dbt, 0, sizeof(vcard_dbt));
@@ -2593,7 +2593,7 @@ add_sequence_to_cache (DB *db,
 {
 		gchar *tmp;
 		DBT   uid_dbt, vcard_dbt;
-		int db_error;
+		gint db_error;
 
 		if (enable_debug) {
 			printf("Adding sequences to cache\n");
@@ -2642,12 +2642,12 @@ add_sequence_to_cache (DB *db,
 static gpointer
 build_cache (EBookBackendGroupwise *ebgw)
 {
-	int status, contact_num = 0;
+	gint status, contact_num = 0;
 	GList *gw_items = NULL;
 	EContact *contact;
 	EDataBookView *book_view;
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
-	char *status_msg;
+	gchar *status_msg;
 
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "name email default members", NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK)
@@ -2685,16 +2685,16 @@ till it gets fixed we will use get items. cursor implementation is below */
 static gpointer
 build_cache (EBookBackendGroupwise *ebgw)
 {
-	int status;
+	gint status;
 	GList *gw_items = NULL, *l;
 	EContact *contact;
-	int cursor, contact_num = 0;
+	gint cursor, contact_num = 0;
 	gboolean done = FALSE;
 	EBookBackendGroupwisePrivate *priv = ebgw->priv;
-	const char *position = E_GW_CURSOR_POSITION_START;
+	const gchar *position = E_GW_CURSOR_POSITION_START;
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
-	char *status_msg;
+	gchar *status_msg;
 	GTimeVal start, end;
 	GTimeVal tstart, tend;
 	unsigned long diff;
@@ -2840,15 +2840,15 @@ build_summary (EBookBackendGroupwise *ebgw)
 static gboolean
 update_cache (EBookBackendGroupwise *ebgw)
 {
-	int status, contact_num = 0;
+	gint status, contact_num = 0;
 	GList *gw_items = NULL;
 	EContact *contact;
 	EGwFilter *filter;
 	time_t mod_time;
-	char cache_time_string[100], *status_msg;
+	gchar cache_time_string[100], *status_msg;
 	const struct tm *tm;
 	struct stat buf;
-	char *cache_file_name;
+	gchar *cache_file_name;
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
 	GTimeVal start, end;
@@ -2894,7 +2894,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	}
 
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) {
-		const char *id;
+		const gchar *id;
 
 		contact = e_contact_new ();
 		fill_contact_from_gw_item (contact, E_GW_ITEM (gw_items->data),
@@ -2950,10 +2950,10 @@ update_cache (EBookBackendGroupwise *ebgw)
 static gboolean
 update_address_book_deltas (EBookBackendGroupwise *ebgw)
 {
-	int status, contact_num = 0;
+	gint status, contact_num = 0;
 	gdouble server_first_sequence = -1, server_last_sequence = -1, server_last_po_rebuild_time = -1;
 	gdouble cache_first_sequence = -1, cache_last_sequence = -1, cache_last_po_rebuild_time = -1;
-	char *count, *sequence, *status_msg;
+	gchar *count, *sequence, *status_msg;
 	gboolean sync_required = FALSE;
 	GList *add_list = NULL, *delete_list = NULL;
 	EContact *contact;
@@ -2964,7 +2964,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 
 	GTimeVal start, end;
 	unsigned long diff;
-	char *cache_file_name;
+	gchar *cache_file_name;
 	struct stat buf;
 	time_t mod_time;
 
@@ -3072,7 +3072,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 			}
 
 			for (; delete_list != NULL; delete_list = g_list_next(delete_list)) {
-				const char *id;
+				const gchar *id;
 
 				/* deleted from the server */
 				contact = e_contact_new ();
@@ -3080,7 +3080,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 							   E_GW_ITEM (delete_list->data),
 							   ebgw->priv->categories_by_id);
 				if (enable_debug)
-					printf("contact email:%s, contact name:%s\n", (char *) e_contact_get(contact, E_CONTACT_EMAIL_1), (char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
+					printf("contact email:%s, contact name:%s\n", (gchar *) e_contact_get(contact, E_CONTACT_EMAIL_1), (gchar *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact,
 					       E_CONTACT_BOOK_URI,
 					       priv->original_uri);
@@ -3103,7 +3103,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 			}
 
 			for (; add_list != NULL; add_list = g_list_next(add_list)) {
-				const char *id;
+				const gchar *id;
 
 				/* newly added to server */
 				contact = e_contact_new ();
@@ -3126,7 +3126,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				}
 
 				if (enable_debug)
-					printf("contact email:%s, contact name:%s\n", (char *)e_contact_get(contact, E_CONTACT_EMAIL_1),(char *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
+					printf("contact email:%s, contact name:%s\n", (gchar *)e_contact_get(contact, E_CONTACT_EMAIL_1),(gchar *) e_contact_get(contact, E_CONTACT_GIVEN_NAME));
 				e_contact_set (contact,
 					       E_CONTACT_BOOK_URI,
 					       priv->original_uri);
@@ -3261,19 +3261,19 @@ static void
 e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 					    EDataBook    *book,
 					    guint32       opid,
-					    const char *user,
-					    const char *passwd,
-					    const char *auth_method)
+					    const gchar *user,
+					    const gchar *passwd,
+					    const gchar *auth_method)
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
 	EGwConnectionErrors error;
-	char *id, *tmpfile;
-	int status;
-	char *http_uri;
+	gchar *id, *tmpfile;
+	gint status;
+	gchar *http_uri;
 	gboolean is_writable;
-	const char *cache_refresh_interval_set;
-	int cache_refresh_interval = CACHE_REFRESH_INTERVAL;
+	const gchar *cache_refresh_interval_set;
+	gint cache_refresh_interval = CACHE_REFRESH_INTERVAL;
 
 	ebgw = E_BOOK_BACKEND_GROUPWISE (backend);
 	priv = ebgw->priv;
@@ -3451,7 +3451,7 @@ e_book_backend_groupwise_get_required_fields (EBookBackend *backend,
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_required_fields...\n");
 
-	fields = g_list_append (fields, (char *)e_contact_field_name (E_CONTACT_FILE_AS));
+	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_FILE_AS));
 	e_data_book_respond_get_supported_fields (book, opid,
 						  GNOME_Evolution_Addressbook_Success,
 						  fields);
@@ -3465,7 +3465,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 					       guint32       opid)
 {
 	GList *fields = NULL;
-	int i;
+	gint i;
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_supported_fields...\n");
@@ -3498,9 +3498,9 @@ e_book_backend_groupwise_cancel_operation (EBookBackend *backend, EDataBook *boo
 
 static void
 #if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3
-file_errcall (const DB_ENV *env, const char *buf1, const char *buf2)
+file_errcall (const DB_ENV *env, const gchar *buf1, const gchar *buf2)
 #else
-file_errcall (const char *buf1, char *buf2)
+file_errcall (const gchar *buf1, gchar *buf2)
 #endif
 {
 	g_warning ("libdb error: %s", buf2);
@@ -3513,18 +3513,18 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 {
 	EBookBackendGroupwise *ebgw;
 	EBookBackendGroupwisePrivate *priv;
-	char *dirname, *filename, *tmp;
-        char *book_name;
-        char *uri;
-	char **tokens;
-	const char *port;
-	int db_error;
+	gchar *dirname, *filename, *tmp;
+        gchar *book_name;
+        gchar *uri;
+	gchar **tokens;
+	const gchar *port;
+	gint db_error;
 	DB *db;
 	DB_ENV *env;
 	EUri *parsed_uri;
-	int i;
-	const char *use_ssl;
-	const char *offline;
+	gint i;
+	const gchar *use_ssl;
+	const gchar *offline;
 
 
 	if (enable_debug)
@@ -3646,7 +3646,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	ebgw->priv->file_db = db;
 
 	if (db_error != 0) {
-		int rv;
+		gint rv;
 
 		/* the databade didn't exist, so we create the
 		   directory then the .db */
@@ -3723,7 +3723,7 @@ e_book_backend_groupwise_remove (EBookBackend *backend,
 				 guint32           opid)
 {
 	EBookBackendGroupwise *ebgw;
-	int status;
+	gint status;
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_remove...\n");
@@ -3744,7 +3744,7 @@ e_book_backend_groupwise_remove (EBookBackend *backend,
 	g_unlink (e_book_backend_db_cache_get_filename(ebgw->priv->file_db));
 }
 
-static char *
+static gchar *
 e_book_backend_groupwise_get_static_capabilities (EBookBackend *backend)
 {
 	EBookBackendGroupwise *ebgw;
@@ -3765,7 +3765,7 @@ static void
 e_book_backend_groupwise_get_supported_auth_methods (EBookBackend *backend, EDataBook *book, guint32 opid)
 {
 	GList *auth_methods = NULL;
-	char *auth_method;
+	gchar *auth_method;
 
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_supported_auth_methods...\n");
@@ -3780,7 +3780,7 @@ e_book_backend_groupwise_get_supported_auth_methods (EBookBackend *backend, EDat
 }
 
 static void
-e_book_backend_groupwise_set_mode (EBookBackend *backend, int mode)
+e_book_backend_groupwise_set_mode (EBookBackend *backend, gint mode)
 {
 	EBookBackendGroupwise *bg;
 

@@ -96,7 +96,7 @@ struct _EBookListenerResponse {
 	GList                                    *list;
 
 	/* For ProgressEvent */
-	char                   *msg;
+	gchar                   *msg;
 	short                   percent;
 
 	/* For LinkStatusEvent */
@@ -106,8 +106,8 @@ struct _EBookListenerResponse {
 	gboolean                writable;
 
 	/* For Card[Added|Removed|Modified]Event */
-	char                   *id;
-	char                   *vcard;
+	gchar                   *id;
+	gchar                   *vcard;
 };
 
 

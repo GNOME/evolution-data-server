@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,12 +17,12 @@ static const char revid[] = "$Id$";
  * __os_dirlist --
  *	Return a list of the files in a directory.
  */
-int
+gint
 __os_dirlist(dbenv, dir, namesp, cntp)
 	DB_ENV *dbenv;
-	const char *dir;
-	char ***namesp;
-	int *cntp;
+	const gchar *dir;
+	gchar ***namesp;
+	gint *cntp;
 {
 	struct _finddata_t fdata;
 #ifdef _WIN64
@@ -30,8 +30,8 @@ __os_dirlist(dbenv, dir, namesp, cntp)
 #else
 	long dirhandle;
 #endif
-	int arraysz, cnt, finished, ret;
-	char **names, filespec[MAXPATHLEN];
+	gint arraysz, cnt, finished, ret;
+	gchar **names, filespec[MAXPATHLEN];
 
 	if (DB_GLOBAL(j_dirlist) != NULL)
 		return (DB_GLOBAL(j_dirlist)(dir, namesp, cntp));
@@ -72,8 +72,8 @@ nomem:	if (names != NULL)
 void
 __os_dirfree(dbenv, names, cnt)
 	DB_ENV *dbenv;
-	char **names;
-	int cnt;
+	gchar **names;
+	gint cnt;
 {
 	if (DB_GLOBAL(j_dirfree) != NULL) {
 		DB_GLOBAL(j_dirfree)(names, cnt);

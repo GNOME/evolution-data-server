@@ -78,19 +78,19 @@ camel_mime_filter_windows_init (CamelObject *o)
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-	       char **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+	       gchar **out, size_t *outlen, size_t *outprespace)
 {
 	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) filter;
-	register unsigned char *inptr;
-	unsigned char *inend;
+	register guchar *inptr;
+	guchar *inend;
 
 	if (!windows->is_windows) {
-		inptr = (unsigned char *) in;
+		inptr = (guchar *) in;
 		inend = inptr + len;
 
 		while (inptr < inend) {
-			register unsigned char c = *inptr++;
+			register guchar c = *inptr++;
 
 			if (c >= 128 && c <= 159) {
 				w(g_warning ("Encountered Windows charset masquerading as %s",
@@ -107,8 +107,8 @@ filter_filter (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, char *in, size_t len, size_t prespace,
-		 char **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
+		 gchar **out, size_t *outlen, size_t *outprespace)
 {
 	filter_filter (filter, in, len, prespace, out, outlen, outprespace);
 }
@@ -144,7 +144,7 @@ camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass)
  * Returns: a new #CamelMimeFilter object
  **/
 CamelMimeFilter *
-camel_mime_filter_windows_new (const char *claimed_charset)
+camel_mime_filter_windows_new (const gchar *claimed_charset)
 {
 	CamelMimeFilterWindows *new;
 
@@ -189,7 +189,7 @@ camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter)
  *
  * Returns: the name of the actual charset
  **/
-const char *
+const gchar *
 camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_WINDOWS (filter), NULL);

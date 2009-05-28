@@ -46,12 +46,12 @@ struct _EDataCalFactoryPrivate {
 	GMutex *backends_mutex;
 
 	/* OAFIID of the factory */
-	char *iid;
+	gchar *iid;
 
 	/* Whether we have been registered with OAF yet */
 	guint registered : 1;
 
-        int mode;
+        gint mode;
 };
 
 /* Signal IDs */
@@ -80,7 +80,7 @@ calobjtype_to_icalkind (const GNOME_Evolution_Calendar_CalObjType type)
 }
 
 static ECalBackendFactory*
-get_backend_factory (GHashTable *methods, const char *method, icalcomponent_kind kind)
+get_backend_factory (GHashTable *methods, const gchar *method, icalcomponent_kind kind)
 {
 	GHashTable *kinds;
 	ECalBackendFactory *factory;
@@ -103,8 +103,8 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	EDataCalFactory *factory;
 	EDataCalFactoryPrivate *priv;
 	ECalBackend *ret_backend;
-	const char *uristr;
-	char *uri;
+	const gchar *uristr;
+	gchar *uri;
 	gboolean last_calendar;
 
 	fprintf (stderr, "backend_last_client_gone_cb() called!\n");
@@ -155,9 +155,9 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	ECalBackend *backend;
 	ECalBackendFactory *backend_factory;
 	ESource *source;
-	char *str_uri;
+	gchar *str_uri;
 	EUri *uri;
-	char *uri_type_string;
+	gchar *uri_type_string;
 
 	factory = E_DATA_CAL_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
@@ -345,7 +345,7 @@ set_backend_online_status (gpointer key, gpointer value, gpointer data)
  * Sets the online mode for all backends created by the given factory.
  */
 void
-e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, int mode)
+e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, gint mode)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
 
@@ -389,11 +389,11 @@ BONOBO_TYPE_FUNC_FULL (EDataCalFactory,
  * Return value: TRUE on success, FALSE otherwise.
  **/
 gboolean
-e_data_cal_factory_register_storage (EDataCalFactory *factory, const char *iid)
+e_data_cal_factory_register_storage (EDataCalFactory *factory, const gchar *iid)
 {
 	EDataCalFactoryPrivate *priv;
 	Bonobo_RegistrationResult result;
-	char *tmp_iid;
+	gchar *tmp_iid;
 
 	g_return_val_if_fail (factory != NULL, FALSE);
 	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (factory), FALSE);
@@ -449,7 +449,7 @@ void
 e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactory *backend_factory)
 {
 	EDataCalFactoryPrivate *priv;
-	const char *method;
+	const gchar *method;
 	GHashTable *kinds;
 	GType type;
 	icalcomponent_kind kind;
@@ -474,7 +474,7 @@ e_data_cal_factory_register_backend (EDataCalFactory *factory, ECalBackendFactor
 	kind = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory)->get_kind (backend_factory);
 
 	for (l= methods; l != NULL; l = g_slist_next (l)) {
-		char *method_str;
+		gchar *method_str;
 
 		method = l->data;
 
@@ -531,11 +531,11 @@ e_data_cal_factory_register_backends (EDataCalFactory *cal_factory)
  *
  * Returns: the number of backends.
  */
-int
+gint
 e_data_cal_factory_get_n_backends (EDataCalFactory *factory)
 {
 	EDataCalFactoryPrivate *priv;
-	int sz;
+	gint sz;
 
 	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (factory), 0);
 
@@ -551,7 +551,7 @@ e_data_cal_factory_get_n_backends (EDataCalFactory *factory)
 static void
 dump_backend (gpointer key, gpointer value, gpointer data)
 {
-	char *uri;
+	gchar *uri;
 	ECalBackend *backend;
 
 	uri = key;

@@ -29,19 +29,19 @@ G_BEGIN_DECLS
 typedef struct _CamelCharset CamelCharset;
 
 struct _CamelCharset {
-	unsigned int mask;
-	int level;
+	guint mask;
+	gint level;
 };
 
 void camel_charset_init(CamelCharset *);
-void camel_charset_step(CamelCharset *, const char *in, int len);
+void camel_charset_step(CamelCharset *, const gchar *in, gint len);
 
-const char *camel_charset_best_name (CamelCharset *);
+const gchar *camel_charset_best_name (CamelCharset *);
 
 /* helper function */
-const char *camel_charset_best(const char *in, int len);
+const gchar *camel_charset_best(const gchar *in, gint len);
 
-const char *camel_charset_iso_to_windows (const char *isocharset);
+const gchar *camel_charset_iso_to_windows (const gchar *isocharset);
 
 G_END_DECLS
 

@@ -35,7 +35,7 @@ e_gw_proxy_construct_proxy_access_list (SoupSoapParameter *param, GList **proxy_
 	SoupSoapParameter *subparam;
 	SoupSoapParameter *type_param;
 	SoupSoapParameter *individual_rights;
-	char *value;
+	gchar *value;
 
 	*proxy_list = NULL;
 	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "entry");
@@ -145,7 +145,7 @@ e_gw_proxy_construct_proxy_list (SoupSoapParameter *param, GList **proxy_info)
 {
 	SoupSoapParameter *subparam;
 	SoupSoapParameter *type_param;
-	char *value;
+	gchar *value;
 
 	for (subparam = soup_soap_parameter_get_first_child_by_name (param, "proxy");
 			subparam != NULL;
@@ -306,7 +306,7 @@ e_gw_proxy_form_modify_proxy_msg (SoupSoapMessage *msg, proxyHandler *new_proxy)
 }
 
 void
-e_gw_proxy_parse_proxy_login_response (SoupSoapParameter *param, int *permissions)
+e_gw_proxy_parse_proxy_login_response (SoupSoapParameter *param, gint *permissions)
 {
 	SoupSoapParameter *subparam;
 	SoupSoapParameter *individual_rights;

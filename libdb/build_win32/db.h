@@ -74,23 +74,23 @@ extern "C" {
  */
 #ifndef	__BIT_TYPES_DEFINED__
 #define	__BIT_TYPES_DEFINED__
-typedef unsigned char u_int8_t;
+typedef guchar u_int8_t;
 typedef short int16_t;
 typedef unsigned short u_int16_t;
-typedef int int32_t;
-typedef unsigned int u_int32_t;
+typedef gint int32_t;
+typedef guint u_int32_t;
 #endif
 
 #if !defined(_WINSOCKAPI_)
-typedef unsigned char u_char;
+typedef guchar u_char;
 typedef unsigned short u_short;
-typedef unsigned int u_int;
+typedef guint u_int;
 typedef unsigned long u_long;
 #endif
 #if defined(_WIN64)
 typedef __int64 ssize_t;
 #else
-typedef int ssize_t;
+typedef gint ssize_t;
 #endif
 
 /* Basic types that are exported or quasi-exported. */
@@ -513,8 +513,8 @@ struct __db_log_cursor {
 	u_int32_t bp_maxrec;		/* Max record length in the log file. */
 
 					/* Methods. */
-	int (*close) __P((DB_LOGC *, u_int32_t));
-	int (*get) __P((DB_LOGC *, DB_LSN *, DBT *, u_int32_t));
+	gint (*close) __P((DB_LOGC *, u_int32_t));
+	gint (*get) __P((DB_LOGC *, DB_LSN *, DBT *, u_int32_t));
 
 #define	DB_LOG_DISK		0x01	/* Log record came from disk. */
 #define	DB_LOG_LOCKED		0x02	/* Log region already locked */
@@ -526,7 +526,7 @@ struct __db_log_cursor {
 struct __db_log_stat {
 	u_int32_t st_magic;		/* Log file magic number. */
 	u_int32_t st_version;		/* Log file version number. */
-	int st_mode;			/* Log file mode. */
+	gint st_mode;			/* Log file mode. */
 	u_int32_t st_lg_bsize;		/* Log buffer size. */
 	u_int32_t st_lg_size;		/* Log file size. */
 	u_int32_t st_w_bytes;		/* Bytes to log. */
@@ -615,22 +615,22 @@ struct __db_mpoolfile {
 	size_t	   len;			/* Length of mmap'd region. */
 
 					/* Methods. */
-	int  (*close) __P((DB_MPOOLFILE *, u_int32_t));
-	int  (*get) __P((DB_MPOOLFILE *, db_pgno_t *, u_int32_t, void *));
+	gint  (*close) __P((DB_MPOOLFILE *, u_int32_t));
+	gint  (*get) __P((DB_MPOOLFILE *, db_pgno_t *, u_int32_t, gpointer ));
 	void (*get_fileid) __P((DB_MPOOLFILE *, u_int8_t *));
 	void (*last_pgno) __P((DB_MPOOLFILE *, db_pgno_t *));
-	int  (*open)__P((DB_MPOOLFILE *, const char *, u_int32_t, int, size_t));
-	int  (*put) __P((DB_MPOOLFILE *, void *, u_int32_t));
+	gint  (*open)__P((DB_MPOOLFILE *, const gchar *, u_int32_t, int, size_t));
+	gint  (*put) __P((DB_MPOOLFILE *, gpointer , u_int32_t));
 	void (*refcnt) __P((DB_MPOOLFILE *, db_pgno_t *));
-	int  (*set) __P((DB_MPOOLFILE *, void *, u_int32_t));
-	int  (*set_clear_len) __P((DB_MPOOLFILE *, u_int32_t));
-	int  (*set_fileid) __P((DB_MPOOLFILE *, u_int8_t *));
-	int  (*set_ftype) __P((DB_MPOOLFILE *, int));
-	int  (*set_lsn_offset) __P((DB_MPOOLFILE *, int32_t));
-	int  (*set_pgcookie) __P((DB_MPOOLFILE *, DBT *));
-	int  (*set_priority) __P((DB_MPOOLFILE *, DB_CACHE_PRIORITY));
+	gint  (*set) __P((DB_MPOOLFILE *, gpointer , u_int32_t));
+	gint  (*set_clear_len) __P((DB_MPOOLFILE *, u_int32_t));
+	gint  (*set_fileid) __P((DB_MPOOLFILE *, u_int8_t *));
+	gint  (*set_ftype) __P((DB_MPOOLFILE *, int));
+	gint  (*set_lsn_offset) __P((DB_MPOOLFILE *, int32_t));
+	gint  (*set_pgcookie) __P((DB_MPOOLFILE *, DBT *));
+	gint  (*set_priority) __P((DB_MPOOLFILE *, DB_CACHE_PRIORITY));
 	void (*set_unlink) __P((DB_MPOOLFILE *, int));
-	int  (*sync) __P((DB_MPOOLFILE *));
+	gint  (*sync) __P((DB_MPOOLFILE *));
 
 	/*
 	 * MP_OPEN_CALLED and MP_READONLY do not need to be thread protected
@@ -686,7 +686,7 @@ struct __db_mpool_stat {
 
 /* Mpool file statistics structure. */
 struct __db_mpool_fstat {
-	char *file_name;		/* File name. */
+	gchar *file_name;		/* File name. */
 	size_t st_pagesize;		/* Page size. */
 	u_int32_t st_map;		/* Pages from mapped files. */
 	u_int32_t st_cache_hit;		/* Pages found in the cache. */
@@ -863,8 +863,8 @@ struct __db_rep_stat {
 
 	u_int32_t st_dupmasters;	/* # of times a duplicate master
 					   condition was detected.+ */
-	int st_env_id;			/* Current environment ID. */
-	int st_env_priority;		/* Current environment priority. */
+	gint st_env_id;			/* Current environment ID. */
+	gint st_env_priority;		/* Current environment priority. */
 	u_int32_t st_gen;		/* Current generation number. */
 	u_int32_t st_log_duplicated;	/* Log records received multiply.+ */
 	u_int32_t st_log_queued;	/* Log records currently queued.+ */
@@ -872,7 +872,7 @@ struct __db_rep_stat {
 	u_int32_t st_log_queued_total;	/* Total # of log recs. ever queued.+ */
 	u_int32_t st_log_records;	/* Log records received and put.+ */
 	u_int32_t st_log_requested;	/* Log recs. missed and requested.+ */
-	int st_master;			/* Env. ID of the current master. */
+	gint st_master;			/* Env. ID of the current master. */
 	u_int32_t st_master_changes;	/* # of times we've switched masters. */
 	u_int32_t st_msgs_badgen;	/* Messages with a bad generation #.+ */
 	u_int32_t st_msgs_processed;	/* Messages received and processed.+ */
@@ -881,7 +881,7 @@ struct __db_rep_stat {
 	u_int32_t st_msgs_send_failures;/* # of failed message sends.+ */
 	u_int32_t st_msgs_sent;		/* # of successful message sends.+ */
 	u_int32_t st_newsites;		/* # of NEWSITE msgs. received.+ */
-	int st_nsites;			/* Current number of sites we will
+	gint st_nsites;			/* Current number of sites we will
 					   assume during elections. */
 	u_int32_t st_nthrottles;	/* # of times we were throttled. */
 	u_int32_t st_outdated;		/* # of times we detected and returned
@@ -893,14 +893,14 @@ struct __db_rep_stat {
 	u_int32_t st_elections_won;	/* # of elections won by this site.+ */
 
 	/* Statistics about an in-progress election. */
-	int st_election_cur_winner;	/* Current front-runner. */
+	gint st_election_cur_winner;	/* Current front-runner. */
 	u_int32_t st_election_gen;	/* Election generation number. */
 	DB_LSN st_election_lsn;		/* Max. LSN of current winner. */
-	int st_election_nsites;		/* # of "registered voters". */
-	int st_election_priority;	/* Current election priority. */
-	int st_election_status;		/* Current election status. */
-	int st_election_tiebreaker;	/* Election tiebreaker value. */
-	int st_election_votes;		/* Votes received in this round. */
+	gint st_election_nsites;		/* # of "registered voters". */
+	gint st_election_priority;	/* Current election priority. */
+	gint st_election_status;		/* Current election status. */
+	gint st_election_tiebreaker;	/* Election tiebreaker value. */
+	gint st_election_votes;		/* Votes received in this round. */
 };
 
 /*******************************************************
@@ -1039,9 +1039,9 @@ struct __db {
 	u_int32_t pgsize;		/* Database logical page size. */
 
 					/* Callbacks. */
-	int (*db_append_recno) __P((DB *, DBT *, db_recno_t));
+	gint (*db_append_recno) __P((DB *, DBT *, db_recno_t));
 	void (*db_feedback) __P((DB *, int, int));
-	int (*dup_compare) __P((DB *, const DBT *, const DBT *));
+	gint (*dup_compare) __P((DB *, const DBT *, const DBT *));
 
 	void	*app_private;		/* Application-private handle. */
 
@@ -1176,79 +1176,79 @@ struct __db {
 	void	*xa_internal;		/* XA. */
 
 					/* Methods. */
-	int  (*associate) __P((DB *, DB_TXN *, DB *, int (*)(DB *, const DBT *,
+	gint  (*associate) __P((DB *, DB_TXN *, DB *, gint (*)(DB *, const DBT *,
 		const DBT *, DBT *), u_int32_t));
-	int  (*close) __P((DB *, u_int32_t));
-	int  (*cursor) __P((DB *, DB_TXN *, DBC **, u_int32_t));
-	int  (*del) __P((DB *, DB_TXN *, DBT *, u_int32_t));
-	void (*err) __P((DB *, int, const char *, ...));
-	void (*errx) __P((DB *, const char *, ...));
-	int  (*fd) __P((DB *, int *));
-	int  (*get) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-	int  (*pget) __P((DB *, DB_TXN *, DBT *, DBT *, DBT *, u_int32_t));
-	int  (*get_byteswapped) __P((DB *, int *));
-	int  (*get_type) __P((DB *, DBTYPE *));
-	int  (*join) __P((DB *, DBC **, DBC **, u_int32_t));
-	int  (*key_range) __P((DB *,
+	gint  (*close) __P((DB *, u_int32_t));
+	gint  (*cursor) __P((DB *, DB_TXN *, DBC **, u_int32_t));
+	gint  (*del) __P((DB *, DB_TXN *, DBT *, u_int32_t));
+	void (*err) __P((DB *, int, const gchar *, ...));
+	void (*errx) __P((DB *, const gchar *, ...));
+	gint  (*fd) __P((DB *, gint *));
+	gint  (*get) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+	gint  (*pget) __P((DB *, DB_TXN *, DBT *, DBT *, DBT *, u_int32_t));
+	gint  (*get_byteswapped) __P((DB *, gint *));
+	gint  (*get_type) __P((DB *, DBTYPE *));
+	gint  (*join) __P((DB *, DBC **, DBC **, u_int32_t));
+	gint  (*key_range) __P((DB *,
 		DB_TXN *, DBT *, DB_KEY_RANGE *, u_int32_t));
-	int  (*open) __P((DB *, DB_TXN *,
-		const char *, const char *, DBTYPE, u_int32_t, int));
-	int  (*put) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-	int  (*remove) __P((DB *, const char *, const char *, u_int32_t));
-	int  (*rename) __P((DB *,
-	    const char *, const char *, const char *, u_int32_t));
-	int  (*truncate) __P((DB *, DB_TXN *, u_int32_t *, u_int32_t));
-	int  (*set_append_recno) __P((DB *, int (*)(DB *, DBT *, db_recno_t)));
-	int  (*set_alloc) __P((DB *, void *(*)(size_t),
-		void *(*)(void *, size_t), void (*)(void *)));
-	int  (*set_cachesize) __P((DB *, u_int32_t, u_int32_t, int));
-	int  (*set_cache_priority) __P((DB *, DB_CACHE_PRIORITY));
-	int  (*set_dup_compare) __P((DB *,
-	    int (*)(DB *, const DBT *, const DBT *)));
-	int  (*set_encrypt) __P((DB *, const char *, u_int32_t));
-	void (*set_errcall) __P((DB *, void (*)(const char *, char *)));
+	gint  (*open) __P((DB *, DB_TXN *,
+		const gchar *, const gchar *, DBTYPE, u_int32_t, int));
+	gint  (*put) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+	gint  (*remove) __P((DB *, const gchar *, const gchar *, u_int32_t));
+	gint  (*rename) __P((DB *,
+	    const gchar *, const gchar *, const gchar *, u_int32_t));
+	gint  (*truncate) __P((DB *, DB_TXN *, u_int32_t *, u_int32_t));
+	gint  (*set_append_recno) __P((DB *, gint (*)(DB *, DBT *, db_recno_t)));
+	gint  (*set_alloc) __P((DB *, gpointer (*)(size_t),
+		gpointer (*)(gpointer , size_t), void (*)(gpointer)));
+	gint  (*set_cachesize) __P((DB *, u_int32_t, u_int32_t, int));
+	gint  (*set_cache_priority) __P((DB *, DB_CACHE_PRIORITY));
+	gint  (*set_dup_compare) __P((DB *,
+	    gint (*)(DB *, const DBT *, const DBT *)));
+	gint  (*set_encrypt) __P((DB *, const gchar *, u_int32_t));
+	void (*set_errcall) __P((DB *, void (*)(const gchar *, gchar *)));
 	void (*set_errfile) __P((DB *, FILE *));
-	void (*set_errpfx) __P((DB *, const char *));
-	int  (*set_feedback) __P((DB *, void (*)(DB *, int, int)));
-	int  (*set_flags) __P((DB *, u_int32_t));
-	int  (*set_lorder) __P((DB *, int));
-	int  (*set_pagesize) __P((DB *, u_int32_t));
-	int  (*set_paniccall) __P((DB *, void (*)(DB_ENV *, int)));
-	int  (*stat) __P((DB *, void *, u_int32_t));
-	int  (*sync) __P((DB *, u_int32_t));
-	int  (*upgrade) __P((DB *, const char *, u_int32_t));
-	int  (*verify) __P((DB *,
-	    const char *, const char *, FILE *, u_int32_t));
+	void (*set_errpfx) __P((DB *, const gchar *));
+	gint  (*set_feedback) __P((DB *, void (*)(DB *, int, int)));
+	gint  (*set_flags) __P((DB *, u_int32_t));
+	gint  (*set_lorder) __P((DB *, int));
+	gint  (*set_pagesize) __P((DB *, u_int32_t));
+	gint  (*set_paniccall) __P((DB *, void (*)(DB_ENV *, int)));
+	gint  (*stat) __P((DB *, gpointer , u_int32_t));
+	gint  (*sync) __P((DB *, u_int32_t));
+	gint  (*upgrade) __P((DB *, const gchar *, u_int32_t));
+	gint  (*verify) __P((DB *,
+	    const gchar *, const gchar *, FILE *, u_int32_t));
 
-	int  (*set_bt_compare) __P((DB *,
-	    int (*)(DB *, const DBT *, const DBT *)));
-	int  (*set_bt_maxkey) __P((DB *, u_int32_t));
-	int  (*set_bt_minkey) __P((DB *, u_int32_t));
-	int  (*set_bt_prefix) __P((DB *,
+	gint  (*set_bt_compare) __P((DB *,
+	    gint (*)(DB *, const DBT *, const DBT *)));
+	gint  (*set_bt_maxkey) __P((DB *, u_int32_t));
+	gint  (*set_bt_minkey) __P((DB *, u_int32_t));
+	gint  (*set_bt_prefix) __P((DB *,
 	    size_t (*)(DB *, const DBT *, const DBT *)));
 
-	int  (*set_h_ffactor) __P((DB *, u_int32_t));
-	int  (*set_h_hash) __P((DB *,
-	    u_int32_t (*)(DB *, const void *, u_int32_t)));
-	int  (*set_h_nelem) __P((DB *, u_int32_t));
+	gint  (*set_h_ffactor) __P((DB *, u_int32_t));
+	gint  (*set_h_hash) __P((DB *,
+	    u_int32_t (*)(DB *, gconstpointer , u_int32_t)));
+	gint  (*set_h_nelem) __P((DB *, u_int32_t));
 
-	int  (*set_re_delim) __P((DB *, int));
-	int  (*set_re_len) __P((DB *, u_int32_t));
-	int  (*set_re_pad) __P((DB *, int));
-	int  (*set_re_source) __P((DB *, const char *));
-	int  (*set_q_extentsize) __P((DB *, u_int32_t));
+	gint  (*set_re_delim) __P((DB *, int));
+	gint  (*set_re_len) __P((DB *, u_int32_t));
+	gint  (*set_re_pad) __P((DB *, int));
+	gint  (*set_re_source) __P((DB *, const gchar *));
+	gint  (*set_q_extentsize) __P((DB *, u_int32_t));
 
-	int  (*db_am_remove) __P((DB *,
-	    DB_TXN *, const char *, const char *, DB_LSN *));
-	int  (*db_am_rename) __P((DB *, DB_TXN *,
-	    const char *, const char *, const char *));
+	gint  (*db_am_remove) __P((DB *,
+	    DB_TXN *, const gchar *, const gchar *, DB_LSN *));
+	gint  (*db_am_rename) __P((DB *, DB_TXN *,
+	    const gchar *, const gchar *, const gchar *));
 
 	/*
 	 * Never called; these are a place to save function pointers
 	 * so that we can undo an associate.
 	 */
-	int  (*stored_get) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-	int  (*stored_close) __P((DB *, u_int32_t));
+	gint  (*stored_get) __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+	gint  (*stored_close) __P((DB *, u_int32_t));
 
 #define	DB_OK_BTREE	0x01
 #define	DB_OK_HASH	0x02
@@ -1399,25 +1399,25 @@ struct __dbc {
 
 	DBC_INTERNAL *internal;		/* Access method private. */
 
-	int (*c_close) __P((DBC *));	/* Methods: public. */
-	int (*c_count) __P((DBC *, db_recno_t *, u_int32_t));
-	int (*c_del) __P((DBC *, u_int32_t));
-	int (*c_dup) __P((DBC *, DBC **, u_int32_t));
-	int (*c_get) __P((DBC *, DBT *, DBT *, u_int32_t));
-	int (*c_pget) __P((DBC *, DBT *, DBT *, DBT *, u_int32_t));
-	int (*c_put) __P((DBC *, DBT *, DBT *, u_int32_t));
+	gint (*c_close) __P((DBC *));	/* Methods: public. */
+	gint (*c_count) __P((DBC *, db_recno_t *, u_int32_t));
+	gint (*c_del) __P((DBC *, u_int32_t));
+	gint (*c_dup) __P((DBC *, DBC **, u_int32_t));
+	gint (*c_get) __P((DBC *, DBT *, DBT *, u_int32_t));
+	gint (*c_pget) __P((DBC *, DBT *, DBT *, DBT *, u_int32_t));
+	gint (*c_put) __P((DBC *, DBT *, DBT *, u_int32_t));
 
 					/* Methods: private. */
-	int (*c_am_bulk) __P((DBC *, DBT *, u_int32_t));
-	int (*c_am_close) __P((DBC *, db_pgno_t, int *));
-	int (*c_am_del) __P((DBC *));
-	int (*c_am_destroy) __P((DBC *));
-	int (*c_am_get) __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-	int (*c_am_put) __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-	int (*c_am_writelock) __P((DBC *));
+	gint (*c_am_bulk) __P((DBC *, DBT *, u_int32_t));
+	gint (*c_am_close) __P((DBC *, db_pgno_t, gint *));
+	gint (*c_am_del) __P((DBC *));
+	gint (*c_am_destroy) __P((DBC *));
+	gint (*c_am_get) __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+	gint (*c_am_put) __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+	gint (*c_am_writelock) __P((DBC *));
 
 	/* Private: for secondary indices. */
-	int (*c_real_get) __P((DBC *, DBT *, DBT *, u_int32_t));
+	gint (*c_real_get) __P((DBC *, DBT *, DBT *, u_int32_t));
 
 #define	DBC_ACTIVE	 0x0001		/* Cursor in use. */
 #define	DBC_COMPENSATE	 0x0002		/* Cursor compensating, don't lock. */
@@ -1516,14 +1516,14 @@ struct __db_env {
 	FILE		*db_errfile;	/* Error message file stream. */
 	const char	*db_errpfx;	/* Error message prefix. */
 					/* Callbacks. */
-	void (*db_errcall) __P((const char *, char *));
+	void (*db_errcall) __P((const gchar *, gchar *));
 	void (*db_feedback) __P((DB_ENV *, int, int));
 	void (*db_paniccall) __P((DB_ENV *, int));
 
 					/* App-specified alloc functions. */
-	void *(*db_malloc) __P((size_t));
-	void *(*db_realloc) __P((void *, size_t));
-	void (*db_free) __P((void *));
+	gpointer (*db_malloc) __P((size_t));
+	gpointer (*db_realloc) __P((gpointer , size_t));
+	void (*db_free) __P((gpointer));
 
 	/*
 	 * Currently, the verbose list is a bit field with room for 32
@@ -1539,7 +1539,7 @@ struct __db_env {
 
 	void		*app_private;	/* Application-private handle. */
 
-	int (*app_dispatch)		/* User-specified recovery dispatch. */
+	gint (*app_dispatch)		/* User-specified recovery dispatch. */
 	    __P((DB_ENV *, DBT *, DB_LSN *, db_recops));
 
 	/* Locking. */
@@ -1590,7 +1590,7 @@ struct __db_env {
 	DB_FH		*lockfhp;	/* fcntl(2) locking file handle. */
 
 	int	      (**recover_dtab)	/* Dispatch table for recover funcs. */
-			    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+			    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t		 recover_dtab_size;
 					/* Slots in the dispatch table. */
 
@@ -1646,106 +1646,106 @@ struct __db_env {
 	u_long		*mt;		/* Mersenne Twister state vector. */
 
 					/* DB_ENV Methods. */
-	int  (*close) __P((DB_ENV *, u_int32_t));
-	int  (*dbremove) __P((DB_ENV *,
-	    DB_TXN *, const char *, const char *, u_int32_t));
-	int  (*dbrename) __P((DB_ENV *, DB_TXN *,
-	    const char *, const char *, const char *, u_int32_t));
-	void (*err) __P((const DB_ENV *, int, const char *, ...));
-	void (*errx) __P((const DB_ENV *, const char *, ...));
-	int  (*open) __P((DB_ENV *, const char *, u_int32_t, int));
-	int  (*remove) __P((DB_ENV *, const char *, u_int32_t));
-	int  (*set_data_dir) __P((DB_ENV *, const char *));
-	int  (*set_alloc) __P((DB_ENV *, void *(*)(size_t),
-		void *(*)(void *, size_t), void (*)(void *)));
-	int  (*set_app_dispatch) __P((DB_ENV *,
-		int (*)(DB_ENV *, DBT *, DB_LSN *, db_recops)));
-	int  (*set_encrypt) __P((DB_ENV *, const char *, u_int32_t));
-	void (*set_errcall) __P((DB_ENV *, void (*)(const char *, char *)));
+	gint  (*close) __P((DB_ENV *, u_int32_t));
+	gint  (*dbremove) __P((DB_ENV *,
+	    DB_TXN *, const gchar *, const gchar *, u_int32_t));
+	gint  (*dbrename) __P((DB_ENV *, DB_TXN *,
+	    const gchar *, const gchar *, const gchar *, u_int32_t));
+	void (*err) __P((const DB_ENV *, int, const gchar *, ...));
+	void (*errx) __P((const DB_ENV *, const gchar *, ...));
+	gint  (*open) __P((DB_ENV *, const gchar *, u_int32_t, int));
+	gint  (*remove) __P((DB_ENV *, const gchar *, u_int32_t));
+	gint  (*set_data_dir) __P((DB_ENV *, const gchar *));
+	gint  (*set_alloc) __P((DB_ENV *, gpointer (*)(size_t),
+		gpointer (*)(gpointer , size_t), void (*)(gpointer)));
+	gint  (*set_app_dispatch) __P((DB_ENV *,
+		gint (*)(DB_ENV *, DBT *, DB_LSN *, db_recops)));
+	gint  (*set_encrypt) __P((DB_ENV *, const gchar *, u_int32_t));
+	void (*set_errcall) __P((DB_ENV *, void (*)(const gchar *, gchar *)));
 	void (*set_errfile) __P((DB_ENV *, FILE *));
-	void (*set_errpfx) __P((DB_ENV *, const char *));
-	int  (*set_feedback) __P((DB_ENV *, void (*)(DB_ENV *, int, int)));
-	int  (*set_flags) __P((DB_ENV *, u_int32_t, int));
-	int  (*set_paniccall) __P((DB_ENV *, void (*)(DB_ENV *, int)));
-	int  (*set_rpc_server) __P((DB_ENV *,
-		void *, const char *, long, long, u_int32_t));
-	int  (*set_shm_key) __P((DB_ENV *, long));
-	int  (*set_tas_spins) __P((DB_ENV *, u_int32_t));
-	int  (*set_tmp_dir) __P((DB_ENV *, const char *));
-	int  (*set_verbose) __P((DB_ENV *, u_int32_t, int));
+	void (*set_errpfx) __P((DB_ENV *, const gchar *));
+	gint  (*set_feedback) __P((DB_ENV *, void (*)(DB_ENV *, int, int)));
+	gint  (*set_flags) __P((DB_ENV *, u_int32_t, int));
+	gint  (*set_paniccall) __P((DB_ENV *, void (*)(DB_ENV *, int)));
+	gint  (*set_rpc_server) __P((DB_ENV *,
+		gpointer , const gchar *, long, long, u_int32_t));
+	gint  (*set_shm_key) __P((DB_ENV *, long));
+	gint  (*set_tas_spins) __P((DB_ENV *, u_int32_t));
+	gint  (*set_tmp_dir) __P((DB_ENV *, const gchar *));
+	gint  (*set_verbose) __P((DB_ENV *, u_int32_t, int));
 
-	void *lg_handle;		/* Log handle and methods. */
-	int  (*set_lg_bsize) __P((DB_ENV *, u_int32_t));
-	int  (*set_lg_dir) __P((DB_ENV *, const char *));
-	int  (*set_lg_max) __P((DB_ENV *, u_int32_t));
-	int  (*set_lg_regionmax) __P((DB_ENV *, u_int32_t));
-	int  (*log_archive) __P((DB_ENV *, char **[], u_int32_t));
-	int  (*log_cursor) __P((DB_ENV *, DB_LOGC **, u_int32_t));
-	int  (*log_file) __P((DB_ENV *, const DB_LSN *, char *, size_t));
-	int  (*log_flush) __P((DB_ENV *, const DB_LSN *));
-	int  (*log_put) __P((DB_ENV *, DB_LSN *, const DBT *, u_int32_t));
-	int  (*log_stat) __P((DB_ENV *, DB_LOG_STAT **, u_int32_t));
+	gpointer lg_handle;		/* Log handle and methods. */
+	gint  (*set_lg_bsize) __P((DB_ENV *, u_int32_t));
+	gint  (*set_lg_dir) __P((DB_ENV *, const gchar *));
+	gint  (*set_lg_max) __P((DB_ENV *, u_int32_t));
+	gint  (*set_lg_regionmax) __P((DB_ENV *, u_int32_t));
+	gint  (*log_archive) __P((DB_ENV *, gchar **[], u_int32_t));
+	gint  (*log_cursor) __P((DB_ENV *, DB_LOGC **, u_int32_t));
+	gint  (*log_file) __P((DB_ENV *, const DB_LSN *, gchar *, size_t));
+	gint  (*log_flush) __P((DB_ENV *, const DB_LSN *));
+	gint  (*log_put) __P((DB_ENV *, DB_LSN *, const DBT *, u_int32_t));
+	gint  (*log_stat) __P((DB_ENV *, DB_LOG_STAT **, u_int32_t));
 
-	void *lk_handle;		/* Lock handle and methods. */
-	int  (*set_lk_conflicts) __P((DB_ENV *, u_int8_t *, int));
-	int  (*set_lk_detect) __P((DB_ENV *, u_int32_t));
-	int  (*set_lk_max) __P((DB_ENV *, u_int32_t));
-	int  (*set_lk_max_locks) __P((DB_ENV *, u_int32_t));
-	int  (*set_lk_max_lockers) __P((DB_ENV *, u_int32_t));
-	int  (*set_lk_max_objects) __P((DB_ENV *, u_int32_t));
-	int  (*lock_detect) __P((DB_ENV *, u_int32_t, u_int32_t, int *));
-	int  (*lock_dump_region) __P((DB_ENV *, char *, FILE *));
-	int  (*lock_get) __P((DB_ENV *,
+	gpointer lk_handle;		/* Lock handle and methods. */
+	gint  (*set_lk_conflicts) __P((DB_ENV *, u_int8_t *, int));
+	gint  (*set_lk_detect) __P((DB_ENV *, u_int32_t));
+	gint  (*set_lk_max) __P((DB_ENV *, u_int32_t));
+	gint  (*set_lk_max_locks) __P((DB_ENV *, u_int32_t));
+	gint  (*set_lk_max_lockers) __P((DB_ENV *, u_int32_t));
+	gint  (*set_lk_max_objects) __P((DB_ENV *, u_int32_t));
+	gint  (*lock_detect) __P((DB_ENV *, u_int32_t, u_int32_t, gint *));
+	gint  (*lock_dump_region) __P((DB_ENV *, gchar *, FILE *));
+	gint  (*lock_get) __P((DB_ENV *,
 		u_int32_t, u_int32_t, const DBT *, db_lockmode_t, DB_LOCK *));
-	int  (*lock_put) __P((DB_ENV *, DB_LOCK *));
-	int  (*lock_id) __P((DB_ENV *, u_int32_t *));
-	int  (*lock_id_free) __P((DB_ENV *, u_int32_t));
-	int  (*lock_id_set) __P((DB_ENV *, u_int32_t, u_int32_t));
-	int  (*lock_stat) __P((DB_ENV *, DB_LOCK_STAT **, u_int32_t));
-	int  (*lock_vec) __P((DB_ENV *,
+	gint  (*lock_put) __P((DB_ENV *, DB_LOCK *));
+	gint  (*lock_id) __P((DB_ENV *, u_int32_t *));
+	gint  (*lock_id_free) __P((DB_ENV *, u_int32_t));
+	gint  (*lock_id_set) __P((DB_ENV *, u_int32_t, u_int32_t));
+	gint  (*lock_stat) __P((DB_ENV *, DB_LOCK_STAT **, u_int32_t));
+	gint  (*lock_vec) __P((DB_ENV *,
 		u_int32_t, u_int32_t, DB_LOCKREQ *, int, DB_LOCKREQ **));
-	int  (*lock_downgrade) __P((DB_ENV *,
+	gint  (*lock_downgrade) __P((DB_ENV *,
 		DB_LOCK *, db_lockmode_t, u_int32_t));
 
-	void *mp_handle;		/* Mpool handle and methods. */
-	int  (*set_mp_mmapsize) __P((DB_ENV *, size_t));
-	int  (*set_cachesize) __P((DB_ENV *, u_int32_t, u_int32_t, int));
-	int  (*memp_dump_region) __P((DB_ENV *, char *, FILE *));
-	int  (*memp_fcreate) __P((DB_ENV *, DB_MPOOLFILE **, u_int32_t));
-	int  (*memp_nameop) __P((DB_ENV *,
-		u_int8_t *, const char *, const char *, const char *));
-	int  (*memp_register) __P((DB_ENV *, int,
-		int (*)(DB_ENV *, db_pgno_t, void *, DBT *),
-		int (*)(DB_ENV *, db_pgno_t, void *, DBT *)));
-	int  (*memp_stat) __P((DB_ENV *,
+	gpointer mp_handle;		/* Mpool handle and methods. */
+	gint  (*set_mp_mmapsize) __P((DB_ENV *, size_t));
+	gint  (*set_cachesize) __P((DB_ENV *, u_int32_t, u_int32_t, int));
+	gint  (*memp_dump_region) __P((DB_ENV *, gchar *, FILE *));
+	gint  (*memp_fcreate) __P((DB_ENV *, DB_MPOOLFILE **, u_int32_t));
+	gint  (*memp_nameop) __P((DB_ENV *,
+		u_int8_t *, const gchar *, const gchar *, const gchar *));
+	gint  (*memp_register) __P((DB_ENV *, int,
+		gint (*)(DB_ENV *, db_pgno_t, gpointer , DBT *),
+		gint (*)(DB_ENV *, db_pgno_t, gpointer , DBT *)));
+	gint  (*memp_stat) __P((DB_ENV *,
 		DB_MPOOL_STAT **, DB_MPOOL_FSTAT ***, u_int32_t));
-	int  (*memp_sync) __P((DB_ENV *, DB_LSN *));
-	int  (*memp_trickle) __P((DB_ENV *, int, int *));
+	gint  (*memp_sync) __P((DB_ENV *, DB_LSN *));
+	gint  (*memp_trickle) __P((DB_ENV *, int, gint *));
 
-	void *rep_handle;		/* Replication handle and methods. */
-	int  (*rep_elect) __P((DB_ENV *, int, int, u_int32_t, int *));
-	int  (*rep_flush) __P((DB_ENV *));
-	int  (*rep_process_message) __P((DB_ENV *, DBT *, DBT *, int *));
-	int  (*rep_start) __P((DB_ENV *, DBT *, u_int32_t));
-	int  (*rep_stat) __P((DB_ENV *, DB_REP_STAT **, u_int32_t));
-	int  (*set_rep_election) __P((DB_ENV *,
+	gpointer rep_handle;		/* Replication handle and methods. */
+	gint  (*rep_elect) __P((DB_ENV *, int, int, u_int32_t, gint *));
+	gint  (*rep_flush) __P((DB_ENV *));
+	gint  (*rep_process_message) __P((DB_ENV *, DBT *, DBT *, gint *));
+	gint  (*rep_start) __P((DB_ENV *, DBT *, u_int32_t));
+	gint  (*rep_stat) __P((DB_ENV *, DB_REP_STAT **, u_int32_t));
+	gint  (*set_rep_election) __P((DB_ENV *,
 		u_int32_t, u_int32_t, u_int32_t, u_int32_t));
-	int  (*set_rep_limit) __P((DB_ENV *, u_int32_t, u_int32_t));
-	int  (*set_rep_request) __P((DB_ENV *, u_int32_t, u_int32_t));
-	int  (*set_rep_timeout) __P((DB_ENV *, u_int32_t, u_int32_t));
-	int  (*set_rep_transport) __P((DB_ENV *, int,
-		int (*) (DB_ENV *, const DBT *, const DBT *, int, u_int32_t)));
+	gint  (*set_rep_limit) __P((DB_ENV *, u_int32_t, u_int32_t));
+	gint  (*set_rep_request) __P((DB_ENV *, u_int32_t, u_int32_t));
+	gint  (*set_rep_timeout) __P((DB_ENV *, u_int32_t, u_int32_t));
+	gint  (*set_rep_transport) __P((DB_ENV *, int,
+		gint (*) (DB_ENV *, const DBT *, const DBT *, int, u_int32_t)));
 
-	void *tx_handle;		/* Txn handle and methods. */
-	int  (*set_tx_max) __P((DB_ENV *, u_int32_t));
-	int  (*set_tx_timestamp) __P((DB_ENV *, time_t *));
-	int  (*txn_begin) __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
-	int  (*txn_checkpoint) __P((DB_ENV *, u_int32_t, u_int32_t, u_int32_t));
-	int  (*txn_id_set) __P((DB_ENV *, u_int32_t, u_int32_t));
-	int  (*txn_recover) __P((DB_ENV *,
+	gpointer tx_handle;		/* Txn handle and methods. */
+	gint  (*set_tx_max) __P((DB_ENV *, u_int32_t));
+	gint  (*set_tx_timestamp) __P((DB_ENV *, time_t *));
+	gint  (*txn_begin) __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
+	gint  (*txn_checkpoint) __P((DB_ENV *, u_int32_t, u_int32_t, u_int32_t));
+	gint  (*txn_id_set) __P((DB_ENV *, u_int32_t, u_int32_t));
+	gint  (*txn_recover) __P((DB_ENV *,
 		DB_PREPLIST *, long, long *, u_int32_t));
-	int  (*txn_stat) __P((DB_ENV *, DB_TXN_STAT **, u_int32_t));
-	int  (*set_timeout) __P((DB_ENV *, db_timeout_t, u_int32_t));
+	gint  (*txn_stat) __P((DB_ENV *, DB_TXN_STAT **, u_int32_t));
+	gint  (*set_timeout) __P((DB_ENV *, db_timeout_t, u_int32_t));
 
 #define	DB_TEST_ELECTINIT	 1	/* after __rep_elect_init */
 #define	DB_TEST_ELECTSEND	 2	/* after REP_ELECT msgnit */
@@ -1813,13 +1813,13 @@ typedef struct __db DBM;
 
 #if defined(_XPG4_2)
 typedef struct {
-	char *dptr;
+	gchar *dptr;
 	size_t dsize;
 } datum;
 #else
 typedef struct {
-	char *dptr;
-	int dsize;
+	gchar *dptr;
+	gint dsize;
 } datum;
 #endif
 
@@ -1866,8 +1866,8 @@ typedef enum {
 } ACTION;
 
 typedef struct entry {
-	char *key;
-	char *data;
+	gchar *key;
+	gchar *data;
 } ENTRY;
 
 #define	hcreate(a)	__db_hcreate(a)
@@ -1893,33 +1893,33 @@ typedef struct entry {
 extern "C" {
 #endif
 
-int db_create __P((DB **, DB_ENV *, u_int32_t));
-char *db_strerror __P((int));
-int db_env_create __P((DB_ENV **, u_int32_t));
-char *db_version __P((int *, int *, int *));
-int log_compare __P((const DB_LSN *, const DB_LSN *));
-int db_env_set_func_close __P((int (*)(int)));
-int db_env_set_func_dirfree __P((void (*)(char **, int)));
-int db_env_set_func_dirlist __P((int (*)(const char *, char ***, int *)));
-int db_env_set_func_exists __P((int (*)(const char *, int *)));
-int db_env_set_func_free __P((void (*)(void *)));
-int db_env_set_func_fsync __P((int (*)(int)));
-int db_env_set_func_ioinfo __P((int (*)(const char *, int, u_int32_t *, u_int32_t *, u_int32_t *)));
-int db_env_set_func_malloc __P((void *(*)(size_t)));
-int db_env_set_func_map __P((int (*)(char *, size_t, int, int, void **)));
-int db_env_set_func_open __P((int (*)(const char *, int, ...)));
-int db_env_set_func_read __P((ssize_t (*)(int, void *, size_t)));
-int db_env_set_func_realloc __P((void *(*)(void *, size_t)));
-int db_env_set_func_rename __P((int (*)(const char *, const char *)));
-int db_env_set_func_seek __P((int (*)(int, size_t, db_pgno_t, u_int32_t, int, int)));
-int db_env_set_func_sleep __P((int (*)(u_long, u_long)));
-int db_env_set_func_unlink __P((int (*)(const char *)));
-int db_env_set_func_unmap __P((int (*)(void *, size_t)));
-int db_env_set_func_write __P((ssize_t (*)(int, const void *, size_t)));
-int db_env_set_func_yield __P((int (*)(void)));
-int txn_abort __P((DB_TXN *));
-int txn_begin __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
-int txn_commit __P((DB_TXN *, u_int32_t));
+gint db_create __P((DB **, DB_ENV *, u_int32_t));
+gchar *db_strerror __P((int));
+gint db_env_create __P((DB_ENV **, u_int32_t));
+gchar *db_version __P((gint *, gint *, gint *));
+gint log_compare __P((const DB_LSN *, const DB_LSN *));
+gint db_env_set_func_close __P((gint (*)(int)));
+gint db_env_set_func_dirfree __P((void (*)(gchar **, int)));
+gint db_env_set_func_dirlist __P((gint (*)(const gchar *, gchar ***, gint *)));
+gint db_env_set_func_exists __P((gint (*)(const gchar *, gint *)));
+gint db_env_set_func_free __P((void (*)(gpointer)));
+gint db_env_set_func_fsync __P((gint (*)(int)));
+gint db_env_set_func_ioinfo __P((gint (*)(const gchar *, int, u_int32_t *, u_int32_t *, u_int32_t *)));
+gint db_env_set_func_malloc __P((gpointer (*)(size_t)));
+gint db_env_set_func_map __P((gint (*)(gchar *, size_t, int, int, gpointer *)));
+gint db_env_set_func_open __P((gint (*)(const gchar *, int, ...)));
+gint db_env_set_func_read __P((ssize_t (*)(int, gpointer , size_t)));
+gint db_env_set_func_realloc __P((gpointer (*)(gpointer , size_t)));
+gint db_env_set_func_rename __P((gint (*)(const gchar *, const gchar *)));
+gint db_env_set_func_seek __P((gint (*)(int, size_t, db_pgno_t, u_int32_t, int, int)));
+gint db_env_set_func_sleep __P((gint (*)(u_long, u_long)));
+gint db_env_set_func_unlink __P((gint (*)(const gchar *)));
+gint db_env_set_func_unmap __P((gint (*)(gpointer , size_t)));
+gint db_env_set_func_write __P((ssize_t (*)(int, gconstpointer , size_t)));
+gint db_env_set_func_yield __P((gint (*)(void)));
+gint txn_abort __P((DB_TXN *));
+gint txn_begin __P((DB_ENV *, DB_TXN *, DB_TXN **, u_int32_t));
+gint txn_commit __P((DB_TXN *, u_int32_t));
 #if DB_DBM_HSEARCH != 0
 int	 __db_ndbm_clearerr __P((DBM *));
 void	 __db_ndbm_close __P((DBM *));
@@ -1929,7 +1929,7 @@ int	 __db_ndbm_error __P((DBM *));
 datum __db_ndbm_fetch __P((DBM *, datum));
 datum __db_ndbm_firstkey __P((DBM *));
 datum __db_ndbm_nextkey __P((DBM *));
-DBM	*__db_ndbm_open __P((const char *, int, int));
+DBM	*__db_ndbm_open __P((const gchar *, int, int));
 int	 __db_ndbm_pagfno __P((DBM *));
 int	 __db_ndbm_rdonly __P((DBM *));
 int	 __db_ndbm_store __P((DBM *, datum, datum, int));
@@ -1939,13 +1939,13 @@ int	 __db_dbm_delete __P((datum));
 int	 __db_dbm_dirf __P((void));
 datum __db_dbm_fetch __P((datum));
 datum __db_dbm_firstkey __P((void));
-int	 __db_dbm_init __P((char *));
+int	 __db_dbm_init __P((gchar *));
 datum __db_dbm_nextkey __P((datum));
 int	 __db_dbm_pagf __P((void));
 int	 __db_dbm_store __P((datum, datum));
 #endif
 #if DB_DBM_HSEARCH != 0
-int __db_hcreate __P((size_t));
+gint __db_hcreate __P((size_t));
 ENTRY *__db_hsearch __P((ENTRY, ACTION));
 void __db_hdestroy __P((void));
 #endif

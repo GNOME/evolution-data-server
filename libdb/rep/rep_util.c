@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -31,8 +31,8 @@ static const char revid[] = "$Id$";
  *	Miscellaneous replication-related utility functions, including
  *	those called by other subsystems.
  */
-static int __rep_cmp_bylsn __P((const void *, const void *));
-static int __rep_cmp_bypage __P((const void *, const void *));
+static gint __rep_cmp_bylsn __P((gconstpointer , gconstpointer ));
+static gint __rep_cmp_bypage __P((gconstpointer , gconstpointer ));
 
 #ifdef REP_DIAGNOSTIC
 static void __rep_print_logmsg __P((DB_ENV *, const DBT *, DB_LSN *));
@@ -44,15 +44,15 @@ static void __rep_print_logmsg __P((DB_ENV *, const DBT *, DB_LSN *));
  *	(This function is called by the __*_getpgnos() functions in
  *	*.src.)
  *
- * PUBLIC: int __rep_check_alloc __P((DB_ENV *, TXN_RECS *, int));
+ * PUBLIC: gint __rep_check_alloc __P((DB_ENV *, TXN_RECS *, int));
  */
-int
+gint
 __rep_check_alloc(dbenv, r, n)
 	DB_ENV *dbenv;
 	TXN_RECS *r;
-	int n;
+	gint n;
 {
-	int nalloc, ret;
+	gint nalloc, ret;
 
 	while (r->nalloc < r->npages + n) {
 		nalloc = r->nalloc == 0 ? 20 : r->nalloc * 2;
@@ -72,13 +72,13 @@ __rep_check_alloc(dbenv, r, n)
  *	This is a wrapper for sending a message.  It takes care of constructing
  * the REP_CONTROL structure and calling the user's specified send function.
  *
- * PUBLIC: int __rep_send_message __P((DB_ENV *, int,
+ * PUBLIC: gint __rep_send_message __P((DB_ENV *, int,
  * PUBLIC:     u_int32_t, DB_LSN *, const DBT *, u_int32_t));
  */
-int
+gint
 __rep_send_message(dbenv, eid, rtype, lsnp, dbtp, flags)
 	DB_ENV *dbenv;
-	int eid;
+	gint eid;
 	u_int32_t rtype;
 	DB_LSN *lsnp;
 	const DBT *dbtp;
@@ -89,7 +89,7 @@ __rep_send_message(dbenv, eid, rtype, lsnp, dbtp, flags)
 	DBT cdbt, scrap_dbt;
 	REP_CONTROL cntrl;
 	u_int32_t send_flags;
-	int ret;
+	gint ret;
 
 	db_rep = dbenv->rep_handle;
 	rep = db_rep->region;
@@ -157,8 +157,8 @@ __rep_print_logmsg(dbenv, logdbt, lsnp)
 	DB_LSN *lsnp;
 {
 	/* Static structures to hold the printing functions. */
-	static int (**ptab)__P((DB_ENV *,
-	    DBT *, DB_LSN *, db_recops, void *)) = NULL;
+	static gint (**ptab)__P((DB_ENV *,
+	    DBT *, DB_LSN *, db_recops, gpointer )) = NULL;
 	size_t ptabsize = 0;
 
 	if (ptabsize == 0) {
@@ -188,13 +188,13 @@ __rep_print_logmsg(dbenv, logdbt, lsnp)
  * need to enforce that in __rep_process_record, but right now, we have
  * no way to identify the master.
  *
- * PUBLIC: int __rep_new_master __P((DB_ENV *, REP_CONTROL *, int));
+ * PUBLIC: gint __rep_new_master __P((DB_ENV *, REP_CONTROL *, int));
  */
-int
+gint
 __rep_new_master(dbenv, cntrl, eid)
 	DB_ENV *dbenv;
 	REP_CONTROL *cntrl;
-	int eid;
+	gint eid;
 {
 	DB_LOG *dblp;
 	DB_LOGC *logc;
@@ -203,7 +203,7 @@ __rep_new_master(dbenv, cntrl, eid)
 	DBT dbt;
 	LOG *lp;
 	REP *rep;
-	int change, ret, t_ret;
+	gint change, ret, t_ret;
 
 	db_rep = dbenv->rep_handle;
 	rep = db_rep->region;
@@ -281,17 +281,17 @@ empty:		MUTEX_LOCK(dbenv, db_rep->mutexp);
  * __rep_lockpgno_init
  *	Create a dispatch table for acquiring locks on each log record.
  *
- * PUBLIC: int __rep_lockpgno_init __P((DB_ENV *,
- * PUBLIC:     int (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *),
+ * PUBLIC: gint __rep_lockpgno_init __P((DB_ENV *,
+ * PUBLIC:     gint (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ),
  * PUBLIC:     size_t *));
  */
-int
+gint
 __rep_lockpgno_init(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t *dtabsizep;
 {
-	int ret;
+	gint ret;
 
 	/* Initialize dispatch table. */
 	*dtabsizep = 0;
@@ -313,9 +313,9 @@ __rep_lockpgno_init(dbenv, dtabp, dtabsizep)
  * __rep_unlockpages --
  *	Unlock the pages locked in __rep_lockpages.
  *
- * PUBLIC: int __rep_unlockpages __P((DB_ENV *, u_int32_t));
+ * PUBLIC: gint __rep_unlockpages __P((DB_ENV *, u_int32_t));
  */
-int
+gint
 __rep_unlockpages(dbenv, lid)
 	DB_ENV *dbenv;
 	u_int32_t lid;
@@ -335,14 +335,14 @@ __rep_unlockpages(dbenv, lid)
  *	to the joint LSN.  A non-NULL max_lsn means that we are applying
  *	a transaction whose commit is at max_lsn.
  *
- * PUBLIC: int __rep_lockpages __P((DB_ENV *,
- * PUBLIC:     int (**)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *),
+ * PUBLIC: gint __rep_lockpages __P((DB_ENV *,
+ * PUBLIC:     gint (**)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ),
  * PUBLIC:     size_t, DB_LSN *, DB_LSN *, TXN_RECS *, u_int32_t));
  */
-int
+gint
 __rep_lockpages(dbenv, dtab, dtabsize, key_lsn, max_lsn, recs, lid)
 	DB_ENV *dbenv;
-	int (**dtab)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+	gint (**dtab)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
 	size_t dtabsize;
 	DB_LSN *key_lsn, *max_lsn;
 	TXN_RECS *recs;
@@ -356,7 +356,7 @@ __rep_lockpages(dbenv, dtab, dtabsize, key_lsn, max_lsn, recs, lid)
 	TXN_RECS tmp, *t;
 	db_pgno_t cur_pgno;
 	linfo_t locks;
-	int i, ret, t_ret, unique;
+	gint i, ret, t_ret, unique;
 	u_int32_t cur_fid;
 
 	/*
@@ -526,7 +526,7 @@ out2:	if ((ret != 0 || recs == NULL) && t->nalloc != 0) {
  */
 static int
 __rep_cmp_bypage(a, b)
-	const void *a, *b;
+	gconstpointer a, *b;
 {
 	LSN_PAGE *ap, *bp;
 
@@ -562,7 +562,7 @@ __rep_cmp_bypage(a, b)
 
 static int
 __rep_cmp_bylsn(a, b)
-	const void *a, *b;
+	gconstpointer a, *b;
 {
 	LSN_PAGE *ap, *bp;
 
@@ -601,15 +601,15 @@ __rep_cmp_bylsn(a, b)
  *	Used by other subsystems to figure out if this is a replication
  * client sites.
  *
- * PUBLIC: int __rep_is_client __P((DB_ENV *));
+ * PUBLIC: gint __rep_is_client __P((DB_ENV *));
  */
-int
+gint
 __rep_is_client(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_REP *db_rep;
 	REP *rep;
-	int ret;
+	gint ret;
 
 	if ((db_rep = dbenv->rep_handle) == NULL)
 		return (0);
@@ -625,13 +625,13 @@ __rep_is_client(dbenv)
  * __rep_send_vote
  *	Send this site's vote for the election.
  *
- * PUBLIC: int __rep_send_vote __P((DB_ENV *, DB_LSN *, int, int, int));
+ * PUBLIC: gint __rep_send_vote __P((DB_ENV *, DB_LSN *, int, int, int));
  */
-int
+gint
 __rep_send_vote(dbenv, lsnp, nsites, pri, tiebreaker)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
-	int nsites, pri, tiebreaker;
+	gint nsites, pri, tiebreaker;
 {
 	DBT vote_dbt;
 	REP_VOTE_INFO vi;
@@ -657,17 +657,17 @@ __rep_send_vote(dbenv, lsnp, nsites, pri, tiebreaker)
  * we need to make sure that we *never* acquire those mutexes in the
  * opposite order.
  *
- * PUBLIC: int __rep_grow_sites __P((DB_ENV *dbenv, int nsites));
+ * PUBLIC: gint __rep_grow_sites __P((DB_ENV *dbenv, gint nsites));
  */
-int
+gint
 __rep_grow_sites(dbenv, nsites)
 	DB_ENV *dbenv;
-	int nsites;
+	gint nsites;
 {
 	REGENV *renv;
 	REGINFO *infop;
 	REP *rep;
-	int nalloc, ret, *tally;
+	gint nalloc, ret, *tally;
 
 	rep = ((DB_REP *)dbenv->rep_handle)->region;
 
@@ -697,7 +697,7 @@ __rep_grow_sites(dbenv, nsites)
 }
 
 #ifdef NOTYET
-static int __rep_send_file __P((DB_ENV *, DBT *, u_int32_t));
+static gint __rep_send_file __P((DB_ENV *, DBT *, u_int32_t));
 /*
  * __rep_send_file --
  *	Send an entire file, one block at a time.
@@ -715,7 +715,7 @@ __rep_send_file(dbenv, rec, eid)
 	DBT rec_dbt;
 	PAGE *pagep;
 	db_pgno_t last_pgno, pgno;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	dbp = NULL;
 	dbc = NULL;
@@ -776,16 +776,16 @@ err:	if (LOCK_ISSET(lk) && (t_ret = __LPUT(dbc, lk)) != 0 && ret == 0)
 
 #if 0
 /*
- * PUBLIC: void __rep_print_message __P((DB_ENV *, int, REP_CONTROL *, char *));
+ * PUBLIC: void __rep_print_message __P((DB_ENV *, int, REP_CONTROL *, gchar *));
  */
 void
 __rep_print_message(dbenv, eid, rp, str)
 	DB_ENV *dbenv;
-	int eid;
+	gint eid;
 	REP_CONTROL *rp;
-	char *str;
+	gchar *str;
 {
-	char *type;
+	gchar *type;
 	switch (rp->rectype) {
 	case REP_ALIVE:
 		type = "alive";

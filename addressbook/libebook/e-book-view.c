@@ -24,7 +24,7 @@ struct _EBookViewPrivate {
 
 	EBookViewListener     *listener;
 
-	int                    response_id;
+	gint                    response_id;
 };
 
 enum {

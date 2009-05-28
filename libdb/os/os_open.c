@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,24 +21,24 @@ static const char revid[] = "$Id$";
 #include "db_int.h"
 
 #ifdef HAVE_QNX
-static int __os_region_open __P((DB_ENV *, const char *, int, int, DB_FH *));
+static gint __os_region_open __P((DB_ENV *, const gchar *, int, int, DB_FH *));
 #endif
 
 /*
  * __os_open --
  *	Open a file.
  *
- * PUBLIC: int __os_open __P((DB_ENV *, const char *, u_int32_t, int, DB_FH *));
+ * PUBLIC: gint __os_open __P((DB_ENV *, const gchar *, u_int32_t, int, DB_FH *));
  */
-int
+gint
 __os_open(dbenv, name, flags, mode, fhp)
 	DB_ENV *dbenv;
-	const char *name;
+	const gchar *name;
 	u_int32_t flags;
-	int mode;
+	gint mode;
 	DB_FH *fhp;
 {
-	int oflags, ret;
+	gint oflags, ret;
 
 	oflags = 0;
 
@@ -145,13 +145,13 @@ __os_open(dbenv, name, flags, mode, fhp)
 static int
 __os_region_open(dbenv, name, oflags, mode, fhp)
 	DB_ENV *dbenv;
-	const char *name;
-	int oflags;
-	int mode;
+	const gchar *name;
+	gint oflags;
+	gint mode;
 	DB_FH *fhp;
 {
-	int ret;
-	char *newname;
+	gint ret;
+	gchar *newname;
 
 	if ((ret = __os_shmname(dbenv, name, &newname)) != 0)
 		goto err;
@@ -185,18 +185,18 @@ err:
  *	Translate a pathname into a shm_open memory object name.
  *
  * PUBLIC: #ifdef HAVE_QNX
- * PUBLIC: int __os_shmname __P((DB_ENV *, const char *, char **));
+ * PUBLIC: gint __os_shmname __P((DB_ENV *, const gchar *, gchar **));
  * PUBLIC: #endif
  */
-int
+gint
 __os_shmname(dbenv, name, newnamep)
 	DB_ENV *dbenv;
-	const char *name;
-	char **newnamep;
+	const gchar *name;
+	gchar **newnamep;
 {
-	int ret;
+	gint ret;
 	size_t size;
-	char *p, *q, *tmpname;
+	gchar *p, *q, *tmpname;
 
 	*newnamep = NULL;
 

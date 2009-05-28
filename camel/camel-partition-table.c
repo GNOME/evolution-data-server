@@ -129,7 +129,7 @@ lookup word, if nameid is deleted, mark it in wordlist as unused and mark for wr
 /* ********************************************************************** */
 
 /* This simple hash seems to work quite well */
-static camel_hash_t hash_key(const char *key)
+static camel_hash_t hash_key(const gchar *key)
 {
 	camel_hash_t hash = 0xABADF00D;
 
@@ -142,9 +142,9 @@ static camel_hash_t hash_key(const char *key)
 }
 
 /* Call with lock held */
-static CamelBlock *find_partition(CamelPartitionTable *cpi, camel_hash_t id, int *indexp)
+static CamelBlock *find_partition(CamelPartitionTable *cpi, camel_hash_t id, gint *indexp)
 {
-	int index, jump;
+	gint index, jump;
 	CamelBlock *bl;
 	CamelPartitionMapBlock *ptb;
 	CamelPartitionMap *part;
@@ -244,11 +244,11 @@ fail:
 }
 
 /* sync our blocks, the caller must still sync the blockfile itself */
-int
+gint
 camel_partition_table_sync(CamelPartitionTable *cpi)
 {
 	CamelBlock *bl, *bn;
-	int ret = 0;
+	gint ret = 0;
 
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
 
@@ -269,14 +269,14 @@ fail:
 	return ret;
 }
 
-camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const char *key)
+camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const gchar *key)
 {
 	CamelPartitionKeyBlock *pkb;
 	CamelPartitionMapBlock *ptb;
 	CamelBlock *block, *ptblock;
 	camel_hash_t hashid;
 	camel_key_t keyid = 0;
-	int index, i;
+	gint index, i;
 
 	hashid = hash_key(key);
 
@@ -313,13 +313,13 @@ camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const char *k
 	return keyid;
 }
 
-void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
+void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
 {
 	CamelPartitionKeyBlock *pkb;
 	CamelPartitionMapBlock *ptb;
 	CamelBlock *block, *ptblock;
 	camel_hash_t hashid;
-	int index, i;
+	gint index, i;
 
 	hashid = hash_key(key);
 
@@ -361,7 +361,7 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const char *key)
 }
 
 static int
-keys_cmp(const void *ap, const void *bp)
+keys_cmp(gconstpointer ap, gconstpointer bp)
 {
 	const CamelPartitionKey *a = ap;
 	const CamelPartitionKey *b = bp;
@@ -374,17 +374,17 @@ keys_cmp(const void *ap, const void *bp)
 	return 0;
 }
 
-int
-camel_partition_table_add(CamelPartitionTable *cpi, const char *key, camel_key_t keyid)
+gint
+camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_t keyid)
 {
 	camel_hash_t hashid, partid;
-	int index, newindex = 0; /* initialisation of this and pkb/nkb is just to silence compiler */
+	gint index, newindex = 0; /* initialisation of this and pkb/nkb is just to silence compiler */
 	CamelPartitionMapBlock *ptb, *ptn;
 	CamelPartitionKeyBlock *kb, *newkb, *nkb = NULL, *pkb = NULL;
 	CamelBlock *block, *ptblock, *ptnblock;
-	int i, half, len;
+	gint i, half, len;
 	struct _CamelPartitionKey keys[CAMEL_BLOCK_SIZE/4];
-	int ret = -1;
+	gint ret = -1;
 
 #define KEY_SIZE (sizeof(kb->keys)/sizeof(kb->keys[0]))
 
@@ -677,7 +677,7 @@ camel_key_table_new(CamelBlockFile *bs, camel_block_t root)
 	return ki;
 }
 
-int
+gint
 camel_key_table_sync(CamelKeyTable *ki)
 {
 #ifdef SYNC_UPDATES
@@ -688,12 +688,12 @@ camel_key_table_sync(CamelKeyTable *ki)
 }
 
 camel_key_t
-camel_key_table_add(CamelKeyTable *ki, const char *key, camel_block_t data, unsigned int flags)
+camel_key_table_add(CamelKeyTable *ki, const gchar *key, camel_block_t data, guint flags)
 {
 	CamelBlock *last, *next;
 	CamelKeyBlock *kblast, *kbnext;
-	int len, left;
-	unsigned int offset;
+	gint len, left;
+	guint offset;
 	camel_key_t keyid = 0;
 
 	/* Maximum key size = 128 chars */
@@ -722,7 +722,7 @@ camel_key_table_add(CamelKeyTable *ki, const char *key, camel_block_t data, unsi
 		goto fail;
 
 	if (kblast->used > 0) {
-		/*left = &kblast->u.keydata[kblast->u.keys[kblast->used-1].offset] - (char *)(&kblast->u.keys[kblast->used+1]);*/
+		/*left = &kblast->u.keydata[kblast->u.keys[kblast->used-1].offset] - (gchar *)(&kblast->u.keys[kblast->used+1]);*/
 		left = kblast->u.keys[kblast->used-1].offset - sizeof(kblast->u.keys[0])*(kblast->used+1);
 		d(printf("key '%s' used = %d (%d), filled = %d, left = %d  len = %d?\n",
 			 key, kblast->used, kblast->used * sizeof(kblast->u.keys[0]),
@@ -787,7 +787,7 @@ camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t dat
 {
 	CamelBlock *bl;
 	camel_block_t blockid;
-	int index;
+	gint index;
 	CamelKeyBlock *kb;
 
 	if (keyid == 0)
@@ -814,13 +814,13 @@ camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t dat
 }
 
 void
-camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, unsigned int flags, unsigned int set)
+camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, guint set)
 {
 	CamelBlock *bl;
 	camel_block_t blockid;
-	int index;
+	gint index;
 	CamelKeyBlock *kb;
-	unsigned int old;
+	guint old;
 
 	if (keyid == 0)
 		return;
@@ -857,12 +857,12 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, unsigned int fla
 }
 
 camel_block_t
-camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, char **keyp, unsigned int *flags)
+camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, gchar **keyp, guint *flags)
 {
 	CamelBlock *bl;
 	camel_block_t blockid;
-	int index, len, off;
-	char *key;
+	gint index, len, off;
+	gchar *key;
 	CamelKeyBlock *kb;
 
 	if (keyp)
@@ -917,12 +917,12 @@ camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, char **keyp, unsign
 
 /* iterate through all keys */
 camel_key_t
-camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned int *flagsp, camel_block_t *datap)
+camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **keyp, guint *flagsp, camel_block_t *datap)
 {
 	CamelBlock *bl;
 	CamelKeyBlock *kb;
 	camel_block_t blockid;
-	int index;
+	gint index;
 
 	if (keyp)
 		*keyp = NULL;
@@ -965,11 +965,11 @@ camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned 
 
 	/* invalid block data */
 	if ((kb->u.keys[index].offset >= sizeof(kb->u.keydata)
-	     /*|| kb->u.keys[index].offset < kb->u.keydata - (char *)&kb->u.keys[kb->used])*/
+	     /*|| kb->u.keys[index].offset < kb->u.keydata - (gchar *)&kb->u.keys[kb->used])*/
 	     || kb->u.keys[index].offset < sizeof(kb->u.keys[0]) * kb->used
 	    || (index > 0 &&
 		(kb->u.keys[index-1].offset >= sizeof(kb->u.keydata)
-		 /*|| kb->u.keys[index-1].offset < kb->u.keydata - (char *)&kb->u.keys[kb->used]))) {*/
+		 /*|| kb->u.keys[index-1].offset < kb->u.keydata - (gchar *)&kb->u.keys[kb->used]))) {*/
 		 || kb->u.keys[index-1].offset < sizeof(kb->u.keys[0]) * kb->used)))) {
 		g_warning("Block %u invalid scanning keys", bl->id);
 		camel_block_file_unref_block(ki->blocks, bl);
@@ -984,8 +984,8 @@ camel_key_table_next(CamelKeyTable *ki, camel_key_t next, char **keyp, unsigned 
 		*flagsp = kb->u.keys[index].flags;
 
 	if (keyp) {
-		int len, off = kb->u.keys[index].offset;
-		char *key;
+		gint len, off = kb->u.keys[index].offset;
+		gchar *key;
 
 		if (index == 0)
 			len = sizeof(kb->u.keydata) - off;

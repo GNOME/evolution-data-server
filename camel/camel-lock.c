@@ -72,13 +72,13 @@
  *
  * Return value: -1 on error, sets @ex appropriately.
  **/
-int
-camel_lock_dot(const char *path, CamelException *ex)
+gint
+camel_lock_dot(const gchar *path, CamelException *ex)
 {
 #ifdef USE_DOT
-	char *locktmp, *lock;
-	int retry = 0;
-	int fdtmp;
+	gchar *locktmp, *lock;
+	gint retry = 0;
+	gint fdtmp;
 	struct stat st;
 
 	/* TODO: Is there a reliable way to refresh the lock, if we're still busy with it?
@@ -155,10 +155,10 @@ camel_lock_dot(const char *path, CamelException *ex)
  * Attempt to unlock a .lock lock.
  **/
 void
-camel_unlock_dot(const char *path)
+camel_unlock_dot(const gchar *path)
 {
 #ifdef USE_DOT
-	char *lock;
+	gchar *lock;
 
 	lock = alloca(strlen(path) + strlen(".lock") + 1);
 	sprintf(lock, "%s.lock", path);
@@ -180,8 +180,8 @@ camel_unlock_dot(const char *path)
  *
  * Return value: -1 on error.
  **/
-int
-camel_lock_fcntl(int fd, CamelLockType type, CamelException *ex)
+gint
+camel_lock_fcntl(gint fd, CamelLockType type, CamelException *ex)
 {
 #ifdef USE_FCNTL
 	struct flock lock;
@@ -200,7 +200,7 @@ camel_lock_fcntl(int fd, CamelLockType type, CamelException *ex)
 					      g_strerror (errno));
 			return -1;
 		} else {
-			static int failed = 0;
+			static gint failed = 0;
 
 			if (failed == 0)
 				fprintf(stderr, "fcntl(2) locking appears not to work on this filesystem");
@@ -218,7 +218,7 @@ camel_lock_fcntl(int fd, CamelLockType type, CamelException *ex)
  * Unlock an fcntl lock.
  **/
 void
-camel_unlock_fcntl(int fd)
+camel_unlock_fcntl(gint fd)
 {
 #ifdef USE_FCNTL
 	struct flock lock;
@@ -244,11 +244,11 @@ camel_unlock_fcntl(int fd)
  *
  * Return value: -1 on error.
  **/
-int
-camel_lock_flock(int fd, CamelLockType type, CamelException *ex)
+gint
+camel_lock_flock(gint fd, CamelLockType type, CamelException *ex)
 {
 #ifdef USE_FLOCK
-	int op;
+	gint op;
 
 	d(printf("flock locking %d\n", fd));
 
@@ -274,7 +274,7 @@ camel_lock_flock(int fd, CamelLockType type, CamelException *ex)
  * Unlock an flock lock.
  **/
 void
-camel_unlock_flock(int fd)
+camel_unlock_flock(gint fd)
 {
 #ifdef USE_FLOCK
 	d(printf("flock unlocking %d\n", fd));
@@ -295,10 +295,10 @@ camel_unlock_flock(int fd)
  *
  * Return value: -1 on error, @ex will describe the locking system that failed.
  **/
-int
-camel_lock_folder(const char *path, int fd, CamelLockType type, CamelException *ex)
+gint
+camel_lock_folder(const gchar *path, gint fd, CamelLockType type, CamelException *ex)
 {
-	int retry = 0;
+	gint retry = 0;
 
 	while (retry < CAMEL_LOCK_RETRY) {
 		if (retry > 0)
@@ -326,7 +326,7 @@ camel_lock_folder(const char *path, int fd, CamelLockType type, CamelException *
  * Free a lock on a folder.
  **/
 void
-camel_unlock_folder(const char *path, int fd)
+camel_unlock_folder(const gchar *path, gint fd)
 {
 	camel_unlock_dot(path);
 	camel_unlock_flock(fd);
@@ -334,10 +334,10 @@ camel_unlock_folder(const char *path, int fd)
 }
 
 #if 0
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelException *ex;
-	int fd1, fd2;
+	gint fd1, fd2;
 
 	ex = camel_exception_new();
 

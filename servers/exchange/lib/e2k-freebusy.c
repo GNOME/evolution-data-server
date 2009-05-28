@@ -43,7 +43,7 @@
 void
 e2k_freebusy_destroy (E2kFreebusy *fb)
 {
-	int i;
+	gint i;
 
 	g_object_unref (fb->ctx);
 	for (i = 0; i < E2K_BUSYSTATUS_MAX; i++)
@@ -53,10 +53,10 @@ e2k_freebusy_destroy (E2kFreebusy *fb)
 	g_free (fb);
 }
 
-static char *
-fb_uri_for_dn (const char *public_uri, const char *dn)
+static gchar *
+fb_uri_for_dn (const gchar *public_uri, const gchar *dn)
 {
-	char *uri, *div, *org;
+	gchar *uri, *div, *org;
 	GString *str;
 
 	for (div = strchr (dn, '/'); div; div = strchr (div + 1, '/')) {
@@ -85,7 +85,7 @@ static void
 merge_events (GArray *events)
 {
 	E2kFreebusyEvent evt, evt2;
-	int i;
+	gint i;
 
 	if (events->len < 2)
 		return;
@@ -106,9 +106,9 @@ static void
 add_data_for_status (E2kFreebusy *fb, GPtrArray *monthyears, GPtrArray *fbdatas, GArray *events)
 {
 	E2kFreebusyEvent evt;
-	int i, monthyear;
+	gint i, monthyear;
 	GByteArray *fbdata;
-	unsigned char *p;
+	guchar *p;
 	struct tm tm;
 
 	if (!monthyears || !fbdatas)
@@ -139,7 +139,7 @@ add_data_for_status (E2kFreebusy *fb, GPtrArray *monthyears, GPtrArray *fbdatas,
 	merge_events (events);
 }
 
-static const char *public_freebusy_props[] = {
+static const gchar *public_freebusy_props[] = {
 	PR_FREEBUSY_START_RANGE,
 	PR_FREEBUSY_END_RANGE,
 	PR_FREEBUSY_ALL_MONTHS,
@@ -151,7 +151,7 @@ static const char *public_freebusy_props[] = {
 	PR_FREEBUSY_OOF_MONTHS,
 	PR_FREEBUSY_OOF_EVENTS
 };
-static const int n_public_freebusy_props = sizeof (public_freebusy_props) / sizeof (public_freebusy_props[0]);
+static const gint n_public_freebusy_props = sizeof (public_freebusy_props) / sizeof (public_freebusy_props[0]);
 
 /**
  * e2k_freebusy_new:
@@ -170,14 +170,14 @@ static const int n_public_freebusy_props = sizeof (public_freebusy_props) / size
  * Return value: the freebusy information
  **/
 E2kFreebusy *
-e2k_freebusy_new (E2kContext *ctx, const char *public_uri, const char *dn)
+e2k_freebusy_new (E2kContext *ctx, const gchar *public_uri, const gchar *dn)
 {
 	E2kFreebusy *fb;
-	char *uri, *time;
+	gchar *uri, *time;
 	GPtrArray *monthyears, *fbdatas;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults = 0, i;
+	gint nresults = 0, i;
 
 	uri = fb_uri_for_dn (public_uri, dn);
 	g_return_val_if_fail (uri, NULL);
@@ -245,11 +245,11 @@ e2k_freebusy_new (E2kContext *ctx, const char *public_uri, const char *dn)
  * to a span of @nmonths around the current date.
  **/
 void
-e2k_freebusy_reset (E2kFreebusy *fb, int nmonths)
+e2k_freebusy_reset (E2kFreebusy *fb, gint nmonths)
 {
 	time_t now;
 	struct tm tm;
-	int i;
+	gint i;
 
 	/* Remove all existing events */
 	for (i = 0; i < E2K_BUSYSTATUS_MAX; i++)
@@ -286,7 +286,7 @@ e2k_freebusy_add_interval (E2kFreebusy *fb, E2kBusyStatus busystatus,
 			   time_t start, time_t end)
 {
 	E2kFreebusyEvent evt, *events;
-	int i;
+	gint i;
 
 	if (busystatus == E2K_BUSYSTATUS_FREE)
 		return;
@@ -339,7 +339,7 @@ void
 e2k_freebusy_clear_interval (E2kFreebusy *fb, time_t start, time_t end)
 {
 	E2kFreebusyEvent *evt;
-	int busystatus, i;
+	gint busystatus, i;
 
 	for (busystatus = 0; busystatus < E2K_BUSYSTATUS_MAX; busystatus++) {
 		for (i = 0; i < fb->events[busystatus]->len; i++) {
@@ -362,12 +362,12 @@ e2k_freebusy_clear_interval (E2kFreebusy *fb, time_t start, time_t end)
 	}
 }
 
-static const char *freebusy_props[] = {
+static const gchar *freebusy_props[] = {
 	E2K_PR_CALENDAR_DTSTART,
 	E2K_PR_CALENDAR_DTEND,
 	E2K_PR_CALENDAR_BUSY_STATUS
 };
-static const int n_freebusy_props = sizeof (freebusy_props) / sizeof (freebusy_props[0]);
+static const gint n_freebusy_props = sizeof (freebusy_props) / sizeof (freebusy_props[0]);
 
 /**
  * e2k_freebusy_add_from_calendar_uri:
@@ -384,10 +384,10 @@ static const int n_freebusy_props = sizeof (freebusy_props) / sizeof (freebusy_p
  * Return value: an HTTP status code.
  **/
 E2kHTTPStatus
-e2k_freebusy_add_from_calendar_uri (E2kFreebusy *fb, const char *uri,
+e2k_freebusy_add_from_calendar_uri (E2kFreebusy *fb, const gchar *uri,
 				    time_t start_tt, time_t end_tt)
 {
-	char *start, *end, *busystatus;
+	gchar *start, *end, *busystatus;
 	E2kBusyStatus busy;
 	E2kRestriction *rn;
 	E2kResultIter *iter;
@@ -445,15 +445,15 @@ e2k_freebusy_add_from_calendar_uri (E2kFreebusy *fb, const char *uri,
 
 static void
 add_events (GArray *events_array, E2kProperties *props,
-	    const char *month_list_prop, const char *data_list_prop)
+	    const gchar *month_list_prop, const gchar *data_list_prop)
 {
 	E2kFreebusyEvent *events = (E2kFreebusyEvent *)events_array->data;
-	int i, evt_start, evt_end, monthyear;
+	gint i, evt_start, evt_end, monthyear;
 	struct tm start_tm, end_tm;
 	time_t start, end;
 	GPtrArray *monthyears, *datas;
 	GByteArray *data;
-	char startend[4];
+	gchar startend[4];
 
 	if (!events_array->len) {
 		e2k_properties_remove (props, month_list_prop);
@@ -524,7 +524,7 @@ E2kHTTPStatus
 e2k_freebusy_save (E2kFreebusy *fb)
 {
 	E2kProperties *props;
-	char *timestamp;
+	gchar *timestamp;
 	E2kHTTPStatus status;
 
 	props = e2k_properties_new ();

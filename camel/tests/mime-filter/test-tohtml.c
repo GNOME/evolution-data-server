@@ -24,11 +24,11 @@
 #define CHUNK_SIZE 4096
 
 static void
-test_filter(CamelMimeFilter *f, const char *inname, const char *outname)
+test_filter(CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 {
 	CamelStreamMem *in, *out;
 	CamelStream *indisk, *outdisk, *filter;
-	int id;
+	gint id;
 
 	camel_test_push("Data file '%s'", inname);
 
@@ -99,17 +99,17 @@ test_filter(CamelMimeFilter *f, const char *inname, const char *outname)
 	camel_test_pull();
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 
 	camel_test_init(argc, argv);
 
 	camel_test_start("HTML Stream filtering");
 
 	for (i=0;i<100;i++) {
-		char inname[32], outname[32];
+		gchar inname[32], outname[32];
 		CamelMimeFilter *f;
 		struct stat st;
 

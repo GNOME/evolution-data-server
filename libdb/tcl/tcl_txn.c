@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -22,9 +22,9 @@ static const char revid[] = "$Id$";
 #include "db_int.h"
 #include "dbinc/tcl_db.h"
 
-static int tcl_TxnCommit __P((Tcl_Interp *,
+static gint tcl_TxnCommit __P((Tcl_Interp *,
 	       int, Tcl_Obj * CONST *, DB_TXN *, DBTCL_INFO *));
-static int txn_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST *));
+static gint txn_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST *));
 
 /*
  * _TxnInfoDelete --
@@ -59,24 +59,24 @@ _TxnInfoDelete(interp, txnip)
 /*
  * tcl_TxnCheckpoint --
  *
- * PUBLIC: int tcl_TxnCheckpoint __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_TxnCheckpoint __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_TxnCheckpoint(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
-	static char *txnckpopts[] = {
+	static gchar *txnckpopts[] = {
 		"-kbyte",	"-min",
 		NULL
 	};
 	enum txnckpopts {
 		TXNCKP_KB,	TXNCKP_MIN
 	};
-	int i, kb, min, optindex, result, ret;
+	gint i, kb, min, optindex, result, ret;
 
 	result = TCL_OK;
 	kb = min = 0;
@@ -122,18 +122,18 @@ tcl_TxnCheckpoint(interp, objc, objv, envp)
 /*
  * tcl_Txn --
  *
- * PUBLIC: int tcl_Txn __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_Txn __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *, DBTCL_INFO *));
  */
-int
+gint
 tcl_Txn(interp, objc, objv, envp, envip)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 	DBTCL_INFO *envip;		/* Info pointer */
 {
-	static char *txnopts[] = {
+	static gchar *txnopts[] = {
 #if CONFIG_TEST
 		"-dirty",
 		"-lock_timeout",
@@ -162,8 +162,8 @@ tcl_Txn(interp, objc, objv, envp, envip)
 	Tcl_Obj *res;
 	db_timeout_t lk_time, tx_time;
 	u_int32_t flag, lk_timeflag, tx_timeflag;
-	int i, optindex, result, ret;
-	char *arg, msg[MSG_SIZE], newname[MSG_SIZE];
+	gint i, optindex, result, ret;
+	gchar *arg, msg[MSG_SIZE], newname[MSG_SIZE];
 
 	result = TCL_OK;
 	memset(newname, 0, MSG_SIZE);
@@ -286,13 +286,13 @@ getit:
 /*
  * tcl_TxnStat --
  *
- * PUBLIC: int tcl_TxnStat __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_TxnStat __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_TxnStat(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
@@ -301,7 +301,7 @@ tcl_TxnStat(interp, objc, objv, envp)
 	DB_TXN_STAT *sp;
 	Tcl_Obj *myobjv[2], *res, *thislist, *lsnlist;
 	u_int32_t i;
-	int myobjc, result, ret;
+	gint myobjc, result, ret;
 
 	result = TCL_OK;
 	/*
@@ -364,18 +364,18 @@ error:
 /*
  * tcl_TxnTimeout --
  *
- * PUBLIC: int tcl_TxnTimeout __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_TxnTimeout __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-int
+gint
 tcl_TxnTimeout(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	long timeout;
-	int result, ret;
+	gint result, ret;
 
 	/*
 	 * One arg, the timeout.
@@ -402,10 +402,10 @@ static int
 txn_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Txn handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static char *txncmds[] = {
+	static gchar *txncmds[] = {
 #if CONFIG_TEST
 		"discard",
 		"id",
@@ -427,12 +427,12 @@ txn_Cmd(clientData, interp, objc, objv)
 	DBTCL_INFO *txnip;
 	DB_TXN *txnp;
 	Tcl_Obj *res;
-	int cmdindex, result, ret;
+	gint cmdindex, result, ret;
 	u_int8_t *gid;
 
 	Tcl_ResetResult(interp);
 	txnp = (DB_TXN *)clientData;
-	txnip = _PtrToInfo((void *)txnp);
+	txnip = _PtrToInfo((gpointer)txnp);
 	result = TCL_OK;
 	if (txnp == NULL) {
 		Tcl_SetResult(interp, "NULL txn pointer", TCL_STATIC);
@@ -528,12 +528,12 @@ txn_Cmd(clientData, interp, objc, objv)
 static int
 tcl_TxnCommit(interp, objc, objv, txnp, txnip)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_TXN *txnp;			/* Transaction pointer */
 	DBTCL_INFO *txnip;		/* Info pointer */
 {
-	static char *commitopt[] = {
+	static gchar *commitopt[] = {
 		"-nosync",
 		"-sync",
 		NULL
@@ -543,7 +543,7 @@ tcl_TxnCommit(interp, objc, objv, txnp, txnip)
 		COMNOSYNC
 	};
 	u_int32_t flag;
-	int optindex, result, ret;
+	gint optindex, result, ret;
 
 	COMPQUIET(txnip, NULL);
 
@@ -580,13 +580,13 @@ tcl_TxnCommit(interp, objc, objv, txnp, txnip)
 /*
  * tcl_TxnRecover --
  *
- * PUBLIC: int tcl_TxnRecover __P((Tcl_Interp *, int,
+ * PUBLIC: gint tcl_TxnRecover __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *, DBTCL_INFO *));
  */
-int
+gint
 tcl_TxnRecover(interp, objc, objv, envp, envip)
 	Tcl_Interp *interp;		/* Interpreter */
-	int objc;			/* How many arguments? */
+	gint objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 	DBTCL_INFO *envip;		/* Info pointer */
@@ -617,8 +617,8 @@ for (i = 0; i < count; i++) {						\
 	DB_PREPLIST prep[DBTCL_PREP], *p;
 	Tcl_Obj *res;
 	long count, i;
-	int result, ret;
-	char newname[MSG_SIZE];
+	gint result, ret;
+	gchar newname[MSG_SIZE];
 
 	result = TCL_OK;
 	/*

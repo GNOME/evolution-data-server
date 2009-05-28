@@ -20,9 +20,9 @@
 
 #include "ex_repquote.h"
 
-static int connect_site __P((DB_ENV *, machtab_t *, const char *,
-   repsite_t *, int *, int *));
-void * elect_thread __P((void *));
+static gint connect_site __P((DB_ENV *, machtab_t *, const gchar *,
+   repsite_t *, gint *, gint *));
+gpointer  elect_thread __P((gpointer));
 
 typedef struct {
 	DB_ENV *dbenv;
@@ -31,9 +31,9 @@ typedef struct {
 
 typedef struct {
 	DB_ENV *dbenv;
-	const char *progname;
-	const char *home;
-	int fd;
+	const gchar *progname;
+	const gchar *home;
+	gint fd;
 	u_int32_t eid;
 	machtab_t *tab;
 } hm_loop_args;
@@ -43,22 +43,22 @@ typedef struct {
  * master to accept messages from a client as well as by clients
  * to communicate with other clients.
  */
-void *
+gpointer
 hm_loop(args)
-	void *args;
+	gpointer args;
 {
 	DB_ENV *dbenv;
 	DBT rec, control;
-	const char *c, *home, *progname;
-	int fd, eid, n, newm;
-	int open, pri, r, ret, t_ret, tmpid;
+	const gchar *c, *home, *progname;
+	gint fd, eid, n, newm;
+	gint open, pri, r, ret, t_ret, tmpid;
 	elect_args *ea;
 	hm_loop_args *ha;
 	machtab_t *tab;
 	pthread_t elect_thr;
 	repsite_t self;
 	u_int32_t timeout;
-	void *status;
+	gpointer status;
 
 	ea = NULL;
 
@@ -134,7 +134,7 @@ hm_loop(args)
 			if (strncmp(myaddr, rec.data, rec.size) == 0)
 				break;
 
-			self.host = (char *)rec.data;
+			self.host = (gchar *)rec.data;
 			self.host = strtok(self.host, ":");
 			if ((c = strtok(NULL, ":")) == NULL) {
 				dbenv->errx(dbenv, "Bad host specification");
@@ -167,7 +167,7 @@ hm_loop(args)
 			ea->dbenv = dbenv;
 			ea->machtab = tab;
 			ret = pthread_create(&elect_thr,
-			    NULL, elect_thread, (void *)ea);
+			    NULL, elect_thread, (gpointer)ea);
 			break;
 		case DB_REP_NEWMASTER:
 			/* Check if it's us. */
@@ -194,7 +194,7 @@ out:	if ((t_ret = machtab_rem(tab, eid, 1)) != 0 && ret == 0)
 	if (ea != NULL)
 		(void)pthread_join(elect_thr, &status);
 
-	return ((void *)ret);
+	return ((gpointer)ret);
 }
 
 /*
@@ -202,13 +202,13 @@ out:	if ((t_ret = machtab_rem(tab, eid, 1)) != 0 && ret == 0)
  * on a socket and then spawns off child threads to handle each new
  * connection.
  */
-void *
+gpointer
 connect_thread(args)
-	void *args;
+	gpointer args;
 {
 	DB_ENV *dbenv;
-	const char *home, *progname;
-	int fd, i, eid, ns, port, ret;
+	const gchar *home, *progname;
+	gint fd, i, eid, ns, port, ret;
 	hm_loop_args *ha;
 	connect_args *cargs;
 	machtab_t *machtab;
@@ -225,7 +225,7 @@ connect_thread(args)
 	port = cargs->port;
 
 	if ((ret = pthread_attr_init(&attr)) != 0)
-		return ((void *)EXIT_FAILURE);
+		return ((gpointer)EXIT_FAILURE);
 
 	if ((ret =
 	    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) != 0)
@@ -255,7 +255,7 @@ connect_thread(args)
 		ha->tab = machtab;
 		ha->dbenv = dbenv;
 		if ((ret = pthread_create(&hm_thrs[i++], &attr,
-		    hm_loop, (void *)ha)) != 0)
+		    hm_loop, (gpointer)ha)) != 0)
 			goto err;
 		ha = NULL;
 	}
@@ -265,22 +265,22 @@ connect_thread(args)
 	ret = ENOMEM;
 
 err:	pthread_attr_destroy(&attr);
-	return (ret == 0 ? (void *)EXIT_SUCCESS : (void *)EXIT_FAILURE);
+	return (ret == 0 ? (gpointer)EXIT_SUCCESS : (gpointer)EXIT_FAILURE);
 }
 
 /*
  * Open a connection to everyone that we've been told about.  If we
  * cannot open some connections, keep trying.
  */
-void *
+gpointer
 connect_all(args)
-	void *args;
+	gpointer args;
 {
 	DB_ENV *dbenv;
 	all_args *aa;
-	const char *home, *progname;
+	const gchar *home, *progname;
 	hm_loop_args *ha;
-	int failed, i, eid, nsites, open, ret, *success;
+	gint failed, i, eid, nsites, open, ret, *success;
 	machtab_t *machtab;
 	repsite_t *sites;
 
@@ -333,19 +333,19 @@ connect_all(args)
 	}
 
 err:	free(success);
-	return (ret ? (void *)EXIT_FAILURE : (void *)EXIT_SUCCESS);
+	return (ret ? (gpointer)EXIT_FAILURE : (gpointer)EXIT_SUCCESS);
 }
 
-int
+gint
 connect_site(dbenv, machtab, progname, site, is_open, eidp)
 	DB_ENV *dbenv;
 	machtab_t *machtab;
-	const char *progname;
+	const gchar *progname;
 	repsite_t *site;
-	int *is_open;
-	int *eidp;
+	gint *is_open;
+	gint *eidp;
 {
-	int ret, s;
+	gint ret, s;
 	hm_loop_args *ha;
 	pthread_t hm_thr;
 
@@ -368,7 +368,7 @@ connect_site(dbenv, machtab, progname, site, is_open, eidp)
 	ha->dbenv = dbenv;
 
 	if ((ret = pthread_create(&hm_thr, NULL,
-	    hm_loop, (void *)ha)) != 0) {
+	    hm_loop, (gpointer)ha)) != 0) {
 		dbenv->err(dbenv, ret, "connect site");
 		goto err1;
 	}
@@ -384,13 +384,13 @@ err:
  * We need to spawn off a new thread in which to hold an election in
  * case we are the only thread listening on for messages.
  */
-void *
+gpointer
 elect_thread(args)
-	void *args;
+	gpointer args;
 {
 	DB_ENV *dbenv;
 	elect_args *eargs;
-	int n, ret, pri;
+	gint n, ret, pri;
 	machtab_t *machtab;
 	u_int32_t timeout;
 
@@ -408,5 +408,5 @@ elect_thread(args)
 	if (master_eid == SELF_EID)
 		ret = dbenv->rep_start(dbenv, NULL, DB_REP_MASTER);
 
-	return ((void *)(ret == 0 ? EXIT_SUCCESS : EXIT_FAILURE));
+	return ((gpointer)(ret == 0 ? EXIT_SUCCESS : EXIT_FAILURE));
 }

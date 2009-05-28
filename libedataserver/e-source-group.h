@@ -61,46 +61,46 @@ struct _ESourceGroupClass {
 
 GType    e_source_group_get_type (void);
 
-ESourceGroup *e_source_group_new              (const char *name,
-					       const char *base_uri);
-ESourceGroup *e_source_group_new_from_xml     (const char *xml);
+ESourceGroup *e_source_group_new              (const gchar *name,
+					       const gchar *base_uri);
+ESourceGroup *e_source_group_new_from_xml     (const gchar *xml);
 ESourceGroup *e_source_group_new_from_xmldoc  (xmlDocPtr   doc);
 
 gboolean  e_source_group_update_from_xml     (ESourceGroup *group,
-					      const char   *xml,
+					      const gchar   *xml,
 					      gboolean     *changed_return);
 gboolean  e_source_group_update_from_xmldoc  (ESourceGroup *group,
 					      xmlDocPtr     doc,
 					      gboolean     *changed_return);
 
-char *e_source_group_uid_from_xmldoc  (xmlDocPtr doc);
+gchar *e_source_group_uid_from_xmldoc  (xmlDocPtr doc);
 
 void  e_source_group_set_name      (ESourceGroup *group,
-				    const char   *name);
+				    const gchar   *name);
 void  e_source_group_set_base_uri  (ESourceGroup *group,
-				    const char   *base_uri);
+				    const gchar   *base_uri);
 
 void e_source_group_set_readonly (ESourceGroup *group,
 				  gboolean      readonly);
 
-const char *e_source_group_peek_uid       (ESourceGroup *group);
-const char *e_source_group_peek_name      (ESourceGroup *group);
-const char *e_source_group_peek_base_uri  (ESourceGroup *group);
+const gchar *e_source_group_peek_uid       (ESourceGroup *group);
+const gchar *e_source_group_peek_name      (ESourceGroup *group);
+const gchar *e_source_group_peek_base_uri  (ESourceGroup *group);
 gboolean    e_source_group_get_readonly   (ESourceGroup *group);
 
 GSList  *e_source_group_peek_sources        (ESourceGroup *group);
 ESource *e_source_group_peek_source_by_uid  (ESourceGroup *group,
-					     const char   *source_uid);
+					     const gchar   *source_uid);
 ESource *e_source_group_peek_source_by_name (ESourceGroup *group,
-					     const char   *source_name);
+					     const gchar   *source_name);
 
 gboolean  e_source_group_add_source            (ESourceGroup *group,
 						ESource      *source,
-						int           position);
+						gint           position);
 gboolean  e_source_group_remove_source         (ESourceGroup *group,
 						ESource      *source);
 gboolean  e_source_group_remove_source_by_uid  (ESourceGroup *group,
-						const char   *uid);
+						const gchar   *uid);
 
 gchar *e_source_group_get_property     (ESourceGroup *source,
 					      const gchar *property);
@@ -111,7 +111,7 @@ void         e_source_group_foreach_property (ESourceGroup *source,
 					      GHFunc func,
 					      gpointer data);
 
-char *e_source_group_to_xml (ESourceGroup *group);
+gchar *e_source_group_to_xml (ESourceGroup *group);
 
 gboolean e_source_group_equal (ESourceGroup *a, ESourceGroup *b);
 gboolean e_source_group_xmlstr_equal (const gchar *a, const gchar *b);

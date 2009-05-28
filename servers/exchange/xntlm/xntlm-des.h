@@ -13,8 +13,8 @@ enum {
 	XNTLM_DES_DECRYPT = 1
 };
 
-void xntlm_deskey (XNTLM_DES_KS ks, const unsigned char *key, int decrypt);
+void xntlm_deskey (XNTLM_DES_KS ks, const guchar *key, gint decrypt);
 
-void xntlm_des (XNTLM_DES_KS ks, unsigned char block[8]);
+void xntlm_des (XNTLM_DES_KS ks, guchar block[8]);
 
 #endif /* _XNTLM_DES_H */

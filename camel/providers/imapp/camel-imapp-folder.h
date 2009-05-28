@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 typedef struct _CamelIMAPPFolder {
 	CamelFolder parent_object;
 
-	char *raw_name;
+	gchar *raw_name;
 	CamelFolderChangeInfo *changes;
 
 	guint32 exists;
@@ -54,7 +54,7 @@ typedef struct _CamelIMAPPFolderClass {
 CamelType camel_imapp_folder_get_type (void);
 
 /* public methods */
-CamelFolder *camel_imapp_folder_new(CamelStore *parent, const char *path);
+CamelFolder *camel_imapp_folder_new(CamelStore *parent, const gchar *path);
 
 G_END_DECLS
 

@@ -57,10 +57,10 @@ typedef struct {
 	CamelMimePart * (*remove_part_at) (CamelMultipart *multipart, guint index);
 	CamelMimePart * (*get_part) (CamelMultipart *multipart, guint index);
 	guint (*get_number) (CamelMultipart *multipart);
-	void (*set_boundary) (CamelMultipart *multipart, const char *boundary);
+	void (*set_boundary) (CamelMultipart *multipart, const gchar *boundary);
 	const gchar * (*get_boundary) (CamelMultipart *multipart);
 
-	int (*construct_from_parser)(CamelMultipart *, struct _CamelMimeParser *);
+	gint (*construct_from_parser)(CamelMultipart *, struct _CamelMimeParser *);
 	/*int (*construct_from_stream)(CamelMultipart *, CamelStream *);*/
 
 } CamelMultipartClass;
@@ -84,11 +84,11 @@ CamelMimePart *     camel_multipart_get_part       (CamelMultipart *multipart,
 						    guint index);
 guint               camel_multipart_get_number     (CamelMultipart *multipart);
 void                camel_multipart_set_boundary   (CamelMultipart *multipart,
-						    const char *boundary);
-const char *        camel_multipart_get_boundary   (CamelMultipart *multipart);
+						    const gchar *boundary);
+const gchar *        camel_multipart_get_boundary   (CamelMultipart *multipart);
 
-void		    camel_multipart_set_preface	   (CamelMultipart *multipart, const char *preface);
-void		    camel_multipart_set_postface   (CamelMultipart *multipart, const char *postface);
+void		    camel_multipart_set_preface	   (CamelMultipart *multipart, const gchar *preface);
+void		    camel_multipart_set_postface   (CamelMultipart *multipart, const gchar *postface);
 
 int		    camel_multipart_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *parser);
 

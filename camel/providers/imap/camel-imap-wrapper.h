@@ -42,7 +42,7 @@ struct _CamelImapWrapper {
 	CamelImapWrapperPrivate *priv;
 
 	CamelImapFolder *folder;
-	char *uid, *part_spec;
+	gchar *uid, *part_spec;
 	CamelMimePart *part;
 };
 
@@ -57,8 +57,8 @@ CamelType camel_imap_wrapper_get_type (void);
 CamelDataWrapper *camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 					  CamelContentType *type,
 					  CamelTransferEncoding encoding,
-					  const char *uid,
-					  const char *part_spec,
+					  const gchar *uid,
+					  const gchar *part_spec,
 					  CamelMimePart *part);
 
 G_END_DECLS

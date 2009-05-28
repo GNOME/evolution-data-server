@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -44,31 +44,31 @@ static const char revid[] =
 typedef enum { T_NOTSET,
     T_DB, T_ENV, T_LOCK, T_LOG, T_MPOOL, T_REP, T_TXN } test_t;
 
-int	 db_stat_argcheck __P((char *, const char *));
+int	 db_stat_argcheck __P((gchar *, const gchar *));
 int	 db_stat_btree_stats __P((DB_ENV *, DB *, DB_BTREE_STAT *, int));
-int	 db_stat_db_init __P((DB_ENV *, char *, test_t, u_int32_t, int *));
-void	 db_stat_dl __P((const char *, u_long));
-void	 db_stat_dl_bytes __P((const char *, u_long, u_long, u_long));
+int	 db_stat_db_init __P((DB_ENV *, gchar *, test_t, u_int32_t, gint *));
+void	 db_stat_dl __P((const gchar *, u_long));
+void	 db_stat_dl_bytes __P((const gchar *, u_long, u_long, u_long));
 int	 db_stat_env_stats __P((DB_ENV *, u_int32_t));
 int	 db_stat_hash_stats __P((DB_ENV *, DB *, int));
-int	 db_stat_lock_stats __P((DB_ENV *, char *, u_int32_t));
+int	 db_stat_lock_stats __P((DB_ENV *, gchar *, u_int32_t));
 int	 db_stat_log_stats __P((DB_ENV *, u_int32_t));
-int	 db_stat_main __P((int, char *[]));
-int	 db_stat_mpool_stats __P((DB_ENV *, char *, u_int32_t));
+int	 db_stat_main __P((int, gchar *[]));
+int	 db_stat_mpool_stats __P((DB_ENV *, gchar *, u_int32_t));
 void	 db_stat_prflags __P((u_int32_t, const FN *));
 int	 db_stat_queue_stats __P((DB_ENV *, DB *, int));
 int	 db_stat_rep_stats __P((DB_ENV *, u_int32_t));
-int	 db_stat_txn_compare __P((const void *, const void *));
+int	 db_stat_txn_compare __P((gconstpointer , gconstpointer ));
 int	 db_stat_txn_stats __P((DB_ENV *, u_int32_t));
 int	 db_stat_usage __P((void));
-int	 db_stat_version_check __P((const char *));
+int	 db_stat_version_check __P((const gchar *));
 
-int
+gint
 db_stat(args)
-	char *args;
+	gchar *args;
 {
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 
 	__db_util_arg("db_stat", args, &argc, &argv);
 	return (db_stat_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -77,22 +77,22 @@ db_stat(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-int
+gint
 db_stat_main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind, __db_getopt_reset;
-	const char *progname = "db_stat";
+	extern gchar *optarg;
+	extern gint optind, __db_getopt_reset;
+	const gchar *progname = "db_stat";
 	DB_ENV	*dbenv;
 	DB_BTREE_STAT *sp;
 	DB *alt_dbp, *dbp;
 	test_t ttype;
 	u_int32_t cache;
-	int ch, checked, d_close, e_close, exitval, fast, flags;
-	int nflag, private, resize, ret;
-	char *db, *home, *internal, *passwd, *subdb;
+	gint ch, checked, d_close, e_close, exitval, fast, flags;
+	gint nflag, private, resize, ret;
+	gchar *db, *home, *internal, *passwd, *subdb;
 
 	if ((ret = db_stat_version_check(progname)) != 0)
 		return (ret);
@@ -389,15 +389,15 @@ shutdown:	exitval = 1;
  * env_stats --
  *	Display environment statistics.
  */
-int
+gint
 db_stat_env_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	REGENV renv;
 	REGION *rp, regs[1024];
-	int n, ret;
-	const char *lable;
+	gint n, ret;
+	const gchar *lable;
 
 	n = sizeof(regs) / sizeof(regs[0]);
 	if ((ret = __db_e_stat(dbenv, &renv, regs, &n, flags)) != 0)  {
@@ -461,12 +461,12 @@ db_stat_env_stats(dbenv, flags)
  * btree_stats --
  *	Display btree/recno statistics.
  */
-int
+gint
 db_stat_btree_stats(dbenv, dbp, msp, fast)
 	DB_ENV *dbenv;
 	DB *dbp;
 	DB_BTREE_STAT *msp;
-	int fast;
+	gint fast;
 {
 	static const FN fn[] = {
 		{ BTM_DUP,	"duplicates" },
@@ -478,7 +478,7 @@ db_stat_btree_stats(dbenv, dbp, msp, fast)
 		{ 0,		NULL }
 	};
 	DB_BTREE_STAT *sp;
-	int ret;
+	gint ret;
 
 	COMPQUIET(dbenv, NULL);
 
@@ -549,11 +549,11 @@ db_stat_btree_stats(dbenv, dbp, msp, fast)
  * hash_stats --
  *	Display hash statistics.
  */
-int
+gint
 db_stat_hash_stats(dbenv, dbp, fast)
 	DB_ENV *dbenv;
 	DB *dbp;
-	int fast;
+	gint fast;
 {
 	static const FN fn[] = {
 		{ DB_HASH_DUP,	"duplicates" },
@@ -561,7 +561,7 @@ db_stat_hash_stats(dbenv, dbp, fast)
 		{ 0,		NULL }
 	};
 	DB_HASH_STAT *sp;
-	int ret;
+	gint ret;
 
 	COMPQUIET(dbenv, NULL);
 
@@ -612,14 +612,14 @@ db_stat_hash_stats(dbenv, dbp, fast)
  * queue_stats --
  *	Display queue statistics.
  */
-int
+gint
 db_stat_queue_stats(dbenv, dbp, fast)
 	DB_ENV *dbenv;
 	DB *dbp;
-	int fast;
+	gint fast;
 {
 	DB_QUEUE_STAT *sp;
-	int ret;
+	gint ret;
 
 	COMPQUIET(dbenv, NULL);
 
@@ -657,14 +657,14 @@ db_stat_queue_stats(dbenv, dbp, fast)
  * lock_stats --
  *	Display lock statistics.
  */
-int
+gint
 db_stat_lock_stats(dbenv, internal, flags)
 	DB_ENV *dbenv;
-	char *internal;
+	gchar *internal;
 	u_int32_t flags;
 {
 	DB_LOCK_STAT *sp;
-	int ret;
+	gint ret;
 
 	if (internal != NULL) {
 		if ((ret =
@@ -728,13 +728,13 @@ db_stat_lock_stats(dbenv, internal, flags)
  * log_stats --
  *	Display log statistics.
  */
-int
+gint
 db_stat_log_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB_LOG_STAT *sp;
-	int ret;
+	gint ret;
 
 	if ((ret = dbenv->log_stat(dbenv, &sp, flags)) != 0) {
 		dbenv->err(dbenv, ret, NULL);
@@ -787,15 +787,15 @@ db_stat_log_stats(dbenv, flags)
  * mpool_stats --
  *	Display mpool statistics.
  */
-int
+gint
 db_stat_mpool_stats(dbenv, internal, flags)
 	DB_ENV *dbenv;
-	char *internal;
+	gchar *internal;
 	u_int32_t flags;
 {
 	DB_MPOOL_FSTAT **fsp;
 	DB_MPOOL_STAT *gsp;
-	int ret;
+	gint ret;
 
 	if (internal != NULL) {
 		if ((ret =
@@ -902,14 +902,14 @@ db_stat_mpool_stats(dbenv, internal, flags)
  * rep_stats --
  *	Display replication statistics.
  */
-int
+gint
 db_stat_rep_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB_REP_STAT *sp;
-	int is_client, ret;
-	const char *p;
+	gint is_client, ret;
+	const gchar *p;
 
 	if ((ret = dbenv->rep_stat(dbenv, &sp, flags)) != 0) {
 		dbenv->err(dbenv, ret, NULL);
@@ -1017,15 +1017,15 @@ db_stat_rep_stats(dbenv, flags)
  * txn_stats --
  *	Display transaction statistics.
  */
-int
+gint
 db_stat_txn_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB_TXN_STAT *sp;
 	u_int32_t i;
-	int ret;
-	const char *p;
+	gint ret;
+	const gchar *p;
 
 	if ((ret = dbenv->txn_stat(dbenv, &sp, flags)) != 0) {
 		dbenv->err(dbenv, ret, NULL);
@@ -1078,9 +1078,9 @@ db_stat_txn_stats(dbenv, flags)
 	return (0);
 }
 
-int
+gint
 db_stat_txn_compare(a1, b1)
-	const void *a1, *b1;
+	gconstpointer a1, *b1;
 {
 	const DB_TXN_ACTIVE *a, *b;
 
@@ -1100,7 +1100,7 @@ db_stat_txn_compare(a1, b1)
  */
 void
 db_stat_dl(msg, value)
-	const char *msg;
+	const gchar *msg;
 	u_long value;
 {
 	/*
@@ -1119,10 +1119,10 @@ db_stat_dl(msg, value)
  */
 void
 db_stat_dl_bytes(msg, gbytes, mbytes, bytes)
-	const char *msg;
+	const gchar *msg;
 	u_long gbytes, mbytes, bytes;
 {
-	const char *sep;
+	const gchar *sep;
 
 	/* Normalize the values. */
 	while (bytes >= MEGABYTE) {
@@ -1163,7 +1163,7 @@ db_stat_prflags(flags, fnp)
 	u_int32_t flags;
 	const FN *fnp;
 {
-	const char *sep;
+	const gchar *sep;
 
 	sep = "\t";
 	printf("Flags:");
@@ -1179,16 +1179,16 @@ db_stat_prflags(flags, fnp)
  * db_init --
  *	Initialize the environment.
  */
-int
+gint
 db_stat_db_init(dbenv, home, ttype, cache, is_private)
 	DB_ENV *dbenv;
-	char *home;
+	gchar *home;
 	test_t ttype;
 	u_int32_t cache;
-	int *is_private;
+	gint *is_private;
 {
 	u_int32_t oflags;
-	int ret;
+	gint ret;
 
 	/*
 	 * If our environment open fails, and we're trying to look at a
@@ -1242,10 +1242,10 @@ db_stat_db_init(dbenv, home, ttype, cache, is_private)
  * argcheck --
  *	Return if argument flags are okay.
  */
-int
+gint
 db_stat_argcheck(arg, ok_args)
-	char *arg;
-	const char *ok_args;
+	gchar *arg;
+	const gchar *ok_args;
 {
 	for (; *arg != '\0'; ++arg)
 		if (strchr(ok_args, *arg) == NULL)
@@ -1253,7 +1253,7 @@ db_stat_argcheck(arg, ok_args)
 	return (1);
 }
 
-int
+gint
 db_stat_usage()
 {
 	fprintf(stderr, "%s\n\t%s\n",
@@ -1262,11 +1262,11 @@ db_stat_usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 db_stat_version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

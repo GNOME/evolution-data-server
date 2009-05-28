@@ -68,27 +68,27 @@
 G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 
 struct _EBookBackendFilePrivate {
-	char     *dirname;
-	char     *filename;
-	char     *summary_filename;
+	gchar     *dirname;
+	gchar     *filename;
+	gchar     *summary_filename;
 	DB       *file_db;
 	DB_ENV   *env;
 	EBookBackendSummary *summary;
 	/* for future use */
-	void *reserved1;
-	void *reserved2;
-	void *reserved3;
-	void *reserved4;
+	gpointer reserved1;
+	gpointer reserved2;
+	gpointer reserved3;
+	gpointer reserved4;
 };
 
 G_LOCK_DEFINE_STATIC (global_env);
 static struct {
-	int ref_count;
+	gint ref_count;
 	DB_ENV *env;
 } global_env;
 
 static EBookBackendSyncStatus
-db_error_to_status (const int db_error)
+db_error_to_status (const gint db_error)
 {
 	switch (db_error) {
 	case 0:
@@ -103,16 +103,16 @@ db_error_to_status (const int db_error)
 }
 
 static void
-string_to_dbt(const char *str, DBT *dbt)
+string_to_dbt(const gchar *str, DBT *dbt)
 {
 	memset (dbt, 0, sizeof (*dbt));
-	dbt->data = (void*)str;
+	dbt->data = (gpointer)str;
 	dbt->size = strlen (str) + 1;
 	dbt->flags = DB_DBT_USERMEM;
 }
 
 static EContact*
-create_contact (char *uid, const char *vcard)
+create_contact (gchar *uid, const gchar *vcard)
 {
 	EContact *contact = e_contact_new_from_vcard (vcard);
 	if (!e_contact_get_const (contact, E_CONTACT_UID))
@@ -126,7 +126,7 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 {
 	DB             *db = bfpriv->file_db;
 	DBC            *dbc;
-	int            db_error;
+	gint            db_error;
 	DBT  id_dbt, vcard_dbt;
 
 	db_error = db->cursor (db, NULL, &dbc, 0);
@@ -159,7 +159,7 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 	return TRUE;
 }
 
-static char *
+static gchar *
 e_book_backend_file_create_unique_id (void)
 {
 	/* use a 32 counter and the 32 bit timestamp to make an id.
@@ -172,7 +172,7 @@ e_book_backend_file_create_unique_id (void)
 static void
 set_revision (EContact *contact)
 {
-	char time_string[100] = {0};
+	gchar time_string[100] = {0};
 	const struct tm *tm = NULL;
 	time_t t;
 
@@ -186,15 +186,15 @@ set_revision (EContact *contact)
 
 static EBookBackendSyncStatus
 do_create(EBookBackendFile  *bf,
-	  const char      *vcard_req,
+	  const gchar      *vcard_req,
 	  EContact **contact)
 {
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt, vcard_dbt;
-	int            db_error;
-	char           *id;
-	char           *vcard;
-	const char *rev;
+	gint            db_error;
+	gchar           *id;
+	gchar           *vcard;
+	const gchar *rev;
 
 	g_assert (bf);
 	g_assert (vcard_req);
@@ -237,7 +237,7 @@ static EBookBackendSyncStatus
 e_book_backend_file_create_contact (EBookBackendSync *backend,
 				    EDataBook *book,
 				    guint32 opid,
-				    const char *vcard,
+				    const gchar *vcard,
 				    EContact **contact)
 {
 	EBookBackendSyncStatus status;
@@ -260,8 +260,8 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt;
-	int            db_error;
-	char          *id;
+	gint            db_error;
+	gchar          *id;
 	GList         *l;
 	GList         *removed_cards = NULL;
 	GNOME_Evolution_Addressbook_CallStatus rv = GNOME_Evolution_Addressbook_Success;
@@ -291,7 +291,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	*ids = removed_cards;
 
 	for (l = removed_cards; l; l = l->next) {
-		char *id = l->data;
+		gchar *id = l->data;
 		e_book_backend_summary_remove_contact (bf->priv->summary, id);
 	}
 
@@ -302,15 +302,15 @@ static EBookBackendSyncStatus
 e_book_backend_file_modify_contact (EBookBackendSync *backend,
 				    EDataBook *book,
 				    guint32 opid,
-				    const char *vcard,
+				    const gchar *vcard,
 				    EContact **contact)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt, vcard_dbt;
-	int            db_error;
-	const char    *id, *lookup_id;
-	char          *vcard_with_rev;
+	gint            db_error;
+	const gchar    *id, *lookup_id;
+	gchar          *vcard_with_rev;
 
 	*contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (*contact, E_CONTACT_UID);
@@ -361,13 +361,13 @@ static EBookBackendSyncStatus
 e_book_backend_file_get_contact (EBookBackendSync *backend,
 				 EDataBook *book,
 				 guint32 opid,
-				 const char *id,
-				 char **vcard)
+				 const gchar *id,
+				 gchar **vcard)
 {
 	EBookBackendFile *bf;
 	DB             *db;
 	DBT             id_dbt, vcard_dbt;
-	int             db_error = 0;
+	gint             db_error = 0;
 
 	bf = E_BOOK_BACKEND_FILE (backend);
 	db = bf->priv->file_db;
@@ -392,17 +392,17 @@ static EBookBackendSyncStatus
 e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				      EDataBook *book,
 				      guint32 opid,
-				      const char *query,
+				      const gchar *query,
 				      GList **contacts)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
 	DBC            *dbc;
-	int            db_error;
+	gint            db_error;
 	DBT  id_dbt, vcard_dbt;
 	EBookBackendSExp *card_sexp = NULL;
 	gboolean search_needed;
-	const char *search = query;
+	const gchar *search = query;
 	GList *contact_list = NULL;
 	EBookBackendSyncStatus status;
 
@@ -412,13 +412,13 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 		/* do a summary query */
 		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
-		int i;
+		gint i;
 
 		if (!ids)
 			return GNOME_Evolution_Addressbook_ContactNotFound;
 
 		for (i = 0; i < ids->len; i ++) {
-			char *id = g_ptr_array_index (ids, i);
+			gchar *id = g_ptr_array_index (ids, i);
 			string_to_dbt (id, &id_dbt);
 			memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 			vcard_dbt.flags = DB_DBT_MALLOC;
@@ -531,10 +531,10 @@ book_view_thread (gpointer data)
 	EDataBookView *book_view;
 	FileBackendSearchClosure *closure;
 	EBookBackendFile *bf;
-	const char *query;
+	const gchar *query;
 	DB  *db;
 	DBT id_dbt, vcard_dbt;
-	int db_error;
+	gint db_error;
 	gboolean allcontacts;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (data), NULL);
@@ -570,13 +570,13 @@ book_view_thread (gpointer data)
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, query)) {
 		/* do a summary query */
 		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, e_data_book_view_get_card_query (book_view));
-		int i;
+		gint i;
 
 		if (!ids)
 			goto done;
 
 		for (i = 0; i < ids->len; i ++) {
-			char *id = g_ptr_array_index (ids, i);
+			gchar *id = g_ptr_array_index (ids, i);
 
 			if (!e_flag_is_set (closure->running))
 				break;
@@ -698,12 +698,12 @@ typedef struct {
 } EBookBackendFileChangeContext;
 
 static void
-e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
+e_book_backend_file_changes_foreach_key (const gchar *key, gpointer user_data)
 {
 	EBookBackendFileChangeContext *ctx = user_data;
 	DB      *db = ctx->db;
 	DBT     id_dbt, vcard_dbt;
-	int     db_error = 0;
+	gint     db_error = 0;
 
 	string_to_dbt (key, &id_dbt);
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
@@ -713,8 +713,8 @@ e_book_backend_file_changes_foreach_key (const char *key, gpointer user_data)
 
 	if (db_error != 0) {
 		EContact *contact;
-		char *id = id_dbt.data;
-		char *vcard_string;
+		gchar *id = id_dbt.data;
+		gchar *vcard_string;
 
 		contact = e_contact_new ();
 		e_contact_set (contact, E_CONTACT_UID, id);
@@ -736,13 +736,13 @@ static EBookBackendSyncStatus
 e_book_backend_file_get_changes (EBookBackendSync *backend,
 				 EDataBook *book,
 				 guint32 opid,
-				 const char *change_id,
+				 const gchar *change_id,
 				 GList **changes_out)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	int     db_error = 0;
+	gint     db_error = 0;
 	DBT     id_dbt, vcard_dbt;
-	char    *filename;
+	gchar    *filename;
 	EDbHash *ehash;
 	GList *i, *v;
 	DB      *db = bf->priv->file_db;
@@ -776,8 +776,8 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 			if (id_dbt.size != strlen(E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 				EContact *contact;
-				char *id = id_dbt.data;
-				char *vcard_string;
+				gchar *id = id_dbt.data;
+				gchar *vcard_string;
 
 				/* Remove fields the user can't change
 				 * and can change without the rest of the
@@ -823,8 +823,8 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	else {
 		/* Update the hash and build our changes list */
 		for (i = ctx.add_ids, v = ctx.add_cards; i != NULL; i = i->next, v = v->next){
-			char *id = i->data;
-			char *vcard = v->data;
+			gchar *id = i->data;
+			gchar *vcard = v->data;
 
 			e_dbhash_add (ehash, id, vcard);
 			changes = g_list_prepend (changes,
@@ -834,8 +834,8 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 			g_free (v->data);
 		}
 		for (i = ctx.mod_ids, v = ctx.mod_cards; i != NULL; i = i->next, v = v->next){
-			char *id = i->data;
-			char *vcard = v->data;
+			gchar *id = i->data;
+			gchar *vcard = v->data;
 
 			e_dbhash_add (ehash, id, vcard);
 			changes = g_list_prepend (changes,
@@ -845,8 +845,8 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 			g_free (v->data);
 		}
 		for (i = ctx.del_ids, v = ctx.del_cards; i != NULL; i = i->next, v = v->next){
-			char *id = i->data;
-			char *vcard = v->data;
+			gchar *id = i->data;
+			gchar *vcard = v->data;
 
 			e_dbhash_remove (ehash, id);
 
@@ -867,8 +867,8 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-static char *
-e_book_backend_file_extract_path_from_uri (const char *uri)
+static gchar *
+e_book_backend_file_extract_path_from_uri (const gchar *uri)
 {
 	g_assert (g_ascii_strncasecmp (uri, "file://", 7) == 0);
 
@@ -879,9 +879,9 @@ static EBookBackendSyncStatus
 e_book_backend_file_authenticate_user (EBookBackendSync *backend,
 				       EDataBook *book,
 				       guint32 opid,
-				       const char *user,
-				       const char *passwd,
-				       const char *auth_method)
+				       const gchar *user,
+				       const gchar *passwd,
+				       const gchar *auth_method)
 {
 	return GNOME_Evolution_Addressbook_Success;
 }
@@ -907,7 +907,7 @@ e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 					  GList **fields_out)
 {
 	GList *fields = NULL;
-	int i;
+	gint i;
 
 	/* XXX we need a way to say "we support everything", since the
 	   file backend does */
@@ -931,10 +931,10 @@ e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 **     came about.
 */
 static gboolean
-e_book_backend_file_upgrade_db (EBookBackendFile *bf, char *old_version)
+e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 {
 	DB  *db = bf->priv->file_db;
-	int db_error;
+	gint db_error;
 	DBT version_name_dbt, version_dbt;
 
 	if (strcmp (old_version, "0.0")
@@ -949,7 +949,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, char *old_version)
                    giving them valid ids if they don't have them */
 		DBT  id_dbt, vcard_dbt;
 		DBC *dbc;
-		int  card_failed = 0;
+		gint  card_failed = 0;
 
 		db_error = db->cursor (db, NULL, &dbc, 0);
 		if (db_error != 0) {
@@ -976,7 +976,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, char *old_version)
 				   so, we need to modify the card to
 				   have the same id as the the dbt. */
 				if (strcmp (id_dbt.data, e_contact_get_const (contact, E_CONTACT_UID))) {
-					char *vcard;
+					gchar *vcard;
 
 					e_contact_set (contact, E_CONTACT_UID, id_dbt.data);
 
@@ -1019,8 +1019,8 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 {
 	DB   *db = bf->priv->file_db;
 	DBT  version_name_dbt, version_dbt;
-	int  db_error;
-	char *version;
+	gint  db_error;
+	gchar *version;
 	gboolean ret_val = TRUE;
 
 	string_to_dbt (E_BOOK_BACKEND_FILE_VERSION_NAME, &version_name_dbt);
@@ -1051,9 +1051,9 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 
 static void
 #if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3
-file_errcall (const DB_ENV *env, const char *buf1, const char *buf2)
+file_errcall (const DB_ENV *env, const gchar *buf1, const gchar *buf2)
 #else
-file_errcall (const char *buf1, char *buf2)
+file_errcall (const gchar *buf1, gchar *buf2)
 #endif
 {
 	g_warning ("libdb error: %s", buf2);
@@ -1066,9 +1066,9 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 				 gboolean                only_if_exists)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	char           *dirname, *filename;
+	gchar           *dirname, *filename;
 	gboolean        writable = FALSE;
-	int             db_error;
+	gint             db_error;
 	DB *db;
 	DB_ENV *env;
 	time_t db_mtime;
@@ -1106,8 +1106,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		env->set_errcall (env, file_errcall);
 
 		/* Set the allocation routines to the non-aborting GLib functions */
-		env->set_alloc (env, (void *(*)(size_t))g_try_malloc,
-				(void *(*)(void *, size_t))g_try_realloc,
+		env->set_alloc (env, (gpointer (*)(size_t))g_try_malloc,
+				(gpointer (*)(gpointer , size_t))g_try_realloc,
 				g_free);
 
 		db_error = (*env->open) (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
@@ -1174,7 +1174,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
-			int rv;
+			gint rv;
 
 			/* the database didn't exist, so we create the
 			   directory then the .db */
@@ -1269,9 +1269,9 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 }
 
 static gboolean
-select_changes (const char *name)
+select_changes (const gchar *name)
 {
-	char *p;
+	gchar *p;
 
 	if (strlen (name) < strlen (CHANGES_DB_SUFFIX))
 		return FALSE;
@@ -1309,11 +1309,11 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 
 	dir = g_dir_open (bf->priv->dirname, 0, NULL);
 	if (dir) {
-		const char *name;
+		const gchar *name;
 
 		while ((name = g_dir_read_name (dir))) {
 			if (select_changes (name)) {
-				char *full_path = g_build_filename (bf->priv->dirname, name, NULL);
+				gchar *full_path = g_build_filename (bf->priv->dirname, name, NULL);
 				if (-1 == g_unlink (full_path)) {
 					g_warning ("failed to remove change db `%s': %s", full_path, g_strerror (errno));
 				}
@@ -1335,7 +1335,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-static char *
+static gchar *
 e_book_backend_file_get_static_capabilities (EBookBackend *backend)
 {
 	return g_strdup("local,do-initial-query,bulk-removes,contact-lists");
@@ -1359,7 +1359,7 @@ static void
 e_book_backend_file_sync (EBookBackend *backend)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	int db_error;
+	gint db_error;
 
 	g_return_if_fail (bf != NULL);
 
@@ -1451,9 +1451,9 @@ e_book_backend_file_finalize (GObject *object)
  */
 
 static int
-my_open (const char *name, int oflag, ...)
+my_open (const gchar *name, gint oflag, ...)
 {
-	int mode = 0;
+	gint mode = 0;
 
 	if (oflag & O_CREAT) {
 		va_list arg;
@@ -1465,14 +1465,14 @@ my_open (const char *name, int oflag, ...)
 	return g_open (name, oflag, mode);
 }
 
-int
-my_rename (const char *oldname, const char *newname)
+gint
+my_rename (const gchar *oldname, const gchar *newname)
 {
 	return g_rename (oldname, newname);
 }
 
-int
-my_exists (const char *name, int *isdirp)
+gint
+my_exists (const gchar *name, gint *isdirp)
 {
 	if (!g_file_test (name, G_FILE_TEST_EXISTS))
 		return ENOENT;
@@ -1481,8 +1481,8 @@ my_exists (const char *name, int *isdirp)
 	return 0;
 }
 
-int
-my_unlink (const char *name)
+gint
+my_unlink (const gchar *name)
 {
 	return g_unlink (name);
 }

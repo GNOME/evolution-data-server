@@ -62,14 +62,14 @@ struct _CamelHttpStream {
 	struct _CamelSession *session;
 	CamelURL *url;
 
-	char *user_agent;
+	gchar *user_agent;
 
 	/* proxy info */
 	CamelURL *proxy;
-	char *authrealm;
-	char *authpass;
+	gchar *authrealm;
+	gchar *authpass;
 
-	int statuscode;
+	gint statuscode;
 
 	CamelStream *raw;
 	CamelStream *read;
@@ -87,11 +87,11 @@ CamelType camel_http_stream_get_type (void);
 /* public methods */
 CamelStream *camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, CamelURL *url);
 
-void camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const char *user_agent);
+void camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const gchar *user_agent);
 
-void camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url);
-void camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const char *proxy_authrealm);
-void camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream, const char *proxy_authpass);
+void camel_http_stream_set_proxy (CamelHttpStream *http_stream, const gchar *proxy_url);
+void camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const gchar *proxy_authrealm);
+void camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream, const gchar *proxy_authpass);
 
 CamelContentType *camel_http_stream_get_content_type (CamelHttpStream *http_stream);
 

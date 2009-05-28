@@ -57,13 +57,13 @@ struct _CamelLocalFolder {
 
 	guint32 flags;		/* open mode flags */
 
-	int locked;		/* lock counter */
+	gint locked;		/* lock counter */
 	CamelLockType locktype;	/* what type of lock we have */
 
-	char *base_path;	/* base path of the local folder */
-	char *folder_path;	/* the path to the folder itself */
-	char *summary_path;	/* where the summary lives */
-	char *index_path;	/* where the index file lives */
+	gchar *base_path;	/* base path of the local folder */
+	gchar *folder_path;	/* the path to the folder itself */
+	gchar *summary_path;	/* where the summary lives */
+	gchar *index_path;	/* where the index file lives */
 
 	CamelIndex *index;	   /* index for this folder */
 	CamelFolderSearch *search; /* used to run searches, we just use the real thing (tm) */
@@ -76,10 +76,10 @@ struct _CamelLocalFolderClass {
 	/* Virtual methods */
 
 	/* summary factory, only used at init */
-	CamelLocalSummary *(*create_summary)(CamelLocalFolder *lf, const char *path, const char *folder, CamelIndex *index);
+	CamelLocalSummary *(*create_summary)(CamelLocalFolder *lf, const gchar *path, const gchar *folder, CamelIndex *index);
 
 	/* Lock the folder for my operations */
-	int (*lock)(CamelLocalFolder *, CamelLockType type, CamelException *ex);
+	gint (*lock)(CamelLocalFolder *, CamelLockType type, CamelException *ex);
 
 	/* Unlock the folder for my operations */
 	void (*unlock)(CamelLocalFolder *);
@@ -89,15 +89,15 @@ struct _CamelLocalFolderClass {
 /* public methods */
 /* flags are taken from CAMEL_STORE_FOLDER_* flags */
 CamelLocalFolder *camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store,
-					       const char *full_name, guint32 flags, CamelException *ex);
+					       const gchar *full_name, guint32 flags, CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_local_folder_get_type(void);
 
 /* Lock the folder for internal use.  May be called repeatedly */
 /* UNIMPLEMENTED */
-int camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
-int camel_local_folder_unlock(CamelLocalFolder *lf);
+gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
+gint camel_local_folder_unlock(CamelLocalFolder *lf);
 
 G_END_DECLS
 

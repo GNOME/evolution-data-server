@@ -71,7 +71,7 @@ static void
 update_preview (GtkFileChooser *chooser, gpointer user_data)
 {
 	GtkImage *image;
-	char *filename;
+	gchar *filename;
 
 	g_return_if_fail (chooser != NULL);
 
@@ -90,7 +90,7 @@ static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
 	CategoryPropertiesDialog *prop_dialog;
-	char *gladefile;
+	gchar *gladefile;
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
 
@@ -224,7 +224,7 @@ add_comma_sep_categories (gpointer key, gpointer value, gpointer user_data)
 	if (strlen ((*str)->str) > 0)
 		*str = g_string_append (*str, ", ");
 
-	*str = g_string_append (*str, (const char *) key);
+	*str = g_string_append (*str, (const gchar *) key);
 }
 
 static void
@@ -275,11 +275,11 @@ entry_changed_cb (GtkEditable *editable, gpointer user_data)
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
 }
 
-static char *
-check_category_name (const char *name)
+static gchar *
+check_category_name (const gchar *name)
 {
 	GString *str = NULL;
-	char *p = (char *) name;
+	gchar *p = (gchar *) name;
 
 	str = g_string_new ("");
 	while (*p) {
@@ -312,8 +312,8 @@ new_button_clicked_cb (GtkButton *button, gpointer user_data)
 
 	do {
 		if (gtk_dialog_run (GTK_DIALOG (prop_dialog->the_dialog)) == GTK_RESPONSE_OK) {
-			const char *category_name;
-			char *correct_category_name;
+			const gchar *category_name;
+			gchar *correct_category_name;
 
 			category_name = gtk_entry_get_text (GTK_ENTRY (prop_dialog->category_name));
 			correct_category_name = check_category_name (category_name);
@@ -360,8 +360,8 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 	GtkTreeModel *model;
 	GtkTreeView *tree_view;
 	GList *selected;
-	char *category_name;
-	const char *icon_file;
+	gchar *category_name;
+	const gchar *icon_file;
 
 	dialog = user_data;
 	priv = dialog->priv;
@@ -552,7 +552,7 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	GtkTreeView *tree_view;
 	GtkWidget *main_widget;
 	GtkWidget *content_area;
-	char *gladefile;
+	gchar *gladefile;
 
 	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
 	dialog->priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -666,7 +666,7 @@ e_categories_dialog_get_type (void)
  * Returns: a new #ECategoriesDialog
  **/
 GtkWidget *
-e_categories_dialog_new (const char *categories)
+e_categories_dialog_new (const gchar *categories)
 {
 	ECategoriesDialog *dialog;
 
@@ -726,7 +726,7 @@ e_categories_dialog_set_categories (ECategoriesDialog *dialog,
 
 	arr = g_strsplit (categories, ",", 0);
 	if (arr) {
-		int i = 0;
+		gint i = 0;
 		while (arr[i] != NULL) {
 			g_hash_table_insert (priv->selected_categories, g_strdup (arr[i]), g_strdup (arr[i]));
 			i++;
@@ -741,7 +741,7 @@ e_categories_dialog_set_categories (ECategoriesDialog *dialog,
 	model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->categories_list));
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		do {
-			char *place_string;
+			gchar *place_string;
 
 			gtk_tree_model_get (model, &iter, COLUMN_CATEGORY, &place_string, -1);
 			if (g_hash_table_lookup (priv->selected_categories, place_string))

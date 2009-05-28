@@ -31,17 +31,17 @@
 #include "e2k-utils.h"
 #include "mapi.h"
 
-static const char *contains_types[] = { NULL, "contains", NULL, NULL, NULL, "not contains", NULL, NULL };
-static const char *subject_types[] = { "is", "contains", "starts with", NULL, "is not", "not contains", "not starts with", NULL };
+static const gchar *contains_types[] = { NULL, "contains", NULL, NULL, NULL, "not contains", NULL, NULL };
+static const gchar *subject_types[] = { "is", "contains", "starts with", NULL, "is not", "not contains", "not starts with", NULL };
 #define E2K_FL_NEGATE 4
 #define E2K_FL_MAX 8
 
 #if 0
 static gboolean
-fuzzy_level_from_name (const char *name, const char *map[],
-		       int *fuzzy_level, gboolean *negated)
+fuzzy_level_from_name (const gchar *name, const gchar *map[],
+		       gint *fuzzy_level, gboolean *negated)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < E2K_FL_MAX; i++) {
 		if (map[i] && !strcmp (name, map[i])) {
@@ -55,8 +55,8 @@ fuzzy_level_from_name (const char *name, const char *map[],
 }
 #endif
 
-static inline const char *
-fuzzy_level_to_name (int fuzzy_level, gboolean negated, const char *map[])
+static inline const gchar *
+fuzzy_level_to_name (gint fuzzy_level, gboolean negated, const gchar *map[])
 {
 	fuzzy_level = E2K_FL_MATCH_TYPE (fuzzy_level);
 	if (negated)
@@ -65,16 +65,16 @@ fuzzy_level_to_name (int fuzzy_level, gboolean negated, const char *map[])
 	return map[fuzzy_level];
 }
 
-static const char *is_types[] = { NULL, NULL, NULL, NULL, "is", "is not" };
-static const char *date_types[] = { "before", "before", "after", "after", NULL, NULL };
-static const char *size_types[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
+static const gchar *is_types[] = { NULL, NULL, NULL, NULL, "is", "is not" };
+static const gchar *date_types[] = { "before", "before", "after", "after", NULL, NULL };
+static const gchar *size_types[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
 
 #if 0
 static gboolean
-relop_from_name (const char *name, const char *map[],
+relop_from_name (const gchar *name, const gchar *map[],
 		 E2kRestrictionRelop *relop)
 {
-	int i;
+	gint i;
 
 	for (i = 0; i < E2K_RELOP_RE; i++) {
 		if (map[i] && !strcmp (name, map[i])) {
@@ -87,10 +87,10 @@ relop_from_name (const char *name, const char *map[],
 }
 #endif
 
-static inline const char *
-relop_to_name (E2kRestrictionRelop relop, gboolean negated, const char *map[])
+static inline const gchar *
+relop_to_name (E2kRestrictionRelop relop, gboolean negated, const gchar *map[])
 {
-	static const int negate_map[] = {
+	static const gint negate_map[] = {
 		E2K_RELOP_GE, E2K_RELOP_GT, E2K_RELOP_LE, E2K_RELOP_LT,
 		E2K_RELOP_NE, E2K_RELOP_EQ
 	};
@@ -179,7 +179,7 @@ restriction_is_delegation (E2kRestriction *rn)
 }
 
 static xmlNode *
-new_value (xmlNode *part, const char *name, const char *type, const char *value)
+new_value (xmlNode *part, const gchar *name, const gchar *type, const gchar *value)
 {
 	xmlNode *node;
 
@@ -193,11 +193,11 @@ new_value (xmlNode *part, const char *name, const char *type, const char *value)
 }
 
 static xmlNode *
-new_value_int (xmlNode *part, const char *name, const char *type,
-	       const char *value_name, long value)
+new_value_int (xmlNode *part, const gchar *name, const gchar *type,
+	       const gchar *value_name, long value)
 {
 	xmlNode *node;
-	char *str;
+	gchar *str;
 
 	node = xmlNewChild (part, NULL, "value", NULL);
 	xmlSetProp (node, "name", name);
@@ -211,7 +211,7 @@ new_value_int (xmlNode *part, const char *name, const char *type,
 }
 
 static xmlNode *
-new_part (const char *part_name)
+new_part (const gchar *part_name)
 {
 	xmlNode *part;
 
@@ -221,8 +221,8 @@ new_part (const char *part_name)
 }
 
 static xmlNode *
-match (const char *part_name, const char *value_name, const char *value_value,
-       const char *string_name, const char *string_value)
+match (const gchar *part_name, const gchar *value_name, const gchar *value_value,
+       const gchar *string_name, const gchar *string_value)
 {
 	xmlNode *part, *value;
 
@@ -235,8 +235,8 @@ match (const char *part_name, const char *value_name, const char *value_value,
 }
 
 static xmlNode *
-message_is (const char *name, const char *type_name,
-	    const char *kind, gboolean negated)
+message_is (const gchar *name, const gchar *type_name,
+	    const gchar *kind, gboolean negated)
 {
 	xmlNode *part;
 
@@ -253,10 +253,10 @@ address_is (E2kRestriction *comment_rn, gboolean recipients, gboolean negated)
 	xmlNode *part;
 	E2kRestriction *rn;
 	E2kPropValue *pv;
-	const char *relation, *display_name, *p;
-	char *addr, *full_addr;
+	const gchar *relation, *display_name, *p;
+	gchar *addr, *full_addr;
 	GByteArray *ba;
-	int i;
+	gint i;
 
 	rn = comment_rn->res.comment.rn;
 	if (rn->type != E2K_RESTRICTION_PROPERTY ||
@@ -274,11 +274,11 @@ address_is (E2kRestriction *comment_rn, gboolean recipients, gboolean negated)
 
 	/* Extract the address part */
 	ba = pv->value;
-	p = strchr ((char *)ba->data, ':');
+	p = strchr ((gchar *)ba->data, ':');
 	if (p)
 		addr = g_ascii_strdown (p + 1, -1);
 	else
-		addr = g_ascii_strdown ((char *)ba->data, -1);
+		addr = g_ascii_strdown ((gchar *)ba->data, -1);
 
 	/* Find the display name in the comment */
 	display_name = NULL;
@@ -314,8 +314,8 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 {
 	xmlNode *part, *value, *node;
 	E2kPropValue *pv;
-	const char *match_type;
-	int i;
+	const gchar *match_type;
+	gint i;
 
 	switch (rn->type) {
 	case E2K_RESTRICTION_AND:
@@ -371,7 +371,7 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 
 	case E2K_RESTRICTION_CONTENT:
 	{
-		int fuzzy_level = E2K_FL_MATCH_TYPE (rn->res.content.fuzzy_level);
+		gint fuzzy_level = E2K_FL_MATCH_TYPE (rn->res.content.fuzzy_level);
 
 		pv = &rn->res.content.pv;
 
@@ -431,7 +431,7 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 	case E2K_RESTRICTION_PROPERTY:
 	{
 		E2kRestrictionRelop relop;
-		const char *relation;
+		const gchar *relation;
 
 		relop = rn->res.property.relop;
 		if (relop >= E2K_RELOP_RE)
@@ -463,7 +463,7 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 		case E2K_PROPTAG_PR_MESSAGE_DELIVERY_TIME:
 		case E2K_PROPTAG_PR_CLIENT_SUBMIT_TIME:
 		{
-			char *timestamp;
+			gchar *timestamp;
 
 			relation = relop_to_name (relop, negated, date_types);
 			if (!relation)
@@ -570,12 +570,12 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 }
 
 
-static char *
-stringify_entryid (guint8 *data, int len)
+static gchar *
+stringify_entryid (guint8 *data, gint len)
 {
 	GString *string;
-	char *ret;
-	int i;
+	gchar *ret;
+	gint i;
 
 	string = g_string_new (NULL);
 
@@ -595,7 +595,7 @@ static gboolean
 action_to_xml (E2kAction *act, xmlNode *actionset)
 {
 	xmlNode *part, *value;
-	char *entryid;
+	gchar *entryid;
 
 	switch (act->type) {
 	case E2K_ACTION_MOVE:
@@ -642,12 +642,12 @@ action_to_xml (E2kAction *act, xmlNode *actionset)
 	case E2K_ACTION_FORWARD:
 	case E2K_ACTION_DELEGATE:
 	{
-		int i, j;
+		gint i, j;
 		E2kAddrList *list;
 		E2kAddrEntry *entry;
 		E2kPropValue *pv;
-		const char *display_name, *email;
-		char *full_addr;
+		const gchar *display_name, *email;
+		gchar *full_addr;
 
 		list = act->act.addr_list;
 		for (i = 0; i < list->nentries; i++) {
@@ -708,7 +708,7 @@ rule_to_xml (E2kRule *rule, xmlNode *ruleset)
 {
 	xmlNode *top, *set;
 	E2kRestriction *rn;
-	int i;
+	gint i;
 
 	top = xmlNewChild (ruleset, NULL, "rule", NULL);
 
@@ -772,7 +772,7 @@ e2k_rules_to_xml (E2kRules *rules)
 {
 	xmlDoc *doc;
 	xmlNode *top, *ruleset;
-	int i;
+	gint i;
 
 	doc = xmlNewDoc (NULL);
 	top = xmlNewNode (NULL, "filteroptions");

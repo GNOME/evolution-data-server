@@ -191,7 +191,7 @@ e_account_new (void)
  * if @xml could not be parsed as valid account data.
  **/
 EAccount *
-e_account_new_from_xml (const char *xml)
+e_account_new_from_xml (const gchar *xml)
 {
 	EAccount *account;
 
@@ -206,13 +206,13 @@ e_account_new_from_xml (const char *xml)
 
 
 static gboolean
-xml_set_bool (xmlNodePtr node, const char *name, gboolean *val)
+xml_set_bool (xmlNodePtr node, const gchar *name, gboolean *val)
 {
 	gboolean bool;
 	xmlChar *buf;
 
 	if ((buf = xmlGetProp (node, (xmlChar*)name))) {
-		bool = (!strcmp ((char*)buf, "true") || !strcmp ((char*)buf, "yes"));
+		bool = (!strcmp ((gchar *)buf, "true") || !strcmp ((gchar *)buf, "yes"));
 		xmlFree (buf);
 
 		if (bool != *val) {
@@ -225,13 +225,13 @@ xml_set_bool (xmlNodePtr node, const char *name, gboolean *val)
 }
 
 static gboolean
-xml_set_int (xmlNodePtr node, const char *name, int *val)
+xml_set_int (xmlNodePtr node, const gchar *name, gint *val)
 {
-	int number;
+	gint number;
 	xmlChar *buf;
 
 	if ((buf = xmlGetProp (node, (xmlChar*)name))) {
-		number = strtol ((char*)buf, NULL, 10);
+		number = strtol ((gchar *)buf, NULL, 10);
 		xmlFree (buf);
 
 		if (number != *val) {
@@ -244,10 +244,10 @@ xml_set_int (xmlNodePtr node, const char *name, int *val)
 }
 
 static gboolean
-xml_set_prop (xmlNodePtr node, const char *name, char **val)
+xml_set_prop (xmlNodePtr node, const gchar *name, gchar **val)
 {
 	xmlChar *buf;
-	int res;
+	gint res;
 
 	buf = xmlGetProp (node, (xmlChar*)name);
 	if (buf == NULL) {
@@ -257,10 +257,10 @@ xml_set_prop (xmlNodePtr node, const char *name, char **val)
 			*val = NULL;
 		}
 	} else {
-		res = *val == NULL || strcmp(*val, (char*)buf) != 0;
+		res = *val == NULL || strcmp(*val, (gchar *)buf) != 0;
 		if (res) {
 			g_free(*val);
-			*val = g_strdup((char*)buf);
+			*val = g_strdup((gchar *)buf);
 		}
 		xmlFree(buf);
 	}
@@ -271,9 +271,9 @@ xml_set_prop (xmlNodePtr node, const char *name, char **val)
 static EAccountReceiptPolicy
 str_to_receipt_policy (const xmlChar *str)
 {
-	if (!strcmp ((char*)str, "ask"))
+	if (!strcmp ((gchar *)str, "ask"))
 		return E_ACCOUNT_RECEIPT_ASK;
-	if (!strcmp ((char*)str, "always"))
+	if (!strcmp ((gchar *)str, "always"))
 		return E_ACCOUNT_RECEIPT_ALWAYS;
 
 	return E_ACCOUNT_RECEIPT_NEVER;
@@ -282,7 +282,7 @@ str_to_receipt_policy (const xmlChar *str)
 static xmlChar*
 receipt_policy_to_str (EAccountReceiptPolicy val)
 {
-	const char *ret = NULL;
+	const gchar *ret = NULL;
 
 	switch (val) {
 	case E_ACCOUNT_RECEIPT_NEVER:
@@ -300,7 +300,7 @@ receipt_policy_to_str (EAccountReceiptPolicy val)
 }
 
 static gboolean
-xml_set_receipt_policy (xmlNodePtr node, const char *name, EAccountReceiptPolicy *val)
+xml_set_receipt_policy (xmlNodePtr node, const gchar *name, EAccountReceiptPolicy *val)
 {
 	EAccountReceiptPolicy new_val;
 	xmlChar *buf;
@@ -319,10 +319,10 @@ xml_set_receipt_policy (xmlNodePtr node, const char *name, EAccountReceiptPolicy
 }
 
 static gboolean
-xml_set_content (xmlNodePtr node, char **val)
+xml_set_content (xmlNodePtr node, gchar **val)
 {
 	xmlChar *buf;
-	int res;
+	gint res;
 
 	buf = xmlNodeGetContent(node);
 	if (buf == NULL) {
@@ -332,10 +332,10 @@ xml_set_content (xmlNodePtr node, char **val)
 			*val = NULL;
 		}
 	} else {
-		res = *val == NULL || strcmp(*val, (char*)buf) != 0;
+		res = *val == NULL || strcmp(*val, (gchar *)buf) != 0;
 		if (res) {
 			g_free(*val);
-			*val = g_strdup((char*)buf);
+			*val = g_strdup((gchar *)buf);
 		}
 		xmlFree(buf);
 	}
@@ -349,15 +349,15 @@ xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
 	gboolean changed = FALSE;
 
 	for (node = node->children; node; node = node->next) {
-		if (!strcmp ((char*)node->name, "name"))
+		if (!strcmp ((gchar *)node->name, "name"))
 			changed |= xml_set_content (node, &id->name);
-		else if (!strcmp ((char*)node->name, "addr-spec"))
+		else if (!strcmp ((gchar *)node->name, "addr-spec"))
 			changed |= xml_set_content (node, &id->address);
-		else if (!strcmp ((char*)node->name, "reply-to"))
+		else if (!strcmp ((gchar *)node->name, "reply-to"))
 			changed |= xml_set_content (node, &id->reply_to);
-		else if (!strcmp ((char*)node->name, "organization"))
+		else if (!strcmp ((gchar *)node->name, "organization"))
 			changed |= xml_set_content (node, &id->organization);
-		else if (!strcmp ((char*)node->name, "signature")) {
+		else if (!strcmp ((gchar *)node->name, "signature")) {
 			changed |= xml_set_prop (node, "uid", &id->sig_uid);
 			if (!id->sig_uid) {
 
@@ -365,7 +365,7 @@ xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
 
 				/* set a fake sig uid so the migrate code can handle this */
 				gboolean autogen = FALSE;
-				int sig_id = 0;
+				gint sig_id = 0;
 
 				xml_set_bool (node, "auto", &autogen);
 				xml_set_int (node, "default", &sig_id);
@@ -400,7 +400,7 @@ xml_set_service (xmlNodePtr node, EAccountService *service)
 	}
 
 	for (node = node->children; node; node = node->next) {
-		if (!strcmp ((char*)node->name, "url")) {
+		if (!strcmp ((gchar *)node->name, "url")) {
 			changed |= xml_set_content (node, &service->url);
 			break;
 		}
@@ -420,7 +420,7 @@ xml_set_service (xmlNodePtr node, EAccountService *service)
  * already matched @xml or @xml could not be parsed
  **/
 gboolean
-e_account_set_from_xml (EAccount *account, const char *xml)
+e_account_set_from_xml (EAccount *account, const gchar *xml)
 {
 	xmlNodePtr node, cur;
 	xmlDocPtr doc;
@@ -430,7 +430,7 @@ e_account_set_from_xml (EAccount *account, const char *xml)
 		return FALSE;
 
 	node = doc->children;
-	if (strcmp ((char*)node->name, "account") != 0) {
+	if (strcmp ((gchar *)node->name, "account") != 0) {
 		xmlFreeDoc (doc);
 		return FALSE;
 	}
@@ -442,25 +442,25 @@ e_account_set_from_xml (EAccount *account, const char *xml)
 	changed |= xml_set_bool (node, "enabled", &account->enabled);
 
 	for (node = node->children; node; node = node->next) {
-		if (!strcmp ((char*)node->name, "identity")) {
+		if (!strcmp ((gchar *)node->name, "identity")) {
 			changed |= xml_set_identity (node, account->id);
-		} else if (!strcmp ((char*)node->name, "source")) {
+		} else if (!strcmp ((gchar *)node->name, "source")) {
 			changed |= xml_set_service (node, account->source);
-		} else if (!strcmp ((char*)node->name, "transport")) {
+		} else if (!strcmp ((gchar *)node->name, "transport")) {
 			changed |= xml_set_service (node, account->transport);
-		} else if (!strcmp ((char*)node->name, "drafts-folder")) {
+		} else if (!strcmp ((gchar *)node->name, "drafts-folder")) {
 			changed |= xml_set_content (node, &account->drafts_folder_uri);
-		} else if (!strcmp ((char*)node->name, "sent-folder")) {
+		} else if (!strcmp ((gchar *)node->name, "sent-folder")) {
 			changed |= xml_set_content (node, &account->sent_folder_uri);
-		} else if (!strcmp ((char*)node->name, "auto-cc")) {
+		} else if (!strcmp ((gchar *)node->name, "auto-cc")) {
 			changed |= xml_set_bool (node, "always", &account->always_cc);
 			changed |= xml_set_content (node, &account->cc_addrs);
-		} else if (!strcmp ((char*)node->name, "auto-bcc")) {
+		} else if (!strcmp ((gchar *)node->name, "auto-bcc")) {
 			changed |= xml_set_bool (node, "always", &account->always_bcc);
 			changed |= xml_set_content (node, &account->bcc_addrs);
-		} else if (!strcmp ((char*)node->name, "receipt-policy")) {
+		} else if (!strcmp ((gchar *)node->name, "receipt-policy")) {
 			changed |= xml_set_receipt_policy (node, "policy", &account->receipt_policy);
-		} else if (!strcmp ((char*)node->name, "pgp")) {
+		} else if (!strcmp ((gchar *)node->name, "pgp")) {
 			changed |= xml_set_bool (node, "encrypt-to-self", &account->pgp_encrypt_to_self);
 			changed |= xml_set_bool (node, "always-trust", &account->pgp_always_trust);
 			changed |= xml_set_bool (node, "always-sign", &account->pgp_always_sign);
@@ -468,31 +468,31 @@ e_account_set_from_xml (EAccount *account, const char *xml)
 
 			if (node->children) {
 				for (cur = node->children; cur; cur = cur->next) {
-					if (!strcmp ((char*)cur->name, "key-id")) {
+					if (!strcmp ((gchar *)cur->name, "key-id")) {
 						changed |= xml_set_content (cur, &account->pgp_key);
 						break;
 					}
 				}
 			}
-		} else if (!strcmp ((char*)node->name, "smime")) {
+		} else if (!strcmp ((gchar *)node->name, "smime")) {
 			changed |= xml_set_bool (node, "sign-default", &account->smime_sign_default);
 			changed |= xml_set_bool (node, "encrypt-to-self", &account->smime_encrypt_to_self);
 			changed |= xml_set_bool (node, "encrypt-default", &account->smime_encrypt_default);
 
 			if (node->children) {
 				for (cur = node->children; cur; cur = cur->next) {
-					if (!strcmp ((char*)cur->name, "sign-key-id")) {
+					if (!strcmp ((gchar *)cur->name, "sign-key-id")) {
 						changed |= xml_set_content (cur, &account->smime_sign_key);
-					} else if (!strcmp ((char*)cur->name, "encrypt-key-id")) {
+					} else if (!strcmp ((gchar *)cur->name, "encrypt-key-id")) {
 						changed |= xml_set_content (cur, &account->smime_encrypt_key);
 						break;
 					}
 				}
 			}
-		} else if (!strcmp ((char*)node->name, "proxy")) {
+		} else if (!strcmp ((gchar *)node->name, "proxy")) {
 			if (node->children) {
 				for (cur = node->children; cur; cur = cur->next) {
-					if (!strcmp ((char*)cur->name, "parent-uid")) {
+					if (!strcmp ((gchar *)cur->name, "parent-uid")) {
 						changed |= xml_set_content (cur, &account->parent_uid);
 						break;
 					}
@@ -588,14 +588,14 @@ e_account_import (EAccount *dest, EAccount *src)
  * Return value: an XML representation of @account, which the caller
  * must free.
  **/
-char *
+gchar *
 e_account_to_xml (EAccount *account)
 {
 	xmlNodePtr root, node, id, src, xport;
-	char *tmp, buf[20];
+	gchar *tmp, buf[20];
 	xmlChar *xmlbuf;
 	xmlDocPtr doc;
-	int n;
+	gint n;
 
 	doc = xmlNewDoc ((xmlChar*)"1.0");
 
@@ -692,18 +692,18 @@ e_account_to_xml (EAccount *account)
  * (or %NULL if @xml could not be parsed or did not contain a uid).
  * The caller must free this string.
  **/
-char *
-e_account_uid_from_xml (const char *xml)
+gchar *
+e_account_uid_from_xml (const gchar *xml)
 {
 	xmlNodePtr node;
 	xmlDocPtr doc;
-	char *uid = NULL;
+	gchar *uid = NULL;
 
 	if (!(doc = xmlParseDoc ((xmlChar *)xml)))
 		return NULL;
 
 	node = doc->children;
-	if (strcmp ((char*)node->name, "account") != 0) {
+	if (strcmp ((gchar *)node->name, "account") != 0) {
 		xmlFreeDoc (doc);
 		return NULL;
 	}
@@ -730,7 +730,7 @@ enum {
 };
 
 static struct _system_info {
-	const char *key;
+	const gchar *key;
 	guint32 perm;
 } system_perms[] = {
 	{ "imap_subscribed", 1<<EAP_IMAP_SUBSCRIBED },
@@ -756,8 +756,8 @@ static struct _system_info {
 static struct _account_info {
 	guint32 perms;
 	guint32 type;
-	unsigned int offset;
-	unsigned int struct_offset;
+	guint offset;
+	guint struct_offset;
 } account_info[E_ACCOUNT_ITEM_LAST] = {
 	{ /* E_ACCOUNT_NAME */ 0, TYPE_STRING, G_STRUCT_OFFSET(EAccount, name) },
 
@@ -807,7 +807,7 @@ static GHashTable *ea_system_table;
 static guint32 ea_perms;
 
 static struct _option_info {
-	const char *key;
+	const gchar *key;
 	guint32 perms;
 } ea_option_list[] = {
 	{ "imap_use_lsub", 1<<EAP_IMAP_SUBSCRIBED },
@@ -822,10 +822,10 @@ static struct _option_info {
 #define LOCK_BASE "/apps/evolution/lock/mail/accounts"
 
 static void
-ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, void *crap)
+ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, gpointer crap)
 {
 	GConfValue *value;
-	char *tkey;
+	gchar *tkey;
 	struct _system_info *info;
 
 	g_return_if_fail (gconf_entry_get_key (entry) != NULL);
@@ -851,8 +851,8 @@ ea_setting_setup (void)
 	GConfClient *gconf = gconf_client_get_default();
 	GConfEntry *entry;
 	GError *err = NULL;
-	int i;
-	char key[64];
+	gint i;
+	gchar key[64];
 
 	if (ea_option_table != NULL)
 		return;
@@ -865,7 +865,7 @@ ea_setting_setup (void)
 
 	ea_system_table = g_hash_table_new(g_str_hash, g_str_equal);
 	for (i=0;i<sizeof(system_perms)/sizeof(system_perms[0]);i++) {
-		g_hash_table_insert(ea_system_table, (char *)system_perms[i].key, &system_perms[i]);
+		g_hash_table_insert(ea_system_table, (gchar *)system_perms[i].key, &system_perms[i]);
 		sprintf(key, LOCK_BASE "/%s", system_perms[i].key);
 		entry = gconf_client_get_entry(gconf, key, NULL, TRUE, &err);
 		if (entry) {
@@ -886,21 +886,21 @@ ea_setting_setup (void)
 /* look up the item in the structure or the substructure using our table of reflection data */
 #define addr(ea, type) \
 	((account_info[type].type & TYPE_STRUCT)? \
-	(((char **)(((char *)ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
-	(((char *)ea)+account_info[type].offset))
+	(((gchar **)(((gchar *)ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
+	(((gchar *)ea)+account_info[type].offset))
 
-const char*
+const gchar *
 e_account_get_string (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, NULL);
-	return *((const char **)addr(ea, type));
+	return *((const gchar **)addr(ea, type));
 }
 
-int
+gint
 e_account_get_int (EAccount *ea, e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, 0);
-	return *((int *)addr(ea, type));
+	return *((gint *)addr(ea, type));
 }
 
 gboolean
@@ -914,7 +914,7 @@ e_account_get_bool (EAccount *ea, e_account_item_t type)
 static void
 dump_account (EAccount *ea)
 {
-	char *xml;
+	gchar *xml;
 
 	printf("Account changed\n");
 	xml = e_account_to_xml(ea);
@@ -925,16 +925,16 @@ dump_account (EAccount *ea)
 
 /* TODO: should it return true if it changed? */
 void
-e_account_set_string (EAccount *ea, e_account_item_t type, const char *val)
+e_account_set_string (EAccount *ea, e_account_item_t type, const gchar *val)
 {
-	char **p;
+	gchar **p;
 
 	g_return_if_fail (ea != NULL);
 
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		p = (char **)addr(ea, type);
+		p = (gchar **)addr(ea, type);
 		d(printf("Setting string %d: old '%s' new '%s'\n", type, *p, val));
 		if (*p != val
 		    && (*p == NULL || val == NULL || strcmp(*p, val) != 0)) {
@@ -947,14 +947,14 @@ e_account_set_string (EAccount *ea, e_account_item_t type, const char *val)
 }
 
 void
-e_account_set_int (EAccount *ea, e_account_item_t type, int val)
+e_account_set_int (EAccount *ea, e_account_item_t type, gint val)
 {
 	g_return_if_fail (ea != NULL);
 
 	if (!e_account_writable(ea, type)) {
 		g_warning("Trying to set non-writable option account value");
 	} else {
-		int *p = (int *)addr(ea, type);
+		gint *p = (gint *)addr(ea, type);
 
 		if (*p != val) {
 			*p = val;
@@ -983,9 +983,9 @@ e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
 }
 
 gboolean
-e_account_writable_option (EAccount *ea, const char *protocol, const char *option)
+e_account_writable_option (EAccount *ea, const gchar *protocol, const gchar *option)
 {
-	char *key;
+	gchar *key;
 	struct _option_info *info;
 
 	ea_setting_setup();

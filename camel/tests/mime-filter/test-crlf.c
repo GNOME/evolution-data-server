@@ -25,23 +25,23 @@ enum {
 	CRLF_DONE
 };
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	CamelStream *source;
 	CamelStream *correct;
 	CamelStreamFilter *filter;
 	CamelMimeFilter *sh;
-	char *work;
-	int i;
+	gchar *work;
+	gint i;
 	ssize_t comp_progress, comp_correct_chunk, comp_filter_chunk;
-	int comp_i;
-	char comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
+	gint comp_i;
+	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
 
 	camel_test_init(argc, argv);
 
 	for (i = 0; i < NUM_CASES; i++) {
-		int j;
+		gint j;
 
 		work = g_strdup_printf ("CRLF/DOT filter, test case %d", i);
 		camel_test_start (work);
@@ -49,7 +49,7 @@ main (int argc, char **argv)
 
 		for (j = CRLF_ENCODE; j < CRLF_DONE; j++) {
 			CamelMimeFilterCRLFDirection direction;
-			char *infile = NULL, *outfile = NULL;
+			gchar *infile = NULL, *outfile = NULL;
 
 			switch (j) {
 			case CRLF_ENCODE:

@@ -91,12 +91,12 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	GChecksum *checksum;
 	guint8 *digest;
 	gsize length;
-	char *passwd;
+	gchar *passwd;
 	const gchar *hex;
 	GByteArray *ret = NULL;
 	guchar ipad[64];
 	guchar opad[64];
-	int i, pw_len;
+	gint i, pw_len;
 
 	/* Need to wait for the server */
 	if (!token)

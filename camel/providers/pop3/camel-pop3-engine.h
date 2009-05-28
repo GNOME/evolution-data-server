@@ -75,7 +75,7 @@ enum {
 	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1<<0
 };
 
-typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data);
+typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data);
 
 struct _CamelPOP3Command {
 	struct _CamelPOP3Command *next;
@@ -85,10 +85,10 @@ struct _CamelPOP3Command {
 	camel_pop3_command_t state;
 
 	CamelPOP3CommandFunc func;
-	void *func_data;
+	gpointer func_data;
 
-	int data_size;
-	char *data;
+	gint data_size;
+	gchar *data;
 };
 
 struct _CamelPOP3Engine {
@@ -101,14 +101,14 @@ struct _CamelPOP3Engine {
 	GList *auth;		/* authtypes supported */
 
 	guint32 capa;		/* capabilities */
-	char *apop;		/* apop time string */
+	gchar *apop;		/* apop time string */
 
-	unsigned char *line;	/* current line buffer */
-	unsigned int linelen;
+	guchar *line;	/* current line buffer */
+	guint linelen;
 
 	struct _CamelPOP3Stream *stream;
 
-	unsigned int sentlen;	/* data sent (so we dont overflow network buffer) */
+	guint sentlen;	/* data sent (so we dont overflow network buffer) */
 
 	CamelDList active;	/* active commands */
 	CamelDList queue;	/* queue of waiting commands */
@@ -131,7 +131,7 @@ void              camel_pop3_engine_command_free(CamelPOP3Engine *pe, CamelPOP3C
 
 int		  camel_pop3_engine_iterate	(CamelPOP3Engine *pe, CamelPOP3Command *pc);
 
-CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, void *data, const char *fmt, ...);
+CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, const gchar *fmt, ...);
 
 G_END_DECLS
 

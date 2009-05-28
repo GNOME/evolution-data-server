@@ -71,7 +71,7 @@ struct _CamelMimeParser {
 struct _CamelMimeParserClass {
 	CamelObjectClass parent_class;
 
-	void (*message) (CamelMimeParser *parser, void *headers);
+	void (*message) (CamelMimeParser *parser, gpointer headers);
 	void (*part) (CamelMimeParser *parser);
 	void (*content) (CamelMimeParser *parser);
 };
@@ -83,7 +83,7 @@ CamelMimeParser *camel_mime_parser_new (void);
 int		camel_mime_parser_errno (CamelMimeParser *parser);
 
 /* using an fd will be a little faster, but not much (over a simple stream) */
-int		camel_mime_parser_init_with_fd (CamelMimeParser *m, int fd);
+int		camel_mime_parser_init_with_fd (CamelMimeParser *m, gint fd);
 int		camel_mime_parser_init_with_stream (CamelMimeParser *m, CamelStream *stream);
 
 /* get the stream or fd back of the parser */
@@ -96,43 +96,43 @@ void camel_mime_parser_scan_from (CamelMimeParser *parser, gboolean scan_from);
 void camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre_from);
 
 /* what headers to save, MUST include ^Content-Type: */
-int camel_mime_parser_set_header_regex (CamelMimeParser *parser, char *matchstr);
+gint camel_mime_parser_set_header_regex (CamelMimeParser *parser, gchar *matchstr);
 
 /* normal interface */
-camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, char **databuffer, size_t *datalength);
+camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, size_t *datalength);
 void camel_mime_parser_unstep (CamelMimeParser *parser);
 void camel_mime_parser_drop_step (CamelMimeParser *parser);
 camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);
-void camel_mime_parser_push_state(CamelMimeParser *mp, camel_mime_parser_state_t newstate, const char *boundary);
+void camel_mime_parser_push_state(CamelMimeParser *mp, camel_mime_parser_state_t newstate, const gchar *boundary);
 
 /* read through the parser */
-int camel_mime_parser_read (CamelMimeParser *parser, const char **databuffer, int len);
+gint camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint len);
 
 /* get content type for the current part/header */
 CamelContentType *camel_mime_parser_content_type (CamelMimeParser *parser);
 
 /* get/change raw header by name */
-const char *camel_mime_parser_header (CamelMimeParser *m, const char *name, int *offset);
+const gchar *camel_mime_parser_header (CamelMimeParser *m, const gchar *name, gint *offset);
 
 /* get all raw headers. READ ONLY! */
 struct _camel_header_raw *camel_mime_parser_headers_raw (CamelMimeParser *m);
 
 /* get multipart pre/postface */
-const char *camel_mime_parser_preface (CamelMimeParser *m);
-const char *camel_mime_parser_postface (CamelMimeParser *m);
+const gchar *camel_mime_parser_preface (CamelMimeParser *m);
+const gchar *camel_mime_parser_postface (CamelMimeParser *m);
 
 /* return the from line content */
-const char *camel_mime_parser_from_line (CamelMimeParser *m);
+const gchar *camel_mime_parser_from_line (CamelMimeParser *m);
 
 /* add a processing filter for body contents */
-int camel_mime_parser_filter_add (CamelMimeParser *m, CamelMimeFilter *mf);
-void camel_mime_parser_filter_remove (CamelMimeParser *m, int id);
+gint camel_mime_parser_filter_add (CamelMimeParser *m, CamelMimeFilter *mf);
+void camel_mime_parser_filter_remove (CamelMimeParser *m, gint id);
 
 /* these should be used with caution, because the state will not
    track the seeked position */
 /* FIXME: something to bootstrap the state? */
 off_t camel_mime_parser_tell (CamelMimeParser *parser);
-off_t camel_mime_parser_seek (CamelMimeParser *parser, off_t offset, int whence);
+off_t camel_mime_parser_seek (CamelMimeParser *parser, off_t offset, gint whence);
 
 off_t camel_mime_parser_tell_start_headers (CamelMimeParser *parser);
 off_t camel_mime_parser_tell_start_from (CamelMimeParser *parser);

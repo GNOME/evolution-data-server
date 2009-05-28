@@ -90,8 +90,8 @@ camel_sasl_ntlm_get_type (void)
 static void ntlm_calc_response   (const guchar key[21],
 				  const guchar plaintext[8],
 				  guchar results[24]);
-static void ntlm_lanmanager_hash (const char *password, char hash[21]);
-static void ntlm_nt_hash         (const char *password, char hash[21]);
+static void ntlm_lanmanager_hash (const gchar *password, gchar hash[21]);
+static void ntlm_nt_hash         (const gchar *password, gchar hash[21]);
 
 typedef struct {
 	guint16 length;
@@ -100,7 +100,7 @@ typedef struct {
 } SecurityBuffer;
 
 static GString *
-ntlm_get_string (GByteArray *ba, int offset)
+ntlm_get_string (GByteArray *ba, gint offset)
 {
 	SecurityBuffer *secbuf;
 	GString *string;
@@ -123,7 +123,7 @@ ntlm_get_string (GByteArray *ba, int offset)
 }
 
 static void
-ntlm_set_string (GByteArray *ba, int offset, const char *data, int len)
+ntlm_set_string (GByteArray *ba, gint offset, const gchar *data, gint len)
 {
 	SecurityBuffer *secbuf;
 
@@ -148,9 +148,9 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		goto fail;
 
 	memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
-	ntlm_lanmanager_hash (sasl->service->url->passwd, (char *) hash);
+	ntlm_lanmanager_hash (sasl->service->url->passwd, (gchar *) hash);
 	ntlm_calc_response (hash, nonce, lm_resp);
-	ntlm_nt_hash (sasl->service->url->passwd, (char *) hash);
+	ntlm_nt_hash (sasl->service->url->passwd, (gchar *) hash);
 	ntlm_calc_response (hash, nonce, nt_resp);
 
 	domain = ntlm_get_string (token, NTLM_CHALLENGE_DOMAIN_OFFSET);
@@ -173,9 +173,9 @@ ntlm_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	ntlm_set_string (ret, NTLM_RESPONSE_HOST_OFFSET,
 			 "UNKNOWN", sizeof ("UNKNOWN") - 1);
 	ntlm_set_string (ret, NTLM_RESPONSE_LM_RESP_OFFSET,
-			 (const char *) lm_resp, sizeof (lm_resp));
+			 (const gchar *) lm_resp, sizeof (lm_resp));
 	ntlm_set_string (ret, NTLM_RESPONSE_NT_RESP_OFFSET,
-			 (const char *) nt_resp, sizeof (nt_resp));
+			 (const gchar *) nt_resp, sizeof (nt_resp));
 
 	sasl->authenticated = TRUE;
 
@@ -194,16 +194,16 @@ exit:
 }
 
 /* MD4 */
-static void md4sum                (const unsigned char *in,
-				   int                  nbytes,
-				   unsigned char        digest[16]);
+static void md4sum                (const guchar *in,
+				   gint                  nbytes,
+				   guchar        digest[16]);
 
 /* DES */
 typedef guint32 DES_KS[16][2]; /* Single-key DES key schedule */
 
-static void deskey                (DES_KS, unsigned char *, int);
+static void deskey                (DES_KS, guchar *, int);
 
-static void des                   (DES_KS, unsigned char *);
+static void des                   (DES_KS, guchar *);
 
 static void setup_schedule        (const guchar *key_56, DES_KS ks);
 
@@ -214,11 +214,11 @@ static void setup_schedule        (const guchar *key_56, DES_KS ks);
 			  "\x00\x00\x00\x00\x00"
 
 static void
-ntlm_lanmanager_hash (const char *password, char hash[21])
+ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
 {
 	guchar lm_password [15];
 	DES_KS ks;
-	int i;
+	gint i;
 
 	for (i = 0; i < 14 && password [i]; i++)
 		lm_password [i] = toupper ((unsigned char) password [i]);
@@ -229,16 +229,16 @@ ntlm_lanmanager_hash (const char *password, char hash[21])
 	memcpy (hash, LM_PASSWORD_MAGIC, 21);
 
 	setup_schedule (lm_password, ks);
-	des (ks, (unsigned char *) hash);
+	des (ks, (guchar *) hash);
 
 	setup_schedule (lm_password + 7, ks);
-	des (ks, (unsigned char *) hash + 8);
+	des (ks, (guchar *) hash + 8);
 }
 
 static void
-ntlm_nt_hash (const char *password, char hash[21])
+ntlm_nt_hash (const gchar *password, gchar hash[21])
 {
-	unsigned char *buf, *p;
+	guchar *buf, *p;
 
 	p = buf = g_malloc (strlen (password) * 2);
 
@@ -247,7 +247,7 @@ ntlm_nt_hash (const char *password, char hash[21])
 		*p++ = '\0';
 	}
 
-	md4sum (buf, p - buf, (unsigned char *) hash);
+	md4sum (buf, p - buf, (guchar *) hash);
 	memset (hash + 16, 0, 5);
 
 	g_free (buf);
@@ -262,7 +262,7 @@ static void
 setup_schedule (const guchar *key_56, DES_KS ks)
 {
 	guchar key[8];
-	int i, c, bit;
+	gint i, c, bit;
 
 	for (i = 0; i < 8; i++) {
 		key [i] = KEYBITS (key_56, i * 7);
@@ -312,11 +312,11 @@ ntlm_calc_response (const guchar key[21], const guchar plaintext[8],
 #define ROT(val, n) ( ((val) << (n)) | ((val) >> (32 - (n))) )
 
 static void
-md4sum (const unsigned char *in, int nbytes, unsigned char digest[16])
+md4sum (const guchar *in, gint nbytes, guchar digest[16])
 {
-	unsigned char *M;
+	guchar *M;
 	guint32 A, B, C, D, AA, BB, CC, DD, X[16];
-	int pbytes, nbits = nbytes * 8, i, j;
+	gint pbytes, nbits = nbytes * 8, i, j;
 
 	pbytes = (120 - (nbytes % 64)) % 64;
 	M = alloca (nbytes + pbytes + 8);
@@ -570,7 +570,7 @@ static guint32 Spbox[8][64] = {
 
 /* Encrypt or decrypt a block of data in ECB mode */
 static void
-des (guint32 ks[16][2], unsigned char block[8])
+des (guint32 ks[16][2], guchar block[8])
 {
 	guint32 left, right, work;
 
@@ -663,7 +663,7 @@ des (guint32 ks[16][2], unsigned char block[8])
 /* Key schedule-related tables from FIPS-46 */
 
 /* permuted choice table (key) */
-static unsigned char pc1[] = {
+static guchar pc1[] = {
 	57, 49, 41, 33, 25, 17,  9,
 	 1, 58, 50, 42, 34, 26, 18,
 	10,  2, 59, 51, 43, 35, 27,
@@ -676,12 +676,12 @@ static unsigned char pc1[] = {
 };
 
 /* number left rotations of pc1 */
-static unsigned char totrot[] = {
+static guchar totrot[] = {
 	1,2,4,6,8,10,12,14,15,17,19,21,23,25,27,28
 };
 
 /* permuted choice key (table) */
-static unsigned char pc2[] = {
+static guchar pc2[] = {
 	14, 17, 11, 24,  1,  5,
 	 3, 28, 15,  6, 21, 10,
 	23, 19, 12,  4, 26,  8,
@@ -696,7 +696,7 @@ static unsigned char pc2[] = {
 
 
 /* bit 0 is left-most in byte */
-static int bytebit[] = {
+static gint bytebit[] = {
 	0200,0100,040,020,010,04,02,01
 };
 
@@ -705,13 +705,13 @@ static int bytebit[] = {
  * depending on the value of "decrypt"
  */
 static void
-deskey (DES_KS k, unsigned char *key, int decrypt)
+deskey (DES_KS k, guchar *key, gint decrypt)
 {
-	unsigned char pc1m[56];		/* place to modify pc1 into */
-	unsigned char pcr[56];		/* place to rotate pc1 into */
-	register int i,j,l;
-	int m;
-	unsigned char ks[8];
+	guchar pc1m[56];		/* place to modify pc1 into */
+	guchar pcr[56];		/* place to rotate pc1 into */
+	register gint i,j,l;
+	gint m;
+	guchar ks[8];
 
 	for (j=0; j<56; j++) {		/* convert pc1 to bits of key */
 		l=pc1[j]-1;		/* integer bit location	 */

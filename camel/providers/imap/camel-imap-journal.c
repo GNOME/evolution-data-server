@@ -54,8 +54,8 @@ static void camel_imap_journal_finalize (CamelObject *object);
 
 static void imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
 static CamelDListNode *imap_entry_load (CamelOfflineJournal *journal, FILE *in);
-static int imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-static int imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
+static gint imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
+static gint imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 static void unref_folder (gpointer key, gpointer value, gpointer data);
 static void free_uids (GPtrArray *array);
 static void close_folder (gpointer name, gpointer folder, gpointer data);
@@ -182,7 +182,7 @@ static GPtrArray *
 decode_uids (FILE *file)
 {
 	GPtrArray *uids;
-	char *uid;
+	gchar *uid;
 	guint32 i;
 
 	if (camel_file_util_decode_uint32 (file, &i) == -1)
@@ -254,7 +254,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 static int
 encode_uids (FILE *file, GPtrArray *uids)
 {
-	int i, status;
+	gint i, status;
 
 	status = camel_file_util_encode_uint32 (file, uids->len);
 	for (i = 0; status != -1 && i < uids->len; i++)
@@ -300,20 +300,20 @@ imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out
 }
 
 static CamelFolder *
-journal_decode_folder (CamelIMAPJournal *journal, const char *name)
+journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
 {
 	CamelFolder *folder;
 
 	folder = g_hash_table_lookup (journal->folders, name);
 	if (!folder) {
 		CamelException ex;
-		char *msg;
+		gchar *msg;
 
 		camel_exception_init (&ex);
 		folder = camel_store_get_folder (CAMEL_STORE (CAMEL_OFFLINE_JOURNAL (journal)->folder->parent_store),
 						 name, 0, &ex);
 		if (folder)
-			g_hash_table_insert (journal->folders, (char *) name, folder);
+			g_hash_table_insert (journal->folders, (gchar *) name, folder);
 		else {
 			msg = g_strdup_printf (_("Could not open '%s':\n%s\nChanges made to this folder will not be resynchronized."),
 					       name, camel_exception_get_description (&ex));
@@ -328,7 +328,7 @@ journal_decode_folder (CamelIMAPJournal *journal, const char *name)
 	return folder;
 }
 
-int
+gint
 imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
@@ -341,7 +341,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 		return 0;
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 	{
-		char *ret_uid = NULL;
+		gchar *ret_uid = NULL;
 		CamelMimeMessage *message;
 		CamelMessageInfo *info;
 
@@ -364,7 +364,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 	{
 		CamelFolder *destination;
 		GPtrArray *ret_uids;
-		int i;
+		gint i;
 
 		destination = journal_decode_folder ((CamelIMAPJournal *)journal, imap_entry->dest_folder_name);
 		if (!destination) {
@@ -399,7 +399,7 @@ imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExcep
 }
 
 CamelOfflineJournal *
-camel_imap_journal_new (CamelImapFolder *folder, const char *filename)
+camel_imap_journal_new (CamelImapFolder *folder, const gchar *filename)
 {
 	CamelOfflineJournal *journal;
 
@@ -437,7 +437,7 @@ camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action,
 		}
 		case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 		{
-			char *uid = va_arg (ap, char *);
+			gchar *uid = va_arg (ap, gchar *);
 			entry->append_uid = g_strdup (uid);
 			break;
 		}
@@ -478,15 +478,15 @@ camel_imap_journal_close_folders (CamelIMAPJournal *journal)
 }
 
 void
-camel_imap_journal_uidmap_add (CamelIMAPJournal *journal, const char *old_uid,
-			      const char *new_uid)
+camel_imap_journal_uidmap_add (CamelIMAPJournal *journal, const gchar *old_uid,
+			      const gchar *new_uid)
 {
 	g_hash_table_insert (journal->uidmap, g_strdup (old_uid),
 			     g_strdup (new_uid));
 }
 
-const char *
-camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal, const char *uid)
+const gchar *
+camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal, const gchar *uid)
 {
 	return g_hash_table_lookup (journal->uidmap, uid);
 }

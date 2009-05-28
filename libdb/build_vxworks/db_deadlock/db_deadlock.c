@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -37,16 +37,16 @@ static const char revid[] =
 
 #include "db_int.h"
 
-int db_deadlock_main __P((int, char *[]));
-int db_deadlock_usage __P((void));
-int db_deadlock_version_check __P((const char *));
+gint db_deadlock_main __P((int, gchar *[]));
+gint db_deadlock_usage __P((void));
+gint db_deadlock_version_check __P((const gchar *));
 
-int
+gint
 db_deadlock(args)
-	char *args;
+	gchar *args;
 {
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 
 	__db_util_arg("db_deadlock", args, &argc, &argv);
 	return (db_deadlock_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -55,20 +55,20 @@ db_deadlock(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-int
+gint
 db_deadlock_main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind, __db_getopt_reset;
-	const char *progname = "db_deadlock";
+	extern gchar *optarg;
+	extern gint optind, __db_getopt_reset;
+	const gchar *progname = "db_deadlock";
 	DB_ENV  *dbenv;
 	u_int32_t atype;
 	time_t now;
 	long secs, usecs;
-	int ch, e_close, exitval, ret, verbose;
-	char *home, *logfile, *str;
+	gint ch, e_close, exitval, ret, verbose;
+	gchar *home, *logfile, *str;
 
 	if ((ret = db_deadlock_version_check(progname)) != 0)
 		return (ret);
@@ -220,7 +220,7 @@ shutdown:	exitval = 1;
 	return (exitval == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-int
+gint
 db_deadlock_usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
@@ -229,11 +229,11 @@ db_deadlock_usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 db_deadlock_version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

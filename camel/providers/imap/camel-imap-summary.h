@@ -69,15 +69,15 @@ struct _CamelImapSummaryClass {
 };
 
 CamelType               camel_imap_summary_get_type     (void);
-CamelFolderSummary *camel_imap_summary_new          (struct _CamelFolder *folder, const char *filename);
+CamelFolderSummary *camel_imap_summary_new          (struct _CamelFolder *folder, const gchar *filename);
 
 void camel_imap_summary_add_offline (CamelFolderSummary *summary,
-				     const char *uid,
+				     const gchar *uid,
 				     CamelMimeMessage *message,
 				     const CamelMessageInfo *info);
 
 void camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary,
-					      const char *uid,
+					      const gchar *uid,
 					      const CamelMessageInfo *info);
 
 G_END_DECLS

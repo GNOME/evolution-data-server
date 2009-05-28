@@ -25,23 +25,23 @@
 
 G_BEGIN_DECLS
 
-void camel_utf8_putc(unsigned char **ptr, guint32 c);
-guint32 camel_utf8_getc(const unsigned char **ptr);
-guint32 camel_utf8_getc_limit (const unsigned char **ptr, const unsigned char *end);
+void camel_utf8_putc(guchar **ptr, guint32 c);
+guint32 camel_utf8_getc(const guchar **ptr);
+guint32 camel_utf8_getc_limit (const guchar **ptr, const guchar *end);
 
 /* utility func for utf8 gstrings */
 void g_string_append_u(GString *out, guint32 c);
 
 /* convert utf7 to/from utf8, actually this is modified IMAP utf7 */
-char *camel_utf7_utf8(const char *ptr);
-char *camel_utf8_utf7(const char *ptr);
+gchar *camel_utf7_utf8(const gchar *ptr);
+gchar *camel_utf8_utf7(const gchar *ptr);
 
 /* convert ucs2 to/from utf8 */
-char *camel_utf8_ucs2(const char *ptr);
-char *camel_ucs2_utf8(const char *ptr);
+gchar *camel_utf8_ucs2(const gchar *ptr);
+gchar *camel_ucs2_utf8(const gchar *ptr);
 
 /* make valid utf8 string */
-char *camel_utf8_make_valid (const char *text);
+gchar *camel_utf8_make_valid (const gchar *text);
 
 G_END_DECLS
 

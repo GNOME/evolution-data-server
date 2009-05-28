@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -25,16 +25,16 @@ static const char revid[] =
 
 #include "db_int.h"
 
-int db_upgrade_main __P((int, char *[]));
-int db_upgrade_usage __P((void));
-int db_upgrade_version_check __P((const char *));
+gint db_upgrade_main __P((int, gchar *[]));
+gint db_upgrade_usage __P((void));
+gint db_upgrade_version_check __P((const gchar *));
 
-int
+gint
 db_upgrade(args)
-	char *args;
+	gchar *args;
 {
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 
 	__db_util_arg("db_upgrade", args, &argc, &argv);
 	return (db_upgrade_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -43,19 +43,19 @@ db_upgrade(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-int
+gint
 db_upgrade_main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind, __db_getopt_reset;
-	const char *progname = "db_upgrade";
+	extern gchar *optarg;
+	extern gint optind, __db_getopt_reset;
+	const gchar *progname = "db_upgrade";
 	DB *dbp;
 	DB_ENV *dbenv;
 	u_int32_t flags;
-	int ch, e_close, exitval, nflag, ret, t_ret;
-	char *home, *passwd;
+	gint ch, e_close, exitval, nflag, ret, t_ret;
+	gchar *home, *passwd;
 
 	if ((ret = db_upgrade_version_check(progname)) != 0)
 		return (ret);
@@ -177,7 +177,7 @@ shutdown:	exitval = 1;
 	return (exitval == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-int
+gint
 db_upgrade_usage()
 {
 	fprintf(stderr, "%s\n",
@@ -185,11 +185,11 @@ db_upgrade_usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 db_upgrade_version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

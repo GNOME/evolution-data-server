@@ -46,7 +46,7 @@ enum {
 
 struct _CamelNNTPStoreInfo {
 	CamelStoreInfo info;
-	char *full_name;
+	gchar *full_name;
 	guint32 first;		/* from LIST or NEWGROUPS return */
 	guint32 last;
 };
@@ -60,7 +60,7 @@ struct _CamelNNTPStoreSummary {
 
 	/* header info */
 	guint32 version;	/* version of base part of file */
-	char last_newslist[NNTP_DATE_SIZE];
+	gchar last_newslist[NNTP_DATE_SIZE];
 };
 
 struct _CamelNNTPStoreSummaryClass {
@@ -71,25 +71,25 @@ CamelType			 camel_nntp_store_summary_get_type	(void);
 CamelNNTPStoreSummary      *camel_nntp_store_summary_new	(void);
 
 /* TODO: this api needs some more work, needs to support lists */
-/*CamelNNTPStoreNamespace *camel_nntp_store_summary_namespace_new(CamelNNTPStoreSummary *s, const char *full_name, char dir_sep);*/
+/*CamelNNTPStoreNamespace *camel_nntp_store_summary_namespace_new(CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);*/
 /*void camel_nntp_store_summary_namespace_set(CamelNNTPStoreSummary *s, CamelNNTPStoreNamespace *ns);*/
-/*CamelNNTPStoreNamespace *camel_nntp_store_summary_namespace_find_path(CamelNNTPStoreSummary *s, const char *path);*/
-/*CamelNNTPStoreNamespace *camel_nntp_store_summary_namespace_find_full(CamelNNTPStoreSummary *s, const char *full_name);*/
+/*CamelNNTPStoreNamespace *camel_nntp_store_summary_namespace_find_path(CamelNNTPStoreSummary *s, const gchar *path);*/
+/*CamelNNTPStoreNamespace *camel_nntp_store_summary_namespace_find_full(CamelNNTPStoreSummary *s, const gchar *full_name);*/
 
 /* helper macro's */
 #define camel_nntp_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_NNTP_STORE_INFO_FULL_NAME))
 
 /* converts to/from utf8 canonical nasmes */
-char *camel_nntp_store_summary_full_to_path(CamelNNTPStoreSummary *s, const char *full_name, char dir_sep);
+gchar *camel_nntp_store_summary_full_to_path(CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);
 
-char *camel_nntp_store_summary_path_to_full(CamelNNTPStoreSummary *s, const char *path, char dir_sep);
-char *camel_nntp_store_summary_dotted_to_full(CamelNNTPStoreSummary *s, const char *dotted, char dir_sep);
+gchar *camel_nntp_store_summary_path_to_full(CamelNNTPStoreSummary *s, const gchar *path, gchar dir_sep);
+gchar *camel_nntp_store_summary_dotted_to_full(CamelNNTPStoreSummary *s, const gchar *dotted, gchar dir_sep);
 
-CamelNNTPStoreInfo *camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const char *full_name);
-CamelNNTPStoreInfo *camel_nntp_store_summary_add_from_full(CamelNNTPStoreSummary *s, const char *full_name, char dir_sep);
+CamelNNTPStoreInfo *camel_nntp_store_summary_full_name(CamelNNTPStoreSummary *s, const gchar *full_name);
+CamelNNTPStoreInfo *camel_nntp_store_summary_add_from_full(CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep);
 
 /* a convenience lookup function. always use this if path known */
-char *camel_nntp_store_summary_full_from_path(CamelNNTPStoreSummary *s, const char *path);
+gchar *camel_nntp_store_summary_full_from_path(CamelNNTPStoreSummary *s, const gchar *path);
 
 G_END_DECLS
 

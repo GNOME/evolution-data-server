@@ -36,7 +36,7 @@ enum {
 	IS_WILDCARD   = (1 << 5),
 };
 
-extern unsigned char camel_imap4_specials[256];
+extern guchar camel_imap4_specials[256];
 
 #define is_atom(x) ((camel_imap4_specials[(unsigned char)(x)] & (IS_ASPECIAL|IS_SPACE|IS_CTRL|IS_WILDCARD|IS_QSPECIAL)) == 0)
 #define is_ctrl(x) ((camel_imap4_specials[(unsigned char)(x)] & IS_CTRL) != 0)

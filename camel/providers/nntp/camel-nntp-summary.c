@@ -57,18 +57,18 @@
 #define EXTRACT_DIGIT(val) part++; val=strtoul (part, &part, 10);
 
 struct _CamelNNTPSummaryPrivate {
-	char *uid;
+	gchar *uid;
 
 	struct _xover_header *xover; /* xoverview format */
-	int xover_setup;
+	gint xover_setup;
 };
 
 #define _PRIVATE(o) (((CamelNNTPSummary *)(o))->priv)
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
-static int summary_header_load(CamelFolderSummary *, FILE *);
-static int summary_header_save(CamelFolderSummary *, FILE *);
-static int summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
+static gint summary_header_load(CamelFolderSummary *, FILE *);
+static gint summary_header_save(CamelFolderSummary *, FILE *);
+static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelException *ex);
 
 static void camel_nntp_summary_class_init (CamelNNTPSummaryClass *klass);
@@ -133,7 +133,7 @@ camel_nntp_summary_finalise(CamelObject *obj)
 }
 
 CamelNNTPSummary *
-camel_nntp_summary_new(struct _CamelFolder *folder, const char *path)
+camel_nntp_summary_new(struct _CamelFolder *folder, const gchar *path)
 {
 	CamelNNTPSummary *cns = (CamelNNTPSummary *)camel_object_new(camel_nntp_summary_get_type());
 
@@ -170,7 +170,7 @@ static int
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
-	char *part;
+	gchar *part;
 
 
 	if (camel_nntp_summary_parent->summary_header_from_db (s, mir) == -1)
@@ -256,14 +256,14 @@ summary_header_save(CamelFolderSummary *s, FILE *out)
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static int
-add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, unsigned int low, CamelFolderChangeInfo *changes, CamelException *ex)
+add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
 	struct _camel_header_raw *headers = NULL;
-	char *line, *tab;
-	int len, ret;
-	unsigned int n, count, total, size;
+	gchar *line, *tab;
+	gint len, ret;
+	guint n, count, total, size;
 	struct _xover_header *xover;
 
 	s = (CamelFolderSummary *)cns;
@@ -281,7 +281,7 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high,
 
 	count = 0;
 	total = high-low+1;
-	while ((ret = camel_nntp_stream_line(store->stream, (unsigned char **)&line, &len)) > 0) {
+	while ((ret = camel_nntp_stream_line(store->stream, (guchar **)&line, &len)) > 0) {
 		camel_operation_progress(NULL, (count * 100) / total);
 		count++;
 		n = strtoul(line, &tab, 10);
@@ -348,12 +348,12 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high,
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 static int
-add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, unsigned int high, unsigned int low, CamelFolderChangeInfo *changes, CamelException *ex)
+add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
-	int ret = -1;
-	char *line, *msgid;
-	unsigned int i, n, count, total;
+	gint ret = -1;
+	gchar *line, *msgid;
+	guint i, n, count, total;
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
 
@@ -430,14 +430,14 @@ ioerror:
 
 /* Assumes we have the stream */
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
-int
-camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *line, CamelFolderChangeInfo *changes, CamelException *ex)
+gint
+camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *line, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
-	int ret = 0, i;
-	unsigned int n, f, l;
-	int count;
-	char *folder = NULL;
+	gint ret = 0, i;
+	guint n, f, l;
+	gint count;
+	gchar *folder = NULL;
 	CamelNNTPStoreInfo *si;
 	GSList *del = NULL;
 
@@ -448,7 +448,7 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 	f = strtoul(line, &line, 10);
 	l = strtoul(line, &line, 10);
 	if (line[0] == ' ') {
-		char *tmp;
+		gchar *tmp;
 
 		folder = line+1;
 		tmp = strchr(folder, ' ');
@@ -470,8 +470,8 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, char *lin
 	if (cns->low != f) {
 		count = camel_folder_summary_count(s);
 		for (i = 0; i < count; i++) {
-			char *uid;
-			const char *msgid;
+			gchar *uid;
+			const gchar *msgid;
 
 			uid  = camel_folder_summary_uid_from_index(s, i);
 			n = strtoul(uid, NULL, 10);

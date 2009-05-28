@@ -28,8 +28,8 @@
 
 G_BEGIN_DECLS
 
-int camel_lock_helper_lock(const char *path , CamelException *ex);
-int camel_lock_helper_unlock(int lockid);
+gint camel_lock_helper_lock(const gchar *path , CamelException *ex);
+gint camel_lock_helper_unlock(gint lockid);
 
 G_END_DECLS
 

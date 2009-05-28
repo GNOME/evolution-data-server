@@ -48,7 +48,7 @@ struct _CamelDigestStoreClass {
 
 CamelType camel_digest_store_get_type (void);
 
-CamelStore *camel_digest_store_new (const char *url);
+CamelStore *camel_digest_store_new (const gchar *url);
 
 G_END_DECLS
 

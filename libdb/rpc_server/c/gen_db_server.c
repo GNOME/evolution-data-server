@@ -304,11 +304,11 @@ __db_txn_recover_4001(msg, req)
 	struct svc_req *req;
 {
 	static __txn_recover_reply reply; /* must be static */
-	static int __txn_recover_free = 0; /* must be static */
+	static gint __txn_recover_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__txn_recover_free)
-		xdr_free((xdrproc_t)xdr___txn_recover_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___txn_recover_reply, (gpointer)&reply);
 	__txn_recover_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -514,11 +514,11 @@ __db_db_get_4001(msg, req)
 	struct svc_req *req;
 {
 	static __db_get_reply reply; /* must be static */
-	static int __db_get_free = 0; /* must be static */
+	static gint __db_get_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__db_get_free)
-		xdr_free((xdrproc_t)xdr___db_get_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___db_get_reply, (gpointer)&reply);
 	__db_get_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -681,11 +681,11 @@ __db_db_pget_4001(msg, req)
 	struct svc_req *req;
 {
 	static __db_pget_reply reply; /* must be static */
-	static int __db_pget_free = 0; /* must be static */
+	static gint __db_pget_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__db_pget_free)
-		xdr_free((xdrproc_t)xdr___db_pget_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___db_pget_reply, (gpointer)&reply);
 	__db_pget_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -729,11 +729,11 @@ __db_db_put_4001(msg, req)
 	struct svc_req *req;
 {
 	static __db_put_reply reply; /* must be static */
-	static int __db_put_free = 0; /* must be static */
+	static gint __db_put_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__db_put_free)
-		xdr_free((xdrproc_t)xdr___db_put_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___db_put_reply, (gpointer)&reply);
 	__db_put_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -869,11 +869,11 @@ __db_db_stat_4001(msg, req)
 	struct svc_req *req;
 {
 	static __db_stat_reply reply; /* must be static */
-	static int __db_stat_free = 0; /* must be static */
+	static gint __db_stat_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__db_stat_free)
-		xdr_free((xdrproc_t)xdr___db_stat_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___db_stat_reply, (gpointer)&reply);
 	__db_stat_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -1051,11 +1051,11 @@ __db_dbc_get_4001(msg, req)
 	struct svc_req *req;
 {
 	static __dbc_get_reply reply; /* must be static */
-	static int __dbc_get_free = 0; /* must be static */
+	static gint __dbc_get_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__dbc_get_free)
-		xdr_free((xdrproc_t)xdr___dbc_get_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___dbc_get_reply, (gpointer)&reply);
 	__dbc_get_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -1091,11 +1091,11 @@ __db_dbc_pget_4001(msg, req)
 	struct svc_req *req;
 {
 	static __dbc_pget_reply reply; /* must be static */
-	static int __dbc_pget_free = 0; /* must be static */
+	static gint __dbc_pget_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__dbc_pget_free)
-		xdr_free((xdrproc_t)xdr___dbc_pget_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___dbc_pget_reply, (gpointer)&reply);
 	__dbc_pget_free = 0;
 
 	/* Reinitialize allocated fields */
@@ -1138,11 +1138,11 @@ __db_dbc_put_4001(msg, req)
 	struct svc_req *req;
 {
 	static __dbc_put_reply reply; /* must be static */
-	static int __dbc_put_free = 0; /* must be static */
+	static gint __dbc_put_free = 0; /* must be static */
 
 	COMPQUIET(req, NULL);
 	if (__dbc_put_free)
-		xdr_free((xdrproc_t)xdr___dbc_put_reply, (void *)&reply);
+		xdr_free((xdrproc_t)xdr___dbc_put_reply, (gpointer)&reply);
 	__dbc_put_free = 0;
 
 	/* Reinitialize allocated fields */

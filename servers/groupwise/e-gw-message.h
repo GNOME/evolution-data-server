@@ -28,20 +28,20 @@
 
 G_BEGIN_DECLS
 
-SoupSoapMessage *e_gw_message_new_with_header (const char *uri, const char *session_id, const char *method_name);
-void             e_gw_message_write_string_parameter (SoupSoapMessage *msg, const char *name,
-						      const char *prefix, const char *value);
+SoupSoapMessage *e_gw_message_new_with_header (const gchar *uri, const gchar *session_id, const gchar *method_name);
+void             e_gw_message_write_string_parameter (SoupSoapMessage *msg, const gchar *name,
+						      const gchar *prefix, const gchar *value);
 void             e_gw_message_write_string_parameter_with_attribute (SoupSoapMessage *msg,
-								     const char *name,
-								     const char *prefix,
-								     const char *value,
-								     const char *attrubute_name,
-								     const char *attribute_value);
+								     const gchar *name,
+								     const gchar *prefix,
+								     const gchar *value,
+								     const gchar *attrubute_name,
+								     const gchar *attribute_value);
 void             e_gw_message_write_base64_parameter (SoupSoapMessage *msg,
-						      const char *name,
-						      const char *prefix,
-						      const char *value);
-void e_gw_message_write_int_parameter (SoupSoapMessage *msg, const char *name, const char *prefix, long value);
+						      const gchar *name,
+						      const gchar *prefix,
+						      const gchar *value);
+void e_gw_message_write_int_parameter (SoupSoapMessage *msg, const gchar *name, const gchar *prefix, long value);
 
 
 void             e_gw_message_write_footer (SoupSoapMessage *msg);

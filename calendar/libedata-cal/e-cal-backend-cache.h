@@ -47,36 +47,36 @@ typedef struct {
 
 GType               e_cal_backend_cache_get_type (void);
 
-ECalBackendCache   *e_cal_backend_cache_new (const char *uri, ECalSourceType source_type);
+ECalBackendCache   *e_cal_backend_cache_new (const gchar *uri, ECalSourceType source_type);
 ECalComponent      *e_cal_backend_cache_get_component (ECalBackendCache *cache,
-						       const char *uid,
-						       const char *rid);
+						       const gchar *uid,
+						       const gchar *rid);
 gboolean            e_cal_backend_cache_put_component (ECalBackendCache *cache, ECalComponent *comp);
 gboolean            e_cal_backend_cache_remove_component (ECalBackendCache *cache,
-							  const char *uid,
-							  const char *rid);
+							  const gchar *uid,
+							  const gchar *rid);
 GList              *e_cal_backend_cache_get_components (ECalBackendCache *cache);
-GSList             *e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const char *uid);
+GSList             *e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar *uid);
 
 
 
-const icaltimezone *e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const char *tzid);
+const icaltimezone *e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid);
 gboolean            e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone);
-gboolean            e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const char *tzid);
+gboolean            e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const gchar *tzid);
 
 gboolean            e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone);
 icaltimezone       *e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache);
 
 GSList             *e_cal_backend_cache_get_keys (ECalBackendCache *cache);
 
-const char         *e_cal_backend_cache_get_marker (ECalBackendCache *cache);
+const gchar         *e_cal_backend_cache_get_marker (ECalBackendCache *cache);
 void                e_cal_backend_cache_set_marker (ECalBackendCache *cache);
 
-gboolean e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const char *utc_str);
-const char * e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache);
+gboolean e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const gchar *utc_str);
+const gchar * e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache);
 
-gboolean e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const char *key, const char *value);
-const char * e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const char *key);
+gboolean e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, const gchar *value);
+const gchar * e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key);
 
 G_END_DECLS
 

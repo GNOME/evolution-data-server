@@ -59,9 +59,9 @@
 #ifdef BUILD_MAP
 
 static struct {
-	char *name;        /* charset name */
-	int multibyte;     /* charset type */
-	unsigned int bit;  /* assigned bit */
+	gchar *name;        /* charset name */
+	gint multibyte;     /* charset type */
+	guint bit;  /* assigned bit */
 } tables[] = {
 	/* These are the 8bit character sets (other than iso-8859-1,
 	 * which is special-cased) which are supported by both other
@@ -100,7 +100,7 @@ static struct {
 	{ NULL,           0, 0 }
 };
 
-unsigned int encoding_map[256 * 256];
+guint encoding_map[256 * 256];
 
 #if G_BYTE_ORDER == G_BIG_ENDIAN
 #define UCS "UCS-4BE"
@@ -111,9 +111,9 @@ unsigned int encoding_map[256 * 256];
 static guint
 block_hash (gconstpointer v)
 {
-	const signed char *p = v;
+	const gchar *p = v;
 	guint32 h = *p++;
-	int i;
+	gint i;
 
 	for (i = 0; i < 256; i++)
 		h = (h << 5) - h + *p++;
@@ -127,17 +127,17 @@ block_equal (gconstpointer v1, gconstpointer v2)
 	return !memcmp (v1, v2, 256);
 }
 
-int main (int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
-	unsigned char *block = NULL;
-	unsigned int bit = 0x01;
+	guchar *block = NULL;
+	guint bit = 0x01;
 	GHashTable *table_hash;
 	size_t inleft, outleft;
-	char *inbuf, *outbuf;
+	gchar *inbuf, *outbuf;
 	guint32 out[128], c;
-	char in[128];
-	int i, j, k;
-	int bytes;
+	gchar in[128];
+	gint i, j, k;
+	gint bytes;
 	iconv_t cd;
 
 	/* dont count the terminator */
@@ -151,7 +151,7 @@ int main (int argc, char **argv)
 		cd = iconv_open (UCS, tables[j].name);
 		inbuf = in;
 		inleft = sizeof (in);
-		outbuf = (char *) out;
+		outbuf = (gchar *) out;
 		outleft = sizeof (out);
 		while (iconv (cd, &inbuf, &inleft, &outbuf, &outleft) == -1) {
 			if (errno == EILSEQ) {
@@ -182,7 +182,7 @@ int main (int argc, char **argv)
 			continue;
 
 		for (c = 128, i = 0; c < 65535 && i < 65535; c++) {
-			inbuf = (char *) &c;
+			inbuf = (gchar *) &c;
 			inleft = sizeof (c);
 			outbuf = in;
 			outleft = sizeof (in);
@@ -210,8 +210,8 @@ int main (int argc, char **argv)
 
 	for (i = 0; i < 256; i++) {
 		for (k = 0; k < bytes; k++) {
-			char name[32], *alias;
-			int has_bits = FALSE;
+			gchar name[32], *alias;
+			gint has_bits = FALSE;
 
 			if (!block) {
 				/* we reuse malloc'd blocks that are not added to the
@@ -236,7 +236,7 @@ int main (int argc, char **argv)
 				/* unique block, dump it */
 				g_hash_table_insert (table_hash, block, g_strdup (name));
 
-				printf ("static unsigned char %s[256] = {\n\t", name);
+				printf ("static guchar %s[256] = {\n\t", name);
 				for (j = 0; j < 256; j++) {
 					printf ("0x%02x, ", block[j]);
 					if (((j + 1) & 7) == 0 && j < 255)
@@ -255,7 +255,7 @@ int main (int argc, char **argv)
 
 	printf ("static const struct {\n");
 	for (k = 0; k < bytes; k++)
-		printf ("\tconst unsigned char *bits%d;\n", k);
+		printf ("\tconst guchar *bits%d;\n", k);
 
 	printf ("} camel_charmap[256] = {\n\t");
 	for (i = 0; i < 256; i++) {
@@ -278,7 +278,7 @@ int main (int argc, char **argv)
 	}
 	printf ("\n};\n\n");
 
-	printf ("static const struct {\n\tconst char *name;\n\tunsigned int bit;\n} camel_charinfo[] = {\n");
+	printf ("static const struct {\n\tconst gchar *name;\n\tguint bit;\n} camel_charinfo[] = {\n");
 	for (j = 0; tables[j].name; j++)
 		printf ("\t{ \"%s\", 0x%08x },\n", tables[j].name, tables[j].bit);
 	printf ("};\n\n");
@@ -315,12 +315,12 @@ camel_charset_init (CamelCharset *c)
 }
 
 void
-camel_charset_step (CamelCharset *cc, const char *in, int len)
+camel_charset_step (CamelCharset *cc, const gchar *in, gint len)
 {
-	const unsigned char *inptr = (const unsigned char *) in;
-	const unsigned char *inend = inptr + len;
-	register unsigned int mask;
-	register int level;
+	const guchar *inptr = (const guchar *) in;
+	const guchar *inend = inptr + len;
+	register guint mask;
+	register gint level;
 	register guint32 c;
 
 	mask = cc->mask;
@@ -347,11 +347,11 @@ camel_charset_step (CamelCharset *cc, const char *in, int len)
 }
 
 /* gets the best charset from the mask of chars in it */
-static const char *
-camel_charset_best_mask(unsigned int mask)
+static const gchar *
+camel_charset_best_mask(guint mask)
 {
-	const char *locale_lang, *lang;
-	int i;
+	const gchar *locale_lang, *lang;
+	gint i;
 
 	locale_lang = camel_iconv_locale_language ();
 	for (i = 0; i < G_N_ELEMENTS (camel_charinfo); i++) {
@@ -366,7 +366,7 @@ camel_charset_best_mask(unsigned int mask)
 	return "UTF-8";
 }
 
-const char *
+const gchar *
 camel_charset_best_name (CamelCharset *charset)
 {
 	if (charset->level == 1)
@@ -378,8 +378,8 @@ camel_charset_best_name (CamelCharset *charset)
 }
 
 /* finds the minimum charset for this string NULL means US-ASCII */
-const char *
-camel_charset_best (const char *in, int len)
+const gchar *
+camel_charset_best (const gchar *in, gint len)
 {
 	CamelCharset charset;
 
@@ -395,8 +395,8 @@ camel_charset_best (const char *in, int len)
  *
  * Returns: the equivalent Windows charset.
  **/
-const char *
-camel_charset_iso_to_windows (const char *isocharset)
+const gchar *
+camel_charset_iso_to_windows (const gchar *isocharset)
 {
 	/* According to http://czyborra.com/charsets/codepages.html,
 	 * the charset mapping is as follows:

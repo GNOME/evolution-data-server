@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -27,7 +27,7 @@ static const char revid[] = "$Id$";
 JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1init
   (JNIEnv *jnienv, jobject jthis, jstring home, jint rmid, jint flags)
 {
-	int err;
+	gint err;
 	LOCKED_STRING ls_home;
 	jclass cl;
 	jmethodID mid;
@@ -35,7 +35,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1init
 	COMPQUIET(jthis, NULL);
 	if (locked_string_get(&ls_home, jnienv, home) != 0)
 		goto out;
-	if ((err = __db_xa_open((char *)ls_home.string,
+	if ((err = __db_xa_open((gchar *)ls_home.string,
 				rmid, flags)) != XA_OK) {
 		verify_return(jnienv, err, EXCEPTION_XA);
 	}
@@ -58,13 +58,13 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1init
 JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1close
   (JNIEnv *jnienv, jobject jthis, jstring home, jint rmid, jint flags)
 {
-	int err;
+	gint err;
 	LOCKED_STRING ls_home;
 
 	COMPQUIET(jthis, NULL);
 	if (locked_string_get(&ls_home, jnienv, home) != 0)
 		goto out;
-	if ((err = __db_xa_close((char *)ls_home.string,
+	if ((err = __db_xa_close((gchar *)ls_home.string,
 				 rmid, flags)) != XA_OK)
 		verify_return(jnienv, err, EXCEPTION_XA);
  out:
@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1commit
 {
 	XID xid;
 	long flags;
-	int err;
+	gint err;
 
 	COMPQUIET(jthis, NULL);
 	if (!get_XID(jnienv, jxid, &xid))
@@ -93,7 +93,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1end
   (JNIEnv *jnienv, jobject jthis, jobject jxid, jint rmid, jint flags)
 {
 	XID xid;
-	int err;
+	gint err;
 
 	COMPQUIET(jthis, NULL);
 	if (!get_XID(jnienv, jxid, &xid))
@@ -106,7 +106,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1forget
   (JNIEnv *jnienv, jobject jthis, jobject jxid, jint rmid)
 {
 	XID xid;
-	int err;
+	gint err;
 
 	COMPQUIET(jthis, NULL);
 	if (!get_XID(jnienv, jxid, &xid))
@@ -119,7 +119,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_xa_DbXAResource__1prepare
   (JNIEnv *jnienv, jobject jthis, jobject jxid, jint rmid)
 {
 	XID xid;
-	int err;
+	gint err;
 
 	COMPQUIET(jthis, NULL);
 	if (!get_XID(jnienv, jxid, &xid))
@@ -135,11 +135,11 @@ JNIEXPORT jobjectArray JNICALL Java_com_sleepycat_db_xa_DbXAResource__1recover
   (JNIEnv *jnienv, jobject jthis, jint rmid, jint flags)
 {
 	XID *xids;
-	int err;
-	int total;
-	int cnt;
-	int i;
-	int curflags;
+	gint err;
+	gint total;
+	gint cnt;
+	gint i;
+	gint curflags;
 	size_t nbytes;
 	jclass xid_class;
 	jmethodID mid;
@@ -212,7 +212,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1rollback
   (JNIEnv *jnienv, jobject jthis, jobject jxid, jint rmid)
 {
 	XID xid;
-	int err;
+	gint err;
 
 	COMPQUIET(jthis, NULL);
 	if (!get_XID(jnienv, jxid, &xid))
@@ -225,7 +225,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_xa_DbXAResource__1start
   (JNIEnv *jnienv, jobject jthis, jobject jxid, jint rmid, jint flags)
 {
 	XID xid;
-	int err;
+	gint err;
 
 	COMPQUIET(jthis, NULL);
 	if (!get_XID(jnienv, jxid, &xid))
@@ -240,11 +240,11 @@ JNIEXPORT jobject JNICALL Java_com_sleepycat_db_xa_DbXAResource_xa_1attach
 {
 	XID xid;
 	XID *xidp;
-	int ret;
+	gint ret;
 	DB_ENV *env;
 	DB_TXN *txn;
-	int rmid;
-	int *rmidp;
+	gint rmid;
+	gint *rmidp;
 	jobject jtxn;
 	jobject jenv;
 	jclass cl;

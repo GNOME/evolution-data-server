@@ -40,7 +40,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -57,14 +57,14 @@ static const char revid[] = "$Id$";
  * __bam_rsearch --
  *	Search a btree for a record number.
  *
- * PUBLIC: int __bam_rsearch __P((DBC *, db_recno_t *, u_int32_t, int, int *));
+ * PUBLIC: gint __bam_rsearch __P((DBC *, db_recno_t *, u_int32_t, int, gint *));
  */
-int
+gint
 __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	DBC *dbc;
 	db_recno_t *recnop;
 	u_int32_t flags;
-	int stop, *exactp;
+	gint stop, *exactp;
 {
 	BINTERNAL *bi;
 	BTREE_CURSOR *cp;
@@ -77,7 +77,7 @@ __bam_rsearch(dbc, recnop, flags, stop, exactp)
 	db_lockmode_t lock_mode;
 	db_pgno_t pg;
 	db_recno_t recno, t_recno, total;
-	int ret, stack;
+	gint ret, stack;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -308,9 +308,9 @@ err:	BT_STK_POP(cp);
  * __bam_adjust --
  *	Adjust the tree after adding or deleting a record.
  *
- * PUBLIC: int __bam_adjust __P((DBC *, int32_t));
+ * PUBLIC: gint __bam_adjust __P((DBC *, int32_t));
  */
-int
+gint
 __bam_adjust(dbc, adjust)
 	DBC *dbc;
 	int32_t adjust;
@@ -321,7 +321,7 @@ __bam_adjust(dbc, adjust)
 	EPG *epg;
 	PAGE *h;
 	db_pgno_t root_pgno;
-	int ret;
+	gint ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -363,9 +363,9 @@ __bam_adjust(dbc, adjust)
  * __bam_nrecs --
  *	Return the number of records in the tree.
  *
- * PUBLIC: int __bam_nrecs __P((DBC *, db_recno_t *));
+ * PUBLIC: gint __bam_nrecs __P((DBC *, db_recno_t *));
  */
-int
+gint
 __bam_nrecs(dbc, rep)
 	DBC *dbc;
 	db_recno_t *rep;
@@ -375,7 +375,7 @@ __bam_nrecs(dbc, rep)
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t pgno;
-	int ret;
+	gint ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;

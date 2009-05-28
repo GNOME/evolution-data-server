@@ -95,7 +95,7 @@ camel_cipher_context_construct (CamelCipherContext *context, CamelSession *sessi
 }
 
 static int
-cipher_sign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash,
+cipher_sign (CamelCipherContext *ctx, const gchar *userid, CamelCipherHash hash,
 	     struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -117,11 +117,11 @@ cipher_sign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash,
  *
  * Return value: 0 for success or -1 for failure.
  **/
-int
-camel_cipher_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
+gint
+camel_cipher_sign (CamelCipherContext *context, const gchar *userid, CamelCipherHash hash,
 		   struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
-	int retval;
+	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 
@@ -182,7 +182,7 @@ camel_cipher_verify (CamelCipherContext *context, struct _CamelMimePart *ipart, 
 }
 
 static int
-cipher_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipients,
+cipher_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipients,
 		struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -204,11 +204,11 @@ cipher_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *reci
  *
  * Return value: 0 for success or -1 for failure.
  **/
-int
-camel_cipher_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipients,
+gint
+camel_cipher_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipients,
 		      struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
-	int retval;
+	gint retval;
 
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
 
@@ -284,7 +284,7 @@ cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, C
  *
  * Returns: 0 on success or -1 on fail.
  **/
-int
+gint
 camel_cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, CamelException *ex)
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), -1);
@@ -315,7 +315,7 @@ cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
  *
  * Returns: 0 on success or -1 on fail.
  **/
-int
+gint
 camel_cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
 			  struct _CamelStream *ostream, CamelException *ex)
 {
@@ -327,27 +327,27 @@ camel_cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
 }
 
 static CamelCipherHash
-cipher_id_to_hash(CamelCipherContext *context, const char *id)
+cipher_id_to_hash(CamelCipherContext *context, const gchar *id)
 {
 	return CAMEL_CIPHER_HASH_DEFAULT;
 }
 
 /* a couple of util functions */
 CamelCipherHash
-camel_cipher_id_to_hash(CamelCipherContext *context, const char *id)
+camel_cipher_id_to_hash(CamelCipherContext *context, const gchar *id)
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), CAMEL_CIPHER_HASH_DEFAULT);
 
 	return CCC_CLASS (context)->id_to_hash (context, id);
 }
 
-static const char *
+static const gchar *
 cipher_hash_to_id(CamelCipherContext *context, CamelCipherHash hash)
 {
 	return NULL;
 }
 
-const char *
+const gchar *
 camel_cipher_hash_to_id(CamelCipherContext *context, CamelCipherHash hash)
 {
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), NULL);
@@ -467,7 +467,7 @@ camel_cipher_validity_clone(CamelCipherValidity *vin)
  * Add a cert info to the signer or encrypter info.
  **/
 void
-camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_validity_mode_t mode, const char *name, const char *email)
+camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email)
 {
 	CamelCipherCertInfo *info;
 	CamelDList *list;
@@ -609,7 +609,7 @@ cc_prepare_sign(CamelMimePart *part)
 {
 	CamelDataWrapper *dw;
 	CamelTransferEncoding encoding;
-	int parts, i;
+	gint parts, i;
 
 	dw = camel_medium_get_content_object((CamelMedium *)part);
 	if (!dw)
@@ -643,12 +643,12 @@ cc_prepare_sign(CamelMimePart *part)
  *
  * Return value: -1 on error;
  **/
-int
+gint
 camel_cipher_canonical_to_stream(CamelMimePart *part, guint32 flags, CamelStream *ostream)
 {
 	CamelStreamFilter *filter;
 	CamelMimeFilter *canon;
-	int res = -1;
+	gint res = -1;
 
 	if (flags & (CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_STRIP))
 		cc_prepare_sign(part);

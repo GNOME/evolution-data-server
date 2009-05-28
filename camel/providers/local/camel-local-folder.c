@@ -69,10 +69,10 @@ static GSList *local_folder_properties;
 #define CF_CLASS(so) CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 #define CLOCALS_CLASS(so) CAMEL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static int local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
-static int local_setv(CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint local_setv(CamelObject *object, CamelException *ex, CamelArgV *args);
 
-static int local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
+static gint local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 static void local_unlock(CamelLocalFolder *lf);
 
 static void local_refresh_info(CamelFolder *folder, CamelException *ex);
@@ -80,14 +80,14 @@ static void local_refresh_info(CamelFolder *folder, CamelException *ex);
 static void local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex);
 static void local_expunge(CamelFolder *folder, CamelException *ex);
 
-static GPtrArray *local_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
-static guint32 local_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
-static GPtrArray *local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
+static GPtrArray *local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex);
+static guint32 local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex);
+static GPtrArray *local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex);
 static void local_search_free(CamelFolder *folder, GPtrArray * result);
 static GPtrArray * local_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex);
 
 static void local_delete(CamelFolder *folder);
-static void local_rename(CamelFolder *folder, const char *newname);
+static void local_rename(CamelFolder *folder, const gchar *newname);
 
 static void local_finalize(CamelObject * object);
 
@@ -184,7 +184,7 @@ camel_local_folder_get_type(void)
 	static CamelType camel_local_folder_type = CAMEL_INVALID_TYPE;
 
 	if (camel_local_folder_type == CAMEL_INVALID_TYPE) {
-		int i;
+		gint i;
 
 		parent_class = (CamelFolderClass *)camel_folder_get_type();
 		camel_local_folder_type = camel_type_register(camel_folder_get_type(), "CamelLocalFolder",
@@ -205,18 +205,18 @@ camel_local_folder_get_type(void)
 }
 
 CamelLocalFolder *
-camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex)
+camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex)
 {
 	CamelFolderInfo *fi;
 	CamelFolder *folder;
-	const char *root_dir_path;
-	char *name;
-	char *tmp, *statepath;
+	const gchar *root_dir_path;
+	gchar *name;
+	gchar *tmp, *statepath;
 #ifndef G_OS_WIN32
-	char folder_path[PATH_MAX];
+	gchar folder_path[PATH_MAX];
 	struct stat st;
 #endif
-	int forceindex, len;
+	gint forceindex, len;
 	CamelURL *url;
 	CamelLocalStore *ls = (CamelLocalStore *)parent_store;
 
@@ -270,7 +270,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	/* if we have no/invalid index file, force it */
 	forceindex = camel_text_index_check(lf->index_path) == -1;
 	if (lf->flags & CAMEL_STORE_FOLDER_BODY_INDEX) {
-		int flag = O_RDWR|O_CREAT;
+		gint flag = O_RDWR|O_CREAT;
 
 		if (forceindex)
 			flag |= O_TRUNC;
@@ -337,7 +337,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 
 /* lock the folder, may be called repeatedly (with matching unlock calls),
    with type the same or less than the first call */
-int camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
+gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 {
 	if (lf->locked > 0) {
 		/* lets be anal here - its important the code knows what its doing */
@@ -354,7 +354,7 @@ int camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelExcep
 }
 
 /* unlock folder */
-int camel_local_folder_unlock(CamelLocalFolder *lf)
+gint camel_local_folder_unlock(CamelLocalFolder *lf)
 {
 	g_assert(lf->locked>0);
 	lf->locked--;
@@ -368,7 +368,7 @@ static int
 local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
-	int i;
+	gint i;
 	guint32 tag;
 
 	for (i=0;i<args->argc;i++) {
@@ -379,7 +379,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		switch (tag & CAMEL_ARG_TAG) {
 		case CAMEL_OBJECT_ARG_DESCRIPTION:
 			if (folder->description == NULL) {
-				char *tmp, *path;
+				gchar *tmp, *path;
 
 				/* check some common prefixes to shorten the name */
 				tmp = ((CamelService *)folder->parent_store)->url->path;
@@ -437,7 +437,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 static int
 local_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 {
-	int i;
+	gint i;
 	guint32 tag;
 
 	for (i=0;i<args->argc;i++) {
@@ -555,10 +555,10 @@ local_delete(CamelFolder *folder)
 }
 
 static void
-local_rename(CamelFolder *folder, const char *newname)
+local_rename(CamelFolder *folder, const gchar *newname)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
-	char *statepath;
+	gchar *statepath;
 	CamelLocalStore *ls = (CamelLocalStore *)folder->parent_store;
 
 	d(printf("renaming local folder paths to '%s'\n", newname));
@@ -585,7 +585,7 @@ local_rename(CamelFolder *folder, const char *newname)
 }
 
 static GPtrArray *
-local_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex)
+local_search_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
 	GPtrArray *matches;
@@ -605,7 +605,7 @@ local_search_by_expression(CamelFolder *folder, const char *expression, CamelExc
 }
 
 static guint32
-local_count_by_expression(CamelFolder *folder, const char *expression, CamelException *ex)
+local_count_by_expression(CamelFolder *folder, const gchar *expression, CamelException *ex)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
 	gint matches;
@@ -625,7 +625,7 @@ local_count_by_expression(CamelFolder *folder, const char *expression, CamelExce
 }
 
 static GPtrArray *
-local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+local_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids, CamelException *ex)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
 	GPtrArray *matches;

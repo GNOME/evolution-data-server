@@ -99,7 +99,7 @@ typedef struct {
 	EFlag *flag;
 	EBook *book;
 	EBookStatus status;
-	char *id;
+	gchar *id;
 	GList *list;
 	EList *elist;
 	EContact *contact;
@@ -127,7 +127,7 @@ typedef enum {
 
 struct _EBookPrivate {
 	/* cached capabilites */
-	char *cap;
+	gchar *cap;
 	gboolean cap_queried;
 
 	/* cached writable status */
@@ -196,7 +196,7 @@ e_book_new_op (EBook *book, gboolean sync)
 }
 
 static EBookOp*
-e_book_get_op (EBook *book, int opid)
+e_book_get_op (EBook *book, gint opid)
 {
 	return (EBookOp*)g_hash_table_lookup (book->priv->id_to_op,
 					      &opid);
@@ -209,7 +209,7 @@ e_book_get_current_sync_op (EBook *book)
 }
 
 static EBookOp *
-e_book_find_op (EBook *book, guint32 opid, const char *func_name)
+e_book_find_op (EBook *book, guint32 opid, const gchar *func_name)
 {
 	EBookOp *op;
 
@@ -271,7 +271,7 @@ do_add_contact (gboolean          sync,
 	EBookOp *our_op;
 	EBookStatus status;
 	CORBA_Environment ev;
-	char *vcard_str;
+	gchar *vcard_str;
 
 	d(printf ("do_add_contact\n"));
 
@@ -441,7 +441,7 @@ static void
 e_book_response_add_contact (EBook       *book,
 			     guint32      opid,
 			     EBookStatus  status,
-			     char        *id)
+			     gchar        *id)
 {
 	EBookOp *op;
 
@@ -485,7 +485,7 @@ do_commit_contact (gboolean        sync,
 	EBookOp *our_op;
 	EBookStatus status;
 	CORBA_Environment ev;
-	char *vcard_str;
+	gchar *vcard_str;
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -1191,9 +1191,9 @@ e_book_response_get_supported_auth_methods (EBook                 *book,
 static gboolean
 do_authenticate_user (gboolean        sync,
 		      EBook          *book,
-		      const char     *user,
-		      const char     *passwd,
-		      const char     *auth_method,
+		      const gchar     *user,
+		      const gchar     *passwd,
+		      const gchar     *auth_method,
 		      GError        **error,
 		      EBookCallback   cb,
 		      gpointer        closure)
@@ -1297,9 +1297,9 @@ do_authenticate_user (gboolean        sync,
  **/
 gboolean
 e_book_authenticate_user (EBook         *book,
-			  const char    *user,
-			  const char    *passwd,
-			  const char    *auth_method,
+			  const gchar    *user,
+			  const gchar    *passwd,
+			  const gchar    *auth_method,
 			  GError       **error)
 {
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
@@ -1330,9 +1330,9 @@ e_book_authenticate_user (EBook         *book,
  **/
 guint
 e_book_async_authenticate_user (EBook                 *book,
-				const char            *user,
-				const char            *passwd,
-				const char            *auth_method,
+				const gchar            *user,
+				const gchar            *passwd,
+				const gchar            *auth_method,
 				EBookCallback         cb,
 				gpointer              closure)
 {
@@ -1351,7 +1351,7 @@ e_book_async_authenticate_user (EBook                 *book,
 static gboolean
 do_get_contact (gboolean sync,
 		EBook *book,
-		const char *id,
+		const gchar *id,
 		EContact **contact,
 		GError **error,
 		EBookContactCallback cb,
@@ -1453,7 +1453,7 @@ do_get_contact (gboolean sync,
  **/
 gboolean
 e_book_get_contact (EBook       *book,
-		    const char  *id,
+		    const gchar  *id,
 		    EContact   **contact,
 		    GError     **error)
 {
@@ -1479,7 +1479,7 @@ e_book_get_contact (EBook       *book,
  **/
 guint
 e_book_async_get_contact (EBook                 *book,
-			  const char            *id,
+			  const gchar            *id,
 			  EBookContactCallback   cb,
 			  gpointer               closure)
 {
@@ -1562,7 +1562,7 @@ do_remove_contacts (gboolean sync,
 	GNOME_Evolution_Addressbook_ContactIdList idlist;
 	CORBA_Environment ev;
 	GList *iter;
-	int num_ids, i;
+	gint num_ids, i;
 	EBookOp *our_op;
 	EBookStatus status;
 
@@ -1663,7 +1663,7 @@ do_remove_contacts (gboolean sync,
  **/
 gboolean
 e_book_remove_contact (EBook       *book,
-		       const char  *id,
+		       const gchar  *id,
 		       GError     **error)
 {
 	GList *list;
@@ -1672,7 +1672,7 @@ e_book_remove_contact (EBook       *book,
 	e_return_error_if_fail (book && E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG, FALSE);
 	e_return_error_if_fail (id,                       E_BOOK_ERROR_INVALID_ARG, FALSE);
 
-	list = g_list_append (NULL, (char*)id);
+	list = g_list_append (NULL, (gchar *)id);
 
 	rv = e_book_remove_contacts (book, list, error);
 
@@ -1684,7 +1684,7 @@ e_book_remove_contact (EBook       *book,
 /**
  * e_book_remove_contacts:
  * @book: an #EBook
- * @ids: an #GList of const char *id's
+ * @ids: an #GList of const gchar *id's
  * @error: a #GError to set on failure
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
@@ -1724,7 +1724,7 @@ e_book_async_remove_contact (EBook                 *book,
 			     EBookCallback          cb,
 			     gpointer               closure)
 {
-	const char *id;
+	const gchar *id;
 
 	g_return_val_if_fail (E_IS_BOOK (book), TRUE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), TRUE);
@@ -1747,7 +1747,7 @@ e_book_async_remove_contact (EBook                 *book,
  **/
 guint
 e_book_async_remove_contact_by_id (EBook                 *book,
-				   const char            *id,
+				   const gchar            *id,
 				   EBookCallback          cb,
 				   gpointer               closure)
 {
@@ -1764,7 +1764,7 @@ e_book_async_remove_contact_by_id (EBook                 *book,
 /**
  * e_book_async_remove_contacts:
  * @book: an #EBook
- * @ids: a #GList of const char *id's
+ * @ids: a #GList of const gchar *id's
  * @cb: a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
@@ -1795,7 +1795,7 @@ do_get_book_view (gboolean sync,
 		  EBook *book,
 		  EBookQuery *query,
 		  GList *requested_fields,
-		  int max_results,
+		  gint max_results,
 		  EBookView **book_view,
 		  GError **error,
 		  EBookBookViewCallback cb,
@@ -1805,9 +1805,9 @@ do_get_book_view (gboolean sync,
 	CORBA_Environment ev;
 	EBookOp *our_op;
 	EBookStatus status;
-	int num_fields, i;
+	gint num_fields, i;
 	GList *iter;
-	char *query_string;
+	gchar *query_string;
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -1847,7 +1847,7 @@ do_get_book_view (gboolean sync,
 	stringlist._length = num_fields;
 
 	for (i = 0, iter = requested_fields; iter; iter = iter->next, i ++) {
-		stringlist._buffer[i] = CORBA_string_dup ((char*)iter->data);
+		stringlist._buffer[i] = CORBA_string_dup ((gchar *)iter->data);
 	}
 
 	query_string = e_book_query_to_string (query);
@@ -1926,7 +1926,7 @@ gboolean
 e_book_get_book_view (EBook       *book,
 		      EBookQuery  *query,
 		      GList       *requested_fields,
-		      int          max_results,
+		      gint          max_results,
 		      EBookView  **book_view,
 		      GError     **error)
 {
@@ -1957,7 +1957,7 @@ guint
 e_book_async_get_book_view (EBook                 *book,
 			    EBookQuery            *query,
 			    GList                 *requested_fields,
-			    int                    max_results,
+			    gint                    max_results,
 			    EBookBookViewCallback  cb,
 			    gpointer               closure)
 {
@@ -2044,7 +2044,7 @@ do_get_contacts (gboolean sync,
 	CORBA_Environment ev;
 	EBookOp *our_op;
 	EBookStatus status;
-	char *query_string;
+	gchar *query_string;
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -2244,7 +2244,7 @@ e_book_response_get_contacts (EBook       *book,
 static gboolean
 do_get_changes (gboolean sync,
 		EBook *book,
-		char *changeid,
+		gchar *changeid,
 		GList **changes,
 		GError **error,
 		EBookListCallback cb,
@@ -2345,7 +2345,7 @@ do_get_changes (gboolean sync,
  */
 gboolean
 e_book_get_changes (EBook       *book,
-		    char        *changeid,
+		    gchar        *changeid,
 		    GList      **changes,
 		    GError     **error)
 {
@@ -2372,7 +2372,7 @@ e_book_get_changes (EBook       *book,
  */
 guint
 e_book_async_get_changes (EBook             *book,
-			  char              *changeid,
+			  gchar              *changeid,
 			  EBookListCallback  cb,
 			  gpointer           closure)
 {
@@ -2515,7 +2515,7 @@ e_book_response_generic (EBook       *book,
 }
 
 static gboolean
-do_cancel (EBook *book, GError **error, EBookOp *op, const char *func_name)
+do_cancel (EBook *book, GError **error, EBookOp *op, const gchar *func_name)
 {
 	EBookStatus status;
 	gboolean rv;
@@ -3244,12 +3244,12 @@ backend_died_cb (EComponentListener *cl, gpointer user_data)
 }
 
 static GList *
-activate_factories_for_uri (EBook *book, const char *uri)
+activate_factories_for_uri (EBook *book, const gchar *uri)
 {
 	CORBA_Environment ev;
 	Bonobo_ServerInfoList *info_list = NULL;
-	int i;
-	char *query;
+	gint i;
+	gchar *query;
 	GList *factories = NULL;
 
 	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" API_VERSION "')";
@@ -3259,7 +3259,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	info_list = bonobo_activation_query (query, NULL, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		char *exc_text = bonobo_exception_get_text (&ev);
+		gchar *exc_text = bonobo_exception_get_text (&ev);
 		g_warning ("Cannot perform bonobo-activation query for book factories: %s", exc_text);
 		g_free (exc_text);
 		CORBA_exception_free (&ev);
@@ -3403,7 +3403,7 @@ fetch_corba_book (EBook       *book,
  *
  * Return value: The URI.
  */
-const char *
+const gchar *
 e_book_get_uri (EBook *book)
 {
 	g_return_val_if_fail (book && E_IS_BOOK (book), NULL);
@@ -3437,7 +3437,7 @@ e_book_get_source (EBook *book)
  *
  * Return value: The capabilities list
  */
-const char *
+const gchar *
 e_book_get_static_capabilities (EBook   *book,
 				GError **error)
 {
@@ -3445,7 +3445,7 @@ e_book_get_static_capabilities (EBook   *book,
 
 	if (!book->priv->cap_queried) {
 		CORBA_Environment ev;
-		char *temp;
+		gchar *temp;
 
 		CORBA_exception_init (&ev);
 
@@ -3489,9 +3489,9 @@ e_book_get_static_capabilities (EBook   *book,
  */
 gboolean
 e_book_check_static_capability (EBook *book,
-				const char  *cap)
+				const gchar  *cap)
 {
-	const char *caps;
+	const gchar *caps;
 
 	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
 
@@ -3575,7 +3575,7 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	GError *e = NULL;
 	GConfClient *gconf;
 	gboolean status;
-	char *uid;
+	gchar *uid;
 
 	*book = e_book_new_system_addressbook (&e);
 
@@ -3658,7 +3658,7 @@ gboolean
 e_book_is_self (EContact *contact)
 {
 	GConfClient *gconf;
-	char *uid;
+	gchar *uid;
 	gboolean rv;
 
 	/* XXX this should probably be e_return_error_if_fail, but we
@@ -3716,7 +3716,7 @@ gboolean
 e_book_set_default_source (ESource *source, GError **error)
 {
 	ESourceList *sources;
-	const char *uid;
+	const gchar *uid;
 	GError *err = NULL;
 	GSList *g;
 
@@ -3787,8 +3787,8 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 }
 
 
-static void*
-startup_mainloop (void *arg)
+static gpointer
+startup_mainloop (gpointer arg)
 {
 	GMainLoop *loop = g_main_loop_new (_ebook_context, FALSE);
 	g_main_loop_run (loop);
@@ -3861,7 +3861,7 @@ e_book_new (ESource *source, GError **error)
  * Return value: a new but unopened #EBook.
  */
 EBook*
-e_book_new_from_uri (const char *uri, GError **error)
+e_book_new_from_uri (const gchar *uri, GError **error)
 {
 	ESourceGroup *group;
 	ESource *source;
@@ -3927,8 +3927,8 @@ e_book_new_system_addressbook    (GError **error)
 		book = e_book_new (system_source, &err);
 	}
 	else {
-		char *filename;
-		char *uri;
+		gchar *filename;
+		gchar *uri;
 
 		filename = g_build_filename (g_get_home_dir(),
 					     ".evolution/addressbook/local/system",

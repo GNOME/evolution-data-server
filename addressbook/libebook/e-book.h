@@ -37,10 +37,10 @@ typedef struct _EBookPrivate EBookPrivate;
 
 typedef void (*EBookCallback) (EBook *book, EBookStatus status, gpointer closure);
 typedef void (*EBookOpenProgressCallback)     (EBook          *book,
-					       const char     *status_message,
+					       const gchar     *status_message,
 					       short           percent,
 					       gpointer        closure);
-typedef void (*EBookIdCallback)       (EBook *book, EBookStatus status, const char *id, gpointer closure);
+typedef void (*EBookIdCallback)       (EBook *book, EBookStatus status, const gchar *id, gpointer closure);
 typedef void (*EBookContactCallback)  (EBook *book, EBookStatus status, EContact *contact, gpointer closure);
 typedef void (*EBookListCallback)     (EBook *book, EBookStatus status, GList *list, gpointer closure);
 typedef void (*EBookBookViewCallback) (EBook *book, EBookStatus status, EBookView *book_view, gpointer closure);
@@ -74,7 +74,7 @@ struct _EBookClass {
 
 /* Creating a new addressbook. */
 EBook    *e_book_new                       (ESource *source, GError **error);
-EBook    *e_book_new_from_uri              (const char *uri, GError **error);
+EBook    *e_book_new_from_uri              (const gchar *uri, GError **error);
 EBook    *e_book_new_system_addressbook    (GError **error);
 EBook    *e_book_new_default_addressbook   (GError **error);
 
@@ -120,32 +120,32 @@ guint    e_book_async_get_supported_auth_methods (EBook              *book,
 
 /* User authentication. */
 gboolean e_book_authenticate_user          (EBook       *book,
-					    const char  *user,
-					    const char  *passwd,
-					    const char  *auth_method,
+					    const gchar  *user,
+					    const gchar  *passwd,
+					    const gchar  *auth_method,
 					    GError     **error);
 
 guint e_book_async_authenticate_user       (EBook                 *book,
-					    const char            *user,
-					    const char            *passwd,
-					    const char            *auth_method,
+					    const gchar            *user,
+					    const gchar            *passwd,
+					    const gchar            *auth_method,
 					    EBookCallback         cb,
 					    gpointer              closure);
 
 /* Fetching contacts. */
 gboolean e_book_get_contact                (EBook       *book,
-					    const char  *id,
+					    const gchar  *id,
 					    EContact   **contact,
 					    GError     **error);
 
 guint     e_book_async_get_contact         (EBook                 *book,
-					    const char            *id,
+					    const gchar            *id,
 					    EBookContactCallback   cb,
 					    gpointer               closure);
 
 /* Deleting contacts. */
 gboolean e_book_remove_contact             (EBook       *book,
-					    const char  *id,
+					    const gchar  *id,
 					    GError     **error);
 
 guint    e_book_async_remove_contact       (EBook                 *book,
@@ -153,7 +153,7 @@ guint    e_book_async_remove_contact       (EBook                 *book,
 					    EBookCallback          cb,
 					    gpointer               closure);
 guint    e_book_async_remove_contact_by_id (EBook                 *book,
-					    const char            *id,
+					    const gchar            *id,
 					    EBookCallback          cb,
 					    gpointer               closure);
 
@@ -190,14 +190,14 @@ guint e_book_async_commit_contact          (EBook                 *book,
 gboolean e_book_get_book_view              (EBook       *book,
 					    EBookQuery  *query,
 					    GList       *requested_fields,
-					    int          max_results,
+					    gint          max_results,
 					    EBookView  **book_view,
 					    GError     **error);
 
 guint e_book_async_get_book_view           (EBook                 *book,
 					    EBookQuery            *query,
 					    GList                 *requested_fields,
-					    int                    max_results,
+					    gint                    max_results,
 					    EBookBookViewCallback  cb,
 					    gpointer               closure);
 
@@ -214,24 +214,24 @@ guint     e_book_async_get_contacts        (EBook             *book,
 
 /* Needed for syncing */
 gboolean e_book_get_changes                (EBook       *book,
-					    char        *changeid,
+					    gchar        *changeid,
 					    GList      **changes,
 					    GError     **error);
 
 guint    e_book_async_get_changes          (EBook             *book,
-					    char              *changeid,
+					    gchar              *changeid,
 					    EBookListCallback  cb,
 					    gpointer           closure);
 
 void     e_book_free_change_list           (GList       *change_list);
 
-const char *e_book_get_uri                 (EBook       *book);
+const gchar *e_book_get_uri                 (EBook       *book);
 ESource    *e_book_get_source              (EBook       *book);
 
-const char *e_book_get_static_capabilities (EBook    *book,
+const gchar *e_book_get_static_capabilities (EBook    *book,
 					    GError  **error);
 gboolean    e_book_check_static_capability (EBook       *book,
-					    const char  *cap);
+					    const gchar  *cap);
 gboolean    e_book_is_opened               (EBook       *book);
 gboolean    e_book_is_writable             (EBook       *book);
 

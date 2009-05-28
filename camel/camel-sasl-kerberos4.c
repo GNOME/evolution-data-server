@@ -65,7 +65,7 @@ static CamelSaslClass *parent_class = NULL;
 static GByteArray *krb4_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex);
 
 struct _CamelSaslKerberos4Private {
-	int state;
+	gint state;
 
 	guint32 nonce_n;
 	guint32 nonce_h;
@@ -129,9 +129,9 @@ krb4_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 {
 	struct _CamelSaslKerberos4Private *priv = CAMEL_SASL_KERBEROS4 (sasl)->priv;
 	GByteArray *ret = NULL;
-	char *inst, *realm, *username;
+	gchar *inst, *realm, *username;
 	struct hostent *h;
-	int status, len;
+	gint status, len;
 	KTEXT_ST authenticator;
 	CREDENTIALS credentials;
 	guint32 plus1;
@@ -212,7 +212,7 @@ krb4_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 		ret->data[5] = ret->data[6] = ret->data[7] = 0;
 		strcpy (ret->data + 8, username);
 
-		des_pcbc_encrypt ((void *)ret->data, (void *)ret->data, len,
+		des_pcbc_encrypt ((gpointer)ret->data, (gpointer)ret->data, len,
 				  priv->schedule, &priv->session, 1);
 		memset (&priv->session, 0, sizeof (priv->session));
 

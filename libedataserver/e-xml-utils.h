@@ -26,8 +26,8 @@
 
 G_BEGIN_DECLS
 
-xmlDocPtr   e_xml_parse_file (const char *filename);
-int         e_xml_save_file  (const char *filename,
+xmlDocPtr   e_xml_parse_file (const gchar *filename);
+gint         e_xml_save_file  (const gchar *filename,
 			      xmlDocPtr   doc);
 xmlNode    *e_xml_get_child_by_name (const xmlNode *parent,
 				     const xmlChar *child_name);

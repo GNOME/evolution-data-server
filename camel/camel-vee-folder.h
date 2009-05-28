@@ -41,7 +41,7 @@ struct _CamelVeeFolder {
 
 	struct _CamelVeeFolderPrivate *priv;
 
-	char *expression;	/* query expression */
+	gchar *expression;	/* query expression */
 
 	guint32 flags;		/* folder open flags */
 
@@ -63,34 +63,34 @@ struct _CamelVeeFolderClass {
 
 	void (*add_folder)(CamelVeeFolder *, CamelFolder *);
 	void (*remove_folder)(CamelVeeFolder *, CamelFolder *);
-	int (*rebuild_folder)(CamelVeeFolder *, CamelFolder *, CamelException *);
+	gint (*rebuild_folder)(CamelVeeFolder *, CamelFolder *, CamelException *);
 
-	void (*set_expression)(CamelVeeFolder *, const char *);
+	void (*set_expression)(CamelVeeFolder *, const gchar *);
 
 	/* Called for a folder-changed event on a source folder */
 	void (*folder_changed)(CamelVeeFolder *, CamelFolder *sub, CamelFolderChangeInfo *changes);
 	/* Called for a folder-renamed event on a source folder */
-	void (*folder_renamed)(CamelVeeFolder *, CamelFolder *sub, const char *old);
+	void (*folder_renamed)(CamelVeeFolder *, CamelFolder *sub, const gchar *old);
 };
 
 #define CAMEL_UNMATCHED_NAME "UNMATCHED"
 
 CamelType	      camel_vee_folder_get_type		(void);
-CamelFolder  *camel_vee_folder_new		(CamelStore *parent_store, const char *full, guint32 flags);
-void         camel_vee_folder_construct		(CamelVeeFolder *vf, CamelStore *parent_store, const char *full, const char *name, guint32 flags);
+CamelFolder  *camel_vee_folder_new		(CamelStore *parent_store, const gchar *full, guint32 flags);
+void         camel_vee_folder_construct		(CamelVeeFolder *vf, CamelStore *parent_store, const gchar *full, const gchar *name, guint32 flags);
 
-CamelFolder *camel_vee_folder_get_location(CamelVeeFolder *vf, const struct _CamelVeeMessageInfo *vinfo, char **realuid);
+CamelFolder *camel_vee_folder_get_location(CamelVeeFolder *vf, const struct _CamelVeeMessageInfo *vinfo, gchar **realuid);
 
 void         camel_vee_folder_add_folder        (CamelVeeFolder *vf, CamelFolder *sub);
 void         camel_vee_folder_remove_folder     (CamelVeeFolder *vf, CamelFolder *sub);
 void	     camel_vee_folder_set_folders	(CamelVeeFolder *vf, GList *folders);
-int          camel_vee_folder_rebuild_folder(CamelVeeFolder *vf, CamelFolder *sub, CamelException *ex);
-void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const char *expr);
+gint          camel_vee_folder_rebuild_folder(CamelVeeFolder *vf, CamelFolder *sub, CamelException *ex);
+void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const gchar *expr);
 
 void	     camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);
 void	     camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);
 
-void	     camel_vee_folder_hash_folder	(CamelFolder *folder, char buffer[8]);
+void	     camel_vee_folder_hash_folder	(CamelFolder *folder, gchar buffer[8]);
 void	     camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex);
 
 G_END_DECLS

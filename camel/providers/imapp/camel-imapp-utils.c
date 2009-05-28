@@ -21,7 +21,7 @@
 
 /* ANSI-C code produced by gperf version 2.7 */
 /* Command-line: gperf -H imap_hash -N imap_tokenise -L ANSI-C -o -t -k1,$ imap-tokens.txt  */
-struct _imap_keyword { char *name; camel_imapp_id_t id; };
+struct _imap_keyword { gchar *name; camel_imapp_id_t id; };
 /*
  gperf input file
  best hash generated using: gperf -o -s-2 -k1,'$' -t -H imap_hash -N imap_tokenise -L ANSI-C
@@ -38,9 +38,9 @@ struct _imap_keyword { char *name; camel_imapp_id_t id; };
 __inline
 #endif
 static unsigned int
-imap_hash (register const char *str, register unsigned int len)
+imap_hash (register const gchar *str, register guint len)
 {
-  static unsigned char asso_values[] =
+  static guchar asso_values[] =
     {
       39, 39, 39, 39, 39, 39, 39, 39, 39, 39,
       39, 39, 39, 39, 39, 39, 39, 39, 39, 39,
@@ -76,7 +76,7 @@ imap_hash (register const char *str, register unsigned int len)
 __inline
 #endif
 camel_imapp_id_t
-imap_tokenise (register const char *str, register unsigned int len)
+imap_tokenise (register const gchar *str, register guint len)
 {
   static struct _imap_keyword wordlist[] =
     {
@@ -115,11 +115,11 @@ imap_tokenise (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = imap_hash (str, len);
+      register gint key = imap_hash (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
         {
-          register const char *s = wordlist[key].name;
+          register const gchar *s = wordlist[key].name;
 
           if (*str == *s && !strcmp (str + 1, s + 1))
             return wordlist[key].id;
@@ -130,7 +130,7 @@ imap_tokenise (register const char *str, register unsigned int len)
 
 /* flag table */
 static struct {
-	char *name;
+	gchar *name;
 	guint32 flag;
 } flag_table[] = {
 	{ "\\ANSWERED", CAMEL_MESSAGE_ANSWERED },
@@ -149,8 +149,8 @@ void
 imap_parse_flags(CamelIMAPPStream *stream, guint32 *flagsp)
 /* throws IO,PARSE exception */
 {
-	int tok, len, i;
-	unsigned char *token, *p, c;
+	gint tok, len, i;
+	guchar *token, *p, c;
 	guint32 flags = 0;
 
 	*flagsp = flags;
@@ -181,7 +181,7 @@ void
 imap_write_flags(CamelStream *stream, guint32 flags)
 /* throws IO exception */
 {
-	int i;
+	gint i;
 
 	/* all this ugly exception throwing goes away once camel streams throw their own? */
 	if (camel_stream_write(stream, "(", 1) == -1)
@@ -319,7 +319,7 @@ media_text      ::= <"> "TEXT" <"> SPACE media_subtype
 /*
 struct _body_fields {
 	CamelContentType *ct;
-	char *msgid, *desc;
+	gchar *msgid, *desc;
 	CamelTransferEncoding encoding;
 	guint32 size;
 	};*/
@@ -347,8 +347,8 @@ imap_free_body(struct _CamelMessageContentInfo *cinfo)
 void
 imap_parse_param_list(CamelIMAPPStream *is, struct _camel_header_param **plist)
 {
-	int tok, len;
-	unsigned char *token, *param;
+	gint tok, len;
+	guchar *token, *param;
 
 	p(printf("body_fld_param\n"));
 
@@ -373,8 +373,8 @@ imap_parse_param_list(CamelIMAPPStream *is, struct _camel_header_param **plist)
 struct _CamelContentDisposition *
 imap_parse_ext_optional(CamelIMAPPStream *is)
 {
-	int tok, len;
-	unsigned char *token;
+	gint tok, len;
+	guchar *token;
 	struct _CamelContentDisposition * volatile dinfo = NULL;
 
 	/* this parses both extension types, from the body_fld_dsp onwards */
@@ -458,7 +458,7 @@ imap_parse_ext_optional(CamelIMAPPStream *is)
 struct _CamelMessageContentInfo *
 imap_parse_body_fields(CamelIMAPPStream *is)
 {
-	unsigned char *token, *type;
+	guchar *token, *type;
 	struct _CamelMessageContentInfo *cinfo;
 
 	/* body_fields     ::= body_fld_param SPACE body_fld_id SPACE
@@ -505,8 +505,8 @@ struct _camel_header_address *
 imap_parse_address_list(CamelIMAPPStream *is)
 /* throws PARSE,IO exception */
 {
-	int tok, len;
-	unsigned char *token, *host, *mbox;
+	gint tok, len;
+	guchar *token, *host, *mbox;
 	struct _camel_header_address *list = NULL;
 
 	/* "(" 1*address ")" / nil */
@@ -555,7 +555,7 @@ imap_parse_address_list(CamelIMAPPStream *is)
 						group = addr;
 					}
 				} else {
-					addr->v.addr = g_strdup_printf("%s%s%s", mbox?(char *)mbox:"", host?"@":"", host?(char *)host:"");
+					addr->v.addr = g_strdup_printf("%s%s%s", mbox?(gchar *)mbox:"", host?"@":"", host?(gchar *)host:"");
 					g_free(mbox);
 					d(printf("adding address '%s'\n", addr->v.addr));
 					if (group != NULL)
@@ -581,10 +581,10 @@ imap_parse_address_list(CamelIMAPPStream *is)
 struct _CamelMessageInfo *
 imap_parse_envelope(CamelIMAPPStream *is)
 {
-	int tok, len;
-	unsigned char *token;
+	gint tok, len;
+	guchar *token;
 	struct _camel_header_address *addr, *addr_from;
-	char *addrstr;
+	gchar *addrstr;
 	struct _CamelMessageInfoBase *minfo;
 
 	/* envelope        ::= "(" env_date SPACE env_subject SPACE env_from
@@ -688,8 +688,8 @@ imap_parse_envelope(CamelIMAPPStream *is)
 struct _CamelMessageContentInfo *
 imap_parse_body(CamelIMAPPStream *is)
 {
-	int tok, len;
-	unsigned char *token;
+	gint tok, len;
+	guchar *token;
 	struct _CamelMessageContentInfo * volatile cinfo = NULL;
 	struct _CamelMessageContentInfo *subinfo, *last;
 	struct _CamelContentDisposition * volatile dinfo = NULL;
@@ -800,7 +800,7 @@ imap_parse_body(CamelIMAPPStream *is)
 			if (tok != ')') {
 				camel_imapp_stream_nstring(is, &token);
 
-				d(printf("md5: %s\n", token?(char *)token:"NIL"));
+				d(printf("md5: %s\n", token?(gchar *)token:"NIL"));
 
 				/* body_fld_dsp    ::= "(" string SPACE body_fld_param ")" / nil */
 
@@ -837,12 +837,12 @@ imap_parse_body(CamelIMAPPStream *is)
 	return cinfo;
 }
 
-char *
+gchar *
 imap_parse_section(CamelIMAPPStream *is)
 {
-	int tok, len;
-	unsigned char *token;
-	char * volatile section = NULL;
+	gint tok, len;
+	guchar *token;
+	gchar * volatile section = NULL;
 
 	/* currently we only return the part within the [section] specifier
 	   any header fields are parsed, but dropped */
@@ -917,7 +917,7 @@ imap_free_fetch(struct _fetch_info *finfo)
 	g_free(finfo);
 }
 
-extern void camel_content_info_dump(CamelMessageContentInfo *ci, int depth);
+extern void camel_content_info_dump(CamelMessageContentInfo *ci, gint depth);
 extern void camel_message_info_dump(CamelMessageInfo *mi);
 
 #include "camel-stream-fs.h"
@@ -927,7 +927,7 @@ void
 imap_dump_fetch(struct _fetch_info *finfo)
 {
 	CamelStream *sout;
-	int fd;
+	gint fd;
 
 	printf("Fetch info:\n");
 	if (finfo == NULL) {
@@ -975,8 +975,8 @@ imap_dump_fetch(struct _fetch_info *finfo)
 struct _fetch_info *
 imap_parse_fetch(CamelIMAPPStream *is)
 {
-	int tok, len;
-	unsigned char *token, *p, c;
+	gint tok, len;
+	guchar *token, *p, c;
 	struct _fetch_info *finfo;
 
 	finfo = g_malloc0(sizeof(*finfo));
@@ -1071,8 +1071,8 @@ imap_parse_fetch(CamelIMAPPStream *is)
 struct _status_info *
 imap_parse_status(CamelIMAPPStream *is)
 {
-	int tok, len;
-	unsigned char *token;
+	gint tok, len;
+	guchar *token;
 	struct _status_info *sinfo;
 
 	sinfo = g_malloc0(sizeof(*sinfo));
@@ -1147,7 +1147,7 @@ imap_parse_status(CamelIMAPPStream *is)
 		}
 
 		/* and take the human readable response */
-		camel_imapp_stream_text(is, (unsigned char **)&sinfo->text);
+		camel_imapp_stream_text(is, (guchar **)&sinfo->text);
 	} CAMEL_CATCH(ex) {
 		imap_free_status(sinfo);
 		camel_exception_throw_ex(ex);
@@ -1177,7 +1177,7 @@ imap_free_status(struct _status_info *sinfo)
 /* FIXME: use tokeniser? */
 /* FIXME: real flags */
 static struct {
-	char *name;
+	gchar *name;
 	guint32 flag;
 } list_flag_table[] = {
 	{ "\\NOINFERIORS", CAMEL_FOLDER_NOINFERIORS },
@@ -1190,8 +1190,8 @@ struct _list_info *
 imap_parse_list(CamelIMAPPStream *is)
 /* throws io, parse */
 {
-	int tok, len, i;
-	unsigned char *token, *p, c;
+	gint tok, len, i;
+	guchar *token, *p, c;
 	struct _list_info * volatile linfo;
 
 	linfo = g_malloc0(sizeof(*linfo));
@@ -1230,12 +1230,12 @@ imap_parse_list(CamelIMAPPStream *is)
 	return linfo;
 }
 
-char *
+gchar *
 imapp_list_get_path(struct _list_info *li)
 {
-	char *path, *p;
-	int c;
-	const char *f;
+	gchar *path, *p;
+	gint c;
+	const gchar *f;
 
 	if (li->separator != 0 && li->separator != '/') {
 		p = path = alloca(strlen(li->name)*3+1);
@@ -1282,10 +1282,10 @@ imapp_uidset_init(struct _uidset_state *ss, CamelIMAPPEngine *ie)
 	ss->last = 0;
 }
 
-int
+gint
 imapp_uidset_done(struct _uidset_state *ss, CamelIMAPPCommand *ic)
 {
-	int ret = 0;
+	gint ret = 0;
 
 	if (ss->last != 0 && ss->last != ss->start) {
 		camel_imapp_engine_command_add(ss->ie, ic, ":%d", ss->last);
@@ -1301,8 +1301,8 @@ imapp_uidset_done(struct _uidset_state *ss, CamelIMAPPCommand *ic)
 	return ret;
 }
 
-int
-imapp_uidset_add(struct _uidset_state *ss, CamelIMAPPCommand *ic, const char *uid)
+gint
+imapp_uidset_add(struct _uidset_state *ss, CamelIMAPPCommand *ic, const gchar *uid)
 {
 	guint32 uidn;
 

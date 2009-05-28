@@ -38,7 +38,7 @@ typedef enum _camel_imapp_id_t {
 } camel_imapp_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */
-camel_imapp_id_t imap_tokenise(register const char *str, register unsigned int len);
+camel_imapp_id_t imap_tokenise(register const gchar *str, register guint len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
@@ -56,7 +56,7 @@ struct _CamelMessageContentInfo *imap_parse_body_fields(CamelIMAPPStream *is); /
 struct _camel_header_address *imap_parse_address_list(CamelIMAPPStream *is); /* IO,PARSE */
 struct _CamelMessageInfo *imap_parse_envelope(CamelIMAPPStream *is); /* IO, PARSE */
 struct _CamelMessageContentInfo *imap_parse_body(CamelIMAPPStream *is); /* IO,PARSE */
-char *imap_parse_section(CamelIMAPPStream *is); /* IO,PARSE */
+gchar *imap_parse_section(CamelIMAPPStream *is); /* IO,PARSE */
 void imap_free_body(struct _CamelMessageContentInfo *cinfo);
 
 /* ********************************************************************** */
@@ -72,9 +72,9 @@ struct _fetch_info {
 	guint32 size;		/* RFC822.SIZE */
 	guint32 offset;		/* start offset of a BODY[]<offset.length> request */
 	guint32 flags;		/* FLAGS */
-	char *date;		/* INTERNALDATE */
-	char *section;		/* section for a BODY[section] request */
-	char *uid;		/* UID */
+	gchar *date;		/* INTERNALDATE */
+	gchar *section;		/* section for a BODY[section] request */
+	gchar *uid;		/* UID */
 };
 
 #define FETCH_BODY (1<<0)
@@ -101,15 +101,15 @@ struct _status_info {
 
 	union {
 		struct {
-			char *oldname;
-			char *newname;
+			gchar *oldname;
+			gchar *newname;
 		} newname;
 		guint32 permanentflags;
 		guint32 uidvalidity;
 		guint32 unseen;
 	} u;
 
-	char *text;
+	gchar *text;
 };
 
 struct _status_info *imap_parse_status(CamelIMAPPStream *is);
@@ -121,19 +121,19 @@ void imap_free_status(struct _status_info *sinfo);
    should this just return the name & flags & separator by reference? */
 struct _list_info {
 	guint32 flags:24;
-	char separator;
-	char *name;
+	gchar separator;
+	gchar *name;
 };
 
 struct _list_info *imap_parse_list(CamelIMAPPStream *is);
-char *imapp_list_get_path(struct _list_info *li);
+gchar *imapp_list_get_path(struct _list_info *li);
 void imap_free_list(struct _list_info *linfo);
 
 /* ********************************************************************** */
 
 struct _uidset_state {
 	struct _CamelIMAPPEngine *ie;
-	int len;
+	gint len;
 	guint32 start;
 	guint32 last;
 };
@@ -141,8 +141,8 @@ struct _uidset_state {
 struct _CamelIMAPPEngine;
 struct _CamelIMAPPCommand;
 void imapp_uidset_init(struct _uidset_state *ss, struct _CamelIMAPPEngine *ie);
-int imapp_uidset_done(struct _uidset_state *ss, struct _CamelIMAPPCommand *ic);
-int imapp_uidset_add(struct _uidset_state *ss, struct _CamelIMAPPCommand *ic, const char *uid);
+gint imapp_uidset_done(struct _uidset_state *ss, struct _CamelIMAPPCommand *ic);
+gint imapp_uidset_add(struct _uidset_state *ss, struct _CamelIMAPPCommand *ic, const gchar *uid);
 
 G_END_DECLS
 

@@ -39,7 +39,7 @@
 
 #define	DATABASE	"bench_001.db"
 
-int	main(int, char *[]);
+int	main(int, gchar *[]);
 void	usage(void);
 
 const char
@@ -50,11 +50,11 @@ const char
  */
 DB_ENV *
 db_init(home, prefix, cachesize, txn)
-	char *home, *prefix;
-	int cachesize, txn;
+	gchar *home, *prefix;
+	gint cachesize, txn;
 {
 	DB_ENV *dbenv;
-	int flags, ret;
+	gint flags, ret;
 
 	if ((ret = db_env_create(&dbenv, 0)) != 0) {
 		dbenv->err(dbenv, ret, "db_env_create");
@@ -80,17 +80,17 @@ db_init(home, prefix, cachesize, txn)
  * get -- loop getting batches of records.
  *
  */
-int
+gint
 get(dbp, txn, datalen, num, dups, iter, countp)
 	DB *dbp;
-	int txn, datalen, num, dups, iter, *countp;
+	gint txn, datalen, num, dups, iter, *countp;
 {
 	DBC *dbcp;
 	DBT key, data;
 	DB_TXN *txnp;
 	u_int32_t len, klen;
-	int count, flags, i, j, ret;
-	void *pointer, *dp, *kp;
+	gint count, flags, i, j, ret;
+	gpointer pointer, *dp, *kp;
 
 	memset(&key, 0, sizeof(key));
 	key.data = &j;
@@ -149,19 +149,19 @@ get(dbp, txn, datalen, num, dups, iter, countp)
  * 10 to a transaction.
  */
 #define	PUTS_PER_TXN	10
-int
+gint
 fill(dbenv, dbp, txn, datalen, num, dups)
 	DB_ENV *dbenv;
 	DB *dbp;
-	int txn, datalen, num, dups;
+	gint txn, datalen, num, dups;
 {
 	DBT key, data;
 	DB_TXN *txnp;
 	struct data {
-		int id;
-		char str[1];
+		gint id;
+		gchar str[1];
 	} *data_val;
-	int count, i, ret;
+	gint count, i, ret;
 	/*
 	 * Insert records into the database, where the key is the user
 	 * input and the data is the user input in reverse order.
@@ -215,20 +215,20 @@ err:	if (txnp != NULL)
 	return (ret);
 }
 
-int
+gint
 main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind;
+	extern gchar *optarg;
+	extern gint optind;
 	DB *dbp;
 	DB_ENV *dbenv;
 	DB_TXN *txnp;
 	struct timeval start_time, end_time;
 	double secs;
-	int cache, ch, count, datalen, dups, env, init, iter, num, pagesize;
-	int ret, rflag, txn;
+	gint cache, ch, count, datalen, dups, env, init, iter, num, pagesize;
+	gint ret, rflag, txn;
 
 	txnp = NULL;
 	datalen = 20;

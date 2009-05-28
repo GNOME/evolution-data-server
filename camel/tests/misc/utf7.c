@@ -11,11 +11,11 @@
 #include "camel-test.h"
 
 static struct {
-	unsigned char *utf8;
-	char *utf7;
+	guchar *utf8;
+	gchar *utf7;
 	guint32 unicode[200];
 } tests[] = {
-	/* the escape char */
+	/* the escape gchar */
 	{ "&", "&-",
 	  {  0x0026, } },
 	/* part of set D */
@@ -43,13 +43,13 @@ static struct {
 };
 #define TESTS_LENGTH (sizeof(tests)/sizeof(tests[0]))
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	char *utf8, *utf7, *p;
-	int i, j;
+	gchar *utf8, *utf7, *p;
+	gint i, j;
 	guint32 u;
-	char utf8enc[256];
+	gchar utf8enc[256];
 	GString *out;
 
 	camel_test_init(argc, argv);
@@ -64,7 +64,7 @@ main (int argc, char **argv)
 		p = tests[i].utf8;
 		j = 0;
 		do {
-			u = camel_utf8_getc((const unsigned char **)&p);
+			u = camel_utf8_getc((const guchar **)&p);
 			check(u == tests[i].unicode[j]);
 			j++;
 		} while (u);
@@ -90,7 +90,7 @@ main (int argc, char **argv)
 		j = 0;
 		do {
 			u = tests[i].unicode[j++];
-			camel_utf8_putc((unsigned char **)&p, u);
+			camel_utf8_putc((guchar **)&p, u);
 			g_string_append_u(out, u);
 		} while (u);
 

@@ -61,24 +61,24 @@ typedef struct {
 /* FIXME: deprecated
    This is used exclusively for the legacy imap cache code.  DO NOT use this in any new code */
 
-typedef gboolean (*EPathFindFoldersCallback) (const char *physical_path,
-					      const char *path,
+typedef gboolean (*EPathFindFoldersCallback) (const gchar *physical_path,
+					      const gchar *path,
 					      gpointer user_data);
 
-char *   e_path_to_physical  (const char *prefix, const char *vpath);
+gchar *   e_path_to_physical  (const gchar *prefix, const gchar *vpath);
 
-gboolean e_path_find_folders (const char *prefix,
+gboolean e_path_find_folders (const gchar *prefix,
 			      EPathFindFoldersCallback callback,
 			      gpointer data);
 
-int      e_path_rmdir        (const char *prefix, const char *vpath);
+gint      e_path_rmdir        (const gchar *prefix, const gchar *vpath);
 
 
 EGwItem *camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *message, CamelAddress *from);
 
 void do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new);
-char *gw_concat ( const char *prefix, const char *suffix);
-void strip_lt_gt (char **string, int s_offset, int e_offset);
+gchar *gw_concat ( const gchar *prefix, const gchar *suffix);
+void strip_lt_gt (gchar **string, gint s_offset, gint e_offset);
 
 G_END_DECLS
 

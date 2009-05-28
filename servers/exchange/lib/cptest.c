@@ -31,10 +31,10 @@
 #include "e2k-kerberos.h"
 #include "test-utils.h"
 
-const char *test_program_name = "cptest";
+const gchar *test_program_name = "cptest";
 
 static void
-krb_error (E2kKerberosResult result, const char *failed)
+krb_error (E2kKerberosResult result, const gchar *failed)
 {
 	switch (result) {
 	case E2K_KERBEROS_USER_UNKNOWN:
@@ -75,12 +75,12 @@ krb_error (E2kKerberosResult result, const char *failed)
 }
 
 void
-test_main (int argc, char **argv)
+test_main (gint argc, gchar **argv)
 {
-	char *domain, *at, *prompt, *password;
-	char *newpass1, *newpass2;
-	const char *user;
-	int res;
+	gchar *domain, *at, *prompt, *password;
+	gchar *newpass1, *newpass2;
+	const gchar *user;
+	gint res;
 
 	if (argc != 2) {
 		fprintf (stderr, "Usage: %s [user@]domain\n", argv[0]);

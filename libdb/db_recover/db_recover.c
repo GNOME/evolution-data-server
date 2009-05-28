@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char copyright[] =
+static const gchar copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const char revid[] =
+static const gchar revid[] =
     "$Id$";
 #endif
 
@@ -36,25 +36,25 @@ static const char revid[] =
 #include "db_int.h"
 #include "dbinc/txn.h"
 
-int main __P((int, char *[]));
-int read_timestamp __P((const char *, char *, time_t *));
-int usage __P((void));
-int version_check __P((const char *));
+gint main __P((int, gchar *[]));
+gint read_timestamp __P((const gchar *, gchar *, time_t *));
+gint usage __P((void));
+gint version_check __P((const gchar *));
 
-int
+gint
 main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern char *optarg;
-	extern int optind;
-	const char *progname = "db_recover";
+	extern gchar *optarg;
+	extern gint optind;
+	const gchar *progname = "db_recover";
 	DB_ENV	*dbenv;
 	DB_TXNREGION *region;
 	time_t now, timestamp;
 	u_int32_t flags;
-	int ch, exitval, fatal_recover, ret, retain_env, verbose;
-	char *home, *passwd;
+	gint ch, exitval, fatal_recover, ret, retain_env, verbose;
+	gchar *home, *passwd;
 
 	if ((ret = version_check(progname)) != 0)
 		return (ret);
@@ -215,16 +215,16 @@ shutdown:	exitval = 1;
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-int
+gint
 read_timestamp(progname, arg, timep)
-	const char *progname;
-	char *arg;
+	const gchar *progname;
+	gchar *arg;
 	time_t *timep;
 {
 	struct tm *t;
 	time_t now;
-	int yearset;
-	char *p;
+	gint yearset;
+	gchar *p;
 					/* Start with the current time. */
 	(void)time(&now);
 	if ((t = localtime(&now)) == NULL) {
@@ -285,7 +285,7 @@ terr:		fprintf(stderr,
 	return (0);
 }
 
-int
+gint
 usage()
 {
 	(void)fprintf(stderr, "%s\n",
@@ -293,11 +293,11 @@ usage()
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 version_check(progname)
-	const char *progname;
+	const gchar *progname;
 {
-	int v_major, v_minor, v_patch;
+	gint v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

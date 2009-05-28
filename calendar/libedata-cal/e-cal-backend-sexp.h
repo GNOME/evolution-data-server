@@ -53,11 +53,11 @@ struct _ECalBackendSExpClass {
 
 GType            e_cal_backend_sexp_get_type     (void);
 
-ECalBackendSExp *e_cal_backend_sexp_new          (const char      *text);
-const char      *e_cal_backend_sexp_text         (ECalBackendSExp *sexp);
+ECalBackendSExp *e_cal_backend_sexp_new          (const gchar      *text);
+const gchar      *e_cal_backend_sexp_text         (ECalBackendSExp *sexp);
 
 gboolean         e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
-						  const char      *object,
+						  const gchar      *object,
 						  ECalBackend     *backend);
 gboolean         e_cal_backend_sexp_match_comp   (ECalBackendSExp *sexp,
 						  ECalComponent   *comp,
@@ -66,11 +66,11 @@ gboolean         e_cal_backend_sexp_match_comp   (ECalBackendSExp *sexp,
 
 /* Default implementations of time functions for use by subclasses */
 
-ESExpResult *e_cal_backend_sexp_func_time_now       (ESExp *esexp, int argc, ESExpResult **argv, void *data);
-ESExpResult *e_cal_backend_sexp_func_make_time      (ESExp *esexp, int argc, ESExpResult **argv, void *data);
-ESExpResult *e_cal_backend_sexp_func_time_add_day   (ESExp *esexp, int argc, ESExpResult **argv, void *data);
-ESExpResult *e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, int argc, ESExpResult **argv, void *data);
-ESExpResult *e_cal_backend_sexp_func_time_day_end   (ESExp *esexp, int argc, ESExpResult **argv, void *data);
+ESExpResult *e_cal_backend_sexp_func_time_now       (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
+ESExpResult *e_cal_backend_sexp_func_make_time      (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
+ESExpResult *e_cal_backend_sexp_func_time_add_day   (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
+ESExpResult *e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
+ESExpResult *e_cal_backend_sexp_func_time_day_end   (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
 
 
 G_END_DECLS

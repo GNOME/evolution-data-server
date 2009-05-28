@@ -99,7 +99,7 @@ send_and_handle_google_redirection (SoupSession *soup_session, SoupMessage *msg)
 
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
 		SoupURI *new_uri;
-		const char *new_loc;
+		const gchar *new_loc;
 
 		new_loc = soup_message_headers_get (msg->response_headers, "Location");
 		g_return_if_fail (new_loc != NULL);
@@ -347,7 +347,7 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GEr
 static GDataEntry*
 gdata_google_service_update_entry (GDataService *service, GDataEntry *entry, GError **error)
 {
-	const char *entry_edit_url;
+	const gchar *entry_edit_url;
 
 	g_return_val_if_fail (service !=NULL, FALSE);
 	g_return_val_if_fail (GDATA_IS_GOOGLE_SERVICE (service), FALSE);

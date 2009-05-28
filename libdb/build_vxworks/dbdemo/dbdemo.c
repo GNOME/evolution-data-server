@@ -14,7 +14,7 @@
 #include <string.h>
 
 #ifdef _WIN32
-extern int getopt(int, char * const *, const char *);
+extern gint getopt(int, gchar * const *, const gchar *);
 #else
 #include <unistd.h>
 #endif
@@ -23,15 +23,15 @@ extern int getopt(int, char * const *, const char *);
 #include <db_int.h>
 
 #define	DATABASE	"access.db"
-int dbdemo_main __P((int, char *[]));
-int dbdemo_usage __P((void));
+gint dbdemo_main __P((int, gchar *[]));
+gint dbdemo_usage __P((void));
 
-int
+gint
 dbdemo(args)
-	char *args;
+	gchar *args;
 {
-	int argc;
-	char **argv;
+	gint argc;
+	gchar **argv;
 
 	__db_util_arg("dbdemo", args, &argc, &argv);
 	return (dbdemo_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -40,19 +40,19 @@ dbdemo(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-int
+gint
 dbdemo_main(argc, argv)
-	int argc;
-	char *argv[];
+	gint argc;
+	gchar *argv[];
 {
-	extern int optind, __db_getopt_reset;
+	extern gint optind, __db_getopt_reset;
 	DB *dbp;
 	DBC *dbcp;
 	DBT key, data;
 	u_int32_t len;
-	int ch, ret, rflag;
-	char *database, *p, *t, buf[1024], rbuf[1024];
-	const char *progname = "dbdemo";		/* Program name. */
+	gint ch, ret, rflag;
+	gchar *database, *p, *t, buf[1024], rbuf[1024];
+	const gchar *progname = "dbdemo";		/* Program name. */
 
 	rflag = 0;
 	__db_getopt_reset = 1;
@@ -146,8 +146,8 @@ dbdemo_main(argc, argv)
 	/* Walk through the database and print out the key/data pairs. */
 	while ((ret = dbcp->c_get(dbcp, &key, &data, DB_NEXT)) == 0)
 		printf("%.*s : %.*s\n",
-		    (int)key.size, (char *)key.data,
-		    (int)data.size, (char *)data.data);
+		    (int)key.size, (gchar *)key.data,
+		    (int)data.size, (gchar *)data.data);
 	if (ret != DB_NOTFOUND) {
 		dbp->err(dbp, ret, "DBcursor->get");
 		goto err2;
@@ -170,7 +170,7 @@ err1:	(void)dbp->close(dbp, 0);
 	return (EXIT_FAILURE);
 }
 
-int
+gint
 dbdemo_usage()
 {
 	(void)fprintf(stderr, "usage: ex_access [-r] [database]\n");

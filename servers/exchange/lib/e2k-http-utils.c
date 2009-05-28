@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern const char *e2k_rfc822_months [];
+extern const gchar *e2k_rfc822_months [];
 
 /**
  * e2k_http_parse_date:
@@ -43,16 +43,16 @@ extern const char *e2k_rfc822_months [];
  * Return value: a %time_t corresponding to @date.
  **/
 time_t
-e2k_http_parse_date (const char *date)
+e2k_http_parse_date (const gchar *date)
 {
 	struct tm tm;
-	char *p;
+	gchar *p;
 
 	if (strlen (date) < 29 || date[3] != ',' || date[4] != ' ')
 		return -1;
 
 	memset (&tm, 0, sizeof (tm));
-	p = (char *)date + 5;
+	p = (gchar *)date + 5;
 
 	tm.tm_mday = strtol (p, &p, 10);
 	p++;
@@ -82,7 +82,7 @@ e2k_http_parse_date (const char *date)
  * Return value: the Status-Code portion of @status_line
  **/
 E2kHTTPStatus
-e2k_http_parse_status (const char *status_line)
+e2k_http_parse_status (const gchar *status_line)
 {
 	if (strncmp (status_line, "HTTP/1.", 7) != 0 ||
 	    !isdigit (status_line[7]) ||
@@ -107,15 +107,15 @@ e2k_http_parse_status (const char *status_line)
  *
  * Return value: an Accept-Language string.
  **/
-const char *
+const gchar *
 e2k_http_accept_language (void)
 {
-	static char *accept = NULL;
+	static gchar *accept = NULL;
 
 	if (!accept) {
 		GString *buf;
-		const char *lang, *sub;
-		int baselen;
+		const gchar *lang, *sub;
+		gint baselen;
 
 		buf = g_string_new (NULL);
 
@@ -154,17 +154,17 @@ e2k_http_accept_language (void)
 }
 
 typedef struct {
-	const char *wanted_header;
+	const gchar *wanted_header;
 	GSList *matches;
 } GetHeadersData;
 
 static void
-maybe_append_header (const char *header_name, const char *value, gpointer data)
+maybe_append_header (const gchar *header_name, const gchar *value, gpointer data)
 {
 	GetHeadersData *ghd = data;
 
 	if (!g_ascii_strcasecmp (header_name, ghd->wanted_header))
-		ghd->matches = g_slist_append (ghd->matches, (char *)value);
+		ghd->matches = g_slist_append (ghd->matches, (gchar *)value);
 }
 
 /* This is a cheat to recreate the behavior of libsoup 2.2's
@@ -173,7 +173,7 @@ maybe_append_header (const char *header_name, const char *value, gpointer data)
  * be doing this...
  */
 GSList *
-e2k_http_get_headers (SoupMessageHeaders *hdrs, const char *header_name)
+e2k_http_get_headers (SoupMessageHeaders *hdrs, const gchar *header_name)
 {
 	GetHeadersData ghd;
 

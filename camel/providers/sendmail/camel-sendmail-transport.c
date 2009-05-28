@@ -43,7 +43,7 @@
 #include "camel-stream-filter.h"
 #include "camel-stream-fs.h"
 
-static char *get_name (CamelService *service, gboolean brief);
+static gchar *get_name (CamelService *service, gboolean brief);
 
 static gboolean sendmail_send_to (CamelTransport *transport,
 				  CamelMimeMessage *message,
@@ -90,8 +90,8 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		  CamelException *ex)
 {
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
-	const char *from_addr, *addr, **argv;
-	int i, len, fd[2], nullfd, wstat;
+	const gchar *from_addr, *addr, **argv;
+	gint i, len, fd[2], nullfd, wstat;
 	CamelStreamFilter *filter;
 	CamelMimeFilter *crlf;
 	sigset_t mask, omask;
@@ -102,7 +102,7 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		return FALSE;
 
 	len = camel_address_length (recipients);
-	argv = g_malloc ((len + 6) * sizeof (char *));
+	argv = g_malloc ((len + 6) * sizeof (gchar *));
 	argv[0] = "sendmail";
 	argv[1] = "-i";
 	argv[2] = "-f";
@@ -185,7 +185,7 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		close (nullfd);
 		close (fd[1]);
 
-		execv (SENDMAIL_PATH, (char **)argv);
+		execv (SENDMAIL_PATH, (gchar **)argv);
 		_exit (255);
 	}
 	g_free (argv);
@@ -256,7 +256,7 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	return TRUE;
 }
 
-static char *
+static gchar *
 get_name (CamelService *service, gboolean brief)
 {
 	if (brief)

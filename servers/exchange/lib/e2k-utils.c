@@ -33,7 +33,7 @@
 #include <string.h>
 
 /* Do not internationalize */
-const char *e2k_rfc822_months [] = {
+const gchar *e2k_rfc822_months [] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
@@ -54,26 +54,26 @@ const char *e2k_rfc822_months [] = {
  * error.
  **/
 time_t
-e2k_parse_timestamp (const char *timestamp)
+e2k_parse_timestamp (const gchar *timestamp)
 {
 	struct tm tm;
 
-	tm.tm_year = strtoul (timestamp, (char **)&timestamp, 10) - 1900;
+	tm.tm_year = strtoul (timestamp, (gchar **)&timestamp, 10) - 1900;
 	if (*timestamp++ != '-')
 		return -1;
-	tm.tm_mon = strtoul (timestamp, (char **)&timestamp, 10) - 1;
+	tm.tm_mon = strtoul (timestamp, (gchar **)&timestamp, 10) - 1;
 	if (*timestamp++ != '-')
 		return -1;
-	tm.tm_mday = strtoul (timestamp, (char **)&timestamp, 10);
+	tm.tm_mday = strtoul (timestamp, (gchar **)&timestamp, 10);
 	if (*timestamp++ != 'T')
 		return -1;
-	tm.tm_hour = strtoul (timestamp, (char **)&timestamp, 10);
+	tm.tm_hour = strtoul (timestamp, (gchar **)&timestamp, 10);
 	if (*timestamp++ != ':')
 		return -1;
-	tm.tm_min = strtoul (timestamp, (char **)&timestamp, 10);
+	tm.tm_min = strtoul (timestamp, (gchar **)&timestamp, 10);
 	if (*timestamp++ != ':')
 		return -1;
-	tm.tm_sec = strtoul (timestamp, (char **)&timestamp, 10);
+	tm.tm_sec = strtoul (timestamp, (gchar **)&timestamp, 10);
 	if (*timestamp != '.' && *timestamp != 'Z')
 		return -1;
 
@@ -89,7 +89,7 @@ e2k_parse_timestamp (const char *timestamp)
  *
  * Return value: the timestamp, which the caller must free.
  **/
-char *
+gchar *
 e2k_make_timestamp (time_t when)
 {
 	struct tm *tm;
@@ -109,11 +109,11 @@ e2k_make_timestamp (time_t when)
  *
  * Return value: the timestamp, which the caller must free.
  **/
-char *
+gchar *
 e2k_make_timestamp_rfc822 (time_t when)
 {
 	struct tm tm;
-	int offset;
+	gint offset;
 
 	e_localtime_with_offset (when, &tm, &offset);
 	offset = (offset / 3600) * 100 + (offset / 60) % 60;
@@ -202,12 +202,12 @@ e2k_filetime_from_time_t (time_t tt)
  *
  * Return value: the converted text, which the caller must free.
  **/
-char *
-e2k_lf_to_crlf (const char *in)
+gchar *
+e2k_lf_to_crlf (const gchar *in)
 {
-	int len;
-	const char *s;
-	char *out, *d;
+	gint len;
+	const gchar *s;
+	gchar *out, *d;
 
 	g_return_val_if_fail (in != NULL, NULL);
 
@@ -235,12 +235,12 @@ e2k_lf_to_crlf (const char *in)
  *
  * Return value: the converted text, which the caller must free.
  **/
-char *
-e2k_crlf_to_lf (const char *in)
+gchar *
+e2k_crlf_to_lf (const gchar *in)
 {
-	int len;
-	const char *s;
-	char *out;
+	gint len;
+	const gchar *s;
+	gchar *out;
 	GString *str;
 
 	g_return_val_if_fail (in != NULL, NULL);
@@ -268,10 +268,10 @@ e2k_crlf_to_lf (const char *in)
  *
  * Return value: the path, which the caller must free
  **/
-char *
-e2k_strdup_with_trailing_slash (const char *path)
+gchar *
+e2k_strdup_with_trailing_slash (const gchar *path)
 {
-	char *p;
+	gchar *p;
 
 	if (!path || !*path)
 		return NULL;
@@ -292,14 +292,14 @@ e2k_strdup_with_trailing_slash (const char *path)
  *
  * Return value: the entryid, which is a pointer into @entryid's data.
  **/
-const char *
+const gchar *
 e2k_entryid_to_dn (GByteArray *entryid)
 {
-	char *p;
+	gchar *p;
 
-	p = ((char *)entryid->data) + entryid->len - 1;
+	p = ((gchar *)entryid->data) + entryid->len - 1;
 	if (*p == 0) {
-		while (*(p - 1) && p > (char *)entryid->data)
+		while (*(p - 1) && p > (gchar *)entryid->data)
 			p--;
 		if (*p == '/')
 			return p;
@@ -310,7 +310,7 @@ e2k_entryid_to_dn (GByteArray *entryid)
 static void
 append_permanenturl_section (GString *url, guint8 *entryid)
 {
-	int i = 0;
+	gint i = 0;
 
 	/* First part */
 	while (i < 16)
@@ -344,11 +344,11 @@ append_permanenturl_section (GString *url, guint8 *entryid)
  *
  * Return value: the permanenturl, which the caller must free.
  **/
-char *
-e2k_entryid_to_permanenturl (GByteArray *entryid, const char *base_uri)
+gchar *
+e2k_entryid_to_permanenturl (GByteArray *entryid, const gchar *base_uri)
 {
 	GString *url;
-	char *ret;
+	gchar *ret;
 
 	g_return_val_if_fail (entryid->len == 22 || entryid->len == 44, NULL);
 
@@ -372,11 +372,11 @@ e2k_entryid_to_permanenturl (GByteArray *entryid, const char *base_uri)
 #define HEXVAL(c) (isdigit (c) ? (c) - '0' : g_ascii_tolower (c) - 'a' + 10)
 
 static gboolean
-append_entryid_section (GByteArray *entryid, const char **permanenturl)
+append_entryid_section (GByteArray *entryid, const gchar **permanenturl)
 {
-	const char *p;
-	char buf[44], byte;
-	int endlen;
+	const gchar *p;
+	gchar buf[44], byte;
+	gint endlen;
 
 	p = *permanenturl;
 	if (strspn (p, "0123456789abcdefABCDEF") != 32)
@@ -413,7 +413,7 @@ append_entryid_section (GByteArray *entryid, const char **permanenturl)
  * Return value: the entryid
  **/
 GByteArray *
-e2k_permanenturl_to_entryid (const char *permanenturl)
+e2k_permanenturl_to_entryid (const gchar *permanenturl)
 {
 	GByteArray *entryid;
 
@@ -462,7 +462,7 @@ e2k_ascii_strcase_hash (gconstpointer v)
 {
 	/* case-insensitive g_str_hash */
 
-	const unsigned char *p = v;
+	const guchar *p = v;
 	guint h = g_ascii_tolower (*p);
 
 	if (h) {
@@ -484,7 +484,7 @@ e2k_ascii_strcase_hash (gconstpointer v)
 gboolean
 e2k_restriction_folders_only (E2kRestriction *rn)
 {
-	int i;
+	gint i;
 
 	if (!rn)
 		return FALSE;
@@ -525,7 +525,7 @@ e2k_restriction_folders_only (E2kRestriction *rn)
 }
 
 /* From MAPIDEFS.H */
-static const char MAPI_ONE_OFF_UID[] = {
+static const gchar MAPI_ONE_OFF_UID[] = {
 	0x81, 0x2b, 0x1f, 0xa4, 0xbe, 0xa3, 0x10, 0x19,
 	0x9d, 0x6e, 0x00, 0xdd, 0x01, 0x0f, 0x54, 0x02
 };
@@ -547,7 +547,7 @@ static const char MAPI_ONE_OFF_UID[] = {
  * Return value: the recipient ENTRYID
  **/
 GByteArray *
-e2k_entryid_generate_oneoff (const char *display_name, const char *email, gboolean unicode)
+e2k_entryid_generate_oneoff (const gchar *display_name, const gchar *email, gboolean unicode)
 {
 	GByteArray *entryid;
 
@@ -574,7 +574,7 @@ e2k_entryid_generate_oneoff (const char *display_name, const char *email, gboole
 	return entryid;
 }
 
-static const char MAPI_LOCAL_UID[] = {
+static const gchar MAPI_LOCAL_UID[] = {
 	0xdc, 0xa7, 0x40, 0xc8, 0xc0, 0x42, 0x10, 0x1a,
 	0xb4, 0xb9, 0x08, 0x00, 0x2b, 0x2f, 0xe1, 0x82
 };
@@ -590,7 +590,7 @@ static const char MAPI_LOCAL_UID[] = {
  * Return value: the recipient ENTRYID
  **/
 GByteArray *
-e2k_entryid_generate_local (const char *exchange_dn)
+e2k_entryid_generate_local (const gchar *exchange_dn)
 {
 	GByteArray *entryid;
 
@@ -605,7 +605,7 @@ e2k_entryid_generate_local (const char *exchange_dn)
 	return entryid;
 }
 
-static const char MAPI_CONTACT_UID[] = {
+static const gchar MAPI_CONTACT_UID[] = {
 	0xfe, 0x42, 0xaa, 0x0a, 0x18, 0xc7, 0x1a, 0x10,
 	0xe8, 0x85, 0x0b, 0x65, 0x1c, 0x24, 0x00, 0x00
 };
@@ -623,7 +623,7 @@ static const char MAPI_CONTACT_UID[] = {
  * Return value: the recipient ENTRYID
  **/
 GByteArray *
-e2k_entryid_generate_contact (GByteArray *contact_entryid, int nth_address)
+e2k_entryid_generate_contact (GByteArray *contact_entryid, gint nth_address)
 {
 	GByteArray *entryid;
 
@@ -650,7 +650,7 @@ e2k_entryid_generate_contact (GByteArray *contact_entryid, int nth_address)
  * Return value: the search key
  **/
 GByteArray *
-e2k_search_key_generate (const char *addrtype, const char *address)
+e2k_search_key_generate (const gchar *addrtype, const gchar *address)
 {
 	GByteArray *search_key;
 	guint8 *p;

@@ -153,7 +153,7 @@ camel_dlist_remtail (CamelDList *l)
  *
  * Return value: %TRUE if @l is an empty list, %FALSE otherwise.
  **/
-int
+gint
 camel_dlist_empty (CamelDList *l)
 {
 	return (l->head == (CamelDListNode *)&l->tail);
@@ -167,11 +167,11 @@ camel_dlist_empty (CamelDList *l)
  *
  * Return value: The number of nodes.
  **/
-int
+gint
 camel_dlist_length (CamelDList *l)
 {
 	CamelDListNode *n, *nn;
-	int count = 0;
+	gint count = 0;
 
 	n = l->head;
 	nn = n->next;
@@ -264,17 +264,17 @@ camel_slist_remtail (CamelSList *l)
 	return n;
 }
 
-int
+gint
 camel_slist_empty (CamelSList *l)
 {
 	return (l->head == NULL);
 }
 
-int
+gint
 camel_slist_length (CamelSList *l)
 {
 	CamelSListNode *n;
-	int count = 0;
+	gint count = 0;
 
 	n = l->head;
 	while (n) {

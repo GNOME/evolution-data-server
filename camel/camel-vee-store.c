@@ -36,15 +36,15 @@
 
 #define d(x)
 
-static CamelFolder *vee_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex);
-static void vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex);
-static void vee_rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
+static CamelFolder *vee_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex);
+static void vee_delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex);
+static void vee_rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
 
-static void vee_sync (CamelStore *store, int expunge, CamelException *ex);
+static void vee_sync (CamelStore *store, gint expunge, CamelException *ex);
 static CamelFolder *vee_get_trash  (CamelStore *store, CamelException *ex);
 static CamelFolder *vee_get_junk  (CamelStore *store, CamelException *ex);
 
-static CamelFolderInfo *vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex);
+static CamelFolderInfo *vee_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelException *ex);
 
 static void camel_vee_store_class_init (CamelVeeStoreClass *klass);
 static void camel_vee_store_init       (CamelVeeStore *obj);
@@ -118,7 +118,7 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 
 }
 static void
-cvs_free_unmatched(void *key, void *value, void *data)
+cvs_free_unmatched(gpointer key, gpointer value, gpointer data)
 {
 	g_free(key);
 }
@@ -156,10 +156,10 @@ camel_vee_store_new (void)
 #define CHANGE_NOSELECT (2)
 
 static void
-change_folder(CamelStore *store, const char *name, guint32 flags, int count)
+change_folder(CamelStore *store, const gchar *name, guint32 flags, gint count)
 {
 	CamelFolderInfo *fi;
-	const char *tmp;
+	const gchar *tmp;
 	CamelURL *url;
 
 	fi = camel_folder_info_new ();
@@ -187,11 +187,11 @@ change_folder(CamelStore *store, const char *name, guint32 flags, int count)
 }
 
 static CamelFolder *
-vee_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+vee_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
 {
 	CamelVeeFolder *vf;
 	CamelFolder *folder;
-	char *name, *p;
+	gchar *name, *p;
 
 	vf = (CamelVeeFolder *)camel_vee_folder_new(store, folder_name, flags);
 	if (vf && ((vf->flags & CAMEL_STORE_FOLDER_PRIVATE) == 0)) {
@@ -222,7 +222,7 @@ vee_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Camel
 }
 
 static void
-vee_sync(CamelStore *store, int expunge, CamelException *ex)
+vee_sync(CamelStore *store, gint expunge, CamelException *ex)
 {
 	/* noop */;
 }
@@ -240,19 +240,19 @@ vee_get_junk (CamelStore *store, CamelException *ex)
 }
 
 static int
-vee_folder_cmp(const void *ap, const void *bp)
+vee_folder_cmp(gconstpointer ap, gconstpointer bp)
 {
 	return strcmp(((CamelFolder **)ap)[0]->full_name, ((CamelFolder **)bp)[0]->full_name);
 }
 
 static CamelFolderInfo *
-vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+vee_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelFolderInfo *info, *res = NULL, *tail;
 	GPtrArray *folders;
 	GHashTable *infos_hash;
 	CamelURL *url;
-	int i;
+	gint i;
 
 	d(printf("Get folder info '%s'\n", top?top:"<null>"));
 
@@ -261,16 +261,16 @@ vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExce
 	qsort(folders->pdata, folders->len, sizeof(folders->pdata[0]), vee_folder_cmp);
 	for (i=0;i<folders->len;i++) {
 		CamelVeeFolder *folder = folders->pdata[i];
-		int add = FALSE;
-		char *name = ((CamelFolder *)folder)->full_name, *pname, *tmp;
+		gint add = FALSE;
+		gchar *name = ((CamelFolder *)folder)->full_name, *pname, *tmp;
 		CamelFolderInfo *pinfo;
 
 		d(printf("folder '%s'\n", name));
 
 		/* check we have to include this one */
 		if (top) {
-			int namelen = strlen(name);
-			int toplen = strlen(top);
+			gint namelen = strlen(name);
+			gint toplen = strlen(top);
 
 			add = ((namelen == toplen
 				&& strcmp(name, top) == 0)
@@ -376,7 +376,7 @@ vee_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExce
 }
 
 static void
-vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
+vee_delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	CamelFolder *folder;
 
@@ -388,7 +388,7 @@ vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex
 
 	folder = camel_object_bag_get(store->folders, folder_name);
 	if (folder) {
-		char *statefile;
+		gchar *statefile;
 
 		camel_object_get(folder, NULL, CAMEL_OBJECT_STATE_FILE, &statefile, NULL);
 		if (statefile) {
@@ -410,10 +410,10 @@ vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex
 }
 
 static void
-vee_rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex)
+vee_rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
 {
 	CamelFolder *folder, *oldfolder;
-	char *p, *name;
+	gchar *p, *name;
 
 	d(printf("vee rename folder '%s' '%s'\n", old, new));
 

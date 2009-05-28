@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -25,7 +25,7 @@ static const char revid[] = "$Id$";
 JNIEXPORT void JNICALL Java_com_sleepycat_db_DbLogc_close
   (JNIEnv *jnienv, jobject jthis, jint flags)
 {
-	int err;
+	gint err;
 	DB_LOGC *dblogc = get_DB_LOGC(jnienv, jthis);
 
 	if (!verify_non_null(jnienv, dblogc))
@@ -40,7 +40,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_DbLogc_get
   (JNIEnv *jnienv, jobject jthis,
    /*DbLsn*/ jobject lsn, /*Dbt*/ jobject data, jint flags)
 {
-	int err, retry;
+	gint err, retry;
 	DB_LOGC *dblogc;
 	DB_LSN *dblsn;
 	LOCKED_DBT ldata;

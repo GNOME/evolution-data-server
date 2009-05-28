@@ -37,35 +37,35 @@ struct _CamelIMAPPCommandPart {
 
 	struct _CamelIMAPPCommand *parent;
 
-	int data_size;
-	char *data;
+	gint data_size;
+	gchar *data;
 
 	camel_imapp_command_part_t type;
 
-	int ob_size;
+	gint ob_size;
 	CamelObject *ob;
 };
 
-typedef int (*CamelIMAPPEngineFunc)(struct _CamelIMAPPEngine *engine, guint32 id, void *data);
-typedef void (*CamelIMAPPCommandFunc)(struct _CamelIMAPPEngine *engine, struct _CamelIMAPPCommand *, void *data);
+typedef gint (*CamelIMAPPEngineFunc)(struct _CamelIMAPPEngine *engine, guint32 id, gpointer data);
+typedef void (*CamelIMAPPCommandFunc)(struct _CamelIMAPPEngine *engine, struct _CamelIMAPPCommand *, gpointer data);
 
 struct _CamelIMAPPCommand {
 	CamelMsg msg;
 
-	const char *name;	/* command name/type (e.g. FETCH) */
+	const gchar *name;	/* command name/type (e.g. FETCH) */
 
 	/* FIXME: remove this select stuff */
-	char *select;		/* if we need to run against a specific folder */
+	gchar *select;		/* if we need to run against a specific folder */
 	struct _status_info *status; /* status for command, indicates it is complete if != NULL */
 
-	unsigned int tag;
+	guint tag;
 
 	struct _CamelStreamMem *mem;	/* for building the part */
 	CamelDList parts;
 	CamelIMAPPCommandPart *current;
 
 	CamelIMAPPCommandFunc complete;
-	void *complete_data;
+	gpointer complete_data;
 };
 
 typedef struct _CamelIMAPPSelectResponse CamelIMAPPSelectResponse;
@@ -111,11 +111,11 @@ struct _CamelIMAPPEngine {
 
 	GHashTable *handlers;
 
-	unsigned char tagprefix; /* out tag prefix 'A' 'B' ... 'Z' */
-	unsigned int tag;	/* next command tag */
+	guchar tagprefix; /* out tag prefix 'A' 'B' ... 'Z' */
+	guint tag;	/* next command tag */
 
-	char *select;		/* *currently* selected folder */
-	char *last_select;	/* last selected or to-be selected folder (e.g. outstanding queued select) */
+	gchar *select;		/* *currently* selected folder */
+	gchar *last_select;	/* last selected or to-be selected folder (e.g. outstanding queued select) */
 	CamelIMAPPCommand *literal;/* current literal op */
 	CamelDList active;	/* active queue */
 	CamelDList queue;	/* outstanding queue */
@@ -128,7 +128,7 @@ struct _CamelIMAPPEngine {
 struct _CamelIMAPPEngineClass {
 	CamelObjectClass parent_class;
 
-	unsigned char tagprefix;
+	guchar tagprefix;
 
 	/* Events:
 	   status(struct _status_info *);
@@ -139,21 +139,21 @@ CamelType       camel_imapp_engine_get_type (void);
 
 CamelIMAPPEngine  *camel_imapp_engine_new(CamelIMAPPStream *stream);
 
-void		camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const char *response, CamelIMAPPEngineFunc func, void *data);
+void		camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const gchar *response, CamelIMAPPEngineFunc func, gpointer data);
 int		camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *wait); /* throws PARSE,IO exception */
 int		camel_imapp_engine_skip(CamelIMAPPEngine *imap);
 int		camel_imapp_engine_capabilities(CamelIMAPPEngine *imap);
 
-CamelIMAPPCommand *camel_imapp_engine_command_new  (CamelIMAPPEngine *imap, const char *name, const char *select, const char *fmt, ...);
-void		camel_imapp_engine_command_complete(CamelIMAPPEngine *imap, struct _CamelIMAPPCommand *, CamelIMAPPCommandFunc func, void *data);
-void            camel_imapp_engine_command_add  (CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const char *fmt, ...);
+CamelIMAPPCommand *camel_imapp_engine_command_new  (CamelIMAPPEngine *imap, const gchar *name, const gchar *select, const gchar *fmt, ...);
+void		camel_imapp_engine_command_complete(CamelIMAPPEngine *imap, struct _CamelIMAPPCommand *, CamelIMAPPCommandFunc func, gpointer data);
+void            camel_imapp_engine_command_add  (CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gchar *fmt, ...);
 void            camel_imapp_engine_command_free (CamelIMAPPEngine *imap, CamelIMAPPCommand *ic);
 void		camel_imapp_engine_command_queue(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic); /* throws IO exception */
-CamelIMAPPCommand *camel_imapp_engine_command_find (CamelIMAPPEngine *imap, const char *name);
-CamelIMAPPCommand *camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, unsigned int tag);
+CamelIMAPPCommand *camel_imapp_engine_command_find (CamelIMAPPEngine *imap, const gchar *name);
+CamelIMAPPCommand *camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, guint tag);
 
 /* util functions */
-CamelIMAPPSelectResponse *camel_imapp_engine_select(CamelIMAPPEngine *imap, const char *name);
+CamelIMAPPSelectResponse *camel_imapp_engine_select(CamelIMAPPEngine *imap, const gchar *name);
 void camel_imapp_engine_select_free(CamelIMAPPEngine *imap, CamelIMAPPSelectResponse *select);
 
 G_END_DECLS

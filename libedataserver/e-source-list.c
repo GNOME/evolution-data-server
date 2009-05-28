@@ -29,14 +29,14 @@
 
 struct _ESourceListPrivate {
 	GConfClient *gconf_client;
-	char *gconf_path;
+	gchar *gconf_path;
 
-	int gconf_notify_id;
+	gint gconf_notify_id;
 
 	GSList *groups;
 
 	gboolean ignore_group_changed;
-	int sync_idle_id;
+	gint sync_idle_id;
 };
 
 
@@ -48,7 +48,7 @@ enum {
 	GROUP_ADDED,
 	LAST_SIGNAL
 };
-static unsigned int signals[LAST_SIGNAL] = { 0 };
+static guint signals[LAST_SIGNAL] = { 0 };
 
 
 /* Forward declarations.  */
@@ -57,7 +57,7 @@ static gboolean  sync_idle_callback      (ESourceList  *list);
 static void      group_changed_callback  (ESourceGroup *group,
 					  ESourceList  *list);
 static void      conf_changed_callback   (GConfClient  *client,
-					  unsigned int  connection_id,
+					  guint  connection_id,
 					  GConfEntry   *entry,
 					  ESourceList  *list);
 
@@ -71,7 +71,7 @@ load_from_gconf (ESourceList *list)
 	GSList *new_groups_list;
 	GHashTable *new_groups_hash;
 	gboolean changed = FALSE;
-	int pos;
+	gint pos;
 
 	conf_list = gconf_client_get_list (list->priv->gconf_client,
 					   list->priv->gconf_path,
@@ -83,7 +83,7 @@ load_from_gconf (ESourceList *list)
 	for (p = conf_list, pos = 0; p != NULL; p = p->next, pos++) {
 		const xmlChar *xml = p->data;
 		xmlDocPtr xmldoc;
-		char *group_uid;
+		gchar *group_uid;
 		ESourceGroup *existing_group;
 
 		xmldoc = xmlParseDoc (xml);
@@ -218,7 +218,7 @@ group_changed_callback (ESourceGroup *group,
 
 static void
 conf_changed_callback (GConfClient *client,
-		       unsigned int connection_id,
+		       guint connection_id,
 		       GConfEntry *entry,
 		       ESourceList *list)
 {
@@ -366,7 +366,7 @@ e_source_list_new (void)
 
 ESourceList *
 e_source_list_new_for_gconf (GConfClient *client,
-			     const char *path)
+			     const gchar *path)
 {
 	ESourceList *list;
 
@@ -391,7 +391,7 @@ e_source_list_new_for_gconf (GConfClient *client,
 }
 
 ESourceList *
-e_source_list_new_for_gconf_default (const char  *path)
+e_source_list_new_for_gconf_default (const gchar  *path)
 {
 	ESourceList *list;
 
@@ -423,7 +423,7 @@ e_source_list_peek_groups (ESourceList *list)
 
 ESourceGroup *
 e_source_list_peek_group_by_uid (ESourceList *list,
-				 const char *uid)
+				 const gchar *uid)
 {
 	GSList *p;
 
@@ -447,7 +447,7 @@ e_source_list_peek_group_by_uid (ESourceList *list,
  **/
 ESourceGroup *
 e_source_list_peek_group_by_name (ESourceList *list,
-				  const char *name)
+				  const gchar *name)
 {
 	GSList *p;
 
@@ -470,10 +470,10 @@ e_source_list_peek_group_by_name (ESourceList *list,
  * Returns the first group which base uri begins with a base_uri.
  **/
 ESourceGroup *
-e_source_list_peek_group_by_base_uri (ESourceList *list, const char *base_uri)
+e_source_list_peek_group_by_base_uri (ESourceList *list, const gchar *base_uri)
 {
 	GSList *p;
-	int len;
+	gint len;
 
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
 	g_return_val_if_fail (base_uri != NULL, NULL);
@@ -482,7 +482,7 @@ e_source_list_peek_group_by_base_uri (ESourceList *list, const char *base_uri)
 
 	for (p = list->priv->groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
-		const char *buri = e_source_group_peek_base_uri (group);
+		const gchar *buri = e_source_group_peek_base_uri (group);
 
 		if (buri && g_ascii_strncasecmp (buri, base_uri, len) == 0)
 			return group;
@@ -497,9 +497,9 @@ struct property_check_struct {
 };
 
 static void
-check_group_property (const char *property_name, const char *property_value, struct property_check_struct *pcs)
+check_group_property (const gchar *property_name, const gchar *property_value, struct property_check_struct *pcs)
 {
-	char *value;
+	gchar *value;
 
 	g_return_if_fail (property_name != NULL);
 	g_return_if_fail (property_value != NULL);
@@ -519,7 +519,7 @@ check_group_property (const char *property_name, const char *property_value, str
  * case insensitively.
  **/
 ESourceGroup *
-e_source_list_peek_group_by_properties (ESourceList *list, const char *property_name, ...)
+e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property_name, ...)
 {
 	GSList *p;
 	va_list ap;
@@ -532,13 +532,13 @@ e_source_list_peek_group_by_properties (ESourceList *list, const char *property_
 
 	va_start (ap, property_name);
 	while (property_name) {
-		const char *value = va_arg (ap, const char *);
+		const gchar *value = va_arg (ap, const gchar *);
 
 		if (!value)
 			break;
 
 		g_hash_table_insert (props, (gpointer)property_name, (gpointer)value);
-		property_name = va_arg (ap, const char *);
+		property_name = va_arg (ap, const gchar *);
 	}
 	va_end (ap);
 
@@ -563,7 +563,7 @@ e_source_list_peek_group_by_properties (ESourceList *list, const char *property_
 
 ESource *
 e_source_list_peek_source_by_uid (ESourceList *list,
-				  const char *uid)
+				  const gchar *uid)
 {
 	GSList *p;
 
@@ -604,7 +604,7 @@ e_source_list_peek_source_any (ESourceList *list)
 gboolean
 e_source_list_add_group (ESourceList *list,
 			 ESourceGroup *group,
-			 int position)
+			 gint position)
 {
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
@@ -639,7 +639,7 @@ e_source_list_remove_group (ESourceList *list,
 
 gboolean
 e_source_list_remove_group_by_uid (ESourceList *list,
-				    const char *uid)
+				    const gchar *uid)
 {
 	ESourceGroup *group;
 
@@ -661,7 +661,7 @@ e_source_list_remove_group_by_uid (ESourceList *list,
  * g_object_unref the group. Otherwise it returns NULL.
  **/
 ESourceGroup *
-e_source_list_ensure_group (ESourceList *list, const char *name, const char *base_uri, gboolean ret_it)
+e_source_list_ensure_group (ESourceList *list, const gchar *name, const gchar *base_uri, gboolean ret_it)
 {
 	ESourceGroup *group;
 
@@ -703,7 +703,7 @@ e_source_list_ensure_group (ESourceList *list, const char *name, const char *bas
  * Returns TRUE if group was found.
  **/
 gboolean
-e_source_list_remove_group_by_base_uri (ESourceList *list, const char *base_uri)
+e_source_list_remove_group_by_base_uri (ESourceList *list, const gchar *base_uri)
 {
 	ESourceGroup *group;
 
@@ -720,7 +720,7 @@ e_source_list_remove_group_by_base_uri (ESourceList *list, const char *base_uri)
 
 gboolean
 e_source_list_remove_source_by_uid (ESourceList *list,
-				     const char *uid)
+				     const gchar *uid)
 {
 	GSList *p;
 
@@ -773,9 +773,9 @@ e_source_list_sync (ESourceList *list,
 gboolean
 e_source_list_is_gconf_updated (ESourceList *list)
 {
-	char *source_group_xml = NULL;
-	char *gconf_xml = NULL;
-	char *group_uid = NULL;
+	gchar *source_group_xml = NULL;
+	gchar *gconf_xml = NULL;
+	gchar *group_uid = NULL;
 	GSList *conf_list = NULL, *temp = NULL, *p = NULL;
 	xmlDocPtr xmldoc;
 	ESourceGroup *group = NULL;
@@ -791,7 +791,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 	/* From conf to list */
 
 	for (temp = conf_list; temp != NULL; temp = temp->next) {
-		gconf_xml = (char *)temp->data;
+		gconf_xml = (gchar *)temp->data;
 		xmldoc = xmlParseDoc ((const xmlChar *)gconf_xml);
 
 		if (xmldoc == NULL)
@@ -823,7 +823,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 	/* If there is mismatch, free the conf_list and return FALSE */
 	if (!conf_to_list) {
 		for (p = conf_list; p != NULL ; p = p->next) {
-			gconf_xml = (char *) p->data;
+			gconf_xml = (gchar *) p->data;
 			g_free (gconf_xml);
 		}
 		g_slist_free (conf_list);
@@ -839,7 +839,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 		source_group_xml = e_source_group_to_xml (group);
 
 		for (temp = conf_list; temp != NULL; temp = temp->next) {
-			gconf_xml = (char *)temp->data;
+			gconf_xml = (gchar *)temp->data;
 			if (!e_source_group_xmlstr_equal (gconf_xml, source_group_xml))
 				continue;
 			else
@@ -855,7 +855,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 	}
 
 	for (p = conf_list; p != NULL ; p = p->next) {
-		gconf_xml = (char *) p->data;
+		gconf_xml = (gchar *) p->data;
 		g_free (gconf_xml);
 	}
 	g_slist_free (conf_list);

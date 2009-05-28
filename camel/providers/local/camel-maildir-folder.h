@@ -45,7 +45,7 @@ typedef struct {
 } CamelMaildirFolderClass;
 
 /* public methods */
-CamelFolder *camel_maildir_folder_new(CamelStore *parent_store, const char *full_name, guint32 flags, CamelException *ex);
+CamelFolder *camel_maildir_folder_new(CamelStore *parent_store, const gchar *full_name, guint32 flags, CamelException *ex);
 
 /* Standard Camel function */
 CamelType camel_maildir_folder_get_type(void);

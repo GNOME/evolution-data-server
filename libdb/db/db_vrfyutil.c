@@ -10,7 +10,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,17 +24,17 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_verify.h"
 #include "dbinc/db_am.h"
 
-static int __db_vrfy_pageinfo_create __P((DB_ENV *, VRFY_PAGEINFO **));
-static int __db_vrfy_pgset_iinc __P((DB *, db_pgno_t, int));
+static gint __db_vrfy_pageinfo_create __P((DB_ENV *, VRFY_PAGEINFO **));
+static gint __db_vrfy_pgset_iinc __P((DB *, db_pgno_t, int));
 
 /*
  * __db_vrfy_dbinfo_create --
  *	Allocate and initialize a VRFY_DBINFO structure.
  *
- * PUBLIC: int __db_vrfy_dbinfo_create
+ * PUBLIC: gint __db_vrfy_dbinfo_create
  * PUBLIC:     __P((DB_ENV *, u_int32_t, VRFY_DBINFO **));
  */
-int
+gint
 __db_vrfy_dbinfo_create(dbenv, pgsize, vdpp)
 	DB_ENV *dbenv;
 	u_int32_t pgsize;
@@ -42,13 +42,13 @@ __db_vrfy_dbinfo_create(dbenv, pgsize, vdpp)
 {
 	DB *cdbp, *pgdbp, *pgset;
 	VRFY_DBINFO *vdp;
-	int ret;
+	gint ret;
 
 	vdp = NULL;
 	cdbp = pgdbp = pgset = NULL;
 
 	if ((ret = __os_calloc(NULL,
-	    1, sizeof(VRFY_DBINFO), (void **)&vdp)) != 0)
+	    1, sizeof(VRFY_DBINFO), (gpointer *)&vdp)) != 0)
 		goto err;
 
 	if ((ret = db_create(&cdbp, dbenv, 0)) != 0)
@@ -100,15 +100,15 @@ err:	if (cdbp != NULL)
  *	Destructor for VRFY_DBINFO.  Destroys VRFY_PAGEINFOs and deallocates
  *	structure.
  *
- * PUBLIC: int __db_vrfy_dbinfo_destroy __P((DB_ENV *, VRFY_DBINFO *));
+ * PUBLIC: gint __db_vrfy_dbinfo_destroy __P((DB_ENV *, VRFY_DBINFO *));
  */
-int
+gint
 __db_vrfy_dbinfo_destroy(dbenv, vdp)
 	DB_ENV *dbenv;
 	VRFY_DBINFO *vdp;
 {
 	VRFY_CHILDINFO *c, *d;
-	int t_ret, ret;
+	gint t_ret, ret;
 
 	ret = 0;
 
@@ -136,10 +136,10 @@ __db_vrfy_dbinfo_destroy(dbenv, vdp)
  * __db_vrfy_getpageinfo --
  *	Get a PAGEINFO structure for a given page, creating it if necessary.
  *
- * PUBLIC: int __db_vrfy_getpageinfo
+ * PUBLIC: gint __db_vrfy_getpageinfo
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, VRFY_PAGEINFO **));
  */
-int
+gint
 __db_vrfy_getpageinfo(vdp, pgno, pipp)
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
@@ -148,7 +148,7 @@ __db_vrfy_getpageinfo(vdp, pgno, pipp)
 	DBT key, data;
 	DB *pgdbp;
 	VRFY_PAGEINFO *pip;
-	int ret;
+	gint ret;
 
 	/*
 	 * We want a page info struct.  There are three places to get it from,
@@ -210,10 +210,10 @@ found:	pip->pi_refcount++;
  * __db_vrfy_putpageinfo --
  *	Put back a VRFY_PAGEINFO that we're done with.
  *
- * PUBLIC: int __db_vrfy_putpageinfo __P((DB_ENV *,
+ * PUBLIC: gint __db_vrfy_putpageinfo __P((DB_ENV *,
  * PUBLIC:     VRFY_DBINFO *, VRFY_PAGEINFO *));
  */
-int
+gint
 __db_vrfy_putpageinfo(dbenv, vdp, pip)
 	DB_ENV *dbenv;
 	VRFY_DBINFO *vdp;
@@ -222,9 +222,9 @@ __db_vrfy_putpageinfo(dbenv, vdp, pip)
 	DBT key, data;
 	DB *pgdbp;
 	VRFY_PAGEINFO *p;
-	int ret;
+	gint ret;
 #ifdef DIAGNOSTIC
-	int found;
+	gint found;
 
 	found = 0;
 #endif
@@ -269,16 +269,16 @@ __db_vrfy_putpageinfo(dbenv, vdp, pip)
  *	(A mapping from page number to int, used by the *_meta2pgset functions,
  *	as well as for keeping track of which pages the verifier has seen.)
  *
- * PUBLIC: int __db_vrfy_pgset __P((DB_ENV *, u_int32_t, DB **));
+ * PUBLIC: gint __db_vrfy_pgset __P((DB_ENV *, u_int32_t, DB **));
  */
-int
+gint
 __db_vrfy_pgset(dbenv, pgsize, dbpp)
 	DB_ENV *dbenv;
 	u_int32_t pgsize;
 	DB **dbpp;
 {
 	DB *dbp;
-	int ret;
+	gint ret;
 
 	if ((ret = db_create(&dbp, dbenv, 0)) != 0)
 		return (ret);
@@ -298,16 +298,16 @@ err:		(void)dbp->close(dbp, 0);
  *	Get the value associated in a page set with a given pgno.  Return
  *	a 0 value (and succeed) if we've never heard of this page.
  *
- * PUBLIC: int __db_vrfy_pgset_get __P((DB *, db_pgno_t, int *));
+ * PUBLIC: gint __db_vrfy_pgset_get __P((DB *, db_pgno_t, gint *));
  */
-int
+gint
 __db_vrfy_pgset_get(dbp, pgno, valp)
 	DB *dbp;
 	db_pgno_t pgno;
-	int *valp;
+	gint *valp;
 {
 	DBT key, data;
-	int ret, val;
+	gint ret, val;
 
 	memset(&key, 0, sizeof(DBT));
 	memset(&data, 0, sizeof(DBT));
@@ -334,9 +334,9 @@ __db_vrfy_pgset_get(dbp, pgno, valp)
  * __db_vrfy_pgset_inc --
  *	Increment the value associated with a pgno by 1.
  *
- * PUBLIC: int __db_vrfy_pgset_inc __P((DB *, db_pgno_t));
+ * PUBLIC: gint __db_vrfy_pgset_inc __P((DB *, db_pgno_t));
  */
-int
+gint
 __db_vrfy_pgset_inc(dbp, pgno)
 	DB *dbp;
 	db_pgno_t pgno;
@@ -349,9 +349,9 @@ __db_vrfy_pgset_inc(dbp, pgno)
  * __db_vrfy_pgset_dec --
  *	Increment the value associated with a pgno by 1.
  *
- * PUBLIC: int __db_vrfy_pgset_dec __P((DB *, db_pgno_t));
+ * PUBLIC: gint __db_vrfy_pgset_dec __P((DB *, db_pgno_t));
  */
-int
+gint
 __db_vrfy_pgset_dec(dbp, pgno)
 	DB *dbp;
 	db_pgno_t pgno;
@@ -369,11 +369,11 @@ static int
 __db_vrfy_pgset_iinc(dbp, pgno, i)
 	DB *dbp;
 	db_pgno_t pgno;
-	int i;
+	gint i;
 {
 	DBT key, data;
-	int ret;
-	int val;
+	gint ret;
+	gint val;
 
 	memset(&key, 0, sizeof(DBT));
 	memset(&data, 0, sizeof(DBT));
@@ -403,16 +403,16 @@ __db_vrfy_pgset_iinc(dbp, pgno, i)
  *	Given a cursor open in a pgset database, get the next page in the
  *	set.
  *
- * PUBLIC: int __db_vrfy_pgset_next __P((DBC *, db_pgno_t *));
+ * PUBLIC: gint __db_vrfy_pgset_next __P((DBC *, db_pgno_t *));
  */
-int
+gint
 __db_vrfy_pgset_next(dbc, pgnop)
 	DBC *dbc;
 	db_pgno_t *pgnop;
 {
 	DBT key, data;
 	db_pgno_t pgno;
-	int ret;
+	gint ret;
 
 	memset(&key, 0, sizeof(DBT));
 	memset(&data, 0, sizeof(DBT));
@@ -436,16 +436,16 @@ __db_vrfy_pgset_next(dbc, pgnop)
  *	Create a cursor to walk the child list with.  Returns with a nonzero
  *	final argument if the specified page has no children.
  *
- * PUBLIC: int __db_vrfy_childcursor __P((VRFY_DBINFO *, DBC **));
+ * PUBLIC: gint __db_vrfy_childcursor __P((VRFY_DBINFO *, DBC **));
  */
-int
+gint
 __db_vrfy_childcursor(vdp, dbcp)
 	VRFY_DBINFO *vdp;
 	DBC **dbcp;
 {
 	DB *cdbp;
 	DBC *dbc;
-	int ret;
+	gint ret;
 
 	cdbp = vdp->cdbp;
 
@@ -459,10 +459,10 @@ __db_vrfy_childcursor(vdp, dbcp)
  * __db_vrfy_childput --
  *	Add a child structure to the set for a given page.
  *
- * PUBLIC: int __db_vrfy_childput
+ * PUBLIC: gint __db_vrfy_childput
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, VRFY_CHILDINFO *));
  */
-int
+gint
 __db_vrfy_childput(vdp, pgno, cip)
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
@@ -472,7 +472,7 @@ __db_vrfy_childput(vdp, pgno, cip)
 	DBC *cc;
 	DBT key, data;
 	VRFY_CHILDINFO *oldcip;
-	int ret;
+	gint ret;
 
 	cdbp = vdp->cdbp;
 	memset(&key, 0, sizeof(DBT));
@@ -526,16 +526,16 @@ __db_vrfy_childput(vdp, pgno, cip)
  *	Sets a cursor created with __db_vrfy_childcursor to the first
  *	child of the given pgno, and returns it in the third arg.
  *
- * PUBLIC: int __db_vrfy_ccset __P((DBC *, db_pgno_t, VRFY_CHILDINFO **));
+ * PUBLIC: gint __db_vrfy_ccset __P((DBC *, db_pgno_t, VRFY_CHILDINFO **));
  */
-int
+gint
 __db_vrfy_ccset(dbc, pgno, cipp)
 	DBC *dbc;
 	db_pgno_t pgno;
 	VRFY_CHILDINFO **cipp;
 {
 	DBT key, data;
-	int ret;
+	gint ret;
 
 	memset(&key, 0, sizeof(DBT));
 	memset(&data, 0, sizeof(DBT));
@@ -558,15 +558,15 @@ __db_vrfy_ccset(dbc, pgno, cipp)
  *	__db_vrfy_childcursor, and returns it in the memory provided in the
  *	second arg.
  *
- * PUBLIC: int __db_vrfy_ccnext __P((DBC *, VRFY_CHILDINFO **));
+ * PUBLIC: gint __db_vrfy_ccnext __P((DBC *, VRFY_CHILDINFO **));
  */
-int
+gint
 __db_vrfy_ccnext(dbc, cipp)
 	DBC *dbc;
 	VRFY_CHILDINFO **cipp;
 {
 	DBT key, data;
-	int ret;
+	gint ret;
 
 	memset(&key, 0, sizeof(DBT));
 	memset(&data, 0, sizeof(DBT));
@@ -589,9 +589,9 @@ __db_vrfy_ccnext(dbc, cipp)
  *	and keep the interfaces the same, and a function call here or there
  *	seldom hurts anyone.
  *
- * PUBLIC: int __db_vrfy_ccclose __P((DBC *));
+ * PUBLIC: gint __db_vrfy_ccclose __P((DBC *));
  */
-int
+gint
 __db_vrfy_ccclose(dbc)
 	DBC *dbc;
 {
@@ -609,7 +609,7 @@ __db_vrfy_pageinfo_create(dbenv, pgipp)
 	VRFY_PAGEINFO **pgipp;
 {
 	VRFY_PAGEINFO *pgip;
-	int ret;
+	gint ret;
 
 	/*
 	 * pageinfo structs are sometimes allocated here and sometimes
@@ -619,7 +619,7 @@ __db_vrfy_pageinfo_create(dbenv, pgipp)
 	 * with __os_ufree.
 	 */
 	if ((ret = __os_umalloc(dbenv,
-	    sizeof(VRFY_PAGEINFO), (void **)&pgip)) != 0)
+	    sizeof(VRFY_PAGEINFO), (gpointer *)&pgip)) != 0)
 		return (ret);
 	memset(pgip, 0, sizeof(VRFY_PAGEINFO));
 
@@ -633,14 +633,14 @@ __db_vrfy_pageinfo_create(dbenv, pgipp)
  * __db_salvage_init --
  *	Set up salvager database.
  *
- * PUBLIC: int  __db_salvage_init __P((VRFY_DBINFO *));
+ * PUBLIC: gint  __db_salvage_init __P((VRFY_DBINFO *));
  */
-int
+gint
 __db_salvage_init(vdp)
 	VRFY_DBINFO *vdp;
 {
 	DB *dbp;
-	int ret;
+	gint ret;
 
 	if ((ret = db_create(&dbp, NULL, 0)) != 0)
 		return (ret);
@@ -677,10 +677,10 @@ __db_salvage_destroy(vdp)
  *	print still.  Delete entries for any already-printed pages we encounter
  *	in this search, as well as the page we're returning.
  *
- * PUBLIC: int __db_salvage_getnext
+ * PUBLIC: gint __db_salvage_getnext
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t *, u_int32_t *));
  */
-int
+gint
 __db_salvage_getnext(vdp, pgnop, pgtypep)
 	VRFY_DBINFO *vdp;
 	db_pgno_t *pgnop;
@@ -689,7 +689,7 @@ __db_salvage_getnext(vdp, pgnop, pgtypep)
 	DB *dbp;
 	DBC *dbc;
 	DBT key, data;
-	int ret;
+	gint ret;
 	u_int32_t pgtype;
 
 	dbp = vdp->salvage_pages;
@@ -732,16 +732,16 @@ err:	(void)dbc->c_close(dbc);
  *	Returns DB_KEYEXIST if it is marked, 0 if not, or another error on
  *	error.
  *
- * PUBLIC: int __db_salvage_isdone __P((VRFY_DBINFO *, db_pgno_t));
+ * PUBLIC: gint __db_salvage_isdone __P((VRFY_DBINFO *, db_pgno_t));
  */
-int
+gint
 __db_salvage_isdone(vdp, pgno)
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
 {
 	DBT key, data;
 	DB *dbp;
-	int ret;
+	gint ret;
 	u_int32_t currtype;
 
 	dbp = vdp->salvage_pages;
@@ -785,16 +785,16 @@ __db_salvage_isdone(vdp, pgno)
  * __db_salvage_markdone --
  *	Mark as done a given page.
  *
- * PUBLIC: int __db_salvage_markdone __P((VRFY_DBINFO *, db_pgno_t));
+ * PUBLIC: gint __db_salvage_markdone __P((VRFY_DBINFO *, db_pgno_t));
  */
-int
+gint
 __db_salvage_markdone(vdp, pgno)
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
 {
 	DBT key, data;
 	DB *dbp;
-	int pgtype, ret;
+	gint pgtype, ret;
 	u_int32_t currtype;
 
 	pgtype = SALVAGE_IGNORE;
@@ -838,10 +838,10 @@ __db_salvage_markdone(vdp, pgno)
  *	If it has not yet been printed, make note of the fact that a page
  *	must be dealt with later.
  *
- * PUBLIC: int __db_salvage_markneeded
+ * PUBLIC: gint __db_salvage_markneeded
  * PUBLIC:     __P((VRFY_DBINFO *, db_pgno_t, u_int32_t));
  */
-int
+gint
 __db_salvage_markneeded(vdp, pgno, pgtype)
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
@@ -849,7 +849,7 @@ __db_salvage_markneeded(vdp, pgno, pgtype)
 {
 	DB *dbp;
 	DBT key, data;
-	int ret;
+	gint ret;
 
 	dbp = vdp->salvage_pages;
 

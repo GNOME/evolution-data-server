@@ -25,7 +25,7 @@
 G_BEGIN_DECLS
 
 /* FIXME: Weird naming, since, I want both parsers to be there for some time.*/
-char * camel_sexp_to_sql_sexp (const char *sexp);
+gchar * camel_sexp_to_sql_sexp (const gchar *sexp);
 
 G_END_DECLS
 

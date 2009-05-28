@@ -47,10 +47,10 @@ struct _CamelPOP3Stream {
 	CamelStream *source;
 
 	camel_pop3_stream_mode_t mode;
-	int state;
+	gint state;
 
-	unsigned char *buf, *ptr, *end;
-	unsigned char *linebuf, *lineptr, *lineend;
+	guchar *buf, *ptr, *end;
+	guchar *linebuf, *lineptr, *lineend;
 };
 
 struct _CamelPOP3StreamClass {
@@ -64,9 +64,9 @@ CamelStream     *camel_pop3_stream_new		(CamelStream *source);
 
 void		 camel_pop3_stream_set_mode     (CamelPOP3Stream *is, camel_pop3_stream_mode_t mode);
 
-int              camel_pop3_stream_line		(CamelPOP3Stream *is, unsigned char **data, unsigned int *len);
-int		 camel_pop3_stream_gets		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
-int		 camel_pop3_stream_getd		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
+gint              camel_pop3_stream_line		(CamelPOP3Stream *is, guchar **data, guint *len);
+int		 camel_pop3_stream_gets		(CamelPOP3Stream *is, guchar **start, guint *len);
+int		 camel_pop3_stream_getd		(CamelPOP3Stream *is, guchar **start, guint *len);
 
 G_END_DECLS
 

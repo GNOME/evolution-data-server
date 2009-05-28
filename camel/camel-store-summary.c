@@ -54,16 +54,16 @@
 
 #define _PRIVATE(o) (((CamelStoreSummary *)(o))->priv)
 
-static int summary_header_load(CamelStoreSummary *, FILE *);
-static int summary_header_save(CamelStoreSummary *, FILE *);
+static gint summary_header_load(CamelStoreSummary *, FILE *);
+static gint summary_header_save(CamelStoreSummary *, FILE *);
 
-static CamelStoreInfo * store_info_new(CamelStoreSummary *, const char *);
+static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);
 static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
 static int		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 
-static const char *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
-static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const char *);
+static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
+static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 static void camel_store_summary_class_init (CamelStoreSummaryClass *klass);
 static void camel_store_summary_init       (CamelStoreSummary *obj);
@@ -179,7 +179,7 @@ camel_store_summary_new (void)
  * Set the filename where the summary will be loaded to/saved from.
  **/
 void
-camel_store_summary_set_filename(CamelStoreSummary *s, const char *name)
+camel_store_summary_set_filename(CamelStoreSummary *s, const gchar *name)
 {
 	CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
 
@@ -216,9 +216,9 @@ camel_store_summary_set_uri_base(CamelStoreSummary *s, CamelURL *base)
  *
  * Get the number of summary items stored in this summary.
  *
- * Returns: the number of items int he summary.
+ * Returns: the number of items gint he summary.
  **/
-int
+gint
 camel_store_summary_count(CamelStoreSummary *s)
 {
 	return s->folders->len;
@@ -240,7 +240,7 @@ camel_store_summary_count(CamelStoreSummary *s)
  * Returns: the summary item, or %NULL if @index is out of range
  **/
 CamelStoreInfo *
-camel_store_summary_index(CamelStoreSummary *s, int i)
+camel_store_summary_index(CamelStoreSummary *s, gint i)
 {
 	CamelStoreInfo *info = NULL;
 
@@ -277,7 +277,7 @@ camel_store_summary_array(CamelStoreSummary *s)
 {
 	CamelStoreInfo *info;
 	GPtrArray *res = g_ptr_array_new();
-	int i;
+	gint i;
 
 	CAMEL_STORE_SUMMARY_LOCK(s, ref_lock);
 	CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
@@ -305,7 +305,7 @@ camel_store_summary_array(CamelStoreSummary *s)
 void
 camel_store_summary_array_free(CamelStoreSummary *s, GPtrArray *array)
 {
-	int i;
+	gint i;
 
 	for (i=0;i<array->len;i++)
 		camel_store_summary_info_free(s, array->pdata[i]);
@@ -330,7 +330,7 @@ camel_store_summary_array_free(CamelStoreSummary *s, GPtrArray *array)
  * available
  **/
 CamelStoreInfo *
-camel_store_summary_path(CamelStoreSummary *s, const char *path)
+camel_store_summary_path(CamelStoreSummary *s, const gchar *path)
 {
 	CamelStoreInfo *info;
 
@@ -357,11 +357,11 @@ camel_store_summary_path(CamelStoreSummary *s, const char *path)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_store_summary_load(CamelStoreSummary *s)
 {
 	FILE *in;
-	int i;
+	gint i;
 	CamelStoreInfo *info;
 
 	g_assert(s->summary_path);
@@ -414,12 +414,12 @@ error:
  *
  * Returns: %0 on succes or %-1 on fail
  **/
-int
+gint
 camel_store_summary_save(CamelStoreSummary *s)
 {
 	FILE *out;
-	int fd;
-	int i;
+	gint fd;
+	gint i;
 	guint32 count;
 	CamelStoreInfo *info;
 
@@ -496,11 +496,11 @@ camel_store_summary_save(CamelStoreSummary *s)
  *
  * Returns: %0 on success or %-1 on fail
  **/
-int
+gint
 camel_store_summary_header_load(CamelStoreSummary *s)
 {
 	FILE *in;
-	int ret;
+	gint ret;
 
 	g_assert(s->summary_path);
 
@@ -545,7 +545,7 @@ camel_store_summary_add(CamelStoreSummary *s, CamelStoreInfo *info)
 	CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
 
 	g_ptr_array_add(s->folders, info);
-	g_hash_table_insert(s->folders_path, (char *)camel_store_info_path(s, info), info);
+	g_hash_table_insert(s->folders_path, (gchar *)camel_store_info_path(s, info), info);
 	s->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 
 	CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
@@ -562,7 +562,7 @@ camel_store_summary_add(CamelStoreSummary *s, CamelStoreInfo *info)
  * Returns: the newly added record
  **/
 CamelStoreInfo *
-camel_store_summary_add_from_path(CamelStoreSummary *s, const char *path)
+camel_store_summary_add_from_path(CamelStoreSummary *s, const gchar *path)
 {
 	CamelStoreInfo *info;
 
@@ -575,7 +575,7 @@ camel_store_summary_add_from_path(CamelStoreSummary *s, const char *path)
 	} else {
 		info = camel_store_summary_info_new_from_path(s, path);
 		g_ptr_array_add(s->folders, info);
-		g_hash_table_insert(s->folders_path, (char *)camel_store_info_path(s, info), info);
+		g_hash_table_insert(s->folders_path, (gchar *)camel_store_info_path(s, info), info);
 		s->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	}
 
@@ -599,7 +599,7 @@ camel_store_summary_add_from_path(CamelStoreSummary *s, const char *path)
  * Returns: the #CamelStoreInfo associated with @path
  **/
 CamelStoreInfo *
-camel_store_summary_info_new_from_path(CamelStoreSummary *s, const char *path)
+camel_store_summary_info_new_from_path(CamelStoreSummary *s, const gchar *path)
 {
 	return ((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_new(s, path);
 }
@@ -679,7 +679,7 @@ camel_store_summary_touch(CamelStoreSummary *s)
 void
 camel_store_summary_clear(CamelStoreSummary *s)
 {
-	int i;
+	gint i;
 
 	CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
 	if (camel_store_summary_count(s) == 0) {
@@ -726,14 +726,14 @@ camel_store_summary_remove(CamelStoreSummary *s, CamelStoreInfo *info)
  * Remove a specific info record from the summary, by @path.
  **/
 void
-camel_store_summary_remove_path(CamelStoreSummary *s, const char *path)
+camel_store_summary_remove_path(CamelStoreSummary *s, const gchar *path)
 {
         CamelStoreInfo *oldinfo;
-        char *oldpath;
+        gchar *oldpath;
 
 	CAMEL_STORE_SUMMARY_LOCK(s, ref_lock);
 	CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
-        if (g_hash_table_lookup_extended(s->folders_path, path, (void *)&oldpath, (void *)&oldinfo)) {
+        if (g_hash_table_lookup_extended(s->folders_path, path, (gpointer)&oldpath, (gpointer)&oldinfo)) {
 		/* make sure it doesn't vanish while we're removing it */
 		oldinfo->refcount++;
 		CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
@@ -755,7 +755,7 @@ camel_store_summary_remove_path(CamelStoreSummary *s, const char *path)
  * Remove a specific info record from the summary, by index.
  **/
 void
-camel_store_summary_remove_index(CamelStoreSummary *s, int index)
+camel_store_summary_remove_index(CamelStoreSummary *s, gint index)
 {
 	CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
 	if (index < s->folders->len) {
@@ -847,8 +847,8 @@ camel_store_summary_info_new(CamelStoreSummary *s)
  *
  * Returns: the string value
  **/
-const char *
-camel_store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, int type)
+const gchar *
+camel_store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, gint type)
 {
 	return ((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_string(s, info, type);
 }
@@ -864,13 +864,13 @@ camel_store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, int ty
  * Set a specific string on the @info.
  **/
 void
-camel_store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *info, int type, const char *value)
+camel_store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *info, gint type, const gchar *value)
 {
 	((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_set_string(s, info, type, value);
 }
 
 static CamelStoreInfo *
-store_info_new(CamelStoreSummary *s, const char *f)
+store_info_new(CamelStoreSummary *s, const gchar *f)
 {
 	CamelStoreInfo *info;
 
@@ -943,10 +943,10 @@ store_info_free(CamelStoreSummary *s, CamelStoreInfo *info)
 	g_slice_free1(s->store_info_size, info);
 }
 
-static const char *
-store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, int type)
+static const gchar *
+store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, gint type)
 {
-	const char *p;
+	const gchar *p;
 
 	/* FIXME: Locks? */
 
@@ -976,28 +976,28 @@ store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, int type)
 }
 
 static void
-store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *info, int type, const char *str)
+store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *info, gint type, const gchar *str)
 {
-	const char *p;
-	char *v;
-	int len;
+	const gchar *p;
+	gchar *v;
+	gint len;
 
 	g_assert (info != NULL);
 
 	switch(type) {
 	case CAMEL_STORE_INFO_PATH:
 		CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
-		g_hash_table_remove(s->folders_path, (char *)camel_store_info_path(s, info));
+		g_hash_table_remove(s->folders_path, (gchar *)camel_store_info_path(s, info));
 		g_free(info->path);
 		g_free(info->uri);
 		info->path = g_strdup(str);
-		g_hash_table_insert(s->folders_path, (char *)camel_store_info_path(s, info), info);
+		g_hash_table_insert(s->folders_path, (gchar *)camel_store_info_path(s, info), info);
 		s->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 		CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 		break;
 	case CAMEL_STORE_INFO_NAME:
 		CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
-		g_hash_table_remove(s->folders_path, (char *)camel_store_info_path(s, info));
+		g_hash_table_remove(s->folders_path, (gchar *)camel_store_info_path(s, info));
 		p = strrchr(info->path, '/');
 		if (p) {
 			len = p-info->path+1;
@@ -1009,7 +1009,7 @@ store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *info, int type, con
 		}
 		g_free(info->path);
 		info->path = v;
-		g_hash_table_insert(s->folders_path, (char *)camel_store_info_path(s, info), info);
+		g_hash_table_insert(s->folders_path, (gchar *)camel_store_info_path(s, info), info);
 		CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 		break;
 	case CAMEL_STORE_INFO_URI:

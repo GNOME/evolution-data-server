@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,9 +23,9 @@ static const char revid[] = "$Id$";
 /*
  * __txn_stat --
  *
- * PUBLIC: int __txn_stat __P((DB_ENV *, DB_TXN_STAT **, u_int32_t));
+ * PUBLIC: gint __txn_stat __P((DB_ENV *, DB_TXN_STAT **, u_int32_t));
  */
-int
+gint
 __txn_stat(dbenv, statp, flags)
 	DB_ENV *dbenv;
 	DB_TXN_STAT **statp;
@@ -37,7 +37,7 @@ __txn_stat(dbenv, statp, flags)
 	TXN_DETAIL *txnp;
 	size_t nbytes;
 	u_int32_t ndx;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, "txn_stat", DB_INIT_TXN);

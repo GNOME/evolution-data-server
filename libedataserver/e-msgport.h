@@ -25,8 +25,8 @@ EDListNode *e_dlist_addtail(EDList *l, EDListNode *n);
 EDListNode *e_dlist_remove(EDListNode *n);
 EDListNode *e_dlist_remhead(EDList *l);
 EDListNode *e_dlist_remtail(EDList *l);
-int e_dlist_empty(EDList *l);
-int e_dlist_length(EDList *l);
+gint e_dlist_empty(EDList *l);
+gint e_dlist_length(EDList *l);
 
 /* a time-based cache */
 typedef struct _EMCache EMCache;
@@ -35,15 +35,15 @@ typedef struct _EMCacheNode EMCacheNode;
 /* subclass this for your data nodes, EMCache is opaque */
 struct _EMCacheNode {
 	struct _EMCacheNode *next, *prev;
-	char *key;
-	int ref_count;
+	gchar *key;
+	gint ref_count;
 	time_t stamp;
 };
 
 EMCache *em_cache_new(time_t timeout, size_t nodesize, GFreeFunc nodefree);
 void em_cache_destroy(EMCache *emc);
-EMCacheNode *em_cache_lookup(EMCache *emc, const char *key);
-EMCacheNode *em_cache_node_new(EMCache *emc, const char *key);
+EMCacheNode *em_cache_lookup(EMCache *emc, const gchar *key);
+EMCacheNode *em_cache_node_new(EMCache *emc, const gchar *key);
 void em_cache_node_unref(EMCache *emc, EMCacheNode *n);
 void em_cache_add(EMCache *emc, EMCacheNode *n);
 void em_cache_clear(EMCache *emc);
@@ -63,7 +63,7 @@ typedef struct _EMsg {
 EMsgPort *e_msgport_new(void);
 void e_msgport_destroy(EMsgPort *mp);
 /* get a fd that can be used to wait on the port asynchronously */
-int e_msgport_fd(EMsgPort *mp);
+gint e_msgport_fd(EMsgPort *mp);
 void e_msgport_put(EMsgPort *mp, EMsg *msg);
 EMsg *e_msgport_wait(EMsgPort *mp);
 EMsg *e_msgport_get(EMsgPort *mp);
@@ -84,17 +84,17 @@ typedef enum {
 				   stored in the queue until a thread becomes available for it, creating a thread pool */
 } e_thread_t;
 
-typedef void (*EThreadFunc)(EThread *, EMsg *, void *data);
+typedef void (*EThreadFunc)(EThread *, EMsg *, gpointer data);
 
 EThread *e_thread_new(e_thread_t type);
 void e_thread_destroy(EThread *e);
-void e_thread_set_queue_limit(EThread *e, int limit);
-void e_thread_set_msg_lost(EThread *e, EThreadFunc destroy, void *data);
-void e_thread_set_msg_destroy(EThread *e, EThreadFunc destroy, void *data);
+void e_thread_set_queue_limit(EThread *e, gint limit);
+void e_thread_set_msg_lost(EThread *e, EThreadFunc destroy, gpointer data);
+void e_thread_set_msg_destroy(EThread *e, EThreadFunc destroy, gpointer data);
 void e_thread_set_reply_port(EThread *e, EMsgPort *reply_port);
-void e_thread_set_msg_received(EThread *e, EThreadFunc received, void *data);
+void e_thread_set_msg_received(EThread *e, EThreadFunc received, gpointer data);
 void e_thread_put(EThread *e, EMsg *msg);
-int e_thread_busy(EThread *e);
+gint e_thread_busy(EThread *e);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 #ifndef EDS_DISABLE_DEPRECATED
@@ -107,12 +107,12 @@ typedef enum _e_mutex_t {
 } e_mutex_t;
 
 EMutex *e_mutex_new(e_mutex_t type);
-int e_mutex_destroy(EMutex *m);
-int e_mutex_lock(EMutex *m);
-int e_mutex_unlock(EMutex *m);
+gint e_mutex_destroy(EMutex *m);
+gint e_mutex_lock(EMutex *m);
+gint e_mutex_unlock(EMutex *m);
 void e_mutex_assert_locked(EMutex *m);
 /* this uses pthread cond's */
-int e_mutex_cond_wait(void *cond, EMutex *m);
+gint e_mutex_cond_wait(gpointer cond, EMutex *m);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 #endif

@@ -50,21 +50,21 @@ enum {
 struct _CamelOfflineStore {
 	CamelStore parent_object;
 
-	int state;
+	gint state;
 };
 
 struct _CamelOfflineStoreClass {
 	CamelStoreClass parent_class;
 
-	void (* set_network_state) (CamelOfflineStore *store, int state, CamelException *ex);
+	void (* set_network_state) (CamelOfflineStore *store, gint state, CamelException *ex);
 };
 
 
 CamelType camel_offline_store_get_type (void);
 
 
-void camel_offline_store_set_network_state (CamelOfflineStore *store, int state, CamelException *ex);
-int camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex);
+void camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, CamelException *ex);
+gint camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex);
 
 void camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelException *ex);
 

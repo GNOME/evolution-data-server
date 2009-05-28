@@ -16,7 +16,7 @@
 
 typedef struct _CamelDBPrivate CamelDBPrivate;
 
-typedef int(*CamelDBCollate)(void*,int,const void*,int,const void*);
+typedef int(*CamelDBCollate)(gpointer ,int,gconstpointer ,int,gconstpointer );
 
 struct _CamelDB {
 	sqlite3 *db;
@@ -59,7 +59,7 @@ struct _CamelDB {
 */
 
 typedef struct _CamelMIRecord {
-	char *uid;
+	gchar *uid;
 	guint32 flags;
 	guint32 msg_type;
 	guint32 dirty;
@@ -72,23 +72,23 @@ typedef struct _CamelMIRecord {
 	guint32 size;
 	time_t dsent;
 	time_t dreceived;
-	char *subject;
-	char *from;
-	char *to;
-	char *cc;
-	char *mlist;
-	char *followup_flag;
-	char *followup_completed_on;
-	char *followup_due_by;
-	char *part;
-	char *labels;
-	char *usertags;
-	char *cinfo;
-	char *bdata;
+	gchar *subject;
+	gchar *from;
+	gchar *to;
+	gchar *cc;
+	gchar *mlist;
+	gchar *followup_flag;
+	gchar *followup_completed_on;
+	gchar *followup_due_by;
+	gchar *part;
+	gchar *labels;
+	gchar *usertags;
+	gchar *cinfo;
+	gchar *bdata;
 } CamelMIRecord;
 
 typedef struct _CamelFIRecord {
-	char *folder_name;
+	gchar *folder_name;
 	guint32 version;
 	guint32 flags;
 	guint32 nextuid;
@@ -99,88 +99,88 @@ typedef struct _CamelFIRecord {
 	guint32 junk_count;
 	guint32 visible_count;
 	guint32 jnd_count;  /* Junked not deleted */
-	char *bdata;
+	gchar *bdata;
 } CamelFIRecord;
 
 
 
 
 typedef struct _CamelDB CamelDB;
-typedef int (*CamelDBSelectCB) (gpointer data, int ncol, char **colvalues, char **colnames);
+typedef gint (*CamelDBSelectCB) (gpointer data, gint ncol, gchar **colvalues, gchar **colnames);
 
 
-CamelDB * camel_db_open (const char *path, CamelException *ex);
+CamelDB * camel_db_open (const gchar *path, CamelException *ex);
 CamelDB * camel_db_clone (CamelDB *cdb, CamelException *ex);
 void camel_db_close (CamelDB *cdb);
-int camel_db_command (CamelDB *cdb, const char *stmt, CamelException *ex);
+gint camel_db_command (CamelDB *cdb, const gchar *stmt, CamelException *ex);
 
-int camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex);
+gint camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex);
 
-int camel_db_begin_transaction (CamelDB *cdb, CamelException *ex);
-int camel_db_add_to_transaction (CamelDB *cdb, const char *query, CamelException *ex);
-int camel_db_end_transaction (CamelDB *cdb, CamelException *ex);
-int camel_db_abort_transaction (CamelDB *cdb, CamelException *ex);
-int camel_db_clear_folder_summary (CamelDB *cdb, char *folder, CamelException *ex);
-int camel_db_rename_folder (CamelDB *cdb, const char *old_folder, const char *new_folder, CamelException *ex);
+gint camel_db_begin_transaction (CamelDB *cdb, CamelException *ex);
+gint camel_db_add_to_transaction (CamelDB *cdb, const gchar *query, CamelException *ex);
+gint camel_db_end_transaction (CamelDB *cdb, CamelException *ex);
+gint camel_db_abort_transaction (CamelDB *cdb, CamelException *ex);
+gint camel_db_clear_folder_summary (CamelDB *cdb, gchar *folder, CamelException *ex);
+gint camel_db_rename_folder (CamelDB *cdb, const gchar *old_folder, const gchar *new_folder, CamelException *ex);
 
-int camel_db_delete_folder (CamelDB *cdb, const char *folder, CamelException *ex);
-int camel_db_delete_uid (CamelDB *cdb, const char *folder, const char *uid, CamelException *ex);
-/*int camel_db_delete_uids (CamelDB *cdb, CamelException *ex, int nargs, ... );*/
-int camel_db_delete_uids (CamelDB *cdb, const char* folder_name, GSList *uids, CamelException *ex);
-int camel_db_delete_vuids (CamelDB *cdb, const char* folder_name, char *shash, GSList *uids, CamelException *ex);
+gint camel_db_delete_folder (CamelDB *cdb, const gchar *folder, CamelException *ex);
+gint camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, CamelException *ex);
+/*int camel_db_delete_uids (CamelDB *cdb, CamelException *ex, gint nargs, ... );*/
+gint camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, CamelException *ex);
+gint camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, gchar *shash, GSList *uids, CamelException *ex);
 
-int camel_db_create_folders_table (CamelDB *cdb, CamelException *ex);
-int camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpointer data, CamelException *ex);
+gint camel_db_create_folders_table (CamelDB *cdb, CamelException *ex);
+gint camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpointer data, CamelException *ex);
 
-int camel_db_write_folder_info_record (CamelDB *cdb, CamelFIRecord *record, CamelException *ex);
-int camel_db_read_folder_info_record (CamelDB *cdb, const char *folder_name, CamelFIRecord **record, CamelException *ex);
+gint camel_db_write_folder_info_record (CamelDB *cdb, CamelFIRecord *record, CamelException *ex);
+gint camel_db_read_folder_info_record (CamelDB *cdb, const gchar *folder_name, CamelFIRecord **record, CamelException *ex);
 
-int camel_db_prepare_message_info_table (CamelDB *cdb, const char *folder_name, CamelException *ex);
+gint camel_db_prepare_message_info_table (CamelDB *cdb, const gchar *folder_name, CamelException *ex);
 
-int camel_db_write_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex);
-int camel_db_write_fresh_message_info_record (CamelDB *cdb, const char *folder_name, CamelMIRecord *record, CamelException *ex);
-int camel_db_read_message_info_records (CamelDB *cdb, const char *folder_name, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex);
-int camel_db_read_message_info_record_with_uid (CamelDB *cdb, const char *folder_name, const char *uid, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex);
+gint camel_db_write_message_info_record (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelException *ex);
+gint camel_db_write_fresh_message_info_record (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelException *ex);
+gint camel_db_read_message_info_records (CamelDB *cdb, const gchar *folder_name, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex);
+gint camel_db_read_message_info_record_with_uid (CamelDB *cdb, const gchar *folder_name, const gchar *uid, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex);
 
-int camel_db_count_junk_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
-int camel_db_count_unread_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
-int camel_db_count_deleted_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
-int camel_db_count_total_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_junk_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_unread_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_deleted_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_total_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
 
-int camel_db_count_visible_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
-int camel_db_count_visible_unread_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_visible_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_visible_unread_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
 
-int camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const char *table_name, guint32 *count, CamelException *ex);
-int camel_db_count_message_info (CamelDB *cdb, const char *query, guint32 *count, CamelException *ex);
+gint camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex);
+gint camel_db_count_message_info (CamelDB *cdb, const gchar *query, guint32 *count, CamelException *ex);
 void camel_db_camel_mir_free (CamelMIRecord *record);
 
-int camel_db_create_vfolder (CamelDB *db, const char *folder_name, CamelException *ex);
-int camel_db_recreate_vfolder (CamelDB *db, const char *folder_name, CamelException *ex);
-int camel_db_delete_uid_from_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
-int camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
-GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, char *folder_name, char *filter, CamelException *ex);
-int camel_db_add_to_vfolder (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
-int camel_db_add_to_vfolder_transaction (CamelDB *db, char *folder_name, char *vuid, CamelException *ex);
+gint camel_db_create_vfolder (CamelDB *db, const gchar *folder_name, CamelException *ex);
+gint camel_db_recreate_vfolder (CamelDB *db, const gchar *folder_name, CamelException *ex);
+gint camel_db_delete_uid_from_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
+gint camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
+GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, gchar *folder_name, gchar *filter, CamelException *ex);
+gint camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
+gint camel_db_add_to_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
 
-int camel_db_get_folder_uids (CamelDB *db, const char *folder_name, const char *sort_by, const char *collate, GPtrArray *array, CamelException *ex);
-int camel_db_get_folder_uids_flags (CamelDB *db, const char *folder_name, const char *sort_by, const char *collate, GPtrArray *summary, GHashTable *table, CamelException *ex);
+gint camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *array, CamelException *ex);
+gint camel_db_get_folder_uids_flags (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *summary, GHashTable *table, CamelException *ex);
 
-GPtrArray * camel_db_get_folder_junk_uids (CamelDB *db, char *folder_name, CamelException *ex);
-GPtrArray * camel_db_get_folder_deleted_uids (CamelDB *db, char *folder_name, CamelException *ex);
+GPtrArray * camel_db_get_folder_junk_uids (CamelDB *db, gchar *folder_name, CamelException *ex);
+GPtrArray * camel_db_get_folder_deleted_uids (CamelDB *db, gchar *folder_name, CamelException *ex);
 
-char * camel_db_sqlize_string (const char *string);
-void camel_db_free_sqlized_string (char *string);
+gchar * camel_db_sqlize_string (const gchar *string);
+void camel_db_free_sqlized_string (gchar *string);
 
-char * camel_db_get_column_name (const char *raw_name);
-int camel_db_set_collate (CamelDB *cdb, const char *col, const char *collate, CamelDBCollate func);
+gchar * camel_db_get_column_name (const gchar *raw_name);
+gint camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, CamelDBCollate func);
 /* Migration APIS */
-int camel_db_migrate_vfolders_to_14(CamelDB *cdb, const char *folder, CamelException *ex);
+gint camel_db_migrate_vfolders_to_14(CamelDB *cdb, const gchar *folder, CamelException *ex);
 
-int camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex);
-int camel_db_flush_in_memory_transactions (CamelDB *cdb, const char * folder_name, CamelException *ex);
+gint camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex);
+gint camel_db_flush_in_memory_transactions (CamelDB *cdb, const gchar * folder_name, CamelException *ex);
 
 GHashTable *
-camel_db_get_folder_preview (CamelDB *db, char *folder_name, CamelException *ex);
-int camel_db_write_preview_record (CamelDB *db, char *folder_name, const char *uid, const char *msg, CamelException *ex);
+camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex);
+gint camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid, const gchar *msg, CamelException *ex);
 #endif
 

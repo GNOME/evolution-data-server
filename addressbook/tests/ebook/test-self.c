@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	EBook *book;
 	EContact *contact;
 	GError *error = NULL;
-	char *vcard;
+	gchar *vcard;
 
 	g_type_init ();
 

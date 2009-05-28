@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-int camel_movemail (const char *source, const char *dest, CamelException *ex);
+gint camel_movemail (const gchar *source, const gchar *dest, CamelException *ex);
 
 G_END_DECLS
 

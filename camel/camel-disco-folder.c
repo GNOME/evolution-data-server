@@ -43,8 +43,8 @@ static CamelProperty disco_property_list[] = {
 	{ CAMEL_DISCO_FOLDER_OFFLINE_SYNC, "offline_sync", N_("Copy folder content locally for offline operation") },
 };
 
-static int disco_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
-static int disco_setv(CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint disco_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint disco_setv(CamelObject *object, CamelException *ex, CamelArgV *args);
 
 static void disco_refresh_info (CamelFolder *folder, CamelException *ex);
 static void disco_refresh_info_online (CamelFolder *folder, CamelException *ex);
@@ -52,7 +52,7 @@ static void disco_sync (CamelFolder *folder, gboolean expunge, CamelException *e
 static void disco_expunge (CamelFolder *folder, CamelException *ex);
 
 static void disco_append_message (CamelFolder *folder, CamelMimeMessage *message,
-				  const CamelMessageInfo *info, char **appended_uid, CamelException *ex);
+				  const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex);
 static void disco_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					CamelFolder *destination,
 					GPtrArray **transferred_uids,
@@ -60,9 +60,9 @@ static void disco_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					CamelException *ex);
 
 static void disco_cache_message       (CamelDiscoFolder *disco_folder,
-				       const char *uid, CamelException *ex);
+				       const gchar *uid, CamelException *ex);
 static void disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
-				       const char *expression,
+				       const gchar *expression,
 				       CamelException *ex);
 
 static void
@@ -100,13 +100,13 @@ static void
 cdf_sync_offline(CamelSession *session, CamelSessionThreadMsg *mm)
 {
 	struct _cdf_sync_msg *m = (struct _cdf_sync_msg *)mm;
-	int i;
+	gint i;
 
 	camel_operation_start(NULL, _("Downloading new messages for offline mode"));
 
 	if (m->changes) {
 		for (i=0;i<m->changes->uid_added->len;i++) {
-			int pc = i * 100 / m->changes->uid_added->len;
+			gint pc = i * 100 / m->changes->uid_added->len;
 
 			camel_operation_progress(NULL, pc);
 			camel_disco_folder_cache_message((CamelDiscoFolder *)m->folder,
@@ -138,7 +138,7 @@ static CamelSessionThreadOps cdf_sync_ops = {
 };
 
 static void
-cdf_folder_changed(CamelFolder *folder, CamelFolderChangeInfo *changes, void *dummy)
+cdf_folder_changed(CamelFolder *folder, CamelFolderChangeInfo *changes, gpointer dummy)
 {
 	if (changes->uid_added->len > 0
 	    && (((CamelDiscoFolder *)folder)->offline_sync
@@ -165,7 +165,7 @@ CamelType
 camel_disco_folder_get_type (void)
 {
 	static CamelType camel_disco_folder_type = CAMEL_INVALID_TYPE;
-	int i;
+	gint i;
 
 	if (camel_disco_folder_type == CAMEL_INVALID_TYPE) {
 		camel_disco_folder_type = camel_type_register (
@@ -187,7 +187,7 @@ camel_disco_folder_get_type (void)
 static int
 disco_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
-	int i, count=0;
+	gint i, count=0;
 	guint32 tag;
 
 	for (i=0;i<args->argc;i++) {
@@ -226,8 +226,8 @@ disco_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 static int
 disco_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 {
-	int save = 0;
-	int i;
+	gint save = 0;
+	gint i;
 	guint32 tag;
 
 	for (i=0;i<args->argc;i++) {
@@ -339,7 +339,7 @@ static void
 disco_expunge (CamelFolder *folder, CamelException *ex)
 {
 	GPtrArray *uids;
-	int i;
+	gint i;
 	guint count;
 	CamelMessageInfo *info;
 
@@ -361,7 +361,7 @@ disco_expunge (CamelFolder *folder, CamelException *ex)
 
 static void
 disco_append_message (CamelFolder *folder, CamelMimeMessage *message,
-		      const CamelMessageInfo *info, char **appended_uid,
+		      const CamelMessageInfo *info, gchar **appended_uid,
 		      CamelException *ex)
 {
 	CamelDiscoStore *disco = CAMEL_DISCO_STORE (folder->parent_store);
@@ -434,7 +434,7 @@ camel_disco_folder_expunge_uids (CamelFolder *folder, GPtrArray *uids,
 
 
 static void
-disco_cache_message (CamelDiscoFolder *disco_folder, const char *uid,
+disco_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid,
 		     CamelException *ex)
 {
 	g_warning ("CamelDiscoFolder::cache_message not implemented for '%s'",
@@ -451,7 +451,7 @@ disco_cache_message (CamelDiscoFolder *disco_folder, const char *uid,
  **/
 void
 camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
-				  const char *uid, CamelException *ex)
+				  const gchar *uid, CamelException *ex)
 {
 	CDF_CLASS (disco_folder)->cache_message (disco_folder, uid, ex);
 }
@@ -459,12 +459,12 @@ camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
 
 static void
 disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
-			   const char *expression,
+			   const gchar *expression,
 			   CamelException *ex)
 {
 	CamelFolder *folder = CAMEL_FOLDER (disco_folder);
 	GPtrArray *uids;
-	int i;
+	gint i;
 
 	camel_operation_start(NULL, _("Preparing folder '%s' for offline"), folder->full_name);
 
@@ -479,7 +479,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 	}
 
 	for (i = 0; i < uids->len; i++) {
-		int pc = i * 100 / uids->len;
+		gint pc = i * 100 / uids->len;
 
 		camel_disco_folder_cache_message (disco_folder, uids->pdata[i], ex);
 		camel_operation_progress(NULL, pc);
@@ -508,7 +508,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
  **/
 void
 camel_disco_folder_prepare_for_offline (CamelDiscoFolder *disco_folder,
-					const char *expression,
+					const gchar *expression,
 					CamelException *ex)
 {
 	g_return_if_fail (CAMEL_IS_DISCO_FOLDER (disco_folder));

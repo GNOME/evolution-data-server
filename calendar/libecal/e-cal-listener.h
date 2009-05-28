@@ -53,32 +53,32 @@ typedef struct {
 
 	/* Signals */
 	void (*read_only) (ECalListener *listener, ECalendarStatus status, gboolean read_only);
-	void (*cal_address) (ECalListener *listener, ECalendarStatus status, const char *address);
-	void (*alarm_address) (ECalListener *listener, ECalendarStatus status, const char *address);
-	void (*ldap_attribute) (ECalListener *listener, ECalendarStatus status, const char *ldap_attribute);
-	void (*static_capabilities) (ECalListener *listener, ECalendarStatus status, const char *capabilities);
+	void (*cal_address) (ECalListener *listener, ECalendarStatus status, const gchar *address);
+	void (*alarm_address) (ECalListener *listener, ECalendarStatus status, const gchar *address);
+	void (*ldap_attribute) (ECalListener *listener, ECalendarStatus status, const gchar *ldap_attribute);
+	void (*static_capabilities) (ECalListener *listener, ECalendarStatus status, const gchar *capabilities);
 
 	void (*open) (ECalListener *listener, ECalendarStatus status);
 	void (*remove) (ECalListener *listener, ECalendarStatus status);
 
-	void (*create_object) (ECalListener *listener, ECalendarStatus status, const char *id);
+	void (*create_object) (ECalListener *listener, ECalendarStatus status, const gchar *id);
 	void (*modify_object) (ECalListener *listener, ECalendarStatus status);
 	void (*remove_object) (ECalListener *listener, ECalendarStatus status);
 
 	void (*discard_alarm) (ECalListener *listener, ECalendarStatus status);
 
 	void (*receive_objects) (ECalListener *listener, ECalendarStatus status);
-	void (*send_objects) (ECalListener *listener, ECalendarStatus status, GList *users, const char *object);
+	void (*send_objects) (ECalListener *listener, ECalendarStatus status, GList *users, const gchar *object);
 
-	void (*default_object) (ECalListener *listener, ECalendarStatus status, const char *object);
-	void (*object) (ECalListener *listener, ECalendarStatus status, const char *object);
+	void (*default_object) (ECalListener *listener, ECalendarStatus status, const gchar *object);
+	void (*object) (ECalListener *listener, ECalendarStatus status, const gchar *object);
 	void (*object_list) (ECalListener *listener, ECalendarStatus status, GList **objects);
 
 	void (*attachment_list) (ECalListener *listener, ECalendarStatus status, GSList **objects);
 
-	void (*get_timezone) (ECalListener *listener, ECalendarStatus status, const char *object);
-	void (*add_timezone) (ECalListener *listener, ECalendarStatus status, const char *tzid);
-	void (*set_default_timezone) (ECalListener *listener, ECalendarStatus status, const char *tzid);
+	void (*get_timezone) (ECalListener *listener, ECalendarStatus status, const gchar *object);
+	void (*add_timezone) (ECalListener *listener, ECalendarStatus status, const gchar *tzid);
+	void (*set_default_timezone) (ECalListener *listener, ECalendarStatus status, const gchar *tzid);
 
 	void (*get_changes) (ECalListener *listener, ECalendarStatus status, GList *changes);
 	void (*get_free_busy) (ECalListener *listener, ECalendarStatus status, GList *freebusy);
@@ -86,7 +86,7 @@ typedef struct {
 	void (*query) (ECalListener *listener, ECalendarStatus status, GNOME_Evolution_Calendar_CalView query);
 
 	void (*auth_required)      (ECalListener *listener);
-	void (*backend_error) (ECalListener *listener, ECalendarStatus status, const char *message);
+	void (*backend_error) (ECalListener *listener, ECalendarStatus status, const gchar *message);
 } ECalListenerClass;
 
 /* Notification functions */

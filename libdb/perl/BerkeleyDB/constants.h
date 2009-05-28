@@ -21,7 +21,7 @@ typedef double NV; /* 5.6 and later define NVTYPE, and typedef NV to it.  */
 #endif
 
 static int
-constant_6 (pTHX_ const char *name, IV *iv_return) {
+constant_6 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_DUP DB_PAD DB_RMW DB_SET */
@@ -76,7 +76,7 @@ constant_6 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_7 (pTHX_ const char *name, IV *iv_return) {
+constant_7 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_EXCL DB_HASH DB_LAST DB_NEXT DB_PREV */
@@ -145,7 +145,7 @@ constant_7 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_8 (pTHX_ const char *name, IV *iv_return) {
+constant_8 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_AFTER DB_BTREE DB_FIRST DB_FLUSH DB_FORCE DB_QUEUE DB_RECNO */
@@ -242,7 +242,7 @@ constant_8 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_9 (pTHX_ const char *name, IV *iv_return) {
+constant_9 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_APPEND DB_BEFORE DB_CLIENT DB_COMMIT DB_CREATE DB_CURLSN DB_DIRECT
@@ -423,7 +423,7 @@ constant_9 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_10 (pTHX_ const char *name, IV *iv_return) {
+constant_10 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_CONSUME DB_CURRENT DB_DELETED DB_DUPSORT DB_ENCRYPT DB_ENV_CDB
@@ -639,7 +639,7 @@ constant_10 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_11 (pTHX_ const char *name, IV *iv_return) {
+constant_11 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_APP_INIT DB_ARCH_ABS DB_ARCH_LOG DB_FIXEDLEN DB_GET_BOTH DB_INIT_CDB
@@ -1010,7 +1010,7 @@ constant_11 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_12 (pTHX_ const char *name, IV *iv_return) {
+constant_12 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_ARCH_DATA DB_CDB_ALLDB DB_CL_WRITER DB_DELIMITER DB_DIRECT_DB
@@ -1438,7 +1438,7 @@ constant_12 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_13 (pTHX_ const char *name, IV *iv_return) {
+constant_13 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_AGGRESSIVE DB_BTREEMAGIC DB_CHECKPOINT DB_DIRECT_LOG DB_DIRTY_READ
@@ -1817,7 +1817,7 @@ constant_13 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_14 (pTHX_ const char *name, IV *iv_return) {
+constant_14 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_AUTO_COMMIT DB_BTREEOLDVER DB_CHKSUM_SHA1 DB_EID_INVALID DB_ENCRYPT_AES
@@ -2287,7 +2287,7 @@ constant_14 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_15 (pTHX_ const char *name, IV *iv_return) {
+constant_15 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_APPLY_LOGREG DB_BTREEVERSION DB_CONSUME_WAIT DB_ENV_LOCKDOWN
@@ -2636,7 +2636,7 @@ constant_15 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_16 (pTHX_ const char *name, IV *iv_return) {
+constant_16 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_BROADCAST_EID DB_CACHED_COUNTS DB_EID_BROADCAST DB_ENV_CDB_ALLDB
@@ -3071,7 +3071,7 @@ constant_16 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_17 (pTHX_ const char *name, IV *iv_return, const char **pv_return) {
+constant_17 (pTHX_ const gchar *name, IV *iv_return, const gchar **pv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_ENV_DIRECT_LOG DB_ENV_REP_CLIENT DB_ENV_REP_MASTER DB_ENV_STANDALONE
@@ -3252,7 +3252,7 @@ constant_17 (pTHX_ const char *name, IV *iv_return, const char **pv_return) {
 }
 
 static int
-constant_18 (pTHX_ const char *name, IV *iv_return) {
+constant_18 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_ALREADY_ABORTED DB_ENV_AUTO_COMMIT DB_ENV_OPEN_CALLED
@@ -3424,7 +3424,7 @@ constant_18 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_19 (pTHX_ const char *name, IV *iv_return) {
+constant_19 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_ENV_REP_LOGSONLY DB_LOCK_FREE_LOCKER DB_LOCK_GET_TIMEOUT
@@ -3635,7 +3635,7 @@ constant_19 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_20 (pTHX_ const char *name, IV *iv_return) {
+constant_20 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_CXX_NO_EXCEPTIONS DB_LOGFILEID_INVALID DB_PANIC_ENVIRONMENT
@@ -3740,7 +3740,7 @@ constant_20 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_21 (pTHX_ const char *name, IV *iv_return) {
+constant_21 (pTHX_ const gchar *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_LOCK_UPGRADE_WRITE DB_PRIORITY_VERY_HIGH DB_TEST_POSTEXTDELETE
@@ -3816,7 +3816,7 @@ constant_21 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant (pTHX_ const char *name, STRLEN len, IV *iv_return, const char **pv_return) {
+constant (pTHX_ const gchar *name, STRLEN len, IV *iv_return, const gchar **pv_return) {
   /* Initially switch on the length of the name.  */
   /* When generated this function returned values for the list of names given
      in this section of perl code.  Rather than manually editing these functions

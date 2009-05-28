@@ -30,7 +30,7 @@
 
 #define d(x) (camel_debug("junk")?(x):0)
 
-const char *
+const gchar *
 camel_junk_plugin_get_name (CamelJunkPlugin *csp)
 {
 	g_return_val_if_fail (csp->get_name != NULL, NULL);
@@ -40,7 +40,7 @@ camel_junk_plugin_get_name (CamelJunkPlugin *csp)
 	return csp->get_name (csp);
 }
 
-int
+gint
 camel_junk_plugin_check_junk (CamelJunkPlugin *csp, CamelMimeMessage *message)
 {
 	g_return_val_if_fail (csp->check_junk != NULL, FALSE);

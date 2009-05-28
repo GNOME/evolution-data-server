@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,9 +17,9 @@ static const char revid[] = "$Id$";
  * __os_get_errno_ret_zero --
  *	Return the value of errno, even if it's zero.
  *
- * PUBLIC: int __os_get_errno_ret_zero __P((void));
+ * PUBLIC: gint __os_get_errno_ret_zero __P((void));
  */
-int
+gint
 __os_get_errno_ret_zero()
 {
 	/* This routine must be able to return the same value repeatedly. */
@@ -30,9 +30,9 @@ __os_get_errno_ret_zero()
  * __os_get_errno --
  *	Return the value of errno, or EAGAIN if errno is zero.
  *
- * PUBLIC: int __os_get_errno __P((void));
+ * PUBLIC: gint __os_get_errno __P((void));
  */
-int
+gint
 __os_get_errno()
 {
 	/*
@@ -58,7 +58,7 @@ __os_get_errno()
  */
 void
 __os_set_errno(evalue)
-	int evalue;
+	gint evalue;
 {
 	errno = evalue;
 }

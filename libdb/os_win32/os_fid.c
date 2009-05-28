@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -20,17 +20,17 @@ static u_int32_t fid_serial = SERIAL_INIT;
  * __os_fileid --
  *	Return a unique identifier for a file.
  */
-int
+gint
 __os_fileid(dbenv, fname, unique_okay, fidp)
 	DB_ENV *dbenv;
-	const char *fname;
-	int unique_okay;
+	const gchar *fname;
+	gint unique_okay;
 	u_int8_t *fidp;
 {
 	size_t i;
 	u_int32_t tmp;
 	u_int8_t *p;
-	int ret;
+	gint ret;
 
 	/*
 	 * The documentation for GetFileInformationByHandle() states that the

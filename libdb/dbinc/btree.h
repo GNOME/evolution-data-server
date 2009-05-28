@@ -263,7 +263,7 @@ struct __btree {			/* Btree access method. */
 	u_int32_t bt_minkey;		/* Minimum keys per page. */
 
 					/* Btree comparison function. */
-	int (*bt_compare) __P((DB *, const DBT *, const DBT *));
+	gint (*bt_compare) __P((DB *, const DBT *, const DBT *));
 					/* Btree prefix function. */
 	size_t (*bt_prefix) __P((DB *, const DBT *, const DBT *));
 

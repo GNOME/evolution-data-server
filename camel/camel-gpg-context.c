@@ -68,7 +68,7 @@
 #define d(x)
 
 #ifdef GPG_LOG
-static int logid;
+static gint logid;
 #endif
 
 static CamelCipherContextClass *parent_class = NULL;
@@ -116,7 +116,7 @@ camel_gpg_context_set_always_trust (CamelGpgContext *ctx, gboolean always_trust)
 }
 
 
-static const char *
+static const gchar *
 gpg_hash_to_id (CamelCipherContext *context, CamelCipherHash hash)
 {
 	switch (hash) {
@@ -139,7 +139,7 @@ gpg_hash_to_id (CamelCipherContext *context, CamelCipherHash hash)
 }
 
 static CamelCipherHash
-gpg_id_to_hash (CamelCipherContext *context, const char *id)
+gpg_id_to_hash (CamelCipherContext *context, const gchar *id)
 {
 	if (id) {
 		if (!strcmp (id, "pgp-md2"))
@@ -184,24 +184,24 @@ struct _GpgCtx {
 	GHashTable *userid_hint;
 	pid_t pid;
 
-	char *userid;
-	char *sigfile;
+	gchar *userid;
+	gchar *sigfile;
 	GPtrArray *recipients;
 	CamelCipherHash hash;
 
-	int stdin_fd;
-	int stdout_fd;
-	int stderr_fd;
-	int status_fd;
-	int passwd_fd;  /* only needed for sign/decrypt */
+	gint stdin_fd;
+	gint stdout_fd;
+	gint stderr_fd;
+	gint status_fd;
+	gint passwd_fd;  /* only needed for sign/decrypt */
 
 	/* status-fd buffer */
-	unsigned char *statusbuf;
-	unsigned char *statusptr;
-	unsigned int statusleft;
+	guchar *statusbuf;
+	guchar *statusptr;
+	guint statusleft;
 
-	char *need_id;
-	char *passwd;
+	gchar *need_id;
+	gchar *passwd;
 
 	CamelStream *istream;
 	CamelStream *ostream;
@@ -209,40 +209,40 @@ struct _GpgCtx {
 	GByteArray *diagbuf;
 	CamelStream *diagnostics;
 
-	int exit_status;
+	gint exit_status;
 
-	unsigned int exited:1;
-	unsigned int complete:1;
-	unsigned int seen_eof1:1;
-	unsigned int seen_eof2:1;
-	unsigned int always_trust:1;
-	unsigned int armor:1;
-	unsigned int need_passwd:1;
-	unsigned int send_passwd:1;
+	guint exited:1;
+	guint complete:1;
+	guint seen_eof1:1;
+	guint seen_eof2:1;
+	guint always_trust:1;
+	guint armor:1;
+	guint need_passwd:1;
+	guint send_passwd:1;
 
-	unsigned int bad_passwds:2;
+	guint bad_passwds:2;
 
-	unsigned int hadsig:1;
-	unsigned int badsig:1;
-	unsigned int errsig:1;
-	unsigned int goodsig:1;
-	unsigned int validsig:1;
-	unsigned int nopubkey:1;
-	unsigned int nodata:1;
-	unsigned int trust:3;
+	guint hadsig:1;
+	guint badsig:1;
+	guint errsig:1;
+	guint goodsig:1;
+	guint validsig:1;
+	guint nopubkey:1;
+	guint nodata:1;
+	guint trust:3;
 
-	unsigned int diagflushed:1;
+	guint diagflushed:1;
 
-	unsigned int utf8:1;
+	guint utf8:1;
 
-	unsigned int padding:10;
+	guint padding:10;
 };
 
 static struct _GpgCtx *
 gpg_ctx_new (CamelSession *session)
 {
 	struct _GpgCtx *gpg;
-	const char *charset;
+	const gchar *charset;
 	CamelStream *stream;
 
 	gpg = g_new (struct _GpgCtx, 1);
@@ -339,14 +339,14 @@ gpg_ctx_set_always_trust (struct _GpgCtx *gpg, gboolean trust)
 }
 
 static void
-gpg_ctx_set_userid (struct _GpgCtx *gpg, const char *userid)
+gpg_ctx_set_userid (struct _GpgCtx *gpg, const gchar *userid)
 {
 	g_free (gpg->userid);
 	gpg->userid = g_strdup (userid);
 }
 
 static void
-gpg_ctx_add_recipient (struct _GpgCtx *gpg, const char *keyid)
+gpg_ctx_add_recipient (struct _GpgCtx *gpg, const gchar *keyid)
 {
 	if (gpg->mode != GPG_CTX_MODE_ENCRYPT && gpg->mode != GPG_CTX_MODE_EXPORT)
 		return;
@@ -358,7 +358,7 @@ gpg_ctx_add_recipient (struct _GpgCtx *gpg, const char *keyid)
 }
 
 static void
-gpg_ctx_set_sigfile (struct _GpgCtx *gpg, const char *sigfile)
+gpg_ctx_set_sigfile (struct _GpgCtx *gpg, const gchar *sigfile)
 {
 	g_free (gpg->sigfile);
 	gpg->sigfile = g_strdup (sigfile);
@@ -389,7 +389,7 @@ gpg_ctx_set_ostream (struct _GpgCtx *gpg, CamelStream *ostream)
 	gpg->seen_eof1 = FALSE;
 }
 
-static const char *
+static const gchar *
 gpg_ctx_get_diagnostics (struct _GpgCtx *gpg)
 {
 	if (!gpg->diagflushed) {
@@ -401,7 +401,7 @@ gpg_ctx_get_diagnostics (struct _GpgCtx *gpg)
 		g_byte_array_append (gpg->diagbuf, (guchar *) "", 1);
 	}
 
-	return (const char *) gpg->diagbuf->data;
+	return (const gchar *) gpg->diagbuf->data;
 }
 
 static void
@@ -414,7 +414,7 @@ userid_hint_free (gpointer key, gpointer value, gpointer user_data)
 static void
 gpg_ctx_free (struct _GpgCtx *gpg)
 {
-	int i;
+	gint i;
 
 	if (gpg == NULL)
 		return;
@@ -469,7 +469,7 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 
 #ifndef G_OS_WIN32
 
-static const char *
+static const gchar *
 gpg_hash_str (CamelCipherHash hash)
 {
 	switch (hash) {
@@ -487,12 +487,12 @@ gpg_hash_str (CamelCipherHash hash)
 }
 
 static GPtrArray *
-gpg_ctx_get_argv (struct _GpgCtx *gpg, int status_fd, char **sfd, int passwd_fd, char **pfd)
+gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_fd, gchar **pfd)
 {
-	const char *hash_str;
+	const gchar *hash_str;
 	GPtrArray *argv;
-	char *buf;
-	int i;
+	gchar *buf;
+	gint i;
 
 	argv = g_ptr_array_new ();
 	g_ptr_array_add (argv, "gpg");
@@ -525,10 +525,10 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, int status_fd, char **sfd, int passwd_fd,
 			g_ptr_array_add (argv, "--armor");
 		hash_str = gpg_hash_str (gpg->hash);
 		if (hash_str)
-			g_ptr_array_add (argv, (char *) hash_str);
+			g_ptr_array_add (argv, (gchar *) hash_str);
 		if (gpg->userid) {
 			g_ptr_array_add (argv, "-u");
-			g_ptr_array_add (argv, (char *) gpg->userid);
+			g_ptr_array_add (argv, (gchar *) gpg->userid);
 		}
 		g_ptr_array_add (argv, "--output");
 		g_ptr_array_add (argv, "-");
@@ -553,7 +553,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, int status_fd, char **sfd, int passwd_fd,
 			g_ptr_array_add (argv, "--always-trust");
 		if (gpg->userid) {
 			g_ptr_array_add (argv, "-u");
-			g_ptr_array_add (argv, (char *) gpg->userid);
+			g_ptr_array_add (argv, (gchar *) gpg->userid);
 		}
 		if (gpg->recipients) {
 			for (i = 0; i < gpg->recipients->len; i++) {
@@ -593,10 +593,10 @@ static int
 gpg_ctx_op_start (struct _GpgCtx *gpg)
 {
 #ifndef G_OS_WIN32
-	char *status_fd = NULL, *passwd_fd = NULL;
-	int i, maxfd, errnosave, fds[10];
+	gchar *status_fd = NULL, *passwd_fd = NULL;
+	gint i, maxfd, errnosave, fds[10];
 	GPtrArray *argv;
-	int flags;
+	gint flags;
 
 	for (i = 0; i < 10; i++)
 		fds[i] = -1;
@@ -632,7 +632,7 @@ gpg_ctx_op_start (struct _GpgCtx *gpg)
 		}
 
 		/* run gpg */
-		execvp ("gpg", (char **) argv->pdata);
+		execvp ("gpg", (gchar **) argv->pdata);
 		_exit (255);
 	} else if (gpg->pid < 0) {
 		g_ptr_array_free (argv, TRUE);
@@ -698,10 +698,10 @@ gpg_ctx_op_start (struct _GpgCtx *gpg)
 
 #ifndef G_OS_WIN32
 
-static const char *
-next_token (const char *in, char **token)
+static const gchar *
+next_token (const gchar *in, gchar **token)
 {
-	const char *start, *inptr = in;
+	const gchar *start, *inptr = in;
 
 	while (*inptr == ' ')
 		inptr++;
@@ -725,10 +725,10 @@ next_token (const char *in, char **token)
 static int
 gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 {
-	register unsigned char *inptr;
-	const unsigned char *status;
+	register guchar *inptr;
+	const guchar *status;
 	size_t nread, nwritten;
-	int len;
+	gint len;
 
  parse:
 
@@ -747,8 +747,8 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	if (camel_debug("gpg:status"))
 		printf ("status: %s\n", status);
 
-	if (strncmp ((const char *) status, "[GNUPG:] ", 9) != 0) {
-		char *message;
+	if (strncmp ((const gchar *) status, "[GNUPG:] ", 9) != 0) {
+		gchar *message;
 		message = g_locale_to_utf8((const gchar *) status, -1, NULL, NULL, NULL);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Unexpected GnuPG status message encountered:\n\n%s"),
@@ -759,11 +759,11 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 
 	status += 9;
 
-	if (!strncmp ((char *) status, "USERID_HINT ", 12)) {
-		char *hint, *user;
+	if (!strncmp ((gchar *) status, "USERID_HINT ", 12)) {
+		gchar *hint, *user;
 
 		status += 12;
-		status = (const unsigned char *) next_token ((char *) status, &hint);
+		status = (const guchar *) next_token ((gchar *) status, &hint);
 		if (!hint) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Failed to parse gpg userid hint."));
@@ -782,12 +782,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		g_strstrip (user);
 
 		g_hash_table_insert (gpg->userid_hint, hint, user);
-	} else if (!strncmp ((char *) status, "NEED_PASSPHRASE ", 16)) {
-		char *userid;
+	} else if (!strncmp ((gchar *) status, "NEED_PASSPHRASE ", 16)) {
+		gchar *userid;
 
 		status += 16;
 
-		status = (const unsigned char *) next_token ((char *) status, &userid);
+		status = (const guchar *) next_token ((gchar *) status, &userid);
 		if (!userid) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Failed to parse gpg passphrase request."));
@@ -796,12 +796,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 
 		g_free (gpg->need_id);
 		gpg->need_id = userid;
-	} else if (!strncmp ((char *) status, "NEED_PASSPHRASE_PIN ", 20)) {
-		char *userid;
+	} else if (!strncmp ((gchar *) status, "NEED_PASSPHRASE_PIN ", 20)) {
+		gchar *userid;
 
 		status += 20;
 
-		status = (const unsigned char *) next_token ((char *) status, &userid);
+		status = (const guchar *) next_token ((gchar *) status, &userid);
 		if (!userid) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Failed to parse gpg passphrase request."));
@@ -810,9 +810,9 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 
 		g_free (gpg->need_id);
 		gpg->need_id = userid;
-	} else if (!strncmp ((char *) status, "GET_HIDDEN ", 11)) {
-		const char *name = NULL;
-		char *prompt, *passwd;
+	} else if (!strncmp ((gchar *) status, "GET_HIDDEN ", 11)) {
+		const gchar *name = NULL;
+		gchar *prompt, *passwd;
 		guint32 flags;
 
 		status += 11;
@@ -822,16 +822,16 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		else if (!name)
 			name = "";
 
-		if (!strncmp ((char *) status, "passphrase.pin.ask", 18)) {
+		if (!strncmp ((gchar *) status, "passphrase.pin.ask", 18)) {
 			prompt = g_markup_printf_escaped (
 				_("You need a PIN to unlock the key for your\n"
 				  "SmartCard: \"%s\""), name);
-		} else if (!strncmp ((char *) status, "passphrase.enter", 16)) {
+		} else if (!strncmp ((gchar *) status, "passphrase.enter", 16)) {
 			prompt = g_markup_printf_escaped (
 				_("You need a passphrase to unlock the key for\n"
 				  "user: \"%s\""), name);
 		} else {
-			next_token ((char *) status, &prompt);
+			next_token ((gchar *) status, &prompt);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Unexpected request from GnuPG for '%s'"), prompt);
 			g_free (prompt);
@@ -841,7 +841,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		flags = CAMEL_SESSION_PASSWORD_SECRET | CAMEL_SESSION_PASSPHRASE;
 		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt, gpg->need_id, flags, ex))) {
 			if (!gpg->utf8) {
-				char *opasswd = passwd;
+				gchar *opasswd = passwd;
 
 				if ((passwd = g_locale_to_utf8 (passwd, -1, &nread, &nwritten, NULL))) {
 					memset (opasswd, 0, strlen (opasswd));
@@ -863,9 +863,9 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		}
 
 		g_free (prompt);
-	} else if (!strncmp ((char *) status, "GOOD_PASSPHRASE", 15)) {
+	} else if (!strncmp ((gchar *) status, "GOOD_PASSPHRASE", 15)) {
 		gpg->bad_passwds = 0;
-	} else if (!strncmp ((char *) status, "BAD_PASSPHRASE", 14)) {
+	} else if (!strncmp ((gchar *) status, "BAD_PASSPHRASE", 14)) {
 		gpg->bad_passwds++;
 
 		camel_session_forget_password (gpg->session, NULL, NULL, gpg->need_id, ex);
@@ -875,16 +875,16 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 					     _("Failed to unlock secret key: 3 bad passphrases given."));
 			return -1;
 		}
-	} else if (!strncmp ((const char *) status, "UNEXPECTED ", 11)) {
+	} else if (!strncmp ((const gchar *) status, "UNEXPECTED ", 11)) {
 		/* this is an error */
-		char *message;
+		gchar *message;
 		message = g_locale_to_utf8((const gchar *) status+11, -1, NULL, NULL, NULL);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Unexpected response from GnuPG: %s"),
 				      message);
 		g_free(message);
 		return -1;
-	} else if (!strncmp ((char *) status, "NODATA", 6)) {
+	} else if (!strncmp ((gchar *) status, "NODATA", 6)) {
 		/* this is an error */
 		/* But we ignore it anyway, we should get other response codes to say why */
 		gpg->nodata = TRUE;
@@ -892,56 +892,56 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		/* check to see if we are complete */
 		switch (gpg->mode) {
 		case GPG_CTX_MODE_SIGN:
-			if (!strncmp ((char *) status, "SIG_CREATED ", 12)) {
+			if (!strncmp ((gchar *) status, "SIG_CREATED ", 12)) {
 				/* FIXME: save this state? */
 			}
 			break;
 		case GPG_CTX_MODE_DECRYPT:
-			if (!strncmp ((char *) status, "BEGIN_DECRYPTION", 16)) {
+			if (!strncmp ((gchar *) status, "BEGIN_DECRYPTION", 16)) {
 				/* nothing to do... but we know to expect data on stdout soon */
 				break;
-			} else if (!strncmp ((char *) status, "END_DECRYPTION", 14)) {
+			} else if (!strncmp ((gchar *) status, "END_DECRYPTION", 14)) {
 				/* nothing to do, but we know the end is near? */
 				break;
 			}
 			/* let if fall through to verify possible signatures too */
 			/* break; */
 		case GPG_CTX_MODE_VERIFY:
-			if (!strncmp ((char *) status, "TRUST_", 6)) {
+			if (!strncmp ((gchar *) status, "TRUST_", 6)) {
 				status += 6;
-				if (!strncmp ((char *) status, "NEVER", 5)) {
+				if (!strncmp ((gchar *) status, "NEVER", 5)) {
 					gpg->trust = GPG_TRUST_NEVER;
-				} else if (!strncmp ((char *) status, "MARGINAL", 8)) {
+				} else if (!strncmp ((gchar *) status, "MARGINAL", 8)) {
 					gpg->trust = GPG_TRUST_MARGINAL;
-				} else if (!strncmp ((char *) status, "FULLY", 5)) {
+				} else if (!strncmp ((gchar *) status, "FULLY", 5)) {
 					gpg->trust = GPG_TRUST_FULLY;
-				} else if (!strncmp ((char *) status, "ULTIMATE", 8)) {
+				} else if (!strncmp ((gchar *) status, "ULTIMATE", 8)) {
 					gpg->trust = GPG_TRUST_ULTIMATE;
-				} else if (!strncmp ((char *) status, "UNDEFINED", 9)) {
+				} else if (!strncmp ((gchar *) status, "UNDEFINED", 9)) {
 					gpg->trust = GPG_TRUST_UNDEFINED;
 				}
-			} else if (!strncmp ((char *) status, "GOODSIG ", 8)) {
+			} else if (!strncmp ((gchar *) status, "GOODSIG ", 8)) {
 				gpg->goodsig = TRUE;
 				gpg->hadsig = TRUE;
-			} else if (!strncmp ((char *) status, "VALIDSIG ", 9)) {
+			} else if (!strncmp ((gchar *) status, "VALIDSIG ", 9)) {
 				gpg->validsig = TRUE;
-			} else if (!strncmp ((char *) status, "BADSIG ", 7)) {
+			} else if (!strncmp ((gchar *) status, "BADSIG ", 7)) {
 				gpg->badsig = FALSE;
 				gpg->hadsig = TRUE;
-			} else if (!strncmp ((char *) status, "ERRSIG ", 7)) {
+			} else if (!strncmp ((gchar *) status, "ERRSIG ", 7)) {
 				/* Note: NO_PUBKEY often comes after an ERRSIG */
 				gpg->errsig = FALSE;
 				gpg->hadsig = TRUE;
-			} else if (!strncmp ((char *) status, "NO_PUBKEY ", 10)) {
+			} else if (!strncmp ((gchar *) status, "NO_PUBKEY ", 10)) {
 				gpg->nopubkey = TRUE;
 			}
 			break;
 		case GPG_CTX_MODE_ENCRYPT:
-			if (!strncmp ((char *) status, "BEGIN_ENCRYPTION", 16)) {
+			if (!strncmp ((gchar *) status, "BEGIN_ENCRYPTION", 16)) {
 				/* nothing to do... but we know to expect data on stdout soon */
-			} else if (!strncmp ((char *) status, "END_ENCRYPTION", 14)) {
+			} else if (!strncmp ((gchar *) status, "END_ENCRYPTION", 14)) {
 				/* nothing to do, but we know the end is near? */
-			} else if (!strncmp ((char *) status, "NO_RECP", 7)) {
+			} else if (!strncmp ((gchar *) status, "NO_RECP", 7)) {
 				camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
 						     _("Failed to encrypt: No valid recipients specified."));
 				return -1;
@@ -977,7 +977,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 
 #define status_backup(gpg, start, len) G_STMT_START {                     \
 	if (gpg->statusleft <= len) {                                     \
-		unsigned int slen, soff;                                  \
+		guint slen, soff;                                  \
 									  \
 		slen = soff = gpg->statusptr - gpg->statusbuf;            \
 		slen = slen ? slen : 1;                                   \
@@ -1001,7 +1001,7 @@ static void
 gpg_ctx_op_cancel (struct _GpgCtx *gpg)
 {
 	pid_t retval;
-	int status;
+	gint status;
 
 	if (gpg->exited)
 		return;
@@ -1025,7 +1025,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 {
 #ifndef G_OS_WIN32
 	GPollFD polls[6];
-	int status, i, cancel_fd;
+	gint status, i, cancel_fd;
 
 	for (i=0;i<6;i++) {
 		polls[i].fd = -1;
@@ -1080,7 +1080,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 
 	if (polls[2].revents & (G_IO_IN|G_IO_HUP)) {
 		/* read the status message and decide what to do... */
-		char buffer[4096];
+		gchar buffer[4096];
 		ssize_t nread;
 
 		d(printf ("reading from gpg's status-fd...\n"));
@@ -1102,7 +1102,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	}
 
 	if ((polls[0].revents & (G_IO_IN|G_IO_HUP)) && gpg->ostream) {
-		char buffer[4096];
+		gchar buffer[4096];
 		ssize_t nread;
 
 		d(printf ("reading gpg's stdout...\n"));
@@ -1122,7 +1122,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	}
 
 	if (polls[1].revents & (G_IO_IN|G_IO_HUP)) {
-		char buffer[4096];
+		gchar buffer[4096];
 		ssize_t nread;
 
 		d(printf ("reading gpg's stderr...\n"));
@@ -1169,7 +1169,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	}
 
 	if ((polls[3].revents & (G_IO_OUT|G_IO_HUP)) && gpg->istream) {
-		char buffer[4096];
+		gchar buffer[4096];
 		ssize_t nread;
 
 		d(printf ("writing to gpg's stdin...\n"));
@@ -1222,7 +1222,7 @@ static gboolean
 gpg_ctx_op_exited (struct _GpgCtx *gpg)
 {
 	pid_t retval;
-	int status;
+	gint status;
 
 	if (gpg->exited)
 		return TRUE;
@@ -1244,7 +1244,7 @@ gpg_ctx_op_wait (struct _GpgCtx *gpg)
 #ifndef G_OS_WIN32
 	sigset_t mask, omask;
 	pid_t retval;
-	int status;
+	gint status;
 
 	if (!gpg->exited) {
 		sigemptyset (&mask);
@@ -1284,13 +1284,13 @@ gpg_ctx_op_wait (struct _GpgCtx *gpg)
 
 
 static int
-gpg_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
+gpg_sign (CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
 {
 	struct _GpgCtx *gpg = NULL;
 	CamelStream *ostream = camel_stream_mem_new(), *istream;
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
-	int res = -1;
+	gint res = -1;
 	CamelMimePart *sigpart;
 	CamelMultipartSigned *mps;
 
@@ -1307,7 +1307,7 @@ gpg_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
 
 #ifdef GPG_LOG
 	if (camel_debug_start("gpg:sign")) {
-		char *name;
+		gchar *name;
 		CamelStream *out;
 
 		name = g_strdup_printf("camel-gpg.%d.sign-data", logid++);
@@ -1343,7 +1343,7 @@ gpg_sign (CamelCipherContext *context, const char *userid, CamelCipherHash hash,
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
-		const char *diagnostics;
+		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1393,12 +1393,12 @@ fail:
 }
 
 
-static char *
+static gchar *
 swrite (CamelMimePart *sigpart)
 {
 	CamelStream *ostream;
-	char *template;
-	int fd, ret;
+	gchar *template;
+	gint fd, ret;
 
 	template = g_build_filename (g_get_tmp_dir (), "evolution-pgp.XXXXXX", NULL);
 	if ((fd = g_mkstemp (template)) == -1) {
@@ -1431,9 +1431,9 @@ static CamelCipherValidity *
 gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 {
 	CamelCipherValidity *validity;
-	const char *diagnostics = NULL;
+	const gchar *diagnostics = NULL;
 	struct _GpgCtx *gpg = NULL;
-	char *sigfile = NULL;
+	gchar *sigfile = NULL;
 	CamelContentType *ct;
 	CamelMimePart *sigpart;
 	CamelStream *istream = NULL, *canon_stream;
@@ -1447,7 +1447,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	/* Inline signature (using our fake mime type) or PGP/Mime signature */
 	if (camel_content_type_is(ct, "multipart", "signed")) {
 		/* PGP/Mime Signature */
-		const char *tmp;
+		const gchar *tmp;
 
 		tmp = camel_content_type_param(ct, "protocol");
 		if (!CAMEL_IS_MULTIPART_SIGNED(mps)
@@ -1488,7 +1488,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	/* Now start the real work of verifying the message */
 #ifdef GPG_LOG
 	if (camel_debug_start("gpg:sign")) {
-		char *name;
+		gchar *name;
 		CamelStream *out;
 
 		name = g_strdup_printf("camel-gpg.%d.verify.data", logid);
@@ -1604,11 +1604,11 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 }
 
 static int
-gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipients, struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
+gpg_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipients, struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
 	CamelGpgContext *ctx = (CamelGpgContext *) context;
 	struct _GpgCtx *gpg;
-	int i, res = -1;
+	gint i, res = -1;
 	CamelStream *istream, *ostream, *vstream;
 	CamelMimePart *encpart, *verpart;
 	CamelDataWrapper *dw;
@@ -1647,7 +1647,7 @@ gpg_encrypt (CamelCipherContext *context, const char *userid, GPtrArray *recipie
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
-		const char *diagnostics;
+		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1718,7 +1718,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	CamelMimePart *encrypted;
 	CamelMultipart *mp;
 	CamelContentType *ct;
-	int rv;
+	gint rv;
 
 	if (!ipart) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1777,7 +1777,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
-		const char *diagnostics;
+		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1838,7 +1838,7 @@ static int
 gpg_import_keys (CamelCipherContext *context, CamelStream *istream, CamelException *ex)
 {
 	struct _GpgCtx *gpg;
-	int res = -1;
+	gint res = -1;
 
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_IMPORT);
@@ -1857,7 +1857,7 @@ gpg_import_keys (CamelCipherContext *context, CamelStream *istream, CamelExcepti
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
-		const char *diagnostics;
+		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -1877,8 +1877,8 @@ static int
 gpg_export_keys (CamelCipherContext *context, GPtrArray *keys, CamelStream *ostream, CamelException *ex)
 {
 	struct _GpgCtx *gpg;
-	int i;
-	int res = -1;
+	gint i;
+	gint res = -1;
 
 	gpg = gpg_ctx_new (context->session);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_EXPORT);
@@ -1902,7 +1902,7 @@ gpg_export_keys (CamelCipherContext *context, GPtrArray *keys, CamelStream *ostr
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
-		const char *diagnostics;
+		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
 		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,

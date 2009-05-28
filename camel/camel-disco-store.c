@@ -48,18 +48,18 @@ static void disco_construct (CamelService *service, CamelSession *session,
 static gboolean disco_connect (CamelService *service, CamelException *ex);
 static void disco_cancel_connect (CamelService *service);
 static gboolean disco_disconnect (CamelService *service, gboolean clean, CamelException *ex);
-static CamelFolder *disco_get_folder (CamelStore *store, const char *name,
+static CamelFolder *disco_get_folder (CamelStore *store, const gchar *name,
 				      guint32 flags, CamelException *ex);
 static CamelFolderInfo *disco_get_folder_info (CamelStore *store,
-					       const char *top, guint32 flags,
+					       const gchar *top, guint32 flags,
 					       CamelException *ex);
 static void set_status (CamelDiscoStore *disco_store,
 			CamelDiscoStoreStatus status,
 			CamelException *ex);
 static gboolean can_work_offline (CamelDiscoStore *disco_store);
 
-static int disco_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static int disco_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+static gint disco_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
+static gint disco_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 static void
 camel_disco_store_class_init (CamelDiscoStoreClass *camel_disco_store_class)
@@ -225,7 +225,7 @@ disco_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 }
 
 static CamelFolder *
-disco_get_folder (CamelStore *store, const char *name,
+disco_get_folder (CamelStore *store, const gchar *name,
 		  guint32 flags, CamelException *ex)
 {
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (store);
@@ -246,7 +246,7 @@ disco_get_folder (CamelStore *store, const char *name,
 }
 
 static CamelFolderInfo *
-disco_get_folder_info (CamelStore *store, const char *top,
+disco_get_folder_info (CamelStore *store, const gchar *top,
 		       guint32 flags, CamelException *ex)
 {
 	CamelDiscoStore *disco_store = CAMEL_DISCO_STORE (store);
@@ -314,7 +314,7 @@ set_status(CamelDiscoStore *disco_store, CamelDiscoStoreStatus status, CamelExce
 			if (((CamelStore *)disco_store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
-				int i, sync;
+				gint i, sync;
 
 				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
 
@@ -423,7 +423,7 @@ camel_disco_store_prepare_for_offline(CamelDiscoStore *disco_store, CamelExcepti
 			if (((CamelStore *)disco_store)->folders) {
 				GPtrArray *folders;
 				CamelFolder *folder;
-				int i, sync;
+				gint i, sync;
 
 				sync =  camel_url_get_param(((CamelService *)disco_store)->url, "offline_sync") != NULL;
 

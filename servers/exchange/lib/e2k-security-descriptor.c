@@ -115,7 +115,7 @@ static E2kPermissionsMap permissions_map[] = {
 	{ E2K_PERMISSION_FOLDER_VISIBLE,
 	  LE(0x1208a9), LE(0x1200a9), LE(0x000000), LE(0x000000) }
 };
-static const int permissions_map_size =
+static const gint permissions_map_size =
 	sizeof (permissions_map) / sizeof (permissions_map[0]);
 
 static const guint32 container_permissions_all = LE(0x1fc9bf);
@@ -185,7 +185,7 @@ ace_compar (E2k_ACE *ace1, E2k_ACE *ace2, E2kSecurityDescriptor *sd)
 {
 	E2kSidType t1;
 	E2kSidType t2;
-	int order1, order2;
+	gint order1, order2;
 
 	if (ace1 == ace2)
 		return 0;
@@ -277,7 +277,7 @@ ace_compar (E2k_ACE *ace1, E2k_ACE *ace2, E2kSecurityDescriptor *sd)
 
 
 static xmlNode *
-find_child (xmlNode *node, const char *name)
+find_child (xmlNode *node, const gchar *name)
 {
 	for (node = node->xmlChildrenNode; node; node = node->next) {
 		if (node->name && !strcmp (node->name, name))
@@ -290,7 +290,7 @@ static void
 extract_sids (E2kSecurityDescriptor *sd, xmlNodePtr node)
 {
 	xmlNodePtr string_sid_node, type_node, display_name_node;
-	char *string_sid, *content, *display_name;
+	gchar *string_sid, *content, *display_name;
 	const guint8 *bsid;
 	E2kSid *sid;
 	E2kSidType type;
@@ -340,7 +340,7 @@ extract_sids (E2kSecurityDescriptor *sd, xmlNodePtr node)
 			continue;
 		}
 
-		g_hash_table_insert (sd->priv->sids, (char *)bsid, sid);
+		g_hash_table_insert (sd->priv->sids, (gchar *)bsid, sid);
 	}
 }
 
@@ -348,7 +348,7 @@ static gboolean
 parse_sid (E2kSecurityDescriptor *sd, GByteArray *binsd, guint16 *off,
 	   E2kSid **sid)
 {
-	int sid_len;
+	gint sid_len;
 
 	if (binsd->len - *off < E2K_SID_BINARY_SID_MIN_LEN)
 		return FALSE;
@@ -367,7 +367,7 @@ parse_acl (E2kSecurityDescriptor *sd, GByteArray *binsd, guint16 *off)
 {
 	E2k_ACL aclbuf;
 	E2k_ACE acebuf;
-	int ace_count, i;
+	gint ace_count, i;
 
 	if (binsd->len - *off < sizeof (E2k_ACL))
 		return FALSE;
@@ -404,7 +404,7 @@ parse_acl (E2kSecurityDescriptor *sd, GByteArray *binsd, guint16 *off)
 			return FALSE;
 
 		if (!g_hash_table_lookup (sd->priv->sid_order, acebuf.Sid)) {
-			int size = g_hash_table_size (sd->priv->sid_order);
+			gint size = g_hash_table_size (sd->priv->sid_order);
 
 			g_hash_table_insert (sd->priv->sid_order, acebuf.Sid,
 					     GUINT_TO_POINTER (size + 1));
@@ -469,7 +469,7 @@ e2k_security_descriptor_new (xmlNodePtr xml_form, GByteArray *binary_form)
 		e2k_sid_new_from_string_sid (E2K_SID_TYPE_WELL_KNOWN_GROUP,
 					     E2K_SID_WKS_EVERYONE, NULL);
 	g_hash_table_insert (sd->priv->sids,
-			     (char *)e2k_sid_get_binary_sid (sd->priv->default_sid),
+			     (gchar *)e2k_sid_get_binary_sid (sd->priv->default_sid),
 			     sd->priv->default_sid);
 	extract_sids (sd, xml_form);
 
@@ -507,7 +507,7 @@ e2k_security_descriptor_to_binary (E2kSecurityDescriptor *sd)
 	E2k_SECURITY_DESCRIPTOR_RELATIVE sdbuf;
 	E2k_ACL aclbuf;
 	E2k_ACE *aces;
-	int off, ace, last_ace = -1, acl_size, ace_count;
+	gint off, ace, last_ace = -1, acl_size, ace_count;
 	const guint8 *bsid;
 
 	g_return_val_if_fail (E2K_IS_SECURITY_DESCRIPTOR (sd), NULL);
@@ -617,7 +617,7 @@ e2k_security_descriptor_get_sids (E2kSecurityDescriptor *sd)
 	GList *sids = NULL;
 	GHashTable *added_sids;
 	E2k_ACE *aces;
-	int ace;
+	gint ace;
 
 	g_return_val_if_fail (E2K_IS_SECURITY_DESCRIPTOR (sd), NULL);
 
@@ -649,7 +649,7 @@ e2k_security_descriptor_remove_sid (E2kSecurityDescriptor *sd,
 				    E2kSid *sid)
 {
 	E2k_ACE *aces;
-	int ace;
+	gint ace;
 
 	g_return_if_fail (E2K_IS_SECURITY_DESCRIPTOR (sd));
 	g_return_if_fail (E2K_IS_SID (sid));
@@ -692,7 +692,7 @@ e2k_security_descriptor_get_permissions (E2kSecurityDescriptor *sd,
 {
 	E2k_ACE *aces;
 	guint32 mapi_perms, checkperm;
-	int ace, map;
+	gint ace, map;
 
 	g_return_val_if_fail (E2K_IS_SECURITY_DESCRIPTOR (sd), 0);
 	g_return_val_if_fail (E2K_IS_SID (sid), 0);
@@ -736,7 +736,7 @@ static void
 set_ace (E2kSecurityDescriptor *sd, E2k_ACE *ace)
 {
 	E2k_ACE *aces = (E2k_ACE *)sd->priv->aces->data;
-	int low, mid = 0, high, cmp = -1;
+	gint low, mid = 0, high, cmp = -1;
 
 	low = 0;
 	high = sd->priv->aces->len - 1;
@@ -776,7 +776,7 @@ e2k_security_descriptor_set_permissions (E2kSecurityDescriptor *sd,
 	guint32 container_allowed, container_denied;
 	const guint8 *bsid;
 	E2kSid *sid2;
-	int map;
+	gint map;
 
 	g_return_if_fail (E2K_IS_SECURITY_DESCRIPTOR (sd));
 	g_return_if_fail (E2K_IS_SID (sid));
@@ -784,9 +784,9 @@ e2k_security_descriptor_set_permissions (E2kSecurityDescriptor *sd,
 	bsid = e2k_sid_get_binary_sid (sid);
 	sid2 = g_hash_table_lookup (sd->priv->sids, bsid);
 	if (!sid2) {
-		int size = g_hash_table_size (sd->priv->sid_order);
+		gint size = g_hash_table_size (sd->priv->sid_order);
 
-		g_hash_table_insert (sd->priv->sids, (char *)bsid, sid);
+		g_hash_table_insert (sd->priv->sids, (gchar *)bsid, sid);
 		g_object_ref (sid);
 
 		g_hash_table_insert (sd->priv->sid_order, sid,
@@ -839,7 +839,7 @@ e2k_security_descriptor_set_permissions (E2kSecurityDescriptor *sd,
 
 
 static struct {
-	const char *name;
+	const gchar *name;
 	guint32 perms;
 } roles[E2K_PERMISSIONS_ROLE_NUM_ROLES] = {
 	/* i18n: These are Outlook's words for the default roles in
@@ -899,7 +899,7 @@ static struct {
  *
  * Return value: the name
  **/
-const char *
+const gchar *
 e2k_permissions_role_get_name (E2kPermissionsRole role)
 {
 	if (role == E2K_PERMISSIONS_ROLE_CUSTOM)
@@ -940,7 +940,7 @@ e2k_permissions_role_get_perms (E2kPermissionsRole role)
 E2kPermissionsRole
 e2k_permissions_role_find (guint perms)
 {
-	int role;
+	gint role;
 
 	/* "Folder contact" isn't actually a permission, and is ignored
 	 * for purposes of roles.

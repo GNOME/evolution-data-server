@@ -37,8 +37,8 @@ struct _SearchContext {
 };
 
 static gboolean
-compare_im (EContact *contact, const char *str,
-	    char *(*compare)(const char*, const char*),
+compare_im (EContact *contact, const gchar *str,
+	    gchar *(*compare)(const gchar *, const gchar *),
 	    EContactField im_field)
 {
 	GList    *aims, *l;
@@ -47,7 +47,7 @@ compare_im (EContact *contact, const char *str,
 	aims = e_contact_get (contact, im_field);
 
 	for (l = aims; l != NULL; l = l->next) {
-		char *im = (char *) l->data;
+		gchar *im = (gchar *) l->data;
 
 		if (im && compare (im, str)) {
 			found_it = TRUE;
@@ -62,70 +62,70 @@ compare_im (EContact *contact, const char *str,
 }
 
 static gboolean
-compare_im_aim (EContact *contact, const char *str,
-		char *(*compare)(const char*, const char*))
+compare_im_aim (EContact *contact, const gchar *str,
+		gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_AIM);
 }
 
 static gboolean
-compare_im_msn (EContact *contact, const char *str,
-		char *(*compare)(const char*, const char*))
+compare_im_msn (EContact *contact, const gchar *str,
+		gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_MSN);
 }
 
 static gboolean
-compare_im_skype (EContact *contact, const char *str,
-		char *(*compare)(const char*, const char*))
+compare_im_skype (EContact *contact, const gchar *str,
+		gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_SKYPE);
 }
 
 static gboolean
-compare_im_icq (EContact *contact, const char *str,
-		char *(*compare)(const char*, const char*))
+compare_im_icq (EContact *contact, const gchar *str,
+		gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_ICQ);
 }
 
 static gboolean
-compare_im_yahoo (EContact *contact, const char *str,
-		  char *(*compare)(const char*, const char*))
+compare_im_yahoo (EContact *contact, const gchar *str,
+		  gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_YAHOO);
 }
 
 static gboolean
-compare_im_gadugadu (EContact *contact, const char *str,
-		  char *(*compare)(const char*, const char*))
+compare_im_gadugadu (EContact *contact, const gchar *str,
+		  gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_GADUGADU);
 }
 
 
 static gboolean
-compare_im_jabber (EContact *contact, const char *str,
-		   char *(*compare)(const char*, const char*))
+compare_im_jabber (EContact *contact, const gchar *str,
+		   gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_JABBER);
 }
 
 static gboolean
-compare_im_groupwise (EContact *contact, const char *str,
-		      char *(*compare)(const char*, const char*))
+compare_im_groupwise (EContact *contact, const gchar *str,
+		      gchar *(*compare)(const gchar *, const gchar *))
 {
 	return compare_im (contact, str, compare, E_CONTACT_IM_GROUPWISE);
 }
 
 static gboolean
-compare_email (EContact *contact, const char *str,
-	       char *(*compare)(const char*, const char*))
+compare_email (EContact *contact, const gchar *str,
+	       gchar *(*compare)(const gchar *, const gchar *))
 {
-	int i;
+	gint i;
 
 	for (i = E_CONTACT_EMAIL_1; i <= E_CONTACT_EMAIL_4; i ++) {
-		const char *email = e_contact_get_const (contact, i);
+		const gchar *email = e_contact_get_const (contact, i);
 
 		if (email && compare(email, str))
 			return TRUE;
@@ -135,14 +135,14 @@ compare_email (EContact *contact, const char *str,
 }
 
 static gboolean
-compare_phone (EContact *contact, const char *str,
-	       char *(*compare)(const char*, const char*))
+compare_phone (EContact *contact, const gchar *str,
+	       gchar *(*compare)(const gchar *, const gchar *))
 {
-	int i;
+	gint i;
 	gboolean rv = FALSE;
 
 	for (i = E_CONTACT_FIRST_PHONE_ID; i <= E_CONTACT_LAST_PHONE_ID; i ++) {
-		char *phone = e_contact_get (contact, i);
+		gchar *phone = e_contact_get (contact, i);
 
 		rv = phone && compare(phone, str);
 		g_free (phone);
@@ -155,10 +155,10 @@ compare_phone (EContact *contact, const char *str,
 }
 
 static gboolean
-compare_name (EContact *contact, const char *str,
-	      char *(*compare)(const char*, const char*))
+compare_name (EContact *contact, const gchar *str,
+	      gchar *(*compare)(const gchar *, const gchar *))
 {
-	const char *name;
+	const gchar *name;
 
 	name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
 	if (name && compare (name, str))
@@ -180,11 +180,11 @@ compare_name (EContact *contact, const char *str,
 }
 
 static gboolean
-compare_address (EContact *contact, const char *str,
-		 char *(*compare)(const char*, const char*))
+compare_address (EContact *contact, const gchar *str,
+		 gchar *(*compare)(const gchar *, const gchar *))
 {
 
-	int i;
+	gint i;
 	gboolean rv = FALSE;
 
 	for (i = E_CONTACT_FIRST_ADDRESS_ID; i <= E_CONTACT_LAST_ADDRESS_ID; i ++) {
@@ -210,8 +210,8 @@ compare_address (EContact *contact, const char *str,
 }
 
 static gboolean
-compare_category (EContact *contact, const char *str,
-		  char *(*compare)(const char*, const char*))
+compare_category (EContact *contact, const gchar *str,
+		  gchar *(*compare)(const gchar *, const gchar *))
 {
 	GList *categories;
 	GList *iterator;
@@ -220,7 +220,7 @@ compare_category (EContact *contact, const char *str,
 	categories = e_contact_get (contact, E_CONTACT_CATEGORY_LIST);
 
 	for (iterator = categories; iterator; iterator = iterator->next) {
-		const char *category = iterator->data;
+		const gchar *category = iterator->data;
 
 		if (compare(category, str)) {
 			ret_val = TRUE;
@@ -236,12 +236,12 @@ compare_category (EContact *contact, const char *str,
 
 static struct prop_info {
 	EContactField field_id;
-	const char *query_prop;
+	const gchar *query_prop;
 #define PROP_TYPE_NORMAL   0x01
 #define PROP_TYPE_LIST     0x02
-	int prop_type;
-	gboolean (*list_compare)(EContact *contact, const char *str,
-				 char *(*compare)(const char*, const char*));
+	gint prop_type;
+	gboolean (*list_compare)(EContact *contact, const gchar *str,
+				 gchar *(*compare)(const gchar *, const gchar *));
 
 } prop_info_table[] = {
 #define NORMAL_PROP(f,q) {f, q, PROP_TYPE_NORMAL, NULL}
@@ -287,18 +287,18 @@ static struct prop_info {
 
 static ESExpResult *
 entry_compare(SearchContext *ctx, struct _ESExp *f,
-	      int argc, struct _ESExpResult **argv,
-	      char *(*compare)(const char*, const char*))
+	      gint argc, struct _ESExpResult **argv,
+	      gchar *(*compare)(const gchar *, const gchar *))
 {
 	ESExpResult *r;
-	int truth = FALSE;
+	gint truth = FALSE;
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-		char *propname;
+		gchar *propname;
 		struct prop_info *info = NULL;
-		int i;
+		gint i;
 		gboolean any_field;
 		gboolean saw_any = FALSE;
 
@@ -319,7 +319,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 					truth = FALSE;
 				}
 				else if (info->prop_type == PROP_TYPE_NORMAL) {
-					const char *prop = NULL;
+					const gchar *prop = NULL;
 					/* straight string property matches */
 
 					prop = e_contact_get_const (ctx->contact, info->field_id);
@@ -352,7 +352,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 			EContactField fid = e_contact_field_id (propname);
 
 			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
-				const char *prop = e_contact_get_const (ctx->contact, fid);
+				const gchar *prop = e_contact_get_const (ctx->contact, fid);
 
 				if (prop && compare (prop, argv[1]->value.string)) {
 					truth = TRUE;
@@ -368,7 +368,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
 
 				for (l = values; l && !truth; l = l->next) {
-					const char *value = l->data;
+					const gchar *value = l->data;
 
 					if (value && compare (value, argv[1]->value.string)) {
 						truth = TRUE;
@@ -393,7 +393,7 @@ contains_helper_free_word (gpointer data, gpointer user_data)
 	}
 }
 
-static char *
+static gchar *
 try_contains_word (const gchar *s1, GSList *word)
 {
 	const gchar *o, *p;
@@ -403,7 +403,7 @@ try_contains_word (const gchar *s1, GSList *word)
 	if (s1 == NULL)
 		return NULL;
 	if (word == NULL)
-		return (char*)s1; /* previous was last word */
+		return (gchar *)s1; /* previous was last word */
 	if (word->data == NULL)
 		return NULL; /* illegal structure */
 
@@ -430,7 +430,7 @@ try_contains_word (const gchar *s1, GSList *word)
 				/* we read whole word and no illegal character has been found */
 				if (word->next == NULL ||
 				    try_contains_word (e_util_unicode_get_utf8 (o, &unival), word->next)) {
-					return (char*)o;
+					return (gchar *)o;
 				}
 			}
 		}
@@ -445,7 +445,7 @@ try_contains_word (const gchar *s1, GSList *word)
    returns newly allocated GString
 */
 static GString *
-chars_to_unistring_lowercase (const char *pstr)
+chars_to_unistring_lowercase (const gchar *pstr)
 {
 	GString *res;
 	gunichar unich;
@@ -478,17 +478,17 @@ chars_to_unistring_lowercase (const char *pstr)
 /* first space between words is treated as wildcard character;
    we are looking for s2 in s1, so s2 will be breaked into words
 */
-static char *
-contains_helper (const char *s1, const char *s2)
+static gchar *
+contains_helper (const gchar *s1, const gchar *s2)
 {
 	GString *s1uni;
 	GString *s2uni;
 	GSList *words;
-	char *next;
+	gchar *next;
 	gboolean have_nonspace;
 	gboolean have_space;
 	GString *last_word, *w;
-	char *res = NULL;
+	gchar *res = NULL;
 	gunichar unich;
 	glong len1, len2;
 
@@ -497,7 +497,7 @@ contains_helper (const char *s1, const char *s2)
 
 	/* the initial word contains an empty string for sure */
 	if (!*s2)
-		return (char *)s1;
+		return (gchar *)s1;
 
 	s1uni = chars_to_unistring_lowercase (s1);
 	if (s1uni == NULL)
@@ -517,7 +517,7 @@ contains_helper (const char *s1, const char *s2)
 
 		/* both are empty strings */
 		if (len1 == len2)
-			return (char *)s1;
+			return (gchar *)s1;
 
 		return NULL;
 	}
@@ -570,23 +570,23 @@ contains_helper (const char *s1, const char *s2)
 }
 
 static ESExpResult *
-func_contains(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
 	return entry_compare (ctx, f, argc, argv, contains_helper);
 }
 
-static char *
-is_helper (const char *ps1, const char *ps2)
+static gchar *
+is_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *s1, *s2, *res;
+	gchar *s1, *s2, *res;
 
 	s1 = e_util_utf8_remove_accents (ps1);
 	s2 = e_util_utf8_remove_accents (ps2);
 
 	if (!e_util_utf8_strcasecmp (s1, s2))
-		res = (char*)ps1;
+		res = (gchar *)ps1;
 	else
 		res = NULL;
 
@@ -597,26 +597,26 @@ is_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_is(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
 	return entry_compare (ctx, f, argc, argv, is_helper);
 }
 
-static char *
-endswith_helper (const char *ps1, const char *ps2)
+static gchar *
+endswith_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
-	char *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *res;
 	glong s1len = g_utf8_strlen (s1, -1);
 	glong s2len = g_utf8_strlen (s2, -1);
 
 	if (s1len < s2len)
 		res = NULL;
 	else
-		res = (char *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
+		res = (gchar *)e_util_utf8_strstrcase (g_utf8_offset_to_pointer (s1, s1len - s2len), s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -625,23 +625,23 @@ endswith_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_endswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
 	return entry_compare (ctx, f, argc, argv, endswith_helper);
 }
 
-static char *
-beginswith_helper (const char *ps1, const char *ps2)
+static gchar *
+beginswith_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *p, *res;
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *p, *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	if ((p = (char*) e_util_utf8_strstrcase(s1, s2))
+	if ((p = (gchar *) e_util_utf8_strstrcase(s1, s2))
 	    && (p == s1))
-		res = (char *)ps1;
+		res = (gchar *)ps1;
 	else
 		res = NULL;
 
@@ -652,21 +652,21 @@ beginswith_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 
 	return entry_compare (ctx, f, argc, argv, beginswith_helper);
 }
 
-static char *
-exists_helper (const char *ps1, const char *ps2)
+static gchar *
+exists_helper (const gchar *ps1, const gchar *ps2)
 {
-	char *res;
-	char *s1 = e_util_utf8_remove_accents (ps1);
-	char *s2 = e_util_utf8_remove_accents (ps2);
+	gchar *res;
+	gchar *s1 = e_util_utf8_remove_accents (ps1);
+	gchar *s2 = e_util_utf8_remove_accents (ps2);
 
-	res = (char *)e_util_utf8_strstrcase (s1, s2);
+	res = (gchar *)e_util_utf8_strstrcase (s1, s2);
 
 	g_free (s1);
 	g_free (s2);
@@ -675,17 +675,17 @@ exists_helper (const char *ps1, const char *ps2)
 }
 
 static ESExpResult *
-func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *r;
-	int truth = FALSE;
+	gint truth = FALSE;
 
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
-		char *propname;
+		gchar *propname;
 		struct prop_info *info = NULL;
-		int i;
+		gint i;
 		gboolean saw_any = FALSE;
 
 		propname = argv[0]->value.string;
@@ -696,7 +696,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				info = &prop_info_table[i];
 
 				if (info->prop_type == PROP_TYPE_NORMAL) {
-					const char *prop = NULL;
+					const gchar *prop = NULL;
 					/* searches where the query's property
 					   maps directly to an ecard property */
 
@@ -721,7 +721,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 			EContactField fid = e_contact_field_id (propname);
 
 			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
-				const char *prop = e_contact_get_const (ctx->contact, fid);
+				const gchar *prop = e_contact_get_const (ctx->contact, fid);
 
 				if (prop && *prop)
 					truth = TRUE;
@@ -731,7 +731,7 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
 
 				for (l = values; l && !truth; l = l->next) {
-					const char *value = l->data;
+					const gchar *value = l->data;
 
 					if (value && *value)
 						truth = TRUE;
@@ -746,17 +746,17 @@ func_exists(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
 }
 
 static ESExpResult *
-func_exists_vcard(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *data)
+func_exists_vcard(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *r;
-	int truth = FALSE;
+	gint truth = FALSE;
 
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
-		const char *attr_name;
+		const gchar *attr_name;
 		EVCardAttribute *attr;
 		GList *values;
-		char *s;
+		gchar *s;
 
 		attr_name = argv[0]->value.string;
 		attr = e_vcard_get_attribute (E_VCARD (ctx->contact), attr_name);
@@ -779,9 +779,9 @@ func_exists_vcard(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *
 
 /* 'builtin' functions */
 static struct {
-	char *name;
+	gchar *name;
 	ESExpFunc *func;
-	int type;		/* set to 1 if a function can perform shortcut evaluation, or
+	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
 	{ "contains", func_contains, 0 },
@@ -835,7 +835,7 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
  * Return value: %TRUE if the VCard matches, %FALSE otherwise.
  **/
 gboolean
-e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const char *vcard)
+e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const gchar *vcard)
 {
 	EContact *contact;
 	gboolean retval;
@@ -860,11 +860,11 @@ e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const char *vcard)
  * Return value: A new #EBookBackendSExp.
  **/
 EBookBackendSExp *
-e_book_backend_sexp_new (const char *text)
+e_book_backend_sexp_new (const gchar *text)
 {
 	EBookBackendSExp *sexp = g_object_new (E_TYPE_BACKEND_SEXP, NULL);
-	int esexp_error;
-	int i;
+	gint esexp_error;
+	gint i;
 
 	sexp->priv->search_sexp = e_sexp_new();
 

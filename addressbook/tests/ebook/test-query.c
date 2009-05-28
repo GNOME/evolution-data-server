@@ -4,22 +4,22 @@
 #define QUERY_STRING1
 #define QUERY_STRING2
 
-static char* queries[] = {
+static gchar * queries[] = {
 	"(exists \"full_name\")",
 	"(contains \"full_name\" \"Miguel\")"
 
 	/* XXX come on, add more here */
 };
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
-	int i;
+	gint i;
 	gboolean failure = FALSE;
 
 	for (i = 0; i < G_N_ELEMENTS (queries); i ++) {
 		EBookQuery *query = e_book_query_from_string (queries[i]);
-		char *str;
+		gchar *str;
 
 		str = e_book_query_to_string (query);
 

@@ -60,7 +60,7 @@ typedef struct {
 	off_t (*seek)       (CamelSeekableStream *stream, off_t offset,
 			     CamelStreamSeekPolicy policy);
 	off_t (*tell)	    (CamelSeekableStream *stream);
-	int  (*set_bounds)  (CamelSeekableStream *stream,
+	gint  (*set_bounds)  (CamelSeekableStream *stream,
 			     off_t start, off_t end);
 } CamelSeekableStreamClass;
 

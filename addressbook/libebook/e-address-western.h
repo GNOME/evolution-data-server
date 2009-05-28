@@ -8,16 +8,16 @@ G_BEGIN_DECLS
 typedef struct {
 
 	/* Public */
-	char *po_box;
-	char *extended;  /* I'm not sure what this is. */
-	char *street;
-	char *locality;  /* For example, the city or town. */
-	char *region;	/* The state or province. */
-	char *postal_code;
-	char *country;
+	gchar *po_box;
+	gchar *extended;  /* I'm not sure what this is. */
+	gchar *street;
+	gchar *locality;  /* For example, the city or town. */
+	gchar *region;	/* The state or province. */
+	gchar *postal_code;
+	gchar *country;
 } EAddressWestern;
 
-EAddressWestern *e_address_western_parse (const char *in_address);
+EAddressWestern *e_address_western_parse (const gchar *in_address);
 void e_address_western_free (EAddressWestern *eaw);
 
 G_END_DECLS

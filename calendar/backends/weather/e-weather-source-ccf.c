@@ -56,8 +56,8 @@
 
 struct search_struct
 {
-	const char *code;
-	const char *name;
+	const gchar *code;
+	const gchar *name;
 	gboolean is_old;
 	WeatherLocation *location;
 };
@@ -114,7 +114,7 @@ done:
 }
 
 EWeatherSource*
-e_weather_source_ccf_new (const char *uri)
+e_weather_source_ccf_new (const gchar *uri)
 {
 	/* Old URI is formatted as weather://ccf/AAA[/BBB] - AAA is the 3-letter station
 	 * code for identifying the providing station (subdirectory within the crh data
@@ -147,10 +147,10 @@ e_weather_source_ccf_new (const char *uri)
 
 #if 0
 static GSList*
-tokenize (char *buffer)
+tokenize (gchar *buffer)
 {
-	char *token;
-	char *tokbuf;
+	gchar *token;
+	gchar *tokbuf;
 	GSList *ret;
 
 	token = strtok_r (buffer, " \n", &tokbuf);
@@ -161,9 +161,9 @@ tokenize (char *buffer)
 }
 
 static void
-date2tm (char *date, struct tm *times)
+date2tm (gchar *date, struct tm *times)
 {
-	char tmp[3];
+	gchar tmp[3];
 	time_t curtime = time(NULL);
 	tmp[2] = '\0';
 
@@ -178,7 +178,7 @@ date2tm (char *date, struct tm *times)
 }
 
 static WeatherConditions
-decodeConditions (char code)
+decodeConditions (gchar code)
 {
 	switch (code) {
 		case 'A': return WEATHER_FAIR;
@@ -213,9 +213,9 @@ decodeConditions (char code)
 }
 
 static int
-decodePOP (char data)
+decodePOP (gchar data)
 {
-	int ret;
+	gint ret;
 
 	switch (data) {
 		case '-':
@@ -234,9 +234,9 @@ decodePOP (char data)
 }
 
 static void
-decodeSnowfall (char *data, float *low, float *high)
+decodeSnowfall (gchar *data, float *low, float *high)
 {
-	char num[3];
+	gchar num[3];
 	num[2] = '\0';
 
 	num[0] = data[0]; num[1] = data[1];
@@ -246,16 +246,16 @@ decodeSnowfall (char *data, float *low, float *high)
 }
 
 static float
-ftoc (char *data)
+ftoc (gchar *data)
 {
-	int fahrenheit = atoi(data);
+	gint fahrenheit = atoi(data);
 	if (fahrenheit >= 900)
 		fahrenheit = (fahrenheit - 900) * -1;
 	return ((float)(fahrenheit-32)) * 5.0f / 9.0f;
 }
 
 static void
-e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
+e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, gchar *buffer)
 {
 	/* CCF gives us either 2 or 7 days of forecast data. IFPS WFO's
 	 * will produce 7 day forecasts, whereas pre-IFPS WFO's are only
@@ -273,7 +273,7 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 	GSList *current = tokens;
 	GList *fc = NULL;
 	struct tm tms;
-	int i;
+	gint i;
 	time_t base;
 	gint n;
 
@@ -286,8 +286,8 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 		current = g_slist_next (current);
 	current = g_slist_next (current);
 	/* pick up the first two conditions reports */
-	forecasts[0].conditions = decodeConditions (((char*)(current->data))[0]);
-	forecasts[1].conditions = decodeConditions (((char*)(current->data))[1]);
+	forecasts[0].conditions = decodeConditions (((gchar *)(current->data))[0]);
+	forecasts[1].conditions = decodeConditions (((gchar *)(current->data))[1]);
 
 	current = g_slist_next (current);
 	if (tms.tm_hour < 12) {
@@ -299,8 +299,8 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 		}
 		forecasts[2].high = ftoc (current->data);
 		current = g_slist_next (current);
-		forecasts[0].pop = decodePOP (((char*)(current->data))[2]);
-		forecasts[1].pop = decodePOP (((char*)(current->data))[4]);
+		forecasts[0].pop = decodePOP (((gchar *)(current->data))[2]);
+		forecasts[1].pop = decodePOP (((gchar *)(current->data))[4]);
 	} else {
 		for (i = 0; i < 2; i++) {
 			current = g_slist_next (current);
@@ -309,8 +309,8 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 			forecasts[i].low  = ftoc (current->data);
 		}
 		current = g_slist_next (current);
-		forecasts[0].pop = decodePOP (((char*)(current->data))[1]);
-		forecasts[1].pop = decodePOP (((char*)(current->data))[3]);
+		forecasts[0].pop = decodePOP (((gchar *)(current->data))[1]);
+		forecasts[1].pop = decodePOP (((gchar *)(current->data))[3]);
 	}
 
 	current = g_slist_next (current);
@@ -344,11 +344,11 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 	}
 
 	/* Grab the conditions for the next 5 days */
-	forecasts[2].conditions = decodeConditions (((char*)(current->data))[0]);
-	forecasts[3].conditions = decodeConditions (((char*)(current->data))[1]);
-	forecasts[4].conditions = decodeConditions (((char*)(current->data))[2]);
-	forecasts[5].conditions = decodeConditions (((char*)(current->data))[3]);
-	forecasts[6].conditions = decodeConditions (((char*)(current->data))[4]);
+	forecasts[2].conditions = decodeConditions (((gchar *)(current->data))[0]);
+	forecasts[3].conditions = decodeConditions (((gchar *)(current->data))[1]);
+	forecasts[4].conditions = decodeConditions (((gchar *)(current->data))[2]);
+	forecasts[5].conditions = decodeConditions (((gchar *)(current->data))[3]);
+	forecasts[6].conditions = decodeConditions (((gchar *)(current->data))[4]);
 
 	/* Temperature forecasts */
 	current = g_slist_next (current);
@@ -364,11 +364,11 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 		forecasts[6].high = ftoc (current->data);
 		forecasts[6].low  = forecasts[6].high;
 		current = g_slist_next (current);
-		forecasts[2].pop = decodePOP (((char*)(current->data))[1]);
-		forecasts[3].pop = decodePOP (((char*)(current->data))[3]);
-		forecasts[4].pop = decodePOP (((char*)(current->data))[5]);
-		forecasts[5].pop = decodePOP (((char*)(current->data))[7]);
-		forecasts[6].pop = decodePOP (((char*)(current->data))[9]);
+		forecasts[2].pop = decodePOP (((gchar *)(current->data))[1]);
+		forecasts[3].pop = decodePOP (((gchar *)(current->data))[3]);
+		forecasts[4].pop = decodePOP (((gchar *)(current->data))[5]);
+		forecasts[5].pop = decodePOP (((gchar *)(current->data))[7]);
+		forecasts[6].pop = decodePOP (((gchar *)(current->data))[9]);
 		n = 7;
 	} else {
 		for (i = 2; i < 6; i++) {
@@ -381,11 +381,11 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, char *buffer)
 		/* hack for people who put out bad data, like Pueblo, CO. Yes, PUB, that means you */
 		if (strlen (current->data) == 3)
 			current = g_slist_next (current);
-		forecasts[1].pop = decodePOP (((char*)(current->data))[0]);
-		forecasts[2].pop = decodePOP (((char*)(current->data))[2]);
-		forecasts[3].pop = decodePOP (((char*)(current->data))[4]);
-		forecasts[4].pop = decodePOP (((char*)(current->data))[6]);
-		forecasts[5].pop = decodePOP (((char*)(current->data))[8]);
+		forecasts[1].pop = decodePOP (((gchar *)(current->data))[0]);
+		forecasts[2].pop = decodePOP (((gchar *)(current->data))[2]);
+		forecasts[3].pop = decodePOP (((gchar *)(current->data))[4]);
+		forecasts[4].pop = decodePOP (((gchar *)(current->data))[6]);
+		forecasts[5].pop = decodePOP (((gchar *)(current->data))[8]);
 	}
 
 	for (i = 0; i < n; i++) {

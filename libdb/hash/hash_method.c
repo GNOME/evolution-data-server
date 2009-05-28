@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,23 +19,23 @@ static const char revid[] = "$Id$";
 #include "dbinc/db_page.h"
 #include "dbinc/hash.h"
 
-static int __ham_set_h_ffactor __P((DB *, u_int32_t));
-static int __ham_set_h_hash
-	       __P((DB *, u_int32_t(*)(DB *, const void *, u_int32_t)));
-static int __ham_set_h_nelem __P((DB *, u_int32_t));
+static gint __ham_set_h_ffactor __P((DB *, u_int32_t));
+static gint __ham_set_h_hash
+	       __P((DB *, u_int32_t(*)(DB *, gconstpointer , u_int32_t)));
+static gint __ham_set_h_nelem __P((DB *, u_int32_t));
 
 /*
  * __ham_db_create --
  *	Hash specific initialization of the DB structure.
  *
- * PUBLIC: int __ham_db_create __P((DB *));
+ * PUBLIC: gint __ham_db_create __P((DB *));
  */
-int
+gint
 __ham_db_create(dbp)
 	DB *dbp;
 {
 	HASH *hashp;
-	int ret;
+	gint ret;
 
 	if ((ret = __os_malloc(dbp->dbenv,
 	    sizeof(HASH), &dbp->h_internal)) != 0)
@@ -55,9 +55,9 @@ __ham_db_create(dbp)
 }
 
 /*
- * PUBLIC: int __ham_db_close __P((DB *));
+ * PUBLIC: gint __ham_db_close __P((DB *));
  */
-int
+gint
 __ham_db_close(dbp)
 	DB *dbp;
 {
@@ -94,7 +94,7 @@ __ham_set_h_ffactor(dbp, h_ffactor)
 static int
 __ham_set_h_hash(dbp, func)
 	DB *dbp;
-	u_int32_t (*func) __P((DB *, const void *, u_int32_t));
+	u_int32_t (*func) __P((DB *, gconstpointer , u_int32_t));
 {
 	HASH *hashp;
 

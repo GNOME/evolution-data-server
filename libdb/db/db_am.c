@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,21 +27,21 @@ static const char revid[] = "$Id$";
 #include "dbinc/mp.h"
 #include "dbinc/qam.h"
 
-static int __db_append_primary __P((DBC *, DBT *, DBT *));
-static int __db_secondary_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
-static int __db_secondary_close __P((DB *, u_int32_t));
+static gint __db_append_primary __P((DBC *, DBT *, DBT *));
+static gint __db_secondary_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+static gint __db_secondary_close __P((DB *, u_int32_t));
 
 #ifdef DEBUG
-static int __db_cprint_item __P((DBC *));
+static gint __db_cprint_item __P((DBC *));
 #endif
 
 /*
  * __db_cursor --
  *	Allocate and return a cursor.
  *
- * PUBLIC: int __db_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
+ * PUBLIC: gint __db_cursor __P((DB *, DB_TXN *, DBC **, u_int32_t));
  */
-int
+gint
 __db_cursor(dbp, txn, dbcp, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -52,7 +52,7 @@ __db_cursor(dbp, txn, dbcp, flags)
 	DBC *dbc;
 	db_lockmode_t mode;
 	u_int32_t op;
-	int ret;
+	gint ret;
 
 	dbenv = dbp->dbenv;
 
@@ -109,23 +109,23 @@ __db_cursor(dbp, txn, dbcp, flags)
  *	non-NULL it is assumed to point to an area to
  *	initialize as a cursor.
  *
- * PUBLIC: int __db_icursor
+ * PUBLIC: gint __db_icursor
  * PUBLIC:     __P((DB *, DB_TXN *, DBTYPE, db_pgno_t, int, u_int32_t, DBC **));
  */
-int
+gint
 __db_icursor(dbp, txn, dbtype, root, is_opd, lockerid, dbcp)
 	DB *dbp;
 	DB_TXN *txn;
 	DBTYPE dbtype;
 	db_pgno_t root;
-	int is_opd;
+	gint is_opd;
 	u_int32_t lockerid;
 	DBC **dbcp;
 {
 	DBC *dbc, *adbc;
 	DBC_INTERNAL *cp;
 	DB_ENV *dbenv;
-	int allocated, ret;
+	gint allocated, ret;
 
 	dbenv = dbp->dbenv;
 	allocated = 0;
@@ -333,14 +333,14 @@ err:	if (allocated)
  * __db_cprint --
  *	Display the cursor active and free queues.
  *
- * PUBLIC: int __db_cprint __P((DB *));
+ * PUBLIC: gint __db_cprint __P((DB *));
  */
-int
+gint
 __db_cprint(dbp)
 	DB *dbp;
 {
 	DBC *dbc;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	ret = 0;
 	MUTEX_THREAD_LOCK(dbp->dbenv, dbp->mutexp);
@@ -360,7 +360,7 @@ __db_cprint(dbp)
 }
 
 static
-int __db_cprint_item(dbc)
+gint __db_cprint_item(dbc)
 	DBC *dbc;
 {
 	static const FN fn[] = {
@@ -377,7 +377,7 @@ int __db_cprint_item(dbc)
 	};
 	DB *dbp;
 	DBC_INTERNAL *cp;
-	const char *s;
+	const gchar *s;
 
 	dbp = dbc->dbp;
 	cp = dbc->internal;
@@ -417,15 +417,15 @@ int __db_cprint_item(dbc)
  * db_fd --
  *	Return a file descriptor for flock'ing.
  *
- * PUBLIC: int __db_fd __P((DB *, int *));
+ * PUBLIC: gint __db_fd __P((DB *, gint *));
  */
-int
+gint
 __db_fd(dbp, fdp)
 	DB *dbp;
-	int *fdp;
+	gint *fdp;
 {
 	DB_FH *fhp;
-	int ret;
+	gint ret;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->fd");
@@ -451,9 +451,9 @@ __db_fd(dbp, fdp)
  * __db_get --
  *	Return a key/data pair.
  *
- * PUBLIC: int __db_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_get __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
  */
-int
+gint
 __db_get(dbp, txn, key, data, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -461,7 +461,7 @@ __db_get(dbp, txn, key, data, flags)
 	u_int32_t flags;
 {
 	DBC *dbc;
-	int mode, ret, t_ret;
+	gint mode, ret, t_ret;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->get");
@@ -514,9 +514,9 @@ __db_get(dbp, txn, key, data, flags)
  * __db_put --
  *	Store a key/data pair.
  *
- * PUBLIC: int __db_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_put __P((DB *, DB_TXN *, DBT *, DBT *, u_int32_t));
  */
-int
+gint
 __db_put(dbp, txn, key, data, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -526,7 +526,7 @@ __db_put(dbp, txn, key, data, flags)
 	DBC *dbc;
 	DBT tdata;
 	DB_ENV *dbenv;
-	int ret, t_ret, txn_local;
+	gint ret, t_ret, txn_local;
 
 	dbc = NULL;
 	dbenv = dbp->dbenv;
@@ -670,9 +670,9 @@ err:	/* Close the cursor. */
  * __db_delete --
  *	Delete the items referenced by a key.
  *
- * PUBLIC: int __db_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_delete __P((DB *, DB_TXN *, DBT *, u_int32_t));
  */
-int
+gint
 __db_delete(dbp, txn, key, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -683,7 +683,7 @@ __db_delete(dbp, txn, key, flags)
 	DBT data, lkey;
 	DB_ENV *dbenv;
 	u_int32_t f_init, f_next;
-	int ret, t_ret, txn_local;
+	gint ret, t_ret, txn_local;
 
 	dbc = NULL;
 	dbenv = dbp->dbenv;
@@ -801,14 +801,14 @@ err:	/* Discard the cursor. */
  * __db_sync --
  *	Flush the database cache.
  *
- * PUBLIC: int __db_sync __P((DB *, u_int32_t));
+ * PUBLIC: gint __db_sync __P((DB *, u_int32_t));
  */
-int
+gint
 __db_sync(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
 {
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->sync");
@@ -838,20 +838,20 @@ __db_sync(dbp, flags)
  * __db_associate --
  *	Associate another database as a secondary index to this one.
  *
- * PUBLIC: int __db_associate __P((DB *, DB_TXN *, DB *,
- * PUBLIC:     int (*)(DB *, const DBT *, const DBT *, DBT *), u_int32_t));
+ * PUBLIC: gint __db_associate __P((DB *, DB_TXN *, DB *,
+ * PUBLIC:     gint (*)(DB *, const DBT *, const DBT *, DBT *), u_int32_t));
  */
-int
+gint
 __db_associate(dbp, txn, sdbp, callback, flags)
 	DB *dbp, *sdbp;
 	DB_TXN *txn;
-	int (*callback) __P((DB *, const DBT *, const DBT *, DBT *));
+	gint (*callback) __P((DB *, const DBT *, const DBT *, DBT *));
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
 	DBC *pdbc, *sdbc;
 	DBT skey, key, data;
-	int build, ret, t_ret, txn_local;
+	gint build, ret, t_ret, txn_local;
 
 	dbenv = dbp->dbenv;
 
@@ -1031,9 +1031,9 @@ err:	if (pdbc != NULL && (t_ret = pdbc->c_close(pdbc)) != 0 && ret == 0)
  * __db_pget --
  *	Return a primary key/data pair given a secondary key.
  *
- * PUBLIC: int __db_pget __P((DB *, DB_TXN *, DBT *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: gint __db_pget __P((DB *, DB_TXN *, DBT *, DBT *, DBT *, u_int32_t));
  */
-int
+gint
 __db_pget(dbp, txn, skey, pkey, data, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -1041,7 +1041,7 @@ __db_pget(dbp, txn, skey, pkey, data, flags)
 	u_int32_t flags;
 {
 	DBC *dbc;
-	int ret, t_ret;
+	gint ret, t_ret;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->pget");
@@ -1111,7 +1111,7 @@ __db_secondary_close(sdbp, flags)
 	u_int32_t flags;
 {
 	DB *primary;
-	int doclose;
+	gint doclose;
 
 	doclose = 0;
 	primary = sdbp->s_primary;
@@ -1154,7 +1154,7 @@ __db_append_primary(dbc, key, data)
 	DB *dbp, *sdbp;
 	DBC *sdbc, *pdbc;
 	DBT oldpkey, pkey, pdata, skey;
-	int cmp, ret, t_ret;
+	gint cmp, ret, t_ret;
 
 	dbp = dbc->dbp;
 	sdbp = NULL;

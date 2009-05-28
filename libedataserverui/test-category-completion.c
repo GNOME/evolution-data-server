@@ -46,8 +46,8 @@ on_idle_create_widget (void)
 	return FALSE;
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	gtk_init (&argc, &argv);
 

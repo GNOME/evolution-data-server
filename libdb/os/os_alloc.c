@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -59,15 +59,15 @@ union __db_alloc {
  *	the allocation function specified to the DB handle, the DB_ENV
  *	handle, or __os_malloc.
  *
- * PUBLIC: int __os_umalloc __P((DB_ENV *, size_t, void *));
+ * PUBLIC: gint __os_umalloc __P((DB_ENV *, size_t, gpointer ));
  */
-int
+gint
 __os_umalloc(dbenv, size, storep)
 	DB_ENV *dbenv;
 	size_t size;
-	void *storep;
+	gpointer storep;
 {
-	int ret;
+	gint ret;
 
 	/* Require an environment handle. */
 	DB_ASSERT(dbenv != NULL);
@@ -78,10 +78,10 @@ __os_umalloc(dbenv, size, storep)
 
 	if (dbenv == NULL || dbenv->db_malloc == NULL) {
 		if (DB_GLOBAL(j_malloc) != NULL)
-			*(void **)storep = DB_GLOBAL(j_malloc)(size);
+			*(gpointer *)storep = DB_GLOBAL(j_malloc)(size);
 		else
-			*(void **)storep = malloc(size);
-		if (*(void **)storep == NULL) {
+			*(gpointer *)storep = malloc(size);
+		if (*(gpointer *)storep == NULL) {
 			/*
 			 *  Correct error return, see __os_malloc.
 			 */
@@ -96,7 +96,7 @@ __os_umalloc(dbenv, size, storep)
 		return (0);
 	}
 
-	if ((*(void **)storep = dbenv->db_malloc(size)) == NULL) {
+	if ((*(gpointer *)storep = dbenv->db_malloc(size)) == NULL) {
 		__db_err(dbenv, "User-specified malloc function returned NULL");
 		return (ENOMEM);
 	}
@@ -108,18 +108,18 @@ __os_umalloc(dbenv, size, storep)
  * __os_urealloc --
  *	realloc(3) counterpart to __os_umalloc.
  *
- * PUBLIC: int __os_urealloc __P((DB_ENV *, size_t, void *));
+ * PUBLIC: gint __os_urealloc __P((DB_ENV *, size_t, gpointer ));
  */
-int
+gint
 __os_urealloc(dbenv, size, storep)
 	DB_ENV *dbenv;
 	size_t size;
-	void *storep;
+	gpointer storep;
 {
-	int ret;
-	void *ptr;
+	gint ret;
+	gpointer ptr;
 
-	ptr = *(void **)storep;
+	ptr = *(gpointer *)storep;
 
 	/* Require an environment handle. */
 	DB_ASSERT(dbenv != NULL);
@@ -133,10 +133,10 @@ __os_urealloc(dbenv, size, storep)
 			return (__os_umalloc(dbenv, size, storep));
 
 		if (DB_GLOBAL(j_realloc) != NULL)
-			*(void **)storep = DB_GLOBAL(j_realloc)(ptr, size);
+			*(gpointer *)storep = DB_GLOBAL(j_realloc)(ptr, size);
 		else
-			*(void **)storep = realloc(ptr, size);
-		if (*(void **)storep == NULL) {
+			*(gpointer *)storep = realloc(ptr, size);
+		if (*(gpointer *)storep == NULL) {
 			/*
 			 * Correct errno, see __os_realloc.
 			 */
@@ -151,7 +151,7 @@ __os_urealloc(dbenv, size, storep)
 		return (0);
 	}
 
-	if ((*(void **)storep = dbenv->db_realloc(ptr, size)) == NULL) {
+	if ((*(gpointer *)storep = dbenv->db_realloc(ptr, size)) == NULL) {
 		__db_err(dbenv,
 		    "User-specified realloc function returned NULL");
 		return (ENOMEM);
@@ -164,12 +164,12 @@ __os_urealloc(dbenv, size, storep)
  * __os_ufree --
  *	free(3) counterpart to __os_umalloc.
  *
- * PUBLIC: int __os_ufree __P((DB_ENV *, void *));
+ * PUBLIC: gint __os_ufree __P((DB_ENV *, gpointer ));
  */
-int
+gint
 __os_ufree(dbenv, ptr)
 	DB_ENV *dbenv;
-	void *ptr;
+	gpointer ptr;
 {
 	/* Require an environment handle. */
 	DB_ASSERT(dbenv != NULL);
@@ -188,19 +188,19 @@ __os_ufree(dbenv, ptr)
  * __os_strdup --
  *	The strdup(3) function for DB.
  *
- * PUBLIC: int __os_strdup __P((DB_ENV *, const char *, void *));
+ * PUBLIC: gint __os_strdup __P((DB_ENV *, const gchar *, gpointer ));
  */
-int
+gint
 __os_strdup(dbenv, str, storep)
 	DB_ENV *dbenv;
-	const char *str;
-	void *storep;
+	const gchar *str;
+	gpointer storep;
 {
 	size_t size;
-	int ret;
-	void *p;
+	gint ret;
+	gpointer p;
 
-	*(void **)storep = NULL;
+	*(gpointer *)storep = NULL;
 
 	size = strlen(str) + 1;
 	if ((ret = __os_malloc(dbenv, size, &p)) != 0)
@@ -208,7 +208,7 @@ __os_strdup(dbenv, str, storep)
 
 	memcpy(p, str, size);
 
-	*(void **)storep = p;
+	*(gpointer *)storep = p;
 	return (0);
 }
 
@@ -216,16 +216,16 @@ __os_strdup(dbenv, str, storep)
  * __os_calloc --
  *	The calloc(3) function for DB.
  *
- * PUBLIC: int __os_calloc __P((DB_ENV *, size_t, size_t, void *));
+ * PUBLIC: gint __os_calloc __P((DB_ENV *, size_t, size_t, gpointer ));
  */
-int
+gint
 __os_calloc(dbenv, num, size, storep)
 	DB_ENV *dbenv;
 	size_t num, size;
-	void *storep;
+	gpointer storep;
 {
-	void *p;
-	int ret;
+	gpointer p;
+	gint ret;
 
 	size *= num;
 	if ((ret = __os_malloc(dbenv, size, &p)) != 0)
@@ -233,7 +233,7 @@ __os_calloc(dbenv, num, size, storep)
 
 	memset(p, 0, size);
 
-	*(void **)storep = p;
+	*(gpointer *)storep = p;
 	return (0);
 }
 
@@ -241,18 +241,18 @@ __os_calloc(dbenv, num, size, storep)
  * __os_malloc --
  *	The malloc(3) function for DB.
  *
- * PUBLIC: int __os_malloc __P((DB_ENV *, size_t, void *));
+ * PUBLIC: gint __os_malloc __P((DB_ENV *, size_t, gpointer ));
  */
-int
+gint
 __os_malloc(dbenv, size, storep)
 	DB_ENV *dbenv;
 	size_t size;
-	void *storep;
+	gpointer storep;
 {
-	int ret;
-	void *p;
+	gint ret;
+	gpointer p;
 
-	*(void **)storep = NULL;
+	*(gpointer *)storep = NULL;
 
 	/* Never allocate 0 bytes -- some C libraries don't like it. */
 	if (size == 0)
@@ -294,7 +294,7 @@ __os_malloc(dbenv, size, storep)
 	((union __db_alloc *)p)->size = size;
 	p = &((union __db_alloc *)p)[1];
 #endif
-	*(void **)storep = p;
+	*(gpointer *)storep = p;
 
 	return (0);
 }
@@ -303,18 +303,18 @@ __os_malloc(dbenv, size, storep)
  * __os_realloc --
  *	The realloc(3) function for DB.
  *
- * PUBLIC: int __os_realloc __P((DB_ENV *, size_t, void *));
+ * PUBLIC: gint __os_realloc __P((DB_ENV *, size_t, gpointer ));
  */
-int
+gint
 __os_realloc(dbenv, size, storep)
 	DB_ENV *dbenv;
 	size_t size;
-	void *storep;
+	gpointer storep;
 {
-	int ret;
-	void *p, *ptr;
+	gint ret;
+	gpointer p, *ptr;
 
-	ptr = *(void **)storep;
+	ptr = *(gpointer *)storep;
 
 	/* Never allocate 0 bytes -- some C libraries don't like it. */
 	if (size == 0)
@@ -362,7 +362,7 @@ __os_realloc(dbenv, size, storep)
 	p = &((union __db_alloc *)p)[1];
 #endif
 
-	*(void **)storep = p;
+	*(gpointer *)storep = p;
 
 	return (0);
 }
@@ -371,15 +371,15 @@ __os_realloc(dbenv, size, storep)
  * __os_free --
  *	The free(3) function for DB.
  *
- * PUBLIC: void __os_free __P((DB_ENV *, void *));
+ * PUBLIC: void __os_free __P((DB_ENV *, gpointer ));
  */
 void
 __os_free(dbenv, ptr)
 	DB_ENV *dbenv;
-	void *ptr;
+	gpointer ptr;
 {
 #ifdef DIAGNOSTIC
-	int size;
+	gint size;
 	/*
 	 * Check that the guard byte (one past the end of the memory) is
 	 * still CLEAR_BYTE.
@@ -428,11 +428,11 @@ __os_guard(dbenv)
  *	we want to look at it.  Unfortunately, if you have code like:
  *
  *		struct a {
- *			int x;
+ *			gint x;
  *		} *p;
  *
- *		void *func_argument;
- *		int local;
+ *		gpointer func_argument;
+ *		gint local;
  *
  *		p = (struct a *)func_argument;
  *		memcpy(&local, p->x, sizeof(local));
@@ -446,13 +446,13 @@ __os_guard(dbenv)
  *	of the time, but we've seen examples where it wasn't sufficient
  *	and there's nothing in ANSI C that requires that work.
  *
- * PUBLIC: void *__ua_memcpy __P((void *, const void *, size_t));
+ * PUBLIC: gpointer __ua_memcpy __P((gpointer , gconstpointer , size_t));
  */
-void *
+gpointer
 __ua_memcpy(dst, src, len)
-	void *dst;
-	const void *src;
+	gpointer dst;
+	gconstpointer src;
 	size_t len;
 {
-	return ((void *)memcpy(dst, src, len));
+	return ((gpointer)memcpy(dst, src, len));
 }

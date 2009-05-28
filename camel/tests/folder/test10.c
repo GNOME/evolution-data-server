@@ -20,21 +20,21 @@
 
 #define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
 
-static const char *local_drivers[] = { "local" };
-static char *local_providers[] = {
+static const gchar *local_drivers[] = { "local" };
+static gchar *local_providers[] = {
 	"mbox",
 	"mh",
 	"maildir"
 };
 
-static char *path;
+static gchar *path;
 static CamelSession *session;
-static int testid;
+static gint testid;
 
-static void *
-worker(void *d)
+static gpointer
+worker(gpointer d)
 {
-	int i;
+	gint i;
 	CamelException *ex = camel_exception_new();
 	CamelStore *store;
 	CamelFolder *folder;
@@ -58,10 +58,10 @@ worker(void *d)
 	return NULL;
 }
 
-int main(int argc, char **argv)
+gint main(gint argc, gchar **argv)
 {
 	CamelException *ex;
-	int i, j;
+	gint i, j;
 	pthread_t threads[MAX_THREADS];
 
 	camel_test_init(argc, argv);

@@ -59,10 +59,10 @@ typedef enum {
 typedef struct {
 	guint32 refcount;
 
-	char *issuer;
-	char *subject;
-	char *hostname;
-	char *fingerprint;
+	gchar *issuer;
+	gchar *subject;
+	gchar *hostname;
+	gchar *fingerprint;
 
 	CamelCertTrust trust;
 	GByteArray *rawcert;
@@ -72,7 +72,7 @@ struct _CamelCertDB {
 	CamelObject parent_object;
 	struct _CamelCertDBPrivate *priv;
 
-	char *filename;
+	gchar *filename;
 	guint32 version;
 	guint32 saved_certs;
 	guint32 flags;
@@ -88,17 +88,17 @@ struct _CamelCertDB {
 struct _CamelCertDBClass {
 	CamelObjectClass parent_class;
 
-	int (*header_load) (CamelCertDB *certdb, FILE *istream);
-	int (*header_save) (CamelCertDB *certdb, FILE *ostream);
+	gint (*header_load) (CamelCertDB *certdb, FILE *istream);
+	gint (*header_save) (CamelCertDB *certdb, FILE *ostream);
 
 	CamelCert * (*cert_load) (CamelCertDB *certdb, FILE *istream);
-	int (*cert_save) (CamelCertDB *certdb, CamelCert *cert, FILE *ostream);
+	gint (*cert_save) (CamelCertDB *certdb, CamelCert *cert, FILE *ostream);
 
 	CamelCert *  (*cert_new) (CamelCertDB *certdb);
 	void        (*cert_free) (CamelCertDB *certdb, CamelCert *cert);
 
-	const char * (*cert_get_string) (CamelCertDB *certdb, CamelCert *cert, int string);
-	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, int string, const char *value);
+	const gchar * (*cert_get_string) (CamelCertDB *certdb, CamelCert *cert, gint string);
+	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 };
 
 
@@ -109,14 +109,14 @@ CamelCertDB *camel_certdb_new (void);
 void camel_certdb_set_default (CamelCertDB *certdb);
 CamelCertDB *camel_certdb_get_default (void);
 
-void camel_certdb_set_filename (CamelCertDB *certdb, const char *filename);
+void camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename);
 
-int camel_certdb_load (CamelCertDB *certdb);
-int camel_certdb_save (CamelCertDB *certdb);
+gint camel_certdb_load (CamelCertDB *certdb);
+gint camel_certdb_save (CamelCertDB *certdb);
 
 void camel_certdb_touch (CamelCertDB *certdb);
 
-CamelCert *camel_certdb_get_cert (CamelCertDB *certdb, const char *fingerprint);
+CamelCert *camel_certdb_get_cert (CamelCertDB *certdb, const gchar *fingerprint);
 
 void camel_certdb_add (CamelCertDB *certdb, CamelCert *cert);
 void camel_certdb_remove (CamelCertDB *certdb, CamelCert *cert);
@@ -128,8 +128,8 @@ void camel_certdb_cert_unref (CamelCertDB *certdb, CamelCert *cert);
 void camel_certdb_clear (CamelCertDB *certdb);
 
 
-const char *camel_cert_get_string (CamelCertDB *certdb, CamelCert *cert, int string);
-void camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, int string, const char *value);
+const gchar *camel_cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string);
+void camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 
 #define camel_cert_get_issuer(certdb,cert) camel_cert_get_string (certdb, cert, CAMEL_CERT_STRING_ISSUER)
 #define camel_cert_get_subject(certdb,cert) camel_cert_get_string (certdb, cert, CAMEL_CERT_STRING_SUBJECT)

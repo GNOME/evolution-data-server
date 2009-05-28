@@ -34,9 +34,9 @@
  */
 struct __db_cipher {
 	int	(*adj_size) __P((size_t));
-	int	(*close) __P((DB_ENV *, void *));
-	int	(*decrypt) __P((DB_ENV *, void *, void *, u_int8_t *, size_t));
-	int	(*encrypt) __P((DB_ENV *, void *, void *, u_int8_t *, size_t));
+	int	(*close) __P((DB_ENV *, gpointer ));
+	int	(*decrypt) __P((DB_ENV *, gpointer , gpointer , u_int8_t *, size_t));
+	int	(*encrypt) __P((DB_ENV *, gpointer , gpointer , u_int8_t *, size_t));
 	int	(*init) __P((DB_ENV *, DB_CIPHER *));
 
 	u_int8_t mac_key[DB_MAC_KEY];	/* MAC key. */

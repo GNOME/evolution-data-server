@@ -51,7 +51,7 @@ typedef struct hash_t {
 	u_int32_t h_ffactor;	/* Fill factor. */
 	u_int32_t h_nelem;	/* Number of elements. */
 				/* Hash function. */
-	u_int32_t (*h_hash) __P((DB *, const void *, u_int32_t));
+	u_int32_t (*h_hash) __P((DB *, gconstpointer , u_int32_t));
 } HASH;
 
 /* Cursor structure definitions. */

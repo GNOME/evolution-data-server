@@ -30,8 +30,8 @@ struct _ExchangeHierarchyGALClass {
 GType                 exchange_hierarchy_gal_get_type (void);
 
 ExchangeHierarchy    *exchange_hierarchy_gal_new      (ExchangeAccount *account,
-						       const char *hierarchy_name,
-						       const char *physical_uri_prefix);
+						       const gchar *hierarchy_name,
+						       const gchar *physical_uri_prefix);
 
 #ifdef __cplusplus
 }

@@ -26,9 +26,9 @@
 
 #ifdef G_OS_WIN32
 
-const char *_libedataserver_get_extensiondir (void) G_GNUC_CONST;
-const char *_libedataserver_get_imagesdir (void) G_GNUC_CONST;
-const char *_libedataserver_get_ui_gladedir (void) G_GNUC_CONST;
+const gchar *_libedataserver_get_extensiondir (void) G_GNUC_CONST;
+const gchar *_libedataserver_get_imagesdir (void) G_GNUC_CONST;
+const gchar *_libedataserver_get_ui_gladedir (void) G_GNUC_CONST;
 
 #undef E_DATA_SERVER_EXTENSIONDIR
 #define E_DATA_SERVER_EXTENSIONDIR _libedataserver_get_extensiondir ()

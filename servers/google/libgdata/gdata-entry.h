@@ -138,9 +138,9 @@ struct _GDataEntryPhoneNumber {
 
 typedef struct _GDataEntryPostalAddress GDataEntryPostalAddress;
 struct _GDataEntryPostalAddress {
-	char *address;
-	char *label;
-	char *rel;
+	gchar *address;
+	gchar *label;
+	gchar *rel;
 	gboolean primary;
 };
 

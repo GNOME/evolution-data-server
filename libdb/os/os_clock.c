@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -34,16 +34,16 @@ static const char revid[] = "$Id$";
  * __os_clock --
  *	Return the current time-of-day clock in seconds and microseconds.
  *
- * PUBLIC: int __os_clock __P((DB_ENV *, u_int32_t *, u_int32_t *));
+ * PUBLIC: gint __os_clock __P((DB_ENV *, u_int32_t *, u_int32_t *));
  */
-int
+gint
 __os_clock(dbenv, secsp, usecsp)
 	DB_ENV *dbenv;
 	u_int32_t *secsp, *usecsp;	/* Seconds and microseconds. */
 {
 #if defined(HAVE_GETTIMEOFDAY)
 	struct timeval tp;
-	int ret;
+	gint ret;
 
 retry:	if (gettimeofday(&tp, NULL) != 0) {
 		if ((ret = __os_get_errno()) == EINTR)
@@ -59,7 +59,7 @@ retry:	if (gettimeofday(&tp, NULL) != 0) {
 #endif
 #if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_CLOCK_GETTIME)
 	struct timespec tp;
-	int ret;
+	gint ret;
 
 retry:	if (clock_gettime(CLOCK_REALTIME, &tp) != 0) {
 		if ((ret = __os_get_errno()) == EINTR)
@@ -75,7 +75,7 @@ retry:	if (clock_gettime(CLOCK_REALTIME, &tp) != 0) {
 #endif
 #if !defined(HAVE_GETTIMEOFDAY) && !defined(HAVE_CLOCK_GETTIME)
 	time_t now;
-	int ret;
+	gint ret;
 
 	if (time(&now) == (time_t)-1) {
 		ret = __os_get_errno();

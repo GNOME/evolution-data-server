@@ -51,7 +51,7 @@ struct _ECalViewClass {
 	void (* objects_added) (ECalView *view, GList *objects);
 	void (* objects_modified) (ECalView *view, GList *objects);
 	void (* objects_removed) (ECalView *view, GList *uids);
-	void (* view_progress) (ECalView *view, char *message, int percent);
+	void (* view_progress) (ECalView *view, gchar *message, gint percent);
 	void (* view_done) (ECalView *view, ECalendarStatus status);
 };
 

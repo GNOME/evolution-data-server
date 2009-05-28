@@ -9,15 +9,15 @@
 #include <libsoup/soup-status.h>
 #include <libsoup/soup-message-headers.h>
 
-typedef unsigned int E2kHTTPStatus;
+typedef guint E2kHTTPStatus;
 
-time_t         e2k_http_parse_date      (const char *date);
-E2kHTTPStatus  e2k_http_parse_status    (const char *status_line);
+time_t         e2k_http_parse_date      (const gchar *date);
+E2kHTTPStatus  e2k_http_parse_status    (const gchar *status_line);
 
-const char    *e2k_http_accept_language (void);
+const gchar    *e2k_http_accept_language (void);
 
 GSList        *e2k_http_get_headers     (SoupMessageHeaders *hdrs,
-					 const char         *header_name);
+					 const gchar         *header_name);
 
 #define E2K_HTTP_STATUS_IS_TRANSPORT_ERROR(status) SOUP_STATUS_IS_TRANSPORT_ERROR(status)
 #define E2K_HTTP_CANCELLED                         SOUP_STATUS_CANCELLED

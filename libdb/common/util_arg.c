@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -17,25 +17,25 @@ static const char revid[] = "$Id$";
 
 #include "db_int.h"
 
-static char *__db_strsep __P((char **, const char *));
+static gchar *__db_strsep __P((gchar **, const gchar *));
 
 /*
  * __db_util_arg --
  *	Convert a string into an argc/argv pair.
  *
- * PUBLIC: int __db_util_arg __P((char *, char *, int *, char ***));
+ * PUBLIC: gint __db_util_arg __P((gchar *, gchar *, gint *, gchar ***));
  */
-int
+gint
 __db_util_arg(arg0, str, argcp, argvp)
-	char *arg0, *str, ***argvp;
-	int *argcp;
+	gchar *arg0, *str, ***argvp;
+	gint *argcp;
 {
-	int n, ret;
-	char **ap, **argv;
+	gint n, ret;
+	gchar **ap, **argv;
 
 #define	MAXARGS	25
 	if ((ret =
-	    __os_malloc(NULL, (MAXARGS + 1) * sizeof(char **), &argv)) != 0)
+	    __os_malloc(NULL, (MAXARGS + 1) * sizeof(gchar **), &argv)) != 0)
 		return (ret);
 
 	ap = argv;
@@ -97,14 +97,14 @@ __db_util_arg(arg0, str, argcp, argvp)
  *
  * If *stringp is NULL, strsep returns NULL.
  */
-static char *
+static gchar *
 __db_strsep(stringp, delim)
-	char **stringp;
-	const char *delim;
+	gchar **stringp;
+	const gchar *delim;
 {
-	const char *spanp;
-	int c, sc;
-	char *s, *tok;
+	const gchar *spanp;
+	gint c, sc;
+	gchar *s, *tok;
 
 	if ((s = *stringp) == NULL)
 		return (NULL);

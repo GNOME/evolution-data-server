@@ -7,9 +7,9 @@
 sqlite3 *db;
 
 static int
-callback (void *data, int argc, char **argv, char **azColName)
+callback (gpointer data, gint argc, gchar **argv, gchar **azColName)
 {
-	int i;
+	gint i;
 	for(i=0; i<argc; i++) {
 		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 	}
@@ -19,10 +19,10 @@ callback (void *data, int argc, char **argv, char **azColName)
 }
 
 static int
-select_stmt (const char* stmt) {
-	char *errmsg;
-	int   ret;
-	int   nrecs = 0;
+select_stmt (const gchar * stmt) {
+	gchar *errmsg;
+	gint   ret;
+	gint   nrecs = 0;
 
 	ret = sqlite3_exec(db, stmt, callback, &nrecs, &errmsg);
 
@@ -36,9 +36,9 @@ select_stmt (const char* stmt) {
 }
 
 static int
-sql_stmt(const char* stmt) {
-	char *errmsg;
-	int   ret;
+sql_stmt(const gchar * stmt) {
+	gchar *errmsg;
+	gint   ret;
 
 	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 
@@ -53,32 +53,32 @@ sql_stmt(const char* stmt) {
 #define CREATE_STMT "CREATE TABLE %s (uid TEXT PRIMARY KEY, gflags INTEGER, isize INTEGER, dsent INTEGER, dreceived INTEGER, jsubject TEXT, ffrom TEXT, tto TEXT, cc TEXT, mlist TEXT, part TEXT, userflags TEXT, usertags TEXT, bdata TEXT)"
 
 static int
-create_table (const char *tablename)
+create_table (const gchar *tablename)
 {
-	char *cmd = malloc (sizeof(CREATE_STMT)+20);
+	gchar *cmd = malloc (sizeof(CREATE_STMT)+20);
 	sprintf(cmd, CREATE_STMT, tablename);
 	sql_stmt (cmd);
 }
 
-int sort_uid (void *foo, int len, void * data1, int len2, void *data2)
+gint sort_uid (gpointer foo, gint len, gpointer  data1, gint len2, gpointer data2)
 {
 	printf("%s \n%s\n\n", data1, data2);
-	int a1 = atoi (data1);
-	int a2 = atoi (data2);
+	gint a1 = atoi (data1);
+	gint a2 = atoi (data2);
 	return a1 < a2;
 }
 
-int sort_cmp (void *foo, int len, void * data1, int len2, void *data2)
+gint sort_cmp (gpointer foo, gint len, gpointer  data1, gint len2, gpointer data2)
 {
 	printf("%s \n%s\n\n", data1, data2);
-	int a1 = atoi (data1);
-	int a2 = atoi (data2);
+	gint a1 = atoi (data1);
+	gint a2 = atoi (data2);
 	return a1 == a2 ? 0 : a1 < a2 ? -1 : 1;
 }
 
-int main(int argc, char **argv) {
-	char *zErrMsg = 0;
-	int rc;
+gint main(gint argc, gchar **argv) {
+	gchar *zErrMsg = 0;
+	gint rc;
 
 //	rc = sqlite3_open_v2("test.db", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE , NULL);
 	rc = sqlite3_open("test.db", &db);
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 	sqlite3_create_collation(db, "uidcmp", SQLITE_UTF8,  NULL, sort_cmp);
 	sqlite3_create_collation(db, "uidsort", SQLITE_UTF8,  NULL, sort_uid);
 
-	char *subject_san = "San?%*()-234@#$!@#$@#$%32424kar's Subject";
+	gchar *subject_san = "San?%*()-234@#$!@#$@#$%32424kar's Subject";
 	create_table ("table1");
 	sql_stmt (sqlite3_mprintf("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('5120', 100, 123, '%q', 'mlistbinary')", subject_san));
 	sql_stmt ("INSERT INTO table1 (uid, gflags, isize, jsubject, mlist) VALUES ('6103', 100, 123, 'nice subject', 'mlistbinary')");

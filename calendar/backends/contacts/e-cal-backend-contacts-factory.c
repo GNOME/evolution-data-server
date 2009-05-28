@@ -29,7 +29,7 @@ e_cal_backend_contacts_factory_instance_init (ECalBackendContactsFactory *factor
 {
 }
 
-static const char *
+static const gchar *
 _get_protocol (ECalBackendFactory *factory)
 {
 	return "contacts";
@@ -99,7 +99,7 @@ eds_module_shutdown   (void)
 }
 
 void
-eds_module_list_types (const GType **types, int *num_types)
+eds_module_list_types (const GType **types, gint *num_types)
 {
 	*types = contacts_types;
 	*num_types = 1;

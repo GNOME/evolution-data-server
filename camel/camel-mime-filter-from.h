@@ -37,7 +37,7 @@ typedef struct _CamelMimeFilterFromClass CamelMimeFilterFromClass;
 struct _CamelMimeFilterFrom {
 	CamelMimeFilter parent;
 
-	int midline;		/* are we between lines? */
+	gint midline;		/* are we between lines? */
 };
 
 struct _CamelMimeFilterFromClass {

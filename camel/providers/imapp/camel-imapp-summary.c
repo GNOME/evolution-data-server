@@ -38,11 +38,11 @@
 
 #define CAMEL_IMAPP_SUMMARY_VERSION (1)
 
-static int summary_header_load(CamelFolderSummary *, FILE *);
-static int summary_header_save(CamelFolderSummary *, FILE *);
+static gint summary_header_load(CamelFolderSummary *, FILE *);
+static gint summary_header_save(CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo *message_info_load(CamelFolderSummary *s, FILE *in);
-static int message_info_save(CamelFolderSummary *s, FILE *out, CamelMessageInfo *info);
+static gint message_info_save(CamelFolderSummary *s, FILE *out, CamelMessageInfo *info);
 
 static void camel_imapp_summary_class_init(CamelIMAPPSummaryClass *klass);
 static void camel_imapp_summary_init      (CamelIMAPPSummary *obj);

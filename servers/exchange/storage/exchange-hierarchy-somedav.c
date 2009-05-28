@@ -54,7 +54,7 @@ static ExchangeHierarchyWebDAVClass *parent_class = NULL;
 
 static ExchangeAccountFolderResult scan_subtree (ExchangeHierarchy *hier,
 						 EFolder *folder,
-						 int mode);
+						 gint mode);
 static void finalize (GObject *object);
 
 static void
@@ -106,28 +106,28 @@ E2K_MAKE_TYPE (exchange_hierarchy_somedav, ExchangeHierarchySomeDAV, class_init,
 static inline gboolean
 folder_is_unreadable (E2kProperties *props)
 {
-	char *access;
+	gchar *access;
 
 	access = e2k_properties_get_prop (props, PR_ACCESS);
 	return !access || !atoi (access);
 }
 
-static const char *folder_props[] = {
+static const gchar *folder_props[] = {
 	E2K_PR_EXCHANGE_FOLDER_CLASS,
 	E2K_PR_HTTPMAIL_UNREAD_COUNT,
 	E2K_PR_DAV_DISPLAY_NAME,
 	PR_ACCESS
 };
-static const int n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
+static const gint n_folder_props = sizeof (folder_props) / sizeof (folder_props[0]);
 
 static ExchangeAccountFolderResult
-scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
+scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint mode)
 {
 	ExchangeHierarchySomeDAV *hsd = EXCHANGE_HIERARCHY_SOMEDAV (hier);
 	GPtrArray *hrefs;
 	E2kResultIter *iter;
 	E2kResult *result;
-	int folders_returned=0, folders_added=0, i;
+	gint folders_returned=0, folders_added=0, i;
 	E2kHTTPStatus status;
 	ExchangeAccountFolderResult folder_result;
 	EFolder *iter_folder = NULL;
@@ -152,7 +152,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, int mode)
 	}
 
 	iter = e_folder_exchange_bpropfind_start (hier->toplevel, NULL,
-						  (const char **)hrefs->pdata,
+						  (const gchar **)hrefs->pdata,
 						  hrefs->len,
 						  folder_props,
 						  n_folder_props);
@@ -205,7 +205,7 @@ exchange_hierarchy_somedav_get_hrefs (ExchangeHierarchySomeDAV *hsd)
 
 void
 exchange_hierarchy_somedav_href_unreadable (ExchangeHierarchySomeDAV *hsd,
-					    const char *href)
+					    const gchar *href)
 {
 	g_return_if_fail (EXCHANGE_IS_HIERARCHY_SOMEDAV (hsd));
 	g_return_if_fail (href != NULL);
@@ -215,14 +215,14 @@ exchange_hierarchy_somedav_href_unreadable (ExchangeHierarchySomeDAV *hsd,
 
 ExchangeAccountFolderResult
 exchange_hierarchy_somedav_add_folder (ExchangeHierarchySomeDAV *hsd,
-				       const char *uri)
+				       const gchar *uri)
 {
 	ExchangeHierarchyWebDAV *hwd;
 	ExchangeHierarchy *hier;
 	E2kContext *ctx;
 	E2kHTTPStatus status;
 	E2kResult *results;
-	int nresults = 0;
+	gint nresults = 0;
 	EFolder *folder;
 
 	g_return_val_if_fail (EXCHANGE_IS_HIERARCHY_SOMEDAV (hsd),

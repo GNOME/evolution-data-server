@@ -34,7 +34,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const char revid[] = "$Id$";
+static const gchar revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -49,15 +49,15 @@ static const char revid[] = "$Id$";
  * strdup --
  *
  * PUBLIC: #ifndef HAVE_STRDUP
- * PUBLIC: char *strdup __P((const char *));
+ * PUBLIC: gchar *strdup __P((const gchar *));
  * PUBLIC: #endif
  */
-char *
+gchar *
 strdup(str)
-	const char *str;
+	const gchar *str;
 {
 	size_t len;
-	char *copy;
+	gchar *copy;
 
 	len = strlen(str) + 1;
 	if (!(copy = malloc((u_int)len)))

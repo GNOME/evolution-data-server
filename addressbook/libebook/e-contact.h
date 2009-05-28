@@ -226,11 +226,11 @@ typedef enum {
 } EContactField;
 
 typedef struct {
-	char *family;
-	char *given;
-	char *additional;
-	char *prefixes;
-	char *suffixes;
+	gchar *family;
+	gchar *given;
+	gchar *additional;
+	gchar *prefixes;
+	gchar *suffixes;
 } EContactName;
 
 typedef struct {
@@ -247,36 +247,36 @@ typedef struct {
 	EContactPhotoType type;
 	union {
 		struct {
-			char *mime_type;
+			gchar *mime_type;
 			gsize length;
 			guchar *data;
 		} inlined;
-		char *uri;
+		gchar *uri;
 	} data;
 } EContactPhoto;
 
 typedef struct {
-	char *address_format; /* the two letter country code that
+	gchar *address_format; /* the two letter country code that
 				 determines the format/meaning of the
 				 following fields */
-	char *po;
-	char *ext;
-	char *street;
-	char *locality;
-	char *region;
-	char *code;
-	char *country;
+	gchar *po;
+	gchar *ext;
+	gchar *street;
+	gchar *locality;
+	gchar *region;
+	gchar *code;
+	gchar *country;
 } EContactAddress;
 
 typedef struct {
-	unsigned int year;
-	unsigned int month;
-	unsigned int day;
+	guint year;
+	guint month;
+	guint day;
 } EContactDate;
 
 typedef struct {
 	gsize length;
-	char *data;
+	gchar *data;
 } EContactCert;
 
 struct _EContact {
@@ -299,13 +299,13 @@ struct _EContactClass {
 GType                   e_contact_get_type (void);
 
 EContact*               e_contact_new              (void);
-EContact*               e_contact_new_from_vcard   (const char *vcard);
+EContact*               e_contact_new_from_vcard   (const gchar *vcard);
 
 EContact*               e_contact_duplicate        (EContact *contact);
 
 gpointer                e_contact_get              (EContact *contact, EContactField field_id);
 gconstpointer		e_contact_get_const        (EContact *contact, EContactField field_id);
-void                    e_contact_set              (EContact *contact, EContactField field_id, const gpointer value);
+void                    e_contact_set              (EContact *contact, EContactField field_id, gconstpointer value);
 
 /* the following two calls return and take a GList of
    EVCardAttribute*'s. */
@@ -315,16 +315,16 @@ void                    e_contact_set_attributes   (EContact *contact, EContactF
 /* misc functions for structured values */
 GType                   e_contact_date_get_type    (void);
 EContactDate           *e_contact_date_new         (void);
-EContactDate           *e_contact_date_from_string (const char *str);
-char                   *e_contact_date_to_string   (EContactDate *dt);
+EContactDate           *e_contact_date_from_string (const gchar *str);
+gchar                   *e_contact_date_to_string   (EContactDate *dt);
 gboolean                e_contact_date_equal       (EContactDate *dt1,
 						    EContactDate *dt2);
 void                    e_contact_date_free        (EContactDate *date);
 
 GType                   e_contact_name_get_type    (void);
 EContactName           *e_contact_name_new         (void);
-char                   *e_contact_name_to_string   (const EContactName *name);
-EContactName           *e_contact_name_from_string (const char *name_str);
+gchar                   *e_contact_name_to_string   (const EContactName *name);
+EContactName           *e_contact_name_from_string (const gchar *name_str);
 EContactName           *e_contact_name_copy        (EContactName *n);
 void                    e_contact_name_free        (EContactName *name);
 
@@ -342,11 +342,11 @@ GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
 
 
-const char*             e_contact_field_name       (EContactField field_id);
-const char*             e_contact_pretty_name      (EContactField field_id);
-const char*             e_contact_vcard_attribute  (EContactField field_id);
-EContactField           e_contact_field_id         (const char *field_name);
-EContactField           e_contact_field_id_from_vcard (const char *vcard_field);
+const gchar *             e_contact_field_name       (EContactField field_id);
+const gchar *             e_contact_pretty_name      (EContactField field_id);
+const gchar *             e_contact_vcard_attribute  (EContactField field_id);
+EContactField           e_contact_field_id         (const gchar *field_name);
+EContactField           e_contact_field_id_from_vcard (const gchar *vcard_field);
 
 G_END_DECLS
 

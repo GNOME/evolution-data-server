@@ -69,11 +69,11 @@ time_t e_mktime_utc (struct tm *tm);
 
 /* Like localtime_r(3), but also returns an offset in minutes after UTC.
    (Calling gmtime with tt + offset would generate the same tm) */
-void e_localtime_with_offset (time_t tt, struct tm *tm, int *offset);
+void e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset);
 
 /* Returns format like %x, but always exchange all 'y' to 'Y'
    (force 4 digit year in format).
    Caller is responsible to g_free returned pointer. */
-char *e_time_get_d_fmt_with_4digit_year (void);
+gchar *e_time_get_d_fmt_with_4digit_year (void);
 
 #endif /* E_TIME_UTILS */

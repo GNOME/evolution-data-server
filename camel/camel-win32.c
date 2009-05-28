@@ -40,11 +40,11 @@ G_LOCK_DEFINE_STATIC (mutex);
 /* localedir uses system codepage as it is passed to the non-UTF8ified
  * gettext library
  */
-static const char *localedir = NULL;
+static const gchar *localedir = NULL;
 
 /* The others are in UTF-8 */
-static const char *libexecdir;
-static const char *providerdir;
+static const gchar *libexecdir;
+static const gchar *providerdir;
 
 static void
 setup (void)
@@ -66,7 +66,7 @@ setup (void)
 #include "camel-private.h"	/* For prototypes */
 
 #define GETTER(varbl)				\
-const char *					\
+const gchar *					\
 _camel_get_##varbl (void)			\
 {						\
         setup ();				\

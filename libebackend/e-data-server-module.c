@@ -44,13 +44,13 @@ struct _EDataServerModule {
 
 	GModule *library;
 
-	char *path;
+	gchar *path;
 
 	void (*initialize) (GTypeModule  *module);
 	void (*shutdown)   (void);
 
 	void (*list_types) (const GType **types,
-			    int          *num_types);
+			    gint          *num_types);
 
 };
 
@@ -154,8 +154,8 @@ static void
 add_module_objects (EDataServerModule *module)
 {
 	const GType *types;
-	int num_types;
-	int i;
+	gint num_types;
+	gint i;
 
 	module->list_types (&types, &num_types);
 
@@ -165,7 +165,7 @@ add_module_objects (EDataServerModule *module)
 }
 
 static EDataServerModule *
-e_data_server_module_load_file (const char *filename)
+e_data_server_module_load_file (const gchar *filename)
 {
 	EDataServerModule *module;
 
@@ -183,18 +183,18 @@ e_data_server_module_load_file (const char *filename)
 }
 
 static void
-load_module_dir (const char *dirname)
+load_module_dir (const gchar *dirname)
 {
 	GDir *dir;
 
 	dir = g_dir_open (dirname, 0, NULL);
 
 	if (dir) {
-		const char *name;
+		const gchar *name;
 
 		while ((name = g_dir_read_name (dir))) {
 			if (g_str_has_suffix (name, "." G_MODULE_SUFFIX)) {
-				char *filename;
+				gchar *filename;
 
 				filename = g_build_filename (dirname,
 							     name,

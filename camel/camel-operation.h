@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelOperation CamelOperation;
 
-typedef void (*CamelOperationStatusFunc)(struct _CamelOperation *op, const char *what, int pc, void *data);
+typedef void (*CamelOperationStatusFunc)(struct _CamelOperation *op, const gchar *what, gint pc, gpointer data);
 
 typedef enum _camel_operation_status_t {
 	CAMEL_OPERATION_START = -1,
@@ -38,7 +38,7 @@ typedef enum _camel_operation_status_t {
 } camel_operation_status_t;
 
 /* main thread functions */
-CamelOperation *camel_operation_new(CamelOperationStatusFunc status, void *status_data);
+CamelOperation *camel_operation_new(CamelOperationStatusFunc status, gpointer status_data);
 void camel_operation_mute(CamelOperation *cc);
 void camel_operation_ref(CamelOperation *cc);
 void camel_operation_unref(CamelOperation *cc);
@@ -51,8 +51,8 @@ void camel_operation_unregister (CamelOperation *cc);
 /* called internally by camel, for the current thread */
 void camel_operation_cancel_block(CamelOperation *cc);
 void camel_operation_cancel_unblock(CamelOperation *cc);
-int camel_operation_cancel_check(CamelOperation *cc);
-int camel_operation_cancel_fd(CamelOperation *cc);
+gint camel_operation_cancel_check(CamelOperation *cc);
+gint camel_operation_cancel_fd(CamelOperation *cc);
 #ifdef HAVE_NSS
 struct PRFileDesc *camel_operation_cancel_prfd(CamelOperation *cc);
 #endif
@@ -61,8 +61,8 @@ CamelOperation *camel_operation_registered(void);
 
 void camel_operation_start(CamelOperation *cc, const gchar *what, ...);
 void camel_operation_start_transient(CamelOperation *cc, const gchar *what, ...);
-void camel_operation_progress(CamelOperation *cc, int pc);
-void camel_operation_progress_count(CamelOperation *cc, int sofar);
+void camel_operation_progress(CamelOperation *cc, gint pc);
+void camel_operation_progress_count(CamelOperation *cc, gint sofar);
 void camel_operation_end(CamelOperation *cc);
 
 G_END_DECLS

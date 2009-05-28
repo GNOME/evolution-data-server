@@ -59,9 +59,9 @@ struct _part_find {
 	/* UID name on disk - e.g. "0." or "0.HEADERS". On windows "0." is
 	 * stored as "0.~"
 	 */
-	char *disk_part_name;
+	gchar *disk_part_name;
 	/* Was the part found? */
-	int found;
+	gint found;
 };
 
 
@@ -112,10 +112,10 @@ finalize (CamelImapMessageCache *cache)
 }
 
 static void
-cache_put (CamelImapMessageCache *cache, const char *uid, const char *key,
+cache_put (CamelImapMessageCache *cache, const gchar *uid, const gchar *key,
 	   CamelStream *stream)
 {
-	char *hash_key;
+	gchar *hash_key;
 	GPtrArray *subparts;
 	gpointer okey, ostream;
 	guint32 uidval;
@@ -165,13 +165,13 @@ cache_put (CamelImapMessageCache *cache, const char *uid, const char *key,
  * expensive, but the parts hash is immediately usable.
  **/
 CamelImapMessageCache *
-camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
+camel_imap_message_cache_new (const gchar *path, CamelFolderSummary *summary,
 			      CamelException *ex)
 {
 	CamelImapMessageCache *cache;
 	GDir *dir;
-	const char *dname;
-	char *uid, *p;
+	const gchar *dname;
+	gchar *uid, *p;
 	GPtrArray *deletes;
 	GError *error = NULL;
 	GHashTable *shash;
@@ -233,10 +233,10 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
  **/
 
 gboolean
-camel_imap_message_cache_delete (const char *path, CamelException *ex)
+camel_imap_message_cache_delete (const gchar *path, CamelException *ex)
 {
 	GDir *dir;
-	const char *dname;
+	const gchar *dname;
 	GError *error = NULL;
 	GPtrArray *deletes;
 
@@ -285,7 +285,7 @@ camel_imap_message_cache_max_uid (CamelImapMessageCache *cache)
  * Set the path used for the message cache.
  **/
 void
-camel_imap_message_cache_set_path (CamelImapMessageCache *cache, const char *path)
+camel_imap_message_cache_set_path (CamelImapMessageCache *cache, const gchar *path)
 {
 	g_free(cache->path);
 	cache->path = g_strdup(path);
@@ -295,7 +295,7 @@ static void
 stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data)
 {
 	CamelImapMessageCache *cache = user_data;
-	char *key;
+	gchar *key;
 
 	key = g_hash_table_lookup (cache->cached, stream);
 	if (!key)
@@ -306,11 +306,11 @@ stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data)
 
 
 static CamelStream *
-insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_spec,
-	      char **path, char **key, CamelException *ex)
+insert_setup (CamelImapMessageCache *cache, const gchar *uid, const gchar *part_spec,
+	      gchar **path, gchar **key, CamelException *ex)
 {
 	CamelStream *stream;
-	int fd;
+	gint fd;
 
 #ifdef G_OS_WIN32
 	/* Trailing periods in file names are silently dropped on
@@ -340,7 +340,7 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 }
 
 static CamelStream *
-insert_abort (char *path, CamelStream *stream)
+insert_abort (gchar *path, CamelStream *stream)
 {
 	g_unlink (path);
 	g_free (path);
@@ -349,8 +349,8 @@ insert_abort (char *path, CamelStream *stream)
 }
 
 static CamelStream *
-insert_finish (CamelImapMessageCache *cache, const char *uid, char *path,
-	       char *key, CamelStream *stream)
+insert_finish (CamelImapMessageCache *cache, const gchar *uid, gchar *path,
+	       gchar *key, CamelStream *stream)
 {
 	camel_stream_flush (stream);
 	camel_stream_reset (stream);
@@ -374,11 +374,11 @@ insert_finish (CamelImapMessageCache *cache, const char *uid, char *path,
  * caller must unref.
  **/
 CamelStream *
-camel_imap_message_cache_insert (CamelImapMessageCache *cache, const char *uid,
-				 const char *part_spec, const char *data,
-				 int len, CamelException *ex)
+camel_imap_message_cache_insert (CamelImapMessageCache *cache, const gchar *uid,
+				 const gchar *part_spec, const gchar *data,
+				 gint len, CamelException *ex)
 {
-	char *path, *key;
+	gchar *path, *key;
 	CamelStream *stream;
 
 	stream = insert_setup (cache, uid, part_spec, &path, &key, ex);
@@ -406,10 +406,10 @@ camel_imap_message_cache_insert (CamelImapMessageCache *cache, const char *uid,
  **/
 void
 camel_imap_message_cache_insert_stream (CamelImapMessageCache *cache,
-					const char *uid, const char *part_spec,
+					const gchar *uid, const gchar *part_spec,
 					CamelStream *data_stream, CamelException *ex)
 {
-	char *path, *key;
+	gchar *path, *key;
 	CamelStream *stream;
 
 	stream = insert_setup (cache, uid, part_spec, &path, &key, ex);
@@ -438,10 +438,10 @@ camel_imap_message_cache_insert_stream (CamelImapMessageCache *cache,
  **/
 void
 camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
-					 const char *uid, const char *part_spec,
+					 const gchar *uid, const gchar *part_spec,
 					 CamelDataWrapper *wrapper, CamelException *ex)
 {
-	char *path, *key;
+	gchar *path, *key;
 	CamelStream *stream;
 
 	stream = insert_setup (cache, uid, part_spec, &path, &key, ex);
@@ -468,13 +468,13 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
  *
  * Return value: the filename of a cache item
  **/
-char*
+gchar *
 camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
-				       const char *uid,
-				       const char *part_spec,
+				       const gchar *uid,
+				       const gchar *part_spec,
 				       CamelException *ex)
 {
-	char *path;
+	gchar *path;
 
 	if (uid[0] == 0)
 		return NULL;
@@ -500,11 +500,11 @@ camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
  * caller must unref), or %NULL if that data is not cached.
  **/
 CamelStream *
-camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
-			      const char *part_spec, CamelException *ex)
+camel_imap_message_cache_get (CamelImapMessageCache *cache, const gchar *uid,
+			      const gchar *part_spec, CamelException *ex)
 {
 	CamelStream *stream;
-	char *path, *key;
+	gchar *path, *key;
 
 	if (uid[0] == 0)
 		return NULL;
@@ -547,12 +547,12 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
  * Removes all data associated with @uid from @cache.
  **/
 void
-camel_imap_message_cache_remove (CamelImapMessageCache *cache, const char *uid)
+camel_imap_message_cache_remove (CamelImapMessageCache *cache, const gchar *uid)
 {
 	GPtrArray *subparts;
-	char *key, *path;
+	gchar *key, *path;
 	CamelObject *stream;
-	int i;
+	gint i;
 
 	subparts = g_hash_table_lookup (cache->parts, uid);
 	if (!subparts)
@@ -593,7 +593,7 @@ void
 camel_imap_message_cache_clear (CamelImapMessageCache *cache)
 {
 	GPtrArray *uids;
-	int i;
+	gint i;
 
 	uids = g_ptr_array_new ();
 	g_hash_table_foreach (cache->parts, add_uids, uids);
@@ -616,15 +616,15 @@ camel_imap_message_cache_clear (CamelImapMessageCache *cache)
  **/
 void
 camel_imap_message_cache_copy (CamelImapMessageCache *source,
-			       const char *source_uid,
+			       const gchar *source_uid,
 			       CamelImapMessageCache *dest,
-			       const char *dest_uid,
+			       const gchar *dest_uid,
 			       CamelException *ex)
 {
 	GPtrArray *subparts;
 	CamelStream *stream;
-	char *part;
-	int i;
+	gchar *part;
+	gint i;
 
 	subparts = g_hash_table_lookup (source->parts, source_uid);
 	if (!subparts || !subparts->len)
@@ -676,7 +676,7 @@ GPtrArray *
 camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *uids, CamelException *ex)
 {
 	GPtrArray *result, *parts_list;
-	int i;
+	gint i;
 	struct _part_find part_find;
 	/* Look for a part "" for each uid. */
 	result = g_ptr_array_sized_new(uids->len);
@@ -689,7 +689,7 @@ camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *
 			 */
 			part_find.found = 0;
 			part_find.disk_part_name = g_strdup_printf("%s" BASE_PART_SUFFIX,
-								   (char *)uids->pdata[i]);
+								   (gchar *)uids->pdata[i]);
 			g_ptr_array_foreach(parts_list, _match_part, &part_find);
 			g_free(part_find.disk_part_name);
 			if (part_find.found)
@@ -701,7 +701,7 @@ camel_imap_message_cache_filter_cached(CamelImapMessageCache *cache, GPtrArray *
 		/* No message parts, or message part "" not found: include the
 		 * uid in the result.
 		 */
-		g_ptr_array_add(result, (char *)camel_pstring_strdup(uids->pdata[i]));
+		g_ptr_array_add(result, (gchar *)camel_pstring_strdup(uids->pdata[i]));
 	}
 	return result;
 }
