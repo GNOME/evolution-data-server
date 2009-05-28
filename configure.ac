@@ -1221,24 +1221,24 @@ AC_ARG_WITH(krb4-includes,
 
 msg_krb5="no"
 if test "x${with_krb5}" != "xno"; then
-	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 	
 	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
 	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
 	sunlibs="-lkrb5 -lgss"
 	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
 	[
-		LDFLAGS="$LDFLAGS -L$with_krb5_libs $mitlibs"
+		LIBS="$LIBS -L$with_krb5_libs $mitlibs"
 		AC_TRY_LINK([#include <krb5.h>],krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
 		[
-			LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $heimlibs"
+			LIBS="$LIBS_save -L$with_krb5_libs $heimlibs"
 			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", 
 			[
-				LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $sunlibs"
+				LIBS="$LIBS_save -L$with_krb5_libs $sunlibs"
 				AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$sunlibs", ac_cv_lib_kerberos5="no")
 			])
 		])
-		LDFLAGS="$LDFLAGS_save"
+		LIBS="$LIBS_save"
 	])
 	if test "$ac_cv_lib_kerberos5" != "no"; then
 		AC_DEFINE(HAVE_KRB5,1,[Define if you have Krb5])
