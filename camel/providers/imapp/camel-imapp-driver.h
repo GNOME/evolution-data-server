@@ -80,7 +80,7 @@ struct _CamelIMAPPDriverClass {
 	CamelObjectClass parent_class;
 };
 
-CamelType       	camel_imapp_driver_get_type (void);
+CamelType	camel_imapp_driver_get_type (void);
 
 CamelIMAPPDriver *	camel_imapp_driver_new(CamelIMAPPStream *stream);
 

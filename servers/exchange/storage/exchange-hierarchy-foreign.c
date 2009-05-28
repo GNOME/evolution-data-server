@@ -442,26 +442,26 @@ exchange_hierarchy_foreign_add_folder (ExchangeHierarchy *hier,
 		!(strcmp (folder_type, "calendar/public"))) {
 			folder_mask = EXCHANGE_CALENDAR_FOLDER | FORIEGN_FOLDER_FLAG;
 			add_folder_esource (hier->account,
-				     	    folder_mask,
-				     	    new_folder_name,
-				    	    physical_uri);
+					    folder_mask,
+					    new_folder_name,
+					    physical_uri);
 		}
 		else if (!(strcmp (folder_type, "tasks")) ||
 			 !(strcmp (folder_type, "tasks/public"))) {
 			folder_mask = EXCHANGE_TASKS_FOLDER | FORIEGN_FOLDER_FLAG;
 				add_folder_esource (hier->account,
-				     		    folder_mask,
-				     		    new_folder_name,
-				     		    physical_uri);
+						    folder_mask,
+						    new_folder_name,
+						    physical_uri);
 		}
 		else if (!(strcmp (folder_type, "contacts")) ||
 			 !(strcmp (folder_type, "contacts/public")) ||
 			 !(strcmp (folder_type, "contacts/ldap"))) {
 				folder_mask = EXCHANGE_CONTACTS_FOLDER | FORIEGN_FOLDER_FLAG;
 				add_folder_esource (hier->account,
-				     		    folder_mask,
-				     		    new_folder_name,
-				     		    physical_uri);
+						    folder_mask,
+						    new_folder_name,
+						    physical_uri);
 		}
 		g_free (new_folder_name);
 	}

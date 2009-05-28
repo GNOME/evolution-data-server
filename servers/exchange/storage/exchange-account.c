@@ -975,9 +975,9 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 		}
 		else if (!account->priv->account->source->save_passwd) {
 			/* get_password returns the password cached but user has not
-		 	 * selected remember password option, forget this password
-		 	 * whis is stored temporarily by e2k_validate_user()
-		 	 */
+			 * selected remember password option, forget this password
+			 * whis is stored temporarily by e2k_validate_user()
+			 */
 			e_passwords_forget_password ("Exchange", account->priv->password_key);
 		}
 	}
@@ -986,9 +986,9 @@ get_password (ExchangeAccount *account, E2kAutoconfig *ac, ExchangeAccountResult
 	}
 	else if (!account->priv->account->source->save_passwd) {
 		/* get_password returns the password cached but user has not
-	 	 * selected remember password option, forget this password
-	 	 * whis is stored temporarily by e2k_validate_user()
-	 	 */
+		 * selected remember password option, forget this password
+		 * whis is stored temporarily by e2k_validate_user()
+		 */
 		e_passwords_forget_password ("Exchange", account->priv->password_key);
 	}
 
@@ -2037,7 +2037,7 @@ exchange_account_get_folder_tree (ExchangeAccount *account, char* path)
 	qsort (folders->pdata, folders->len,
 	       sizeof (EFolder *), folder_comparator);
 
- 	g_free (fld_tree);
+	g_free (fld_tree);
 
 	return folders;
 }

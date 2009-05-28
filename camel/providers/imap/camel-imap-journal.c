@@ -276,7 +276,7 @@ imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 		uids = imap_entry->uids;
 
-	        if (encode_uids (out, uids))
+		if (encode_uids (out, uids))
 			return -1;
 	case CAMEL_IMAP_JOURNAL_ENTRY_APPEND:
 		if (camel_file_util_encode_string (out, imap_entry->append_uid))

@@ -622,7 +622,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 		const char *location;
 
 		location = soup_message_headers_get (failed_msg->response_headers,
-		                                     "Location");
+						     "Location");
 		if (location != NULL) {/*Make sure we can get absolute path*/
 			suri = soup_uri_new (location);
 			if (suri != NULL) {/*Valid URI*/
@@ -632,7 +632,7 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 				path_end = strrchr (suri->path, '/') + 1;
 				*path_end = '\0';
 				suri->path = g_realloc (suri->path,
-		                                path_end - suri->path + strlen (value) + 1);
+						path_end - suri->path + strlen (value) + 1);
 				strcat (suri->path, value);
 				g_free (suri->query);
 				suri->query = NULL;

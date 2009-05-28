@@ -277,7 +277,7 @@ struct _CamelFolderSummaryClass {
 	CamelMessageInfo * (*message_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageInfo * (*message_info_new_from_message)(CamelFolderSummary *, CamelMimeMessage *);
 	CamelMessageInfo * (*message_info_load)(CamelFolderSummary *, FILE *);
- 	int		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
+	int		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
 	int		   (*meta_message_info_save)(CamelFolderSummary *, FILE *, FILE *, CamelMessageInfo *);
 
 	void		   (*message_info_free)(CamelFolderSummary *, CamelMessageInfo *);
@@ -288,8 +288,8 @@ struct _CamelFolderSummaryClass {
 	CamelMessageContentInfo * (*content_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageContentInfo * (*content_info_new_from_message)(CamelFolderSummary *, CamelMimePart *);
 	CamelMessageContentInfo * (*content_info_load)(CamelFolderSummary *, FILE *);
-	int		          (*content_info_save)(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
-	void		          (*content_info_free)(CamelFolderSummary *, CamelMessageContentInfo *);
+	int			  (*content_info_save)(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
+	void			  (*content_info_free)(CamelFolderSummary *, CamelMessageContentInfo *);
 	CamelMessageInfo * (*message_info_from_uid) (CamelFolderSummary *, const char *);
 	/* get the next uid */
 	char *(*next_uid_string)(CamelFolderSummary *);
@@ -335,7 +335,7 @@ void camel_folder_summary_set_build_content(CamelFolderSummary *summary, gboolea
 
 guint32  camel_folder_summary_next_uid        (CamelFolderSummary *summary);
 char    *camel_folder_summary_next_uid_string (CamelFolderSummary *summary);
-void 	 camel_folder_summary_set_uid	      (CamelFolderSummary *summary, guint32 uid);
+void	 camel_folder_summary_set_uid	      (CamelFolderSummary *summary, guint32 uid);
 
 /* load/save the summary in its entirety */
 int camel_folder_summary_load(CamelFolderSummary *summary);

@@ -639,7 +639,7 @@ usage (void)
 	printf ("       ebrowse -s URI                       (subscribe and listen)\n");
 	printf ("       ebrowse [ -m | -c ] SRC DEST         (move/copy)\n");
 	printf ("       ebrowse -n ALIAS URI                 (lookup name)\n");
-	printf ("       ebrowse -f URI                 	     (lookup favorite folder props)\n");
+	printf ("       ebrowse -f URI			     (lookup favorite folder props)\n");
 	exit (1);
 }
 

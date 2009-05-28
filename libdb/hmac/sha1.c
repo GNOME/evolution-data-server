@@ -149,7 +149,7 @@ static int is_bigendian = -1;
     block = (CHAR64LONG16*)buffer;
 #endif
     if (is_bigendian == -1)
-    	is_bigendian = __db_isbigendian();
+	is_bigendian = __db_isbigendian();
     /* Copy context->state[] to working vars */
     a = state[0];
     b = state[1];

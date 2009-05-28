@@ -1026,7 +1026,7 @@ __db_backup_name(dbenv, name, txn, backup)
 		if (txn == NULL)	/* case 3 */
 			snprintf(retp, len,
 			    "%.*s%s%s.", plen, name, BACKUP_PREFIX, p);
-		else 			/* case 4 */
+		else			/* case 4 */
 			snprintf(retp, len,
 			    "%.*s%x.%x.", plen, name, lsn.file, lsn.offset);
 	}

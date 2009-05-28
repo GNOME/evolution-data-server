@@ -93,12 +93,12 @@ enl_popup_grab (ENameSelectorList *list)
 	gtk_grab_add (GTK_WIDGET (list->popup));
 
 	gdk_pointer_grab (window, TRUE,
-                    	  GDK_BUTTON_PRESS_MASK |
-                    	  GDK_BUTTON_RELEASE_MASK |
-                    	  GDK_POINTER_MOTION_MASK,
-                	  NULL, NULL, GDK_CURRENT_TIME);
+			  GDK_BUTTON_PRESS_MASK |
+			  GDK_BUTTON_RELEASE_MASK |
+			  GDK_POINTER_MOTION_MASK,
+			  NULL, NULL, GDK_CURRENT_TIME);
 
-    	gdk_keyboard_grab (window, TRUE, GDK_CURRENT_TIME);
+	gdk_keyboard_grab (window, TRUE, GDK_CURRENT_TIME);
 	gtk_widget_grab_focus ((GtkWidget *)list);
 
 	/* Build the listview from the model */
@@ -175,7 +175,7 @@ enl_popup_enter_notify (GtkWidget        *widget,
 			ENameSelectorList *list)
 {
   if (event->type == GDK_ENTER_NOTIFY && !GTK_WIDGET_HAS_GRAB (list->popup))
-  	enl_popup_grab (list);
+	enl_popup_grab (list);
 
   return TRUE;
 }
@@ -229,7 +229,7 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 	GtkTreeSelection *selection;
 
 	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (E_NAME_SELECTOR_ENTRY (list)->destination_store), &iter, path))
-      		return;
+		return;
 
 	selection = gtk_tree_view_get_selection ( GTK_TREE_VIEW (list->tree_view));
 	len = e_destination_store_get_destination_count (E_NAME_SELECTOR_ENTRY (list)->destination_store);
@@ -247,7 +247,7 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 		if(list->menu)
 			gtk_menu_popdown(GTK_MENU (list->menu));
 		gtk_widget_hide ( GTK_WIDGET (list->popup));
-	    	return;
+		return;
 	}
 
 	iter.stamp = ((ENameSelectorEntry *) list)->destination_store->stamp;
@@ -310,7 +310,7 @@ destination_set_email (GtkWidget *item, EDestination *destination)
 	int email_num;
 	EContact *contact;
 
- 	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
+	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
 		return;
 	contact = e_destination_get_contact (destination);
 	if (!contact)
@@ -350,9 +350,9 @@ enl_tree_button_press_event (GtkWidget *widget,
 	GtkWidget    *menu_item;
 	GList        *email_list = NULL, *l;
 	gint          i;
-	int 	      email_num, len;
+	int	      email_num, len;
 	char         *delete_label;
-	GSList 	     *group = NULL;
+	GSList	     *group = NULL;
 	gboolean      is_list;
 	gboolean      show_menu = FALSE;
 	GtkTreeSelection *selection;
@@ -360,8 +360,8 @@ enl_tree_button_press_event (GtkWidget *widget,
 	PopupDeleteRowInfo *row_info;
 	GtkTreeIter   iter;
 
-  	if ( !GTK_WIDGET_HAS_GRAB (list->popup))
-        	enl_popup_grab (list);
+	if ( !GTK_WIDGET_HAS_GRAB (list->popup))
+		enl_popup_grab (list);
 
 	gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW (list->tree_view), event->x, event->y, &path, NULL);
 	selection = gtk_tree_view_get_selection ( GTK_TREE_VIEW (list->tree_view));
@@ -611,20 +611,20 @@ e_name_selector_list_init (ENameSelectorList *list)
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
-                                	GTK_POLICY_NEVER,
+					GTK_POLICY_NEVER,
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
-                                       	     GTK_SHADOW_NONE);
+					     GTK_SHADOW_NONE);
 	gtk_widget_set_size_request (
 		gtk_scrolled_window_get_vscrollbar (
 		GTK_SCROLLED_WINDOW (scroll)), -1, 0);
 
 	list->popup =  GTK_WINDOW (gtk_window_new (GTK_WINDOW_POPUP));
- 	gtk_window_set_resizable (GTK_WINDOW (list->popup), FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (list->popup), FALSE);
 
 	popup_frame = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (popup_frame),
-			     	   GTK_SHADOW_ETCHED_IN);
+				   GTK_SHADOW_ETCHED_IN);
 
 	gtk_container_add (GTK_CONTAINER (list->popup), popup_frame);
 
@@ -633,7 +633,7 @@ e_name_selector_list_init (ENameSelectorList *list)
 
 	gtk_container_add (GTK_CONTAINER (scroll), list->tree_view);
 	gtk_box_pack_start (GTK_BOX (vbox), scroll,
-                      	    TRUE, TRUE, 0);
+			    TRUE, TRUE, 0);
 
 	g_signal_connect_after (GTK_WIDGET (list), "focus-in-event", G_CALLBACK(enl_entry_focus_in), NULL);
 	g_signal_connect (GTK_WIDGET (list), "focus-out-event", G_CALLBACK(enl_entry_focus_out), NULL);

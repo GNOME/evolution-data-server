@@ -154,10 +154,10 @@ SV *sv;
 #else
 #  if (PERL_VERSION == 3) && (PERL_SUBVERSION == 22)
      /* 5.003_22 */
-     		start_subparse(0),
+		start_subparse(0),
 #  else
      /* 5.003_23  onwards */
-     		start_subparse(FALSE, 0),
+		start_subparse(FALSE, 0),
 #  endif
 #endif
 
@@ -289,25 +289,25 @@ SV *sv;
 #define DBM_setFilter(db_type,code)				\
 	{							\
 	    if (db_type)					\
-	        RETVAL = sv_mortalcopy(db_type) ;		\
+		RETVAL = sv_mortalcopy(db_type) ;		\
 	    ST(0) = RETVAL ;					\
 	    if (db_type && (code == &PL_sv_undef)) {		\
                 SvREFCNT_dec(db_type) ;				\
-	        db_type = NULL ;				\
+		db_type = NULL ;				\
 	    }							\
 	    else if (code) {					\
-	        if (db_type)					\
-	            sv_setsv(db_type, code) ;			\
-	        else						\
-	            db_type = newSVsv(code) ;			\
-	    }	    						\
+		if (db_type)					\
+		    sv_setsv(db_type, code) ;			\
+		else						\
+		    db_type = newSVsv(code) ;			\
+	    }							\
 	}
 
 #define DBM_ckFilter(arg,type,name)				\
 	if (db->type) {						\
 	    if (db->filtering) {				\
-	        croak("recursion detected in %s", name) ;	\
-	    }                     				\
+		croak("recursion detected in %s", name) ;	\
+	    }						\
 	    ENTER ;						\
 	    SAVETMPS ;						\
 	    SAVEINT(db->filtering) ;				\
@@ -317,7 +317,7 @@ SV *sv;
 	    SvTEMP_off(arg) ;					\
 	    PUSHMARK(SP) ;					\
 	    PUTBACK ;						\
-	    (void) perl_call_sv(db->type, G_DISCARD); 		\
+	    (void) perl_call_sv(db->type, G_DISCARD);		\
 	    SPAGAIN ;						\
 	    PUTBACK ;						\
 	    FREETMPS ;						\

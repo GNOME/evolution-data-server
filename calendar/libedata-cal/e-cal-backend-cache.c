@@ -294,7 +294,7 @@ e_cal_backend_cache_new (const char *uri, ECalSourceType source_type)
 {
 	ECalBackendCache *cache;
 
-       	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "source_type", source_type, "uri", uri,  NULL);
+	cache = g_object_new (E_TYPE_CAL_BACKEND_CACHE, "source_type", source_type, "uri", uri,  NULL);
 
         return cache;
 }
@@ -829,7 +829,7 @@ e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), NULL);
 
-       	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
+	return	e_file_cache_get_object (E_FILE_CACHE (cache), "server_utc_time");
 }
 
 static char *

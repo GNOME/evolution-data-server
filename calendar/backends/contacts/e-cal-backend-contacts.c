@@ -752,7 +752,7 @@ static ECalBackendSyncStatus
 e_cal_backend_contacts_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal,
 						char **capabilities)
 {
- 	*capabilities = NULL;
+	*capabilities = NULL;
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1260,16 +1260,16 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 
 	sync_class->is_read_only_sync = e_cal_backend_contacts_is_read_only;
 	sync_class->get_cal_address_sync = e_cal_backend_contacts_get_cal_address;
- 	sync_class->get_alarm_email_address_sync = e_cal_backend_contacts_get_alarm_email_address;
- 	sync_class->get_ldap_attribute_sync = e_cal_backend_contacts_get_ldap_attribute;
- 	sync_class->get_static_capabilities_sync = e_cal_backend_contacts_get_static_capabilities;
+	sync_class->get_alarm_email_address_sync = e_cal_backend_contacts_get_alarm_email_address;
+	sync_class->get_ldap_attribute_sync = e_cal_backend_contacts_get_ldap_attribute;
+	sync_class->get_static_capabilities_sync = e_cal_backend_contacts_get_static_capabilities;
 	sync_class->open_sync = e_cal_backend_contacts_open;
 	sync_class->remove_sync = e_cal_backend_contacts_remove;
 	sync_class->create_object_sync = e_cal_backend_contacts_create_object;
 	sync_class->discard_alarm_sync = e_cal_backend_contacts_discard_alarm;
 	sync_class->receive_objects_sync = e_cal_backend_contacts_receive_objects;
 	sync_class->send_objects_sync = e_cal_backend_contacts_send_objects;
- 	sync_class->get_default_object_sync = e_cal_backend_contacts_get_default_object;
+	sync_class->get_default_object_sync = e_cal_backend_contacts_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_contacts_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_contacts_get_object_list;
 	sync_class->get_timezone_sync = e_cal_backend_contacts_get_timezone;

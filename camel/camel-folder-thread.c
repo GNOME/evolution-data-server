@@ -87,7 +87,7 @@ container_parent_child(CamelFolderThreadNode *parent, CamelFolderThreadNode *chi
 	d(printf("scanning children:\n"));
 	while (c->next) {
 		d(printf(" %p\n", c));
-	        if (c->next==child) {
+		if (c->next==child) {
 			d(printf("found node %p\n", child));
 			c->next = c->next->next;
 			child->parent = NULL;

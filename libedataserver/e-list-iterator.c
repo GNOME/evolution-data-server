@@ -15,11 +15,11 @@
 static void        e_list_iterator_invalidate (EIterator *iterator);
 static gboolean    e_list_iterator_is_valid   (EIterator *iterator);
 static void        e_list_iterator_set        (EIterator  *iterator,
-	           			       const void *object);
+					       const void *object);
 static void        e_list_iterator_remove     (EIterator  *iterator);
 static void        e_list_iterator_insert     (EIterator  *iterator,
-		   			       const void *object,
-		   			       gboolean    before);
+					       const void *object,
+					       gboolean    before);
 static gboolean    e_list_iterator_prev       (EIterator  *iterator);
 static gboolean    e_list_iterator_next       (EIterator  *iterator);
 static void        e_list_iterator_reset      (EIterator *iterator);

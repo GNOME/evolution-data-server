@@ -44,7 +44,7 @@ struct _GDataEntryPrivate {
 	GSList *attendees;
 	gchar *location;
 	gchar *content;
-    	gchar *title;
+	gchar *title;
 	gchar *reminder;
 	gchar *status;
 	gchar *visibility;

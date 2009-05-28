@@ -71,13 +71,13 @@ EFolder *e_folder_new        (const char *name,
 			      const char *type,
 			      const char *description);
 
-const char *e_folder_get_name         	  (EFolder *folder);
-const char *e_folder_get_type_string  	  (EFolder *folder);
-const char *e_folder_get_description  	  (EFolder *folder);
-const char *e_folder_get_physical_uri 	  (EFolder *folder);
-int         e_folder_get_unread_count 	  (EFolder *folder);
-gboolean    e_folder_get_highlighted  	  (EFolder *folder);
-gboolean    e_folder_get_is_stock     	  (EFolder *folder);
+const char *e_folder_get_name		  (EFolder *folder);
+const char *e_folder_get_type_string	  (EFolder *folder);
+const char *e_folder_get_description	  (EFolder *folder);
+const char *e_folder_get_physical_uri	  (EFolder *folder);
+int         e_folder_get_unread_count	  (EFolder *folder);
+gboolean    e_folder_get_highlighted	  (EFolder *folder);
+gboolean    e_folder_get_is_stock	  (EFolder *folder);
 gboolean    e_folder_get_can_sync_offline (EFolder *folder);
 gboolean    e_folder_get_has_subfolders   (EFolder *folder);
 const char *e_folder_get_custom_icon_name (EFolder *folder);

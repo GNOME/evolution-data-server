@@ -339,10 +339,10 @@ init_sqlite_vfs (void)
 }
 
 #define d(x) if (camel_debug("sqlite")) x
-#define START(stmt) 	if (camel_debug("dbtime")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
-#define END 	if (camel_debug("dbtime")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
-#define STARTTS(stmt) 	if (camel_debug("dbtimets")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
-#define ENDTS 	if (camel_debug("dbtimets")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
+#define START(stmt)	if (camel_debug("dbtime")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
+#define END	if (camel_debug("dbtime")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
+#define STARTTS(stmt)	if (camel_debug("dbtimets")) { g_print ("\n===========\nDB SQL operation [%s] started\n", stmt); if (!cdb->priv->timer) { cdb->priv->timer = g_timer_new (); } else { g_timer_reset(cdb->priv->timer);} }
+#define ENDTS	if (camel_debug("dbtimets")) { g_timer_stop (cdb->priv->timer); g_print ("DB Operation ended. Time Taken : %f\n###########\n", g_timer_elapsed (cdb->priv->timer, NULL)); }
 
 
 struct _CamelDBPrivate {
@@ -592,15 +592,15 @@ end:
 static int
 count_cb (void *data, int argc, char **argv, char **azColName)
 {
-  	int i;
+	int i;
 
-  	for(i=0; i<argc; i++) {
+	for(i=0; i<argc; i++) {
 		if (strstr(azColName[i], "COUNT")) {
 			*(guint32 *)data = argv [i] ? strtoul (argv [i], NULL, 10) : 0;
 		}
-  	}
+	}
 
-  	return 0;
+	return 0;
 }
 
 int
@@ -794,13 +794,13 @@ camel_db_select (CamelDB *cdb, const char* stmt, CamelDBSelectCB callback, gpoin
 	g_mutex_unlock (cdb->lock);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
-  	if (ret != SQLITE_OK) {
-    		d(g_warning ("Error in select statement '%s' [%s].\n", stmt, errmsg));
+	if (ret != SQLITE_OK) {
+		d(g_warning ("Error in select statement '%s' [%s].\n", stmt, errmsg));
 		if (ex)
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, errmsg);
 		sqlite3_free (errmsg);
 		errmsg = NULL;
-  	}
+	}
 
 	if (errmsg) {
 		sqlite3_free (errmsg);

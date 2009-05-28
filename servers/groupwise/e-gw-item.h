@@ -209,7 +209,7 @@ GList*      e_gw_item_get_im_list (EGwItem *item);
 void        e_gw_item_set_im_list (EGwItem *item, GList *im_list);
 void        e_gw_item_set_categories (EGwItem *item, GList *category_list);
 GList*      e_gw_item_get_categories (EGwItem *item);
-void 	    e_gw_item_set_to (EGwItem *item, const char *to) ;
+void	    e_gw_item_set_to (EGwItem *item, const char *to) ;
 const char* e_gw_item_get_to (EGwItem *item) ;
 const char *e_gw_item_get_msg_content_type (EGwItem *item) ;
 guint32     e_gw_item_get_item_status (EGwItem *item);

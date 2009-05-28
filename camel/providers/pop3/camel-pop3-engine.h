@@ -129,7 +129,7 @@ void              camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
 
 void              camel_pop3_engine_command_free(CamelPOP3Engine *pe, CamelPOP3Command *pc);
 
-int 		  camel_pop3_engine_iterate	(CamelPOP3Engine *pe, CamelPOP3Command *pc);
+int		  camel_pop3_engine_iterate	(CamelPOP3Engine *pe, CamelPOP3Command *pc);
 
 CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, void *data, const char *fmt, ...);
 

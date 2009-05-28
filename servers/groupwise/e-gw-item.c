@@ -670,11 +670,11 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		 to none. */
 		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
                 if (subparam) {
-       			char *formatted_date, *value;
+			char *formatted_date, *value;
 			SoupSoapParameter *temp_param ;
 
 			recipient->status_enabled = TRUE;
-       			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted")) ) {
+			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted")) ) {
 				recipient->status = E_GW_ITEM_STAT_DELETED;
 				value = soup_soap_parameter_get_string_value (temp_param);
 				formatted_date = e_gw_connection_format_date_string (value);
@@ -756,7 +756,7 @@ get_notification_value (SoupSoapParameter *param, const char *param_name)
 			value = soup_soap_parameter_get_string_value (subparam);
 		if (value && !g_ascii_strcasecmp (value, "1")) {
 			g_free (value), value = NULL;
-	 		return E_GW_ITEM_NOTIFY_MAIL;
+			return E_GW_ITEM_NOTIFY_MAIL;
 		}
 		g_free (value), value = NULL;
 	}
@@ -811,7 +811,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 
 		       value = soup_soap_parameter_get_property (subparam, "autoDelete");
 		       if (value && !g_ascii_strcasecmp (value, "1"))
-		      		priv->autodelete = TRUE;
+				priv->autodelete = TRUE;
 		       g_free (value), value = NULL;
 	       }
 	}
@@ -1428,7 +1428,7 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 
 	}
 
-       	subparam = soup_soap_parameter_get_first_child_by_name (param, "website");
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "website");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
@@ -1494,7 +1494,7 @@ append_full_name_to_soap_message (FullName *full_name, char *display_name, SoupS
 		e_gw_message_write_string_parameter (msg, "namePrefix", NULL, full_name->name_prefix);
 	if (full_name->first_name)
 		e_gw_message_write_string_parameter (msg, "firstName", NULL, full_name->first_name);
-       	if (full_name->middle_name)
+	if (full_name->middle_name)
 		e_gw_message_write_string_parameter (msg, "middleName", NULL, full_name->middle_name);
 	if (full_name->last_name)
 		e_gw_message_write_string_parameter (msg, "lastName", NULL, full_name->last_name) ;

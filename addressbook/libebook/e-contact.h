@@ -35,20 +35,20 @@ typedef struct _EContactPrivate EContactPrivate;
 
 typedef enum {
 
-	E_CONTACT_UID = 1,     	 /* string field */
-	E_CONTACT_FILE_AS,     	 /* string field */
+	E_CONTACT_UID = 1,	 /* string field */
+	E_CONTACT_FILE_AS,	 /* string field */
 	E_CONTACT_BOOK_URI,      /* string field */
 
 	/* Name fields */
-	E_CONTACT_FULL_NAME,   	 /* string field */
-	E_CONTACT_GIVEN_NAME,  	 /* synthetic string field */
-	E_CONTACT_FAMILY_NAME, 	 /* synthetic string field */
-	E_CONTACT_NICKNAME,    	 /* string field */
+	E_CONTACT_FULL_NAME,	 /* string field */
+	E_CONTACT_GIVEN_NAME,	 /* synthetic string field */
+	E_CONTACT_FAMILY_NAME,	 /* synthetic string field */
+	E_CONTACT_NICKNAME,	 /* string field */
 
 	/* Email fields */
-	E_CONTACT_EMAIL_1,     	 /* synthetic string field */
-	E_CONTACT_EMAIL_2,     	 /* synthetic string field */
-	E_CONTACT_EMAIL_3,     	 /* synthetic string field */
+	E_CONTACT_EMAIL_1,	 /* synthetic string field */
+	E_CONTACT_EMAIL_2,	 /* synthetic string field */
+	E_CONTACT_EMAIL_3,	 /* synthetic string field */
 	E_CONTACT_EMAIL_4,       /* synthetic string field */
 
 	E_CONTACT_MAILER,        /* string field */
@@ -80,13 +80,13 @@ typedef enum {
 	E_CONTACT_PHONE_TTYTDD,
 
 	/* Organizational fields */
-	E_CONTACT_ORG,        	 /* string field */
-	E_CONTACT_ORG_UNIT,   	 /* string field */
-	E_CONTACT_OFFICE,     	 /* string field */
-	E_CONTACT_TITLE,      	 /* string field */
-	E_CONTACT_ROLE,       	 /* string field */
-	E_CONTACT_MANAGER,    	 /* string field */
-	E_CONTACT_ASSISTANT,  	 /* string field */
+	E_CONTACT_ORG,		 /* string field */
+	E_CONTACT_ORG_UNIT,	 /* string field */
+	E_CONTACT_OFFICE,	 /* string field */
+	E_CONTACT_TITLE,	 /* string field */
+	E_CONTACT_ROLE,	 /* string field */
+	E_CONTACT_MANAGER,	 /* string field */
+	E_CONTACT_ASSISTANT,	 /* string field */
 
 	/* Web fields */
 	E_CONTACT_HOMEPAGE_URL,  /* string field */
@@ -157,19 +157,19 @@ typedef enum {
 	E_CONTACT_CATEGORY_LIST, /* multi-valued */
 
 	/* Photo/Logo */
-	E_CONTACT_PHOTO,       	 /* structured field (EContactPhoto) */
-	E_CONTACT_LOGO,       	 /* structured field (EContactPhoto) */
+	E_CONTACT_PHOTO,	 /* structured field (EContactPhoto) */
+	E_CONTACT_LOGO,	 /* structured field (EContactPhoto) */
 
-	E_CONTACT_NAME,        	 /* structured field (EContactName) */
-	E_CONTACT_EMAIL,       	 /* Multi-valued */
+	E_CONTACT_NAME,		 /* structured field (EContactName) */
+	E_CONTACT_EMAIL,	 /* Multi-valued */
 
 	/* Instant Messaging fields */
-	E_CONTACT_IM_AIM,     	 /* Multi-valued */
+	E_CONTACT_IM_AIM,	 /* Multi-valued */
 	E_CONTACT_IM_GROUPWISE,  /* Multi-valued */
-	E_CONTACT_IM_JABBER,  	 /* Multi-valued */
-	E_CONTACT_IM_YAHOO,   	 /* Multi-valued */
-	E_CONTACT_IM_MSN,     	 /* Multi-valued */
-	E_CONTACT_IM_ICQ,     	 /* Multi-valued */
+	E_CONTACT_IM_JABBER,	 /* Multi-valued */
+	E_CONTACT_IM_YAHOO,	 /* Multi-valued */
+	E_CONTACT_IM_MSN,	 /* Multi-valued */
+	E_CONTACT_IM_ICQ,	 /* Multi-valued */
 
 	E_CONTACT_WANTS_HTML,    /* boolean field */
 
@@ -205,7 +205,7 @@ typedef enum {
 	E_CONTACT_IM_SKYPE_WORK_1,     /* Synthetic string field */
 	E_CONTACT_IM_SKYPE_WORK_2,     /* Synthetic string field */
 	E_CONTACT_IM_SKYPE_WORK_3,     /* Synthetic string field */
-	E_CONTACT_IM_SKYPE,    	 	/* Multi-valued */
+	E_CONTACT_IM_SKYPE,		/* Multi-valued */
 
 	E_CONTACT_SIP,
 
@@ -229,7 +229,7 @@ typedef struct {
 	char *family;
 	char *given;
 	char *additional;
- 	char *prefixes;
+	char *prefixes;
 	char *suffixes;
 } EContactName;
 

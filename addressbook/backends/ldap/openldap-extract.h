@@ -229,8 +229,8 @@ get_token( const char ** sp, char ** token_val )
 			*token_val = res;
 		}
 		break;
-/*  		kind = TK_UNEXPCHAR; */
-/*  		break; */
+/*		kind = TK_UNEXPCHAR; */
+/*		break; */
 	}
 
 	return kind;
@@ -879,9 +879,9 @@ skip_url_prefix(
 	const char **scheme )
 {
 	/*
- 	 * return non-zero if this looks like a LDAP URL; zero if not
- 	 * if non-zero returned, *urlp will be moved past "ldap://" part of URL
- 	 */
+	 * return non-zero if this looks like a LDAP URL; zero if not
+	 * if non-zero returned, *urlp will be moved past "ldap://" part of URL
+	 */
 	const char *p;
 
 	if ( url == NULL ) {

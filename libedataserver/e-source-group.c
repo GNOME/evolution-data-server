@@ -893,7 +893,7 @@ e_source_group_xmlstr_equal (const gchar *a, const gchar *b)
 
 gchar *
 e_source_group_get_property (ESourceGroup *source_group,
-		             const gchar *property)
+			     const gchar *property)
 {
 	ESourceGroupPrivate *priv;
 
@@ -905,8 +905,8 @@ e_source_group_get_property (ESourceGroup *source_group,
 
 void
 e_source_group_set_property (ESourceGroup *source_group,
-		             const gchar *property,
-		             const gchar *value)
+			     const gchar *property,
+			     const gchar *value)
 {
 	ESourceGroupPrivate *priv;
 

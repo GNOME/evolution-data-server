@@ -490,11 +490,11 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	Section            section;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
-	GtkWidget  	  *vbox, *hbox, *chbox;
-	GtkWidget 	  *widget, *image, *label;
+	GtkWidget	  *vbox, *hbox, *chbox;
+	GtkWidget	  *widget, *image, *label;
 	SelData		  *data;
 	GtkTreeSelection  *selection;
-	gchar 		  *text;
+	gchar		  *text;
 
 	g_assert (name != NULL);
 	g_assert (pretty_name != NULL);
@@ -1184,7 +1184,7 @@ destination_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, 
 	EDestination      *destination;
 	GString           *buffer;
 
-       	destination = e_destination_store_get_destination (destination_store, iter);
+	destination = e_destination_store_get_destination (destination_store, iter);
 	g_assert (destination);
 
 	buffer = g_string_new (e_destination_get_name (destination));

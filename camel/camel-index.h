@@ -66,7 +66,7 @@ struct _CamelIndexCursorClass {
 	void         (*reset) (CamelIndexCursor *idc);
 };
 
-CamelType	           camel_index_cursor_get_type(void);
+CamelType		   camel_index_cursor_get_type(void);
 
 CamelIndexCursor  *camel_index_cursor_new(CamelIndex *idx, const char *name);
 
@@ -96,7 +96,7 @@ struct _CamelIndexNameClass {
 	size_t (*add_buffer)(CamelIndexName *name, const char *buffer, size_t len);
 };
 
-CamelType	           camel_index_name_get_type	(void);
+CamelType		   camel_index_name_get_type	(void);
 
 CamelIndexName    *camel_index_name_new(CamelIndex *idx, const char *name);
 
@@ -128,12 +128,12 @@ struct _CamelIndexClass {
 
 	int			(*rename)(CamelIndex *idx, const char *path);
 
-	int 			(*has_name)(CamelIndex *idx, const char *name);
+	int			(*has_name)(CamelIndex *idx, const char *name);
 	CamelIndexName *	(*add_name)(CamelIndex *idx, const char *name);
 	int			(*write_name)(CamelIndex *idx, CamelIndexName *idn);
 	CamelIndexCursor *	(*find_name)(CamelIndex *idx, const char *name);
-	void 			(*delete_name)(CamelIndex *idx, const char *name);
-	CamelIndexCursor * 	(*find)(CamelIndex *idx, const char *word);
+	void			(*delete_name)(CamelIndex *idx, const char *name);
+	CamelIndexCursor *	(*find)(CamelIndex *idx, const char *word);
 
 	CamelIndexCursor *      (*words)(CamelIndex *idx);
 	CamelIndexCursor *      (*names)(CamelIndex *idx);
@@ -142,7 +142,7 @@ struct _CamelIndexClass {
 /* flags, stored in 'state', set with set_state */
 #define CAMEL_INDEX_DELETED (1<<0)
 
-CamelType	           camel_index_get_type	(void);
+CamelType		   camel_index_get_type	(void);
 
 CamelIndex        *camel_index_new(const char *path, int flags);
 void               camel_index_construct(CamelIndex *, const char *path, int flags);

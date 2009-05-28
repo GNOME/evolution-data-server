@@ -321,7 +321,7 @@ void               camel_folder_free_uids             (CamelFolder *folder,
 GPtrArray *        camel_folder_get_uncached_uids     (CamelFolder *,
                                                        GPtrArray * uids,
                                                        CamelException *);
-gint 		   camel_folder_cmp_uids 	      (CamelFolder *folder, const char *uid1, const char *uid2);
+gint		   camel_folder_cmp_uids	      (CamelFolder *folder, const char *uid1, const char *uid2);
 void               camel_folder_sort_uids             (CamelFolder *folder,
 						       GPtrArray *uids);
 

@@ -736,7 +736,7 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 		soup_soap_message_end_element (msg);
 		soup_soap_message_end_element (msg);
 
-	} else 	if (flag == 1) {
+	} else	if (flag == 1) {
 		soup_soap_message_start_element (msg, "delete", NULL, NULL);
 		soup_soap_message_start_element (msg, "acl", NULL, NULL);
 

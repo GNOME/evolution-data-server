@@ -572,7 +572,7 @@ e_source_unset_color (ESource *source)
  **/
 void
 e_source_set_color_spec (ESource *source,
-		         const gchar *color_spec)
+			 const gchar *color_spec)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
@@ -919,7 +919,7 @@ e_source_get_duped_property (ESource *source, const char *property)
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 	priv = source->priv;
 
- 	return g_strdup (g_hash_table_lookup (priv->properties, property));
+	return g_strdup (g_hash_table_lookup (priv->properties, property));
 }
 
 void

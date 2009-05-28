@@ -586,9 +586,9 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 
 		/* auto update vfolders shouldn't need a rebuild */
-/* 		if ((vf->flags & CAMEL_STORE_VEE_FOLDER_AUTO) == 0 */
-/* 		    && camel_vee_folder_rebuild_folder(vf, f, ex) == -1) */
-/* 			break; */
+/*		if ((vf->flags & CAMEL_STORE_VEE_FOLDER_AUTO) == 0 */
+/*		    && camel_vee_folder_rebuild_folder(vf, f, ex) == -1) */
+/*			break; */
 
 		node = node->next;
 	}

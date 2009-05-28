@@ -147,8 +147,8 @@ struct {
 	{ "gb18030-0",      "gb18030"    },
 	{ "gbk-0",          "GBK"        },
 
-	{ "eucjp-0",        "eucJP"  	 },
-	{ "ujis-0",         "ujis"  	 },
+	{ "eucjp-0",        "eucJP"	 },
+	{ "ujis-0",         "ujis"	 },
 	{ "jisx0208.1983-0","SJIS"       },
 	{ "jisx0212.1990-0","SJIS"       },
 	{ "pck",	    "SJIS"       },

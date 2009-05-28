@@ -512,10 +512,10 @@ unexpected_token (camel_imap4_token_t *token)
 		fprintf (stderr, "NIL");
 		break;
 	case CAMEL_IMAP4_TOKEN_ATOM:
-	        fprintf (stderr, "%s", token->v.atom);
+		fprintf (stderr, "%s", token->v.atom);
 		break;
 	case CAMEL_IMAP4_TOKEN_QSTRING:
-	        fprintf (stderr, "\"%s\"", token->v.qstring);
+		fprintf (stderr, "\"%s\"", token->v.qstring);
 		break;
 	case CAMEL_IMAP4_TOKEN_LITERAL:
 		fprintf (stderr, "{%u}", token->v.literal);

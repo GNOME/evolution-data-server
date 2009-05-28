@@ -119,7 +119,7 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 
 	if (priv->source_changed_id == 0)
 		priv->source_changed_id = g_signal_connect (G_OBJECT (source),
-		                                            "changed",
+							    "changed",
 							    G_CALLBACK (source_changed),
 							    cbw);
 
@@ -130,7 +130,7 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 	 * serious bandwidth, they would appreciate it if we didn't hammer their servers
 	 */
 	priv->reload_timeout_id = g_timeout_add ((refresh_str ? atoi (refresh_str) : 240) * 60000,
-	    					 (GSourceFunc) reload_cb, cbw);
+						 (GSourceFunc) reload_cb, cbw);
 
 }
 
@@ -243,14 +243,14 @@ getCategory (WeatherInfo *report)
 		const char *description;
 		const char *icon_name;
 	} categories[] = {
-		{ N_("Weather: Fog"), 		"weather-fog" },
-		{ N_("Weather: Cloudy"), 	"weather-few-clouds" },
+		{ N_("Weather: Fog"),		"weather-fog" },
+		{ N_("Weather: Cloudy"),	"weather-few-clouds" },
 		{ N_("Weather: Cloudy Night"),	"weather-few-clouds-night" },
 		{ N_("Weather: Overcast"),	"weather-overcast" },
-		{ N_("Weather: Showers"), 	"weather-showers" },
-		{ N_("Weather: Snow"), 		"weather-snow" },
-		{ N_("Weather: Sunny"), 	"weather-clear" },
-		{ N_("Weather: Clear Night"), 	"weather-clear-night" },
+		{ N_("Weather: Showers"),	"weather-showers" },
+		{ N_("Weather: Snow"),		"weather-snow" },
+		{ N_("Weather: Sunny"),	"weather-clear" },
+		{ N_("Weather: Clear Night"),	"weather-clear-night" },
 		{ N_("Weather: Thunderstorms"), "weather-storm" },
 		{ NULL,				NULL }
 	};
@@ -278,7 +278,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	icalcomponent             *ical_comp;
 	struct icaltimetype        itt;
 	ECalComponentDateTime      dt;
-	char                	  *uid;
+	char			  *uid;
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
 	ESource                   *source;

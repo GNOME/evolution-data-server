@@ -87,7 +87,7 @@ CamelMimeFilterBestenc      *camel_mime_filter_bestenc_new	(unsigned int flags);
 
 CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required);
 const char *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
-void 			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, unsigned int flags);
+void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, unsigned int flags);
 
 G_END_DECLS
 

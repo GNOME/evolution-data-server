@@ -212,9 +212,9 @@ CamelType camel_store_get_type (void);
 
 /* public methods */
 CamelFolder *    camel_store_get_folder         (CamelStore *store,
-					         const char *folder_name,
+						 const char *folder_name,
 						 guint32 flags,
-					         CamelException *ex);
+						 CamelException *ex);
 CamelFolder *    camel_store_get_inbox          (CamelStore *store,
 						 CamelException *ex);
 CamelFolder *    camel_store_get_trash          (CamelStore *store,

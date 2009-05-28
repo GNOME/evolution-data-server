@@ -897,7 +897,7 @@ e_cal_listener_class_init (ECalListenerClass *klass)
 			      G_STRUCT_OFFSET (ECalListenerClass, object_list),
 			      NULL, NULL,
 			      e_cal_marshal_VOID__INT_POINTER,
-		      	      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
+			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_POINTER);
 	signals[ATTACHMENT_LIST] =
 		g_signal_new ("attachment_list",
 			      G_TYPE_FROM_CLASS (klass),
@@ -1000,7 +1000,7 @@ e_cal_listener_construct (ECalListener *listener,
 
 	g_return_val_if_fail (listener != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_LISTENER (listener), NULL);
- 	g_return_val_if_fail (cal_set_mode_fn != NULL, NULL);
+	g_return_val_if_fail (cal_set_mode_fn != NULL, NULL);
 
 	priv = listener->priv;
 

@@ -430,7 +430,7 @@ nntp_folder_append_message_offline (CamelFolder *folder, CamelMimeMessage *mime_
 				    CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-	                      _("You cannot post NNTP messages while working offline!"));
+			      _("You cannot post NNTP messages while working offline!"));
 }
 
 /* I do not know what to do this exactly. Looking at the IMAP implementation for this, it
@@ -441,7 +441,7 @@ nntp_folder_transfer_message (CamelFolder *source, GPtrArray *uids, CamelFolder 
 			      GPtrArray **transferred_uids, gboolean delete_orig, CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-	                      _("You cannot copy messages from a NNTP folder!"));
+			      _("You cannot copy messages from a NNTP folder!"));
 }
 
 static void

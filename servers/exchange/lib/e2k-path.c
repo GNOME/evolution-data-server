@@ -98,7 +98,7 @@ e_path_to_physical (const char *prefix, const char *vpath)
 
 	/* Copy the mangled path.  */
 	p = vpath;
- 	while (1) {
+	while (1) {
 		newp = strchr (p, '/');
 		if (newp == NULL) {
 			strcpy (dp, p);

@@ -1,5 +1,5 @@
 /* Evolution calendar - weather backend source class for parsing
- * 	CCF (coded cities forecast) formatted NWS reports
+ *	CCF (coded cities forecast) formatted NWS reports
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *

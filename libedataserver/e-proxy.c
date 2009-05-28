@@ -122,11 +122,11 @@ static unsigned int signals[LAST_SIGNAL] = { 0 };
 
 /* Forward declarations.  */
 
-static void 	ep_setting_changed 	(GConfClient *client, guint32 cnxn_id,
+static void	ep_setting_changed	(GConfClient *client, guint32 cnxn_id,
 					 GConfEntry *entry, gpointer user_data);
-static void 	e_proxy_dispose 	(GObject* object);
+static void	e_proxy_dispose	(GObject* object);
 
-static void 	ipv6_network_addr	(const struct in6_addr *addr,
+static void	ipv6_network_addr	(const struct in6_addr *addr,
 					 const struct in6_addr *mask,
 					 struct in6_addr *res);
 

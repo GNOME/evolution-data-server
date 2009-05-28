@@ -257,7 +257,7 @@ nss_error_to_string (long errorcode)
 	cs (SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE, "The certificate issuer's certificate has expired.  Check your system date and time.")
 	cs (SEC_ERROR_CRL_EXPIRED, "The CRL for the certificate's issuer has expired.  Update it or check your system date and time.")
 	cs (SEC_ERROR_CRL_BAD_SIGNATURE, "The CRL for the certificate's issuer has an invalid signature.")
- 	cs (SEC_ERROR_CRL_INVALID, "New CRL has an invalid format.")
+	cs (SEC_ERROR_CRL_INVALID, "New CRL has an invalid format.")
 	cs (SEC_ERROR_EXTENSION_VALUE_INVALID, "Certificate extension value is invalid.")
 	cs (SEC_ERROR_EXTENSION_NOT_FOUND, "Certificate extension not found.")
 	cs (SEC_ERROR_CA_CERT_INVALID, "Issuer certificate is invalid.")
@@ -931,7 +931,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 
 	dec = NSS_CMSDecoder_Start(NULL,
 				   NULL, NULL, /* content callback     */
-				   NULL, NULL, 	/* password callback    */
+				   NULL, NULL,	/* password callback    */
 				   NULL, NULL); /* decrypt key callback */
 
 	camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)sigpart), (CamelStream *)mem);
@@ -968,7 +968,7 @@ sm_encrypt(CamelCipherContext *context, const char *userid, GPtrArray *recipient
 	PLArenaPool *poolp;
 	NSSCMSMessage *cmsg = NULL;
 	NSSCMSEnvelopedData *envd;
- 	NSSCMSEncoderContext *enc = NULL;
+	NSSCMSEncoderContext *enc = NULL;
 	CamelStreamMem *mem;
 	CamelStream *ostream = NULL;
 	CamelDataWrapper *dw;

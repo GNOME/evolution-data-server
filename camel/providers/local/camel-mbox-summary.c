@@ -69,7 +69,7 @@ static CamelMessageInfo * message_info_new_from_header(CamelFolderSummary *, str
 static CamelMessageInfo * message_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageInfo * message_info_load (CamelFolderSummary *, FILE *);
 static int		  message_info_save (CamelFolderSummary *, FILE *, CamelMessageInfo *);
-static int 		  meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *mi);
+static int		  meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *mi);
 /*static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);*/
 
 static char *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);

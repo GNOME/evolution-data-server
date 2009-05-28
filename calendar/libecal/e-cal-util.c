@@ -288,7 +288,7 @@ compute_alarm_range (ECalComponent *comp, GList *alarm_uids, time_t start, time_
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START:
 		case E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END:
 			dur = &trigger.u.rel_duration;
-  			dur_time = icaldurationtype_as_int (*dur);
+			dur_time = icaldurationtype_as_int (*dur);
 
 			if (repeat.repetitions != 0) {
 				int rdur;
@@ -390,7 +390,7 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 			continue;
 
 		dur = &trigger.u.rel_duration;
-  		dur_time = icaldurationtype_as_int (*dur);
+		dur_time = icaldurationtype_as_int (*dur);
 
 		if (trigger.type == E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START)
 			occur_time = start;

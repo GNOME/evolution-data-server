@@ -51,11 +51,11 @@ gboolean __e_book_backend_google_debug__;
 static EBookBackendSyncStatus e_book_backend_status_from_google_book_error (GoogleBookError error_code);
 
 static EBookBackendSyncStatus
-e_book_backend_google_create_contact (EBookBackendSync 	*backend,
+e_book_backend_google_create_contact (EBookBackendSync	*backend,
 				      EDataBook		*book,
-				      guint32 		opid,
-				      const char 	*vcard_str,
-				      EContact 		**out_contact)
+				      guint32		opid,
+				      const char	*vcard_str,
+				      EContact		**out_contact)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
@@ -88,10 +88,10 @@ e_book_backend_google_create_contact (EBookBackendSync 	*backend,
 
 static EBookBackendSyncStatus
 e_book_backend_google_remove_contacts (EBookBackendSync *backend,
-				       EDataBook 	*book,
-				       guint32 		opid,
-				       GList 		*id_list,
-				       GList 		**ids)
+				       EDataBook	*book,
+				       guint32		opid,
+				       GList		*id_list,
+				       GList		**ids)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
@@ -129,11 +129,11 @@ e_book_backend_google_remove_contacts (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_modify_contact (EBookBackendSync 	*backend,
+e_book_backend_google_modify_contact (EBookBackendSync	*backend,
 				      EDataBook		*book,
-				      guint32 		opid,
-				      const char 	*vcard_str,
-				      EContact 		**out_contact)
+				      guint32		opid,
+				      const char	*vcard_str,
+				      EContact		**out_contact)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
@@ -165,11 +165,11 @@ e_book_backend_google_modify_contact (EBookBackendSync 	*backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_get_contact (EBookBackendSync 	*backend,
-				   EDataBook 		*book,
-				   guint32 		opid,
-				   const char 		*uid,
-				   char 		**vcard_str)
+e_book_backend_google_get_contact (EBookBackendSync	*backend,
+				   EDataBook		*book,
+				   guint32		opid,
+				   const char		*uid,
+				   char		**vcard_str)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
@@ -194,10 +194,10 @@ e_book_backend_google_get_contact (EBookBackendSync 	*backend,
 
 static EBookBackendSyncStatus
 e_book_backend_google_get_contact_list (EBookBackendSync *backend,
-					EDataBook 	 *book,
-					guint32 	 opid,
-					const char 	 *query,
-					GList 		 **contacts)
+					EDataBook	 *book,
+					guint32	 opid,
+					const char	 *query,
+					GList		 **contacts)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
@@ -342,11 +342,11 @@ e_book_backend_google_stop_book_view (EBookBackend  *backend,
 
 static EBookBackendSyncStatus
 e_book_backend_google_authenticate_user (EBookBackendSync *backend,
-					 EDataBook 	  *book,
-					 guint32 	  opid,
-					 const char 	  *username,
-					 const char 	  *password,
-					 const char 	  *auth_method)
+					 EDataBook	  *book,
+					 guint32	  opid,
+					 const char	  *username,
+					 const char	  *password,
+					 const char	  *auth_method)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_Success;
@@ -390,10 +390,10 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_get_supported_auth_methods (EBookBackendSync 	*backend,
-						  EDataBook 		*book,
-						  guint32 		opid,
-						  GList 		**methods)
+e_book_backend_google_get_supported_auth_methods (EBookBackendSync	*backend,
+						  EDataBook		*book,
+						  guint32		opid,
+						  GList		**methods)
 {
     char *auth_method;
 
@@ -405,10 +405,10 @@ e_book_backend_google_get_supported_auth_methods (EBookBackendSync 	*backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_get_required_fields (EBookBackendSync 	*backend,
-					   EDataBook 		*book,
-					   guint32 		opid,
-					   GList 		**fields_out)
+e_book_backend_google_get_required_fields (EBookBackendSync	*backend,
+					   EDataBook		*book,
+					   guint32		opid,
+					   GList		**fields_out)
 {
     __debug__ (G_STRFUNC);
 
@@ -417,10 +417,10 @@ e_book_backend_google_get_required_fields (EBookBackendSync 	*backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_get_supported_fields (EBookBackendSync 	*backend,
-					    EDataBook 		*book,
-					    guint32 		opid,
-					    GList 		**fields_out)
+e_book_backend_google_get_supported_fields (EBookBackendSync	*backend,
+					    EDataBook		*book,
+					    guint32		opid,
+					    GList		**fields_out)
 {
     const int supported_fields[] =
     {
@@ -468,20 +468,20 @@ e_book_backend_google_get_supported_fields (EBookBackendSync 	*backend,
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_get_changes (EBookBackendSync 	*backend,
-				   EDataBook 		*book,
-				   guint32 		opid,
-				   const char 		*change_id,
-				   GList 		**changes_out)
+e_book_backend_google_get_changes (EBookBackendSync	*backend,
+				   EDataBook		*book,
+				   guint32		opid,
+				   const char		*change_id,
+				   GList		**changes_out)
 {
     __debug__ (G_STRFUNC);
     return GNOME_Evolution_Addressbook_OtherError;
 }
 
 static EBookBackendSyncStatus
-e_book_backend_google_remove (EBookBackendSync 	*backend,
+e_book_backend_google_remove (EBookBackendSync	*backend,
 			      EDataBook		*book,
-			      guint32 		opid)
+			      guint32		opid)
 {
     __debug__ (G_STRFUNC);
     return GNOME_Evolution_Addressbook_Success;
@@ -496,8 +496,8 @@ on_google_book_auth_required (GoogleBook *book, gpointer user_data)
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_google_load_source (EBookBackend *backend,
-				   ESource 	*source,
-				   gboolean 	only_if_exists)
+				   ESource	*source,
+				   gboolean	only_if_exists)
 {
     EBookBackendGooglePrivate *priv = GET_PRIVATE (backend);
     const char *refresh_interval_str, *use_ssl_str, *use_cache_str;

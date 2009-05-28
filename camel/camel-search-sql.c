@@ -812,7 +812,7 @@ camel_sexp_to_sql (const char *txt)
 					   char *str = g_strdup_printf("NOT ( %s )", n->exact_token);
 					   g_free (n->exact_token);
 					   n->exact_token = str;
-				   	   all = g_list_prepend (all, n);
+					   all = g_list_prepend (all, n);
 					   if (preserve) {
 						   GList *foo;
 						   foo = preserve;
@@ -829,7 +829,7 @@ camel_sexp_to_sql (const char *txt)
 			  }
 
 			  if (!lastoper)
-			  	free_node (n1);
+				free_node (n1);
 			  g_list_free (res);
 			  res = NULL;
 			  tmp = all;

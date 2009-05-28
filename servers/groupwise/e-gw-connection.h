@@ -120,7 +120,7 @@ const char         *e_gw_connection_get_session_id (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_email (EGwConnection *cnc);
 const char         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
-const char 	   *e_gw_connection_get_version (EGwConnection *cnc);
+const char	   *e_gw_connection_get_version (EGwConnection *cnc);
 const char	   *e_gw_connection_get_server_time (EGwConnection *cnc) ;
 
 

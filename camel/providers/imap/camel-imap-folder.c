@@ -877,8 +877,8 @@ imap_rescan (CamelFolder *folder, int exists, CamelException *ex)
 	gboolean ok;
 	CamelFolderChangeInfo *changes = NULL;
 
- 	if (camel_application_is_exiting)
- 		return;
+	if (camel_application_is_exiting)
+		return;
 
 	imap_folder->need_rescan = FALSE;
 
@@ -2871,11 +2871,11 @@ content_info_incomplete (CamelMessageContentInfo *ci)
 static CamelImapMessageInfo *
 imap_folder_summary_uid_or_error(CamelFolderSummary *summary, const char * uid, CamelException *ex)
 {
-  	CamelImapMessageInfo *mi;
+	CamelImapMessageInfo *mi;
 	mi = (CamelImapMessageInfo *)camel_folder_summary_uid (summary, uid);
 	if (mi == NULL) {
 		camel_exception_setv (
-                	ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+			ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 			_("Cannot get message with message ID %s: %s"),
 			uid, _("No such message available."));
 	}
@@ -3603,21 +3603,21 @@ imap_update_summary (CamelFolder *folder, int exists,
 
 		/* FIXME: If it enters if(info) it will always match the exception. So stupid */
 		/* FIXME[disk-summary] Use a db query to see if the DB exists */
-/* 		info = (CamelImapMessageInfo *)camel_folder_summary_uid(folder->summary, uid); */
-/* 		if (info) { */
-/* 			for (seq = 0; seq < camel_folder_summary_count (folder->summary); seq++) { */
-/* 				if (folder->summary->messages->pdata[seq] == info) */
-/* 					break; */
-/* 			} */
+/*		info = (CamelImapMessageInfo *)camel_folder_summary_uid(folder->summary, uid); */
+/*		if (info) { */
+/*			for (seq = 0; seq < camel_folder_summary_count (folder->summary); seq++) { */
+/*				if (folder->summary->messages->pdata[seq] == info) */
+/*					break; */
+/*			} */
 
-/* 			g_warning("Message already present? %s", camel_message_info_uid(mi)); */
-/* 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, */
-/* 					      _("Unexpected server response: Identical UIDs provided for messages %d and %d"), */
-/* 					      seq + 1, i + first); */
+/*			g_warning("Message already present? %s", camel_message_info_uid(mi)); */
+/*			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, */
+/*					      _("Unexpected server response: Identical UIDs provided for messages %d and %d"), */
+/*					      seq + 1, i + first); */
 
-/* 			camel_message_info_free(&info->info); */
-/* 			break; */
-/* 		}  */
+/*			camel_message_info_free(&info->info); */
+/*			break; */
+/*		}  */
 
 		((CamelMessageInfoBase *)mi)->dirty = TRUE;
 		if (((CamelMessageInfoBase *)mi)->summary)

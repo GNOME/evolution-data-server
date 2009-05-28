@@ -65,8 +65,8 @@ CamelStream     *camel_pop3_stream_new		(CamelStream *source);
 void		 camel_pop3_stream_set_mode     (CamelPOP3Stream *is, camel_pop3_stream_mode_t mode);
 
 int              camel_pop3_stream_line		(CamelPOP3Stream *is, unsigned char **data, unsigned int *len);
-int 		 camel_pop3_stream_gets		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
-int 		 camel_pop3_stream_getd		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
+int		 camel_pop3_stream_gets		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
+int		 camel_pop3_stream_getd		(CamelPOP3Stream *is, unsigned char **start, unsigned int *len);
 
 G_END_DECLS
 

@@ -110,7 +110,7 @@ static void cert_setter (EContact *contact, EVCardAttribute *attr, void *data);
 /* This *must* be kept in the same order as the EContactField enum */
 static const EContactFieldInfo field_info[] = {
 	{0,}, /* Dummy row as EContactField starts from 1 */
- 	STRING_FIELD (E_CONTACT_UID,        EVC_UID,       "id",         N_("Unique ID"),  FALSE),
+	STRING_FIELD (E_CONTACT_UID,        EVC_UID,       "id",         N_("Unique ID"),  FALSE),
 	STRING_FIELD (E_CONTACT_FILE_AS,    EVC_X_FILE_AS, "file_as",    N_("File Under"),    FALSE),
 	/* URI of the book to which the contact belongs to */
 	STRING_FIELD (E_CONTACT_BOOK_URI, EVC_X_BOOK_URI, "book_uri", N_("Book URI"), FALSE),
@@ -246,10 +246,10 @@ static const EContactFieldInfo field_info[] = {
 	/* Instant messaging fields */
 	MULTI_LIST_FIELD (E_CONTACT_IM_AIM,       EVC_X_AIM,       "im_aim",       N_("AIM Screen Name List"),    FALSE),
 	MULTI_LIST_FIELD (E_CONTACT_IM_GROUPWISE, EVC_X_GROUPWISE, "im_groupwise", N_("GroupWise Id List"),       FALSE),
-	MULTI_LIST_FIELD (E_CONTACT_IM_JABBER, 	  EVC_X_JABBER,    "im_jabber",    N_("Jabber Id List"),          FALSE),
-	MULTI_LIST_FIELD (E_CONTACT_IM_YAHOO,  	  EVC_X_YAHOO,     "im_yahoo",     N_("Yahoo! Screen Name List"), FALSE),
-	MULTI_LIST_FIELD (E_CONTACT_IM_MSN,    	  EVC_X_MSN,       "im_msn",       N_("MSN Screen Name List"),    FALSE),
-	MULTI_LIST_FIELD (E_CONTACT_IM_ICQ,    	  EVC_X_ICQ,       "im_icq",       N_("ICQ Id List"),             FALSE),
+	MULTI_LIST_FIELD (E_CONTACT_IM_JABBER,	  EVC_X_JABBER,    "im_jabber",    N_("Jabber Id List"),          FALSE),
+	MULTI_LIST_FIELD (E_CONTACT_IM_YAHOO,	  EVC_X_YAHOO,     "im_yahoo",     N_("Yahoo! Screen Name List"), FALSE),
+	MULTI_LIST_FIELD (E_CONTACT_IM_MSN,	  EVC_X_MSN,       "im_msn",       N_("MSN Screen Name List"),    FALSE),
+	MULTI_LIST_FIELD (E_CONTACT_IM_ICQ,	  EVC_X_ICQ,       "im_icq",       N_("ICQ Id List"),             FALSE),
 
 	BOOLEAN_FIELD        (E_CONTACT_WANTS_HTML, EVC_X_WANTS_HTML, "wants_html", N_("Wants HTML Mail"), FALSE),
 
@@ -281,9 +281,9 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_1,  EVC_X_SKYPE,  "im_skype_work_1",  N_("Skype Work Name 1"),         FALSE, "WORK", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_2,  EVC_X_SKYPE,  "im_skype_work_2",  N_("Skype Work Name 2"),         FALSE, "WORK", 1),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_SKYPE_WORK_3,  EVC_X_SKYPE,  "im_skype_work_3",  N_("Skype Work Name 3"),         FALSE, "WORK", 2),
-	MULTI_LIST_FIELD (E_CONTACT_IM_SKYPE,  	  EVC_X_SKYPE,     "im_skype",     N_("Skype Name List"),         FALSE),
+	MULTI_LIST_FIELD (E_CONTACT_IM_SKYPE,	  EVC_X_SKYPE,     "im_skype",     N_("Skype Name List"),         FALSE),
 
-	MULTI_LIST_FIELD (E_CONTACT_SIP, 	  EVC_X_SIP,    "sip",    N_("SIP address"),          FALSE),
+	MULTI_LIST_FIELD (E_CONTACT_SIP,	  EVC_X_SIP,    "sip",    N_("SIP address"),          FALSE),
 };
 
 #undef LIST_ELEM_STR_FIELD
@@ -1202,12 +1202,12 @@ e_contact_get_property (GObject *object,
 			g_value_set_boxed (value, data);
 		} else {
 			g_value_set_string (value, data);
- 		}
+		}
 	} else if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
 		g_value_set_string (value, data);
 	} else {
 		g_value_set_pointer (value, data);
- 	}
+	}
 }
 
 

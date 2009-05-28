@@ -62,7 +62,7 @@ ESourceList *	e_source_combo_box_get_source_list
 						(ESourceComboBox *source_combo_box);
 void		e_source_combo_box_set_source_list
 						(ESourceComboBox *source_combo_box,
-					 	 ESourceList *source_list);
+						 ESourceList *source_list);
 ESource *	e_source_combo_box_get_active
 						(ESourceComboBox *source_combo_box);
 void		e_source_combo_box_set_active

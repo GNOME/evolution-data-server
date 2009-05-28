@@ -65,7 +65,7 @@ start_test (void)
 	name_selector_entry = e_name_selector_entry_new ();
 	e_name_selector_entry_set_destination_store (name_selector_entry, destination_store);
 
- 	g_signal_connect (name_selector_dialog, "response", G_CALLBACK (close_dialog), name_selector_dialog);
+	g_signal_connect (name_selector_dialog, "response", G_CALLBACK (close_dialog), name_selector_dialog);
 	gtk_widget_show (GTK_WIDGET (name_selector_dialog));
 
 	container = gtk_window_new (GTK_WINDOW_TOPLEVEL);

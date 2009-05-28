@@ -76,7 +76,7 @@
 
   type = (if bool function)
   type = (if bool function function)
-  	Choose a flow path based on a boolean value
+	Choose a flow path based on a boolean value
 
   type = (begin  func func func)
         Execute a sequence.  The last function return is the return type.
@@ -270,7 +270,7 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 			a1 = (char **)r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
-			        gpointer ptr;
+				gpointer ptr;
 				int n;
 				ptr = g_hash_table_lookup(ht, a1[j]);
 				n = GPOINTER_TO_INT(ptr);

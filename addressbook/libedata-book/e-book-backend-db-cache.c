@@ -251,7 +251,7 @@ e_book_backend_db_cache_check_contact (DB *db, const char *uid)
 	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt,0);
 	if (db_error != 0)
 		return FALSE;
- 	else {
+	else {
 		free (vcard_dbt.data);
 		return TRUE;
 	}

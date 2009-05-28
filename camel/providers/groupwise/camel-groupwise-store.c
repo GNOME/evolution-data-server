@@ -592,7 +592,7 @@ groupwise_get_folder (CamelStore *store, const char *folder_name, guint32 flags,
 		}
 	}
 
-	container_id = 	g_strdup (g_hash_table_lookup (priv->name_hash, folder_name));
+	container_id =	g_strdup (g_hash_table_lookup (priv->name_hash, folder_name));
 
 
 	storage_path = g_strdup_printf("%s/folders", priv->storage_path);
@@ -735,7 +735,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 		}
 	}
 
-	container_id = 	g_strdup (g_hash_table_lookup (priv->name_hash, folder->full_name));
+	container_id =	g_strdup (g_hash_table_lookup (priv->name_hash, folder->full_name));
 
 	si = camel_store_summary_path ((CamelStoreSummary *)gw_store->summary, folder->name);
 	if (si) {
@@ -1350,7 +1350,7 @@ groupwise_delete_folder(CamelStore *store,
 
 static void
 groupwise_rename_folder(CamelStore *store,
-		        const char *old_name,
+			const char *old_name,
 			const char *new_name,
 			CamelException *ex)
 {

@@ -824,9 +824,9 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	  if (!match_string (HERE_AM_STR, rp))
 	    {
 	      if (match_string (HERE_PM_STR, rp))
-	        is_pm = 1;
+		is_pm = 1;
 	      else
-	        return NULL;
+		return NULL;
             }
 	  break;
 	case 'r':
@@ -1094,7 +1094,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	      /* The C locale has no era information, so use the
 		 normal representation.  */
 	      goto match_century;
- 	    case 'y':
+	    case 'y':
 	      if (*decided != raw)
 		{
 		  get_number(0, 9999, 4);

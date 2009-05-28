@@ -374,7 +374,7 @@ e_address_western_parse (const gchar *in_address)
 	found_po_box = FALSE;
 	found_postal = FALSE;
 
-   	for (cntr = 0; cntr < linecntr; cntr++)  {
+	for (cntr = 0; cntr < linecntr; cntr++)  {
 		if (e_address_western_is_po_box (lines[cntr])) {
 			if (eaw->po_box == NULL)
 				eaw->po_box = e_address_western_extract_po_box (lines[cntr]);

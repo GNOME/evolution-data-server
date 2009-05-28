@@ -95,9 +95,9 @@ getopt(nargc, nargv, ostr)
 	}
 	if (!progname) {
 		if ((progname = __db_rpath(*nargv)) == NULL)
-	                progname = *nargv;
-        	else
-                	++progname;
+			progname = *nargv;
+		else
+			++progname;
 	}
 
 	if (optreset || !*place) {		/* update scanning pointer */
@@ -145,7 +145,7 @@ getopt(nargc, nargv, ostr)
 				    progname, optopt);
 			return (BADCH);
 		}
-	 	else				/* white space */
+		else				/* white space */
 			optarg = nargv[optind];
 		place = EMSG;
 		++optind;

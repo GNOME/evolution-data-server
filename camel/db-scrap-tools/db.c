@@ -9,43 +9,43 @@ sqlite3 *db;
 static int
 callback (void *data, int argc, char **argv, char **azColName)
 {
-  	int i;
-  	for(i=0; i<argc; i++) {
-    		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-  	}
-  	printf("--DONE \n");
+	int i;
+	for(i=0; i<argc; i++) {
+		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+	}
+	printf("--DONE \n");
 
-  	return 0;
+	return 0;
 }
 
 static int
 select_stmt (const char* stmt) {
-  	char *errmsg;
-  	int   ret;
-  	int   nrecs = 0;
+	char *errmsg;
+	int   ret;
+	int   nrecs = 0;
 
-  	ret = sqlite3_exec(db, stmt, callback, &nrecs, &errmsg);
+	ret = sqlite3_exec(db, stmt, callback, &nrecs, &errmsg);
 
-  	if(ret!=SQLITE_OK) {
-    		printf("Error in select statement %s [%s].\n", stmt, errmsg);
-  	} else {
-    		printf("\n   %d records returned.\n", nrecs);
-  	}
+	if(ret!=SQLITE_OK) {
+		printf("Error in select statement %s [%s].\n", stmt, errmsg);
+	} else {
+		printf("\n   %d records returned.\n", nrecs);
+	}
 
 	return ret;
 }
 
 static int
 sql_stmt(const char* stmt) {
-  	char *errmsg;
-  	int   ret;
+	char *errmsg;
+	int   ret;
 
-  	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
+	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 
-  	if(ret != SQLITE_OK) {
-    		printf("Error in statement: %s [%s].\n", stmt, errmsg);
+	if(ret != SQLITE_OK) {
+		printf("Error in statement: %s [%s].\n", stmt, errmsg);
 		exit (1);
- 	}
+	}
 
 	return ret;
 }
@@ -80,14 +80,14 @@ int main(int argc, char **argv) {
 	char *zErrMsg = 0;
 	int rc;
 
-//  	rc = sqlite3_open_v2("test.db", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE , NULL);
+//	rc = sqlite3_open_v2("test.db", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE , NULL);
 	rc = sqlite3_open("test.db", &db);
 
-  	if( rc ) {
-    		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-    		sqlite3_close(db);
-    		exit(1);
-  	}
+	if( rc ) {
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		sqlite3_close(db);
+		exit(1);
+	}
 
 	sqlite3_create_collation(db, "uidcmp", SQLITE_UTF8,  NULL, sort_cmp);
 	sqlite3_create_collation(db, "uidsort", SQLITE_UTF8,  NULL, sort_uid);
@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
 
 	printf("------\n");
 	select_stmt ("select count(isize) from table1");
-  	sqlite3_close(db);
+	sqlite3_close(db);
 
-  	return 0;
+	return 0;
 }

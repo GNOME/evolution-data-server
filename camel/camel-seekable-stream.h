@@ -70,7 +70,7 @@ CamelType camel_seekable_stream_get_type (void);
 /* public methods */
 off_t    camel_seekable_stream_seek            (CamelSeekableStream *stream, off_t offset,
 						CamelStreamSeekPolicy policy);
-off_t	 camel_seekable_stream_tell    	       (CamelSeekableStream *stream);
+off_t	 camel_seekable_stream_tell	       (CamelSeekableStream *stream);
 int	 camel_seekable_stream_set_bounds      (CamelSeekableStream *stream, off_t start, off_t end);
 
 G_END_DECLS

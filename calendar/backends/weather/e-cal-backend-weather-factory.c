@@ -50,7 +50,7 @@ static ECalBackend*
 _events_new_backend (ECalBackendFactory *factory, ESource *source)
 {
 	return g_object_new (e_cal_backend_weather_get_type (),
-	                     "source", source,
+			     "source", source,
 			     "kind", ICAL_VEVENT_COMPONENT,
 			     NULL);
 }
@@ -85,7 +85,7 @@ events_backend_factory_get_type (GTypeModule *module)
 		(GInstanceInitFunc) e_cal_backend_weather_factory_instance_init
 	};
 	type = g_type_module_register_type (module,
-	                                    E_TYPE_CAL_BACKEND_FACTORY,
+					    E_TYPE_CAL_BACKEND_FACTORY,
 					    "ECalBackendWeatherEventsFactory",
 					    &info, 0);
 

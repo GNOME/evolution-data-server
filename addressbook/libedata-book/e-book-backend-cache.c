@@ -228,7 +228,7 @@ e_book_backend_cache_new (const char *uri)
 {
 	EBookBackendCache *cache;
 
-       	cache = g_object_new (E_TYPE_BOOK_BACKEND_CACHE, "uri", uri, NULL);
+	cache = g_object_new (E_TYPE_BOOK_BACKEND_CACHE, "uri", uri, NULL);
 
         return cache;
 }
@@ -473,7 +473,7 @@ e_book_backend_cache_exists (const char *uri)
 void
 e_book_backend_cache_set_populated (EBookBackendCache *cache)
 {
-  	g_return_if_fail (E_IS_BOOK_BACKEND_CACHE (cache));
+	g_return_if_fail (E_IS_BOOK_BACKEND_CACHE (cache));
 	e_file_cache_add_object (E_FILE_CACHE (cache), "populated", "TRUE");
 
 }
@@ -489,7 +489,7 @@ e_book_backend_cache_set_populated (EBookBackendCache *cache)
 gboolean
 e_book_backend_cache_is_populated (EBookBackendCache *cache)
 {
-  	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
 	if (e_file_cache_get_object (E_FILE_CACHE (cache), "populated"))
 		return TRUE;
 	return FALSE;

@@ -19,8 +19,8 @@ extern "C" {
 #define CONF_KEY_CONTACTS "/apps/evolution/addressbook/sources"
 #define EXCHANGE_URI_PREFIX "exchange://"
 
-void 			add_folder_esource (ExchangeAccount *account, FolderType folder_type, const char *folder_name, const char *physical_uri);
-void 			remove_folder_esource (ExchangeAccount *account, FolderType folder_type, const char *physical_uri);
+void			add_folder_esource (ExchangeAccount *account, FolderType folder_type, const char *folder_name, const char *physical_uri);
+void			remove_folder_esource (ExchangeAccount *account, FolderType folder_type, const char *physical_uri);
 
 /* Remove this ugly hack by moving this to exchange-account.h */
 char * exchange_account_get_authtype (ExchangeAccount *account);

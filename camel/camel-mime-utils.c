@@ -431,7 +431,7 @@ camel_uudecode_step (unsigned char *in, size_t len, unsigned char *out, int *sta
 				if (uulen >= 3) {
 					*outptr++ = CAMEL_UUDECODE_CHAR (b0) << 2 | CAMEL_UUDECODE_CHAR (b1) >> 4;
 					*outptr++ = CAMEL_UUDECODE_CHAR (b1) << 4 | CAMEL_UUDECODE_CHAR (b2) >> 2;
-				        *outptr++ = CAMEL_UUDECODE_CHAR (b2) << 6 | CAMEL_UUDECODE_CHAR (b3);
+					*outptr++ = CAMEL_UUDECODE_CHAR (b2) << 6 | CAMEL_UUDECODE_CHAR (b3);
 				} else {
 					if (uulen >= 1) {
 						*outptr++ = CAMEL_UUDECODE_CHAR (b0) << 2 | CAMEL_UUDECODE_CHAR (b1) >> 4;
@@ -3839,19 +3839,19 @@ get_days_in_month (int month, int year)
 	case 8:
 	case 10:
 	case 12:
-	        return 31;
+		return 31;
 	case 4:
 	case 6:
 	case 9:
 	case 11:
-	        return 30;
+		return 30;
 	case 2:
-	        if (g_date_is_leap_year (year))
-		        return 29;
+		if (g_date_is_leap_year (year))
+			return 29;
 		else
-		        return 28;
+			return 28;
 	default:
-	        return 0;
+		return 0;
 	}
 }
 #endif

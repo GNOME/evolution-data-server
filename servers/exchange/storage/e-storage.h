@@ -83,9 +83,9 @@ struct EStorageClass {
 
 	GList      * (* get_subfolder_paths)     (EStorage *storage,
 						  const char *path);
-	EFolder    * (* get_folder)    	         (EStorage *storage,
+	EFolder    * (* get_folder)		 (EStorage *storage,
 						  const char *path);
-	const char * (* get_name)      	         (EStorage *storage);
+	const char * (* get_name)		 (EStorage *storage);
 
 	void         (* async_create_folder)  (EStorage *storage,
 					       const char *path,
@@ -115,17 +115,17 @@ struct EStorageClass {
 					       EFolder *source);
 
 	void         (* async_discover_shared_folder)  (EStorage *storage,
-						        const char *owner,
-						        const char *folder_name,
-						        EStorageDiscoveryCallback callback,
-						        void *data);
+							const char *owner,
+							const char *folder_name,
+							EStorageDiscoveryCallback callback,
+							void *data);
 	void         (* cancel_discover_shared_folder) (EStorage *storage,
 							const char *owner,
 							const char *folder_name);
 	void         (* async_remove_shared_folder)    (EStorage *storage,
-						        const char *path,
-						        EStorageResultCallback callback,
-						        void *data);
+							const char *path,
+							EStorageResultCallback callback,
+							void *data);
 };
 
 GType       e_storage_get_type                (void);

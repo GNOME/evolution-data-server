@@ -105,7 +105,7 @@ static struct {
 	{ { 1, 0, 0 }, "(= 72000 (get-sent-date))" },
 	{ { 0, 0, 0 }, "(= 72001 (get-sent-date))" },
 
- 	{ { (100/2-1)/17+1, (50/2-1)/17+1, 0 }, "(and (user-flag \"every17\") (< 72000 (get-sent-date)))" },
+	{ { (100/2-1)/17+1, (50/2-1)/17+1, 0 }, "(and (user-flag \"every17\") (< 72000 (get-sent-date)))" },
 	{ { (100/2-1)/17+1, (50/2-1)/17, 0 }, "(and (user-flag \"every17\") (> 72000 (get-sent-date)))" },
 	{ { (100/2-1)/13+1, (50/2-1)/13+1, 0 }, "(and (user-flag \"every13\") (< 72000 (get-sent-date)))" },
 	{ { (100/2-1)/13+1, (50/2-1)/13+1, 0 }, "(and (user-flag \"every13\") (> 72000 (get-sent-date)))" },

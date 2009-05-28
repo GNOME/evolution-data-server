@@ -812,7 +812,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 		dbc->c_close (dbc);
 	}
 
-   	e_dbhash_foreach_key (ehash, (EDbHashFunc)e_book_backend_file_changes_foreach_key, &ctx);
+	e_dbhash_foreach_key (ehash, (EDbHashFunc)e_book_backend_file_changes_foreach_key, &ctx);
 
 	/* Send the changes */
 	if (db_error != DB_NOTFOUND) {
@@ -1163,13 +1163,13 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		writable = TRUE;
 	} else {
 		db->close (db, 0);
-        	db_error = db_create (&db, env, 0);
-        	if (db_error != 0) {
-                	g_warning ("db_create failed with %s", db_strerror (db_error));
-                	g_free (dirname);
-                	g_free (filename);
-                	return db_error_to_status (db_error);
-        	}
+		db_error = db_create (&db, env, 0);
+		if (db_error != 0) {
+			g_warning ("db_create failed with %s", db_strerror (db_error));
+			g_free (dirname);
+			g_free (filename);
+			return db_error_to_status (db_error);
+		}
 
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
@@ -1192,7 +1192,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 
 			db_error = db_create (&db, env, 0);
 			if (db_error != 0) {
- 				g_warning ("db_create failed with %s", db_strerror (db_error));
+				g_warning ("db_create failed with %s", db_strerror (db_error));
 				g_free (dirname);
 				g_free (filename);
 				return db_error_to_status (db_error);

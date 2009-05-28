@@ -160,7 +160,7 @@ groupwise_send_to (CamelTransport *transport,
 
 	service = CAMEL_SERVICE(transport);
 	url = camel_url_to_string (service->url,
-			           (CAMEL_URL_HIDE_PASSWORD |
+				   (CAMEL_URL_HIDE_PASSWORD |
 				    CAMEL_URL_HIDE_PARAMS   |
 				    CAMEL_URL_HIDE_AUTH) );
 

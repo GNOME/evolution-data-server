@@ -13,7 +13,7 @@
 	reading/writing different charsets
 
   Just testing streams:
-  	different stream types
+	different stream types
 	different file ops
 	seek, eof, etc.
 */

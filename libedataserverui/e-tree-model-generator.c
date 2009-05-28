@@ -79,7 +79,7 @@ static gboolean     e_tree_model_generator_iter_parent     (GtkTreeModel       *
 							    GtkTreeIter        *child);
 
 static GArray *build_node_map     (ETreeModelGenerator *tree_model_generator, GtkTreeIter *parent_iter,
-			           GArray *parent_group, gint parent_index);
+				   GArray *parent_group, gint parent_index);
 static void    release_node_map   (GArray *group);
 
 static void    child_row_changed  (ETreeModelGenerator *tree_model_generator, GtkTreePath *path, GtkTreeIter *iter);

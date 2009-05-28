@@ -16,7 +16,7 @@ static struct {
 	guint32 unicode[200];
 } tests[] = {
 	/* the escape char */
- 	{ "&", "&-",
+	{ "&", "&-",
 	  {  0x0026, } },
 	/* part of set D */
 	{ "+", "+",

@@ -133,7 +133,7 @@ e_cal_backend_set_property (GObject *object, guint property_id, const GValue *va
 static void
 e_cal_backend_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
- 	ECalBackend *backend;
+	ECalBackend *backend;
 	ECalBackendPrivate *priv;
 
 	backend = E_CAL_BACKEND (object);

@@ -4,7 +4,7 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  * Authors: Christopher Toshok <toshok@ximian.com>
- *    	    Michael Zucchi <notzed@ximian.com>
+ *	    Michael Zucchi <notzed@ximian.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -73,8 +73,8 @@ static CamelServiceClass *service_class = NULL;
 static int camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex);
 
 static void nntp_construct (CamelService *service, CamelSession *session,
-		            CamelProvider *provider, CamelURL *url,
-		            CamelException *ex);
+			    CamelProvider *provider, CamelURL *url,
+			    CamelException *ex);
 
 
 static gboolean
@@ -241,10 +241,10 @@ connect_to_server (CamelService *service, struct addrinfo *ai, int ssl_mode, Cam
 	    && camel_nntp_try_authenticate(store, ex) != NNTP_AUTH_ACCEPTED)
 		goto fail;
 
-  	/* set 'reader' mode & ignore return code, also ping the server, inn goes offline very quickly otherwise */
+	/* set 'reader' mode & ignore return code, also ping the server, inn goes offline very quickly otherwise */
 	if (camel_nntp_raw_command_auth (store, ex, (char **) &buf, "mode reader") == -1
 	    || camel_nntp_raw_command_auth (store, ex, (char **) &buf, "date") == -1)
-  		goto fail;
+		goto fail;
 
 	if (xover_setup(store, ex) == -1)
 		goto fail;
@@ -912,7 +912,7 @@ nntp_store_subscribe_folder (CamelStore *store, const char *folder_name,
 	if (!si) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 				      _("You cannot subscribe to this newsgroup:\n\n"
-				        "No such newsgroup. The selected item is a probably a parent folder."));
+					"No such newsgroup. The selected item is a probably a parent folder."));
 	} else {
 		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
@@ -944,7 +944,7 @@ nntp_store_unsubscribe_folder (CamelStore *store, const char *folder_name,
 	if (!fitem) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
 				      _("You cannot unsubscribe to this newsgroup:\n\n"
-				        "newsgroup does not exist!"));
+					"newsgroup does not exist!"));
 	} else {
 		if (fitem->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
 			fitem->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
@@ -968,7 +968,7 @@ nntp_create_folder (CamelStore *store, const char *parent_name,
                     const char *folder_name, CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-	            _("You cannot create a folder in a News store: subscribe instead."));
+		    _("You cannot create a folder in a News store: subscribe instead."));
 	return NULL;
 }
 
@@ -976,7 +976,7 @@ static void
 nntp_rename_folder (CamelStore *store, const char *old_name, const char *new_name_in, CamelException *ex)
 {
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-	          _("You cannot rename a folder in a News store."));
+		  _("You cannot rename a folder in a News store."));
 }
 
 static void
@@ -984,7 +984,7 @@ nntp_delete_folder (CamelStore *store, const char *folder_name, CamelException *
 {
 	nntp_store_unsubscribe_folder (store, folder_name, ex);
 	camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-	          _("You cannot remove a folder in a News store: unsubscribe instead."));
+		  _("You cannot remove a folder in a News store: unsubscribe instead."));
 	return;
 }
 

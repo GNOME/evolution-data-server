@@ -69,9 +69,9 @@ find_account_group (ESourceList *source_list, ExchangeAccount *exa)
 
 void
 add_folder_esource (ExchangeAccount *account,
-	     	    FolderType folder_type,
-	     	    const char *folder_name,
-	     	    const char *physical_uri)
+		    FolderType folder_type,
+		    const char *folder_name,
+		    const char *physical_uri)
 {
 	ESource *source = NULL;
 	ESourceGroup *source_group = NULL;
@@ -133,7 +133,7 @@ add_folder_esource (ExchangeAccount *account,
 			g_object_unref (source_list);
 			g_object_unref (source_group);
 			g_object_unref (client);
-        		g_free (relative_uri);
+			g_free (relative_uri);
 			g_free (username);
 			if (authtype)
 				g_free (authtype);
@@ -194,7 +194,7 @@ add_folder_esource (ExchangeAccount *account,
 				g_free (browse);
 			}
 			else {
-        			source = e_source_new (folder_name, relative_uri);
+				source = e_source_new (folder_name, relative_uri);
 			}
 
 			if (mode == OFFLINE_MODE)

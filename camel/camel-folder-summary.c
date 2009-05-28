@@ -127,8 +127,8 @@ static CamelMessageContentInfo * content_info_new_from_header(CamelFolderSummary
 static CamelMessageContentInfo * content_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageContentInfo * content_info_new_from_message(CamelFolderSummary *s, CamelMimePart *mp);
 static CamelMessageContentInfo * content_info_load(CamelFolderSummary *, FILE *);
-static int		         content_info_save(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
-static void		         content_info_free(CamelFolderSummary *, CamelMessageContentInfo *);
+static int			 content_info_save(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
+static void			 content_info_free(CamelFolderSummary *, CamelMessageContentInfo *);
 
 static int save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mir, CamelException *ex);
 static int camel_read_mir_callback (void * ref, int ncol, char ** cols, char ** name);
@@ -3405,7 +3405,7 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 
 	record->followup_flag = (char *) camel_pstring_strdup(camel_message_info_user_tag(info, "follow-up"));
 	record->followup_completed_on = (char *) camel_pstring_strdup(camel_message_info_user_tag(info, "completed-on"));
- 	record->followup_due_by = (char *) camel_pstring_strdup(camel_message_info_user_tag(info, "due-by"));
+	record->followup_due_by = (char *) camel_pstring_strdup(camel_message_info_user_tag(info, "due-by"));
 
 	tmp = g_string_new (NULL);
 	if (mi->references) {
@@ -3533,7 +3533,7 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 #ifndef USE_GSLICE
 		g_free(mi);
 #else
-	        g_slice_free1 (s->message_info_size, mi);
+		g_slice_free1 (s->message_info_size, mi);
 #endif
 #endif
 	else

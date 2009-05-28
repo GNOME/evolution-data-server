@@ -190,23 +190,23 @@ e_folder_exchange_new (ExchangeHierarchy *hier, const char *name,
 		if ((strcmp (type, "calendar") == 0) ||
 		    (strcmp (type, "calendar/public") == 0)) {
 			add_folder_esource (hier->account,
-				     	    EXCHANGE_CALENDAR_FOLDER,
-				     	    name,
-				     	    physical_uri);
+					    EXCHANGE_CALENDAR_FOLDER,
+					    name,
+					    physical_uri);
 		}
 		else if ((strcmp (type, "tasks") == 0) ||
 			 (strcmp (type, "tasks/public") == 0)) {
 			add_folder_esource (hier->account,
-				     	    EXCHANGE_TASKS_FOLDER,
-				     	    name,
-				     	    physical_uri);
+					    EXCHANGE_TASKS_FOLDER,
+					    name,
+					    physical_uri);
 		}
 		else if ((strcmp (type, "contacts") == 0) ||
 			 (strcmp (type, "contacts/public") == 0)) {
 			add_folder_esource (hier->account,
-				     	    EXCHANGE_CONTACTS_FOLDER,
-				     	    name,
-				     	    physical_uri);
+					    EXCHANGE_CONTACTS_FOLDER,
+					    name,
+					    physical_uri);
 		}
 	}
 	return ef;

@@ -122,7 +122,7 @@ vee_info_user_flag(const CamelMessageInfo *mi, const char *id)
 	gboolean ret;
 
 	HANDLE_NULL_INFO(FALSE);
-	ret = 	camel_message_info_user_flag (rmi, id);
+	ret =	camel_message_info_user_flag (rmi, id);
 	camel_message_info_free (rmi);
 
 	return ret;

@@ -641,7 +641,7 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 	EDestination      *destination;
 	const gchar       *string;
-	GString 	  *string_new;
+	GString	  *string_new;
 	gint               row;
 	EContact	  *contact;
 

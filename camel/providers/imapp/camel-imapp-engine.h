@@ -140,7 +140,7 @@ CamelType       camel_imapp_engine_get_type (void);
 CamelIMAPPEngine  *camel_imapp_engine_new(CamelIMAPPStream *stream);
 
 void		camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const char *response, CamelIMAPPEngineFunc func, void *data);
-int 		camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *wait); /* throws PARSE,IO exception */
+int		camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *wait); /* throws PARSE,IO exception */
 int		camel_imapp_engine_skip(CamelIMAPPEngine *imap);
 int		camel_imapp_engine_capabilities(CamelIMAPPEngine *imap);
 
@@ -148,7 +148,7 @@ CamelIMAPPCommand *camel_imapp_engine_command_new  (CamelIMAPPEngine *imap, cons
 void		camel_imapp_engine_command_complete(CamelIMAPPEngine *imap, struct _CamelIMAPPCommand *, CamelIMAPPCommandFunc func, void *data);
 void            camel_imapp_engine_command_add  (CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const char *fmt, ...);
 void            camel_imapp_engine_command_free (CamelIMAPPEngine *imap, CamelIMAPPCommand *ic);
-void 		camel_imapp_engine_command_queue(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic); /* throws IO exception */
+void		camel_imapp_engine_command_queue(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic); /* throws IO exception */
 CamelIMAPPCommand *camel_imapp_engine_command_find (CamelIMAPPEngine *imap, const char *name);
 CamelIMAPPCommand *camel_imapp_engine_command_find_tag(CamelIMAPPEngine *imap, unsigned int tag);
 

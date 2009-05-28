@@ -95,7 +95,7 @@ e_cal_backend_google_utils_populate_cache (ECalBackendGoogle *cbgo)
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND(cbgo));
 	temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 
- 	item = e_cal_backend_google_get_item (cbgo);
+	item = e_cal_backend_google_get_item (cbgo);
 	entries = gdata_feed_get_entries (item->feed);
 	priv = cbgo->priv;
 

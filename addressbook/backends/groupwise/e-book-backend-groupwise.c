@@ -125,7 +125,7 @@ static void fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTa
 
 static const struct field_element_mapping {
 	EContactField field_id;
-  	int element_type;
+	int element_type;
 	char *element_name;
 	void (*populate_contact_func)(EContact *contact,    gpointer data);
 	void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
@@ -448,7 +448,7 @@ set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  char *address_
 
 	new_postal_address = e_gw_item_get_address (new_item,  address_type);
 	old_postal_address = e_gw_item_get_address (old_item, address_type);
-    	if (new_postal_address && old_postal_address) {
+	if (new_postal_address && old_postal_address) {
 		s1 = new_postal_address->street_address;
 		s2 = old_postal_address->street_address;
 		if (!s1 && s2)
@@ -516,7 +516,7 @@ populate_birth_date (EContact *contact, gpointer data)
 
 	item = E_GW_ITEM (data);
 	value = e_gw_item_get_field_value (item, "birthday");
- 	if (value) {
+	if (value) {
 		date =  e_contact_date_from_string (value);
 		e_contact_set (contact, E_CONTACT_BIRTH_DATE, date);
 		e_contact_date_free (date);
@@ -728,7 +728,7 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 	if (old_full_name && new_full_name) {
 		s1 = new_full_name->name_prefix;
 		s2 = old_full_name->name_prefix;
-	        if(!s1 && s2)
+		if(!s1 && s2)
 			delete_full_name->name_prefix = g_strdup(s2);
 		else if (s1)
 			update_full_name->name_prefix = g_strdup(s1);
@@ -807,7 +807,7 @@ populate_contact_members (EContact *contact, gpointer data)
 static void
 set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise *egwb)
 {
-  	GList  *members, *temp, *dtemp, *items, *p, *emails_without_ids, *dest_without_ids;
+	GList  *members, *temp, *dtemp, *items, *p, *emails_without_ids, *dest_without_ids;
 	GList *group_members;
 	char *email;
 	EGwFilter *filter;
@@ -988,7 +988,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	g_list_free (dest_without_ids);
 
 	g_list_free (items);
-       	e_gw_item_set_member_list (item, group_members);
+	e_gw_item_set_member_list (item, group_members);
 }
 
 static void
@@ -997,7 +997,7 @@ set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise 
 	GList *old_members, *new_members ;
 	GList *old_ids,  *new_ids,  *additions, *deletions;
 
-       	old_ids = new_ids = additions = deletions = NULL;
+	old_ids = new_ids = additions = deletions = NULL;
 	old_members = e_gw_item_get_member_list (old_item);
 	new_members = e_gw_item_get_member_list (new_item);
 
@@ -1096,7 +1096,7 @@ set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 	new_value = e_gw_item_get_field_value (new_item, "organization");
 	old_org_id = e_gw_item_get_field_value (old_item, "organization_id");
 	new_org_id = e_gw_item_get_field_value (new_item, "organization_id");
-       	if (new_value && old_value) {
+	if (new_value && old_value) {
 		if (!g_str_equal (new_value, old_value)) {
 			e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "organization", new_value);
 			e_gw_item_set_change (new_item, E_GW_ITEM_CHANGE_TYPE_UPDATE, "organization_id", new_org_id);
@@ -1643,7 +1643,7 @@ func_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv, void *dat
 		if (g_str_equal (propname, "x-evolution-any-field")) {
 			if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
 				/* ignore the NULL query */
-		     		sexp_data->is_filter_valid = FALSE;
+				sexp_data->is_filter_valid = FALSE;
 				r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 				r->value.bool = FALSE;
 				return r;
@@ -1761,7 +1761,7 @@ func_beginswith(struct _ESExp *f, int argc, struct _ESExpResult **argv, void *da
 
 		if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
 			/* ignore the NULL query */
-		     	sexp_data->is_filter_valid = FALSE;
+			sexp_data->is_filter_valid = FALSE;
 			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 			r->value.bool = FALSE;
 			return r;
@@ -2169,7 +2169,7 @@ get_contacts_from_cache (EBookBackendGroupwise *ebgw,
                 if (!e_flag_is_set (closure->running))
                         break;
 
- 		uid = g_ptr_array_index (ids, i);
+		uid = g_ptr_array_index (ids, i);
 		contact = e_book_backend_db_cache_get_contact (ebgw->priv->file_db, uid);
 		if (contact) {
 			e_data_book_view_notify_update (book_view, contact);
@@ -2219,7 +2219,7 @@ book_view_thread (gpointer data)
 		}
 
 		if (gwb->priv->is_summary_ready &&
-	    	    e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
+		    e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
 			if (enable_debug)
 				printf ("reading the uids from summary \n");
 			ids = e_book_backend_summary_search (gwb->priv->summary, query);
@@ -2257,7 +2257,7 @@ book_view_thread (gpointer data)
 
 		if (gwb->priv->cnc == NULL) {
 			e_data_book_view_notify_complete (book_view,
-						          GNOME_Evolution_Addressbook_AuthenticationRequired);
+							  GNOME_Evolution_Addressbook_AuthenticationRequired);
 			e_data_book_view_unref (book_view);
 			return NULL;
 		}
@@ -2291,13 +2291,13 @@ book_view_thread (gpointer data)
 				if (filter)
 					g_object_unref (filter);
 				return NULL;
- 		}
- 		else
- 			status =  E_GW_CONNECTION_STATUS_OK;
+		}
+		else
+			status =  E_GW_CONNECTION_STATUS_OK;
 
 		/* Check if the data is found on summary */
 		if (gwb->priv->is_summary_ready &&
-	    	    e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
+		    e_book_backend_summary_is_summary_query (gwb->priv->summary, query)) {
 			if (enable_debug)
 				printf("reading the uids from summary file\n");
 			ids = e_book_backend_summary_search (gwb->priv->summary, query);
@@ -2738,7 +2738,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 		}
 
 		if (status != E_GW_CONNECTION_STATUS_OK)
-		       	 break;
+			 break;
 
 		for (l = gw_items; l != NULL; l = g_list_next (l)) {
 			contact_num++;
@@ -3112,7 +3112,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 							   ebgw->priv->categories_by_id);
 
 				/* When a distribution list is modified the server sends me a delete and add response.
-				But it doesnt send me the members, so i have to explicitly request the server for the members 				     of the distribution list */
+				But it doesnt send me the members, so i have to explicitly request the server for the members				     of the distribution list */
 
 				if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 					if(enable_debug)
@@ -3148,7 +3148,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				} else {
 					if (enable_debug)
 						printf("contact not there\n");
-		    			e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
+					e_book_backend_db_cache_add_contact (ebgw->priv->file_db, contact);
 					e_book_backend_summary_add_contact (ebgw->priv->summary, contact);
 				}
 
@@ -3280,7 +3280,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 
 	if (enable_debug) {
 		printf ("authenticate user ............\n");
- 		if(priv->book_name)
+		if(priv->book_name)
 			printf("book_name:%s\n", priv->book_name);
 	}
 
@@ -3392,8 +3392,8 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 				t = g_thread_create ((GThreadFunc) update_address_book_deltas, ebgw, TRUE, NULL);
 
 				/* spawn a thread to update the system address book cache
-	 			 * at given intervals
-	 			 */
+				 * at given intervals
+				 */
 				cache_refresh_interval_set = g_getenv ("BOOK_CACHE_REFRESH_INTERVAL");
 				if (cache_refresh_interval_set) {
 					cache_refresh_interval = g_ascii_strtod (cache_refresh_interval_set,
@@ -3517,7 +3517,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
         char *book_name;
         char *uri;
 	char **tokens;
-   	const char *port;
+	const char *port;
 	int db_error;
 	DB *db;
 	DB_ENV *env;
@@ -3969,7 +3969,7 @@ e_book_backend_groupwise_init (EBookBackendGroupwise *backend)
 	priv->cache_timeout = 0;
 	priv->update_mutex = g_mutex_new();
 	priv->update_cache_mutex = g_mutex_new();
-       	backend->priv = priv;
+	backend->priv = priv;
 
 	if (!priv->dlock) {
                 priv->dlock = g_new0 (SyncUpdate, 1);

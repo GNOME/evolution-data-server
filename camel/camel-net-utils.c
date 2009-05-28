@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
  * Authors: Michael Zucchi <notzed@ximian.com>
- * 	    Jeffrey Stedfast <fejj@ximian.com>
+ *	    Jeffrey Stedfast <fejj@ximian.com>
  *	    Chris Toshok <toshok@ximian.com>
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
@@ -91,7 +91,7 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 	int req_length;                                                \
 	char *p;                                                       \
 	int i;                                                         \
-	                                                               \
+								       \
 	/* check to make sure we have enough room in our buffer */     \
 	req_length = 0;                                                \
 	if (h->h_aliases) {                                            \
@@ -99,23 +99,23 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 			req_length += strlen (h->h_aliases[i]) + 1;    \
 		num_aliases = i;                                       \
 	}                                                              \
-	                                                               \
+								       \
 	if (h->h_addr_list) {                                          \
 		for (i = 0; h->h_addr_list[i]; i++)                    \
 			req_length += h->h_length;                     \
 		num_addrs = i;                                         \
 	}                                                              \
-	                                                               \
+								       \
 	req_length += sizeof (char *) * (num_aliases + 1);             \
 	req_length += sizeof (char *) * (num_addrs + 1);               \
 	req_length += strlen (h->h_name) + 1;                          \
-	                                                               \
+								       \
 	if (buflen < req_length) {                                     \
 		*herr = ERANGE;                                        \
 		G_UNLOCK (gethost_mutex);                              \
 		return ERANGE;                                         \
 	}                                                              \
-	                                                               \
+								       \
 	/* we store the alias/addr pointers in the buffer */           \
         /* their addresses here. */                                    \
 	p = buf;                                                       \
@@ -130,14 +130,14 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 		p += sizeof (char *) * (num_addrs + 1);                \
 	} else                                                         \
 		host->h_addr_list = NULL;                              \
-	                                                               \
+								       \
 	/* copy the host name into the buffer */                       \
 	host->h_name = p;                                              \
 	strcpy (p, h->h_name);                                         \
 	p += strlen (h->h_name) + 1;                                   \
 	host->h_addrtype = h->h_addrtype;                              \
 	host->h_length = h->h_length;                                  \
-	                                                               \
+								       \
 	/* copy the aliases/addresses into the buffer */               \
         /* and assign pointers into the hostent */                     \
 	*p = 0;                                                        \
@@ -149,7 +149,7 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 		}                                                      \
 		host->h_aliases[num_aliases] = NULL;                   \
 	}                                                              \
-	                                                               \
+								       \
 	if (num_addrs) {                                               \
 		for (i = 0; i < num_addrs; i++) {                      \
 			memcpy (p, h->h_addr_list[i], h->h_length);    \

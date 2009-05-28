@@ -70,8 +70,8 @@ camel_imapp_token_t camel_imapp_stream_token	(CamelIMAPPStream *is, unsigned cha
 void		 camel_imapp_stream_ungettoken	(CamelIMAPPStream *is, camel_imapp_token_t tok, unsigned char *token, unsigned int len);
 
 void		 camel_imapp_stream_set_literal	(CamelIMAPPStream *is, unsigned int literal);
-int 		 camel_imapp_stream_gets		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
-int 		 camel_imapp_stream_getl		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
+int		 camel_imapp_stream_gets		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
+int		 camel_imapp_stream_getl		(CamelIMAPPStream *is, unsigned char **start, unsigned int *len);
 
 /* all throw IO,PARSE exceptions */
 

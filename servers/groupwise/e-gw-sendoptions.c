@@ -316,7 +316,7 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 		       if (val_param)
 				val = soup_soap_parameter_get_string_value (val_param);
 
-	       		if (val) {
+			if (val) {
 				if (!g_ascii_strcasecmp (val, "None"))
 					gopts->reply_enabled = FALSE;
 				else if (!g_ascii_strcasecmp (val, "WhenConvenient")) {
@@ -413,7 +413,7 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 
 		temp = soup_soap_parameter_get_property (group_param, "type");
 
-	        if (!temp)
+		if (!temp)
 			continue;
 
 		if (!g_ascii_strcasecmp (temp, "MailMessageSettings")) {
@@ -421,13 +421,13 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 			parse_general_options (group_param, priv->gopts);
 		}
 
-	        if (!g_ascii_strcasecmp (temp, "AppointmentMessageSettings")) {
+		if (!g_ascii_strcasecmp (temp, "AppointmentMessageSettings")) {
 			parse_status_tracking_options (group_param, 11, priv->copts);
 		}
-	        if (!g_ascii_strcasecmp (temp, "TaskMessageSettings"))
+		if (!g_ascii_strcasecmp (temp, "TaskMessageSettings"))
 			parse_status_tracking_options (group_param, 4, priv->topts);
 
-	        if (!g_ascii_strcasecmp (temp, "AdvancedSettings"))
+		if (!g_ascii_strcasecmp (temp, "AdvancedSettings"))
 			parse_advanced_settings (group_param, priv->gopts);
 
 		g_free (temp);

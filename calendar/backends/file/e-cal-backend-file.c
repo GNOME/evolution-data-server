@@ -311,7 +311,7 @@ e_cal_backend_file_finalize (GObject *object)
 	g_static_rec_mutex_free (&priv->idle_save_rmutex);
 
 	if (priv->path) {
-	        g_free (priv->path);
+		g_free (priv->path);
 		priv->path = NULL;
 	}
 
@@ -384,9 +384,9 @@ e_cal_backend_file_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, 
 static ECalBackendSyncStatus
 e_cal_backend_file_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
- 	/* A file backend has no particular email address associated
- 	 * with it (although that would be a useful feature some day).
- 	 */
+	/* A file backend has no particular email address associated
+	 * with it (although that would be a useful feature some day).
+	 */
 	*address = NULL;
 
 	return GNOME_Evolution_Calendar_Success;
@@ -1021,7 +1021,7 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 
 	/* Claim a succesful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
-        	status = GNOME_Evolution_Calendar_Success;
+		status = GNOME_Evolution_Calendar_Success;
 		goto done;
         }
 
@@ -1162,27 +1162,27 @@ e_cal_backend_file_set_mode (ECalBackend *backend, CalMode mode)
 static ECalBackendSyncStatus
 e_cal_backend_file_get_default_object (ECalBackendSync *backend, EDataCal *cal, char **object)
 {
- 	ECalComponent *comp;
+	ECalComponent *comp;
 
- 	comp = e_cal_component_new ();
+	comp = e_cal_component_new ();
 
- 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
- 	case ICAL_VEVENT_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
- 		break;
- 	case ICAL_VTODO_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
- 		break;
- 	case ICAL_VJOURNAL_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
- 		break;
- 	default:
- 		g_object_unref (comp);
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+	case ICAL_VEVENT_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+		break;
+	case ICAL_VTODO_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
+		break;
+	default:
+		g_object_unref (comp);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
- 	}
+	}
 
- 	*object = e_cal_component_get_as_string (comp);
- 	g_object_unref (comp);
+	*object = e_cal_component_get_as_string (comp);
+	g_object_unref (comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1710,7 +1710,7 @@ e_cal_backend_file_compute_changes_foreach_key (const char *key, gpointer value,
 
 		g_object_unref (comp);
 		return TRUE;
- 	}
+	}
 	return FALSE;
 }
 
@@ -1779,7 +1779,7 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const char *change_
 	*deletes = be_data.deletes;
 
 	e_xmlhash_write (ehash);
-  	e_xmlhash_destroy (ehash);
+	e_xmlhash_destroy (ehash);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return GNOME_Evolution_Calendar_Success;
@@ -1839,7 +1839,7 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const char *tzid
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
 	if (!strcmp (tzid, "UTC"))
-	        zone = icaltimezone_get_utc_timezone ();
+		zone = icaltimezone_get_utc_timezone ();
 	else {
 		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
 		if (!zone)
@@ -2843,9 +2843,9 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	sync_class->is_read_only_sync = e_cal_backend_file_is_read_only;
 	sync_class->get_cal_address_sync = e_cal_backend_file_get_cal_address;
- 	sync_class->get_alarm_email_address_sync = e_cal_backend_file_get_alarm_email_address;
- 	sync_class->get_ldap_attribute_sync = e_cal_backend_file_get_ldap_attribute;
- 	sync_class->get_static_capabilities_sync = e_cal_backend_file_get_static_capabilities;
+	sync_class->get_alarm_email_address_sync = e_cal_backend_file_get_alarm_email_address;
+	sync_class->get_ldap_attribute_sync = e_cal_backend_file_get_ldap_attribute;
+	sync_class->get_static_capabilities_sync = e_cal_backend_file_get_static_capabilities;
 	sync_class->open_sync = e_cal_backend_file_open;
 	sync_class->remove_sync = e_cal_backend_file_remove;
 	sync_class->create_object_sync = e_cal_backend_file_create_object;
@@ -2854,7 +2854,7 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	sync_class->discard_alarm_sync = e_cal_backend_file_discard_alarm;
 	sync_class->receive_objects_sync = e_cal_backend_file_receive_objects;
 	sync_class->send_objects_sync = e_cal_backend_file_send_objects;
- 	sync_class->get_default_object_sync = e_cal_backend_file_get_default_object;
+	sync_class->get_default_object_sync = e_cal_backend_file_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_file_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_file_get_object_list;
 	sync_class->get_attachment_list_sync = e_cal_backend_file_get_attachment_list;

@@ -312,7 +312,7 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GEr
 	entry_edit_url = gdata_entry_get_edit_link (entry);
 	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE (GDATA_GOOGLE_SERVICE (service));
 	auth = (GDataGoogleServiceAuth *) priv->auth;
-	soup_session = 	(SoupSession *)priv->soup_session;
+	soup_session =	(SoupSession *)priv->soup_session;
 
 	msg = soup_message_new (SOUP_METHOD_DELETE, entry_edit_url);
 	soup_message_headers_append (msg->request_headers,
@@ -323,7 +323,7 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GEr
 	/* Handle redirects ourself */
 	send_and_handle_google_redirection (soup_session, msg);
 
-    	if (msg->status_code != 200) {
+	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
 					 msg->status_code, "%s", msg->reason_phrase);
 	} else {
@@ -407,7 +407,7 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 	/* Handle redirects ourself */
 	send_and_handle_google_redirection (soup_session, msg);
 
-    	if (msg->status_code != 200) {
+	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
 					 msg->status_code, "%s", msg->reason_phrase);
 		g_object_unref (msg);
@@ -701,7 +701,7 @@ gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
 
 	soup_session_send_message (priv->soup_session, msg);
 
-    	if (msg->status_code != 200) {
+	if (msg->status_code != 200) {
 		g_set_error (error, SOUP_HTTP_ERROR,
 					 msg->status_code, "%s", msg->reason_phrase);
 		g_object_unref(msg);

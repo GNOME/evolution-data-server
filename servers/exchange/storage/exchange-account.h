@@ -80,7 +80,7 @@ ExchangeAccount       *exchange_account_new                  (EAccountList *acco
 E2kContext            *exchange_account_get_context          (ExchangeAccount  *acct);
 E2kGlobalCatalog      *exchange_account_get_global_catalog   (ExchangeAccount  *acct);
 
-EAccount 	      *exchange_account_fetch 		     (ExchangeAccount *acct);
+EAccount	      *exchange_account_fetch		     (ExchangeAccount *acct);
 char                  *exchange_account_get_account_uri_param (ExchangeAccount *acct, const char *param);
 
 const char            *exchange_account_get_standard_uri     (ExchangeAccount  *acct,
@@ -94,7 +94,7 @@ char                  *exchange_account_get_foreign_uri      (ExchangeAccount  *
 							      const char       *std_uri_prop);
 ExchangeHierarchy     *exchange_account_get_hierarchy_by_email (ExchangeAccount *account, const char *email);
 
-char 		      *exchange_account_get_authtype 	     (ExchangeAccount *account);
+char		      *exchange_account_get_authtype	     (ExchangeAccount *account);
 
 E2kContext            *exchange_account_connect              (ExchangeAccount  *acct,
 							      const char *pword,
@@ -104,20 +104,20 @@ EFolder               *exchange_account_get_folder           (ExchangeAccount  *
 							      const char       *path_or_uri);
 GPtrArray             *exchange_account_get_folders          (ExchangeAccount  *acct);
 
-GPtrArray 	       *exchange_account_get_folder_tree      (ExchangeAccount *account, char* path);
+GPtrArray	       *exchange_account_get_folder_tree      (ExchangeAccount *account, char* path);
 
 ExchangeHierarchy     *exchange_account_get_hierarchy_by_type	      (ExchangeAccount *acct,
 							       ExchangeHierarchyType type);
 
 void                   exchange_account_rescan_tree          (ExchangeAccount  *acct);
 
-char 		      *exchange_account_get_password 	     (ExchangeAccount  *acct);
+char		      *exchange_account_get_password	     (ExchangeAccount  *acct);
 
-ExchangeAccountResult exchange_account_set_password 	     (ExchangeAccount  *acct,
+ExchangeAccountResult exchange_account_set_password	     (ExchangeAccount  *acct,
 							      char             *old_password,
 							      char             *new_password);
 
-void 		       exchange_account_forget_password       (ExchangeAccount  *acct);
+void		       exchange_account_forget_password       (ExchangeAccount  *acct);
 
 void		       exchange_account_set_save_password    (ExchangeAccount *account,
 							      gboolean save_password);
@@ -176,29 +176,29 @@ ExchangeAccountFolderResult exchange_account_remove_favorite (ExchangeAccount *a
 							      EFolder         *folder);
 
 gboolean exchange_account_is_favorite_folder              (ExchangeAccount *account,
-						           EFolder         *folder);
+							   EFolder         *folder);
 
-char * exchange_account_get_username 			  (ExchangeAccount *account);
+char * exchange_account_get_username			  (ExchangeAccount *account);
 
-char * exchange_account_get_windows_domain 		  (ExchangeAccount *account);
+char * exchange_account_get_windows_domain		  (ExchangeAccount *account);
 
-char * exchange_account_get_email_id 			  (ExchangeAccount *account);
+char * exchange_account_get_email_id			  (ExchangeAccount *account);
 
 int exchange_account_get_quota_limit			  (ExchangeAccount *account);
 
 int exchange_account_check_password_expiry		  (ExchangeAccount *account);
 
 /* Folder Size methods */
-void 			exchange_account_folder_size_add   (ExchangeAccount *account,
-	 					     	     const char *folder_name,
-						     	     gdouble size);
-void 			exchange_account_folder_size_remove (ExchangeAccount *account,
-						     	     const char *folder_name);
-void 			exchange_account_folder_size_rename (ExchangeAccount *account,
-						     	     const char *old_name,
-						     	     const char *new_name);
-GtkListStore 	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
-void 		  	exchange_account_scan_foreign_hierarchy (ExchangeAccount *account,
+void			exchange_account_folder_size_add   (ExchangeAccount *account,
+							     const char *folder_name,
+							     gdouble size);
+void			exchange_account_folder_size_remove (ExchangeAccount *account,
+							     const char *folder_name);
+void			exchange_account_folder_size_rename (ExchangeAccount *account,
+							     const char *old_name,
+							     const char *new_name);
+GtkListStore	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
+void			exchange_account_scan_foreign_hierarchy (ExchangeAccount *account,
 							      const char *user_email);
 
 

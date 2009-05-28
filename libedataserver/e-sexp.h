@@ -136,7 +136,7 @@ struct _ESExpClass {
 #ifdef E_SEXP_IS_G_OBJECT
 GType           e_sexp_get_type		(void);
 #endif
-ESExp 	       *e_sexp_new		(void);
+ESExp	       *e_sexp_new		(void);
 #ifdef E_SEXP_IS_G_OBJECT
 #define         e_sexp_ref(f)           g_object_ref (f)
 #define         e_sexp_unref(f)         g_object_unref (f)
@@ -144,9 +144,9 @@ ESExp 	       *e_sexp_new		(void);
 void		e_sexp_ref		(ESExp *f);
 void		e_sexp_unref		(ESExp *f);
 #endif
-void		e_sexp_add_function  	(ESExp *f, int scope, char *name, ESExpFunc *func, void *data);
-void		e_sexp_add_ifunction  	(ESExp *f, int scope, char *name, ESExpIFunc *func, void *data);
-void		e_sexp_add_variable  	(ESExp *f, int scope, char *name, ESExpTerm *value);
+void		e_sexp_add_function	(ESExp *f, int scope, char *name, ESExpFunc *func, void *data);
+void		e_sexp_add_ifunction	(ESExp *f, int scope, char *name, ESExpIFunc *func, void *data);
+void		e_sexp_add_variable	(ESExp *f, int scope, char *name, ESExpTerm *value);
 void		e_sexp_remove_symbol	(ESExp *f, int scope, char *name);
 int		e_sexp_set_scope	(ESExp *f, int scope);
 

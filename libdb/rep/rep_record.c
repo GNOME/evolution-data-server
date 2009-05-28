@@ -331,7 +331,7 @@ send:				ret = __rep_send_message(dbenv, *eidp,
 		 * There are three different cases here.
 		 * 1. We asked for a particular LSN and got it.
 		 * 2. We asked for an LSN of X,0 which is invalid and got the
-		 * 	first log record in a particular file.
+		 *	first log record in a particular file.
 		 * 3. We asked for an LSN and it's not found because it is
 		 *	beyond the end of a log file and we need a NEWFILE msg.
 		 */

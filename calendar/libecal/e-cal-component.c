@@ -4318,8 +4318,8 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
 						    priv->summary.altrep_param);
 		}
 	} else if (priv->summary.altrep_param) {
- 		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
- 		priv->summary.altrep_param = NULL;
+		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
+		priv->summary.altrep_param = NULL;
 	}
 
 	/* look for alarms that need a description */

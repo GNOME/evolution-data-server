@@ -258,7 +258,7 @@ offline_folder_downsync (CamelOfflineFolder *offline, const char *expression, Ca
 		uids = camel_folder_get_uids (folder);
 
 	if (!uids)
-	  	goto done;
+		goto done;
 	uncached_uids = camel_folder_get_uncached_uids(folder, uids, ex);
 	if (uids) {
 		if (expression)

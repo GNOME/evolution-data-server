@@ -801,7 +801,7 @@ form_uri (ESource *source)
 	char *formed_uri;
 	const char *use_ssl;
 
-       	EUri *parsed_uri;
+	EUri *parsed_uri;
 
 	uri = e_source_get_uri (source);
 	if (uri == NULL)
@@ -811,7 +811,7 @@ form_uri (ESource *source)
 	if (parsed_uri == NULL)
 		return NULL;
 
-       	port = e_source_get_property (source, "port");
+	port = e_source_get_property (source, "port");
 	if (port == NULL)
 		port = "7191";
 	use_ssl = e_source_get_property (source, "use_ssl");
@@ -1266,7 +1266,7 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
 				  CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY ","
 				  CAL_STATIC_CAPABILITY_REMOVE_ALARMS ","
-	                          CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 				  CAL_STATIC_CAPABILITY_NO_CONV_TO_ASSIGN_TASK ","
 				  CAL_STATIC_CAPABILITY_NO_CONV_TO_RECUR ","
@@ -1485,7 +1485,7 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 						    GNOME_Evolution_Calendar_MODE_REMOTE);
 		e_cal_backend_notify_readonly (backend, priv->read_only);
 		if(e_cal_backend_groupwise_is_loaded (backend))
-		              e_cal_backend_notify_auth_required(backend);
+			      e_cal_backend_notify_auth_required(backend);
 		break;
 
 	case CAL_MODE_LOCAL : /* go offline */
@@ -1515,7 +1515,7 @@ e_cal_backend_groupwise_get_default_object (ECalBackendSync *backend, EDataCal *
 
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 	case ICAL_VEVENT_COMPONENT:
-        	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 		break;
 	case ICAL_VTODO_COMPONENT:
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
@@ -1739,7 +1739,7 @@ e_cal_backend_groupwise_start_query (ECalBackend *backend, EDataCalView *query)
                 return;
 	}
 
-       	/* notify listeners of all objects */
+	/* notify listeners of all objects */
 	if (objects) {
 		e_data_cal_view_notify_objects_added (query, (const GList *) objects);
 
@@ -1804,7 +1804,7 @@ e_cal_backend_groupwise_compute_changes_foreach_key (const char *key, const char
 
 		e_xmlhash_remove (be_data->ehash, key);
 		g_object_unref (comp);
- 	}
+	}
 }
 
 static ECalBackendSyncStatus
@@ -1868,12 +1868,12 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const char 
 	be_data.kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	be_data.deletes = NULL;
 	be_data.ehash = ehash;
-   	e_xmlhash_foreach_key (ehash, (EXmlHashFunc)e_cal_backend_groupwise_compute_changes_foreach_key, &be_data);
+	e_xmlhash_foreach_key (ehash, (EXmlHashFunc)e_cal_backend_groupwise_compute_changes_foreach_key, &be_data);
 
 	*deletes = be_data.deletes;
 
 	e_xmlhash_write (ehash);
-  	e_xmlhash_destroy (ehash);
+	e_xmlhash_destroy (ehash);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -2587,7 +2587,7 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 			else {
 				comps = g_slist_append (comps, component);
 				found = TRUE;
- 			}
+			}
 
 			e_cal_component_free_id (id);
 		}
@@ -2623,13 +2623,13 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 
 				g_free (comp_str);
 			}
- 		}
+		}
 
 		g_slist_foreach (comps, (GFunc) g_object_unref, NULL);
 		g_slist_free (comps);
 		g_object_unref (comp);
 		g_object_unref (modif_comp);
- 		return GNOME_Evolution_Calendar_Success;
+		return GNOME_Evolution_Calendar_Success;
 
 	}
 
@@ -2850,9 +2850,9 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 
 	sync_class->is_read_only_sync = e_cal_backend_groupwise_is_read_only;
 	sync_class->get_cal_address_sync = e_cal_backend_groupwise_get_cal_address;
- 	sync_class->get_alarm_email_address_sync = e_cal_backend_groupwise_get_alarm_email_address;
- 	sync_class->get_ldap_attribute_sync = e_cal_backend_groupwise_get_ldap_attribute;
- 	sync_class->get_static_capabilities_sync = e_cal_backend_groupwise_get_static_capabilities;
+	sync_class->get_alarm_email_address_sync = e_cal_backend_groupwise_get_alarm_email_address;
+	sync_class->get_ldap_attribute_sync = e_cal_backend_groupwise_get_ldap_attribute;
+	sync_class->get_static_capabilities_sync = e_cal_backend_groupwise_get_static_capabilities;
 	sync_class->open_sync = e_cal_backend_groupwise_open;
 	sync_class->remove_sync = e_cal_backend_groupwise_remove;
 	sync_class->create_object_sync = e_cal_backend_groupwise_create_object;
@@ -2861,7 +2861,7 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	sync_class->discard_alarm_sync = e_cal_backend_groupwise_discard_alarm;
 	sync_class->receive_objects_sync = e_cal_backend_groupwise_receive_objects;
 	sync_class->send_objects_sync = e_cal_backend_groupwise_send_objects;
- 	sync_class->get_default_object_sync = e_cal_backend_groupwise_get_default_object;
+	sync_class->get_default_object_sync = e_cal_backend_groupwise_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_groupwise_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_groupwise_get_object_list;
 	sync_class->get_attachment_list_sync = e_cal_backend_groupwise_get_attachment_list;

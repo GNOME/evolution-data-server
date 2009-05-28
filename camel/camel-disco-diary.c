@@ -423,11 +423,11 @@ camel_disco_diary_new (CamelDiscoStore *store, const char *filename, CamelExcept
 	/* Note that the linux man page says:
 
 	   a+     Open for reading and appending (writing at end  of  file).   The
-	          file  is created if it does not exist.  The stream is positioned
+		  file  is created if it does not exist.  The stream is positioned
 		  at the end of the file.
 	   However, c99 (which glibc uses?) says:
 	   a+     append; open or create text file for update, writing at
-	           end-of-file
+		   end-of-file
 
 	   So we must seek ourselves.
 	*/

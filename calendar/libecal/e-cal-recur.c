@@ -681,7 +681,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 					ECalRecurInstanceFn  cb,
 					gpointer            cb_data,
 					ECalRecurResolveTimezoneFn  tz_cb,
-					gpointer	            tz_cb_data,
+					gpointer		    tz_cb_data,
 					icaltimezone	 *default_timezone)
 {
 	ECalComponentDateTime dtstart, dtend;
@@ -1586,7 +1586,7 @@ cal_obj_expand_recurrence		(CalObjTime	  *event_start,
 		if (len >= 0)
 			g_array_append_vals (all_occs, occs->data, len + 1);
 
- 		g_array_free (occs, TRUE);
+		g_array_free (occs, TRUE);
 
 		/* Skip to the next period, or exit the loop if finished. */
 		if ((*vtable->find_next_position) (&occ, event_end,

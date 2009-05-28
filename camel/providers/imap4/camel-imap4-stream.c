@@ -294,18 +294,18 @@ camel_imap4_stream_new (CamelStream *stream)
 #define token_save(imap4, start, len) G_STMT_START {                         \
 	if (imap4->tokenleft <= len) {                                       \
 		unsigned int tlen, toff;                                    \
-		                                                            \
+									    \
 		tlen = toff = imap4->tokenptr - imap4->tokenbuf;              \
 		tlen = tlen ? tlen : 1;                                     \
-		                                                            \
+									    \
 		while (tlen < toff + len)                                   \
 			tlen <<= 1;                                         \
-		                                                            \
+									    \
 		imap4->tokenbuf = g_realloc (imap4->tokenbuf, tlen + 1);      \
 		imap4->tokenptr = imap4->tokenbuf + toff;                     \
 		imap4->tokenleft = tlen - toff;                              \
 	}                                                                   \
-	                                                                    \
+									    \
 	memcpy (imap4->tokenptr, start, len);                                \
 	imap4->tokenptr += len;                                              \
 	imap4->tokenleft -= len;                                             \

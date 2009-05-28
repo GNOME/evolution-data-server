@@ -1576,18 +1576,18 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 
 			/* SURF : e_notice (NULL, GTK_MESSAGE_ERROR,
 				  _("Could not connect to the Exchange "
-			    	    "server.\nMake sure the URL is correct "
-			    	    "(try \"%s\" instead of \"%s\"?) "
-			    	    "and try again."), new, old);
+				    "server.\nMake sure the URL is correct "
+				    "(try \"%s\" instead of \"%s\"?) "
+				    "and try again."), new, old);
 			*/
 			valid = FALSE;
 			break;
 
 		case E2K_AUTOCONFIG_CANT_RESOLVE:
 		/* SURF :	e_notice (NULL, GTK_MESSAGE_ERROR,
-			  	_("Could not locate Exchange server.\n"
-			    	  "Make sure the server name is spelled correctly "
-			    	  "and try again."));
+				_("Could not locate Exchange server.\n"
+				  "Make sure the server name is spelled correctly "
+				  "and try again."));
 		*/
 			valid = FALSE;
 			break;
@@ -1596,22 +1596,22 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_NTLM:
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_BASIC:
 		/* SURF :	e_notice (NULL, GTK_MESSAGE_ERROR,
-			  	_("Could not authenticate to the Exchange "
-			    	  "server.\nMake sure the username and "
-			    	  "password are correct and try again."));
+				_("Could not authenticate to the Exchange "
+				  "server.\nMake sure the username and "
+				  "password are correct and try again."));
 		*/
 			valid = FALSE;
 			break;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_DOMAIN:
-		/* SURF : 		e_notice (NULL, GTK_MESSAGE_ERROR,
-			  	_("Could not authenticate to the Exchange "
-			    	  "server.\nMake sure the username and "
-			    	  "password are correct and try again.\n\n"
-			    	  "You may need to specify the Windows "
-			    	  "domain name as part of your username "
-			    	  "(eg, \"MY-DOMAIN\\%s\")."),
-			  	  ac->username);
+		/* SURF :		e_notice (NULL, GTK_MESSAGE_ERROR,
+				_("Could not authenticate to the Exchange "
+				  "server.\nMake sure the username and "
+				  "password are correct and try again.\n\n"
+				  "You may need to specify the Windows "
+				  "domain name as part of your username "
+				  "(eg, \"MY-DOMAIN\\%s\")."),
+				  ac->username);
 		*/
 			valid = FALSE;
 			break;
@@ -1619,8 +1619,8 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		case E2K_AUTOCONFIG_NO_OWA:
 		case E2K_AUTOCONFIG_NOT_EXCHANGE:
 		/* SURF :	e_notice (NULL, GTK_MESSAGE_ERROR,
-			  	_("Could not find OWA data at the indicated URL.\n"
-			    	  "Make sure the URL is correct and try again."));
+				_("Could not find OWA data at the indicated URL.\n"
+				  "Make sure the URL is correct and try again."));
 		*/
 			valid = FALSE;
 			break;
@@ -1629,13 +1629,13 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		/* SURF :	e_notice (
 				NULL, GTK_MESSAGE_ERROR,
 				_("Ximian Connector requires access to certain "
-			  	"functionality on the Exchange Server that appears "
-			  	"to be disabled or blocked.  (This is usually "
-			  	"unintentional.)  Your Exchange Administrator will "
-			  	"need to enable this functionality in order for "
-			  	"you to be able to use Ximian Connector.\n\n"
-			  	"For information to provide to your Exchange "
-			  	"administrator, please follow the link below:\n"
+				"functionality on the Exchange Server that appears "
+				"to be disabled or blocked.  (This is usually "
+				"unintentional.)  Your Exchange Administrator will "
+				"need to enable this functionality in order for "
+				"you to be able to use Ximian Connector.\n\n"
+				"For information to provide to your Exchange "
+				"administrator, please follow the link below:\n"
 				"http://support.novell.com/cgi-bin/search/searchtid.cgi?/ximian/ximian328.html "));
 		*/
 			valid = FALSE;
@@ -1645,17 +1645,17 @@ validate (const char *owa_url, char *user, char *password, ExchangeParams *excha
 		/* SURF :	e_notice (
 				NULL, GTK_MESSAGE_ERROR,
 				_("The Exchange server URL you provided is for an "
-			  	"Exchange 5.5 Server. Ximian Connector supports "
-			  	"Microsoft Exchange 2000 and 2003 only."));
+				"Exchange 5.5 Server. Ximian Connector supports "
+				"Microsoft Exchange 2000 and 2003 only."));
 		*/
 			valid = FALSE;
 			break;
 
 		default:
 		/* SURF :	e_notice (NULL, GTK_MESSAGE_ERROR,
-			  	_("Could not configure Exchange account because "
-			    	  "an unknown error occurred. Check the URL, "
-			    	  "username, and password, and try again."));
+				_("Could not configure Exchange account because "
+				  "an unknown error occurred. Check the URL, "
+				  "username, and password, and try again."));
 		*/
 			valid = FALSE; /* FIXME return valid */
 			break;

@@ -93,8 +93,8 @@ const char    *e_destination_get_address        (const EDestination *dest);  /* 
 gboolean       e_destination_is_evolution_list   (const EDestination *dest);
 gboolean       e_destination_list_show_addresses (const EDestination *dest);
 const GList   *e_destination_list_get_dests      (const EDestination *dest);
-gboolean       e_destination_is_ignored  	 (const EDestination *dest);
-void           e_destination_set_ignored 	 (EDestination *dest, gboolean ignored);
+gboolean       e_destination_is_ignored	 (const EDestination *dest);
+void           e_destination_set_ignored	 (EDestination *dest, gboolean ignored);
 
 /* If true, they want HTML mail. */
 void           e_destination_set_html_mail_pref (EDestination *dest, gboolean flag);

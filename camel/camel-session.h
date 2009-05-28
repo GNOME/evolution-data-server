@@ -231,7 +231,7 @@ gboolean           camel_session_lookup_addressbook (CamelSession *session,
 
 void		   camel_session_forward_to         (CamelSession *session,
 						     struct _CamelFolder *folder,
-					             struct _CamelMimeMessage *message,
+						     struct _CamelMimeMessage *message,
 						     const char *address,
 						     CamelException *ex);
 

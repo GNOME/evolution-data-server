@@ -35,9 +35,9 @@
 
 G_BEGIN_DECLS
 
-#define OFFLINE_TYPE_LISTENER		        (offline_listener_get_type ())
-#define OFFLINE_LISTENER(obj)		        ((G_TYPE_CHECK_INSTANCE_CAST((obj), OFFLINE_TYPE_LISTENER, OfflineListener)))
-#define OFFLINE_LISTENER_CLASS(klass)	        (G_TYPE_CHECK_CLASS_CAST((klass), OFFLINE_TYPE_LISTENER, OfflineListenerClass))
+#define OFFLINE_TYPE_LISTENER			(offline_listener_get_type ())
+#define OFFLINE_LISTENER(obj)			((G_TYPE_CHECK_INSTANCE_CAST((obj), OFFLINE_TYPE_LISTENER, OfflineListener)))
+#define OFFLINE_LISTENER_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST((klass), OFFLINE_TYPE_LISTENER, OfflineListenerClass))
 #define OFFLINE_IS_LISTENER(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), OFFLINE_TYPE_LISTENER))
 #define OFFLINE_IS_LISTENER_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), OFFLINE_TYPE_LISTENER))
 

@@ -90,7 +90,7 @@ append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 
 	switch (filter_component->operation) {
 
-	        case E_GW_FILTER_OP_EQUAL :
+		case E_GW_FILTER_OP_EQUAL :
 			operation_name = "eq";
 			break;
 		case E_GW_FILTER_OP_NOTEQUAL :

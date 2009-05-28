@@ -96,7 +96,7 @@ backend_factory_get_type_ ## _type (GTypeModule *module)			\
 		(GInstanceInitFunc) ecb_caldav_factory_instance_init		\
 	   };									\
 										\
-	if (!type) {   								\
+	if (!type) {								\
 		type = g_type_module_register_type (module,			\
 			E_TYPE_CAL_BACKEND_FACTORY,				\
 			_name,							\

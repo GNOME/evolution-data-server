@@ -491,7 +491,7 @@ check_state (ECalBackendCalDAV *cbdav, gboolean *online)
 		*online = TRUE;
 	}
 
-	return 	GNOME_Evolution_Calendar_Success;
+	return	GNOME_Evolution_Calendar_Success;
 }
 
 /* ************************************************************************* */
@@ -779,7 +779,7 @@ out:
 
 static void
 soup_authenticate (SoupSession  *session,
-	           SoupMessage  *msg,
+		   SoupMessage  *msg,
 		   SoupAuth     *auth,
 		   gboolean      retrying,
 		   gpointer      data)
@@ -978,12 +978,12 @@ static gboolean
 check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 {
 	ECalBackendCalDAVPrivate *priv;
-	xmlOutputBufferPtr   	  buf;
+	xmlOutputBufferPtr	  buf;
 	SoupMessage              *message;
 	xmlDocPtr		  doc;
-	xmlNodePtr           	  root, node;
+	xmlNodePtr		  root, node;
 	xmlNsPtr		  ns, nsdav;
-	gboolean 		  result = TRUE;
+	gboolean		  result = TRUE;
 
 	g_return_val_if_fail (cbdav != NULL, TRUE);
 
@@ -1249,7 +1249,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 	}
 
 	soup_message_set_request (message,
-			          "text/calendar; charset=utf-8",
+				  "text/calendar; charset=utf-8",
 				  SOUP_MEMORY_COPY,
 				  object->cdata,
 				  strlen (object->cdata));
@@ -1405,7 +1405,7 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackendSyncStatus     result;
 	ECalBackend              *bkend;
-	icalcomponent 		 *icomp, *subcomp;
+	icalcomponent		 *icomp, *subcomp;
 	icalcomponent_kind        kind;
 	gboolean                  res;
 
@@ -1468,7 +1468,7 @@ synchronize_object (ECalBackendCalDAV *cbdav,
 
 #define etags_match(_tag1, _tag2) ((_tag1 == _tag2) ? TRUE :                 \
 				   g_str_equal (_tag1 != NULL ? _tag1 : "",  \
-					        _tag2 != NULL ? _tag2 : ""))
+						_tag2 != NULL ? _tag2 : ""))
 
 static void
 synchronize_cache (ECalBackendCalDAV *cbdav)
@@ -3193,25 +3193,25 @@ caldav_get_default_object (ECalBackendSync  *backend,
 {
 	ECalComponent *comp;
 
- 	comp = e_cal_component_new ();
+	comp = e_cal_component_new ();
 
- 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
- 	case ICAL_VEVENT_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
- 		break;
- 	case ICAL_VTODO_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
- 		break;
- 	case ICAL_VJOURNAL_COMPONENT:
- 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
- 		break;
- 	default:
- 		g_object_unref (comp);
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
+	case ICAL_VEVENT_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+		break;
+	case ICAL_VTODO_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
+		break;
+	case ICAL_VJOURNAL_COMPONENT:
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
+		break;
+	default:
+		g_object_unref (comp);
 		return GNOME_Evolution_Calendar_ObjectNotFound;
- 	}
+	}
 
- 	*object = e_cal_component_get_as_string (comp);
- 	g_object_unref (comp);
+	*object = e_cal_component_get_as_string (comp);
+	g_object_unref (comp);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -3364,7 +3364,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSExp 	 *sexp;
+	ECalBackendSExp	 *sexp;
 	ECalBackendCache         *bcache;
 	ECalBackend              *bkend;
 	gboolean                  do_search;
@@ -3419,7 +3419,7 @@ caldav_start_query (ECalBackend  *backend,
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSExp 	 *sexp;
+	ECalBackendSExp	 *sexp;
 	ECalBackend              *bkend;
 	gboolean                  do_search;
 	GList			 *list, *iter;
@@ -3729,9 +3729,9 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 
 	sync_class->is_read_only_sync            = caldav_is_read_only;
 	sync_class->get_cal_address_sync         = caldav_get_cal_address;
- 	sync_class->get_alarm_email_address_sync = caldav_get_alarm_email_address;
- 	sync_class->get_ldap_attribute_sync      = caldav_get_ldap_attribute;
- 	sync_class->get_static_capabilities_sync = caldav_get_static_capabilities;
+	sync_class->get_alarm_email_address_sync = caldav_get_alarm_email_address;
+	sync_class->get_ldap_attribute_sync      = caldav_get_ldap_attribute;
+	sync_class->get_static_capabilities_sync = caldav_get_static_capabilities;
 
 	sync_class->open_sync                    = caldav_do_open;
 	sync_class->remove_sync                  = caldav_remove;
@@ -3743,7 +3743,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	sync_class->discard_alarm_sync        = caldav_discard_alarm;
 	sync_class->receive_objects_sync      = caldav_receive_objects;
 	sync_class->send_objects_sync         = caldav_send_objects;
- 	sync_class->get_default_object_sync   = caldav_get_default_object;
+	sync_class->get_default_object_sync   = caldav_get_default_object;
 	sync_class->get_object_sync           = caldav_get_object;
 	sync_class->get_object_list_sync      = caldav_get_object_list;
 	sync_class->get_timezone_sync         = caldav_get_timezone;

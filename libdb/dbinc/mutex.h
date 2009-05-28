@@ -399,7 +399,7 @@ typedef unsigned char tsl_t;
 #define	MUTEX_SET(tsl) ({						\
 	int __r;							\
 	asm volatile("swpb %0, %1, [%2]"				\
-	    : "=r" (__r) 						\
+	    : "=r" (__r)						\
 	    : "0" (1), "r" (tsl)					\
 	    : "memory"							\
 	    );								\
@@ -513,19 +513,19 @@ void
 __db_mutex_tas_dummy()
 {
 	__asm__	__volatile__("		\n\
-	.globl 	___db_mutex_set		\n\
+	.globl	___db_mutex_set		\n\
 ___db_mutex_set:			\n\
 	lwarx	r5,0,r3			\n\
-	cmpwi 	r5,0			\n\
-	bne 	fail			\n\
-	addi 	r5,r5,1			\n\
-	stwcx. 	r5,0,r3			\n\
-	beq 	success			\n\
+	cmpwi	r5,0			\n\
+	bne	fail			\n\
+	addi	r5,r5,1			\n\
+	stwcx.	r5,0,r3			\n\
+	beq	success			\n\
 fail:					\n\
-	li 	r3,0			\n\
-	blr 				\n\
+	li	r3,0			\n\
+	blr				\n\
 success:				\n\
-	li 	r3,1			\n\
+	li	r3,1			\n\
 	blr");
 }
 #define	MUTEX_SET(tsl)  __db_mutex_set(tsl)

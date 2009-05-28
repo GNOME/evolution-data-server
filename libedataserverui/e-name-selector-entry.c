@@ -56,7 +56,7 @@ struct _ENameSelectorEntryPrivate
 /* 1/3 of the second to wait until invoking autocomplete lookup */
 #define AUTOCOMPLETE_TIMEOUT 333
 
-#define re_set_timeout(id,func,ptr) 			\
+#define re_set_timeout(id,func,ptr)			\
 	if (id)						\
 		g_source_remove (id);			\
 	id = g_timeout_add (AUTOCOMPLETE_TIMEOUT,	\
@@ -1319,7 +1319,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 			/* If we are at the beginning or removing junk space, let us ignore it */
 			del_space = TRUE;
 		}
-	} else 	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
+	} else	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
 		/* We could be just deleting the empty text */
 		char *c;
 
@@ -2158,11 +2158,11 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 	EDestination *destination = name_selector_entry->popup_destination;
 	int position, start, end;
 
- 	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
+	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
 
 	email_list = e_destination_get_address(destination);
- 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
- 	get_range_at_position (text, position, &start, &end);
+	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
+	get_range_at_position (text, position, &start, &end);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
@@ -2335,7 +2335,7 @@ destination_set_email (GtkWidget *item, EDestination *destination)
 	int email_num;
 	EContact *contact;
 
- 	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
+	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
 		return;
 	contact = e_destination_get_contact (destination);
 	if (!contact)
@@ -2354,11 +2354,11 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	GList        *email_list=NULL;
 	GList        *l;
 	gint          i;
-	char 	     *edit_label;
-	char 	     *cut_label;
+	char	     *edit_label;
+	char	     *cut_label;
 	char         *copy_label;
-	int 	      email_num, len;
-	GSList 	     *group = NULL;
+	int	      email_num, len;
+	GSList	     *group = NULL;
 	gboolean      is_list;
 	gboolean      show_menu = FALSE;
 

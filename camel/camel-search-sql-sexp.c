@@ -573,7 +573,7 @@ static struct {
 
 	{ "match-all", (ESExpFunc *)match_all, 1 },
 	{ "match-threads", (ESExpFunc *)match_threads, 1 },
-/* 	{ "body-contains", body_contains}, */ /* We don't store body on the db. */
+/*	{ "body-contains", body_contains}, */ /* We don't store body on the db. */
 	{ "header-contains", header_contains, 0},
 	{ "header-matches", header_matches, 0},
 	{ "header-starts-with", header_starts_with, 0},

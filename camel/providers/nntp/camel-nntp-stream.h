@@ -62,8 +62,8 @@ CamelStream     *camel_nntp_stream_new		(CamelStream *source);
 void		 camel_nntp_stream_set_mode     (CamelNNTPStream *is, camel_nntp_stream_mode_t mode);
 
 int              camel_nntp_stream_line		(CamelNNTPStream *is, unsigned char **data, unsigned int *len);
-int 		 camel_nntp_stream_gets		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
-int 		 camel_nntp_stream_getd		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
+int		 camel_nntp_stream_gets		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
+int		 camel_nntp_stream_getd		(CamelNNTPStream *is, unsigned char **start, unsigned int *len);
 
 G_END_DECLS
 

@@ -182,13 +182,13 @@ static void
 impl_Cal_getDefaultObject (PortableServer_Servant servant,
 			   CORBA_Environment *ev)
 {
- 	EDataCal *cal;
- 	EDataCalPrivate *priv;
+	EDataCal *cal;
+	EDataCalPrivate *priv;
 
- 	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
- 	priv = cal->priv;
+	cal = E_DATA_CAL (bonobo_object_from_servant (servant));
+	priv = cal->priv;
 
- 	e_cal_backend_get_default_object (priv->backend, cal);
+	e_cal_backend_get_default_object (priv->backend, cal);
 }
 
 /* Cal::getObject method */
@@ -665,9 +665,9 @@ e_data_cal_class_init (EDataCalClass *klass)
 	epv->remove = impl_Cal_remove;
 	epv->isReadOnly = impl_Cal_isReadOnly;
 	epv->getCalAddress = impl_Cal_getCalAddress;
- 	epv->getAlarmEmailAddress = impl_Cal_getAlarmEmailAddress;
- 	epv->getLdapAttribute = impl_Cal_getLdapAttribute;
- 	epv->getStaticCapabilities = impl_Cal_getStaticCapabilities;
+	epv->getAlarmEmailAddress = impl_Cal_getAlarmEmailAddress;
+	epv->getLdapAttribute = impl_Cal_getLdapAttribute;
+	epv->getStaticCapabilities = impl_Cal_getStaticCapabilities;
 	epv->setMode = impl_Cal_setMode;
 	epv->getDefaultObject = impl_Cal_getDefaultObject;
 	epv->getObject = impl_Cal_getObject;

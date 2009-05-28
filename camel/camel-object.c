@@ -39,13 +39,13 @@
 #include "camel-object.h"
 
 #define d(x)
-#define b(x) 			/* object bag */
-#define h(x) 			/* hooks */
+#define b(x)			/* object bag */
+#define h(x)			/* hooks */
 
 /* I just mashed the keyboard for these... */
-#define CAMEL_OBJECT_MAGIC           	 0x77A344ED
-#define CAMEL_OBJECT_CLASS_MAGIC     	 0xEE26A997
-#define CAMEL_INTERFACE_MAGIC     	 0xBCE137A7
+#define CAMEL_OBJECT_MAGIC		 0x77A344ED
+#define CAMEL_OBJECT_CLASS_MAGIC	 0xEE26A997
+#define CAMEL_INTERFACE_MAGIC	 0xBCE137A7
 #define CAMEL_OBJECT_FINALISED_MAGIC       0x84AC365F
 #define CAMEL_OBJECT_CLASS_FINALISED_MAGIC 0x7621ABCD
 #define CAMEL_INTERFACE_FINALISED_MAGIC    0x7CB2FE71
@@ -392,7 +392,7 @@ done:
    Version 0 of the file:
 
    version:uint32 = 0
-   count:uint32  				-- count of meta-data items
+   count:uint32				-- count of meta-data items
    ( name:string value:string ) *count		-- meta-data items
 
    Version 1 of the file adds:

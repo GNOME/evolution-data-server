@@ -594,10 +594,10 @@ make_valid_utf8 (const gchar *name)
 	gint remaining_bytes, valid_bytes;
 
 	string = NULL;
-  	remainder = name;
+	remainder = name;
 	remaining_bytes = strlen (name);
 
- 	while (remaining_bytes != 0) {
+	while (remaining_bytes != 0) {
 		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
 			break;
 	      valid_bytes = invalid - remainder;
@@ -606,15 +606,15 @@ make_valid_utf8 (const gchar *name)
 			string = g_string_sized_new (remaining_bytes);
 
 		g_string_append_len (string, remainder, valid_bytes);
-	        /* append U+FFFD REPLACEMENT CHARACTER */
-	        g_string_append (string, "\357\277\275");
+		/* append U+FFFD REPLACEMENT CHARACTER */
+		g_string_append (string, "\357\277\275");
 
-	        remaining_bytes -= valid_bytes + 1;
-	        remainder = invalid + 1;
+		remaining_bytes -= valid_bytes + 1;
+		remainder = invalid + 1;
 	}
 
-  	if (string == NULL)
-    		return g_strdup (name);
+	if (string == NULL)
+		return g_strdup (name);
 
 	g_string_append (string, remainder);
 

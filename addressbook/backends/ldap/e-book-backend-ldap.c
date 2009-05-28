@@ -168,7 +168,7 @@ struct _EBookBackendLDAPPrivate {
 	char     *schema_dn;   /* the base dn for schema information */
 	gchar    *ldap_rootdn; /* the base dn of our searches */
 	int      ldap_scope;   /* the scope used for searches */
-	gchar 	*ldap_search_filter;
+	gchar	*ldap_search_filter;
 	int      ldap_limit;   /* the search limit */
 	int      ldap_timeout; /* the search timeout */
 
@@ -1405,7 +1405,7 @@ add_objectclass_mod (EBookBackendLDAP *bl, GPtrArray *mod_array, GList *existing
 {
 #define FIND_INSERT(oc) \
 	if (!g_list_find_custom (existing_objectclasses, (oc), (GCompareFunc)g_ascii_strcasecmp)) \
-	         g_ptr_array_add (objectclasses, g_strdup ((oc)))
+		 g_ptr_array_add (objectclasses, g_strdup ((oc)))
 #define INSERT(oc) \
 		 g_ptr_array_add (objectclasses, g_strdup ((oc)))
 
@@ -3113,7 +3113,7 @@ static void
 address_populate(EContact * card, char **values, EContactField field, EContactField other_field)
 {
 	if (values[0]) {
-        	EContactAddress *contact_addr;
+		EContactAddress *contact_addr;
 		char *temp = g_strdup(values[0]);
 		char *i;
 		for (i = temp; *i != '\0'; i++) {
@@ -3123,10 +3123,10 @@ address_populate(EContact * card, char **values, EContactField field, EContactFi
 		}
 		e_contact_set(card, field, temp);
 
-        	contact_addr = getormakeEContactAddress(card, other_field);
-	        contact_addr->street = g_strdup (temp);
-	        e_contact_set (card, other_field, contact_addr);
-	        e_contact_address_free (contact_addr);
+		contact_addr = getormakeEContactAddress(card, other_field);
+		contact_addr->street = g_strdup (temp);
+		e_contact_set (card, other_field, contact_addr);
+		e_contact_address_free (contact_addr);
 
 		g_free(temp);
 	}
@@ -4019,15 +4019,15 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 								do {
 									g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 									if ((ldap_error = ldap_search_ext_s (bl->priv->ldap,
-						    						        values[j],
-						    						        LDAP_SCOPE_BASE,
-						    						        NULL,
-						    						        grpattrs, 0,
-												        NULL,
-												        NULL,
-												        NULL,
-												        view_limit,
-											    	        &result)) == LDAP_SUCCESS) {
+													values[j],
+													LDAP_SCOPE_BASE,
+													NULL,
+													grpattrs, 0,
+													NULL,
+													NULL,
+													NULL,
+													view_limit,
+													&result)) == LDAP_SUCCESS) {
 										/* find the e-mail ids of members */
 										cn_values = ldap_get_values (bl->priv->ldap, result, "cn");
 										email_values = ldap_get_values (bl->priv->ldap, result, "mail");
@@ -4061,9 +4061,9 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 							info->populate_contact_func (contact, member_info);
 
 							for (j = 0; j < count; j++) {
-                						g_free (*(member_info + j));
-        						}
-        						g_free (member_info);
+								g_free (*(member_info + j));
+							}
+							g_free (member_info);
 						}
 
 						ldap_value_free (values);
@@ -5229,16 +5229,16 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 
 	priv->supported_fields       = NULL;
 	priv->supported_auth_methods = NULL;
-	priv->ldap_limit       	     = 100;
-	priv->id_to_op         	     = g_hash_table_new (g_int_hash, g_int_equal);
-	priv->poll_timeout     	     = -1;
+	priv->ldap_limit	     = 100;
+	priv->id_to_op		     = g_hash_table_new (g_int_hash, g_int_equal);
+	priv->poll_timeout	     = -1;
 	priv->marked_for_offline     = FALSE;
 	priv->mode                   = GNOME_Evolution_Addressbook_MODE_REMOTE;
-	priv->is_summary_ready 	     = FALSE;
-	priv->reserved1 	     = NULL;
-	priv->reserved2 	     = NULL;
-	priv->reserved3 	     = NULL;
-	priv->reserved4 	     = NULL;
+	priv->is_summary_ready	     = FALSE;
+	priv->reserved1	     = NULL;
+	priv->reserved2	     = NULL;
+	priv->reserved3	     = NULL;
+	priv->reserved4	     = NULL;
 	g_static_rec_mutex_init (&priv->op_hash_mutex);
 
 	backend->priv = priv;

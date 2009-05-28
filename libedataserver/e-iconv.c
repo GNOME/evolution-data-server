@@ -144,8 +144,8 @@ static const struct {
 	{ "gbk-0",           "GBK"        },
 
 	/* Japanese charsets */
-	{ "eucjp-0",         "eucJP"  	  },  /* should this map to "EUC-JP" instead? */
-	{ "ujis-0",          "ujis"  	  },  /* we might want to map this to EUC-JP */
+	{ "eucjp-0",         "eucJP"	  },  /* should this map to "EUC-JP" instead? */
+	{ "ujis-0",          "ujis"	  },  /* we might want to map this to EUC-JP */
 	{ "jisx0208.1983-0", "SJIS"       },
 	{ "jisx0212.1990-0", "SJIS"       },
 	{ "pck",	     "SJIS"       },

@@ -1642,7 +1642,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 						CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 						if ((cache_stream = camel_data_cache_add (gw_folder->cache, "cache", id, NULL))) {
-								if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg, 	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
+								if (camel_data_wrapper_write_to_stream ((CamelDataWrapper *) mail_msg,	cache_stream) == -1 || camel_stream_flush (cache_stream) == -1)
 										camel_data_cache_remove (gw_folder->cache, "cache", id, NULL);
 								camel_object_unref (cache_stream);
 						}

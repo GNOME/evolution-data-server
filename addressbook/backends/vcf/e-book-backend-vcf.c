@@ -560,7 +560,7 @@ e_book_backend_vcf_get_required_fields (EBookBackendSync *backend,
 	GList *fields = NULL;
 
 	fields = g_list_append (fields , g_strdup(e_contact_field_name (E_CONTACT_FILE_AS)));
-       	*fields_out = fields;
+	*fields_out = fields;
 	return GNOME_Evolution_Addressbook_Success;
 }
 

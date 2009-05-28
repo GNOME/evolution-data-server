@@ -123,7 +123,7 @@ e_cal_backend_http_finalize (GObject *object)
 	}
 
 	if (priv->uri) {
-	        g_free (priv->uri);
+		g_free (priv->uri);
 		priv->uri = NULL;
 	}
 
@@ -187,9 +187,9 @@ e_cal_backend_http_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal, 
 static ECalBackendSyncStatus
 e_cal_backend_http_get_alarm_email_address (ECalBackendSync *backend, EDataCal *cal, char **address)
 {
- 	/* A HTTP backend has no particular email address associated
- 	 * with it (although that would be a useful feature some day).
- 	 */
+	/* A HTTP backend has no particular email address associated
+	 * with it (although that would be a useful feature some day).
+	 */
 	*address = NULL;
 
 	return GNOME_Evolution_Calendar_Success;
@@ -384,7 +384,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 
 static void
 soup_authenticate (SoupSession  *session,
-	           SoupMessage  *msg,
+		   SoupMessage  *msg,
 		   SoupAuth     *auth,
 		   gboolean      retrying,
 		   gpointer      data)
@@ -430,7 +430,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 		const char *secure_prop = e_source_get_property (source, "use_ssl");
 
 		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
-		                                   (secure_prop && g_str_equal(secure_prop, "1")));
+						   (secure_prop && g_str_equal(secure_prop, "1")));
 	}
 
 	/* create the Soup session if not already created */
@@ -1202,7 +1202,7 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const char *tzid
 	priv = cbhttp->priv;
 
 	if (!strcmp (tzid, "UTC"))
-	        zone = icaltimezone_get_utc_timezone ();
+		zone = icaltimezone_get_utc_timezone ();
 	else {
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
@@ -1248,9 +1248,9 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 
 	sync_class->is_read_only_sync = e_cal_backend_http_is_read_only;
 	sync_class->get_cal_address_sync = e_cal_backend_http_get_cal_address;
- 	sync_class->get_alarm_email_address_sync = e_cal_backend_http_get_alarm_email_address;
- 	sync_class->get_ldap_attribute_sync = e_cal_backend_http_get_ldap_attribute;
- 	sync_class->get_static_capabilities_sync = e_cal_backend_http_get_static_capabilities;
+	sync_class->get_alarm_email_address_sync = e_cal_backend_http_get_alarm_email_address;
+	sync_class->get_ldap_attribute_sync = e_cal_backend_http_get_ldap_attribute;
+	sync_class->get_static_capabilities_sync = e_cal_backend_http_get_static_capabilities;
 	sync_class->open_sync = e_cal_backend_http_open;
 	sync_class->remove_sync = e_cal_backend_http_remove;
 	sync_class->create_object_sync = e_cal_backend_http_create_object;
@@ -1259,7 +1259,7 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	sync_class->discard_alarm_sync = e_cal_backend_http_discard_alarm;
 	sync_class->receive_objects_sync = e_cal_backend_http_receive_objects;
 	sync_class->send_objects_sync = e_cal_backend_http_send_objects;
- 	sync_class->get_default_object_sync = e_cal_backend_http_get_default_object;
+	sync_class->get_default_object_sync = e_cal_backend_http_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_http_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_http_get_object_list;
 	sync_class->get_timezone_sync = e_cal_backend_http_get_timezone;

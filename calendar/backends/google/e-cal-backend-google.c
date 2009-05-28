@@ -371,7 +371,7 @@ e_cal_backend_google_get_default_object (ECalBackendSync *backend, EDataCal *cal
         comp = e_cal_component_new ();
 	switch (e_cal_backend_get_kind (E_CAL_BACKEND (backend))) {
 	case ICAL_VEVENT_COMPONENT:
-        	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
 		break;
 	case ICAL_VTODO_COMPONENT:
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
@@ -428,7 +428,7 @@ e_cal_backend_google_set_mode (ECalBackend *backend, CalMode mode)
 
 	if (!priv->mode && priv->mode == mode) {
 		e_cal_backend_notify_mode (backend, GNOME_Evolution_Calendar_CalListener_MODE_SET,
-				  	   cal_mode_to_corba (mode));
+					   cal_mode_to_corba (mode));
 		return;
 	}
 
@@ -1036,7 +1036,7 @@ e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
 			return GNOME_Evolution_Calendar_InvalidObject;
 		}
 
-	        gdata_service_delete_entry (GDATA_SERVICE(priv->service), entry, NULL);
+		gdata_service_delete_entry (GDATA_SERVICE(priv->service), entry, NULL);
 		*object = NULL;
 		*old_object = strdup (calobj);
 	}
@@ -1218,7 +1218,7 @@ e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean onl
 	filename = g_build_filename (g_get_home_dir (),
 				     ".evolution/cache", source,
 				     mangled_uri,
-			             NULL);
+				     NULL);
 
 	g_free (mangled_uri);
 	priv->local_attachments_store = g_filename_to_uri (filename, NULL, NULL);

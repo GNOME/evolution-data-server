@@ -88,7 +88,7 @@ static void append_message (CamelFolder *folder, CamelMimeMessage *message,
 			    CamelException *ex);
 
 static GPtrArray        *get_uids            (CamelFolder *folder);
-static GPtrArray 	*get_uncached_uids   (CamelFolder *, GPtrArray * uids, CamelException *);
+static GPtrArray	*get_uncached_uids   (CamelFolder *, GPtrArray * uids, CamelException *);
 static void              free_uids           (CamelFolder *folder,
 					      GPtrArray *array);
 static gint cmp_uids (CamelFolder *folder, const char *uid1, const char *uid2);
@@ -2168,7 +2168,7 @@ folder_changed (CamelObject *obj, gpointer event_data)
 		msg->driver = driver;
 		camel_exception_init(&msg->ex);
 		camel_session_thread_queue(session, &msg->msg, 0);
-	        return FALSE;
+		return FALSE;
 	}
 
 	return TRUE;

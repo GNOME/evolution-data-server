@@ -3,7 +3,7 @@
  *  Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  *  Authors:
- * 	parthasrathi susarla <sparthasrathi@novell.com>
+ *	parthasrathi susarla <sparthasrathi@novell.com>
  * Based on the IMAP summary class implementation by:
  *    Michael Zucchi <notzed@ximian.com>
  *    Dan Winship <danw@ximian.com>

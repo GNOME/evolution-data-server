@@ -1091,7 +1091,7 @@ update_capslock_state (gpointer widget, gpointer event, GtkWidget *label)
 	/* The space acts as a vertical placeholder. */
 	markup = g_markup_printf_escaped (
 		"<small>%s</small>", (mask & GDK_LOCK_MASK) ?
-	 	 _("You have the Caps Lock key on.") : " ");
+		 _("You have the Caps Lock key on.") : " ");
 	gtk_label_set_markup (GTK_LABEL (label), markup);
 	g_free (markup);
 

@@ -844,7 +844,7 @@ e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *
 	icaltimezone *default_zone;
 	const char *user_email;
 
-   	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_id (item, e_cal_component_get_gw_id (comp));
@@ -1690,7 +1690,7 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
                 return status;
         }
 
-       	/* if status is OK - parse result, return the list */
+	/* if status is OK - parse result, return the list */
         param = soup_soap_response_get_first_parameter_by_name (response, "freeBusySessionId");
         if (!param) {
                 g_object_unref (response);
@@ -1717,7 +1717,7 @@ close_freebusy_session (EGwConnection *cnc, const char *session)
 	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
 					    e_gw_connection_get_session_id (cnc),
 					    "closeFreeBusySessionRequest");
-       	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
+	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
         e_gw_message_write_footer (msg);
 
 	/* send message to server */
@@ -1762,7 +1762,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 	msg = e_gw_message_new_with_header (e_gw_connection_get_uri (cnc),
 					    e_gw_connection_get_session_id (cnc),
 					    "getFreeBusyRequest");
-       	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
+	e_gw_message_write_string_parameter (msg, "freeBusySessionId", NULL, session);
         e_gw_message_write_footer (msg);
 
 	/* send message to server */
@@ -2220,9 +2220,9 @@ e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const char *e
 
 		prop = icalcomponent_get_next_property (e_cal_component_get_icalcomponent (comp),
 							ICAL_X_PROPERTY);
- 	}
+	}
 
- 	return FALSE;
+	return FALSE;
 
 }
 

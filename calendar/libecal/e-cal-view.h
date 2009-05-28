@@ -38,7 +38,7 @@ typedef struct _ECalViewPrivate ECalViewPrivate;
 struct _ECal;
 
 struct _ECalView {
- 	GObject object;
+	GObject object;
 
 	/*< private >*/
 	ECalViewPrivate *priv;

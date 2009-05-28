@@ -49,9 +49,9 @@ typedef struct  XCBackendComponent               XCBackendComponent;
 typedef struct  XCBackendComponentPrivate        XCBackendComponentPrivate;
 typedef struct  XCBackendComponentClass          XCBackendComponentClass;
 
-typedef struct  XCBackendView               	 XCBackendView;
-typedef struct  XCBackendViewPrivate        	 XCBackendViewPrivate;
-typedef struct  XCBackendViewClass          	 XCBackendViewClass;
+typedef struct  XCBackendView		 XCBackendView;
+typedef struct  XCBackendViewPrivate		 XCBackendViewPrivate;
+typedef struct  XCBackendViewClass		 XCBackendViewClass;
 
 typedef enum {
 	EXCHANGE_HIERARCHY_PERSONAL,
