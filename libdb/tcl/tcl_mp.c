@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,16 +25,16 @@ static const gchar revid[] = "$Id$";
 /*
  * Prototypes for procedures defined later in this file:
  */
-static gint      mp_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
-static gint      pg_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
-static gint      tcl_MpGet __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
+static int      mp_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+static int      pg_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+static int      tcl_MpGet __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
     DB_MPOOLFILE *, DBTCL_INFO *));
-static gint      tcl_Pg __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
-    gpointer , DB_MPOOLFILE *, DBTCL_INFO *, int));
-static gint      tcl_PgInit __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
-    gpointer , DBTCL_INFO *));
-static gint      tcl_PgIsset __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
-    gpointer , DBTCL_INFO *));
+static int      tcl_Pg __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
+    void *, DB_MPOOLFILE *, DBTCL_INFO *, int));
+static int      tcl_PgInit __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
+    void *, DBTCL_INFO *));
+static int      tcl_PgIsset __P((Tcl_Interp *, int, Tcl_Obj * CONST*,
+    void *, DBTCL_INFO *));
 
 /*
  * _MpInfoDelete --
@@ -67,18 +67,18 @@ _MpInfoDelete(interp, mpip)
 /*
  * tcl_MpSync --
  *
- * PUBLIC: gint tcl_MpSync __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+ * PUBLIC: int tcl_MpSync __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_MpSync(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 
 	DB_LSN lsn, *lsnp;
-	gint result, ret;
+	int result, ret;
 
 	result = TCL_OK;
 	lsnp = NULL;
@@ -105,21 +105,21 @@ tcl_MpSync(interp, objc, objv, envp)
 /*
  * tcl_MpTrickle --
  *
- * PUBLIC: gint tcl_MpTrickle __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_MpTrickle __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_MpTrickle(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 
-	gint pages;
-	gint percent;
-	gint result;
-	gint ret;
+	int pages;
+	int percent;
+	int result;
+	int ret;
 	Tcl_Obj *res;
 
 	result = TCL_OK;
@@ -150,18 +150,18 @@ tcl_MpTrickle(interp, objc, objv, envp)
 /*
  * tcl_Mp --
  *
- * PUBLIC: gint tcl_Mp __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_Mp __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *, DBTCL_INFO *));
  */
-gint
+int
 tcl_Mp(interp, objc, objv, envp, envip)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 	DBTCL_INFO *envip;		/* Info pointer */
 {
-	static gchar *mpopts[] = {
+	static char *mpopts[] = {
 		"-create",
 		"-mode",
 		"-nommap",
@@ -180,8 +180,8 @@ tcl_Mp(interp, objc, objv, envp, envip)
 	DB_MPOOLFILE *mpf;
 	Tcl_Obj *res;
 	u_int32_t flag;
-	gint i, pgsize, mode, optindex, result, ret;
-	gchar *file, newname[MSG_SIZE];
+	int i, pgsize, mode, optindex, result, ret;
+	char *file, newname[MSG_SIZE];
 
 	result = TCL_OK;
 	i = 2;
@@ -308,19 +308,19 @@ error:
 /*
  * tcl_MpStat --
  *
- * PUBLIC: gint tcl_MpStat __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
+ * PUBLIC: int tcl_MpStat __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_MpStat(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	DB_MPOOL_STAT *sp;
 	DB_MPOOL_FSTAT **fsp, **savefsp;
-	gint result;
-	gint ret;
+	int result;
+	int ret;
 	Tcl_Obj *res;
 	Tcl_Obj *res1;
 
@@ -427,10 +427,10 @@ static int
 mp_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Mp handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static gchar *mpcmds[] = {
+	static char *mpcmds[] = {
 		"close",
 		"fsync",
 		"get",
@@ -442,10 +442,10 @@ mp_Cmd(clientData, interp, objc, objv)
 		MPGET
 	};
 	DB_MPOOLFILE *mp;
-	gint cmdindex, length, result, ret;
+	int cmdindex, length, result, ret;
 	DBTCL_INFO *mpip;
 	Tcl_Obj *res;
-	gchar *obj_name;
+	char *obj_name;
 
 	Tcl_ResetResult(interp);
 	mp = (DB_MPOOLFILE *)clientData;
@@ -513,12 +513,12 @@ mp_Cmd(clientData, interp, objc, objv)
 static int
 tcl_MpGet(interp, objc, objv, mp, mpip)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_MPOOLFILE *mp;		/* mp pointer */
 	DBTCL_INFO *mpip;		/* mp info pointer */
 {
-	static gchar *mpget[] = {
+	static char *mpget[] = {
 		"-create",
 		"-last",
 		"-new",
@@ -534,9 +534,9 @@ tcl_MpGet(interp, objc, objv, mp, mpip)
 	Tcl_Obj *res;
 	db_pgno_t pgno;
 	u_int32_t flag;
-	gint i, ipgno, optindex, result, ret;
-	gchar newname[MSG_SIZE];
-	gpointer page;
+	int i, ipgno, optindex, result, ret;
+	char newname[MSG_SIZE];
+	void *page;
 
 	result = TCL_OK;
 	memset(newname, 0, MSG_SIZE);
@@ -626,10 +626,10 @@ static int
 pg_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Page handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static gchar *pgcmds[] = {
+	static char *pgcmds[] = {
 		"init",
 		"is_setto",
 		"pgnum",
@@ -647,14 +647,14 @@ pg_Cmd(clientData, interp, objc, objv)
 		PGSET
 	};
 	DB_MPOOLFILE *mp;
-	gint cmdindex, length, result;
-	gchar *obj_name;
-	gpointer page;
+	int cmdindex, length, result;
+	char *obj_name;
+	void *page;
 	DBTCL_INFO *pgip;
 	Tcl_Obj *res;
 
 	Tcl_ResetResult(interp);
-	page = (gpointer)clientData;
+	page = (void *)clientData;
 	obj_name = Tcl_GetStringFromObj(objv[0], &length);
 	pgip = _NameToInfo(obj_name);
 	mp = NAME_TO_MP(pgip->i_parent->i_name);
@@ -713,14 +713,14 @@ pg_Cmd(clientData, interp, objc, objv)
 static int
 tcl_Pg(interp, objc, objv, page, mp, pgip, putop)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
-	gpointer page;			/* Page pointer */
+	void *page;			/* Page pointer */
 	DB_MPOOLFILE *mp;		/* Mpool pointer */
 	DBTCL_INFO *pgip;		/* Info pointer */
-	gint putop;			/* Operation */
+	int putop;			/* Operation */
 {
-	static gchar *pgopt[] = {
+	static char *pgopt[] = {
 		"-clean",
 		"-dirty",
 		"-discard",
@@ -732,7 +732,7 @@ tcl_Pg(interp, objc, objv, page, mp, pgip, putop)
 		PGDISCARD
 	};
 	u_int32_t flag;
-	gint i, optindex, result, ret;
+	int i, optindex, result, ret;
 
 	result = TCL_OK;
 	i = 2;
@@ -773,15 +773,15 @@ tcl_Pg(interp, objc, objv, page, mp, pgip, putop)
 static int
 tcl_PgInit(interp, objc, objv, page, pgip)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
-	gpointer page;			/* Page pointer */
+	void *page;			/* Page pointer */
 	DBTCL_INFO *pgip;		/* Info pointer */
 {
 	Tcl_Obj *res;
 	size_t pgsz;
 	long *p, *endp, newval;
-	gint length, result;
+	int length, result;
 	u_char *s;
 
 	result = TCL_OK;
@@ -812,15 +812,15 @@ tcl_PgInit(interp, objc, objv, page, pgip)
 static int
 tcl_PgIsset(interp, objc, objv, page, pgip)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
-	gpointer page;			/* Page pointer */
+	void *page;			/* Page pointer */
 	DBTCL_INFO *pgip;		/* Info pointer */
 {
 	Tcl_Obj *res;
 	size_t pgsz;
 	long *p, *endp, newval;
-	gint length, result;
+	int length, result;
 	u_char *s;
 
 	result = TCL_OK;

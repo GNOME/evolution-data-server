@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -20,29 +20,29 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/btree.h"
 #include "dbinc/qam.h"
 
-static gint __bam_set_bt_compare
-	       __P((DB *, gint (*)(DB *, const DBT *, const DBT *)));
-static gint __bam_set_bt_maxkey __P((DB *, u_int32_t));
-static gint __bam_set_bt_minkey __P((DB *, u_int32_t));
-static gint __bam_set_bt_prefix
+static int __bam_set_bt_compare
+	       __P((DB *, int (*)(DB *, const DBT *, const DBT *)));
+static int __bam_set_bt_maxkey __P((DB *, u_int32_t));
+static int __bam_set_bt_minkey __P((DB *, u_int32_t));
+static int __bam_set_bt_prefix
 	       __P((DB *, size_t(*)(DB *, const DBT *, const DBT *)));
-static gint __ram_set_re_delim __P((DB *, int));
-static gint __ram_set_re_len __P((DB *, u_int32_t));
-static gint __ram_set_re_pad __P((DB *, int));
-static gint __ram_set_re_source __P((DB *, const gchar *));
+static int __ram_set_re_delim __P((DB *, int));
+static int __ram_set_re_len __P((DB *, u_int32_t));
+static int __ram_set_re_pad __P((DB *, int));
+static int __ram_set_re_source __P((DB *, const char *));
 
 /*
  * __bam_db_create --
  *	Btree specific initialization of the DB structure.
  *
- * PUBLIC: gint __bam_db_create __P((DB *));
+ * PUBLIC: int __bam_db_create __P((DB *));
  */
-gint
+int
 __bam_db_create(dbp)
 	DB *dbp;
 {
 	BTREE *t;
-	gint ret;
+	int ret;
 
 	/* Allocate and initialize the private btree structure. */
 	if ((ret = __os_calloc(dbp->dbenv, 1, sizeof(BTREE), &t)) != 0)
@@ -74,9 +74,9 @@ __bam_db_create(dbp)
  * __bam_db_close --
  *	Btree specific discard of the DB structure.
  *
- * PUBLIC: gint __bam_db_close __P((DB *));
+ * PUBLIC: int __bam_db_close __P((DB *));
  */
-gint
+int
 __bam_db_close(dbp)
 	DB *dbp;
 {
@@ -103,9 +103,9 @@ __bam_db_close(dbp)
  * __bam_set_flags --
  *	Set Btree specific flags.
  *
- * PUBLIC: gint __bam_set_flags __P((DB *, u_int32_t *flagsp));
+ * PUBLIC: int __bam_set_flags __P((DB *, u_int32_t *flagsp));
  */
-gint
+int
 __bam_set_flags(dbp, flagsp)
 	DB *dbp;
 	u_int32_t *flagsp;
@@ -170,7 +170,7 @@ incompat:
 static int
 __bam_set_bt_compare(dbp, func)
 	DB *dbp;
-	gint (*func) __P((DB *, const DBT *, const DBT *));
+	int (*func) __P((DB *, const DBT *, const DBT *));
 {
 	BTREE *t;
 
@@ -264,9 +264,9 @@ __bam_set_bt_prefix(dbp, func)
  * __ram_set_flags --
  *	Set Recno specific flags.
  *
- * PUBLIC: gint __ram_set_flags __P((DB *, u_int32_t *flagsp));
+ * PUBLIC: int __ram_set_flags __P((DB *, u_int32_t *flagsp));
  */
-gint
+int
 __ram_set_flags(dbp, flagsp)
 	DB *dbp;
 	u_int32_t *flagsp;
@@ -301,7 +301,7 @@ __ram_set_flags(dbp, flagsp)
 static int
 __ram_set_re_delim(dbp, re_delim)
 	DB *dbp;
-	gint re_delim;
+	int re_delim;
 {
 	BTREE *t;
 
@@ -349,7 +349,7 @@ __ram_set_re_len(dbp, re_len)
 static int
 __ram_set_re_pad(dbp, re_pad)
 	DB *dbp;
-	gint re_pad;
+	int re_pad;
 {
 	BTREE *t;
 	QUEUE *q;
@@ -375,7 +375,7 @@ __ram_set_re_pad(dbp, re_pad)
 static int
 __ram_set_re_source(dbp, re_source)
 	DB *dbp;
-	const gchar *re_source;
+	const char *re_source;
 {
 	BTREE *t;
 

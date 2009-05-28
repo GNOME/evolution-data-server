@@ -44,19 +44,19 @@ class _exported DbException
 {
 public:
 	virtual ~DbException();
-	DbException(gint err);
-	DbException(const gchar *description);
-	DbException(const gchar *prefix, gint err);
-	DbException(const gchar *prefix1, const gchar *prefix2, gint err);
-	gint get_errno() const;
-	virtual const gchar *what() const;
+	DbException(int err);
+	DbException(const char *description);
+	DbException(const char *prefix, int err);
+	DbException(const char *prefix1, const char *prefix2, int err);
+	int get_errno() const;
+	virtual const char *what() const;
 
 	DbException(const DbException &);
 	DbException &operator = (const DbException &);
 
 private:
-	gchar *what_;
-	gint err_;                   // errno
+	char *what_;
+	int err_;                   // errno
 };
 
 //
@@ -67,7 +67,7 @@ class _exported DbDeadlockException : public DbException
 {
 public:
 	virtual ~DbDeadlockException();
-	DbDeadlockException(const gchar *description);
+	DbDeadlockException(const char *description);
 
 	DbDeadlockException(const DbDeadlockException &);
 	DbDeadlockException &operator = (const DbDeadlockException &);
@@ -83,8 +83,8 @@ class _exported DbLockNotGrantedException : public DbException
 {
 public:
 	virtual ~DbLockNotGrantedException();
-	DbLockNotGrantedException(const gchar *prefix, db_lockop_t op,
-	    db_lockmode_t mode, const Dbt *obj, const DbLock lock, gint index);
+	DbLockNotGrantedException(const char *prefix, db_lockop_t op,
+	    db_lockmode_t mode, const Dbt *obj, const DbLock lock, int index);
 	DbLockNotGrantedException(const DbLockNotGrantedException &);
 	DbLockNotGrantedException &operator =
 	    (const DbLockNotGrantedException &);
@@ -93,14 +93,14 @@ public:
 	db_lockmode_t get_mode() const;
 	const Dbt* get_obj() const;
 	DbLock *get_lock() const;
-	gint get_index() const;
+	int get_index() const;
 
 private:
 	db_lockop_t op_;
 	db_lockmode_t mode_;
 	const Dbt *obj_;
 	DbLock *lock_;
-	gint index_;
+	int index_;
 };
 
 //
@@ -112,9 +112,9 @@ class _exported DbMemoryException : public DbException
 public:
 	virtual ~DbMemoryException();
 	DbMemoryException(Dbt *dbt);
-	DbMemoryException(const gchar *description);
-	DbMemoryException(const gchar *prefix, Dbt *dbt);
-	DbMemoryException(const gchar *prefix1, const gchar *prefix2, Dbt *dbt);
+	DbMemoryException(const char *description);
+	DbMemoryException(const char *prefix, Dbt *dbt);
+	DbMemoryException(const char *prefix1, const char *prefix2, Dbt *dbt);
 	Dbt *get_dbt() const;
 
 	DbMemoryException(const DbMemoryException &);
@@ -132,7 +132,7 @@ class _exported DbRunRecoveryException : public DbException
 {
 public:
 	virtual ~DbRunRecoveryException();
-	DbRunRecoveryException(const gchar *description);
+	DbRunRecoveryException(const char *description);
 
 	DbRunRecoveryException(const DbRunRecoveryException &);
 	DbRunRecoveryException &operator = (const DbRunRecoveryException &);

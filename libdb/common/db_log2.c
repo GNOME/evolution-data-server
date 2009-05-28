@@ -39,7 +39,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES

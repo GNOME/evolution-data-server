@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #if CONFIG_TEST
@@ -31,15 +31,15 @@ static const gchar revid[] = "$Id$";
  * bdb_HCommand --
  *	Implements h* functions.
  *
- * PUBLIC: gint bdb_HCommand __P((Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: int bdb_HCommand __P((Tcl_Interp *, int, Tcl_Obj * CONST*));
  */
-gint
+int
 bdb_HCommand(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static gchar *hcmds[] = {
+	static char *hcmds[] = {
 		"hcreate",
 		"hdestroy",
 		"hsearch",
@@ -50,7 +50,7 @@ bdb_HCommand(interp, objc, objv)
 		HHDESTROY,
 		HHSEARCH
 	};
-	static gchar *srchacts[] = {
+	static char *srchacts[] = {
 		"enter",
 		"find",
 		NULL
@@ -61,7 +61,7 @@ bdb_HCommand(interp, objc, objv)
 	};
 	ENTRY item, *hres;
 	ACTION action;
-	gint actindex, cmdindex, nelem, result, ret;
+	int actindex, cmdindex, nelem, result, ret;
 	Tcl_Obj *res;
 
 	result = TCL_OK;
@@ -118,7 +118,7 @@ bdb_HCommand(interp, objc, objv)
 		if (hres == NULL)
 			Tcl_SetResult(interp, "-1", TCL_STATIC);
 		else if (action == FIND)
-			Tcl_SetResult(interp, (gchar *)hres->data, TCL_STATIC);
+			Tcl_SetResult(interp, (char *)hres->data, TCL_STATIC);
 		else
 			/* action is ENTER */
 			Tcl_SetResult(interp, "0", TCL_STATIC);
@@ -152,17 +152,17 @@ bdb_HCommand(interp, objc, objv)
  *	Opens an ndbm database.
  *
  * PUBLIC: #if DB_DBM_HSEARCH != 0
- * PUBLIC: gint bdb_NdbmOpen __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBM **));
+ * PUBLIC: int bdb_NdbmOpen __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBM **));
  * PUBLIC: #endif
  */
-gint
+int
 bdb_NdbmOpen(interp, objc, objv, dbpp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DBM **dbpp;			/* Dbm pointer */
 {
-	static gchar *ndbopen[] = {
+	static char *ndbopen[] = {
 		"-create",
 		"-mode",
 		"-rdonly",
@@ -179,8 +179,8 @@ bdb_NdbmOpen(interp, objc, objv, dbpp)
 	};
 
 	u_int32_t open_flags;
-	gint endarg, i, mode, optindex, read_only, result, ret;
-	gchar *arg, *db;
+	int endarg, i, mode, optindex, read_only, result, ret;
+	char *arg, *db;
 
 	result = TCL_OK;
 	open_flags = 0;
@@ -295,19 +295,19 @@ error:
  *	Implements "dbm" commands.
  *
  * PUBLIC: #if DB_DBM_HSEARCH != 0
- * PUBLIC: gint bdb_DbmCommand
+ * PUBLIC: int bdb_DbmCommand
  * PUBLIC:     __P((Tcl_Interp *, int, Tcl_Obj * CONST*, int, DBM *));
  * PUBLIC: #endif
  */
-gint
+int
 bdb_DbmCommand(interp, objc, objv, flag, dbm)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
-	gint flag;			/* Which db interface */
+	int flag;			/* Which db interface */
 	DBM *dbm;			/* DBM pointer */
 {
-	static gchar *dbmcmds[] = {
+	static char *dbmcmds[] = {
 		"dbmclose",
 		"dbminit",
 		"delete",
@@ -326,7 +326,7 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 		DBMNEXT,
 		DBMSTORE
 	};
-	static gchar *stflag[] = {
+	static char *stflag[] = {
 		"insert",	"replace",
 		NULL
 	};
@@ -334,10 +334,10 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 		STINSERT,	STREPLACE
 	};
 	datum key, data;
-	gpointer dtmp, *ktmp;
+	void *dtmp, *ktmp;
 	u_int32_t size;
-	gint cmdindex, freedata, freekey, stindex, result, ret;
-	gchar *name, *t;
+	int cmdindex, freedata, freekey, stindex, result, ret;
+	char *name, *t;
 
 	result = TCL_OK;
 	freekey = freedata = 0;
@@ -402,7 +402,7 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 			goto out;
 		}
 		key.dsize = size;
-		key.dptr = (gchar *)ktmp;
+		key.dptr = (char *)ktmp;
 		_debug_check();
 		if (flag == DBTCL_DBM)
 			data = fetch(key);
@@ -443,7 +443,7 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 			goto out;
 		}
 		key.dsize = size;
-		key.dptr = (gchar *)ktmp;
+		key.dptr = (char *)ktmp;
 		if ((ret = _CopyObjBytes(
 		    interp, objv[3], &dtmp, &size, &freedata)) != 0) {
 			result = _ReturnSetup(interp, ret,
@@ -451,7 +451,7 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 			goto out;
 		}
 		data.dsize = size;
-		data.dptr = (gchar *)dtmp;
+		data.dptr = (char *)dtmp;
 		_debug_check();
 		if (flag == DBTCL_DBM)
 			ret = store(key, data);
@@ -490,7 +490,7 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 			goto out;
 		}
 		key.dsize = size;
-		key.dptr = (gchar *)ktmp;
+		key.dptr = (char *)ktmp;
 		_debug_check();
 		if (flag == DBTCL_DBM)
 			ret = delete(key);
@@ -548,7 +548,7 @@ bdb_DbmCommand(interp, objc, objv, flag, dbm)
 				goto out;
 			}
 			key.dsize = size;
-			key.dptr = (gchar *)ktmp;
+			key.dptr = (char *)ktmp;
 			data = nextkey(key);
 		} else if (flag == DBTCL_NDBM) {
 			if (objc != 2) {
@@ -584,16 +584,16 @@ out:
  * ndbm_Cmd --
  *	Implements the "ndbm" widget.
  *
- * PUBLIC: gint ndbm_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: int ndbm_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
  */
-gint
+int
 ndbm_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* DB handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static gchar *ndbcmds[] = {
+	static char *ndbcmds[] = {
 		"clearerr",
 		"close",
 		"delete",
@@ -623,11 +623,11 @@ ndbm_Cmd(clientData, interp, objc, objv)
 	DBM *dbp;
 	DBTCL_INFO *dbip;
 	Tcl_Obj *res;
-	gint cmdindex, result, ret;
+	int cmdindex, result, ret;
 
 	Tcl_ResetResult(interp);
 	dbp = (DBM *)clientData;
-	dbip = _PtrToInfo((gpointer)dbp);
+	dbip = _PtrToInfo((void *)dbp);
 	result = TCL_OK;
 	if (objc <= 1) {
 		Tcl_WrongNumArgs(interp, 1, objv, "command cmdargs");

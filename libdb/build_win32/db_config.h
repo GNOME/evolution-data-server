@@ -411,9 +411,9 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern gint optind;
-extern gchar *optarg;
-extern gint getopt(int, gchar * const *, const gchar *);
+extern int optind;
+extern char *optarg;
+extern int getopt(int, char * const *, const char *);
 #if defined(__cplusplus)
 }
 #endif

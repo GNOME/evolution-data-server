@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -31,7 +31,7 @@ static int	db185_del __P((const DB185 *, const DBT185 *, u_int));
 static int	db185_fd __P((const DB185 *));
 static int	db185_get __P((const DB185 *, const DBT185 *, DBT185 *, u_int));
 static u_int32_t
-		db185_hash __P((DB *, gconstpointer , u_int32_t));
+		db185_hash __P((DB *, const void *, u_int32_t));
 static void	db185_openstderr __P((DB_FH *));
 static size_t	db185_prefix __P((DB *, const DBT *, const DBT *));
 static int	db185_put __P((const DB185 *, DBT185 *, const DBT185 *, u_int));
@@ -41,18 +41,18 @@ static int	db185_sync __P((const DB185 *, u_int));
 /*
  * EXTERN: #ifdef _DB185_INT_H_
  * EXTERN: DB185 *__db185_open
- * EXTERN:     __P((const gchar *, int, int, DBTYPE, gconstpointer ));
+ * EXTERN:     __P((const char *, int, int, DBTYPE, const void *));
  * EXTERN: #else
  * EXTERN: DB *__db185_open
- * EXTERN:     __P((const gchar *, int, int, DBTYPE, gconstpointer ));
+ * EXTERN:     __P((const char *, int, int, DBTYPE, const void *));
  * EXTERN: #endif
  */
 DB185 *
 __db185_open(file, oflags, mode, type, openinfo)
-	const gchar *file;
-	gint oflags, mode;
+	const char *file;
+	int oflags, mode;
 	DBTYPE type;
-	gconstpointer openinfo;
+	const void *openinfo;
 {
 	const BTREEINFO *bi;
 	const HASHINFO *hi;
@@ -61,7 +61,7 @@ __db185_open(file, oflags, mode, type, openinfo)
 	DB185 *db185p;
 	DB_FH fh;
 	size_t nw;
-	gint ret;
+	int ret;
 
 	dbp = NULL;
 	db185p = NULL;
@@ -260,7 +260,7 @@ db185_close(db185p)
 	DB185 *db185p;
 {
 	DB *dbp;
-	gint ret;
+	int ret;
 
 	dbp = db185p->dbp;
 
@@ -285,7 +285,7 @@ db185_del(db185p, key185, flags)
 {
 	DB *dbp;
 	DBT key;
-	gint ret;
+	int ret;
 
 	dbp = db185p->dbp;
 
@@ -318,7 +318,7 @@ db185_fd(db185p)
 	const DB185 *db185p;
 {
 	DB *dbp;
-	gint fd, ret;
+	int fd, ret;
 
 	dbp = db185p->dbp;
 
@@ -340,7 +340,7 @@ db185_get(db185p, key185, data185, flags)
 {
 	DB *dbp;
 	DBT key, data;
-	gint ret;
+	int ret;
 
 	dbp = db185p->dbp;
 
@@ -379,7 +379,7 @@ db185_put(db185p, key185, data185, flags)
 	DB *dbp;
 	DBC *dbcp_put;
 	DBT key, data;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = db185p->dbp;
 
@@ -454,7 +454,7 @@ db185_seq(db185p, key185, data185, flags)
 {
 	DB *dbp;
 	DBT key, data;
-	gint ret;
+	int ret;
 
 	dbp = db185p->dbp;
 
@@ -513,7 +513,7 @@ db185_sync(db185p, flags)
 	DB *dbp;
 	DB_FH fh;
 	size_t nw;
-	gint ret;
+	int ret;
 
 	dbp = db185p->dbp;
 
@@ -587,7 +587,7 @@ db185_prefix(dbp, a, b)
 static u_int32_t
 db185_hash(dbp, key, len)
 	DB *dbp;
-	gconstpointer key;
+	const void *key;
 	u_int32_t len;
 {
 	return (((DB185 *)dbp->api_internal)->hash(key, (size_t)len));

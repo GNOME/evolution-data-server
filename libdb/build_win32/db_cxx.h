@@ -131,24 +131,24 @@ class DbTxnImp;
 // the choices.
 //
 extern "C" {
-	typedef gpointer  (*db_malloc_fcn_type)
+	typedef void * (*db_malloc_fcn_type)
 		(size_t);
-	typedef gpointer  (*db_realloc_fcn_type)
-		(gpointer , size_t);
+	typedef void * (*db_realloc_fcn_type)
+		(void *, size_t);
 	typedef void (*db_free_fcn_type)
-		(gpointer);
-	typedef gint (*bt_compare_fcn_type)          /*C++ version available*/
+		(void *);
+	typedef int (*bt_compare_fcn_type)          /*C++ version available*/
 		(DB *, const DBT *, const DBT *);
 	typedef size_t (*bt_prefix_fcn_type)        /*C++ version available*/
 		(DB *, const DBT *, const DBT *);
-	typedef gint (*dup_compare_fcn_type)         /*C++ version available*/
+	typedef int (*dup_compare_fcn_type)         /*C++ version available*/
 		(DB *, const DBT *, const DBT *);
 	typedef u_int32_t (*h_hash_fcn_type)        /*C++ version available*/
-		(DB *, gconstpointer , u_int32_t);
-	typedef gint (*pgin_fcn_type)
-		(DB_ENV *dbenv, db_pgno_t pgno, gpointer pgaddr, DBT *pgcookie);
-	typedef gint (*pgout_fcn_type)
-		(DB_ENV *dbenv, db_pgno_t pgno, gpointer pgaddr, DBT *pgcookie);
+		(DB *, const void *, u_int32_t);
+	typedef int (*pgin_fcn_type)
+		(DB_ENV *dbenv, db_pgno_t pgno, void *pgaddr, DBT *pgcookie);
+	typedef int (*pgout_fcn_type)
+		(DB_ENV *dbenv, db_pgno_t pgno, void *pgaddr, DBT *pgcookie);
 };
 
 ////////////////////////////////////////////////////////////////
@@ -202,20 +202,20 @@ private:
 	DEFINE_DB_CLASS(DbMpoolFile);
 
 public:
-	gint close(u_int32_t flags);
-	gint get(db_pgno_t *pgnoaddr, u_int32_t flags, gpointer pagep);
+	int close(u_int32_t flags);
+	int get(db_pgno_t *pgnoaddr, u_int32_t flags, void *pagep);
 	void last_pgno(db_pgno_t *pgnoaddr);
-	gint open(const gchar *file, u_int32_t flags, gint mode, size_t pagesize);
-	gint put(gpointer pgaddr, u_int32_t flags);
+	int open(const char *file, u_int32_t flags, int mode, size_t pagesize);
+	int put(void *pgaddr, u_int32_t flags);
 	void refcnt(db_pgno_t *pgnoaddr);
-	gint set(gpointer pgaddr, u_int32_t flags);
-	gint set_clear_len(u_int32_t len);
-	gint set_fileid(u_int8_t *fileid);
-	gint set_ftype(gint ftype);
-	gint set_lsn_offset(int32_t offset);
-	gint set_pgcookie(DBT *dbt);
+	int set(void *pgaddr, u_int32_t flags);
+	int set_clear_len(u_int32_t len);
+	int set_fileid(u_int8_t *fileid);
+	int set_ftype(int ftype);
+	int set_lsn_offset(int32_t offset);
+	int set_pgcookie(DBT *dbt);
 	void set_unlink(int);
-	gint sync();
+	int sync();
 
 	virtual DB_MPOOLFILE *get_DB_MPOOLFILE()
 	{
@@ -275,12 +275,12 @@ private:
 	DEFINE_DB_CLASS(DbTxn);
 
 public:
-	gint abort();
-	gint commit(u_int32_t flags);
-	gint discard(u_int32_t flags);
+	int abort();
+	int commit(u_int32_t flags);
+	int discard(u_int32_t flags);
 	u_int32_t id();
-	gint prepare(u_int8_t *gid);
-	gint set_timeout(db_timeout_t timeout, u_int32_t flags);
+	int prepare(u_int8_t *gid);
+	int set_timeout(db_timeout_t timeout, u_int32_t flags);
 
 	virtual DB_TXN *get_DB_TXN()
 	{
@@ -355,56 +355,56 @@ public:
 
 	// These methods match those in the C interface.
 	//
-	virtual gint close(u_int32_t);
-	virtual gint dbremove(DbTxn *txn, const gchar *name, const gchar *subdb,
+	virtual int close(u_int32_t);
+	virtual int dbremove(DbTxn *txn, const char *name, const char *subdb,
 	    u_int32_t flags);
-	virtual gint dbrename(DbTxn *txn, const gchar *name, const gchar *subdb,
-	    const gchar *newname, u_int32_t flags);
-	virtual void err(int, const gchar *, ...);
-	virtual void errx(const gchar *, ...);
-	virtual gpointer get_app_private() const;
-	virtual gint open(const gchar *, u_int32_t, int);
-	virtual gint remove(const gchar *, u_int32_t);
-	virtual gint set_alloc(db_malloc_fcn_type, db_realloc_fcn_type,
+	virtual int dbrename(DbTxn *txn, const char *name, const char *subdb,
+	    const char *newname, u_int32_t flags);
+	virtual void err(int, const char *, ...);
+	virtual void errx(const char *, ...);
+	virtual void *get_app_private() const;
+	virtual int open(const char *, u_int32_t, int);
+	virtual int remove(const char *, u_int32_t);
+	virtual int set_alloc(db_malloc_fcn_type, db_realloc_fcn_type,
 		      db_free_fcn_type);
-	virtual void set_app_private(gpointer);
-	virtual gint set_cachesize(u_int32_t, u_int32_t, int);
-	virtual gint set_data_dir(const gchar *);
-	virtual gint set_encrypt(const gchar *, int);
-	virtual void set_errcall(void (*)(const gchar *, gchar *));
+	virtual void set_app_private(void *);
+	virtual int set_cachesize(u_int32_t, u_int32_t, int);
+	virtual int set_data_dir(const char *);
+	virtual int set_encrypt(const char *, int);
+	virtual void set_errcall(void (*)(const char *, char *));
 	virtual void set_errfile(FILE *);
-	virtual void set_errpfx(const gchar *);
-	virtual gint set_flags(u_int32_t, int);
-	virtual gint set_feedback(void (*)(DbEnv *, int, int));
-	virtual gint set_lg_bsize(u_int32_t);
-	virtual gint set_lg_dir(const gchar *);
-	virtual gint set_lg_max(u_int32_t);
-	virtual gint set_lg_regionmax(u_int32_t);
-	virtual gint set_lk_conflicts(u_int8_t *, int);
-	virtual gint set_lk_detect(u_int32_t);
-	virtual gint set_lk_max(u_int32_t);
-	virtual gint set_lk_max_lockers(u_int32_t);
-	virtual gint set_lk_max_locks(u_int32_t);
-	virtual gint set_lk_max_objects(u_int32_t);
-	virtual gint set_mp_mmapsize(size_t);
-	virtual gint set_paniccall(void (*)(DbEnv *, int));
-	virtual gint set_rpc_server(gpointer , gchar *, long, long, u_int32_t);
-	virtual gint set_shm_key(long);
-	virtual gint set_timeout(db_timeout_t timeout, u_int32_t flags);
-	virtual gint set_tmp_dir(const gchar *);
-	virtual gint set_tas_spins(u_int32_t);
-	virtual gint set_tx_max(u_int32_t);
-	virtual gint set_app_dispatch(gint (*)(DbEnv *,
+	virtual void set_errpfx(const char *);
+	virtual int set_flags(u_int32_t, int);
+	virtual int set_feedback(void (*)(DbEnv *, int, int));
+	virtual int set_lg_bsize(u_int32_t);
+	virtual int set_lg_dir(const char *);
+	virtual int set_lg_max(u_int32_t);
+	virtual int set_lg_regionmax(u_int32_t);
+	virtual int set_lk_conflicts(u_int8_t *, int);
+	virtual int set_lk_detect(u_int32_t);
+	virtual int set_lk_max(u_int32_t);
+	virtual int set_lk_max_lockers(u_int32_t);
+	virtual int set_lk_max_locks(u_int32_t);
+	virtual int set_lk_max_objects(u_int32_t);
+	virtual int set_mp_mmapsize(size_t);
+	virtual int set_paniccall(void (*)(DbEnv *, int));
+	virtual int set_rpc_server(void *, char *, long, long, u_int32_t);
+	virtual int set_shm_key(long);
+	virtual int set_timeout(db_timeout_t timeout, u_int32_t flags);
+	virtual int set_tmp_dir(const char *);
+	virtual int set_tas_spins(u_int32_t);
+	virtual int set_tx_max(u_int32_t);
+	virtual int set_app_dispatch(int (*)(DbEnv *,
 	    Dbt *, DbLsn *, db_recops));
-	virtual gint set_tx_timestamp(time_t *);
-	virtual gint set_verbose(u_int32_t which, gint onoff);
+	virtual int set_tx_timestamp(time_t *);
+	virtual int set_verbose(u_int32_t which, int onoff);
 
 	// Version information.  A static method so it can be obtained anytime.
 	//
-	static gchar *version(gint *major, gint *minor, gint *patch);
+	static char *version(int *major, int *minor, int *patch);
 
 	// Convert DB errors to strings
-	static gchar *strerror(int);
+	static char *strerror(int);
 
 	// If an error is detected and the error call function
 	// or stream is set, a message is dispatched or printed.
@@ -418,66 +418,66 @@ public:
 	virtual void set_error_stream(__DB_OSTREAMCLASS *);
 
 	// used internally
-	static void runtime_error(const gchar *caller, gint err,
-				  gint error_policy);
-	static void runtime_error_dbt(const gchar *caller, Dbt *dbt,
-				  gint error_policy);
-	static void runtime_error_lock_get(const gchar *caller, gint err,
+	static void runtime_error(const char *caller, int err,
+				  int error_policy);
+	static void runtime_error_dbt(const char *caller, Dbt *dbt,
+				  int error_policy);
+	static void runtime_error_lock_get(const char *caller, int err,
 				  db_lockop_t op, db_lockmode_t mode,
-				  const Dbt *obj, DbLock lock, gint index,
-				  gint error_policy);
+				  const Dbt *obj, DbLock lock, int index,
+				  int error_policy);
 
 	// Lock functions
 	//
-	virtual gint lock_detect(u_int32_t flags, u_int32_t atype, gint *aborted);
-	virtual gint lock_get(u_int32_t locker, u_int32_t flags, const Dbt *obj,
+	virtual int lock_detect(u_int32_t flags, u_int32_t atype, int *aborted);
+	virtual int lock_get(u_int32_t locker, u_int32_t flags, const Dbt *obj,
 		     db_lockmode_t lock_mode, DbLock *lock);
-	virtual gint lock_id(u_int32_t *idp);
-	virtual gint lock_id_free(u_int32_t id);
-	virtual gint lock_put(DbLock *lock);
-	virtual gint lock_stat(DB_LOCK_STAT **statp, u_int32_t flags);
-	virtual gint lock_vec(u_int32_t locker, u_int32_t flags, DB_LOCKREQ list[],
-		     gint nlist, DB_LOCKREQ **elistp);
+	virtual int lock_id(u_int32_t *idp);
+	virtual int lock_id_free(u_int32_t id);
+	virtual int lock_put(DbLock *lock);
+	virtual int lock_stat(DB_LOCK_STAT **statp, u_int32_t flags);
+	virtual int lock_vec(u_int32_t locker, u_int32_t flags, DB_LOCKREQ list[],
+		     int nlist, DB_LOCKREQ **elistp);
 
 	// Log functions
 	//
-	virtual gint log_archive(gchar **list[], u_int32_t flags);
-	static gint log_compare(const DbLsn *lsn0, const DbLsn *lsn1);
-	virtual gint log_cursor(DbLogc **cursorp, u_int32_t flags);
-	virtual gint log_file(DbLsn *lsn, gchar *namep, size_t len);
-	virtual gint log_flush(const DbLsn *lsn);
-	virtual gint log_put(DbLsn *lsn, const Dbt *data, u_int32_t flags);
+	virtual int log_archive(char **list[], u_int32_t flags);
+	static int log_compare(const DbLsn *lsn0, const DbLsn *lsn1);
+	virtual int log_cursor(DbLogc **cursorp, u_int32_t flags);
+	virtual int log_file(DbLsn *lsn, char *namep, size_t len);
+	virtual int log_flush(const DbLsn *lsn);
+	virtual int log_put(DbLsn *lsn, const Dbt *data, u_int32_t flags);
 
-	virtual gint log_stat(DB_LOG_STAT **spp, u_int32_t flags);
+	virtual int log_stat(DB_LOG_STAT **spp, u_int32_t flags);
 
 	// Mpool functions
 	//
-	virtual gint memp_fcreate(DbMpoolFile **dbmfp, u_int32_t flags);
-	virtual gint memp_register(gint ftype,
+	virtual int memp_fcreate(DbMpoolFile **dbmfp, u_int32_t flags);
+	virtual int memp_register(int ftype,
 			  pgin_fcn_type pgin_fcn,
 			  pgout_fcn_type pgout_fcn);
-	virtual gint memp_stat(DB_MPOOL_STAT
+	virtual int memp_stat(DB_MPOOL_STAT
 		      **gsp, DB_MPOOL_FSTAT ***fsp, u_int32_t flags);
-	virtual gint memp_sync(DbLsn *lsn);
-	virtual gint memp_trickle(gint pct, gint *nwrotep);
+	virtual int memp_sync(DbLsn *lsn);
+	virtual int memp_trickle(int pct, int *nwrotep);
 
 	// Transaction functions
 	//
-	virtual gint txn_begin(DbTxn *pid, DbTxn **tid, u_int32_t flags);
-	virtual gint txn_checkpoint(u_int32_t kbyte, u_int32_t min, u_int32_t flags);
-	virtual gint txn_recover(DbPreplist *preplist, long count,
+	virtual int txn_begin(DbTxn *pid, DbTxn **tid, u_int32_t flags);
+	virtual int txn_checkpoint(u_int32_t kbyte, u_int32_t min, u_int32_t flags);
+	virtual int txn_recover(DbPreplist *preplist, long count,
 			long *retp, u_int32_t flags);
-	virtual gint txn_stat(DB_TXN_STAT **statp, u_int32_t flags);
+	virtual int txn_stat(DB_TXN_STAT **statp, u_int32_t flags);
 
 	// Replication functions
 	//
-	virtual gint rep_elect(int, int, u_int32_t, gint *);
-	virtual gint rep_process_message(Dbt *, Dbt *, gint *);
-	virtual gint rep_start(Dbt *, u_int32_t);
-	virtual gint rep_stat(DB_REP_STAT **statp, u_int32_t flags);
-	virtual gint set_rep_limit(u_int32_t, u_int32_t);
-	virtual gint set_rep_transport(u_int32_t,
-	    gint (*)(DbEnv *, const Dbt *, const Dbt *, int, u_int32_t));
+	virtual int rep_elect(int, int, u_int32_t, int *);
+	virtual int rep_process_message(Dbt *, Dbt *, int *);
+	virtual int rep_start(Dbt *, u_int32_t);
+	virtual int rep_stat(DB_REP_STAT **statp, u_int32_t flags);
+	virtual int set_rep_limit(u_int32_t, u_int32_t);
+	virtual int set_rep_transport(u_int32_t,
+	    int (*)(DbEnv *, const Dbt *, const Dbt *, int, u_int32_t));
 
 	// Conversion functions
 	//
@@ -508,19 +508,19 @@ public:
 	// via C functions.  They should never be called by users
 	// of this class.
 	//
-	static void _stream_error_function(const gchar *, gchar *);
-	static gint _app_dispatch_intercept(DB_ENV *env, DBT *dbt, DB_LSN *lsn,
+	static void _stream_error_function(const char *, char *);
+	static int _app_dispatch_intercept(DB_ENV *env, DBT *dbt, DB_LSN *lsn,
 					db_recops op);
-	static void _paniccall_intercept(DB_ENV *env, gint errval);
-	static void _feedback_intercept(DB_ENV *env, gint opcode, gint pct);
-	static gint _rep_send_intercept(DB_ENV *env,
+	static void _paniccall_intercept(DB_ENV *env, int errval);
+	static void _feedback_intercept(DB_ENV *env, int opcode, int pct);
+	static int _rep_send_intercept(DB_ENV *env,
 				       const DBT *cntrl, const DBT *data,
-				       gint id, u_int32_t flags);
+				       int id, u_int32_t flags);
 
 private:
 	void cleanup();
-	gint initialize(DB_ENV *env);
-	gint error_policy();
+	int initialize(DB_ENV *env);
+	int error_policy();
 
 	// For internal use only.
 	DbEnv(DB_ENV *, u_int32_t flags);
@@ -530,16 +530,16 @@ private:
 	void operator = (const DbEnv &);
 
 	// instance data
-	gint construct_error_;
+	int construct_error_;
 	u_int32_t construct_flags_;
-	gint (*app_dispatch_callback_)(DbEnv *, Dbt *, DbLsn *, db_recops);
+	int (*app_dispatch_callback_)(DbEnv *, Dbt *, DbLsn *, db_recops);
 	void (*feedback_callback_)(DbEnv *, int, int);
 	void (*paniccall_callback_)(DbEnv *, int);
-	gint (*pgin_callback_)(DbEnv *dbenv, db_pgno_t pgno,
-			      gpointer pgaddr, Dbt *pgcookie);
-	gint (*pgout_callback_)(DbEnv *dbenv, db_pgno_t pgno,
-			       gpointer pgaddr, Dbt *pgcookie);
-	gint (*rep_send_callback_)(DbEnv *,
+	int (*pgin_callback_)(DbEnv *dbenv, db_pgno_t pgno,
+			      void *pgaddr, Dbt *pgcookie);
+	int (*pgout_callback_)(DbEnv *dbenv, db_pgno_t pgno,
+			       void *pgaddr, Dbt *pgcookie);
+	int (*rep_send_callback_)(DbEnv *,
 	    const Dbt *, const Dbt *, int, u_int32_t);
 
 	// class data
@@ -569,65 +569,65 @@ public:
 
 	// These methods exactly match those in the C interface.
 	//
-	virtual gint associate(DbTxn *txn, Db *secondary,
-	    gint (*callback)(Db *, const Dbt *, const Dbt *, Dbt *),
+	virtual int associate(DbTxn *txn, Db *secondary,
+	    int (*callback)(Db *, const Dbt *, const Dbt *, Dbt *),
 	    u_int32_t flags);
-	virtual gint close(u_int32_t flags);
-        virtual gint cursor(DbTxn *txnid, Dbc **cursorp, u_int32_t flags);
-	virtual gint del(DbTxn *txnid, Dbt *key, u_int32_t flags);
-	virtual void err(int, const gchar *, ...);
-	virtual void errx(const gchar *, ...);
-	virtual gint fd(gint *fdp);
-	virtual gint get(DbTxn *txnid, Dbt *key, Dbt *data, u_int32_t flags);
-	virtual gpointer get_app_private() const;
-	virtual gint get_byteswapped(gint *);
-	virtual gint get_type(DBTYPE *);
-	virtual gint join(Dbc **curslist, Dbc **dbcp, u_int32_t flags);
-	virtual gint key_range(DbTxn *, Dbt *, DB_KEY_RANGE *, u_int32_t);
-	virtual gint open(DbTxn *txnid,
-	    const gchar *, const gchar *subname, DBTYPE, u_int32_t, int);
-	virtual gint pget(DbTxn *txnid, Dbt *key, Dbt *pkey, Dbt *data,
+	virtual int close(u_int32_t flags);
+        virtual int cursor(DbTxn *txnid, Dbc **cursorp, u_int32_t flags);
+	virtual int del(DbTxn *txnid, Dbt *key, u_int32_t flags);
+	virtual void err(int, const char *, ...);
+	virtual void errx(const char *, ...);
+	virtual int fd(int *fdp);
+	virtual int get(DbTxn *txnid, Dbt *key, Dbt *data, u_int32_t flags);
+	virtual void *get_app_private() const;
+	virtual int get_byteswapped(int *);
+	virtual int get_type(DBTYPE *);
+	virtual int join(Dbc **curslist, Dbc **dbcp, u_int32_t flags);
+	virtual int key_range(DbTxn *, Dbt *, DB_KEY_RANGE *, u_int32_t);
+	virtual int open(DbTxn *txnid,
+	    const char *, const char *subname, DBTYPE, u_int32_t, int);
+	virtual int pget(DbTxn *txnid, Dbt *key, Dbt *pkey, Dbt *data,
 		 u_int32_t flags);
-	virtual gint put(DbTxn *, Dbt *, Dbt *, u_int32_t);
-	virtual gint remove(const gchar *, const gchar *, u_int32_t);
-	virtual gint rename(const gchar *, const gchar *, const gchar *, u_int32_t);
-	virtual gint set_alloc(db_malloc_fcn_type, db_realloc_fcn_type,
+	virtual int put(DbTxn *, Dbt *, Dbt *, u_int32_t);
+	virtual int remove(const char *, const char *, u_int32_t);
+	virtual int rename(const char *, const char *, const char *, u_int32_t);
+	virtual int set_alloc(db_malloc_fcn_type, db_realloc_fcn_type,
 		      db_free_fcn_type);
-	virtual void set_app_private(gpointer);
-	virtual gint set_append_recno(gint (*)(Db *, Dbt *, db_recno_t));
-	virtual gint set_bt_compare(bt_compare_fcn_type); /*deprecated*/
-	virtual gint set_bt_compare(gint (*)(Db *, const Dbt *, const Dbt *));
-	virtual gint set_bt_maxkey(u_int32_t);
-	virtual gint set_bt_minkey(u_int32_t);
-	virtual gint set_bt_prefix(bt_prefix_fcn_type); /*deprecated*/
-	virtual gint set_bt_prefix(size_t (*)(Db *, const Dbt *, const Dbt *));
-	virtual gint set_cachesize(u_int32_t, u_int32_t, int);
-	virtual gint set_cache_priority(DB_CACHE_PRIORITY);
-	virtual gint set_dup_compare(dup_compare_fcn_type); /*deprecated*/
-	virtual gint set_dup_compare(gint (*)(Db *, const Dbt *, const Dbt *));
-	virtual gint set_encrypt(const gchar *, int);
-	virtual void set_errcall(void (*)(const gchar *, gchar *));
+	virtual void set_app_private(void *);
+	virtual int set_append_recno(int (*)(Db *, Dbt *, db_recno_t));
+	virtual int set_bt_compare(bt_compare_fcn_type); /*deprecated*/
+	virtual int set_bt_compare(int (*)(Db *, const Dbt *, const Dbt *));
+	virtual int set_bt_maxkey(u_int32_t);
+	virtual int set_bt_minkey(u_int32_t);
+	virtual int set_bt_prefix(bt_prefix_fcn_type); /*deprecated*/
+	virtual int set_bt_prefix(size_t (*)(Db *, const Dbt *, const Dbt *));
+	virtual int set_cachesize(u_int32_t, u_int32_t, int);
+	virtual int set_cache_priority(DB_CACHE_PRIORITY);
+	virtual int set_dup_compare(dup_compare_fcn_type); /*deprecated*/
+	virtual int set_dup_compare(int (*)(Db *, const Dbt *, const Dbt *));
+	virtual int set_encrypt(const char *, int);
+	virtual void set_errcall(void (*)(const char *, char *));
 	virtual void set_errfile(FILE *);
-	virtual void set_errpfx(const gchar *);
-	virtual gint set_feedback(void (*)(Db *, int, int));
-	virtual gint set_flags(u_int32_t);
-	virtual gint set_h_ffactor(u_int32_t);
-	virtual gint set_h_hash(h_hash_fcn_type); /*deprecated*/
-	virtual gint set_h_hash(u_int32_t (*)(Db *, gconstpointer , u_int32_t));
-	virtual gint set_h_nelem(u_int32_t);
-	virtual gint set_lorder(int);
-	virtual gint set_pagesize(u_int32_t);
-	virtual gint set_paniccall(void (*)(DbEnv *, int));
-	virtual gint set_re_delim(int);
-	virtual gint set_re_len(u_int32_t);
-	virtual gint set_re_pad(int);
-	virtual gint set_re_source(gchar *);
-	virtual gint set_q_extentsize(u_int32_t);
-	virtual gint stat(gpointer sp, u_int32_t flags);
-	virtual gint sync(u_int32_t flags);
-	virtual gint truncate(DbTxn *, u_int32_t *, u_int32_t);
-	virtual gint upgrade(const gchar *name, u_int32_t flags);
-	virtual gint verify(const gchar *, const gchar *, __DB_OSTREAMCLASS *, u_int32_t);
+	virtual void set_errpfx(const char *);
+	virtual int set_feedback(void (*)(Db *, int, int));
+	virtual int set_flags(u_int32_t);
+	virtual int set_h_ffactor(u_int32_t);
+	virtual int set_h_hash(h_hash_fcn_type); /*deprecated*/
+	virtual int set_h_hash(u_int32_t (*)(Db *, const void *, u_int32_t));
+	virtual int set_h_nelem(u_int32_t);
+	virtual int set_lorder(int);
+	virtual int set_pagesize(u_int32_t);
+	virtual int set_paniccall(void (*)(DbEnv *, int));
+	virtual int set_re_delim(int);
+	virtual int set_re_len(u_int32_t);
+	virtual int set_re_pad(int);
+	virtual int set_re_source(char *);
+	virtual int set_q_extentsize(u_int32_t);
+	virtual int stat(void *sp, u_int32_t flags);
+	virtual int sync(u_int32_t flags);
+	virtual int truncate(DbTxn *, u_int32_t *, u_int32_t);
+	virtual int upgrade(const char *name, u_int32_t flags);
+	virtual int verify(const char *, const char *, __DB_OSTREAMCLASS *, u_int32_t);
 
 	// These additional methods are not in the C interface, and
 	// are only available for C++.
@@ -660,12 +660,12 @@ private:
 	Db &operator = (const Db &);
 
 	void cleanup();
-	gint initialize();
-	gint error_policy();
+	int initialize();
+	int error_policy();
 
 	// instance data
 	DbEnv *env_;
-	gint construct_error_;
+	int construct_error_;
 	u_int32_t flags_;
 	u_int32_t construct_flags_;
 
@@ -674,13 +674,13 @@ public:
 	// via C callback functions.  They should never be used by
 	// external users of this class.
 	//
-	gint (*append_recno_callback_)(Db *, Dbt *, db_recno_t);
-	gint (*associate_callback_)(Db *, const Dbt *, const Dbt *, Dbt *);
-	gint (*bt_compare_callback_)(Db *, const Dbt *, const Dbt *);
+	int (*append_recno_callback_)(Db *, Dbt *, db_recno_t);
+	int (*associate_callback_)(Db *, const Dbt *, const Dbt *, Dbt *);
+	int (*bt_compare_callback_)(Db *, const Dbt *, const Dbt *);
 	size_t (*bt_prefix_callback_)(Db *, const Dbt *, const Dbt *);
-	gint (*dup_compare_callback_)(Db *, const Dbt *, const Dbt *);
+	int (*dup_compare_callback_)(Db *, const Dbt *, const Dbt *);
 	void (*feedback_callback_)(Db *, int, int);
-	u_int32_t (*h_hash_callback_)(Db *, gconstpointer , u_int32_t);
+	u_int32_t (*h_hash_callback_)(Db *, const void *, u_int32_t);
 };
 
 //
@@ -696,8 +696,8 @@ class _exported Dbt : private DBT
 public:
 
 	// key/data
-	gpointer get_data() const                 { return data; }
-	void set_data(gpointer value)             { data = value; }
+	void *get_data() const                 { return data; }
+	void set_data(void *value)             { data = value; }
 
 	// key/data length
 	u_int32_t get_size() const             { return size; }
@@ -727,7 +727,7 @@ public:
 	static const Dbt* get_const_Dbt(const DBT *dbt)
 					       { return (const Dbt *)dbt; }
 
-	Dbt(gpointer data, u_int32_t size);
+	Dbt(void *data, u_int32_t size);
 	Dbt();
 	~Dbt();
 	Dbt(const Dbt &);
@@ -750,13 +750,13 @@ class _exported Dbc : protected DBC
 	friend class Db;
 
 public:
-	gint close();
-	gint count(db_recno_t *countp, u_int32_t flags);
-	gint del(u_int32_t flags);
-	gint dup(Dbc** cursorp, u_int32_t flags);
-	gint get(Dbt* key, Dbt *data, u_int32_t flags);
-	gint pget(Dbt* key, Dbt* pkey, Dbt *data, u_int32_t flags);
-	gint put(Dbt* key, Dbt *data, u_int32_t flags);
+	int close();
+	int count(db_recno_t *countp, u_int32_t flags);
+	int del(u_int32_t flags);
+	int dup(Dbc** cursorp, u_int32_t flags);
+	int get(Dbt* key, Dbt *data, u_int32_t flags);
+	int pget(Dbt* key, Dbt* pkey, Dbt *data, u_int32_t flags);
+	int put(Dbt* key, Dbt *data, u_int32_t flags);
 
 private:
 	// No data is permitted in this class (see comment at top)
@@ -777,8 +777,8 @@ class _exported DbLogc : protected DB_LOGC
 	friend class DbEnv;
 
 public:
-	gint close(u_int32_t _flags);
-	gint get(DbLsn *lsn, Dbt *data, u_int32_t _flags);
+	int close(u_int32_t _flags);
+	int get(DbLsn *lsn, Dbt *data, u_int32_t _flags);
 
 private:
 	// No data is permitted in this class (see comment at top)

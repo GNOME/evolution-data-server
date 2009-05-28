@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,34 +23,34 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/txn.h"
 
-static gint  __lock_checklocker __P((DB_LOCKTAB *,
+static int  __lock_checklocker __P((DB_LOCKTAB *,
 		struct __db_lock *, u_int32_t, u_int32_t));
 static void __lock_expires __P((DB_ENV *, db_timeval_t *, db_timeout_t));
 static void __lock_freelocker
 		__P((DB_LOCKTAB *, DB_LOCKREGION *, DB_LOCKER *, u_int32_t));
-static gint  __lock_get_internal __P((DB_LOCKTAB *, u_int32_t, u_int32_t,
+static int  __lock_get_internal __P((DB_LOCKTAB *, u_int32_t, u_int32_t,
 		const DBT *, db_lockmode_t, db_timeout_t, DB_LOCK *));
-static gint  __lock_getobj
+static int  __lock_getobj
 		__P((DB_LOCKTAB *, const DBT *, u_int32_t, int, DB_LOCKOBJ **));
-static gint  __lock_is_parent __P((DB_LOCKTAB *, u_int32_t, DB_LOCKER *));
-static gint  __lock_put_internal __P((DB_LOCKTAB *,
+static int  __lock_is_parent __P((DB_LOCKTAB *, u_int32_t, DB_LOCKER *));
+static int  __lock_put_internal __P((DB_LOCKTAB *,
 		struct __db_lock *, u_int32_t,  u_int32_t));
-static gint  __lock_put_nolock __P((DB_ENV *, DB_LOCK *, gint *, u_int32_t));
+static int  __lock_put_nolock __P((DB_ENV *, DB_LOCK *, int *, u_int32_t));
 static void __lock_remove_waiter __P((DB_LOCKTAB *,
 		DB_LOCKOBJ *, struct __db_lock *, db_status_t));
-static gint __lock_trade __P((DB_ENV *, DB_LOCK *, u_int32_t));
+static int __lock_trade __P((DB_ENV *, DB_LOCK *, u_int32_t));
 
-static const gchar __db_lock_err[] = "Lock table is out of available %s";
-static const gchar __db_lock_invalid[] = "%s: Lock is no longer valid";
-static const gchar __db_locker_invalid[] = "Locker is not valid";
+static const char __db_lock_err[] = "Lock table is out of available %s";
+static const char __db_lock_invalid[] = "%s: Lock is no longer valid";
+static const char __db_locker_invalid[] = "Locker is not valid";
 
 /*
  * __lock_id --
  *	Generate a unique locker id.
  *
- * PUBLIC: gint __lock_id __P((DB_ENV *, u_int32_t *));
+ * PUBLIC: int __lock_id __P((DB_ENV *, u_int32_t *));
  */
-gint
+int
 __lock_id(dbenv, idp)
 	DB_ENV *dbenv;
 	u_int32_t *idp;
@@ -59,7 +59,7 @@ __lock_id(dbenv, idp)
 	DB_LOCKTAB *lt;
 	DB_LOCKREGION *region;
 	u_int32_t *ids, locker_ndx;
-	gint nids, ret;
+	int nids, ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -114,9 +114,9 @@ err:	UNLOCKREGION(dbenv, lt);
  * __lock_id_free --
  *	Free a locker id.
  *
- * PUBLIC: gint __lock_id_free __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int __lock_id_free __P((DB_ENV *, u_int32_t));
  */
-gint
+int
 __lock_id_free(dbenv, id)
 	DB_ENV *dbenv;
 	u_int32_t id;
@@ -125,7 +125,7 @@ __lock_id_free(dbenv, id)
 	DB_LOCKTAB *lt;
 	DB_LOCKREGION *region;
 	u_int32_t locker_ndx;
-	gint ret;
+	int ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -164,14 +164,14 @@ err:	UNLOCKREGION(dbenv, lt);
  *	given locker (used during transaction commit/abort), releasing
  *	all locks on a given object, and generating debugging information.
  *
- * PUBLIC: gint __lock_vec __P((DB_ENV *,
+ * PUBLIC: int __lock_vec __P((DB_ENV *,
  * PUBLIC:     u_int32_t, u_int32_t, DB_LOCKREQ *, int, DB_LOCKREQ **));
  */
-gint
+int
 __lock_vec(dbenv, locker, flags, list, nlist, elistp)
 	DB_ENV *dbenv;
 	u_int32_t locker, flags;
-	gint nlist;
+	int nlist;
 	DB_LOCKREQ *list, **elistp;
 {
 	struct __db_lock *lp, *next_lock;
@@ -181,7 +181,7 @@ __lock_vec(dbenv, locker, flags, list, nlist, elistp)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	u_int32_t lndx, ndx;
-	gint did_abort, i, ret, run_dd, upgrade, writes;
+	int did_abort, i, ret, run_dd, upgrade, writes;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -485,10 +485,10 @@ __lock_vec(dbenv, locker, flags, list, nlist, elistp)
  * All the work for lock_get (and for the GET option of lock_vec) is done
  * inside of lock_get_internal.
  *
- * PUBLIC: gint __lock_get __P((DB_ENV *,
+ * PUBLIC: int __lock_get __P((DB_ENV *,
  * PUBLIC:     u_int32_t, u_int32_t, const DBT *, db_lockmode_t, DB_LOCK *));
  */
-gint
+int
 __lock_get(dbenv, locker, flags, obj, lock_mode, lock)
 	DB_ENV *dbenv;
 	u_int32_t locker, flags;
@@ -496,7 +496,7 @@ __lock_get(dbenv, locker, flags, obj, lock_mode, lock)
 	db_lockmode_t lock_mode;
 	DB_LOCK *lock;
 {
-	gint ret;
+	int ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -534,7 +534,7 @@ __lock_get_internal(lt, locker, flags, obj, lock_mode, timeout, lock)
 	DB_LOCKOBJ *sh_obj;
 	DB_LOCKREGION *region;
 	u_int32_t locker_ndx, obj_ndx;
-	gint did_abort, ihold, on_locker_list, no_dd, ret;
+	int did_abort, ihold, on_locker_list, no_dd, ret;
 
 	dbenv = lt->dbenv;
 	region = lt->reginfo.primary;
@@ -918,15 +918,15 @@ err:	newl->status = DB_LSTAT_FREE;
  * The user callable one is lock_put and the three we use internally are
  * __lock_put_nolock, __lock_put_internal and __lock_downgrade.
  *
- * PUBLIC: gint  __lock_put __P((DB_ENV *, DB_LOCK *));
+ * PUBLIC: int  __lock_put __P((DB_ENV *, DB_LOCK *));
  */
-gint
+int
 __lock_put(dbenv, lock)
 	DB_ENV *dbenv;
 	DB_LOCK *lock;
 {
 	DB_LOCKTAB *lt;
-	gint ret, run_dd;
+	int ret, run_dd;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -957,13 +957,13 @@ static int
 __lock_put_nolock(dbenv, lock, runp, flags)
 	DB_ENV *dbenv;
 	DB_LOCK *lock;
-	gint *runp;
+	int *runp;
 	u_int32_t flags;
 {
 	struct __db_lock *lockp;
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
-	gint ret;
+	int ret;
 
 	/* Check if locks have been globally turned off. */
 	if (F_ISSET(dbenv, DB_ENV_NOLOCKING))
@@ -996,10 +996,10 @@ __lock_put_nolock(dbenv, lock, runp, flags)
  * back to iwrite locks and 2) to downgrade write-handle locks to read-handle
  * locks at the end of an open/create.
  *
- * PUBLIC: gint __lock_downgrade __P((DB_ENV *,
+ * PUBLIC: int __lock_downgrade __P((DB_ENV *,
  * PUBLIC:     DB_LOCK *, db_lockmode_t, u_int32_t));
  */
-gint
+int
 __lock_downgrade(dbenv, lock, new_mode, flags)
 	DB_ENV *dbenv;
 	DB_LOCK *lock;
@@ -1012,7 +1012,7 @@ __lock_downgrade(dbenv, lock, new_mode, flags)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	u_int32_t indx;
-	gint ret;
+	int ret;
 
 	COMPQUIET(flags, 0);
 
@@ -1069,7 +1069,7 @@ __lock_put_internal(lt, lockp, obj_ndx, flags)
 {
 	DB_LOCKOBJ *sh_obj;
 	DB_LOCKREGION *region;
-	gint ret, state_changed;
+	int ret, state_changed;
 
 	region = lt->reginfo.primary;
 	ret = state_changed = 0;
@@ -1174,7 +1174,7 @@ __lock_checklocker(lt, lockp, locker, flags)
 	DB_LOCKER *sh_locker;
 	DB_LOCKREGION *region;
 	u_int32_t indx;
-	gint ret;
+	int ret;
 
 	dbenv = lt->dbenv;
 	region = lt->reginfo.primary;
@@ -1225,9 +1225,9 @@ freelock:
  * __lock_addfamilylocker
  *	Put a locker entry in for a child transaction.
  *
- * PUBLIC: gint __lock_addfamilylocker __P((DB_ENV *, u_int32_t, u_int32_t));
+ * PUBLIC: int __lock_addfamilylocker __P((DB_ENV *, u_int32_t, u_int32_t));
  */
-gint
+int
 __lock_addfamilylocker(dbenv, pid, id)
 	DB_ENV *dbenv;
 	u_int32_t pid, id;
@@ -1236,7 +1236,7 @@ __lock_addfamilylocker(dbenv, pid, id)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	u_int32_t ndx;
-	gint ret;
+	int ret;
 
 	lt = dbenv->lk_handle;
 	region = lt->reginfo.primary;
@@ -1291,9 +1291,9 @@ err:
  *
  * This must be called without the locker bucket locked.
  *
- * PUBLIC: gint __lock_freefamilylocker  __P((DB_LOCKTAB *, u_int32_t));
+ * PUBLIC: int __lock_freefamilylocker  __P((DB_LOCKTAB *, u_int32_t));
  */
-gint
+int
 __lock_freefamilylocker(lt, locker)
 	DB_LOCKTAB *lt;
 	u_int32_t locker;
@@ -1302,7 +1302,7 @@ __lock_freefamilylocker(lt, locker)
 	DB_LOCKER *sh_locker;
 	DB_LOCKREGION *region;
 	u_int32_t indx;
-	gint ret;
+	int ret;
 
 	dbenv = lt->dbenv;
 	region = lt->reginfo.primary;
@@ -1361,10 +1361,10 @@ __lock_freelocker(lt, region, sh_locker, indx)
  * amount of time that a lock for this transaction is permitted
  * to wait.
  *
- * PUBLIC: gint __lock_set_timeout __P(( DB_ENV *,
+ * PUBLIC: int __lock_set_timeout __P(( DB_ENV *,
  * PUBLIC:      u_int32_t, db_timeout_t, u_int32_t));
  */
-gint
+int
 __lock_set_timeout(dbenv, locker, timeout, op)
 	DB_ENV *dbenv;
 	u_int32_t locker;
@@ -1375,7 +1375,7 @@ __lock_set_timeout(dbenv, locker, timeout, op)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	u_int32_t locker_ndx;
-	gint ret;
+	int ret;
 
 	lt = dbenv->lk_handle;
 	region = lt->reginfo.primary;
@@ -1412,9 +1412,9 @@ __lock_set_timeout(dbenv, locker, timeout, op)
  * return EINVAL if the parent does not exist or did not
  * have a current txn timeout set.
  *
- * PUBLIC: gint __lock_inherit_timeout __P(( DB_ENV *, u_int32_t, u_int32_t));
+ * PUBLIC: int __lock_inherit_timeout __P(( DB_ENV *, u_int32_t, u_int32_t));
  */
-gint
+int
 __lock_inherit_timeout(dbenv, parent, locker)
 	DB_ENV *dbenv;
 	u_int32_t parent, locker;
@@ -1423,7 +1423,7 @@ __lock_inherit_timeout(dbenv, parent, locker)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	u_int32_t locker_ndx;
-	gint ret;
+	int ret;
 
 	lt = dbenv->lk_handle;
 	region = lt->reginfo.primary;
@@ -1476,14 +1476,14 @@ err:
  *
  * This must be called with the locker bucket locked.
  *
- * PUBLIC: gint __lock_getlocker __P((DB_LOCKTAB *,
+ * PUBLIC: int __lock_getlocker __P((DB_LOCKTAB *,
  * PUBLIC:     u_int32_t, u_int32_t, int, DB_LOCKER **));
  */
-gint
+int
 __lock_getlocker(lt, locker, indx, create, retp)
 	DB_LOCKTAB *lt;
 	u_int32_t locker, indx;
-	gint create;
+	int create;
 	DB_LOCKER **retp;
 {
 	DB_ENV *dbenv;
@@ -1550,14 +1550,14 @@ __lock_getobj(lt, obj, ndx, create, retp)
 	DB_LOCKTAB *lt;
 	const DBT *obj;
 	u_int32_t ndx;
-	gint create;
+	int create;
 	DB_LOCKOBJ **retp;
 {
 	DB_ENV *dbenv;
 	DB_LOCKOBJ *sh_obj;
 	DB_LOCKREGION *region;
-	gint ret;
-	gpointer p;
+	int ret;
+	void *p;
 
 	dbenv = lt->dbenv;
 	region = lt->reginfo.primary;
@@ -1644,9 +1644,9 @@ __lock_is_parent(lt, locker, sh_locker)
  * Look through the waiters and holders lists and decide which (if any)
  * locks can be promoted.   Promote any that are eligible.
  *
- * PUBLIC: gint __lock_promote __P((DB_LOCKTAB *, DB_LOCKOBJ *, u_int32_t));
+ * PUBLIC: int __lock_promote __P((DB_LOCKTAB *, DB_LOCKOBJ *, u_int32_t));
  */
-gint
+int
 __lock_promote(lt, obj, flags)
 	DB_LOCKTAB *lt;
 	DB_LOCKOBJ *obj;
@@ -1656,7 +1656,7 @@ __lock_promote(lt, obj, flags)
 	DB_LOCKER *sh_locker;
 	DB_LOCKREGION *region;
 	u_int32_t locker_ndx;
-	gint had_waiters, state_changed;
+	int had_waiters, state_changed;
 
 	region = lt->reginfo.primary;
 	had_waiters = 0;
@@ -1749,7 +1749,7 @@ __lock_remove_waiter(lt, sh_obj, lockp, status)
 	db_status_t status;
 {
 	DB_LOCKREGION *region;
-	gint do_wakeup;
+	int do_wakeup;
 
 	region = lt->reginfo.primary;
 
@@ -1801,9 +1801,9 @@ __lock_expires(dbenv, timevalp, timeout)
 /*
  * __lock_expired -- determine if a lock has expired.
  *
- * PUBLIC: gint __lock_expired __P((DB_ENV *, db_timeval_t *, db_timeval_t *));
+ * PUBLIC: int __lock_expired __P((DB_ENV *, db_timeval_t *, db_timeval_t *));
  */
-gint
+int
 __lock_expired(dbenv, now, timevalp)
 	DB_ENV *dbenv;
 	db_timeval_t *now, *timevalp;
@@ -1836,7 +1836,7 @@ __lock_trade(dbenv, lock, new_locker)
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	DB_LOCKER *sh_locker;
-	gint ret;
+	int ret;
 	u_int32_t locker_ndx;
 
 	lt = dbenv->lk_handle;

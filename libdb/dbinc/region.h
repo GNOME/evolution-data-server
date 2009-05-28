@@ -262,7 +262,7 @@ typedef struct __db_regmaint_t {
  * portable.  We use u_int32_t, which restricts regions to 4Gb in size.
  */
 #define	R_ADDR(base, offset)						\
-	((gpointer)((u_int8_t *)((base)->addr) + offset))
+	((void *)((u_int8_t *)((base)->addr) + offset))
 #define	R_OFFSET(base, p)						\
 	((u_int32_t)((u_int8_t *)(p) - (u_int8_t *)(base)->addr))
 

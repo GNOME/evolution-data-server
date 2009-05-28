@@ -25,7 +25,7 @@ struct xid_t {
 	long formatID;			/* format identifier */
 	long gtrid_length;		/* value from 1 through 64 */
 	long bqual_length;		/* value from 1 through 64 */
-	gchar data[XIDDATASIZE];
+	char data[XIDDATASIZE];
 };
 typedef	struct xid_t XID;
 /*
@@ -35,8 +35,8 @@ typedef	struct xid_t XID;
 /*
  * Declarations of routines by which RMs call TMs:
  */
-extern gint ax_reg __P((int, XID *, long));
-extern gint ax_unreg __P((int, long));
+extern int ax_reg __P((int, XID *, long));
+extern int ax_unreg __P((int, long));
 
 /*
  * XA Switch Data Structure
@@ -47,29 +47,29 @@ extern gint ax_unreg __P((int, long));
 					/* strings, including the null
 					terminator */
 struct xa_switch_t {
-	gchar name[RMNAMESZ];		/* name of resource manager */
+	char name[RMNAMESZ];		/* name of resource manager */
 	long flags;			/* resource manager specific options */
 	long version;			/* must be 0 */
-	gint (*xa_open_entry)		/* xa_open function pointer */
-	    __P((gchar *, int, long));
-	gint (*xa_close_entry)		/* xa_close function pointer */
-	    __P((gchar *, int, long));
-	gint (*xa_start_entry)		/* xa_start function pointer */
+	int (*xa_open_entry)		/* xa_open function pointer */
+	    __P((char *, int, long));
+	int (*xa_close_entry)		/* xa_close function pointer */
+	    __P((char *, int, long));
+	int (*xa_start_entry)		/* xa_start function pointer */
 	    __P((XID *, int, long));
-	gint (*xa_end_entry)		/* xa_end function pointer */
+	int (*xa_end_entry)		/* xa_end function pointer */
 	    __P((XID *, int, long));
-	gint (*xa_rollback_entry)	/* xa_rollback function pointer */
+	int (*xa_rollback_entry)	/* xa_rollback function pointer */
 	    __P((XID *, int, long));
-	gint (*xa_prepare_entry)		/* xa_prepare function pointer */
+	int (*xa_prepare_entry)		/* xa_prepare function pointer */
 	    __P((XID *, int, long));
-	gint (*xa_commit_entry)		/* xa_commit function pointer */
+	int (*xa_commit_entry)		/* xa_commit function pointer */
 	    __P((XID *, int, long));
-	gint (*xa_recover_entry)		/* xa_recover function pointer */
+	int (*xa_recover_entry)		/* xa_recover function pointer */
 	    __P((XID *, long, int, long));
-	gint (*xa_forget_entry)		/* xa_forget function pointer */
+	int (*xa_forget_entry)		/* xa_forget function pointer */
 	    __P((XID *, int, long));
-	gint (*xa_complete_entry)	/* xa_complete function pointer */
-	    __P((gint *, gint *, int, long));
+	int (*xa_complete_entry)	/* xa_complete function pointer */
+	    __P((int *, int *, int, long));
 };
 
 /*

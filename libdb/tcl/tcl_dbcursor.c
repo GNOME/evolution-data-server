@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,24 +25,24 @@ static const gchar revid[] = "$Id$";
 /*
  * Prototypes for procedures defined later in this file:
  */
-static gint tcl_DbcDup __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBC *));
-static gint tcl_DbcGet __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBC *, int));
-static gint tcl_DbcPut __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBC *));
+static int tcl_DbcDup __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBC *));
+static int tcl_DbcGet __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBC *, int));
+static int tcl_DbcPut __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DBC *));
 
 /*
- * PUBLIC: gint dbc_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: int dbc_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
  *
  * dbc_cmd --
  *	Implements the cursor command.
  */
-gint
+int
 dbc_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Cursor handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static gchar *dbccmds[] = {
+	static char *dbccmds[] = {
 #if CONFIG_TEST
 		"pget",
 #endif
@@ -65,11 +65,11 @@ dbc_Cmd(clientData, interp, objc, objv)
 	};
 	DBC *dbc;
 	DBTCL_INFO *dbip;
-	gint cmdindex, result, ret;
+	int cmdindex, result, ret;
 
 	Tcl_ResetResult(interp);
 	dbc = (DBC *)clientData;
-	dbip = _PtrToInfo((gpointer)dbc);
+	dbip = _PtrToInfo((void *)dbc);
 	result = TCL_OK;
 
 	if (objc <= 1) {
@@ -147,11 +147,11 @@ dbc_Cmd(clientData, interp, objc, objv)
 static int
 tcl_DbcPut(interp, objc, objv, dbc)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DBC *dbc;			/* Cursor pointer */
 {
-	static gchar *dbcutopts[] = {
+	static char *dbcutopts[] = {
 #if CONFIG_TEST
 		"-nodupdata",
 #endif
@@ -179,10 +179,10 @@ tcl_DbcPut(interp, objc, objv, dbc)
 	DBTCL_INFO *dbcip, *dbip;
 	DBTYPE type;
 	Tcl_Obj **elemv, *res;
-	gpointer dtmp, *ktmp;
+	void *dtmp, *ktmp;
 	db_recno_t recno;
 	u_int32_t flag;
-	gint elemc, freekey, freedata, i, optindex, result, ret;
+	int elemc, freekey, freedata, i, optindex, result, ret;
 
 	result = TCL_OK;
 	flag = 0;
@@ -375,12 +375,12 @@ out:
 static int
 tcl_DbcGet(interp, objc, objv, dbc, ispget)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DBC *dbc;			/* Cursor pointer */
-	gint ispget;			/* 1 for pget, 0 for get */
+	int ispget;			/* 1 for pget, 0 for get */
 {
-	static gchar *dbcgetopts[] = {
+	static char *dbcgetopts[] = {
 #if CONFIG_TEST
 		"-dirty",
 		"-get_both_range",
@@ -434,10 +434,10 @@ tcl_DbcGet(interp, objc, objv, dbc, ispget)
 	DBTCL_INFO *dbcip, *dbip;
 	DBTYPE ptype, type;
 	Tcl_Obj **elemv, *myobj, *retlist;
-	gpointer dtmp, *ktmp;
+	void *dtmp, *ktmp;
 	db_recno_t precno, recno;
 	u_int32_t flag, op;
-	gint bufsize, elemc, freekey, freedata, i, optindex, result, ret;
+	int bufsize, elemc, freekey, freedata, i, optindex, result, ret;
 
 	result = TCL_OK;
 	flag = 0;
@@ -812,11 +812,11 @@ out:
 static int
 tcl_DbcDup(interp, objc, objv, dbc)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DBC *dbc;			/* Cursor pointer */
 {
-	static gchar *dbcdupopts[] = {
+	static char *dbcdupopts[] = {
 		"-position",
 		NULL
 	};
@@ -827,8 +827,8 @@ tcl_DbcDup(interp, objc, objv, dbc)
 	DBTCL_INFO *dbcip, *newdbcip, *dbip;
 	Tcl_Obj *res;
 	u_int32_t flag;
-	gint i, optindex, result, ret;
-	gchar newname[MSG_SIZE];
+	int i, optindex, result, ret;
+	char newname[MSG_SIZE];
 
 	result = TCL_OK;
 	flag = 0;

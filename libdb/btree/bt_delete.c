@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -62,9 +62,9 @@ static const gchar revid[] = "$Id$";
  * __bam_ditem --
  *	Delete one or more entries from a page.
  *
- * PUBLIC: gint __bam_ditem __P((DBC *, PAGE *, u_int32_t));
+ * PUBLIC: int __bam_ditem __P((DBC *, PAGE *, u_int32_t));
  */
-gint
+int
 __bam_ditem(dbc, h, indx)
 	DBC *dbc;
 	PAGE *h;
@@ -75,7 +75,7 @@ __bam_ditem(dbc, h, indx)
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
 	u_int32_t nbytes;
-	gint ret;
+	int ret;
 	db_indx_t *inp;
 
 	dbp = dbc->dbp;
@@ -171,19 +171,19 @@ __bam_ditem(dbc, h, indx)
  * __bam_adjindx --
  *	Adjust an index on the page.
  *
- * PUBLIC: gint __bam_adjindx __P((DBC *, PAGE *, u_int32_t, u_int32_t, int));
+ * PUBLIC: int __bam_adjindx __P((DBC *, PAGE *, u_int32_t, u_int32_t, int));
  */
-gint
+int
 __bam_adjindx(dbc, h, indx, indx_copy, is_insert)
 	DBC *dbc;
 	PAGE *h;
 	u_int32_t indx, indx_copy;
-	gint is_insert;
+	int is_insert;
 {
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
 	db_indx_t copy, *inp;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -221,9 +221,9 @@ __bam_adjindx(dbc, h, indx, indx_copy, is_insert)
  * __bam_dpages --
  *	Delete a set of locked pages.
  *
- * PUBLIC: gint __bam_dpages __P((DBC *, EPG *));
+ * PUBLIC: int __bam_dpages __P((DBC *, EPG *));
  */
-gint
+int
 __bam_dpages(dbc, stack_epg)
 	DBC *dbc;
 	EPG *stack_epg;
@@ -239,7 +239,7 @@ __bam_dpages(dbc, stack_epg)
 	db_indx_t nitems;
 	db_pgno_t pgno, root_pgno;
 	db_recno_t rcnt;
-	gint done, ret, t_ret;
+	int done, ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;

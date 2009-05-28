@@ -23,20 +23,20 @@
 /*
  * Process globals (we could put these in the machtab I suppose.
  */
-gint master_eid;
-gchar *myaddr;
+int master_eid;
+char *myaddr;
 
-static gint env_init __P((const gchar *, const gchar *, DB_ENV **, machtab_t *,
+static int env_init __P((const char *, const char *, DB_ENV **, machtab_t *,
     u_int32_t));
-static void usage __P((const gchar *));
+static void usage __P((const char *));
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
+	extern char *optarg;
+	extern int optind;
 	DB_ENV *dbenv;
 	DBT local;
 	enum { MASTER, CLIENT, UNKNOWN } whoami;
@@ -46,10 +46,10 @@ main(argc, argv)
 	pthread_t all_thr, conn_thr;
 	repsite_t site, *sitep, self, *selfp;
 	struct sigaction sigact;
-	gint maxsites, nsites, ret, priority, totalsites;
-	gchar *c, ch;
-	const gchar *home, *progname;
-	gpointer astatus, *cstatus;
+	int maxsites, nsites, ret, priority, totalsites;
+	char *c, ch;
+	const char *home, *progname;
+	void *astatus, *cstatus;
 
 	master_eid = DB_EID_INVALID;
 
@@ -252,7 +252,7 @@ err:	if (machtab != NULL)
  */
 static void
 usage(progname)
-	const gchar *progname;
+	const char *progname;
 {
 	fprintf(stderr, "usage: %s ", progname);
 	fprintf(stderr, "[-CM][-h home][-o host:port][-m host:port]%s",
@@ -261,16 +261,16 @@ usage(progname)
 }
 
 /* Open and configure an environment.  */
-gint
+int
 env_init(progname, home, dbenvp, machtab, flags)
-	const gchar *progname, *home;
+	const char *progname, *home;
 	DB_ENV **dbenvp;
 	machtab_t *machtab;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	gint ret;
-	gchar *prefix;
+	int ret;
+	char *prefix;
 
 	if ((prefix = malloc(strlen(progname) + 2)) == NULL) {
 		fprintf(stderr,

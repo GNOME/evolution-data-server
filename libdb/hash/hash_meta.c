@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,9 +24,9 @@ static const gchar revid[] = "$Id$";
 /*
  * Acquire the meta-data page.
  *
- * PUBLIC: gint __ham_get_meta __P((DBC *));
+ * PUBLIC: int __ham_get_meta __P((DBC *));
  */
-gint
+int
 __ham_get_meta(dbc)
 	DBC *dbc;
 {
@@ -35,7 +35,7 @@ __ham_get_meta(dbc)
 	DB_MPOOLFILE *mpf;
 	HASH *hashp;
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -63,9 +63,9 @@ __ham_get_meta(dbc)
 /*
  * Release the meta-data page.
  *
- * PUBLIC: gint __ham_release_meta __P((DBC *));
+ * PUBLIC: int __ham_release_meta __P((DBC *));
  */
-gint
+int
 __ham_release_meta(dbc)
 	DBC *dbc;
 {
@@ -90,9 +90,9 @@ __ham_release_meta(dbc)
 /*
  * Mark the meta-data page dirty.
  *
- * PUBLIC: gint __ham_dirty_meta __P((DBC *));
+ * PUBLIC: int __ham_dirty_meta __P((DBC *));
  */
-gint
+int
 __ham_dirty_meta(dbc)
 	DBC *dbc;
 {
@@ -101,7 +101,7 @@ __ham_dirty_meta(dbc)
 	DB_LOCK _tmp;
 	HASH *hashp;
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	hashp = dbp->h_internal;

@@ -406,10 +406,10 @@ xdr___txn_recover_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_array(xdrs, (gchar **)&objp->txn.txn_val, (u_int *) &objp->txn.txn_len, ~0,
+	if (!xdr_array(xdrs, (char **)&objp->txn.txn_val, (u_int *) &objp->txn.txn_len, ~0,
 		sizeof (u_int), (xdrproc_t) xdr_u_int))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->gid.gid_val, (u_int *) &objp->gid.gid_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->gid.gid_val, (u_int *) &objp->gid.gid_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->retcount))
 		return (FALSE);
@@ -560,7 +560,7 @@ xdr___db_del_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->keyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -670,7 +670,7 @@ xdr___db_get_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->keyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->datadlen))
 		return (FALSE);
@@ -680,7 +680,7 @@ xdr___db_get_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->dataflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -695,9 +695,9 @@ xdr___db_get_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	return (TRUE);
 }
@@ -768,7 +768,7 @@ xdr___db_key_range_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->keyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -900,7 +900,7 @@ xdr___db_pget_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->skeyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->pkeydlen))
 		return (FALSE);
@@ -910,7 +910,7 @@ xdr___db_pget_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->pkeyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->datadlen))
 		return (FALSE);
@@ -920,7 +920,7 @@ xdr___db_pget_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->dataflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -935,11 +935,11 @@ xdr___db_pget_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	return (TRUE);
 }
@@ -962,7 +962,7 @@ xdr___db_put_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->keyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->datadlen))
 		return (FALSE);
@@ -972,7 +972,7 @@ xdr___db_put_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->dataflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -987,7 +987,7 @@ xdr___db_put_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	return (TRUE);
 }
@@ -1143,7 +1143,7 @@ xdr___db_stat_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_array(xdrs, (gchar **)&objp->stats.stats_val, (u_int *) &objp->stats.stats_len, ~0,
+	if (!xdr_array(xdrs, (char **)&objp->stats.stats_val, (u_int *) &objp->stats.stats_len, ~0,
 		sizeof (u_int), (xdrproc_t) xdr_u_int))
 		return (FALSE);
 	return (TRUE);
@@ -1237,7 +1237,7 @@ xdr___db_join_msg(xdrs, objp)
 
 	if (!xdr_u_int(xdrs, &objp->dbpcl_id))
 		return (FALSE);
-	if (!xdr_array(xdrs, (gchar **)&objp->curs.curs_val, (u_int *) &objp->curs.curs_len, ~0,
+	if (!xdr_array(xdrs, (char **)&objp->curs.curs_val, (u_int *) &objp->curs.curs_len, ~0,
 		sizeof (u_int), (xdrproc_t) xdr_u_int))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
@@ -1372,7 +1372,7 @@ xdr___dbc_get_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->keyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->datadlen))
 		return (FALSE);
@@ -1382,7 +1382,7 @@ xdr___dbc_get_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->dataflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -1397,9 +1397,9 @@ xdr___dbc_get_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	return (TRUE);
 }
@@ -1420,7 +1420,7 @@ xdr___dbc_pget_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->skeyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->pkeydlen))
 		return (FALSE);
@@ -1430,7 +1430,7 @@ xdr___dbc_pget_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->pkeyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->datadlen))
 		return (FALSE);
@@ -1440,7 +1440,7 @@ xdr___dbc_pget_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->dataflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -1455,11 +1455,11 @@ xdr___dbc_pget_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->skeydata.skeydata_val, (u_int *) &objp->skeydata.skeydata_len, ~0))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->pkeydata.pkeydata_val, (u_int *) &objp->pkeydata.pkeydata_len, ~0))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	return (TRUE);
 }
@@ -1480,7 +1480,7 @@ xdr___dbc_put_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->keyflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->datadlen))
 		return (FALSE);
@@ -1490,7 +1490,7 @@ xdr___dbc_put_msg(xdrs, objp)
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->dataflags))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->datadata.datadata_val, (u_int *) &objp->datadata.datadata_len, ~0))
 		return (FALSE);
 	if (!xdr_u_int(xdrs, &objp->flags))
 		return (FALSE);
@@ -1505,7 +1505,7 @@ xdr___dbc_put_reply(xdrs, objp)
 
 	if (!xdr_int(xdrs, &objp->status))
 		return (FALSE);
-	if (!xdr_bytes(xdrs, (gchar **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
+	if (!xdr_bytes(xdrs, (char **)&objp->keydata.keydata_val, (u_int *) &objp->keydata.keydata_len, ~0))
 		return (FALSE);
 	return (TRUE);
 }

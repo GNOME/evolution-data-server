@@ -64,7 +64,7 @@ struct __db_txnhead {
 		u_int32_t txn_min;
 		u_int32_t txn_max;
 	} *gen_array;		/* Array of txnids associted with a gen. */
-	gint nslots;
+	int nslots;
 	LIST_HEAD(__db_headlink, __db_txnlist) head[1];
 };
 
@@ -86,7 +86,7 @@ struct __db_txnlist {
 			int32_t nentries;
 			int32_t maxentry;
 			int32_t locked;
-			gchar *fname;
+			char *fname;
 			int32_t fileid;
 			db_pgno_t *pgno_array;
 			u_int8_t uid[DB_FILE_ID_LEN];

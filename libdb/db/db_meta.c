@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -58,7 +58,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/lock.h"
 #include "dbinc/db_am.h"
 
-static void __db_init_meta __P((gpointer , u_int32_t, db_pgno_t, u_int32_t));
+static void __db_init_meta __P((void *, u_int32_t, db_pgno_t, u_int32_t));
 
 /*
  * __db_init_meta --
@@ -68,7 +68,7 @@ static void __db_init_meta __P((gpointer , u_int32_t, db_pgno_t, u_int32_t));
  */
 static void
 __db_init_meta(p, pgsize, pgno, pgtype)
-	gpointer p;
+	void *p;
 	u_int32_t pgsize;
 	db_pgno_t pgno;
 	u_int32_t pgtype;
@@ -89,9 +89,9 @@ __db_init_meta(p, pgsize, pgno, pgtype)
  * __db_new --
  *	Get a new page, preferably from the freelist.
  *
- * PUBLIC: gint __db_new __P((DBC *, u_int32_t, PAGE **));
+ * PUBLIC: int __db_new __P((DBC *, u_int32_t, PAGE **));
  */
-gint
+int
 __db_new(dbc, type, pagepp)
 	DBC *dbc;
 	u_int32_t type;
@@ -104,7 +104,7 @@ __db_new(dbc, type, pagepp)
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t pgno, newnext;
-	gint meta_flags, extend, ret;
+	int meta_flags, extend, ret;
 
 	meta = NULL;
 	meta_flags = 0;
@@ -212,9 +212,9 @@ err:	if (h != NULL)
  * __db_free --
  *	Add a page to the head of the freelist.
  *
- * PUBLIC: gint __db_free __P((DBC *, PAGE *));
+ * PUBLIC: int __db_free __P((DBC *, PAGE *));
  */
-gint
+int
 __db_free(dbc, h)
 	DBC *dbc;
 	PAGE *h;
@@ -226,7 +226,7 @@ __db_free(dbc, h)
 	DB_MPOOLFILE *mpf;
 	db_pgno_t pgno;
 	u_int32_t dirty_flag;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -292,9 +292,9 @@ err:	if ((t_ret = mpf->put(mpf, h, dirty_flag)) != 0 && ret == 0)
  * __db_lprint --
  *	Print out the list of locks currently held by a cursor.
  *
- * PUBLIC: gint __db_lprint __P((DBC *));
+ * PUBLIC: int __db_lprint __P((DBC *));
  */
-gint
+int
 __db_lprint(dbc)
 	DBC *dbc;
 {
@@ -330,13 +330,13 @@ __db_lprint(dbc)
  * __db_lget --
  *	The standard lock get call.
  *
- * PUBLIC: gint __db_lget __P((DBC *,
+ * PUBLIC: int __db_lget __P((DBC *,
  * PUBLIC:     int, db_pgno_t, db_lockmode_t, u_int32_t, DB_LOCK *));
  */
-gint
+int
 __db_lget(dbc, action, pgno, mode, lkflags, lockp)
 	DBC *dbc;
-	gint action;
+	int action;
 	db_pgno_t pgno;
 	db_lockmode_t mode;
 	u_int32_t lkflags;
@@ -346,7 +346,7 @@ __db_lget(dbc, action, pgno, mode, lkflags, lockp)
 	DB_ENV *dbenv;
 	DB_LOCKREQ couple[2], *reqp;
 	DB_TXN *txn;
-	gint has_timeout, ret;
+	int has_timeout, ret;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -424,15 +424,15 @@ lck_couple:	couple[0].op = has_timeout? DB_LOCK_GET_TIMEOUT : DB_LOCK_GET;
  * __db_lput --
  *	The standard lock put call.
  *
- * PUBLIC: gint __db_lput __P((DBC *, DB_LOCK *));
+ * PUBLIC: int __db_lput __P((DBC *, DB_LOCK *));
  */
-gint
+int
 __db_lput(dbc, lockp)
 	DBC *dbc;
 	DB_LOCK *lockp;
 {
 	DB_ENV *dbenv;
-	gint ret;
+	int ret;
 
 	dbenv = dbc->dbp->dbenv;
 

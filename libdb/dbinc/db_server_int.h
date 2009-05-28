@@ -40,10 +40,10 @@ DB_SYSTEM_MEM | DB_USE_ENVIRON | DB_USE_ENVIRON_ROOT)
 typedef struct home_entry home_entry;
 struct home_entry {
 	LIST_ENTRY(home_entry) entries;
-	gchar *home;
-	gchar *dir;
-	gchar *name;
-	gchar *passwd;
+	char *home;
+	char *dir;
+	char *name;
+	char *passwd;
 };
 
 /*
@@ -101,7 +101,7 @@ struct ct_entry {
 		DB *dbp;			/* H_DB */
 		DBC *dbc;			/* H_CURSOR */
 #endif
-		gpointer anyp;
+		void *anyp;
 	} handle_u;
 	union {					/* Private data per type */
 		ct_envdata	envdp;		/* Env info */
@@ -128,7 +128,7 @@ struct ct_entry {
 #define	ct_envdp private_u.envdp
 #define	ct_dbdp private_u.dbdp
 
-extern gint __dbsrv_verbose;
+extern int __dbsrv_verbose;
 
 /*
  * Get ctp and activate it.

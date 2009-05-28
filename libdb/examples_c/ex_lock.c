@@ -13,37 +13,37 @@
 #include <string.h>
 
 #ifdef _WIN32
-extern gint getopt(int, gchar * const *, const gchar *);
+extern int getopt(int, char * const *, const char *);
 #else
 #include <unistd.h>
 #endif
 
 #include <db.h>
 
-gint db_init __P((const gchar *, u_int32_t, int));
-gint main __P((int, gchar *[]));
-gint usage __P((void));
+int db_init __P((const char *, u_int32_t, int));
+int main __P((int, char *[]));
+int usage __P((void));
 
 DB_ENV	 *dbenv;
 const char
 	*progname = "ex_lock";				/* Program name. */
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
+	extern char *optarg;
+	extern int optind;
 	DBT lock_dbt;
 	DB_LOCK lock;
 	DB_LOCK *locks;
 	db_lockmode_t lock_type;
 	long held;
 	u_int32_t len, locker, maxlocks;
-	gint ch, do_unlink, did_get, i, lockid, lockcount, ret;
-	const gchar *home;
-	gchar opbuf[16], objbuf[1024], lockbuf[16];
+	int ch, do_unlink, did_get, i, lockid, lockcount, ret;
+	const char *home;
+	char opbuf[16], objbuf[1024], lockbuf[16];
 
 	home = "TESTDIR";
 	maxlocks = 0;
@@ -189,13 +189,13 @@ main(argc, argv)
  * db_init --
  *	Initialize the environment.
  */
-gint
+int
 db_init(home, maxlocks, do_unlink)
-	const gchar *home;
+	const char *home;
 	u_int32_t maxlocks;
-	gint do_unlink;
+	int do_unlink;
 {
-	gint ret;
+	int ret;
 
 	if ((ret = db_env_create(&dbenv, 0)) != 0) {
 		fprintf(stderr, "%s: db_env_create: %s\n",
@@ -230,7 +230,7 @@ db_init(home, maxlocks, do_unlink)
 	return (0);
 }
 
-gint
+int
 usage()
 {
 	(void)fprintf(stderr,

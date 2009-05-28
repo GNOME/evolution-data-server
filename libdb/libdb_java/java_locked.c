@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -22,7 +22,7 @@ static const gchar revid[] = "$Id$";
  *
  * Implementation of functions to manipulate LOCKED_DBT.
  */
-gint
+int
 locked_dbt_get(LOCKED_DBT *ldbt, JNIEnv *jnienv, DB_ENV *dbenv,
 	       jobject jdbt, OpKind kind)
 {
@@ -261,7 +261,7 @@ locked_dbt_put(LOCKED_DBT *ldbt, JNIEnv *jnienv, DB_ENV *dbenv)
  * Return 1 if these conditions are met, otherwise 0.  This is used
  * internally to simulate the operations needed for DB_DBT_REALLOC.
  */
-gint locked_dbt_realloc(LOCKED_DBT *ldbt, JNIEnv *jnienv, DB_ENV *dbenv)
+int locked_dbt_realloc(LOCKED_DBT *ldbt, JNIEnv *jnienv, DB_ENV *dbenv)
 {
 	DBT *dbt;
 
@@ -301,7 +301,7 @@ gint locked_dbt_realloc(LOCKED_DBT *ldbt, JNIEnv *jnienv, DB_ENV *dbenv)
  *
  * Implementation of functions to manipulate LOCKED_STRING.
  */
-gint
+int
 locked_string_get(LOCKED_STRING *ls, JNIEnv *jnienv, jstring jstr)
 {
 	ls->jstr = jstr;

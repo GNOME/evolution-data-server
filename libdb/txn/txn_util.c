@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,7 +28,7 @@ struct __txn_event {
 	union {
 		struct {
 			/* Delayed remove. */
-			gchar *name;
+			char *name;
 			u_int8_t *fileid;
 		} r;
 		struct {
@@ -45,17 +45,17 @@ struct __txn_event {
  *
  * Creates a remove event that can be added to the commit list.
  *
- * PUBLIC: gint __txn_remevent __P((DB_ENV *,
- * PUBLIC:       DB_TXN *, const gchar *, u_int8_t*));
+ * PUBLIC: int __txn_remevent __P((DB_ENV *,
+ * PUBLIC:       DB_TXN *, const char *, u_int8_t*));
  */
-gint
+int
 __txn_remevent(dbenv, txn, name, fileid)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	const gchar *name;
+	const char *name;
 	u_int8_t *fileid;
 {
-	gint ret;
+	int ret;
 	TXN_EVENT *e;
 
 	e = NULL;
@@ -89,10 +89,10 @@ err:	if (e != NULL)
  * Add a lockevent to the commit-queue.  The lock event indicates a locker
  * trade.
  *
- * PUBLIC: gint __txn_lockevent __P((DB_ENV *,
+ * PUBLIC: int __txn_lockevent __P((DB_ENV *,
  * PUBLIC:     DB_TXN *, DB *, DB_LOCK *, u_int32_t));
  */
-gint
+int
 __txn_lockevent(dbenv, txn, dbp, lock, locker)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
@@ -100,7 +100,7 @@ __txn_lockevent(dbenv, txn, dbp, lock, locker)
 	DB_LOCK *lock;
 	u_int32_t locker;
 {
-	gint ret;
+	int ret;
 	TXN_EVENT *e;
 
 	if (!LOCKING_ON(dbenv))
@@ -152,7 +152,7 @@ __txn_remlock(dbenv, txn, lock, locker)
  * Process the list of events associated with a transaction.  On commit,
  * apply the events; on abort, just toss the entries.
  *
- * PUBLIC: gint __txn_doevents __P((DB_ENV *, DB_TXN *, int, int));
+ * PUBLIC: int __txn_doevents __P((DB_ENV *, DB_TXN *, int, int));
  */
 #define	DO_TRADE do {							\
 	memset(&req, 0, sizeof(req));					\
@@ -168,15 +168,15 @@ __txn_remlock(dbenv, txn, lock, locker)
 	e->op = TXN_TRADED;						\
 } while (0)
 
-gint
+int
 __txn_doevents(dbenv, txn, is_commit, preprocess)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	gint is_commit, preprocess;
+	int is_commit, preprocess;
 {
 	DB_LOCKREQ req;
 	TXN_EVENT *e;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	ret = 0;
 

@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,10 +30,10 @@ static const gchar revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static gint __log_set_lg_bsize __P((DB_ENV *, u_int32_t));
-static gint __log_set_lg_dir __P((DB_ENV *, const gchar *));
-static gint __log_set_lg_max __P((DB_ENV *, u_int32_t));
-static gint __log_set_lg_regionmax __P((DB_ENV *, u_int32_t));
+static int __log_set_lg_bsize __P((DB_ENV *, u_int32_t));
+static int __log_set_lg_dir __P((DB_ENV *, const char *));
+static int __log_set_lg_max __P((DB_ENV *, u_int32_t));
+static int __log_set_lg_regionmax __P((DB_ENV *, u_int32_t));
 
 /*
  * __log_dbenv_create --
@@ -180,7 +180,7 @@ __log_set_lg_regionmax(dbenv, lg_regionmax)
 static int
 __log_set_lg_dir(dbenv, dir)
 	DB_ENV *dbenv;
-	const gchar *dir;
+	const char *dir;
 {
 	if (dbenv->db_log_dir != NULL)
 		__os_free(dbenv, dbenv->db_log_dir);

@@ -76,7 +76,7 @@
  *********************************************************************/
 #ifdef HAVE_MUTEX_AIX_CHECK_LOCK
 #include <sys/atomic_op.h>
-typedef gint tsl_t;
+typedef int tsl_t;
 #define	MUTEX_ALIGN	sizeof(int)
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
@@ -209,7 +209,7 @@ typedef lock_t tsl_t;
 #ifdef HAVE_MUTEX_VMS
 #include <sys/mman.h>;
 #include <builtins.h>
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 #define	MUTEX_ALIGN		sizeof(unsigned int)
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
@@ -282,7 +282,7 @@ do {									\
  * when we initialize the mutex.
  *********************************************************************/
 #ifdef HAVE_MUTEX_WIN16
-typedef guint tsl_t;
+typedef unsigned int tsl_t;
 #define	MUTEX_ALIGN		sizeof(unsigned int)
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
@@ -312,7 +312,7 @@ typedef guint tsl_t;
  * 68K/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_68K_GCC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -320,7 +320,7 @@ typedef guchar tsl_t;
  */
 #define	MUTEX_SET(tsl) ({						\
 	register tsl_t *__l = (tsl);					\
-	gint __r;							\
+	int __r;							\
 	    asm volatile("tas  %1; \n					\
 			  seq  %0"					\
 		: "=dm" (__r), "=m" (*__l)				\
@@ -390,16 +390,16 @@ MUTEX_UNSET(tsl_t *tsl) {
  * ARM/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_ARM_GCC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
  * For arm/gcc, 0 is clear, 1 is set.
  */
 #define	MUTEX_SET(tsl) ({						\
-	gint __r;							\
+	int __r;							\
 	asm volatile("swpb %0, %1, [%2]"				\
-	    : "=r" (__r)						\
+	    : "=r" (__r) 						\
 	    : "0" (1), "r" (tsl)					\
 	    : "memory"							\
 	    );								\
@@ -426,7 +426,7 @@ typedef u_int32_t tsl_t;
  */
 #define	MUTEX_SET(tsl) ({						\
 	register tsl_t *__l = (tsl);					\
-	gint __r;							\
+	int __r;							\
 	asm volatile("ldcws 0(%1),%0" : "=r" (__r) : "r" (__l));	\
 	__r & 1;							\
 })
@@ -440,7 +440,7 @@ typedef u_int32_t tsl_t;
  * IA64/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_IA64_GCC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -457,7 +457,7 @@ typedef guchar tsl_t;
  * Store through a "volatile" pointer so we get a store with "release"
  * semantics.
  */
-#define	MUTEX_UNSET(tsl)	(*(volatile guchar *)(tsl) = 0)
+#define	MUTEX_UNSET(tsl)	(*(volatile unsigned char *)(tsl) = 0)
 #define	MUTEX_INIT(tsl)		MUTEX_UNSET(tsl)
 #endif
 #endif
@@ -508,32 +508,32 @@ typedef u_int32_t tsl_t;
  * ___db_mutex_set label is used as a function name.
  */
 #ifdef HAVE_MUTEX_PPC_APPLE_GCC_ASSEMBLY
-extern gint __db_mutex_set __P((volatile tsl_t *));
+extern int __db_mutex_set __P((volatile tsl_t *));
 void
 __db_mutex_tas_dummy()
 {
 	__asm__	__volatile__("		\n\
-	.globl	___db_mutex_set		\n\
+	.globl 	___db_mutex_set		\n\
 ___db_mutex_set:			\n\
 	lwarx	r5,0,r3			\n\
-	cmpwi	r5,0			\n\
-	bne	fail			\n\
-	addi	r5,r5,1			\n\
-	stwcx.	r5,0,r3			\n\
-	beq	success			\n\
+	cmpwi 	r5,0			\n\
+	bne 	fail			\n\
+	addi 	r5,r5,1			\n\
+	stwcx. 	r5,0,r3			\n\
+	beq 	success			\n\
 fail:					\n\
-	li	r3,0			\n\
-	blr				\n\
+	li 	r3,0			\n\
+	blr 				\n\
 success:				\n\
-	li	r3,1			\n\
+	li 	r3,1			\n\
 	blr");
 }
 #define	MUTEX_SET(tsl)  __db_mutex_set(tsl)
 #endif
 #ifdef HAVE_MUTEX_PPC_GENERIC_GCC_ASSEMBLY
 #define	MUTEX_SET(tsl)	({		\
-	gint __one = 1;			\
-	gint __r;			\
+	int __one = 1;			\
+	int __r;			\
 	tsl_t *__l = (tsl);		\
 	asm volatile ("			\
 0:					\
@@ -561,7 +561,7 @@ success:				\n\
  * S/390 32-bit assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_S390_GCC_ASSEMBLY
-typedef gint tsl_t;
+typedef int tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -570,7 +570,7 @@ typedef gint tsl_t;
 static inline int
 MUTEX_SET(tsl_t *tsl) {							\
 	register tsl_t *__l = (tsl);					\
-	gint __r;							\
+	int __r;							\
   asm volatile(								\
        "    la    1,%1\n"						\
        "    lhi   0,1\n"						\
@@ -591,7 +591,7 @@ MUTEX_SET(tsl_t *tsl) {							\
  * SCO/cc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_SCO_X86_CC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -602,7 +602,7 @@ typedef guchar tsl_t;
 
 #if defined(__USLC__)
 asm int
-_tsl_set(gpointer tsl)
+_tsl_set(void *tsl)
 {
 %mem tsl
 	movl	tsl, %ecx
@@ -623,7 +623,7 @@ _tsl_set(gpointer tsl)
  * Sparc/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_SPARC_GCC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -659,7 +659,7 @@ typedef guchar tsl_t;
  * UTS/cc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_UTS_CC_ASSEMBLY
-typedef gint tsl_t;
+typedef int tsl_t;
 
 #define	MUTEX_ALIGN	sizeof(int)
 #ifdef LOAD_ACTUAL_MUTEX_CODE
@@ -673,7 +673,7 @@ typedef gint tsl_t;
  * MIPS/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_MIPS_GCC_ASSEMBLY
-typedef guint tsl_t;
+typedef unsigned int tsl_t;
 #define MUTEX_ALIGN     sizeof(unsigned int)
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
@@ -707,7 +707,7 @@ typedef guint tsl_t;
  * x86/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_X86_GCC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -715,7 +715,7 @@ typedef guchar tsl_t;
  */
 #define	MUTEX_SET(tsl) ({						\
 	register tsl_t *__l = (tsl);					\
-	gint __r;							\
+	int __r;							\
 	asm volatile("movl $1,%%eax; lock; xchgb %1,%%al; xorl $1,%%eax"\
 	    : "=&a" (__r), "=m" (*__l)					\
 	    : "1" (*__l)						\
@@ -732,7 +732,7 @@ typedef guchar tsl_t;
  * x86_64/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_X86_64_GCC_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 
 #ifdef LOAD_ACTUAL_MUTEX_CODE
 /*
@@ -740,7 +740,7 @@ typedef guchar tsl_t;
  */
 #define	MUTEX_SET(tsl) ({						\
 	register tsl_t *__l = (tsl);					\
-	gint __r;							\
+	int __r;							\
 	asm volatile("movq $1,%%rax; lock; xchgb %1,%%al; xorq $1,%%rax"\
 	    : "=&a" (__r), "=m" (*__l)					\
 	    : "1" (*__l)						\
@@ -757,7 +757,7 @@ typedef guchar tsl_t;
  * alphalinux/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY
-typedef unsigned long gint tsl_t;
+typedef unsigned long int tsl_t;
 
 #define	MUTEX_ALIGN	8
 #endif
@@ -766,21 +766,21 @@ typedef unsigned long gint tsl_t;
  * sparc32linux/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 #endif
 
 /*********************************************************************
  * sparc64linux/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY
-typedef guchar tsl_t;
+typedef unsigned char tsl_t;
 #endif
 
 /*********************************************************************
  * s390linux/gcc assembly.
  *********************************************************************/
 #ifdef HAVE_MUTEX_S390_LINUX_ASSEMBLY
-typedef volatile gint tsl_t;
+typedef volatile int tsl_t;
 #endif
 
 /*

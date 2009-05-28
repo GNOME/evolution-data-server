@@ -25,8 +25,8 @@ void  exec_proc();
 void  tm_file_init();
 void  map_file();
 void  run_proc();
-gpointer run_thread();
-gpointer run_thread_wake();
+void *run_thread();
+void *run_thread_wake();
 void  tm_mutex_destroy();
 void  tm_mutex_init();
 void  tm_mutex_stats();
@@ -47,16 +47,16 @@ int	 child;					/* -s: Slave. */
 int	 nthreads = 1;				/* -t: Threads. */
 int	 verbose;				/* -v: Verbosity. */
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gint optind;
-	extern gchar *optarg;
+	extern int optind;
+	extern char *optarg;
 	pid_t pid;
-	gint ch, eval, i, status;
-	gchar *tmpath;
+	int ch, eval, i, status;
+	char *tmpath;
 
 	tmpath = argv[0];
 	while ((ch = getopt(argc, argv, "l:n:p:st:v")) != EOF)
@@ -150,9 +150,9 @@ main(argc, argv)
 
 void
 exec_proc(tmpath)
-	gchar *tmpath;
+	char *tmpath;
 {
-	gchar *argv[10], **ap, b_l[10], b_n[10], b_t[10];
+	char *argv[10], **ap, b_l[10], b_n[10], b_t[10];
 
 	ap = &argv[0];
 	*ap++ = "tm";
@@ -178,15 +178,15 @@ run_proc()
 {
 #if defined(HAVE_MUTEX_PTHREADS) || defined(BUILD_PTHREADS_ANYWAY)
 	pthread_t *kidsp, wakep;
-	gint i, status;
-	gpointer retp;
+	int i, status;
+	void *retp;
 #endif
 	__os_sleep(&dbenv, 3, 0);		/* Let everyone catch up. */
 
 	srand((u_int)time(NULL) / getpid());	/* Initialize random numbers. */
 
 	if (nthreads == 1)			/* Simple case. */
-		exit((int)run_thread((gpointer)0));
+		exit((int)run_thread((void *)0));
 
 #if defined(HAVE_MUTEX_PTHREADS) || defined(BUILD_PTHREADS_ANYWAY)
 	/*
@@ -200,14 +200,14 @@ run_proc()
 	}
 	for (i = 0; i < nthreads; i++)
 		if ((errno = pthread_create(
-		    &kidsp[i], NULL, run_thread, (gpointer)i)) != 0) {
+		    &kidsp[i], NULL, run_thread, (void *)i)) != 0) {
 			fprintf(stderr, "tm: failed spawning thread %d: %s\n",
 			    i, strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 
 	if ((errno = pthread_create(
-	    &wakep, NULL, run_thread_wake, (gpointer)0)) != 0) {
+	    &wakep, NULL, run_thread_wake, (void *)0)) != 0) {
 		fprintf(stderr, "tm: failed spawning wakeup thread: %s\n",
 		    strerror(errno));
 		exit(EXIT_FAILURE);
@@ -237,13 +237,13 @@ run_proc()
 #endif
 }
 
-gpointer
+void *
 run_thread(arg)
-	gpointer arg;
+	void *arg;
 {
 	DB_MUTEX *gm_addr, *lm_addr, *tm_addr, *mp;
 	u_long gid1, gid2, *id_addr;
-	gint fd, i, lock, id, nl, remap;
+	int fd, i, lock, id, nl, remap;
 
 	/* Set local and global per-thread ID. */
 	id = (int)arg;
@@ -272,14 +272,14 @@ run_thread(arg)
 		if (__db_mutex_lock(&dbenv, mp)) {
 			fprintf(stderr,
 			    "%lu/%lx: never got lock\n", gid1, gid2);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 		if (id_addr[lock * 2] != 0) {
 			fprintf(stderr,
 			    "RACE! (%lu/%lx granted lock %d held by %lu/%lx)\n",
 			    gid1, gid2,
 			    lock, id_addr[lock * 2], id_addr[lock * 2 + 1]);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 		id_addr[lock * 2] = gid1;
 		id_addr[lock * 2 + 1] = gid2;
@@ -296,7 +296,7 @@ run_thread(arg)
 			    "RACE! (%lu/%lx stole lock %d from %lu/%lx)\n",
 				    id_addr[lock * 2],
 				    id_addr[lock * 2 + 1], lock, gid1, gid2);
-				return ((gpointer)EXIT_FAILURE);
+				return ((void *)EXIT_FAILURE);
 			}
 		}
 
@@ -313,25 +313,25 @@ run_thread(arg)
 		 */
 		if (__db_mutex_lock(&dbenv, gm_addr)) {
 			fprintf(stderr, "%lu/%lx: global lock\n", gid1, gid2);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 		mp = (DB_MUTEX *)((u_int8_t *)tm_addr + id * align);
 		F_SET(mp, MUTEX_WAKEME);
 		if (__db_mutex_unlock(&dbenv, gm_addr)) {
 			fprintf(stderr,
 			    "%lu/%lx: per-thread wakeup failed\n", gid1, gid2);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 		if (__db_mutex_lock(&dbenv, mp)) {
 			fprintf(stderr,
 			    "%lu/%lx: per-thread lock\n", gid1, gid2);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 		/* Time passes... */
 		if (F_ISSET(mp, MUTEX_WAKEME)) {
 			fprintf(stderr, "%lu/%lx: %03d wakeup flag still set\n",
 			    gid1, gid2, id);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 #endif
 
@@ -340,14 +340,14 @@ run_thread(arg)
 		mp = (DB_MUTEX *)((u_int8_t *)lm_addr + lock * align);
 		if (__db_mutex_unlock(&dbenv, mp)) {
 			fprintf(stderr, "%lu/%lx: wakeup failed\n", gid1, gid2);
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 
 		if (--nl % 100 == 0)
 			fprintf(stderr, "%lu/%lx: %d\n", gid1, gid2, nl);
 
 		if (nl == 0 || --remap == 0) {
-			unmap_file((gpointer)gm_addr, fd);
+			unmap_file((void *)gm_addr, fd);
 			gm_addr = NULL;
 
 			if (nl == 0)
@@ -365,12 +365,12 @@ run_thread(arg)
  * run_thread_wake --
  *	Thread to wake up other threads that are sleeping.
  */
-gpointer
+void *
 run_thread_wake(arg)
-	gpointer arg;
+	void *arg;
 {
 	DB_MUTEX *gm_addr, *tm_addr, *mp;
-	gint fd, id;
+	int fd, id;
 
 	arg = NULL;
 	map_file(&gm_addr, &tm_addr, NULL, NULL, &fd);
@@ -382,7 +382,7 @@ run_thread_wake(arg)
 		/* Acquire the global lock. */
 retry:		if (__db_mutex_lock(&dbenv, gm_addr)) {
 			fprintf(stderr, "wt: global lock failed\n");
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 
 next:		mp = (DB_MUTEX *)((u_int8_t *)tm_addr + id * align);
@@ -390,7 +390,7 @@ next:		mp = (DB_MUTEX *)((u_int8_t *)tm_addr + id * align);
 			F_CLR(mp, MUTEX_WAKEME);
 			if (__db_mutex_unlock(&dbenv, mp)) {
 				fprintf(stderr, "wt: wakeup failed\n");
-				return ((gpointer)EXIT_FAILURE);
+				return ((void *)EXIT_FAILURE);
 			}
 		}
 
@@ -399,7 +399,7 @@ next:		mp = (DB_MUTEX *)((u_int8_t *)tm_addr + id * align);
 
 		if (__db_mutex_unlock(&dbenv, gm_addr)) {
 			fprintf(stderr, "wt: global unlock failed\n");
-			return ((gpointer)EXIT_FAILURE);
+			return ((void *)EXIT_FAILURE);
 		}
 
 		__os_sleep(&dbenv, 0, 500);
@@ -418,7 +418,7 @@ next:		mp = (DB_MUTEX *)((u_int8_t *)tm_addr + id * align);
 void
 tm_file_init()
 {
-	gint fd;
+	int fd;
 
 
 	/* Initialize the backing file. */
@@ -451,7 +451,7 @@ void
 tm_mutex_init()
 {
 	DB_MUTEX *gm_addr, *lm_addr, *mp, *tm_addr;
-	gint fd, i;
+	int fd, i;
 
 	map_file(&gm_addr, &tm_addr, &lm_addr, NULL, &fd);
 
@@ -487,7 +487,7 @@ tm_mutex_init()
 			exit(EXIT_FAILURE);
 		}
 
-	unmap_file((gpointer)gm_addr, fd);
+	unmap_file((void *)gm_addr, fd);
 }
 
 /*
@@ -498,7 +498,7 @@ void
 tm_mutex_destroy()
 {
 	DB_MUTEX *gm_addr, *lm_addr, *mp, *tm_addr;
-	gint fd, i;
+	int fd, i;
 
 	map_file(&gm_addr, &tm_addr, &lm_addr, NULL, &fd);
 
@@ -530,7 +530,7 @@ tm_mutex_destroy()
 			exit(EXIT_FAILURE);
 		}
 
-	unmap_file((gpointer)gm_addr, fd);
+	unmap_file((void *)gm_addr, fd);
 #ifdef HAVE_QNX
 	(void)shm_unlink(file);
 #endif
@@ -544,7 +544,7 @@ void
 tm_mutex_stats()
 {
 	DB_MUTEX *gm_addr, *lm_addr, *mp;
-	gint fd, i;
+	int fd, i;
 
 	map_file(&gm_addr, NULL, &lm_addr, NULL, &fd);
 
@@ -554,7 +554,7 @@ tm_mutex_stats()
 		printf("mutex %2d: wait: %lu; no wait %lu\n", i,
 		    (u_long)mp->mutex_set_wait, (u_long)mp->mutex_set_nowait);
 
-	unmap_file((gpointer)gm_addr, fd);
+	unmap_file((void *)gm_addr, fd);
 }
 
 /*
@@ -565,13 +565,13 @@ void
 map_file(gm_addrp, tm_addrp, lm_addrp, id_addrp, fdp)
 	DB_MUTEX **gm_addrp, **tm_addrp, **lm_addrp;
 	u_long **id_addrp;
-	gint *fdp;
+	int *fdp;
 {
-	gpointer maddr;
-	gint fd;
+	void *maddr;
+	int fd;
 
 #ifndef MAP_FAILED
-#define	MAP_FAILED	(gpointer)-1
+#define	MAP_FAILED	(void *)-1
 #endif
 #ifndef MAP_FILE
 #define	MAP_FILE	0
@@ -613,8 +613,8 @@ map_file(gm_addrp, tm_addrp, lm_addrp, id_addrp, fdp)
  */
 void
 unmap_file(maddr, fd)
-	gpointer maddr;
-	gint fd;
+	void *maddr;
+	int fd;
 {
 	if (munmap(maddr, len) != 0) {
 		fprintf(stderr, "munmap: %s\n", strerror(errno));

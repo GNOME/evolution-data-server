@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,16 +25,16 @@ static const gchar revid[] = "$Id$";
  * __os_openhandle --
  *	Open a file, using POSIX 1003.1 open flags.
  *
- * PUBLIC: gint __os_openhandle __P((DB_ENV *, const gchar *, int, int, DB_FH *));
+ * PUBLIC: int __os_openhandle __P((DB_ENV *, const char *, int, int, DB_FH *));
  */
-gint
+int
 __os_openhandle(dbenv, name, flags, mode, fhp)
 	DB_ENV *dbenv;
-	const gchar *name;
-	gint flags, mode;
+	const char *name;
+	int flags, mode;
 	DB_FH *fhp;
 {
-	gint ret, nrepeat;
+	int ret, nrepeat;
 
 	memset(fhp, 0, sizeof(*fhp));
 	fhp->handle = INVALID_HANDLE_VALUE;
@@ -85,15 +85,15 @@ __os_openhandle(dbenv, name, flags, mode, fhp)
  * __os_closehandle --
  *	Close a file.
  *
- * PUBLIC: gint __os_closehandle __P((DB_ENV *, DB_FH *));
+ * PUBLIC: int __os_closehandle __P((DB_ENV *, DB_FH *));
  */
-gint
+int
 __os_closehandle(dbenv, fhp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 {
 	BOOL success;
-	gint ret;
+	int ret;
 
 	COMPQUIET(dbenv, NULL);
 	/* Don't close file descriptors that were never opened. */

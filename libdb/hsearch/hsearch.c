@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -64,17 +64,17 @@ static ENTRY	 retval;
  *
  * EXTERN: #if DB_DBM_HSEARCH != 0
  *
- * EXTERN: gint __db_hcreate __P((size_t));
+ * EXTERN: int __db_hcreate __P((size_t));
  * EXTERN: ENTRY *__db_hsearch __P((ENTRY, ACTION));
  * EXTERN: void __db_hdestroy __P((void));
  *
  * EXTERN: #endif
  */
-gint
+int
 __db_hcreate(nel)
 	size_t nel;
 {
-	gint ret;
+	int ret;
 
 	if ((ret = db_create(&dbp, NULL, 0)) != 0) {
 		__os_set_errno(ret);
@@ -101,7 +101,7 @@ __db_hsearch(item, action)
 	ACTION action;
 {
 	DBT key, val;
-	gint ret;
+	int ret;
 
 	if (dbp == NULL) {
 		__os_set_errno(EINVAL);
@@ -139,7 +139,7 @@ __db_hsearch(item, action)
 				__os_set_errno(ret);
 			return (NULL);
 		}
-		item.data = (gchar *)val.data;
+		item.data = (char *)val.data;
 		break;
 	default:
 		__os_set_errno(EINVAL);

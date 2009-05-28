@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -58,21 +58,21 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/hash.h"
 #include "dbinc/log.h"
 
-static gint __ham_alloc_pages __P((DB *, __ham_groupalloc_args *, DB_LSN *));
+static int __ham_alloc_pages __P((DB *, __ham_groupalloc_args *, DB_LSN *));
 
 /*
  * __ham_insdel_recover --
  *
- * PUBLIC: gint __ham_insdel_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_insdel_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_insdel_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_insdel_args *argp;
 	DB *file_dbp;
@@ -80,7 +80,7 @@ __ham_insdel_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t flags, opcode;
-	gint cmp_n, cmp_p, ret, type;
+	int cmp_n, cmp_p, ret, type;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -172,16 +172,16 @@ out:	if (pagep != NULL)
  *	This log message is used when we add/remove overflow pages.  This
  *	message takes care of the pointer chains, not the data on the pages.
  *
- * PUBLIC: gint __ham_newpage_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_newpage_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_newpage_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_newpage_args *argp;
 	DB *file_dbp;
@@ -189,7 +189,7 @@ __ham_newpage_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t flags;
-	gint cmp_n, cmp_p, ret;
+	int cmp_n, cmp_p, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -343,16 +343,16 @@ out:	if (pagep != NULL)
  *	page.  You can think of them as special cases of the more general
  *	insdel log message.
  *
- * PUBLIC: gint __ham_replace_recover
- * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_replace_recover
+ * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_replace_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_replace_args *argp;
 	DB *file_dbp;
@@ -362,7 +362,7 @@ __ham_replace_recover(dbenv, dbtp, lsnp, op, info)
 	PAGE *pagep;
 	u_int32_t flags;
 	int32_t grow;
-	gint cmp_n, cmp_p, ret;
+	int cmp_n, cmp_p, ret;
 	u_int8_t *hk;
 
 	pagep = NULL;
@@ -436,16 +436,16 @@ out:	if (pagep != NULL)
 /*
  * __ham_splitdata_recover --
  *
- * PUBLIC: gint __ham_splitdata_recover
- * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_splitdata_recover
+ * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_splitdata_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_splitdata_args *argp;
 	DB *file_dbp;
@@ -453,7 +453,7 @@ __ham_splitdata_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t flags;
-	gint cmp_n, cmp_p, ret;
+	int cmp_n, cmp_p, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -524,16 +524,16 @@ out:	if (pagep != NULL)
  * __ham_copypage_recover --
  *	Recovery function for copypage.
  *
- * PUBLIC: gint __ham_copypage_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_copypage_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_copypage_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_copypage_args *argp;
 	DB *file_dbp;
@@ -541,7 +541,7 @@ __ham_copypage_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t flags;
-	gint cmp_n, cmp_p, ret;
+	int cmp_n, cmp_p, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -672,16 +672,16 @@ out:	if (pagep != NULL)
  * __ham_metagroup_recover --
  *	Recovery function for metagroup.
  *
- * PUBLIC: gint __ham_metagroup_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_metagroup_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_metagroup_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_metagroup_args *argp;
 	HASH_CURSOR *hcp;
@@ -692,7 +692,7 @@ __ham_metagroup_recover(dbenv, dbtp, lsnp, op, info)
 	PAGE *pagep;
 	db_pgno_t pgno;
 	u_int32_t flags, mmeta_flags;
-	gint cmp_n, cmp_p, did_recover, groupgrow, ret;
+	int cmp_n, cmp_p, did_recover, groupgrow, ret;
 
 	COMPQUIET(info, NULL);
 	mmeta_flags = 0;
@@ -840,16 +840,16 @@ out:	if (mmeta != NULL)
  * __ham_groupalloc_recover --
  *	Recover the batch creation of a set of pages for a new database.
  *
- * PUBLIC: gint __ham_groupalloc_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_groupalloc_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_groupalloc_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_groupalloc_args *argp;
 	DBMETA *mmeta;
@@ -858,7 +858,7 @@ __ham_groupalloc_recover(dbenv, dbtp, lsnp, op, info)
 	DBC *dbc;
 	PAGE *pagep;
 	db_pgno_t pgno;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	mmeta = NULL;
 	modified = 0;
@@ -953,7 +953,7 @@ __ham_alloc_pages(dbp, argp, lsnp)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	db_pgno_t pgno;
-	gint ret;
+	int ret;
 
 	mpf = dbp->mpf;
 
@@ -990,22 +990,22 @@ reinit_page:
  * __ham_curadj_recover --
  *	Undo cursor adjustments if a subtransaction fails.
  *
- * PUBLIC: gint __ham_curadj_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_curadj_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_curadj_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_curadj_args *argp;
 	DB_MPOOLFILE *mpf;
 	DB *file_dbp;
 	DBC *dbc;
-	gint ret;
+	int ret;
 	HASH_CURSOR *hcp;
 
 	COMPQUIET(info, NULL);
@@ -1037,23 +1037,23 @@ out:	REC_CLOSE;
  * __ham_chgpg_recover --
  *	Undo cursor adjustments if a subtransaction fails.
  *
- * PUBLIC: gint __ham_chgpg_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __ham_chgpg_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __ham_chgpg_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__ham_chgpg_args *argp;
 	BTREE_CURSOR *opdcp;
 	DB_MPOOLFILE *mpf;
 	DB *file_dbp, *ldbp;
 	DBC *dbc;
-	gint ret;
+	int ret;
 	DBC *cp;
 	HASH_CURSOR *lcp;
 	u_int32_t order, indx;

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,10 +23,10 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/rep.h"
 #include "dbinc/txn.h"
 
-static gint __rep_apply __P((DB_ENV *, REP_CONTROL *, DBT *));
-static gint __rep_collect_txn __P((DB_ENV *, DB_LSN *, LSN_COLLECTION *));
-static gint __rep_lsn_cmp __P((gconstpointer , gconstpointer ));
-static gint __rep_newfile __P((DB_ENV *, REP_CONTROL *, DBT *, DB_LSN *));
+static int __rep_apply __P((DB_ENV *, REP_CONTROL *, DBT *));
+static int __rep_collect_txn __P((DB_ENV *, DB_LSN *, LSN_COLLECTION *));
+static int __rep_lsn_cmp __P((const void *, const void *));
+static int __rep_newfile __P((DB_ENV *, REP_CONTROL *, DBT *, DB_LSN *));
 
 #define	IS_SIMPLE(R)	((R) != DB___txn_regop && \
     (R) != DB___txn_ckp && (R) != DB___dbreg_register)
@@ -42,13 +42,13 @@ static gint __rep_newfile __P((DB_ENV *, REP_CONTROL *, DBT *, DB_LSN *));
  *	in the case of a DB_NEWMASTER message, returns the eid
  *	of the new master.
  *
- * PUBLIC: gint __rep_process_message __P((DB_ENV *, DBT *, DBT *, gint *));
+ * PUBLIC: int __rep_process_message __P((DB_ENV *, DBT *, DBT *, int *));
  */
-gint
+int
 __rep_process_message(dbenv, control, rec, eidp)
 	DB_ENV *dbenv;
 	DBT *control, *rec;
-	gint *eidp;
+	int *eidp;
 {
 	DB_LOG *dblp;
 	DB_LOGC *logc;
@@ -60,8 +60,8 @@ __rep_process_message(dbenv, control, rec, eidp)
 	REP_CONTROL *rp;
 	REP_VOTE_INFO *vi;
 	u_int32_t bytes, gen, gbytes, type, unused;
-	gint check_limit, cmp, done, do_req, i;
-	gint master, old, recovering, ret, t_ret, *tally;
+	int check_limit, cmp, done, do_req, i;
+	int master, old, recovering, ret, t_ret, *tally;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv, dbenv->tx_handle, "rep_stat", DB_INIT_TXN);
@@ -331,7 +331,7 @@ send:				ret = __rep_send_message(dbenv, *eidp,
 		 * There are three different cases here.
 		 * 1. We asked for a particular LSN and got it.
 		 * 2. We asked for an LSN of X,0 which is invalid and got the
-		 *	first log record in a particular file.
+		 * 	first log record in a particular file.
 		 * 3. We asked for an LSN and it's not found because it is
 		 *	beyond the end of a log file and we need a NEWFILE msg.
 		 */
@@ -765,7 +765,7 @@ __rep_apply(dbenv, rp, rec)
 	REP *rep;
 	REP_CONTROL lsn_rc;
 	u_int32_t rectype, txnid;
-	gint cmp, do_req, eid, have_mutex, ret, t_ret;
+	int cmp, do_req, eid, have_mutex, ret, t_ret;
 
 	db_rep = dbenv->rep_handle;
 	rep = db_rep->region;
@@ -1249,9 +1249,9 @@ err:	if (dbc != NULL && (t_ret = dbc->c_close(dbc)) != 0 && ret == 0)
  * This is the routine that actually gets a transaction ready for
  * processing.
  *
- * PUBLIC: gint __rep_process_txn __P((DB_ENV *, DBT *));
+ * PUBLIC: int __rep_process_txn __P((DB_ENV *, DBT *));
  */
-gint
+int
 __rep_process_txn(dbenv, rec)
 	DB_ENV *dbenv;
 	DBT *rec;
@@ -1266,10 +1266,10 @@ __rep_process_txn(dbenv, rec)
 	__txn_regop_args *txn_args;
 	__txn_xa_regop_args *prep_args;
 	u_int32_t lockid, op, rectype;
-	gint i, ret, t_ret;
-	gint (**dtab)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+	int i, ret, t_ret;
+	int (**dtab)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 	size_t dtabsize;
-	gpointer txninfo;
+	void *txninfo;
 
 	db_rep = dbenv->rep_handle;
 	rep = db_rep->region;
@@ -1405,7 +1405,7 @@ __rep_collect_txn(dbenv, lsnp, lc)
 	DB_LSN c_lsn;
 	DBT data;
 	u_int32_t rectype;
-	gint nalloc, ret, t_ret;
+	int nalloc, ret, t_ret;
 
 	memset(&data, 0, sizeof(data));
 	F_SET(&data, DB_DBT_REALLOC);
@@ -1463,7 +1463,7 @@ err:	if ((t_ret = logc->close(logc, 0)) != 0 && ret == 0)
  */
 static int
 __rep_lsn_cmp(lsn1, lsn2)
-	gconstpointer lsn1, *lsn2;
+	const void *lsn1, *lsn2;
 {
 
 	return (log_compare((DB_LSN *)lsn1, (DB_LSN *)lsn2));

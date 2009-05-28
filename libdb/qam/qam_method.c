@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,7 +26,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/qam.h"
 #include "dbinc/txn.h"
 
-static gint __qam_set_extentsize __P((DB *, u_int32_t));
+static int __qam_set_extentsize __P((DB *, u_int32_t));
 
 struct __qam_cookie {
 	DB_LSN lsn;
@@ -37,14 +37,14 @@ struct __qam_cookie {
  * __qam_db_create --
  *	Queue specific initialization of the DB structure.
  *
- * PUBLIC: gint __qam_db_create __P((DB *));
+ * PUBLIC: int __qam_db_create __P((DB *));
  */
-gint
+int
 __qam_db_create(dbp)
 	DB *dbp;
 {
 	QUEUE *t;
-	gint ret;
+	int ret;
 
 	/* Allocate and initialize the private queue structure. */
 	if ((ret = __os_calloc(dbp->dbenv, 1, sizeof(QUEUE), &t)) != 0)
@@ -61,9 +61,9 @@ __qam_db_create(dbp)
  * __qam_db_close --
  *	Queue specific discard of the DB structure.
  *
- * PUBLIC: gint __qam_db_close __P((DB *));
+ * PUBLIC: int __qam_db_close __P((DB *));
  */
-gint
+int
 __qam_db_close(dbp)
 	DB *dbp;
 {
@@ -72,7 +72,7 @@ __qam_db_close(dbp)
 	QUEUE *t;
 	struct __qmpf *mpfp;
 	u_int32_t i;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	ret = 0;
 	if ((t = dbp->q_internal) == NULL)
@@ -127,9 +127,9 @@ __qam_set_extentsize(dbp, extentsize)
  * __db_prqueue --
  *	Print out a queue
  *
- * PUBLIC: gint __db_prqueue __P((DB *, FILE *, u_int32_t));
+ * PUBLIC: int __db_prqueue __P((DB *, FILE *, u_int32_t));
  */
-gint
+int
 __db_prqueue(dbp, fp, flags)
 	DB *dbp;
 	FILE *fp;
@@ -139,7 +139,7 @@ __db_prqueue(dbp, fp, flags)
 	PAGE *h;
 	QMETA *meta;
 	db_pgno_t first, i, last, pg_ext, stop;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	mpf = dbp->mpf;
 
@@ -198,14 +198,14 @@ begin:
  * __qam_remove
  *	Remove method for a Queue.
  *
- * PUBLIC: gint __qam_remove __P((DB *,
- * PUBLIC:     DB_TXN *, const gchar *, const gchar *, DB_LSN *));
+ * PUBLIC: int __qam_remove __P((DB *,
+ * PUBLIC:     DB_TXN *, const char *, const char *, DB_LSN *));
  */
-gint
+int
 __qam_remove(dbp, txn, name, subdb, lsnp)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name, *subdb;
+	const char *name, *subdb;
 	DB_LSN *lsnp;
 {
 	DB_ENV *dbenv;
@@ -213,8 +213,8 @@ __qam_remove(dbp, txn, name, subdb, lsnp)
 	MPFARRAY *ap;
 	QUEUE *qp;
 	QUEUE_FILELIST *filelist, *fp;
-	gint ret, needclose, t_ret;
-	gchar buf[MAXPATHLEN];
+	int ret, needclose, t_ret;
+	char buf[MAXPATHLEN];
 	u_int8_t fid[DB_FILE_ID_LEN];
 
 	COMPQUIET(lsnp, NULL);
@@ -319,23 +319,23 @@ err:	if (filelist != NULL)
  * __qam_rename
  *	Rename method for Queue.
  *
- * PUBLIC: gint __qam_rename __P((DB *, DB_TXN *,
- * PUBLIC:     const gchar *, const gchar *, const gchar *));
+ * PUBLIC: int __qam_rename __P((DB *, DB_TXN *,
+ * PUBLIC:     const char *, const char *, const char *));
  */
-gint
+int
 __qam_rename(dbp, txn, filename, subdb, newname)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *filename, *subdb, *newname;
+	const char *filename, *subdb, *newname;
 {
 	DB_ENV *dbenv;
 	DB *tmpdbp;
 	MPFARRAY *ap;
 	QUEUE *qp;
 	QUEUE_FILELIST *fp, *filelist;
-	gchar buf[MAXPATHLEN], nbuf[MAXPATHLEN];
-	gchar *namep;
-	gint ret, needclose, t_ret;
+	char buf[MAXPATHLEN], nbuf[MAXPATHLEN];
+	char *namep;
+	int ret, needclose, t_ret;
 	u_int8_t fid[DB_FILE_ID_LEN], *fidp;
 
 	dbenv = dbp->dbenv;

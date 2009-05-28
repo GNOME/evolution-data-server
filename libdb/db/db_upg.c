@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,8 +24,8 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/hash.h"
 #include "dbinc/qam.h"
 
-static gint (* const func_31_list[P_PAGETYPE_MAX])
-    __P((DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *)) = {
+static int (* const func_31_list[P_PAGETYPE_MAX])
+    __P((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *)) = {
 	NULL,			/* P_INVALID */
 	NULL,			/* __P_DUPLICATE */
 	__ham_31_hash,		/* P_HASH */
@@ -38,27 +38,27 @@ static gint (* const func_31_list[P_PAGETYPE_MAX])
 	__bam_31_btreemeta,	/* P_BTREEMETA */
 };
 
-static gint __db_page_pass __P((DB *, gchar *, u_int32_t, gint (* const [])
-	       (DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *), DB_FH *));
+static int __db_page_pass __P((DB *, char *, u_int32_t, int (* const [])
+	       (DB *, char *, u_int32_t, DB_FH *, PAGE *, int *), DB_FH *));
 
 /*
  * __db_upgrade --
  *	Upgrade an existing database.
  *
- * PUBLIC: gint __db_upgrade __P((DB *, const gchar *, u_int32_t));
+ * PUBLIC: int __db_upgrade __P((DB *, const char *, u_int32_t));
  */
-gint
+int
 __db_upgrade(dbp, fname, flags)
 	DB *dbp;
-	const gchar *fname;
+	const char *fname;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
 	DB_FH fh;
 	size_t n;
-	gint ret, t_ret;
+	int ret, t_ret;
 	u_int8_t mbuf[256];
-	gchar *real_name;
+	char *real_name;
 
 	dbenv = dbp->dbenv;
 
@@ -252,17 +252,17 @@ err:	if ((t_ret = __os_closehandle(dbenv, &fh)) != 0 && ret == 0)
 static int
 __db_page_pass(dbp, real_name, flags, fl, fhp)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int32_t flags;
-	gint (* const fl[P_PAGETYPE_MAX])
-	    __P((DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *));
+	int (* const fl[P_PAGETYPE_MAX])
+	    __P((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *));
 	DB_FH *fhp;
 {
 	DB_ENV *dbenv;
 	PAGE *page;
 	db_pgno_t i, pgno_last;
 	size_t n;
-	gint dirty, ret;
+	int dirty, ret;
 
 	dbenv = dbp->dbenv;
 
@@ -305,19 +305,19 @@ __db_page_pass(dbp, real_name, flags, fl, fhp)
  * __db_lastpgno --
  *	Return the current last page number of the file.
  *
- * PUBLIC: gint __db_lastpgno __P((DB *, gchar *, DB_FH *, db_pgno_t *));
+ * PUBLIC: int __db_lastpgno __P((DB *, char *, DB_FH *, db_pgno_t *));
  */
-gint
+int
 __db_lastpgno(dbp, real_name, fhp, pgno_lastp)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	DB_FH *fhp;
 	db_pgno_t *pgno_lastp;
 {
 	DB_ENV *dbenv;
 	db_pgno_t pgno_last;
 	u_int32_t mbytes, bytes;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 

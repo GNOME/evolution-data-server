@@ -11,7 +11,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -38,39 +38,39 @@ static const gchar revid[] = "$Id$";
  * list of already open segments.
  */
 typedef struct {
-	gpointer segment;			/* Segment address. */
+	void *segment;			/* Segment address. */
 	u_int32_t size;			/* Segment size. */
-	gchar *name;			/* Segment name. */
+	char *name;			/* Segment name. */
 	long segid;			/* Segment ID. */
 } os_segdata_t;
 
 static os_segdata_t *__os_segdata;	/* Segment table. */
-static gint __os_segdata_size;		/* Segment table size. */
+static int __os_segdata_size;		/* Segment table size. */
 
 #define	OS_SEGDATA_STARTING_SIZE 16
 #define	OS_SEGDATA_INCREMENT	 16
 
-static gint __os_segdata_allocate
-	       __P((DB_ENV *, const gchar *, REGINFO *, REGION *));
-static gint __os_segdata_find_byname
-	       __P((DB_ENV *, const gchar *, REGINFO *, REGION *));
-static gint __os_segdata_init __P((DB_ENV *));
-static gint __os_segdata_new __P((DB_ENV *, gint *));
-static gint __os_segdata_release __P((DB_ENV *, REGION *, int));
+static int __os_segdata_allocate
+	       __P((DB_ENV *, const char *, REGINFO *, REGION *));
+static int __os_segdata_find_byname
+	       __P((DB_ENV *, const char *, REGINFO *, REGION *));
+static int __os_segdata_init __P((DB_ENV *));
+static int __os_segdata_new __P((DB_ENV *, int *));
+static int __os_segdata_release __P((DB_ENV *, REGION *, int));
 
 /*
  * __os_r_sysattach --
  *	Create/join a shared memory region.
  *
- * PUBLIC: gint __os_r_sysattach __P((DB_ENV *, REGINFO *, REGION *));
+ * PUBLIC: int __os_r_sysattach __P((DB_ENV *, REGINFO *, REGION *));
  */
-gint
+int
 __os_r_sysattach(dbenv, infop, rp)
 	DB_ENV *dbenv;
 	REGINFO *infop;
 	REGION *rp;
 {
-	gint ret;
+	int ret;
 
 	if (__os_segdata == NULL)
 		__os_segdata_init(dbenv);
@@ -130,13 +130,13 @@ out:
  * __os_r_sysdetach --
  *	Detach from a shared region.
  *
- * PUBLIC: gint __os_r_sysdetach __P((DB_ENV *, REGINFO *, int));
+ * PUBLIC: int __os_r_sysdetach __P((DB_ENV *, REGINFO *, int));
  */
-gint
+int
 __os_r_sysdetach(dbenv, infop, destroy)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	gint destroy;
+	int destroy;
 {
 	/*
 	 * If just detaching, there is no mapping to discard.
@@ -151,17 +151,17 @@ __os_r_sysdetach(dbenv, infop, destroy)
  * __os_mapfile --
  *	Map in a shared memory file.
  *
- * PUBLIC: gint __os_mapfile __P((DB_ENV *,
- * PUBLIC:    gchar *, DB_FH *, size_t, int, gpointer *));
+ * PUBLIC: int __os_mapfile __P((DB_ENV *,
+ * PUBLIC:    char *, DB_FH *, size_t, int, void **));
  */
-gint
+int
 __os_mapfile(dbenv, path, fhp, len, is_rdonly, addrp)
 	DB_ENV *dbenv;
-	gchar *path;
+	char *path;
 	DB_FH *fhp;
-	gint is_rdonly;
+	int is_rdonly;
 	size_t len;
-	gpointer *addrp;
+	void **addrp;
 {
 	/* We cannot map in regular files in VxWorks. */
 	COMPQUIET(dbenv, NULL);
@@ -177,12 +177,12 @@ __os_mapfile(dbenv, path, fhp, len, is_rdonly, addrp)
  * __os_unmapfile --
  *	Unmap the shared memory file.
  *
- * PUBLIC: gint __os_unmapfile __P((DB_ENV *, gpointer , size_t));
+ * PUBLIC: int __os_unmapfile __P((DB_ENV *, void *, size_t));
  */
-gint
+int
 __os_unmapfile(dbenv, addr, len)
 	DB_ENV *dbenv;
-	gpointer addr;
+	void *addr;
 	size_t len;
 {
 	/* We cannot map in regular files in VxWorks. */
@@ -201,7 +201,7 @@ static int
 __os_segdata_init(dbenv)
 	DB_ENV *dbenv;
 {
-	gint ret;
+	int ret;
 
 	if (__os_segdata != NULL) {
 		__db_err(dbenv, "shared memory segment already exists");
@@ -226,14 +226,14 @@ __os_segdata_init(dbenv)
  *	Currently not called.  This function should be called if the
  *	user creates a function to unload or shutdown.
  *
- * PUBLIC: gint __os_segdata_destroy __P((DB_ENV *));
+ * PUBLIC: int __os_segdata_destroy __P((DB_ENV *));
  */
-gint
+int
 __os_segdata_destroy(dbenv)
 	DB_ENV *dbenv;
 {
 	os_segdata_t *p;
-	gint i;
+	int i;
 
 	if (__os_segdata == NULL)
 		return (0);
@@ -270,12 +270,12 @@ __os_segdata_destroy(dbenv)
 static int
 __os_segdata_allocate(dbenv, name, infop, rp)
 	DB_ENV *dbenv;
-	const gchar *name;
+	const char *name;
 	REGINFO *infop;
 	REGION *rp;
 {
 	os_segdata_t *p;
-	gint id, ret;
+	int id, ret;
 
 	if ((ret = __os_segdata_new(dbenv, &id)) != 0)
 		return (ret);
@@ -307,10 +307,10 @@ __os_segdata_allocate(dbenv, name, infop, rp)
 static int
 __os_segdata_new(dbenv, segidp)
 	DB_ENV *dbenv;
-	gint *segidp;
+	int *segidp;
 {
 	os_segdata_t *p;
-	gint i, newsize, ret;
+	int i, newsize, ret;
 
 	if (__os_segdata == NULL) {
 		__db_err(dbenv, "shared memory segment not initialized");
@@ -348,18 +348,18 @@ __os_segdata_new(dbenv, segidp)
  * Assumes it is called with the SEGDATA lock taken.
  *
  * PUBLIC: __os_segdata_find_byname
- * PUBLIC:     __P((DB_ENV *, const gchar *, REGINFO *, REGION *));
+ * PUBLIC:     __P((DB_ENV *, const char *, REGINFO *, REGION *));
  */
 static int
 __os_segdata_find_byname(dbenv, name, infop, rp)
 	DB_ENV *dbenv;
-	const gchar *name;
+	const char *name;
 	REGINFO *infop;
 	REGION *rp;
 {
 	os_segdata_t *p;
 	long segid;
-	gint i;
+	int i;
 
 	if (__os_segdata == NULL) {
 		__db_err(dbenv, "shared memory segment not initialized");
@@ -406,7 +406,7 @@ static int
 __os_segdata_release(dbenv, rp, is_locked)
 	DB_ENV *dbenv;
 	REGION *rp;
-	gint is_locked;
+	int is_locked;
 {
 	os_segdata_t *p;
 

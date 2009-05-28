@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -51,26 +51,26 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/txn.h"
 
-static gint __dbreg_open_file __P((DB_ENV *,
-    DB_TXN *, __dbreg_register_args *, gpointer ));
+static int __dbreg_open_file __P((DB_ENV *,
+    DB_TXN *, __dbreg_register_args *, void *));
 
 /*
- * PUBLIC: gint __dbreg_register_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __dbreg_register_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __dbreg_register_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	DB_ENTRY *dbe;
 	DB_LOG *dblp;
 	DB *dbp;
 	__dbreg_register_args *argp;
-	gint do_close, do_open, do_rem, ret, t_ret;
+	int do_close, do_open, do_rem, ret, t_ret;
 
 	dblp = dbenv->lg_handle;
 	dbp = NULL;
@@ -274,7 +274,7 @@ __dbreg_open_file(dbenv, txn, argp, info)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
 	__dbreg_register_args *argp;
-	gpointer info;
+	void *info;
 {
 	DB_ENTRY *dbe;
 	DB_LOG *lp;

@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -21,48 +21,48 @@ static const gchar revid[] = "$Id$";
 #define	sys_nerr _sys_nerr
 #endif
 
-const gchar * const name_DB                 = "Db";
-const gchar * const name_DB_BTREE_STAT      = "DbBtreeStat";
-const gchar * const name_DBC                = "Dbc";
-const gchar * const name_DB_DEADLOCK_EX     = "DbDeadlockException";
-const gchar * const name_DB_ENV             = "DbEnv";
-const gchar * const name_DB_EXCEPTION       = "DbException";
-const gchar * const name_DB_HASH_STAT       = "DbHashStat";
-const gchar * const name_DB_LOCK            = "DbLock";
-const gchar * const name_DB_LOCK_STAT       = "DbLockStat";
-const gchar * const name_DB_LOCKNOTGRANTED_EX = "DbLockNotGrantedException";
-const gchar * const name_DB_LOGC            = "DbLogc";
-const gchar * const name_DB_LOG_STAT        = "DbLogStat";
-const gchar * const name_DB_LSN             = "DbLsn";
-const gchar * const name_DB_MEMORY_EX       = "DbMemoryException";
-const gchar * const name_DB_MPOOL_FSTAT     = "DbMpoolFStat";
-const gchar * const name_DB_MPOOL_STAT      = "DbMpoolStat";
-const gchar * const name_DB_PREPLIST        = "DbPreplist";
-const gchar * const name_DB_QUEUE_STAT      = "DbQueueStat";
-const gchar * const name_DB_REP_STAT        = "DbRepStat";
-const gchar * const name_DB_RUNRECOVERY_EX  = "DbRunRecoveryException";
-const gchar * const name_DBT                = "Dbt";
-const gchar * const name_DB_TXN             = "DbTxn";
-const gchar * const name_DB_TXN_STAT        = "DbTxnStat";
-const gchar * const name_DB_TXN_STAT_ACTIVE = "DbTxnStat$Active";
-const gchar * const name_DB_UTIL            = "DbUtil";
-const gchar * const name_DbAppendRecno      = "DbAppendRecno";
-const gchar * const name_DbBtreeCompare     = "DbBtreeCompare";
-const gchar * const name_DbBtreePrefix      = "DbBtreePrefix";
-const gchar * const name_DbDupCompare       = "DbDupCompare";
-const gchar * const name_DbEnvFeedback      = "DbEnvFeedback";
-const gchar * const name_DbErrcall          = "DbErrcall";
-const gchar * const name_DbHash             = "DbHash";
-const gchar * const name_DbLockRequest      = "DbLockRequest";
-const gchar * const name_DbFeedback         = "DbFeedback";
-const gchar * const name_DbRecoveryInit     = "DbRecoveryInit";
-const gchar * const name_DbRepTransport	   = "DbRepTransport";
-const gchar * const name_DbSecondaryKeyCreate = "DbSecondaryKeyCreate";
-const gchar * const name_DbTxnRecover       = "DbTxnRecover";
-const gchar * const name_RepElectResult = "DbEnv$RepElectResult";
-const gchar * const name_RepProcessMessage = "DbEnv$RepProcessMessage";
+const char * const name_DB                 = "Db";
+const char * const name_DB_BTREE_STAT      = "DbBtreeStat";
+const char * const name_DBC                = "Dbc";
+const char * const name_DB_DEADLOCK_EX     = "DbDeadlockException";
+const char * const name_DB_ENV             = "DbEnv";
+const char * const name_DB_EXCEPTION       = "DbException";
+const char * const name_DB_HASH_STAT       = "DbHashStat";
+const char * const name_DB_LOCK            = "DbLock";
+const char * const name_DB_LOCK_STAT       = "DbLockStat";
+const char * const name_DB_LOCKNOTGRANTED_EX = "DbLockNotGrantedException";
+const char * const name_DB_LOGC            = "DbLogc";
+const char * const name_DB_LOG_STAT        = "DbLogStat";
+const char * const name_DB_LSN             = "DbLsn";
+const char * const name_DB_MEMORY_EX       = "DbMemoryException";
+const char * const name_DB_MPOOL_FSTAT     = "DbMpoolFStat";
+const char * const name_DB_MPOOL_STAT      = "DbMpoolStat";
+const char * const name_DB_PREPLIST        = "DbPreplist";
+const char * const name_DB_QUEUE_STAT      = "DbQueueStat";
+const char * const name_DB_REP_STAT        = "DbRepStat";
+const char * const name_DB_RUNRECOVERY_EX  = "DbRunRecoveryException";
+const char * const name_DBT                = "Dbt";
+const char * const name_DB_TXN             = "DbTxn";
+const char * const name_DB_TXN_STAT        = "DbTxnStat";
+const char * const name_DB_TXN_STAT_ACTIVE = "DbTxnStat$Active";
+const char * const name_DB_UTIL            = "DbUtil";
+const char * const name_DbAppendRecno      = "DbAppendRecno";
+const char * const name_DbBtreeCompare     = "DbBtreeCompare";
+const char * const name_DbBtreePrefix      = "DbBtreePrefix";
+const char * const name_DbDupCompare       = "DbDupCompare";
+const char * const name_DbEnvFeedback      = "DbEnvFeedback";
+const char * const name_DbErrcall          = "DbErrcall";
+const char * const name_DbHash             = "DbHash";
+const char * const name_DbLockRequest      = "DbLockRequest";
+const char * const name_DbFeedback         = "DbFeedback";
+const char * const name_DbRecoveryInit     = "DbRecoveryInit";
+const char * const name_DbRepTransport	   = "DbRepTransport";
+const char * const name_DbSecondaryKeyCreate = "DbSecondaryKeyCreate";
+const char * const name_DbTxnRecover       = "DbTxnRecover";
+const char * const name_RepElectResult = "DbEnv$RepElectResult";
+const char * const name_RepProcessMessage = "DbEnv$RepProcessMessage";
 
-const gchar * const string_signature    = "Ljava/lang/String;";
+const char * const string_signature    = "Ljava/lang/String;";
 
 jfieldID fid_Dbt_data;
 jfieldID fid_Dbt_offset;
@@ -129,7 +129,7 @@ void one_time_init(JNIEnv *jnienv)
  * The private data is stored in the object as a Java long (64 bits),
  * which is long enough to store a pointer on current architectures.
  */
-gpointer get_private_dbobj(JNIEnv *jnienv, const gchar *classname,
+void *get_private_dbobj(JNIEnv *jnienv, const char *classname,
 			jobject obj)
 {
 	jclass dbClass;
@@ -151,8 +151,8 @@ gpointer get_private_dbobj(JNIEnv *jnienv, const gchar *classname,
  * The private data is stored in the object as a Java long (64 bits),
  * which is long enough to store a pointer on current architectures.
  */
-void set_private_dbobj(JNIEnv *jnienv, const gchar *classname,
-		       jobject obj, gpointer value)
+void set_private_dbobj(JNIEnv *jnienv, const char *classname,
+		       jobject obj, void *value)
 {
 	long_to_ptr lp;
 	jclass dbClass;
@@ -171,7 +171,7 @@ void set_private_dbobj(JNIEnv *jnienv, const gchar *classname,
  * The private data is stored in the object as a Java long (64 bits),
  * which is long enough to store a pointer on current architectures.
  */
-gpointer get_private_info(JNIEnv *jnienv, const gchar *classname,
+void *get_private_info(JNIEnv *jnienv, const char *classname,
 		       jobject obj)
 {
 	jclass dbClass;
@@ -193,8 +193,8 @@ gpointer get_private_info(JNIEnv *jnienv, const gchar *classname,
  * The private data is stored in the object as a Java long (64 bits),
  * which is long enough to store a pointer on current architectures.
  */
-void set_private_info(JNIEnv *jnienv, const gchar *classname,
-		      jobject obj, gpointer value)
+void set_private_info(JNIEnv *jnienv, const char *classname,
+		      jobject obj, void *value)
 {
 	long_to_ptr lp;
 	jclass dbClass;
@@ -212,7 +212,7 @@ void set_private_info(JNIEnv *jnienv, const gchar *classname,
  * Given a non-qualified name (e.g. "foo"), get the class handle
  * for the fully qualified name (e.g. "com.sleepycat.db.foo")
  */
-jclass get_class(JNIEnv *jnienv, const gchar *classname)
+jclass get_class(JNIEnv *jnienv, const char *classname)
 {
 	/*
 	 * Note: PERFORMANCE: It should be possible to cache jclass's.
@@ -222,7 +222,7 @@ jclass get_class(JNIEnv *jnienv, const gchar *classname)
 	 * technically right, but it would likely work with
 	 * most implementations.  Possibly make it configurable.
 	 */
-	gchar fullname[128];
+	char fullname[128];
 
 	(void)snprintf(fullname, sizeof(fullname),
 	    "%s%s", DB_PACKAGE_NAME, classname);
@@ -236,14 +236,14 @@ jclass get_class(JNIEnv *jnienv, const gchar *classname)
  * This is appropriate to be used for classes that may
  * not be present.
  */
-jclass get_fully_qualified_class(JNIEnv *jnienv, const gchar *classname)
+jclass get_fully_qualified_class(JNIEnv *jnienv, const char *classname)
 {
 	jclass result;
 
 	result = ((*jnienv)->FindClass(jnienv, classname));
 	if (result == NULL) {
 		jclass cnfe;
-		gchar message[1024];
+		char message[1024];
 
 		cnfe = (*jnienv)->FindClass(jnienv,
 				    "java/lang/ClassNotFoundException");
@@ -259,10 +259,10 @@ jclass get_fully_qualified_class(JNIEnv *jnienv, const gchar *classname)
  * The field must be a DB object type.
  */
 void set_object_field(JNIEnv *jnienv, jclass class_of_this,
-		      jobject jthis, const gchar *object_classname,
-		      const gchar *name_of_field, jobject obj)
+		      jobject jthis, const char *object_classname,
+		      const char *name_of_field, jobject obj)
 {
-	gchar signature[512];
+	char signature[512];
 	jfieldID id;
 
 	(void)snprintf(signature, sizeof(signature),
@@ -277,7 +277,7 @@ void set_object_field(JNIEnv *jnienv, jclass class_of_this,
  * The field must be an integer type.
  */
 void set_int_field(JNIEnv *jnienv, jclass class_of_this,
-		   jobject jthis, const gchar *name_of_field, jint value)
+		   jobject jthis, const char *name_of_field, jint value)
 {
 	jfieldID id  =
 	    (*jnienv)->GetFieldID(jnienv, class_of_this, name_of_field, "I");
@@ -289,7 +289,7 @@ void set_int_field(JNIEnv *jnienv, jclass class_of_this,
  * The field must be an integer type.
  */
 void set_long_field(JNIEnv *jnienv, jclass class_of_this,
-		    jobject jthis, const gchar *name_of_field, jlong value)
+		    jobject jthis, const char *name_of_field, jlong value)
 {
 	jfieldID id  = (*jnienv)->GetFieldID(jnienv, class_of_this,
 					     name_of_field, "J");
@@ -301,7 +301,7 @@ void set_long_field(JNIEnv *jnienv, jclass class_of_this,
  * The field must be an integer type.
  */
 void set_lsn_field(JNIEnv *jnienv, jclass class_of_this,
-		   jobject jthis, const gchar *name_of_field, DB_LSN value)
+		   jobject jthis, const char *name_of_field, DB_LSN value)
 {
 	set_object_field(jnienv, class_of_this, jthis, name_DB_LSN,
 			 name_of_field, get_DbLsn(jnienv, value));
@@ -310,8 +310,8 @@ void set_lsn_field(JNIEnv *jnienv, jclass class_of_this,
 /*
  * Report an exception back to the java side.
  */
-void report_exception(JNIEnv *jnienv, const gchar *text,
-		      gint err, unsigned long expect_mask)
+void report_exception(JNIEnv *jnienv, const char *text,
+		      int err, unsigned long expect_mask)
 {
 	jstring textString;
 	jclass dbexcept;
@@ -351,7 +351,7 @@ void report_exception(JNIEnv *jnienv, const gchar *text,
 				    "java/io/FileNotFoundException");
 			}
 			else {
-				gchar errstr[1024];
+				char errstr[1024];
 
 				snprintf(errstr, sizeof(errstr),
 				  "internal error: unexpected errno: %s",
@@ -393,9 +393,9 @@ void report_exception(JNIEnv *jnienv, const gchar *text,
  * case of DB_LOCK_NOTGRANTED, as more things are added to the
  * constructor of this type of exception.
  */
-void report_notgranted_exception(JNIEnv *jnienv, const gchar *text,
+void report_notgranted_exception(JNIEnv *jnienv, const char *text,
 				 db_lockop_t op, db_lockmode_t mode,
-				 jobject jdbt, jobject jlock, gint index)
+				 jobject jdbt, jobject jlock, int index)
 {
 	jstring textString;
 	jclass dbexcept;
@@ -421,11 +421,11 @@ void report_notgranted_exception(JNIEnv *jnienv, const gchar *text,
 /*
  * Create an exception object and return it.
  * The given class must have a constructor that has a
- * constructor with args (java.lang.String text, gint errno);
+ * constructor with args (java.lang.String text, int errno);
  * DbException and its subclasses fit this bill.
  */
 jobject create_exception(JNIEnv *jnienv, jstring text,
-				  gint err, jclass dbexcept)
+				  int err, jclass dbexcept)
 {
 	jthrowable obj;
 	jmethodID mid;
@@ -447,7 +447,7 @@ jobject create_exception(JNIEnv *jnienv, jstring text,
  * Report an error via the errcall mechanism.
  */
 void report_errcall(JNIEnv *jnienv, jobject errcall,
-		    jstring prefix, const gchar *message)
+		    jstring prefix, const char *message)
 {
 	jmethodID id;
 	jclass errcall_class;
@@ -473,7 +473,7 @@ void report_errcall(JNIEnv *jnienv, jobject errcall,
  * If the object is null, report an exception and return false (0),
  * otherwise return true (1).
  */
-gint verify_non_null(JNIEnv *jnienv, gpointer obj)
+int verify_non_null(JNIEnv *jnienv, void *obj)
 {
 	if (obj == NULL) {
 		report_exception(jnienv, "null object", EINVAL, 0);
@@ -486,7 +486,7 @@ gint verify_non_null(JNIEnv *jnienv, gpointer obj)
  * If the error code is non-zero, report an exception and return false (0),
  * otherwise return true (1).
  */
-gint verify_return(JNIEnv *jnienv, gint err, unsigned long expect_mask)
+int verify_return(JNIEnv *jnienv, int err, unsigned long expect_mask)
 {
 	if (err == 0)
 		return (1);
@@ -500,7 +500,7 @@ gint verify_return(JNIEnv *jnienv, gint err, unsigned long expect_mask)
  * If there is report a DbMemoryException, with the Dbt attached
  * and return false (0), otherwise return true (1).
  */
-gint verify_dbt(JNIEnv *jnienv, gint err, LOCKED_DBT *ldbt)
+int verify_dbt(JNIEnv *jnienv, int err, LOCKED_DBT *ldbt)
 {
 	DBT *dbt;
 	jobject exception;
@@ -533,7 +533,7 @@ gint verify_dbt(JNIEnv *jnienv, gint err, LOCKED_DBT *ldbt)
 /*
  * Create an object of the given class, calling its default constructor.
  */
-jobject create_default_object(JNIEnv *jnienv, const gchar *class_name)
+jobject create_default_object(JNIEnv *jnienv, const char *class_name)
 {
 	jmethodID id;
 	jclass dbclass;
@@ -549,7 +549,7 @@ jobject create_default_object(JNIEnv *jnienv, const gchar *class_name)
  * Note: This implementation creates a new Java object on each call,
  * so it is generally useful when a new DB object has just been created.
  */
-jobject convert_object(JNIEnv *jnienv, const gchar *class_name, gpointer dbobj)
+jobject convert_object(JNIEnv *jnienv, const char *class_name, void *dbobj)
 {
 	jobject jo;
 
@@ -564,11 +564,11 @@ jobject convert_object(JNIEnv *jnienv, const gchar *class_name, gpointer dbobj)
 /*
  * Create a copy of the string
  */
-gchar *dup_string(const gchar *str)
+char *dup_string(const char *str)
 {
-	gint len;
-	gchar *retval;
-	gint err;
+	int len;
+	char *retval;
+	int err;
 
 	len = strlen(str) + 1;
 	if ((err = __os_malloc(NULL, sizeof(char)*len, &retval)) != 0)
@@ -580,7 +580,7 @@ gchar *dup_string(const gchar *str)
 /*
  * Create a java string from the given string
  */
-jstring get_java_string(JNIEnv *jnienv, const gchar * string)
+jstring get_java_string(JNIEnv *jnienv, const char* string)
 {
 	if (string == 0)
 		return (0);
@@ -591,10 +591,10 @@ jstring get_java_string(JNIEnv *jnienv, const gchar * string)
  * Create a copy of the java string using __os_malloc.
  * Caller must free it.
  */
-gchar *get_c_string(JNIEnv *jnienv, jstring jstr)
+char *get_c_string(JNIEnv *jnienv, jstring jstr)
 {
-	const gchar *utf;
-	gchar *retval;
+	const char *utf;
+	char *retval;
 
 	utf = (*jnienv)->GetStringUTFChars(jnienv, jstr, NULL);
 	retval = dup_string(utf);
@@ -680,7 +680,7 @@ DB_LSN *get_DB_LSN(JNIEnv *jnienv, /* DbLsn */ jobject obj) {
 	 * DB_LSN is legitimate.
 	 */
 	DB_LSN *lsnp;
-	gint err;
+	int err;
 
 	if (obj == NULL)
 		return (NULL);
@@ -778,7 +778,7 @@ jobject get_DbLogStat(JNIEnv *jnienv, DB_LOG_STAT *dbobj)
 jobject get_DbLsn(JNIEnv *jnienv, DB_LSN dbobj)
 {
 	DB_LSN *lsnp;
-	gint err;
+	int err;
 
 	if ((err = __os_malloc(NULL, sizeof(DB_LSN), &lsnp)) != 0)
 		return (NULL);
@@ -804,7 +804,7 @@ jobject get_DbLsn(JNIEnv *jnienv, DB_LSN dbobj)
  * arbitrary number.  We might also have sharing of the byte arrays
  * used by the Dbts.
  */
-static jobject get_Dbt_shared(JNIEnv *jnienv, const DBT *dbt, gint readonly,
+static jobject get_Dbt_shared(JNIEnv *jnienv, const DBT *dbt, int readonly,
 			      DBT_JAVAINFO **ret_info)
 {
 	jobject jdbt;

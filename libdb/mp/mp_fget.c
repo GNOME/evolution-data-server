@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,7 +21,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/mp.h"
 
 #ifdef HAVE_FILESYSTEM_NOTZERO
-static gint __memp_fs_notzero
+static int __memp_fs_notzero
     __P((DB_ENV *, DB_MPOOLFILE *, MPOOLFILE *, db_pgno_t *));
 #endif
 
@@ -29,15 +29,15 @@ static gint __memp_fs_notzero
  * __memp_fget --
  *	Get a page from the file.
  *
- * PUBLIC: gint __memp_fget
- * PUBLIC:     __P((DB_MPOOLFILE *, db_pgno_t *, u_int32_t, gpointer ));
+ * PUBLIC: int __memp_fget
+ * PUBLIC:     __P((DB_MPOOLFILE *, db_pgno_t *, u_int32_t, void *));
  */
-gint
+int
 __memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	DB_MPOOLFILE *dbmfp;
 	db_pgno_t *pgnoaddr;
 	u_int32_t flags;
-	gpointer addrp;
+	void *addrp;
 {
 	enum { FIRST_FOUND, FIRST_MISS, SECOND_FOUND, SECOND_MISS } state;
 	BH *alloc_bhp, *bhp;
@@ -48,9 +48,9 @@ __memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	MPOOLFILE *mfp;
 	roff_t mf_offset;
 	u_int32_t n_cache, st_hsearch;
-	gint b_incr, extending, first, ret;
+	int b_incr, extending, first, ret;
 
-	*(gpointer *)addrp = NULL;
+	*(void **)addrp = NULL;
 
 	dbmp = dbmfp->dbmp;
 	dbenv = dbmp->dbenv;
@@ -128,7 +128,7 @@ __memp_fget(dbmfp, pgnoaddr, flags, addrp)
 	 */
 	if (dbmfp->addr != NULL &&
 	    F_ISSET(mfp, MP_CAN_MMAP) && *pgnoaddr <= mfp->orig_last_pgno) {
-		*(gpointer *)addrp =
+		*(void **)addrp =
 		    R_ADDR(dbmfp, *pgnoaddr * mfp->stat.st_pagesize);
 		++mfp->stat.st_map;
 		return (0);
@@ -557,7 +557,7 @@ alloc:		/*
 		__os_yield(dbenv, 1);
 #endif
 
-	*(gpointer *)addrp = bhp->buf;
+	*(void **)addrp = bhp->buf;
 	return (0);
 
 err:	/*
@@ -596,9 +596,9 @@ __memp_fs_notzero(dbenv, dbmfp, mfp, pgnoaddr)
 	DB_IO db_io;
 	u_int32_t i, npages;
 	size_t nw;
-	gint ret;
+	int ret;
 	u_int8_t *page;
-	gchar *fail;
+	char *fail;
 
 	/*
 	 * Pages allocated by writing pages past end-of-file are not zeroed,

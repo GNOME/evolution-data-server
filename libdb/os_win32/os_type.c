@@ -9,19 +9,19 @@
 #include "db_int_def.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 /*
  * __os_is_winnt --
  *	Return 1 if Windows/NT, otherwise 0.
  *
- * PUBLIC: gint __os_is_winnt __P((void));
+ * PUBLIC: int __os_is_winnt __P((void));
  */
-gint
+int
 __os_is_winnt()
 {
-	static gint __os_type = -1;
+	static int __os_type = -1;
 
 	/*
 	 * The value of __os_type is computed only once, and cached to

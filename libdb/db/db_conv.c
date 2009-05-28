@@ -40,7 +40,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -63,13 +63,13 @@ static const gchar revid[] = "$Id$";
  * __db_pgin --
  *	Primary page-swap routine.
  *
- * PUBLIC: gint __db_pgin __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
+ * PUBLIC: int __db_pgin __P((DB_ENV *, db_pgno_t, void *, DBT *));
  */
-gint
+int
 __db_pgin(dbenv, pg, pp, cookie)
 	DB_ENV *dbenv;
 	db_pgno_t pg;
-	gpointer pp;
+	void *pp;
 	DBT *cookie;
 {
 	DB dummydb, *dbp;
@@ -78,7 +78,7 @@ __db_pgin(dbenv, pg, pp, cookie)
 	DB_LSN not_used;
 	PAGE *pagep;
 	size_t pg_off, pg_len, sum_len;
-	gint is_hmac, ret;
+	int is_hmac, ret;
 	u_int8_t *chksum, *iv;
 
 	pginfo = (DB_PGINFO *)cookie->data;
@@ -222,13 +222,13 @@ __db_pgin(dbenv, pg, pp, cookie)
  * __db_pgout --
  *	Primary page-swap routine.
  *
- * PUBLIC: gint __db_pgout __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
+ * PUBLIC: int __db_pgout __P((DB_ENV *, db_pgno_t, void *, DBT *));
  */
-gint
+int
 __db_pgout(dbenv, pg, pp, cookie)
 	DB_ENV *dbenv;
 	db_pgno_t pg;
-	gpointer pp;
+	void *pp;
 	DBT *cookie;
 {
 	DB dummydb, *dbp;
@@ -236,7 +236,7 @@ __db_pgout(dbenv, pg, pp, cookie)
 	DB_PGINFO *pginfo;
 	PAGE *pagep;
 	size_t pg_off, pg_len, sum_len;
-	gint ret;
+	int ret;
 	u_int8_t *chksum, *iv, *key;
 
 	pginfo = (DB_PGINFO *)cookie->data;
@@ -368,17 +368,17 @@ __db_metaswap(pg)
  * __db_byteswap --
  *	Byteswap a page.
  *
- * PUBLIC: gint __db_byteswap
+ * PUBLIC: int __db_byteswap
  * PUBLIC:         __P((DB_ENV *, DB *, db_pgno_t, PAGE *, size_t, int));
  */
-gint
+int
 __db_byteswap(dbenv, dbp, pg, h, pagesize, pgin)
 	DB_ENV *dbenv;
 	DB *dbp;
 	db_pgno_t pg;
 	PAGE *h;
 	size_t pagesize;
-	gint pgin;
+	int pgin;
 {
 	BINTERNAL *bi;
 	BKEYDATA *bk;

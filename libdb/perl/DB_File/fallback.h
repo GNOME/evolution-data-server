@@ -21,7 +21,7 @@ typedef double NV; /* 5.6 and later define NVTYPE, and typedef NV to it.  */
 #endif
 
 static int
-constant_6 (pTHX_ const gchar *name, IV *iv_return) {
+constant_6 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_TXN R_LAST R_NEXT R_PREV */
@@ -76,7 +76,7 @@ constant_6 (pTHX_ const gchar *name, IV *iv_return) {
 }
 
 static int
-constant_7 (pTHX_ const gchar *name, IV *iv_return) {
+constant_7 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_LOCK R_FIRST R_NOKEY */
@@ -120,7 +120,7 @@ constant_7 (pTHX_ const gchar *name, IV *iv_return) {
 }
 
 static int
-constant_8 (pTHX_ const gchar *name, IV *iv_return) {
+constant_8 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      DB_SHMEM R_CURSOR R_IAFTER */
@@ -164,7 +164,7 @@ constant_8 (pTHX_ const gchar *name, IV *iv_return) {
 }
 
 static int
-constant_9 (pTHX_ const gchar *name, IV *iv_return) {
+constant_9 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      HASHMAGIC RET_ERROR R_IBEFORE */
@@ -208,7 +208,7 @@ constant_9 (pTHX_ const gchar *name, IV *iv_return) {
 }
 
 static int
-constant_10 (pTHX_ const gchar *name, IV *iv_return) {
+constant_10 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      BTREEMAGIC R_FIXEDLEN R_SNAPSHOT __R_UNUSED */
@@ -263,7 +263,7 @@ constant_10 (pTHX_ const gchar *name, IV *iv_return) {
 }
 
 static int
-constant_11 (pTHX_ const gchar *name, IV *iv_return) {
+constant_11 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      HASHVERSION RET_SPECIAL RET_SUCCESS R_RECNOSYNC R_SETCURSOR */
@@ -329,7 +329,7 @@ constant_11 (pTHX_ const gchar *name, IV *iv_return) {
 }
 
 static int
-constant (pTHX_ const gchar *name, STRLEN len, IV *iv_return) {
+constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
   /* Initially switch on the length of the name.  */
   /* When generated this function returned values for the list of names given
      in this section of perl code.  Rather than manually editing these functions

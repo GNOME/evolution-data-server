@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -27,30 +27,30 @@ static const gchar revid[] =
 #include "dbinc/db_page.h"
 #include "dbinc/db_am.h"
 
-int	 db_init __P((DB_ENV *, gchar *, int, u_int32_t, gint *));
+int	 db_init __P((DB_ENV *, char *, int, u_int32_t, int *));
 int	 dump __P((DB *, int, int));
-int	 dump_sub __P((DB_ENV *, DB *, gchar *, int, int));
-int	 is_sub __P((DB *, gint *));
-int	 main __P((int, gchar *[]));
+int	 dump_sub __P((DB_ENV *, DB *, char *, int, int));
+int	 is_sub __P((DB *, int *));
+int	 main __P((int, char *[]));
 int	 show_subs __P((DB *));
 int	 usage __P((void));
-int	 version_check __P((const gchar *));
+int	 version_check __P((const char *));
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
-	const gchar *progname = "db_dump";
+	extern char *optarg;
+	extern int optind;
+	const char *progname = "db_dump";
 	DB_ENV	*dbenv;
 	DB *dbp;
 	u_int32_t cache;
-	gint ch, d_close;
-	gint e_close, exitval, keyflag, lflag, nflag, pflag, private;
-	gint ret, Rflag, rflag, resize, subs;
-	gchar *dopt, *home, *passwd, *subname;
+	int ch, d_close;
+	int e_close, exitval, keyflag, lflag, nflag, pflag, private;
+	int ret, Rflag, rflag, resize, subs;
+	char *dopt, *home, *passwd, *subname;
 
 	if ((ret = version_check(progname)) != 0)
 		return (ret);
@@ -274,15 +274,15 @@ done:	if (d_close && (ret = dbp->close(dbp, 0)) != 0) {
  * db_init --
  *	Initialize the environment.
  */
-gint
+int
 db_init(dbenv, home, is_salvage, cache, is_privatep)
 	DB_ENV *dbenv;
-	gchar *home;
-	gint is_salvage;
+	char *home;
+	int is_salvage;
 	u_int32_t cache;
-	gint *is_privatep;
+	int *is_privatep;
 {
-	gint ret;
+	int ret;
 
 	/*
 	 * Try and use the underlying environment when opening a database.
@@ -332,14 +332,14 @@ db_init(dbenv, home, is_salvage, cache, is_privatep)
  * is_sub --
  *	Return if the database contains subdatabases.
  */
-gint
+int
 is_sub(dbp, yesno)
 	DB *dbp;
-	gint *yesno;
+	int *yesno;
 {
 	DB_BTREE_STAT *btsp;
 	DB_HASH_STAT *hsp;
-	gint ret;
+	int ret;
 
 	switch (dbp->type) {
 	case DB_BTREE:
@@ -372,18 +372,18 @@ is_sub(dbp, yesno)
  * dump_sub --
  *	Dump out the records for a DB containing subdatabases.
  */
-gint
+int
 dump_sub(dbenv, parent_dbp, parent_name, pflag, keyflag)
 	DB_ENV *dbenv;
 	DB *parent_dbp;
-	gchar *parent_name;
-	gint pflag, keyflag;
+	char *parent_name;
+	int pflag, keyflag;
 {
 	DB *dbp;
 	DBC *dbcp;
 	DBT key, data;
-	gint ret;
-	gchar *subdb;
+	int ret;
+	char *subdb;
 
 	/*
 	 * Get a cursor and step through the database, dumping out each
@@ -442,13 +442,13 @@ dump_sub(dbenv, parent_dbp, parent_name, pflag, keyflag)
  * show_subs --
  *	Display the subdatabases for a database.
  */
-gint
+int
 show_subs(dbp)
 	DB *dbp;
 {
 	DBC *dbcp;
 	DBT key, data;
-	gint ret;
+	int ret;
 
 	/*
 	 * Get a cursor and step through the database, printing out the key
@@ -484,17 +484,17 @@ show_subs(dbp)
  * dump --
  *	Dump out the records for a DB.
  */
-gint
+int
 dump(dbp, pflag, keyflag)
 	DB *dbp;
-	gint pflag, keyflag;
+	int pflag, keyflag;
 {
 	DBC *dbcp;
 	DBT key, data;
 	DBT keyret, dataret;
 	db_recno_t recno;
-	gint is_recno, failed, ret;
-	gpointer pointer;
+	int is_recno, failed, ret;
+	void *pointer;
 
 	/*
 	 * Get a cursor and step through the database, printing out each
@@ -582,7 +582,7 @@ err:	if (data.data != NULL)
  * usage --
  *	Display the usage message.
  */
-gint
+int
 usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
@@ -591,11 +591,11 @@ usage()
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 version_check(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	gint v_major, v_minor, v_patch;
+	int v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

@@ -16,29 +16,29 @@
 #include <time.h>
 
 #ifdef _WIN32
-extern gint getopt(int, gchar * const *, const gchar *);
+extern int getopt(int, char * const *, const char *);
 #else
 #include <unistd.h>
 #endif
 
 #include <db.h>
 
-int	init __P((const gchar *, int, int, const gchar *));
-int	run __P((int, int, int, int, const gchar *));
-int	run_mpool __P((int, int, int, int, const gchar *));
-int	main __P((int, gchar *[]));
-int	usage __P((const gchar *));
+int	init __P((const char *, int, int, const char *));
+int	run __P((int, int, int, int, const char *));
+int	run_mpool __P((int, int, int, int, const char *));
+int	main __P((int, char *[]));
+int	usage __P((const char *));
 #define	MPOOL	"mpool"					/* File. */
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
-	gint cachesize, ch, hits, npages, pagesize;
-	gchar *progname;
+	extern char *optarg;
+	extern int optind;
+	int cachesize, ch, hits, npages, pagesize;
+	char *progname;
 
 	cachesize = 20 * 1024;
 	hits = 1000;
@@ -74,9 +74,9 @@ main(argc, argv)
 	    hits, npages, progname) == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-gint
+int
 usage(progname)
-	const gchar *progname;
+	const char *progname;
 {
 	(void)fprintf(stderr,
 	    "usage: %s [-c cachesize] [-h hits] [-n npages] [-p pagesize]\n",
@@ -84,12 +84,12 @@ usage(progname)
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 run_mpool(pagesize, cachesize, hits, npages, progname)
-	gint pagesize, cachesize, hits, npages;
-	const gchar *progname;
+	int pagesize, cachesize, hits, npages;
+	const char *progname;
 {
-	gint ret;
+	int ret;
 
 	/* Initialize the file. */
 	if ((ret = init(MPOOL, pagesize, npages, progname)) != 0)
@@ -106,14 +106,14 @@ run_mpool(pagesize, cachesize, hits, npages, progname)
  * init --
  *	Create a backing file.
  */
-gint
+int
 init(file, pagesize, npages, progname)
-	const gchar *file, *progname;
-	gint pagesize, npages;
+	const char *file, *progname;
+	int pagesize, npages;
 {
 	FILE *fp;
-	gint cnt;
-	gchar *p;
+	int cnt;
+	char *p;
 
 	/*
 	 * Create a file with the right number of pages, and store a page
@@ -124,14 +124,14 @@ init(file, pagesize, npages, progname)
 		    "%s: %s: %s\n", progname, file, strerror(errno));
 		return (1);
 	}
-	if ((p = (gchar *)malloc(pagesize)) == NULL) {
+	if ((p = (char *)malloc(pagesize)) == NULL) {
 		fprintf(stderr, "%s: %s\n", progname, strerror(ENOMEM));
 		return (1);
 	}
 
 	/* The pages are numbered from 0. */
 	for (cnt = 0; cnt <= npages; ++cnt) {
-		*(gint *)p = cnt;
+		*(int *)p = cnt;
 		if (fwrite(p, pagesize, 1, fp) != 1) {
 			fprintf(stderr,
 			    "%s: %s: %s\n", progname, file, strerror(errno));
@@ -148,16 +148,16 @@ init(file, pagesize, npages, progname)
  * run --
  *	Get a set of pages.
  */
-gint
+int
 run(hits, cachesize, pagesize, npages, progname)
-	gint hits, cachesize, pagesize, npages;
-	const gchar *progname;
+	int hits, cachesize, pagesize, npages;
+	const char *progname;
 {
 	DB_ENV *dbenv;
 	DB_MPOOLFILE *mfp;
 	db_pgno_t pageno;
-	gint cnt, ret;
-	gpointer p;
+	int cnt, ret;
+	void *p;
 
 	dbenv = NULL;
 	mfp = NULL;
@@ -219,7 +219,7 @@ run(hits, cachesize, pagesize, npages, progname)
 		if (*(db_pgno_t *)p != pageno) {
 			dbenv->errx(dbenv,
 			    "wrong page retrieved (%lu != %d)",
-			    (u_long)pageno, *(gint *)p);
+			    (u_long)pageno, *(int *)p);
 			goto err;
 		}
 		if ((ret = mfp->put(mfp, p, 0)) != 0) {

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -32,16 +32,16 @@ static const gchar revid[] = "$Id$";
  * __bam_split_recover --
  *	Recovery function for split.
  *
- * PUBLIC: gint __bam_split_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_split_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_split_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_split_args *argp;
 	DB *file_dbp;
@@ -50,7 +50,7 @@ __bam_split_recover(dbenv, dbtp, lsnp, op, info)
 	PAGE *_lp, *lp, *np, *pp, *_rp, *rp, *sp;
 	db_pgno_t pgno, root_pgno;
 	u_int32_t ptype;
-	gint cmp, l_update, p_update, r_update, rc, ret, ret_l, rootsplit, t_ret;
+	int cmp, l_update, p_update, r_update, rc, ret, ret_l, rootsplit, t_ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__bam_split_print);
@@ -335,16 +335,16 @@ out:	/* Free any pages that weren't dirtied. */
  * __bam_rsplit_recover --
  *	Recovery function for a reverse split.
  *
- * PUBLIC: gint __bam_rsplit_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_rsplit_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_rsplit_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_rsplit_args *argp;
 	DB *file_dbp;
@@ -353,7 +353,7 @@ __bam_rsplit_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	db_pgno_t pgno, root_pgno;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -440,23 +440,23 @@ out:	if (pagep != NULL)
  * __bam_adj_recover --
  *	Recovery function for adj.
  *
- * PUBLIC: gint __bam_adj_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_adj_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_adj_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_adj_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -509,23 +509,23 @@ out:	if (pagep != NULL)
  *	Recovery function for the adjust of a count change in an internal
  *	page.
  *
- * PUBLIC: gint __bam_cadjust_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_cadjust_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_cadjust_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_cadjust_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -592,16 +592,16 @@ out:	if (pagep != NULL)
  * __bam_cdel_recover --
  *	Recovery function for the intent-to-delete of a cursor record.
  *
- * PUBLIC: gint __bam_cdel_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_cdel_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_cdel_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_cdel_args *argp;
 	DB *file_dbp;
@@ -609,7 +609,7 @@ __bam_cdel_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
 	u_int32_t indx;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	pagep = NULL;
 	COMPQUIET(info, NULL);
@@ -661,16 +661,16 @@ out:	if (pagep != NULL)
  * __bam_repl_recover --
  *	Recovery function for page item replacement.
  *
- * PUBLIC: gint __bam_repl_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_repl_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_repl_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_repl_args *argp;
 	BKEYDATA *bk;
@@ -679,7 +679,7 @@ __bam_repl_recover(dbenv, dbtp, lsnp, op, info)
 	DBT dbt;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 	u_int8_t *p;
 
 	pagep = NULL;
@@ -769,23 +769,23 @@ out:	if (pagep != NULL)
  * __bam_root_recover --
  *	Recovery function for setting the root page on the meta-data page.
  *
- * PUBLIC: gint __bam_root_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_root_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_root_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_root_args *argp;
 	BTMETA *meta;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	meta = NULL;
 	COMPQUIET(info, NULL);
@@ -833,22 +833,22 @@ out:	if (meta != NULL)
  *	Transaction abort function to undo cursor adjustments.
  *	This should only be triggered by subtransaction aborts.
  *
- * PUBLIC: gint __bam_curadj_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_curadj_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_curadj_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_curadj_args *argp;
 	DB *file_dbp;
 	DBC *dbc;
 	DB_MPOOLFILE *mpf;
-	gint ret;
+	int ret;
 
 	COMPQUIET(info, NULL);
 
@@ -892,23 +892,23 @@ out:	REC_CLOSE;
  *	Transaction abort function to undo cursor adjustments in rrecno.
  *	This should only be triggered by subtransaction aborts.
  *
- * PUBLIC: gint __bam_rcuradj_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __bam_rcuradj_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __bam_rcuradj_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__bam_rcuradj_args *argp;
 	BTREE_CURSOR *cp;
 	DB *file_dbp;
 	DBC *dbc, *rdbc;
 	DB_MPOOLFILE *mpf;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	COMPQUIET(info, NULL);
 	rdbc = NULL;

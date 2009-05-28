@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,19 +26,19 @@ static const gchar revid[] = "$Id$";
  * __os_open --
  *	Open a file descriptor.
  */
-gint
+int
 __os_open(dbenv, name, flags, mode, fhp)
 	DB_ENV *dbenv;
-	const gchar *name;
+	const char *name;
 	u_int32_t flags;
-	gint mode;
+	int mode;
 	DB_FH *fhp;
 {
 	DWORD bytesWritten;
 	u_int32_t log_size, pagesize, sectorsize;
-	gint access, attr, oflags, share, createflag;
-	gint ret, nrepeat;
-	gchar *drive, dbuf[4]; /* <letter><colon><slosh><nul> */
+	int access, attr, oflags, share, createflag;
+	int ret, nrepeat;
+	char *drive, dbuf[4]; /* <letter><colon><slosh><nul> */
 
 #ifdef DIAGNOSTIC
 #define	OKFLAGS								\

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,7 +19,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/db_page.h"
 #include "dbinc/btree.h"
 
-static gint __bam_opd_cursor __P((DB *, DBC *, db_pgno_t, u_int32_t, u_int32_t));
+static int __bam_opd_cursor __P((DB *, DBC *, db_pgno_t, u_int32_t, u_int32_t));
 
 #ifdef DEBUG
 /*
@@ -61,20 +61,20 @@ __bam_cprint(dbc)
  *	Update the cursors when items are deleted and when already deleted
  *	items are overwritten.  Return the number of relevant cursors found.
  *
- * PUBLIC: gint __bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, int));
+ * PUBLIC: int __bam_ca_delete __P((DB *, db_pgno_t, u_int32_t, int));
  */
-gint
+int
 __bam_ca_delete(dbp, pgno, indx, delete)
 	DB *dbp;
 	db_pgno_t pgno;
 	u_int32_t indx;
-	gint delete;
+	int delete;
 {
 	BTREE_CURSOR *cp;
 	DB *ldbp;
 	DB_ENV *dbenv;
 	DBC *dbc;
-	gint count;		/* !!!: Has to contain max number of cursors. */
+	int count;		/* !!!: Has to contain max number of cursors. */
 
 	dbenv = dbp->dbenv;
 
@@ -116,9 +116,9 @@ __bam_ca_delete(dbp, pgno, indx, delete)
  * __ram_ca_delete --
  *	Return the number of relevant cursors.
  *
- * PUBLIC: gint __ram_ca_delete __P((DB *, db_pgno_t));
+ * PUBLIC: int __ram_ca_delete __P((DB *, db_pgno_t));
  */
-gint
+int
 __ram_ca_delete(dbp, root_pgno)
 	DB *dbp;
 	db_pgno_t root_pgno;
@@ -126,7 +126,7 @@ __ram_ca_delete(dbp, root_pgno)
 	DB *ldbp;
 	DBC *dbc;
 	DB_ENV *dbenv;
-	gint found;
+	int found;
 
 	found = 0;
 	dbenv = dbp->dbenv;
@@ -153,14 +153,14 @@ __ram_ca_delete(dbp, root_pgno)
  * __bam_ca_di --
  *	Adjust the cursors during a delete or insert.
  *
- * PUBLIC: gint __bam_ca_di __P((DBC *, db_pgno_t, u_int32_t, int));
+ * PUBLIC: int __bam_ca_di __P((DBC *, db_pgno_t, u_int32_t, int));
  */
-gint
+int
 __bam_ca_di(my_dbc, pgno, indx, adjust)
 	DBC *my_dbc;
 	db_pgno_t pgno;
 	u_int32_t indx;
-	gint adjust;
+	int adjust;
 {
 	DB *dbp, *ldbp;
 	DB_ENV *dbenv;
@@ -168,7 +168,7 @@ __bam_ca_di(my_dbc, pgno, indx, adjust)
 	DB_TXN *my_txn;
 	DBC *dbc;
 	DBC_INTERNAL *cp;
-	gint found, ret;
+	int found, ret;
 
 	dbp = my_dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -223,7 +223,7 @@ __bam_opd_cursor(dbp, dbc, first, tpgno, ti)
 {
 	BTREE_CURSOR *cp, *orig_cp;
 	DBC *dbc_nopd;
-	gint ret;
+	int ret;
 
 	orig_cp = (BTREE_CURSOR *)dbc->internal;
 	dbc_nopd = NULL;
@@ -274,10 +274,10 @@ __bam_opd_cursor(dbp, dbc, first, tpgno, ti)
  *	Adjust the cursors when moving items from a leaf page to a duplicates
  *	page.
  *
- * PUBLIC: gint __bam_ca_dup __P((DBC *,
+ * PUBLIC: int __bam_ca_dup __P((DBC *,
  * PUBLIC:    u_int32_t, db_pgno_t, u_int32_t, db_pgno_t, u_int32_t));
  */
-gint
+int
 __bam_ca_dup(my_dbc, first, fpgno, fi, tpgno, ti)
 	DBC *my_dbc;
 	db_pgno_t fpgno, tpgno;
@@ -289,7 +289,7 @@ __bam_ca_dup(my_dbc, first, fpgno, fi, tpgno, ti)
 	DB_ENV *dbenv;
 	DB_LSN lsn;
 	DB_TXN *my_txn;
-	gint found, ret;
+	int found, ret;
 
 	dbp = my_dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -345,10 +345,10 @@ loop:		MUTEX_THREAD_LOCK(dbenv, dbp->mutexp);
  *	from a duplicate page.
  *	Called only during undo processing.
  *
- * PUBLIC: gint __bam_ca_undodup __P((DB *,
+ * PUBLIC: int __bam_ca_undodup __P((DB *,
  * PUBLIC:    u_int32_t, db_pgno_t, u_int32_t, u_int32_t));
  */
-gint
+int
 __bam_ca_undodup(dbp, first, fpgno, fi, ti)
 	DB *dbp;
 	db_pgno_t fpgno;
@@ -358,7 +358,7 @@ __bam_ca_undodup(dbp, first, fpgno, fi, ti)
 	DB *ldbp;
 	DBC *dbc;
 	DB_ENV *dbenv;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 
@@ -409,9 +409,9 @@ loop:		MUTEX_THREAD_LOCK(dbenv, dbp->mutexp);
  * __bam_ca_rsplit --
  *	Adjust the cursors when doing reverse splits.
  *
- * PUBLIC: gint __bam_ca_rsplit __P((DBC *, db_pgno_t, db_pgno_t));
+ * PUBLIC: int __bam_ca_rsplit __P((DBC *, db_pgno_t, db_pgno_t));
  */
-gint
+int
 __bam_ca_rsplit(my_dbc, fpgno, tpgno)
 	DBC* my_dbc;
 	db_pgno_t fpgno, tpgno;
@@ -421,7 +421,7 @@ __bam_ca_rsplit(my_dbc, fpgno, tpgno)
 	DB_ENV *dbenv;
 	DB_LSN lsn;
 	DB_TXN *my_txn;
-	gint found, ret;
+	int found, ret;
 
 	dbp = my_dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -462,15 +462,15 @@ __bam_ca_rsplit(my_dbc, fpgno, tpgno)
  * __bam_ca_split --
  *	Adjust the cursors when splitting a page.
  *
- * PUBLIC: gint __bam_ca_split __P((DBC *,
+ * PUBLIC: int __bam_ca_split __P((DBC *,
  * PUBLIC:    db_pgno_t, db_pgno_t, db_pgno_t, u_int32_t, int));
  */
-gint
+int
 __bam_ca_split(my_dbc, ppgno, lpgno, rpgno, split_indx, cleft)
 	DBC *my_dbc;
 	db_pgno_t ppgno, lpgno, rpgno;
 	u_int32_t split_indx;
-	gint cleft;
+	int cleft;
 {
 	DB *dbp, *ldbp;
 	DBC *dbc;
@@ -478,7 +478,7 @@ __bam_ca_split(my_dbc, ppgno, lpgno, rpgno, split_indx, cleft)
 	DB_ENV *dbenv;
 	DB_LSN lsn;
 	DB_TXN *my_txn;
-	gint found, ret;
+	int found, ret;
 
 	dbp = my_dbc->dbp;
 	dbenv = dbp->dbenv;

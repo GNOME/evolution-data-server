@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -20,7 +20,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/db_shash.h"
 #include "dbinc/mp.h"
 
-static gint __mpool_init __P((DB_ENV *, DB_MPOOL *, int, int));
+static int __mpool_init __P((DB_ENV *, DB_MPOOL *, int, int));
 #ifdef HAVE_MUTEX_SYSTEM_RESOURCES
 static size_t __mpool_region_maint __P((REGINFO *));
 #endif
@@ -29,9 +29,9 @@ static size_t __mpool_region_maint __P((REGINFO *));
  * __memp_open --
  *	Internal version of memp_open: only called from DB_ENV->open.
  *
- * PUBLIC: gint __memp_open __P((DB_ENV *));
+ * PUBLIC: int __memp_open __P((DB_ENV *));
  */
-gint
+int
 __memp_open(dbenv)
 	DB_ENV *dbenv;
 {
@@ -40,7 +40,7 @@ __memp_open(dbenv)
 	REGINFO reginfo;
 	roff_t reg_size, *regids;
 	u_int32_t i;
-	gint htab_buckets, ret;
+	int htab_buckets, ret;
 
 	/* Figure out how big each cache region is. */
 	reg_size = (dbenv->mp_gbytes / dbenv->mp_ncache) * GIGABYTE;
@@ -204,7 +204,7 @@ static int
 __mpool_init(dbenv, dbmp, reginfo_off, htab_buckets)
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
-	gint reginfo_off, htab_buckets;
+	int reginfo_off, htab_buckets;
 {
 	DB_MPOOL_HASH *htab;
 	MPOOL *mp;
@@ -212,8 +212,8 @@ __mpool_init(dbenv, dbmp, reginfo_off, htab_buckets)
 #ifdef HAVE_MUTEX_SYSTEM_RESOURCES
 	size_t maint_size;
 #endif
-	gint i, ret;
-	gpointer p;
+	int i, ret;
+	void *p;
 
 	mp = NULL;
 
@@ -278,9 +278,9 @@ mem_err:__db_err(dbenv, "Unable to allocate memory for mpool region");
  * __memp_dbenv_refresh --
  *	Clean up after the mpool system on a close or failed open.
  *
- * PUBLIC: gint __memp_dbenv_refresh __P((DB_ENV *));
+ * PUBLIC: int __memp_dbenv_refresh __P((DB_ENV *));
  */
-gint
+int
 __memp_dbenv_refresh(dbenv)
 	DB_ENV *dbenv;
 {
@@ -288,7 +288,7 @@ __memp_dbenv_refresh(dbenv)
 	DB_MPOOLFILE *dbmfp;
 	DB_MPREG *mpreg;
 	u_int32_t i;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	ret = 0;
 	dbmp = dbenv->mp_handle;
@@ -332,7 +332,7 @@ __mpool_region_maint(infop)
 	REGINFO *infop;
 {
 	size_t s;
-	gint numlocks;
+	int numlocks;
 
 	/*
 	 * For mutex maintenance we need one mutex per possible page.
@@ -369,24 +369,24 @@ __mpool_region_destroy(dbenv, infop)
  * __memp_nameop
  *	Remove or rename a file in the pool.
  *
- * PUBLIC: gint  __memp_nameop __P((DB_ENV *,
- * PUBLIC:     u_int8_t *, const gchar *, const gchar *, const gchar *));
+ * PUBLIC: int  __memp_nameop __P((DB_ENV *,
+ * PUBLIC:     u_int8_t *, const char *, const char *, const char *));
  *
  * XXX
  * Undocumented interface: DB private.
  */
-gint
+int
 __memp_nameop(dbenv, fileid, newname, fullold, fullnew)
 	DB_ENV *dbenv;
 	u_int8_t *fileid;
-	const gchar *newname, *fullold, *fullnew;
+	const char *newname, *fullold, *fullnew;
 {
 	DB_MPOOL *dbmp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
 	roff_t newname_off;
-	gint locked, ret;
-	gpointer p;
+	int locked, ret;
+	void *p;
 
 	locked = 0;
 	dbmp = NULL;

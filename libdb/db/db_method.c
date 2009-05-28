@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -38,48 +38,48 @@ static const gchar revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static gint  __db_get_byteswapped __P((DB *, gint *));
-static gint  __db_get_type __P((DB *, DBTYPE *dbtype));
-static gint  __db_init __P((DB *, u_int32_t));
-static gint  __db_key_range
+static int  __db_get_byteswapped __P((DB *, int *));
+static int  __db_get_type __P((DB *, DBTYPE *dbtype));
+static int  __db_init __P((DB *, u_int32_t));
+static int  __db_key_range
 		__P((DB *, DB_TXN *, DBT *, DB_KEY_RANGE *, u_int32_t));
-static gint  __db_set_alloc __P((DB *, gpointer (*)(size_t),
-		gpointer (*)(gpointer , size_t), void (*)(gpointer)));
-static gint  __db_set_append_recno __P((DB *, gint (*)(DB *, DBT *, db_recno_t)));
-static gint  __db_set_cachesize __P((DB *, u_int32_t, u_int32_t, int));
-static gint  __db_set_cache_priority __P((DB *, DB_CACHE_PRIORITY));
-static gint  __db_set_dup_compare
-		__P((DB *, gint (*)(DB *, const DBT *, const DBT *)));
-static gint  __db_set_encrypt __P((DB *, const gchar *, u_int32_t));
-static gint  __db_set_feedback __P((DB *, void (*)(DB *, int, int)));
-static gint  __db_set_flags __P((DB *, u_int32_t));
-static gint  __db_set_pagesize __P((DB *, u_int32_t));
-static gint  __db_set_paniccall __P((DB *, void (*)(DB_ENV *, int)));
-static void __db_set_errcall __P((DB *, void (*)(const gchar *, gchar *)));
+static int  __db_set_alloc __P((DB *, void *(*)(size_t),
+		void *(*)(void *, size_t), void (*)(void *)));
+static int  __db_set_append_recno __P((DB *, int (*)(DB *, DBT *, db_recno_t)));
+static int  __db_set_cachesize __P((DB *, u_int32_t, u_int32_t, int));
+static int  __db_set_cache_priority __P((DB *, DB_CACHE_PRIORITY));
+static int  __db_set_dup_compare
+		__P((DB *, int (*)(DB *, const DBT *, const DBT *)));
+static int  __db_set_encrypt __P((DB *, const char *, u_int32_t));
+static int  __db_set_feedback __P((DB *, void (*)(DB *, int, int)));
+static int  __db_set_flags __P((DB *, u_int32_t));
+static int  __db_set_pagesize __P((DB *, u_int32_t));
+static int  __db_set_paniccall __P((DB *, void (*)(DB_ENV *, int)));
+static void __db_set_errcall __P((DB *, void (*)(const char *, char *)));
 static void __db_set_errfile __P((DB *, FILE *));
-static void __db_set_errpfx __P((DB *, const gchar *));
-static gint  __db_stat_fail __P((DB *, gpointer , u_int32_t));
-static void __dbh_err __P((DB *, int, const gchar *, ...));
-static void __dbh_errx __P((DB *, const gchar *, ...));
+static void __db_set_errpfx __P((DB *, const char *));
+static int  __db_stat_fail __P((DB *, void *, u_int32_t));
+static void __dbh_err __P((DB *, int, const char *, ...));
+static void __dbh_errx __P((DB *, const char *, ...));
 
 #ifdef HAVE_RPC
-static gint  __dbcl_init __P((DB *, DB_ENV *, u_int32_t));
+static int  __dbcl_init __P((DB *, DB_ENV *, u_int32_t));
 #endif
 
 /*
  * db_create --
  *	DB constructor.
  *
- * EXTERN: gint db_create __P((DB **, DB_ENV *, u_int32_t));
+ * EXTERN: int db_create __P((DB **, DB_ENV *, u_int32_t));
  */
-gint
+int
 db_create(dbpp, dbenv, flags)
 	DB **dbpp;
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB *dbp;
-	gint ret;
+	int ret;
 
 	/* Check for invalid function flags. */
 	switch (flags) {
@@ -143,7 +143,7 @@ __db_init(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
 {
-	gint ret;
+	int ret;
 
 	dbp->lid = DB_LOCK_INVALIDID;
 	LOCK_INIT(dbp->handle_lock);
@@ -215,9 +215,9 @@ __db_init(dbp, flags)
  * __dbh_am_chk --
  *	Error if an unreasonable method is called.
  *
- * PUBLIC: gint __dbh_am_chk __P((DB *, u_int32_t));
+ * PUBLIC: int __dbh_am_chk __P((DB *, u_int32_t));
  */
-gint
+int
 __dbh_am_chk(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
@@ -246,12 +246,12 @@ __dbh_am_chk(dbp, flags)
  */
 static void
 #ifdef __STDC__
-__dbh_err(DB *dbp, gint error, const gchar *fmt, ...)
+__dbh_err(DB *dbp, int error, const char *fmt, ...)
 #else
 __dbh_err(dbp, error, fmt, va_alist)
 	DB *dbp;
-	gint error;
-	const gchar *fmt;
+	int error;
+	const char *fmt;
 	va_dcl
 #endif
 {
@@ -264,11 +264,11 @@ __dbh_err(dbp, error, fmt, va_alist)
  */
 static void
 #ifdef __STDC__
-__dbh_errx(DB *dbp, const gchar *fmt, ...)
+__dbh_errx(DB *dbp, const char *fmt, ...)
 #else
 __dbh_errx(dbp, fmt, va_alist)
 	DB *dbp;
-	const gchar *fmt;
+	const char *fmt;
 	va_dcl
 #endif
 {
@@ -282,7 +282,7 @@ __dbh_errx(dbp, fmt, va_alist)
 static int
 __db_get_byteswapped(dbp, isswapped)
 	DB *dbp;
-	gint *isswapped;
+	int *isswapped;
 {
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "get_byteswapped");
 
@@ -335,7 +335,7 @@ __db_key_range(dbp, txn, key, kr, flags)
 static int
 __db_set_append_recno(dbp, func)
 	DB *dbp;
-	gint (*func) __P((DB *, DBT *, db_recno_t));
+	int (*func) __P((DB *, DBT *, db_recno_t));
 {
 	DB_ILLEGAL_AFTER_OPEN(dbp, "set_append_recno");
 	DB_ILLEGAL_METHOD(dbp, DB_OK_QUEUE | DB_OK_RECNO);
@@ -353,7 +353,7 @@ static int
 __db_set_cachesize(dbp, cache_gbytes, cache_bytes, ncache)
 	DB *dbp;
 	u_int32_t cache_gbytes, cache_bytes;
-	gint ncache;
+	int ncache;
 {
 	DB_ILLEGAL_IN_ENV(dbp, "set_cachesize");
 	DB_ILLEGAL_AFTER_OPEN(dbp, "set_cachesize");
@@ -389,9 +389,9 @@ __db_set_cache_priority(dbp, priority)
 static int
 __db_set_dup_compare(dbp, func)
 	DB *dbp;
-	gint (*func) __P((DB *, const DBT *, const DBT *));
+	int (*func) __P((DB *, const DBT *, const DBT *));
 {
-	gint ret;
+	int ret;
 
 	DB_ILLEGAL_AFTER_OPEN(dbp, "dup_compare");
 	DB_ILLEGAL_METHOD(dbp, DB_OK_BTREE | DB_OK_HASH);
@@ -411,11 +411,11 @@ __db_set_dup_compare(dbp, func)
 static int
 __db_set_encrypt(dbp, passwd, flags)
 	DB *dbp;
-	const gchar *passwd;
+	const char *passwd;
 	u_int32_t flags;
 {
 	DB_CIPHER *db_cipher;
-	gint ret;
+	int ret;
 
 	DB_ILLEGAL_IN_ENV(dbp, "set_encrypt");
 	DB_ILLEGAL_AFTER_OPEN(dbp, "set_encrypt");
@@ -438,7 +438,7 @@ __db_set_encrypt(dbp, passwd, flags)
 static void
 __db_set_errcall(dbp, errcall)
 	DB *dbp;
-	void (*errcall) __P((const gchar *, gchar *));
+	void (*errcall) __P((const char *, char *));
 {
 	dbp->dbenv->set_errcall(dbp->dbenv, errcall);
 }
@@ -454,7 +454,7 @@ __db_set_errfile(dbp, errfile)
 static void
 __db_set_errpfx(dbp, errpfx)
 	DB *dbp;
-	const gchar *errpfx;
+	const char *errpfx;
 {
 	dbp->dbenv->set_errpfx(dbp->dbenv, errpfx);
 }
@@ -473,7 +473,7 @@ __db_set_flags(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
 {
-	gint ret;
+	int ret;
 
 	/*
 	 * !!!
@@ -510,14 +510,14 @@ __db_set_flags(dbp, flags)
  * __db_set_lorder --
  *	Set whether lorder is swapped or not.
  *
- * PUBLIC: gint  __db_set_lorder __P((DB *, int));
+ * PUBLIC: int  __db_set_lorder __P((DB *, int));
  */
-gint
+int
 __db_set_lorder(dbp, db_lorder)
 	DB *dbp;
-	gint db_lorder;
+	int db_lorder;
 {
-	gint ret;
+	int ret;
 
 	DB_ILLEGAL_AFTER_OPEN(dbp, "set_lorder");
 
@@ -539,9 +539,9 @@ __db_set_lorder(dbp, db_lorder)
 static int
 __db_set_alloc(dbp, mal_func, real_func, free_func)
 	DB *dbp;
-	gpointer (*mal_func) __P((size_t));
-	gpointer (*real_func) __P((gpointer , size_t));
-	void (*free_func) __P((gpointer));
+	void *(*mal_func) __P((size_t));
+	void *(*real_func) __P((void *, size_t));
+	void (*free_func) __P((void *));
 {
 	DB_ILLEGAL_IN_ENV(dbp, "set_alloc");
 	DB_ILLEGAL_AFTER_OPEN(dbp, "set_alloc");
@@ -598,7 +598,7 @@ __db_set_paniccall(dbp, paniccall)
 static int
 __db_stat_fail(dbp, sp, flags)
 	DB *dbp;
-	gpointer sp;
+	void *sp;
 	u_int32_t flags;
 {
 	COMPQUIET(sp, NULL);

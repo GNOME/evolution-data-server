@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,25 +23,25 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/db_shash.h"
 #include "dbinc/lock.h"
 
-static gint __db_subdb_remove __P((DB *, DB_TXN *, const gchar *, const gchar *));
-static gint __db_dbtxn_remove __P((DB *, DB_TXN *, const gchar *));
+static int __db_subdb_remove __P((DB *, DB_TXN *, const char *, const char *));
+static int __db_dbtxn_remove __P((DB *, DB_TXN *, const char *));
 
 /*
  * __dbenv_dbremove
  *	Remove method for DB_ENV.
  *
- * PUBLIC: gint __dbenv_dbremove __P((DB_ENV *,
- * PUBLIC:     DB_TXN *, const gchar *, const gchar *, u_int32_t));
+ * PUBLIC: int __dbenv_dbremove __P((DB_ENV *,
+ * PUBLIC:     DB_TXN *, const char *, const char *, u_int32_t));
  */
-gint
+int
 __dbenv_dbremove(dbenv, txn, name, subdb, flags)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	const gchar *name, *subdb;
+	const char *name, *subdb;
 	u_int32_t flags;
 {
 	DB *dbp;
-	gint ret, t_ret, txn_local;
+	int ret, t_ret, txn_local;
 
 	txn_local = 0;
 
@@ -99,16 +99,16 @@ __dbenv_dbremove(dbenv, txn, name, subdb, flags)
  * __db_remove
  *	Remove method for DB.
  *
- * PUBLIC: gint __db_remove __P((DB *, const gchar *, const gchar *, u_int32_t));
+ * PUBLIC: int __db_remove __P((DB *, const char *, const char *, u_int32_t));
  */
-gint
+int
 __db_remove(dbp, name, subdb, flags)
 	DB *dbp;
-	const gchar *name, *subdb;
+	const char *name, *subdb;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbenv = dbp->dbenv;
 
@@ -154,18 +154,18 @@ err:	if ((t_ret = dbp->close(dbp, DB_NOSYNC)) != 0 && ret == 0)
  * __db_remove_i
  *	Internal remove method for DB.
  *
- * PUBLIC: gint __db_remove_i __P((DB *, DB_TXN *, const gchar *, const gchar *));
+ * PUBLIC: int __db_remove_i __P((DB *, DB_TXN *, const char *, const char *));
  */
-gint
+int
 __db_remove_i(dbp, txn, name, subdb)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name, *subdb;
+	const char *name, *subdb;
 {
 	DB_ENV *dbenv;
 	DB_LSN newlsn;
-	gint ret;
-	gchar *real_name;
+	int ret;
+	char *real_name;
 
 	dbenv = dbp->dbenv;
 	real_name = NULL;
@@ -211,10 +211,10 @@ static int
 __db_subdb_remove(dbp, txn, name, subdb)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name, *subdb;
+	const char *name, *subdb;
 {
 	DB *mdbp, *sdbp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	mdbp = sdbp = NULL;
 
@@ -274,12 +274,12 @@ static int
 __db_dbtxn_remove(dbp, txn, name)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name;
+	const char *name;
 {
 	DB_ENV *dbenv;
 	DB_LSN newlsn;
-	gint ret;
-	gchar *tmpname;
+	int ret;
+	char *tmpname;
 
 	dbenv = dbp->dbenv;
 	tmpname = NULL;

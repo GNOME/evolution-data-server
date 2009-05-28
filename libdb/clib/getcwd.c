@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -81,26 +81,26 @@ static const gchar revid[] = "$Id$";
  *	Get the current working directory.
  *
  * PUBLIC: #ifndef HAVE_GETCWD
- * PUBLIC: gchar *getcwd __P((gchar *, size_t));
+ * PUBLIC: char *getcwd __P((char *, size_t));
  * PUBLIC: #endif
  */
-gchar *
+char *
 getcwd(pt, size)
-	gchar *pt;
+	char *pt;
 	size_t size;
 {
 	register struct dirent *dp;
 	register DIR *dir;
 	register dev_t dev;
 	register ino_t ino;
-	register gint first;
-	register gchar *bpt, *bup;
+	register int first;
+	register char *bpt, *bup;
 	struct stat s;
 	dev_t root_dev;
 	ino_t root_ino;
 	size_t ptsize, upsize;
-	gint ret, save_errno;
-	gchar *ept, *eup, *up;
+	int ret, save_errno;
+	char *ept, *eup, *up;
 
 	/*
 	 * If no buffer specified by the user, allocate one as necessary.

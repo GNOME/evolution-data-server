@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -38,21 +38,21 @@ static const gchar revid[] = "$Id$";
 #define strcasecmp _stricmp
 #endif
 
-static gint __db_parse __P((DB_ENV *, gchar *));
-static gint __db_tmp_open __P((DB_ENV *, u_int32_t, gchar *, DB_FH *));
-static gint __dbenv_config __P((DB_ENV *, const gchar *, u_int32_t));
-static gint __dbenv_iremove __P((DB_ENV *, const gchar *, u_int32_t));
-static gint __dbenv_refresh __P((DB_ENV *, u_int32_t));
+static int __db_parse __P((DB_ENV *, char *));
+static int __db_tmp_open __P((DB_ENV *, u_int32_t, char *, DB_FH *));
+static int __dbenv_config __P((DB_ENV *, const char *, u_int32_t));
+static int __dbenv_iremove __P((DB_ENV *, const char *, u_int32_t));
+static int __dbenv_refresh __P((DB_ENV *, u_int32_t));
 
 /*
  * db_version --
  *	Return version information.
  *
- * EXTERN: gchar *db_version __P((gint *, gint *, gint *));
+ * EXTERN: char *db_version __P((int *, int *, int *));
  */
-gchar *
+char *
 db_version(majverp, minverp, patchp)
-	gint *majverp, *minverp, *patchp;
+	int *majverp, *minverp, *patchp;
 {
 	if (majverp != NULL)
 		*majverp = DB_VERSION_MAJOR;
@@ -60,24 +60,24 @@ db_version(majverp, minverp, patchp)
 		*minverp = DB_VERSION_MINOR;
 	if (patchp != NULL)
 		*patchp = DB_VERSION_PATCH;
-	return ((gchar *)DB_VERSION_STRING);
+	return ((char *)DB_VERSION_STRING);
 }
 
 /*
  * __dbenv_open --
  *	Initialize an environment.
  *
- * PUBLIC: gint __dbenv_open __P((DB_ENV *, const gchar *, u_int32_t, int));
+ * PUBLIC: int __dbenv_open __P((DB_ENV *, const char *, u_int32_t, int));
  */
-gint
+int
 __dbenv_open(dbenv, db_home, flags, mode)
 	DB_ENV *dbenv;
-	const gchar *db_home;
+	const char *db_home;
 	u_int32_t flags;
-	gint mode;
+	int mode;
 {
 	DB_MPOOL *dbmp;
-	gint ret;
+	int ret;
 	u_int32_t init_flags, orig_flags;
 
 	orig_flags = dbenv->flags;
@@ -358,15 +358,15 @@ err:	/* If we fail after creating the regions, remove them. */
  * __dbenv_remove --
  *	Discard an environment.
  *
- * PUBLIC: gint __dbenv_remove __P((DB_ENV *, const gchar *, u_int32_t));
+ * PUBLIC: int __dbenv_remove __P((DB_ENV *, const char *, u_int32_t));
  */
-gint
+int
 __dbenv_remove(dbenv, db_home, flags)
 	DB_ENV *dbenv;
-	const gchar *db_home;
+	const char *db_home;
 	u_int32_t flags;
 {
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	ret = __dbenv_iremove(dbenv, db_home, flags);
 
@@ -383,10 +383,10 @@ __dbenv_remove(dbenv, db_home, flags)
 static int
 __dbenv_iremove(dbenv, db_home, flags)
 	DB_ENV *dbenv;
-	const gchar *db_home;
+	const char *db_home;
 	u_int32_t flags;
 {
-	gint ret;
+	int ret;
 
 #undef	OKFLAGS
 #define	OKFLAGS								\
@@ -413,12 +413,12 @@ __dbenv_iremove(dbenv, db_home, flags)
 static int
 __dbenv_config(dbenv, db_home, flags)
 	DB_ENV *dbenv;
-	const gchar *db_home;
+	const char *db_home;
 	u_int32_t flags;
 {
 	FILE *fp;
-	gint ret;
-	gchar *p, buf[256];
+	int ret;
+	char *p, buf[256];
 
 	/*
 	 * Set the database home.  Do this before calling __db_appname,
@@ -482,15 +482,15 @@ __dbenv_config(dbenv, db_home, flags)
  * __dbenv_close --
  *	DB_ENV destructor.
  *
- * PUBLIC: gint __dbenv_close __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int __dbenv_close __P((DB_ENV *, u_int32_t));
  */
-gint
+int
 __dbenv_close(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
-	gchar **p;
-	gint ret, t_ret;
+	char **p;
+	int ret, t_ret;
 
 	COMPQUIET(flags, 0);
 
@@ -524,7 +524,7 @@ __dbenv_close(dbenv, flags)
 		ret = t_ret;
 
 	/* Do per-subsystem destruction. */
-	__lock_dbenv_close(dbenv); /* gpointer /
+	__lock_dbenv_close(dbenv); /* void */
 	if ((t_ret = __rep_dbenv_close(dbenv)) != 0 && ret == 0)
 		ret = t_ret;
 
@@ -564,7 +564,7 @@ __dbenv_refresh(dbenv, orig_flags)
 	u_int32_t orig_flags;
 {
 	DB_MPOOL *dbmp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	ret = 0;
 
@@ -690,22 +690,22 @@ __dbenv_refresh(dbenv, orig_flags)
  *	of call, build a path based on the DB_ENV->open rules, and return
  *	it in allocated space.
  *
- * PUBLIC: gint __db_appname __P((DB_ENV *, APPNAME,
- * PUBLIC:    const gchar *, u_int32_t, DB_FH *, gchar **));
+ * PUBLIC: int __db_appname __P((DB_ENV *, APPNAME,
+ * PUBLIC:    const char *, u_int32_t, DB_FH *, char **));
  */
-gint
+int
 __db_appname(dbenv, appname, file, tmp_oflags, fhp, namep)
 	DB_ENV *dbenv;
 	APPNAME appname;
-	const gchar *file;
+	const char *file;
 	u_int32_t tmp_oflags;
 	DB_FH *fhp;
-	gchar **namep;
+	char **namep;
 {
 	size_t len, str_len;
-	gint data_entry, ret, slash, tmp_create;
-	const gchar *a, *b;
-	gchar *p, *str;
+	int data_entry, ret, slash, tmp_create;
+	const char *a, *b;
+	char *p, *str;
 
 	a = b = NULL;
 	data_entry = -1;
@@ -812,15 +812,15 @@ retry:	/*
  * __db_home --
  *	Find the database home.
  *
- * PUBLIC:	gint __db_home __P((DB_ENV *, const gchar *, u_int32_t));
+ * PUBLIC:	int __db_home __P((DB_ENV *, const char *, u_int32_t));
  */
-gint
+int
 __db_home(dbenv, db_home, flags)
 	DB_ENV *dbenv;
-	const gchar *db_home;
+	const char *db_home;
 	u_int32_t flags;
 {
-	const gchar *p;
+	const char *p;
 
 	/*
 	 * Use db_home by default, this allows utilities to reasonably
@@ -853,18 +853,18 @@ __db_home(dbenv, db_home, flags)
 static int
 __db_parse(dbenv, s)
 	DB_ENV *dbenv;
-	gchar *s;
+	char *s;
 {
 	u_long __max, __v, v1, v2, v3;
 	u_int32_t flags;
-	gchar *name, *p, *value, v4;
+	char *name, *p, *value, v4;
 
 	/*
 	 * !!!
 	 * The value of 40 is hard-coded into format arguments to sscanf
 	 * below, it can't be changed here without changing it there, too.
 	 */
-	gchar arg[40];
+	char arg[40];
 
 	/*
 	 * Name/value pairs are parsed as two white-space separated strings.
@@ -1106,13 +1106,13 @@ static int
 __db_tmp_open(dbenv, tmp_oflags, path, fhp)
 	DB_ENV *dbenv;
 	u_int32_t tmp_oflags;
-	gchar *path;
+	char *path;
 	DB_FH *fhp;
 {
 	u_int32_t id;
-	gint mode, isdir, ret;
-	const gchar *p;
-	gchar *trv;
+	int mode, isdir, ret;
+	const char *p;
+	char *trv;
 
 	/*
 	 * Check the target directory; if you have six X's and it doesn't

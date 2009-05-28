@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,10 +25,10 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/db_shash.h"
 #include "dbinc/lock.h"
 
-static gint  __ram_add __P((DBC *, db_recno_t *, DBT *, u_int32_t, u_int32_t));
-static gint  __ram_source __P((DB *));
-static gint  __ram_sread __P((DBC *, db_recno_t));
-static gint  __ram_update __P((DBC *, db_recno_t, int));
+static int  __ram_add __P((DBC *, db_recno_t *, DBT *, u_int32_t, u_int32_t));
+static int  __ram_source __P((DB *));
+static int  __ram_sread __P((DBC *, db_recno_t));
+static int  __ram_update __P((DBC *, db_recno_t, int));
 
 /*
  * In recno, there are two meanings to the on-page "deleted" flag.  If we're
@@ -104,20 +104,20 @@ static gint  __ram_update __P((DBC *, db_recno_t, int));
  * __ram_open --
  *	Recno open function.
  *
- * PUBLIC: gint __ram_open __P((DB *,
- * PUBLIC:      DB_TXN *, const gchar *, db_pgno_t, u_int32_t));
+ * PUBLIC: int __ram_open __P((DB *,
+ * PUBLIC:      DB_TXN *, const char *, db_pgno_t, u_int32_t));
  */
-gint
+int
 __ram_open(dbp, txn, name, base_pgno, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name;
+	const char *name;
 	db_pgno_t base_pgno;
 	u_int32_t flags;
 {
 	BTREE *t;
 	DBC *dbc;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	COMPQUIET(name, NULL);
 	t = dbp->bt_internal;
@@ -163,15 +163,15 @@ __ram_open(dbp, txn, name, base_pgno, flags)
  * __ram_append --
  *	Recno append function.
  *
- * PUBLIC: gint __ram_append __P((DBC *, DBT *, DBT *));
+ * PUBLIC: int __ram_append __P((DBC *, DBT *, DBT *));
  */
-gint
+int
 __ram_append(dbc, key, data)
 	DBC *dbc;
 	DBT *key, *data;
 {
 	BTREE_CURSOR *cp;
-	gint ret;
+	int ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 
@@ -196,9 +196,9 @@ __ram_append(dbc, key, data)
  * __ram_c_del --
  *	Recno cursor->c_del function.
  *
- * PUBLIC: gint __ram_c_del __P((DBC *));
+ * PUBLIC: int __ram_c_del __P((DBC *));
  */
-gint
+int
 __ram_c_del(dbc)
 	DBC *dbc;
 {
@@ -209,7 +209,7 @@ __ram_c_del(dbc)
 	DB_LSN lsn;
 	DBT hdr, data;
 	EPG *epg;
-	gint exact, ret, stack;
+	int exact, ret, stack;
 
 	dbp = dbc->dbp;
 	cp = (BTREE_CURSOR *)dbc->internal;
@@ -316,7 +316,7 @@ __ram_c_del(dbc)
 		hdr.data = &bk;
 		hdr.size = SSZA(BKEYDATA, data);
 		memset(&data, 0, sizeof(data));
-		data.data = (gpointer)"";
+		data.data = (void *)"";
 		data.size = 0;
 		if ((ret = __db_pitem(dbc,
 		    cp->page, cp->indx, BKEYDATA_SIZE(0), &hdr, &data)) != 0)
@@ -335,10 +335,10 @@ err:	if (stack)
  * __ram_c_get --
  *	Recno cursor->c_get function.
  *
- * PUBLIC: gint __ram_c_get
+ * PUBLIC: int __ram_c_get
  * PUBLIC:     __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
  */
-gint
+int
 __ram_c_get(dbc, key, data, flags, pgnop)
 	DBC *dbc;
 	DBT *key, *data;
@@ -347,7 +347,7 @@ __ram_c_get(dbc, key, data, flags, pgnop)
 {
 	BTREE_CURSOR *cp;
 	DB *dbp;
-	gint cmp, exact, ret;
+	int cmp, exact, ret;
 
 	COMPQUIET(pgnop, NULL);
 
@@ -567,9 +567,9 @@ err:	CD_CLR(cp);
  * __ram_c_put --
  *	Recno cursor->c_put function.
  *
- * PUBLIC: gint __ram_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+ * PUBLIC: int __ram_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
  */
-gint
+int
 __ram_c_put(dbc, key, data, flags, pgnop)
 	DBC *dbc;
 	DBT *key, *data;
@@ -579,9 +579,9 @@ __ram_c_put(dbc, key, data, flags, pgnop)
 	BTREE_CURSOR *cp;
 	DB *dbp;
 	DB_LSN lsn;
-	gint exact, nc, ret, t_ret;
+	int exact, nc, ret, t_ret;
 	u_int32_t iiflags;
-	gpointer arg;
+	void *arg;
 
 	COMPQUIET(pgnop, NULL);
 
@@ -725,9 +725,9 @@ err:	CD_CLR(cp);
  * __ram_ca --
  *	Adjust cursors.  Returns the number of relevant cursors.
  *
- * PUBLIC: gint __ram_ca __P((DBC *, ca_recno_arg));
+ * PUBLIC: int __ram_ca __P((DBC *, ca_recno_arg));
  */
-gint
+int
 __ram_ca(dbc_arg, op)
 	DBC *dbc_arg;
 	ca_recno_arg op;
@@ -737,7 +737,7 @@ __ram_ca(dbc_arg, op)
 	DB_ENV *dbenv;
 	DBC *dbc;
 	db_recno_t recno;
-	gint adjusted, found;
+	int adjusted, found;
 	u_int32_t order;
 
 	dbp = dbc_arg->dbp;
@@ -868,14 +868,14 @@ iafter:				if (!adjusted && C_LESSTHAN(cp_arg, cp)) {
  * __ram_getno --
  *	Check the user's record number, and make sure we've seen it.
  *
- * PUBLIC: gint __ram_getno __P((DBC *, const DBT *, db_recno_t *, int));
+ * PUBLIC: int __ram_getno __P((DBC *, const DBT *, db_recno_t *, int));
  */
-gint
+int
 __ram_getno(dbc, key, rep, can_create)
 	DBC *dbc;
 	const DBT *key;
 	db_recno_t *rep;
-	gint can_create;
+	int can_create;
 {
 	DB *dbp;
 	db_recno_t recno;
@@ -906,13 +906,13 @@ static int
 __ram_update(dbc, recno, can_create)
 	DBC *dbc;
 	db_recno_t recno;
-	gint can_create;
+	int can_create;
 {
 	BTREE *t;
 	DB *dbp;
 	DBT *rdata;
 	db_recno_t nrecs;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	t = dbp->bt_internal;
@@ -964,8 +964,8 @@ __ram_source(dbp)
 	DB *dbp;
 {
 	BTREE *t;
-	gchar *source;
-	gint ret;
+	char *source;
+	int ret;
 
 	t = dbp->bt_internal;
 
@@ -996,9 +996,9 @@ __ram_source(dbp)
  * __ram_writeback --
  *	Rewrite the backing file.
  *
- * PUBLIC: gint __ram_writeback __P((DB *));
+ * PUBLIC: int __ram_writeback __P((DB *));
  */
-gint
+int
 __ram_writeback(dbp)
 	DB *dbp;
 {
@@ -1008,7 +1008,7 @@ __ram_writeback(dbp)
 	DBT key, data;
 	FILE *fp;
 	db_recno_t keyno;
-	gint ret, t_ret;
+	int ret, t_ret;
 	u_int8_t delim, *pad;
 
 	t = dbp->bt_internal;
@@ -1160,7 +1160,7 @@ __ram_sread(dbc, top)
 	DBT data, *rdata;
 	db_recno_t recno;
 	size_t len;
-	gint ch, ret, was_modified;
+	int ch, ret, was_modified;
 
 	t = dbc->dbp->bt_internal;
 	dbp = dbc->dbp;
@@ -1259,7 +1259,7 @@ __ram_add(dbc, recnop, data, flags, bi_flags)
 	u_int32_t flags, bi_flags;
 {
 	BTREE_CURSOR *cp;
-	gint exact, ret, stack;
+	int exact, ret, stack;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 

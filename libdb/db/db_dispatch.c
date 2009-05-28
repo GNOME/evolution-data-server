@@ -39,7 +39,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -58,17 +58,17 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/rep.h"
 #include "dbinc/txn.h"
 
-static gint __db_limbo_fix __P((DB *,
+static int __db_limbo_fix __P((DB *,
     DB_TXN *, DB_TXNLIST *, db_pgno_t *, DBMETA *));
-static gint __db_limbo_bucket __P((DB_ENV *, DB_TXN *, DB_TXNLIST *));
-static gint __db_limbo_move __P((DB_ENV *, DB_TXN *, DB_TXN *, DB_TXNLIST *));
-static gint __db_lock_move __P((DB_ENV *,
+static int __db_limbo_bucket __P((DB_ENV *, DB_TXN *, DB_TXNLIST *));
+static int __db_limbo_move __P((DB_ENV *, DB_TXN *, DB_TXN *, DB_TXNLIST *));
+static int __db_lock_move __P((DB_ENV *,
 		u_int8_t *, db_pgno_t, db_lockmode_t, DB_TXN *, DB_TXN *));
-static gint __db_default_getpgnos __P((DB_ENV *, DB_LSN *lsnp, gpointer ));
-static gint __db_txnlist_find_internal __P((DB_ENV *, gpointer , db_txnlist_type,
+static int __db_default_getpgnos __P((DB_ENV *, DB_LSN *lsnp, void *));
+static int __db_txnlist_find_internal __P((DB_ENV *, void *, db_txnlist_type,
 		u_int32_t, u_int8_t [DB_FILE_ID_LEN], DB_TXNLIST **, int));
-static gint __db_txnlist_pgnoadd __P((DB_ENV *, DB_TXNHEAD *,
-		int32_t, u_int8_t [DB_FILE_ID_LEN], gchar *, db_pgno_t));
+static int __db_txnlist_pgnoadd __P((DB_ENV *, DB_TXNHEAD *,
+		int32_t, u_int8_t [DB_FILE_ID_LEN], char *, db_pgno_t));
 
 /*
  * __db_dispatch --
@@ -79,23 +79,23 @@ static gint __db_txnlist_pgnoadd __P((DB_ENV *, DB_TXNHEAD *,
  * scripts in the tools directory).  An application using a different
  * recovery paradigm will supply a different dispatch function to txn_open.
  *
- * PUBLIC: gint __db_dispatch __P((DB_ENV *,
- * PUBLIC:     gint (**)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer )),
- * PUBLIC:     size_t, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __db_dispatch __P((DB_ENV *,
+ * PUBLIC:     int (**)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *)),
+ * PUBLIC:     size_t, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __db_dispatch(dbenv, dtab, dtabsize, db, lsnp, redo, info)
 	DB_ENV *dbenv;		/* The environment. */
-	gint (**dtab)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+	int (**dtab)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 	size_t dtabsize;	/* Size of the dtab. */
 	DBT *db;		/* The log record upon which to dispatch. */
 	DB_LSN *lsnp;		/* The lsn of the record being dispatched. */
 	db_recops redo;		/* Redo this op (or undo it). */
-	gpointer info;
+	void *info;
 {
 	DB_LSN prev_lsn;
 	u_int32_t rectype, txnid;
-	gint make_call, ret;
+	int make_call, ret;
 
 	memcpy(&rectype, db->data, sizeof(rectype));
 	memcpy(&txnid, (u_int8_t *)db->data + sizeof(rectype), sizeof(txnid));
@@ -293,20 +293,20 @@ __db_dispatch(dbenv, dtab, dtabsize, db, lsnp, redo, info)
 /*
  * __db_add_recovery --
  *
- * PUBLIC: gint __db_add_recovery __P((DB_ENV *,
- * PUBLIC:   gint (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ), size_t *,
- * PUBLIC:   gint (*)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ), u_int32_t));
+ * PUBLIC: int __db_add_recovery __P((DB_ENV *,
+ * PUBLIC:   int (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *), size_t *,
+ * PUBLIC:   int (*)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *), u_int32_t));
  */
-gint
+int
 __db_add_recovery(dbenv, dtab, dtabsize, func, ndx)
 	DB_ENV *dbenv;
-	gint (***dtab) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+	int (***dtab) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 	size_t *dtabsize;
-	gint (*func) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+	int (*func) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 	u_int32_t ndx;
 {
 	size_t i, nsize;
-	gint ret;
+	int ret;
 
 	/* Check if we have to grow the table. */
 	if (ndx >= *dtabsize) {
@@ -327,19 +327,19 @@ __db_add_recovery(dbenv, dtab, dtabsize, func, ndx)
  * __db_txnlist_init --
  *	Initialize transaction linked list.
  *
- * PUBLIC: gint __db_txnlist_init __P((DB_ENV *,
- * PUBLIC:     u_int32_t, u_int32_t, DB_LSN *, gpointer ));
+ * PUBLIC: int __db_txnlist_init __P((DB_ENV *,
+ * PUBLIC:     u_int32_t, u_int32_t, DB_LSN *, void *));
  */
-gint
+int
 __db_txnlist_init(dbenv, low_txn, hi_txn, trunc_lsn, retp)
 	DB_ENV *dbenv;
 	u_int32_t low_txn, hi_txn;
 	DB_LSN *trunc_lsn;
-	gpointer retp;
+	void *retp;
 {
 	DB_TXNHEAD *headp;
 	u_int32_t tmp;
-	gint ret, size;
+	int ret, size;
 
 	/*
 	 * Size a hash table.
@@ -389,7 +389,7 @@ __db_txnlist_init(dbenv, low_txn, hi_txn, trunc_lsn, retp)
 	ZERO_LSN(headp->maxlsn);
 	ZERO_LSN(headp->ckplsn);
 
-	*(gpointer *)retp = headp;
+	*(void **)retp = headp;
 	return (0);
 }
 
@@ -397,20 +397,20 @@ __db_txnlist_init(dbenv, low_txn, hi_txn, trunc_lsn, retp)
  * __db_txnlist_add --
  *	Add an element to our transaction linked list.
  *
- * PUBLIC: gint __db_txnlist_add __P((DB_ENV *,
- * PUBLIC:     gpointer , u_int32_t, int32_t, DB_LSN *));
+ * PUBLIC: int __db_txnlist_add __P((DB_ENV *,
+ * PUBLIC:     void *, u_int32_t, int32_t, DB_LSN *));
  */
-gint
+int
 __db_txnlist_add(dbenv, listp, txnid, status, lsn)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	u_int32_t txnid;
 	int32_t status;
 	DB_LSN *lsn;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *elp;
-	gint ret;
+	int ret;
 
 	if ((ret = __os_malloc(dbenv, sizeof(DB_TXNLIST), &elp)) != 0)
 		return (ret);
@@ -437,12 +437,12 @@ __db_txnlist_add(dbenv, listp, txnid, status, lsn)
  * __db_txnlist_remove --
  *	Remove an element from our transaction linked list.
  *
- * PUBLIC: gint __db_txnlist_remove __P((DB_ENV *, gpointer , u_int32_t));
+ * PUBLIC: int __db_txnlist_remove __P((DB_ENV *, void *, u_int32_t));
  */
-gint
+int
 __db_txnlist_remove(dbenv, listp, txnid)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	u_int32_t txnid;
 {
 	DB_TXNLIST *entry;
@@ -460,12 +460,12 @@ __db_txnlist_remove(dbenv, listp, txnid)
  * recovery, we are going to virtually truncate the log and we need
  * to retain the last checkpoint before the truncation point.
  *
- * PUBLIC: void __db_txnlist_ckp __P((DB_ENV *, gpointer , DB_LSN *));
+ * PUBLIC: void __db_txnlist_ckp __P((DB_ENV *, void *, DB_LSN *));
  */
 void
 __db_txnlist_ckp(dbenv, listp, ckp_lsn)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	DB_LSN *ckp_lsn;
 {
 	DB_TXNHEAD *hp;
@@ -484,16 +484,16 @@ __db_txnlist_ckp(dbenv, listp, ckp_lsn)
  *	Discard transaction linked list. Print out any error messages
  * for deleted files.
  *
- * PUBLIC: void __db_txnlist_end __P((DB_ENV *, gpointer ));
+ * PUBLIC: void __db_txnlist_end __P((DB_ENV *, void *));
  */
 void
 __db_txnlist_end(dbenv, listp)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *p;
-	gint i;
+	int i;
 
 	if ((hp = (DB_TXNHEAD *)listp) == NULL)
 		return;
@@ -528,12 +528,12 @@ __db_txnlist_end(dbenv, listp)
  *	the status of the transaction.  A txnid of 0 means the record
  *	was generated while not in a transaction.
  *
- * PUBLIC: gint __db_txnlist_find __P((DB_ENV *, gpointer , u_int32_t));
+ * PUBLIC: int __db_txnlist_find __P((DB_ENV *, void *, u_int32_t));
  */
-gint
+int
 __db_txnlist_find(dbenv, listp, txnid)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	u_int32_t txnid;
 {
 	DB_TXNLIST *entry;
@@ -549,20 +549,20 @@ __db_txnlist_find(dbenv, listp, txnid)
  *	Change the status of an existing transaction entry.
  *	Returns TXN_NOTFOUND if no such entry exists.
  *
- * PUBLIC: gint __db_txnlist_update __P((DB_ENV *,
- * PUBLIC:     gpointer , u_int32_t, u_int32_t, DB_LSN *));
+ * PUBLIC: int __db_txnlist_update __P((DB_ENV *,
+ * PUBLIC:     void *, u_int32_t, u_int32_t, DB_LSN *));
  */
-gint
+int
 __db_txnlist_update(dbenv, listp, txnid, status, lsn)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	u_int32_t txnid;
 	u_int32_t status;
 	DB_LSN *lsn;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *elp;
-	gint ret;
+	int ret;
 
 	if (txnid == 0)
 		return (TXN_NOTFOUND);
@@ -590,19 +590,19 @@ __db_txnlist_update(dbenv, listp, txnid, status, lsn)
 static int
 __db_txnlist_find_internal(dbenv, listp, type, txnid, uid, txnlistp, delete)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	db_txnlist_type type;
 	u_int32_t  txnid;
 	u_int8_t uid[DB_FILE_ID_LEN];
 	DB_TXNLIST **txnlistp;
-	gint delete;
+	int delete;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *p;
 	int32_t generation;
 	u_int32_t hash;
 	struct __db_headlink *head;
-	gint i, ret;
+	int i, ret;
 
 	if ((hp = (DB_TXNHEAD *)listp) == NULL)
 		return (TXN_NOTFOUND);
@@ -674,18 +674,18 @@ __db_txnlist_find_internal(dbenv, listp, type, txnid, uid, txnlistp, delete)
  * __db_txnlist_gen --
  *	Change the current generation number.
  *
- * PUBLIC: gint __db_txnlist_gen __P((DB_ENV *,
- * PUBLIC:       gpointer , int, u_int32_t, u_int32_t));
+ * PUBLIC: int __db_txnlist_gen __P((DB_ENV *,
+ * PUBLIC:       void *, int, u_int32_t, u_int32_t));
  */
-gint
+int
 __db_txnlist_gen(dbenv, listp, incr, min, max)
 	DB_ENV *dbenv;
-	gpointer listp;
-	gint incr;
+	void *listp;
+	int incr;
 	u_int32_t min, max;
 {
 	DB_TXNHEAD *hp;
-	gint ret;
+	int ret;
 
 	/*
 	 * During recovery generation numbers keep track of "restart"
@@ -721,7 +721,7 @@ __db_txnlist_gen(dbenv, listp, incr, min, max)
 }
 
 #define	TXN_BUBBLE(AP, MAX) {						\
-	gint __j;							\
+	int __j;							\
 	DB_LSN __tmp;							\
 									\
 	for (__j = 0; __j < MAX - 1; __j++)				\
@@ -739,18 +739,18 @@ __db_txnlist_gen(dbenv, listp, incr, min, max)
  *	subsystem explicitly, and there is only a single TXNLIST_LSN entry on
  *	the list.
  *
- * PUBLIC: gint __db_txnlist_lsnadd __P((DB_ENV *, gpointer , DB_LSN *, u_int32_t));
+ * PUBLIC: int __db_txnlist_lsnadd __P((DB_ENV *, void *, DB_LSN *, u_int32_t));
  */
-gint
+int
 __db_txnlist_lsnadd(dbenv, listp, lsnp, flags)
 	DB_ENV *dbenv;
-	gpointer listp;
+	void *listp;
 	DB_LSN *lsnp;
 	u_int32_t flags;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *elp;
-	gint i, ret;
+	int i, ret;
 
 	hp = (DB_TXNHEAD *)listp;
 
@@ -792,16 +792,16 @@ __db_txnlist_lsnadd(dbenv, listp, lsnp, flags)
  * __db_txnlist_lsninit --
  *	Initialize a transaction list with an lsn array entry.
  *
- * PUBLIC: gint __db_txnlist_lsninit __P((DB_ENV *, DB_TXNHEAD *, DB_LSN *));
+ * PUBLIC: int __db_txnlist_lsninit __P((DB_ENV *, DB_TXNHEAD *, DB_LSN *));
  */
-gint
+int
 __db_txnlist_lsninit(dbenv, hp, lsnp)
 	DB_ENV *dbenv;
 	DB_TXNHEAD *hp;
 	DB_LSN *lsnp;
 {
 	DB_TXNLIST *elp;
-	gint ret;
+	int ret;
 
 	elp = NULL;
 
@@ -827,20 +827,20 @@ err:	__db_txnlist_end(dbenv, hp);
  * __db_add_limbo -- add pages to the limbo list.
  *	Get the file information and call pgnoadd for each page.
  *
- * PUBLIC: gint __db_add_limbo __P((DB_ENV *,
- * PUBLIC:      gpointer , int32_t, db_pgno_t, int32_t));
+ * PUBLIC: int __db_add_limbo __P((DB_ENV *,
+ * PUBLIC:      void *, int32_t, db_pgno_t, int32_t));
  */
-gint
+int
 __db_add_limbo(dbenv, info, fileid, pgno, count)
 	DB_ENV *dbenv;
-	gpointer info;
+	void *info;
 	int32_t fileid;
 	db_pgno_t pgno;
 	int32_t count;
 {
 	DB_LOG *dblp;
 	FNAME *fnp;
-	gint ret;
+	int ret;
 
 	dblp = dbenv->lg_handle;
 	if ((ret = __dbreg_id_to_fname(dblp, fileid, 0, &fnp)) != 0)
@@ -889,17 +889,17 @@ __db_add_limbo(dbenv, info, fileid, pgno, count)
  * "create list and write meta-data page" algorithm.  Otherwise, we're in
  * an abort and doing the "use compensating transaction" algorithm.
  *
- * PUBLIC: gint __db_do_the_limbo __P((DB_ENV *,
+ * PUBLIC: int __db_do_the_limbo __P((DB_ENV *,
  * PUBLIC:     DB_TXN *, DB_TXN *, DB_TXNHEAD *));
  */
-gint
+int
 __db_do_the_limbo(dbenv, ptxn, txn, hp)
 	DB_ENV *dbenv;
 	DB_TXN *ptxn, *txn;
 	DB_TXNHEAD *hp;
 {
 	DB_TXNLIST *elp;
-	gint h, ret;
+	int h, ret;
 
 	ret = 0;
 	/*
@@ -944,7 +944,7 @@ __db_lock_move(dbenv, fileid, pgno, mode, ptxn, txn)
 	DB_LOCK lock;
 	DB_LOCK_ILOCK lock_obj;
 	DB_LOCKREQ req;
-	gint ret;
+	int ret;
 
 	lock_obj.pgno = pgno;
 	memcpy(lock_obj.fileid, fileid, DB_FILE_ID_LEN);
@@ -975,7 +975,7 @@ __db_limbo_move(dbenv, ptxn, txn, elp)
 	DB_TXN *ptxn, *txn;
 	DB_TXNLIST *elp;
 {
-	gint ret;
+	int ret;
 
 	for (; elp != NULL; elp = LIST_NEXT(elp, links)) {
 		if (elp->type != TXNLIST_PGNO || elp->u.p.locked == 1)
@@ -1007,7 +1007,7 @@ __db_limbo_bucket(dbenv, txn, elp)
 	DBMETA *meta;
 	DB_TXN *ctxn, *t;
 	db_pgno_t last_pgno, pgno;
-	gint dbp_created, in_retry, ret, t_ret;
+	int dbp_created, in_retry, ret, t_ret;
 
 	ctxn = NULL;
 	in_retry = 0;
@@ -1182,7 +1182,7 @@ __db_limbo_fix(dbp, ctxn, elp, lastp, meta)
 	DB_MPOOLFILE *mpf;
 	PAGE *freep, *pagep;
 	db_pgno_t next, pgno;
-	gint i, put_page, ret, t_ret;
+	int i, put_page, ret, t_ret;
 
 	/*
 	 * Loop through the entries for this txnlist element and
@@ -1288,12 +1288,12 @@ __db_txnlist_pgnoadd(dbenv, hp, fileid, uid, fname, pgno)
 	DB_TXNHEAD *hp;
 	int32_t fileid;
 	u_int8_t uid[DB_FILE_ID_LEN];
-	gchar *fname;
+	char *fname;
 	db_pgno_t pgno;
 {
 	DB_TXNLIST *elp;
 	u_int32_t hash;
-	gint len, ret;
+	int len, ret;
 
 	elp = NULL;
 
@@ -1345,10 +1345,10 @@ static int
 __db_default_getpgnos(dbenv, lsnp, summary)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
-	gpointer summary;
+	void *summary;
 {
 	TXN_RECS *t;
-	gint ret;
+	int ret;
 
 	t = (TXN_RECS *)summary;
 
@@ -1371,16 +1371,16 @@ __db_default_getpgnos(dbenv, lsnp, summary)
  * __db_txnlist_print --
  *	Print out the transaction list.
  *
- * PUBLIC: void __db_txnlist_print __P((gpointer));
+ * PUBLIC: void __db_txnlist_print __P((void *));
  */
 void
 __db_txnlist_print(listp)
-	gpointer listp;
+	void *listp;
 {
 	DB_TXNHEAD *hp;
 	DB_TXNLIST *p;
-	gint i;
-	gchar *stats[] = { "ok", "commit", "prepare", "abort", "notfound",
+	int i;
+	char *stats[] = { "ok", "commit", "prepare", "abort", "notfound",
 	    "ignore", "expected", "unexpected" };
 
 	hp = (DB_TXNHEAD *)listp;

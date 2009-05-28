@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,24 +21,24 @@ static const gchar revid[] = "$Id$";
 #include "db_int.h"
 
 #ifdef HAVE_FILESYSTEM_NOTZERO
-static gint __os_zerofill __P((DB_ENV *, DB_FH *));
+static int __os_zerofill __P((DB_ENV *, DB_FH *));
 #endif
-static gint __os_physwrite __P((DB_ENV *, DB_FH *, gpointer , size_t, size_t *));
+static int __os_physwrite __P((DB_ENV *, DB_FH *, void *, size_t, size_t *));
 
 /*
  * __os_io --
  *	Do an I/O.
  *
- * PUBLIC: gint __os_io __P((DB_ENV *, DB_IO *, int, size_t *));
+ * PUBLIC: int __os_io __P((DB_ENV *, DB_IO *, int, size_t *));
  */
-gint
+int
 __os_io(dbenv, db_iop, op, niop)
 	DB_ENV *dbenv;
 	DB_IO *db_iop;
-	gint op;
+	int op;
 	size_t *niop;
 {
-	gint ret;
+	int ret;
 
 	if (__os_is_winnt()) {
 		ULONG64 off = (ULONG64)db_iop->pagesize * db_iop->pgno;
@@ -100,19 +100,19 @@ err:	MUTEX_THREAD_UNLOCK(dbenv, db_iop->mutexp);
  * __os_read --
  *	Read from a file handle.
  *
- * PUBLIC: gint __os_read __P((DB_ENV *, DB_FH *, gpointer , size_t, size_t *));
+ * PUBLIC: int __os_read __P((DB_ENV *, DB_FH *, void *, size_t, size_t *));
  */
-gint
+int
 __os_read(dbenv, fhp, addr, len, nrp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
-	gpointer addr;
+	void *addr;
 	size_t len;
 	size_t *nrp;
 {
 	size_t offset;
 	DWORD nr;
-	gint ret;
+	int ret;
 	BOOL success;
 	u_int8_t *taddr;
 
@@ -148,17 +148,17 @@ retry:		if (DB_GLOBAL(j_read) != NULL) {
  * __os_write --
  *	Write to a file handle.
  *
- * PUBLIC: gint __os_write __P((DB_ENV *, DB_FH *, gpointer , size_t, size_t *));
+ * PUBLIC: int __os_write __P((DB_ENV *, DB_FH *, void *, size_t, size_t *));
  */
-gint
+int
 __os_write(dbenv, fhp, addr, len, nwp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
-	gpointer addr;
+	void *addr;
 	size_t len;
 	size_t *nwp;
 {
-	gint ret;
+	int ret;
 
 #ifdef HAVE_FILESYSTEM_NOTZERO
 	/* Zero-fill as necessary. */
@@ -176,13 +176,13 @@ static int
 __os_physwrite(dbenv, fhp, addr, len, nwp)
 	DB_ENV *dbenv;
 	DB_FH *fhp;
-	gpointer addr;
+	void *addr;
 	size_t len;
 	size_t *nwp;
 {
 	size_t offset;
 	DWORD nw;
-	gint ret;
+	int ret;
 	BOOL success;
 	u_int8_t *taddr;
 
@@ -234,7 +234,7 @@ __os_zerofill(dbenv, fhp)
 	unsigned __int64 stat_offset, write_offset;
 	size_t blen, nw;
 	u_int32_t bytes, mbytes;
-	gint group_sync, need_free, ret;
+	int group_sync, need_free, ret;
 	u_int8_t buf[8 * 1024], *bp;
 
 	/* Calculate the byte offset of the next write. */

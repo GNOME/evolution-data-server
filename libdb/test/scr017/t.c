@@ -8,11 +8,11 @@
 
 #include "db_185.h"
 
-void	err(gchar *);
+void	err(char *);
 int	mycmp(const DBT *, const DBT *);
 void	ops(DB *, int);
 
-gint
+int
 main()
 {
 	DB *dbp;
@@ -61,7 +61,7 @@ main()
 	return (0);
 }
 
-gint
+int
 mycmp(a, b)
 	const DBT *a, *b;
 {
@@ -78,13 +78,13 @@ mycmp(a, b)
 void
 ops(dbp, type)
 	DB *dbp;
-	gint type;
+	int type;
 {
 	FILE *outfp;
 	DBT key, data;
 	recno_t recno;
-	gint i, ret;
-	gchar buf[64];
+	int i, ret;
+	char buf[64];
 
 	memset(&key, 0, sizeof(key));
 	memset(&data, 0, sizeof(data));
@@ -149,11 +149,11 @@ ops(dbp, type)
 		err("fopen: output");
 	while ((ret = dbp->seq(dbp, &key, &data, R_NEXT)) == 0) {
 		if (type == DB_RECNO)
-			fprintf(outfp, "%d\n", *(gint *)key.data);
+			fprintf(outfp, "%d\n", *(int *)key.data);
 		else
 			fprintf(outfp,
-			    "%.*s\n", (int)key.size, (gchar *)key.data);
-		fprintf(outfp, "%.*s\n", (int)data.size, (gchar *)data.data);
+			    "%.*s\n", (int)key.size, (char *)key.data);
+		fprintf(outfp, "%.*s\n", (int)data.size, (char *)data.data);
 	}
 	if (ret != 1)
 		err("DB->seq");
@@ -181,7 +181,7 @@ ops(dbp, type)
 
 void
 err(s)
-	gchar *s;
+	char *s;
 {
 	fprintf(stderr, "\t%s: %s\n", s, strerror(errno));
 	exit (1);

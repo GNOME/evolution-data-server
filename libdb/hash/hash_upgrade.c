@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,12 +26,12 @@ static const gchar revid[] = "$Id$";
  * __ham_30_hashmeta --
  *	Upgrade the database from version 4/5 to version 6.
  *
- * PUBLIC: gint __ham_30_hashmeta __P((DB *, gchar *, u_int8_t *));
+ * PUBLIC: int __ham_30_hashmeta __P((DB *, char *, u_int8_t *));
  */
-gint
+int
 __ham_30_hashmeta(dbp, real_name, obuf)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int8_t *obuf;
 {
 	DB_ENV *dbenv;
@@ -39,7 +39,7 @@ __ham_30_hashmeta(dbp, real_name, obuf)
 	HMETA30 newmeta;
 	u_int32_t *o_spares, *n_spares;
 	u_int32_t fillf, maxb, nelem;
-	gint i, max_entry, ret;
+	int i, max_entry, ret;
 
 	dbenv = dbp->dbenv;
 	memset(&newmeta, 0, sizeof(newmeta));
@@ -115,20 +115,20 @@ __ham_30_hashmeta(dbp, real_name, obuf)
  *	Make sure that all hash pages belonging to the current
  *	hash doubling are within the bounds of the file.
  *
- * PUBLIC: gint __ham_30_sizefix __P((DB *, DB_FH *, gchar *, u_int8_t *));
+ * PUBLIC: int __ham_30_sizefix __P((DB *, DB_FH *, char *, u_int8_t *));
  */
-gint
+int
 __ham_30_sizefix(dbp, fhp, realname, metabuf)
 	DB *dbp;
 	DB_FH *fhp;
-	gchar *realname;
+	char *realname;
 	u_int8_t *metabuf;
 {
 	u_int8_t buf[DB_MAX_PGSIZE];
 	DB_ENV *dbenv;
 	HMETA30 *meta;
 	db_pgno_t last_actual, last_desired;
-	gint ret;
+	int ret;
 	size_t nw;
 	u_int32_t pagesize;
 
@@ -171,17 +171,17 @@ __ham_30_sizefix(dbp, fhp, realname, metabuf)
  * __ham_31_hashmeta --
  *	Upgrade the database from version 6 to version 7.
  *
- * PUBLIC: gint __ham_31_hashmeta
- * PUBLIC:      __P((DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *));
+ * PUBLIC: int __ham_31_hashmeta
+ * PUBLIC:      __P((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *));
  */
-gint
+int
 __ham_31_hashmeta(dbp, real_name, flags, fhp, h, dirtyp)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int32_t flags;
 	DB_FH *fhp;
 	PAGE *h;
-	gint *dirtyp;
+	int *dirtyp;
 {
 	HMETA31 *newmeta;
 	HMETA30 *oldmeta;
@@ -226,22 +226,22 @@ __ham_31_hashmeta(dbp, real_name, flags, fhp, h, dirtyp)
  * __ham_31_hash --
  *	Upgrade the database hash leaf pages.
  *
- * PUBLIC: gint __ham_31_hash
- * PUBLIC:      __P((DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *));
+ * PUBLIC: int __ham_31_hash
+ * PUBLIC:      __P((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *));
  */
-gint
+int
 __ham_31_hash(dbp, real_name, flags, fhp, h, dirtyp)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int32_t flags;
 	DB_FH *fhp;
 	PAGE *h;
-	gint *dirtyp;
+	int *dirtyp;
 {
 	HKEYDATA *hk;
 	db_pgno_t pgno, tpgno;
 	db_indx_t indx;
-	gint ret;
+	int ret;
 
 	COMPQUIET(flags, 0);
 

@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 /*
@@ -65,13 +65,13 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/hash.h"
 #include "dbinc/lock.h"
 
-static gint __ham_c_delpg
+static int __ham_c_delpg
     __P((DBC *, db_pgno_t, db_pgno_t, u_int32_t, db_ham_mode, u_int32_t *));
 
 /*
- * PUBLIC: gint __ham_item __P((DBC *, db_lockmode_t, db_pgno_t *));
+ * PUBLIC: int __ham_item __P((DBC *, db_lockmode_t, db_pgno_t *));
  */
-gint
+int
 __ham_item(dbc, mode, pgnop)
 	DBC *dbc;
 	db_lockmode_t mode;
@@ -80,7 +80,7 @@ __ham_item(dbc, mode, pgnop)
 	DB *dbp;
 	HASH_CURSOR *hcp;
 	db_pgno_t next_pgno;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	hcp = (HASH_CURSOR *)dbc->internal;
@@ -140,16 +140,16 @@ recheck:
 }
 
 /*
- * PUBLIC: gint __ham_item_reset __P((DBC *));
+ * PUBLIC: int __ham_item_reset __P((DBC *));
  */
-gint
+int
 __ham_item_reset(dbc)
 	DBC *dbc;
 {
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -203,16 +203,16 @@ __ham_item_init(dbc)
 /*
  * Returns the last item in a bucket.
  *
- * PUBLIC: gint __ham_item_last __P((DBC *, db_lockmode_t, db_pgno_t *));
+ * PUBLIC: int __ham_item_last __P((DBC *, db_lockmode_t, db_pgno_t *));
  */
-gint
+int
 __ham_item_last(dbc, mode, pgnop)
 	DBC *dbc;
 	db_lockmode_t mode;
 	db_pgno_t *pgnop;
 {
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 	if ((ret = __ham_item_reset(dbc)) != 0)
@@ -225,16 +225,16 @@ __ham_item_last(dbc, mode, pgnop)
 }
 
 /*
- * PUBLIC: gint __ham_item_first __P((DBC *, db_lockmode_t, db_pgno_t *));
+ * PUBLIC: int __ham_item_first __P((DBC *, db_lockmode_t, db_pgno_t *));
  */
-gint
+int
 __ham_item_first(dbc, mode, pgnop)
 	DBC *dbc;
 	db_lockmode_t mode;
 	db_pgno_t *pgnop;
 {
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 	if ((ret = __ham_item_reset(dbc)) != 0)
@@ -251,9 +251,9 @@ __ham_item_first(dbc, mode, pgnop)
  *	bigkeys, just returns the page number and index of the bigkey
  *	pointer pair.
  *
- * PUBLIC: gint __ham_item_prev __P((DBC *, db_lockmode_t, db_pgno_t *));
+ * PUBLIC: int __ham_item_prev __P((DBC *, db_lockmode_t, db_pgno_t *));
  */
-gint
+int
 __ham_item_prev(dbc, mode, pgnop)
 	DBC *dbc;
 	db_lockmode_t mode;
@@ -262,7 +262,7 @@ __ham_item_prev(dbc, mode, pgnop)
 	DB *dbp;
 	HASH_CURSOR *hcp;
 	db_pgno_t next_pgno;
-	gint ret;
+	int ret;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 	dbp = dbc->dbp;
@@ -369,16 +369,16 @@ __ham_item_prev(dbc, mode, pgnop)
 /*
  * Sets the cursor to the next key/data pair on a page.
  *
- * PUBLIC: gint __ham_item_next __P((DBC *, db_lockmode_t, db_pgno_t *));
+ * PUBLIC: int __ham_item_next __P((DBC *, db_lockmode_t, db_pgno_t *));
  */
-gint
+int
 __ham_item_next(dbc, mode, pgnop)
 	DBC *dbc;
 	db_lockmode_t mode;
 	db_pgno_t *pgnop;
 {
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 
@@ -457,7 +457,7 @@ __ham_putitem(dbp, p, dbt, type)
 	DB *dbp;
 	PAGE *p;
 	const DBT *dbt;
-	gint type;
+	int type;
 {
 	u_int16_t n, off;
 	db_indx_t *inp;
@@ -533,12 +533,12 @@ __ham_reputpair(dbp, p, ndx, key, data)
 }
 
 /*
- * PUBLIC: gint __ham_del_pair __P((DBC *, int));
+ * PUBLIC: int __ham_del_pair __P((DBC *, int));
  */
-gint
+int
 __ham_del_pair(dbc, reclaim_page)
 	DBC *dbc;
-	gint reclaim_page;
+	int reclaim_page;
 {
 	DB *dbp;
 	DBT data_dbt, key_dbt;
@@ -549,7 +549,7 @@ __ham_del_pair(dbc, reclaim_page)
 	db_ham_mode op;
 	db_indx_t ndx;
 	db_pgno_t chg_pgno, pgno, tmp_pgno;
-	gint ret, t_ret;
+	int ret, t_ret;
 	u_int32_t order;
 
 	dbp = dbc->dbp;
@@ -819,9 +819,9 @@ err:	/* Clean up any pages. */
  *	Given the key data indicated by the cursor, replace part/all of it
  *	according to the fields in the dbt.
  *
- * PUBLIC: gint __ham_replpair __P((DBC *, DBT *, u_int32_t));
+ * PUBLIC: int __ham_replpair __P((DBC *, DBT *, u_int32_t));
  */
-gint
+int
 __ham_replpair(dbc, dbt, make_dup)
 	DBC *dbc;
 	DBT *dbt;
@@ -834,9 +834,9 @@ __ham_replpair(dbc, dbt, make_dup)
 	HASH_CURSOR *hcp;
 	int32_t change;			/* XXX: Possible overflow. */
 	u_int32_t dup_flag, len, memsize;
-	gint beyond_eor, is_big, ret, type;
+	int beyond_eor, is_big, ret, type;
 	u_int8_t *beg, *dest, *end, *hk, *src;
-	gpointer memp;
+	void *memp;
 
 	/*
 	 * Big item replacements are handled in generic code.
@@ -1010,7 +1010,7 @@ __ham_onpage_replace(dbp, pagep, ndx, off, change, dbt)
 	int32_t len;
 	size_t pgsize;
 	u_int8_t *src, *dest;
-	gint zero_me;
+	int zero_me;
 
 	pgsize = dbp->pgsize;
 	inp = P_INP(dbp, pagep);
@@ -1046,9 +1046,9 @@ __ham_onpage_replace(dbp, pagep, ndx, off, change, dbt)
 }
 
 /*
- * PUBLIC: gint __ham_split_page __P((DBC *, u_int32_t, u_int32_t));
+ * PUBLIC: int __ham_split_page __P((DBC *, u_int32_t, u_int32_t));
  */
-gint
+int
 __ham_split_page(dbc, obucket, nbucket)
 	DBC *dbc;
 	u_int32_t obucket, nbucket;
@@ -1065,8 +1065,8 @@ __ham_split_page(dbc, obucket, nbucket)
 	db_indx_t n;
 	db_pgno_t bucket_pgno, npgno, next_pgno;
 	u_int32_t big_len, len;
-	gint found, i, ret, t_ret;
-	gpointer big_buf;
+	int found, i, ret, t_ret;
+	void *big_buf;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -1277,13 +1277,13 @@ err:		if (old_pagep != NULL)
  * to which we just added something.  This allows us to link overflow
  * pages and return the new page having correctly put the last page.
  *
- * PUBLIC: gint __ham_add_el __P((DBC *, const DBT *, const DBT *, int));
+ * PUBLIC: int __ham_add_el __P((DBC *, const DBT *, const DBT *, int));
  */
-gint
+int
 __ham_add_el(dbc, key, val, type)
 	DBC *dbc;
 	const DBT *key, *val;
-	gint type;
+	int type;
 {
 	const DBT *pkey, *pdata;
 	DB *dbp;
@@ -1294,8 +1294,8 @@ __ham_add_el(dbc, key, val, type)
 	HOFFPAGE doff, koff;
 	db_pgno_t next_pgno, pgno;
 	u_int32_t data_size, key_size, pairsize, rectype;
-	gint do_expand, is_keybig, is_databig, ret;
-	gint key_type, data_type;
+	int do_expand, is_keybig, is_databig, ret;
+	int key_type, data_type;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1447,7 +1447,7 @@ __ham_copy_item(dbp, src_page, src_ndx, dest_page)
 {
 	u_int32_t len;
 	size_t pgsize;
-	gpointer src, *dest;
+	void *src, *dest;
 	db_indx_t *inp;
 
 	pgsize = dbp->pgsize;
@@ -1473,20 +1473,20 @@ __ham_copy_item(dbp, src_page, src_ndx, dest_page)
  *	pointer on success
  *	NULL on error
  *
- * PUBLIC: gint __ham_add_ovflpage __P((DBC *, PAGE *, int, PAGE **));
+ * PUBLIC: int __ham_add_ovflpage __P((DBC *, PAGE *, int, PAGE **));
  */
-gint
+int
 __ham_add_ovflpage(dbc, pagep, release, pp)
 	DBC *dbc;
 	PAGE *pagep;
-	gint release;
+	int release;
 	PAGE **pp;
 {
 	DB *dbp;
 	DB_LSN new_lsn;
 	DB_MPOOLFILE *mpf;
 	PAGE *new_pagep;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1516,9 +1516,9 @@ __ham_add_ovflpage(dbc, pagep, release, pp)
 }
 
 /*
- * PUBLIC: gint __ham_get_cpage __P((DBC *, db_lockmode_t));
+ * PUBLIC: int __ham_get_cpage __P((DBC *, db_lockmode_t));
  */
-gint
+int
 __ham_get_cpage(dbc, mode)
 	DBC *dbc;
 	db_lockmode_t mode;
@@ -1527,7 +1527,7 @@ __ham_get_cpage(dbc, mode)
 	DB_LOCK tmp_lock;
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1592,19 +1592,19 @@ __ham_get_cpage(dbc, mode)
  * If the flag is set to H_ISDUP, then we are talking about the
  * duplicate page, not the main page.
  *
- * PUBLIC: gint __ham_next_cpage __P((DBC *, db_pgno_t, int));
+ * PUBLIC: int __ham_next_cpage __P((DBC *, db_pgno_t, int));
  */
-gint
+int
 __ham_next_cpage(dbc, pgno, dirty)
 	DBC *dbc;
 	db_pgno_t pgno;
-	gint dirty;
+	int dirty;
 {
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
 	PAGE *p;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1629,16 +1629,16 @@ __ham_next_cpage(dbc, pgno, dirty)
  * __ham_lock_bucket --
  *	Get the lock on a particular bucket.
  *
- * PUBLIC: gint __ham_lock_bucket __P((DBC *, db_lockmode_t));
+ * PUBLIC: int __ham_lock_bucket __P((DBC *, db_lockmode_t));
  */
-gint
+int
 __ham_lock_bucket(dbc, mode)
 	DBC *dbc;
 	db_lockmode_t mode;
 {
 	HASH_CURSOR *hcp;
 	db_pgno_t pgno;
-	gint gotmeta, ret;
+	int gotmeta, ret;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 	gotmeta = hcp->hdr == NULL ? 1 : 0;
@@ -1758,7 +1758,7 @@ __ham_c_delpg(dbc, old_pgno, new_pgno, num_ent, op, orderp)
 	DB_TXN *my_txn;
 	DBC *cp;
 	HASH_CURSOR *hcp;
-	gint found, ret;
+	int found, ret;
 	db_indx_t indx;
 	u_int32_t order;
 

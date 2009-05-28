@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,16 +25,16 @@ static const gchar revid[] = "$Id$";
  * __db_ret --
  *	Build return DBT.
  *
- * PUBLIC: gint __db_ret __P((DB *,
- * PUBLIC:    PAGE *, u_int32_t, DBT *, gpointer *, u_int32_t *));
+ * PUBLIC: int __db_ret __P((DB *,
+ * PUBLIC:    PAGE *, u_int32_t, DBT *, void **, u_int32_t *));
  */
-gint
+int
 __db_ret(dbp, h, indx, dbt, memp, memsize)
 	DB *dbp;
 	PAGE *h;
 	u_int32_t indx;
 	DBT *dbt;
-	gpointer *memp;
+	void **memp;
 	u_int32_t *memsize;
 {
 	BKEYDATA *bk;
@@ -42,7 +42,7 @@ __db_ret(dbp, h, indx, dbt, memp, memsize)
 	BOVERFLOW *bo;
 	u_int32_t len;
 	u_int8_t *hk;
-	gpointer data;
+	void *data;
 
 	switch (TYPE(h)) {
 	case P_HASH:
@@ -78,19 +78,19 @@ __db_ret(dbp, h, indx, dbt, memp, memsize)
  * __db_retcopy --
  *	Copy the returned data into the user's DBT, handling special flags.
  *
- * PUBLIC: gint __db_retcopy __P((DB_ENV *, DBT *,
- * PUBLIC:    gpointer , u_int32_t, gpointer *, u_int32_t *));
+ * PUBLIC: int __db_retcopy __P((DB_ENV *, DBT *,
+ * PUBLIC:    void *, u_int32_t, void **, u_int32_t *));
  */
-gint
+int
 __db_retcopy(dbenv, dbt, data, len, memp, memsize)
 	DB_ENV *dbenv;
 	DBT *dbt;
-	gpointer data;
+	void *data;
 	u_int32_t len;
-	gpointer *memp;
+	void **memp;
 	u_int32_t *memsize;
 {
-	gint ret;
+	int ret;
 
 	/* If returning a partial record, reset the length. */
 	if (F_ISSET(dbt, DB_DBT_PARTIAL)) {

@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -69,14 +69,14 @@ static void __bam_init_meta __P((DB *, BTMETA *, db_pgno_t, DB_LSN *));
  * __bam_open --
  *	Open a btree.
  *
- * PUBLIC: gint __bam_open __P((DB *,
- * PUBLIC:      DB_TXN *, const gchar *, db_pgno_t, u_int32_t));
+ * PUBLIC: int __bam_open __P((DB *,
+ * PUBLIC:      DB_TXN *, const char *, db_pgno_t, u_int32_t));
  */
-gint
+int
 __bam_open(dbp, txn, name, base_pgno, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name;
+	const char *name;
 	db_pgno_t base_pgno;
 	u_int32_t flags;
 {
@@ -119,17 +119,17 @@ __bam_open(dbp, txn, name, base_pgno, flags)
 /*
  * __bam_metachk --
  *
- * PUBLIC: gint __bam_metachk __P((DB *, const gchar *, BTMETA *));
+ * PUBLIC: int __bam_metachk __P((DB *, const char *, BTMETA *));
  */
-gint
+int
 __bam_metachk(dbp, name, btm)
 	DB *dbp;
-	const gchar *name;
+	const char *name;
 	BTMETA *btm;
 {
 	DB_ENV *dbenv;
 	u_int32_t vers;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 
@@ -274,9 +274,9 @@ wrong_type:
  * __bam_read_root --
  *	Read the root page and check a tree.
  *
- * PUBLIC: gint __bam_read_root __P((DB *, DB_TXN *, db_pgno_t, u_int32_t));
+ * PUBLIC: int __bam_read_root __P((DB *, DB_TXN *, db_pgno_t, u_int32_t));
  */
-gint
+int
 __bam_read_root(dbp, txn, base_pgno, flags)
 	DB *dbp;
 	DB_TXN *txn;
@@ -288,7 +288,7 @@ __bam_read_root(dbp, txn, base_pgno, flags)
 	DBC *dbc;
 	DB_LOCK metalock;
 	DB_MPOOLFILE *mpf;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	meta = NULL;
 	t = dbp->bt_internal;
@@ -421,14 +421,14 @@ __bam_init_meta(dbp, meta, pgno, lsnp)
  * memory or calls mpf->get), 2) the initialization, and 3) the "put page"
  * chunk which either does a fop write or an mpf->put.
  *
- * PUBLIC: gint __bam_new_file __P((DB *, DB_TXN *, DB_FH *, const gchar *));
+ * PUBLIC: int __bam_new_file __P((DB *, DB_TXN *, DB_FH *, const char *));
  */
-gint
+int
 __bam_new_file(dbp, txn, fhp, name)
 	DB *dbp;
 	DB_TXN *txn;
 	DB_FH *fhp;
-	const gchar *name;
+	const char *name;
 {
 	BTMETA *meta;
 	DB_ENV *dbenv;
@@ -438,8 +438,8 @@ __bam_new_file(dbp, txn, fhp, name)
 	DBT pdbt;
 	PAGE *root;
 	db_pgno_t pgno;
-	gint ret;
-	gpointer buf;
+	int ret;
+	void *buf;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -525,9 +525,9 @@ err:	if (name != NULL)
  * __bam_new_subdb --
  *	Create a metadata page and a root page for a new btree.
  *
- * PUBLIC: gint __bam_new_subdb __P((DB *, DB *, DB_TXN *));
+ * PUBLIC: int __bam_new_subdb __P((DB *, DB *, DB_TXN *));
  */
-gint
+int
 __bam_new_subdb(mdbp, dbp, txn)
 	DB *mdbp, *dbp;
 	DB_TXN *txn;
@@ -539,7 +539,7 @@ __bam_new_subdb(mdbp, dbp, txn)
 	DB_LSN lsn;
 	DB_MPOOLFILE *mpf;
 	PAGE *root;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbenv = mdbp->dbenv;
 	mpf = mdbp->mpf;

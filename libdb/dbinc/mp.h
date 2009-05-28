@@ -59,8 +59,8 @@ struct __db_mpreg {
 
 	int32_t ftype;			/* File type. */
 					/* Pgin, pgout routines. */
-	gint (*pgin) __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
-	gint (*pgout) __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
+	int (*pgin) __P((DB_ENV *, db_pgno_t, void *, DBT *));
+	int (*pgout) __P((DB_ENV *, db_pgno_t, void *, DBT *));
 };
 
 /*

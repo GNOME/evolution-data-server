@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,24 +30,24 @@ static const gchar revid[] = "$Id$";
  * The order of items in the list structure and the order of checks in
  * the environment are documented.
  *
- * PUBLIC: gint __os_tmpdir __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int __os_tmpdir __P((DB_ENV *, u_int32_t));
  */
-gint
+int
 __os_tmpdir(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
-	gint isdir;
+	int isdir;
 
 	/*
 	 * !!!
 	 * Don't change this to:
 	 *
-	 *	static const gchar * const list[]
+	 *	static const char * const list[]
 	 *
 	 * because it creates a text relocation in position independent code.
 	 */
-	static const gchar * list[] = {
+	static const char * list[] = {
 		"/var/tmp",
 		"/usr/tmp",
 		"/temp",		/* Windows. */
@@ -56,7 +56,7 @@ __os_tmpdir(dbenv, flags)
 		"C:/tmp",		/* Windows. */
 		NULL
 	};
-	const gchar * const *lp, *p;
+	const char * const *lp, *p;
 
 	/* Use the environment if it's permitted and initialized. */
 	if (LF_ISSET(DB_USE_ENVIRON) ||
@@ -99,7 +99,7 @@ __os_tmpdir(dbenv, flags)
 #ifdef DB_WIN32
 	/* Get the path to the temporary directory. */
 	{int len;
-	gchar *eos, temp[MAXPATHLEN + 1];
+	char *eos, temp[MAXPATHLEN + 1];
 
 		if ((len = GetTempPath(sizeof(temp) - 1, temp)) > 2) {
 			eos = &temp[len];

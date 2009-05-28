@@ -257,14 +257,14 @@ struct {								\
  * Circular queue functions.
  */
 #define	CIRCLEQ_INIT(head) do {						\
-	(head)->cqh_first = (gpointer)(head);				\
-	(head)->cqh_last = (gpointer)(head);				\
+	(head)->cqh_first = (void *)(head);				\
+	(head)->cqh_last = (void *)(head);				\
 } while (0)
 
 #define	CIRCLEQ_INSERT_AFTER(head, listelm, elm, field) do {		\
 	(elm)->field.cqe_next = (listelm)->field.cqe_next;		\
 	(elm)->field.cqe_prev = (listelm);				\
-	if ((listelm)->field.cqe_next == (gpointer)(head))		\
+	if ((listelm)->field.cqe_next == (void *)(head))		\
 		(head)->cqh_last = (elm);				\
 	else								\
 		(listelm)->field.cqe_next->field.cqe_prev = (elm);	\
@@ -274,7 +274,7 @@ struct {								\
 #define	CIRCLEQ_INSERT_BEFORE(head, listelm, elm, field) do {		\
 	(elm)->field.cqe_next = (listelm);				\
 	(elm)->field.cqe_prev = (listelm)->field.cqe_prev;		\
-	if ((listelm)->field.cqe_prev == (gpointer)(head))		\
+	if ((listelm)->field.cqe_prev == (void *)(head))		\
 		(head)->cqh_first = (elm);				\
 	else								\
 		(listelm)->field.cqe_prev->field.cqe_next = (elm);	\
@@ -283,8 +283,8 @@ struct {								\
 
 #define	CIRCLEQ_INSERT_HEAD(head, elm, field) do {			\
 	(elm)->field.cqe_next = (head)->cqh_first;			\
-	(elm)->field.cqe_prev = (gpointer)(head);				\
-	if ((head)->cqh_last == (gpointer)(head))				\
+	(elm)->field.cqe_prev = (void *)(head);				\
+	if ((head)->cqh_last == (void *)(head))				\
 		(head)->cqh_last = (elm);				\
 	else								\
 		(head)->cqh_first->field.cqe_prev = (elm);		\
@@ -292,9 +292,9 @@ struct {								\
 } while (0)
 
 #define	CIRCLEQ_INSERT_TAIL(head, elm, field) do {			\
-	(elm)->field.cqe_next = (gpointer)(head);				\
+	(elm)->field.cqe_next = (void *)(head);				\
 	(elm)->field.cqe_prev = (head)->cqh_last;			\
-	if ((head)->cqh_first == (gpointer)(head))			\
+	if ((head)->cqh_first == (void *)(head))			\
 		(head)->cqh_first = (elm);				\
 	else								\
 		(head)->cqh_last->field.cqe_next = (elm);		\
@@ -302,12 +302,12 @@ struct {								\
 } while (0)
 
 #define	CIRCLEQ_REMOVE(head, elm, field) do {				\
-	if ((elm)->field.cqe_next == (gpointer)(head))			\
+	if ((elm)->field.cqe_next == (void *)(head))			\
 		(head)->cqh_last = (elm)->field.cqe_prev;		\
 	else								\
 		(elm)->field.cqe_next->field.cqe_prev =			\
 		    (elm)->field.cqe_prev;				\
-	if ((elm)->field.cqe_prev == (gpointer)(head))			\
+	if ((elm)->field.cqe_prev == (void *)(head))			\
 		(head)->cqh_first = (elm)->field.cqe_next;		\
 	else								\
 		(elm)->field.cqe_prev->field.cqe_next =			\

@@ -44,7 +44,7 @@ __getBerkeleyDBInfo()
     SV * compat_sv = perl_get_sv("DB_File::db_185_compat", GV_ADD|GV_ADDMULTI) ;
 
 #ifdef DB_VERSION_MAJOR
-    gint Major, Minor, Patch ;
+    int Major, Minor, Patch ;
 
     (void)db_version(&Major, &Minor, &Patch) ;
 
@@ -61,7 +61,7 @@ __getBerkeleyDBInfo()
 		 Major, Minor, Patch) ;
 
     {
-        gchar buffer[40] ;
+        char buffer[40] ;
         sprintf(buffer, "%d.%d", Major, Minor) ;
         sv_setpv(version_sv, buffer) ;
         sprintf(buffer, "%d.%03d%03d", Major, Minor, Patch) ;

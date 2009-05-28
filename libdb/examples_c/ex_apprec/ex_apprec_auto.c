@@ -8,10 +8,10 @@
 
 #include "ex_apprec.h"
 /*
- * PUBLIC: gint ex_apprec_mkdir_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
+ * PUBLIC: int ex_apprec_mkdir_log __P((DB_ENV *, DB_TXN *, DB_LSN *,
  * PUBLIC:     u_int32_t, const DBT *));
  */
-gint
+int
 ex_apprec_mkdir_log(dbenv, txnid, ret_lsnp, flags,
     dirname)
 	DB_ENV *dbenv;
@@ -24,7 +24,7 @@ ex_apprec_mkdir_log(dbenv, txnid, ret_lsnp, flags,
 	DB_LSN *lsnp, null_lsn;
 	u_int32_t zero;
 	u_int32_t npad, rectype, txn_num;
-	gint ret;
+	int ret;
 	u_int8_t *bp;
 
 	rectype = DB_ex_apprec_mkdir;
@@ -84,21 +84,21 @@ ex_apprec_mkdir_log(dbenv, txnid, ret_lsnp, flags,
 }
 
 /*
- * PUBLIC: gint ex_apprec_mkdir_print __P((DB_ENV *, DBT *, DB_LSN *,
- * PUBLIC:     db_recops, gpointer ));
+ * PUBLIC: int ex_apprec_mkdir_print __P((DB_ENV *, DBT *, DB_LSN *,
+ * PUBLIC:     db_recops, void *));
  */
-gint
+int
 ex_apprec_mkdir_print(dbenv, dbtp, lsnp, notused2, notused3)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops notused2;
-	gpointer notused3;
+	void *notused3;
 {
 	ex_apprec_mkdir_args *argp;
 	u_int32_t i;
-	gint ch;
-	gint ret;
+	int ch;
+	int ret;
 
 	notused2 = DB_TXN_ABORT;
 	notused3 = NULL;
@@ -125,13 +125,13 @@ ex_apprec_mkdir_print(dbenv, dbtp, lsnp, notused2, notused3)
 }
 
 /*
- * PUBLIC: gint ex_apprec_mkdir_read __P((DB_ENV *, gpointer ,
+ * PUBLIC: int ex_apprec_mkdir_read __P((DB_ENV *, void *,
  * PUBLIC:     ex_apprec_mkdir_args **));
  */
-gint
+int
 ex_apprec_mkdir_read(dbenv, recbuf, argpp)
 	DB_ENV *dbenv;
-	gpointer recbuf;
+	void *recbuf;
 	ex_apprec_mkdir_args **argpp;
 {
 	ex_apprec_mkdir_args *argp;
@@ -165,20 +165,20 @@ ex_apprec_mkdir_read(dbenv, recbuf, argpp)
 }
 
 /*
- * PUBLIC: gint ex_apprec_init_print __P((DB_ENV *, gint (***)(DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ), size_t *));
+ * PUBLIC: int ex_apprec_init_print __P((DB_ENV *, int (***)(DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, void *), size_t *));
  */
-gint
+int
 ex_apprec_init_print(dbenv, dtabp, dtabsizep)
 	DB_ENV *dbenv;
-	gint (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+	int (***dtabp)__P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 	size_t *dtabsizep;
 {
-	gint __db_add_recovery __P((DB_ENV *,
-	    gint (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ),
+	int __db_add_recovery __P((DB_ENV *,
+	    int (***)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *),
 	    size_t *,
-	    gint (*)(DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ), u_int32_t));
-	gint ret;
+	    int (*)(DB_ENV *, DBT *, DB_LSN *, db_recops, void *), u_int32_t));
+	int ret;
 
 	if ((ret = __db_add_recovery(dbenv, dtabp, dtabsizep,
 	    ex_apprec_mkdir_print, DB_ex_apprec_mkdir)) != 0)

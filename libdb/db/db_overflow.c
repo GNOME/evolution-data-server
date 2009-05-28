@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -70,16 +70,16 @@ static const gchar revid[] = "$Id$";
  * __db_goff --
  *	Get an offpage item.
  *
- * PUBLIC: gint __db_goff __P((DB *, DBT *,
- * PUBLIC:     u_int32_t, db_pgno_t, gpointer *, u_int32_t *));
+ * PUBLIC: int __db_goff __P((DB *, DBT *,
+ * PUBLIC:     u_int32_t, db_pgno_t, void **, u_int32_t *));
  */
-gint
+int
 __db_goff(dbp, dbt, tlen, pgno, bpp, bpsz)
 	DB *dbp;
 	DBT *dbt;
 	u_int32_t tlen;
 	db_pgno_t pgno;
-	gpointer *bpp;
+	void **bpp;
 	u_int32_t *bpsz;
 {
 	DB_ENV *dbenv;
@@ -88,7 +88,7 @@ __db_goff(dbp, dbt, tlen, pgno, bpp, bpsz)
 	db_indx_t bytes;
 	u_int32_t curoff, needed, start;
 	u_int8_t *p, *src;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -166,9 +166,9 @@ __db_goff(dbp, dbt, tlen, pgno, bpp, bpsz)
  * __db_poff --
  *	Put an offpage item.
  *
- * PUBLIC: gint __db_poff __P((DBC *, const DBT *, db_pgno_t *));
+ * PUBLIC: int __db_poff __P((DBC *, const DBT *, db_pgno_t *));
  */
-gint
+int
 __db_poff(dbc, dbt, pgnop)
 	DBC *dbc;
 	const DBT *dbt;
@@ -182,7 +182,7 @@ __db_poff(dbc, dbt, pgnop)
 	db_indx_t pagespace;
 	u_int32_t sz;
 	u_int8_t *p;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	/*
 	 * Allocate pages and copy the key/data item into them.  Calculate the
@@ -265,9 +265,9 @@ __db_poff(dbc, dbt, pgnop)
  * __db_ovref --
  *	Increment/decrement the reference count on an overflow page.
  *
- * PUBLIC: gint __db_ovref __P((DBC *, db_pgno_t, int32_t));
+ * PUBLIC: int __db_ovref __P((DBC *, db_pgno_t, int32_t));
  */
-gint
+int
 __db_ovref(dbc, pgno, adjust)
 	DBC *dbc;
 	db_pgno_t pgno;
@@ -276,7 +276,7 @@ __db_ovref(dbc, pgno, adjust)
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -304,9 +304,9 @@ __db_ovref(dbc, pgno, adjust)
  * __db_doff --
  *	Delete an offpage chain of overflow pages.
  *
- * PUBLIC: gint __db_doff __P((DBC *, db_pgno_t));
+ * PUBLIC: int __db_doff __P((DBC *, db_pgno_t));
  */
-gint
+int
 __db_doff(dbc, pgno)
 	DBC *dbc;
 	db_pgno_t pgno;
@@ -316,7 +316,7 @@ __db_doff(dbc, pgno)
 	DB_LSN null_lsn;
 	DB_MPOOLFILE *mpf;
 	DBT tmp_dbt;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -369,24 +369,24 @@ __db_doff(dbc, pgno)
  * specified a comparison function.  In this case, we need to materialize
  * the entire object and call their comparison routine.
  *
- * PUBLIC: gint __db_moff __P((DB *, const DBT *, db_pgno_t, u_int32_t,
- * PUBLIC:     gint (*)(DB *, const DBT *, const DBT *), gint *));
+ * PUBLIC: int __db_moff __P((DB *, const DBT *, db_pgno_t, u_int32_t,
+ * PUBLIC:     int (*)(DB *, const DBT *, const DBT *), int *));
  */
-gint
+int
 __db_moff(dbp, dbt, pgno, tlen, cmpfunc, cmpp)
 	DB *dbp;
 	const DBT *dbt;
 	db_pgno_t pgno;
 	u_int32_t tlen;
-	gint (*cmpfunc) __P((DB *, const DBT *, const DBT *)), *cmpp;
+	int (*cmpfunc) __P((DB *, const DBT *, const DBT *)), *cmpp;
 {
 	DBT local_dbt;
 	DB_MPOOLFILE *mpf;
 	PAGE *pagep;
-	gpointer buf;
+	void *buf;
 	u_int32_t bufsize, cmp_bytes, key_left;
 	u_int8_t *p1, *p2;
-	gint ret;
+	int ret;
 
 	mpf = dbp->mpf;
 
@@ -443,10 +443,10 @@ __db_moff(dbp, dbt, pgno, tlen, cmpfunc, cmpp)
  * __db_vrfy_overflow --
  *	Verify overflow page.
  *
- * PUBLIC: gint __db_vrfy_overflow __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
+ * PUBLIC: int __db_vrfy_overflow __P((DB *, VRFY_DBINFO *, PAGE *, db_pgno_t,
  * PUBLIC:     u_int32_t));
  */
-gint
+int
 __db_vrfy_overflow(dbp, vdp, h, pgno, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -455,7 +455,7 @@ __db_vrfy_overflow(dbp, vdp, h, pgno, flags)
 	u_int32_t flags;
 {
 	VRFY_PAGEINFO *pip;
-	gint isbad, ret, t_ret;
+	int isbad, ret, t_ret;
 
 	isbad = 0;
 	if ((ret = __db_vrfy_getpageinfo(vdp, pgno, &pip)) != 0)
@@ -489,10 +489,10 @@ err:	if ((t_ret = __db_vrfy_putpageinfo(dbp->dbenv, vdp, pip)) != 0)
  *	Walk a list of overflow pages, avoiding cycles and marking
  *	pages seen.
  *
- * PUBLIC: gint __db_vrfy_ovfl_structure
+ * PUBLIC: int __db_vrfy_ovfl_structure
  * PUBLIC:     __P((DB *, VRFY_DBINFO *, db_pgno_t, u_int32_t, u_int32_t));
  */
-gint
+int
 __db_vrfy_ovfl_structure(dbp, vdp, pgno, tlen, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
@@ -503,7 +503,7 @@ __db_vrfy_ovfl_structure(dbp, vdp, pgno, tlen, flags)
 	DB *pgset;
 	VRFY_PAGEINFO *pip;
 	db_pgno_t next, prev;
-	gint isbad, p, ret, t_ret;
+	int isbad, p, ret, t_ret;
 	u_int32_t refcount;
 
 	pgset = vdp->pgset;
@@ -644,21 +644,21 @@ err:	if ((t_ret =
  *	Get an overflow item, very carefully, from an untrusted database,
  *	in the context of the salvager.
  *
- * PUBLIC: gint __db_safe_goff __P((DB *, VRFY_DBINFO *, db_pgno_t,
- * PUBLIC:     DBT *, gpointer *, u_int32_t));
+ * PUBLIC: int __db_safe_goff __P((DB *, VRFY_DBINFO *, db_pgno_t,
+ * PUBLIC:     DBT *, void **, u_int32_t));
  */
-gint
+int
 __db_safe_goff(dbp, vdp, pgno, dbt, buf, flags)
 	DB *dbp;
 	VRFY_DBINFO *vdp;
 	db_pgno_t pgno;
 	DBT *dbt;
-	gpointer *buf;
+	void **buf;
 	u_int32_t flags;
 {
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	gint ret, t_ret;
+	int ret, t_ret;
 	u_int32_t bytesgot, bytes;
 	u_int8_t *src, *dest;
 

@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -39,24 +39,24 @@ static const gchar revid[] =
 #include "dbinc/db_page.h"
 #include "dbinc/db_am.h"
 
-int	 main __P((int, gchar *[]));
+int	 main __P((int, char *[]));
 int	 usage __P((void));
-int	 version_check __P((const gchar *));
+int	 version_check __P((const char *));
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
+	extern char *optarg;
+	extern int optind;
 	DB_ENV	*dbenv;
-	const gchar *progname = "db_checkpoint";
+	const char *progname = "db_checkpoint";
 	time_t now;
 	long argval;
 	u_int32_t flags, kbytes, minutes, seconds;
-	gint ch, e_close, exitval, once, ret, verbose;
-	gchar *home, *logfile, *passwd;
+	int ch, e_close, exitval, once, ret, verbose;
+	char *home, *logfile, *passwd;
 
 	if ((ret = version_check(progname)) != 0)
 		return (ret);
@@ -214,7 +214,7 @@ shutdown:	exitval = 1;
 	return (exitval == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-gint
+int
 usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
@@ -223,11 +223,11 @@ usage()
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 version_check(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	gint v_major, v_minor, v_patch;
+	int v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

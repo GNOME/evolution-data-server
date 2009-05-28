@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,7 +17,7 @@ static const gchar revid[] = "$Id$";
  * __os_spin --
  *	Return the number of default spins before blocking.
  */
-gint
+int
 __os_spin(dbenv)
 	DB_ENV *dbenv;
 {

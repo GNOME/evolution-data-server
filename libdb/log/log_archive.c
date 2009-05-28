@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,21 +25,21 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/qam.h"
 #include "dbinc/txn.h"
 
-static gint __absname __P((DB_ENV *, gchar *, gchar *, gchar **));
-static gint __build_data __P((DB_ENV *, gchar *, gchar ***));
-static gint __cmpfunc __P((gconstpointer , gconstpointer ));
-static gint __usermem __P((DB_ENV *, gchar ***));
+static int __absname __P((DB_ENV *, char *, char *, char **));
+static int __build_data __P((DB_ENV *, char *, char ***));
+static int __cmpfunc __P((const void *, const void *));
+static int __usermem __P((DB_ENV *, char ***));
 
 /*
  * __log_archive --
  *	Supporting function for db_archive(1).
  *
- * PUBLIC: gint __log_archive __P((DB_ENV *, gchar **[], u_int32_t));
+ * PUBLIC: int __log_archive __P((DB_ENV *, char **[], u_int32_t));
  */
-gint
+int
 __log_archive(dbenv, listp, flags)
 	DB_ENV *dbenv;
-	gchar ***listp;
+	char ***listp;
 	u_int32_t flags;
 {
 	DBT rec;
@@ -47,8 +47,8 @@ __log_archive(dbenv, listp, flags)
 	DB_LOGC *logc;
 	DB_LSN stable_lsn;
 	__txn_ckp_args *ckp_args;
-	gchar **array, **arrayp, *name, *p, *pref, buf[MAXPATHLEN];
-	gint array_size, db_arch_abs, n, ret;
+	char **array, **arrayp, *name, *p, *pref, buf[MAXPATHLEN];
+	int array_size, db_arch_abs, n, ret;
 	u_int32_t fnum;
 
 	PANIC_CHECK(dbenv);
@@ -156,7 +156,7 @@ __log_archive(dbenv, listp, flags)
 	/* Get some initial space. */
 	array_size = 64;
 	if ((ret = __os_malloc(dbenv,
-	    sizeof(gchar *) * array_size, &array)) != 0)
+	    sizeof(char *) * array_size, &array)) != 0)
 		return (ret);
 	array[0] = NULL;
 
@@ -175,7 +175,7 @@ __log_archive(dbenv, listp, flags)
 		if (n >= array_size - 2) {
 			array_size += LIST_INCREMENT;
 			if ((ret = __os_realloc(dbenv,
-			    sizeof(gchar *) * array_size, &array)) != 0)
+			    sizeof(char *) * array_size, &array)) != 0)
 				goto err;
 		}
 
@@ -203,7 +203,7 @@ __log_archive(dbenv, listp, flags)
 	}
 
 	/* Sort the list. */
-	qsort(array, (size_t)n, sizeof(gchar *), __cmpfunc);
+	qsort(array, (size_t)n, sizeof(char *), __cmpfunc);
 
 	/* Rework the memory. */
 	if ((ret = __usermem(dbenv, &array)) != 0)
@@ -229,20 +229,20 @@ err:	if (array != NULL) {
 static int
 __build_data(dbenv, pref, listp)
 	DB_ENV *dbenv;
-	gchar *pref, ***listp;
+	char *pref, ***listp;
 {
 	DBT rec;
 	DB_LOGC *logc;
 	DB_LSN lsn;
 	__dbreg_register_args *argp;
 	u_int32_t rectype;
-	gint array_size, last, n, nxt, ret, t_ret;
-	gchar **array, **arrayp, **list, **lp, *p, *real_name;
+	int array_size, last, n, nxt, ret, t_ret;
+	char **array, **arrayp, **list, **lp, *p, *real_name;
 
 	/* Get some initial space. */
 	array_size = 64;
 	if ((ret = __os_malloc(dbenv,
-	    sizeof(gchar *) * array_size, &array)) != 0)
+	    sizeof(char *) * array_size, &array)) != 0)
 		return (ret);
 	array[0] = NULL;
 
@@ -270,7 +270,7 @@ __build_data(dbenv, pref, listp)
 		if (n >= array_size - 2) {
 			array_size += LIST_INCREMENT;
 			if ((ret = __os_realloc(dbenv,
-			    sizeof(gchar *) * array_size, &array)) != 0)
+			    sizeof(char *) * array_size, &array)) != 0)
 				goto free_continue;
 		}
 
@@ -288,7 +288,7 @@ __build_data(dbenv, pref, listp)
 				if (n >= array_size - 2) {
 					array_size += LIST_INCREMENT;
 					if ((ret = __os_realloc(dbenv,
-					    sizeof(gchar *) *
+					    sizeof(char *) *
 					    array_size, &array)) != 0)
 						goto q_err;
 				}
@@ -319,7 +319,7 @@ free_continue:	__os_free(dbenv, argp);
 	}
 
 	/* Sort the list. */
-	qsort(array, (size_t)n, sizeof(gchar *), __cmpfunc);
+	qsort(array, (size_t)n, sizeof(char *), __cmpfunc);
 
 	/*
 	 * Build the real pathnames, discarding nonexistent files and
@@ -407,11 +407,11 @@ err1:	if (array != NULL) {
 static int
 __absname(dbenv, pref, name, newnamep)
 	DB_ENV *dbenv;
-	gchar *pref, *name, **newnamep;
+	char *pref, *name, **newnamep;
 {
 	size_t l_pref, l_name;
-	gint isabspath, ret;
-	gchar *newname;
+	int isabspath, ret;
+	char *newname;
 
 	l_name = strlen(name);
 	isabspath = __os_abspath(name);
@@ -442,22 +442,22 @@ __absname(dbenv, pref, name, newnamep)
 static int
 __usermem(dbenv, listp)
 	DB_ENV *dbenv;
-	gchar ***listp;
+	char ***listp;
 {
 	size_t len;
-	gint ret;
-	gchar **array, **arrayp, **orig, *strp;
+	int ret;
+	char **array, **arrayp, **orig, *strp;
 
 	/* Find out how much space we need. */
 	for (len = 0, orig = *listp; *orig != NULL; ++orig)
-		len += sizeof(gchar *) + strlen(*orig) + 1;
-	len += sizeof(gchar *);
+		len += sizeof(char *) + strlen(*orig) + 1;
+	len += sizeof(char *);
 
 	/* Allocate it and set up the pointers. */
 	if ((ret = __os_umalloc(dbenv, len, &array)) != 0)
 		return (ret);
 
-	strp = (gchar *)(array + (orig - *listp) + 1);
+	strp = (char *)(array + (orig - *listp) + 1);
 
 	/* Copy the original information into the new memory. */
 	for (orig = *listp, arrayp = array; *orig != NULL; ++orig, ++arrayp) {
@@ -480,7 +480,7 @@ __usermem(dbenv, listp)
 
 static int
 __cmpfunc(p1, p2)
-	gconstpointer p1, *p2;
+	const void *p1, *p2;
 {
-	return (strcmp(*((gchar * const *)p1), *((gchar * const *)p2)));
+	return (strcmp(*((char * const *)p1), *((char * const *)p2)));
 }

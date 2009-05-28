@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,7 +28,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/txn.h"
 
-static gint __fop_set_pgsize __P((DB *, DB_FH *, const gchar *));
+static int __fop_set_pgsize __P((DB *, DB_FH *, const char *));
 
 /*
  * Acquire the environment meta-data lock.  The parameters are the
@@ -76,11 +76,11 @@ static gint __fop_set_pgsize __P((DB *, DB_FH *, const gchar *));
  * do this as a lock_vec call that releases the enviroment lock before
  * acquiring the handle lock.
  *
- * PUBLIC: gint __fop_lock_handle __P((DB_ENV *,
+ * PUBLIC: int __fop_lock_handle __P((DB_ENV *,
  * PUBLIC:     DB *, u_int32_t, db_lockmode_t, DB_LOCK *, u_int32_t));
  *
  */
-gint
+int
 __fop_lock_handle(dbenv, dbp, locker, mode, elock, flags)
 	DB_ENV *dbenv;
 	DB *dbp;
@@ -92,7 +92,7 @@ __fop_lock_handle(dbenv, dbp, locker, mode, elock, flags)
 	DBT fileobj;
 	DB_LOCKREQ reqs[2], *ereq;
 	DB_LOCK_ILOCK lock_desc;
-	gint ret;
+	int ret;
 
 	if (!LOCKING_ON(dbenv) || F_ISSET(dbp, DB_AM_COMPENSATE))
 		return (0);
@@ -156,24 +156,24 @@ __fop_lock_handle(dbenv, dbp, locker, mode, elock, flags)
  * buffer cache or obtaining a lock (we use this unique fileid to lock
  * as well as to identify like files in the cache).
  *
- * PUBLIC: gint __fop_file_setup __P((DB *,
- * PUBLIC:     DB_TXN *, const gchar *, int, u_int32_t, u_int32_t *));
+ * PUBLIC: int __fop_file_setup __P((DB *,
+ * PUBLIC:     DB_TXN *, const char *, int, u_int32_t, u_int32_t *));
  */
-gint
+int
 __fop_file_setup(dbp, txn, name, mode, flags, retidp)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name;
-	gint mode;
+	const char *name;
+	int mode;
 	u_int32_t flags, *retidp;
 {
 	DB_ENV *dbenv;
 	DB_FH fh, *fhp;
 	DB_LOCK elock, tmp_lock;
 	DB_TXN *stxn;
-	gchar *real_name, *real_tmpname, *tmpname;
+	char *real_name, *real_tmpname, *tmpname;
 	db_lockmode_t lmode;
-	gint created_fhp, created_locker, ret, tmp_created, t_ret, truncating;
+	int created_fhp, created_locker, ret, tmp_created, t_ret, truncating;
 	size_t len;
 	u_int32_t locker, oflags;
 	u_int8_t mbuf[DBMETASIZE];
@@ -265,7 +265,7 @@ reopen:		ret = __fop_read_meta(dbenv, real_name,
 		 */
 		if (ret != 0 &&
 		    LF_ISSET(DB_FCNTL_LOCKING) && txn == NULL && len == 0) {
-			tmpname = (gchar *)real_name;
+			tmpname = (char *)real_name;
 			real_name = NULL;
 			goto creat2;
 		}
@@ -332,7 +332,7 @@ do_trunc:		if ((ret = __os_open(dbenv,
 			 */
 			tmp_lock = dbp->handle_lock;
 			truncating = 1;
-			tmpname = (gchar *)name;
+			tmpname = (char *)name;
 			goto creat2;
 		}
 
@@ -489,11 +489,11 @@ static int
 __fop_set_pgsize(dbp, fhp, name)
 	DB *dbp;
 	DB_FH *fhp;
-	const gchar *name;
+	const char *name;
 {
 	DB_ENV *dbenv;
 	u_int32_t iopsize;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 
@@ -539,20 +539,20 @@ __fop_set_pgsize(dbp, fhp, name)
  * page lock with a different type (DB_HANDLE_LOCK) for the long-term handle.
  * locks.
  *
- * PUBLIC: gint __fop_subdb_setup __P((DB *, DB_TXN *,
- * PUBLIC:     const gchar *, const gchar *, int, u_int32_t));
+ * PUBLIC: int __fop_subdb_setup __P((DB *, DB_TXN *,
+ * PUBLIC:     const char *, const char *, int, u_int32_t));
  */
-gint
+int
 __fop_subdb_setup(dbp, txn, mname, name, mode, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *mname, *name;
-	gint mode;
+	const char *mname, *name;
+	int mode;
 	u_int32_t flags;
 {
 	DB *mdbp;
 	DB_ENV *dbenv;
-	gint do_remove, ret;
+	int do_remove, ret;
 
 	mdbp = NULL;
 	dbenv = dbp->dbenv;
@@ -669,21 +669,21 @@ DB_TEST_RECOVERY_LABEL
  * __fop_remove_setup --
  *	Open handle appropriately and lock for removal of a database file.
  *
- * PUBLIC: gint __fop_remove_setup __P((DB *,
- * PUBLIC:      DB_TXN *, const gchar *, u_int32_t));
+ * PUBLIC: int __fop_remove_setup __P((DB *,
+ * PUBLIC:      DB_TXN *, const char *, u_int32_t));
  */
-gint
+int
 __fop_remove_setup(dbp, txn, name, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name;
+	const char *name;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
 	DB_FH *fhp;
 	DB_LOCK elock;
 	u_int8_t mbuf[DBMETASIZE];
-	gint ret;
+	int ret;
 
 	COMPQUIET(flags, 0);
 	dbenv = dbp->dbenv;
@@ -744,23 +744,23 @@ err:	(void)REL_ENVLOCK(dbenv, &elock);
  *	Read the meta-data page from a file and return it in buf.  The
  * open file handle is returned in fhp.
  *
- * PUBLIC: gint __fop_read_meta __P((DB_ENV *, const gchar *,
+ * PUBLIC: int __fop_read_meta __P((DB_ENV *, const char *,
  * PUBLIC:     u_int8_t *, size_t, DB_FH *, int, size_t *, u_int32_t));
  */
-gint
+int
 __fop_read_meta(dbenv, name, buf, size, fhp, errok, nbytesp, flags)
 	DB_ENV *dbenv;
-	const gchar *name;
+	const char *name;
 	u_int8_t *buf;
 	size_t size;
 	DB_FH *fhp;
-	gint errok;
+	int errok;
 	size_t *nbytesp;
 	u_int32_t flags;
 {
 	DB_FH fh, *lfhp;
 	size_t nr;
-	gint myfhp, ret;
+	int myfhp, ret;
 
 	nr = 0;
 	myfhp = 0;
@@ -802,14 +802,14 @@ err:	/*
  * we use for remove and rename (remove is simply a rename with a delayed
  * remove).
  *
- * PUBLIC: gint __fop_dummy __P((DB *,
- * PUBLIC:     DB_TXN *, const gchar *, const gchar *, u_int32_t));
+ * PUBLIC: int __fop_dummy __P((DB *,
+ * PUBLIC:     DB_TXN *, const char *, const char *, u_int32_t));
  */
-gint
+int
 __fop_dummy(dbp, txn, old, new, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *old, *new;
+	const char *old, *new;
 	u_int32_t flags;
 {
 	DB *tmpdbp;
@@ -818,9 +818,9 @@ __fop_dummy(dbp, txn, old, new, flags)
 	DB_LSN lsn;
 	DBT fiddbt, namedbt, tmpdbt;
 	DB_TXN *stxn;
-	gchar *back;
-	gchar *realback, *realnew, *realold;
-	gint ret, t_ret;
+	char *back;
+	char *realback, *realnew, *realold;
+	int ret, t_ret;
 	u_int8_t mbuf[DBMETASIZE];
 	u_int32_t locker, stxnid;
 
@@ -909,7 +909,7 @@ __fop_dummy(dbp, txn, old, new, flags)
 		fiddbt.size = DB_FILE_ID_LEN;
 		tmpdbt.data = tmpdbp->fileid;
 		tmpdbt.size = DB_FILE_ID_LEN;
-		namedbt.data = (gpointer)old;
+		namedbt.data = (void *)old;
 		namedbt.size = (u_int32_t)strlen(old) + 1;
 		if ((t_ret =
 		    __fop_file_remove_log(dbenv, txn, &lsn, 0, &fiddbt,
@@ -948,17 +948,17 @@ err:	(void)REL_ENVLOCK(dbenv, &elock);
  * and the subsequent calls in __db_rename do the work for the
  * transactional case).
  *
- * PUBLIC: gint __fop_dbrename __P((DB *, const gchar *, const gchar *));
+ * PUBLIC: int __fop_dbrename __P((DB *, const char *, const char *));
  */
-gint
+int
 __fop_dbrename(dbp, old, new)
 	DB *dbp;
-	const gchar *old, *new;
+	const char *old, *new;
 {
 	DB_ENV *dbenv;
 	DB_LOCK elock;
-	gchar *real_new, *real_old;
-	gint ret, tret;
+	char *real_new, *real_old;
+	int ret, tret;
 
 	dbenv = dbp->dbenv;
 	real_new = NULL;

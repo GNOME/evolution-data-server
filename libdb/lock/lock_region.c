@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -21,7 +21,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/db_shash.h"
 #include "dbinc/lock.h"
 
-static gint  __lock_init __P((DB_ENV *, DB_LOCKTAB *));
+static int  __lock_init __P((DB_ENV *, DB_LOCKTAB *));
 static size_t
 	    __lock_region_size __P((DB_ENV *));
 
@@ -66,16 +66,16 @@ static const u_int8_t db_cdb_conflicts[] = {
  * __lock_open --
  *	Internal version of lock_open: only called from DB_ENV->open.
  *
- * PUBLIC: gint __lock_open __P((DB_ENV *));
+ * PUBLIC: int __lock_open __P((DB_ENV *));
  */
-gint
+int
 __lock_open(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_LOCKREGION *region;
 	DB_LOCKTAB *lt;
 	size_t size;
-	gint ret;
+	int ret;
 
 	/* Create the lock table structure. */
 	if ((ret = __os_calloc(dbenv, 1, sizeof(DB_LOCKTAB), &lt)) != 0)
@@ -170,7 +170,7 @@ __lock_init(dbenv, lt)
 #endif
 	u_int32_t i, lk_modes;
 	u_int8_t *addr;
-	gint ret;
+	int ret;
 
 	if ((ret = __db_shalloc(lt->reginfo.addr,
 	    sizeof(DB_LOCKREGION), 0, &lt->reginfo.primary)) != 0)
@@ -290,14 +290,14 @@ mem_err:		__db_err(dbenv,
  *	Clean up after the lock system on a close or failed open.  Called
  * only from __dbenv_refresh.  (Formerly called __lock_close.)
  *
- * PUBLIC: gint __lock_dbenv_refresh __P((DB_ENV *));
+ * PUBLIC: int __lock_dbenv_refresh __P((DB_ENV *));
  */
-gint
+int
 __lock_dbenv_refresh(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_LOCKTAB *lt;
-	gint ret;
+	int ret;
 
 	lt = dbenv->lk_handle;
 
@@ -394,9 +394,9 @@ __lock_region_destroy(dbenv, infop)
  *	Set the current locker ID and current maximum unused ID (for
  *	testing purposes only).
  *
- * PUBLIC: gint __lock_id_set __P((DB_ENV *, u_int32_t, u_int32_t));
+ * PUBLIC: int __lock_id_set __P((DB_ENV *, u_int32_t, u_int32_t));
  */
-gint
+int
 __lock_id_set(dbenv, cur_id, max_id)
 	DB_ENV *dbenv;
 	u_int32_t cur_id, max_id;

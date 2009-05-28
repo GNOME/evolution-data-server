@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,22 +25,22 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/txn.h"
 
 #ifdef CONFIG_TEST
-static gint tcl_LogcGet __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_LOGC *));
+static int tcl_LogcGet __P((Tcl_Interp *, int, Tcl_Obj * CONST*, DB_LOGC *));
 
 /*
  * tcl_LogArchive --
  *
- * PUBLIC: gint tcl_LogArchive __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogArchive __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_LogArchive(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
-	static gchar *archopts[] = {
+	static char *archopts[] = {
 		"-arch_abs",	"-arch_data",	"-arch_log",
 		NULL
 	};
@@ -49,8 +49,8 @@ tcl_LogArchive(interp, objc, objv, envp)
 	};
 	Tcl_Obj *fileobj, *res;
 	u_int32_t flag;
-	gint i, optindex, result, ret;
-	gchar **file, **list;
+	int i, optindex, result, ret;
+	char **file, **list;
 
 	result = TCL_OK;
 	flag = 0;
@@ -98,18 +98,18 @@ tcl_LogArchive(interp, objc, objv, envp)
 /*
  * tcl_LogCompare --
  *
- * PUBLIC: gint tcl_LogCompare __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogCompare __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*));
  */
-gint
+int
 tcl_LogCompare(interp, objc, objv)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
 	DB_LSN lsn0, lsn1;
 	Tcl_Obj *res;
-	gint result, ret;
+	int result, ret;
 
 	result = TCL_OK;
 	/*
@@ -137,21 +137,21 @@ tcl_LogCompare(interp, objc, objv)
 /*
  * tcl_LogFile --
  *
- * PUBLIC: gint tcl_LogFile __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogFile __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_LogFile(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	DB_LSN lsn;
 	Tcl_Obj *res;
 	size_t len;
-	gint result, ret;
-	gchar *name;
+	int result, ret;
+	char *name;
 
 	result = TCL_OK;
 	/*
@@ -196,18 +196,18 @@ tcl_LogFile(interp, objc, objv, envp)
 /*
  * tcl_LogFlush --
  *
- * PUBLIC: gint tcl_LogFlush __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogFlush __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_LogFlush(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	DB_LSN lsn, *lsnp;
-	gint result, ret;
+	int result, ret;
 
 	result = TCL_OK;
 	/*
@@ -235,13 +235,13 @@ tcl_LogFlush(interp, objc, objv, envp)
 /*
  * tcl_LogGet --
  *
- * PUBLIC: gint tcl_LogGet __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogGet __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_LogGet(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
@@ -257,17 +257,17 @@ tcl_LogGet(interp, objc, objv, envp)
 /*
  * tcl_LogPut --
  *
- * PUBLIC: gint tcl_LogPut __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogPut __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_LogPut(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
-	static gchar *logputopts[] = {
+	static char *logputopts[] = {
 		"-flush",
 		NULL
 	};
@@ -277,9 +277,9 @@ tcl_LogPut(interp, objc, objv, envp)
 	DB_LSN lsn;
 	DBT data;
 	Tcl_Obj *intobj, *res;
-	gpointer dtmp;
+	void *dtmp;
 	u_int32_t flag;
-	gint freedata, optindex, result, ret;
+	int freedata, optindex, result, ret;
 
 	result = TCL_OK;
 	flag = 0;
@@ -339,19 +339,19 @@ tcl_LogPut(interp, objc, objv, envp)
 /*
  * tcl_LogStat --
  *
- * PUBLIC: gint tcl_LogStat __P((Tcl_Interp *, int,
+ * PUBLIC: int tcl_LogStat __P((Tcl_Interp *, int,
  * PUBLIC:    Tcl_Obj * CONST*, DB_ENV *));
  */
-gint
+int
 tcl_LogStat(interp, objc, objv, envp)
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 	DB_ENV *envp;			/* Environment pointer */
 {
 	DB_LOG_STAT *sp;
 	Tcl_Obj *res;
-	gint result, ret;
+	int result, ret;
 
 	result = TCL_OK;
 	/*
@@ -408,16 +408,16 @@ error:
  * logc_Cmd --
  *	Implements the log cursor command.
  *
- * PUBLIC: gint logc_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
+ * PUBLIC: int logc_Cmd __P((ClientData, Tcl_Interp *, int, Tcl_Obj * CONST*));
  */
-gint
+int
 logc_Cmd(clientData, interp, objc, objv)
 	ClientData clientData;		/* Cursor handle */
 	Tcl_Interp *interp;		/* Interpreter */
-	gint objc;			/* How many arguments? */
+	int objc;			/* How many arguments? */
 	Tcl_Obj *CONST objv[];		/* The argument objects */
 {
-	static gchar *logccmds[] = {
+	static char *logccmds[] = {
 		"close",
 		"get",
 		NULL
@@ -428,11 +428,11 @@ logc_Cmd(clientData, interp, objc, objv)
 	};
 	DB_LOGC *logc;
 	DBTCL_INFO *logcip;
-	gint cmdindex, result, ret;
+	int cmdindex, result, ret;
 
 	Tcl_ResetResult(interp);
 	logc = (DB_LOGC *)clientData;
-	logcip = _PtrToInfo((gpointer)logc);
+	logcip = _PtrToInfo((void *)logc);
 	result = TCL_OK;
 
 	if (objc <= 1) {
@@ -483,11 +483,11 @@ logc_Cmd(clientData, interp, objc, objv)
 static int
 tcl_LogcGet(interp, objc, objv, logc)
 	Tcl_Interp *interp;
-	gint objc;
+	int objc;
 	Tcl_Obj * CONST *objv;
 	DB_LOGC *logc;
 {
-	static gchar *logcgetopts[] = {
+	static char *logcgetopts[] = {
 		"-current",
 		"-first",
 		"-last",
@@ -508,7 +508,7 @@ tcl_LogcGet(interp, objc, objv, logc)
 	DBT data;
 	Tcl_Obj *dataobj, *lsnlist, *myobjv[2], *res;
 	u_int32_t flag;
-	gint i, myobjc, optindex, result, ret;
+	int i, myobjc, optindex, result, ret;
 
 	result = TCL_OK;
 	res = NULL;

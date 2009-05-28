@@ -8,27 +8,27 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
 
-static gint __os_map
-  __P((DB_ENV *, gchar *, REGINFO *, DB_FH *, size_t, int, int, int, gpointer *));
-static gint __os_unique_name __P((gchar *, HANDLE, gchar *, size_t));
+static int __os_map
+  __P((DB_ENV *, char *, REGINFO *, DB_FH *, size_t, int, int, int, void **));
+static int __os_unique_name __P((char *, HANDLE, char *, size_t));
 
 /*
  * __os_r_sysattach --
  *	Create/join a shared memory region.
  */
-gint
+int
 __os_r_sysattach(dbenv, infop, rp)
 	DB_ENV *dbenv;
 	REGINFO *infop;
 	REGION *rp;
 {
 	DB_FH fh;
-	gint is_system, ret;
+	int is_system, ret;
 
 	/*
 	 * Try to open/create the file.  We DO NOT need to ensure that multiple
@@ -72,13 +72,13 @@ __os_r_sysattach(dbenv, infop, rp)
  * __os_r_sysdetach --
  *	Detach from a shared memory region.
  */
-gint
+int
 __os_r_sysdetach(dbenv, infop, destroy)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	gint destroy;
+	int destroy;
 {
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	if (infop->wnt_handle != NULL) {
 		(void)CloseHandle(*((HANDLE*)(infop->wnt_handle)));
@@ -103,14 +103,14 @@ __os_r_sysdetach(dbenv, infop, destroy)
  * __os_mapfile --
  *	Map in a shared memory file.
  */
-gint
+int
 __os_mapfile(dbenv, path, fhp, len, is_rdonly, addr)
 	DB_ENV *dbenv;
-	gchar *path;
+	char *path;
 	DB_FH *fhp;
-	gint is_rdonly;
+	int is_rdonly;
 	size_t len;
-	gpointer *addr;
+	void **addr;
 {
 	/* If the user replaced the map call, call through their interface. */
 	if (DB_GLOBAL(j_map) != NULL)
@@ -123,10 +123,10 @@ __os_mapfile(dbenv, path, fhp, len, is_rdonly, addr)
  * __os_unmapfile --
  *	Unmap the shared memory file.
  */
-gint
+int
 __os_unmapfile(dbenv, addr, len)
 	DB_ENV *dbenv;
-	gpointer addr;
+	void *addr;
 	size_t len;
 {
 	/* If the user replaced the map call, call through their interface. */
@@ -165,12 +165,12 @@ __os_unmapfile(dbenv, addr, len)
  */
 static int
 __os_unique_name(orig_path, hfile, result_path, result_path_len)
-	gchar *orig_path, *result_path;
+	char *orig_path, *result_path;
 	HANDLE hfile;
 	size_t result_path_len;
 {
 	BY_HANDLE_FILE_INFORMATION fileinfo;
-	gchar *basename, *p;
+	char *basename, *p;
 
 	/*
 	 * In Windows, pathname components are delimited by '/' or '\', and
@@ -212,17 +212,17 @@ static int
 __os_map(dbenv, path, infop, fhp, len, is_region, is_system, is_rdonly, addr)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	gchar *path;
+	char *path;
 	DB_FH *fhp;
-	gint is_region, is_system, is_rdonly;
+	int is_region, is_system, is_rdonly;
 	size_t len;
-	gpointer *addr;
+	void **addr;
 {
 	HANDLE hMemory;
 	REGENV *renv;
-	gint ret, use_pagefile;
-	gchar shmem_name[MAXPATHLEN];
-	gpointer pMemory;
+	int ret, use_pagefile;
+	char shmem_name[MAXPATHLEN];
+	void *pMemory;
 
 	ret = 0;
 	if (infop != NULL)

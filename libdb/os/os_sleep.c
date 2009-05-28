@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -45,15 +45,15 @@ static const gchar revid[] = "$Id$";
  * __os_sleep --
  *	Yield the processor for a period of time.
  *
- * PUBLIC: gint __os_sleep __P((DB_ENV *, u_long, u_long));
+ * PUBLIC: int __os_sleep __P((DB_ENV *, u_long, u_long));
  */
-gint
+int
 __os_sleep(dbenv, secs, usecs)
 	DB_ENV *dbenv;
 	u_long secs, usecs;		/* Seconds and microseconds. */
 {
 	struct timeval t;
-	gint ret;
+	int ret;
 
 	/* Don't require that the values be normalized. */
 	for (; usecs >= 1000000; usecs -= 1000000)

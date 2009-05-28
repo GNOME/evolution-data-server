@@ -164,8 +164,8 @@ typedef struct __txn_recs {
 } TXN_RECS;
 
 typedef struct __lsn_collection {
-	gint nlsns;
-	gint nalloc;
+	int nlsns;
+	int nalloc;
 	DB_LSN *array;
 } LSN_COLLECTION;
 

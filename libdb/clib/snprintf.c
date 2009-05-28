@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,24 +24,24 @@ static const gchar revid[] = "$Id$";
  *	Bounded version of sprintf.
  *
  * PUBLIC: #ifndef HAVE_SNPRINTF
- * PUBLIC: gint snprintf __P((gchar *, size_t, const gchar *, ...));
+ * PUBLIC: int snprintf __P((char *, size_t, const char *, ...));
  * PUBLIC: #endif
  */
 #ifndef HAVE_SNPRINTF
-gint
+int
 #ifdef __STDC__
-snprintf(gchar *str, size_t n, const gchar *fmt, ...)
+snprintf(char *str, size_t n, const char *fmt, ...)
 #else
 snprintf(str, n, fmt, va_alist)
-	gchar *str;
+	char *str;
 	size_t n;
-	const gchar *fmt;
+	const char *fmt;
 	va_dcl
 #endif
 {
-	static gint ret_charpnt = -1;
+	static int ret_charpnt = -1;
 	va_list ap;
-	gint len;
+	int len;
 
 	COMPQUIET(n, 0);
 
@@ -54,7 +54,7 @@ snprintf(str, n, fmt, va_alist)
 	 * cross-compilation environment.
 	 */
 	if (ret_charpnt == -1) {
-		gchar buf[10];
+		char buf[10];
 
 		ret_charpnt =
 		    sprintf(buf, "123") != 3 ||

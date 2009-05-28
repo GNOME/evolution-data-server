@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -54,24 +54,24 @@ static const gchar revid[] = "$Id$";
 #define	IS_XA_TXN(R) (R->xid.size != 0)
 
 /*
- * PUBLIC: gint __txn_regop_recover
- * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __txn_regop_recover
+ * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  *
  * These records are only ever written for commits.  Normally, we redo any
  * committed transaction, however if we are doing recovery to a timestamp, then
  * we may treat transactions that commited after the timestamp as aborted.
  */
-gint
+int
 __txn_regop_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	DB_TXNHEAD *headp;
 	__txn_regop_args *argp;
-	gint ret;
+	int ret;
 
 #ifdef DEBUG_RECOVER
 	(void)__txn_regop_print(dbenv, dbtp, lsnp, op, info);
@@ -141,21 +141,21 @@ err:		__db_err(dbenv,
 }
 
 /*
- * PUBLIC: gint __txn_xa_regop_recover
- * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __txn_xa_regop_recover
+ * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  *
  * These records are only ever written for prepares.
  */
-gint
+int
 __txn_xa_regop_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__txn_xa_regop_args *argp;
-	gint ret;
+	int ret;
 
 #ifdef DEBUG_RECOVER
 	(void)__txn_xa_regop_print(dbenv, dbtp, lsnp, op, info);
@@ -218,19 +218,19 @@ err:	__os_free(dbenv, argp);
 }
 
 /*
- * PUBLIC: gint __txn_ckp_recover
- * PUBLIC: __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __txn_ckp_recover
+ * PUBLIC: __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __txn_ckp_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__txn_ckp_args *argp;
-	gint ret;
+	int ret;
 
 #ifdef DEBUG_RECOVER
 	__txn_ckp_print(dbenv, dbtp, lsnp, op, info);
@@ -252,19 +252,19 @@ __txn_ckp_recover(dbenv, dbtp, lsnp, op, info)
  * __txn_child_recover
  *	Recover a commit record for a child transaction.
  *
- * PUBLIC: gint __txn_child_recover
- * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __txn_child_recover
+ * PUBLIC:    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __txn_child_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__txn_child_args *argp;
-	gint c_stat, p_stat, ret;
+	int c_stat, p_stat, ret;
 
 #ifdef DEBUG_RECOVER
 	(void)__txn_child_print(dbenv, dbtp, lsnp, op, info);
@@ -348,10 +348,10 @@ __txn_child_recover(dbenv, dbtp, lsnp, op, info)
  * lsnp is the LSN of the returned LSN
  * argp is the perpare record (in an appropriate structure)
  *
- * PUBLIC: gint __txn_restore_txn __P((DB_ENV *,
+ * PUBLIC: int __txn_restore_txn __P((DB_ENV *,
  * PUBLIC:     DB_LSN *, __txn_xa_regop_args *));
  */
-gint
+int
 __txn_restore_txn(dbenv, lsnp, argp)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
@@ -360,7 +360,7 @@ __txn_restore_txn(dbenv, lsnp, argp)
 	DB_TXNMGR *mgr;
 	TXN_DETAIL *td;
 	DB_TXNREGION *region;
-	gint ret;
+	int ret;
 
 	if (argp->xid.size == 0)
 	return (0);
@@ -404,19 +404,19 @@ __txn_restore_txn(dbenv, lsnp, argp)
  * __txn_recycle_recover --
  *	Recovery function for recycle.
  *
- * PUBLIC: gint __txn_recycle_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __txn_recycle_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __txn_recycle_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__txn_recycle_args *argp;
-	gint ret;
+	int ret;
 
 #ifdef DEBUG_RECOVER
 	(void)__txn_child_print(dbenv, dbtp, lsnp, op, info);

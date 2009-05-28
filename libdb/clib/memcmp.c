@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -47,17 +47,17 @@ static const gchar revid[] = "$Id$";
  * memcmp --
  *
  * PUBLIC: #ifndef HAVE_MEMCMP
- * PUBLIC: gint memcmp __P((gconstpointer , gconstpointer , size_t));
+ * PUBLIC: int memcmp __P((const void *, const void *, size_t));
  * PUBLIC: #endif
  */
-gint
+int
 memcmp(s1, s2, n)
-	gchar *s1, *s2;
+	char *s1, *s2;
 	size_t n;
 {
 	if (n != 0) {
-		guchar *p1 = (guchar *)s1,
-			      *p2 = (guchar *)s2;
+		unsigned char *p1 = (unsigned char *)s1,
+			      *p2 = (unsigned char *)s2;
 		do {
 			if (*p1++ != *p2++)
 				return (*--p1 - *--p2);

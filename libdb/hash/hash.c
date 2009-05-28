@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -60,18 +60,18 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/hash.h"
 #include "dbinc/lock.h"
 
-static gint  __ham_bulk __P((DBC *, DBT *, u_int32_t));
-static gint  __ham_c_close __P((DBC *, db_pgno_t, gint *));
-static gint  __ham_c_del __P((DBC *));
-static gint  __ham_c_destroy __P((DBC *));
-static gint  __ham_c_get __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-static gint  __ham_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-static gint  __ham_c_writelock __P((DBC *));
-static gint  __ham_dup_return __P((DBC *, DBT *, u_int32_t));
-static gint  __ham_expand_table __P((DBC *));
-static gint  __ham_lookup __P((DBC *,
+static int  __ham_bulk __P((DBC *, DBT *, u_int32_t));
+static int  __ham_c_close __P((DBC *, db_pgno_t, int *));
+static int  __ham_c_del __P((DBC *));
+static int  __ham_c_destroy __P((DBC *));
+static int  __ham_c_get __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+static int  __ham_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+static int  __ham_c_writelock __P((DBC *));
+static int  __ham_dup_return __P((DBC *, DBT *, u_int32_t));
+static int  __ham_expand_table __P((DBC *));
+static int  __ham_lookup __P((DBC *,
 		const DBT *, u_int32_t, db_lockmode_t, db_pgno_t *));
-static gint  __ham_overwrite __P((DBC *, DBT *, u_int32_t));
+static int  __ham_overwrite __P((DBC *, DBT *, u_int32_t));
 
 /*
  * __ham_quick_delete --
@@ -91,13 +91,13 @@ static gint  __ham_overwrite __P((DBC *, DBT *, u_int32_t));
  *	set, or to the sole key/data pair when the key does not have a
  *	duplicate set, before the function is called.
  *
- * PUBLIC: gint __ham_quick_delete __P((DBC *));
+ * PUBLIC: int __ham_quick_delete __P((DBC *));
  */
-gint
+int
 __ham_quick_delete(dbc)
 	DBC *dbc;
 {
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	if ((ret = __ham_get_meta(dbc)) != 0)
 		return (ret);
@@ -126,15 +126,15 @@ __ham_quick_delete(dbc)
  * __ham_c_init --
  *	Initialize the hash-specific portion of a cursor.
  *
- * PUBLIC: gint __ham_c_init __P((DBC *));
+ * PUBLIC: int __ham_c_init __P((DBC *));
  */
-gint
+int
 __ham_c_init(dbc)
 	DBC *dbc;
 {
 	DB_ENV *dbenv;
 	HASH_CURSOR *new_curs;
-	gint ret;
+	int ret;
 
 	dbenv = dbc->dbp->dbenv;
 	if ((ret = __os_calloc(dbenv,
@@ -175,12 +175,12 @@ static int
 __ham_c_close(dbc, root_pgno, rmroot)
 	DBC *dbc;
 	db_pgno_t root_pgno;
-	gint *rmroot;
+	int *rmroot;
 {
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
 	HKEYDATA *dp;
-	gint doroot, gotmeta, ret, t_ret;
+	int doroot, gotmeta, ret, t_ret;
 	u_int32_t dirty;
 
 	COMPQUIET(rmroot, 0);
@@ -248,9 +248,9 @@ __ham_c_destroy(dbc)
  * __ham_c_count --
  *	Return a count of on-page duplicates.
  *
- * PUBLIC: gint __ham_c_count __P((DBC *, db_recno_t *));
+ * PUBLIC: int __ham_c_count __P((DBC *, db_recno_t *));
  */
-gint
+int
 __ham_c_count(dbc, recnop)
 	DBC *dbc;
 	db_recno_t *recnop;
@@ -260,7 +260,7 @@ __ham_c_count(dbc, recnop)
 	HASH_CURSOR *hcp;
 	db_indx_t len;
 	db_recno_t recno;
-	gint ret, t_ret;
+	int ret, t_ret;
 	u_int8_t *p, *pend;
 
 	dbp = dbc->dbp;
@@ -309,7 +309,7 @@ __ham_c_del(dbc)
 	DBT repldbt;
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -368,9 +368,9 @@ out:	if (hcp->page != NULL) {
  *	Duplicate a hash cursor, such that the new one holds appropriate
  *	locks for the position of the original.
  *
- * PUBLIC: gint __ham_c_dup __P((DBC *, DBC *));
+ * PUBLIC: int __ham_c_dup __P((DBC *, DBC *));
  */
-gint
+int
 __ham_c_dup(orig_dbc, new_dbc)
 	DBC *orig_dbc, *new_dbc;
 {
@@ -418,7 +418,7 @@ __ham_c_get(dbc, key, data, flags, pgnop)
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
 	db_lockmode_t lock_type;
-	gint get_key, ret, t_ret;
+	int get_key, ret, t_ret;
 
 	hcp = (HASH_CURSOR *)dbc->internal;
 	dbp = dbc->dbp;
@@ -603,8 +603,8 @@ __ham_bulk(dbc, data, flags)
 	int32_t  *endp, key_off, *offp, *saveoff;
 	u_int32_t key_size, size, space;
 	u_int8_t *dbuf, *dp, *hk, *np, *tmp;
-	gint is_dup, is_key;
-	gint need_pg, next_key, no_dup, pagesize, ret, t_ret;
+	int is_dup, is_key;
+	int need_pg, next_key, no_dup, pagesize, ret, t_ret;
 
 	ret = 0;
 	key_off = 0;
@@ -973,7 +973,7 @@ __ham_c_put(dbc, key, data, flags, pgnop)
 	DBT tmp_val, *myval;
 	HASH_CURSOR *hcp;
 	u_int32_t nbytes;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	/*
 	 * The compiler doesn't realize that we only use this when ret is
@@ -1088,7 +1088,7 @@ __ham_expand_table(dbc)
 	PAGE *h;
 	db_pgno_t pgno, mpgno;
 	u_int32_t newalloc, new_bucket, old_bucket;
-	gint dirty_meta, got_meta, logn, new_double, ret;
+	int dirty_meta, got_meta, logn, new_double, ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1269,7 +1269,7 @@ __ham_dup_return(dbc, val, flags)
 	db_pgno_t pgno;
 	u_int32_t off, tlen;
 	u_int8_t *hk, type;
-	gint cmp, ret;
+	int cmp, ret;
 	db_indx_t len;
 
 	/* Check for duplicate and return the first one. */
@@ -1455,11 +1455,11 @@ __ham_overwrite(dbc, nval, flags)
 	DB_ENV *dbenv;
 	HASH_CURSOR *hcp;
 	DBT *myval, tmp_val, tmp_val2;
-	gpointer newrec;
+	void *newrec;
 	u_int8_t *hk, *p;
 	u_int32_t len, nondup_size;
 	db_indx_t newsize;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -1664,7 +1664,7 @@ __ham_lookup(dbc, key, sought, mode, pgnop)
 	HASH_CURSOR *hcp;
 	db_pgno_t pgno;
 	u_int32_t tlen;
-	gint match, ret;
+	int match, ret;
 	u_int8_t *hk, *dk;
 
 	dbp = dbc->dbp;
@@ -1741,18 +1741,18 @@ found_key:			F_SET(hcp, H_OK);
  *	Initialize a dbt using some possibly already allocated storage
  *	for items.
  *
- * PUBLIC: gint __ham_init_dbt __P((DB_ENV *,
- * PUBLIC:     DBT *, u_int32_t, gpointer *, u_int32_t *));
+ * PUBLIC: int __ham_init_dbt __P((DB_ENV *,
+ * PUBLIC:     DBT *, u_int32_t, void **, u_int32_t *));
  */
-gint
+int
 __ham_init_dbt(dbenv, dbt, size, bufp, sizep)
 	DB_ENV *dbenv;
 	DBT *dbt;
 	u_int32_t size;
-	gpointer *bufp;
+	void **bufp;
 	u_int32_t *sizep;
 {
-	gint ret;
+	int ret;
 
 	memset(dbt, 0, sizeof(*dbt));
 	if (*sizep < size) {
@@ -1777,14 +1777,14 @@ __ham_init_dbt(dbenv, dbt, size, bufp, sizep)
  * added (add == 1) or deleted (add == 0).
  * dup indicates if the addition occurred into a duplicate set.
  *
- * PUBLIC: gint __ham_c_update
+ * PUBLIC: int __ham_c_update
  * PUBLIC:    __P((DBC *, u_int32_t, int, int));
  */
-gint
+int
 __ham_c_update(dbc, len, add, is_dup)
 	DBC *dbc;
 	u_int32_t len;
-	gint add, is_dup;
+	int add, is_dup;
 {
 	DB *dbp, *ldbp;
 	DBC *cp;
@@ -1792,7 +1792,7 @@ __ham_c_update(dbc, len, add, is_dup)
 	DB_LSN lsn;
 	DB_TXN *my_txn;
 	HASH_CURSOR *hcp, *lcp;
-	gint found, ret;
+	int found, ret;
 	u_int32_t order;
 
 	dbp = dbc->dbp;
@@ -1965,9 +1965,9 @@ __ham_c_update(dbc, len, add, is_dup)
  * cursors on a split.  The latter is so we can update cursors when we
  * move items off page.
  *
- * PUBLIC: gint __ham_get_clist __P((DB *, db_pgno_t, u_int32_t, DBC ***));
+ * PUBLIC: int __ham_get_clist __P((DB *, db_pgno_t, u_int32_t, DBC ***));
  */
-gint
+int
 __ham_get_clist(dbp, pgno, indx, listp)
 	DB *dbp;
 	db_pgno_t pgno;
@@ -1977,7 +1977,7 @@ __ham_get_clist(dbp, pgno, indx, listp)
 	DB *ldbp;
 	DBC *cp;
 	DB_ENV *dbenv;
-	gint nalloc, nused, ret;
+	int nalloc, nused, ret;
 
 	/*
 	 * Assume that finding anything is the exception, so optimize for
@@ -2039,7 +2039,7 @@ __ham_c_writelock(dbc)
 	DB_ENV *dbenv;
 	DB_LOCK tmp_lock;
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	/*
 	 * All we need do is acquire the lock and let the off-page

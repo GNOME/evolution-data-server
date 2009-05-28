@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,7 +28,7 @@ static void	onint __P((int));
  */
 static void
 onint(signo)
-	gint signo;
+	int signo;
 {
 	if ((interrupt = signo) == 0)
 		interrupt = SIGINT;
@@ -61,9 +61,9 @@ __db_util_siginit()
  * __db_util_interrupted --
  *	Return if interrupted.
  *
- * PUBLIC: gint __db_util_interrupted __P((void));
+ * PUBLIC: int __db_util_interrupted __P((void));
  */
-gint
+int
 __db_util_interrupted()
 {
 	return (interrupt != 0);

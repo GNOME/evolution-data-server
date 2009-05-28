@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -46,11 +46,11 @@ static const gchar revid[] = "$Id$";
 /*
  * Prototypes for procedures defined later in this file:
  */
-static void tcl_flag_callback __P((u_int32_t, const FN *, gpointer ));
+static void tcl_flag_callback __P((u_int32_t, const FN *, void *));
 
 /*
  * Private structure type used to pass both an interp and an object into
- * a callback's single gpointer .
+ * a callback's single void *.
  */
 struct __tcl_callback_bundle {
 	Tcl_Interp *interp;
@@ -61,7 +61,7 @@ struct __tcl_callback_bundle {
 
 /*
  * PUBLIC: DBTCL_INFO *_NewInfo __P((Tcl_Interp *,
- * PUBLIC:    gpointer , gchar *, enum INFOTYPE));
+ * PUBLIC:    void *, char *, enum INFOTYPE));
  *
  * _NewInfo --
  *
@@ -71,12 +71,12 @@ struct __tcl_callback_bundle {
 DBTCL_INFO *
 _NewInfo(interp, anyp, name, type)
 	Tcl_Interp *interp;
-	gpointer anyp;
-	gchar *name;
+	void *anyp;
+	char *name;
 	enum INFOTYPE type;
 {
 	DBTCL_INFO *p;
-	gint i, ret;
+	int i, ret;
 
 	if ((ret = __os_malloc(NULL, sizeof(DBTCL_INFO), &p)) != 0) {
 		Tcl_SetResult(interp, db_strerror(ret), TCL_STATIC);
@@ -111,11 +111,11 @@ _NewInfo(interp, anyp, name, type)
 }
 
 /*
- * PUBLIC: gpointer _NameToPtr __P((CONST gchar *));
+ * PUBLIC: void *_NameToPtr __P((CONST char *));
  */
 void	*
 _NameToPtr(name)
-	CONST gchar *name;
+	CONST char *name;
 {
 	DBTCL_INFO *p;
 
@@ -127,11 +127,11 @@ _NameToPtr(name)
 }
 
 /*
- * PUBLIC: DBTCL_INFO *_PtrToInfo __P((CONST gpointer ));
+ * PUBLIC: DBTCL_INFO *_PtrToInfo __P((CONST void *));
  */
 DBTCL_INFO *
 _PtrToInfo(ptr)
-	CONST gpointer ptr;
+	CONST void *ptr;
 {
 	DBTCL_INFO *p;
 
@@ -143,11 +143,11 @@ _PtrToInfo(ptr)
 }
 
 /*
- * PUBLIC: DBTCL_INFO *_NameToInfo __P((CONST gchar *));
+ * PUBLIC: DBTCL_INFO *_NameToInfo __P((CONST char *));
  */
 DBTCL_INFO *
 _NameToInfo(name)
-	CONST gchar *name;
+	CONST char *name;
 {
 	DBTCL_INFO *p;
 
@@ -159,12 +159,12 @@ _NameToInfo(name)
 }
 
 /*
- * PUBLIC: void  _SetInfoData __P((DBTCL_INFO *, gpointer ));
+ * PUBLIC: void  _SetInfoData __P((DBTCL_INFO *, void *));
  */
 void
 _SetInfoData(p, data)
 	DBTCL_INFO *p;
-	gpointer data;
+	void *data;
 {
 	if (p == NULL)
 		return;
@@ -209,18 +209,18 @@ _DeleteInfo(p)
 }
 
 /*
- * PUBLIC: gint _SetListElem __P((Tcl_Interp *,
- * PUBLIC:    Tcl_Obj *, gpointer , int, gpointer , int));
+ * PUBLIC: int _SetListElem __P((Tcl_Interp *,
+ * PUBLIC:    Tcl_Obj *, void *, int, void *, int));
  */
-gint
+int
 _SetListElem(interp, list, elem1, e1cnt, elem2, e2cnt)
 	Tcl_Interp *interp;
 	Tcl_Obj *list;
-	gpointer elem1, *elem2;
-	gint e1cnt, e2cnt;
+	void *elem1, *elem2;
+	int e1cnt, e2cnt;
 {
 	Tcl_Obj *myobjv[2], *thislist;
-	gint myobjc;
+	int myobjc;
 
 	myobjc = 2;
 	myobjv[0] = Tcl_NewByteArrayObj((u_char *)elem1, e1cnt);
@@ -233,20 +233,20 @@ _SetListElem(interp, list, elem1, e1cnt, elem2, e2cnt)
 }
 
 /*
- * PUBLIC: gint _SetListElemInt __P((Tcl_Interp *, Tcl_Obj *, gpointer , int));
+ * PUBLIC: int _SetListElemInt __P((Tcl_Interp *, Tcl_Obj *, void *, int));
  */
-gint
+int
 _SetListElemInt(interp, list, elem1, elem2)
 	Tcl_Interp *interp;
 	Tcl_Obj *list;
-	gpointer elem1;
-	gint elem2;
+	void *elem1;
+	int elem2;
 {
 	Tcl_Obj *myobjv[2], *thislist;
-	gint myobjc;
+	int myobjc;
 
 	myobjc = 2;
-	myobjv[0] = Tcl_NewByteArrayObj((u_char *)elem1, strlen((gchar *)elem1));
+	myobjv[0] = Tcl_NewByteArrayObj((u_char *)elem1, strlen((char *)elem1));
 	myobjv[1] = Tcl_NewIntObj(elem2);
 	thislist = Tcl_NewListObj(myobjc, myobjv);
 	if (thislist == NULL)
@@ -255,19 +255,19 @@ _SetListElemInt(interp, list, elem1, elem2)
 }
 
 /*
- * PUBLIC: gint _SetListRecnoElem __P((Tcl_Interp *, Tcl_Obj *,
+ * PUBLIC: int _SetListRecnoElem __P((Tcl_Interp *, Tcl_Obj *,
  * PUBLIC:     db_recno_t, u_char *, int));
  */
-gint
+int
 _SetListRecnoElem(interp, list, elem1, elem2, e2size)
 	Tcl_Interp *interp;
 	Tcl_Obj *list;
 	db_recno_t elem1;
 	u_char *elem2;
-	gint e2size;
+	int e2size;
 {
 	Tcl_Obj *myobjv[2], *thislist;
-	gint myobjc;
+	int myobjc;
 
 	myobjc = 2;
 	myobjv[0] = Tcl_NewLongObj((long)elem1);
@@ -292,15 +292,15 @@ _SetListRecnoElem(interp, list, elem1, elem2, e2size)
  *	to eliminate redundancy and bring them into the standard DB
  *	function namespace.
  *
- * PUBLIC: gint _Set3DBTList __P((Tcl_Interp *, Tcl_Obj *, DBT *, int,
+ * PUBLIC: int _Set3DBTList __P((Tcl_Interp *, Tcl_Obj *, DBT *, int,
  * PUBLIC:     DBT *, int, DBT *));
  */
-gint
+int
 _Set3DBTList(interp, list, elem1, is1recno, elem2, is2recno, elem3)
 	Tcl_Interp *interp;
 	Tcl_Obj *list;
 	DBT *elem1, *elem2, *elem3;
-	gint is1recno, is2recno;
+	int is1recno, is2recno;
 {
 
 	Tcl_Obj *myobjv[3], *thislist;
@@ -329,20 +329,20 @@ _Set3DBTList(interp, list, elem1, is1recno, elem2, is2recno, elem3)
 /*
  * _SetMultiList -- build a list for return from multiple get.
  *
- * PUBLIC: gint _SetMultiList __P((Tcl_Interp *,
+ * PUBLIC: int _SetMultiList __P((Tcl_Interp *,
  * PUBLIC:	    Tcl_Obj *, DBT *, DBT*, int, int));
  */
-gint
+int
 _SetMultiList(interp, list, key, data, type, flag)
 	Tcl_Interp *interp;
 	Tcl_Obj *list;
 	DBT *key, *data;
-	gint type, flag;
+	int type, flag;
 {
 	db_recno_t recno;
 	u_int32_t dlen, klen;
-	gint result;
-	gpointer pointer, *dp, *kp;
+	int result;
+	void *pointer, *dp, *kp;
 
 	recno = 0;
 	dlen = 0;
@@ -381,15 +381,15 @@ _SetMultiList(interp, list, key, data, type, flag)
 	return (result);
 }
 /*
- * PUBLIC: gint _GetGlobPrefix __P((gchar *, gchar **));
+ * PUBLIC: int _GetGlobPrefix __P((char *, char **));
  */
-gint
+int
 _GetGlobPrefix(pattern, prefix)
-	gchar *pattern;
-	gchar **prefix;
+	char *pattern;
+	char **prefix;
 {
-	gint i, j;
-	gchar *p;
+	int i, j;
+	char *p;
 
 	/*
 	 * Duplicate it, we get enough space and most of the work is done.
@@ -412,15 +412,15 @@ _GetGlobPrefix(pattern, prefix)
 }
 
 /*
- * PUBLIC: gint _ReturnSetup __P((Tcl_Interp *, int, int, gchar *));
+ * PUBLIC: int _ReturnSetup __P((Tcl_Interp *, int, int, char *));
  */
-gint
+int
 _ReturnSetup(interp, ret, ok, errmsg)
 	Tcl_Interp *interp;
-	gint ret, ok;
-	gchar *errmsg;
+	int ret, ok;
+	char *errmsg;
 {
-	gchar *msg;
+	char *msg;
 
 	if (ret > 0)
 		return (_ErrorSetup(interp, ret, errmsg));
@@ -449,13 +449,13 @@ _ReturnSetup(interp, ret, ok, errmsg)
 }
 
 /*
- * PUBLIC: gint _ErrorSetup __P((Tcl_Interp *, int, gchar *));
+ * PUBLIC: int _ErrorSetup __P((Tcl_Interp *, int, char *));
  */
-gint
+int
 _ErrorSetup(interp, ret, errmsg)
 	Tcl_Interp *interp;
-	gint ret;
-	gchar *errmsg;
+	int ret;
+	char *errmsg;
 {
 	Tcl_SetErrno(ret);
 	Tcl_AppendResult(interp, errmsg, ":", Tcl_PosixError(interp), NULL);
@@ -463,17 +463,17 @@ _ErrorSetup(interp, ret, errmsg)
 }
 
 /*
- * PUBLIC: void _ErrorFunc __P((CONST gchar *, gchar *));
+ * PUBLIC: void _ErrorFunc __P((CONST char *, char *));
  */
 void
 _ErrorFunc(pfx, msg)
-	CONST gchar *pfx;
-	gchar *msg;
+	CONST char *pfx;
+	char *msg;
 {
 	DBTCL_INFO *p;
 	Tcl_Interp *interp;
-	gint size;
-	gchar *err;
+	int size;
+	char *err;
 
 	p = _NameToInfo(pfx);
 	if (p == NULL)
@@ -500,17 +500,17 @@ _ErrorFunc(pfx, msg)
 #define	INVALID_LSNMSG "Invalid LSN with %d parts. Should have 2.\n"
 
 /*
- * PUBLIC: gint _GetLsn __P((Tcl_Interp *, Tcl_Obj *, DB_LSN *));
+ * PUBLIC: int _GetLsn __P((Tcl_Interp *, Tcl_Obj *, DB_LSN *));
  */
-gint
+int
 _GetLsn(interp, obj, lsn)
 	Tcl_Interp *interp;
 	Tcl_Obj *obj;
 	DB_LSN *lsn;
 {
 	Tcl_Obj **myobjv;
-	gchar msg[MSG_SIZE];
-	gint myobjc, result;
+	char msg[MSG_SIZE];
+	int myobjc, result;
 	u_int32_t tmp;
 
 	result = Tcl_ListObjGetElements(interp, obj, &myobjc, &myobjv);
@@ -535,7 +535,7 @@ _GetLsn(interp, obj, lsn)
  * _GetUInt32 --
  *	Get a u_int32_t from a Tcl object.  Tcl_GetIntFromObj does the
  * right thing most of the time, but on machines where a long is 8 bytes
- * and an gint is 4 bytes, it errors on integers between the maximum
+ * and an int is 4 bytes, it errors on integers between the maximum
  * int32_t and the maximum u_int32_t.  This is correct, but we generally
  * want a u_int32_t in the end anyway, so we use Tcl_GetLongFromObj and do
  * the bounds checking ourselves.
@@ -544,15 +544,15 @@ _GetLsn(interp, obj, lsn)
  * bounds check.  It's essentially Tcl_GetUnsignedIntFromObj, which
  * unfortunately doesn't exist.
  *
- * PUBLIC: gint _GetUInt32 __P((Tcl_Interp *, Tcl_Obj *, u_int32_t *));
+ * PUBLIC: int _GetUInt32 __P((Tcl_Interp *, Tcl_Obj *, u_int32_t *));
  */
-gint
+int
 _GetUInt32(interp, obj, resp)
 	Tcl_Interp *interp;
 	Tcl_Obj *obj;
 	u_int32_t *resp;
 {
-	gint result;
+	int result;
 	long ltmp;
 
 	result = Tcl_GetLongFromObj(interp, obj, &ltmp);
@@ -582,12 +582,12 @@ static void
 tcl_flag_callback(flags, fn, vtcbp)
 	u_int32_t flags;
 	const FN *fn;
-	gpointer vtcbp;
+	void *vtcbp;
 {
 	const FN *fnp;
 	Tcl_Interp *interp;
 	Tcl_Obj *newobj, *listobj;
-	gint result;
+	int result;
 	struct __tcl_callback_bundle *tcbp;
 
 	tcbp = (struct __tcl_callback_bundle *)vtcbp;
@@ -617,15 +617,15 @@ tcl_flag_callback(flags, fn, vtcbp)
  * that can extract the right names for the right flags.
  *
  * PUBLIC: Tcl_Obj *_GetFlagsList __P((Tcl_Interp *, u_int32_t,
- * PUBLIC:     void (*)(u_int32_t, gpointer ,
- * PUBLIC:     void (*)(u_int32_t, const FN *, gpointer ))));
+ * PUBLIC:     void (*)(u_int32_t, void *,
+ * PUBLIC:     void (*)(u_int32_t, const FN *, void *))));
  */
 Tcl_Obj *
 _GetFlagsList(interp, flags, func)
 	Tcl_Interp *interp;
 	u_int32_t flags;
 	void (*func)
-	    __P((u_int32_t, gpointer , void (*)(u_int32_t, const FN *, gpointer )));
+	    __P((u_int32_t, void *, void (*)(u_int32_t, const FN *, void *)));
 {
 	Tcl_Obj *newlist;
 	struct __tcl_callback_bundle tcb;
@@ -641,7 +641,7 @@ _GetFlagsList(interp, flags, func)
 	return (newlist);
 }
 
-gint __debug_stop, __debug_on, __debug_print, __debug_test;
+int __debug_stop, __debug_on, __debug_print, __debug_test;
 
 /*
  * PUBLIC: void _debug_check  __P((void));
@@ -674,19 +674,19 @@ _debug_check()
  * memory.
  */
 /*
- * PUBLIC: gint _CopyObjBytes  __P((Tcl_Interp *, Tcl_Obj *obj, gpointer *,
- * PUBLIC:     u_int32_t *, gint *));
+ * PUBLIC: int _CopyObjBytes  __P((Tcl_Interp *, Tcl_Obj *obj, void **,
+ * PUBLIC:     u_int32_t *, int *));
  */
-gint
+int
 _CopyObjBytes(interp, obj, newp, sizep, freep)
 	Tcl_Interp *interp;
 	Tcl_Obj *obj;
-	gpointer *newp;
+	void **newp;
 	u_int32_t *sizep;
-	gint *freep;
+	int *freep;
 {
-	gpointer tmp, *new;
-	gint i, len, ret;
+	void *tmp, *new;
+	int i, len, ret;
 
 	/*
 	 * If the object is not an int, then just return the byte

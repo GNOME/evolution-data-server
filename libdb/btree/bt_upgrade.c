@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,18 +26,18 @@ static const gchar revid[] = "$Id$";
  * __bam_30_btreemeta --
  *	Upgrade the metadata pages from version 6 to version 7.
  *
- * PUBLIC: gint __bam_30_btreemeta __P((DB *, gchar *, u_int8_t *));
+ * PUBLIC: int __bam_30_btreemeta __P((DB *, char *, u_int8_t *));
  */
-gint
+int
 __bam_30_btreemeta(dbp, real_name, buf)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int8_t *buf;
 {
 	BTMETA30 *newmeta;
 	BTMETA2X *oldmeta;
 	DB_ENV *dbenv;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 
@@ -72,17 +72,17 @@ __bam_30_btreemeta(dbp, real_name, buf)
  * __bam_31_btreemeta --
  *	Upgrade the database from version 7 to version 8.
  *
- * PUBLIC: gint __bam_31_btreemeta
- * PUBLIC:      __P((DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *));
+ * PUBLIC: int __bam_31_btreemeta
+ * PUBLIC:      __P((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *));
  */
-gint
+int
 __bam_31_btreemeta(dbp, real_name, flags, fhp, h, dirtyp)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int32_t flags;
 	DB_FH *fhp;
 	PAGE *h;
-	gint *dirtyp;
+	int *dirtyp;
 {
 	BTMETA31 *newmeta;
 	BTMETA30 *oldmeta;
@@ -126,22 +126,22 @@ __bam_31_btreemeta(dbp, real_name, flags, fhp, h, dirtyp)
  * __bam_31_lbtree --
  *	Upgrade the database btree leaf pages.
  *
- * PUBLIC: gint __bam_31_lbtree
- * PUBLIC:      __P((DB *, gchar *, u_int32_t, DB_FH *, PAGE *, gint *));
+ * PUBLIC: int __bam_31_lbtree
+ * PUBLIC:      __P((DB *, char *, u_int32_t, DB_FH *, PAGE *, int *));
  */
-gint
+int
 __bam_31_lbtree(dbp, real_name, flags, fhp, h, dirtyp)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int32_t flags;
 	DB_FH *fhp;
 	PAGE *h;
-	gint *dirtyp;
+	int *dirtyp;
 {
 	BKEYDATA *bk;
 	db_pgno_t pgno;
 	db_indx_t indx;
-	gint ret;
+	int ret;
 
 	ret = 0;
 	for (indx = O_INDX; indx < NUM_ENT(h); indx += P_INDX) {

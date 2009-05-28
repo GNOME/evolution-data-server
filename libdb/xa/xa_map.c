@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -29,11 +29,11 @@ static const gchar revid[] = "$Id$";
  * __db_rmid_to_env
  *	Return the environment associated with a given XA rmid.
  *
- * PUBLIC: gint __db_rmid_to_env __P((gint rmid, DB_ENV **envp));
+ * PUBLIC: int __db_rmid_to_env __P((int rmid, DB_ENV **envp));
  */
-gint
+int
 __db_rmid_to_env(rmid, envp)
-	gint rmid;
+	int rmid;
 	DB_ENV **envp;
 {
 	DB_ENV *env;
@@ -64,9 +64,9 @@ __db_rmid_to_env(rmid, envp)
  * __db_xid_to_txn
  *	Return the txn that corresponds to this XID.
  *
- * PUBLIC: gint __db_xid_to_txn __P((DB_ENV *, XID *, size_t *));
+ * PUBLIC: int __db_xid_to_txn __P((DB_ENV *, XID *, size_t *));
  */
-gint
+int
 __db_xid_to_txn(dbenv, xid, offp)
 	DB_ENV *dbenv;
 	XID *xid;
@@ -81,11 +81,11 @@ __db_xid_to_txn(dbenv, xid, offp)
  * __db_map_rmid
  *	Create a mapping between the specified rmid and environment.
  *
- * PUBLIC: gint __db_map_rmid __P((int, DB_ENV *));
+ * PUBLIC: int __db_map_rmid __P((int, DB_ENV *));
  */
-gint
+int
 __db_map_rmid(rmid, env)
-	gint rmid;
+	int rmid;
 	DB_ENV *env;
 {
 	env->xa_rmid = rmid;
@@ -97,11 +97,11 @@ __db_map_rmid(rmid, env)
  * __db_unmap_rmid
  *	Destroy the mapping for the given rmid.
  *
- * PUBLIC: gint __db_unmap_rmid __P((int));
+ * PUBLIC: int __db_unmap_rmid __P((int));
  */
-gint
+int
 __db_unmap_rmid(rmid)
-	gint rmid;
+	int rmid;
 {
 	DB_ENV *e;
 
@@ -121,9 +121,9 @@ __db_unmap_rmid(rmid)
  *	Create a mapping between this XID and the transaction at
  *	"off" in the shared region.
  *
- * PUBLIC: gint __db_map_xid __P((DB_ENV *, XID *, size_t));
+ * PUBLIC: int __db_map_xid __P((DB_ENV *, XID *, size_t));
  */
-gint
+int
 __db_map_xid(env, xid, off)
 	DB_ENV *env;
 	XID *xid;

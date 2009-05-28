@@ -38,7 +38,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 /*
@@ -59,11 +59,11 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/hash.h"
 #include "dbinc/btree.h"
 
-static gint __ham_c_chgpg __P((DBC *,
+static int __ham_c_chgpg __P((DBC *,
     db_pgno_t, u_int32_t, db_pgno_t, u_int32_t));
-static gint __ham_check_move __P((DBC *, u_int32_t));
-static gint __ham_dcursor __P((DBC *, db_pgno_t, u_int32_t));
-static gint __ham_move_offpage __P((DBC *, PAGE *, u_int32_t, db_pgno_t));
+static int __ham_check_move __P((DBC *, u_int32_t));
+static int __ham_dcursor __P((DBC *, db_pgno_t, u_int32_t));
+static int __ham_move_offpage __P((DBC *, PAGE *, u_int32_t, db_pgno_t));
 
 /*
  * Called from hash_access to add a duplicate key. nval is the new
@@ -78,9 +78,9 @@ static gint __ham_move_offpage __P((DBC *, PAGE *, u_int32_t, db_pgno_t));
  * Case 4: The element is large enough to push the duplicate set onto a
  *	   separate page.
  *
- * PUBLIC: gint __ham_add_dup __P((DBC *, DBT *, u_int32_t, db_pgno_t *));
+ * PUBLIC: int __ham_add_dup __P((DBC *, DBT *, u_int32_t, db_pgno_t *));
  */
-gint
+int
 __ham_add_dup(dbc, nval, flags, pgnop)
 	DBC *dbc;
 	DBT *nval;
@@ -92,7 +92,7 @@ __ham_add_dup(dbc, nval, flags, pgnop)
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
 	u_int32_t add_bytes, new_size;
-	gint cmp, ret;
+	int cmp, ret;
 	u_int8_t *hk;
 
 	dbp = dbc->dbp;
@@ -237,9 +237,9 @@ __ham_add_dup(dbc, nval, flags, pgnop)
 /*
  * Convert an on-page set of duplicates to an offpage set of duplicates.
  *
- * PUBLIC: gint __ham_dup_convert __P((DBC *));
+ * PUBLIC: int __ham_dup_convert __P((DBC *));
  */
-gint
+int
 __ham_dup_convert(dbc)
 	DBC *dbc;
 {
@@ -253,7 +253,7 @@ __ham_dup_convert(dbc)
 	HOFFPAGE ho;
 	PAGE *dp;
 	db_indx_t i, len, off;
-	gint c, ret, t_ret;
+	int c, ret, t_ret;
 	u_int8_t *p, *pend;
 
 	dbp = dbc->dbp;
@@ -393,19 +393,19 @@ err:	if (ret == 0)
  * information set appropriately. If the incoming dbt is a partial, assume
  * we are creating a new entry and make sure that we do any initial padding.
  *
- * PUBLIC: gint __ham_make_dup __P((DB_ENV *,
- * PUBLIC:     const DBT *, DBT *d, gpointer *, u_int32_t *));
+ * PUBLIC: int __ham_make_dup __P((DB_ENV *,
+ * PUBLIC:     const DBT *, DBT *d, void **, u_int32_t *));
  */
-gint
+int
 __ham_make_dup(dbenv, notdup, duplicate, bufp, sizep)
 	DB_ENV *dbenv;
 	const DBT *notdup;
 	DBT *duplicate;
-	gpointer *bufp;
+	void **bufp;
 	u_int32_t *sizep;
 {
 	db_indx_t tsize, item_size;
-	gint ret;
+	int ret;
 	u_int8_t *p;
 
 	item_size = (db_indx_t)notdup->size;
@@ -457,7 +457,7 @@ __ham_check_move(dbc, add_len)
 	db_pgno_t next_pgno;
 	u_int32_t new_datalen, old_len, rectype;
 	u_int8_t *hk;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -647,7 +647,7 @@ __ham_move_offpage(dbc, pagep, ndx, pgno)
 	db_indx_t i, *inp;
 	int32_t shrink;
 	u_int8_t *src;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	od.type = H_OFFDUP;
@@ -694,20 +694,20 @@ __ham_move_offpage(dbc, pagep, ndx, pgno)
  *	we exit with the cursor set appropriately.
  *
  * PUBLIC: void __ham_dsearch
- * PUBLIC:     __P((DBC *, DBT *, u_int32_t *, gint *, u_int32_t));
+ * PUBLIC:     __P((DBC *, DBT *, u_int32_t *, int *, u_int32_t));
  */
 void
 __ham_dsearch(dbc, dbt, offp, cmpp, flags)
 	DBC *dbc;
 	DBT *dbt;
 	u_int32_t *offp, flags;
-	gint *cmpp;
+	int *cmpp;
 {
 	DB *dbp;
 	HASH_CURSOR *hcp;
 	DBT cur;
 	db_indx_t i, len;
-	gint (*func) __P((DB *, const DBT *, const DBT *));
+	int (*func) __P((DB *, const DBT *, const DBT *));
 	u_int8_t *data;
 
 	dbp = dbc->dbp;
@@ -786,7 +786,7 @@ __ham_dcursor(dbc, pgno, indx)
 	DB *dbp;
 	HASH_CURSOR *hcp;
 	BTREE_CURSOR *dcp;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	hcp = (HASH_CURSOR *)dbc->internal;
@@ -840,7 +840,7 @@ __ham_c_chgpg(dbc, old_pgno, old_index, new_pgno, new_index)
 	DB_TXN *my_txn;
 	DBC *cp;
 	HASH_CURSOR *hcp;
-	gint found, ret;
+	int found, ret;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;

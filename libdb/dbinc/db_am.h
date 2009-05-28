@@ -51,7 +51,7 @@
 }
 
 #define	REC_CLOSE {							\
-	gint __t_ret;							\
+	int __t_ret;							\
 	if (argp != NULL)						\
 		__os_free(dbenv, argp);					\
 	if (dbc != NULL &&						\
@@ -117,7 +117,7 @@
 
 typedef struct {
 	DBC *dbc;
-	gint count;
+	int count;
 } db_trunc_param;
 
 #include "dbinc/db_dispatch.h"

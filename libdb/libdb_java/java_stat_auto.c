@@ -1,6 +1,6 @@
 /* DO NOT EDIT: automatically built by dist/s_java. */
 #include "java_util.h"
-gint __jv_fill_bt_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_bt_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_bt_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, bt_magic);
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, bt_version);
@@ -24,7 +24,7 @@ gint __jv_fill_bt_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, bt_over_pgfree);
 	return (0);
 }
-gint __jv_fill_h_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_h_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_h_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, hash_magic);
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, hash_version);
@@ -44,7 +44,7 @@ gint __jv_fill_h_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, hash_dup_free);
 	return (0);
 }
-gint __jv_fill_lock_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_lock_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_lock_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_id);
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_cur_maxid);
@@ -72,7 +72,7 @@ gint __jv_fill_lock_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_regsize);
 	return (0);
 }
-gint __jv_fill_log_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_log_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_log_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_magic);
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_version);
@@ -97,7 +97,7 @@ gint __jv_fill_log_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_mincommitperflush);
 	return (0);
 }
-gint __jv_fill_mpool_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_mpool_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_mpool_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_gbytes);
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_bytes);
@@ -131,7 +131,7 @@ gint __jv_fill_mpool_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_alloc_max_pages);
 	return (0);
 }
-gint __jv_fill_qam_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_qam_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_qam_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, qs_magic);
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, qs_version);
@@ -148,7 +148,7 @@ gint __jv_fill_qam_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, qs_cur_recno);
 	return (0);
 }
-gint __jv_fill_rep_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_rep_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_rep_stat *statp) {
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_status);
 	JAVADB_STAT_LSN(jnienv, cl, jobj, statp, st_next_lsn);
@@ -187,7 +187,7 @@ gint __jv_fill_rep_stat(JNIEnv *jnienv, jclass cl,
 	JAVADB_STAT_INT(jnienv, cl, jobj, statp, st_election_votes);
 	return (0);
 }
-gint __jv_fill_txn_stat(JNIEnv *jnienv, jclass cl,
+int __jv_fill_txn_stat(JNIEnv *jnienv, jclass cl,
     jobject jobj, struct __db_txn_stat *statp) {
 	JAVADB_STAT_LSN(jnienv, cl, jobj, statp, st_last_ckp);
 	JAVADB_STAT_LONG(jnienv, cl, jobj, statp, st_time_ckp);

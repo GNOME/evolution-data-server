@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -39,16 +39,16 @@ static const gchar revid[] =
 #include "dbinc/db_page.h"
 #include "dbinc/db_am.h"
 
-int	 db_checkpoint_main __P((int, gchar *[]));
+int	 db_checkpoint_main __P((int, char *[]));
 int	 db_checkpoint_usage __P((void));
-int	 db_checkpoint_version_check __P((const gchar *));
+int	 db_checkpoint_version_check __P((const char *));
 
-gint
+int
 db_checkpoint(args)
-	gchar *args;
+	char *args;
 {
-	gint argc;
-	gchar **argv;
+	int argc;
+	char **argv;
 
 	__db_util_arg("db_checkpoint", args, &argc, &argv);
 	return (db_checkpoint_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -57,20 +57,20 @@ db_checkpoint(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-gint
+int
 db_checkpoint_main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind, __db_getopt_reset;
+	extern char *optarg;
+	extern int optind, __db_getopt_reset;
 	DB_ENV	*dbenv;
-	const gchar *progname = "db_checkpoint";
+	const char *progname = "db_checkpoint";
 	time_t now;
 	long argval;
 	u_int32_t flags, kbytes, minutes, seconds;
-	gint ch, e_close, exitval, once, ret, verbose;
-	gchar *home, *logfile, *passwd;
+	int ch, e_close, exitval, once, ret, verbose;
+	char *home, *logfile, *passwd;
 
 	if ((ret = db_checkpoint_version_check(progname)) != 0)
 		return (ret);
@@ -229,7 +229,7 @@ shutdown:	exitval = 1;
 	return (exitval == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-gint
+int
 db_checkpoint_usage()
 {
 	(void)fprintf(stderr, "%s\n\t%s\n",
@@ -238,11 +238,11 @@ db_checkpoint_usage()
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 db_checkpoint_version_check(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	gint v_major, v_minor, v_patch;
+	int v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -69,14 +69,14 @@ static db_pgno_t __ham_init_meta __P((DB *, HMETA *, db_pgno_t, DB_LSN *));
 /*
  * __ham_open --
  *
- * PUBLIC: gint __ham_open __P((DB *,
- * PUBLIC:     DB_TXN *, const gchar * name, db_pgno_t, u_int32_t));
+ * PUBLIC: int __ham_open __P((DB *,
+ * PUBLIC:     DB_TXN *, const char * name, db_pgno_t, u_int32_t));
  */
-gint
+int
 __ham_open(dbp, txn, name, base_pgno, flags)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name;
+	const char *name;
 	db_pgno_t base_pgno;
 	u_int32_t flags;
 {
@@ -85,7 +85,7 @@ __ham_open(dbp, txn, name, base_pgno, flags)
 	DB_MPOOLFILE *mpf;
 	HASH_CURSOR *hcp;
 	HASH *hashp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	COMPQUIET(name, NULL);
 	dbenv = dbp->dbenv;
@@ -155,17 +155,17 @@ err1:	if ((t_ret  = dbc->c_close(dbc)) != 0 && ret == 0)
 /*
  * __ham_metachk --
  *
- * PUBLIC: gint __ham_metachk __P((DB *, const gchar *, HMETA *));
+ * PUBLIC: int __ham_metachk __P((DB *, const char *, HMETA *));
  */
-gint
+int
 __ham_metachk(dbp, name, hashm)
 	DB *dbp;
-	const gchar *name;
+	const char *name;
 	HMETA *hashm;
 {
 	DB_ENV *dbenv;
 	u_int32_t vers;
-	gint ret;
+	int ret;
 
 	dbenv = dbp->dbenv;
 
@@ -269,7 +269,7 @@ __ham_init_meta(dbp, meta, pgno, lsnp)
 {
 	HASH *hashp;
 	db_pgno_t nbuckets;
-	gint i;
+	int i;
 	int32_t l2;
 
 	hashp = dbp->h_internal;
@@ -344,14 +344,14 @@ __ham_init_meta(dbp, meta, pgno, lsnp)
  * memory or calls mpf->get), 2) the initialization, and 3) the "put page"
  * chunk which either does a fop write or an mpf->put.
  *
- * PUBLIC: gint __ham_new_file __P((DB *, DB_TXN *, DB_FH *, const gchar *));
+ * PUBLIC: int __ham_new_file __P((DB *, DB_TXN *, DB_FH *, const char *));
  */
-gint
+int
 __ham_new_file(dbp, txn, fhp, name)
 	DB *dbp;
 	DB_TXN *txn;
 	DB_FH *fhp;
-	const gchar *name;
+	const char *name;
 {
 	DB_ENV *dbenv;
 	DB_LSN lsn;
@@ -360,9 +360,9 @@ __ham_new_file(dbp, txn, fhp, name)
 	DBT pdbt;
 	HMETA *meta;
 	PAGE *page;
-	gint ret;
+	int ret;
 	db_pgno_t lpgno;
-	gpointer buf;
+	void *buf;
 
 	dbenv = dbp->dbenv;
 	mpf = dbp->mpf;
@@ -444,9 +444,9 @@ err:	if (name != NULL)
  * __ham_new_subdb --
  *	Create the necessary pages to begin a new subdatabase.
  *
- * PUBLIC: gint __ham_new_subdb __P((DB *, DB *, DB_TXN *));
+ * PUBLIC: int __ham_new_subdb __P((DB *, DB *, DB_TXN *));
  */
-gint
+int
 __ham_new_subdb(mdbp, dbp, txn)
 	DB *mdbp, *dbp;
 	DB_TXN *txn;
@@ -459,7 +459,7 @@ __ham_new_subdb(mdbp, dbp, txn)
 	DBMETA *mmeta;
 	HMETA *meta;
 	PAGE *h;
-	gint i, ret, t_ret;
+	int i, ret, t_ret;
 	db_pgno_t lpgno, mpgno;
 
 	dbenv = mdbp->dbenv;

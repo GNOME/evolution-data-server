@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,13 +17,13 @@ static const gchar revid[] = "$Id$";
  * __os_rename --
  *	Rename a file.
  */
-gint
+int
 __os_rename(dbenv, oldname, newname, flags)
 	DB_ENV *dbenv;
-	const gchar *oldname, *newname;
+	const char *oldname, *newname;
 	u_int32_t flags;
 {
-	gint ret;
+	int ret;
 
 	ret = 0;
 	if (DB_GLOBAL(j_rename) != NULL) {

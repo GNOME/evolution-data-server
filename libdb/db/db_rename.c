@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,25 +24,25 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/lock.h"
 #include "dbinc/log.h"
 
-static gint __db_subdb_rename __P(( DB *, DB_TXN *,
-		const gchar *, const gchar *, const gchar *));
+static int __db_subdb_rename __P(( DB *, DB_TXN *,
+		const char *, const char *, const char *));
 
 /*
  * __dbenv_dbrename
  *	Rename method for DB_ENV.
  *
- * PUBLIC: gint __dbenv_dbrename __P((DB_ENV *, DB_TXN *,
- * PUBLIC:     const gchar *, const gchar *, const gchar *, u_int32_t));
+ * PUBLIC: int __dbenv_dbrename __P((DB_ENV *, DB_TXN *,
+ * PUBLIC:     const char *, const char *, const char *, u_int32_t));
  */
-gint
+int
 __dbenv_dbrename(dbenv, txn, name, subdb, newname, flags)
 	DB_ENV *dbenv;
 	DB_TXN *txn;
-	const gchar *name, *subdb, *newname;
+	const char *name, *subdb, *newname;
 	u_int32_t flags;
 {
 	DB *dbp;
-	gint ret, t_ret, txn_local;
+	int ret, t_ret, txn_local;
 
 	txn_local = 0;
 
@@ -101,17 +101,17 @@ __dbenv_dbrename(dbenv, txn, name, subdb, newname, flags)
  * __db_rename
  *	Rename method for DB.
  *
- * PUBLIC: gint __db_rename __P((DB *,
- * PUBLIC:     const gchar *, const gchar *, const gchar *, u_int32_t));
+ * PUBLIC: int __db_rename __P((DB *,
+ * PUBLIC:     const char *, const char *, const char *, u_int32_t));
  */
-gint
+int
 __db_rename(dbp, name, subdb, newname, flags)
 	DB *dbp;
-	const gchar *name, *subdb, *newname;
+	const char *name, *subdb, *newname;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbenv = dbp->dbenv;
 
@@ -157,18 +157,18 @@ err:	if ((t_ret = dbp->close(dbp, DB_NOSYNC)) != 0 && ret == 0)
  * __db_rename_i
  *	Internal rename method for DB.
  *
- * PUBLIC: gint __db_rename_i __P((DB *,
- * PUBLIC:      DB_TXN *, const gchar *, const gchar *, const gchar *));
+ * PUBLIC: int __db_rename_i __P((DB *,
+ * PUBLIC:      DB_TXN *, const char *, const char *, const char *));
  */
-gint
+int
 __db_rename_i(dbp, txn, name, subdb, newname)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name, *subdb, *newname;
+	const char *name, *subdb, *newname;
 {
 	DB_ENV *dbenv;
-	gint ret;
-	gchar *real_name;
+	int ret;
+	char *real_name;
 
 	dbenv = dbp->dbenv;
 	real_name = NULL;
@@ -235,12 +235,12 @@ static int
 __db_subdb_rename(dbp, txn, name, subdb, newname)
 	DB *dbp;
 	DB_TXN *txn;
-	const gchar *name, *subdb, *newname;
+	const char *name, *subdb, *newname;
 {
 	DB *mdbp;
 	DB_ENV *dbenv;
 	PAGE *meta;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	mdbp = NULL;
 	meta = NULL;

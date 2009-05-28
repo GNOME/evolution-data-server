@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,9 +27,9 @@ static const gchar revid[] = "$Id$";
  * __db_ditem --
  *	Remove an item from a page.
  *
- * PUBLIC:  gint __db_ditem __P((DBC *, PAGE *, u_int32_t, u_int32_t));
+ * PUBLIC:  int __db_ditem __P((DBC *, PAGE *, u_int32_t, u_int32_t));
  */
-gint
+int
 __db_ditem(dbc, pagep, indx, nbytes)
 	DBC *dbc;
 	PAGE *pagep;
@@ -38,7 +38,7 @@ __db_ditem(dbc, pagep, indx, nbytes)
 	DB *dbp;
 	DBT ldbt;
 	db_indx_t cnt, *inp, offset;
-	gint ret;
+	int ret;
 	u_int8_t *from;
 
 	dbp = dbc->dbp;
@@ -91,10 +91,10 @@ __db_ditem(dbc, pagep, indx, nbytes)
  * __db_pitem --
  *	Put an item on a page.
  *
- * PUBLIC: gint __db_pitem
+ * PUBLIC: int __db_pitem
  * PUBLIC:     __P((DBC *, PAGE *, u_int32_t, u_int32_t, DBT *, DBT *));
  */
-gint
+int
 __db_pitem(dbc, pagep, indx, nbytes, hdr, data)
 	DBC *dbc;
 	PAGE *pagep;
@@ -106,7 +106,7 @@ __db_pitem(dbc, pagep, indx, nbytes, hdr, data)
 	BKEYDATA bk;
 	DBT thdr;
 	db_indx_t *inp;
-	gint ret;
+	int ret;
 	u_int8_t *p;
 
 	dbp = dbc->dbp;
@@ -169,21 +169,21 @@ __db_pitem(dbc, pagep, indx, nbytes, hdr, data)
  * __db_relink --
  *	Relink around a deleted page.
  *
- * PUBLIC: gint __db_relink __P((DBC *, u_int32_t, PAGE *, PAGE **, int));
+ * PUBLIC: int __db_relink __P((DBC *, u_int32_t, PAGE *, PAGE **, int));
  */
-gint
+int
 __db_relink(dbc, add_rem, pagep, new_next, needlock)
 	DBC *dbc;
 	u_int32_t add_rem;
 	PAGE *pagep, **new_next;
-	gint needlock;
+	int needlock;
 {
 	DB *dbp;
 	PAGE *np, *pp;
 	DB_LOCK npl, ppl;
 	DB_LSN *nlsnp, *plsnp, ret_lsn;
 	DB_MPOOLFILE *mpf;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	np = pp = NULL;

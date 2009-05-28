@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -34,18 +34,18 @@ static const gchar revid[] =
 #include "dbinc/rep.h"
 #include "dbinc/txn.h"
 
-gint db_printlog_main __P((int, gchar *[]));
-gint db_printlog_usage __P((void));
-gint db_printlog_version_check __P((const gchar *));
-gint db_printlog_print_app_record __P((DB_ENV *, DBT *, DB_LSN *, db_recops));
-gint db_printlog_open_rep_db __P((DB_ENV *, DB **, DBC **));
+int db_printlog_main __P((int, char *[]));
+int db_printlog_usage __P((void));
+int db_printlog_version_check __P((const char *));
+int db_printlog_print_app_record __P((DB_ENV *, DBT *, DB_LSN *, db_recops));
+int db_printlog_open_rep_db __P((DB_ENV *, DB **, DBC **));
 
-gint
+int
 db_printlog(args)
-	gchar *args;
+	char *args;
 {
-	gint argc;
-	gchar **argv;
+	int argc;
+	char **argv;
 
 	__db_util_arg("db_printlog", args, &argc, &argv);
 	return (db_printlog_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -54,24 +54,24 @@ db_printlog(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-gint
+int
 db_printlog_main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind, __db_getopt_reset;
-	const gchar *progname = "db_printlog";
+	extern char *optarg;
+	extern int optind, __db_getopt_reset;
+	const char *progname = "db_printlog";
 	DB *dbp;
 	DBC *dbc;
 	DB_ENV	*dbenv;
 	DB_LOGC *logc;
-	gint (**dtab) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+	int (**dtab) __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 	size_t dtabsize;
 	DBT data, keydbt;
 	DB_LSN key;
-	gint ch, e_close, exitval, nflag, rflag, ret, repflag;
-	gchar *home, *passwd;
+	int ch, e_close, exitval, nflag, rflag, ret, repflag;
+	char *home, *passwd;
 
 	if ((ret = db_printlog_version_check(progname)) != 0)
 		return (ret);
@@ -274,7 +274,7 @@ shutdown:	exitval = 1;
 	return (exitval == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-gint
+int
 db_printlog_usage()
 {
 	fprintf(stderr, "%s\n",
@@ -282,11 +282,11 @@ db_printlog_usage()
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 db_printlog_version_check(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	gint v_major, v_minor, v_patch;
+	int v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);
@@ -302,14 +302,14 @@ db_printlog_version_check(progname)
 }
 
 /* Print an unknown, application-specific log record as best we can. */
-gint
+int
 db_printlog_print_app_record(dbenv, dbt, lsnp, op)
 	DB_ENV *dbenv;
 	DBT *dbt;
 	DB_LSN *lsnp;
 	db_recops op;
 {
-	gint ch;
+	int ch;
 	u_int32_t i, rectype;
 
 	DB_ASSERT(op == DB_TXN_PRINT);
@@ -338,13 +338,13 @@ db_printlog_print_app_record(dbenv, dbt, lsnp, op)
 	return (0);
 }
 
-gint
+int
 db_printlog_open_rep_db(dbenv, dbpp, dbcp)
 	DB_ENV *dbenv;
 	DB **dbpp;
 	DBC **dbcp;
 {
-	gint ret;
+	int ret;
 
 	DB *dbp;
 	*dbpp = NULL;

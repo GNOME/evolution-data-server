@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -17,7 +17,7 @@ static const gchar revid[] = "$Id$";
  * __os_fs_notzero --
  *	Return 1 if allocated filesystem blocks are not zeroed.
  */
-gint
+int
 __os_fs_notzero()
 {
 	/*

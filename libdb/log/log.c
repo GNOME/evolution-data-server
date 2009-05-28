@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -25,24 +25,24 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/txn.h"
 
-static gint __log_init __P((DB_ENV *, DB_LOG *));
-static gint __log_recover __P((DB_LOG *));
+static int __log_init __P((DB_ENV *, DB_LOG *));
+static int __log_recover __P((DB_LOG *));
 static size_t __log_region_size __P((DB_ENV *));
-static gint __log_zero __P((DB_ENV *, DB_LSN *, DB_LSN *));
+static int __log_zero __P((DB_ENV *, DB_LSN *, DB_LSN *));
 
 /*
  * __log_open --
  *	Internal version of log_open: only called from DB_ENV->open.
  *
- * PUBLIC: gint __log_open __P((DB_ENV *));
+ * PUBLIC: int __log_open __P((DB_ENV *));
  */
-gint
+int
 __log_open(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_LOG *dblp;
 	LOG *lp;
-	gint ret;
+	int ret;
 
 	/* Create/initialize the DB_LOG structure. */
 	if ((ret = __os_calloc(dbenv, 1, sizeof(DB_LOG), &dblp)) != 0)
@@ -145,8 +145,8 @@ __log_init(dbenv, dblp)
 {
 	DB_MUTEX *flush_mutexp;
 	LOG *region;
-	gint ret;
-	gpointer p;
+	int ret;
+	void *p;
 #ifdef  HAVE_MUTEX_SYSTEM_RESOURCES
 	u_int8_t *addr;
 #endif
@@ -250,7 +250,7 @@ __log_recover(dblp)
 	DB_LSN lsn;
 	LOG *lp;
 	u_int32_t cnt, rectype;
-	gint ret;
+	int ret;
 	logfile_validity status;
 
 	logc = NULL;
@@ -353,21 +353,21 @@ err:	if (logc != NULL)
  * the number of the first readable log file, else it will contain the number
  * of the last log file (which may be too old to read).
  *
- * PUBLIC: gint __log_find __P((DB_LOG *, int, u_int32_t *, logfile_validity *));
+ * PUBLIC: int __log_find __P((DB_LOG *, int, u_int32_t *, logfile_validity *));
  */
-gint
+int
 __log_find(dblp, find_first, valp, statusp)
 	DB_LOG *dblp;
-	gint find_first;
+	int find_first;
 	u_int32_t *valp;
 	logfile_validity *statusp;
 {
 	DB_ENV *dbenv;
 	logfile_validity logval_status, status;
 	u_int32_t clv, logval;
-	gint cnt, fcnt, ret;
-	const gchar *dir;
-	gchar *c, **names, *p, *q, savech;
+	int cnt, fcnt, ret;
+	const char *dir;
+	char *c, **names, *p, *q, savech;
 
 	dbenv = dblp->dbenv;
 	logval_status = status = DB_LV_NONEXISTENT;
@@ -510,13 +510,13 @@ err:	__os_dirfree(dbenv, names, fcnt);
  *	log file if it is not unexpectedly flawed (that is, if it's perfectly
  *	normal, if it's zero-length, or if it's an old version).
  *
- * PUBLIC: gint __log_valid __P((DB_LOG *, u_int32_t, int, logfile_validity *));
+ * PUBLIC: int __log_valid __P((DB_LOG *, u_int32_t, int, logfile_validity *));
  */
-gint
+int
 __log_valid(dblp, number, set_persist, statusp)
 	DB_LOG *dblp;
 	u_int32_t number;
-	gint set_persist;
+	int set_persist;
 	logfile_validity *statusp;
 {
 	DB_CIPHER *db_cipher;
@@ -527,9 +527,9 @@ __log_valid(dblp, number, set_persist, statusp)
 	LOGP *persist;
 	logfile_validity status;
 	size_t hdrsize, nw, recsize;
-	gint is_hmac, need_free, ret;
+	int is_hmac, need_free, ret;
 	u_int8_t *tmp;
-	gchar *fname;
+	char *fname;
 
 	dbenv = dblp->dbenv;
 	db_cipher = dbenv->crypto_handle;
@@ -697,14 +697,14 @@ err:	__os_free(dbenv, fname);
  *	Clean up after the log system on a close or failed open.  Called only
  * from __dbenv_refresh.  (Formerly called __log_close.)
  *
- * PUBLIC: gint __log_dbenv_refresh __P((DB_ENV *));
+ * PUBLIC: int __log_dbenv_refresh __P((DB_ENV *));
  */
-gint
+int
 __log_dbenv_refresh(dbenv)
 	DB_ENV *dbenv;
 {
 	DB_LOG *dblp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dblp = dbenv->lg_handle;
 
@@ -738,9 +738,9 @@ __log_dbenv_refresh(dbenv)
  * __log_stat --
  *	Return log statistics.
  *
- * PUBLIC: gint __log_stat __P((DB_ENV *, DB_LOG_STAT **, u_int32_t));
+ * PUBLIC: int __log_stat __P((DB_ENV *, DB_LOG_STAT **, u_int32_t));
  */
-gint
+int
 __log_stat(dbenv, statp, flags)
 	DB_ENV *dbenv;
 	DB_LOG_STAT **statp;
@@ -749,7 +749,7 @@ __log_stat(dbenv, statp, flags)
 	DB_LOG *dblp;
 	DB_LOG_STAT *stats;
 	LOG *region;
-	gint ret;
+	int ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -867,9 +867,9 @@ __log_region_destroy(dbenv, infop)
  * record to be written). This is used in replication to discard records
  * in the log file that do not agree with the master.
  *
- * PUBLIC: gint __log_vtruncate __P((DB_ENV *, DB_LSN *, DB_LSN *));
+ * PUBLIC: int __log_vtruncate __P((DB_ENV *, DB_LSN *, DB_LSN *));
  */
-gint
+int
 __log_vtruncate(dbenv, lsn, ckplsn)
 	DB_ENV *dbenv;
 	DB_LSN *lsn, *ckplsn;
@@ -881,8 +881,8 @@ __log_vtruncate(dbenv, lsn, ckplsn)
 	DB_LSN end_lsn;
 	LOG *lp;
 	u_int32_t bytes, c_len;
-	gint fn, ret, t_ret;
-	gchar *fname;
+	int fn, ret, t_ret;
+	char *fname;
 
 	/* Need to find out the length of this soon-to-be-last record. */
 	if ((ret = dbenv->log_cursor(dbenv, &logc, 0)) != 0)
@@ -977,19 +977,19 @@ err:	R_UNLOCK(dbenv, &dblp->reginfo);
  * lower-numbered than the current logs, the we return *outdatedp non
  * zero, else we return it 0.
  *
- * PUBLIC: gint __log_is_outdated __P((DB_ENV *dbenv,
- * PUBLIC:     u_int32_t fnum, gint *outdatedp));
+ * PUBLIC: int __log_is_outdated __P((DB_ENV *dbenv,
+ * PUBLIC:     u_int32_t fnum, int *outdatedp));
  */
-gint
+int
 __log_is_outdated(dbenv, fnum, outdatedp)
 	DB_ENV *dbenv;
 	u_int32_t fnum;
-	gint *outdatedp;
+	int *outdatedp;
 {
 	DB_LOG *dblp;
 	LOG *lp;
-	gchar *name;
-	gint ret;
+	char *name;
+	int ret;
 	u_int32_t cfile;
 
 	dblp = dbenv->lg_handle;
@@ -1027,10 +1027,10 @@ __log_zero(dbenv, from_lsn, to_lsn)
 	DB_ENV *dbenv;
 	DB_LSN *from_lsn, *to_lsn;
 {
-	gchar *lname;
+	char *lname;
 	DB_LOG *dblp;
 	LOG *lp;
-	gint ret;
+	int ret;
 	size_t nbytes, len, nw;
 	u_int8_t buf[4096];
 	u_int32_t mbytes, bytes;

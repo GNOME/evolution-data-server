@@ -15,7 +15,7 @@
 #include <time.h>
 
 #ifdef _WIN32
-extern gint getopt(int, gchar * const *, const gchar *);
+extern int getopt(int, char * const *, const char *);
 #else
 #include <unistd.h>
 #endif
@@ -24,18 +24,18 @@ extern gint getopt(int, gchar * const *, const gchar *);
 
 typedef enum { ACCOUNT, BRANCH, TELLER } FTYPE;
 
-DB_ENV	 *db_init __P((const gchar *, const gchar *, int, int, u_int32_t));
+DB_ENV	 *db_init __P((const char *, const char *, int, int, u_int32_t));
 int	  hpopulate __P((DB *, int, int, int, int));
-int	  populate __P((DB *, u_int32_t, u_int32_t, int, const gchar *));
+int	  populate __P((DB *, u_int32_t, u_int32_t, int, const char *));
 u_int32_t random_id __P((FTYPE, int, int, int));
 u_int32_t random_int __P((u_int32_t, u_int32_t));
 int	  tp_populate __P((DB_ENV *, int, int, int, int, int));
 int	  tp_run __P((DB_ENV *, int, int, int, int, int));
 int	  tp_txn __P((DB_ENV *, DB *, DB *, DB *, DB *, int, int, int, int));
 
-int	  invarg __P((const gchar *, int, const gchar *));
-int	  main __P((int, gchar *[]));
-int	  usage __P((const gchar *));
+int	  invarg __P((const char *, int, const char *));
+int	  main __P((int, char *[]));
+int	  usage __P((const char *));
 
 /*
  * This program implements a basic TPC/B driver program.  To create the
@@ -102,17 +102,17 @@ typedef struct _histrec {
 	u_int8_t	pad[RECLEN - 4 * sizeof(u_int32_t)];
 } histrec;
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
+	extern char *optarg;
+	extern int optind;
 	DB_ENV *dbenv;
-	gint accounts, branches, seed, tellers, history;
-	gint ch, iflag, mpool, ntxns, ret, txn_no_sync, verbose;
-	const gchar *home, *progname;
+	int accounts, branches, seed, tellers, history;
+	int ch, iflag, mpool, ntxns, ret, txn_no_sync, verbose;
+	const char *home, *progname;
 
 	home = "TESTDIR";
 	progname = "ex_tpcb";
@@ -206,22 +206,22 @@ main(argc, argv)
 	return (EXIT_SUCCESS);
 }
 
-gint
+int
 invarg(progname, arg, str)
-	const gchar *progname;
-	gint arg;
-	const gchar *str;
+	const char *progname;
+	int arg;
+	const char *str;
 {
 	(void)fprintf(stderr,
 	    "%s: invalid argument for -%c: %s\n", progname, arg, str);
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 usage(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	const gchar *a1, *a2;
+	const char *a1, *a2;
 
 	a1 = "[-fv] [-a accounts] [-b branches]\n";
 	a2 = "\t[-c cache_size] [-h home] [-S seed] [-s history] [-t tellers]";
@@ -237,13 +237,13 @@ usage(progname)
  */
 DB_ENV *
 db_init(home, prefix, cachesize, initializing, flags)
-	const gchar *home, *prefix;
-	gint cachesize, initializing;
+	const char *home, *prefix;
+	int cachesize, initializing;
 	u_int32_t flags;
 {
 	DB_ENV *dbenv;
 	u_int32_t local_flags;
-	gint ret;
+	int ret;
 
 	if ((ret = db_env_create(&dbenv, 0)) != 0) {
 		dbenv->err(dbenv, ret, "db_env_create");
@@ -272,16 +272,16 @@ db_init(home, prefix, cachesize, initializing, flags)
  * Initialize the database to the specified number of accounts, branches,
  * history records, and tellers.
  */
-gint
+int
 tp_populate(env, accounts, branches, history, tellers, verbose)
 	DB_ENV *env;
-	gint accounts, branches, history, tellers, verbose;
+	int accounts, branches, history, tellers, verbose;
 {
 	DB *dbp;
 	u_int32_t balance, idnum, oflags;
 	u_int32_t end_anum, end_bnum, end_tnum;
 	u_int32_t start_anum, start_bnum, start_tnum;
-	gint ret;
+	int ret;
 
 	idnum = BEGID;
 	balance = 500000;
@@ -388,16 +388,16 @@ tp_populate(env, accounts, branches, history, tellers, verbose)
 	return (0);
 }
 
-gint
+int
 populate(dbp, start_id, balance, nrecs, msg)
 	DB *dbp;
 	u_int32_t start_id, balance;
-	gint nrecs;
-	const gchar *msg;
+	int nrecs;
+	const char *msg;
 {
 	DBT kdbt, ddbt;
 	defrec drec;
-	gint i, ret;
+	int i, ret;
 
 	kdbt.flags = 0;
 	kdbt.data = &drec.id;
@@ -420,15 +420,15 @@ populate(dbp, start_id, balance, nrecs, msg)
 	return (0);
 }
 
-gint
+int
 hpopulate(dbp, history, accounts, branches, tellers)
 	DB *dbp;
-	gint history, accounts, branches, tellers;
+	int history, accounts, branches, tellers;
 {
 	DBT kdbt, ddbt;
 	histrec hrec;
 	db_recno_t key;
-	gint i, ret;
+	int i, ret;
 
 	memset(&kdbt, 0, sizeof(kdbt));
 	memset(&ddbt, 0, sizeof(ddbt));
@@ -456,7 +456,7 @@ random_int(lo, hi)
 	u_int32_t lo, hi;
 {
 	u_int32_t ret;
-	gint t;
+	int t;
 
 #ifndef RAND_MAX
 #define	RAND_MAX	0x7fffffff
@@ -471,7 +471,7 @@ random_int(lo, hi)
 u_int32_t
 random_id(type, accounts, branches, tellers)
 	FTYPE type;
-	gint accounts, branches, tellers;
+	int accounts, branches, tellers;
 {
 	u_int32_t min, max, num;
 
@@ -493,14 +493,14 @@ random_id(type, accounts, branches, tellers)
 	return (random_int(min, max));
 }
 
-gint
+int
 tp_run(dbenv, n, accounts, branches, tellers, verbose)
 	DB_ENV *dbenv;
-	gint n, accounts, branches, tellers, verbose;
+	int n, accounts, branches, tellers, verbose;
 {
 	DB *adb, *bdb, *hdb, *tdb;
 	double gtps, itps;
-	gint failed, ifailed, ret, txns;
+	int failed, ifailed, ret, txns;
 	time_t starttime, curtime, lasttime;
 
 	adb = bdb = hdb = tdb = NULL;
@@ -584,11 +584,11 @@ err:	if (adb != NULL)
 /*
  * XXX Figure out the appropriate way to pick out IDs.
  */
-gint
+int
 tp_txn(dbenv, adb, bdb, tdb, hdb, accounts, branches, tellers, verbose)
 	DB_ENV *dbenv;
 	DB *adb, *bdb, *tdb, *hdb;
-	gint accounts, branches, tellers, verbose;
+	int accounts, branches, tellers, verbose;
 {
 	DBC *acurs, *bcurs, *tcurs;
 	DBT d_dbt, d_histdbt, k_dbt, k_histdbt;
@@ -596,7 +596,7 @@ tp_txn(dbenv, adb, bdb, tdb, hdb, accounts, branches, tellers, verbose)
 	db_recno_t key;
 	defrec rec;
 	histrec hrec;
-	gint account, branch, teller, ret;
+	int account, branch, teller, ret;
 
 	t = NULL;
 	acurs = bcurs = tcurs = NULL;

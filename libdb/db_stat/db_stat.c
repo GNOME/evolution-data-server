@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -44,41 +44,41 @@ static const gchar revid[] =
 typedef enum { T_NOTSET,
     T_DB, T_ENV, T_LOCK, T_LOG, T_MPOOL, T_REP, T_TXN } test_t;
 
-int	 argcheck __P((gchar *, const gchar *));
+int	 argcheck __P((char *, const char *));
 int	 btree_stats __P((DB_ENV *, DB *, DB_BTREE_STAT *, int));
-int	 db_init __P((DB_ENV *, gchar *, test_t, u_int32_t, gint *));
-void	 dl __P((const gchar *, u_long));
-void	 dl_bytes __P((const gchar *, u_long, u_long, u_long));
+int	 db_init __P((DB_ENV *, char *, test_t, u_int32_t, int *));
+void	 dl __P((const char *, u_long));
+void	 dl_bytes __P((const char *, u_long, u_long, u_long));
 int	 env_stats __P((DB_ENV *, u_int32_t));
 int	 hash_stats __P((DB_ENV *, DB *, int));
-int	 lock_stats __P((DB_ENV *, gchar *, u_int32_t));
+int	 lock_stats __P((DB_ENV *, char *, u_int32_t));
 int	 log_stats __P((DB_ENV *, u_int32_t));
-int	 main __P((int, gchar *[]));
-int	 mpool_stats __P((DB_ENV *, gchar *, u_int32_t));
+int	 main __P((int, char *[]));
+int	 mpool_stats __P((DB_ENV *, char *, u_int32_t));
 void	 prflags __P((u_int32_t, const FN *));
 int	 queue_stats __P((DB_ENV *, DB *, int));
 int	 rep_stats __P((DB_ENV *, u_int32_t));
-int	 txn_compare __P((gconstpointer , gconstpointer ));
+int	 txn_compare __P((const void *, const void *));
 int	 txn_stats __P((DB_ENV *, u_int32_t));
 int	 usage __P((void));
-int	 version_check __P((const gchar *));
+int	 version_check __P((const char *));
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
-	const gchar *progname = "db_stat";
+	extern char *optarg;
+	extern int optind;
+	const char *progname = "db_stat";
 	DB_ENV	*dbenv;
 	DB_BTREE_STAT *sp;
 	DB *alt_dbp, *dbp;
 	test_t ttype;
 	u_int32_t cache;
-	gint ch, checked, d_close, e_close, exitval, fast, flags;
-	gint nflag, private, resize, ret;
-	gchar *db, *home, *internal, *passwd, *subdb;
+	int ch, checked, d_close, e_close, exitval, fast, flags;
+	int nflag, private, resize, ret;
+	char *db, *home, *internal, *passwd, *subdb;
 
 	if ((ret = version_check(progname)) != 0)
 		return (ret);
@@ -374,15 +374,15 @@ shutdown:	exitval = 1;
  * env_stats --
  *	Display environment statistics.
  */
-gint
+int
 env_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	REGENV renv;
 	REGION *rp, regs[1024];
-	gint n, ret;
-	const gchar *lable;
+	int n, ret;
+	const char *lable;
 
 	n = sizeof(regs) / sizeof(regs[0]);
 	if ((ret = __db_e_stat(dbenv, &renv, regs, &n, flags)) != 0)  {
@@ -446,12 +446,12 @@ env_stats(dbenv, flags)
  * btree_stats --
  *	Display btree/recno statistics.
  */
-gint
+int
 btree_stats(dbenv, dbp, msp, fast)
 	DB_ENV *dbenv;
 	DB *dbp;
 	DB_BTREE_STAT *msp;
-	gint fast;
+	int fast;
 {
 	static const FN fn[] = {
 		{ BTM_DUP,	"duplicates" },
@@ -463,7 +463,7 @@ btree_stats(dbenv, dbp, msp, fast)
 		{ 0,		NULL }
 	};
 	DB_BTREE_STAT *sp;
-	gint ret;
+	int ret;
 
 	COMPQUIET(dbenv, NULL);
 
@@ -534,11 +534,11 @@ btree_stats(dbenv, dbp, msp, fast)
  * hash_stats --
  *	Display hash statistics.
  */
-gint
+int
 hash_stats(dbenv, dbp, fast)
 	DB_ENV *dbenv;
 	DB *dbp;
-	gint fast;
+	int fast;
 {
 	static const FN fn[] = {
 		{ DB_HASH_DUP,	"duplicates" },
@@ -546,7 +546,7 @@ hash_stats(dbenv, dbp, fast)
 		{ 0,		NULL }
 	};
 	DB_HASH_STAT *sp;
-	gint ret;
+	int ret;
 
 	COMPQUIET(dbenv, NULL);
 
@@ -597,14 +597,14 @@ hash_stats(dbenv, dbp, fast)
  * queue_stats --
  *	Display queue statistics.
  */
-gint
+int
 queue_stats(dbenv, dbp, fast)
 	DB_ENV *dbenv;
 	DB *dbp;
-	gint fast;
+	int fast;
 {
 	DB_QUEUE_STAT *sp;
-	gint ret;
+	int ret;
 
 	COMPQUIET(dbenv, NULL);
 
@@ -642,14 +642,14 @@ queue_stats(dbenv, dbp, fast)
  * lock_stats --
  *	Display lock statistics.
  */
-gint
+int
 lock_stats(dbenv, internal, flags)
 	DB_ENV *dbenv;
-	gchar *internal;
+	char *internal;
 	u_int32_t flags;
 {
 	DB_LOCK_STAT *sp;
-	gint ret;
+	int ret;
 
 	if (internal != NULL) {
 		if ((ret =
@@ -713,13 +713,13 @@ lock_stats(dbenv, internal, flags)
  * log_stats --
  *	Display log statistics.
  */
-gint
+int
 log_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB_LOG_STAT *sp;
-	gint ret;
+	int ret;
 
 	if ((ret = dbenv->log_stat(dbenv, &sp, flags)) != 0) {
 		dbenv->err(dbenv, ret, NULL);
@@ -772,15 +772,15 @@ log_stats(dbenv, flags)
  * mpool_stats --
  *	Display mpool statistics.
  */
-gint
+int
 mpool_stats(dbenv, internal, flags)
 	DB_ENV *dbenv;
-	gchar *internal;
+	char *internal;
 	u_int32_t flags;
 {
 	DB_MPOOL_FSTAT **fsp;
 	DB_MPOOL_STAT *gsp;
-	gint ret;
+	int ret;
 
 	if (internal != NULL) {
 		if ((ret =
@@ -887,14 +887,14 @@ mpool_stats(dbenv, internal, flags)
  * rep_stats --
  *	Display replication statistics.
  */
-gint
+int
 rep_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB_REP_STAT *sp;
-	gint is_client, ret;
-	const gchar *p;
+	int is_client, ret;
+	const char *p;
 
 	if ((ret = dbenv->rep_stat(dbenv, &sp, flags)) != 0) {
 		dbenv->err(dbenv, ret, NULL);
@@ -1002,15 +1002,15 @@ rep_stats(dbenv, flags)
  * txn_stats --
  *	Display transaction statistics.
  */
-gint
+int
 txn_stats(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
 {
 	DB_TXN_STAT *sp;
 	u_int32_t i;
-	gint ret;
-	const gchar *p;
+	int ret;
+	const char *p;
 
 	if ((ret = dbenv->txn_stat(dbenv, &sp, flags)) != 0) {
 		dbenv->err(dbenv, ret, NULL);
@@ -1063,9 +1063,9 @@ txn_stats(dbenv, flags)
 	return (0);
 }
 
-gint
+int
 txn_compare(a1, b1)
-	gconstpointer a1, *b1;
+	const void *a1, *b1;
 {
 	const DB_TXN_ACTIVE *a, *b;
 
@@ -1085,7 +1085,7 @@ txn_compare(a1, b1)
  */
 void
 dl(msg, value)
-	const gchar *msg;
+	const char *msg;
 	u_long value;
 {
 	/*
@@ -1104,10 +1104,10 @@ dl(msg, value)
  */
 void
 dl_bytes(msg, gbytes, mbytes, bytes)
-	const gchar *msg;
+	const char *msg;
 	u_long gbytes, mbytes, bytes;
 {
-	const gchar *sep;
+	const char *sep;
 
 	/* Normalize the values. */
 	while (bytes >= MEGABYTE) {
@@ -1148,7 +1148,7 @@ prflags(flags, fnp)
 	u_int32_t flags;
 	const FN *fnp;
 {
-	const gchar *sep;
+	const char *sep;
 
 	sep = "\t";
 	printf("Flags:");
@@ -1164,16 +1164,16 @@ prflags(flags, fnp)
  * db_init --
  *	Initialize the environment.
  */
-gint
+int
 db_init(dbenv, home, ttype, cache, is_private)
 	DB_ENV *dbenv;
-	gchar *home;
+	char *home;
 	test_t ttype;
 	u_int32_t cache;
-	gint *is_private;
+	int *is_private;
 {
 	u_int32_t oflags;
-	gint ret;
+	int ret;
 
 	/*
 	 * If our environment open fails, and we're trying to look at a
@@ -1227,10 +1227,10 @@ db_init(dbenv, home, ttype, cache, is_private)
  * argcheck --
  *	Return if argument flags are okay.
  */
-gint
+int
 argcheck(arg, ok_args)
-	gchar *arg;
-	const gchar *ok_args;
+	char *arg;
+	const char *ok_args;
 {
 	for (; *arg != '\0'; ++arg)
 		if (strchr(ok_args, *arg) == NULL)
@@ -1238,7 +1238,7 @@ argcheck(arg, ok_args)
 	return (1);
 }
 
-gint
+int
 usage()
 {
 	fprintf(stderr, "%s\n\t%s\n",
@@ -1247,11 +1247,11 @@ usage()
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 version_check(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	gint v_major, v_minor, v_patch;
+	int v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

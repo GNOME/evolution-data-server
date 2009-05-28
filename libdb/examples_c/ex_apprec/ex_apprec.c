@@ -22,25 +22,25 @@
 #include "ex_apprec.h"
 
 int	apprec_dispatch __P((DB_ENV *, DBT *, DB_LSN *, db_recops));
-int	open_env __P((const gchar *, FILE *, const gchar *, DB_ENV **));
-int	verify_absence __P((DB_ENV *, const gchar *));
-int	verify_presence __P((DB_ENV *, const gchar *));
+int	open_env __P((const char *, FILE *, const char *, DB_ENV **));
+int	verify_absence __P((DB_ENV *, const char *));
+int	verify_presence __P((DB_ENV *, const char *));
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
+	extern char *optarg;
+	extern int optind;
 	DB_ENV *dbenv;
 	DB_LSN lsn;
 	DB_TXN *txn;
 	DBT dirnamedbt;
-	gint ret;
-	const gchar *home;
-	gchar ch, dirname[256];
-	const gchar *progname = "ex_apprec";		/* Program name. */
+	int ret;
+	const char *home;
+	char ch, dirname[256];
+	const char *progname = "ex_apprec";		/* Program name. */
 
 	/* Default home. */
 	home = "TESTDIR";
@@ -167,14 +167,14 @@ main(argc, argv)
 	return (EXIT_SUCCESS);
 }
 
-gint
+int
 open_env(home, errfp, progname, dbenvp)
-	const gchar *home, *progname;
+	const char *home, *progname;
 	FILE *errfp;
 	DB_ENV **dbenvp;
 {
 	DB_ENV *dbenv;
-	gint ret;
+	int ret;
 
 	/*
 	 * Create an environment object and initialize it for error
@@ -213,7 +213,7 @@ open_env(home, errfp, progname, dbenvp)
  * Sample application dispatch function to handle user-specified log record
  * types.
  */
-gint
+int
 apprec_dispatch(dbenv, dbt, lsn, op)
 	DB_ENV *dbenv;
 	DBT *dbt;
@@ -238,10 +238,10 @@ apprec_dispatch(dbenv, dbt, lsn, op)
 	}
 }
 
-gint
+int
 verify_absence(dbenv, dirname)
 	DB_ENV *dbenv;
-	const gchar *dirname;
+	const char *dirname;
 {
 
 	if (access(dirname, F_OK) == 0) {
@@ -252,10 +252,10 @@ verify_absence(dbenv, dirname)
 	return (0);
 }
 
-gint
+int
 verify_presence(dbenv, dirname)
 	DB_ENV *dbenv;
-	const gchar *dirname;
+	const char *dirname;
 {
 
 	if (access(dirname, F_OK) != 0) {

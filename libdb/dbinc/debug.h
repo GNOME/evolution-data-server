@@ -148,7 +148,7 @@ do {									\
 
 #define	DB_ENV_TEST_RECOVERY(env, val, ret, name)			\
 do {									\
-	gint __ret;							\
+	int __ret;							\
 	PANIC_CHECK((env));						\
 	if ((env)->test_copy == (val)) {				\
 		/* COPY the FILE */					\
@@ -165,7 +165,7 @@ do {									\
 
 #define	DB_TEST_RECOVERY(dbp, val, ret, name)				\
 do {									\
-	gint __ret;							\
+	int __ret;							\
 	PANIC_CHECK((dbp)->dbenv);					\
 	if ((dbp)->dbenv->test_copy == (val)) {				\
 		/* Copy the file. */					\

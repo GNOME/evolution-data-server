@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include "db_int.h"
@@ -18,18 +18,18 @@ static const gchar revid[] = "$Id$";
  * __os_abspath --
  *	Return if a path is an absolute path.
  */
-gint
+int
 __os_abspath(path)
-	const gchar *path;
+	const char *path;
 {
 	DEV_HDR *dummy;
-	gchar *ptail;
+	char *ptail;
 
 	/*
 	 * VxWorks devices can be rooted at any name at all.
 	 * Use iosDevFind() to see if name matches any of our devices.
 	 */
-	if ((dummy = iosDevFind((gchar *)path, &ptail)) == NULL)
+	if ((dummy = iosDevFind((char *)path, &ptail)) == NULL)
 		return (0);
 	/*
 	 * If the routine used a device, then ptail points to the

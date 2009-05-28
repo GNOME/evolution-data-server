@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,19 +27,19 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/rep.h"
 #include "dbinc/txn.h"
 
-static gint  __db_des_destroy __P((DB_ENV *, REGION *));
-static gint  __db_des_get __P((DB_ENV *, REGINFO *, REGINFO *, REGION **));
-static gint  __db_e_remfile __P((DB_ENV *));
-static gint  __db_faultmem __P((DB_ENV *, gpointer , size_t, int));
+static int  __db_des_destroy __P((DB_ENV *, REGION *));
+static int  __db_des_get __P((DB_ENV *, REGINFO *, REGINFO *, REGION **));
+static int  __db_e_remfile __P((DB_ENV *));
+static int  __db_faultmem __P((DB_ENV *, void *, size_t, int));
 static void __db_region_destroy __P((DB_ENV *, REGINFO *));
 
 /*
  * __db_e_attach
  *	Join/create the environment
  *
- * PUBLIC: gint __db_e_attach __P((DB_ENV *, u_int32_t *));
+ * PUBLIC: int __db_e_attach __P((DB_ENV *, u_int32_t *));
  */
-gint
+int
 __db_e_attach(dbenv, init_flagsp)
 	DB_ENV *dbenv;
 	u_int32_t *init_flagsp;
@@ -51,8 +51,8 @@ __db_e_attach(dbenv, init_flagsp)
 	size_t size;
 	size_t nrw;
 	u_int32_t mbytes, bytes;
-	gint retry_cnt, ret, segid;
-	gchar buf[sizeof(DB_REGION_FMT) + 20];
+	int retry_cnt, ret, segid;
+	char buf[sizeof(DB_REGION_FMT) + 20];
 
 #if !defined(HAVE_MUTEX_THREADS)
 	/*
@@ -540,12 +540,12 @@ retry:	/* Close any open file handle. */
  * __db_e_detach --
  *	Detach from the environment.
  *
- * PUBLIC: gint __db_e_detach __P((DB_ENV *, int));
+ * PUBLIC: int __db_e_detach __P((DB_ENV *, int));
  */
-gint
+int
 __db_e_detach(dbenv, destroy)
 	DB_ENV *dbenv;
-	gint destroy;
+	int destroy;
 {
 	REGENV *renv;
 	REGINFO *infop;
@@ -613,9 +613,9 @@ __db_e_detach(dbenv, destroy)
  * __db_e_remove --
  *	Discard an environment if it's not in use.
  *
- * PUBLIC: gint __db_e_remove __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int __db_e_remove __P((DB_ENV *, u_int32_t));
  */
-gint
+int
 __db_e_remove(dbenv, flags)
 	DB_ENV *dbenv;
 	u_int32_t flags;
@@ -624,7 +624,7 @@ __db_e_remove(dbenv, flags)
 	REGINFO *infop, reginfo;
 	REGION *rp;
 	u_int32_t db_env_reset;
-	gint force, ret;
+	int force, ret;
 
 	force = LF_ISSET(DB_FORCE) ? 1 : 0;
 	/*
@@ -761,17 +761,17 @@ static int
 __db_e_remfile(dbenv)
 	DB_ENV *dbenv;
 {
-	static gchar *old_region_names[] = {
+	static char *old_region_names[] = {
 		"__db_lock.share",
 		"__db_log.share",
 		"__db_mpool.share",
 		"__db_txn.share",
 		NULL
 	};
-	gint cnt, fcnt, lastrm, ret;
+	int cnt, fcnt, lastrm, ret;
 	u_int8_t saved_byte;
-	const gchar *dir;
-	gchar *p, **names, *path, buf[sizeof(DB_REGION_FMT) + 20];
+	const char *dir;
+	char *p, **names, *path, buf[sizeof(DB_REGION_FMT) + 20];
 
 	/* Get the full path of a file in the environment. */
 	(void)snprintf(buf, sizeof(buf), "%s", DB_REGION_ENV);
@@ -844,7 +844,7 @@ __db_e_remfile(dbenv)
 	 * Backward compatibility -- remove region files from releases
 	 * before 2.8.XX.
 	 */
-	for (names = (gchar **)old_region_names; *names != NULL; ++names)
+	for (names = (char **)old_region_names; *names != NULL; ++names)
 		if (__db_appname(dbenv,
 		    DB_APP_NONE, *names, 0, NULL, &path) == 0) {
 			(void)__os_unlink(dbenv, path);
@@ -858,21 +858,21 @@ __db_e_remfile(dbenv)
  * __db_e_stat
  *	Statistics for the environment.
  *
- * PUBLIC: gint __db_e_stat __P((DB_ENV *,
- * PUBLIC:       REGENV *, REGION *, gint *, u_int32_t));
+ * PUBLIC: int __db_e_stat __P((DB_ENV *,
+ * PUBLIC:       REGENV *, REGION *, int *, u_int32_t));
  */
-gint
+int
 __db_e_stat(dbenv, arg_renv, arg_regions, arg_regions_cnt, flags)
 	DB_ENV *dbenv;
 	REGENV *arg_renv;
 	REGION *arg_regions;
-	gint *arg_regions_cnt;
+	int *arg_regions_cnt;
 	u_int32_t flags;
 {
 	REGENV *renv;
 	REGINFO *infop;
 	REGION *rp;
-	gint n, ret;
+	int n, ret;
 
 	infop = dbenv->reginfo;
 	renv = infop->primary;
@@ -913,9 +913,9 @@ __db_e_stat(dbenv, arg_renv, arg_regions, arg_regions_cnt, flags)
  * __db_r_attach
  *	Join/create a region.
  *
- * PUBLIC: gint __db_r_attach __P((DB_ENV *, REGINFO *, size_t));
+ * PUBLIC: int __db_r_attach __P((DB_ENV *, REGINFO *, size_t));
  */
-gint
+int
 __db_r_attach(dbenv, infop, size)
 	DB_ENV *dbenv;
 	REGINFO *infop;
@@ -923,8 +923,8 @@ __db_r_attach(dbenv, infop, size)
 {
 	REGENV *renv;
 	REGION *rp;
-	gint ret;
-	gchar buf[sizeof(DB_REGION_FMT) + 20];
+	int ret;
+	char buf[sizeof(DB_REGION_FMT) + 20];
 
 	renv = ((REGINFO *)dbenv->reginfo)->primary;
 
@@ -1012,17 +1012,17 @@ err:	if (infop->addr != NULL)
  * __db_r_detach --
  *	Detach from a region.
  *
- * PUBLIC: gint __db_r_detach __P((DB_ENV *, REGINFO *, int));
+ * PUBLIC: int __db_r_detach __P((DB_ENV *, REGINFO *, int));
  */
-gint
+int
 __db_r_detach(dbenv, infop, destroy)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	gint destroy;
+	int destroy;
 {
 	REGENV *renv;
 	REGION *rp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	renv = ((REGINFO *)dbenv->reginfo)->primary;
 	rp = infop->rp;
@@ -1077,7 +1077,7 @@ __db_des_get(dbenv, env_infop, infop, rpp)
 	REGENV *renv;
 	REGION *rp, *first_type;
 	u_int32_t maxid;
-	gint ret;
+	int ret;
 
 	/*
 	 * !!!
@@ -1189,11 +1189,11 @@ __db_des_destroy(dbenv, rp)
 static int
 __db_faultmem(dbenv, addr, size, created)
 	DB_ENV *dbenv;
-	gpointer addr;
+	void *addr;
 	size_t size;
-	gint created;
+	int created;
 {
-	gint ret;
+	int ret;
 	u_int8_t *p, *t;
 
 	/*

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,7 +27,7 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/txn.h"
 #endif
 
-static gint __db_mutex_alloc_int __P((DB_ENV *, REGINFO *, DB_MUTEX **));
+static int __db_mutex_alloc_int __P((DB_ENV *, REGINFO *, DB_MUTEX **));
 #ifdef	HAVE_MUTEX_SYSTEM_RESOURCES
 static REGMAINT * __db_mutex_maint __P((DB_ENV *, REGINFO *));
 #endif
@@ -37,19 +37,19 @@ static REGMAINT * __db_mutex_maint __P((DB_ENV *, REGINFO *));
  *	External interface to allocate, and/or initialize, record
  *	mutexes.
  *
- * PUBLIC: gint __db_mutex_setup __P((DB_ENV *, REGINFO *, gpointer , u_int32_t));
+ * PUBLIC: int __db_mutex_setup __P((DB_ENV *, REGINFO *, void *, u_int32_t));
  */
-gint
+int
 __db_mutex_setup(dbenv, infop, ptr, flags)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	gpointer ptr;
+	void *ptr;
 	u_int32_t flags;
 {
 	DB_MUTEX *mutex;
 	REGMAINT *maint;
 	u_int32_t iflags, offset;
-	gint ret;
+	int ret;
 
 	ret = 0;
 	/*
@@ -122,7 +122,7 @@ __db_mutex_alloc_int(dbenv, infop, storep)
 	REGINFO *infop;
 	DB_MUTEX **storep;
 {
-	gint ret;
+	int ret;
 
 	/*
 	 * If the architecture supports mutexes in heap memory, use heap memory.
@@ -299,10 +299,10 @@ __db_shreg_locks_destroy(infop, rp)
  * __db_shreg_mutex_init --
  *	Initialize a shared memory mutex.
  *
- * PUBLIC: gint __db_shreg_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t,
+ * PUBLIC: int __db_shreg_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t,
  * PUBLIC:    u_int32_t, REGINFO *, REGMAINT *));
  */
-gint
+int
 __db_shreg_mutex_init(dbenv, mutexp, offset, flags, infop, rp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
@@ -311,7 +311,7 @@ __db_shreg_mutex_init(dbenv, mutexp, offset, flags, infop, rp)
 	REGINFO *infop;
 	REGMAINT *rp;
 {
-	gint ret;
+	int ret;
 
 	if ((ret = __db_mutex_init_int(dbenv, mutexp, offset, flags)) != 0)
 		return (ret);
@@ -344,12 +344,12 @@ __db_shreg_mutex_init(dbenv, mutexp, offset, flags, infop, rp)
  * __db_shreg_maintinit --
  *	Initialize a region's maintenance information.
  *
- * PUBLIC: void __db_shreg_maintinit __P((REGINFO *, gpointer addr, size_t));
+ * PUBLIC: void __db_shreg_maintinit __P((REGINFO *, void *addr, size_t));
  */
 void
 __db_shreg_maintinit(infop, addr, size)
 	REGINFO *infop;
-	gpointer addr;
+	void *addr;
 	size_t size;
 {
 	REGMAINT *rp;

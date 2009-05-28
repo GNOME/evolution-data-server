@@ -6,9 +6,9 @@
  */
 
 #ifndef lint
-static gchar copyright[] =
+static char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static gchar revid[] =
+static char revid[] =
     "$Id$";
 #endif
 
@@ -69,7 +69,7 @@ typedef struct hashhdr186 {	/* Disk resident portion */
 	u_int16_t bitmaps[NCACHED];
 } HASHHDR186;
 typedef struct htab186	 {		/* Memory resident data structure */
-	gpointer unused[2];
+	void *unused[2];
 	HASHHDR186	hdr;		/* Header */
 } HTAB186;
 
@@ -172,19 +172,19 @@ void	db_btree __P((DB *, int));
 void	db_hash __P((DB *, int));
 void	dbt_dump __P((DBT *));
 void	dbt_print __P((DBT *));
-int	main __P((int, gchar *[]));
+int	main __P((int, char *[]));
 int	usage __P((void));
 
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind;
+	extern char *optarg;
+	extern int optind;
 	DB *dbp;
 	DBT key, data;
-	gint ch, pflag, rval;
+	int ch, pflag, rval;
 
 	pflag = 0;
 	while ((ch = getopt(argc, argv, "f:p")) != EOF)
@@ -250,7 +250,7 @@ main(argc, argv)
 void
 db_hash(dbp, pflag)
 	DB *dbp;
-	gint pflag;
+	int pflag;
 {
 	HTAB185 *hash185p;
 	HTAB186 *hash186p;
@@ -282,7 +282,7 @@ db_hash(dbp, pflag)
 void
 db_btree(dbp, pflag)
 	DB *dbp;
-	gint pflag;
+	int pflag;
 {
 	BTREE *btp;
 
@@ -302,7 +302,7 @@ db_btree(dbp, pflag)
 	printf("HEADER=END\n");
 }
 
-static gchar hex[] = "0123456789abcdef";
+static char hex[] = "0123456789abcdef";
 
 /*
  * dbt_dump --
@@ -347,7 +347,7 @@ dbt_print(dbtp)
  * usage --
  *	Display the usage message.
  */
-gint
+int
 usage()
 {
 	(void)fprintf(stderr, "usage: db_dump185 [-p] [-f file] db_file\n");

@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,9 +24,9 @@ static const gchar revid[] = "$Id$";
  * __qam_mswap --
  *	Swap the bytes on the queue metadata page.
  *
- * PUBLIC: gint __qam_mswap __P((PAGE *));
+ * PUBLIC: int __qam_mswap __P((PAGE *));
  */
-gint
+int
 __qam_mswap(pg)
 	PAGE *pg;
 {
@@ -54,13 +54,13 @@ __qam_mswap(pg)
  *	stored on disk.
  *  We only need to fix up a few fields in the header
  *
- * PUBLIC: gint __qam_pgin_out __P((DB_ENV *, db_pgno_t, gpointer , DBT *));
+ * PUBLIC: int __qam_pgin_out __P((DB_ENV *, db_pgno_t, void *, DBT *));
  */
-gint
+int
 __qam_pgin_out(dbenv, pg, pp, cookie)
 	DB_ENV *dbenv;
 	db_pgno_t pg;
-	gpointer pp;
+	void *pp;
 	DBT *cookie;
 {
 	DB_PGINFO *pginfo;

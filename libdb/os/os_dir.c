@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -39,25 +39,25 @@ static const gchar revid[] = "$Id$";
  * __os_dirlist --
  *	Return a list of the files in a directory.
  *
- * PUBLIC: gint __os_dirlist __P((DB_ENV *, const gchar *, gchar ***, gint *));
+ * PUBLIC: int __os_dirlist __P((DB_ENV *, const char *, char ***, int *));
  */
-gint
+int
 __os_dirlist(dbenv, dir, namesp, cntp)
 	DB_ENV *dbenv;
-	const gchar *dir;
-	gchar ***namesp;
-	gint *cntp;
+	const char *dir;
+	char ***namesp;
+	int *cntp;
 {
 	struct dirent *dp;
 	DIR *dirp;
-	gint arraysz, cnt, ret;
-	gchar **names;
+	int arraysz, cnt, ret;
+	char **names;
 
 	if (DB_GLOBAL(j_dirlist) != NULL)
 		return (DB_GLOBAL(j_dirlist)(dir, namesp, cntp));
 
 #ifdef HAVE_VXWORKS
-	if ((dirp = opendir((gchar *)dir)) == NULL)
+	if ((dirp = opendir((char *)dir)) == NULL)
 #else
 	if ((dirp = opendir(dir)) == NULL)
 #endif
@@ -90,13 +90,13 @@ nomem:	if (names != NULL)
  * __os_dirfree --
  *	Free the list of files.
  *
- * PUBLIC: void __os_dirfree __P((DB_ENV *, gchar **, int));
+ * PUBLIC: void __os_dirfree __P((DB_ENV *, char **, int));
  */
 void
 __os_dirfree(dbenv, names, cnt)
 	DB_ENV *dbenv;
-	gchar **names;
-	gint cnt;
+	char **names;
+	int cnt;
 {
 	if (DB_GLOBAL(j_dirfree) != NULL)
 		DB_GLOBAL(j_dirfree)(names, cnt);

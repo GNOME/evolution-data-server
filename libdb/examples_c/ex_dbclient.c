@@ -20,19 +20,19 @@
 
 #define	DATABASE	"access.db"
 
-int	db_clientrun __P((DB_ENV *, const gchar *));
-int	ex_dbclient_run __P((const gchar *, FILE *, const gchar *, const gchar *));
-int	main __P((int, gchar *[]));
+int	db_clientrun __P((DB_ENV *, const char *));
+int	ex_dbclient_run __P((const char *, FILE *, const char *, const char *));
+int	main __P((int, char *[]));
 
 /*
  * An example of a program creating/configuring a Berkeley DB environment.
  */
-gint
+int
 main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	const gchar *home;
+	const char *home;
 
 	if (argc != 2) {
 		fprintf(stderr, "Usage: %s hostname\n", argv[0]);
@@ -48,13 +48,13 @@ main(argc, argv)
 	    stderr, argv[1], argv[0]) == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-gint
+int
 ex_dbclient(host)
-	const gchar *host;
+	const char *host;
 {
-	const gchar *home;
-	const gchar *progname = "ex_dbclient";		/* Program name. */
-	gint ret;
+	const char *home;
+	const char *progname = "ex_dbclient";		/* Program name. */
+	int ret;
 
 	/*
 	 * All of the shared database files live in DATABASE_HOME, but
@@ -68,13 +68,13 @@ ex_dbclient(host)
 	return (0);
 }
 
-gint
+int
 ex_dbclient_run(home, errfp, host, progname)
-	const gchar *home, *host, *progname;
+	const char *home, *host, *progname;
 	FILE *errfp;
 {
 	DB_ENV *dbenv;
-	gint ret, retry;
+	int ret, retry;
 
 	/*
 	 * Create an environment object and initialize it for error
@@ -142,16 +142,16 @@ retry:
 	return (0);
 }
 
-gint
+int
 db_clientrun(dbenv, progname)
 	DB_ENV *dbenv;
-	const gchar *progname;
+	const char *progname;
 {
 	DB *dbp;
 	DBT key, data;
 	u_int32_t len;
-	gint ret;
-	gchar *p, *t, buf[1024], rbuf[1024];
+	int ret;
+	char *p, *t, buf[1024], rbuf[1024];
 
 	/* Remove the previous database. */
 
@@ -206,8 +206,8 @@ db_clientrun(dbenv, progname)
 		switch (ret = dbp->get(dbp, NULL, &key, &data, 0)) {
 		case 0:
 			printf("%.*s : %.*s\n",
-			    (int)key.size, (gchar *)key.data,
-			    (int)data.size, (gchar *)data.data);
+			    (int)key.size, (char *)key.data,
+			    (int)data.size, (char *)data.data);
 			break;
 		default:
 			dbp->err(dbp, ret, "DB->get");

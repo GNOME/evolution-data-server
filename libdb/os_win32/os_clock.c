@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -21,7 +21,7 @@ static const gchar revid[] = "$Id$";
  * __os_clock --
  *	Return the current time-of-day clock in seconds and microseconds.
  */
-gint
+int
 __os_clock(dbenv, secsp, usecsp)
 	DB_ENV *dbenv;
 	u_int32_t *secsp, *usecsp;	/* Seconds and microseconds. */

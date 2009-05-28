@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -31,16 +31,16 @@ static const gchar revid[] = "$Id$";
  * need to go to a model where we maintain the free list with chunks of
  * contiguous pages as well.
  *
- * PUBLIC: gint __ham_reclaim __P((DB *, DB_TXN *txn));
+ * PUBLIC: int __ham_reclaim __P((DB *, DB_TXN *txn));
  */
-gint
+int
 __ham_reclaim(dbp, txn)
 	DB *dbp;
 	DB_TXN *txn;
 {
 	DBC *dbc;
 	HASH_CURSOR *hcp;
-	gint ret;
+	int ret;
 
 	/* Open up a cursor that we'll use for traversing. */
 	if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)
@@ -70,9 +70,9 @@ err:	if (hcp->hdr != NULL)
  *	Reclaim the pages from a subdatabase and return them to the
  * parent free list.
  *
- * PUBLIC: gint __ham_truncate __P((DB *, DB_TXN *txn, u_int32_t *));
+ * PUBLIC: int __ham_truncate __P((DB *, DB_TXN *txn, u_int32_t *));
  */
-gint
+int
 __ham_truncate(dbp, txn, countp)
 	DB *dbp;
 	DB_TXN *txn;
@@ -81,7 +81,7 @@ __ham_truncate(dbp, txn, countp)
 	DBC *dbc;
 	HASH_CURSOR *hcp;
 	db_trunc_param trunc;
-	gint ret;
+	int ret;
 
 	/* Open up a cursor that we'll use for traversing. */
 	if ((ret = dbp->cursor(dbp, txn, &dbc, 0)) != 0)

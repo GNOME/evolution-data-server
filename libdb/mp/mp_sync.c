@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,24 +27,24 @@ typedef struct {
 	db_pgno_t track_pgno;		/* Page number. */
 } BH_TRACK;
 
-static gint __bhcmp __P((gconstpointer , gconstpointer ));
-static gint __memp_close_flush_files __P((DB_ENV *, DB_MPOOL *));
-static gint __memp_sync_files __P((DB_ENV *, DB_MPOOL *));
+static int __bhcmp __P((const void *, const void *));
+static int __memp_close_flush_files __P((DB_ENV *, DB_MPOOL *));
+static int __memp_sync_files __P((DB_ENV *, DB_MPOOL *));
 
 /*
  * __memp_sync --
  *	Mpool sync function.
  *
- * PUBLIC: gint __memp_sync __P((DB_ENV *, DB_LSN *));
+ * PUBLIC: int __memp_sync __P((DB_ENV *, DB_LSN *));
  */
-gint
+int
 __memp_sync(dbenv, lsnp)
 	DB_ENV *dbenv;
 	DB_LSN *lsnp;
 {
 	DB_MPOOL *dbmp;
 	MPOOL *mp;
-	gint ret;
+	int ret;
 
 	PANIC_CHECK(dbenv);
 	ENV_REQUIRES_CONFIG(dbenv,
@@ -90,9 +90,9 @@ __memp_sync(dbenv, lsnp)
  * __memp_fsync --
  *	Mpool file sync function.
  *
- * PUBLIC: gint __memp_fsync __P((DB_MPOOLFILE *));
+ * PUBLIC: int __memp_fsync __P((DB_MPOOLFILE *));
  */
-gint
+int
 __memp_fsync(dbmfp)
 	DB_MPOOLFILE *dbmfp;
 {
@@ -122,9 +122,9 @@ __memp_fsync(dbmfp)
  * __mp_xxx_fh --
  *	Return a file descriptor for DB 1.85 compatibility locking.
  *
- * PUBLIC: gint __mp_xxx_fh __P((DB_MPOOLFILE *, DB_FH **));
+ * PUBLIC: int __mp_xxx_fh __P((DB_MPOOLFILE *, DB_FH **));
  */
-gint
+int
 __mp_xxx_fh(dbmfp, fhp)
 	DB_MPOOLFILE *dbmfp;
 	DB_FH **fhp;
@@ -156,14 +156,14 @@ __mp_xxx_fh(dbmfp, fhp)
  * __memp_sync_int --
  *	Mpool sync internal function.
  *
- * PUBLIC: gint __memp_sync_int
- * PUBLIC:     __P((DB_ENV *, DB_MPOOLFILE *, int, db_sync_op, gint *));
+ * PUBLIC: int __memp_sync_int
+ * PUBLIC:     __P((DB_ENV *, DB_MPOOLFILE *, int, db_sync_op, int *));
  */
-gint
+int
 __memp_sync_int(dbenv, dbmfp, ar_max, op, wrotep)
 	DB_ENV *dbenv;
 	DB_MPOOLFILE *dbmfp;
-	gint ar_max, *wrotep;
+	int ar_max, *wrotep;
 	db_sync_op op;
 {
 	BH *bhp;
@@ -174,7 +174,7 @@ __memp_sync_int(dbenv, dbmfp, ar_max, op, wrotep)
 	MPOOL *c_mp, *mp;
 	MPOOLFILE *mfp;
 	u_int32_t n_cache;
-	gint ar_cnt, hb_lock, i, pass, remaining, ret, t_ret, wait_cnt, wrote;
+	int ar_cnt, hb_lock, i, pass, remaining, ret, t_ret, wait_cnt, wrote;
 
 	dbmp = dbenv->mp_handle;
 	mp = dbmp->reginfo[0].primary;
@@ -501,14 +501,14 @@ err:	__os_free(dbenv, bharray);
  *	Sync all the files in the environment, open or not.
  */
 static
-gint __memp_sync_files(dbenv, dbmp)
+int __memp_sync_files(dbenv, dbmp)
 	DB_ENV *dbenv;
 	DB_MPOOL *dbmp;
 {
 	DB_MPOOLFILE *dbmfp;
 	MPOOL *mp;
 	MPOOLFILE *mfp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	ret = 0;
 	mp = dbmp->reginfo[0].primary;
@@ -569,7 +569,7 @@ __memp_close_flush_files(dbenv, dbmp)
 	DB_MPOOL *dbmp;
 {
 	DB_MPOOLFILE *dbmfp;
-	gint ret;
+	int ret;
 
 	/*
 	 * The routine exists because we must close files opened by sync to
@@ -601,7 +601,7 @@ retry:	MUTEX_THREAD_LOCK(dbenv, dbmp->mutexp);
 
 static int
 __bhcmp(p1, p2)
-	gconstpointer p1, *p2;
+	const void *p1, *p2;
 {
 	BH_TRACK *bhp1, *bhp2;
 

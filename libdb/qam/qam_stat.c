@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -29,12 +29,12 @@ static const gchar revid[] = "$Id$";
  * __qam_stat --
  *	Gather/print the qam statistics
  *
- * PUBLIC: gint __qam_stat __P((DB *, gpointer , u_int32_t));
+ * PUBLIC: int __qam_stat __P((DB *, void *, u_int32_t));
  */
-gint
+int
 __qam_stat(dbp, spp, flags)
 	DB *dbp;
-	gpointer spp;
+	void *spp;
 	u_int32_t flags;
 {
 	DBC *dbc;
@@ -48,7 +48,7 @@ __qam_stat(dbp, spp, flags)
 	db_indx_t indx;
 	db_pgno_t first, last, pgno, pg_ext, stop;
 	u_int32_t re_len;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	PANIC_CHECK(dbp->dbenv);
 	DB_ILLEGAL_BEFORE_OPEN(dbp, "DB->stat");

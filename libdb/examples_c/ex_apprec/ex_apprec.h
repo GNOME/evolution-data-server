@@ -12,13 +12,13 @@
 
 #include "ex_apprec_auto.h"
 
-gint ex_apprec_mkdir_log
+int ex_apprec_mkdir_log
     __P((DB_ENV *, DB_TXN *, DB_LSN *, u_int32_t, const DBT *));
-gint ex_apprec_mkdir_print
-    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
-gint ex_apprec_mkdir_read
-    __P((DB_ENV *, gpointer , ex_apprec_mkdir_args **));
-gint ex_apprec_mkdir_recover
-    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+int ex_apprec_mkdir_print
+    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
+int ex_apprec_mkdir_read
+    __P((DB_ENV *, void *, ex_apprec_mkdir_args **));
+int ex_apprec_mkdir_recover
+    __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
 
 #endif /* !_EX_APPREC_H_ */

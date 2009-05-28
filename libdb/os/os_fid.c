@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -45,18 +45,18 @@ static u_int32_t fid_serial = SERIAL_INIT;
  * temporary files, the inode and device fields are left blank and
  * the extra four bytes are filled in with a random value.
  *
- * PUBLIC: gint __os_fileid __P((DB_ENV *, const gchar *, int, u_int8_t *));
+ * PUBLIC: int __os_fileid __P((DB_ENV *, const char *, int, u_int8_t *));
  */
-gint
+int
 __os_fileid(dbenv, fname, unique_okay, fidp)
 	DB_ENV *dbenv;
-	const gchar *fname;
-	gint unique_okay;
+	const char *fname;
+	int unique_okay;
 	u_int8_t *fidp;
 {
 	struct stat sb;
 	size_t i;
-	gint ret;
+	int ret;
 	u_int32_t tmp;
 	u_int8_t *p;
 
@@ -66,7 +66,7 @@ __os_fileid(dbenv, fname, unique_okay, fidp)
 	/* On POSIX/UNIX, use a dev/inode pair. */
 retry:
 #ifdef HAVE_VXWORKS
-	if (stat((gchar *)fname, &sb) != 0) {
+	if (stat((char *)fname, &sb) != 0) {
 #else
 	if (stat(fname, &sb) != 0) {
 #endif

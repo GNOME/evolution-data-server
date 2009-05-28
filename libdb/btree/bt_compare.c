@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -58,17 +58,17 @@ static const gchar revid[] = "$Id$";
  * __bam_cmp --
  *	Compare a key to a given record.
  *
- * PUBLIC: gint __bam_cmp __P((DB *, const DBT *, PAGE *,
- * PUBLIC:    u_int32_t, gint (*)(DB *, const DBT *, const DBT *), gint *));
+ * PUBLIC: int __bam_cmp __P((DB *, const DBT *, PAGE *,
+ * PUBLIC:    u_int32_t, int (*)(DB *, const DBT *, const DBT *), int *));
  */
-gint
+int
 __bam_cmp(dbp, dbt, h, indx, func, cmpp)
 	DB *dbp;
 	const DBT *dbt;
 	PAGE *h;
 	u_int32_t indx;
-	gint (*func)__P((DB *, const DBT *, const DBT *));
-	gint *cmpp;
+	int (*func)__P((DB *, const DBT *, const DBT *));
+	int *cmpp;
 {
 	BINTERNAL *bi;
 	BKEYDATA *bk;
@@ -150,9 +150,9 @@ __bam_cmp(dbp, dbt, h, indx, func, cmpp)
  * __bam_defcmp --
  *	Default comparison routine.
  *
- * PUBLIC: gint __bam_defcmp __P((DB *, const DBT *, const DBT *));
+ * PUBLIC: int __bam_defcmp __P((DB *, const DBT *, const DBT *));
  */
-gint
+int
 __bam_defcmp(dbp, a, b)
 	DB *dbp;
 	const DBT *a, *b;

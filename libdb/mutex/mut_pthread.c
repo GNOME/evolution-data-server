@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -59,16 +59,16 @@ static const gchar revid[] = "$Id$";
  * __db_pthread_mutex_init --
  *	Initialize a DB_MUTEX.
  *
- * PUBLIC: gint __db_pthread_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t));
+ * PUBLIC: int __db_pthread_mutex_init __P((DB_ENV *, DB_MUTEX *, u_int32_t));
  */
-gint
+int
 __db_pthread_mutex_init(dbenv, mutexp, flags)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
 	u_int32_t flags;
 {
 	u_int32_t save;
-	gint ret;
+	int ret;
 
 	ret = 0;
 
@@ -172,7 +172,7 @@ __db_pthread_mutex_init(dbenv, mutexp, flags)
 #endif
 #ifdef HAVE_MUTEX_UI_THREADS
 	{
-	gint type;
+	int type;
 
 	type = LF_ISSET(MUTEX_THREAD) ? USYNC_THREAD : USYNC_PROCESS;
 
@@ -201,15 +201,15 @@ __db_pthread_mutex_init(dbenv, mutexp, flags)
  * __db_pthread_mutex_lock
  *	Lock on a mutex, logically blocking if necessary.
  *
- * PUBLIC: gint __db_pthread_mutex_lock __P((DB_ENV *, DB_MUTEX *));
+ * PUBLIC: int __db_pthread_mutex_lock __P((DB_ENV *, DB_MUTEX *));
  */
-gint
+int
 __db_pthread_mutex_lock(dbenv, mutexp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
 {
 	u_int32_t nspins;
-	gint i, ret, waited;
+	int i, ret, waited;
 
 	if (F_ISSET(dbenv, DB_ENV_NOLOCKING) || F_ISSET(mutexp, MUTEX_IGNORE))
 		return (0);
@@ -280,7 +280,7 @@ __db_pthread_mutex_lock(dbenv, mutexp)
 			++mutexp->mutex_set_wait;
 #ifdef DIAGNOSTIC
 		if (mutexp->locked) {
-			gchar msgbuf[128];
+			char msgbuf[128];
 			(void)snprintf(msgbuf,
 			    sizeof(msgbuf), MSG1, (u_long)mutexp->locked);
 			(void)write(STDERR_FILENO, msgbuf, strlen(msgbuf));
@@ -300,14 +300,14 @@ err:	__db_err(dbenv, "unable to lock mutex: %s", strerror(ret));
  * __db_pthread_mutex_unlock --
  *	Release a lock.
  *
- * PUBLIC: gint __db_pthread_mutex_unlock __P((DB_ENV *, DB_MUTEX *));
+ * PUBLIC: int __db_pthread_mutex_unlock __P((DB_ENV *, DB_MUTEX *));
  */
-gint
+int
 __db_pthread_mutex_unlock(dbenv, mutexp)
 	DB_ENV *dbenv;
 	DB_MUTEX *mutexp;
 {
-	gint i, ret;
+	int i, ret;
 
 	if (F_ISSET(dbenv, DB_ENV_NOLOCKING) || F_ISSET(mutexp, MUTEX_IGNORE))
 		return (0);
@@ -344,13 +344,13 @@ err:	__db_err(dbenv, "unable to unlock mutex: %s", strerror(ret));
  * __db_pthread_mutex_destroy --
  *	Destroy a DB_MUTEX.
  *
- * PUBLIC: gint __db_pthread_mutex_destroy __P((DB_MUTEX *));
+ * PUBLIC: int __db_pthread_mutex_destroy __P((DB_MUTEX *));
  */
-gint
+int
 __db_pthread_mutex_destroy(mutexp)
 	DB_MUTEX *mutexp;
 {
-	gint ret;
+	int ret;
 
 	if (F_ISSET(mutexp, MUTEX_IGNORE))
 		return (0);

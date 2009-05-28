@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -33,7 +33,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_sleepycat_db_Dbt_create_1data
 {
 	DBT_JAVAINFO *db_this;
 	jbyteArray arr = NULL;
-	gint len;
+	int len;
 
 	db_this = get_DBT_JAVAINFO(jnienv, jthis);
 	if (verify_non_null(jnienv, db_this)) {

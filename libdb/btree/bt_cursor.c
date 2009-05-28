@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -23,25 +23,25 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/btree.h"
 #include "dbinc/lock.h"
 
-static gint  __bam_bulk __P((DBC *, DBT *, u_int32_t));
-static gint  __bam_c_close __P((DBC *, db_pgno_t, gint *));
-static gint  __bam_c_del __P((DBC *));
-static gint  __bam_c_destroy __P((DBC *));
-static gint  __bam_c_first __P((DBC *));
-static gint  __bam_c_get __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-static gint  __bam_c_getstack __P((DBC *));
-static gint  __bam_c_last __P((DBC *));
-static gint  __bam_c_next __P((DBC *, int, int));
-static gint  __bam_c_physdel __P((DBC *));
-static gint  __bam_c_prev __P((DBC *));
-static gint  __bam_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
-static gint  __bam_c_search __P((DBC *,
-		db_pgno_t, const DBT *, u_int32_t, gint *));
-static gint  __bam_c_writelock __P((DBC *));
-static gint  __bam_getboth_finddatum __P((DBC *, DBT *, u_int32_t));
-static gint  __bam_getbothc __P((DBC *, DBT *));
-static gint  __bam_get_prev __P((DBC *));
-static gint  __bam_isopd __P((DBC *, db_pgno_t *));
+static int  __bam_bulk __P((DBC *, DBT *, u_int32_t));
+static int  __bam_c_close __P((DBC *, db_pgno_t, int *));
+static int  __bam_c_del __P((DBC *));
+static int  __bam_c_destroy __P((DBC *));
+static int  __bam_c_first __P((DBC *));
+static int  __bam_c_get __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+static int  __bam_c_getstack __P((DBC *));
+static int  __bam_c_last __P((DBC *));
+static int  __bam_c_next __P((DBC *, int, int));
+static int  __bam_c_physdel __P((DBC *));
+static int  __bam_c_prev __P((DBC *));
+static int  __bam_c_put __P((DBC *, DBT *, DBT *, u_int32_t, db_pgno_t *));
+static int  __bam_c_search __P((DBC *,
+		db_pgno_t, const DBT *, u_int32_t, int *));
+static int  __bam_c_writelock __P((DBC *));
+static int  __bam_getboth_finddatum __P((DBC *, DBT *, u_int32_t));
+static int  __bam_getbothc __P((DBC *, DBT *));
+static int  __bam_get_prev __P((DBC *));
+static int  __bam_isopd __P((DBC *, db_pgno_t *));
 
 /*
  * Acquire a new page/lock.  If we hold a page/lock, discard the page, and
@@ -132,7 +132,7 @@ static gint  __bam_isopd __P((DBC *, db_pgno_t *));
 #undef	DISCARD
 #define	DISCARD(dbc, ldiscard, lock, pagep, ret) {			\
 	DB_MPOOLFILE *__mpf = (dbc)->dbp->mpf;				\
-	gint __t_ret;							\
+	int __t_ret;							\
 	if ((pagep) != NULL) {						\
 		ret = __mpf->put(__mpf, pagep, 0);			\
 		pagep = NULL;						\
@@ -186,15 +186,15 @@ static gint  __bam_isopd __P((DBC *, db_pgno_t *));
  * __bam_c_init --
  *	Initialize the access private portion of a cursor
  *
- * PUBLIC: gint __bam_c_init __P((DBC *, DBTYPE));
+ * PUBLIC: int __bam_c_init __P((DBC *, DBTYPE));
  */
-gint
+int
 __bam_c_init(dbc, dbtype)
 	DBC *dbc;
 	DBTYPE dbtype;
 {
 	DB_ENV *dbenv;
-	gint ret;
+	int ret;
 
 	dbenv = dbc->dbp->dbenv;
 
@@ -236,9 +236,9 @@ __bam_c_init(dbc, dbtype)
  * __bam_c_refresh
  *	Set things up properly for cursor re-use.
  *
- * PUBLIC: gint __bam_c_refresh __P((DBC *));
+ * PUBLIC: int __bam_c_refresh __P((DBC *));
  */
-gint
+int
 __bam_c_refresh(dbc)
 	DBC *dbc;
 {
@@ -305,14 +305,14 @@ static int
 __bam_c_close(dbc, root_pgno, rmroot)
 	DBC *dbc;
 	db_pgno_t root_pgno;
-	gint *rmroot;
+	int *rmroot;
 {
 	BTREE_CURSOR *cp, *cp_opd, *cp_c;
 	DB *dbp;
 	DBC *dbc_opd, *dbc_c;
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	gint cdb_lock, ret, t_ret;
+	int cdb_lock, ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -604,9 +604,9 @@ __bam_c_destroy(dbc)
  * __bam_c_count --
  *	Return a count of on and off-page duplicates.
  *
- * PUBLIC: gint __bam_c_count __P((DBC *, db_recno_t *));
+ * PUBLIC: int __bam_c_count __P((DBC *, db_recno_t *));
  */
-gint
+int
 __bam_c_count(dbc, recnop)
 	DBC *dbc;
 	db_recno_t *recnop;
@@ -616,7 +616,7 @@ __bam_c_count(dbc, recnop)
 	DB_MPOOLFILE *mpf;
 	db_indx_t indx, top;
 	db_recno_t recno;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -671,7 +671,7 @@ __bam_c_del(dbc)
 	BTREE_CURSOR *cp;
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -750,14 +750,14 @@ err:	/*
  *	Duplicate a btree cursor, such that the new one holds appropriate
  *	locks for the position of the original.
  *
- * PUBLIC: gint __bam_c_dup __P((DBC *, DBC *));
+ * PUBLIC: int __bam_c_dup __P((DBC *, DBC *));
  */
-gint
+int
 __bam_c_dup(orig_dbc, new_dbc)
 	DBC *orig_dbc, *new_dbc;
 {
 	BTREE_CURSOR *orig, *new;
-	gint ret;
+	int ret;
 
 	orig = (BTREE_CURSOR *)orig_dbc->internal;
 	new = (BTREE_CURSOR *)new_dbc->internal;
@@ -796,7 +796,7 @@ __bam_c_get(dbc, key, data, flags, pgnop)
 	DB_MPOOLFILE *mpf;
 	db_pgno_t orig_pgno;
 	db_indx_t orig_indx;
-	gint exact, newopd, ret;
+	int exact, newopd, ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1004,7 +1004,7 @@ __bam_get_prev(dbc)
 	BTREE_CURSOR *cp;
 	DBT key, data;
 	db_pgno_t pgno;
-	gint ret;
+	int ret;
 
 	if ((ret = __bam_c_prev(dbc)) != 0)
 		return (ret);
@@ -1038,8 +1038,8 @@ __bam_bulk(dbc, data, flags)
 	int32_t  *endp, key_off, *offp, *saveoffp;
 	u_int8_t *dbuf, *dp, *np;
 	u_int32_t key_size, size, space;
-	gint adj, is_key, need_pg, next_key, no_dup;
-	gint pagesize, rec_key, ret;
+	int adj, is_key, need_pg, next_key, no_dup;
+	int pagesize, rec_key, ret;
 
 	ret = 0;
 	key_off = 0;
@@ -1373,10 +1373,10 @@ get_space:
  * __bam_bulk_overflow --
  *	Dump overflow record into the buffer.
  *	The space requirements have already been checked.
- * PUBLIC: gint __bam_bulk_overflow
+ * PUBLIC: int __bam_bulk_overflow
  * PUBLIC:    __P((DBC *, u_int32_t, db_pgno_t, u_int8_t *));
  */
-gint
+int
 __bam_bulk_overflow(dbc, len, pgno, dp)
 	DBC *dbc;
 	u_int32_t len;
@@ -1388,7 +1388,7 @@ __bam_bulk_overflow(dbc, len, pgno, dp)
 	memset(&dbt, 0, sizeof(dbt));
 	F_SET(&dbt, DB_DBT_USERMEM);
 	dbt.ulen = len;
-	dbt.data = (gpointer)dp;
+	dbt.data = (void *)dp;
 	return (__db_goff(dbc->dbp, &dbt, len, pgno, NULL, NULL));
 }
 
@@ -1397,11 +1397,11 @@ __bam_bulk_overflow(dbc, len, pgno, dp)
  *	Put as many off page duplicates as will fit into the buffer.
  * This routine will adjust the cursor to reflect the position in
  * the overflow tree.
- * PUBLIC: gint __bam_bulk_duplicates __P((DBC *,
+ * PUBLIC: int __bam_bulk_duplicates __P((DBC *,
  * PUBLIC:       db_pgno_t, u_int8_t *, int32_t *,
  * PUBLIC:	 int32_t **, u_int8_t **, u_int32_t *, int));
  */
-gint
+int
 __bam_bulk_duplicates(dbc, pgno, dbuf, keyoff, offpp, dpp, spacep, no_dup)
 	DBC *dbc;
 	db_pgno_t pgno;
@@ -1409,7 +1409,7 @@ __bam_bulk_duplicates(dbc, pgno, dbuf, keyoff, offpp, dpp, spacep, no_dup)
 	int32_t *keyoff, **offpp;
 	u_int8_t **dpp;
 	u_int32_t *spacep;
-	gint no_dup;
+	int no_dup;
 {
 	DB *dbp;
 	BKEYDATA *bk;
@@ -1422,7 +1422,7 @@ __bam_bulk_duplicates(dbc, pgno, dbuf, keyoff, offpp, dpp, spacep, no_dup)
 	int32_t *offp;
 	u_int32_t size, space;
 	u_int8_t *dp, *np;
-	gint first, need_pg, pagesize, ret, t_ret;
+	int first, need_pg, pagesize, ret, t_ret;
 
 	ret = 0;
 
@@ -1592,7 +1592,7 @@ __bam_getbothc(dbc, data)
 	BTREE_CURSOR *cp;
 	DB *dbp;
 	DB_MPOOLFILE *mpf;
-	gint cmp, exact, ret;
+	int cmp, exact, ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1664,7 +1664,7 @@ __bam_getboth_finddatum(dbc, data, flags)
 	BTREE_CURSOR *cp;
 	DB *dbp;
 	db_indx_t base, lim, top;
-	gint cmp, ret;
+	int cmp, ret;
 
 	dbp = dbc->dbp;
 	cp = (BTREE_CURSOR *)dbc->internal;
@@ -1768,8 +1768,8 @@ __bam_c_put(dbc, key, data, flags, pgnop)
 	DB_MPOOLFILE *mpf;
 	db_pgno_t root_pgno;
 	u_int32_t iiop;
-	gint cmp, exact, ret, stack;
-	gpointer arg;
+	int cmp, exact, ret, stack;
+	void *arg;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -2009,9 +2009,9 @@ done:	/*
  * __bam_c_rget --
  *	Return the record number for a cursor.
  *
- * PUBLIC: gint __bam_c_rget __P((DBC *, DBT *));
+ * PUBLIC: int __bam_c_rget __P((DBC *, DBT *));
  */
-gint
+int
 __bam_c_rget(dbc, data)
 	DBC *dbc;
 	DBT *data;
@@ -2021,7 +2021,7 @@ __bam_c_rget(dbc, data)
 	DBT dbt;
 	DB_MPOOLFILE *mpf;
 	db_recno_t recno;
-	gint exact, ret;
+	int exact, ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -2066,7 +2066,7 @@ __bam_c_writelock(dbc)
 	DBC *dbc;
 {
 	BTREE_CURSOR *cp;
-	gint ret;
+	int ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 
@@ -2093,7 +2093,7 @@ __bam_c_first(dbc)
 {
 	BTREE_CURSOR *cp;
 	db_pgno_t pgno;
-	gint ret;
+	int ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 	ret = 0;
@@ -2138,7 +2138,7 @@ __bam_c_last(dbc)
 {
 	BTREE_CURSOR *cp;
 	db_pgno_t pgno;
-	gint ret;
+	int ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 	ret = 0;
@@ -2183,13 +2183,13 @@ __bam_c_last(dbc)
 static int
 __bam_c_next(dbc, initial_move, deleted_okay)
 	DBC *dbc;
-	gint initial_move, deleted_okay;
+	int initial_move, deleted_okay;
 {
 	BTREE_CURSOR *cp;
 	db_indx_t adjust;
 	db_lockmode_t lock_mode;
 	db_pgno_t pgno;
-	gint ret;
+	int ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 	ret = 0;
@@ -2258,7 +2258,7 @@ __bam_c_prev(dbc)
 	db_indx_t adjust;
 	db_lockmode_t lock_mode;
 	db_pgno_t pgno;
-	gint ret;
+	int ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 	ret = 0;
@@ -2319,7 +2319,7 @@ __bam_c_search(dbc, root_pgno, key, flags, exactp)
 	db_pgno_t root_pgno;
 	const DBT *key;
 	u_int32_t flags;
-	gint *exactp;
+	int *exactp;
 {
 	BTREE *t;
 	BTREE_CURSOR *cp;
@@ -2329,7 +2329,7 @@ __bam_c_search(dbc, root_pgno, key, flags, exactp)
 	db_pgno_t bt_lpgno;
 	db_recno_t recno;
 	u_int32_t sflags;
-	gint cmp, ret;
+	int cmp, ret;
 
 	dbp = dbc->dbp;
 	cp = (BTREE_CURSOR *)dbc->internal;
@@ -2547,7 +2547,7 @@ __bam_c_physdel(dbc)
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
 	db_pgno_t pgno;
-	gint delete_page, empty_page, exact, level, ret;
+	int delete_page, empty_page, exact, level, ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -2737,7 +2737,7 @@ __bam_c_getstack(dbc)
 	DBT dbt;
 	DB_MPOOLFILE *mpf;
 	PAGE *h;
-	gint exact, ret, t_ret;
+	int exact, ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;

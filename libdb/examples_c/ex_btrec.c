@@ -20,15 +20,15 @@
 int	main __P((void));
 
 int	ex_btrec __P((void));
-void	show __P((const gchar *, DBT *, DBT *));
+void	show __P((const char *, DBT *, DBT *));
 
-gint
+int
 main()
 {
 	return (ex_btrec() == 1 ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-gint
+int
 ex_btrec()
 {
 	DB *dbp;
@@ -38,9 +38,9 @@ ex_btrec()
 	FILE *fp;
 	db_recno_t recno;
 	u_int32_t len;
-	gint cnt, ret;
-	gchar *p, *t, buf[1024], rbuf[1024];
-	const gchar *progname = "ex_btrec";		/* Program name. */
+	int cnt, ret;
+	char *p, *t, buf[1024], rbuf[1024];
+	const char *progname = "ex_btrec";		/* Program name. */
 
 	/* Open the word database. */
 	if ((fp = fopen(WORDLIST, "r")) == NULL) {
@@ -194,10 +194,10 @@ err1:	(void)dbp->close(dbp, 0);
  */
 void
 show(msg, key, data)
-	const gchar *msg;
+	const char *msg;
 	DBT *key, *data;
 {
 	printf("%s%.*s : %.*s\n", msg,
-	    (int)key->size, (gchar *)key->data,
-	    (int)data->size, (gchar *)data->data);
+	    (int)key->size, (char *)key->data,
+	    (int)data->size, (char *)data->data);
 }

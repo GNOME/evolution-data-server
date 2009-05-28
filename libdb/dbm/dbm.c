@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -70,7 +70,7 @@ static const gchar revid[] = "$Id$";
  * EXTERN: datum __db_ndbm_fetch __P((DBM *, datum));
  * EXTERN: datum __db_ndbm_firstkey __P((DBM *));
  * EXTERN: datum __db_ndbm_nextkey __P((DBM *));
- * EXTERN: DBM	*__db_ndbm_open __P((const gchar *, int, int));
+ * EXTERN: DBM	*__db_ndbm_open __P((const char *, int, int));
  * EXTERN: int	 __db_ndbm_pagfno __P((DBM *));
  * EXTERN: int	 __db_ndbm_rdonly __P((DBM *));
  * EXTERN: int	 __db_ndbm_store __P((DBM *, datum, datum, int));
@@ -81,7 +81,7 @@ static const gchar revid[] = "$Id$";
  * EXTERN: int	 __db_dbm_dirf __P((void));
  * EXTERN: datum __db_dbm_fetch __P((datum));
  * EXTERN: datum __db_dbm_firstkey __P((void));
- * EXTERN: int	 __db_dbm_init __P((gchar *));
+ * EXTERN: int	 __db_dbm_init __P((char *));
  * EXTERN: datum __db_dbm_nextkey __P((datum));
  * EXTERN: int	 __db_dbm_pagf __P((void));
  * EXTERN: int	 __db_dbm_store __P((datum, datum));
@@ -96,9 +96,9 @@ static DBM *__cur_db;
 
 static void __db_no_open __P((void));
 
-gint
+int
 __db_dbm_init(file)
-	gchar *file;
+	char *file;
 {
 	if (__cur_db != NULL)
 		(void)dbm_close(__cur_db);
@@ -110,7 +110,7 @@ __db_dbm_init(file)
 	return (-1);
 }
 
-gint
+int
 __db_dbm_close()
 {
 	if (__cur_db != NULL) {
@@ -166,7 +166,7 @@ __db_dbm_nextkey(key)
 	return (dbm_nextkey(__cur_db));
 }
 
-gint
+int
 __db_dbm_delete(key)
 	datum key;
 {
@@ -177,7 +177,7 @@ __db_dbm_delete(key)
 	return (dbm_delete(__cur_db, key));
 }
 
-gint
+int
 __db_dbm_store(key, dat)
 	datum key, dat;
 {
@@ -206,13 +206,13 @@ __db_no_open()
  */
 DBM *
 __db_ndbm_open(file, oflags, mode)
-	const gchar *file;
-	gint oflags, mode;
+	const char *file;
+	int oflags, mode;
 {
 	DB *dbp;
 	DBC *dbc;
-	gint ret;
-	gchar path[MAXPATHLEN];
+	int ret;
+	char path[MAXPATHLEN];
 
 	/*
 	 * !!!
@@ -286,7 +286,7 @@ __db_ndbm_fetch(dbm, key)
 	DBC *dbc;
 	DBT _key, _data;
 	datum data;
-	gint ret;
+	int ret;
 
 	dbc = (DBC *)dbm;
 
@@ -328,7 +328,7 @@ __db_ndbm_firstkey(dbm)
 	DBC *dbc;
 	DBT _key, _data;
 	datum key;
-	gint ret;
+	int ret;
 
 	dbc = (DBC *)dbm;
 
@@ -363,7 +363,7 @@ __db_ndbm_nextkey(dbm)
 	DBC *dbc;
 	DBT _key, _data;
 	datum key;
-	gint ret;
+	int ret;
 
 	dbc = (DBC *)dbm;
 
@@ -391,14 +391,14 @@ __db_ndbm_nextkey(dbm)
  *	 0 on success
  *	<0 failure
  */
-gint
+int
 __db_ndbm_delete(dbm, key)
 	DBM *dbm;
 	datum key;
 {
 	DBC *dbc;
 	DBT _key;
-	gint ret;
+	int ret;
 
 	dbc = (DBC *)dbm;
 
@@ -424,15 +424,15 @@ __db_ndbm_delete(dbm, key)
  *	<0 failure
  *	 1 if DBM_INSERT and entry exists
  */
-gint
+int
 __db_ndbm_store(dbm, key, data, flags)
 	DBM *dbm;
 	datum key, data;
-	gint flags;
+	int flags;
 {
 	DBC *dbc;
 	DBT _key, _data;
-	gint ret;
+	int ret;
 
 	dbc = (DBC *)dbm;
 
@@ -456,7 +456,7 @@ __db_ndbm_store(dbm, key, data, flags)
 	return (-1);
 }
 
-gint
+int
 __db_ndbm_error(dbm)
 	DBM *dbm;
 {
@@ -467,7 +467,7 @@ __db_ndbm_error(dbm)
 	return (F_ISSET(dbc->dbp, DB_AM_DBM_ERROR));
 }
 
-gint
+int
 __db_ndbm_clearerr(dbm)
 	DBM *dbm;
 {
@@ -484,7 +484,7 @@ __db_ndbm_clearerr(dbm)
  *	1 if read-only
  *	0 if not read-only
  */
-gint
+int
 __db_ndbm_rdonly(dbm)
 	DBM *dbm;
 {
@@ -501,19 +501,19 @@ __db_ndbm_rdonly(dbm)
  * the same one for both files.  Hopefully, the user is using it for locking
  * and picked one to use at random.
  */
-gint
+int
 __db_ndbm_dirfno(dbm)
 	DBM *dbm;
 {
 	return (dbm_pagfno(dbm));
 }
 
-gint
+int
 __db_ndbm_pagfno(dbm)
 	DBM *dbm;
 {
 	DBC *dbc;
-	gint fd;
+	int fd;
 
 	dbc = (DBC *)dbm;
 

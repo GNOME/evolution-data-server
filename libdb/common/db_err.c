@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -31,12 +31,12 @@ static const gchar revid[] = "$Id$";
  * __db_fchk --
  *	General flags checking routine.
  *
- * PUBLIC: gint __db_fchk __P((DB_ENV *, const gchar *, u_int32_t, u_int32_t));
+ * PUBLIC: int __db_fchk __P((DB_ENV *, const char *, u_int32_t, u_int32_t));
  */
-gint
+int
 __db_fchk(dbenv, name, flags, ok_flags)
 	DB_ENV *dbenv;
-	const gchar *name;
+	const char *name;
 	u_int32_t flags, ok_flags;
 {
 	return (LF_ISSET(~ok_flags) ? __db_ferr(dbenv, name, 0) : 0);
@@ -46,13 +46,13 @@ __db_fchk(dbenv, name, flags, ok_flags)
  * __db_fcchk --
  *	General combination flags checking routine.
  *
- * PUBLIC: gint __db_fcchk
- * PUBLIC:    __P((DB_ENV *, const gchar *, u_int32_t, u_int32_t, u_int32_t));
+ * PUBLIC: int __db_fcchk
+ * PUBLIC:    __P((DB_ENV *, const char *, u_int32_t, u_int32_t, u_int32_t));
  */
-gint
+int
 __db_fcchk(dbenv, name, flags, flag1, flag2)
 	DB_ENV *dbenv;
-	const gchar *name;
+	const char *name;
 	u_int32_t flags, flag1, flag2;
 {
 	return (LF_ISSET(flag1) &&
@@ -63,13 +63,13 @@ __db_fcchk(dbenv, name, flags, flag1, flag2)
  * __db_ferr --
  *	Common flag errors.
  *
- * PUBLIC: gint __db_ferr __P((const DB_ENV *, const gchar *, int));
+ * PUBLIC: int __db_ferr __P((const DB_ENV *, const char *, int));
  */
-gint
+int
 __db_ferr(dbenv, name, iscombo)
 	const DB_ENV *dbenv;
-	const gchar *name;
-	gint iscombo;
+	const char *name;
+	int iscombo;
 {
 	__db_err(dbenv, "illegal flag %sspecified to %s",
 	    iscombo ? "combination " : "", name);
@@ -86,7 +86,7 @@ void
 __db_pgerr(dbp, pgno, errval)
 	DB *dbp;
 	db_pgno_t pgno;
-	gint errval;
+	int errval;
 {
 	/*
 	 * Three things are certain:
@@ -102,9 +102,9 @@ __db_pgerr(dbp, pgno, errval)
  * __db_pgfmt --
  *	Error when a page has the wrong format.
  *
- * PUBLIC: gint __db_pgfmt __P((DB_ENV *, db_pgno_t));
+ * PUBLIC: int __db_pgfmt __P((DB_ENV *, db_pgno_t));
  */
-gint
+int
 __db_pgfmt(dbenv, pgno)
 	DB_ENV *dbenv;
 	db_pgno_t pgno;
@@ -117,9 +117,9 @@ __db_pgfmt(dbenv, pgno)
  * __db_eopnotsup --
  *	Common operation not supported message.
  *
- * PUBLIC: gint __db_eopnotsup __P((const DB_ENV *));
+ * PUBLIC: int __db_eopnotsup __P((const DB_ENV *));
  */
-gint
+int
 __db_eopnotsup(dbenv)
 	const DB_ENV *dbenv;
 {
@@ -137,13 +137,13 @@ __db_eopnotsup(dbenv)
  *	Error when an assertion fails.  Only checked if #DIAGNOSTIC defined.
  *
  * PUBLIC: #ifdef DIAGNOSTIC
- * PUBLIC: void __db_assert __P((const gchar *, const gchar *, int));
+ * PUBLIC: void __db_assert __P((const char *, const char *, int));
  * PUBLIC: #endif
  */
 void
 __db_assert(failedexpr, file, line)
-	const gchar *failedexpr, *file;
-	gint line;
+	const char *failedexpr, *file;
+	int line;
 {
 	(void)fprintf(stderr,
 	    "__db_assert: \"%s\" failed: file \"%s\", line %d\n",
@@ -161,9 +161,9 @@ __db_assert(failedexpr, file, line)
  * __db_panic_msg --
  *	Just report that someone else paniced.
  *
- * PUBLIC: gint __db_panic_msg __P((DB_ENV *));
+ * PUBLIC: int __db_panic_msg __P((DB_ENV *));
  */
-gint
+int
 __db_panic_msg(dbenv)
 	DB_ENV *dbenv;
 {
@@ -175,12 +175,12 @@ __db_panic_msg(dbenv)
  * __db_panic --
  *	Lock out the tree due to unrecoverable error.
  *
- * PUBLIC: gint __db_panic __P((DB_ENV *, int));
+ * PUBLIC: int __db_panic __P((DB_ENV *, int));
  */
-gint
+int
 __db_panic(dbenv, errval)
 	DB_ENV *dbenv;
-	gint errval;
+	int errval;
 {
 	if (dbenv != NULL) {
 		PANIC_SET(dbenv, 1);
@@ -216,11 +216,11 @@ __db_panic(dbenv, errval)
  * db_strerror --
  *	ANSI C strerror(3) for DB.
  *
- * EXTERN: gchar *db_strerror __P((int));
+ * EXTERN: char *db_strerror __P((int));
  */
-gchar *
+char *
 db_strerror(error)
-	gint error;
+	int error;
 {
 	if (error == 0)
 		return ("Successful return: 0");
@@ -285,7 +285,7 @@ db_strerror(error)
 		 * if we're given an unknown error, which should never happen.
 		 * Note, however, we're no longer thread-safe if it does.
 		 */
-		static gchar ebuf[40];
+		static char ebuf[40];
 
 		(void)snprintf(ebuf, sizeof(ebuf), "Unknown error: %d", error);
 		return (ebuf);
@@ -298,15 +298,15 @@ db_strerror(error)
  *	Standard DB error routine.  The same as errx, except we don't write
  *	to stderr if no output mechanism was specified.
  *
- * PUBLIC: void __db_err __P((const DB_ENV *, const gchar *, ...));
+ * PUBLIC: void __db_err __P((const DB_ENV *, const char *, ...));
  */
 void
 #ifdef __STDC__
-__db_err(const DB_ENV *dbenv, const gchar *fmt, ...)
+__db_err(const DB_ENV *dbenv, const char *fmt, ...)
 #else
 __db_err(dbenv, fmt, va_alist)
 	const DB_ENV *dbenv;
-	const gchar *fmt;
+	const char *fmt;
 	va_dcl
 #endif
 {
@@ -318,17 +318,17 @@ __db_err(dbenv, fmt, va_alist)
  *	Do the error message work for callback functions.
  *
  * PUBLIC: void __db_errcall
- * PUBLIC:          __P((const DB_ENV *, int, int, const gchar *, va_list));
+ * PUBLIC:          __P((const DB_ENV *, int, int, const char *, va_list));
  */
 void
 __db_errcall(dbenv, error, error_set, fmt, ap)
 	const DB_ENV *dbenv;
-	gint error, error_set;
-	const gchar *fmt;
+	int error, error_set;
+	const char *fmt;
 	va_list ap;
 {
-	gchar *p;
-	gchar errbuf[2048];	/* !!!: END OF THE STACK DON'T TRUST SPRINTF. */
+	char *p;
+	char errbuf[2048];	/* !!!: END OF THE STACK DON'T TRUST SPRINTF. */
 
 	p = errbuf;
 	if (fmt != NULL)
@@ -363,13 +363,13 @@ __db_errcall(dbenv, error, error_set, fmt, ap)
  *	Do the error message work for FILE *s.
  *
  * PUBLIC: void __db_errfile
- * PUBLIC:          __P((const DB_ENV *, int, int, const gchar *, va_list));
+ * PUBLIC:          __P((const DB_ENV *, int, int, const char *, va_list));
  */
 void
 __db_errfile(dbenv, error, error_set, fmt, ap)
 	const DB_ENV *dbenv;
-	gint error, error_set;
-	const gchar *fmt;
+	int error, error_set;
+	const char *fmt;
 	va_list ap;
 {
 	FILE *fp;
@@ -395,17 +395,17 @@ __db_errfile(dbenv, error, error_set, fmt, ap)
  *	Write information into the DB log.
  *
  * PUBLIC: void __db_logmsg __P((const DB_ENV *,
- * PUBLIC:     DB_TXN *, const gchar *, u_int32_t, const gchar *, ...));
+ * PUBLIC:     DB_TXN *, const char *, u_int32_t, const char *, ...));
  */
 void
 #ifdef __STDC__
 __db_logmsg(const DB_ENV *dbenv,
-    DB_TXN *txnid, const gchar *opname, u_int32_t flags, const gchar *fmt, ...)
+    DB_TXN *txnid, const char *opname, u_int32_t flags, const char *fmt, ...)
 #else
 __db_logmsg(dbenv, txnid, opname, flags, fmt, va_alist)
 	const DB_ENV *dbenv;
 	DB_TXN *txnid;
-	const gchar *opname, *fmt;
+	const char *opname, *fmt;
 	u_int32_t flags;
 	va_dcl
 #endif
@@ -413,7 +413,7 @@ __db_logmsg(dbenv, txnid, opname, flags, fmt, va_alist)
 	DBT opdbt, msgdbt;
 	DB_LSN lsn;
 	va_list ap;
-	gchar __logbuf[2048];	/* !!!: END OF THE STACK DON'T TRUST SPRINTF. */
+	char __logbuf[2048];	/* !!!: END OF THE STACK DON'T TRUST SPRINTF. */
 
 	if (!LOGGING_ON(dbenv))
 		return;
@@ -424,7 +424,7 @@ __db_logmsg(dbenv, txnid, opname, flags, fmt, va_alist)
 	va_start(ap);
 #endif
 	memset(&opdbt, 0, sizeof(opdbt));
-	opdbt.data = (gpointer)opname;
+	opdbt.data = (void *)opname;
 	opdbt.size = (u_int32_t)(strlen(opname) + 1);
 
 	memset(&msgdbt, 0, sizeof(msgdbt));
@@ -445,12 +445,12 @@ __db_logmsg(dbenv, txnid, opname, flags, fmt, va_alist)
 /*
  * __db_unknown_flag -- report internal error
  *
- * PUBLIC: gint __db_unknown_flag __P((DB_ENV *, gchar *, u_int32_t));
+ * PUBLIC: int __db_unknown_flag __P((DB_ENV *, char *, u_int32_t));
  */
-gint
+int
 __db_unknown_flag(dbenv, routine, flag)
 	DB_ENV *dbenv;
-	gchar *routine;
+	char *routine;
 	u_int32_t flag;
 {
 	__db_err(dbenv, "%s: Unknown flag: 0x%x", routine, flag);
@@ -461,12 +461,12 @@ __db_unknown_flag(dbenv, routine, flag)
 /*
  * __db_unknown_type -- report internal error
  *
- * PUBLIC: gint __db_unknown_type __P((DB_ENV *, gchar *, DBTYPE));
+ * PUBLIC: int __db_unknown_type __P((DB_ENV *, char *, DBTYPE));
  */
-gint
+int
 __db_unknown_type(dbenv, routine, type)
 	DB_ENV *dbenv;
-	gchar *routine;
+	char *routine;
 	DBTYPE type;
 {
 	__db_err(dbenv, "%s: Unknown db type: 0x%x", routine, type);
@@ -478,14 +478,14 @@ __db_unknown_type(dbenv, routine, type)
  * __db_check_txn --
  *	Check for common transaction errors.
  *
- * PUBLIC: gint __db_check_txn __P((DB *, DB_TXN *, u_int32_t, int));
+ * PUBLIC: int __db_check_txn __P((DB *, DB_TXN *, u_int32_t, int));
  */
-gint
+int
 __db_check_txn(dbp, txn, assoc_lid, read_op)
 	DB *dbp;
 	DB_TXN *txn;
 	u_int32_t assoc_lid;
-	gint read_op;
+	int read_op;
 {
 	DB_ENV *dbenv;
 
@@ -568,9 +568,9 @@ open_err:
  * __db_not_txn_env --
  *	DB handle must be in an environment that supports transactions.
  *
- * PUBLIC: gint __db_not_txn_env __P((DB_ENV *));
+ * PUBLIC: int __db_not_txn_env __P((DB_ENV *));
  */
-gint
+int
 __db_not_txn_env(dbenv)
 	DB_ENV *dbenv;
 {

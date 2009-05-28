@@ -239,27 +239,27 @@ struct {								\
 
 #define	SH_CIRCLEQ_FIRST(head, type)					\
 	((head)->scqh_first == -1 ?					\
-	(gpointer)head : SH_CIRCLEQ_FIRSTP(head, type))
+	(void *)head : SH_CIRCLEQ_FIRSTP(head, type))
 
 #define	SH_CIRCLEQ_LASTP(head, type)					\
 	((struct type *)(((u_int8_t *)(head)) + (head)->scqh_last))
 
 #define	SH_CIRCLEQ_LAST(head, type)					\
-	((head)->scqh_last == -1 ? (gpointer)head : SH_CIRCLEQ_LASTP(head, type))
+	((head)->scqh_last == -1 ? (void *)head : SH_CIRCLEQ_LASTP(head, type))
 
 #define	SH_CIRCLEQ_NEXTP(elm, field, type)				\
 	((struct type *)(((u_int8_t *)(elm)) + (elm)->field.scqe_next))
 
 #define	SH_CIRCLEQ_NEXT(head, elm, field, type)				\
 	((elm)->field.scqe_next == SH_PTR_TO_OFF(elm, head) ?		\
-	    (gpointer)head : SH_CIRCLEQ_NEXTP(elm, field, type))
+	    (void *)head : SH_CIRCLEQ_NEXTP(elm, field, type))
 
 #define	SH_CIRCLEQ_PREVP(elm, field, type)				\
 	((struct type *)(((u_int8_t *)(elm)) + (elm)->field.scqe_prev))
 
 #define	SH_CIRCLEQ_PREV(head, elm, field, type)				\
 	((elm)->field.scqe_prev == SH_PTR_TO_OFF(elm, head) ?		\
-	    (gpointer)head : SH_CIRCLEQ_PREVP(elm, field, type))
+	    (void *)head : SH_CIRCLEQ_PREVP(elm, field, type))
 
 #define	SH_CIRCLEQ_INIT(head) {						\
 	(head)->scqh_first = 0;						\
@@ -270,7 +270,7 @@ struct {								\
 	(elm)->field.scqe_prev = SH_PTR_TO_OFF(elm, listelm);		\
 	(elm)->field.scqe_next = (listelm)->field.scqe_next +		\
 	    (elm)->field.scqe_prev;					\
-	if (SH_CIRCLEQ_NEXTP(listelm, field, type) == (gpointer)head)	\
+	if (SH_CIRCLEQ_NEXTP(listelm, field, type) == (void *)head)	\
 		(head)->scqh_last = SH_PTR_TO_OFF(head, elm);		\
 	else								\
 		SH_CIRCLEQ_NEXTP(listelm,				\
@@ -284,7 +284,7 @@ struct {								\
 	(elm)->field.scqe_next = SH_PTR_TO_OFF(elm, listelm);		\
 	(elm)->field.scqe_prev = (elm)->field.scqe_next -		\
 		SH_CIRCLEQ_PREVP(listelm, field, type)->field.scqe_next;\
-	if (SH_CIRCLEQ_PREVP(listelm, field, type) == (gpointer)(head))	\
+	if (SH_CIRCLEQ_PREVP(listelm, field, type) == (void *)(head))	\
 		(head)->scqh_first = SH_PTR_TO_OFF(head, elm);		\
 	else								\
 		SH_CIRCLEQ_PREVP(listelm,				\
@@ -319,12 +319,12 @@ struct {								\
 } while (0)
 
 #define	SH_CIRCLEQ_REMOVE(head, elm, field, type) do {			\
-	if (SH_CIRCLEQ_NEXTP(elm, field, type) == (gpointer)(head))	\
+	if (SH_CIRCLEQ_NEXTP(elm, field, type) == (void *)(head))	\
 		(head)->scqh_last += (elm)->field.scqe_prev;		\
 	else								\
 		SH_CIRCLEQ_NEXTP(elm, field, type)->field.scqe_prev +=	\
 		    (elm)->field.scqe_prev;				\
-	if (SH_CIRCLEQ_PREVP(elm, field, type) == (gpointer)(head))	\
+	if (SH_CIRCLEQ_PREVP(elm, field, type) == (void *)(head))	\
 		(head)->scqh_first += (elm)->field.scqe_next;		\
 	else								\
 		SH_CIRCLEQ_PREVP(elm, field, type)->field.scqe_next +=	\

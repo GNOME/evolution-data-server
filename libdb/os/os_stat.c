@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,14 +24,14 @@ static const gchar revid[] = "$Id$";
  * __os_exists --
  *	Return if the file exists.
  *
- * PUBLIC: gint __os_exists __P((const gchar *, gint *));
+ * PUBLIC: int __os_exists __P((const char *, int *));
  */
-gint
+int
 __os_exists(path, isdirp)
-	const gchar *path;
-	gint *isdirp;
+	const char *path;
+	int *isdirp;
 {
-	gint ret;
+	int ret;
 	struct stat sb;
 
 	if (DB_GLOBAL(j_exists) != NULL)
@@ -40,7 +40,7 @@ __os_exists(path, isdirp)
 	do {
 		ret =
 #ifdef HAVE_VXWORKS
-		    stat((gchar *)path, &sb);
+		    stat((char *)path, &sb);
 #else
 		    stat(path, &sb);
 #endif
@@ -70,17 +70,17 @@ __os_exists(path, isdirp)
  *	Return file size and I/O size; abstracted to make it easier
  *	to replace.
  *
- * PUBLIC: gint __os_ioinfo __P((DB_ENV *, const gchar *,
+ * PUBLIC: int __os_ioinfo __P((DB_ENV *, const char *,
  * PUBLIC:    DB_FH *, u_int32_t *, u_int32_t *, u_int32_t *));
  */
-gint
+int
 __os_ioinfo(dbenv, path, fhp, mbytesp, bytesp, iosizep)
 	DB_ENV *dbenv;
-	const gchar *path;
+	const char *path;
 	DB_FH *fhp;
 	u_int32_t *mbytesp, *bytesp, *iosizep;
 {
-	gint ret;
+	int ret;
 	struct stat sb;
 
 	if (DB_GLOBAL(j_ioinfo) != NULL)

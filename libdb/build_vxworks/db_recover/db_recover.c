@@ -8,9 +8,9 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar copyright[] =
+static const char copyright[] =
     "Copyright (c) 1996-2002\nSleepycat Software Inc.  All rights reserved.\n";
-static const gchar revid[] =
+static const char revid[] =
     "$Id$";
 #endif
 
@@ -36,17 +36,17 @@ static const gchar revid[] =
 #include "db_int.h"
 #include "dbinc/txn.h"
 
-gint db_recover_main __P((int, gchar *[]));
-gint db_recover_read_timestamp __P((const gchar *, gchar *, time_t *));
-gint db_recover_usage __P((void));
-gint db_recover_version_check __P((const gchar *));
+int db_recover_main __P((int, char *[]));
+int db_recover_read_timestamp __P((const char *, char *, time_t *));
+int db_recover_usage __P((void));
+int db_recover_version_check __P((const char *));
 
-gint
+int
 db_recover(args)
-	gchar *args;
+	char *args;
 {
-	gint argc;
-	gchar **argv;
+	int argc;
+	char **argv;
 
 	__db_util_arg("db_recover", args, &argc, &argv);
 	return (db_recover_main(argc, argv) ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -55,20 +55,20 @@ db_recover(args)
 #include <stdio.h>
 #define	ERROR_RETURN	ERROR
 
-gint
+int
 db_recover_main(argc, argv)
-	gint argc;
-	gchar *argv[];
+	int argc;
+	char *argv[];
 {
-	extern gchar *optarg;
-	extern gint optind, __db_getopt_reset;
-	const gchar *progname = "db_recover";
+	extern char *optarg;
+	extern int optind, __db_getopt_reset;
+	const char *progname = "db_recover";
 	DB_ENV	*dbenv;
 	DB_TXNREGION *region;
 	time_t now, timestamp;
 	u_int32_t flags;
-	gint ch, exitval, fatal_recover, ret, retain_env, verbose;
-	gchar *home, *passwd;
+	int ch, exitval, fatal_recover, ret, retain_env, verbose;
+	char *home, *passwd;
 
 	if ((ret = db_recover_version_check(progname)) != 0)
 		return (ret);
@@ -230,16 +230,16 @@ shutdown:	exitval = 1;
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-gint
+int
 db_recover_read_timestamp(progname, arg, timep)
-	const gchar *progname;
-	gchar *arg;
+	const char *progname;
+	char *arg;
 	time_t *timep;
 {
 	struct tm *t;
 	time_t now;
-	gint yearset;
-	gchar *p;
+	int yearset;
+	char *p;
 					/* Start with the current time. */
 	(void)time(&now);
 	if ((t = localtime(&now)) == NULL) {
@@ -300,7 +300,7 @@ terr:		fprintf(stderr,
 	return (0);
 }
 
-gint
+int
 db_recover_usage()
 {
 	(void)fprintf(stderr, "%s\n",
@@ -308,11 +308,11 @@ db_recover_usage()
 	return (EXIT_FAILURE);
 }
 
-gint
+int
 db_recover_version_check(progname)
-	const gchar *progname;
+	const char *progname;
 {
-	gint v_major, v_minor, v_patch;
+	int v_major, v_minor, v_patch;
 
 	/* Make sure we're loaded with the right version of the DB library. */
 	(void)db_version(&v_major, &v_minor, &v_patch);

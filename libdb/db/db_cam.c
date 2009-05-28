@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -26,11 +26,11 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/log.h"
 #include "dbinc/qam.h"
 
-static gint __db_buildpartial __P((DB *, DBT *, DBT *, DBT *));
-static gint __db_c_cleanup __P((DBC *, DBC *, int));
-static gint __db_c_del_secondary __P((DBC *));
-static gint __db_c_pget_recno __P((DBC *, DBT *, DBT *, u_int32_t));
-static gint __db_wrlock_err __P((DB_ENV *));
+static int __db_buildpartial __P((DB *, DBT *, DBT *, DBT *));
+static int __db_c_cleanup __P((DBC *, DBC *, int));
+static int __db_c_del_secondary __P((DBC *));
+static int __db_c_pget_recno __P((DBC *, DBT *, DBT *, u_int32_t));
+static int __db_wrlock_err __P((DB_ENV *));
 
 #define	CDB_LOCKING_INIT(dbp, dbc)					\
 	/*								\
@@ -72,9 +72,9 @@ static gint __db_wrlock_err __P((DB_ENV *));
  * __db_c_close --
  *	Close the cursor.
  *
- * PUBLIC: gint __db_c_close __P((DBC *));
+ * PUBLIC: int __db_c_close __P((DBC *));
  */
-gint
+int
 __db_c_close(dbc)
 	DBC *dbc;
 {
@@ -82,7 +82,7 @@ __db_c_close(dbc)
 	DBC *opd;
 	DBC_INTERNAL *cp;
 	DB_ENV *dbenv;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -179,15 +179,15 @@ __db_c_close(dbc)
  * __db_c_destroy --
  *	Destroy the cursor, called after DBC->c_close.
  *
- * PUBLIC: gint __db_c_destroy __P((DBC *));
+ * PUBLIC: int __db_c_destroy __P((DBC *));
  */
-gint
+int
 __db_c_destroy(dbc)
 	DBC *dbc;
 {
 	DB *dbp;
 	DB_ENV *dbenv;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	dbenv = dbp->dbenv;
@@ -225,16 +225,16 @@ __db_c_destroy(dbc)
  * __db_c_count --
  *	Return a count of duplicate data items.
  *
- * PUBLIC: gint __db_c_count __P((DBC *, db_recno_t *, u_int32_t));
+ * PUBLIC: int __db_c_count __P((DBC *, db_recno_t *, u_int32_t));
  */
-gint
+int
 __db_c_count(dbc, recnop, flags)
 	DBC *dbc;
 	db_recno_t *recnop;
 	u_int32_t flags;
 {
 	DB *dbp;
-	gint ret;
+	int ret;
 
 	/*
 	 * Cursor Cleanup Note:
@@ -278,16 +278,16 @@ __db_c_count(dbc, recnop, flags)
  * __db_c_del --
  *	Delete using a cursor.
  *
- * PUBLIC: gint __db_c_del __P((DBC *, u_int32_t));
+ * PUBLIC: int __db_c_del __P((DBC *, u_int32_t));
  */
-gint
+int
 __db_c_del(dbc, flags)
 	DBC *dbc;
 	u_int32_t flags;
 {
 	DB *dbp;
 	DBC *opd;
-	gint ret;
+	int ret;
 
 	/*
 	 * Cursor Cleanup Note:
@@ -355,9 +355,9 @@ done:	CDB_LOCKING_DONE(dbp, dbc);
  * __db_c_dup --
  *	Duplicate a cursor
  *
- * PUBLIC: gint __db_c_dup __P((DBC *, DBC **, u_int32_t));
+ * PUBLIC: int __db_c_dup __P((DBC *, DBC **, u_int32_t));
  */
-gint
+int
 __db_c_dup(dbc_orig, dbcp, flags)
 	DBC *dbc_orig;
 	DBC **dbcp;
@@ -366,7 +366,7 @@ __db_c_dup(dbc_orig, dbcp, flags)
 	DB_ENV *dbenv;
 	DB *dbp;
 	DBC *dbc_n, *dbc_nopd;
-	gint ret;
+	int ret;
 
 	dbp = dbc_orig->dbp;
 	dbenv = dbp->dbenv;
@@ -432,9 +432,9 @@ err:	if (dbc_n != NULL)
  * __db_c_idup --
  *	Internal version of __db_c_dup.
  *
- * PUBLIC: gint __db_c_idup __P((DBC *, DBC **, u_int32_t));
+ * PUBLIC: int __db_c_idup __P((DBC *, DBC **, u_int32_t));
  */
-gint
+int
 __db_c_idup(dbc_orig, dbcp, flags)
 	DBC *dbc_orig, **dbcp;
 	u_int32_t flags;
@@ -442,7 +442,7 @@ __db_c_idup(dbc_orig, dbcp, flags)
 	DB *dbp;
 	DBC *dbc_n;
 	DBC_INTERNAL *int_n, *int_orig;
-	gint ret;
+	int ret;
 
 	dbp = dbc_orig->dbp;
 	dbc_n = *dbcp;
@@ -502,9 +502,9 @@ err:	(void)dbc_n->c_close(dbc_n);
  * __db_c_newopd --
  *	Create a new off-page duplicate cursor.
  *
- * PUBLIC: gint __db_c_newopd __P((DBC *, db_pgno_t, DBC *, DBC **));
+ * PUBLIC: int __db_c_newopd __P((DBC *, db_pgno_t, DBC *, DBC **));
  */
-gint
+int
 __db_c_newopd(dbc_parent, root, oldopd, dbcp)
 	DBC *dbc_parent;
 	db_pgno_t root;
@@ -514,7 +514,7 @@ __db_c_newopd(dbc_parent, root, oldopd, dbcp)
 	DB *dbp;
 	DBC *opd;
 	DBTYPE dbtype;
-	gint ret;
+	int ret;
 
 	dbp = dbc_parent->dbp;
 	dbtype = (dbp->dup_compare == NULL) ? DB_RECNO : DB_BTREE;
@@ -564,9 +564,9 @@ __db_c_newopd(dbc_parent, root, oldopd, dbcp)
  * __db_c_get --
  *	Get using a cursor.
  *
- * PUBLIC: gint __db_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int __db_c_get __P((DBC *, DBT *, DBT *, u_int32_t));
  */
-gint
+int
 __db_c_get(dbc_arg, key, data, flags)
 	DBC *dbc_arg;
 	DBT *key, *data;
@@ -579,7 +579,7 @@ __db_c_get(dbc_arg, key, data, flags)
 	db_pgno_t pgno;
 	u_int32_t multi, tmp_dirty, tmp_flags, tmp_rmw;
 	u_int8_t type;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	/*
 	 * Cursor Cleanup Note:
@@ -885,9 +885,9 @@ err:	/* Don't pass DB_DBT_ISSET back to application level, error or no. */
  * __db_c_put --
  *	Put using a cursor.
  *
- * PUBLIC: gint __db_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int __db_c_put __P((DBC *, DBT *, DBT *, u_int32_t));
  */
-gint
+int
 __db_c_put(dbc_arg, key, data, flags)
 	DBC *dbc_arg;
 	DBT *key, *data;
@@ -897,7 +897,7 @@ __db_c_put(dbc_arg, key, data, flags)
 	DBC *dbc_n, *oldopd, *opd, *sdbc, *pdbc;
 	DBT olddata, oldpkey, oldskey, newdata, pkey, save_skey, skey, temp;
 	db_pgno_t pgno;
-	gint cmp, have_oldrec, ispartial, nodel, re_pad, ret, rmw, t_ret;
+	int cmp, have_oldrec, ispartial, nodel, re_pad, ret, rmw, t_ret;
 	u_int32_t re_len, size, tmp_flags;
 
 	/*
@@ -1472,9 +1472,9 @@ err:	/* Cleanup and cursor resolution. */
 /*
  * __db_duperr()
  *	Error message: we don't currently support sorted duplicate duplicates.
- * PUBLIC: gint __db_duperr __P((DB *, u_int32_t));
+ * PUBLIC: int __db_duperr __P((DB *, u_int32_t));
  */
-gint
+int
 __db_duperr(dbp, flags)
 	DB *dbp;
 	u_int32_t flags;
@@ -1505,13 +1505,13 @@ __db_duperr(dbp, flags)
 static int
 __db_c_cleanup(dbc, dbc_n, failed)
 	DBC *dbc, *dbc_n;
-	gint failed;
+	int failed;
 {
 	DB *dbp;
 	DBC *opd;
 	DBC_INTERNAL *internal;
 	DB_MPOOLFILE *mpf;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -1599,9 +1599,9 @@ __db_c_cleanup(dbc, dbc_n, failed)
  *	This wrapper function for DBC->c_pget() is the DBC->c_get() function
  *	for a secondary index cursor.
  *
- * PUBLIC: gint __db_c_secondary_get __P((DBC *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int __db_c_secondary_get __P((DBC *, DBT *, DBT *, u_int32_t));
  */
-gint
+int
 __db_c_secondary_get(dbc, skey, data, flags)
 	DBC *dbc;
 	DBT *skey, *data;
@@ -1616,9 +1616,9 @@ __db_c_secondary_get(dbc, skey, data, flags)
  * __db_c_pget --
  *	Get a primary key/data pair through a secondary index.
  *
- * PUBLIC: gint __db_c_pget __P((DBC *, DBT *, DBT *, DBT *, u_int32_t));
+ * PUBLIC: int __db_c_pget __P((DBC *, DBT *, DBT *, DBT *, u_int32_t));
  */
-gint
+int
 __db_c_pget(dbc, skey, pkey, data, flags)
 	DBC *dbc;
 	DBT *skey, *pkey, *data;
@@ -1627,7 +1627,7 @@ __db_c_pget(dbc, skey, pkey, data, flags)
 	DB *pdbp, *sdbp;
 	DBC *pdbc;
 	DBT *save_rdata, nullpkey;
-	gint pkeymalloc, ret, save_pkey_flags, t_ret;
+	int pkeymalloc, ret, save_pkey_flags, t_ret;
 
 	sdbp = dbc->dbp;
 	pdbp = sdbp->s_primary;
@@ -1830,7 +1830,7 @@ __db_c_pget_recno(sdbc, pkey, data, flags)
 	DBT discardme, primary_key;
 	db_recno_t oob;
 	u_int32_t rmw;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	sdbp = sdbc->dbp;
 	pdbp = sdbp->s_primary;
@@ -1933,7 +1933,7 @@ __db_c_del_secondary(dbc)
 	DB *pdbp;
 	DBC *pdbc;
 	DBT skey, pkey;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	memset(&skey, 0, sizeof(DBT));
 	memset(&pkey, 0, sizeof(DBT));
@@ -2002,16 +2002,16 @@ __db_c_del_secondary(dbc)
  *	database, and delete any secondary keys that point at the current
  *	record.
  *
- * PUBLIC: gint __db_c_del_primary __P((DBC *));
+ * PUBLIC: int __db_c_del_primary __P((DBC *));
  */
-gint
+int
 __db_c_del_primary(dbc)
 	DBC *dbc;
 {
 	DB *dbp, *sdbp;
 	DBC *sdbc;
 	DBT data, pkey, skey, temp;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 
@@ -2115,14 +2115,14 @@ __db_s_first(pdbp)
  * __db_s_next --
  *	Get the next secondary in the list.
  *
- * PUBLIC: gint __db_s_next __P((DB **));
+ * PUBLIC: int __db_s_next __P((DB **));
  */
-gint
+int
 __db_s_next(sdbpp)
 	DB **sdbpp;
 {
 	DB *sdbp, *pdbp, *closeme;
-	gint ret;
+	int ret;
 
 	/*
 	 * Secondary indices are kept in a linked list, s_secondaries,
@@ -2176,14 +2176,14 @@ __db_s_next(sdbpp)
  *	Properly decrement the refcount on a secondary database handle we're
  *	using, without calling __db_s_next.
  *
- * PUBLIC: gint __db_s_done __P((DB *));
+ * PUBLIC: int __db_s_done __P((DB *));
  */
-gint
+int
 __db_s_done(sdbp)
 	DB *sdbp;
 {
 	DB *pdbp;
-	gint doclose;
+	int doclose;
 
 	pdbp = sdbp->s_primary;
 	doclose = 0;
@@ -2213,7 +2213,7 @@ __db_buildpartial(dbp, oldrec, partial, newrec)
 	DB *dbp;
 	DBT *oldrec, *partial, *newrec;
 {
-	gint ret;
+	int ret;
 	u_int8_t *buf;
 	u_int32_t len, nbytes;
 

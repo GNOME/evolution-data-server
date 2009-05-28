@@ -132,7 +132,7 @@ typedef unsigned long db_alignp_t;
 /* Structure used to print flag values. */
 typedef struct __fn {
 	u_int32_t mask;			/* Flag value. */
-	const gchar *name;		/* Flag name. */
+	const char *name;		/* Flag name. */
 } FN;
 
 /* Set, clear and test flags. */
@@ -291,7 +291,7 @@ typedef enum {
 	if (!F_ISSET((dbp)->dbenv, DB_ENV_DBLOCAL))			\
 		return (__db_mi_env((dbp)->dbenv, name));
 #define	DB_ILLEGAL_METHOD(dbp, flags) {					\
-	gint __ret;							\
+	int __ret;							\
 	if ((__ret = __dbh_am_chk(dbp, flags)) != 0)			\
 		return (__ret);						\
 }

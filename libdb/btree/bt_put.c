@@ -43,7 +43,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -56,10 +56,10 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/db_page.h"
 #include "dbinc/btree.h"
 
-static gint __bam_build
+static int __bam_build
 	       __P((DBC *, u_int32_t, DBT *, PAGE *, u_int32_t, u_int32_t));
-static gint __bam_dup_convert __P((DBC *, PAGE *, u_int32_t));
-static gint __bam_ovput
+static int __bam_dup_convert __P((DBC *, PAGE *, u_int32_t));
+static int __bam_ovput
 	       __P((DBC *, u_int32_t, db_pgno_t, PAGE *, u_int32_t, DBT *));
 static u_int32_t
 	   __bam_partsize __P((DB *, u_int32_t, DBT *, PAGE *, u_int32_t));
@@ -68,9 +68,9 @@ static u_int32_t
  * __bam_iitem --
  *	Insert an item into the tree.
  *
- * PUBLIC: gint __bam_iitem __P((DBC *, DBT *, DBT *, u_int32_t, u_int32_t));
+ * PUBLIC: int __bam_iitem __P((DBC *, DBT *, DBT *, u_int32_t, u_int32_t));
  */
-gint
+int
 __bam_iitem(dbc, key, data, op, flags)
 	DBC *dbc;
 	DBT *key, *data;
@@ -85,7 +85,7 @@ __bam_iitem(dbc, key, data, op, flags)
 	PAGE *h;
 	db_indx_t indx;
 	u_int32_t data_size, have_bytes, need_bytes, needed;
-	gint cmp, bigkey, bigdata, dupadjust, padrec, replace, ret, was_deleted;
+	int cmp, bigkey, bigdata, dupadjust, padrec, replace, ret, was_deleted;
 
 	COMPQUIET(bk, NULL);
 
@@ -450,7 +450,7 @@ __bam_build(dbc, op, dbt, h, indx, nbytes)
 	DBT copy, *rdata;
 	u_int32_t len, tlen;
 	u_int8_t *p;
-	gint ret;
+	int ret;
 
 	COMPQUIET(bo, NULL);
 
@@ -568,9 +568,9 @@ user_copy:
  * __bam_ritem --
  *	Replace an item on a page.
  *
- * PUBLIC: gint __bam_ritem __P((DBC *, PAGE *, u_int32_t, DBT *));
+ * PUBLIC: int __bam_ritem __P((DBC *, PAGE *, u_int32_t, DBT *));
  */
-gint
+int
 __bam_ritem(dbc, h, indx, data)
 	DBC *dbc;
 	PAGE *h;
@@ -582,7 +582,7 @@ __bam_ritem(dbc, h, indx, data)
 	DBT orig, repl;
 	db_indx_t cnt, lo, ln, min, off, prefix, suffix;
 	int32_t nbytes;
-	gint ret;
+	int ret;
 	db_indx_t *inp;
 	u_int8_t *p, *t;
 
@@ -688,7 +688,7 @@ __bam_dup_convert(dbc, h, indx)
 	DB_MPOOLFILE *mpf;
 	PAGE *dp;
 	db_indx_t cnt, cpindx, dindx, first, *inp, sz;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -826,7 +826,7 @@ __bam_ovput(dbc, type, pgno, h, indx, item)
 {
 	BOVERFLOW bo;
 	DBT hdr;
-	gint ret;
+	int ret;
 
 	UMRW_SET(bo.unused1);
 	B_TSET(bo.type, type, 0);

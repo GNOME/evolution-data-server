@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -30,13 +30,13 @@ static const gchar revid[] = "$Id$";
 #include "dbinc_auto/rpc_client_ext.h"
 #endif
 
-static gint __lock_set_lk_conflicts __P((DB_ENV *, u_int8_t *, int));
-static gint __lock_set_lk_detect __P((DB_ENV *, u_int32_t));
-static gint __lock_set_lk_max __P((DB_ENV *, u_int32_t));
-static gint __lock_set_lk_max_lockers __P((DB_ENV *, u_int32_t));
-static gint __lock_set_lk_max_locks __P((DB_ENV *, u_int32_t));
-static gint __lock_set_lk_max_objects __P((DB_ENV *, u_int32_t));
-static gint __lock_set_env_timeout __P((DB_ENV *, db_timeout_t, u_int32_t));
+static int __lock_set_lk_conflicts __P((DB_ENV *, u_int8_t *, int));
+static int __lock_set_lk_detect __P((DB_ENV *, u_int32_t));
+static int __lock_set_lk_max __P((DB_ENV *, u_int32_t));
+static int __lock_set_lk_max_lockers __P((DB_ENV *, u_int32_t));
+static int __lock_set_lk_max_locks __P((DB_ENV *, u_int32_t));
+static int __lock_set_lk_max_objects __P((DB_ENV *, u_int32_t));
+static int __lock_set_env_timeout __P((DB_ENV *, db_timeout_t, u_int32_t));
 
 /*
  * __lock_dbenv_create --
@@ -124,9 +124,9 @@ static int
 __lock_set_lk_conflicts(dbenv, lk_conflicts, lk_modes)
 	DB_ENV *dbenv;
 	u_int8_t *lk_conflicts;
-	gint lk_modes;
+	int lk_modes;
 {
-	gint ret;
+	int ret;
 
 	ENV_ILLEGAL_AFTER_OPEN(dbenv, "set_lk_conflicts");
 

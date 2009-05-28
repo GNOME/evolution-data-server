@@ -40,7 +40,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -56,29 +56,29 @@ static const gchar revid[] = "$Id$";
 #include "dbinc/lock.h"
 #include "dbinc/btree.h"
 
-static gint __bam_broot __P((DBC *, PAGE *, PAGE *, PAGE *));
-static gint __bam_page __P((DBC *, EPG *, EPG *));
-static gint __bam_pinsert __P((DBC *, EPG *, PAGE *, PAGE *, int));
-static gint __bam_psplit __P((DBC *, EPG *, PAGE *, PAGE *, db_indx_t *));
-static gint __bam_root __P((DBC *, EPG *));
-static gint __ram_root __P((DBC *, PAGE *, PAGE *, PAGE *));
+static int __bam_broot __P((DBC *, PAGE *, PAGE *, PAGE *));
+static int __bam_page __P((DBC *, EPG *, EPG *));
+static int __bam_pinsert __P((DBC *, EPG *, PAGE *, PAGE *, int));
+static int __bam_psplit __P((DBC *, EPG *, PAGE *, PAGE *, db_indx_t *));
+static int __bam_root __P((DBC *, EPG *));
+static int __ram_root __P((DBC *, PAGE *, PAGE *, PAGE *));
 
 /*
  * __bam_split --
  *	Split a page.
  *
- * PUBLIC: gint __bam_split __P((DBC *, gpointer , db_pgno_t *));
+ * PUBLIC: int __bam_split __P((DBC *, void *, db_pgno_t *));
  */
-gint
+int
 __bam_split(dbc, arg, root_pgnop)
 	DBC *dbc;
-	gpointer arg;
+	void *arg;
 	db_pgno_t *root_pgnop;
 {
 	BTREE_CURSOR *cp;
 	enum { UP, DOWN } dir;
 	db_pgno_t root_pgno;
-	gint exact, level, ret;
+	int exact, level, ret;
 
 	cp = (BTREE_CURSOR *)dbc->internal;
 	root_pgno = cp->root;
@@ -183,7 +183,7 @@ __bam_root(dbc, cp)
 	PAGE *lp, *rp;
 	db_indx_t split;
 	u_int32_t opflags;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -277,7 +277,7 @@ __bam_page(dbc, pp, cp)
 	PAGE *lp, *rp, *alloc_rp, *tp;
 	db_indx_t split;
 	u_int32_t opflags;
-	gint ret, t_ret;
+	int ret, t_ret;
 
 	dbp = dbc->dbp;
 	mpf = dbp->mpf;
@@ -516,7 +516,7 @@ __bam_broot(dbc, rootp, lp, rp)
 	DB *dbp;
 	DBT hdr, data;
 	db_pgno_t root_pgno;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	cp = (BTREE_CURSOR *)dbc->internal;
@@ -645,7 +645,7 @@ __ram_root(dbc, rootp, lp, rp)
 	DBT hdr;
 	RINTERNAL ri;
 	db_pgno_t root_pgno;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	root_pgno = dbc->internal->root;
@@ -682,7 +682,7 @@ __bam_pinsert(dbc, parent, lchild, rchild, space_check)
 	DBC *dbc;
 	EPG *parent;
 	PAGE *lchild, *rchild;
-	gint space_check;
+	int space_check;
 {
 	BINTERNAL bi, *child_bi;
 	BKEYDATA *child_bk, *tmp_bk;
@@ -696,7 +696,7 @@ __bam_pinsert(dbc, parent, lchild, rchild, space_check)
 	db_recno_t nrecs;
 	size_t (*func) __P((DB *, const DBT *, const DBT *));
 	u_int32_t n, nbytes, nksize;
-	gint ret;
+	int ret;
 
 	dbp = dbc->dbp;
 	cp = (BTREE_CURSOR *)dbc->internal;
@@ -929,7 +929,7 @@ __bam_psplit(dbc, cp, lp, rp, splitret)
 	DB *dbp;
 	PAGE *pp;
 	db_indx_t half, *inp, nbytes, off, splitp, top;
-	gint adjust, cnt, iflag, isbigkey, ret;
+	int adjust, cnt, iflag, isbigkey, ret;
 
 	dbp = dbc->dbp;
 	pp = cp->page;
@@ -1119,9 +1119,9 @@ sort:	splitp = off;
  * __bam_copy --
  *	Copy a set of records from one page to another.
  *
- * PUBLIC: gint __bam_copy __P((DB *, PAGE *, PAGE *, u_int32_t, u_int32_t));
+ * PUBLIC: int __bam_copy __P((DB *, PAGE *, PAGE *, u_int32_t, u_int32_t));
  */
-gint
+int
 __bam_copy(dbp, pp, cp, nxt, stop)
 	DB *dbp;
 	PAGE *pp, *cp;

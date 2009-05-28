@@ -26,24 +26,24 @@ typedef struct __db_globals {
 	TAILQ_HEAD(__db_envq, __db_env) db_envq;
 
 	int	(*j_close) __P((int));	/* Underlying OS interface jump table.*/
-	void	(*j_dirfree) __P((gchar **, int));
-	int	(*j_dirlist) __P((const gchar *, gchar ***, gint *));
-	int	(*j_exists) __P((const gchar *, gint *));
-	void	(*j_free) __P((gpointer));
+	void	(*j_dirfree) __P((char **, int));
+	int	(*j_dirlist) __P((const char *, char ***, int *));
+	int	(*j_exists) __P((const char *, int *));
+	void	(*j_free) __P((void *));
 	int	(*j_fsync) __P((int));
-	int	(*j_ioinfo) __P((const gchar *,
+	int	(*j_ioinfo) __P((const char *,
 		    int, u_int32_t *, u_int32_t *, u_int32_t *));
 	void   *(*j_malloc) __P((size_t));
-	int	(*j_map) __P((gchar *, size_t, int, int, gpointer *));
-	int	(*j_open) __P((const gchar *, int, ...));
-	ssize_t	(*j_read) __P((int, gpointer , size_t));
-	void   *(*j_realloc) __P((gpointer , size_t));
-	int	(*j_rename) __P((const gchar *, const gchar *));
+	int	(*j_map) __P((char *, size_t, int, int, void **));
+	int	(*j_open) __P((const char *, int, ...));
+	ssize_t	(*j_read) __P((int, void *, size_t));
+	void   *(*j_realloc) __P((void *, size_t));
+	int	(*j_rename) __P((const char *, const char *));
 	int	(*j_seek) __P((int, size_t, db_pgno_t, u_int32_t, int, int));
 	int	(*j_sleep) __P((u_long, u_long));
-	int	(*j_unlink) __P((const gchar *));
-	int	(*j_unmap) __P((gpointer , size_t));
-	ssize_t	(*j_write) __P((int, gconstpointer , size_t));
+	int	(*j_unlink) __P((const char *));
+	int	(*j_unmap) __P((void *, size_t));
+	ssize_t	(*j_write) __P((int, const void *, size_t));
 	int	(*j_yield) __P((void));
 } DB_GLOBALS;
 

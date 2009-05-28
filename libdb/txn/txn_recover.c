@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -61,10 +61,10 @@ __txn_continue(env, txnp, td, off)
  * __txn_map_gid
  *	Return the txn that corresponds to this global ID.
  *
- * PUBLIC: gint __txn_map_gid __P((DB_ENV *,
+ * PUBLIC: int __txn_map_gid __P((DB_ENV *,
  * PUBLIC:     u_int8_t *, TXN_DETAIL **, size_t *));
  */
-gint
+int
 __txn_map_gid(dbenv, gid, tdp, offp)
 	DB_ENV *dbenv;
 	u_int8_t *gid;
@@ -103,10 +103,10 @@ __txn_map_gid(dbenv, gid, tdp, offp)
  * commited transactions.  See __txn_get_prepared for details.  This
  * function and __db_xa_recover both wrap that one.
  *
- * PUBLIC: gint __txn_recover
+ * PUBLIC: int __txn_recover
  * PUBLIC:     __P((DB_ENV *, DB_PREPLIST *, long, long *, u_int32_t));
  */
-gint
+int
 __txn_recover(dbenv, preplist, count, retp, flags)
 	DB_ENV *dbenv;
 	DB_PREPLIST *preplist;
@@ -136,10 +136,10 @@ __txn_recover(dbenv, preplist, count, retp, flags)
  *	entries	returned in the xids/txns array.  Flags indicates the operation,
  *	one of DB_FIRST or DB_NEXT.
  *
- * PUBLIC: gint __txn_get_prepared __P((DB_ENV *,
+ * PUBLIC: int __txn_get_prepared __P((DB_ENV *,
  * PUBLIC:     XID *, DB_PREPLIST *, long, long *, u_int32_t));
  */
-gint
+int
 __txn_get_prepared(dbenv, xids, txns, count, retp, flags)
 	DB_ENV *dbenv;
 	XID *xids;
@@ -158,8 +158,8 @@ __txn_get_prepared(dbenv, xids, txns, count, retp, flags)
 	XID *xidp;
 	__txn_ckp_args *ckp_args;
 	long i;
-	gint nrestores, open_files, ret, t_ret;
-	gpointer txninfo;
+	int nrestores, open_files, ret, t_ret;
+	void *txninfo;
 
 	*retp = 0;
 

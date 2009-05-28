@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -24,12 +24,12 @@ static const gchar revid[] = "$Id$";
  * __qam_31_qammeta --
  *	Upgrade the database from version 1 to version 2.
  *
- * PUBLIC: gint __qam_31_qammeta __P((DB *, gchar *, u_int8_t *));
+ * PUBLIC: int __qam_31_qammeta __P((DB *, char *, u_int8_t *));
  */
-gint
+int
 __qam_31_qammeta(dbp, real_name, buf)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int8_t *buf;
 {
 	QMETA31 *newmeta;
@@ -68,12 +68,12 @@ __qam_31_qammeta(dbp, real_name, buf)
  * __qam_32_qammeta --
  *	Upgrade the database from version 2 to version 3.
  *
- * PUBLIC: gint __qam_32_qammeta __P((DB *, gchar *, u_int8_t *));
+ * PUBLIC: int __qam_32_qammeta __P((DB *, char *, u_int8_t *));
  */
-gint
+int
 __qam_32_qammeta(dbp, real_name, buf)
 	DB *dbp;
-	gchar *real_name;
+	char *real_name;
 	u_int8_t *buf;
 {
 	QMETA32 *newmeta;

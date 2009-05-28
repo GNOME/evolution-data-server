@@ -7,7 +7,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #include <jni.h>
@@ -25,7 +25,7 @@ static const gchar revid[] = "$Id$";
 JNIEXPORT void JNICALL Java_com_sleepycat_db_Dbc_close
   (JNIEnv *jnienv, jobject jthis)
 {
-	gint err;
+	int err;
 	DBC *dbc = get_DBC(jnienv, jthis);
 
 	if (!verify_non_null(jnienv, dbc))
@@ -39,7 +39,7 @@ JNIEXPORT void JNICALL Java_com_sleepycat_db_Dbc_close
 JNIEXPORT jint JNICALL Java_com_sleepycat_db_Dbc_count
   (JNIEnv *jnienv, jobject jthis, jint flags)
 {
-	gint err;
+	int err;
 	DBC *dbc = get_DBC(jnienv, jthis);
 	db_recno_t count;
 
@@ -56,7 +56,7 @@ JAVADB_METHOD_INT(Dbc_del, (JAVADB_ARGS, jint flags), DBC,
 JNIEXPORT jobject JNICALL Java_com_sleepycat_db_Dbc_dup
   (JNIEnv *jnienv, jobject jthis, jint flags)
 {
-	gint err;
+	int err;
 	DBC *dbc = get_DBC(jnienv, jthis);
 	DBC *dbc_ret = NULL;
 
@@ -73,7 +73,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Dbc_get
   (JNIEnv *jnienv, jobject jthis,
    /*Dbt*/ jobject key, /*Dbt*/ jobject data, jint flags)
 {
-	gint err, retry, op_flags;
+	int err, retry, op_flags;
 	DBC *dbc;
 	DB_ENV *dbenv;
 	LOCKED_DBT lkey, ldata;
@@ -143,7 +143,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Dbc_pget
   (JNIEnv *jnienv, jobject jthis,
    /*Dbt*/ jobject key, /*Dbt*/ jobject pkey, /*Dbt*/ jobject data, jint flags)
 {
-	gint err, retry, op_flags;
+	int err, retry, op_flags;
 	DBC *dbc;
 	DB_ENV *dbenv;
 	LOCKED_DBT lkey, lpkey, ldata;
@@ -220,7 +220,7 @@ JNIEXPORT jint JNICALL Java_com_sleepycat_db_Dbc_put
   (JNIEnv *jnienv, jobject jthis,
    /*Dbt*/ jobject key, /*Dbt*/ jobject data, jint flags)
 {
-	gint err;
+	int err;
 	DBC *dbc;
 	DB_ENV *dbenv;
 	LOCKED_DBT lkey, ldata;

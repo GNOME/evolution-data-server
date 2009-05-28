@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -27,21 +27,21 @@ static const gchar revid[] = "$Id$";
  * __fop_create_recover --
  *	Recovery function for create.
  *
- * PUBLIC: gint __fop_create_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __fop_create_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __fop_create_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	DB_FH fh;
 	__fop_create_args *argp;
-	gchar *real_name;
-	gint ret;
+	char *real_name;
+	int ret;
 
 	real_name = NULL;
 	COMPQUIET(info, NULL);
@@ -49,7 +49,7 @@ __fop_create_recover(dbenv, dbtp, lsnp, op, info)
 	REC_NOOP_INTRO(__fop_create_read);
 
 	if ((ret = __db_appname(dbenv, (APPNAME)argp->appname,
-	    (const gchar *)argp->name.data, 0, NULL, &real_name)) != 0)
+	    (const char *)argp->name.data, 0, NULL, &real_name)) != 0)
 		goto out;
 
 	if (DB_UNDO(op))
@@ -71,20 +71,20 @@ out: if (real_name != NULL)
  * __fop_remove_recover --
  *	Recovery function for remove.
  *
- * PUBLIC: gint __fop_remove_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __fop_remove_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __fop_remove_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__fop_remove_args *argp;
-	gchar *real_name;
-	gint ret;
+	char *real_name;
+	int ret;
 
 	real_name = NULL;
 	COMPQUIET(info, NULL);
@@ -92,7 +92,7 @@ __fop_remove_recover(dbenv, dbtp, lsnp, op, info)
 	REC_NOOP_INTRO(__fop_remove_read);
 
 	if ((ret = __db_appname(dbenv, (APPNAME)argp->appname,
-	    (const gchar *)argp->name.data, 0, NULL, &real_name)) != 0)
+	    (const char *)argp->name.data, 0, NULL, &real_name)) != 0)
 		goto out;
 
 	if (DB_REDO(op) && (ret = dbenv->memp_nameop(dbenv,
@@ -109,19 +109,19 @@ out:	if (real_name != NULL)
  * __fop_write_recover --
  *	Recovery function for writechunk.
  *
- * PUBLIC: gint __fop_write_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __fop_write_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __fop_write_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__fop_write_args *argp;
-	gint ret;
+	int ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__fop_write_print);
@@ -142,21 +142,21 @@ __fop_write_recover(dbenv, dbtp, lsnp, op, info)
  * __fop_rename_recover --
  *	Recovery function for rename.
  *
- * PUBLIC: gint __fop_rename_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __fop_rename_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __fop_rename_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__fop_rename_args *argp;
 	DBMETA *meta;
-	gchar *real_new, *real_old, *src;
-	gint ret;
+	char *real_new, *real_old, *src;
+	int ret;
 	u_int8_t *fileid, mbuf[DBMETASIZE];
 
 	real_new = NULL;
@@ -170,10 +170,10 @@ __fop_rename_recover(dbenv, dbtp, lsnp, op, info)
 	fileid = argp->fileid.data;
 
 	if ((ret = __db_appname(dbenv, (APPNAME)argp->appname,
-	    (const gchar *)argp->newname.data, 0, NULL, &real_new)) != 0)
+	    (const char *)argp->newname.data, 0, NULL, &real_new)) != 0)
 		goto out;
 	if ((ret = __db_appname(dbenv, (APPNAME)argp->appname,
-	    (const gchar *)argp->oldname.data, 0, NULL, &real_old)) != 0)
+	    (const char *)argp->oldname.data, 0, NULL, &real_old)) != 0)
 		goto out;
 
 	/*
@@ -200,10 +200,10 @@ __fop_rename_recover(dbenv, dbtp, lsnp, op, info)
 
 	if (DB_UNDO(op))
 		(void)dbenv->memp_nameop(dbenv, fileid,
-		    (const gchar *)argp->oldname.data, real_new, real_old);
+		    (const char *)argp->oldname.data, real_new, real_old);
 	if (DB_REDO(op))
 		(void)dbenv->memp_nameop(dbenv, fileid,
-		    (const gchar *)argp->newname.data, real_old, real_new);
+		    (const char *)argp->newname.data, real_old, real_new);
 
 done:	*lsnp = argp->prev_lsn;
 out:	if (real_new != NULL)
@@ -222,21 +222,21 @@ out:	if (real_new != NULL)
  * exists and then set the status of the child transaction depending on
  * what we find out.
  *
- * PUBLIC: gint __fop_file_remove_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __fop_file_remove_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __fop_file_remove_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__fop_file_remove_args *argp;
 	DBMETA *meta;
-	gchar *real_name;
-	gint is_real, is_tmp, ret;
+	char *real_name;
+	int is_real, is_tmp, ret;
 	size_t len;
 	u_int8_t mbuf[DBMETASIZE];
 	u_int32_t cstat;

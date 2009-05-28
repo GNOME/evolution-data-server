@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -47,7 +47,7 @@ static const gchar revid[] = "$Id$";
  * sizeof(word) MUST BE A POWER OF TWO
  * SO THAT wmask BELOW IS ALL ONES
  */
-typedef	gint word;		/* "word" used for optimal copy speed */
+typedef	int word;		/* "word" used for optimal copy speed */
 
 #undef	wsize
 #define	wsize	sizeof(word)
@@ -62,31 +62,31 @@ typedef	gint word;		/* "word" used for optimal copy speed */
 #ifdef MEMCOPY
 /*
  * PUBLIC: #ifndef HAVE_MEMCPY
- * PUBLIC: gpointer memcpy __P((gpointer , gconstpointer , size_t));
+ * PUBLIC: void *memcpy __P((void *, const void *, size_t));
  * PUBLIC: #endif
  */
-gpointer
+void *
 memcpy(dst0, src0, length)
 #else
 #ifdef MEMMOVE
 /*
  * PUBLIC: #ifndef HAVE_MEMMOVE
- * PUBLIC: gpointer memmove __P((gpointer , gconstpointer , size_t));
+ * PUBLIC: void *memmove __P((void *, const void *, size_t));
  * PUBLIC: #endif
  */
-gpointer
+void *
 memmove(dst0, src0, length)
 #else
 void
 bcopy(src0, dst0, length)
 #endif
 #endif
-	gpointer dst0;
-	gconstpointer src0;
+	void *dst0;
+	const void *src0;
 	register size_t length;
 {
-	register gchar *dst = dst0;
-	register const gchar *src = src0;
+	register char *dst = dst0;
+	register const char *src = src0;
 	register size_t t;
 
 	if (length == 0 || dst == src)		/* nothing to do */

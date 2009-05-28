@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -29,16 +29,16 @@ static const gchar revid[] = "$Id$";
  * __qam_incfirst_recover --
  *	Recovery function for incfirst.
  *
- * PUBLIC: gint __qam_incfirst_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __qam_incfirst_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __qam_incfirst_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__qam_incfirst_args *argp;
 	DB *file_dbp;
@@ -48,7 +48,7 @@ __qam_incfirst_recover(dbenv, dbtp, lsnp, op, info)
 	QMETA *meta;
 	QUEUE_CURSOR *cp;
 	db_pgno_t metapg;
-	gint exact, modified, ret, rec_ext;
+	int exact, modified, ret, rec_ext;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__qam_incfirst_print);
@@ -141,16 +141,16 @@ out:	REC_CLOSE;
  * __qam_mvptr_recover --
  *	Recovery function for mvptr.
  *
- * PUBLIC: gint __qam_mvptr_recover
- * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __qam_mvptr_recover
+ * PUBLIC:   __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __qam_mvptr_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__qam_mvptr_args *argp;
 	DB *file_dbp;
@@ -159,7 +159,7 @@ __qam_mvptr_recover(dbenv, dbtp, lsnp, op, info)
 	DB_MPOOLFILE *mpf;
 	QMETA *meta;
 	db_pgno_t metapg;
-	gint cmp_n, cmp_p, modified, ret;
+	int cmp_n, cmp_p, modified, ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__qam_mvptr_print);
@@ -232,16 +232,16 @@ out:	REC_CLOSE;
  *	Recovery function for del.
  *		Non-extent version or if there is no data (zero len).
  *
- * PUBLIC: gint __qam_del_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __qam_del_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __qam_del_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__qam_del_args *argp;
 	DB *file_dbp;
@@ -252,7 +252,7 @@ __qam_del_recover(dbenv, dbtp, lsnp, op, info)
 	QMETA *meta;
 	QPAGE *pagep;
 	db_pgno_t metapg;
-	gint cmp_n, modified, ret;
+	int cmp_n, modified, ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__qam_del_print);
@@ -331,16 +331,16 @@ out:	REC_CLOSE;
  * __qam_delext_recover --
  *	Recovery function for del in an extent based queue.
  *
- * PUBLIC: gint __qam_delext_recover __P((DB_ENV *,
- * PUBLIC:     DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __qam_delext_recover __P((DB_ENV *,
+ * PUBLIC:     DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __qam_delext_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__qam_delext_args *argp;
 	DB *file_dbp;
@@ -351,7 +351,7 @@ __qam_delext_recover(dbenv, dbtp, lsnp, op, info)
 	QMETA *meta;
 	QPAGE *pagep;
 	db_pgno_t metapg;
-	gint cmp_n, modified, ret;
+	int cmp_n, modified, ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__qam_delext_print);
@@ -440,16 +440,16 @@ out:	REC_CLOSE;
  * __qam_add_recover --
  *	Recovery function for add.
  *
- * PUBLIC: gint __qam_add_recover
- * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, gpointer ));
+ * PUBLIC: int __qam_add_recover
+ * PUBLIC:     __P((DB_ENV *, DBT *, DB_LSN *, db_recops, void *));
  */
-gint
+int
 __qam_add_recover(dbenv, dbtp, lsnp, op, info)
 	DB_ENV *dbenv;
 	DBT *dbtp;
 	DB_LSN *lsnp;
 	db_recops op;
-	gpointer info;
+	void *info;
 {
 	__qam_add_args *argp;
 	DB *file_dbp;
@@ -459,7 +459,7 @@ __qam_add_recover(dbenv, dbtp, lsnp, op, info)
 	QMETA *meta;
 	QPAGE *pagep;
 	db_pgno_t metapg;
-	gint cmp_n, meta_dirty, modified, ret;
+	int cmp_n, meta_dirty, modified, ret;
 
 	COMPQUIET(info, NULL);
 	REC_PRINT(__qam_add_print);

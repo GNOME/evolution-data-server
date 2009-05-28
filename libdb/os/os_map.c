@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -28,19 +28,19 @@ static const gchar revid[] = "$Id$";
 #include "db_int.h"
 
 #ifdef HAVE_MMAP
-static gint __os_map __P((DB_ENV *, gchar *, DB_FH *, size_t, int, int, gpointer *));
+static int __os_map __P((DB_ENV *, char *, DB_FH *, size_t, int, int, void **));
 #endif
 #ifndef HAVE_SHMGET
-static gint __db_nosystemmem __P((DB_ENV *));
+static int __db_nosystemmem __P((DB_ENV *));
 #endif
 
 /*
  * __os_r_sysattach --
  *	Create/join a shared memory region.
  *
- * PUBLIC: gint __os_r_sysattach __P((DB_ENV *, REGINFO *, REGION *));
+ * PUBLIC: int __os_r_sysattach __P((DB_ENV *, REGINFO *, REGION *));
  */
-gint
+int
 __os_r_sysattach(dbenv, infop, rp)
 	DB_ENV *dbenv;
 	REGINFO *infop;
@@ -65,7 +65,7 @@ __os_r_sysattach(dbenv, infop, rp)
 #if defined(HAVE_SHMGET)
 		{
 		key_t segid;
-		gint id, ret;
+		int id, ret;
 
 		/*
 		 * We could potentially create based on REGION_CREATE_OK, but
@@ -118,7 +118,7 @@ __os_r_sysattach(dbenv, infop, rp)
 		} else
 			id = rp->segid;
 
-		if ((infop->addr = shmat(id, NULL, 0)) == (gpointer)-1) {
+		if ((infop->addr = shmat(id, NULL, 0)) == (void *)-1) {
 			infop->addr = NULL;
 			ret = __os_get_errno();
 			__db_err(dbenv,
@@ -137,7 +137,7 @@ __os_r_sysattach(dbenv, infop, rp)
 #ifdef HAVE_MMAP
 	{
 	DB_FH fh;
-	gint ret;
+	int ret;
 
 	/*
 	 * Try to open/create the shared region file.  We DO NOT need to ensure
@@ -185,13 +185,13 @@ __os_r_sysattach(dbenv, infop, rp)
  * __os_r_sysdetach --
  *	Detach from a shared memory region.
  *
- * PUBLIC: gint __os_r_sysdetach __P((DB_ENV *, REGINFO *, int));
+ * PUBLIC: int __os_r_sysdetach __P((DB_ENV *, REGINFO *, int));
  */
-gint
+int
 __os_r_sysdetach(dbenv, infop, destroy)
 	DB_ENV *dbenv;
 	REGINFO *infop;
-	gint destroy;
+	int destroy;
 {
 	REGION *rp;
 
@@ -199,7 +199,7 @@ __os_r_sysdetach(dbenv, infop, destroy)
 
 	if (F_ISSET(dbenv, DB_ENV_SYSTEM_MEM)) {
 #ifdef HAVE_SHMGET
-		gint ret, segid;
+		int ret, segid;
 
 		/*
 		 * We may be about to remove the memory referenced by rp,
@@ -235,7 +235,7 @@ __os_r_sysdetach(dbenv, infop, destroy)
 		(void)munlock(infop->addr, rp->size);
 #endif
 	if (munmap(infop->addr, rp->size) != 0) {
-		gint ret;
+		int ret;
 
 		ret = __os_get_errno();
 		__db_err(dbenv, "munmap: %s", strerror(ret));
@@ -256,17 +256,17 @@ __os_r_sysdetach(dbenv, infop, destroy)
  * __os_mapfile --
  *	Map in a shared memory file.
  *
- * PUBLIC: gint __os_mapfile __P((DB_ENV *,
- * PUBLIC:     gchar *, DB_FH *, size_t, int, gpointer *));
+ * PUBLIC: int __os_mapfile __P((DB_ENV *,
+ * PUBLIC:     char *, DB_FH *, size_t, int, void **));
  */
-gint
+int
 __os_mapfile(dbenv, path, fhp, len, is_rdonly, addrp)
 	DB_ENV *dbenv;
-	gchar *path;
+	char *path;
 	DB_FH *fhp;
-	gint is_rdonly;
+	int is_rdonly;
 	size_t len;
-	gpointer *addrp;
+	void **addrp;
 {
 #if defined(HAVE_MMAP) && !defined(HAVE_QNX)
 	return (__os_map(dbenv, path, fhp, len, 0, is_rdonly, addrp));
@@ -285,12 +285,12 @@ __os_mapfile(dbenv, path, fhp, len, is_rdonly, addrp)
  * __os_unmapfile --
  *	Unmap the shared memory file.
  *
- * PUBLIC: gint __os_unmapfile __P((DB_ENV *, gpointer , size_t));
+ * PUBLIC: int __os_unmapfile __P((DB_ENV *, void *, size_t));
  */
-gint
+int
 __os_unmapfile(dbenv, addr, len)
 	DB_ENV *dbenv;
-	gpointer addr;
+	void *addr;
 	size_t len;
 {
 	/* If the user replaced the map call, call through their interface. */
@@ -306,7 +306,7 @@ __os_unmapfile(dbenv, addr, len)
 	COMPQUIET(dbenv, NULL);
 #endif
 	{
-		gint ret;
+		int ret;
 
 		while ((ret = munmap(addr, len)) != 0 &&
 		    __os_get_errno() == EINTR)
@@ -328,14 +328,14 @@ __os_unmapfile(dbenv, addr, len)
 static int
 __os_map(dbenv, path, fhp, len, is_region, is_rdonly, addrp)
 	DB_ENV *dbenv;
-	gchar *path;
+	char *path;
 	DB_FH *fhp;
-	gint is_region, is_rdonly;
+	int is_region, is_rdonly;
 	size_t len;
-	gpointer *addrp;
+	void **addrp;
 {
-	gpointer p;
-	gint flags, prot, ret;
+	void *p;
+	int flags, prot, ret;
 
 	/* If the user replaced the map call, call through their interface. */
 	if (DB_GLOBAL(j_map) != NULL)
@@ -396,7 +396,7 @@ __os_map(dbenv, path, fhp, len, is_region, is_rdonly, addrp)
 #define	MAP_FAILED	-1
 #endif
 	if ((p = mmap(NULL,
-	    len, prot, flags, fhp->fd, (off_t)0)) == (gpointer)MAP_FAILED) {
+	    len, prot, flags, fhp->fd, (off_t)0)) == (void *)MAP_FAILED) {
 		ret = __os_get_errno();
 		__db_err(dbenv, "mmap: %s", strerror(ret));
 		return (ret);

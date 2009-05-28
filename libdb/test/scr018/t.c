@@ -5,11 +5,11 @@
 #include <stdio.h>
 #include <strings.h>
 
-gint
+int
 chk(f)
-	gchar *f;
+	char *f;
 {
-	gint ch, l, r;
+	int ch, l, r;
 
 	if (freopen(f, "r", stdin) == NULL) {
 		fprintf(stderr, "%s: %s\n", f, strerror(errno));
@@ -34,10 +34,10 @@ next:		if (ch == '\n')
 	return (r);
 }
 
-gint
-main(gint argc, gchar *argv[])
+int
+main(int argc, char *argv[])
 {
-	gint r;
+	int r;
 
 	for (r = 0; *++argv != NULL;)
 		if (chk(*argv))

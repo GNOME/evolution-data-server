@@ -8,7 +8,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 #ifndef NO_SYSTEM_INCLUDES
@@ -19,12 +19,12 @@ static const gchar revid[] = "$Id$";
 
 #include "db_int.h"
 
-static gint __db_idcmp __P((gconstpointer , gconstpointer ));
+static int __db_idcmp __P((const void *, const void *));
 
 static int
 __db_idcmp(a, b)
-	gconstpointer a;
-	gconstpointer b;
+	const void *a;
+	const void *b;
 {
 	u_int32_t i, j;
 
@@ -51,10 +51,10 @@ __db_idcmp(a, b)
 void
 __db_idspace(inuse, n, minp, maxp)
 	u_int32_t *inuse;
-	gint n;
+	int n;
 	u_int32_t *minp, *maxp;
 {
-	gint i, low;
+	int i, low;
 	u_int32_t gap, t;
 
 	/* A single locker ID is a special case. */

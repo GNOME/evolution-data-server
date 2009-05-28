@@ -62,9 +62,9 @@
 
 #ifndef dTHR
 #  ifdef WIN32
-#	define dTHR extern gint Perl___notused
+#	define dTHR extern int Perl___notused
 #  else
-#	define dTHR extern gint errno
+#	define dTHR extern int errno
 #  endif
 #endif
 
@@ -126,14 +126,14 @@ static SV * newRV_noinc (SV * sv)
 #if defined(NEED_newCONSTSUB)
 static
 #else
-extern void newCONSTSUB _((HV * stash, gchar * name, SV *sv));
+extern void newCONSTSUB _((HV * stash, char * name, SV *sv));
 #endif
 
 #if defined(NEED_newCONSTSUB) || defined(NEED_newCONSTSUB_GLOBAL)
 void
 newCONSTSUB(stash,name,sv)
 HV *stash;
-gchar *name;
+char *name;
 SV *sv;
 {
 	U32 oldhints = PL_hints;
@@ -154,10 +154,10 @@ SV *sv;
 #else
 #  if (PERL_VERSION == 3) && (PERL_SUBVERSION == 22)
      /* 5.003_22 */
-		start_subparse(0),
+     		start_subparse(0),
 #  else
      /* 5.003_23  onwards */
-		start_subparse(FALSE, 0),
+     		start_subparse(FALSE, 0),
 #  endif
 #endif
 
@@ -258,7 +258,7 @@ SV *sv;
 #endif
 
 #ifndef dNOOP
-#  define dNOOP extern gint Perl___notused PERL_UNUSED_DECL
+#  define dNOOP extern int Perl___notused PERL_UNUSED_DECL
 #endif
 
 #define START_MY_CXT	static my_cxt_t my_cxt;
@@ -289,25 +289,25 @@ SV *sv;
 #define DBM_setFilter(db_type,code)				\
 	{							\
 	    if (db_type)					\
-		RETVAL = sv_mortalcopy(db_type) ;		\
+	        RETVAL = sv_mortalcopy(db_type) ;		\
 	    ST(0) = RETVAL ;					\
 	    if (db_type && (code == &PL_sv_undef)) {		\
                 SvREFCNT_dec(db_type) ;				\
-		db_type = NULL ;				\
+	        db_type = NULL ;				\
 	    }							\
 	    else if (code) {					\
-		if (db_type)					\
-		    sv_setsv(db_type, code) ;			\
-		else						\
-		    db_type = newSVsv(code) ;			\
-	    }							\
+	        if (db_type)					\
+	            sv_setsv(db_type, code) ;			\
+	        else						\
+	            db_type = newSVsv(code) ;			\
+	    }	    						\
 	}
 
 #define DBM_ckFilter(arg,type,name)				\
 	if (db->type) {						\
 	    if (db->filtering) {				\
-		croak("recursion detected in %s", name) ;	\
-	    }						\
+	        croak("recursion detected in %s", name) ;	\
+	    }                     				\
 	    ENTER ;						\
 	    SAVETMPS ;						\
 	    SAVEINT(db->filtering) ;				\
@@ -317,7 +317,7 @@ SV *sv;
 	    SvTEMP_off(arg) ;					\
 	    PUSHMARK(SP) ;					\
 	    PUTBACK ;						\
-	    (void) perl_call_sv(db->type, G_DISCARD);		\
+	    (void) perl_call_sv(db->type, G_DISCARD); 		\
 	    SPAGAIN ;						\
 	    PUTBACK ;						\
 	    FREETMPS ;						\

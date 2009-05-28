@@ -36,7 +36,7 @@
 #include "db_config.h"
 
 #ifndef lint
-static const gchar revid[] = "$Id$";
+static const char revid[] = "$Id$";
 #endif /* not lint */
 
 /*
@@ -44,20 +44,20 @@ static const gchar revid[] = "$Id$";
  *	Return the string associated with an errno.
  *
  * PUBLIC: #ifndef HAVE_STRERROR
- * PUBLIC: gchar *strerror __P((int));
+ * PUBLIC: char *strerror __P((int));
  * PUBLIC: #endif
  */
-gchar *
+char *
 strerror(num)
-	gint num;
+	int num;
 {
-	extern gint sys_nerr;
-	extern gchar *sys_errlist[];
+	extern int sys_nerr;
+	extern char *sys_errlist[];
 #undef	UPREFIX
 #define	UPREFIX	"Unknown error: "
-	static gchar ebuf[40] = UPREFIX;		/* 64-bit number + slop */
-	gint errnum;
-	gchar *p, *t, tmp[40];
+	static char ebuf[40] = UPREFIX;		/* 64-bit number + slop */
+	int errnum;
+	char *p, *t, tmp[40];
 
 	errnum = num;				/* convert to unsigned */
 	if (errnum < sys_nerr)
