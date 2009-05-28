@@ -52,6 +52,7 @@ struct _ESourceSelectorDialogClass {
 GType      e_source_selector_dialog_get_type (void);
 
 GtkWidget *e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list);
+gboolean   e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog);
 ESource   *e_source_selector_dialog_peek_primary_selection (ESourceSelectorDialog *dialog);
 
 G_END_DECLS

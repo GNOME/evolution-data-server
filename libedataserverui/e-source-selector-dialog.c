@@ -213,6 +213,52 @@ e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list)
 }
 
 /**
+ * e_source_selector_dialog_select_default_source:
+ * @dialog: An #ESourceSelectorDialog widget.
+ *
+ * Selects default source in the dialog.
+ *
+ * Return value: Whether found any default source.
+ **/
+gboolean
+e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog)
+{
+	ESourceSelectorDialogPrivate *priv;
+
+	g_return_val_if_fail (E_IS_SOURCE_SELECTOR_DIALOG (dialog), FALSE);
+
+	priv = dialog->priv;
+
+	if (priv->source_list) {
+		ESource *default_source = NULL;
+		GSList *groups, *g;
+
+		groups = e_source_list_peek_groups (priv->source_list);
+		for (g = groups; g != NULL && !default_source; g = g->next) {
+			ESourceGroup *group = E_SOURCE_GROUP (g->data);
+			GSList *sources, *s;
+
+			sources = e_source_group_peek_sources (group);
+
+			for (s = sources; s != NULL && !default_source; s = s->next) {
+				ESource *source = E_SOURCE (s->data);
+
+				if (source && e_source_get_property (source, "default"))
+					default_source = source;
+			}
+
+		}
+
+		if (default_source)
+			e_source_selector_set_primary_selection (E_SOURCE_SELECTOR (priv->source_selector), default_source);
+
+		return default_source != NULL;
+	}
+
+	return FALSE;
+}
+
+/**
  * e_source_selector_dialog_peek_primary_selection:
  * @dialog: An #ESourceSelectorDialog widget.
  *
