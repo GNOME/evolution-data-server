@@ -720,7 +720,7 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 
 		contact = e_book_backend_cache_get_contact(priv->cache, complete_uri);
 		/* download contact if it is not cached or its ETag changed */
-		if (contact == NULL ||
+		if (contact == NULL || etag == NULL ||
 				strcmp(e_contact_get_const(contact, E_CONTACT_REV),etag) != 0) {
 			contact = download_contact(webdav, complete_uri);
 			if (contact != NULL) {
