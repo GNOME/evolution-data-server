@@ -1131,8 +1131,8 @@ e_destination_get_textrepv (EDestination **destv)
 	strv = g_new0 (gchar *, len + 1);
 	for (i = 0, j = 0; destv[i]; i++) {
 		if (!e_destination_empty (destv[i])) {
-			const gchar *addr = e_destination_get_address (destv[i]);
-			strv[j++] = addr ? (gchar *) addr : "";
+			const char *addr = e_destination_get_address (destv[i]);
+			strv[j++] = addr ? (char *) addr : (gchar *) "";
 		}
 	}
 

@@ -2244,7 +2244,7 @@ e_book_response_get_contacts (EBook       *book,
 static gboolean
 do_get_changes (gboolean sync,
 		EBook *book,
-		gchar *changeid,
+		const gchar *changeid,
 		GList **changes,
 		GError **error,
 		EBookListCallback cb,
@@ -2345,7 +2345,7 @@ do_get_changes (gboolean sync,
  */
 gboolean
 e_book_get_changes (EBook       *book,
-		    gchar        *changeid,
+		    const gchar *changeid,
 		    GList      **changes,
 		    GError     **error)
 {
@@ -2372,7 +2372,7 @@ e_book_get_changes (EBook       *book,
  */
 guint
 e_book_async_get_changes (EBook             *book,
-			  gchar              *changeid,
+			  const gchar       *changeid,
 			  EBookListCallback  cb,
 			  gpointer           closure)
 {
@@ -3248,8 +3248,8 @@ activate_factories_for_uri (EBook *book, const gchar *uri)
 {
 	CORBA_Environment ev;
 	Bonobo_ServerInfoList *info_list = NULL;
-	gint i;
-	gchar *query;
+	int i;
+	const gchar *query;
 	GList *factories = NULL;
 
 	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/BookFactory:" API_VERSION "')";

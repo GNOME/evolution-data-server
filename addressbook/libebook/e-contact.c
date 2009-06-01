@@ -497,7 +497,7 @@ static void
 photo_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 {
 	EContactPhoto *photo = data;
-	gchar *image_type, *p;
+	const gchar *image_type, *p;
 
 	switch (photo->type) {
 	case E_CONTACT_PHOTO_TYPE_INLINED:
@@ -536,7 +536,7 @@ fn_getter (EContact *contact, EVCardAttribute *attr)
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
 
-		return p && p->data ? p->data : "";
+		return p && p->data ? p->data : (gpointer) "";
 	}
 	else
 		return NULL;
@@ -1432,8 +1432,8 @@ e_contact_get (EContact *contact, EContactField field_id)
 
 		if (attr) {
 			GList *v = e_vcard_attribute_get_values (attr);
-			rv = v && v->data && !g_ascii_strcasecmp ((gchar *)v->data, "true");
-			return rv ? "1" : NULL;
+			rv = v && v->data && !g_ascii_strcasecmp ((char*)v->data, "true");
+			return rv ? (gpointer) "1" : NULL;
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {

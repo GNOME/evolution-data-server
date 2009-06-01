@@ -126,7 +126,7 @@ static void fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTa
 static const struct field_element_mapping {
 	EContactField field_id;
 	gint element_type;
-	gchar *element_name;
+	const gchar *element_name;
 	void (*populate_contact_func)(EContact *contact,    gpointer data);
 	void (*set_value_in_gw_item) (EGwItem *item, gpointer data);
 	void (*set_changes) (EGwItem *new_item, EGwItem *old_item);
@@ -260,7 +260,7 @@ populate_ims (EContact *contact, gpointer data)
 }
 
 static void
-append_ims_to_list (GList **im_list, EContact *contact,  gchar *service_name, EContactField field_id)
+append_ims_to_list (GList **im_list, EContact *contact, const gchar *service_name, EContactField field_id)
 {
 	GList *list;
 	IMAddress *address;
@@ -437,7 +437,7 @@ copy_postal_address (PostalAddress *address)
 }
 
 static void
-set_postal_address_change (EGwItem *new_item, EGwItem *old_item,  gchar *address_type)
+set_postal_address_change (EGwItem *new_item, EGwItem *old_item, const gchar *address_type)
 {
 	PostalAddress *old_postal_address;
 	PostalAddress *new_postal_address;
@@ -1025,66 +1025,6 @@ set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise 
 }
 
 static void
-set_organization_in_gw_item (EGwItem *item, EContact *contact, EBookBackendGroupwise *egwb)
-{
-	gchar *organization_name;
-	EGwItem *org_item, *temp_item;
-	EGwFilter *filter;
-	gint status;
-	gchar *id;
-	GList *items;
-
-	organization_name = e_contact_get (contact, E_CONTACT_ORG);
-	if (organization_name == NULL || strlen (organization_name) == 0)
-		return;
-
-	filter = e_gw_filter_new ();
-	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "name", organization_name);
-	items = NULL;
-	status = e_gw_connection_get_items (egwb->priv->cnc, egwb->priv->container_id, NULL, filter, &items);
-	g_object_unref (filter);
-	id = NULL;
-
-	for (; items != NULL; items = g_list_next (items )) {
-		temp_item = E_GW_ITEM (items->data);
-		if (e_gw_item_get_item_type (temp_item) == E_GW_ITEM_TYPE_ORGANISATION) {
-			id = g_strdup (e_gw_item_get_id (temp_item));
-			for (;items != NULL; items = g_list_next (items))
-				g_object_unref (items->data);
-			break;
-		}
-		g_object_unref (temp_item);
-	}
-	g_list_free (items);
-
-	if (id == NULL) {
-		org_item = e_gw_item_new_empty ();
-		e_gw_item_set_container_id (org_item, egwb->priv->container_id);
-		e_gw_item_set_field_value (org_item, "name", organization_name);
-		e_gw_item_set_item_type (org_item, E_GW_ITEM_TYPE_ORGANISATION);
-		status = e_gw_connection_create_item (egwb->priv->cnc, org_item, &id);
-		if ((status == E_GW_CONNECTION_STATUS_OK) && id) {
-			EContact *contact = e_contact_new ();
-			fill_contact_from_gw_item (contact, org_item, egwb->priv->categories_by_id);
-			e_contact_set (contact, E_CONTACT_UID, id);
-			e_contact_set (contact, E_CONTACT_FULL_NAME, organization_name);
-			/* book uri is always set outside fill_contact_from_gw_item() */
-			e_contact_set (contact, E_CONTACT_BOOK_URI, egwb->priv->original_uri);
-			e_book_backend_db_cache_add_contact (egwb->priv->file_db, contact);
-			e_book_backend_summary_add_contact (egwb->priv->summary, contact);
-			g_object_unref (contact);
-		}
-		g_object_unref (org_item);
-		if (status != E_GW_CONNECTION_STATUS_OK)
-			return;
-	}
-	if (id == NULL)
-		return;
-	e_gw_item_set_field_value (item, "organization_id", id);
-	e_gw_item_set_field_value (item , "organization", organization_name);
-}
-
-static void
 set_organization_changes_in_gw_item (EGwItem *new_item, EGwItem *old_item)
 {
 	gchar *old_value;
@@ -1638,7 +1578,7 @@ func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = argv[1]->value.string;
-		gchar *gw_field_name;
+		const gchar *gw_field_name;
 
 		if (g_str_equal (propname, "x-evolution-any-field")) {
 			if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
@@ -1699,7 +1639,7 @@ func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = argv[1]->value.string;
-		gchar *gw_field_name;
+		const gchar *gw_field_name;
 
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name"))
@@ -1757,7 +1697,7 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = argv[1]->value.string;
-		gchar *gw_field_name;
+		const gchar *gw_field_name;
 
 		if (!sexp_data->is_personal_book && str && strlen(str) == 0) {
 			/* ignore the NULL query */
@@ -1843,7 +1783,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 	    && argv[0]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = argv[1]->value.string;
-		gchar *gw_field_name;
+		const gchar *gw_field_name;
 
 		gw_field_name = NULL;
 		if (g_str_equal (propname, "full_name"))
@@ -1883,7 +1823,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 
 /* 'builtin' functions */
 static const struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -2193,7 +2133,7 @@ book_view_thread (gpointer data)
 	GPtrArray *ids = NULL;
 	EDataBookView *book_view = data;
 	GroupwiseBackendSearchClosure *closure = get_closure (book_view);
-	gchar *view = NULL;
+	const gchar *view = NULL;
 	gboolean is_auto_completion = FALSE;
 	gchar *search_string = NULL;
 	GTimeVal start, end;

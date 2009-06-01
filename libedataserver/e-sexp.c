@@ -1130,9 +1130,9 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(s, 0, (gchar *) symbols[i].name, (ESExpIFunc *)symbols[i].func, (gpointer)&symbols[i]);
+			e_sexp_add_ifunction(s, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, (void *)&symbols[i]);
 		} else {
-			e_sexp_add_function(s, 0, (gchar *) symbols[i].name, symbols[i].func, (gpointer)&symbols[i]);
+			e_sexp_add_function(s, 0, symbols[i].name, symbols[i].func, (void *)&symbols[i]);
 		}
 	}
 
@@ -1199,7 +1199,7 @@ e_sexp_unref (ESExp *f)
 #endif
 
 void
-e_sexp_add_function(ESExp *f, gint scope, gchar *name, ESExpFunc *func, gpointer data)
+e_sexp_add_function(ESExp *f, int scope, const char *name, ESExpFunc *func, void *data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1217,7 +1217,7 @@ e_sexp_add_function(ESExp *f, gint scope, gchar *name, ESExpFunc *func, gpointer
 }
 
 void
-e_sexp_add_ifunction(ESExp *f, gint scope, gchar *name, ESExpIFunc *ifunc, gpointer data)
+e_sexp_add_ifunction(ESExp *f, int scope, const char *name, ESExpIFunc *ifunc, void *data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1250,7 +1250,7 @@ e_sexp_add_variable(ESExp *f, gint scope, gchar *name, ESExpTerm *value)
 }
 
 void
-e_sexp_remove_symbol(ESExp *f, gint scope, gchar *name)
+e_sexp_remove_symbol(ESExp *f, int scope, const char *name)
 {
 	gint oldscope;
 	struct _ESExpSymbol *s;

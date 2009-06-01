@@ -955,7 +955,7 @@ func_check(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer dat
 
 /* 'builtin' functions */
 static const struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -1182,7 +1182,7 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 
 /* 'builtin' functions */
 static const struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */

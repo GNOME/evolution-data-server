@@ -15,9 +15,9 @@ main (gint argc, gchar **argv)
 	contact = e_contact_new ();
 
 	category_list = NULL;
-	category_list = g_list_append (category_list, "Birthday");
-	category_list = g_list_append (category_list, "Business");
-	category_list = g_list_append (category_list, "Competition");
+	category_list = g_list_append (category_list, (gpointer) "Birthday");
+	category_list = g_list_append (category_list, (gpointer) "Business");
+	category_list = g_list_append (category_list, (gpointer) "Competition");
 
 	e_contact_set (contact, E_CONTACT_CATEGORY_LIST, category_list);
 

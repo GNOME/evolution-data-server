@@ -198,7 +198,7 @@ skip_to_next_line (gchar **p)
 /* skip forward until we hit a character in @s, CRLF, or \0.  leave *p
    pointing at the character that causes us to stop */
 static void
-skip_until (gchar **p, gchar *s)
+skip_until (char **p, const char *s)
 {
 	gchar *lp;
 
@@ -206,7 +206,7 @@ skip_until (gchar **p, gchar *s)
 
 	while (*lp != '\r' && *lp != '\0') {
 		gboolean s_matches = FALSE;
-		gchar *ls;
+		const char *ls;
 		for (ls = s; *ls; ls = g_utf8_next_char (ls)) {
 			if (g_utf8_get_char (ls) == g_utf8_get_char (lp)) {
 				s_matches = TRUE;
@@ -420,7 +420,7 @@ read_attribute_params (EVCardAttribute *attr, gchar **p, gboolean *quoted_printa
 			}
 			else {
 				if (str->len > 0) {
-					gchar *param_name;
+					const char *param_name;
 					if (!g_ascii_strcasecmp (str->str,
 								 "quoted-printable")) {
 						param_name = "ENCODING";
@@ -1258,7 +1258,7 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr, const gchar *value, 
 		g_warning ("can't add_value_decoded with an attribute using RAW encoding.  you must set the ENCODING parameter first");
 		break;
 	case EVC_ENCODING_BASE64: {
-		gchar *b64_data = g_base64_encode (value, len);
+		gchar *b64_data = g_base64_encode ((guchar *) value, len);
 		GString *decoded = g_string_new_len (value, len);
 
 		/* make sure the decoded list is up to date */
@@ -1832,7 +1832,7 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
 				gsize len = 0;
 
 				decoded = g_base64_decode (l->data, &len);
-				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new_len (decoded, len));
+				attr->decoded_values = g_list_prepend (attr->decoded_values, g_string_new_len ((gchar *) decoded, len));
 				g_free (decoded);
 			}
 			attr->decoded_values = g_list_reverse (attr->decoded_values);

@@ -153,7 +153,7 @@ typedef enum {
 
 static gboolean enable_debug = FALSE;
 
-static gchar *query_prop_to_ldap(gchar *query_prop);
+static const gchar *query_prop_to_ldap(gchar *query_prop);
 static gchar *e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query);
 
 typedef struct LDAPOp LDAPOp;
@@ -297,7 +297,7 @@ static void cert_populate (EContact *contact, struct berval **ber_values);
 
 static struct prop_info {
 	EContactField field_id;
-	gchar *ldap_attr;
+	const gchar *ldap_attr;
 #define PROP_TYPE_STRING    0x01
 #define PROP_TYPE_COMPLEX   0x02
 #define PROP_TYPE_BINARY    0x04
@@ -566,7 +566,7 @@ add_oc_attributes_to_supported_fields (EBookBackendLDAP *bl, LDAPObjectClass *oc
 	GHashTable *attr_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (i = 0; i < num_prop_infos; i ++)
-		g_hash_table_insert (attr_hash, prop_info[i].ldap_attr, (gchar *)e_contact_field_name (prop_info[i].field_id));
+		g_hash_table_insert (attr_hash, (gpointer) prop_info[i].ldap_attr, (gchar*)e_contact_field_name (prop_info[i].field_id));
 
 	if (oc->oc_at_oids_must)
 		add_to_supported_fields (bl, oc->oc_at_oids_must, attr_hash);
@@ -580,7 +580,7 @@ add_oc_attributes_to_supported_fields (EBookBackendLDAP *bl, LDAPObjectClass *oc
 static void
 check_schema_support (EBookBackendLDAP *bl)
 {
-	gchar *attrs[2];
+	const gchar *attrs[2];
 	LDAPMessage *resp;
 	struct timeval timeout;
 
@@ -604,7 +604,7 @@ check_schema_support (EBookBackendLDAP *bl)
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (ldap_search_ext_s (bl->priv->ldap, bl->priv->schema_dn, LDAP_SCOPE_BASE,
-			       "(objectClass=subschema)", attrs, 0,
+			       "(objectClass=subschema)", (gchar **) attrs, 0,
 			       NULL, NULL, &timeout, LDAP_NO_LIMIT, &resp) == LDAP_SUCCESS) {
 		gchar **values;
 
@@ -718,7 +718,8 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 #define MAX_DSE_ATTRS 20
 	LDAPMessage *resp;
 	gint ldap_error = LDAP_OTHER;
-	gchar *attrs[MAX_DSE_ATTRS], **values;
+	const gchar *attrs[MAX_DSE_ATTRS];
+	gchar **values;
 	gint i = 0;
 	struct timeval timeout;
 
@@ -745,7 +746,7 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 	ldap_error = ldap_search_ext_s (bl->priv->ldap,
 					LDAP_ROOT_DSE, LDAP_SCOPE_BASE,
 					"(objectclass=*)",
-					attrs, 0, NULL, NULL, &timeout, LDAP_NO_LIMIT, &resp);
+					(gchar **) attrs, 0, NULL, NULL, &timeout, LDAP_NO_LIMIT, &resp);
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	if (ldap_error != LDAP_SUCCESS) {
 		g_warning ("could not perform query on Root DSE (ldap_error 0x%02x/%s)", ldap_error, ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : "Unknown error");
@@ -3610,7 +3611,7 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 			g_free (match_str);
 		}
 		else {
-			gchar *ldap_attr = query_prop_to_ldap(propname);
+			const gchar *ldap_attr = query_prop_to_ldap(propname);
 
 			if (ldap_attr)
 				ldap_data->list = g_list_prepend(ldap_data->list,
@@ -3640,7 +3641,7 @@ func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = rfc2254_escape(argv[1]->value.string);
-		gchar *ldap_attr = query_prop_to_ldap(propname);
+		const gchar *ldap_attr = query_prop_to_ldap(propname);
 
 		if (ldap_attr)
 			ldap_data->list = g_list_prepend(ldap_data->list,
@@ -3673,7 +3674,7 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = rfc2254_escape(argv[1]->value.string);
-		gchar *ldap_attr = query_prop_to_ldap(propname);
+		const gchar *ldap_attr = query_prop_to_ldap(propname);
 
 		if (strlen (str) == 0) {
 			g_free (str);
@@ -3730,7 +3731,7 @@ func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = rfc2254_escape(argv[1]->value.string);
-		gchar *ldap_attr = query_prop_to_ldap(propname);
+		const gchar *ldap_attr = query_prop_to_ldap(propname);
 
 		if (ldap_attr)
 			ldap_data->list = g_list_prepend(ldap_data->list,
@@ -3784,7 +3785,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 			g_free (match_str);
 		}
 		else {
-			gchar *ldap_attr = query_prop_to_ldap(propname);
+			const gchar *ldap_attr = query_prop_to_ldap(propname);
 
 			if (ldap_attr)
 				ldap_data->list = g_list_prepend(ldap_data->list,
@@ -3800,7 +3801,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 
 /* 'builtin' functions */
 static struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -3881,8 +3882,8 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query)
 	return retval;
 }
 
-static gchar *
-query_prop_to_ldap(gchar *query_prop)
+static const gchar *
+query_prop_to_ldap (gchar *query_prop)
 {
 	gint i;
 
@@ -3991,7 +3992,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 										    values);
 						}
 						else if (info->prop_type & PROP_TYPE_GROUP) {
-							gchar *grpattrs[3];
+							const gchar *grpattrs[3];
 							gint j, view_limit = -1, ldap_error, count;
 							EDataBookView *book_view;
 							LDAPMessage *result;
@@ -4019,15 +4020,15 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 								do {
 									g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 									if ((ldap_error = ldap_search_ext_s (bl->priv->ldap,
-													values[j],
-													LDAP_SCOPE_BASE,
-													NULL,
-													grpattrs, 0,
-													NULL,
-													NULL,
-													NULL,
-													view_limit,
-													&result)) == LDAP_SUCCESS) {
+						    						        values[j],
+						    						        LDAP_SCOPE_BASE,
+						    						        NULL,
+						    						        (gchar **) grpattrs, 0,
+												        NULL,
+												        NULL,
+												        NULL,
+												        view_limit,
+											    	        &result)) == LDAP_SUCCESS) {
 										/* find the e-mail ids of members */
 										cn_values = ldap_get_values (bl->priv->ldap, result, "cn");
 										email_values = ldap_get_values (bl->priv->ldap, result, "mail");

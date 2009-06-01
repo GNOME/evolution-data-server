@@ -681,7 +681,7 @@ void
 e_data_book_respond_get_contact (EDataBook                              *book,
 				 guint32                                 opid,
 				 GNOME_Evolution_Addressbook_CallStatus  status,
-				 gchar                                   *vcard)
+				 const gchar                            *vcard)
 {
 	CORBA_Environment ev;
 

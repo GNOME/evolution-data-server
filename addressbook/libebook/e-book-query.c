@@ -575,7 +575,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 
 /* 'builtin' functions */
 static const struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -660,8 +660,9 @@ e_book_query_to_string    (EBookQuery *q)
 {
 	GString *str = g_string_new ("(");
 	GString *encoded = g_string_new ("");
-	gint i;
-	gchar *s = NULL;
+	int i;
+	char *s = NULL;
+	const gchar *cs;
 
 	switch (q->type) {
 	case E_BOOK_QUERY_TYPE_AND:
@@ -696,10 +697,10 @@ e_book_query_to_string    (EBookQuery *q)
 		break;
 	case E_BOOK_QUERY_TYPE_FIELD_TEST:
 		switch (q->query.field_test.test) {
-		case E_BOOK_QUERY_IS: s = "is"; break;
-		case E_BOOK_QUERY_CONTAINS: s = "contains"; break;
-		case E_BOOK_QUERY_BEGINS_WITH: s = "beginswith"; break;
-		case E_BOOK_QUERY_ENDS_WITH: s = "endswith"; break;
+		case E_BOOK_QUERY_IS: cs = "is"; break;
+		case E_BOOK_QUERY_CONTAINS: cs = "contains"; break;
+		case E_BOOK_QUERY_BEGINS_WITH: cs = "beginswith"; break;
+		case E_BOOK_QUERY_ENDS_WITH: cs = "endswith"; break;
 		default:
 			g_assert_not_reached();
 			break;
@@ -708,7 +709,7 @@ e_book_query_to_string    (EBookQuery *q)
 		e_sexp_encode_string (encoded, q->query.field_test.value);
 
 		g_string_append_printf (str, "%s \"%s\" %s",
-					s,
+					cs,
 					q->query.field_test.field_name,
 					encoded->str);
 		break;

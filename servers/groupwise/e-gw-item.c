@@ -825,8 +825,8 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	}
 }
 
-gchar *
-e_gw_item_get_field_value (EGwItem *item, gchar *field_name)
+char*
+e_gw_item_get_field_value (EGwItem *item, const gchar *field_name)
 {
 	gpointer value;
 
@@ -844,7 +844,7 @@ e_gw_item_get_field_value (EGwItem *item, gchar *field_name)
 }
 
 void
-e_gw_item_set_field_value (EGwItem *item, gchar *field_name, gchar * field_value)
+e_gw_item_set_field_value (EGwItem *item, const gchar *field_name, char* field_value)
 {
 	g_return_if_fail (field_name != NULL);
 	g_return_if_fail (field_name != NULL);
@@ -912,14 +912,14 @@ e_gw_item_set_member_list (EGwItem *item, GList *list)
 }
 
 void
-e_gw_item_set_address (EGwItem *item, gchar *address_type, PostalAddress *address)
+e_gw_item_set_address (EGwItem *item, const gchar *address_type, PostalAddress *address)
 {
 	if (address_type && address)
 		g_hash_table_insert (item->priv->addresses, address_type, address);
 
 }
 
-PostalAddress *e_gw_item_get_address (EGwItem *item, gchar *address_type)
+PostalAddress *e_gw_item_get_address (EGwItem *item, const gchar *address_type)
 {
 	return (PostalAddress *) g_hash_table_lookup (item->priv->addresses, address_type);
 }
@@ -949,7 +949,7 @@ e_gw_item_get_category_name (EGwItem *item)
 	return item->priv->category_name;
 }
 
-void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, gchar *field_name, gpointer field_value)
+void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, const gchar *field_name, gpointer field_value)
 {
 	GHashTable *hash_table;
 	EGwItemPrivate *priv;

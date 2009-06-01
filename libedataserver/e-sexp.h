@@ -144,11 +144,11 @@ ESExp	       *e_sexp_new		(void);
 void		e_sexp_ref		(ESExp *f);
 void		e_sexp_unref		(ESExp *f);
 #endif
-void		e_sexp_add_function	(ESExp *f, gint scope, gchar *name, ESExpFunc *func, gpointer data);
-void		e_sexp_add_ifunction	(ESExp *f, gint scope, gchar *name, ESExpIFunc *func, gpointer data);
-void		e_sexp_add_variable	(ESExp *f, gint scope, gchar *name, ESExpTerm *value);
-void		e_sexp_remove_symbol	(ESExp *f, gint scope, gchar *name);
-int		e_sexp_set_scope	(ESExp *f, gint scope);
+void		e_sexp_add_function  	(ESExp *f, int scope, const char *name, ESExpFunc *func, void *data);
+void		e_sexp_add_ifunction  	(ESExp *f, int scope, const char *name, ESExpIFunc *func, void *data);
+void		e_sexp_add_variable  	(ESExp *f, int scope, char *name, ESExpTerm *value);
+void		e_sexp_remove_symbol	(ESExp *f, int scope, const char *name);
+int		e_sexp_set_scope	(ESExp *f, int scope);
 
 void		e_sexp_input_text	(ESExp *f, const gchar *text, gint len);
 void		e_sexp_input_file	(ESExp *f, gint fd);

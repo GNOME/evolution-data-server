@@ -19,7 +19,7 @@
 /* These are the keywords that will distinguish the start of an extended
    address. */
 
-static gchar *extended_keywords[] = {
+static const gchar *extended_keywords[] = {
 	"apt", "apartment", "suite", NULL
 };
 

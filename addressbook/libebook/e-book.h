@@ -214,12 +214,12 @@ guint     e_book_async_get_contacts        (EBook             *book,
 
 /* Needed for syncing */
 gboolean e_book_get_changes                (EBook       *book,
-					    gchar        *changeid,
+					    const gchar *changeid,
 					    GList      **changes,
 					    GError     **error);
 
 guint    e_book_async_get_changes          (EBook             *book,
-					    gchar              *changeid,
+					    const gchar       *changeid,
 					    EBookListCallback  cb,
 					    gpointer           closure);
 
