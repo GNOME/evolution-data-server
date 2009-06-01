@@ -91,4 +91,4 @@ EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	eds-version.h.in
 
-DISTCLEANFILES = $(pkgconfig_DATA)
+DISTCLEANFILES = eds-version.h $(pkgconfig_DATA)
