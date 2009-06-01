@@ -1559,7 +1559,16 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 			goto exception;
 	}
 
-	gpg_ctx_op_wait (gpg);
+	if (gpg_ctx_op_wait (gpg) != 0) {
+		const gchar *diagnostics;
+
+		diagnostics = gpg_ctx_get_diagnostics (gpg);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     diagnostics && *diagnostics ? diagnostics :
+				     _("Failed to execute gpg."));
+		goto exception;
+	}
+
 	validity = camel_cipher_validity_new ();
 	diagnostics = gpg_ctx_get_diagnostics (gpg);
 	camel_cipher_validity_set_description (validity, diagnostics);
