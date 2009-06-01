@@ -47,8 +47,6 @@ static GType        e_destination_store_get_column_type (GtkTreeModel       *tre
 static gboolean     e_destination_store_get_iter        (GtkTreeModel       *tree_model,
 							 GtkTreeIter        *iter,
 							 GtkTreePath        *path);
-GtkTreePath *e_destination_store_get_path        (GtkTreeModel       *tree_model,
-							 GtkTreeIter        *iter);
 static void         e_destination_store_get_value       (GtkTreeModel       *tree_model,
 							 GtkTreeIter        *iter,
 							 gint                column,

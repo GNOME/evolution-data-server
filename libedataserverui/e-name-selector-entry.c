@@ -62,8 +62,6 @@ struct _ENameSelectorEntryPrivate
 	id = g_timeout_add (AUTOCOMPLETE_TIMEOUT,	\
 			    (GSourceFunc) func, ptr);
 
-static void e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_class);
-static void e_name_selector_entry_init       (ENameSelectorEntry *name_selector_entry);
 static void e_name_selector_entry_dispose    (GObject *object);
 static void e_name_selector_entry_finalize   (GObject *object);
 

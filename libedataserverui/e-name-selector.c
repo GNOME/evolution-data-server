@@ -49,8 +49,6 @@ typedef struct {
 }
 SourceBook;
 
-static void  e_name_selector_init       (ENameSelector		 *name_selector);
-static void  e_name_selector_class_init (ENameSelectorClass	 *name_selector_class);
 static void  e_name_selector_finalize   (GObject                 *object);
 
 /* ------------------ *

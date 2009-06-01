@@ -41,8 +41,6 @@
 
 G_DEFINE_TYPE (ENameSelectorList, e_name_selector_list, E_TYPE_NAME_SELECTOR_ENTRY)
 
-static void e_name_selector_list_class_init (ENameSelectorListClass *name_selector_list_class);
-static void e_name_selector_list_init       (ENameSelectorList *name_selector_list);
 static void e_name_selector_list_dispose    (GObject *object);
 static void e_name_selector_list_finalize   (GObject *object);
 
