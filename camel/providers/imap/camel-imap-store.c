@@ -921,9 +921,9 @@ connect_to_server_process (CamelService *service, const gchar *cmd, CamelExcepti
 #endif
 
 static struct {
-	gchar *value;
-	gchar *serv;
-	gchar *port;
+	const gchar *value;
+	const gchar *serv;
+	const gchar *port;
 	gint mode;
 } ssl_options[] = {
 	{ "",              "imaps", IMAPS_PORT, MODE_SSL   },  /* really old (1.x) */
@@ -939,7 +939,7 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 	const gchar *ssl_mode;
 	struct addrinfo hints, *ai;
 	gint mode, ret, i;
-	gchar *serv;
+	const gchar *serv;
 	const gchar *port;
 
 #ifndef G_OS_WIN32
@@ -965,7 +965,7 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 
 	if (service->url->port) {
 		serv = g_alloca (16);
-		sprintf (serv, "%d", service->url->port);
+		sprintf ((char *)serv, "%d", service->url->port);
 		port = NULL;
 	}
 
@@ -1873,8 +1873,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 		if (parent_real != NULL) {
 			gboolean need_convert = FALSE;
 			gchar *resp, *thisone;
-			guint32 flags;
-			gint i;
+			gint i, flags;
 
 			if (!(response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %G", parent_real))) {
 				CAMEL_SERVICE_REC_UNLOCK (imap_store, connect_lock);
@@ -2504,7 +2503,7 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 		for (i = 0; i < response->untagged->len; i++) {
 			list = response->untagged->pdata[i];
 			fi = parse_list_response_as_folder_info (imap_store, list);
-			if (fi) {
+			if (fi && fi->full_name && *fi->full_name) {
 				hfi = g_hash_table_lookup(present, fi->full_name);
 				if (hfi == NULL) {
 					if (j == 1) {
@@ -2518,6 +2517,8 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 						hfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
 					camel_folder_info_free(fi);
 				}
+			} else if (fi) {
+				camel_folder_info_free (fi);
 			}
 		}
 		camel_imap_response_free (imap_store, response);
@@ -2529,11 +2530,19 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 	count = camel_store_summary_count((CamelStoreSummary *)imap_store->summary);
 
 	for (i=0;i<count;i++) {
+		const char *full_name;
+
 		si = camel_store_summary_index((CamelStoreSummary *)imap_store->summary, i);
 		if (si == NULL)
 			continue;
 
-		if (imap_match_pattern(imap_store->dir_sep, pattern, camel_imap_store_info_full_name(imap_store->summary, si))) {
+		full_name = camel_imap_store_info_full_name (imap_store->summary, si);
+		if (!full_name || !*full_name) {
+			camel_store_summary_info_free ((CamelStoreSummary *)imap_store->summary, si);
+			continue;
+		}
+		
+		if (imap_match_pattern (imap_store->dir_sep, pattern, full_name)) {
 			if ((fi = g_hash_table_lookup(present, camel_store_info_path(imap_store->summary, si))) != NULL) {
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
@@ -2818,13 +2827,20 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 
 	for (i=0;i<camel_store_summary_count((CamelStoreSummary *)imap_store->summary);i++) {
 		CamelStoreInfo *si = camel_store_summary_index((CamelStoreSummary *)imap_store->summary, i);
+		const char *full_name;
 
 		if (si == NULL)
 			continue;
 
-		if ((!strcmp(name, camel_imap_store_info_full_name(imap_store->summary, si))
-		     || imap_match_pattern(imap_store->dir_sep, pattern, camel_imap_store_info_full_name(imap_store->summary, si))
-		     || (include_inbox && !g_ascii_strcasecmp (camel_imap_store_info_full_name(imap_store->summary, si), "INBOX")))
+		full_name = camel_imap_store_info_full_name (imap_store->summary, si);
+		if (!full_name || !*full_name) {
+			camel_store_summary_info_free ((CamelStoreSummary *)imap_store->summary, si);
+			continue;
+		}
+
+		if ((!strcmp(name, full_name)
+		     || imap_match_pattern(imap_store->dir_sep, pattern, full_name)
+		     || (include_inbox && !g_ascii_strcasecmp (full_name, "INBOX")))
 		    && ((imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS) == 0
 			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))) {
@@ -3057,7 +3073,7 @@ camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *
 		nread--;
 	}
 
-	*dest = ba->data;
+	*dest = (gchar *)ba->data;
 	g_byte_array_free (ba, FALSE);
 
 	return nread;
