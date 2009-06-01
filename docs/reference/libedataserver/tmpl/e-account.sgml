@@ -209,7 +209,7 @@ EAccount
 
 @Param1: 
 @type: 
-@Varargs: 
+@Param3: 
 
 
 <!-- ##### FUNCTION e_account_set_bool ##### -->

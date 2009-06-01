@@ -60,8 +60,8 @@ camel-nntp-newsrc
 
 @newsrc: 
 @group_name: 
-@Param3: 
-@Param4: 
+@low: 
+@high: 
 
 
 <!-- ##### FUNCTION camel_nntp_newsrc_article_is_read ##### -->
@@ -71,7 +71,7 @@ camel-nntp-newsrc
 
 @newsrc: 
 @group_name: 
-@Param3: 
+@num: 
 @Returns: 
 
 
