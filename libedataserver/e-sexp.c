@@ -103,7 +103,9 @@
 static struct _ESExpTerm * parse_list(ESExp *f, gint gotbrace);
 static struct _ESExpTerm * parse_value(ESExp *f);
 
-static void parse_dump_term(struct _ESExpTerm *t, gint depth);
+#ifdef TESTER
+static void parse_dump_term(struct _ESExpTerm *t, int depth);
+#endif
 
 #ifdef E_SEXP_IS_G_OBJECT
 static GObjectClass *parent_class;
@@ -111,39 +113,39 @@ static GObjectClass *parent_class;
 
 static const GScannerConfig scanner_config =
 {
-	( " \t\r\n")		/* cset_skip_characters */,
-	( G_CSET_a_2_z
+	( (gchar *) " \t\r\n")		/* cset_skip_characters */,
+	( (gchar *) G_CSET_a_2_z
 	  "_+-<=>?"
-	  G_CSET_A_2_Z)		/* cset_identifier_first */,
-	( G_CSET_a_2_z
+	  G_CSET_A_2_Z)			/* cset_identifier_first */,
+	( (gchar *) G_CSET_a_2_z
 	  "_0123456789-<>?"
 	  G_CSET_A_2_Z
 	  G_CSET_LATINS
-	  G_CSET_LATINC	)	/* cset_identifier_nth */,
-	( ";\n" )		/* cpair_comment_single */,
+	  G_CSET_LATINC	)		/* cset_identifier_nth */,
+	( (gchar *) ";\n" )		/* cpair_comment_single */,
 
-	FALSE			/* case_sensitive */,
+	FALSE				/* case_sensitive */,
 
-	TRUE			/* skip_comment_multi */,
-	TRUE			/* skip_comment_single */,
-	TRUE			/* scan_comment_multi */,
-	TRUE			/* scan_identifier */,
-	TRUE			/* scan_identifier_1char */,
-	FALSE			/* scan_identifier_NULL */,
-	TRUE			/* scan_symbols */,
-	FALSE			/* scan_binary */,
-	TRUE			/* scan_octal */,
-	TRUE			/* scan_float */,
-	TRUE			/* scan_hex */,
-	FALSE			/* scan_hex_dollar */,
-	TRUE			/* scan_string_sq */,
-	TRUE			/* scan_string_dq */,
-	TRUE			/* numbers_2_int */,
-	FALSE			/* int_2_float */,
-	FALSE			/* identifier_2_string */,
-	TRUE			/* char_2_token */,
-	FALSE			/* symbol_2_token */,
-	FALSE			/* scope_0_fallback */,
+	TRUE				/* skip_comment_multi */,
+	TRUE				/* skip_comment_single */,
+	TRUE				/* scan_comment_multi */,
+	TRUE				/* scan_identifier */,
+	TRUE				/* scan_identifier_1char */,
+	FALSE				/* scan_identifier_NULL */,
+	TRUE				/* scan_symbols */,
+	FALSE				/* scan_binary */,
+	TRUE				/* scan_octal */,
+	TRUE				/* scan_float */,
+	TRUE				/* scan_hex */,
+	FALSE				/* scan_hex_dollar */,
+	TRUE				/* scan_string_sq */,
+	TRUE				/* scan_string_dq */,
+	TRUE				/* numbers_2_int */,
+	FALSE				/* int_2_float */,
+	FALSE				/* identifier_2_string */,
+	TRUE				/* char_2_token */,
+	FALSE				/* symbol_2_token */,
+	FALSE				/* scope_0_fallback */,
 };
 
 /* jumps back to the caller of f->failenv, only to be called from inside a callback */
@@ -768,6 +770,7 @@ eval_dump_result(ESExpResult *r, gint depth)
 }
 #endif
 
+#ifdef TESTER
 static void
 parse_dump_term(struct _ESExpTerm *t, gint depth)
 {
@@ -814,6 +817,7 @@ parse_dump_term(struct _ESExpTerm *t, gint depth)
 
 	printf("\n");
 }
+#endif
 
 /*
   PARSER

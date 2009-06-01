@@ -192,7 +192,7 @@ trie_insert (ETrie *trie, gint depth, struct _trie_state *q, gunichar c)
 }
 
 
-#if 1
+#if 0
 static void
 dump_trie (struct _trie_state *s, gint depth)
 {
