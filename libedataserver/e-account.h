@@ -177,7 +177,7 @@ void      e_account_set_string   (EAccount *,
 				  e_account_item_t type, const gchar *);
 
 void      e_account_set_int      (EAccount *,
-				  e_account_item_t type, int);
+				  e_account_item_t type, gint);
 
 void      e_account_set_bool     (EAccount *,
 				  e_account_item_t type, gboolean);

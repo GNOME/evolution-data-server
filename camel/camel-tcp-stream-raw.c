@@ -53,8 +53,8 @@ static CamelTcpStreamClass *parent_class = NULL;
 /* Returns the class for a CamelTcpStreamRaw */
 #define CTSR_CLASS(so) CAMEL_TCP_STREAM_RAW_CLASS (CAMEL_OBJECT_GET_CLASS (so))
 
-static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 
@@ -125,17 +125,17 @@ camel_tcp_stream_raw_get_type (void)
 }
 
 #ifdef SIMULATE_FLAKY_NETWORK
-static ssize_t
-flaky_tcp_write (gint fd, const gchar *buffer, size_t buflen)
+static gssize
+flaky_tcp_write (gint fd, const gchar *buffer, gsize buflen)
 {
-	size_t len = buflen;
-	ssize_t nwritten;
+	gsize len = buflen;
+	gssize nwritten;
 	gint val;
 
 	if (buflen == 0)
 		return 0;
 
-	val = 1 + (int) (10.0 * rand () / (RAND_MAX + 1.0));
+	val = 1 + (gint) (10.0 * rand () / (RAND_MAX + 1.0));
 
 	switch (val) {
 	case 1:
@@ -153,11 +153,11 @@ flaky_tcp_write (gint fd, const gchar *buffer, size_t buflen)
 	case 4:
 	case 5:
 	case 6:
-		len = 1 + (size_t) (buflen * rand () / (RAND_MAX + 1.0));
+		len = 1 + (gsize) (buflen * rand () / (RAND_MAX + 1.0));
 		len = MIN (len, buflen);
 		/* fall through... */
 	default:
-		printf ("flaky_tcp_write (%d, ..., %d): (%d) '%.*s'", fd, buflen, len, (int) len, buffer);
+		printf ("flaky_tcp_write (%d, ..., %d): (%d) '%.*s'", fd, buflen, len, (gint) len, buffer);
 		nwritten = write (fd, buffer, len);
 		if (nwritten < 0)
 			printf (" errno => %s\n", g_strerror (errno));
@@ -172,17 +172,17 @@ flaky_tcp_write (gint fd, const gchar *buffer, size_t buflen)
 
 #define write(fd, buffer, buflen) flaky_tcp_write (fd, buffer, buflen)
 
-static ssize_t
-flaky_tcp_read (gint fd, gchar *buffer, size_t buflen)
+static gssize
+flaky_tcp_read (gint fd, gchar *buffer, gsize buflen)
 {
-	size_t len = buflen;
-	ssize_t nread;
+	gsize len = buflen;
+	gssize nread;
 	gint val;
 
 	if (buflen == 0)
 		return 0;
 
-	val = 1 + (int) (10.0 * rand () / (RAND_MAX + 1.0));
+	val = 1 + (gint) (10.0 * rand () / (RAND_MAX + 1.0));
 
 	switch (val) {
 	case 1:
@@ -204,7 +204,7 @@ flaky_tcp_read (gint fd, gchar *buffer, size_t buflen)
 	case 8:
 	case 9:
 	case 10:
-		len = 1 + (size_t) (10.0 * rand () / (RAND_MAX + 1.0));
+		len = 1 + (gsize) (10.0 * rand () / (RAND_MAX + 1.0));
 		len = MIN (len, buflen);
 		/* fall through... */
 	default:
@@ -244,29 +244,29 @@ camel_tcp_stream_raw_new (void)
 	return CAMEL_STREAM (stream);
 }
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 
 	return camel_read_socket (raw->sockfd, buffer, n);
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 
 	return camel_write_socket (raw->sockfd, buffer, n);
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	return 0;
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1)
@@ -278,7 +278,7 @@ stream_close (CamelStream *stream)
 
 /* this is a 'cancellable' connect, cancellable from camel_operation_cancel etc */
 /* returns -1 & errno == EINTR if the connection was cancelled */
-static int
+static gint
 socket_connect(struct addrinfo *h)
 {
 	struct timeval tv;
@@ -373,7 +373,7 @@ socket_connect(struct addrinfo *h)
 			errno = EINTR;
 			return -1;
 		} else {
-			len = sizeof (int);
+			len = sizeof (gint);
 
 			if (getsockopt (fd, SOL_SOCKET, SO_ERROR, (gchar *) &ret, &len) == -1) {
 				errnosav = errno;
@@ -401,7 +401,7 @@ socket_connect(struct addrinfo *h)
 	return fd;
 }
 
-static int
+static gint
 stream_connect (CamelTcpStream *stream, struct addrinfo *host)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
@@ -419,7 +419,7 @@ stream_connect (CamelTcpStream *stream, struct addrinfo *host)
 	return -1;
 }
 
-static int
+static gint
 get_sockopt_level (const CamelSockOptData *data)
 {
 	switch (data->option) {
@@ -431,7 +431,7 @@ get_sockopt_level (const CamelSockOptData *data)
 	}
 }
 
-static int
+static gint
 get_sockopt_optname (const CamelSockOptData *data)
 {
 	switch (data->option) {
@@ -460,7 +460,7 @@ get_sockopt_optname (const CamelSockOptData *data)
 	}
 }
 
-static int
+static gint
 stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	gint optname, optlen;
@@ -490,7 +490,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 			   (socklen_t *) &optlen);
 }
 
-static int
+static gint
 stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	gint optname;

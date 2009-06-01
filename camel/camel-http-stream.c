@@ -47,8 +47,8 @@
 
 static CamelStreamClass *parent_class = NULL;
 
-static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 static gint stream_reset  (CamelStream *stream);
@@ -246,16 +246,16 @@ http_next_token (const guchar *in)
 {
 	const guchar *inptr = in;
 
-	while (*inptr && !isspace ((int) *inptr))
+	while (*inptr && !isspace ((gint) *inptr))
 		inptr++;
 
-	while (*inptr && isspace ((int) *inptr))
+	while (*inptr && isspace ((gint) *inptr))
 		inptr++;
 
 	return (const gchar *) inptr;
 }
 
-static int
+static gint
 http_get_statuscode (CamelHttpStream *http)
 {
 	const gchar *token;
@@ -278,13 +278,13 @@ http_get_statuscode (CamelHttpStream *http)
 	return -1;
 }
 
-static int
+static gint
 http_get_headers (CamelHttpStream *http)
 {
 	struct _camel_header_raw *headers, *node, *tail;
 	const gchar *type;
 	gchar *buf;
-	size_t len;
+	gsize len;
 	gint err;
 
 	if (http->parser)
@@ -347,7 +347,7 @@ http_get_headers (CamelHttpStream *http)
 	return -1;
 }
 
-static int
+static gint
 http_method_invoke (CamelHttpStream *http)
 {
 	const gchar *method = NULL;
@@ -381,16 +381,18 @@ http_method_invoke (CamelHttpStream *http)
 	}
 	g_free (url);
 
-	if (http->authrealm)
+	if (http->authrealm) {
 		d(printf("HTTP Stream Sending: WWW-Authenticate: %s\n", http->authrealm));
+	}
 
 	if (http->authrealm && camel_stream_printf (http->raw, "WWW-Authenticate: %s\r\n", http->authrealm) == -1) {
 		http_disconnect(http);
 		return -1;
 	}
 
-	if (http->authpass && http->proxy)
+	if (http->authpass && http->proxy) {
 		d(printf("HTTP Stream Sending: Proxy-Aurhorization: Basic %s\n", http->authpass));
+	}
 
 	if (http->authpass && http->proxy && camel_stream_printf (http->raw, "Proxy-Authorization: Basic %s\r\n",
 								  http->authpass) == -1) {
@@ -407,12 +409,12 @@ http_method_invoke (CamelHttpStream *http)
 	return 0;
 }
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
 	const gchar *parser_buf;
-	ssize_t nread;
+	gssize nread;
 
 	if (http->method != CAMEL_HTTP_METHOD_GET && http->method != CAMEL_HTTP_METHOD_HEAD) {
 		errno = EIO;
@@ -500,13 +502,13 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return nread;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	return -1;
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
@@ -517,7 +519,7 @@ stream_flush (CamelStream *stream)
 		return 0;
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
@@ -532,7 +534,7 @@ stream_close (CamelStream *stream)
 	return 0;
 }
 
-static int
+static gint
 stream_reset (CamelStream *stream)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);

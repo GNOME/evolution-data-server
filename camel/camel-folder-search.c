@@ -180,7 +180,7 @@ camel_folder_search_get_type (void)
 #endif
 
 static struct {
-	gchar *name;
+	const gchar *name;
 	gint offset;
 	gint flags;		/* 0x02 = immediate, 0x01 = always enter */
 } builtins[] = {
@@ -1050,7 +1050,7 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 			header = camel_message_info_subject(search->current);
 		} else if (!g_ascii_strcasecmp(headername, "date")) {
 			/* FIXME: not a very useful form of the date */
-			sprintf(strbuf, "%d", (int)camel_message_info_date_sent(search->current));
+			sprintf(strbuf, "%d", (gint)camel_message_info_date_sent(search->current));
 			header = strbuf;
 		} else if (!g_ascii_strcasecmp(headername, "from")) {
 			header = camel_message_info_from(search->current);
@@ -1291,7 +1291,7 @@ htand(gchar *key, gint value, struct IterData *iter_data)
 		g_ptr_array_add(iter_data->uids, key);
 }
 
-static int
+static gint
 match_message_index(CamelIndex *idx, const gchar *uid, const gchar *match, CamelException *ex)
 {
 	CamelIndexCursor *wc, *nc;
@@ -1772,7 +1772,7 @@ search_uid(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 	return r;
 }
 
-static int
+static gint
 read_uid_callback (gpointer  ref, gint ncol, gchar ** cols, gchar **name)
 {
 	GPtrArray *matches;

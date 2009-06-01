@@ -102,7 +102,7 @@ void             e2k_global_catalog_async_lookup (E2kGlobalCatalog *gc,
 						  E2kGlobalCatalogCallback callback,
 						  gpointer user_data);
 
-double		lookup_passwd_max_age (E2kGlobalCatalog *gc,
+gdouble		lookup_passwd_max_age (E2kGlobalCatalog *gc,
 				      E2kOperation *op);
 
 

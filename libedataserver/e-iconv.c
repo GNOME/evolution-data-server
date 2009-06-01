@@ -503,7 +503,7 @@ iconv_t e_iconv_open(const gchar *oto, const gchar *ofrom)
 			/* work around some broken iconv implementations
 			 * that die if the length arguments are NULL
 			 */
-			size_t buggy_iconv_len = 0;
+			gsize buggy_iconv_len = 0;
 			gchar *buggy_iconv_buf = NULL;
 
 			/* resets the converter */
@@ -535,7 +535,7 @@ iconv_t e_iconv_open(const gchar *oto, const gchar *ofrom)
 	return ip;
 }
 
-size_t e_iconv(iconv_t cd, const gchar **inbuf, size_t *inbytesleft, gchar ** outbuf, size_t *outbytesleft)
+gsize e_iconv(iconv_t cd, const gchar **inbuf, gsize *inbytesleft, gchar ** outbuf, gsize *outbytesleft)
 {
 	return iconv(cd, (gchar **) inbuf, inbytesleft, outbuf, outbytesleft);
 }

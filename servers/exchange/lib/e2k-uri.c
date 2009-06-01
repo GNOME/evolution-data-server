@@ -55,7 +55,7 @@ e2k_uri_new (const gchar *uri_string)
 
 	/* Find protocol: initial [a-z+.-]* substring until ":" */
 	p = uri_string;
-	while (p < end && (isalnum ((unsigned char)*p) ||
+	while (p < end && (isalnum ((guchar)*p) ||
 			   *p == '.' || *p == '+' || *p == '-'))
 		p++;
 
@@ -306,7 +306,7 @@ e2k_uri_append_encoded (GString *str, const gchar *in,
 			break;
 		case 1:
 		escape:
-			g_string_append_printf (str, "%%%02x", (int)*s++);
+			g_string_append_printf (str, "%%%02x", (gint)*s++);
 			break;
 		default:
 			g_string_append_c (str, *s++);

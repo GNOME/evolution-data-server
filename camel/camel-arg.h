@@ -39,7 +39,7 @@ enum camel_arg_t {
 
 	CAMEL_ARG_OBJ = 0x00000000, /* object */
 	CAMEL_ARG_INT = 0x10000000, /* gint */
-	CAMEL_ARG_DBL = 0x20000000, /* double */
+	CAMEL_ARG_DBL = 0x20000000, /* gdouble */
 	CAMEL_ARG_STR = 0x30000000, /* c string */
 	CAMEL_ARG_PTR = 0x40000000, /* ptr */
 	CAMEL_ARG_BOO = 0x50000000  /* bool */
@@ -56,7 +56,7 @@ struct _CamelArg {
 	union {
 		gpointer ca_object;
 		gint ca_int;
-		double ca_double;
+		gdouble ca_double;
 		gchar *ca_str;
 		gpointer ca_ptr;
 	} u;
@@ -66,7 +66,7 @@ struct _CamelArgGet {
 	union {
 		gpointer *ca_object;
 		gint *ca_int;
-		double *ca_double;
+		gdouble *ca_double;
 		gchar **ca_str;
 		gpointer *ca_ptr;
 	} u;
@@ -105,8 +105,8 @@ typedef struct _CamelProperty CamelProperty;
 
 struct _CamelProperty {
 	guint32 tag;
-	gchar *name;
-	gchar *description;
+	const gchar *name;
+	const gchar *description;
 };
 
 G_END_DECLS

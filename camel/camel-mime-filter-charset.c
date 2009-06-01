@@ -77,7 +77,7 @@ reset(CamelMimeFilter *mf)
 	CamelMimeFilterCharset *f = (CamelMimeFilterCharset *)mf;
 	gchar buf[16];
 	gchar *buffer;
-	size_t outlen = 16;
+	gsize outlen = 16;
 
 	/* what happens with the output bytes if this resets the state? */
 	if (f->ic != (iconv_t) -1) {
@@ -87,10 +87,10 @@ reset(CamelMimeFilter *mf)
 }
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterCharset *charset = (CamelMimeFilterCharset *)mf;
-	size_t inleft, outleft, converted = 0;
+	gsize inleft, outleft, converted = 0;
 	const gchar *inbuf;
 	gchar *outbuf;
 
@@ -107,7 +107,7 @@ complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **ou
 	if (inleft > 0) {
 		do {
 			converted = camel_iconv (charset->ic, &inbuf, &inleft, &outbuf, &outleft);
-			if (converted == (size_t) -1) {
+			if (converted == (gsize) -1) {
 				if (errno == E2BIG) {
 					/*
 					 * E2BIG   There is not sufficient room at *outbuf.
@@ -142,7 +142,7 @@ complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **ou
 				} else
 					goto noop;
 			}
-		} while (((int) inleft) > 0);
+		} while (((gint) inleft) > 0);
 	}
 
 	/* flush the iconv conversion */
@@ -156,16 +156,16 @@ complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **ou
 
  noop:
 
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }
 
 static void
-filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterCharset *charset = (CamelMimeFilterCharset *)mf;
-	size_t inleft, outleft, converted = 0;
+	gsize inleft, outleft, converted = 0;
 	const gchar *inbuf;
 	gchar *outbuf;
 
@@ -181,7 +181,7 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 
 	do {
 		converted = camel_iconv (charset->ic, &inbuf, &inleft, &outbuf, &outleft);
-		if (converted == (size_t) -1) {
+		if (converted == (gsize) -1) {
 			if (errno == E2BIG || errno == EINVAL)
 				break;
 
@@ -200,9 +200,9 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 				goto noop;
 			}
 		}
-	} while (((int) inleft) > 0);
+	} while (((gint) inleft) > 0);
 
-	if (((int) inleft) > 0) {
+	if (((gint) inleft) > 0) {
 		/* We've either got an E2BIG or EINVAL. Save the
                    remainder of the buffer as we'll process this next
                    time through */
@@ -217,7 +217,7 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 
  noop:
 
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }

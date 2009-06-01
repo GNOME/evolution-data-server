@@ -166,7 +166,7 @@ message_info_new_from_header(CamelFolderSummary *s, struct _camel_header_raw *h)
 	return (CamelMessageInfo *)mi;
 }
 
-static int
+static gint
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
@@ -193,7 +193,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	return 0;
 }
 
-static int
+static gint
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
@@ -203,11 +203,11 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 
 	/* Legacy version */
 	if (s->version == 0x20c) {
-		camel_file_util_decode_fixed_int32(in, &cns->high);
-		return camel_file_util_decode_fixed_int32(in, &cns->low);
+		camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->high);
+		return camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->low);
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, &cns->version) == -1)
+	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->version) == -1)
 		return -1;
 
 	if (cns->version > CAMEL_NNTP_SUMMARY_VERSION) {
@@ -216,8 +216,8 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 		return -1;
 	}
 
-	if (camel_file_util_decode_fixed_int32(in, &cns->high) == -1
-	    || camel_file_util_decode_fixed_int32(in, &cns->low) == -1)
+	if (camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->high) == -1
+	    || camel_file_util_decode_fixed_int32(in, (gint32 *) &cns->low) == -1)
 		return -1;
 
 	return 0;
@@ -238,7 +238,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	return fir;
 }
 
-static int
+static gint
 summary_header_save(CamelFolderSummary *s, FILE *out)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
@@ -255,14 +255,15 @@ summary_header_save(CamelFolderSummary *s, FILE *out)
 /* ********************************************************************** */
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
-static int
+static gint
 add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
 	struct _camel_header_raw *headers = NULL;
 	gchar *line, *tab;
-	gint len, ret;
+	guint len;
+	gint ret;
 	guint n, count, total, size;
 	struct _xover_header *xover;
 
@@ -347,7 +348,7 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 }
 
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
-static int
+static gint
 add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint low, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	CamelFolderSummary *s;

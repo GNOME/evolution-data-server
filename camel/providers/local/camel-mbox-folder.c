@@ -447,8 +447,8 @@ retry:
 	    || camel_mime_parser_tell_start_from(parser) != frompos) {
 
 		g_warning("Summary doesn't match the folder contents!  eek!\n"
-			  "  expecting offset %ld got %ld, state = %d", (long int)frompos,
-			  (long int)camel_mime_parser_tell_start_from(parser),
+			  "  expecting offset %ld got %ld, state = %d", (glong)frompos,
+			  (glong)camel_mime_parser_tell_start_from(parser),
 			  camel_mime_parser_state(parser));
 
 		camel_object_unref((CamelObject *)parser);

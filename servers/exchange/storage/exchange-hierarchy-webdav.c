@@ -181,7 +181,7 @@ static void
 hierarchy_new_folder (ExchangeHierarchy *hier, EFolder *folder,
 		      gpointer user_data)
 {
-	const gchar *internal_uri ;
+	const gchar *internal_uri;
 	gchar *mf_path;
 
 	g_return_if_fail (E_IS_FOLDER (folder));
@@ -768,7 +768,7 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gint mode)
 							       E2K_PR_EXCHANGE_FOLDER_SIZE);
 
 			/* FIXME : Find a better way of doing this */
-			fsize_d = g_ascii_strtod (folder_size, NULL)/1024 ;
+			fsize_d = g_ascii_strtod (folder_size, NULL)/1024;
 			exchange_account_folder_size_add (hier->account, name, fsize_d);
 		}
 

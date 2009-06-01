@@ -116,7 +116,7 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 
 	uristr = e_cal_backend_get_uri (backend);
 	g_assert (uristr != NULL);
-	uri = g_strdup_printf("%s:%d", uristr, (int)e_cal_backend_get_kind(backend));
+	uri = g_strdup_printf("%s:%d", uristr, (gint)e_cal_backend_get_kind(backend));
 
 	g_mutex_lock (priv->backends_mutex);
 
@@ -186,7 +186,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	uri_type_string = g_strdup_printf ("%s:%d", str_uri, (int)calobjtype_to_icalkind (type));
+	uri_type_string = g_strdup_printf ("%s:%d", str_uri, (gint)calobjtype_to_icalkind (type));
 	g_free(str_uri);
 
 	/* Find the associated backend factory (if any) */

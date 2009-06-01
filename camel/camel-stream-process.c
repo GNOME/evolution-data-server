@@ -50,8 +50,8 @@ static CamelObjectClass *parent_class = NULL;
 #define CS_CLASS(so) CAMEL_STREAM_PROCESS_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
 /* dummy implementations, for a PROCESS stream */
-static ssize_t   stream_read       (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t   stream_write      (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize   stream_read       (CamelStream *stream, gchar *buffer, gsize n);
+static gssize   stream_write      (CamelStream *stream, const gchar *buffer, gsize n);
 static gint       stream_close      (CamelStream *stream);
 static gint       stream_flush      (CamelStream *stream);
 
@@ -120,29 +120,29 @@ camel_stream_process_new (void)
 }
 
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
 
 	return camel_read (stream_process->sockfd, buffer, n);
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
 
 	return camel_write (stream_process->sockfd, buffer, n);
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	return 0;
 }
 
-static int
+static gint
 stream_close (CamelStream *object)
 {
 	CamelStreamProcess *stream = CAMEL_STREAM_PROCESS (object);
@@ -191,7 +191,7 @@ stream_close (CamelStream *object)
 	return 0;
 }
 
-static void
+G_GNUC_NORETURN static void
 do_exec_command (gint fd, const gchar *command, gchar **env)
 {
 	gint i, maxopen;
@@ -225,7 +225,7 @@ do_exec_command (gint fd, const gchar *command, gchar **env)
 
 	/* Set up child's environment. We _add_ to it, don't use execle,
 	   because otherwise we'd destroy stuff like SSH_AUTH_SOCK etc. */
-	for ( ; env && *env; env++)
+	for (; env && *env; env++)
 		putenv(*env);
 
 	execl ("/bin/sh", "/bin/sh", "-c", command, NULL);

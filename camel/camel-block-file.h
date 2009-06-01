@@ -79,7 +79,7 @@ struct _CamelBlockFile {
 	gint flags;
 
 	gint fd;
-	size_t block_size;
+	gsize block_size;
 
 	CamelBlockRoot *root;
 	CamelBlock *root_block;
@@ -100,7 +100,7 @@ struct _CamelBlockFileClass {
 
 CamelType camel_block_file_get_type(void);
 
-CamelBlockFile *camel_block_file_new(const gchar *path, gint flags, const gchar version[8], size_t block_size);
+CamelBlockFile *camel_block_file_new(const gchar *path, gint flags, const gchar version[8], gsize block_size);
 gint camel_block_file_rename(CamelBlockFile *bs, const gchar *path);
 gint camel_block_file_delete(CamelBlockFile *kf);
 
@@ -137,11 +137,11 @@ struct _CamelKeyFileClass {
 CamelType      camel_key_file_get_type(void);
 
 CamelKeyFile * camel_key_file_new(const gchar *path, gint flags, const gchar version[8]);
-int	       camel_key_file_rename(CamelKeyFile *kf, const gchar *path);
-int	       camel_key_file_delete(CamelKeyFile *kf);
+gint	       camel_key_file_rename(CamelKeyFile *kf, const gchar *path);
+gint	       camel_key_file_delete(CamelKeyFile *kf);
 
-gint            camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_key_t *records);
-gint            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, size_t *len, camel_key_t **records);
+gint            camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, gsize len, camel_key_t *records);
+gint            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, gsize *len, camel_key_t **records);
 
 G_END_DECLS
 

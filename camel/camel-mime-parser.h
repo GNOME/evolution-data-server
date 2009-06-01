@@ -80,15 +80,15 @@ CamelType camel_mime_parser_get_type (void);
 CamelMimeParser *camel_mime_parser_new (void);
 
 /* quick-fix for parser not erroring, we can find out if it had an error afterwards */
-int		camel_mime_parser_errno (CamelMimeParser *parser);
+gint		camel_mime_parser_errno (CamelMimeParser *parser);
 
 /* using an fd will be a little faster, but not much (over a simple stream) */
-int		camel_mime_parser_init_with_fd (CamelMimeParser *m, gint fd);
-int		camel_mime_parser_init_with_stream (CamelMimeParser *m, CamelStream *stream);
+gint		camel_mime_parser_init_with_fd (CamelMimeParser *m, gint fd);
+gint		camel_mime_parser_init_with_stream (CamelMimeParser *m, CamelStream *stream);
 
 /* get the stream or fd back of the parser */
 CamelStream    *camel_mime_parser_stream (CamelMimeParser *parser);
-int		camel_mime_parser_fd (CamelMimeParser *parser);
+gint		camel_mime_parser_fd (CamelMimeParser *parser);
 
 /* scan 'From' separators? */
 void camel_mime_parser_scan_from (CamelMimeParser *parser, gboolean scan_from);
@@ -99,7 +99,7 @@ void camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre
 gint camel_mime_parser_set_header_regex (CamelMimeParser *parser, gchar *matchstr);
 
 /* normal interface */
-camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, size_t *datalength);
+camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *datalength);
 void camel_mime_parser_unstep (CamelMimeParser *parser);
 void camel_mime_parser_drop_step (CamelMimeParser *parser);
 camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);

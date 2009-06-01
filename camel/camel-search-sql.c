@@ -59,30 +59,30 @@ gchar * escape_values (gchar *str);
 
 static GScannerConfig config =
         {
-                (
+                ((gchar *)
                         " \t\n\r"
-                        )                       /* cset_skip_characters */,
-                (
+                        )               /* cset_skip_characters */,
+                ((gchar *)
                         G_CSET_a_2_z
                         G_CSET_A_2_Z
-                        )                       /* cset_identifier_first */,
-                (
+                        )               /* cset_identifier_first */,
+                ((gchar *)
                         G_CSET_a_2_z
                         "_-0123456789"
                         G_CSET_A_2_Z
-                        )                       /* cset_identifier_nth */,
-                ( "" )               /* cpair_comment_single */,
-                FALSE                    /* case_sensitive */,
+                        )               /* cset_identifier_nth */,
+                ((gchar *) "" )         /* cpair_comment_single */,
+                FALSE                   /* case_sensitive */,
                 TRUE                    /* skip_comment_multi */,
                 TRUE                    /* skip_comment_single */,
                 TRUE                    /* scan_comment_multi */,
                 TRUE                    /* scan_identifier */,
                 TRUE                    /* scan_identifier_1char */,
                 FALSE                   /* scan_identifier_NULL */,
-                TRUE                   /* scan_symbols */,
+                TRUE                    /* scan_symbols */,
                 FALSE                   /* scan_binary */,
                 FALSE                   /* scan_octal */,
-                FALSE                    /* scan_float */,
+                FALSE                   /* scan_float */,
                 FALSE                   /* scan_hex */,
                 FALSE                   /* scan_hex_dollar */,
                 TRUE                    /* scan_string_sq */,
@@ -103,8 +103,8 @@ typedef struct Node {
 	gchar post_token; /* post token to apppend with substitute */
 	gchar rval; /* rhs value for binary ops */
 	gint level; /* depth in the hier */
-	gint prefix:1 ; /* unary operator to be searched ?*/
-	gint sys_node:1 ; /* is it a predefined term ? */
+	gint prefix:1; /* unary operator to be searched ?*/
+	gint sys_node:1; /* is it a predefined term ? */
 	gint ignore_lhs:1; /* ignore lhs value ?*/
 	gint swap :1;
 	gint prenode :1;
@@ -133,20 +133,20 @@ typedef struct Node {
  * */
 
 /* Configuration of your sexp expression */
-static Node elements[] =  { {"header-contains", "LIKE", 3, '%', '%', 0, 0, 0 , 1, 0, 0, 0, 0, 0},
-			    {"system-flag", "=", 2, ' ', ' ', '1', 0, 1, 1, 0, 0, 0, 0, 0},
-			    {"match-all", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
-			    {"cast-int", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
-			    { "header-matches", "LIKE", 3, '%', '%', 0, 0, 1, 1, 0, 0, 0, 0, 0},
-			    { "header-ends-with", "LIKE", 3, '%', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
-			    { "header-exists", "NOTNULL", 2, ' ', ' ', ' ', 0, 0, 1, 0, 0, 0, 0, 0},
-			    { "user-tag", "usertags", 3, '%', '%', 0, 0, 1, 1, 1, 0, 0, 0, 0},
-			    { "user-flag", "labels LIKE", 2, '%', '%', 0, 0, 0, 1, 0, 1, 0, 0, 0},
-			    { "header-starts-with", "LIKE", 3, ' ', '%', 0, 0, 0, 1, 0, 0, 0, 0, 0},
-			    { "get-sent-date", "dsent", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
-			    { "get-received-date", "dreceived", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
-			    { "get-size", "size", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1},
-			    {"match-threads", "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
+static Node elements[] =  { { (gchar *) "header-contains", (gchar *) "LIKE", 3, '%', '%', 0, 0, 0 , 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "system-flag", (gchar *) "=", 2, ' ', ' ', '1', 0, 1, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "match-all", (gchar *) "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "cast-int", (gchar *) "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "header-matches", (gchar *) "LIKE", 3, '%', '%', 0, 0, 1, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "header-ends-with", (gchar *) "LIKE", 3, '%', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "header-exists", (gchar *) "NOTNULL", 2, ' ', ' ', ' ', 0, 0, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "user-tag", (gchar *) "usertags", 3, '%', '%', 0, 0, 1, 1, 1, 0, 0, 0, 0},
+			    { (gchar *) "user-flag", (gchar *) "labels LIKE", 2, '%', '%', 0, 0, 0, 1, 0, 1, 0, 0, 0},
+			    { (gchar *) "header-starts-with", (gchar *) "LIKE", 3, ' ', '%', 0, 0, 0, 1, 0, 0, 0, 0, 0},
+			    { (gchar *) "get-sent-date", (gchar *) "dsent", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
+			    { (gchar *) "get-received-date", (gchar *) "dreceived", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
+			    { (gchar *) "get-size", (gchar *) "size", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1},
+			    { (gchar *) "match-threads", (gchar *) "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 };
 #if 0
 	{ "get-sent-date", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, get_sent_date), 1 },
@@ -171,15 +171,7 @@ free_node (Node *node)
 	g_free (node);
 }
 
-static void
-g_list_dump (GList *l)
-{
-	while (l) {
-		 printf("%s\t", (gchar *)l->data);
-		l = l->next;
-	}
-}
-
+#if 0
 static void
 g_node_dump (GList *l)
 {
@@ -191,8 +183,8 @@ g_node_dump (GList *l)
 		l = l->next;
 	}
 	printf("\n");
-
 }
+#endif
 
 gchar *
 escape_values (gchar *str)
@@ -365,7 +357,7 @@ camel_sexp_to_sql (const gchar *txt)
 
 			if (g_ascii_strcasecmp (pnode->token, "user-flag") == 0) {
 				    /* Colloct all after '+' and append them to one token. Go till you find ')' */
-				    token = g_scanner_get_next_token (scanner) ;
+				    token = g_scanner_get_next_token (scanner);
 				    while (token != G_TOKEN_RIGHT_PAREN) {
 					    astr = g_strdup_printf ("%s%s", bstr?bstr:"", scanner->value.v_string);
 					    g_free (bstr); bstr = astr;
@@ -375,8 +367,8 @@ camel_sexp_to_sql (const gchar *txt)
 			} else {
 				/* should be the date fns*/
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
-				token = g_scanner_get_next_token (scanner) ;
-				while (token >= 0 && !g_scanner_eof(scanner) && lvl >=0 ) {
+				token = g_scanner_get_next_token (scanner);
+				while (!g_scanner_eof(scanner) && lvl >=0 ) {
 					if (token == G_TOKEN_RIGHT_PAREN) {
 						d(printf(")\n"));
 						lvl--;
@@ -424,8 +416,8 @@ camel_sexp_to_sql (const gchar *txt)
 			gint lvl=0, lval=0;
 
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
-			token = g_scanner_get_next_token (scanner) ;
-			while (token >= 0 && !g_scanner_eof(scanner) && lvl >=0 ) {
+			token = g_scanner_get_next_token (scanner);
+			while (!g_scanner_eof(scanner) && lvl >=0 ) {
 				if (token == G_TOKEN_RIGHT_PAREN) {
 					lvl--;
 					token = g_scanner_get_next_token (scanner);
@@ -451,7 +443,7 @@ camel_sexp_to_sql (const gchar *txt)
 			d(printf("lvl = %ld\n", lval));
 			node = g_new0 (Node, 1);
 			node->token = bstr;
-			node->exact_token = g_strdup_printf("%ld", (long)lval);
+			node->exact_token = g_strdup_printf("%ld", (glong)lval);
 			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
 			node->prefix = 0;
 			node->rval = ' ';
@@ -481,7 +473,7 @@ camel_sexp_to_sql (const gchar *txt)
 			Node *pnode = operands->data, *node;
 
 			node = g_new0 (Node, 1);
-			node->token = g_strdup_printf ("%ld", scanner->value.v_int) ;
+			node->token = g_strdup_printf ("%ld", scanner->value.v_int);
 			node->exact_token = g_strdup_printf ("%ld", scanner->value.v_int);
 			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
 			node->prefix = 0;
@@ -537,11 +529,11 @@ camel_sexp_to_sql (const gchar *txt)
 					pnode = NULL;
 
 				if (len == 3) {
-					gchar *prefix = NULL;
+					const gchar *prefix = NULL;
 					gchar *str, *sqstr, *escstr;
 					gint dyn_lvl;
 					Node *opnode = operators->data;
-					gchar *temp_op="";
+					const gchar *temp_op="";
 
 					if (n3->level < n2->level)
 						dyn_lvl = n2->level;

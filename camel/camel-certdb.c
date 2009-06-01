@@ -213,7 +213,7 @@ camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename)
 }
 
 
-static int
+static gint
 certdb_header_load (CamelCertDB *certdb, FILE *istream)
 {
 	if (camel_file_util_decode_uint32 (istream, &certdb->version) == -1)
@@ -298,7 +298,7 @@ camel_certdb_load (CamelCertDB *certdb)
 	return -1;
 }
 
-static int
+static gint
 certdb_header_save (CamelCertDB *certdb, FILE *ostream)
 {
 	if (camel_file_util_encode_uint32 (ostream, certdb->version) == -1)
@@ -309,7 +309,7 @@ certdb_header_save (CamelCertDB *certdb, FILE *ostream)
 	return 0;
 }
 
-static int
+static gint
 certdb_cert_save (CamelCertDB *certdb, CamelCert *cert, FILE *ostream)
 {
 	if (camel_file_util_encode_string (ostream, cert->issuer) == -1)

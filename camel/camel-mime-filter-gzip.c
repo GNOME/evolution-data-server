@@ -93,10 +93,10 @@ static void camel_mime_filter_gzip_class_init (CamelMimeFilterGZipClass *klass);
 static void camel_mime_filter_gzip_init (CamelMimeFilterGZip *filter, CamelMimeFilterGZipClass *klass);
 static void camel_mime_filter_gzip_finalize (CamelObject *object);
 
-static void filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-			   gchar **out, size_t *outlen, size_t *outprespace);
-static void filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-			     gchar **out, size_t *outlen, size_t *outprespace);
+static void filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+			   gchar **out, gsize *outlen, gsize *outprespace);
+static void filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+			     gchar **out, gsize *outlen, gsize *outprespace);
 static void filter_reset (CamelMimeFilter *filter);
 
 
@@ -160,8 +160,8 @@ camel_mime_filter_gzip_finalize (CamelObject *object)
 
 
 static void
-gzip_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-	     gchar **out, size_t *outlen, size_t *outprespace, gint flush)
+gzip_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+	     gchar **out, gsize *outlen, gsize *outprespace, gint flush)
 {
 	CamelMimeFilterGZip *gzip = (CamelMimeFilterGZip *) filter;
 	struct _CamelMimeFilterGZipPrivate *priv = gzip->priv;
@@ -205,7 +205,7 @@ gzip_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
 			fprintf (stderr, "gzip: %d: %s\n", retval, priv->stream->msg);
 
 		if (flush == Z_FULL_FLUSH) {
-			size_t n;
+			gsize n;
 
 			n = filter->outsize - priv->stream->avail_out;
 			camel_mime_filter_set_size (filter, n + (priv->stream->avail_in * 2) + 12, TRUE);
@@ -244,8 +244,8 @@ gzip_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
 }
 
 static void
-gunzip_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-	       gchar **out, size_t *outlen, size_t *outprespace, gint flush)
+gunzip_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+	       gchar **out, gsize *outlen, gsize *outprespace, gint flush)
 {
 	CamelMimeFilterGZip *gzip = (CamelMimeFilterGZip *) filter;
 	struct _CamelMimeFilterGZipPrivate *priv = gzip->priv;
@@ -358,7 +358,7 @@ gunzip_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
 			fprintf (stderr, "gunzip: %d: %s\n", retval, priv->stream->msg);
 
 		if (flush == Z_FULL_FLUSH) {
-			size_t n;
+			gsize n;
 
 			if (priv->stream->avail_in == 0) {
 				/* FIXME: extract & compare calculated crc32 and isize values? */
@@ -391,8 +391,8 @@ gunzip_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-	       gchar **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+	       gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterGZip *gzip = (CamelMimeFilterGZip *) filter;
 
@@ -403,8 +403,8 @@ filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-		 gchar **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+		 gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterGZip *gzip = (CamelMimeFilterGZip *) filter;
 

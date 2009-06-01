@@ -495,7 +495,7 @@ soup_soap_message_write_int (SoupSoapMessage *msg, glong i)
  * Writes the stringified value of @d as the current element's content.
  */
 void
-soup_soap_message_write_double (SoupSoapMessage *msg, double d)
+soup_soap_message_write_double (SoupSoapMessage *msg, gdouble d)
 {
 	gchar *str = g_strdup_printf ("%f", d);
 	soup_soap_message_write_string (msg, str);

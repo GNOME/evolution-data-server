@@ -63,7 +63,7 @@ typedef struct _camel_imap4_token_t {
 		gchar *atom;
 		gchar *flag;
 		gchar *qstring;
-		size_t literal;
+		gsize literal;
 		guint32 number;
 	} v;
 } camel_imap4_token_t;
@@ -83,7 +83,7 @@ struct _CamelIMAP4Stream {
 	guint mode:1;          /* TOKEN vs LITERAL */
 	guint eol:1;           /* end-of-literal */
 
-	size_t literal;
+	gsize literal;
 
 	/* i/o buffers */
 	guchar realbuf[IMAP4_READ_PRELEN + IMAP4_READ_BUFLEN + 1];
@@ -114,8 +114,8 @@ CamelStream *camel_imap4_stream_new (CamelStream *stream);
 gint camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token);
 gint camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *token);
 
-gint camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, size_t *len);
-gint camel_imap4_stream_literal (CamelIMAP4Stream *stream, guchar **literal, size_t *len);
+gint camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, gsize *len);
+gint camel_imap4_stream_literal (CamelIMAP4Stream *stream, guchar **literal, gsize *len);
 
 G_END_DECLS
 

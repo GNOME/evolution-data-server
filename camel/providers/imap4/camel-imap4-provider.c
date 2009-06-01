@@ -111,7 +111,7 @@ imap4_url_hash (gconstpointer key)
 	return hash;
 }
 
-static int
+static gint
 check_equal (gchar *s1, gchar *s2)
 {
 	if (s1 == NULL) {
@@ -127,7 +127,7 @@ check_equal (gchar *s1, gchar *s2)
 	return strcmp (s1, s2) == 0;
 }
 
-static int
+static gint
 imap4_url_equal (gconstpointer a, gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;

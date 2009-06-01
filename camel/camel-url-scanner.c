@@ -74,7 +74,7 @@ camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
 
 
 gboolean
-camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, size_t inlen, urlmatch_t *match)
+camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, urlmatch_t *match)
 {
 	const gchar *pos;
 	const guchar *inptr, *inend;
@@ -140,13 +140,13 @@ enum {
 	IS_URLSAFE      = (1 << 7)
 };
 
-#define is_ctrl(x) ((url_scanner_table[(unsigned char)(x)] & IS_CTRL) != 0)
-#define is_lwsp(x) ((url_scanner_table[(unsigned char)(x)] & IS_LWSP) != 0)
-#define is_atom(x) ((url_scanner_table[(unsigned char)(x)] & (IS_SPECIAL|IS_SPACE|IS_CTRL)) == 0)
-#define is_alpha(x) ((url_scanner_table[(unsigned char)(x)] & IS_ALPHA) != 0)
-#define is_digit(x) ((url_scanner_table[(unsigned char)(x)] & IS_DIGIT) != 0)
-#define is_domain(x) ((url_scanner_table[(unsigned char)(x)] & IS_DOMAIN) != 0)
-#define is_urlsafe(x) ((url_scanner_table[(unsigned char)(x)] & (IS_ALPHA|IS_DIGIT|IS_URLSAFE)) != 0)
+#define is_ctrl(x) ((url_scanner_table[(guchar)(x)] & IS_CTRL) != 0)
+#define is_lwsp(x) ((url_scanner_table[(guchar)(x)] & IS_LWSP) != 0)
+#define is_atom(x) ((url_scanner_table[(guchar)(x)] & (IS_SPECIAL|IS_SPACE|IS_CTRL)) == 0)
+#define is_alpha(x) ((url_scanner_table[(guchar)(x)] & IS_ALPHA) != 0)
+#define is_digit(x) ((url_scanner_table[(guchar)(x)] & IS_DIGIT) != 0)
+#define is_domain(x) ((url_scanner_table[(guchar)(x)] & IS_DOMAIN) != 0)
+#define is_urlsafe(x) ((url_scanner_table[(guchar)(x)] & (IS_ALPHA|IS_DIGIT|IS_URLSAFE)) != 0)
 
 
 static const struct {
@@ -175,7 +175,7 @@ is_open_brace (gchar c)
 }
 
 static char
-url_stop_at_brace (const gchar *in, size_t so, gchar *open_brace)
+url_stop_at_brace (const gchar *in, gsize so, gchar *open_brace)
 {
 	gint i;
 

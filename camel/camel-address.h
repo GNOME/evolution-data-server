@@ -58,15 +58,15 @@ struct _CamelAddressClass {
 CamelType	camel_address_get_type	(void);
 CamelAddress   *camel_address_new	(void);
 CamelAddress   *camel_address_new_clone	(const CamelAddress *addr);
-int		camel_address_length	(CamelAddress *addr);
+gint		camel_address_length	(CamelAddress *addr);
 
-int		camel_address_decode	(CamelAddress *addr, const gchar *raw);
-char	       *camel_address_encode	(CamelAddress *addr);
-int		camel_address_unformat	(CamelAddress *addr, const gchar *raw);
-char	       *camel_address_format	(CamelAddress *addr);
+gint		camel_address_decode	(CamelAddress *addr, const gchar *raw);
+gchar	       *camel_address_encode	(CamelAddress *addr);
+gint		camel_address_unformat	(CamelAddress *addr, const gchar *raw);
+gchar	       *camel_address_format	(CamelAddress *addr);
 
-int		camel_address_cat	(CamelAddress *dest, const CamelAddress *source);
-int		camel_address_copy	(CamelAddress *dest, const CamelAddress *source);
+gint		camel_address_cat	(CamelAddress *dest, const CamelAddress *source);
+gint		camel_address_copy	(CamelAddress *dest, const CamelAddress *source);
 
 void		camel_address_remove	(CamelAddress *addr, gint index);
 

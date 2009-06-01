@@ -43,8 +43,8 @@ static CamelObjectClass *parent_class = NULL;
 #define CDW_CLASS(so) CAMEL_DATA_WRAPPER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 static gint construct_from_stream(CamelDataWrapper *, CamelStream *);
-static ssize_t write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
-static ssize_t decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
+static gssize write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
+static gssize decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
 static void set_mime_type (CamelDataWrapper *data_wrapper, const gchar *mime_type);
 static gchar *get_mime_type (CamelDataWrapper *data_wrapper);
 static CamelContentType *get_mime_type_field (CamelDataWrapper *data_wrapper);
@@ -129,10 +129,10 @@ camel_data_wrapper_new (void)
 	return (CamelDataWrapper *) camel_object_new (CAMEL_DATA_WRAPPER_TYPE);
 }
 
-static ssize_t
+static gssize
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
-	ssize_t ret;
+	gssize ret;
 
 	if (data_wrapper->stream == NULL) {
 		return -1;
@@ -164,7 +164,7 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  *
  * Returns: the number of bytes written, or %-1 on fail
  **/
-ssize_t
+gssize
 camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 				    CamelStream *stream)
 {
@@ -175,12 +175,12 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 }
 
 
-static ssize_t
+static gssize
 decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMimeFilter *filter;
 	CamelStream *fstream;
-	ssize_t ret;
+	gssize ret;
 
 	fstream = (CamelStream *) camel_stream_filter_new_with_stream (stream);
 
@@ -228,7 +228,7 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
  *
  * Returns: the number of bytes written, or %-1 on fail
  **/
-ssize_t
+gssize
 camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 				     CamelStream *stream)
 {
@@ -239,7 +239,7 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 }
 
 
-static int
+static gint
 construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	if (data_wrapper->stream)

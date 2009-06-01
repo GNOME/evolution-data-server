@@ -238,7 +238,7 @@ localtime_r (t, tp)
 #define match_char(ch1, ch2) if (ch1 != ch2) return NULL
 #if defined _LIBC && defined __GNUC__ && __GNUC__ >= 2
 # define match_string(cs1, s2) \
-  ({ size_t len = strlen (cs1);						      \
+  ({ gsize len = strlen (cs1);						      \
      gint result = __strncasecmp_l ((cs1), (s2), len, locale) == 0;	      \
      if (result) (s2) += len;						      \
      result; })
@@ -436,7 +436,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 
   const gchar *rp_backup;
   gint cnt;
-  size_t val;
+  gsize val;
   gint have_I, is_pm;
   gint century, want_century;
   gint want_era;
@@ -446,7 +446,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
   gint have_uweek, have_wweek;
   gint week_no;
 #ifdef _NL_CURRENT
-  size_t num_eras;
+  gsize num_eras;
 #endif
   struct era_entry *era;
 
@@ -1071,7 +1071,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 
 		  num_eras = _NL_CURRENT_WORD (LC_TIME,
 					       _NL_TIME_ERA_NUM_ENTRIES);
-		  for (era_cnt = 0; era_cnt < (int) num_eras;
+		  for (era_cnt = 0; era_cnt < (gint) num_eras;
 		       ++era_cnt, rp = rp_backup)
 		    {
 		      era = _nl_select_era_entry (era_cnt
@@ -1082,7 +1082,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 			  break;
 			}
 		    }
-		  if (era_cnt != (int) num_eras)
+		  if (era_cnt != (gint) num_eras)
 		    break;
 
 		  era_cnt = -1;
@@ -1126,7 +1126,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 
 		  num_eras = _NL_CURRENT_WORD (LC_TIME,
 					       _NL_TIME_ERA_NUM_ENTRIES);
-		  for (era_cnt = 0; era_cnt < (int) num_eras; ++era_cnt)
+		  for (era_cnt = 0; era_cnt < (gint) num_eras; ++era_cnt)
 		    {
 		      era = _nl_select_era_entry (era_cnt
 						  HELPER_LOCALE_ARG);
@@ -1144,7 +1144,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 			    }
 			}
 		    }
-		  if (era_cnt != (int) num_eras)
+		  if (era_cnt != (gint) num_eras)
 		    break;
 
 		  era_cnt = -1;
@@ -1160,14 +1160,14 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 		{
 		  num_eras = _NL_CURRENT_WORD (LC_TIME,
 					       _NL_TIME_ERA_NUM_ENTRIES);
-		  for (era_cnt = 0; era_cnt < (int) num_eras;
+		  for (era_cnt = 0; era_cnt < (gint) num_eras;
 		       ++era_cnt, rp = rp_backup)
 		    {
 		      era = _nl_select_era_entry (era_cnt HELPER_LOCALE_ARG);
 		      if (era != NULL && recursive (era->era_format))
 			break;
 		    }
-		  if (era_cnt == (int) num_eras)
+		  if (era_cnt == (gint) num_eras)
 		    {
 		      era_cnt = -1;
 		      if (*decided == loc)
@@ -1501,7 +1501,7 @@ parse_with_strptime (const gchar *value, struct tm *result, const gchar **format
 		return E_TIME_PARSE_INVALID;
 
 	/* Skip whitespace */
-	while (n = (int)((unsigned char)*pos), isspace (n) != 0)
+	while (n = (gint)((guchar)*pos), isspace (n) != 0)
 		pos++;
 
 	/* Try each of the formats in turn */
@@ -1605,7 +1605,7 @@ has_correct_date (const struct tm *value)
  *          E_TIME_PARSE_INVALID if the string could not be parsed.
  */
 ETimeParseStatus
-e_time_parse_date_and_time_ex		(const char	*value,
+e_time_parse_date_and_time_ex		(const gchar	*value,
 					 struct tm	*result,
 					 gboolean	*two_digit_year)
 {
@@ -1735,7 +1735,7 @@ e_time_parse_date_and_time_ex		(const char	*value,
 }
 
 ETimeParseStatus
-e_time_parse_date_and_time		(const char	*value,
+e_time_parse_date_and_time		(const gchar	*value,
 					 struct tm	*result)
 {
 	return e_time_parse_date_and_time_ex (value, result, NULL);
@@ -1882,8 +1882,8 @@ e_time_format_date_and_time		(struct tm	*date_tm,
 					 gboolean	 use_24_hour_format,
 					 gboolean	 show_midnight,
 					 gboolean	 show_zero_seconds,
-					 char		*buffer,
-					 int		 buffer_size)
+					 gchar		*buffer,
+					 gint		 buffer_size)
 {
 	gchar *format;
 
@@ -1933,8 +1933,8 @@ void
 e_time_format_time			(struct tm	*date_tm,
 					 gboolean	 use_24_hour_format,
 					 gboolean	 show_zero_seconds,
-					 char		*buffer,
-					 int		 buffer_size)
+					 gchar		*buffer,
+					 gint		 buffer_size)
 {
 	gchar *format;
 

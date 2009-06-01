@@ -38,7 +38,7 @@ source_changed_cb (ESourceComboBox *combo_box)
 }
 
 
-static int
+static gint
 on_idle_create_widget (const gchar *gconf_path)
 {
 	GtkWidget *window;

@@ -92,7 +92,7 @@ static pthread_once_t operation_once = PTHREAD_ONCE_INIT;
 
 typedef struct _CamelOperationMsg {
 	CamelMsg msg;
-} CamelOperationMsg ;
+} CamelOperationMsg;
 
 static void
 co_createspecific(void)

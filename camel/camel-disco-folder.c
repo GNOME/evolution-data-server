@@ -184,7 +184,7 @@ camel_disco_folder_get_type (void)
 	return camel_disco_folder_type;
 }
 
-static int
+static gint
 disco_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	gint i, count=0;
@@ -223,7 +223,7 @@ disco_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	return 0;
 }
 
-static int
+static gint
 disco_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	gint save = 0;

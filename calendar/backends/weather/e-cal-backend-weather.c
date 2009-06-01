@@ -278,7 +278,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	icalcomponent             *ical_comp;
 	struct icaltimetype        itt;
 	ECalComponentDateTime      dt;
-	char			  *uid;
+	gchar			  *uid;
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
 	ESource                   *source;

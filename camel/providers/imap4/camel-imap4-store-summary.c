@@ -167,7 +167,7 @@ load_namespaces (FILE *in)
 	return NULL;
 }
 
-static int
+static gint
 summary_header_load (CamelStoreSummary *s, FILE *in)
 {
 	CamelIMAP4StoreSummary *is = (CamelIMAP4StoreSummary *) s;
@@ -197,7 +197,7 @@ summary_header_load (CamelStoreSummary *s, FILE *in)
 	return 0;
 }
 
-static int
+static gint
 save_namespaces (FILE *out, CamelIMAP4NamespaceList *nsl)
 {
 	CamelIMAP4Namespace *ns, *cur = NULL;
@@ -237,7 +237,7 @@ save_namespaces (FILE *out, CamelIMAP4NamespaceList *nsl)
 	return 0;
 }
 
-static int
+static gint
 summary_header_save (CamelStoreSummary *s, FILE *out)
 {
 	CamelIMAP4StoreSummary *is = (CamelIMAP4StoreSummary *) s;
@@ -263,7 +263,7 @@ store_info_load (CamelStoreSummary *s, FILE *in)
 	return parent_class->store_info_load (s, in);
 }
 
-static int
+static gint
 store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *info)
 {
 	return parent_class->store_info_save (s, out, info);
@@ -381,7 +381,7 @@ camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const gcha
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	CamelStoreInfo *si;
-	size_t toplen, len;
+	gsize toplen, len;
 	gint i;
 
 	toplen = strlen (top);

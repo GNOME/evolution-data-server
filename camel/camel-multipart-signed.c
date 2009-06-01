@@ -59,7 +59,7 @@ static CamelMimePart *signed_remove_part_at (CamelMultipart *multipart, guint in
 static CamelMimePart *signed_get_part (CamelMultipart *multipart, guint index);
 static guint signed_get_number (CamelMultipart *multipart);
 
-static ssize_t write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
+static gssize write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
 static void set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type);
 static gint construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
 static gint signed_construct_from_parser (CamelMultipart *multipart, struct _CamelMimeParser *mp);
@@ -180,11 +180,11 @@ camel_multipart_signed_new (void)
 	return multipart;
 }
 
-static int
+static gint
 skip_content(CamelMimeParser *cmp)
 {
 	gchar *buf;
-	size_t len;
+	gsize len;
 	gint state;
 
 	switch (camel_mime_parser_state(cmp)) {
@@ -224,7 +224,7 @@ skip_content(CamelMimeParser *cmp)
 	return 0;
 }
 
-static int
+static gint
 parse_content(CamelMultipartSigned *mps)
 {
 	CamelMimeParser *cmp;
@@ -232,7 +232,7 @@ parse_content(CamelMultipartSigned *mps)
 	CamelStreamMem *mem;
 	const gchar *boundary;
 	gchar *buf;
-	size_t len;
+	gsize len;
 	gint state;
 
 	boundary = camel_multipart_get_boundary(mp);
@@ -441,7 +441,7 @@ set_stream(CamelMultipartSigned *mps, CamelStream *mem)
 	}
 }
 
-static int
+static gint
 construct_from_stream(CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
@@ -455,14 +455,14 @@ construct_from_stream(CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return 0;
 }
 
-static int
+static gint
 signed_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
 	gint err;
 	CamelContentType *content_type;
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)multipart;
 	gchar *buf;
-	size_t len;
+	gsize len;
 	CamelStream *mem;
 
 	/* we *must not* be in multipart state, otherwise the mime parser will
@@ -487,14 +487,14 @@ signed_construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser 
 		return 0;
 }
 
-static ssize_t
+static gssize
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMultipartSigned *mps = (CamelMultipartSigned *)data_wrapper;
 	CamelMultipart *mp = (CamelMultipart *)mps;
 	const gchar *boundary;
-	ssize_t total = 0;
-	ssize_t count;
+	gssize total = 0;
+	gssize count;
 
 	/* we have 3 basic cases:
 	   1. constructed, we write out the data wrapper stream we got

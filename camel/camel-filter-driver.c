@@ -154,7 +154,7 @@ static ESExpResult *pipe_message (struct _ESExp *f, gint argc, struct _ESExpResu
 
 /* these are our filter actions - each must have a callback */
 static struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -747,7 +747,7 @@ child_watch (GPid     pid,
 	g_main_loop_quit (child_watch_data->loop);
 }
 
-static int
+static gint
 pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
 {
 	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
@@ -1027,7 +1027,7 @@ close_folder (gpointer key, gpointer value, gpointer data)
 }
 
 /* flush/close all folders */
-static int
+static gint
 close_folders (CamelFilterDriver *driver)
 {
 	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
@@ -1169,7 +1169,7 @@ camel_filter_driver_flush (CamelFilterDriver *driver, CamelException *ex)
 }
 
 
-static int
+static gint
 decode_flags_from_xev(const gchar *xev, CamelMessageInfoBase *mi)
 {
 	guint32 uid, flags = 0;
@@ -1241,7 +1241,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const gchar *mbox, c
 		const gchar *xev;
 
 		if (st.st_size > 0)
-			pc = (int)(100.0 * ((double)camel_mime_parser_tell (mp) / (double)st.st_size));
+			pc = (gint)(100.0 * ((double)camel_mime_parser_tell (mp) / (double)st.st_size));
 
 		report_status (driver, CAMEL_FILTER_STATUS_START, pc, _("Getting message %d (%d%%)"), i, pc);
 

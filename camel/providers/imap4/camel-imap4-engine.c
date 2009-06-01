@@ -497,7 +497,7 @@ static struct {
 	{ NULL,            0                                    }
 };
 
-static int
+static gint
 parse_xgwextensions (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)
 {
 	gint i;
@@ -536,7 +536,7 @@ auth_free (gpointer key, gpointer value, gpointer user_data)
 	return TRUE;
 }
 
-static int
+static gint
 engine_parse_capability (CamelIMAP4Engine *engine, gint sentinel, CamelException *ex)
 {
 	camel_imap4_token_t token;
@@ -589,7 +589,7 @@ engine_parse_capability (CamelIMAP4Engine *engine, gint sentinel, CamelException
 	return 0;
 }
 
-static int
+static gint
 engine_parse_flags_list (CamelIMAP4Engine *engine, CamelIMAP4RespCode *resp, gint perm, CamelException *ex)
 {
 	guint32 flags = 0;
@@ -619,7 +619,7 @@ engine_parse_flags_list (CamelIMAP4Engine *engine, CamelIMAP4RespCode *resp, gin
 	return 0;
 }
 
-static int
+static gint
 engine_parse_flags (CamelIMAP4Engine *engine, CamelException *ex)
 {
 	camel_imap4_token_t token;
@@ -639,7 +639,7 @@ engine_parse_flags (CamelIMAP4Engine *engine, CamelException *ex)
 	return 0;
 }
 
-static int
+static gint
 engine_parse_namespace (CamelIMAP4Engine *engine, CamelException *ex)
 {
 	CamelIMAP4Namespace *namespaces[3], *node, *tail;
@@ -826,7 +826,7 @@ camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex
 	camel_imap4_resp_code_t code;
 	camel_imap4_token_t token;
 	guchar *linebuf;
-	size_t len;
+	gsize len;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
 		return -1;
@@ -1215,7 +1215,7 @@ camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, camel_imap4_toke
 		if (!strcmp ("EXISTS", token->v.atom)) {
 			camel_imap4_summary_set_exists (folder->summary, v);
 		} else if (!strcmp ("EXPUNGE", token->v.atom) || !strcmp ("XGWMOVE", token->v.atom)) {
-			camel_imap4_summary_expunge (folder->summary, (int) v);
+			camel_imap4_summary_expunge (folder->summary, (gint) v);
 		} else if (!strcmp ("RECENT", token->v.atom)) {
 			camel_imap4_summary_set_recent (folder->summary, v);
 		} else if (ic && (untagged = g_hash_table_lookup (ic->untagged, token->v.atom))) {
@@ -1274,7 +1274,7 @@ camel_imap4_engine_handle_untagged (CamelIMAP4Engine *engine, CamelException *ex
 }
 
 
-static int
+static gint
 imap4_process_command (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 {
 	gint retval;
@@ -1314,7 +1314,7 @@ engine_prequeue_folder_select (CamelIMAP4Engine *engine)
 }
 
 
-static int
+static gint
 engine_state_change (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 {
 	const gchar *cmd;
@@ -1593,7 +1593,7 @@ camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex)
 	camel_imap4_token_t token;
 	guchar *literal;
 	gint retval;
-	size_t n;
+	gsize n;
 
 	do {
 		if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
@@ -1633,11 +1633,11 @@ camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex)
  * Returns: 0 on success or -1 on fail
  **/
 gint
-camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, size_t *len, CamelException *ex)
+camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, gsize *len, CamelException *ex)
 {
 	GByteArray *linebuf = NULL;
 	guchar *buf;
-	size_t buflen;
+	gsize buflen;
 	gint retval;
 
 	if (line != NULL)
@@ -1689,11 +1689,11 @@ camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, size_t *len, C
  * Returns: 0 on success or -1 on fail.
  **/
 gint
-camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, size_t *len, CamelException *ex)
+camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, gsize *len, CamelException *ex)
 {
 	GByteArray *literalbuf = NULL;
 	guchar *buf;
-	size_t buflen;
+	gsize buflen;
 	gint retval;
 
 	if (literal != NULL)
@@ -1746,7 +1746,7 @@ gint
 camel_imap4_engine_nstring (CamelIMAP4Engine *engine, guchar **nstring, CamelException *ex)
 {
 	camel_imap4_token_t token;
-	size_t n;
+	gsize n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
 		return -1;

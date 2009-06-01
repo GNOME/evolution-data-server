@@ -260,7 +260,9 @@ camel_provider_register(CamelProvider *provider)
 		l = l->next;
 	}
 
-	g_hash_table_insert(provider_table, provider->protocol, provider);
+	g_hash_table_insert (
+		provider_table,
+		(gpointer) provider->protocol, provider);
 
 	UNLOCK();
 }
@@ -347,7 +349,7 @@ camel_provider_get(const gchar *url_string, CamelException *ex)
 {
 	CamelProvider *provider = NULL;
 	gchar *protocol;
-	size_t len;
+	gsize len;
 
 	g_return_val_if_fail (url_string != NULL, NULL);
 	g_return_val_if_fail (provider_table != NULL, NULL);

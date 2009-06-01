@@ -173,7 +173,7 @@ camel_offline_folder_finalize (CamelObject *object)
 	;
 }
 
-static int
+static gint
 offline_folder_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelArgGetV props;
@@ -210,7 +210,7 @@ offline_folder_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args
 	return 0;
 }
 
-static int
+static gint
 offline_folder_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	CamelOfflineFolder *folder = (CamelOfflineFolder *) object;

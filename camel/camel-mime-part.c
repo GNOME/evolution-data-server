@@ -74,8 +74,8 @@ static CamelMediumClass *parent_class=NULL;
 #define CMD_CLASS(so) CAMEL_MEDIUM_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 /* from CamelDataWrapper */
-static ssize_t         write_to_stream                 (CamelDataWrapper *dw, CamelStream *stream);
-static int	       construct_from_stream	       (CamelDataWrapper *dw, CamelStream *stream);
+static gssize         write_to_stream                 (CamelDataWrapper *dw, CamelStream *stream);
+static gint	       construct_from_stream	       (CamelDataWrapper *dw, CamelStream *stream);
 
 /* from CamelMedium */
 static void            add_header                      (CamelMedium *medium, const gchar *name, gconstpointer value);
@@ -94,9 +94,9 @@ static gint             construct_from_parser           (CamelMimePart *mime_par
 static void set_disposition (CamelMimePart *mime_part, const gchar *disposition);
 
 /* format output of headers */
-static ssize_t write_references(CamelStream *stream, struct _camel_header_raw *h);
+static gssize write_references(CamelStream *stream, struct _camel_header_raw *h);
 /*static gint write_fold(CamelStream *stream, struct _camel_header_raw *h);*/
-static ssize_t write_raw(CamelStream *stream, struct _camel_header_raw *h);
+static gssize write_raw(CamelStream *stream, struct _camel_header_raw *h);
 
 
 /* loads in a hash table the set of header names we */
@@ -105,26 +105,69 @@ static ssize_t write_raw(CamelStream *stream, struct _camel_header_raw *h);
 static void
 init_header_name_table(void)
 {
-	header_name_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-	g_hash_table_insert (header_name_table, "Content-Description", (gpointer)HEADER_DESCRIPTION);
-	g_hash_table_insert (header_name_table, "Content-Disposition", (gpointer)HEADER_DISPOSITION);
-	g_hash_table_insert (header_name_table, "Content-id", (gpointer)HEADER_CONTENT_ID);
-	g_hash_table_insert (header_name_table, "Content-Transfer-Encoding", (gpointer)HEADER_ENCODING);
-	g_hash_table_insert (header_name_table, "Content-MD5", (gpointer)HEADER_CONTENT_MD5);
-	g_hash_table_insert (header_name_table, "Content-Location", (gpointer)HEADER_CONTENT_LOCATION);
-	g_hash_table_insert (header_name_table, "Content-Type", (gpointer)HEADER_CONTENT_TYPE);
+	header_name_table = g_hash_table_new (
+		camel_strcase_hash, camel_strcase_equal);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-Description",
+		(gpointer) HEADER_DESCRIPTION);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-Disposition",
+		(gpointer) HEADER_DISPOSITION);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-id",
+		(gpointer) HEADER_CONTENT_ID);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-Transfer-Encoding",
+		(gpointer) HEADER_ENCODING);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-MD5",
+		(gpointer) HEADER_CONTENT_MD5);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-Location",
+		(gpointer) HEADER_CONTENT_LOCATION);
+	g_hash_table_insert (
+		header_name_table,
+		(gpointer) "Content-Type",
+		(gpointer) HEADER_CONTENT_TYPE);
 
-	header_formatted_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-	g_hash_table_insert(header_formatted_table, "Content-Type", write_raw);
-	g_hash_table_insert(header_formatted_table, "Content-Disposition", write_raw);
-	g_hash_table_insert(header_formatted_table, "To", write_raw);
-	g_hash_table_insert(header_formatted_table, "From", write_raw);
-	g_hash_table_insert(header_formatted_table, "Reply-To", write_raw);
-	g_hash_table_insert(header_formatted_table, "Cc", write_raw);
-	g_hash_table_insert(header_formatted_table, "Bcc", write_raw);
-	g_hash_table_insert(header_formatted_table, "Message-ID", write_raw);
-	g_hash_table_insert(header_formatted_table, "In-Reply-To", write_raw);
-	g_hash_table_insert(header_formatted_table, "References", write_references);
+	header_formatted_table = g_hash_table_new (
+		camel_strcase_hash, camel_strcase_equal);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "Content-Type", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "Content-Disposition", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "To", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "From", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "Reply-To", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "Cc", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "Bcc", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "Message-ID", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "In-Reply-To", write_raw);
+	g_hash_table_insert (
+		header_formatted_table,
+		(gpointer) "References", write_references);
 }
 
 static void
@@ -707,10 +750,10 @@ set_content_object (CamelMedium *medium, CamelDataWrapper *content)
 
 /**********************************************************************/
 
-static ssize_t
+static gssize
 write_references(CamelStream *stream, struct _camel_header_raw *h)
 {
-	ssize_t len, out, total;
+	gssize len, out, total;
 	gchar *v, *ids, *ide;
 
 	/* this is only approximate, based on the next >, this way it retains any content
@@ -751,7 +794,7 @@ write_references(CamelStream *stream, struct _camel_header_raw *h)
 
 #if 0
 /* not needed - yet - handled by default case */
-static ssize_t
+static gssize
 write_fold(CamelStream *stream, struct _camel_header_raw *h)
 {
 	gchar *val;
@@ -765,7 +808,7 @@ write_fold(CamelStream *stream, struct _camel_header_raw *h)
 }
 #endif
 
-static ssize_t
+static gssize
 write_raw(CamelStream *stream, struct _camel_header_raw *h)
 {
 	gchar *val = h->value;
@@ -773,15 +816,15 @@ write_raw(CamelStream *stream, struct _camel_header_raw *h)
 	return camel_stream_printf(stream, "%s%s%s\n", h->name, isspace(val[0]) ? ":" : ": ", val);
 }
 
-static ssize_t
+static gssize
 write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 {
 	CamelMimePart *mp = CAMEL_MIME_PART (dw);
 	CamelMedium *medium = CAMEL_MEDIUM (dw);
 	CamelStream *ostream = stream;
 	CamelDataWrapper *content;
-	ssize_t total = 0;
-	ssize_t count;
+	gssize total = 0;
+	gssize count;
 	gint errnosav;
 
 	d(printf("mime_part::write_to_stream\n"));
@@ -792,7 +835,7 @@ write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 	if (mp->headers) {
 		struct _camel_header_raw *h = mp->headers;
 		gchar *val;
-		ssize_t (*writefn)(CamelStream *stream, struct _camel_header_raw *);
+		gssize (*writefn)(CamelStream *stream, struct _camel_header_raw *);
 
 		/* fold/write the headers.   But dont fold headers that are already formatted
 		   (e.g. ones with parameter-lists, that we know about, and have created) */
@@ -925,14 +968,14 @@ write_to_stream (CamelDataWrapper *dw, CamelStream *stream)
 }
 
 /* mime_part */
-static int
+static gint
 construct_from_parser (CamelMimePart *mime_part, CamelMimeParser *mp)
 {
 	CamelDataWrapper *dw = (CamelDataWrapper *) mime_part;
 	struct _camel_header_raw *headers;
 	const gchar *content;
 	gchar *buf;
-	size_t len;
+	gsize len;
 	gint err;
 
 	d(printf("mime_part::construct_from_parser()\n"));
@@ -993,7 +1036,7 @@ camel_mime_part_construct_from_parser(CamelMimePart *mime_part, CamelMimeParser 
 	return CMP_CLASS (mime_part)->construct_from_parser (mime_part, mp);
 }
 
-static int
+static gint
 construct_from_stream(CamelDataWrapper *dw, CamelStream *s)
 {
 	CamelMimeParser *mp;
@@ -1073,12 +1116,12 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
  *
  * Returns: the size of the MIME part's content in bytes.
  **/
-size_t
+gsize
 camel_mime_part_get_content_size (CamelMimePart *mime_part)
 {
 	CamelStreamNull *null;
 	CamelDataWrapper *dw;
-	size_t size;
+	gsize size;
 
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), 0);
 

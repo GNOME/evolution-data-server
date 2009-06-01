@@ -93,7 +93,7 @@ e_gw_message_write_base64_parameter (SoupSoapMessage *msg, const gchar *name, co
 }
 
 void
-e_gw_message_write_int_parameter (SoupSoapMessage *msg, const gchar *name, const gchar *prefix, long value)
+e_gw_message_write_int_parameter (SoupSoapMessage *msg, const gchar *name, const gchar *prefix, glong value)
 {
 	soup_soap_message_start_element (msg, name, prefix, NULL);
 	soup_soap_message_write_int (msg, value);

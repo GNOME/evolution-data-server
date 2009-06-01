@@ -69,7 +69,7 @@ typedef enum {
 	E_GW_CONTAINER_TYPE_JUNK,
 	E_GW_CONTAINER_TYPE_FOLDER
 
-} EGwContainerType ;
+} EGwContainerType;
 
 GType         e_gw_container_get_type (void);
 EGwContainer *e_gw_container_new_from_soap_parameter (SoupSoapParameter *param);
@@ -79,22 +79,22 @@ const gchar   *e_gw_container_get_name (EGwContainer *container);
 void          e_gw_container_set_name (EGwContainer *container, const gchar *new_name);
 const gchar   *e_gw_container_get_id (EGwContainer *container);
 void          e_gw_container_set_id (EGwContainer *container, const gchar *new_id);
-const gchar   *e_gw_container_get_parent_id (EGwContainer *container) ;
-void	      e_gw_container_set_parent_id (EGwContainer *container, const gchar *parent_id) ;
-guint32       e_gw_container_get_total_count (EGwContainer *container) ;
-guint32       e_gw_container_get_unread_count (EGwContainer *container) ;
+const gchar   *e_gw_container_get_parent_id (EGwContainer *container);
+void	      e_gw_container_set_parent_id (EGwContainer *container, const gchar *parent_id);
+guint32       e_gw_container_get_total_count (EGwContainer *container);
+guint32       e_gw_container_get_unread_count (EGwContainer *container);
 gboolean      e_gw_container_get_is_writable (EGwContainer *container);
 void          e_gw_container_set_is_writable (EGwContainer *container, gboolean writable);
 gboolean     e_gw_container_get_is_frequent_contacts (EGwContainer *container);
 void         e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_frequent_contacts);
-gboolean    e_gw_container_is_root (EGwContainer *container) ;
+gboolean    e_gw_container_is_root (EGwContainer *container);
 const gchar *  e_gw_container_get_owner(EGwContainer *container);
 const gchar *  e_gw_container_get_modified(EGwContainer *container);
 gint           e_gw_container_get_sequence(EGwContainer *container);
 gboolean      e_gw_container_get_is_shared_by_me(EGwContainer *container);
 gboolean      e_gw_container_get_is_shared_to_me(EGwContainer *container);
-int	      e_gw_container_get_rights(EGwContainer *container, gchar *email);
-EGwContainerType e_gw_container_get_container_type (EGwContainer *container) ;
+gint	      e_gw_container_get_rights(EGwContainer *container, gchar *email);
+EGwContainerType e_gw_container_get_container_type (EGwContainer *container);
 void	      e_gw_container_get_user_list(EGwContainer *container, GList **user_list);
 void	      e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, const gchar *sub, const gchar *mesg, gint flag);
 gboolean e_gw_container_get_is_system_folder (EGwContainer *container);

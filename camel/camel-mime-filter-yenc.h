@@ -92,11 +92,11 @@ guint32 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc);
 guint32 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc);
 
 
-size_t camel_ydecode_step  (const guchar *in, size_t inlen, guchar *out,
+gsize camel_ydecode_step  (const guchar *in, gsize inlen, guchar *out,
 			    gint *state, guint32 *pcrc, guint32 *crc);
-size_t camel_yencode_step  (const guchar *in, size_t inlen, guchar *out,
+gsize camel_yencode_step  (const guchar *in, gsize inlen, guchar *out,
 			    gint *state, guint32 *pcrc, guint32 *crc);
-size_t camel_yencode_close (const guchar *in, size_t inlen, guchar *out,
+gsize camel_yencode_close (const guchar *in, gsize inlen, guchar *out,
 			    gint *state, guint32 *pcrc, guint32 *crc);
 
 G_END_DECLS

@@ -57,7 +57,7 @@ enum {
 };
 
 static gboolean
-free_fsize_table (gpointer key, gpointer value, gpointer data)
+free_fgsizeable (gpointer key, gpointer value, gpointer data)
 {
 	folder_info *f_info = (folder_info *) value;
 
@@ -80,7 +80,7 @@ finalize (GObject *object)
 {
 	ExchangeFolderSize *fsize = EXCHANGE_FOLDER_SIZE (object);
 
-	g_hash_table_foreach_remove (fsize->priv->table, free_fsize_table, NULL);
+	g_hash_table_foreach_remove (fsize->priv->table, free_fgsizeable, NULL);
 	g_hash_table_destroy (fsize->priv->table);
 	g_hash_table_foreach_remove (fsize->priv->row_refs, free_row_refs, NULL);
 	g_hash_table_destroy (fsize->priv->row_refs);
@@ -142,7 +142,7 @@ exchange_folder_size_update (ExchangeFolderSize *fsize,
 {
 	folder_info *f_info, *cached_info;
 	ExchangeFolderSizePrivate *priv;
-	GHashTable *folder_size_table;
+	GHashTable *folder_gsizeable;
 	GtkTreeRowReference *row;
 	GtkTreeIter iter;
 	GtkTreePath *path;
@@ -150,9 +150,9 @@ exchange_folder_size_update (ExchangeFolderSize *fsize,
 	g_return_if_fail (EXCHANGE_IS_FOLDER_SIZE (fsize));
 
 	priv = fsize->priv;
-	folder_size_table = priv->table;
+	folder_gsizeable = priv->table;
 
-	cached_info = g_hash_table_lookup (folder_size_table, folder_name);
+	cached_info = g_hash_table_lookup (folder_gsizeable, folder_name);
 	if (cached_info) {
 		if (cached_info->folder_size == folder_size) {
 			return;
@@ -173,7 +173,7 @@ exchange_folder_size_update (ExchangeFolderSize *fsize,
 		f_info = g_new0(folder_info, 1);
 		f_info->folder_name = g_strdup (folder_name);
 		f_info->folder_size = folder_size;
-		g_hash_table_insert (folder_size_table, f_info->folder_name, f_info);
+		g_hash_table_insert (folder_gsizeable, f_info->folder_name, f_info);
 
 		gtk_list_store_append (fsize->priv->model, &iter);
 		gtk_list_store_set (fsize->priv->model, &iter,
@@ -194,7 +194,7 @@ exchange_folder_size_remove (ExchangeFolderSize *fsize,
 				const gchar *folder_name)
 {
 	ExchangeFolderSizePrivate *priv;
-	GHashTable *folder_size_table;
+	GHashTable *folder_gsizeable;
 	folder_info *cached_info;
 	GtkTreeRowReference *row;
 	GtkTreeIter iter;
@@ -204,13 +204,13 @@ exchange_folder_size_remove (ExchangeFolderSize *fsize,
 	g_return_if_fail (folder_name != NULL);
 
 	priv = fsize->priv;
-	folder_size_table = priv->table;
+	folder_gsizeable = priv->table;
 
-	cached_info = g_hash_table_lookup (folder_size_table, folder_name);
+	cached_info = g_hash_table_lookup (folder_gsizeable, folder_name);
 	if (cached_info)  {
 		row = g_hash_table_lookup (priv->row_refs, folder_name);
 		path = gtk_tree_row_reference_get_path (row);
-		g_hash_table_remove (folder_size_table, folder_name);
+		g_hash_table_remove (folder_gsizeable, folder_name);
 		if (gtk_tree_model_get_iter (GTK_TREE_MODEL (fsize->priv->model), &iter, path)) {
 			gtk_list_store_remove (fsize->priv->model, &iter);
 		}
@@ -224,15 +224,15 @@ exchange_folder_size_get (ExchangeFolderSize *fsize,
 			  const gchar *folder_name)
 {
 	ExchangeFolderSizePrivate *priv;
-	GHashTable *folder_size_table;
+	GHashTable *folder_gsizeable;
 	folder_info *cached_info;
 
 	g_return_val_if_fail (EXCHANGE_IS_FOLDER_SIZE (fsize), -1);
 
 	priv = fsize->priv;
-	folder_size_table = priv->table;
+	folder_gsizeable = priv->table;
 
-	cached_info = g_hash_table_lookup (folder_size_table, folder_name);
+	cached_info = g_hash_table_lookup (folder_gsizeable, folder_name);
 	if (cached_info)  {
 		return cached_info->folder_size;
 	}

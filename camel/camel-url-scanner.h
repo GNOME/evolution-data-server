@@ -47,8 +47,8 @@ gboolean camel_url_addrspec_start (const gchar *in, const gchar *pos, const gcha
 gboolean camel_url_addrspec_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match);
 
 typedef struct {
-	gchar *pattern;
-	gchar *prefix;
+	const gchar *pattern;
+	const gchar *prefix;
 	CamelUrlScanFunc start;
 	CamelUrlScanFunc end;
 } urlpattern_t;
@@ -60,7 +60,7 @@ void camel_url_scanner_free (CamelUrlScanner *scanner);
 
 void camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern);
 
-gboolean camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, size_t inlen, urlmatch_t *match);
+gboolean camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, urlmatch_t *match);
 
 G_END_DECLS
 

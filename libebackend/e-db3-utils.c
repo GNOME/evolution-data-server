@@ -30,7 +30,7 @@ get_copy_filename (const gchar *filename)
 	return g_strdup_printf ("%s-copy", filename);
 }
 
-static int
+static gint
 cp_file (const gchar *src, const gchar *dest)
 {
 	gint i;
@@ -89,7 +89,7 @@ cp_file (const gchar *src, const gchar *dest)
 	return (i == -1) ? -1 : 0;
 }
 
-static int
+static gint
 touch_file (const gchar *file)
 {
 	gint o;
@@ -100,7 +100,7 @@ touch_file (const gchar *file)
 	return close (o);
 }
 
-static int
+static gint
 resume_upgrade (const gchar *filename, const gchar *copy_filename, const gchar *check_filename)
 {
 	DB *db;

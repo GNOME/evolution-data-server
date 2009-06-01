@@ -312,7 +312,7 @@ e_folder_exchange_set_permanent_uri (EFolder *folder, const gchar *permanent_uri
  *
  * Return value: @folder's size
  **/
-long long int
+gint64
 e_folder_exchange_get_folder_size (EFolder *folder)
 {
 	g_return_val_if_fail (E_IS_FOLDER_EXCHANGE (folder), -1);

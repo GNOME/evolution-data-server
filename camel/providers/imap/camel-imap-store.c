@@ -310,7 +310,7 @@ construct (CamelService *service, CamelSession *session,
 	}
 }
 
-static int
+static gint
 imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	CamelImapStore *store = (CamelImapStore *) object;
@@ -384,7 +384,7 @@ imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
 }
 
-static int
+static gint
 imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelImapStore *store = (CamelImapStore *) object;
@@ -955,17 +955,17 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
 		mode = ssl_options[i].mode;
-		serv = ssl_options[i].serv;
+		serv = (gchar *) ssl_options[i].serv;
 		port = ssl_options[i].port;
 	} else {
 		mode = MODE_CLEAR;
-		serv = "imap";
+		serv = (gchar *) "imap";
 		port = IMAP_PORT;
 	}
 
 	if (service->url->port) {
 		serv = g_alloca (16);
-		sprintf ((char *)serv, "%d", service->url->port);
+		sprintf ((gchar *)serv, "%d", service->url->port);
 		port = NULL;
 	}
 
@@ -1401,7 +1401,7 @@ imap_connect (CamelService *service, CamelException *ex)
 	CamelImapResponse *response;
 	/*struct _namespaces *namespaces;*/
 	gchar *result, *name;
-	size_t len;
+	gsize len;
 	CamelImapStoreNamespace *ns;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
@@ -1873,7 +1873,8 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 		if (parent_real != NULL) {
 			gboolean need_convert = FALSE;
 			gchar *resp, *thisone;
-			gint i, flags;
+			gint flags;
+			gint i;
 
 			if (!(response = camel_imap_command (imap_store, NULL, ex, "LIST \"\" %G", parent_real))) {
 				CAMEL_SERVICE_REC_UNLOCK (imap_store, connect_lock);
@@ -2530,7 +2531,7 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 	count = camel_store_summary_count((CamelStoreSummary *)imap_store->summary);
 
 	for (i=0;i<count;i++) {
-		const char *full_name;
+		const gchar *full_name;
 
 		si = camel_store_summary_index((CamelStoreSummary *)imap_store->summary, i);
 		if (si == NULL)
@@ -2541,7 +2542,7 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 			camel_store_summary_info_free ((CamelStoreSummary *)imap_store->summary, si);
 			continue;
 		}
-		
+
 		if (imap_match_pattern (imap_store->dir_sep, pattern, full_name)) {
 			if ((fi = g_hash_table_lookup(present, camel_store_info_path(imap_store->summary, si))) != NULL) {
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
@@ -2827,7 +2828,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 
 	for (i=0;i<camel_store_summary_count((CamelStoreSummary *)imap_store->summary);i++) {
 		CamelStoreInfo *si = camel_store_summary_index((CamelStoreSummary *)imap_store->summary, i);
-		const char *full_name;
+		const gchar *full_name;
 
 		if (si == NULL)
 			continue;
@@ -3016,13 +3017,13 @@ camel_imap_store_connected (CamelImapStore *store, CamelException *ex)
 }
 
 
-ssize_t
+gssize
 camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *ex)
 {
 	CamelStreamBuffer *stream;
 	gchar linebuf[1024] = {0};
 	GByteArray *ba;
-	ssize_t nread;
+	gssize nread;
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_STORE (store), -1);
 	g_return_val_if_fail (dest, -1);
@@ -3073,7 +3074,7 @@ camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *
 		nread--;
 	}
 
-	*dest = (gchar *)ba->data;
+	*dest = (gchar *) ba->data;
 	g_byte_array_free (ba, FALSE);
 
 	return nread;

@@ -121,7 +121,7 @@ block_hash (gconstpointer v)
 	return h;
 }
 
-static int
+static gint
 block_equal (gconstpointer v1, gconstpointer v2)
 {
 	return !memcmp (v1, v2, 256);
@@ -132,7 +132,7 @@ gint main (gint argc, gchar **argv)
 	guchar *block = NULL;
 	guint bit = 0x01;
 	GHashTable *table_hash;
-	size_t inleft, outleft;
+	gsize inleft, outleft;
 	gchar *inbuf, *outbuf;
 	guint32 out[128], c;
 	gchar in[128];
@@ -176,7 +176,7 @@ gint main (gint argc, gchar **argv)
 	}
 
 	/* Mutibyte tables */
-	for ( ; tables[j].name && tables[j].multibyte; j++) {
+	for (; tables[j].name && tables[j].multibyte; j++) {
 		cd = iconv_open (tables[j].name, UCS);
 		if (cd == (iconv_t) -1)
 			continue;
@@ -187,7 +187,7 @@ gint main (gint argc, gchar **argv)
 			outbuf = in;
 			outleft = sizeof (in);
 
-			if (iconv (cd, &inbuf, &inleft, &outbuf, &outleft) != (size_t) -1) {
+			if (iconv (cd, &inbuf, &inleft, &outbuf, &outleft) != (gsize) -1) {
 				/* this is a legal character in charset table[j].name */
 				iconv (cd, NULL, NULL, &outbuf, &outleft);
 				encoding_map[i++] |= bit;
@@ -310,7 +310,7 @@ gint main (gint argc, gchar **argv)
 void
 camel_charset_init (CamelCharset *c)
 {
-	c->mask = (unsigned int) ~0;
+	c->mask = (guint) ~0;
 	c->level = 0;
 }
 

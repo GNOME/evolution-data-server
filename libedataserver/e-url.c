@@ -159,7 +159,7 @@ e_uri_new (const gchar *uri_string)
 
 	/* find protocol: initial [a-z+.-]* substring until ":" */
 	p = uri_string;
-	while (p < end && (isalnum ((unsigned char) *p) ||
+	while (p < end && (isalnum ((guchar) *p) ||
 			   *p == '.' || *p == '+' || *p == '-'))
 		p++;
 

@@ -66,7 +66,7 @@
 #define E_IS_STATUS_INTR() (errno == EINTR)
 #endif
 
-static int
+static gint
 e_pipe (gint *fds)
 {
 #ifndef G_OS_WIN32
@@ -281,7 +281,7 @@ struct _EMCache {
 	GMutex *lock;
 	GHashTable *key_table;
 	EDList lru_list;
-	size_t node_size;
+	gsize node_size;
 	gint node_count;
 	time_t timeout;
 	GFreeFunc node_free;
@@ -299,7 +299,7 @@ struct _EMCache {
  * Return value:
  **/
 EMCache *
-em_cache_new(time_t timeout, size_t nodesize, GFreeFunc nodefree)
+em_cache_new(time_t timeout, gsize nodesize, GFreeFunc nodefree)
 {
 	struct _EMCache *emc;
 
@@ -500,7 +500,7 @@ enum {
 };
 
 #ifdef HAVE_NSS
-static int
+static gint
 e_prpipe (PRFileDesc **fds)
 {
 #ifdef G_OS_WIN32
@@ -1317,7 +1317,7 @@ gpointer fdserver(gpointer data)
 {
 	gint fd;
 	EMsg *msg;
-	gint id = (int)data;
+	gint id = (gint)data;
 	fd_set rfds;
 
 	fd = e_msgport_fd(server_port);
@@ -1344,7 +1344,7 @@ gpointer fdserver(gpointer data)
 gpointer server(gpointer data)
 {
 	EMsg *msg;
-	gint id = (int)data;
+	gint id = (gint)data;
 
 	while (1) {
 		printf("server %d: waiting\n", id);

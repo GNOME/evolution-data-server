@@ -433,7 +433,7 @@ rebuild_model (ESourceSelector *selector)
 	free_rebuild_data (rebuild_data);
 }
 
-static int
+static gint
 on_idle_rebuild_model_callback (ESourceSelector *selector)
 {
 	rebuild_model (selector);

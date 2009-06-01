@@ -192,14 +192,14 @@ camel_store_get_type (void)
 	return camel_store_type;
 }
 
-static int
+static gint
 store_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	/* CamelStore doesn't currently have anything to set */
 	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
 }
 
-static int
+static gint
 store_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	/* CamelStore doesn't currently have anything to get */
@@ -261,8 +261,9 @@ construct (CamelService *service, CamelSession *session,
 
 	if (camel_db_create_folders_table (store->cdb_r, ex))
 		g_warning ("something went wrong terribly during db creation \n");
-	else
+	else {
 		d(printf ("folders table successfully created \n"));
+	}
 
 	if (camel_exception_is_set (ex))
 		return;
@@ -998,7 +999,7 @@ camel_folder_info_new (void)
 	return g_slice_new0 (CamelFolderInfo);
 }
 
-static int
+static gint
 folder_info_cmp (gconstpointer ap, gconstpointer bp)
 {
 	const CamelFolderInfo *a = ((CamelFolderInfo **)ap)[0];
@@ -1085,8 +1086,9 @@ camel_folder_info_build (GPtrArray *folders, const gchar *namespace,
 				sep = strrchr (path, separator);
 				if (sep)
 					*sep = '\0';
-				else
+				else {
 					d(g_warning ("huh, no \"%c\" in \"%s\"?", separator, fi->uri));
+				}
 
 				pfi->full_name = g_strdup (path);
 

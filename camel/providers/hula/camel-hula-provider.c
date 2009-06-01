@@ -101,7 +101,7 @@ static CamelServiceAuthType camel_hula_password_authtype = {
 	TRUE
 };
 
-static int
+static gint
 hula_auto_detect_cb (CamelURL *url, GHashTable **auto_detected,
 			 CamelException *ex)
 {

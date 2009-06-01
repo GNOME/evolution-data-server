@@ -67,7 +67,7 @@ fuzzy_level_to_name (gint fuzzy_level, gboolean negated, const gchar *map[])
 
 static const gchar *is_types[] = { NULL, NULL, NULL, NULL, "is", "is not" };
 static const gchar *date_types[] = { "before", "before", "after", "after", NULL, NULL };
-static const gchar *size_types[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
+static const gchar *gsizeypes[] = { "less than", "less than", "greater than", "greater than", NULL, NULL };
 
 #if 0
 static gboolean
@@ -531,7 +531,7 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 				(xmlChar *) "type",
 				(xmlChar *) "1");
 
-			timestamp = g_strdup_printf ("%lu", (unsigned long)e2k_parse_timestamp (pv->value));
+			timestamp = g_strdup_printf ("%lu", (gulong)e2k_parse_timestamp (pv->value));
 			xmlSetProp (
 				node,
 				(xmlChar *) "value",
@@ -541,7 +541,7 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 		}
 
 		case E2K_PROPTAG_PR_MESSAGE_SIZE:
-			relation = relop_to_name (relop, negated, size_types);
+			relation = relop_to_name (relop, negated, gsizeypes);
 			if (!relation)
 				return FALSE;
 

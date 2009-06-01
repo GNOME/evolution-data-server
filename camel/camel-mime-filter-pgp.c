@@ -32,11 +32,11 @@
 
 #include "camel-mime-filter-pgp.h"
 
-static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
-		    gchar **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, gchar *in, size_t len,
-		      size_t prespace, gchar **out, size_t *outlen,
-		      size_t *outprespace);
+static void filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
+		    gchar **out, gsize *outlen, gsize *outprespace);
+static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
+		      gsize prespace, gchar **out, gsize *outlen,
+		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
 
 enum {
@@ -84,14 +84,14 @@ camel_mime_filter_pgp_get_type (void)
 #define END_PGP_SIGNATURE_LEN        (sizeof (END_PGP_SIGNATURE) - 1)
 
 static void
-filter_run(CamelMimeFilter *f, gchar *in, size_t inlen, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace, gint last)
+filter_run(CamelMimeFilter *f, const gchar *in, gsize inlen, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace, gint last)
 {
 	CamelMimeFilterPgp *pgp = (CamelMimeFilterPgp *) f;
 	const gchar *start, *inend = in + inlen;
 	register const gchar *inptr = in;
 	register gchar *o;
 	gboolean blank;
-	size_t len;
+	gsize len;
 
 	/* only need as much space as the input, we're stripping chars */
 	camel_mime_filter_set_size (f, inlen, FALSE);
@@ -168,13 +168,13 @@ filter_run(CamelMimeFilter *f, gchar *in, size_t inlen, size_t prespace, gchar *
 }
 
 static void
-filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	filter_run (f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-complete (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	filter_run (f, in, len, prespace, out, outlen, outprespace, TRUE);
 }

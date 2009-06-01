@@ -270,7 +270,7 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, gint recipient_
 	EGwItemRecipient *recipient;
 
 	total_add = camel_address_length (recipients);
-	for (i=0 ; i<total_add ; i++) {
+	for (i=0; i<total_add; i++) {
 		const gchar *name = NULL, *addr = NULL;
 		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
 
@@ -579,7 +579,7 @@ do_flags_diff (flags_diff_t *diff, guint32 old, guint32 _new)
 gchar *
 gw_concat ( const gchar *prefix, const gchar *suffix)
 {
-	size_t len;
+	gsize len;
 
 	len = strlen (prefix);
 	if (len == 0 || prefix[len - 1] == '/')
@@ -610,7 +610,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 	gint i;
 
 	part_count = camel_multipart_get_number (mp);
-	for ( i=0 ; i<part_count ; i++) {
+	for ( i=0; i<part_count; i++) {
 		CamelContentType *type;
 		CamelMimePart *part;
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();

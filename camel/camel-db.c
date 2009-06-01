@@ -50,7 +50,7 @@ typedef struct {
 	gint flags;
 } CamelSqlite3File;
 
-static int
+static gint
 call_old_file_Sync (CamelSqlite3File *cFile, gint flags)
 {
 	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
@@ -133,7 +133,7 @@ sync_push_request (CamelSqlite3File *cFile)
 }
 
 #define def_subclassed(_nm, _params, _call)			\
-static int							\
+static gint							\
 camel_sqlite3_file_ ## _nm _params				\
 {								\
 	CamelSqlite3File *cFile;				\
@@ -158,7 +158,7 @@ def_subclassed (xDeviceCharacteristics, (sqlite3_file *pFile), (cFile->old_vfs_f
 
 #undef def_subclassed
 
-static int
+static gint
 camel_sqlite3_file_xCheckReservedLock (sqlite3_file *pFile, gint *pResOut)
 {
 	CamelSqlite3File *cFile;
@@ -176,7 +176,7 @@ camel_sqlite3_file_xCheckReservedLock (sqlite3_file *pFile, gint *pResOut)
 		return ((gint (*)(sqlite3_file *, gint *)) (cFile->old_vfs_file->pMethods->xCheckReservedLock)) (cFile->old_vfs_file, pResOut);
 }
 
-static int
+static gint
 camel_sqlite3_file_xClose (sqlite3_file *pFile)
 {
 	CamelSqlite3File *cFile;
@@ -225,7 +225,7 @@ camel_sqlite3_file_xClose (sqlite3_file *pFile)
 	return res;
 }
 
-static int
+static gint
 camel_sqlite3_file_xSync (sqlite3_file *pFile, gint flags)
 {
 	CamelSqlite3File *cFile;
@@ -256,7 +256,7 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile, gint flags)
 	return SQLITE_OK;
 }
 
-static int
+static gint
 camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pFile, gint flags, gint *pOutFlags)
 {
 	static GStaticRecMutex only_once_lock = G_STATIC_REC_MUTEX_INIT;
@@ -354,7 +354,7 @@ static GStaticRecMutex trans_lock = G_STATIC_REC_MUTEX_INIT;
 
 static gint write_mir (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelException *ex, gboolean delete_old_record);
 
-static int
+static gint
 cdb_sql_exec (sqlite3 *db, const gchar * stmt, CamelException *ex)
 {
 	gchar *errmsg = NULL;
@@ -589,7 +589,7 @@ end:
 	return ret;
 }
 
-static int
+static gint
 count_cb (gpointer data, gint argc, gchar **argv, gchar **azColName)
 {
 	gint i;
@@ -866,7 +866,7 @@ camel_db_delete_uid_from_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, 
 }
 
 gint
-camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex)
+camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, CamelException *ex)
 {
 	gchar *del_query;
 	gint ret;
@@ -884,7 +884,7 @@ struct _db_data_uids_flags {
 	GPtrArray *uids;
 	GPtrArray *flags;
 };
-static int
+static gint
 read_uids_flags_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
 	struct _db_data_uids_flags *data= (struct _db_data_uids_flags *) ref;
@@ -927,7 +927,7 @@ camel_db_get_folder_uids_flags (CamelDB *db, const gchar *folder_name, const gch
 	 return ret;
 }
 
-static int
+static gint
 read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
 	GPtrArray *array = (GPtrArray *) ref;
@@ -999,7 +999,7 @@ camel_db_get_folder_deleted_uids (CamelDB *db, gchar *folder_name, CamelExceptio
 	 return array;
 }
 
-static int
+static gint
 read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
 	GHashTable *hash = (GHashTable *)ref;
@@ -1053,7 +1053,7 @@ camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid
 	return ret;
 }
 
-static int
+static gint
 read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
 	 GPtrArray *array = (GPtrArray *)ref;
@@ -1136,14 +1136,14 @@ camel_db_add_to_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vui
 gint
 camel_db_create_folders_table (CamelDB *cdb, CamelException *ex)
 {
-	gchar *query = "CREATE TABLE IF NOT EXISTS folders ( folder_name TEXT PRIMARY KEY, version REAL, flags INTEGER, nextuid INTEGER, time NUMERIC, saved_count INTEGER, unread_count INTEGER, deleted_count INTEGER, junk_count INTEGER, visible_count INTEGER, jnd_count INTEGER, bdata TEXT )";
+	const gchar *query = "CREATE TABLE IF NOT EXISTS folders ( folder_name TEXT PRIMARY KEY, version REAL, flags INTEGER, nextuid INTEGER, time NUMERIC, saved_count INTEGER, unread_count INTEGER, deleted_count INTEGER, junk_count INTEGER, visible_count INTEGER, jnd_count INTEGER, bdata TEXT )";
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	return ((camel_db_command (cdb, query, ex)));
 }
 
 
 
-static int
+static gint
 camel_db_create_message_info_table (CamelDB *cdb, const gchar *folder_name, CamelException *ex)
 {
 	gint ret;
@@ -1197,7 +1197,7 @@ camel_db_create_message_info_table (CamelDB *cdb, const gchar *folder_name, Came
 	return ret;
 }
 
-static int
+static gint
 camel_db_migrate_folder_prepare (CamelDB *cdb, const gchar *folder_name, gint version, CamelException *ex)
 {
 	gint ret = 0;
@@ -1237,7 +1237,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb, const gchar *folder_name, gint ve
 	return ret;
 }
 
-static int
+static gint
 camel_db_migrate_folder_recreate (CamelDB *cdb, const gchar *folder_name, gint version, CamelException *ex)
 {
 	gint ret = 0;
@@ -1260,7 +1260,7 @@ camel_db_migrate_folder_recreate (CamelDB *cdb, const gchar *folder_name, gint v
 	return ret;
 }
 
-static int
+static gint
 camel_db_write_folder_version (CamelDB *cdb, const gchar *folder_name, gint old_version, CamelException *ex)
 {
 	gint ret = 0;
@@ -1283,7 +1283,7 @@ camel_db_write_folder_version (CamelDB *cdb, const gchar *folder_name, gint old_
 	return ret;
 }
 
-static int
+static gint
 camel_db_get_folder_version (CamelDB *cdb, const gchar *folder_name, CamelException *ex)
 {
 	gint version = -1, ret;
@@ -1341,11 +1341,11 @@ camel_db_write_message_info_record (CamelDB *cdb, const gchar *folder_name, Came
 	return write_mir (cdb, folder_name, record, ex, TRUE);
 }
 
-static int
+static gint
 write_mir (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelException *ex, gboolean delete_old_record)
 {
 	gint ret;
-	gchar *del_query;
+	/*char *del_query;*/
 	gchar *ins_query;
 
 	/* FIXME: We should migrate from this DELETE followed by INSERT model to an INSERT OR REPLACE model as pointed out by pvanhoof */
@@ -1356,7 +1356,7 @@ write_mir (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelE
 			folder_name, record->uid, record->flags,
 			record->msg_type, record->read, record->deleted, record->replied,
 			record->important, record->junk, record->attachment, record->dirty,
-			record->size, (long long) record->dsent, (long long) record->dreceived,
+			record->size, (gint64) record->dsent, (gint64) record->dreceived,
 			record->subject, record->from, record->to,
 			record->cc, record->mlist, record->followup_flag,
 			record->followup_completed_on, record->followup_due_by,
@@ -1423,7 +1423,7 @@ camel_db_write_folder_info_record (CamelDB *cdb, CamelFIRecord *record, CamelExc
 	return ret;
 }
 
-static int
+static gint
 read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 {
 	CamelFIRecord *record = *(CamelFIRecord **) ref;
@@ -1515,7 +1515,7 @@ camel_db_read_message_info_records (CamelDB *cdb, const gchar *folder_name, gpoi
 	return (ret);
 }
 
-static int
+static gint
 camel_db_create_deleted_table (CamelDB *cdb, CamelException *ex)
 {
 	gint ret;
@@ -1526,7 +1526,7 @@ camel_db_create_deleted_table (CamelDB *cdb, CamelException *ex)
 	return ret;
 }
 
-static int
+static gint
 camel_db_trim_deleted_table (CamelDB *cdb, CamelException *ex)
 {
 	gint ret = 0;
@@ -1564,8 +1564,8 @@ camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, CamelE
 	return ret;
 }
 
-static int
-cdb_delete_ids (CamelDB *cdb, const gchar * folder_name, GSList *uids, gchar *uid_prefix, const gchar *field, CamelException *ex)
+static gint
+cdb_delete_ids (CamelDB *cdb, const gchar * folder_name, GSList *uids, const gchar *uid_prefix, const gchar *field, CamelException *ex)
 {
 	gchar *tmp;
 	gint ret;
@@ -1645,7 +1645,7 @@ camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, Cam
 }
 
 gint
-camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, gchar *hash, GSList *uids, CamelException *ex)
+camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *hash, GSList *uids, CamelException *ex)
 {
 	return cdb_delete_ids (cdb, folder_name, uids, hash, "vuid", ex);
 }

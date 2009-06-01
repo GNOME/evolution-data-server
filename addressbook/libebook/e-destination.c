@@ -1118,7 +1118,7 @@ e_destination_get_textrepv (EDestination **destv)
 
 	/* Q: Please tell me this is only for assertion
            reasons. If this is considered to be ok behavior then you
-           shouldn't use g_return's. Just a reminder ;-)
+           shouldn't use g_return's. Just a reminder;-)
 
 	   A: Yes, this is just an assertion.  (Though it does find the
 	   length of the vector in the process...)
@@ -1131,8 +1131,8 @@ e_destination_get_textrepv (EDestination **destv)
 	strv = g_new0 (gchar *, len + 1);
 	for (i = 0, j = 0; destv[i]; i++) {
 		if (!e_destination_empty (destv[i])) {
-			const char *addr = e_destination_get_address (destv[i]);
-			strv[j++] = addr ? (char *) addr : (gchar *) "";
+			const gchar *addr = e_destination_get_address (destv[i]);
+			strv[j++] = addr ? (gchar *) addr : (gchar *) "";
 		}
 	}
 

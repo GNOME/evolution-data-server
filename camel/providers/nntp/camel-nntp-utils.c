@@ -226,7 +226,7 @@ get_HEAD_headers(CamelNNTPStore *nntp_store, CamelFolder *folder,
 }
 #endif
 
-static inline int
+static inline gint
 uid_num (CamelFolderSummary *summary, gint index)
 {
 	gchar *tmp;

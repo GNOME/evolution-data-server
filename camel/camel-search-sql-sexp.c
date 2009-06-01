@@ -560,7 +560,7 @@ sql_exp (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 
 /* 'builtin' functions */
 static struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint immediate :1;
 } symbols[] = {
@@ -605,7 +605,7 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].immediate)
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
-					    symbols[i].func, NULL);
+					     (ESExpIFunc *) symbols[i].func, NULL);
 		else
 			e_sexp_add_function(sexp, 0, symbols[i].name,
 					    symbols[i].func, NULL);

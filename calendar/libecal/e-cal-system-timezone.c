@@ -332,9 +332,9 @@ static gchar *
 system_timezone_read_etc_localtime_content (void)
 {
 	struct stat  stat_localtime;
-	char	*localtime_content = NULL;
+	gchar	*localtime_content = NULL;
 	gsize	localtime_content_len = -1;
-	char	*retval;
+	gchar	*retval;
 
 	if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
 		return NULL;

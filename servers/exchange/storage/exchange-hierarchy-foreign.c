@@ -534,14 +534,14 @@ exchange_hierarchy_foreign_new (ExchangeAccount *account,
 				      source_uri);
 
 	props = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (props, (gpointer) "name", (char *)hierarchy_name);
+	g_hash_table_insert (props, (gpointer) "name", (gchar *)hierarchy_name);
 	g_hash_table_insert (props, (gpointer) "physical_uri_prefix",
-			     (char *)physical_uri_prefix);
+			     (gchar *)physical_uri_prefix);
 	g_hash_table_insert (props, (gpointer) "internal_uri_prefix",
-			     (char *)internal_uri_prefix);
-	g_hash_table_insert (props, (gpointer) "owner_name", (char *)owner_name);
-	g_hash_table_insert (props, (gpointer) "owner_email", (char *)owner_email);
-	g_hash_table_insert (props, (gpointer) "source_uri", (char *)source_uri);
+			     (gchar *)internal_uri_prefix);
+	g_hash_table_insert (props, (gpointer) "owner_name", (gchar *)owner_name);
+	g_hash_table_insert (props, (gpointer) "owner_email", (gchar *)owner_email);
+	g_hash_table_insert (props, (gpointer) "source_uri", (gchar *)source_uri);
 
 	mf_path = e_folder_exchange_get_storage_file (hier->toplevel, "hierarchy.xml");
 	doc = e_xml_from_hash (props, E_XML_HASH_TYPE_PROPERTY,

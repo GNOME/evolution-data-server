@@ -20,7 +20,6 @@ endif
 
 INCLUDES = \
 	-I$(top_srcdir)/camel			\
-	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"camel-local-provider\"

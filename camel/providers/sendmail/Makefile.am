@@ -7,7 +7,6 @@ INCLUDES =						\
 	-I..						\
 	-I$(srcdir)/..					\
 	-I$(srcdir)/../../..				\
-	-I$(top_srcdir)/intl				\
 	-I$(top_srcdir)/camel                   	\
 	$(CAMEL_CFLAGS)					\
 	$(GNOME_INCLUDEDIR)				\

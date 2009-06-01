@@ -41,8 +41,8 @@ static CamelStreamClass *parent_class = NULL;
 /* Returns the class for a CamelStreamVFS */
 #define CSVFS_CLASS(so) CAMEL_STREAM_VFS_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static ssize_t stream_read   (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write  (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read   (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write  (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 
@@ -186,8 +186,8 @@ camel_stream_vfs_is_writable (CamelStreamVFS *stream_vfs)
 	return G_IS_OUTPUT_STREAM (stream_vfs->stream);
 }
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	gssize nread;
 	GError *error = NULL;
@@ -208,8 +208,8 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return nread;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	gboolean success;
 	gsize bytes_written;
@@ -227,7 +227,7 @@ stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 	return success ? bytes_written : -1;
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);
@@ -248,7 +248,7 @@ stream_flush (CamelStream *stream)
 	return 0;
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	CamelStreamVFS *stream_vfs = CAMEL_STREAM_VFS (stream);

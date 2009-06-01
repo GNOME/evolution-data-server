@@ -49,7 +49,7 @@ camel_imap4_build_folder_info_tree (GPtrArray *array, const gchar *top)
 {
 	CamelFolderInfo *cur, *fi, *root = NULL;
 	const gchar *p;
-	size_t n = 0;
+	gsize n = 0;
 	gchar *pname;
 	gint i;
 
@@ -207,12 +207,12 @@ camel_imap4_namespace_list_free (CamelIMAP4NamespaceList *nsl)
 }
 
 
-char
+gchar
 camel_imap4_get_path_delim (CamelIMAP4StoreSummary *s, const gchar *full_name)
 {
 	CamelIMAP4Namespace *namespace;
 	const gchar *slash;
-	size_t len;
+	gsize len;
 	gchar *top;
 
 	g_return_val_if_fail (s->namespaces != NULL, '/');
@@ -272,7 +272,7 @@ struct _uidset {
 	CamelFolderSummary *summary;
 	struct _uidset_range *ranges;
 	struct _uidset_range *tail;
-	size_t maxlen, setlen;
+	gsize maxlen, setlen;
 };
 
 static void
@@ -288,7 +288,7 @@ uidset_range_free (struct _uidset_range *range)
 }
 
 static void
-uidset_init (struct _uidset *uidset, CamelFolderSummary *summary, size_t maxlen)
+uidset_init (struct _uidset *uidset, CamelFolderSummary *summary, gsize maxlen)
 {
 	uidset->ranges = g_new (struct _uidset_range, 1);
 	uidset->ranges->first = (guint32) -1;
@@ -303,13 +303,13 @@ uidset_init (struct _uidset *uidset, CamelFolderSummary *summary, size_t maxlen)
 }
 
 /* returns: -1 on full-and-not-added, 0 on added-and-not-full or 1 on added-and-full */
-static int
+static gint
 uidset_add (struct _uidset *uidset, CamelMessageInfo *info)
 {
 	GPtrArray *messages = uidset->summary->messages;
 	struct _uidset_range *node, *tail = uidset->tail;
 	const gchar *iuid = camel_message_info_uid (info);
-	size_t uidlen, len;
+	gsize uidlen, len;
 	const gchar *colon;
 	guint32 index;
 
@@ -397,10 +397,10 @@ uidset_to_string (struct _uidset *uidset)
 }
 
 gint
-camel_imap4_get_uid_set (CamelIMAP4Engine *engine, CamelFolderSummary *summary, GPtrArray *infos, gint cur, size_t linelen, gchar **set)
+camel_imap4_get_uid_set (CamelIMAP4Engine *engine, CamelFolderSummary *summary, GPtrArray *infos, gint cur, gsize linelen, gchar **set)
 {
 	struct _uidset uidset;
-	size_t maxlen;
+	gsize maxlen;
 	gint rv = 0;
 	gint i;
 
@@ -460,7 +460,7 @@ camel_imap4_utils_set_unexpected_token_error (CamelException *ex, CamelIMAP4Engi
 		g_string_append (errmsg, _("No data"));
 		break;
 	default:
-		g_string_append_c (errmsg, (unsigned char) (token->token & 0xff));
+		g_string_append_c (errmsg, (guchar) (token->token & 0xff));
 		break;
 	}
 
@@ -555,7 +555,7 @@ camel_imap4_untagged_list (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guin
 	guint32 flags = 0;
 	GString *literal;
 	gchar delim;
-	size_t n;
+	gsize n;
 	gint i;
 
 	if (camel_imap4_engine_next_token (engine, token, ex) == -1)
@@ -684,7 +684,7 @@ camel_imap4_untagged_status (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, gu
 	camel_imap4_status_t *status;
 	guchar *literal;
 	gchar *mailbox;
-	size_t len;
+	gsize len;
 	gint type;
 	gint i;
 
@@ -707,7 +707,7 @@ camel_imap4_untagged_status (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, gu
 	default:
 		fprintf (stderr, "Unexpected token in IMAP4 untagged STATUS response: %s%c\n",
 			 token->token == CAMEL_IMAP4_TOKEN_NIL ? "NIL" : "",
-			 (unsigned char) (token->token & 0xff));
+			 (guchar) (token->token & 0xff));
 		camel_imap4_utils_set_unexpected_token_error (ex, engine, token);
 		return -1;
 	}

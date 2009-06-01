@@ -222,8 +222,8 @@ void camel_imap4_engine_handle_untagged (CamelIMAP4Engine *engine, CamelExceptio
 
 /* stream wrapper utility functions */
 gint camel_imap4_engine_next_token (CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token, CamelException *ex);
-gint camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, size_t *len, CamelException *ex);
-gint camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, size_t *len, CamelException *ex);
+gint camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, gsize *len, CamelException *ex);
+gint camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, gsize *len, CamelException *ex);
 gint camel_imap4_engine_nstring (CamelIMAP4Engine *engine, guchar **nstring, CamelException *ex);
 gint camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex);
 

@@ -42,7 +42,7 @@ camel_strcase_hash (gconstpointer v)
 	const gchar *p = (gchar *) v;
 	guint h = 0, g;
 
-	for ( ; *p != '\0'; p++) {
+	for (; *p != '\0'; p++) {
 		h = (h << 4) + g_ascii_toupper (*p);
 		if ((g = h & 0xf0000000)) {
 			h = h ^ (g >> 24);

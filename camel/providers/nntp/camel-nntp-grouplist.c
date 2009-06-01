@@ -93,7 +93,7 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 	CamelNNTPGroupList *list;
 	FILE *fp;
 	gchar buf[300];
-	unsigned long time;
+	gulong time;
 
 	g_free (root_dir);
 	fp = g_fopen (grouplist_file, "r");
@@ -167,7 +167,7 @@ camel_nntp_grouplist_save (CamelNNTPGroupList *group_list, CamelException *ex)
 		return;
 	}
 
-	fprintf (fp, "%lu\n", (long)group_list->time);
+	fprintf (fp, "%lu\n", (glong)group_list->time);
 
 	g_list_foreach (group_list->group_list, (GFunc)save_entry, fp);
 

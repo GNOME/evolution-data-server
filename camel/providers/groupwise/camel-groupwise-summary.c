@@ -53,11 +53,11 @@
 static gint gw_summary_header_load (CamelFolderSummary *, FILE *);
 static gint gw_summary_header_save (CamelFolderSummary *, FILE *);
 
-static CamelMessageInfo *gw_message_info_load (CamelFolderSummary *s, FILE *in) ;
+static CamelMessageInfo *gw_message_info_load (CamelFolderSummary *s, FILE *in);
 
-static gint gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info) ;
-static CamelMessageContentInfo * gw_content_info_load (CamelFolderSummary *s, FILE *in) ;
-static gint gw_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info) ;
+static gint gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info);
+static CamelMessageContentInfo * gw_content_info_load (CamelFolderSummary *s, FILE *in);
+static gint gw_content_info_save (CamelFolderSummary *s, FILE *out, CamelMessageContentInfo *info);
 static gboolean gw_info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set);
 
 static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
@@ -74,7 +74,7 @@ static void camel_groupwise_summary_init       (CamelGroupwiseSummary *obj);
 /*End of Prototypes*/
 
 
-static CamelFolderSummaryClass *camel_groupwise_summary_parent ;
+static CamelFolderSummaryClass *camel_groupwise_summary_parent;
 
 
 CamelType
@@ -118,7 +118,7 @@ camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass)
 
 	camel_groupwise_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
 
-	cfs_class->message_info_clone = gw_message_info_clone ;
+	cfs_class->message_info_clone = gw_message_info_clone;
 	cfs_class->summary_header_load = gw_summary_header_load;
 	cfs_class->summary_header_save = gw_summary_header_save;
 	cfs_class->message_info_load = gw_message_info_load;
@@ -167,7 +167,7 @@ camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename)
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (
 			camel_object_new (camel_groupwise_summary_get_type ()));
 
-	summary->folder = folder ;
+	summary->folder = folder;
 	camel_folder_summary_set_build_content (summary, TRUE);
 	camel_folder_summary_set_filename (summary, filename);
 
@@ -179,14 +179,14 @@ camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename)
 	return summary;
 }
 
-static int
+static gint
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 {
 	CamelGroupwiseSummary *gms = CAMEL_GROUPWISE_SUMMARY (s);
 	gchar *part;
 
 	if (camel_groupwise_summary_parent->summary_header_from_db (s, mir) == -1)
-		return -1 ;
+		return -1;
 
 	part = mir->bdata;
 
@@ -203,13 +203,13 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	return 0;
 }
 
-static int
+static gint
 gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 {
 	CamelGroupwiseSummary *gms = CAMEL_GROUPWISE_SUMMARY (s);
 
 	if (camel_groupwise_summary_parent->summary_header_load (s, in) == -1)
-		return -1 ;
+		return -1;
 
 	if (camel_file_util_decode_fixed_int32(in, &gms->version) == -1
 			|| camel_file_util_decode_fixed_int32(in, &gms->validity) == -1)
@@ -217,7 +217,7 @@ gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 
 	if (camel_file_util_decode_string (in, &gms->time_string) == -1)
 		return -1;
-	return 0 ;
+	return 0;
 }
 
 
@@ -240,7 +240,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 
 }
 
-static int
+static gint
 gw_summary_header_save (CamelFolderSummary *s, FILE *out)
 {
 	CamelGroupwiseSummary *gms = CAMEL_GROUPWISE_SUMMARY(s);
@@ -271,21 +271,21 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 static CamelMessageInfo *
 gw_message_info_load (CamelFolderSummary *s, FILE *in)
 {
-	CamelMessageInfo *info ;
-	CamelGroupwiseMessageInfo *gw_info ;
+	CamelMessageInfo *info;
+	CamelGroupwiseMessageInfo *gw_info;
 
 
-	info = camel_groupwise_summary_parent->message_info_load(s,in) ;
+	info = camel_groupwise_summary_parent->message_info_load(s,in);
 	if (info) {
-		gw_info = (CamelGroupwiseMessageInfo*) info ;
+		gw_info = (CamelGroupwiseMessageInfo*) info;
 		if (camel_file_util_decode_uint32 (in, &gw_info->server_flags) == -1)
-			goto error ;
+			goto error;
 	}
 
-	return info ;
+	return info;
 error:
-	camel_message_info_free (info) ;
-	return NULL ;
+	camel_message_info_free (info);
+	return NULL;
 }
 
 static CamelMIRecord *
@@ -301,7 +301,7 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 	return mir;
 }
 
-static int
+static gint
 gw_message_info_save (CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 {
 	CamelGroupwiseMessageInfo *gw_info = (CamelGroupwiseMessageInfo *)info;
@@ -342,7 +342,7 @@ gw_content_info_load (CamelFolderSummary *s, FILE *in)
 		return camel_folder_summary_content_info_new (s);
 }
 
-static int
+static gint
 content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir)
 {
 
@@ -355,7 +355,7 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 	}
 }
 
-static int
+static gint
 gw_content_info_save (CamelFolderSummary *s, FILE *out,
 		CamelMessageContentInfo *info)
 {
@@ -435,17 +435,17 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 void
 camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *message, const CamelMessageInfo *info)
 {
-	CamelGroupwiseMessageInfo *mi ;
-	const CamelFlag *flag ;
-	const CamelTag *tag ;
+	CamelGroupwiseMessageInfo *mi;
+	const CamelFlag *flag;
+	const CamelTag *tag;
 
 	/* Create summary entry */
-	mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_info_new_from_message (summary, message) ;
+	mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_info_new_from_message (summary, message);
 
 	/* Copy flags 'n' tags */
-	mi->info.flags = camel_message_info_flags(info) ;
+	mi->info.flags = camel_message_info_flags(info);
 
-	flag = camel_message_info_user_flags(info) ;
+	flag = camel_message_info_user_flags(info);
 	while (flag) {
 		camel_message_info_set_user_flag((CamelMessageInfo *)mi, flag->name, TRUE);
 		flag = flag->next;

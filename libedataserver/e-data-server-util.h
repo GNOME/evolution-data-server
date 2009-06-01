@@ -39,13 +39,13 @@ gchar       *e_util_strstrcase (const gchar *haystack, const gchar *needle);
 gchar       *e_util_unicode_get_utf8 (const gchar *text, gunichar *out);
 const gchar *e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle);
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
-int	     e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2);
+gint	     e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2);
 gchar       *e_util_utf8_remove_accents (const gchar *str);
 guint64      e_util_pthread_id (pthread_t t);
 void         e_filename_make_safe (gchar *string);
 
-size_t e_utf8_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm);
-size_t e_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm);
+gsize e_utf8_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm);
+gsize e_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm);
 
 #ifdef G_OS_WIN32
 const gchar  *e_util_get_prefix (void) G_GNUC_CONST;

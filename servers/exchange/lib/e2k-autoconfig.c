@@ -1437,7 +1437,7 @@ read_config (void)
 	p = config_data;
 
 	while (1) {
-		for (name = p; isspace ((unsigned char)*name); name++)
+		for (name = p; isspace ((guchar)*name); name++)
 			;
 
 		p = strchr (name, ':');

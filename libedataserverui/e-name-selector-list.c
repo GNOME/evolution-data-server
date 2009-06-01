@@ -348,7 +348,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 	GtkWidget    *menu_item;
 	GList        *email_list = NULL, *l;
 	gint          i;
-	int	      email_num, len;
+	gint	      email_num, len;
 	gchar         *delete_label;
 	GSList	     *group = NULL;
 	gboolean      is_list;

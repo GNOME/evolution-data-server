@@ -99,7 +99,7 @@ imap_namespace_decode (const gchar **in, struct _namespace **namespace)
 	struct _namespace *list, *tail, *node;
 	const gchar *inptr;
 	gchar *astring;
-	size_t len;
+	gsize len;
 
 	inptr = *in;
 
@@ -313,7 +313,7 @@ imap_parse_list_response (CamelImapStore *store, const gchar *buf, gint *flags, 
 {
 	gboolean is_lsub = FALSE;
 	const gchar *word;
-	size_t len;
+	gsize len;
 
 	if (*buf != '*')
 		return FALSE;
@@ -683,7 +683,7 @@ imap_is_atom(const gchar *in)
 	register guchar c;
 	register const gchar *p = in;
 
-	while ((c = (unsigned char)*p)) {
+	while ((c = (guchar)*p)) {
 		if (!imap_is_atom_char(c))
 			return FALSE;
 		p++;
@@ -696,7 +696,7 @@ imap_is_atom(const gchar *in)
 /**
  * imap_parse_string_generic:
  * @str_p: a pointer to a string
- * @len: a pointer to a size_t to return the length in
+ * @len: a pointer to a gsize to return the length in
  * @type: type of string (#IMAP_STRING, #IMAP_ASTRING, or #IMAP_NSTRING)
  * to parse.
  *
@@ -715,7 +715,7 @@ imap_is_atom(const gchar *in)
  * latter, it will point to the character after the NIL.)
  **/
 gchar *
-imap_parse_string_generic (const gchar **str_p, size_t *len, gint type)
+imap_parse_string_generic (const gchar **str_p, gsize *len, gint type)
 {
 	const gchar *str = *str_p;
 	gchar *out;
@@ -724,7 +724,7 @@ imap_parse_string_generic (const gchar **str_p, size_t *len, gint type)
 		return NULL;
 	else if (*str == '"') {
 		gchar *p;
-		size_t size;
+		gsize size;
 
 		str++;
 		size = strcspn (str, "\"") + 1;
@@ -764,8 +764,8 @@ imap_parse_string_generic (const gchar **str_p, size_t *len, gint type)
 		*str_p += 3;
 		*len = 0;
 		return NULL;
-	} else if (type == IMAP_ASTRING && imap_is_atom_char ((unsigned char)*str)) {
-		while (imap_is_atom_char ((unsigned char) *str))
+	} else if (type == IMAP_ASTRING && imap_is_atom_char ((guchar)*str)) {
+		while (imap_is_atom_char ((guchar) *str))
 			str++;
 
 		*len = str - *str_p;
@@ -808,7 +808,7 @@ skip_asn (const gchar **str_p)
 		else
 			*str_p = NULL;
 	} else if (*str == '{') {
-		unsigned long len;
+		gulong len;
 
 		len = strtoul (str + 1, (gchar **) &str, 10);
 		if (*str != '}' || *(str + 1) != '\n' ||
@@ -842,12 +842,12 @@ imap_skip_list (const gchar **str_p)
 	skip_char (str_p, ')');
 }
 
-static int
+static gint
 parse_params (const gchar **parms_p, CamelContentType *type)
 {
 	const gchar *parms = *parms_p;
 	gchar *name, *value;
-	size_t len;
+	gsize len;
 
 	if (!g_ascii_strncasecmp (parms, "nil", 3)) {
 		*parms_p += 3;
@@ -889,8 +889,8 @@ imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *fo
 	CamelContentType *ctype = NULL;
 	gchar *description = NULL;
 	gchar *encoding = NULL;
-	size_t len;
-	size_t size;
+	gsize len;
+	gsize size;
 	gchar *p;
 
 	if (*inptr++ != '(')
@@ -1029,7 +1029,7 @@ imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *fo
 		if (size == 0)
 			goto exception;
 
-		inptr = (const guchar *) p;
+		inptr = (const gchar *) p;
 
 		if (camel_content_type_is (ctype, "message", "rfc822")) {
 			/* body_type_msg */
@@ -1052,14 +1052,14 @@ imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *fo
 
 			/* lines */
 			strtoul ((const gchar *) inptr, &p, 10);
-			inptr = (const guchar *) p;
+			inptr = (const gchar *) p;
 		} else if (camel_content_type_is (ctype, "text", "*")) {
 			if (!inptr || *inptr++ != ' ')
 				goto exception;
 
 			/* lines */
 			strtoul ((const gchar *) inptr, &p, 10);
-			inptr = (const guchar *) p;
+			inptr = (const gchar *) p;
 		} else {
 			/* body_type_basic */
 		}
@@ -1174,10 +1174,10 @@ imap_quote_string (const gchar *str)
 }
 
 
-static inline unsigned long
+static inline gulong
 get_summary_uid_numeric (CamelFolderSummary *summary, gint index)
 {
-	unsigned long uid;
+	gulong uid;
 	gchar *suid;
 
 	suid = camel_folder_summary_uid_from_index (summary, index);
@@ -1211,9 +1211,9 @@ get_summary_uid_numeric (CamelFolderSummary *summary, gint index)
  * Return value: the set, which the caller must free with g_free()
  **/
 gchar *
-imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, ssize_t maxlen, gint *lastuid)
+imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, gssize maxlen, gint *lastuid)
 {
-	unsigned long last_uid, next_summary_uid, this_uid;
+	gulong last_uid, next_summary_uid, this_uid;
 	gboolean range = FALSE;
 	gint si, scount;
 	GString *gset;
@@ -1230,10 +1230,10 @@ imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, s
 		/* Find the next UID in the summary after the one we
 		 * just wrote out.
 		 */
-		for ( ; last_uid >= next_summary_uid && si < scount; si++)
+		for (; last_uid >= next_summary_uid && si < scount; si++)
 			next_summary_uid = get_summary_uid_numeric (summary, si);
 		if (last_uid >= next_summary_uid)
-			next_summary_uid = (unsigned long) -1;
+			next_summary_uid = (gulong) -1;
 
 		/* Now get the next UID from @uids */
 		this_uid = strtoul (uids->pdata[uid], NULL, 10);
@@ -1282,7 +1282,7 @@ imap_uid_set_to_array (CamelFolderSummary *summary, const gchar *uids)
 {
 	GPtrArray *arr;
 	gchar *p, *q;
-	unsigned long uid, suid;
+	gulong uid, suid;
 	gint si, scount;
 
 	arr = g_ptr_array_new ();
@@ -1353,7 +1353,7 @@ imap_uid_array_free (GPtrArray *arr)
 gchar *
 imap_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffix)
 {
-	size_t len;
+	gsize len;
 
 	len = strlen (prefix);
 	if (len == 0 || prefix[len - 1] == imap_store->dir_sep)
@@ -1363,7 +1363,7 @@ imap_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffi
 }
 
 gchar *
-imap_mailbox_encode (const guchar *in, size_t inlen)
+imap_mailbox_encode (const guchar *in, gsize inlen)
 {
 	gchar *buf;
 
@@ -1375,7 +1375,7 @@ imap_mailbox_encode (const guchar *in, size_t inlen)
 }
 
 gchar *
-imap_mailbox_decode (const guchar *in, size_t inlen)
+imap_mailbox_decode (const guchar *in, gsize inlen)
 {
 	gchar *buf;
 

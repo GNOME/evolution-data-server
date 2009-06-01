@@ -50,7 +50,7 @@ gint camel_argv_build(CamelArgV *tv)
 			a->ca_object = va_arg(tv->ap, gpointer );
 			break;
 		case CAMEL_ARG_INT:
-			a->ca_int = va_arg(tv->ap, int);
+			a->ca_int = va_arg(tv->ap, gint);
 			break;
 		case CAMEL_ARG_DBL:
 			a->ca_double = va_arg(tv->ap, double);
@@ -62,7 +62,7 @@ gint camel_argv_build(CamelArgV *tv)
 			a->ca_ptr = va_arg(tv->ap, gpointer );
 			break;
 		case CAMEL_ARG_BOO:
-			a->ca_int = va_arg(tv->ap, int) != 0;
+			a->ca_int = va_arg(tv->ap, gint) != 0;
 			break;
 		default:
 			printf("Error, unknown type, truncating result\n");
@@ -105,7 +105,7 @@ gint camel_arggetv_build(CamelArgGetV *tv)
 			*a->ca_int = 0;
 			break;
 		case CAMEL_ARG_DBL:
-			a->ca_double = va_arg(tv->ap, double *);
+			a->ca_double = va_arg(tv->ap, gdouble *);
 			*a->ca_double = 0.0;
 			break;
 		case CAMEL_ARG_STR:

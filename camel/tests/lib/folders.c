@@ -52,7 +52,7 @@ test_folder_counts(CamelFolder *folder, gint total, gint unread)
 	pull();
 }
 
-static int
+static gint
 safe_strcmp(const gchar *a, const gchar *b)
 {
 	if (a == NULL && b == NULL)

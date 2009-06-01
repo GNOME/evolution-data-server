@@ -57,7 +57,7 @@ void camel_imap4_namespace_list_free (struct _CamelIMAP4NamespaceList *nsl);
 
 gchar camel_imap4_get_path_delim (struct _CamelIMAP4StoreSummary *s, const gchar *full_name);
 
-gint camel_imap4_get_uid_set (struct _CamelIMAP4Engine *engine, struct _CamelFolderSummary *summary, GPtrArray *infos, gint cur, size_t linelen, gchar **set);
+gint camel_imap4_get_uid_set (struct _CamelIMAP4Engine *engine, struct _CamelFolderSummary *summary, GPtrArray *infos, gint cur, gsize linelen, gchar **set);
 
 void camel_imap4_utils_set_unexpected_token_error (CamelException *ex, struct _CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token);
 

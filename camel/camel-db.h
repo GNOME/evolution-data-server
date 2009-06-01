@@ -16,7 +16,7 @@
 
 typedef struct _CamelDBPrivate CamelDBPrivate;
 
-typedef int(*CamelDBCollate)(gpointer ,int,gconstpointer ,int,gconstpointer );
+typedef gint(*CamelDBCollate)(gpointer ,int,gconstpointer ,int,gconstpointer );
 
 struct _CamelDB {
 	sqlite3 *db;
@@ -127,7 +127,7 @@ gint camel_db_delete_folder (CamelDB *cdb, const gchar *folder, CamelException *
 gint camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, CamelException *ex);
 /*int camel_db_delete_uids (CamelDB *cdb, CamelException *ex, gint nargs, ... );*/
 gint camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, CamelException *ex);
-gint camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, gchar *shash, GSList *uids, CamelException *ex);
+gint camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *shash, GSList *uids, CamelException *ex);
 
 gint camel_db_create_folders_table (CamelDB *cdb, CamelException *ex);
 gint camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpointer data, CamelException *ex);
@@ -157,7 +157,7 @@ void camel_db_camel_mir_free (CamelMIRecord *record);
 gint camel_db_create_vfolder (CamelDB *db, const gchar *folder_name, CamelException *ex);
 gint camel_db_recreate_vfolder (CamelDB *db, const gchar *folder_name, CamelException *ex);
 gint camel_db_delete_uid_from_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
-gint camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
+gint camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, CamelException *ex);
 GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, gchar *folder_name, gchar *filter, CamelException *ex);
 gint camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);
 gint camel_db_add_to_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex);

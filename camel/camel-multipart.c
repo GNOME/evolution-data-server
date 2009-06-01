@@ -54,7 +54,7 @@ static guint                 get_number        (CamelMultipart *multipart);
 static void                  set_boundary      (CamelMultipart *multipart,
 						const gchar *boundary);
 static const gchar *         get_boundary      (CamelMultipart *multipart);
-static ssize_t               write_to_stream   (CamelDataWrapper *data_wrapper,
+static gssize               write_to_stream   (CamelDataWrapper *data_wrapper,
 						CamelStream *stream);
 
 static gint construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp);
@@ -363,8 +363,8 @@ set_boundary (CamelMultipart *multipart, const gchar *boundary)
 
 		/* Generate a fairly random boundary string. */
 		bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) multipart,
-					(unsigned long) getpid(),
-					(unsigned long) time(NULL));
+					(gulong) getpid(),
+					(gulong) time(NULL));
 
 		checksum = g_checksum_new (G_CHECKSUM_MD5);
 		g_checksum_update (checksum, (guchar *) bgen, -1);
@@ -444,13 +444,13 @@ is_offline (CamelDataWrapper *data_wrapper)
 }
 
 /* this is MIME specific, doesn't belong here really */
-static ssize_t
+static gssize
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
 	const gchar *boundary;
-	ssize_t total = 0;
-	ssize_t count;
+	gssize total = 0;
+	gssize count;
 	GList *node;
 
 	/* get the bundary text */
@@ -550,14 +550,14 @@ camel_multipart_set_postface(CamelMultipart *multipart, const gchar *postface)
 	}
 }
 
-static int
+static gint
 construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 {
 	gint err;
 	CamelContentType *content_type;
 	CamelMimePart *bodypart;
 	gchar *buf;
-	size_t len;
+	gsize len;
 
 	g_assert(camel_mime_parser_state(mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
 

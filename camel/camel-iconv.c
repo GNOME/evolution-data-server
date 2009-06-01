@@ -97,8 +97,8 @@ static gchar *locale_charset = NULL;
 static gchar *locale_lang = NULL;
 
 struct {
-	gchar *charset;
-	gchar *iconv_name;
+	const gchar *charset;
+	const gchar *iconv_name;
 } known_iconv_charsets[] = {
 #if 0
 	/* charset name, iconv-friendly charset name */
@@ -508,7 +508,7 @@ camel_iconv_open (const gchar *oto, const gchar *ofrom)
 			/* work around some broken iconv implementations
 			 * that die if the length arguments are NULL
 			 */
-			size_t buggy_iconv_len = 0;
+			gsize buggy_iconv_len = 0;
 			gchar *buggy_iconv_buf = NULL;
 
 			/* resets the converter */
@@ -592,8 +592,8 @@ camel_iconv_locale_language (void)
  * camel_iconv_charset_name() so that we don't have to keep track of all
  * the aliases too. */
 static struct {
-	gchar *charset;
-	gchar *lang;
+	const gchar *charset;
+	const gchar *lang;
 } cjkr_lang_map[] = {
 	{ "Big5",        "zh" },
 	{ "BIG5HKSCS",   "zh" },

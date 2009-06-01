@@ -34,8 +34,8 @@ static CamelObjectClass *parent_class = NULL;
 #define CS_CLASS(so) CAMEL_STREAM_NULL_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
 /* dummy implementations, for a NULL stream */
-static ssize_t   stream_read       (CamelStream *stream, gchar *buffer, size_t n) { return 0; }
-static ssize_t   stream_write      (CamelStream *stream, const gchar *buffer, size_t n) { ((CamelStreamNull *)stream)->written += n; return n; }
+static gssize   stream_read       (CamelStream *stream, gchar *buffer, gsize n) { return 0; }
+static gssize   stream_write      (CamelStream *stream, const gchar *buffer, gsize n) { ((CamelStreamNull *)stream)->written += n; return n; }
 static gint       stream_close      (CamelStream *stream) { return 0; }
 static gint       stream_flush      (CamelStream *stream) { return 0; }
 static gboolean  stream_eos        (CamelStream *stream) { return TRUE; }

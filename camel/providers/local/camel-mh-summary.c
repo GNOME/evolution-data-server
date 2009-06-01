@@ -217,7 +217,7 @@ remove_summary(gchar *key, CamelMessageInfo *info, CamelLocalSummary *cls)
 }
 
 
-static int
+static gint
 mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	DIR *dir;
@@ -295,7 +295,7 @@ mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, Came
 }
 
 /* sync the summary file with the ondisk files */
-static int
+static gint
 mh_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	gint count, i;

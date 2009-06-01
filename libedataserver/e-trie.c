@@ -63,7 +63,7 @@ struct _ETrie {
 
 
 static inline gunichar
-trie_utf8_getc (const guchar **in, size_t inlen)
+trie_utf8_getc (const guchar **in, gsize inlen)
 {
 	register const guchar *inptr = *in;
 	const guchar *inend = inptr + inlen;
@@ -335,10 +335,10 @@ e_trie_add (ETrie *trie, const gchar *pattern, gint pattern_id)
  * Returns: The matched pattern, or %NULL if no pattern is matched.
  **/
 const gchar *
-e_trie_search (ETrie *trie, const gchar *buffer, size_t buflen, gint *matched_id)
+e_trie_search (ETrie *trie, const gchar *buffer, gsize buflen, gint *matched_id)
 {
 	const guchar *inptr, *inend, *prev, *pat;
-	register size_t inlen = buflen;
+	register gsize inlen = buflen;
 	struct _trie_state *q;
 	struct _trie_match *m = NULL; /* init to please gcc */
 	gunichar c;

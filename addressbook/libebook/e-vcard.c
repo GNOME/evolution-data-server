@@ -198,7 +198,7 @@ skip_to_next_line (gchar **p)
 /* skip forward until we hit a character in @s, CRLF, or \0.  leave *p
    pointing at the character that causes us to stop */
 static void
-skip_until (char **p, const char *s)
+skip_until (gchar **p, const gchar *s)
 {
 	gchar *lp;
 
@@ -206,7 +206,7 @@ skip_until (char **p, const char *s)
 
 	while (*lp != '\r' && *lp != '\0') {
 		gboolean s_matches = FALSE;
-		const char *ls;
+		const gchar *ls;
 		for (ls = s; *ls; ls = g_utf8_next_char (ls)) {
 			if (g_utf8_get_char (ls) == g_utf8_get_char (lp)) {
 				s_matches = TRUE;
@@ -420,7 +420,7 @@ read_attribute_params (EVCardAttribute *attr, gchar **p, gboolean *quoted_printa
 			}
 			else {
 				if (str->len > 0) {
-					const char *param_name;
+					const gchar *param_name;
 					if (!g_ascii_strcasecmp (str->str,
 								 "quoted-printable")) {
 						param_name = "ENCODING";
@@ -630,7 +630,7 @@ make_valid_utf8 (const gchar *name)
 static void
 parse (EVCard *evc, const gchar *str)
 {
-	gchar *buf ;
+	gchar *buf;
 	gchar *p;
 	EVCardAttribute *attr;
 
@@ -913,7 +913,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 			g_string_append (attr_str, escaped_value);
 			if (v->next) {
 				/* XXX toshok - i hate you, rfc 2426.
-				   why doesn't CATEGORIES use a ; like
+				   why doesn't CATEGORIES use a; like
 				   a normal list attribute? */
 				if (!g_ascii_strcasecmp (attr->name, "CATEGORIES"))
 					g_string_append_c (attr_str, ',');

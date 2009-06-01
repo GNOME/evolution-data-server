@@ -608,7 +608,7 @@ folders_build_rec(CamelURL *base, GPtrArray *folders, gint *ip, CamelFolderInfo 
 	if (pfi)
 		plen = strlen(pname);
 
-	for(;(*ip)<(int)folders->len;) {
+	for(;(*ip)<(gint)folders->len;) {
 		CamelFolderInfo *fi;
 		struct _list_info *li;
 
@@ -770,7 +770,7 @@ imap_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelEx
 	camel_imapp_engine_command_free(istore->driver->engine, ic);
 
 	printf("got folder list:\n");
-	for (i=0;i<(int)istore->pending_list->len;i++) {
+	for (i=0;i<(gint)istore->pending_list->len;i++) {
 		struct _list_info *linfo = istore->pending_list->pdata[i];
 
 		printf("%s (%c)\n", linfo->name, linfo->separator);

@@ -147,7 +147,7 @@ camel_seekable_stream_tell (CamelSeekableStream *stream)
 	return CSS_CLASS (stream)->tell (stream);
 }
 
-static int
+static gint
 set_bounds (CamelSeekableStream *stream, off_t start, off_t end)
 {
 	/* store the bounds */
@@ -183,7 +183,7 @@ camel_seekable_stream_set_bounds (CamelSeekableStream *stream,
 }
 
 /* a default implementation of reset for seekable streams */
-static int
+static gint
 reset (CamelStream *stream)
 {
 	CamelSeekableStream *seekable_stream;

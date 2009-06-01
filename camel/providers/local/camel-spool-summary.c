@@ -126,7 +126,7 @@ camel_spool_summary_new(struct _CamelFolder *folder, const gchar *mbox_name)
 	return new;
 }
 
-static int
+static gint
 spool_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex)
 {
 	g_warning("spool summary - not loading anything\n");
@@ -134,7 +134,7 @@ spool_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex)
 }
 
 /* perform a full sync */
-static int
+static gint
 spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	gint fd = -1, fdout = -1;
@@ -305,7 +305,7 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 	return -1;
 }
 
-static int
+static gint
 spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	gint i, work, count;
@@ -345,7 +345,7 @@ spool_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, C
 	return 0;
 }
 
-static int
+static gint
 spool_summary_need_index(void) {
 	return 0;
 }

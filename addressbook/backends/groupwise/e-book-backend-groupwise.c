@@ -312,7 +312,7 @@ set_im_changes (EGwItem *new_item, EGwItem *old_item)
 	if (old_ims && new_ims) {
 
 		old_ims_copy = g_list_copy (old_ims);
-		for ( ; new_ims != NULL; new_ims = g_list_next (new_ims)) {
+		for (; new_ims != NULL; new_ims = g_list_next (new_ims)) {
 
 			im1 = new_ims->data;
 			temp = old_ims;
@@ -511,7 +511,7 @@ static void
 populate_birth_date (EContact *contact, gpointer data)
 {
 	EGwItem *item;
-	gchar *value ;
+	gchar *value;
 	EContactDate *date;
 
 	item = E_GW_ITEM (data);
@@ -578,7 +578,7 @@ populate_emails (EContact *contact, gpointer data)
 	item = E_GW_ITEM (data);
 	email_list = e_gw_item_get_email_list(item);
 
-	for (i =0 ; i < 3 && email_list; i++, email_list = g_list_next (email_list)) {
+	for (i =0; i < 3 && email_list; i++, email_list = g_list_next (email_list)) {
 		if (email_list->data)
 			e_contact_set (contact, email_fields[i], email_list->data);
 	}
@@ -595,7 +595,7 @@ set_emails_in_gw_item (EGwItem *item, gpointer data)
 
 	contact = E_CONTACT (data);
 	email_list = NULL;
-	for (i =0 ; i < 3; i++) {
+	for (i =0; i < 3; i++) {
 		email = e_contact_get (contact, email_fields[i]);
 		if(email)
 			email_list = g_list_append (email_list, g_strdup (email));
@@ -612,7 +612,7 @@ compare_string_lists ( GList *old_list, GList *new_list, GList **additions, GLis
 
 	if (old_list && new_list) {
 		old_list_copy = g_list_copy (old_list);
-		for ( ; new_list != NULL; new_list = g_list_next (new_list)) {
+		for (; new_list != NULL; new_list = g_list_next (new_list)) {
 
 			string1 = new_list->data;
 			temp = old_list;
@@ -656,7 +656,7 @@ static void
 populate_full_name (EContact *contact, gpointer data)
 {
 	EGwItem *item;
-	FullName  *full_name ;
+	FullName  *full_name;
 	gchar *full_name_string;
 
 	item = E_GW_ITEM(data);
@@ -827,7 +827,7 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	emails_without_ids = NULL;
 	dest_without_ids = NULL;
 
-	for ( ;temp != NULL; temp = g_list_next (temp)) {
+	for (;temp != NULL; temp = g_list_next (temp)) {
 		EVCardAttribute *attr = temp->data;
 		EDestination *dest;
 		id = email = NULL;
@@ -915,9 +915,9 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 	 * arbitrary contacts and then add them as members to the group.
 	 */
 
-	temp = emails_without_ids ;
+	temp = emails_without_ids;
 	dtemp = dest_without_ids;
-	for (; temp != NULL && dtemp != NULL ; temp = g_list_next (temp), dtemp = g_list_next(dtemp)) {
+	for (; temp != NULL && dtemp != NULL; temp = g_list_next (temp), dtemp = g_list_next(dtemp)) {
 		EContact *new_contact = e_contact_new ();
 		EGwItem *new_item = e_gw_item_new_empty ();
 		FullName *full_name;
@@ -994,19 +994,19 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 static void
 set_member_changes (EGwItem *new_item, EGwItem *old_item, EBookBackendGroupwise *egwb)
 {
-	GList *old_members, *new_members ;
+	GList *old_members, *new_members;
 	GList *old_ids,  *new_ids,  *additions, *deletions;
 
 	old_ids = new_ids = additions = deletions = NULL;
 	old_members = e_gw_item_get_member_list (old_item);
 	new_members = e_gw_item_get_member_list (new_item);
 
-	for ( ;old_members != NULL; old_members = g_list_next (old_members)) {
+	for (;old_members != NULL; old_members = g_list_next (old_members)) {
 		EGroupMember *member;
 		member = (EGroupMember *)old_members->data;
 		old_ids = g_list_append (old_ids, member->id);
 	}
-	for ( ;new_members != NULL; new_members = g_list_next (new_members)) {
+	for (;new_members != NULL; new_members = g_list_next (new_members)) {
 		EGroupMember *member;
 		member = (EGroupMember *)new_members->data;
 		new_ids = g_list_append (new_ids, member->id);
@@ -1106,7 +1106,7 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 	if (old_category_list && new_category_list) {
 		old_categories_copy = g_list_copy (old_category_list);
 
-		for ( ; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
+		for (; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
 			category1  = new_category_list->data;
 			temp = old_category_list;
 			categories_matched  = FALSE;
@@ -1299,7 +1299,7 @@ e_book_backend_groupwise_remove_contacts (EBookBackend *backend,
 			return;
 		}
 
-		for ( ; id_list != NULL; id_list = g_list_next (id_list)) {
+		for (; id_list != NULL; id_list = g_list_next (id_list)) {
 			id = (gchar *) id_list->data;
 			e_gw_connection_remove_item (ebgw->priv->cnc, ebgw->priv->container_id, id);
 			deleted_ids =  g_list_append (deleted_ids, id);
@@ -1455,7 +1455,7 @@ e_book_backend_groupwise_get_contact (EBookBackend *backend,
 				      const gchar   *id)
 {
 	EBookBackendGroupwise *gwb;
-	gint status ;
+	gint status;
 	EGwItem *item;
 	EContact *contact;
 	gchar *vcard;
@@ -2137,7 +2137,7 @@ book_view_thread (gpointer data)
 	gboolean is_auto_completion = FALSE;
 	gchar *search_string = NULL;
 	GTimeVal start, end;
-	unsigned long diff;
+	gulong diff;
 
 	gwb  = closure->bg;
 	gw_items = NULL;
@@ -2637,7 +2637,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	gchar *status_msg;
 	GTimeVal start, end;
 	GTimeVal tstart, tend;
-	unsigned long diff;
+	gulong diff;
 
 	if(!ebgw)
 		return NULL;
@@ -2744,7 +2744,7 @@ build_summary (EBookBackendGroupwise *ebgw)
 	gchar *query_string;
 	GList *contacts, *temp_list = NULL;
 	GTimeVal start, end;
-	unsigned long diff;
+	gulong diff;
 
 	if (enable_debug) {
 		g_get_current_time(&start);
@@ -2792,7 +2792,7 @@ update_cache (EBookBackendGroupwise *ebgw)
 	EDataBookView *book_view;
 	GroupwiseBackendSearchClosure *closure;
 	GTimeVal start, end;
-	unsigned long diff;
+	gulong diff;
 
 	if (!ebgw)
 		return FALSE;
@@ -2903,7 +2903,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	EBookBackendGroupwisePrivate *priv;
 
 	GTimeVal start, end;
-	unsigned long diff;
+	gulong diff;
 	gchar *cache_file_name;
 	struct stat buf;
 	time_t mod_time;
@@ -3303,7 +3303,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 
 		if (!ebgw->priv->file_db) {
 				e_data_book_respond_authenticate_user (book, opid, GNOME_Evolution_Addressbook_OtherError);
-				return ;
+				return;
 		}
 		if (e_book_backend_db_cache_is_populated (ebgw->priv->file_db)) {
 			if (enable_debug)
@@ -3410,7 +3410,7 @@ e_book_backend_groupwise_get_supported_fields (EBookBackend *backend,
 	if (enable_debug)
 		printf ("\ne_book_backend_groupwise_get_supported_fields...\n");
 
-	for (i = 0; i < G_N_ELEMENTS (mappings) ; i ++)
+	for (i = 0; i < G_N_ELEMENTS (mappings); i ++)
 		fields = g_list_append (fields, g_strdup (e_contact_field_name (mappings[i].field_id)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_2)));
 	fields = g_list_append (fields, g_strdup (e_contact_field_name (E_CONTACT_EMAIL_3)));

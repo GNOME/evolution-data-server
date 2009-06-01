@@ -144,7 +144,7 @@ camel_imap4_summary_new (CamelFolder *folder)
 	return summary;
 }
 
-static int
+static gint
 imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 {
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
@@ -180,7 +180,7 @@ imap4_header_load (CamelFolderSummary *summary, FILE *fin)
 	return 0;
 }
 
-static int
+static gint
 imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 {
 	CamelIMAP4Summary *imap4_summary = (CamelIMAP4Summary *) summary;
@@ -197,7 +197,7 @@ imap4_header_save (CamelFolderSummary *summary, FILE *fout)
 	return 0;
 }
 
-static int
+static gint
 envelope_decode_address (CamelIMAP4Engine *engine, GString *addrs, CamelException *ex)
 {
 	gchar *addr, *name = NULL, *user = NULL;
@@ -206,7 +206,7 @@ envelope_decode_address (CamelIMAP4Engine *engine, GString *addrs, CamelExceptio
 	camel_imap4_token_t token;
 	const gchar *domain = NULL;
 	gint part = 0;
-	size_t n;
+	gsize n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
 		return -1;
@@ -300,7 +300,7 @@ envelope_decode_address (CamelIMAP4Engine *engine, GString *addrs, CamelExceptio
 	return -1;
 }
 
-static int
+static gint
 envelope_decode_addresses (CamelIMAP4Engine *engine, gchar **addrlist, CamelException *ex)
 {
 	camel_imap4_token_t token;
@@ -346,13 +346,13 @@ envelope_decode_addresses (CamelIMAP4Engine *engine, gchar **addrlist, CamelExce
 	return 0;
 }
 
-static int
+static gint
 envelope_decode_date (CamelIMAP4Engine *engine, time_t *date, CamelException *ex)
 {
 	guchar *literal = NULL;
 	camel_imap4_token_t token;
 	const gchar *nstring;
-	size_t n;
+	gsize n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
 		return -1;
@@ -385,12 +385,12 @@ envelope_decode_date (CamelIMAP4Engine *engine, time_t *date, CamelException *ex
 	return 0;
 }
 
-static int
+static gint
 envelope_decode_nstring (CamelIMAP4Engine *engine, gchar **nstring, gboolean rfc2047, CamelException *ex)
 {
 	camel_imap4_token_t token;
 	guchar *literal;
-	size_t n;
+	gsize n;
 
 	if (camel_imap4_engine_next_token (engine, &token, ex) == -1)
 		return -1;
@@ -477,7 +477,7 @@ decode_references (const gchar *refstr, const gchar *irtstr)
 	return references;
 }
 
-static int
+static gint
 decode_envelope (CamelIMAP4Engine *engine, CamelMessageInfo *info, camel_imap4_token_t *token, CamelException *ex)
 {
 	CamelIMAP4MessageInfo *iinfo = (CamelIMAP4MessageInfo *) info;
@@ -598,7 +598,7 @@ decode_time (const gchar **in, gint *hour, gint *min, gint *sec)
 	*hour = *min = *sec = 0;
 
 	val = hour;
-	for ( ; *inptr && !isspace ((int) *inptr); inptr++) {
+	for (; *inptr && !isspace ((gint) *inptr); inptr++) {
 		if (*inptr == ':') {
 			colons++;
 			switch (colons) {
@@ -611,7 +611,7 @@ decode_time (const gchar **in, gint *hour, gint *min, gint *sec)
 			default:
 				return FALSE;
 			}
-		} else if (!isdigit ((int) *inptr))
+		} else if (!isdigit ((gint) *inptr))
 			return FALSE;
 		else
 			*val = (*val * 10) + (*inptr - '0');
@@ -901,7 +901,7 @@ imap4_fetch_all_update (struct imap4_fetch_all_t *fetch)
 	g_free (fetch);
 }
 
-static int
+static gint
 untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)
 {
 	struct imap4_fetch_all_t *fetch = ic->user_data;
@@ -920,8 +920,8 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 		 * client expunged messages in the range
 		 * before fetch->first in the period between
 		 * our previous attempt and now. */
-		size_t movelen = added->len * sizeof (gpointer);
-		size_t extra = index - fetch->first;
+		gsize movelen = added->len * sizeof (gpointer);
+		gsize extra = index - fetch->first;
 		gpointer dest;
 
 		g_assert (fetch->all);
@@ -932,7 +932,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 		fetch->total += extra;
 		fetch->first = index;
 	} else if (index > (added->len + (fetch->first - 1))) {
-		size_t extra = index - (added->len + (fetch->first - 1));
+		gsize extra = index - (added->len + (fetch->first - 1));
 		g_ptr_array_set_size (added, added->len + extra);
 		fetch->total += extra;
 	}
@@ -1054,7 +1054,7 @@ untagged_fetch_all (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 ind
 			guchar *literal;
 			const gchar *refs, *str;
 			gchar *mlist;
-			size_t n;
+			gsize n;
 
 			/* '(' */
 			if (camel_imap4_engine_next_token (engine, token, ex) == -1)
@@ -1374,7 +1374,7 @@ imap4_message_info_load (CamelFolderSummary *summary, FILE *fin)
 	return NULL;
 }
 
-static int
+static gint
 imap4_message_info_save (CamelFolderSummary *summary, FILE *fout, CamelMessageInfo *info)
 {
 	CamelIMAP4MessageInfo *minfo = (CamelIMAP4MessageInfo *) info;
@@ -1412,7 +1412,7 @@ imap4_content_info_load (CamelFolderSummary *summary, FILE *in)
 		return camel_folder_summary_content_info_new (summary);
 }
 
-static int
+static gint
 imap4_content_info_save (CamelFolderSummary *summary, FILE *out, CamelMessageContentInfo *info)
 {
 	if (info->type) {
@@ -1535,7 +1535,7 @@ camel_imap4_summary_expunge (CamelFolderSummary *summary, gint seqid)
 }
 
 #if 0
-static int
+static gint
 info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)
 {
 	guint32 uid0, uid1;

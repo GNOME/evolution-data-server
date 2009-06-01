@@ -55,23 +55,23 @@ camel_mime_filter_from_get_type (void)
 
 struct fromnode {
 	struct fromnode *next;
-	gchar *pointer;
+	const gchar *pointer;
 };
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }
 
 /* Yes, it is complicated ... */
 static void
-filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterFrom *f = (CamelMimeFilterFrom *)mf;
-	register gchar *inptr, *inend;
+	const gchar *inptr, *inend;
 	gint left;
 	gint midline = f->midline;
 	gint fromcount = 0;
@@ -144,7 +144,7 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 
 		d(printf("Filtered '%.*s'\n", *outlen, *out));
 	} else {
-		*out = in;
+		*out = (gchar *) in;
 		*outlen = inend - in;
 		*outprespace = prespace;
 

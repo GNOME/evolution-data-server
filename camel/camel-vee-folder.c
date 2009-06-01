@@ -476,8 +476,8 @@ count_folder (CamelFolder *f, gchar *expr, CamelException *ex)
 {
 	return camel_folder_count_by_expression(f, expr, ex);
 }
-static int
-count_result (CamelFolderSummary *summary, gchar *query, CamelException *ex)
+static gint
+count_result (CamelFolderSummary *summary, const gchar *query, CamelException *ex)
 {
 	CamelFolder *folder = summary->folder;
 	CamelVeeFolder *vf = (CamelVeeFolder *)folder;
@@ -613,9 +613,9 @@ vee_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 #endif
 	if (vf->priv->unread_vfolder == 1) {
 		/* Cleanup Junk/Trash uids */
+		GSList *del = NULL;
 		gint i, count;
 		count = folder->summary->uids->len;
-		GSList *del = NULL;
 
 		for (i=0; i < count; i++) {
 			CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *)camel_folder_summary_index (folder->summary, i);
@@ -793,7 +793,7 @@ vee_search_by_uids(CamelFolder *folder, const gchar *expression, GPtrArray *uids
 						vuid = g_malloc(strlen(uid)+9);
 						memcpy(vuid, hash, 8);
 						strcpy(vuid+8, uid);
-						g_ptr_array_add(result, camel_pstring_strdup(vuid));
+						g_ptr_array_add(result, (gpointer) camel_pstring_strdup(vuid));
 						g_free(vuid);
 					}
 					camel_folder_search_free(f, matches);
@@ -1088,7 +1088,7 @@ folder_added_uid(gchar *uidin, gpointer value, struct _update_data *u)
 
 
 /* build query contents for a single folder */
-static int
+static gint
 vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 {
 	GPtrArray *match, *all;
@@ -1979,7 +1979,7 @@ vee_set_expression(CamelVeeFolder *vf, const gchar *query)
 }
 
 /* This entire code will be useless, since we sync the counts always. */
-static int
+static gint
 vf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;

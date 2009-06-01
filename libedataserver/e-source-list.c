@@ -822,7 +822,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 
 	/* If there is mismatch, free the conf_list and return FALSE */
 	if (!conf_to_list) {
-		for (p = conf_list; p != NULL ; p = p->next) {
+		for (p = conf_list; p != NULL; p = p->next) {
 			gconf_xml = (gchar *) p->data;
 			g_free (gconf_xml);
 		}
@@ -834,7 +834,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 
 	/* From list to conf */
 
-	for (p = groups ; p != NULL; p = p->next) {
+	for (p = groups; p != NULL; p = p->next) {
 		group = E_SOURCE_GROUP (p->data);
 		source_group_xml = e_source_group_to_xml (group);
 
@@ -854,7 +854,7 @@ e_source_list_is_gconf_updated (ESourceList *list)
 
 	}
 
-	for (p = conf_list; p != NULL ; p = p->next) {
+	for (p = conf_list; p != NULL; p = p->next) {
 		gconf_xml = (gchar *) p->data;
 		g_free (gconf_xml);
 	}

@@ -201,7 +201,7 @@ static void md4sum                (const guchar *in,
 /* DES */
 typedef guint32 DES_KS[16][2]; /* Single-key DES key schedule */
 
-static void deskey                (DES_KS, guchar *, int);
+static void deskey                (DES_KS, guchar *, gint);
 
 static void des                   (DES_KS, guchar *);
 
@@ -221,7 +221,7 @@ ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
 	gint i;
 
 	for (i = 0; i < 14 && password [i]; i++)
-		lm_password [i] = toupper ((unsigned char) password [i]);
+		lm_password [i] = toupper ((guchar) password [i]);
 
 	for (; i < 15; i++)
 		lm_password [i] = '\0';

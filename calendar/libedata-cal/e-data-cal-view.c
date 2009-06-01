@@ -111,7 +111,7 @@ add_object_to_cache (EDataCalView *query, const gchar *calobj)
 
 	if (e_cal_component_is_instance (comp)) {
 		gchar *str;
-		str = e_cal_component_get_recurid_as_string (comp)	;
+		str = e_cal_component_get_recurid_as_string (comp);
 		real_uid = g_strdup_printf ("%s@%s", uid, str);
 		g_free (str);
 	} else

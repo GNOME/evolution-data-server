@@ -64,7 +64,7 @@ struct _CamelMsgPort {
 #endif
 };
 
-static int
+static gint
 msgport_pipe (gint *fds)
 {
 #ifndef G_OS_WIN32
@@ -195,7 +195,7 @@ out0:
 }
 
 #ifdef HAVE_NSS
-static int
+static gint
 msgport_prpipe (PRFileDesc **fds)
 {
 #ifdef G_OS_WIN32

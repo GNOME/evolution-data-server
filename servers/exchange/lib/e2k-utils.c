@@ -376,7 +376,7 @@ append_entryid_section (GByteArray *entryid, const gchar **permanenturl)
 {
 	const gchar *p;
 	guint8 buf[44], byte;
-	int endlen;
+	gint endlen;
 
 	p = *permanenturl;
 	if (strspn (p, "0123456789abcdefABCDEF") != 32)

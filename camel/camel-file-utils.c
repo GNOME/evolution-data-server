@@ -150,7 +150,7 @@ camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
 }
 
 #define CFU_ENCODE_T(type)						\
-int									\
+gint									\
 camel_file_util_encode_##type(FILE *out, type value)			\
 {									\
 	gint i;								\
@@ -163,7 +163,7 @@ camel_file_util_encode_##type(FILE *out, type value)			\
 }
 
 #define CFU_DECODE_T(type)				\
-int							\
+gint							\
 camel_file_util_decode_##type(FILE *in, type *dest)	\
 {							\
 	type save = 0;					\
@@ -227,27 +227,27 @@ CFU_ENCODE_T(off_t)
 CFU_DECODE_T(off_t)
 
 /**
- * camel_file_util_encode_size_t:
+ * camel_file_util_encode_gsize:
  * @out: file to output to
  * @value: value to output
  *
- * Encode an size_t type.
+ * Encode an gsize type.
  *
  * Return value: %0 on success, %-1 on error.
  **/
-CFU_ENCODE_T(size_t)
+CFU_ENCODE_T(gsize)
 
 
 /**
- * camel_file_util_decode_size_t:
+ * camel_file_util_decode_gsize:
  * @in: file to read from
  * @dest: pointer to a variable to put the value in
  *
- * Decode an size_t type.
+ * Decode an gsize type.
  *
  * Return value: %0 on success, %-1 on failure.
  **/
-CFU_DECODE_T(size_t)
+CFU_DECODE_T(gsize)
 
 
 /**
@@ -329,7 +329,7 @@ camel_file_util_decode_string (FILE *in, gchar **str)
  * Return value: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_encode_fixed_string (FILE *out, const gchar *str, size_t len)
+camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len)
 {
 	gchar buf[len];
 
@@ -362,7 +362,7 @@ camel_file_util_encode_fixed_string (FILE *out, const gchar *str, size_t len)
  * Return value: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_decode_fixed_string (FILE *in, gchar **str, size_t len)
+camel_file_util_decode_fixed_string (FILE *in, gchar **str, gsize len)
 {
 	register gchar *ret;
 
@@ -424,10 +424,10 @@ camel_file_util_safe_filename (const gchar *name)
  * Returns: number of bytes read or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
-ssize_t
-camel_read (gint fd, gchar *buf, size_t n)
+gssize
+camel_read (gint fd, gchar *buf, gsize n)
 {
-	ssize_t nread;
+	gssize nread;
 	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
@@ -502,10 +502,10 @@ camel_read (gint fd, gchar *buf, size_t n)
  * Returns: number of bytes written or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
-ssize_t
-camel_write (gint fd, const gchar *buf, size_t n)
+gssize
+camel_write (gint fd, const gchar *buf, gsize n)
 {
-	ssize_t w, written = 0;
+	gssize w, written = 0;
 	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
@@ -593,13 +593,13 @@ camel_write (gint fd, const gchar *buf, size_t n)
  * be set appropriately. If the socket is nonblocking
  * camel_read_socket() will retry the read until it gets something.
  **/
-ssize_t
-camel_read_socket (gint fd, gchar *buf, size_t n)
+gssize
+camel_read_socket (gint fd, gchar *buf, gsize n)
 {
 #ifndef G_OS_WIN32
 	return camel_read (fd, buf, n);
 #else
-	ssize_t nread;
+	gssize nread;
 	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
@@ -663,13 +663,13 @@ camel_read_socket (gint fd, gchar *buf, size_t n)
  * Returns: number of bytes written or -1 on fail. On failure, errno will
  * be set appropriately.
  **/
-ssize_t
-camel_write_socket (gint fd, const gchar *buf, size_t n)
+gssize
+camel_write_socket (gint fd, const gchar *buf, gsize n)
 {
 #ifndef G_OS_WIN32
 	return camel_write (fd, buf, n);
 #else
-	ssize_t w, written = 0;
+	gssize w, written = 0;
 	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {

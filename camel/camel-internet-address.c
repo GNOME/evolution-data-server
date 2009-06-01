@@ -81,7 +81,7 @@ camel_internet_address_get_type(void)
 	return type;
 }
 
-static int
+static gint
 internet_decode	(CamelAddress *a, const gchar *raw)
 {
 	struct _camel_header_address *ha, *n;
@@ -142,7 +142,7 @@ internet_encode	(CamelAddress *a)
 	return ret;
 }
 
-static int
+static gint
 internet_unformat(CamelAddress *a, const gchar *raw)
 {
 	gchar *buffer, *p, *name, *addr;
@@ -162,7 +162,7 @@ internet_unformat(CamelAddress *a, const gchar *raw)
 	name = NULL;
 	addr = p;
 	do {
-		c = (unsigned char)*p++;
+		c = (guchar)*p++;
 		switch (c) {
 			/* removes quotes, they should only be around the total name anyway */
 		case '"':
@@ -238,7 +238,7 @@ internet_format	(CamelAddress *a)
 	return ret;
 }
 
-static int
+static gint
 internet_cat (CamelAddress *dest, const CamelAddress *source)
 {
 	gint i;

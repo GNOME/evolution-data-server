@@ -78,8 +78,8 @@ camel_mime_filter_windows_init (CamelObject *o)
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-	       gchar **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+	       gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) filter;
 	register guchar *inptr;
@@ -101,14 +101,14 @@ filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
 		}
 	}
 
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-		 gchar **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+		 gchar **out, gsize *outlen, gsize *outprespace)
 {
 	filter_filter (filter, in, len, prespace, out, outlen, outprespace);
 }

@@ -318,7 +318,7 @@ struct _tree_info {
 	GHashTable *visited;
 };
 
-static int
+static gint
 dump_tree_rec(struct _tree_info *info, CamelFolderThreadNode *c, gint depth)
 {
 	gchar *p;
@@ -360,7 +360,7 @@ camel_folder_threaded_messages_dump(CamelFolderThreadNode *c)
 	return count;
 }
 
-static int
+static gint
 sort_node(gconstpointer a, gconstpointer b)
 {
 	const CamelFolderThreadNode *a1 = ((CamelFolderThreadNode **)a)[0];
@@ -440,7 +440,7 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
 	CamelFolderThreadNode *c, *child, *head;
 #ifdef TIMEIT
 	struct timeval start, end;
-	unsigned long diff;
+	gulong diff;
 
 	gettimeofday(&start, NULL);
 #endif
@@ -623,8 +623,8 @@ camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean
 	if (fsummary->len - camel_folder_summary_cache_size (folder->summary) > 50)
 		camel_folder_summary_reload_from_db (folder->summary, NULL);
 
-	for (i = 0 ; i < fsummary->len ; i++) {
-		CamelMessageInfo *info ;
+	for (i = 0; i < fsummary->len; i++) {
+		CamelMessageInfo *info;
 		gchar *uid = fsummary->pdata[i];
 
 		if (wanted == NULL || g_hash_table_lookup(wanted, uid) != NULL) {
@@ -747,7 +747,7 @@ camel_folder_thread_messages_new_summary(GPtrArray *summary)
 
 #ifdef TIMEIT
 	struct timeval start, end;
-	unsigned long diff;
+	gulong diff;
 
 	gettimeofday(&start, NULL);
 #endif

@@ -2,8 +2,6 @@
 INCLUDES =						\
 	-I$(includedir)					\
 	-I$(top_srcdir)					\
-	-I$(top_srcdir)/intl			 	\
-	-I$(top_srcdir)/e-util			 	\
 	-I$(top_srcdir)/camel				\
 	-DCAMEL_BUILD_DIR=\"$(top_builddir)/camel\"	\
 	$(CAMEL_CFLAGS)

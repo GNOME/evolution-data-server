@@ -54,7 +54,7 @@ static EBookBackendSyncStatus
 e_book_backend_google_create_contact (EBookBackendSync	*backend,
 				      EDataBook		*book,
 				      guint32		opid,
-				      const char	*vcard_str,
+				      const gchar	*vcard_str,
 				      EContact		**out_contact)
 {
     EBookBackendGooglePrivate *priv;
@@ -132,7 +132,7 @@ static EBookBackendSyncStatus
 e_book_backend_google_modify_contact (EBookBackendSync	*backend,
 				      EDataBook		*book,
 				      guint32		opid,
-				      const char	*vcard_str,
+				      const gchar	*vcard_str,
 				      EContact		**out_contact)
 {
     EBookBackendGooglePrivate *priv;
@@ -168,8 +168,8 @@ static EBookBackendSyncStatus
 e_book_backend_google_get_contact (EBookBackendSync	*backend,
 				   EDataBook		*book,
 				   guint32		opid,
-				   const char		*uid,
-				   char		**vcard_str)
+				   const gchar		*uid,
+				   gchar		**vcard_str)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_OtherError;
@@ -196,7 +196,7 @@ static EBookBackendSyncStatus
 e_book_backend_google_get_contact_list (EBookBackendSync *backend,
 					EDataBook	 *book,
 					guint32	 opid,
-					const char	 *query,
+					const gchar	 *query,
 					GList		 **contacts)
 {
     EBookBackendGooglePrivate *priv;
@@ -344,9 +344,9 @@ static EBookBackendSyncStatus
 e_book_backend_google_authenticate_user (EBookBackendSync *backend,
 					 EDataBook	  *book,
 					 guint32	  opid,
-					 const char	  *username,
-					 const char	  *password,
-					 const char	  *auth_method)
+					 const gchar	  *username,
+					 const gchar	  *password,
+					 const gchar	  *auth_method)
 {
     EBookBackendGooglePrivate *priv;
     EBookBackendSyncStatus status = GNOME_Evolution_Addressbook_Success;
@@ -471,7 +471,7 @@ static EBookBackendSyncStatus
 e_book_backend_google_get_changes (EBookBackendSync	*backend,
 				   EDataBook		*book,
 				   guint32		opid,
-				   const char		*change_id,
+				   const gchar		*change_id,
 				   GList		**changes_out)
 {
     __debug__ (G_STRFUNC);

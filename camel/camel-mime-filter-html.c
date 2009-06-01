@@ -110,13 +110,13 @@ camel_mime_filter_html_init       (CamelObject *o)
 }
 
 static void
-run(CamelMimeFilter *mf, gchar *in, size_t inlen, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace, gint last)
+run(CamelMimeFilter *mf, const gchar *in, gsize inlen, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace, gint last)
 {
 	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *) mf;
 	camel_html_parser_t state;
 	gchar *outp;
 
-	d(printf("converting html:\n%.*s\n", (int)inlen, in));
+	d(printf("converting html:\n%.*s\n", (gint)inlen, in));
 
 	/* We should generally shrink the data, but this'll do */
 	camel_mime_filter_set_size (mf, inlen * 2 + 256, FALSE);
@@ -148,17 +148,17 @@ run(CamelMimeFilter *mf, gchar *in, size_t inlen, size_t prespace, gchar **out, 
 	*outlenptr = outp - mf->outbuf;
 	*outprespace = mf->outbuf - mf->outreal;
 
-	d(printf("converted html end:\n%.*s\n", (int)*outlenptr, *out));
+	d(printf("converted html end:\n%.*s\n", (gint)*outlenptr, *out));
 }
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace)
 {
 	run(mf, in, len, prespace, out, outlenptr, outprespace, TRUE);
 }
 
 static void
-filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace)
+filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace)
 {
 	run(mf, in, len, prespace, out, outlenptr, outprespace, FALSE);
 }

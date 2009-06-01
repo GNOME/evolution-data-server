@@ -108,14 +108,14 @@ camel_digest_store_finalise (CamelObject *obj)
 
 }
 
-static int
+static gint
 digest_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	/* CamelDigestStore doesn't currently have anything to set */
 	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
 }
 
-static int
+static gint
 digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	/* CamelDigestStore doesn't currently have anything to get */

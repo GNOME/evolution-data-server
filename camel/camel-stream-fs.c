@@ -45,8 +45,8 @@ static CamelSeekableStreamClass *parent_class = NULL;
 /* Returns the class for a CamelStreamFS */
 #define CSFS_CLASS(so) CAMEL_STREAM_FS_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
-static ssize_t stream_read   (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write  (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read   (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write  (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 static off_t stream_seek (CamelSeekableStream *stream, off_t offset,
@@ -212,12 +212,12 @@ camel_stream_fs_new_with_name_and_bounds (const gchar *name, gint flags,
 }
 
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelStreamFs *stream_fs = CAMEL_STREAM_FS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
-	ssize_t nread;
+	gssize nread;
 
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
@@ -230,12 +230,12 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return nread;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelStreamFs *stream_fs = CAMEL_STREAM_FS (stream);
 	CamelSeekableStream *seekable = CAMEL_SEEKABLE_STREAM (stream);
-	ssize_t nwritten;
+	gssize nwritten;
 
 	if (seekable->bound_end != CAMEL_STREAM_UNBOUND)
 		n = MIN (seekable->bound_end - seekable->position, n);
@@ -246,13 +246,13 @@ stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 	return nwritten;
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	return fsync(((CamelStreamFs *)stream)->fd);
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	if (close (((CamelStreamFs *)stream)->fd) == -1)

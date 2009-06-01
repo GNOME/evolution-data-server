@@ -80,7 +80,7 @@ camel_nntp_address_get_type(void)
 }
 
 /* since newsgropus are 7bit ascii, decode/unformat are the same */
-static int
+static gint
 nntp_decode(CamelAddress *a, const gchar *raw)
 {
 	struct _camel_header_newsgroup *ha, *n;
@@ -122,7 +122,7 @@ nntp_encode(CamelAddress *a)
 	return ret;
 }
 
-static int
+static gint
 nntp_cat (CamelAddress *dest, const CamelAddress *source)
 {
 	gint i;

@@ -1106,8 +1106,8 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 		env->set_errcall (env, file_errcall);
 
 		/* Set the allocation routines to the non-aborting GLib functions */
-		env->set_alloc (env, (gpointer (*)(size_t))g_try_malloc,
-				(gpointer (*)(gpointer , size_t))g_try_realloc,
+		env->set_alloc (env, (gpointer (*)(gsize))g_try_malloc,
+				(gpointer (*)(gpointer , gsize))g_try_realloc,
 				g_free);
 
 		db_error = (*env->open) (env, NULL, DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
@@ -1450,7 +1450,7 @@ e_book_backend_file_finalize (GObject *object)
  * prototype that db_env_set_func_open() wants for the open method.
  */
 
-static int
+static gint
 my_open (const gchar *name, gint oflag, ...)
 {
 	gint mode = 0;
@@ -1458,7 +1458,7 @@ my_open (const gchar *name, gint oflag, ...)
 	if (oflag & O_CREAT) {
 		va_list arg;
 		va_start (arg, oflag);
-		mode = va_arg (arg, int);
+		mode = va_arg (arg, gint);
 		va_end (arg);
 	}
 

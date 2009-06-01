@@ -97,7 +97,7 @@ static ESExpResult *junk_test (struct _ESExp *f, gint argc, struct _ESExpResult 
 
 /* builtin functions */
 static struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
@@ -539,7 +539,7 @@ child_watch (GPid     pid,
 	g_main_loop_quit (child_watch_data->loop);
 }
 
-static int
+static gint
 run_command (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
 {
 	CamelMimeMessage *message;

@@ -36,8 +36,8 @@ typedef struct {
 	gchar *filename;
 	GHashTable *uids;
 	guint level;
-	size_t expired;
-	size_t size;
+	gsize expired;
+	gsize size;
 	gint fd;
 } CamelUIDCache;
 

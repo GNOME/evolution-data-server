@@ -64,7 +64,7 @@ void              soup_soap_message_start_header_element (SoupSoapMessage *msg,
 							  const gchar *ns_uri);
 void              soup_soap_message_end_header_element (SoupSoapMessage *msg);
 void              soup_soap_message_write_int (SoupSoapMessage *msg, glong i);
-void              soup_soap_message_write_double (SoupSoapMessage *msg, double d);
+void              soup_soap_message_write_double (SoupSoapMessage *msg, gdouble d);
 void              soup_soap_message_write_base64 (SoupSoapMessage *msg, const gchar *string, gint len);
 void              soup_soap_message_write_time (SoupSoapMessage *msg, const time_t *timeval);
 void              soup_soap_message_write_string (SoupSoapMessage *msg, const gchar *string);

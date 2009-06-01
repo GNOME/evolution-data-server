@@ -47,13 +47,13 @@ static void namespace_clear(CamelStoreSummary *s);
 static gint summary_header_load(CamelStoreSummary *, FILE *);
 static gint summary_header_save(CamelStoreSummary *, FILE *);
 
-static CamelStoreInfo *store_info_load(CamelStoreSummary *s, FILE *in) ;
-static gint store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi) ;
-static void store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi) ;
-static void store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str) ;
+static CamelStoreInfo *store_info_load(CamelStoreSummary *s, FILE *in);
+static gint store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi);
+static void store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi);
+static void store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str);
 
-static const gchar *store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type) ;
-CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s, const gchar *full) ;
+static const gchar *store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type);
+CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_full(CamelGroupwiseStoreSummary *s, const gchar *full);
 
 static void camel_groupwise_store_summary_class_init (CamelGroupwiseStoreSummaryClass *klass);
 static void camel_groupwise_store_summary_init       (CamelGroupwiseStoreSummary *obj);
@@ -177,7 +177,7 @@ static guint32 hexnib(guint32 c)
 		return 0;
 }
 
-static int
+static gint
 namespace_save(CamelStoreSummary *s, FILE *in, CamelGroupwiseStoreNamespace *ns)
 {
 	if (camel_file_util_encode_string(in, ns->path) == -1
@@ -228,7 +228,7 @@ namespace_load(CamelStoreSummary *s, FILE *in)
 gchar *
 camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const gchar *path, gchar dir_sep)
 {
-	guchar *full, *f;
+	gchar *full, *f;
 	guint32 c, v = 0;
 	const gchar *p;
 	gint state=0;
@@ -273,7 +273,7 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 				else {
 					if (c == '/')
 						c = dir_sep;
-					camel_utf8_putc(&f, c);
+					camel_utf8_putc((guchar **) &f, c);
 				}
 				break;
 			case 1:
@@ -283,11 +283,11 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 			case 2:
 				state = 0;
 				v |= hexnib(c);
-				camel_utf8_putc(&f, v);
+				camel_utf8_putc((guchar **) &f, v);
 				break;
 		}
 	}
-	camel_utf8_putc(&f, c);
+	camel_utf8_putc((guchar **) &f, c);
 
 	/* merge old path part if required */
 	f = g_strdup (full);
@@ -301,7 +301,7 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 		g_free(f);
 		f = full;
 	}
-	return f ;
+	return f;
 }
 
 CamelGroupwiseStoreNamespace *
@@ -378,8 +378,9 @@ camel_groupwise_store_summary_add_from_full(CamelGroupwiseStoreSummary *s, const
 	if (info) {
 		d(printf("  '%s' -> '%s'\n", pathu8, full_name));
 		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_STORE_INFO_LAST, full_name);
-	} else
+	} else {
 		d(printf("  failed\n"));
+	}
 
 	return info;
 }
@@ -458,41 +459,41 @@ camel_groupwise_store_summary_namespace_find_path(CamelGroupwiseStoreSummary *s,
 
 
 
-static int
+static gint
 summary_header_load(CamelStoreSummary *s, FILE *in)
 {
-	CamelGroupwiseStoreSummary *summary = (CamelGroupwiseStoreSummary *)s ;
-	 gint32 version, capabilities, count ;
+	CamelGroupwiseStoreSummary *summary = (CamelGroupwiseStoreSummary *)s;
+	 gint32 version, capabilities, count;
 
-	namespace_clear (s) ;
+	namespace_clear (s);
 
 	if (camel_groupwise_store_summary_parent->summary_header_load ((CamelStoreSummary *)s, in) == -1
 			|| camel_file_util_decode_fixed_int32(in, &version) == -1)
-		return -1 ;
+		return -1;
 
-	summary->version = version ;
+	summary->version = version;
 
 	if (camel_file_util_decode_fixed_int32(in, &capabilities) == -1
 			|| camel_file_util_decode_fixed_int32(in, &count) == -1
 			|| count > 1)
 		return -1;
 
-	summary->capabilities = capabilities ;
+	summary->capabilities = capabilities;
 	if (count == 1) {
 		if ((summary->namespace = namespace_load (s, in)) == NULL)
-			return -1 ;
+			return -1;
 	}
-	return 0 ;
+	return 0;
 }
 
 
-static int
+static gint
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
-	CamelGroupwiseStoreSummary *summary = (CamelGroupwiseStoreSummary *) s ;
-	guint32 count ;
+	CamelGroupwiseStoreSummary *summary = (CamelGroupwiseStoreSummary *) s;
+	guint32 count;
 
-	count = summary->namespace?1:0 ;
+	count = summary->namespace?1:0;
 	if (camel_groupwise_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1
 			|| camel_file_util_encode_fixed_int32(out, 0) == -1
 			|| camel_file_util_encode_fixed_int32(out, summary->capabilities) == -1
@@ -503,7 +504,7 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 		return -1;
 
 
-	return 0 ;
+	return 0;
 }
 
 static CamelStoreInfo *
@@ -522,7 +523,7 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 	return (CamelStoreInfo *)si;
 }
 
-static int
+static gint
 store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelGroupwiseStoreInfo *summary = (CamelGroupwiseStoreInfo *)mi;

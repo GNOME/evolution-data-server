@@ -140,9 +140,9 @@ CamelType       camel_imapp_engine_get_type (void);
 CamelIMAPPEngine  *camel_imapp_engine_new(CamelIMAPPStream *stream);
 
 void		camel_imapp_engine_add_handler(CamelIMAPPEngine *imap, const gchar *response, CamelIMAPPEngineFunc func, gpointer data);
-int		camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *wait); /* throws PARSE,IO exception */
-int		camel_imapp_engine_skip(CamelIMAPPEngine *imap);
-int		camel_imapp_engine_capabilities(CamelIMAPPEngine *imap);
+gint		camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *wait); /* throws PARSE,IO exception */
+gint		camel_imapp_engine_skip(CamelIMAPPEngine *imap);
+gint		camel_imapp_engine_capabilities(CamelIMAPPEngine *imap);
 
 CamelIMAPPCommand *camel_imapp_engine_command_new  (CamelIMAPPEngine *imap, const gchar *name, const gchar *select, const gchar *fmt, ...);
 void		camel_imapp_engine_command_complete(CamelIMAPPEngine *imap, struct _CamelIMAPPCommand *, CamelIMAPPCommandFunc func, gpointer data);

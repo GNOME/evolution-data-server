@@ -172,7 +172,7 @@ save_file_when_idle (gpointer user_data)
 	}
 
 	buf = icalcomponent_as_ical_string_r (priv->icalcomp);
-	g_output_stream_write_all (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (char), NULL, NULL, &e);
+	g_output_stream_write_all (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (gchar), NULL, NULL, &e);
 	g_free (buf);
 
 	if (e) {
@@ -2481,7 +2481,7 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 	attach_store = g_build_filename (g_get_home_dir (),
 			".evolution/calendar/local/system", NULL);
 
-	for (l = attach_list; l ; l = l->next) {
+	for (l = attach_list; l; l = l->next) {
 		gchar *sfname = (gchar *)l->data;
 		gchar *filename, *new_filename;
 		GMappedFile *mapped_file;

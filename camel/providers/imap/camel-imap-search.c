@@ -208,7 +208,7 @@ hash_match(gchar hash[17], gint argc, struct _ESExpResult **argv)
 	hash[16] = 0;
 }
 
-static int
+static gint
 save_match(CamelImapSearch *is, struct _match_record *mr)
 {
 	guint32 mark = MATCH_MARK;
@@ -315,7 +315,7 @@ load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult *
 	return mr;
 }
 
-static int
+static gint
 sync_match(CamelImapSearch *is, struct _match_record *mr)
 {
 	gchar *p, *result, *lasts = NULL;

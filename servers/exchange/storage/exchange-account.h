@@ -94,7 +94,7 @@ gchar                  *exchange_account_get_foreign_uri      (ExchangeAccount  
 							      const gchar       *std_uri_prop);
 ExchangeHierarchy     *exchange_account_get_hierarchy_by_email (ExchangeAccount *account, const gchar *email);
 
-char		      *exchange_account_get_authtype	     (ExchangeAccount *account);
+gchar		      *exchange_account_get_authtype	     (ExchangeAccount *account);
 
 E2kContext            *exchange_account_connect              (ExchangeAccount  *acct,
 							      const gchar *pword,
@@ -111,7 +111,7 @@ ExchangeHierarchy     *exchange_account_get_hierarchy_by_type	      (ExchangeAcc
 
 void                   exchange_account_rescan_tree          (ExchangeAccount  *acct);
 
-char		      *exchange_account_get_password	     (ExchangeAccount  *acct);
+gchar		      *exchange_account_get_password	     (ExchangeAccount  *acct);
 
 ExchangeAccountResult exchange_account_set_password	     (ExchangeAccount  *acct,
 							      gchar             *old_password,

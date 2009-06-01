@@ -303,7 +303,7 @@ e_util_utf8_remove_accents (const gchar *str)
 		return g_strdup (str);
 
 	for (i = 0, j = 0; res [i]; i++) {
-		if ((unsigned char)res[i] != 0xCC || res [i + 1] == 0) {
+		if ((guchar)res[i] != 0xCC || res [i + 1] == 0) {
 			res [j] = res [i];
 			j++;
 		} else {
@@ -328,9 +328,9 @@ e_util_utf8_remove_accents (const gchar *str)
  *
  * Returns: The number of characters placed in @s.
  **/
-size_t e_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm)
+gsize e_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm)
 {
-	size_t ret;
+	gsize ret;
 #ifdef HAVE_LKSTRFTIME
 	ret = strftime(s, max, fmt, tm);
 #else
@@ -377,10 +377,10 @@ size_t e_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm)
  *
  * Returns: The number of characters placed in @s.
  **/
-size_t
-e_utf8_strftime(gchar *s, size_t max, const gchar *fmt, const struct tm *tm)
+gsize
+e_utf8_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm)
 {
-	size_t sz, ret;
+	gsize sz, ret;
 	gchar *locale_fmt, *buf;
 
 	locale_fmt = g_locale_from_utf8(fmt, -1, NULL, &sz, NULL);
@@ -454,7 +454,7 @@ e_util_pthread_id (pthread_t t)
 	/* 64-bit Windows */
 	return (guint64) t.p;
 #else
-	return (int) t.p;
+	return (gint) t.p;
 #endif
 #else
 	/* Just return a checksum of the contents of the pthread_t */

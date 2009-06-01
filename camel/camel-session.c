@@ -601,7 +601,7 @@ session_thread_proxy (CamelSessionThreadMsg *msg,
 	camel_session_thread_msg_free(session, msg);
 }
 
-static int
+static gint
 session_thread_queue (CamelSession *session,
                       CamelSessionThreadMsg *msg,
                       gint flags)

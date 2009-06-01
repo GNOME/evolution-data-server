@@ -146,7 +146,7 @@ dump_list (void)
 }
 
 
-static int
+static gint
 idle_dump_callback (gpointer unused_data)
 {
 	dump_list ();
@@ -297,7 +297,7 @@ group_removed_callback (ESourceList *list,
 }
 
 
-static int
+static gint
 on_idle_do_stuff (gpointer unused_data)
 {
 	GConfClient *client = gconf_client_get_default ();

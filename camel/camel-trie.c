@@ -61,7 +61,7 @@ struct _CamelTrie {
 
 
 static inline gunichar
-trie_utf8_getc (const guchar **in, size_t inlen)
+trie_utf8_getc (const guchar **in, gsize inlen)
 {
 	register const guchar *inptr = *in;
 	const guchar *inend = inptr + inlen;
@@ -337,7 +337,7 @@ camel_trie_search (CamelTrie *trie, const gchar *buffer, gsize buflen,
                    gint *matched_id)
 {
 	const guchar *inptr, *inend, *prev, *pat;
-	register size_t inlen = buflen;
+	register gsize inlen = buflen;
 	struct _trie_state *q;
 	struct _trie_match *m = NULL; /* init to please gcc */
 	gunichar c;

@@ -694,9 +694,9 @@ download_contacts(EBookBackendWebdav *webdav, EFlag *running,
 			break;
 
 		if (book_view != NULL) {
-			float percent = 100.0 / count * i;
+			gfloat percent = 100.0 / count * i;
 			gchar buf[100];
-			snprintf(buf, sizeof(buf), "Loading Contacts (%d%%)", (int)percent);
+			snprintf(buf, sizeof(buf), "Loading Contacts (%d%%)", (gint)percent);
 			e_data_book_view_notify_status_message(book_view, buf);
 		}
 

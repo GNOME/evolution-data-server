@@ -145,13 +145,13 @@ struct _header_scan_filter {
 	CamelMimeFilter *filter;
 };
 
-static void folder_scan_step(struct _header_scan_state *s, gchar **databuffer, size_t *datalength);
+static void folder_scan_step(struct _header_scan_state *s, gchar **databuffer, gsize *datalength);
 static void folder_scan_drop_step(struct _header_scan_state *s);
 static gint folder_scan_init_with_fd(struct _header_scan_state *s, gint fd);
 static gint folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream);
 static struct _header_scan_state *folder_scan_init(void);
 static void folder_scan_close(struct _header_scan_state *s);
-static struct _header_scan_stack *folder_scan_content(struct _header_scan_state *s, gint *lastone, gchar **data, size_t *length);
+static struct _header_scan_stack *folder_scan_content(struct _header_scan_state *s, gint *lastone, gchar **data, gsize *length);
 static struct _header_scan_stack *folder_scan_header(struct _header_scan_state *s, gint *lastone);
 static gint folder_scan_skip_line(struct _header_scan_state *s, GByteArray *save);
 static off_t folder_seek(struct _header_scan_state *s, off_t offset, gint whence);
@@ -605,7 +605,7 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
  * is returned.
  **/
 camel_mime_parser_state_t
-camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, size_t *datalength)
+camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *datalength)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
 
@@ -613,7 +613,7 @@ camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, size_t *dat
 
 	if (s->unstep <= 0) {
 		gchar *dummy;
-		size_t dummylength;
+		gsize dummylength;
 
 		if (databuffer == NULL) {
 			databuffer = &dummy;
@@ -885,7 +885,7 @@ camel_mime_parser_errno (CamelMimeParser *parser)
 /* ********************************************************************** */
 
 /* read the next bit of data, ensure there is enough room 'atleast' bytes */
-static int
+static gint
 folder_read(struct _header_scan_state *s)
 {
 	gint len;
@@ -1016,7 +1016,7 @@ folder_pull_part(struct _header_scan_state *s)
 	}
 }
 
-static int
+static gint
 folder_scan_skip_line(struct _header_scan_state *s, GByteArray *save)
 {
 	gint atleast = s->atleast;
@@ -1253,7 +1253,7 @@ folder_scan_header(struct _header_scan_state *s, gint *lastone)
 						/* otherwise, complete header, add it */
 						s->outptr[0] = 0;
 
-						h(printf("header '%s' at %d\n", s->outbuf, (int)s->header_start));
+						h(printf("header '%s' at %d\n", s->outbuf, (gint)s->header_start));
 
 						header_raw_append_parse(&h->headers, s->outbuf, s->header_start);
 						s->outptr = s->outbuf;
@@ -1299,7 +1299,7 @@ header_done:
 }
 
 static struct _header_scan_stack *
-folder_scan_content(struct _header_scan_state *s, gint *lastone, gchar **data, size_t *length)
+folder_scan_content(struct _header_scan_state *s, gint *lastone, gchar **data, gsize *length)
 {
 	gint atleast = s->atleast, newatleast;
 	register gchar *inptr;
@@ -1494,7 +1494,7 @@ folder_scan_reset(struct _header_scan_state *s)
 	s->eof = FALSE;
 }
 
-static int
+static gint
 folder_scan_init_with_fd(struct _header_scan_state *s, gint fd)
 {
 	folder_scan_reset(s);
@@ -1503,7 +1503,7 @@ folder_scan_init_with_fd(struct _header_scan_state *s, gint fd)
 	return 0;
 }
 
-static int
+static gint
 folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream)
 {
 	folder_scan_reset(s);
@@ -1516,7 +1516,7 @@ folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream)
 #define USE_FROM
 
 static void
-folder_scan_step(struct _header_scan_state *s, gchar **databuffer, size_t *datalength)
+folder_scan_step(struct _header_scan_state *s, gchar **databuffer, gsize *datalength)
 {
 	struct _header_scan_stack *h, *hb;
 	const gchar *content;
@@ -1524,7 +1524,7 @@ folder_scan_step(struct _header_scan_state *s, gchar **databuffer, size_t *datal
 	gint type, state, seenlast;
 	CamelContentType *ct = NULL;
 	struct _header_scan_filter *f;
-	size_t presize;
+	gsize presize;
 
 /*	printf("\nSCAN PASS: state = %d '%s'\n", s->state, states[s->state]);*/
 
@@ -1660,7 +1660,7 @@ tail_recurse:
 			hb = folder_scan_content (s, &state, databuffer, datalength);
 
 			d(printf ("\n\nOriginal content: '"));
-			d(fwrite(*databuffer, sizeof(char), *datalength, stdout));
+			d(fwrite(*databuffer, sizeof(gchar), *datalength, stdout));
 			d(printf("'\n"));
 
 			if (*datalength > 0) {
@@ -1668,7 +1668,7 @@ tail_recurse:
 					camel_mime_filter_filter(f->filter, *databuffer, *datalength, presize,
 								 databuffer, datalength, &presize);
 					d(printf("Filtered content (%s): '", ((CamelObject *)f->filter)->klass->name));
-					d(fwrite(*databuffer, sizeof(char), *datalength, stdout));
+					d(fwrite(*databuffer, sizeof(gchar), *datalength, stdout));
 					d(printf("'\n"));
 					f = f->next;
 				}
@@ -1808,7 +1808,7 @@ gint main(gint argc, gchar **argv)
 	gint fd;
 	struct _header_scan_state *s;
 	gchar *data;
-	size_t len;
+	gsize len;
 	gint state;
 	gchar *name = "/tmp/evmail/Inbox";
 	struct _header_scan_stack *h;

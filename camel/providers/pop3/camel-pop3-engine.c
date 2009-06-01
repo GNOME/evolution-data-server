@@ -40,6 +40,8 @@
    for the server to accept our data when pipelining */
 #define CAMEL_POP3_SEND_LIMIT (1024)
 
+extern CamelServiceAuthType camel_pop3_password_authtype;
+extern CamelServiceAuthType camel_pop3_apop_authtype;
 
 extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
@@ -98,11 +100,9 @@ camel_pop3_engine_get_type (void)
 	return camel_pop3_engine_type;
 }
 
-static int
+static gint
 read_greeting (CamelPOP3Engine *pe)
 {
-	extern CamelServiceAuthType camel_pop3_password_authtype;
-	extern CamelServiceAuthType camel_pop3_apop_authtype;
 	guchar *line, *apop, *apopend;
 	guint len;
 
@@ -174,7 +174,7 @@ camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
 /* TODO: read implementation too?
    etc? */
 static struct {
-	gchar *cap;
+	const gchar *cap;
 	guint32 flag;
 } capa[] = {
 	{ "APOP" , CAMEL_POP3_CAP_APOP },
@@ -250,7 +250,7 @@ get_capabilities(CamelPOP3Engine *pe)
 }
 
 /* returns true if the command was sent, false if it was just queued */
-static int
+static gint
 engine_command_queue(CamelPOP3Engine *pe, CamelPOP3Command *pc)
 {
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen(pc->data)) > CAMEL_POP3_SEND_LIMIT)

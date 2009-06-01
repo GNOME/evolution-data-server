@@ -82,6 +82,7 @@
  * octets) */
 #define UID_SET_LIMIT  (768)
 
+extern gint camel_application_is_exiting;
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
 static CamelOfflineFolderClass *offline_folder_class = NULL;
@@ -311,7 +312,7 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapSummary *imap_summary = CAMEL_IMAP_SUMMARY (folder->summary);
-	unsigned long exists = 0, validity = 0, val, uid;
+	gulong exists = 0, validity = 0, val, uid;
 	guint32 perm_flags = 0;
 	GData *fetch_data;
 	gint i, count;
@@ -320,7 +321,7 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 	count = camel_folder_summary_count (folder->summary);
 
 	for (i = 0; i < response->untagged->len; i++) {
-		resp = response->untagged->pdata[i] + 2;
+		resp = (gchar *) response->untagged->pdata[i] + 2;
 
 		if (!g_ascii_strncasecmp (resp, "FLAGS ", 6) && !perm_flags) {
 			resp += 6;
@@ -336,8 +337,8 @@ camel_imap_folder_selected (CamelFolder *folder, CamelImapResponse *response,
 				folder->permanent_flags = perm_flags;
 		} else if (!g_ascii_strncasecmp (resp, "OK [UIDVALIDITY ", 16)) {
 			validity = strtoul (resp + 16, NULL, 10);
-		} else if (isdigit ((unsigned char)*resp)) {
-			unsigned long num = strtoul (resp, &resp, 10);
+		} else if (isdigit ((guchar)*resp)) {
+			gulong num = strtoul (resp, &resp, 10);
 
 			if (!g_ascii_strncasecmp (resp, " EXISTS", 7)) {
 				exists = num;
@@ -472,7 +473,7 @@ imap_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return camel_imap_message_cache_get_filename (imap_folder->cache, uid, "", ex);
 }
 
-static int
+static gint
 imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
@@ -526,7 +527,7 @@ imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	return 0;
 }
 
-static int
+static gint
 imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	gint save = 0;
@@ -686,7 +687,6 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	CamelImapResponse *response;
 	CamelStoreInfo *si;
 	gint check_rescan = -1;
-	extern gint camel_application_is_exiting;
 
 	if (CAMEL_OFFLINE_STORE (imap_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
@@ -861,7 +861,6 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelImapStore *store = CAMEL_IMAP_STORE (folder->parent_store);
-	extern gint camel_application_is_exiting;
 	struct {
 		gchar *uid;
 		guint32 flags;
@@ -965,7 +964,7 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 	 * to sync up with the server. So either way, we remove it
 	 * from the summary.
 	 */
-	removed = g_array_new (FALSE, FALSE, sizeof (int));
+	removed = g_array_new (FALSE, FALSE, sizeof (gint));
 
 	if (summary_len - camel_folder_summary_cache_size (folder->summary) > 50)
 		camel_folder_summary_reload_from_db (folder->summary, ex);
@@ -1505,11 +1504,11 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 }
 
-static int
+static gint
 uid_compar (gconstpointer va, gconstpointer vb)
 {
 	const gchar **sa = (const gchar **)va, **sb = (const gchar **)vb;
-	unsigned long a, b;
+	gulong a, b;
 
 	a = strtoul (*sa, NULL, 10);
 	b = strtoul (*sb, NULL, 10);
@@ -1696,7 +1695,7 @@ imap_expunge_uids_resyncing (CamelFolder *folder, GPtrArray *uids, CamelExceptio
 
 	if (result[8] == ' ') {
 		gchar *uid, *lasts = NULL;
-		unsigned long euid, kuid;
+		gulong euid, kuid;
 		gint ei, ki;
 
 		keep_uids = g_ptr_array_new ();
@@ -1828,7 +1827,7 @@ get_temp_uid (void)
 
 	G_LOCK (lock);
 	res = g_strdup_printf ("tempuid-%lx-%d",
-			       (unsigned long) time (NULL),
+			       (gulong) time (NULL),
 			       counter++);
 	G_UNLOCK (lock);
 
@@ -2411,7 +2410,7 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 		for (first = i; i < uids->len; i++) {
 			uid = uids->pdata[i];
 
-			if (!isdigit ((unsigned char)*uid)) {
+			if (!isdigit ((guchar)*uid)) {
 				uid = camel_imap_journal_uidmap_lookup ((CamelIMAPJournal *) CAMEL_IMAP_FOLDER (source)->journal, uid);
 				if (!uid)
 					break;
@@ -2548,7 +2547,7 @@ part_spec_push (struct _part_spec_stack **stack, gint part)
 	*stack = node;
 }
 
-static int
+static gint
 part_spec_pop (struct _part_spec_stack **stack)
 {
 	struct _part_spec_stack *node;
@@ -2571,7 +2570,7 @@ content_info_get_part_spec (CamelMessageContentInfo *ci)
 	struct _part_spec_stack *stack = NULL;
 	CamelMessageContentInfo *node;
 	gchar *part_spec, *buf;
-	size_t len = 1;
+	gsize len = 1;
 	gint part;
 
 	node = ci;
@@ -3102,7 +3101,7 @@ imap_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid,
 #define IMAP_PRETEND_SIZEOF_SIZE	  20
 #define IMAP_PRETEND_SIZEOF_HEADERS	2000
 
-static gchar *tm_months[] = {
+static const gchar *tm_months[] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
@@ -3116,7 +3115,7 @@ decode_time (const guchar **in, gint *hour, gint *min, gint *sec)
 	*hour = *min = *sec = 0;
 
 	val = hour;
-	for (inptr = *in; *inptr && !isspace ((int) *inptr); inptr++) {
+	for (inptr = *in; *inptr && !isspace ((gint) *inptr); inptr++) {
 		if (*inptr == ':') {
 			colons++;
 			switch (colons) {
@@ -3129,7 +3128,7 @@ decode_time (const guchar **in, gint *hour, gint *min, gint *sec)
 			default:
 				return FALSE;
 			}
-		} else if (!isdigit ((int) *inptr))
+		} else if (!isdigit ((gint) *inptr))
 			return FALSE;
 		else
 			*val = (*val * 10) + (*inptr - '0');
@@ -3333,7 +3332,6 @@ imap_update_summary (CamelFolder *folder, gint exists,
 	CamelStream *stream;
 	gchar *uid, *resp, *tempuid;
 	GData *data;
-	extern gint camel_application_is_exiting;
 	gint k = 0, ct;
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
@@ -3672,7 +3670,6 @@ camel_imap_folder_changed (CamelFolder *folder, gint exists,
 			   GArray *expunged, CamelException *ex)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
-	extern gint camel_application_is_exiting;
 	CamelFolderChangeInfo *changes;
 	gint len;
 	gchar *uid;
@@ -3827,10 +3824,10 @@ parse_fetch_response (CamelImapFolder *imap_folder, gchar *response)
 	GData *data = NULL;
 	gchar *start, *part_spec = NULL, *body = NULL, *uid = NULL, *idate = NULL;
 	gboolean cache_header = TRUE, header = FALSE;
-	size_t body_len = 0;
+	gsize body_len = 0;
 
 	if (*response != '(') {
-		long seq;
+		glong seq;
 
 		if (*response != '*' || *(response + 1) != ' ')
 			return NULL;
@@ -3861,7 +3858,7 @@ parse_fetch_response (CamelImapFolder *imap_folder, gchar *response)
 					g_datalist_set_data_full (&data, "CUSTOM.FLAGS", custom_flags, g_free);
 			}
 		} else if (!g_ascii_strncasecmp (response, "RFC822.SIZE ", 12)) {
-			unsigned long size;
+			gulong size;
 
 			response += 12;
 			size = strtoul (response, &response, 10);
@@ -4000,7 +3997,7 @@ imap_get_quota_info (CamelFolder *folder)
 
 				if (resp && g_str_has_prefix (resp, "* QUOTA ")) {
 					gboolean skipped = TRUE;
-					size_t sz;
+					gsize sz;
 					gchar *astr;
 
 					resp = resp + 8;
@@ -4031,7 +4028,7 @@ imap_get_quota_info (CamelFolder *folder)
 							u = strtoull (used, NULL, 10);
 							t = strtoull (total, NULL, 10);
 
-							if (u >= 0 && t > 0) {
+							if (t > 0) {
 								CamelFolderQuotaInfo *info = camel_folder_quota_info_new (name, u, t);
 
 								if (last)

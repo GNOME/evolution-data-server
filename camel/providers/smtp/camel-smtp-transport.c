@@ -396,9 +396,9 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 }
 
 static struct {
-	gchar *value;
-	gchar *serv;
-	gchar *port;
+	const gchar *value;
+	const gchar *serv;
+	const gchar *port;
 	gint mode;
 } ssl_options[] = {
 	{ "",              "smtps", SMTPS_PORT, MODE_SSL   },  /* really old (1.x) */
@@ -422,11 +422,11 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
 		mode = ssl_options[i].mode;
-		serv = ssl_options[i].serv;
+		serv = (gchar *) ssl_options[i].serv;
 		port = ssl_options[i].port;
 	} else {
 		mode = MODE_CLEAR;
-		serv = "smtp";
+		serv = (gchar *) "smtp";
 		port = SMTP_PORT;
 	}
 
@@ -640,7 +640,7 @@ esmtp_get_authtypes (const guchar *buffer)
 
 	/* advance to the first token */
 	start = buffer;
-	while (isspace ((int) *start) || *start == '=')
+	while (isspace ((gint) *start) || *start == '=')
 		start++;
 
 	if (!*start)
@@ -648,12 +648,12 @@ esmtp_get_authtypes (const guchar *buffer)
 
 	table = g_hash_table_new (g_str_hash, g_str_equal);
 
-	for ( ; *start; ) {
+	for (; *start; ) {
 		gchar *type;
 
 		/* advance to the end of the token */
 		end = start;
-		while (*end && !isspace ((int) *end))
+		while (*end && !isspace ((gint) *end))
 			end++;
 
 		type = g_strndup ((gchar *) start, end - start);
@@ -661,7 +661,7 @@ esmtp_get_authtypes (const guchar *buffer)
 
 		/* advance to the next token */
 		start = end;
-		while (isspace ((int) *start))
+		while (isspace ((gint) *start))
 			start++;
 	}
 
@@ -788,10 +788,10 @@ smtp_next_token (const gchar *buf)
 	const guchar *token;
 
 	token = (const guchar *) buf;
-	while (*token && !isspace ((int) *token))
+	while (*token && !isspace ((gint) *token))
 		token++;
 
-	while (*token && isspace ((int) *token))
+	while (*token && isspace ((gint) *token))
 		token++;
 
 	return (const gchar *) token;
@@ -822,7 +822,7 @@ smtp_next_token (const gchar *buf)
  *        hexadecimal digits
  */
 static gchar *
-smtp_decode_status_code (const gchar *in, size_t len)
+smtp_decode_status_code (const gchar *in, gsize len)
 {
 	guchar *inptr, *outptr;
 	const guchar *inend;

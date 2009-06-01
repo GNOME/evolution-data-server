@@ -101,7 +101,7 @@ camel_imap4_search_new (CamelIMAP4Engine *engine, const gchar *cachedir)
 }
 
 
-static int
+static gint
 untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)
 {
 	CamelFolderSummary *summary = ((CamelFolder *) engine->folder)->summary;
@@ -149,7 +149,7 @@ imap4_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 	const gchar *expr;
 	ESExpResult *r;
 	gint id, i, n;
-	size_t used;
+	gsize used;
 	gchar *set;
 
 	if (((CamelOfflineStore *) engine->service)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
@@ -195,7 +195,7 @@ imap4_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 			if (!utf8_search) {
 				inptr = (guchar *) argv[i]->value.string;
 				while (*inptr != '\0') {
-					if (!isascii ((int) *inptr)) {
+					if (!isascii ((gint) *inptr)) {
 						utf8_search = TRUE;
 						break;
 					}

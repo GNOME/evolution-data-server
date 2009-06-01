@@ -120,7 +120,7 @@ list_contents (E2kContext *ctx, gchar *top, gboolean reverse)
 	test_quit ();
 }
 
-static int
+static gint
 mp_compar (gconstpointer k, gconstpointer m)
 {
 	const gchar *key = k;
@@ -171,7 +171,7 @@ typedef struct {
 	gpointer value;
 } EBrowseProp;
 
-static int
+static gint
 prop_compar (gconstpointer a, gconstpointer b)
 {
 	EBrowseProp **pa = (gpointer)a;
@@ -431,7 +431,7 @@ get_sd (E2kContext *ctx, gchar *uri)
 		printf ("%s: %s (0x%lx)\n",
 			e2k_sid_get_display_name (sid),
 			e2k_permissions_role_get_name (role),
-			(unsigned long)perms);
+			(gulong)perms);
 	}
 	g_list_free (sids);
 

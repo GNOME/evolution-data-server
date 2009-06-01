@@ -94,7 +94,7 @@ camel_cipher_context_construct (CamelCipherContext *context, CamelSession *sessi
 	context->session = session;
 }
 
-static int
+static gint
 cipher_sign (CamelCipherContext *ctx, const gchar *userid, CamelCipherHash hash,
 	     struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
@@ -181,7 +181,7 @@ camel_cipher_verify (CamelCipherContext *context, struct _CamelMimePart *ipart, 
 	return valid;
 }
 
-static int
+static gint
 cipher_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipients,
 		struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
@@ -264,7 +264,7 @@ camel_cipher_decrypt(CamelCipherContext *context, struct _CamelMimePart *ipart, 
 	return valid;
 }
 
-static int
+static gint
 cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istream, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -293,7 +293,7 @@ camel_cipher_import_keys (CamelCipherContext *context, struct _CamelStream *istr
 	return CCC_CLASS (context)->import_keys (context, istream, ex);
 }
 
-static int
+static gint
 cipher_export_keys (CamelCipherContext *context, GPtrArray *keys,
 		    struct _CamelStream *ostream, CamelException *ex)
 {

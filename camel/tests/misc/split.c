@@ -28,7 +28,7 @@ static struct {
 	{ "\"quoted\"", 1, { { "quoted", CAMEL_SEARCH_WORD_SIMPLE } } },
 	{ "\"quoted double\"", 1, { { "quoted double", CAMEL_SEARCH_WORD_COMPLEX } } },
 	{ "\"quoted double\" compl;ex", 2, { { "quoted double", CAMEL_SEARCH_WORD_COMPLEX }, { "compl;ex", CAMEL_SEARCH_WORD_COMPLEX } } },
-	{ "\"quoted double \\\" escaped\"", 1, { { "quoted double \" escaped", CAMEL_SEARCH_WORD_COMPLEX } } },
+	{ "\"quoted gdouble \\\" escaped\"", 1, { { "quoted gdouble \" escaped", CAMEL_SEARCH_WORD_COMPLEX } } },
 	{ "\"quoted\\\"double\" \\\" escaped\\\"", 3, { { "quoted\"double", CAMEL_SEARCH_WORD_COMPLEX }, {"\"", CAMEL_SEARCH_WORD_COMPLEX}, { "escaped\"", CAMEL_SEARCH_WORD_COMPLEX } } },
 	{ "\\\"escaped", 1, { { "\"escaped", CAMEL_SEARCH_WORD_COMPLEX } } },
 

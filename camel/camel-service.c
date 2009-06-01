@@ -148,7 +148,7 @@ camel_service_get_type (void)
 }
 
 
-static int
+static gint
 service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	CamelService *service = (CamelService *) object;
@@ -214,7 +214,7 @@ service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
 }
 
-static int
+static gint
 service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelService *service = (CamelService *) object;

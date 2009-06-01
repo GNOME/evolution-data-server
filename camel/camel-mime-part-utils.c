@@ -60,7 +60,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	gchar *buf;
 	GByteArray *buffer;
 	CamelStream *mem;
-	size_t len;
+	gsize len;
 
 	d(printf ("simple_data_wrapper_construct_from_parser()\n"));
 

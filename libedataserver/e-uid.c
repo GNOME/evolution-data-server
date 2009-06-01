@@ -47,8 +47,8 @@ e_uid_new (void)
 	}
 
 	return g_strdup_printf ("%lu.%lu.%d@%s",
-				(unsigned long) time (NULL),
-				(unsigned long) getpid (),
+				(gulong) time (NULL),
+				(gulong) getpid (),
 				serial++,
 				hostname);
 }

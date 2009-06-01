@@ -62,7 +62,7 @@ void           e2k_properties_set_bool          (E2kProperties *props,
 						 gboolean       value);
 void           e2k_properties_set_float         (E2kProperties *props,
 						 const gchar    *propname,
-						 float          value);
+						 gfloat          value);
 void           e2k_properties_set_date          (E2kProperties *props,
 						 const gchar    *propname,
 						 gchar          *value);

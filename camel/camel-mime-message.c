@@ -74,7 +74,7 @@ typedef enum {
 	HEADER_MESSAGE_ID
 } CamelHeaderType;
 
-static gchar *header_names[] = {
+static const gchar *header_names[] = {
 	/* dont include HEADER_UNKNOWN string */
 	"From", "Reply-To", "Subject", "To", "Resent-To", "Cc", "Resent-Cc",
 	"Bcc", "Resent-Bcc", "Date", "Message-Id", NULL
@@ -84,11 +84,11 @@ static GHashTable *header_name_table;
 
 static CamelMimePartClass *parent_class = NULL;
 
-static gchar *recipient_names[] = {
+static const gchar *recipient_names[] = {
 	"To", "Cc", "Bcc", "Resent-To", "Resent-Cc", "Resent-Bcc", NULL
 };
 
-static ssize_t write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
+static gssize write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
 static void add_header (CamelMedium *medium, const gchar *name, gconstpointer value);
 static void set_header (CamelMedium *medium, const gchar *name, gconstpointer value);
 static void remove_header (CamelMedium *medium, const gchar *name);
@@ -112,7 +112,10 @@ camel_mime_message_class_init (CamelMimeMessageClass *camel_mime_message_class)
 
 	header_name_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 	for (i = 0;header_names[i]; i++)
-		g_hash_table_insert (header_name_table, header_names[i], GINT_TO_POINTER(i+1));
+		g_hash_table_insert (
+			header_name_table,
+			(gpointer) header_names[i],
+			GINT_TO_POINTER(i+1));
 
 	/* virtual method overload */
 	camel_data_wrapper_class->write_to_stream = write_to_stream;
@@ -133,7 +136,10 @@ camel_mime_message_init (gpointer object, gpointer klass)
 
 	mime_message->recipients =  g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 	for (i=0;recipient_names[i];i++) {
-		g_hash_table_insert(mime_message->recipients, recipient_names[i], camel_internet_address_new());
+		g_hash_table_insert (
+			mime_message->recipients,
+			(gpointer) recipient_names[i],
+			camel_internet_address_new ());
 	}
 
 	mime_message->subject = NULL;
@@ -580,11 +586,11 @@ camel_mime_message_get_source (CamelMimeMessage *mime_message)
 }
 
 /* mime_message */
-static int
+static gint
 construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 {
 	gchar *buf;
-	size_t len;
+	gsize len;
 	gint state;
 	gint ret;
 	gint err;
@@ -624,7 +630,7 @@ construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 	return ret;
 }
 
-static ssize_t
+static gssize
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
 	CamelMimeMessage *mm = CAMEL_MIME_MESSAGE (data_wrapper);

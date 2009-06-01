@@ -174,8 +174,8 @@ void camel_header_raw_clear (struct _camel_header_raw **list);
 gchar *camel_header_raw_check_mailing_list (struct _camel_header_raw **list);
 
 /* fold a header */
-gchar *camel_header_address_fold (const gchar *in, size_t headerlen);
-gchar *camel_header_fold (const gchar *in, size_t headerlen);
+gchar *camel_header_address_fold (const gchar *in, gsize headerlen);
+gchar *camel_header_fold (const gchar *in, gsize headerlen);
 gchar *camel_header_unfold (const gchar *in);
 
 /* decode a header which is a simple token */
@@ -230,27 +230,27 @@ void camel_header_mime_decode (const gchar *in, gint *maj, gint *min);
 
 #ifndef CAMEL_DISABLE_DEPRECATED
 /* do incremental base64/quoted-printable (de/en)coding */
-size_t camel_base64_decode_step (guchar *in, size_t len, guchar *out, gint *state, guint *save);
+gsize camel_base64_decode_step (guchar *in, gsize len, guchar *out, gint *state, guint *save);
 
-size_t camel_base64_encode_step (guchar *in, size_t inlen, gboolean break_lines, guchar *out, gint *state, gint *save);
-size_t camel_base64_encode_close (guchar *in, size_t inlen, gboolean break_lines, guchar *out, gint *state, gint *save);
+gsize camel_base64_encode_step (guchar *in, gsize inlen, gboolean break_lines, guchar *out, gint *state, gint *save);
+gsize camel_base64_encode_close (guchar *in, gsize inlen, gboolean break_lines, guchar *out, gint *state, gint *save);
 #endif
 
-size_t camel_uudecode_step (guchar *in, size_t inlen, guchar *out, gint *state, guint32 *save);
+gsize camel_uudecode_step (guchar *in, gsize inlen, guchar *out, gint *state, guint32 *save);
 
-size_t camel_uuencode_step (guchar *in, size_t len, guchar *out, guchar *uubuf, gint *state,
+gsize camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *state,
 		      guint32 *save);
-size_t camel_uuencode_close (guchar *in, size_t len, guchar *out, guchar *uubuf, gint *state,
+gsize camel_uuencode_close (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *state,
 		       guint32 *save);
 
-size_t camel_quoted_decode_step (guchar *in, size_t len, guchar *out, gint *savestate, gint *saveme);
+gsize camel_quoted_decode_step (guchar *in, gsize len, guchar *out, gint *savestate, gint *saveme);
 
-size_t camel_quoted_encode_step (guchar *in, size_t len, guchar *out, gint *state, gint *save);
-size_t camel_quoted_encode_close (guchar *in, size_t len, guchar *out, gint *state, gint *save);
+gsize camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *state, gint *save);
+gsize camel_quoted_encode_close (guchar *in, gsize len, guchar *out, gint *state, gint *save);
 
 #ifndef CAMEL_DISABLE_DEPRECATED
-gchar *camel_base64_encode_simple (const gchar *data, size_t len);
-size_t camel_base64_decode_simple (gchar *data, size_t len);
+gchar *camel_base64_encode_simple (const gchar *data, gsize len);
+gsize camel_base64_decode_simple (gchar *data, gsize len);
 #endif
 
 /* camel ctype type functions for rfc822/rfc2047/other, which are non-locale specific */
@@ -269,18 +269,18 @@ enum {
 
 extern unsigned short camel_mime_special_table[256];
 
-#define camel_mime_is_ctrl(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_CTRL) != 0)
-#define camel_mime_is_lwsp(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_LWSP) != 0)
-#define camel_mime_is_tspecial(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_TSPECIAL) != 0)
-#define camel_mime_is_type(x, t) ((camel_mime_special_table[(unsigned char)(x)] & (t)) != 0)
-#define camel_mime_is_ttoken(x) ((camel_mime_special_table[(unsigned char)(x)] & (CAMEL_MIME_IS_TSPECIAL|CAMEL_MIME_IS_LWSP|CAMEL_MIME_IS_CTRL)) == 0)
-#define camel_mime_is_atom(x) ((camel_mime_special_table[(unsigned char)(x)] & (CAMEL_MIME_IS_SPECIAL|CAMEL_MIME_IS_SPACE|CAMEL_MIME_IS_CTRL)) == 0)
-#define camel_mime_is_dtext(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_DSPECIAL) == 0)
-#define camel_mime_is_fieldname(x) ((camel_mime_special_table[(unsigned char)(x)] & (CAMEL_MIME_IS_CTRL|CAMEL_MIME_IS_SPACE)) == 0)
-#define camel_mime_is_qpsafe(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_QPSAFE) != 0)
-#define camel_mime_is_especial(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_ESPECIAL) != 0)
-#define camel_mime_is_psafe(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_PSAFE) != 0)
-#define camel_mime_is_attrchar(x) ((camel_mime_special_table[(unsigned char)(x)] & CAMEL_MIME_IS_ATTRCHAR) != 0)
+#define camel_mime_is_ctrl(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_CTRL) != 0)
+#define camel_mime_is_lwsp(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_LWSP) != 0)
+#define camel_mime_is_tspecial(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_TSPECIAL) != 0)
+#define camel_mime_is_type(x, t) ((camel_mime_special_table[(guchar)(x)] & (t)) != 0)
+#define camel_mime_is_ttoken(x) ((camel_mime_special_table[(guchar)(x)] & (CAMEL_MIME_IS_TSPECIAL|CAMEL_MIME_IS_LWSP|CAMEL_MIME_IS_CTRL)) == 0)
+#define camel_mime_is_atom(x) ((camel_mime_special_table[(guchar)(x)] & (CAMEL_MIME_IS_SPECIAL|CAMEL_MIME_IS_SPACE|CAMEL_MIME_IS_CTRL)) == 0)
+#define camel_mime_is_dtext(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_DSPECIAL) == 0)
+#define camel_mime_is_fieldname(x) ((camel_mime_special_table[(guchar)(x)] & (CAMEL_MIME_IS_CTRL|CAMEL_MIME_IS_SPACE)) == 0)
+#define camel_mime_is_qpsafe(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_QPSAFE) != 0)
+#define camel_mime_is_especial(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_ESPECIAL) != 0)
+#define camel_mime_is_psafe(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_PSAFE) != 0)
+#define camel_mime_is_attrchar(x) ((camel_mime_special_table[(guchar)(x)] & CAMEL_MIME_IS_ATTRCHAR) != 0)
 
 G_END_DECLS
 

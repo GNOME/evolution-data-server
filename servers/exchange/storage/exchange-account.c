@@ -1041,10 +1041,10 @@ is_password_expired (ExchangeAccount *account, E2kAutoconfig *ac)
 }
 #endif
 
-static int
+static gint
 find_passwd_exp_period (ExchangeAccount *account, E2kGlobalCatalogEntry *entry)
 {
-	double max_pwd_age = 0;
+	gdouble max_pwd_age = 0;
 	gint max_pwd_age_days;
 	E2kOperation gcop;
 	E2kGlobalCatalogStatus gcstatus;
@@ -1922,7 +1922,7 @@ exchange_account_get_folder (ExchangeAccount *account,
 	return folder;
 }
 
-static int
+static gint
 folder_comparator (gconstpointer a, gconstpointer b)
 {
 	EFolder **fa = (EFolder **)a;
@@ -2048,7 +2048,7 @@ exchange_account_get_folder_tree (ExchangeAccount *account, gchar * path)
  *
  * Return the value of the quota limit reached.
  *
- * Return value: an int
+ * Return value: an gint
  **/
 gint
 exchange_account_get_quota_limit (ExchangeAccount *account)

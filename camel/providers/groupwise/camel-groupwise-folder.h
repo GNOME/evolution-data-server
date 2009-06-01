@@ -78,8 +78,8 @@ struct _CamelGroupwiseFolderClass {
 CamelType camel_groupwise_folder_get_type (void);
 
 /* implemented */
-CamelFolder * camel_gw_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex) ;
-void gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex) ;
+CamelFolder * camel_gw_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex);
+void gw_update_summary ( CamelFolder *folder, GList *item_list,CamelException *ex);
 void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
 
 G_END_DECLS

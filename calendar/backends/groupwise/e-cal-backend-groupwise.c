@@ -266,7 +266,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 
 				/* Show the progress information */
 				num++;
-				percent = ((float) num/total) * 100;
+				percent = ((gfloat) num/total) * 100;
 
 				/* FIXME The total obtained from the server is wrong. Sometimes the num can
 				be greater than the total. The following makes sure that the percentage is not >= 100 */

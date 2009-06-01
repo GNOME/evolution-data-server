@@ -70,7 +70,7 @@ reset(CamelMimeFilter *mf)
 }
 
 static void
-filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
 	register guchar *p, *pend;
@@ -158,13 +158,13 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 		camel_charset_step(&f->charset, in, len);
 
 donothing:
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
 

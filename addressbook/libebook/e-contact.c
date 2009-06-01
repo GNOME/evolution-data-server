@@ -1432,7 +1432,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 
 		if (attr) {
 			GList *v = e_vcard_attribute_get_values (attr);
-			rv = v && v->data && !g_ascii_strcasecmp ((char*)v->data, "true");
+			rv = v && v->data && !g_ascii_strcasecmp ((gchar *)v->data, "true");
 			return rv ? (gpointer) "1" : NULL;
 		}
 	}

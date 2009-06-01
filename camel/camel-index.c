@@ -346,8 +346,8 @@ camel_index_name_add_word(CamelIndexName *idn, const gchar *word)
 		g_free(b);
 }
 
-size_t
-camel_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, size_t len)
+gsize
+camel_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, gsize len)
 {
 	return CIN_CLASS(idn)->add_buffer(idn, buffer, len);
 }

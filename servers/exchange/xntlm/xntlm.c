@@ -65,7 +65,7 @@ strip_dup (guchar *mem, gint len)
 	gchar *buf = g_malloc (len / 2 + 1), *p = buf;
 
 	while (len > 0) {
-		*p = (char)*mem;
+		*p = (gchar)*mem;
 		p++;
 		mem += 2;
 		len -= 2;
@@ -238,7 +238,7 @@ setup_schedule (const guchar *key_56, XNTLM_DES_KS ks)
 	guchar key[8];
 	gint i, c, bit;
 
-	key[0] = (key_56[0])                                 ;
+	key[0] = (key_56[0]);
 	key[1] = (key_56[1] >> 1) | ((key_56[0] << 7) & 0xFF);
 	key[2] = (key_56[2] >> 2) | ((key_56[1] << 6) & 0xFF);
 	key[3] = (key_56[3] >> 3) | ((key_56[2] << 5) & 0xFF);
@@ -273,7 +273,7 @@ ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
 	guint i;
 
 	for (i = 0; i < 14 && password [i]; i++)
-		lm_password [i] = toupper ((unsigned char) password [i]);
+		lm_password [i] = toupper ((guchar) password [i]);
 
 	for (; i < sizeof (lm_password); i++)
 		lm_password [i] = '\0';

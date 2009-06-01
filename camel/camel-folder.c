@@ -49,8 +49,6 @@
 #define d(x)
 #define w(x)
 
-extern gint camel_verbose_debug;
-
 static CamelObjectClass *parent_class = NULL;
 
 /* Returns the class for a CamelFolder */
@@ -351,7 +349,7 @@ camel_folder_refresh_info (CamelFolder *folder, CamelException *ex)
 	CF_CLASS (folder)->refresh_info (folder, ex);
 }
 
-static int
+static gint
 folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
@@ -620,7 +618,7 @@ camel_folder_expunge (CamelFolder *folder, CamelException *ex)
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
-static int
+static gint
 get_message_count (CamelFolder *folder)
 {
 	g_return_val_if_fail(folder->summary != NULL, -1);

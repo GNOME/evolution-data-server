@@ -360,7 +360,7 @@ void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key)
 	camel_block_file_unref_block(cpi->blocks, block);
 }
 
-static int
+static gint
 keys_cmp(gconstpointer ap, gconstpointer bp)
 {
 	const CamelPartitionKey *a = ap;
@@ -839,7 +839,7 @@ camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, gui
 #else
 	if (kb->used >=127 || index >= kb->used) {
 		g_warning("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
-		return ;
+		return;
 	}
 #endif
 

@@ -27,7 +27,7 @@ typedef struct {
 	gint suffix_idx;
 } ENameWesternIdxs;
 
-static int
+static gint
 e_name_western_str_count_words (const gchar *str)
 {
 	gint word_count;
@@ -105,7 +105,7 @@ e_name_western_get_words_at_idx (gchar *str, gint idx, gint num_words)
 	return g_string_free (words, FALSE);
 }
 
-static int
+static gint
 e_name_western_max (const gint a, const gint b)
 {
 	if (a > b)
@@ -419,7 +419,7 @@ e_name_western_extract_nickname (ENameWestern *name, ENameWesternIdxs *idxs)
 	idxs->nick_idx = start_idx;
 }
 
-static int
+static gint
 e_name_western_last_get_max_idx (ENameWestern *name, ENameWesternIdxs *idxs)
 {
 	gint max_idx = -1;

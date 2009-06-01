@@ -204,7 +204,7 @@ e2k_sid_get_string_sid (E2kSid *sid)
 		/* Subauthorities. */
 		for (sa = 0; sa < sid->priv->binary_sid->SubAuthorityCount; sa++) {
 			g_string_append_printf (string, "-%lu",
-						(unsigned long) GUINT32_FROM_LE (sid->priv->binary_sid->SubAuthority[sa]));
+						(gulong) GUINT32_FROM_LE (sid->priv->binary_sid->SubAuthority[sa]));
 		}
 
 		sid->priv->string_sid = string->str;

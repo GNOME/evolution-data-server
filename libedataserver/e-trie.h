@@ -41,7 +41,7 @@ void e_trie_free (ETrie *trie);
 
 void e_trie_add (ETrie *trie, const gchar *pattern, gint pattern_id);
 
-const gchar *e_trie_search (ETrie *trie, const gchar *buffer, size_t buflen, gint *matched_id);
+const gchar *e_trie_search (ETrie *trie, const gchar *buffer, gsize buflen, gint *matched_id);
 
 #ifdef __cplusplus
 }

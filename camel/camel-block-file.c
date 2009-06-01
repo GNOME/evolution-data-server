@@ -80,7 +80,7 @@ static gint block_file_threshhold = 10;
 static gint sync_nolock(CamelBlockFile *bs);
 static gint sync_block_nolock(CamelBlockFile *bs, CamelBlock *bl);
 
-static int
+static gint
 block_file_validate_root(CamelBlockFile *bs)
 {
 	CamelBlockRoot *br;
@@ -95,9 +95,9 @@ block_file_validate_root(CamelBlockFile *bs)
 	d(printf("version: %.8s (%.8s)\n", bs->root->version, bs->version));
 	d(printf("block size: %d (%d)%s\n", br->block_size, bs->block_size,
 		br->block_size != bs->block_size ? " BAD":" OK"));
-	d(printf("free: %ld (%d add size < %ld)%s\n", (long)br->free, br->free / bs->block_size * bs->block_size, (long)st.st_size,
+	d(printf("free: %ld (%d add size < %ld)%s\n", (glong)br->free, br->free / bs->block_size * bs->block_size, (glong)st.st_size,
 		(br->free > st.st_size) || (br->free % bs->block_size) != 0 ? " BAD":" OK"));
-	d(printf("last: %ld (%d and size: %ld)%s\n", (long)br->last, br->last / bs->block_size * bs->block_size, (long)st.st_size,
+	d(printf("last: %ld (%d and size: %ld)%s\n", (glong)br->last, br->last / bs->block_size * bs->block_size, (glong)st.st_size,
 		(br->last != st.st_size) || ((br->last % bs->block_size) != 0) ? " BAD": " OK"));
 	d(printf("flags: %s\n", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC"));
 
@@ -116,9 +116,9 @@ block_file_validate_root(CamelBlockFile *bs)
 			g_warning("version: %.8s (%.8s)", bs->root->version, bs->version);
 			g_warning("block size: %d (%d)%s", br->block_size, bs->block_size,
 				  br->block_size != bs->block_size ? " BAD":" OK");
-			g_warning("free: %ld (%d add size < %ld)%s", (long)br->free, br->free / bs->block_size * bs->block_size, (long)st.st_size,
+			g_warning("free: %ld (%d add size < %ld)%s", (glong)br->free, br->free / bs->block_size * bs->block_size, (glong)st.st_size,
 				  (br->free > st.st_size) || (br->free % bs->block_size) != 0 ? " BAD":" OK");
-			g_warning("last: %ld (%d and size: %ld)%s", (long)br->last, br->last / bs->block_size * bs->block_size, (long)st.st_size,
+			g_warning("last: %ld (%d and size: %ld)%s", (glong)br->last, br->last / bs->block_size * bs->block_size, (glong)st.st_size,
 				  (br->last != st.st_size) || ((br->last % bs->block_size) != 0) ? " BAD": " OK");
 			g_warning("flags: %s", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC");
 		}
@@ -129,7 +129,7 @@ block_file_validate_root(CamelBlockFile *bs)
 	return 0;
 }
 
-static int
+static gint
 block_file_init_root(CamelBlockFile *bs)
 {
 	CamelBlockRoot *br = bs->root;
@@ -258,7 +258,7 @@ camel_block_file_get_type(void)
 }
 
 /* 'use' a block file for io */
-static int
+static gint
 block_file_use(CamelBlockFile *bs)
 {
 	struct _CamelBlockFilePrivate *nw, *nn, *p = bs->priv;
@@ -282,8 +282,9 @@ block_file_use(CamelBlockFile *bs)
 		CAMEL_BLOCK_FILE_UNLOCK(bs, io_lock);
 		errno = ENOENT;
 		return -1;
-	} else
+	} else {
 		d(printf("Turning block file online: %s\n", bs->path));
+	}
 
 	if ((bs->fd = g_open(bs->path, bs->flags|O_BINARY, 0600)) == -1) {
 		err = errno;
@@ -362,7 +363,7 @@ camel_cache_remove(c, key);
  *
  * Return value: The new block file, or NULL if it could not be created.
  **/
-CamelBlockFile *camel_block_file_new(const gchar *path, gint flags, const gchar version[8], size_t block_size)
+CamelBlockFile *camel_block_file_new(const gchar *path, gint flags, const gchar version[8], gsize block_size)
 {
 	CamelBlockFile *bs;
 
@@ -692,7 +693,7 @@ void camel_block_file_unref_block(CamelBlockFile *bs, CamelBlock *bl)
 	CAMEL_BLOCK_FILE_UNLOCK(bs, cache_lock);
 }
 
-static int
+static gint
 sync_block_nolock(CamelBlockFile *bs, CamelBlock *bl)
 {
 	d(printf("Sync block %08x: %s\n", bl->id, (bl->flags & CAMEL_BLOCK_DIRTY)?"dirty":"clean"));
@@ -708,7 +709,7 @@ sync_block_nolock(CamelBlockFile *bs, CamelBlock *bl)
 	return 0;
 }
 
-static int
+static gint
 sync_nolock(CamelBlockFile *bs)
 {
 	CamelBlock *bl, *bn;
@@ -877,13 +878,13 @@ camel_key_file_get_type(void)
 }
 
 /* 'use' a key file for io */
-static int
+static gint
 key_file_use(CamelKeyFile *bs)
 {
 	struct _CamelKeyFilePrivate *nw, *nn, *p = bs->priv;
 	CamelKeyFile *bf;
 	gint err, fd;
-	gchar *flag;
+	const gchar *flag;
 
 	/* We want to:
 	    remove file from active list
@@ -904,8 +905,9 @@ key_file_use(CamelKeyFile *bs)
 		CAMEL_KEY_FILE_UNLOCK(bs, lock);
 		errno = ENOENT;
 		return -1;
-	} else
+	} else {
 		d(printf("Turning key file online: '%s'\n", bs->path));
+	}
 
 	if ((bs->flags & O_ACCMODE) == O_RDONLY)
 		flag = "rb";
@@ -1085,7 +1087,7 @@ camel_key_file_delete(CamelKeyFile *kf)
  * Return value: -1 on io error.  The key file will remain unchanged.
  **/
 gint
-camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_key_t *records)
+camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, gsize len, camel_key_t *records)
 {
 	camel_block_t next;
 	guint32 size;
@@ -1140,10 +1142,10 @@ camel_key_file_write(CamelKeyFile *kf, camel_block_t *parent, size_t len, camel_
  * Return value: -1 on io error.
  **/
 gint
-camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, size_t *len, camel_key_t **records)
+camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, gsize *len, camel_key_t **records)
 {
 	guint32 size;
-	long pos = *start;
+	glong pos = *start;
 	camel_block_t next;
 	gint ret = -1;
 

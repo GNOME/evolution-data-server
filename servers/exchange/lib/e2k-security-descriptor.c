@@ -180,7 +180,7 @@ E2K_MAKE_TYPE (e2k_security_descriptor, E2kSecurityDescriptor, class_init, init,
 /* This determines the relative ordering of any two ACEs in a SID.
  * See docs/security for details.
  */
-static int
+static gint
 ace_compar (E2k_ACE *ace1, E2k_ACE *ace2, E2kSecurityDescriptor *sd)
 {
 	E2kSidType t1;

@@ -59,10 +59,10 @@ static gint summary_header_save(CamelStoreSummary *, FILE *);
 
 static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);
 static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
-static int		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
+static gint		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 
-static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
+static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 static void camel_store_summary_class_init (CamelStoreSummaryClass *klass);
@@ -772,7 +772,7 @@ camel_store_summary_remove_index(CamelStoreSummary *s, gint index)
 	}
 }
 
-static int
+static gint
 summary_header_load(CamelStoreSummary *s, FILE *in)
 {
 	gint32 version, flags, count;
@@ -802,7 +802,7 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 	return 0;
 }
 
-static int
+static gint
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
 	fseek(out, 0, SEEK_SET);
@@ -922,7 +922,7 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 	return NULL;
 }
 
-static int
+static gint
 store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *info)
 {
 	io(printf("Saving folder info\n"));

@@ -50,10 +50,10 @@ static gint summary_header_save(CamelStoreSummary *, FILE *);
 
 /*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);*/
 static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
-static int		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
+static gint		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 
-static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
+static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 static void camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *klass);
@@ -302,13 +302,14 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const gchar *f
 	if (info) {
 		d(printf("  '%s' -> '%s'\n", pathu8, full_name));
 		camel_store_info_set_string((CamelStoreSummary *)s, (CamelStoreInfo *)info, CAMEL_NNTP_STORE_INFO_FULL_NAME, full_name);
-	} else
+	} else {
 		d(printf("  failed\n"));
+	}
 
 	return info;
 }
 
-static int
+static gint
 summary_header_load (CamelStoreSummary *s, FILE *in)
 {
 	CamelNNTPStoreSummary *is = (CamelNNTPStoreSummary *) s;
@@ -333,7 +334,7 @@ summary_header_load (CamelStoreSummary *s, FILE *in)
 	return 0;
 }
 
-static int
+static gint
 summary_header_save (CamelStoreSummary *s, FILE *out)
 {
 	CamelNNTPStoreSummary *is = (CamelNNTPStoreSummary *) s;
@@ -372,7 +373,7 @@ store_info_load (CamelStoreSummary *s, FILE *in)
 	return (CamelStoreInfo *) ni;
 }
 
-static int
+static gint
 store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelNNTPStoreInfo *isi = (CamelNNTPStoreInfo *)mi;

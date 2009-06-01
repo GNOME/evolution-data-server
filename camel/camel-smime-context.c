@@ -76,7 +76,7 @@ static CamelCipherContextClass *parent_class = NULL;
 
 /* used for decode content callback, for streaming decode */
 static void
-sm_write_stream(gpointer arg, const gchar *buf, unsigned long len)
+sm_write_stream(gpointer arg, const gchar *buf, gulong len)
 {
 	camel_stream_write((CamelStream *)arg, buf, len);
 }
@@ -219,7 +219,7 @@ sm_id_to_hash(CamelCipherContext *context, const gchar *id)
 }
 
 static const gchar *
-nss_error_to_string (long errorcode)
+nss_error_to_string (glong errorcode)
 {
 	#define cs(a,b) case a: return b;
 
@@ -407,7 +407,7 @@ nss_error_to_string (long errorcode)
 static void
 set_nss_error (CamelException *ex, const gchar *def_error)
 {
-	long err_code;
+	glong err_code;
 
 	g_return_if_fail (def_error != NULL);
 
@@ -422,7 +422,7 @@ set_nss_error (CamelException *ex, const gchar *def_error)
 		if (!err_str)
 			err_str = "Uknown error.";
 
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s (%d) - %s", err_str, (int) err_code, def_error);
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s (%d) - %s", err_str, (gint) err_code, def_error);
 	}
 }
 
@@ -563,7 +563,7 @@ fail:
 	return NULL;
 }
 
-static int
+static gint
 sm_sign(CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
 {
 	gint res = -1;
@@ -953,7 +953,7 @@ fail:
 	return valid;
 }
 
-static int
+static gint
 sm_encrypt(CamelCipherContext *context, const gchar *userid, GPtrArray *recipients, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
 {
 	struct _CamelSMIMEContextPrivate *p = ((CamelSMIMEContext *)context)->priv;
@@ -1194,7 +1194,7 @@ fail:
 	return valid;
 }
 
-static int
+static gint
 sm_import_keys(CamelCipherContext *context, CamelStream *istream, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("import keys: unimplemented"));
@@ -1202,7 +1202,7 @@ sm_import_keys(CamelCipherContext *context, CamelStream *istream, CamelException
 	return -1;
 }
 
-static int
+static gint
 sm_export_keys(CamelCipherContext *context, GPtrArray *keys, CamelStream *ostream, CamelException *ex)
 {
 	camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("export keys: unimplemented"));

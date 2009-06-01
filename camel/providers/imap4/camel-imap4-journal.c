@@ -156,7 +156,7 @@ imap4_entry_load (CamelOfflineJournal *journal, FILE *in)
 	return NULL;
 }
 
-static int
+static gint
 imap4_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out)
 {
 	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;
@@ -188,7 +188,7 @@ imap4_message_info_dup_to (CamelMessageInfoBase *dest, CamelMessageInfoBase *src
 	dest->size = src->size;
 }
 
-static int
+static gint
 imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *entry, CamelException *ex)
 {
 	CamelIMAP4Folder *imap4_folder = (CamelIMAP4Folder *) journal->folder;
@@ -258,7 +258,7 @@ imap4_entry_play_append (CamelOfflineJournal *journal, CamelIMAP4JournalEntry *e
 	return 0;
 }
 
-static int
+static gint
 imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelIMAP4JournalEntry *imap4_entry = (CamelIMAP4JournalEntry *) entry;

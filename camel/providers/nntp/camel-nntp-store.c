@@ -95,7 +95,7 @@ static struct {
 	{ "bytes", 2 },
 };
 
-static int
+static gint
 xover_setup(CamelNNTPStore *store, CamelException *ex)
 {
 	gint ret, i;
@@ -266,9 +266,9 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 }
 
 static struct {
-	gchar *value;
-	gchar *serv;
-	gchar *port;
+	const gchar *value;
+	const gchar *serv;
+	const gchar *port;
 	gint mode;
 } ssl_options[] = {
 	{ "",              "nntps", NNTPS_PORT, MODE_SSL   },  /* really old (1.x) */
@@ -292,11 +292,11 @@ nntp_connect_online (CamelService *service, CamelException *ex)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
 		mode = ssl_options[i].mode;
-		serv = ssl_options[i].serv;
+		serv = (gchar *) ssl_options[i].serv;
 		port = ssl_options[i].port;
 	} else {
 		mode = MODE_CLEAR;
-		serv = "nntp";
+		serv = (gchar *) "nntp";
 		port = NNTP_PORT;
 	}
 
@@ -1112,8 +1112,7 @@ nntp_construct (CamelService *service, CamelSession *session,
 	g_free (tmp);
 
 	camel_url_free (summary_url);
-	if (camel_store_summary_load ((CamelStoreSummary *)nntp_store->summary) == 0)
-		;
+	camel_store_summary_load ((CamelStoreSummary *)nntp_store->summary);
 
 	/* get options */
 	if (camel_url_get_param (url, "show_short_notation"))
@@ -1169,7 +1168,7 @@ camel_nntp_store_get_type (void)
 	return camel_nntp_store_type;
 }
 
-static int
+static gint
 camel_nntp_try_authenticate (CamelNNTPStore *store, CamelException *ex)
 {
 	CamelService *service = (CamelService *) store;
@@ -1262,11 +1261,11 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, gchar **line
 				camel_stream_write((CamelStream *)store->mem, s, strlen(s));
 				break;
 			case 'd':
-				d = va_arg(ap, int);
+				d = va_arg(ap, gint);
 				camel_stream_printf((CamelStream *)store->mem, "%d", d);
 				break;
 			case 'u':
-				u = va_arg(ap, unsigned int);
+				u = va_arg(ap, guint);
 				camel_stream_printf((CamelStream *)store->mem, "%u", u);
 				break;
 			case 'm':
@@ -1274,8 +1273,8 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, gchar **line
 				camel_stream_printf((CamelStream *)store->mem, "<%s>", s);
 				break;
 			case 'r':
-				u = va_arg(ap, unsigned int);
-				u2 = va_arg(ap, unsigned int);
+				u = va_arg(ap, guint);
+				u2 = va_arg(ap, guint);
 				if (u == u2)
 					camel_stream_printf((CamelStream *)store->mem, "%u", u);
 				else
@@ -1289,7 +1288,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, gchar **line
 	}
 
 	camel_stream_write ((CamelStream *) store->mem, (const gchar *) ps, p-ps-1);
-	dd(printf("NNTP_COMMAND: '%.*s'\n", (int)store->mem->buffer->len, store->mem->buffer->data));
+	dd(printf("NNTP_COMMAND: '%.*s'\n", (gint)store->mem->buffer->len, store->mem->buffer->data));
 	camel_stream_write ((CamelStream *) store->mem, "\r\n", 2);
 
 	if (camel_stream_write((CamelStream *) store->stream, (const gchar *) store->mem->buffer->data, store->mem->buffer->len) == -1)

@@ -23,7 +23,7 @@
 gint
 main (gint argc, gchar **argv)
 {
-	ssize_t comp_progress, comp_correct_chunk, comp_filter_chunk;
+	gssize comp_progress, comp_correct_chunk, comp_filter_chunk;
 	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];
 	CamelStream *source;
 	CamelStream *correct;
@@ -99,7 +99,7 @@ main (gint argc, gchar **argv)
 				break;
 
 			while (comp_filter_chunk < comp_correct_chunk) {
-				ssize_t delta;
+				gssize delta;
 
 				delta = camel_stream_read (CAMEL_STREAM (filter),
 							   comp_filter + comp_filter_chunk,

@@ -55,8 +55,8 @@ static CamelTcpStreamClass *parent_class = NULL;
 /* Returns the class for a CamelTcpStreamSSL */
 #define CTSR_CLASS(so) CAMEL_TCP_STREAM_SSL_CLASS (CAMEL_OBJECT_GET_CLASS (so))
 
-static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 
@@ -214,7 +214,7 @@ camel_tcp_stream_ssl_new_raw (CamelService *service, const gchar *expected_host,
 }
 
 
-static int
+static gint
 ssl_errno (SSL *ssl, gint ret)
 {
 	switch (SSL_get_error (ssl, ret)) {
@@ -272,12 +272,12 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *stream)
 }
 
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelTcpStreamSSL *openssl = CAMEL_TCP_STREAM_SSL (stream);
 	SSL *ssl = openssl->priv->ssl;
-	ssize_t nread;
+	gssize nread;
 	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
@@ -340,12 +340,12 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return nread;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelTcpStreamSSL *openssl = CAMEL_TCP_STREAM_SSL (stream);
 	SSL *ssl = openssl->priv->ssl;
-	ssize_t w, written = 0;
+	gssize w, written = 0;
 	gint cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
@@ -423,7 +423,7 @@ stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 	return written;
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	return 0;
@@ -443,7 +443,7 @@ close_ssl_connection (SSL *ssl)
 	}
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	close_ssl_connection (((CamelTcpStreamSSL *)stream)->priv->ssl);
@@ -458,7 +458,7 @@ stream_close (CamelStream *stream)
 
 /* this is a 'cancellable' connect, cancellable from camel_operation_cancel etc */
 /* returns -1 & errno == EINTR if the connection was cancelled */
-static int
+static gint
 socket_connect (struct hostent *h, gint port)
 {
 #ifdef ENABLE_IPv6
@@ -544,7 +544,7 @@ socket_connect (struct hostent *h, gint port)
 			errno = EINTR;
 			return -1;
 		} else {
-			len = sizeof (int);
+			len = sizeof (gint);
 
 			if (getsockopt (fd, SOL_SOCKET, SO_ERROR, &ret, &len) == -1) {
 				close (fd);
@@ -636,7 +636,7 @@ x509_strerror (gint err)
 	}
 }
 
-static int
+static gint
 ssl_verify (gint ok, X509_STORE_CTX *ctx)
 {
 	guchar md5sum[16], fingerprint[40], *f;
@@ -763,7 +763,7 @@ open_ssl_connection (CamelService *service, gint sockfd, CamelTcpStreamSSL *open
 	return ssl;
 }
 
-static int
+static gint
 stream_connect (CamelTcpStream *stream, struct hostent *host, gint port)
 {
 	CamelTcpStreamSSL *openssl = CAMEL_TCP_STREAM_SSL (stream);
@@ -789,7 +789,7 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, gint port)
 }
 
 
-static int
+static gint
 get_sockopt_level (const CamelSockOptData *data)
 {
 	switch (data->option) {
@@ -801,7 +801,7 @@ get_sockopt_level (const CamelSockOptData *data)
 	}
 }
 
-static int
+static gint
 get_sockopt_optname (const CamelSockOptData *data)
 {
 	switch (data->option) {
@@ -828,7 +828,7 @@ get_sockopt_optname (const CamelSockOptData *data)
 	}
 }
 
-static int
+static gint
 stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	gint optname, optlen;
@@ -855,7 +855,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 			   (socklen_t *) &optlen);
 }
 
-static int
+static gint
 stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	gint optname;

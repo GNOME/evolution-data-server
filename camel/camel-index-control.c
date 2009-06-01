@@ -20,7 +20,9 @@
 #include "camel-object.h"
 #include "camel-text-index.h"
 
-static void
+extern gint camel_init(const gchar *certdb_dir, gboolean nss_init);
+
+G_GNUC_NORETURN static void
 do_usage(gchar *argv0)
 {
 	fprintf(stderr, "Usage: %s [ compress | dump | info ] file(s) ...\n", argv0);
@@ -30,7 +32,7 @@ do_usage(gchar *argv0)
 	exit(1);
 }
 
-static int
+static gint
 do_compress(gint argc, gchar **argv)
 {
 	gint i;
@@ -54,7 +56,7 @@ do_compress(gint argc, gchar **argv)
 	return 0;
 }
 
-static int
+static gint
 do_dump(gint argc, gchar **argv)
 {
 	gint i;
@@ -75,7 +77,7 @@ do_dump(gint argc, gchar **argv)
 	return 0;
 }
 
-static int
+static gint
 do_info(gint argc, gchar **argv)
 {
 	gint i;
@@ -95,7 +97,7 @@ do_info(gint argc, gchar **argv)
 	return 1;
 }
 
-static int
+static gint
 do_check(gint argc, gchar **argv)
 {
 	gint i;
@@ -119,8 +121,6 @@ static gint do_perf(gint argc, gchar **argv);
 
 gint main(gint argc, gchar **argv)
 {
-	extern gint camel_init(const gchar *certdb_dir, gboolean nss_init);
-
 	if (argc<2)
 		do_usage(argv[0]);
 
@@ -149,12 +149,12 @@ gint main(gint argc, gchar **argv)
 #include "camel-mime-filter-index.h"
 #include "camel-stream-fs.h"
 
-static int
+static gint
 do_perf(gint argc, gchar **argv)
 {
 	CamelIndex *idx;
 	DIR *dir;
-	gchar *path = "/home/notzed/evolution/local/Inbox/mbox/cur";
+	const gchar *path = "/home/notzed/evolution/local/Inbox/mbox/cur";
 	struct dirent *d;
 	CamelStream *null, *filter, *stream;
 	CamelMimeFilterIndex *filter_index;

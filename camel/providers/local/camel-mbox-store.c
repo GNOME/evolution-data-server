@@ -100,7 +100,7 @@ camel_mbox_store_get_type(void)
 	return camel_mbox_store_type;
 }
 
-static gchar *extensions[] = {
+static const gchar *extensions[] = {
 	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock", ".db", ".journal"
 };
 
@@ -412,7 +412,7 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 	return info;
 }
 
-static int
+static gint
 xrename(CamelStore *store, const gchar *old_name, const gchar *new_name, const gchar *ext, gboolean missingok)
 {
 	CamelLocalStore *ls = (CamelLocalStore *)store;

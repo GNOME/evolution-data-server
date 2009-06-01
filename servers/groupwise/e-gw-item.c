@@ -3100,7 +3100,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		gchar *str;
 
 		str = g_base64_encode ((guchar *) priv->message, strlen (priv->message));
-		dtstring = g_strdup_printf ("%d", (int)strlen (str));
+		dtstring = g_strdup_printf ("%d", (gint)strlen (str));
 		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
 		g_free (dtstring);
 		soup_soap_message_write_string (msg, str);
@@ -3289,7 +3289,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 
 			str = g_base64_encode ((guchar *) priv->message, strlen (priv->message));
 			/*str = g_strdup (priv->message);*/
-			str_len = g_strdup_printf ("%d", str ? (int)strlen (str) : 0);
+			str_len = g_strdup_printf ("%d", str ? (gint)strlen (str) : 0);
 			soup_soap_message_start_element (msg, "part", NULL, NULL);
 			soup_soap_message_add_attribute (msg, "length", str_len, NULL, NULL);
 			soup_soap_message_add_attribute (msg, "contentType", priv->content_type, NULL, NULL);
@@ -3530,7 +3530,7 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, gint 
 			gchar *str, *message;
 
 			str = g_base64_encode ((guchar *) priv->message, strlen (priv->message));
-			message = g_strdup_printf ("%d", (int)strlen (str));
+			message = g_strdup_printf ("%d", (gint)strlen (str));
 			soup_soap_message_add_attribute (msg, "length", message, NULL, NULL);
 			g_free (message);
 			soup_soap_message_write_string (msg, str);

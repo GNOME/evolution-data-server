@@ -183,7 +183,7 @@ local_url_hash (gconstpointer v)
 	return hash;
 }
 
-static int
+static gint
 check_equal (gchar *s1, gchar *s2)
 {
 	if (s1 == NULL || *s1 == 0) {
@@ -199,7 +199,7 @@ check_equal (gchar *s1, gchar *s2)
 	return strcmp (s1, s2) == 0;
 }
 
-static int
+static gint
 local_url_equal(gconstpointer v, gconstpointer v2)
 {
 	const CamelURL *u1 = v, *u2 = v2;

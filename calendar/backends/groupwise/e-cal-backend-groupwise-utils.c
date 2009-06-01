@@ -483,7 +483,7 @@ set_attendees_to_item (EGwItem *item, ECalComponent *comp, icaltimezone *default
 
 }
 
-static int
+static gint
 get_actual_count (ECalComponent *comp, ECalBackendGroupwise *cbgw)
 {
 	gint count = 0;

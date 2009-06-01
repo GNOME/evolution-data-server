@@ -5,7 +5,6 @@ camel_provider_DATA = libcamelsmtp.urls
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
-	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"camel-smtp-provider\"

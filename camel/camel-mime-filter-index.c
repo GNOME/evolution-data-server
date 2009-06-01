@@ -55,7 +55,7 @@ camel_mime_filter_index_finalize(CamelObject *o)
 }
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace)
 {
 	CamelMimeFilterIndex *f = (CamelMimeFilterIndex *)mf;
 
@@ -67,13 +67,13 @@ complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **ou
 	camel_index_name_add_buffer(f->name, NULL, 0);
 
 donothing:
-	*out = in;
+	*out = (gchar *) in;
 	*outlenptr = len;
 	*outprespace = prespace;
 }
 
 static void
-filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlenptr, size_t *outprespace)
+filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace)
 {
 	CamelMimeFilterIndex *f = (CamelMimeFilterIndex *)mf;
 
@@ -84,7 +84,7 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 	camel_index_name_add_buffer(f->name, in, len);
 
 donothing:
-	*out = in;
+	*out = (gchar *) in;
 	*outlenptr = len;
 	*outprespace = prespace;
 }
@@ -170,7 +170,7 @@ camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter, CamelIndex *ind
 {
 	if (filter->index) {
 		gchar *out;
-		size_t outlen, outspace;
+		gsize outlen, outspace;
 
 		camel_mime_filter_complete((CamelMimeFilter *)filter, "", 0, 0, &out, &outlen, &outspace);
 		camel_object_unref (index);

@@ -165,7 +165,7 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 /* some helpful utils for IPv6 lookups */
 #define IPv6_BUFLEN_MIN  (sizeof (gchar *) * 3)
 
-static int
+static gint
 ai_to_herr (gint error)
 {
 	switch (error) {
@@ -199,9 +199,9 @@ ai_to_herr (gint error)
 
 #endif /* ENABLE_IPv6 */
 
-static int
+static gint
 camel_gethostbyname_r (const gchar *name, struct hostent *host,
-		       gchar *buf, size_t buflen, gint *herr)
+		       gchar *buf, gsize buflen, gint *herr)
 {
 #ifdef ENABLE_IPv6
 	struct addrinfo hints, *res;
@@ -310,9 +310,9 @@ camel_gethostbyname_r (const gchar *name, struct hostent *host,
 #endif /* ENABLE_IPv6 */
 }
 
-static int
+static gint
 camel_gethostbyaddr_r (const gchar *addr, gint addrlen, gint type, struct hostent *host,
-		       gchar *buf, size_t buflen, gint *herr)
+		       gchar *buf, gsize buflen, gint *herr)
 {
 #ifdef ENABLE_IPv6
 	gint retval, len;
@@ -441,7 +441,7 @@ cs_freeinfo(struct _addrinfo_msg *msg)
 }
 
 /* returns -1 if we didn't wait for reply from thread */
-static int
+static gint
 cs_waitinfo(gpointer (worker)(gpointer), struct _addrinfo_msg *msg, const gchar *error, CamelException *ex)
 {
 	CamelMsgPort *reply_port;

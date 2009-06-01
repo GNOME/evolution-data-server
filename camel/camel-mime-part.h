@@ -97,13 +97,13 @@ void               camel_mime_part_set_content_type	(CamelMimePart *mime_part, c
 CamelContentType  *camel_mime_part_get_content_type	(CamelMimePart *mime_part);
 
 /* construction */
-int		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMimeParser *parser);
+gint		camel_mime_part_construct_from_parser  (CamelMimePart *mime_part, CamelMimeParser *parser);
 
 /* utility functions */
 void	camel_mime_part_set_content	       (CamelMimePart *mime_part,
 							const gchar *data, gint length, const gchar *type);
 
-size_t          camel_mime_part_get_content_size       (CamelMimePart *mime_part);
+gsize          camel_mime_part_get_content_size       (CamelMimePart *mime_part);
 
 G_END_DECLS
 

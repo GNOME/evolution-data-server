@@ -4,7 +4,7 @@
 #define QUERY_STRING1
 #define QUERY_STRING2
 
-static const gchar* queries[] = {
+static const gchar * queries[] = {
 	"(exists \"full_name\")",
 	"(contains \"full_name\" \"Miguel\")"
 

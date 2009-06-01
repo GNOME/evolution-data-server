@@ -36,7 +36,7 @@ typedef struct _CamelStreamNullClass CamelStreamNullClass;
 struct _CamelStreamNull {
 	CamelStream parent;
 
-	size_t written;
+	gsize written;
 };
 
 struct _CamelStreamNullClass {

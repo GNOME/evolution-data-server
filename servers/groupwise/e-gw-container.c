@@ -32,14 +32,14 @@ struct _EGwContainerPrivate {
 	gchar *name;
 	gchar *id;
 	gchar *parent;
-	guint32 unread ;
-	guint32 total ;
+	guint32 unread;
+	guint32 total;
 	gint sequence;
 	gchar *owner;
 	GList *user_list;
 	gchar *modified;
-	EGwContainerType type ;
-	gboolean is_root ;
+	EGwContainerType type;
+	gboolean is_root;
 	gboolean is_writable;
 	gboolean is_frequent_contacts; /*indicates  whether this folder is frequent contacts or not */
 	gboolean is_shared_by_me;
@@ -62,7 +62,7 @@ free_node(EShUsers *user)
 		g_free (user->email);
 		g_free (user);
 	}
-	return ;
+	return;
 }
 
 static void
@@ -229,37 +229,37 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "parent");
 	if (!subparam) {
 		e_gw_container_set_parent_id (container, "");
-		container->priv->is_root = TRUE ;
+		container->priv->is_root = TRUE;
 	} else {
 
 		value = soup_soap_parameter_get_string_value (subparam);
 		e_gw_container_set_parent_id (container, (const gchar *) value);
-		g_free (value) ;
+		g_free (value);
 	}
 
 	/*retrieve the folder type*/
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "folderType") ;
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "folderType");
 	if (!subparam)
-		container->priv->type = E_GW_CONTAINER_TYPE_FOLDER ;
+		container->priv->type = E_GW_CONTAINER_TYPE_FOLDER;
 	else {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (!strcmp (value, "Root"))
-			container->priv->type = E_GW_CONTAINER_TYPE_ROOT ;
+			container->priv->type = E_GW_CONTAINER_TYPE_ROOT;
 		else if (!strcmp (value, "Mailbox"))
-			container->priv->type = E_GW_CONTAINER_TYPE_INBOX ;
+			container->priv->type = E_GW_CONTAINER_TYPE_INBOX;
 		else if (!strcmp (value, "SentItems"))
 			container->priv->type = E_GW_CONTAINER_TYPE_SENT;
 		else if (!strcmp (value, "Calendar"))
-			container->priv->type = E_GW_CONTAINER_TYPE_CALENDAR ;
+			container->priv->type = E_GW_CONTAINER_TYPE_CALENDAR;
 		else if (!strcmp (value, "Contacts"))
-			container->priv->type = E_GW_CONTAINER_TYPE_CONTACTS ;
+			container->priv->type = E_GW_CONTAINER_TYPE_CONTACTS;
 		else if (!strcmp (value, "Draft"))
-			container->priv->type = E_GW_CONTAINER_TYPE_DRAFT ;
+			container->priv->type = E_GW_CONTAINER_TYPE_DRAFT;
 		else if (!strcmp (value, "Trash"))
-			container->priv->type = E_GW_CONTAINER_TYPE_TRASH ;
+			container->priv->type = E_GW_CONTAINER_TYPE_TRASH;
 		else if (!strcmp (value, "JunkMail"))
 			container->priv->type = E_GW_CONTAINER_TYPE_JUNK;
-		g_free (value) ;
+		g_free (value);
 	}
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSystemFolder");
@@ -272,28 +272,28 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 
 
 	/* retrive the unread and total count */
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "hasUnread") ;
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "hasUnread");
 	if (!subparam) {
-		container->priv->unread = 0 ;
+		container->priv->unread = 0;
 	} else {
-		subparam = soup_soap_parameter_get_first_child_by_name (param, "unreadCount") ;
+		subparam = soup_soap_parameter_get_first_child_by_name (param, "unreadCount");
 		if (subparam) {
-			value = soup_soap_parameter_get_string_value (subparam) ;
+			value = soup_soap_parameter_get_string_value (subparam);
 			if (value)
-				container->priv->unread = atoi(value) ;
+				container->priv->unread = atoi(value);
 			else
-				container->priv->unread = 0 ; /*XXX:should it be 0?*/
+				container->priv->unread = 0; /*XXX:should it be 0?*/
 
-			g_free (value) ;
+			g_free (value);
 		}
 	}
 
-	subparam = soup_soap_parameter_get_first_child_by_name (param, "count") ;
+	subparam = soup_soap_parameter_get_first_child_by_name (param, "count");
 	if (subparam) {
-		value = soup_soap_parameter_get_string_value (subparam) ;
+		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			container->priv->total = atoi(value) ;
-		g_free (value) ;
+			container->priv->total = atoi(value);
+		g_free (value);
 	}
 	/* Is shared by me*/
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "isSharedByMe");
@@ -425,7 +425,7 @@ e_gw_container_get_sequence (EGwContainer *container)
 {
 	g_return_val_if_fail (E_IS_GW_CONTAINER (container), 0);
 
-	return (int)container->priv->sequence;
+	return (gint)container->priv->sequence;
 }
 
 static  void
@@ -605,33 +605,33 @@ e_gw_container_get_parent_id (EGwContainer *container)
 void
 e_gw_container_set_parent_id (EGwContainer *container, const gchar *parent_id)
 {
-	EGwContainerPrivate *priv ;
+	EGwContainerPrivate *priv;
 
 	g_return_if_fail (E_IS_GW_CONTAINER (container));
 	g_return_if_fail (parent_id != NULL);
 
-	priv = container->priv ;
+	priv = container->priv;
 
 	if (priv->parent)
-		g_free (priv->parent) ;
+		g_free (priv->parent);
 
-	priv->parent = g_strdup (parent_id) ;
+	priv->parent = g_strdup (parent_id);
 }
 
 guint32
 e_gw_container_get_total_count (EGwContainer *container)
 {
-	g_return_val_if_fail (E_IS_GW_CONTAINER (container), -1) ;
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), -1);
 
-	return container->priv->total ;
+	return container->priv->total;
 }
 
 guint32
 e_gw_container_get_unread_count (EGwContainer *container)
 {
-	g_return_val_if_fail (E_IS_GW_CONTAINER (container), -1) ;
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), -1);
 
-	return container->priv->unread ;
+	return container->priv->unread;
 
 }
 
@@ -673,16 +673,16 @@ e_gw_container_set_is_frequent_contacts (EGwContainer *container, gboolean is_fr
 gboolean
 e_gw_container_is_root (EGwContainer *container)
 {
-	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE) ;
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
 
-	return container->priv->is_root ;
+	return container->priv->is_root;
 }
 
 EGwContainerType
 e_gw_container_get_container_type (EGwContainer *container)
 {
-	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE) ;
-	return container->priv->type ;
+	g_return_val_if_fail (E_IS_GW_CONTAINER (container), FALSE);
+	return container->priv->type;
 }
 
 /* flag specifies whether we are adding to acl or deleting one or more entries*/

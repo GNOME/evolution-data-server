@@ -400,7 +400,7 @@ static CamelFolderInfo *scan_fi(CamelStore *store, guint32 flags, CamelURL *url,
 	return fi;
 }
 
-static int
+static gint
 scan_dirs(CamelStore *store, guint32 flags, CamelFolderInfo *topfi, CamelURL *url, CamelException *ex)
 {
 	CamelDList queue = CAMEL_DLIST_INITIALISER(queue);

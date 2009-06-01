@@ -6,7 +6,7 @@
 
 sqlite3 *db;
 
-static int
+static gint
 callback (gpointer data, gint argc, gchar **argv, gchar **azColName)
 {
 	gint i;
@@ -18,7 +18,7 @@ callback (gpointer data, gint argc, gchar **argv, gchar **azColName)
 	return 0;
 }
 
-static int
+static gint
 select_stmt (const gchar * stmt) {
 	gchar *errmsg;
 	gint   ret;
@@ -35,7 +35,7 @@ select_stmt (const gchar * stmt) {
 	return ret;
 }
 
-static int
+static gint
 sql_stmt(const gchar * stmt) {
 	gchar *errmsg;
 	gint   ret;
@@ -52,7 +52,7 @@ sql_stmt(const gchar * stmt) {
 
 #define CREATE_STMT "CREATE TABLE %s (uid TEXT PRIMARY KEY, gflags INTEGER, isize INTEGER, dsent INTEGER, dreceived INTEGER, jsubject TEXT, ffrom TEXT, tto TEXT, cc TEXT, mlist TEXT, part TEXT, userflags TEXT, usertags TEXT, bdata TEXT)"
 
-static int
+static gint
 create_table (const gchar *tablename)
 {
 	gchar *cmd = malloc (sizeof(CREATE_STMT)+20);

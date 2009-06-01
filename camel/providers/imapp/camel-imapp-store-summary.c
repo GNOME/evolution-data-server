@@ -49,10 +49,10 @@ static gint summary_header_save(CamelStoreSummary *, FILE *);
 
 /*static CamelStoreInfo * store_info_new(CamelStoreSummary *, const gchar *);*/
 static CamelStoreInfo * store_info_load(CamelStoreSummary *, FILE *);
-static int		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
+static gint		 store_info_save(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 static void		 store_info_free(CamelStoreSummary *, CamelStoreInfo *);
 
-static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, int);
+static const gchar *store_info_string(CamelStoreSummary *, const CamelStoreInfo *, gint);
 static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 
 static void camel_imapp_store_summary_class_init (CamelIMAPPStoreSummaryClass *klass);
@@ -470,7 +470,7 @@ namespace_load(CamelStoreSummary *s, FILE *in)
 	return ns;
 }
 
-static int
+static gint
 namespace_save(CamelStoreSummary *s, FILE *in, CamelIMAPPStoreNamespace *ns)
 {
 	if (camel_file_util_encode_string(in, ns->path) == -1
@@ -481,7 +481,7 @@ namespace_save(CamelStoreSummary *s, FILE *in, CamelIMAPPStoreNamespace *ns)
 	return 0;
 }
 
-static int
+static gint
 summary_header_load(CamelStoreSummary *s, FILE *in)
 {
 	CamelIMAPPStoreSummary *is = (CamelIMAPPStoreSummary *)s;
@@ -515,7 +515,7 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 	return 0;
 }
 
-static int
+static gint
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
 	CamelIMAPPStoreSummary *is = (CamelIMAPPStoreSummary *)s;
@@ -552,7 +552,7 @@ store_info_load(CamelStoreSummary *s, FILE *in)
 	return (CamelStoreInfo *)mi;
 }
 
-static int
+static gint
 store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 {
 	CamelIMAPPStoreInfo *isi = (CamelIMAPPStoreInfo *)mi;

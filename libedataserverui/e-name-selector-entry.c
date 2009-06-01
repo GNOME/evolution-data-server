@@ -1681,7 +1681,7 @@ contact_layout_pixbuffer (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 
 		if (pixbuf) {
 			gint w, h;
-			double scale = 1.0;
+			gdouble scale = 1.0;
 
 			w = gdk_pixbuf_get_width (pixbuf);
 			h = gdk_pixbuf_get_height (pixbuf);
@@ -2352,10 +2352,10 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	GList        *email_list=NULL;
 	GList        *l;
 	gint          i;
-	char	     *edit_label;
-	char	     *cut_label;
+	gchar	     *edit_label;
+	gchar	     *cut_label;
 	gchar         *copy_label;
-	int	      email_num, len;
+	gint	      email_num, len;
 	GSList	     *group = NULL;
 	gboolean      is_list;
 	gboolean      show_menu = FALSE;

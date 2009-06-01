@@ -390,7 +390,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query)
 
         lcache = l = e_file_cache_get_objects (E_FILE_CACHE (cache));
 
-        for ( ; l != NULL; l = g_slist_next (l)) {
+        for (; l != NULL; l = g_slist_next (l)) {
                 vcard_str = l->data;
                 if (vcard_str && !strncmp (vcard_str, "BEGIN:VCARD", 11)) {
                         contact = e_contact_new_from_vcard (vcard_str);

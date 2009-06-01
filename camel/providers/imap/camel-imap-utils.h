@@ -57,7 +57,7 @@ gboolean imap_parse_flag_list      (gchar **flag_list_p, guint32 *flags_out, gch
 
 enum { IMAP_STRING, IMAP_NSTRING, IMAP_ASTRING };
 
-gchar    *imap_parse_string_generic (const gchar **str_p, size_t *len, gint type);
+gchar    *imap_parse_string_generic (const gchar **str_p, gsize *len, gint type);
 
 #define imap_parse_string(str_p, len_p) \
 	imap_parse_string_generic (str_p, len_p, IMAP_STRING)
@@ -74,15 +74,15 @@ gchar    *imap_quote_string         (const gchar *str);
 
 void     imap_skip_list            (const gchar **str_p);
 
-gchar    *imap_uid_array_to_set     (CamelFolderSummary *summary, GPtrArray *uids, gint uid, ssize_t maxlen, gint *lastuid);
+gchar    *imap_uid_array_to_set     (CamelFolderSummary *summary, GPtrArray *uids, gint uid, gssize maxlen, gint *lastuid);
 GPtrArray *imap_uid_set_to_array   (CamelFolderSummary *summary, const gchar *uids);
 void     imap_uid_array_free       (GPtrArray *arr);
 
 gchar *imap_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffix);
 gchar *imap_namespace_concat (CamelImapStore *store, const gchar *name);
 
-gchar *imap_mailbox_encode (const guchar *in, size_t inlen);
-gchar *imap_mailbox_decode (const guchar *in, size_t inlen);
+gchar *imap_mailbox_encode (const guchar *in, gsize inlen);
+gchar *imap_mailbox_decode (const guchar *in, gsize inlen);
 
 typedef gboolean (*IMAPPathFindFoldersCallback) (const gchar *physical_path, const gchar *path, gpointer user_data);
 

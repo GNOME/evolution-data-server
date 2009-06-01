@@ -47,7 +47,7 @@ static CamelObjectClass *parent_class = NULL;
 #define CAMEL_POP3_STREAM_SIZE (4096)
 #define CAMEL_POP3_STREAM_LINE (1024) /* maximum line size */
 
-static int
+static gint
 stream_fill(CamelPOP3Stream *is)
 {
 	gint left = 0;
@@ -71,8 +71,8 @@ stream_fill(CamelPOP3Stream *is)
 	return 0;
 }
 
-static ssize_t
-stream_read(CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read(CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
 	gchar *o, *oe;
@@ -105,7 +105,7 @@ stream_read(CamelStream *stream, gchar *buffer, size_t n)
 				is->ptr = p+3;
 				is->mode = CAMEL_POP3_STREAM_EOD;
 				is->state = 0;
-				dd(printf("POP3_STREAM_READ(%d):\n%.*s\n", (int)(o-buffer), (int)(o-buffer), buffer));
+				dd(printf("POP3_STREAM_READ(%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
 				return o-buffer;
 			}
 			p++;
@@ -138,32 +138,32 @@ stream_read(CamelStream *stream, gchar *buffer, size_t n)
 	is->ptr = p;
 	is->state = state;
 
-	dd(printf("POP3_STREAM_READ(%d):\n%.*s\n", (int)(o-buffer), (int)(o-buffer), buffer));
+	dd(printf("POP3_STREAM_READ(%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
 
 	return o-buffer;
 }
 
-static ssize_t
-stream_write(CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write(CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelPOP3Stream *is = (CamelPOP3Stream *)stream;
 
 	if (strncmp (buffer, "PASS ", 5) != 0)
-		dd(printf("POP3_STREAM_WRITE(%d):\n%.*s\n", (int)n, (int)n, buffer));
+		dd(printf("POP3_STREAM_WRITE(%d):\n%.*s\n", (gint)n, (gint)n, buffer));
 	else
-		dd(printf("POP3_STREAM_WRITE(%d):\nPASS xxxxxxxx\n", (int)n));
+		dd(printf("POP3_STREAM_WRITE(%d):\nPASS xxxxxxxx\n", (gint)n));
 
 	return camel_stream_write(is->source, buffer, n);
 }
 
-static int
+static gint
 stream_close(CamelStream *stream)
 {
 	/* nop? */
 	return 0;
 }
 
-static int
+static gint
 stream_flush(CamelStream *stream)
 {
 	/* nop? */
@@ -178,7 +178,7 @@ stream_eos(CamelStream *stream)
 	return is->mode != CAMEL_POP3_STREAM_DATA;
 }
 
-static int
+static gint
 stream_reset(CamelStream *stream)
 {
 	/* nop?  reset literal mode? */
@@ -372,7 +372,7 @@ gint camel_pop3_stream_gets(CamelPOP3Stream *is, guchar **start, guint *len)
 	*len = max;
 	is->ptr += max;
 
-	dd(printf("POP3_STREAM_GETS(%s,%d): '%.*s'\n", end==NULL?"more":"last", *len, (int)*len, *start));
+	dd(printf("POP3_STREAM_GETS(%s,%d): '%.*s'\n", end==NULL?"more":"last", *len, (gint)*len, *start));
 
 	return end == NULL?1:0;
 }
@@ -424,7 +424,7 @@ gint camel_pop3_stream_getd(CamelPOP3Stream *is, guchar **start, guint *len)
 					is->mode = CAMEL_POP3_STREAM_EOD;
 					is->state = 0;
 
-					dd(printf("POP3_STREAM_GETD(%s,%d): '%.*s'\n", "last", *len, (int)*len, *start));
+					dd(printf("POP3_STREAM_GETD(%s,%d): '%.*s'\n", "last", *len, (gint)*len, *start));
 
 					return 0;
 				}
@@ -439,7 +439,7 @@ gint camel_pop3_stream_getd(CamelPOP3Stream *is, guchar **start, guint *len)
 					*start = s;
 					is->state = 1;
 
-					dd(printf("POP3_STREAM_GETD(%s,%d): '%.*s'\n", "more", *len, (int)*len, *start));
+					dd(printf("POP3_STREAM_GETD(%s,%d): '%.*s'\n", "more", *len, (gint)*len, *start));
 
 					return 1;
 				}
@@ -464,7 +464,7 @@ gint camel_pop3_stream_getd(CamelPOP3Stream *is, guchar **start, guint *len)
 	*len = p-s;
 	*start = s;
 
-	dd(printf("POP3_STREAM_GETD(%s,%d): '%.*s'\n", "more", *len, (int)*len, *start));
+	dd(printf("POP3_STREAM_GETD(%s,%d): '%.*s'\n", "more", *len, (gint)*len, *start));
 
 	return 1;
 }

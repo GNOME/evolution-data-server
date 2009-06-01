@@ -91,14 +91,14 @@ camel_transport_get_type (void)
 }
 
 
-static int
+static gint
 transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	/* CamelTransport doesn't currently have anything to set */
 	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
 }
 
-static int
+static gint
 transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	/* CamelTransport doesn't currently have anything to get */

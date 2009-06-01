@@ -118,9 +118,9 @@ camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 
 
 static gchar *
-check_size (CamelMimeFilter *filter, gchar *outptr, gchar **outend, size_t len)
+check_size (CamelMimeFilter *filter, gchar *outptr, gchar **outend, gsize len)
 {
-	size_t offset;
+	gsize offset;
 
 	if (*outend - outptr >= len)
 		return outptr;
@@ -137,7 +137,7 @@ check_size (CamelMimeFilter *filter, gchar *outptr, gchar **outend, size_t len)
 static gchar *
 append_string_verbatim (CamelMimeFilter *filter, const gchar *str, gchar *outptr, gchar **outend)
 {
-	size_t len = strlen (str);
+	gsize len = strlen (str);
 
 	outptr = check_size (filter, outptr, outend, len);
 	memcpy(outptr, str, len);
@@ -146,7 +146,7 @@ append_string_verbatim (CamelMimeFilter *filter, const gchar *str, gchar *outptr
 	return outptr;
 }
 
-static int
+static gint
 citation_depth (const gchar *in)
 {
 	register const gchar *inptr = in;
@@ -242,12 +242,13 @@ writeln (CamelMimeFilter *filter, const guchar *in, const guchar *inend, gchar *
 }
 
 static void
-html_convert (CamelMimeFilter *filter, gchar *in, size_t inlen, size_t prespace,
-	      gchar **out, size_t *outlen, size_t *outprespace, gboolean flush)
+html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize prespace,
+	      gchar **out, gsize *outlen, gsize *outprespace, gboolean flush)
 {
 	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
-	register gchar *inptr, *outptr;
-	gchar *start, *outend;
+	const gchar *inptr;
+	gchar *outptr, *outend;
+	const gchar *start;
 	const gchar *inend;
 	gint depth;
 
@@ -263,7 +264,7 @@ html_convert (CamelMimeFilter *filter, gchar *in, size_t inlen, size_t prespace,
 			*outlen = outptr - filter->outbuf;
 			*outprespace = filter->outpre;
 		} else {
-			*out = in;
+			*out = (gchar *) in;
 			*outlen = 0;
 			*outprespace = 0;
 		}
@@ -315,7 +316,7 @@ html_convert (CamelMimeFilter *filter, gchar *in, size_t inlen, size_t prespace,
 
 #define CONVERT_URLS (CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS | CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES)
 		if (html->flags & CONVERT_URLS) {
-			size_t matchlen, len;
+			gsize matchlen, len;
 			urlmatch_t match;
 
 			len = inptr - start;
@@ -403,15 +404,15 @@ html_convert (CamelMimeFilter *filter, gchar *in, size_t inlen, size_t prespace,
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-	       gchar **out, size_t *outlen, size_t *outprespace)
+filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+	       gchar **out, gsize *outlen, gsize *outprespace)
 {
 	html_convert (filter, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, gchar *in, size_t len, size_t prespace,
-		 gchar **out, size_t *outlen, size_t *outprespace)
+filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
+		 gchar **out, gsize *outlen, gsize *outprespace)
 {
 	html_convert (filter, in, len, prespace, out, outlen, outprespace, TRUE);
 }
@@ -483,7 +484,7 @@ gchar *
 camel_text_to_html (const gchar *in, guint32 flags, guint32 colour)
 {
 	CamelMimeFilter *filter;
-	size_t outlen, outpre;
+	gsize outlen, outpre;
 	gchar *outbuf;
 
 	g_return_val_if_fail (in != NULL, NULL);

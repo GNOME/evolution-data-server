@@ -44,11 +44,11 @@ static CamelObjectClass *parent_class = NULL;
 /* Returns the class for a CamelStream */
 #define CS_CLASS(so) CAMEL_IMAPP_FETCH_STREAM_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
-static ssize_t
-stream_read(CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read(CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelIMAPPFetchStream *is = (CamelIMAPPFetchStream *)stream;
-	ssize_t max;
+	gssize max;
 
 	/* make sure we have all the data read in */
 	while (camel_imapp_engine_iterate(is->engine, is->command)>0)
@@ -75,22 +75,22 @@ stream_read(CamelStream *stream, gchar *buffer, size_t n)
 	return max;
 }
 
-static ssize_t
-stream_write(CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write(CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelIMAPPFetchStream *is = (CamelIMAPPFetchStream *)stream;
 
 	return camel_stream_write(is->source, buffer, n);
 }
 
-static int
+static gint
 stream_close(CamelStream *stream)
 {
 	/* nop? */
 	return 0;
 }
 
-static int
+static gint
 stream_flush(CamelStream *stream)
 {
 	/* nop? */
@@ -105,7 +105,7 @@ stream_eos(CamelStream *stream)
 	return is->literal == 0;
 }
 
-static int
+static gint
 stream_reset(CamelStream *stream)
 {
 	/* nop?  reset literal mode? */

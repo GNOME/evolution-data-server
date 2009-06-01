@@ -37,8 +37,8 @@ static CamelObjectClass *parent_class = NULL;
 #define CS_CLASS(so) CAMEL_STREAM_CLASS(CAMEL_OBJECT_GET_CLASS(so))
 
 /* default implementations, do very little */
-static ssize_t   stream_read       (CamelStream *stream, gchar *buffer, size_t n) { return 0; }
-static ssize_t   stream_write      (CamelStream *stream, const gchar *buffer, size_t n) { return n; }
+static gssize   stream_read       (CamelStream *stream, gchar *buffer, gsize n) { return 0; }
+static gssize   stream_write      (CamelStream *stream, const gchar *buffer, gsize n) { return n; }
 static gint       stream_close      (CamelStream *stream) { return 0; }
 static gint       stream_flush      (CamelStream *stream) { return 0; }
 static gboolean  stream_eos        (CamelStream *stream) { return stream->eos; }
@@ -89,8 +89,8 @@ camel_stream_get_type (void)
  * Returns: the number of bytes actually read, or %-1 on error and set
  * errno.
  **/
-ssize_t
-camel_stream_read (CamelStream *stream, gchar *buffer, size_t n)
+gssize
+camel_stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (n == 0 || buffer, -1);
@@ -110,8 +110,8 @@ camel_stream_read (CamelStream *stream, gchar *buffer, size_t n)
  * Returns: the number of bytes written to the stream, or %-1 on error
  * along with setting errno.
  **/
-ssize_t
-camel_stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+gssize
+camel_stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (n == 0 || buffer, -1);
@@ -201,7 +201,7 @@ camel_stream_reset (CamelStream *stream)
  *
  * Returns: the number of characters written or %-1 on error.
  **/
-ssize_t
+gssize
 camel_stream_write_string (CamelStream *stream, const gchar *string)
 {
 	return camel_stream_write (stream, string, strlen (string));
@@ -217,12 +217,12 @@ camel_stream_write_string (CamelStream *stream, const gchar *string)
  *
  * Returns: the number of characters written or %-1 on error.
  **/
-ssize_t
+gssize
 camel_stream_printf (CamelStream *stream, const gchar *fmt, ... )
 {
 	va_list args;
 	gchar *string;
-	ssize_t ret;
+	gssize ret;
 
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 
@@ -250,13 +250,13 @@ camel_stream_printf (CamelStream *stream, const gchar *fmt, ... )
  * Returns: %-1 on error, or the number of bytes succesfully
  * copied across streams.
  **/
-ssize_t
+gssize
 camel_stream_write_to_stream (CamelStream *stream, CamelStream *output_stream)
 {
 	gchar tmp_buf[4096];
-	ssize_t total = 0;
-	ssize_t nb_read;
-	ssize_t nb_written;
+	gssize total = 0;
+	gssize nb_read;
+	gssize nb_written;
 
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (output_stream), -1);
@@ -269,7 +269,7 @@ camel_stream_write_to_stream (CamelStream *stream, CamelStream *output_stream)
 			nb_written = 0;
 
 			while (nb_written < nb_read) {
-				ssize_t len = camel_stream_write (output_stream, tmp_buf + nb_written,
+				gssize len = camel_stream_write (output_stream, tmp_buf + nb_written,
 								  nb_read - nb_written);
 				if (len < 0)
 					return -1;

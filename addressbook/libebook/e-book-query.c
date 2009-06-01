@@ -660,8 +660,8 @@ e_book_query_to_string    (EBookQuery *q)
 {
 	GString *str = g_string_new ("(");
 	GString *encoded = g_string_new ("");
-	int i;
-	char *s = NULL;
+	gint i;
+	gchar *s = NULL;
 	const gchar *cs;
 
 	switch (q->type) {

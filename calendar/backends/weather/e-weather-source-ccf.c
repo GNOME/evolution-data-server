@@ -212,7 +212,7 @@ decodeConditions (gchar code)
 	}
 }
 
-static int
+static gint
 decodePOP (gchar data)
 {
 	gint ret;
@@ -234,7 +234,7 @@ decodePOP (gchar data)
 }
 
 static void
-decodeSnowfall (gchar *data, float *low, float *high)
+decodeSnowfall (gchar *data, gfloat *low, gfloat *high)
 {
 	gchar num[3];
 	num[2] = '\0';
@@ -251,7 +251,7 @@ ftoc (gchar *data)
 	gint fahrenheit = atoi(data);
 	if (fahrenheit >= 900)
 		fahrenheit = (fahrenheit - 900) * -1;
-	return ((float)(fahrenheit-32)) * 5.0f / 9.0f;
+	return ((gfloat)(fahrenheit-32)) * 5.0f / 9.0f;
 }
 
 static void

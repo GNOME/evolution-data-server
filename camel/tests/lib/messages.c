@@ -145,7 +145,7 @@ hexdump (const guchar *in, gint inlen)
 		printf ("       ");
 
 		while (start < inptr) {
-			fputc (isprint ((int) *start) ? *start : '.', stdout);
+			fputc (isprint ((gint) *start) ? *start : '.', stdout);
 			start++;
 		}
 

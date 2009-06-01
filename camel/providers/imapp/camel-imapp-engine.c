@@ -131,7 +131,7 @@ static gint resp_capability(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 				*p++ = toupper(c);
 		case IMAP_TOK_INT:
 			printf(" cap: '%s'\n", token);
-			for (i=0;i<(int)(sizeof(capa_table)/sizeof(capa_table[0]));i++)
+			for (i=0;i<(gint)(sizeof(capa_table)/sizeof(capa_table[0]));i++)
 				if (strcmp(token, capa_table[i].name))
 					ie->capa |= capa_table[i].flag;
 			break;
@@ -329,7 +329,7 @@ camel_imapp_engine_skip(CamelIMAPPEngine *imap)
 		if (tok == IMAP_TOK_LITERAL) {
 			camel_imapp_stream_set_literal(imap->stream, len);
 			while ((tok = camel_imapp_stream_getl(imap->stream, &token, &len)) > 0) {
-				printf("Skip literal data '%.*s'\n", (int)len, token);
+				printf("Skip literal data '%.*s'\n", (gint)len, token);
 			}
 		}
 	} while (tok != '\n' && tok >= 0);
@@ -341,7 +341,7 @@ camel_imapp_engine_skip(CamelIMAPPEngine *imap)
 }
 
 /* handle any untagged responses */
-static int
+static gint
 iterate_untagged(CamelIMAPPEngine *imap)
 {
 	guint id, len;
@@ -439,7 +439,7 @@ iterate_untagged(CamelIMAPPEngine *imap)
 
 /* handle any continuation requests
    either data continuations, or auth continuation */
-static int
+static gint
 iterate_continuation(CamelIMAPPEngine *imap)
 {
 	CamelIMAPPCommand *ic;
@@ -521,7 +521,7 @@ iterate_continuation(CamelIMAPPEngine *imap)
 }
 
 /* handle a completion line */
-static int
+static gint
 iterate_completion(CamelIMAPPEngine *imap, guchar *token)
 {
 	CamelIMAPPCommand *ic;
@@ -847,7 +847,7 @@ static gint len(CamelDList *list)
 static void
 imap_engine_command_complete(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic)
 {
-	c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (int)ic->mem->buffer->len, ic->mem->buffer->data));
+	c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (gint)ic->mem->buffer->len, ic->mem->buffer->data));
 	c(printf("command has %d parts\n", len(&ic->parts)));
 	if (ic->mem->buffer->len > 0)
 		imap_engine_command_add_part(imap, ic, CAMEL_IMAPP_COMMAND_SIMPLE, NULL);
@@ -871,7 +871,7 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 	gint zero;
 	gchar *s;
 	gint d;
-	long gint l;
+	glong gint l;
 	guint32 f;
 	CamelStream *S;
 	CamelDataWrapper *D;
@@ -957,20 +957,20 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 					imap_write_flags((CamelStream *)ic->mem, f);
 					break;
 				case 'c':
-					d = va_arg(ap, int);
+					d = va_arg(ap, gint);
 					ch = d;
 					camel_stream_write((CamelStream *)ic->mem, &ch, 1);
 					break;
 				case 'd': /* int/unsigned */
 				case 'u':
 					if (llong) {
-						l = va_arg(ap, long int);
-						c(printf("got long gint '%d'\n", (int)l));
+						l = va_arg(ap, glong gint);
+						c(printf("got glong gint '%d'\n", (gint)l));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, l);
 					} else {
-						d = va_arg(ap, int);
+						d = va_arg(ap, gint);
 						c(printf("got gint '%d'\n", d));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;

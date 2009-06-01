@@ -64,7 +64,6 @@ static CamelFolderInfo *get_folder_info (CamelStore *store, const gchar *top, gu
 static void free_folder_info (CamelStore *store, CamelFolderInfo *fi);
 
 static void delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex);
-static void rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex);
 
 static gchar *spool_get_meta_path(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static gchar *spool_get_full_path(CamelLocalStore *ls, const gchar *full_name);

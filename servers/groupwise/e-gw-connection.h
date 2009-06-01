@@ -61,7 +61,7 @@ struct _EGwConnectionClass {
 
 /* TODO:This has to go either in a generic file or specific to junk*/
 typedef struct {
-	gchar *id ;
+	gchar *id;
 	gchar *match;
 	gchar *matchType;
 	gchar *lastUsed;
@@ -120,8 +120,8 @@ const gchar         *e_gw_connection_get_session_id (EGwConnection *cnc);
 const gchar         *e_gw_connection_get_user_name (EGwConnection *cnc);
 const gchar         *e_gw_connection_get_user_email (EGwConnection *cnc);
 const gchar         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
-const char	   *e_gw_connection_get_version (EGwConnection *cnc);
-const char	   *e_gw_connection_get_server_time (EGwConnection *cnc) ;
+const gchar	   *e_gw_connection_get_version (EGwConnection *cnc);
+const gchar	   *e_gw_connection_get_server_time (EGwConnection *cnc);
 
 
 time_t              e_gw_connection_get_date_from_string (const gchar *dtstring);
@@ -152,14 +152,14 @@ EGwConnectionStatus e_gw_connection_position_cursor (EGwConnection *cnc, const g
 
 EGwConnectionStatus e_gw_connection_get_quick_messages (EGwConnection *cnc, const gchar *container, const gchar *view, gchar **start_date, const gchar *message_list, const gchar *item_types, const gchar *item_sources, gint count, GSList **item_list);
 
-EGwConnectionStatus e_gw_connection_create_folder(EGwConnection *cnc, const gchar *parent_name,const gchar *folder_name, gchar **container_id) ;
+EGwConnectionStatus e_gw_connection_create_folder(EGwConnection *cnc, const gchar *parent_name,const gchar *folder_name, gchar **container_id);
 EGwConnectionStatus
-e_gw_connection_get_attachment (EGwConnection *cnc, const gchar *id, gint offset, gint length, const gchar **attachment, gint *attach_length) ;
+e_gw_connection_get_attachment (EGwConnection *cnc, const gchar *id, gint offset, gint length, const gchar **attachment, gint *attach_length);
 EGwConnectionStatus e_gw_connection_get_attachment_base64 (EGwConnection *cnc, const gchar *id, gint offset, gint length, const gchar **attachment, gint *attach_length, gint *offset_r);
-EGwConnectionStatus e_gw_connection_add_item (EGwConnection *cnc, const gchar *container, const gchar *id) ;
-EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const gchar *container, GList *item_ids) ;
+EGwConnectionStatus e_gw_connection_add_item (EGwConnection *cnc, const gchar *container, const gchar *id);
+EGwConnectionStatus e_gw_connection_add_items (EGwConnection *cnc, const gchar *container, GList *item_ids);
 EGwConnectionStatus e_gw_connection_move_item (EGwConnection *cnc, const gchar *id, const gchar *dest_container_id, const gchar *from_container_id);
-EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const gchar *id ,const gchar *new_name) ;
+EGwConnectionStatus e_gw_connection_rename_folder (EGwConnection *cnc, const gchar *id ,const gchar *new_name);
 EGwConnectionStatus e_gw_connection_get_settings (EGwConnection *cnc, EGwSendOptions **opts);
 EGwConnectionStatus e_gw_connection_modify_settings (EGwConnection *cnc, EGwSendOptions *opts);
 EGwConnectionStatus e_gw_connection_share_folder (EGwConnection *cnc, gchar *id, GList *new_list, const gchar *sub, const gchar *mesg ,int flag);
@@ -167,9 +167,9 @@ EGwConnectionStatus e_gw_connection_accept_shared_folder (EGwConnection *cnc, gc
 EGwConnectionStatus e_gw_connection_purge_deleted_items (EGwConnection *cnc);
 EGwConnectionStatus e_gw_connection_purge_selected_items (EGwConnection *cnc, GList *item_ids);
 
-EGwConnectionStatus e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids) ;
-EGwConnectionStatus e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids) ;
-EGwConnectionStatus e_gw_connection_reply_item (EGwConnection *cnc, const gchar *id, const gchar *view, EGwItem **item) ;
+EGwConnectionStatus e_gw_connection_mark_read(EGwConnection *cnc, GList *item_ids);
+EGwConnectionStatus e_gw_connection_mark_unread(EGwConnection *cnc, GList *item_ids);
+EGwConnectionStatus e_gw_connection_reply_item (EGwConnection *cnc, const gchar *id, const gchar *view, EGwItem **item);
 EGwConnectionStatus e_gw_connection_forward_item (EGwConnection *cnc, const gchar *id, const gchar *view, gboolean embed, EGwItem **item);
 EGwConnectionStatus e_gw_connection_create_junk_entry (EGwConnection *cnc, const gchar *value, const gchar *match_type , const gchar *list_type);
 EGwConnectionStatus e_gw_connection_get_junk_settings (EGwConnection *cnc, gint *use_junk, gint *use_block, gint *use_pab,  gint *persistence);

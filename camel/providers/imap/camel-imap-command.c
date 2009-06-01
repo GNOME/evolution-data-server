@@ -47,8 +47,6 @@
 #include "camel-imap-store.h"
 #include "camel-imap-utils.h"
 
-extern gint camel_verbose_debug;
-
 static gboolean imap_command_start (CamelImapStore *store, CamelFolder *folder,
 				    const gchar *cmd, CamelException *ex);
 static CamelImapResponse *imap_read_response (CamelImapStore *store,
@@ -177,7 +175,7 @@ static gboolean
 imap_command_start (CamelImapStore *store, CamelFolder *folder,
 		    const gchar *cmd, CamelException *ex)
 {
-	ssize_t nwritten;
+	gssize nwritten;
 
 	if (!store->ostream) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No output stream"));
@@ -258,7 +256,7 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
  **/
 CamelImapResponse *
 camel_imap_command_continuation (CamelImapStore *store, const gchar *cmd,
-				 size_t cmdlen, CamelException *ex)
+				 gsize cmdlen, CamelException *ex)
 {
 	if (!camel_imap_store_connected (store, ex))
 		return NULL;
@@ -620,7 +618,7 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 				/* XGWMOVE response is the same as an EXPUNGE response */
 				if (!expunged) {
 					expunged = g_array_new (FALSE, FALSE,
-								sizeof (int));
+								sizeof (gint));
 				}
 				g_array_append_val (expunged, number);
 			}
@@ -775,7 +773,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const gchar *fmt,
 
 		switch (*++p) {
 		case 'd':
-			num = va_arg (ap, int);
+			num = va_arg (ap, gint);
 			g_ptr_array_add (args, GINT_TO_POINTER (num));
 			start = p + 1;
 			len += 10;

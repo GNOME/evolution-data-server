@@ -84,7 +84,7 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 
 	/* Find protocol: initial [a-z+.-]* substring until ":" */
 	p = url_string;
-	while (p < end && (isalnum ((unsigned char)*p) ||
+	while (p < end && (isalnum ((guchar)*p) ||
 			   *p == '.' || *p == '+' || *p == '-'))
 		p++;
 
@@ -229,7 +229,7 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 			last = base->path ? strrchr (base->path, '/') : NULL;
 			if (last) {
 				newpath = g_strdup_printf ("%.*s/%s",
-							   (int)(last - base->path),
+							   (gint)(last - base->path),
 							   base->path,
 							   url->path);
 			} else
@@ -604,7 +604,7 @@ append_url_encoded (GString *str, const gchar *in, const gchar *extra_enc_chars)
 	while (*s) {
 		if (url_encoded_char[*s] ||
 		    (extra_enc_chars && strchr (extra_enc_chars, *s)))
-			g_string_append_printf (str, "%%%02x", (int)*s++);
+			g_string_append_printf (str, "%%%02x", (gint)*s++);
 		else
 			g_string_append_c (str, *s++);
 	}
@@ -684,7 +684,7 @@ camel_url_hash (gconstpointer v)
 	return hash;
 }
 
-static int
+static gint
 check_equal (gchar *s1, gchar *s2)
 {
 	if (s1 == NULL) {

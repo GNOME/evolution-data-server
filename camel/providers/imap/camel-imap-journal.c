@@ -228,7 +228,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 		entry->uids = decode_uids (in);
 		if (!entry->uids)
 			goto exception;
-		if (camel_file_util_decode_uint32 (in, &entry->move) == -1)
+		if (camel_file_util_decode_uint32 (in, (guint32 *) &entry->move) == -1)
 			goto exception;
 		break;
 	default:
@@ -251,7 +251,7 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 	return NULL;
 }
 
-static int
+static gint
 encode_uids (FILE *file, GPtrArray *uids)
 {
 	gint i, status;
@@ -262,7 +262,7 @@ encode_uids (FILE *file, GPtrArray *uids)
 	return status;
 }
 
-static int
+static gint
 imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;

@@ -231,7 +231,7 @@ cobject_finalise(CamelObject *o)
 	o->klass = NULL;
 }
 
-static int
+static gint
 cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 {
 	gint i;
@@ -264,7 +264,7 @@ cobject_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 	return 0;
 }
 
-static int
+static gint
 cobject_setv(CamelObject *o, CamelException *ex, CamelArgV *args)
 {
 	gint i;
@@ -401,7 +401,7 @@ done:
 
 */
 
-static int
+static gint
 cobject_state_read(CamelObject *obj, FILE *fp)
 {
 	guint32 i, count, version;
@@ -483,7 +483,7 @@ cobject_state_read(CamelObject *obj, FILE *fp)
 }
 
 /* TODO: should pass exception around */
-static int
+static gint
 cobject_state_write(CamelObject *obj, FILE *fp)
 {
 	gint32 count, i;
@@ -617,20 +617,19 @@ cobject_class_finalise(CamelObjectClass * klass)
 
 /* CamelInterface base methods */
 
-static void
+G_GNUC_NORETURN static void
 cinterface_init(CamelObject *o, CamelObjectClass *klass)
 {
 	g_error("Cannot instantiate interfaces, trying to instantiate '%s'", klass->name);
-	abort();
 }
 
-static int
+static gint
 cinterface_getv(CamelObject *o, CamelException *ex, CamelArgGetV *args)
 {
 	return 0;
 }
 
-static int
+static gint
 cinterface_setv(CamelObject *o, CamelException *ex, CamelArgV *args)
 {
 	return 0;
@@ -701,7 +700,7 @@ camel_type_class_init(CamelObjectClass *klass, CamelObjectClass *type)
 static CamelType
 co_type_register(CamelType parent, const gchar * name,
 		 /*guint ver, guint rev,*/
-		 size_t object_size, size_t klass_size,
+		 gsize object_size, gsize klass_size,
 		 CamelObjectClassInitFunc class_init,
 		 CamelObjectClassFinalizeFunc class_finalise,
 		 CamelObjectInitFunc object_init,
@@ -709,7 +708,7 @@ co_type_register(CamelType parent, const gchar * name,
 {
 	CamelObjectClass *klass;
 	/*int offset;
-	  size_t size;*/
+	  gsize size;*/
 
 	TYPE_LOCK();
 
@@ -787,7 +786,7 @@ co_type_register(CamelType parent, const gchar * name,
 CamelType
 camel_type_register(CamelType parent, const gchar * name,
 		    /*guint ver, guint rev,*/
-		    size_t object_size, size_t klass_size,
+		    gsize object_size, gsize klass_size,
 		    CamelObjectClassInitFunc class_init,
 		    CamelObjectClassFinalizeFunc class_finalise,
 		    CamelObjectInitFunc object_init,
@@ -803,7 +802,7 @@ camel_type_register(CamelType parent, const gchar * name,
 
 CamelType
 camel_interface_register(CamelType parent, const gchar *name,
-			 size_t class_size,
+			 gsize class_size,
 			 CamelObjectClassInitFunc class_init,
 			 CamelObjectClassFinalizeFunc class_finalise)
 {
@@ -1279,7 +1278,7 @@ camel_object_get_hooks(CamelObject *o)
 	return o->hooks;
 }
 
-unsigned int
+guint
 camel_object_hook_event(gpointer vo, const gchar * name, CamelObjectEventHookFunc func, gpointer data)
 {
 	CamelObject *obj = vo;
@@ -2368,7 +2367,7 @@ camel_object_bag_remove(CamelObjectBag *inbag, gpointer vo)
 
 /* ********************************************************************** */
 
-gpointer camel_iterator_new(CamelIteratorVTable *klass, size_t size)
+gpointer camel_iterator_new(CamelIteratorVTable *klass, gsize size)
 {
 	CamelIterator *it;
 

@@ -85,7 +85,7 @@ struct _CamelTextIndexCursorPrivate {
 
 	gint record_index;
 
-	size_t record_count;
+	gsize record_count;
 	camel_key_t *records;
 
 	gchar *current;
@@ -253,7 +253,7 @@ text_index_add_name_to_word(CamelIndex *idx, const gchar *word, camel_key_t name
 	}
 }
 
-static int
+static gint
 text_index_sync(CamelIndex *idx)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
@@ -337,7 +337,7 @@ static void tmp_name(const gchar *in, gchar *o)
 	}
 }
 
-static int
+static gint
 text_index_compress(CamelIndex *idx)
 {
 	gint ret;
@@ -354,7 +354,7 @@ text_index_compress(CamelIndex *idx)
 }
 
 /* Attempt to recover index space by compressing the indices */
-static int
+static gint
 text_index_compress_nosync(CamelIndex *idx)
 {
 	CamelTextIndex *newidx;
@@ -367,7 +367,7 @@ text_index_compress_nosync(CamelIndex *idx)
 	gchar *name = NULL;
 	guint flags;
 	gchar *newpath, *savepath, *oldpath;
-	size_t count, newcount;
+	gsize count, newcount;
 	camel_key_t *records, newrecords[256];
 	struct _CamelTextIndexRoot *rb;
 
@@ -425,8 +425,9 @@ text_index_compress_nosync(CamelIndex *idx)
 			rb->names++;
 			camel_partition_table_add(newp->name_hash, name, newkeyid);
 			g_hash_table_insert(remap, GINT_TO_POINTER(oldkeyid), GINT_TO_POINTER(newkeyid));
-		} else
+		} else {
 			io(printf("deleted name '%s'\n", name));
+		}
 		g_free(name);
 		name = NULL;
 		deleted |= flags;
@@ -446,7 +447,7 @@ text_index_compress_nosync(CamelIndex *idx)
 		}
 		while (data) {
 			if (camel_key_file_read(oldp->links, &data, &count, &records) == -1) {
-				io(printf("could not read from old keys at %d for word '%s'\n", (int)data, name));
+				io(printf("could not read from old keys at %d for word '%s'\n", (gint)data, name));
 				goto fail;
 			}
 			for (i=0;i<count;i++) {
@@ -525,7 +526,7 @@ fail:
 	return ret;
 }
 
-static int
+static gint
 text_index_delete(CamelIndex *idx)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
@@ -539,7 +540,7 @@ text_index_delete(CamelIndex *idx)
 	return ret;
 }
 
-static int
+static gint
 text_index_rename(CamelIndex *idx, const gchar *path)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
@@ -575,7 +576,7 @@ text_index_rename(CamelIndex *idx, const gchar *path)
 	return 0;
 }
 
-static int
+static gint
 text_index_has_name(CamelIndex *idx, const gchar *name)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
@@ -636,7 +637,7 @@ hash_write_word(gchar *word, gpointer data, CamelIndexName *idn)
 	text_index_add_name_to_word(idn->index, word, tin->priv->nameid);
 }
 
-static int
+static gint
 text_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 {
 	/* force 'flush' of any outstanding data */
@@ -1267,7 +1268,7 @@ camel_text_index_validate(CamelTextIndex *idx)
 	camel_block_t data;
 	gchar *oldword;
 	camel_key_t *records;
-	size_t count;
+	gsize count;
 
 	GHashTable *names, *deleted, *words, *keys, *name_word, *word_word;
 
@@ -1361,7 +1362,7 @@ camel_text_index_validate(CamelTextIndex *idx)
 				printf("Warning, read failed for word '%s', at data '%u'\n", word, data);
 				data = 0;
 			} else {
-				printf("(%d)\n", (int)count);
+				printf("(%d)\n", (gint)count);
 				g_free(records);
 			}
 		}
@@ -1464,8 +1465,8 @@ camel_utf8_next(const guchar **ptr, const guchar *ptrend)
 	return 0;
 }
 
-static size_t
-text_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, size_t len)
+static gsize
+text_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, gsize len)
 {
 	CamelTextIndexNamePrivate *p = CIN_PRIVATE(idn);
 	const guchar *ptr, *ptrend;

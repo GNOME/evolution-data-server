@@ -295,7 +295,7 @@ camel_ustrstrcase (const gchar *haystack, const gchar *needle)
 		return 1;                              \
 } G_STMT_END
 
-static int
+static gint
 camel_ustrcasecmp (const gchar *ps1, const gchar *ps2)
 {
 	gunichar u1, u2 = 0;
@@ -327,8 +327,8 @@ camel_ustrcasecmp (const gchar *ps1, const gchar *ps2)
 	return 0;
 }
 
-static int
-camel_ustrncasecmp (const gchar *ps1, const gchar *ps2, size_t len)
+static gint
+camel_ustrncasecmp (const gchar *ps1, const gchar *ps2, gsize len)
 {
 	gunichar u1, u2 = 0;
 	const guchar *s1 = (const guchar *)ps1;
@@ -364,7 +364,7 @@ camel_ustrncasecmp (const gchar *ps1, const gchar *ps2, size_t len)
 }
 
 /* value is the match value suitable for exact match if required */
-static int
+static gint
 header_match(const gchar *value, const gchar *match, camel_search_match_t how)
 {
 	const guchar *p;

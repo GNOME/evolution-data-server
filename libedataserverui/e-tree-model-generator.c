@@ -648,12 +648,12 @@ child_row_changed (ETreeModelGenerator *tree_model_generator, GtkTreePath *path,
 		gtk_tree_path_next (generated_path);
 	}
 
-	for ( ; i < node->n_generated; ) {
+	for (; i < node->n_generated; ) {
 		node->n_generated--;
 		row_deleted (tree_model_generator, generated_path);
 	}
 
-	for ( ; i < n_generated; i++) {
+	for (; i < n_generated; i++) {
 		node->n_generated++;
 		row_inserted (tree_model_generator, generated_path);
 		gtk_tree_path_next (generated_path);
@@ -707,7 +707,7 @@ child_row_deleted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
 
 	/* FIXME: Converting the path to an iter every time is inefficient */
 
-	for ( ; node->n_generated; ) {
+	for (; node->n_generated; ) {
 		node->n_generated--;
 		row_deleted (tree_model_generator, generated_path);
 	}

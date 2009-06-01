@@ -283,9 +283,9 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 }
 
 static struct {
-	gchar *value;
-	gchar *serv;
-	gchar *port;
+	const gchar *value;
+	const gchar *serv;
+	const gchar *port;
 	gint mode;
 } ssl_options[] = {
 	{ "",              "pop3s", POP3S_PORT, MODE_SSL   },  /* really old (1.x) */
@@ -309,11 +309,11 @@ connect_to_server_wrapper (CamelService *service, CamelException *ex)
 			if (!strcmp (ssl_options[i].value, ssl_mode))
 				break;
 		mode = ssl_options[i].mode;
-		serv = ssl_options[i].serv;
+		serv = (gchar *) ssl_options[i].serv;
 		port = ssl_options[i].port;
 	} else {
 		mode = MODE_CLEAR;
-		serv = "pop3";
+		serv = (gchar *) "pop3";
 		port = POP3S_PORT;
 	}
 
@@ -389,7 +389,7 @@ camel_pop3_store_expunge (CamelPOP3Store *store, CamelException *ex)
 	camel_service_disconnect (CAMEL_SERVICE (store), FALSE, ex);
 }
 
-static int
+static gint
 try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 {
 	CamelPOP3Stream *stream = store->engine->stream;
@@ -456,7 +456,7 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 	return -1;
 }
 
-static int
+static gint
 pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *errmsg, CamelException *ex)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *)service;
@@ -503,7 +503,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 		d = store->engine->apop;
 
 		while (*d != '\0') {
-			if (!isascii((int)*d)) {
+			if (!isascii((gint)*d)) {
 
 				/* README for Translators: The string APOP should not be translated */
 				camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,

@@ -1018,7 +1018,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
 				      &iter, path)) {
 			gtk_tree_path_free (path);
-			return ;
+			return;
 		}
 
 		gtk_tree_path_free (path);

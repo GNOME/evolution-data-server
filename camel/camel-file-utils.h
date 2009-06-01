@@ -47,12 +47,12 @@ gint camel_file_util_encode_time_t (FILE *out, time_t value);
 gint camel_file_util_decode_time_t (FILE *in, time_t *dest);
 gint camel_file_util_encode_off_t (FILE *out, off_t value);
 gint camel_file_util_decode_off_t (FILE *in, off_t *dest);
-gint camel_file_util_encode_size_t (FILE *out, size_t value);
-gint camel_file_util_decode_size_t (FILE *in, size_t *dest);
+gint camel_file_util_encode_gsize (FILE *out, gsize value);
+gint camel_file_util_decode_gsize (FILE *in, gsize *dest);
 gint camel_file_util_encode_string (FILE *out, const gchar *str);
 gint camel_file_util_decode_string (FILE *in, gchar **str);
-gint camel_file_util_encode_fixed_string (FILE *out, const gchar *str, size_t len);
-gint camel_file_util_decode_fixed_string (FILE *in, gchar **str, size_t len);
+gint camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len);
+gint camel_file_util_decode_fixed_string (FILE *in, gchar **str, gsize len);
 
 
 gchar *camel_file_util_safe_filename (const gchar *name);
@@ -64,11 +64,11 @@ gchar *camel_file_util_safe_filename (const gchar *name);
  * camel_read_socket() and camel_write_socket(). These are cancellable
  * also on Win32.
  */
-ssize_t camel_read (gint fd, gchar *buf, size_t n);
-ssize_t camel_write (gint fd, const gchar *buf, size_t n);
+gssize camel_read (gint fd, gchar *buf, gsize n);
+gssize camel_write (gint fd, const gchar *buf, gsize n);
 
-ssize_t camel_read_socket (gint fd, gchar *buf, size_t n);
-ssize_t camel_write_socket (gint fd, const gchar *buf, size_t n);
+gssize camel_read_socket (gint fd, gchar *buf, gsize n);
+gssize camel_write_socket (gint fd, const gchar *buf, gsize n);
 
 gchar *camel_file_util_savename(const gchar *filename);
 

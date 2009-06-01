@@ -27,7 +27,7 @@
 
 #include <glib.h>
 #include <stdio.h>		/* FILE */
-#include <stdlib.h>		/* size_t */
+#include <stdlib.h>		/* gsize */
 #include <stdarg.h>
 #include <pthread.h>
 
@@ -197,8 +197,8 @@ struct _CamelInterface {
 /* The type system .... it's pretty simple..... */
 void camel_type_init (void);
 CamelType camel_type_register(CamelType parent, const gchar * name, /*guint ver, guint rev,*/
-			      size_t instance_size,
-			      size_t classfuncs_size,
+			      gsize instance_size,
+			      gsize classfuncs_size,
 			      CamelObjectClassInitFunc class_init,
 			      CamelObjectClassFinalizeFunc  class_finalize,
 			      CamelObjectInitFunc instance_init,
@@ -206,7 +206,7 @@ CamelType camel_type_register(CamelType parent, const gchar * name, /*guint ver,
 
 #ifndef CAMEL_DISABLE_DEPRECATED
 CamelType camel_interface_register(CamelType parent, const gchar *name,
-				   size_t classfuncs_size,
+				   gsize classfuncs_size,
 				   CamelObjectClassInitFunc class_init,
 				   CamelObjectClassFinalizeFunc class_finalize);
 #endif /* CAMEL_DISABLE_DEPRECATED */
@@ -339,7 +339,7 @@ struct _CamelIterator {
 	/* subclasses adds new fields afterwards */
 };
 
-gpointer camel_iterator_new(CamelIteratorVTable *klass, size_t size);
+gpointer camel_iterator_new(CamelIteratorVTable *klass, gsize size);
 void camel_iterator_free(gpointer it);
 gconstpointer camel_iterator_next(gpointer it, CamelException *ex);
 void camel_iterator_reset(gpointer it);

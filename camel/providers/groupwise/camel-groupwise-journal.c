@@ -158,7 +158,7 @@ groupwise_entry_load (CamelOfflineJournal *journal, FILE *in)
 	return NULL;
 }
 
-static int
+static gint
 groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out)
 {
 	CamelGroupwiseJournalEntry *groupwise_entry = (CamelGroupwiseJournalEntry *) entry;
@@ -197,7 +197,7 @@ gw_message_info_dup_to (CamelMessageInfoBase *dest, CamelMessageInfoBase *src)
 	dest->size = src->size;
 }
 
-static int
+static gint
 groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournalEntry *entry, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = (CamelGroupwiseFolder *) journal->folder;
@@ -243,7 +243,7 @@ groupwise_entry_play_append (CamelOfflineJournal *journal, CamelGroupwiseJournal
 	return 0;
 }
 
-static int
+static gint
 groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJournalEntry *entry, CamelException *ex)
 {
 	CamelGroupwiseFolder *gw_folder = (CamelGroupwiseFolder *) journal->folder;
@@ -301,7 +301,7 @@ groupwise_entry_play_transfer (CamelOfflineJournal *journal, CamelGroupwiseJourn
 	return -1;
 }
 
-static int
+static gint
 groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelGroupwiseJournalEntry *groupwise_entry = (CamelGroupwiseJournalEntry *) entry;
@@ -417,7 +417,7 @@ camel_groupwise_journal_transfer (CamelGroupwiseJournal *groupwise_journal, Came
 				  CamelException *ex)
 {
 	CamelOfflineJournal *journal = (CamelOfflineJournal *) groupwise_journal;
-	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(journal->folder->parent_store) ;
+	CamelGroupwiseStore *gw_store= CAMEL_GROUPWISE_STORE(journal->folder->parent_store);
 	CamelGroupwiseJournalEntry *entry;
 	gchar *uid;
 

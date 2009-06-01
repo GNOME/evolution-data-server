@@ -324,7 +324,7 @@ remove_folder_esource (ExchangeAccount *account,
 	groups = e_source_list_peek_groups (source_list);
 	found_group = FALSE;
 
-	for ( ; groups != NULL && !found_group; groups = g_slist_next (groups)) {
+	for (; groups != NULL && !found_group; groups = g_slist_next (groups)) {
 		group = E_SOURCE_GROUP (groups->data);
 
 		if (strcmp (e_source_group_peek_name (group), account->account_name) == 0
@@ -333,7 +333,7 @@ remove_folder_esource (ExchangeAccount *account,
 
 			sources = e_source_group_peek_sources (group);
 
-			for( ; sources != NULL; sources = g_slist_next (sources)) {
+			for(; sources != NULL; sources = g_slist_next (sources)) {
 
 				source = E_SOURCE (sources->data);
 				read_uri = e_source_get_uri (source);

@@ -132,7 +132,7 @@ EContact *
 e_book_backend_db_cache_get_contact (DB *db, const gchar *uid)
 {
 	DBT	uid_dbt, vcard_dbt;
-	int	db_error;
+	gint	db_error;
 	EContact *contact = NULL;
 
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -166,8 +166,8 @@ e_book_backend_db_cache_add_contact (DB *db,
 				     EContact *contact)
 {
 	DBT	uid_dbt, vcard_dbt;
-	int	db_error;
-	char	*vcard_str;
+	gint	db_error;
+	gchar	*vcard_str;
 	const gchar *uid;
 
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
@@ -211,7 +211,7 @@ e_book_backend_db_cache_remove_contact (DB *db,
 
 {
 	DBT	uid_dbt;
-	int	db_error;
+	gint	db_error;
 
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -240,7 +240,7 @@ gboolean
 e_book_backend_db_cache_check_contact (DB *db, const gchar *uid)
 {
 	DBT	uid_dbt, vcard_dbt;
-	int	db_error;
+	gint	db_error;
 
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -273,7 +273,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const gchar *query)
 {
 	DBC	*dbc;
 	DBT	uid_dbt, vcard_dbt;
-	int	db_error;
+	gint	db_error;
 	GList *list = NULL;
 	EBookBackendSExp *sexp = NULL;
 	EContact *contact;
@@ -382,7 +382,7 @@ void
 e_book_backend_db_cache_set_populated (DB *db)
 {
 	DBT	uid_dbt, vcard_dbt;
-	int	db_error;
+	gint	db_error;
 
 	string_to_dbt ("populated", &uid_dbt);
 	string_to_dbt ("TRUE", &vcard_dbt);
@@ -405,7 +405,7 @@ gboolean
 e_book_backend_db_cache_is_populated (DB *db)
 {
 	DBT	uid_dbt, vcard_dbt;
-	int	db_error;
+	gint	db_error;
 
 	string_to_dbt ("populated", &uid_dbt);
 	memset(&vcard_dbt, 0, sizeof(vcard_dbt));

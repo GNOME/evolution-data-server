@@ -83,6 +83,8 @@ struct _CamelGroupwiseFolderPrivate {
 
 };
 
+extern gint camel_application_is_exiting;
+
 /*prototypes*/
 static void groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *destination, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex);
 static gint gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
@@ -126,7 +128,6 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 	EGwConnection *cnc;
 	EGwItem *item;
 	CamelStream *stream, *cache_stream;
-	gint errno;
 
 	/* see if it is there in cache */
 
@@ -182,7 +183,7 @@ groupwise_folder_get_message( CamelFolder *folder, const gchar *uid, CamelExcept
 		return NULL;
 	}
 
-	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name)) ;
+	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 
 	cnc = cnc_lookup (priv);
 
@@ -242,9 +243,10 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 	type = e_gw_item_get_item_type (item);
 
 	if (type == E_GW_ITEM_TYPE_APPOINTMENT  || type == E_GW_ITEM_TYPE_NOTE || type == E_GW_ITEM_TYPE_TASK) {
+		time_t actual_time;
 		gint offset = 0;
 		dtstring = e_gw_item_get_start_date (item);
-		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
+		actual_time = e_gw_connection_get_date_from_string (dtstring);
 		camel_mime_message_set_date (msg, actual_time, offset);
 		return;
 	}
@@ -353,7 +355,7 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 		gchar *status_opt = NULL;
 		gboolean enabled;
 
-		for (rl = recipient_list ; rl != NULL ; rl = rl->next) {
+		for (rl = recipient_list; rl != NULL; rl = rl->next) {
 			EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 			enabled = recp->status_enabled;
 
@@ -714,7 +716,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	}
 	cnc = cnc_lookup (priv);
 
-	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
+	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
 
 	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 	if (!camel_groupwise_store_connected (gw_store, ex)) {
@@ -725,11 +727,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)
-		return ;
+		return;
 
 	count = camel_folder_summary_count (folder->summary);
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
-	for (i=0 ; i < count ; i++) {
+	for (i=0; i < count; i++) {
 		guint32 flags = 0;
 		info = camel_folder_summary_index (folder->summary, i);
 		gw_info = (CamelGroupwiseMessageInfo *) info;
@@ -991,8 +993,6 @@ static void
 update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 {
 
-	extern gint camel_application_is_exiting;
-
 	struct _folder_update_msg *m = (struct _folder_update_msg *)msg;
 	EGwConnectionStatus status;
 	CamelException *ex = NULL;
@@ -1030,7 +1030,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 
 		if (camel_application_is_exiting) {
 				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
-				return ;
+				return;
 		}
 
 		item_list = NULL;
@@ -1150,7 +1150,7 @@ groupwise_refresh_info(CamelFolder *folder, CamelException *ex)
 	}
 }
 
-static int
+static gint
 check_for_new_mails_count (CamelGroupwiseSummary *gw_summary, GSList *ids)
 {
 	CamelFolderSummary *summary = (CamelFolderSummary *) gw_summary;
@@ -1171,7 +1171,7 @@ check_for_new_mails_count (CamelGroupwiseSummary *gw_summary, GSList *ids)
 	return count;
 }
 
-static int
+static gint
 compare_ids (gpointer a, gpointer b, gpointer data)
 {
 	EGwItem *item1 = (EGwItem *) a;
@@ -1184,7 +1184,7 @@ compare_ids (gpointer a, gpointer b, gpointer data)
 	return strcmp (id1, id2);
 }
 
-static int
+static gint
 get_merge_lists_new_count (CamelGroupwiseSummary *summary, GSList *new, GSList *modified, GSList **merged)
 {
 	GSList *l, *element;
@@ -1263,7 +1263,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		return;
 	}
 
-	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name)) ;
+	container_id = g_strdup (camel_groupwise_store_container_id_lookup (gw_store, folder->full_name));
 
 	if (!container_id) {
 		d (printf ("\nERROR - Container id not present. Cannot refresh info for %s\n", folder->full_name));
@@ -1310,7 +1310,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 	/*Get the New Items*/
 	if (!is_proxy) {
-		gchar *source;
+		const gchar *source;
 
 		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) {
 			source = NULL;
@@ -1468,8 +1468,8 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 
 	camel_operation_start (NULL, _("Fetching summary information for new messages in %s"), folder->name);
 
-	for ( ; item_list != NULL ; item_list = g_list_next (item_list) ) {
-		EGwItem *temp_item ;
+	for (; item_list != NULL; item_list = g_list_next (item_list) ) {
+		EGwItem *temp_item;
 		EGwItem *item;
 		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
@@ -1725,7 +1725,7 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		is_junk = TRUE;
 	}
 
-	for (; item_list != NULL ; item_list = g_list_next (item_list) ) {
+	for (; item_list != NULL; item_list = g_list_next (item_list) ) {
 		EGwItem *item = (EGwItem *)item_list->data;
 		EGwItemType type = E_GW_ITEM_TYPE_UNKNOWN;
 		EGwItemOrganizer *org;
@@ -1876,7 +1876,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	CamelMultipart *multipart = NULL;
-	gint errno;
 	gchar *body = NULL;
 	gint body_len = 0;
 	const gchar *uid = NULL;
@@ -1924,7 +1923,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		} /* if Mime.822 or TEXT.htm */
 
 		if (!ignore_mime_822) {
-			for (al = attach_list ; al != NULL ; al = al->next) {
+			for (al = attach_list; al != NULL; al = al->next) {
 				EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 				if (!g_ascii_strcasecmp (attach->name, "Mime.822")) {
 					if (attach->size > MAX_ATTACHMENT_SIZE) {
@@ -2033,7 +2032,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		gboolean has_boundary = FALSE;
 		GSList *al;
 
-		for (al = attach_list ; al != NULL ; al = al->next) {
+		for (al = attach_list; al != NULL; al = al->next) {
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 			gchar *attachment = NULL;
 			gint len = 0;
@@ -2263,7 +2262,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
 	/*Get the container id*/
-	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name) ;
+	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
 
 	item = camel_groupwise_util_item_from_message (cnc, message, CAMEL_ADDRESS (message->from));
 	/*Set the source*/
@@ -2311,11 +2310,11 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 /* A function to compare uids, inspired by strcmp .
 This code was used in some other provider also , imap4rev1 iirc */
-static int
+static gint
 uid_compar (gconstpointer va, gconstpointer vb)
 {
 	const gchar **sa = (const gchar **)va, **sb = (const gchar **)vb;
-	unsigned long a, b;
+	gulong a, b;
 
 	a = strtoul (*sa, NULL, 10);
 	b = strtoul (*sb, NULL, 10);
@@ -2362,10 +2361,10 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		*transferred_uids = NULL;
 
 	if (delete_originals)
-		source_container_id = camel_groupwise_store_container_id_lookup (gw_store, source->full_name) ;
+		source_container_id = camel_groupwise_store_container_id_lookup (gw_store, source->full_name);
 	else
 		source_container_id = NULL;
-	dest_container_id = camel_groupwise_store_container_id_lookup (gw_store, destination->full_name) ;
+	dest_container_id = camel_groupwise_store_container_id_lookup (gw_store, destination->full_name);
 
 	CAMEL_SERVICE_REC_LOCK (source->parent_store, connect_lock);
 	/* check for offline operation */
@@ -2569,7 +2568,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 
 	changes = camel_folder_change_info_new ();
 
-	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->full_name)) ;
+	container_id =  g_strdup (camel_groupwise_store_container_id_lookup (groupwise_store, folder->full_name));
 
 	max = camel_folder_summary_count (folder->summary);
 	for (i = 0; i < max; i++) {
@@ -2727,14 +2726,14 @@ camel_groupwise_folder_get_type (void)
 	return camel_groupwise_folder_type;
 }
 
-static int
+static gint
 gw_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
 	gint i, count = 0;
 	guint32 tag;
 
-	for (i=0 ; i<args->argc ; i++) {
+	for (i=0; i<args->argc; i++) {
 		CamelArgGet *arg = &args->argv[i];
 
 		tag = arg->tag;
@@ -2825,9 +2824,9 @@ convert_to_calendar (EGwItem *item, gchar **str, gint *len)
 
 	recp_list = e_gw_item_get_recipient_list (item);
 	if (recp_list) {
-		GSList *rl ;
+		GSList *rl;
 
-		for (rl = recp_list ; rl != NULL ; rl = rl->next) {
+		for (rl = recp_list; rl != NULL; rl = rl->next) {
 			EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 			g_string_append_printf (gstr,
 					"ATTENDEE;CN= %s;ROLE= REQ-PARTICIPANT:\nMAILTO:%s\n",
@@ -2854,7 +2853,7 @@ convert_to_calendar (EGwItem *item, gchar **str, gint *len)
 	if (attach_list) {
 		GSList *al;
 
-		for (al = attach_list ; al != NULL ; al = al->next) {
+		for (al = attach_list; al != NULL; al = al->next) {
 			EGwItemAttachment *attach = (EGwItemAttachment *)al->data;
 			g_string_append_printf (gstr, "ATTACH:%s\n", attach->id);
 		}
@@ -2920,7 +2919,7 @@ convert_to_task (EGwItem *item, gchar **str, gint *len)
 	if (recp_list) {
 		GSList *rl;
 
-		for (rl = recp_list ; rl != NULL ; rl = rl->next) {
+		for (rl = recp_list; rl != NULL; rl = rl->next) {
 			EGwItemRecipient *recp = (EGwItemRecipient *) rl->data;
 			g_string_append_printf (gstr,
 					"ATTENDEE;CN= %s;ROLE= REQ-PARTICIPANT:\nMAILTO:%s\n",

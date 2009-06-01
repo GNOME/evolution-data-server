@@ -404,7 +404,7 @@ func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer da
 	ESExpResult *result;
 	icaltimezone *zone;
 	ECalComponentDateTime dt;
-	time_t due_t ;
+	time_t due_t;
 	gboolean retval;
 
 	/* Check argument types */
@@ -637,7 +637,7 @@ matches_priority (ECalComponent *comp ,const gchar *pr)
 	else if (g_str_equal (pr, "LOW") && *priority > 5)
 		return TRUE;
 	else if (g_str_equal (pr, "UNDEFINED") && (!priority || !*priority))
-		return TRUE ;
+		return TRUE;
 
 	return FALSE;
 }
@@ -645,7 +645,7 @@ matches_priority (ECalComponent *comp ,const gchar *pr)
 static gboolean
 matches_status (ECalComponent *comp ,const gchar *str)
 {
-	icalproperty_status status ;
+	icalproperty_status status;
 
 	if (!*str)
 		return FALSE;

@@ -25,12 +25,12 @@
 #include "camel-mime-utils.h"
 
 static void reset(CamelMimeFilter *mf);
-static void complete(CamelMimeFilter *mf, gchar *in, size_t len,
-		     size_t prespace, gchar **out,
-		     size_t *outlen, size_t *outprespace);
-static void filter(CamelMimeFilter *mf, gchar *in, size_t len,
-		   size_t prespace, gchar **out,
-		   size_t *outlen, size_t *outprespace);
+static void complete(CamelMimeFilter *mf, const gchar *in, gsize len,
+		     gsize prespace, gchar **out,
+		     gsize *outlen, gsize *outprespace);
+static void filter(CamelMimeFilter *mf, const gchar *in, gsize len,
+		   gsize prespace, gchar **out,
+		   gsize *outlen, gsize *outprespace);
 
 static void camel_mime_filter_basic_class_init (CamelMimeFilterBasicClass *klass);
 static void camel_mime_filter_basic_init       (CamelMimeFilterBasic *obj);
@@ -92,10 +92,10 @@ reset(CamelMimeFilter *mf)
 }
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
-	size_t newlen = 0;
+	gsize newlen = 0;
 
 	switch(f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
@@ -150,17 +150,17 @@ complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **ou
 
 	return;
 donothing:
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }
 
 /* here we do all of the basic mime filtering */
 static void
-filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
-	size_t newlen;
+	gsize newlen;
 
 	switch(f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
@@ -195,8 +195,8 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 		break;
 	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
 		if (!(f->state & CAMEL_UUDECODE_STATE_BEGIN)) {
-			register gchar *inptr, *inend;
-			size_t left;
+			const gchar *inptr, *inend;
+			gsize left;
 
 			inptr = in;
 			inend = inptr + len;
@@ -222,7 +222,7 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 				}
 
 				/* go to the next line */
-				for ( ; inptr < inend && *inptr != '\n'; inptr++);
+				for (; inptr < inend && *inptr != '\n'; inptr++);
 
 				if (inptr < inend)
 					inptr++;
@@ -248,7 +248,7 @@ filter(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out,
 
 	return;
 donothing:
-	*out = in;
+	*out = (gchar *) in;
 	*outlen = len;
 	*outprespace = prespace;
 }

@@ -2,7 +2,6 @@
 INCLUDES =						\
 	-I$(includedir)					\
 	-I$(top_srcdir)					\
-	-I$(top_srcdir)/intl			 	\
 	-I$(top_srcdir)/camel				\
 	-I$(top_srcdir)/camel/tests/lib 		\
 	-DG_LOG_DOMAIN=\"evolution-tests\"		\

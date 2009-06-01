@@ -119,11 +119,11 @@ struct _CamelStoreSummaryClass {
 	/* create/save/load an individual message info */
 	CamelStoreInfo * (*store_info_new)(CamelStoreSummary *, const gchar *path);
 	CamelStoreInfo * (*store_info_load)(CamelStoreSummary *, FILE *);
-	int		  (*store_info_save)(CamelStoreSummary *, FILE *, CamelStoreInfo *);
+	gint		  (*store_info_save)(CamelStoreSummary *, FILE *, CamelStoreInfo *);
 	void		  (*store_info_free)(CamelStoreSummary *, CamelStoreInfo *);
 
 	/* virtualise access methods */
-	const gchar *(*store_info_string)(CamelStoreSummary *, const CamelStoreInfo *, int);
+	const gchar *(*store_info_string)(CamelStoreSummary *, const CamelStoreInfo *, gint);
 	void (*store_info_set_string)(CamelStoreSummary *, CamelStoreInfo *, int, const gchar *);
 };
 

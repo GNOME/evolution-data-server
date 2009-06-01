@@ -61,7 +61,7 @@ static void movemail_external (const gchar *source, const gchar *dest,
 #endif
 
 #ifdef HAVE_BROKEN_SPOOL
-static gint camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, size_t bytes, CamelMimeFilter *filter);
+static gint camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, gsize bytes, CamelMimeFilter *filter);
 static gint camel_movemail_solaris (gint oldsfd, gint dfd, CamelException *ex);
 #else
 /* these could probably be exposed as a utility? (but only mbox needs it) */
@@ -69,7 +69,7 @@ static gint camel_movemail_copy_file(gint sfd, gint dfd, CamelException *ex);
 #endif
 
 #if 0
-static gint camel_movemail_copy(gint fromfd, gint tofd, off_t start, size_t bytes);
+static gint camel_movemail_copy(gint fromfd, gint tofd, off_t start, gsize bytes);
 #endif
 
 /**
@@ -241,7 +241,7 @@ movemail_external (const gchar *source, const gchar *dest, CamelException *ex)
 #endif
 
 #ifndef HAVE_BROKEN_SPOOL
-static int
+static gint
 camel_movemail_copy_file(gint sfd, gint dfd, CamelException *ex)
 {
 	gint nread, nwrote;
@@ -282,8 +282,8 @@ camel_movemail_copy_file(gint sfd, gint dfd, CamelException *ex)
 #endif
 
 #if 0
-static int
-camel_movemail_copy(gint fromfd, gint tofd, off_t start, size_t bytes)
+static gint
+camel_movemail_copy(gint fromfd, gint tofd, off_t start, gsize bytes)
 {
         gchar buffer[4096];
         gint written = 0;
@@ -334,8 +334,8 @@ camel_movemail_copy(gint fromfd, gint tofd, off_t start, size_t bytes)
 #define PRE_SIZE (32)
 
 #ifdef HAVE_BROKEN_SPOOL
-static int
-camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, size_t bytes, CamelMimeFilter *filter)
+static gint
+camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, gsize bytes, CamelMimeFilter *filter)
 {
         gchar buffer[4096+PRE_SIZE];
         gint written = 0;
@@ -400,7 +400,7 @@ camel_movemail_copy_filter(gint fromfd, gint tofd, off_t start, size_t bytes, Ca
 
 /* write the headers back out again, but not he Content-Length header, because we dont
    want	to maintain it! */
-static int
+static gint
 solaris_header_write(gint fd, struct _camel_header_raw *header)
 {
         struct iovec iv[4];
@@ -446,7 +446,7 @@ solaris_header_write(gint fd, struct _camel_header_raw *header)
 /* Well, since Solaris is a tad broken wrt its 'mbox' folder format,
    we must convert it to a real mbox format.  Thankfully this is
    mostly pretty easy */
-static int
+static gint
 camel_movemail_solaris (gint oldsfd, gint dfd, CamelException *ex)
 {
 	CamelMimeParser *mp;
@@ -495,7 +495,7 @@ camel_movemail_solaris (gint oldsfd, gint dfd, CamelException *ex)
 
 			cl = camel_mime_parser_header(mp, "content-length", NULL);
 			if (cl == NULL) {
-				g_warning("Required Content-Length header is missing from solaris mail box @ %d", (int)camel_mime_parser_tell(mp));
+				g_warning("Required Content-Length header is missing from solaris mail box @ %d", (gint)camel_mime_parser_tell(mp));
 				camel_mime_parser_drop_step(mp);
 				camel_mime_parser_drop_step(mp);
 				camel_mime_parser_step(mp, &buffer, &len);

@@ -35,7 +35,7 @@ static const gchar *e_cal_match_location(const gchar *location)
 {
     icaltimezone *icomp;
     const gchar *tail;
-    size_t len;
+    gsize len;
     gchar *buffer;
 
     icomp = icaltimezone_get_builtin_timezone (location);
@@ -70,8 +70,8 @@ const gchar *e_cal_match_tzid(const gchar *tzid)
 {
     const gchar *location;
     const gchar *systzid;
-    size_t len = strlen(tzid);
-    ssize_t eostr;
+    gsize len = strlen(tzid);
+    gssize eostr;
 
     /*
      * Try without any trailing spaces/digits: they might have been added
@@ -314,8 +314,8 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
 
                         if (counter) {
                             gchar *fulltzid = g_strdup_printf("TZID:%s", value);
-                            size_t baselen = strlen("TZID:") + strlen(tzid);
-                            size_t fulllen = strlen(fulltzid);
+                            gsize baselen = strlen("TZID:") + strlen(tzid);
+                            gsize fulllen = strlen(fulltzid);
                             gchar *tzidprop;
                             /*
                              * Map TZID with counter suffix back to basename.

@@ -59,9 +59,9 @@
 
   Comparison operators:
 
-  bool = (< gint int)
-  bool = (> gint int)
-  bool = (= gint int)
+  bool = (< gint gint)
+  bool = (> gint gint)
+  bool = (= gint gint)
 
   bool = (< string string)
   bool = (> string string)
@@ -104,7 +104,7 @@ static struct _ESExpTerm * parse_list(ESExp *f, gint gotbrace);
 static struct _ESExpTerm * parse_value(ESExp *f);
 
 #ifdef TESTER
-static void parse_dump_term(struct _ESExpTerm *t, int depth);
+static void parse_dump_term(struct _ESExpTerm *t, gint depth);
 #endif
 
 #ifdef E_SEXP_IS_G_OBJECT
@@ -760,7 +760,7 @@ eval_dump_result(ESExpResult *r, gint depth)
 		printf("bool: %c\n", r->value.bool?'t':'f');
 		break;
 	case ESEXP_RES_TIME:
-		printf("time_t: %ld\n", (long) r->value.time);
+		printf("time_t: %ld\n", (glong) r->value.time);
 		break;
 	case ESEXP_RES_UNDEFINED:
 		printf(" <undefined>\n");
@@ -795,7 +795,7 @@ parse_dump_term(struct _ESExpTerm *t, gint depth)
 		printf(" #%c", t->value.bool?'t':'f');
 		break;
 	case ESEXP_TERM_TIME:
-		printf(" %ld", (long) t->value.time);
+		printf(" %ld", (glong) t->value.time);
 		break;
 	case ESEXP_TERM_IFUNC:
 	case ESEXP_TERM_FUNC:
@@ -1130,9 +1130,9 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction(s, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, (void *)&symbols[i]);
+			e_sexp_add_ifunction(s, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, (gpointer)&symbols[i]);
 		} else {
-			e_sexp_add_function(s, 0, symbols[i].name, symbols[i].func, (void *)&symbols[i]);
+			e_sexp_add_function(s, 0, symbols[i].name, symbols[i].func, (gpointer)&symbols[i]);
 		}
 	}
 
@@ -1199,7 +1199,7 @@ e_sexp_unref (ESExp *f)
 #endif
 
 void
-e_sexp_add_function(ESExp *f, int scope, const char *name, ESExpFunc *func, void *data)
+e_sexp_add_function(ESExp *f, gint scope, const gchar *name, ESExpFunc *func, gpointer data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1217,7 +1217,7 @@ e_sexp_add_function(ESExp *f, int scope, const char *name, ESExpFunc *func, void
 }
 
 void
-e_sexp_add_ifunction(ESExp *f, int scope, const char *name, ESExpIFunc *ifunc, void *data)
+e_sexp_add_ifunction(ESExp *f, gint scope, const gchar *name, ESExpIFunc *ifunc, gpointer data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1250,7 +1250,7 @@ e_sexp_add_variable(ESExp *f, gint scope, gchar *name, ESExpTerm *value)
 }
 
 void
-e_sexp_remove_symbol(ESExp *f, int scope, const char *name)
+e_sexp_remove_symbol(ESExp *f, gint scope, const gchar *name)
 {
 	gint oldscope;
 	struct _ESExpSymbol *s;

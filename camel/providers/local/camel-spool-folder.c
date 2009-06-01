@@ -137,7 +137,7 @@ spool_create_summary(CamelLocalFolder *lf, const gchar *path, const gchar *folde
 	return (CamelLocalSummary *)camel_spool_summary_new((CamelFolder *)lf, folder);
 }
 
-static int
+static gint
 spool_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 {
 	gint retry = 0;

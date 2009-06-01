@@ -29,11 +29,11 @@
 #include "camel-mime-filter-linewrap.h"
 
 
-static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
-		    gchar **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, gchar *in, size_t len,
-		      size_t prespace, gchar **out, size_t *outlen,
-		      size_t *outprespace);
+static void filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
+		    gchar **out, gsize *outlen, gsize *outprespace);
+static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
+		      gsize prespace, gchar **out, gsize *outlen,
+		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
 
 
@@ -67,11 +67,12 @@ camel_mime_filter_linewrap_get_type (void)
 }
 
 static void
-filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
-	gchar **out, size_t *outlen, size_t *outprespace)
+filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
+	gchar **out, gsize *outlen, gsize *outprespace)
 {
 	CamelMimeFilterLinewrap *linewrap = (CamelMimeFilterLinewrap *)f;
-	gchar *inend, *p, *q;
+	gchar *q;
+	const gchar *inend, *p;
 	gint nchars = linewrap->nchars;
 
 	/* we'll be adding chars here so we need a bigger buffer */
@@ -114,8 +115,8 @@ filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
 }
 
 static void
-complete (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
-	  gchar **out, size_t *outlen, size_t *outprespace)
+complete (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
+	  gchar **out, gsize *outlen, gsize *outprespace)
 {
 	if (len)
 		filter (f, in, len, prespace, out, outlen, outprespace);

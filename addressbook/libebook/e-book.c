@@ -3248,7 +3248,7 @@ activate_factories_for_uri (EBook *book, const gchar *uri)
 {
 	CORBA_Environment ev;
 	Bonobo_ServerInfoList *info_list = NULL;
-	int i;
+	gint i;
 	const gchar *query;
 	GList *factories = NULL;
 

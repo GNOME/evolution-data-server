@@ -67,7 +67,7 @@ enum {
 };
 
 typedef struct {
-	gchar *name;
+	const gchar *name;
 	guint type;
 } DataType;
 
@@ -670,8 +670,8 @@ generate_response (struct _DigestChallenge *challenge, const gchar *host,
 
 	/* generate the cnonce */
 	bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) resp,
-				(unsigned long) getpid (),
-				(unsigned long) time (NULL));
+				(gulong) getpid (),
+				(gulong) time (NULL));
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	g_checksum_update (checksum, (guchar *) bgen, -1);
 	g_checksum_get_digest (checksum, digest, &length);
@@ -731,7 +731,7 @@ digest_response (struct _DigestResponse *resp)
 		/* Encode the username using the requested charset */
 		gchar *username, *outbuf;
 		const gchar *charset;
-		size_t len, outlen;
+		gsize len, outlen;
 		const gchar *inbuf;
 		iconv_t cd;
 
@@ -746,7 +746,7 @@ digest_response (struct _DigestResponse *resp)
 
 		outbuf = username = g_malloc0 (outlen + 1);
 		inbuf = resp->username;
-		if (cd == (iconv_t) -1 || camel_iconv (cd, &inbuf, &len, &outbuf, &outlen) == (size_t) -1) {
+		if (cd == (iconv_t) -1 || camel_iconv (cd, &inbuf, &len, &outbuf, &outlen) == (gsize) -1) {
 			/* We can't convert to UTF-8 - pretend we never got a charset param? */
 			g_free (resp->charset);
 			resp->charset = NULL;

@@ -112,7 +112,7 @@ CamelServiceAuthType camel_groupwise_password_authtype = {
 	TRUE
 };
 
-static int
+static gint
 groupwise_auto_detect_cb (CamelURL *url, GHashTable **auto_detected,
 			 CamelException *ex)
 {

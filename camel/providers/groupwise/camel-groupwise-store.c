@@ -979,7 +979,7 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 	}
 
 	/*populate the hash table for finding the mapping from container id <-> folder name*/
-	for (;temp_list != NULL ; temp_list = g_list_next (temp_list) ) {
+	for (;temp_list != NULL; temp_list = g_list_next (temp_list) ) {
 		const gchar *name, *id, *parent;
 		name = e_gw_container_get_name (E_GW_CONTAINER (temp_list->data));
 		id = e_gw_container_get_id(E_GW_CONTAINER(temp_list->data));
@@ -1225,7 +1225,7 @@ create_junk_folder (CamelStore *store)
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
 	CamelFolderInfo *root = NULL;
-	gchar *parent_name, *folder_name, *child_container_id, *parent_id;
+	const gchar *parent_name, *folder_name, *child_container_id, *parent_id;
 	gint status;
 
 	parent_name = "";
@@ -1264,7 +1264,8 @@ groupwise_create_folder(CamelStore *store,
 	CamelGroupwiseStore *groupwise_store = CAMEL_GROUPWISE_STORE (store);
 	CamelGroupwiseStorePrivate  *priv = groupwise_store->priv;
 	CamelFolderInfo *root = NULL;
-	gchar *parent_id , *child_container_id;
+	const gchar *parent_id;
+	gchar *child_container_id;
 	gint status;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
@@ -1499,7 +1500,7 @@ camel_groupwise_store_connected (CamelGroupwiseStore *store, CamelException *ex)
 	return FALSE;
 }
 
-static int
+static gint
 match_path(const gchar *path, const gchar *name)
 {
 	gchar p, n;

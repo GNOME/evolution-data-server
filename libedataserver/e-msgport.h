@@ -40,7 +40,7 @@ struct _EMCacheNode {
 	time_t stamp;
 };
 
-EMCache *em_cache_new(time_t timeout, size_t nodesize, GFreeFunc nodefree);
+EMCache *em_cache_new(time_t timeout, gsize nodesize, GFreeFunc nodefree);
 void em_cache_destroy(EMCache *emc);
 EMCacheNode *em_cache_lookup(EMCache *emc, const gchar *key);
 EMCacheNode *em_cache_node_new(EMCache *emc, const gchar *key);

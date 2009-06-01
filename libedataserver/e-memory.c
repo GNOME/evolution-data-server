@@ -57,7 +57,7 @@ static time_start(const gchar *desc)
 
 static time_end(const gchar *desc)
 {
-	unsigned long diff;
+	gulong diff;
 	struct timeval end;
 
 	gettimeofday(&end, NULL);
@@ -549,7 +549,7 @@ void e_mempool_destroy(MemPool *pool)
   string array classes
 */
 
-#define STRV_UNPACKED ((unsigned char)(~0))
+#define STRV_UNPACKED ((guchar)(~0))
 
 struct _EStrv {
 	guchar length;	/* how many entries we have (or the token STRV_UNPACKED) */
@@ -875,7 +875,7 @@ static GPtrArray *poolv_table = NULL;
 #ifdef PROFILE_POOLV
 static gulong poolv_hits = 0;
 static gulong poolv_misses = 0;
-static unsigned long poolv_mem, poolv_count;
+static gulong poolv_mem, poolv_count;
 #endif
 
 #ifdef G_THREADS_ENABLED
@@ -1028,7 +1028,7 @@ poolv_profile_update (void)
 
 	printf("poolv profile: %lu hits, %lu misses: %d%% hit rate, memory: %lu, instances: %lu\n",
 	       poolv_hits, poolv_misses,
-	       (int)(100.0 * ((double) poolv_hits / (double) (poolv_hits + poolv_misses))),
+	       (gint)(100.0 * ((double) poolv_hits / (double) (poolv_hits + poolv_misses))),
 	       poolv_mem, poolv_count);
 
 	last_time = new_time;

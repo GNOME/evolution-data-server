@@ -277,8 +277,8 @@ struct _CamelFolderSummaryClass {
 	CamelMessageInfo * (*message_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageInfo * (*message_info_new_from_message)(CamelFolderSummary *, CamelMimeMessage *);
 	CamelMessageInfo * (*message_info_load)(CamelFolderSummary *, FILE *);
-	int		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
-	int		   (*meta_message_info_save)(CamelFolderSummary *, FILE *, FILE *, CamelMessageInfo *);
+	gint		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
+	gint		   (*meta_message_info_save)(CamelFolderSummary *, FILE *, FILE *, CamelMessageInfo *);
 
 	void		   (*message_info_free)(CamelFolderSummary *, CamelMessageInfo *);
 	CamelMessageInfo * (*message_info_clone)(CamelFolderSummary *, const CamelMessageInfo *);
@@ -288,7 +288,7 @@ struct _CamelFolderSummaryClass {
 	CamelMessageContentInfo * (*content_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageContentInfo * (*content_info_new_from_message)(CamelFolderSummary *, CamelMimePart *);
 	CamelMessageContentInfo * (*content_info_load)(CamelFolderSummary *, FILE *);
-	int			  (*content_info_save)(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
+	gint			  (*content_info_save)(CamelFolderSummary *, FILE *, CamelMessageContentInfo *);
 	void			  (*content_info_free)(CamelFolderSummary *, CamelMessageContentInfo *);
 	CamelMessageInfo * (*message_info_from_uid) (CamelFolderSummary *, const gchar *);
 	/* get the next uid */
@@ -417,17 +417,17 @@ gint camel_folder_summary_decode_token(FILE *in, gchar **str);
 gboolean	camel_flag_get(CamelFlag **list, const gchar *name);
 gboolean	camel_flag_set(CamelFlag **list, const gchar *name, gboolean value);
 gboolean	camel_flag_list_copy(CamelFlag **to, CamelFlag **from);
-int		camel_flag_list_size(CamelFlag **list);
+gint		camel_flag_list_size(CamelFlag **list);
 void		camel_flag_list_free(CamelFlag **list);
 
 guint32         camel_system_flag (const gchar *name);
 gboolean        camel_system_flag_get (guint32 flags, const gchar *name);
 
 /* message tag operations */
-const char	*camel_tag_get(CamelTag **list, const gchar *name);
+const gchar	*camel_tag_get(CamelTag **list, const gchar *name);
 gboolean	camel_tag_set(CamelTag **list, const gchar *name, const gchar *value);
 gboolean	camel_tag_list_copy(CamelTag **to, CamelTag **from);
-int		camel_tag_list_size(CamelTag **list);
+gint		camel_tag_list_size(CamelTag **list);
 void		camel_tag_list_free(CamelTag **list);
 
 /* Summary may be null */

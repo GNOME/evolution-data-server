@@ -97,9 +97,9 @@ typedef struct {
 
 /* query_auth_types returns a GList of these */
 typedef struct {
-	gchar *name;               /* user-friendly name */
-	gchar *description;
-	gchar *authproto;
+	const gchar *name;               /* user-friendly name */
+	const gchar *description;
+	const gchar *authproto;
 
 	gboolean need_password;   /* needs a password to authenticate */
 } CamelServiceAuthType;

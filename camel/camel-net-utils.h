@@ -56,7 +56,7 @@ struct addrinfo {
 	gint ai_family;
 	gint ai_socktype;
 	gint ai_protocol;
-	size_t ai_addrlen;
+	gsize ai_addrlen;
 	struct sockaddr *ai_addr;
 	gchar *ai_canonname;
 	struct addrinfo *ai_next;

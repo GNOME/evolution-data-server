@@ -72,8 +72,8 @@ static CamelTcpStreamClass *parent_class = NULL;
 /* Returns the class for a CamelTcpStreamSSL */
 #define CTSS_CLASS(so) CAMEL_TCP_STREAM_SSL_CLASS (CAMEL_OBJECT_GET_CLASS (so))
 
-static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 
@@ -335,12 +335,12 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 }
 
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	PRFileDesc *cancel_fd;
-	ssize_t nread;
+	gssize nread;
 
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
@@ -418,11 +418,11 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return nread;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
-	ssize_t w, written = 0;
+	gssize w, written = 0;
 	PRFileDesc *cancel_fd;
 
 	if (camel_operation_cancel_check (NULL)) {
@@ -513,14 +513,14 @@ stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 	return written;
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	/*return PR_Sync (((CamelTcpStreamSSL *)stream)->priv->sockfd);*/
 	return 0;
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	if (((CamelTcpStreamSSL *)stream)->priv->sockfd == NULL) {
@@ -1083,7 +1083,7 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 	return ssl_fd;
 }
 
-static int
+static gint
 sockaddr_to_praddr(struct sockaddr *s, gint len, PRNetAddr *addr)
 {
 	/* We assume the ip addresses are the same size - they have to be anyway.
@@ -1123,7 +1123,7 @@ sockaddr_to_praddr(struct sockaddr *s, gint len, PRNetAddr *addr)
 	return -1;
 }
 
-static int
+static gint
 socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
@@ -1218,7 +1218,7 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 	return 0;
 }
 
-static int
+static gint
 stream_connect(CamelTcpStream *stream, struct addrinfo *host)
 {
 	while (host) {
@@ -1230,7 +1230,7 @@ stream_connect(CamelTcpStream *stream, struct addrinfo *host)
 	return -1;
 }
 
-static int
+static gint
 stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	PRSocketOptionData sodata;
@@ -1246,7 +1246,7 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 	return 0;
 }
 
-static int
+static gint
 stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	PRSocketOptionData sodata;

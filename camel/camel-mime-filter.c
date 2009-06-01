@@ -31,7 +31,7 @@
 
 struct _CamelMimeFilterPrivate {
 	gchar *inbuf;
-	size_t inlen;
+	gsize inlen;
 };
 
 #define PRE_HEAD (64)
@@ -41,9 +41,9 @@ struct _CamelMimeFilterPrivate {
 
 static CamelObjectClass *camel_mime_filter_parent;
 
-static void complete (CamelMimeFilter *mf, gchar *in, size_t len,
-		      size_t prespace, gchar **out, size_t *outlen,
-		      size_t *outprespace);
+static void complete (CamelMimeFilter *mf, const gchar *in, gsize len,
+		      gsize prespace, gchar **out, gsize *outlen,
+		      gsize *outprespace);
 
 static void
 camel_mime_filter_class_init (CamelMimeFilterClass *klass)
@@ -98,7 +98,7 @@ camel_mime_filter_get_type (void)
 }
 
 static void
-complete(CamelMimeFilter *mf, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	/* default - do nothing */
 }
@@ -141,11 +141,11 @@ checkmem(gpointer p)
 #endif
 
 static void filter_run(CamelMimeFilter *f,
-		       gchar *in, size_t len, size_t prespace,
-		       gchar **out, size_t *outlen, size_t *outprespace,
+		       const gchar *in, gsize len, gsize prespace,
+		       gchar **out, gsize *outlen, gsize *outprespace,
 		       void (*filterfunc)(CamelMimeFilter *f,
-					  gchar *in, size_t len, size_t prespace,
-					  gchar **out, size_t *outlen, size_t *outprespace))
+					  const gchar *in, gsize len, gsize prespace,
+					  gchar **out, gsize *outlen, gsize *outprespace))
 {
 	struct _CamelMimeFilterPrivate *p;
 
@@ -179,7 +179,7 @@ static void filter_run(CamelMimeFilter *f,
 
 	/* preload any backed up data */
 	if (f->backlen > 0) {
-		memcpy(in-f->backlen, f->backbuf, f->backlen);
+		memcpy((gchar *) in-f->backlen, f->backbuf, f->backlen);
 		in -= f->backlen;
 		len += f->backlen;
 		prespace -= f->backlen;
@@ -211,8 +211,8 @@ static void filter_run(CamelMimeFilter *f,
  **/
 void
 camel_mime_filter_filter (CamelMimeFilter *filter,
-			  gchar *in, size_t len, size_t prespace,
-			  gchar **out, size_t *outlen, size_t *outprespace)
+			  const gchar *in, gsize len, gsize prespace,
+			  gchar **out, gsize *outlen, gsize *outprespace)
 {
 	if (FCLASS(filter)->filter)
 		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->filter);
@@ -239,8 +239,8 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
  **/
 void
 camel_mime_filter_complete (CamelMimeFilter *filter,
-			    gchar *in, size_t len, size_t prespace,
-			    gchar **out, size_t *outlen, size_t *outprespace)
+			    const gchar *in, gsize len, gsize prespace,
+			    gchar **out, gsize *outlen, gsize *outprespace)
 {
 	if (FCLASS(filter)->complete)
 		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->complete);
@@ -277,7 +277,7 @@ camel_mime_filter_reset(CamelMimeFilter *filter)
  * Note: New calls replace old data.
  **/
 void
-camel_mime_filter_backup(CamelMimeFilter *filter, const gchar *data, size_t length)
+camel_mime_filter_backup(CamelMimeFilter *filter, const gchar *data, gsize length)
 {
 	if (filter->backsize < length) {
 		/* g_realloc copies data, unnecessary overhead */
@@ -300,7 +300,7 @@ camel_mime_filter_backup(CamelMimeFilter *filter, const gchar *data, size_t leng
  * for filter output.
  **/
 void
-camel_mime_filter_set_size(CamelMimeFilter *filter, size_t size, gint keep)
+camel_mime_filter_set_size(CamelMimeFilter *filter, gsize size, gint keep)
 {
 	if (filter->outsize < size) {
 		gint offset = filter->outptr - filter->outreal;

@@ -31,11 +31,11 @@
 
 #include "camel-mime-filter-canon.h"
 
-static void filter (CamelMimeFilter *f, gchar *in, size_t len, size_t prespace,
-		    gchar **out, size_t *outlen, size_t *outprespace);
-static void complete (CamelMimeFilter *f, gchar *in, size_t len,
-		      size_t prespace, gchar **out, size_t *outlen,
-		      size_t *outprespace);
+static void filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
+		    gchar **out, gsize *outlen, gsize *outprespace);
+static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
+		      gsize prespace, gchar **out, gsize *outlen,
+		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
 
 
@@ -68,7 +68,7 @@ camel_mime_filter_canon_get_type (void)
 }
 
 static void
-filter_run(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace, gint last)
+filter_run(CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace, gint last)
 {
 	register guchar *inptr, c;
 	const guchar *inend, *start;
@@ -162,13 +162,13 @@ filter_run(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **o
 }
 
 static void
-filter(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+filter(CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	filter_run(f, in, len, prespace, out, outlen, outprespace, FALSE);
 }
 
 static void
-complete(CamelMimeFilter *f, gchar *in, size_t len, size_t prespace, gchar **out, size_t *outlen, size_t *outprespace)
+complete(CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
 {
 	filter_run(f, in, len, prespace, out, outlen, outprespace, TRUE);
 }

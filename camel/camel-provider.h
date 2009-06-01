@@ -135,8 +135,8 @@ typedef enum {
 
 typedef struct {
 	CamelProviderConfType type;
-	gchar *name, *depname;
-	gchar *text, *value;
+	const gchar *name, *depname;
+	const gchar *text, *value;
 } CamelProviderConfEntry;
 
 /* Some defaults */
@@ -148,10 +148,10 @@ typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_de
 
 typedef struct {
 	/* Provider name used in CamelURLs. */
-	gchar *protocol;
+	const gchar *protocol;
 
 	/* Provider name as used by people. (May be the same as protocol) */
-	gchar *name;
+	const gchar *name;
 
 	/* Description of the provider. A novice user should be able
 	 * to read this description, and the information provided by
@@ -159,13 +159,13 @@ typedef struct {
 	 * this provider is relevant to him, and if so, which
 	 * information goes with it.
 	 */
-	gchar *description;
+	const gchar *description;
 
 	/* The category of message that this provider works with.
 	 * (evolution-mail will only list a provider in the store/transport
 	 * config dialogs if its domain is "mail".)
 	 */
-	gchar *domain;
+	const gchar *domain;
 
 	/* Flags describing the provider, flags describing its URLs */
 	gint flags, url_flags;
@@ -197,7 +197,7 @@ typedef struct {
 	/* gettext translation domain (NULL for providers in the
 	 * evolution source tree).
 	 */
-	gchar *translation_domain;
+	const gchar *translation_domain;
 
 	/* This string points to the provider's gconf key value
 	 */

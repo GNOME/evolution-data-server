@@ -32,10 +32,10 @@ static CamelSeekableStreamClass *parent_class = NULL;
 /* Returns the class for a CamelSeekableSubStream */
 #define CSS_CLASS(so) CAMEL_SEEKABLE_SUBSTREAM_CLASS (CAMEL_OBJECT(so)->klass)
 
-static	ssize_t	 stream_read  (CamelStream *stream, gchar *buffer, size_t n);
-static	ssize_t	 stream_write (CamelStream *stream, const gchar *buffer, size_t n);
-static	int	 stream_flush (CamelStream *stream);
-static	int	 stream_close (CamelStream *stream);
+static	gssize	 stream_read  (CamelStream *stream, gchar *buffer, gsize n);
+static	gssize	 stream_write (CamelStream *stream, const gchar *buffer, gsize n);
+static	gint	 stream_flush (CamelStream *stream);
+static	gint	 stream_close (CamelStream *stream);
 static	gboolean eos	      (CamelStream *stream);
 static	off_t	 stream_seek  (CamelSeekableStream *stream, off_t offset,
 			       CamelStreamSeekPolicy policy);
@@ -142,13 +142,13 @@ parent_reset (CamelSeekableSubstream *seekable_substream, CamelSeekableStream *p
 	return camel_seekable_stream_seek (parent, (off_t) seekable_stream->position, CAMEL_STREAM_SET) == seekable_stream->position;
 }
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelSeekableStream *parent;
 	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM (stream);
 	CamelSeekableSubstream *seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (stream);
-	ssize_t v;
+	gssize v;
 
 	if (n == 0)
 		return 0;
@@ -179,13 +179,13 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return v;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelSeekableStream *parent;
 	CamelSeekableStream *seekable_stream = CAMEL_SEEKABLE_STREAM(stream);
 	CamelSeekableSubstream *seekable_substream = CAMEL_SEEKABLE_SUBSTREAM(stream);
-	ssize_t v;
+	gssize v;
 
 	if (n == 0)
 		return 0;
@@ -217,7 +217,7 @@ stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	CamelSeekableSubstream *sus = (CamelSeekableSubstream *)stream;
@@ -225,7 +225,7 @@ stream_flush (CamelStream *stream)
 	return camel_stream_flush(CAMEL_STREAM(sus->parent_stream));
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	/* we dont really want to close the substream ... */

@@ -67,7 +67,7 @@ check_toggled_callback (GtkToggleButton *button,
 	e_source_selector_show_selection (selector, gtk_toggle_button_get_active (button));
 }
 
-static int
+static gint
 on_idle_create_widget (const gchar *gconf_path)
 {
 	GtkWidget *window;

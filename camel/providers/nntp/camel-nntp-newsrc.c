@@ -77,7 +77,7 @@ camel_nntp_newsrc_group_add (CamelNNTPNewsrc *newsrc, const gchar *group_name, g
 	return new_group;
 }
 
-static int
+static gint
 camel_nntp_newsrc_group_get_highest_article_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group)
 {
 	if (!group || group->ranges->len == 0)
@@ -86,7 +86,7 @@ camel_nntp_newsrc_group_get_highest_article_read(CamelNNTPNewsrc *newsrc, Newsrc
 	return g_array_index(group->ranges, ArticleRange, group->ranges->len - 1).high;
 }
 
-static int
+static gint
 camel_nntp_newsrc_group_get_num_articles_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group)
 {
 	gint i;
@@ -104,7 +104,7 @@ camel_nntp_newsrc_group_get_num_articles_read(CamelNNTPNewsrc *newsrc, NewsrcGro
 
 
 static void
-camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group, long low, long high)
+camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group, glong low, glong high)
 {
 	gint i;
 
@@ -235,13 +235,13 @@ camel_nntp_newsrc_mark_article_read (CamelNNTPNewsrc *newsrc, const gchar *group
 }
 
 void
-camel_nntp_newsrc_mark_range_read(CamelNNTPNewsrc *newsrc, const gchar *group_name, long low, long high)
+camel_nntp_newsrc_mark_range_read(CamelNNTPNewsrc *newsrc, const gchar *group_name, glong low, glong high)
 {
 	NewsrcGroup *group;
 
 	/* swap them if they're in the wrong order. */
 	if (low > high) {
-		long tmp;
+		glong tmp;
 
 		tmp = high;
 		high = low;
@@ -257,7 +257,7 @@ camel_nntp_newsrc_mark_range_read(CamelNNTPNewsrc *newsrc, const gchar *group_na
 }
 
 gboolean
-camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const gchar *group_name, long num)
+camel_nntp_newsrc_article_is_read (CamelNNTPNewsrc *newsrc, const gchar *group_name, glong num)
 {
 	gint i;
 	NewsrcGroup *group;

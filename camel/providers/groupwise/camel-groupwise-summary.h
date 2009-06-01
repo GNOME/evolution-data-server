@@ -32,10 +32,10 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelGroupwiseSummary CamelGroupwiseSummary ;
-typedef struct _CamelGroupwiseSummaryClass CamelGroupwiseSummaryClass ;
-typedef struct _CamelGroupwiseMessageInfo CamelGroupwiseMessageInfo ;
-typedef struct _CamelGroupwiseMessageContentInfo CamelGroupwiseMessageContentInfo ;
+typedef struct _CamelGroupwiseSummary CamelGroupwiseSummary;
+typedef struct _CamelGroupwiseSummaryClass CamelGroupwiseSummaryClass;
+typedef struct _CamelGroupwiseMessageInfo CamelGroupwiseMessageInfo;
+typedef struct _CamelGroupwiseMessageContentInfo CamelGroupwiseMessageContentInfo;
 
 /* extra summary flags*/
 enum {
@@ -51,7 +51,7 @@ struct _CamelGroupwiseMessageInfo {
 
 
 struct _CamelGroupwiseMessageContentInfo {
-	CamelMessageContentInfo info ;
+	CamelMessageContentInfo info;
 } ;
 
 
@@ -65,17 +65,17 @@ struct _CamelGroupwiseSummary {
 
 
 struct _CamelGroupwiseSummaryClass {
-	CamelFolderSummaryClass parent_class ;
+	CamelFolderSummaryClass parent_class;
 } ;
 
 
-CamelType camel_groupwise_summary_get_type (void) ;
+CamelType camel_groupwise_summary_get_type (void);
 
-CamelFolderSummary *camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename) ;
+CamelFolderSummary *camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename);
 
-void camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *messgae, const CamelMessageInfo *info) ;
+void camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *messgae, const CamelMessageInfo *info);
 
-void camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid, const CamelMessageInfo *info) ;
+void camel_gw_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid, const CamelMessageInfo *info);
 void groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache);
 
 G_END_DECLS

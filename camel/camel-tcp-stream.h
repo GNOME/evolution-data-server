@@ -84,9 +84,9 @@ typedef struct _CamelSockOptData {
 		gboolean    mcast_loopback;      /* IP multicast loopback */
 		gboolean    no_delay;            /* Don't delay send to coalesce packets */
 		gboolean    broadcast;           /* Enable broadcast */
-		size_t      max_segment;         /* Maximum segment size */
-		size_t      recv_buffer_size;    /* Receive buffer size */
-		size_t      send_buffer_size;    /* Send buffer size */
+		gsize      max_segment;         /* Maximum segment size */
+		gsize      recv_buffer_size;    /* Receive buffer size */
+		gsize      send_buffer_size;    /* Send buffer size */
 		CamelLinger linger;              /* Time to linger on close if data present */
 	} value;
 } CamelSockOptData;

@@ -62,7 +62,7 @@ static void maildir_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
 static void maildir_finalize(CamelObject * object);
 
-static int
+static gint
 maildir_folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;

@@ -24,16 +24,16 @@ G_BEGIN_DECLS
 
 /* Returns the number of days in the month. Year is the normal year, e.g. 2001.
    Month is 0 (Jan) to 11 (Dec). */
-int	time_days_in_month	(gint year, gint month);
+gint	time_days_in_month	(gint year, gint month);
 
 /* Returns the 1-based day number within the year of the specified date.
    Year is the normal year, e.g. 2001. Month is 0 to 11. */
-int	time_day_of_year	(gint day, gint month, gint year);
+gint	time_day_of_year	(gint day, gint month, gint year);
 
 /* Returns the day of the week for the specified date, 0 (Sun) to 6 (Sat).
    For the days that were removed on the Gregorian reformation, it returns
    Thursday. Year is the normal year, e.g. 2001. Month is 0 to 11. */
-int	time_day_of_week	(gint day, gint month, gint year);
+gint	time_day_of_week	(gint day, gint month, gint year);
 
 /* Returns whether the specified year is a leap year. Year is the normal year,
    e.g. 2001. */
@@ -41,7 +41,7 @@ gboolean time_is_leap_year	(gint year);
 
 /* Returns the number of leap years since year 1 up to (but not including) the
    specified year. Year is the normal year, e.g. 2001. */
-int	time_leap_years_up_to	(gint year);
+gint	time_leap_years_up_to	(gint year);
 
 /* Convert to or from an ISO 8601 representation of a time, in UTC,
    e.g. "20010708T183000Z". */

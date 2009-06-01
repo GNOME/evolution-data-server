@@ -722,7 +722,7 @@ e2k_prop_namespace_name (const gchar *prop)
  *
  * Return value: the abbreviation used for prop's namespace
  **/
-char
+gchar
 e2k_prop_namespace_abbrev (const gchar *prop)
 {
 	const gchar *div = get_div (prop);

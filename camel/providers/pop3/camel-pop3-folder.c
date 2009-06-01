@@ -423,7 +423,7 @@ camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete,	CamelException *
 
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
 		if (pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
-			double time_diff = difftime(temp,message_time);
+			gdouble time_diff = difftime(temp,message_time);
 			gint day_lag = time_diff/(60*60*24);
 
 			d(printf("%s(%d): message_time= [%ld]\n", __FILE__, __LINE__, message_time));

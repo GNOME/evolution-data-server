@@ -169,7 +169,7 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (e2k_global_catalog, E2kGlobalCatalog, class_init, init, PARENT_TYPE)
 
-static int
+static gint
 gc_ldap_result (LDAP *ldap, E2kOperation *op,
 		gint msgid, LDAPMessage **msg)
 {
@@ -195,7 +195,7 @@ gc_ldap_result (LDAP *ldap, E2kOperation *op,
 		return LDAP_SUCCESS;
 }
 
-static int
+static gint
 gc_search (E2kGlobalCatalog *gc, E2kOperation *op,
 	   const gchar *base, gint scope, const gchar *filter,
 	   const gchar **attrs, LDAPMessage **msg)
@@ -228,7 +228,7 @@ gc_search (E2kGlobalCatalog *gc, E2kOperation *op,
 }
 
 #ifdef HAVE_LDAP_NTLM_BIND
-static int
+static gint
 ntlm_bind (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 {
 	LDAPMessage *msg;
@@ -304,7 +304,7 @@ ntlm_bind (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 }
 #endif
 
-static int
+static gint
 connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 {
 	gint ldap_error;
@@ -363,7 +363,7 @@ connect_ldap (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	return ldap_error;
 }
 
-static int
+static gint
 get_ldap_connection (E2kGlobalCatalog *gc, E2kOperation *op,
 		     const gchar *server, gint port,
 		     LDAP **ldap)
@@ -396,7 +396,7 @@ get_ldap_connection (E2kGlobalCatalog *gc, E2kOperation *op,
 	return ldap_error;
 }
 
-static int
+static gint
 get_gc_connection (E2kGlobalCatalog *gc, E2kOperation *op)
 {
 	gint err;
@@ -1053,7 +1053,7 @@ find_domain_dn (gchar *domain)
 	return dn;
 }
 
-double
+gdouble
 lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 {
 	gchar **values = NULL, *filter = NULL, *val=NULL;
@@ -1061,7 +1061,7 @@ lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 	LDAP *ldap;
 	LDAPMessage *msg=NULL;
 	gint ldap_error, msgid;
-	double maxAge=0;
+	gdouble maxAge=0;
 	gchar *dn=NULL;
 
 	attrs[0] = "maxPwdAge";

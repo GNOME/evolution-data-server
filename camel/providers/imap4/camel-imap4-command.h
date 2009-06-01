@@ -44,7 +44,7 @@ typedef struct _CamelIMAP4Literal CamelIMAP4Literal;
 typedef gint (* CamelIMAP4PlusCallback) (struct _CamelIMAP4Engine *engine,
 					CamelIMAP4Command *ic,
 					const guchar *linebuf,
-					size_t linelen, CamelException *ex);
+					gsize linelen, CamelException *ex);
 
 typedef gint (* CamelIMAP4UntaggedCallback) (struct _CamelIMAP4Engine *engine,
 					    CamelIMAP4Command *ic,
@@ -72,7 +72,7 @@ struct _CamelIMAP4Literal {
 typedef struct _CamelIMAP4CommandPart {
 	struct _CamelIMAP4CommandPart *next;
 	guchar *buffer;
-	size_t buflen;
+	gsize buflen;
 
 	CamelIMAP4Literal *literal;
 } CamelIMAP4CommandPart;

@@ -111,7 +111,7 @@ camel_imapp_summary_new(void)
 }
 
 
-static int
+static gint
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
 	CamelIMAPPSummary *ims = CAMEL_IMAPP_SUMMARY(s);
@@ -136,7 +136,7 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 	return 0;
 }
 
-static int
+static gint
 summary_header_save(CamelFolderSummary *s, FILE *out)
 {
 	CamelIMAPPSummary *ims = CAMEL_IMAPP_SUMMARY(s);
@@ -172,7 +172,7 @@ error:
 	return NULL;
 }
 
-static int
+static gint
 message_info_save(CamelFolderSummary *s, FILE *out, CamelMessageInfo *info)
 {
 	CamelIMAPPMessageInfo *iinfo =(CamelIMAPPMessageInfo *)info;

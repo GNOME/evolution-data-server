@@ -641,7 +641,7 @@ xp_object_get_status (xmlXPathObjectPtr result)
 }
 
 #if 0
-static int
+static gint
 xp_object_get_number (xmlXPathObjectPtr result)
 {
 	gint ret = -1;
@@ -1482,7 +1482,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 	GList                    *cobjs, *created = NULL, *modified = NULL, *put_to_cache = NULL;
 	GList                    *citer;
 	gboolean                  res;
-	int			  len;
+	gint			  len;
 	gint                       i;
 
 	priv   = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
@@ -1741,7 +1741,7 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 	ECalBackendSyncStatus     result;
 	ECalBackendCalDAVPrivate *priv;
 	ESource                  *source;
-	const char		 *os_val;
+	const gchar		 *os_val;
 	const gchar               *uri;
 	gsize                     len;
 	const gchar               *refresh;

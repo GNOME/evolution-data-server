@@ -47,7 +47,7 @@ static CamelFolderInfo fi_list_3[] = {
 	{ NULL, NULL, NULL, "maildir:/tmp/camel-test/maildir#testbox/foo", "foo", "testbox/foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
-static int
+static gint
 cmp_fi(gconstpointer a, gconstpointer b)
 {
 	const CamelFolderInfo *fa = ((const CamelFolderInfo **)a)[0];

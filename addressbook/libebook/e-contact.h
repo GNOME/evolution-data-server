@@ -234,8 +234,8 @@ typedef struct {
 } EContactName;
 
 typedef struct {
-	double latitude;
-	double longitude;
+	gdouble latitude;
+	gdouble longitude;
 } EContactGeo;
 
 typedef enum {

@@ -307,7 +307,7 @@ static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary * s, st
 		if (mds->priv->current_file) {
 #if 0
 			gchar *p1, *p2, *p3;
-			unsigned long uid;
+			gulong uid;
 #endif
 			/* if setting from a file, grab the flags from it */
 			camel_maildir_info_set_filename(mi, g_strdup(mds->priv->current_file));
@@ -474,7 +474,7 @@ static gint maildir_summary_load(CamelLocalSummary *cls, gint forceindex, CamelE
 	return ret;
 }
 
-static int
+static gint
 camel_maildir_summary_add (CamelLocalSummary *cls, const gchar *name, gint forceindex)
 {
 	CamelMaildirSummary *maildirs = (CamelMaildirSummary *)cls;
@@ -525,7 +525,7 @@ remove_summary(gchar *key, CamelMessageInfo *info, struct _remove_data *rd)
 	camel_message_info_free(info);
 }
 
-static int
+static gint
 maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	DIR *dir;
@@ -726,7 +726,7 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 }
 
 /* sync the summary with the ondisk files. */
-static int
+static gint
 maildir_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changes, CamelException *ex)
 {
 	gint count, i;

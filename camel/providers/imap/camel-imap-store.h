@@ -45,7 +45,7 @@ struct _CamelImapMsg {
 
 CamelImapMsg *camel_imap_msg_new(void (*receive)(CamelImapStore *store, struct _CamelImapMsg *m),
 				 void (*free)(CamelImapStore *store, struct _CamelImapMsg *m),
-				 size_t size);
+				 gsize size);
 void camel_imap_msg_queue(CamelImapStore *store, CamelImapMsg *msg);
 
 G_END_DECLS
@@ -161,7 +161,7 @@ CamelType camel_imap_store_get_type (void);
 
 gboolean camel_imap_store_connected (CamelImapStore *store, CamelException *ex);
 
-ssize_t camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *ex);
+gssize camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *ex);
 
 G_END_DECLS
 

@@ -37,7 +37,7 @@ struct _imap_keyword { gchar *name; camel_imapp_id_t id; };
 #ifdef __GNUC__
 __inline
 #endif
-static unsigned int
+static guint
 imap_hash (register const gchar *str, register guint len)
 {
   static guchar asso_values[] =
@@ -69,7 +69,7 @@ imap_hash (register const gchar *str, register guint len)
       39, 39, 39, 39, 39, 39, 39, 39, 39, 39,
       39, 39, 39, 39, 39, 39
     };
-  return len + asso_values[(unsigned char)str[len - 1]] + asso_values[(unsigned char)str[0]];
+  return len + asso_values[(guchar)str[len - 1]] + asso_values[(guchar)str[0]];
 }
 
 #ifdef __GNUC__
@@ -163,7 +163,7 @@ imap_parse_flags(CamelIMAPPStream *stream, guint32 *flagsp)
 				p = token;
 				while ((c=*p))
 					*p++ = toupper(c);
-				for (i=0;i<(int)(sizeof(flag_table)/sizeof(flag_table[0]));i++)
+				for (i=0;i<(gint)(sizeof(flag_table)/sizeof(flag_table[0]));i++)
 					if (!strcmp(token, flag_table[i].name))
 						flags |= flag_table[i].flag;
 			} else if (tok != ')') {
@@ -187,7 +187,7 @@ imap_write_flags(CamelStream *stream, guint32 flags)
 	if (camel_stream_write(stream, "(", 1) == -1)
 		camel_exception_throw(1, "io error: %s", g_strerror(errno));
 
-	for (i=0;flags!=0 && i<(int)(sizeof(flag_table)/sizeof(flag_table[0]));i++) {
+	for (i=0;flags!=0 && i<(gint)(sizeof(flag_table)/sizeof(flag_table[0]));i++) {
 		if (flag_table[i].flag & flags) {
 			if (camel_stream_write(stream, flag_table[i].name, strlen(flag_table[i].name)) == -1)
 				camel_exception_throw(1, "io error: %s", g_strerror(errno));
@@ -441,7 +441,7 @@ imap_parse_ext_optional(CamelIMAPPStream *is)
 			/* we have a literal string */
 			camel_imapp_stream_set_literal(is, len);
 			while ((tok = camel_imapp_stream_getl(is, &token, &len)) > 0) {
-				d(printf("Skip literal data '%.*s'\n", (int)len, token));
+				d(printf("Skip literal data '%.*s'\n", (gint)len, token));
 			}
 			break;
 
@@ -958,11 +958,11 @@ imap_dump_fetch(struct _fetch_info *finfo)
 		camel_content_info_dump(finfo->cinfo, 0);
 	}
 	if (finfo->got & FETCH_SIZE)
-		camel_stream_printf(sout, "Size: %d\n", (int)finfo->size);
+		camel_stream_printf(sout, "Size: %d\n", (gint)finfo->size);
 	if (finfo->got & FETCH_BODY)
-		camel_stream_printf(sout, "Offset: %d\n", (int)finfo->offset);
+		camel_stream_printf(sout, "Offset: %d\n", (gint)finfo->offset);
 	if (finfo->got & FETCH_FLAGS)
-		camel_stream_printf(sout, "Flags: %08x\n", (int)finfo->flags);
+		camel_stream_printf(sout, "Flags: %08x\n", (gint)finfo->flags);
 	if (finfo->date)
 		camel_stream_printf(sout, "Date: '%s'\n", finfo->date);
 	if (finfo->section)
@@ -1210,7 +1210,7 @@ imap_parse_list(CamelIMAPPStream *is)
 				p = token;
 				while ((c=*p))
 					*p++ = toupper(c);
-				for (i=0;i<(int)(sizeof(list_flag_table)/sizeof(list_flag_table[0]));i++)
+				for (i=0;i<(gint)(sizeof(list_flag_table)/sizeof(list_flag_table[0]));i++)
 					if (!strcmp(token, list_flag_table[i].name))
 						linfo->flags |= list_flag_table[i].flag;
 			} else {

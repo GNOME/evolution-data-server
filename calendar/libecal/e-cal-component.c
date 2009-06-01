@@ -3845,7 +3845,7 @@ e_cal_component_has_recurrences (ECalComponent *comp)
 }
 
 /* Counts the elements in the by_xxx fields of an icalrecurrencetype */
-static int
+static gint
 count_by_xxx (short *field, gint max_elements)
 {
 	gint i;

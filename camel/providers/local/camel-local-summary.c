@@ -149,7 +149,7 @@ camel_local_summary_construct(CamelLocalSummary *new, const gchar *filename, con
 		camel_object_ref((CamelObject *)index);
 }
 
-static int
+static gint
 local_summary_load(CamelLocalSummary *cls, gint forceindex, CamelException *ex)
 {
 	d(g_print ("\nlocal_summary_load called \n"));
@@ -400,14 +400,14 @@ camel_local_summary_write_headers(gint fd, struct _camel_header_raw *header, con
 	return outlen;
 }
 
-static int
+static gint
 local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	/* FIXME: sync index here ? */
 	return 0;
 }
 
-static int
+static gint
 local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	gint ret = 0;
@@ -424,7 +424,7 @@ local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeIn
 	return ret;
 }
 
-static int
+static gint
 local_summary_need_index(void) {
 	return 1;
 }
@@ -574,7 +574,7 @@ local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelLocalMessage
 	return ret;
 }
 
-static int
+static gint
 local_summary_decode_x_evolution(CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *mi)
 {
 	struct _camel_header_param *params, *scan;
@@ -638,7 +638,7 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const gchar *xev, Camel
 }
 
 
-static int
+static gint
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)s;
@@ -663,7 +663,7 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 }
 
 
-static int
+static gint
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *)s;
@@ -678,7 +678,7 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 		return 0;
 
 	/* otherwise load the version number */
-	return camel_file_util_decode_fixed_int32(in, &cls->version);
+	return camel_file_util_decode_fixed_int32(in, (gint32 *) &cls->version);
 }
 
 static struct _CamelFIRecord *
@@ -693,7 +693,7 @@ summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 	return fir;
 }
 
-static int
+static gint
 summary_header_save(CamelFolderSummary *s, FILE *out)
 {
 	/*CamelLocalSummary *cls = (CamelLocalSummary *)s;*/

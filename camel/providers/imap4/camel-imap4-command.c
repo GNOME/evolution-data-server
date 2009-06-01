@@ -50,7 +50,7 @@ enum {
 	IMAP4_STRING_LITERAL,
 };
 
-static int
+static gint
 imap4_string_get_type (const gchar *str)
 {
 	gint type = 0;
@@ -88,12 +88,12 @@ imap4_string_is_quote_safe (const gchar *str)
 }
 #endif
 
-static size_t
+static gsize
 camel_imap4_literal_length (CamelIMAP4Literal *literal)
 {
 	CamelStream *stream, *null;
 	CamelMimeFilter *crlf;
-	size_t len;
+	gsize len;
 
 	if (literal->type == CAMEL_IMAP4_LITERAL_STRING)
 		return strlen (literal->literal.string);
@@ -222,7 +222,7 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 			gchar *function, **strv;
 			guint u;
 			gchar *string;
-			size_t len;
+			gsize len;
 			gpointer obj;
 			gint c, d;
 
@@ -235,17 +235,17 @@ camel_imap4_command_newv (CamelIMAP4Engine *engine, CamelIMAP4Folder *imap4_fold
 				break;
 			case 'c':
 				/* character */
-				c = va_arg (args, int);
+				c = va_arg (args, gint);
 				g_string_append_c (str, c);
 				break;
 			case 'd':
 				/* integer */
-				d = va_arg (args, int);
+				d = va_arg (args, gint);
 				g_string_append_printf (str, "%d", d);
 				break;
 			case 'u':
 				/* unsigned integer */
-				u = va_arg (args, unsigned int);
+				u = va_arg (args, guint);
 				g_string_append_printf (str, "%u", u);
 				break;
 			case 'F':
@@ -445,7 +445,7 @@ camel_imap4_command_unref (CamelIMAP4Command *ic)
 }
 
 
-static int
+static gint
 imap4_literal_write_to_stream (CamelIMAP4Literal *literal, CamelStream *stream)
 {
 	CamelStream *istream, *ostream = NULL;
@@ -521,7 +521,7 @@ unexpected_token (camel_imap4_token_t *token)
 		fprintf (stderr, "{%u}", token->v.literal);
 		break;
 	default:
-		fprintf (stderr, "%c", (unsigned char) (token->token & 0xff));
+		fprintf (stderr, "%c", (guchar) (token->token & 0xff));
 		break;
 	}
 }
@@ -534,7 +534,7 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 	CamelIMAP4Literal *literal;
 	camel_imap4_token_t token;
 	guchar *linebuf;
-	size_t len;
+	gsize len;
 
 	g_assert (ic->part != NULL);
 

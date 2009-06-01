@@ -364,7 +364,7 @@ gint camel_local_folder_unlock(CamelLocalFolder *lf)
 	return 0;
 }
 
-static int
+static gint
 local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelFolder *folder = (CamelFolder *)object;
@@ -379,7 +379,8 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		switch (tag & CAMEL_ARG_TAG) {
 		case CAMEL_OBJECT_ARG_DESCRIPTION:
 			if (folder->description == NULL) {
-				gchar *tmp, *path;
+				const gchar *tmp;
+				gchar *path;
 
 				/* check some common prefixes to shorten the name */
 				tmp = ((CamelService *)folder->parent_store)->url->path;
@@ -434,7 +435,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	return ((CamelObjectClass *)parent_class)->getv(object, ex, args);
 }
 
-static int
+static gint
 local_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	gint i;
@@ -465,7 +466,7 @@ local_setv(CamelObject *object, CamelException *ex, CamelArgV *args)
 	return ((CamelObjectClass *)parent_class)->setv(object, ex, args);
 }
 
-static int
+static gint
 local_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex)
 {
 	return 0;

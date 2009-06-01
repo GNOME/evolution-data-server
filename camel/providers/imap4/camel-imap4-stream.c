@@ -43,8 +43,8 @@ static void camel_imap4_stream_class_init (CamelIMAP4StreamClass *klass);
 static void camel_imap4_stream_init (CamelIMAP4Stream *stream, CamelIMAP4StreamClass *klass);
 static void camel_imap4_stream_finalize (CamelObject *object);
 
-static ssize_t stream_read (CamelStream *stream, gchar *buffer, size_t n);
-static ssize_t stream_write (CamelStream *stream, const gchar *buffer, size_t n);
+static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
+static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
 static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 static gboolean stream_eos (CamelStream *stream);
@@ -120,12 +120,12 @@ camel_imap4_stream_finalize (CamelObject *object)
 }
 
 
-static ssize_t
+static gssize
 imap4_fill (CamelIMAP4Stream *imap4)
 {
 	guchar *inbuf, *inptr, *inend;
-	ssize_t nread;
-	size_t inlen;
+	gssize nread;
+	gsize inlen;
 
 	if (imap4->disconnected) {
 		errno = EINVAL;
@@ -146,7 +146,7 @@ imap4_fill (CamelIMAP4Stream *imap4)
 		inptr = inbuf;
 		inbuf += inlen;
 	} else if (inptr > imap4->realbuf) {
-		size_t shift;
+		gsize shift;
 
 		shift = MIN (inptr - imap4->realbuf, inend - inbuf);
 		memmove (inptr - shift, inptr, inlen);
@@ -171,11 +171,11 @@ imap4_fill (CamelIMAP4Stream *imap4)
 	return imap4->inend - imap4->inptr;
 }
 
-static ssize_t
-stream_read (CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read (CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelIMAP4Stream *imap4 = (CamelIMAP4Stream *) stream;
-	ssize_t len, nread = 0;
+	gssize len, nread = 0;
 
 	if (imap4->mode == CAMEL_IMAP4_STREAM_MODE_LITERAL) {
 		/* don't let our caller read past the end of the literal */
@@ -210,11 +210,11 @@ stream_read (CamelStream *stream, gchar *buffer, size_t n)
 	return nread;
 }
 
-static ssize_t
-stream_write (CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelIMAP4Stream *imap4 = (CamelIMAP4Stream *) stream;
-	ssize_t nwritten;
+	gssize nwritten;
 
 	if (imap4->disconnected) {
 		errno = EINVAL;
@@ -227,7 +227,7 @@ stream_write (CamelStream *stream, const gchar *buffer, size_t n)
 	return nwritten;
 }
 
-static int
+static gint
 stream_flush (CamelStream *stream)
 {
 	CamelIMAP4Stream *imap4 = (CamelIMAP4Stream *) stream;
@@ -235,7 +235,7 @@ stream_flush (CamelStream *stream)
 	return camel_stream_flush (imap4->stream);
 }
 
-static int
+static gint
 stream_close (CamelStream *stream)
 {
 	CamelIMAP4Stream *imap4 = (CamelIMAP4Stream *) stream;
@@ -333,7 +333,7 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 	register guchar *inptr;
 	guchar *inend, *start, *p;
 	gboolean escaped = FALSE;
-	size_t literal = 0;
+	gsize literal = 0;
 	guint32 nz_number;
 	gint ret;
 
@@ -434,11 +434,11 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 				if ((p = strchr (inptr, '}')) && strchr (p, '\n')) {
 					inptr++;
 
-					while (isdigit ((int) *inptr) && literal < UINT_MAX / 10)
+					while (isdigit ((gint) *inptr) && literal < UINT_MAX / 10)
 						literal = (literal * 10) + (*inptr++ - '0');
 
 					if (*inptr != '}') {
-						if (isdigit ((int) *inptr))
+						if (isdigit ((gint) *inptr))
 							g_warning ("illegal literal identifier: literal too large");
 						else if (*inptr != '+')
 							g_warning ("illegal literal identifier: garbage following size");
@@ -629,7 +629,7 @@ camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *t
  * read is incomplete.
  **/
 gint
-camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, size_t *len)
+camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, gsize *len)
 {
 	register guchar *inptr;
 	guchar *inend;
@@ -691,10 +691,10 @@ camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, size_t *len)
  * has been reached or -1 on fail.
  **/
 gint
-camel_imap4_stream_literal (CamelIMAP4Stream *stream, guchar **literal, size_t *len)
+camel_imap4_stream_literal (CamelIMAP4Stream *stream, guchar **literal, gsize *len)
 {
 	guchar *inptr, *inend;
-	size_t nread;
+	gsize nread;
 
 	g_return_val_if_fail (CAMEL_IS_IMAP4_STREAM (stream), -1);
 	g_return_val_if_fail (stream->mode == CAMEL_IMAP4_STREAM_MODE_LITERAL, -1);

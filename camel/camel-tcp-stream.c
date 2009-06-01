@@ -82,7 +82,7 @@ camel_tcp_stream_get_type (void)
 }
 
 
-static int
+static gint
 tcp_connect (CamelTcpStream *stream, struct addrinfo *host)
 {
 	w(g_warning ("CamelTcpStream::connect called on default implementation"));
@@ -107,7 +107,7 @@ camel_tcp_stream_connect (CamelTcpStream *stream, struct addrinfo *host)
 	return CTS_CLASS (stream)->connect (stream, host);
 }
 
-static int
+static gint
 tcp_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
 	w(g_warning ("CamelTcpStream::getsockopt called on default implementation"));
@@ -131,7 +131,7 @@ camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 	return CTS_CLASS (stream)->getsockopt (stream, data);
 }
 
-static int
+static gint
 tcp_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
 	w(g_warning ("CamelTcpStream::setsockopt called on default implementation"));

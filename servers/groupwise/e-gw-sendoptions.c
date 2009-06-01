@@ -174,8 +174,8 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 {
 	SoupSoapParameter *subparam, *field_param, *val_param;
 
-	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting") ;
-			     subparam != NULL ;
+	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting");
+			     subparam != NULL;
 			     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
 
 		gchar *field = NULL, *val = NULL;
@@ -282,8 +282,8 @@ parse_general_options (SoupSoapParameter *group_param, EGwSendOptionsGeneral *go
 {
 	SoupSoapParameter *subparam, *field_param, *val_param;
 
-	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting") ;
-			     subparam != NULL ;
+	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting");
+			     subparam != NULL;
 			     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
 		gchar *field = NULL, *val = NULL;
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
@@ -364,8 +364,8 @@ parse_advanced_settings (SoupSoapParameter *group_param, EGwSendOptionsGeneral *
 {
 	SoupSoapParameter *subparam, *field_param, *val_param;
 
-	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting") ;
-			     subparam != NULL ;
+	for (subparam = soup_soap_parameter_get_first_child_by_name(group_param, "setting");
+			     subparam != NULL;
 			     subparam = soup_soap_parameter_get_next_child_by_name (subparam, "setting")) {
 		gchar *field = NULL, *val = NULL;
 		field_param = soup_soap_parameter_get_first_child_by_name (subparam, "field");
@@ -406,8 +406,8 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 
 	priv = opts->priv;
 
-	for (group_param = soup_soap_parameter_get_first_child_by_name(param, "group") ;
-			     group_param != NULL ;
+	for (group_param = soup_soap_parameter_get_first_child_by_name(param, "group");
+			     group_param != NULL;
 			     group_param = soup_soap_parameter_get_next_child_by_name (group_param, "group")) {
 		gchar *temp = NULL;
 

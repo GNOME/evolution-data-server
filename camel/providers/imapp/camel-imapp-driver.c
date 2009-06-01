@@ -552,7 +552,7 @@ camel_imapp_driver_list(CamelIMAPPDriver *id, const gchar *name, guint32 flags)
 	return res;
 }
 
-static int
+static gint
 driver_resp_list(CamelIMAPPEngine *ie, guint32 idx, CamelIMAPPDriver *id)
 {
 	struct _list_info *linfo;
@@ -634,7 +634,7 @@ driver_status(CamelIMAPPEngine *ie, struct _status_info *sinfo, CamelIMAPPDriver
 	}
 }
 
-static int
+static gint
 driver_resp_exists(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 {
 	/* should this be an event instead? */
@@ -644,7 +644,7 @@ driver_resp_exists(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 	return camel_imapp_engine_skip(ie);
 }
 
-static int
+static gint
 driver_resp_expunge(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 {
 	printf("got expunge response %u\n", id);
@@ -666,7 +666,7 @@ driver_resp_expunge(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 	return camel_imapp_engine_skip(ie);
 }
 
-static int
+static gint
 driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 {
 	struct _fetch_info *finfo = NULL;

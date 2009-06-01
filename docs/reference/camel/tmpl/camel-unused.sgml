@@ -472,6 +472,24 @@ camel-types
 
 @Returns: 
 
+<!-- ##### FUNCTION camel_file_util_decode_size_t ##### -->
+<para>
+
+</para>
+
+@in: 
+@dest: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_file_util_encode_size_t ##### -->
+<para>
+
+</para>
+
+@out: 
+@value: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>
 

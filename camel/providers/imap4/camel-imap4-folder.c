@@ -179,7 +179,7 @@ imap4_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return camel_data_cache_get_filename (imap4_folder->cache, "cache", uid, ex);
 }
 
-static int
+static gint
 imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 {
 	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
@@ -223,7 +223,7 @@ imap4_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	return 0;
 }
 
-static int
+static gint
 imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
 	CamelIMAP4Folder *folder = (CamelIMAP4Folder *) object;
@@ -460,7 +460,7 @@ static struct {
 };
 
 
-static int
+static gint
 imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, gchar onoff, const gchar *flag, CamelException *ex)
 {
 	CamelIMAP4Engine *engine = ((CamelIMAP4Store *) folder->parent_store)->engine;
@@ -509,7 +509,7 @@ imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, gchar onoff, const gchar
 	return 0;
 }
 
-static int
+static gint
 imap4_sync_changes (CamelFolder *folder, GPtrArray *sync, CamelException *ex)
 {
 	CamelIMAP4MessageInfo *iinfo;
@@ -702,7 +702,7 @@ imap4_refresh_info (CamelFolder *folder, CamelException *ex)
 	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 }
 
-static int
+static gint
 untagged_fetch (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)
 {
 	CamelFolderSummary *summary = ((CamelFolder *) engine->folder)->summary;
@@ -1081,7 +1081,7 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 }
 
 
-static int
+static gint
 info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)
 {
 	guint32 uid0, uid1;

@@ -110,7 +110,7 @@ imap4_hash_folder_name (gconstpointer key)
 		return g_str_hash (key);
 }
 
-static int
+static gint
 imap4_compare_folder_name (gconstpointer a, gconstpointer b)
 {
 	gconstpointer aname = a, bname = b;
@@ -403,8 +403,8 @@ connect_to_server_wrapper (CamelIMAP4Engine *engine, CamelException *ex)
 	return ret;
 }
 
-static int
-sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const guchar *linebuf, size_t linelen, CamelException *ex)
+static gint
+sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const guchar *linebuf, gsize linelen, CamelException *ex)
 {
 	/* Perform a single challenge iteration */
 	CamelSasl *sasl = ic->user_data;
@@ -441,7 +441,7 @@ sasl_auth (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, const guchar *linebu
 	return 0;
 }
 
-static int
+static gint
 imap4_try_authenticate (CamelIMAP4Engine *engine, gboolean reprompt, const gchar *errmsg, CamelException *ex)
 {
 	CamelService *service = engine->service;
@@ -1154,7 +1154,7 @@ imap4_rename_folder (CamelStore *store, const gchar *old_name, const gchar *new_
 	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 }
 
-static int
+static gint
 list_sort (const camel_imap4_list_t **list0, const camel_imap4_list_t **list1)
 {
 	return strcmp ((*list0)->name, (*list1)->name);
@@ -1513,7 +1513,7 @@ imap4_get_folder_info (CamelStore *store, const gchar *top, guint32 flags, Camel
 	}
 
 	if (*top != '\0') {
-		size_t len;
+		gsize len;
 		gchar sep;
 
 		len = strlen (pattern);

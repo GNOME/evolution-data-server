@@ -61,10 +61,10 @@ typedef struct {
 	void                (*set_mime_type_field)    (CamelDataWrapper *data_wrapper,
 						       CamelContentType *mime_type_field);
 
-	ssize_t             (*write_to_stream)        (CamelDataWrapper *data_wrapper,
+	gssize             (*write_to_stream)        (CamelDataWrapper *data_wrapper,
 						       CamelStream *stream);
 
-	ssize_t             (*decode_to_stream)       (CamelDataWrapper *data_wrapper,
+	gssize             (*decode_to_stream)       (CamelDataWrapper *data_wrapper,
 						       CamelStream *stream);
 
 	gint                 (*construct_from_stream)  (CamelDataWrapper *data_wrapper,
@@ -78,9 +78,9 @@ CamelType camel_data_wrapper_get_type (void);
 
 /* public methods */
 CamelDataWrapper *camel_data_wrapper_new(void);
-ssize_t           camel_data_wrapper_write_to_stream        (CamelDataWrapper *data_wrapper,
+gssize           camel_data_wrapper_write_to_stream        (CamelDataWrapper *data_wrapper,
 							     CamelStream *stream);
-ssize_t           camel_data_wrapper_decode_to_stream       (CamelDataWrapper *data_wrapper,
+gssize           camel_data_wrapper_decode_to_stream       (CamelDataWrapper *data_wrapper,
 							     CamelStream *stream);
 
 void              camel_data_wrapper_set_mime_type          (CamelDataWrapper *data_wrapper,

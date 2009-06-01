@@ -495,18 +495,18 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 	gint i;
 
 	argv = g_ptr_array_new ();
-	g_ptr_array_add (argv, "gpg");
+	g_ptr_array_add (argv, (guint8 *) "gpg");
 
-	g_ptr_array_add (argv, "--verbose");
-	g_ptr_array_add (argv, "--no-secmem-warning");
-	g_ptr_array_add (argv, "--no-greeting");
-	g_ptr_array_add (argv, "--no-tty");
+	g_ptr_array_add (argv, (guint8 *) "--verbose");
+	g_ptr_array_add (argv, (guint8 *) "--no-secmem-warning");
+	g_ptr_array_add (argv, (guint8 *) "--no-greeting");
+	g_ptr_array_add (argv, (guint8 *) "--no-tty");
 
 	if (passwd_fd == -1) {
 		/* only use batch mode if we don't intend on using the
                    interactive --command-fd option */
-		g_ptr_array_add (argv, "--batch");
-		g_ptr_array_add (argv, "--yes");
+		g_ptr_array_add (argv, (guint8 *) "--batch");
+		g_ptr_array_add (argv, (guint8 *) "--yes");
 	}
 
 	*sfd = buf = g_strdup_printf ("--status-fd=%d", status_fd);
@@ -519,64 +519,64 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 
 	switch (gpg->mode) {
 	case GPG_CTX_MODE_SIGN:
-		g_ptr_array_add (argv, "--sign");
-		g_ptr_array_add (argv, "--detach");
+		g_ptr_array_add (argv, (guint8 *) "--sign");
+		g_ptr_array_add (argv, (guint8 *) "--detach");
 		if (gpg->armor)
-			g_ptr_array_add (argv, "--armor");
+			g_ptr_array_add (argv, (guint8 *) "--armor");
 		hash_str = gpg_hash_str (gpg->hash);
 		if (hash_str)
-			g_ptr_array_add (argv, (gchar *) hash_str);
+			g_ptr_array_add (argv, (guint8 *) hash_str);
 		if (gpg->userid) {
-			g_ptr_array_add (argv, "-u");
-			g_ptr_array_add (argv, (gchar *) gpg->userid);
+			g_ptr_array_add (argv, (guint8 *) "-u");
+			g_ptr_array_add (argv, (guint8 *) gpg->userid);
 		}
-		g_ptr_array_add (argv, "--output");
-		g_ptr_array_add (argv, "-");
+		g_ptr_array_add (argv, (guint8 *) "--output");
+		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_VERIFY:
 		if (!camel_session_is_online (gpg->session)) {
 			/* this is a deprecated flag to gpg since 1.0.7 */
 			/*g_ptr_array_add (argv, "--no-auto-key-retrieve");*/
-			g_ptr_array_add (argv, "--keyserver-options");
-			g_ptr_array_add (argv, "no-auto-key-retrieve");
+			g_ptr_array_add (argv, (guint8 *) "--keyserver-options");
+			g_ptr_array_add (argv, (guint8 *) "no-auto-key-retrieve");
 		}
-		g_ptr_array_add (argv, "--verify");
+		g_ptr_array_add (argv, (guint8 *) "--verify");
 		if (gpg->sigfile)
 			g_ptr_array_add (argv, gpg->sigfile);
-		g_ptr_array_add (argv, "-");
+		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_ENCRYPT:
-		g_ptr_array_add (argv,  "--encrypt");
+		g_ptr_array_add (argv, (guint8 *) "--encrypt");
 		if (gpg->armor)
-			g_ptr_array_add (argv, "--armor");
+			g_ptr_array_add (argv, (guint8 *) "--armor");
 		if (gpg->always_trust)
-			g_ptr_array_add (argv, "--always-trust");
+			g_ptr_array_add (argv, (guint8 *) "--always-trust");
 		if (gpg->userid) {
-			g_ptr_array_add (argv, "-u");
-			g_ptr_array_add (argv, (gchar *) gpg->userid);
+			g_ptr_array_add (argv, (guint8 *) "-u");
+			g_ptr_array_add (argv, (guint8 *) gpg->userid);
 		}
 		if (gpg->recipients) {
 			for (i = 0; i < gpg->recipients->len; i++) {
-				g_ptr_array_add (argv, "-r");
+				g_ptr_array_add (argv, (guint8 *) "-r");
 				g_ptr_array_add (argv, gpg->recipients->pdata[i]);
 			}
 		}
-		g_ptr_array_add (argv, "--output");
-		g_ptr_array_add (argv, "-");
+		g_ptr_array_add (argv, (guint8 *) "--output");
+		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_DECRYPT:
-		g_ptr_array_add (argv, "--decrypt");
-		g_ptr_array_add (argv, "--output");
-		g_ptr_array_add (argv, "-");
+		g_ptr_array_add (argv, (guint8 *) "--decrypt");
+		g_ptr_array_add (argv, (guint8 *) "--output");
+		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_IMPORT:
-		g_ptr_array_add (argv, "--import");
-		g_ptr_array_add (argv, "-");
+		g_ptr_array_add (argv, (guint8 *) "--import");
+		g_ptr_array_add (argv, (guint8 *) "-");
 		break;
 	case GPG_CTX_MODE_EXPORT:
 		if (gpg->armor)
-			g_ptr_array_add (argv, "--armor");
-		g_ptr_array_add (argv, "--export");
+			g_ptr_array_add (argv, (guint8 *) "--armor");
+		g_ptr_array_add (argv, (guint8 *) "--export");
 		for (i = 0; i < gpg->recipients->len; i++)
 			g_ptr_array_add (argv, gpg->recipients->pdata[i]);
 		break;
@@ -589,7 +589,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 
 #endif
 
-static int
+static gint
 gpg_ctx_op_start (struct _GpgCtx *gpg)
 {
 #ifndef G_OS_WIN32
@@ -722,12 +722,12 @@ next_token (const gchar *in, gchar **token)
 	return inptr;
 }
 
-static int
+static gint
 gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 {
 	register guchar *inptr;
 	const guchar *status;
-	size_t nread, nwritten;
+	gsize nread, nwritten;
 	gint len;
 
  parse:
@@ -1020,7 +1020,7 @@ gpg_ctx_op_cancel (struct _GpgCtx *gpg)
 
 #endif
 
-static int
+static gint
 gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 {
 #ifndef G_OS_WIN32
@@ -1081,7 +1081,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	if (polls[2].revents & (G_IO_IN|G_IO_HUP)) {
 		/* read the status message and decide what to do... */
 		gchar buffer[4096];
-		ssize_t nread;
+		gssize nread;
 
 		d(printf ("reading from gpg's status-fd...\n"));
 
@@ -1103,7 +1103,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 
 	if ((polls[0].revents & (G_IO_IN|G_IO_HUP)) && gpg->ostream) {
 		gchar buffer[4096];
-		ssize_t nread;
+		gssize nread;
 
 		d(printf ("reading gpg's stdout...\n"));
 
@@ -1114,7 +1114,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 			goto exception;
 
 		if (nread > 0) {
-			if (camel_stream_write (gpg->ostream, buffer, (size_t) nread) == -1)
+			if (camel_stream_write (gpg->ostream, buffer, (gsize) nread) == -1)
 				goto exception;
 		} else {
 			gpg->seen_eof1 = TRUE;
@@ -1123,7 +1123,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 
 	if (polls[1].revents & (G_IO_IN|G_IO_HUP)) {
 		gchar buffer[4096];
-		ssize_t nread;
+		gssize nread;
 
 		d(printf ("reading gpg's stderr...\n"));
 
@@ -1141,8 +1141,8 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 	}
 
 	if ((polls[4].revents & (G_IO_OUT|G_IO_HUP)) && gpg->need_passwd && gpg->send_passwd) {
-		ssize_t w, nwritten = 0;
-		size_t n;
+		gssize w, nwritten = 0;
+		gsize n;
 
 		d(printf ("sending gpg our passphrase...\n"));
 
@@ -1170,14 +1170,14 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 
 	if ((polls[3].revents & (G_IO_OUT|G_IO_HUP)) && gpg->istream) {
 		gchar buffer[4096];
-		ssize_t nread;
+		gssize nread;
 
 		d(printf ("writing to gpg's stdin...\n"));
 
 		/* write our stream to gpg's stdin */
 		nread = camel_stream_read (gpg->istream, buffer, sizeof (buffer));
 		if (nread > 0) {
-			ssize_t w, nwritten = 0;
+			gssize w, nwritten = 0;
 
 			do {
 				do {
@@ -1238,7 +1238,7 @@ gpg_ctx_op_exited (struct _GpgCtx *gpg)
 }
 #endif
 
-static int
+static gint
 gpg_ctx_op_wait (struct _GpgCtx *gpg)
 {
 #ifndef G_OS_WIN32
@@ -1283,7 +1283,7 @@ gpg_ctx_op_wait (struct _GpgCtx *gpg)
 
 
 
-static int
+static gint
 gpg_sign (CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
 {
 	struct _GpgCtx *gpg = NULL;
@@ -1612,7 +1612,7 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	return NULL;
 }
 
-static int
+static gint
 gpg_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipients, struct _CamelMimePart *ipart, struct _CamelMimePart *opart, CamelException *ex)
 {
 	CamelGpgContext *ctx = (CamelGpgContext *) context;
@@ -1843,7 +1843,7 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	return valid;
 }
 
-static int
+static gint
 gpg_import_keys (CamelCipherContext *context, CamelStream *istream, CamelException *ex)
 {
 	struct _GpgCtx *gpg;
@@ -1882,7 +1882,7 @@ fail:
 	return res;
 }
 
-static int
+static gint
 gpg_export_keys (CamelCipherContext *context, GPtrArray *keys, CamelStream *ostream, CamelException *ex)
 {
 	struct _GpgCtx *gpg;

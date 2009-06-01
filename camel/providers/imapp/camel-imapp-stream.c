@@ -49,7 +49,7 @@ static CamelObjectClass *parent_class = NULL;
 #define CAMEL_IMAPP_STREAM_SIZE (4096)
 #define CAMEL_IMAPP_STREAM_TOKEN (4096) /* maximum token size */
 
-static int
+static gint
 stream_fill(CamelIMAPPStream *is)
 {
 	gint left = 0;
@@ -75,11 +75,11 @@ stream_fill(CamelIMAPPStream *is)
 	return -1;
 }
 
-static ssize_t
-stream_read(CamelStream *stream, gchar *buffer, size_t n)
+static gssize
+stream_read(CamelStream *stream, gchar *buffer, gsize n)
 {
 	CamelIMAPPStream *is = (CamelIMAPPStream *)stream;
-	ssize_t max;
+	gssize max;
 
 	if (is->literal == 0 || n == 0)
 		return 0;
@@ -102,22 +102,22 @@ stream_read(CamelStream *stream, gchar *buffer, size_t n)
 	return max;
 }
 
-static ssize_t
-stream_write(CamelStream *stream, const gchar *buffer, size_t n)
+static gssize
+stream_write(CamelStream *stream, const gchar *buffer, gsize n)
 {
 	CamelIMAPPStream *is = (CamelIMAPPStream *)stream;
 
 	return camel_stream_write(is->source, buffer, n);
 }
 
-static int
+static gint
 stream_close(CamelStream *stream)
 {
 	/* nop? */
 	return 0;
 }
 
-static int
+static gint
 stream_flush(CamelStream *stream)
 {
 	/* nop? */
@@ -132,7 +132,7 @@ stream_eos(CamelStream *stream)
 	return is->literal == 0;
 }
 
-static int
+static gint
 stream_reset(CamelStream *stream)
 {
 	/* nop?  reset literal mode? */
@@ -271,7 +271,7 @@ static void setup_table(void)
 	gint i;
 	guchar *p, c;
 
-	for (i=0;i<(int)(sizeof(is_masks)/sizeof(is_masks[0]));i++) {
+	for (i=0;i<(gint)(sizeof(is_masks)/sizeof(is_masks[0]));i++) {
 		p = is_masks[i].chars;
 		while ((c = *p++))
 			imap_specials[c] |= is_masks[i].mask;
@@ -280,7 +280,7 @@ static void setup_table(void)
 
 #if 0
 
-static int
+static gint
 skip_ws(CamelIMAPPStream *is, guchar *pp, guchar *pe)
 {
 	register guchar c, *p;

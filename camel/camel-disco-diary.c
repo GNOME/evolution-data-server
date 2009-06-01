@@ -106,7 +106,7 @@ camel_disco_diary_get_type (void)
 }
 
 
-static int
+static gint
 diary_encode_uids (CamelDiscoDiary *diary, GPtrArray *uids)
 {
 	gint i, status;
@@ -285,7 +285,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 {
 	guint32 action;
 	off_t size;
-	double pc;
+	gdouble pc;
 
 	d(printf("disco diary replay\n"));
 
