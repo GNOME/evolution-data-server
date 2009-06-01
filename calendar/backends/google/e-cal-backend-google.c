@@ -534,8 +534,8 @@ fetch_attachments (ECalBackendGoogle *cbgo, ECalComponent *comp)
 	e_cal_component_set_attachment_list (comp, new_attach_list);
 }
 
-ECalBackendSyncStatus
-static receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp)
+static ECalBackendSyncStatus
+receive_object (ECalBackendGoogle *cbgo, EDataCal *cal, icalcomponent *icalcomp)
 {
 	ECalBackendGooglePrivate *priv;
 	EGoItem *item = NULL;
@@ -1145,7 +1145,8 @@ e_cal_backend_google_open (ECalBackendSync *backend, EDataCal *cal, gboolean onl
 	ECalBackendGooglePrivate *priv;
 	ECalBackendSyncStatus status;
 	ECalSourceType source_type;
-	gchar *source = NULL, *mangled_uri = NULL, *filename = NULL;
+	const gchar *source = NULL;
+	gchar *mangled_uri = NULL, *filename = NULL;
 	gint i;
 
 	cbgo = E_CAL_BACKEND_GOOGLE(backend);

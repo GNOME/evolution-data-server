@@ -54,7 +54,7 @@
 #define E_GW_ITEM_BY_SETPOS_SIZE 367
 
 typedef struct {
-	gchar *frequency;
+	const gchar *frequency;
 	gchar *until;
 	gint count;
 	gint interval;

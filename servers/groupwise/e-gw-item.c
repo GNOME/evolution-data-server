@@ -55,7 +55,7 @@ struct _EGwItemPrivate {
 	gchar *priority;
 	gchar *task_priority;
 	gchar *place;
-	gchar *source ;
+	gchar *source;
 	gchar *security;
 	GSList *recipient_list;
 	GSList *recurrence_dates;
@@ -68,14 +68,14 @@ struct _EGwItemPrivate {
 	EGwItemOrganizer *organizer;
 
 	/*properties for mail*/
-	gchar *from ;
-	gchar *to ;
-	gchar *content_type ;
+	gchar *from;
+	gchar *to;
+	gchar *content_type;
 	gchar *msg_body_id;
 	gint item_status;
 	/*Attachments*/
 	gboolean has_attachment;
-	GSList *attach_list ;
+	GSList *attach_list;
 	/*linkInfo for replies*/
 	EGwItemLinkInfo *link_info;
 
@@ -188,22 +188,22 @@ free_string (gpointer s, gpointer data)
 static void
 free_attach (gpointer s, gpointer data)
 {
-	EGwItemAttachment *attach = (EGwItemAttachment *) s ;
+	EGwItemAttachment *attach = (EGwItemAttachment *) s;
 	if (attach) {
 		if (attach->id)
-			g_free (attach->id), attach->id = NULL ;
+			g_free (attach->id), attach->id = NULL;
 		if (attach->name)
-			g_free (attach->name), attach->name = NULL ;
+			g_free (attach->name), attach->name = NULL;
 		if (attach->contentid)
-			g_free (attach->contentid), attach->contentid= NULL ;
+			g_free (attach->contentid), attach->contentid= NULL;
 		if (attach->contentType)
-			g_free (attach->contentType), attach->contentType = NULL ;
+			g_free (attach->contentType), attach->contentType = NULL;
 		if (attach->date)
-			g_free (attach->date), attach->date = NULL ;
+			g_free (attach->date), attach->date = NULL;
 		if (attach->data)
-			g_free (attach->data), attach->data = NULL ;
+			g_free (attach->data), attach->data = NULL;
 
-		g_free(attach) ;
+		g_free(attach);
 	}
 
 }
@@ -334,18 +334,18 @@ e_gw_item_dispose (GObject *object)
 		}
 
 		if (priv->from) {
-			g_free (priv->from) ;
-			priv->from = NULL ;
+			g_free (priv->from);
+			priv->from = NULL;
 		}
 
 		if (priv->to) {
-			g_free (priv->to) ;
-			priv->to = NULL ;
+			g_free (priv->to);
+			priv->to = NULL;
 		}
 
 		if (priv->content_type) {
-			g_free (priv->content_type) ;
-			priv->content_type = NULL ;
+			g_free (priv->content_type);
+			priv->content_type = NULL;
 		}
 		if (priv->msg_body_id) {
 			g_free (priv->msg_body_id);
@@ -439,8 +439,8 @@ e_gw_item_dispose (GObject *object)
 
 		if(priv->attach_list) {
 			g_slist_foreach (priv->attach_list, free_attach, NULL);
-			g_slist_free (priv->attach_list) ;
-			priv->attach_list = NULL ;
+			g_slist_free (priv->attach_list);
+			priv->attach_list = NULL;
 		}
 
 		if (priv->category_name) {
@@ -553,7 +553,7 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->set_sendoptions = FALSE;
 	priv->expires = NULL;
 	priv->delay_until = NULL;
-	priv->attach_list = NULL ;
+	priv->attach_list = NULL;
 	priv->simple_fields = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
 	priv->full_name = g_new0(FullName, 1);
 	priv->addresses = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, free_postal_address);
@@ -671,7 +671,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
                 if (subparam) {
 			gchar *formatted_date, *value;
-			SoupSoapParameter *temp_param ;
+			SoupSoapParameter *temp_param;
 
 			recipient->status_enabled = TRUE;
 			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted")) ) {
@@ -825,7 +825,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	}
 }
 
-char*
+gchar *
 e_gw_item_get_field_value (EGwItem *item, const gchar *field_name)
 {
 	gpointer value;
@@ -844,7 +844,7 @@ e_gw_item_get_field_value (EGwItem *item, const gchar *field_name)
 }
 
 void
-e_gw_item_set_field_value (EGwItem *item, const gchar *field_name, char* field_value)
+e_gw_item_set_field_value (EGwItem *item, const gchar *field_name, gchar * field_value)
 {
 	g_return_if_fail (field_name != NULL);
 	g_return_if_fail (field_name != NULL);
@@ -1101,7 +1101,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 	SoupSoapParameter *temp;
 	SoupSoapParameter *second_level_child;
 	GHashTable *simple_fields;
-	FullName *full_name ;
+	FullName *full_name;
 	PostalAddress *address;
 
 	value = NULL;
@@ -1497,7 +1497,7 @@ append_full_name_to_soap_message (FullName *full_name, gchar *display_name, Soup
 	if (full_name->middle_name)
 		e_gw_message_write_string_parameter (msg, "middleName", NULL, full_name->middle_name);
 	if (full_name->last_name)
-		e_gw_message_write_string_parameter (msg, "lastName", NULL, full_name->last_name) ;
+		e_gw_message_write_string_parameter (msg, "lastName", NULL, full_name->last_name);
 	if (full_name->name_suffix)
 		e_gw_message_write_string_parameter (msg, "nameSuffix", NULL, full_name->name_suffix);
 	soup_soap_message_end_element (msg);
@@ -1711,7 +1711,7 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 	g_free (internet_prop);
 
 	if (!g_ascii_strcasecmp (item_type, "Mail"))
-		item->priv->item_type = E_GW_ITEM_TYPE_MAIL ;
+		item->priv->item_type = E_GW_ITEM_TYPE_MAIL;
 	else if (!g_ascii_strcasecmp (item_type, "Appointment"))
 		item->priv->item_type = E_GW_ITEM_TYPE_APPOINTMENT;
 	else if (!g_ascii_strcasecmp (item_type, "Task"))
@@ -1725,7 +1725,7 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 		return item;
 	}
 	else if (!g_ascii_strcasecmp (item_type,"SharedNotification"))
-		item->priv->item_type = E_GW_ITEM_TYPE_NOTIFICATION ;
+		item->priv->item_type = E_GW_ITEM_TYPE_NOTIFICATION;
 
 	else if (!g_ascii_strcasecmp (item_type, "Organization")) {
 
@@ -1934,8 +1934,8 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 			g_free (formatted_date);
 
 		} else if (!g_ascii_strcasecmp (name, "to")) {
-			gchar *to ;
-			to = soup_soap_parameter_get_string_value (child) ;
+			gchar *to;
+			to = soup_soap_parameter_get_string_value (child);
 			e_gw_item_set_to (item, to);
 			g_free (to);
 		} else if (!g_ascii_strcasecmp (name, "iCalId"))
@@ -1974,57 +1974,57 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 				len = atoi (length);
 				item->priv->message = g_base64_decode  (msg, &len);
 				if (!(item->priv->message)) {
-					item->priv->msg_body_id = soup_soap_parameter_get_property (part, "id") ;
+					item->priv->msg_body_id = soup_soap_parameter_get_property (part, "id");
 				}
-				item->priv->content_type = soup_soap_parameter_get_property (part, "contentType") ;
+				item->priv->content_type = soup_soap_parameter_get_property (part, "contentType");
 			}
 
 			g_free (length);
 			g_free (msg);
 
 		} else if (!g_ascii_strcasecmp (name, "attachments")) {
-			for (attachment_param = soup_soap_parameter_get_first_child_by_name(child,"attachment") ;
-					attachment_param != NULL ;
+			for (attachment_param = soup_soap_parameter_get_first_child_by_name(child,"attachment");
+					attachment_param != NULL;
 					attachment_param = soup_soap_parameter_get_next_child_by_name (attachment_param, "attachment")) {
 
-				SoupSoapParameter *temp ;
-				EGwItemAttachment *attach = g_new0 (EGwItemAttachment, 1) ;
+				SoupSoapParameter *temp;
+				EGwItemAttachment *attach = g_new0 (EGwItemAttachment, 1);
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "id") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "id");
 				if (temp) {
-					attach->id = soup_soap_parameter_get_string_value (temp) ;
+					attach->id = soup_soap_parameter_get_string_value (temp);
 					attach->item_reference =  soup_soap_parameter_get_property (temp, "itemReference");
 				}
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "contentId") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "contentId");
 				if (temp)
-					attach->contentid = soup_soap_parameter_get_string_value (temp) ;
+					attach->contentid = soup_soap_parameter_get_string_value (temp);
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "name") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "name");
 				if (temp)
-					attach->name = soup_soap_parameter_get_string_value (temp) ;
+					attach->name = soup_soap_parameter_get_string_value (temp);
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "contentType") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "contentType");
 				if (temp)
-					attach->contentType = soup_soap_parameter_get_string_value (temp) ;
+					attach->contentType = soup_soap_parameter_get_string_value (temp);
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "size") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "size");
 				if (temp) {
 					value = soup_soap_parameter_get_string_value (temp);
 					attach->size = atoi (value);
 					g_free (value);
 				}
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "date") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "date");
 				if (temp)
-					attach->date = soup_soap_parameter_get_string_value (temp) ;
+					attach->date = soup_soap_parameter_get_string_value (temp);
 
-				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "hidden") ;
+				temp = soup_soap_parameter_get_first_child_by_name (attachment_param, "hidden");
 				if (temp)
 					if (soup_soap_parameter_get_int_value (temp) == 1)
 						attach->hidden = TRUE;
 
-				item->priv->attach_list = g_slist_append (item->priv->attach_list, attach) ;
+				item->priv->attach_list = g_slist_append (item->priv->attach_list, attach);
 			}
 
 		} else if (!g_ascii_strcasecmp (name, "place"))
@@ -2060,15 +2060,15 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 			SoupSoapParameter *subparam;
 			EGwItemLinkInfo *info = g_new0 (EGwItemLinkInfo, 1);
 
-			subparam = soup_soap_parameter_get_first_child_by_name (child, "id") ;
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "id");
 			if (subparam)
 				info->id = soup_soap_parameter_get_string_value (subparam);
 
-			subparam = soup_soap_parameter_get_first_child_by_name (child, "type") ;
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "type");
 			if (subparam)
 				info->type =soup_soap_parameter_get_string_value (subparam);
 
-			subparam = soup_soap_parameter_get_first_child_by_name (child, "thread") ;
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "thread");
 			if (subparam)
 				info->thread =soup_soap_parameter_get_string_value (subparam);
 
@@ -2511,19 +2511,19 @@ e_gw_item_get_organizer (EGwItem *item)
 void
 e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list)
 {
-	g_return_if_fail (E_IS_GW_ITEM (item)) ;
+	g_return_if_fail (E_IS_GW_ITEM (item));
 	if (attach_list) {
-		g_slist_foreach (item->priv->attach_list, (GFunc)free_attach, NULL) ;
-		g_slist_free (item->priv->attach_list) ;
+		g_slist_foreach (item->priv->attach_list, (GFunc)free_attach, NULL);
+		g_slist_free (item->priv->attach_list);
 	}
-	item->priv->attach_list = attach_list ;
+	item->priv->attach_list = attach_list;
 }
 
 GSList *
 e_gw_item_get_attach_id_list (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL) ;
-	return item->priv->attach_list ;
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->attach_list;
 }
 
 void
@@ -2622,21 +2622,21 @@ void
 e_gw_item_set_to (EGwItem *item, const gchar *to)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
-	item->priv->to = g_strdup (to) ;
+	item->priv->to = g_strdup (to);
 }
 
 const gchar *
 e_gw_item_get_to (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM(item), NULL) ;
-	return item->priv->to ;
+	g_return_val_if_fail (E_IS_GW_ITEM(item), NULL);
+	return item->priv->to;
 }
 
 const gchar *
 e_gw_item_get_msg_content_type (EGwItem *item)
 {
-	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL) ;
-	return item->priv->content_type ;
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	return item->priv->content_type;
 }
 
 const gchar *
@@ -2833,7 +2833,7 @@ e_gw_item_get_delay_until (EGwItem *item)
 }
 
 void
-e_gw_item_set_source (EGwItem *item, gchar *source)
+e_gw_item_set_source (EGwItem *item, const gchar *source)
 {
 	g_return_if_fail (E_IS_GW_ITEM (item));
 	item->priv->source = g_strdup (source);
@@ -2854,7 +2854,7 @@ e_gw_item_get_content_type (EGwItem *item)
 {
 	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
-	return item->priv->content_type ;
+	return item->priv->content_type;
 }
 
 void
@@ -3027,7 +3027,7 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 {
 	gchar *size = NULL;
 
-	soup_soap_message_start_element (msg, "attachment", NULL, NULL) ;
+	soup_soap_message_start_element (msg, "attachment", NULL, NULL);
 
 	/*id*/
 	if (attachment->id && attachment->item_reference)
@@ -3037,32 +3037,32 @@ add_attachment_to_soap_message(EGwItemAttachment *attachment, SoupSoapMessage *m
 	else
 		e_gw_message_write_string_parameter (msg, "id", NULL, "");
 	/*name*/
-	e_gw_message_write_string_parameter (msg, "name", NULL, attachment->name) ;
+	e_gw_message_write_string_parameter (msg, "name", NULL, attachment->name);
 	/*content id*/
 	e_gw_message_write_string_parameter (msg, "contentId", NULL, attachment->contentid);
 	/*content type*/
-	e_gw_message_write_string_parameter (msg, "contentType", NULL, attachment->contentType) ;
+	e_gw_message_write_string_parameter (msg, "contentType", NULL, attachment->contentType);
 	/*size*/
 	if (attachment->size > 0) {
-		size = g_strdup_printf ("%d", attachment->size) ;
-		e_gw_message_write_string_parameter (msg, "size", NULL, size) ;
+		size = g_strdup_printf ("%d", attachment->size);
+		e_gw_message_write_string_parameter (msg, "size", NULL, size);
 	}
 	/*date*/
 	if (attachment->date)
-		e_gw_message_write_string_parameter (msg, "date", NULL, attachment->date) ;
+		e_gw_message_write_string_parameter (msg, "date", NULL, attachment->date);
 
 	/*data*/
 	if (attachment->size > 0) {
-		soup_soap_message_start_element (msg, "data", NULL, NULL) ;
+		soup_soap_message_start_element (msg, "data", NULL, NULL);
 		soup_soap_message_add_attribute (msg, "contentId", attachment->id, NULL, NULL);
-		soup_soap_message_add_attribute (msg, "contentType", attachment->contentType, NULL, NULL) ;
-		soup_soap_message_add_attribute (msg, "length", size, NULL, NULL) ;
-		soup_soap_message_write_string (msg, attachment->data) ;
-		soup_soap_message_end_element (msg) ;
+		soup_soap_message_add_attribute (msg, "contentType", attachment->contentType, NULL, NULL);
+		soup_soap_message_add_attribute (msg, "length", size, NULL, NULL);
+		soup_soap_message_write_string (msg, attachment->data);
+		soup_soap_message_end_element (msg);
 	}
 
-	soup_soap_message_end_element (msg) ;
-	g_free (size) ;
+	soup_soap_message_end_element (msg);
+	g_free (size);
 }
 
 static void
@@ -3234,14 +3234,14 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 
 	/*attachments*/
 	if (priv->attach_list) {
-		GSList *al ;
-		soup_soap_message_start_element (msg, "attachments", NULL, NULL) ;
-		for (al = priv->attach_list ; al != NULL ;  al = al->next) {
-			EGwItemAttachment *attachment = (EGwItemAttachment *)al->data ;
-			add_attachment_to_soap_message (attachment, msg) ;
+		GSList *al;
+		soup_soap_message_start_element (msg, "attachments", NULL, NULL);
+		for (al = priv->attach_list; al != NULL;  al = al->next) {
+			EGwItemAttachment *attachment = (EGwItemAttachment *)al->data;
+			add_attachment_to_soap_message (attachment, msg);
 
 		}
-		soup_soap_message_end_element (msg) ;
+		soup_soap_message_end_element (msg);
 	}
 }
 
@@ -3267,9 +3267,9 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 
 		/*The subject*/
 		if (priv->subject)
-			e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject) ;
+			e_gw_message_write_string_parameter (msg, "subject", NULL, priv->subject);
 		/*distribution*/
-		e_gw_item_add_distribution_to_soap_message(item, msg) ;
+		e_gw_item_add_distribution_to_soap_message(item, msg);
 
 		if (priv->set_sendoptions) {
 			/* item options */
@@ -3284,8 +3284,8 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		/*message*/
 		soup_soap_message_start_element (msg, "message", NULL, NULL);
 		if (priv->message) {
-			gchar *str ;
-			gchar *str_len ;
+			gchar *str;
+			gchar *str_len;
 
 			str = g_base64_encode (priv->message, strlen (priv->message));
 			/*str = g_strdup (priv->message);*/
@@ -3308,7 +3308,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		if (priv->attach_list) {
 			GSList *al;
 			soup_soap_message_start_element (msg, "attachments", NULL, NULL);
-			for (al = priv->attach_list ; al != NULL ;  al = al->next) {
+			for (al = priv->attach_list; al != NULL;  al = al->next) {
 				EGwItemAttachment *attachment = (EGwItemAttachment *)al->data;
 				add_attachment_to_soap_message (attachment, msg);
 			}
@@ -3318,9 +3318,9 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		/*Link info - used when a mail is being replied to or forwarded*/
 		if (priv->link_info) {
 			soup_soap_message_start_element (msg, "link", NULL, NULL);
-			e_gw_message_write_string_parameter (msg, "id", NULL, priv->link_info->id) ;
-			e_gw_message_write_string_parameter (msg, "type", NULL, priv->link_info->type) ;
-			e_gw_message_write_string_parameter (msg, "thread", NULL, priv->link_info->thread) ;
+			e_gw_message_write_string_parameter (msg, "id", NULL, priv->link_info->id);
+			e_gw_message_write_string_parameter (msg, "type", NULL, priv->link_info->type);
+			e_gw_message_write_string_parameter (msg, "thread", NULL, priv->link_info->thread);
 			soup_soap_message_end_element (msg);
 		}
 

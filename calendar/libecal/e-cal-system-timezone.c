@@ -216,7 +216,7 @@ static gchar *
 recursive_compare (struct stat  *localtime_stat,
 		   const gchar   *localtime_content,
 		   gsize	 localtime_content_len,
-		   char	 *file,
+		   const gchar	*file,
 		   CompareFiles  compare_func)
 {
 	struct stat file_stat;

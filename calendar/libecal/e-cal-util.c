@@ -213,7 +213,7 @@ e_cal_util_parse_ics_string (const gchar *string)
 }
 
 static gchar *
-get_line_fn (gchar *buf, size_t size, gpointer file)
+get_line_fn (gchar *buf, gsize size, gpointer file)
 {
 	return fgets (buf, size, file);
 }
@@ -675,10 +675,10 @@ e_cal_util_generate_alarms_for_list (GList *comps,
  * Return value: a string representing the PRIORITY value. This value is a
  * constant, so it should never be freed.
  */
-gchar *
+const gchar *
 e_cal_util_priority_to_string (gint priority)
 {
-	gchar *retval;
+	const gchar *retval;
 
 	if (priority <= 0)
 		retval = "";

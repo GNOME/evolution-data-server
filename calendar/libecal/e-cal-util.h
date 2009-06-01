@@ -87,7 +87,7 @@ gint e_cal_util_generate_alarms_for_list (GList *comps,
 				       gpointer user_data,
 				       icaltimezone *default_timezone);
 
-gchar *e_cal_util_priority_to_string (gint priority);
+const gchar *e_cal_util_priority_to_string (gint priority);
 gint e_cal_util_priority_from_string (const gchar *string);
 
 void e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,

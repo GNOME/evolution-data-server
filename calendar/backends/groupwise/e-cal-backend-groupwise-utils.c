@@ -308,7 +308,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 
 	e_cal_component_get_attachment_list (comp, &attach_file_list);
 
-	for (l = attach_file_list; l ; l = l->next) {
+	for (l = attach_file_list; l; l = l->next) {
 
 		EGwItemAttachment *attach_item;
 		gchar *file_contents, *encoded_data;
@@ -344,7 +344,7 @@ e_cal_backend_groupwise_set_attachments_from_comp (ECalComponent *comp,
 		attach_item->name = g_strdup (filename + strlen(uid) + 1);
 		/* do a base64 encoding so it can be embedded in a soap
 		 * message */
-		encoded_data = g_base64_encode (file_contents, file_len);
+		encoded_data = g_base64_encode ((guchar *) file_contents, file_len);
 		attach_item->data = encoded_data;
 		attach_item->size = strlen (encoded_data);
 
@@ -568,7 +568,7 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 			e_cal_component_get_exdate_list (comp, &exdate_list);
 			default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 			utc = icaltimezone_get_utc_timezone ();
-			for (l = exdate_list; l ; l = l->next) {
+			for (l = exdate_list; l; l = l->next) {
 				ECalComponentDateTime *dt = (ECalComponentDateTime *) l->data;
 				if (dt->value) {
 					if (!icaltime_get_timezone (*(dt->value)))
@@ -895,7 +895,7 @@ set_attachments_to_cal_component (EGwItem *item, ECalComponent *comp, ECalBacken
 		return; /* No attachments exist */
 
 	e_cal_component_get_uid (comp, &uid);
-	for (l = fetch_list; l ; l = l->next) {
+	for (l = fetch_list; l; l = l->next) {
 		gint fd;
 		EGwItemAttachment *attach_item;
 		gchar *attach_data = NULL;
@@ -1026,7 +1026,8 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	ECalComponentText text;
 	ECalComponentDateTime dt;
 	const gchar *description, *uid;
-	gchar *t, *name;
+	const gchar *t;
+	gchar *name;
 	GList *category_ids;
         GSList *categories;
 	GHashTable *categories_by_id;
@@ -1501,7 +1502,7 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const gchar *conta
 
 
 			e_cal_component_get_attendee_list (comp, &attendee_list);
-			for (l = attendee_list; l ; l = g_slist_next (l)) {
+			for (l = attendee_list; l; l = g_slist_next (l)) {
 				tmp = (ECalComponentAttendee *) (l->data);
 				email_id = tmp->value;
 
@@ -1980,7 +1981,7 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 	new_category_list = e_gw_item_get_categories (new_item);
 	if (old_category_list && new_category_list) {
 		old_categories_copy = g_list_copy (old_category_list);
-		for ( ; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
+		for (; new_category_list != NULL; new_category_list = g_list_next (new_category_list)) {
 
 			category1  = new_category_list->data;
 			temp = old_category_list;
@@ -2064,7 +2065,7 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 
 
 static void
-add_return_value (EGwSendOptionsReturnNotify track, ESource *source, gchar *notify)
+add_return_value (EGwSendOptionsReturnNotify track, ESource *source, const gchar *notify)
 {
 	gchar *value;
 

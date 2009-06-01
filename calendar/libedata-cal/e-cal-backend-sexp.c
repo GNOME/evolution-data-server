@@ -1244,7 +1244,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 
 /* 'builtin' functions */
 static struct {
-	gchar *name;
+	const gchar *name;
 	ESExpFunc *func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */

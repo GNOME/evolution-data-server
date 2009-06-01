@@ -329,7 +329,7 @@ get_deltas (gpointer handle)
 	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
 	const gchar *key = "attempts";
 	const gchar *attempts;
-	const gchar *position ;
+	const gchar *position;
 
 
 	EGwFilter *filter;
@@ -594,7 +594,7 @@ get_deltas (gpointer handle)
 		g_free (real_key);
 	}
 
-	for (ls = cache_keys; ls ; ls = g_slist_next (ls)) {
+	for (ls = cache_keys; ls; ls = g_slist_next (ls)) {
 		ECalComponent *comp = NULL;
 		icalcomponent *icalcomp = NULL;
 
@@ -1321,7 +1321,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	ECalBackendGroupwisePrivate *priv;
 	ECalBackendSyncStatus status;
 	ECalSourceType source_type;
-	gchar *source = NULL;
+	const gchar *source = NULL;
 	gchar *filename;
 	gchar *mangled_uri;
 	gint i;
@@ -1985,7 +1985,7 @@ update_from_server (ECalBackendGroupwise *cbgw, GSList *uid_list, gchar **calobj
 
 	comp = g_object_ref ( (ECalComponent *) list->data );
 	/* convert items into components and add them to the cache */
-	for (i=0, tmp = list; tmp ; tmp = g_list_next (tmp), i++) {
+	for (i=0, tmp = list; tmp; tmp = g_list_next (tmp), i++) {
 		ECalComponent *e_cal_comp;
 		EGwItem *item;
 
@@ -2420,7 +2420,7 @@ fetch_attachments (ECalBackendGroupwise *cbgw, ECalComponent *comp)
 	/*FIXME  get the uri rather than computing the path */
 	attach_store = g_strdup (e_cal_backend_groupwise_get_local_attachments_store (cbgw));
 
-	for (l = attach_list; l ; l = l->next) {
+	for (l = attach_list; l; l = l->next) {
 		gchar *sfname = (gchar *)l->data;
 		gchar *filename, *new_filename;
 		GMappedFile *mapped_file;

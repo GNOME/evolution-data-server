@@ -417,7 +417,7 @@ gchar *
 e_cal_component_gen_uid (void)
 {
         gchar *iso, *ret;
-	static gchar *hostname;
+	static const gchar *hostname;
 	time_t t = time (NULL);
 	static gint serial;
 
@@ -1509,7 +1509,7 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 	for (l = attachment_list; l; l = l->next) {
 		struct attachment *attachment;
 		const gchar *data;
-		size_t buf_size;
+		gsize buf_size;
 		gchar *buf = NULL;
 
 		attachment = l->data;
@@ -1564,7 +1564,7 @@ set_attachment_list (icalcomponent *icalcomp,
 
 	for (l = al; l; l = l->next) {
 		struct attachment *attachment;
-		size_t buf_size;
+		gsize buf_size;
 		gchar *buf;
 
 		attachment = g_new0 (struct attachment, 1);
@@ -5364,7 +5364,7 @@ ECalComponentAlarm *
 e_cal_component_alarm_new (void)
 {
 	ECalComponentAlarm *alarm;
-	gchar *new_auid ;
+	gchar *new_auid;
 
 	alarm = g_new (ECalComponentAlarm, 1);
 

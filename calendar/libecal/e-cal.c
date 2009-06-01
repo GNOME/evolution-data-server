@@ -1011,9 +1011,8 @@ get_factories (const gchar *str_uri, GList **factories)
 	GNOME_Evolution_Calendar_CalFactory factory;
 	Bonobo_ServerInfoList *servers;
 	EUri *uri;
-	gchar *query;
+	const gchar *query;
 	gint i;
-
 
 	/* Determine the protocol and query for factory supporting that */
 	uri = e_uri_new (str_uri);
@@ -4828,7 +4827,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	}
 
 	/* Now add it to the cache, to avoid the server call in future. */
-	g_hash_table_insert (priv->timezones, icaltimezone_get_tzid (*zone), *zone);
+	g_hash_table_insert (priv->timezones, (gpointer) icaltimezone_get_tzid (*zone), *zone);
 
 	e_calendar_remove_op (ecal, our_op);
 	e_calendar_free_op (our_op);

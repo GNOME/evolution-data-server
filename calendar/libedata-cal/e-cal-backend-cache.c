@@ -467,7 +467,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
         l = e_file_cache_get_objects (E_FILE_CACHE (cache));
         if (!l)
                 return NULL;
-        for ( ; l != NULL; l = g_slist_next (l)) {
+        for (; l != NULL; l = g_slist_next (l)) {
                 comp_str = l->data;
                 if (comp_str) {
                         icalcomp = icalparser_parse_string (comp_str);
@@ -516,7 +516,7 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar 
         l = e_file_cache_get_objects (E_FILE_CACHE (cache));
         if (!l)
                 return NULL;
-        for ( ; l != NULL; l = g_slist_next (l)) {
+        for (; l != NULL; l = g_slist_next (l)) {
                 comp_str = l->data;
                 if (comp_str) {
                         icalcomp = icalparser_parse_string (comp_str);
