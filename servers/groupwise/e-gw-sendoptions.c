@@ -437,7 +437,7 @@ e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts)
 }
 
 static void
-e_gw_sendoptions_write_settings (SoupSoapMessage *msg, gchar *field_name, gchar *value, gchar *value_name, gboolean value_direct)
+e_gw_sendoptions_write_settings (SoupSoapMessage *msg, const gchar *field_name, const gchar *value, const gchar *value_name, gboolean value_direct)
 {
 	soup_soap_message_start_element (msg, "setting", NULL, NULL);
 
@@ -458,7 +458,7 @@ e_gw_sendoptions_write_settings (SoupSoapMessage *msg, gchar *field_name, gchar 
 }
 
 static void
-set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking *n_sopts, EGwSendOptionsStatusTracking *o_sopts, gchar *comp)
+set_status_tracking_changes (SoupSoapMessage *msg, EGwSendOptionsStatusTracking *n_sopts, EGwSendOptionsStatusTracking *o_sopts, const gchar *comp)
 {
 	gchar *value, *comp_name = NULL;
 

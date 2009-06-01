@@ -851,7 +851,7 @@ e_gw_item_set_field_value (EGwItem *item, const gchar *field_name, gchar * field
 	g_return_if_fail (E_IS_GW_ITEM(item));
 
 	if (item->priv->simple_fields != NULL)
-		g_hash_table_insert (item->priv->simple_fields, field_name, g_strdup (field_value));
+		g_hash_table_insert (item->priv->simple_fields, (gpointer) field_name, g_strdup (field_value));
 
 }
 guint32
@@ -915,7 +915,7 @@ void
 e_gw_item_set_address (EGwItem *item, const gchar *address_type, PostalAddress *address)
 {
 	if (address_type && address)
-		g_hash_table_insert (item->priv->addresses, address_type, address);
+		g_hash_table_insert (item->priv->addresses, (gpointer) address_type, address);
 
 }
 
@@ -973,7 +973,7 @@ void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, const g
 	}
 
 	if (hash_table)
-		g_hash_table_insert (hash_table, field_name, field_value);
+		g_hash_table_insert (hash_table, (gpointer) field_name, field_value);
 
 }
 
@@ -994,28 +994,28 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 	subparam = soup_soap_parameter_get_first_child_by_name(param, "id");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
-		g_hash_table_insert (simple_fields, "id", value);
+		g_hash_table_insert (simple_fields, (gpointer) "id", value);
 		item->priv->id = g_strdup (value);
 	}
 	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "modified");
 	if (subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
-		g_hash_table_insert (simple_fields, "modified_time", value);
+		g_hash_table_insert (simple_fields, (gpointer) "modified_time", value);
 	}
 	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "comment");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			g_hash_table_insert (simple_fields , "comment", value);
+			g_hash_table_insert (simple_fields , (gpointer) "comment", value);
 	}
 	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name(param, "name");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if (value)
-			g_hash_table_insert (simple_fields, "name", value);
+			g_hash_table_insert (simple_fields, (gpointer) "name", value);
 	}
 	value = NULL;
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "categories");
@@ -1196,7 +1196,7 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "phoneList");
 	if(subparam) {
-		g_hash_table_insert (simple_fields, "default_phone", soup_soap_parameter_get_property(subparam, "default"));
+		g_hash_table_insert (simple_fields, (gpointer) "default_phone", soup_soap_parameter_get_property(subparam, "default"));
 		for ( temp = soup_soap_parameter_get_first_child (subparam); temp != NULL; temp = soup_soap_parameter_get_next_child (temp))
 			{
 				const gchar *key = NULL;
@@ -1237,14 +1237,14 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if (value)
-				g_hash_table_insert (simple_fields, "birthday", value);
+				g_hash_table_insert (simple_fields, (gpointer) "birthday", value);
 
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "website");
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if (value)
-				g_hash_table_insert (simple_fields, "website", value);
+				g_hash_table_insert (simple_fields, (gpointer) "website", value);
 		}
 	}
 
@@ -1254,22 +1254,22 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
-				g_hash_table_insert (simple_fields, "organization", value);
+				g_hash_table_insert (simple_fields, (gpointer) "organization", value);
 			value = soup_soap_parameter_get_property(temp, "uid");
 			if (value)
-				g_hash_table_insert (simple_fields, "organization_id", value);
+				g_hash_table_insert (simple_fields, (gpointer) "organization_id", value);
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "department");
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
-				g_hash_table_insert (simple_fields, "department", value);
+				g_hash_table_insert (simple_fields, (gpointer) "department", value);
 		}
 		temp = soup_soap_parameter_get_first_child_by_name (subparam, "title");
 		if(temp) {
 			value = soup_soap_parameter_get_string_value (temp);
 			if(value)
-				g_hash_table_insert (simple_fields, "title", value);
+				g_hash_table_insert (simple_fields, (gpointer) "title", value);
 		}
 
 	}
@@ -1374,7 +1374,7 @@ set_resource_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "default_phone", value);
+			g_hash_table_insert (simple_fields, (gpointer) "default_phone", value);
 	}
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "email");
 	if(subparam) {
@@ -1410,21 +1410,21 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "default_phone", value);
+			g_hash_table_insert (simple_fields, (gpointer) "default_phone", value);
 	}
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "fax");
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "phone_Fax", value);
+			g_hash_table_insert (simple_fields, (gpointer) "phone_Fax", value);
 	}
 
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "address");
 	if (subparam) {
 		address = g_new0 (PostalAddress, 1);
 		set_postal_address_from_soap_parameter (address, subparam);
-		g_hash_table_insert (item->priv->addresses, "Office", address);
+		g_hash_table_insert (item->priv->addresses, (gpointer) "Office", address);
 
 	}
 
@@ -1432,14 +1432,14 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 	if(subparam) {
 		value = soup_soap_parameter_get_string_value (subparam);
 		if(value)
-			g_hash_table_insert (simple_fields, "website", value);
+			g_hash_table_insert (simple_fields, (gpointer) "website", value);
 	}
 
 
 }
 
 static void
-append_postal_address_to_soap_message (SoupSoapMessage *msg, PostalAddress *address, gchar *address_type)
+append_postal_address_to_soap_message (SoupSoapMessage *msg, PostalAddress *address, const gchar *address_type)
 {
 	soup_soap_message_start_element (msg, "address", NULL, NULL);
 	soup_soap_message_add_attribute (msg, "type", address_type, NULL, NULL);
@@ -1972,7 +1972,7 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 
 			if (msg && length && atoi (length) > 0) {
 				len = atoi (length);
-				item->priv->message = g_base64_decode  (msg, &len);
+				item->priv->message = (gchar *) g_base64_decode (msg, &len);
 				if (!(item->priv->message)) {
 					item->priv->msg_body_id = soup_soap_parameter_get_property (part, "id");
 				}
@@ -2872,7 +2872,7 @@ e_gw_item_get_link_info (EGwItem *item)
 }
 
 static void
-add_return_notification (SoupSoapMessage *msg, gchar *option, EGwItemReturnNotify value)
+add_return_notification (SoupSoapMessage *msg, const gchar *option, EGwItemReturnNotify value)
 {
 	soup_soap_message_start_element (msg, option, NULL, NULL);
 
@@ -2935,8 +2935,8 @@ e_gw_item_add_distribution_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	soup_soap_message_start_element (msg, "recipients", NULL, NULL);
 	/* add each recipient */
 	for (rl = recipient_list; rl != NULL; rl = rl->next) {
-		gchar *dist_type;
-		gchar *status = NULL;
+		const gchar *dist_type;
+		const gchar *status = NULL;
 
 		EGwItemRecipient *recipient = (EGwItemRecipient *) rl->data;
 
@@ -3099,7 +3099,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 	if (priv->message) {
 		gchar *str;
 
-		str = g_base64_encode (priv->message, strlen (priv->message));
+		str = g_base64_encode ((guchar *) priv->message, strlen (priv->message));
 		dtstring = g_strdup_printf ("%d", (int)strlen (str));
 		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
 		g_free (dtstring);
@@ -3287,7 +3287,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			gchar *str;
 			gchar *str_len;
 
-			str = g_base64_encode (priv->message, strlen (priv->message));
+			str = g_base64_encode ((guchar *) priv->message, strlen (priv->message));
 			/*str = g_strdup (priv->message);*/
 			str_len = g_strdup_printf ("%d", str ? (int)strlen (str) : 0);
 			soup_soap_message_start_element (msg, "part", NULL, NULL);
@@ -3529,7 +3529,7 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, gint 
 		if (priv->message) {
 			gchar *str, *message;
 
-			str = g_base64_encode (priv->message, strlen (priv->message));
+			str = g_base64_encode ((guchar *) priv->message, strlen (priv->message));
 			message = g_strdup_printf ("%d", (int)strlen (str));
 			soup_soap_message_add_attribute (msg, "length", message, NULL, NULL);
 			g_free (message);

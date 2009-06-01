@@ -82,7 +82,7 @@ static void
 append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 {
 
-	gchar *operation_name;
+	const gchar *operation_name;
 
 	g_return_if_fail (SOUP_IS_SOAP_MESSAGE (msg));
 	soup_soap_message_start_element (msg, "element", NULL, NULL);

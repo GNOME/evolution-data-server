@@ -29,6 +29,8 @@
 #define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
+G_DEFINE_TYPE (EFolderTypeRegistry, e_folder_type_registry, G_TYPE_OBJECT)
+
 typedef struct {
 	gchar *name;
 	gchar *icon_name;
@@ -405,4 +407,3 @@ e_folder_type_registry_get_accepted_dnd_types_for_type (EFolderTypeRegistry *fol
 
 	return folder_type->accepted_dnd_types;
 }
-G_DEFINE_TYPE (EFolderTypeRegistry, e_folder_type_registry, G_TYPE_OBJECT)

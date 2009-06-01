@@ -679,7 +679,7 @@ static void
 setup_namespaces (void)
 {
 	namespaces = g_hash_table_new (prop_hash, prop_equal);
-	g_hash_table_insert (namespaces, "DAV", GINT_TO_POINTER ('D'));
+	g_hash_table_insert (namespaces, (gpointer) "DAV", GINT_TO_POINTER ('D'));
 }
 
 /**

@@ -502,7 +502,7 @@ add_events (GArray *events_array, E2kProperties *props,
 			startend[1] = evt_start >> 8;
 			startend[2] = evt_end & 0xFF;
 			startend[3] = evt_end >> 8;
-			g_byte_array_append (data, startend, 4);
+			g_byte_array_append (data, (guint8 *) startend, 4);
 			i++;
 		}
 

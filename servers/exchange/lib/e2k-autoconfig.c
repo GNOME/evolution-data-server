@@ -574,11 +574,11 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	for (node = doc->children; node; node = e2k_xml_find (node, "meta")) {
 		gboolean ex55 = FALSE;
 
-		equiv = xmlGetProp (node, "http-equiv");
-		content = xmlGetProp (node, "content");
+		equiv = xmlGetProp (node, (xmlChar *) "http-equiv");
+		content = xmlGetProp (node, (xmlChar *) "content");
 		if (equiv && content &&
-		    !g_ascii_strcasecmp (equiv, "REFRESH") &&
-		    strstr (content, "/logon.asp"))
+		    !g_ascii_strcasecmp ((gchar *) equiv, "REFRESH") &&
+		    xmlStrstr (content, (xmlChar *) "/logon.asp"))
 			ex55 = TRUE;
 		if (equiv)
 			xmlFree (equiv);
@@ -596,9 +596,9 @@ e2k_autoconfig_get_context (E2kAutoconfig *ac, E2kOperation *op,
 	if (node) {
 		/* We won */
 		*result = E2K_AUTOCONFIG_OK;
-		href = xmlGetProp (node, "href");
+		href = xmlGetProp (node, (xmlChar *) "href");
 		g_free (ac->home_uri);
-		ac->home_uri = g_strdup (href);
+		ac->home_uri = g_strdup ((gchar *) href);
 		xmlFree (href);
 	} else
 		*result = E2K_AUTOCONFIG_FAILED;
@@ -728,13 +728,13 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 
 	if (doc) {
 		for (node = e2k_xml_find (doc->children, "img"); node; node = e2k_xml_find (node, "img")) {
-			prop = xmlGetProp (node, "src");
-			if (prop && strstr (prop, "public") && node->parent) {
+			prop = xmlGetProp (node, (xmlChar *) "src");
+			if (prop && xmlStrstr (prop, (xmlChar *) "public") && node->parent) {
 				node = node->parent;
 				xmlFree (prop);
-				prop = xmlGetProp (node, "href");
+				prop = xmlGetProp (node, (xmlChar *) "href");
 				if (prop) {
-					euri = e2k_uri_new (prop);
+					euri = e2k_uri_new ((gchar *) prop);
 					ac->pf_server = g_strdup (euri->host);
 					e2k_uri_free (euri);
 					xmlFree (prop);
@@ -821,13 +821,13 @@ find_global_catalog (E2kAutoconfig *ac)
 	/* Skip query */
 	count = ntohs (header->qdcount);
 	while (count-- && p < end) {
-		p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
+		p += dn_expand (answer, end, p, (gchar *) namebuf, sizeof (namebuf));
 		p += 4;
 	}
 
 	/* Read answers */
 	while (count-- && p < end) {
-		p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
+		p += dn_expand (answer, end, p, (gchar *) namebuf, sizeof (namebuf));
 		GETSHORT (type, p);
 		GETSHORT (qclass, p);
 		GETLONG (ttl, p);
@@ -841,10 +841,10 @@ find_global_catalog (E2kAutoconfig *ac)
 		GETSHORT (priority, p);
 		GETSHORT (weight, p);
 		GETSHORT (port, p);
-		p += dn_expand (answer, end, p, namebuf, sizeof (namebuf));
+		p += dn_expand (answer, end, p, (gchar *) namebuf, sizeof (namebuf));
 
 		/* FIXME: obey priority and weight */
-		ac->gc_server = g_strdup (namebuf);
+		ac->gc_server = g_strdup ((gchar *) namebuf);
 		ac->gc_server_autodetected = TRUE;
 		return;
 	}

@@ -158,7 +158,7 @@ ntlm_set_string (GByteArray *ba, gint offset, const gchar *data, gint len)
 	ba->data[offset + 1] = ba->data[offset + 3] = (len >> 8) & 0xFF;
 	ba->data[offset + 4] =  ba->len       & 0xFF;
 	ba->data[offset + 5] = (ba->len >> 8) & 0xFF;
-	g_byte_array_append (ba, data, len);
+	g_byte_array_append (ba, (guint8 *) data, len);
 }
 
 static void ntlm_lanmanager_hash (const gchar *password, gchar hash[21]);
@@ -207,10 +207,10 @@ xntlm_authenticate (const gchar *nonce, const gchar *domain,
 
 	message = g_byte_array_new ();
 
-	ntlm_lanmanager_hash (password, hash);
-	ntlm_calc_response (hash, nonce, lm_resp);
-	ntlm_nt_hash (password, hash);
-	ntlm_calc_response (hash, nonce, nt_resp);
+	ntlm_lanmanager_hash (password, (gchar *) hash);
+	ntlm_calc_response (hash, (guchar *) nonce, lm_resp);
+	ntlm_nt_hash (password, (gchar *) hash);
+	ntlm_calc_response (hash, (guchar *) nonce, nt_resp);
 
 	g_byte_array_set_size (message, NTLM_RESPONSE_BASE_SIZE);
 	memset (message->data, 0, NTLM_RESPONSE_BASE_SIZE);
@@ -224,9 +224,9 @@ xntlm_authenticate (const gchar *nonce, const gchar *domain,
 	ntlm_set_string (message, NTLM_RESPONSE_WORKSTATION_OFFSET,
 			 workstation, strlen (workstation));
 	ntlm_set_string (message, NTLM_RESPONSE_LM_RESP_OFFSET,
-			 lm_resp, sizeof (lm_resp));
+			 (gchar *) lm_resp, sizeof (lm_resp));
 	ntlm_set_string (message, NTLM_RESPONSE_NT_RESP_OFFSET,
-			 nt_resp, sizeof (nt_resp));
+			 (gchar *) nt_resp, sizeof (nt_resp));
 
 	return message;
 }
@@ -281,10 +281,10 @@ ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
 	memcpy (hash, LM_PASSWORD_MAGIC, sizeof (LM_PASSWORD_MAGIC));
 
 	setup_schedule (lm_password, ks);
-	xntlm_des (ks, hash);
+	xntlm_des (ks, (guchar *) hash);
 
 	setup_schedule (lm_password + 7, ks);
-	xntlm_des (ks, hash + 8);
+	xntlm_des (ks, (guchar *) hash + 8);
 }
 
 static void
@@ -299,7 +299,7 @@ ntlm_nt_hash (const gchar *password, gchar hash[21])
 		*p++ = '\0';
 	}
 
-	xntlm_md4sum (buf, p - buf, hash);
+	xntlm_md4sum (buf, p - buf, (guchar *) hash);
 	memset (hash + 16, 0, 5);
 
 	g_free (buf);

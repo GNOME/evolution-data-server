@@ -36,6 +36,8 @@
 #define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
+G_DEFINE_TYPE (EStorage, e_storage, G_TYPE_OBJECT)
+
 struct EStoragePrivate {
 	/* The set of folders we have in this storage.  */
 	EFolderTree *folder_tree;
@@ -824,5 +826,3 @@ e_storage_removed_folder (EStorage *storage,
 
 	return TRUE;
 }
-
-G_DEFINE_TYPE (EStorage, e_storage, G_TYPE_OBJECT)

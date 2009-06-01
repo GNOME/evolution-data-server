@@ -226,7 +226,7 @@ void
 e2k_rule_append_string (GByteArray *ba, const gchar *str)
 {
 	/* FIXME: verify encoding */
-	g_byte_array_append (ba, str, strlen (str) + 1);
+	g_byte_array_append (ba, (guint8 *) str, strlen (str) + 1);
 }
 
 /**
@@ -247,7 +247,7 @@ e2k_rule_extract_string (guint8 **ptr, gint *len, gchar **str)
 
 	for (slen = 0; slen < *len; slen++) {
 		if ((*ptr)[slen] == '\0') {
-			*str = g_strdup (*ptr);
+			*str = g_strdup ((gchar *) *ptr);
 			*ptr += slen + 1;
 			*len -= slen + 1;
 			return TRUE;

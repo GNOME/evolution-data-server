@@ -1848,15 +1848,19 @@ e_gw_connection_get_date_from_string (const gchar *dtstring)
 		/* It might be a date value */
 		GDate date;
 		struct tm tt;
+		guint16 year;
+		guint month;
+		guint8 day;
 
 		g_date_clear (&date, 1);
 #define digit_at(x,y) (x[y] - '0')
-		guint16 year = digit_at (dtstring, 0) * 1000
-				+ digit_at (dtstring, 1) * 100
-				+ digit_at (dtstring, 2) * 10
-				+ digit_at (dtstring, 3);
-		guint month = digit_at (dtstring, 4) * 10 + digit_at (dtstring, 5);
-		guint8 day = digit_at (dtstring, 6) * 10 + digit_at (dtstring, 7);
+		year = digit_at (dtstring, 0) * 1000
+			+ digit_at (dtstring, 1) * 100
+			+ digit_at (dtstring, 2) * 10
+			+ digit_at (dtstring, 3);
+		month = digit_at (dtstring, 4) * 10 + digit_at (dtstring, 5);
+		day = digit_at (dtstring, 6) * 10 + digit_at (dtstring, 7);
+
 		g_date_set_year (&date, year);
 		g_date_set_month (&date, month);
 		g_date_set_day (&date, day);
@@ -3452,7 +3456,7 @@ e_gw_connection_get_junk_settings (EGwConnection *cnc, gint *use_junk, gint *use
 }
 
 static void
-msg_add_settings (SoupSoapMessage *msg, gchar *field, gint value)
+msg_add_settings (SoupSoapMessage *msg, const gchar *field, int value)
 {
 	soup_soap_message_start_element (msg, "setting", NULL, NULL);
 	e_gw_message_write_string_parameter (msg, "field", NULL, field);

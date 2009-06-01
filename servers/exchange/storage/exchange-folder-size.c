@@ -35,6 +35,8 @@
 #define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
+G_DEFINE_TYPE (ExchangeFolderSize, exchange_folder_size, G_TYPE_OBJECT)
+
 typedef struct {
         gchar *folder_name;
         gdouble folder_size;
@@ -117,8 +119,6 @@ exchange_folder_size_init (ExchangeFolderSize *fsize)
         fsize->priv->model = gtk_list_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_DOUBLE);
 	fsize->priv->row_refs = g_hash_table_new (g_str_hash, g_str_equal);
 }
-
-G_DEFINE_TYPE (ExchangeFolderSize, exchange_folder_size, G_TYPE_OBJECT)
 
 /**
  * exchange_folder_size_new:

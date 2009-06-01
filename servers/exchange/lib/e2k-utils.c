@@ -375,8 +375,8 @@ static gboolean
 append_entryid_section (GByteArray *entryid, const gchar **permanenturl)
 {
 	const gchar *p;
-	gchar buf[44], byte;
-	gint endlen;
+	guint8 buf[44], byte;
+	int endlen;
 
 	p = *permanenturl;
 	if (strspn (p, "0123456789abcdefABCDEF") != 32)
@@ -392,8 +392,8 @@ append_entryid_section (GByteArray *entryid, const gchar **permanenturl)
 	memset (buf + 32, '0', sizeof (buf) - 32 - endlen);
 	memcpy (buf + sizeof (buf) - endlen, p + 33, endlen);
 
-	p = buf;
-	while (p < buf + sizeof (buf)) {
+	p = (gchar *) buf;
+	while (p < (gchar *) buf + sizeof (buf)) {
 		byte = (HEXVAL (*p) << 4) + HEXVAL (*(p + 1));
 		g_byte_array_append (entryid, &byte, 1);
 		p += 2;
@@ -554,7 +554,7 @@ e2k_entryid_generate_oneoff (const gchar *display_name, const gchar *email, gboo
 	entryid = g_byte_array_new ();
 
 	e2k_rule_append_uint32 (entryid, 0);
-	g_byte_array_append (entryid, MAPI_ONE_OFF_UID, sizeof (MAPI_ONE_OFF_UID));
+	g_byte_array_append (entryid, (guint8 *) MAPI_ONE_OFF_UID, sizeof (MAPI_ONE_OFF_UID));
 	e2k_rule_append_uint16 (entryid, 0);
 	e2k_rule_append_uint16 (entryid,
 				MAPI_ONE_OFF_NO_RICH_INFO |
@@ -597,7 +597,7 @@ e2k_entryid_generate_local (const gchar *exchange_dn)
 	entryid = g_byte_array_new ();
 
 	e2k_rule_append_uint32 (entryid, 0);
-	g_byte_array_append (entryid, MAPI_LOCAL_UID, sizeof (MAPI_LOCAL_UID));
+	g_byte_array_append (entryid, (guint8 *) MAPI_LOCAL_UID, sizeof (MAPI_LOCAL_UID));
 	e2k_rule_append_uint16 (entryid, 1);
 	e2k_rule_append_uint16 (entryid, 0);
 	e2k_rule_append_string (entryid, exchange_dn);
@@ -630,7 +630,7 @@ e2k_entryid_generate_contact (GByteArray *contact_entryid, gint nth_address)
 	entryid = g_byte_array_new ();
 
 	e2k_rule_append_uint32 (entryid, 0);
-	g_byte_array_append (entryid, MAPI_CONTACT_UID, sizeof (MAPI_CONTACT_UID));
+	g_byte_array_append (entryid, (guint8 *) MAPI_CONTACT_UID, sizeof (MAPI_CONTACT_UID));
 	e2k_rule_append_uint32 (entryid, 3);
 	e2k_rule_append_uint32 (entryid, 4);
 	e2k_rule_append_uint32 (entryid, nth_address);
@@ -656,10 +656,10 @@ e2k_search_key_generate (const gchar *addrtype, const gchar *address)
 	guint8 *p;
 
 	search_key = g_byte_array_new ();
-	g_byte_array_append (search_key, addrtype, strlen (addrtype));
-	g_byte_array_append (search_key, ":", 1);
-	g_byte_array_append (search_key, address, strlen (address));
-	g_byte_array_append (search_key, "", 1);
+	g_byte_array_append (search_key, (guint8 *) addrtype, strlen (addrtype));
+	g_byte_array_append (search_key, (guint8 *) ":", 1);
+	g_byte_array_append (search_key, (guint8 *) address, strlen (address));
+	g_byte_array_append (search_key, (guint8 *) "", 1);
 
 	for (p = search_key->data; *p; p++)
 		*p = g_ascii_toupper (*p);

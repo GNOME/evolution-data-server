@@ -14,7 +14,9 @@
 xmlDoc *e2k_parse_xml  (const gchar *buf, gint len);
 xmlDoc *e2k_parse_html (const gchar *buf, gint len);
 
-#define E2K_IS_NODE(node, nspace, nname) (!strcmp (node->name, nname) && node->ns && !strcmp (node->ns->href, nspace))
+#define E2K_IS_NODE(node, nspace, nname) \
+	(!xmlStrcmp ((node)->name, (xmlChar *) (nname)) && \
+	(node)->ns && !xmlStrcmp ((node)->ns->href, (xmlChar *) (nspace)))
 
 void  e2k_g_string_append_xml_escaped (GString *string, const gchar *value);
 

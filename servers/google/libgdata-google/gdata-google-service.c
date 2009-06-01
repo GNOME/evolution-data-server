@@ -685,11 +685,11 @@ gdata_google_service_authenticate (GDataGoogleService *service, GError **error)
 	auth = (GDataGoogleServiceAuth *)priv->auth;
 
 	request_form = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (request_form, "Email", auth->username);
-	g_hash_table_insert (request_form, "Passwd", auth->password);
-	g_hash_table_insert (request_form, "service", priv->name);
-	g_hash_table_insert (request_form, "source", priv->agent);
-	g_hash_table_insert (request_form, "accountType", "HOSTED_OR_GOOGLE");
+	g_hash_table_insert (request_form, (gpointer) "Email", auth->username);
+	g_hash_table_insert (request_form, (gpointer) "Passwd", auth->password);
+	g_hash_table_insert (request_form, (gpointer) "service", priv->name);
+	g_hash_table_insert (request_form, (gpointer) "source", priv->agent);
+	g_hash_table_insert (request_form, (gpointer) "accountType", (gpointer) "HOSTED_OR_GOOGLE");
 	request_body = soup_form_encode_hash (request_form);
 	g_hash_table_destroy (request_form);
 

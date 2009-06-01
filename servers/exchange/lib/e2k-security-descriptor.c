@@ -277,10 +277,10 @@ ace_compar (E2k_ACE *ace1, E2k_ACE *ace2, E2kSecurityDescriptor *sd)
 
 
 static xmlNode *
-find_child (xmlNode *node, const gchar *name)
+find_child (xmlNode *node, const xmlChar *name)
 {
 	for (node = node->xmlChildrenNode; node; node = node->next) {
-		if (node->name && !strcmp (node->name, name))
+		if (node->name && !xmlStrcmp (node->name, name))
 			return node;
 	}
 	return NULL;
@@ -290,34 +290,34 @@ static void
 extract_sids (E2kSecurityDescriptor *sd, xmlNodePtr node)
 {
 	xmlNodePtr string_sid_node, type_node, display_name_node;
-	gchar *string_sid, *content, *display_name;
+	xmlChar *string_sid, *content, *display_name;
 	const guint8 *bsid;
 	E2kSid *sid;
 	E2kSidType type;
 
 	for (; node; node = node->next) {
-		if (strcmp (node->name, "sid") != 0) {
+		if (xmlStrcmp (node->name, (xmlChar *) "sid") != 0) {
 			if (node->xmlChildrenNode)
 				extract_sids (sd, node->xmlChildrenNode);
 			continue;
 		}
 
-		string_sid_node = find_child (node, "string_sid");
-		type_node = find_child (node, "type");
-		display_name_node = find_child (node, "display_name");
+		string_sid_node = find_child (node, (xmlChar *) "string_sid");
+		type_node = find_child (node, (xmlChar *) "type");
+		display_name_node = find_child (node, (xmlChar *) "display_name");
 		if (!string_sid_node || !type_node)
 			continue;
 
 		string_sid = xmlNodeGetContent (string_sid_node);
 
 		content = xmlNodeGetContent (type_node);
-		if (!content || !strcmp (content, "user"))
+		if (!content || !xmlStrcmp (content, (xmlChar *) "user"))
 			type = E2K_SID_TYPE_USER;
-		else if (!strcmp (content, "group"))
+		else if (!xmlStrcmp (content, (xmlChar *) "group"))
 			type = E2K_SID_TYPE_GROUP;
-		else if (!strcmp (content, "well_known_group"))
+		else if (!xmlStrcmp (content, (xmlChar *) "well_known_group"))
 			type = E2K_SID_TYPE_WELL_KNOWN_GROUP;
-		else if (!strcmp (content, "alias"))
+		else if (!xmlStrcmp (content, (xmlChar *) "alias"))
 			type = E2K_SID_TYPE_ALIAS;
 		else
 			type = E2K_SID_TYPE_INVALID;
@@ -328,8 +328,8 @@ extract_sids (E2kSecurityDescriptor *sd, xmlNodePtr node)
 		else
 			display_name = NULL;
 
-		sid = e2k_sid_new_from_string_sid (type, string_sid,
-						   display_name);
+		sid = e2k_sid_new_from_string_sid (type, (gchar *) string_sid,
+						   (gchar *) display_name);
 		xmlFree (string_sid);
 		if (display_name)
 			xmlFree (display_name);

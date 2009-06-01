@@ -22,9 +22,6 @@ extern "C" {
 void			add_folder_esource (ExchangeAccount *account, FolderType folder_type, const gchar *folder_name, const gchar *physical_uri);
 void			remove_folder_esource (ExchangeAccount *account, FolderType folder_type, const gchar *physical_uri);
 
-/* Remove this ugly hack by moving this to exchange-account.h */
-gchar * exchange_account_get_authtype (ExchangeAccount *account);
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

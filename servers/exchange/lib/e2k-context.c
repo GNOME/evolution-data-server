@@ -551,7 +551,8 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	static gboolean in_fba_auth = FALSE;
 	gint status, len;
 	SoupBuffer *response = NULL;
-	gchar *action, *method, *name, *value;
+	gchar *action;
+	xmlChar *method, *name, *value;
 	xmlDoc *doc = NULL;
 	xmlNode *node;
 	SoupMessage *post_msg;
@@ -597,15 +598,15 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	if (!node)
 		goto failed;
 
-	method = xmlGetProp (node, "method");
-	if (!method || g_ascii_strcasecmp (method, "post") != 0) {
+	method = xmlGetProp (node, (xmlChar *) "method");
+	if (!method || g_ascii_strcasecmp ((gchar *) method, "post") != 0) {
 		if (method)
 			xmlFree (method);
 		goto failed;
 	}
 	xmlFree (method);
 
-	value = xmlGetProp (node, "action");
+	value = xmlGetProp (node, (xmlChar *) "action");
 	if (!value || !*value)
 		goto failed;
 	if (*value == '/') {
@@ -613,10 +614,10 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 
 		suri = soup_uri_new (ctx->priv->owa_uri);
 		g_free (suri->path);
-		suri->path = g_strdup (value);
+		suri->path = g_strdup ((gchar *) value);
 		action = soup_uri_to_string (suri, FALSE);
 		soup_uri_free (suri);
-	} else if (strncmp(value, "http", 4) != 0) {
+	} else if (xmlStrncmp (value, (xmlChar *) "http", 4) != 0) {
 		SoupURI *suri;
 		gchar *path_end;
 		const gchar *location;
@@ -632,8 +633,8 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 				path_end = strrchr (suri->path, '/') + 1;
 				*path_end = '\0';
 				suri->path = g_realloc (suri->path,
-						path_end - suri->path + strlen (value) + 1);
-				strcat (suri->path, value);
+					path_end - suri->path + xmlStrlen (value) + 1);
+				strcat (suri->path, (gchar *) value);
 				g_free (suri->query);
 				suri->query = NULL;
 				action = soup_uri_to_string (suri, FALSE);
@@ -641,47 +642,57 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 			}
 		}
 	} else
-		action = g_strdup (value);
+		action = g_strdup ((gchar *) value);
 	xmlFree (value);
 
 	form_data = g_hash_table_new_full (g_str_hash, g_str_equal,
 					   NULL, g_free);
 	while ((node = e2k_xml_find (node, "input"))) {
-		name = xmlGetProp (node, "name");
+		name = xmlGetProp (node, (xmlChar *) "name");
 		if (!name)
 			continue;
-		value = xmlGetProp (node, "value");
+		value = xmlGetProp (node, (xmlChar *) "value");
 
-		if (!g_ascii_strcasecmp (name, "destination") && value) {
-			g_hash_table_insert (form_data, "destination",
-					     g_strdup (value));
-		} else if (!g_ascii_strcasecmp (name, "flags")) {
-			g_hash_table_insert (form_data, "flags",
-					     g_strdup (E2K_FBA_FLAG_TRUSTED));
-		} else if (!g_ascii_strcasecmp (name, "username")) {
-			g_hash_table_insert (form_data, "username",
-					     g_strdup (ctx->priv->username));
-		} else if (!g_ascii_strcasecmp (name, "password")) {
-			g_hash_table_insert (form_data, "password",
-					     g_strdup (ctx->priv->password));
+		if (!g_ascii_strcasecmp ((gchar *) name, "destination") && value) {
+			g_hash_table_insert (
+				form_data,
+				(gpointer) "destination",
+				g_strdup ((gchar *) value));
+		} else if (!g_ascii_strcasecmp ((gchar *) name, "flags")) {
+			g_hash_table_insert (
+				form_data,
+				(gpointer) "flags",
+				g_strdup (E2K_FBA_FLAG_TRUSTED));
+		} else if (!g_ascii_strcasecmp ((gchar *) name, "username")) {
+			g_hash_table_insert (
+				form_data,
+				(gpointer) "username",
+				g_strdup (ctx->priv->username));
+		} else if (!g_ascii_strcasecmp ((gchar *) name, "password")) {
+			g_hash_table_insert (
+				form_data,
+				(gpointer) "password",
+				g_strdup (ctx->priv->password));
 		}
 
 		if (value)
 			xmlFree (value);
 		xmlFree (name);
 	}
-	g_hash_table_insert (form_data, "trusted",
-			     g_strdup (E2K_FBA_FLAG_TRUSTED));
+	g_hash_table_insert (
+		form_data, (gpointer) "trusted",
+		g_strdup (E2K_FBA_FLAG_TRUSTED));
 	xmlFreeDoc (doc);
 	doc = NULL;
 
 	form_body = soup_form_encode_hash (form_data);
 	g_hash_table_destroy (form_data);
 
-	post_msg = e2k_soup_message_new_full (ctx, action, "POST",
-					      "application/x-www-form-urlencoded",
-					      SOUP_MEMORY_TAKE,
-					      form_body, strlen (form_body));
+	post_msg = e2k_soup_message_new_full (
+		ctx, action, "POST",
+		"application/x-www-form-urlencoded",
+		SOUP_MEMORY_TAKE,
+		form_body, strlen (form_body));
 	if (!post_msg)
 		goto failed;
 
@@ -700,12 +711,12 @@ e2k_context_fba (E2kContext *ctx, SoupMessage *failed_msg)
 	cookie_str = g_string_new (NULL);
 
 	for (c = cookies; c; c = c->next) {
-		value = c->data;
-		len = strcspn (value, ";");
+		gchar *string = c->data;
+		len = strcspn (string, ";");
 
 		if (cookie_str->len)
 			g_string_append (cookie_str, "; ");
-		g_string_append_len (cookie_str, value, len);
+		g_string_append_len (cookie_str, string, len);
 	}
 	ctx->priv->cookie = cookie_str->str;
 	ctx->priv->cookie_verified = FALSE;
@@ -2403,7 +2414,7 @@ polled (SoupSession *session, SoupMessage *msg, gpointer user_data)
 	E2kResult *results;
 	gint nresults, i;
 	xmlNode *ids;
-	gchar *id;
+	xmlChar *id;
 
 	sub->poll_msg = NULL;
 	if (msg->status_code != E2K_HTTP_MULTI_STATUS) {
@@ -2421,7 +2432,7 @@ polled (SoupSession *session, SoupMessage *msg, gpointer user_data)
 		if (!ids)
 			continue;
 		for (ids = ids->xmlChildrenNode; ids; ids = ids->next) {
-			if (strcmp (ids->name, "li") != 0 ||
+			if (xmlStrcmp (ids->name, (xmlChar *) "li") != 0 ||
 			    !ids->xmlChildrenNode ||
 			    !ids->xmlChildrenNode->content)
 				continue;
@@ -2557,7 +2568,7 @@ renew_cb (SoupSession *session, SoupMessage *msg, gpointer user_data)
 #define E2K_SUBSCRIPTION_MAX_LIFETIME     57600 /* 16 hours */
 
 /* This must be kept in sync with E2kSubscriptionType */
-static gchar *subscription_type[] = {
+static const gchar *subscription_type[] = {
 	"update",		/* E2K_SUBSCRIPTION_OBJECT_CHANGED */
 	"update/newmember",	/* E2K_SUBSCRIPTION_OBJECT_ADDED */
 	"delete",		/* E2K_SUBSCRIPTION_OBJECT_REMOVED */

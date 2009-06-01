@@ -247,7 +247,7 @@ e2k_xml_find_in (xmlNode *node, xmlNode *top, const gchar *name)
 			node = node->next;
 		}
 
-		if (node->name && !strcmp (node->name, name))
+		if (node->name && !strcmp ((gchar *) node->name, name))
 			return node;
 	}
 

@@ -495,19 +495,40 @@ e_folder_exchange_save_to_file (EFolder *folder, const gchar *filename)
 	else
 		return FALSE;
 
-	doc = xmlNewDoc ("1.0");
-	root = xmlNewDocNode (doc, NULL, "connector-folder", NULL);
-	xmlNewProp (root, "version", "1");
+	doc = xmlNewDoc ((xmlChar *) "1.0");
+	root = xmlNewDocNode (doc, NULL, (xmlChar *) "connector-folder", NULL);
+	xmlNewProp (root, (xmlChar *) "version", (xmlChar *) "1");
 	xmlDocSetRootElement (doc, root);
 
-	xmlNewChild (root, NULL, "displayname", name);
-	xmlNewChild (root, NULL, "type", type);
-	xmlNewChild (root, NULL, "outlook_class", outlook_class);
-	xmlNewChild (root, NULL, "physical_uri", physical_uri);
-	xmlNewChild (root, NULL, "internal_uri", internal_uri);
-	xmlNewChild (root, NULL, "folder_size", folder_size);
+	xmlNewChild (
+		root, NULL,
+		(xmlChar *) "displayname",
+		(xmlChar *) name);
+	xmlNewChild (
+		root, NULL,
+		(xmlChar *) "type",
+		(xmlChar *) type);
+	xmlNewChild (
+		root, NULL,
+		(xmlChar *) "outlook_class",
+		(xmlChar *) outlook_class);
+	xmlNewChild (
+		root, NULL,
+		(xmlChar *) "physical_uri",
+		(xmlChar *) physical_uri);
+	xmlNewChild (
+		root, NULL,
+		(xmlChar *) "internal_uri",
+		(xmlChar *) internal_uri);
+	xmlNewChild (
+		root, NULL,
+		(xmlChar *) "folder_size",
+		(xmlChar *) folder_size);
 	if (permanent_uri)
-		xmlNewChild (root, NULL, "permanent_uri", permanent_uri);
+		xmlNewChild (
+			root, NULL,
+			(xmlChar *) "permanent_uri",
+			(xmlChar *) permanent_uri);
 
 	status = e_xml_save_file (filename, doc);
 
@@ -536,11 +557,11 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const gchar *filename)
 	EFolder *folder = NULL;
 	xmlDoc *doc;
 	xmlNode *root, *node;
-	gchar *version, *display_name = NULL;
-	gchar *type = NULL, *outlook_class = NULL;
-	gchar *physical_uri = NULL, *internal_uri = NULL;
-	gchar *permanent_uri = NULL;
-	gchar *folder_size = NULL;
+	xmlChar *version, *display_name = NULL;
+	xmlChar *type = NULL, *outlook_class = NULL;
+	xmlChar *physical_uri = NULL, *internal_uri = NULL;
+	xmlChar *permanent_uri = NULL;
+	xmlChar *folder_size = NULL;
 
 	doc = e_xml_parse_file (filename);
 
@@ -548,43 +569,43 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const gchar *filename)
 		return NULL;
 
 	root = xmlDocGetRootElement (doc);
-	if (root == NULL || strcmp (root->name, "connector-folder") != 0) {
+	if (root == NULL || strcmp ((gchar *) root->name, "connector-folder") != 0) {
 		xmlFreeDoc (doc);
 		return NULL;
 	}
-	version = xmlGetProp (root, "version");
+	version = xmlGetProp (root, (xmlChar *) "version");
 	if (!version) {
 		xmlFreeDoc (doc);
 		return NULL;
 	}
-	if (strcmp (version, "1") != 0) {
+	if (strcmp ((gchar *) version, "1") != 0) {
 		xmlFreeDoc (doc);
 		xmlFree (version);
 		return NULL;
 	}
 	xmlFree (version);
 
-	node = e_xml_get_child_by_name (root, "displayname");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "displayname");
 	if (!node)
 		goto done;
 	display_name = xmlNodeGetContent (node);
 
-	node = e_xml_get_child_by_name (root, "type");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "type");
 	if (!node)
 		goto done;
 	type = xmlNodeGetContent (node);
 
-	node = e_xml_get_child_by_name (root, "outlook_class");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "outlook_class");
 	if (!node)
 		goto done;
 	outlook_class = xmlNodeGetContent (node);
 
-	node = e_xml_get_child_by_name (root, "physical_uri");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "physical_uri");
 	if (!node)
 		goto done;
 	physical_uri = xmlNodeGetContent (node);
 
-	node = e_xml_get_child_by_name (root, "internal_uri");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "internal_uri");
 	if (!node)
 		goto done;
 	internal_uri = xmlNodeGetContent (node);
@@ -592,20 +613,24 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const gchar *filename)
 	if (!display_name || !type || !physical_uri || !internal_uri)
 		goto done;
 
-	folder = e_folder_exchange_new (hier, display_name,
-					type, outlook_class,
-					physical_uri, internal_uri);
+	folder = e_folder_exchange_new (
+		hier,
+		(gchar *) display_name,
+		(gchar *) type,
+		(gchar *) outlook_class,
+		(gchar *) physical_uri,
+		(gchar *) internal_uri);
 
-	node = e_xml_get_child_by_name (root, "permanent_uri");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "permanent_uri");
 	if (node) {
 		permanent_uri = xmlNodeGetContent (node);
-		e_folder_exchange_set_permanent_uri (folder, permanent_uri);
+		e_folder_exchange_set_permanent_uri (folder, (gchar *) permanent_uri);
 	}
 
-	node = e_xml_get_child_by_name (root, "folder_size");
+	node = e_xml_get_child_by_name (root, (xmlChar *) "folder_size");
 	if (node) {
 		folder_size = xmlNodeGetContent (node);
-		e_folder_exchange_set_folder_size (folder, atoi (folder_size));
+		e_folder_exchange_set_folder_size (folder, atoi ((gchar *) folder_size));
 	}
 
  done:

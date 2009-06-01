@@ -147,7 +147,7 @@ E2K_MAKE_TYPE (exchange_hierarchy_webdav, ExchangeHierarchyWebDAV, class_init, i
 
 
 typedef struct {
-	gchar *contentclass, *component;
+	const gchar *contentclass, *component;
 	gboolean offline_supported;
 } ExchangeFolderType;
 
@@ -168,7 +168,7 @@ folder_type_map_init (void)
 	folder_type_map = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; folder_types[i].contentclass; i++) {
 		g_hash_table_insert (folder_type_map,
-				     folder_types[i].contentclass,
+				     (gpointer) folder_types[i].contentclass,
 				     &folder_types[i]);
 	}
 }

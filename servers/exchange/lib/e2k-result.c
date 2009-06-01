@@ -48,7 +48,7 @@ prop_get_binary_array (E2kResult *result, const gchar *propname, xmlNode *node)
 			gsize length = 0;
 
 			data = g_base64_decode (
-				node->xmlChildrenNode->content, &length);
+				(gchar *) node->xmlChildrenNode->content, &length);
 			g_byte_array_append (byte_array, data, length);
 			g_free (data);
 		}
@@ -67,7 +67,7 @@ prop_get_string_array (E2kResult *result, const gchar *propname,
 	array = g_ptr_array_new ();
 	for (node = node->xmlChildrenNode; node; node = node->next) {
 		if (node->xmlChildrenNode && node->xmlChildrenNode->content)
-			g_ptr_array_add (array, g_strdup (node->xmlChildrenNode->content));
+			g_ptr_array_add (array, g_strdup ((gchar *) node->xmlChildrenNode->content));
 		else
 			g_ptr_array_add (array, g_strdup (""));
 	}
@@ -87,7 +87,7 @@ prop_get_binary (E2kResult *result, const gchar *propname, xmlNode *node)
 		gsize length = 0;
 
 		data = g_base64_decode (
-			node->xmlChildrenNode->content, &length);
+			(gchar *) node->xmlChildrenNode->content, &length);
 		g_byte_array_append (byte_array, data, length);
 		g_free (data);
 	}
@@ -102,7 +102,7 @@ prop_get_string (E2kResult *result, const gchar *propname,
 	gchar *content;
 
 	if (node->xmlChildrenNode && node->xmlChildrenNode->content)
-		content = g_strdup (node->xmlChildrenNode->content);
+		content = g_strdup ((gchar *) node->xmlChildrenNode->content);
 	else
 		content = g_strdup ("");
 
@@ -120,14 +120,15 @@ prop_get_xml (E2kResult *result, const gchar *propname, xmlNode *node)
 static void
 prop_parse (xmlNode *node, E2kResult *result)
 {
-	gchar *name, *type;
+	gchar *name;
+	xmlChar *type;
 
 	g_return_if_fail (node->ns != NULL);
 
 	if (!result->props)
 		result->props = e2k_properties_new ();
 
-	if (!strncmp (node->ns->href, E2K_NS_MAPI_ID, E2K_NS_MAPI_ID_LEN)) {
+	if (!strncmp ((gchar *) node->ns->href, E2K_NS_MAPI_ID, E2K_NS_MAPI_ID_LEN)) {
 		/* Reinsert the illegal initial '0' that was stripped out
 		 * by sanitize_bad_multistatus. (This also covers us in
 		 * the cases where the server returns the property without
@@ -137,22 +138,25 @@ prop_parse (xmlNode *node, E2kResult *result)
 	} else
 		name = g_strdup_printf ("%s%s", node->ns->href, node->name);
 
-	type = xmlGetNsProp (node, "dt", E2K_NS_TYPE);
-	if (type && !strcmp (type, "mv.bin.base64"))
+	type = xmlGetNsProp (
+		node,
+		(xmlChar *) "dt",
+		(xmlChar *) E2K_NS_TYPE);
+	if (type && !xmlStrcmp (type, (xmlChar *) "mv.bin.base64"))
 		prop_get_binary_array (result, name, node);
-	else if (type && !strcmp (type, "mv.int"))
+	else if (type && !xmlStrcmp (type, (xmlChar *) "mv.int"))
 		prop_get_string_array (result, name, E2K_PROP_TYPE_INT_ARRAY, node);
-	else if (type && !strncmp (type, "mv.", 3))
+	else if (type && !xmlStrncmp (type, (xmlChar *) "mv.", 3))
 		prop_get_string_array (result, name, E2K_PROP_TYPE_STRING_ARRAY, node);
-	else if (type && !strcmp (type, "bin.base64"))
+	else if (type && !xmlStrcmp (type, (xmlChar *) "bin.base64"))
 		prop_get_binary (result, name, node);
-	else if (type && !strcmp (type, "int"))
+	else if (type && !xmlStrcmp (type, (xmlChar *) "int"))
 		prop_get_string (result, name, E2K_PROP_TYPE_INT, node);
-	else if (type && !strcmp (type, "boolean"))
+	else if (type && !xmlStrcmp (type, (xmlChar *) "boolean"))
 		prop_get_string (result, name, E2K_PROP_TYPE_BOOL, node);
-	else if (type && !strcmp (type, "float"))
+	else if (type && !xmlStrcmp (type, (xmlChar *) "float"))
 		prop_get_string (result, name, E2K_PROP_TYPE_FLOAT, node);
-	else if (type && !strcmp (type, "dateTime.tz"))
+	else if (type && !xmlStrcmp (type, (xmlChar *) "dateTime.tz"))
 		prop_get_string (result, name, E2K_PROP_TYPE_DATE, node);
 	else if (!node->xmlChildrenNode ||
 		 !node->xmlChildrenNode->xmlChildrenNode)
@@ -171,7 +175,8 @@ propstat_parse (xmlNode *node, E2kResult *result)
 	node = node->xmlChildrenNode;
 	if (!E2K_IS_NODE (node, "DAV:", "status"))
 		return;
-	result->status = e2k_http_parse_status (node->xmlChildrenNode->content);
+	result->status = e2k_http_parse_status (
+		(gchar *) node->xmlChildrenNode->content);
 	if (result->status != E2K_HTTP_OK)
 		return;
 
@@ -326,10 +331,10 @@ e2k_results_array_add_from_multistatus (GArray *results_array,
 				continue;
 
 			if (E2K_IS_NODE (rnode, "DAV:", "href"))
-				result.href = xmlNodeGetContent (rnode);
+				result.href = (gchar *) xmlNodeGetContent (rnode);
 			else if (E2K_IS_NODE (rnode, "DAV:", "status")) {
 				result.status = e2k_http_parse_status (
-					rnode->xmlChildrenNode->content);
+					(gchar *) rnode->xmlChildrenNode->content);
 			} else if (E2K_IS_NODE (rnode, "DAV:", "propstat"))
 				propstat_parse (rnode, &result);
 			else

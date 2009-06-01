@@ -73,7 +73,7 @@ class_init (GObjectClass *object_class)
 	 * below) takes a *really* long time to scan the sasl modules
 	 * when running under gdb. We're not using sasl anyway, so...
 	 */
-	putenv("SASL_PATH=");
+	g_setenv ("SASL_PATH", "", TRUE);
 
 	parent_class = g_type_class_ref (PARENT_TYPE);
 
@@ -240,7 +240,7 @@ ntlm_bind (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	/* Create and send NTLM request */
 	ba = xntlm_negotiate ();
 	ldap_buf.bv_len = ba->len;
-	ldap_buf.bv_val = ba->data;
+	ldap_buf.bv_val = (gchar *) ba->data;
 	ldap_error = ldap_ntlm_bind (ldap, "NTLM", LDAP_AUTH_NTLM_REQUEST,
 				     &ldap_buf, NULL, NULL, &msgid);
 	g_byte_array_free (ba, TRUE);
@@ -276,7 +276,7 @@ ntlm_bind (E2kGlobalCatalog *gc, E2kOperation *op, LDAP *ldap)
 	ba = xntlm_authenticate (nonce, gc->priv->nt_domain ? gc->priv->nt_domain : default_domain,
 				 gc->priv->user, gc->priv->password, NULL);
 	ldap_buf.bv_len = ba->len;
-	ldap_buf.bv_val = ba->data;
+	ldap_buf.bv_val = (gchar *) ba->data;
 	ldap_error = ldap_ntlm_bind (ldap, "NTLM", LDAP_AUTH_NTLM_RESPONSE,
 				     &ldap_buf, NULL, NULL, &msgid);
 	g_byte_array_free (ba, TRUE);
@@ -567,7 +567,7 @@ get_sid_values (E2kGlobalCatalog *gc, E2kOperation *op,
 		ldap_value_free (values);
 
 	entry->sid = e2k_sid_new_from_binary_sid (
-		type, bsid_values[0]->bv_val, entry->display_name);
+		type, (guint8 *) bsid_values[0]->bv_val, entry->display_name);
 	entry->mask |= E2K_GLOBAL_CATALOG_LOOKUP_SID;
 
 	ldap_value_free_len (bsid_values);
@@ -750,14 +750,14 @@ e2k_global_catalog_lookup (E2kGlobalCatalog *gc,
 	attrs = g_ptr_array_new ();
 
 	if (!entry->display_name)
-		g_ptr_array_add (attrs, "displayName");
+		g_ptr_array_add (attrs, (guint8 *) "displayName");
 	if (!entry->email) {
-		g_ptr_array_add (attrs, "mail");
+		g_ptr_array_add (attrs, (guint8 *) "mail");
 		if (flags & E2K_GLOBAL_CATALOG_LOOKUP_EMAIL)
 			need_flags |= E2K_GLOBAL_CATALOG_LOOKUP_EMAIL;
 	}
 	if (!entry->legacy_exchange_dn) {
-		g_ptr_array_add (attrs, "legacyExchangeDN");
+		g_ptr_array_add (attrs, (guint8 *) "legacyExchangeDN");
 		if (flags & E2K_GLOBAL_CATALOG_LOOKUP_LEGACY_EXCHANGE_DN)
 			need_flags |= E2K_GLOBAL_CATALOG_LOOKUP_LEGACY_EXCHANGE_DN;
 	}
@@ -765,27 +765,27 @@ e2k_global_catalog_lookup (E2kGlobalCatalog *gc,
 	lookup_flags = flags & ~entry->mask;
 
 	if (lookup_flags & E2K_GLOBAL_CATALOG_LOOKUP_SID) {
-		g_ptr_array_add (attrs, "objectSid");
-		g_ptr_array_add (attrs, "objectCategory");
+		g_ptr_array_add (attrs, (guint8 *) "objectSid");
+		g_ptr_array_add (attrs, (guint8 *) "objectCategory");
 		need_flags |= E2K_GLOBAL_CATALOG_LOOKUP_SID;
 	}
 	if (lookup_flags & E2K_GLOBAL_CATALOG_LOOKUP_MAILBOX) {
-		g_ptr_array_add (attrs, "mailNickname");
-		g_ptr_array_add (attrs, "homeMTA");
+		g_ptr_array_add (attrs, (guint8 *) "mailNickname");
+		g_ptr_array_add (attrs, (guint8 *) "homeMTA");
 		need_flags |= E2K_GLOBAL_CATALOG_LOOKUP_MAILBOX;
 	}
 	if (lookup_flags & E2K_GLOBAL_CATALOG_LOOKUP_DELEGATES)
-		g_ptr_array_add (attrs, "publicDelegates");
+		g_ptr_array_add (attrs, (guint8 *) "publicDelegates");
 	if (lookup_flags & E2K_GLOBAL_CATALOG_LOOKUP_DELEGATORS)
-		g_ptr_array_add (attrs, "publicDelegatesBL");
+		g_ptr_array_add (attrs, (guint8 *) "publicDelegatesBL");
 	if (lookup_flags & E2K_GLOBAL_CATALOG_LOOKUP_QUOTA) {
-		g_ptr_array_add (attrs, "mDBUseDefaults");
-		g_ptr_array_add (attrs, "mDBStorageQuota");
-		g_ptr_array_add (attrs, "mDBOverQuotaLimit");
-		g_ptr_array_add (attrs, "mDBOverHardQuotaLimit");
+		g_ptr_array_add (attrs, (guint8 *) "mDBUseDefaults");
+		g_ptr_array_add (attrs, (guint8 *) "mDBStorageQuota");
+		g_ptr_array_add (attrs, (guint8 *) "mDBOverQuotaLimit");
+		g_ptr_array_add (attrs, (guint8 *) "mDBOverHardQuotaLimit");
 	}
 	if (lookup_flags & E2K_GLOBAL_CATALOG_LOOKUP_ACCOUNT_CONTROL)
-		g_ptr_array_add (attrs, "userAccountControl");
+		g_ptr_array_add (attrs, (guint8 *) "userAccountControl");
 
 	if (attrs->len == 0) {
 		E2K_GC_DEBUG_MSG(("\nGC: returning cached info for %s\n", key));
@@ -1148,7 +1148,7 @@ do_delegate_op (E2kGlobalCatalog *gc, E2kOperation *op, gint deleg_op,
 		return E2K_GLOBAL_CATALOG_ERROR;
 
 	mod.mod_op = deleg_op;
-	mod.mod_type = "publicDelegates";
+	mod.mod_type = (gchar *) "publicDelegates";
 	mod.mod_values = values;
 	values[0] = (gchar *)delegate_dn;
 	values[1] = NULL;

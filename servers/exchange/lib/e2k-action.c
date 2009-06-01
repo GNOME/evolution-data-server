@@ -708,14 +708,14 @@ append_action (GByteArray *ba, E2kAction *act)
 
 		e2k_rule_append_uint16 (ba, act->act.xfer.store_entryid->len +
 					E2K_ACTION_XFER_STORE_ENTRYID_PREFIX_LEN);
-		g_byte_array_append (ba, E2K_ACTION_XFER_STORE_ENTRYID_PREFIX,
+		g_byte_array_append (ba, (guint8 *) E2K_ACTION_XFER_STORE_ENTRYID_PREFIX,
 				     E2K_ACTION_XFER_STORE_ENTRYID_PREFIX_LEN);
 		g_byte_array_append (ba, act->act.xfer.store_entryid->data,
 				     act->act.xfer.store_entryid->len);
 
 		e2k_rule_append_uint16 (ba, 49);
 		type = MAPI_FOLDER;
-		g_byte_array_append (ba, &type, 1);
+		g_byte_array_append (ba, (guint8 *) &type, 1);
 		g_byte_array_append (ba, act->act.xfer.folder_source_key->data,
 				     act->act.xfer.folder_source_key->len);
 		break;

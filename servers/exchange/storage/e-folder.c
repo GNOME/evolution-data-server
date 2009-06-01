@@ -33,6 +33,8 @@
 #define PARENT_TYPE G_TYPE_OBJECT
 static GObjectClass *parent_class = NULL;
 
+G_DEFINE_TYPE (EFolder, e_folder, G_TYPE_OBJECT)
+
 struct EFolderPrivate {
 	gchar *name;
 	gchar *type;
@@ -459,5 +461,3 @@ e_folder_accept_drop (EFolder *folder, GdkDragContext *context,
 							 target_type,
 							 selection_data);
 }
-
-G_DEFINE_TYPE (EFolder, e_folder, G_TYPE_OBJECT)
