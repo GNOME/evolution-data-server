@@ -234,12 +234,15 @@ compare_category (EContact *contact, const gchar *str,
 	return ret_val;
 }
 
+enum prop_type {
+	PROP_TYPE_NORMAL,
+	PROP_TYPE_LIST
+};
+
 static struct prop_info {
 	EContactField field_id;
 	const gchar *query_prop;
-#define PROP_TYPE_NORMAL   0x01
-#define PROP_TYPE_LIST     0x02
-	gint prop_type;
+	enum prop_type prop_type;
 	gboolean (*list_compare)(EContact *contact, const gchar *str,
 				 gchar *(*compare)(const gchar *, const gchar *));
 
