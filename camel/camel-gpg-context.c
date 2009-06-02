@@ -1559,7 +1559,8 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 			goto exception;
 	}
 
-	if (gpg_ctx_op_wait (gpg) != 0) {
+	/* report error only when no data or didn't found signature */
+	if (gpg_ctx_op_wait (gpg) != 0 && (gpg->nodata || !gpg->hadsig)) {
 		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
