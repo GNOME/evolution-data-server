@@ -114,6 +114,12 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
+
+	/* TRUE when 'calendar-schedule' supported on the server */
+	gboolean calendar_schedule;
+	/* with 'calendar-schedule' supported, here's an outbox url
+	   for queries of free/busy information */
+	gchar *schedule_outbox_url;
 };
 
 /* ************************************************************************* */
@@ -522,9 +528,6 @@ xpath_eval (xmlXPathContextPtr ctx, const gchar *format, ...)
 	if (result->type == XPATH_NODESET &&
 	    xmlXPathNodeSetIsEmpty (result->nodesetval)) {
 		xmlXPathFreeObject (result);
-
-		g_print ("No result\n");
-
 		return NULL;
 	}
 
@@ -666,6 +669,10 @@ xp_object_get_number (xmlXPathObjectPtr result)
 #define XPATH_CALENDAR_DATA "string(/D:multistatus/D:response[%d]/C:calendar-data)"
 #define XPATH_GETCTAG_STATUS "string(/D:multistatus/D:response/D:propstat/D:prop/CS:getctag/../../D:status)"
 #define XPATH_GETCTAG "string(/D:multistatus/D:response/D:propstat/D:prop/CS:getctag)"
+#define XPATH_OWNER_STATUS "string(/D:multistatus/D:response/D:propstat/D:prop/D:owner/D:href/../../../D:status)"
+#define XPATH_OWNER "string(/D:multistatus/D:response/D:propstat/D:prop/D:owner/D:href)"
+#define XPATH_SCHEDULE_OUTBOX_URL_STATUS "string(/D:multistatus/D:response/D:propstat/D:prop/C:schedule-outbox-URL/D:href/../../../D:status)"
+#define XPATH_SCHEDULE_OUTBOX_URL "string(/D:multistatus/D:response/D:propstat/D:prop/C:schedule-outbox-URL/D:href)"
 
 typedef struct _CalDAVObject CalDAVObject;
 
@@ -771,6 +778,58 @@ out:
 		xmlXPathFreeObject (result);
 	xmlXPathFreeContext (xpctx);
 	xmlFreeDoc (doc);
+	return res;
+}
+
+/* returns whether was able to read the xpath_value from the server's response; *value contains the result */
+static gboolean
+parse_propfind_response (SoupMessage *message, const char *xpath_status, const char *xpath_value, gchar **value)
+{
+	xmlXPathContextPtr xpctx;
+	xmlDocPtr          doc;
+	gboolean           res = FALSE;
+
+	g_return_val_if_fail (message != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	doc = xmlReadMemory (message->response_body->data,
+			     message->response_body->length,
+			     "response.xml",
+			     NULL,
+			     0);
+
+	if (doc == NULL) {
+		return FALSE;
+	}
+
+	xpctx = xmlXPathNewContext (doc);
+	xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
+	xmlXPathRegisterNs (xpctx, (xmlChar *) "C", (xmlChar *) "urn:ietf:params:xml:ns:caldav");
+	xmlXPathRegisterNs (xpctx, (xmlChar *) "CS", (xmlChar *) "http://calendarserver.org/ns/");
+
+	if (xpath_status == NULL || xp_object_get_status (xpath_eval (xpctx, xpath_status)) == 200) {
+		gchar *txt = xp_object_get_string (xpath_eval (xpctx, xpath_value));
+
+		if (txt && *txt) {
+			gint len = strlen (txt);
+
+			if (*txt == '\"' && len > 2 && txt [len - 1] == '\"') {
+				/* dequote */
+				*value = g_strndup (txt + 1, len - 2);
+			} else {
+				*value = txt;
+				txt = NULL;
+			}
+
+			res = (*value) != NULL;
+		}
+
+		g_free (txt);
+	}
+
+	xmlXPathFreeContext (xpctx);
+	xmlFreeDoc (doc);
+
 	return res;
 }
 
@@ -896,10 +955,13 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	/* parse the dav header, we are intreseted in the
 	 * calendar-access bit only at the moment */
 	header = soup_message_headers_get (message->response_headers, "DAV");
-	if (header)
+	if (header) {
 		calendar_access = soup_header_contains (header, "calendar-access");
-	else
+		priv->calendar_schedule = soup_header_contains (header, "calendar-schedule");
+	} else {
 		calendar_access = FALSE;
+		priv->calendar_schedule = FALSE;
+	}
 
 	/* parse the Allow header and look for PUT, DELETE at the
 	 * moment (maybe we should check more here, for REPORT eg) */
@@ -919,57 +981,6 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	}
 
 	return GNOME_Evolution_Calendar_NoSuchCal;
-}
-
-/* returns whether was able to read new ctag from the server's response */
-static gboolean
-parse_getctag_response (SoupMessage *message, gchar **new_ctag)
-{
-	xmlXPathContextPtr xpctx;
-	xmlDocPtr          doc;
-	gboolean           res = FALSE;
-
-	g_return_val_if_fail (message != NULL, FALSE);
-	g_return_val_if_fail (new_ctag != NULL, FALSE);
-
-	doc = xmlReadMemory (message->response_body->data,
-			     message->response_body->length,
-			     "response.xml",
-			     NULL,
-			     0);
-
-	if (doc == NULL) {
-		return FALSE;
-	}
-
-	xpctx = xmlXPathNewContext (doc);
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
-	xmlXPathRegisterNs (xpctx, (xmlChar *) "CS", (xmlChar *) "http://calendarserver.org/ns/");
-
-	if (xp_object_get_status (xpath_eval (xpctx, XPATH_GETCTAG_STATUS)) == 200) {
-		gchar *txt = xp_object_get_string (xpath_eval (xpctx, XPATH_GETCTAG));
-
-		if (txt && *txt) {
-			gint len = strlen (txt);
-
-			if (*txt == '\"' && len > 2 && txt [len - 1] == '\"') {
-				/* dequote */
-				*new_ctag = g_strndup (txt + 1, len - 2);
-			} else {
-				*new_ctag = txt;
-				txt = NULL;
-			}
-
-			res = (*new_ctag) != NULL;
-		}
-
-		g_free (txt);
-	}
-
-	xmlXPathFreeContext (xpctx);
-	xmlFreeDoc (doc);
-
-	return res;
 }
 
 /* Returns whether calendar changed on the server. This works only when server
@@ -1037,7 +1048,7 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 	} else {
 		gchar *ctag = NULL;
 
-		if (parse_getctag_response (message, &ctag)) {
+		if (parse_propfind_response (message, XPATH_GETCTAG_STATUS, XPATH_GETCTAG, &ctag)) {
 			const gchar *my_ctag = e_cal_backend_cache_get_key_value (priv->cache, CALDAV_CTAG_KEY);
 
 			if (ctag && my_ctag && g_str_equal (ctag, my_ctag)) {
@@ -1214,6 +1225,48 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 }
 
 static ECalBackendSyncStatus
+caldav_post_freebusy (ECalBackendCalDAV *cbdav, const char *url, gchar **post_fb)
+{
+	ECalBackendCalDAVPrivate *priv;
+	SoupMessage *message;
+
+	g_return_val_if_fail (cbdav != NULL, GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (url != NULL, GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (post_fb != NULL, GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (*post_fb != NULL, GNOME_Evolution_Calendar_OtherError);
+	
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	message = soup_message_new (SOUP_METHOD_POST, url);
+	if (message == NULL) {
+		return GNOME_Evolution_Calendar_NoSuchCal;
+	}
+
+	soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
+	soup_message_set_request (message,
+				  "text/calendar; charset=utf-8",
+				  SOUP_MEMORY_COPY,
+				  *post_fb, strlen (*post_fb));
+
+	send_and_handle_redirection (priv->session, message, NULL);
+
+	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		guint status_code = message->status_code;
+		g_object_unref (message);
+
+		g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, status_code, soup_status_get_phrase (status_code) ? soup_status_get_phrase (status_code) : "Unknown code");
+		return status_code_to_result (status_code, priv);
+	}
+
+	g_free (*post_fb);
+	*post_fb = g_strdup (message->response_body->data);
+
+	g_object_unref (message);
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static ECalBackendSyncStatus
 caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalcomponent *icalcomp)
 {
 	ECalBackendCalDAVPrivate *priv;
@@ -1363,6 +1416,129 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 	g_object_unref (message);
 
 	return result;
+}
+
+static gboolean
+caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
+{
+	ECalBackendCalDAVPrivate *priv;
+	SoupMessage *message;
+	xmlOutputBufferPtr buf;
+	xmlDocPtr doc;
+	xmlNodePtr root, node;
+	xmlNsPtr nsdav;
+	char *owner = NULL;
+
+	g_return_val_if_fail (cbdav != NULL, FALSE);
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	g_return_val_if_fail (priv != NULL, FALSE);
+	g_return_val_if_fail (priv->schedule_outbox_url == NULL, TRUE);
+	
+	/* Prepare the soup message */
+	message = soup_message_new ("PROPFIND", priv->uri);
+	if (message == NULL)
+		return FALSE;
+
+	doc = xmlNewDoc ((xmlChar *) "1.0");
+	root = xmlNewDocNode (doc, NULL, (xmlChar *) "propfind", NULL);
+	xmlDocSetRootElement (doc, root);
+	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", NULL);
+
+	node = xmlNewTextChild (root, nsdav, (xmlChar *) "prop", NULL);
+	node = xmlNewTextChild (node, nsdav, (xmlChar *) "owner", NULL);
+
+	buf = xmlAllocOutputBuffer (NULL);
+	xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
+	xmlOutputBufferFlush (buf);
+
+	soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
+	soup_message_headers_append (message->request_headers, "Depth", "0");
+
+	soup_message_set_request (message,
+				  "application/xml",
+				  SOUP_MEMORY_COPY,
+				  (gchar *) buf->buffer->content,
+				  buf->buffer->use);
+
+	/* Send the request now */
+	send_and_handle_redirection (priv->session, message, NULL);
+
+	/* Clean up the memory */
+	xmlOutputBufferClose (buf);
+	xmlFreeDoc (doc);
+
+	/* Check the result */
+	if (message->status_code == 207 && parse_propfind_response (message, XPATH_OWNER_STATUS, XPATH_OWNER, &owner) && owner && *owner) {
+		xmlNsPtr nscd;
+		SoupURI *suri;
+
+		g_object_unref (message);
+
+		/* owner is a full path to the user's URL, thus change it in
+		   calendar's uri when asking for schedule-outbox-URL */
+		suri = soup_uri_new (priv->uri);
+		soup_uri_set_path (suri, owner);
+		g_free (owner);
+		owner = soup_uri_to_string (suri, FALSE);
+		soup_uri_free (suri);
+
+		message = soup_message_new ("PROPFIND", owner);
+		if (message == NULL) {
+			g_free (owner);
+			return FALSE;
+		}
+
+		doc = xmlNewDoc ((xmlChar *) "1.0");
+		root = xmlNewDocNode (doc, NULL, (xmlChar *) "propfind", NULL);
+		xmlDocSetRootElement (doc, root);
+		nsdav = xmlNewNs (root, (xmlChar *) "DAV:", NULL);
+		nscd = xmlNewNs (root, (xmlChar *) "urn:ietf:params:xml:ns:caldav", (xmlChar *) "C");
+
+		node = xmlNewTextChild (root, nsdav, (xmlChar *) "prop", NULL);
+		node = xmlNewTextChild (node, nscd, (xmlChar *) "schedule-outbox-URL", NULL);
+
+		buf = xmlAllocOutputBuffer (NULL);
+		xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
+		xmlOutputBufferFlush (buf);
+
+		soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
+		soup_message_headers_append (message->request_headers, "Depth", "0");
+
+		soup_message_set_request (message,
+				  "application/xml",
+				  SOUP_MEMORY_COPY,
+				  (gchar *) buf->buffer->content,
+				  buf->buffer->use);
+
+		/* Send the request now */
+		send_and_handle_redirection (priv->session, message, NULL);
+
+		if (message->status_code == 207 && parse_propfind_response (message, XPATH_SCHEDULE_OUTBOX_URL_STATUS, XPATH_SCHEDULE_OUTBOX_URL, &priv->schedule_outbox_url)) {
+			if (!*priv->schedule_outbox_url) {
+				g_free (priv->schedule_outbox_url);
+				priv->schedule_outbox_url = NULL;
+			} else {
+				/* make it a full URI */
+				suri = soup_uri_new (priv->uri);
+				soup_uri_set_path (suri, priv->schedule_outbox_url);
+				g_free (priv->schedule_outbox_url);
+				priv->schedule_outbox_url = soup_uri_to_string (suri, FALSE);
+				soup_uri_free (suri);
+			}
+		}
+
+		/* Clean up the memory */
+		xmlOutputBufferClose (buf);
+		xmlFreeDoc (doc);
+	}
+
+	if (message)
+		g_object_unref (message);
+
+	g_free (owner);
+
+	return priv->schedule_outbox_url != NULL;
 }
 
 /* ************************************************************************* */
@@ -3474,9 +3650,166 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 		      time_t            end,
 		      GList           **freebusy)
 {
-	/* FIXME: implement me! */
-	g_warning ("function not implemented %s", G_STRFUNC);
-	return GNOME_Evolution_Calendar_OtherError;
+	ECalBackendCalDAV *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+	ECalBackendSyncStatus status;
+	icalcomponent *icalcomp;
+	ECalComponent *comp;
+	ECalComponentDateTime dt;
+	struct icaltimetype dtvalue;
+	icaltimezone *utc;
+	char *str;
+	GList *u;
+	GSList *attendees = NULL, *to_free = NULL;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	g_return_val_if_fail (priv != NULL, GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (users != NULL, GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (freebusy != NULL, GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (start < end, GNOME_Evolution_Calendar_OtherError);
+
+	if (!priv->calendar_schedule) {
+		return GNOME_Evolution_Calendar_OtherError;
+	}
+
+	if (!priv->schedule_outbox_url) {
+		caldav_receive_schedule_outbox_url (cbdav);
+		if (!priv->schedule_outbox_url) {
+			priv->calendar_schedule = FALSE;
+			return GNOME_Evolution_Calendar_OtherError;
+		}
+	}
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY);
+
+	str = e_cal_component_gen_uid ();
+	e_cal_component_set_uid (comp, str);
+	g_free (str);
+
+	utc = icaltimezone_get_utc_timezone ();
+	dt.value = &dtvalue;
+	dt.tzid = icaltimezone_get_tzid (utc);
+
+	dtvalue = icaltime_current_time_with_zone (utc);
+	e_cal_component_set_dtstamp (comp, &dtvalue);
+
+	dtvalue = icaltime_from_timet_with_zone (start, FALSE, utc);
+	e_cal_component_set_dtstart (comp, &dt);
+
+	dtvalue = icaltime_from_timet_with_zone (end, FALSE, utc);
+	e_cal_component_set_dtend (comp, &dt);
+
+	if (priv->username) {
+		ECalComponentOrganizer organizer = {0};
+
+		organizer.value = priv->username;
+		e_cal_component_set_organizer (comp, &organizer);
+	}
+
+	for (u = users; u; u = u->next) {
+		ECalComponentAttendee *ca;
+		gchar *temp = g_strconcat ("mailto:", (const gchar *)u->data, NULL);
+
+		ca = g_new0 (ECalComponentAttendee, 1);
+
+		ca->value = temp;
+		ca->cutype = ICAL_CUTYPE_INDIVIDUAL;
+		ca->status = ICAL_PARTSTAT_NEEDSACTION;
+		ca->role = ICAL_ROLE_CHAIR;
+
+		to_free = g_slist_prepend (to_free, temp);
+		attendees = g_slist_append (attendees, ca);
+	}
+
+	e_cal_component_set_attendee_list (comp, attendees);
+
+	g_slist_foreach (attendees, (GFunc) g_free, NULL);
+	g_slist_free (attendees);
+
+	g_slist_foreach (to_free, (GFunc) g_free, NULL);
+	g_slist_free (to_free);
+
+	e_cal_component_abort_sequence (comp);
+
+	/* put the free/busy request to a VCALENDAR */
+	icalcomp = e_cal_util_new_top_level ();
+	icalcomponent_set_method (icalcomp, ICAL_METHOD_REQUEST);
+	icalcomponent_add_component (icalcomp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+
+	str = icalcomponent_as_ical_string_r (icalcomp);
+
+	icalcomponent_free (icalcomp);
+	g_object_unref (comp);
+
+	g_return_val_if_fail (str != NULL, GNOME_Evolution_Calendar_OtherError);
+
+	status = caldav_post_freebusy (cbdav, priv->schedule_outbox_url, &str);
+
+	if (status == GNOME_Evolution_Calendar_Success) {
+		/* parse returned xml */
+		xmlDocPtr doc;
+
+		doc = xmlReadMemory (str, strlen (str), "response.xml", NULL, 0);
+		if (doc != NULL) {
+			xmlXPathContextPtr xpctx;
+			xmlXPathObjectPtr result;
+
+			xpctx = xmlXPathNewContext (doc);
+			xmlXPathRegisterNs (xpctx, (xmlChar *) "D", (xmlChar *) "DAV:");
+			xmlXPathRegisterNs (xpctx, (xmlChar *) "C", (xmlChar *) "urn:ietf:params:xml:ns:caldav");
+
+			result = xpath_eval (xpctx, "/C:schedule-response/C:response");
+
+			if (result == NULL || result->type != XPATH_NODESET) {
+				status = GNOME_Evolution_Calendar_OtherError;
+			} else {
+				gint i, n;
+
+				n = xmlXPathNodeSetGetLength (result->nodesetval);
+				for (i = 0; i < n; i++) {
+					gchar *tmp;
+
+					tmp = xp_object_get_string (xpath_eval (xpctx, "string(/C:schedule-response/C:response[%d]/C:calendar-data)", i + 1));
+					if (tmp && *tmp) {
+						GList *objects = NULL, *o;
+
+						icalcomp = icalparser_parse_string (tmp);
+						if (icalcomp && extract_objects (icalcomp, ICAL_VFREEBUSY_COMPONENT, &objects) == GNOME_Evolution_Calendar_Success) {
+							for (o = objects; o; o = o->next) {
+								char *obj_str = icalcomponent_as_ical_string_r (o->data);
+
+								if (obj_str && *obj_str)
+									*freebusy = g_list_append (*freebusy, obj_str);
+								else
+									g_free (obj_str);
+							}
+						}
+
+						g_list_foreach (objects, (GFunc)icalcomponent_free, NULL);
+						g_list_free (objects);
+
+						if (icalcomp)
+							icalcomponent_free (icalcomp);
+					}
+
+					g_free (tmp);
+
+				}
+			}
+
+			if (result != NULL)
+				xmlXPathFreeObject (result);
+			xmlXPathFreeContext (xpctx);
+			xmlFreeDoc (doc);
+		}
+	}
+
+	g_free (str);
+
+	return status;
 }
 
 static ECalBackendSyncStatus
@@ -3635,6 +3968,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 	g_free (priv->username);
 	g_free (priv->password);
 	g_free (priv->uri);
+	g_free (priv->schedule_outbox_url);
 
 	if (priv->cache != NULL) {
 		g_object_unref (priv->cache);
@@ -3691,6 +4025,8 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
 	priv->ctag_supported = TRUE;
+
+	priv->schedule_outbox_url = NULL;
 
 	priv->lock = g_mutex_new ();
 	priv->cond = g_cond_new ();
