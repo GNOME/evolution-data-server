@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2006 OpenedHand Ltd
+# Copyright (C) 2006 Intel Corporation
 # 
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of version 2 of the GNU Lesser General Public License as published
@@ -23,7 +23,7 @@ var = None
 strings = []
 
 def output():
-    print "static const char %s_table[] = {" % var
+    print "static const gchar %s_table[] = {" % var
     for s in strings:
         print "  \"%s\\0\"" % s
     print "};"
