@@ -491,7 +491,7 @@ e_folder_exchange_save_to_file (EFolder *folder, const gchar *filename)
 			      FALSE);
 
 	if ((fsize = e_folder_exchange_get_folder_size (folder)) >= 0)
-		folder_size = g_strdup_printf ("%llu", fsize);
+		folder_size = g_strdup_printf ("%" G_GINT64_FORMAT, fsize);
 	else
 		return FALSE;
 
