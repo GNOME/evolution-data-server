@@ -3553,7 +3553,6 @@ e_book_is_online (EBook *book)
 	g_return_val_if_fail (book && E_IS_BOOK (book), FALSE);
 
 	return book->priv->connected;
-
 }
 
 #define SELF_UID_KEY "/apps/evolution/addressbook/self/self_uid"
@@ -3893,7 +3892,7 @@ e_book_new_from_uri (const gchar *uri, GError **error)
  * Return value: a new but unopened #EBook.
  */
 EBook*
-e_book_new_system_addressbook    (GError **error)
+e_book_new_system_addressbook (GError **error)
 {
 	ESourceList *sources;
 	GSList *g;
