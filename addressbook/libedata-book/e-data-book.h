@@ -22,10 +22,10 @@ G_BEGIN_DECLS
 
 #define E_TYPE_DATA_BOOK        (e_data_book_get_type ())
 #define E_DATA_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK, EDataBook))
-#define E_DATA_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_DATA_BOOK_FACTORY_TYPE, EDataBookClass))
+#define E_DATA_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_DATA_BOOK, EDataBookClass))
 #define E_IS_DATA_BOOK(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_DATA_BOOK))
 #define E_IS_DATA_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK))
-#define E_DATA_BOOK_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_DATA_BOOK, EDataBookClass))
+#define E_DATA_BOOK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_DATA_BOOK, EDataBookClass))
 
 typedef struct _EDataBookPrivate EDataBookPrivate;
 
