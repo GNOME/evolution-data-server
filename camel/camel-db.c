@@ -282,6 +282,9 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pF
 
 	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);
 
+	if (res != SQLITE_OK)
+		return res;
+
 	g_static_rec_mutex_lock (&only_once_lock);
 
 	/* cFile->old_vfs_file->pMethods is NULL when open failed for some reason,
