@@ -44,6 +44,8 @@
 #include "camel-groupwise-transport.h"
 #include "camel-groupwise-utils.h"
 
+#define REPLY_VIEW "default message attachments threading"
+
 static gboolean groupwise_send_to (CamelTransport *transport,
 				  CamelMimeMessage *message,
 				  CamelAddress *from,
@@ -186,16 +188,16 @@ groupwise_send_to (CamelTransport *transport,
 	}
 
 	item = camel_groupwise_util_item_from_message (cnc, message, from);
-
-	reply_request = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), "In-Reply-To");
+	
+	reply_request = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), "X-GW-ORIG-ITEM-ID");
 	if (reply_request) {
 		gchar *id;
 		gint len = strlen (reply_request);
 
 		id = (gchar *)g_malloc0 (len-1);
 		id = memcpy(id, reply_request+2, len-3);
-		status = e_gw_connection_reply_item (cnc, id, NULL, &temp_item);
-		if (status != E_GW_CONNECTION_STATUS_OK)
+		status = e_gw_connection_reply_item (cnc, id, REPLY_VIEW, &temp_item);
+		if (status != E_GW_CONNECTION_STATUS_OK) 
 			g_warning ("Could not send a replyRequest...continuing without!!\n");
 		else {
 			info = e_gw_item_get_link_info (temp_item);

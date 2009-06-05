@@ -304,6 +304,10 @@ gboolean e_gw_item_has_attachment (EGwItem *item);
 
 gboolean e_gw_item_is_from_internet (EGwItem *item);
 
+const gchar *e_gw_item_get_parent_thread_ids (EGwItem *item);
+const gchar* e_gw_item_get_message_id (EGwItem *item);
+
+
 typedef struct {
 	gchar *email;
 	gchar *display_name;

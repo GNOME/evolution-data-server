@@ -128,6 +128,10 @@ struct _EGwItemPrivate {
 
 	gboolean internet;
 
+	/* Message Threading */
+	gchar *message_id;
+	gchar *parent_threads;
+
 	/*padding*/
 	guint padding[10];
 };
@@ -482,6 +486,16 @@ e_gw_item_dispose (GObject *object)
 			g_free (priv->creation_date);
 			priv->creation_date = NULL;
                 }
+		
+		if (priv->message_id) {
+			g_free (priv->message_id);
+			priv->message_id = NULL;
+		}
+
+		if (priv->parent_threads) {
+			g_free (priv->parent_threads);
+			priv->parent_threads = NULL;
+		}
 
 		free_changes (priv->additions);
 		free_changes (priv->deletions);
@@ -565,6 +579,8 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->msg_body_id = NULL;
 	priv->has_attachment = FALSE;
 	priv->internet = FALSE;
+	priv->message_id = NULL;
+	priv->parent_threads = NULL;
 	item->priv = priv;
 
 
@@ -947,6 +963,18 @@ gchar *
 e_gw_item_get_category_name (EGwItem *item)
 {
 	return item->priv->category_name;
+}
+
+const gchar*
+e_gw_item_get_parent_thread_ids (EGwItem *item)
+{
+	return item->priv->parent_threads;
+}
+
+const gchar*
+e_gw_item_get_message_id (EGwItem *item)
+{
+	return item->priv->message_id;
 }
 
 void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, const gchar *field_name, gpointer field_value)
@@ -2084,6 +2112,15 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 				g_free (value);
 			}
 			g_free (enabled);
+		} else if (!g_ascii_strcasecmp (name, "threading")) {
+			SoupSoapParameter *subparam;
+			
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "parent") ;
+			if (subparam) 
+  				item->priv->parent_threads = soup_soap_parameter_get_string_value (subparam);
+			
+		} else if (!g_ascii_strcasecmp (name, "messageId")) {
+			item->priv->message_id = soup_soap_parameter_get_string_value (child);
 		}
 
 	}

@@ -494,6 +494,7 @@ form_login_request (const gchar *uri, const gchar * username, const gchar * pass
 	/* build the SOAP message */
 	msg = e_gw_message_new_with_header (uri, NULL, "loginRequest");
 	e_gw_message_write_string_parameter (msg, "application", "types", build_timestamp);
+	e_gw_message_write_string_parameter (msg, "version", NULL, "1.02");
 	soup_soap_message_start_element (msg, "auth", "types", NULL);
 	soup_soap_message_add_attribute (msg, "type", "types:PlainText", "xsi",
 					 "http://www.w3.org/2001/XMLSchema-instance");
