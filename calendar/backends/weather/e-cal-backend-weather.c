@@ -618,7 +618,7 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, con
 	ECalBackendWeatherPrivate *priv;
 	icalcomponent *tz_comp;
 	icaltimezone *zone;
-	gchar *tzid;
+	const gchar *tzid;
 
 	cbw = (ECalBackendWeather*) backend;
 

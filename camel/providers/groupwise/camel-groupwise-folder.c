@@ -1462,7 +1462,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 
 	/* set message id */
 	msgid = camel_header_msgid_decode(message_id);
-	digest = get_md5_digest (msgid);
+	digest = get_md5_digest ((const guchar *)msgid);
 	memcpy(mi->info.message_id.id.hash, digest, sizeof(mi->info.message_id.id.hash));
 	g_free (msgid);
 
