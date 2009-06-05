@@ -1042,6 +1042,7 @@ e_book_backend_init (EBookBackend *backend)
 
 	priv          = g_new0 (EBookBackendPrivate, 1);
 	priv->clients = NULL;
+	priv->source = NULL;
 	priv->views   = e_list_new((EListCopyFunc) NULL, (EListFreeFunc) NULL, NULL);
 	priv->open_mutex = g_mutex_new ();
 	priv->clients_mutex = g_mutex_new ();
@@ -1065,7 +1066,10 @@ e_book_backend_dispose (GObject *object)
 			backend->priv->views = NULL;
 		}
 
-		g_object_unref (backend->priv->source);
+		if (backend->priv->source) {
+			g_object_unref (backend->priv->source);
+			backend->priv->source = NULL;
+		}
 
 		g_mutex_free (backend->priv->open_mutex);
 		g_mutex_free (backend->priv->clients_mutex);
