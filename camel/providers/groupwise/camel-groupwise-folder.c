@@ -99,6 +99,7 @@ static void gw_update_cache ( CamelFolder *folder, GList *item_list, CamelExcept
 static CamelMimeMessage *groupwise_folder_item_to_msg ( CamelFolder *folder, EGwItem *item, CamelException *ex );
 static gchar * groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
 static const gchar *get_from_from_org (EGwItemOrganizer *org);
+static void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
 
 #define d(x)
 
@@ -1233,7 +1234,7 @@ update_summary_string (CamelFolder *folder, const gchar *time_string, CamelExcep
 	groupwise_sync_summary (folder, ex);
 }
 
-void
+static void
 groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 {
 	CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
@@ -1742,8 +1743,8 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 		if (mi)
 			exists = TRUE;
 
+		type = e_gw_item_get_item_type (item);
 		if (!exists) {
-			type = e_gw_item_get_item_type (item);
 			if ((type == E_GW_ITEM_TYPE_CONTACT) || (type == E_GW_ITEM_TYPE_UNKNOWN)) {
 				exists = FALSE;
 				continue;
