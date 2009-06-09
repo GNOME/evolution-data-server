@@ -1,20 +1,22 @@
-# translation of evolution-data-server.HEAD.po to Hindi
+# translation of hi.po to Hindi
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
 # Rajesh Ranjan <rranjan@redhat.com>, 2004, 2005, 2006, 2009.
+# Rajesh Ranjan <rajesh672@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.HEAD\n"
+"Project-Id-Version: hi\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2009-02-25 12:08+0000\n"
-"PO-Revision-Date: 2009-03-12 17:08+0530\n"
-"Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
+"PO-Revision-Date: 2009-06-09 13:31+0530\n"
+"Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Hindi <hindi.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -1194,7 +1196,7 @@ msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" दूसरे तर्क की एक स्ट्रिंग होने की आशा करता है"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 #| "\"description\", or \"location\""
@@ -1202,9 +1204,7 @@ msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
-msgstr ""
-"\"%s\" पहले तर्क को \"any\", \"summary\", or \"description\", या \"location\" "
-"में से किसी रूप में आशा करता है"
+msgstr "\"%s\" पहले तर्क को \"any\", \"summary\", या \"description\", या \"location\" या \"attendee\", या \"organizer\", या \"classification\" में से किसी रूप में आशा करता है"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:925
 #, c-format
@@ -2124,7 +2124,7 @@ msgstr "कृपया %s कूटशब्द %s के लिए %s मे�
 
 #: ../camel/camel-session.c:822
 msgid "Camel session doesn't support forwarding of a message."
-msgstr ""
+msgstr "कैमल सत्र किसी संदेश के अग्रेषित किए जाने का समर्थन नहीं करता है."
 
 #: ../camel/camel-smime-context.c:440 ../camel/camel-smime-context.c:984
 #, c-format
@@ -2859,7 +2859,7 @@ msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
-msgstr ""
+msgstr "आप इस खाता भंडार सीमा से आगे निकल गए हैं. आपका संदेश आपके आउटबाक्स में कतार में है. भेजें/पाएँ दबाकर फिर भेजें अपनी डाक को मिटाने/अभिलेखित करने के बाद.\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:209
@@ -2999,15 +2999,15 @@ msgstr "%s में परिवर्तित संदेश के लि�
 #: ../camel/providers/imap/camel-imap-folder.c:1950
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
-msgstr ""
+msgstr "अप्रत्याशित अनुक्रिया स्थिति '%s' APPEND कमांड के बाद"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1965
 msgid "No response on continuation after APPEND command"
-msgstr ""
+msgstr "APPEND कमांड के बाद जारी रहने की प्रतिक्रिया नहीं"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2010
 msgid "Unknown error occurred during APPEND command!"
-msgstr ""
+msgstr "APPEND कमांड के दौरान अज्ञात त्रुटि आई!"
 
 #: ../camel/providers/imap/camel-imap-folder.c:2842
 #, c-format
@@ -3305,7 +3305,7 @@ msgstr "X सेकेंड में कैश किए संदेश क�
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:91
 msgid "Expire cached messages older than X seconds"
-msgstr ""
+msgstr "X सेकेंड से पुराने कैश संदेश का समय समाप्त करें"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:432
 #, c-format
@@ -3421,12 +3421,12 @@ msgid "Connection canceled"
 msgstr "कनेक्शन रद्द"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:300
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgid ""
 "Failed to connect to IMAP server %s in secure mode: Server does not support "
 "STARTTLS"
-msgstr "सुरक्षित मोड में %s IMAP सर्वर से जुड़ने में विफल: %s"
+msgstr "सुरक्षित मोड में %s IMAP सर्वर से जुड़ने में विफल: सर्वर STARTTLS के साथ समर्थन नहीं करता है"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:330
 #: ../camel/providers/pop3/camel-pop3-store.c:251
@@ -3523,10 +3523,10 @@ msgstr "फ़ोल्डर'%s' को '%s' नाम नहीं बदल �
 #. Translators: the first %s is an IMAP4 command, either LSUB or LIST.
 #. * The fourth one is an error message.
 #: ../camel/providers/imap4/camel-imap4-store.c:1577
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get %s information for pattern `%s' on IMAP server %s: %s"
 msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-msgstr "%s IMAP सर्वर पर '%s' पैटर्न के लिये '%s' सूचना नहीं प्राप्त कर सकता: %s"
+msgstr "%s IMAP सर्वर पर '%s' पैटर्न के लिये %s सूचना नहीं प्राप्त कर सकता है: %s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1638
 msgid "Cannot subscribe to IMAP folders in offline mode."
@@ -3567,7 +3567,7 @@ msgstr "परिवर्तित संदेश के लिये स्�
 #: ../camel/providers/imap4/camel-imap4-summary.c:1617
 #, c-format
 msgid "IMAP server %s is in an inconsistent state."
-msgstr ""
+msgstr "IMAP सर्वर %s अस्थिर स्थिति में है."
 
 #: ../camel/providers/imap4/camel-imap4-summary.c:1644
 #| msgid "Fetching envelopes for new messages"
@@ -4460,7 +4460,7 @@ msgstr "%s POP सर्वर के सत्यापन में असफ�
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
-msgstr ""
+msgstr "POP सर्वर %s में कनेक्ट होने में असमर्थ:\tअवैध APOP ID प्राप्त. छद्मावरण तरीके से हमला संभव है. अपने प्रशासक से संपर्क करें."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:551
 #: ../camel/providers/pop3/camel-pop3-store.c:564
@@ -5161,7 +5161,7 @@ msgstr "%s मिटाएँ (_D)"
 #: ../libedataserverui/e-passwords.c:234
 #, c-format
 msgid "Keyring key is unusable: no user or host name"
-msgstr ""
+msgstr "कीरिंग कुंजी उपयोग लायक नहीं है: कोई उपयोक्ता या मेजबान नाम नहीं"
 
 #: ../libedataserverui/e-passwords.c:1094
 msgid "You have the Caps Lock key on."
