@@ -303,8 +303,12 @@ static CamelFolder *
 journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
 {
 	CamelFolder *folder;
+	CamelOfflineJournal *offline = CAMEL_OFFLINE_JOURNAL (journal);
 
 	folder = g_hash_table_lookup (journal->folders, name);
+	if (!folder && offline->folder && g_str_equal (offline->folder->full_name, name)) {
+		folder = offline->folder;
+	}
 	if (!folder) {
 		CamelException ex;
 		gchar *msg;

@@ -484,19 +484,10 @@ local_refresh_info(CamelFolder *folder, CamelException *ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 
-	/*
-	 * Banner: This is a very very ugly hack to get over the summary mismatch. This needs to
-	 * be done better. Im postponing this post-disk summary.
-	 * */
-
-	CAMEL_FOLDER_REC_LOCK(folder, lock);
-
 	if (camel_local_summary_check((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {
-		CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 		return;
 	}
 
-	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 	if (camel_folder_change_info_changed(lf->changes)) {
 		camel_object_trigger_event((CamelObject *)folder, "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);

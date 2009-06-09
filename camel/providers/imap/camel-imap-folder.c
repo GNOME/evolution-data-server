@@ -233,6 +233,35 @@ camel_imap_folder_get_type (void)
 	return camel_imap_folder_type;
 }
 
+static void
+replay_offline_journal (CamelImapStore *imap_store, CamelImapFolder *imap_folder, CamelException *ex)
+{
+	CamelIMAPJournal *imap_journal;
+
+	g_return_if_fail (imap_store != NULL);
+	g_return_if_fail (imap_folder != NULL);
+	g_return_if_fail (imap_folder->journal != NULL);
+
+	imap_journal = CAMEL_IMAP_JOURNAL (imap_folder->journal);
+	g_return_if_fail (imap_journal != NULL);
+
+	/* do not replay when still in offline */
+	if (CAMEL_OFFLINE_STORE (imap_store)->state != CAMEL_OFFLINE_STORE_NETWORK_AVAIL || !camel_imap_store_connected (imap_store, ex))
+		return;
+
+	/* Check if the replay is already in progress as imap_sync would be called while expunge resync */
+	if (!imap_journal->rp_in_progress) {
+		imap_journal->rp_in_progress++;
+
+		camel_offline_journal_replay (imap_folder->journal, ex);
+		camel_imap_journal_close_folders (imap_journal);
+		camel_offline_journal_write (imap_folder->journal, ex);
+
+		imap_journal->rp_in_progress--;
+		g_return_if_fail (imap_journal->rp_in_progress >= 0);
+	}
+}
+
 CamelFolder *
 camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 		       const gchar *folder_dir, CamelException *ex)
@@ -298,9 +327,8 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 
 	imap_folder->search = camel_imap_search_new(folder_dir);
 
-	camel_offline_journal_replay (imap_folder->journal, ex);
-	camel_imap_journal_close_folders ((CamelIMAPJournal *)imap_folder->journal);
-	camel_offline_journal_write (CAMEL_IMAP_FOLDER (folder)->journal, ex);
+	/* do not do that here, as other folders for 'transfer' might not be opened yet
+	replay_offline_journal (imap_store, imap_folder, ex);*/
 
 	return folder;
 }
@@ -706,6 +734,9 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	if (camel_application_is_exiting  || !camel_imap_store_connected(imap_store, ex))
 		goto done;
 
+	/* try to store local changes first, as the summary contains new local messages */
+	replay_offline_journal (imap_store, imap_folder, ex);
+
 	if (imap_store->current_folder != folder
 	    || g_ascii_strcasecmp(folder->full_name, "INBOX") == 0) {
 		response = camel_imap_command (imap_store, folder, ex, NULL);
@@ -769,10 +800,6 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 	}
 done:
 	CAMEL_SERVICE_REC_UNLOCK (imap_store, connect_lock);
-
-	camel_offline_journal_replay (CAMEL_IMAP_FOLDER (folder)->journal, ex);
-	camel_imap_journal_close_folders ((CamelIMAPJournal *) CAMEL_IMAP_FOLDER (folder)->journal);
-	camel_offline_journal_write (CAMEL_IMAP_FOLDER (folder)->journal, ex);
 
 	camel_folder_summary_save_to_db (folder->summary, ex);
 	camel_store_summary_save ((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
@@ -1167,6 +1194,25 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 	g_array_free (removed, TRUE);
 }
 
+static const gchar *
+get_message_uid (CamelFolder *folder, CamelImapMessageInfo *info)
+{
+	const gchar *uid;
+
+	g_return_val_if_fail (folder != NULL, NULL);
+	g_return_val_if_fail (info != NULL, NULL);
+
+	uid = camel_message_info_uid (info);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	if (!isdigit ((unsigned char)*uid)) {
+		uid = camel_imap_journal_uidmap_lookup ((CamelIMAPJournal *) CAMEL_IMAP_FOLDER (folder)->journal, uid);
+		g_return_val_if_fail (uid != NULL, NULL);
+	}
+
+	return uid;
+}
+
 /* the max number of chars that an unsigned 32-bit gint can be is 10 chars plus 1 for a possible : */
 #define UID_SET_FULL(setlen, maxlen) (maxlen > 0 ? setlen + 11 >= maxlen : FALSE)
 
@@ -1193,7 +1239,7 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 			if (range != i - 1) {								\
 				CamelImapMessageInfo *rinfo = matches->pdata[matches->len - 1];		\
 													\
-				g_string_append_printf (gset, ":%s", camel_message_info_uid (rinfo));	\
+				g_string_append_printf (gset, ":%s", get_message_uid (folder, rinfo));	\
 			}										\
 			range = -1;									\
 			last_range_uid = -1;								\
@@ -1289,12 +1335,12 @@ get_matching (CamelFolder *folder, guint32 flags, guint32 mask, CamelMessageInfo
 		last_range_uid = uid_num;
 		if (gset->len)
 			g_string_append_c (gset, ',');
-		g_string_append_printf (gset, "%s", camel_message_info_uid (info));
+		g_string_append_printf (gset, "%s", get_message_uid (folder, info));
 	}
 
 	if (range != -1 && range != max - 1) {
 		info = matches->pdata[matches->len - 1];
-		g_string_append_printf (gset, ":%s", camel_message_info_uid (info));
+		g_string_append_printf (gset, ":%s", get_message_uid (folder, info));
 	}
 
 	if (list1)
@@ -1361,6 +1407,9 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	camel_exception_init (&local_ex);
 	CAMEL_SERVICE_REC_LOCK (store, connect_lock);
+
+	/* write local changes first */
+	replay_offline_journal (store, imap_folder, ex);
 
 	/* Find a message with changed flags, find all of the other
 	 * messages like it, sync them as a group, mark them as
@@ -1483,17 +1532,6 @@ imap_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 
 	if (expunge)
 		imap_expunge (folder, ex);
-
-	/* Check if the replay is already in progress as imap_sync would be called while expunge resync */
-	if (!CAMEL_IMAP_JOURNAL (imap_folder->journal)->rp_in_progress) {
-		CAMEL_IMAP_JOURNAL (imap_folder->journal)->rp_in_progress = TRUE;
-
-		camel_offline_journal_replay (imap_folder->journal, ex);
-		camel_imap_journal_close_folders ((CamelIMAPJournal *)imap_folder->journal);
-		camel_offline_journal_write (CAMEL_IMAP_FOLDER (folder)->journal, ex);
-
-		CAMEL_IMAP_JOURNAL (imap_folder->journal)->rp_in_progress = FALSE;
-	}
 
 	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
@@ -2434,6 +2472,7 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 			message = camel_folder_get_message (source, uid, NULL);
 			if (!message) {
 				/* Message must have been expunged */
+				i++;
 				continue;
 			}
 			info = camel_folder_get_message_info (source, uid);

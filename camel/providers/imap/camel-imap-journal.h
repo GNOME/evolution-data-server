@@ -70,7 +70,7 @@ struct _CamelIMAPJournal {
 
 	GHashTable *folders;
 	GHashTable *uidmap;
-	gboolean rp_in_progress;
+	gint rp_in_progress;
 };
 
 struct _CamelIMAPJournalClass {
