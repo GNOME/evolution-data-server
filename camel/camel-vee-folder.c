@@ -1533,11 +1533,13 @@ folder_changed_change(CamelSession *session, CamelSessionThreadMsg *msg)
 	}
 
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
-	if (matches_changed || matches_added || changes->uid_removed->len||present)
-		camel_db_begin_transaction (folder->parent_store->cdb_w, NULL);
 
 	if (folder_unmatched != NULL)
 		CAMEL_VEE_FOLDER_LOCK(folder_unmatched, summary_lock);
+
+	if (matches_changed || matches_added || changes->uid_removed->len||present)
+		camel_db_begin_transaction (folder->parent_store->cdb_w, NULL);
+
 
 	dd(printf("Vfolder '%s' subfolder changed '%s'\n", folder->full_name, sub->full_name));
 	dd(printf(" changed %u added %u removed %u\n", changes->uid_changed->len, changes->uid_added->len, changes->uid_removed->len));
