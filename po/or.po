@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2009-03-04 17:51+0000\n"
-"PO-Revision-Date: 2009-03-23 18:19+0530\n"
+"PO-Revision-Date: 2009-06-11 17:01+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -1207,6 +1208,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
+"\"%s\" ସମସ୍ତ ସ୍ୱତନ୍ତ୍ରଚରଗୁଡ଼ିକୁ ବାକ୍ୟଖଣ୍ଡ ଆକାରରେ ଆଶା କରୁଅଛି କିମ୍ବା କେବଳ ଗୋଟିଏ "
+"ସ୍ୱତନ୍ତ୍ରଚରକୁ ବୁଲିଆନ false (#f) ଆକାରରେ ଆଶାକରୁଅଛି"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:109
 msgid "Invalid range"
@@ -1946,12 +1949,16 @@ msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
+"input_token ବିଭିନ୍ନ ପ୍ରକାର ଚ୍ୟାନେଲ ବନ୍ଧନଗୁଡ଼ିକୁ ଧାରଣ କରିଥାଏ ଯାହାକି "
+"input_chan_bindings ପ୍ରାଚଳ ମାଧ୍ଯମରେ ଉଲ୍ଲେଖ କରାଯାଇଥାଏ।"
 
 #: ../camel/camel-sasl-gssapi.c:181
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
+"ଏହି input_token ଅବୈଧ ହସ୍ତାକ୍ଷର ଧାରଣ କରିଥାଏ, କିମ୍ବା ଗୋଟିଏ ହସ୍ତାକ୍ଷର ଯାହାକୁକି ଯାଞ୍ଚ "
+"କରାଯାଇପାରିବ ନାହିଁ।"
 
 #: ../camel/camel-sasl-gssapi.c:185
 msgid ""
@@ -2816,6 +2823,9 @@ msgid ""
 "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
 "of your mail.\n"
 msgstr ""
+"ଆପଣ ଏହି ଖାତାର ଭଣ୍ଡାର ସୀମାକୁ ଅତିକ୍ରମ କରିସାରିଛନ୍ତି। ଆପଣଙ୍କର ସନ୍ଦେଶଗୁଡ଼ିକ ଆପଣଙ୍କର "
+"ଆଉଟବକ୍ସର ଧାଡ଼ିରେ ଅଛି। ଆପଣଙ୍କର କିଛି ମେଲକୁ ଅପସାରଣ/ଆଲେଖୀ କରି ପଠାନ୍ତୁ/ଗ୍ରହଣ କରନ୍ତୁକୁ "
+"ଦବାଇ କରି ପୁନଃ ପ୍ରେରଣ କରନ୍ତୁ।\n"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:223
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:209
@@ -3580,6 +3590,8 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
+"Evolution ଦ୍ୱାରା ପରିଚାଳିତ ସ୍ଥାନୀୟ ମେଲକୁ ମାନକ mbox-ଶୈଳୀକୃତ ସ୍ପୁଲଗୁଡ଼ିକରୁ ଫୋଲଡରଗୁଡ଼ିକ "
+"ମଧ୍ଯରୁ କାଢ଼ିବା (ଗତିକରାଇବା) ପାଇଁ।"
 
 #: ../camel/providers/local/camel-local-provider.c:88
 #: ../camel/providers/local/camel-local-provider.c:107
@@ -3608,6 +3620,8 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
+"ବାହ୍ୟ ମାନକ mbox ସ୍ପୁଲ ଫାଇଲଗୁଡ଼ିକରୁ ସ୍ଥାନୀୟ ମେଲକୁ ପଢ଼ିବା ଏବଂ ସଂରକ୍ଷଣ କରିବା ପାଇଁ।\n"
+"Elm, Pine, କିମ୍ବା Mutt ଶୈଳୀ ଫୋଲଡରଗୁଡ଼ିକର ଟ୍ରୀକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ବ୍ୟବହୃତ ହୋଇଥାଏ।"
 
 #: ../camel/providers/local/camel-local-provider.c:126
 msgid "Standard Unix mbox spool directory"
@@ -4268,6 +4282,9 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
+"ଏହି ବିକଳ୍ପଟି POP ସର୍ଭର ବ୍ୟବହାର କରି APOP ପ୍ରୋଟୋକଲ ମାଧ୍ଯମରେ ସଂଗୁପ୍ତ ପ୍ରବେଶ ସଂକେତ "
+"ସହିତ ସଂଯୁକ୍ତ ହୋଇଥାଏ। ଏହା ସମସ୍ତ ଚାଳକ ମାନଙ୍କ ପାଇଁ ବ୍ୟବହାର ହୋଇନପାରେ, ଏହାକୁ "
+"ସମର୍ଥନ କରୁଅଛି ବୋଲି ଅଭିଯୋଗ କରୁଥିଲେ ମଧ୍ଯ।"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:209
 #, c-format
@@ -4361,7 +4378,7 @@ msgstr "ପଠାଯାଇଥିବା ମେଲ"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
+msgstr "\"ପଠାଯାଇଥିବା ମେଲ\" ପ୍ରଗ୍ରାମକୁ ସ୍ଥାନୀୟ ତନ୍ତ୍ର ଫାଇଲରେ ପ୍ରେରଣ କରିବା ପାଇଁ।"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:115
 msgid "Could not parse recipient list"
@@ -5151,7 +5168,7 @@ msgstr "ଉଲ୍ଲିଖିତ ଫୋଲଡରକୁ ପରିବର୍ତ୍�
 
 #: ../servers/exchange/storage/e-storage.c:579
 msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
+msgstr "ଏହାର ନିମ୍ନବର୍ତ୍ତି ସ୍ତରର ଫୋଲଡର ନିର୍ମାଣ କରିପାରିବେ ନାହିଁ"
 
 #: ../servers/exchange/storage/e-storage.c:581
 msgid "Cannot create a folder with that name"
