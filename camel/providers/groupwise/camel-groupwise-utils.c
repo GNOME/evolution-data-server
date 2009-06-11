@@ -343,11 +343,11 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 	attachment->name = g_strdup (filename ? filename : "");
 	if (camel_content_type_is (type, "message", "rfc822")) {
-		const gchar *message_id;
+		const gchar *item_id;
 		gchar *msgid;
 		gint len;
 
-		message_id = camel_medium_get_header (CAMEL_MEDIUM (dw), "Message-Id");
+		item_id = camel_medium_get_header (CAMEL_MEDIUM (dw), "X-GW-ITEM-ID");
 		/*
 		 * XXX: The following code piece is a screwed up way of doing stuff.
 		 * But we dont have much choice. Do not use 'camel_header_msgid_decode'
@@ -355,9 +355,9 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 		 * groupwise server needs.
 		 */
 
-		len = strlen (message_id);
+		len = strlen (item_id);
 		msgid = (gchar *)g_malloc0 (len-1);
-		msgid = memcpy(msgid, message_id+2, len-3);
+		msgid = memcpy(msgid, item_id+2, len-3);
 		g_print ("||| msgid:%s\n", msgid);
 
 		status = e_gw_connection_forward_item (cnc, msgid, NULL, TRUE, &temp_item);
