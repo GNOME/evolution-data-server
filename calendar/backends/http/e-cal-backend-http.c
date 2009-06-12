@@ -41,6 +41,8 @@
 
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendHttpPrivate {
+	/* signal handler id for source's 'changed' signal */
+	gulong source_changed_id;
 	/* URI to get remote calendar data from */
 	gchar *uri;
 
@@ -97,6 +99,13 @@ e_cal_backend_http_dispose (GObject *object)
 
 	g_free (priv->username);
 	g_free (priv->password);
+	priv->username = NULL;
+	priv->password = NULL;
+
+	if (priv->source_changed_id) {
+		g_signal_handler_disconnect (e_cal_backend_get_source (E_CAL_BACKEND (cbhttp)), priv->source_changed_id);
+		priv->source_changed_id = 0;
+	}
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
@@ -250,6 +259,12 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	priv->is_loading = FALSE;
 	d(g_message ("Retrieval done.\n"));
 
+	if (!priv->uri) {
+		/* uri changed meanwhile, retrieve again */
+		begin_retrieval_cb (cbhttp);
+		return;
+	}
+
 	/* Handle redirection ourselves */
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
 		newuri = soup_message_headers_get (msg->response_headers,
@@ -278,6 +293,8 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
 						    soup_status_get_phrase (msg->status_code));
 		}
+
+		e_cal_backend_empty_cache (E_CAL_BACKEND (cbhttp), priv->cache);
 		return;
 	}
 
@@ -287,6 +304,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	if (!icalcomp) {
 		if (!priv->opened)
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
+		e_cal_backend_empty_cache (E_CAL_BACKEND (cbhttp), priv->cache);
 		return;
 	}
 
@@ -294,6 +312,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 		if (!priv->opened)
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
 		icalcomponent_free (icalcomp);
+		e_cal_backend_empty_cache (E_CAL_BACKEND (cbhttp), priv->cache);
 		return;
 	}
 
@@ -414,7 +433,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	priv = cbhttp->priv;
 
 	if (priv->mode != CAL_MODE_REMOTE)
-		return TRUE;
+		return FALSE;
 
 	maybe_start_reload_timeout (cbhttp);
 
@@ -459,6 +478,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	soup_message = soup_message_new (SOUP_METHOD_GET, priv->uri);
 	if (soup_message == NULL) {
 		priv->is_loading = FALSE;
+		e_cal_backend_empty_cache (E_CAL_BACKEND (cbhttp), priv->cache);
 		return FALSE;
 	}
 
@@ -517,6 +537,37 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 						 (GSourceFunc) reload_cb, cbhttp);
 }
 
+static void
+source_changed_cb (ESource *source, ECalBackendHttp *cbhttp)
+{
+	ECalBackendHttpPrivate *priv;
+
+	g_return_if_fail (cbhttp != NULL);
+	g_return_if_fail (cbhttp->priv != NULL);
+
+	priv = cbhttp->priv;
+
+	if (priv->uri) {
+		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+		const gchar *secure_prop = e_source_get_property (source, "use_ssl");
+		gchar *new_uri;
+
+		new_uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
+						 (secure_prop && g_str_equal(secure_prop, "1")));
+
+		if (new_uri && !g_str_equal (priv->uri, new_uri)) {
+			/* uri changed, do reload some time soon */
+			g_free (priv->uri);
+			priv->uri = NULL;
+
+			if (!priv->is_loading)
+				g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
+		}
+
+		g_free (new_uri);
+	}
+}
+
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
@@ -525,10 +576,20 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
+	gchar *tmp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+
+	if (priv->source_changed_id == 0) {
+		priv->source_changed_id = g_signal_connect (source, "changed", G_CALLBACK (source_changed_cb), cbhttp);
+	}
+
+	/* always read uri again */
+	tmp = priv->uri;
+	priv->uri = NULL;
+	g_free (tmp);
 
 	if (e_source_get_property (source, "auth") != NULL) {
 		if ((username == NULL || password == NULL)) {
@@ -565,13 +626,13 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		if (priv->default_zone) {
 			e_cal_backend_cache_put_default_timezone (priv->cache, priv->default_zone);
 		}
-
-		if (priv->mode == CAL_MODE_LOCAL)
-			return GNOME_Evolution_Calendar_Success;
-
-
-		g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 	}
+
+	if (priv->mode == CAL_MODE_LOCAL)
+		return GNOME_Evolution_Calendar_Success;
+
+
+	g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 
 	return GNOME_Evolution_Calendar_Success;
 }

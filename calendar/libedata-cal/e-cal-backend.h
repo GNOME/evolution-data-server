@@ -44,6 +44,8 @@ G_BEGIN_DECLS
 #define E_IS_CAL_BACKEND_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND))
 #define E_CAL_BACKEND_GET_CLASS(obj) (E_CAL_BACKEND_CLASS (G_OBJECT_GET_CLASS (obj)))
 
+struct _ECalBackendCache;
+
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
 
 struct _ECalBackend {
@@ -187,6 +189,8 @@ void e_cal_backend_notify_cal_address (ECalBackend *backend, gchar *address);
 void e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *query, const GList *objects);
 void e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *query, const GList *ids);
 void e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *query, const GList *objects);
+
+void e_cal_backend_empty_cache (ECalBackend *backend, struct _ECalBackendCache *cache);
 
 G_END_DECLS
 

@@ -27,6 +27,7 @@
 #include <libxml/xmlmemory.h>
 
 #include "e-cal-backend.h"
+#include "e-cal-backend-cache.h"
 
 
 
@@ -36,6 +37,8 @@ G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT)
 struct _ECalBackendPrivate {
 	/* The source for this backend */
 	ESource *source;
+	/* signal handler ID for source's 'changed' signal */
+	gulong source_changed_id;
 
 	/* URI, from source. This is cached, since we return const. */
 	gchar *uri;
@@ -86,6 +89,29 @@ static void e_cal_backend_finalize (GObject *object);
 
 
 static void
+source_changed_cb (ESource *source, ECalBackend *backend)
+{
+	ECalBackendPrivate *priv;
+	gchar *suri;
+
+	g_return_if_fail (source != NULL);
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	priv = backend->priv;
+	g_return_if_fail (priv != NULL);
+	g_return_if_fail (priv->source == source);
+
+	suri = e_source_get_uri (priv->source);
+	if (!priv->uri || (suri && !g_str_equal (priv->uri, suri))) {
+		g_free (priv->uri);
+		priv->uri = suri;
+	} else {
+		g_free (suri);
+	}
+}
+
+static void
 e_cal_backend_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	ECalBackend *backend;
@@ -99,9 +125,16 @@ e_cal_backend_set_property (GObject *object, guint property_id, const GValue *va
 		{
 			ESource *new_source;
 
+			if (priv->source_changed_id && priv->source) {
+				g_signal_handler_disconnect (priv->source, priv->source_changed_id);
+				priv->source_changed_id = 0;
+			}
+
 			new_source = g_value_get_object (value);
-			if (new_source)
+			if (new_source) {
 				g_object_ref (new_source);
+				priv->source_changed_id = g_signal_connect (new_source, "changed", G_CALLBACK (source_changed_cb), backend);
+			}
 
 			if (priv->source)
 				g_object_unref (priv->source);
@@ -275,6 +308,10 @@ e_cal_backend_finalize (GObject *object)
 	g_mutex_free (priv->queries_mutex);
 
 	g_free (priv->uri);
+	if (priv->source_changed_id && priv->source) {
+		g_signal_handler_disconnect (priv->source, priv->source_changed_id);
+		priv->source_changed_id = 0;
+	}
 	g_object_unref (priv->source);
 
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
@@ -1455,4 +1492,50 @@ e_cal_backend_notify_error (ECalBackend *backend, const gchar *message)
 
 	for (l = priv->clients; l; l = l->next)
 		e_data_cal_notify_error (l->data, message);
+}
+
+/**
+ * e_cal_backend_empty_cache:
+ * @backend: A calendar backend.
+ * @cache: Backend's cache to empty.
+ *
+ * Empties backend's cache with all notifications and so on, thus all listening
+ * will know there is nothing in this backend.
+ **/
+void
+e_cal_backend_empty_cache (ECalBackend *backend, ECalBackendCache *cache)
+{
+	GList *comps_in_cache;
+
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	if (!cache)
+		return;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CACHE (cache));
+
+	e_file_cache_freeze_changes (E_FILE_CACHE (cache));
+
+	for (comps_in_cache = e_cal_backend_cache_get_components (cache);
+	     comps_in_cache;
+	     comps_in_cache = comps_in_cache->next) {
+		gchar *comp_str;
+		ECalComponentId *id;
+		ECalComponent *comp = comps_in_cache->data;
+
+		id = e_cal_component_get_id (comp);
+		comp_str = e_cal_component_get_as_string (comp);
+
+		e_cal_backend_cache_remove_component (cache, id->uid, id->rid);
+		e_cal_backend_notify_object_removed (backend, id, comp_str, NULL);
+
+		g_free (comp_str);
+		e_cal_component_free_id (id);
+		g_object_unref (comp);
+	}
+
+	g_list_free (comps_in_cache);
+
+	e_file_cache_thaw_changes (E_FILE_CACHE (cache));
 }

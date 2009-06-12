@@ -310,10 +310,25 @@ e_source_update_from_xml_node (ESource *source,
 	if (source->priv->name == NULL
 	    || strcmp ((gchar *)name, source->priv->name) != 0
 	    || source->priv->relative_uri == NULL
-	    || relative_uri != NULL
+	    || relative_uri == NULL
 	    || strcmp ((gchar *)relative_uri, source->priv->relative_uri) != 0) {
 		g_free (source->priv->name);
 		source->priv->name = g_strdup ((gchar *)name);
+
+		if (source->priv->group) {
+			/* reset the absolute uri to NULL to be regenerated when asked for */
+			g_free (source->priv->absolute_uri);
+			source->priv->absolute_uri = NULL;
+		} else if (source->priv->absolute_uri &&
+			   source->priv->relative_uri &&
+			   g_str_has_suffix (source->priv->absolute_uri, source->priv->relative_uri)) {
+			gchar *tmp = source->priv->absolute_uri;
+
+			tmp [strlen (tmp) - strlen (source->priv->relative_uri)] = 0;
+			source->priv->absolute_uri = g_strconcat (tmp, (gchar *)relative_uri, NULL);
+
+			g_free (tmp);
+		}
 
 		g_free (source->priv->relative_uri);
 		source->priv->relative_uri = g_strdup ((gchar *)relative_uri);

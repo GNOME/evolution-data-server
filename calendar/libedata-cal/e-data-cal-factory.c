@@ -25,7 +25,9 @@
 #include <bonobo/bonobo-main.h>
 #include "libedataserver/e-url.h"
 #include "libedataserver/e-source.h"
+#include "libedataserver/e-source-list.h"
 #include "libebackend/e-data-server-module.h"
+#include "libecal/e-cal.h"
 #include "e-cal-backend.h"
 #include "e-data-cal.h"
 #include "e-data-cal-factory.h"
@@ -52,6 +54,12 @@ struct _EDataCalFactoryPrivate {
 	guint registered : 1;
 
         gint mode;
+
+	/* this is for notifications of source changes */
+	ESourceList *lists[E_CAL_SOURCE_TYPE_LAST];
+
+	/* backends divided by their type */
+	GSList *backends_by_type[E_CAL_SOURCE_TYPE_LAST];
 };
 
 /* Signal IDs */
@@ -79,6 +87,74 @@ calobjtype_to_icalkind (const GNOME_Evolution_Calendar_CalObjType type)
 	return ICAL_NO_COMPONENT;
 }
 
+static ECalSourceType
+icalkind_to_ecalsourcetype (const icalcomponent_kind kind)
+{
+	switch (kind) {
+	case ICAL_VEVENT_COMPONENT:
+		return E_CAL_SOURCE_TYPE_EVENT;
+	case ICAL_VTODO_COMPONENT:
+		return E_CAL_SOURCE_TYPE_TODO;
+	case ICAL_VJOURNAL_COMPONENT:
+		return E_CAL_SOURCE_TYPE_JOURNAL;
+	default:
+		break;
+	}
+
+	return E_CAL_SOURCE_TYPE_LAST;
+}
+
+static void
+update_source_in_backend (ECalBackend *backend, ESource *updated_source)
+{
+	xmlNodePtr xml;
+
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (updated_source != NULL);
+
+	xml = xmlNewNode (NULL, (const xmlChar *)"dummy");
+	e_source_dump_to_xml_node (updated_source, xml);
+	e_source_update_from_xml_node (e_cal_backend_get_source (backend), xml->children, NULL);
+	xmlFreeNode (xml);
+}
+
+static void
+source_list_changed_cb (ESourceList *list, EDataCalFactory *factory)
+{
+	EDataCalFactoryPrivate *priv;
+	gint i;
+
+	g_return_if_fail (list != NULL);
+	g_return_if_fail (factory != NULL);
+	g_return_if_fail (E_IS_DATA_CAL_FACTORY (factory));
+
+	priv = factory->priv;
+
+	g_mutex_lock (priv->backends_mutex);
+
+	for (i = 0; i < E_CAL_SOURCE_TYPE_LAST; i++) {
+		if (list == priv->lists[i]) {
+			GSList *l;
+
+			for (l = priv->backends_by_type [i]; l; l = l->next) {
+				ECalBackend *backend = l->data;
+				ESource *source, *list_source;
+
+				source = e_cal_backend_get_source (backend);
+				list_source = e_source_list_peek_source_by_uid (priv->lists[i], e_source_peek_uid (source));
+
+				if (list_source) {
+					update_source_in_backend (backend, list_source);
+				}
+			}
+
+			break;
+		}
+	}
+
+	g_mutex_unlock (priv->backends_mutex);
+}
+
 static ECalBackendFactory*
 get_backend_factory (GHashTable *methods, const gchar *method, icalcomponent_kind kind)
 {
@@ -103,8 +179,9 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 	EDataCalFactory *factory;
 	EDataCalFactoryPrivate *priv;
 	ECalBackend *ret_backend;
-	const gchar *uristr;
-	gchar *uri;
+	ECalSourceType st;
+	ESource *source;
+	gchar *uid_type_string;
 	gboolean last_calendar;
 
 	fprintf (stderr, "backend_last_client_gone_cb() called!\n");
@@ -114,18 +191,23 @@ backend_last_client_gone_cb (ECalBackend *backend, gpointer data)
 
 	/* Remove the backend from the hash table */
 
-	uristr = e_cal_backend_get_uri (backend);
-	g_assert (uristr != NULL);
-	uri = g_strdup_printf("%s:%d", uristr, (gint)e_cal_backend_get_kind(backend));
+	source = e_cal_backend_get_source (backend);
+	g_assert (source != NULL);
+	uid_type_string = g_strdup_printf ("%s:%d", e_source_peek_uid (source), (gint)e_cal_backend_get_kind (backend));
 
 	g_mutex_lock (priv->backends_mutex);
 
-	ret_backend = g_hash_table_lookup (factory->priv->backends, uri);
+	st = icalkind_to_ecalsourcetype (e_cal_backend_get_kind (backend));
+	if (st != E_CAL_SOURCE_TYPE_LAST && priv->backends_by_type [st]) {
+		priv->backends_by_type [st] = g_slist_remove (priv->backends_by_type [st], backend);
+	}
+
+	ret_backend = g_hash_table_lookup (priv->backends, uid_type_string);
 	g_assert (ret_backend != NULL);
 	g_assert (ret_backend == backend);
 
-	g_hash_table_remove (priv->backends, uri);
-	g_free(uri);
+	g_hash_table_remove (priv->backends, uid_type_string);
+	g_free (uid_type_string);
 
 	g_signal_handlers_disconnect_matched (backend, G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL, NULL, data);
@@ -157,7 +239,7 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	ESource *source;
 	gchar *str_uri;
 	EUri *uri;
-	gchar *uri_type_string;
+	gchar *uid_type_string;
 
 	factory = E_DATA_CAL_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
@@ -186,22 +268,24 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	uri_type_string = g_strdup_printf ("%s:%d", str_uri, (gint)calobjtype_to_icalkind (type));
-	g_free(str_uri);
+	g_free (str_uri);
+	uid_type_string = g_strdup_printf ("%s:%d", e_source_peek_uid (source), (gint)calobjtype_to_icalkind (type));
 
 	/* Find the associated backend factory (if any) */
 	backend_factory = get_backend_factory (priv->methods, uri->protocol, calobjtype_to_icalkind (type));
 	if (!backend_factory) {
 		/* FIXME Distinguish between method and kind failures? */
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod);
-		goto cleanup;
+		goto cleanup2;
 	}
 
 	g_mutex_lock (priv->backends_mutex);
 
 	/* Look for an existing backend */
-	backend = g_hash_table_lookup (factory->priv->backends, uri_type_string);
+	backend = g_hash_table_lookup (factory->priv->backends, uid_type_string);
 	if (!backend) {
+		ECalSourceType st;
+
 		/* There was no existing backend, create a new one */
 		if (E_IS_CAL_BACKEND_LOADER_FACTORY (backend_factory)) {
 			backend = E_CAL_BACKEND_LOADER_FACTORY_GET_CLASS (backend_factory)->new_backend_with_protocol ((ECalBackendLoaderFactory *)backend_factory,
@@ -215,12 +299,25 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 			goto cleanup;
 		}
 
+		st = icalkind_to_ecalsourcetype (e_cal_backend_get_kind (backend));
+		if (st != E_CAL_SOURCE_TYPE_LAST) {
+			if (!priv->lists[st] && e_cal_get_sources (&(priv->lists[st]), st, NULL)) {
+				g_signal_connect (priv->lists[st], "changed", G_CALLBACK (source_list_changed_cb), factory);
+			}
+
+			if (priv->lists[st])
+				priv->backends_by_type[st] = g_slist_prepend (priv->backends_by_type[st], backend);
+		}
+
 		/* Track the backend */
-		g_hash_table_insert (priv->backends, g_strdup (uri_type_string), backend);
+		g_hash_table_insert (priv->backends, g_strdup (uid_type_string), backend);
 
 		g_signal_connect (G_OBJECT (backend), "last_client_gone",
 				  G_CALLBACK (backend_last_client_gone_cb),
 				  factory);
+	} else if (!e_source_equal (source, e_cal_backend_get_source (backend))) {
+		/* source changed, update it in a backend */
+		update_source_in_backend (backend, source);
 	}
 
 	/* Create the corba calendar */
@@ -241,8 +338,9 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	   before e_cal_backend_finalize() is called from the
 	   backend_last_client_gone_cb(), for details see bug 506457. */
 	g_mutex_unlock (priv->backends_mutex);
+ cleanup2:
 	e_uri_free (uri);
-	g_free (uri_type_string);
+	g_free (uid_type_string);
 	g_object_unref (source);
 
 	return ret_cal;
@@ -276,6 +374,7 @@ e_data_cal_factory_finalize (GObject *object)
 {
 	EDataCalFactory *factory;
 	EDataCalFactoryPrivate *priv;
+	gint i;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (E_IS_DATA_CAL_FACTORY (object));
@@ -296,6 +395,18 @@ e_data_cal_factory_finalize (GObject *object)
 		priv->registered = FALSE;
 	}
 	g_free (priv->iid);
+
+	for (i = 0; i < E_CAL_SOURCE_TYPE_LAST; i++) {
+		if (priv->lists[i]) {
+			g_object_unref (priv->lists[i]);
+			priv->lists[i] = NULL;
+		}
+
+		if (priv->backends_by_type[i]) {
+			g_slist_free (priv->backends_by_type[i]);
+			priv->backends_by_type[i] = NULL;
+		}
+	}
 
 	g_free (priv);
 	factory->priv = NULL;

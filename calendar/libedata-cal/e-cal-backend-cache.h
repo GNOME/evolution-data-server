@@ -34,12 +34,13 @@ G_BEGIN_DECLS
 #define E_IS_CAL_BACKEND_CACHE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_BACKEND_CACHE))
 #define E_IS_CAL_BACKEND_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND_CACHE))
 
+typedef struct _ECalBackendCache ECalBackendCache;
 typedef struct _ECalBackendCachePrivate ECalBackendCachePrivate;
 
-typedef struct {
+struct _ECalBackendCache {
 	EFileCache parent;
 	ECalBackendCachePrivate *priv;
-} ECalBackendCache;
+};
 
 typedef struct {
 	EFileCacheClass parent_class;
