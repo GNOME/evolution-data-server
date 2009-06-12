@@ -372,7 +372,7 @@ http_method_invoke (CamelHttpStream *http)
 		 http->url->host));
 	if (camel_stream_printf (http->raw, "%s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
 				 method,
-				 url,
+				 http->proxy ? url : http->url->path,
 				 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
 				 http->url->host) == -1) {
 		http_disconnect(http);
@@ -576,7 +576,7 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const char *proxy_url
 	if (http_stream->proxy)
 		camel_url_free (http_stream->proxy);
 
-	if (proxy_url == NULL)
+	if (proxy_url == NULL || !*proxy_url)
 		http_stream->proxy = NULL;
 	else
 		http_stream->proxy = camel_url_new (proxy_url, NULL);
