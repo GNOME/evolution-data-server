@@ -1196,7 +1196,7 @@ ldap_error_to_response (gint ldap_error)
 		return GNOME_Evolution_Addressbook_OtherError;
 }
 
-static const char *
+static const gchar *
 get_dn_attribute_name (gchar *rootdn)
 {
 	/* Use 'uid' is already used in root DN,
@@ -1217,17 +1217,17 @@ create_dn_from_contact (EContact *contact, gchar *rootdn)
 
 	cn = e_contact_get (contact, E_CONTACT_FAMILY_NAME);
 	if (cn) {
-		int pos = 0;
+		gint pos = 0;
 		cn_part = g_malloc0 (strlen (cn) + 1);
 		while (cn[pos])	{
 			if (g_ascii_isalnum (cn[pos])) {
 				cn_part[pos] = g_ascii_tolower (cn[pos]);
-			}	
+			}
 			pos++;
 		}
 	}
 
-	dn = g_strdup_printf ("%s=%s%s%lu", 
+	dn = g_strdup_printf ("%s=%s%s%lu",
 			      get_dn_attribute_name (rootdn),
 			      (cn_part && *cn_part) ? cn_part : "",
 			      (cn_part && *cn_part) ? "." : "",
@@ -1240,10 +1240,10 @@ create_dn_from_contact (EContact *contact, gchar *rootdn)
 	return dn;
 }
 
-static char *
-create_full_dn_from_contact (gchar *dn, const char *root_dn)
+static gchar *
+create_full_dn_from_contact (gchar *dn, const gchar *root_dn)
 {
-	char *full_dn = g_strdup_printf ("%s%s%s", dn,
+	gchar *full_dn = g_strdup_printf ("%s%s%s", dn,
 					 (root_dn && *root_dn) ? "," : "",
 					 (root_dn && *root_dn) ? root_dn: "");
 
@@ -1292,12 +1292,12 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 
 	/* add LDAP uid attribute, if given */
 	if (ldap_uid) {
-		LDAPMod *mod = g_new (LDAPMod, 1);		
+		LDAPMod *mod = g_new (LDAPMod, 1);
 		gchar *ldap_uid_value = strchr (ldap_uid, '=');
 		if (ldap_uid_value) {
 			mod->mod_op = LDAP_MOD_ADD;
 			mod->mod_type = g_strdup ("uid");
-			mod->mod_values = g_new (char*, 2);
+			mod->mod_values = g_new (gchar *, 2);
 			mod->mod_values[0] = g_strdup (ldap_uid_value+1);
 			mod->mod_values[1] = NULL;
 			g_ptr_array_add (result, mod);
@@ -1392,7 +1392,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
                            need to update the dn if it's one of the
                            attributes we compute the dn from. */
 			if (new_dn_needed) {
-				const char *current_dn = e_contact_get_const (current, E_CONTACT_UID);
+				const gchar *current_dn = e_contact_get_const (current, E_CONTACT_UID);
 
 				/* check, if this attribute's name is found in the uid string */
 				if (current_dn && current_prop) {
@@ -2014,7 +2014,7 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 
 		/* UID rename necessary? */
 		if (new_dn_needed) {
-			const char *current_dn = e_contact_get_const (modify_op->current_contact, E_CONTACT_UID);
+			const gchar *current_dn = e_contact_get_const (modify_op->current_contact, E_CONTACT_UID);
 			gchar *new_uid;
 
 			if (modify_op->ldap_uid)
@@ -2031,8 +2031,8 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 #endif
 			if (current_dn && new_uid && modify_op->new_id) {
 				EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-				int ldap_error;
-				int rename_contact_msgid;
+				gint ldap_error;
+				gint rename_contact_msgid;
 
 				/* actually perform the ldap rename */
 				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2071,7 +2071,7 @@ modify_contact_search_handler (LDAPOp *op, LDAPMessage *res)
 		} else {
 			/* no renaming necessary, just call the modify function */
 			modify_op->new_id = NULL;
-		        modify_contact_rename_handler (op, NULL);
+			modify_contact_rename_handler (op, NULL);
 		}
 	}
 }
@@ -2081,11 +2081,11 @@ modify_contact_rename_handler (LDAPOp *op, LDAPMessage *res)
 {
 	LDAPModifyOp *modify_op = (LDAPModifyOp*)op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	char *ldap_error_msg;
-	int ldap_error;
+	gchar *ldap_error_msg;
+	gint ldap_error;
 	LDAPMod **ldap_mods;
 	gboolean differences;
-	int modify_contact_msgid;
+	gint modify_contact_msgid;
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
@@ -2159,7 +2159,7 @@ modify_contact_rename_handler (LDAPOp *op, LDAPMessage *res)
 		ldap_mods = (LDAPMod**)modify_op->mod_array->pdata;
 #ifdef LDAP_DEBUG_MODIFY
 		{
-			int i;
+			gint i;
 			printf ("Sending the following to the server as MOD\n");
 
 			for (i = 0; g_ptr_array_index(modify_op->mod_array, i); i ++) {
@@ -2178,11 +2178,11 @@ modify_contact_rename_handler (LDAPOp *op, LDAPMessage *res)
 				printf (" %s:\n", mod->mod_type);
 
 				if (mod->mod_op & LDAP_MOD_BVALUES) {
-					int j;
+					gint j;
 					for (j = 0; mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
 						printf ("\t\t'%s'\n", mod->mod_bvalues[j]->bv_val);
 				} else {
-					int j;
+					gint j;
 					for (j = 0; mod->mod_values[j]; j++)
 						printf ("\t\t'%s'\n", mod->mod_values[j]);
 				}

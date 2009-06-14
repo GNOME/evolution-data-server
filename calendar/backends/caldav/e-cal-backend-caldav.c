@@ -783,7 +783,7 @@ out:
 
 /* returns whether was able to read the xpath_value from the server's response; *value contains the result */
 static gboolean
-parse_propfind_response (SoupMessage *message, const char *xpath_status, const char *xpath_value, gchar **value)
+parse_propfind_response (SoupMessage *message, const gchar *xpath_status, const gchar *xpath_value, gchar **value)
 {
 	xmlXPathContextPtr xpctx;
 	xmlDocPtr          doc;
@@ -1225,7 +1225,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 }
 
 static ECalBackendSyncStatus
-caldav_post_freebusy (ECalBackendCalDAV *cbdav, const char *url, gchar **post_fb)
+caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_fb)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupMessage *message;
@@ -1234,7 +1234,7 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav, const char *url, gchar **post_fb
 	g_return_val_if_fail (url != NULL, GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (post_fb != NULL, GNOME_Evolution_Calendar_OtherError);
 	g_return_val_if_fail (*post_fb != NULL, GNOME_Evolution_Calendar_OtherError);
-	
+
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	message = soup_message_new (SOUP_METHOD_POST, url);
@@ -1427,14 +1427,14 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 	xmlDocPtr doc;
 	xmlNodePtr root, node;
 	xmlNsPtr nsdav;
-	char *owner = NULL;
+	gchar *owner = NULL;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	g_return_val_if_fail (priv != NULL, FALSE);
 	g_return_val_if_fail (priv->schedule_outbox_url == NULL, TRUE);
-	
+
 	/* Prepare the soup message */
 	message = soup_message_new ("PROPFIND", priv->uri);
 	if (message == NULL)
@@ -3658,7 +3658,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	ECalComponentDateTime dt;
 	struct icaltimetype dtvalue;
 	icaltimezone *utc;
-	char *str;
+	gchar *str;
 	GList *u;
 	GSList *attendees = NULL, *to_free = NULL;
 
@@ -3779,7 +3779,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 						icalcomp = icalparser_parse_string (tmp);
 						if (icalcomp && extract_objects (icalcomp, ICAL_VFREEBUSY_COMPONENT, &objects) == GNOME_Evolution_Calendar_Success) {
 							for (o = objects; o; o = o->next) {
-								char *obj_str = icalcomponent_as_ical_string_r (o->data);
+								gchar *obj_str = icalcomponent_as_ical_string_r (o->data);
 
 								if (obj_str && *obj_str)
 									*freebusy = g_list_append (*freebusy, obj_str);

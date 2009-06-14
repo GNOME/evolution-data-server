@@ -1434,10 +1434,10 @@ get_md5_digest (const guchar *str)
 	guint8 *digest;
 	gsize length;
 	GChecksum *checksum;
-	
+
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
-	
+
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	g_checksum_update (checksum, str, -1);
 	g_checksum_get_digest (checksum, digest, &length);
@@ -1455,7 +1455,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 	struct _camel_header_references *refs, *scan;
 	guint8 *digest;
 	gchar *msgid;
-	
+
 
 	if (!message_id)
 		return;
@@ -1480,7 +1480,7 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 	while (scan) {
 		digest = get_md5_digest ((const guchar *) scan->id);
 		memcpy(mi->info.references->references [count].id.hash, digest, sizeof(mi->info.message_id.id.hash));
-		
+
 		count++;
 		scan = scan->next;
 	}
@@ -1682,7 +1682,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 			mi->info.size = e_gw_item_get_mail_size (item);
 			mi->info.subject = camel_pstring_strdup(e_gw_item_get_subject(item));
 			groupwise_folder_set_threading_data (mi, item);
-			
+
 			camel_folder_summary_add (folder->summary,(CamelMessageInfo *)mi);
 			camel_folder_change_info_add_uid (changes, mi->info.uid);
 			camel_folder_change_info_recent_uid (changes, mi->info.uid);
@@ -2063,7 +2063,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		if (parent_threads)
 			camel_medium_add_header (CAMEL_MEDIUM (msg), "References", parent_threads);
 	}
-	
+
 	/* set item id */
 	camel_medium_add_header (CAMEL_MEDIUM (msg), "X-GW-ITEM-ID", uid);
 

@@ -1205,7 +1205,7 @@ get_message_uid (CamelFolder *folder, CamelImapMessageInfo *info)
 	uid = camel_message_info_uid (info);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	if (!isdigit ((unsigned char)*uid)) {
+	if (!isdigit ((guchar)*uid)) {
 		uid = camel_imap_journal_uidmap_lookup ((CamelIMAPJournal *) CAMEL_IMAP_FOLDER (folder)->journal, uid);
 		g_return_val_if_fail (uid != NULL, NULL);
 	}

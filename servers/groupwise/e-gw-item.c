@@ -485,8 +485,8 @@ e_gw_item_dispose (GObject *object)
 		if (priv->creation_date) {
 			g_free (priv->creation_date);
 			priv->creation_date = NULL;
-                }
-		
+		}
+
 		if (priv->message_id) {
 			g_free (priv->message_id);
 			priv->message_id = NULL;
@@ -593,15 +593,15 @@ e_gw_item_get_type (void)
 
 	if (!type) {
 		static GTypeInfo info = {
-                        sizeof (EGwItemClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_gw_item_class_init,
-                        NULL, NULL,
-                        sizeof (EGwItem),
-                        0,
-                        (GInstanceInitFunc) e_gw_item_init
-                };
+			sizeof (EGwItemClass),
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+			(GClassInitFunc) e_gw_item_class_init,
+			NULL, NULL,
+			sizeof (EGwItem),
+			0,
+			(GInstanceInitFunc) e_gw_item_init
+		};
 		type = g_type_register_static (G_TYPE_OBJECT, "EGwItem", &info, 0);
 	}
 
@@ -638,46 +638,46 @@ e_gw_item_new_empty (void)
 static void
 set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 {
-        SoupSoapParameter *param_recipient;
-        gchar *email, *cn;
+	SoupSoapParameter *param_recipient;
+	gchar *email, *cn;
 	EGwItemRecipient *recipient;
 	GList *email_list;
 
 	email_list = e_gw_item_get_email_list (item);
 
-        for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
-	     param_recipient != NULL;
-	     param_recipient = soup_soap_parameter_get_next_child_by_name (param_recipient, "recipient")) {
-                SoupSoapParameter *subparam;
+	for (param_recipient = soup_soap_parameter_get_first_child_by_name (param, "recipient");
+			param_recipient != NULL;
+			param_recipient = soup_soap_parameter_get_next_child_by_name (param_recipient, "recipient")) {
+		SoupSoapParameter *subparam;
 
 		recipient = g_new0 (EGwItemRecipient, 1);
-                subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "email");
-                if (subparam) {
-                        email = soup_soap_parameter_get_string_value (subparam);
-                        if (email)
-                                recipient->email = email;
-                }
-                subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "displayName");
-                if (subparam) {
-                        cn = soup_soap_parameter_get_string_value (subparam);
-                        if (cn)
-                                recipient->display_name = cn;
-                }
+		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "email");
+		if (subparam) {
+			email = soup_soap_parameter_get_string_value (subparam);
+			if (email)
+				recipient->email = email;
+		}
+		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "displayName");
+		if (subparam) {
+			cn = soup_soap_parameter_get_string_value (subparam);
+			if (cn)
+				recipient->display_name = cn;
+		}
 
-                subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "distType");
-                if (subparam) {
-                        gchar *dist_type;
-                        dist_type = soup_soap_parameter_get_string_value (subparam);
-                        if (!strcmp (dist_type, "TO"))
-                                recipient->type = E_GW_ITEM_RECIPIENT_TO;
-                        else if (!strcmp (dist_type, "CC"))
-                                recipient->type = E_GW_ITEM_RECIPIENT_CC;
+		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "distType");
+		if (subparam) {
+			gchar *dist_type;
+			dist_type = soup_soap_parameter_get_string_value (subparam);
+			if (!strcmp (dist_type, "TO"))
+				recipient->type = E_GW_ITEM_RECIPIENT_TO;
+			else if (!strcmp (dist_type, "CC"))
+				recipient->type = E_GW_ITEM_RECIPIENT_CC;
 			else if (!strcmp (dist_type, "BC"))
 				recipient->type = E_GW_ITEM_RECIPIENT_BC;
-                        else
+			else
 				recipient->type = E_GW_ITEM_RECIPIENT_NONE;
 			g_free (dist_type);
-                }
+		}
 		/*FIXME  gw recipientTypes need to be added after the server is fixed. */
 
 
@@ -685,7 +685,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		 look for accepted/declined and update the item else set it
 		 to none. */
 		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
-                if (subparam) {
+		if (subparam) {
 			gchar *formatted_date, *value;
 			SoupSoapParameter *temp_param;
 
@@ -745,8 +745,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				g_free (value), value = NULL;
 				g_free (formatted_date), formatted_date = NULL;
 			}
-                }
-		else {
+		} else {
 			/* if recipientStatus is not provided, use the
 			 * self_status, obtained from the mail properties. */
 			if (!strcmp ((const gchar *)email_list->data, recipient->email))
@@ -756,9 +755,10 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				recipient->status = E_GW_ITEM_STAT_NONE;
 		}
 
-                item->priv->recipient_list = g_slist_append (item->priv->recipient_list, recipient);
-        }
+		item->priv->recipient_list = g_slist_append (item->priv->recipient_list, recipient);
+	}
 }
+
 static EGwItemReturnNotify
 get_notification_value (SoupSoapParameter *param, const gchar *param_name)
 {
@@ -965,13 +965,13 @@ e_gw_item_get_category_name (EGwItem *item)
 	return item->priv->category_name;
 }
 
-const gchar*
+const gchar *
 e_gw_item_get_parent_thread_ids (EGwItem *item)
 {
 	return item->priv->parent_threads;
 }
 
-const gchar*
+const gchar *
 e_gw_item_get_message_id (EGwItem *item)
 {
 	return item->priv->message_id;
@@ -1123,7 +1123,7 @@ static void
 set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 {
 	gchar *value;
-        gchar *type;
+	gchar *type;
 	gchar *primary_email;
 	SoupSoapParameter *subparam;
 	SoupSoapParameter *temp;
@@ -1697,7 +1697,7 @@ append_group_fields_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 	simple_fields = item->priv->simple_fields;
 	append_common_addressbook_item_fields_to_soap_message (simple_fields, item->priv->category_list, msg);
 	if (item->priv->container)
-                e_gw_message_write_string_parameter (msg, "container", NULL, item->priv->container);
+		e_gw_message_write_string_parameter (msg, "container", NULL, item->priv->container);
 	soup_soap_message_start_element (msg, "members", NULL, NULL);
 	members = g_list_copy (item->priv->member_list);
 	for (; members != NULL; members = g_list_next (members)) {
@@ -1717,7 +1717,7 @@ EGwItem *
 e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, SoupSoapParameter *param)
 {
 	EGwItem *item;
-        gchar *item_type, *internet_prop;
+	gchar *item_type, *internet_prop;
 	SoupSoapParameter *subparameter, *child, *category_param, *attachment_param;
 	gboolean is_group_item = TRUE;
 	GList *user_email = NULL;
@@ -2114,11 +2114,11 @@ e_gw_item_new_from_soap_parameter (const gchar *email, const gchar *container, S
 			g_free (enabled);
 		} else if (!g_ascii_strcasecmp (name, "threading")) {
 			SoupSoapParameter *subparam;
-			
-			subparam = soup_soap_parameter_get_first_child_by_name (child, "parent") ;
-			if (subparam) 
-  				item->priv->parent_threads = soup_soap_parameter_get_string_value (subparam);
-			
+
+			subparam = soup_soap_parameter_get_first_child_by_name (child, "parent");
+			if (subparam)
+				item->priv->parent_threads = soup_soap_parameter_get_string_value (subparam);
+
 		} else if (!g_ascii_strcasecmp (name, "messageId")) {
 			item->priv->message_id = soup_soap_parameter_get_string_value (child);
 		}
@@ -3420,7 +3420,7 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		append_contact_fields_to_soap_message (item, msg);
 		soup_soap_message_end_element(msg);
 		return TRUE;
-        case E_GW_ITEM_TYPE_GROUP :
+	case E_GW_ITEM_TYPE_GROUP :
 		soup_soap_message_add_attribute (msg, "type", "Group", "xsi", NULL);
 		append_group_fields_to_soap_message (item, msg);
 		soup_soap_message_end_element(msg);
@@ -3625,7 +3625,7 @@ e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		append_contact_changes_to_soap_message (item, msg, E_GW_ITEM_CHANGE_TYPE_DELETE);
 		soup_soap_message_end_element(msg);
 		return TRUE;
-        case E_GW_ITEM_TYPE_GROUP :
+	case E_GW_ITEM_TYPE_GROUP :
 		soup_soap_message_start_element (msg, "update", NULL, NULL);
 		value = g_hash_table_lookup (item->priv->simple_fields, "name");
 		if (value)
