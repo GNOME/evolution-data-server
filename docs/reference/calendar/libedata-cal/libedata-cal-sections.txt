@@ -172,8 +172,9 @@ e_cal_backend_notify_view_progress
 e_cal_backend_notify_readonly
 e_cal_backend_notify_cal_address
 e_cal_backend_notify_objects_added
-e_cal_backend_notify_objects_modified
 e_cal_backend_notify_objects_removed
+e_cal_backend_notify_objects_modified
+e_cal_backend_empty_cache
 <SUBSECTION Standard>
 E_CAL_BACKEND
 E_IS_CAL_BACKEND

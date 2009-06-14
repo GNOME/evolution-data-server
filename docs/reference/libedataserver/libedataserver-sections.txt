@@ -235,11 +235,15 @@ e_source_list_new_for_gconf_default
 e_source_list_peek_groups
 e_source_list_peek_group_by_uid
 e_source_list_peek_group_by_name
+e_source_list_peek_group_by_base_uri
+e_source_list_peek_group_by_properties
 e_source_list_peek_source_by_uid
 e_source_list_peek_source_any
 e_source_list_add_group
 e_source_list_remove_group
 e_source_list_remove_group_by_uid
+e_source_list_ensure_group
+e_source_list_remove_group_by_base_uri
 e_source_list_remove_source_by_uid
 e_source_list_sync
 e_source_list_is_gconf_updated
@@ -444,6 +448,7 @@ e_sexp_encode_bool
 e_sexp_encode_string
 e_sexp_fatal_error
 e_sexp_error
+e_sexp_parse_value
 <SUBSECTION Standard>
 E_TYPE_SEXP
 E_SEXP
@@ -506,6 +511,7 @@ e_util_unicode_get_utf8
 e_util_utf8_strstrcase
 e_util_utf8_strstrcasedecomp
 e_util_utf8_strcasecmp
+e_util_utf8_remove_accents
 e_util_pthread_id
 e_filename_make_safe
 e_utf8_strftime

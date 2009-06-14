@@ -1,5 +1,5 @@
 <!-- ##### SECTION Title ##### -->
-ESourceSelectorDialog
+e-cal-check-timezones
 
 <!-- ##### SECTION Short_Description ##### -->
 
@@ -17,37 +17,47 @@ ESourceSelectorDialog
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT ESourceSelectorDialog ##### -->
+<!-- ##### FUNCTION e_cal_check_timezones ##### -->
 <para>
 
 </para>
 
-
-<!-- ##### FUNCTION e_source_selector_dialog_new ##### -->
-<para>
-
-</para>
-
-@parent: 
-@source_list: 
+@comp: 
+@comps: 
+@tzlookup: 
+@custom: 
+@error: 
 @Returns: 
 
 
-<!-- ##### FUNCTION e_source_selector_dialog_select_default_source ##### -->
+<!-- ##### FUNCTION e_cal_tzlookup_ecal ##### -->
 <para>
 
 </para>
 
-@dialog: 
+@tzid: 
+@custom: 
+@error: 
 @Returns: 
 
 
-<!-- ##### FUNCTION e_source_selector_dialog_peek_primary_selection ##### -->
+<!-- ##### FUNCTION e_cal_tzlookup_icomp ##### -->
 <para>
 
 </para>
 
-@dialog: 
+@tzid: 
+@custom: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_match_tzid ##### -->
+<para>
+
+</para>
+
+@tzid: 
 @Returns: 
 
 

@@ -71,6 +71,8 @@ e_cal_component_set_last_modified
 e_cal_component_get_organizer
 e_cal_component_set_organizer
 e_cal_component_has_organizer
+e_cal_component_get_percent_as_int
+e_cal_component_set_percent_as_int
 e_cal_component_get_percent
 e_cal_component_set_percent
 e_cal_component_get_priority
@@ -333,6 +335,11 @@ ECalendarStatus
 </SECTION>
 
 <SECTION>
+<FILE>e-cal-system-timezone</FILE>
+e_cal_system_timezone_get_location
+</SECTION>
+
+<SECTION>
 <FILE>e-cal-util</FILE>
 CalObjInstance
 cal_obj_instance_list_free
@@ -384,6 +391,8 @@ CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY
 CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING
 e_cal_util_construct_instance
 e_cal_util_remove_instances
+e_cal_util_get_system_timezone_location
+e_cal_util_get_system_timezone
 </SECTION>
 
 <SECTION>

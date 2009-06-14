@@ -169,6 +169,7 @@ E_IS_CATEGORIES_DIALOG
 E_TYPE_CATEGORIES_DIALOG
 E_CATEGORIES_DIALOG_CLASS
 E_IS_CATEGORIES_DIALOG_CLASS
+E_CATEGORIES_DIALOG_GET_CLASS
 ECategoriesDialogClass
 <SUBSECTION Private>
 ECategoriesDialogPrivate
@@ -226,6 +227,7 @@ e_destination_store_get_type
 <TITLE>ESourceSelectorDialog</TITLE>
 ESourceSelectorDialog
 e_source_selector_dialog_new
+e_source_selector_dialog_select_default_source
 e_source_selector_dialog_peek_primary_selection
 <SUBSECTION Standard>
 E_SOURCE_SELECTOR_DIALOG

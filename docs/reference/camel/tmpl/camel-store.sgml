@@ -299,6 +299,13 @@ CamelStore
 
 
 
+<!-- ##### MACRO CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION camel_store_get_folder ##### -->
 <para>
 

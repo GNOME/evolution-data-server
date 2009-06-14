@@ -666,6 +666,24 @@ ECalComponent
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_component_get_percent_as_int ##### -->
+<para>
+
+</para>
+
+@comp: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_component_set_percent_as_int ##### -->
+<para>
+
+</para>
+
+@comp: 
+@percent: 
+
+
 <!-- ##### FUNCTION e_cal_component_get_percent ##### -->
 <para>
 

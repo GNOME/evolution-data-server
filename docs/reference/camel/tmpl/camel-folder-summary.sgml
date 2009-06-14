@@ -367,6 +367,16 @@ CamelFolderSummary
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_ensure_infos_loaded ##### -->
+<para>
+
+</para>
+
+@s: 
+@at_least: 
+@ex: 
+
+
 <!-- ##### FUNCTION camel_folder_summary_insert ##### -->
 <para>
 
@@ -845,6 +855,14 @@ CamelFolderSummary
 @mi: 
 
 
+<!-- ##### MACRO camel_message_info_preview ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
 <!-- ##### MACRO camel_message_info_from ##### -->
 <para>
 
@@ -999,6 +1017,33 @@ CamelFolderSummary
 @mi: 
 @id: 
 @val: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_set_need_preview ##### -->
+<para>
+
+</para>
+
+@summary: 
+@preview: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_add_preview ##### -->
+<para>
+
+</para>
+
+@s: 
+@info: 
+
+
+<!-- ##### FUNCTION camel_folder_summary_get_need_preview ##### -->
+<para>
+
+</para>
+
+@summary: 
 @Returns: 
 
 

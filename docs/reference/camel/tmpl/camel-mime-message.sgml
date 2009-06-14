@@ -276,6 +276,15 @@ CamelMimeMessage
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_mime_message_has_attachment ##### -->
+<para>
+
+</para>
+
+@message: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_mime_message_dump ##### -->
 <para>
 

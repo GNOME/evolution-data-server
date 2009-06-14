@@ -104,6 +104,26 @@ camel-file-utils
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_file_util_encode_gsize ##### -->
+<para>
+
+</para>
+
+@out: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_file_util_decode_gsize ##### -->
+<para>
+
+</para>
+
+@in: 
+@dest: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_file_util_encode_string ##### -->
 <para>
 

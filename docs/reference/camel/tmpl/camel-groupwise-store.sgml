@@ -130,3 +130,12 @@ CamelGroupwiseStore
 @ex: 
 
 
+<!-- ##### FUNCTION groupwise_store_set_current_folder ##### -->
+<para>
+
+</para>
+
+@groupwise_store: 
+@folder: 
+
+

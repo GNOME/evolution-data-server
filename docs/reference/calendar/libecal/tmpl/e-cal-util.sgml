@@ -431,3 +431,19 @@ Various utility functions.
 @mod: 
 
 
+<!-- ##### FUNCTION e_cal_util_get_system_timezone_location ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_util_get_system_timezone ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

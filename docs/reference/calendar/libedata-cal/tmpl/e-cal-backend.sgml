@@ -498,6 +498,16 @@ Base class for calendar/tasks backend implementations.
 @objects: 
 
 
+<!-- ##### FUNCTION e_cal_backend_notify_objects_removed ##### -->
+<para>
+
+</para>
+
+@backend: 
+@query: 
+@ids: 
+
+
 <!-- ##### FUNCTION e_cal_backend_notify_objects_modified ##### -->
 <para>
 
@@ -508,13 +518,12 @@ Base class for calendar/tasks backend implementations.
 @objects: 
 
 
-<!-- ##### FUNCTION e_cal_backend_notify_objects_removed ##### -->
+<!-- ##### FUNCTION e_cal_backend_empty_cache ##### -->
 <para>
 
 </para>
 
 @backend: 
-@query: 
-@ids: 
+@cache: 
 
 

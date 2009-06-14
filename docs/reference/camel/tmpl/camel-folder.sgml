@@ -369,6 +369,17 @@ CamelFolder
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_cmp_uids ##### -->
+<para>
+
+</para>
+
+@folder: 
+@uid1: 
+@uid2: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_folder_sort_uids ##### -->
 <para>
 

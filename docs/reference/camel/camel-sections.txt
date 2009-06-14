@@ -258,6 +258,8 @@ camel_db_set_collate
 camel_db_migrate_vfolders_to_14
 camel_db_start_in_memory_transactions
 camel_db_flush_in_memory_transactions
+camel_db_get_folder_preview
+camel_db_write_preview_record
 <SUBSECTION Private>
 CamelDBPrivate
 </SECTION>
@@ -415,6 +417,7 @@ camel_folder_delete_message
 camel_folder_get_uids
 camel_folder_free_uids
 camel_folder_get_uncached_uids
+camel_folder_cmp_uids
 camel_folder_sort_uids
 camel_folder_has_search_capability
 camel_folder_search_by_expression
@@ -520,6 +523,7 @@ camel_folder_summary_peek_info
 camel_folder_summary_get_changed
 camel_folder_summary_cache_size
 camel_folder_summary_reload_from_db
+camel_folder_summary_ensure_infos_loaded
 camel_folder_summary_insert
 camel_folder_summary_remove_index_fast
 camel_folder_summary_remove_uid_fast
@@ -571,6 +575,7 @@ camel_message_info_uint32
 camel_message_info_time
 camel_message_info_uid
 camel_message_info_subject
+camel_message_info_preview
 camel_message_info_from
 camel_message_info_to
 camel_message_info_cc
@@ -589,6 +594,9 @@ camel_message_info_user_tag
 camel_message_info_set_flags
 camel_message_info_set_user_flag
 camel_message_info_set_user_tag
+camel_folder_summary_set_need_preview
+camel_folder_summary_add_preview
+camel_folder_summary_get_need_preview
 camel_content_info_dump
 camel_message_info_dump
 camel_folder_summary_migrate_infos
@@ -1104,6 +1112,7 @@ camel_mime_message_set_best_encoding
 camel_mime_message_encode_8bit_parts
 camel_mime_message_get_part_by_content_id
 camel_mime_message_build_mbox_from
+camel_mime_message_has_attachment
 camel_mime_message_dump
 <SUBSECTION Standard>
 CAMEL_MIME_MESSAGE
@@ -1184,6 +1193,7 @@ camel_mime_part_construct_from_parser
 camel_mime_part_set_content
 camel_mime_part_get_content_size
 camel_mime_part_construct_content_from_parser
+camel_mime_message_build_preview
 <SUBSECTION Standard>
 CAMEL_MIME_PART
 CAMEL_IS_MIME_PART
@@ -1816,6 +1826,7 @@ CAMEL_STORE_FOLDER_INFO_FAST
 CAMEL_STORE_FOLDER_INFO_RECURSIVE
 CAMEL_STORE_FOLDER_INFO_SUBSCRIBED
 CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL
+CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST
 camel_store_get_folder
 camel_store_get_inbox
 camel_store_get_trash
@@ -2486,7 +2497,6 @@ CamelImapWrapperPrivate
 CamelGroupwiseFolder
 camel_gw_folder_new
 gw_update_summary
-groupwise_refresh_folder
 <SUBSECTION Standard>
 CAMEL_GROUPWISE_FOLDER
 CAMEL_IS_GROUPWISE_FOLDER
@@ -2537,6 +2547,7 @@ groupwise_base_url_lookup
 create_junk_folder
 camel_groupwise_store_connected
 gw_store_reload_folder
+groupwise_store_set_current_folder
 <SUBSECTION Standard>
 CAMEL_GROUPWISE_STORE
 CAMEL_IS_GROUPWISE_STORE
@@ -3502,8 +3513,8 @@ camel_file_util_encode_time_t
 camel_file_util_decode_time_t
 camel_file_util_encode_off_t
 camel_file_util_decode_off_t
-camel_file_util_encode_size_t
-camel_file_util_decode_size_t
+camel_file_util_encode_gsize
+camel_file_util_decode_gsize
 camel_file_util_encode_string
 camel_file_util_decode_string
 camel_file_util_encode_fixed_string

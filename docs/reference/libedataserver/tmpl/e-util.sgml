@@ -83,6 +83,15 @@ Miscellaneous utility functions for evolution-data-server.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_util_utf8_remove_accents ##### -->
+<para>
+
+</para>
+
+@str: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_util_pthread_id ##### -->
 <para>
 

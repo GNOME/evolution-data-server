@@ -734,3 +734,27 @@ CamelDB
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_db_get_folder_preview ##### -->
+<para>
+
+</para>
+
+@db: 
+@folder_name: 
+@ex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_db_write_preview_record ##### -->
+<para>
+
+</para>
+
+@db: 
+@folder_name: 
+@uid: 
+@msg: 
+@ex: 
+@Returns: 
+
+
