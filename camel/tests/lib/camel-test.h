@@ -57,7 +57,6 @@ void camel_test_pull(void);
 
 /* fail a test, with a reason why */
 void camel_test_fail(const gchar *why, ...);
-void camel_test_failv(const gchar *why, va_list ap);
 
 /* Set whether a failed test quits.  May be nested, but must be called in nonfatal/fatal pairs  */
 void camel_test_nonfatal(const gchar *why, ...);
