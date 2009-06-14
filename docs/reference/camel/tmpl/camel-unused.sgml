@@ -721,6 +721,14 @@ camel-types
 @needle: 
 @Returns: 
 
+<!-- ##### FUNCTION groupwise_refresh_folder ##### -->
+<para>
+
+</para>
+
+@folder: 
+@ex: 
+
 <!-- ##### FUNCTION gw_get_path ##### -->
 <para>
 
