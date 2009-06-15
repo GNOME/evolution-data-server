@@ -919,7 +919,20 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
+#ifdef _WIN32 */
+				typedef ULONG (*PFN_ldap_start_tls_s)(PLDAP,PLDAPControl*,PLDAPControl*);
+				PFN_ldap_start_tls_s pldap_start_tls_s =
+				(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_s");
+				if (!pldap_start_tls_s)
+					(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_sA");
+				
+				if (!pldap_start_tls_s)
+					ldap_error = LDAP_NOT_SUPPORTED;
+				else
+					ldap_error = pldap_start_tls_s(blpriv->ldap, NULL, NULL);
+#else /* !defined(_WIN32) */
 				ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
+#endif /* _WIN32 */
 #endif
 				if (LDAP_SUCCESS != ldap_error) {
 					if (bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {

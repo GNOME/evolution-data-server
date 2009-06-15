@@ -35,6 +35,9 @@
 #include "camel-exception.h"
 #include "camel-msgport.h"
 #include "camel-net-utils.h"
+#ifdef G_OS_WIN32
+#include "camel-net-utils-win32.h"
+#endif
 #include "camel-operation.h"
 
 #define d(x)
