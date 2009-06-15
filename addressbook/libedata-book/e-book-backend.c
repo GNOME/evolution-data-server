@@ -9,6 +9,7 @@
 #include <config.h>
 
 #include "e-data-book-view.h"
+#include "e-data-book.h"
 #include "e-book-backend.h"
 
 struct _EBookBackendPrivate {
@@ -571,12 +572,7 @@ e_book_backend_add_client (EBookBackend      *backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	bonobo_object_set_immortal (BONOBO_OBJECT (book), TRUE);
-
 	g_object_weak_ref (G_OBJECT (book), book_destroy_cb, backend);
-
-	ORBit_small_listen_for_broken (e_data_book_get_listener (book), G_CALLBACK (listener_died_cb), book);
-
 	g_mutex_lock (backend->priv->clients_mutex);
 	backend->priv->clients = g_list_prepend (backend->priv->clients, book);
 	g_mutex_unlock (backend->priv->clients_mutex);
@@ -629,29 +625,7 @@ e_book_backend_remove_client (EBookBackend *backend,
 gboolean
 e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
 {
-	GList *l;
-
-	g_mutex_lock (backend->priv->clients_mutex);
-
-	if (!backend->priv->clients) {
-		g_mutex_unlock (backend->priv->clients_mutex);
-
-		return FALSE;
-	}
-
-	for (l = backend->priv->clients; l; l = l->next) {
-		if (ORBit_small_get_connection_status (e_data_book_get_listener (l->data)) != ORBIT_CONNECTION_IN_PROC) {
-			g_mutex_unlock (backend->priv->clients_mutex);
-
-			return TRUE;
-		}
-	}
-
-	g_mutex_unlock (backend->priv->clients_mutex);
-
-	/* If we get here, all remaining clients are in proc */
-
-	return FALSE;
+	return TRUE;
 }
 
 /**
@@ -815,13 +789,13 @@ e_book_backend_sync (EBookBackend *backend)
  *
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
-GNOME_Evolution_Addressbook_BookChangeItem*
-e_book_backend_change_add_new     (const gchar *vcard)
+EDataBookChange *
+e_book_backend_change_add_new     (const char *vcard)
 {
-	GNOME_Evolution_Addressbook_BookChangeItem* new_change = GNOME_Evolution_Addressbook_BookChangeItem__alloc();
+  EDataBookChange *new_change = g_new (EDataBookChange, 1);
 
-	new_change->changeType= GNOME_Evolution_Addressbook_ContactAdded;
-	new_change->vcard = CORBA_string_dup (vcard);
+	new_change->change_type = E_DATA_BOOK_BACKEND_CHANGE_ADDED;
+	new_change->vcard = g_strdup (vcard);
 
 	return new_change;
 }
@@ -835,13 +809,13 @@ e_book_backend_change_add_new     (const gchar *vcard)
  *
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
-GNOME_Evolution_Addressbook_BookChangeItem*
-e_book_backend_change_modify_new  (const gchar *vcard)
+EDataBookChange *
+e_book_backend_change_modify_new  (const char *vcard)
 {
-	GNOME_Evolution_Addressbook_BookChangeItem* new_change = GNOME_Evolution_Addressbook_BookChangeItem__alloc();
+  EDataBookChange *new_change = g_new (EDataBookChange, 1);
 
-	new_change->changeType= GNOME_Evolution_Addressbook_ContactModified;
-	new_change->vcard = CORBA_string_dup (vcard);
+	new_change->change_type = E_DATA_BOOK_BACKEND_CHANGE_MODIFIED;
+	new_change->vcard = g_strdup (vcard);
 
 	return new_change;
 }
@@ -855,13 +829,13 @@ e_book_backend_change_modify_new  (const gchar *vcard)
  *
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
-GNOME_Evolution_Addressbook_BookChangeItem*
-e_book_backend_change_delete_new  (const gchar *vcard)
+EDataBookChange *
+e_book_backend_change_delete_new  (const char *vcard)
 {
-	GNOME_Evolution_Addressbook_BookChangeItem* new_change = GNOME_Evolution_Addressbook_BookChangeItem__alloc();
+  EDataBookChange *new_change = g_new (EDataBookChange, 1);
 
-	new_change->changeType= GNOME_Evolution_Addressbook_ContactDeleted;
-	new_change->vcard = CORBA_string_dup (vcard);
+	new_change->change_type = E_DATA_BOOK_BACKEND_CHANGE_DELETED;
+	new_change->vcard = g_strdup (vcard);
 
 	return new_change;
 }

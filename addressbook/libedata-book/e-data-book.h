@@ -1,109 +1,112 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * A wrapper object which exports the GNOME_Evolution_Addressbook_Book CORBA interface
- * and which maintains a request queue.
- *
- * Author:
- *   Nat Friedman (nat@ximian.com)
- *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2006 OpenedHand Ltd
+ * Copyright (C) 2009 Intel Corporation
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of version 2.1 of the GNU Lesser General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * Author: Ross Burton <ross@linux.intel.com>
  */
 
 #ifndef __E_DATA_BOOK_H__
 #define __E_DATA_BOOK_H__
 
-#include <bonobo/bonobo-object.h>
-#include "libedataserver/e-list.h"
-#include "libedataserver/e-source.h"
-#include <libedata-book/Evolution-DataServer-Addressbook.h>
-#include <libedata-book/e-data-book-types.h>
+#include <glib-object.h>
+#include <dbus/dbus-glib.h>
+#include <libedataserver/e-source.h>
+#include "e-book-backend.h"
+#include "e-data-book-types.h"
 
 G_BEGIN_DECLS
 
 #define E_TYPE_DATA_BOOK        (e_data_book_get_type ())
 #define E_DATA_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK, EDataBook))
-#define E_DATA_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_DATA_BOOK, EDataBookClass))
+#define E_DATA_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_DATA_BOOK, EDataBookClass))
 #define E_IS_DATA_BOOK(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_DATA_BOOK))
 #define E_IS_DATA_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK))
 #define E_DATA_BOOK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_DATA_BOOK, EDataBookClass))
 
-typedef struct _EDataBookPrivate EDataBookPrivate;
+typedef void (* EDataBookClosedCallback) (EDataBook *book, const char *client);
 
 struct _EDataBook {
-	BonoboObject       parent_object;
-	EDataBookPrivate    *priv;
+	GObject parent;
+	EBookBackend *backend;
+	ESource *source;
+	/* TODO: move to private data */
+	EDataBookClosedCallback closed_cb;
 };
 
 struct _EDataBookClass {
-	BonoboObjectClass parent_class;
-
-	POA_GNOME_Evolution_Addressbook_Book__epv epv;
-
-	/* Padding for future expansion */
-	void (*_pas_reserved0) (void);
-	void (*_pas_reserved1) (void);
-	void (*_pas_reserved2) (void);
-	void (*_pas_reserved3) (void);
-	void (*_pas_reserved4) (void);
+	GObjectClass parent;
 };
 
-EDataBook                *e_data_book_new                    (EBookBackend                               *backend,
-							      ESource                                  *source,
-							 GNOME_Evolution_Addressbook_BookListener  listener);
-GNOME_Evolution_Addressbook_BookListener e_data_book_get_listener (EDataBook                         *book);
+GQuark e_data_book_error_quark (void);
+#define E_DATA_BOOK_ERROR e_data_book_error_quark ()
+
+EDataBook                *e_data_book_new                    (EBookBackend *backend,
+							      ESource *source,
+							 EDataBookClosedCallback closed_cb);
 EBookBackend             *e_data_book_get_backend            (EDataBook                                *book);
 ESource                *e_data_book_get_source             (EDataBook                                *book);
 
-void                    e_data_book_respond_open           (EDataBook                                *book,
-							    guint32                                   opid,
-							    GNOME_Evolution_Addressbook_CallStatus    status);
-void                    e_data_book_respond_remove         (EDataBook                                *book,
-							    guint32                                   opid,
-							    GNOME_Evolution_Addressbook_CallStatus  status);
-void                    e_data_book_respond_create         (EDataBook                                *book,
-							    guint32                                   opid,
-							    GNOME_Evolution_Addressbook_CallStatus  status,
-							    EContact                               *contact);
-void                    e_data_book_respond_remove_contacts (EDataBook                                *book,
-							     guint32                                   opid,
-							     GNOME_Evolution_Addressbook_CallStatus  status,
-							     GList                                  *ids);
-void                    e_data_book_respond_modify         (EDataBook                                *book,
-							    guint32                                   opid,
-							    GNOME_Evolution_Addressbook_CallStatus  status,
-							    EContact                               *contact);
-void                    e_data_book_respond_authenticate_user (EDataBook                                *book,
-							       guint32                                   opid,
-							       GNOME_Evolution_Addressbook_CallStatus  status);
-void                    e_data_book_respond_get_supported_fields (EDataBook                              *book,
-								  guint32                                 opid,
-								  GNOME_Evolution_Addressbook_CallStatus  status,
-								  GList                                  *fields);
-void                    e_data_book_respond_get_required_fields (EDataBook                              *book,
-								  guint32                                 opid,
-								  GNOME_Evolution_Addressbook_CallStatus  status,
-								  GList                                  *fields);
-void                    e_data_book_respond_get_supported_auth_methods (EDataBook                              *book,
-									guint32                                 opid,
-									GNOME_Evolution_Addressbook_CallStatus  status,
-									GList                                  *fields);
+void                    e_data_book_respond_open           (EDataBook *book,
+							    guint32 opid,
+							    EDataBookStatus status);
+void                    e_data_book_respond_remove         (EDataBook *book,
+							    guint32 opid,
+							    EDataBookStatus status);
+void                    e_data_book_respond_create         (EDataBook *book,
+							    guint32 opid,
+							    EDataBookStatus status,
+							    EContact *contact);
+void                    e_data_book_respond_remove_contacts (EDataBook *book,
+							     guint32 opid,
+							     EDataBookStatus  status,
+							     GList *ids);
+void                    e_data_book_respond_modify         (EDataBook *book,
+							    guint32 opid,
+							    EDataBookStatus status,
+							    EContact *contact);
+void                    e_data_book_respond_authenticate_user (EDataBook *book,
+							       guint32 opid,
+							       EDataBookStatus status);
+void                    e_data_book_respond_get_supported_fields (EDataBook *book,
+								  guint32 opid,
+								  EDataBookStatus status,
+								  GList *fields);
+void                    e_data_book_respond_get_required_fields (EDataBook *book,
+								  guint32 opid,
+								  EDataBookStatus status,
+								  GList *fields);
+void                    e_data_book_respond_get_supported_auth_methods (EDataBook *book,
+									guint32 opid,
+									EDataBookStatus status,
+									GList *fields);
 
-void                    e_data_book_respond_get_book_view  (EDataBook                              *book,
-							    guint32                                 opid,
-							    GNOME_Evolution_Addressbook_CallStatus  status,
-							    EDataBookView                          *book_view);
-void                    e_data_book_respond_get_contact    (EDataBook                              *book,
-							    guint32                                 opid,
-							    GNOME_Evolution_Addressbook_CallStatus  status,
-							    const gchar                            *vcard);
-void                    e_data_book_respond_get_contact_list (EDataBook                              *book,
-							      guint32                                 opid,
-							      GNOME_Evolution_Addressbook_CallStatus  status,
+void                    e_data_book_respond_get_contact (EDataBook *book,
+							    guint32 opid,
+							    EDataBookStatus status,
+							    const gchar *vcard);
+void                    e_data_book_respond_get_contact_list (EDataBook *book,
+							      guint32 opid,
+							      EDataBookStatus status,
 							      GList *cards);
-void                    e_data_book_respond_get_changes    (EDataBook                              *book,
-							    guint32                                 opid,
-							    GNOME_Evolution_Addressbook_CallStatus  status,
-							    GList                                  *changes);
+void                    e_data_book_respond_get_changes    (EDataBook *book,
+							    guint32 opid,
+							    EDataBookStatus status,
+							    GList *changes);
 
 void                    e_data_book_report_writable        (EDataBook                         *book,
 							    gboolean                           writable);

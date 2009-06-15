@@ -6,7 +6,6 @@
 #define __E_BOOK_BACKEND_SYNC_H__
 
 #include <glib.h>
-#include <libedata-book/Evolution-DataServer-Addressbook.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-book-backend.h>
 

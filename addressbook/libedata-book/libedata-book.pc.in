@@ -5,14 +5,11 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 
-idldir=@idldir@
-IDL_INCLUDES=-I${idldir} @IDL_INCLUDES@
-
 privincludedir=@privincludedir@
 
 Name: libedatabook
 Description: Backend library for evolution address books
 Version: @VERSION@
-Requires: libbonobo-2.0 >= @LIBBONOBO_REQUIRED@ libedataserver-1.2 libebackend-1.2 libebook-1.2
+Requires: libedataserver-1.2 libebook-1.2 dbus-glib-1
 Libs: -L${libdir} -ledata-book-1.2
 Cflags: -I${privincludedir}

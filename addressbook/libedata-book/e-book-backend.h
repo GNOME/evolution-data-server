@@ -25,9 +25,10 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <libebook/e-contact.h>
-#include <libedata-book/Evolution-DataServer-Addressbook.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-data-book.h>
+#include <libedataserver/e-list.h>
+#include <libedataserver/e-source.h>
 
 G_BEGIN_DECLS
 

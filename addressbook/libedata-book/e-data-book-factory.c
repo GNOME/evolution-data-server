@@ -1,82 +1,87 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *
- * Author:
- *   Nat Friedman (nat@ximian.com)
- *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2006 OpenedHand Ltd
+ * Copyright (C) 2009 Intel Corporation
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of version 2.1 of the GNU Lesser General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * Author: Ross Burton <ross@linux.intel.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
+#include <stdlib.h>
 #include <string.h>
-
-#include <bonobo-activation/bonobo-activation.h>
-#include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-arg.h>
-#include "libebackend/e-data-server-module.h"
+#include <glib-object.h>
+#include <glib/gi18n.h>
+#include <dbus/dbus-protocol.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib-bindings.h>
+#include <libebackend/e-data-server-module.h>
+#include "e-book-backend-factory.h"
 #include "e-data-book-factory.h"
+#include "e-data-book.h"
+#include "e-book-backend.h"
+#include "e-book-backend-factory.h"
 
-#include <backends/groupwise/e-book-backend-groupwise.h>
+static void impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context);
+#include "e-data-book-factory-glue.h"
 
-#define DEFAULT_E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory:" BASE_VERSION
+static gchar *nm_dbus_escape_object_path (const gchar *utf8_string);
 
-static BonoboObjectClass          *e_data_book_factory_parent_class;
+static GMainLoop *loop;
+static EDataBookFactory *factory;
+extern DBusGConnection *connection;
 
-typedef struct {
-	gchar                                     *uri;
-	GNOME_Evolution_Addressbook_BookListener  listener;
-} EDataBookFactoryQueuedRequest;
+/* Convenience macro to test and set a GError/return on failure */
+#define g_set_error_val_if_fail(test, returnval, error, domain, code) G_STMT_START{ \
+		if G_LIKELY (test) {} else {				\
+			g_set_error (error, domain, code, #test);	\
+			g_warning(#test " failed");			\
+			return (returnval);				\
+		}							\
+	}G_STMT_END
+
+G_DEFINE_TYPE(EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);
+
+#define E_DATA_BOOK_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
 
 struct _EDataBookFactoryPrivate {
-	GMutex *map_mutex;
-
+	/* TODO: as the factory is not threaded these locks could be removed */
+	GMutex *backend_lock;
 	GHashTable *backends;
-	GHashTable *active_server_map;
 
-	/* OAFIID of the factory */
-	gchar *iid;
+	GMutex *books_lock;
+	/* A hash of object paths for book URIs to EDataBooks */
+	GHashTable *books;
 
-	/* Whether the factory has been registered with OAF yet */
-	guint       registered : 1;
+	GMutex *connections_lock;
+	/* This is a hash of client addresses to GList* of EDataBooks */
+	GHashTable *connections;
 
-	gint mode;
+	guint exit_timeout;
 };
 
-/* Signal IDs */
-enum {
-	LAST_BOOK_GONE,
-	LAST_SIGNAL
-};
-
-static guint factory_signals[LAST_SIGNAL];
-
-static gchar *
-e_data_book_factory_canonicalize_uri (const gchar *uri)
+/* Create the EDataBookFactory error quark */
+GQuark
+e_data_book_factory_error_quark (void)
 {
-	/* FIXME: What do I do here? */
-
-	return g_strdup (uri);
-}
-
-static gchar *
-e_data_book_factory_extract_proto_from_uri (const gchar *uri)
-{
-	gchar *proto;
-	gchar *p;
-
-	p = strchr (uri, ':');
-
-	if (p == NULL)
-		return NULL;
-
-	proto = g_malloc0 (p - uri + 1);
-
-	strncpy (proto, uri, p - uri);
-
-	return proto;
+	static GQuark quark = 0;
+	if (!quark)
+		quark = g_quark_from_static_string ("e_data_book_factory_error");
+	return quark;
 }
 
 /**
@@ -86,7 +91,7 @@ e_data_book_factory_extract_proto_from_uri (const gchar *uri)
  *
  * Registers @backend_factory with @factory.
  **/
-void
+static void
 e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
 				      EBookBackendFactory   *backend_factory)
 {
@@ -106,46 +111,6 @@ e_data_book_factory_register_backend (EDataBookFactory      *book_factory,
 			     g_strdup (proto), backend_factory);
 }
 
-static void
-out_of_proc_check (gpointer key, gpointer value, gpointer data)
-{
-	gboolean *out_of_proc = data;
-
-	if ((*out_of_proc))
-	    return;
-
-	*out_of_proc = e_book_backend_has_out_of_proc_clients (value);
-}
-
-/**
- * e_data_book_factory_get_n_backends:
- * @factory: An addressbook factory.
- *
- * Queries the number of running addressbook backends in an addressbook factory.
- *
- * Return value: Number of running backends.
- **/
-gint
-e_data_book_factory_get_n_backends (EDataBookFactory *factory)
-{
-	gint n_backends;
-	gboolean out_of_proc = FALSE;
-
-	g_return_val_if_fail (factory != NULL, -1);
-	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), -1);
-
-	g_mutex_lock (factory->priv->map_mutex);
-	g_hash_table_foreach (factory->priv->active_server_map, out_of_proc_check, &out_of_proc);
-
-	if (!out_of_proc)
-		n_backends = 0;
-	else
-		n_backends = g_hash_table_size (factory->priv->active_server_map);
-	g_mutex_unlock (factory->priv->map_mutex);
-
-	return n_backends;
-}
-
 /**
  * e_data_book_factory_register_backends:
  * @book_factory: an #EDataBookFactory
@@ -153,7 +118,7 @@ e_data_book_factory_get_n_backends (EDataBookFactory *factory)
  * Register the backends supported by the Evolution Data Server,
  * with @book_factory.
  **/
-void
+static void
 e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 {
 	GList *factories, *f;
@@ -166,72 +131,47 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 	}
 
 	e_data_server_extension_list_free (factories);
+	e_data_server_module_remove_unused ();
 }
 
 static void
-dump_active_server_map_entry (gpointer key, gpointer value, gpointer data)
+e_data_book_factory_class_init (EDataBookFactoryClass *e_data_book_factory_class)
 {
-	gchar *uri;
-	EBookBackend *backend;
-
-	uri = key;
-	backend = E_BOOK_BACKEND (value);
-
-	g_message ("  %s: %p", uri, (gpointer) backend);
+	g_type_class_add_private (e_data_book_factory_class, sizeof (EDataBookFactoryPrivate));
+	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (e_data_book_factory_class), &dbus_glib_e_data_book_factory_object_info);
 }
 
-/**
- * e_data_book_factory_dump_active_backends:
- * @factory: an #EDataBookFactory
- *
- * Dump the list of active backends registered with @factory
- * to stdout. This is a debugging function.
- **/
-void
-e_data_book_factory_dump_active_backends (EDataBookFactory *factory)
-{
-	g_message ("Active PAS backends");
-
-	g_mutex_lock (factory->priv->map_mutex);
-	g_hash_table_foreach (factory->priv->active_server_map,
-			      dump_active_server_map_entry,
-			      NULL);
-	g_mutex_unlock (factory->priv->map_mutex);
-}
-
-/* Callback used when a backend loses its last connected client */
+/* Instance init */
 static void
-backend_last_client_gone_cb (EBookBackend *backend, gpointer data)
+e_data_book_factory_init (EDataBookFactory *factory)
 {
-	EDataBookFactory *factory;
-	ESource *source;
-	gchar *uri;
+	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
-	factory = E_DATA_BOOK_FACTORY (data);
+	factory->priv->backend_lock = g_mutex_new ();
+	factory->priv->backends = g_hash_table_new (g_str_hash, g_str_equal);
 
-	/* Remove the backend from the active server map */
+	factory->priv->books_lock = g_mutex_new ();
+	factory->priv->books = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-	source = e_book_backend_get_source (backend);
-	if (source)
-		uri = e_source_get_uri (source);
-	else
-		uri = NULL;
+	factory->priv->connections_lock = g_mutex_new ();
+	factory->priv->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-	if (uri) {
-		g_mutex_lock (factory->priv->map_mutex);
-		g_hash_table_remove (factory->priv->active_server_map, uri);
-		g_mutex_unlock (factory->priv->map_mutex);
-	}
-
-	if (g_hash_table_size (factory->priv->active_server_map) == 0) {
-		/* Notify upstream if there are no more backends */
-		g_signal_emit (G_OBJECT (factory), factory_signals[LAST_BOOK_GONE], 0);
-	}
-
-	g_free (uri);
+	e_data_server_module_init ();
+	e_data_book_factory_register_backends (factory);
 }
 
-
+/* TODO: write dispose to kill hash */
+static char *
+e_data_book_factory_extract_proto_from_uri (const char *uri)
+{
+	char *proto, *p;
+	p = strchr (uri, ':');
+	if (p == NULL)
+		return NULL;
+	proto = g_malloc0 (p - uri + 1);
+	strncpy (proto, uri, p - uri);
+	return proto;
+}
 
 static EBookBackendFactory*
 e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
@@ -239,336 +179,219 @@ e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
 {
 	EBookBackendFactory *backend_factory;
 	gchar                *proto;
-	gchar                *canonical_uri;
 
-	g_assert (factory != NULL);
-	g_assert (E_IS_DATA_BOOK_FACTORY (factory));
-	g_assert (uri != NULL);
+	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), NULL);
+	g_return_val_if_fail (uri != NULL, NULL);
 
-	canonical_uri = e_data_book_factory_canonicalize_uri (uri);
-	if (canonical_uri == NULL)
-		return NULL;
-
-	proto = e_data_book_factory_extract_proto_from_uri (canonical_uri);
+	proto = e_data_book_factory_extract_proto_from_uri (uri);
 	if (proto == NULL) {
-		g_free (canonical_uri);
+		g_warning ("Cannot extract protocol from URI %s", uri);
 		return NULL;
 	}
 
 	backend_factory = g_hash_table_lookup (factory->priv->backends, proto);
 
 	g_free (proto);
-	g_free (canonical_uri);
 
 	return backend_factory;
 }
 
-static EBookBackend *
-e_data_book_factory_launch_backend (EDataBookFactory      *book_factory,
-				    EBookBackendFactory   *backend_factory,
-				    GNOME_Evolution_Addressbook_BookListener listener,
-				    const gchar          *uri)
+static char *
+make_path_name (const char* uri)
 {
-	EBookBackend          *backend;
-
-	backend = e_book_backend_factory_new_backend (backend_factory);
-	if (!backend)
-		return NULL;
-
-	g_hash_table_insert (book_factory->priv->active_server_map,
-			     g_strdup (uri),
-			     backend);
-
-	g_signal_connect (backend, "last_client_gone",
-			  G_CALLBACK (backend_last_client_gone_cb),
-			  book_factory);
-
-	return backend;
+	char *s, *path;
+	s = nm_dbus_escape_object_path (uri);
+	path = g_strdup_printf ("/org/gnome/evolution/dataserver/addressbook/%s", s);
+	g_free (s);
+	return path;
 }
 
-static GNOME_Evolution_Addressbook_Book
-impl_GNOME_Evolution_Addressbook_BookFactory_getBook (PortableServer_Servant        servant,
-						      const CORBA_char             *source_xml,
-						      const GNOME_Evolution_Addressbook_BookListener listener,
-						      CORBA_Environment            *ev)
+static void
+my_remove (char *key, GObject *dead)
 {
-	EDataBookFactory      *factory = E_DATA_BOOK_FACTORY (bonobo_object (servant));
-	GNOME_Evolution_Addressbook_Book corba_book;
-	EBookBackend *backend;
-	EDataBook *book = NULL;
+	g_mutex_lock (factory->priv->books_lock);
+	g_hash_table_remove (factory->priv->books, key);
+	g_mutex_unlock (factory->priv->books_lock);
+
+	g_free (key);
+
+	/* If there are no open books, start a timer to quit */
+	if (factory->priv->exit_timeout == 0 && g_hash_table_size (factory->priv->books) == 0) {
+		factory->priv->exit_timeout = g_timeout_add (10000, (GSourceFunc)g_main_loop_quit, loop);
+	}
+}
+
+static void
+book_closed_cb (EDataBook *book, const char *client)
+{
+	GList *list;
+
+	list = g_hash_table_lookup (factory->priv->connections, client);
+	list = g_list_remove (list, book);
+	g_hash_table_insert (factory->priv->connections, g_strdup (client), list);
+}
+
+static void
+impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context)
+{
+	EDataBook *book;
+	EDataBookFactoryPrivate *priv = factory->priv;
 	ESource *source;
-	gchar *uri;
+	char *path, *sender;
+	GList *list;
 
-	printf ("impl_GNOME_Evolution_Addressbook_BookFactory_getBook\n");
-
-	source = e_source_new_from_standalone_xml (source_xml);
-	if (!source) {
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
-				     NULL);
-		return CORBA_OBJECT_NIL;
+	if (IN_uri == NULL || IN_uri[0] == '\0') {
+		dbus_g_method_return_error (context, g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Empty URI")));
+		return;
 	}
 
-	uri = e_source_get_uri (source);
-	if (!uri) {
-		g_object_unref (source);
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
-				     NULL);
-		return CORBA_OBJECT_NIL;
+	/* Remove a pending exit */
+	if (priv->exit_timeout) {
+		g_source_remove (priv->exit_timeout);
+		priv->exit_timeout = 0;
 	}
-	printf (" + %s\n", uri);
 
-	/* Look up the backend and create one if needed */
-	g_mutex_lock (factory->priv->map_mutex);
+	g_mutex_lock (priv->books_lock);
 
-	backend = g_hash_table_lookup (factory->priv->active_server_map, uri);
+	source = e_source_new_with_absolute_uri ("", IN_uri);
+	path = make_path_name (IN_uri);
+	book = g_hash_table_lookup (priv->books, path);
+	if (book == NULL) {
+		EBookBackend *backend = NULL;
+		backend = e_book_backend_factory_new_backend (e_data_book_factory_lookup_backend_factory (factory, IN_uri));
+		book = e_data_book_new (backend, source, book_closed_cb);
+		e_book_backend_set_mode (backend, 2); /* TODO: very odd */
+		g_hash_table_insert (priv->books, g_strdup(path), book);
+		dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));
+		g_object_weak_ref (G_OBJECT (book), (GWeakNotify)my_remove, g_strdup (path));
+		g_object_unref (backend); /* The book takes a reference to the backend */
+	} else {
+		g_object_ref (book);
+	}
+	g_object_unref (source);
 
-	if (!backend) {
-		EBookBackendFactory*  backend_factory;
+	/* Update the hash of open connections */
+	g_mutex_lock (priv->connections_lock);
+	sender = dbus_g_method_get_sender (context);
+	list = g_hash_table_lookup (priv->connections, sender);
+	list = g_list_prepend (list, book);
+	g_hash_table_insert (priv->connections, sender, list);
+	g_mutex_unlock (priv->connections_lock);
 
-		backend_factory = e_data_book_factory_lookup_backend_factory (factory, uri);
+	g_mutex_unlock (priv->books_lock);
 
-		if (backend_factory == NULL) {
-			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-					     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
-					     NULL);
+	dbus_g_method_return (context, path);
+}
 
-			g_mutex_unlock (factory->priv->map_mutex);
+static void
+name_owner_changed (DBusGProxy *proxy,
+                    const char *name,
+                    const char *prev_owner,
+                    const char *new_owner,
+                    EDataBookFactory *factory)
+{
+	if (strcmp (new_owner, "") == 0 && strcmp (name, prev_owner) == 0) {
+		char *key;
+		GList *list = NULL;
+		g_mutex_lock (factory->priv->connections_lock);
+		if (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
+			g_list_foreach (list, (GFunc)g_object_unref, NULL);
+			g_list_free (list);
+			g_hash_table_remove (factory->priv->connections, prev_owner);
+		}
+		g_mutex_unlock (factory->priv->connections_lock);
+	}
+}
 
-			g_free (uri);
-			return CORBA_OBJECT_NIL;
+/* Convenience function to print an error and exit */
+static void
+die (const char *prefix, GError *error)
+{
+	g_error("%s: %s", prefix, error->message);
+	g_error_free (error);
+	exit(1);
+}
+
+#define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
+
+int
+main (int argc, char **argv)
+{
+	GError *error = NULL;
+	DBusGProxy *bus_proxy;
+	guint32 request_name_ret;
+
+	g_type_init ();
+	if (!g_thread_supported ()) g_thread_init (NULL);
+	dbus_g_thread_init ();
+
+	loop = g_main_loop_new (NULL, FALSE);
+
+	/* Obtain a connection to the session bus */
+	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+	if (connection == NULL)
+		die ("Failed to open connection to bus", error);
+
+	bus_proxy = dbus_g_proxy_new_for_name (connection,
+					       DBUS_SERVICE_DBUS,
+					       DBUS_PATH_DBUS,
+					       DBUS_INTERFACE_DBUS);
+
+	if (!org_freedesktop_DBus_request_name (bus_proxy, E_DATA_BOOK_FACTORY_SERVICE_NAME,
+						0, &request_name_ret, &error))
+		die ("Failed to get name", error);
+
+	if (request_name_ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+		g_error ("Got result code %u from requesting name", request_name_ret);
+		exit (1);
+	}
+
+	factory = g_object_new (E_TYPE_DATA_BOOK_FACTORY, NULL);
+	dbus_g_connection_register_g_object (connection,
+					     "/org/gnome/evolution/dataserver/addressbook/BookFactory",
+					     G_OBJECT (factory));
+
+	dbus_g_proxy_add_signal (bus_proxy, "NameOwnerChanged",
+				 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (bus_proxy, "NameOwnerChanged", G_CALLBACK (name_owner_changed), factory, NULL);
+
+	g_main_loop_run (loop);
+
+	dbus_g_connection_unref (connection);
+
+	return 0;
+}
+
+/* Stolen from http://cvs.gnome.org/viewcvs/NetworkManager/utils/nm-utils.c */
+static gchar *nm_dbus_escape_object_path (const gchar *utf8_string)
+{
+	const gchar *p;
+	GString *string;
+
+	g_return_val_if_fail (utf8_string != NULL, NULL);
+	g_return_val_if_fail (g_utf8_validate (utf8_string, -1, NULL), NULL);
+
+	string = g_string_sized_new ((strlen (utf8_string) + 1) * 2);
+
+	for (p = utf8_string; *p != '\0'; p = g_utf8_next_char (p))
+		{
+			gunichar character;
+
+			character = g_utf8_get_char (p);
+
+			if (((character >= ((gunichar) 'a')) &&
+			     (character <= ((gunichar) 'z'))) ||
+			    ((character >= ((gunichar) 'A')) &&
+			     (character <= ((gunichar) 'Z'))) ||
+			    ((character >= ((gunichar) '0')) &&
+			     (character <= ((gunichar) '9'))))
+				{
+					g_string_append_c (string, (gchar) character);
+					continue;
+				}
+
+			g_string_append_printf (string, "_%x_", character);
 		}
 
-		backend = e_data_book_factory_launch_backend (factory, backend_factory, listener, uri);
-	}
-
-	g_free (uri);
-
-	if (backend) {
-		g_mutex_unlock (factory->priv->map_mutex);
-
-		book = e_data_book_new (backend, source, listener);
-
-		e_book_backend_add_client (backend, book);
-		e_book_backend_set_mode (backend, factory->priv->mode);
-		corba_book = bonobo_object_corba_objref (BONOBO_OBJECT (book));
-	}
-	else {
-		/* probably need a more descriptive exception here */
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_GNOME_Evolution_Addressbook_BookFactory_ProtocolNotSupported,
-				     NULL);
-		g_mutex_unlock (factory->priv->map_mutex);
-
-		corba_book = CORBA_OBJECT_NIL;
-	}
-
-	g_object_unref (source);
-	if (book)
-		printf (" => %p\n", (gpointer) book);
-	return corba_book;
+	return g_string_free (string, FALSE);
 }
-
-static void
-e_data_book_factory_construct (EDataBookFactory *factory)
-{
-	/* nothing to do here.. */
-}
-
-/**
- * e_data_book_factory_new:
- *
- * Create a new #EDataBookFactory.
- *
- * Return value: A new #EDataBookFactory.
- **/
-EDataBookFactory *
-e_data_book_factory_new (void)
-{
-	static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
-	static PortableServer_POA poa = NULL;
-	EDataBookFactory *factory;
-
-	g_static_mutex_lock (&mutex);
-	if (poa == NULL)
-		poa = bonobo_poa_get_threaded (ORBIT_THREAD_HINT_PER_REQUEST, NULL);
-	g_static_mutex_unlock (&mutex);
-
-	factory = g_object_new (E_TYPE_DATA_BOOK_FACTORY, "poa", poa, NULL);
-
-	e_data_book_factory_construct (factory);
-
-	return factory;
-}
-
-/**
- * e_data_book_factory_activate:
- * @factory: an #EDataBookFactory
- * @iid: the OAF ID of the factory to activate
- *
- * Activates the factory specified by @iid, using Bonobo.
- *
- * Return value: %TRUE for success, %FALSE otherwise.
- **/
-gboolean
-e_data_book_factory_activate (EDataBookFactory *factory, const gchar *iid)
-{
-	EDataBookFactoryPrivate *priv;
-	Bonobo_RegistrationResult result;
-	gchar *tmp_iid;
-
-	g_return_val_if_fail (factory != NULL, FALSE);
-	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (factory), FALSE);
-
-	priv = factory->priv;
-
-	g_return_val_if_fail (!priv->registered, FALSE);
-
-	/* if iid is NULL, use the default factory OAFIID */
-	if (iid)
-		tmp_iid = g_strdup (iid);
-	else
-		tmp_iid = g_strdup (DEFAULT_E_DATA_BOOK_FACTORY_OAF_ID);
-
-	result = bonobo_activation_active_server_register (tmp_iid, bonobo_object_corba_objref (BONOBO_OBJECT (factory)));
-
-	switch (result) {
-	case Bonobo_ACTIVATION_REG_SUCCESS:
-		priv->registered = TRUE;
-		priv->iid = tmp_iid;
-		return TRUE;
-	case Bonobo_ACTIVATION_REG_NOT_LISTED:
-		g_message ("Error registering the PAS factory: not listed");
-		break;
-	case Bonobo_ACTIVATION_REG_ALREADY_ACTIVE:
-		g_message ("Error registering the PAS factory: already active");
-		break;
-	case Bonobo_ACTIVATION_REG_ERROR:
-	default:
-		g_message ("Error registering the PAS factory: generic error");
-		break;
-	}
-
-	g_free (tmp_iid);
-	return FALSE;
-}
-static void
-set_backend_online_status (gpointer key, gpointer value, gpointer data)
-{
-	EBookBackend *backend;
-
-	backend = E_BOOK_BACKEND (value);
-	e_book_backend_set_mode (backend, GPOINTER_TO_INT (data));
-}
-
-/**
- * e_data_book_factory_set_backend_mode:
- * @factory: an #EDataBookFactory
- * @mode: a connection status
- *
- * Sets all the backends associated with @factory to be either online
- * or offline. @mode should be passed as 1 for offline, or 2 for
- * online.
- **/
-void
-e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
-{
-	EDataBookFactoryPrivate *priv = factory->priv;
-
-	g_mutex_lock (priv->map_mutex);
-	priv->mode = mode;
-	g_hash_table_foreach (priv->active_server_map, set_backend_online_status, GINT_TO_POINTER (priv->mode));
-	g_mutex_unlock (priv->map_mutex);
-
-}
-static void
-e_data_book_factory_init (EDataBookFactory *factory)
-{
-	GHashTable *active_server_map;
-	GHashTable *backends;
-
-	active_server_map = g_hash_table_new_full (
-		g_str_hash, g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) g_object_unref);
-
-	backends = g_hash_table_new_full (
-		g_str_hash, g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) NULL);
-
-	factory->priv = g_new0 (EDataBookFactoryPrivate, 1);
-
-	factory->priv->map_mutex         = g_mutex_new();
-	factory->priv->active_server_map = active_server_map;
-	factory->priv->backends          = backends;
-	factory->priv->registered        = FALSE;
-}
-
-static void
-e_data_book_factory_dispose (GObject *object)
-{
-	EDataBookFactory *factory = E_DATA_BOOK_FACTORY (object);
-	EDataBookFactoryPrivate *priv = factory->priv;
-
-	g_hash_table_remove_all (priv->active_server_map);
-	g_hash_table_remove_all (priv->backends);
-
-	if (priv->registered) {
-		bonobo_activation_active_server_unregister (
-			priv->iid, bonobo_object_corba_objref (
-			BONOBO_OBJECT (factory)));
-		priv->registered = FALSE;
-	}
-
-	if (G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose)
-		G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose (object);
-}
-
-static void
-e_data_book_factory_finalize (GObject *object)
-{
-	EDataBookFactory *factory = E_DATA_BOOK_FACTORY (object);
-	EDataBookFactoryPrivate *priv = factory->priv;
-
-	g_mutex_free (priv->map_mutex);
-	g_hash_table_destroy (priv->active_server_map);
-	g_hash_table_destroy (priv->backends);
-	g_free (priv->iid);
-	g_free (priv);
-
-	if (G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize)
-		G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
-}
-
-static void
-e_data_book_factory_class_init (EDataBookFactoryClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	POA_GNOME_Evolution_Addressbook_BookFactory__epv *epv;
-
-	e_data_book_factory_parent_class = g_type_class_peek_parent (klass);
-
-	object_class->dispose = e_data_book_factory_dispose;
-	object_class->finalize = e_data_book_factory_finalize;
-
-	factory_signals[LAST_BOOK_GONE] =
-		g_signal_new ("last_book_gone",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (EDataBookFactoryClass, last_book_gone),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-
-	epv = &klass->epv;
-
-	epv->getBook = impl_GNOME_Evolution_Addressbook_BookFactory_getBook;
-}
-
-BONOBO_TYPE_FUNC_FULL (
-		       EDataBookFactory,
-		       GNOME_Evolution_Addressbook_BookFactory,
-		       BONOBO_TYPE_OBJECT,
-		       e_data_book_factory)
