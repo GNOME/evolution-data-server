@@ -919,7 +919,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 					ldap_set_option(blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
-#ifdef _WIN32 */
+#ifdef _WIN32
 				typedef ULONG (*PFN_ldap_start_tls_s)(PLDAP,PLDAPControl*,PLDAPControl*);
 				PFN_ldap_start_tls_s pldap_start_tls_s =
 				(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_s");
