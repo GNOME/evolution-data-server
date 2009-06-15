@@ -600,13 +600,21 @@ ep_set_proxy (GConfClient *client,
 
 	proxy_server = gconf_client_get_string (client, RIGHT_KEY (HTTP_HOST), NULL);
 	proxy_port = gconf_client_get_int (client, RIGHT_KEY (HTTP_PORT), NULL);
-	uri_http = g_strdup_printf ("http://%s:%d", proxy_server, proxy_port);
+	if (proxy_server != NULL)
+		uri_http = g_strdup_printf (
+			"http://%s:%d", proxy_server, proxy_port);
+	else
+		uri_http = NULL;
 	g_free (proxy_server);
 	d(g_print ("ep_set_proxy: uri_http: %s\n", uri_http));
 
 	proxy_server = gconf_client_get_string (client, RIGHT_KEY (HTTPS_HOST), NULL);
 	proxy_port = gconf_client_get_int (client, RIGHT_KEY (HTTPS_PORT), NULL);
-	uri_https = g_strdup_printf ("https://%s:%d", proxy_server, proxy_port);
+	if (proxy_server != NULL)
+		uri_https = g_strdup_printf (
+			"https://%s:%d", proxy_server, proxy_port);
+	else
+		uri_https = NULL;
 	g_free (proxy_server);
 	d(g_print ("ep_set_proxy: uri_http: %s\n", uri_http));
 
