@@ -1,30 +1,42 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * The Evolution addressbook client object.
- *
- * Author:
- *   Nat Friedman (nat@ximian.com)
- *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2006 OpenedHand Ltd
+ * Copyright (C) 2009 Intel Corporation
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of version 2.1 of the GNU Lesser General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * Author: Ross Burton <ross@linux.intel.com>
  */
 
-#include <config.h>
-
-#include "e-book-view-listener.h"
+#include <glib-object.h>
+#include <dbus/dbus-glib.h>
+#include "e-book.h"
 #include "e-book-view.h"
 #include "e-book-view-private.h"
-#include "e-book.h"
+#include "e-data-book-view-bindings.h"
+#include "e-book-marshal.h"
 
-static GObjectClass *parent_class;
+G_DEFINE_TYPE(EBookView, e_book_view, G_TYPE_OBJECT);
+
+#define E_BOOK_VIEW_GET_PRIVATE(o)					\
+	(G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK_VIEW, EBookViewPrivate))
 
 struct _EBookViewPrivate {
-	GNOME_Evolution_Addressbook_BookView     corba_book_view;
-
-	EBook                 *book;
-
-	EBookViewListener     *listener;
-
-	gint                    response_id;
+	EBook *book;
+	DBusGProxy *view_proxy;
+	gboolean running;
 };
 
 enum {
@@ -36,156 +48,124 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint e_book_view_signals [LAST_SIGNAL];
+static guint signals [LAST_SIGNAL];
 
 static void
-e_book_view_do_added_event (EBookView                 *book_view,
-			    EBookViewListenerResponse *resp)
+status_message_cb (DBusGProxy *proxy, const gchar *message, EBookView *book_view)
 {
-	g_signal_emit (book_view, e_book_view_signals [CONTACTS_ADDED], 0,
-		       resp->contacts);
-}
-
-static void
-e_book_view_do_modified_event (EBookView                 *book_view,
-			       EBookViewListenerResponse *resp)
-{
-	g_signal_emit (book_view, e_book_view_signals [CONTACTS_CHANGED], 0,
-		       resp->contacts);
-}
-
-static void
-e_book_view_do_removed_event (EBookView                 *book_view,
-			      EBookViewListenerResponse *resp)
-{
-	g_signal_emit (book_view, e_book_view_signals [CONTACTS_REMOVED], 0,
-		       resp->ids);
-}
-
-static void
-e_book_view_do_complete_event (EBookView                 *book_view,
-			       EBookViewListenerResponse *resp)
-{
-	g_signal_emit (book_view, e_book_view_signals [SEQUENCE_COMPLETE], 0,
-		       resp->status);
-}
-
-static void
-e_book_view_do_status_message_event (EBookView                 *book_view,
-				     EBookViewListenerResponse *resp)
-{
-	g_signal_emit (book_view, e_book_view_signals [STATUS_MESSAGE], 0,
-		       resp->message);
-}
-
-static void
-e_book_view_handle_response (EBookViewListener *listener, EBookViewListenerResponse *resp, EBookView *book_view)
-{
-	/* we shouldn't need this check.  EBVL only emits the signal when resp != NULL */
-	if (resp == NULL)
+	if (!book_view->priv->running)
 		return;
 
-	switch (resp->op) {
-	case ContactsAddedEvent:
-		e_book_view_do_added_event (book_view, resp);
-		break;
-	case ContactsModifiedEvent:
-		e_book_view_do_modified_event (book_view, resp);
-		break;
-	case ContactsRemovedEvent:
-		e_book_view_do_removed_event (book_view, resp);
-		break;
-	case SequenceCompleteEvent:
-		e_book_view_do_complete_event (book_view, resp);
-		break;
-	case StatusMessageEvent:
-		e_book_view_do_status_message_event (book_view, resp);
-		break;
-	default:
-		g_error ("EBookView: Unknown operation %d in listener queue!\n",
-			 resp->op);
-		break;
-	}
+	g_signal_emit (book_view, signals[STATUS_MESSAGE], 0, message);
 }
 
-static gboolean
-e_book_view_construct (EBookView *book_view, GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener)
+static void
+contacts_added_cb (DBusGProxy *proxy, const gchar **vcards, EBookView *book_view)
 {
-	CORBA_Environment  ev;
-	g_return_val_if_fail (book_view != NULL,     FALSE);
-	g_return_val_if_fail (E_IS_BOOK_VIEW (book_view), FALSE);
+	const gchar **p;
+	GList *contacts = NULL;
 
-	/*
-	 * Copy in the corba_book_view.
-	 */
-	CORBA_exception_init (&ev);
+	if (!book_view->priv->running)
+		return;
 
-	book_view->priv->corba_book_view = bonobo_object_dup_ref(corba_book_view, &ev);
-
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("e_book_view_construct: Exception duplicating corba_book_view.\n");
-		CORBA_exception_free (&ev);
-		book_view->priv->corba_book_view = CORBA_OBJECT_NIL;
-		return FALSE;
+	for (p = vcards; *p; p++) {
+		contacts = g_list_prepend (contacts, e_contact_new_from_vcard (*p));
 	}
+	contacts = g_list_reverse (contacts);
 
-	CORBA_exception_free (&ev);
+	g_signal_emit (book_view, signals[CONTACTS_ADDED], 0, contacts);
 
-	/*
-	 * Create our local BookListener interface.
-	 */
-	book_view->priv->listener = listener;
-	book_view->priv->response_id = g_signal_connect (book_view->priv->listener, "response",
-							 G_CALLBACK (e_book_view_handle_response), book_view);
-
-	bonobo_object_ref(BONOBO_OBJECT(book_view->priv->listener));
-
-	return TRUE;
+	g_list_foreach (contacts, (GFunc)g_object_unref, NULL);
+	g_list_free (contacts);
 }
 
-/**
+static void
+contacts_changed_cb (DBusGProxy *proxy, const gchar **vcards, EBookView *book_view)
+{
+	const gchar **p;
+	GList *contacts = NULL;
+
+	if (!book_view->priv->running)
+		return;
+
+	for (p = vcards; *p; p++) {
+		contacts = g_list_prepend (contacts, e_contact_new_from_vcard (*p));
+	}
+	contacts = g_list_reverse (contacts);
+
+	g_signal_emit (book_view, signals[CONTACTS_CHANGED], 0, contacts);
+
+	g_list_foreach (contacts, (GFunc)g_object_unref, NULL);
+	g_list_free (contacts);
+}
+
+static void
+contacts_removed_cb (DBusGProxy *proxy, const gchar **ids, EBookView *book_view)
+{
+	const gchar **p;
+	GList *list = NULL;
+
+	if (!book_view->priv->running)
+		return;
+
+	for (p = ids; *p; p++) {
+		list = g_list_prepend (list, (char*)*p);
+	}
+	list = g_list_reverse (list);
+
+	g_signal_emit (book_view, signals[CONTACTS_REMOVED], 0, list);
+
+	/* No need to free the values, our caller will */
+	g_list_free (list);
+}
+
+static void
+complete_cb (DBusGProxy *proxy, guint status, EBookView *book_view)
+{
+	if (!book_view->priv->running)
+		return;
+
+	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, status);
+}
+
+/*
  * e_book_view_new:
- * @corba_book_view: a CORBA BookView object
- * @listener: an #EBookViewListener
+ * @book: an #EBook
+ * @view_proxy: The #DBusGProxy to get signals from
  *
- * Creates a new #EBookView based on @corba_book_view and listening to
- * @listener.  This is a private function, applications should call
- * #e_book_get_book_view or #e_book_async_get_book_view.
+ * Creates a new #EBookView based on #EBook and listening to @view_proxy.  This
+ * is a private function, applications should call #e_book_get_book_view or
+ * #e_book_async_get_book_view.
  *
  * Return value: A new #EBookView.
  **/
 EBookView *
-e_book_view_new (GNOME_Evolution_Addressbook_BookView corba_book_view, EBookViewListener *listener)
+_e_book_view_new (EBook *book, DBusGProxy *view_proxy)
 {
-	EBookView *book_view;
+	EBookView *view;
+	EBookViewPrivate *priv;
 
-	book_view = g_object_new (E_TYPE_BOOK_VIEW, NULL);
+	view = g_object_new (E_TYPE_BOOK_VIEW, NULL);
+	priv = view->priv;
 
-	if (! e_book_view_construct (book_view, corba_book_view, listener)) {
-		g_object_unref (book_view);
-		return NULL;
-	}
+	priv->book = g_object_ref (book);
 
-	return book_view;
-}
+	/* Take ownership of the view_proxy object */
+	priv->view_proxy = view_proxy;
+	g_object_add_weak_pointer (G_OBJECT (view_proxy), (gpointer)&priv->view_proxy);
 
-/**
- * e_book_view_set_book:
- * @book_view: an #EBookView
- * @book: an #EBook
- *
- * Makes @book_view listen to changes in @book. This function apparently
- * has no effect for the time being.
- **/
-void
-e_book_view_set_book (EBookView *book_view, EBook *book)
-{
-	g_return_if_fail (book_view && E_IS_BOOK_VIEW (book_view));
-	g_return_if_fail (book && E_IS_BOOK (book));
-	g_return_if_fail (book_view->priv->book == NULL);
+	dbus_g_proxy_add_signal (view_proxy, "StatusMessage", G_TYPE_STRING, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (view_proxy, "StatusMessage", G_CALLBACK (status_message_cb), view, NULL);
+	dbus_g_proxy_add_signal (view_proxy, "ContactsAdded", G_TYPE_STRV, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (view_proxy, "ContactsAdded", G_CALLBACK (contacts_added_cb), view, NULL);
+	dbus_g_proxy_add_signal (view_proxy, "ContactsChanged", G_TYPE_STRV, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (view_proxy, "ContactsChanged", G_CALLBACK (contacts_changed_cb), view, NULL);
+	dbus_g_proxy_add_signal (view_proxy, "ContactsRemoved", G_TYPE_STRV, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (view_proxy, "ContactsRemoved", G_CALLBACK (contacts_removed_cb), view, NULL);
+	dbus_g_proxy_add_signal (view_proxy, "Complete", G_TYPE_UINT, G_TYPE_INVALID);
+	dbus_g_proxy_connect_signal (view_proxy, "Complete", G_CALLBACK (complete_cb), view, NULL);
 
-	book_view->priv->book = book;
-	g_object_ref (book);
+	return view;
 }
 
 /**
@@ -196,10 +176,10 @@ e_book_view_set_book (EBookView *book_view, EBook *book)
  *
  * Return value: an #EBook.
  **/
-EBook*
+EBook *
 e_book_view_get_book (EBookView *book_view)
 {
-	g_return_val_if_fail (book_view && E_IS_BOOK_VIEW (book_view), NULL);
+	g_return_val_if_fail (E_IS_BOOK_VIEW (book_view), NULL);
 
 	return book_view->priv->book;
 }
@@ -213,18 +193,24 @@ e_book_view_get_book (EBookView *book_view)
 void
 e_book_view_start (EBookView *book_view)
 {
-	CORBA_Environment ev;
+	GError *error = NULL;
 
-	g_return_if_fail (book_view && E_IS_BOOK_VIEW (book_view));
+	g_return_if_fail (E_IS_BOOK_VIEW (book_view));
 
-	CORBA_exception_init (&ev);
+	book_view->priv->running = TRUE;
 
-	e_book_view_listener_start (book_view->priv->listener);
+	if (book_view->priv->view_proxy) {
+		org_gnome_evolution_dataserver_addressbook_BookView_start (book_view->priv->view_proxy, &error);
+		if (error) {
+			g_warning ("Cannot start book view: %s\n", error->message);
 
-	GNOME_Evolution_Addressbook_BookView_start (book_view->priv->corba_book_view, &ev);
+			/* Fake a sequence-complete so that the application knows this failed */
+			/* TODO: use get_status_from_error */
+			g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0,
+				       E_BOOK_ERROR_CORBA_EXCEPTION);
 
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("corba exception._major = %d\n", ev._major);
+			g_error_free (error);
+		}
 	}
 }
 
@@ -237,69 +223,48 @@ e_book_view_start (EBookView *book_view)
 void
 e_book_view_stop (EBookView *book_view)
 {
-	CORBA_Environment ev;
+	GError *error = NULL;
 
-	g_return_if_fail (book_view && E_IS_BOOK_VIEW (book_view));
+	g_return_if_fail (E_IS_BOOK_VIEW (book_view));
 
-	CORBA_exception_init (&ev);
+	book_view->priv->running = FALSE;
 
-	e_book_view_listener_stop (book_view->priv->listener);
-
-	GNOME_Evolution_Addressbook_BookView_stop (book_view->priv->corba_book_view, &ev);
-
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("corba exception._major = %d\n", ev._major);
+	if (book_view->priv->view_proxy) {
+		org_gnome_evolution_dataserver_addressbook_BookView_stop (book_view->priv->view_proxy, &error);
+		if (error) {
+			g_warning ("Cannot stop book view: %s\n", error->message);
+			g_error_free (error);
+		}
 	}
 }
 
 static void
 e_book_view_init (EBookView *book_view)
 {
-	book_view->priv                      = g_new0 (EBookViewPrivate, 1);
-	book_view->priv->book                = NULL;
-	book_view->priv->corba_book_view     = CORBA_OBJECT_NIL;
-	book_view->priv->listener            = NULL;
-	book_view->priv->response_id = 0;
+	EBookViewPrivate *priv = E_BOOK_VIEW_GET_PRIVATE (book_view);
+
+	priv->book = NULL;
+	priv->view_proxy = NULL;
+	priv->running = FALSE;
+
+	book_view->priv = priv;
 }
 
 static void
 e_book_view_dispose (GObject *object)
 {
-	EBookView             *book_view = E_BOOK_VIEW (object);
-	CORBA_Environment  ev;
+	EBookView *view = E_BOOK_VIEW (object);
 
-	if (book_view->priv) {
-		if (book_view->priv->book) {
-			g_object_unref (book_view->priv->book);
-		}
-
-		if (book_view->priv->corba_book_view) {
-			CORBA_exception_init (&ev);
-
-			GNOME_Evolution_Addressbook_BookView_dispose (book_view->priv->corba_book_view, &ev);
-
-			bonobo_object_release_unref (book_view->priv->corba_book_view, &ev);
-
-			if (ev._major != CORBA_NO_EXCEPTION) {
-				g_warning ("EBookView: Exception while releasing BookView\n");
-			}
-
-			CORBA_exception_free (&ev);
-		}
-
-		if (book_view->priv->listener) {
-			if (book_view->priv->response_id)
-				g_signal_handler_disconnect(book_view->priv->listener,
-							    book_view->priv->response_id);
-			e_book_view_listener_stop (book_view->priv->listener);
-			bonobo_object_unref (BONOBO_OBJECT(book_view->priv->listener));
-		}
-
-		g_free (book_view->priv);
-		book_view->priv = NULL;
+	if (view->priv->view_proxy) {
+		org_gnome_evolution_dataserver_addressbook_BookView_dispose (view->priv->view_proxy, NULL);
+		g_object_unref (view->priv->view_proxy);
+		view->priv->view_proxy = NULL;
 	}
 
-	G_OBJECT_CLASS(parent_class)->dispose (object);
+	if (view->priv->book) {
+		g_object_unref (view->priv->book);
+		view->priv->book = NULL;
+	}
 }
 
 static void
@@ -307,84 +272,43 @@ e_book_view_class_init (EBookViewClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = g_type_class_ref (G_TYPE_OBJECT);
+	g_type_class_add_private (klass, sizeof (EBookViewPrivate));
 
-	e_book_view_signals [CONTACTS_CHANGED] =
-		g_signal_new ("contacts_changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookViewClass, contacts_changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_POINTER);
-
-	e_book_view_signals [CONTACTS_ADDED] =
-		g_signal_new ("contacts_added",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookViewClass, contacts_added),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_POINTER);
-
-	e_book_view_signals [CONTACTS_REMOVED] =
-		g_signal_new ("contacts_removed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookViewClass, contacts_removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_POINTER);
-
-	e_book_view_signals [SEQUENCE_COMPLETE] =
-		g_signal_new ("sequence_complete",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__INT,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_INT);
-
-	e_book_view_signals [STATUS_MESSAGE] =
-		g_signal_new ("status_message",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EBookViewClass, status_message),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__STRING,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_STRING);
+	signals [CONTACTS_CHANGED] = g_signal_new ("contacts_changed",
+						   G_OBJECT_CLASS_TYPE (object_class),
+						   G_SIGNAL_RUN_LAST,
+						   G_STRUCT_OFFSET (EBookViewClass, contacts_changed),
+						   NULL, NULL,
+						   e_book_marshal_NONE__POINTER,
+						   G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals [CONTACTS_REMOVED] = g_signal_new ("contacts_removed",
+						   G_OBJECT_CLASS_TYPE (object_class),
+						   G_SIGNAL_RUN_LAST,
+						   G_STRUCT_OFFSET (EBookViewClass, contacts_removed),
+						   NULL, NULL,
+						   e_book_marshal_NONE__POINTER,
+						   G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals [CONTACTS_ADDED] = g_signal_new ("contacts_added",
+						 G_OBJECT_CLASS_TYPE (object_class),
+						 G_SIGNAL_RUN_LAST,
+						 G_STRUCT_OFFSET (EBookViewClass, contacts_added),
+						 NULL, NULL,
+						 e_book_marshal_NONE__POINTER,
+						 G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals [SEQUENCE_COMPLETE] = g_signal_new ("sequence_complete",
+						    G_OBJECT_CLASS_TYPE (object_class),
+						    G_SIGNAL_RUN_LAST,
+						    G_STRUCT_OFFSET (EBookViewClass, sequence_complete),
+						    NULL, NULL,
+						    e_book_marshal_NONE__INT,
+						    G_TYPE_NONE, 1, G_TYPE_INT);
+	signals [STATUS_MESSAGE] = g_signal_new ("status_message",
+						 G_OBJECT_CLASS_TYPE (object_class),
+						 G_SIGNAL_RUN_LAST,
+						 G_STRUCT_OFFSET (EBookViewClass, status_message),
+						 NULL, NULL,
+						 e_book_marshal_NONE__STRING,
+						 G_TYPE_NONE, 1, G_TYPE_STRING);
 
 	object_class->dispose = e_book_view_dispose;
-}
-
-/**
- * e_book_view_get_type:
- */
-GType
-e_book_view_get_type (void)
-{
-	static GType type = 0;
-
-	if (! type) {
-		GTypeInfo info = {
-			sizeof (EBookViewClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_view_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookView),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_view_init
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "EBookView", &info, 0);
-	}
-
-	return type;
 }

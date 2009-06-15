@@ -8,37 +8,18 @@ AM_CPPFLAGS =						\
 	-I$(top_builddir)/addressbook/libebook		\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-# The corba stubs and skels
-CORBA_GENERATED_C =				\
-	Evolution-DataServer-Addressbook-common.c		\
-	Evolution-DataServer-Addressbook-skels.c		\
-	Evolution-DataServer-Addressbook-stubs.c
-CORBA_GENERATED_H =			\
-	Evolution-DataServer-Addressbook.h
-
-CORBA_GENERATED = $(CORBA_GENERATED_C) $(CORBA_GENERATED_H)
-
-idls =						\
-	$(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
-
-idl_flags = $(IDL_INCLUDES)
-
-$(CORBA_GENERATED_H): $(idls)
-	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Addressbook.idl
-$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
+# The marshallers
+MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
+@EVO_MARSHAL_RULE@
 
 # The library
 lib_LTLIBRARIES = libebook-1.2.la
 
-libebook_1_2_la_SOURCES =				\
-	$(CORBA_GENERATED_C)				\
-	$(CORBA_GENERATED_H)				\
+libebook_1_2_la_SOURCES =					\
+	$(MARSHAL_GENERATED)				\
+	$(DBUS_GENERATED_H)				\
 	e-address-western.c				\
-	e-book-listener.c				\
-	e-book-listener.h				\
 	e-book-query.c					\
-	e-book-view-listener.c				\
-	e-book-view-listener.h				\
 	e-book-view-private.h				\
 	e-book-view.c					\
 	e-book.c					\
@@ -46,7 +27,8 @@ libebook_1_2_la_SOURCES =				\
 	e-destination.c					\
 	e-name-western.c				\
 	e-name-western-tables.h                         \
-	e-vcard.c
+	e-vcard.c					\
+	e-error.h
 
 libebook_1_2_la_LIBADD =					\
 	$(top_builddir)/camel/libcamel-1.2.la			\
@@ -78,11 +60,16 @@ e-name-western-tables.h: e-name-western-tables.h.in
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
 
-BUILT_SOURCES = $(CORBA_GENERATED)
+DBUS_GENERATED_H = e-data-book-factory-bindings.h e-data-book-bindings.h e-data-book-view-bindings.h
+%-bindings.h: $(top_srcdir)/addressbook/libedata-book/%.xml
+	dbus-binding-tool --mode=glib-client --output=$@ --prefix=$(subst -,_,$*) $^
+
+BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
+	e-book-marshal.list				\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)     \
 	e-name-western-tables.h.in                      \
 	gen-western-table.py
