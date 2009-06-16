@@ -1,3 +1,39 @@
+Evolution-Data-Server 2.27.3 2009-06-15
+---------------------------------------
+
+Bug Fixes:
+	
+	#583507 - Fix for evolution hang while updating search folder.
+		  (Srinivasa Ragavan)
+	#585327 - Attaching a message via drag and drop doesn't work for
+		  GW provider. (Bharath Acharya)
+	#266678 - Renaming LDAP contacts CN breaks DN. (Sven Anders)
+	#580198 - IMAP offline mode improvement. (Milan Crha)
+	#584797 - Do not set internal SQLite3 structures on error. (Milan Crha)
+	#580212 - Report errors in CamelException when verifying signature (Milan Crha)
+	#559345 - Support CalDAV free/busy extension (Milan Crha)
+	#337082 - Do not return folders with empty names (Milan Crha)
+	#584101 - Configure fails with kerberos and LDFLAGS="-Wl,--as-needed" (Tiziano Muller)
+	#584030 - New API function for ESourceSelectorDialog (Milan Crha)
+	#583344 - do not leak pipe handles (Milan Crha)
+	#562015 - CalDAV - Store CTag in a cache (Milan Crha)
+	#506265 - (bnc) do not reset the meeting date to delivered date. (Milan Crha)
+	#583528 - Hints of missing mails in Gw (Chenthill Palanisamy)
+	#582643 - Deleted mails are not immediately synced (Chenthill Palanisamy)
+	#543069 - Support detached instances in CalDAV (Milan Crha)
+	#559980 - Harden WebDAV contact backend by checking for etag being NULL (Tobias Muller)
+
+Translations:
+	Manoj Kumar (or)
+	Kjartan Maraas (nb)
+
+Other Fixes:
+	Support for header based threading in GroupWise provider. (Chenthill Palanisamy)
+	Compiler warnings and white space cleanup (Matthew Barnes)
+	Correctly dispose of the source in EBookBackend. Code cleanup. (Ross Burton)
+	Instead of duplicating libgnome function, use corresponding glib functions (Fridrich Strba)
+	Make the backend factory type const (Rob Bradford)
+
 Evolution-Data-Server 2.27.2 2009-05-25
 ---------------------------------------
 
