@@ -2056,7 +2056,8 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	if (!has_mime_822 ) {
 		/* Set Message Id */
 		message_id = e_gw_item_get_message_id (item);
-		camel_medium_add_header (CAMEL_MEDIUM (msg), "Message-Id", message_id);
+		if (message_id)
+			camel_medium_add_header (CAMEL_MEDIUM (msg), "Message-Id", message_id);
 
 		/* Set parent threads */
 		parent_threads = e_gw_item_get_parent_thread_ids (item);
