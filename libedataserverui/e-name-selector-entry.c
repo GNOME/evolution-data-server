@@ -1523,7 +1523,8 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	gtk_editable_set_position (GTK_EDITABLE (name_selector_entry), range_end);
 	g_signal_emit (name_selector_entry, signals[UPDATED], 0, destination, NULL);
 
-	priv->is_completing = FALSE;
+	if (priv->is_completing)
+		clear_completion_model (name_selector_entry);
 }
 
 static void
