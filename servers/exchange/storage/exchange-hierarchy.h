@@ -8,10 +8,7 @@
 #include "exchange-account.h"
 #include "e-folder.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define EXCHANGE_TYPE_HIERARCHY            (exchange_hierarchy_get_type ())
 #define EXCHANGE_HIERARCHY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXCHANGE_TYPE_HIERARCHY, ExchangeHierarchy))
@@ -99,8 +96,6 @@ ExchangeAccountFolderResult exchange_hierarchy_xfer_folder   (ExchangeHierarchy 
 							      const gchar        *dest_name,
 							      gboolean           remove_source);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_HIERARCHY_H__ */

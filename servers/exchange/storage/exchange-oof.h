@@ -7,10 +7,7 @@
 #include "exchange-types.h"
 #include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 gboolean      exchange_oof_get              (ExchangeAccount  *account,
 					     gboolean         *oof,
@@ -19,8 +16,6 @@ gboolean      exchange_oof_set              (ExchangeAccount  *account,
 					     gboolean          oof,
 					     const gchar       *msg);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_OOF_H__ */

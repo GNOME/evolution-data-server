@@ -26,10 +26,7 @@
 #include <glib-object.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define E_TYPE_FOLDER_TYPE_REGISTRY		(e_folder_type_registry_get_type ())
 #define E_FOLDER_TYPE_REGISTRY(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_FOLDER_TYPE_REGISTRY, EFolderTypeRegistry))
@@ -88,8 +85,6 @@ GList *e_folder_type_registry_get_accepted_dnd_types_for_type (EFolderTypeRegist
 							       const gchar *type_name);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* _E_FOLDER_TYPE_REGISTRY_H_ */

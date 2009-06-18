@@ -20,17 +20,12 @@
 #endif
 #include "e2k-global-catalog.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 LDAP             *e2k_global_catalog_get_ldap        (E2kGlobalCatalog *gc,
 						      E2kOperation     *op,
 						      gint              *ldap_error);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_GLOBAL_CATALOG_LDAP_H__ */

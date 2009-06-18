@@ -57,8 +57,6 @@ GSList        *e2k_http_get_headers     (SoupMessageHeaders *hdrs,
 #define E2K_HTTP_INTERNAL_SERVER_ERROR             500
 #define E2K_HTTP_BAD_GATEWAY                       502
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_HTTP_UTILS_H__ */

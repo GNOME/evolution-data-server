@@ -26,10 +26,7 @@
 #include <glib-object.h>
 #include "e-folder.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define E_TYPE_STORAGE			(e_storage_get_type ())
 #define E_STORAGE(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_STORAGE, EStorage))
@@ -206,8 +203,6 @@ gboolean e_storage_declare_has_subfolders (EStorage   *storage,
 gboolean e_storage_get_has_subfolders     (EStorage   *storage,
 					   const gchar *path);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* _E_STORAGE_H_ */

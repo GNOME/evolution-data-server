@@ -27,12 +27,9 @@
 
 #ifndef EDS_DISABLE_DEPRECATED
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
-
 #include <glib.h>
+
+G_BEGIN_DECLS
 
 typedef struct _ETrie ETrie;
 
@@ -43,9 +40,7 @@ void e_trie_add (ETrie *trie, const gchar *pattern, gint pattern_id);
 
 const gchar *e_trie_search (ETrie *trie, const gchar *buffer, gsize buflen, gint *matched_id);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* EDS_DISABLE_DEPRECATED */
 

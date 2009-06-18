@@ -15,10 +15,7 @@
 #include "e2k-http-utils.h"
 #include "e2k-result.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define E2K_TYPE_CONTEXT            (e2k_context_get_type ())
 #define E2K_CONTEXT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E2K_TYPE_CONTEXT, E2kContext))
@@ -212,8 +209,6 @@ E2kHTTPStatus  e2k_context_send_message  (E2kContext *ctx,
 					  E2kOperation *op,
 					  SoupMessage *msg);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_CONTEXT_H__ */

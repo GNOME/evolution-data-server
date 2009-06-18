@@ -4,10 +4,7 @@
 #ifndef __MAPI_H__
 #define __MAPI_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef enum {
 	MAPI_ACCESS_MODIFY            = (1 << 0),
@@ -120,8 +117,6 @@ typedef enum {
 	MAPI_IMPORTANCE_HIGH   = 2
 } MapiPrImportance;
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __MAPI_H__ */

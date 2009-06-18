@@ -6,10 +6,7 @@
 
 #include "e2k-context.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef enum {
 	E2K_BUSYSTATUS_FREE = 0,
@@ -62,8 +59,6 @@ E2kHTTPStatus  e2k_freebusy_save                  (E2kFreebusy     *fb);
 
 void           e2k_freebusy_destroy               (E2kFreebusy     *fb);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_FREEBUSY_H__ */

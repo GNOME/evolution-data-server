@@ -7,10 +7,7 @@
 #include "exchange-constants.h"
 #include "exchange-account.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define CONF_KEY_SELECTED_CAL_SOURCES "/apps/evolution/calendar/display/selected_calendars"
 #define CONF_KEY_SELECTED_TASKS_SOURCES "/apps/evolution/calendar/tasks/selected_tasks"
@@ -22,8 +19,6 @@ extern "C" {
 void			add_folder_esource (ExchangeAccount *account, FolderType folder_type, const gchar *folder_name, const gchar *physical_uri);
 void			remove_folder_esource (ExchangeAccount *account, FolderType folder_type, const gchar *physical_uri);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_ESOURCE_H__ */

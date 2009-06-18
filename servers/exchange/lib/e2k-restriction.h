@@ -6,10 +6,7 @@
 
 #include "e2k-types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef enum {
 	E2K_RELOP_LT = 0,
@@ -95,8 +92,6 @@ gboolean        e2k_restriction_extract     (guint8              **data,
 void            e2k_restriction_append      (GByteArray           *ba,
 					     E2kRestriction       *rn);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_RESTRICTION_H__ */

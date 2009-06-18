@@ -31,10 +31,7 @@
 
 #include <iconv.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 const gchar *e_iconv_charset_name(const gchar *charset);
 iconv_t e_iconv_open(const gchar *oto, const gchar *ofrom);
@@ -46,9 +43,7 @@ const gchar *e_iconv_locale_charset(void);
 const gchar *e_iconv_locale_language (void);
 const gchar *e_iconv_charset_language (const gchar *charset);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* EDS_DISABLE_DEPRECATED */
 

@@ -8,10 +8,7 @@
 #include "exchange-types.h"
 #include "e2k-context.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define E_TYPE_FOLDER_EXCHANGE            (e_folder_exchange_get_type ())
 #define E_FOLDER_EXCHANGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_FOLDER_EXCHANGE, EFolderExchange))
@@ -155,8 +152,6 @@ E2kHTTPStatus  e_folder_exchange_transfer_dir      (EFolder *source,
 						    gchar **permanent_url);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E_FOLDER_EXCHANGE_H__ */

@@ -37,9 +37,7 @@ typedef int (WINAPI *COMPAT_PGETADDRINFO)(const char *nodename,const char *servn
 typedef int (WINAPI *COMPAT_PGETNAMEINFO)(const struct sockaddr *sa,socklen_t salen,char *host,size_t hostlen,char *serv,size_t servlen,int flags);
 typedef void (WINAPI *COMPAT_PFREEADDRINFO)(struct addrinfo *ai);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
   static char *WINAPI CompatStrdup (const char *pszString) {
     char *pszMemory;
@@ -379,7 +377,5 @@ extern "C" {
     (*pfFreeAddrInfo)(ai);
   }
 
-#ifdef __cplusplus
-}
-#endif
+G_END_DECLS
 #endif

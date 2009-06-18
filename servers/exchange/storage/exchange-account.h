@@ -14,10 +14,7 @@
 #include <libedataserver/e-account-list.h>
 #include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define EXCHANGE_TYPE_ACCOUNT            (exchange_account_get_type ())
 #define EXCHANGE_ACCOUNT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXCHANGE_TYPE_ACCOUNT, ExchangeAccount))
@@ -202,8 +199,6 @@ void			exchange_account_scan_foreign_hierarchy (ExchangeAccount *account,
 							      const gchar *user_email);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_ACCOUNT_H__ */

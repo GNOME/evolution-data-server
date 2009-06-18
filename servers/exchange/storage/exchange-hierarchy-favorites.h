@@ -6,10 +6,7 @@
 
 #include "exchange-hierarchy-somedav.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define EXCHANGE_TYPE_HIERARCHY_FAVORITES            (exchange_hierarchy_favorites_get_type ())
 #define EXCHANGE_HIERARCHY_FAVORITES(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXCHANGE_TYPE_HIERARCHY_FAVORITES, ExchangeHierarchyFavorites))
@@ -45,8 +42,6 @@ ExchangeAccountFolderResult  exchange_hierarchy_favorites_add_folder (ExchangeHi
 gboolean exchange_hierarchy_favorites_is_added (ExchangeHierarchy *hier,
 						EFolder *folder);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_HIERARCHY_FAVORITES_H__ */

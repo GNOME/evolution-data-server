@@ -61,8 +61,6 @@ typedef enum {
 	EXCHANGE_HIERARCHY_FOREIGN
 } ExchangeHierarchyType;
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_TYPES_H__ */

@@ -8,10 +8,7 @@
 #include "e2k-properties.h"
 #include "e2k-rule.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 gboolean     e2k_actions_extract       (guint8		    **data,
 					gint		     *len,
@@ -52,8 +49,6 @@ void         e2k_addr_list_set_oneoff  (E2kAddrList	     *list,
 					const gchar	     *email);
 void         e2k_addr_list_free        (E2kAddrList	     *list);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_ACTION_H__ */

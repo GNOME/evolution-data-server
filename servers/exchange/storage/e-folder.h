@@ -26,10 +26,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define E_TYPE_FOLDER			(e_folder_get_type ())
 #define E_FOLDER(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_FOLDER, EFolder))
@@ -98,8 +95,6 @@ void  e_folder_set_sorting_priority  (EFolder *folder, gint sorting_priority);
 gboolean e_folder_accept_drop        (EFolder *folder, GdkDragContext *context,
 				      const gchar *target_type,
 				      GtkSelectionData *selection_data);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* _E_FOLDER_H_ */

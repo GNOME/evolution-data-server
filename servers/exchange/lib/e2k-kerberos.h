@@ -4,10 +4,7 @@
 #ifndef __E2K_KERBEROS_H__
 #define __E2K_KERBEROS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef enum {
 	E2K_KERBEROS_OK,
@@ -31,8 +28,6 @@ E2kKerberosResult e2k_kerberos_change_password (const gchar *user,
 						const gchar *old_password,
 						const gchar *new_password);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_FREEBUSY_H__ */

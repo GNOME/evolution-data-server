@@ -8,10 +8,7 @@
 #include "e2k-security-descriptor.h"
 #include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define EXCHANGE_TYPE_FOLDER_SIZE			(exchange_folder_size_get_type ())
 #define EXCHANGE_FOLDER_SIZE(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), EXCHANGE_TYPE_FOLDER_SIZE, ExchangeFolderSize))
@@ -48,8 +45,6 @@ gdouble exchange_folder_size_get (ExchangeFolderSize *fsize, const gchar *folder
 
 GtkListStore *exchange_folder_size_get_model (ExchangeFolderSize *fsize);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_FOLDER_SIZE_H__ */

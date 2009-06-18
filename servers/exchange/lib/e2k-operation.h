@@ -7,10 +7,7 @@
 #include <string.h>
 #include "e2k-types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef void (*E2kOperationCancelFunc) (E2kOperation *op, gpointer owner, gpointer data);
 
@@ -37,8 +34,6 @@ void     e2k_operation_finish         (E2kOperation           *op);
 void     e2k_operation_cancel         (E2kOperation           *op);
 gboolean e2k_operation_is_cancelled   (E2kOperation           *op);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2k_OPERATION_H__ */

@@ -8,10 +8,7 @@
 #include "e2k-operation.h"
 #include "e2k-validate.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef enum {
 	E2K_EXCHANGE_UNKNOWN,
@@ -80,8 +77,6 @@ E2kAutoconfigResult  e2k_autoconfig_check_global_catalog (E2kAutoconfig *ac,
 
 const gchar          *e2k_autoconfig_lookup_option        (const gchar *option);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_AUTOCONFIG_H__ */

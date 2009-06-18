@@ -6,10 +6,7 @@
 
 #include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 typedef enum {
 	E2K_AUTOCONFIG_USE_GAL_DEFAULT, /* try ntlm if available and then basic if not or failed */
@@ -54,8 +51,6 @@ gboolean e2k_validate_user (const gchar *owa_url, gchar *key, gchar **user,
 			    GtkWindow *parent);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_VALIDATE_H_ */

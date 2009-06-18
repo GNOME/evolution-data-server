@@ -6,10 +6,7 @@
 
 #include "exchange-hierarchy.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define EXCHANGE_TYPE_HIERARCHY_GAL            (exchange_hierarchy_gal_get_type ())
 #define EXCHANGE_HIERARCHY_GAL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EXCHANGE_TYPE_HIERARCHY_GAL, ExchangeHierarchyGAL))
@@ -33,8 +30,6 @@ ExchangeHierarchy    *exchange_hierarchy_gal_new      (ExchangeAccount *account,
 						       const gchar *hierarchy_name,
 						       const gchar *physical_uri_prefix);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __EXCHANGE_HIERARCHY_GAL_H__ */

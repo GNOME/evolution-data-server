@@ -9,10 +9,7 @@
 #include "e2k-operation.h"
 #include "e2k-validate.h"
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define E2K_TYPE_GLOBAL_CATALOG            (e2k_global_catalog_get_type ())
 #define E2K_GLOBAL_CATALOG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E2K_TYPE_GLOBAL_CATALOG, E2kGlobalCatalog))
@@ -117,8 +114,6 @@ E2kGlobalCatalogStatus e2k_global_catalog_remove_delegate (E2kGlobalCatalog *gc,
 							   const gchar *self_dn,
 							   const gchar *delegate_dn);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __E2K_GLOBAL_CATALOG_H__ */
