@@ -362,5 +362,9 @@ md5_get_digest_from_file (const gchar *filename, guchar digest[16])
 
 	md5_get_digest (contents, length, digest);
 
+#if GLIB_CHECK_VERSION(2,21,3)
+	g_mapped_file_unref (mapped_file);
+#else
 	g_mapped_file_free (mapped_file);
+#endif
 }
