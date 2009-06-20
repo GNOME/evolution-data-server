@@ -1,5 +1,5 @@
- Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.52)
+# Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.54)
 
 # Evolution-Data-Server version */
 m4_define([eds_major_version], [2])
@@ -9,16 +9,21 @@ m4_define([eds_micro_version], [4])
 m4_define([eds_version],
           [eds_major_version.eds_minor_version.eds_micro_version])
 
-AC_INIT(evolution-data-server, [eds_version])
+# This is for api/versioning tracking for things like bonobo .server files
+# This should always be the major/minor of the stable version or stable version to be
+# Define Base / Api Version		  
+m4_define([base_version], [2.28])
+m4_define([api_version], [1.2])
+
+AC_INIT(evolution-data-server, [eds_version], http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server)
 AC_CONFIG_SRCDIR(README)
 
 # Gross hack to enable 'make dist' on automake 1.9+tar 1.14.
 # The extra brackets are to foil regex-based scans.
 m4_ifdef([_A][M_PROG_TAR],[_A][M_SET_OPTION([tar-ustar])])
 
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
-
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE([gnu 1.6])
+AC_CONFIG_HEADERS(config.h)
 
 # Required Package Versions
 m4_define([glib_minimum_version], [2.16.1])
@@ -34,17 +39,8 @@ m4_define([sqlite_minimum_version], [3.5])
 m4_define([gweather_minimum_version], [2.25.4])
 m4_define([libical_minimum_version], [0.43])
 
-dnl *************************************************************************************************
-dnl Base Version
-dnl
-dnl This is for api/versioning tracking for things like bonobo .server files
-dnl
-dnl This should always be the major/minor of the stable version or stable version to be
-dnl *************************************************************************************************
-BASE_VERSION=2.28
-API_VERSION=1.2
-AC_SUBST(BASE_VERSION)
-AC_SUBST(API_VERSION)
+AC_SUBST([BASE_VERSION],[base_version])
+AC_SUBST([API_VERSION],[api_version])
 AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
 AC_DEFINE_UNQUOTED(API_VERSION, "$API_VERSION", [Api version (Major.Minor)])
 
@@ -235,7 +231,7 @@ case "$host" in
     DL_LIB=''
     SOFTOKN3_LIB=''
     LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
-    AC_CACHE_VAL(have_addrinfo, [have_addrinfo=yes])
+    AC_CACHE_VAL(ac_cv_have_addrinfo, [ac_cv_have_addrinfo=yes])
     AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
     ;;
 *)  os_win32=no
@@ -632,7 +628,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 				nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
 			fi
 			
-			AC_CACHE_CHECK([for Mozilla nspr libraries], moz_nspr_libs,
+			AC_CACHE_CHECK([for Mozilla nspr libraries], ac_cv_moz_nspr_libs,
 			[
 		       		LIBS_save="$LIBS"
 				CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
@@ -645,12 +641,12 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 		       			LDFLAGS="$LDFLAGS"
 				fi
 				
-				AC_TRY_LINK_FUNC(PR_Init, moz_nspr_libs="yes", moz_nspr_libs="no")
+				AC_TRY_LINK_FUNC(PR_Init, ac_cv_moz_nspr_libs="yes", ac_cv_moz_nspr_libs="no")
 				CFLAGS="$CFLAGS_save"
 				LDFLAGS="$LDFLAGS_save"
 	 			LIBS="$LIBS_save"
 			])
-			if test "x$moz_nspr_libs" != "xno"; then
+			if test "x$ac_cv_moz_nspr_libs" != "xno"; then
 				have_nspr_libs="yes"
 				MANUAL_NSPR_LIBS="-L$with_nspr_libs $nsprlibs"
 			else
@@ -711,21 +707,21 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 		 		nsslibs="-lssl3 -lsmime3 -lnss3"
 	 		fi	
 			
-			AC_CACHE_CHECK([for Mozilla nss libraries], moz_nss_libs,
+			AC_CACHE_CHECK([for Mozilla nss libraries], ac_cv_moz_nss_libs,
 			[
 	 			LIBS_save="$LIBS"
 				LDFLAGS="$LDFLAGS -L$with_nspr_libs $nsprlibs -L$with_nss_libs $nsslibs"
 		      		LIBS="$nsslibs $nsprlibs"
-				AC_TRY_LINK_FUNC(NSS_Init, moz_nss_libs="yes", moz_nss_libs="no")
-				if test "$moz_nss_libs" = no; then
+				AC_TRY_LINK_FUNC(NSS_Init, ac_cv_moz_nss_libs="yes", ac_cv_moz_nss_libs="no")
+				if test "$ac_cv_moz_nss_libs" = no; then
 					nsslibs="-lssl3 -lsmime3 -lnss3"
 					LDFLAGS="$LDFLAGS -L$with_nspr_libs $nsprlibs -L$with_nss_libs $nsslibs"
-					AC_TRY_LINK_FUNC(NSS_Init, moz_nss_libs="yes", moz_nss_libs="no")	
+					AC_TRY_LINK_FUNC(NSS_Init, ac_cv_moz_nss_libs="yes", ac_cv_moz_nss_libs="no")	
 				fi
 				LDFLAGS="$LDFLAGS_save"
 	 			LIBS="$LIBS_save"
 			])
-			if test "$moz_nss_libs" != no; then
+			if test "$ac_cv_moz_nss_libs" != no; then
 				AC_DEFINE(HAVE_NSS)
 				AC_DEFINE(HAVE_SSL)
 				if test "$enable_nss" = "static"; then
@@ -962,7 +958,7 @@ AC_CHECK_FUNCS(statfs)
 dnl **************************************************
 dnl * IPv6 support and getaddrinfo calls
 dnl **************************************************
-AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], have_addrinfo,
+AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], ac_cv_have_addrinfo,
 [
 	AC_TRY_COMPILE([
 		#include "confdefs.h"
@@ -991,13 +987,13 @@ AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], have_addrinfo,
 		freeaddrinfo (res);
 		getnameinfo((struct sockaddr *)&sin6, sizeof(sin6), host, sizeof(host), serv, sizeof(serv), 0);
 	],[
-		have_addrinfo=yes
+		ac_cv_have_addrinfo=yes
 	],[
-		have_addrinfo=no
+		ac_cv_have_addrinfo=no
 	])
 ])
 
-if test x"$have_addrinfo" = "xno" ; then
+if test x"$ac_cv_have_addrinfo" = "xno" ; then
    AC_DEFINE(NEED_ADDRINFO,1,[Enable getaddrinfo emulation])
    if test x"$enable_ipv6" = "xyes" ; then
       AC_ERROR(system doesn't support necessary interfaces for ipv6 support)
@@ -1600,7 +1596,7 @@ AC_ARG_ENABLE(largefile,
 	      enable_largefile="no")
 if test "x$enable_largefile" != "xno"; then
     AC_SYS_LARGEFILE
-    AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], largefile64_source,
+    AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], ac_cv_largefile64_source,
     [
 	AC_TRY_COMPILE([
 		#include <sys/types.h>
@@ -1609,7 +1605,7 @@ if test "x$enable_largefile" != "xno"; then
 	],[
 		int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
 	],[
-		largefile64_source="no"
+		ac_cv_largefile64_source="no"
 	],[
 		AC_TRY_COMPILE([
 			#define _LARGEFILE64_SOURCE
@@ -1619,19 +1615,19 @@ if test "x$enable_largefile" != "xno"; then
 		],[
 			int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
 		],[
-			largefile64_source="yes"
+			ac_cv_largefile64_source="yes"
 		],[
-			largefile64_source="unknown"
+			ac_cv_largefile64_source="unknown"
 		])
 	])
     ])
     
     enable_largefile="no"
     
-    if test "x$largefile64_source" = "xyes"; then
+    if test "x$ac_cv_largefile64_source" = "xyes"; then
         LARGEFILE_CFLAGS="-D_LARGEFILE64_SOURCE"
         enable_largefile="yes"
-    elif test "x$largefile64_source" = "xunknown"; then
+    elif test "x$ac_cv_largefile64_source" = "xunknown"; then
         AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
     fi
     

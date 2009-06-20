@@ -1,6 +1,7 @@
 # evolution/acinclude.m4
 # shared configure.in hacks between Evolution and Connector
 
+# serial 1
 
 # EVO_PURIFY_SUPPORT
 # Add --enable-purify. If the user turns it on, subst PURIFY and set
@@ -232,8 +233,6 @@ AC_DEFUN([EVO_PTHREAD_CHECK],[
 	AC_PROVIDE([EVO_PTHREAD_CHECK])
 ])
 dnl -*- mode: autoconf -*-
-
-# serial 1
 
 dnl Usage:
 dnl   GTK_DOC_CHECK([minimum-gtk-doc-version])
