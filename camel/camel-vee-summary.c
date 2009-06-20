@@ -144,13 +144,38 @@ vee_info_user_tag(const CamelMessageInfo *mi, const char *id)
 static gboolean
 vee_info_set_user_flag(CamelMessageInfo *mi, const char *name, gboolean value)
 {
-	int res = FALSE;
+	gint res = FALSE;
+	gboolean hacked_unread_folder = FALSE;
+	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
+
+	if (camel_debug("vfolderexp"))
+		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
+
+	if (vf->priv->unread_vfolder == -1)
+		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
+
+	if (vf->priv->unread_vfolder == 1)
+		hacked_unread_folder = TRUE;
+	else {
+		gchar *meta = camel_object_meta_get (mi->summary->folder, "vfolder:unread");
+		if (meta && strcmp (meta, "true") == 0)
+			hacked_unread_folder = TRUE;
+		g_free(meta);
+	}
 
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 		HANDLE_NULL_INFO(FALSE);
+
+		if (hacked_unread_folder)
+			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+		
 		res = camel_message_info_set_user_flag(rmi, name, value);
-		camel_message_info_free (rmi);		
+
+		if (hacked_unread_folder)
+			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+		
+		camel_message_info_free (rmi);
 	}
  
 	return res;
