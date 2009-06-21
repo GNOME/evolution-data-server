@@ -9,9 +9,9 @@ m4_define([eds_micro_version], [4])
 m4_define([eds_version],
           [eds_major_version.eds_minor_version.eds_micro_version])
 
-# This is for api/versioning tracking for things like bonobo .server files
-# This should always be the major/minor of the stable version or stable version to be
-# Define Base / Api Version		  
+# This is for API/version tracking for things like Bonobo server files.
+# This should always be the major/minor of the stable version or stable
+# version to be.  (XXX The API version is no longer meaningful.)
 m4_define([base_version], [2.28])
 m4_define([api_version], [1.2])
 
@@ -41,8 +41,8 @@ m4_define([libical_minimum_version], [0.43])
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
-AC_DEFINE_UNQUOTED(BASE_VERSION, "$BASE_VERSION", [Base version (Major.Minor)])
-AC_DEFINE_UNQUOTED(API_VERSION, "$API_VERSION", [Api version (Major.Minor)])
+AC_DEFINE_UNQUOTED(BASE_VERSION, ["$BASE_VERSION"], [Base version (Major.Minor)])
+AC_DEFINE_UNQUOTED(API_VERSION, ["$API_VERSION"], [API version (Major.Minor)])
 
 EDS_MAJOR_VERSION=eds_major_version
 EDS_MINOR_VERSION=eds_minor_version
