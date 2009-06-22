@@ -1493,6 +1493,7 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
 
 	/* XXX Because we stuff three renderers in a single column,
 	 *     we have to manually hunt for the text renderer. */
+	renderer = NULL;
 	list = gtk_tree_view_column_get_cell_renderers (column);
 	while (list != NULL) {
 		renderer = list->data;
