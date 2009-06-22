@@ -23,7 +23,15 @@ ltmain.sh
 missing
 mkinstalldirs
 stamp-*
+INSTALL
+dolt*
 
 # misc generated stuff
 *.pc
 *.server
+*-bindings.h
+*-glue.h
+*-marshal.[ch]
+*-enumtypes.[ch]
+iconv-detect.h
+*.service
