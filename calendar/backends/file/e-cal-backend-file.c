@@ -2632,7 +2632,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
 	/* Now we manipulate the components we care about */
 	for (l = comps; l; l = l->next) {
 		const gchar *uid;
-		gchar *object, *old_object, *rid, *new_object;
+		gchar *object, *old_object = NULL, *rid, *new_object;
 		ECalBackendFileObject *obj_data;
 		gboolean is_declined;
 
