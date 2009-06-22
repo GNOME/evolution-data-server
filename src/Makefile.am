@@ -5,8 +5,6 @@ AM_CPPFLAGS =						\
 	-DDATADIR=\"$(datadir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\
 	-I$(top_srcdir)					\
-	-I$(top_srcdir)/addressbook			\
-	-I$(top_builddir)/addressbook			\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
@@ -55,7 +53,6 @@ endif
 evolution_data_server_LDADD =                                           \
 	$(top_builddir)/libebackend/libebackend-1.2.la                  \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la            \
-	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la  \
 	$(E_DATA_CAL_LIBS)                                              \
 	$(E_FACTORY_LIBS)                                               \
 	$(E_DATA_SERVER_LIBS)

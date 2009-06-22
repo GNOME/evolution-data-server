@@ -42,10 +42,7 @@
 #include <gconf/gconf-client.h>
 
 #include <libebackend/e-data-server-module.h>
-#include <libedata-book/e-data-book-factory.h>
-#if ENABLE_CALENDAR
 #include <libedata-cal/e-data-cal-factory.h>
-#endif
 
 #ifdef G_OS_WIN32
 #include <libedataserver/e-data-server-util.h>
@@ -59,15 +56,10 @@
 #define E_DATA_SERVER_LOGGING_OAF_ID "OAFIID:GNOME_Evolution_DataServer_Logging"
 
 #define E_DATA_CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_CalFactory:" API_VERSION
-#define E_DATA_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_DataServer_BookFactory:" API_VERSION
 
-/* The and addressbook calendar factories */
+/* The calendar factory */
 
-#if ENABLE_CALENDAR
 static EDataCalFactory *e_data_cal_factory;
-#endif
-
-static EDataBookFactory *e_data_book_factory;
 
 /* The other interfaces we implement */
 
@@ -92,10 +84,7 @@ termination_handler (gpointer data)
 {
 	gint count = 0;
 
-#if ENABLE_CALENDAR
 	count += e_data_cal_factory_get_n_backends (e_data_cal_factory);
-#endif
-	count += e_data_book_factory_get_n_backends (e_data_book_factory);
 
 	if (count == 0) {
 		g_message ("termination_handler(): Terminating the Server.  Have a nice day.");
@@ -119,41 +108,8 @@ queue_termination (void)
 }
 
 
-
-static void
-last_book_gone_cb (EDataBookFactory *factory, gpointer data)
-{
-	queue_termination ();
-}
-
-static gboolean
-setup_books (void)
-{
-	e_data_book_factory = e_data_book_factory_new ();
-
-	if (!e_data_book_factory)
-		return FALSE;
-
-	e_data_book_factory_register_backends (e_data_book_factory);
-
-	g_signal_connect (e_data_book_factory,
-			  "last_book_gone",
-			  G_CALLBACK (last_book_gone_cb),
-			  NULL);
-
-	if (!e_data_book_factory_activate (e_data_book_factory, E_DATA_BOOK_FACTORY_OAF_ID)) {
-		bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
-		e_data_book_factory = NULL;
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-
 /* Personal calendar server */
 
-#if ENABLE_CALENDAR
 /* Callback used when the calendar factory has no more running backends */
 static void
 last_calendar_gone_cb (EDataCalFactory *factory, gpointer data)
@@ -188,14 +144,6 @@ setup_cals (void)
 	return TRUE;
 
 }
-#else
-static gboolean
-setup_cals (void)
-{
-	return TRUE;
-}
-#endif
-
 
 /* Logging iface.  */
 static gboolean
@@ -215,7 +163,6 @@ setup_logging (void)
 	server_logging_register_domain (logging_iface, "GThread");
 
 	server_logging_register_domain (logging_iface, "evolution-data-server");
-	server_logging_register_domain (logging_iface, "libebookbackend");
 	server_logging_register_domain (logging_iface, "libecalbackendfile");
 
 	result = bonobo_activation_active_server_register (E_DATA_SERVER_LOGGING_OAF_ID,
@@ -243,10 +190,7 @@ setup_interface_check (void)
 static void
 dump_backends (gint signal)
 {
-	e_data_book_factory_dump_active_backends (e_data_book_factory);
-#if ENABLE_CALENDAR
 	e_data_cal_factory_dump_active_backends (e_data_cal_factory);
-#endif
 }
 #endif
 
@@ -293,7 +237,6 @@ libdir (void)
 gint
 main (gint argc, gchar **argv)
 {
-	gboolean did_books=FALSE, did_cals=FALSE;
 	OfflineListener *offline_listener = NULL;
 
 	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
@@ -313,38 +256,19 @@ main (gint argc, gchar **argv)
 
 	e_data_server_module_init ();
 
-	if (!( (did_books = setup_books ())
-	       && (did_cals = setup_cals ())
-		    )) {
+	if (!setup_cals ()) {
 
-		const gchar *failed = NULL;
+		g_warning (G_STRLOC ": could not initialize Server service \"CALS\"; terminating");
 
-		if (!did_books)
-			failed = "BOOKS";
-		else if (!did_cals)
-			failed = "CALS";
-
-		g_warning (G_STRLOC ": could not initialize Server service \"%s\"; terminating", failed);
-
-		if (e_data_book_factory) {
-			bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
-			e_data_book_factory = NULL;
-		}
-
-#if ENABLE_CALENDAR
 		if (e_data_cal_factory) {
 			bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
 			e_data_cal_factory = NULL;
 		}
-#endif
+
 		exit (EXIT_FAILURE);
 	}
 
-#if ENABLE_CALENDAR
-	offline_listener = offline_listener_new (e_data_book_factory, e_data_cal_factory);
-#else
-	offline_listener = offline_listener_new (e_data_book_factory);
-#endif
+	offline_listener = offline_listener_new (e_data_cal_factory);
 
 	if ( setup_logging ()) {
 			if ( setup_interface_check ()) {
@@ -358,13 +282,8 @@ main (gint argc, gchar **argv)
 
 	g_object_unref (offline_listener);
 
-#if ENABLE_CALENDAR
 	bonobo_object_unref (BONOBO_OBJECT (e_data_cal_factory));
 	e_data_cal_factory = NULL;
-#endif
-
-	bonobo_object_unref (BONOBO_OBJECT (e_data_book_factory));
-	e_data_book_factory = NULL;
 
 	bonobo_object_unref (BONOBO_OBJECT (logging_iface));
 	logging_iface = NULL;

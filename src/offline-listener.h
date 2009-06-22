@@ -28,10 +28,7 @@
 #endif
 
 #include <glib-object.h>
-#include <libedata-book/e-data-book-factory.h>
-#if ENABLE_CALENDAR
 #include <libedata-cal/e-data-cal-factory.h>
-#endif
 
 G_BEGIN_DECLS
 
@@ -58,11 +55,7 @@ struct _OfflineListenerClass {
 
 GType offline_listener_get_type  (void);
 
-#if ENABLE_CALENDAR
-OfflineListener  *offline_listener_new (EDataBookFactory *book_factory, EDataCalFactory *cal_factory);
-#else
-OfflineListener  *offline_listener_new (EDataBookFactory *book_factory);
-#endif
+OfflineListener  *offline_listener_new (EDataCalFactory *cal_factory);
 
 G_END_DECLS
 
