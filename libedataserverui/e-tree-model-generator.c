@@ -959,7 +959,7 @@ e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_mod
 	GArray      *group;
 	gint         generator_index;
 	gint         index;
-	gint         internal_offset;
+	gint         internal_offset = 0;
 
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 	g_return_if_fail (ITER_IS_VALID (tree_model_generator, generator_iter));
@@ -1109,7 +1109,7 @@ e_tree_model_generator_iter_next (GtkTreeModel  *tree_model,
 	GArray              *group;
 	gint                 index;
 	gint                 child_index;
-	gint                 internal_offset;
+	gint                 internal_offset = 0;
 
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), FALSE);
 	g_return_val_if_fail (ITER_IS_VALID (tree_model_generator, iter), FALSE);
