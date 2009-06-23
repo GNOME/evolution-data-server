@@ -3858,16 +3858,15 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_mutex_lock (priv->lock);
+	/*g_mutex_lock (priv->lock);*/
 
-	/* We only support online and offline
-	 * (is there something else?) */
+	/* We only support online and offline */
 	if (mode != CAL_MODE_REMOTE &&
 	    mode != CAL_MODE_LOCAL) {
 		e_cal_backend_notify_mode (backend,
 					   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
 					   cal_mode_to_corba (mode));
-		g_mutex_unlock (priv->lock);
+		/*g_mutex_unlock (priv->lock);*/
 		return;
 	}
 
@@ -3876,7 +3875,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 		e_cal_backend_notify_mode (backend,
 					   GNOME_Evolution_Calendar_CalListener_MODE_SET,
 					   cal_mode_to_corba (mode));
-		g_mutex_unlock (priv->lock);
+		/*g_mutex_unlock (priv->lock);*/
 		return;
 	}
 
@@ -3895,7 +3894,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 				   GNOME_Evolution_Calendar_CalListener_MODE_SET,
 				   cal_mode_to_corba (mode));
 
-	g_mutex_unlock (priv->lock);
+	/*g_mutex_unlock (priv->lock);*/
 }
 
 static icaltimezone *
