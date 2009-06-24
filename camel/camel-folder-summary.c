@@ -949,6 +949,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	CamelDB *cdb;
 	char *folder_name;
 	int ret = 0;
+	CamelException ex2;
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 
 	/* struct _db_pass_data data; */
@@ -963,7 +964,20 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 	folder_name = s->folder->full_name;
 	cdb = s->folder->parent_store->cdb_r;
 
-	ret = camel_db_get_folder_uids_flags (cdb, folder_name, (char *)s->sort_by, (char *)s->collate, s->uids, p->flag_cache, ex);
+	camel_exception_init (&ex2);
+
+	ret = camel_db_get_folder_uids_flags (cdb, folder_name, s->sort_by, s->collate, s->uids, p->flag_cache, &ex2);
+
+	if (camel_exception_is_set (&ex2) && camel_exception_get_description (&ex2) &&
+	    strstr (camel_exception_get_description (&ex2), "no such table") != NULL) {
+		/* create table the first time it is accessed and missing */
+		ret = camel_db_prepare_message_info_table (cdb, folder_name, ex);
+	} else if (ex) {
+		camel_exception_xfer (ex, &ex2);
+	}
+
+	camel_exception_clear (&ex2);
+
 	/* camel_folder_summary_dump (s); */
 
 #if 0
