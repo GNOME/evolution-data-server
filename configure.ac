@@ -16,13 +16,8 @@ m4_define([base_version], [2.28])
 m4_define([api_version], [1.2])
 
 AC_INIT(evolution-data-server, [eds_version], http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server)
+AM_INIT_AUTOMAKE([gnu 1.9])
 AC_CONFIG_SRCDIR(README)
-
-# Gross hack to enable 'make dist' on automake 1.9+tar 1.14.
-# The extra brackets are to foil regex-based scans.
-m4_ifdef([_A][M_PROG_TAR],[_A][M_SET_OPTION([tar-ustar])])
-
-AM_INIT_AUTOMAKE([gnu 1.6])
 AC_CONFIG_HEADERS(config.h)
 
 # Required Package Versions
@@ -171,7 +166,6 @@ CFLAGS="$CFLAGS $WARNING_FLAGS"
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
-
 AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
@@ -281,9 +275,9 @@ dnl **************************************************
 dnl * libdb checking
 dnl **************************************************
 
-AC_ARG_WITH(libdb, 
+AC_ARG_WITH(libdb,
   AC_HELP_STRING( [--with-libdb],
-		  [Prefix where libdb is installed]), 
+		  [Prefix where libdb is installed]),
   dynamic_libdb=yes, dynamic_libdb=no)
 
 if test "x${dynamic_libdb}" = "xyes"; then
@@ -322,7 +316,7 @@ dnl ******************************
 dnl iconv checking
 dnl ******************************
 have_iconv=no
-AC_ARG_WITH(libiconv, 
+AC_ARG_WITH(libiconv,
   AC_HELP_STRING( [--with-libiconv],
 		  [Prefix where libiconv is installed]))
 if test -d $withval; then
@@ -489,7 +483,7 @@ AC_MSG_RESULT($ac_cv_lkstrftime)
 dnl ********************************************************************************
 dnl security extension support (SSL and S/MIME)
 dnl
-dnl The following voodoo does detection of mozilla libraries (nspr and nss) 
+dnl The following voodoo does detection of mozilla libraries (nspr and nss)
 dnl needed by Camel (SSL and S/MIME).
 dnl
 dnl The Evolution security extensions are only built if these libraries are found
@@ -503,32 +497,32 @@ AC_ARG_ENABLE(nss,
 		  [Attempt to use Mozilla libnss for SSL support.]),
   enable_nss="$enableval", enable_nss="yes")
 
-AC_ARG_ENABLE(smime, 
+AC_ARG_ENABLE(smime,
   AC_HELP_STRING( [--enable-smime=@<:@yes/no@:>@],
 		  [Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)]),
   enable_smime="$enableval", enable_smime="yes")
 
-AC_ARG_ENABLE(gnome-keyring, 
+AC_ARG_ENABLE(gnome-keyring,
   AC_HELP_STRING( [--enable-gnome-keyring=@<:@yes/no@:>@],
 		  [Attempt to use Gnome Keyring for storing passwords]),
   enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
 
-AC_ARG_WITH(nspr-includes, 
+AC_ARG_WITH(nspr-includes,
   AC_HELP_STRING( [--with-nspr-includes=PREFIX],
 		  [Location of Mozilla nspr4 includes.]),
   with_nspr_includes="$withval")
 
-AC_ARG_WITH(nspr-libs, 
+AC_ARG_WITH(nspr-libs,
   AC_HELP_STRING( [--with-nspr-libs=PREFIX],
 		  [Location of Mozilla nspr4 libs.]),
   with_nspr_libs="$withval")
 
-AC_ARG_WITH(nss-includes, 
+AC_ARG_WITH(nss-includes,
   AC_HELP_STRING( [--with-nss-includes=PREFIX],
 		  [Location of Mozilla nss3 includes.]),
   with_nss_includes="$withval")
 
-AC_ARG_WITH(nss-libs, 
+AC_ARG_WITH(nss-libs,
   AC_HELP_STRING( [--with-nss-libs=PREFIX],
 		  [Location of Mozilla nss3 libs.]),
   with_nss_libs="$withval")
@@ -536,7 +530,7 @@ AC_ARG_WITH(nss-libs,
 if test "x${enable_gnome_keyring}" = "xyes"; then
 	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1 >= gnome_keyring_minimum_version, with_gnome_keyring="yes", with_gnome_keyring="no");
 	if test "x$with_gnome_keyring" = "xyes"; then
-		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])	
+		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])
 		GNOME_KEYRING_REQUIREMENT="gnome-keyring-1"
 	else
 		GNOME_KEYRING_REQUIREMENT=""
@@ -549,7 +543,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 	else
 		check_manually="no"
 	fi
-	
+
 	if test "x${check_manually}" = "xno"; then
 		AC_MSG_CHECKING(Mozilla NSPR pkg-config module name)
 		mozilla_nspr_pcs="nspr mozilla-nspr firefox-nspr xulrunner-nspr seamonkey-nspr"
@@ -560,7 +554,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 				break;
 			fi
 		done
-		
+
 		AC_MSG_CHECKING(Mozilla NSS pkg-config module name)
 		mozilla_nss_pcs="nss mozilla-nss firefox-nss xulrunner-nss seamonkey-nss"
 		for pc in $mozilla_nss_pcs; do
@@ -570,7 +564,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 				break;
 			fi
 		done
-		
+
 		if test -n "$mozilla_nspr" -a -n "$mozilla_nss"; then
 			msg_ssl="yes (Mozilla NSS)"
 			if test "x$enable_smime" = "xyes"; then
@@ -589,19 +583,19 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 			mozilla_nss=""
 		fi
 	fi
-	
+
 	if test "x${check_manually}" = "xyes"; then
 		have_nspr_includes="no"
 		if test "x${with_nspr_includes}" != "xno"; then
 			CPPFLAGS_save="$CPPFLAGS"
-			
+
 			AC_MSG_CHECKING(for Mozilla nspr4 includes in $with_nspr_includes)
 			AC_MSG_RESULT("")
-			
+
 			CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
 			AC_CHECK_HEADERS(nspr.h prio.h, [ moz_nspr_includes="yes" ])
 			CPPFLAGS="$CPPFLAGS_save"
-			
+
 			if test "x{$moz_nspr_includes}" != "xno" -a "x{$moz_nspr_includes}" != "x" ; then
 				have_nspr_includes="yes"
 				MANUAL_NSPR_CFLAGS="-I$with_nspr_includes"
@@ -610,12 +604,12 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 			AC_MSG_CHECKING(for Mozilla nspr4 includes)
 			AC_MSG_RESULT(no)
 		fi
-		
+
 		have_nspr_libs="no"
 		if test "x${with_nspr_libs}" != "xno" -a "x${have_nspr_includes}" != "xno"; then
 			CFLAGS_save="$CFLAGS"
 			LDFLAGS_save="$LDFLAGS"
-			
+
 			if test "$enable_nss" = "static"; then
 				if test -z "${with_nspr_libs}"; then
 					AC_MSG_ERROR([Static linkage requested, but path to nspr libraries not set.]
@@ -627,12 +621,12 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 			else
 				nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
 			fi
-			
+
 			AC_CACHE_CHECK([for Mozilla nspr libraries], ac_cv_moz_nspr_libs,
 			[
 		       		LIBS_save="$LIBS"
 				CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
-				
+
 				if test "x${with_nspr_libs}" != "x"; then
 		       			LIBS="$nsprlibs"
 		       			LDFLAGS="$LDFLAGS -L$with_nspr_libs"
@@ -640,7 +634,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 		       			LIBS="$nsprlibs"
 		       			LDFLAGS="$LDFLAGS"
 				fi
-				
+
 				AC_TRY_LINK_FUNC(PR_Init, ac_cv_moz_nspr_libs="yes", ac_cv_moz_nspr_libs="no")
 				CFLAGS="$CFLAGS_save"
 				LDFLAGS="$LDFLAGS_save"
@@ -656,26 +650,26 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 			AC_MSG_CHECKING(for Mozilla nspr4 libraries)
 			AC_MSG_RESULT(no)
 		fi
-		
+
 		if test "x${with_nss_includes}" != "xno" -a "x${have_nspr_libs}" != "xno"; then
 			CPPFLAGS_save="$CPPFLAGS"
-			
+
 			AC_MSG_CHECKING(for Mozilla nss3 includes in $with_nss_includes)
 			AC_MSG_RESULT("")
-			
+
 			if test "x${with_nspr_includes}" != "x"; then
 				CPPFLAGS="$CPPFLAGS -I$with_nspr_includes -I$with_nss_includes"
 			else
 				CPPFLAGS="$CPPFLAGS -I$with_nss_includes"
 			fi
-			
+
 			AC_CHECK_HEADERS(nss.h ssl.h smime.h,
-				[ have_nss_includes="yes" ], 
+				[ have_nss_includes="yes" ],
 				[ have_nss_includes="no" ])
-			
+
 			CPPFLAGS="$CPPFLAGS_save"
-			
-			if test "x${have_nss_includes}" = "xyes"; then	
+
+			if test "x${have_nss_includes}" = "xyes"; then
 				have_nss_includes="yes"
 				MANUAL_NSS_CFLAGS="-I$with_nss_includes"
 			else
@@ -686,10 +680,10 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 			AC_MSG_CHECKING(for Mozilla nss3 includes)
 			AC_MSG_RESULT(no)
 		fi
-		
+
 		if test "x${with_nss_libs}" != "xno" -a "x${have_nss_includes}" != "xno"; then
 			LDFLAGS_save="$LDFLAGS"
-			
+
 			if test "$enable_nss" = "static"; then
 		    		if test -z "${with_nss_libs}"; then
 					AC_MSG_ERROR([Static linkage requested, but path to nss libraries not set.]
@@ -705,8 +699,8 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 				fi
 			else
 		 		nsslibs="-lssl3 -lsmime3 -lnss3"
-	 		fi	
-			
+	 		fi
+
 			AC_CACHE_CHECK([for Mozilla nss libraries], ac_cv_moz_nss_libs,
 			[
 	 			LIBS_save="$LIBS"
@@ -716,7 +710,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 				if test "$ac_cv_moz_nss_libs" = no; then
 					nsslibs="-lssl3 -lsmime3 -lnss3"
 					LDFLAGS="$LDFLAGS -L$with_nspr_libs $nsprlibs -L$with_nss_libs $nsslibs"
-					AC_TRY_LINK_FUNC(NSS_Init, ac_cv_moz_nss_libs="yes", ac_cv_moz_nss_libs="no")	
+					AC_TRY_LINK_FUNC(NSS_Init, ac_cv_moz_nss_libs="yes", ac_cv_moz_nss_libs="no")
 				fi
 				LDFLAGS="$LDFLAGS_save"
 	 			LIBS="$LIBS_save"
@@ -743,7 +737,7 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 			AC_MSG_CHECKING(for Mozilla nss libraries)
 			AC_MSG_RESULT(no)
 		fi
-		
+
 		MANUAL_NSS_CFLAGS="$MANUAL_NSPR_CFLAGS $MANUAL_NSS_CFLAGS"
 		MANUAL_NSS_LIBS="$MANUAL_NSPR_LIBS $MANUAL_NSS_LIBS"
 	fi
@@ -874,7 +868,7 @@ AC_CACHE_CHECK([if ctime_r wants three arguments], ac_cv_ctime_r_three_args,
 		ac_cv_ctime_r_three_args=no
 	])
 ])
-	
+
 if test x"$ac_cv_ctime_r_three_args" = xyes ; then
 	AC_DEFINE(CTIME_R_THREE_ARGS, 1, [Solaris-style ctime_r])
 fi
@@ -907,7 +901,7 @@ AC_CACHE_CHECK([if gethostbyname_r wants five arguments], ac_cv_gethostbyname_r_
 		ac_cv_gethostbyname_r_five_args=no
 	])
 ])])
-	
+
 if test "x$ac_cv_gethostbyname_r_five_args" = "xyes" ; then
 	AC_DEFINE(GETHOSTBYNAME_R_FIVE_ARGS, 1, [Solaris-style gethostbyname_r])
 fi
@@ -940,7 +934,7 @@ AC_CACHE_CHECK([if gethostbyaddr_r wants seven arguments], ac_cv_gethostbyaddr_r
 		ac_cv_gethostbyaddr_r_seven_args=no
 	])
 ])])
-	
+
 if test "x$ac_cv_gethostbyaddr_r_seven_args" = "xyes" ; then
 	AC_DEFINE(GETHOSTBYADDR_R_SEVEN_ARGS, 1, [Solaris-style gethostbyaddr_r])
 fi
@@ -1000,7 +994,7 @@ if test x"$ac_cv_have_addrinfo" = "xno" ; then
    fi
    msg_ipv6=no
 else
-   AC_ARG_ENABLE(ipv6, 
+   AC_ARG_ENABLE(ipv6,
      AC_HELP_STRING( [--enable-ipv6=@<:@no/yes@:>@],
 		     [Enable support for resolving IPv6 addresses.]),
      ,enable_ipv6=yes)
@@ -1016,7 +1010,7 @@ else
 
 	],[
 		struct addrinfo hints;
-		
+
 		hints.ai_flags = AI_ADDRCONFIG;
 	],[
 		AC_DEFINE(HAVE_AI_ADDRCONFIG,1,[Define if the system defines the AI_ADDRCONFIG flag for getaddrinfo])
@@ -1032,7 +1026,7 @@ dnl **************************************************
 dnl Calendar support
 dnl **************************************************
 AC_MSG_CHECKING(if we should build the calendar)
-AC_ARG_ENABLE(calendar, 
+AC_ARG_ENABLE(calendar,
   AC_HELP_STRING( [--enable-calendar=@<:@yes/no@:>@],
 		  [Enable the calendar components (default yes)]),
   enable_calendar="$enableval", enable_calendar="yes")
@@ -1048,9 +1042,9 @@ dnl **************************************************
 dnl Weather calendar backend support
 dnl **************************************************
 AC_MSG_CHECKING(if we should build the weather calendar backend)
-AC_ARG_WITH([weather], 
+AC_ARG_WITH([weather],
   [AC_HELP_STRING([--with-weather], [Build the weather calendar backend (default=yes)])],
-  [use_gweather=$withval], 
+  [use_gweather=$withval],
   [use_gweather=yes])
 if test $enable_calendar = no; then
 	use_gweather="no (calendar support is disabled)"
@@ -1058,9 +1052,9 @@ fi
 AC_MSG_RESULT($use_gweather)
 
 if test $use_gweather = yes; then
-	PKG_CHECK_MODULES([LIBGWEATHER], 
+	PKG_CHECK_MODULES([LIBGWEATHER],
 	   [gweather >= gweather_minimum_version],
-	   [], 
+	   [],
 	   [AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
 fi
 
@@ -1069,7 +1063,7 @@ AM_CONDITIONAL(ENABLE_WEATHER, test $use_gweather = yes)
 dnl **************************************************
 dnl NNTP support.
 dnl **************************************************
-AC_ARG_ENABLE(nntp, 
+AC_ARG_ENABLE(nntp,
   AC_HELP_STRING( [--enable-nntp=@<:@no/yes@:>@],
 		  [Build Usenet news (NNTP) backend]),
   ,enable_nntp=yes)
@@ -1085,7 +1079,7 @@ AM_CONDITIONAL(ENABLE_NNTP, test x$enable_nntp = xyes)
 dnl **************************************************
 dnl New IMAP code support.
 dnl **************************************************
-AC_ARG_ENABLE(imapp, 
+AC_ARG_ENABLE(imapp,
   AC_HELP_STRING( [--enable-imapp=@<:@no/yes@:>@],
 		  [Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code]),
   ,enable_imapp=no)
@@ -1098,20 +1092,20 @@ else
 fi
 AM_CONDITIONAL(ENABLE_IMAPP, test x$enable_imapp = xyes)
 
-dnl ************************************************** 	 
-dnl IMAP4rev1 code support. 	 
-dnl ************************************************** 	 
-AC_ARG_ENABLE(imap4, 	 
+dnl **************************************************
+dnl IMAP4rev1 code support.
+dnl **************************************************
+AC_ARG_ENABLE(imap4,
   AC_HELP_STRING( [--enable-imap4=@<:@no/yes@:>@],
 		  [Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
-  ,enable_imap4=no) 	 
+  ,enable_imap4=no)
 
-if test "x$enable_imap4" = "xyes"; then 	 
-         AC_DEFINE(ENABLE_IMAP4,1,[Really don't try this at home]) 	 
-         msg_imap4=yes 	 
-else 	 
-         msg_imap4=no 	 
-fi 	 
+if test "x$enable_imap4" = "xyes"; then
+         AC_DEFINE(ENABLE_IMAP4,1,[Really don't try this at home])
+         msg_imap4=yes
+else
+         msg_imap4=no
+fi
 AM_CONDITIONAL(ENABLE_IMAP4, test x$enable_imap4 = xyes)
 
 dnl **************************************************
@@ -1134,7 +1128,7 @@ dnl **************************************************
 dnl * File locking
 dnl **************************************************
 
-AC_ARG_ENABLE(dot-locking, 
+AC_ARG_ENABLE(dot-locking,
   AC_HELP_STRING( [--enable-dot-locking=@<:@yes/no@:>@],
 		  [Enable support for locking mail files with dot locking]),
   ,enable_dot_locking=yes)
@@ -1143,11 +1137,11 @@ if test $os_win32 != yes -a "x$enable_dot_locking" = "xyes"; then
   AC_DEFINE(USE_DOT,1,[Define to use dot locking for mbox files])
   msg_dot=yes
 else
-  msg_dot=no	
+  msg_dot=no
 fi
 
-AC_ARG_ENABLE(file-locking, 
-  AC_HELP_STRING( [--enable-file-locking=@<:@fcntl/flock/no@:>@], 
+AC_ARG_ENABLE(file-locking,
+  AC_HELP_STRING( [--enable-file-locking=@<:@fcntl/flock/no@:>@],
 		  [Enable support for locking mail files with file locking]),
   ,enable_file_locking=fcntl)
 
@@ -1159,7 +1153,7 @@ else
     AC_DEFINE(USE_FLOCK,1,[Define to use flock locking for mbox files])
     msg_file=flock
   else
-    msg_file=no	
+    msg_file=no
   fi
 fi
 
@@ -1172,7 +1166,7 @@ if test "x$host_os" = "xsunos" ; then
    with_broken_spool="yes"
 fi
 
-AC_ARG_WITH(broken-spool, 
+AC_ARG_WITH(broken-spool,
   AC_HELP_STRING( [--with-broken-spool=@<:@yes/no@:>@],
 		  [Using SunOS/Solaris sendmail which has a broken spool format]),
   ,with_broken_spool=${with_broken_spool:=no})
@@ -1186,40 +1180,40 @@ AC_MSG_RESULT($with_broken_spool)
 dnl ********
 dnl Kerberos
 dnl ********
-AC_ARG_WITH(krb5, 
+AC_ARG_WITH(krb5,
   AC_HELP_STRING( [--with-krb5=DIR],
 		  [Location of Kerberos 5 install dir]),
   with_krb5="$withval", with_krb5="no")
 
-AC_ARG_WITH(krb5-libs, 
+AC_ARG_WITH(krb5-libs,
   AC_HELP_STRING( [--with-krb5-libs=DIR],
-		  [Location of Kerberos 5 libraries]), 
+		  [Location of Kerberos 5 libraries]),
   with_krb5_libs="$withval", with_krb5_libs="$with_krb5/lib")
 
-AC_ARG_WITH(krb5-includes, 
+AC_ARG_WITH(krb5-includes,
   AC_HELP_STRING( [--with-krb5-includes=DIR],
-		  [Location of Kerberos 5 headers]), 
+		  [Location of Kerberos 5 headers]),
   with_krb5_includes="$withval", with_krb5_includes="")
 
-AC_ARG_WITH(krb4, 
+AC_ARG_WITH(krb4,
   AC_HELP_STRING( [--with-krb4=DIR],
-		  [Location of Kerberos 4 install dir]), 
+		  [Location of Kerberos 4 install dir]),
   with_krb4="$withval", with_krb4="no")
 
-AC_ARG_WITH(krb4-libs, 
+AC_ARG_WITH(krb4-libs,
   AC_HELP_STRING( [--with-krb4-libs=DIR],
-		  [Location of Kerberos 4 libraries]), 
+		  [Location of Kerberos 4 libraries]),
   with_krb4_libs="$withval", with_krb4_libs="$with_krb4/lib")
 
-AC_ARG_WITH(krb4-includes, 
+AC_ARG_WITH(krb4-includes,
   AC_HELP_STRING( [--with-krb4-includes=DIR],
-		  [Location of Kerberos 4 headers]), 
+		  [Location of Kerberos 4 headers]),
   with_krb4_includes="$withval", with_krb4_includes="")
 
 msg_krb5="no"
 if test "x${with_krb5}" != "xno"; then
 	LIBS_save="$LIBS"
-	
+
 	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
 	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
 	sunlibs="-lkrb5 -lgss"
@@ -1229,7 +1223,7 @@ if test "x${with_krb5}" != "xno"; then
 		AC_TRY_LINK([#include <krb5.h>],krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
 		[
 			LIBS="$LIBS_save -L$with_krb5_libs $heimlibs"
-			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", 
+			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs",
 			[
 				LIBS="$LIBS_save -L$with_krb5_libs $sunlibs"
 				AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$sunlibs", ac_cv_lib_kerberos5="no")
@@ -1293,7 +1287,7 @@ if test "x${with_krb4}" != "xno"; then
 		# Look for MIT krb5 compat krb4
 		LDFLAGS="$LDFLAGS -L$with_krb4_libs $mitcompatlibs"
 		AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="$mitcompatlibs")
-		
+
 		if test "$ac_cv_lib_kerberos4" = "no"; then
 			# Look for KTH krb4
 			LDFLAGS="$LDFLAGS_save -L$with_krb4_libs -lkrb -lcrypto -lcom_err -lroken"
@@ -1325,7 +1319,7 @@ if test "x${with_krb4}" != "xno"; then
 			KRB4_CFLAGS="-I$with_krb4_includes"
 		fi
 		KRB4_LDFLAGS="-L$with_krb4_libs $ac_cv_lib_kerberos4"
-		
+
 		CFLAGS_save="$CFLAGS"
 		CFLAGS="$CFLAGS $KRB4_CFLAGS"
 		AC_TRY_COMPILE([#include "krb.h"
@@ -1421,7 +1415,7 @@ if test "$msg_ldap" != "no" ; then
 	if test "$ac_cv_func_ldap_ntlm_bind" != no ; then
 		msg_exchange="yes"
 	else
-dnl The user wanted to build with openldap, but his openldap did not have NTLM 
+dnl The user wanted to build with openldap, but his openldap did not have NTLM
 dnl support. Make him aware of this with a warning message at the end.
 		msg_no_ntlm="yes"
 	fi
@@ -1535,10 +1529,10 @@ if test "x${enable_calendar}" = "xyes"; then
 	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 libbonobo-2.0 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
 dnl *****
-dnl libical.pc from libical-0.43 has a bug in it's CFlags. 
+dnl libical.pc from libical-0.43 has a bug in it's CFlags.
 dnl It wants apps to include <libical/ical*.h> but it's CFlags make it difficult
 dnl to differentiate between <libical/ical.h> and <ical.h>
-dnl We have fixed all our instances to use <libical/ical.h>. Until the .pc from 
+dnl We have fixed all our instances to use <libical/ical.h>. Until the .pc from
 dnl libical is fixed, we have to work-around the buggy CFlags.
 dnl *****
 LIBICAL_EXTRA_CFLAGS=" -I`$PKG_CONFIG --variable=includedir libical` "
@@ -1582,7 +1576,7 @@ AC_SUBST(SQLITE_REQUIRED)
 zlib_found=false
 dnl deflateInit is a #define, use deflateEnd instead
 AC_CHECK_LIB(z, deflateEnd,
-    [ AC_CHECK_HEADER(zlib.h, zlib_found=true) ])                                                                                                                                                                            
+    [ AC_CHECK_HEADER(zlib.h, zlib_found=true) ])
 if test "x$zlib_found" = "xfalse"; then
     AC_MSG_ERROR([*** zlib is required])
 fi
@@ -1621,21 +1615,21 @@ if test "x$enable_largefile" != "xno"; then
 		])
 	])
     ])
-    
+
     enable_largefile="no"
-    
+
     if test "x$ac_cv_largefile64_source" = "xyes"; then
         LARGEFILE_CFLAGS="-D_LARGEFILE64_SOURCE"
         enable_largefile="yes"
     elif test "x$ac_cv_largefile64_source" = "xunknown"; then
         AC_DEFINE(O_LARGEFILE, 0, [Define to 0 if your system does not have the O_LARGEFILE flag])
     fi
-    
+
     if test -n "$ac_cv_sys_large_files" -a "x$ac_cv_sys_large_files" != "xno"; then
         LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGE_FILES"
         enable_largefile="yes"
     fi
-    
+
     if test "x$ac_cv_sys_file_offset_bits" != "xno"; then
         LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
         enable_largefile="yes"
@@ -1647,7 +1641,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, test "x$enable_largefile" = "xyes")
 
-EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, 
+EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0,
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
 	              -lz $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
@@ -1809,7 +1803,7 @@ servers/exchange/storage/libexchange-storage.pc
 servers/google/Makefile
 servers/google/libgdata/Makefile
 servers/google/libgdata/libgdata.pc
-servers/google/libgdata-google/Makefile 
+servers/google/libgdata-google/Makefile
 servers/google/libgdata-google/libgdata-google.pc
 src/Makefile
 win32/Makefile
@@ -1866,8 +1860,8 @@ if test "$msg_no_ntlm" != "no" ; then
 	echo ""
 	AC_MSG_WARN([
 No NTLM support in OpenLDAP; Plaintext password authentication will be
-used when connecting to the Exchange Global Catalog server. Consider 
-installing the evo-openldap package, or building OpenLDAP with the 
+used when connecting to the Exchange Global Catalog server. Consider
+installing the evo-openldap package, or building OpenLDAP with the
 patch in servers/exchange/docs/openldap-ntlm.diff
 ])
 fi
