@@ -77,8 +77,10 @@ struct _ECalBackendCalDAVPrivate {
 	/* TRUE after caldav_open */
 	gboolean loaded;
 
+	/* lock to indicate a busy state */
+	GMutex *busy_lock;
 	/* lock to protect cache */
-	GMutex *lock;
+	GStaticRecMutex cache_lock;
 
 	/* cond to synch threads */
 	GCond *cond;
@@ -89,8 +91,8 @@ struct _ECalBackendCalDAVPrivate {
 	/* BG synch thread */
 	const GThread *synch_slave; /* just for a reference, whether thread exists */
 	SlaveCommand slave_cmd;
+	gboolean slave_busy; /* whether is slave working */
 	GTimeVal refresh_time;
-	gboolean do_synch;
 
 	/* The main soup session  */
 	SoupSession *session;
@@ -114,6 +116,7 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
+	gchar *ctag_to_store;
 
 	/* TRUE when 'calendar-schedule' supported on the server */
 	gboolean calendar_schedule;
@@ -251,6 +254,7 @@ static ECalBackendSyncClass *parent_class = NULL;
 
 static icaltimezone *caldav_internal_get_default_timezone (ECalBackend *backend);
 static icaltimezone *caldav_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
+static void caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav);
 
 static gboolean remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid);
 static gboolean put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gchar *href, const gchar *etag);
@@ -976,7 +980,6 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 
 	if (calendar_access) {
 		priv->read_only = ! (put_allowed && delete_allowed);
-		priv->do_synch = TRUE;
 		return GNOME_Evolution_Calendar_Success;
 	}
 
@@ -1049,13 +1052,20 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 		gchar *ctag = NULL;
 
 		if (parse_propfind_response (message, XPATH_GETCTAG_STATUS, XPATH_GETCTAG, &ctag)) {
-			const gchar *my_ctag = e_cal_backend_cache_get_key_value (priv->cache, CALDAV_CTAG_KEY);
+			const gchar *my_ctag;
+
+			g_static_rec_mutex_lock (&priv->cache_lock);
+			my_ctag = e_cal_backend_cache_get_key_value (priv->cache, CALDAV_CTAG_KEY);
+			g_static_rec_mutex_unlock (&priv->cache_lock);
 
 			if (ctag && my_ctag && g_str_equal (ctag, my_ctag)) {
 				/* ctag is same, no change in the calendar */
 				result = FALSE;
 			} else {
-				e_cal_backend_cache_put_key_value (priv->cache, CALDAV_CTAG_KEY, ctag);
+				/* do not store ctag now, do it rather after complete sync */
+				g_free (priv->ctag_to_store);
+				priv->ctag_to_store = ctag;
+				ctag = NULL;
 			}
 
 			g_free (ctag);
@@ -1678,7 +1688,10 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		return;
 
 	hindex = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	g_static_rec_mutex_lock (&priv->cache_lock);
 	cobjs = e_cal_backend_cache_get_components (bcache);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	/* build up a index for the href entry */
 	for (citer = cobjs; citer; citer = g_list_next (citer)) {
@@ -1702,7 +1715,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 	}
 
 	/* see if we have to update or add some objects */
-	for (i = 0, object = sobjs; i < len; i++, object++) {
+	for (i = 0, object = sobjs; i < len && priv->slave_cmd == SLAVE_SHOULD_WORK; i++, object++) {
 		ECalComponent *ccomp;
 		gchar *etag = NULL;
 
@@ -1792,6 +1805,18 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		g_object_unref (old_comp);
 	}
 
+	if (priv->ctag_to_store) {
+		/* store only when wasn't interrupted */
+		if (priv->slave_cmd == SLAVE_SHOULD_WORK) {
+			g_static_rec_mutex_lock (&priv->cache_lock);
+			e_cal_backend_cache_put_key_value (priv->cache, CALDAV_CTAG_KEY, priv->ctag_to_store);
+			g_static_rec_mutex_unlock (&priv->cache_lock);
+		}
+
+		g_free (priv->ctag_to_store);
+		priv->ctag_to_store = NULL;
+	}
+
 	g_hash_table_destroy (hindex);
 	g_list_free (cobjs);
 	g_list_free (created);
@@ -1809,13 +1834,13 @@ synch_slave_loop (gpointer data)
 	cbdav = E_CAL_BACKEND_CALDAV (data);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (priv->busy_lock);
 
 	while (priv->slave_cmd != SLAVE_SHOULD_DIE) {
 		GTimeVal alarm_clock;
 		if (priv->slave_cmd == SLAVE_SHOULD_SLEEP) {
 			/* just sleep until we get woken up again */
-			g_cond_wait (priv->cond, priv->lock);
+			g_cond_wait (priv->cond, priv->busy_lock);
 
 			/* check if we should die, work or sleep again */
 			continue;
@@ -1824,13 +1849,15 @@ synch_slave_loop (gpointer data)
 		/* Ok here we go, do some real work
 		 * Synch it baby one more time ...
 		 */
+		priv->slave_busy = TRUE;
 		synchronize_cache (cbdav);
+		priv->slave_busy = FALSE;
 
 		/* puhh that was hard, get some rest :) */
 		g_get_current_time (&alarm_clock);
 		alarm_clock.tv_sec += priv->refresh_time.tv_sec;
 		g_cond_timed_wait (priv->cond,
-				   priv->lock,
+				   priv->busy_lock,
 				   &alarm_clock);
 
 	}
@@ -1841,7 +1868,7 @@ synch_slave_loop (gpointer data)
 	priv->synch_slave = NULL;
 
 	/* we got killed ... */
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (priv->busy_lock);
 	return NULL;
 }
 
@@ -1926,6 +1953,9 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 
 	result = GNOME_Evolution_Calendar_Success;
 	source = e_cal_backend_get_source (E_CAL_BACKEND (cbdav));
+
+	if (!g_signal_handler_find (G_OBJECT (source), G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, caldav_source_changed_cb, cbdav))
+		g_signal_connect (G_OBJECT (source), "changed", G_CALLBACK (caldav_source_changed_cb), cbdav);
 
 	os_val = e_source_get_property (source, "offline_sync");
 
@@ -2072,7 +2102,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 	status = GNOME_Evolution_Calendar_Success;
 
-	g_mutex_lock (priv->lock);
+	g_mutex_lock (priv->busy_lock);
 
 	/* let it decide the 'getctag' extension availability again */
 	priv->ctag_supported = TRUE;
@@ -2082,13 +2112,13 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	if (status != GNOME_Evolution_Calendar_Success) {
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (priv->busy_lock);
 		return status;
 	}
 
 	if (priv->need_auth) {
 		if ((username == NULL || password == NULL)) {
-			g_mutex_unlock (priv->lock);
+			g_mutex_unlock (priv->busy_lock);
 			return GNOME_Evolution_Calendar_AuthenticationRequired;
 		}
 
@@ -2099,7 +2129,7 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	if (!priv->do_offline && priv->mode == CAL_MODE_LOCAL) {
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (priv->busy_lock);
 		return GNOME_Evolution_Calendar_RepositoryOffline;
 	}
 
@@ -2119,7 +2149,7 @@ caldav_do_open (ECalBackendSync *backend,
 		priv->read_only = TRUE;
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (priv->busy_lock);
 
 	return status;
 }
@@ -2136,10 +2166,13 @@ caldav_remove (ECalBackendSync *backend,
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_mutex_lock (priv->lock);
+	/* first tell it to die, then wait for its lock */
+	priv->slave_cmd = SLAVE_SHOULD_DIE;
+
+	g_mutex_lock (priv->busy_lock);
 
 	if (!priv->loaded) {
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (priv->busy_lock);
 		return GNOME_Evolution_Calendar_Success;
 	}
 
@@ -2152,20 +2185,20 @@ caldav_remove (ECalBackendSync *backend,
 	e_file_cache_remove (E_FILE_CACHE (priv->cache));
 	priv->cache  = NULL;
 	priv->loaded = FALSE;
-	priv->slave_cmd = SLAVE_SHOULD_DIE;
 
 	if (priv->synch_slave) {
 		g_cond_signal (priv->cond);
 
 		/* wait until the slave died */
-		g_cond_wait (priv->slave_gone_cond, priv->lock);
+		g_cond_wait (priv->slave_gone_cond, priv->busy_lock);
 	}
 
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (priv->busy_lock);
 
 	return GNOME_Evolution_Calendar_Success;
 }
 
+/* has priv->cache_lock locked already */
 static void
 remove_comp_from_cache_cb (gpointer value, gpointer user_data)
 {
@@ -2191,6 +2224,8 @@ remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar 
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
+	g_static_rec_mutex_lock (&priv->cache_lock);
+
 	if (!rid || !*rid) {
 		/* get with detached instances */
 		GSList *objects = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
@@ -2205,6 +2240,8 @@ remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar 
 	} else {
 		res = e_cal_backend_cache_remove_component (priv->cache, uid, rid);
 	}
+
+	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	return res;
 }
@@ -2340,8 +2377,10 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 				if (etag)
 					ecalcomp_set_etag (comp, etag);
 
+				g_static_rec_mutex_lock (&priv->cache_lock);
 				if (e_cal_backend_cache_put_component (priv->cache, comp))
 					res = TRUE;
+				g_static_rec_mutex_unlock (&priv->cache_lock);
 			}
 		}
 	} else if (icalcomponent_isa (icalcomp) == my_kind) {
@@ -2353,7 +2392,9 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 			if (etag)
 				ecalcomp_set_etag (comp, etag);
 
+			g_static_rec_mutex_lock (&priv->cache_lock);
 			res = e_cal_backend_cache_put_component (priv->cache, comp);
+			g_static_rec_mutex_unlock (&priv->cache_lock);
 		}
 	}
 
@@ -2446,7 +2487,9 @@ add_timezones_from_component (ECalBackendCalDAV *cbdav, icalcomponent *vcal_comp
 	f_data.vcal_comp = vcal_comp;
 	f_data.icalcomp = icalcomp;
 
+	g_static_rec_mutex_lock (&priv->cache_lock);
 	icalcomponent_foreach_tzid (icalcomp, add_timezone_cb, &f_data);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
 }
 
 /* also removes X-EVOLUTION-CALDAV from all the components */
@@ -2550,7 +2593,9 @@ cache_contains (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid)
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	g_return_val_if_fail (priv != NULL && priv->cache != NULL, FALSE);
 
+	g_static_rec_mutex_lock (&priv->cache_lock);
 	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
 	res = comp != NULL;
 
 	if (comp)
@@ -2671,7 +2716,7 @@ replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent
 	return old_comp;
 }
 
-/* priv->lock is supposed to be locked already, when calling this function */
+/* a busy_lock and a cache_lock are supposed to be locked already, when calling this function */
 static ECalBackendSyncStatus
 do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 {
@@ -2773,7 +2818,7 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 	return status;
 }
 
-/* priv->lock is supposed to be locked already, when calling this function */
+/* a busy_lock and a cache_lock are supposed to be locked already, when calling this function */
 static ECalBackendSyncStatus
 do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object)
 {
@@ -2839,7 +2884,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 
 		if (e_cal_component_is_instance (comp)) {
 			/* set detached instance as the old object, if any */
-			ECalComponent *old_instance = e_cal_backend_cache_get_component (priv->cache, id->uid, id->rid);
+			ECalComponent *old_instance = old_instance = e_cal_backend_cache_get_component (priv->cache, id->uid, id->rid);
 
 			if (old_instance) {
 				*old_object = e_cal_component_get_as_string (old_instance);
@@ -2930,7 +2975,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	return status;
 }
 
-/* priv->lock is supposed to be locked already, when calling this function */
+/* a busy_lock and a cache_lock are supposed to be locked already, when calling this function */
 static ECalBackendSyncStatus
 do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object)
 {
@@ -3032,66 +3077,6 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 }
 
 static ECalBackendSyncStatus
-caldav_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
-{
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	g_mutex_lock (priv->lock);
-	status = do_create_object (cbdav, calobj, uid);
-	g_mutex_unlock (priv->lock);
-
-	return status;
-}
-
-static ECalBackendSyncStatus
-caldav_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object)
-{
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	g_mutex_lock (priv->lock);
-	status = do_modify_object (cbdav, calobj, mod, old_object, new_object);
-	g_mutex_unlock (priv->lock);
-
-	return status;
-}
-
-static ECalBackendSyncStatus
-caldav_remove_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object)
-{
-	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
-	ECalBackendSyncStatus     status;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-
-	g_mutex_lock (priv->lock);
-	status = do_remove_object (cbdav, uid, rid, mod, old_object, object);
-	g_mutex_unlock (priv->lock);
-
-	return status;
-}
-
-static ECalBackendSyncStatus
-caldav_discard_alarm (ECalBackendSync *backend,
-		      EDataCal        *cal,
-		      const gchar      *uid,
-		      const gchar      *auid)
-{
-	return GNOME_Evolution_Calendar_Success;
-}
-
-static ECalBackendSyncStatus
 extract_objects (icalcomponent       *icomp,
 		 icalcomponent_kind   ekind,
 		 GList              **objects)
@@ -3144,6 +3129,8 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
+	g_static_rec_mutex_lock (&priv->cache_lock);
+
 	zone = icaltimezone_new ();
 	for (iter = timezones; iter; iter = iter->next) {
 		if (icaltimezone_set_component (zone, iter->data)) {
@@ -3153,13 +3140,13 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 		}
 	}
 
+	g_static_rec_mutex_unlock (&priv->cache_lock);
+
 	icaltimezone_free (zone, TRUE);
 	g_list_free (timezones);
 
 	return TRUE;
 }
-
-#define is_error(__status) (__status != GNOME_Evolution_Calendar_Success)
 
 static ECalBackendSyncStatus
 process_object (ECalBackendCalDAV   *cbdav,
@@ -3271,9 +3258,7 @@ process_object (ECalBackendCalDAV   *cbdav,
 }
 
 static ECalBackendSyncStatus
-caldav_receive_objects (ECalBackendSync *backend,
-			EDataCal        *cal,
-			const gchar      *calobj)
+do_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -3287,6 +3272,11 @@ caldav_receive_objects (ECalBackendSync *backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	status = check_state (cbdav, &online);
+	if (status != GNOME_Evolution_Calendar_Success) {
+		return status;
+	}
 
 	icomp = icalparser_parse_string (calobj);
 
@@ -3306,21 +3296,9 @@ caldav_receive_objects (ECalBackendSync *backend,
 	/* Extract optional timezone compnents */
 	extract_timezones (cbdav, icomp);
 
-	/*   */
-	g_mutex_lock (priv->lock);
-
-	status = check_state (cbdav, &online);
-
-	if (status != GNOME_Evolution_Calendar_Success) {
-		/* FIXME: free components here */
-		g_mutex_unlock (priv->lock);
-		icalcomponent_free (icomp);
-		return status;
-	}
-
 	tmethod = icalcomponent_get_method (icomp);
 
-	for (iter = objects; iter && ! is_error (status); iter = iter->next) {
+	for (iter = objects; iter && status == GNOME_Evolution_Calendar_Success; iter = iter->next) {
 		icalcomponent       *scomp;
 		ECalComponent       *ecomp;
 		icalproperty_method  method;
@@ -3343,10 +3321,71 @@ caldav_receive_objects (ECalBackendSync *backend,
 
 	g_list_free (objects);
 
-	g_mutex_unlock (priv->lock);
 	icalcomponent_free (icomp);
 
 	return status;
+}
+
+#define caldav_busy_stub(_func_name, _params, _call_func, _call_params)	\
+static ECalBackendSyncStatus						\
+_func_name _params							\
+{									\
+	ECalBackendCalDAV        *cbdav;				\
+	ECalBackendCalDAVPrivate *priv;					\
+	ECalBackendSyncStatus     status;				\
+	SlaveCommand		  old_slave_cmd;			\
+	gboolean		  was_slave_busy;			\
+									\
+	cbdav = E_CAL_BACKEND_CALDAV (backend);				\
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);		\
+									\
+	/* this is done before locking */				\
+	old_slave_cmd = priv->slave_cmd;				\
+	was_slave_busy = priv->slave_busy;				\
+	if (was_slave_busy) {						\
+		/* let it pause its work and do our job */		\
+		priv->slave_cmd = SLAVE_SHOULD_SLEEP;			\
+	}								\
+									\
+	g_mutex_lock (priv->busy_lock);					\
+	g_static_rec_mutex_lock (&priv->cache_lock);			\
+	status = _call_func _call_params;				\
+	g_static_rec_mutex_unlock (&priv->cache_lock);			\
+									\
+	/* this is done before unlocking */				\
+	if (was_slave_busy) {						\
+		priv->slave_cmd = old_slave_cmd;			\
+		g_cond_signal (priv->cond);				\
+	}								\
+									\
+	g_mutex_unlock (priv->busy_lock);				\
+									\
+	return status;							\
+}
+
+caldav_busy_stub (
+	caldav_create_object, (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid),
+	do_create_object, (cbdav, calobj, uid))
+
+caldav_busy_stub (
+	caldav_modify_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object),
+	do_modify_object, (cbdav, calobj, mod, old_object, new_object))
+
+caldav_busy_stub (
+	caldav_remove_object, (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object),
+	do_remove_object, (cbdav, uid, rid, mod, old_object, object))
+
+caldav_busy_stub (
+	caldav_receive_objects, (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj),
+	do_receive_objects, (backend, cal, calobj))
+
+static ECalBackendSyncStatus
+caldav_discard_alarm (ECalBackendSync *backend,
+		      EDataCal        *cal,
+		      const gchar      *uid,
+		      const gchar      *auid)
+{
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
@@ -3406,12 +3445,12 @@ caldav_get_object (ECalBackendSync  *backend,
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_mutex_lock (priv->lock);
+	g_static_rec_mutex_lock (&priv->cache_lock);
 
 	*object = NULL;
 	icalcomp = get_comp_from_cache (cbdav, uid, rid, NULL, NULL);
 
-	g_mutex_unlock (priv->lock);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	if (!icalcomp) {
 		return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -3440,9 +3479,9 @@ caldav_get_timezone (ECalBackendSync  *backend,
 	g_return_val_if_fail (tzid, GNOME_Evolution_Calendar_ObjectNotFound);
 
 	/* first try to get the timezone from the cache */
-	g_mutex_lock (priv->lock);
+	g_static_rec_mutex_lock (&priv->cache_lock);
 	zone = e_cal_backend_cache_get_timezone (priv->cache, tzid);
-	g_mutex_unlock (priv->lock);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	if (!zone) {
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
@@ -3488,9 +3527,9 @@ caldav_add_timezone (ECalBackendSync *backend,
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
 
-		g_mutex_lock (priv->lock);
+		g_static_rec_mutex_lock (&priv->cache_lock);
 		e_cal_backend_cache_put_timezone (priv->cache, zone);
-		g_mutex_unlock (priv->lock);
+		g_static_rec_mutex_unlock (&priv->cache_lock);
 
 		icaltimezone_free (zone, TRUE);
 	} else {
@@ -3564,9 +3603,10 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	*objects = NULL;
 	bcache = priv->cache;
 
-	g_mutex_lock (priv->lock);
-
+	g_static_rec_mutex_lock (&priv->cache_lock);
 	list = e_cal_backend_cache_get_components (bcache);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
+
 	bkend = E_CAL_BACKEND (backend);
 
 	for (iter = list; iter; iter = g_list_next (iter)) {
@@ -3583,8 +3623,6 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 	g_object_unref (sexp);
 	g_list_free (list);
-
-	g_mutex_unlock (priv->lock);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -3615,9 +3653,10 @@ caldav_start_query (ECalBackend  *backend,
 		do_search = TRUE;
 	}
 
-	g_mutex_lock (priv->lock);
-
+	g_static_rec_mutex_lock (&priv->cache_lock);
 	list = e_cal_backend_cache_get_components (priv->cache);
+	g_static_rec_mutex_unlock (&priv->cache_lock);
+
 	bkend = E_CAL_BACKEND (backend);
 
 	for (iter = list; iter; iter = g_list_next (iter)) {
@@ -3636,10 +3675,7 @@ caldav_start_query (ECalBackend  *backend,
 	g_object_unref (sexp);
 	g_list_free (list);
 
-
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
-	g_mutex_unlock (priv->lock);
-	return;
 }
 
 static ECalBackendSyncStatus
@@ -3858,7 +3894,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	/*g_mutex_lock (priv->lock);*/
+	/*g_mutex_lock (priv->busy_lock);*/
 
 	/* We only support online and offline */
 	if (mode != CAL_MODE_REMOTE &&
@@ -3866,7 +3902,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 		e_cal_backend_notify_mode (backend,
 					   GNOME_Evolution_Calendar_CalListener_MODE_NOT_SUPPORTED,
 					   cal_mode_to_corba (mode));
-		/*g_mutex_unlock (priv->lock);*/
+		/*g_mutex_unlock (priv->busy_lock);*/
 		return;
 	}
 
@@ -3875,7 +3911,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 		e_cal_backend_notify_mode (backend,
 					   GNOME_Evolution_Calendar_CalListener_MODE_SET,
 					   cal_mode_to_corba (mode));
-		/*g_mutex_unlock (priv->lock);*/
+		/*g_mutex_unlock (priv->busy_lock);*/
 		return;
 	}
 
@@ -3894,7 +3930,7 @@ caldav_set_mode (ECalBackend *backend, CalMode mode)
 				   GNOME_Evolution_Calendar_CalListener_MODE_SET,
 				   cal_mode_to_corba (mode));
 
-	/*g_mutex_unlock (priv->lock);*/
+	/*g_mutex_unlock (priv->busy_lock);*/
 }
 
 static icaltimezone *
@@ -3931,6 +3967,37 @@ caldav_internal_get_timezone (ECalBackend *backend,
 	return zone;
 }
 
+static void
+caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav)
+{
+	ECalBackendCalDAVPrivate *priv;
+	SlaveCommand old_slave_cmd;
+	gboolean old_slave_busy;
+
+	g_return_if_fail (source != NULL);
+	g_return_if_fail (cbdav != NULL);
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	g_return_if_fail (priv != NULL);
+
+	old_slave_cmd = priv->slave_cmd;
+	old_slave_busy = priv->slave_busy;
+	if (old_slave_busy) {
+		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		g_mutex_lock (priv->busy_lock);
+	}
+
+	initialize_backend (cbdav);
+
+	/* always wakeup thread, even when it was sleeping */
+	g_cond_signal (priv->cond);
+
+	if (old_slave_busy) {
+		priv->slave_cmd = old_slave_cmd;
+		g_mutex_unlock (priv->busy_lock);
+	}
+}
+
 /* ************************************************************************* */
 /* ***************************** GObject Foo ******************************* */
 
@@ -3941,24 +4008,32 @@ e_cal_backend_caldav_dispose (GObject *object)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
+	ESource *source;
 
 	cbdav = E_CAL_BACKEND_CALDAV (object);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_mutex_lock (priv->lock);
+	/* tell the slave to stop before acquiring a lock,
+	   as it can work at the moment, and lock can be locked */
+	priv->slave_cmd = SLAVE_SHOULD_DIE;
+
+	g_mutex_lock (priv->busy_lock);
 
 	if (priv->disposed) {
-		g_mutex_unlock (priv->lock);
+		g_mutex_unlock (priv->busy_lock);
 		return;
 	}
 
+	source = e_cal_backend_get_source (E_CAL_BACKEND (cbdav));
+	if (source)
+		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, cbdav);
+
 	/* stop the slave  */
-	priv->slave_cmd = SLAVE_SHOULD_DIE;
 	if (priv->synch_slave) {
 		g_cond_signal (priv->cond);
 
 		/* wait until the slave died */
-		g_cond_wait (priv->slave_gone_cond, priv->lock);
+		g_cond_wait (priv->slave_gone_cond, priv->busy_lock);
 	}
 
 	g_object_unref (priv->session);
@@ -3974,7 +4049,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 	}
 
 	priv->disposed = TRUE;
-	g_mutex_unlock (priv->lock);
+	g_mutex_unlock (priv->busy_lock);
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
@@ -3989,7 +4064,8 @@ e_cal_backend_caldav_finalize (GObject *object)
 	cbdav = E_CAL_BACKEND_CALDAV (object);
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_mutex_free (priv->lock);
+	g_mutex_free (priv->busy_lock);
+	g_static_rec_mutex_free (&priv->cache_lock);
 	g_cond_free (priv->cond);
 	g_cond_free (priv->slave_gone_cond);
 
@@ -4006,6 +4082,7 @@ static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
 	ECalBackendCalDAVPrivate *priv;
+
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	priv->session = soup_session_sync_new ();
@@ -4019,20 +4096,22 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv->default_zone = icaltimezone_get_utc_timezone ();
 
 	priv->disposed = FALSE;
-	priv->do_synch = FALSE;
 	priv->loaded   = FALSE;
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
 	priv->ctag_supported = TRUE;
+	priv->ctag_to_store = NULL;
 
 	priv->schedule_outbox_url = NULL;
 
-	priv->lock = g_mutex_new ();
+	priv->busy_lock = g_mutex_new ();
+	g_static_rec_mutex_init (&priv->cache_lock);
 	priv->cond = g_cond_new ();
 	priv->slave_gone_cond = g_cond_new ();
 
 	/* Slave control ... */
 	priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+	priv->slave_busy = FALSE;
 	priv->refresh_time.tv_usec = 0;
 	priv->refresh_time.tv_sec  = DEFAULT_REFRESH_TIME;
 
