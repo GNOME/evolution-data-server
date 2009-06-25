@@ -404,26 +404,37 @@ ecalcomp_set_synch_state (ECalComponent *comp, ECalCompSyncState state)
 }*/
 
 
-/* gen uid, set it internally and report it back so we can instantly
- * use it
- * and btw FIXME!!! */
 static gchar *
 ecalcomp_gen_href (ECalComponent *comp)
 {
-	gchar *href, *iso;
-
+	gchar *href, *uid, *tmp;
 	icalcomponent *icomp;
 
-	iso = isodate_from_time_t (time (NULL));
-
-	href = g_strconcat (iso, ".ics", NULL);
-
-	g_free (iso);
-
 	icomp = e_cal_component_get_icalcomponent (comp);
+	g_return_val_if_fail (icomp != NULL, NULL);
+
+	uid = g_strdup (icalcomponent_get_uid (icomp));
+	if (!uid || !*uid) {
+		g_free (uid);
+		uid = e_cal_component_gen_uid ();
+
+		tmp = uid ? strchr (uid, '@') : NULL;
+		if (tmp)
+			*tmp = '\0';
+
+		tmp = NULL;
+	} else
+		tmp = isodate_from_time_t (time (NULL));
+
+	/* quite long, but ensures uniqueness quite well, without using UUIDs */
+	href = g_strconcat (uid ? uid : "no-uid", tmp ? "-" : "", tmp ? tmp : "", ".ics", NULL);
+
+	g_free (tmp);
+	g_free (uid);
+
 	icomp_x_prop_set (icomp, X_E_CALDAV "HREF", href);
 
-	return href;
+	return g_strdelimit (href, " /'\"`&();|<>$%{}!\\:*?#@", '_');
 }
 
 /* ensure etag is quoted (to workaround potential server bugs) */
@@ -1693,6 +1704,9 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 	cobjs = e_cal_backend_cache_get_components (bcache);
 	g_static_rec_mutex_unlock (&priv->cache_lock);
 
+	/* do not store changes in cache immediately - makes things significantly quicker */
+	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
+
 	/* build up a index for the href entry */
 	for (citer = cobjs; citer; citer = g_list_next (citer)) {
 		ECalComponent *ccomp = E_CAL_COMPONENT (citer->data);
@@ -1816,6 +1830,9 @@ synchronize_cache (ECalBackendCalDAV *cbdav)
 		g_free (priv->ctag_to_store);
 		priv->ctag_to_store = NULL;
 	}
+
+	/* save cache changes to disk finally */
+	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 
 	g_hash_table_destroy (hindex);
 	g_list_free (cobjs);
