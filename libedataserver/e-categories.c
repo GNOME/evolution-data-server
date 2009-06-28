@@ -399,6 +399,7 @@ load_default_categories (void)
 			gettext (cat_info->category),
 			NULL, icon_file, TRUE);
 		g_free (icon_file);
+		icon_file = NULL;
 		cat_info++;
 	}
 }

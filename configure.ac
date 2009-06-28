@@ -21,7 +21,7 @@ AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADERS(config.h)
 
 # Automake 1.11 - Silent Build Rules
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Required Package Versions
 m4_define([glib_minimum_version], [2.16.1])
