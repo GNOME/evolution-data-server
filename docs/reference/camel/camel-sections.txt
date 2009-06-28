@@ -2537,6 +2537,7 @@ groupwise_base_url_lookup
 create_junk_folder
 camel_groupwise_store_connected
 gw_store_reload_folder
+groupwise_store_set_current_folder
 <SUBSECTION Standard>
 CAMEL_GROUPWISE_STORE
 CAMEL_IS_GROUPWISE_STORE
