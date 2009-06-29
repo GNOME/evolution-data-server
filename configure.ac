@@ -1547,9 +1547,6 @@ AC_SUBST(privincludedir)
 privlibdir='${libdir}'/evolution-data-server-$BASE_VERSION
 AC_SUBST(privlibdir)
 
-idldir='${datadir}'/idl/evolution-data-server-$API_VERSION
-AC_SUBST(idldir)
-
 imagesdir='${datadir}'/pixmaps/evolution-data-server
 AC_SUBST(imagesdir)
 
@@ -1625,7 +1622,6 @@ addressbook/tests/ebook/Makefile
 addressbook/tests/vcard/Makefile
 art/Makefile
 calendar/Makefile
-calendar/idl/Makefile
 calendar/libecal/Makefile
 calendar/libecal/libecal.pc
 calendar/libedata-cal/Makefile
