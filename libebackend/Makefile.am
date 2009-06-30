@@ -1,4 +1,4 @@
-INCLUDES =								\
+AM_CPPFLAGS =								\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\

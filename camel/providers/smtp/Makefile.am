@@ -3,7 +3,7 @@
 camel_provider_LTLIBRARIES = libcamelsmtp.la
 camel_provider_DATA = libcamelsmtp.urls
 
-INCLUDES =					\
+AM_CPPFLAGS =					\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\

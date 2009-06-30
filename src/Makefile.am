@@ -1,4 +1,4 @@
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	-DG_LOG_DOMAIN=\"evolution-data-server\"	\
 	-DPREFIX=\"$(prefix)\"				\
 	-DSYSCONFDIR=\"$(sysconfdir)\"			\

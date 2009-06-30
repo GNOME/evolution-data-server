@@ -1,5 +1,5 @@
 
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	-I$(includedir)					\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/camel				\

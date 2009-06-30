@@ -8,6 +8,6 @@ libxntlm_la_SOURCES =	\
 	xntlm-md4.c	\
 	xntlm-md4.h
 
-INCLUDES =		\
+AM_CPPFLAGS =		\
 	-I$(top_srcdir)	\
 	$(GLIB_CFLAGS)

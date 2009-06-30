@@ -5,7 +5,7 @@ WIN32_BOOTSTRAP_LIBS =					\
 	$(top_builddir)/win32/libedataserverui-1.2.la
 endif
 
-INCLUDES =							\
+AM_CPPFLAGS =							\
 	-DG_LOG_DOMAIN=\"evolution-exchange-storage\"		\
 	-DPREFIX=\"$(prefix)\"					\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\

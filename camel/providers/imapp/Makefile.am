@@ -3,7 +3,7 @@
 camel_provider_LTLIBRARIES = libcamelimapp.la
 camel_provider_DATA = libcamelimapp.urls
 
-INCLUDES = -I.. \
+AM_CPPFLAGS = -I.. \
 	-I$(srcdir)/..				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\

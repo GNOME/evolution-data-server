@@ -3,7 +3,7 @@
 camel_provider_LTLIBRARIES = libcamelsendmail.la
 camel_provider_DATA = libcamelsendmail.urls
 
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	-I..						\
 	-I$(srcdir)/..					\
 	-I$(srcdir)/../../..				\

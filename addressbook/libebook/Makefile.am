@@ -1,4 +1,4 @@
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-DG_LOG_DOMAIN=\"libebook\"			\
 	-I$(top_srcdir)					\

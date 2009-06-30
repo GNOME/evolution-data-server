@@ -1,4 +1,4 @@
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	-DG_LOG_DOMAIN=\"libedata-cal\"			\
 	-DBASE_VERSION=\""$(BASE_VERSION)"\"		\
 	-I$(top_srcdir)					\

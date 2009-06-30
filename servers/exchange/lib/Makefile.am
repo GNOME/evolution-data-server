@@ -1,6 +1,6 @@
 # Fix the code to not use E_DATA_SERVER_UI_CFLAGS
 
-INCLUDES =                                                      \
+AM_CPPFLAGS =                                                      \
 	-DCONNECTOR_PREFIX=\""$(prefix)"\"			\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/servers/exchange/xntlm			\

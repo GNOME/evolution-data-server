@@ -18,7 +18,7 @@ SYSDEP_PROVIDER_SOURCES = \
 	camel-spool-summary.c
 endif
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\

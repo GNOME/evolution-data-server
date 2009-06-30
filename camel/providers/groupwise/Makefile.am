@@ -3,7 +3,7 @@
 camel_provider_LTLIBRARIES = libcamelgroupwise.la
 camel_provider_DATA = libcamelgroupwise.urls
 
-INCLUDES = -I.. \
+AM_CPPFLAGS = -I.. \
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/camel/providers/imap    \

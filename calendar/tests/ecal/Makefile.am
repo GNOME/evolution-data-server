@@ -1,4 +1,4 @@
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\

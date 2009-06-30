@@ -3,7 +3,7 @@
 camel_provider_LTLIBRARIES = libcamelpop3.la
 camel_provider_DATA = libcamelpop3.urls
 
-INCLUDES =					\
+AM_CPPFLAGS =					\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\

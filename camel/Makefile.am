@@ -33,7 +33,7 @@ camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 
 lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
 
-INCLUDES = -I.. -I$(srcdir)/.. 			 	\
+AM_CPPFLAGS = -I.. -I$(srcdir)/.. 			 	\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"	\
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
 	-DG_LOG_DOMAIN=\"camel\"			\
