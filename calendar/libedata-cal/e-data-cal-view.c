@@ -858,9 +858,9 @@ e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *ids)
 }
 
 /**
- * e_data_cal_view_notify_objects_removed:
+ * e_data_cal_view_notify_objects_removed_1:
  * @query: A query object.
- * @id: Id of the removed object.
+ * @id: ID of the removed object.
  *
  * Notifies all query listener of the removal of a single object.
  */
