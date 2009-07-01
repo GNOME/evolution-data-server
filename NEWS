@@ -1,3 +1,20 @@
+Evolution-Data-Server 2.26.3 2009-06-29	
+----------------------------------------
+
+Bug Fixes:
+	#511283 - Request files properly with their path (Milan Crha)
+	#568302 - Create camel summary table if not exists on load (Milan Crha)
+	#575701 - Message disappear from unread vfolder, when reply (Srinivasa Ragavan)
+	#583344 - Do not leak pipe handles (Milan Crha)
+	#584101 - Configure fails with kerberos and LDFLAGS (Tiziano Müller)
+
+Updated Translations:
+	Manoj Kumar Giri (or)
+	Rajesh Ranjan (hi)
+
+Other Fixes:
+	Update Win32 symbol export files (Matthew Barnes)
+
 Evolution-Data-Server 2.26.2 2009-05-18	
 ----------------------------------------
 
