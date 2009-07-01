@@ -288,7 +288,7 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 
 	switch (property_id) {
 	case PROP_BACKEND:
-		priv->backend = g_object_ref (E_CAL_BACKEND (g_value_get_object (value)));
+		priv->backend = E_CAL_BACKEND (g_value_dup_object (value));
 		break;
 	case PROP_LISTENER:
 		e_data_cal_view_add_listener (query, g_value_get_pointer (value));
