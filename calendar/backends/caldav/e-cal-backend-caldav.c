@@ -585,33 +585,6 @@ xp_object_get_string (xmlXPathObjectPtr result)
 	return ret;
 }
 
-/* as get_string but will normailze it (i.e. only take
- * the last part of the href) */
-static gchar *
-xp_object_get_href (xmlXPathObjectPtr result)
-{
-	gchar *ret = NULL;
-	gchar *val;
-
-	if (result == NULL)
-		return ret;
-
-	if (result->type == XPATH_STRING) {
-		val = (gchar *) result->stringval;
-
-		if ((ret = g_strrstr (val, "/")) == NULL) {
-			ret = val;
-		} else {
-			ret++; /* skip the unwanted "/" */
-		}
-
-		ret = g_strdup (ret);
-	}
-
-	xmlXPathFreeObject (result);
-	return ret;
-}
-
 /* like get_string but will quote the etag if necessary */
 static gchar *
 xp_object_get_etag (xmlXPathObjectPtr result)
@@ -763,7 +736,8 @@ parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, gint *len
 		/* see if we got a status child in the response element */
 
 		xpres = xpath_eval (xpctx, XPATH_HREF, i + 1);
-		object->href = xp_object_get_href (xpres);
+		/* use full path from a href, to let calendar-multiget work properly */
+		object->href = xp_object_get_string (xpres);
 
 		xpres = xpath_eval (xpctx,XPATH_STATUS , i + 1);
 		object->status = xp_object_get_status (xpres);
@@ -926,8 +900,13 @@ caldav_generate_uri (ECalBackendCalDAV *cbdav, const gchar *target)
 {
 	ECalBackendCalDAVPrivate  *priv;
 	gchar *uri;
+	const gchar *slash;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	slash = strrchr (target, '/');
+	if (slash)
+		target = slash + 1;
 
 	/* priv->uri *have* trailing slash already */
 	uri = g_strconcat (priv->uri, target, NULL);
