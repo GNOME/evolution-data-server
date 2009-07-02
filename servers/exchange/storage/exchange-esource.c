@@ -183,7 +183,6 @@ add_folder_esource (ExchangeAccount *account,
                 /* source group already exists*/
 		if((source = e_source_group_peek_source_by_name (source_group,
 							folder_name)) == NULL) {
-			printf("old group, new source\n");
 			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
 				gchar *browse = exchange_account_get_account_uri_param (account, "ad_browse");
 

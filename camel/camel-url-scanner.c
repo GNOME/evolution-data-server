@@ -439,10 +439,8 @@ camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmat
 		case '?':
 			while (inptr < inend && is_urlsafe (*inptr)) {
 				if (*inptr == open_brace) {
-					g_message ("++");
 					brace_stack++;
 				} else if (*inptr == close_brace) {
-					g_message ("--");
 					brace_stack--;
 					if (brace_stack == -1)
 						break;

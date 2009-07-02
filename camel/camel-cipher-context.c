@@ -479,7 +479,7 @@ camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_
 	list = (mode==CAMEL_CIPHER_VALIDITY_SIGN)?&vin->sign.signers:&vin->encrypt.encrypters;
 	camel_dlist_addtail(list, (CamelDListNode *)info);
 
-	printf("adding certinfo %s <%s>\n", name?name:"unset", email?email:"unset");
+	d (printf ("adding certinfo %s <%s>\n", name?name:"unset", email?email:"unset"));
 }
 
 /**
