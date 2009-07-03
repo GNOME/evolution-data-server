@@ -2025,9 +2025,9 @@ e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
 }
 
 #ifdef G_OS_WIN32
-static int _e_string_replace(gchar *s, const gchar *old, const gchar *new)
+static int _e_string_replace(gchar *str, const gchar *old, const gchar *new)
 {
-    char *buf;
+    gchar *buf, *s = str;
     int i, count = 0;
     size_t newlen = strlen(new);
     size_t oldlen = strlen(old);
@@ -2052,10 +2052,10 @@ static int _e_string_replace(gchar *s, const gchar *old, const gchar *new)
         } else
              buf[i++] = *s++;
     }
-    buf[i] = '\0';
-
-    g_free(s);
-    s = buf;
+	
+    g_free(str);
+    str = g_strdup(buf);
+    g_free(buf);
     return 0;
 }
 #endif
@@ -2071,9 +2071,9 @@ e_time_get_d_fmt_with_4digit_year (void)
 	int format_string_length = GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, NULL, 0);
 	if (format_string_length > 0)
 	{
+		gsize format_bytes_read, format_bytes_written;
 		gchar *format_string = g_strnfill(format_string_length + 1, '\0');
 		GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, format_string, format_string_length);
-		gsize format_bytes_read, format_bytes_written;
 		res = g_locale_to_utf8(format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
 		g_free(format_string);
 		/* now, convert the res to format of nl_langinfo */
