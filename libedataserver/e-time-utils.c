@@ -2028,16 +2028,25 @@ gchar *
 e_time_get_d_fmt_with_4digit_year (void)
 {
 	gchar *p;
-	gchar *res =
-	#if defined(__linux__)
-		g_strdup (nl_langinfo (D_FMT) );
-	/*#elif defined(G_OS_WIN32)
-	**TODO** implement this for Win32 (GetLocaleInfo?) and/or other systems
+	gchar *res = NULL;
+#if defined(__linux__)
+	res = g_strdup (nl_langinfo (D_FMT) );
+#elif defined(G_OS_WIN32)
+	int format_string_length = GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, NULL, 0);
+	if (format_string_length > 0)
+	{
+		gchar *format_string = g_strnfill(format_string_length + 1, '\0');
+		GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, format_string, format_string_length);
+		gsize format_bytes_read, format_bytes_written;
+		res = g_locale_to_utf8(format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
+		g_free(format_string);
+	}			
+	/**TODO** implement this for other systems
 	*/
-	#else
+#else
 		/* this will not work for other systems */
-		g_strdup ("%x");
-	#endif
+	res = g_strdup ("%x");
+#endif
 
 	while (p = strchr (res, 'y'), p)
 		*p = 'Y';
