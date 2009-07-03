@@ -2024,6 +2024,42 @@ e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
 #endif
 }
 
+#ifdef G_OS_WIN32
+static int _e_string_replace(gchar *s, const gchar *old, const gchar *new)
+{
+    char *buf;
+    int i, count = 0;
+    size_t newlen = strlen(new);
+    size_t oldlen = strlen(old);
+
+    for (i = 0; s[i] != '\0'; i++) {
+        if (strstr(&s[i], old) == &s[i]) {
+            count++;
+            i += oldlen - 1;
+        }
+    }
+
+    buf = g_strnfill(i + count * (newlen - oldlen), '\0');
+    if (buf == NULL)
+        return -1;
+
+    i = 0;
+    while (*s) {
+        if (strstr(s, old) == s) {
+             strcpy(&buf[i], new);
+             i += newlen;
+             s += oldlen;
+        } else
+             buf[i++] = *s++;
+    }
+    buf[i] = '\0';
+
+    g_free(s);
+    s = buf;
+    return 0;
+}
+#endif
+
 gchar *
 e_time_get_d_fmt_with_4digit_year (void)
 {
@@ -2040,6 +2076,35 @@ e_time_get_d_fmt_with_4digit_year (void)
 		gsize format_bytes_read, format_bytes_written;
 		res = g_locale_to_utf8(format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
 		g_free(format_string);
+		/* now, convert the res to format of nl_langinfo */
+		/* dddd -> %A */
+		_e_string_replace(res, "dddd", "\%A");
+		/* ddd -> %a */
+		_e_string_replace(res, "ddd", "\%a");
+		/* dd -> %d (first pass) */
+		_e_string_replace(res, "dd", "\%D");
+		/* d -> %#d */
+		_e_string_replace(res, "d", "\%#d");
+		/* dd -> %d (second pass) */
+		_e_string_replace(res, "\%D", "\%d");
+		/* MMMM -> %B */
+		_e_string_replace(res, "MMMM", "\%B");
+		/* MMM -> %b */
+		_e_string_replace(res, "MMM", "\%b");
+		/* MM -> %m */
+		_e_string_replace(res, "MM", "\%m");
+		/* M -> %#m */
+		_e_string_replace(res, "M", "\%#m");
+		/* yyyyy -> %Y */
+		_e_string_replace(res, "yyyyy", "\%Y");
+		/* yyyy -> %Y */
+		_e_string_replace(res, "yyyy", "\%Y");
+		/* yy -> %y (first pass)*/
+		_e_string_replace(res, "yy", "\%D");
+		/* y -> %y */
+		_e_string_replace(res, "y", "\%y");
+		/* yy -> %y (second pass)*/
+		_e_string_replace(res, "\%D", "\%y");
 	}			
 	/**TODO** implement this for other systems
 	*/
