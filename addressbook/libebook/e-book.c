@@ -2031,7 +2031,7 @@ e_book_new (ESource *source, GError **error)
 {
 	GError *err = NULL;
 	EBook *book;
-	char *path;
+	char *path, *xml;
 
 	e_return_error_if_fail (E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
 
@@ -2046,12 +2046,16 @@ e_book_new (ESource *source, GError **error)
 	book->priv->source = g_object_ref (source);
 	book->priv->uri = e_source_get_uri (source);
 
-	if (!org_gnome_evolution_dataserver_addressbook_BookFactory_get_book (factory_proxy, book->priv->uri, &path, &err)) {
+	xml = e_source_to_standalone_xml (source);
+
+	if (!org_gnome_evolution_dataserver_addressbook_BookFactory_get_book (factory_proxy, xml, &path, &err)) {
+		g_free (xml);
 		g_warning (G_STRLOC ": cannot get book from factory: %s", err ? err->message : "[no error]");
 		g_propagate_error (error, err);
 		g_object_unref (book);
 		return NULL;
 	}
+	g_free (xml);
 
 	book->priv->proxy = dbus_g_proxy_new_for_name_owner (connection,
 							     E_DATA_BOOK_FACTORY_SERVICE_NAME, path,

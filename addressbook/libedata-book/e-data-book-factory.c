@@ -232,15 +232,15 @@ book_closed_cb (EDataBook *book, const char *client)
 }
 
 static void
-impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context)
+impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusGMethodInvocation *context)
 {
 	EDataBook *book;
 	EDataBookFactoryPrivate *priv = factory->priv;
 	ESource *source;
-	char *path, *sender;
+	char *uri, *path, *sender;
 	GList *list;
 
-	if (IN_uri == NULL || IN_uri[0] == '\0') {
+	if (IN_source == NULL || IN_source[0] == '\0') {
 		dbus_g_method_return_error (context, g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Empty URI")));
 		return;
 	}
@@ -253,15 +253,20 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMet
 
 	g_mutex_lock (priv->books_lock);
 
-	source = e_source_new_with_absolute_uri ("", IN_uri);
-	path = make_path_name (IN_uri);
+	source = e_source_new_from_standalone_xml (IN_source);
+	if (!source) {
+		dbus_g_method_return_error (context, g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Invalid source")));
+	}
+
+	uri = e_source_get_uri (source);
+	path = make_path_name (uri);
 	book = g_hash_table_lookup (priv->books, path);
 	if (book == NULL) {
 		EBookBackend *backend = NULL;
-		backend = e_book_backend_factory_new_backend (e_data_book_factory_lookup_backend_factory (factory, IN_uri));
+		backend = e_book_backend_factory_new_backend (e_data_book_factory_lookup_backend_factory (factory, uri));
 		book = e_data_book_new (backend, source, book_closed_cb);
 		e_book_backend_set_mode (backend, 2); /* TODO: very odd */
-		g_hash_table_insert (priv->books, g_strdup(path), book);
+		g_hash_table_insert (priv->books, g_strdup (path), book);
 		dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));
 		g_object_weak_ref (G_OBJECT (book), (GWeakNotify)my_remove, g_strdup (path));
 		g_object_unref (backend); /* The book takes a reference to the backend */
