@@ -2025,37 +2025,13 @@ e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
 }
 
 #ifdef G_OS_WIN32
-static int _e_string_replace(gchar *str, const gchar *old, const gchar *new)
+static int _e_string_replace(gchar **str, const gchar *old, const gchar *new)
 {
-    gchar *buf, *s = str;
-    int i, count = 0;
-    size_t newlen = strlen(new);
-    size_t oldlen = strlen(old);
-
-    for (i = 0; s[i] != '\0'; i++) {
-        if (strstr(&s[i], old) == &s[i]) {
-            count++;
-            i += oldlen - 1;
-        }
-    }
-
-    buf = g_strnfill(i + count * (newlen - oldlen), '\0');
-    if (buf == NULL)
-        return -1;
-
-    i = 0;
-    while (*s) {
-        if (strstr(s, old) == s) {
-             strcpy(&buf[i], new);
-             i += newlen;
-             s += oldlen;
-        } else
-             buf[i++] = *s++;
-    }
-	
-    g_free(str);
-    str = g_strdup(buf);
-    g_free(buf);
+	GRegex *my_regex = g_regex_new(old, 0, 0, NULL);
+	gchar *buf = *str;
+	*str = g_regex_replace(my_regex, buf, -1, 0, new, 0, NULL);
+	g_free(buf);
+	g_regex_unref(my_regex);
     return 0;
 }
 #endif
@@ -2068,44 +2044,30 @@ e_time_get_d_fmt_with_4digit_year (void)
 #if defined(__linux__)
 	res = g_strdup (nl_langinfo (D_FMT) );
 #elif defined(G_OS_WIN32)
-	int format_string_length = GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, NULL, 0);
+  #define GET_LOCALE_INFO(str, len) GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
+	int format_string_length = GET_LOCALE_INFO(NULL, 0);
 	if (format_string_length > 0)
 	{
 		gsize format_bytes_read, format_bytes_written;
 		gchar *format_string = g_strnfill(format_string_length + 1, '\0');
-		GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, format_string, format_string_length);
+		GET_LOCALE_INFO(format_string, format_string_length);
 		res = g_locale_to_utf8(format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
 		g_free(format_string);
 		/* now, convert the res to format of nl_langinfo */
-		/* dddd -> %A */
-		_e_string_replace(res, "dddd", "\%A");
-		/* ddd -> %a */
-		_e_string_replace(res, "ddd", "\%a");
-		/* dd -> %d (first pass) */
-		_e_string_replace(res, "dd", "\%D");
-		/* d -> %#d */
-		_e_string_replace(res, "d", "\%#d");
-		/* dd -> %d (second pass) */
-		_e_string_replace(res, "\%D", "\%d");
-		/* MMMM -> %B */
-		_e_string_replace(res, "MMMM", "\%B");
-		/* MMM -> %b */
-		_e_string_replace(res, "MMM", "\%b");
-		/* MM -> %m */
-		_e_string_replace(res, "MM", "\%m");
-		/* M -> %#m */
-		_e_string_replace(res, "M", "\%#m");
-		/* yyyyy -> %Y */
-		_e_string_replace(res, "yyyyy", "\%Y");
-		/* yyyy -> %Y */
-		_e_string_replace(res, "yyyy", "\%Y");
-		/* yy -> %y (first pass)*/
-		_e_string_replace(res, "yy", "\%D");
-		/* y -> %y */
-		_e_string_replace(res, "y", "\%y");
-		/* yy -> %y (second pass)*/
-		_e_string_replace(res, "\%D", "\%y");
+		_e_string_replace(&res, "\\bd\\b", "\%#d");	/* d -> %#d */
+		_e_string_replace(&res, "\\bdd\\b", "\%d");	/* dd -> %d */
+		_e_string_replace(&res, "\\bddd\\b", "\%a");	/* ddd -> %a */
+		_e_string_replace(&res, "\\bdddd\\b", "\%A");	/* dddd -> %A */
+		_e_string_replace(&res, "\\bM\\b", "\%#m");	/* M -> %#m */
+		_e_string_replace(&res, "\\bMM\\b", "\%m");	/* MM -> %m */
+		_e_string_replace(&res, "\\bMMM\\b", "\%b");	/* MMM -> %b */
+		_e_string_replace(&res, "\\bMMMM\\b", "\%B");	/* MMMM -> %B */
+		_e_string_replace(&res, "\\by\\b", "\%#y");	/* y -> %y */
+		_e_string_replace(&res, "\\byy\\b", "\%y");	/* yy -> %y*/
+		_e_string_replace(&res, "\\byyyy\\b", "\%Y");	/* yyyy -> %Y */
+		_e_string_replace(&res, "\\byyyyy\\b", "\%Y");	/* yyyyy -> %Y */
 	}			
+  #undef GET_LOCALE_INFO
 	/**TODO** implement this for other systems
 	*/
 #else
@@ -2118,3 +2080,4 @@ e_time_get_d_fmt_with_4digit_year (void)
 
 	return res;
 }
+
