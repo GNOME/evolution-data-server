@@ -27,6 +27,7 @@ calendar/libecal/e-cal-util.c
 calendar/libecal/e-cal.c
 calendar/libedata-cal/e-cal-backend-sexp.c
 calendar/libedata-cal/e-cal-backend-util.c
+calendar/libedata-cal/e-data-cal.c
 camel/camel-address.c
 camel/camel-arg.c
 camel/camel-block-file.c
@@ -221,5 +222,3 @@ servers/exchange/storage/e-storage.c
 servers/exchange/storage/exchange-account.c
 servers/exchange/storage/exchange-hierarchy-foreign.c
 servers/groupwise/e-gw-connection.c
-src/GNOME_Evolution_DataServer.server.in.in
-src/server.c

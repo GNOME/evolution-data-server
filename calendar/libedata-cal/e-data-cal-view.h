@@ -21,10 +21,12 @@
 #ifndef E_DATA_CAL_VIEW_H
 #define E_DATA_CAL_VIEW_H
 
-#include <bonobo/bonobo-object.h>
-#include <libedata-cal/Evolution-DataServer-Calendar.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <dbus/dbus-glib.h>
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
+#include <libedata-cal/e-data-cal-types.h>
 
 G_BEGIN_DECLS
 
@@ -41,26 +43,19 @@ G_BEGIN_DECLS
 typedef struct _EDataCalViewPrivate EDataCalViewPrivate;
 
 struct _EDataCalView {
-	BonoboObject xobject;
-
-	/* Private data */
+	GObject parent;
 	EDataCalViewPrivate *priv;
 };
 
 struct _EDataCalViewClass {
-	BonoboObjectClass parent_class;
-
-	POA_GNOME_Evolution_Calendar_CalView__epv epv;
-
-	/* Notification signals */
-	void (* last_listener_gone) (EDataCalView *query);
+	GObjectClass parent_class;
 };
 
 GType                 e_data_cal_view_get_type (void);
-EDataCalView         *e_data_cal_view_new (ECalBackend                             *backend,
-					   GNOME_Evolution_Calendar_CalViewListener  ql,
-					   ECalBackendSExp                   *sexp);
-void                  e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalViewListener ql);
+EDataCalView         *e_data_cal_view_new (ECalBackend *backend, const gchar *path, ECalBackendSExp *sexp);
+
+const gchar * e_data_cal_view_get_dbus_path (EDataCalView *view);
+
 const gchar           *e_data_cal_view_get_text (EDataCalView *query);
 ECalBackendSExp      *e_data_cal_view_get_object_sexp (EDataCalView *query);
 gboolean              e_data_cal_view_object_matches (EDataCalView *query, const gchar *object);
@@ -68,7 +63,7 @@ gboolean              e_data_cal_view_object_matches (EDataCalView *query, const
 GList                *e_data_cal_view_get_matched_objects (EDataCalView *query);
 gboolean              e_data_cal_view_is_started (EDataCalView *query);
 gboolean              e_data_cal_view_is_done (EDataCalView *query);
-GNOME_Evolution_Calendar_CallStatus e_data_cal_view_get_done_status (EDataCalView *query);
+EDataCalCallStatus e_data_cal_view_get_done_status (EDataCalView *query);
 
 void                  e_data_cal_view_notify_objects_added (EDataCalView       *query,
 							    const GList *objects);
@@ -86,7 +81,7 @@ void                  e_data_cal_view_notify_progress (EDataCalView      *query,
 						       const gchar *message,
 						       gint         percent);
 void                  e_data_cal_view_notify_done (EDataCalView                               *query,
-						   GNOME_Evolution_Calendar_CallStatus status);
+						   EDataCalCallStatus status);
 
 G_END_DECLS
 

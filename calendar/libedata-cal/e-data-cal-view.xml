@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<node>
+  <interface name="org.gnome.evolution.dataserver.calendar.CalView">
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataCalView"/>
+    
+    <method name="start">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_EDataCalView_start"/>
+    </method>
+    
+    <signal name="ObjectsAdded">
+      <arg name="objects" type="as"/>
+    </signal>
+
+    <signal name="ObjectsModified">
+      <arg name="objects" type="as"/>
+    </signal>
+
+    <signal name="ObjectsRemoved">
+      <arg name="ids" type="as"/>
+    </signal>
+
+    <signal name="Progress">
+      <arg name="message" type="s"/>
+      <arg name="progress" type="u"/>
+    </signal>
+
+    <signal name="Done">
+      <arg name="status" type="u"/>
+    </signal>
+  </interface>
+</node>

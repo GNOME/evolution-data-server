@@ -31,7 +31,7 @@
 
 
 
-G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT)
+G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
@@ -287,8 +287,7 @@ e_cal_backend_init (ECalBackend *backend)
 	priv->clients_mutex = g_mutex_new ();
 	priv->last_percent_notified = 0;
 
-	/* FIXME bonobo_object_ref/unref? */
-	priv->queries = e_list_new ((EListCopyFunc) bonobo_object_ref, (EListFreeFunc) bonobo_object_unref, NULL);
+	priv->queries = e_list_new((EListCopyFunc) g_object_ref, (EListFreeFunc) g_object_unref, NULL);
 	priv->queries_mutex = g_mutex_new ();
 }
 
@@ -384,23 +383,6 @@ e_cal_backend_get_kind (ECalBackend *backend)
 }
 
 static void
-cal_destroy_cb (gpointer data, GObject *where_cal_was)
-{
-	ECalBackend *backend = E_CAL_BACKEND (data);
-
-	e_cal_backend_remove_client (backend, (EDataCal *) where_cal_was);
-}
-
-static void
-listener_died_cb (gpointer cnx, gpointer data)
-{
-	EDataCal *cal = E_DATA_CAL (data);
-
-	if (ORBit_small_get_connection_status (e_data_cal_get_listener(cal)) == ORBIT_CONNECTION_DISCONNECTED)
-		e_cal_backend_remove_client (e_data_cal_get_backend (cal), cal);
-}
-
-static void
 last_client_gone (ECalBackend *backend)
 {
 	g_signal_emit (backend, e_cal_backend_signals[LAST_CLIENT_GONE], 0);
@@ -426,11 +408,14 @@ e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal)
 
 	priv = backend->priv;
 
+	/* TODO: Implement this? */
+#if 0
 	bonobo_object_set_immortal (BONOBO_OBJECT (cal), TRUE);
 
 	g_object_weak_ref (G_OBJECT (cal), cal_destroy_cb, backend);
 
 	ORBit_small_listen_for_broken (e_data_cal_get_listener (cal), G_CALLBACK (listener_died_cb), cal);
+#endif
 
 	g_mutex_lock (priv->clients_mutex);
 	priv->clients = g_list_append (priv->clients, cal);
@@ -538,13 +523,13 @@ e_cal_backend_remove_query (ECalBackend *backend, EDataCalView *query)
  * must already have an open calendar.
  **/
 void
-e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_cal_address != NULL);
-	(* CLASS (backend)->get_cal_address) (backend, cal);
+	(* CLASS (backend)->get_cal_address) (backend, cal, context);
 }
 
 void
@@ -564,7 +549,7 @@ e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only)
 }
 
 void
-e_cal_backend_notify_cal_address (ECalBackend *backend, gchar *address)
+e_cal_backend_notify_cal_address (ECalBackend *backend, EServerMethodContext context, gchar *address)
 {
 	ECalBackendPrivate *priv;
 	GList *l;
@@ -572,7 +557,7 @@ e_cal_backend_notify_cal_address (ECalBackend *backend, gchar *address)
 	priv = backend->priv;
 
 	for (l = priv->clients; l; l = l->next)
-		e_data_cal_notify_cal_address (l->data, GNOME_Evolution_Calendar_Success, address);
+		e_data_cal_notify_cal_address (l->data, context, GNOME_Evolution_Calendar_Success, address);
 }
 
 /**
@@ -583,13 +568,13 @@ e_cal_backend_notify_cal_address (ECalBackend *backend, gchar *address)
  * Calls the get_alarm_email_address method on the given backend.
  */
 void
-e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_alarm_email_address != NULL);
-	(* CLASS (backend)->get_alarm_email_address) (backend, cal);
+	(* CLASS (backend)->get_alarm_email_address) (backend, cal, context);
 }
 
 /**
@@ -600,13 +585,13 @@ e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal)
  * Calls the get_ldap_attribute method of the given backend.
  */
 void
-e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_ldap_attribute != NULL);
-	(* CLASS (backend)->get_ldap_attribute) (backend, cal);
+	(* CLASS (backend)->get_ldap_attribute) (backend, cal, context);
 }
 
 /**
@@ -617,13 +602,13 @@ e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal)
  * Calls the get_static_capabilities method on the given backend.
  */
 void
-e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_static_capabilities != NULL);
-	(* CLASS (backend)->get_static_capabilities) (backend, cal);
+	(* CLASS (backend)->get_static_capabilities) (backend, cal, context);
 }
 
 /**
@@ -640,14 +625,14 @@ e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal)
  * URI.
  */
 void
-e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists,
+e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, gboolean only_if_exists,
 		    const gchar *username, const gchar *password)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->open != NULL);
-	(* CLASS (backend)->open) (backend, cal, only_if_exists, username, password);
+	(* CLASS (backend)->open) (backend, cal, context, only_if_exists, username, password);
 }
 
 /**
@@ -658,13 +643,13 @@ e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists
  * Removes the calendar being accessed by the given backend.
  */
 void
-e_cal_backend_remove (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->remove != NULL);
-	(* CLASS (backend)->remove) (backend, cal);
+	(* CLASS (backend)->remove) (backend, cal, context);
 }
 
 /**
@@ -772,13 +757,13 @@ e_cal_backend_set_mode (ECalBackend *backend, CalMode mode)
  * Calls the get_default_object method on the given backend.
  */
 void
-e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_default_object != NULL);
-	(* CLASS (backend)->get_default_object) (backend, cal);
+	(* CLASS (backend)->get_default_object) (backend, cal, context);
 }
 
 /**
@@ -792,14 +777,14 @@ e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal)
  * identifier and its recurrence ID (if a recurrent appointment).
  */
 void
-e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid)
+e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
 
 	g_assert (CLASS (backend)->get_object != NULL);
-	(* CLASS (backend)->get_object) (backend, cal, uid, rid);
+	(* CLASS (backend)->get_object) (backend, cal, context, uid, rid);
 }
 
 /**
@@ -811,13 +796,13 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const gchar *uid,
  * Calls the get_object_list method on the given backend.
  */
 void
-e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const gchar *sexp)
+e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *sexp)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
 	g_assert (CLASS (backend)->get_object_list != NULL);
-	(* CLASS (backend)->get_object_list) (backend, cal, sexp);
+	(* CLASS (backend)->get_object_list) (backend, cal, context, sexp);
 }
 
 /**
@@ -831,14 +816,14 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const gchar 
  * on its unique identifier and its recurrence ID (if a recurrent appointment).
  */
 void
-e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid)
+e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
 
 	g_assert (CLASS (backend)->get_object != NULL);
-	(* CLASS (backend)->get_attachment_list) (backend, cal, uid, rid);
+	(* CLASS (backend)->get_attachment_list) (backend, cal, context, uid, rid);
 }
 
 /**
@@ -852,7 +837,7 @@ e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const gc
  * Gets a free/busy object for the given time interval
  */
 void
-e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, time_t start, time_t end)
+e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, GList *users, time_t start, time_t end)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -860,7 +845,7 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, 
 	g_return_if_fail (start <= end);
 
 	g_assert (CLASS (backend)->get_free_busy != NULL);
-	(* CLASS (backend)->get_free_busy) (backend, cal, users, start, end);
+	(* CLASS (backend)->get_free_busy) (backend, cal, context, users, start, end);
 }
 
 /**
@@ -873,14 +858,14 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, 
  * the last time the give change_id was seen
  */
 void
-e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const gchar *change_id)
+e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *change_id)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (change_id != NULL);
 
 	g_assert (CLASS (backend)->get_changes != NULL);
-	(* CLASS (backend)->get_changes) (backend, cal, change_id);
+	(* CLASS (backend)->get_changes) (backend, cal, context, change_id);
 }
 
 /**
@@ -894,7 +879,7 @@ e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const gchar *cha
  * to do whatever is needed to really discard the alarm.
  */
 void
-e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
+e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *auid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -902,7 +887,7 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const gchar *u
 	g_return_if_fail (auid != NULL);
 
 	g_assert (CLASS (backend)->discard_alarm != NULL);
-	(* CLASS (backend)->discard_alarm) (backend, cal, uid, auid);
+	(* CLASS (backend)->discard_alarm) (backend, cal, context, uid, auid);
 }
 
 /**
@@ -914,16 +899,16 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const gchar *u
  * Calls the create_object method on the given backend.
  */
 void
-e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
+e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
 	if (CLASS (backend)->create_object)
-		(* CLASS (backend)->create_object) (backend, cal, calobj);
+		(* CLASS (backend)->create_object) (backend, cal, context, calobj);
 	else
-		e_data_cal_notify_object_created (cal, GNOME_Evolution_Calendar_PermissionDenied, NULL, NULL);
+		e_data_cal_notify_object_created (cal, context, PermissionDenied, NULL, NULL);
 }
 
 /**
@@ -936,16 +921,16 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const gchar *c
  * Calls the modify_object method on the given backend.
  */
 void
-e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod)
+e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj, CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
 	if (CLASS (backend)->modify_object)
-		(* CLASS (backend)->modify_object) (backend, cal, calobj, mod);
+		(* CLASS (backend)->modify_object) (backend, cal, context, calobj, mod);
 	else
-		e_data_cal_notify_object_removed (cal, GNOME_Evolution_Calendar_PermissionDenied, NULL, NULL, NULL);
+		e_data_cal_notify_object_removed (cal, context, PermissionDenied, NULL, NULL, NULL);
 }
 
 /**
@@ -960,14 +945,14 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const gchar *c
  * clients about the change.
  */
 void
-e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod)
+e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid, CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (uid != NULL);
 
 	g_assert (CLASS (backend)->remove_object != NULL);
-	(* CLASS (backend)->remove_object) (backend, cal, uid, rid, mod);
+	(* CLASS (backend)->remove_object) (backend, cal, context, uid, rid, mod);
 }
 
 /**
@@ -979,14 +964,14 @@ e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const gchar *u
  * Calls the receive_objects method on the given backend.
  */
 void
-e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
+e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
 	g_assert (CLASS (backend)->receive_objects != NULL);
-	(* CLASS (backend)->receive_objects) (backend, cal, calobj);
+	(* CLASS (backend)->receive_objects) (backend, cal, context, calobj);
 }
 
 /**
@@ -998,14 +983,14 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const gchar 
  * Calls the send_objects method on the given backend.
  */
 void
-e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj)
+e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (calobj != NULL);
 
 	g_assert (CLASS (backend)->send_objects != NULL);
-	(* CLASS (backend)->send_objects) (backend, cal, calobj);
+	(* CLASS (backend)->send_objects) (backend, cal, context, calobj);
 }
 
 /**
@@ -1019,14 +1004,14 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const gchar *ca
  * can't be found.
  */
 void
-e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid)
+e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzid != NULL);
 
 	g_assert (CLASS (backend)->get_timezone != NULL);
-	(* CLASS (backend)->get_timezone) (backend, cal, tzid);
+	(* CLASS (backend)->get_timezone) (backend, cal, context, tzid);
 }
 
 /**
@@ -1039,13 +1024,13 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tz
  * DATE and floating DATE-TIME values.
  */
 void
-e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const gchar *tzobj)
+e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobj != NULL);
 
-	(* CLASS (backend)->set_default_zone) (backend, cal, tzobj);
+	(* CLASS (backend)->set_default_zone) (backend, cal, context, tzobj);
 }
 
 /**
@@ -1063,13 +1048,13 @@ e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const gchar
  *
  */
 void
-e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid)
+e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzid != NULL);
 
-	(* CLASS (backend)->set_default_timezone) (backend, cal, tzid);
+	(* CLASS (backend)->set_default_timezone) (backend, cal, context, tzid);
 }
 
 /**
@@ -1081,13 +1066,13 @@ e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const g
  * Add a timezone object to the given backend.
  */
 void
-e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzobj)
+e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzobj)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobj != NULL);
 	g_return_if_fail (CLASS (backend)->add_timezone != NULL);
 
-	(* CLASS (backend)->add_timezone) (backend, cal, tzobj);
+	(* CLASS (backend)->add_timezone) (backend, cal, context, tzobj);
 }
 
 /**
@@ -1173,10 +1158,10 @@ e_cal_backend_notify_object_created (ECalBackend *backend, const gchar *calobj)
 	while (e_iterator_is_valid (iter)) {
 		query = QUERY (e_iterator_get (iter));
 
-		bonobo_object_ref (query);
+		g_object_ref (query);
 		if (e_data_cal_view_object_matches (query, calobj))
 			e_data_cal_view_notify_objects_added_1 (query, calobj);
-		bonobo_object_unref (query);
+		g_object_unref (query);
 
 		e_iterator_next (iter);
 	}
@@ -1262,11 +1247,11 @@ e_cal_backend_notify_view_progress (ECalBackend *backend, const gchar *message, 
 	while (e_iterator_is_valid (iter)) {
 		query = QUERY (e_iterator_get (iter));
 
-		bonobo_object_ref (query);
+		g_object_ref (query);
 
 		e_data_cal_view_notify_progress (query, message, percent);
 
-		bonobo_object_unref (query);
+		g_object_unref (query);
 
 		e_iterator_next (iter);
 	}
@@ -1301,11 +1286,11 @@ e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_C
 	while (e_iterator_is_valid (iter)) {
 		query = QUERY (e_iterator_get (iter));
 
-		bonobo_object_ref (query);
+		g_object_ref (query);
 
 		e_data_cal_view_notify_done (query, status);
 
-		bonobo_object_unref (query);
+		g_object_unref (query);
 
 		e_iterator_next (iter);
 	}
@@ -1346,9 +1331,9 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
 	while (e_iterator_is_valid (iter)) {
 		query = QUERY (e_iterator_get (iter));
 
-		bonobo_object_ref (query);
+		g_object_ref (query);
 		match_query_and_notify (query, old_object, object);
-		bonobo_object_unref (query);
+		g_object_unref (query);
 
 		e_iterator_next (iter);
 	}
@@ -1392,7 +1377,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 	while (e_iterator_is_valid (iter)) {
 		query = QUERY (e_iterator_get (iter));
 
-		bonobo_object_ref (query);
+		g_object_ref (query);
 
 		if (object == NULL) {
 			/* if object == NULL, it means the object has been completely
@@ -1402,7 +1387,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 		} else
 			match_query_and_notify (query, old_object, object);
 
-		bonobo_object_unref (query);
+		g_object_unref (query);
 
 		e_iterator_next (iter);
 	}
@@ -1438,8 +1423,8 @@ e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *query
  **/
 void
 e_cal_backend_notify_mode (ECalBackend *backend,
-			   GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
-			   GNOME_Evolution_Calendar_CalMode mode)
+			   EDataCalViewListenerSetModeStatus status,
+			   EDataCalMode mode)
 {
 	ECalBackendPrivate *priv = backend->priv;
 	GList *l;

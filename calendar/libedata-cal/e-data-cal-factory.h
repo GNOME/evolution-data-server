@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar factory
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
@@ -21,10 +22,7 @@
 #ifndef E_DATA_CAL_FACTORY_H
 #define E_DATA_CAL_FACTORY_H
 
-#include <bonobo/bonobo-object.h>
-#include <libical/ical.h>
-#include <libedata-cal/Evolution-DataServer-Calendar.h>
-#include <libedata-cal/e-cal-backend-loader-factory.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -42,25 +40,23 @@ typedef struct _EDataCalFactoryClass EDataCalFactoryClass;
 typedef struct _EDataCalFactoryPrivate EDataCalFactoryPrivate;
 
 struct _EDataCalFactory {
-	BonoboObject object;
-
-	/* Private data */
+	GObject parent;
 	EDataCalFactoryPrivate *priv;
 };
 
 struct _EDataCalFactoryClass {
-	BonoboObjectClass parent_class;
-
-	POA_GNOME_Evolution_Calendar_CalFactory__epv epv;
-
-	/* Notification signals */
-	void (* last_calendar_gone) (EDataCalFactory *factory);
+	GObjectClass parent;
 };
 
-GType       e_data_cal_factory_get_type        (void);
-EDataCalFactory *e_data_cal_factory_new             (void);
+typedef enum {
+	E_DATA_CAL_FACTORY_ERROR_GENERIC
+} EDataCalFactoryError;
 
-gboolean    e_data_cal_factory_register_storage (EDataCalFactory *factory, const gchar *iid);
+GQuark e_data_cal_factory_error_quark (void);
+#define E_DATA_CAL_FACTORY_ERROR e_data_cal_factory_error_quark ()
+
+GType       e_data_cal_factory_get_type        (void);
+
 void        e_data_cal_factory_register_backend  (EDataCalFactory *factory,
 						  ECalBackendFactory *backend_factory);
 

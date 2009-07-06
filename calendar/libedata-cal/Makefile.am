@@ -1,22 +1,16 @@
-CORBA_GENERATED_H =				\
-	Evolution-DataServer-Calendar.h
+MARSHAL_GENERATED = e-data-cal-marshal.c e-data-cal-marshal.h
+@EVO_MARSHAL_RULE@
 
-CORBA_GENERATED_C =				\
-	Evolution-DataServer-Calendar-common.c		\
-	Evolution-DataServer-Calendar-skels.c		\
-	Evolution-DataServer-Calendar-stubs.c
+DBUS_GENERATED_H = e-data-cal-glue.h e-data-cal-factory-glue.h e-data-cal-view-glue.h
+%-glue.h: %.xml
+	dbus-binding-tool --mode=glib-server --output=$@ --prefix=$(subst -,_,$*) $^
 
-CORBA_GENERATED = $(CORBA_GENERATED_H) $(CORBA_GENERATED_C)
+include $(top_srcdir)/glib-gen.mak
+glib_enum_headers=e-data-cal-types.h
+glib_enum_define=E_DATA_CAL
+glib_enum_prefix=e_data_cal
 
-idls =						\
-	$(srcdir)/../idl/Evolution-DataServer-Calendar.idl
-
-idl_flags = -I $(srcdir) $(IDL_INCLUDES)
-
-$(CORBA_GENERATED_H): $(idls)
-	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/Evolution-DataServer-Calendar.idl
-
-$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
+ENUM_GENERATED = e-data-cal-enumtypes.h e-data-cal-enumtypes.c
 
 # The libraray
 lib_LTLIBRARIES = libedata-cal-1.2.la
@@ -33,18 +27,18 @@ libedata_cal_1_2_la_CPPFLAGS = \
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 libedata_cal_1_2_la_SOURCES =		\
-	$(CORBA_GENERATED_C)		\
+	$(MARSHAL_GENERATED)		\
+	$(ENUM_GENERATED)		\
+	$(DBUS_GENERATED_H)		\
 	e-cal-backend.c			\
 	e-cal-backend-cache.c		\
 	e-cal-backend-factory.c		\
-	e-cal-backend-loader-factory.c		\
 	e-cal-backend-sexp.c		\
 	e-cal-backend-sync.c		\
 	e-cal-backend-util.c		\
 	e-cal-backend-store.c		\
 	e-cal-backend-file-store.c	\
 	e-data-cal.c			\
-	e-data-cal-factory.c		\
 	e-data-cal-view.c
 
 libedata_cal_1_2_la_LIBADD =					\
@@ -60,11 +54,10 @@ libedata_cal_1_2_la_LDFLAGS = 								\
 libedata_calincludedir = $(privincludedir)/libedata-cal
 
 libedata_calinclude_HEADERS = 		\
-	$(CORBA_GENERATED_H)		\
+	e-data-cal-types.h		\
 	e-cal-backend.h			\
 	e-cal-backend-cache.h		\
 	e-cal-backend-factory.h		\
-	e-cal-backend-loader-factory.h	\
 	e-cal-backend-sync.h		\
 	e-cal-backend-util.h		\
 	e-cal-backend-sexp.h		\
@@ -81,13 +74,30 @@ libedata_calinclude_HEADERS = 		\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-cal-$(API_VERSION).pc
 
-BUILT_SOURCES = $(CORBA_GENERATED)
-CLEANFILES = $(BUILT_SOURCES)
-DISTCLEANFILES = $(pkgconfig_DATA)
+service_in_files = org.gnome.evolution.dataserver.Calendar.service.in
+servicedir = $(datadir)/dbus-1/services
+service_DATA = $(service_in_files:.service.in=.service)
+@EVO_SUBST_SERVICE_RULE@
+
+BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED) $(ENUM_GENERATED)
+CLEANFILES = $(BUILT_SOURCES) $(service_DATA)
+DISTCLEANFILES = $(pkgconfig_DATA) $(service_DATA)
 
 EXTRA_DIST = 						\
+	e-data-cal-marshal.list				\
+	e-data-cal-factory.xml				\
+	e-data-cal-view.xml				\
+	e-data-cal.xml					\
+	$(service_in_files)				\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
-dist-hook:
-	cd $(distdir); rm -f $(BUILT_SOURCES)
 
+factorydir = $(libexecdir)
+factory_PROGRAMS = e-calendar-factory
+
+e_calendar_factory_SOURCES = \
+	e-data-cal-factory.c \
+	e-data-cal-factory.h \
+	e-cal-backend-loader-factory.c \
+	e-cal-backend-loader-factory.h
+e_calendar_factory_LDADD = $(builddir)/libedata-cal-1.2.la

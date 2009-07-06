@@ -1,8 +1,11 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar - Live search query implementation
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2009 Intel Corporation
  *
- * Author: Federico Mena-Quintero <federico@ximian.com>
+ * Authors: Federico Mena-Quintero <federico@ximian.com>
+ *          Ross Burton <ross@linux.intel.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -24,256 +27,318 @@
 
 #include <string.h>
 #include <glib.h>
-#include <bonobo/bonobo-exception.h>
-#include "libedataserver/e-component-listener.h"
+
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
+#include <glib-object.h>
+
 #include "e-cal-backend-sexp.h"
 #include "e-data-cal-view.h"
+#include "e-data-cal-marshal.h"
 
-
+extern DBusGConnection *connection;
 
-typedef struct {
-	GNOME_Evolution_Calendar_CalViewListener listener;
-	EComponentListener *component_listener;
+static gboolean impl_EDataCalView_start (EDataCalView *query, GError **error);
+#include "e-data-cal-view-glue.h"
 
-	gboolean notified_start;
-	gboolean notified_done;
-} ListenerData;
+#define THRESHOLD 32
 
-/* Private part of the Query structure */
 struct _EDataCalViewPrivate {
 	/* The backend we are monitoring */
 	ECalBackend *backend;
 
 	gboolean started;
 	gboolean done;
-	GNOME_Evolution_Calendar_CallStatus done_status;
-
-	GHashTable *matched_objects;
-
-	/* The listener we report to */
-	GList *listeners;
+	EDataCalCallStatus done_status;
 
 	/* Sexp that defines the query */
 	ECalBackendSExp *sexp;
+
+	GArray *adds;
+	GArray *changes;
+	GArray *removes;
+
+	GHashTable *ids;
+
+	char *path;
 };
 
-
+G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
+#define E_DATA_CAL_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate))
 
-static void e_data_cal_view_class_init (EDataCalViewClass *class);
-static void e_data_cal_view_init (EDataCalView *query, EDataCalViewClass *class);
+static void e_data_cal_view_dispose (GObject *object);
 static void e_data_cal_view_finalize (GObject *object);
-
-static BonoboObjectClass *parent_class;
-
-
-
-BONOBO_TYPE_FUNC_FULL (EDataCalView,
-		       GNOME_Evolution_Calendar_CalView,
-		       BONOBO_TYPE_OBJECT,
-		       e_data_cal_view)
+static void e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
+static void e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec);
 
 /* Property IDs */
 enum props {
 	PROP_0,
 	PROP_BACKEND,
-	PROP_LISTENER,
 	PROP_SEXP
 };
 
-/* Signal IDs */
+/* Signals */
 enum {
-	LAST_LISTENER_GONE,
-	LAST_SIGNAL
+  OBJECTS_ADDED,
+  OBJECTS_MODIFIED,
+  OBJECTS_REMOVED,
+  PROGRESS,
+  DONE,
+  LAST_SIGNAL
 };
 
-static guint signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL] = { 0 };
 
+/* Class init */
 static void
-add_object_to_cache (EDataCalView *query, const gchar *calobj)
+e_data_cal_view_class_init (EDataCalViewClass *klass)
 {
-	ECalComponent *comp;
-	gchar *real_uid;
-	const gchar *uid;
-	EDataCalViewPrivate *priv;
+	GParamSpec *param;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	priv = query->priv;
+	g_type_class_add_private (klass, sizeof (EDataCalViewPrivate));
 
-	comp = e_cal_component_new_from_string (calobj);
-	if (!comp)
-		return;
+	object_class->set_property = e_data_cal_view_set_property;
+	object_class->get_property = e_data_cal_view_get_property;
+	object_class->dispose = e_data_cal_view_dispose;
+	object_class->finalize = e_data_cal_view_finalize;
 
-	e_cal_component_get_uid (comp, &uid);
-	if (!uid || !*uid) {
-		g_object_unref (comp);
-		return;
-	}
+	param =  g_param_spec_object ("backend", NULL, NULL, E_TYPE_CAL_BACKEND,
+				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
+	g_object_class_install_property (object_class, PROP_BACKEND, param);
+	param =  g_param_spec_object ("sexp", NULL, NULL, E_TYPE_CAL_BACKEND_SEXP,
+				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
+	g_object_class_install_property (object_class, PROP_SEXP, param);
 
-	if (e_cal_component_is_instance (comp)) {
-		gchar *str;
-		str = e_cal_component_get_recurid_as_string (comp);
-		real_uid = g_strdup_printf ("%s@%s", uid, str);
-		g_free (str);
-	} else
-		real_uid = g_strdup (uid);
+        signals[OBJECTS_ADDED] =
+          g_signal_new ("objects-added",
+                        G_OBJECT_CLASS_TYPE (klass),
+                        G_SIGNAL_RUN_LAST,
+                        0, NULL, NULL,
+                        g_cclosure_marshal_VOID__BOXED,
+                        G_TYPE_NONE, 1, G_TYPE_STRV);
 
-	if (g_hash_table_lookup (priv->matched_objects, real_uid))
-		g_hash_table_replace (priv->matched_objects, real_uid, g_strdup (calobj));
-	else
-		g_hash_table_insert (priv->matched_objects, real_uid, g_strdup (calobj));
+        signals[OBJECTS_MODIFIED] =
+          g_signal_new ("objects-modified",
+                        G_OBJECT_CLASS_TYPE (klass),
+                        G_SIGNAL_RUN_LAST,
+                        0, NULL, NULL,
+                        g_cclosure_marshal_VOID__BOXED,
+                        G_TYPE_NONE, 1, G_TYPE_STRV);
 
-	/* free memory */
-	g_object_unref (comp);
+        signals[OBJECTS_REMOVED] =
+          g_signal_new ("objects-removed",
+                        G_OBJECT_CLASS_TYPE (klass),
+                        G_SIGNAL_RUN_LAST,
+                        0, NULL, NULL,
+                        g_cclosure_marshal_VOID__BOXED,
+                        G_TYPE_NONE, 1, G_TYPE_STRV);
+
+        signals[PROGRESS] =
+          g_signal_new ("progress",
+                        G_OBJECT_CLASS_TYPE (klass),
+                        G_SIGNAL_RUN_LAST,
+                        0, NULL, NULL,
+                        e_data_cal_marshal_VOID__STRING_UINT,
+                        G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
+
+        signals[DONE] =
+          g_signal_new ("done",
+                        G_OBJECT_CLASS_TYPE (klass),
+                        G_SIGNAL_RUN_LAST,
+                        0, NULL, NULL,
+                        g_cclosure_marshal_VOID__UINT,
+                        G_TYPE_NONE, 1, G_TYPE_UINT);
+
+	dbus_g_object_type_install_info (G_TYPE_FROM_CLASS (klass), &dbus_glib_e_data_cal_view_object_info);
+}
+
+static guint
+id_hash (gconstpointer key)
+{
+	const ECalComponentId *id = key;
+	return g_str_hash (id->uid) ^ (id->rid ? g_str_hash (id->rid) : 0);
 }
 
 static gboolean
-uncache_with_id_cb (gpointer key, gpointer value, gpointer user_data)
+id_equal (gconstpointer a, gconstpointer b)
 {
+	const ECalComponentId *id_a = a, *id_b = b;
+	return g_strcmp0 (id_a->uid, id_b->uid) == 0 && g_strcmp0 (id_a->rid, id_b->rid) == 0;
+}
+
+/* Instance init */
+static void
+e_data_cal_view_init (EDataCalView *view)
+{
+	EDataCalViewPrivate *priv = E_DATA_CAL_VIEW_GET_PRIVATE (view);
+
+	view->priv = priv;
+
+	priv->backend = NULL;
+	priv->started = FALSE;
+	priv->done = FALSE;
+	priv->done_status = Success;
+	priv->started = FALSE;
+	priv->sexp = NULL;
+
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
+
+	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify)e_cal_component_free_id, NULL);
+}
+
+EDataCalView *
+e_data_cal_view_new (ECalBackend *backend,
+		     const char *path, ECalBackendSExp *sexp)
+{
+	EDataCalView *query;
+
+	query = g_object_new (E_DATA_CAL_VIEW_TYPE, "backend", backend, "sexp", sexp, NULL);
+	query->priv->path = g_strdup (path);
+
+	dbus_g_connection_register_g_object (connection, path, G_OBJECT (query));
+
+	return query;
+}
+
+const char *
+e_data_cal_view_get_dbus_path (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
+
+	return view->priv->path;
+}
+
+static void
+reset_array (GArray *array)
+{
+	gint i = 0;
+	gchar *tmp = NULL;
+
+	/* Free stored strings */
+	for (i = 0; i < array->len; i++) {
+		tmp = g_array_index (array, gchar *, i);
+		g_free (tmp);
+	}
+
+	/* Force the array size to 0 */
+	g_array_set_size (array, 0);
+}
+
+static void
+send_pending_adds (EDataCalView *view)
+{
+	EDataCalViewPrivate *priv = view->priv;
+
+	if (priv->adds->len == 0)
+		return;
+
+	g_signal_emit (view, signals[OBJECTS_ADDED], 0, priv->adds->data);
+	reset_array (priv->adds);
+}
+
+static void
+send_pending_changes (EDataCalView *view)
+{
+	EDataCalViewPrivate *priv = view->priv;
+
+	if (priv->changes->len == 0)
+		return;
+
+	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, priv->changes->data);
+	reset_array (priv->changes);
+}
+
+static void
+send_pending_removes (EDataCalView *view)
+{
+	EDataCalViewPrivate *priv = view->priv;
+
+	if (priv->removes->len == 0)
+		return;
+
+	/* TODO: send ECalComponentIds as a list of pairs */
+	g_signal_emit (view, signals[OBJECTS_REMOVED], 0, priv->removes->data);
+	reset_array (priv->removes);
+}
+
+static void
+notify_add (EDataCalView *view, char *obj)
+{
+	EDataCalViewPrivate *priv = view->priv;
 	ECalComponent *comp;
-	ECalComponentId *id;
-	const gchar *this_uid;
-	gchar *object;
-	gboolean remove = FALSE;
 
-	id = user_data;
-	object = value;
+	send_pending_changes (view);
+	send_pending_removes (view);
 
-	comp = e_cal_component_new_from_string (object);
-	if (comp) {
-		e_cal_component_get_uid (comp, &this_uid);
-		if (this_uid && !strcmp (id->uid, this_uid)) {
-			if (id->rid && *id->rid) {
-				gchar *rid = e_cal_component_get_recurid_as_string (comp);
-
-				if (rid && !strcmp (id->rid, rid))
-					remove = TRUE;
-
-				g_free (rid);
-			} else
-				remove = TRUE;
-		}
-
-		g_object_unref (comp);
+	if (priv->adds->len == THRESHOLD) {
+		send_pending_adds (view);
 	}
+	g_array_append_val (priv->adds, obj);
 
-	return remove;
+	comp = e_cal_component_new_from_string (obj);
+	g_hash_table_insert (priv->ids,
+			     e_cal_component_get_id (comp),
+			     GUINT_TO_POINTER (1));
+	g_object_unref (comp);
 }
 
 static void
-remove_object_from_cache (EDataCalView *query, const ECalComponentId *id)
+notify_change (EDataCalView *view, char *obj)
+{
+	EDataCalViewPrivate *priv = view->priv;
+
+	send_pending_adds (view);
+	send_pending_removes (view);
+
+	g_array_append_val (priv->changes, obj);
+}
+
+static void
+notify_remove (EDataCalView *view, ECalComponentId *id)
+{
+	EDataCalViewPrivate *priv = view->priv;
+	char *uid;
+
+	send_pending_adds (view);
+	send_pending_changes (view);
+
+	/* TODO: store ECalComponentId instead of just uid*/
+	uid = g_strdup (id->uid);
+	g_array_append_val (priv->removes, uid);
+
+	g_hash_table_remove (priv->ids, id);
+}
+
+static void
+notify_done (EDataCalView *view)
+{
+	EDataCalViewPrivate *priv = view->priv;
+
+	send_pending_adds (view);
+	send_pending_changes (view);
+	send_pending_removes (view);
+
+	g_signal_emit (view, signals[DONE], 0, priv->done_status);
+}
+
+
+static gboolean
+impl_EDataCalView_start (EDataCalView *query, GError **error)
 {
 	EDataCalViewPrivate *priv;
 
 	priv = query->priv;
 
-	g_hash_table_foreach_remove (priv->matched_objects, (GHRFunc) uncache_with_id_cb, (gpointer) id);
-}
-
-static void
-listener_died_cb (EComponentListener *cl, gpointer data)
-{
-	EDataCalView *query = QUERY (data);
-	EDataCalViewPrivate *priv;
-	GList *l;
-
-	priv = query->priv;
-
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		if (ld->component_listener == cl) {
-			g_object_unref (ld->component_listener);
-			ld->component_listener = NULL;
-
-			bonobo_object_release_unref (ld->listener, NULL);
-			ld->listener = NULL;
-
-			priv->listeners = g_list_remove_link (priv->listeners, l);
-			g_list_free (l);
-			g_free (ld);
-
-			if (priv->listeners == NULL)
-				g_signal_emit (query, signals[LAST_LISTENER_GONE], 0);
-
-			break;
-		}
-	}
-}
-
-static void
-notify_matched_object_cb (gpointer key, gpointer value, gpointer user_data)
-{
-	gchar *uid, *object;
-	EDataCalView *query;
-	EDataCalViewPrivate *priv;
-	GList *l;
-
-	uid = key;
-	object = value;
-	query = user_data;
-	priv = query->priv;
-
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		if (!ld->notified_start) {
-			GNOME_Evolution_Calendar_stringlist obj_list;
-			CORBA_Environment ev;
-
-			obj_list._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (1);
-			obj_list._maximum = 1;
-			obj_list._length = 1;
-			obj_list._buffer[0] = CORBA_string_dup (object);
-
-			CORBA_exception_init (&ev);
-			GNOME_Evolution_Calendar_CalViewListener_notifyObjectsAdded (ld->listener, &obj_list, &ev);
-			CORBA_exception_free (&ev);
-
-			CORBA_free (obj_list._buffer);
-		}
-	}
-}
-
-static void
-impl_EDataCalView_start (PortableServer_Servant servant, CORBA_Environment *ev)
-{
-	EDataCalView *query;
-	EDataCalViewPrivate *priv;
-	GList *l;
-
-	query = QUERY (bonobo_object_from_servant (servant));
-	priv = query->priv;
-
-	if (priv->started) {
-		g_hash_table_foreach (priv->matched_objects, (GHFunc) notify_matched_object_cb, query);
-
-		/* notify all listeners correctly if the query is already done */
-		for (l = priv->listeners; l != NULL; l = l->next) {
-			ListenerData *ld = l->data;
-
-			if (!ld->notified_start) {
-				ld->notified_start = TRUE;
-
-				if (priv->done && !ld->notified_done) {
-
-					ld->notified_done = TRUE;
-
-					CORBA_exception_init (ev);
-					GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (
-						ld->listener, priv->done_status, ev);
-					CORBA_exception_free (ev);
-				}
-			}
-		}
-	} else {
+	if (!priv->started) {
 		priv->started = TRUE;
 		e_cal_backend_start_query (priv->backend, query);
-
-		for (l = priv->listeners; l != NULL; l = l->next) {
-			ListenerData *ld = l->data;
-
-			ld->notified_start = TRUE;
-		}
 	}
+
+	return TRUE;
 }
 
 static void
@@ -288,9 +353,6 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 	switch (property_id) {
 	case PROP_BACKEND:
 		priv->backend = E_CAL_BACKEND (g_value_dup_object (value));
-		break;
-	case PROP_LISTENER:
-		e_data_cal_view_add_listener (query, g_value_get_pointer (value));
 		break;
 	case PROP_SEXP:
 		priv->sexp = E_CAL_BACKEND_SEXP (g_value_dup_object (value));
@@ -313,14 +375,6 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 	switch (property_id) {
 	case PROP_BACKEND:
 		g_value_set_object (value, priv->backend);
-	case PROP_LISTENER:
-
-		if (priv->listeners) {
-			ListenerData *ld;
-
-			ld = priv->listeners->data;
-			g_value_set_pointer (value, ld->listener);
-		}
 		break;
 	case PROP_SEXP:
 		g_value_set_object (value, priv->sexp);
@@ -331,65 +385,31 @@ e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value,
 	}
 }
 
-/* Class initialization function for the live search query */
 static void
-e_data_cal_view_class_init (EDataCalViewClass *klass)
+e_data_cal_view_dispose (GObject *object)
 {
-	GObjectClass *object_class;
-	POA_GNOME_Evolution_Calendar_CalView__epv *epv = &klass->epv;
-	GParamSpec *param;
-
-	object_class = (GObjectClass *) klass;
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	object_class->set_property = e_data_cal_view_set_property;
-	object_class->get_property = e_data_cal_view_get_property;
-	object_class->finalize = e_data_cal_view_finalize;
-
-	epv->start = impl_EDataCalView_start;
-
-	param =  g_param_spec_object ("backend", NULL, NULL, E_TYPE_CAL_BACKEND,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_BACKEND, param);
-	param =  g_param_spec_pointer ("listener", NULL, NULL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_LISTENER, param);
-	param =  g_param_spec_object ("sexp", NULL, NULL, E_TYPE_CAL_BACKEND_SEXP,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_SEXP, param);
-
-	signals[LAST_LISTENER_GONE] =
-		g_signal_new ("last_listener_gone",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (EDataCalViewClass, last_listener_gone),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-
-	klass->last_listener_gone = NULL;
-}
-
-/* Object initialization function for the live search query */
-static void
-e_data_cal_view_init (EDataCalView *query, EDataCalViewClass *class)
-{
+	EDataCalView *query;
 	EDataCalViewPrivate *priv;
 
-	priv = g_new0 (EDataCalViewPrivate, 1);
-	query->priv = priv;
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (IS_QUERY (object));
 
-	priv->backend = NULL;
-	priv->started = FALSE;
-	priv->done = FALSE;
-	priv->done_status = GNOME_Evolution_Calendar_Success;
-	priv->matched_objects = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	priv->listeners = NULL;
-	priv->sexp = NULL;
+	query = QUERY (object);
+	priv = query->priv;
+
+	if (priv->backend) {
+		g_object_unref (priv->backend);
+		priv->backend = NULL;
+	}
+
+	if (priv->sexp) {
+		g_object_unref (priv->sexp);
+		priv->sexp = NULL;
+	}
+
+	(* G_OBJECT_CLASS (e_data_cal_view_parent_class)->dispose) (object);
 }
 
-/* Finalize handler for the live search query */
 static void
 e_data_cal_view_finalize (GObject *object)
 {
@@ -402,87 +422,11 @@ e_data_cal_view_finalize (GObject *object)
 	query = QUERY (object);
 	priv = query->priv;
 
-	if (priv->backend)
-		g_object_unref (priv->backend);
+	g_hash_table_destroy (priv->ids);
 
-	while (priv->listeners) {
-		ListenerData *ld = priv->listeners->data;
+	g_free (priv->path);
 
-		if (ld->listener)
-			bonobo_object_release_unref (ld->listener, NULL);
-		if (ld->component_listener)
-			g_object_unref (ld->component_listener);
-		priv->listeners = g_list_remove (priv->listeners, ld);
-		g_free (ld);
-	}
-
-	if (priv->matched_objects)
-		g_hash_table_destroy (priv->matched_objects);
-
-	if (priv->sexp)
-		g_object_unref (priv->sexp);
-
-	g_free (priv);
-
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
-}
-
-/**
- * e_data_cal_view_new:
- * @backend: Calendar backend that the query object will monitor.
- * @ql: Listener for query results.
- * @sexp: Sexp that defines the query.
- *
- * Creates a new query engine object that monitors a calendar backend.
- *
- * Return value: A newly-created query object, or NULL on failure.
- **/
-EDataCalView *
-e_data_cal_view_new (ECalBackend *backend,
-		     GNOME_Evolution_Calendar_CalViewListener ql,
-		     ECalBackendSExp *sexp)
-{
-	EDataCalView *query;
-
-	query = g_object_new (E_DATA_CAL_VIEW_TYPE, "backend", backend, "listener", ql,
-			      "sexp", sexp, NULL);
-
-	return query;
-}
-
-/**
- * e_data_cal_view_add_listener:
- * @query: A #EDataCalView object.
- * @ql: A CORBA query listener to add to the list of listeners.
- *
- * Adds the given CORBA listener to a #EDataCalView object. This makes the view
- * object notify that listener when notifying the other listeners already attached
- * to the view.
- */
-void
-e_data_cal_view_add_listener (EDataCalView *query, GNOME_Evolution_Calendar_CalViewListener ql)
-{
-	ListenerData *ld;
-	EDataCalViewPrivate *priv;
-	CORBA_Environment ev;
-
-	g_return_if_fail (IS_QUERY (query));
-	g_return_if_fail (ql != CORBA_OBJECT_NIL);
-
-	priv = query->priv;
-
-	ld = g_new0 (ListenerData, 1);
-
-	CORBA_exception_init (&ev);
-	ld->listener = CORBA_Object_duplicate (ql, &ev);
-	CORBA_exception_free (&ev);
-
-	ld->component_listener = e_component_listener_new (ld->listener);
-	g_signal_connect (G_OBJECT (ld->component_listener), "component_died",
-			  G_CALLBACK (listener_died_cb), query);
-
-	priv->listeners = g_list_prepend (priv->listeners, ld);
+	(* G_OBJECT_CLASS (e_data_cal_view_parent_class)->finalize) (object);
 }
 
 /**
@@ -541,14 +485,6 @@ e_data_cal_view_object_matches (EDataCalView *query, const gchar *object)
 	return e_cal_backend_sexp_match_object (priv->sexp, object, priv->backend);
 }
 
-static void
-add_object_to_list (gpointer key, gpointer value, gpointer user_data)
-{
-	GList **list = user_data;
-
-	*list = g_list_append (*list, value);
-}
-
 /**
  * e_data_cal_view_get_matched_objects:
  * @query: A query object.
@@ -560,16 +496,9 @@ add_object_to_list (gpointer key, gpointer value, gpointer user_data)
 GList *
 e_data_cal_view_get_matched_objects (EDataCalView *query)
 {
-	EDataCalViewPrivate *priv;
-	GList *list = NULL;
-
 	g_return_val_if_fail (IS_QUERY (query), NULL);
-
-	priv = query->priv;
-
-	g_hash_table_foreach (priv->matched_objects, (GHFunc) add_object_to_list, &list);
-
-	return list;
+#warning TODO e_data_cal_view_get_matched_objects
+	return NULL;
 }
 
 /**
@@ -581,15 +510,11 @@ e_data_cal_view_get_matched_objects (EDataCalView *query)
  * Return value: TRUE if the query has already been started, FALSE otherwise.
  */
 gboolean
-e_data_cal_view_is_started (EDataCalView *query)
+e_data_cal_view_is_started (EDataCalView *view)
 {
-	EDataCalViewPrivate *priv;
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
 
-	g_return_val_if_fail (IS_QUERY (query), FALSE);
-
-	priv = query->priv;
-
-	return priv->started;
+	return view->priv->started;
 }
 
 /**
@@ -624,7 +549,7 @@ e_data_cal_view_is_done (EDataCalView *query)
  *
  * Return value: The query status.
  */
-GNOME_Evolution_Calendar_CallStatus
+EDataCalCallStatus
 e_data_cal_view_get_done_status (EDataCalView *query)
 {
 	EDataCalViewPrivate *priv;
@@ -636,7 +561,7 @@ e_data_cal_view_get_done_status (EDataCalView *query)
 	if (priv->done)
 		return priv->done_status;
 
-	return GNOME_Evolution_Calendar_Success;
+	return Success;
 }
 
 /**
@@ -647,48 +572,22 @@ e_data_cal_view_get_done_status (EDataCalView *query)
  * Notifies all query listeners of the addition of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
+e_data_cal_view_notify_objects_added (EDataCalView *view, const GList *objects)
 {
 	EDataCalViewPrivate *priv;
-	GNOME_Evolution_Calendar_stringlist obj_list;
-	CORBA_Environment ev;
 	const GList *l;
-	gint num_objs, i;
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
-
-	num_objs = g_list_length ((GList*)objects);
-	if (num_objs <= 0)
+	if (objects == NULL)
 		return;
 
-	obj_list._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (num_objs);
-	obj_list._maximum = num_objs;
-	obj_list._length = num_objs;
-
-	for (l = objects, i = 0; l; l = l->next, i++) {
-		obj_list._buffer[i] = CORBA_string_dup (l->data);
-
-		/* update our cache */
-		add_object_to_cache (query, l->data);
+	for (l = objects; l; l = l->next) {
+		notify_add (view, g_strdup (l->data));
 	}
 
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		CORBA_exception_init (&ev);
-
-		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsAdded (ld->listener, &obj_list, &ev);
-		if (BONOBO_EX (&ev))
-			g_warning (G_STRLOC ": could not notify the listener of object addition");
-
-		CORBA_exception_free (&ev);
-	}
-
-	CORBA_free (obj_list._buffer);
+	send_pending_adds (view);
 }
 
 /**
@@ -699,22 +598,15 @@ e_data_cal_view_notify_objects_added (EDataCalView *query, const GList *objects)
  * Notifies all the query listeners of the addition of a single object.
  */
 void
-e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const gchar *object)
+e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
 {
-	EDataCalViewPrivate *priv;
-	GList objects;
+	GList l = {0,};
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
-	g_return_if_fail (object != NULL);
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	g_return_if_fail (object);
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
-
-	objects.next = objects.prev = NULL;
-	objects.data = (gpointer)object;
-
-	e_data_cal_view_notify_objects_added (query, &objects);
+	l.data = (gpointer)object;
+	e_data_cal_view_notify_objects_added (view, &l);
 }
 
 /**
@@ -725,48 +617,23 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *query, const gchar *object
  * Notifies all query listeners of the modification of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objects)
+e_data_cal_view_notify_objects_modified (EDataCalView *view, const GList *objects)
 {
 	EDataCalViewPrivate *priv;
-	GNOME_Evolution_Calendar_CalObjUIDSeq obj_list;
-	CORBA_Environment ev;
 	const GList *l;
-	gint num_objs, i;
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
-
-	num_objs = g_list_length ((GList*)objects);
-	if (num_objs <= 0)
+	if (objects == NULL)
 		return;
 
-	obj_list._buffer = GNOME_Evolution_Calendar_stringlist_allocbuf (num_objs);
-	obj_list._maximum = num_objs;
-	obj_list._length = num_objs;
-
-	for (l = objects, i = 0; l; l = l->next, i++) {
-		obj_list._buffer[i] = CORBA_string_dup (l->data);
-
-		/* update our cache */
-		add_object_to_cache (query, l->data);
+	for (l = objects; l; l = l->next) {
+		/* TODO: send add/remove/change as relevant, based on ->ids */
+		notify_change (view, g_strdup (l->data));
 	}
 
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		CORBA_exception_init (&ev);
-
-		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsModified (ld->listener, &obj_list, &ev);
-		if (BONOBO_EX (&ev))
-			g_warning (G_STRLOC ": could not notify the listener of object modification");
-
-		CORBA_exception_free (&ev);
-	}
-
-	CORBA_free (obj_list._buffer);
+	send_pending_changes (view);
 }
 
 /**
@@ -777,22 +644,15 @@ e_data_cal_view_notify_objects_modified (EDataCalView *query, const GList *objec
  * Notifies all query listeners of the modification of a single object.
  */
 void
-e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const gchar *object)
+e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *object)
 {
-	EDataCalViewPrivate *priv;
-	GList objects;
+	GList l = {0,};
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
-	g_return_if_fail (object != NULL);
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	g_return_if_fail (object);
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
-
-	objects.next = objects.prev = NULL;
-	objects.data = (gpointer)object;
-
-	e_data_cal_view_notify_objects_modified (query, &objects);
+	l.data = (gpointer)object;
+	e_data_cal_view_notify_objects_modified (view, &l);
 }
 
 /**
@@ -803,57 +663,24 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *query, const gchar *obj
  * Notifies all query listener of the removal of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *ids)
+e_data_cal_view_notify_objects_removed (EDataCalView *view, const GList *ids)
 {
 	EDataCalViewPrivate *priv;
-	GNOME_Evolution_Calendar_CalObjIDSeq id_list;
-	CORBA_Environment ev;
 	const GList *l;
-	gint num_ids, i;
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
-
-	num_ids = g_list_length ((GList*)ids);
-	if (num_ids <= 0)
+	if (ids == NULL)
 		return;
 
-	id_list._buffer = GNOME_Evolution_Calendar_CalObjIDSeq_allocbuf (num_ids);
-	id_list._maximum = num_ids;
-	id_list._length = num_ids;
-
-	i = 0;
-	for (l = ids; l; l = l->next, i++) {
+	for (l = ids; l; l = l->next) {
 		ECalComponentId *id = l->data;
-		GNOME_Evolution_Calendar_CalObjID *c_id = &id_list._buffer[i];
-
-		c_id->uid = CORBA_string_dup (id->uid);
-
-		if (id->rid)
-			c_id->rid = CORBA_string_dup (id->rid);
-		else
-			c_id->rid = CORBA_string_dup ("");
-
-		/* update our cache */
-		remove_object_from_cache (query, l->data);
+		if (g_hash_table_lookup (priv->ids, id))
+		    notify_remove (view, id);
 	}
 
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		CORBA_exception_init (&ev);
-
-		GNOME_Evolution_Calendar_CalViewListener_notifyObjectsRemoved (ld->listener, &id_list, &ev);
-		if (BONOBO_EX (&ev))
-			g_warning (G_STRLOC ": could not notify the listener of object removal");
-
-		CORBA_exception_free (&ev);
-	}
-
-	CORBA_free (id_list._buffer);
+	send_pending_removes (view);
 }
 
 /**
@@ -864,22 +691,15 @@ e_data_cal_view_notify_objects_removed (EDataCalView *query, const GList *ids)
  * Notifies all query listener of the removal of a single object.
  */
 void
-e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const ECalComponentId *id)
+e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponentId *id)
 {
-	EDataCalViewPrivate *priv;
-	GList ids;
+	GList l = {0,};
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
-	g_return_if_fail (id != NULL);
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	g_return_if_fail (id);
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
-
-	ids.next = ids.prev = NULL;
-	ids.data = (gpointer)id;
-
-	e_data_cal_view_notify_objects_removed (query, &ids);
+	l.data = (gpointer)id;
+	e_data_cal_view_notify_objects_removed (view, &l);
 }
 
 /**
@@ -891,29 +711,17 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *query, const ECalCompone
  * Notifies all query listeners of progress messages.
  */
 void
-e_data_cal_view_notify_progress (EDataCalView *query, const gchar *message, gint percent)
+e_data_cal_view_notify_progress (EDataCalView *view, const gchar *message, gint percent)
 {
 	EDataCalViewPrivate *priv;
-	CORBA_Environment ev;
-	GList *l;
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
+	if (!priv->started)
+		return;
 
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		CORBA_exception_init (&ev);
-
-		GNOME_Evolution_Calendar_CalViewListener_notifyQueryProgress (ld->listener, message, percent, &ev);
-		if (BONOBO_EX (&ev))
-			g_warning (G_STRLOC ": could not notify the listener of query progress");
-
-		CORBA_exception_free (&ev);
-	}
+	g_signal_emit (view, signals[PROGRESS], 0, message, percent);
 }
 
 /**
@@ -925,30 +733,18 @@ e_data_cal_view_notify_progress (EDataCalView *query, const gchar *message, gint
  * status code.
  */
 void
-e_data_cal_view_notify_done (EDataCalView *query, GNOME_Evolution_Calendar_CallStatus status)
+e_data_cal_view_notify_done (EDataCalView *view, GNOME_Evolution_Calendar_CallStatus status)
 {
 	EDataCalViewPrivate *priv;
-	CORBA_Environment ev;
-	GList *l;
 
-	g_return_if_fail (query != NULL);
-	g_return_if_fail (IS_QUERY (query));
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
 
-	priv = query->priv;
-	g_return_if_fail (priv->listeners != CORBA_OBJECT_NIL);
+	if (!priv->started)
+		return;
 
 	priv->done = TRUE;
 	priv->done_status = status;
 
-	for (l = priv->listeners; l != NULL; l = l->next) {
-		ListenerData *ld = l->data;
-
-		CORBA_exception_init (&ev);
-
-		GNOME_Evolution_Calendar_CalViewListener_notifyQueryDone (ld->listener, status, &ev);
-		if (BONOBO_EX (&ev))
-			g_warning (G_STRLOC ": could not notify the listener of query completion");
-
-		CORBA_exception_free (&ev);
-	}
+	notify_done (view);
 }

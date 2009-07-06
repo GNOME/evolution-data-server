@@ -27,10 +27,10 @@
 #include "libedataserver/e-source.h"
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-component.h>
-#include <libedata-cal/Evolution-DataServer-Calendar.h>
+#include "e-data-cal-common.h"
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-data-cal.h>
-#include <libedata-cal/e-data-cal-view.h>
+#include "e-data-cal-types.h"
 
 G_BEGIN_DECLS
 
@@ -70,35 +70,35 @@ struct _ECalBackendClass {
 
 	/* Virtual methods */
 	void (* is_read_only) (ECalBackend *backend, EDataCal *cal);
-	void (* get_cal_address) (ECalBackend *backend, EDataCal *cal);
-	void (* get_alarm_email_address) (ECalBackend *backend, EDataCal *cal);
-	void (* get_ldap_attribute) (ECalBackend *backend, EDataCal *cal);
-	void (* get_static_capabilities) (ECalBackend *backend, EDataCal *cal);
+	void (* get_cal_address) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+	void (* get_alarm_email_address) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+	void (* get_ldap_attribute) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+	void (* get_static_capabilities) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
-	void (* open) (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists, const gchar *username, const gchar *password);
-	void (* remove) (ECalBackend *backend, EDataCal *cal);
+	void (* open) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, gboolean only_if_exists, const gchar *username, const gchar *password);
+	void (* remove) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
 	/* Object related virtual methods */
-	void (* create_object) (ECalBackend *backend, EDataCal *cal, const gchar *calobj);
-	void (* modify_object) (ECalBackend *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod);
-	void (* remove_object) (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod);
+	void (* create_object) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);
+	void (* modify_object) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj, CalObjModType mod);
+	void (* remove_object) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid, CalObjModType mod);
 
-	void (* discard_alarm) (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *auid);
+	void (* discard_alarm) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *auid);
 
-	void (* receive_objects) (ECalBackend *backend, EDataCal *cal, const gchar *calobj);
-	void (* send_objects) (ECalBackend *backend, EDataCal *cal, const gchar *calobj);
+	void (* receive_objects) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);
+	void (* send_objects) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);
 
-	void (* get_default_object) (ECalBackend *backend, EDataCal *cal);
-	void (* get_object) (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid);
-	void (* get_object_list) (ECalBackend *backend, EDataCal *cal, const gchar *sexp);
+	void (* get_default_object) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+	void (* get_object) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid);
+	void (* get_object_list) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *sexp);
 
-	void (* get_attachment_list) (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid);
+	void (* get_attachment_list) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid);
 
 	/* Timezone related virtual methods */
-	void (* get_timezone) (ECalBackend *backend, EDataCal *cal, const gchar *tzid);
-	void (* add_timezone) (ECalBackend *backend, EDataCal *cal, const gchar *object);
-	void (* set_default_zone) (ECalBackend *backend, EDataCal *cal, const gchar *tzobj);
-	void (* set_default_timezone) (ECalBackend *backend, EDataCal *cal, const gchar *tzid);
+	void (* get_timezone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
+	void (* add_timezone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *object);
+	void (* set_default_zone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzobj);
+	void (* set_default_timezone) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
 
 	void (* start_query) (ECalBackend *backend, EDataCalView *query);
 
@@ -106,8 +106,8 @@ struct _ECalBackendClass {
 	CalMode (* get_mode) (ECalBackend *backend);
 	void    (* set_mode) (ECalBackend *backend, CalMode mode);
 
-	void (* get_free_busy) (ECalBackend *backend, EDataCal *cal, GList *users, time_t start, time_t end);
-	void (* get_changes) (ECalBackend *backend, EDataCal *cal, const gchar *change_id);
+	void (* get_free_busy) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, GList *users, time_t start, time_t end);
+	void (* get_changes) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *change_id);
 
 	/* Internal methods for use only in the pcs */
 	icaltimezone *(* internal_get_default_timezone) (ECalBackend *backend);
@@ -128,28 +128,27 @@ EList *e_cal_backend_get_queries (ECalBackend *backend);
 void e_cal_backend_remove_query (ECalBackend *backend, EDataCalView *query);
 
 void e_cal_backend_is_read_only (ECalBackend *backend, EDataCal *cal);
-void e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal);
-void e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal);
-void e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal);
-void e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal);
+void e_cal_backend_get_cal_address (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+void e_cal_backend_get_alarm_email_address (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+void e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+void e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
-void e_cal_backend_open (ECalBackend *backend, EDataCal *cal, gboolean only_if_exists, const gchar *username, const gchar *password);
-void e_cal_backend_remove (ECalBackend *backend, EDataCal *cal);
+void e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, gboolean only_if_exists, const gchar *username, const gchar *password);
+void e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
-void e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj);
-void e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, const gchar *calobj, CalObjModType mod);
-void e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid, CalObjModType mod);
+void e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);
+void e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj, CalObjModType mod);
+void e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid, CalObjModType mod);
 
-void e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *auid);
+void e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *auid);
 
-void e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj);
-void e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, const gchar *calobj);
+void e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);
+void e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);
 
-void e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal);
-void e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid);
-void e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, const gchar *sexp);
-
-void e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, const gchar *uid, const gchar *rid);
+void e_cal_backend_get_default_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
+void e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid);
+void e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *sexp);
+void e_cal_backend_get_attachment_list (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *uid, const gchar *rid);
 
 gboolean e_cal_backend_is_loaded (ECalBackend *backend);
 
@@ -158,13 +157,13 @@ void e_cal_backend_start_query (ECalBackend *backend, EDataCalView *query);
 CalMode e_cal_backend_get_mode (ECalBackend *backend);
 void e_cal_backend_set_mode (ECalBackend *backend, CalMode mode);
 
-void e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid);
-void e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, const gchar *object);
-void e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, const gchar *tzid);
-void e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, const gchar *tzobj);
+void e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
+void e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *object);
+void e_cal_backend_set_default_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzid);
+void e_cal_backend_set_default_zone (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *tzobj);
 
-void e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, const gchar *change_id);
-void e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, GList *users, time_t start, time_t end);
+void e_cal_backend_get_changes (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *change_id);
+void e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, GList *users, time_t start, time_t end);
 
 icaltimezone* e_cal_backend_internal_get_default_timezone (ECalBackend *backend);
 icaltimezone* e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
@@ -175,16 +174,16 @@ void e_cal_backend_notify_object_modified (ECalBackend *backend, const gchar *ol
 void e_cal_backend_notify_object_removed  (ECalBackend *backend, const ECalComponentId *id, const gchar *old_object, const gchar *object);
 
 void e_cal_backend_notify_mode      (ECalBackend *backend,
-				     GNOME_Evolution_Calendar_CalListener_SetModeStatus status,
-				     GNOME_Evolution_Calendar_CalMode mode);
+				     EDataCalViewListenerSetModeStatus status,
+				     EDataCalMode mode);
 void e_cal_backend_notify_auth_required (ECalBackend *backend);
 void e_cal_backend_notify_error     (ECalBackend *backend, const gchar *message);
 
-void e_cal_backend_notify_view_done (ECalBackend *backend, GNOME_Evolution_Calendar_CallStatus status);
+void e_cal_backend_notify_view_done (ECalBackend *backend, EDataCalCallStatus status);
 void e_cal_backend_notify_view_progress_start (ECalBackend *backend);
 void e_cal_backend_notify_view_progress (ECalBackend *backend, const gchar *message, gint percent);
 void e_cal_backend_notify_readonly (ECalBackend *backend, gboolean read_only);
-void e_cal_backend_notify_cal_address (ECalBackend *backend, gchar *address);
+void e_cal_backend_notify_cal_address (ECalBackend *backend, EServerMethodContext context, gchar *address);
 
 void e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *query, const GList *objects);
 void e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *query, const GList *ids);
