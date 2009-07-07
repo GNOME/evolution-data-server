@@ -2054,18 +2054,18 @@ e_time_get_d_fmt_with_4digit_year (void)
 		res = g_locale_to_utf8(format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
 		g_free(format_string);
 		/* now, convert the res to format of nl_langinfo */
-		_e_string_replace(&res, "\\bd\\b", "\%#d");	/* d -> %#d */
-		_e_string_replace(&res, "\\bdd\\b", "\%d");	/* dd -> %d */
-		_e_string_replace(&res, "\\bddd\\b", "\%a");	/* ddd -> %a */
-		_e_string_replace(&res, "\\bdddd\\b", "\%A");	/* dddd -> %A */
-		_e_string_replace(&res, "\\bM\\b", "\%#m");	/* M -> %#m */
-		_e_string_replace(&res, "\\bMM\\b", "\%m");	/* MM -> %m */
-		_e_string_replace(&res, "\\bMMM\\b", "\%b");	/* MMM -> %b */
-		_e_string_replace(&res, "\\bMMMM\\b", "\%B");	/* MMMM -> %B */
-		_e_string_replace(&res, "\\by\\b", "\%#y");	/* y -> %y */
-		_e_string_replace(&res, "\\byy\\b", "\%y");	/* yy -> %y*/
-		_e_string_replace(&res, "\\byyyy\\b", "\%Y");	/* yyyy -> %Y */
-		_e_string_replace(&res, "\\byyyyy\\b", "\%Y");	/* yyyyy -> %Y */
+		_e_string_replace(&res, "\\bd\\b", "%#d");	/* d -> %#d */
+		_e_string_replace(&res, "\\bdd\\b", "%d");	/* dd -> %d */
+		_e_string_replace(&res, "\\bddd\\b", "%a");	/* ddd -> %a */
+		_e_string_replace(&res, "\\bdddd\\b", "%A");	/* dddd -> %A */
+		_e_string_replace(&res, "\\bM\\b", "%#m");	/* M -> %#m */
+		_e_string_replace(&res, "\\bMM\\b", "%m");	/* MM -> %m */
+		_e_string_replace(&res, "\\bMMM\\b", "%b");	/* MMM -> %b */
+		_e_string_replace(&res, "\\bMMMM\\b", "%B");	/* MMMM -> %B */
+		_e_string_replace(&res, "\\by\\b", "%#y");	/* y -> %y */
+		_e_string_replace(&res, "\\byy\\b", "%y");	/* yy -> %y*/
+		_e_string_replace(&res, "\\byyyy\\b", "%Y");	/* yyyy -> %Y */
+		_e_string_replace(&res, "\\byyyyy\\b", "%Y");	/* yyyyy -> %Y */
 	}			
   #undef GET_LOCALE_INFO
 	/**TODO** implement this for other systems
