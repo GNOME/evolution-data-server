@@ -172,20 +172,18 @@ e_cal_backend_google_utils_create_cache (ECalBackendGoogle *cbgo)
 gpointer
 e_cal_backend_google_utils_update (gpointer handle)
 {
+	static gint max_results = -1;
 	ECalBackendGoogle *cbgo;
 	ECalBackendGooglePrivate *priv;
 	EGoItem *item;
-
 	ECalBackendCache *cache;
-
 	GDataGoogleService *service;
 	static GStaticMutex updating = G_STATIC_MUTEX_INIT;
 	icalcomponent_kind kind;
-
 	GSList *ids_list = NULL, *cache_keys = NULL, *entries_list = NULL;
 	GSList *uid_list = NULL, *iter_list = NULL, *remove = NULL;
 	gboolean needs_to_insert = FALSE;
-	gchar *uri;
+	gchar *uri, *full_uri;
 
 	if (!handle || !E_IS_CAL_BACKEND_GOOGLE (handle)) {
 		g_critical ("\n Invalid handle %s", G_STRLOC);
@@ -202,7 +200,20 @@ e_cal_backend_google_utils_update (gpointer handle)
 	service = e_cal_backend_google_get_service (cbgo);
 	uri = e_cal_backend_google_get_uri (cbgo);
 
-	item->feed = gdata_service_get_feed (GDATA_SERVICE(service), uri, NULL);
+	if (max_results <= 0) {
+		const gchar *env = getenv ("EVO_GOOGLE_MAX_RESULTS");
+
+		if (env)
+			max_results = atoi (env);
+
+		if (max_results <= 0)
+			max_results = 1024;
+	}
+
+	full_uri = g_strdup_printf ("%s?max-results=%d", uri, max_results);
+	item->feed = gdata_service_get_feed (GDATA_SERVICE(service), full_uri, NULL);
+	g_free (full_uri);
+
 	entries_list = gdata_feed_get_entries (item->feed);
 	cache_keys = e_cal_backend_cache_get_keys (cache);
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgo));
