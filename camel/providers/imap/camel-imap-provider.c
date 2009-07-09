@@ -72,7 +72,7 @@ CamelProviderConfEntry imap_conf_entries[] = {
 	  N_("Check new messages for Jun_k contents"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk_inbox", "filter_junk",
 	  N_("Only check for Junk messages in the IN_BOX folder"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "offline_sync", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "sync_offline", NULL,
 	  N_("Automatically synchroni_ze remote mail locally"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
