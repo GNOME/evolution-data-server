@@ -1,3 +1,49 @@
+Evolution-Data-Server 2.27.4 2009-07-13
+---------------------------------------
+
+Bug Fixes:
+
+Addressbook:
+	#540779 - Do not call e_book_new in the main thread (Milan Crha)
+	#563668 - Do not pop-down an empty completion list (Milan Crha)
+	#586225 - Parse numeric name suffixes (Marco Barisione)
+
+Calendar:
+	#548702 - google calendar source does not show all events (Milan Crha)
+	
+Mail:
+	#575701 - Message disappear from unread vfolder, when reply. (Srinivasa Ragavan)	
+	#568302 - create camel summary table if not exists on load (Milan Crha)
+	#586602 – folder messages are lost on folder rename (Lucian Langa)
+	#327285 - Word "Success" in error message for failed action (Milan Crha)
+	#587699 - IMAP - Localize only Inbox folder name, no other (Milan Crha)
+	#579065 - IMAP - Synchronize remote mail locally is not working (Milan Crha)
+	#564388 - UI blocks for a long time when downloading mails with nntp (Srinivasa Ragavan)
+	
+Misc:
+	#586442 – Various build cleanups (H.Habighorst)
+	#586477 – Fix quoting in configure.ac (H.Habighorst)
+	#586811 – Require automake 1.9 and fix whitespace (H.Habighorst)
+	#586813 – Fix iconv cflags/libs in configure.ac (H.Habighorst)
+	#586809 – Enable "silent rules" automake 1.11 option (H.Habighorst)
+	#587165 – Double free in initialize_categories (Matthew Barnes)
+	#587374 - iconv test broken on some gcc (Matthew Barnes)
+	
+Other Fixes:
+
+Misc:
+	Use G_BEGIN_DECLS / G_END_DECLS macros. (Matthew Barnes)
+	Work around deprecation of g_mapped_file_free() (Matthew Barnes)
+	Silence some compiler warnings (Ross Burton)
+	Fixes for windows build (Fridrich Strba)
+
+Calendar:
+	CalDav Fixes/improvements (Milan Crha)
+
+Translations:
+	Ivar Smolin (et)
+	Maxim Dubovoy (uk)
+
 Evolution-Data-Server 2.27.3 2009-06-15
 ---------------------------------------
 
