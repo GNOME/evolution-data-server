@@ -67,7 +67,6 @@ struct _EDestinationClass {
 
 GType e_destination_get_type (void);
 
-
 EDestination  *e_destination_new                (void);
 EDestination  *e_destination_copy               (const EDestination *dest);
 

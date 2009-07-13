@@ -22,7 +22,6 @@
  * Modified October 1995 by Erik Troan for RPM
  */
 
-
 #include <stdio.h>
 #include <string.h>
 
@@ -31,9 +30,7 @@
 
 #include "md5-utils.h"
 
-
 static void md5_transform (guint32 buf[4], const guint32 in[16]);
-
 
 #if G_BYTE_ORDER == G_BIG_ENDIAN
 /*
@@ -70,8 +67,6 @@ md5_init (MD5Context *ctx)
 	ctx->bits[0] = 0;
 	ctx->bits[1] = 0;
 }
-
-
 
 /**
  * md5_update: add a buffer to md5 hash computation
@@ -131,10 +126,6 @@ md5_update (MD5Context *ctx, const guchar *buf, guint32 len)
 	memcpy (ctx->in, buf, len);
 }
 
-
-
-
-
 /*
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
@@ -192,9 +183,6 @@ md5_final (MD5Context *ctx, guchar digest[16])
 #endif
 	memcpy (digest, ctx->buf, 16);
 }
-
-
-
 
 /* The four core functions - F1 is optimized somewhat */
 
@@ -297,9 +285,6 @@ md5_transform (guint32 buf[4], const guint32 in[16])
 	buf[3] += d;
 }
 
-
-
-
 /**
  * md5_get_digest: get the md5 hash of a buffer
  * @buffer: byte buffer
@@ -329,7 +314,6 @@ md5_get_digest (const gchar *buffer, gint buffer_size, guchar digest[16])
 
 	memcpy (digest, local_digest, length);
 }
-
 
 /**
  * md5_get_digest_from_file: get the md5 hash of a file

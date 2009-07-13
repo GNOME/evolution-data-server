@@ -46,7 +46,6 @@ struct _uid_state {
 	gboolean save;
 };
 
-
 /**
  * camel_uid_cache_new:
  * @filename: path to load the cache from
@@ -118,7 +117,6 @@ camel_uid_cache_new (const gchar *filename)
 	return cache;
 }
 
-
 static void
 maybe_write_uid (gpointer key, gpointer value, gpointer data)
 {
@@ -141,7 +139,6 @@ maybe_write_uid (gpointer key, gpointer value, gpointer data)
 		cache->expired += strlen (key) + 1;
 	}
 }
-
 
 /**
  * camel_uid_cache_save:
@@ -233,14 +230,12 @@ camel_uid_cache_save (CamelUIDCache *cache)
 	return FALSE;
 }
 
-
 static void
 free_uid (gpointer key, gpointer value, gpointer data)
 {
 	g_free (key);
 	g_free (value);
 }
-
 
 /**
  * camel_uid_cache_destroy:
@@ -256,7 +251,6 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
 	g_free (cache->filename);
 	g_free (cache);
 }
-
 
 /**
  * camel_uid_cache_get_new_uids:
@@ -300,7 +294,6 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
 	return new_uids;
 }
 
-
 /**
  * camel_uid_cache_save_uid:
  * @cache: a CamelUIDCache
@@ -327,7 +320,6 @@ camel_uid_cache_save_uid (CamelUIDCache *cache, const gchar *uid)
 		g_hash_table_insert (cache->uids, g_strdup (uid), state);
 	}
 }
-
 
 /**
  * camel_uid_cache_free_uids:

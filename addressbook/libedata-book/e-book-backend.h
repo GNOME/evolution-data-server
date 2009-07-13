@@ -179,7 +179,6 @@ void        e_book_backend_sync                       (EBookBackend *backend);
 
 GType       e_book_backend_get_type                 (void);
 
-
 /* protected functions for subclasses */
 void        e_book_backend_set_is_loaded            (EBookBackend             *backend,
 						     gboolean                  is_loaded);

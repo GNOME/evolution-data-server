@@ -169,12 +169,12 @@ vee_info_set_user_flag(CamelMessageInfo *mi, const gchar *name, gboolean value)
 
 		if (hacked_unread_folder)
 			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
-		
+
 		res = camel_message_info_set_user_flag(rmi, name, value);
 
 		if (hacked_unread_folder)
 			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
-		
+
 		camel_message_info_free (rmi);
 	}
 
@@ -435,7 +435,6 @@ camel_vee_summary_get_type (void)
 
 	return type;
 }
-
 
 /**
  * camel_vee_summary_new:

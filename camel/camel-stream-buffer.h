@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_STREAM_BUFFER_H
 #define CAMEL_STREAM_BUFFER_H 1
 
@@ -62,7 +61,6 @@ struct _CamelStreamBuffer
 	guint flags;	/* internal flags */
 };
 
-
 typedef struct {
 	CamelStreamClass parent_class;
 
@@ -75,10 +73,8 @@ typedef struct {
 
 } CamelStreamBufferClass;
 
-
 /* Standard Camel function */
 CamelType camel_stream_buffer_get_type (void);
-
 
 /* public methods */
 CamelStream *camel_stream_buffer_new (CamelStream *stream,

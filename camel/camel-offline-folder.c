@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -52,7 +51,6 @@ static CamelProperty offline_prop_list[] = {
 	{ CAMEL_OFFLINE_FOLDER_SYNC_OFFLINE, "sync_offline", N_("Copy folder content locally for offline operation") },
 };
 
-
 CamelType
 camel_offline_folder_get_type (void)
 {
@@ -71,7 +69,6 @@ camel_offline_folder_get_type (void)
 
 	return type;
 }
-
 
 static void
 camel_offline_folder_class_init (CamelOfflineFolderClass *klass)
@@ -92,7 +89,6 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *klass)
 
 	klass->downsync = offline_folder_downsync;
 }
-
 
 struct _offline_downsync_msg {
 	CamelSessionThreadMsg msg;
@@ -282,7 +278,6 @@ done:
 
 	camel_operation_end (NULL);
 }
-
 
 /**
  * camel_offline_folder_downsync:

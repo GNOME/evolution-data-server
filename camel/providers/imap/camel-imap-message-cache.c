@@ -64,7 +64,6 @@ struct _part_find {
 	gint found;
 };
 
-
 CamelType
 camel_imap_message_cache_get_type (void)
 {
@@ -223,7 +222,6 @@ camel_imap_message_cache_new (const gchar *path, CamelFolderSummary *summary,
 	return cache;
 }
 
-
 /**
  * camel_imap_message_cache_delete:
  * @path: directory to use for storage
@@ -303,7 +301,6 @@ stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data)
 	g_hash_table_remove (cache->cached, stream);
 	g_hash_table_insert (cache->parts, key, NULL);
 }
-
 
 static CamelStream *
 insert_setup (CamelImapMessageCache *cache, const gchar *uid, const gchar *part_spec,
@@ -603,7 +600,6 @@ camel_imap_message_cache_clear (CamelImapMessageCache *cache)
 	g_ptr_array_free (uids, TRUE);
 }
 
-
 /**
  * camel_imap_message_cache_copy:
  * @source: the source message cache
@@ -641,7 +637,6 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 		}
 	}
 }
-
 
 static void
 _match_part(gpointer part_name, gpointer user_data)

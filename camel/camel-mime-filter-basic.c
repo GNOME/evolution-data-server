@@ -56,7 +56,6 @@ camel_mime_filter_basic_init (CamelMimeFilterBasic *obj)
 	obj->save = 0;
 }
 
-
 CamelType
 camel_mime_filter_basic_get_type (void)
 {
@@ -253,7 +252,6 @@ donothing:
 	*outprespace = prespace;
 }
 
-
 /**
  * camel_mime_filter_basic_new:
  *
@@ -267,7 +265,6 @@ camel_mime_filter_basic_new (void)
 	CamelMimeFilterBasic *new = CAMEL_MIME_FILTER_BASIC ( camel_object_new (camel_mime_filter_basic_get_type ()));
 	return new;
 }
-
 
 /**
  * camel_mime_filter_basic_new_type:

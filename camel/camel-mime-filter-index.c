@@ -115,7 +115,6 @@ camel_mime_filter_index_new (void)
 	return new;
 }
 
-
 /**
  * camel_mime_filter_index_new_index:
  * @index: a #CamelIndex object
@@ -139,7 +138,6 @@ camel_mime_filter_index_new_index (CamelIndex *index)
 
 /* Set the match name for any indexed words */
 
-
 /**
  * camel_mime_filter_index_set_name:
  * @filter: a #CamelMimeFilterIndex object
@@ -156,7 +154,6 @@ camel_mime_filter_index_set_name (CamelMimeFilterIndex *filter, CamelIndexName *
 	if (name)
 		camel_object_ref (name);
 }
-
 
 /**
  * camel_mime_filter_index_set_index:

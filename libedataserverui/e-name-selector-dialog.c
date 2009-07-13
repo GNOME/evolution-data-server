@@ -87,7 +87,6 @@ G_DEFINE_TYPE (ENameSelectorDialog, e_name_selector_dialog, GTK_TYPE_DIALOG)
 #define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
 
-
 static void
 e_name_selector_dialog_get_property (GObject *object, guint prop_id,
 				     GValue *value, GParamSpec *pspec)
@@ -261,7 +260,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	/* Display initial source */
 
 	/* TODO: Remember last used source */
-
 
 	/* Set up dialog defaults */
 
@@ -849,7 +847,6 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 		g_warning ("ENameSelectorDialog could not get selected contact!");
 		return;
 	}
-
 
 	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 

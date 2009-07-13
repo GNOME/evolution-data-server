@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -52,7 +51,6 @@ camel_strcase_hash (gconstpointer v)
 
 	return h;
 }
-
 
 static void
 free_string (gpointer string, gpointer user_data)
@@ -93,7 +91,6 @@ camel_strstrcase (const gchar *haystack, const gchar *needle)
 
 	return NULL;
 }
-
 
 const gchar *
 camel_strdown (gchar *str)
@@ -248,7 +245,6 @@ camel_pstring_strdup (const gchar *s)
 {
 	return camel_pstring_add ((gchar *) s, FALSE);
 }
-
 
 /**
  * camel_pstring_free:

@@ -19,7 +19,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -44,14 +43,12 @@
 /* key index debug */
 #define k(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
 
-
 struct _CamelPartitionTablePrivate {
 	pthread_mutex_t lock;	/* for locking partition */
 };
 
 #define CAMEL_PARTITION_TABLE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
 #define CAMEL_PARTITION_TABLE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))
-
 
 static void
 camel_partition_table_class_init(CamelPartitionTableClass *klass)
@@ -587,14 +584,12 @@ fail:
 
 /* ********************************************************************** */
 
-
 struct _CamelKeyTablePrivate {
 	pthread_mutex_t lock;	/* for locking key */
 };
 
 #define CAMEL_KEY_TABLE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
 #define CAMEL_KEY_TABLE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))
-
 
 static void
 camel_key_table_class_init(CamelKeyTableClass *klass)
@@ -649,7 +644,6 @@ camel_key_table_get_type(void)
 
 	return type;
 }
-
 
 CamelKeyTable *
 camel_key_table_new(CamelBlockFile *bs, camel_block_t root)
@@ -768,7 +762,6 @@ camel_key_table_add(CamelKeyTable *ki, const gchar *key, camel_block_t data, gui
 		return 0;
 	}
 #endif
-
 
 	camel_block_file_touch_block(ki->blocks, last);
 	camel_block_file_unref_block(ki->blocks, last);

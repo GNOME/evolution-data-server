@@ -50,7 +50,6 @@ gboolean e2k_validate_user (const gchar *owa_url, gchar *key, gchar **user,
 			    E2kAutoconfigResult *result,
 			    GtkWindow *parent);
 
-
 G_END_DECLS
 
 #endif /* __EXCHANGE_VALIDATE_H_ */

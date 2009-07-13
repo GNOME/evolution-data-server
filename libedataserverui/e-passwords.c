@@ -852,7 +852,6 @@ ep_get_password_keyring (EPassMsg *msg)
 				continue;
 			}
 
-
 			if (ep_keyring_validate (uri->user, uri->host, uri->protocol, found->attributes)) {
 				msg->password = g_strdup (found->secret);
 				break;
@@ -1236,7 +1235,6 @@ ep_ask_password (EPassMsg *msg)
 			1, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	}
 
-
 	msg->noreply = noreply;
 
 	g_signal_connect (password_dialog, "response", G_CALLBACK (pass_response), msg);
@@ -1246,7 +1244,6 @@ ep_ask_password (EPassMsg *msg)
 	else
 		gtk_widget_show ((GtkWidget *)password_dialog);
 }
-
 
 /**
  * e_passwords_init:

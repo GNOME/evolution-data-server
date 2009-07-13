@@ -61,14 +61,11 @@ static gint construct_from_parser(CamelMultipart *multipart, struct _CamelMimePa
 
 static CamelDataWrapperClass *parent_class = NULL;
 
-
-
 /* Returns the class for a CamelMultipart */
 #define CMP_CLASS(so) CAMEL_MULTIPART_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 /* Returns the class for a CamelDataWrapper */
 #define CDW_CLASS(so) CAMEL_DATA_WRAPPER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-
 
 static void
 camel_multipart_class_init (CamelMultipartClass *camel_multipart_class)
@@ -126,7 +123,6 @@ camel_multipart_finalize (CamelObject *object)
 		g_free (multipart->postface);
 }
 
-
 CamelType
 camel_multipart_get_type (void)
 {
@@ -144,7 +140,6 @@ camel_multipart_get_type (void)
 
 	return camel_multipart_type;
 }
-
 
 /**
  * camel_multipart_new:
@@ -165,14 +160,12 @@ camel_multipart_new (void)
 	return multipart;
 }
 
-
 static void
 add_part (CamelMultipart *multipart, CamelMimePart *part)
 {
 	multipart->parts = g_list_append (multipart->parts, part);
 	camel_object_ref (part);
 }
-
 
 /**
  * camel_multipart_add_part:
@@ -189,7 +182,6 @@ camel_multipart_add_part (CamelMultipart *multipart, CamelMimePart *part)
 
 	CMP_CLASS (multipart)->add_part (multipart, part);
 }
-
 
 static void
 add_part_at (CamelMultipart *multipart, CamelMimePart *part, guint index)
@@ -218,7 +210,6 @@ camel_multipart_add_part_at (CamelMultipart *multipart,
 	CMP_CLASS (multipart)->add_part_at (multipart, part, index);
 }
 
-
 static void
 remove_part (CamelMultipart *multipart, CamelMimePart *part)
 {
@@ -244,7 +235,6 @@ camel_multipart_remove_part (CamelMultipart *multipart,
 
 	CMP_CLASS (multipart)->remove_part (multipart, part);
 }
-
 
 static CamelMimePart *
 remove_part_at (CamelMultipart *multipart, guint index)
@@ -291,7 +281,6 @@ camel_multipart_remove_part_at (CamelMultipart *multipart, guint index)
 	return CMP_CLASS (multipart)->remove_part_at (multipart, index);
 }
 
-
 static CamelMimePart *
 get_part (CamelMultipart *multipart, guint index)
 {
@@ -322,7 +311,6 @@ camel_multipart_get_part (CamelMultipart *multipart, guint index)
 	return CMP_CLASS (multipart)->get_part (multipart, index);
 }
 
-
 static guint
 get_number (CamelMultipart *multipart)
 {
@@ -342,7 +330,6 @@ camel_multipart_get_number (CamelMultipart *multipart)
 
 	return CMP_CLASS (multipart)->get_number (multipart);
 }
-
 
 static void
 set_boundary (CamelMultipart *multipart, const gchar *boundary)
@@ -402,7 +389,6 @@ camel_multipart_set_boundary (CamelMultipart *multipart, const gchar *boundary)
 
 	CMP_CLASS (multipart)->set_boundary (multipart, boundary);
 }
-
 
 static const gchar *
 get_boundary (CamelMultipart *multipart)
@@ -587,7 +573,6 @@ construct_from_parser(CamelMultipart *multipart, struct _CamelMimeParser *mp)
 	} else
 		return 0;
 }
-
 
 /**
  * camel_multipart_construct_from_parser:

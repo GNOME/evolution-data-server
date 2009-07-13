@@ -38,7 +38,6 @@
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libedataserver/e-proxy.h>
 
-
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 
@@ -137,7 +136,6 @@ e_cal_backend_google_get_free_busy (ECalBackendSync *backend,
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 static ECalBackendSyncStatus
 e_cal_backend_google_remove (ECalBackendSync *backend, EDataCal *cal)
 {
@@ -159,7 +157,6 @@ e_cal_backend_google_remove (ECalBackendSync *backend, EDataCal *cal)
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 static gboolean
 e_cal_backend_google_is_loaded (ECalBackend *backend)
 {
@@ -171,7 +168,6 @@ e_cal_backend_google_is_loaded (ECalBackend *backend)
 
 	return priv->cache ? TRUE : FALSE;
 }
-
 
 static ECalBackendSyncStatus
 e_cal_backend_google_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
@@ -415,7 +411,6 @@ e_cal_backend_google_set_default_zone (ECalBackendSync *backend, EDataCal *cal, 
 	priv->default_zone = zone;
 	return GNOME_Evolution_Calendar_Success;
 }
-
 
 static void
 e_cal_backend_google_set_mode (ECalBackend *backend, CalMode mode)
@@ -860,7 +855,6 @@ e_cal_backend_google_is_read_only (ECalBackendSync *backend, EDataCal *cal, gboo
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 /* Returns the email address of the person who opened the calendar */
 static ECalBackendSyncStatus
 e_cal_backend_google_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
@@ -973,7 +967,6 @@ e_cal_backend_google_modify_object (ECalBackendSync *backend, EDataCal *cal, con
 	g_object_unref (comp);
 	return GNOME_Evolution_Calendar_Success;
 }
-
 
 static ECalBackendSyncStatus
 e_cal_backend_google_remove_object (ECalBackendSync *backend, EDataCal *cal,
@@ -1133,7 +1126,6 @@ e_cal_backend_google_get_ldap_attribute (ECalBackendSync *backend, EDataCal *cal
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 static ECalBackendSyncStatus
 e_cal_backend_google_get_static_capabilities (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities)
 {
@@ -1288,7 +1280,6 @@ e_cal_backend_google_finalize (GObject *object)
 		priv->cache = NULL;
 	}
 
-
 	if (priv->default_zone) {
 		icaltimezone_free (priv->default_zone, 1);
 		priv->default_zone = NULL;
@@ -1434,7 +1425,6 @@ e_cal_backend_google_get_type (void)
 	}
 	return e_cal_backend_google_type;
 }
-
 
 /***************************************** Helper Functions ****************************************************/
 
@@ -1612,7 +1602,6 @@ e_cal_backend_google_get_cache (ECalBackendGoogle *cbgo)
 	g_return_val_if_fail (cbgo != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GOOGLE(cbgo), NULL);
 
-
 	priv = cbgo->priv;
 	return priv->cache;
 }
@@ -1740,7 +1729,6 @@ e_cal_backend_google_get_password (ECalBackendGoogle *cbgo)
 	priv = cbgo->priv;
 	return priv->password;
 }
-
 
 gchar *
 e_cal_backend_google_get_local_attachments_store (ECalBackendGoogle *cbgo)

@@ -1546,7 +1546,6 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 
-
 	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL && clean) {
 		CamelImapResponse *response;
 
@@ -3016,7 +3015,6 @@ camel_imap_store_connected (CamelImapStore *store, CamelException *ex)
 
 	return FALSE;
 }
-
 
 gssize
 camel_imap_store_readline (CamelImapStore *store, gchar **dest, CamelException *ex)

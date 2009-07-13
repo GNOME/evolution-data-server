@@ -35,12 +35,10 @@ typedef struct _CamelSaslNTLM {
 
 } CamelSaslNTLM;
 
-
 typedef struct _CamelSaslNTLMClass {
 	CamelSaslClass parent_class;
 
 } CamelSaslNTLMClass;
-
 
 /* Standard Camel function */
 CamelType camel_sasl_ntlm_get_type (void);

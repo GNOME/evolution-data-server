@@ -431,7 +431,6 @@ camel_url_free (CamelURL *url)
 	}
 }
 
-
 #define DEFINE_CAMEL_URL_SET(part)			\
 void							\
 camel_url_set_##part (CamelURL *url, const gchar *part)	\
@@ -442,7 +441,6 @@ camel_url_set_##part (CamelURL *url, const gchar *part)	\
 	url->part = g_strdup (part);			\
 }
 
-
 /**
  * camel_url_set_protocol:
  * @url: a #CamelURL
@@ -451,7 +449,6 @@ camel_url_set_##part (CamelURL *url, const gchar *part)	\
  * Set the protocol of a #CamelURL.
  **/
 DEFINE_CAMEL_URL_SET (protocol)
-
 
 /**
  * camel_url_set_user:
@@ -462,7 +459,6 @@ DEFINE_CAMEL_URL_SET (protocol)
  **/
 DEFINE_CAMEL_URL_SET (user)
 
-
 /**
  * camel_url_set_authmech:
  * @url: a #CamelURL
@@ -471,7 +467,6 @@ DEFINE_CAMEL_URL_SET (user)
  * Set the authmech of a #CamelURL.
  **/
 DEFINE_CAMEL_URL_SET (authmech)
-
 
 /**
  * camel_url_set_passwd:
@@ -482,7 +477,6 @@ DEFINE_CAMEL_URL_SET (authmech)
  **/
 DEFINE_CAMEL_URL_SET (passwd)
 
-
 /**
  * camel_url_set_host:
  * @url: a #CamelURL
@@ -491,7 +485,6 @@ DEFINE_CAMEL_URL_SET (passwd)
  * Set the hostname of a #CamelURL.
  **/
 DEFINE_CAMEL_URL_SET (host)
-
 
 /**
  * camel_url_set_path:
@@ -502,7 +495,6 @@ DEFINE_CAMEL_URL_SET (host)
  **/
 DEFINE_CAMEL_URL_SET (path)
 
-
 /**
  * camel_url_set_query:
  * @url: a #CamelURL
@@ -512,7 +504,6 @@ DEFINE_CAMEL_URL_SET (path)
  **/
 DEFINE_CAMEL_URL_SET (query)
 
-
 /**
  * camel_url_set_fragment:
  * @url: a #CamelURL
@@ -521,7 +512,6 @@ DEFINE_CAMEL_URL_SET (query)
  * Set the fragment of a #CamelURL.
  **/
 DEFINE_CAMEL_URL_SET (fragment)
-
 
 /**
  * camel_url_set_port:
@@ -537,7 +527,6 @@ camel_url_set_port (CamelURL *url, gint port)
 
 	url->port = port;
 }
-
 
 /**
  * camel_url_set_param:
@@ -557,7 +546,6 @@ camel_url_set_param (CamelURL *url, const gchar *name, const gchar *value)
 	else
 		g_datalist_remove_data(&url->params, name);
 }
-
 
 /**
  * camel_url_get_param:
@@ -664,7 +652,6 @@ camel_url_decode (gchar *part)
 	} while (*s++);
 }
 
-
 guint
 camel_url_hash (gconstpointer v)
 {
@@ -713,7 +700,6 @@ camel_url_equal(gconstpointer v, gconstpointer v2)
 		&& check_equal(u1->query, u2->query)
 		&& u1->port == u2->port;
 }
-
 
 /**
  * camel_url_copy:

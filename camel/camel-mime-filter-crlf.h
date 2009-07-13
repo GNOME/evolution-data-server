@@ -20,7 +20,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef _CAMEL_MIME_FILTER_CRLF_H
 #define _CAMEL_MIME_FILTER_CRLF_H
 

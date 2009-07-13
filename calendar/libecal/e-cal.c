@@ -42,7 +42,6 @@
 #include "e-cal-view-private.h"
 #include "e-cal.h"
 
-
 static gboolean
 open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarStatus *status, gboolean needs_auth);
 
@@ -278,8 +277,6 @@ cal_mode_enum_get_type (void)
 
 	return cal_mode_enum_type;
 }
-
-
 
 static GNOME_Evolution_Calendar_CalObjType
 convert_type (ECalSourceType type)
@@ -1024,7 +1021,6 @@ get_factories (const gchar *str_uri, GList **factories)
 
 	query = "repo_ids.has ('IDL:GNOME/Evolution/DataServer/CalFactory:" API_VERSION "')";
 
-
 	servers = bonobo_activation_query (query, NULL, NULL);
 
 	e_uri_free (uri);
@@ -1271,7 +1267,6 @@ e_cal_get_type (void)
 	return e_cal_type;
 }
 
-
 static gboolean
 fetch_corba_cal (ECal *ecal, ESource *source, ECalSourceType type)
 {
@@ -1341,7 +1336,6 @@ e_cal_activate (void)
 	}
 	g_static_mutex_unlock (&e_cal_lock);
 }
-
 
 /* TODO - For now, the policy of where each backend serializes its
  * attachment data is hardcoded below. Should this end up as a
@@ -1731,7 +1725,6 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 		g_free (key);
 	}
 
-
 	CORBA_exception_init (&ev);
 
 	priv->load_state = E_CAL_LOAD_LOADING;
@@ -1918,7 +1911,6 @@ e_cal_remove (ECal *ecal, GError **error)
 	our_op = e_calendar_new_op (ecal, "cal_remove");
 
 	g_mutex_unlock (ecal->priv->mutex);
-
 
 	CORBA_exception_init (&ev);
 
@@ -2178,7 +2170,6 @@ get_read_only (ECal *ecal, gboolean *read_only, GError **error)
 
 	g_mutex_unlock (ecal->priv->mutex);
 
-
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Calendar_Cal_isReadOnly (priv->cal, &ev);
@@ -2226,7 +2217,6 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 	ECalendarStatus status;
 	ECalendarOp *our_op;
 
-
 	if (!(ecal && E_IS_CAL (ecal)))
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
 	priv = ecal->priv;
@@ -2246,7 +2236,6 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 		our_op = e_calendar_new_op (ecal, "get_cal_address");
 
 		g_mutex_unlock (ecal->priv->mutex);
-
 
 		CORBA_exception_init (&ev);
 
@@ -2318,7 +2307,6 @@ e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error
 
 	g_mutex_unlock (ecal->priv->mutex);
 
-
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Calendar_Cal_getAlarmEmailAddress (priv->cal, &ev);
@@ -2385,7 +2373,6 @@ e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error)
 
 	g_mutex_unlock (ecal->priv->mutex);
 
-
 	CORBA_exception_init (&ev);
 
 	GNOME_Evolution_Calendar_Cal_getLdapAttribute (priv->cal, &ev);
@@ -2441,7 +2428,6 @@ load_static_capabilities (ECal *ecal, GError **error)
 	our_op = e_calendar_new_op (ecal, "load_static_capabilities");
 
 	g_mutex_unlock (ecal->priv->mutex);
-
 
 	CORBA_exception_init (&ev);
 
@@ -3148,7 +3134,6 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
 	CORBA_Environment ev;
 	ECalendarOp *our_op;
 	ECalendarStatus status;
-
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4161,14 +4146,12 @@ append_timezone_string (gpointer key, gpointer value, gpointer data)
 	g_free (value);
 }
 
-
 /* This simply frees the hash values. */
 static void
 free_timezone_string (gpointer key, gpointer value, gpointer data)
 {
 	g_free (value);
 }
-
 
 /* This converts the VEVENT/VTODO to a string. If include_all_timezones is
    TRUE, it includes all the VTIMEZONE components needed for the VEVENT/VTODO.
@@ -4463,7 +4446,6 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 	our_op = e_calendar_new_op (ecal, "remove_object_with_mod");
 
 	g_mutex_unlock (ecal->priv->mutex);
-
 
 	CORBA_exception_init (&ev);
 

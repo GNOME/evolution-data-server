@@ -45,7 +45,6 @@ struct _CamelImapWrapperPrivate {
 #define CAMEL_IMAP_WRAPPER_LOCK(f, l) (g_mutex_lock(((CamelImapWrapper *)f)->priv->l))
 #define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) (g_mutex_unlock(((CamelImapWrapper *)f)->priv->l))
 
-
 static CamelDataWrapperClass *parent_class = NULL;
 
 /* Returns the class for a CamelDataWrapper */
@@ -111,7 +110,6 @@ camel_imap_wrapper_get_type (void)
 	return type;
 }
 
-
 static void
 imap_wrapper_hydrate (CamelImapWrapper *imap_wrapper, CamelStream *stream)
 {
@@ -128,7 +126,6 @@ imap_wrapper_hydrate (CamelImapWrapper *imap_wrapper, CamelStream *stream)
 	g_free (imap_wrapper->part_spec);
 	imap_wrapper->part = NULL;
 }
-
 
 static gssize
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
@@ -160,7 +157,6 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 
 	return parent_class->write_to_stream (data_wrapper, stream);
 }
-
 
 CamelDataWrapper *
 camel_imap_wrapper_new (CamelImapFolder *imap_folder,

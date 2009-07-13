@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_SENDMAIL_TRANSPORT_H
 #define CAMEL_SENDMAIL_TRANSPORT_H 1
 
@@ -41,12 +40,10 @@ typedef struct {
 
 } CamelSendmailTransport;
 
-
 typedef struct {
 	CamelTransportClass parent_class;
 
 } CamelSendmailTransportClass;
-
 
 /* Standard Camel function */
 CamelType camel_sendmail_transport_get_type (void);

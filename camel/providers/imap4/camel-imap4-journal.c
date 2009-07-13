@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -45,7 +44,6 @@
 
 #define d(x)
 
-
 static void camel_imap4_journal_class_init (CamelIMAP4JournalClass *klass);
 static void camel_imap4_journal_init (CamelIMAP4Journal *journal, CamelIMAP4JournalClass *klass);
 static void camel_imap4_journal_finalize (CamelObject *object);
@@ -55,9 +53,7 @@ static CamelDListNode *imap4_entry_load (CamelOfflineJournal *journal, FILE *in)
 static gint imap4_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
 static gint imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
-
 static CamelOfflineJournalClass *parent_class = NULL;
-
 
 CamelType
 camel_imap4_journal_get_type (void)
@@ -272,8 +268,6 @@ imap4_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelExce
 	}
 }
 
-
-
 CamelOfflineJournal *
 camel_imap4_journal_new (CamelIMAP4Folder *folder, const gchar *filename)
 {
@@ -287,7 +281,6 @@ camel_imap4_journal_new (CamelIMAP4Folder *folder, const gchar *filename)
 	return journal;
 }
 
-
 void
 camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal)
 {
@@ -299,7 +292,6 @@ camel_imap4_journal_readd_failed (CamelIMAP4Journal *journal)
 
 	g_ptr_array_set_size (journal->failed, 0);
 }
-
 
 void
 camel_imap4_journal_append (CamelIMAP4Journal *imap4_journal, CamelMimeMessage *message,

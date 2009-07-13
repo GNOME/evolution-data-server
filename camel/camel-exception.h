@@ -23,8 +23,6 @@
  * USA
  */
 
-
-
 #ifndef CAMEL_EXCEPTION_H
 #define CAMEL_EXCEPTION_H 1
 
@@ -50,7 +48,6 @@ CamelException *          camel_exception_new           (void);
 void                      camel_exception_free          (CamelException *ex);
 void                      camel_exception_init          (CamelException *ex);
 
-
 /* exception content manipulation */
 void                      camel_exception_clear         (CamelException *ex);
 void                      camel_exception_set           (CamelException *ex,
@@ -64,7 +61,6 @@ void                      camel_exception_setv          (CamelException *ex,
 /* exception content transfer */
 void                      camel_exception_xfer          (CamelException *ex_dst,
 							 CamelException *ex_src);
-
 
 /* exception content retrieval */
 ExceptionId               camel_exception_get_id        (CamelException *ex);

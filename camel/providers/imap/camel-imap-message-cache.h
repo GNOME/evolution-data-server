@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_IMAP_MESSAGE_CACHE_H
 #define CAMEL_IMAP_MESSAGE_CACHE_H 1
 
@@ -52,14 +51,12 @@ struct _CamelImapMessageCache {
 	guint32 max_uid;
 };
 
-
 typedef struct {
 	CamelFolderClass parent_class;
 
 	/* Virtual methods */
 
 } CamelImapMessageCacheClass;
-
 
 /* public methods */
 CamelImapMessageCache *camel_imap_message_cache_new (const gchar *path,

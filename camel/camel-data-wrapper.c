@@ -20,7 +20,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -115,7 +114,6 @@ camel_data_wrapper_get_type (void)
 	return type;
 }
 
-
 /**
  * camel_data_wrapper_new:
  *
@@ -151,7 +149,6 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return ret;
 }
 
-
 /**
  * camel_data_wrapper_write_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
@@ -173,7 +170,6 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 
 	return CDW_CLASS (data_wrapper)->write_to_stream (data_wrapper, stream);
 }
-
 
 static gssize
 decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
@@ -218,7 +214,6 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return ret;
 }
 
-
 /**
  * camel_data_wrapper_decode_to_stream:
  * @data_wrapper: a #CamelDataWrapper object
@@ -238,7 +233,6 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 	return CDW_CLASS (data_wrapper)->decode_to_stream (data_wrapper, stream);
 }
 
-
 static gint
 construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
@@ -249,7 +243,6 @@ construct_from_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	camel_object_ref (stream);
 	return 0;
 }
-
 
 /**
  * camel_data_wrapper_construct_from_stream:
@@ -270,7 +263,6 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	return CDW_CLASS (data_wrapper)->construct_from_stream (data_wrapper, stream);
 }
 
-
 static void
 set_mime_type (CamelDataWrapper *data_wrapper, const gchar *mime_type)
 {
@@ -278,7 +270,6 @@ set_mime_type (CamelDataWrapper *data_wrapper, const gchar *mime_type)
 		camel_content_type_unref (data_wrapper->mime_type);
 	data_wrapper->mime_type = camel_content_type_decode (mime_type);
 }
-
 
 /**
  * camel_data_wrapper_set_mime_type:
@@ -309,7 +300,6 @@ get_mime_type (CamelDataWrapper *data_wrapper)
 	return camel_content_type_simple (data_wrapper->mime_type);
 }
 
-
 /**
  * camel_data_wrapper_get_mime_type:
  * @data_wrapper: a #CamelDataWrapper object
@@ -324,13 +314,11 @@ camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
 	return CDW_CLASS (data_wrapper)->get_mime_type (data_wrapper);
 }
 
-
 static CamelContentType *
 get_mime_type_field (CamelDataWrapper *data_wrapper)
 {
 	return data_wrapper->mime_type;
 }
-
 
 /**
  * camel_data_wrapper_get_mime_type_field:
@@ -357,7 +345,6 @@ set_mime_type_field (CamelDataWrapper *data_wrapper,
 	data_wrapper->mime_type = mime_type;
 }
 
-
 /**
  * camel_data_wrapper_set_mime_type_field:
  * @data_wrapper: a #CamelDataWrapper object
@@ -376,13 +363,11 @@ camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 	CDW_CLASS (data_wrapper)->set_mime_type_field (data_wrapper, mime_type);
 }
 
-
 static gboolean
 is_offline (CamelDataWrapper *data_wrapper)
 {
 	return data_wrapper->offline;
 }
-
 
 /**
  * camel_data_wrapper_is_offline:

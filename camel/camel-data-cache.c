@@ -350,7 +350,6 @@ camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, C
 	return stream;
 }
 
-
 /**
  * camel_data_cache_get_filename:
  * @cdc: A #CamelDataCache

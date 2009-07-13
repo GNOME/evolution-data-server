@@ -34,7 +34,6 @@ G_BEGIN_DECLS
 #define E_IS_SOURCE_GROUP(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_GROUP))
 #define E_IS_SOURCE_GROUP_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_GROUP))
 
-
 typedef struct _ESourceGroup        ESourceGroup;
 typedef struct _ESourceGroupPrivate ESourceGroupPrivate;
 typedef struct _ESourceGroupClass   ESourceGroupClass;
@@ -57,7 +56,6 @@ struct _ESourceGroupClass {
 	void (* source_removed) (ESourceGroup *source_list, ESource *source);
 	void (* source_added)   (ESourceGroup *source_list, ESource *source);
 };
-
 
 GType    e_source_group_get_type (void);
 

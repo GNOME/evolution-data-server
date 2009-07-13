@@ -19,7 +19,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_IMAP_WRAPPER_H
 #define CAMEL_IMAP_WRAPPER_H 1
 

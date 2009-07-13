@@ -18,7 +18,6 @@ E2kGlobalCatalog *test_get_gc              (const gchar     *server);
 
 void              test_abort_if_http_error (E2kHTTPStatus   status);
 
-
 /* lower-level util */
 gchar             *test_ask_password        (const gchar     *prompt);
 

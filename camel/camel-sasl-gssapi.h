@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_SASL_GSSAPI_H__
 #define __CAMEL_SASL_GSSAPI_H__
 

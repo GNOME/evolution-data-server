@@ -204,7 +204,6 @@ e_account_new_from_xml (const gchar *xml)
 	return account;
 }
 
-
 static gboolean
 xml_set_bool (xmlNodePtr node, const gchar *name, gboolean *val)
 {
@@ -508,7 +507,6 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
 	return changed;
 }
 
-
 /**
  * e_account_import:
  * @dest: destination account object
@@ -579,7 +577,6 @@ e_account_import (EAccount *dest, EAccount *src)
 
 	g_signal_emit(dest, signals[CHANGED], 0, -1);
 }
-
 
 /**
  * e_account_to_xml:
@@ -682,7 +679,6 @@ e_account_to_xml (EAccount *account)
 
 	return tmp;
 }
-
 
 /**
  * e_account_uid_from_xml:

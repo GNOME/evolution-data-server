@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_MEDIUM_H
 #define CAMEL_MEDIUM_H 1
 

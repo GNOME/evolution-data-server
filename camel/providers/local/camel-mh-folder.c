@@ -199,7 +199,6 @@ static gchar * mh_get_filename (CamelFolder *folder, const gchar *uid, CamelExce
 	return g_strdup_printf("%s/%s", lf->folder_path, uid);
 }
 
-
 static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;

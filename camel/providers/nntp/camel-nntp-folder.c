@@ -179,7 +179,6 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, con
 	return NULL;
 }
 
-
 static void
 nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid, CamelException *ex)
 {

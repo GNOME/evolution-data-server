@@ -273,7 +273,6 @@ connect_to_server (CamelService *service, gint ssl_mode, gint try_starttls)
 
 /* leave this stuff out for now */
 
-
 static struct {
 	gchar *value;
 	gint mode;

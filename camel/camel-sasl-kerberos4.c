@@ -104,7 +104,6 @@ camel_sasl_kerberos4_finalize (CamelObject *object)
 	}
 }
 
-
 CamelType
 camel_sasl_kerberos4_get_type (void)
 {

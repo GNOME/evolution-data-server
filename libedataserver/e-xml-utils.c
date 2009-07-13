@@ -149,4 +149,3 @@ e_xml_get_child_by_name (const xmlNode *parent, const xmlChar *child_name)
 	return NULL;
 }
 
-

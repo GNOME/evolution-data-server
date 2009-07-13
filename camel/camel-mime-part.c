@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -62,7 +61,6 @@ typedef enum {
 	HEADER_CONTENT_TYPE
 } CamelHeaderType;
 
-
 static GHashTable *header_name_table;
 static GHashTable *header_formatted_table;
 
@@ -97,7 +95,6 @@ static void set_disposition (CamelMimePart *mime_part, const gchar *disposition)
 static gssize write_references(CamelStream *stream, struct _camel_header_raw *h);
 /*static gint write_fold(CamelStream *stream, struct _camel_header_raw *h);*/
 static gssize write_raw(CamelStream *stream, struct _camel_header_raw *h);
-
 
 /* loads in a hash table the set of header names we */
 /* recognize and associate them with a unique enum  */
@@ -212,7 +209,6 @@ camel_mime_part_init (gpointer object, gpointer klass)
 	mime_part->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
 }
 
-
 static void
 camel_mime_part_finalize (CamelObject *object)
 {
@@ -227,8 +223,6 @@ camel_mime_part_finalize (CamelObject *object)
 
 	camel_header_raw_clear(&mime_part->headers);
 }
-
-
 
 CamelType
 camel_mime_part_get_type (void)
@@ -248,7 +242,6 @@ camel_mime_part_get_type (void)
 
 	return type;
 }
-
 
 /* **** */
 
@@ -391,7 +384,6 @@ camel_mime_part_set_description (CamelMimePart *mime_part, const gchar *descript
 	g_free (text);
 }
 
-
 /**
  * camel_mime_part_get_description:
  * @mime_part: a #CamelMimePart object
@@ -417,7 +409,6 @@ set_disposition (CamelMimePart *mime_part, const gchar *disposition)
 	else
 		mime_part->disposition = NULL;
 }
-
 
 /**
  * camel_mime_part_set_disposition:
@@ -447,7 +438,6 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part, const gchar *disposit
 	g_free(text);
 }
 
-
 /**
  * camel_mime_part_get_disposition:
  * @mime_part: a #CamelMimePart object
@@ -464,7 +454,6 @@ camel_mime_part_get_disposition (CamelMimePart *mime_part)
 	else
 		return NULL;
 }
-
 
 /* **** Content-Disposition: filename="xxx" */
 
@@ -500,7 +489,6 @@ camel_mime_part_set_filename (CamelMimePart *mime_part, const gchar *filename)
 	g_free (str);
 }
 
-
 /**
  * camel_mime_part_get_filename:
  * @mime_part: a #CamelMimePart object
@@ -520,7 +508,6 @@ camel_mime_part_get_filename (CamelMimePart *mime_part)
 
 	return camel_content_type_param (((CamelDataWrapper *) mime_part)->mime_type, "name");
 }
-
 
 /* **** Content-ID: */
 
@@ -546,7 +533,6 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part, const gchar *contentid
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-ID", cid);
 	g_free (cid);
 }
-
 
 /**
  * camel_mime_part_get_content_id:
@@ -577,7 +563,6 @@ camel_mime_part_set_content_MD5 (CamelMimePart *mime_part, const gchar *md5)
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-MD5", md5);
 }
 
-
 /**
  * camel_mime_part_get_content_MD5:
  * @mime_part: a #CamelMimePart object
@@ -594,7 +579,6 @@ camel_mime_part_get_content_MD5 (CamelMimePart *mime_part)
 
 /* **** Content-Location: */
 
-
 /**
  * camel_mime_part_set_content_location:
  * @mime_part: a #CamelMimePart object
@@ -608,7 +592,6 @@ camel_mime_part_set_content_location (CamelMimePart *mime_part, const gchar *loc
 	/* FIXME: this should perform content-location folding */
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part), "Content-Location", location);
 }
-
 
 /**
  * camel_mime_part_get_content_location:
@@ -625,7 +608,6 @@ camel_mime_part_get_content_location (CamelMimePart *mime_part)
 }
 
 /* **** Content-Transfer-Encoding: */
-
 
 /**
  * camel_mime_part_set_encoding:
@@ -645,7 +627,6 @@ camel_mime_part_set_encoding (CamelMimePart *mime_part,
 				 "Content-Transfer-Encoding", text);
 }
 
-
 /**
  * camel_mime_part_get_encoding:
  * @mime_part: a #CamelMimePart object
@@ -661,7 +642,6 @@ camel_mime_part_get_encoding (CamelMimePart *mime_part)
 }
 
 /* FIXME: do something with this stuff ... */
-
 
 /**
  * camel_mime_part_set_content_languages:
@@ -681,7 +661,6 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part, GList *content_
 	/* FIXME: translate to a header and set it */
 }
 
-
 /**
  * camel_mime_part_get_content_languages:
  * @mime_part: a #CamelMimePart object
@@ -695,7 +674,6 @@ camel_mime_part_get_content_languages (CamelMimePart *mime_part)
 {
 	return mime_part->content_languages;
 }
-
 
 /* **** */
 
@@ -714,7 +692,6 @@ camel_mime_part_set_content_type (CamelMimePart *mime_part, const gchar *content
 	camel_medium_set_header (CAMEL_MEDIUM (mime_part),
 				 "Content-Type", content_type);
 }
-
 
 /**
  * camel_mime_part_get_content_type:

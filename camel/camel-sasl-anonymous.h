@@ -45,12 +45,10 @@ typedef struct _CamelSaslAnonymous {
 	CamelSaslAnonTraceType type;
 } CamelSaslAnonymous;
 
-
 typedef struct _CamelSaslAnonymousClass {
 	CamelSaslClass parent_class;
 
 } CamelSaslAnonymousClass;
-
 
 /* Standard Camel function */
 CamelType camel_sasl_anonymous_get_type (void);

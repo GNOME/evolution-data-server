@@ -586,7 +586,6 @@ imap_read_untagged (CamelImapStore *store, gchar *line, CamelException *ex)
 	return NULL;
 }
 
-
 /**
  * camel_imap_response_free:
  * @store: the CamelImapStore the response is from

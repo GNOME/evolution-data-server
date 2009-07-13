@@ -212,7 +212,6 @@ camel_imapp_stream_new(CamelStream *source)
 	return (CamelStream *)is;
 }
 
-
 /*
  From rfc2060
 

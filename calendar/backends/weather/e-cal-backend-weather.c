@@ -955,7 +955,6 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	backend_class->internal_get_timezone = e_cal_backend_weather_internal_get_timezone;
 }
 
-
 /**
  * e_cal_backend_weather_get_type:
  * @void:

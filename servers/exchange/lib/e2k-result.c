@@ -370,7 +370,6 @@ e2k_results_array_free (GArray *results_array, gboolean free_results)
 	g_array_free (results_array, FALSE);
 }
 
-
 /**
  * e2k_results_from_multistatus:
  * @msg: a 207 Multi-Status response
@@ -440,7 +439,6 @@ e2k_results_free (E2kResult *results, gint nresults)
 		e2k_result_clear (&results[i]);
 	g_free (results);
 }
-
 
 /* Iterators */
 struct E2kResultIter {

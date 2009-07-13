@@ -21,7 +21,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -61,7 +60,6 @@ static void camel_groupwise_store_summary_finalise   (CamelObject *obj);
 
 static CamelStoreSummaryClass *camel_groupwise_store_summary_parent;
 
-
 static void
 camel_groupwise_store_summary_class_init (CamelGroupwiseStoreSummaryClass *klass)
 {
@@ -77,7 +75,6 @@ camel_groupwise_store_summary_class_init (CamelGroupwiseStoreSummaryClass *klass
 	ssklass->store_info_string = store_info_string;
 	ssklass->store_info_set_string = store_info_set_string;
 
-
 }
 
 static void
@@ -88,12 +85,10 @@ camel_groupwise_store_summary_init (CamelGroupwiseStoreSummary *s)
 	s->version = CAMEL_GW_STORE_SUMMARY_VERSION;
 }
 
-
 static void
 camel_groupwise_store_summary_finalise (CamelObject *obj)
 {
 }
-
 
 CamelType
 camel_groupwise_store_summary_get_type (void)
@@ -114,7 +109,6 @@ camel_groupwise_store_summary_get_type (void)
 	return type;
 }
 
-
 CamelGroupwiseStoreSummary *
 camel_groupwise_store_summary_new (void)
 {
@@ -122,7 +116,6 @@ camel_groupwise_store_summary_new (void)
 
 	return new;
 }
-
 
 CamelGroupwiseStoreInfo *
 camel_groupwise_store_summary_full_name(CamelGroupwiseStoreSummary *s, const gchar *full_name)
@@ -457,8 +450,6 @@ camel_groupwise_store_summary_namespace_find_path(CamelGroupwiseStoreSummary *s,
 	return ns;
 }
 
-
-
 static gint
 summary_header_load(CamelStoreSummary *s, FILE *in)
 {
@@ -486,7 +477,6 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 	return 0;
 }
 
-
 static gint
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
@@ -502,7 +492,6 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 
 	if (summary->namespace && namespace_save(s, out, summary->namespace) == -1)
 		return -1;
-
 
 	return 0;
 }
@@ -535,7 +524,6 @@ store_info_save(CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 	return 0;
 }
 
-
 static void
 store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi)
 {
@@ -544,10 +532,6 @@ store_info_free(CamelStoreSummary *s, CamelStoreInfo *mi)
 	g_free(si->full_name);
 	camel_groupwise_store_summary_parent->store_info_free(s, mi);
 }
-
-
-
-
 
 static const gchar *
 store_info_string(CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)

@@ -131,7 +131,6 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (exchange_hierarchy, ExchangeHierarchy, class_init, NULL, PARENT_TYPE)
 
-
 /**
  * exchange_hierarchy_new_folder:
  * @hier: the hierarchy
@@ -179,7 +178,6 @@ exchange_hierarchy_is_empty (ExchangeHierarchy *hier)
 
 	return HIER_CLASS (hier)->is_empty (hier);
 }
-
 
 static ExchangeAccountFolderResult
 create_folder (ExchangeHierarchy *hier, EFolder *parent,
@@ -270,7 +268,6 @@ exchange_hierarchy_xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 					       remove_source);
 }
 
-
 static void
 rescan (ExchangeHierarchy *hier)
 {
@@ -290,7 +287,6 @@ exchange_hierarchy_rescan (ExchangeHierarchy *hier)
 
 	HIER_CLASS (hier)->rescan (hier);
 }
-
 
 static ExchangeAccountFolderResult
 scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint mode)
@@ -318,7 +314,6 @@ exchange_hierarchy_scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint 
 	return HIER_CLASS (hier)->scan_subtree (hier, folder, mode);
 }
 
-
 static void
 add_to_storage (ExchangeHierarchy *hier)
 {
@@ -340,7 +335,6 @@ exchange_hierarchy_add_to_storage (ExchangeHierarchy *hier)
 
 	HIER_CLASS (hier)->add_to_storage (hier);
 }
-
 
 /**
  * exchange_hierarchy_construct:

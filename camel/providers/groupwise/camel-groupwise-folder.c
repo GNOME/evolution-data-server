@@ -25,7 +25,6 @@
  * USA
  */
 
-
 /* This file is broken and suffers from multiple author syndrome.
 This needs to be rewritten with a lot of functions cleaned up.
 
@@ -113,7 +112,6 @@ groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *e
 
 	return camel_data_cache_get_filename (gw_folder->cache, "cache", uid, ex);
 }
-
 
 /* Get a message from cache if available otherwise get it from server */
 static CamelMimeMessage *
@@ -887,8 +885,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	}
 
-
-
 	if (unread_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 		status = e_gw_connection_mark_unread (cnc, unread_items);
@@ -923,7 +919,6 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	CamelGroupwiseFolder *gw_folder;
 	gchar *summary_file, *state_file, *journal_file;
 	gchar *short_name;
-
 
 	folder = CAMEL_FOLDER (camel_object_new(camel_groupwise_folder_get_type ()) );
 
@@ -1308,7 +1303,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		is_proxy = TRUE;
 	}
 
-
 	/*Get the New Items*/
 	if (!is_proxy) {
 		const gchar *source;
@@ -1349,7 +1343,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 			goto end3;
 		}
 
-
 		if (gw_store->current_folder != folder)
 			groupwise_store_set_current_folder (gw_store, folder);
 
@@ -1382,14 +1375,12 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 
 		g_object_unref (container);
 
-
 		if (list)
 			gw_update_cache (folder, list, ex, FALSE);
 
 		/* update the new_sync_time to summary */
 		update_summary_string (folder, new_sync_time, ex);
 	}
-
 
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	is_locked = FALSE;
@@ -1455,7 +1446,6 @@ groupwise_folder_set_threading_data (CamelGroupwiseMessageInfo *mi, EGwItem *ite
 	struct _camel_header_references *refs, *scan;
 	guint8 *digest;
 	gchar *msgid;
-
 
 	if (!message_id)
 		return;
@@ -1843,7 +1833,6 @@ gw_update_summary ( CamelFolder *folder, GList *list,CamelException *ex)
 
 		mi->info.flags |= status_flags;
 
-
 		priority = e_gw_item_get_priority (item);
 		if (priority && !(g_ascii_strcasecmp (priority,"High"))) {
 			mi->info.flags |= CAMEL_MESSAGE_FLAGGED;
@@ -2038,7 +2027,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 		}
 
 	} /* if attach_list */
-
 
 	msg = camel_mime_message_new ();
 	if (has_mime_822 && body) {
@@ -2235,7 +2223,6 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 
 	}/* if attach_list */
 	/********************/
-
 
 	/* this is broken for translations. someone should care to fix these hacks. nobody except groupwise users are affected though */
 	if (e_gw_item_get_priority (item))
@@ -2486,7 +2473,6 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		return;
 	}
 
-
 	cnc = cnc_lookup (priv);
 	index = 0;
 	while (index < uids->len) {
@@ -2532,7 +2518,6 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					wrapper = NULL;
 				}
 
-
 				/* A User may mark a message as Unread and then immediately move it to
 				some other folder. The following piece of code take care of such scenario.
 
@@ -2550,7 +2535,6 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				}
 			}
 		}
-
 
 		if (destination_is_trash) {
 				e_gw_connection_remove_item (cnc, source_container_id, (const gchar *) uids->pdata[index]);
@@ -2624,7 +2608,6 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 	gint i, max;
 	gboolean delete = FALSE;
 	GList *deleted_items, *deleted_head;
-
 
 	deleted_items = deleted_head = NULL;
 	cnc = cnc_lookup (priv);
@@ -2753,7 +2736,6 @@ camel_groupwise_folder_init (gpointer object, gpointer klass)
 	CamelGroupwiseFolder *gw_folder = CAMEL_GROUPWISE_FOLDER (object);
 	CamelFolder *folder = CAMEL_FOLDER (object);
 
-
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
 
@@ -2787,7 +2769,6 @@ CamelType
 camel_groupwise_folder_get_type (void)
 {
 	static CamelType camel_groupwise_folder_type = CAMEL_INVALID_TYPE;
-
 
 	if (camel_groupwise_folder_type == CAMEL_INVALID_TYPE) {
 		camel_groupwise_folder_type =
@@ -3024,7 +3005,6 @@ convert_to_task (EGwItem *item, gchar **str, gint *len)
 		g_string_append_printf (gstr, "DUE:%s\n", temp);
 	gstr = g_string_append (gstr, "END:VTODO\n");
 	gstr = g_string_append (gstr, "END:VCALENDAR\n");
-
 
 	*str = g_strdup (gstr->str);
 	*len = gstr->len;

@@ -34,7 +34,6 @@ G_BEGIN_DECLS
 #define E_IS_SOURCE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE))
 #define E_IS_SOURCE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE))
 
-
 typedef struct _ESource        ESource;
 typedef struct _ESourcePrivate ESourcePrivate;
 typedef struct _ESourceClass   ESourceClass;
@@ -53,7 +52,6 @@ struct _ESourceClass {
 	/* Signals.  */
 	void (* changed) (ESource *source);
 };
-
 
 GType    e_source_get_type (void);
 

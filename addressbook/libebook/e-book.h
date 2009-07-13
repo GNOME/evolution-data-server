@@ -46,7 +46,6 @@ typedef void (*EBookListCallback)     (EBook *book, EBookStatus status, GList *l
 typedef void (*EBookBookViewCallback) (EBook *book, EBookStatus status, EBookView *book_view, gpointer closure);
 typedef void (*EBookEListCallback)   (EBook *book, EBookStatus status, EList *list, gpointer closure);
 
-
 struct _EBook {
 	GObject       parent;
 	/*< private >*/
@@ -116,7 +115,6 @@ gboolean e_book_get_supported_auth_methods       (EBook       *book,
 guint    e_book_async_get_supported_auth_methods (EBook              *book,
 						  EBookEListCallback  cb,
 						  gpointer            closure);
-
 
 /* User authentication. */
 gboolean e_book_authenticate_user          (EBook       *book,

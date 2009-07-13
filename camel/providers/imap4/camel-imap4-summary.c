@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -34,7 +33,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <ctype.h>
-
 
 #include <glib/gi18n-lib.h>
 
@@ -74,7 +72,6 @@ static gint imap4_content_info_save (CamelFolderSummary *summary, FILE *out, Cam
 
 static CamelFolderSummaryClass *parent_class = NULL;
 
-
 CamelType
 camel_imap4_summary_get_type (void)
 {
@@ -93,7 +90,6 @@ camel_imap4_summary_get_type (void)
 
 	return type;
 }
-
 
 static void
 camel_imap4_summary_class_init (CamelIMAP4SummaryClass *klass)
@@ -131,7 +127,6 @@ static void
 camel_imap4_summary_finalize (CamelObject *object)
 {
 }
-
 
 CamelFolderSummary *
 camel_imap4_summary_new (CamelFolder *folder)
@@ -1421,7 +1416,6 @@ imap4_content_info_save (CamelFolderSummary *summary, FILE *out, CamelMessageCon
 	} else
 		return fputc (0, out);
 }
-
 
 void
 camel_imap4_summary_set_exists (CamelFolderSummary *summary, guint32 exists)

@@ -33,7 +33,6 @@ G_BEGIN_DECLS
 #define GW_EVENT_TYPE_ID "@4:"
 #define GW_TODO_TYPE_ID "@3:"
 
-
 /* Default reminder */
 #define CALENDAR_CONFIG_PREFIX "/apps/evolution/calendar"
 #define CALENDAR_CONFIG_DEFAULT_REMINDER CALENDAR_CONFIG_PREFIX "/other/use_default_reminder"
@@ -56,7 +55,6 @@ EGwConnectionStatus e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw
 EGwConnectionStatus e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone);
 gboolean e_cal_backend_groupwise_store_settings (GwSettings *hold);
 gboolean e_cal_backend_groupwise_utils_check_delegate (ECalComponent *comp, const gchar *email);
-
 
 /*
  * Component related utility functions

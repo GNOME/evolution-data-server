@@ -300,7 +300,6 @@ camel_provider_list(gboolean load)
 {
 	GList *list = NULL;
 
-
 	/* provider_table can be NULL, so initialize it */
 	if (G_UNLIKELY (provider_table == NULL))
 		camel_provider_init ();
@@ -384,7 +383,6 @@ fail:
 
 	return provider;
 }
-
 
 /**
  * camel_provider_auto_detect:

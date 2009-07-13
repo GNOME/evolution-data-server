@@ -57,7 +57,6 @@ typedef struct {
 	guint32 bits;
 } flags_diff_t;
 
-
 /* FIXME: deprecated
    This is used exclusively for the legacy imap cache code.  DO NOT use this in any new code */
 
@@ -72,7 +71,6 @@ gboolean e_path_find_folders (const gchar *prefix,
 			      gpointer data);
 
 gint      e_path_rmdir        (const gchar *prefix, const gchar *vpath);
-
 
 EGwItem *camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *message, CamelAddress *from);
 

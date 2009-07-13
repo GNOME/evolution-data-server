@@ -62,7 +62,6 @@ static void close_folder (gpointer name, gpointer folder, gpointer data);
 
 static CamelOfflineJournalClass *parent_class = NULL;
 
-
 CamelType
 camel_imap_journal_get_type (void)
 {
@@ -203,7 +202,6 @@ static CamelDListNode *
 imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 {
 	CamelIMAPJournalEntry *entry;
-
 
 	d(g_print ("DEBUG: Loading to  the journal \n"));
 

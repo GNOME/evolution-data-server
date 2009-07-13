@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_SEEKABLE_STREAM_H
 #define CAMEL_SEEKABLE_STREAM_H 1
 

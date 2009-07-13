@@ -37,7 +37,6 @@
 
 E2K_MAKE_TYPE (exchange_hierarchy_gal, ExchangeHierarchyGAL, NULL, NULL, PARENT_TYPE)
 
-
 ExchangeHierarchy *
 exchange_hierarchy_gal_new (ExchangeAccount *account,
 			    const gchar *hierarchy_name,

@@ -11,7 +11,6 @@
 #ifndef TIMEUTIL_H
 #define TIMEUTIL_H
 
-
 #include <time.h>
 #include <libical/ical.h>
 #include <glib.h>
@@ -48,7 +47,6 @@ gint	time_leap_years_up_to	(gint year);
 gchar   *isodate_from_time_t     (time_t t);
 time_t	time_from_isodate	(const gchar *str);
 
-
 /**************************************************************************
  * time_t manipulation functions.
  *
@@ -64,7 +62,6 @@ time_t	time_add_week		(time_t time, gint weeks);
 /* Returns the beginning or end of the day. */
 time_t	time_day_begin		(time_t t);
 time_t	time_day_end		(time_t t);
-
 
 /**************************************************************************
  * time_t manipulation functions, using timezones in libical.

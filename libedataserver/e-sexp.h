@@ -103,8 +103,6 @@ struct _ESExpTerm {
 	} value;
 };
 
-
-
 struct _ESExp {
 #ifdef E_SEXP_IS_G_OBJECT
 	GObject parent_object;
@@ -152,7 +150,6 @@ gint		e_sexp_set_scope	(ESExp *f, gint scope);
 
 void		e_sexp_input_text	(ESExp *f, const gchar *text, gint len);
 void		e_sexp_input_file	(ESExp *f, gint fd);
-
 
 gint		e_sexp_parse		(ESExp *f);
 ESExpResult    *e_sexp_eval		(ESExp *f);

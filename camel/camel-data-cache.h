@@ -20,7 +20,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_DATA_CACHE_H
 #define CAMEL_DATA_CACHE_H 1
 

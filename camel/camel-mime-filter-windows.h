@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_MIME_FILTER_WINDOWS_H__
 #define __CAMEL_MIME_FILTER_WINDOWS_H__
 
@@ -46,7 +45,6 @@ struct _CamelMimeFilterWindowsClass {
 	CamelMimeFilterClass parent_class;
 
 };
-
 
 CamelType camel_mime_filter_windows_get_type (void);
 

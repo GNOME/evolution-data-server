@@ -156,7 +156,6 @@ create_rebuild_data (ESourceSelector *selector)
 	return rebuild_data;
 }
 
-
 static void
 free_rebuild_data (ESourceSelectorRebuildData *rebuild_data)
 {
@@ -586,7 +585,6 @@ selection_func (GtkTreeSelection *selection,
 	if (! gtk_tree_model_get_iter (model, &iter, path))
 		return FALSE;
 
-
 	gtk_tree_model_get (model, &iter, 0, &data, -1);
 	if (E_IS_SOURCE_GROUP (data)) {
 		g_object_unref (data);
@@ -599,7 +597,6 @@ selection_func (GtkTreeSelection *selection,
 
 	return TRUE;
 }
-
 
 /* Callbacks.  */
 
@@ -1134,7 +1131,6 @@ group_search_function   (GtkTreeModel *model,
 	if (name)
 		status = g_ascii_strncasecmp (name, key, strlen(key)) != 0;
 
-
 	g_object_unref (data);
 
 	return status;
@@ -1199,7 +1195,6 @@ e_source_selector_init (ESourceSelector *selector)
 	g_signal_connect (G_OBJECT (selector), "test-collapse-row", G_CALLBACK (test_collapse_row_callback), selector);
 	g_signal_connect (G_OBJECT (selector), "row-expanded", G_CALLBACK (row_expanded_callback), selector);
 }
-
 
 /* Public API.  */
 
@@ -1308,7 +1303,6 @@ e_source_selector_free_selection (GSList *list)
 	g_slist_foreach (list, (GFunc) g_object_unref, NULL);
 	g_slist_free (list);
 }
-
 
 /**
  * e_source_selector_show_selection:

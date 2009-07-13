@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef CAMEL_TCP_STREAM_RAW_H
 #define CAMEL_TCP_STREAM_RAW_H
 

@@ -195,7 +195,6 @@ unref_recipient (gpointer key, gpointer value, gpointer user_data)
 	camel_object_unref (value);
 }
 
-
 /**
  * camel_mime_message_new:
  *
@@ -213,7 +212,6 @@ camel_mime_message_new (void)
 }
 
 /* **** Date: */
-
 
 /**
  * camel_mime_message_set_date:
@@ -246,7 +244,6 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, gint offse
 	g_free (datestr);
 }
 
-
 /**
  * camel_mime_message_get_date:
  * @message: a #CamelMimeMessage object
@@ -264,7 +261,6 @@ camel_mime_message_get_date (CamelMimeMessage *msg, gint *offset)
 
 	return msg->date;
 }
-
 
 /**
  * camel_mime_message_get_date_received:
@@ -324,7 +320,6 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const gchar *
 	g_free (id);
 }
 
-
 /**
  * camel_mime_message_get_message_id:
  * @message: a #CamelMimeMessage object
@@ -342,7 +337,6 @@ camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
 }
 
 /* **** Reply-To: */
-
 
 /**
  * camel_mime_message_set_reply_to:
@@ -373,7 +367,6 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, const CamelInternetAddre
 	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (msg), "Reply-To", addr);
 	g_free (addr);
 }
-
 
 /**
  * camel_mime_message_get_reply_to:
@@ -422,7 +415,6 @@ camel_mime_message_set_subject (CamelMimeMessage *message, const gchar *subject)
 	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (message), "Subject", text);
 	g_free (text);
 }
-
 
 /**
  * camel_mime_message_get_subject:
@@ -475,7 +467,6 @@ camel_mime_message_set_from (CamelMimeMessage *msg, const CamelInternetAddress *
 	CAMEL_MEDIUM_CLASS (parent_class)->set_header(CAMEL_MEDIUM(msg), "From", addr);
 	g_free(addr);
 }
-
 
 /**
  * camel_mime_message_get_from:
@@ -534,7 +525,6 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
 	g_free(text);
 }
 
-
 /**
  * camel_mime_message_get_recipients:
  * @message: a #CamelMimeMessage object
@@ -551,7 +541,6 @@ camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const gchar *
 
 	return g_hash_table_lookup (mime_message->recipients, type);
 }
-
 
 void
 camel_mime_message_set_source (CamelMimeMessage *mime_message, const gchar *src)
@@ -821,7 +810,6 @@ check_8bit (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
 	return !(*has8bit);
 }
 
-
 /**
  * camel_mime_message_has_8bit_parts:
  * @message: a #CamelMimeMessage object
@@ -1007,7 +995,6 @@ best_encoding (CamelMimeMessage *msg, CamelMimePart *part, gpointer datap)
 	return TRUE;
 }
 
-
 /**
  * camel_mime_message_set_best_encoding:
  * @message: a #CamelMimeMessage object
@@ -1036,7 +1023,6 @@ camel_mime_message_set_best_encoding (CamelMimeMessage *msg, CamelBestencRequire
 	camel_mime_message_foreach_part (msg, best_encoding, &data);
 }
 
-
 /**
  * camel_mime_message_encode_8bit_parts:
  * @message: a #CamelMimeMessage object
@@ -1048,7 +1034,6 @@ camel_mime_message_encode_8bit_parts (CamelMimeMessage *mime_message)
 {
 	camel_mime_message_set_best_encoding (mime_message, CAMEL_BESTENC_GET_ENCODING, CAMEL_BESTENC_7BIT);
 }
-
 
 struct _check_content_id {
 	CamelMimePart *part;
@@ -1072,7 +1057,6 @@ check_content_id (CamelMimeMessage *message, CamelMimePart *part, gpointer data)
 
 	return !found;
 }
-
 
 /**
  * camel_mime_message_get_part_by_content_id:
@@ -1109,7 +1093,6 @@ static const gchar tz_months[][4] = {
 static const gchar tz_days[][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
-
 
 /**
  * camel_mime_message_build_mbox_from:

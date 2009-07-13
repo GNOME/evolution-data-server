@@ -216,7 +216,6 @@ remove_summary(gchar *key, CamelMessageInfo *info, CamelLocalSummary *cls)
 	camel_message_info_free(info);
 }
 
-
 static gint
 mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {

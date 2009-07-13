@@ -412,7 +412,6 @@ disco_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	}
 }
 
-
 /**
  * camel_disco_folder_expunge_uids:
  * @folder: a (disconnectable) folder
@@ -431,7 +430,6 @@ camel_disco_folder_expunge_uids (CamelFolder *folder, GPtrArray *uids,
 {
 	disco_expunge_uids (folder, uids, ex);
 }
-
 
 static void
 disco_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid,
@@ -455,7 +453,6 @@ camel_disco_folder_cache_message (CamelDiscoFolder *disco_folder,
 {
 	CDF_CLASS (disco_folder)->cache_message (disco_folder, uid, ex);
 }
-
 
 static void
 disco_prepare_for_offline (CamelDiscoFolder *disco_folder,

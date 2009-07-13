@@ -37,12 +37,10 @@ typedef struct _CamelSaslPOPB4SMTP {
 
 } CamelSaslPOPB4SMTP;
 
-
 typedef struct _CamelSaslPOPB4SMTPClass {
 	CamelSaslClass parent_class;
 
 } CamelSaslPOPB4SMTPClass;
-
 
 /* Standard Camel function */
 CamelType camel_sasl_popb4smtp_get_type (void);

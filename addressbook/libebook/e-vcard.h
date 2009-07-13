@@ -140,7 +140,6 @@ gchar *   e_vcard_to_string                    (EVCard *evc, EVCardFormat format
 /* mostly for debugging */
 void    e_vcard_dump_structure               (EVCard *evc);
 
-
 /* attributes */
 EVCardAttribute *e_vcard_attribute_new               (const gchar *attr_group, const gchar *attr_name);
 void             e_vcard_attribute_free              (EVCardAttribute *attr);

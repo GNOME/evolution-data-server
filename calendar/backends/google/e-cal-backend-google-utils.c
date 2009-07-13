@@ -20,7 +20,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -48,7 +47,6 @@
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-time-util.h>
-
 
 #include <libical/ical.h>
 #include <libsoup/soup-misc.h>
@@ -117,7 +115,6 @@ e_cal_backend_google_utils_populate_cache (ECalBackendGoogle *cbgo)
 	e_cal_backend_notify_view_done (E_CAL_BACKEND(cbgo), GNOME_Evolution_Calendar_Success);
 }
 
-
 /**
  *
  * e_cal_backend_google_utils_create_cache:
@@ -159,7 +156,6 @@ e_cal_backend_google_utils_create_cache (ECalBackendGoogle *cbgo)
 
 	return GINT_TO_POINTER (GNOME_Evolution_Calendar_Success);
 }
-
 
 /**
  * e_cal_backend_google_utils_update:
@@ -548,7 +544,6 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	return comp;
 }
 
-
 /**
  *
  * e_go_item_from_cal_component:
@@ -653,7 +648,6 @@ e_go_item_get_entry (EGoItem *item)
 	return item->entry;
 }
 
-
 /**
  *
  * e_go_item_set_entry:
@@ -692,7 +686,6 @@ gdata_entry_get_entry_by_id (GSList *entries, const gchar *id)
 
 	return NULL;
 }
-
 
 /***************************************************************** Utility Functions *********************************************/
 
@@ -749,7 +742,6 @@ utils_update_insertion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, EGoIte
 	if (entries_list)
 		g_slist_free (entries_list);
 }
-
 
 static void
 utils_update_deletion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, GSList *cache_keys)

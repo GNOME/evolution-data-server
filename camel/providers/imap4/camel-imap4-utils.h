@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef __CAMEL_IMAP4_UTILS_H__
 #define __CAMEL_IMAP4_UTILS_H__
 
@@ -38,7 +37,6 @@ typedef struct {
 void camel_imap4_flags_diff (flags_diff_t *diff, guint32 old, guint32 new);
 guint32 camel_imap4_flags_merge (flags_diff_t *diff, guint32 flags);
 guint32 camel_imap4_merge_flags (guint32 original, guint32 local, guint32 server);
-
 
 struct _CamelFolderInfo;
 struct _CamelIMAP4Engine;
@@ -75,7 +73,6 @@ typedef struct {
 
 gint camel_imap4_untagged_list (struct _CamelIMAP4Engine *engine, struct _CamelIMAP4Command *ic,
 			       guint32 index, struct _camel_imap4_token_t *token, CamelException *ex);
-
 
 enum {
 	CAMEL_IMAP4_STATUS_UNKNOWN,

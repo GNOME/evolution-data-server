@@ -30,7 +30,6 @@ void     e2k_operation_start          (E2kOperation           *op,
 				       gpointer                data);
 void     e2k_operation_finish         (E2kOperation           *op);
 
-
 void     e2k_operation_cancel         (E2kOperation           *op);
 gboolean e2k_operation_is_cancelled   (E2kOperation           *op);
 

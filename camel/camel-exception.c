@@ -37,7 +37,6 @@
 /* dont turn this off */
 #define w(x) x
 
-
 /**
  * camel_exception_new: allocate a new exception object.
  *
@@ -74,7 +73,6 @@ camel_exception_init (CamelException *ex)
 	/* set the Exception Id to NULL */
 	ex->id = CAMEL_EXCEPTION_NONE;
 }
-
 
 /**
  * camel_exception_clear:

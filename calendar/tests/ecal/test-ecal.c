@@ -169,7 +169,6 @@ test_object_creation (ECal *client,  gchar **uid)
 	e_cal_component_set_dtend (comp, &dt);
 	e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
 
-
 	e_cal_component_commit_sequence (comp);
 	icalcomp = e_cal_component_get_icalcomponent (comp);
 	if (!e_cal_create_object (client, icalcomp, uid, &error)) {
@@ -529,7 +528,6 @@ test_get_free_busy (ECal *client)
 	return NULL;
 }
 
-
 static gchar *
 test_get_default_object (ECal *client)
 {
@@ -547,7 +545,6 @@ test_get_default_object (ECal *client)
 		cl_printf (client, "Test Get default object : Could not get the default object: %s\n", error->message);
 	return error->message;
 }
-
 
 /* XXX The string pasted below is *really* ugly. Alternatively, it could be
  * read from a file at run-time. Not sure if it is an elegant solution when
@@ -616,7 +613,6 @@ test_timezones (ECal *client)
 	printf ("\n\nTime Zones : \n%s *** %s", icaltimezone_get_display_name (zone), icaltimezone_get_tzid (zone));
 	printf ("\n\nTime Zones : \n%s", icaltimezone_get_location (zone));
 
-
 	return NULL;
 }
 
@@ -637,7 +633,6 @@ all_tests(ECal *client, const gchar *uri)
 	mu_run_test (test_query (client, "(contains? \"any\" \"test\")", 2));
 	mu_run_test (test_query (client, "(contains? \"summary\" \"Kansas\")", 1));
 	mu_run_test (test_query (client, "(contains? \"any\" \"gibberish\")", 0));
-
 
 	mu_run_test (test_get_default_object (client));
 	mu_run_test (test_get_object (client));
@@ -706,7 +701,6 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 	cl_printf (*client, "*************Tests passed: %d*************\n\n\n", tests_passed);
 	if (results != 0)
 		cl_printf (*client, "***Failures********%s\n", results);
-
 
 	cl_printf (*client, "dump of the test calendar data");
 	list_uids (*client);

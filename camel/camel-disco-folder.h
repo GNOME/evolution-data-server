@@ -108,7 +108,6 @@ typedef struct {
 			    const gchar *new_uid);
 } CamelDiscoFolderClass;
 
-
 /* public methods */
 void camel_disco_folder_expunge_uids (CamelFolder *folder, GPtrArray *uids,
 				      CamelException *ex);

@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef __CAMEL_IMAP4_STORE_H__
 #define __CAMEL_IMAP4_STORE_H__
 
@@ -51,7 +50,6 @@ struct _CamelIMAP4StoreClass {
 	CamelOfflineStoreClass parent_class;
 
 };
-
 
 CamelType camel_imap4_store_get_type (void);
 

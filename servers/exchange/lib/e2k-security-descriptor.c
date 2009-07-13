@@ -176,7 +176,6 @@ dispose (GObject *object)
 
 E2K_MAKE_TYPE (e2k_security_descriptor, E2kSecurityDescriptor, class_init, init, PARENT_TYPE)
 
-
 /* This determines the relative ordering of any two ACEs in a SID.
  * See docs/security for details.
  */
@@ -274,7 +273,6 @@ ace_compar (E2k_ACE *ace1, E2k_ACE *ace2, E2kSecurityDescriptor *sd)
 			return 0;
 	}
 }
-
 
 static xmlNode *
 find_child (xmlNode *node, const xmlChar *name)
@@ -836,7 +834,6 @@ e2k_security_descriptor_set_permissions (E2kSecurityDescriptor *sd,
 		set_ace (sd, &ace);
 	}
 }
-
 
 static struct {
 	const gchar *name;

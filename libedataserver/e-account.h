@@ -146,7 +146,6 @@ typedef struct {
 	void (*changed)(EAccount *, gint field);
 } EAccountClass;
 
-
 GType     e_account_get_type (void);
 
 EAccount *e_account_new          (void);
@@ -160,7 +159,6 @@ void      e_account_import       (EAccount   *dest,
 				  EAccount   *src);
 
 gchar     *e_account_to_xml       (EAccount   *account);
-
 
 gchar     *e_account_uid_from_xml (const gchar *xml);
 

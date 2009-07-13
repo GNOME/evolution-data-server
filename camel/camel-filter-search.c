@@ -125,7 +125,6 @@ static struct {
 	{ "junk-test",          (ESExpFunc *) junk_test,          0 },
 };
 
-
 static CamelMimeMessage *
 camel_filter_search_get_message (FilterMessageSearch *fms, struct _ESExp *sexp)
 {
@@ -205,7 +204,6 @@ header_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Filter
 {
 	return check_header (f, argc, argv, fms, CAMEL_SEARCH_MATCH_CONTAINS);
 }
-
 
 static ESExpResult *
 header_matches (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)

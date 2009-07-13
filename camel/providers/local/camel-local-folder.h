@@ -85,7 +85,6 @@ struct _CamelLocalFolderClass {
 	void (*unlock)(CamelLocalFolder *);
 };
 
-
 /* public methods */
 /* flags are taken from CAMEL_STORE_FOLDER_* flags */
 CamelLocalFolder *camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store,

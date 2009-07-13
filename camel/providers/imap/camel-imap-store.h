@@ -21,7 +21,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_IMAP_STORE_H
 #define CAMEL_IMAP_STORE_H 1
 
@@ -154,10 +153,8 @@ typedef struct {
 
 } CamelImapStoreClass;
 
-
 /* Standard Camel function */
 CamelType camel_imap_store_get_type (void);
-
 
 gboolean camel_imap_store_connected (CamelImapStore *store, CamelException *ex);
 

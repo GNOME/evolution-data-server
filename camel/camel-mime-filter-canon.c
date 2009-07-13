@@ -38,7 +38,6 @@ static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
 		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
 
-
 static void
 camel_mime_filter_canon_class_init (CamelMimeFilterCanonClass *klass)
 {
@@ -178,7 +177,6 @@ reset (CamelMimeFilter *f)
 {
 	/* no-op */
 }
-
 
 /**
  * camel_mime_filter_canon_new:

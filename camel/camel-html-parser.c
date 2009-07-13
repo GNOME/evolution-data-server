@@ -126,7 +126,6 @@ camel_html_parser_new (void)
 	return new;
 }
 
-
 void camel_html_parser_set_data(CamelHTMLParser *hp, const gchar *start, gint len, gint last)
 {
 	CamelHTMLParserPrivate *p = hp->priv;
@@ -375,7 +374,6 @@ static struct {
 	{ 8658,	"rArr",	/* rightwards double arrow, U+21D2 ISOtech */ },
 	{ 8659,	"dArr",	/* downwards double arrow, U+21D3 ISOamsa */ },
 	{ 8660,	"hArr",	/* left right double arrow, U+21D4 ISOamsa */ },
-
 
 	{ 8704,	"forall",/* for all, U+2200 ISOtech */ },
 	{ 8706,	"part",	/* partial differential, U+2202 ISOtech */ },

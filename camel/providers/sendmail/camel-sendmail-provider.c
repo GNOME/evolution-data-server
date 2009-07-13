@@ -61,5 +61,3 @@ camel_provider_module_init(void)
 	camel_provider_register(&sendmail_provider);
 }
 
-
-

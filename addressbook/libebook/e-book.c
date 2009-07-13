@@ -259,7 +259,6 @@ e_book_clear_op (EBook *book,
 	e_book_op_free (op);
 }
 
-
 static gboolean
 do_add_contact (gboolean          sync,
 		EBook            *book,
@@ -569,7 +568,6 @@ do_commit_contact (gboolean        sync,
 	}
 }
 
-
 /**
  * e_book_commit_contact:
  * @book: an #EBook
@@ -687,7 +685,6 @@ do_get_required_fields (gboolean             sync,
 		return FALSE;
 	}
 
-
 	CORBA_exception_free (&ev);
 
 	if (sync) {
@@ -777,7 +774,6 @@ do_get_supported_fields (gboolean             sync,
 
 		return FALSE;
 	}
-
 
 	CORBA_exception_free (&ev);
 
@@ -1074,7 +1070,6 @@ do_get_supported_auth_methods (gboolean             sync,
 				   "Book::getSupportedAuthMethods");
 		return FALSE;
 	}
-
 
 	CORBA_exception_free (&ev);
 
@@ -2205,7 +2200,6 @@ emit_async_get_contacts_response (gpointer data)
 	return FALSE;
 }
 
-
 static void
 e_book_response_get_contacts (EBook       *book,
 			      guint32      opid,
@@ -3073,7 +3067,6 @@ e_book_idle_auth_required (gpointer data)
 
 	return FALSE;
 
-
 }
 
 static void
@@ -3205,7 +3198,6 @@ e_book_unload_uri (EBook   *book,
 
 
 
-
 /* Set a flag for operation from the operation hash table */
 static void
 find_key_value (gpointer key, gpointer value, gpointer data)
@@ -3326,7 +3318,6 @@ fetch_corba_book (EBook       *book,
 			     _("%s: no factories available for URI `%s'"), "e_book_load_uri", uri);
 		return FALSE;
 	}
-
 
 	/*
 	 * Create our local BookListener interface.
@@ -3699,7 +3690,6 @@ e_book_set_default_addressbook (EBook *book, GError **error)
 
 	return e_book_set_default_source (source, error);
 }
-
 
 /**
  * e_book_set_default_source:

@@ -80,7 +80,6 @@ static void expunge             (CamelFolder *folder,
 static gint folder_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args);
 static void folder_free(CamelObject *o, guint32 tag, gpointer val);
 
-
 static void append_message (CamelFolder *folder, CamelMimeMessage *message,
 			    const CamelMessageInfo *info, gchar **appended_uid,
 			    CamelException *ex);
@@ -295,14 +294,12 @@ camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 	}
 }
 
-
 static void
 folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	w(g_warning ("CamelFolder::sync not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 }
-
 
 /**
  * camel_folder_sync:
@@ -326,13 +323,11 @@ camel_folder_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
-
 static void
 refresh_info (CamelFolder *folder, CamelException *ex)
 {
 	/* No op */
 }
-
 
 /**
  * camel_folder_refresh_info:
@@ -527,7 +522,6 @@ get_name (CamelFolder *folder)
 	return folder->name;
 }
 
-
 /**
  * camel_folder_get_name:
  * @folder: a #CamelFolder object
@@ -545,13 +539,11 @@ camel_folder_get_name (CamelFolder *folder)
 	return CF_CLASS (folder)->get_name (folder);
 }
 
-
 static const gchar *
 get_full_name (CamelFolder *folder)
 {
 	return folder->full_name;
 }
-
 
 /**
  * camel_folder_get_full_name:
@@ -569,13 +561,11 @@ camel_folder_get_full_name (CamelFolder *folder)
 	return CF_CLASS (folder)->get_full_name (folder);
 }
 
-
 static CamelStore *
 get_parent_store (CamelFolder * folder)
 {
 	return folder->parent_store;
 }
-
 
 /**
  * camel_folder_get_parent_store:
@@ -591,14 +581,12 @@ camel_folder_get_parent_store (CamelFolder *folder)
 	return CF_CLASS (folder)->get_parent_store (folder);
 }
 
-
 static void
 expunge (CamelFolder *folder, CamelException *ex)
 {
 	w(g_warning ("CamelFolder::expunge not implemented for '%s'",
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (folder))));
 }
-
 
 /**
  * camel_folder_expunge:
@@ -628,7 +616,6 @@ get_message_count (CamelFolder *folder)
 	return camel_folder_summary_count(folder->summary);
 }
 
-
 /**
  * camel_folder_get_message_count:
  * @folder: a #CamelFolder object
@@ -646,7 +633,6 @@ camel_folder_get_message_count (CamelFolder *folder)
 
 	return ret;
 }
-
 
 /**
  * camel_folder_get_unread_message_count:
@@ -668,7 +654,6 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
 
 	return count;
 }
-
 
 /**
  * camel_folder_get_deleted_message_count:
@@ -730,13 +715,11 @@ camel_folder_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	CAMEL_FOLDER_REC_UNLOCK(folder, lock);
 }
 
-
 static guint32
 get_permanent_flags (CamelFolder *folder)
 {
 	return folder->permanent_flags;
 }
-
 
 /**
  * camel_folder_get_permanent_flags:
@@ -771,7 +754,6 @@ get_message_flags(CamelFolder *folder, const gchar *uid)
 
 	return flags;
 }
-
 
 /**
  * camel_folder_get_message_flags:
@@ -812,7 +794,6 @@ set_message_flags(CamelFolder *folder, const gchar *uid, guint32 flags, guint32 
 
 	return res;
 }
-
 
 /**
  * camel_folder_set_message_flags:
@@ -864,7 +845,6 @@ get_message_user_flag(CamelFolder *folder, const gchar *uid, const gchar *name)
 	return ret;
 }
 
-
 /**
  * camel_folder_get_message_user_flag:
  * @folder: a #CamelFolder object
@@ -904,7 +884,6 @@ set_message_user_flag(CamelFolder *folder, const gchar *uid, const gchar *name, 
 	camel_message_info_set_user_flag(info, name, value);
 	camel_message_info_free(info);
 }
-
 
 /**
  * camel_folder_set_message_user_flag:
@@ -947,7 +926,6 @@ get_message_user_tag(CamelFolder *folder, const gchar *uid, const gchar *name)
 	return ret;
 }
 
-
 /**
  * camel_folder_get_message_user_tag:
  * @folder: a #CamelFolder object
@@ -987,7 +965,6 @@ set_message_user_tag(CamelFolder *folder, const gchar *uid, const gchar *name, c
 	camel_message_info_free(info);
 }
 
-
 /**
  * camel_folder_set_message_user_tag:
  * @folder: a #CamelFolder object
@@ -1017,7 +994,6 @@ get_message_info (CamelFolder *folder, const gchar *uid)
 
 	return camel_folder_summary_uid(folder->summary, uid);
 }
-
 
 /**
  * camel_folder_get_message_info:
@@ -1051,7 +1027,6 @@ free_message_info (CamelFolder *folder, CamelMessageInfo *info)
 	camel_message_info_free(info);
 }
 
-
 /**
  * camel_folder_free_message_info:
  * @folder: a #CamelFolder object
@@ -1077,7 +1052,6 @@ ref_message_info (CamelFolder *folder, CamelMessageInfo *info)
 	camel_message_info_ref(info);
 }
 
-
 /**
  * camel_folder_ref_message_info:
  * @folder: a #CamelFolder object
@@ -1097,7 +1071,6 @@ camel_folder_ref_message_info(CamelFolder *folder, CamelMessageInfo *info)
 	CF_CLASS (folder)->ref_message_info(folder, info);
 }
 
-
 /* TODO: is this function required anyway? */
 /**
  * camel_folder_has_summary_capability:
@@ -1115,7 +1088,6 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 	return folder->folder_flags & CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 }
 
-
 /* UIDs stuff */
 
 static CamelMimeMessage *
@@ -1126,7 +1098,6 @@ get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 
 	return NULL;
 }
-
 
 /**
  * camel_folder_get_message:
@@ -1197,7 +1168,6 @@ get_uids(CamelFolder *folder)
 	return camel_folder_summary_array (folder->summary);
 }
 
-
 /**
  * camel_folder_get_uids:
  * @folder: a #CamelFolder object
@@ -1232,7 +1202,6 @@ free_uids (CamelFolder *folder, GPtrArray *array)
 	g_ptr_array_free(array, TRUE);
 }
 
-
 /**
  * camel_folder_free_uids:
  * @folder: a #CamelFolder object
@@ -1247,7 +1216,6 @@ camel_folder_free_uids (CamelFolder *folder, GPtrArray *array)
 
 	CF_CLASS (folder)->free_uids (folder, array);
 }
-
 
 /**
  * Default: return the uids we are given.
@@ -1331,7 +1299,6 @@ sort_uids (CamelFolder *folder, GPtrArray *uids)
 	g_qsort_with_data (uids->pdata, uids->len, sizeof (gpointer), cmp_array_uids, folder);
 }
 
-
 /**
  * camel_folder_sort_uids:
  * @folder: a #CamelFolder object
@@ -1347,7 +1314,6 @@ camel_folder_sort_uids (CamelFolder *folder, GPtrArray *uids)
 	CF_CLASS (folder)->sort_uids (folder, uids);
 }
 
-
 static GPtrArray *
 get_summary(CamelFolder *folder)
 {
@@ -1355,7 +1321,6 @@ get_summary(CamelFolder *folder)
 
 	return camel_folder_summary_array(folder->summary);
 }
-
 
 /**
  * camel_folder_get_summary:
@@ -1386,7 +1351,6 @@ free_summary(CamelFolder *folder, GPtrArray *summary)
 	g_ptr_array_free (summary, TRUE);
 }
 
-
 /**
  * camel_folder_free_summary:
  * @folder: a #CamelFolder object
@@ -1399,7 +1363,6 @@ camel_folder_free_summary(CamelFolder *folder, GPtrArray *array)
 {
 	CF_CLASS(folder)->free_summary(folder, array);
 }
-
 
 /**
  * camel_folder_has_search_capability:
@@ -1430,7 +1393,6 @@ search_by_expression (CamelFolder *folder, const gchar *expression,
 
 	return NULL;
 }
-
 
 /**
  * camel_folder_search_by_expression:
@@ -1473,7 +1435,6 @@ count_by_expression (CamelFolder *folder, const gchar *expression,
 	return 0;
 }
 
-
 /**
  * camel_folder_count_by_expression:
  * @folder: a #CamelFolder object
@@ -1513,7 +1474,6 @@ search_by_uids(CamelFolder *folder, const gchar *exp, GPtrArray *uids, CamelExce
 	return NULL;
 }
 
-
 /**
  * camel_folder_search_by_uids:
  * @folder: a #CamelFolder object
@@ -1551,7 +1511,6 @@ search_free (CamelFolder *folder, GPtrArray *result)
 	g_ptr_array_free (result, TRUE);
 }
 
-
 /**
  * camel_folder_search_free:
  * @folder: a #CamelFolder object
@@ -1568,7 +1527,6 @@ camel_folder_search_free (CamelFolder *folder, GPtrArray *result)
 	/* NOTE: upto the callee to lock */
 	CF_CLASS (folder)->search_free (folder, result);
 }
-
 
 static void
 transfer_message_to (CamelFolder *source, const gchar *uid, CamelFolder *dest,
@@ -1643,7 +1601,6 @@ transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, G
 	camel_exception_clear(&local);
 }
 
-
 /**
  * camel_folder_transfer_messages_to:
  * @source: the source #CamelFolder object
@@ -1691,7 +1648,6 @@ delete (CamelFolder *folder)
 		camel_folder_summary_clear (folder->summary);
 }
 
-
 /**
  * camel_folder_delete:
  * @folder: a #CamelFolder object
@@ -1735,7 +1691,6 @@ folder_rename (CamelFolder *folder, const gchar *new)
 	folder->name = g_strdup(tmp?tmp+1:new);
 }
 
-
 /**
  * camel_folder_rename:
  * @folder: a #CamelFolder object
@@ -1771,7 +1726,6 @@ freeze (CamelFolder *folder)
 	d(printf ("freeze(%p '%s') = %d\n", folder, folder->full_name, folder->priv->frozen));
 	CAMEL_FOLDER_UNLOCK(folder, change_lock);
 }
-
 
 /**
  * camel_folder_freeze:
@@ -1838,7 +1792,6 @@ is_frozen (CamelFolder *folder)
 {
 	return folder->priv->frozen != 0;
 }
-
 
 /**
  * camel_folder_is_frozen:
@@ -2076,7 +2029,6 @@ struct _CamelFolderChangeInfoPrivate {
 	struct _EMemPool *uid_pool;	/* pool used to store copies of uid strings */
 };
 
-
 /* Event hooks that block emission when frozen */
 static gboolean
 folder_changed (CamelObject *obj, gpointer event_data)
@@ -2174,7 +2126,6 @@ folder_changed (CamelObject *obj, gpointer event_data)
 	return TRUE;
 }
 
-
 /**
  * camel_folder_free_nop:
  * @folder: a #CamelFolder object
@@ -2189,7 +2140,6 @@ camel_folder_free_nop (CamelFolder *folder, GPtrArray *array)
 {
 	;
 }
-
 
 /**
  * camel_folder_free_shallow:
@@ -2206,7 +2156,6 @@ camel_folder_free_shallow (CamelFolder *folder, GPtrArray *array)
 {
 	g_ptr_array_free (array, TRUE);
 }
-
 
 /**
  * camel_folder_free_deep:
@@ -2226,7 +2175,6 @@ camel_folder_free_deep (CamelFolder *folder, GPtrArray *array)
 		g_free (array->pdata[i]);
 	g_ptr_array_free (array, TRUE);
 }
-
 
 /**
  * camel_folder_change_info_new:
@@ -2257,7 +2205,6 @@ camel_folder_change_info_new(void)
 	return info;
 }
 
-
 /**
  * camel_folder_change_info_add_source:
  * @info: a #CamelFolderChangeInfo
@@ -2280,7 +2227,6 @@ camel_folder_change_info_add_source(CamelFolderChangeInfo *info, const gchar *ui
 	if (g_hash_table_lookup(p->uid_source, uid) == NULL)
 		g_hash_table_insert(p->uid_source, e_mempool_strdup(p->uid_pool, uid), GINT_TO_POINTER (1));
 }
-
 
 /**
  * camel_folder_change_info_add_source_list:
@@ -2311,7 +2257,6 @@ camel_folder_change_info_add_source_list(CamelFolderChangeInfo *info, const GPtr
 	}
 }
 
-
 /**
  * camel_folder_change_info_add_update:
  * @info: a #CamelFolderChangeInfo
@@ -2341,7 +2286,6 @@ camel_folder_change_info_add_update(CamelFolderChangeInfo *info, const gchar *ui
 		camel_folder_change_info_add_uid(info, uid);
 	}
 }
-
 
 /**
  * camel_folder_change_info_add_update_list:
@@ -2383,7 +2327,6 @@ change_info_remove(gchar *key, gpointer value, CamelFolderChangeInfo *info)
 	g_ptr_array_add(info->uid_removed, key);
 	g_hash_table_insert(p->uid_stored, key, info->uid_removed);
 }
-
 
 /**
  * camel_folder_change_info_build_diff:
@@ -2449,7 +2392,6 @@ change_info_cat(CamelFolderChangeInfo *info, GPtrArray *source, void (*add)(Came
 		add(info, source->pdata[i]);
 }
 
-
 /**
  * camel_folder_change_info_cat:
  * @info: a #CamelFolderChangeInfo to append to
@@ -2505,7 +2447,6 @@ camel_folder_change_info_add_uid(CamelFolderChangeInfo *info, const gchar *uid)
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_added);
 }
 
-
 /**
  * camel_folder_change_info_remove_uid:
  * @info: a #CamelFolderChangeInfo
@@ -2539,7 +2480,6 @@ camel_folder_change_info_remove_uid(CamelFolderChangeInfo *info, const gchar *ui
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_removed);
 }
 
-
 /**
  * camel_folder_change_info_change_uid:
  * @info: a #CamelFolderChangeInfo
@@ -2567,7 +2507,6 @@ camel_folder_change_info_change_uid(CamelFolderChangeInfo *info, const gchar *ui
 	g_ptr_array_add(info->uid_changed, olduid);
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_changed);
 }
-
 
 /**
  * camel_folder_change_info_recent_uid:
@@ -2604,7 +2543,6 @@ camel_folder_change_info_changed(CamelFolderChangeInfo *info)
 	return (info->uid_added->len || info->uid_removed->len || info->uid_changed->len || info->uid_recent->len);
 }
 
-
 /**
  * camel_folder_change_info_clear:
  * @info: a #CamelFolderChangeInfo
@@ -2634,7 +2572,6 @@ camel_folder_change_info_clear(CamelFolderChangeInfo *info)
 	g_ptr_array_set_size(p->uid_filter, 0);
 	e_mempool_flush(p->uid_pool, TRUE);
 }
-
 
 /**
  * camel_folder_change_info_free:

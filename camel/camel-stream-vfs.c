@@ -78,7 +78,6 @@ camel_stream_vfs_finalize (CamelObject *object)
 		g_object_unref (stream_vfs->stream);
 }
 
-
 CamelType
 camel_stream_vfs_get_type (void)
 {

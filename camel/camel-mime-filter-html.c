@@ -60,7 +60,6 @@ static struct {
 	{ "h1", "\n" }, { "h2", "\n" }, { "h3", "\n" }, { "h4", "\n" }, { "h5", "\n" }, { "h6", "\n" },
 };
 
-
 static struct {
 	gchar *element;
 	gchar *remap;
@@ -69,9 +68,7 @@ static struct {
 };
 #endif
 
-
 /* ********************************************************************** */
-
 
 CamelType
 camel_mime_filter_html_get_type (void)
@@ -183,7 +180,6 @@ camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass)
 	filter_class->filter = filter;
 	filter_class->complete = complete;
 }
-
 
 /**
  * camel_mime_filter_html_new:

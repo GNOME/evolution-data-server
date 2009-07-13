@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef __CAMEL_IMAP4_STREAM_H__
 #define __CAMEL_IMAP4_STREAM_H__
 
@@ -104,7 +103,6 @@ struct _CamelIMAP4StreamClass {
 
 	/* Virtual methods */
 };
-
 
 /* Standard Camel function */
 CamelType camel_imap4_stream_get_type (void);

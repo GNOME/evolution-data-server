@@ -53,7 +53,6 @@ GType                e_book_backend_factory_get_type             (void);
 const gchar *          e_book_backend_factory_get_protocol         (EBookBackendFactory *factory);
 EBookBackend*        e_book_backend_factory_new_backend          (EBookBackendFactory *factory);
 
-
 /* use this macro for simple, 1 factory modules */
 #define E_BOOK_BACKEND_FACTORY_SIMPLE(p,t,f) \
 typedef struct { \

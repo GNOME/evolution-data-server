@@ -135,7 +135,6 @@ e_path_to_physical (const gchar *prefix, const gchar *vpath)
 	return ppath;
 }
 
-
 static gboolean
 find_folders_recursive (const gchar *physical_path, const gchar *path,
 			EPathFindFoldersCallback callback, gpointer data)
@@ -215,7 +214,6 @@ e_path_find_folders (const gchar *prefix,
 {
 	return find_folders_recursive (prefix, "", callback, data);
 }
-
 
 /**
  * e_path_rmdir:

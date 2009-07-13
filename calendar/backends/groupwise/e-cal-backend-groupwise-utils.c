@@ -489,7 +489,6 @@ get_actual_count (ECalComponent *comp, ECalBackendGroupwise *cbgw)
 	gint count = 0;
 	icaltimezone *dzone, *utc;
 
-
 	dzone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	utc = icaltimezone_get_utc_timezone ();
 
@@ -564,7 +563,6 @@ set_rrule_from_comp (ECalComponent *comp, EGwItem *item, ECalBackendGroupwise *c
 			icaltimezone *default_zone, *utc;
 			struct icaltimetype itt_utc;
 
-
 			e_cal_component_get_exdate_list (comp, &exdate_list);
 			default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 			utc = icaltimezone_get_utc_timezone ();
@@ -637,8 +635,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 			cal_obj_uid_list_free (l);
 		}
 
-
-
 		/* end date */
 		e_cal_component_get_dtend (comp, &dt);
 		if (dt.value) {
@@ -706,7 +702,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	/* GW server ID */
 	e_gw_item_set_id (item, e_cal_component_get_gw_id (comp));
 
-
 	/* UID */
 	e_cal_component_get_uid (comp, &uid);
 	e_gw_item_set_icalid (item, uid);
@@ -732,7 +727,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 		g_string_free (str, TRUE);
 		e_cal_component_free_text_list (slist);
 	}
-
 
 	/* start date */
 	e_cal_component_get_dtstart (comp, &dt);
@@ -793,7 +787,6 @@ set_properties_from_cal_component (EGwItem *item, ECalComponent *comp, ECalBacke
 	default :
 		e_gw_item_set_classification (item, NULL);
 	}
-
 
 	set_attendees_to_item (item, comp, default_zone, FALSE, NULL);
 
@@ -1001,7 +994,6 @@ set_default_alarms (ECalComponent *comp)
 		g_object_unref (gconf);
 }
 
-
 static gchar *
 get_cn_from_display_name (gchar *display_name)
 {
@@ -1072,7 +1064,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		icalproperty_set_x_name (icalprop, "X-GWRECORDID");
 		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
 	}
-
 
 	if (e_gw_item_get_reply_request (item)) {
 		gchar *reply_within;
@@ -1256,7 +1247,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				else
 					attendee->status = ICAL_PARTSTAT_NEEDSACTION;
 
-
 				attendee_list = g_slist_append (attendee_list, attendee);
 			}
 
@@ -1330,7 +1320,6 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 			e_cal_component_set_dtend (comp, &dt);
 		}
-
 
 		/* alarms*/
 		/* we negate the value as GW supports only "before" the start of event alarms */
@@ -1500,7 +1489,6 @@ e_gw_connection_send_appointment (ECalBackendGroupwise *cbgw, const gchar *conta
 			const gchar *email_id;
 			ECalComponentAttendee  *attendee = NULL, *tmp;
 
-
 			e_cal_component_get_attendee_list (comp, &attendee_list);
 			for (l = attendee_list; l; l = g_slist_next (l)) {
 				tmp = (ECalComponentAttendee *) (l->data);
@@ -1660,7 +1648,6 @@ start_freebusy_session (EGwConnection *cnc, GList *users,
         }
 
         soup_soap_message_end_element (msg);
-
 
 	utc = icaltimezone_get_utc_timezone ();
 	icaltime = icaltime_from_timet_with_zone (start, FALSE, utc);
@@ -2031,7 +2018,6 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 	SET_DELTA(message);
 	SET_DELTA(classification);
 
-
 	SET_DELTA(start_date);
 	set_categories_changes (item, cache_item);
 	/*FIXME  recipient_list modifications need go here after server starts
@@ -2062,7 +2048,6 @@ e_gw_item_set_changes (EGwItem *item, EGwItem *cache_item)
 		SET_DELTA(task_priority);
 	}
 }
-
 
 static void
 add_return_value (EGwSendOptionsReturnNotify track, ESource *source, const gchar *notify)

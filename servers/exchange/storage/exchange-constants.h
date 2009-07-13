@@ -4,7 +4,6 @@
 #ifndef __EXCHANGE_CONSTANTS_H__
 #define __EXCHANGE_CONSTANTS_H__
 
-
 enum {
 	UNSUPPORTED_MODE = 0,
         OFFLINE_MODE,

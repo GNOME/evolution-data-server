@@ -103,7 +103,6 @@ compare_im_gadugadu (EContact *contact, const gchar *str,
 	return compare_im (contact, str, compare, E_CONTACT_IM_GADUGADU);
 }
 
-
 static gboolean
 compare_im_jabber (EContact *contact, const gchar *str,
 		   gchar *(*compare)(const gchar *, const gchar *))

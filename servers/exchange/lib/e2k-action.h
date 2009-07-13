@@ -36,7 +36,6 @@ E2kAction   *e2k_action_delete         (void);
 void         e2k_actions_free          (GPtrArray	     *actions);
 void         e2k_action_free           (E2kAction            *act);
 
-
 E2kAddrList *e2k_addr_list_new         (gint		      nentries);
 void         e2k_addr_list_set_local   (E2kAddrList	     *list,
 					gint		      entry_num,

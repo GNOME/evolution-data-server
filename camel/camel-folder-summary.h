@@ -329,7 +329,6 @@ CamelFolderSummary      *camel_folder_summary_new	(struct _CamelFolder *folder);
 /* Deprecated */
 void camel_folder_summary_set_filename(CamelFolderSummary *summary, const gchar *filename);
 
-
 void camel_folder_summary_set_index(CamelFolderSummary *summary, CamelIndex *index);
 void camel_folder_summary_set_build_content(CamelFolderSummary *summary, gboolean state);
 

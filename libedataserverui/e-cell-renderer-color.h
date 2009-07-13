@@ -21,7 +21,6 @@
 #ifndef _E_CELL_RENDERER_COLOR_H_
 #define _E_CELL_RENDERER_COLOR_H_
 
-
 #include <glib.h>
 #include <gtk/gtk.h>
 

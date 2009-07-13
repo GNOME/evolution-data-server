@@ -93,7 +93,6 @@ struct _match_record {
 	GArray *matches;
 };
 
-
 static void free_match(CamelImapSearch *is, struct _match_record *mr);
 static ESExpResult *imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
@@ -172,7 +171,6 @@ camel_imap_search_new (const gchar *cachedir)
 
 	return new;
 }
-
 
 static void
 hash_match(gchar hash[17], gint argc, struct _ESExpResult **argv)

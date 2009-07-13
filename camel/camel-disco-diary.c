@@ -105,7 +105,6 @@ camel_disco_diary_get_type (void)
 	return camel_disco_diary_type;
 }
 
-
 static gint
 diary_encode_uids (CamelDiscoDiary *diary, GPtrArray *uids)
 {

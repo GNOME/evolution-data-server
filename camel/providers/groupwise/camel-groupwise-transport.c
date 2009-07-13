@@ -57,10 +57,7 @@ static gchar *groupwise_transport_get_name (CamelService *service, gboolean brie
 static void groupwise_transport_construct (CamelService *service, CamelSession *session,
 					   CamelProvider *provider, CamelURL *url, CamelException *ex);
 
-
 static CamelTransportClass *parent_class = NULL;
-
-
 
 static void
 camel_groupwise_transport_class_init (CamelGroupwiseTransportClass *camel_groupwise_transport_class)
@@ -127,14 +124,12 @@ static gchar *groupwise_transport_get_name (CamelService *service, gboolean brie
 	}
 }
 
-
 static gboolean
 groupwise_transport_connect (CamelService *service, CamelException *ex)
 {
 	return TRUE;
 
 }
-
 
 static gboolean
 groupwise_send_to (CamelTransport *transport,
@@ -206,7 +201,6 @@ groupwise_send_to (CamelTransport *transport,
 
 		g_free (id);
 	}
-
 
 	/*Send item*/
 	status = e_gw_connection_send_item (cnc, item, &sent_item_list);

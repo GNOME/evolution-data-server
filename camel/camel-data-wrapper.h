@@ -22,7 +22,6 @@
  *
  */
 
-
 #ifndef CAMEL_DATA_WRAPPER_H
 #define CAMEL_DATA_WRAPPER_H 1
 

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef _CAMEL_VTRASH_FOLDER_H
 #define _CAMEL_VTRASH_FOLDER_H
 

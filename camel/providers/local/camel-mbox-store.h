@@ -50,4 +50,3 @@ G_END_DECLS
 
 #endif /* CAMEL_MBOX_STORE_H */
 
-

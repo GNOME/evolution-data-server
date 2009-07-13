@@ -48,7 +48,6 @@ typedef enum {
 	E_BOOK_ERROR_NO_SPACE
 } EBookStatus;
 
-
 typedef enum {
 	E_BOOK_VIEW_STATUS_OK,
 	E_BOOK_VIEW_STATUS_TIME_LIMIT_EXCEEDED,

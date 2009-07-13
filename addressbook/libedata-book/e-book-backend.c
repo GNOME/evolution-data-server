@@ -894,7 +894,6 @@ e_book_backend_foreach_view (EBookBackend *backend,
 	g_object_unref (views);
 }
 
-
 static void
 view_notify_update (EDataBookView *view, gpointer contact)
 {
@@ -919,7 +918,6 @@ e_book_backend_notify_update (EBookBackend *backend, EContact *contact)
 	e_book_backend_foreach_view (backend, view_notify_update, contact);
 }
 
-
 static void
 view_notify_remove (EDataBookView *view, gpointer id)
 {
@@ -943,7 +941,6 @@ e_book_backend_notify_remove (EBookBackend *backend, const gchar *id)
 {
 	e_book_backend_foreach_view (backend, view_notify_remove, (gpointer)id);
 }
-
 
 static void
 view_notify_complete (EDataBookView *view, gpointer unused)

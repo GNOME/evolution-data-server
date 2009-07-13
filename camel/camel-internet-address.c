@@ -268,7 +268,6 @@ internet_remove	(CamelAddress *a, gint index)
 	g_ptr_array_remove_index(a->addresses, index);
 }
 
-
 /**
  * camel_internet_address_new:
  *
@@ -282,7 +281,6 @@ camel_internet_address_new (void)
 	CamelInternetAddress *new = CAMEL_INTERNET_ADDRESS(camel_object_new(camel_internet_address_get_type()));
 	return new;
 }
-
 
 /**
  * camel_internet_address_add:
@@ -310,7 +308,6 @@ camel_internet_address_add (CamelInternetAddress *addr, const gchar *name, const
 
 	return index;
 }
-
 
 /**
  * camel_internet_address_get:
@@ -340,7 +337,6 @@ camel_internet_address_get (const CamelInternetAddress *addr, gint index, const 
 		*addressp = a->address;
 	return TRUE;
 }
-
 
 /**
  * camel_internet_address_find_name:
@@ -372,7 +368,6 @@ camel_internet_address_find_name(CamelInternetAddress *addr, const gchar *name, 
 	}
 	return -1;
 }
-
 
 /**
  * camel_internet_address_find_address:
@@ -440,7 +435,6 @@ cia_encode_addrspec(GString *out, const gchar *addr)
 append:
 	g_string_append(out, addr);
 }
-
 
 /**
  * camel_internet_address_encode_address:
@@ -516,7 +510,6 @@ camel_internet_address_encode_address(gint *inlen, const gchar *real, const gcha
 
 	return ret;
 }
-
 
 /**
  * camel_internet_address_format_address:

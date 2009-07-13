@@ -657,7 +657,6 @@ restriction_to_xml (E2kRestriction *rn, xmlNode *partset,
 	return TRUE;
 }
 
-
 static gchar *
 stringify_entryid (guint8 *data, gint len)
 {

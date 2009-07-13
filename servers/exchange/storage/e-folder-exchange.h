@@ -41,7 +41,6 @@ EFolder    *e_folder_exchange_new_from_file (ExchangeHierarchy     *hier,
 gboolean    e_folder_exchange_save_to_file  (EFolder               *folder,
 					     const gchar            *filename);
 
-
 const gchar *e_folder_exchange_get_internal_uri     (EFolder    *folder);
 void        e_folder_exchange_set_internal_uri     (EFolder    *folder,
 						    const gchar *internal_uri);
@@ -69,7 +68,6 @@ gchar       *e_folder_exchange_get_storage_file     (EFolder    *folder,
 						    const gchar *filename);
 
 ExchangeHierarchy *e_folder_exchange_get_hierarchy (EFolder    *folder);
-
 
 /* E2kContext wrappers */
 E2kHTTPStatus  e_folder_exchange_propfind          (EFolder *folder,
@@ -99,7 +97,6 @@ void           e_folder_exchange_subscribe         (EFolder *folder,
 						    E2kContextChangeCallback,
 						    gpointer user_data);
 void           e_folder_exchange_unsubscribe       (EFolder *folder);
-
 
 E2kResultIter *e_folder_exchange_transfer_start    (EFolder *source,
 						    E2kOperation *op,
@@ -150,7 +147,6 @@ E2kHTTPStatus  e_folder_exchange_transfer_dir      (EFolder *source,
 						    EFolder *dest,
 						    gboolean delete_original,
 						    gchar **permanent_url);
-
 
 G_END_DECLS
 

@@ -47,7 +47,6 @@
 #define E_GW_PROXY_MODIFY_FOLDERS           (1 << 10)
 #define E_GW_PROXY_READ_PRIVATE             (1 << 11)
 
-
 struct _proxyHandler {
     gchar *uniqueid;
     gchar *proxy_name;

@@ -222,7 +222,6 @@ typedef struct {
 /* Standard Camel function */
 CamelType camel_folder_get_type (void);
 
-
 /* public methods */
 void               camel_folder_construct              (CamelFolder *folder,
 							CamelStore *parent_store,
@@ -237,16 +236,13 @@ void               camel_folder_sync                   (CamelFolder *folder,
 
 CamelStore *       camel_folder_get_parent_store       (CamelFolder *folder);
 
-
 /* delete operations */
 void		   camel_folder_expunge                (CamelFolder *folder,
 							CamelException *ex);
 
-
 /* folder name operations */
 const gchar *      camel_folder_get_name                (CamelFolder *folder);
 const gchar *      camel_folder_get_full_name           (CamelFolder *folder);
-
 
 /* various properties accessors */
 guint32		   camel_folder_get_permanent_flags    (CamelFolder *folder);
@@ -279,8 +275,6 @@ void		   camel_folder_set_message_user_tag  (CamelFolder *folder,
 						       const gchar *value);
 #endif /* CAMEL_DISABLE_DEPRECATED */
 
-
-
 /* message manipulation */
 void               camel_folder_append_message         (CamelFolder *folder,
 							CamelMimeMessage *message,
@@ -288,10 +282,8 @@ void               camel_folder_append_message         (CamelFolder *folder,
 							gchar **appended_uid,
 							CamelException *ex);
 
-
 /* summary related operations */
 gboolean           camel_folder_has_summary_capability (CamelFolder *folder);
-
 
 gint                camel_folder_get_message_count     (CamelFolder *folder);
 

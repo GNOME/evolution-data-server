@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -34,7 +33,6 @@ static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
 		      gsize prespace, gchar **out, gsize *outlen,
 		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
-
 
 static void
 camel_mime_filter_save_class_init (CamelMimeFilterSaveClass *klass)
@@ -93,7 +91,6 @@ reset (CamelMimeFilter *f)
 	/* no-op */
 }
 
-
 /**
  * camel_mime_filter_save_new:
  *
@@ -110,7 +107,6 @@ camel_mime_filter_save_new (void)
 
 	return (CamelMimeFilter *) save;
 }
-
 
 /**
  * camel_mime_filter_save_new_with_stream:

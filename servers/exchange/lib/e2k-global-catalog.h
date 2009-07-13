@@ -39,7 +39,6 @@ E2kGlobalCatalog *e2k_global_catalog_new             (const gchar *server,
 						      const gchar *password,
 						      E2kAutoconfigGalAuthPref use_auth);
 
-
 typedef enum {
 	E2K_GLOBAL_CATALOG_OK,
 	E2K_GLOBAL_CATALOG_NO_SUCH_USER,
@@ -101,7 +100,6 @@ void             e2k_global_catalog_async_lookup (E2kGlobalCatalog *gc,
 
 gdouble		lookup_passwd_max_age (E2kGlobalCatalog *gc,
 				      E2kOperation *op);
-
 
 #define e2k_global_catalog_entry_free(gc, entry)
 

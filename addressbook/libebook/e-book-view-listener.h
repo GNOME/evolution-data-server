@@ -48,7 +48,6 @@ struct _EBookViewListenerClass {
 	 */
 	void (*response) (EBookViewListener *listener, EBookViewListenerResponse *response);
 
-
 	/* Padding for future expansion */
 	void (*_ebook_reserved0) (void);
 	void (*_ebook_reserved1) (void);

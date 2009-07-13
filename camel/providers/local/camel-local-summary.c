@@ -637,7 +637,6 @@ local_summary_decode_x_evolution(CamelLocalSummary *cls, const gchar *xev, Camel
 	return 0;
 }
 
-
 static gint
 summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 {
@@ -661,7 +660,6 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 
 	return 0;
 }
-
 
 static gint
 summary_header_load(CamelFolderSummary *s, FILE *in)

@@ -24,7 +24,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H 1
 
@@ -66,7 +65,6 @@ extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 #define CAMEL_PROVIDER_SUPPORTS_SSL	(1 << 5)
 #define CAMEL_PROVIDER_HAS_LICENSE      (1 << 6)
 #define CAMEL_PROVIDER_DISABLE_SENT_FOLDER (1 << 7)
-
 
 /* Flags for url_flags. "ALLOW" means the config dialog will let the
  * user configure it. "NEED" implies "ALLOW" but means the user must
@@ -116,7 +114,6 @@ extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
 
 #define CAMEL_URL_FRAGMENT_IS_PATH  (1 << 30) /* url uses fragment for folder name path, not path */
 #define CAMEL_URL_PATH_IS_ABSOLUTE (1 << 31)
-
 
 #define CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT(prov) (prov->object_types[CAMEL_PROVIDER_STORE] && prov->object_types[CAMEL_PROVIDER_TRANSPORT])
 
@@ -230,7 +227,6 @@ CamelProvider *camel_provider_get(const gchar *url_string, CamelException *ex);
 
 /* This is defined by each module, not by camel-provider.c. */
 void camel_provider_module_init(void);
-
 
 gint camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
 				GHashTable **auto_detected, CamelException *ex);

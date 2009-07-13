@@ -173,7 +173,6 @@ camel_store_finalize (CamelObject *object)
 	g_free (store->priv);
 }
 
-
 CamelType
 camel_store_get_type (void)
 {
@@ -622,7 +621,6 @@ camel_store_rename_folder (CamelStore *store, const gchar *old_namein, const gch
 	g_ptr_array_free(folders, TRUE);
 	g_free(old_name);
 }
-
 
 static CamelFolder *
 get_inbox (CamelStore *store, CamelException *ex)
@@ -1158,7 +1156,6 @@ folder_info_clone_rec(CamelFolderInfo *fi, CamelFolderInfo *parent)
 	return info;
 }
 
-
 /**
  * camel_folder_info_clone:
  * @fi: a #CamelFolderInfo
@@ -1175,7 +1172,6 @@ camel_folder_info_clone(CamelFolderInfo *fi)
 
 	return folder_info_clone_rec(fi, NULL);
 }
-
 
 /**
  * camel_store_supports_subscriptions:
@@ -1261,7 +1257,6 @@ unsubscribe_folder(CamelStore *store, const gchar *folder_name, CamelException *
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (store))));
 }
 
-
 /**
  * camel_store_unsubscribe_folder:
  * @store: a #CamelStore object
@@ -1311,7 +1306,6 @@ camel_store_noop (CamelStore *store, CamelException *ex)
 {
 	CS_CLASS (store)->noop (store, ex);
 }
-
 
 /**
  * camel_store_folder_uri_equal:

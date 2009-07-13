@@ -162,7 +162,6 @@ e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
         return NULL;
 }
 
-
 static gunichar
 stripped_char (gunichar ch)
 {

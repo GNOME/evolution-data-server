@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_OFFLINE_JOURNAL_H__
 #define __CAMEL_OFFLINE_JOURNAL_H__
 
@@ -65,7 +64,6 @@ struct _CamelOfflineJournalClass {
 	gint (* entry_write) (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
 	gint (* entry_play) (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 };
-
 
 CamelType camel_offline_journal_get_type (void);
 

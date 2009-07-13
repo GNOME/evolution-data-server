@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -52,7 +51,6 @@ guchar camel_imap4_specials[256] = {
           2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,
 };
 
-
 static void
 imap4_init_bits (unsigned short bit, unsigned short bitcopy, gint remove, guchar *vals)
 {
@@ -80,7 +78,6 @@ imap4_init_bits (unsigned short bit, unsigned short bitcopy, gint remove, guchar
 		}
 	}
 }
-
 
 void
 camel_imap4_specials_init (void)

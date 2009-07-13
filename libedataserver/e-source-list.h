@@ -36,7 +36,6 @@ G_BEGIN_DECLS
 #define E_IS_SOURCE_LIST(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_LIST))
 #define E_IS_SOURCE_LIST_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_LIST))
 
-
 typedef struct _ESourceList        ESourceList;
 typedef struct _ESourceListPrivate ESourceListPrivate;
 typedef struct _ESourceListClass   ESourceListClass;
@@ -57,7 +56,6 @@ struct _ESourceListClass {
 	void (* group_removed) (ESourceList *source_list, ESourceGroup *group);
 	void (* group_added) (ESourceList *source_list, ESourceGroup *group);
 };
-
 
 GType    e_source_list_get_type (void);
 

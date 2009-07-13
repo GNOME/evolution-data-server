@@ -19,7 +19,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_SPOOL_STORE_H
 #define CAMEL_SPOOL_STORE_H 1
 
@@ -43,13 +42,10 @@ typedef struct {
 	camel_spool_store_t type;
 } CamelSpoolStore;
 
-
-
 typedef struct {
 	CamelMboxStoreClass parent_class;
 
 } CamelSpoolStoreClass;
-
 
 /* public methods */
 
@@ -59,5 +55,4 @@ CamelType camel_spool_store_get_type (void);
 G_END_DECLS
 
 #endif /* CAMEL_SPOOL_STORE_H */
-
 

@@ -84,7 +84,6 @@ static pthread_mutex_t operation_lock = PTHREAD_MUTEX_INITIALIZER;
 #define LOCK() pthread_mutex_lock(&operation_lock)
 #define UNLOCK() pthread_mutex_unlock(&operation_lock)
 
-
 static guint stamp (void);
 static CamelDList operation_list = CAMEL_DLIST_INITIALISER(operation_list);
 static pthread_key_t operation_key;

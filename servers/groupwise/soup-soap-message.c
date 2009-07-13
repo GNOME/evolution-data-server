@@ -60,7 +60,6 @@ soup_soap_message_init (SoupSoapMessage *msg)
 	priv->doc->encoding = xmlCharStrdup ("UTF-8");
 }
 
-
 static xmlNsPtr
 fetch_ns (SoupSoapMessage *msg, const gchar *prefix, const gchar *ns_uri)
 {

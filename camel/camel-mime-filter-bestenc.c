@@ -18,7 +18,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -209,7 +208,6 @@ camel_mime_filter_bestenc_new (guint flags)
 	return new;
 }
 
-
 /**
  * camel_mime_filter_bestenc_get_best_encoding:
  * @filter: a #CamelMimeFilterBestenc object
@@ -272,7 +270,6 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 
 }
 
-
 /**
  * camel_mime_filter_bestenc_get_best_charset:
  * @filter: a #CamelMimeFilterBestenc object
@@ -287,7 +284,6 @@ camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
 {
 	return camel_charset_best_name(&filter->charset);
 }
-
 
 /**
  * camel_mime_filter_bestenc_set_flags:

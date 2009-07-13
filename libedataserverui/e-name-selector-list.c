@@ -259,7 +259,6 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 	list->rows = e_destination_store_get_destination_count (((ENameSelectorEntry *) list)->destination_store);
 	enl_popup_size (list);
 
-
 }
 
 static void
@@ -481,7 +480,6 @@ enl_tree_button_press_event (GtkWidget *widget,
 				  row_info);
 
 	return TRUE;
-
 
 }
 

@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_POP3_STORE_H
 #define CAMEL_POP3_STORE_H 1
 
@@ -48,13 +47,10 @@ typedef struct {
 	guint delete_after;
 } CamelPOP3Store;
 
-
-
 typedef struct {
 	CamelStoreClass parent_class;
 
 } CamelPOP3StoreClass;
-
 
 /* public methods */
 void camel_pop3_store_expunge (CamelPOP3Store *store, CamelException *ex);
@@ -70,5 +66,4 @@ CamelType camel_pop3_store_get_type (void);
 G_END_DECLS
 
 #endif /* CAMEL_POP3_STORE_H */
-
 

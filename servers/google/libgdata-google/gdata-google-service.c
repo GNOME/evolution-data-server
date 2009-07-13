@@ -66,7 +66,6 @@ enum {
 	PROP_AGENT
 };
 
-
 static const gchar *GOOGLE_CLIENT_LOGIN = "https://www.google.com/accounts/ClientLogin";
 
 GQuark
@@ -150,7 +149,6 @@ service_is_authenticated (GDataGoogleService *service)
 		return TRUE;
 }
 
-
 /**
  *
  * gdata_google_service_get_feed:
@@ -210,7 +208,6 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url, GEr
 
 	return feed;
 }
-
 
 /**
  *
@@ -280,7 +277,6 @@ gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url,
 	g_object_unref (msg);
 	return updated_entry;
 }
-
 
 /**
  *
@@ -356,7 +352,6 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry, GEr
 
 	return gdata_google_service_update_entry_with_link (service, entry, entry_edit_url, error);
 }
-
 
 /**
  *
@@ -453,7 +448,6 @@ static void gdata_google_service_instance_init(GTypeInstance *instance,
 
 	priv->name = NULL;
 	priv->agent = NULL;
-
 
 	priv->auth = g_new0(GDataGoogleServiceAuth,1);
 	priv->auth->username = NULL;
@@ -573,7 +567,6 @@ static void gdata_google_service_set_property (GObject *obj,
 	}
 }
 
-
 static void gdata_google_service_class_init(gpointer g_class,
 		gpointer g_class_data)
 {
@@ -587,7 +580,6 @@ static void gdata_google_service_class_init(gpointer g_class,
 	gobject_class->dispose  = gdata_google_service_dispose;
 	gobject_class->finalize = gdata_google_service_finalize;
 
-
 	g_object_class_install_property(gobject_class, PROP_NAME,
 			g_param_spec_string("name", "Name",
 				"The name (e.g. 'cl') of the service",
@@ -597,7 +589,6 @@ static void gdata_google_service_class_init(gpointer g_class,
 				G_PARAM_STATIC_NAME |
 				G_PARAM_STATIC_NICK |
 				G_PARAM_STATIC_BLURB));
-
 
 	g_object_class_install_property(gobject_class, PROP_AGENT,
 			g_param_spec_string("agent", "Agent",
@@ -611,7 +602,6 @@ static void gdata_google_service_class_init(gpointer g_class,
 
 	return;
 }
-
 
 GType  gdata_google_service_get_type (void)
 {
@@ -650,7 +640,6 @@ GType  gdata_google_service_get_type (void)
 
 	return type;
 }
-
 
 /*********API******* */
 

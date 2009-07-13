@@ -19,7 +19,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef _CAMEL_IMAPP_STORE_SUMMARY_H
 #define _CAMEL_IMAPP_STORE_SUMMARY_H
 

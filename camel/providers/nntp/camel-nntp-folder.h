@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_NNTP_FOLDER_H
 #define CAMEL_NNTP_FOLDER_H 1
 

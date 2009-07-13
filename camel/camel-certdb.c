@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -61,9 +60,7 @@ static void certdb_cert_free (CamelCertDB *certdb, CamelCert *cert);
 static const gchar *cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string);
 static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 
-
 static CamelObjectClass *parent_class = NULL;
-
 
 CamelType
 camel_certdb_get_type (void)
@@ -83,7 +80,6 @@ camel_certdb_get_type (void)
 
 	return type;
 }
-
 
 static void
 camel_certdb_class_init (CamelCertDBClass *klass)
@@ -151,17 +147,14 @@ camel_certdb_finalize (CamelObject *obj)
 	g_free (p);
 }
 
-
 CamelCertDB *
 camel_certdb_new (void)
 {
 	return (CamelCertDB *) camel_object_new (camel_certdb_get_type ());
 }
 
-
 static CamelCertDB *default_certdb = NULL;
 static pthread_mutex_t default_certdb_lock = PTHREAD_MUTEX_INITIALIZER;
-
 
 void
 camel_certdb_set_default (CamelCertDB *certdb)
@@ -178,7 +171,6 @@ camel_certdb_set_default (CamelCertDB *certdb)
 
 	pthread_mutex_unlock (&default_certdb_lock);
 }
-
 
 CamelCertDB *
 camel_certdb_get_default (void)
@@ -197,7 +189,6 @@ camel_certdb_get_default (void)
 	return certdb;
 }
 
-
 void
 camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename)
 {
@@ -211,7 +202,6 @@ camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename)
 
 	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
 }
-
 
 static gint
 certdb_header_load (CamelCertDB *certdb, FILE *istream)
@@ -551,7 +541,6 @@ camel_certdb_cert_unref (CamelCertDB *certdb, CamelCert *cert)
 	CAMEL_CERTDB_UNLOCK (certdb, ref_lock);
 }
 
-
 static gboolean
 cert_remove (gpointer key, gpointer value, gpointer user_data)
 {
@@ -581,7 +570,6 @@ camel_certdb_clear (CamelCertDB *certdb)
 	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
 }
 
-
 static const gchar *
 cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string)
 {
@@ -598,7 +586,6 @@ cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string)
 		return NULL;
 	}
 }
-
 
 const gchar *
 camel_cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string)
@@ -636,7 +623,6 @@ cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar 
 	}
 }
 
-
 void
 camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value)
 {
@@ -648,7 +634,6 @@ camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const 
 	CAMEL_CERTDB_GET_CLASS (certdb)->cert_set_string (certdb, cert, string, value);
 }
 
-
 CamelCertTrust
 camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert)
 {
@@ -657,7 +642,6 @@ camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert)
 
 	return cert->trust;
 }
-
 
 void
 camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust)

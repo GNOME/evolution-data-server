@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_STRING_UTILS_H__
 #define __CAMEL_STRING_UTILS_H__
 

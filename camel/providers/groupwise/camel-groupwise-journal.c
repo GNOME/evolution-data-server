@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -49,7 +48,6 @@
 
 #define d(x)
 
-
 static void camel_groupwise_journal_class_init (CamelGroupwiseJournalClass *klass);
 static void camel_groupwise_journal_init (CamelGroupwiseJournal *journal, CamelGroupwiseJournalClass *klass);
 static void camel_groupwise_journal_finalize (CamelObject *object);
@@ -59,9 +57,7 @@ static CamelDListNode *groupwise_entry_load (CamelOfflineJournal *journal, FILE 
 static gint groupwise_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
 static gint groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex);
 
-
 static CamelOfflineJournalClass *parent_class = NULL;
-
 
 CamelType
 camel_groupwise_journal_get_type (void)
@@ -316,8 +312,6 @@ groupwise_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, Camel
 		return -1;
 	}
 }
-
-
 
 CamelOfflineJournal *
 camel_groupwise_journal_new (CamelGroupwiseFolder *folder, const gchar *filename)

@@ -21,7 +21,6 @@
 
 /* currently, this is just a straigt s/imap/nntp from the IMAP file*/
 
-
 #ifndef _CAMEL_NNTP_STORE_SUMMARY_H
 #define _CAMEL_NNTP_STORE_SUMMARY_H
 

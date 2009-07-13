@@ -583,7 +583,6 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->parent_threads = NULL;
 	item->priv = priv;
 
-
 }
 
 GType
@@ -679,7 +678,6 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			g_free (dist_type);
 		}
 		/*FIXME  gw recipientTypes need to be added after the server is fixed. */
-
 
 		/* update Recipient Status
 		 look for accepted/declined and update the item else set it
@@ -881,7 +879,6 @@ e_gw_item_get_email_list (EGwItem *item)
 {
 	return item->priv->email_list;
 
-
 }
 
 void
@@ -1065,7 +1062,6 @@ set_common_addressbook_item_fields_from_soap_parameter (EGwItem *item, SoupSoapP
 		}
 	}
 
-
 }
 
 static void
@@ -1221,7 +1217,6 @@ set_contact_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			}
 	}
 
-
 	subparam =  soup_soap_parameter_get_first_child_by_name(param, "phoneList");
 	if(subparam) {
 		g_hash_table_insert (simple_fields, (gpointer) "default_phone", soup_soap_parameter_get_property(subparam, "default"));
@@ -1374,7 +1369,6 @@ set_group_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		}
 	}
 
-
 }
 
 static void
@@ -1462,7 +1456,6 @@ set_organization_fields_from_soap_parameter (EGwItem *item, SoupSoapParameter *p
 		if(value)
 			g_hash_table_insert (simple_fields, (gpointer) "website", value);
 	}
-
 
 }
 
@@ -2654,7 +2647,6 @@ e_gw_item_set_trigger (EGwItem *item, gint trigger)
 	item->priv->trigger = trigger;
 }
 
-
 void
 e_gw_item_set_to (EGwItem *item, const gchar *to)
 {
@@ -2739,7 +2731,6 @@ e_gw_item_get_track_info (EGwItem *item)
 
 	return item->priv->track_info;
 }
-
 
 void
 e_gw_item_set_autodelete (EGwItem *item, gboolean set)
@@ -3381,7 +3372,6 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 		else
 			e_gw_message_write_string_parameter (msg, "allDayEvent", NULL ,"0");
 
-
 		if (priv->trigger != 0) {
 			alarm = g_strdup_printf ("%d", priv->trigger);
 			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "1");
@@ -3444,7 +3434,6 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 
 	return TRUE;
 }
-
 
 static void
 append_contact_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, gint change_type)

@@ -20,7 +20,6 @@
 
 #include "camel-address.h"
 
-
 static void camel_address_class_init (CamelAddressClass *klass);
 static void camel_address_init       (CamelAddress *obj);
 static void camel_address_finalize   (CamelObject *obj);
@@ -78,7 +77,6 @@ camel_address_new (void)
 	return new;
 }
 
-
 /**
  * camel_address_new_clone:
  * @addr: a #CamelAddress object
@@ -96,7 +94,6 @@ camel_address_new_clone (const CamelAddress *addr)
 	return new;
 }
 
-
 /**
  * camel_address_length:
  * @addr: a #CamelAddress object
@@ -110,7 +107,6 @@ camel_address_length (CamelAddress *addr)
 {
 	return addr->addresses->len;
 }
-
 
 /**
  * camel_address_decode:
@@ -129,7 +125,6 @@ camel_address_decode (CamelAddress *addr, const gchar *raw)
 	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->decode(addr, raw);
 }
 
-
 /**
  * camel_address_encode:
  * @addr: a #CamelAddress object
@@ -145,7 +140,6 @@ camel_address_encode (CamelAddress *addr)
 
 	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->encode(addr);
 }
-
 
 /**
  * camel_address_unformat:
@@ -165,7 +159,6 @@ camel_address_unformat(CamelAddress *addr, const gchar *raw)
 	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->unformat(addr, raw);
 }
 
-
 /**
  * camel_address_format:
  * @addr: a #CamelAddress object
@@ -181,7 +174,6 @@ camel_address_format (CamelAddress *addr)
 
 	return CAMEL_ADDRESS_CLASS (CAMEL_OBJECT_GET_CLASS (addr))->format(addr);
 }
-
 
 /**
  * camel_address_cat:
@@ -202,7 +194,6 @@ camel_address_cat (CamelAddress *dest, const CamelAddress *source)
 	return CAMEL_ADDRESS_CLASS(CAMEL_OBJECT_GET_CLASS(dest))->cat(dest, source);
 }
 
-
 /**
  * camel_address_copy:
  * @dest: destination #CamelAddress object
@@ -221,7 +212,6 @@ camel_address_copy (CamelAddress *dest, const CamelAddress *source)
 	camel_address_remove(dest, -1);
 	return camel_address_cat(dest, source);
 }
-
 
 /**
  * camel_address_remove:

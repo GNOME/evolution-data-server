@@ -339,7 +339,6 @@ e_folder_exchange_set_folder_size (EFolder *folder, gint64 folder_size)
 	efe->priv->folder_size = folder_size;
 }
 
-
 /**
  * e_folder_exchange_get_has_subfolders:
  * @folder: an #EFolderExchange
@@ -458,7 +457,6 @@ e_folder_exchange_get_storage_file (EFolder *folder, const gchar *filename)
 	path = g_build_filename (efe->priv->storage_dir, filename, NULL);
 	return path;
 }
-
 
 /**
  * e_folder_exchange_save_to_file:
@@ -645,8 +643,6 @@ e_folder_exchange_new_from_file (ExchangeHierarchy *hier, const gchar *filename)
 
 	return folder;
 }
-
-
 
 /* E2kContext wrappers */
 #define E_FOLDER_EXCHANGE_CONTEXT(efe) (exchange_account_get_context (((EFolderExchange *)efe)->priv->hier->account))

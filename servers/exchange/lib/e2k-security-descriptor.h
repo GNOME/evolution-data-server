@@ -35,7 +35,6 @@ E2kSid                *e2k_security_descriptor_get_default   (E2kSecurityDescrip
 void                   e2k_security_descriptor_remove_sid    (E2kSecurityDescriptor *sd,
 							      E2kSid                *sid);
 
-
 /* MAPI folder permissions */
 #define E2K_PERMISSION_READ_ANY         0x001
 #define E2K_PERMISSION_CREATE           0x002

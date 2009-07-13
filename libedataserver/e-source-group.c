@@ -46,7 +46,6 @@ struct _ESourceGroupPrivate {
 	GHashTable *properties;
 };
 
-
 /* Signals.  */
 
 enum {
@@ -57,7 +56,6 @@ enum {
 };
 static guint signals[LAST_SIGNAL] = { 0 };
 
-
 /* Callbacks.  */
 
 static void
@@ -67,7 +65,6 @@ source_changed_callback (ESource *source,
 	if (! group->priv->ignore_source_changed)
 		g_signal_emit (group, signals[CHANGED], 0);
 }
-
 
 /* GObject methods.  */
 
@@ -112,7 +109,6 @@ impl_finalize (GObject *object)
 
 	(* G_OBJECT_CLASS (e_source_group_parent_class)->finalize) (object);
 }
-
 
 /* Initialization.  */
 
@@ -344,7 +340,6 @@ e_source_group_update_from_xml (ESourceGroup *group,
 
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 	g_return_val_if_fail (xml != NULL, FALSE);
-
 
 	xmldoc = xmlParseDoc (XC xml);
 
@@ -751,7 +746,6 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 
 	return FALSE;
 }
-
 
 gchar *
 e_source_group_to_xml (ESourceGroup *group)

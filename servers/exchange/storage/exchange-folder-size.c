@@ -42,7 +42,6 @@ typedef struct {
         gdouble folder_size;
 } folder_info;
 
-
 struct _ExchangeFolderSizePrivate {
 
 	GHashTable *table;

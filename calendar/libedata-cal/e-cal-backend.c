@@ -747,7 +747,6 @@ e_cal_backend_get_mode (ECalBackend *backend)
 	return result;
 }
 
-
 /**
  * e_cal_backend_set_mode:
  * @backend: A calendar backend
@@ -1409,7 +1408,6 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 	}
 	g_object_unref (iter);
 }
-
 
 void
 e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *query, const GList *objects)

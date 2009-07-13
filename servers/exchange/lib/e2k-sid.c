@@ -273,7 +273,6 @@ e2k_sid_get_display_name (E2kSid *sid)
 	return sid->priv->display_name;
 }
 
-
 /**
  * e2k_sid_binary_sid_equal:
  * @a: pointer to a binary SID

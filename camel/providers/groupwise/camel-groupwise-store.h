@@ -21,7 +21,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_GROUPWISE_STORE_H
 #define CAMEL_GROUPWISE_STORE_H 1
 
@@ -60,11 +59,9 @@ struct _CamelGroupwiseStore {
 	guint list_loaded;
 };
 
-
 struct _CamelGroupwiseStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
-
 
 /* Standard Camel function */
 CamelType camel_groupwise_store_get_type (void);

@@ -33,7 +33,6 @@ struct _ExchangeHierarchySomeDAVClass {
 
 GType exchange_hierarchy_somedav_get_type (void);
 
-
 GPtrArray *exchange_hierarchy_somedav_get_hrefs (ExchangeHierarchySomeDAV *hsd);
 ExchangeAccountFolderResult exchange_hierarchy_somedav_add_folder (ExchangeHierarchySomeDAV *hsd,
 								   const gchar *uri);

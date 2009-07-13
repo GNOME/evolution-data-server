@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_MIME_FILTER_YENC_H__
 #define __CAMEL_MIME_FILTER_YENC_H__
 
@@ -79,7 +78,6 @@ struct _CamelMimeFilterYencClass {
 
 };
 
-
 CamelType camel_mime_filter_yenc_get_type (void);
 
 CamelMimeFilter *camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction);
@@ -90,7 +88,6 @@ void camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc);
 /*int     camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc);*/
 guint32 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc);
 guint32 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc);
-
 
 gsize camel_ydecode_step  (const guchar *in, gsize inlen, guchar *out,
 			    gint *state, guint32 *pcrc, guint32 *crc);

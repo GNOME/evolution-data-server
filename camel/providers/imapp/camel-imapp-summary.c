@@ -110,7 +110,6 @@ camel_imapp_summary_new(void)
 	return summary;
 }
 
-
 static gint
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
@@ -150,7 +149,6 @@ summary_header_save(CamelFolderSummary *s, FILE *out)
 
 	return 0;
 }
-
 
 static CamelMessageInfo *
 message_info_load(CamelFolderSummary *s, FILE *in)

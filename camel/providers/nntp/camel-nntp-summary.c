@@ -172,7 +172,6 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(s);
 	gchar *part;
 
-
 	if (camel_nntp_summary_parent->summary_header_from_db (s, mir) == -1)
 		return -1;
 
@@ -222,7 +221,6 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 
 	return 0;
 }
-
 
 static CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, CamelException *ex)

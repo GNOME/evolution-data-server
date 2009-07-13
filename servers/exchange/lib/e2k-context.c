@@ -131,7 +131,6 @@ static gboolean do_notification (GIOChannel *source, GIOCondition condition, gpo
 static void setup_message (SoupSession *session, SoupMessage *msg, SoupSocket *socket, gpointer user_data);
 static void proxy_settings_changed (EProxy *proxy, gpointer user_data);
 
-
 static void
 proxy_settings_changed (EProxy *proxy, gpointer user_data)
 {
@@ -255,7 +254,6 @@ class_init (GObjectClass *object_class)
 }
 
 E2K_MAKE_TYPE (e2k_context, E2kContext, class_init, init, PARENT_TYPE)
-
 
 static void
 renew_sub_list (gpointer key, gpointer value, gpointer data)
@@ -931,7 +929,6 @@ e2k_context_send_message (E2kContext *ctx, E2kOperation *op, SoupMessage *msg)
 	return status;
 }
 
-
 static void
 update_unique_uri (E2kContext *ctx, SoupMessage *msg,
 		   const gchar *folder_uri, const gchar *encoded_name, gint *count,
@@ -957,7 +954,6 @@ update_unique_uri (E2kContext *ctx, SoupMessage *msg,
 	soup_uri_free (suri);
 	g_free (uri);
 }
-
 
 /* GET */
 
@@ -1997,8 +1993,6 @@ e2k_context_search_start (E2kContext *ctx, E2kOperation *op, const gchar *uri,
 				    search_data);
 }
 
-
-
 /* DELETE */
 
 static SoupMessage *
@@ -2356,7 +2350,6 @@ e2k_context_transfer_dir (E2kContext *ctx, E2kOperation *op,
 	g_object_unref (msg);
 	return status;
 }
-
 
 /* Subscriptions */
 

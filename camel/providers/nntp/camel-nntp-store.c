@@ -76,7 +76,6 @@ static void nntp_construct (CamelService *service, CamelSession *session,
 			    CamelProvider *provider, CamelURL *url,
 			    CamelException *ex);
 
-
 static gboolean
 nntp_can_work_offline(CamelDiscoStore *store)
 {

@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_FILE_UTILS_H
 #define CAMEL_FILE_UTILS_H 1
 
@@ -53,7 +52,6 @@ gint camel_file_util_encode_string (FILE *out, const gchar *str);
 gint camel_file_util_decode_string (FILE *in, gchar **str);
 gint camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len);
 gint camel_file_util_decode_fixed_string (FILE *in, gchar **str, gsize len);
-
 
 gchar *camel_file_util_safe_filename (const gchar *name);
 

@@ -20,7 +20,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -42,9 +41,7 @@ static void camel_imap4_search_finalize (CamelObject *object);
 
 static ESExpResult *imap4_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *search);
 
-
 static CamelFolderSearchClass *parent_class = NULL;
-
 
 CamelType
 camel_imap4_search_get_type (void)
@@ -87,7 +84,6 @@ camel_imap4_search_finalize (CamelObject *object)
 	;
 }
 
-
 CamelFolderSearch *
 camel_imap4_search_new (CamelIMAP4Engine *engine, const gchar *cachedir)
 {
@@ -99,7 +95,6 @@ camel_imap4_search_new (CamelIMAP4Engine *engine, const gchar *cachedir)
 
 	return (CamelFolderSearch *) search;
 }
-
 
 static gint
 untagged_search (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)
@@ -263,7 +258,6 @@ imap4_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 			camel_imap4_command_unref (ic);
 			goto done;
 		}
-
 
 		if (ic->result == CAMEL_IMAP4_RESULT_NO && utf8_search && (engine->capa & CAMEL_IMAP4_CAPABILITY_utf8_search)) {
 			gint j;

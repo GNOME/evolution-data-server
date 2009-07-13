@@ -270,7 +270,6 @@ e_gw_container_set_from_soap_parameter (EGwContainer *container, SoupSoapParamet
 		g_free (value);
 	}
 
-
 	/* retrive the unread and total count */
 	subparam = soup_soap_parameter_get_first_child_by_name (param, "hasUnread");
 	if (!subparam) {
@@ -634,7 +633,6 @@ e_gw_container_get_unread_count (EGwContainer *container)
 	return container->priv->unread;
 
 }
-
 
 gboolean
 e_gw_container_get_is_writable (EGwContainer *container)

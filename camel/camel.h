@@ -21,7 +21,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_H
 #define CAMEL_H 1
 

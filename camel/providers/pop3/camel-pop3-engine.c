@@ -155,7 +155,6 @@ camel_pop3_engine_new(CamelStream *source, guint32 flags)
 	return pe;
 }
 
-
 /**
  * camel_pop3_engine_reget_capabilities:
  * @engine: pop3 engine
@@ -169,7 +168,6 @@ camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
 
 	get_capabilities (engine);
 }
-
 
 /* TODO: read implementation too?
    etc? */

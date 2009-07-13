@@ -110,7 +110,6 @@ camel_stream_mem_get_type (void)
 	return camel_stream_mem_type;
 }
 
-
 /**
  * camel_stream_mem_new:
  *
@@ -123,7 +122,6 @@ camel_stream_mem_new (void)
 {
 	return camel_stream_mem_new_with_byte_array (g_byte_array_new ());
 }
-
 
 /**
  * camel_stream_mem_new_with_buffer:
@@ -148,7 +146,6 @@ camel_stream_mem_new_with_buffer (const gchar *buffer, gsize len)
 	return camel_stream_mem_new_with_byte_array (ba);
 }
 
-
 /**
  * camel_stream_mem_new_with_byte_array:
  * @buffer: a #GByteArray to use as the stream data
@@ -172,7 +169,6 @@ camel_stream_mem_new_with_byte_array (GByteArray *buffer)
 	return CAMEL_STREAM (stream_mem);
 }
 
-
 /**
  * camel_stream_mem_set_secure:
  * @mem: a #CamelStreamMem object
@@ -187,7 +183,6 @@ camel_stream_mem_set_secure(CamelStreamMem *mem)
 	mem->secure = 1;
 	/* setup a mem-locked buffer etc?  blah blah, well not yet anyway */
 }
-
 
 /* note: with these functions the caller is the 'owner' of the buffer */
 
@@ -213,7 +208,6 @@ camel_stream_mem_set_byte_array (CamelStreamMem *mem, GByteArray *buffer)
 	mem->buffer = buffer;
 }
 
-
 /**
  * camel_stream_mem_set_buffer:
  * @mem: a #CamelStreamMem object
@@ -235,7 +229,6 @@ camel_stream_mem_set_buffer (CamelStreamMem *mem, const gchar *buffer, gsize len
 	camel_stream_mem_set_byte_array(mem, ba);
 	mem->owner = TRUE;
 }
-
 
 static void
 camel_stream_mem_finalize (CamelObject *object)

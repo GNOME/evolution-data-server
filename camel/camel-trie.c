@@ -59,7 +59,6 @@ struct _CamelTrie {
 	EMemChunk *state_chunks;
 };
 
-
 static inline gunichar
 trie_utf8_getc (const guchar **in, gsize inlen)
 {
@@ -147,8 +146,6 @@ camel_trie_free (CamelTrie *trie)
 	g_free (trie);
 }
 
-
-
 static struct _trie_match *
 g (struct _trie_state *s, gunichar c)
 {
@@ -189,7 +186,6 @@ trie_insert (CamelTrie *trie, gint depth, struct _trie_state *q, gunichar c)
 	return q;
 }
 
-
 #if d(!)0
 static void
 dump_trie (struct _trie_state *s, gint depth)
@@ -212,7 +208,6 @@ dump_trie (struct _trie_state *s, gint depth)
 	}
 }
 #endif
-
 
 /*
  * final = empty set

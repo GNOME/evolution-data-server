@@ -267,7 +267,6 @@ e2k_action_delete (void)
 	return act;
 }
 
-
 /**
  * e2k_addr_list_new:
  * @nentries: the number of entries

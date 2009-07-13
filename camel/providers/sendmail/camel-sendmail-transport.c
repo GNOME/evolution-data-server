@@ -50,7 +50,6 @@ static gboolean sendmail_send_to (CamelTransport *transport,
 				  CamelAddress *from, CamelAddress *recipients,
 				  CamelException *ex);
 
-
 static void
 camel_sendmail_transport_class_init (CamelSendmailTransportClass *camel_sendmail_transport_class)
 {
@@ -82,7 +81,6 @@ camel_sendmail_transport_get_type (void)
 
 	return camel_sendmail_transport_type;
 }
-
 
 static gboolean
 sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,

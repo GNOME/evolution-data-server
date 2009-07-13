@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_IMAP_FOLDER_H
 #define CAMEL_IMAP_FOLDER_H 1
 
@@ -74,7 +73,6 @@ struct _CamelImapFolderClass {
 	/* Virtual methods */
 
 };
-
 
 /* public methods */
 CamelFolder *camel_imap_folder_new (CamelStore *parent,

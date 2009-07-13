@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_OFFLINE_STORE_H__
 #define __CAMEL_OFFLINE_STORE_H__
 
@@ -59,9 +58,7 @@ struct _CamelOfflineStoreClass {
 	void (* set_network_state) (CamelOfflineStore *store, gint state, CamelException *ex);
 };
 
-
 CamelType camel_offline_store_get_type (void);
-
 
 void camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, CamelException *ex);
 gint camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex);

@@ -81,7 +81,6 @@ camel_tcp_stream_get_type (void)
 	return type;
 }
 
-
 static gint
 tcp_connect (CamelTcpStream *stream, struct addrinfo *host)
 {

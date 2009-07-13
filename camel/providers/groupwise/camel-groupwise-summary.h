@@ -49,11 +49,9 @@ struct _CamelGroupwiseMessageInfo {
 	guint32 server_flags;
 } ;
 
-
 struct _CamelGroupwiseMessageContentInfo {
 	CamelMessageContentInfo info;
 } ;
-
 
 struct _CamelGroupwiseSummary {
 	CamelFolderSummary parent;
@@ -63,11 +61,9 @@ struct _CamelGroupwiseSummary {
 	gint32 validity;
 } ;
 
-
 struct _CamelGroupwiseSummaryClass {
 	CamelFolderSummaryClass parent_class;
 } ;
-
 
 CamelType camel_groupwise_summary_get_type (void);
 

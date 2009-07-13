@@ -99,7 +99,6 @@ camel_stream_buffer_finalize (CamelObject *object)
 	g_free(sbf->linebuf);
 }
 
-
 CamelType
 camel_stream_buffer_get_type (void)
 {
@@ -117,7 +116,6 @@ camel_stream_buffer_get_type (void)
 
 	return camel_stream_buffer_type;
 }
-
 
 static void
 set_vbuf(CamelStreamBuffer *sbf, gchar *buf, CamelStreamBufferMode mode, gint size)
@@ -154,7 +152,6 @@ init(CamelStreamBuffer *sbuf, CamelStream *s, CamelStreamBufferMode mode)
 {
 	init_vbuf(sbuf, s, mode, NULL, BUF_SIZE);
 }
-
 
 /**
  * camel_stream_buffer_new:

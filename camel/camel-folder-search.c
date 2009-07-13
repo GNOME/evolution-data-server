@@ -834,7 +834,6 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 		camel_folder_summary_reload_from_db (search->folder->summary, search->priv->ex);
 	}
 
-
 	for (i=0;i<v->len;i++) {
 		const gchar *uid;
 

@@ -2078,7 +2078,6 @@ e_contact_geo_get_type (void)
 	return type_id;
 }
 
-
 /**
  * e_contact_address_free:
  * @address: an #EContactAddress

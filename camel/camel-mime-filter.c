@@ -103,7 +103,6 @@ complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar 
 	/* default - do nothing */
 }
 
-
 /**
  * camel_mime_filter_new:
  *
@@ -195,7 +194,6 @@ static void filter_run(CamelMimeFilter *f,
 
 }
 
-
 /**
  * camel_mime_filter_filter:
  * @filter: a #CamelMimeFilter object
@@ -219,7 +217,6 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
 	else
 		g_error("Filter function unplmenented in class");
 }
-
 
 /**
  * camel_mime_filter_complete:
@@ -246,7 +243,6 @@ camel_mime_filter_complete (CamelMimeFilter *filter,
 		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->complete);
 }
 
-
 /**
  * camel_mime_filter_reset:
  * @filter: a #CamelMimeFilter object
@@ -263,7 +259,6 @@ camel_mime_filter_reset(CamelMimeFilter *filter)
 	/* could free some buffers, if they are really big? */
 	filter->backlen = 0;
 }
-
 
 /**
  * camel_mime_filter_backup:
@@ -288,7 +283,6 @@ camel_mime_filter_backup(CamelMimeFilter *filter, const gchar *data, gsize lengt
 	filter->backlen = length;
 	memcpy(filter->backbuf, data, length);
 }
-
 
 /**
  * camel_mime_filter_set_size:

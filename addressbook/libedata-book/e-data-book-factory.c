@@ -476,7 +476,6 @@ e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
 {
 	EDataBookFactoryPrivate *priv = factory->priv;
 
-
 	g_mutex_lock (priv->map_mutex);
 	priv->mode = mode;
 	g_hash_table_foreach (priv->active_server_map, set_backend_online_status, GINT_TO_POINTER (priv->mode));
@@ -562,7 +561,6 @@ e_data_book_factory_class_init (EDataBookFactoryClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
 
 	epv = &klass->epv;
 

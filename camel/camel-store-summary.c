@@ -156,7 +156,6 @@ camel_store_summary_get_type (void)
 	return type;
 }
 
-
 /**
  * camel_store_summary_new:
  *
@@ -169,7 +168,6 @@ camel_store_summary_new (void)
 {
 	CamelStoreSummary *new = CAMEL_STORE_SUMMARY ( camel_object_new (camel_store_summary_get_type ()));	return new;
 }
-
 
 /**
  * camel_store_summary_set_filename:
@@ -188,7 +186,6 @@ camel_store_summary_set_filename(CamelStoreSummary *s, const gchar *name)
 
 	CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 }
-
 
 /**
  * camel_store_summary_set_uri_base:
@@ -209,7 +206,6 @@ camel_store_summary_set_uri_base(CamelStoreSummary *s, CamelURL *base)
 	CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 }
 
-
 /**
  * camel_store_summary_count:
  * @summary: a #CamelStoreSummary object
@@ -223,7 +219,6 @@ camel_store_summary_count(CamelStoreSummary *s)
 {
 	return s->folders->len;
 }
-
 
 /**
  * camel_store_summary_index:
@@ -260,7 +255,6 @@ camel_store_summary_index(CamelStoreSummary *s, gint i)
 	return info;
 }
 
-
 /**
  * camel_store_summary_array:
  * @summary: a #CamelStoreSummary object
@@ -294,7 +288,6 @@ camel_store_summary_array(CamelStoreSummary *s)
 	return res;
 }
 
-
 /**
  * camel_store_summary_array_free:
  * @summary: a #CamelStoreSummary object
@@ -312,7 +305,6 @@ camel_store_summary_array_free(CamelStoreSummary *s, GPtrArray *array)
 
 	g_ptr_array_free(array, TRUE);
 }
-
 
 /**
  * camel_store_summary_path:
@@ -404,7 +396,6 @@ error:
 	return -1;
 }
 
-
 /**
  * camel_store_summary_save:
  * @summary: a #CamelStoreSummary object
@@ -485,7 +476,6 @@ camel_store_summary_save(CamelStoreSummary *s)
 	return 0;
 }
 
-
 /**
  * camel_store_summary_header_load:
  * @summary: a #CamelStoreSummary object
@@ -516,7 +506,6 @@ camel_store_summary_header_load(CamelStoreSummary *s)
 	s->flags &= ~CAMEL_STORE_SUMMARY_DIRTY;
 	return ret;
 }
-
 
 /**
  * camel_store_summary_add:
@@ -551,7 +540,6 @@ camel_store_summary_add(CamelStoreSummary *s, CamelStoreInfo *info)
 	CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 }
 
-
 /**
  * camel_store_summary_add_from_path:
  * @summary: a #CamelStoreSummary object
@@ -584,7 +572,6 @@ camel_store_summary_add_from_path(CamelStoreSummary *s, const gchar *path)
 	return info;
 }
 
-
 /**
  * camel_store_summary_info_new_from_path:
  * @summary: a #CamelStoreSummary object
@@ -603,7 +590,6 @@ camel_store_summary_info_new_from_path(CamelStoreSummary *s, const gchar *path)
 {
 	return ((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_new(s, path);
 }
-
 
 /**
  * camel_store_summary_info_free:
@@ -633,7 +619,6 @@ camel_store_summary_info_free(CamelStoreSummary *s, CamelStoreInfo *info)
 	((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_free(s, info);
 }
 
-
 /**
  * camel_store_summary_info_ref:
  * @summary: a #CamelStoreSummary object
@@ -653,7 +638,6 @@ camel_store_summary_info_ref(CamelStoreSummary *s, CamelStoreInfo *info)
 	CAMEL_STORE_SUMMARY_UNLOCK(s, ref_lock);
 }
 
-
 /**
  * camel_store_summary_touch:
  * @summary: a #CamelStoreSummary object
@@ -668,7 +652,6 @@ camel_store_summary_touch(CamelStoreSummary *s)
 	s->flags |= CAMEL_STORE_SUMMARY_DIRTY;
 	CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 }
-
 
 /**
  * camel_store_summary_clear:
@@ -697,7 +680,6 @@ camel_store_summary_clear(CamelStoreSummary *s)
 	CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 }
 
-
 /**
  * camel_store_summary_remove:
  * @summary: a #CamelStoreSummary object
@@ -716,7 +698,6 @@ camel_store_summary_remove(CamelStoreSummary *s, CamelStoreInfo *info)
 
 	camel_store_summary_info_free(s, info);
 }
-
 
 /**
  * camel_store_summary_remove_path:
@@ -745,7 +726,6 @@ camel_store_summary_remove_path(CamelStoreSummary *s, const gchar *path)
 		CAMEL_STORE_SUMMARY_UNLOCK(s, ref_lock);
 	}
 }
-
 
 /**
  * camel_store_summary_remove_index:
@@ -816,7 +796,6 @@ summary_header_save(CamelStoreSummary *s, FILE *out)
 	return camel_file_util_encode_fixed_int32(out, camel_store_summary_count(s));
 }
 
-
 /**
  * camel_store_summary_info_new:
  * @summary: a #CamelStoreSummary object
@@ -836,7 +815,6 @@ camel_store_summary_info_new(CamelStoreSummary *s)
 	return info;
 }
 
-
 /**
  * camel_store_info_string:
  * @summary: a #CamelStoreSummary object
@@ -852,7 +830,6 @@ camel_store_info_string(CamelStoreSummary *s, const CamelStoreInfo *info, gint t
 {
 	return ((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_string(s, info, type);
 }
-
 
 /**
  * camel_store_info_set_string:

@@ -49,5 +49,3 @@ GType       e_book_backend_groupwise_get_type (void);
 
 #endif /* ! __E_BOOK_BACKEND_GROUPWISE_H__ */
 
-
-

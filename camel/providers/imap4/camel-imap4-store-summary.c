@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -38,7 +37,6 @@
 #include "camel-imap4-store-summary.h"
 #include "camel-imap4-utils.h"
 
-
 #define CAMEL_IMAP4_STORE_SUMMARY_VERSION_0 (0)
 #define CAMEL_IMAP4_STORE_SUMMARY_VERSION (0)
 
@@ -53,9 +51,7 @@ static CamelStoreInfo *store_info_load (CamelStoreSummary *s, FILE *in);
 static gint store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *info);
 static void store_info_free (CamelStoreSummary *s, CamelStoreInfo *info);
 
-
 static CamelStoreSummaryClass *parent_class = NULL;
-
 
 CamelType
 camel_imap4_store_summary_get_type (void)
@@ -75,7 +71,6 @@ camel_imap4_store_summary_get_type (void)
 
 	return type;
 }
-
 
 static void
 camel_imap4_store_summary_class_init (CamelIMAP4StoreSummaryClass *klass)
@@ -108,7 +103,6 @@ camel_imap4_store_summary_finalize (CamelObject *obj)
 	if (s->namespaces)
 		camel_imap4_namespace_list_free (s->namespaces);
 }
-
 
 static CamelIMAP4NamespaceList *
 load_namespaces (FILE *in)
@@ -275,7 +269,6 @@ store_info_free (CamelStoreSummary *s, CamelStoreInfo *info)
 	parent_class->store_info_free (s, info);
 }
 
-
 /**
  * camel_imap4_store_summary_new:
  *
@@ -289,13 +282,11 @@ camel_imap4_store_summary_new (void)
 	return (CamelIMAP4StoreSummary *) camel_object_new (camel_imap4_store_summary_get_type ());
 }
 
-
 void
 camel_imap4_store_summary_set_capabilities (CamelIMAP4StoreSummary *s, guint32 capa)
 {
 	s->capa = capa;
 }
-
 
 void
 camel_imap4_store_summary_set_namespaces (CamelIMAP4StoreSummary *s, const CamelIMAP4NamespaceList *ns)
@@ -304,7 +295,6 @@ camel_imap4_store_summary_set_namespaces (CamelIMAP4StoreSummary *s, const Camel
 		camel_imap4_namespace_list_free (s->namespaces);
 	s->namespaces = camel_imap4_namespace_list_copy (ns);
 }
-
 
 void
 camel_imap4_store_summary_note_info (CamelIMAP4StoreSummary *s, CamelFolderInfo *fi)
@@ -339,7 +329,6 @@ camel_imap4_store_summary_note_info (CamelIMAP4StoreSummary *s, CamelFolderInfo 
 	/* FIXME: should this be recursive? */
 }
 
-
 void
 camel_imap4_store_summary_unnote_info (CamelIMAP4StoreSummary *s, CamelFolderInfo *fi)
 {
@@ -347,7 +336,6 @@ camel_imap4_store_summary_unnote_info (CamelIMAP4StoreSummary *s, CamelFolderInf
 
 	camel_store_summary_remove_path (ss, fi->full_name);
 }
-
 
 static CamelFolderInfo *
 store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
@@ -372,7 +360,6 @@ store_info_to_folder_info (CamelStoreSummary *s, CamelStoreInfo *si)
 
 	return fi;
 }
-
 
 CamelFolderInfo *
 camel_imap4_store_summary_get_folder_info (CamelIMAP4StoreSummary *s, const gchar *top, guint32 flags)

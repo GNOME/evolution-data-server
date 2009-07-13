@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -77,7 +76,6 @@ static void camel_mime_filter_tohtml_finalize   (CamelObject *obj);
 
 static CamelMimeFilterClass *camel_mime_filter_tohtml_parent;
 
-
 CamelType
 camel_mime_filter_tohtml_get_type (void)
 {
@@ -115,7 +113,6 @@ camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 	filter->column = 0;
 	filter->pre_open = FALSE;
 }
-
 
 static gchar *
 check_size (CamelMimeFilter *filter, gchar *outptr, gchar **outend, gsize len)
@@ -438,7 +435,6 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
 	filter_class->complete = filter_complete;
 }
 
-
 /**
  * camel_mime_filter_tohtml_new:
  * @flags: bitwise flags defining the behaviour
@@ -467,7 +463,6 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
 
 	return CAMEL_MIME_FILTER (new);
 }
-
 
 /**
  * camel_text_to_html:

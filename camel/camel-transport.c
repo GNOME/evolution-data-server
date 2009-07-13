@@ -40,7 +40,6 @@ static CamelServiceClass *parent_class = NULL;
 static gint transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
 static gint transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
-
 static void
 camel_transport_class_init (CamelTransportClass *camel_transport_class)
 {
@@ -90,7 +89,6 @@ camel_transport_get_type (void)
 	return type;
 }
 
-
 static gint
 transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 {
@@ -104,7 +102,6 @@ transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	/* CamelTransport doesn't currently have anything to get */
 	return CAMEL_OBJECT_CLASS (parent_class)->getv (object, ex, args);
 }
-
 
 /**
  * camel_transport_send_to:

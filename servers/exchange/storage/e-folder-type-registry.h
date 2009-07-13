@@ -84,7 +84,6 @@ const gchar                    *e_folder_type_registry_get_description_for_type 
 GList *e_folder_type_registry_get_accepted_dnd_types_for_type (EFolderTypeRegistry *folder_type_registry,
 							       const gchar *type_name);
 
-
 G_END_DECLS
 
 #endif /* _E_FOLDER_TYPE_REGISTRY_H_ */

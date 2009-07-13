@@ -79,7 +79,6 @@ void           e2k_properties_set_type_as_string_array (E2kProperties *props,
 void           e2k_properties_remove            (E2kProperties *props,
 						 const gchar    *propname);
 
-
 typedef void (*E2kPropertiesForeachFunc)        (const gchar    *propname,
 						 E2kPropType    type,
 						 gpointer       value,
@@ -90,7 +89,6 @@ void           e2k_properties_foreach           (E2kProperties *props,
 void           e2k_properties_foreach_removed   (E2kProperties *props,
 						 E2kPropertiesForeachFunc callback,
 						 gpointer       user_data);
-
 
 typedef void(*E2kPropertiesForeachNamespaceFunc)(const gchar    *namespace,
 						 gchar           abbrev,

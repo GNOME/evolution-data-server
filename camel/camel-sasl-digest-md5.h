@@ -39,12 +39,10 @@ typedef struct _CamelSaslDigestMd5 {
 
 } CamelSaslDigestMd5;
 
-
 typedef struct _CamelSaslDigestMd5Class {
 	CamelSaslClass parent_class;
 
 } CamelSaslDigestMd5Class;
-
 
 /* Standard Camel function */
 CamelType camel_sasl_digest_md5_get_type (void);

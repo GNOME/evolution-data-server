@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_MIME_FILTER_GZIP_H__
 #define __CAMEL_MIME_FILTER_GZIP_H__
 
@@ -56,7 +55,6 @@ struct _CamelMimeFilterGZipClass {
 	CamelMimeFilterClass parent_class;
 
 };
-
 
 CamelType camel_mime_filter_gzip_get_type (void);
 

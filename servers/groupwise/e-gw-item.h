@@ -55,7 +55,6 @@ typedef enum {
 
 } EGwItemType;
 
-
 typedef enum {
 	E_GW_ITEM_CHANGE_TYPE_ADD,
 	E_GW_ITEM_CHANGE_TYPE_UPDATE,
@@ -248,7 +247,6 @@ void e_gw_item_set_delay_until (EGwItem *item, gchar *delay_until);
 gchar *e_gw_item_get_delay_until (EGwItem *item);
 void e_gw_item_free_cal_id (EGwItemCalId *calid);
 
-
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
 #define E_GW_ITEM_CLASSIFICATION_PRIVATE      "Private"
 #define E_GW_ITEM_CLASSIFICATION_CONFIDENTIAL "Confidential"
@@ -282,7 +280,6 @@ void e_gw_item_set_organizer (EGwItem  *item, EGwItemOrganizer *organizer);
 GSList * e_gw_item_get_attach_id_list (EGwItem *item);
 void e_gw_item_set_attach_id_list (EGwItem *item, GSList *attach_list);
 
-
 GSList *e_gw_item_get_recurrence_dates (EGwItem *item);
 void e_gw_item_set_recurrence_dates (EGwItem  *item, GSList *new_recurrence_dates);
 
@@ -306,7 +303,6 @@ gboolean e_gw_item_is_from_internet (EGwItem *item);
 
 const gchar *e_gw_item_get_parent_thread_ids (EGwItem *item);
 const gchar * e_gw_item_get_message_id (EGwItem *item);
-
 
 typedef struct {
 	gchar *email;

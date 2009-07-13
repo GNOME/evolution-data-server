@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -50,7 +49,6 @@ static gint digest_setv (CamelObject *object, CamelException *ex, CamelArgV *arg
 static gint digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
 
 static CamelStoreClass *parent_class = NULL;
-
 
 CamelType
 camel_digest_store_get_type (void)
@@ -121,7 +119,6 @@ digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 	/* CamelDigestStore doesn't currently have anything to get */
 	return CAMEL_OBJECT_CLASS (parent_class)->getv (object, ex, args);
 }
-
 
 /**
  * camel_digest_store_new:

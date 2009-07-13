@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -31,7 +30,6 @@
 #include <zlib.h>
 
 #include "camel-mime-filter-gzip.h"
-
 
 /* rfc1952 */
 
@@ -99,9 +97,7 @@ static void filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len
 			     gchar **out, gsize *outlen, gsize *outprespace);
 static void filter_reset (CamelMimeFilter *filter);
 
-
 static CamelMimeFilterClass *parent_class = NULL;
-
 
 CamelType
 camel_mime_filter_gzip_get_type (void)
@@ -121,7 +117,6 @@ camel_mime_filter_gzip_get_type (void)
 
 	return type;
 }
-
 
 static void
 camel_mime_filter_gzip_class_init (CamelMimeFilterGZipClass *klass)
@@ -157,7 +152,6 @@ camel_mime_filter_gzip_finalize (CamelObject *object)
 	g_free (priv->stream);
 	g_free (priv);
 }
-
 
 static void
 gzip_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
@@ -431,7 +425,6 @@ filter_reset (CamelMimeFilter *filter)
 	priv->crc32 = crc32 (0, Z_NULL, 0);
 	priv->isize = 0;
 }
-
 
 /**
  * camel_mime_filter_gzip_new:

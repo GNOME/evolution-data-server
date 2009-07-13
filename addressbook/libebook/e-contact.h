@@ -179,7 +179,6 @@ typedef enum {
 	E_CONTACT_IS_LIST,             /* boolean field */
 	E_CONTACT_LIST_SHOW_ADDRESSES, /* boolean field */
 
-
 	E_CONTACT_BIRTH_DATE,    /* structured field (EContactDate) */
 	E_CONTACT_ANNIVERSARY,   /* structured field (EContactDate) */
 
@@ -328,7 +327,6 @@ EContactName           *e_contact_name_from_string (const gchar *name_str);
 EContactName           *e_contact_name_copy        (EContactName *n);
 void                    e_contact_name_free        (EContactName *name);
 
-
 GType                   e_contact_photo_get_type   (void);
 void                    e_contact_photo_free       (EContactPhoto *photo);
 
@@ -340,7 +338,6 @@ void                    e_contact_cert_free        (EContactCert *cert);
 
 GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
-
 
 const gchar *             e_contact_field_name       (EContactField field_id);
 const gchar *             e_contact_pretty_name      (EContactField field_id);

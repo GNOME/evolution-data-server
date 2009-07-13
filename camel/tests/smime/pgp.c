@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -41,7 +40,6 @@
 #define CAMEL_PGP_SESSION_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_PGP_SESSION_TYPE, CamelPgpSessionClass))
 #define CAMEL_PGP_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_PGP_SESSION_TYPE))
 
-
 typedef struct _CamelPgpSession {
 	CamelSession parent_object;
 
@@ -51,7 +49,6 @@ typedef struct _CamelPgpSessionClass {
 	CamelSessionClass parent_class;
 
 } CamelPgpSessionClass;
-
 
 static gchar *get_password (CamelSession *session, const gchar *prompt,
 			   guint32 flags,
@@ -112,7 +109,6 @@ camel_pgp_session_new (const gchar *path)
 
 	return session;
 }
-
 
 gint main (gint argc, gchar **argv)
 {

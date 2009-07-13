@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_MULTIPART_ENCRYPTED_H__
 #define __CAMEL_MULTIPART_ENCRYPTED_H__
 

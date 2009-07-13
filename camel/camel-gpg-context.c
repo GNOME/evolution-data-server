@@ -98,7 +98,6 @@ camel_gpg_context_new (CamelSession *session)
 	return cipher;
 }
 
-
 /**
  * camel_gpg_context_set_always_trust:
  * @ctx: gpg context
@@ -114,7 +113,6 @@ camel_gpg_context_set_always_trust (CamelGpgContext *ctx, gboolean always_trust)
 
 	ctx->always_trust = always_trust;
 }
-
 
 static const gchar *
 gpg_hash_to_id (CamelCipherContext *context, CamelCipherHash hash)
@@ -158,7 +156,6 @@ gpg_id_to_hash (CamelCipherContext *context, const gchar *id)
 
 	return CAMEL_CIPHER_HASH_DEFAULT;
 }
-
 
 enum _GpgCtxMode {
 	GPG_CTX_MODE_SIGN,
@@ -1216,7 +1213,6 @@ gpg_ctx_op_complete (struct _GpgCtx *gpg)
 {
 	return gpg->complete && gpg->seen_eof1 && gpg->seen_eof2;}
 
-
 #if 0
 static gboolean
 gpg_ctx_op_exited (struct _GpgCtx *gpg)
@@ -1280,8 +1276,6 @@ gpg_ctx_op_wait (struct _GpgCtx *gpg)
 	return -1;
 #endif
 }
-
-
 
 static gint
 gpg_sign (CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, CamelMimePart *ipart, CamelMimePart *opart, CamelException *ex)
@@ -1391,7 +1385,6 @@ fail:
 
 	return res;
 }
-
 
 static gchar *
 swrite (CamelMimePart *sigpart)

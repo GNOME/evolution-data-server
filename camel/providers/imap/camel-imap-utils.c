@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -66,7 +65,6 @@ imap_next_word (const gchar *buf)
 
 	return word;
 }
-
 
 static void
 imap_namespace_destroy (struct _namespace *namespace)
@@ -411,7 +409,6 @@ imap_parse_list_response (CamelImapStore *store, const gchar *buf, gint *flags, 
 
 	return TRUE;
 }
-
 
 /**
  * imap_parse_folder_name:
@@ -879,7 +876,6 @@ parse_params (const gchar **parms_p, CamelContentType *type)
 	return 0;
 }
 
-
 static CamelMessageContentInfo *
 imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *folder, GPtrArray *cis)
 {
@@ -1089,7 +1085,6 @@ imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *fo
 	return NULL;
 }
 
-
 /**
  * imap_parse_body:
  * @body_p: pointer to the start of an IMAP "body"
@@ -1136,7 +1131,6 @@ imap_parse_body (const gchar **body_p, CamelFolder *folder,
 	g_ptr_array_free (children, TRUE);
 }
 
-
 /**
  * imap_quote_string:
  * @str: the string to quote, which must not contain CR or LF
@@ -1172,7 +1166,6 @@ imap_quote_string (const gchar *str)
 
 	return quoted;
 }
-
 
 static inline gulong
 get_summary_uid_numeric (CamelFolderSummary *summary, gint index)

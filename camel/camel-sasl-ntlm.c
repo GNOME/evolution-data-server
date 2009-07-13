@@ -207,8 +207,6 @@ static void des                   (DES_KS, guchar *);
 
 static void setup_schedule        (const guchar *key_56, DES_KS ks);
 
-
-
 #define LM_PASSWORD_MAGIC "\x4B\x47\x53\x21\x40\x23\x24\x25" \
                           "\x4B\x47\x53\x21\x40\x23\x24\x25" \
 			  "\x00\x00\x00\x00\x00"
@@ -297,7 +295,6 @@ ntlm_calc_response (const guchar key[21], const guchar plaintext[8],
         setup_schedule (key + 14, ks);
         des (ks, results + 16);
 }
-
 
 /*
  * MD4 encoder. (The one everyone else uses is not GPL-compatible;
@@ -420,7 +417,6 @@ md4sum (const guchar *in, gint nbytes, guchar digest[16])
 	digest[14] = (D >> 16) & 0xFF;
 	digest[15] = (D >> 24) & 0xFF;
 }
-
 
 /* Public domain DES implementation from Phil Karn */
 static guint32 Spbox[8][64] = {
@@ -694,12 +690,10 @@ static guchar pc2[] = {
 
 /* End of DES-defined tables */
 
-
 /* bit 0 is left-most in byte */
 static gint bytebit[] = {
 	0200,0100,040,020,010,04,02,01
 };
-
 
 /* Generate key schedule for encryption or decryption
  * depending on the value of "decrypt"

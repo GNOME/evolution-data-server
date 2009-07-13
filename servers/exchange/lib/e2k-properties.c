@@ -262,7 +262,6 @@ e2k_properties_empty (E2kProperties *props)
 	return g_hash_table_size (props->set) == 0;
 }
 
-
 extern gchar e2k_des_key[8];
 
 static E2kPropInfo *
@@ -422,8 +421,6 @@ E2K_PROPERTIES_SETTER (int_array, GPtrArray *, INT_ARRAY, value)
 E2K_PROPERTIES_SETTER (float, float, FLOAT, g_strdup_printf ("%f", value))
 E2K_PROPERTIES_SETTER (bool, gboolean, BOOL, g_strdup_printf ("%d", value != FALSE))
 E2K_PROPERTIES_SETTER (date, gchar *, DATE, value)
-
-
 
 /**
  * e2k_properties_set_type_as_string:
@@ -637,7 +634,6 @@ e2k_properties_foreach_namespace (E2kProperties *props,
 
 	g_hash_table_destroy (fnd.seen_namespaces);
 }
-
 
 static GHashTable *namespaces;
 static gint next_namespace = 'a';

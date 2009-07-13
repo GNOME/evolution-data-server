@@ -27,7 +27,6 @@
 
 G_BEGIN_DECLS
 
-
 #define E_TYPE_CAL_BACKEND_CALDAV             (e_cal_backend_caldav_get_type ())
 #define E_CAL_BACKEND_CALDAV(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAV))
 #define E_CAL_BACKEND_CALDAV_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVClass))
@@ -49,7 +48,6 @@ struct _ECalBackendCalDAVClass {
 };
 
 GType       e_cal_backend_caldav_get_type      (void);
-
 
 G_END_DECLS
 

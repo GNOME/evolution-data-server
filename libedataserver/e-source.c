@@ -30,7 +30,6 @@
 
 #define ES_CLASS(obj)  E_SOURCE_CLASS (G_OBJECT_GET_CLASS (obj))
 
-
 /* Private members.  */
 
 struct _ESourcePrivate {
@@ -48,7 +47,6 @@ struct _ESourcePrivate {
 	GHashTable *properties;
 };
 
-
 /* Signals.  */
 
 enum {
@@ -56,7 +54,6 @@ enum {
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL] = { 0 };
-
 
 /* Callbacks.  */
 
@@ -68,7 +65,6 @@ group_weak_notify (ESource *source,
 
 	g_signal_emit (source, signals[CHANGED], 0);
 }
-
 
 /* GObject methods.  */
 
@@ -104,7 +100,6 @@ impl_dispose (GObject *object)
 
 	(* G_OBJECT_CLASS (e_source_parent_class)->dispose) (object);
 }
-
 
 /* Initialization.  */
 
@@ -662,7 +657,6 @@ e_source_get_readonly (ESource *source)
 	return source->priv->readonly;
 }
 
-
 #ifndef EDS_DISABLE_DEPRECATED
 /**
  * e_source_get_color:
@@ -717,7 +711,6 @@ e_source_get_uri (ESource *source)
 		return e_source_build_absolute_uri (source);
 }
 
-
 static void
 property_dump_cb (const xmlChar *key, const xmlChar *value, xmlNodePtr root)
 {
@@ -727,7 +720,6 @@ property_dump_cb (const xmlChar *key, const xmlChar *value, xmlNodePtr root)
 	xmlSetProp (node, (xmlChar*)"name", key);
 	xmlSetProp (node, (xmlChar*)"value", value);
 }
-
 
 static xmlNodePtr
 dump_common_to_xml_node (ESource *source,
@@ -766,7 +758,6 @@ dump_common_to_xml_node (ESource *source,
 	return node;
 }
 
-
 void
 e_source_dump_to_xml_node (ESource *source,
 			   xmlNodePtr parent_node)
@@ -775,7 +766,6 @@ e_source_dump_to_xml_node (ESource *source,
 
 	dump_common_to_xml_node (source, parent_node);
 }
-
 
 gchar *
 e_source_to_standalone_xml (ESource *source)
@@ -913,7 +903,6 @@ e_source_new_from_standalone_xml (const gchar *xml)
 	return source;
 }
 
-
 const gchar *
 e_source_get_property (ESource *source,
 		       const gchar *property)
@@ -955,7 +944,6 @@ e_source_set_property (ESource *source,
 	g_signal_emit (source, signals[CHANGED], 0);
 }
 
-
 void
 e_source_foreach_property (ESource *source, GHFunc func, gpointer data)
 {
@@ -967,13 +955,11 @@ e_source_foreach_property (ESource *source, GHFunc func, gpointer data)
 	g_hash_table_foreach (priv->properties, func, data);
 }
 
-
 static void
 copy_property (const gchar *key, const gchar *value, ESource *new_source)
 {
 	e_source_set_property (new_source, key, value);
 }
-
 
 ESource *
 e_source_copy (ESource *source)

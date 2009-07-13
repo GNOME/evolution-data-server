@@ -214,7 +214,6 @@ e2k_uri_get_param (E2kUri *uri, const gchar *name)
 	return g_datalist_get_data (&uri->params, name);
 }
 
-
 #define HEXVAL(c) (isdigit (c) ? (c) - '0' : g_ascii_tolower (c) - 'a' + 10)
 
 /**

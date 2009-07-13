@@ -308,7 +308,6 @@ match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 
 }
 
-
 static ESExpResult *
 match_threads(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
@@ -417,7 +416,6 @@ header_ends_with (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoin
 	return check_header(f, argc, argv, data, CAMEL_SEARCH_MATCH_ENDS);
 }
 
-
 static ESExpResult *
 header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
@@ -451,7 +449,6 @@ user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 
 	return r;
 }
-
 
 static ESExpResult *
 user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
@@ -591,7 +588,6 @@ static struct {
 /*	{ "uid", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, uid), 1 },	*/
 };
 
-
 gchar *
 camel_sexp_to_sql_sexp (const gchar *sql)
 {
@@ -629,7 +625,6 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 
 #ifdef TEST_MAIN
 /*
-
 
 (and (match-all (and (not (system-flag "deleted")) (not (system-flag "junk"))))
  (and   (or
@@ -753,5 +748,4 @@ gint main ()
 
 }
 #endif
-
 

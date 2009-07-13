@@ -55,7 +55,6 @@ soup_soap_response_init (SoupSoapResponse *response)
 	priv->xmldoc = xmlNewDoc ((const xmlChar *)"1.0");
 }
 
-
 /**
  * soup_soap_response_new:
  *
@@ -562,7 +561,6 @@ soup_xml_real_node (xmlNode *node)
 		node = node->next;
 	return node;
 }
-
 
 gint
 soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer)

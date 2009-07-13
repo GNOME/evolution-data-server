@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -73,7 +72,6 @@ camel_file_util_encode_uint32 (FILE *out, guint32 value)
 	return fputc (value | 0x80, out);
 }
 
-
 /**
  * camel_file_util_decode_uint32:
  * @in: file to read from
@@ -104,7 +102,6 @@ camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
         return 0;
 }
 
-
 /**
  * camel_file_util_encode_fixed_int32:
  * @out: file to output to
@@ -125,7 +122,6 @@ camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
 		return -1;
 	return 0;
 }
-
 
 /**
  * camel_file_util_decode_fixed_int32:
@@ -180,7 +176,6 @@ camel_file_util_decode_##type(FILE *in, type *dest)	\
 	return 0;					\
 }
 
-
 /**
  * camel_file_util_encode_time_t:
  * @out: file to output to
@@ -214,7 +209,6 @@ CFU_DECODE_T(time_t)
  **/
 CFU_ENCODE_T(off_t)
 
-
 /**
  * camel_file_util_decode_off_t:
  * @in: file to read from
@@ -237,7 +231,6 @@ CFU_DECODE_T(off_t)
  **/
 CFU_ENCODE_T(gsize)
 
-
 /**
  * camel_file_util_decode_gsize:
  * @in: file to read from
@@ -248,7 +241,6 @@ CFU_ENCODE_T(gsize)
  * Return value: %0 on success, %-1 on failure.
  **/
 CFU_DECODE_T(gsize)
-
 
 /**
  * camel_file_util_encode_string:
@@ -276,7 +268,6 @@ camel_file_util_encode_string (FILE *out, const gchar *str)
 		return 0;
 	return -1;
 }
-
 
 /**
  * camel_file_util_decode_string:
@@ -350,7 +341,6 @@ camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len)
 	return -1;
 }
 
-
 /**
  * camel_file_util_decode_fixed_string:
  * @in: file to read from
@@ -406,7 +396,6 @@ camel_file_util_safe_filename (const gchar *name)
 
 	return camel_url_encode(name, unsafe_chars);
 }
-
 
 /* FIXME: poll() might be more efficient and more portable? */
 
@@ -486,7 +475,6 @@ camel_read (gint fd, gchar *buf, gsize n)
 
 	return nread;
 }
-
 
 /**
  * camel_write:
@@ -731,7 +719,6 @@ camel_write_socket (gint fd, const gchar *buf, gsize n)
 	return written;
 #endif
 }
-
 
 /**
  * camel_file_util_savename:

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_ICONV_H__
 #define __CAMEL_ICONV_H__
 

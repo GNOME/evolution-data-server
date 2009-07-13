@@ -63,7 +63,6 @@ static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRe
 static gint content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
 static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
 
-
 static void camel_imap_summary_class_init (CamelImapSummaryClass *klass);
 static void camel_imap_summary_init       (CamelImapSummary *obj);
 

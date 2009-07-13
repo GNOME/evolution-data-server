@@ -68,7 +68,6 @@ e2k_operation_free (E2kOperation *op)
 	g_static_mutex_unlock (&op_mutex);
 }
 
-
 /**
  * e2k_operation_start:
  * @op: an #E2kOperation, or %NULL
@@ -127,7 +126,6 @@ e2k_operation_finish (E2kOperation *op)
 	op->data = NULL;
 	g_static_mutex_unlock (&op_mutex);
 }
-
 
 /**
  * e2k_operation_cancel:

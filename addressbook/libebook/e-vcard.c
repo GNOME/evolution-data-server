@@ -124,8 +124,6 @@ e_vcard_get_type (void)
 	return vcard_type;
 }
 
-
-
 /*  Skip newline characters and return the next character.
  *  This function takes care of folding lines, skipping
  *  newline characters if found, taking care of equal characters
@@ -175,7 +173,6 @@ skip_newline (gchar *str, gboolean quoted_printable)
 
 	return p;
 }
-
 
 /* skip forward until we hit the CRLF, or \0 */
 static void

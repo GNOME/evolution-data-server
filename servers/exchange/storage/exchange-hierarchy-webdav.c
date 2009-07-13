@@ -145,7 +145,6 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (exchange_hierarchy_webdav, ExchangeHierarchyWebDAV, class_init, init, PARENT_TYPE)
 
-
 typedef struct {
 	const gchar *contentclass, *component;
 	gboolean offline_supported;
@@ -726,7 +725,6 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *parent, gint mode)
 		return EXCHANGE_ACCOUNT_FOLDER_OK;
 	}
 
-
 	if (!folders_rn) {
 		folders_rn =
 			e2k_restriction_andv (
@@ -817,7 +815,6 @@ scan_offline_cb (const gchar *physical_path, const gchar *path, gpointer data)
 	struct scan_offline_data *sod = data;
 	EFolder *folder;
 	gchar *mf_name;
-
 
 	mf_name = g_build_filename (physical_path, "connector-metadata.xml", NULL);
 	folder = e_folder_exchange_new_from_file (sod->hier, mf_name);

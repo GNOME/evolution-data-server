@@ -89,7 +89,6 @@ camel_stream_fs_finalize (CamelObject *object)
 		close (stream_fs->fd);
 }
 
-
 CamelType
 camel_stream_fs_get_type (void)
 {
@@ -210,7 +209,6 @@ camel_stream_fs_new_with_name_and_bounds (const gchar *name, gint flags,
 
 	return stream;
 }
-
 
 static gssize
 stream_read (CamelStream *stream, gchar *buffer, gsize n)

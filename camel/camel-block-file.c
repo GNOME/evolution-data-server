@@ -58,7 +58,6 @@ struct _CamelBlockFilePrivate {
 	guint deleted:1;
 };
 
-
 #define CAMEL_BLOCK_FILE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
 #define CAMEL_BLOCK_FILE_TRYLOCK(kf, lock) (pthread_mutex_trylock(&(kf)->priv->lock))
 #define CAMEL_BLOCK_FILE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -133,7 +132,6 @@ camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass)
 	filter_class->complete = filter_complete;
 }
 
-
 /**
  * camel_mime_filter_windows_new:
  * @claimed_charset: ISO charset name
@@ -157,7 +155,6 @@ camel_mime_filter_windows_new (const gchar *claimed_charset)
 	return CAMEL_MIME_FILTER (new);
 }
 
-
 /**
  * camel_mime_filter_windows_is_windows_charset:
  * @filter: a #CamelMimeFilterWindows object
@@ -176,7 +173,6 @@ camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter)
 
 	return filter->is_windows;
 }
-
 
 /**
  * camel_mime_filter_windows_real_charset:

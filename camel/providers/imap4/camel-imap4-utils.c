@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -42,7 +41,6 @@
 #include "camel-imap4-utils.h"
 
 #define d(x)
-
 
 CamelFolderInfo *
 camel_imap4_build_folder_info_tree (GPtrArray *array, const gchar *top)
@@ -118,13 +116,11 @@ camel_imap4_flags_diff (flags_diff_t *diff, guint32 old, guint32 new)
 	diff->bits = new & diff->changed;
 }
 
-
 guint32
 camel_imap4_flags_merge (flags_diff_t *diff, guint32 flags)
 {
 	return (flags & ~diff->changed) | diff->bits;
 }
-
 
 /**
  * camel_imap4_merge_flags:
@@ -145,7 +141,6 @@ camel_imap4_merge_flags (guint32 original, guint32 local, guint32 server)
 
 	return camel_imap4_flags_merge (&diff, server);
 }
-
 
 void
 camel_imap4_namespace_clear (CamelIMAP4Namespace **ns)
@@ -206,7 +201,6 @@ camel_imap4_namespace_list_free (CamelIMAP4NamespaceList *nsl)
 	g_free (nsl);
 }
 
-
 gchar
 camel_imap4_get_path_delim (CamelIMAP4StoreSummary *s, const gchar *full_name)
 {
@@ -259,7 +253,6 @@ camel_imap4_get_path_delim (CamelIMAP4StoreSummary *s, const gchar *full_name)
 
 	return '/';
 }
-
 
 struct _uidset_range {
 	struct _uidset_range *next;
@@ -424,7 +417,6 @@ camel_imap4_get_uid_set (CamelIMAP4Engine *engine, CamelFolderSummary *summary, 
 	return (i - cur);
 }
 
-
 void
 camel_imap4_utils_set_unexpected_token_error (CamelException *ex, CamelIMAP4Engine *engine, camel_imap4_token_t *token)
 {
@@ -468,7 +460,6 @@ camel_imap4_utils_set_unexpected_token_error (CamelException *ex, CamelIMAP4Engi
 
 	g_string_free (errmsg, TRUE);
 }
-
 
 static struct {
 	const gchar *name;
@@ -532,7 +523,6 @@ camel_imap4_parse_flags_list (CamelIMAP4Engine *engine, guint32 *flags, CamelExc
 
 	return 0;
 }
-
 
 static struct {
 	const gchar *name;
@@ -646,7 +636,6 @@ camel_imap4_untagged_list (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guin
 	return -1;
 }
 
-
 static struct {
 	const gchar *name;
 	gint type;
@@ -657,7 +646,6 @@ static struct {
 	{ "UIDVALIDITY", CAMEL_IMAP4_STATUS_UIDVALIDITY },
 	{ "UNSEEN",      CAMEL_IMAP4_STATUS_UNSEEN      },
 };
-
 
 void
 camel_imap4_status_free (camel_imap4_status_t *status)
@@ -674,7 +662,6 @@ camel_imap4_status_free (camel_imap4_status_t *status)
 	g_free (status->mailbox);
 	g_free (status);
 }
-
 
 gint
 camel_imap4_untagged_status (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index, camel_imap4_token_t *token, CamelException *ex)

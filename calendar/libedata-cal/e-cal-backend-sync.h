@@ -58,7 +58,6 @@ struct _ECalBackendSyncClass {
 
 	ECalBackendSyncStatus (*get_attachment_list_sync)  (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **attachments);
 
-
 	ECalBackendSyncStatus (*get_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object);
 	ECalBackendSyncStatus (*add_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
 	ECalBackendSyncStatus (*set_default_timezone_sync) (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid);

@@ -96,7 +96,6 @@ current_state(void)
 	return info;
 }
 
-
 void camel_test_init(gint argc, gchar **argv)
 {
 	struct stat st;
@@ -235,7 +234,6 @@ void camel_test_fail(const gchar *why, ...)
 	va_end(ap);
 }
 
-
 void camel_test_failv(const gchar *why, va_list ap)
 {
 	gchar *text;
@@ -317,9 +315,6 @@ void camel_test_end(void)
 
 	fflush(stdout);
 }
-
-
-
 
 /* compare strings, ignore whitespace though */
 gint string_equal(const gchar *a, const gchar *b)

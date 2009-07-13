@@ -19,7 +19,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -169,7 +168,6 @@ camel_mime_filter_from_init (CamelMimeFilterFrom *obj)
 	;
 }
 
-
 /**
  * camel_mime_filter_from_new:
  *
@@ -196,7 +194,6 @@ gint main(gint argc, gchar **argv)
 
 	g_tk_init(&argc, &argv);
 
-
 	f = camel_mime_filter_from_new();
 
 	buffer = "This is a test\nFrom Someone\nTo someone. From Someone else, From\n From blah\nFromblah\nBye! \nFrom ";
@@ -211,7 +208,6 @@ gint main(gint argc, gchar **argv)
 	prespace = 0;
 	camel_mime_filter_complete(f, buffer, len, prespace, &buffer, &len, &prespace);
 	printf("complete = '%.*s'\n", len, buffer);
-
 
 	return 0;
 }

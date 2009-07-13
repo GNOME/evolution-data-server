@@ -35,7 +35,6 @@ G_BEGIN_DECLS
 #define E_IS_SOURCE_SELECTOR_DIALOG(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_SELECTOR_DIALOG))
 #define E_IS_SOURCE_SELECTOR_DIALOG_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_SELECTOR_DIALOG))
 
-
 typedef struct _ESourceSelectorDialog        ESourceSelectorDialog;
 typedef struct _ESourceSelectorDialogPrivate ESourceSelectorDialogPrivate;
 typedef struct _ESourceSelectorDialogClass   ESourceSelectorDialogClass;

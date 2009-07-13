@@ -79,7 +79,6 @@ accept_drop (EFolder *folder, GdkDragContext *context,
 	return FALSE;
 }
 
-
 /* GObject methods.  */
 
 static void

@@ -429,7 +429,6 @@ e_folder_tree_foreach (EFolderTree *folder_tree,
 	traverse_subtree (folder_tree, root_node, foreach_func, data);
 }
 
-
 /**
  * e_folder_tree_get_path_for_data:
  * @folder_tree: A pointer to an EFolderTree

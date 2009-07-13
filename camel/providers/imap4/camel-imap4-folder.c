@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -82,7 +81,6 @@ static gchar * imap4_get_filename (CamelFolder *folder, const gchar *uid, CamelE
 
 static CamelOfflineFolderClass *parent_class = NULL;
 
-
 static GSList *imap4_folder_props = NULL;
 
 static CamelProperty imap4_prop_list[] = {
@@ -90,7 +88,6 @@ static CamelProperty imap4_prop_list[] = {
 	{ CAMEL_IMAP4_FOLDER_EXPIRE_ACCESS, "expire-access", N_("Expire cached messages that haven't been read in X seconds") },
 	{ CAMEL_IMAP4_FOLDER_EXPIRE_AGE, "expire-age", N_("Expire cached messages older than X seconds") },
 };
-
 
 CamelType
 camel_imap4_folder_get_type (void)
@@ -269,7 +266,6 @@ imap4_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 	return ((CamelObjectClass *) parent_class)->setv (object, ex, args);
 }
 
-
 static gchar *
 imap4_get_summary_filename (const gchar *path)
 {
@@ -339,7 +335,6 @@ imap4_store_build_filename (gpointer store, const gchar *full_name)
 
 	return path;
 }
-
 
 CamelFolder *
 camel_imap4_folder_new (CamelStore *store, const gchar *full_name, CamelException *ex)
@@ -446,7 +441,6 @@ camel_imap4_folder_utf7_name (CamelIMAP4Folder *folder)
 	return folder->utf7_name;
 }
 
-
 static struct {
 	const gchar *name;
 	guint32 flag;
@@ -458,7 +452,6 @@ static struct {
 	/*{ "$Forwarded",  CAMEL_MESSAGE_FORWARDED },*/
 	{ "\\Seen",     CAMEL_MESSAGE_SEEN      },
 };
-
 
 static gint
 imap4_sync_flag (CamelFolder *folder, GPtrArray *infos, gchar onoff, const gchar *flag, CamelException *ex)
@@ -1079,7 +1072,6 @@ imap4_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
 }
-
 
 static gint
 info_uid_sort (const CamelMessageInfo **info0, const CamelMessageInfo **info1)

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_MIME_FILTER_SAVE_H__
 #define __CAMEL_MIME_FILTER_SAVE_H__
 

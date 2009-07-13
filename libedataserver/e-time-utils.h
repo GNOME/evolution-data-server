@@ -34,7 +34,6 @@ ETimeParseStatus e_time_parse_date_and_time	(const gchar	*value,
 ETimeParseStatus e_time_parse_date		(const gchar	*value,
 						 struct tm	*result);
 
-
 /* have same behavior like those functions above with two_digit_year set to NULL */
 ETimeParseStatus e_time_parse_date_and_time_ex	(const gchar	*value,
 						 struct tm	*result,
@@ -62,7 +61,6 @@ void e_time_format_time				(struct tm	*date_tm,
 						 gboolean	 show_zero_seconds,
 						 gchar		*buffer,
 						 gint		 buffer_size);
-
 
 /* Like mktime(3), but assumes UTC instead of local timezone. */
 time_t e_mktime_utc (struct tm *tm);

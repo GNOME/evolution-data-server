@@ -61,9 +61,6 @@ void e_book_backend_cache_set_time (EBookBackendCache *cache, const gchar *t);
 gchar *e_book_backend_cache_get_time (EBookBackendCache *cache);
 GPtrArray* e_book_backend_cache_search (EBookBackendCache *cache, const gchar *query);
 
-
-
-
 G_END_DECLS
 
 #endif

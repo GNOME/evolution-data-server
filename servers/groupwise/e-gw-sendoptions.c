@@ -229,7 +229,6 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 			} else
 				sopts->opened = E_GW_RETURN_NOTIFY_NONE;
 
-
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnDelete")) {
 			if (val_param)
 				val_param = soup_soap_parameter_get_first_child_by_name (val_param, "mail");
@@ -253,7 +252,6 @@ parse_status_tracking_options (SoupSoapParameter *group_param, guint i, EGwSendO
 				sopts->accepted = E_GW_RETURN_NOTIFY_MAIL;
 			} else
 				sopts->accepted = E_GW_RETURN_NOTIFY_NONE;
-
 
 		} else if (!g_ascii_strcasecmp (field + i, "ReturnCompleted")) {
 			if (val_param)
@@ -658,5 +656,4 @@ e_gw_sendoptions_new_from_soap_parameter (SoupSoapParameter *param)
 
 	return opts;
 }
-
 

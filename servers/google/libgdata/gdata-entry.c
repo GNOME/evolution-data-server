@@ -22,7 +22,6 @@
  *
  */
 
-
 #include <config.h>
 
 /* LibXML2 includes */
@@ -172,7 +171,6 @@ static void destroy_postal_address (gpointer data, gpointer user_data)
 	g_free (address->rel);
 	g_free (address);
 }
-
 
 static void gdata_entry_init (GTypeInstance *instance,
 		gpointer      g_class)
@@ -325,7 +323,6 @@ GType gdata_entry_get_type (void)
 
 	return type;
 }
-
 
 /*** API ***/
 static GDataEntryAuthor *
@@ -846,7 +843,6 @@ postal_address_to_xmlnode (GDataEntryPostalAddress *address)
 	return address_node;
 }
 
-
 /**
  * gdata_entry_new:
  * Creates a new #GDataEntry.
@@ -1360,7 +1356,6 @@ gdata_entry_get_start_time (GDataEntry *entry)
 	priv = GDATA_ENTRY_GET_PRIVATE(entry);
 	return priv->start_time;
 }
-
 
 /**
  * gdata_entry_get_transparency:

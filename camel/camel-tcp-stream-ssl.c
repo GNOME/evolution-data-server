@@ -143,7 +143,6 @@ camel_tcp_stream_ssl_finalize (CamelObject *object)
 	g_free (stream->priv);
 }
 
-
 CamelType
 camel_tcp_stream_ssl_get_type (void)
 {
@@ -162,7 +161,6 @@ camel_tcp_stream_ssl_get_type (void)
 
 	return type;
 }
-
 
 /**
  * camel_tcp_stream_ssl_new:
@@ -197,7 +195,6 @@ camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, gui
 	return CAMEL_STREAM (stream);
 }
 
-
 /**
  * camel_tcp_stream_ssl_new_raw:
  * @session: an active #CamelSession object
@@ -230,7 +227,6 @@ camel_tcp_stream_ssl_new_raw (CamelSession *session, const gchar *expected_host,
 
 	return CAMEL_STREAM (stream);
 }
-
 
 static void
 set_errno (gint code)
@@ -294,7 +290,6 @@ set_errno (gint code)
 	}
 }
 
-
 /**
  * camel_tcp_stream_ssl_enable_ssl:
  * @ssl: a #CamelTcpStreamSSL object
@@ -333,7 +328,6 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 
 	return 0;
 }
-
 
 static gssize
 stream_read (CamelStream *stream, gchar *buffer, gsize n)
@@ -818,7 +812,6 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 
 	g_free (path);
 }
-
 
 #if 0
 /* used by the mozilla-like code below */

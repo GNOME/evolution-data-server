@@ -63,7 +63,6 @@ gboolean         e_cal_backend_sexp_match_comp   (ECalBackendSExp *sexp,
 						  ECalComponent   *comp,
 						  ECalBackend     *backend);
 
-
 /* Default implementations of time functions for use by subclasses */
 
 ESExpResult *e_cal_backend_sexp_func_time_now       (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
@@ -71,7 +70,6 @@ ESExpResult *e_cal_backend_sexp_func_make_time      (ESExp *esexp, gint argc, ES
 ESExpResult *e_cal_backend_sexp_func_time_add_day   (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
 ESExpResult *e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
 ESExpResult *e_cal_backend_sexp_func_time_day_end   (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
-
 
 G_END_DECLS
 

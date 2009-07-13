@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -68,7 +67,6 @@ camel_sasl_anonymous_finalize (CamelObject *object)
 	g_free (sasl->trace_info);
 }
 
-
 CamelType
 camel_sasl_anonymous_get_type (void)
 {
@@ -87,7 +85,6 @@ camel_sasl_anonymous_get_type (void)
 
 	return type;
 }
-
 
 /**
  * camel_sasl_anonymous_new:

@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_MIME_PART_H
 #define CAMEL_MIME_PART_H 1
 

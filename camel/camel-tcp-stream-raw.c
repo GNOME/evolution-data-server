@@ -104,7 +104,6 @@ camel_tcp_stream_raw_finalize (CamelObject *object)
 		SOCKET_CLOSE (stream->sockfd);
 }
 
-
 CamelType
 camel_tcp_stream_raw_get_type (void)
 {
@@ -224,8 +223,6 @@ flaky_tcp_read (gint fd, gchar *buffer, gsize buflen)
 #define read(fd, buffer, buflen) flaky_tcp_read (fd, buffer, buflen)
 
 #endif /* SIMULATE_FLAKY_NETWORK */
-
-
 
 /**
  * camel_tcp_stream_raw_new:

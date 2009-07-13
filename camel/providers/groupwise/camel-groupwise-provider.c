@@ -47,7 +47,6 @@ static guint groupwise_url_hash (gconstpointer key);
 static gint check_equal (gchar *s1, gchar *s2);
 static gint groupwise_url_equal (gconstpointer a, gconstpointer b);
 
-
 CamelProviderConfEntry groupwise_conf_entries[] = {
 	/* override the labels/defaults of the standard settings */
 
@@ -82,7 +81,6 @@ CamelProviderConfEntry groupwise_conf_entries[] = {
 
 	{ CAMEL_PROVIDER_CONF_END }
 };
-
 
 static CamelProvider groupwise_provider = {
 	"groupwise",
@@ -149,7 +147,6 @@ camel_provider_module_init(void)
 
 	camel_provider_register (&groupwise_provider);
 }
-
 
 static void
 add_hash (guint *hash, gchar *s)

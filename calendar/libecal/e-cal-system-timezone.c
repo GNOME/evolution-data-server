@@ -266,7 +266,6 @@ recursive_compare (struct stat  *localtime_stat,
 	return NULL;
 }
 
-
 static gboolean
 files_are_identical_inode (struct stat *a_stat,
 			   struct stat *b_stat,
@@ -276,7 +275,6 @@ files_are_identical_inode (struct stat *a_stat,
 {
 	return (a_stat->st_ino == b_stat->st_ino);
 }
-
 
 /* Determine if /etc/localtime is a hard link to some file, by looking at
  * the inodes */

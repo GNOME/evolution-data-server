@@ -85,7 +85,6 @@ camel_sasl_login_finalize (CamelObject *object)
 	g_free (sasl->priv);
 }
 
-
 CamelType
 camel_sasl_login_get_type (void)
 {

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -45,9 +44,7 @@ static void camel_multipart_encrypted_finalize (CamelObject *object);
 
 static void set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type);
 
-
 static CamelMultipartClass *parent_class = NULL;
-
 
 CamelType
 camel_multipart_encrypted_get_type (void)
@@ -67,7 +64,6 @@ camel_multipart_encrypted_get_type (void)
 
 	return type;
 }
-
 
 static void
 camel_multipart_encrypted_class_init (CamelMultipartEncryptedClass *klass)
@@ -117,7 +113,6 @@ set_mime_type_field (CamelDataWrapper *data_wrapper, CamelContentType *mime_type
 
 	((CamelDataWrapperClass *) parent_class)->set_mime_type_field (data_wrapper, mime_type);
 }
-
 
 /**
  * camel_multipart_encrypted_new:

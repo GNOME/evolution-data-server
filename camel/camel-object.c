@@ -130,7 +130,6 @@ static void camel_object_bag_remove_unlocked(CamelObjectBag *inbag, CamelObject 
 #define camel_object_unget_hooks(o) \
 	(g_static_rec_mutex_unlock(&CAMEL_OBJECT(o)->hooks->lock))
 
-
 /* ********************************************************************** */
 
 /* type-lock must be recursive, for atomically creating classes */
@@ -587,7 +586,6 @@ abort:
 	return res;
 }
 
-
 static void
 cobject_class_init(CamelObjectClass *klass)
 {
@@ -613,7 +611,6 @@ cobject_class_finalise(CamelObjectClass * klass)
 
 	g_free(klass);
 }
-
 
 /* CamelInterface base methods */
 

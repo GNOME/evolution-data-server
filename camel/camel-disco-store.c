@@ -22,7 +22,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -273,7 +272,6 @@ disco_get_folder_info (CamelStore *store, const gchar *top,
 	return NULL;
 }
 
-
 /**
  * camel_disco_store_status:
  * @store: a disconnectable store
@@ -382,7 +380,6 @@ camel_disco_store_can_work_offline (CamelDiscoStore *store)
 {
 	return CDS_CLASS (store)->can_work_offline (store);
 }
-
 
 /**
  * camel_disco_store_check_online:

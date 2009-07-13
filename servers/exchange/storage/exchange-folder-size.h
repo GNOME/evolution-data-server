@@ -16,7 +16,6 @@ G_BEGIN_DECLS
 #define EXCHANGE_IS_FOLDER_SIZE(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), EXCHANGE_TYPE_FOLDER_SIZE))
 #define EXCHANGE_IS_FOLDER_SIZE_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((obj), EXCHANGE_TYPE_FOLDER_SIZE))
 
-
 typedef struct _ExchangeFolderSize        ExchangeFolderSize;
 typedef struct _ExchangeFolderSizePrivate ExchangeFolderSizePrivate;
 typedef struct _ExchangeFolderSizeClass   ExchangeFolderSizeClass;

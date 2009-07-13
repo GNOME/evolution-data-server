@@ -36,5 +36,3 @@ e_gw_recur_get_day_of_week (short day)
 	return days_of_week [day-1];
 }
 
-
-

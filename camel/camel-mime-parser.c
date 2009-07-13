@@ -247,7 +247,6 @@ camel_mime_parser_new (void)
 	return new;
 }
 
-
 /**
  * camel_mime_parser_filter_add:
  * @m:
@@ -1404,7 +1403,6 @@ normal_exit:
 	return part;
 }
 
-
 static void
 folder_scan_close(struct _header_scan_state *s)
 {
@@ -1419,7 +1417,6 @@ folder_scan_close(struct _header_scan_state *s)
 	}
 	g_free(s);
 }
-
 
 static struct _header_scan_state *
 folder_scan_init(void)

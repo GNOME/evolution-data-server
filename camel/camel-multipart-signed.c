@@ -564,7 +564,6 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	return total;
 }
 
-
 /**
  * camel_multipart_signed_get_content_stream:
  * @mps: a #CamlMultipartSigned object

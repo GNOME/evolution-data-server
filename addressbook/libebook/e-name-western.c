@@ -727,7 +727,6 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 	g_free (name->full);
 	name->full = newfull;
 
-
 	g_free (prefix);
 	g_free (firstmidnick);
 	g_free (last);

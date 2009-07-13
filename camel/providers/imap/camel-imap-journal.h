@@ -78,7 +78,6 @@ struct _CamelIMAPJournalClass {
 
 };
 
-
 CamelType camel_imap_journal_get_type (void);
 
 CamelOfflineJournal *camel_imap_journal_new (struct _CamelImapFolder *folder, const gchar *filename);

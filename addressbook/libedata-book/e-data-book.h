@@ -47,7 +47,6 @@ struct _EDataBookClass {
 	void (*_pas_reserved4) (void);
 };
 
-
 EDataBook                *e_data_book_new                    (EBookBackend                               *backend,
 							      ESource                                  *source,
 							 GNOME_Evolution_Addressbook_BookListener  listener);

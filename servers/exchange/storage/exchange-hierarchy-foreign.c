@@ -334,7 +334,6 @@ create_internal (ExchangeHierarchy *hier, EFolder *parent,
 	return result;
 }
 
-
 static ExchangeAccountFolderResult
 create_folder (ExchangeHierarchy *hier, EFolder *parent,
 	       const gchar *name, const gchar *type)

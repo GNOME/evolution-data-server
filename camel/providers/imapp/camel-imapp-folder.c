@@ -211,7 +211,6 @@ imap_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return msg;
 }
 
-
 /* Algorithm for selecting a folder:
 
   - If uidvalidity == old uidvalidity

@@ -295,7 +295,6 @@ icomp_x_prop_set (icalcomponent *comp, const gchar *key, const gchar *value)
 	}
 }
 
-
 static gchar *
 icomp_x_prop_get (icalcomponent *comp, const gchar *key)
 {
@@ -403,7 +402,6 @@ ecalcomp_set_synch_state (ECalComponent *comp, ECalCompSyncState state)
 
 	g_free (state_string);
 }*/
-
 
 static gchar *
 ecalcomp_gen_href (ECalComponent *comp)
@@ -1191,7 +1189,6 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, gint 
 	return result;
 }
 
-
 static ECalBackendSyncStatus
 caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object)
 {
@@ -1758,7 +1755,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 		} else if (uid && ccl) {
 			/* all components cover by this uid are up-to-date */
 			GSList *p;
-			
+
 			for (p = ccl->slist; p; p = p->next) {
 				g_object_unref (p->data);
 			}
@@ -2035,7 +2032,6 @@ caldav_is_read_only (ECalBackendSync *backend,
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 static ECalBackendSyncStatus
 caldav_get_cal_address (ECalBackendSync  *backend,
 			EDataCal         *cal,
@@ -2044,8 +2040,6 @@ caldav_get_cal_address (ECalBackendSync  *backend,
 	*address = NULL;
 	return GNOME_Evolution_Calendar_Success;
 }
-
-
 
 static ECalBackendSyncStatus
 caldav_get_ldap_attribute (ECalBackendSync  *backend,
@@ -4259,7 +4253,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbdav), FALSE);
 }
-
 
 static void
 e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)

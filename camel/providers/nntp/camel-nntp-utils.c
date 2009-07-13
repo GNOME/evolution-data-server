@@ -290,7 +290,6 @@ camel_nntp_get_headers (CamelStore *store,
 		return;
 	}
 
-
 	if (nntp_store->extensions & CAMEL_NNTP_EXT_OVER) {
 		get_XOVER_headers (nntp_store, folder, first_message, last_message, ex);
 	}

@@ -664,7 +664,6 @@ e_cal_util_generate_alarms_for_list (GList *comps,
 	return n;
 }
 
-
 /**
  * e_cal_util_priority_to_string:
  * @priority: Priority value.
@@ -693,7 +692,6 @@ e_cal_util_priority_to_string (gint priority)
 
 	return retval;
 }
-
 
 /**
  * e_cal_util_priority_from_string:
@@ -951,8 +949,6 @@ e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *icalcomp2
 		if (icaltime_compare (c1_dtend, c2_dtend))
 			return FALSE;
 	}
-
-
 
 	/* now match the timezones */
 	if (!(!c1_dtstart.zone && !c2_dtstart.zone) ||

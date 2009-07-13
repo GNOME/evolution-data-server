@@ -402,7 +402,6 @@ e2k_rule_extract_proptag (guint8 **ptr, gint *len, E2kRuleProp *prop)
 	return TRUE;
 }
 
-
 /**
  * e2k_rule_append_propvalue:
  * @ba: a byte array containing a binary rule
@@ -529,7 +528,6 @@ e2k_rule_free_propvalue (E2kPropValue *pv)
 	else if (pv->type == E2K_PROP_TYPE_BINARY && pv->value)
 		g_byte_array_free (pv->value, TRUE);
 }
-
 
 /**
  * e2k_rule_free:

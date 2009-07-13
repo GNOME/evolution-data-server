@@ -39,12 +39,10 @@ typedef struct _CamelSaslLogin {
 
 } CamelSaslLogin;
 
-
 typedef struct _CamelSaslLoginClass {
 	CamelSaslClass parent_class;
 
 } CamelSaslLoginClass;
-
 
 /* Standard Camel function */
 CamelType camel_sasl_login_get_type (void);

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -119,7 +118,6 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass)
 	filter_class->filter = filter_filter;
 	filter_class->complete = filter_complete;
 }
-
 
 /**
  * camel_mime_filter_progress_new:

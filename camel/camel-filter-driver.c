@@ -416,7 +416,6 @@ report_status (CamelFilterDriver *driver, enum camel_filter_status_t status, gin
 	}
 }
 
-
 #if 0
 void
 camel_filter_driver_set_global (CamelFilterDriver *d, const gchar *name, const gchar *value)
@@ -1051,7 +1050,6 @@ free_key (gpointer key, gpointer value, gpointer user_data)
 }
 #endif
 
-
 static void
 camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, const gchar *desc, ...)
 {
@@ -1102,7 +1100,6 @@ camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, co
 	}
 }
 
-
 struct _run_only_once {
 	CamelFilterDriver *driver;
 	CamelException *ex;
@@ -1145,7 +1142,6 @@ run_only_once (gpointer key, gchar *action, struct _run_only_once *data)
 	return TRUE;
 }
 
-
 /**
  * camel_filter_driver_flush:
  * @driver:
@@ -1167,7 +1163,6 @@ camel_filter_driver_flush (CamelFilterDriver *driver, CamelException *ex)
 
 	g_hash_table_foreach_remove (p->only_once, (GHRFunc) run_only_once, &data);
 }
-
 
 static gint
 decode_flags_from_xev(const gchar *xev, CamelMessageInfoBase *mi)
@@ -1297,7 +1292,6 @@ fail:
 	return ret;
 }
 
-
 /**
  * camel_filter_driver_filter_folder:
  * @driver: CamelFilterDriver
@@ -1386,12 +1380,10 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver, CamelFolder *folde
 	return status;
 }
 
-
 struct _get_message {
 	struct _CamelFilterDriverPrivate *p;
 	const gchar *source_url;
 };
-
 
 static CamelMimeMessage *
 get_message_cb (gpointer data, CamelException *ex)

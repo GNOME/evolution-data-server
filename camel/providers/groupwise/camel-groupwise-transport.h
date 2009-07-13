@@ -21,7 +21,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_GROUPWISE_TRANSPORT_H
 #define CAMEL_GROUPWISE_TRANSPORT_H 1
 
@@ -40,12 +39,10 @@ typedef struct {
 
 } CamelGroupwiseTransport;
 
-
 typedef struct {
 	CamelTransportClass parent_class;
 
 } CamelGroupwiseTransportClass;
-
 
 /* Standard Camel function */
 CamelType camel_groupwise_transport_get_type (void);

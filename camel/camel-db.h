@@ -29,7 +29,6 @@ struct _CamelDB {
 #define CAMEL_DB_RELEASE_SQLITE_MEMORY if(!g_getenv("CAMEL_SQLITE_FREE_CACHE")) sqlite3_release_memory(CAMEL_DB_FREE_CACHE_SIZE);
 #define CAMEL_DB_USE_SHARED_CACHE if(g_getenv("CAMEL_SQLITE_SHARED_CACHE")) sqlite3_enable_shared_cache(TRUE);
 
-
 /* The extensive DB format, supporting basic searching and sorting
   uid, - Message UID
   flags, - Camel Message info flags
@@ -102,12 +101,8 @@ typedef struct _CamelFIRecord {
 	gchar *bdata;
 } CamelFIRecord;
 
-
-
-
 typedef struct _CamelDB CamelDB;
 typedef gint (*CamelDBSelectCB) (gpointer data, gint ncol, gchar **colvalues, gchar **colnames);
-
 
 CamelDB * camel_db_open (const gchar *path, CamelException *ex);
 CamelDB * camel_db_clone (CamelDB *cdb, CamelException *ex);

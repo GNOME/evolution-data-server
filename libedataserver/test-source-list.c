@@ -33,7 +33,6 @@ static GMainLoop *main_loop = NULL;
 static ESourceList *list = NULL;
 static gint idle_dump_id = 0;
 
-
 /* Options.  */
 
 static gboolean listen = FALSE;
@@ -145,7 +144,6 @@ dump_list (void)
 		dump_group (E_SOURCE_GROUP (p->data));
 }
 
-
 static gint
 idle_dump_callback (gpointer unused_data)
 {
@@ -161,7 +159,6 @@ dump_on_idle (void)
 	if (idle_dump_id == 0)
 		idle_dump_id = g_idle_add (idle_dump_callback, NULL);
 }
-
 
 static void
 source_changed_callback (ESource *source)
@@ -192,7 +189,6 @@ list_changed_callback (ESourceGroup *group)
 
 	dump_on_idle ();
 }
-
 
 static void
 connect_source (ESource *source)
@@ -247,7 +243,6 @@ disconnect_source (ESource *source)
 	g_object_unref (source);
 }
 
-
 static void
 source_added_callback (ESourceGroup *group,
 		       ESource *source)
@@ -295,7 +290,6 @@ group_removed_callback (ESourceList *list,
 	disconnect_group (group);
 	dump_on_idle ();
 }
-
 
 static gint
 on_idle_do_stuff (gpointer unused_data)
@@ -535,7 +529,6 @@ on_idle_do_stuff (gpointer unused_data)
 
 	return FALSE;
 }
-
 
 gint
 main (gint argc, gchar **argv)

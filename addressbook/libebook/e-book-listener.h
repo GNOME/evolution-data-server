@@ -110,7 +110,6 @@ struct _EBookListenerResponse {
 	gchar                   *vcard;
 };
 
-
 EBookListener         *e_book_listener_new            (void);
 GType                  e_book_listener_get_type       (void);
 void                   e_book_listener_stop           (EBookListener *listener);

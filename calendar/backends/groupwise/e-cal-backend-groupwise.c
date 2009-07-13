@@ -331,7 +331,6 @@ get_deltas (gpointer handle)
 	const gchar *attempts;
 	const gchar *position;
 
-
 	EGwFilter *filter;
 	gint time_interval;
 	icaltimetype temp;
@@ -598,7 +597,6 @@ get_deltas (gpointer handle)
 		ECalComponent *comp = NULL;
 		icalcomponent *icalcomp = NULL;
 
-
 		comp = e_cal_backend_cache_get_component (cache, (const gchar *) ls->data, NULL);
 
 		if (!comp)
@@ -636,7 +634,6 @@ get_deltas (gpointer handle)
 				e_cal_component_commit_sequence (comp);
 				sanitize_component (E_CAL_BACKEND_SYNC (cbgw), comp, (gchar *) e_gw_item_get_id (item));
 				e_cal_backend_cache_put_component (priv->cache, comp);
-
 
 				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
 					tmp = e_cal_component_get_as_string (comp);
@@ -759,7 +756,6 @@ fetch_deltas (ECalBackendGroupwise *cbgw)
 
 	return TRUE;
 }
-
 
 static gboolean
 start_fetch_deltas (gpointer data)
@@ -998,7 +994,6 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			return GNOME_Evolution_Calendar_AuthenticationFailed;
 		}
 
-
 		cbgw->priv->read_only = TRUE;
 
 		if (kind == ICAL_VEVENT_COMPONENT && (permissions & E_GW_PROXY_APPOINTMENT_WRITE) )
@@ -1083,7 +1078,6 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create thread for populating cache"));
 			return GNOME_Evolution_Calendar_OtherError;
 		}
-
 
 	} else {
 		e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Authentication failed"));
@@ -1283,7 +1277,6 @@ e_cal_backend_groupwise_get_static_capabilities (ECalBackendSync *backend, EData
 	return GNOME_Evolution_Calendar_Success;
 }
 
-
 static void
 in_offline (ECalBackendGroupwise *cbgw) {
 	ECalBackendGroupwisePrivate *priv;
@@ -1308,7 +1301,6 @@ in_offline (ECalBackendGroupwise *cbgw) {
 		g_object_unref (priv->cnc);
 		priv->cnc = NULL;
 	}
-
 
 }
 
@@ -2248,7 +2240,6 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 		break;
 	}
 
-
 	*old_object = e_cal_component_get_as_string (cache_comp);
 	g_object_unref (cache_comp);
 	g_object_unref (comp);
@@ -2476,7 +2467,6 @@ change_status (ECalComponent *comp, icalparameter_partstat status, const gchar *
 	icalparameter *param;
 	gboolean found = FALSE;
 	icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
-
 
 	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
 			prop;
@@ -2713,7 +2703,6 @@ send_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalcomp,
 		return GNOME_Evolution_Calendar_ObjectNotFound;
 	}
 
-
 	switch (priv->mode) {
 	case CAL_MODE_ANY :
 	case CAL_MODE_REMOTE :
@@ -2815,7 +2804,6 @@ e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, c
 	return status;
 }
 
-
 /* Object initialization function for the file backend */
 static void
 e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseClass *class)
@@ -2882,7 +2870,6 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	backend_class->internal_get_default_timezone = e_cal_backend_groupwise_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_groupwise_internal_get_timezone;
 }
-
 
 /**
  * e_cal_backend_groupwise_get_type:

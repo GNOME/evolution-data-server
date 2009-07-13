@@ -203,7 +203,6 @@ enum ptime_locale_status { not, loc, raw };
 # include "../locale/localeinfo.h"
 #endif
 
-
 #ifndef __P
 # if defined __GNUC__ || (defined __STDC__ && __STDC__)
 #  define __P(args) args
@@ -211,7 +210,6 @@ enum ptime_locale_status { not, loc, raw };
 #  define __P(args) ()
 # endif  /* GCC.  */
 #endif  /* Not __P.  */
-
 
 #if ! HAVE_LOCALTIME_R && ! defined localtime_r
 # ifdef _LIBC
@@ -233,7 +231,6 @@ localtime_r (t, tp)
 }
 # endif /* ! _LIBC */
 #endif /* ! HAVE_LOCALTIME_R && ! defined (localtime_r) */
-
 
 #define match_char(ch1, ch2) if (ch1 != ch2) return NULL
 #if defined _LIBC && defined __GNUC__ && __GNUC__ >= 2
@@ -296,7 +293,6 @@ localtime_r (t, tp)
   (*(new_fmt) != '\0'							      \
    && (rp = __strptime_internal (rp, (new_fmt), tm,			      \
 				 decided, era_cnt LOCALE_ARG)) != NULL)
-
 
 #ifdef _LIBC
 /* This is defined in locale/C-time.c in the GNU libc.  */
@@ -379,9 +375,6 @@ static const unsigned short __mon_yday[2][13] =
 # define ISSPACE(Ch) isspace (Ch)
 #endif
 
-
-
-
 #ifndef __isleap
 /* Nonzero if YEAR is a leap year (every 4 years,
    except every 100th isn't, and every 400th is).  */
@@ -414,7 +407,6 @@ day_of_the_year (struct tm *tm)
   tm->tm_yday = (__mon_yday[__isleap (1900 + tm->tm_year)][tm->tm_mon]
 		 + (tm->tm_mday - 1));
 }
-
 
 #ifdef _LIBC
 gchar *
@@ -1474,7 +1466,6 @@ string_is_empty (const gchar *value)
 	return empty;
 }
 
-
 /* Takes a number of format strings for strptime() and attempts to parse a
  * string with them.
  */
@@ -1671,7 +1662,6 @@ e_time_parse_date_and_time_ex		(const gchar	*value,
 	/* strptime format of a weekday and a date. */
 	format[num_formats++] = _("%a %m/%d/%Y");
 
-
 	/*
 	 * Now try all the above formats again, but without the weekday.
 	 */
@@ -1860,7 +1850,6 @@ e_time_parse_time (const gchar *value, struct tm *result)
 	return parse_with_strptime (value, result, format, num_formats);
 }
 
-
 /**
  * e_time_format_date_and_time:
  * @date_tm: The #tm to convert to a string.
@@ -1917,7 +1906,6 @@ e_time_format_date_and_time		(struct tm	*date_tm,
 		buffer[0] = '\0';
 }
 
-
 /**
  * e_time_format_time:
  * @date_tm: The #tm to convert to a string.
@@ -1961,7 +1949,6 @@ e_time_format_time			(struct tm	*date_tm,
 	if (e_utf8_strftime (buffer, buffer_size, format, date_tm) == 0)
 		buffer[0] = '\0';
 }
-
 
 /**
  * e_mktime_utc:
@@ -2025,7 +2012,7 @@ e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
 }
 
 #ifdef G_OS_WIN32
-static int _e_string_replace(gchar **str, const gchar *old, const gchar *new)
+static gint _e_string_replace(gchar **str, const gchar *old, const gchar *new)
 {
 	GRegex *my_regex = g_regex_new(old, 0, 0, NULL);
 	gchar *buf = *str;
@@ -2045,7 +2032,7 @@ e_time_get_d_fmt_with_4digit_year (void)
 	res = g_strdup (nl_langinfo (D_FMT) );
 #elif defined(G_OS_WIN32)
   #define GET_LOCALE_INFO(str, len) GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
-	int format_string_length = GET_LOCALE_INFO(NULL, 0);
+	gint format_string_length = GET_LOCALE_INFO(NULL, 0);
 	if (format_string_length > 0)
 	{
 		gsize format_bytes_read, format_bytes_written;
@@ -2066,7 +2053,7 @@ e_time_get_d_fmt_with_4digit_year (void)
 		_e_string_replace(&res, "\\byy\\b", "%y");	/* yy -> %y*/
 		_e_string_replace(&res, "\\byyyy\\b", "%Y");	/* yyyy -> %Y */
 		_e_string_replace(&res, "\\byyyyy\\b", "%Y");	/* yyyyy -> %Y */
-	}			
+	}
   #undef GET_LOCALE_INFO
 	/**TODO** implement this for other systems
 	*/

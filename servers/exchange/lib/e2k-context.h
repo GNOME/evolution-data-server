@@ -187,7 +187,6 @@ void          e2k_context_subscribe          (E2kContext *ctx,
 void          e2k_context_unsubscribe        (E2kContext *ctx,
 					      const gchar *uri);
 
-
 /*
  * Utility functions
  */

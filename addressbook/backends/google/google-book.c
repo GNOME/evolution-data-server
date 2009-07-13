@@ -425,7 +425,6 @@ on_refresh_timeout (gpointer user_data)
     return FALSE;
 }
 
-
 static void
 google_book_cache_destroy (GoogleBook *book)
 {
@@ -620,7 +619,6 @@ google_book_emit_auth_required (GoogleBook *book)
     __debug__ (G_STRFUNC);
     g_signal_emit (book, google_book_signals [AUTH_REQUIRED], 0);
 }
-
 
 static void
 google_book_class_init (GoogleBookClass *klass)
@@ -1087,7 +1085,6 @@ out:
 
     return rv;
 }
-
 
 EContact*
 google_book_get_contact (GoogleBook *book,

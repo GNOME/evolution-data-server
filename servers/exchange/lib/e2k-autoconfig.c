@@ -792,7 +792,6 @@ e2k_autoconfig_check_exchange (E2kAutoconfig *ac, E2kOperation *op)
 	return ac->exchange_dn ? E2K_AUTOCONFIG_OK : E2K_AUTOCONFIG_FAILED;
 }
 
-
 /* FIXME: make this cancellable */
 static void
 find_global_catalog (E2kAutoconfig *ac)
@@ -1042,7 +1041,6 @@ set_account_uri_string (E2kAutoconfig *ac)
 	e2k_uri_free (home_uri);
 	e2k_uri_free (owa_uri);
 }
-
 
 /* Approximate mapping from Exchange timezones to Olson ones. Exchange
  * is less specific, so we factor in the language/country info from
@@ -1386,7 +1384,6 @@ find_olson_timezone (const gchar *windows_timezone)
 	return g_strdup (zonemap[i - 1].olson_name);
 }
 
-
 /* Config file handling */
 
 static GHashTable *config_options;
@@ -1684,7 +1681,6 @@ e2k_validate_user (const gchar *owa_url, gchar *pkey, gchar **user,
 
 try_auth_again:
 	username = g_strdup (*user);
-
 
 	password = e_passwords_get_password ("Exchange", key);
 	if (password) {

@@ -29,7 +29,6 @@
 /* We set data on each menu item specifying the corresponding ESource using this key.  */
 #define MENU_ITEM_SOURCE_DATA_ID	"ESourceOptionMenu:Source"
 
-
 struct _ESourceOptionMenuPrivate {
 	ESourceList *source_list;
 
@@ -91,7 +90,6 @@ select_source (ESourceOptionMenu *menu,
 	g_free (foreach_data);
 }
 
-
 /* Menu callback.  */
 
 static void
@@ -103,7 +101,6 @@ menu_item_activate_callback (GtkMenuItem *menu_item,
 	if (source != NULL)
 		select_source (option_menu, source);
 }
-
 
 /* Functions to keep the menu in sync with the ESourceList.  */
 
@@ -190,7 +187,6 @@ populate (ESourceOptionMenu *option_menu)
 	}
 }
 
-
 static void
 source_list_changed_callback (ESourceList *list,
 			      ESourceOptionMenu *menu)
@@ -204,7 +200,6 @@ connect_signals (ESourceOptionMenu *menu)
 	g_signal_connect_object (menu->priv->source_list, "changed",
 				 G_CALLBACK (source_list_changed_callback), G_OBJECT (menu), 0);
 }
-
 
 /* GObject methods.  */
 
@@ -236,7 +231,6 @@ e_source_option_menu_finalize (GObject *object)
 	(* G_OBJECT_CLASS (e_source_option_menu_parent_class)->finalize) (object);
 }
 
-
 /* Initialization.  */
 
 static void
@@ -267,7 +261,6 @@ e_source_option_menu_init (ESourceOptionMenu *source_option_menu)
 
 	source_option_menu->priv = priv;
 }
-
 
 /* Public methods.  */
 

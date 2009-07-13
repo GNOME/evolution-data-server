@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -33,7 +32,6 @@
 #include "camel-offline-store.h"
 #include "camel-session.h"
 
-
 static void camel_offline_store_class_init (CamelOfflineStoreClass *klass);
 static void camel_offline_store_init (CamelOfflineStore *store, CamelOfflineStoreClass *klass);
 static void camel_offline_store_finalize (CamelObject *object);
@@ -42,9 +40,7 @@ static void offline_store_construct (CamelService *service, CamelSession *sessio
 				     CamelProvider *provider, CamelURL *url,
 				     CamelException *ex);
 
-
 static CamelStoreClass *parent_class = NULL;
-
 
 CamelType
 camel_offline_store_get_type (void)
@@ -65,7 +61,6 @@ camel_offline_store_get_type (void)
 	return type;
 }
 
-
 static void
 camel_offline_store_class_init (CamelOfflineStoreClass *klass)
 {
@@ -85,7 +80,6 @@ camel_offline_store_finalize (CamelObject *object)
 {
 	;
 }
-
 
 static void
 offline_store_construct (CamelService *service, CamelSession *session,

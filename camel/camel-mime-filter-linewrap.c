@@ -19,7 +19,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -28,14 +27,12 @@
 
 #include "camel-mime-filter-linewrap.h"
 
-
 static void filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
 		    gchar **out, gsize *outlen, gsize *outprespace);
 static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
 		      gsize prespace, gchar **out, gsize *outlen,
 		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
-
 
 static void
 camel_mime_filter_linewrap_class_init (CamelMimeFilterLinewrapClass *klass)

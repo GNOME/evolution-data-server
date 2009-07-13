@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_URL_SCANNER_H__
 #define __CAMEL_URL_SCANNER_H__
 

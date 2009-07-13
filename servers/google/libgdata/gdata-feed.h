@@ -29,7 +29,6 @@
 
 G_BEGIN_DECLS
 
-
 #define GDATA_TYPE_FEED           (gdata_feed_get_type())
 #define GDATA_FEED(obj)           (G_TYPE_CHECK_INSTANCE_CAST((obj), GDATA_TYPE_FEED, GDataFeed))
 #define GDATA_FEED_CLASS(klass)   (G_TYPE_CHECK_CLASS_CAST((klass), GDATA_TYPE_FEED, GDataFeedClass))
@@ -40,7 +39,6 @@ G_BEGIN_DECLS
 typedef struct _GDataFeed GDataFeed;
 typedef struct _GDataFeedClass GDataFeedClass;
 typedef struct _GDataFeedPrivate GDataFeedPrivate;
-
 
 struct _GDataFeed {
 

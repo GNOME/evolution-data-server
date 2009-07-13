@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -387,7 +386,6 @@ camel_charset_best (const gchar *in, gint len)
 	camel_charset_step (&charset, in, len);
 	return camel_charset_best_name (&charset);
 }
-
 
 /**
  * camel_charset_iso_to_windows:

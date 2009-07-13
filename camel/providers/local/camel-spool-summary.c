@@ -173,7 +173,6 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 	if (camel_mbox_summary_sync_mbox((CamelMboxSummary *)cls, flags, changeinfo, fd, fdout, ex) == -1)
 		goto error;
 
-
 	/* sync out content */
 	if (fsync(fdout) == -1) {
 		g_warning("Cannot sync temporary folder: %s", g_strerror (errno));
@@ -221,7 +220,6 @@ spool_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, CamelFolderChan
 		ftruncate(fd, spoollen);
 		goto error;
 	}
-
 
 	/* now copy content back */
 	buffer = g_malloc(8192);

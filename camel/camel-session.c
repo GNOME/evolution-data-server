@@ -286,7 +286,6 @@ camel_session_get_service_connected (CamelSession *session,
 	return svc;
 }
 
-
 static gchar *
 get_storage_path (CamelSession *session, CamelService *service, CamelException *ex)
 {
@@ -339,7 +338,6 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
 	return CS_CLASS (session)->get_storage_path (session, service, ex);
 }
 
-
 /**
  * camel_session_get_password:
  * @session: a #CamelSession object
@@ -385,7 +383,6 @@ camel_session_get_password (CamelSession *session, CamelService *service,
 	return CS_CLASS (session)->get_password (session, service, domain, prompt, item, flags, ex);
 }
 
-
 /**
  * camel_session_forget_password:
  * @session: a #CamelSession object
@@ -411,7 +408,6 @@ camel_session_forget_password (CamelSession *session, CamelService *service,
 
 	CS_CLASS (session)->forget_password (session, service, domain, item, ex);
 }
-
 
 /**
  * camel_session_alert_user:
@@ -500,7 +496,6 @@ camel_session_is_online (CamelSession *session)
 {
 	return session->online;
 }
-
 
 /**
  * camel_session_set_online:

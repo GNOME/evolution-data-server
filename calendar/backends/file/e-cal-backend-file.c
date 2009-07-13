@@ -745,7 +745,6 @@ notify_removals_cb (gpointer key, gpointer value, gpointer data)
 		comp = e_cal_component_new_from_string (old_obj_str);
 		id = e_cal_component_get_id (comp);
 
-
 		e_cal_backend_notify_object_removed (context->backend, id, old_obj_str, NULL);
 
 		e_cal_component_free_id (id);
@@ -1727,7 +1726,6 @@ e_cal_backend_file_compute_changes (ECalBackendFile *cbfile, const gchar *change
 
 	priv = cbfile->priv;
 
-
 	/* FIXME Will this always work? */
 	unescaped_uri = g_uri_unescape_string (priv->path, "");
 	filename = g_strdup_printf ("%s-%s.db", unescaped_uri, change_id);
@@ -2461,7 +2459,6 @@ check_tzids (icalparameter *param, gpointer data)
 		tzdata->found = FALSE;
 }
 
-
 /* This function is largely duplicated in
  * ../groupwise/e-cal-backend-groupwise.c
  */
@@ -2876,7 +2873,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	backend_class->internal_get_default_timezone = e_cal_backend_file_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_file_internal_get_timezone;
 }
-
 
 /**
  * e_cal_backend_file_get_type:

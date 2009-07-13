@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef __CAMEL_IMAP4_COMMAND_H__
 #define __CAMEL_IMAP4_COMMAND_H__
 

@@ -50,7 +50,6 @@ struct _OfflineListenerPrivate
 	gboolean is_offline_now;
 };
 
-
 static void
 set_online_status (OfflineListener *offline_listener, gboolean is_offline)
 {
@@ -87,7 +86,6 @@ online_status_changed (GConfClient *client, gint cnxn_id, GConfEntry *entry, gpo
 
 }
 
-
 static void
 setup_offline_listener (OfflineListener *offline_listener)
 {
@@ -119,7 +117,6 @@ offline_listener_new (EDataBookFactory *book_factory)
 	return offline_listener;
 
 }
-
 
 static void
 offline_listener_dispose (GObject *object)
@@ -157,8 +154,6 @@ offline_listener_init (OfflineListener *listener)
 
 }
 
-
-
 static void
 offline_listener_class_init (OfflineListener *klass)
 {
@@ -170,10 +165,7 @@ offline_listener_class_init (OfflineListener *klass)
 	object_class->dispose = offline_listener_dispose;
 	object_class->finalize = offline_listener_finalize;
 
-
-
 }
-
 
 GType
 offline_listener_get_type (void)

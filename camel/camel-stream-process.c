@@ -86,7 +86,6 @@ camel_stream_process_init (gpointer object, gpointer klass)
 	stream->childpid = 0;
 }
 
-
 CamelType
 camel_stream_process_get_type (void)
 {
@@ -118,7 +117,6 @@ camel_stream_process_new (void)
 {
 	return (CamelStream *) camel_object_new (camel_stream_process_get_type ());
 }
-
 
 static gssize
 stream_read (CamelStream *stream, gchar *buffer, gsize n)

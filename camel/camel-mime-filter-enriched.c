@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -93,7 +92,6 @@ static struct {
 
 static GHashTable *enriched_hash = NULL;
 
-
 static void camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *klass);
 static void camel_mime_filter_enriched_init       (CamelMimeFilterEnriched *filter);
 static void camel_mime_filter_enriched_finalize   (CamelObject *obj);
@@ -104,9 +102,7 @@ static void filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len
 			     gchar **out, gsize *outlen, gsize *outprespace);
 static void filter_reset (CamelMimeFilter *filter);
 
-
 static CamelMimeFilterClass *parent_class = NULL;
-
 
 CamelType
 camel_mime_filter_enriched_get_type (void)
@@ -161,7 +157,6 @@ camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 	filter->flags = 0;
 	filter->nofill = 0;
 }
-
 
 #if 0
 static gboolean
@@ -564,7 +559,6 @@ filter_reset (CamelMimeFilter *filter)
 	enriched->nofill = 0;
 }
 
-
 /**
  * camel_mime_filter_enriched_new:
  * @flags: bitwise set of flags to specify filter behaviour
@@ -584,7 +578,6 @@ camel_mime_filter_enriched_new (guint32 flags)
 
 	return CAMEL_MIME_FILTER (new);
 }
-
 
 /**
  * camel_enriched_to_html:

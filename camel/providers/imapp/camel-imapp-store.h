@@ -21,7 +21,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_IMAPP_STORE_H
 #define CAMEL_IMAPP_STORE_H 1
 
@@ -67,5 +66,4 @@ CamelType camel_imapp_store_get_type (void);
 G_END_DECLS
 
 #endif /* CAMEL_IMAPP_STORE_H */
-
 

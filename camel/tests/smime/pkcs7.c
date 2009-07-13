@@ -8,12 +8,10 @@
 
 #include "camel-test.h"
 
-
 #define CAMEL_TEST_SESSION_TYPE     (camel_test_session_get_type ())
 #define CAMEL_TEST_SESSION(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TEST_SESSION_TYPE, CamelTestSession))
 #define CAMEL_TEST_SESSION_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TEST_SESSION_TYPE, CamelTestSessionClass))
 #define CAMEL_TEST_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TEST_SESSION_TYPE))
-
 
 typedef struct _CamelTestSession {
 	CamelSession parent_object;
@@ -24,7 +22,6 @@ typedef struct _CamelTestSessionClass {
 	CamelSessionClass parent_class;
 
 } CamelTestSessionClass;
-
 
 static gchar *get_password (CamelSession *session, const gchar *prompt,
 			   guint32 flags, CamelService *service,
@@ -84,7 +81,6 @@ camel_test_session_new (const gchar *path)
 
 	return session;
 }
-
 
 gint main (gint argc, gchar **argv)
 {

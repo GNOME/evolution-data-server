@@ -301,7 +301,6 @@ impl_BookListener_respond_get_required_fields (PortableServer_Servant servant,
 	g_signal_emit (listener, e_book_listener_signals [RESPONSE], 0, &response);
 }
 
-
 static void
 impl_BookListener_respond_get_supported_fields (PortableServer_Servant servant,
 						const CORBA_long opid,

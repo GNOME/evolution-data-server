@@ -638,7 +638,6 @@ book_view_thread (gpointer data)
 			abort ();
 		}
 
-
 	}
 done:
 	if (e_flag_is_set (closure->running))
@@ -899,7 +898,6 @@ e_book_backend_file_get_required_fields (EBookBackendSync *backend,
 	return GNOME_Evolution_Addressbook_Success;
 }
 
-
 static EBookBackendSyncStatus
 e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 					  EDataBook *book,
@@ -1058,7 +1056,6 @@ file_errcall (const gchar *buf1, gchar *buf2)
 {
 	g_warning ("libdb error: %s", buf2);
 }
-
 
 static GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_file_load_source (EBookBackend           *backend,
@@ -1517,7 +1514,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	sync_class->authenticate_user_sync     = e_book_backend_file_authenticate_user;
 	sync_class->get_supported_fields_sync  = e_book_backend_file_get_supported_fields;
 	sync_class->get_required_fields_sync   = e_book_backend_file_get_required_fields;
-
 
 	object_class->dispose = e_book_backend_file_dispose;
 	object_class->finalize = e_book_backend_file_finalize;

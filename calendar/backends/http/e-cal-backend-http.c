@@ -141,7 +141,6 @@ e_cal_backend_http_finalize (GObject *object)
 		priv->default_zone = NULL;
 	}
 
-
 	if (priv->soup_session) {
 		soup_session_abort (priv->soup_session);
 		g_object_unref (priv->soup_session);
@@ -631,7 +630,6 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	if (priv->mode == CAL_MODE_LOCAL)
 		return GNOME_Evolution_Calendar_Success;
 
-
 	g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -860,7 +858,6 @@ e_cal_backend_http_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
 	if (!tz_comp)
 		return GNOME_Evolution_Calendar_InvalidObject;
 
-
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
 
@@ -947,7 +944,6 @@ e_cal_backend_http_start_query (ECalBackend *backend, EDataCalView *query)
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
 }
 
-
 static icaltimezone *
 resolve_tzid (const gchar *tzid, gpointer user_data)
 {
@@ -960,7 +956,6 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 
         return icalcomponent_get_timezone (vcalendar_comp, tzid);
 }
-
 
 static gboolean
 free_busy_instance (ECalComponent *comp,
@@ -1079,8 +1074,6 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gcha
         return vfb;
 }
 
-
-
 /* Get_free_busy handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,
@@ -1091,7 +1084,6 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList
 	gchar *address, *name;
 	icalcomponent *vfb;
 	gchar *calobj;
-
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -1337,7 +1329,6 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	backend_class->internal_get_default_timezone = e_cal_backend_http_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_http_internal_get_timezone;
 }
-
 
 /**
  * e_cal_backend_http_get_type:

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_GPG_CONTEXT_H__
 #define __CAMEL_GPG_CONTEXT_H__
 
@@ -46,7 +45,6 @@ struct _CamelGpgContextClass {
 	CamelCipherContextClass parent_class;
 
 };
-
 
 CamelType camel_gpg_context_get_type (void);
 

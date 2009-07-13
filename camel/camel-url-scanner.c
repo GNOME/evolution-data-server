@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -38,7 +37,6 @@ struct _CamelUrlScanner {
 	CamelTrie *trie;
 };
 
-
 CamelUrlScanner *
 camel_url_scanner_new (void)
 {
@@ -51,7 +49,6 @@ camel_url_scanner_new (void)
 	return scanner;
 }
 
-
 void
 camel_url_scanner_free (CamelUrlScanner *scanner)
 {
@@ -62,7 +59,6 @@ camel_url_scanner_free (CamelUrlScanner *scanner)
 	g_free (scanner);
 }
 
-
 void
 camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
 {
@@ -71,7 +67,6 @@ camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
 	camel_trie_add (scanner->trie, pattern->pattern, scanner->patterns->len);
 	g_ptr_array_add (scanner->patterns, pattern);
 }
-
 
 gboolean
 camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, urlmatch_t *match)
@@ -108,7 +103,6 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, 
 
 	return FALSE;
 }
-
 
 static guchar url_scanner_table[256] = {
 	  1,  1,  1,  1,  1,  1,  1,  1,  1,  9,  9,  1,  1,  9,  1,  1,
@@ -147,7 +141,6 @@ enum {
 #define is_digit(x) ((url_scanner_table[(guchar)(x)] & IS_DIGIT) != 0)
 #define is_domain(x) ((url_scanner_table[(guchar)(x)] & IS_DOMAIN) != 0)
 #define is_urlsafe(x) ((url_scanner_table[(guchar)(x)] & (IS_ALPHA|IS_DIGIT|IS_URLSAFE)) != 0)
-
 
 static const struct {
 	const gchar open;
@@ -194,7 +187,6 @@ url_stop_at_brace (const gchar *in, gsize so, gchar *open_brace)
 
 	return '\0';
 }
-
 
 gboolean
 camel_url_addrspec_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
@@ -461,13 +453,10 @@ camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmat
 	while (inptr > pos && strchr (",.:;?!-|}])\"", inptr[-1]))
 		inptr--;
 
-
 	match->um_eo = (inptr - in);
 
 	return TRUE;
 }
-
-
 
 #ifdef BUILD_TABLE
 
@@ -479,7 +468,6 @@ camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmat
 
 /* got these from rfc1738 */
 #define CHARS_URLSAFE "$-_.+!*'(),{}|\\^~[]`#%\";/?:@&="
-
 
 static void
 table_init_bits (guint mask, const guchar *vals)

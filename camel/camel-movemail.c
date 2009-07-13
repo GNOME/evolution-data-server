@@ -531,7 +531,6 @@ fail:
 			      _("Error copying mail temp file: %s"),
 			      g_strerror (errno));
 
-
 	camel_object_unref((CamelObject *)mp);
 	camel_object_unref((CamelObject *)ffrom);
 

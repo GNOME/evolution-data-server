@@ -106,7 +106,6 @@ struct {
 	{ "STARTTLS", IMAP_CAPABILITY_STARTTLS },
 };
 
-
 /*
 capability_data ::= "CAPABILITY" SPACE [1#capability SPACE] "IMAP4rev1"
                     [SPACE 1#capability]
@@ -575,7 +574,6 @@ iterate_completion(CamelIMAPPEngine *imap, guchar *token)
 	return 1;
 }
 
-
 /* Do work if there's any to do */
 gint
 camel_imapp_engine_iterate(CamelIMAPPEngine *imap, CamelIMAPPCommand *icwait)
@@ -871,7 +869,7 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 	gint zero;
 	gchar *s;
 	gint d;
-	glong gint l;
+	gglong l;
 	guint32 f;
 	CamelStream *S;
 	CamelDataWrapper *D;
@@ -964,8 +962,8 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 				case 'd': /* int/unsigned */
 				case 'u':
 					if (llong) {
-						l = va_arg(ap, glong gint);
-						c(printf("got glong gint '%d'\n", (gint)l));
+						l = va_arg(ap, gglong);
+						c(printf("got gglong '%d'\n", (gint)l));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, l);
@@ -995,7 +993,6 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 
 	camel_stream_write((CamelStream *)ic->mem, ps, p-ps-1);
 }
-
 
 static gpointer
 cie_worker(gpointer data)
@@ -1048,9 +1045,7 @@ cie_worker(gpointer data)
 	}
 }
 
-
 /* here temporarily while its experimental */
-
 
 #ifdef ENABLE_THREADS
 #include <pthread.h>

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -51,9 +50,7 @@ static void camel_offline_journal_class_init (CamelOfflineJournalClass *klass);
 static void camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalClass *klass);
 static void camel_offline_journal_finalize (CamelObject *object);
 
-
 static CamelObjectClass *parent_class = NULL;
-
 
 CamelType
 camel_offline_journal_get_type (void)
@@ -125,7 +122,6 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
 	}
 }
 
-
 /**
  * camel_offline_journal_set_filename:
  * @journal: a #CamelOfflineJournal object
@@ -141,7 +137,6 @@ camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *f
 	g_free (journal->filename);
 	journal->filename = g_strdup (filename);
 }
-
 
 /**
  * camel_offline_journal_write:
@@ -191,7 +186,6 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 
 	return -1;
 }
-
 
 /**
  * camel_offline_journal_replay:

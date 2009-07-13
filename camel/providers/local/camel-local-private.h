@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef CAMEL_LOCAL_PRIVATE_H
 #define CAMEL_LOCAL_PRIVATE_H 1
 

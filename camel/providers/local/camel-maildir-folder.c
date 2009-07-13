@@ -262,7 +262,6 @@ maildir_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename(mdi));
 }
 
-
 static CamelMimeMessage *
 maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)
 {

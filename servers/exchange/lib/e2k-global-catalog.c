@@ -58,7 +58,6 @@ static GObjectClass *parent_class = NULL;
 static void finalize (GObject *);
 static gint get_gc_connection (E2kGlobalCatalog *gc, E2kOperation *op);
 
-
 static void
 class_init (GObjectClass *object_class)
 {
@@ -165,7 +164,6 @@ finalize (GObject *object)
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
-
 
 E2K_MAKE_TYPE (e2k_global_catalog, E2kGlobalCatalog, class_init, init, PARENT_TYPE)
 
@@ -531,7 +529,6 @@ lookup_mta (E2kGlobalCatalog *gc, E2kOperation *op, const gchar *mta_dn)
 	return hostname;
 }
 
-
 static void
 get_sid_values (E2kGlobalCatalog *gc, E2kOperation *op,
 		LDAPMessage *msg, E2kGlobalCatalogEntry *entry)
@@ -877,7 +874,6 @@ e2k_global_catalog_lookup (E2kGlobalCatalog *gc,
 	g_mutex_unlock (gc->priv->ldap_lock);
 	return status;
 }
-
 
 struct async_lookup_data {
 	E2kGlobalCatalog *gc;

@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_MULTIPART_H
 #define CAMEL_MULTIPART_H 1
 
@@ -67,7 +66,6 @@ typedef struct {
 
 /* Standard Camel function */
 CamelType camel_multipart_get_type (void);
-
 
 /* public methods */
 CamelMultipart *    camel_multipart_new            (void);

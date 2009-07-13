@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifndef __CAMEL_IMAP4_ENGINE_H__
 #define __CAMEL_IMAP4_ENGINE_H__
 
@@ -191,7 +190,6 @@ struct _CamelIMAP4EngineClass {
 	guchar tagprefix;
 };
 
-
 CamelType camel_imap4_engine_get_type (void);
 
 CamelIMAP4Engine *camel_imap4_engine_new (CamelService *service, CamelIMAP4ReconnectFunc reconnect);
@@ -215,7 +213,6 @@ void camel_imap4_engine_dequeue (CamelIMAP4Engine *engine, struct _CamelIMAP4Com
 
 gint camel_imap4_engine_iterate (CamelIMAP4Engine *engine);
 
-
 /* untagged response utility functions */
 gint camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, struct _camel_imap4_token_t *token, CamelException *ex);
 void camel_imap4_engine_handle_untagged (CamelIMAP4Engine *engine, CamelException *ex);
@@ -226,7 +223,6 @@ gint camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, gsize *le
 gint camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, gsize *len, CamelException *ex);
 gint camel_imap4_engine_nstring (CamelIMAP4Engine *engine, guchar **nstring, CamelException *ex);
 gint camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex);
-
 
 /* response code stuff */
 gint camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex);

@@ -19,7 +19,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -240,7 +239,6 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *obj)
 	obj->ic = (iconv_t)-1;
 }
 
-
 /**
  * camel_mime_filter_charset_new:
  *
@@ -253,7 +251,6 @@ camel_mime_filter_charset_new (void)
 {
 	return CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
 }
-
 
 /**
  * camel_mime_filter_charset_new_convert:

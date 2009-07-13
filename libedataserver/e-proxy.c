@@ -146,7 +146,6 @@ ep_free_proxy_host_addr (ProxyHostAddr* host)
 	}
 }
 
-
 static void
 e_proxy_class_init (EProxyClass *klass)
 {
@@ -172,7 +171,6 @@ e_proxy_class_init (EProxyClass *klass)
                               NULL, NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
-
 
 }
 

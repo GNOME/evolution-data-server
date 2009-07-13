@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_SESSION_H
 #define CAMEL_SESSION_H 1
 
@@ -125,12 +124,10 @@ typedef struct {
 					      CamelException *ex);
 } CamelSessionClass;
 
-
 /* public methods */
 
 /* Standard Camel function */
 CamelType camel_session_get_type (void);
-
 
 void            camel_session_construct             (CamelSession *session,
 						     const gchar *storage_path);

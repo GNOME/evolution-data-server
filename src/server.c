@@ -239,7 +239,6 @@ setup_interface_check (void)
 	return result == Bonobo_ACTIVATION_REG_SUCCESS;
 }
 
-
 #ifdef DEBUG_BACKENDS
 static void
 dump_backends (gint signal)

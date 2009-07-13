@@ -36,7 +36,6 @@
 
 #define GDATA_FEED_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_FEED, GDataFeedPrivate))
 
-
 struct _GDataFeedAuthor {
 	gchar *email;
 	gchar *name;
@@ -61,8 +60,6 @@ struct _GDataFeedLink {
 	gchar *type;
 };
 typedef struct _GDataFeedLink GDataFeedLink;
-
-
 
 struct _GDataFeedPrivate {
 
@@ -246,7 +243,6 @@ gdata_feed_finalize(GObject *obj)
 	if (priv->feedXML != NULL)
 		g_free(priv->feedXML);
 
-
 	/* Chain up to the parent class */
 	klass = GDATA_FEED_CLASS(g_type_class_peek(GDATA_TYPE_FEED));
 	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
@@ -304,12 +300,10 @@ gdata_feed_class_init(gpointer g_class,
 	GObjectClass *gobject_class = G_OBJECT_CLASS(g_class);
 	GDataFeedClass *klass = GDATA_FEED_CLASS(g_class);
 
-
 	g_type_class_add_private(klass, sizeof (GDataFeedPrivate));
 
 	gobject_class->set_property = gdata_feed_set_property;
 	gobject_class->get_property = gdata_feed_get_property;
-
 
 	gobject_class->dispose     = gdata_feed_dispose;
 	gobject_class->finalize    = gdata_feed_finalize;
@@ -336,7 +330,6 @@ GType gdata_feed_get_type(void)
   }
   return type;
 }
-
 
 /*** API ***/
 	static GDataFeedAuthor *
@@ -387,7 +380,6 @@ xmlnode_to_link(xmlDocPtr doc, xmlNodePtr cur)
 	link->title = NULL;
 	link->type = NULL;
 
-
 	value = xmlGetProp(cur, (xmlChar *)"href");
 	if (value) {
 		link->href = g_strdup((gchar *)value);
@@ -414,7 +406,6 @@ xmlnode_to_link(xmlDocPtr doc, xmlNodePtr cur)
 
 	return link;
 }
-
 
 static GDataFeedCategory *
 xmlnode_to_category(xmlDocPtr doc, xmlNodePtr cur)
@@ -523,7 +514,6 @@ gdata_feed_new(void)
 	return g_object_new(GDATA_TYPE_FEED, NULL);
 }
 
-
 GDataFeed *
 gdata_feed_new_from_xml(const gchar * feedXML, const gint length)
 {
@@ -602,7 +592,6 @@ gdata_feed_new_from_xml(const gchar * feedXML, const gint length)
 
 	return feed;
 }
-
 
 gchar *
 gdata_feed_generate_xml(GDataFeed *feed)

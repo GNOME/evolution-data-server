@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_NNTP_UTILS_H
 #define CAMEL_NNTP_UTILS_H 1
 

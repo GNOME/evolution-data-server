@@ -35,7 +35,6 @@
 #define E_IS_SOURCE_OPTION_MENU(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_OPTION_MENU))
 #define E_IS_SOURCE_OPTION_MENU_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_OPTION_MENU))
 
-
 typedef struct _ESourceOptionMenu        ESourceOptionMenu;
 typedef struct _ESourceOptionMenuPrivate ESourceOptionMenuPrivate;
 typedef struct _ESourceOptionMenuClass   ESourceOptionMenuClass;
@@ -52,7 +51,6 @@ struct _ESourceOptionMenuClass {
 	void (* source_selected) (ESourceOptionMenu *menu,
 				  ESource *selected_source);
 };
-
 
 GType  e_source_option_menu_get_type  (void);
 

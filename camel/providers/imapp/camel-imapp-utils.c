@@ -301,12 +301,8 @@ media_subtype   ::= string
 media_text      ::= <"> "TEXT" <"> SPACE media_subtype
                     ;; Defined in [MIME-IMT]
 
-
-
  ( "type" "subtype"  body_fields [envelope body body_fld_lines]
                                  [body_fld_lines]
-
-
 
  (("TEXT" "PLAIN" ("CHARSET"
                      "US-ASCII") NIL NIL "7BIT" 1152 23)("TEXT" "PLAIN"
@@ -1263,7 +1259,6 @@ imap_free_list(struct _list_info *linfo)
 		g_free(linfo);
 	}
 }
-
 
 /* ********************************************************************** */
 /* utility functions */

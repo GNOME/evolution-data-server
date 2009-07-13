@@ -163,7 +163,6 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 	}                                                              \
 } G_STMT_END
 
-
 #ifdef ENABLE_IPv6
 /* some helpful utils for IPv6 lookups */
 #define IPv6_BUFLEN_MIN  (sizeof (gchar *) * 3)

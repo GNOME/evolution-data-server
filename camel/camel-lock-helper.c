@@ -344,7 +344,6 @@ gint main(gint argc, gchar **argv)
 			continue;
 		}
 
-
 		len = read_n(STDIN_FILENO, &msg, sizeof(msg));
 		if (len == 0)
 			break;

@@ -454,7 +454,6 @@ impl_Cal_getQuery (PortableServer_Servant servant,
 	e_data_cal_notify_query (cal, GNOME_Evolution_Calendar_Success, query);
 }
 
-
 /* Cal::getTimezone method */
 static void
 impl_Cal_getTimezone (PortableServer_Servant servant,

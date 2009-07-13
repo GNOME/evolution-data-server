@@ -61,7 +61,6 @@ static gint summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 static CamelMessageInfo * message_info_from_db(CamelFolderSummary *s, CamelMIRecord *record);
 static CamelMIRecord * message_info_to_db(CamelFolderSummary *s, CamelMessageInfo *info);
 
-
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
@@ -279,7 +278,6 @@ summary_header_from_db (CamelFolderSummary *s, struct _CamelFIRecord *fir)
 	return 0;
 }
 
-
 static gint
 summary_header_load(CamelFolderSummary *s, FILE *in)
 {
@@ -491,7 +489,6 @@ message_info_to_db(CamelFolderSummary *s, CamelMessageInfo *info)
 
 	return mir;
 }
-
 
 static gint
 message_info_save(CamelFolderSummary *s, FILE *out, CamelMessageInfo *mi)
@@ -987,7 +984,6 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 
 	/* Sync only the changes */
 
-
 	summary = camel_folder_summary_get_changed ((CamelFolderSummary *)mbs);
 	for (i=0; i<summary->len; i++) {
 		CamelMboxMessageInfo *info = (CamelMboxMessageInfo *)camel_folder_summary_uid(s, summary->pdata[i]);
@@ -1006,13 +1002,11 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	if (quick && expunge) {
 		guint32 dcount =0;
 
-
 		if (camel_db_count_deleted_message_info (s->folder->parent_store->cdb_w, s->folder->full_name, &dcount, ex) == -1)
 			return -1;
 		if (dcount)
 			quick = FALSE;
 	}
-
 
 	/* yuck i hate this logic, but its to simplify the 'all ok, update summary' and failover cases */
 	ret = -1;

@@ -43,8 +43,6 @@ xmlDoc     *e_xml_from_hash    (GHashTable   *hash,
 
 void        e_xml_destroy_hash (GHashTable   *hash);
 
-
-
 /**
  * EXmlHashStatus:
  * @E_XMLHASH_STATUS_SAME: The compared values are the same.

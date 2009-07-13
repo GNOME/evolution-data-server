@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -42,12 +41,10 @@ static gchar test_msg[] = "Since we need to make sure that\nFrom lines work okay
 "as well as test 8bit chars and other fun stuff? 8bit chars: Dra¾en Kaèar\n\nOkay, I guess that covers"
 "the basics at least...\n";
 
-
 #define CAMEL_PGP_SESSION_TYPE     (camel_pgp_session_get_type ())
 #define CAMEL_PGP_SESSION(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_PGP_SESSION_TYPE, CamelPgpSession))
 #define CAMEL_PGP_SESSION_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_PGP_SESSION_TYPE, CamelPgpSessionClass))
 #define CAMEL_PGP_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_PGP_SESSION_TYPE))
-
 
 typedef struct _CamelPgpSession {
 	CamelSession parent_object;
@@ -58,7 +55,6 @@ typedef struct _CamelPgpSessionClass {
 	CamelSessionClass parent_class;
 
 } CamelPgpSessionClass;
-
 
 static gchar *get_password (CamelSession *session, const gchar *prompt,
 			   guint32 flags,
@@ -119,7 +115,6 @@ camel_pgp_session_new (const gchar *path)
 
 	return session;
 }
-
 
 gint main (gint argc, gchar **argv)
 {

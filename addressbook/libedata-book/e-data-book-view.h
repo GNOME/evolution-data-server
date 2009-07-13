@@ -41,7 +41,6 @@ struct _EDataBookViewClass {
 	POA_GNOME_Evolution_Addressbook_BookView__epv epv;
 };
 
-
 EDataBookView *e_data_book_view_new                  (EBookBackend                 *backend,
 						      GNOME_Evolution_Addressbook_BookViewListener  listener,
 						      const gchar                   *card_query,

@@ -48,7 +48,6 @@ struct _CamelDigestSummaryClass {
 
 };
 
-
 CamelType camel_digest_summary_get_type (void);
 
 CamelFolderSummary *camel_digest_summary_new (void);

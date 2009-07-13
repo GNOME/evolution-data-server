@@ -45,7 +45,6 @@
 #include "camel-private.h"
 #include "camel-text-index.h"
 
-
 #define w(x)
 #define io(x)
 #define d(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
@@ -1122,8 +1121,6 @@ dump_raw(GHashTable *map, gchar *path)
 	while ((len = read(fd, buf, 1024)) == 1024) {
 		id = total;
 
-
-
 		type = g_hash_table_lookup(map, id);
 		switch(type) {
 		case 0:
@@ -1166,7 +1163,6 @@ dump_raw(GHashTable *map, gchar *path)
 			printf("Used: %u\n", k->used);
 		} break;
 		}
-
 
 		printf("--raw--\n");
 
@@ -1846,7 +1842,6 @@ gint main(gint argc, gchar **argv)
 	camel_init(NULL, 0);
 
 	idx = (CamelIndex *)camel_text_index_new("textindex", O_CREAT|O_RDWR|O_TRUNC);
-
 
 #if 1
 	camel_index_compress(idx);

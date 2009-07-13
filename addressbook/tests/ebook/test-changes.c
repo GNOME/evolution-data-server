@@ -86,7 +86,6 @@ main (gint argc, gchar **argv)
 
 	e_book_free_change_list (changes);
 
-
 	if (!e_book_remove (book, &error)) {
 		printf ("failed to remove book; %s\n", error->message);
 		exit(0);

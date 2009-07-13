@@ -501,7 +501,6 @@ camel_sexp_to_sql (const gchar *txt)
 				gint len = 2;
 				Node *pnode;
 
-
 				n1=NULL; n2=NULL; n3=NULL;
 				tmp = operands;
 				n1 = operands->data;
@@ -540,7 +539,6 @@ camel_sexp_to_sql (const gchar *txt)
 					else
 						dyn_lvl = n3->level;
 
-
 					if (n3->prefix && g_ascii_strcasecmp (opnode->token, "=") == 0) {
 						/* see if '=' was a last operator. if so take care of it */
 						free_node(opnode);
@@ -573,7 +571,6 @@ camel_sexp_to_sql (const gchar *txt)
 							dyn_lvl = opnode->level;
 						}
 
-
 					}
 					if (n3->prefix && ((g_ascii_strcasecmp (opnode->token, ">") == 0) || (g_ascii_strcasecmp (opnode->token, ">") == 0) )) {
 						/* see if '=' was a last operator. if so take care of it */
@@ -605,7 +602,6 @@ camel_sexp_to_sql (const gchar *txt)
 							temp_op = "LIKE";
 							n3->ignore_lhs = 0;
 						}
-
 
 					}
 
@@ -709,7 +705,6 @@ camel_sexp_to_sql (const gchar *txt)
 			}
 		}
 
-
 	}
 
 	tmp = operands;
@@ -732,7 +727,6 @@ camel_sexp_to_sql (const gchar *txt)
 	d(printf("\n\n\n"));
 	d(g_node_dump (all));
 	d(printf("\n\n\n"));
-
 
 	res=NULL;
 	tmp = all;
@@ -881,7 +875,6 @@ camel_sexp_to_sql (const gchar *txt)
 
 #ifdef TEST_MAIN
 /*
-
 
 (and (match-all (and (not (system-flag "deleted")) (not (system-flag "junk"))))
  (and   (or

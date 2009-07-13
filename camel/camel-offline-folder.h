@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_OFFLINE_FOLDER_H__
 #define __CAMEL_OFFLINE_FOLDER_H__
 
@@ -56,7 +55,6 @@ struct _CamelOfflineFolderClass {
 
 	void (* downsync) (CamelOfflineFolder *folder, const gchar *expression, CamelException *ex);
 };
-
 
 CamelType camel_offline_folder_get_type (void);
 

@@ -339,7 +339,6 @@ static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary * s, st
 	return mi;
 }
 
-
 static void
 message_info_free(CamelFolderSummary *s, CamelMessageInfo *mi)
 {
@@ -350,7 +349,6 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *mi)
 #endif
 	((CamelFolderSummaryClass *) parent_class)->message_info_free(s, mi);
 }
-
 
 static gchar *maildir_summary_next_uid_string(CamelFolderSummary *s)
 {

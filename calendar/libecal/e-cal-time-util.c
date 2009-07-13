@@ -28,14 +28,11 @@
 #define SATURDAY 6		/* Offset value; 1 Jan 1 was a Saturday */
 #define ISODATE_LENGTH 17 /* 4+2+2+1+2+2+2+1 + 1 */
 
-
 /* Number of days in a month, using 0 (Jan) to 11 (Dec). For leap years,
    add 1 to February (month 1). */
 static const gint days_in_month[12] = {
 	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
-
-
 
 /**************************************************************************
  * time_t manipulation functions.
@@ -128,7 +125,6 @@ time_day_end (time_t t)
 	return mktime (&tm);
 }
 
-
 /**************************************************************************
  * time_t manipulation functions, using timezones in libical.
  *
@@ -136,7 +132,6 @@ time_day_end (time_t t)
  * functions easier. New code should use icaltimetype values rather than
  * time_t values wherever possible.
  **************************************************************************/
-
 
 /**
  * time_add_day_with_zone:
@@ -167,7 +162,6 @@ time_add_day_with_zone (time_t time, gint days, icaltimezone *zone)
 	return icaltime_as_timet_with_zone (tt, zone);
 }
 
-
 /**
  * time_add_week_with_zone:
  * @time: A time_t value.
@@ -187,7 +181,6 @@ time_add_week_with_zone (time_t time, gint weeks, icaltimezone *zone)
 {
 	return time_add_day_with_zone (time, weeks * 7, zone);
 }
-
 
 /**
  * time_add_month_with_zone:
@@ -239,7 +232,6 @@ time_add_month_with_zone (time_t time, gint months, icaltimezone *zone)
 	return icaltime_as_timet_with_zone (tt, zone);
 }
 
-
 /**
  * time_year_begin_with_zone:
  * @time: A time_t value.
@@ -272,7 +264,6 @@ time_year_begin_with_zone (time_t time, icaltimezone *zone)
 	return icaltime_as_timet_with_zone (tt, zone);
 }
 
-
 /**
  * time_month_begin_with_zone:
  * @time: A time_t value.
@@ -303,7 +294,6 @@ time_month_begin_with_zone (time_t time, icaltimezone *zone)
 	/* Convert back to a time_t. */
 	return icaltime_as_timet_with_zone (tt, zone);
 }
-
 
 /**
  * time_week_begin_with_zone:
@@ -348,7 +338,6 @@ time_week_begin_with_zone (time_t time, gint week_start_day, icaltimezone *zone)
 	return icaltime_as_timet_with_zone (tt, zone);
 }
 
-
 /**
  * time_day_begin_with_zone:
  * @time: A time_t value.
@@ -378,7 +367,6 @@ time_day_begin_with_zone (time_t time, icaltimezone *zone)
 	/* Convert back to a time_t. */
 	return icaltime_as_timet_with_zone (tt, zone);
 }
-
 
 /**
  * time_day_end_with_zone:
@@ -438,11 +426,9 @@ time_to_gdate_with_zone (GDate *date, time_t time, icaltimezone *zone)
 	g_date_set_dmy (date, tt.day, tt.month, tt.year);
 }
 
-
 /**************************************************************************
  * General time functions.
  **************************************************************************/
-
 
 /**
  * time_days_in_month:
@@ -469,7 +455,6 @@ time_days_in_month (gint year, gint month)
 	return days;
 }
 
-
 /**
  * time_day_of_year:
  * @day: The day.
@@ -495,7 +480,6 @@ time_day_of_year (gint day, gint month, gint year)
 
 	return day;
 }
-
 
 /**
  * time_day_of_week:
@@ -526,7 +510,6 @@ time_day_of_week (gint day, gint month, gint year)
 	return THURSDAY;
 }
 
-
 /**
  * time_is_leap_year:
  * @year: The year.
@@ -544,7 +527,6 @@ time_is_leap_year (gint year)
 	else
 		return (!(year % 4) && (year % 100)) || !(year % 400);
 }
-
 
 /**
  * time_leap_years_up_to:
@@ -565,7 +547,6 @@ time_leap_years_up_to (gint year)
 		- ((year > 1700) ? (year / 100 - 17) : 0)
 		+ ((year > 1600) ? ((year - 1600) / 400) : 0));
 }
-
 
 /**
  * isodate_from_time_t:

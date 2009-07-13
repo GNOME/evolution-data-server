@@ -64,6 +64,5 @@ gint          e2k_sid_binary_sid_equal    (gconstpointer  a,
 #define E2K_SID_WKS_ANONYMOUS      "S-1-5-7"
 #define E2K_SID_WKS_ANONYMOUS_NAME "Anonymous"
 
-
 #endif
 

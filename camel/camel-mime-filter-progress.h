@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_MIME_FILTER_PROGRESS_H__
 #define __CAMEL_MIME_FILTER_PROGRESS_H__
 
@@ -48,7 +47,6 @@ struct _CamelMimeFilterProgressClass {
 	CamelMimeFilterClass parent_class;
 
 };
-
 
 CamelType camel_mime_filter_progress_get_type (void);
 

@@ -337,9 +337,7 @@ void e_cal_component_set_attachment_list (ECalComponent *comp, GSList *attachmen
 gboolean e_cal_component_has_attachments (ECalComponent *comp);
 gint e_cal_component_get_num_attachments (ECalComponent *comp);
 
-
 gboolean e_cal_component_event_dates_match (ECalComponent *comp1, ECalComponent *comp2);
-
 
 /* Functions to free returned values */
 

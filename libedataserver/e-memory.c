@@ -544,7 +544,6 @@ void e_mempool_destroy(MemPool *pool)
 	}
 }
 
-
 /*
   string array classes
 */
@@ -845,8 +844,6 @@ e_strv_destroy(struct _EStrv *strv)
 
 	g_free(strv);
 }
-
-
 
 /* string pool stuff */
 

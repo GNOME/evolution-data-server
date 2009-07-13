@@ -74,7 +74,6 @@ E2kGlobalCatalog    *e2k_autoconfig_get_global_catalog   (E2kAutoconfig *ac,
 E2kAutoconfigResult  e2k_autoconfig_check_global_catalog (E2kAutoconfig *ac,
 							  E2kOperation *op);
 
-
 const gchar          *e2k_autoconfig_lookup_option        (const gchar *option);
 
 G_END_DECLS

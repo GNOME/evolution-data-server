@@ -45,8 +45,6 @@ struct _EGwFilterPrivate {
 
 };
 
-
-
 void
 e_gw_filter_add_filter_component (EGwFilter *filter, EGwFilterOpType operation, const gchar *field_name, const gchar *field_value)
 {
@@ -126,7 +124,6 @@ append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 
 	}
 
-
 	if (operation_name != NULL) {
 
 			e_gw_message_write_string_parameter (msg, "op", NULL, operation_name);
@@ -136,8 +133,6 @@ append_child_component (FilterComponent* filter_component, SoupSoapMessage *msg)
 
 	soup_soap_message_end_element (msg);
 }
-
-
 
 static GSList*
 append_complex_component (GSList *component_list, SoupSoapMessage *msg)
@@ -168,7 +163,6 @@ append_complex_component (GSList *component_list, SoupSoapMessage *msg)
 		}
 		else
 			append_child_component (filter_component, msg);
-
 
 	}
 	soup_soap_message_end_element (msg);
@@ -247,7 +241,6 @@ e_gw_filter_init (EGwFilter *filter, EGwFilterClass *klass)
 	priv->component_list = NULL;
 	filter->priv = priv;
 }
-
 
 static void
 e_gw_filter_class_init (EGwFilterClass *klass)

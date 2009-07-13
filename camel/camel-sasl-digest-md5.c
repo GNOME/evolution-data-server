@@ -234,7 +234,6 @@ camel_sasl_digest_md5_finalize (CamelObject *object)
 	g_free (sasl->priv);
 }
 
-
 CamelType
 camel_sasl_digest_md5_get_type (void)
 {

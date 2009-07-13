@@ -118,7 +118,6 @@ do_lookup (E2kGlobalCatalog *gc, const gchar *user)
 	if (entry->user_account_control)
 		printf ("    user_account_control : %d\n", entry->user_account_control);
 
-
 	maxAge = lookup_passwd_max_age (gc, &op);
 	printf("Password max age is %f \n", maxAge);
 	pwd_exp_days = (maxAge * 0.000000100)/86400;

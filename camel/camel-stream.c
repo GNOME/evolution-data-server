@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -77,7 +76,6 @@ camel_stream_get_type (void)
 	return camel_stream_type;
 }
 
-
 /**
  * camel_stream_read:
  * @stream: a #CamelStream object.
@@ -97,7 +95,6 @@ camel_stream_read (CamelStream *stream, gchar *buffer, gsize n)
 
 	return (CS_CLASS (stream)->read) (stream, buffer, n);
 }
-
 
 /**
  * camel_stream_write:
@@ -119,7 +116,6 @@ camel_stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 	return CS_CLASS (stream)->write (stream, buffer, n);
 }
 
-
 /**
  * camel_stream_flush:
  * @stream: a #CamelStream object
@@ -137,7 +133,6 @@ camel_stream_flush (CamelStream *stream)
 	return CS_CLASS (stream)->flush (stream);
 }
 
-
 /**
  * camel_stream_close:
  * @stream: a #CamelStream object
@@ -154,7 +149,6 @@ camel_stream_close (CamelStream *stream)
 	return CS_CLASS (stream)->close (stream);
 }
 
-
 /**
  * camel_stream_eos:
  * @stream: a #CamelStream object
@@ -170,7 +164,6 @@ camel_stream_eos (CamelStream *stream)
 
 	return CS_CLASS (stream)->eos (stream);
 }
-
 
 /**
  * camel_stream_reset:
@@ -207,7 +200,6 @@ camel_stream_write_string (CamelStream *stream, const gchar *string)
 	return camel_stream_write (stream, string, strlen (string));
 }
 
-
 /**
  * camel_stream_printf:
  * @stream: a #CamelStream object
@@ -237,7 +229,6 @@ camel_stream_printf (CamelStream *stream, const gchar *fmt, ... )
 	g_free (string);
 	return ret;
 }
-
 
 /**
  * camel_stream_write_to_stream:

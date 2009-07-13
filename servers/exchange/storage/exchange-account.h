@@ -131,7 +131,6 @@ void		       exchange_account_is_offline           (ExchangeAccount  *account,
 void		       exchange_account_is_offline_sync_set  (ExchangeAccount *account,
 							      gint             *mode);
 
-
 typedef enum {
 	EXCHANGE_ACCOUNT_FOLDER_OK,
 	EXCHANGE_ACCOUNT_FOLDER_ALREADY_EXISTS,
@@ -197,7 +196,6 @@ void			exchange_account_folder_size_rename (ExchangeAccount *account,
 GtkListStore	       *exchange_account_folder_size_get_model (ExchangeAccount *account);
 void			exchange_account_scan_foreign_hierarchy (ExchangeAccount *account,
 							      const gchar *user_email);
-
 
 G_END_DECLS
 

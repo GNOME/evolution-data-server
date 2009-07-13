@@ -84,7 +84,6 @@ struct _CamelMimeFilterBestencClass {
 CamelType		camel_mime_filter_bestenc_get_type	(void);
 CamelMimeFilterBestenc      *camel_mime_filter_bestenc_new	(guint flags);
 
-
 CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required);
 const gchar *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
 void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint flags);

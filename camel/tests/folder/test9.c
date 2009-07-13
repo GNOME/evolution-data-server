@@ -215,7 +215,6 @@ gint main(gint argc, gchar **argv)
 	}
 	pull();
 
-
 	for (i=0;i<ARRAY_LEN(mailboxes);i++) {
 		check_unref(mailboxes[i].folder, 1);
 	}

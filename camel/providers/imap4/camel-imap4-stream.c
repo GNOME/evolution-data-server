@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -49,9 +48,7 @@ static gint stream_flush  (CamelStream *stream);
 static gint stream_close  (CamelStream *stream);
 static gboolean stream_eos (CamelStream *stream);
 
-
 static CamelStreamClass *parent_class = NULL;
-
 
 CamelType
 camel_imap4_stream_get_type (void)
@@ -118,7 +115,6 @@ camel_imap4_stream_finalize (CamelObject *object)
 
 	g_free (imap4->tokenbuf);
 }
-
 
 static gssize
 imap4_fill (CamelIMAP4Stream *imap4)
@@ -268,7 +264,6 @@ stream_eos (CamelStream *stream)
 	return FALSE;
 }
 
-
 /**
  * camel_imap4_stream_new:
  * @stream: tcp stream
@@ -288,8 +283,6 @@ camel_imap4_stream_new (CamelStream *stream)
 
 	return (CamelStream *) imap4;
 }
-
-
 
 #define token_save(imap4, start, len) G_STMT_START {                         \
 	if (imap4->tokenleft <= len) {                                       \
@@ -316,7 +309,6 @@ camel_imap4_stream_new (CamelStream *stream)
 	imap4->tokenptr = imap4->tokenbuf;                                    \
 	imap4->literal = 0;                                                  \
 } G_STMT_END
-
 
 /**
  * camel_imap4_stream_next_token:
@@ -587,7 +579,6 @@ camel_imap4_stream_next_token (CamelIMAP4Stream *stream, camel_imap4_token_t *to
 	return 0;
 }
 
-
 /**
  * camel_imap4_stream_unget_token:
  * @stream: imap4 stream
@@ -613,7 +604,6 @@ camel_imap4_stream_unget_token (CamelIMAP4Stream *stream, camel_imap4_token_t *t
 
 	return 0;
 }
-
 
 /**
  * camel_imap4_stream_line:
@@ -675,7 +665,6 @@ camel_imap4_stream_line (CamelIMAP4Stream *stream, guchar **line, gsize *len)
 
 	return 1;
 }
-
 
 /**
  * camel_imap4_stream_literal:

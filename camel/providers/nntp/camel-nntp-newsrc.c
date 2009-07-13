@@ -60,7 +60,6 @@ struct CamelNNTPNewsrc {
 	GMutex *lock;
 };
 
-
 static NewsrcGroup *
 camel_nntp_newsrc_group_add (CamelNNTPNewsrc *newsrc, const gchar *group_name, gboolean subscribed)
 {
@@ -101,7 +100,6 @@ camel_nntp_newsrc_group_get_num_articles_read(CamelNNTPNewsrc *newsrc, NewsrcGro
 
 	return count;
 }
-
 
 static void
 camel_nntp_newsrc_group_mark_range_read(CamelNNTPNewsrc *newsrc, NewsrcGroup *group, glong low, glong high)

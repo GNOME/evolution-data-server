@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -60,7 +59,6 @@ struct _ETrie {
 	EMemChunk *match_chunks;
 	EMemChunk *state_chunks;
 };
-
 
 static inline gunichar
 trie_utf8_getc (const guchar **in, gsize inlen)
@@ -149,8 +147,6 @@ e_trie_free (ETrie *trie)
 	g_free (trie);
 }
 
-
-
 static struct _trie_match *
 g (struct _trie_state *s, gunichar c)
 {
@@ -191,7 +187,6 @@ trie_insert (ETrie *trie, gint depth, struct _trie_state *q, gunichar c)
 	return q;
 }
 
-
 #if 0
 static void
 dump_trie (struct _trie_state *s, gint depth)
@@ -214,7 +209,6 @@ dump_trie (struct _trie_state *s, gint depth)
 	}
 }
 #endif
-
 
 /*
  * final = empty set

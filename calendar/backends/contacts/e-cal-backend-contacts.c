@@ -1286,7 +1286,6 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	backend_class->internal_get_timezone = e_cal_backend_contacts_internal_get_timezone;
 }
 
-
 /**
  * e_cal_backend_contacts_get_type:
  * @void:

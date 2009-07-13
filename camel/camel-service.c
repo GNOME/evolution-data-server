@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -64,7 +63,6 @@ static gchar *get_path (CamelService *service);
 
 static gint service_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
 static gint service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
-
 
 static void
 camel_service_class_init (CamelServiceClass *camel_service_class)
@@ -125,8 +123,6 @@ camel_service_finalize (CamelObject *object)
 	g_free (service->priv);
 }
 
-
-
 CamelType
 camel_service_get_type (void)
 {
@@ -146,7 +142,6 @@ camel_service_get_type (void)
 
 	return type;
 }
-
 
 static gint
 service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
@@ -315,7 +310,6 @@ camel_service_construct (CamelService *service, CamelSession *session,
 	CSERV_CLASS (service)->construct (service, session, provider, url, ex);
 }
 
-
 static gboolean
 service_connect (CamelService *service, CamelException *ex)
 {
@@ -324,7 +318,6 @@ service_connect (CamelService *service, CamelException *ex)
 	 */
 	 return TRUE;
 }
-
 
 /**
  * camel_service_connect:
@@ -397,7 +390,6 @@ service_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 
 	return TRUE;
 }
-
 
 /**
  * camel_service_disconnect:
@@ -488,7 +480,6 @@ camel_service_get_url (CamelService *service)
 	return camel_url_to_string (service->url, CAMEL_URL_HIDE_PASSWORD);
 }
 
-
 static gchar *
 get_name (CamelService *service, gboolean brief)
 {
@@ -496,7 +487,6 @@ get_name (CamelService *service, gboolean brief)
 		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service))));
 	return g_strdup ("???");
 }
-
 
 /**
  * camel_service_get_name:
@@ -518,7 +508,6 @@ camel_service_get_name (CamelService *service, gboolean brief)
 
 	return CSERV_CLASS (service)->get_name (service, brief);
 }
-
 
 static gchar *
 get_path (CamelService *service)
@@ -584,7 +573,6 @@ camel_service_get_path (CamelService *service)
 	return CSERV_CLASS (service)->get_path (service);
 }
 
-
 /**
  * camel_service_get_session:
  * @service: a #CamelService object
@@ -598,7 +586,6 @@ camel_service_get_session (CamelService *service)
 {
 	return service->session;
 }
-
 
 /**
  * camel_service_get_provider:
@@ -619,7 +606,6 @@ query_auth_types (CamelService *service, CamelException *ex)
 {
 	return NULL;
 }
-
 
 /**
  * camel_service_query_auth_types:

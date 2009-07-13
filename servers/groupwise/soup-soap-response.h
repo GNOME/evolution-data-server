@@ -63,7 +63,6 @@ SoupSoapParameter *soup_soap_response_get_next_parameter_by_name (SoupSoapRespon
 
 gint soup_soap_response_dump_response (SoupSoapResponse *response, FILE *buffer);
 
-
 G_END_DECLS
 
 #endif

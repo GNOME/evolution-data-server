@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -38,9 +37,7 @@ static void filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len
 			     gchar **out, gsize *outlen, gsize *outprespace);
 static void filter_reset (CamelMimeFilter *filter);
 
-
 static CamelMimeFilterClass *parent_class = NULL;
-
 
 CamelType
 camel_mime_filter_yenc_get_type (void)
@@ -61,7 +58,6 @@ camel_mime_filter_yenc_get_type (void)
 	return type;
 }
 
-
 static void
 camel_mime_filter_yenc_class_init (CamelMimeFilterYencClass *klass)
 {
@@ -81,7 +77,6 @@ camel_mime_filter_yenc_init (CamelMimeFilterYenc *filter, CamelMimeFilterYencCla
 	filter->pcrc = CAMEL_MIME_YENCODE_CRC_INIT;
 	filter->crc = CAMEL_MIME_YENCODE_CRC_INIT;
 }
-
 
 /* here we do all of the basic yEnc filtering */
 static void
@@ -230,7 +225,6 @@ filter_reset (CamelMimeFilter *filter)
 	yenc->crc = CAMEL_MIME_YENCODE_CRC_INIT;
 }
 
-
 /**
  * camel_mime_filter_yenc_new:
  * @direction: encode direction
@@ -261,7 +255,6 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
 	return (CamelMimeFilter *) new;
 }
 
-
 /**
  * camel_mime_filter_yenc_set_state:
  * @yenc: a #CamelMimeFilterYenc object
@@ -277,7 +270,6 @@ camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, gint state)
 	yenc->state = state;
 }
 
-
 /**
  * camel_mime_filter_yenc_set_crc:
  * @yenc: a #CamelMimeFilterYenc object
@@ -292,7 +284,6 @@ camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc)
 
 	yenc->crc = crc;
 }
-
 
 #if 0
 /* FIXME: once we parse out the yenc part id, we can re-enable this interface */
@@ -333,7 +324,6 @@ camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
 	return CAMEL_MIME_YENCODE_CRC_FINAL (yenc->pcrc);
 }
 
-
 /**
  * camel_mime_filter_yenc_get_crc:
  * @yenc: a #CamelMimeFiletrYenc object
@@ -349,7 +339,6 @@ camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc)
 
 	return CAMEL_MIME_YENCODE_CRC_FINAL (yenc->crc);
 }
-
 
 static const gint yenc_crc_table[256] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
@@ -389,7 +378,6 @@ static const gint yenc_crc_table[256] = {
 #define yenc_crc_add(crc, c) (yenc_crc_table[(((gint) (crc)) ^ ((guchar) (c))) & 0xff] ^ ((((gint) (crc)) >> 8) & 0x00ffffff))
 
 #define YENC_NEWLINE_ESCAPE (CAMEL_MIME_YDECODE_STATE_EOLN | CAMEL_MIME_YDECODE_STATE_ESCAPE)
-
 
 /**
  * camel_ydecode_step:
@@ -470,7 +458,6 @@ camel_ydecode_step (const guchar *in, gsize inlen, guchar *out,
 	return outptr - out;
 }
 
-
 /**
  * camel_yencode_step:
  * @in: input buffer
@@ -535,7 +522,6 @@ camel_yencode_step (const guchar *in, gsize inlen, guchar *out,
 
 	return outptr - out;
 }
-
 
 /**
  * camel_yencode_close:

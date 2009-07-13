@@ -78,7 +78,6 @@ e_book_view_do_status_message_event (EBookView                 *book_view,
 		       resp->message);
 }
 
-
 static void
 e_book_view_handle_response (EBookViewListener *listener, EBookViewListenerResponse *resp, EBookView *book_view)
 {

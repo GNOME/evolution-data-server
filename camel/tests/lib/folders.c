@@ -318,7 +318,6 @@ test_folder_basic(CamelSession *session, const gchar *storename, gint local, gin
 	camel_exception_free(ex);
 }
 
-
 /* todo: cross-check everything with folder_info checks as well */
 /* this should probably take a folder instead of a session ... */
 void

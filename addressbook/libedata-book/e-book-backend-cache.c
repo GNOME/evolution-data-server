@@ -111,7 +111,6 @@ e_book_backend_cache_get_property (GObject *object, guint property_id, GValue *v
 	}
 }
 
-
 static void
 e_book_backend_cache_finalize (GObject *object)
 {
@@ -126,7 +125,6 @@ e_book_backend_cache_finalize (GObject *object)
 			g_free (priv->uri);
 			priv->uri = NULL;
 		}
-
 
 		g_free (priv);
 		cache->priv = NULL;
@@ -190,7 +188,6 @@ e_book_backend_cache_init (EBookBackendCache *cache)
 	cache->priv = priv;
 
 }
-
 
 GType
 e_book_backend_cache_get_type (void)
@@ -259,7 +256,6 @@ e_book_backend_cache_get_contact (EBookBackendCache *cache, const gchar *uid)
 
 	}
 
-
 	return contact;
 }
 
@@ -282,7 +278,6 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
 	EBookBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
-
 
 	priv = cache->priv;
 
@@ -321,13 +316,11 @@ e_book_backend_cache_remove_contact (EBookBackendCache *cache,
 
 	priv = cache->priv;
 
-
 	if (!e_file_cache_get_object (E_FILE_CACHE (cache), uid)) {
 		return FALSE;
 	}
 
 	retval = e_file_cache_remove_object (E_FILE_CACHE (cache), uid);
-
 
 	return retval;
 }
@@ -386,7 +379,6 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query)
 		if (!sexp)
 			return NULL;
 	}
-
 
         lcache = l = e_file_cache_get_objects (E_FILE_CACHE (cache));
 

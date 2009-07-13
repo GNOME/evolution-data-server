@@ -110,7 +110,6 @@
 #include "openldap-extract.h"
 #endif
 
-
 #endif
 
 #include <sys/time.h>
@@ -671,7 +670,6 @@ check_schema_support (EBookBackendLDAP *bl)
 	}
 }
 
-
 #ifndef SUNLDAP
 static void
 get_ldap_library_info (void)
@@ -925,7 +923,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_s");
 				if (!pldap_start_tls_s)
 					(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_sA");
-				
+
 				if (!pldap_start_tls_s)
 					ldap_error = LDAP_NOT_SUPPORTED;
 				else
@@ -1739,7 +1737,6 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 	}
 }
 
-
 typedef struct {
 	LDAPOp op;
 	gchar *id;
@@ -2260,7 +2257,6 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 	gint modify_contact_msgid;
 	EDataBookView *book_view;
 
-
 	switch (bl->priv->mode) {
 
 	case GNOME_Evolution_Addressbook_MODE_LOCAL :
@@ -2311,7 +2307,6 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 		}
 	}
 }
-
 
 typedef struct {
 	LDAPOp op;
@@ -2518,7 +2513,6 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 	}
 }
 
-
 typedef struct {
 	LDAPOp op;
 	GList *contacts;
@@ -2640,7 +2634,6 @@ contact_list_dtor (LDAPOp *op)
 
 	g_free (contact_list_op);
 }
-
 
 static void
 e_book_backend_ldap_get_contact_list (EBookBackend *backend,
@@ -2823,7 +2816,6 @@ email_compare (EContact *contact1, EContact *contact2)
 
 	return TRUE;
 }
-
 
 static void
 member_populate (EContact *contact, gchar **values)
@@ -3294,8 +3286,6 @@ static EContactAddress * getormakeEContactAddress(EContact * card, EContactField
     return contact_addr;
 }
 
-
-
 static void
 address_populate(EContact * card, gchar **values, EContactField field, EContactField other_field)
 {
@@ -3539,7 +3529,6 @@ photo_compare(EContact * ecard1, EContact * ecard2)
 
 	photo1 = e_contact_get(ecard1, E_CONTACT_PHOTO);
 	photo2 = e_contact_get(ecard2, E_CONTACT_PHOTO);
-
 
 	if (photo1 && photo2) {
 		if (photo1->type == photo2->type && photo1->type == E_CONTACT_PHOTO_TYPE_INLINED) {
@@ -4971,13 +4960,11 @@ e_book_backend_ldap_get_required_fields (EBookBackend *backend,
 {
 	GList *fields = NULL;
 
-
 	/*FIMEME we should look at mandatory attributs in the schema
 	  and return all those fields here */
 	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_FILE_AS));
 	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_FULL_NAME));
 	fields = g_list_append (fields, (gchar *)e_contact_field_name (E_CONTACT_FAMILY_NAME));
-
 
 	e_data_book_respond_get_required_fields (book,
 						  opid,
@@ -4985,7 +4972,6 @@ e_book_backend_ldap_get_required_fields (EBookBackend *backend,
 						  fields);
 	g_list_free (fields);
 }
-
 
 static void
 e_book_backend_ldap_get_supported_fields (EBookBackend *backend,

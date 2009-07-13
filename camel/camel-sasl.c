@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -38,7 +37,6 @@
 #include "camel-sasl-popb4smtp.h"
 #include "camel-sasl.h"
 #include "camel-service.h"
-
 
 #define w(x)
 
@@ -84,7 +82,6 @@ camel_sasl_get_type (void)
 
 	return type;
 }
-
 
 static GByteArray *
 sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
@@ -174,7 +171,6 @@ camel_sasl_authenticated (CamelSasl *sasl)
 {
 	return sasl->authenticated;
 }
-
 
 /**
  * camel_sasl_new:

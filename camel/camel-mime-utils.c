@@ -114,7 +114,6 @@ camel_base64_encode_close(guchar *in, gsize inlen, gboolean break_lines, guchar 
 	return bytes;
 }
 
-
 /**
  * camel_base64_encode_step:
  * @in: input stream
@@ -137,7 +136,6 @@ camel_base64_encode_step(guchar *in, gsize len, gboolean break_lines, guchar *ou
 	return g_base64_encode_step (in, len, break_lines, (gchar *) out, state, save);
 }
 
-
 /**
  * camel_base64_decode_step: decode a chunk of base64 encoded data
  * @in: input stream
@@ -156,7 +154,6 @@ camel_base64_decode_step(guchar *in, gsize len, guchar *out, gint *state, guint 
 	return g_base64_decode_step ((gchar *) in, len, out, state, save);
 }
 
-
 /**
  * camel_base64_encode_simple:
  * @data: binary stream of data to encode
@@ -171,7 +168,6 @@ camel_base64_encode_simple (const gchar *data, gsize len)
 {
 	return g_base64_encode ((const guchar *) data, len);
 }
-
 
 /**
  * camel_base64_decode_simple:
@@ -279,7 +275,6 @@ camel_uuencode_close (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *s
 	return outptr - out;
 }
 
-
 /**
  * camel_uuencode_step:
  * @in: input stream
@@ -356,7 +351,6 @@ camel_uuencode_step (guchar *in, gsize len, guchar *out, guchar *uubuf, gint *st
 
 	return outptr - out;
 }
-
 
 /**
  * camel_uudecode_step:
@@ -456,7 +450,6 @@ camel_uudecode_step (guchar *in, gsize len, guchar *out, gint *state, guint32 *s
 	return outptr - out;
 }
 
-
 /**
  * camel_quoted_encode_close:
  * @in: input stream
@@ -498,7 +491,6 @@ camel_quoted_encode_close(guchar *in, gsize len, guchar *out, gint *state, gint 
 
 	return outptr-out;
 }
-
 
 /**
  * camel_quoted_encode_step:
@@ -775,7 +767,6 @@ quoted_encode (const guchar *in, gsize len, guchar *out, unsigned short safemask
 
 	return (outptr - out);
 }
-
 
 static void
 header_decode_lwsp(const gchar **in)
@@ -1319,7 +1310,6 @@ header_decode_text (const gchar *in, gint ctext, const gchar *default_charset)
 	return decoded;
 }
 
-
 /**
  * camel_header_decode_string:
  * @in: input header value string
@@ -1338,7 +1328,6 @@ camel_header_decode_string (const gchar *in, const gchar *default_charset)
 
 	return header_decode_text (in, FALSE, default_charset);
 }
-
 
 /**
  * camel_header_format_ctext:
@@ -1471,7 +1460,6 @@ rfc2047_encode_word(GString *outstring, const gchar *in, gsize len, const gchar 
 	if (ic != (iconv_t) -1)
 		camel_iconv_close (ic);
 }
-
 
 /* TODO: Should this worry about quotes?? */
 /**
@@ -1875,7 +1863,6 @@ camel_header_encode_phrase (const guchar *in)
 	return outstr;
 }
 
-
 /* these are all internal parser functions */
 
 static gchar *
@@ -1895,7 +1882,6 @@ decode_token (const gchar **in)
 		return NULL;
 	}
 }
-
 
 /**
  * camel_header_token_decode:
@@ -2122,7 +2108,6 @@ rfc2184_decode (const gchar *in, gsize len)
 	return decoded;
 }
 
-
 /**
  * camel_header_param:
  * @params: parameters
@@ -2141,7 +2126,6 @@ camel_header_param (struct _camel_header_param *p, const gchar *name)
 		return p->value;
 	return NULL;
 }
-
 
 /**
  * camel_header_set_param:
@@ -2190,7 +2174,6 @@ camel_header_set_param (struct _camel_header_param **l, const gchar *name, const
 	return pn;
 }
 
-
 /**
  * camel_content_type_param:
  * @content_type: a #CamelContentType
@@ -2209,7 +2192,6 @@ camel_content_type_param (CamelContentType *t, const gchar *name)
 	return camel_header_param (t->params, name);
 }
 
-
 /**
  * camel_content_type_set_param:
  * @content_type: a #CamelContentType
@@ -2223,7 +2205,6 @@ camel_content_type_set_param (CamelContentType *t, const gchar *name, const gcha
 {
 	camel_header_set_param (&t->params, name, value);
 }
-
 
 /**
  * camel_content_type_is:
@@ -2254,7 +2235,6 @@ camel_content_type_is(CamelContentType *ct, const gchar *type, const gchar *subt
 			|| !strcmp("*", subtype))));
 }
 
-
 /**
  * camel_header_param_list_free:
  * @params: a list of params
@@ -2274,7 +2254,6 @@ camel_header_param_list_free(struct _camel_header_param *p)
 		p = n;
 	}
 }
-
 
 /**
  * camel_content_type_new:
@@ -2299,7 +2278,6 @@ camel_content_type_new(const gchar *type, const gchar *subtype)
 	return t;
 }
 
-
 /**
  * camel_content_type_ref:
  * @content_type: a #CamelContentType
@@ -2312,7 +2290,6 @@ camel_content_type_ref(CamelContentType *ct)
 	if (ct)
 		ct->refcount++;
 }
-
 
 /**
  * camel_content_type_unref:
@@ -2760,7 +2737,6 @@ header_msgid_decode_internal(const gchar **in)
 	return msgid;
 }
 
-
 /**
  * camel_header_msgid_decode:
  * @in: input string
@@ -2777,7 +2753,6 @@ camel_header_msgid_decode(const gchar *in)
 
 	return header_msgid_decode_internal(&in);
 }
-
 
 /**
  * camel_header_contentid_decode:
@@ -3647,7 +3622,6 @@ camel_content_disposition_format(CamelContentDisposition *d)
 	return ret;
 }
 
-
 /* date parser macros */
 #define NUMERIC_CHARS          "1234567890"
 #define WEEKDAY_CHARS          "SundayMondayTuesdayWednesdayThursdayFridaySaturday"
@@ -3713,7 +3687,6 @@ static const gchar tm_months [][4] = {
 static const gchar tm_days [][4] = {
 	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
-
 
 /**
  * camel_header_format_date:
@@ -4069,7 +4042,6 @@ parse_rfc822_date (struct _date_token *tokens, gint *tzone)
 	return t;
 }
 
-
 #define date_token_mask(t)  (((struct _date_token *) t)->mask)
 #define is_numeric(t)       ((date_token_mask (t) & DATE_TOKEN_NON_NUMERIC) == 0)
 #define is_weekday(t)       ((date_token_mask (t) & DATE_TOKEN_NON_WEEKDAY) == 0)
@@ -4187,7 +4159,6 @@ parse_broken_date (struct _date_token *tokens, gint *tzone)
 
 	return t;
 }
-
 
 /**
  * camel_header_decode_date:
@@ -4474,7 +4445,6 @@ camel_header_msgid_generate (void)
 	return msgid;
 }
 
-
 static struct {
 	const gchar *name;
 	const gchar *pattern;
@@ -4710,7 +4680,6 @@ camel_header_address_list_append_list(struct _camel_header_address **l, struct _
 		n->next = *h;
 	}
 }
-
 
 void
 camel_header_address_list_append(struct _camel_header_address **l, struct _camel_header_address *h)

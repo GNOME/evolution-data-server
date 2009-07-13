@@ -58,7 +58,6 @@ typedef struct {
 	void (*account_removed) (EAccountList *, EAccount *);
 } EAccountListClass;
 
-
 GType           e_account_list_get_type (void);
 
 EAccountList   *e_account_list_new       (GConfClient  *gconf);

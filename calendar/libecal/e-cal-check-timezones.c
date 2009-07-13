@@ -329,7 +329,6 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
                             g_free(fulltzid);
                         }
 
-
                         /*
                          * If the strings are identical, then the
                          * VTIMEZONE definitions are identical.  If

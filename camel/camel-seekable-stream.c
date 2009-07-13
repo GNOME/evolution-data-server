@@ -83,7 +83,6 @@ camel_seekable_stream_get_type (void)
 	return camel_seekable_stream_type;
 }
 
-
 static off_t
 seek (CamelSeekableStream *stream, off_t offset,
       CamelStreamSeekPolicy policy)
@@ -123,7 +122,6 @@ camel_seekable_stream_seek (CamelSeekableStream *stream, off_t offset,
 
 	return CSS_CLASS (stream)->seek (stream, offset, policy);
 }
-
 
 static off_t
 stream_tell (CamelSeekableStream *stream)
@@ -194,9 +192,4 @@ reset (CamelStream *stream)
 					   seekable_stream->bound_start,
 					   CAMEL_STREAM_SET);
 }
-
-
-
-
-
 

@@ -57,4 +57,3 @@ G_END_DECLS
 
 #endif /* CAMEL_LOCAL_STORE_H */
 
-

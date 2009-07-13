@@ -28,16 +28,13 @@
 #include <glib.h>
 #include <glib-object.h>
 
-
 /* LibXML2 includes */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
-
 G_BEGIN_DECLS
-
 
 #define GDATA_TYPE_ENTRY           (gdata_entry_get_type())
 #define GDATA_ENTRY(obj)           (G_TYPE_CHECK_INSTANCE_CAST((obj), GDATA_TYPE_ENTRY, GDataEntry))
@@ -49,7 +46,6 @@ G_BEGIN_DECLS
 typedef struct _GDataEntry GDataEntry;
 typedef struct _GDataEntryClass GDataEntryClass;
 typedef struct _GDataEntryPrivate GDataEntryPrivate;
-
 
 struct _GDataEntry {
 
@@ -144,9 +140,7 @@ struct _GDataEntryPostalAddress {
 	gboolean primary;
 };
 
-
 GType gdata_entry_get_type(void);
-
 
 /***** API  *****/
 

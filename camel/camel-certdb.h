@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_CERTDB_H__
 #define __CAMEL_CERTDB_H__
 
@@ -101,7 +100,6 @@ struct _CamelCertDBClass {
 	void (*cert_set_string) (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);
 };
 
-
 CamelType camel_certdb_get_type (void);
 
 CamelCertDB *camel_certdb_new (void);
@@ -126,7 +124,6 @@ void camel_certdb_cert_ref (CamelCertDB *certdb, CamelCert *cert);
 void camel_certdb_cert_unref (CamelCertDB *certdb, CamelCert *cert);
 
 void camel_certdb_clear (CamelCertDB *certdb);
-
 
 const gchar *camel_cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string);
 void camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value);

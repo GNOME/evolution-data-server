@@ -23,8 +23,6 @@ static const gchar *extended_keywords[] = {
 	"apt", "apartment", "suite", NULL
 };
 
-
-
 static gboolean
 e_address_western_is_line_blank (gchar *line)
 {
@@ -41,8 +39,6 @@ e_address_western_is_line_blank (gchar *line)
 
 	return blank;
 }
-
-
 
 /* In the array of lines, `lines', we will erase the line at line_num, and
  shift the remaining lines, up to line number num_lines, up one position. */
@@ -61,7 +57,6 @@ e_address_western_shift_line (gchar *lines[], gint line_num, gint num_lines)
 			lines[cntr] = lines[cntr + 1];
 	}
 }
-
 
 static void
 e_address_western_remove_blank_lines (gchar *lines[], gint *linecntr)
@@ -84,7 +79,6 @@ e_address_western_remove_blank_lines (gchar *lines[], gint *linecntr)
 	}
 }
 
-
 static gboolean
 e_address_western_is_po_box (gchar *line)
 {
@@ -92,7 +86,6 @@ e_address_western_is_po_box (gchar *line)
 
 	/* In which phase of processing are we? */
 	enum State { FIRSTCHAR, SECONDCHAR, WHITESPACE } state;
-
 
 	/* If the first two letters of the line are `p' and `o', and these
 	 are in turn followed by whitespace before another letter, then I
@@ -215,7 +208,6 @@ e_address_western_extract_locality (gchar *line)
 	else
 		return g_strndup (line, index);
 }
-
 
 /* Whatever resides between the comma and the start of the
   postal code is deemed to be the region. */

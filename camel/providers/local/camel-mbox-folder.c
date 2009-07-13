@@ -372,7 +372,6 @@ mbox_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	frompos = info->frompos;
 	camel_message_info_free((CamelMessageInfo *)info);
 
-
 	filename = g_strdup_printf ("%s%s!%" PRId64, lf->folder_path, G_DIR_SEPARATOR_S, (gint64) frompos);
 
 fail:

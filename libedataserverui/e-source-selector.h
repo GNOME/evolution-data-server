@@ -35,7 +35,6 @@ G_BEGIN_DECLS
 #define E_IS_SOURCE_SELECTOR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_SELECTOR))
 #define E_IS_SOURCE_SELECTOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_SELECTOR))
 
-
 typedef struct _ESourceSelector        ESourceSelector;
 typedef struct _ESourceSelectorPrivate ESourceSelectorPrivate;
 typedef struct _ESourceSelectorClass   ESourceSelectorClass;
@@ -65,7 +64,6 @@ struct _ESourceSelectorClass {
 	gpointer padding2;
 	gpointer padding3;
 };
-
 
 GType  e_source_selector_get_type  (void);
 

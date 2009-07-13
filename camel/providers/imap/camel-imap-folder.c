@@ -1106,7 +1106,6 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 			changed = TRUE;
 		}
 
-
 		/* Do not merge custom flags when server doesn't support it.
 		   Because server always reports NULL, which means none, which
 		   will remove user's flags from local machine, which is bad.
@@ -1132,7 +1131,6 @@ imap_rescan (CamelFolder *folder, gint exists, CamelException *ex)
 	}
 
 	seq = i + 1;
-
 
 #if 0
 	/* FIXME: Srini: I don't think this will be called any longer. */
@@ -2108,7 +2106,6 @@ imap_append_resyncing (CamelFolder *folder, CamelMimeMessage *message,
 	camel_imap_response_free (store, response);
 }
 
-
 static void
 imap_transfer_offline (CamelFolder *source, GPtrArray *uids,
 		       CamelFolder *dest, GPtrArray **transferred_uids,
@@ -2438,7 +2435,6 @@ imap_transfer_resyncing (CamelFolder *source, GPtrArray *uids,
 	 * appended into @source while we were offline, in which case
 	 * if we don't have UIDPLUS, we won't know their real UIDs,
 	 * so we'll have to append them rather than copying. */
-
 
 	realuids = g_ptr_array_new ();
 
@@ -3767,7 +3763,6 @@ imap_thaw (CamelFolder *folder)
 		imap_refresh_info (folder, NULL);
 	}
 }
-
 
 CamelStream *
 camel_imap_folder_fetch_data (CamelImapFolder *imap_folder, const gchar *uid,

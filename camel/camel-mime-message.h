@@ -21,7 +21,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_MIME_MESSAGE_H
 #define CAMEL_MIME_MESSAGE_H 1
 
@@ -77,11 +76,8 @@ typedef struct {
 
 } CamelMimeMessageClass;
 
-
-
 /* Standard Camel function */
 CamelType                   camel_mime_message_get_type           (void);
-
 
 /* public methods */
 CamelMimeMessage           *camel_mime_message_new                (void);
@@ -115,7 +111,6 @@ void                        camel_mime_message_set_recipients     (CamelMimeMess
 void                        camel_mime_message_set_source         (CamelMimeMessage           *message,
 								   const gchar                 *identity);
 const gchar                 *camel_mime_message_get_source         (CamelMimeMessage           *message);
-
 
 /* utility functions */
 gboolean                    camel_mime_message_has_8bit_parts     (CamelMimeMessage           *message);

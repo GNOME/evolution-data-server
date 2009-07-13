@@ -20,7 +20,6 @@
 
 #include "camel-news-address.h"
 
-
 static void camel_news_address_class_init (CamelNewsAddressClass *klass);
 
 static CamelAddressClass *camel_news_address_parent;
@@ -30,7 +29,6 @@ camel_news_address_class_init (CamelNewsAddressClass *klass)
 {
 	camel_news_address_parent = CAMEL_ADDRESS_CLASS (camel_type_get_global_classfuncs (camel_address_get_type ()));
 }
-
 
 CamelType
 camel_news_address_get_type (void)

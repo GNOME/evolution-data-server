@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_MOVEMAIL_H
 #define CAMEL_MOVEMAIL_H 1
 

@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_TRANSPORT_H
 #define CAMEL_TRANSPORT_H 1
 
@@ -48,8 +47,6 @@ struct _CamelTransport
 	struct _CamelTransportPrivate *priv;
 };
 
-
-
 typedef struct {
 	CamelServiceClass parent_class;
 
@@ -58,7 +55,6 @@ typedef struct {
 			     CamelAddress *from, CamelAddress *recipients,
 			     CamelException *ex);
 } CamelTransportClass;
-
 
 /* public methods */
 gboolean camel_transport_send_to (CamelTransport *transport,

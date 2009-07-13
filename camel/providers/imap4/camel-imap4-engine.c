@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -42,7 +41,6 @@
 
 #define d(x)
 
-
 static void camel_imap4_engine_class_init (CamelIMAP4EngineClass *klass);
 static void camel_imap4_engine_init (CamelIMAP4Engine *engine, CamelIMAP4EngineClass *klass);
 static void camel_imap4_engine_finalize (CamelObject *object);
@@ -50,9 +48,7 @@ static void camel_imap4_engine_finalize (CamelObject *object);
 static gint parse_xgwextensions (CamelIMAP4Engine *engine, CamelIMAP4Command *ic, guint32 index,
 				camel_imap4_token_t *token, CamelException *ex);
 
-
 static CamelObjectClass *parent_class = NULL;
-
 
 CamelType
 camel_imap4_engine_get_type (void)
@@ -149,7 +145,6 @@ camel_imap4_engine_finalize (CamelObject *object)
 	}
 }
 
-
 /**
  * camel_imap4_engine_new:
  * @service: service
@@ -172,7 +167,6 @@ camel_imap4_engine_new (CamelService *service, CamelIMAP4ReconnectFunc reconnect
 
 	return engine;
 }
-
 
 /**
  * camel_imap4_engine_take_stream:
@@ -232,7 +226,6 @@ camel_imap4_engine_take_stream (CamelIMAP4Engine *engine, CamelStream *stream, C
 	return -1;
 }
 
-
 /**
  * camel_imap4_engine_disconnect:
  * @engine: IMAP4 engine
@@ -255,7 +248,6 @@ camel_imap4_engine_disconnect (CamelIMAP4Engine *engine)
 		engine->ostream = NULL;
 	}
 }
-
 
 /**
  * camel_imap4_engine_capability:
@@ -302,7 +294,6 @@ camel_imap4_engine_capability (CamelIMAP4Engine *engine, CamelException *ex)
 
 	return retval;
 }
-
 
 /**
  * camel_imap4_engine_namespace:
@@ -372,7 +363,6 @@ camel_imap4_engine_namespace (CamelIMAP4Engine *engine, CamelException *ex)
 
 	return 0;
 }
-
 
 /**
  * camel_imap4_engine_select_folder:
@@ -466,7 +456,6 @@ camel_imap4_engine_select_folder (CamelIMAP4Engine *engine, CamelFolder *folder,
 
 	return retval;
 }
-
 
 static struct {
 	const gchar *name;
@@ -775,7 +764,6 @@ engine_parse_namespace (CamelIMAP4Engine *engine, CamelException *ex)
 	return -1;
 }
 
-
 /*
  * resp-text-code  = "ALERT" /
  *                   "BADCHARSET" [SP "(" astring *(SP astring) ")" ] /
@@ -808,7 +796,6 @@ static struct {
 	{ "COPYUID",        CAMEL_IMAP4_RESP_CODE_COPYUID,     1 },
 	{ NULL,             CAMEL_IMAP4_RESP_CODE_UNKNOWN,     0 }
 };
-
 
 /**
  * camel_imap4_engine_parse_resp_code:
@@ -1075,7 +1062,6 @@ camel_imap4_engine_parse_resp_code (CamelIMAP4Engine *engine, CamelException *ex
 	return -1;
 }
 
-
 /**
  * camel_imap4_engine_handle_untagged_1:
  * @engine: IMAP4 engine
@@ -1238,7 +1224,6 @@ camel_imap4_engine_handle_untagged_1 (CamelIMAP4Engine *engine, camel_imap4_toke
 	return code;
 }
 
-
 /**
  * camel_imap4_engine_handle_untagged:
  * @engine: IMAP4 engine
@@ -1273,7 +1258,6 @@ camel_imap4_engine_handle_untagged (CamelIMAP4Engine *engine, CamelException *ex
 	engine->state = CAMEL_IMAP4_ENGINE_DISCONNECTED;
 }
 
-
 static gint
 imap4_process_command (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 {
@@ -1289,7 +1273,6 @@ imap4_process_command (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 
 	return 0;
 }
-
 
 static void
 engine_prequeue_folder_select (CamelIMAP4Engine *engine)
@@ -1312,7 +1295,6 @@ engine_prequeue_folder_select (CamelIMAP4Engine *engine)
 
 	camel_imap4_command_unref (ic);
 }
-
 
 static gint
 engine_state_change (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
@@ -1343,7 +1325,6 @@ engine_state_change (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 
 	return retval;
 }
-
 
 /**
  * camel_imap4_engine_iterate:
@@ -1440,7 +1421,6 @@ camel_imap4_engine_iterate (CamelIMAP4Engine *engine)
 	return retval;
 }
 
-
 /**
  * camel_imap4_engine_queue:
  * @engine: IMAP4 engine
@@ -1471,7 +1451,6 @@ camel_imap4_engine_queue (CamelIMAP4Engine *engine, CamelFolder *folder, const g
 
 	return ic;
 }
-
 
 /**
  * camel_imap4_engine_prequeue:
@@ -1525,7 +1504,6 @@ camel_imap4_engine_prequeue (CamelIMAP4Engine *engine, CamelFolder *folder, cons
 	return ic;
 }
 
-
 /**
  * camel_imap4_engine_dequeue:
  * @engine: IMAP4 engine
@@ -1547,7 +1525,6 @@ camel_imap4_engine_dequeue (CamelIMAP4Engine *engine, CamelIMAP4Command *ic)
 
 	camel_imap4_command_unref (ic);
 }
-
 
 /**
  * camel_imap4_engine_next_token:
@@ -1576,7 +1553,6 @@ camel_imap4_engine_next_token (CamelIMAP4Engine *engine, camel_imap4_token_t *to
 
 	return 0;
 }
-
 
 /**
  * camel_imap4_engine_eat_line:
@@ -1617,7 +1593,6 @@ camel_imap4_engine_eat_line (CamelIMAP4Engine *engine, CamelException *ex)
 
 	return 0;
 }
-
 
 /**
  * camel_imap4_engine_line:
@@ -1672,7 +1647,6 @@ camel_imap4_engine_line (CamelIMAP4Engine *engine, guchar **line, gsize *len, Ca
 
 	return 0;
 }
-
 
 /**
  * camel_imap4_engine_literal:
@@ -1730,7 +1704,6 @@ camel_imap4_engine_literal (CamelIMAP4Engine *engine, guchar **literal, gsize *l
 	return 0;
 }
 
-
 /**
  * camel_imap4_engine_nstring:
  * @engine: IMAP4 engine
@@ -1772,7 +1745,6 @@ camel_imap4_engine_nstring (CamelIMAP4Engine *engine, guchar **nstring, CamelExc
 
 	return 0;
 }
-
 
 /**
  * camel_imap4_resp_code_free:

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -30,7 +29,6 @@
 #include <unistd.h>
 
 #include "camel-process.h"
-
 
 pid_t
 camel_process_fork (const gchar *path, gchar **argv, gint *infd, gint *outfd, gint *errfd, CamelException *ex)
@@ -116,7 +114,6 @@ camel_process_fork (const gchar *path, gchar **argv, gint *infd, gint *outfd, gi
 
 	return pid;
 }
-
 
 gint
 camel_process_wait (pid_t pid)

@@ -152,8 +152,6 @@ static const struct {
 	{ NULL,              NULL         }
 };
 
-
-
 /* Another copy of this trivial list implementation
    Why?  This stuff gets called a lot (potentially), should run fast,
    and g_list's are f@@#$ed up to make this a hassle */
@@ -189,7 +187,6 @@ static EDListNode *e_dlist_remove(EDListNode *n)
         return n;
 }
 
-
 static const gchar *
 e_strdown (gchar *str)
 {
@@ -217,7 +214,6 @@ e_strup (gchar *str)
 
 	return str;
 }
-
 
 static void
 locale_parse_lang (const gchar *locale)
@@ -569,7 +565,6 @@ const gchar *e_iconv_locale_charset(void)
 
 	return locale_charset;
 }
-
 
 const gchar *
 e_iconv_locale_language (void)

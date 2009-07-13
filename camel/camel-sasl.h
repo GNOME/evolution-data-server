@@ -44,14 +44,12 @@ typedef struct _CamelSasl {
 	gboolean authenticated;
 } CamelSasl;
 
-
 typedef struct _CamelSaslClass {
 	CamelObjectClass parent_class;
 
 	GByteArray *    (*challenge)   (CamelSasl *sasl, GByteArray *token, CamelException *ex);
 
 } CamelSaslClass;
-
 
 /* Standard Camel function */
 CamelType  camel_sasl_get_type (void);

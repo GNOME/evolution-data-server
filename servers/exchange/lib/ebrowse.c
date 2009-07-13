@@ -273,7 +273,6 @@ got_all_properties (SoupMessage *msg, gpointer ctx)
 	e2k_results_free (results, nresults);
 }
 
-
 #define ALL_PROPS \
 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" \
 "<propfind xmlns=\"DAV:\" xmlns:e=\"http://schemas.microsoft.com/exchange/\">" \
@@ -332,7 +331,6 @@ get_fav_properties(E2kContext *ctx, gchar *uri)
 	const gchar *prop;
 	gint status;
 	gchar *eml_str, *top = uri, fav_uri[1024];
-
 
 	/* list the contents and search for the favorite properties */
 	e2k_operation_init (&op);

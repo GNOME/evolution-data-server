@@ -28,7 +28,6 @@
 #include <ctype.h>
 #include <string.h>
 
-
 static guchar NTLM_NEGOTIATE_MESSAGE[] = {
 	 'N',  'T',  'L',  'M',  'S',  'S',  'P', 0x00,
 	0x01, 0x00, 0x00, 0x00, 0x06, 0x82, 0x00, 0x00,
@@ -55,7 +54,6 @@ xntlm_negotiate (void)
 			     sizeof (NTLM_NEGOTIATE_MESSAGE));
 	return message;
 }
-
 
 #define GET_SHORTY(p) ((p)[0] + ((p)[1] << 8))
 
@@ -150,7 +148,6 @@ xntlm_parse_challenge (gpointer challenge, gint len, gchar **nonce,
 	return TRUE;
 }
 
-
 static void
 ntlm_set_string (GByteArray *ba, gint offset, const gchar *data, gint len)
 {
@@ -230,7 +227,6 @@ xntlm_authenticate (const gchar *nonce, const gchar *domain,
 
 	return message;
 }
-
 
 static void
 setup_schedule (const guchar *key_56, XNTLM_DES_KS ks)
@@ -324,5 +320,4 @@ ntlm_calc_response (const guchar key[21], const guchar plaintext[8],
         setup_schedule (key + 14, ks);
         xntlm_des (ks, results + 16);
 }
-
 

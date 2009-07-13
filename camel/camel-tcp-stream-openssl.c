@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -137,7 +136,6 @@ camel_tcp_stream_ssl_finalize (CamelObject *object)
 	g_free (stream->priv);
 }
 
-
 CamelType
 camel_tcp_stream_ssl_get_type (void)
 {
@@ -156,7 +154,6 @@ camel_tcp_stream_ssl_get_type (void)
 
 	return type;
 }
-
 
 /**
  * camel_tcp_stream_ssl_new:
@@ -185,7 +182,6 @@ camel_tcp_stream_ssl_new (CamelService *service, const gchar *expected_host, gui
 	return CAMEL_STREAM (stream);
 }
 
-
 /**
  * camel_tcp_stream_ssl_new_raw:
  * @service: camel service
@@ -213,7 +209,6 @@ camel_tcp_stream_ssl_new_raw (CamelService *service, const gchar *expected_host,
 	return CAMEL_STREAM (stream);
 }
 
-
 static gint
 ssl_errno (SSL *ssl, gint ret)
 {
@@ -239,7 +234,6 @@ ssl_errno (SSL *ssl, gint ret)
 		return EINTR;
 	}
 }
-
 
 /**
  * camel_tcp_stream_ssl_enable_ssl:
@@ -270,7 +264,6 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *stream)
 
 	return 0;
 }
-
 
 static gssize
 stream_read (CamelStream *stream, gchar *buffer, gsize n)
@@ -428,7 +421,6 @@ stream_flush (CamelStream *stream)
 {
 	return 0;
 }
-
 
 static void
 close_ssl_connection (SSL *ssl)
@@ -787,7 +779,6 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, gint port)
 
 	return 0;
 }
-
 
 static gint
 get_sockopt_level (const CamelSockOptData *data)

@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -78,9 +77,7 @@ static void imap4_unsubscribe_folder (CamelStore *store, const gchar *folder_nam
 static gboolean imap4_folder_subscribed (CamelStore *store, const gchar *folder_name);
 static void imap4_noop (CamelStore *store, CamelException *ex);
 
-
 static CamelOfflineStoreClass *parent_class = NULL;
-
 
 CamelType
 camel_imap4_store_get_type (void)
@@ -174,7 +171,6 @@ camel_imap4_store_finalize (CamelObject *object)
 
 	g_free (store->storage_path);
 }
-
 
 static void
 imap4_construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
@@ -777,7 +773,6 @@ imap4_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, Ca
 
 	return folder;
 }
-
 
 static gboolean
 imap4_folder_can_contain_folders (CamelStore *store, const gchar *folder_name, CamelException *ex)

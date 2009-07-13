@@ -24,4 +24,3 @@ G_END_DECLS
 
 #endif  /* ! __E_ADDRESS_WESTERN_H__ */
 
-

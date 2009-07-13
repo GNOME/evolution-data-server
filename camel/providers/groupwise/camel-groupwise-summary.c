@@ -70,12 +70,9 @@ static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, Ca
 static void camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass);
 static void camel_groupwise_summary_init       (CamelGroupwiseSummary *obj);
 
-
 /*End of Prototypes*/
 
-
 static CamelFolderSummaryClass *camel_groupwise_summary_parent;
-
 
 CamelType
 camel_groupwise_summary_get_type (void)
@@ -136,7 +133,6 @@ camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass)
 
 }
 
-
 static void
 camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
 {
@@ -149,7 +145,6 @@ camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
 	/* Meta-summary - Overriding UID len */
 	s->meta_summary->uid_len = 2048;
 }
-
 
 /**
  * camel_groupwise_summary_new:
@@ -220,10 +215,6 @@ gw_summary_header_load (CamelFolderSummary *s, FILE *in)
 	return 0;
 }
 
-
-
-
-
 static CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -273,7 +264,6 @@ gw_message_info_load (CamelFolderSummary *s, FILE *in)
 {
 	CamelMessageInfo *info;
 	CamelGroupwiseMessageInfo *gw_info;
-
 
 	info = camel_groupwise_summary_parent->message_info_load(s,in);
 	if (info) {
@@ -331,7 +321,6 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	else
 		return camel_folder_summary_content_info_new (s);
 }
-
 
 static CamelMessageContentInfo *
 gw_content_info_load (CamelFolderSummary *s, FILE *in)
@@ -418,7 +407,6 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 				mi->flags |= CAMEL_GW_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK_LEARN;
 		}
 
-
 		if (mi->summary && mi->summary->folder && mi->uid) {
 				CamelFolderChangeInfo *changes = camel_folder_change_info_new();
 
@@ -430,7 +418,6 @@ gw_info_set_flags (CamelMessageInfo *info, guint32 flags, guint32 set)
 
 		return TRUE;
 }
-
 
 void
 camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, CamelMimeMessage *message, const CamelMessageInfo *info)

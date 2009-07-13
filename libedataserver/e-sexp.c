@@ -82,7 +82,6 @@
         Execute a sequence.  The last function return is the return type.
 */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -98,7 +97,6 @@
 #define p(x)			/* parse debug */
 #define r(x)			/* run debug */
 #define d(x)			/* general debug */
-
 
 static struct _ESExpTerm * parse_list(ESExp *f, gint gotbrace);
 static struct _ESExpTerm * parse_value(ESExp *f);
@@ -670,7 +668,6 @@ term_eval_begin(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer 
 		return e_sexp_result_new(f, ESEXP_RES_UNDEFINED);
 }
 
-
 /* this must only be called from inside term evaluation callbacks! */
 struct _ESExpResult *
 e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
@@ -904,7 +901,6 @@ ESExpTerm * e_sexp_parse_value (ESExp *f)
 {
 	return parse_value (f);
 }
-
 
 static struct _ESExpTerm *
 parse_value(ESExp *f)

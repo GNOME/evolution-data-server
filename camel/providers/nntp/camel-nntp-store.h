@@ -20,7 +20,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_NNTP_STORE_H
 #define CAMEL_NNTP_STORE_H 1
 
@@ -105,5 +104,4 @@ gint camel_nntp_command (CamelNNTPStore *store, struct _CamelException *ex, stru
 G_END_DECLS
 
 #endif /* CAMEL_NNTP_STORE_H */
-
 

@@ -584,7 +584,6 @@ populate_emails (EContact *contact, gpointer data)
 	}
 }
 
-
 static void
 set_emails_in_gw_item (EGwItem *item, gpointer data)
 {
@@ -906,7 +905,6 @@ set_members_in_gw_item (EGwItem  *item, EContact *contact, EBookBackendGroupwise
 		}
 		g_object_unref (temp_item);
 	}
-
 
 	/* In groupwise there is no way to put arbitrary members into a group. There's no
 	 * mechanism for a group to contain members that are not already present in a system
@@ -2593,7 +2591,6 @@ build_cache (EBookBackendGroupwise *ebgw)
 	if (status != E_GW_CONNECTION_STATUS_OK)
 		return FALSE;
 
-
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) {
 		contact_num++;
 		contact = e_contact_new ();
@@ -2617,7 +2614,6 @@ build_cache (EBookBackendGroupwise *ebgw)
 
 	return NULL;
 }*/
-
 
 /*FIXME using cursors for address book seems to be crashing server
 till it gets fixed we will use get items. cursor implementation is below */
@@ -2908,7 +2904,6 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	struct stat buf;
 	time_t mod_time;
 
-
 	if (!ebgw)
 		return FALSE;
 
@@ -3114,7 +3109,6 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 	if (sync_required)
 		ebgw->priv->file_db->sync(ebgw->priv->file_db, 0);
 
-
 	if (book_view) {
 		e_data_book_view_notify_complete (book_view,
 						  GNOME_Evolution_Addressbook_Success);
@@ -3223,7 +3217,6 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 		if(priv->book_name)
 			printf("book_name:%s\n", priv->book_name);
 	}
-
 
 	switch (ebgw->priv->mode) {
 	case GNOME_Evolution_Addressbook_MODE_LOCAL:
@@ -3465,7 +3458,6 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	gint i;
 	const gchar *use_ssl;
 	const gchar *offline;
-
 
 	if (enable_debug)
 		printf("\ne_book_backend_groupwise_load_source.. \n");
@@ -3864,7 +3856,6 @@ e_book_backend_groupwise_dispose (GObject *object)
 static void
 e_book_backend_groupwise_class_init (EBookBackendGroupwiseClass *klass)
 {
-
 
 	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
 	EBookBackendClass *parent_class;

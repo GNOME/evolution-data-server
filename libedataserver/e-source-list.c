@@ -39,7 +39,6 @@ struct _ESourceListPrivate {
 	gint sync_idle_id;
 };
 
-
 /* Signals.  */
 
 enum {
@@ -50,7 +49,6 @@ enum {
 };
 static guint signals[LAST_SIGNAL] = { 0 };
 
-
 /* Forward declarations.  */
 
 static gboolean  sync_idle_callback      (ESourceList  *list);
@@ -60,7 +58,6 @@ static void      conf_changed_callback   (GConfClient  *client,
 					  guint  connection_id,
 					  GConfEntry   *entry,
 					  ESourceList  *list);
-
 
 /* Utility functions.  */
 
@@ -187,7 +184,6 @@ remove_group (ESourceList *list,
 	g_signal_emit (list, signals[CHANGED], 0);
 }
 
-
 /* Callbacks.  */
 
 static gboolean
@@ -224,7 +220,6 @@ conf_changed_callback (GConfClient *client,
 {
 	load_from_gconf (list);
 }
-
 
 /* GObject methods.  */
 
@@ -288,7 +283,6 @@ impl_finalize (GObject *object)
 
 	(* G_OBJECT_CLASS (e_source_list_parent_class)->finalize) (object);
 }
-
 
 /* Initialization.  */
 
@@ -739,7 +733,6 @@ e_source_list_remove_source_by_uid (ESourceList *list,
 	return FALSE;
 }
 
-
 gboolean
 e_source_list_sync (ESourceList *list,
 		    GError **error)
@@ -818,7 +811,6 @@ e_source_list_is_gconf_updated (ESourceList *list)
 			break;
 		}
 	}
-
 
 	/* If there is mismatch, free the conf_list and return FALSE */
 	if (!conf_to_list) {

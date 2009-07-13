@@ -296,12 +296,10 @@ static guchar pc2[] = {
 
 /* End of DES-defined tables */
 
-
 /* bit 0 is left-most in byte */
 static gint bytebit[] = {
 	0200,0100,040,020,010,04,02,01
 };
-
 
 /* Generate key schedule for encryption or decryption
  * depending on the value of "decrypt"

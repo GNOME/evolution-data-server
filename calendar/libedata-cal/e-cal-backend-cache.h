@@ -59,8 +59,6 @@ gboolean            e_cal_backend_cache_remove_component (ECalBackendCache *cach
 GList              *e_cal_backend_cache_get_components (ECalBackendCache *cache);
 GSList             *e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar *uid);
 
-
-
 const icaltimezone *e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid);
 gboolean            e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone);
 gboolean            e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const gchar *tzid);

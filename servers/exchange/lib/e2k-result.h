@@ -25,7 +25,6 @@ E2kResult *e2k_results_copy                       (E2kResult    *results,
 void       e2k_results_free                       (E2kResult    *results,
 						   gint           nresults);
 
-
 GArray    *e2k_results_array_new                  (void);
 
 void       e2k_results_array_add_from_multistatus (GArray       *results_array,
@@ -33,7 +32,6 @@ void       e2k_results_array_add_from_multistatus (GArray       *results_array,
 
 void       e2k_results_array_free                 (GArray       *results_array,
 						   gboolean      free_results);
-
 
 typedef struct E2kResultIter E2kResultIter;
 

@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -90,7 +89,6 @@ CamelServiceAuthType camel_imap4_password_authtype = {
 	TRUE
 };
 
-
 static void
 add_hash (guint *hash, gchar *s)
 {
@@ -137,7 +135,6 @@ imap4_url_equal (gconstpointer a, gconstpointer b)
 		&& check_equal (u1->host, u2->host)
 		&& u1->port == u2->port;
 }
-
 
 void
 camel_provider_module_init (void)

@@ -102,7 +102,6 @@ finalize (GObject *object)
 
 E2K_MAKE_TYPE (exchange_hierarchy_somedav, ExchangeHierarchySomeDAV, class_init, init, PARENT_TYPE)
 
-
 static inline gboolean
 folder_is_unreadable (E2kProperties *props)
 {
@@ -193,7 +192,6 @@ scan_subtree (ExchangeHierarchy *hier, EFolder *folder, gint mode)
 
 	return folder_result;
 }
-
 
 GPtrArray *
 exchange_hierarchy_somedav_get_hrefs (ExchangeHierarchySomeDAV *hsd)

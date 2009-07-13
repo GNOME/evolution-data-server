@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -35,7 +34,6 @@
 #include <camel/camel-mime-message.h>
 #include <camel/camel-stream-fs.h>
 #include <camel/camel-stream-mem.h>
-
 
 #if 0
 static void

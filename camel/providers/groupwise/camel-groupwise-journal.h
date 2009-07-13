@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_GROUPWISE_JOURNAL_H__
 #define __CAMEL_GROUPWISE_JOURNAL_H__
 
@@ -70,7 +69,6 @@ struct _CamelGroupwiseJournalClass {
 	CamelOfflineJournalClass parent_class;
 
 };
-
 
 CamelType camel_groupwise_journal_get_type (void);
 

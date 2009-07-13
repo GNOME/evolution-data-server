@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_IMAP_COMMAND_H
 #define CAMEL_IMAP_COMMAND_H 1
 

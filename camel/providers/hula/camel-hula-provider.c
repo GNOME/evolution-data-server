@@ -42,7 +42,6 @@ static guint hula_url_hash (gconstpointer key);
 static gint check_equal (gchar *s1, gchar *s2);
 static gint hula_url_equal (gconstpointer a, gconstpointer b);
 
-
 static CamelProviderConfEntry hula_conf_entries[] = {
 	/* override the labels/defaults of the standard settings */
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
@@ -71,7 +70,6 @@ static CamelProviderConfEntry hula_conf_entries[] = {
 	/* revisit each options in other providers (incl. authdomain) for
 	 * relevancy - harish*/
 };
-
 
 static CamelProvider hula_provider = {
 	"hula",
@@ -129,10 +127,8 @@ camel_provider_module_init(void)
 
 	hula_provider.object_types[CAMEL_PROVIDER_STORE] = imap_provider->object_types [CAMEL_PROVIDER_STORE];
 
-
 	camel_provider_register (&hula_provider);
 }
-
 
 static void
 add_hash (guint *hash, gchar *s)

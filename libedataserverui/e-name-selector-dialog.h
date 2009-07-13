@@ -87,7 +87,6 @@ void                 e_name_selector_dialog_set_model  (ENameSelectorDialog *nam
 void                 e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector_dialog,
 								   guint                index);
 
-
 G_END_DECLS
 
 #endif /* E_NAME_SELECTOR_DIALOG_H */

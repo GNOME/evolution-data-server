@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __CAMEL_HTTP_STREAM_H__
 #define __CAMEL_HTTP_STREAM_H__
 
@@ -46,7 +45,6 @@ typedef enum {
 	/*CAMEL_HTTP_METHOD_TRACE,*/
 	/*CAMEL_HTTP_METHOD_CONNECT*/
 } CamelHttpMethod;
-
 
 typedef struct _CamelHttpStreamClass CamelHttpStreamClass;
 

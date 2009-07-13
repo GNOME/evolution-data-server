@@ -117,7 +117,6 @@ camel_nntp_get_grouplist_from_file (CamelNNTPStore *store, CamelException *ex)
 		return NULL;
 	}
 
-
 	list = g_new0 (CamelNNTPGroupList, 1);
 	list->store = store;
 	sscanf (buf, "%lu", &time);

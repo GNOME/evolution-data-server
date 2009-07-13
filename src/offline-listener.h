@@ -41,7 +41,6 @@ G_BEGIN_DECLS
 #define OFFLINE_IS_LISTENER(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), OFFLINE_TYPE_LISTENER))
 #define OFFLINE_IS_LISTENER_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), OFFLINE_TYPE_LISTENER))
 
-
 typedef struct _OfflineListener        OfflineListener;
 typedef struct _OfflineListenerPrivate  OfflineListenerPrivate;
 typedef struct _OfflineListenerClass   OfflineListenerClass;
@@ -56,7 +55,6 @@ struct _OfflineListenerClass {
 	GObjectClass  parent_class;
 
 };
-
 
 GType offline_listener_get_type  (void);
 

@@ -86,7 +86,6 @@ e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
 	return hash;
 }
 
-
 struct save_data {
 	EXmlHashType type;
 	xmlDoc *doc;
@@ -161,7 +160,6 @@ e_xml_destroy_hash (GHashTable *hash)
 	g_hash_table_foreach (hash, free_values, NULL);
 	g_hash_table_destroy (hash);
 }
-
 
 /**
  * EXmlHash:

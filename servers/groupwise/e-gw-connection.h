@@ -114,7 +114,6 @@ EGwConnectionStatus e_gw_connection_remove_items (EGwConnection *cnc, const gcha
 EGwConnectionStatus e_gw_connection_get_items_delta_info (EGwConnection *cnc, const gchar *container, gdouble *first_sequence, gdouble *last_sequence, gdouble *last_po_rebuild_time);
 EGwConnectionStatus e_gw_connection_get_items_delta (EGwConnection *cnc, const gchar *container, const gchar *view, const gchar *count, const gchar * start_sequence, GList **add_list, GList **delete_list);
 
-
 const gchar         *e_gw_connection_get_uri (EGwConnection *cnc);
 const gchar         *e_gw_connection_get_session_id (EGwConnection *cnc);
 const gchar         *e_gw_connection_get_user_name (EGwConnection *cnc);
@@ -123,10 +122,8 @@ const gchar         *e_gw_connection_get_user_uuid (EGwConnection *cnc);
 const gchar	   *e_gw_connection_get_version (EGwConnection *cnc);
 const gchar	   *e_gw_connection_get_server_time (EGwConnection *cnc);
 
-
 time_t              e_gw_connection_get_date_from_string (const gchar *dtstring);
 gchar               *e_gw_connection_format_date_string (const gchar *dtstring);
-
 
 EGwConnectionStatus e_gw_connection_create_item (EGwConnection *cnc, EGwItem *item, gchar ** id);
 EGwConnectionStatus e_gw_connection_get_item (EGwConnection *cnc, const gchar *container, const gchar *id, const gchar *view, EGwItem **item);

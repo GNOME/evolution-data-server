@@ -307,9 +307,7 @@ finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-
 E2K_MAKE_TYPE (exchange_account, ExchangeAccount, class_init, init, PARENT_TYPE)
-
 
 void
 exchange_account_rescan_tree (ExchangeAccount *account)
@@ -910,8 +908,6 @@ static const gchar *mailbox_info_props[] = {
 };
 static const gint n_mailbox_info_props = G_N_ELEMENTS (mailbox_info_props);
 
-
-
 static gboolean
 account_moved (ExchangeAccount *account, E2kAutoconfig *ac)
 {
@@ -1171,7 +1167,6 @@ exchange_account_is_save_password (ExchangeAccount *account)
 {
 	return account->priv->account->source->save_passwd;
 }
-
 
 /**
  * exchange_account_set_offline:
@@ -1937,7 +1932,6 @@ struct _folders_tree {
 	GPtrArray *folders;
 };
 
-
 static void
 add_folder (gpointer key, gpointer value, gpointer folders)
 {
@@ -2206,7 +2200,6 @@ exchange_account_get_authtype (ExchangeAccount *account)
 
 	return NULL;
 }
-
 
 /**
  * exchange_account_new:

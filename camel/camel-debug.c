@@ -210,7 +210,6 @@ Invalid hw breakpoint length %d in i386_length_and_rw_bits.\n", len);
 #define I386_DR_LOCAL_ENABLE(i) \
   dr_control_mirror |= (1 << (DR_LOCAL_ENABLE_SHIFT + DR_ENABLE_SIZE * (i)))
 
-
 #define set_dr(regnum, val) \
 		__asm__("movl %0,%%db" #regnum  \
 			: /* no output */ \

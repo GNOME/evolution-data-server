@@ -19,7 +19,6 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -42,7 +41,6 @@
 #include "camel-imap4-stream.h"
 
 #define d(x) (camel_debug ("imap4:command") ? (x) : 0)
-
 
 enum {
 	IMAP4_STRING_ATOM,
@@ -444,7 +442,6 @@ camel_imap4_command_unref (CamelIMAP4Command *ic)
 	}
 }
 
-
 static gint
 imap4_literal_write_to_stream (CamelIMAP4Literal *literal, CamelStream *stream)
 {
@@ -496,7 +493,6 @@ imap4_literal_write_to_stream (CamelIMAP4Literal *literal, CamelStream *stream)
 
 	return -1;
 }
-
 
 static void
 unexpected_token (camel_imap4_token_t *token)
@@ -709,7 +705,6 @@ camel_imap4_command_step (CamelIMAP4Command *ic)
 
 	return -1;
 }
-
 
 void
 camel_imap4_command_reset (CamelIMAP4Command *ic)

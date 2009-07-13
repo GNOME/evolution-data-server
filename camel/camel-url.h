@@ -23,7 +23,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_URL_H
 #define CAMEL_URL_H 1
 

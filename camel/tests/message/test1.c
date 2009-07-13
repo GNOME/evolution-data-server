@@ -5,7 +5,6 @@
 
   Retrieve message, compare content.
 
-
   Operations:
 	writing/loading from different types of streams
 	reading/writing different content

@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -33,9 +32,7 @@ static void camel_digest_summary_class_init (CamelDigestSummaryClass *klass);
 static void camel_digest_summary_init       (CamelDigestSummary *obj);
 static void camel_digest_summary_finalise   (CamelObject *obj);
 
-
 static CamelFolderSummaryClass *parent_class = NULL;
-
 
 CamelType
 camel_digest_summary_get_type(void)
@@ -81,7 +78,6 @@ camel_digest_summary_finalise (CamelObject *object)
 {
 
 }
-
 
 CamelFolderSummary *
 camel_digest_summary_new (void)

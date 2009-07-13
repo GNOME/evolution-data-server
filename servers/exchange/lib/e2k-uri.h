@@ -20,7 +20,6 @@ typedef struct {
 	gchar  *fragment;
 } E2kUri;
 
-
 E2kUri *    e2k_uri_new       (const gchar *uri_string);
 void        e2k_uri_free      (E2kUri *uri);
 const gchar *e2k_uri_get_param (E2kUri *uri, const gchar *name);

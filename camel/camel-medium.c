@@ -22,7 +22,6 @@
  * USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -94,7 +93,6 @@ camel_medium_finalize (CamelObject *object)
 		camel_object_unref (medium->content);
 }
 
-
 CamelType
 camel_medium_get_type (void)
 {
@@ -126,7 +124,6 @@ add_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 	g_warning("No %s::add_header implemented, adding %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
 
-
 /**
  * camel_medium_add_header:
  * @medium: a #CamelMedium object
@@ -150,7 +147,6 @@ set_header (CamelMedium *medium, const gchar *name, gconstpointer value)
 {
 	g_warning("No %s::set_header implemented, setting %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
-
 
 /**
  * camel_medium_set_header:
@@ -180,7 +176,6 @@ remove_header(CamelMedium *medium, const gchar *name)
 	g_warning("No %s::remove_header implemented, removing %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 }
 
-
 /**
  * camel_medium_remove_header:
  * @medium: a #CamelMedium
@@ -198,14 +193,12 @@ camel_medium_remove_header(CamelMedium *medium, const gchar *name)
 	CM_CLASS(medium)->remove_header(medium, name);
 }
 
-
 static gconstpointer
 get_header(CamelMedium *medium, const gchar *name)
 {
 	g_warning("No %s::get_header implemented, getting %s", camel_type_to_name(CAMEL_OBJECT_GET_TYPE(medium)), name);
 	return NULL;
 }
-
 
 /**
  * camel_medium_get_header:
@@ -229,7 +222,6 @@ camel_medium_get_header(CamelMedium *medium, const gchar *name)
 
 	return CM_CLASS (medium)->get_header (medium, name);
 }
-
 
 static GArray *
 get_headers(CamelMedium *medium)
@@ -280,13 +272,11 @@ camel_medium_free_headers (CamelMedium *medium, GArray *headers)
 	CM_CLASS (medium)->free_headers (medium, headers);
 }
 
-
 static CamelDataWrapper *
 get_content_object(CamelMedium *medium)
 {
 	return medium->content;
 }
-
 
 /**
  * camel_medium_get_content_object:
@@ -305,7 +295,6 @@ camel_medium_get_content_object (CamelMedium *medium)
 	return CM_CLASS (medium)->get_content_object (medium);
 }
 
-
 static void
 set_content_object (CamelMedium *medium, CamelDataWrapper *content)
 {
@@ -314,7 +303,6 @@ set_content_object (CamelMedium *medium, CamelDataWrapper *content)
 	camel_object_ref (content);
 	medium->content = content;
 }
-
 
 /**
  * camel_medium_set_content_object:

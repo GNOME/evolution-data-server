@@ -24,7 +24,6 @@
 #ifndef E_GW_FILTER_H
 #define E_GW_FILTER_H
 
-
 #include "soup-soap-message.h"
 #include "soup-soap-response.h"
 
@@ -39,7 +38,6 @@ G_BEGIN_DECLS
 typedef struct _EGwFilter        EGwFilter;
 typedef struct _EGwFilterClass   EGwFilterClass;
 typedef struct _EGwFilterPrivate EGwFilterPrivate;
-
 
 typedef enum {
 	E_GW_FILTER_OP_AND,

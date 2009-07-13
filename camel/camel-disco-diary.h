@@ -66,7 +66,6 @@ typedef struct {
 
 } CamelDiscoDiaryClass;
 
-
 /* public methods */
 CamelDiscoDiary *camel_disco_diary_new    (CamelDiscoStore *store,
 					   const gchar *filename,

@@ -172,7 +172,6 @@ impl_GNOME_Evolution_Addressbook_Book_getBookView (PortableServer_Servant servan
 	e_data_book_respond_get_book_view (book, opid, GNOME_Evolution_Addressbook_Success, view);
 }
 
-
 static void
 impl_GNOME_Evolution_Addressbook_Book_getChanges (PortableServer_Servant servant,
 						  const CORBA_long opid,
@@ -197,7 +196,6 @@ impl_GNOME_Evolution_Addressbook_Book_getStaticCapabilities (PortableServer_Serv
 	g_free(temp);
 	return ret_val;
 }
-
 
 static void
 impl_GNOME_Evolution_Addressbook_Book_getRequiredFields (PortableServer_Servant servant,
@@ -240,7 +238,6 @@ impl_GNOME_Evolution_Addressbook_Book_cancelOperation (PortableServer_Servant se
 
 	return e_book_backend_cancel_operation (e_data_book_get_backend (book), book);
 }
-
 
 /**
  * e_data_book_get_backend:
@@ -734,7 +731,6 @@ e_data_book_respond_get_contact_list (EDataBook                              *bo
 
 	g_list_foreach (card_list, (GFunc)g_free, NULL);
 	g_list_free (card_list);
-
 
 	GNOME_Evolution_Addressbook_BookListener_notifyContactListRequested (book->priv->listener,
 									     opid,

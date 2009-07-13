@@ -1,5 +1,4 @@
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -779,7 +778,6 @@ driver_resp_fetch(CamelIMAPPEngine *ie, guint32 id, CamelIMAPPDriver *sdata)
 
 	return camel_imapp_engine_skip(ie);
 }
-
 
 /* This code is for the separate thread per server idea */
 

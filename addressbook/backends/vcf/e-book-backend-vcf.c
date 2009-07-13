@@ -380,7 +380,6 @@ e_book_backend_vcf_get_contact (EBookBackendSync *backend,
 	}
 }
 
-
 typedef struct {
 	EBookBackendVCF      *bvcf;
 	gboolean            search_needed;
@@ -499,7 +498,6 @@ book_view_thread (gpointer data)
 
 	return NULL;
 }
-
 
 static void
 e_book_backend_vcf_start_book_view (EBookBackend  *backend,

@@ -39,12 +39,10 @@ typedef struct _CamelSaslKerberos4 {
 
 } CamelSaslKerberos4;
 
-
 typedef struct _CamelSaslKerberos4Class {
 	CamelSaslClass parent_class;
 
 } CamelSaslKerberos4Class;
-
 
 /* Standard Camel function */
 CamelType camel_sasl_kerberos4_get_type (void);

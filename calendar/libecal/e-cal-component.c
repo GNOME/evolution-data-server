@@ -37,7 +37,6 @@
 /* Extension property for alarm components so that we can reference them by UID */
 #define EVOLUTION_ALARM_UID_PROPERTY "X-EVOLUTION-ALARM-UID"
 
-
 struct attendee {
 	icalproperty *prop;
 	icalparameter *cutype_param;
@@ -617,7 +616,6 @@ scan_period (ECalComponent *comp, GSList **list, icalproperty *prop)
 
 	*list = g_slist_append (*list, period);
 }
-
 
 /* Scans an icalrecurtype property */
 static void
@@ -1533,7 +1531,6 @@ get_attachment_list (GSList *attachment_list, GSList **al)
 	*al = g_slist_reverse (*al);
 }
 
-
 static void
 set_attachment_list (icalcomponent *icalcomp,
 		   GSList **attachment_list,
@@ -1580,7 +1577,6 @@ set_attachment_list (icalcomponent *icalcomp,
 
 	*attachment_list = g_slist_reverse (*attachment_list);
 }
-
 
 /**
  * e_cal_component_get_attachment_list:
@@ -1737,7 +1733,6 @@ e_cal_component_set_categories (ECalComponent *comp, const gchar *categories)
 		icalcomponent_add_property (priv->icalcomp, priv->categories);
 	}
 }
-
 
 /**
  * e_cal_component_get_categories_list:
@@ -2230,7 +2225,6 @@ e_cal_component_set_completed (ECalComponent *comp, struct icaltimetype *t)
 			  t);
 }
 
-
 /**
  * e_cal_component_get_created:
  * @comp: A calendar component object.
@@ -2410,7 +2404,6 @@ set_datetime (ECalComponent *comp, struct datetime *datetime,
 	}
 }
 
-
 /* This tries to get the DTSTART + DURATION for a VEVENT or VTODO. In a
    VEVENT this is used for the DTEND if no DTEND exists, In a VTOTO it is
    used for the DUE date if DUE doesn't exist. */
@@ -2453,7 +2446,6 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp,
 	icaltime_adjust (dt->value, duration.days, duration.hours,
 			 duration.minutes, duration.seconds);
 }
-
 
 /**
  * e_cal_component_get_dtend:
@@ -3382,9 +3374,7 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
 		priv->organizer.language_param = NULL;
 	}
 
-
 }
-
 
 /**
  * e_cal_component_has_organizer:
@@ -3463,7 +3453,6 @@ e_cal_component_set_percent_as_int (ECalComponent *comp, gint percent)
 		priv->percent = icalproperty_new_percentcomplete (percent);
 		icalcomponent_add_property (priv->icalcomp, priv->percent);
 	}
-
 
 }
 
@@ -4392,7 +4381,6 @@ e_cal_component_set_transparency (ECalComponent *comp, ECalComponentTransparency
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-
 	if (transp == E_CAL_COMPONENT_TRANSP_NONE) {
 		if (priv->transparency) {
 			icalcomponent_remove_property (priv->icalcomp, priv->transparency);
@@ -4541,7 +4529,6 @@ get_attendee_list (GSList *attendee_list, GSList **al)
 
 	*al = g_slist_reverse (*al);
 }
-
 
 /* Sets a text list value */
 static void
@@ -5150,7 +5137,6 @@ e_cal_component_remove_all_alarms (ECalComponent *comp)
 
 	g_hash_table_foreach_remove (priv->alarm_uid_hash, for_each_remove_all_alarms, comp);
 }
-
 
 /* Scans an icalproperty from a calendar component and adds its mapping to our
  * own alarm structure.
@@ -5955,7 +5941,6 @@ e_cal_component_alarm_has_attendees (ECalComponentAlarm *alarm)
 	return FALSE;
 }
 
-
 /**
  * e_cal_component_alarm_get_icalcomponent
  * @alarm: An alarm.
@@ -5985,7 +5970,6 @@ e_cal_component_strings_match	(const gchar	*string1,
 
 	return FALSE;
 }
-
 
 /**
  * e_cal_component_event_dates_match:
@@ -6059,5 +6043,4 @@ e_cal_component_event_dates_match	(ECalComponent *comp1,
 
 	return retval;
 }
-
 

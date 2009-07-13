@@ -30,7 +30,6 @@
 #define E_GW_ITEM_RECURRENCE_FREQUENCY_MONTHLY "Monthly"
 #define E_GW_ITEM_RECURRENCE_FREQUENCY_YEARLY "Yearly"
 
-
 #define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_FIRST  "First"
 #define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_SECOND "Second"
 #define E_GW_ITEM_RECUR_OCCURRENCE_TYPE_THIRD  "Third"
@@ -65,10 +64,7 @@ typedef struct {
 	short by_setpos [E_GW_ITEM_BY_SETPOS_SIZE];
 } EGwItemRecurrenceRule;
 
-
 #define E_GW_ITEM_RECUR_END_MARKER  0x7f7f
-
-
 
 const gchar *e_gw_recur_get_day_of_week (short day);
 

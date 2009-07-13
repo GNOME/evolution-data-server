@@ -29,7 +29,6 @@ static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
 		      gsize *outprespace);
 static void reset (CamelMimeFilter *f);
 
-
 static void
 camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *klass)
 {
@@ -160,7 +159,6 @@ reset (CamelMimeFilter *f)
 	crlf->saw_lf = TRUE;
 	crlf->saw_dot = FALSE;
 }
-
 
 /**
  * camel_mime_filter_crlf_new:

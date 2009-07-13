@@ -166,7 +166,6 @@ get_backend_factory (GHashTable *methods, const gchar *method, icalcomponent_kin
 		return NULL;
 	}
 
-
 	factory = g_hash_table_lookup (kinds, GINT_TO_POINTER (kind));
 
 	return factory;
@@ -346,7 +345,6 @@ impl_CalFactory_getCal (PortableServer_Servant servant,
 	return ret_cal;
 }
 
-
 /**
  * e_data_cal_factory_new:
  * @void:
@@ -465,7 +463,6 @@ e_data_cal_factory_set_backend_mode (EDataCalFactory *factory, gint mode)
 	g_hash_table_foreach (priv->backends, set_backend_online_status, GINT_TO_POINTER (priv->mode));
 	g_mutex_unlock (priv->backends_mutex);
 }
-
 
 /* Object initialization function for the calendar factory */
 static void

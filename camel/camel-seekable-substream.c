@@ -73,7 +73,6 @@ camel_seekable_substream_finalize (CamelObject *object)
 		camel_object_unref (seekable_substream->parent_stream);
 }
 
-
 CamelType
 camel_seekable_substream_get_type (void)
 {

@@ -95,8 +95,6 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *camel_pop3_store_class)
 	camel_store_class->can_refresh_folder = pop3_can_refresh_folder;
 }
 
-
-
 static void
 camel_pop3_store_init (gpointer object, gpointer klass)
 {

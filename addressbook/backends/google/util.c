@@ -546,7 +546,6 @@ get_google_primary_type_label (EVCardAttribute *attr,
     return types;
 }
 
-
 static EVCardAttribute*
 attribute_from_gdata_entry_email_address (GDataEntryEmailAddress *email)
 {

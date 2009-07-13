@@ -534,7 +534,6 @@ e2k_restriction_ref (E2kRestriction *rn)
 	rn->ref_count++;
 }
 
-
 /* SQL export */
 
 static gboolean rn_to_sql (E2kRestriction *rn, GString *sql, E2kRestrictionType inside);
@@ -730,7 +729,6 @@ e2k_restriction_to_sql (E2kRestriction *rn)
 	g_string_free (sql, FALSE);
 	return ret;
 }
-
 
 /* Binary import/export */
 

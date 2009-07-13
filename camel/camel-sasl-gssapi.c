@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -89,12 +88,9 @@ struct _CamelSaslGssapiPrivate {
 	gss_name_t target;
 };
 
-
 static GByteArray *gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex);
 
-
 static CamelSaslClass *parent_class = NULL;
-
 
 static void
 camel_sasl_gssapi_class_init (CamelSaslGssapiClass *klass)
@@ -132,7 +128,6 @@ camel_sasl_gssapi_finalize (CamelObject *object)
 
 	g_free (gssapi->priv);
 }
-
 
 CamelType
 camel_sasl_gssapi_get_type (void)

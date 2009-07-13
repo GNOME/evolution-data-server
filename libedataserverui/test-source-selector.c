@@ -107,7 +107,6 @@ on_idle_create_widget (const gchar *gconf_path)
 	return FALSE;
 }
 
-
 gint
 main (gint argc, gchar **argv)
 {

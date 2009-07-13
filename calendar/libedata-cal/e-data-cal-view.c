@@ -57,7 +57,6 @@ struct _EDataCalViewPrivate {
 	ECalBackendSExp *sexp;
 };
 
-
 
 
 static void e_data_cal_view_class_init (EDataCalViewClass *class);

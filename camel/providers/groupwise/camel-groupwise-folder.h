@@ -24,7 +24,6 @@
  * USA
  */
 
-
 #ifndef CAMEL_GROUPWISE_FOLDER_H
 #define CAMEL_GROUPWISE_FOLDER_H 1
 
@@ -63,7 +62,6 @@ struct _CamelGroupwiseFolder {
 	guint need_refresh:1;
 	guint read_only:1;
 
-
 };
 
 struct _CamelGroupwiseFolderClass {
@@ -72,7 +70,6 @@ struct _CamelGroupwiseFolderClass {
 	/* Virtual methods */
 
 } ;
-
 
 /* Standard Camel function */
 CamelType camel_groupwise_folder_get_type (void);

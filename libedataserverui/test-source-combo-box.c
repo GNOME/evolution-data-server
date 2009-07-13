@@ -37,7 +37,6 @@ source_changed_cb (ESourceComboBox *combo_box)
 	g_print ("source selected: \"%s\"\n", e_source_peek_name (source));
 }
 
-
 static gint
 on_idle_create_widget (const gchar *gconf_path)
 {
@@ -63,7 +62,6 @@ on_idle_create_widget (const gchar *gconf_path)
 
 	return FALSE;
 }
-
 
 gint
 main (gint argc, gchar **argv)
