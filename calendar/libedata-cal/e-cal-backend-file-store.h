@@ -45,11 +45,11 @@ G_BEGIN_DECLS
   (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStoreClass))
 
 typedef struct {
-  ECalBackendStore parent;
+	ECalBackendStore parent;
 } ECalBackendFileStore;
 
 typedef struct {
-  ECalBackendStoreClass parent_class;
+	ECalBackendStoreClass parent_class;
 } ECalBackendFileStoreClass;
 
 GType e_cal_backend_file_store_get_type (void);

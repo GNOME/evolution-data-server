@@ -46,32 +46,32 @@ G_BEGIN_DECLS
   (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_BACKEND_STORE, ECalBackendStoreClass))
 
 typedef struct {
-  GObject parent;
+	GObject parent;
 } ECalBackendStore;
 
 typedef struct {
-  GObjectClass parent_class;
+	GObjectClass parent_class;
 
-  /* virtual methods */
-  gboolean (* load) (ECalBackendStore *store);
+	/* virtual methods */
+	gboolean	(*load) (ECalBackendStore *store);
+
+	ECalComponent *	(*get_component) (ECalBackendStore *store, const gchar *uid, const gchar *rid);
+	gboolean 	(*put_component) (ECalBackendStore *store, ECalComponent *comp);
+	gboolean 	(*remove_component) (ECalBackendStore *store, const gchar *uid, const gchar *rid);
+	GSList *	(*get_components_by_uid) (ECalBackendStore *store, const gchar *uid);
   
-  ECalComponent *(* get_component) (ECalBackendStore *store, const gchar *uid, const gchar *rid);
-  gboolean (* put_component) (ECalBackendStore *store, ECalComponent *comp);
-  gboolean (* remove_component) (ECalBackendStore *store, const gchar *uid, const gchar *rid);
-  GSList *(* get_components_by_uid) (ECalBackendStore *store, const gchar *uid);
-  
-  const icaltimezone *(* get_timezone) (ECalBackendStore *store, const gchar *tzid);
-  gboolean (* put_timezone) (ECalBackendStore *store, const icaltimezone *zone);
-  gboolean (* remove_timezone) (ECalBackendStore *store, const gchar *tzid);
+	const icaltimezone *	(*get_timezone) (ECalBackendStore *store, const gchar *tzid);
+	gboolean	(*put_timezone) (ECalBackendStore *store, const icaltimezone *zone);
+	gboolean	(*remove_timezone) (ECalBackendStore *store, const gchar *tzid);
 
-  const icaltimezone *(* get_default_timezone) (ECalBackendStore *store);
-  gboolean (* set_default_timezone) (ECalBackendStore *store, const icaltimezone *zone);
+	const icaltimezone *	(*get_default_timezone) (ECalBackendStore *store);
+	gboolean	(*set_default_timezone) (ECalBackendStore *store, const icaltimezone *zone);
 
-  void (* thaw_changes) (ECalBackendStore *store);
-  void (* freeze_changes) (ECalBackendStore *store);
+	void	(*thaw_changes) (ECalBackendStore *store);
+	void	(*freeze_changes) (ECalBackendStore *store);
 
-  const gchar *(* get_key) (ECalBackendStore *store, const gchar *key);
-  gboolean (* put_key) (ECalBackendStore *store, const gchar *key, const gchar *value);
+	const gchar *(*get_key) (ECalBackendStore *store, const gchar *key);
+	gboolean (*put_key) (ECalBackendStore *store, const gchar *key, const gchar *value);
 
 } ECalBackendStoreClass;
 
@@ -79,21 +79,21 @@ GType e_cal_backend_store_get_type (void);
 
 const char *e_cal_backend_store_get_path (ECalBackendStore *store);
 
-gboolean e_cal_backend_store_load (ECalBackendStore *store);
-ECalComponent *e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid);
-gboolean e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp);
-gboolean e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid);
-const icaltimezone *e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid);
-gboolean e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *zone);
-gboolean e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid);
-const icaltimezone *e_cal_backend_store_get_default_timezone (ECalBackendStore *store);
-gboolean e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone);
-GSList *e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid);
-GSList *e_cal_backend_store_get_objects_list (ECalBackendStore *store, const gchar *sexp);
-const gchar *e_cal_backend_store_get_key (ECalBackendStore *store, const gchar *key);
-gboolean e_cal_backend_store_put_key (ECalBackendStore *store, const gchar *key, const gchar *value);
-void	e_cal_backend_store_thaw_changes (ECalBackendStore *store);
-void	e_cal_backend_store_freeze_changes (ECalBackendStore *store);
+gboolean		e_cal_backend_store_load (ECalBackendStore *store);
+ECalComponent *		e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid);
+gboolean 		e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp);
+gboolean 		e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid);
+const icaltimezone *	e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid);
+gboolean 		e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *zone);
+gboolean 		e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid);
+const icaltimezone *	e_cal_backend_store_get_default_timezone (ECalBackendStore *store);
+gboolean 		e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone);
+GSList *		e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid);
+GSList *		e_cal_backend_store_get_objects_list (ECalBackendStore *store, const gchar *sexp);
+const gchar *		e_cal_backend_store_get_key (ECalBackendStore *store, const gchar *key);
+gboolean 		e_cal_backend_store_put_key (ECalBackendStore *store, const gchar *key, const gchar *value);
+void			e_cal_backend_store_thaw_changes (ECalBackendStore *store);
+void			e_cal_backend_store_freeze_changes (ECalBackendStore *store);
 
 
 G_END_DECLS
