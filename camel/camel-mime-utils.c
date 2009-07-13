@@ -4423,20 +4423,25 @@ camel_header_msgid_generate (void)
 	gchar *msgid;
 	gint retval;
 	struct addrinfo *ai = NULL, hints = { 0 };
+	static char *cached_hostname = NULL;
 
-	retval = gethostname (host, sizeof (host));
-	if (retval == 0 && *host) {
-		hints.ai_flags = AI_CANONNAME;
-		ai = camel_getaddrinfo(host, NULL, &hints, NULL);
-		if (ai && ai->ai_canonname)
-			name = ai->ai_canonname;
-		else
-			name = host;
-	} else
-		name = "localhost.localdomain";
+	if (!cached_hostname) {
+		retval = gethostname (host, sizeof (host));
+		if (retval == 0 && *host) {
+			hints.ai_flags = AI_CANONNAME;
+			ai = camel_getaddrinfo(host, NULL, &hints, NULL);
+			if (ai && ai->ai_canonname)
+				name = ai->ai_canonname;
+			else
+				name = host;
+		} else
+			name = "localhost.localdomain";
+
+		cached_hostname = g_strdup (name);
+	}
 
 	COUNT_LOCK ();
-	msgid = g_strdup_printf ("%d.%d.%d.camel@%s", (gint) time (NULL), getpid (), count++, name);
+	msgid = g_strdup_printf ("%d.%d.%d.camel@%s", (gint) time (NULL), getpid (), count++, cached_hostname);
 	COUNT_UNLOCK ();
 
 	if (ai)
