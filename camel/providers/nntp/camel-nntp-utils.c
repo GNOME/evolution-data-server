@@ -266,14 +266,22 @@ camel_nntp_get_headers (CamelStore *store,
 
 	i = camel_folder_summary_count(folder->summary);
 	if(i != 0) {
+		GSList *del = NULL;
 		last_summary = uid_num(folder->summary, i-1);
 
 		if(last_summary < first_message)
 			camel_folder_summary_clear(folder->summary);
 		else {
-			while(uid_num(folder->summary, 0) < first_message)
-				camel_folder_summary_remove_index(folder->summary, 0);
+			while(uid_num(folder->summary, 0) < first_message) {
+				char *uid = camel_folder_summary_uid_from_index (folder->summary, 0);
+				del = g_slist_prepend (del, uid);
+				camel_folder_summary_remove_index_fast (s, 0);
+			}
 
+			camel_db_delete_uids (folder->parent_store->cdb_w, folder->full_name, del, ex);
+			g_slist_foreach (del, (GFunc) g_free, NULL);
+			g_slist_free (del);
+			
 			if(last_summary >= last_message)
 				return;
 

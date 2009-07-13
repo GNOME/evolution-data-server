@@ -264,8 +264,10 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 	gint ret;
 	guint n, count, total, size;
 	struct _xover_header *xover;
+	GHashTable *summary_table;
 
 	s = (CamelFolderSummary *)cns;
+	summary_table = camel_folder_summary_get_hashtable(s);
 
 	camel_operation_start(NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
 
@@ -322,7 +324,7 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 
 		/* truncated line? ignore? */
 		if (xover == NULL) {
-			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
+			if (!GPOINTER_TO_INT(g_hash_table_lookup (summary_table, cns->priv->uid))) {
 				mi = (CamelMessageInfoBase *)camel_folder_summary_add_from_header(s, headers);
 				if (mi) {
 					mi->size = size;
@@ -342,6 +344,8 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 
 	camel_operation_end(NULL);
 
+	camel_folder_summary_free_hashtable(summary_table);
+
 	return ret;
 }
 
@@ -355,8 +359,11 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint l
 	guint i, n, count, total;
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
+	GHashTable *summary_table;
 
 	s = (CamelFolderSummary *)cns;
+
+	summary_table = camel_folder_summary_get_hashtable(s);
 
 	mp = camel_mime_parser_new();
 
@@ -386,7 +393,7 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint l
 		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))){
 			line[1] = 0;
 			cns->priv->uid = g_strdup_printf("%u,%s\n", n, msgid);
-			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
+			if (!GPOINTER_TO_INT(g_hash_table_lookup (summary_table, cns->priv->uid))) {
 				if (camel_mime_parser_init_with_stream(mp, (CamelStream *)store->stream) == -1)
 					goto error;
 				mi = camel_folder_summary_add_from_parser(s, mp);
@@ -423,6 +430,8 @@ ioerror:
 	camel_object_unref((CamelObject *)mp);
 
 	camel_operation_end(NULL);
+
+	camel_folder_summary_free_hashtable(summary_table);
 
 	return ret;
 }
@@ -495,6 +504,10 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *li
 		cns->low = f;
 	}
 
+	camel_db_delete_uids (s->folder->parent_store->cdb_w, s->folder->full_name, del, ex);
+	g_slist_foreach (del, (GFunc) g_free, NULL);
+	g_slist_free (del);
+
 	if (cns->high < l) {
 		if (cns->high < f)
 			cns->high = f-1;
@@ -505,10 +518,6 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *li
 			ret = add_range_head(cns, store, l, cns->high+1, changes, ex);
 		}
 	}
-
-	camel_db_delete_uids (s->folder->parent_store->cdb_w, s->folder->full_name, del, ex);
-	g_slist_foreach (del, (GFunc) g_free, NULL);
-	g_slist_free (del);
 
 	/* TODO: not from here */
 	camel_folder_summary_touch(s);
