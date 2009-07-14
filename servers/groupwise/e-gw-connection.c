@@ -207,7 +207,7 @@ e_gw_connection_parse_response_status (SoupSoapResponse *response)
 	case 59923: return E_GW_CONNECTION_STATUS_REDIRECT;
 	case 53530: return E_GW_CONNECTION_STATUS_OTHER;
 	/* FIXME: 58652 should be changed with an enum.*/
-	case 58652: return 58652;
+	case 58652: return E_GW_CONNECTION_STATUS_OVER_QUOTA;
 	case 59922: return 59922; /*Very big attachment, get in chunks*/
 		/* FIXME: map all error codes */
 	}

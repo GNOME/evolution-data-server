@@ -2054,6 +2054,8 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 
 			if (status == E_GW_CONNECTION_STATUS_UNKNOWN_USER)
 				return GNOME_Evolution_Calendar_UnknownUser;
+			else if (status == E_GW_CONNECTION_STATUS_OVER_QUOTA)
+				return GNOME_Evolution_Calendar_PermissionDenied;
 			else
 				return GNOME_Evolution_Calendar_OtherError;
 		}
@@ -2068,7 +2070,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 		/* Get the item back from server to update the last-modified time */
 		status = update_from_server (cbgw, uid_list, calobj, comp);
 		if (status != E_GW_CONNECTION_STATUS_OK)
-			return GNOME_Evolution_Calendar_OtherError;
+			return GNOME_Evolution_Calendar_OtherError; 
 
 		break;
 	default :
@@ -2209,6 +2211,10 @@ e_cal_backend_groupwise_modify_object (ECalBackendSync *backend, EDataCal *cal, 
 					g_object_unref (comp);
 					g_object_unref (cache_comp);
 					g_free (rid);
+
+					if (status == E_GW_CONNECTION_STATUS_OVER_QUOTA)
+						return GNOME_Evolution_Calendar_PermissionDenied;
+
 					return GNOME_Evolution_Calendar_OtherError;
 				}
 				e_cal_backend_cache_put_component (priv->cache, comp);
@@ -2627,10 +2633,12 @@ receive_object (ECalBackendGroupwise *cbgw, EDataCal *cal, icalcomponent *icalco
 
 	}
 
+	g_object_unref (comp);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_OBJECT) {
-		g_object_unref (comp);
 		return  GNOME_Evolution_Calendar_InvalidObject;
-	}
+	} else if (status == E_GW_CONNECTION_STATUS_OVER_QUOTA)
+		return GNOME_Evolution_Calendar_PermissionDenied;
+
 	return GNOME_Evolution_Calendar_OtherError;
 }
 
