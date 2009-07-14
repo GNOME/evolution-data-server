@@ -210,6 +210,19 @@ e_cal_backend_store_init (ECalBackendStore *store)
 	priv->source_type = E_CAL_SOURCE_TYPE_EVENT;
 }
 
+const char *
+e_cal_backend_store_get_path (ECalBackendStore *store)
+{
+	ECalBackendStorePrivate *priv;
+
+	g_return_val_if_fail (store != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
+
+	priv = GET_PRIVATE(store);
+	
+	return priv->path;
+}
+
 gboolean
 e_cal_backend_store_load (ECalBackendStore *store)
 {
