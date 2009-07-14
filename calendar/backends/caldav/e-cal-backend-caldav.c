@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <gconf/gconf-client.h>
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-xml-hash-utils.h"
 #include "libedataserver/e-proxy.h"
@@ -51,6 +52,7 @@
 
 #define CALDAV_CTAG_KEY "CALDAV_CTAG"
 #define CALDAV_MAX_MULTIGET_AMOUNT 100 /* what's the maximum count of items to fetch within a multiget request */
+#define LOCAL_PREFIX "file://"
 
 /* in seconds */
 #define DEFAULT_REFRESH_TIME 60
@@ -71,6 +73,9 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* The local disk cache */
 	ECalBackendCache *cache;
+
+	/* local attachments store */
+	gchar *local_attachments_store;
 
 	/* should we sync for offline mode? */
 	gboolean do_offline;
@@ -133,6 +138,10 @@ struct _ECalBackendCalDAVPrivate {
 #define DEBUG_MESSAGE_HEADER "message:header"
 #define DEBUG_MESSAGE_BODY "message:body"
 #define DEBUG_SERVER_ITEMS "items"
+
+static void convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp);
+static void convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp);
+static void remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid);
 
 static gboolean caldav_debug_all = FALSE;
 static GHashTable *caldav_debug_table = NULL;
@@ -263,6 +272,7 @@ static gboolean put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *ical
 /* ************************************************************************* */
 /* Misc. utility functions */
 #define X_E_CALDAV "X-EVOLUTION-CALDAV-"
+#define X_E_CALDAV_ATTACHMENT_NAME X_E_CALDAV "ATTACHMENT-NAME"
 
 static void
 icomp_x_prop_set (icalcomponent *comp, const gchar *key, const gchar *value)
@@ -1606,6 +1616,7 @@ remove_complist_from_cache_and_notify_cb (gpointer key, gpointer value, gpointer
 
 		e_cal_component_free_id (id);
 	}
+	remove_cached_attachment (cbdav, (const char *)key);
 
 	return FALSE;
 }
@@ -1826,6 +1837,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 							     subcomp = icalcomponent_get_next_component (icomp, kind)) {
 								ECalComponent *new_comp, *old_comp;
 
+								convert_to_url_attachment (cbdav, subcomp);
 								new_comp = e_cal_component_new ();
 								if (e_cal_component_set_icalcomponent (new_comp, icalcomponent_new_clone (subcomp))) {
 									const gchar *uid = NULL;
@@ -2076,11 +2088,15 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 {
 	ECalBackendSyncStatus     result;
 	ECalBackendCalDAVPrivate *priv;
+	ECalSourceType            source_type;
 	ESource                  *source;
 	const gchar		 *os_val;
 	const gchar               *uri;
 	gsize                     len;
-	const gchar               *refresh;
+	const gchar              *refresh;
+	const gchar              *stype;
+	gchar                    *filename;
+	gchar                    *mangled_uri;
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
@@ -2157,29 +2173,44 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 		g_free (tmp);
 	}
 
+	switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
+		default:
+		case ICAL_VEVENT_COMPONENT:
+			source_type = E_CAL_SOURCE_TYPE_EVENT;
+			stype = "calendar";
+			break;
+		case ICAL_VTODO_COMPONENT:
+			source_type = E_CAL_SOURCE_TYPE_TODO;
+			stype = "tasks";
+			break;
+		case ICAL_VJOURNAL_COMPONENT:
+			source_type = E_CAL_SOURCE_TYPE_JOURNAL;
+			stype = "journal";
+			break;
+	}
+
 	if (priv->cache == NULL) {
-		ECalSourceType source_type;
-
-		switch (e_cal_backend_get_kind (E_CAL_BACKEND (cbdav))) {
-			default:
-			case ICAL_VEVENT_COMPONENT:
-				source_type = E_CAL_SOURCE_TYPE_EVENT;
-				break;
-			case ICAL_VTODO_COMPONENT:
-				source_type = E_CAL_SOURCE_TYPE_TODO;
-				break;
-			case ICAL_VJOURNAL_COMPONENT:
-				source_type = E_CAL_SOURCE_TYPE_JOURNAL;
-				break;
-		}
-
 		priv->cache = e_cal_backend_cache_new (priv->uri, source_type);
 
 		if (priv->cache == NULL) {
 			result = GNOME_Evolution_Calendar_OtherError;
 			goto out;
 		}
+	}
 
+	/* Set the local attachment store */
+	mangled_uri = g_strdup (uri);
+	mangled_uri = g_strdelimit (mangled_uri, ":/", '_');
+	filename = g_build_filename (g_get_home_dir (),
+			".evolution", "cache", stype,
+			mangled_uri, NULL);
+	g_free (mangled_uri);
+	if (priv->local_attachments_store)
+		g_free (priv->local_attachments_store);
+	priv->local_attachments_store = filename;
+	if (g_mkdir_with_parents (filename, 0700) < 0) {
+		result = GNOME_Evolution_Calendar_OtherError;
+		goto out;
 	}
 
 	refresh = e_source_get_property (source, "refresh");
@@ -2564,6 +2595,229 @@ strip_x_evolution_caldav (icalcomponent *icomp)
 	g_slist_free (to_remove);
 }
 
+static void
+convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
+{
+	ECalBackendCalDAVPrivate *priv;
+	icalcomponent *cclone;
+	icalproperty *p;
+	GSList *to_remove = NULL;
+
+	g_return_if_fail (icalcomp != NULL);
+
+	cclone = icalcomponent_new_clone (icalcomp);
+
+	/* Remove local url attachments first */
+	for (p = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	     p;
+	     p = icalcomponent_get_next_property (icalcomp, ICAL_ATTACH_PROPERTY)) {
+		icalattach *attach;
+
+		attach = icalproperty_get_attach ((const icalproperty *)p);
+		if (icalattach_get_is_url (attach)) {
+			const gchar *url;
+
+			url = icalattach_get_url (attach);
+			if (g_str_has_prefix (url, LOCAL_PREFIX))
+				to_remove = g_slist_prepend (to_remove, p);
+		}
+	}
+	g_slist_foreach (to_remove, remove_property, icalcomp);
+	g_slist_free (to_remove);
+
+	/* convert local url attachments to inline attachments now */
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	for (p = icalcomponent_get_first_property (cclone, ICAL_ATTACH_PROPERTY);
+	     p;
+	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY)) {
+		icalattach *attach;
+		GFile *file;
+		GError *error = NULL;
+		const gchar *uri;
+		gchar *basename;
+		gchar *content;
+		gsize len;
+
+		attach = icalproperty_get_attach ((const icalproperty *)p);
+		if (!icalattach_get_is_url (attach))
+			continue;
+
+		uri = icalattach_get_url (attach);
+		if (!g_str_has_prefix (uri, LOCAL_PREFIX))
+			continue;
+
+		file = g_file_new_for_uri (uri);
+		basename = g_file_get_basename (file);
+		if (g_file_load_contents (file, NULL, &content, &len, NULL, &error) == TRUE) {
+			icalproperty *prop;
+			icalparameter *param;
+			gchar *encoded;
+
+			/*
+			 * do a base64 encoding so it can
+			 * be embedded in a soap message
+			 */
+			encoded = g_base64_encode ((guchar *) content, len);
+			attach = icalattach_new_from_data ((guchar *) encoded, 0, 0);
+			g_free(content);
+			g_free(encoded);
+
+			prop = icalproperty_new_attach (attach);
+			icalattach_unref (attach);
+
+			param = icalparameter_new_value (ICAL_VALUE_BINARY);
+			icalproperty_add_parameter (prop, param);
+
+			param = icalparameter_new_encoding (ICAL_ENCODING_BASE64);
+			icalproperty_add_parameter (prop, param);
+
+			param = icalparameter_new_x (basename);
+			icalparameter_set_xname (param, X_E_CALDAV_ATTACHMENT_NAME);
+			icalproperty_add_parameter (prop, param);
+
+			icalcomponent_add_property (icalcomp, prop);
+		} else {
+			g_warning ("%s\n", error->message);
+			g_clear_error (&error);
+		}
+		g_free (basename);
+		g_object_unref (file);
+	}
+	icalcomponent_free (cclone);
+}
+
+static void
+convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
+{
+	ECalBackendCalDAVPrivate *priv;
+	GSList *to_remove = NULL;
+	icalcomponent *cclone;
+	icalproperty *p;
+
+	g_return_if_fail (cbdav != NULL);
+	g_return_if_fail (icalcomp != NULL);
+
+	cclone = icalcomponent_new_clone (icalcomp);
+
+	/* Remove all inline attachments first */
+	for (p = icalcomponent_get_first_property (icalcomp, ICAL_ATTACH_PROPERTY);
+	     p;
+	     p = icalcomponent_get_next_property (icalcomp, ICAL_ATTACH_PROPERTY)) {
+		icalattach *attach;
+
+		attach = icalproperty_get_attach ((const icalproperty *)p);
+		if (!icalattach_get_is_url (attach))
+			to_remove = g_slist_prepend (to_remove, p);
+	}
+	g_slist_foreach (to_remove, remove_property, icalcomp);
+	g_slist_free (to_remove);
+
+	/* convert inline attachments to url attachments now */
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	for (p = icalcomponent_get_first_property (cclone, ICAL_ATTACH_PROPERTY);
+	     p;
+	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY)) {
+		icalattach *attach;
+		gchar *dir;
+
+		attach = icalproperty_get_attach ((const icalproperty *)p);
+		if (icalattach_get_is_url (attach))
+			continue;
+
+		dir = g_build_filename (priv->local_attachments_store,
+				icalcomponent_get_uid (icalcomp),
+				NULL);
+		if (g_mkdir_with_parents (dir, 0700) >= 0) {
+			GError *error = NULL;
+			gchar *basename;
+			gchar *dest;
+			gchar *content;
+			gsize len;
+			gchar *decoded;
+
+			basename = icalproperty_get_parameter_as_string_r (p,
+					X_E_CALDAV_ATTACHMENT_NAME);
+			dest = g_build_filename (dir, basename, NULL);
+			g_free (basename);
+
+			content = (gchar *)icalattach_get_data (attach);
+			decoded = (gchar *)g_base64_decode (content, &len);
+			if (g_file_set_contents (dest, decoded, len, &error) == TRUE) {
+				icalproperty *prop;
+				gchar *url;
+
+				url = g_filename_to_uri (dest, NULL, NULL);
+				attach = icalattach_new_from_url (url);
+				prop = icalproperty_new_attach (attach);
+				icalattach_unref (attach);
+				icalcomponent_add_property (icalcomp, prop);
+				g_free (url);
+			} else {
+				g_warning ("%s\n", error->message);
+				g_clear_error (&error);
+			}
+			g_free (decoded);
+			g_free (dest);
+		}
+		g_free (dir);
+	}
+	icalcomponent_free (cclone);
+}
+
+static void
+remove_dir (const char *dir)
+{
+	GDir *d;
+
+	/*
+	 * remove all files in the direcory first
+	 * and call rmdir to remove the empty directory
+	 * because ZFS does not support unlinking a directory.
+	 */
+	d = g_dir_open (dir, 0, NULL);
+	if (d) {
+		const gchar *entry;
+
+		while ((entry = g_dir_read_name (d)) != NULL) {
+			gchar *path;
+			int ret;
+
+			path = g_build_filename (dir, entry, NULL);
+			if (g_file_test (path, G_FILE_TEST_IS_DIR))
+				remove_dir (path);
+			else
+				ret = g_unlink (path);
+			g_free (path);
+		}
+		g_dir_close (d);
+	}
+	g_rmdir (dir);
+}
+
+static void
+remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
+{
+	ECalBackendCalDAVPrivate *priv;
+	GSList *l;
+	guint len;
+	gchar *dir;
+
+	g_return_if_fail (cbdav != NULL);
+	g_return_if_fail (uid != NULL);
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+	l = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
+	len = g_slist_length (l);
+	g_slist_free (l);
+	if (len > 0)
+		return;
+
+	dir = g_build_filename (priv->local_attachments_store,
+			uid, NULL);
+	remove_dir (dir);
+	g_free (dir);
+}
+
 /* callback for icalcomponent_foreach_tzid */
 typedef struct {
 	ECalBackendCache *cache;
@@ -2642,6 +2896,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 
 		cclone = icalcomponent_new_clone (icomp);
 		strip_x_evolution_caldav (cclone);
+		convert_to_inline_attachment (cbdav, cclone);
 		icalcomponent_add_component (calcomp, cclone);
 		add_timezones_from_component (cbdav, calcomp, cclone);
 	} else {
@@ -2653,6 +2908,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 		     subcomp;
 		     subcomp = icalcomponent_get_next_component (calcomp, my_kind)) {
 			strip_x_evolution_caldav (subcomp);
+			convert_to_inline_attachment (cbdav, subcomp);
 			add_timezones_from_component (cbdav, calcomp, subcomp);
 		}
 	}
@@ -3201,6 +3457,7 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 		else
 			ecalcomp_set_synch_state (cache_comp_master, ECALCOMP_LOCALLY_DELETED);*/
 	}
+	remove_cached_attachment (cbdav, uid);
 
 	icalcomponent_free (cache_comp);
 	g_free (href);
@@ -4176,6 +4433,11 @@ e_cal_backend_caldav_dispose (GObject *object)
 	g_free (priv->password);
 	g_free (priv->uri);
 	g_free (priv->schedule_outbox_url);
+
+	if (priv->local_attachments_store) {
+		g_free (priv->local_attachments_store);
+		priv->local_attachments_store = NULL;
+	}
 
 	if (priv->cache != NULL) {
 		g_object_unref (priv->cache);
