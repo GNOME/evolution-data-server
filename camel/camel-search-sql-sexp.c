@@ -151,7 +151,7 @@ func_not(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	if (r1->type == ESEXP_RES_STRING) {
 		r = e_sexp_result_new(f, ESEXP_RES_STRING);
 		/* HACK: Fix and handle completed-on better. */
-		if (strcmp(r1->value.string, "( (usertags LIKE '%completed-on 0%' AND usertags LIKE '%completed-on%') )") == 0)
+		if (g_strcmp0 (r1->value.string, "( (usertags LIKE '%completed-on 0%' AND usertags LIKE '%completed-on%') )") == 0)
 			r->value.string = g_strdup ("( (not (usertags LIKE '%completed-on 0%')) AND usertags LIKE '%completed-on%' )");
 		else
 			r->value.string = g_strdup_printf ("(NOT (%s))",
@@ -440,9 +440,9 @@ user_tag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
 	/* Hacks no otherway to fix these really :( */
-	if (strcmp(argv[0]->value.string, "completed-on") == 0)
+	if (g_strcmp0 (argv[0]->value.string, "completed-on") == 0)
 		r->value.string = g_strdup_printf("(usertags LIKE '%ccompleted-on 0%c' AND usertags LIKE '%ccompleted-on%c')", '%', '%', '%', '%');
-	else if (strcmp(argv[0]->value.string, "follow-up") == 0)
+	else if (g_strcmp0 (argv[0]->value.string, "follow-up") == 0)
 		r->value.string = g_strdup_printf("usertags NOT LIKE '%cfollow-up%c'", '%', '%');
 	else
 		r->value.string = g_strdup("usertags");
