@@ -2189,11 +2189,11 @@ modify_contact_rename_handler (LDAPOp *op, LDAPMessage *res)
 
 				if (mod->mod_op & LDAP_MOD_BVALUES) {
 					gint j;
-					for (j = 0; mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
+					for (j = 0; mod->mod_bvalues && mod->mod_bvalues[j] && mod->mod_bvalues[j]->bv_val; j++)
 						printf ("\t\t'%s'\n", mod->mod_bvalues[j]->bv_val);
 				} else {
 					gint j;
-					for (j = 0; mod->mod_values[j]; j++)
+					for (j = 0; mod->mod_values && mod->mod_values[j]; j++)
 						printf ("\t\t'%s'\n", mod->mod_values[j]);
 				}
 			}
