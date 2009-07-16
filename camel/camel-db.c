@@ -270,6 +270,13 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pF
 
 	cFile = (CamelSqlite3File *)pFile;
 	cFile->old_vfs_file = g_malloc0 (old_vfs->szOsFile);
+
+	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);
+	if (res != SQLITE_OK) {
+		g_free (cFile->old_vfs_file);
+		return res;
+	}
+
 	cFile->queue = g_async_queue_new ();
 
 	/* Spawn a joinable thread to listen for sync requests. */
@@ -279,11 +286,6 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pF
 		g_warning ("%s", error->message);
 		g_error_free (error);
 	}
-
-	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);
-
-	if (res != SQLITE_OK)
-		return res;
 
 	g_static_rec_mutex_lock (&only_once_lock);
 
