@@ -205,6 +205,55 @@ e_cal_backend_loader_factory_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-cal-backend-store</FILE>
+<TITLE>ECalBackendStore</TITLE>
+ECalBackendStore
+e_cal_backend_store_get_path
+e_cal_backend_store_load
+e_cal_backend_store_get_component
+e_cal_backend_store_put_component
+e_cal_backend_store_remove_component
+e_cal_backend_store_get_timezone
+e_cal_backend_store_put_timezone
+e_cal_backend_store_remove_timezone
+e_cal_backend_store_get_default_timezone
+e_cal_backend_store_set_default_timezone
+e_cal_backend_store_get_components_by_uid
+e_cal_backend_store_get_objects_list
+e_cal_backend_store_get_key
+e_cal_backend_store_put_key
+e_cal_backend_store_thaw_changes
+e_cal_backend_store_freeze_changes
+<SUBSECTION Standard>
+E_CAL_BACKEND_STORE
+E_IS_CAL_BACKEND_STORE
+E_TYPE_CAL_BACKEND_STORE
+E_CAL_BACKEND_STORE_CLASS
+E_IS_CAL_BACKEND_STORE_CLASS
+E_CAL_BACKEND_STORE_GET_CLASS
+ECalBackendStoreClass
+<SUBSECTION Private>
+e_cal_backend_store_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-cal-backend-file-store</FILE>
+<TITLE>ECalBackendFileStore</TITLE>
+ECalBackendFileStore
+e_cal_backend_file_store_new
+<SUBSECTION Standard>
+E_CAL_BACKEND_FILE_STORE
+E_IS_CAL_BACKEND_FILE_STORE
+E_TYPE_CAL_BACKEND_FILE_STORE
+E_CAL_BACKEND_FILE_STORE_CLASS
+E_IS_CAL_BACKEND_FILE_STORE_CLASS
+E_CAL_BACKEND_FILE_STORE_GET_CLASS
+ECalBackendFileStoreClass
+<SUBSECTION Private>
+e_cal_backend_file_store_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-data-cal-factory</FILE>
 <TITLE>EDataCalFactory</TITLE>
 EDataCalFactory
@@ -314,6 +363,8 @@ e_data_cal_view_notify_objects_removed_1
 e_data_cal_view_notify_progress
 e_data_cal_view_notify_done
 <SUBSECTION Standard>
+E_DATA_CAL_VIEW
+E_IS_DATA_CAL_VIEW
 E_DATA_CAL_VIEW_TYPE
 E_DATA_CAL_VIEW_CLASS
 IS_E_DATA_CAL_VIEW_CLASS

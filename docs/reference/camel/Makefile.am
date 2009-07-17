@@ -52,15 +52,16 @@ CFILE_GLOB=$(top_srcdir)/camel/*.c
 IGNORE_HFILES = 			\
 	broken-date-parser.h		\
 	camel-charset-map-private.h	\
-	camel-private.h			\
-	camel-search-private.h		\
-	camel-types.h			\
 	camel-groupwise-private.h	\
 	camel-imap-private.h		\
 	camel-imap-types.h		\
 	camel-local-private.h		\
+	camel-net-utils-win32.h		\
 	camel-nntp-private.h		\
-	camel-nntp-types.h
+	camel-nntp-types.h		\
+	camel-private.h			\
+	camel-search-private.h		\
+	camel-types.h
 
 # Extra options to supply to gtkdoc-fixref
 FIXXREF_OPTIONS = 
