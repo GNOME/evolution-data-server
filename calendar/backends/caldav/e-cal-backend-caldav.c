@@ -129,6 +129,12 @@ struct _ECalBackendCalDAVPrivate {
 	/* with 'calendar-schedule' supported, here's an outbox url
 	   for queries of free/busy information */
 	gchar *schedule_outbox_url;
+
+	/* "Temporary hack" to indicate it's talking to a google calendar.
+	   The proper solution should be to subclass whole backend and change only
+	   necessary parts in it, but this will give us more freedom, as also direct
+	   caldav calendars can profit from this. */
+	gboolean is_google;
 };
 
 /* ************************************************************************* */
@@ -2020,6 +2026,18 @@ caldav_synch_slave_loop (gpointer data)
 	return NULL;
 }
 
+static gchar *
+get_users_email (const gchar *username, const gchar *may_append)
+{
+	if (!username || !*username)
+		return NULL;
+
+	if (strchr (username, '@'))
+		return g_strdup (username);
+
+	return g_strconcat (username, may_append, NULL);
+}
+
 /* ************************************************************************* */
 /* ********** ECalBackendSync virtual function implementation *************  */
 
@@ -2049,7 +2067,38 @@ caldav_get_cal_address (ECalBackendSync  *backend,
 			EDataCal         *cal,
 			gchar            **address)
 {
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+
 	*address = NULL;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	if (priv && priv->is_google && priv->username) {
+		*address = get_users_email (priv->username, "@gmail.com");
+	}
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static ECalBackendSyncStatus
+caldav_get_alarm_email_address (ECalBackendSync  *backend,
+				EDataCal         *cal,
+				gchar            **address)
+{
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+
+	*address = NULL;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	if (priv && priv->is_google && priv->username) {
+		*address = get_users_email (priv->username, "@gmail.com");
+	}
+
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -2063,22 +2112,23 @@ caldav_get_ldap_attribute (ECalBackendSync  *backend,
 }
 
 static ECalBackendSyncStatus
-caldav_get_alarm_email_address (ECalBackendSync  *backend,
-				EDataCal         *cal,
-				gchar            **address)
-{
-	*address = NULL;
-	return GNOME_Evolution_Calendar_Success;
-}
-
-static ECalBackendSyncStatus
 caldav_get_static_capabilities (ECalBackendSync  *backend,
 				EDataCal         *cal,
 				gchar            **capabilities)
 {
-	*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
-				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	if (priv && priv->is_google)
+		*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
+	else
+		*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
+					  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
+					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -2250,6 +2300,24 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
 }
 
+static gboolean
+is_google_uri (const gchar *uri)
+{
+	SoupURI *suri;
+	gboolean res;
+
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	suri = soup_uri_new (uri);
+	g_return_val_if_fail (suri != NULL, FALSE);
+
+	res = suri->host && g_ascii_strcasecmp (suri->host, "www.google.com") == 0;
+
+	soup_uri_free (suri);
+
+	return res;
+}
+
 static ECalBackendSyncStatus
 caldav_do_open (ECalBackendSync *backend,
 		EDataCal        *cal,
@@ -2298,6 +2366,7 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	priv->loaded = TRUE;
+	priv->is_google = FALSE;
 
 	if (priv->mode == CAL_MODE_REMOTE) {
 		/* set forward proxy */
@@ -2308,6 +2377,8 @@ caldav_do_open (ECalBackendSync *backend,
 		if (status == GNOME_Evolution_Calendar_Success) {
 			priv->slave_cmd = SLAVE_SHOULD_WORK;
 			g_cond_signal (priv->cond);
+
+			priv->is_google = is_google_uri (priv->uri);
 		}
 	} else {
 		priv->read_only = TRUE;
@@ -4498,6 +4569,8 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv->ctag_to_store = NULL;
 
 	priv->schedule_outbox_url = NULL;
+
+	priv->is_google = FALSE;
 
 	priv->busy_lock = g_mutex_new ();
 	g_static_rec_mutex_init (&priv->cache_lock);

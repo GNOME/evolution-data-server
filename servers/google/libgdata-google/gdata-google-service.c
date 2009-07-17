@@ -179,8 +179,10 @@ gdata_google_service_get_feed (GDataService *service, const gchar *feed_url, GEr
 	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE( GDATA_GOOGLE_SERVICE(service) );
 	auth = (GDataGoogleServiceAuth *)priv->auth;
 	soup_session = (SoupSession *)priv->soup_session;
-	msg = NULL;
+
 	msg = soup_message_new(SOUP_METHOD_GET, feed_url);
+	if (!msg)
+		return NULL;
 
 	soup_message_headers_append(msg->request_headers,
 			"Authorization", (gchar *)g_strdup_printf("GoogleLogin auth=%s", auth->token));
