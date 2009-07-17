@@ -979,7 +979,7 @@ remove_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * @error: a #GError to set on failure
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
- * always more efficient than calling e_book_remove_contact_by_id if you
+ * always more efficient than calling e_book_remove_contact() if you
  * have more than one id to remove, as some backends can implement it
  * as a batch request.
  *
@@ -1120,7 +1120,7 @@ remove_contacts_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * @closure: data to pass to callback function
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
- * always more efficient than calling e_book_remove_contact_by_id() if you
+ * always more efficient than calling e_book_remove_contact() if you
  * have more than one id to remove, as some backends can implement it
  * as a batch request.
  *
