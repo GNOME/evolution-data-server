@@ -2070,7 +2070,7 @@ e_cal_backend_groupwise_create_object (ECalBackendSync *backend, EDataCal *cal, 
 		/* Get the item back from server to update the last-modified time */
 		status = update_from_server (cbgw, uid_list, calobj, comp);
 		if (status != E_GW_CONNECTION_STATUS_OK)
-			return GNOME_Evolution_Calendar_OtherError; 
+			return GNOME_Evolution_Calendar_OtherError;
 
 		break;
 	default :

@@ -492,7 +492,7 @@ get_actual_count (ECalComponent *comp, ECalBackendGroupwise *cbgw)
 
 	dzone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	utc = icaltimezone_get_utc_timezone ();
-	
+
 	if (dzone)
 		e_cal_recur_generate_instances (comp, -1, -1,get_recur_count, &count, resolve_tzid_cb, NULL, (icaltimezone *) dzone);
 	else

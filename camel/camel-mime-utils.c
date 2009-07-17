@@ -4423,7 +4423,7 @@ camel_header_msgid_generate (void)
 	gchar *msgid;
 	gint retval;
 	struct addrinfo *ai = NULL, hints = { 0 };
-	static char *cached_hostname = NULL;
+	static gchar *cached_hostname = NULL;
 
 	if (!cached_hostname) {
 		retval = gethostname (host, sizeof (host));

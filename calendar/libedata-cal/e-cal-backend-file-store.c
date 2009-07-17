@@ -44,7 +44,7 @@ struct _ECalBackendFileStorePrivate {
 	GHashTable *timezones;
 	GHashTable *comp_uid_hash;
 	EFileCache *keys_cache;
-	
+
 	GStaticRWLock lock;
 
 	gchar *cache_file_name;
@@ -58,12 +58,11 @@ struct _ECalBackendFileStorePrivate {
 
 static void save_cache (ECalBackendFileStore *store);
 
-
 static FullCompObject *
 create_new_full_object (void)
 {
 	FullCompObject *obj;
-	
+
 	obj = g_new0 (FullCompObject, 1);
 	obj->recurrences = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
@@ -102,7 +101,7 @@ put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 	}
 
 	g_static_rw_lock_writer_lock (&priv->lock);
-	
+
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
 
 	if (obj == NULL) {
@@ -133,7 +132,7 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 	FullCompObject *obj = NULL;
 	gboolean ret_val = TRUE;
 	gboolean remove_completely = FALSE;
-	
+
 	priv = GET_PRIVATE (fstore);
 
 	g_static_rw_lock_writer_lock (&priv->lock);
@@ -166,13 +165,13 @@ get_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *rid)
 	ECalBackendFileStorePrivate *priv;
 	FullCompObject *obj = NULL;
 	ECalComponent *comp = NULL;
-	
+
 	priv = GET_PRIVATE(fstore);
 
 	g_static_rw_lock_reader_lock (&priv->lock);
 
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
-	if (obj == NULL) 
+	if (obj == NULL)
 		goto end;
 
 	if (rid != NULL)
@@ -183,7 +182,7 @@ get_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *rid)
 	if (comp != NULL)
 		g_object_ref (comp);
 
-end:	
+end:
 	g_static_rw_lock_reader_unlock (&priv->lock);
 	return comp;
 }
@@ -209,7 +208,7 @@ e_cal_backend_file_store_put_component (ECalBackendStore *store, ECalComponent *
 	priv = GET_PRIVATE (fstore);
 
 	ret_val = put_component (fstore, comp);
-	
+
 	if (ret_val) {
 		priv->dirty = TRUE;
 
@@ -226,18 +225,18 @@ e_cal_backend_file_store_remove_component (ECalBackendStore *store, const gchar 
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	gboolean ret_val = FALSE;
-	
+
 	priv = GET_PRIVATE (fstore);
-	
+
 	ret_val = remove_component (fstore, uid, rid);
-	
+
 	if (ret_val) {
 		priv->dirty = TRUE;
-		
+
 		if (!priv->freeze_changes)
 			save_cache (fstore);
 	}
-	
+
 	return ret_val;
 }
 
@@ -247,14 +246,14 @@ e_cal_backend_file_store_get_timezone (ECalBackendStore *store, const gchar *tzi
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	const icaltimezone *zone = NULL;
-	
+
 	priv = GET_PRIVATE (fstore);
-	
+
 	g_static_rw_lock_reader_lock (&priv->lock);
 	zone = g_hash_table_lookup (priv->timezones, tzid);
 	g_static_rw_lock_reader_unlock (&priv->lock);
-	
-	return zone;	
+
+	return zone;
 }
 
 static gboolean
@@ -265,14 +264,14 @@ e_cal_backend_file_store_put_timezone (ECalBackendStore *store, const icaltimezo
 	gboolean ret_val = FALSE;
 
 	priv = GET_PRIVATE (fstore);
-	
+
 	g_static_rw_lock_writer_lock (&priv->lock);
 	g_hash_table_insert (priv->timezones, g_strdup (icaltimezone_get_tzid ((icaltimezone *) zone)), (icaltimezone *) zone);
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
 	if (ret_val) {
 		priv->dirty = TRUE;
-		
+
 		if (!priv->freeze_changes)
 			save_cache (fstore);
 	}
@@ -286,21 +285,21 @@ e_cal_backend_file_store_remove_timezone (ECalBackendStore *store, const gchar *
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	gboolean ret_val = FALSE;
-	
+
 	priv = GET_PRIVATE (fstore);
-	
+
 	g_static_rw_lock_writer_lock (&priv->lock);
 	ret_val = g_hash_table_remove (priv->timezones, tzid);
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
 	if (ret_val) {
 		priv->dirty = TRUE;
-		
+
 		if (!priv->freeze_changes)
 			save_cache (fstore);
 	}
 
-	return ret_val;	
+	return ret_val;
 }
 
 static const gchar *
@@ -327,12 +326,12 @@ e_cal_backend_file_store_put_key_value (ECalBackendStore *store, const gchar *ke
 	gboolean ret_val = FALSE;
 
 	priv = GET_PRIVATE (fstore);
-	
+
 	g_static_rw_lock_writer_lock (&priv->lock);
 	ret_val = e_file_cache_replace_object (priv->keys_cache, key, value);
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
-	return ret_val;	
+	return ret_val;
 }
 
 static const icaltimezone *
@@ -362,11 +361,11 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	const gchar *tzid;
-	
+
 	priv = GET_PRIVATE (fstore);
 
 	g_static_rw_lock_writer_lock (&priv->lock);
-	
+
 	tzid = icaltimezone_get_tzid ((icaltimezone*) zone);
 	g_hash_table_insert (priv->timezones, g_strdup (tzid), (icaltimezone *) zone);
 	e_file_cache_replace_object (priv->keys_cache, "default-zone", tzid);
@@ -385,7 +384,7 @@ e_cal_backend_file_store_thaw_changes (ECalBackendStore *store)
 	priv = GET_PRIVATE (fstore);
 
 	priv->freeze_changes = FALSE;
-	
+
 	e_file_cache_thaw_changes (priv->keys_cache);
 	if (priv->dirty) {
 		save_cache (fstore);
@@ -423,7 +422,7 @@ e_cal_backend_file_store_get_components_by_uid (ECalBackendStore *store, const g
 	GSList *comps = NULL;
 
 	priv = GET_PRIVATE (fstore);
-	
+
 	g_static_rw_lock_reader_lock (&priv->lock);
 
 	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
@@ -437,7 +436,7 @@ e_cal_backend_file_store_get_components_by_uid (ECalBackendStore *store, const g
 	}
 
 	g_hash_table_foreach (obj->recurrences, (GHFunc) add_comp_to_slist, &comps);
-end:	
+end:
 	g_static_rw_lock_reader_unlock (&priv->lock);
 	return comps;
 }
@@ -448,7 +447,7 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 	ECalBackendFileStorePrivate *priv;
 	icalproperty *prop;
 	icaltimezone *zone;
-	const char *tzid;
+	const gchar *tzid;
 
 	prop = icalcomponent_get_first_property (vtzcomp, ICAL_TZID_PROPERTY);
 	if (!prop)
@@ -469,7 +468,7 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 	g_static_rw_lock_writer_unlock (&priv->lock);
 }
 
-static void 
+static void
 scan_vcalendar (ECalBackendFileStore *fstore, icalcomponent *top_icalcomp)
 {
 	ECalBackendFileStorePrivate *priv;
@@ -530,7 +529,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 
 	if (icalcomponent_isa (icalcomp) != ICAL_VCALENDAR_COMPONENT) {
 		icalcomponent_free (icalcomp);
-	
+
 		return FALSE;
 	}
 
@@ -563,7 +562,7 @@ save_object (gpointer key, gpointer value, gpointer user_data)
 
 	g_hash_table_foreach (obj->recurrences, save_instance, vcalcomp);
 }
-	
+
 static void
 save_timezone (gpointer key, gpointer tz, gpointer vcalcomp)
 {
@@ -588,7 +587,7 @@ timeout_save_cache (gpointer user_data)
 	g_static_rw_lock_reader_lock (&priv->lock);
 
 	priv->save_timeout_id = 0;
-	
+
 	vcalcomp = e_cal_util_new_top_level ();
 	g_hash_table_foreach (priv->timezones, save_timezone, vcalcomp);
 	g_hash_table_foreach (priv->comp_uid_hash, save_object, vcalcomp);

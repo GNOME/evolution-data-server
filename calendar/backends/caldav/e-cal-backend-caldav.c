@@ -1622,7 +1622,7 @@ remove_complist_from_cache_and_notify_cb (gpointer key, gpointer value, gpointer
 
 		e_cal_component_free_id (id);
 	}
-	remove_cached_attachment (cbdav, (const char *)key);
+	remove_cached_attachment (cbdav, (const gchar *)key);
 
 	return FALSE;
 }
@@ -2836,7 +2836,7 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 }
 
 static void
-remove_dir (const char *dir)
+remove_dir (const gchar *dir)
 {
 	GDir *d;
 
@@ -2851,7 +2851,7 @@ remove_dir (const char *dir)
 
 		while ((entry = g_dir_read_name (d)) != NULL) {
 			gchar *path;
-			int ret;
+			gint ret;
 
 			path = g_build_filename (dir, entry, NULL);
 			if (g_file_test (path, G_FILE_TEST_IS_DIR))

@@ -68,7 +68,7 @@ set_store_path (ECalBackendStore *store)
 	if (priv->uri)
 	{
 		const gchar *component = get_component (priv->source_type);
-		char *mangled_uri = NULL;
+		gchar *mangled_uri = NULL;
 
 		mangled_uri = g_strdup (priv->uri);
 		mangled_uri = g_strdelimit (mangled_uri, ":/",'_');
@@ -77,7 +77,7 @@ set_store_path (ECalBackendStore *store)
 			g_free (priv->path);
 
 		priv->path = g_build_filename (g_get_home_dir (), ".evolution/cache/",
-				component, mangled_uri, NULL);	
+				component, mangled_uri, NULL);
 	}
 }
 
@@ -123,7 +123,7 @@ e_cal_backend_store_get_property (GObject *object, guint property_id, GValue *va
 	store = E_CAL_BACKEND_STORE (object);
 	priv = GET_PRIVATE(store);
 
-	switch (property_id) 
+	switch (property_id)
 	{
 	case PROP_SOURCE_TYPE:
 		g_value_set_enum (value, priv->source_type);
@@ -187,7 +187,7 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *klass)
 	klass->get_key = NULL;
 	klass->put_key = NULL;
 
-	g_object_class_install_property (object_class, PROP_SOURCE_TYPE, 
+	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
 		  		g_param_spec_enum ("source_type", NULL, NULL,
 				e_cal_source_type_enum_get_type (),
 				E_CAL_SOURCE_TYPE_EVENT,
@@ -210,7 +210,7 @@ e_cal_backend_store_init (ECalBackendStore *store)
 	priv->source_type = E_CAL_SOURCE_TYPE_EVENT;
 }
 
-const char *
+const gchar *
 e_cal_backend_store_get_path (ECalBackendStore *store)
 {
 	ECalBackendStorePrivate *priv;
@@ -219,7 +219,7 @@ e_cal_backend_store_get_path (ECalBackendStore *store)
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
 	priv = GET_PRIVATE(store);
-	
+
 	return priv->path;
 }
 
@@ -228,7 +228,7 @@ e_cal_backend_store_load (ECalBackendStore *store)
 {
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
 }
 
@@ -250,7 +250,7 @@ e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (comp != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp) != FALSE, FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
 }
 
@@ -261,7 +261,7 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (rid != NULL, FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid);
 }
 
@@ -271,7 +271,7 @@ e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_timezone (store, tzid);
 }
 
@@ -281,7 +281,7 @@ e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *z
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_timezone (store, zone);
 }
 
@@ -291,7 +291,7 @@ e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_timezone (store, tzid);
 }
 
@@ -300,7 +300,7 @@ e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 {
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_default_timezone (store);
 }
 
@@ -310,7 +310,7 @@ e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltim
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->set_default_timezone (store, zone);
 }
 
@@ -320,7 +320,7 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar 
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components_by_uid (store, uid);
 }
 
@@ -330,7 +330,7 @@ e_cal_backend_store_get_key (ECalBackendStore *store, const gchar *key)
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_key (store, key);
 }
 
@@ -340,7 +340,7 @@ e_cal_backend_store_put_key (ECalBackendStore *store, const gchar *key, const gc
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
-	
+
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_key (store, key, value);
 }
 
@@ -349,7 +349,7 @@ e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 {
 	g_return_if_fail (store != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
-	
+
 	(E_CAL_BACKEND_STORE_GET_CLASS (store))->thaw_changes (store);
 }
 
@@ -358,6 +358,6 @@ e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 {
 	g_return_if_fail (store != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
-	
+
 	(E_CAL_BACKEND_STORE_GET_CLASS (store))->freeze_changes (store);
 }
