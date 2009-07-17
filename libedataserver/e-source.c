@@ -307,11 +307,18 @@ e_source_update_from_xml_node (ESource *source,
 	    || source->priv->relative_uri == NULL
 	    || relative_uri == NULL
 	    || strcmp ((gchar *)relative_uri, source->priv->relative_uri) != 0) {
+		gchar *abs_uri = NULL;
+
 		g_free (source->priv->name);
 		source->priv->name = g_strdup ((gchar *)name);
 
 		if (source->priv->group) {
-			/* reset the absolute uri to NULL to be regenerated when asked for */
+			abs_uri = e_source_build_absolute_uri (source);
+		}
+
+		if (abs_uri && source->priv->absolute_uri && g_str_equal (abs_uri, source->priv->absolute_uri)) {
+			/* reset the absolute uri to NULL to be regenerated when asked for,
+			   but only when it was generated also before */
 			g_free (source->priv->absolute_uri);
 			source->priv->absolute_uri = NULL;
 		} else if (source->priv->absolute_uri &&
@@ -324,6 +331,8 @@ e_source_update_from_xml_node (ESource *source,
 
 			g_free (tmp);
 		}
+
+		g_free (abs_uri);
 
 		g_free (source->priv->relative_uri);
 		source->priv->relative_uri = g_strdup ((gchar *)relative_uri);
@@ -493,25 +502,32 @@ void
 e_source_set_relative_uri (ESource *source,
 			   const gchar *relative_uri)
 {
-	gchar *absolute_uri;
+	gchar *absolute_uri, *old_abs_uri = NULL;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	if (source->priv->readonly)
 		return;
 
-	if (source->priv->relative_uri == relative_uri)
+	if (source->priv->relative_uri == relative_uri ||
+	    (source->priv->relative_uri && relative_uri && g_str_equal (source->priv->relative_uri, relative_uri)))
 		return;
+
+	if (source->priv->group)
+		old_abs_uri = e_source_build_absolute_uri (source);
 
 	g_free (source->priv->relative_uri);
 	source->priv->relative_uri = g_strdup (relative_uri);
 
-	/* reset the absolute uri */
+	/* reset the absolute uri, if it's a generated one */
 	if (source->priv->absolute_uri &&
+	    (!old_abs_uri || g_str_equal (source->priv->absolute_uri, old_abs_uri)) &&
 	    (absolute_uri = e_source_build_absolute_uri (source))) {
 		g_free (source->priv->absolute_uri);
 		source->priv->absolute_uri = absolute_uri;
 	}
+
+	g_free (old_abs_uri);
 
 	g_signal_emit (source, signals[CHANGED], 0);
 }
@@ -522,7 +538,7 @@ e_source_set_absolute_uri (ESource *source,
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	if (!!absolute_uri == !!source->priv->absolute_uri
+	if ((absolute_uri == source->priv->absolute_uri && absolute_uri == NULL)
 	    || (absolute_uri && source->priv->absolute_uri && !strcmp (source->priv->absolute_uri, absolute_uri)))
 		return;
 
