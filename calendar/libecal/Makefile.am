@@ -70,6 +70,7 @@ libecalinclude_HEADERS =	\
 	e-cal-recur.h		\
 	e-cal-time-util.h	\
         e-cal-check-timezones.h \
+	e-cal-system-timezone.h	\
 	e-cal-types.h		\
 	e-cal-util.h		\
 	e-cal-view.h
