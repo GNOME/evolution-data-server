@@ -9,7 +9,7 @@ static gint
 callback (gpointer data, gint argc, gchar **argv, gchar **azColName)
 {
 	gint i;
-	for(i=0; i<argc; i++) {
+	for (i=0; i<argc; i++) {
 		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 	}
 	printf("--DONE \n");
@@ -25,7 +25,7 @@ select_stmt (const gchar * stmt) {
 
 	ret = sqlite3_exec(db, stmt, callback, &nrecs, &errmsg);
 
-	if(ret!=SQLITE_OK) {
+	if (ret!=SQLITE_OK) {
 		printf("Error in select statement %s [%s].\n", stmt, errmsg);
 	} else {
 		printf("\n   %d records returned.\n", nrecs);
@@ -41,7 +41,7 @@ sql_stmt(const gchar * stmt) {
 
 	ret = sqlite3_exec(db, stmt, 0, 0, &errmsg);
 
-	if(ret != SQLITE_OK) {
+	if (ret != SQLITE_OK) {
 		printf("Error in statement: %s [%s].\n", stmt, errmsg);
 		exit (1);
 	}
@@ -82,7 +82,7 @@ gint main(gint argc, gchar **argv) {
 //	rc = sqlite3_open_v2("test.db", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE , NULL);
 	rc = sqlite3_open("test.db", &db);
 
-	if( rc ) {
+	if ( rc ) {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
 		exit(1);

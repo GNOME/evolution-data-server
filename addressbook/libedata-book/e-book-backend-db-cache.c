@@ -296,7 +296,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const gchar *query)
 	memset(&uid_dbt, 0, sizeof(uid_dbt));
 	db_error = dbc->c_get(dbc, &uid_dbt, &vcard_dbt, DB_FIRST);
 
-	while(db_error == 0) {
+	while (db_error == 0) {
 		if (vcard_dbt.data && !strncmp (vcard_dbt.data, "BEGIN:VCARD", 11)) {
 			contact = e_contact_new_from_vcard (vcard_dbt.data);
 
@@ -309,7 +309,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const gchar *query)
 	}
 
 	db_error = dbc->c_close (dbc);
-	if(db_error != 0)
+	if (db_error != 0)
 		g_warning ("db->c_close failed with %d", db_error);
 
 	if (sexp)
@@ -412,7 +412,7 @@ e_book_backend_db_cache_is_populated (DB *db)
 	vcard_dbt.flags = DB_DBT_MALLOC;
 
 	db_error = db->get (db, NULL, &uid_dbt, &vcard_dbt, 0);
-	if (db_error != 0){
+	if (db_error != 0) {
 		return FALSE;
 	}
 	else {

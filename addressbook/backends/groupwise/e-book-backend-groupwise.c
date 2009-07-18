@@ -317,7 +317,7 @@ set_im_changes (EGwItem *new_item, EGwItem *old_item)
 			im1 = new_ims->data;
 			temp = old_ims;
 			ims_matched = FALSE;
-			for(; temp != NULL; temp = g_list_next (temp)) {
+			for (; temp != NULL; temp = g_list_next (temp)) {
 				im2 = temp->data;
 				if (g_str_equal (im1->service, im2->service) && g_str_equal (im1->address, im2->address)) {
 					ims_matched = TRUE;
@@ -596,7 +596,7 @@ set_emails_in_gw_item (EGwItem *item, gpointer data)
 	email_list = NULL;
 	for (i =0; i < 3; i++) {
 		email = e_contact_get (contact, email_fields[i]);
-		if(email)
+		if (email)
 			email_list = g_list_append (email_list, g_strdup (email));
 	}
 	e_gw_item_set_email_list (item, email_list);
@@ -616,7 +616,7 @@ compare_string_lists ( GList *old_list, GList *new_list, GList **additions, GLis
 			string1 = new_list->data;
 			temp = old_list;
 			strings_matched = FALSE;
-			for(; temp != NULL; temp = g_list_next (temp)) {
+			for (; temp != NULL; temp = g_list_next (temp)) {
 				string2 = temp->data;
 				if ( g_str_equal (string1, string2)) {
 					strings_matched = TRUE;
@@ -684,7 +684,7 @@ set_full_name_in_gw_item (EGwItem *item, gpointer data)
 
 	name = e_contact_get (contact, E_CONTACT_FULL_NAME);
 
-	if(name) {
+	if (name) {
 		contact_name = e_contact_name_from_string (name);
 		full_name = g_new0 (FullName, 1);
 		if (contact_name && full_name) {
@@ -727,32 +727,32 @@ set_full_name_changes (EGwItem *new_item, EGwItem *old_item)
 	if (old_full_name && new_full_name) {
 		s1 = new_full_name->name_prefix;
 		s2 = old_full_name->name_prefix;
-		if(!s1 && s2)
+		if (!s1 && s2)
 			delete_full_name->name_prefix = g_strdup(s2);
 		else if (s1)
 			update_full_name->name_prefix = g_strdup(s1);
 		s1 = new_full_name->first_name;
 		s2  = old_full_name->first_name;
-		if(!s1 && s2)
+		if (!s1 && s2)
 			delete_full_name->first_name = g_strdup(s2);
 		else if (s1)
 			update_full_name->first_name = g_strdup(s1);
 		s1 = new_full_name->middle_name;
 		s2  = old_full_name->middle_name;
-		if(!s1 && s2)
+		if (!s1 && s2)
 			delete_full_name->middle_name = g_strdup(s2);
 		else if (s1)
 			update_full_name->middle_name = g_strdup(s1);
 
 		s1 = new_full_name->last_name;
 		s2 = old_full_name->last_name;
-		if(!s1 && s2)
+		if (!s1 && s2)
 			delete_full_name->last_name = g_strdup(s2);
 		else if (s1)
 			update_full_name->last_name = g_strdup(s1);
 		s1 = new_full_name->name_suffix;
 		s2  = old_full_name->name_suffix;
-		if(!s1 && s2)
+		if (!s1 && s2)
 			delete_full_name->name_suffix = g_strdup(s2);
 		else if (s1)
 			update_full_name->name_suffix = g_strdup(s1);
@@ -1109,7 +1109,7 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 			temp = old_category_list;
 			categories_matched  = FALSE;
 
-			for(; temp != NULL; temp = g_list_next (temp)) {
+			for (; temp != NULL; temp = g_list_next (temp)) {
 				category2 = temp->data;
 				if ( g_str_equal (category1, category2)) {
 					categories_matched = TRUE;
@@ -1149,11 +1149,11 @@ fill_contact_from_gw_item (EContact *contact, EGwItem *item, GHashTable *categor
 	for ( i = 0; i < G_N_ELEMENTS (mappings); i++) {
 		element_type = mappings[i].element_type;
 
-		if(element_type == ELEMENT_TYPE_SIMPLE) {
+		if (element_type == ELEMENT_TYPE_SIMPLE) {
 			if (mappings[i].field_id != E_CONTACT_BOOK_URI) {
 				if (!is_organization) {
 					value = e_gw_item_get_field_value (item, mappings[i].element_name);
-					if(value != NULL)
+					if (value != NULL)
 						e_contact_set (contact, mappings[i].field_id, value);
 				}
 			}
@@ -1855,7 +1855,7 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const gch
 	sexp_data->auto_completion = 0;
 	sexp_data->search_string = NULL;
 
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, sexp_data);
@@ -2635,7 +2635,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 	GTimeVal tstart, tend;
 	gulong diff;
 
-	if(!ebgw)
+	if (!ebgw)
 		return NULL;
 
 	if (enable_debug) {
@@ -3050,7 +3050,7 @@ update_address_book_deltas (EBookBackendGroupwise *ebgw)
 				But it doesnt send me the members, so i have to explicitly request the server for the members				     of the distribution list */
 
 				if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
-					if(enable_debug)
+					if (enable_debug)
 						printf ("Contact List modified fetching the members of the contact list\n");
 
 					status = e_gw_connection_get_item (ebgw->priv->cnc, ebgw->priv->container_id, e_contact_get (contact, E_CONTACT_UID), "name email default members", &item);
@@ -3214,7 +3214,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 
 	if (enable_debug) {
 		printf ("authenticate user ............\n");
-		if(priv->book_name)
+		if (priv->book_name)
 			printf("book_name:%s\n", priv->book_name);
 	}
 
@@ -3308,7 +3308,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			ebgw->priv->is_cache_ready = TRUE;
 			ebgw->priv->is_summary_ready = TRUE;
 
-			if (priv->is_writable){
+			if (priv->is_writable) {
 				if (enable_debug) {
 					printf("is writable\n");
 					printf("creating update_cache thread\n");
@@ -3351,7 +3351,7 @@ e_book_backend_groupwise_authenticate_user (EBookBackend *backend,
 			}
 			g_thread_create ((GThreadFunc) build_cache, ebgw, FALSE, NULL);
 		}
-		else if(priv->marked_for_offline) {
+		else if (priv->marked_for_offline) {
 			GThread *t;
 			if (enable_debug)
 				printf("else if marked_for_offline\n");
@@ -3471,7 +3471,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 
 	uri =  e_source_get_uri (source);
 	priv->original_uri = g_strdup (uri);
-	if(uri == NULL)
+	if (uri == NULL)
 		return  GNOME_Evolution_Addressbook_OtherError;
 
 	tokens = g_strsplit (uri, ";", 2);
@@ -3479,7 +3479,7 @@ e_book_backend_groupwise_load_source (EBookBackend           *backend,
 	if (tokens[0])
 		uri = g_strdup(tokens[0]);
 	book_name = g_strdup (tokens[1]);
-	if(book_name == NULL)
+	if (book_name == NULL)
 		return  GNOME_Evolution_Addressbook_OtherError;
 	g_strfreev (tokens);
 	parsed_uri = e_uri_new (uri);

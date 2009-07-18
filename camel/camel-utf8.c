@@ -226,7 +226,7 @@ camel_utf7_utf8(const gchar *ptr)
 	out = g_string_new("");
 	do {
 		c = *p++;
-		switch(state) {
+		switch (state) {
 		case 0:
 			if (c == '&')
 				state = 1;

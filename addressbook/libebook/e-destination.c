@@ -449,7 +449,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 		}
 
 		g_signal_emit (dest, signals [CHANGED], 0);
-	} else if (dest->priv->email_num != email_num){
+	} else if (dest->priv->email_num != email_num) {
 		/* Splitting here would help the contact lists not rebuiding, so that it remembers ignored values */
 		g_object_ref (contact);
 

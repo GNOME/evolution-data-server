@@ -26,7 +26,7 @@ gint main(gint argc, gchar **argv)
 	for (i=0;i<3;i++) {
 
 		push("Creating stream using method %d", i);
-		switch(i) {
+		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_mem_new();
 			break;

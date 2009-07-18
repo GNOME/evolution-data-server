@@ -242,7 +242,7 @@ camel_imapp_store_summary_path_to_full(CamelIMAPPStoreSummary *s, const gchar *p
 		p = path;
 
 	while ( (c = camel_utf8_getc((const guchar **)&p)) ) {
-		switch(state) {
+		switch (state) {
 		case 0:
 			if (c == '%')
 				state = 1;
@@ -597,7 +597,7 @@ store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const
 
 	g_assert(mi != NULL);
 
-	switch(type) {
+	switch (type) {
 	case CAMEL_IMAPP_STORE_INFO_FULL_NAME:
 		d(printf("Set full name %s -> %s\n", isi->full_name, str));
 		CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);

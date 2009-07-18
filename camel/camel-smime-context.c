@@ -194,7 +194,7 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 static const gchar *
 sm_hash_to_id(CamelCipherContext *context, CamelCipherHash hash)
 {
-	switch(hash) {
+	switch (hash) {
 	case CAMEL_CIPHER_HASH_MD5:
 		return "md5";
 	case CAMEL_CIPHER_HASH_SHA1:
@@ -691,7 +691,7 @@ sm_status_description(NSSCMSVerificationStatus status)
 	/* could use this but then we can't control i18n? */
 	/*NSS_CMSUtil_VerificationStatusToString(status));*/
 
-	switch(status) {
+	switch (status) {
 	case NSSCMSVS_Unverified:
 	default:
 		return _("Unverified");

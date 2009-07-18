@@ -350,7 +350,7 @@ gint main(gint argc, gchar **argv)
 
 		res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 		if (len == sizeof(msg) && msg.magic == CAMEL_LOCK_HELPER_MAGIC) {
-			switch(msg.id) {
+			switch (msg.id) {
 			case CAMEL_LOCK_HELPER_LOCK:
 				res = CAMEL_LOCK_HELPER_STATUS_NOMEM;
 				if (msg.data > 0xffff) {

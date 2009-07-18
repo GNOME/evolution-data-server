@@ -289,7 +289,7 @@ e_book_backend_webdav_create_contact(EBookBackend *backend,
 		return;
 	}
 	/* PUT request didn't return an etag? try downloading to get one */
-	if(e_contact_get_const(contact, E_CONTACT_REV) == NULL) {
+	if (e_contact_get_const(contact, E_CONTACT_REV) == NULL) {
 		EContact *new_contact;
 
 		g_warning("Server didn't return etag for new address resource");
@@ -418,12 +418,12 @@ e_book_backend_webdav_modify_contact(EBookBackend *backend,
 	etag = e_contact_get_const(contact, E_CONTACT_REV);
 
 	/* PUT request didn't return an etag? try downloading to get one */
-	if(etag == NULL || (etag[0] == 'W' && etag[1] == '/')) {
+	if (etag == NULL || (etag[0] == 'W' && etag[1] == '/')) {
 		EContact *new_contact;
 
 		g_warning("Server didn't return etag for modified address resource");
 		new_contact = download_contact(webdav, uid);
-		if(new_contact != NULL) {
+		if (new_contact != NULL) {
 			contact = new_contact;
 		}
 	}

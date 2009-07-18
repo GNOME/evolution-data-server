@@ -450,7 +450,7 @@ camel_folder_summary_check_uid (CamelFolderSummary *s, const gchar *uid)
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 
 	for (i=0; i<s->uids->len; i++) {
-		if(strcmp(s->uids->pdata[i], uid) == 0) {
+		if (strcmp(s->uids->pdata[i], uid) == 0) {
 			CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 			return TRUE;
 		}
@@ -3788,7 +3788,7 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 	if (s->build_content)
 		info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->content_info_new_from_parser(s, mp);
 
-	switch(state) {
+	switch (state) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 		/* check content type for indexing, then read body */
 		ct = camel_mime_parser_content_type(mp);

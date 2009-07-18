@@ -649,7 +649,7 @@ e_gw_sendoptions_new_from_soap_parameter (SoupSoapParameter *param)
 
 	opts = g_object_new (E_TYPE_GW_SENDOPTIONS, NULL);
 
-	if (!e_gw_sendoptions_store_settings (param, opts)){
+	if (!e_gw_sendoptions_store_settings (param, opts)) {
 		g_object_unref (opts);
 		return NULL;
 	}

@@ -990,7 +990,7 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const gch
 
 	sexp = e_sexp_new();
 
-	for(i=0;i<sizeof(check_symbols)/sizeof(check_symbols[0]);i++) {
+	for (i=0;i<sizeof(check_symbols)/sizeof(check_symbols[0]);i++) {
 		if (check_symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, check_symbols[i].name,
 					     (ESExpIFunc *)check_symbols[i].func, summary);
@@ -1215,7 +1215,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
 
 	sexp = e_sexp_new();
 
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, summary);

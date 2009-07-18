@@ -770,7 +770,7 @@ imap_refresh_info (CamelFolder *folder, CamelException *ex)
 
 		camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
 		if (si->total != total
-		    || si->unread != unread){
+		    || si->unread != unread) {
 			si->total = total;
 			si->unread = unread;
 			camel_store_summary_touch((CamelStoreSummary *)((CamelImapStore *)folder->parent_store)->summary);
@@ -3634,7 +3634,7 @@ imap_update_summary (CamelFolder *folder, gint exists,
 			break;
 		}
 
-		/* FIXME: If it enters if(info) it will always match the exception. So stupid */
+		/* FIXME: If it enters if (info) it will always match the exception. So stupid */
 		/* FIXME[disk-summary] Use a db query to see if the DB exists */
 /*		info = (CamelImapMessageInfo *)camel_folder_summary_uid(folder->summary, uid); */
 /*		if (info) { */

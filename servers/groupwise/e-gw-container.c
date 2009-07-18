@@ -58,7 +58,7 @@ static void e_gw_container_set_is_shared_to_me (EGwContainer *container, gboolea
 static void
 free_node(EShUsers *user)
 {
-	if(user){
+	if (user) {
 		g_free (user->email);
 		g_free (user);
 	}
@@ -111,7 +111,7 @@ e_gw_container_finalize (GObject *object)
 			priv->modified = NULL;
 		}
 
-		if(priv->user_list) {
+		if (priv->user_list) {
 			g_list_foreach (priv->user_list,(GFunc) free_node, NULL);
 			g_list_free (priv->user_list);
 			priv->user_list = NULL;
@@ -492,7 +492,7 @@ e_gw_container_get_rights (EGwContainer *container, gchar *email)
 
 	for (node = user_list; node != NULL; node = node->next) {
 		user = node->data;
-		if( !strcmp (user->email, email))
+		if ( !strcmp (user->email, email))
 			return user->rights;
 	}
 
@@ -745,11 +745,11 @@ e_gw_container_form_message (SoupSoapMessage *msg, gchar *id, GList *new_list, c
 			e_gw_message_write_string_parameter (msg, "displayName", NULL, "name");
 			email = g_strdup (user->email);
 
-			if(user->rights & 0x1)
+			if (user->rights & 0x1)
 				add = TRUE;
-			if(user->rights & 0x2)
+			if (user->rights & 0x2)
 				edit = TRUE;
-			if(user->rights & 0x4)
+			if (user->rights & 0x4)
 				del = TRUE;
 
 			e_gw_message_write_string_parameter (msg, "email", NULL, email);

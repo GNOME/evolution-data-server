@@ -821,7 +821,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 	}
 	else {
 		/* Update the hash and build our changes list */
-		for (i = ctx.add_ids, v = ctx.add_cards; i != NULL; i = i->next, v = v->next){
+		for (i = ctx.add_ids, v = ctx.add_cards; i != NULL; i = i->next, v = v->next) {
 			gchar *id = i->data;
 			gchar *vcard = v->data;
 
@@ -832,7 +832,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 			g_free (i->data);
 			g_free (v->data);
 		}
-		for (i = ctx.mod_ids, v = ctx.mod_cards; i != NULL; i = i->next, v = v->next){
+		for (i = ctx.mod_ids, v = ctx.mod_cards; i != NULL; i = i->next, v = v->next) {
 			gchar *id = i->data;
 			gchar *vcard = v->data;
 
@@ -843,7 +843,7 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 			g_free (i->data);
 			g_free (v->data);
 		}
-		for (i = ctx.del_ids, v = ctx.del_cards; i != NULL; i = i->next, v = v->next){
+		for (i = ctx.del_ids, v = ctx.del_cards; i != NULL; i = i->next, v = v->next) {
 			gchar *id = i->data;
 			gchar *vcard = v->data;
 

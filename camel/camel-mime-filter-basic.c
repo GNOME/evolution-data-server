@@ -80,7 +80,7 @@ reset(CamelMimeFilter *mf)
 {
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
 
-	switch(f->type) {
+	switch (f->type) {
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 		f->state = -1;
 		break;
@@ -96,7 +96,7 @@ complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar 
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
 	gsize newlen = 0;
 
-	switch(f->type) {
+	switch (f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
 		camel_mime_filter_set_size(mf, len*2+6, FALSE);
@@ -161,7 +161,7 @@ filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **
 	CamelMimeFilterBasic *f = (CamelMimeFilterBasic *)mf;
 	gsize newlen;
 
-	switch(f->type) {
+	switch (f->type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
 		/* wont go to more than 2x size (overly conservative) */
 		camel_mime_filter_set_size(mf, len*2+6, FALSE);

@@ -123,7 +123,7 @@ static gint resp_capability(CamelIMAPPEngine *ie, guint32 id, gpointer data)
 	printf("got capability response:\n");
 	while (1) {
 		tok = camel_imapp_stream_token(ie->stream, &token, &len);
-		switch(tok) {
+		switch (tok) {
 		case IMAP_TOK_TOKEN:
 			p = token;
 			while ((c = *p))
@@ -391,7 +391,7 @@ iterate_untagged(CamelIMAPPEngine *imap)
 		camel_object_trigger_event(imap, "status", sinfo);
 		imap_free_status(sinfo);
 #if 0
-		switch(sinfo->condition) {
+		switch (sinfo->condition) {
 		case IMAP_READ_WRITE:
 			printf("folder is read-write\n");
 			break;
@@ -456,7 +456,7 @@ iterate_continuation(CamelIMAPPEngine *imap)
 
 	printf("got continuation response for data\n");
 	cp = ic->current;
-	switch(cp->type & CAMEL_IMAPP_COMMAND_MASK) {
+	switch (cp->type & CAMEL_IMAPP_COMMAND_MASK) {
 	case CAMEL_IMAPP_COMMAND_DATAWRAPPER:
 		printf("writing data wrapper to literal\n");
 		camel_data_wrapper_write_to_stream((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream);
@@ -784,7 +784,7 @@ imap_engine_command_add_part(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, came
 	CamelStreamNull *null;
 	guint ob_size = 0;
 
-	switch(type & CAMEL_IMAPP_COMMAND_MASK) {
+	switch (type & CAMEL_IMAPP_COMMAND_MASK) {
 	case CAMEL_IMAPP_COMMAND_DATAWRAPPER:
 	case CAMEL_IMAPP_COMMAND_STREAM:
 		null = (CamelStreamNull *)camel_stream_null_new();
@@ -881,7 +881,7 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 	p = fmt;
 	ps = fmt;
 	while ( ( c = *p++ ) ) {
-		switch(c) {
+		switch (c) {
 		case '%':
 			if (*p == '%') {
 				camel_stream_write((CamelStream *)ic->mem, ps, p-ps);
@@ -918,7 +918,7 @@ imap_engine_command_addv(CamelIMAPPEngine *imap, CamelIMAPPCommand *ic, const gc
 					c = *p++;
 				}
 
-				switch(c) {
+				switch (c) {
 				case 'A': /* auth object - sasl auth, treat as special kind of continuation */
 					A = va_arg(ap, CamelSasl *);
 					imap_engine_command_add_part(imap, ic, CAMEL_IMAPP_COMMAND_AUTH, (CamelObject *)A);

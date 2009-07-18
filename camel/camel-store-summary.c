@@ -961,7 +961,7 @@ store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *info, gint type, co
 
 	g_assert (info != NULL);
 
-	switch(type) {
+	switch (type) {
 	case CAMEL_STORE_INFO_PATH:
 		CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
 		g_hash_table_remove(s->folders_path, (gchar *)camel_store_info_path(s, info));

@@ -237,7 +237,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 	gchar *temp_str = NULL;
 
 	temp_str = (gchar *)e_gw_item_get_subject(item);
-	if(temp_str)
+	if (temp_str)
 		camel_mime_message_set_subject (msg, temp_str);
 	type = e_gw_item_get_item_type (item);
 
@@ -251,7 +251,7 @@ groupwise_populate_details_from_item (CamelMimeMessage *msg, EGwItem *item)
 	}
 
 	dtstring = e_gw_item_get_delivered_date (item);
-	if(dtstring) {
+	if (dtstring) {
 		gint offset = 0;
 		time_t actual_time = e_gw_connection_get_date_from_string (dtstring);
 		camel_mime_message_set_date (msg, actual_time, offset);
@@ -280,7 +280,7 @@ groupwise_populate_msg_body_from_item (EGwConnection *cnc, CamelMultipart *multi
 
 	if (!body) {
 		temp_body = e_gw_item_get_message (item);
-		if(!temp_body){
+		if (!temp_body) {
 			gint len = 0;
 			EGwConnectionStatus status;
 			status = e_gw_connection_get_attachment (cnc,
@@ -403,21 +403,21 @@ groupwise_msg_set_recipient_list (CamelMimeMessage *msg, EGwItem *item)
 		}
 	}
 
-	if(to_list) {
+	if (to_list) {
 		subs_email=camel_header_address_list_encode(to_list);
 		camel_medium_set_header( CAMEL_MEDIUM(msg), "To", subs_email);
 		g_free(subs_email);
 		camel_header_address_list_clear(&to_list);
 	}
 
-	if(cc_list) {
+	if (cc_list) {
 		subs_email=camel_header_address_list_encode(cc_list);
 		camel_medium_set_header( CAMEL_MEDIUM(msg), "Cc", subs_email);
 		g_free(subs_email);
 		camel_header_address_list_clear(&cc_list);
 	}
 
-	if(bcc_list) {
+	if (bcc_list) {
 		subs_email=camel_header_address_list_encode(bcc_list);
 		camel_medium_set_header( CAMEL_MEDIUM(msg), "Bcc", subs_email);
 		g_free(subs_email);
@@ -591,7 +591,7 @@ update_junk_list (CamelStore *store, CamelMessageInfo *info, gint flag)
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_get_junk_entries (cnc, &list);
 
-		if (status == E_GW_CONNECTION_STATUS_OK){
+		if (status == E_GW_CONNECTION_STATUS_OK) {
 			while (list) {
 				entry = list->data;
 				if (!g_ascii_strcasecmp (entry->match, email[index])) {
@@ -736,7 +736,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 		gw_info = (CamelGroupwiseMessageInfo *) info;
 
 		/**Junk Mail handling**/
-		if(!info)
+		if (!info)
 			continue;
 		flags = camel_message_info_flags (info);
 
@@ -1186,7 +1186,7 @@ get_merge_lists_new_count (CamelGroupwiseSummary *summary, GSList *new, GSList *
 	GSList *l, *element;
 	gint count = 0;
 
-	if (new == NULL && modified == NULL){
+	if (new == NULL && modified == NULL) {
 		*merged = NULL;
 		return 0;
 	} if (new == NULL) {
@@ -2310,7 +2310,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 	if (!strcmp (folder->name, RECEIVED))
 		is_ok = TRUE;
-	if(!strcmp (folder->name, SENT))
+	if (!strcmp (folder->name, SENT))
 		is_ok = TRUE;
 
 	if (!is_ok) {

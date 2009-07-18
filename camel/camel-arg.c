@@ -45,7 +45,7 @@ gint camel_argv_build(CamelArgV *tv)
 
 		a->tag = tag;
 
-		switch((tag & CAMEL_ARG_TYPE)) {
+		switch ((tag & CAMEL_ARG_TYPE)) {
 		case CAMEL_ARG_OBJ:
 			a->ca_object = va_arg(tv->ap, gpointer );
 			break;
@@ -94,7 +94,7 @@ gint camel_arggetv_build(CamelArgGetV *tv)
 
 		a->tag = tag;
 
-		switch((tag & CAMEL_ARG_TYPE)) {
+		switch ((tag & CAMEL_ARG_TYPE)) {
 		case CAMEL_ARG_OBJ:
 			a->ca_object = va_arg(tv->ap, gpointer *);
 			*a->ca_object = NULL;

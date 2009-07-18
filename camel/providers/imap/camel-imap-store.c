@@ -807,7 +807,7 @@ connect_to_server_process (CamelService *service, const gchar *cmd, CamelExcepti
 
 	full_cmd = g_strdup("");
 
-	for(;;) {
+	for (;;) {
 		gchar *pc;
 		gchar *tmp;
 		gchar *var;
@@ -826,7 +826,7 @@ connect_to_server_process (CamelService *service, const gchar *cmd, CamelExcepti
 
 		var = NULL;
 
-		switch(pc[1]) {
+		switch (pc[1]) {
 		case 'h':
 			var = service->url->host;
 			break;

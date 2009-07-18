@@ -396,7 +396,7 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 	if (part) {
 		if (*part == ' ')
 			part++;
-		if (part){
+		if (part) {
 			EXTRACT_FIRST_DIGIT (type);
 		}
 	}

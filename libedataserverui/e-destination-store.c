@@ -670,7 +670,7 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 		case E_DESTINATION_STORE_COLUMN_ADDRESS:
 			contact = e_destination_get_contact(destination);
 			if (contact && E_IS_CONTACT (contact)) {
-				if(e_contact_get (contact, E_CONTACT_IS_LIST)) {
+				if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 					string = e_destination_get_name (destination);
 					string_new = g_string_new(string);
 					string_new = g_string_append(string_new, " mailing list");

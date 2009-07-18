@@ -430,7 +430,7 @@ camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete,	CamelException *
 			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
 				 __FILE__, __LINE__, day_lag, days_to_delete));
 
-			if( day_lag > days_to_delete)
+			if ( day_lag > days_to_delete)
 			{
 				if (fi->cmd) {
 					while (camel_pop3_engine_iterate(pop3_store->engine, fi->cmd) > 0) {

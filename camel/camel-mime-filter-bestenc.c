@@ -256,7 +256,7 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 		return CAMEL_TRANSFER_ENCODING_7BIT;
 
 	/* otherwise, we see if we can use 8 bit, or not */
-	switch(required) {
+	switch (required) {
 	case CAMEL_BESTENC_7BIT:
 		return bestenc;
 	case CAMEL_BESTENC_8BIT:

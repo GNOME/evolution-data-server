@@ -314,7 +314,7 @@ camel_imapp_stream_atom(CamelIMAPPStream *is, guchar **data, guint *lenp)
 	guchar *p, c;
 
 	/* this is only 'approximate' atom */
-	switch(camel_imapp_stream_token(is, data, lenp)) {
+	switch (camel_imapp_stream_token(is, data, lenp)) {
 	case IMAP_TOK_TOKEN:
 		p = *data;
 		while ((c = *p))
@@ -337,7 +337,7 @@ camel_imapp_stream_astring(CamelIMAPPStream *is, guchar **data)
 	guchar *p, *start;
 	guint len, inlen;
 
-	switch(camel_imapp_stream_token(is, data, &len)) {
+	switch (camel_imapp_stream_token(is, data, &len)) {
 	case IMAP_TOK_TOKEN:
 	case IMAP_TOK_INT:
 	case IMAP_TOK_STRING:
@@ -377,7 +377,7 @@ camel_imapp_stream_nstring(CamelIMAPPStream *is, guchar **data)
 	guchar *p, *start;
 	guint len, inlen;
 
-	switch(camel_imapp_stream_token(is, data, &len)) {
+	switch (camel_imapp_stream_token(is, data, &len)) {
 	case IMAP_TOK_STRING:
 		return 0;
 	case IMAP_TOK_LITERAL:
@@ -426,7 +426,7 @@ camel_imapp_stream_nstring_stream(CamelIMAPPStream *is, CamelStream **stream)
 	*stream = NULL;
 
 	CAMEL_TRY {
-		switch(camel_imapp_stream_token(is, &token, &len)) {
+		switch (camel_imapp_stream_token(is, &token, &len)) {
 		case IMAP_TOK_STRING:
 			mem = camel_stream_mem_new_with_buffer(token, len);
 			*stream = mem;

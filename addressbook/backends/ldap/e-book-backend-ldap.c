@@ -983,7 +983,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		}
 
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		if(ldap_error == LDAP_INSUFFICIENT_ACCESS)
+		if (ldap_error == LDAP_INSUFFICIENT_ACCESS)
 			ldap_error = LDAP_SUCCESS;
 		else
 			ldap_error = query_ldap_root_dse (bl);
@@ -1201,7 +1201,7 @@ ldap_error_to_response (gint ldap_error)
 		return GNOME_Evolution_Addressbook_RepositoryOffline;
 	else if (ldap_error == LDAP_ALREADY_EXISTS)
 		return GNOME_Evolution_Addressbook_ContactIdAlreadyExists;
-	else if(ldap_error == LDAP_TYPE_OR_VALUE_EXISTS )
+	else if (ldap_error == LDAP_TYPE_OR_VALUE_EXISTS )
 		return GNOME_Evolution_Addressbook_ContactIdAlreadyExists;
 	else
 		return GNOME_Evolution_Addressbook_OtherError;
@@ -3614,14 +3614,14 @@ rfc2254_escape(gchar *str)
 static gchar *
 extend_query_value (gchar *str)
 {
-	if(str && g_utf8_strlen (str, -1) > 0){
+	if (str && g_utf8_strlen (str, -1) > 0) {
 		gchar *next;
 		gchar *last_star = NULL;
 		gboolean have_nonspace = FALSE;
 
-		for (next = str; next && *next; next = g_utf8_next_char (next) ){
-			if (*next == ' '){
-				if (have_nonspace && !last_star){
+		for (next = str; next && *next; next = g_utf8_next_char (next) ) {
+			if (*next == ' ') {
+				if (have_nonspace && !last_star) {
 					/* exchange only first space after nonspace character */
 					*next = '*';
 					last_star = next;
@@ -3632,7 +3632,7 @@ extend_query_value (gchar *str)
 			}
 		}
 
-		if (last_star){
+		if (last_star) {
 			/* we placed a star at the end of str, so make it back a space */
 			*last_star = ' ';
 		}
@@ -4006,7 +4006,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query)
 
 	sexp = e_sexp_new();
 
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, &data);
@@ -4032,7 +4032,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query)
 		}
 		else {
 			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter
-				&& g_ascii_strncasecmp(bl->priv->ldap_search_filter,"(objectClass=*)",sizeof(bl->priv->ldap_search_filter))){
+				&& g_ascii_strncasecmp(bl->priv->ldap_search_filter,"(objectClass=*)",sizeof(bl->priv->ldap_search_filter))) {
 				strings = g_new0(gchar *, 5);
 				strings[0] = g_strdup ("(&");
 				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);

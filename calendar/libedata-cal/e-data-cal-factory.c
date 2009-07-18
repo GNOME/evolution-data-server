@@ -75,7 +75,7 @@ static guint signals[LAST_SIGNAL];
 static icalcomponent_kind
 calobjtype_to_icalkind (const GNOME_Evolution_Calendar_CalObjType type)
 {
-	switch (type){
+	switch (type) {
 	case GNOME_Evolution_Calendar_TYPE_EVENT:
 		return ICAL_VEVENT_COMPONENT;
 	case GNOME_Evolution_Calendar_TYPE_TODO:

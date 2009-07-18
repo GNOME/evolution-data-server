@@ -182,7 +182,7 @@ e_sexp_result_free(struct _ESExp *f, struct _ESExpResult *t)
 	if (t == NULL)
 		return;
 
-	switch(t->type) {
+	switch (t->type) {
 	case ESEXP_RES_ARRAY_PTR:
 		g_ptr_array_free(t->value.ptrarray, TRUE);
 		break;
@@ -474,7 +474,7 @@ term_eval_plus(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 
 	if (argc>0) {
 		type = argv[0]->type;
-		switch(type) {
+		switch (type) {
 		case ESEXP_RES_INT: {
 			gint total = argv[0]->value.number;
 			for (i=1;i<argc && argv[i]->type == ESEXP_RES_INT;i++) {
@@ -535,7 +535,7 @@ term_eval_sub(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 
 	if (argc>0) {
 		type = argv[0]->type;
-		switch(type) {
+		switch (type) {
 		case ESEXP_RES_INT: {
 			gint total = argv[0]->value.number;
 			for (i=1;i<argc && argv[i]->type == ESEXP_RES_INT;i++) {
@@ -632,7 +632,7 @@ term_eval_caststring(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gp
 
 /* implements 'if' function */
 static ESExpResult *
-term_eval_if(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_if (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 {
 	struct _ESExpResult *r;
 	gint doit;
@@ -913,7 +913,7 @@ parse_value(ESExp *f)
 	p(printf("parsing value\n"));
 
 	token = g_scanner_get_next_token(gs);
-	switch(token) {
+	switch (token) {
 	case G_TOKEN_EOF:
 		break;
 	case G_TOKEN_LEFT_PAREN:
@@ -1008,7 +1008,7 @@ parse_list(ESExp *f, gint gotbrace)
 		token = g_scanner_get_next_token(gs);
 	if (token =='(') {
 		token = g_scanner_get_next_token(gs);
-		switch(token) {
+		switch (token) {
 		case G_TOKEN_SYMBOL: {
 			struct _ESExpSymbol *s;
 
@@ -1124,7 +1124,7 @@ e_sexp_init (ESExp *s)
 	s->result_chunks = e_memchunk_new(16, sizeof(struct _ESExpResult));
 
 	/* load in builtin symbols? */
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(s, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, (gpointer)&symbols[i]);
 		} else {

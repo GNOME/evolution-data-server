@@ -242,7 +242,7 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 	/* We deleted the last entry */
 	if (len == 1) {
 		enl_popup_ungrab (list);
-		if(list->menu)
+		if (list->menu)
 			gtk_menu_popdown(GTK_MENU (list->menu));
 		gtk_widget_hide ( GTK_WIDGET (list->popup));
 		return;
@@ -503,7 +503,7 @@ enl_tree_key_press_event (GtkWidget *w,
 		g_list_free (paths);
 	} else if (event->keyval != GDK_Up && event->keyval != GDK_Down
 		   && event->keyval != GDK_Shift_R && event->keyval != GDK_Shift_L
-		   && event->keyval != GDK_Control_R && event->keyval != GDK_Control_L){
+		   && event->keyval != GDK_Control_R && event->keyval != GDK_Control_L) {
 
 		enl_popup_ungrab (list);
 		gtk_widget_hide ( GTK_WIDGET (list->popup));
@@ -528,7 +528,7 @@ e_name_selector_list_expand_clicked(ENameSelectorList *list)
 	}
 	else {
 		enl_popup_ungrab (list);
-		if(list->menu)
+		if (list->menu)
 			gtk_menu_popdown(GTK_MENU (list->menu));
 		gtk_widget_hide (GTK_WIDGET (list->popup));
 	}

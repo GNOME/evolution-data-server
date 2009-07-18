@@ -89,7 +89,7 @@ stream_read(CamelStream *stream, gchar *buffer, gsize n)
 	p = is->ptr;
 	e = is->end;
 
-	switch(state) {
+	switch (state) {
 	state_0:
 	case 0:		/* start of line, always read at least 3 chars */
 		while (e - p < 3) {
@@ -412,7 +412,7 @@ gint camel_pop3_stream_getd(CamelPOP3Stream *is, guchar **start, guint *len)
 	s = p;
 
 	do {
-		switch(state) {
+		switch (state) {
 		case 0:
 			/* check leading '.', ... */
 			if (p[0] == '.') {

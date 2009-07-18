@@ -607,7 +607,7 @@ folders_build_rec(CamelURL *base, GPtrArray *folders, gint *ip, CamelFolderInfo 
 	if (pfi)
 		plen = strlen(pname);
 
-	for(;(*ip)<(gint)folders->len;) {
+	for (;(*ip)<(gint)folders->len;) {
 		CamelFolderInfo *fi;
 		struct _list_info *li;
 

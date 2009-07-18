@@ -837,7 +837,7 @@ void e_thread_destroy(EThread *e)
 
 	pthread_mutex_lock(&e->mutex);
 
-	switch(e->type) {
+	switch (e->type) {
 	case E_THREAD_QUEUE:
 	case E_THREAD_DROP:
 		/* if we have a thread, 'kill' it */
@@ -1100,7 +1100,7 @@ void e_thread_put(EThread *e, EMsg *msg)
 
 	msg->reply_port = e->reply_port;
 
-	switch(e->type) {
+	switch (e->type) {
 	case E_THREAD_QUEUE:
 		/* if the queue is full, lose this new addition */
 		if (g_async_queue_length(e->server_port->queue) < e->queue_limit) {
@@ -1293,7 +1293,7 @@ gint e_mutex_cond_wait(gpointer vcond, EMutex *m)
 	gint ret;
 	pthread_cond_t *cond = vcond;
 
-	switch(m->type) {
+	switch (m->type) {
 	case E_MUTEX_SIMPLE:
 		return pthread_cond_wait(cond, &m->mutex);
 	case E_MUTEX_REC:

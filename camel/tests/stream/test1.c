@@ -27,7 +27,7 @@ gint main(gint argc, gchar **argv)
 		(void)unlink("stream.txt");
 
 		push("trying to open a nonexistant stream, method %d", i);
-		switch(i) {
+		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR, 0);
 			break;
@@ -41,7 +41,7 @@ gint main(gint argc, gchar **argv)
 		pull();
 
 		push("Creating stream using method %d", i);
-		switch(i) {
+		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_CREAT|O_RDWR|O_TRUNC, 0600);
 			fd = ((CamelStreamFs *)ss)->fd;
@@ -69,7 +69,7 @@ gint main(gint argc, gchar **argv)
 		pull();
 
 		push("re-opening stream");
-		switch(i) {
+		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR, 0);
 			fd = ((CamelStreamFs *)ss)->fd;
@@ -89,7 +89,7 @@ gint main(gint argc, gchar **argv)
 		pull();
 
 		push("re-opening stream with truncate");
-		switch(i) {
+		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR|O_TRUNC, 0);
 			fd = ((CamelStreamFs *)ss)->fd;

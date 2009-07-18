@@ -183,7 +183,7 @@ text_index_add_name_to_word(CamelIndex *idx, const gchar *word, camel_key_t name
 		if (wordid == 0) {
 			data = 0;
 			wordid = camel_key_table_add(p->word_index, word, 0, 0);
-			if (wordid == 0){
+			if (wordid == 0) {
 				g_warning ("Could not create key entry for word '%s': %s\n",
 					   word, g_strerror (errno));
 				return;
@@ -1122,7 +1122,7 @@ dump_raw(GHashTable *map, gchar *path)
 		id = total;
 
 		type = g_hash_table_lookup(map, id);
-		switch(type) {
+		switch (type) {
 		case 0:
 			printf(" - unknown -\n");
 			break;

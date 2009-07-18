@@ -679,7 +679,7 @@ model_section_removed (ENameSelectorDialog *name_selector_dialog, const gchar *n
 static void
 status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialog)
 {
-	if(message == NULL)
+	if (message == NULL)
 		gtk_label_set_text(dialog->status_label, "");
 	else
 		gtk_label_set_text(dialog->status_label, message);

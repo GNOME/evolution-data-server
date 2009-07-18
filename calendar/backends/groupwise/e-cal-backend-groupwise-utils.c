@@ -1238,7 +1238,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 				if (recipient->status == E_GW_ITEM_STAT_ACCEPTED) {
 					const gchar *accept_level = e_gw_item_get_accept_level (item);
 
-					if(accept_level && !strcmp (e_gw_item_get_accept_level (item),"Tentative"))
+					if (accept_level && !strcmp (e_gw_item_get_accept_level (item),"Tentative"))
 						attendee->status = ICAL_PARTSTAT_TENTATIVE;
 					else
 						attendee->status = ICAL_PARTSTAT_ACCEPTED;
@@ -1974,7 +1974,7 @@ set_categories_changes (EGwItem *new_item, EGwItem *old_item)
 			category1  = new_category_list->data;
 			temp = old_category_list;
 			categories_matched  = FALSE;
-			for(; temp != NULL; temp = g_list_next (temp)) {
+			for (; temp != NULL; temp = g_list_next (temp)) {
 				category2 = temp->data;
 				if ( g_str_equal (category1, category2)) {
 					categories_matched = TRUE;

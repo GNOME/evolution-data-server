@@ -294,7 +294,7 @@ cobject_setv(CamelObject *o, CamelException *ex, CamelArgV *args)
 static void
 cobject_free(CamelObject *o, guint32 tag, gpointer value)
 {
-	switch(tag & CAMEL_ARG_TAG) {
+	switch (tag & CAMEL_ARG_TAG) {
 	case CAMEL_OBJECT_ARG_METADATA:
 		co_metadata_free(o, value);
 		break;
@@ -452,7 +452,7 @@ cobject_state_read(CamelObject *obj, FILE *fp)
 			/* so far,only do strings and ints, doubles could be added,
 			   object's would require a serialisation interface */
 
-			switch(argv->argv[argv->argc].tag & CAMEL_ARG_TYPE) {
+			switch (argv->argv[argv->argc].tag & CAMEL_ARG_TYPE) {
 			case CAMEL_ARG_INT:
 			case CAMEL_ARG_BOO:
 				if (camel_file_util_decode_uint32(fp, (guint32 *) &argv->argv[argv->argc].ca_int) == -1)

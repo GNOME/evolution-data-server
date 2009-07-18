@@ -281,7 +281,7 @@ cal_mode_enum_get_type (void)
 static GNOME_Evolution_Calendar_CalObjType
 convert_type (ECalSourceType type)
 {
-	switch (type){
+	switch (type) {
 	case E_CAL_SOURCE_TYPE_EVENT:
 		return GNOME_Evolution_Calendar_TYPE_EVENT;
 	case E_CAL_SOURCE_TYPE_TODO:
@@ -2762,7 +2762,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
 	e_flag_wait (our_op->done);
 
 	status = our_op->status;
-        if (status != E_CALENDAR_STATUS_OK){
+        if (status != E_CALENDAR_STATUS_OK) {
                 *list = NULL;
         } else {
 		*list = our_op->slist;
@@ -2834,7 +2834,7 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 	e_flag_wait (our_op->done);
 
 	status = our_op->status;
-        if (status != E_CALENDAR_STATUS_OK){
+        if (status != E_CALENDAR_STATUS_OK) {
                 *icalcomp = NULL;
         } else {
 		icalcomponent *tmp_icalcomp;
@@ -2945,7 +2945,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
 	e_flag_wait (our_op->done);
 
 	status = our_op->status;
-        if (status != E_CALENDAR_STATUS_OK){
+        if (status != E_CALENDAR_STATUS_OK) {
                 *objects = NULL;
         } else {
 		icalcomponent *icalcomp;
@@ -4759,7 +4759,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 		e_flag_wait (our_op->done);
 
 		status = our_op->status;
-		if (status != E_CALENDAR_STATUS_OK){
+		if (status != E_CALENDAR_STATUS_OK) {
 			icalcomp = NULL;
 		} else {
 			icalcomp = icalparser_parse_string (our_op->string);

@@ -270,7 +270,7 @@ add_recipients(GSList *recipient_list, CamelAddress *recipients, gint recipient_
 	total_add = camel_address_length (recipients);
 	for (i=0; i<total_add; i++) {
 		const gchar *name = NULL, *addr = NULL;
-		if(camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
+		if (camel_internet_address_get ((CamelInternetAddress *)recipients, i , &name, &addr )) {
 
 			recipient = g_new0 (EGwItemRecipient, 1);
 
@@ -410,7 +410,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 	/** Get the mime parts from CamelMimemessge **/
 	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
-	if(!mp) {
+	if (!mp) {
 		g_warning ("ERROR: Could not get content object");
 		camel_operation_end (NULL);
 		return NULL;

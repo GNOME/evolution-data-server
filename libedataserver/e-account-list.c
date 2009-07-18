@@ -480,7 +480,7 @@ e_account_list_find(EAccountList *accounts, e_account_find_t type, const gchar *
 		account = (const EAccount *)e_iterator_get (it);
 
 		val = NULL;
-		switch(type) {
+		switch (type) {
 		case E_ACCOUNT_FIND_NAME:
 			found = strcmp(account->name, key) == 0;
 			break;

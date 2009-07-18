@@ -116,7 +116,7 @@ static gint camel_lock_helper_init(CamelException *ex)
 	}
 
 	lock_helper_pid = fork();
-	switch(lock_helper_pid) {
+	switch (lock_helper_pid) {
 	case -1:
 		close(lock_stdin_pipe[0]);
 		close(lock_stdin_pipe[1]);
@@ -206,7 +206,7 @@ again:
 	} while (msg->seq < lock_sequence);
 
 	if (msg->seq == lock_sequence) {
-		switch(msg->id) {
+		switch (msg->id) {
 		case CAMEL_LOCK_HELPER_STATUS_OK:
 			d(printf("lock child locked ok, id is %d\n", msg->data));
 			res = msg->data;
@@ -283,7 +283,7 @@ again:
 	} while (msg->seq < lock_sequence);
 
 	if (msg->seq == lock_sequence) {
-		switch(msg->id) {
+		switch (msg->id) {
 		case CAMEL_LOCK_HELPER_STATUS_OK:
 			d(printf("lock child unlocked ok\n"));
 			res = 0;

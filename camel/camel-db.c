@@ -429,7 +429,7 @@ camel_db_open (const gchar *path, CamelException *ex)
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
-	if(g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL)
+	if (g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL)
 		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
 	else
 		cache = g_strdup ("PRAGMA cache_size=100");
@@ -592,7 +592,7 @@ count_cb (gpointer data, gint argc, gchar **argv, gchar **azColName)
 {
 	gint i;
 
-	for(i=0; i<argc; i++) {
+	for (i=0; i<argc; i++) {
 		if (strstr(azColName[i], "COUNT")) {
 			*(guint32 *)data = argv [i] ? strtoul (argv [i], NULL, 10) : 0;
 		}
@@ -1073,7 +1073,7 @@ camel_db_get_vuids_from_vfolder (CamelDB *db, gchar *folder_name, gchar *filter,
 	 gchar *cond = NULL;
 	 GPtrArray *array;
 	 gchar *tmp = g_strdup_printf("%s%%", filter ? filter:"");
-	 if(filter)
+	 if (filter)
 		  cond = sqlite3_mprintf(" WHERE vuid LIKE %Q", tmp);
 	 g_free(tmp);
 	 sel_query = sqlite3_mprintf("SELECT vuid FROM %Q%s", folder_name, filter ? cond : "");
@@ -1627,7 +1627,7 @@ cdb_delete_ids (CamelDB *cdb, const gchar * folder_name, GSList *uids, const gch
 gint
 camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, CamelException *ex)
 {
-	if(!uids || !uids->data)
+	if (!uids || !uids->data)
 		return 0;
 
 	return cdb_delete_ids (cdb, folder_name, uids, "", "uid", ex);

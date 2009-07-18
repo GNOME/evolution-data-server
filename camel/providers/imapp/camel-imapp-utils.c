@@ -988,7 +988,7 @@ imap_parse_fetch(CamelIMAPPStream *is)
 			while ((c=*p))
 				*p++ = toupper(c);
 
-			switch(imap_tokenise(token, len)) {
+			switch (imap_tokenise(token, len)) {
 			case IMAP_ENVELOPE:
 				finfo->minfo = imap_parse_envelope(is);
 				finfo->got |= FETCH_MINFO;

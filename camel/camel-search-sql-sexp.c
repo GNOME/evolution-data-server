@@ -125,7 +125,7 @@ func_or(ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	for (i = 0; i < argc; i ++) {
 		r1 = e_sexp_term_eval(f, argv[i]);
 
-		if (r1->type != ESEXP_RES_STRING){
+		if (r1->type != ESEXP_RES_STRING) {
 			e_sexp_result_free (f, r1);
 			continue;
 		}
@@ -598,7 +598,7 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 
 	sexp = e_sexp_new();
 
-	for(i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
 		if (symbols[i].immediate)
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, NULL);

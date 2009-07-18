@@ -135,7 +135,7 @@ groupwise_store_construct (CamelService *service, CamelSession *session,
 	property_value =  camel_url_get_param (url, "soap_port");
 	if (property_value == NULL)
 		priv->port = g_strdup ("7191");
-	else if(strlen(property_value) == 0)
+	else if (strlen(property_value) == 0)
 		priv->port = g_strdup ("7191");
 	else
 		priv->port = g_strdup (property_value);
@@ -377,7 +377,7 @@ groupwise_disconnect_cleanup (CamelService *service, gboolean clean, CamelExcept
 		if (priv->storage_path)
 			g_free(priv->storage_path);
 
-		if(groupwise_store->root_container)
+		if (groupwise_store->root_container)
 			g_free (groupwise_store->root_container);
 
 		if (priv->id_hash)
@@ -469,7 +469,7 @@ groupwise_build_folder_info(CamelGroupwiseStore *gw_store, const gchar *parent_n
 	camel_url_free(url);
 
 	name = strrchr(fi->full_name,'/');
-	if(name == NULL)
+	if (name == NULL)
 		name = fi->full_name;
 	else
 		name++;
@@ -611,7 +611,7 @@ groupwise_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags
 	summary = (CamelGroupwiseSummary *) folder->summary;
 
 	summary_count = camel_folder_summary_count (folder->summary);
-	if(!summary_count || !summary->time_string) {
+	if (!summary_count || !summary->time_string) {
 		d(g_print ("\n\n** %s **: No summary as yet : using get cursor request\n\n", folder->name);)
 
 		status = e_gw_connection_create_cursor (priv->cnc, container_id,
@@ -742,7 +742,7 @@ gw_store_reload_folder (CamelGroupwiseStore *gw_store, CamelFolder *folder, guin
 	camel_folder_summary_save_to_db (folder->summary, ex);
 
 	summary_count = camel_folder_summary_count (folder->summary);
-	if(!summary_count || !summary->time_string) {
+	if (!summary_count || !summary->time_string) {
 			d(g_print ("\n\n** %s **: Summary missing???? Reloading summary....\n\n", folder->name);)
 
 					status = e_gw_connection_create_cursor (priv->cnc, container_id,
@@ -944,7 +944,7 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 	gint count, i;
 
 	if (!priv->cnc && ((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_AVAIL) {
-		if (((CamelService *)store)->status == CAMEL_SERVICE_DISCONNECTED){
+		if (((CamelService *)store)->status == CAMEL_SERVICE_DISCONNECTED) {
 			((CamelService *)store)->status = CAMEL_SERVICE_CONNECTING;
 			groupwise_connect ((CamelService *)store, ex);
 		}
@@ -1267,7 +1267,7 @@ groupwise_create_folder(CamelStore *store,
 		return NULL;
 	}
 
-	if(parent_name == NULL) {
+	if (parent_name == NULL) {
 		parent_name = "";
 		if (groupwise_is_system_folder (folder_name)) {
 			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, NULL);
@@ -1410,7 +1410,7 @@ groupwise_rename_folder(CamelStore *store,
 gchar *
 groupwise_get_name(CamelService *service, gboolean brief)
 {
-	if(brief)
+	if (brief)
 		return g_strdup_printf(_("GroupWise server %s"), service->url->host);
 	else
 		return g_strdup_printf(_("GroupWise service for %s on %s"),
@@ -1592,7 +1592,7 @@ camel_groupwise_store_finalize (CamelObject *object)
 		if (priv->storage_path)
 			g_free(priv->storage_path);
 
-		if(groupwise_store->root_container)
+		if (groupwise_store->root_container)
 			g_free (groupwise_store->root_container);
 
 		if (priv->id_hash)

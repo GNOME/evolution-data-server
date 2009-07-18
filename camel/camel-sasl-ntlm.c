@@ -721,7 +721,7 @@ deskey (DES_KS k, guchar *key, gint decrypt)
 			/* rotate left and right halves independently */
 		for (j=0; j<48; j++){	/* select bits individually */
 			/* check bit that goes to ks[j] */
-			if (pcr[pc2[j]-1]){
+			if (pcr[pc2[j]-1]) {
 				/* mask it in if it's there */
 				l= j % 6;
 				ks[j/6] |= bytebit[l] >> 2;

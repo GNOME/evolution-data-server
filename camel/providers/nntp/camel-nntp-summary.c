@@ -304,7 +304,7 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 				line += xover->skip;
 				if (line < tab) {
 					camel_header_raw_append(&headers, xover->name, line, -1);
-					switch(xover->type) {
+					switch (xover->type) {
 					case XOVER_STRING:
 						break;
 					case XOVER_MSGID:
@@ -390,7 +390,7 @@ add_range_head(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint l
 			g_warning("retrieved message '%u' when i expected '%u'?\n", n, i);
 
 		/* FIXME: use camel-mime-utils.c function for parsing msgid? */
-		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))){
+		if ((msgid = strchr(line, '<')) && (line = strchr(msgid+1, '>'))) {
 			line[1] = 0;
 			cns->priv->uid = g_strdup_printf("%u,%s\n", n, msgid);
 			if (!GPOINTER_TO_INT(g_hash_table_lookup (summary_table, cns->priv->uid))) {

@@ -126,7 +126,7 @@ run(CamelMimeFilter *mf, const gchar *in, gsize inlen, gsize prespace, gchar **o
 
 		state = camel_html_parser_step(f->priv->ctxt, &data, &len);
 
-		switch(state) {
+		switch (state) {
 		case CAMEL_HTML_PARSER_DATA:
 		case CAMEL_HTML_PARSER_ENT:
 			memcpy(outp, data, len);

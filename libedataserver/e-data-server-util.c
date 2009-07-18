@@ -497,7 +497,7 @@ e_filename_make_safe (gchar *string)
 	g_return_if_fail (string != NULL);
 	p = string;
 
-	while(p && *p) {
+	while (p && *p) {
 		c = g_utf8_get_char (p);
 		ts = p;
 		p = g_utf8_next_char (p);

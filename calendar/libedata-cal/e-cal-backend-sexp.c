@@ -434,7 +434,7 @@ func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer da
 	end = argv[1]->value.time;
 	e_cal_component_get_due (ctx->comp, &dt);
 
-	if(dt.value != NULL) {
+	if (dt.value != NULL) {
 		zone = resolve_tzid (dt.tzid, ctx);
 		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 		if (zone)
@@ -443,7 +443,7 @@ func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer da
 			due_t = icaltime_as_timet(*dt.value);
 	}
 
-	if(dt.value != NULL && (due_t <= end && due_t >= start))
+	if (dt.value != NULL && (due_t <= end && due_t >= start))
 		retval = TRUE;
 	else
 		retval = FALSE;
@@ -558,11 +558,11 @@ matches_classification (ECalComponent *comp, const gchar *str)
 	if (!*str)
 		return FALSE;
 
-	if(g_str_equal (str, "Public"))
+	if (g_str_equal (str, "Public"))
 		classification1 = E_CAL_COMPONENT_CLASS_PUBLIC;
-	else if(g_str_equal (str, "Private"))
+	else if (g_str_equal (str, "Private"))
 		classification1 = E_CAL_COMPONENT_CLASS_PRIVATE;
-	else if(g_str_equal (str, "Confidential"))
+	else if (g_str_equal (str, "Confidential"))
 		classification1 = E_CAL_COMPONENT_CLASS_CONFIDENTIAL;
 	else
 		classification1 = E_CAL_COMPONENT_CLASS_UNKNOWN;
@@ -656,9 +656,9 @@ matches_status (ECalComponent *comp ,const gchar *str)
 			return TRUE;
 	else if (g_str_equal (str, "COMPLETED") && status == ICAL_STATUS_COMPLETED)
 			return TRUE;
-	else if(g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)
+	else if (g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)
 			return TRUE;
-	else if(g_str_equal (str, "IN PROGRESS")  && status == ICAL_STATUS_INPROCESS)
+	else if (g_str_equal (str, "IN PROGRESS")  && status == ICAL_STATUS_INPROCESS)
 			return TRUE;
 
 	return FALSE;
@@ -763,11 +763,11 @@ func_contains (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 		matches = matches_attendee (ctx->comp, str);
 	else if (strcmp (field, "organizer") == 0)
 		matches = matches_organizer (ctx->comp, str);
-	else if(strcmp (field, "classification") == 0)
+	else if (strcmp (field, "classification") == 0)
 		matches = matches_classification (ctx->comp, str);
-	else if(strcmp (field, "status") == 0)
+	else if (strcmp (field, "status") == 0)
 		matches = matches_status (ctx->comp, str);
-	else if(strcmp (field, "priority") == 0)
+	else if (strcmp (field, "priority") == 0)
 		matches = matches_priority (ctx->comp, str);
 	else {
 		e_sexp_fatal_error (esexp, _("\"%s\" expects the first "

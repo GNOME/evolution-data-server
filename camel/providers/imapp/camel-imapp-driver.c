@@ -600,7 +600,7 @@ static void
 driver_status(CamelIMAPPEngine *ie, struct _status_info *sinfo, CamelIMAPPDriver *sdata)
 {
 	printf("got status response ...\n");
-	switch(sinfo->condition) {
+	switch (sinfo->condition) {
 	case IMAP_READ_WRITE:
 		printf("folder is read-write\n");
 		break;

@@ -235,7 +235,7 @@ uid_num (CamelFolderSummary *summary, gint index)
 
 	tmp = camel_folder_summary_uid_from_index(summary, index);
 
-	if((brk = strchr(tmp, ',')) == NULL)
+	if ((brk = strchr(tmp, ',')) == NULL)
 		ret = 0;
 	else {
 		*brk = 0;
@@ -265,14 +265,14 @@ camel_nntp_get_headers (CamelStore *store,
 	g_free (ret);
 
 	i = camel_folder_summary_count(folder->summary);
-	if(i != 0) {
+	if (i != 0) {
 		GSList *del = NULL;
 		last_summary = uid_num(folder->summary, i-1);
 
-		if(last_summary < first_message)
+		if (last_summary < first_message)
 			camel_folder_summary_clear(folder->summary);
 		else {
-			while(uid_num(folder->summary, 0) < first_message) {
+			while (uid_num(folder->summary, 0) < first_message) {
 				gchar *uid = camel_folder_summary_uid_from_index (folder->summary, 0);
 				del = g_slist_prepend (del, uid);
 				camel_folder_summary_remove_index_fast (s, 0);
@@ -282,7 +282,7 @@ camel_nntp_get_headers (CamelStore *store,
 			g_slist_foreach (del, (GFunc) g_free, NULL);
 			g_slist_free (del);
 
-			if(last_summary >= last_message)
+			if (last_summary >= last_message)
 				return;
 
 			first_message = last_summary;

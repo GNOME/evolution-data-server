@@ -1386,7 +1386,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		p = text + end_pos;
 		for (p = text + (end_pos-1), j = end_pos - 1; *p && *p != '"' ; p = g_utf8_next_char (p), j++) {
 			gunichar c = g_utf8_get_char (p);
-			if(c == ',') {
+			if (c == ',') {
 				insert_destination_at_position (name_selector_entry, j+1);
 			}
 		}
@@ -1399,7 +1399,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		/* If the entry was completely cleared, remove the initial destination too */
 		remove_destination_by_index (name_selector_entry, 0);
 		generate_attribute_list (name_selector_entry);
-	} else  if (!del_space){
+	} else  if (!del_space) {
 		modify_destination_at_position (name_selector_entry, start_pos);
 	}
 

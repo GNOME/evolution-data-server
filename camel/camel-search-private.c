@@ -432,7 +432,7 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 	while ((c = camel_utf8_getc(&ptr)) && g_unichar_isspace(c))
 		value = (const gchar *)ptr;
 
-	switch(type) {
+	switch (type) {
 	case CAMEL_SEARCH_TYPE_ENCODED:
 		v = camel_header_decode_string(value, default_charset); /* FIXME: Find header charset */
 		truth = header_match(v, match, how);

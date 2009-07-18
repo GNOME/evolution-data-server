@@ -181,7 +181,7 @@ add_folder_esource (ExchangeAccount *account,
 	}
 	else {
                 /* source group already exists*/
-		if((source = e_source_group_peek_source_by_name (source_group,
+		if ((source = e_source_group_peek_source_by_name (source_group,
 							folder_name)) == NULL) {
 			if (is_contacts_folder && g_str_has_prefix (physical_uri, "gal://")) {
 				gchar *browse = exchange_account_get_account_uri_param (account, "ad_browse");
@@ -332,7 +332,7 @@ remove_folder_esource (ExchangeAccount *account,
 
 			sources = e_source_group_peek_sources (group);
 
-			for(; sources != NULL; sources = g_slist_next (sources)) {
+			for (; sources != NULL; sources = g_slist_next (sources)) {
 
 				source = E_SOURCE (sources->data);
 				read_uri = e_source_get_uri (source);

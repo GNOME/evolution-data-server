@@ -917,7 +917,7 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 
 		printf("looping, error '%d'\n", error);
 
-		switch(error) {
+		switch (error) {
 		case SEC_ERROR_UNKNOWN_ISSUER:
 		case SEC_ERROR_CA_CERT_INVALID:
 		case SEC_ERROR_UNTRUSTED_ISSUER:

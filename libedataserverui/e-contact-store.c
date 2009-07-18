@@ -274,7 +274,7 @@ find_contact_source_by_book_return_view(EContactStore *contact_store, EBook *boo
 
 	ContactSource *source = NULL;
 
-	for(i = 0; i < contact_store->contact_sources->len; i++) {
+	for (i = 0; i < contact_store->contact_sources->len; i++) {
 		source = &g_array_index (contact_store->contact_sources, ContactSource, i);
 		if (source->book == book)
 			break;

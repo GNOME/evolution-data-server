@@ -174,13 +174,13 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 	e_gw_message_write_string_parameter (msg, "email", NULL, new_proxy->proxy_email);
 	e_gw_message_write_string_parameter (msg, "displayName", NULL, new_proxy->proxy_name);
 
-	if (new_proxy->permissions & E_GW_PROXY_MAIL_READ){
+	if (new_proxy->permissions & E_GW_PROXY_MAIL_READ) {
 		added = TRUE;
 		soup_soap_message_start_element (msg, "mail", NULL, NULL);
 		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
 	}
-	if (new_proxy->permissions & E_GW_PROXY_MAIL_WRITE){
-		if (added == FALSE){
+	if (new_proxy->permissions & E_GW_PROXY_MAIL_WRITE) {
+		if (added == FALSE) {
 			added=TRUE;
 			soup_soap_message_start_element (msg, "mail", NULL, NULL);
 		}
@@ -190,13 +190,13 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		soup_soap_message_end_element(msg);
 
 	added = FALSE;
-	if (new_proxy->permissions & E_GW_PROXY_APPOINTMENT_READ){
+	if (new_proxy->permissions & E_GW_PROXY_APPOINTMENT_READ) {
 		added=TRUE;
 		soup_soap_message_start_element (msg, "appointment", NULL, NULL);
 		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
 	}
-	if (new_proxy->permissions & E_GW_PROXY_APPOINTMENT_WRITE){
-		if(added == FALSE)
+	if (new_proxy->permissions & E_GW_PROXY_APPOINTMENT_WRITE) {
+		if (added == FALSE)
 		{
 			added=TRUE;
 			soup_soap_message_start_element (msg, "appointment", NULL, NULL);
@@ -207,12 +207,12 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		soup_soap_message_end_element  (msg);
 
 	added = FALSE;
-	if (new_proxy->permissions & E_GW_PROXY_TASK_READ){
+	if (new_proxy->permissions & E_GW_PROXY_TASK_READ) {
 		added=TRUE;
 		soup_soap_message_start_element (msg, "task", NULL, NULL);
 		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
 	}
-	if (new_proxy->permissions & E_GW_PROXY_TASK_WRITE){
+	if (new_proxy->permissions & E_GW_PROXY_TASK_WRITE) {
 		if (added == FALSE)
 		{
 			added=TRUE;
@@ -224,13 +224,13 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		soup_soap_message_end_element(msg);
 
 	added = FALSE;
-	if (new_proxy->permissions & E_GW_PROXY_NOTES_READ){
+	if (new_proxy->permissions & E_GW_PROXY_NOTES_READ) {
 		added=TRUE;
 		soup_soap_message_start_element (msg, "note", NULL, NULL);
 		e_gw_message_write_int_parameter (msg, "read", NULL, 1);
 	}
-	if (new_proxy->permissions & E_GW_PROXY_NOTES_WRITE){
-		if(added==FALSE)
+	if (new_proxy->permissions & E_GW_PROXY_NOTES_WRITE) {
+		if (added==FALSE)
 		{
 			added=TRUE;
 			soup_soap_message_start_element (msg, "note", NULL, NULL);
@@ -241,12 +241,12 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		soup_soap_message_end_element(msg);
 
 	added = FALSE;
-	if (new_proxy->permissions & E_GW_PROXY_GET_ALARMS){
+	if (new_proxy->permissions & E_GW_PROXY_GET_ALARMS) {
 		added=TRUE;
 		soup_soap_message_start_element(msg,"misc",NULL,NULL);
 		e_gw_message_write_int_parameter (msg, "alarms", NULL, 1);
 	}
-	if (new_proxy->permissions & E_GW_PROXY_GET_NOTIFICATIONS){
+	if (new_proxy->permissions & E_GW_PROXY_GET_NOTIFICATIONS) {
 		if (added!=TRUE)
 		{
 			added=TRUE;
@@ -255,7 +255,7 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		e_gw_message_write_int_parameter (msg, "notify", NULL, 1);
 	}
 
-	if (new_proxy->permissions & E_GW_PROXY_MODIFY_FOLDERS){
+	if (new_proxy->permissions & E_GW_PROXY_MODIFY_FOLDERS) {
 		if (added!=TRUE)
 		{
 			added=TRUE;
@@ -263,7 +263,7 @@ e_gw_proxy_form_soap_request_from_proxyHandler (SoupSoapMessage *msg, proxyHandl
 		}
 		e_gw_message_write_int_parameter (msg, "setup", NULL, 1);
 	}
-	if (new_proxy->permissions & E_GW_PROXY_READ_PRIVATE){
+	if (new_proxy->permissions & E_GW_PROXY_READ_PRIVATE) {
 		if (added!=TRUE)
 		{
 			added=TRUE;

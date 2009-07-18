@@ -460,7 +460,7 @@ xfer_folder (ExchangeHierarchy *hier, EFolder *source,
 					       physical_uri);
 		}
 		else if ((strcmp (folder_type, "tasks") == 0) ||
-			 (strcmp (folder_type, "tasks/public") == 0)){
+			 (strcmp (folder_type, "tasks/public") == 0)) {
 			remove_folder_esource (hier->account,
 					       EXCHANGE_TASKS_FOLDER,
 					       physical_uri);

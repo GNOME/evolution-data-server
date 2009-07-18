@@ -550,7 +550,7 @@ camel_nntp_newsrc_parse_line(CamelNNTPNewsrc *newsrc, gchar *line)
 			p = comma + 1;
 		}
 
-	} while(comma);
+	} while (comma);
 }
 
 static gchar *

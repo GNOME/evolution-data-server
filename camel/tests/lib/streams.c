@@ -74,7 +74,7 @@ test_stream_seekable_readpart(CamelSeekableStream *s)
 		new = i*3;
 
 		/* exercise all seek methods */
-		switch(i % 3) {
+		switch (i % 3) {
 		case 0:
 			check(camel_seekable_stream_seek(s, new, CAMEL_STREAM_SET) == new);
 			break;
