@@ -104,9 +104,11 @@ e_cal_backend_store_set_property (GObject *object, guint property_id, const GVal
 	switch (property_id) {
 	case PROP_SOURCE_TYPE:
 		priv->source_type = g_value_get_enum (value);
+		break;
 	case PROP_URI:
 		set_uri (store, g_value_dup_string (value));
 		set_store_path (store);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
 	}
@@ -125,6 +127,7 @@ e_cal_backend_store_get_property (GObject *object, guint property_id, GValue *va
 	{
 	case PROP_SOURCE_TYPE:
 		g_value_set_enum (value, priv->source_type);
+		break;
 	case PROP_URI :
 		g_value_set_string (value, priv->uri);
 		break;
@@ -231,6 +234,15 @@ e_cal_backend_store_load (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
 }
 
+gboolean
+e_cal_backend_store_remove (ECalBackendStore *store)
+{
+	g_return_val_if_fail (store != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
+
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove (store);
+}
+
 ECalComponent *
 e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
@@ -321,6 +333,15 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar 
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components_by_uid (store, uid);
+}
+
+GSList *
+e_cal_backend_store_get_components (ECalBackendStore *store)
+{
+	g_return_val_if_fail (store != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
+
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components (store);
 }
 
 const gchar *

@@ -57,11 +57,13 @@ typedef struct {
 
 	/* virtual methods */
 	gboolean	(*load) (ECalBackendStore *store);
+	gboolean	(*remove) (ECalBackendStore *store);
 
 	ECalComponent *	(*get_component) (ECalBackendStore *store, const gchar *uid, const gchar *rid);
 	gboolean 	(*put_component) (ECalBackendStore *store, ECalComponent *comp);
 	gboolean 	(*remove_component) (ECalBackendStore *store, const gchar *uid, const gchar *rid);
 	GSList *	(*get_components_by_uid) (ECalBackendStore *store, const gchar *uid);
+	GSList *	(*get_components) (ECalBackendStore *store);
 
 	const icaltimezone *	(*get_timezone) (ECalBackendStore *store, const gchar *tzid);
 	gboolean	(*put_timezone) (ECalBackendStore *store, const icaltimezone *zone);
@@ -83,6 +85,7 @@ GType e_cal_backend_store_get_type (void);
 const gchar *e_cal_backend_store_get_path (ECalBackendStore *store);
 
 gboolean		e_cal_backend_store_load (ECalBackendStore *store);
+gboolean		e_cal_backend_store_remove (ECalBackendStore *store);
 ECalComponent *		e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid);
 gboolean 		e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp);
 gboolean 		e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid);
@@ -92,7 +95,7 @@ gboolean 		e_cal_backend_store_remove_timezone (ECalBackendStore *store, const g
 const icaltimezone *	e_cal_backend_store_get_default_timezone (ECalBackendStore *store);
 gboolean 		e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone);
 GSList *		e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid);
-GSList *		e_cal_backend_store_get_objects_list (ECalBackendStore *store, const gchar *sexp);
+GSList *		e_cal_backend_store_get_components (ECalBackendStore *store);
 const gchar *		e_cal_backend_store_get_key (ECalBackendStore *store, const gchar *key);
 gboolean 		e_cal_backend_store_put_key (ECalBackendStore *store, const gchar *key, const gchar *value);
 void			e_cal_backend_store_thaw_changes (ECalBackendStore *store);
