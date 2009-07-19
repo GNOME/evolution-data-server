@@ -26,8 +26,6 @@ G_DEFINE_TYPE (ECalBackendStore, e_cal_backend_store, G_TYPE_OBJECT)
 #define GET_PRIVATE(o) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate))
 
-typedef struct _ECalBackendStorePrivate ECalBackendStorePrivate;
-
 struct _ECalBackendStorePrivate {
 	ECalSourceType source_type;
 	gchar *uri;
@@ -205,6 +203,7 @@ e_cal_backend_store_init (ECalBackendStore *store)
 
 	priv = GET_PRIVATE(store);
 
+	store->priv = priv;
 	priv->uri = NULL;
 	priv->path = NULL;
 	priv->source_type = E_CAL_SOURCE_TYPE_EVENT;

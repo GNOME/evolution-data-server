@@ -44,8 +44,11 @@ G_BEGIN_DECLS
 #define E_CAL_BACKEND_FILE_STORE_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStoreClass))
 
+typedef struct _ECalBackendFileStorePrivate ECalBackendFileStorePrivate;
+
 typedef struct {
 	ECalBackendStore parent;
+	ECalBackendFileStorePrivate *priv;
 } ECalBackendFileStore;
 
 typedef struct {

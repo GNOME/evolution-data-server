@@ -33,8 +33,6 @@ G_DEFINE_TYPE (ECalBackendFileStore, e_cal_backend_file_store, E_TYPE_CAL_BACKEN
 #define GET_PRIVATE(o) \
   (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_BACKEND_FILE_STORE, ECalBackendFileStorePrivate))
 
-typedef struct _ECalBackendFileStorePrivate ECalBackendFileStorePrivate;
-
 typedef struct {
 	ECalComponent *comp;
 	GHashTable *recurrences;
@@ -729,6 +727,7 @@ e_cal_backend_file_store_init (ECalBackendFileStore *self)
 
 	priv = GET_PRIVATE(self);
 
+	self->priv = priv;
 	priv->timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) destroy_full_object);
 	priv->keys_cache = NULL;
