@@ -85,6 +85,19 @@ destroy_full_object (FullCompObject *obj)
 	obj = NULL;
 }
 
+static icaltimezone *
+copy_timezone (icaltimezone *zone)
+{
+	icaltimezone *copy;
+	icalcomponent *icalcomp;
+
+	copy = icaltimezone_new ();
+	icalcomp = icaltimezone_get_component (zone);
+	icaltimezone_set_component (copy, icalcomponent_new_clone (icalcomp));
+
+	return copy;
+}
+
 static gboolean
 put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 {
@@ -147,7 +160,7 @@ remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *r
 		goto end;
 	}
 
-	if (rid != NULL) {
+	if (rid != NULL && *rid) {
 		ret_val = g_hash_table_remove (obj->recurrences, rid);
 
 		if (ret_val && g_hash_table_size (obj->recurrences) == 0 && !obj->comp)
@@ -178,7 +191,7 @@ get_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *rid)
 	if (obj == NULL)
 		goto end;
 
-	if (rid != NULL)
+	if (rid != NULL && *rid)
 		comp = g_hash_table_lookup (obj->recurrences, rid);
 	else
 		comp = obj->comp;
@@ -200,6 +213,36 @@ e_cal_backend_file_store_get_component (ECalBackendStore *store, const gchar *ui
 	priv = GET_PRIVATE (fstore);
 
 	return get_component (fstore, uid, rid);
+}
+
+static gboolean
+e_cal_backend_file_store_has_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+{
+	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
+	ECalBackendFileStorePrivate *priv;
+	gboolean ret_val = FALSE;
+	FullCompObject *obj = NULL;
+
+	priv = GET_PRIVATE (fstore);
+
+	g_static_rw_lock_reader_lock (&priv->lock);
+
+	obj = g_hash_table_lookup (priv->comp_uid_hash, uid);
+	if (obj == NULL) {
+		goto end;
+	}
+
+	if (rid != NULL) {
+		ECalComponent *comp = g_hash_table_lookup (obj->recurrences, rid);
+
+		if (comp != NULL)
+			ret_val = TRUE;
+	} else
+		ret_val = TRUE;
+
+end:	
+	g_static_rw_lock_reader_unlock (&priv->lock);
+	return ret_val;
 }
 
 static gboolean
@@ -271,7 +314,7 @@ e_cal_backend_file_store_put_timezone (ECalBackendStore *store, const icaltimezo
 	priv = GET_PRIVATE (fstore);
 
 	g_static_rw_lock_writer_lock (&priv->lock);
-	copy = icaltimezone_copy ((icaltimezone *) zone);
+	copy = copy_timezone ((icaltimezone *) zone);
 	g_hash_table_insert (priv->timezones, g_strdup (icaltimezone_get_tzid ((icaltimezone *) zone)), copy);
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
@@ -381,7 +424,7 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 	g_static_rw_lock_writer_lock (&priv->lock);
 
 	tzid = icaltimezone_get_tzid ((icaltimezone*) zone);
-	copy = icaltimezone_copy ((icaltimezone *) zone);
+	copy = copy_timezone ((icaltimezone *) zone);
 	g_hash_table_insert (priv->timezones, g_strdup (tzid), copy);
 
 	if (e_file_cache_get_object (priv->keys_cache, key))
@@ -492,6 +535,48 @@ e_cal_backend_file_store_get_components (ECalBackendStore *store)
 }
 
 static void
+add_instance_ids_to_slist (gpointer key, gpointer value, gpointer user_data)
+{
+	GSList **slist = (GSList **) user_data;
+	ECalComponent *comp = (ECalComponent *) value;
+	ECalComponentId *id = e_cal_component_get_id (comp);
+
+	*slist = g_slist_prepend (*slist, id);
+}
+
+static void
+add_comp_ids_to_slist (gpointer key, gpointer value, gpointer user_data)
+{
+	GSList **slist = (GSList **) user_data;
+	FullCompObject *obj = NULL;
+	
+	obj = value;
+	if (obj->comp) {
+		ECalComponentId *id = e_cal_component_get_id (obj->comp);
+
+		*slist = g_slist_prepend (*slist, id);
+	}
+
+	g_hash_table_foreach (obj->recurrences, (GHFunc) add_instance_ids_to_slist, slist);
+}
+
+static GSList *
+e_cal_backend_file_store_get_component_ids (ECalBackendStore *store)
+{
+	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
+	ECalBackendFileStorePrivate *priv;
+	GSList *comp_ids = NULL;
+	
+	priv = GET_PRIVATE (fstore);
+
+	g_static_rw_lock_reader_lock (&priv->lock);
+	g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) add_comp_ids_to_slist, &comp_ids);
+	g_static_rw_lock_reader_unlock (&priv->lock);
+
+	return comp_ids;
+}
+
+static void
 add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 {
 	ECalBackendFileStorePrivate *priv;
@@ -594,7 +679,21 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 static gboolean
 e_cal_backend_file_store_remove (ECalBackendStore *store)
 {
-	
+	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
+	ECalBackendFileStorePrivate *priv;
+
+	priv = GET_PRIVATE (store);
+
+	/* This will remove all the contents in the directory */
+	e_file_cache_remove (priv->keys_cache);
+
+	g_hash_table_destroy (priv->timezones);
+	priv->timezones = NULL;
+
+	g_hash_table_destroy (priv->comp_uid_hash);
+	priv->comp_uid_hash = NULL;
+
+	return TRUE;
 }
 
 static void
@@ -778,17 +877,19 @@ e_cal_backend_file_store_class_init (ECalBackendFileStoreClass *klass)
 	store_class->get_component = e_cal_backend_file_store_get_component;
 	store_class->put_component = e_cal_backend_file_store_put_component;
 	store_class->remove_component = e_cal_backend_file_store_remove_component;
+	store_class->has_component = e_cal_backend_file_store_has_component;
 	store_class->get_timezone = e_cal_backend_file_store_get_timezone;
 	store_class->put_timezone = e_cal_backend_file_store_put_timezone;
 	store_class->remove_timezone = e_cal_backend_file_store_remove_timezone;
 	store_class->get_default_timezone = e_cal_backend_file_store_get_default_timezone;
 	store_class->set_default_timezone = e_cal_backend_file_store_set_default_timezone;
 	store_class->get_components_by_uid = e_cal_backend_file_store_get_components_by_uid;
-	store_class->get_key = e_cal_backend_file_store_get_key_value;
-	store_class->put_key = e_cal_backend_file_store_put_key_value;
+	store_class->get_key_value = e_cal_backend_file_store_get_key_value;
+	store_class->put_key_value = e_cal_backend_file_store_put_key_value;
 	store_class->thaw_changes = e_cal_backend_file_store_thaw_changes;
 	store_class->freeze_changes = e_cal_backend_file_store_freeze_changes;
 	store_class->get_components = e_cal_backend_file_store_get_components;
+	store_class->get_component_ids = e_cal_backend_file_store_get_component_ids;
 }
 
 static void

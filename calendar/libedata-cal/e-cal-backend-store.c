@@ -185,8 +185,8 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *klass)
 	klass->get_default_timezone = NULL;
 	klass->set_default_timezone = NULL;
 	klass->get_components_by_uid = NULL;
-	klass->get_key = NULL;
-	klass->put_key = NULL;
+	klass->get_key_value = NULL;
+	klass->put_key_value = NULL;
 
 	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
 		  		g_param_spec_enum ("source_type", NULL, NULL,
@@ -249,9 +249,18 @@ e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, co
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
-	g_return_val_if_fail (rid != NULL, NULL);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component (store, uid, rid);
+}
+
+gboolean
+e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+{
+	g_return_val_if_fail (store != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->has_component (store, uid, rid);
 }
 
 gboolean
@@ -344,24 +353,33 @@ e_cal_backend_store_get_components (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components (store);
 }
 
+GSList *
+e_cal_backend_store_get_component_ids (ECalBackendStore *store)
+{
+	g_return_val_if_fail (store != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
+
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component_ids (store);
+}
+
 const gchar *
-e_cal_backend_store_get_key (ECalBackendStore *store, const gchar *key)
+e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
 {
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_key (store, key);
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_key_value (store, key);
 }
 
 gboolean
-e_cal_backend_store_put_key (ECalBackendStore *store, const gchar *key, const gchar *value)
+e_cal_backend_store_put_key_value (ECalBackendStore *store, const gchar *key, const gchar *value)
 {
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_key (store, key, value);
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_key_value (store, key, value);
 }
 
 void
