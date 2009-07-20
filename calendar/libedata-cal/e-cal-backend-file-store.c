@@ -672,7 +672,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 
 	scan_vcalendar (fstore, icalcomp);
 	icalcomponent_free (icalcomp);
-
+	
 	return TRUE;
 }
 
@@ -693,6 +693,26 @@ e_cal_backend_file_store_remove (ECalBackendStore *store)
 	g_hash_table_destroy (priv->comp_uid_hash);
 	priv->comp_uid_hash = NULL;
 
+	return TRUE;
+}
+
+static gboolean
+e_cal_backend_file_store_clean (ECalBackendStore *store)
+{
+	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
+	ECalBackendFileStorePrivate *priv;
+
+	priv = GET_PRIVATE (store);
+
+	g_static_rw_lock_writer_lock (&priv->lock);
+
+	e_file_cache_clean (priv->keys_cache);
+	g_hash_table_remove_all (priv->comp_uid_hash);
+	g_hash_table_remove_all (priv->timezones);
+	
+	g_static_rw_lock_writer_unlock (&priv->lock);
+	
+	save_cache (fstore);
 	return TRUE;
 }
 
@@ -857,6 +877,7 @@ e_cal_backend_file_store_finalize (GObject *object)
 
 	priv->dirty = FALSE;
 	priv->freeze_changes = FALSE;
+	g_static_rw_lock_free (&priv->lock);
 
 	G_OBJECT_CLASS (e_cal_backend_file_store_parent_class)->finalize (object);
 }
@@ -874,6 +895,7 @@ e_cal_backend_file_store_class_init (ECalBackendFileStoreClass *klass)
 
 	store_class->load = e_cal_backend_file_store_load;
 	store_class->remove = e_cal_backend_file_store_remove;
+	store_class->clean = e_cal_backend_file_store_clean;
 	store_class->get_component = e_cal_backend_file_store_get_component;
 	store_class->put_component = e_cal_backend_file_store_put_component;
 	store_class->remove_component = e_cal_backend_file_store_remove_component;

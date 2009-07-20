@@ -30,6 +30,7 @@ struct _ECalBackendStorePrivate {
 	ECalSourceType source_type;
 	gchar *uri;
 	gchar *path;
+	gboolean loaded;
 };
 
 /* Property IDs */
@@ -176,6 +177,8 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *klass)
 	object_class->get_property = e_cal_backend_store_get_property;
 
 	klass->load = NULL;
+	klass->remove = NULL;
+	klass->clean = NULL;
 	klass->get_component = NULL;
 	klass->put_component = NULL;
 	klass->remove_component = NULL;
@@ -210,6 +213,7 @@ e_cal_backend_store_init (ECalBackendStore *store)
 	priv->uri = NULL;
 	priv->path = NULL;
 	priv->source_type = E_CAL_SOURCE_TYPE_EVENT;
+	priv->loaded = FALSE;
 }
 
 const gchar *
@@ -228,10 +232,19 @@ e_cal_backend_store_get_path (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_load (ECalBackendStore *store)
 {
+	ECalBackendStorePrivate *priv;
+
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
+	priv = GET_PRIVATE(store);
+
+	if (priv->loaded)
+		return TRUE;
+
+        priv->loaded = (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
+
+	return priv->loaded;
 }
 
 gboolean
@@ -241,6 +254,15 @@ e_cal_backend_store_remove (ECalBackendStore *store)
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove (store);
+}
+
+gboolean
+e_cal_backend_store_clean (ECalBackendStore *store)
+{
+	g_return_val_if_fail (store != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
+
+	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->clean (store);
 }
 
 ECalComponent *

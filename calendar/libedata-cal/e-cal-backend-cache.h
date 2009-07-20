@@ -77,6 +77,8 @@ const gchar * e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache);
 gboolean e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, const gchar *value);
 const gchar * e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key);
 
+gboolean	e_cal_backend_cache_remove (const gchar *uri, ECalSourceType source_type);
+
 G_END_DECLS
 
 #endif

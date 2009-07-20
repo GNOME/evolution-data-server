@@ -891,3 +891,49 @@ e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key)
 
 	return value;
 }
+
+gboolean
+e_cal_backend_cache_remove (const gchar *uri, ECalSourceType source_type)
+{
+	gchar *filename;
+
+	filename = get_filename_from_uri (uri, source_type);
+
+	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		gchar *dirname, *full_path;
+		const gchar *fname;
+		GDir *dir;
+		gboolean success;
+
+		/* remove all files in the directory */
+		dirname = g_path_get_dirname (filename);
+		dir = g_dir_open (dirname, 0, NULL);
+		if (dir) {
+			while ((fname = g_dir_read_name (dir))) {
+				full_path = g_build_filename (dirname, fname, NULL);
+				if (g_unlink (full_path) != 0) {
+					g_free (full_path);
+					g_free (dirname);
+					g_dir_close (dir);
+
+					return FALSE;
+				}
+
+				g_free (full_path);
+			}
+
+			g_dir_close (dir);
+		}
+
+		/* remove the directory itself */
+		success = g_rmdir (dirname) == 0;
+
+		/* free all memory */
+		g_free (dirname);
+		g_free (filename);
+		return success;
+	}
+
+	g_free (filename);
+	return FALSE;
+}
