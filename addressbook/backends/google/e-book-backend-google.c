@@ -373,7 +373,7 @@ e_book_backend_google_authenticate_user (EBookBackendSync *backend,
     g_free (book_username);
     if (FALSE == match) {
 	g_warning ("Username given when loading source and on authentication did not match!");
-	return GNOME_Evolution_Addressbook_OtherError;
+	return GNOME_Evolution_Addressbook_AuthenticationRequired;
     }
 
     google_book_connect_to_google (priv->book, password, &error);
@@ -686,6 +686,23 @@ e_book_backend_google_new (void)
 static EBookBackendSyncStatus
 e_book_backend_status_from_google_book_error (GoogleBookError error_code)
 {
-    return GNOME_Evolution_Addressbook_OtherError;
+	switch (error_code) {
+	case GOOGLE_BOOK_ERROR_NONE:
+		return GNOME_Evolution_Addressbook_Success;
+	case GOOGLE_BOOK_ERROR_CONTACT_NOT_FOUND:
+		return GNOME_Evolution_Addressbook_ContactNotFound;
+	case GOOGLE_BOOK_ERROR_CONFLICT:
+		return GNOME_Evolution_Addressbook_ContactIdAlreadyExists;
+	case GOOGLE_BOOK_ERROR_AUTH_FAILED:
+		return GNOME_Evolution_Addressbook_AuthenticationFailed;
+	case GOOGLE_BOOK_ERROR_AUTH_REQUIRED:
+		return GNOME_Evolution_Addressbook_AuthenticationRequired;
+	case GOOGLE_BOOK_ERROR_INVALID_CONTACT:
+	case GOOGLE_BOOK_ERROR_NETWORK_ERROR:
+	case GOOGLE_BOOK_ERROR_HTTP_ERROR:
+		break;
+	}
+
+	return GNOME_Evolution_Addressbook_OtherError;
 }
 

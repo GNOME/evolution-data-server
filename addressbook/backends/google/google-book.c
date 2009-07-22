@@ -1244,7 +1244,7 @@ google_book_error_from_soup_error (GError     *soup_error,
     }
     g_set_error (error,
                 GOOGLE_BOOK_ERROR,
-                GOOGLE_BOOK_ERROR_HTTP_ERROR,
+                code,
                 "%s due to '%s' (HTTP code %d)",
                 message ? message : "Action failed",
                 soup_error->message,
