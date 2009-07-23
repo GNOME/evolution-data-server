@@ -147,7 +147,7 @@ groupwise_send_to (CamelTransport *transport,
 	EGwConnectionStatus status = 0;
 	GSList *sent_item_list = NULL;
 	gchar *url = NULL;
-	const gchar *reply_request = NULL;
+	gchar *reply_request = NULL;
 	EGwItemLinkInfo *info = NULL;
 
 	if (!transport) {
@@ -184,22 +184,17 @@ groupwise_send_to (CamelTransport *transport,
 
 	item = camel_groupwise_util_item_from_message (cnc, message, from);
 
-	reply_request = (gchar *)camel_medium_get_header (CAMEL_MEDIUM (message), "X-GW-ORIG-ITEM-ID");
+	reply_request = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (message), "X-GW-ORIG-ITEM-ID"));
 	if (reply_request) {
-		gchar *id;
-		gint len = strlen (reply_request);
-
-		id = (gchar *)g_malloc0 (len-1);
-		id = memcpy(id, reply_request+2, len-3);
-		status = e_gw_connection_reply_item (cnc, id, REPLY_VIEW, &temp_item);
+		g_strstrip (reply_request);
+		status = e_gw_connection_reply_item (cnc, reply_request, REPLY_VIEW, &temp_item);
 		if (status != E_GW_CONNECTION_STATUS_OK)
 			g_warning ("Could not send a replyRequest...continuing without!!\n");
 		else {
 			info = e_gw_item_get_link_info (temp_item);
 			e_gw_item_set_link_info (item, info);
 		}
-
-		g_free (id);
+		g_free (reply_request);
 	}
 
 	/*Send item*/

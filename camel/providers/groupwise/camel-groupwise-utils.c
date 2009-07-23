@@ -341,28 +341,27 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 	attachment->name = g_strdup (filename ? filename : "");
 	if (camel_content_type_is (type, "message", "rfc822")) {
-		const gchar *item_id;
-		gchar *msgid;
-		gint len;
+		gchar *item_id;
 
-		item_id = camel_medium_get_header (CAMEL_MEDIUM (dw), "X-GW-ITEM-ID");
+		item_id = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (dw), "X-GW-ITEM-ID"));
 		/*
 		 * XXX: The following code piece is a screwed up way of doing stuff.
 		 * But we dont have much choice. Do not use 'camel_header_msgid_decode'
 		 * since it removes the container id portion from the id and which the
 		 * groupwise server needs.
 		 */
-
-		len = strlen (item_id);
-		msgid = (gchar *)g_malloc0 (len-1);
-		msgid = memcpy(msgid, item_id+2, len-3);
-		g_print ("||| msgid:%s\n", msgid);
-
-		status = e_gw_connection_forward_item (cnc, msgid, NULL, TRUE, &temp_item);
-		g_free (msgid);
+		g_strstrip (item_id);
+		status = e_gw_connection_forward_item (cnc, item_id, NULL, TRUE, &temp_item);
+		g_free (item_id);
 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_warning ("Could not send a forwardRequest...continuing without!!\n");
+			
+			g_free (attachment->name);
+			attachment->name = g_strdup ("Mime.822");
+			
+			g_free (attachment->contentType);
+			attachment->contentType = g_strdup ("Mail");
 		} else {
 			GSList *attach_list = e_gw_item_get_attach_id_list (temp_item);
 			EGwItemAttachment *temp_attach = (EGwItemAttachment *)attach_list->data;
