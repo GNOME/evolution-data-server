@@ -302,7 +302,6 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (rid != NULL, FALSE);
 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid);
 }

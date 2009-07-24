@@ -682,7 +682,7 @@ e_cal_backend_file_store_remove (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 
-	priv = GET_PRIVATE (store);
+	priv = GET_PRIVATE (fstore);
 
 	/* This will remove all the contents in the directory */
 	e_file_cache_remove (priv->keys_cache);

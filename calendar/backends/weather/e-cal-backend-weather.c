@@ -20,6 +20,7 @@
 
 #include <config.h>
 #include <libedata-cal/e-cal-backend-cache.h>
+#include <libedata-cal/e-cal-backend-file-store.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include <glib/gi18n-lib.h>
@@ -48,7 +49,7 @@ struct _ECalBackendWeatherPrivate {
 	CalMode mode;
 
 	/* The file cache */
-	ECalBackendCache *cache;
+	ECalBackendStore *store;
 
 	/* The calendar's default timezone, used for resolving DATE and
 	   floating DATE-TIME values. */
@@ -140,7 +141,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent *comp;
 	icalcomponent *icomp;
-	GList *l;
+	GSList *l;
 	gchar *obj;
 
 	priv = cbw->priv;
@@ -151,8 +152,8 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 	}
 
 	/* update cache */
-	l = e_cal_backend_cache_get_components (priv->cache);
-	for (; l != NULL; l = g_list_next (l)) {
+	l = e_cal_backend_store_get_components (priv->store);
+	for (; l != NULL; l = g_slist_next (l)) {
 		ECalComponentId *id;
 		gchar *obj;
 
@@ -169,14 +170,14 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 		g_free (obj);
 		g_object_unref (G_OBJECT (l->data));
 	}
-	g_list_free (l);
-	e_file_cache_clean (E_FILE_CACHE (priv->cache));
+	g_slist_free (l);
+	e_cal_backend_store_clean (priv->store);
 
 	comp = create_weather (cbw, info, FALSE);
 	if (comp) {
 		GSList *forecasts;
 
-		e_cal_backend_cache_put_component (priv->cache, comp);
+		e_cal_backend_store_put_component (priv->store, comp);
 		icomp = e_cal_component_get_icalcomponent (comp);
 		obj = icalcomponent_as_ical_string_r (icomp);
 		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
@@ -193,7 +194,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 				if (nfo) {
 					comp = create_weather (cbw, nfo, TRUE);
 					if (comp) {
-						e_cal_backend_cache_put_component (priv->cache, comp);
+						e_cal_backend_store_put_component (priv->store, comp);
 						icomp = e_cal_component_get_icalcomponent (comp);
 						obj = icalcomponent_as_ical_string_r (icomp);
 						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
@@ -477,13 +478,15 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 		g_free (priv->city);
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
 
-	if (!priv->cache) {
-		priv->cache = e_cal_backend_cache_new (uri, E_CAL_SOURCE_TYPE_EVENT);
+	if (!priv->store) {
+		e_cal_backend_cache_remove (uri, E_CAL_SOURCE_TYPE_EVENT);
+		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, E_CAL_SOURCE_TYPE_EVENT);
 
-		if (!priv->cache) {
+		if (!priv->store) {
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbw), _("Could not create cache file"));
 			return GNOME_Evolution_Calendar_OtherError;
 		}
+		e_cal_backend_store_load (priv->store);
 
 		if (priv->default_zone) {
 			icalcomponent *icalcomp = icaltimezone_get_component (priv->default_zone);
@@ -513,13 +516,13 @@ e_cal_backend_weather_remove (ECalBackendSync *backend, EDataCal *cal)
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	if (!priv->cache) {
+	if (!priv->store) {
 		/* lie here a bit, but otherwise the calendar will not be removed, even it should */
 		g_print (G_STRLOC ": Doesn't have a cache?!?");
 		return GNOME_Evolution_Calendar_Success;
 	}
 
-	e_file_cache_remove (E_FILE_CACHE (priv->cache));
+	e_cal_backend_store_remove (priv->store);
 	return GNOME_Evolution_Calendar_Success;
 }
 
@@ -549,9 +552,9 @@ e_cal_backend_weather_get_object (ECalBackendSync *backend, EDataCal *cal, const
 	ECalComponent *comp;
 
 	g_return_val_if_fail (uid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
-	g_return_val_if_fail (priv->cache != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
+	g_return_val_if_fail (priv->store != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
-	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+	comp = e_cal_backend_store_get_component (priv->store, uid, rid);
 	g_return_val_if_fail (comp != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
 
 	*object = e_cal_component_get_as_string (comp);
@@ -566,20 +569,20 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, 
 	ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
 	ECalBackendWeatherPrivate *priv = cbw->priv;
 	ECalBackendSExp *sexp = e_cal_backend_sexp_new (sexp_string);
-	GList *components, *l;
+	GSList *components, *l;
 
 	if (!sexp)
 		return GNOME_Evolution_Calendar_InvalidQuery;
 
 	*objects = NULL;
-	components = e_cal_backend_cache_get_components (priv->cache);
-	for (l = components; l != NULL; l = g_list_next (l)) {
+	components = e_cal_backend_store_get_components (priv->store);
+	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend)))
 			*objects = g_list_append (*objects, e_cal_component_get_as_string (l->data));
 	}
 
-	g_list_foreach (components, (GFunc) g_object_unref, NULL);
-	g_list_free (components);
+	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
+	g_slist_free (components);
 	g_object_unref (sexp);
 
 	return GNOME_Evolution_Calendar_Success;
@@ -710,7 +713,7 @@ e_cal_backend_weather_is_loaded (ECalBackend *backend)
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	if (!priv->cache)
+	if (!priv->store)
 		return FALSE;
 
 	return TRUE;
@@ -721,12 +724,13 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
 	ECalBackendSExp *sexp;
-	GList *components, *l, *objects;
+	GSList *components, *l;
+	GList *objects;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	if (!priv->cache) {
+	if (!priv->store) {
 		e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_NoSuchCal);
 		return;
 	}
@@ -738,8 +742,8 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 	}
 
 	objects = NULL;
-	components = e_cal_backend_cache_get_components (priv->cache);
-	for (l = components; l != NULL; l = g_list_next (l)) {
+	components = e_cal_backend_store_get_components (priv->store);
+	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
 			objects = g_list_append (objects, e_cal_component_get_as_string (l->data));
 	}
@@ -747,8 +751,8 @@ static void e_cal_backend_weather_start_query (ECalBackend *backend, EDataCalVie
 	if (objects)
 		e_data_cal_view_notify_objects_added (query, (const GList *) objects);
 
-	g_list_foreach (components, (GFunc) g_object_unref, NULL);
-	g_list_free (components);
+	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
+	g_slist_free (components);
 	g_list_foreach (objects, (GFunc) g_free, NULL);
 	g_list_free (objects);
 	g_object_unref (sexp);
@@ -866,9 +870,9 @@ e_cal_backend_weather_finalize (GObject *object)
 		priv->begin_retrival_id = 0;
 	}
 
-	if (priv->cache) {
-		g_object_unref (priv->cache);
-		priv->cache = NULL;
+	if (priv->store) {
+		g_object_unref (priv->store);
+		priv->store = NULL;
 	}
 
 	g_hash_table_destroy (priv->zones);
@@ -905,7 +909,7 @@ e_cal_backend_weather_init (ECalBackendWeather *cbw, ECalBackendWeatherClass *cl
 	priv->begin_retrival_id = 0;
 	priv->opened = FALSE;
 	priv->source = NULL;
-	priv->cache = NULL;
+	priv->store = NULL;
 	priv->city = NULL;
 
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);

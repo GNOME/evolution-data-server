@@ -34,6 +34,7 @@
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-time-util.h>
 #include <libedata-cal/e-cal-backend-cache.h>
+#include <libedata-cal/e-cal-backend-file-store.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 
@@ -72,7 +73,7 @@ struct _ECalBackendCalDAVPrivate {
 	CalMode mode;
 
 	/* The local disk cache */
-	ECalBackendCache *cache;
+	ECalBackendStore *store;
 
 	/* local attachments store */
 	gchar *local_attachments_store;
@@ -85,8 +86,6 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* lock to indicate a busy state */
 	GMutex *busy_lock;
-	/* lock to protect cache */
-	GStaticRecMutex cache_lock;
 
 	/* cond to synch threads */
 	GCond *cond;
@@ -1056,9 +1055,7 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 		if (parse_propfind_response (message, XPATH_GETCTAG_STATUS, XPATH_GETCTAG, &ctag)) {
 			const gchar *my_ctag;
 
-			g_static_rec_mutex_lock (&priv->cache_lock);
-			my_ctag = e_cal_backend_cache_get_key_value (priv->cache, CALDAV_CTAG_KEY);
-			g_static_rec_mutex_unlock (&priv->cache_lock);
+			my_ctag = e_cal_backend_store_get_key_value (priv->store, CALDAV_CTAG_KEY);
 
 			if (ctag && my_ctag && g_str_equal (ctag, my_ctag)) {
 				/* ctag is same, no change in the calendar */
@@ -1612,7 +1609,7 @@ remove_complist_from_cache_and_notify_cb (gpointer key, gpointer value, gpointer
 			continue;
 		}
 
-		if (e_cal_backend_cache_remove_component (priv->cache, id->uid, id->rid)) {
+		if (e_cal_backend_store_remove_component (priv->store, id->uid, id->rid)) {
 			gchar *old_str = e_cal_component_get_as_string (old_comp);
 
 			e_cal_backend_notify_object_removed ((ECalBackend *)cbdav, id, old_str, NULL);
@@ -1653,7 +1650,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackend *bkend;
 	CalDAVObject *sobjs, *object;
-	GList *c_objs, *c_iter; /* list of all items known from our cache */
+	GSList *c_objs, *c_iter; /* list of all items known from our cache */
 	GTree *c_uid2complist;  /* cache components list (with detached instances) sorted by (master's) uid */
 	GHashTable *c_href2uid; /* connection between href and a (master's) uid */
 	GSList *hrefs_to_update, *htu; /* list of href-s to update */
@@ -1673,22 +1670,20 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	if (!caldav_server_list_objects (cbdav, &sobjs, &len, NULL, start_time, end_time))
 		return;
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-	c_objs = e_cal_backend_cache_get_components (priv->cache);
-	g_static_rec_mutex_unlock (&priv->cache_lock);
+	c_objs = e_cal_backend_store_get_components (priv->store);
 
 	if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
-		printf ("CalDAV - found %d objects on the server, locally stored %d objects\n", len, g_list_length (c_objs)); fflush (stdout);
+		printf ("CalDAV - found %d objects on the server, locally stored %d objects\n", len, g_slist_length (c_objs)); fflush (stdout);
 	}
 
 	/* do not store changes in cache immediately - makes things significantly quicker */
-	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
+	e_cal_backend_store_freeze_changes (priv->store);
 
 	c_uid2complist = g_tree_new_full ((GCompareDataFunc)g_strcmp0, NULL, g_free, free_comp_list);
 	c_href2uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	/* fill indexed hash and tree with cached components */
-	for (c_iter = c_objs; c_iter; c_iter = g_list_next (c_iter)) {
+	for (c_iter = c_objs; c_iter; c_iter = g_slist_next (c_iter)) {
 		ECalComponent *ccomp = E_CAL_COMPONENT (c_iter->data);
 		const gchar *uid = NULL;
 		struct cache_comp_list *ccl;
@@ -1731,8 +1726,8 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	}
 
 	/* clear it now, we do not need it later */
-	g_list_foreach (c_objs, (GFunc) g_object_unref, NULL);
-	g_list_free (c_objs);
+	g_slist_foreach (c_objs, (GFunc) g_object_unref, NULL);
+	g_slist_free (c_objs);
 	c_objs = NULL;
 
 	hrefs_to_update = NULL;
@@ -1821,8 +1816,6 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 			}
 
 			/* we are going to update cache */
-			g_static_rec_mutex_lock (&priv->cache_lock);
-
 			/* they are downloaded, so process them */
 			for (i = 0, object = up_sobjs; i < count /*&& priv->slave_cmd == SLAVE_SHOULD_WORK*/; i++, object++) {
 				if (object->status == 200 && object->href && object->etag && object->cdata && *object->cdata) {
@@ -1881,7 +1874,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 										g_free (nc_rid);
 									}
 
-									e_cal_backend_cache_put_component (priv->cache, new_comp);
+									e_cal_backend_store_put_component (priv->store, new_comp);
 
 									if (old_comp == NULL) {
 										gchar *new_str = e_cal_component_get_as_string (new_comp);
@@ -1916,7 +1909,6 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 			}
 
 			/* cache update done for fetched items */
-			g_static_rec_mutex_unlock (&priv->cache_lock);
 		}
 
 		/* do not free 'data' itself, it's part of 'sobjs' */
@@ -1926,17 +1918,13 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	/* if not interrupted and not using the time range... */
 	if (priv->slave_cmd == SLAVE_SHOULD_WORK && (!start_time || !end_time)) {
 		/* ...remove old (not on server anymore) items from our cache and notify of a removal */
-		g_static_rec_mutex_lock (&priv->cache_lock);
 		g_tree_foreach (c_uid2complist, remove_complist_from_cache_and_notify_cb, cbdav);
-		g_static_rec_mutex_unlock (&priv->cache_lock);
 	}
 
 	if (priv->ctag_to_store) {
 		/* store only when wasn't interrupted */
 		if (priv->slave_cmd == SLAVE_SHOULD_WORK && start_time == 0 && end_time == 0) {
-			g_static_rec_mutex_lock (&priv->cache_lock);
-			e_cal_backend_cache_put_key_value (priv->cache, CALDAV_CTAG_KEY, priv->ctag_to_store);
-			g_static_rec_mutex_unlock (&priv->cache_lock);
+			e_cal_backend_store_put_key_value (priv->store, CALDAV_CTAG_KEY, priv->ctag_to_store);
 		}
 
 		g_free (priv->ctag_to_store);
@@ -1944,7 +1932,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	}
 
 	/* save cache changes to disk finally */
-	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
+	e_cal_backend_store_thaw_changes (priv->store);
 
 	for (i = 0, object = sobjs; i < len; i++, object++) {
 		caldav_object_free (object, FALSE);
@@ -1993,16 +1981,14 @@ caldav_synch_slave_loop (gpointer data)
 		}
 
 		if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
-			GList *c_objs;
+			GSList *c_objs;
 
-			g_static_rec_mutex_lock (&priv->cache_lock);
-			c_objs = e_cal_backend_cache_get_components (priv->cache);
-			g_static_rec_mutex_unlock (&priv->cache_lock);
+			c_objs = e_cal_backend_store_get_components (priv->store);
 
-			printf ("CalDAV - finished syncing with %d items in a cache\n", g_list_length (c_objs)); fflush (stdout);
+			printf ("CalDAV - finished syncing with %d items in a cache\n", g_slist_length (c_objs)); fflush (stdout);
 
-			g_list_foreach (c_objs, (GFunc) g_object_unref, NULL);
-			g_list_free (c_objs);
+			g_slist_foreach (c_objs, (GFunc) g_object_unref, NULL);
+			g_slist_free (c_objs);
 		}
 
 		priv->slave_busy = FALSE;
@@ -2239,13 +2225,17 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 			break;
 	}
 
-	if (priv->cache == NULL) {
-		priv->cache = e_cal_backend_cache_new (priv->uri, source_type);
+	if (priv->store == NULL) {
+		/* remove the old cache while migrating to ECalBackendStore */
+		e_cal_backend_cache_remove (priv->uri, source_type);
+		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (priv->uri, source_type);
 
-		if (priv->cache == NULL) {
+		if (priv->store == NULL) {
 			result = GNOME_Evolution_Calendar_OtherError;
 			goto out;
 		}
+
+		e_cal_backend_store_load (priv->store);
 	}
 
 	/* Set the local attachment store */
@@ -2417,8 +2407,8 @@ caldav_remove (ECalBackendSync *backend,
 	if (status != GNOME_Evolution_Calendar_Success)
 		g_print (G_STRLOC ": %s", e_cal_backend_status_to_string (status));
 
-	e_file_cache_remove (E_FILE_CACHE (priv->cache));
-	priv->cache  = NULL;
+	e_cal_backend_store_remove (priv->store);
+	priv->store = NULL;
 	priv->loaded = FALSE;
 
 	if (priv->synch_slave) {
@@ -2433,21 +2423,20 @@ caldav_remove (ECalBackendSync *backend,
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/* has priv->cache_lock locked already */
 static void
 remove_comp_from_cache_cb (gpointer value, gpointer user_data)
 {
 	ECalComponent *comp = value;
-	ECalBackendCache *cache = user_data;
+	ECalBackendStore *store = user_data;
 	ECalComponentId *id;
 
 	g_return_if_fail (comp != NULL);
-	g_return_if_fail (cache != NULL);
+	g_return_if_fail (store != NULL);
 
 	id = e_cal_component_get_id (comp);
 	g_return_if_fail (id != NULL);
 
-	e_cal_backend_cache_remove_component (cache, id->uid, id->rid);
+	e_cal_backend_store_remove_component (store, id->uid, id->rid);
 	e_cal_component_free_id (id);
 }
 
@@ -2459,24 +2448,20 @@ remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar 
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-
 	if (!rid || !*rid) {
 		/* get with detached instances */
-		GSList *objects = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
+		GSList *objects = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 
 		if (objects) {
-			g_slist_foreach (objects, (GFunc)remove_comp_from_cache_cb, priv->cache);
+			g_slist_foreach (objects, (GFunc)remove_comp_from_cache_cb, priv->store);
 			g_slist_foreach (objects, (GFunc)g_object_unref, NULL);
 			g_slist_free (objects);
 
 			res = TRUE;
 		}
 	} else {
-		res = e_cal_backend_cache_remove_component (priv->cache, uid, rid);
+		res = e_cal_backend_store_remove_component (priv->store, uid, rid);
 	}
-
-	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	return res;
 }
@@ -2525,7 +2510,7 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *ri
 
 	if (rid == NULL || !*rid) {
 		/* get with detached instances */
-		GSList *objects = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
+		GSList *objects = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 
 		if (!objects) {
 			return NULL;
@@ -2557,7 +2542,7 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *ri
 		g_slist_free (objects);
 	} else {
 		/* get the exact object */
-		ECalComponent *comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+		ECalComponent *comp = e_cal_backend_store_get_component (priv->store, uid, rid);
 
 		if (comp) {
 			icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
@@ -2612,10 +2597,8 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 				if (etag)
 					ecalcomp_set_etag (comp, etag);
 
-				g_static_rec_mutex_lock (&priv->cache_lock);
-				if (e_cal_backend_cache_put_component (priv->cache, comp))
+				if (e_cal_backend_store_put_component (priv->store, comp))
 					res = TRUE;
-				g_static_rec_mutex_unlock (&priv->cache_lock);
 			}
 		}
 	} else if (icalcomponent_isa (icalcomp) == my_kind) {
@@ -2627,9 +2610,7 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 			if (etag)
 				ecalcomp_set_etag (comp, etag);
 
-			g_static_rec_mutex_lock (&priv->cache_lock);
-			res = e_cal_backend_cache_put_component (priv->cache, comp);
-			g_static_rec_mutex_unlock (&priv->cache_lock);
+			res = e_cal_backend_store_put_component (priv->store, comp);
 		}
 	}
 
@@ -2877,7 +2858,7 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
 	g_return_if_fail (uid != NULL);
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-	l = e_cal_backend_cache_get_components_by_uid (priv->cache, uid);
+	l = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 	len = g_slist_length (l);
 	g_slist_free (l);
 	if (len > 0)
@@ -2891,7 +2872,7 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
 
 /* callback for icalcomponent_foreach_tzid */
 typedef struct {
-	ECalBackendCache *cache;
+	ECalBackendStore *store;
 	icalcomponent *vcal_comp;
 	icalcomponent *icalcomp;
 } ForeachTzidData;
@@ -2916,7 +2897,7 @@ add_timezone_cb (icalparameter *param, gpointer data)
 	if (!tz) {
 		tz = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 		if (!tz)
-			tz = (icaltimezone *) e_cal_backend_cache_get_timezone (f_data->cache, tzid);
+			tz = (icaltimezone *) e_cal_backend_store_get_timezone (f_data->store, tzid);
 		if (!tz)
 			return;
 	}
@@ -2941,13 +2922,11 @@ add_timezones_from_component (ECalBackendCalDAV *cbdav, icalcomponent *vcal_comp
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	f_data.cache = priv->cache;
+	f_data.store = priv->store;
 	f_data.vcal_comp = vcal_comp;
 	f_data.icalcomp = icalcomp;
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
 	icalcomponent_foreach_tzid (icalcomp, add_timezone_cb, &f_data);
-	g_static_rec_mutex_unlock (&priv->cache_lock);
 }
 
 /* also removes X-EVOLUTION-CALDAV from all the components */
@@ -3051,11 +3030,9 @@ cache_contains (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid)
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
-	g_return_val_if_fail (priv != NULL && priv->cache != NULL, FALSE);
+	g_return_val_if_fail (priv != NULL && priv->store != NULL, FALSE);
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-	comp = e_cal_backend_cache_get_component (priv->cache, uid, rid);
-	g_static_rec_mutex_unlock (&priv->cache_lock);
+	comp = e_cal_backend_store_get_component (priv->store, uid, rid);
 	res = comp != NULL;
 
 	if (comp)
@@ -3176,7 +3153,7 @@ replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent
 	return old_comp;
 }
 
-/* a busy_lock and a cache_lock are supposed to be locked already, when calling this function */
+/* a busy_lock is supposed to be locked already, when calling this function */
 static ECalBackendSyncStatus
 do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 {
@@ -3278,7 +3255,7 @@ do_create_object (ECalBackendCalDAV *cbdav, gchar **calobj, gchar **uid)
 	return status;
 }
 
-/* a busy_lock and a cache_lock are supposed to be locked already, when calling this function */
+/* a busy_lock is supposed to be locked already, when calling this function */
 static ECalBackendSyncStatus
 do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object)
 {
@@ -3344,7 +3321,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 
 		if (e_cal_component_is_instance (comp)) {
 			/* set detached instance as the old object, if any */
-			ECalComponent *old_instance = old_instance = e_cal_backend_cache_get_component (priv->cache, id->uid, id->rid);
+			ECalComponent *old_instance = old_instance = e_cal_backend_store_get_component (priv->store, id->uid, id->rid);
 
 			if (old_instance) {
 				*old_object = e_cal_component_get_as_string (old_instance);
@@ -3435,7 +3412,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	return status;
 }
 
-/* a busy_lock and a cache_lock are supposed to be locked already, when calling this function */
+/* a busy_lock is supposed to be locked already, when calling this function */
 static ECalBackendSyncStatus
 do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object)
 {
@@ -3462,7 +3439,7 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 	}
 
 	if (old_object) {
-		ECalComponent *old = e_cal_backend_cache_get_component (priv->cache, uid, rid);
+		ECalComponent *old = e_cal_backend_store_get_component (priv->store, uid, rid);
 
 		if (old) {
 			*old_object = e_cal_component_get_as_string (old);
@@ -3590,18 +3567,14 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-
 	zone = icaltimezone_new ();
 	for (iter = timezones; iter; iter = iter->next) {
 		if (icaltimezone_set_component (zone, iter->data)) {
-			e_cal_backend_cache_put_timezone (priv->cache, zone);
+			e_cal_backend_store_put_timezone (priv->store, zone);
 		} else {
 			icalcomponent_free (iter->data);
 		}
 	}
-
-	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	icaltimezone_free (zone, TRUE);
 	g_list_free (timezones);
@@ -3809,9 +3782,7 @@ _func_name _params							\
 	}								\
 									\
 	g_mutex_lock (priv->busy_lock);					\
-	g_static_rec_mutex_lock (&priv->cache_lock);			\
 	status = _call_func _call_params;				\
-	g_static_rec_mutex_unlock (&priv->cache_lock);			\
 									\
 	/* this is done before unlocking */				\
 	if (was_slave_busy) {						\
@@ -3906,12 +3877,8 @@ caldav_get_object (ECalBackendSync  *backend,
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-
 	*object = NULL;
 	icalcomp = get_comp_from_cache (cbdav, uid, rid, NULL, NULL);
-
-	g_static_rec_mutex_unlock (&priv->cache_lock);
 
 	if (!icalcomp) {
 		return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -3940,9 +3907,7 @@ caldav_get_timezone (ECalBackendSync  *backend,
 	g_return_val_if_fail (tzid, GNOME_Evolution_Calendar_ObjectNotFound);
 
 	/* first try to get the timezone from the cache */
-	g_static_rec_mutex_lock (&priv->cache_lock);
-	zone = e_cal_backend_cache_get_timezone (priv->cache, tzid);
-	g_static_rec_mutex_unlock (&priv->cache_lock);
+	zone = e_cal_backend_store_get_timezone (priv->store, tzid);
 
 	if (!zone) {
 		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
@@ -3988,9 +3953,7 @@ caldav_add_timezone (ECalBackendSync *backend,
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
 
-		g_static_rec_mutex_lock (&priv->cache_lock);
-		e_cal_backend_cache_put_timezone (priv->cache, zone);
-		g_static_rec_mutex_unlock (&priv->cache_lock);
+		e_cal_backend_store_put_timezone (priv->store, zone);
 
 		icaltimezone_free (zone, TRUE);
 	} else {
@@ -4041,10 +4004,9 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackendSExp	 *sexp;
-	ECalBackendCache         *bcache;
-	ECalBackend              *bkend;
+	ECalBackend *bkend;
 	gboolean                  do_search;
-	GList			 *list, *iter;
+	GSList			 *list, *iter;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
@@ -4062,15 +4024,12 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	}
 
 	*objects = NULL;
-	bcache = priv->cache;
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-	list = e_cal_backend_cache_get_components (bcache);
-	g_static_rec_mutex_unlock (&priv->cache_lock);
+	list = e_cal_backend_store_get_components (priv->store);
 
 	bkend = E_CAL_BACKEND (backend);
 
-	for (iter = list; iter; iter = g_list_next (iter)) {
+	for (iter = list; iter; iter = g_slist_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
 
 		if (!do_search ||
@@ -4083,7 +4042,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 	}
 
 	g_object_unref (sexp);
-	g_list_free (list);
+	g_slist_free (list);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -4097,7 +4056,7 @@ caldav_start_query (ECalBackend  *backend,
 	ECalBackendSExp	 *sexp;
 	ECalBackend              *bkend;
 	gboolean                  do_search;
-	GList			 *list, *iter;
+	GSList			 *list, *iter;
 	const gchar               *sexp_string;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
@@ -4114,13 +4073,11 @@ caldav_start_query (ECalBackend  *backend,
 		do_search = TRUE;
 	}
 
-	g_static_rec_mutex_lock (&priv->cache_lock);
-	list = e_cal_backend_cache_get_components (priv->cache);
-	g_static_rec_mutex_unlock (&priv->cache_lock);
+	list = e_cal_backend_store_get_components (priv->store);
 
 	bkend = E_CAL_BACKEND (backend);
 
-	for (iter = list; iter; iter = g_list_next (iter)) {
+	for (iter = list; iter; iter = g_slist_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
 
 		if (!do_search ||
@@ -4134,7 +4091,7 @@ caldav_start_query (ECalBackend  *backend,
 	}
 
 	g_object_unref (sexp);
-	g_list_free (list);
+	g_slist_free (list);
 
 	e_data_cal_view_notify_done (query, GNOME_Evolution_Calendar_Success);
 }
@@ -4510,8 +4467,8 @@ e_cal_backend_caldav_dispose (GObject *object)
 		priv->local_attachments_store = NULL;
 	}
 
-	if (priv->cache != NULL) {
-		g_object_unref (priv->cache);
+	if (priv->store != NULL) {
+		g_object_unref (priv->store);
 	}
 
 	priv->disposed = TRUE;
@@ -4531,7 +4488,6 @@ e_cal_backend_caldav_finalize (GObject *object)
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 
 	g_mutex_free (priv->busy_lock);
-	g_static_rec_mutex_free (&priv->cache_lock);
 	g_cond_free (priv->cond);
 	g_cond_free (priv->slave_gone_cond);
 
@@ -4573,7 +4529,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	priv->is_google = FALSE;
 
 	priv->busy_lock = g_mutex_new ();
-	g_static_rec_mutex_init (&priv->cache_lock);
 	priv->cond = g_cond_new ();
 	priv->slave_gone_cond = g_cond_new ();
 
