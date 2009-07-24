@@ -154,6 +154,7 @@ typedef struct {
 	gchar *item_id;
 	gchar *ical_id;
 	gchar *recur_key;
+	gchar *start_date;
 } EGwItemCalId;
 
 GType       e_gw_item_get_type (void);

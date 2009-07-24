@@ -625,6 +625,11 @@ e_gw_item_free_cal_id (EGwItemCalId *calid)
 		calid->recur_key = NULL;
 	}
 
+	if (calid->start_date) {
+		g_free (calid->start_date);
+		calid->start_date = NULL;
+	}
+
 	g_free (calid);
 }
 

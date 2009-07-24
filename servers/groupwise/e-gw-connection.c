@@ -3771,7 +3771,7 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const gchar *container, gint c
 				id = soup_soap_parameter_get_string_value (param_id);
 				formatted_date = e_gw_connection_format_date_string (id);
 				 /* store the date in calid for recurring events */
-				calid->ical_id = formatted_date;
+				calid->start_date = formatted_date;
 				g_free (id);
 			}
 
