@@ -209,3 +209,13 @@ Cache for calendar backends.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_cache_remove ##### -->
+<para>
+
+</para>
+
+@uri: 
+@source_type: 
+@Returns: 
+
+

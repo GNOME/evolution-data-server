@@ -20,6 +20,7 @@ e_cal_backend_cache_put_server_utc_time
 e_cal_backend_cache_get_server_utc_time
 e_cal_backend_cache_put_key_value
 e_cal_backend_cache_get_key_value
+e_cal_backend_cache_remove
 <SUBSECTION Standard>
 E_CAL_BACKEND_CACHE
 E_IS_CAL_BACKEND_CACHE
@@ -210,18 +211,23 @@ e_cal_backend_loader_factory_get_type
 ECalBackendStore
 e_cal_backend_store_get_path
 e_cal_backend_store_load
+e_cal_backend_store_is_loaded
+e_cal_backend_store_remove
+e_cal_backend_store_clean
 e_cal_backend_store_get_component
 e_cal_backend_store_put_component
 e_cal_backend_store_remove_component
+e_cal_backend_store_has_component
 e_cal_backend_store_get_timezone
 e_cal_backend_store_put_timezone
 e_cal_backend_store_remove_timezone
 e_cal_backend_store_get_default_timezone
 e_cal_backend_store_set_default_timezone
 e_cal_backend_store_get_components_by_uid
-e_cal_backend_store_get_objects_list
-e_cal_backend_store_get_key
-e_cal_backend_store_put_key
+e_cal_backend_store_get_components
+e_cal_backend_store_get_component_ids
+e_cal_backend_store_get_key_value
+e_cal_backend_store_put_key_value
 e_cal_backend_store_thaw_changes
 e_cal_backend_store_freeze_changes
 <SUBSECTION Standard>
@@ -233,6 +239,7 @@ E_IS_CAL_BACKEND_STORE_CLASS
 E_CAL_BACKEND_STORE_GET_CLASS
 ECalBackendStoreClass
 <SUBSECTION Private>
+ECalBackendStorePrivate
 e_cal_backend_store_get_type
 </SECTION>
 
@@ -250,6 +257,7 @@ E_IS_CAL_BACKEND_FILE_STORE_CLASS
 E_CAL_BACKEND_FILE_STORE_GET_CLASS
 ECalBackendFileStoreClass
 <SUBSECTION Private>
+ECalBackendFileStorePrivate
 e_cal_backend_file_store_get_type
 </SECTION>
 
