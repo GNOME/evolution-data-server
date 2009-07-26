@@ -240,7 +240,7 @@ e_cal_backend_file_store_has_component (ECalBackendStore *store, const gchar *ui
 	} else
 		ret_val = TRUE;
 
-end:	
+end:
 	g_static_rw_lock_reader_unlock (&priv->lock);
 	return ret_val;
 }
@@ -377,7 +377,7 @@ e_cal_backend_file_store_put_key_value (ECalBackendStore *store, const gchar *ke
 	priv = GET_PRIVATE (fstore);
 
 	g_static_rw_lock_writer_lock (&priv->lock);
-	
+
 	if (e_file_cache_get_object (priv->keys_cache, key))
 		ret_val = e_file_cache_replace_object (priv->keys_cache, key, value);
 	else
@@ -416,7 +416,7 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 	ECalBackendFileStorePrivate *priv;
 	const gchar *tzid;
 	icaltimezone *copy;
-	const char *key = "default-zone";
+	const gchar *key = "default-zone";
 	gboolean ret_val;
 
 	priv = GET_PRIVATE (fstore);
@@ -524,7 +524,7 @@ e_cal_backend_file_store_get_components (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	GSList *comps = NULL;
-	
+
 	priv = GET_PRIVATE (fstore);
 
 	g_static_rw_lock_reader_lock (&priv->lock);
@@ -549,7 +549,7 @@ add_comp_ids_to_slist (gpointer key, gpointer value, gpointer user_data)
 {
 	GSList **slist = (GSList **) user_data;
 	FullCompObject *obj = NULL;
-	
+
 	obj = value;
 	if (obj->comp) {
 		ECalComponentId *id = e_cal_component_get_id (obj->comp);
@@ -566,7 +566,7 @@ e_cal_backend_file_store_get_component_ids (ECalBackendStore *store)
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
 	GSList *comp_ids = NULL;
-	
+
 	priv = GET_PRIVATE (fstore);
 
 	g_static_rw_lock_reader_lock (&priv->lock);
@@ -672,7 +672,7 @@ e_cal_backend_file_store_load (ECalBackendStore *store)
 
 	scan_vcalendar (fstore, icalcomp);
 	icalcomponent_free (icalcomp);
-	
+
 	return TRUE;
 }
 
@@ -709,9 +709,9 @@ e_cal_backend_file_store_clean (ECalBackendStore *store)
 	e_file_cache_clean (priv->keys_cache);
 	g_hash_table_remove_all (priv->comp_uid_hash);
 	g_hash_table_remove_all (priv->timezones);
-	
+
 	g_static_rw_lock_writer_unlock (&priv->lock);
-	
+
 	save_cache (fstore);
 	return TRUE;
 }
@@ -922,7 +922,7 @@ e_cal_backend_file_store_init (ECalBackendFileStore *self)
 	priv = GET_PRIVATE(self);
 
 	self->priv = priv;
-	
+
 	priv->timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) free_timezone);
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) destroy_full_object);
 	priv->keys_cache = NULL;

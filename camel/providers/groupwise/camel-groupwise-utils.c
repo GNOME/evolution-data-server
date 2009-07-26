@@ -356,10 +356,10 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			g_warning ("Could not send a forwardRequest...continuing without!!\n");
-			
+
 			g_free (attachment->name);
 			attachment->name = g_strdup ("Mime.822");
-			
+
 			g_free (attachment->contentType);
 			attachment->contentType = g_strdup ("Mail");
 		} else {

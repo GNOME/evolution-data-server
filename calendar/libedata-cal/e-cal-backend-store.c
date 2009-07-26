@@ -192,7 +192,7 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *klass)
 	klass->put_key_value = NULL;
 
 	g_object_class_install_property (object_class, PROP_SOURCE_TYPE,
-		  		g_param_spec_enum ("source_type", NULL, NULL,
+				g_param_spec_enum ("source_type", NULL, NULL,
 				e_cal_source_type_enum_get_type (),
 				E_CAL_SOURCE_TYPE_EVENT,
 				G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));

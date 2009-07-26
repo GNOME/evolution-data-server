@@ -579,13 +579,13 @@ get_deltas (gpointer handle)
 
 		if (calid->recur_key && calid->start_date) {
 			gchar *rid = NULL;
-			
+
 			icaltimetype tt = icaltime_from_string (calid->start_date);
-			
+
 			tt = icaltime_convert_to_zone (tt, priv->default_zone);
 			icaltime_set_timezone (&tt, priv->default_zone);
 			rid = icaltime_as_ical_string_r (tt);
-			
+
 			id->uid = g_strdup (calid->recur_key);
 			id->rid = rid;
 		} else
@@ -609,7 +609,7 @@ get_deltas (gpointer handle)
 
 		comp = e_cal_backend_store_get_component (store, id->uid, id->rid);
 
-		if (!comp) 
+		if (!comp)
 			continue;
 
 		icalcomp = e_cal_component_get_icalcomponent (comp);
@@ -1372,7 +1372,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 		if (!priv->store) {
 			const gchar *uri = e_cal_backend_get_uri (E_CAL_BACKEND (cbgw));
-			
+
 			/* remove the old cache while migrating to ECalBackendStore */
 			e_cal_backend_cache_remove (uri, source_type);
 			priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
@@ -1828,7 +1828,6 @@ e_cal_backend_groupwise_compute_changes (ECalBackendGroupwise *cbgw, const gchar
 	ECalBackendGroupwiseComputeChangesData be_data;
 	GList *i, *list = NULL;
 	gchar *unescaped_uri;
-
 
 	/* FIXME Will this always work? */
 	unescaped_uri = g_uri_unescape_string (cbgw->priv->uri, "");

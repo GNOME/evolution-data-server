@@ -250,7 +250,7 @@ empty_cache (ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	GSList *comps, *l;
-	
+
 	priv = cbhttp->priv;
 
 	if (!priv->store)
@@ -649,7 +649,7 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 				source_type = E_CAL_SOURCE_TYPE_JOURNAL;
 				break;
 		}
-		
+
 		/* remove the old cache while migrating to ECalBackendStore */
 		e_cal_backend_cache_remove (uri, source_type);
 		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
