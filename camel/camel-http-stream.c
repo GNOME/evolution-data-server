@@ -350,7 +350,7 @@ http_get_headers (CamelHttpStream *http)
 static gint
 http_method_invoke (CamelHttpStream *http)
 {
-	const gchar *method = NULL;
+	const gchar *method = NULL, *use_url;
 	gchar *url;
 
 	switch (http->method) {
@@ -365,14 +365,23 @@ http_method_invoke (CamelHttpStream *http)
 	}
 
 	url = camel_url_to_string (http->url, 0);
+
+	if (http->proxy) {
+		use_url = url;
+	} else if (http->url->host && *http->url->host) {
+		use_url = strstr (url, http->url->host) + strlen (http->url->host);
+	} else {
+		use_url = http->url->path;
+	}
+
 	d(printf("HTTP Stream Sending: %s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
 		 method,
-		 http->proxy ? url : http->url->path,
+		 use_url,
 		 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
 		 http->url->host));
 	if (camel_stream_printf (http->raw, "%s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
 				 method,
-				 http->proxy ? url : http->url->path,
+				 use_url,
 				 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
 				 http->url->host) == -1) {
 		http_disconnect(http);
