@@ -304,9 +304,9 @@ e_source_update_from_xml_node (ESource *source,
 
 	if (source->priv->name == NULL
 	    || strcmp ((gchar *)name, source->priv->name) != 0
-	    || source->priv->relative_uri == NULL
-	    || relative_uri == NULL
-	    || strcmp ((gchar *)relative_uri, source->priv->relative_uri) != 0) {
+	    || (source->priv->relative_uri == NULL && relative_uri != NULL)
+	    || (source->priv->relative_uri != NULL && relative_uri == NULL)
+	    || (relative_uri && source->priv->relative_uri && strcmp ((gchar *)relative_uri, source->priv->relative_uri) != 0)) {
 		gchar *abs_uri = NULL;
 
 		g_free (source->priv->name);

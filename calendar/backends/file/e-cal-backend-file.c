@@ -86,8 +86,25 @@ struct _ECalBackendFilePrivate {
 	   floating DATE-TIME values. */
 	icaltimezone *default_zone;
 
-	/* The list of live queries */
-	GList *queries;
+	/* a custom filename opened */
+	gchar *custom_file;
+
+	/* guards refresh members */
+	GMutex *refresh_lock;
+	/* set to TRUE to indicate thread should stop */
+	gboolean refresh_thread_stop;
+	/* condition for refreshing, not NULL when thread exists */
+	GCond *refresh_cond;
+	/* cond to know the refresh thread gone */
+	GCond *refresh_gone_cond;
+	/* increased when backend saves the file */
+	guint refresh_skip;
+
+	/* Monitor for a refresh type "1" */
+	GFileMonitor *refresh_monitor;
+
+	/* timeour id for refresh type "2" */
+	guint refresh_timeout_id;
 };
 
 
@@ -101,6 +118,8 @@ static ECalBackendSyncClass *parent_class;
 
 static ECalBackendSyncStatus
 e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
+
+static void free_refresh_data (ECalBackendFile *cbfile);
 
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
@@ -133,8 +152,9 @@ save_file_when_idle (gpointer user_data)
 	g_assert (priv->icalcomp != NULL);
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
-	if (!priv->is_dirty) {
+	if (!priv->is_dirty || priv->read_only) {
 		priv->dirty_idle_id = 0;
+		priv->is_dirty = FALSE;
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		return FALSE;
 	}
@@ -161,6 +181,7 @@ save_file_when_idle (gpointer user_data)
 		goto error_malformed_uri;
 	}
 
+	priv->refresh_skip++;
 	stream = g_file_replace (backup_file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &e);
 	if (!stream || e) {
 		if (stream)
@@ -168,6 +189,7 @@ save_file_when_idle (gpointer user_data)
 
 		g_object_unref (file);
 		g_object_unref (backup_file);
+		priv->refresh_skip--;
 		goto error;
 	}
 
@@ -308,12 +330,21 @@ e_cal_backend_file_finalize (GObject *object)
 		priv->dirty_idle_id = 0;
 	}
 
+	free_refresh_data (cbfile);
+
+	if (priv->refresh_lock)
+		g_mutex_free (priv->refresh_lock);
+	priv->refresh_lock = NULL;
+
 	g_static_rec_mutex_free (&priv->idle_save_rmutex);
 
 	if (priv->path) {
 		g_free (priv->path);
 		priv->path = NULL;
 	}
+
+	g_free (priv->custom_file);
+	priv->custom_file = NULL;
 
 	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ()) {
 		icaltimezone_free (priv->default_zone, 1);
@@ -643,25 +674,37 @@ uri_to_path (ECalBackend *backend)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ESource *source;
 	const gchar *master_uri;
 	gchar *full_uri, *str_uri;
-	GFile *file;
+	GFile *file = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	master_uri = e_cal_backend_get_uri (backend);
-
-	/* FIXME Check the error conditions a little more elegantly here */
-	if (g_strrstr ("tasks.ics", master_uri) || g_strrstr ("calendar.ics", master_uri)) {
-		g_warning (G_STRLOC ": Existing file name %s", master_uri);
-
-		return NULL;
+	source = e_cal_backend_get_source (backend);
+	if (source && e_source_get_property (source, "custom-file")) {
+		/* customr-uri is with a filename already */
+		master_uri = e_source_get_property (source, "custom-file");
+		file = g_file_new_for_path (master_uri);
+		if (!file)
+			return NULL;
 	}
 
-	full_uri = g_strdup_printf ("%s/%s", master_uri, priv->file_name);
-	file = g_file_new_for_uri (full_uri);
-	g_free (full_uri);
+	if (!file) {
+		master_uri = e_cal_backend_get_uri (backend);
+
+		/* FIXME Check the error conditions a little more elegantly here */
+		if (g_strrstr ("tasks.ics", master_uri) || g_strrstr ("calendar.ics", master_uri)) {
+			g_warning (G_STRLOC ": Existing file name %s", master_uri);
+
+			return NULL;
+		}
+
+		full_uri = g_strdup_printf ("%s/%s", master_uri, priv->file_name);
+		file = g_file_new_for_uri (full_uri);
+		g_free (full_uri);
+	}
 
 	if (!file)
 		return NULL;
@@ -679,6 +722,180 @@ uri_to_path (ECalBackend *backend)
 	return str_uri;
 }
 
+static gpointer
+refresh_thread_func (gpointer data)
+{
+	ECalBackendFile *cbfile = data;
+	ECalBackendFilePrivate *priv;
+	GFile *file;
+	GFileInfo *info;
+	guint64 last_modified, modified;
+
+	g_return_val_if_fail (cbfile != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_FILE (cbfile), NULL);
+
+	priv = cbfile->priv;
+	g_return_val_if_fail (priv->custom_file != NULL, NULL);
+
+	file = g_file_new_for_path (priv->custom_file);
+	info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	g_return_val_if_fail (info != NULL, NULL);
+
+	last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+	g_object_unref (info);
+
+	g_mutex_lock (priv->refresh_lock);
+	while (!priv->refresh_thread_stop) {
+		g_cond_wait (priv->refresh_cond, priv->refresh_lock);
+
+		g_static_rec_mutex_lock (&priv->idle_save_rmutex);
+
+		if (priv->refresh_skip > 0) {
+			priv->refresh_skip--;
+			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+			continue;
+		}
+
+		if (priv->is_dirty) {
+			/* save before reload, if dirty */
+			if (priv->dirty_idle_id) {
+				g_source_remove (priv->dirty_idle_id);
+				priv->dirty_idle_id = 0;
+			}
+			save_file_when_idle (cbfile);
+			priv->refresh_skip = 0;
+		}
+
+		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
+
+		info = 	g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+		if (!info)
+			break;
+
+		modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+		g_object_unref (info);
+
+		if (modified != last_modified) {
+			last_modified = modified;
+			e_cal_backend_file_reload (cbfile);
+		}
+	}
+
+	g_object_unref (file);
+	g_cond_signal (priv->refresh_gone_cond);
+	g_mutex_unlock (priv->refresh_lock);
+
+	return NULL;
+}
+
+static gboolean
+check_refresh_calendar_timeout (ECalBackendFilePrivate *priv)
+{
+	g_return_val_if_fail (priv != NULL, FALSE);
+
+	/* called in the main thread */
+	if (priv->refresh_cond)
+		g_cond_signal (priv->refresh_cond);
+
+	/* call it next time again */
+	return TRUE;
+}
+
+static void
+custom_file_changed (GFileMonitor *monitor, GFile *file, GFile *other_file, GFileMonitorEvent event_type, ECalBackendFilePrivate *priv)
+{
+	if (priv->refresh_cond)
+		g_cond_signal (priv->refresh_cond);
+}
+
+static void
+prepare_refresh_data (ECalBackendFile *cbfile)
+{
+	ECalBackendFilePrivate *priv;
+	ESource *source;
+	const gchar *value;
+
+	g_return_if_fail (cbfile != NULL);
+
+	priv = cbfile->priv;
+
+	g_mutex_lock (priv->refresh_lock);
+
+	priv->refresh_thread_stop = FALSE;
+	priv->refresh_skip = 0;
+
+	source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+	value = e_source_get_property (source, "refresh-type");
+	if (e_source_get_property (source, "custom-file") && value && *value && !value[1]) {
+		GFile *file;
+		GError *error = NULL;
+
+		switch (*value) {
+		case '1': /* on file change */
+			file = g_file_new_for_path (priv->custom_file);
+			priv->refresh_monitor = g_file_monitor_file (file, G_FILE_MONITOR_WATCH_MOUNTS, NULL, &error);
+			if (file)
+				g_object_unref (file);
+			if (priv->refresh_monitor)
+				g_signal_connect (G_OBJECT (priv->refresh_monitor), "changed", G_CALLBACK (custom_file_changed), priv);
+			break;
+		case '2': /* on refresh timeout */
+			value = e_source_get_property (source, "refresh");
+			if (value && atoi (value) > 0) {
+				priv->refresh_timeout_id = g_timeout_add_seconds (60 * atoi (value), (GSourceFunc) check_refresh_calendar_timeout, priv);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (priv->refresh_monitor || priv->refresh_timeout_id) {
+		priv->refresh_cond = g_cond_new ();
+		priv->refresh_gone_cond = g_cond_new ();
+
+		g_thread_create (refresh_thread_func, cbfile, FALSE, NULL);
+	}
+
+	g_mutex_unlock (priv->refresh_lock);
+}
+
+static void
+free_refresh_data (ECalBackendFile *cbfile)
+{
+	ECalBackendFilePrivate *priv;
+
+	g_return_if_fail (cbfile != NULL);
+
+	priv = cbfile->priv;
+	g_return_if_fail (priv != NULL);
+
+	g_mutex_lock (priv->refresh_lock);
+
+	if (priv->refresh_monitor)
+		g_object_unref (priv->refresh_monitor);
+	priv->refresh_monitor = NULL;
+
+	if (priv->refresh_timeout_id)
+		g_source_remove (priv->refresh_timeout_id);
+	priv->refresh_timeout_id = 0;
+
+	if (priv->refresh_cond) {
+		priv->refresh_thread_stop = TRUE;
+		g_cond_signal (priv->refresh_cond);
+		g_cond_wait (priv->refresh_gone_cond, priv->refresh_lock);
+
+		g_cond_free (priv->refresh_cond);
+		priv->refresh_cond = NULL;
+		g_cond_free (priv->refresh_gone_cond);
+		priv->refresh_gone_cond = NULL;
+	}
+
+	priv->refresh_skip = 0;
+
+	g_mutex_unlock (priv->refresh_lock);
+}
+
 /* Parses an open iCalendar file and loads it into the backend */
 static ECalBackendSyncStatus
 open_cal (ECalBackendFile *cbfile, const gchar *uristr)
@@ -687,6 +904,8 @@ open_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	icalcomponent *icalcomp;
 
 	priv = cbfile->priv;
+
+	free_refresh_data (cbfile);
 
 	icalcomp = e_cal_util_parse_ics_file (uristr);
 	if (!icalcomp)
@@ -704,9 +923,13 @@ open_cal (ECalBackendFile *cbfile, const gchar *uristr)
 
 	priv->icalcomp = icalcomp;
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
+	g_free (priv->custom_file);
+	priv->custom_file = g_strdup (uristr);
 
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	scan_vcalendar (cbfile);
+
+	prepare_refresh_data (cbfile);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -870,6 +1093,8 @@ create_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	gchar *dirname;
 	ECalBackendFilePrivate *priv;
 
+	free_refresh_data (cbfile);
+
 	priv = cbfile->priv;
 
 	/* Create the directory to contain the file */
@@ -890,6 +1115,10 @@ create_cal (ECalBackendFile *cbfile, const gchar *uristr)
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
 
 	save (cbfile);
+
+	g_free (priv->custom_file);
+	priv->custom_file = g_strdup (uristr);
+	prepare_refresh_data (cbfile);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1030,6 +1259,7 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		goto done;
         }
 
+	priv->read_only = FALSE;
 	if (g_access (str_uri, R_OK) == 0) {
 		status = open_cal (cbfile, str_uri);
 		if (g_access (str_uri, W_OK) != 0)
@@ -1042,6 +1272,13 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 	}
 
 	if (status == GNOME_Evolution_Calendar_Success) {
+		if (!priv->read_only) {
+			ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+
+			if (source && e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+				priv->read_only = TRUE;
+		}
+
 		if (priv->default_zone && add_timezone (priv->icalcomp, priv->default_zone)) {
 			save (cbfile);
 		}
@@ -2814,6 +3051,8 @@ e_cal_backend_file_init (ECalBackendFile *cbfile)
 	priv->icalcomp = NULL;
 	priv->comp_uid_hash = NULL;
 	priv->comp = NULL;
+	priv->custom_file = NULL;
+	priv->refresh_lock = g_mutex_new ();
 
 	/* The timezone defaults to UTC. */
 	priv->default_zone = icaltimezone_get_utc_timezone ();
@@ -2965,6 +3204,12 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile)
 
 	g_free (str_uri);
 
+	if (status == GNOME_Evolution_Calendar_Success && !priv->read_only) {
+		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+
+		if (source && e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+			priv->read_only = TRUE;
+	}
   done:
         g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 	return status;
