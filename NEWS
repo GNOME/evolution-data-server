@@ -1,3 +1,47 @@
+Evolution-Data-Server 2.27.5 2009-07-27
+---------------------------------------
+
+Bug Fixes:
+
+Address Book:
+	#587558 - Removing a picture of a contact in an LDAP addressbook
+	crashes evolution (Milan Crha)
+	#589325 - Evolution Contacts reports ambiguous error on Google
+	Contacts authentication failure with bad password (Milan Crha)
+
+Calendar:
+	#572176 - Allow local iCal files to be selected as calendar source
+	(Milan Crha)
+	#586342 - CalDAV backend does not support attachments (Wang Xin)
+	#588857 - CalDAV for Google calendars should allow email notifications
+	(Milan Crha)
+
+Mail:
+	#524219 (bnc) - Unable to read forward groupwise mails in other
+	clients. (Chenthill Palanisamy)
+	#588220 - Evolution crashed when starting with local account
+	configured (Jeff Cai)
+	#588573 - NULL string comparison in camel-search-sql-sexp.c
+	(Matthew Barnes)
+
+Miscellaneous:
+	#583374 - The broken Google calendar import should be replaced by
+	the working CalDAV support (Milan Crha)
+	#588277 - Unnecessary special-purpose configure flag (Matthew Barnes)
+
+Other Fixes:
+	Handle quota error messages. (Chenthill Palanisamy)
+	Return the proper timezone to get the counts right in all timezones.
+	(Chenthill Palanisamy)
+	CamelVeeFolder - pass exceptions to functions instead of NULL
+	(Milan Crha)
+	Migrate caldav, groupwise, http, weather backends to ECalBackendStore.
+	(Chenthill Palanisamy)
+
+Translations:
+	Ilkka Tuohela (fi)
+	Daniel Nylander (sv)
+
 Evolution-Data-Server 2.27.4 2009-07-13
 ---------------------------------------
 
