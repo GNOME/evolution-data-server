@@ -3749,22 +3749,12 @@ e_gw_connection_read_cal_ids (EGwConnection *cnc, const gchar *container, gint c
 		}
 
 		if (id && !g_str_equal (id, "0")) {
-			guint allday = 0;
-
 			calid->recur_key = id;
 
-			if (type == E_GW_ITEM_TYPE_APPOINTMENT) {
-				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "allDayEvent");
-				if (param_id) {
-					allday = soup_soap_parameter_get_int_value (param_id);
-				}
-
-			}
-
-			if (allday)
+			/* startDate is returned for both all-day and ordinary events */
+			param_id = soup_soap_parameter_get_first_child_by_name (subparam, "startDate");
+			if (!param_id)
 				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "startDay");
-			else
-				param_id = soup_soap_parameter_get_first_child_by_name (subparam, "startDate");
 
 			if (param_id) {
 				gchar *formatted_date;
