@@ -267,6 +267,7 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusG
 		book = e_data_book_new (backend, source, book_closed_cb);
 		e_book_backend_set_mode (backend, 2); /* TODO: very odd */
 		g_hash_table_insert (priv->books, g_strdup (path), book);
+		e_book_backend_add_client (backend, book);
 		dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));
 		g_object_weak_ref (G_OBJECT (book), (GWeakNotify)my_remove, g_strdup (path));
 		g_object_unref (backend); /* The book takes a reference to the backend */
