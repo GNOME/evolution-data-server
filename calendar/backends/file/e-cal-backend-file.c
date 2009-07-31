@@ -2507,6 +2507,11 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data, const
 	e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
 				     icaltime_from_string (rid), CALOBJ_MOD_THIS);
 
+	/* Since we are only removing one instance of recurrence
+       event, update the last modified time on the component */
+	struct icaltimetype current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
+	e_cal_component_set_last_modified (obj_data->full_object, &current);
+
 	/* add the modified object to the beginning of the list,
 	   so that it's always before any detached instance we
 	   might have */
