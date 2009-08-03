@@ -35,8 +35,6 @@ libedata_book_1_2_la_SOURCES =				\
 	e-data-book.c					\
 	ximian-vcard.h					\
 	opid.c opid.h					\
-	offline-listener.c				\
-	offline-listener.h				\
 	$(ENUM_GENERATED)
 
 libedata_book_1_2_la_LIBADD =					\
@@ -92,5 +90,5 @@ dist-hook:
 factorydir = $(libexecdir)
 factory_PROGRAMS = e-addressbook-factory
 
-e_addressbook_factory_SOURCES = e-data-book-factory.c e-data-book-factory.h
+e_addressbook_factory_SOURCES = e-data-book-factory.c e-data-book-factory.h offline-listener.c	offline-listener.h
 e_addressbook_factory_LDADD = libedata-book-1.2.la

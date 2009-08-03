@@ -35,6 +35,7 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
+#include "offline-listener.h"
 
 static void impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context);
 #include "e-data-book-factory-glue.h"
@@ -72,6 +73,8 @@ struct _EDataBookFactoryPrivate {
 	GHashTable *connections;
 
 	guint exit_timeout;
+
+        gint mode;
 };
 
 /* Create the EDataBookFactory error quark */
@@ -133,6 +136,40 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 	e_data_server_extension_list_free (factories);
 	e_data_server_module_remove_unused ();
 }
+
+static void
+set_backend_online_status (gpointer key, gpointer value, gpointer data)
+{
+#if 0
+	GList *books = (GList *) value;
+	EBookBackend *backend = NULL;
+
+	while (books = g_list_next (books)) {
+		backend =  E_BOOK_BACKEND (books->data);
+		e_book_backend_set_mode (backend,  GPOINTER_TO_INT (data));
+	}
+#endif
+}
+
+/**
+ * e_data_book_factory_set_backend_mode:
+ * @factory: A bookendar factory.
+ * @mode: Online mode to set.
+ *
+ * Sets the online mode for all backends created by the given factory.
+ */
+void
+e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
+{
+	EDataBookFactoryPrivate *priv = factory->priv;
+
+	priv->mode = mode;
+	g_mutex_lock (priv->connections_lock);
+	g_hash_table_foreach (priv->connections, set_backend_online_status, GINT_TO_POINTER (priv->mode));
+	g_mutex_unlock (priv->connections_lock);
+}
+
+
 
 static void
 e_data_book_factory_class_init (EDataBookFactoryClass *e_data_book_factory_class)
@@ -265,7 +302,7 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusG
 		EBookBackend *backend = NULL;
 		backend = e_book_backend_factory_new_backend (e_data_book_factory_lookup_backend_factory (factory, uri));
 		book = e_data_book_new (backend, source, book_closed_cb);
-		e_book_backend_set_mode (backend, 2); /* TODO: very odd */
+		e_book_backend_set_mode (backend, factory->priv->mode);
 		g_hash_table_insert (priv->books, g_strdup (path), book);
 		e_book_backend_add_client (backend, book);
 		dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));
@@ -327,6 +364,8 @@ main (int argc, char **argv)
 	DBusGProxy *bus_proxy;
 	guint32 request_name_ret;
 
+	OfflineListener *offline_listener = NULL;
+
 	g_type_init ();
 	if (!g_thread_supported ()) g_thread_init (NULL);
 	dbus_g_thread_init ();
@@ -361,7 +400,11 @@ main (int argc, char **argv)
 				 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (bus_proxy, "NameOwnerChanged", G_CALLBACK (name_owner_changed), factory, NULL);
 
+	offline_listener = offline_listener_new (factory);
+
 	g_main_loop_run (loop);
+
+	g_object_unref (offline_listener);
 
 	dbus_g_connection_unref (connection);
 
