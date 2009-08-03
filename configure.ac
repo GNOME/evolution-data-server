@@ -1,6 +1,3 @@
-# Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.54)
-
 # Evolution-Data-Server version */
 m4_define([eds_major_version], [2])
 m4_define([eds_minor_version], [27])
@@ -15,10 +12,15 @@ m4_define([eds_version],
 m4_define([base_version], [2.28])
 m4_define([api_version], [1.2])
 
-AC_INIT(evolution-data-server, [eds_version], http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server)
+# Autoconf / Automake Initialization
+AC_PREREQ(2.58)
+AC_INIT([evolution-data-server],[eds_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server])
 AM_INIT_AUTOMAKE([gnu 1.9])
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADERS(config.h)
+
+dnl This is for the autoconf tests only - it set's the language we use
+AC_LANG(C)
 
 # Automake 1.11 - Silent Build Rules
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -169,21 +171,20 @@ CFLAGS="$CFLAGS $WARNING_FLAGS"
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
-AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
 AC_C_INLINE
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
 AM_PROG_LEX
 AC_PROG_YACC
 case $YACC in
 *yacc*)
-	AC_MSG_ERROR(You need bison to build evolution-data-server)
+	AC_MSG_ERROR([You need bison to build evolution-data-server])
 	;;
 esac
-AC_STDC_HEADERS
-AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_MAKE_SET
+
 
 dnl  Test whether jw is installed
 AC_PATH_PROG(JW,jw,no)
@@ -208,9 +209,13 @@ localedir='$(prefix)/$(DATADIRNAME)/locale'
 AC_SUBST(localedir)
 
 dnl Initialize libtool
+dnl if switch to libtool >= 2.2, replace existing with following:
+dnl LT_PREREQ(2.2)
+dnl LT_INIT(disable-static win32-dll)
 AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
+
 DOLT
 
 PKG_PROG_PKG_CONFIG
@@ -245,13 +250,16 @@ AC_SUBST(NO_UNDEFINED)
 AC_SUBST(SOCKET_LIBS)
 AC_SUBST(LIBEXECDIR_IN_SERVER_FILE)
 
-AC_CHECK_HEADERS(pthread.h semaphore.h sys/wait.h)
+dnl Check for posix compatible sys/wait.h
+AC_HEADER_SYS_WAIT
+
+dnl Check for posix compatible alloca()
+AC_FUNC_ALLOCA
+
+dnl Checks for functions
 AC_CHECK_FUNCS(fsync strptime strtok_r)
 
-dnl alloca()
-AC_CHECK_HEADERS(alloca.h)
-
-# Check for base dependencies early.
+dnl Check for base dependencies early.
 PKG_CHECK_MODULES(GNOME_PLATFORM,
         [glib-2.0 >= glib_minimum_version
          gtk+-2.0 >= gtk_minimum_version
@@ -278,10 +286,9 @@ dnl **************************************************
 dnl * libdb checking
 dnl **************************************************
 
-AC_ARG_WITH(libdb,
-  AC_HELP_STRING( [--with-libdb],
-		  [Prefix where libdb is installed]),
-  dynamic_libdb=yes, dynamic_libdb=no)
+AC_ARG_WITH([libdb],
+	AS_HELP_STRING([--with-libdb],[Prefix where libdb is installed]),
+	[dynamic_libdb=yes], [dynamic_libdb=no])
 
 if test "x${dynamic_libdb}" = "xyes"; then
         DB_CFLAGS="-I$withval/include"
@@ -290,11 +297,11 @@ if test "x${dynamic_libdb}" = "xyes"; then
         AC_MSG_CHECKING([Berkeley DB])
         save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
         save_libs=$LIBS; LIBS="$DB_LIBS"
-        AC_LINK_IFELSE(
-                [AC_LANG_PROGRAM([[#include <db.h>]],
-                                 [db_create(NULL, NULL, 0)])],
-                AC_MSG_RESULT(yes),
-                AC_MSG_ERROR(cannot find libdb))
+        AC_LINK_IFELSE([AC_LANG_PROGRAM(
+		[[#include <db.h>]],
+		[[db_create(NULL, NULL, 0)]])],
+                [AC_MSG_RESULT([yes])],
+                [AC_MSG_ERROR([cannot find libdb])])
         CFLAGS=$save_cflags
         LIBS=$save_libs
 
@@ -307,13 +314,12 @@ else
 		# from the static libdb
 		DB_LIBS="$DB_LIBS -Wl,--exclude-libs=libdb-4.1.a"
 	fi
-        AC_MSG_NOTICE(Using local libdb)
+        AC_MSG_NOTICE([Using local libdb])
         msg_libdb="statically linked to local copy"
 fi
-AM_CONDITIONAL(WITH_LIBDB, test "x$dynamic_libdb" != "xno")
+AM_CONDITIONAL(WITH_LIBDB, [test "x$dynamic_libdb" != "xno"])
 AC_SUBST(DB_CFLAGS)
 AC_SUBST(DB_LIBS)
-
 
 dnl ******************************
 dnl iconv checking
@@ -321,104 +327,106 @@ dnl ******************************
 have_iconv=no
 save_LIBS="$LIBS"
 LIBS="$LIBS -liconv"
-AC_CACHE_CHECK(for iconv in -liconv, ac_cv_libiconv, AC_TRY_LINK([
-#include <iconv.h>
-#include <stdlib.h>],[
-	iconv_t cd;
-	cd = iconv_open ("UTF-8", "ISO-8859-1");
-	exit (0);
-], ac_cv_libiconv=yes, ac_cv_libiconv=no))
+AC_CACHE_CHECK([for iconv in -liconv], [ac_cv_libiconv],
+	AC_LINK_IFELSE([AC_LANG_PROGRAM(
+	[[
+		#include <iconv.h>
+		#include <stdlib.h>
+	]],
+	[[
+		iconv_t cd;
+	        cd = iconv_open ("UTF-8", "ISO-8859-1");
+	]]
+	)],[ac_cv_libiconv=yes],[ac_cv_libiconv=no]))
+
 if test $ac_cv_libiconv = yes; then
-	ICONV_LIBS="-liconv"
+        ICONV_LIBS="-liconv"
 	if test $os_win32 = yes; then
 		# Don't pointlessly auto-export the global symbols
 		# from a potentially static libiconv.a
 		ICONV_LIBS="$ICONV_LIBS -Wl,--exclude-libs=libiconv.a"
 	fi
-	have_iconv=yes
+        have_iconv=yes
 else
-	LIBS="$save_LIBS"
-	AC_CHECK_FUNC(iconv, have_iconv=yes, have_iconv=no)
+        LIBS="$save_LIBS"
+        AC_CHECK_FUNC(iconv, have_iconv=yes, have_iconv=no)
 fi
 
 if test $have_iconv = yes; then
-	if test $ac_cv_libiconv = no; then
-		AC_CHECK_FUNCS(gnu_get_libc_version)
-	fi
-	AC_CACHE_CHECK([if iconv() handles UTF-8], ac_cv_libiconv_utf8, AC_TRY_RUN([
-#include <iconv.h>
-#include <stdlib.h>
-#include <string.h>
-#ifdef HAVE_GNU_GET_LIBC_VERSION
-#include <gnu/libc-version.h>
-#endif
+        if test $ac_cv_libiconv = no; then
+                AC_CHECK_FUNCS(gnu_get_libc_version)
+        fi
+AC_CACHE_CHECK([if iconv() handles UTF-8], [ac_cv_libiconv_utf8],
+	AC_RUN_IFELSE([AC_LANG_SOURCE([[
+		#include <iconv.h>
+		#include <stdlib.h>
+		#include <string.h>
+		#ifdef HAVE_GNU_GET_LIBC_VERSION
+		#include <gnu/libc-version.h>
+		#endif
+		int main() {
+			char *jp = "\x1B\x24\x42\x46\x7C\x4B\x5C\x38\x6C";
+			char *utf8 = "\xE6\x97\xA5\xE6\x9C\xAC\xE8\xAA\x9E";
+			char *transbuf = malloc (10), *trans = transbuf;
+			iconv_t cd;
+			size_t jp_len = strlen (jp), utf8_len = 10;
+			size_t utf8_real_len = strlen (utf8);
 
-int main (int argc, char **argv)
-{
-	char *from = "Some Text \xA4";
-	char *utf8 = "Some Text \xC2\xA4";
-	char *transbuf = malloc (20), *trans = transbuf;
-	iconv_t cd;
-	size_t from_len = strlen (from), utf8_len = 20;
-	size_t utf8_real_len = strlen (utf8);
+			#ifdef HAVE_GNU_GET_LIBC_VERSION
+			/* glibc 2.1.2's iconv is broken in hard to test ways. */
+			if (!strcmp (gnu_get_libc_version (), "2.1.2"))
+				exit (1);
+			#endif
 
-#ifdef HAVE_GNU_GET_LIBC_VERSION
-	/* glibc 2.1.2's iconv is broken in hard to test ways. */
-	if (!strcmp (gnu_get_libc_version (), "2.1.2"))
-		exit (1);
-#endif
-
-	cd = iconv_open ("UTF-8", "ISO-8859-1");
-	if (cd == (iconv_t) -1)
-		exit (1);
-	if (iconv (cd, &from, &from_len, &trans, &utf8_len) == -1 || from_len != 0)
-		exit (1);
-	if (memcmp (utf8, transbuf, utf8_real_len) != 0)
-		exit (1);
-
-	exit (0);
-}], ac_cv_libiconv_utf8=yes, [ac_cv_libiconv_utf8=no; have_iconv=no], ac_cv_libiconv_utf8=HOPEFULLY))
+			cd = iconv_open ("UTF-8", "ISO-2022-JP");
+			if (cd == (iconv_t) -1)
+				exit (1);
+			if (iconv (cd, &jp, &jp_len, &trans, &utf8_len) == -1 || jp_len != 0)
+				exit (1);
+			if (memcmp (utf8, transbuf, utf8_real_len) != 0)
+				exit (1);
+			return (0);}
+		]])
+	],[ac_cv_libiconv_utf8=yes],[ac_cv_libiconv_utf8=no; have_iconv=no],[ac_cv_libiconv_utf8=hopefully]))
 fi
 
 if test "$have_iconv" = no; then
-	AC_MSG_ERROR([You need to install a working iconv implementation, such as ftp://ftp.gnu.org/pub/gnu/libiconv])
+        AC_MSG_ERROR([You need to install a working iconv implementation, such as ftp://ftp.gnu.org/pub/gnu/libiconv])
 fi
 AC_SUBST(ICONV_LIBS)
 
 CFLAGS="$CFLAGS -I$srcdir"
 
-AC_MSG_CHECKING(preferred charset formats for system iconv)
-AC_TRY_RUN([
-#define CONFIGURE_IN
-#include "iconv-detect.c"
-],[
-	AC_MSG_RESULT(found)
-],[
-	AC_MSG_RESULT(not found)
-	AC_WARN([
-	*** The iconv-detect program was unable to determine the
-	*** preferred charset formats recognized by your system
-	*** iconv library. It is suggested that you install a
-	*** working iconv library such as the one found at
-	*** ftp://ftp.gnu.org/pub/gnu/libiconv
-])
-],[
-  if test x$os_win32 = xyes; then
-    AC_MSG_RESULT(using cached win32 result)
-    echo "/* This is an auto-generated header, DO NOT EDIT! */" > iconv-detect.h
-    echo "" >>iconv-detect.h
-    echo "#define ICONV_ISO_D_FORMAT \"iso-%d-%d\"" >>iconv-detect.h
-    echo "#define ICONV_ISO_S_FORMAT \"iso-%d-%s\"" >>iconv-detect.h
-    echo "#define ICONV_10646 \"UCS-4BE\"" >>iconv-detect.h
-  else
-	AC_MSG_RESULT(unknown)
-	AC_WARN([
-	*** The iconv-detect program was unable to determine the
-	*** preferred charset formats recognized by your system
-	*** iconv library. You are crosscompiling and supposed
-	*** to know what you are doing. (:-)
-    ])
-  fi
+AC_MSG_CHECKING([preferred charset name formats for system iconv])
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+	#define CONFIGURE_IN
+	#include "iconv-detect.c"
+	]])],
+	[AC_MSG_RESULT([found])],
+	[AC_MSG_RESULT([not found])
+		AC_MSG_WARN([
+		*** The iconv-detect program was unable to determine the
+		*** preferred charset name formats recognized by your
+		*** iconv library. It is suggested that you install a
+		*** working iconv library such as the one found at
+		*** ftp://ftp.gnu.org/pub/gnu/libiconv
+	])],
+	[if test x$os_win32 = xyes; then
+		AC_MSG_RESULT([using known win32 result])
+		echo '/* This is an auto-generated header, DO NOT EDIT! */' > iconv-detect.h
+		echo  >>iconv-detect.h
+		echo '#define ICONV_ISO_D_FORMAT "iso-%d-%d"' >>iconv-detect.h
+		echo '#define ICONV_ISO_S_FORMAT "iso-%d-%s"' >>iconv-detect.h
+		echo '#define ICONV_10646 "UCS-4BE"' >>iconv-detect.h
+	else
+		AC_MSG_RESULT([unknown])
+		AC_MSG_WARN([
+		*** We can't determine the preferred charset name formats
+		*** recognized by your iconv library. You are
+		*** cross-compiling and supposed to know what you are doing.
+		*** Please construct the iconv-detect.h file manually.
+		])
+	fi
 ])
 
 CFLAGS="$save_CFLAGS"
@@ -426,46 +434,41 @@ LIBS="$save_LIBS"
 
 dnl Check for nl_langinfo and CODESET
 AC_MSG_CHECKING([for nl_langinfo (CODESET)])
-AC_TRY_COMPILE([#include <langinfo.h>],
-	[char *codeset = nl_langinfo (CODESET);],
-	[ac_cv_langinfo_codeset=yes],
-	[ac_cv_langinfo_codeset=no])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[#include <langinfo.h>]],
+	[[char *codeset = nl_langinfo (CODESET);]]
+	)],[ac_cv_langinfo_codeset=yes],[ac_cv_langinfo_codeset=no])
 if test x$ac_cv_langinfo_codeset = xyes; then
 	AC_DEFINE(HAVE_CODESET, 1, [Have nl_langinfo (CODESET)])
 fi
-AC_MSG_RESULT($ac_cv_langinfo_codeset)
+AC_MSG_RESULT([$ac_cv_langinfo_codeset])
 
 dnl Check to see if strftime supports the use of %l and %k
 
-AC_MSG_CHECKING(for %l and %k support in strftime)
-AC_TRY_RUN([
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+AC_MSG_CHECKING([for %l and %k support in strftime])
+AC_RUN_IFELSE([AC_LANG_SOURCE(
+	[[	#include <stdlib.h>
+		#include <string.h>
+		#include <time.h>
+		int main(int argc, char **argv)	{
+		char buf[10];
+		time_t rawtime;
+		struct tm *timeinfo;
 
-int main(int argc, char **argv)
-{
-	char buf[10];
-	time_t rawtime;
-	struct tm *timeinfo;
+		time(&rawtime);
+		timeinfo=localtime(&rawtime);
+		buf[0] = '\0';
+		strftime(buf, 10, "%lx%k", timeinfo);
 
-	time(&rawtime);
-	timeinfo=localtime(&rawtime);
-	buf[0] = '\0';
-	strftime(buf, 10, "%lx%k", timeinfo);
-
-	if (buf[0] == '\0' || buf[0] == 'x' || strstr(buf, "l") || strstr(buf, "k"))
-		exit(1);
-	else
-		exit(0);
-}],[
-AC_DEFINE(HAVE_LKSTRFTIME, 1, [strftime supports use of l and k])
-ac_cv_lkstrftime=yes
-],ac_cv_lkstrftime=no,ac_cv_lkstrftime=no,[
-AC_DEFINE(HAVE_LKSTRFTIME, 1, [strftime supports use of l and k])
-ac_cv_lkstrftime=yes
-])
-AC_MSG_RESULT($ac_cv_lkstrftime)
+		if (buf[0] == '\0' || buf[0] == 'x' || strstr(buf, "l") || strstr(buf, "k"))
+			exit(1);
+		else
+			exit(0);
+		return 0;
+		}
+	]]
+	)],[AC_DEFINE(HAVE_LKSTRFTIME, 1, [strftime supports use of l and k]) ac_cv_lkstrftime=yes],[ac_cv_lkstrftime=no],[ac_cv_lkstrftime=no])
+AC_MSG_RESULT([$ac_cv_lkstrftime])
 
 dnl ********************************************************************************
 dnl security extension support (SSL and S/MIME)
@@ -480,38 +483,31 @@ msg_smime="no"
 
 dnl these 2 enable's are inverses of each other
 AC_ARG_ENABLE(nss,
-  AC_HELP_STRING( [--enable-nss=@<:@yes/no/static@:>@],
-		  [Attempt to use Mozilla libnss for SSL support.]),
+  AS_HELP_STRING([--enable-nss=@<:@yes/no/static@:>@],[Attempt to use Mozilla libnss for SSL support.]),
   enable_nss="$enableval", enable_nss="yes")
 
 AC_ARG_ENABLE(smime,
-  AC_HELP_STRING( [--enable-smime=@<:@yes/no@:>@],
-		  [Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)]),
+  AS_HELP_STRING([--enable-smime=@<:@yes/no@:>@],[Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)]),
   enable_smime="$enableval", enable_smime="yes")
 
 AC_ARG_ENABLE(gnome-keyring,
-  AC_HELP_STRING( [--enable-gnome-keyring=@<:@yes/no@:>@],
-		  [Attempt to use Gnome Keyring for storing passwords]),
+  AS_HELP_STRING([--enable-gnome-keyring=@<:@yes/no@:>@],[Attempt to use Gnome Keyring for storing passwords]),
   enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
 
 AC_ARG_WITH(nspr-includes,
-  AC_HELP_STRING( [--with-nspr-includes=PREFIX],
-		  [Location of Mozilla nspr4 includes.]),
+  AS_HELP_STRING([--with-nspr-includes=PREFIX],[Location of Mozilla nspr4 includes.]),
   with_nspr_includes="$withval")
 
 AC_ARG_WITH(nspr-libs,
-  AC_HELP_STRING( [--with-nspr-libs=PREFIX],
-		  [Location of Mozilla nspr4 libs.]),
+  AS_HELP_STRING([--with-nspr-libs=PREFIX],[Location of Mozilla nspr4 libs.]),
   with_nspr_libs="$withval")
 
 AC_ARG_WITH(nss-includes,
-  AC_HELP_STRING( [--with-nss-includes=PREFIX],
-		  [Location of Mozilla nss3 includes.]),
+  AS_HELP_STRING([--with-nss-includes=PREFIX],[Location of Mozilla nss3 includes.]),
   with_nss_includes="$withval")
 
 AC_ARG_WITH(nss-libs,
-  AC_HELP_STRING( [--with-nss-libs=PREFIX],
-		  [Location of Mozilla nss3 libs.]),
+  AS_HELP_STRING([--with-nss-libs=PREFIX],[Location of Mozilla nss3 libs.]),
   with_nss_libs="$withval")
 
 if test "x${enable_gnome_keyring}" = "xyes"; then
@@ -737,62 +733,40 @@ AC_SUBST(MANUAL_NSPR_LIBS)
 AC_SUBST(MANUAL_NSS_CFLAGS)
 AC_SUBST(MANUAL_NSS_LIBS)
 
-if test $os_win32 != yes; then
-
-dnl check for socklen_t (in Unix98)
-AC_MSG_CHECKING(for socklen_t)
-AC_TRY_COMPILE([#include <sys/types.h>
-#include <sys/socket.h>
-socklen_t x;
-],[],[AC_MSG_RESULT(yes)],[
-AC_TRY_COMPILE([#include <sys/types.h>
-#include <sys/socket.h>
-int accept (int, struct sockaddr *, size_t *);
-],[],[
-AC_MSG_RESULT(size_t)
-AC_DEFINE(socklen_t,size_t,[Define to appropriate type if socklen_t is not defined])], [
-AC_MSG_RESULT(int)
-AC_DEFINE(socklen_t,int)])])
-
-fi
-
 dnl
 dnl system mail stuff
 dnl
-AC_PATH_PROG(SENDMAIL, sendmail, /usr/sbin/sendmail, /usr/sbin:/usr/lib)
+AC_PATH_PROG(SENDMAIL, sendmail, [/usr/sbin/sendmail], [/usr/sbin:/usr/lib])
 AC_DEFINE_UNQUOTED(SENDMAIL_PATH, "$SENDMAIL", [Path to a sendmail binary, or equivalent])
 
-AC_MSG_CHECKING(system mail directory)
+AC_MSG_CHECKING([system mail directory])
 if test -d /var/mail -a '!' -h /var/mail ; then
-	system_mail_dir=/var/mail
+	system_mail_dir="/var/mail"
 else
-	system_mail_dir=/var/spool/mail
+	system_mail_dir="/var/spool/mail"
 fi
 AC_DEFINE_UNQUOTED(SYSTEM_MAIL_DIR, "$system_mail_dir", [Directory local mail is delivered to])
 
 case `ls -ld $system_mail_dir 2>&1 | awk '{print $1;}'` in
-d??????rw?)
-	CAMEL_LOCK_HELPER_USER=""
-	CAMEL_LOCK_HELPER_GROUP=""
-	system_mail_perm="world writable"
+	d??????rw?)
+		CAMEL_LOCK_HELPER_USER=""
+		CAMEL_LOCK_HELPER_GROUP=""
+		system_mail_perm="world writable"
 	;;
-
-d???rw????)
-	CAMEL_LOCK_HELPER_USER=""
-	CAMEL_LOCK_HELPER_GROUP=`ls -ld $system_mail_dir 2>&1 | awk '{print $4;}'`
-	system_mail_perm="writable by group $CAMEL_LOCK_HELPER_GROUP"
+	d???rw????)
+		CAMEL_LOCK_HELPER_USER=""
+		CAMEL_LOCK_HELPER_GROUP=`ls -ld $system_mail_dir 2>&1 | awk '{print $4;}'`
+		system_mail_perm="writable by group $CAMEL_LOCK_HELPER_GROUP"
 	;;
-
-drw???????)
-	CAMEL_LOCK_HELPER_USER=`ls -ld $system_mail_dir 2>&1 | awk '{print $3;}'`
-	CAMEL_LOCK_HELPER_GROUP=""
-	system_mail_perm="writable by user $CAMEL_LOCK_HELPER_USER"
+	drw???????)
+		CAMEL_LOCK_HELPER_USER=`ls -ld $system_mail_dir 2>&1 | awk '{print $3;}'`
+		CAMEL_LOCK_HELPER_GROUP=""
+		system_mail_perm="writable by user $CAMEL_LOCK_HELPER_USER"
 	;;
-
-*)
-	CAMEL_LOCK_HELPER_USER=""
-	CAMEL_LOCK_HELPER_GROUP=""
-	system_mail_perm="???"
+	*)
+		CAMEL_LOCK_HELPER_USER=""
+		CAMEL_LOCK_HELPER_GROUP=""
+		system_mail_perm="???"
 	;;
 esac
 
@@ -800,60 +774,52 @@ AC_MSG_RESULT([$system_mail_dir, $system_mail_perm])
 AC_SUBST(CAMEL_LOCK_HELPER_USER)
 AC_SUBST(CAMEL_LOCK_HELPER_GROUP)
 
-
 dnl ***************
 dnl Timezone checks
 dnl ***************
-AC_CACHE_CHECK(for tm_gmtoff in struct tm, ac_cv_struct_tm_gmtoff,
-	AC_TRY_COMPILE([
-		#include <time.h>
-		], [
+AC_CACHE_CHECK(for tm_gmtoff in struct tm, [ac_cv_struct_tm_gmtoff],
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[	#include <time.h>	]],
+	[[
 		struct tm tm;
 		tm.tm_gmtoff = 1;
-		], ac_cv_struct_tm_gmtoff=yes, ac_cv_struct_tm_gmtoff=no))
+	]]
+	)],[ac_cv_struct_tm_gmtoff=yes],[ac_cv_struct_tm_gmtoff=no]))
 if test $ac_cv_struct_tm_gmtoff = yes; then
 	AC_DEFINE(HAVE_TM_GMTOFF, 1, [Define if struct tm has a tm_gmtoff member])
 else
-	AC_CACHE_CHECK(for timezone variable, ac_cv_var_timezone,
-		AC_TRY_COMPILE([
-			#include <time.h>
-		], [
-			timezone = 1;
-		], ac_cv_var_timezone=yes, ac_cv_var_timezone=no))
+	AC_CACHE_CHECK(for timezone variable, [ac_cv_var_timezone],
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+		[[	#include <time.h> ]],
+		[[	timezone = 1;	]]
+		)],[ac_cv_var_timezone=yes],[ac_cv_var_timezone=no]))
 	if test $ac_cv_var_timezone = yes; then
 		AC_DEFINE(HAVE_TIMEZONE, 1, [Define if libc defines a timezone variable])
-		AC_CACHE_CHECK(for altzone variable, ac_cv_var_altzone,
-			AC_TRY_COMPILE([
-				#include <time.h>
-			], [
-				altzone = 1;
-			], ac_cv_var_altzone=yes, ac_cv_var_altzone=no))
+		AC_CACHE_CHECK(for altzone variable, [ac_cv_var_altzone],
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+			[[	#include <time.h>	]],
+			[[	altzone = 1; ]]
+			)],[ac_cv_var_altzone=yes],[ac_cv_var_altzone=no]))
 		if test $ac_cv_var_altzone = yes; then
 			AC_DEFINE(HAVE_ALTZONE, 1, [Define if libc defines an altzone variable])
 		fi
 	else
-		AC_ERROR(unable to find a way to determine timezone)
+		AC_MSG_ERROR([unable to find a way to determine timezone])
 	fi
 fi
-
 
 dnl **************************************************
 dnl ctime_r prototype
 dnl **************************************************
 
-AC_CACHE_CHECK([if ctime_r wants three arguments], ac_cv_ctime_r_three_args,
+AC_CACHE_CHECK([if ctime_r wants three arguments], [ac_cv_ctime_r_three_args],
 [
-	AC_TRY_COMPILE([
-		#include <time.h>
-	],[
-		char *buf;
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[	#include <time.h> ]],
+	[[	char *buf;
 		time_t date;
-		ctime_r (&date, buf, 100);
-	],[
-		ac_cv_ctime_r_three_args=yes
-	],[
-		ac_cv_ctime_r_three_args=no
-	])
+		ctime_r (&date, buf, 100); ]]
+	)],[ac_cv_ctime_r_three_args=yes],[ac_cv_ctime_r_three_args=no])
 ])
 
 if test x"$ac_cv_ctime_r_three_args" = xyes ; then
@@ -865,9 +831,10 @@ dnl gethostbyname_r prototype
 dnl **************************************************
 
 AC_CHECK_FUNCS(gethostbyname_r,[
-AC_CACHE_CHECK([if gethostbyname_r wants five arguments], ac_cv_gethostbyname_r_five_args,
+AC_CACHE_CHECK([if gethostbyname_r wants five arguments], [ac_cv_gethostbyname_r_five_args],
 [
-	AC_TRY_COMPILE([
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[
 		#include "confdefs.h"
 		#include <sys/types.h>
 		#include <sys/socket.h>
@@ -875,18 +842,15 @@ AC_CACHE_CHECK([if gethostbyname_r wants five arguments], ac_cv_gethostbyname_r_
 		#include <netdb.h>
 
 		#define BUFSIZE (sizeof(struct hostent)+10)
-	],[
+	]],
+	[[
 		struct hostent hent;
 		char buffer[BUFSIZE];
 		int bufsize=BUFSIZE;
 		int h_errno;
-
 		(void)gethostbyname_r ("www.ximian.com", &hent, buffer, bufsize, &h_errno);
-	],[
-		ac_cv_gethostbyname_r_five_args=yes
-	],[
-		ac_cv_gethostbyname_r_five_args=no
-	])
+	]]
+	)],[ac_cv_gethostbyname_r_five_args=yes],[ac_cv_gethostbyname_r_five_args=no])
 ])])
 
 if test "x$ac_cv_gethostbyname_r_five_args" = "xyes" ; then
@@ -898,28 +862,24 @@ dnl gethostbyaddr_r prototype
 dnl **************************************************
 
 AC_CHECK_FUNCS(gethostbyaddr_r,[
-AC_CACHE_CHECK([if gethostbyaddr_r wants seven arguments], ac_cv_gethostbyaddr_r_seven_args,
+AC_CACHE_CHECK([if gethostbyaddr_r wants seven arguments], [ac_cv_gethostbyaddr_r_seven_args],
 [
-	AC_TRY_COMPILE([
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[
 		#include "confdefs.h"
 		#include <sys/types.h>
 		#include <sys/socket.h>
 		#include <netinet/in.h>
 		#include <netdb.h>
-
 		#define BUFSIZE (sizeof(struct hostent)+10)
-	],[
+	]],
+	[[
 		struct hostent hent;
 		char buffer[BUFSIZE];
 		int bufsize=BUFSIZE;
 		int h_errno;
-
-		(void)gethostbyaddr_r ("www.ximian.com", 14, AF_INET, &hent, buffer, bufsize, &h_errno);
-	],[
-		ac_cv_gethostbyaddr_r_seven_args=yes
-	],[
-		ac_cv_gethostbyaddr_r_seven_args=no
-	])
+		(void)gethostbyaddr_r ("www.ximian.com", 14, AF_INET, &hent, buffer, bufsize, &h_errno); ]]
+	)],[ac_cv_gethostbyaddr_r_seven_args=yes],[ac_cv_gethostbyaddr_r_seven_args=no])
 ])])
 
 if test "x$ac_cv_gethostbyaddr_r_seven_args" = "xyes" ; then
@@ -930,27 +890,41 @@ dnl **************************************************
 dnl stat(v)fs location/type
 dnl **************************************************
 
-AC_CHECK_HEADERS(sys/statvfs.h)
+AC_CHECK_HEADERS(sys/statvfs.h,,,
+[[
+	#if HAVE_SYS_STATVFS_H
+	#include <sys/statvfs.h>
+	#endif
+]])
 AC_CHECK_FUNCS(statvfs)
-AC_CHECK_HEADERS(sys/param.h)
-AC_CHECK_HEADERS(sys/mount.h)
+AC_CHECK_HEADERS(sys/param.h,,,
+[[
+	#if HAVE_SYS_PARAM_H
+	#include <sys/param.h>
+	#endif
+]])
+AC_CHECK_HEADERS(sys/mount.h,,,
+[[
+	#if HAVE_SYS_MOUNT_H
+	#include <sys/mount.h>
+	#endif
+]])
 AC_CHECK_FUNCS(statfs)
 
 dnl **************************************************
 dnl * IPv6 support and getaddrinfo calls
 dnl **************************************************
-AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], ac_cv_have_addrinfo,
+AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], [ac_cv_have_addrinfo],
 [
-	AC_TRY_COMPILE([
-		#include "confdefs.h"
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[	#include "confdefs.h"
 		#include <sys/types.h>
 		#include <sys/socket.h>
 		#include <netinet/in.h>
 		#include <netdb.h>
 		#include <stddef.h>
-
-	],[
-		#ifndef NI_MAXHOST
+	]],
+	[[	#ifndef NI_MAXHOST
 		#define NI_MAXHOST	1025
 		#endif
 
@@ -966,110 +940,103 @@ AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], ac_cv_have_addr
 
 		getaddrinfo ("www.ximian.com", NULL, &hints, &res);
 		freeaddrinfo (res);
-		getnameinfo((struct sockaddr *)&sin6, sizeof(sin6), host, sizeof(host), serv, sizeof(serv), 0);
-	],[
-		ac_cv_have_addrinfo=yes
-	],[
-		ac_cv_have_addrinfo=no
-	])
+		getnameinfo((struct sockaddr *)&sin6, sizeof(sin6), host, sizeof(host), serv, sizeof(serv), 0);	]]
+	)],[ac_cv_have_addrinfo=yes],[ac_cv_have_addrinfo=no])
 ])
 
 if test x"$ac_cv_have_addrinfo" = "xno" ; then
    AC_DEFINE(NEED_ADDRINFO,1,[Enable getaddrinfo emulation])
    if test x"$enable_ipv6" = "xyes" ; then
-      AC_ERROR(system doesn't support necessary interfaces for ipv6 support)
+      AC_MSG_ERROR([system doesn't support necessary interfaces for ipv6 support])
    fi
    msg_ipv6=no
 else
-   AC_ARG_ENABLE(ipv6,
-     AC_HELP_STRING( [--enable-ipv6=@<:@no/yes@:>@],
-		     [Enable support for resolving IPv6 addresses.]),
-     ,enable_ipv6=yes)
-   if test x"$enable_ipv6" = "xyes"; then
-        msg_ipv6=yes
-	AC_DEFINE(ENABLE_IPv6,1,[Enable IPv6 support])
-	AC_TRY_COMPILE([
-		#include "confdefs.h"
-		#include <sys/types.h>
-		#include <sys/socket.h>
-		#include <netinet/in.h>
-		#include <netdb.h>
-
-	],[
-		struct addrinfo hints;
-
-		hints.ai_flags = AI_ADDRCONFIG;
-	],[
-		AC_DEFINE(HAVE_AI_ADDRCONFIG,1,[Define if the system defines the AI_ADDRCONFIG flag for getaddrinfo])
-	])
+	AC_ARG_ENABLE([ipv6],
+	AS_HELP_STRING([--enable-ipv6=no/yes],
+	[Enable support for resolving IPv6 addresses.]),
+	[enable_ipv6=$enableval],[enable_ipv6=yes])
+	if test x"$enable_ipv6" = "xyes"; then
+		msg_ipv6=yes
+		AC_DEFINE(ENABLE_IPv6,1,[Enable IPv6 support])
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+		[[	#include "confdefs.h"
+			#include <sys/types.h>
+			#include <sys/socket.h>
+			#include <netinet/in.h>
+			#include <netdb.h>
+		]],
+		[[	struct addrinfo hints;
+			hints.ai_flags = AI_ADDRCONFIG;
+		]]
+		)],[AC_DEFINE(HAVE_AI_ADDRCONFIG,1,[Define if the system defines the AI_ADDRCONFIG flag for getaddrinfo])],[])
    else
 	msg_ipv6=no
    fi
 fi
 
-AM_CONDITIONAL(ENABLE_IPv6, test "x$enable_ipv6" = "xyes")
+AM_CONDITIONAL(ENABLE_IPv6, [test "x$enable_ipv6" = "xyes"])
 
 dnl **************************************************
 dnl Calendar support
 dnl **************************************************
-AC_MSG_CHECKING(if we should build the calendar)
-AC_ARG_ENABLE(calendar,
-  AC_HELP_STRING( [--enable-calendar=@<:@yes/no@:>@],
-		  [Enable the calendar components (default yes)]),
-  enable_calendar="$enableval", enable_calendar="yes")
+AC_MSG_CHECKING([if we should build the calendar])
+AC_ARG_ENABLE([calendar],
+	AS_HELP_STRING([--enable-calendar=yes/no],
+	[Enable the calendar components (default yes)]),
+	[enable_calendar=$enableval], [enable_calendar=yes])
 
 if test "x${enable_calendar}" != "xno"; then
         AC_DEFINE(ENABLE_CALENDAR, 1, [Define if Calendar should be built])
 fi
-AM_CONDITIONAL(ENABLE_CALENDAR, test x$enable_calendar = xyes)
-AC_MSG_RESULT($enable_calendar)
+AM_CONDITIONAL(ENABLE_CALENDAR, [test x$enable_calendar = xyes])
+AC_MSG_RESULT([$enable_calendar])
 msg_calendar=$enable_calendar
 
 dnl **************************************************
 dnl Weather calendar backend support
 dnl **************************************************
-AC_MSG_CHECKING(if we should build the weather calendar backend)
+AC_MSG_CHECKING([if we should build the weather calendar backend])
 AC_ARG_WITH([weather],
-  [AC_HELP_STRING([--with-weather], [Build the weather calendar backend (default=yes)])],
-  [use_gweather=$withval],
-  [use_gweather=yes])
-if test $enable_calendar = no; then
+	[AS_HELP_STRING([--with-weather],
+	[Build the weather calendar backend (default=yes)])],
+	[use_gweather=$withval], [use_gweather=yes])
+if test "$enable_calendar" = "no"; then
 	use_gweather="no (calendar support is disabled)"
 fi
-AC_MSG_RESULT($use_gweather)
 
-if test $use_gweather = yes; then
-	PKG_CHECK_MODULES([LIBGWEATHER],
-	   [gweather >= gweather_minimum_version],
+AC_MSG_RESULT([$use_gweather])
+if test "$use_gweather" = "yes"; then
+	PKG_CHECK_MODULES([LIBGWEATHER], [gweather >= gweather_minimum_version],
 	   [],
 	   [AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
 fi
 
-AM_CONDITIONAL(ENABLE_WEATHER, test $use_gweather = yes)
+AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
 dnl **************************************************
 dnl NNTP support.
 dnl **************************************************
-AC_ARG_ENABLE(nntp,
-  AC_HELP_STRING( [--enable-nntp=@<:@no/yes@:>@],
-		  [Build Usenet news (NNTP) backend]),
-  ,enable_nntp=yes)
-
+AC_ARG_ENABLE([nntp],
+	AS_HELP_STRING([--enable-nntp],
+	[Build Usenet news (NNTP) backend]),
+	[enable_nntp=$enableval],[enable_nntp=yes])
 if test "x$enable_nntp" = "xyes"; then
 	AC_DEFINE(ENABLE_NNTP,1,[Build NNTP backend])
 	msg_nntp=yes
 else
 	msg_nntp=no
 fi
-AM_CONDITIONAL(ENABLE_NNTP, test x$enable_nntp = xyes)
+AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
+
+AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 
 dnl **************************************************
 dnl New IMAP code support.
 dnl **************************************************
-AC_ARG_ENABLE(imapp,
-  AC_HELP_STRING( [--enable-imapp=@<:@no/yes@:>@],
-		  [Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code]),
-  ,enable_imapp=no)
+AC_ARG_ENABLE([imapp],
+	AS_HELP_STRING([--enable-imapp=no/yes],
+	[Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code]),
+	[],[enable_imapp=no])
 
 if test "x$enable_imapp" = "xyes"; then
 	AC_DEFINE(ENABLE_IMAPP,1,[Really don't try this at home])
@@ -1077,15 +1044,15 @@ if test "x$enable_imapp" = "xyes"; then
 else
 	msg_imapp=no
 fi
-AM_CONDITIONAL(ENABLE_IMAPP, test x$enable_imapp = xyes)
+AM_CONDITIONAL(ENABLE_IMAPP, [test x$enable_imapp = xyes])
 
 dnl **************************************************
 dnl IMAP4rev1 code support.
 dnl **************************************************
 AC_ARG_ENABLE(imap4,
-  AC_HELP_STRING( [--enable-imap4=@<:@no/yes@:>@],
-		  [Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
-  ,enable_imap4=no)
+	AS_HELP_STRING([--enable-imap4=no/yes],
+	[Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
+	[],[enable_imap4=no])
 
 if test "x$enable_imap4" = "xyes"; then
          AC_DEFINE(ENABLE_IMAP4,1,[Really don't try this at home])
@@ -1093,15 +1060,15 @@ if test "x$enable_imap4" = "xyes"; then
 else
          msg_imap4=no
 fi
-AM_CONDITIONAL(ENABLE_IMAP4, test x$enable_imap4 = xyes)
+AM_CONDITIONAL(ENABLE_IMAP4, [test x$enable_imap4 = xyes])
 
 dnl **************************************************
 dnl Hula support
 dnl **************************************************
-AC_ARG_ENABLE(hula,
-  AC_HELP_STRING( [--enable-hula=@<:@no/yes@:>@],
-                  [Enable support for the now-defunct Hula project]),
-  ,enable_hula=no)
+AC_ARG_ENABLE([hula],
+	AS_HELP_STRING([--enable-hula=no/yes],
+	[Enable support for the now-defunct Hula project]),
+	[],[enable_hula=no])
 
 if test "x$enable_hula" = "xyes"; then
         AC_DEFINE(ENABLE_HULA,1,[Build Hula backend])
@@ -1109,114 +1076,117 @@ if test "x$enable_hula" = "xyes"; then
 else
         msg_hula=no
 fi
-AM_CONDITIONAL(ENABLE_HULA, test x$enable_hula = xyes)
+AM_CONDITIONAL(ENABLE_HULA, [test x$enable_hula = xyes])
 
 dnl **************************************************
 dnl * File locking
 dnl **************************************************
 
-AC_ARG_ENABLE(dot-locking,
-  AC_HELP_STRING( [--enable-dot-locking=@<:@yes/no@:>@],
-		  [Enable support for locking mail files with dot locking]),
-  ,enable_dot_locking=yes)
+AC_ARG_ENABLE([dot-locking],
+	AS_HELP_STRING([--enable-dot-locking=yes/no],
+	[Enable support for locking mail files with dot locking]),
+	[enable_dot_locking=$enableval],[enable_dot_locking=yes])
 
 if test $os_win32 != yes -a "x$enable_dot_locking" = "xyes"; then
-  AC_DEFINE(USE_DOT,1,[Define to use dot locking for mbox files])
-  msg_dot=yes
+	AC_DEFINE(USE_DOT,1,[Define to use dot locking for mbox files])
+	msg_dot=yes
 else
-  msg_dot=no
+	msg_dot=no
 fi
 
-AC_ARG_ENABLE(file-locking,
-  AC_HELP_STRING( [--enable-file-locking=@<:@fcntl/flock/no@:>@],
-		  [Enable support for locking mail files with file locking]),
-  ,enable_file_locking=fcntl)
+AC_ARG_ENABLE([file-locking],
+	AS_HELP_STRING([--enable-file-locking=fcntl/flock/no],
+	[Enable support for locking mail files with file locking]),
+	[],[enable_file_locking=fcntl])
 
 if test $os_win32 != yes -a "x$enable_file_locking" = "xfcntl"; then
-  AC_DEFINE(USE_FCNTL,1,[Define to use fcntl locking for mbox files])
-  msg_file=fcntl
+	AC_DEFINE(USE_FCNTL,1,[Define to use fcntl locking for mbox files])
+	msg_file=fcntl
 else
-  if test $os_win32 != yes -a "x$enable_file_locking" = "xflock"; then
-    AC_DEFINE(USE_FLOCK,1,[Define to use flock locking for mbox files])
-    msg_file=flock
-  else
-    msg_file=no
-  fi
+	if test $os_win32 != yes -a "x$enable_file_locking" = "xflock"; then
+		AC_DEFINE(USE_FLOCK,1,[Define to use flock locking for mbox files])
+		msg_file=flock
+	else
+		msg_file=no
+	fi
 fi
 
 dnl **************************************************
 dnl * sendmail operation
 dnl **************************************************
 
-AC_MSG_CHECKING(for SunOS broken spool format)
+AC_MSG_CHECKING([for SunOS broken spool format])
 if test "x$host_os" = "xsunos" ; then
-   with_broken_spool="yes"
+	with_broken_spool="yes"
 fi
 
-AC_ARG_WITH(broken-spool,
-  AC_HELP_STRING( [--with-broken-spool=@<:@yes/no@:>@],
-		  [Using SunOS/Solaris sendmail which has a broken spool format]),
-  ,with_broken_spool=${with_broken_spool:=no})
+AC_ARG_WITH([broken-spool],
+	AS_HELP_STRING([--with-broken-spool=yes/no],
+	[Using SunOS/Solaris sendmail which has a broken spool format]),
+	[with_broken_spool=$enableval],[with_broken_spool=${with_broken_spool:=no}])
 
 if test "x$with_broken_spool" = "xyes"; then
-  AC_DEFINE(HAVE_BROKEN_SPOOL,1,[Define if mail delivered to the system mail directory is in broken Content-Length format])
+	AC_DEFINE(HAVE_BROKEN_SPOOL,1,[Define if mail delivered to the system mail directory is in broken Content-Length format])
 fi
 
-AC_MSG_RESULT($with_broken_spool)
+AC_MSG_RESULT([$with_broken_spool])
 
 dnl ********
 dnl Kerberos
 dnl ********
-AC_ARG_WITH(krb5,
-  AC_HELP_STRING( [--with-krb5=DIR],
-		  [Location of Kerberos 5 install dir]),
-  with_krb5="$withval", with_krb5="no")
+AC_ARG_WITH([krb5],
+	AS_HELP_STRING([--with-krb5=PATH],
+	[Location of Kerberos 5 install dir]),
+	[with_krb5="$withval"], [with_krb5="no"])
 
-AC_ARG_WITH(krb5-libs,
-  AC_HELP_STRING( [--with-krb5-libs=DIR],
-		  [Location of Kerberos 5 libraries]),
-  with_krb5_libs="$withval", with_krb5_libs="$with_krb5/lib")
+AC_ARG_WITH([krb5-libs],
+	AS_HELP_STRING([--with-krb5-libs=PATH],
+	[Location of Kerberos 5 libraries]),
+	[with_krb5_libs="$withval"], [with_krb5_libs="$with_krb5/lib"])
 
-AC_ARG_WITH(krb5-includes,
-  AC_HELP_STRING( [--with-krb5-includes=DIR],
-		  [Location of Kerberos 5 headers]),
-  with_krb5_includes="$withval", with_krb5_includes="")
+AC_ARG_WITH([krb5-includes],
+	AS_HELP_STRING([--with-krb5-includes=PATH],
+	[Location of Kerberos 5 headers]),
+	[with_krb5_includes="$withval"], [with_krb5_includes=""])
 
-AC_ARG_WITH(krb4,
-  AC_HELP_STRING( [--with-krb4=DIR],
-		  [Location of Kerberos 4 install dir]),
-  with_krb4="$withval", with_krb4="no")
+AC_ARG_WITH([krb4],
+	AS_HELP_STRING([--with-krb4=PATH],
+	[Location of Kerberos 4 install dir]),
+	[with_krb4="$withval"], [with_krb4="no"])
 
-AC_ARG_WITH(krb4-libs,
-  AC_HELP_STRING( [--with-krb4-libs=DIR],
-		  [Location of Kerberos 4 libraries]),
-  with_krb4_libs="$withval", with_krb4_libs="$with_krb4/lib")
+AC_ARG_WITH([krb4-libs],
+	AS_HELP_STRING([--with-krb4-libs=DIR],
+	[Location of Kerberos 4 libraries]),
+	[with_krb4_libs="$withval"], [with_krb4_libs="$with_krb4/lib"])
 
-AC_ARG_WITH(krb4-includes,
-  AC_HELP_STRING( [--with-krb4-includes=DIR],
-		  [Location of Kerberos 4 headers]),
-  with_krb4_includes="$withval", with_krb4_includes="")
+AC_ARG_WITH([krb4-includes],
+	AS_HELP_STRING([--with-krb4-includes=DIR],
+	[Location of Kerberos 4 headers]),
+	[with_krb4_includes="$withval"], [with_krb4_includes=""])
 
 msg_krb5="no"
 if test "x${with_krb5}" != "xno"; then
-	LIBS_save="$LIBS"
+	LDFLAGS_save="$LDFLAGS"
 
 	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
 	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
 	sunlibs="-lkrb5 -lgss"
-	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
+	AC_CACHE_CHECK([for Kerberos 5], [ac_cv_lib_kerberos5],
 	[
-		LIBS="$LIBS -L$with_krb5_libs $mitlibs"
-		AC_TRY_LINK([#include <krb5.h>],krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
+		LDFLAGS="$LDFLAGS -L$with_krb5_libs $mitlibs"
+		AC_LINK_IFELSE([AC_LANG_CALL([], [krb5_init_context])],
+		[ac_cv_lib_kerberos5="$mitlibs"],
 		[
-			LIBS="$LIBS_save -L$with_krb5_libs $heimlibs"
-			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs",
+			LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $heimlibs"
+			AC_LINK_IFELSE([AC_LANG_CALL([], [krb5_init_context])],
+			[ac_cv_lib_kerberos5="$heimlibs"],
 			[
-				LIBS="$LIBS_save -L$with_krb5_libs $sunlibs"
-				AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$sunlibs", ac_cv_lib_kerberos5="no")
+				LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $sunlibs"
+				AC_LINK_IFELSE([AC_LANG_CALL([], [krb5_init_context])],
+				[ac_cv_lib_kerberos5="$sunlibs"], [ac_cv_lib_kerberos5="no"])
 			])
 		])
-		LIBS="$LIBS_save"
+		LDFLAGS="$LDFLAGS_save"
 	])
 	if test "$ac_cv_lib_kerberos5" != "no"; then
 		AC_DEFINE(HAVE_KRB5,1,[Define if you have Krb5])
@@ -1248,7 +1218,7 @@ if test "x${with_krb5}" != "xno"; then
 			fi
 		fi
 		KRB5_LDFLAGS="-L$with_krb5_libs $ac_cv_lib_kerberos5"
-		AC_MSG_RESULT(msg_krb5)
+		AC_MSG_RESULT([msg_krb5])
 	else
 		dnl AC_MSG_CHECKING([for Kerberos 5])
 		AC_MSG_RESULT([no])
@@ -1258,35 +1228,47 @@ else
 	AC_MSG_WARN([krb5 support disabled])
 fi
 
-AM_CONDITIONAL(ENABLE_KRB5, test x$with_krb5 != xno)
+AM_CONDITIONAL(ENABLE_KRB5, [test x$with_krb5 != xno])
 
-AC_CHECK_HEADER([et/com_err.h],[AC_DEFINE([HAVE_ET_COM_ERR_H], 1, [Have et/comm_err.h])])
-AC_CHECK_HEADER([com_err.h],[AC_DEFINE([HAVE_COM_ERR_H], 1, [Have comm_err.h])])
+AC_CHECK_HEADER([et/com_err.h],,,
+[[#if HAVE_ET_COM_ERR_H
+#include <et/com_err.h>
+#endif
+]])
+AC_CHECK_HEADER([com_err.h],,,
+[[#if HAVE_ET_COM_ERR_H
+#include <com_err.h>
+#endif
+]])
 
 msg_krb4="no"
 if test "x${with_krb4}" != "xno"; then
 	LDFLAGS_save="$LDFLAGS"
-	AC_CACHE_CHECK(for Kerberos 4, ac_cv_lib_kerberos4,
+	AC_CACHE_CHECK([for Kerberos 4], [ac_cv_lib_kerberos4],
 	[
 		ac_cv_lib_kerberos4="no"
 
 		mitcompatlibs="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
 		# Look for MIT krb5 compat krb4
 		LDFLAGS="$LDFLAGS -L$with_krb4_libs $mitcompatlibs"
-		AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="$mitcompatlibs")
+		AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
+		[ac_cv_lib_kerberos4="$mitcompatlibs"])
 
 		if test "$ac_cv_lib_kerberos4" = "no"; then
 			# Look for KTH krb4
 			LDFLAGS="$LDFLAGS_save -L$with_krb4_libs -lkrb -lcrypto -lcom_err -lroken"
-			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken")
+			AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
+			[ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken"])
 		fi
 		if test "$ac_cv_lib_kerberos4" = "no"; then
 			# Look for old MIT krb4
 			LDFLAGS="$LDFLAGS_save -L$with_krb4_libs -lkrb"
-			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb",
+			AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
+			[ac_cv_lib_kerberos4="-lkrb"],
 			[
 				LDFLAGS="$LDFLAGS -ldes"
-				AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -ldes")
+				AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
+				[ac_cv_lib_kerberos4="-lkrb -ldes"])
 			])
 		fi
 	])
@@ -1309,14 +1291,17 @@ if test "x${with_krb4}" != "xno"; then
 
 		CFLAGS_save="$CFLAGS"
 		CFLAGS="$CFLAGS $KRB4_CFLAGS"
-		AC_TRY_COMPILE([#include "krb.h"
-		int krb_sendauth;
-		],[return 0],[AC_DEFINE(NEED_KRB_SENDAUTH_PROTO,1,[Need krb_sendauth proto])],)
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+			[[	#include "krb.h"
+				int krb_sendauth;
+			]],
+			[[	return 0	]]
+			)],[AC_DEFINE(NEED_KRB_SENDAUTH_PROTO,1,[Need krb_sendauth proto])],[])
 		CFLAGS="$CFLAGS_save"
 	fi
 else
-	AC_MSG_CHECKING(for Kerberos 4)
-	AC_MSG_RESULT(${with_krb4})
+	AC_MSG_CHECKING([for Kerberos 4])
+	AC_MSG_RESULT([${with_krb4}])
 fi
 
 AC_SUBST(KRB5_CFLAGS)
@@ -1332,16 +1317,14 @@ EVO_PURIFY_SUPPORT
 dnl **************************************************
 dnl Exchange debug
 dnl **************************************************
-AC_ARG_WITH(e2k-debug,
-  AC_HELP_STRING( [--with-e2k-debug],
-		  [Allow debugging]))
-case $withval in
-no)
-	;;
-*)
+AC_ARG_ENABLE([e2k-debug],
+	AS_HELP_STRING([--enable-e2kdebug],
+	[Allow debugging]),
+	[enable_e2kdebug=$enableval],[enable_e2kdebug="no"])
+
+if test "$enable_e2kdebug" = "yes"; then
 	AC_DEFINE(E2K_DEBUG, 1, [Define if you want E2K_DEBUG to be available])
-	;;
-esac
+fi
 
 dnl **************************************************
 dnl LDAP support.
@@ -1385,7 +1368,7 @@ if test "$with_openldap" = no ; then
 else
 	with_sunldap=no
 fi
-AM_CONDITIONAL(SUNLDAP, test "$with_sunldap" != no)
+AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
 
 SAVE_CFLAGS="$CFLAGS"
 SAVE_LIBS="$LIBS"
@@ -1460,7 +1443,7 @@ AC_SUBST(THREADS_LIBS)
 AC_SUBST(THREADS_CFLAGS)
 AC_DEFINE(ENABLE_THREADS,1,[Required])
 
-PKG_CHECK_MODULES(ORBIT, ORBit-2.0 >= ORBit_minimum_version)
+PKG_CHECK_MODULES([ORBIT], [ORBit-2.0 >= ORBit_minimum_version])
 test x$ORBIT_IDL = x && ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
 AC_SUBST(ORBIT_CFLAGS)
 AC_SUBST(ORBIT_LIBS)
@@ -1571,35 +1554,26 @@ fi
 dnl *************************************
 dnl *** Checks for large file support ***
 dnl *************************************
-AC_ARG_ENABLE(largefile,
-	      AC_HELP_STRING([--enable-largefile],
-	      [enable support for large files [[default=no]]]),,
-	      enable_largefile="no")
+AC_ARG_ENABLE([largefile],
+	AS_HELP_STRING([--enable-largefile],
+	[enable support for large files [[default=no]]]),
+	[],[enable_largefile="no"])
+
 if test "x$enable_largefile" != "xno"; then
-    AC_SYS_LARGEFILE
-    AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], ac_cv_largefile64_source,
-    [
-	AC_TRY_COMPILE([
-		#include <sys/types.h>
-		#include <sys/stat.h>
+	AC_SYS_LARGEFILE
+	AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], [ac_cv_largefile64_source],
+	[AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[	#include <sys/types.h>
+			#include <sys/stat.h>
 		#include <fcntl.h>
-	],[
-		int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
-	],[
-		ac_cv_largefile64_source="no"
-	],[
-		AC_TRY_COMPILE([
-			#define _LARGEFILE64_SOURCE
+	]],
+	[[	int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);	]]
+	)],[ac_cv_largefile64_source="no"],
+		[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[	#define _LARGEFILE64_SOURCE
 			#include <sys/types.h>
 			#include <sys/stat.h>
 			#include <fcntl.h>
-		],[
-			int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);
-		],[
-			ac_cv_largefile64_source="yes"
-		],[
-			ac_cv_largefile64_source="unknown"
-		])
+		]], [[ int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644); ]])],[ac_cv_largefile64_source="yes"],[ac_cv_largefile64_source="unknown"])
 	])
     ])
 
@@ -1626,7 +1600,7 @@ else
     LARGEFILE_CFLAGS=""
 fi
 
-AM_CONDITIONAL(ENABLE_LARGEFILE, test "x$enable_largefile" = "xyes")
+AM_CONDITIONAL(ENABLE_LARGEFILE, [test "x$enable_largefile" = "xyes"])
 
 EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0,
 		      $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS,
@@ -1712,7 +1686,8 @@ export privdatadir
 if test $dynamic_libdb = no; then
         AC_CONFIG_SUBDIRS(libdb/dist)
 fi
-AC_OUTPUT([
+
+AC_CONFIG_FILES([
 Makefile
 evolution-data-server-zip
 evolution-data-server.pc
@@ -1808,6 +1783,7 @@ docs/reference/libedataserverui/Makefile
 docs/reference/libebackend/Makefile
 po/Makefile.in
 ])
+AC_OUTPUT
 
 case $host in
 *-mingw*)
@@ -1821,16 +1797,8 @@ echo "
 	Calendar:         $msg_calendar
 	Weather calendar: $use_gweather
 	Mail Directory:   $system_mail_dir, $system_mail_perm
-	LDAP support:     $msg_ldap"
-if test "$msg_nntp" = "yes"; then
-echo "\
-	NNTP support:     $msg_nntp"
-fi
-if test "$msg_hula" = "yes"; then
-echo "\
-	Hula support:     $msg_hula"
-fi
-echo "\
+	LDAP support:     $msg_ldap
+	NNTP support:     $msg_nntp
 	Kerberos 4/5:     $msg_krb4/$msg_krb5
 	Gnome Keyring:    $enable_gnome_keyring/$with_gnome_keyring
 	SSL support:      $msg_ssl
@@ -1840,9 +1808,13 @@ echo "\
 	Exchange support: $msg_exchange
 	Dot Locking:	  $msg_dot
 	File Locking:	  $msg_file
-	Large files:      $largefile_support
+	Large files:      $enable_largefile
 	Gtk Doc:          $enable_gtk_doc
 "
+if test "$msg_hula" = "yes"; then
+	echo "Hula support:     $msg_hula"
+fi
+
 if test "$msg_no_ntlm" != "no" ; then
 	echo ""
 	AC_MSG_WARN([
