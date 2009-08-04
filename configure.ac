@@ -1230,16 +1230,8 @@ fi
 
 AM_CONDITIONAL(ENABLE_KRB5, [test x$with_krb5 != xno])
 
-AC_CHECK_HEADER([et/com_err.h],,,
-[[#if HAVE_ET_COM_ERR_H
-#include <et/com_err.h>
-#endif
-]])
-AC_CHECK_HEADER([com_err.h],,,
-[[#if HAVE_ET_COM_ERR_H
-#include <com_err.h>
-#endif
-]])
+AC_CHECK_HEADER([et/com_err.h], [AC_DEFINE([HAVE_ET_COM_ERR_H], 1, [Have <et/comm_err.h>])])
+AC_CHECK_HEADER([com_err.h], [AC_DEFINE([HAVE_COM_ERR_H], 1, [Have <comm_err.h>])])
 
 msg_krb4="no"
 if test "x${with_krb4}" != "xno"; then
