@@ -24,6 +24,8 @@
 #endif
 
 #include <string.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <libecal/e-cal-util.h>
 #include "e-cal-backend-cache.h"
 
