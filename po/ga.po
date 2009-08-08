@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-07 21:35-0600\n"
-"PO-Revision-Date: 2009-08-07 21:36-0600\n"
+"PO-Revision-Date: 2009-08-08 04:08-0600\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1317,7 +1317,7 @@ msgstr ""
 
 #: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:51
 msgid "Copy folder content locally for offline operation"
-msgstr ""
+msgstr "Cóipeáil ábhar an fhillteáin go logánta le haghaidh oibrithe as líne"
 
 #: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:107
 msgid "Downloading new messages for offline mode"
@@ -2872,7 +2872,7 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-folder.c:91
 msgid "Always check for new mail in this folder"
-msgstr ""
+msgstr "Lorg post nua san fhillteán seo i gcónaí"
 
 #: ../camel/providers/imap/camel-imap-folder.c:277
 #, c-format
