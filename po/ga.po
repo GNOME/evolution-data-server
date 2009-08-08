@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-07 21:35-0600\n"
-"PO-Revision-Date: 2009-08-08 04:08-0600\n"
+"PO-Revision-Date: 2009-08-08 10:55-0600\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2673,7 +2673,7 @@ msgstr "GroupWise Novell"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:89
 msgid "For accessing Novell GroupWise servers"
-msgstr ""
+msgstr "Le haghaidh rochtana freastalaithe GroupWise Novell"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:104
 #: ../camel/providers/hula/camel-hula-provider.c:93
@@ -2980,7 +2980,7 @@ msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:85
 msgid "For reading and storing mail on IMAP servers."
-msgstr ""
+msgstr "Le haghaidh léimh agus stórála poist ar fhreastalaithe IMAP."
 
 #: ../camel/providers/imap/camel-imap-provider.c:102
 #: ../camel/providers/imapp/camel-imapp-provider.c:69
@@ -3485,15 +3485,15 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:55
 msgid "MH-format mail directories"
-msgstr ""
+msgstr "Comhadlanna poist MH-fhormáide"
 
 #: ../camel/providers/local/camel-local-provider.c:56
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
+msgstr "Le haghaidh stórála poist logánta i gcomhadlanna poist cosúil le MH."
 
 #: ../camel/providers/local/camel-local-provider.c:73
 msgid "Local delivery"
-msgstr ""
+msgstr "Seachadadh logánta"
 
 #: ../camel/providers/local/camel-local-provider.c:74
 msgid ""
@@ -3508,11 +3508,11 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
-msgstr ""
+msgstr "Comhadlanna poist maildir-fhormáide"
 
 #: ../camel/providers/local/camel-local-provider.c:96
 msgid "For storing local mail in maildir directories."
-msgstr ""
+msgstr "Le haghaidh stórála poist logánta i gcomhadlanna maildir."
 
 #: ../camel/providers/local/camel-local-provider.c:108
 msgid "_Store status headers in Elm/Pine/Mutt format"
@@ -3520,7 +3520,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:115
 msgid "Standard Unix mbox spool file"
-msgstr ""
+msgstr "Comhad spólála mbox Unix caighdeánach"
 
 #: ../camel/providers/local/camel-local-provider.c:116
 #: ../camel/providers/local/camel-local-provider.c:127
@@ -3531,7 +3531,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:126
 msgid "Standard Unix mbox spool directory"
-msgstr ""
+msgstr "Comhadlann spólála mbox Unix chaighdeánach"
 
 #: ../camel/providers/local/camel-local-store.c:165
 #: ../camel/providers/local/camel-local-store.c:276
@@ -4155,7 +4155,7 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:59
 msgid "For connecting to and downloading mail from POP servers."
-msgstr ""
+msgstr "Le haghaidh naisc le agus post a íosluchtú ó fhreastalaithe POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:76
 msgid ""
