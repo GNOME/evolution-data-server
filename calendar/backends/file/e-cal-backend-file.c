@@ -768,7 +768,7 @@ refresh_thread_func (gpointer data)
 
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
-		info = 	g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+		info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
 		if (!info)
 			break;
 
