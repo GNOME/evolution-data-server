@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-07 21:35-0600\n"
-"PO-Revision-Date: 2009-08-08 10:55-0600\n"
+"PO-Revision-Date: 2009-08-08 18:54-0600\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2624,14 +2624,14 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:54
 #: ../camel/providers/imap4/camel-imap4-provider.c:38
 msgid "Checking for new mail"
-msgstr ""
+msgstr "Lorg poist nua"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:56
 #: ../camel/providers/hula/camel-hula-provider.c:50
 #: ../camel/providers/imap/camel-imap-provider.c:46
 #: ../camel/providers/imap4/camel-imap4-provider.c:40
 msgid "C_heck for new messages in all folders"
-msgstr ""
+msgstr "_Lorg teachtaireachtaí nua i ngach fillteán"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:59
 #: ../camel/providers/imap/camel-imap-provider.c:68
@@ -2653,7 +2653,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:65
 #: ../camel/providers/imap/camel-imap-provider.c:74
 msgid "Only check for Junk messages in the IN_BOX folder"
-msgstr ""
+msgstr "Lorg teachtaireachtaí Dramhphoist sa _Bhosca Isteach amháin"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:67
 msgid "Automatically synchroni_ze account locally"
@@ -2772,7 +2772,7 @@ msgstr "Ceangal le Freastalaí"
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:54
 msgid "_Use custom command to connect to server"
-msgstr ""
+msgstr "Úsáid o_rdú saincheaptha chun nasc leis an bhfreastalaí"
 
 #: ../camel/providers/hula/camel-hula-provider.c:57
 #: ../camel/providers/imap/camel-imap-provider.c:56
@@ -2790,7 +2790,7 @@ msgstr "Fillteáin"
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:45
 msgid "_Show only subscribed folders"
-msgstr ""
+msgstr "_Taispeáin fillteáin liostáilte amháin"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
 #: ../camel/providers/imap/camel-imap-provider.c:64
@@ -2953,7 +2953,7 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr ""
+msgstr "L_org teachtaireachtaí nua i bhfillteáin liostáilte"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:49
@@ -2964,10 +2964,12 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr ""
+"Cuir _scagairí i bhfeidhm ar theachtaireachtaí nua sa Bhosca Isteach ar an "
+"bhfreastalaí seo"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 msgid "Check new messages for Jun_k contents"
-msgstr ""
+msgstr "Lorg ábhar _Dramhphoist i dteachtaireachtaí nua"
 
 #: ../camel/providers/imap/camel-imap-provider.c:76
 #: ../camel/providers/imap4/camel-imap4-provider.c:59
@@ -3248,11 +3250,11 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Check new messages for _Junk contents"
-msgstr ""
+msgstr "Lorg ábhar _Dramhphoist i dteachtaireachtaí nua"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:57
 msgid "Only check for Junk messa_ges in the INBOX folder"
-msgstr ""
+msgstr "Lo_rg teachtaireachtaí Dramhphoist sa Bhosca Isteach amháin"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:66
 msgid "IMAP4rev1"
