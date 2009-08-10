@@ -1380,7 +1380,7 @@ imap_auth_loop (CamelService *service, CamelException *ex)
 			}
 		}
 		if (!authenticated) {
-			printf("EXCEP %d %d %d\n", camel_exception_get_id(ex), CAMEL_EXCEPTION_USER_CANCEL, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE);
+			d(printf("EXCEP %d %d %d\n", camel_exception_get_id(ex), CAMEL_EXCEPTION_USER_CANCEL, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE));
 			if (camel_exception_get_id (ex) == CAMEL_EXCEPTION_USER_CANCEL ||
 			    camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_UNAVAILABLE)
 				return FALSE;
