@@ -594,16 +594,30 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 	for (i=0;i<count;i++) {
 		mi = (CamelMboxMessageInfo *)camel_folder_summary_index(s, i);
 		/* must've dissapeared from the file? */
-		if (mi->info.info.flags & CAMEL_MESSAGE_FOLDER_NOTSEEN) {
-			d(printf("uid '%s' vanished, removing", camel_message_info_uid(mi)));
+		if (!mi || mi->info.info.flags & CAMEL_MESSAGE_FOLDER_NOTSEEN) {
+			gchar *uid;
+
+			if (mi)
+				uid = g_strdup (camel_message_info_uid (mi));
+			else
+				uid = camel_folder_summary_uid_from_index (s, i);
+
+			if (!uid) {
+				g_debug ("%s: didn't get uid at %d of %d (%d)", G_STRFUNC, i, count, camel_folder_summary_count (s));
+				continue;
+			}
+
+			d(printf("uid '%s' vanished, removing", uid));
 			if (changeinfo)
-				camel_folder_change_info_remove_uid(changeinfo, camel_message_info_uid(mi));
-			del = g_slist_prepend(del, (gpointer) camel_pstring_strdup(camel_message_info_uid(mi)));
+				camel_folder_change_info_remove_uid (changeinfo, uid);
+			del = g_slist_prepend (del, (gpointer) camel_pstring_strdup (uid));
 			camel_folder_summary_remove_index_fast (s, i);
 			count--;
 			i--;
+			g_free (uid);
 		}
-		camel_message_info_free(mi);
+		if (mi)
+			camel_message_info_free (mi);
 	}
 
 	/* Delete all in one transaction */
