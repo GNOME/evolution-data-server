@@ -16,6 +16,7 @@ dnl Autoconf / Automake Initialization
 AC_PREREQ(2.58)
 AC_INIT([evolution-data-server],[eds_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server])
 AM_INIT_AUTOMAKE([gnu 1.9])
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADERS(config.h)
 
