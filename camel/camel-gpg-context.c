@@ -498,6 +498,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 	g_ptr_array_add (argv, (guint8 *) "--no-secmem-warning");
 	g_ptr_array_add (argv, (guint8 *) "--no-greeting");
 	g_ptr_array_add (argv, (guint8 *) "--no-tty");
+	g_ptr_array_add (argv, (guint8 *) "--no-use-agent");
 
 	if (passwd_fd == -1) {
 		/* only use batch mode if we don't intend on using the
