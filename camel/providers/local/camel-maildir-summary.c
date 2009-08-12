@@ -683,8 +683,12 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 				camel_message_info_free(info);
 				newname = destname = camel_folder_summary_next_uid_string(s);
 			} else {
-				newname = NULL;
-				destname = name;
+				gchar *nm;
+				newname = g_strdup (name);
+				nm =strrchr (newname, ':');
+				if (nm)
+					*nm = '\0';
+				destname = newname;
 			}
 
 			/* copy this to the destination folder, use 'standard' semantics for maildir info field */
