@@ -6,10 +6,15 @@ m4_define([eds_micro_version], [91])
 m4_define([eds_version],
 	[eds_major_version.eds_minor_version.eds_micro_version])
 
-dnl This is for API/version tracking for things like Bonobo server files.
-dnl This should always be the major/minor of the stable version or stable
-dnl version to be. (XXX The API version is no longer meaningful.)
+dnl Base Version: This is for API/version tracking for things like
+dnl Bonobo server files.  This should always be the major/minor of
+dnl the stable version or stable version to be.  Note, this is set
+dnl the way it is so that GETTEXT_PACKAGE will be parsed correctly.
+BASE_VERSION=2.28
 m4_define([base_version], [2.28])
+
+dnl This number is meaningless, but we're now stuck with it in our
+dnl library names for backward compatibility.
 m4_define([api_version], [1.2])
 
 dnl Autoconf / Automake Initialization
