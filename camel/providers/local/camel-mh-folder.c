@@ -126,7 +126,6 @@ static CamelLocalSummary *mh_create_summary(CamelLocalFolder *lf, const gchar *p
 static void
 mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
 {
-	CamelMhFolder *mh_folder = (CamelMhFolder *)folder;
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
 	CamelStream *output_stream;
 	CamelMessageInfo *mi;
@@ -136,10 +135,17 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 
 	d(printf("Appending message\n"));
 
+	/* If we can't lock, don't do anything */
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
+		return;
+
+	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1)
+		goto check_changed;
+
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
-		return;
+		goto check_changed;
 
 	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
 		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
@@ -161,14 +167,10 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 
 	g_free(name);
 
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed",
-				    ((CamelLocalFolder *)mh_folder)->changes);
-	camel_folder_change_info_clear (((CamelLocalFolder *)mh_folder)->changes);
-
 	if (appended_uid)
 		*appended_uid = g_strdup(camel_message_info_uid(mi));
 
-	return;
+	goto check_changed;
 
  fail_write:
 
@@ -190,6 +192,14 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	}
 
 	g_free (name);
+
+ check_changed:
+	camel_local_folder_unlock (lf);
+
+	if (lf && camel_folder_change_info_changed (lf->changes)) {
+		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", lf->changes);
+		camel_folder_change_info_clear (lf->changes);
+	}
 }
 
 static gchar * mh_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
@@ -205,16 +215,23 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 	CamelStream *message_stream = NULL;
 	CamelMimeMessage *message = NULL;
 	CamelMessageInfo *info;
-	gchar *name;
+	gchar *name = NULL;
 
 	d(printf("getting message: %s\n", uid));
+
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
+		return NULL;
+
+	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {
+		goto fail;
+	}
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
 				     _("No such message"));
-		return NULL;
+		goto fail;
 	}
 
 	/* we only need it to check the message exists */
@@ -225,8 +242,7 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get message: %s from folder %s\n  %s"), name, lf->folder_path,
 				      g_strerror (errno));
-		g_free(name);
-		return NULL;
+		goto fail;
 	}
 
 	message = camel_mime_message_new();
@@ -234,14 +250,21 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot get message: %s from folder %s\n  %s"), name, lf->folder_path,
 				      _("Message construction failed."));
-		g_free(name);
-		camel_object_unref((CamelObject *)message_stream);
 		camel_object_unref((CamelObject *)message);
-		return NULL;
+		message = NULL;
 
 	}
 	camel_object_unref((CamelObject *)message_stream);
-	g_free(name);
+
+ fail:
+	g_free (name);
+
+	camel_local_folder_unlock (lf);
+
+	if (lf && camel_folder_change_info_changed (lf->changes)) {
+		camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", lf->changes);
+		camel_folder_change_info_clear (lf->changes);
+	}
 
 	return message;
 }
