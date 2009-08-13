@@ -71,7 +71,7 @@ libexchange_storage_1_2_la_LIBADD =				\
 	$(SOCKET_LIBS)
 
 libexchange_storage_1_2_la_LDFLAGS =				\
-	$(KRB5_LDFLAGS)						\
+	$(KRB5_LIBS)						\
 	$(NO_UNDEFINED)						\
 	-version-info $(LIBEXCHANGE_STORAGE_CURRENT):$(LIBEXCHANGE_STORAGE_REVISION):$(LIBEXCHANGE_STORAGE_AGE)
 
