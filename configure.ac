@@ -54,7 +54,9 @@ EDS_MAJOR_VERSION=eds_major_version
 EDS_MINOR_VERSION=eds_minor_version
 EDS_MICRO_VERSION=eds_micro_version
 
+dnl ******************************
 dnl Libtool versioning
+dnl ******************************
 LIBEDATASERVER_CURRENT=11
 LIBEDATASERVER_REVISION=1
 LIBEDATASERVER_AGE=0
@@ -143,10 +145,14 @@ AC_SUBST(LIBEBACKEND_CURRENT)
 AC_SUBST(LIBEBACKEND_REVISION)
 AC_SUBST(LIBEBACKEND_AGE)
 
+dnl **************************************
 dnl Put the ACLOCAL flags in the Makefile
+dnl **************************************
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
+dnl ******************************
 dnl Compiler Warning Flags
+dnl ******************************
 AS_COMPILER_FLAGS(WARNING_FLAGS,
 	"-DG_DISABLE_DEPRECATED
 	-DPANGO_DISABLE_DEPRECATED
@@ -174,7 +180,9 @@ dnl	-Wmissing-format-attribute
 dnl	-Wshadow
 CFLAGS="$CFLAGS $WARNING_FLAGS"
 
+dnl ******************************
 dnl Initialize maintainer mode
+dnl ******************************
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
@@ -191,8 +199,9 @@ case $YACC in
 	;;
 esac
 
-
+dnl ******************************
 dnl Test whether jw is installed
+dnl ******************************
 AC_PATH_PROG(JW,jw,no)
 if test x$JW = xno; then
 	HAVE_JW="no"
@@ -202,7 +211,9 @@ fi
 AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
 AC_SUBST(HAVE_JW)
 
+dnl ******************************
 dnl I18N stuff
+dnl ******************************
 IT_PROG_INTLTOOL([0.35.5])
 
 AM_GLIB_GNU_GETTEXT
@@ -214,10 +225,12 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettex
 localedir='$(prefix)/$(DATADIRNAME)/locale'
 AC_SUBST(localedir)
 
-dnl Initialize libtool
+dnl ******************************
+dnl Initialize libtool \ DOLT
 dnl if switch to libtool >= 2.2, replace existing with following:
 dnl LT_PREREQ(2.2)
 dnl LT_INIT(disable-static win32-dll)
+dnl ******************************
 AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
@@ -226,7 +239,9 @@ DOLT
 
 PKG_PROG_PKG_CONFIG
 
+dnl ******************************
 dnl Check for Win32
+dnl ******************************
 AC_MSG_CHECKING([for Win32])
 case "$host" in
 *-mingw*)
@@ -254,16 +269,24 @@ AC_SUBST(NO_UNDEFINED)
 AC_SUBST(SOCKET_LIBS)
 AC_SUBST(LIBEXECDIR_IN_SERVER_FILE)
 
+dnl **************************************
 dnl Check for posix compatible sys/wait.h
+dnl **************************************
 AC_HEADER_SYS_WAIT
 
+dnl ************************************
 dnl Check for posix compatible alloca()
+dnl ************************************
 AC_FUNC_ALLOCA
 
+dnl ******************************
 dnl Checks for functions
+dnl ******************************
 AC_CHECK_FUNCS(fsync strptime strtok_r)
 
+dnl ***********************************
 dnl Check for base dependencies early.
+dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[glib-2.0 >= glib_minimum_version
 	gtk+-2.0 >= gtk_minimum_version
@@ -277,14 +300,18 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)
 
+dnl ******************************
 dnl regex check
+dnl ******************************
 AC_CHECK_FUNCS(regexec,,[AC_CHECK_LIB(regex,regexec,
 			[REGEX_LIBS=-lregex
 			AC_DEFINE(HAVE_REGEXEC,1,[Define to 1 if you have the regexec function.])],
 			[AC_MSG_ERROR([No regex library found])])])
 AC_SUBST(REGEX_LIBS)
 
+dnl ******************************
 dnl libdb checking
+dnl ******************************
 AC_ARG_WITH([libdb],
 	AS_HELP_STRING([--with-libdb],[Prefix where libdb is installed]),
 	[dynamic_libdb=yes], [dynamic_libdb=no])
@@ -319,7 +346,9 @@ AM_CONDITIONAL(WITH_LIBDB, [test "x$dynamic_libdb" != "xno"])
 AC_SUBST(DB_CFLAGS)
 AC_SUBST(DB_LIBS)
 
+dnl ******************************
 dnl iconv checking
+dnl ******************************
 have_iconv=no
 save_LIBS="$LIBS"
 LIBS="$LIBS -liconv"
@@ -428,7 +457,9 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
+dnl **********************************
 dnl Check for nl_langinfo and CODESET
+dnl **********************************
 AC_MSG_CHECKING([for nl_langinfo (CODESET)])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	[[#include <langinfo.h>]],
@@ -439,7 +470,9 @@ if test x$ac_cv_langinfo_codeset = xyes; then
 fi
 AC_MSG_RESULT([$ac_cv_langinfo_codeset])
 
+dnl *******************************************************
 dnl Check to see if strftime supports the use of %l and %k
+dnl *******************************************************
 AC_MSG_CHECKING([for %l and %k support in strftime])
 AC_RUN_IFELSE([AC_LANG_SOURCE(
 	[[	#include <stdlib.h>
@@ -728,7 +761,9 @@ AC_SUBST(MANUAL_NSPR_LIBS)
 AC_SUBST(MANUAL_NSS_CFLAGS)
 AC_SUBST(MANUAL_NSS_LIBS)
 
+dnl ******************************
 dnl system mail stuff
+dnl ******************************
 AC_PATH_PROG(SENDMAIL, sendmail, [/usr/sbin/sendmail], [/usr/sbin:/usr/lib])
 AC_DEFINE_UNQUOTED(SENDMAIL_PATH, "$SENDMAIL", [Path to a sendmail binary, or equivalent])
 
@@ -767,7 +802,9 @@ AC_MSG_RESULT([$system_mail_dir, $system_mail_perm])
 AC_SUBST(CAMEL_LOCK_HELPER_USER)
 AC_SUBST(CAMEL_LOCK_HELPER_GROUP)
 
+dnl ******************************
 dnl Timezone checks
+dnl ******************************
 AC_CACHE_CHECK(for tm_gmtoff in struct tm, [ac_cv_struct_tm_gmtoff],
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	[[	#include <time.h>	]],
@@ -799,7 +836,9 @@ else
 	fi
 fi
 
+dnl ******************************
 dnl ctime_r prototype
+dnl ******************************
 AC_CACHE_CHECK([if ctime_r wants three arguments], [ac_cv_ctime_r_three_args],
 [
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -814,7 +853,9 @@ if test x"$ac_cv_ctime_r_three_args" = xyes ; then
 	AC_DEFINE(CTIME_R_THREE_ARGS, 1, [Solaris-style ctime_r])
 fi
 
+dnl ******************************
 dnl gethostbyname_r prototype
+dnl ******************************
 AC_CHECK_FUNCS(gethostbyname_r,[
 AC_CACHE_CHECK([if gethostbyname_r wants five arguments], [ac_cv_gethostbyname_r_five_args],
 [
@@ -841,7 +882,9 @@ if test "x$ac_cv_gethostbyname_r_five_args" = "xyes" ; then
 	AC_DEFINE(GETHOSTBYNAME_R_FIVE_ARGS, 1, [Solaris-style gethostbyname_r])
 fi
 
+dnl ******************************
 dnl gethostbyaddr_r prototype
+dnl ******************************
 AC_CHECK_FUNCS(gethostbyaddr_r,[
 AC_CACHE_CHECK([if gethostbyaddr_r wants seven arguments], [ac_cv_gethostbyaddr_r_seven_args],
 [
@@ -867,7 +910,9 @@ if test "x$ac_cv_gethostbyaddr_r_seven_args" = "xyes" ; then
 	AC_DEFINE(GETHOSTBYADDR_R_SEVEN_ARGS, 1, [Solaris-style gethostbyaddr_r])
 fi
 
+dnl ******************************
 dnl stat(v)fs location/type
+dnl ******************************
 AC_CHECK_HEADER([sys/statvfs.h],
 	[AC_DEFINE([HAVE_SYS_STATVFS_H], 1, [Have <sys/statvfs.h>])],,
 	[[	#if HAVE_SYS_STATVFS_H
@@ -890,7 +935,9 @@ AC_CHECK_HEADER([sys/mount.h],
 	]])
 AC_CHECK_FUNCS(statfs)
 
+dnl ******************************
 dnl IPv6 support and getaddrinfo calls
+dnl ******************************
 AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], [ac_cv_have_addrinfo],
 [
 	AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -953,7 +1000,9 @@ fi
 
 AM_CONDITIONAL(ENABLE_IPv6, [test "x$enable_ipv6" = "xyes"])
 
+dnl ******************************
 dnl Calendar support
+dnl ******************************
 AC_MSG_CHECKING([if we should build the calendar])
 AC_ARG_ENABLE([calendar],
 	AS_HELP_STRING([--enable-calendar=yes/no],
@@ -967,7 +1016,9 @@ AM_CONDITIONAL(ENABLE_CALENDAR, [test x$enable_calendar = xyes])
 AC_MSG_RESULT([$enable_calendar])
 msg_calendar=$enable_calendar
 
+dnl **********************************
 dnl Weather calendar backend support
+dnl **********************************
 AC_MSG_CHECKING([if we should build the weather calendar backend])
 AC_ARG_WITH([weather],
 	[AS_HELP_STRING([--with-weather],
@@ -984,7 +1035,9 @@ if test "$use_gweather" = "yes"; then
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
+dnl ******************************
 dnl NNTP support.
+dnl ******************************
 AC_ARG_ENABLE([nntp],
 	AS_HELP_STRING([--enable-nntp],
 	[Build Usenet news (NNTP) backend]),
@@ -999,7 +1052,9 @@ AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
 
 AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 
+dnl ******************************
 dnl New IMAP code support.
+dnl ******************************
 AC_ARG_ENABLE([imapp],
 	AS_HELP_STRING([--enable-imapp=no/yes],
 	[Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code]),
@@ -1013,7 +1068,9 @@ else
 fi
 AM_CONDITIONAL(ENABLE_IMAPP, [test x$enable_imapp = xyes])
 
+dnl ******************************
 dnl IMAP4rev1 code support.
+dnl ******************************
 AC_ARG_ENABLE(imap4,
 	AS_HELP_STRING([--enable-imap4=no/yes],
 	[Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
@@ -1027,7 +1084,9 @@ else
 fi
 AM_CONDITIONAL(ENABLE_IMAP4, [test x$enable_imap4 = xyes])
 
+dnl ******************************
 dnl Hula support
+dnl ******************************
 AC_ARG_ENABLE([hula],
 	AS_HELP_STRING([--enable-hula=no/yes],
 	[Enable support for the now-defunct Hula project]),
@@ -1041,7 +1100,9 @@ else
 fi
 AM_CONDITIONAL(ENABLE_HULA, [test x$enable_hula = xyes])
 
+dnl ******************************
 dnl File locking
+dnl ******************************
 AC_ARG_ENABLE([dot-locking],
 	AS_HELP_STRING([--enable-dot-locking=yes/no],
 	[Enable support for locking mail files with dot locking]),
@@ -1071,7 +1132,9 @@ else
 	fi
 fi
 
+dnl ******************************
 dnl sendmail operation
+dnl ******************************
 AC_MSG_CHECKING([for SunOS broken spool format])
 if test "x$host_os" = "xsunos" ; then
 	with_broken_spool="yes"
@@ -1088,7 +1151,9 @@ fi
 
 AC_MSG_RESULT([$with_broken_spool])
 
+dnl ******************************
 dnl Kerberos
+dnl ******************************
 AC_ARG_WITH([krb5],
 	AS_HELP_STRING([--with-krb5=PATH],
 	[Location of Kerberos 5 install dir]),
@@ -1119,7 +1184,9 @@ AC_ARG_WITH([krb4-includes],
 	[Location of Kerberos 4 headers]),
 	[with_krb4_includes="$withval"], [with_krb4_includes=""])
 
+dnl ******************************
 dnl Kerberos 5
+dnl ******************************
 msg_krb5="no"
 if test "x${with_krb5}" != "xno"; then
 	LDFLAGS_save="$LDFLAGS"
@@ -1199,7 +1266,9 @@ AC_CHECK_HEADER([com_err.h],
 		#endif
 	]])
 
+dnl ******************************
 dnl Kerberos 4
+dnl ******************************
 msg_krb4="no"
 if test "x${with_krb4}" != "xno"; then
 	LDFLAGS_save="$LDFLAGS"
@@ -1268,10 +1337,14 @@ AC_SUBST(KRB5_LDFLAGS)
 AC_SUBST(KRB4_CFLAGS)
 AC_SUBST(KRB4_LDFLAGS)
 
+dnl ******************************
 dnl Purify support
+dnl ******************************
 EVO_PURIFY_SUPPORT
 
+dnl ******************************
 dnl Exchange debug
+dnl ******************************
 AC_ARG_ENABLE([e2k-debug],
 	AS_HELP_STRING([--enable-e2kdebug],
 	[Allow debugging]),
@@ -1281,78 +1354,80 @@ if test "$enable_e2kdebug" = "yes"; then
 	AC_DEFINE(E2K_DEBUG, 1, [Define if you want E2K_DEBUG to be available])
 fi
 
+dnl ******************************
 dnl LDAP support.
+dnl ******************************
 if test "$os_win32" != yes; then
-EVO_LDAP_CHECK(no)
-case $with_openldap in
-no)
-	msg_ldap=no
-	;;
-*)
-	case $with_static_ldap in
-	yes)
-		msg_ldap="$with_openldap (static)"
-		;;
-	*)
-		msg_ldap="$with_openldap (dynamic)"
-		;;
-	esac
-esac
-
-dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
-if test "$with_openldap" = no ; then
-	EVO_SUNLDAP_CHECK(no)
-	case $with_sunldap in
+	EVO_LDAP_CHECK(no)
+	case $with_openldap in
 	no)
 		msg_ldap=no
-		;;
+	;;
 	*)
-		case $with_static_sunldap in
+		case $with_static_ldap in
 		yes)
-			msg_ldap="$with_sunldap (static)"
+			msg_ldap="$with_openldap (static)"
 			;;
 		*)
-			msg_ldap="$with_sunldap (dynamic)"
+			msg_ldap="$with_openldap (dynamic)"
 			;;
 		esac
 	esac
-else
-	with_sunldap=no
-fi
-AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
 
-SAVE_CFLAGS="$CFLAGS"
-SAVE_LIBS="$LIBS"
-LDAP_CFLAGS="$LDAP_CFLAGS -DLDAP_DEPRECATED"
-CFLAGS="$CFLAGS $LDAP_CFLAGS"
-LIBS="$LIBS $LDAP_LIBS"
-AC_CHECK_FUNCS(ldap_ntlm_bind)
-CFLAGS="$SAVE_CFLAGS"
-LIBS="$SAVE_LIBS"
-dnl You need to enable LDAP and Kerberos to enable Exchange support in e-d-s
-msg_no_ntlm="no"
-msg_exchange="no"
-if test "$msg_ldap" != "no" ; then
-	if test "$ac_cv_func_ldap_ntlm_bind" != no ; then
-		msg_exchange="yes"
+dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
+	if test "$with_openldap" = no ; then
+		EVO_SUNLDAP_CHECK(no)
+		case $with_sunldap in
+		no)
+			msg_ldap=no
+			;;
+		*)
+			case $with_static_sunldap in
+			yes)
+				msg_ldap="$with_sunldap (static)"
+				;;
+			*)
+				msg_ldap="$with_sunldap (dynamic)"
+				;;
+		esac
+	esac
 	else
-dnl The user wanted to build with openldap, but his openldap did not have NTLM
-dnl support. Make him aware of this with a warning message at the end.
-		msg_no_ntlm="yes"
+		with_sunldap=no
 	fi
-fi
+	AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
+
+	SAVE_CFLAGS="$CFLAGS"
+	SAVE_LIBS="$LIBS"
+	LDAP_CFLAGS="$LDAP_CFLAGS -DLDAP_DEPRECATED"
+	CFLAGS="$CFLAGS $LDAP_CFLAGS"
+	LIBS="$LIBS $LDAP_LIBS"
+	AC_CHECK_FUNCS(ldap_ntlm_bind)
+	CFLAGS="$SAVE_CFLAGS"
+	LIBS="$SAVE_LIBS"
+	dnl You need to enable LDAP and Kerberos to enable Exchange support in e-d-s
+	msg_no_ntlm="no"
+	msg_exchange="no"
+	if test "$msg_ldap" != "no" ; then
+		if test "$ac_cv_func_ldap_ntlm_bind" != no ; then
+			msg_exchange="yes"
+		else
+		dnl The user wanted to build with openldap, but his openldap did not have NTLM
+		dnl support. Make him aware of this with a warning message at the end.
+			msg_no_ntlm="yes"
+		fi
+	fi
 else
-dnl Win32 LDAP support
-LDAP_CFLAGS="-DLDAP_DEPRECATED"
-LDAP_LIBS="-lwldap32"
-AC_SUBST(LDAP_CFLAGS)
-AC_SUBST(LDAP_LIBS)
-AC_DEFINE(HAVE_LDAP,1,[Define if you have LDAP support])
-AM_CONDITIONAL(ENABLE_LDAP, true)
-AM_CONDITIONAL(SUNLDAP, false)
-msg_ldap="yes"
-msg_no_ntlm="no"
-msg_exchange="yes"
+	dnl Win32 LDAP support
+	LDAP_CFLAGS="-DLDAP_DEPRECATED"
+	LDAP_LIBS="-lwldap32"
+	AC_SUBST(LDAP_CFLAGS)
+	AC_SUBST(LDAP_LIBS)
+	AC_DEFINE(HAVE_LDAP,1,[Define if you have LDAP support])
+	AM_CONDITIONAL(ENABLE_LDAP, true)
+	AM_CONDITIONAL(SUNLDAP, false)
+	msg_ldap="yes"
+	msg_no_ntlm="no"
+	msg_exchange="yes"
 fi
 
 LIBBONOBO_REQUIRED=libbonobo_minimum_version
@@ -1361,14 +1436,18 @@ AC_SUBST(LIBBONOBO_REQUIRED)
 ORBIT_REQUIRED=ORBit_minimum_version
 AC_SUBST(ORBIT_REQUIRED)
 
+dnl ******************************
 dnl GObject marshalling
+dnl ******************************
 AM_PATH_GLIB_2_0
 
 dnl We use AC_SUBST_FILE because AC_SUBST won't deal with newlines
 EVO_MARSHAL_RULE=$srcdir/marshal.mk
 AC_SUBST_FILE(EVO_MARSHAL_RULE)
 
+dnl ******************************
 dnl Posix thread support
+dnl ******************************
 
 dnl GLIB_CONFIG=${GLIB_CONFIG-glib-config}
 dnl GNOME_PTHREAD_CHECK
@@ -1389,6 +1468,9 @@ AC_SUBST(THREADS_LIBS)
 AC_SUBST(THREADS_CFLAGS)
 AC_DEFINE(ENABLE_THREADS,1,[Required])
 
+dnl ******************************
+dnl Orbit \ Bonobo stuff
+dnl ******************************
 PKG_CHECK_MODULES([ORBIT], [ORBit-2.0 >= ORBit_minimum_version])
 test x$ORBIT_IDL = x && ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
 AC_SUBST(ORBIT_CFLAGS)
@@ -1400,23 +1482,28 @@ IDL_INCLUDES="-I"`${PKG_CONFIG} --variable=idldir libbonobo-2.0`" -I"`${PKG_CONF
 AC_MSG_RESULT($IDL_INCLUDES)
 AC_SUBST(IDL_INCLUDES)
 
+dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
 dnl EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
+dnl ******************************
 AC_DEFUN([EVO_SET_COMPILE_FLAGS], [
 	PKG_CHECK_MODULES([$1], [$2])
 	$1_CFLAGS="[$]$1_CFLAGS $3 "
 	$1_LIBS="[$]$1_LIBS $4 "
 ])
 
-dnl Flags for the various libraries we build
-
-dnl libedataserver, libedataserverui, libebackend flags
+dnl ******************************
+dnl libedataserver flags
+dnl ******************************
 E_DATA_SERVER_DEPS="libxml-2.0 libbonobo-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
+dnl ******************************
+dnl libedataserverui
+dnl ******************************
 E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
@@ -1425,19 +1512,25 @@ AC_SUBST(E_DATA_SERVER_UI_LIBS)
 
 E_BACKEND_DEPS="gobject-2.0 libxml-2.0 gmodule-2.0"
 
+dnl ******************************
+dnl libebackend flags
+dnl ******************************
 EVO_SET_COMPILE_FLAGS(E_BACKEND, $E_BACKEND_DEPS)
 AC_SUBST(E_BACKEND_CFLAGS)
 AC_SUBST(E_BACKEND_LIBS)
 
+dnl ******************************
 dnl evolution-addressbook flags
-
+dnl ******************************
 EVOLUTION_ADDRESSBOOK_DEPS="libxml-2.0 libbonobo-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 
+dnl ******************************
 dnl evolution-calendar flags
+dnl ******************************
 if test "x${enable_calendar}" = "xyes"; then
 	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 libbonobo-2.0 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
@@ -1448,17 +1541,19 @@ dnl to differentiate between <libical/ical.h> and <ical.h>
 dnl We have fixed all our instances to use <libical/ical.h>. Until the .pc from
 dnl libical is fixed, we have to work-around the buggy CFlags.
 dnl *****
-LIBICAL_EXTRA_CFLAGS=" -I`$PKG_CONFIG --variable=includedir libical` "
-LIBICAL_EXTRA_LIBS=""
-AC_SUBST(LIBICAL_EXTRA_CFLAGS)
-AC_SUBST(LIBICAL_EXTRA_LIBS)
+	LIBICAL_EXTRA_CFLAGS=" -I`$PKG_CONFIG --variable=includedir libical` "
+	LIBICAL_EXTRA_LIBS=""
+	AC_SUBST(LIBICAL_EXTRA_CFLAGS)
+	AC_SUBST(LIBICAL_EXTRA_LIBS)
 
 	EVO_SET_COMPILE_FLAGS(EVOLUTION_CALENDAR, $EVOLUTION_CALENDAR_DEPS, $LIBICAL_EXTRA_CFLAGS, $LIBICAL_EXTRA_LIBS)
 	AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
 	AC_SUBST(EVOLUTION_CALENDAR_LIBS)
 fi
 
+dnl ******************************
 dnl factory flags
+dnl ******************************
 E_FACTORY_DEPS="$mozilla_nspr"
 if test "x${enable_calendar}" = "xyes"; then
 	E_FACTORY_DEPS="$E_FACTORY_DEPS libical"
@@ -1467,13 +1562,17 @@ EVO_SET_COMPILE_FLAGS(E_FACTORY, $E_FACTORY_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_C
 AC_SUBST(E_FACTORY_CFLAGS)
 AC_SUBST(E_FACTORY_LIBS)
 
+dnl ******************************
 dnl Google flags
+dnl ******************************
 GDATA_DEPS="libsoup-2.4 libxml-2.0"
 EVO_SET_COMPILE_FLAGS(GDATA, $GDATA_DEPS)
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
+dnl ******************************
 dnl Groupwise flags
+dnl ******************************
 LIBSOUP_REQUIRED=libsoup_minimum_version
 AC_SUBST(LIBSOUP_REQUIRED)
 
@@ -1481,7 +1580,9 @@ EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
 AC_SUBST(SOUP_LIBS)
 
+dnl ******************************
 dnl Camel flags
+dnl ******************************
 SQLITE_REQUIRED=sqlite_minimum_version
 AC_SUBST(SQLITE_REQUIRED)
 
@@ -1493,7 +1594,9 @@ if test "x$zlib_found" = "xfalse"; then
 	AC_MSG_ERROR([*** zlib is required])
 fi
 
+dnl ******************************
 dnl Checks for large file support
+dnl ******************************
 AC_ARG_ENABLE([largefile],
 	AS_HELP_STRING([--enable-largefile],
 	[enable support for large files [[default=no]]]),
@@ -1550,7 +1653,9 @@ AC_SUBST(CAMEL_LIBS)
 AC_SUBST(CAMEL_GROUPWISE_CFLAGS)
 AC_SUBST(CAMEL_GROUPWISE_LIBS)
 
+dnl ******************************
 dnl Special directories
+dnl ******************************
 
 dnl If you add something here, consider whether or not you also
 dnl need to add it to one or more .pc.in files (for Connector,
@@ -1589,7 +1694,9 @@ dnl separate camel from e-d-s? or should it be under the same spot? same for now
 camel_providerdir='${libdir}'/evolution-data-server-$API_VERSION/camel-providers
 AC_SUBST(camel_providerdir)
 
+dnl ******************************
 dnl IDL/Component Versioning
+dnl ******************************
 INTERFACE_VERSION="$BASE_VERSION"
 AC_SUBST(INTERFACE_VERSION)
 AC_DEFINE_UNQUOTED(INTERFACE_VERSION, "$INTERFACE_VERSION", [IDL interface version (Major.Minor)])
@@ -1599,14 +1706,20 @@ EVO_NAME_SERVER_RULE='%_$(API_VERSION).server: %.server ; mv $< $@'
 AC_SUBST(EVO_SUBST_SERVER_RULE)
 AC_SUBST(EVO_NAME_SERVER_RULE)
 
+dnl ******************************
 dnl GConf stuff
+dnl ******************************
 AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
 AM_GCONF_SOURCE_2
 
+dnl ******************************
 dnl Gtk Doc stuff
+dnl ******************************
 GTK_DOC_CHECK(1.9)
 
+dnl ******************************
 dnl Makefiles
+dnl ******************************
 export privlibdir
 export privincludedir
 export privdatadir
