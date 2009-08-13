@@ -1189,27 +1189,27 @@ dnl Kerberos 5
 dnl ******************************
 msg_krb5="no"
 if test "x${with_krb5}" != "xno"; then
-	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 
 	mitlibs="-lkrb5 -lk5crypto -lcom_err -lgssapi_krb5"
 	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken -lgssapi"
 	sunlibs="-lkrb5 -lgss"
 	AC_CACHE_CHECK([for Kerberos 5], [ac_cv_lib_kerberos5],
 	[
-		LDFLAGS="$LDFLAGS -L$with_krb5_libs $mitlibs"
+		LIBS="$LIBS -L$with_krb5_libs $mitlibs"
 		AC_LINK_IFELSE([AC_LANG_CALL([], [krb5_init_context])],
 		[ac_cv_lib_kerberos5="$mitlibs"],
 		[
-			LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $heimlibs"
+			LIBS="$LIBS_save -L$with_krb5_libs $heimlibs"
 			AC_LINK_IFELSE([AC_LANG_CALL([], [krb5_init_context])],
 			[ac_cv_lib_kerberos5="$heimlibs"],
 			[
-				LDFLAGS="$LDFLAGS_save -L$with_krb5_libs $sunlibs"
+				LIBS="$LIBS_save -L$with_krb5_libs $sunlibs"
 				AC_LINK_IFELSE([AC_LANG_CALL([], [krb5_init_context])],
 				[ac_cv_lib_kerberos5="$sunlibs"], [ac_cv_lib_kerberos5="no"])
 			])
 		])
-		LDFLAGS="$LDFLAGS_save"
+		LIBS="$LIBS_save"
 	])
 	if test "$ac_cv_lib_kerberos5" != "no"; then
 		AC_DEFINE(HAVE_KRB5,1,[Define if you have Krb5])
@@ -1240,7 +1240,7 @@ if test "x${with_krb5}" != "xno"; then
 				msg_krb5="yes (Sun)"
 			fi
 		fi
-		KRB5_LDFLAGS="-L$with_krb5_libs $ac_cv_lib_kerberos5"
+		KRB5_LIBS="-L$with_krb5_libs $ac_cv_lib_kerberos5"
 		AC_MSG_RESULT([msg_krb5])
 	else
 		dnl AC_MSG_CHECKING([for Kerberos 5])
@@ -1271,36 +1271,36 @@ dnl Kerberos 4
 dnl ******************************
 msg_krb4="no"
 if test "x${with_krb4}" != "xno"; then
-	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 	AC_CACHE_CHECK([for Kerberos 4], [ac_cv_lib_kerberos4],
 	[
 		ac_cv_lib_kerberos4="no"
 
 		mitcompatlibs="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
 		dnl Look for MIT krb5 compat krb4
-		LDFLAGS="$LDFLAGS -L$with_krb4_libs $mitcompatlibs"
+		LIBS="$LIBS_save -L$with_krb4_libs $mitcompatlibs"
 		AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
 		[ac_cv_lib_kerberos4="$mitcompatlibs"])
 
 		if test "$ac_cv_lib_kerberos4" = "no"; then
 			dnl Look for KTH krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4_libs -lkrb -lcrypto -lcom_err -lroken"
+			LIBS="$LIBS_save -L$with_krb4_libs -lkrb -lcrypto -lcom_err -lroken"
 			AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
 			[ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken"])
 		fi
 		if test "$ac_cv_lib_kerberos4" = "no"; then
 			dnl Look for old MIT krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4_libs -lkrb"
+			LIBS="$LIBS_save -L$with_krb4_libs -lkrb"
 			AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
 			[ac_cv_lib_kerberos4="-lkrb"],
 			[
-				LDFLAGS="$LDFLAGS -ldes"
+				LIBS="$LIBS -ldes"
 				AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
 				[ac_cv_lib_kerberos4="-lkrb -ldes"])
 			])
 		fi
 	])
-	LDFLAGS="$LDFLAGS_save"
+	LIBS="$LIBS_save"
 	if test "$ac_cv_lib_kerberos4" != "no"; then
 		AC_DEFINE(HAVE_KRB4,1,[Define if you have Krb4])
 		msg_krb4="yes"
@@ -1315,7 +1315,7 @@ if test "x${with_krb4}" != "xno"; then
 		else
 			KRB4_CFLAGS="-I$with_krb4_includes"
 		fi
-		KRB4_LDFLAGS="-L$with_krb4_libs $ac_cv_lib_kerberos4"
+		KRB4_LIBS="-L$with_krb4_libs $ac_cv_lib_kerberos4"
 
 		CFLAGS_save="$CFLAGS"
 		CFLAGS="$CFLAGS $KRB4_CFLAGS"
@@ -1333,9 +1333,9 @@ else
 fi
 
 AC_SUBST(KRB5_CFLAGS)
-AC_SUBST(KRB5_LDFLAGS)
+AC_SUBST(KRB5_LIBS)
 AC_SUBST(KRB4_CFLAGS)
-AC_SUBST(KRB4_LDFLAGS)
+AC_SUBST(KRB4_LIBS)
 
 dnl ******************************
 dnl Purify support
@@ -1647,7 +1647,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, [test "x$enable_largefile" = "xyes"])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $THREADS_LIBS $KRB4_LDFLAGS $KRB5_LDFLAGS $MANUAL_NSS_LIBS)
+EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $THREADS_LIBS $KRB4_LIBS $KRB5_LIBS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 AC_SUBST(CAMEL_GROUPWISE_CFLAGS)
