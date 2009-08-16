@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-15 06:49-0600\n"
-"PO-Revision-Date: 2009-08-15 07:02-0600\n"
+"PO-Revision-Date: 2009-08-15 20:59-0600\n"
 "Last-Translator: Seán de Búrca <leftmostcat@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2116,12 +2116,10 @@ msgstr ""
 msgid "Unverified"
 msgstr ""
 
-# SG
 #: ../camel/camel-smime-context.c:699
 msgid "Good signature"
 msgstr "Síniú maith"
 
-# SG
 #: ../camel/camel-smime-context.c:701
 msgid "Bad signature"
 msgstr "Drochshíniú"
@@ -2146,7 +2144,6 @@ msgstr ""
 msgid "Signature algorithm unsupported"
 msgstr ""
 
-# SG
 #: ../camel/camel-smime-context.c:713
 msgid "Malformed signature"
 msgstr "Síniú míchumtha"
@@ -2155,7 +2152,6 @@ msgstr "Síniú míchumtha"
 msgid "Processing error"
 msgstr ""
 
-# SG
 #: ../camel/camel-smime-context.c:753
 msgid "No signed data in signature"
 msgstr ""
@@ -2186,7 +2182,6 @@ msgstr ""
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 
-# SG
 #: ../camel/camel-smime-context.c:824
 msgid "Cannot find signature digests"
 msgstr ""
@@ -2194,7 +2189,7 @@ msgstr ""
 #: ../camel/camel-smime-context.c:840
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
-msgstr ""
+msgstr "Sínitheoir: %s <%s>: %s\n"
 
 #: ../camel/camel-smime-context.c:941 ../camel/camel-smime-context.c:1165
 msgid "Decoder failed"
@@ -2222,7 +2217,7 @@ msgstr ""
 
 #: ../camel/camel-smime-context.c:1037
 msgid "Cannot attach CMS data object"
-msgstr ""
+msgstr "Ní féidir réad sonraí CMS a cheangal"
 
 #: ../camel/camel-smime-context.c:1046
 msgid "Cannot create CMS Recipient information"
@@ -2339,7 +2334,7 @@ msgstr ""
 
 #: ../camel/camel-tcp-stream-openssl.c:591
 msgid "Out of memory"
-msgstr ""
+msgstr "Cuimhne ídithe"
 
 #: ../camel/camel-tcp-stream-openssl.c:593
 msgid "Zero-depth self-signed certificate"
@@ -2413,6 +2408,10 @@ msgid ""
 "Fingerprint:       %s\n"
 "Signature:         %s"
 msgstr ""
+"Eisitheoir:            %s\n"
+"Ábhar:           %s\n"
+"Méarlorg:       %s\n"
+"Síniú:         %s"
 
 #: ../camel/camel-tcp-stream-openssl.c:698 ../camel/camel-tcp-stream-ssl.c:879
 msgid "GOOD"
@@ -2433,6 +2432,13 @@ msgid ""
 "\n"
 "Do you wish to accept anyway?"
 msgstr ""
+"Drochtheastas ó %s:\n"
+"\n"
+"%s\n"
+"\n"
+"%s\n"
+"\n"
+"Ar mhaith leat glacadh leis mar sin féin?"
 
 #. construct our user prompt
 #: ../camel/camel-tcp-stream-ssl.c:883
@@ -2481,12 +2487,12 @@ msgstr "Níorbh fhéidir URL '%s' a pharsáil"
 #: ../camel/camel-vee-folder.c:580
 #, c-format
 msgid "Error storing '%s': %s"
-msgstr ""
+msgstr "Earráid agus '%s' á stóráil: %s"
 
 #: ../camel/camel-vee-folder.c:657
 #, c-format
 msgid "No such message %s in %s"
-msgstr ""
+msgstr "Níl a leithéid de theachtaireacht %s ann i %s"
 
 #: ../camel/camel-vee-folder.c:816 ../camel/camel-vee-folder.c:822
 msgid "Cannot copy or move messages into a Virtual Folder"
@@ -2500,20 +2506,20 @@ msgstr "Gan Chomhoiriúnú"
 #: ../camel/camel-vee-store.c:400
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr ""
+msgstr "Ní féidir fillteán a scriosadh: %s: Níl a leithéid d'fhillteán ann"
 
 #: ../camel/camel-vee-store.c:422
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
+msgstr "Ní féidir fillteán a athainmniú: %s: Níl a leithéid d'fhillteán ann"
 
 #: ../camel/camel-vtrash-folder.c:55
 msgid "Cannot copy messages to the Trash folder"
-msgstr ""
+msgstr "Ní féidir teachtaireachtaí a chóipeáil go dtí an fillteán Bruscair"
 
 #: ../camel/camel-vtrash-folder.c:57
 msgid "Cannot copy messages to the Junk folder"
-msgstr ""
+msgstr "Ní féidir teachtaireachtaí a chóipeáil go dtí an fillteán Dramhphoist"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:136
 #, c-format
@@ -2521,6 +2527,8 @@ msgid ""
 "Cannot get message: %s\n"
 "  %s"
 msgstr ""
+"Ní féidir teachtaireacht a fháil: %s\n"
+"  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:136
 #: ../camel/providers/local/camel-maildir-folder.c:265
@@ -2529,7 +2537,7 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-folder.c:414
 #: ../camel/providers/local/camel-mh-folder.c:233
 msgid "No such message"
-msgstr ""
+msgstr "Níl a leithéid de theachtaireacht ann"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:148
 #: ../camel/providers/imap4/camel-imap4-folder.c:814
@@ -2710,7 +2718,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2047
 #, c-format
 msgid "No such folder %s"
-msgstr ""
+msgstr "Níl a leithéid d'fhillteán %s ann"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1266
 msgid "Cannot create GroupWise folders in offline mode."
@@ -2746,7 +2754,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:164
 msgid "Sending Message"
-msgstr ""
+msgstr "Teachtaireacht á Seoladh"
 
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:212
 msgid ""
@@ -2759,12 +2767,12 @@ msgstr ""
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:207
 #, c-format
 msgid "Could not send message: %s"
-msgstr ""
+msgstr "Níorbh fhéidir teachtaireacht a sheoladh: %s"
 
 #: ../camel/providers/hula/camel-hula-provider.c:48
 #: ../camel/providers/imap/camel-imap-provider.c:44
 msgid "Checking for New Mail"
-msgstr ""
+msgstr "Lorg Poist Nua"
 
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:52
@@ -3321,7 +3329,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:818
 #: ../camel/providers/imap4/camel-imap4-store.c:1574
 msgid "Bad command"
-msgstr ""
+msgstr "Drochordú"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:897
 #, c-format
@@ -3766,7 +3774,7 @@ msgstr "Ní féidir fillteán a chruthú: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:394
 msgid "Folder already exists"
-msgstr ""
+msgstr "Tá an fillteán ann cheana"
 
 #: ../camel/providers/local/camel-mbox-store.c:485
 msgid "The new folder name is illegal."
@@ -4096,7 +4104,6 @@ msgstr ""
 msgid "Unexpected server response from head: %s"
 msgstr ""
 
-# FR
 #: ../camel/providers/nntp/camel-nntp-summary.c:420
 msgid "Use cancel"
 msgstr ""
@@ -4104,7 +4111,7 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-summary.c:422
 #, c-format
 msgid "Operation failed: %s"
-msgstr ""
+msgstr "Theip oibríocht: %s"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:253
 msgid "Retrieving POP summary"
@@ -4142,12 +4149,12 @@ msgstr "Cúis anaithnid"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 msgid "_Leave messages on server"
-msgstr ""
+msgstr "_Fág teachtaireachtaí ar an bhfreastalaí"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 #, c-format
 msgid "_Delete after %s day(s)"
-msgstr ""
+msgstr "_Scrios i ndiaidh %s lá"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:49
 msgid "Disable _support for all POP3 extensions"
@@ -4237,6 +4244,8 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: %s"
 msgstr ""
+"Ní féidir nasc le freastalaí POP %s.\n"
+"Earráid agus focal faire á sheoladh: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:556
 #, c-format
@@ -4244,6 +4253,8 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username: %s"
 msgstr ""
+"Ní féidir nasc le freastalaí POP %s.\n"
+"Earráid agus ainm úsáideora á sheoladh: %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:669
 #, c-format
@@ -4259,7 +4270,7 @@ msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
 msgstr ""
-"Le haghaidh seachadadh poist trína chur chuig an clár \"sendmail\" ar an "
+"Le haghaidh seachadadh poist trína chur chuig an gclár \"sendmail\" ar an "
 "gcóras logánta."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:113
@@ -4457,7 +4468,7 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:730
 msgid "Sending message"
-msgstr ""
+msgstr "Teachtaireacht á seoladh"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:745
 msgid "Cannot send message: no recipients defined."
@@ -4469,7 +4480,7 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:985
 msgid "SMTP Greeting"
-msgstr ""
+msgstr "Beannacht SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1010
 #, c-format
@@ -4482,7 +4493,7 @@ msgstr "Theip ordú HELO"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1093
 msgid "SMTP Authentication"
-msgstr ""
+msgstr "Fíordheimhniú SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1099
 msgid "Error creating SASL authentication object."
@@ -4519,7 +4530,7 @@ msgstr ""
 #: ../camel/providers/smtp/camel-smtp-transport.c:1290
 #, c-format
 msgid "RCPT TO <%s> failed"
-msgstr ""
+msgstr "Theip RCPT TO <%s>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1330
 #: ../camel/providers/smtp/camel-smtp-transport.c:1399
@@ -4585,7 +4596,7 @@ msgstr "Cartaí Laethanta Saoire"
 #. important people (e.g. new business partners)
 #: ../libedataserver/e-categories.c:55
 msgid "Hot Contacts"
-msgstr "Teagmhálacha Tábhachtach"
+msgstr "Teagmhálacha Tábhachtacha"
 
 #: ../libedataserver/e-categories.c:56
 msgid "Ideas"
@@ -4770,7 +4781,7 @@ msgstr ""
 
 #: ../libedataserverui/e-book-auth-util.c:192
 msgid "Failed to authenticate.\n"
-msgstr ""
+msgstr "Theip ar fhíordheimhniú.\n"
 
 #: ../libedataserverui/e-categories-dialog.c:327
 #, c-format
@@ -4826,7 +4837,7 @@ msgstr "Cruthaigh catagóir \"%s\""
 
 #: ../libedataserverui/e-cell-renderer-color.c:222
 msgid "Color Info"
-msgstr ""
+msgstr "Eolas Datha"
 
 #: ../libedataserverui/e-cell-renderer-color.c:223
 msgid "The color to render"
@@ -5036,7 +5047,7 @@ msgstr ""
 
 #: ../servers/exchange/storage/e-storage.c:575
 msgid "Operation not supported"
-msgstr ""
+msgstr "Oibríocht gan tacaíocht"
 
 #: ../servers/exchange/storage/e-storage.c:577
 msgid "The specified type is not supported in this storage"
@@ -5125,7 +5136,7 @@ msgstr ""
 
 #: ../servers/groupwise/e-gw-connection.c:237
 msgid "Bad parameter"
-msgstr ""
+msgstr "Drochpharaiméadar"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
