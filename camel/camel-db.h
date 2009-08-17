@@ -84,6 +84,7 @@ typedef struct _CamelMIRecord {
 	gchar *usertags;
 	gchar *cinfo;
 	gchar *bdata;
+	gchar *bodystructure;
 } CamelMIRecord;
 
 typedef struct _CamelFIRecord {

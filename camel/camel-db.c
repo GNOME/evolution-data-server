@@ -1140,7 +1140,11 @@ camel_db_create_message_info_table (CamelDB *cdb, const gchar *folder_name, Came
 	gchar *table_creation_query, *safe_index;
 
 	/* README: It is possible to compress all system flags into a single column and use just as userflags but that makes querying for other applications difficult an d bloats the parsing code. Instead, it is better to bloat the tables. Sqlite should have some optimizations for sparse columns etc. */
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT, created TEXT, modified TEXT )", folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS %Q (  uid TEXT PRIMARY KEY , flags INTEGER , msg_type INTEGER , read INTEGER , deleted INTEGER , replied INTEGER , important INTEGER , junk INTEGER , attachment INTEGER , dirty INTEGER , size INTEGER , dsent NUMERIC , dreceived NUMERIC , subject TEXT , mail_from TEXT , mail_to TEXT , mail_cc TEXT , mlist TEXT , followup_flag TEXT , followup_completed_on TEXT , followup_due_by TEXT , part TEXT , labels TEXT , usertags TEXT , cinfo TEXT , bdata TEXT, created TEXT, modified TEXT)", folder_name);
+	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
+	sqlite3_free (table_creation_query);
+
+	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%s_bodystructure' (  uid TEXT PRIMARY KEY , bodystructure TEXT )", folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	sqlite3_free (table_creation_query);
 
@@ -1196,6 +1200,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb, const gchar *folder_name, gint ve
 	/* Migration stage one: storing the old data */
 
 	if (version < 1) {
+
 		/* Between version 0-1 the following things are changed
 		 * ADDED: created: time
 		 * ADDED: modified: time
@@ -1235,7 +1240,7 @@ camel_db_migrate_folder_recreate (CamelDB *cdb, const gchar *folder_name, gint v
 
 	/* Migration stage two: writing back the old data */
 
-	if (version < 1) {
+	if (version < 2) {
 		table_creation_query = sqlite3_mprintf ("INSERT INTO %Q SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata, created, modified FROM 'mem.%q'", folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 		sqlite3_free (table_creation_query);
@@ -1285,9 +1290,9 @@ camel_db_write_folder_version (CamelDB *cdb, const gchar *folder_name, gint old_
 	version_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_version' ( version TEXT )", folder_name);
 
 	if (old_version == -1)
-		version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('1')", folder_name);
+		version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('2')", folder_name);
 	else
-		version_insert_query = sqlite3_mprintf ("UPDATE '%q_version' SET version='1'", folder_name);
+		version_insert_query = sqlite3_mprintf ("UPDATE '%q_version' SET version='2'", folder_name);
 
 	ret = camel_db_add_to_transaction (cdb, version_creation_query, ex);
 	ret = camel_db_add_to_transaction (cdb, version_insert_query, ex);
@@ -1398,6 +1403,13 @@ write_mir (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelE
 	/* if (delete_old_record)
 			sqlite3_free (del_query); */
 	sqlite3_free (ins_query);
+
+	if (ret == 0) {
+		ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO '%s_bodystructure' VALUES (%Q, %Q )",
+				folder_name, record->uid, record->bodystructure);
+		ret = camel_db_add_to_transaction (cdb, ins_query, ex);
+		sqlite3_free (ins_query);
+	}
 
 	return ret;
 }
@@ -1568,6 +1580,10 @@ camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, CamelE
 
 	ret = camel_db_trim_deleted_table (cdb, ex);
 
+	tab = sqlite3_mprintf ("DELETE FROM '%s_bodystructure' WHERE uid = %Q", folder, uid);
+	ret = camel_db_add_to_transaction (cdb, tab, ex);
+	sqlite3_free (tab);
+
 	tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder, uid);
 	ret = camel_db_add_to_transaction (cdb, tab, ex);
 	sqlite3_free (tab);
@@ -1671,10 +1687,12 @@ camel_db_clear_folder_summary (CamelDB *cdb, gchar *folder, CamelException *ex)
 
 	gchar *folders_del;
 	gchar *msginfo_del;
+	gchar *bstruct_del;
 	gchar *tab;
 
 	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
 	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder);
+	bstruct_del = sqlite3_mprintf ("DELETE FROM '%s_bodystructure' ", folder);
 
 	camel_db_begin_transaction (cdb, ex);
 
@@ -1688,11 +1706,13 @@ camel_db_clear_folder_summary (CamelDB *cdb, gchar *folder, CamelException *ex)
 
 	camel_db_add_to_transaction (cdb, msginfo_del, ex);
 	camel_db_add_to_transaction (cdb, folders_del, ex);
+	camel_db_add_to_transaction (cdb, bstruct_del, ex);
 
 	ret = camel_db_end_transaction (cdb, ex);
 
 	sqlite3_free (folders_del);
 	sqlite3_free (msginfo_del);
+	sqlite3_free (bstruct_del);
 
 	return ret;
 }
@@ -1719,6 +1739,10 @@ camel_db_delete_folder (CamelDB *cdb, const gchar *folder, CamelException *ex)
 	sqlite3_free (del);
 
 	del = sqlite3_mprintf ("DROP TABLE %Q ", folder);
+	ret = camel_db_add_to_transaction (cdb, del, ex);
+	sqlite3_free (del);
+
+	del = sqlite3_mprintf ("DROP TABLE '%s_bodystructure' ", folder);
 	ret = camel_db_add_to_transaction (cdb, del, ex);
 	sqlite3_free (del);
 
@@ -1784,6 +1808,7 @@ camel_db_camel_mir_free (CamelMIRecord *record)
 		g_free (record->usertags);
 		g_free (record->cinfo);
 		g_free (record->bdata);
+		g_free (record->bodystructure);
 
 		g_free (record);
 	}

@@ -116,7 +116,7 @@ static gint summary_meta_header_save(CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header(CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser(CamelFolderSummary *, CamelMimeParser *);
-static CamelMessageInfo * message_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg);
+static CamelMessageInfo * message_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg, const gchar *bodystructure);
 static CamelMessageInfo * message_info_load(CamelFolderSummary *, FILE *);
 static gint		  message_info_save(CamelFolderSummary *, FILE *, CamelMessageInfo *);
 static gint		  meta_message_info_save(CamelFolderSummary *s, FILE *out_meta, FILE *out, CamelMessageInfo *info);
@@ -1168,6 +1168,9 @@ mir_from_cols (CamelMIRecord *mir, CamelFolderSummary *s, gint ncol, gchar ** co
 			mir->cinfo = g_strdup(cols [i]);
 		else if ( !strcmp (name [i], "bdata") )
 			mir->bdata = g_strdup(cols [i]);
+		/* Evolution itself doesn't yet use this, ignoring
+		else if ( !strcmp (name [i], "bodystructure") )
+			mir->bodystructure = g_strdup(cols [i]); */
 
 	}
 }
@@ -2084,7 +2087,7 @@ camel_folder_summary_add_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
 CamelMessageInfo *
 camel_folder_summary_add_from_message (CamelFolderSummary *s, CamelMimeMessage *msg)
 {
-	CamelMessageInfo *info = camel_folder_summary_info_new_from_message(s, msg);
+	CamelMessageInfo *info = camel_folder_summary_info_new_from_message(s, msg, NULL);
 
 	camel_folder_summary_add (s, info);
 	update_summary (s, (CamelMessageInfoBase *) info);
@@ -2181,6 +2184,7 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
  * camel_folder_summary_info_new_from_message:
  * @summary: a #CamelFodlerSummary object
  * @message: a #CamelMimeMessage object
+ * @boydstructure: a bodystructure or NULL
  *
  * Create a summary item from a message.
  *
@@ -2188,13 +2192,13 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
  * #camel_message_info_free
  **/
 CamelMessageInfo *
-camel_folder_summary_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg)
+camel_folder_summary_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg, const gchar *bodystructure)
 {
 	CamelMessageInfo *info;
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 	CamelIndexName *name = NULL;
 
-	info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_new_from_message(s, msg);
+	info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_new_from_message(s, msg, bodystructure);
 
 	/* assign a unique uid, this is slightly 'wrong' as we do not really
 	 * know if we are going to store this in the summary, but we need it set for indexing */
@@ -2996,11 +3000,12 @@ content_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser *mp)
 }
 
 static CamelMessageInfo *
-message_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg)
+message_info_new_from_message(CamelFolderSummary *s, CamelMimeMessage *msg, const gchar *bodystructure)
 {
 	CamelMessageInfo *mi;
 
 	mi = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->message_info_new_from_header(s, ((CamelMimePart *)msg)->headers);
+	((CamelMessageInfoBase *)mi)->bodystructure = g_strdup (bodystructure);
 
 	return mi;
 }
@@ -3222,6 +3227,9 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 	mi->cc = (gchar *) camel_pstring_add (record->cc, FALSE);
 	mi->mlist = (gchar *) camel_pstring_add (record->mlist, FALSE);
 
+	/* Evolution itself doesn't yet use this, so we ignore it (saving some memory) */
+	mi->bodystructure = NULL;
+
 	/* Extract Message id & References */
 	mi->content = NULL;
 	part = record->part;
@@ -3408,6 +3416,8 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 	record->followup_completed_on = (gchar *) camel_pstring_strdup(camel_message_info_user_tag(info, "completed-on"));
 	record->followup_due_by = (gchar *) camel_pstring_strdup(camel_message_info_user_tag(info, "due-by"));
 
+	record->bodystructure = mi->bodystructure ? g_strdup (mi->bodystructure) : NULL;
+
 	tmp = g_string_new (NULL);
 	if (mi->references) {
 		g_string_append_printf (tmp, "%lu %lu %lu", (gulong)mi->message_id.id.part.hi, (gulong)mi->message_id.id.part.lo, (gulong)mi->references->size);
@@ -3519,6 +3529,7 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 	camel_pstring_free(mi->to);
 	camel_pstring_free(mi->cc);
 	camel_pstring_free(mi->mlist);
+	g_free (mi->bodystructure);
 	g_free(mi->references);
 	g_free (mi->preview);
 	camel_flag_list_free(&mi->user_flags);

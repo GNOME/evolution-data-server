@@ -427,7 +427,7 @@ camel_gw_summary_add_offline (CamelFolderSummary *summary, const gchar *uid, Cam
 	const CamelTag *tag;
 
 	/* Create summary entry */
-	mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_info_new_from_message (summary, message);
+	mi = (CamelGroupwiseMessageInfo *)camel_folder_summary_info_new_from_message (summary, message, NULL);
 
 	/* Copy flags 'n' tags */
 	mi->info.flags = camel_message_info_flags(info);

@@ -3239,6 +3239,7 @@ add_message_from_data (CamelFolder *folder, GPtrArray *messages,
 	CamelStream *stream;
 	CamelImapMessageInfo *mi;
 	const gchar *idate;
+	const gchar *bodystructure;
 	gint seq;
 
 	seq = GPOINTER_TO_INT (g_datalist_get_data (&data, "SEQUENCE"));
@@ -3257,7 +3258,9 @@ add_message_from_data (CamelFolder *folder, GPtrArray *messages,
 		return;
 	}
 
-	mi = (CamelImapMessageInfo *)camel_folder_summary_info_new_from_message (folder->summary, msg);
+	bodystructure = g_datalist_get_data (&data, "BODY");
+
+	mi = (CamelImapMessageInfo *)camel_folder_summary_info_new_from_message (folder->summary, msg, bodystructure);
 	camel_object_unref (CAMEL_OBJECT (msg));
 
 	if ((idate = g_datalist_get_data (&data, "INTERNALDATE")))
@@ -3413,7 +3416,7 @@ imap_update_summary (CamelFolder *folder, gint exists,
 	size = (exists - seq) * (IMAP_PRETEND_SIZEOF_FLAGS + IMAP_PRETEND_SIZEOF_SIZE + IMAP_PRETEND_SIZEOF_HEADERS);
 	got = 0;
 	if (!camel_imap_command_start (store, folder, ex,
-				       "UID FETCH %d:* (FLAGS RFC822.SIZE INTERNALDATE BODY.PEEK[%s])",
+				       "UID FETCH %d:* (FLAGS RFC822.SIZE INTERNALDATE BODYSTRUCTURE BODY.PEEK[%s])",
 				       uidval + 1, header_spec->str)) {
 		g_string_free (header_spec, TRUE);
 		return;
@@ -3499,7 +3502,7 @@ imap_update_summary (CamelFolder *folder, gint exists,
 		while (uid < needheaders->len && !camel_application_is_exiting) {
 			uidset = imap_uid_array_to_set (folder->summary, needheaders, uid, UID_SET_LIMIT, &uid);
 			if (!camel_imap_command_start (store, folder, ex,
-						       "UID FETCH %s BODY.PEEK[%s]",
+						       "UID FETCH %s BODYSTRUCTURE BODY.PEEK[%s]",
 						       uidset, header_spec->str)) {
 				g_ptr_array_free (needheaders, TRUE);
 				camel_operation_end (NULL);

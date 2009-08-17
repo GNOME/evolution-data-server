@@ -188,7 +188,7 @@ struct _CamelMessageInfoBase {
 	CamelMessageContentInfo *content;
 	struct _camel_header_param *headers;
 	gchar *preview;
-
+	gchar *bodystructure;
 };
 
 /* probably do this as well, removing CamelFolderChangeInfo and interfaces
@@ -275,7 +275,7 @@ struct _CamelFolderSummaryClass {
 	/* create/save/load an individual message info */
 	CamelMessageInfo * (*message_info_new_from_header)(CamelFolderSummary *, struct _camel_header_raw *);
 	CamelMessageInfo * (*message_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
-	CamelMessageInfo * (*message_info_new_from_message)(CamelFolderSummary *, CamelMimeMessage *);
+	CamelMessageInfo * (*message_info_new_from_message)(CamelFolderSummary *, CamelMimeMessage *, const gchar *);
 	CamelMessageInfo * (*message_info_load)(CamelFolderSummary *, FILE *);
 	gint		   (*message_info_save)(CamelFolderSummary *, FILE *, CamelMessageInfo *);
 	gint		   (*meta_message_info_save)(CamelFolderSummary *, FILE *, FILE *, CamelMessageInfo *);
@@ -380,7 +380,7 @@ CamelMessageInfo *camel_folder_summary_add_from_message(CamelFolderSummary *summ
 /* Just build raw summary items */
 CamelMessageInfo *camel_folder_summary_info_new_from_header(CamelFolderSummary *summary, struct _camel_header_raw *headers);
 CamelMessageInfo *camel_folder_summary_info_new_from_parser(CamelFolderSummary *summary, CamelMimeParser *parser);
-CamelMessageInfo *camel_folder_summary_info_new_from_message(CamelFolderSummary *summary, CamelMimeMessage *message);
+CamelMessageInfo *camel_folder_summary_info_new_from_message(CamelFolderSummary *summary, CamelMimeMessage *message, const gchar *bodystructure);
 
 CamelMessageContentInfo *camel_folder_summary_content_info_new(CamelFolderSummary *summary);
 void camel_folder_summary_content_info_free(CamelFolderSummary *summary, CamelMessageContentInfo *ci);
