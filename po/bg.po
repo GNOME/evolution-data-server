@@ -8,10 +8,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server gnome-2-28\n"
+"Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-18 13:51+0300\n"
-"PO-Revision-Date: 2009-08-18 13:50+0300\n"
+"POT-Creation-Date: 2009-08-18 13:53+0300\n"
+"PO-Revision-Date: 2009-08-18 13:53+0300\n"
 "Last-Translator: Yavor Doganov <yavor@gnu.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -79,99 +79,14 @@ msgstr "Получаване на резултатите от търсенето
 msgid "Error performing search"
 msgstr "Грешка при изпълнението на търсенето"
 
-#. translators: the placeholders will be filled by
-#. * function names, e.g.
-#. * "e_book_add_contact" on book before
-#. * "e_book_open
-#: ../addressbook/libebook/e-book.c:287 ../addressbook/libebook/e-book.c:291
-#: ../addressbook/libebook/e-book.c:495 ../addressbook/libebook/e-book.c:499
-#: ../addressbook/libebook/e-book.c:637 ../addressbook/libebook/e-book.c:641
-#: ../addressbook/libebook/e-book.c:727 ../addressbook/libebook/e-book.c:731
-#: ../addressbook/libebook/e-book.c:1024 ../addressbook/libebook/e-book.c:1029
-#: ../addressbook/libebook/e-book.c:1206 ../addressbook/libebook/e-book.c:1210
-#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
-#: ../addressbook/libebook/e-book.c:1570 ../addressbook/libebook/e-book.c:1574
-#: ../addressbook/libebook/e-book.c:1813 ../addressbook/libebook/e-book.c:1817
-#: ../addressbook/libebook/e-book.c:2050 ../addressbook/libebook/e-book.c:2054
-#: ../addressbook/libebook/e-book.c:2257 ../addressbook/libebook/e-book.c:2261
-#: ../addressbook/libebook/e-book.c:3445
-#, c-format
-msgid "\"%s\" on book before \"%s\""
-msgstr "„%s“ е в обекта „book“ преди „%s“"
-
-#: ../addressbook/libebook/e-book.c:300 ../addressbook/libebook/e-book.c:508
-#: ../addressbook/libebook/e-book.c:650 ../addressbook/libebook/e-book.c:740
-#: ../addressbook/libebook/e-book.c:1039 ../addressbook/libebook/e-book.c:1220
-#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1583
-#: ../addressbook/libebook/e-book.c:1826 ../addressbook/libebook/e-book.c:2064
-#: ../addressbook/libebook/e-book.c:2270 ../addressbook/libebook/e-book.c:2679
-#: ../addressbook/libebook/e-book.c:2877
-#, c-format
-msgid "book busy"
-msgstr "обектът „book“ е зает"
-
-#: ../addressbook/libebook/e-book.c:331 ../addressbook/libebook/e-book.c:335
-#: ../addressbook/libebook/e-book.c:539 ../addressbook/libebook/e-book.c:543
-#: ../addressbook/libebook/e-book.c:677 ../addressbook/libebook/e-book.c:681
-#: ../addressbook/libebook/e-book.c:767 ../addressbook/libebook/e-book.c:771
-#: ../addressbook/libebook/e-book.c:1066 ../addressbook/libebook/e-book.c:1069
-#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
-#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
-#: ../addressbook/libebook/e-book.c:1619 ../addressbook/libebook/e-book.c:1623
-#: ../addressbook/libebook/e-book.c:1873 ../addressbook/libebook/e-book.c:1877
-#: ../addressbook/libebook/e-book.c:2094 ../addressbook/libebook/e-book.c:2098
-#: ../addressbook/libebook/e-book.c:2296 ../addressbook/libebook/e-book.c:2300
-#: ../addressbook/libebook/e-book.c:2531 ../addressbook/libebook/e-book.c:2705
-#: ../addressbook/libebook/e-book.c:2709 ../addressbook/libebook/e-book.c:2903
-#: ../addressbook/libebook/e-book.c:2907 ../addressbook/libebook/e-book.c:3454
-#, c-format
-msgid "CORBA exception making \"%s\" call"
-msgstr "Изключение на CORBA при извикването на „%s“"
-
-#: ../addressbook/libebook/e-book.c:2520
-#, c-format
-msgid "%s: there is no current operation"
-msgstr "%s: няма текуща операция"
-
-#: ../addressbook/libebook/e-book.c:2549 ../addressbook/libebook/e-book.c:2594
-#: ../addressbook/libebook/e-book.c:2633
-#, c-format
-msgid "%s: could not cancel"
-msgstr "%s: неуспех при отмяната"
-
-#: ../addressbook/libebook/e-book.c:2665 ../addressbook/libebook/e-book.c:2669
-#, c-format
-msgid "\"%s\" on book after \"%s\""
-msgstr "„%s“ е в обекта „book“ след „%s“"
-
-#: ../addressbook/libebook/e-book.c:2733
-#, c-format
-msgid "%s: canceled"
-msgstr "%s: отказан"
-
-#: ../addressbook/libebook/e-book.c:3310
-#, c-format
-msgid "%s: Invalid source."
-msgstr "%s: Неправилен източник."
-
-#: ../addressbook/libebook/e-book.c:3318 ../addressbook/libebook/e-book.c:3383
-#, c-format
-msgid "%s: no factories available for URI `%s'"
-msgstr "%s: няма фабрики за адреси „%s“"
-
-#: ../addressbook/libebook/e-book.c:3329
-#, c-format
-msgid "%s: Could not create EBookListener"
-msgstr "%s: Неуспех при създаването на EBookListener"
-
-#: ../addressbook/libebook/e-book.c:3595
+#: ../addressbook/libebook/e-book.c:1837
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr ""
 "%s: не съществува уникален идентификатор на потребител за собствен контакт в "
 "gconf"
 
-#: ../addressbook/libebook/e-book.c:3727
+#: ../addressbook/libebook/e-book.c:1967
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr ""
