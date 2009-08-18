@@ -71,16 +71,6 @@ Fired with a status message reporting the progress of the view.
 @ebookview: the object which received the signal.
 @arg1: a const char* message
 
-<!-- ##### FUNCTION e_book_view_new ##### -->
-<para>
-
-</para>
-
-@corba_book_view: 
-@listener: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_view_start ##### -->
 <para>
 
@@ -95,15 +85,6 @@ Fired with a status message reporting the progress of the view.
 </para>
 
 @book_view: 
-
-
-<!-- ##### FUNCTION e_book_view_set_book ##### -->
-<para>
-
-</para>
-
-@book_view: 
-@book: 
 
 
 <!-- ##### FUNCTION e_book_view_get_book ##### -->

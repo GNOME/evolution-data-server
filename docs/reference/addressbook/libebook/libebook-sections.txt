@@ -1,47 +1,4 @@
 <SECTION>
-<FILE>e-book-listener</FILE>
-<TITLE>EBookListener</TITLE>
-EBookListener
-EBookListenerResponse
-EBookListenerOperation
-e_book_listener_new
-e_book_listener_stop
-<SUBSECTION Standard>
-EBookListenerClass
-E_BOOK_LISTENER
-E_IS_BOOK_LISTENER
-E_TYPE_BOOK_LISTENER
-e_book_listener_get_type
-E_BOOK_LISTENER_CLASS
-E_IS_BOOK_LISTENER_CLASS
-E_BOOK_LISTENER_GET_CLASS
-<SUBSECTION Private>
-EBookListenerPrivate
-</SECTION>
-
-<SECTION>
-<FILE>e-book-view-listener</FILE>
-<TITLE>EBookViewListener</TITLE>
-EBookViewListener
-EBookViewListenerResponse
-EBookViewListenerOperation
-e_book_view_listener_new
-e_book_view_listener_start
-e_book_view_listener_stop
-<SUBSECTION Standard>
-EBookViewListenerClass
-E_BOOK_VIEW_LISTENER
-E_IS_BOOK_VIEW_LISTENER
-E_TYPE_BOOK_VIEW_LISTENER
-e_book_view_listener_get_type
-E_BOOK_VIEW_LISTENER_CLASS
-E_IS_BOOK_VIEW_LISTENER_CLASS
-E_BOOK_VIEW_LISTENER_GET_CLASS
-<SUBSECTION Private>
-EBookViewListenerPrivate
-</SECTION>
-
-<SECTION>
 <FILE>e-book-view</FILE>
 <TITLE>EBookView</TITLE>
 EBookView

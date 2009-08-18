@@ -22,60 +22,8 @@ EDataBookFactory
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
-
-<!-- ##### FUNCTION e_data_book_factory_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_book_factory_register_backend ##### -->
-<para>
-
-</para>
-
-@factory: 
-@backend_factory: 
-
-
-<!-- ##### FUNCTION e_data_book_factory_get_n_backends ##### -->
-<para>
-
-</para>
-
-@factory: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_book_factory_register_backends ##### -->
-<para>
-
-</para>
-
-@factory: 
-
-
-<!-- ##### FUNCTION e_data_book_factory_dump_active_backends ##### -->
-<para>
-
-</para>
-
-@factory: 
-
-
-<!-- ##### FUNCTION e_data_book_factory_activate ##### -->
-<para>
-
-</para>
-
-@factory: 
-@iid: 
-@Returns: 
-
 
 <!-- ##### FUNCTION e_data_book_factory_set_backend_mode ##### -->
 <para>

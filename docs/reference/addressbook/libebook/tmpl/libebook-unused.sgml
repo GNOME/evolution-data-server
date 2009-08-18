@@ -101,11 +101,64 @@ e-name-western-tables
 @fields: 
 @closure: 
 
+<!-- ##### STRUCT EBookListener ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL EBookListener::response ##### -->
+<para>
+
+</para>
+
+@ebooklistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### ENUM EBookListenerOperation ##### -->
+<para>
+
+</para>
+
+@OpenBookResponse: 
+@RemoveBookResponse: 
+@CreateContactResponse: 
+@RemoveContactResponse: 
+@ModifyContactResponse: 
+@GetContactResponse: 
+@GetContactListResponse: 
+@GetBookViewResponse: 
+@GetChangesResponse: 
+@AuthenticationResponse: 
+@GetSupportedFieldsResponse: 
+@GetRequiredFieldsResponse: 
+@GetSupportedAuthMethodsResponse: 
+@LinkStatusEvent: 
+@WritableStatusEvent: 
+@AuthRequiredEvent: 
+@ProgressEvent: 
+
 <!-- ##### STRUCT EBookListenerPrivate ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### STRUCT EBookListenerResponse ##### -->
+<para>
+
+</para>
+
+@op: 
+@opid: 
+@status: 
+@book_view: 
+@list: 
+@msg: 
+@connected: 
+@writable: 
+@id: 
+@vcard: 
 
 <!-- ##### STRUCT EBookPrivate ##### -->
 <para>
@@ -113,11 +166,47 @@ e-name-western-tables
 </para>
 
 
+<!-- ##### STRUCT EBookViewListener ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL EBookViewListener::response ##### -->
+<para>
+
+</para>
+
+@ebookviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### ENUM EBookViewListenerOperation ##### -->
+<para>
+Asynchronous events that are listened for.
+</para>
+
+@ContactsAddedEvent: 
+@ContactsRemovedEvent: 
+@ContactsModifiedEvent: 
+@SequenceCompleteEvent: 
+@StatusMessageEvent: 
+
 <!-- ##### STRUCT EBookViewListenerPrivate ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### STRUCT EBookViewListenerResponse ##### -->
+<para>
+Data sent back to the e-book object.
+</para>
+
+@op: 
+@status: 
+@ids: 
+@contacts: 
+@message: 
 
 <!-- ##### STRUCT EBookViewPrivate ##### -->
 <para>
@@ -188,6 +277,20 @@ e-name-western-tables
 @book: 
 @error: 
 @Returns: 
+
+<!-- ##### FUNCTION e_book_listener_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION e_book_listener_stop ##### -->
+<para>
+
+</para>
+
+@listener: 
 
 <!-- ##### FUNCTION e_book_load_local_addressbook ##### -->
 <para>
@@ -288,6 +391,44 @@ e-name-western-tables
 @book: 
 @error: 
 @Returns: 
+
+<!-- ##### FUNCTION e_book_view_listener_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION e_book_view_listener_start ##### -->
+<para>
+
+</para>
+
+@listener: 
+
+<!-- ##### FUNCTION e_book_view_listener_stop ##### -->
+<para>
+
+</para>
+
+@listener: 
+
+<!-- ##### FUNCTION e_book_view_new ##### -->
+<para>
+
+</para>
+
+@corba_book_view: 
+@listener: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_view_set_book ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@book: 
 
 <!-- ##### FUNCTION e_contact_cert_get_type ##### -->
 <para>

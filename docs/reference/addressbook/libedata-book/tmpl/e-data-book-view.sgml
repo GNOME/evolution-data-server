@@ -23,13 +23,53 @@ EDataBookView
 </para>
 
 
+<!-- ##### SIGNAL EDataBookView::complete ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::contacts-added ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::contacts-changed ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::contacts-removed ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBookView::status-message ##### -->
+<para>
+
+</para>
+
+@edatabookview: the object which received the signal.
+@arg1: 
+
 <!-- ##### FUNCTION e_data_book_view_new ##### -->
 <para>
 
 </para>
 
-@backend: 
-@listener: 
+@book: 
+@path: 
 @card_query: 
 @card_sexp: 
 @max_results: 
@@ -82,24 +122,6 @@ EDataBookView
 @Returns: 
 
 
-<!-- ##### FUNCTION e_data_book_view_get_listener ##### -->
-<para>
-
-</para>
-
-@book_view: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_book_view_get_mutex ##### -->
-<para>
-
-</para>
-
-@book_view: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_data_book_view_notify_update ##### -->
 <para>
 
@@ -143,7 +165,7 @@ EDataBookView
 </para>
 
 @book_view: 
-@Param2: 
+@status: 
 
 
 <!-- ##### FUNCTION e_data_book_view_notify_status_message ##### -->

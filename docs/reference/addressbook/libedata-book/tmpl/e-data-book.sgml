@@ -23,6 +23,29 @@ EDataBook
 </para>
 
 
+<!-- ##### SIGNAL EDataBook::auth-required ##### -->
+<para>
+
+</para>
+
+@edatabook: the object which received the signal.
+
+<!-- ##### SIGNAL EDataBook::connection ##### -->
+<para>
+
+</para>
+
+@edatabook: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataBook::writable ##### -->
+<para>
+
+</para>
+
+@edatabook: the object which received the signal.
+@arg1: 
+
 <!-- ##### FUNCTION e_data_book_new ##### -->
 <para>
 
@@ -30,16 +53,7 @@ EDataBook
 
 @backend: 
 @source: 
-@listener: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_book_get_listener ##### -->
-<para>
-
-</para>
-
-@book: 
+@closed_cb: 
 @Returns: 
 
 
@@ -155,17 +169,6 @@ EDataBook
 @opid: 
 @status: 
 @fields: 
-
-
-<!-- ##### FUNCTION e_data_book_respond_get_book_view ##### -->
-<para>
-
-</para>
-
-@book: 
-@opid: 
-@status: 
-@book_view: 
 
 
 <!-- ##### FUNCTION e_data_book_respond_get_contact ##### -->
