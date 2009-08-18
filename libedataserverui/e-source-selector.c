@@ -523,20 +523,18 @@ pixbuf_cell_data_func (GtkTreeViewColumn *column,
 	gpointer data;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
+	g_return_if_fail (G_IS_OBJECT (data));
 
 	if (E_IS_SOURCE_GROUP (data)) {
-		g_object_set (renderer,
-			      "visible", FALSE,
-			      NULL);
-	} else {
+		g_object_set (renderer, "visible", FALSE, NULL);
+
+	} else if (E_IS_SOURCE (data)) {
 		ESource *source;
 		GdkPixbuf *pixbuf = NULL;
 		const gchar *color_spec;
 		GdkColor color;
 
-		g_assert (E_IS_SOURCE (data));
 		source = E_SOURCE (data);
-
 		color_spec = e_source_peek_color_spec (source);
 		if (color_spec != NULL && gdk_color_parse (color_spec, &color)) {
 			guint32 rgba;
