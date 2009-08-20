@@ -2274,19 +2274,20 @@ get_status_from_error (GError *error)
 	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
 		const char *name;
 		name = dbus_g_error_get_name (error);
-		if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.contactnotfound") == 0) {
+		if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND") == 0) {
 			return E_BOOK_ERROR_CONTACT_NOT_FOUND;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.invalidquery") == 0) {
+		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_INVALID_QUERY") == 0) {
 			return E_BOOK_ERROR_INVALID_ARG;
+		/*FIXME find the right enum for cancelled */
 		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.cancelled") == 0) {
 			return E_BOOK_ERROR_CANCELLED;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.permissiondenied") == 0) {
+		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_PERMISSION_DENIED") == 0) {
 			return E_BOOK_ERROR_PERMISSION_DENIED;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.nospace") == 0) {
+		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_NO_SPACE") == 0) {
 			return E_BOOK_ERROR_NO_SPACE;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.repositoryoffline") == 0) {
+		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE") == 0) {
 			return E_BOOK_ERROR_REPOSITORY_OFFLINE;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.othererror") == 0) {
+		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_OTHER_ERROR") == 0) {
 			return E_BOOK_ERROR_OTHER_ERROR;
 		} else {
 			g_warning (G_STRLOC ": unmatched error name %s", name);
