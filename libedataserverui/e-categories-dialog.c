@@ -25,7 +25,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
-#include <glade/glade-xml.h>
 #include "libedataserver/e-categories.h"
 #include "libedataserver/libedataserver-private.h"
 #include "e-categories-dialog.h"
@@ -36,7 +35,7 @@
 	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate))
 
 struct _ECategoriesDialogPrivate {
-	GladeXML *gui;
+	GtkBuilder *gui;
 	GtkWidget *categories_entry;
 	GtkWidget *categories_list;
 	GtkWidget *new_button;
@@ -61,7 +60,7 @@ static gpointer parent_class;
 
 typedef struct {
 	ECategoriesDialog *parent;
-	GladeXML *gui;
+	GtkBuilder *gui;
 	GtkWidget *the_dialog;
 	GtkWidget *category_name;
 	GtkWidget *category_icon;
@@ -90,28 +89,40 @@ static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
 	CategoryPropertiesDialog *prop_dialog;
-	gchar *gladefile;
+	gchar *ui_to_load[] = { "properties-dialog", NULL };
+	gchar *uifile;
+	GError *error = NULL;
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
 
-	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
-				      "e-categories-dialog.glade",
+	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
+				      "e-categories-dialog.ui",
 				      NULL);
-	prop_dialog->gui = glade_xml_new (gladefile, "properties-dialog", GETTEXT_PACKAGE);
-	g_free (gladefile);
-
-	if (!prop_dialog->gui) {
+	prop_dialog->gui = gtk_builder_new ();
+	gtk_builder_set_translation_domain (prop_dialog->gui, GETTEXT_PACKAGE);
+	
+	if (!gtk_builder_add_objects_from_file (prop_dialog->gui, uifile, ui_to_load, &error)) {
+		g_object_unref (prop_dialog->gui);
 		g_free (prop_dialog);
+		g_free (uifile);
+
+		g_warning ("%s: Failed to load e-categories-dialog.ui, %s", G_STRFUNC, error ? error->message : "Unknown error");
+
+		if (error)
+			g_error_free (error);
+
 		return NULL;
 	}
 
+	g_free (uifile);
+
 	prop_dialog->parent = parent;
 
-	prop_dialog->the_dialog = glade_xml_get_widget (prop_dialog->gui, "properties-dialog");
+	prop_dialog->the_dialog = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "properties-dialog"));
 	gtk_window_set_transient_for (GTK_WINDOW (prop_dialog->the_dialog), GTK_WINDOW (parent));
 
-	prop_dialog->category_name = glade_xml_get_widget (prop_dialog->gui, "category-name");
-	prop_dialog->category_icon = glade_xml_get_widget (prop_dialog->gui, "category-icon");
+	prop_dialog->category_name = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "category-name"));
+	prop_dialog->category_icon = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "category-icon"));
 
 	if (prop_dialog->category_icon) {
 		GtkFileChooser *chooser = GTK_FILE_CHOOSER (prop_dialog->category_icon);
@@ -552,30 +563,42 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	GtkTreeView *tree_view;
 	GtkWidget *main_widget;
 	GtkWidget *content_area;
-	gchar *gladefile;
+	gchar *uifile;
+	gchar *ui_to_load[] = {"table-categories", NULL};
+	GError *error = NULL;
 
 	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
 	dialog->priv->selected_categories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	/* load the UI from our Glade file */
-	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
-				      "e-categories-dialog.glade",
+	/* load the UI from our UI file */
+	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
+				      "e-categories-dialog.ui",
 				      NULL);
-	dialog->priv->gui = glade_xml_new (gladefile, "table-categories", GETTEXT_PACKAGE);
-	g_free (gladefile);
+	dialog->priv->gui = gtk_builder_new ();
+	gtk_builder_set_translation_domain (dialog->priv->gui, GETTEXT_PACKAGE);
 
-	if (!dialog->priv->gui) {
-		g_warning (G_STRLOC ": can't load e-categories-dialog.glade file");
+	if (!gtk_builder_add_objects_from_file (dialog->priv->gui, uifile, ui_to_load, &error)) {
+		g_free (uifile);
+		g_object_unref (dialog->priv->gui);
+		dialog->priv->gui = NULL;
+
+		g_warning ("%s: can't load e-categories-dialog.ui file, %s", G_STRFUNC, error ? error->message : "Unknown error");
+
+		if (error)
+			g_error_free (error);
+
 		return;
 	}
 
+	g_free (uifile);
+
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
-	main_widget = glade_xml_get_widget (dialog->priv->gui, "table-categories");
+	main_widget = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "table-categories"));
 	gtk_box_pack_start (GTK_BOX (content_area), main_widget, TRUE, TRUE, 0);
 
-	dialog->priv->categories_entry = glade_xml_get_widget (dialog->priv->gui, "entry-categories");
-	dialog->priv->categories_list = glade_xml_get_widget (dialog->priv->gui, "categories-list");
+	dialog->priv->categories_entry = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "entry-categories"));
+	dialog->priv->categories_list = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "categories-list"));
 
 	tree_view = GTK_TREE_VIEW (dialog->priv->categories_list);
 	selection = gtk_tree_view_get_selection (tree_view);
@@ -593,11 +616,11 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	gtk_entry_set_completion (GTK_ENTRY (dialog->priv->categories_entry), completion);
 	g_object_unref (completion);
 
-	dialog->priv->new_button = glade_xml_get_widget (dialog->priv->gui, "button-new");
+	dialog->priv->new_button = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "button-new"));
 	g_signal_connect (G_OBJECT (dialog->priv->new_button), "clicked", G_CALLBACK (new_button_clicked_cb), dialog);
-	dialog->priv->edit_button = glade_xml_get_widget (dialog->priv->gui, "button-edit");
+	dialog->priv->edit_button = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "button-edit"));
 	g_signal_connect (G_OBJECT (dialog->priv->edit_button), "clicked", G_CALLBACK (edit_button_clicked_cb), dialog);
-	dialog->priv->delete_button = glade_xml_get_widget (dialog->priv->gui, "button-delete");
+	dialog->priv->delete_button = GTK_WIDGET (gtk_builder_get_object (dialog->priv->gui, "button-delete"));
 	g_signal_connect_swapped (
 		G_OBJECT (dialog->priv->delete_button), "clicked",
 		G_CALLBACK (categories_dialog_delete_cb), dialog);

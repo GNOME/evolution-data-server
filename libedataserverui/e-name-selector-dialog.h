@@ -25,7 +25,6 @@
 #define E_NAME_SELECTOR_DIALOG_H
 
 #include <gtk/gtk.h>
-#include <glade/glade.h>
 #include <libebook/e-book.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-name-selector-model.h>
@@ -68,7 +67,7 @@ struct _ENameSelectorDialog {
 	ENameSelectorModel *name_selector_model;
 	GtkTreeModelSort   *contact_sort;
 
-	GladeXML           *gui;
+	GtkBuilder         *gui;
 	GtkTreeView        *contact_view;
 	GtkLabel           *status_label;
 	GtkBox             *destination_box;

@@ -37,7 +37,6 @@ m4_define([gtk_minimum_version], [2.14.0])
 m4_define([ORBit_minimum_version], [2.9.8])
 m4_define([libbonobo_minimum_version], [2.20.3])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
-m4_define([libglade_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
@@ -294,7 +293,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	ORBit-2.0 >= ORBit_minimum_version
 	libbonobo-2.0 >= libbonobo_minimum_version
 	gconf-2.0 >= gconf_minimum_version
-	libglade-2.0 >= libglade_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version])
 
@@ -1512,7 +1510,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-2.0 libglade-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
+E_DATA_SERVER_UI_DEPS="gtk+-2.0 libxml-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1690,8 +1688,8 @@ AC_SUBST(serverdir)
 extensiondir='${libdir}'/evolution-data-server-$API_VERSION/extensions
 AC_SUBST(extensiondir)
 
-gladedir="$privdatadir/glade"
-AC_SUBST(gladedir)
+uidir="$privdatadir/ui"
+AC_SUBST(uidir)
 
 if test $use_gweather = yes; then
 	weatherdatadir="$privdatadir/weather"

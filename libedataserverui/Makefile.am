@@ -3,7 +3,7 @@ AM_CPPFLAGS =								\
 	-I$(top_srcdir)/addressbook					\
 	-I$(top_builddir)/addressbook					\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
-	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
+	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"			\
 	$(E_DATA_SERVER_UI_CFLAGS)
 
 # The marshallers
@@ -104,10 +104,10 @@ test_name_selector_LDADD =					\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserverui-$(API_VERSION).pc
 
-glade_DATA = e-categories-dialog.glade e-name-selector-dialog.glade
+ui_DATA = e-categories-dialog.ui e-name-selector-dialog.ui
 
 EXTRA_DIST = 						\
-	$(glade_DATA)					\
+	$(ui_DATA)					\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)

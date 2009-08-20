@@ -106,8 +106,8 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 	GList *category_list, *iter;
 
 	/* "Any Category" is preloaded. */
-	combo_box = glade_xml_get_widget (
-		name_selector_dialog->gui, "combobox-category");
+	combo_box = GTK_WIDGET (gtk_builder_get_object (
+		name_selector_dialog->gui, "combobox-category"));
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
@@ -136,24 +136,40 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget         *parent;
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
-	gchar              *gladefile;
+	gchar             *uifile;
 	GConfClient *gconf_client;
 	gchar *uid;
+	GError *error = NULL;
 
 	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	priv->destination_index = 0;
 	priv->user_query_fields = NULL;
 
-	/* Get Glade GUI */
-	gladefile = g_build_filename (E_DATA_SERVER_UI_GLADEDIR,
-				      "e-name-selector-dialog.glade",
-				      NULL);
-	name_selector_dialog->gui = glade_xml_new (gladefile, NULL, GETTEXT_PACKAGE);
-	g_free (gladefile);
+	/* Get GtkBuilder GUI */
+	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
+				"e-name-selector-dialog.ui",
+				NULL);
+	name_selector_dialog->gui = gtk_builder_new ();
+	gtk_builder_set_translation_domain (name_selector_dialog->gui, GETTEXT_PACKAGE);
 
-	widget = glade_xml_get_widget (name_selector_dialog->gui, "name-selector-box");
+	if (!gtk_builder_add_from_file (name_selector_dialog->gui, uifile, &error)) {
+		g_free (uifile);
+		g_object_unref (name_selector_dialog->gui);
+		name_selector_dialog->gui = NULL;
+
+		g_warning ("%s: Cannot load e-name-selector-dialog.ui file, %s", G_STRFUNC, error ? error->message : "Unknown error");
+
+		if (error)
+			g_error_free (error);
+
+		return;
+	}
+
+	g_free (uifile);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "name-selector-box"));
 	if (!widget) {
-		g_warning ("ENameSelectorDialog can't load Glade interface!");
+		g_warning ("%s: Cannot load e-name-selector-dialog.ui file", G_STRFUNC);
 		g_object_unref (name_selector_dialog->gui);
 		name_selector_dialog->gui = NULL;
 		return;
@@ -181,13 +197,13 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	/* Store pointers to relevant widgets */
 
 	name_selector_dialog->contact_view = GTK_TREE_VIEW (
-		glade_xml_get_widget (name_selector_dialog->gui, "source-tree-view"));
+		gtk_builder_get_object (name_selector_dialog->gui, "source-tree-view"));
 	name_selector_dialog->status_label = GTK_LABEL (
-		glade_xml_get_widget (name_selector_dialog->gui, "status-message"));
+		gtk_builder_get_object (name_selector_dialog->gui, "status-message"));
 	name_selector_dialog->destination_box = GTK_BOX (
-		glade_xml_get_widget (name_selector_dialog->gui, "destination-box"));
+		gtk_builder_get_object (name_selector_dialog->gui, "destination-box"));
 	name_selector_dialog->search_entry = GTK_ENTRY (
-		glade_xml_get_widget (name_selector_dialog->gui, "search"));
+		gtk_builder_get_object (name_selector_dialog->gui, "search"));
 
 	/* Create size group for transfer buttons */
 
@@ -242,19 +258,19 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 		g_free (uid);
 	}
 
-	label = glade_xml_get_widget (name_selector_dialog->gui, "AddressBookLabel");
+	label = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "AddressBookLabel"));
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
 
 	gtk_widget_show (widget);
 
-	container = glade_xml_get_widget (name_selector_dialog->gui, "source-menu-box");
+	container = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "source-menu-box"));
 	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
 
 	e_name_selector_dialog_populate_categories (name_selector_dialog);
 
 	/* Set up search-as-you-type signal */
 
-	widget = glade_xml_get_widget (name_selector_dialog->gui, "search");
+	widget = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "search"));
 	g_signal_connect_swapped (widget, "changed", G_CALLBACK (search_changed), name_selector_dialog);
 
 	/* Display initial source */
@@ -749,8 +765,8 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	gchar         *category_escaped;
 	gchar         *user_fields_str;
 
-	combo_box = glade_xml_get_widget (
-		name_selector_dialog->gui, "combobox-category");
+	combo_box = GTK_WIDGET (gtk_builder_get_object (
+		name_selector_dialog->gui, "combobox-category"));
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
@@ -1263,9 +1279,9 @@ e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector
 	priv->destination_index = index;
 }
 
-/* ----------------------------------- *
- * Widget creation functions for Glade *
- * ----------------------------------- */
+/* ---------------------------------------- *
+ * Widget creation functions for GtkBuilder *
+ * ---------------------------------------- */
 
 #ifdef CATEGORIES_COMPONENTS_MOVED
 

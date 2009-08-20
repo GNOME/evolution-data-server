@@ -25,7 +25,6 @@
 
 #include <string.h>
 
-#include <glade/glade-xml.h>
 #include <gtk/gtk.h>
 
 #include "exchange-hierarchy-webdav.h"
