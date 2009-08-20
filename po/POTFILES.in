@@ -204,11 +204,11 @@ libedataserver/e-categories.c
 libedataserver/e-time-utils.c
 libedataserverui/e-book-auth-util.c
 libedataserverui/e-categories-dialog.c
-libedataserverui/e-categories-dialog.ui
+[type: gettext/glade]libedataserverui/e-categories-dialog.ui
 libedataserverui/e-category-completion.c
 libedataserverui/e-cell-renderer-color.c
 libedataserverui/e-name-selector-dialog.c
-libedataserverui/e-name-selector-dialog.ui
+[type: gettext/glade]libedataserverui/e-name-selector-dialog.ui
 libedataserverui/e-name-selector-entry.c
 libedataserverui/e-name-selector-list.c
 libedataserverui/e-passwords.c
