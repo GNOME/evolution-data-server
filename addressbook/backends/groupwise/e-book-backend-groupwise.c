@@ -1780,7 +1780,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
-		gchar *str = argv[1]->value.string;
+		gchar *str = "";
 		const gchar *gw_field_name;
 
 		gw_field_name = NULL;
@@ -1791,6 +1791,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 		else if (g_str_equal (propname, "file_as") || g_str_equal (propname, "nickname"))
 			 gw_field_name = "name";
 
+		/* FIXME the whole function looks useless. Why does one need str argument to the filter here ?*/
 		if (gw_field_name) {
 
 			if (g_str_equal (gw_field_name, "fullName")) {
