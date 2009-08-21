@@ -179,9 +179,6 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return;
 
-	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1)
-		goto check_changed;
-
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
@@ -286,10 +283,6 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return NULL;
-
-	if (camel_local_summary_check ((CamelLocalSummary *)folder->summary, lf->changes, ex) == -1) {
-		goto fail;
-	}
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
