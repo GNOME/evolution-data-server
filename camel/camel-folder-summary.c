@@ -3488,7 +3488,9 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
 
 	if (mi->uid) {
-		g_hash_table_remove (s->loaded_infos, mi->uid);
+		if (g_hash_table_lookup (s->loaded_infos, mi->uid) == mi) {
+			g_hash_table_remove (s->loaded_infos, mi->uid);
+		}
 		camel_pstring_free(mi->uid);
 	}
 	camel_pstring_free(mi->subject);
