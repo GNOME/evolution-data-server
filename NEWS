@@ -1,3 +1,34 @@
+Evolution-Data-Server 2.27.90 2009-08-24
+----------------------------------------
+
+Bug Fixes:
+
+Mailer:
+	#350007 - evolution busy-waits on GPG signing operations (Milan Crha)
+	#571206 - Index files on Maildir accounts are not updated on move
+	          (Milan Crha)
+	#590044 - Drop index on all columns of sqlite database (Romuald Brunet)
+	#592310 - Deadlock in maildir provider after doing expunge (Milan Crha)
+
+Miscellaneous:
+	#591324 - Cosmetic changes and fixes in configure.ac (H.Habighorst)
+	#591326 - Keep m4 macros in their own folder (H.Habighorst)
+	#591377 - Fails to detect krb5 in configure with -as-needed
+	          (H.Habighorst)
+
+Other Fixes:
+	Updated the macros from latest gtk-doc.m4 (Chenthill Palanisamy)
+
+Translations:
+	Alexander Shopov (bg)
+	Carles Ferrando (ca@valencia)
+	Ivar Smolin (et)
+	Seán de Búrca (ga)
+	Antón Méixome (gl)
+	Rajesh Ranjan (hi)
+	Changwoo Ryu (ko)
+	Sandeep Shedmake (mr)
+
 Evolution-Data-Server 2.27.90 2009-08-10
 ----------------------------------------
 
