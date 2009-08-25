@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2009-03-04 17:51+0000\n"
-"PO-Revision-Date: 2009-06-11 17:01+0530\n"
+"PO-Revision-Date: 2009-08-25 18:17+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -56,7 +57,7 @@ msgstr "(%d) ସମ୍ପର୍କ ସଞ୍ଚୟକୁ ଅଦ୍ଯତିତ �
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:751
 msgid "Using Distinguished Name (DN)"
-msgstr "ପ୍ରଖ୍ଯାତ ନାମକୁ ବ୍ଯବହାର କରୁଅଛି"
+msgstr "ପ୍ରଖ୍ଯାତ ନାମ (DN) କୁ ବ୍ଯବହାର କରୁଅଛି"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:754
 msgid "Using Email Address"
