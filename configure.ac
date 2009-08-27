@@ -1441,7 +1441,7 @@ dnl ******************************
 dnl evolution-calendar flags
 dnl ******************************
 if test "x${enable_calendar}" = "xyes"; then
-	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 libbonobo-2.0 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
+	EVOLUTION_CALENDAR_DEPS="libical >= libical_minimum_version libxml-2.0 dbus-glib-1 gio-2.0 gobject-2.0 gthread-2.0 gconf-2.0"
 
 dnl *****
 dnl libical.pc from libical-0.43 has a bug in it's CFlags.
