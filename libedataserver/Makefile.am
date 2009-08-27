@@ -17,7 +17,6 @@ libedataserver_1_2_la_SOURCES =		\
 	e-account-list.c		\
 	e-account.c			\
 	e-categories.c			\
-	e-component-listener.c		\
 	e-flag.c			\
 	e-iconv.c			\
 	e-iterator.c			\
@@ -56,7 +55,6 @@ libedataserverinclude_HEADERS =		\
 	e-account-list.h		\
 	e-account.h			\
 	e-categories.h			\
-	e-component-listener.h		\
 	e-flag.h			\
 	e-iconv.h			\
 	e-iterator.h			\
