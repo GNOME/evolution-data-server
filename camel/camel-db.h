@@ -177,5 +177,8 @@ gint camel_db_flush_in_memory_transactions (CamelDB *cdb, const gchar * folder_n
 GHashTable *
 camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex);
 gint camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid, const gchar *msg, CamelException *ex);
+
+gint
+camel_db_reset_folder_version (CamelDB *cdb, const gchar *folder_name, gint reset_version, CamelException *ex);
 #endif
 

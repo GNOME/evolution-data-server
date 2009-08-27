@@ -1250,6 +1250,31 @@ camel_db_migrate_folder_recreate (CamelDB *cdb, const gchar *folder_name, gint v
 	return ret;
 }
 
+gint
+camel_db_reset_folder_version (CamelDB *cdb, const gchar *folder_name, gint reset_version, CamelException *ex)
+{
+	gint ret = 0;
+	gchar *version_creation_query;
+	gchar *version_insert_query;
+	gchar *drop_folder_query;
+
+
+	drop_folder_query = sqlite3_mprintf ("DROP TABLE IF EXISTS '%q_version'", folder_name);
+	version_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_version' ( version TEXT )", folder_name);
+
+	version_insert_query = sqlite3_mprintf ("INSERT INTO '%q_version' VALUES ('%d')", folder_name, reset_version);
+
+	ret = camel_db_add_to_transaction (cdb, drop_folder_query, ex);
+	ret = camel_db_add_to_transaction (cdb, version_creation_query, ex);
+	ret = camel_db_add_to_transaction (cdb, version_insert_query, ex);
+
+	sqlite3_free (drop_folder_query);
+	sqlite3_free (version_creation_query);
+	sqlite3_free (version_insert_query);
+
+	return ret;
+}
+
 static gint
 camel_db_write_folder_version (CamelDB *cdb, const gchar *folder_name, gint old_version, CamelException *ex)
 {
