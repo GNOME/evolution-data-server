@@ -952,9 +952,11 @@ preview_update_exec (CamelSession *session, CamelSessionThreadMsg *msg)
 		camel_pstring_free (uids_uncached->pdata[i]); /* unref the hash table key */
 	}
 
+	CAMEL_FOLDER_REC_LOCK(m->folder, lock);
 	camel_db_begin_transaction (m->folder->parent_store->cdb_w, NULL);
 	g_hash_table_foreach (hash, (GHFunc)msg_update_preview, m->folder);
 	camel_db_end_transaction (m->folder->parent_store->cdb_w, NULL);
+	CAMEL_FOLDER_REC_UNLOCK(m->folder, lock);
 	camel_folder_free_uids(m->folder, uids_uncached);
 	camel_folder_summary_free_hashtable (hash);
 }
@@ -1578,6 +1580,25 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
+	
+	printf("WARNING %s\n", camel_exception_get_description (ex));
+	if (strstr (camel_exception_get_description (ex), "26 columns but 28 values") != NULL) {
+		/* This is an error is previous migration. Let remigrate this folder alone. */
+		camel_db_abort_transaction (cdb, ex);
+		camel_db_reset_folder_version (cdb, s->folder->full_name, 0, ex);
+		g_warning ("Fixing up a broken summary migration\n");
+		/* Begin everything again. */
+		camel_db_begin_transaction (cdb, ex);
+
+		ret = save_message_infos_to_db (s, FALSE, ex);
+		if (ret != 0) {
+			camel_db_abort_transaction (cdb, ex);
+			/* Failed, so lets reset the flag */
+			s->flags |= CAMEL_SUMMARY_DIRTY;
+			return -1;
+		}
+	}
+
 
 	camel_db_end_transaction (cdb, ex);
 
