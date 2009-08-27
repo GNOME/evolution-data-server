@@ -34,8 +34,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 dnl Required Package Versions
 m4_define([glib_minimum_version], [2.16.1])
 m4_define([gtk_minimum_version], [2.14.0])
-m4_define([ORBit_minimum_version], [2.9.8])
-m4_define([libbonobo_minimum_version], [2.20.3])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
@@ -285,8 +283,6 @@ dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[glib-2.0 >= glib_minimum_version
 	gtk+-2.0 >= gtk_minimum_version
-	ORBit-2.0 >= ORBit_minimum_version
-	libbonobo-2.0 >= libbonobo_minimum_version
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version])
@@ -1332,12 +1328,6 @@ else
 	msg_exchange="yes"
 fi
 
-LIBBONOBO_REQUIRED=libbonobo_minimum_version
-AC_SUBST(LIBBONOBO_REQUIRED)
-
-ORBIT_REQUIRED=ORBit_minimum_version
-AC_SUBST(ORBIT_REQUIRED)
-
 DBUS_GLIB_REQUIRED=dbus_glib_minimum_version
 AC_SUBST(DBUS_GLIB_REQUIRED)
 
@@ -1374,19 +1364,8 @@ AC_SUBST(THREADS_CFLAGS)
 AC_DEFINE(ENABLE_THREADS,1,[Required])
 
 dnl ******************************
-dnl Orbit \ Bonobo stuff
+dnl DBus stuff
 dnl ******************************
-PKG_CHECK_MODULES([ORBIT], [ORBit-2.0 >= ORBit_minimum_version])
-test x$ORBIT_IDL = x && ORBIT_IDL=`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`
-AC_SUBST(ORBIT_CFLAGS)
-AC_SUBST(ORBIT_LIBS)
-AC_SUBST(ORBIT_IDL)
-
-AC_MSG_CHECKING(for CORBA include paths)
-IDL_INCLUDES="-I"`${PKG_CONFIG} --variable=idldir libbonobo-2.0`" -I"`${PKG_CONFIG} --variable=idldir bonobo-activation-2.0`
-AC_MSG_RESULT($IDL_INCLUDES)
-AC_SUBST(IDL_INCLUDES)
-
 PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= dbus_glib_minimum_version)
 AC_SUBST(DBUS_GLIB_CFLAGS)
 AC_SUBST(DBUS_GLIB_LIBS)
@@ -1584,9 +1563,6 @@ AC_SUBST(idldir)
 
 imagesdir='${datadir}'/pixmaps/evolution-data-server
 AC_SUBST(imagesdir)
-
-serverdir="$libdir/bonobo/servers"
-AC_SUBST(serverdir)
 
 extensiondir='${libdir}'/evolution-data-server-$API_VERSION/extensions
 AC_SUBST(extensiondir)
