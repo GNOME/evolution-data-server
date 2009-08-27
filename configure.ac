@@ -1440,17 +1440,6 @@ dnl *****
 fi
 
 dnl ******************************
-dnl factory flags
-dnl ******************************
-E_FACTORY_DEPS="$mozilla_nspr"
-if test "x${enable_calendar}" = "xyes"; then
-	E_FACTORY_DEPS="$E_FACTORY_DEPS libical"
-fi
-EVO_SET_COMPILE_FLAGS(E_FACTORY, $E_FACTORY_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS $LIBICAL_EXTRA_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS $LIBICAL_EXTRA_LIBS)
-AC_SUBST(E_FACTORY_CFLAGS)
-AC_SUBST(E_FACTORY_LIBS)
-
-dnl ******************************
 dnl Google flags
 dnl ******************************
 GDATA_DEPS="libsoup-2.4 libxml-2.0"
@@ -1693,7 +1682,6 @@ servers/google/libgdata/Makefile
 servers/google/libgdata/libgdata.pc
 servers/google/libgdata-google/Makefile
 servers/google/libgdata-google/libgdata-google.pc
-src/Makefile
 win32/Makefile
 docs/Makefile
 docs/reference/Makefile

@@ -3,11 +3,11 @@ ACLOCAL_AMFLAGS=-I m4
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
 if ENABLE_CALENDAR
-CALENDAR_DIR = calendar src
+CALENDAR_DIR = calendar
 endif
 
 SUBDIRS = win32 libedataserver libebackend servers camel addressbook $(CALENDAR_DIR) libedataserverui docs art po
-DIST_SUBDIRS = win32 libedataserver libebackend servers camel addressbook calendar src libedataserverui docs art po
+DIST_SUBDIRS = win32 libedataserver libebackend servers camel addressbook calendar libedataserverui docs art po
 
 changelogs =			\
 	ChangeLog
