@@ -162,7 +162,7 @@ ep_key_file_load (void)
 		G_KEY_FILE_KEEP_TRANSLATIONS, &error);
 
 	if (error != NULL) {
-		g_warning ("%s", error->message);
+		g_warning ("%s: %s", filename, error->message);
 		g_error_free (error);
 	}
 
@@ -188,7 +188,7 @@ ep_key_file_save (void)
 		g_file_set_contents (filename, contents, length, &error);
 
 	if (error != NULL) {
-		g_warning ("%s", error->message);
+		g_warning ("%s: %s", filename, error->message);
 		g_error_free (error);
 	}
 
