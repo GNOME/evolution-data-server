@@ -1581,12 +1581,11 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 		return -1;
 	}
 	
-	printf("WARNING %s\n", camel_exception_get_description (ex));
-	if (strstr (camel_exception_get_description (ex), "26 columns but 28 values") != NULL) {
+	if (ex && camel_exception_is_set (ex) && strstr (camel_exception_get_description (ex), "26 columns but 28 values") != NULL) {
 		/* This is an error is previous migration. Let remigrate this folder alone. */
 		camel_db_abort_transaction (cdb, ex);
 		camel_db_reset_folder_version (cdb, s->folder->full_name, 0, ex);
-		g_warning ("Fixing up a broken summary migration\n");
+		g_warning ("Fixing up a broken summary migration on %s\n", s->folder->full_name);
 		/* Begin everything again. */
 		camel_db_begin_transaction (cdb, ex);
 
