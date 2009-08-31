@@ -1576,11 +1576,48 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 static gboolean
 user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
 {
-	/*
-	 * To preserve selected text, do not propagate the event any more.
-	 */
+	int n;
+	GList *l, *known;
+	GString *str = g_string_new ("");
+	EDestination *dest_dummy = e_destination_new ();
 
-	return TRUE;
+	g_signal_handlers_block_matched (name_selector_entry, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+	g_signal_handlers_block_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+
+	known = e_destination_store_list_destinations (name_selector_entry->destination_store);
+	for (l = known, n = 0; l != NULL; l = l->next, n++) {
+		EDestination *dest = l->data;
+
+		if (dest) {
+			char *text;
+
+			text = get_destination_textrep (dest);
+			if (text) {
+				if (str->str && str->str[0])
+					g_string_append (str, ", ");
+
+				g_string_append (str, text);
+			}
+			g_free (text);
+		}
+	}
+	g_list_free (known);
+	
+	/* Add a blank destination */
+	e_destination_store_append_destination (name_selector_entry->destination_store, dest_dummy);
+	if (str->str && str->str[0])
+		g_string_append (str, ", ");
+
+	gtk_entry_set_text (GTK_ENTRY (name_selector_entry), str->str);
+	
+	g_string_free (str, TRUE);
+
+	g_signal_handlers_unblock_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+	g_signal_handlers_unblock_matched (name_selector_entry, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+
+	generate_attribute_list (name_selector_entry);
+
+	return FALSE;
 }
 
 static gboolean
