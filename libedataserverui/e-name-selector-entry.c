@@ -172,7 +172,7 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_c
 	g_type_class_add_private (object_class, sizeof(ENameSelectorEntryPrivate));
 }
 
-/* Remove unquoted commas from string */
+/* Remove unquoted commas and control characters from string */
 static gchar *
 sanitize_string (const gchar *string)
 {
@@ -191,6 +191,8 @@ sanitize_string (const gchar *string)
 		if (c == '"')
 			quoted = ~quoted;
 		else if (c == ',' && !quoted)
+			continue;
+		else if (c == '\t' || c == '\n')
 			continue;
 
 		g_string_append_unichar (gstring, c);
