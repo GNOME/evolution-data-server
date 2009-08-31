@@ -498,7 +498,6 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 	g_ptr_array_add (argv, (guint8 *) "--no-secmem-warning");
 	g_ptr_array_add (argv, (guint8 *) "--no-greeting");
 	g_ptr_array_add (argv, (guint8 *) "--no-tty");
-	g_ptr_array_add (argv, (guint8 *) "--no-use-agent");
 
 	if (passwd_fd == -1) {
 		/* only use batch mode if we don't intend on using the
@@ -1197,6 +1196,13 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 			close (gpg->stdin_fd);
 			gpg->stdin_fd = -1;
 		}
+	}
+
+	if (gpg->need_id) {
+		/* do not ask more than ten times per second when looking for a pass phrase,
+		   in case user has the use-agent set, it'll not use the all CPU when
+		   agent is asking for a pass phrase, instead of us */
+		g_usleep (G_USEC_PER_SEC / 10);
 	}
 
 	return 0;
