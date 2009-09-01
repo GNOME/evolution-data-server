@@ -813,9 +813,12 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;
 	CamelFolderSummary *s = m->summary;
+	CamelException ex;
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-	camel_folder_sync (s->folder, FALSE, NULL);
+	camel_exception_init (&ex);
+	camel_folder_sync (s->folder, FALSE, &ex);
+	camel_exception_clear (&ex);
 
 	if (time(NULL) - s->cache_load_time < SUMMARY_CACHE_DROP)
 		return;
@@ -828,8 +831,6 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 	dd(printf("done .. now %d\n",g_hash_table_size (s->loaded_infos)));
 
 	s->cache_load_time = time(NULL);
-
-	return;
 }
 
 static void remove_cache_end (CamelSession *session, CamelSessionThreadMsg *msg)
