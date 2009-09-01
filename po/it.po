@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.27.x\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-08-25 12:55+0000\n"
-"PO-Revision-Date: 2009-08-26 15:52+0200\n"
+"POT-Creation-Date: 2009-09-01 13:43+0000\n"
+"PO-Revision-Date: 2009-09-01 22:02+0200\n"
 "Last-Translator: Luca Ferretti <elle.uca@libero.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -798,7 +798,7 @@ msgstr "Risposta richiesta: da "
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1087
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2083
 msgid "Reply Requested: When convenient"
-msgstr "Risposta richiesta: se conveniente"
+msgstr "Risposta richiesta: quando più comodo"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:281
 #, c-format
@@ -1382,7 +1382,7 @@ msgstr "Scaricamento dei nuovi messaggi per la modalità fuori rete"
 #: ../camel/camel-disco-folder.c:466
 #, c-format
 msgid "Preparing folder '%s' for offline"
-msgstr "Preparazione delle cartella «%s» per l'accesso fuori rete"
+msgstr "Preparazione della cartella «%s» per l'accesso fuori rete"
 
 # Umoristica: se in linea --> i ciccioni non possono completare
 # questa operazione :-) -Luca
@@ -1576,7 +1576,7 @@ msgstr "Apprendimento posta attendibile"
 msgid "Filtering new message(s)"
 msgstr "Filtraggio nuovi messaggi"
 
-#: ../camel/camel-gpg-context.c:752
+#: ../camel/camel-gpg-context.c:751
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1587,15 +1587,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:767
+#: ../camel/camel-gpg-context.c:766
 msgid "Failed to parse gpg userid hint."
 msgstr "Analisi hint ID utente gpg non riuscita."
 
-#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:790 ../camel/camel-gpg-context.c:804
 msgid "Failed to parse gpg passphrase request."
 msgstr "Analisi richiesta passphrase gpg non riuscita."
 
-#: ../camel/camel-gpg-context.c:825
+#: ../camel/camel-gpg-context.c:824
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1604,7 +1604,7 @@ msgstr ""
 "È necessario un PIN per sbloccare la chiave\n"
 "della propria SmartCard: «%s»"
 
-#: ../camel/camel-gpg-context.c:829
+#: ../camel/camel-gpg-context.c:828
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1613,97 +1613,97 @@ msgstr ""
 "È necessaria una passphrase per sbloccare la chiave\n"
 "per l'utente: «%s»"
 
-#: ../camel/camel-gpg-context.c:834
+#: ../camel/camel-gpg-context.c:833
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Richiesta inattesa da GnuPG per «%s»"
 
-#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:1068
+#: ../camel/camel-gpg-context.c:858 ../camel/camel-gpg-context.c:1067
 #: ../camel/providers/nntp/camel-nntp-store.c:1313
 msgid "Canceled."
 msgstr "Annullato."
 
-#: ../camel/camel-gpg-context.c:873
+#: ../camel/camel-gpg-context.c:872
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Sblocco della chiave segreta non riuscito: sono state fornite 3 passphrase "
 "errate."
 
-#: ../camel/camel-gpg-context.c:881
+#: ../camel/camel-gpg-context.c:880
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Risposta inattesa da GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:944
+#: ../camel/camel-gpg-context.c:943
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Cifratura non riuscita: nessun destinatario valido specificato."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1331
-#: ../camel/camel-gpg-context.c:1853 ../camel/camel-gpg-context.c:1898
+#: ../camel/camel-gpg-context.c:1212 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1859 ../camel/camel-gpg-context.c:1904
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Esecuzione di gpg non riuscita: %s"
 
-#: ../camel/camel-gpg-context.c:1299 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Impossibile generare i dati per la firma: %s"
 
-#: ../camel/camel-gpg-context.c:1346 ../camel/camel-gpg-context.c:1547
-#: ../camel/camel-gpg-context.c:1563 ../camel/camel-gpg-context.c:1643
-#: ../camel/camel-gpg-context.c:1658 ../camel/camel-gpg-context.c:1774
-#: ../camel/camel-gpg-context.c:1789 ../camel/camel-gpg-context.c:1869
-#: ../camel/camel-gpg-context.c:1914
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1553
+#: ../camel/camel-gpg-context.c:1569 ../camel/camel-gpg-context.c:1649
+#: ../camel/camel-gpg-context.c:1664 ../camel/camel-gpg-context.c:1780
+#: ../camel/camel-gpg-context.c:1795 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1920
 msgid "Failed to execute gpg."
 msgstr "Esecuzione di gpg non riuscita."
 
-#: ../camel/camel-gpg-context.c:1365
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "Questa è una parte del messaggio firmata digitalmente"
 
-#: ../camel/camel-gpg-context.c:1451 ../camel/camel-gpg-context.c:1457
-#: ../camel/camel-gpg-context.c:1463 ../camel/camel-gpg-context.c:1478
+#: ../camel/camel-gpg-context.c:1457 ../camel/camel-gpg-context.c:1463
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1484
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 "Impossibile verificare la firma del messaggio: formato messaggio non corretto"
 
-#: ../camel/camel-gpg-context.c:1517
+#: ../camel/camel-gpg-context.c:1523
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr ""
 "Impossibile verificare la firma del messaggio: impossibile creare il file "
 "temporaneo: %s"
 
-#: ../camel/camel-gpg-context.c:1626
+#: ../camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Impossibile generare i dati per la cifratura: %s"
 
-#: ../camel/camel-gpg-context.c:1676
+#: ../camel/camel-gpg-context.c:1682
 msgid "This is a digitally encrypted message part"
 msgstr "Questa è una parte del messaggio cifrata digitalmente"
 
-#: ../camel/camel-gpg-context.c:1729 ../camel/camel-gpg-context.c:1737
-#: ../camel/camel-gpg-context.c:1756
+#: ../camel/camel-gpg-context.c:1735 ../camel/camel-gpg-context.c:1743
+#: ../camel/camel-gpg-context.c:1762
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Impossibile decifrare il messaggio: formato del messaggio non valido"
 
-#: ../camel/camel-gpg-context.c:1746
+#: ../camel/camel-gpg-context.c:1752
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Decifratura della parte MIME non riuscita: errore di protocollo"
 
-#: ../camel/camel-gpg-context.c:1811 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1817 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "Contenuto cifrato"
 
-#: ../camel/camel-gpg-context.c:1830
+#: ../camel/camel-gpg-context.c:1836
 msgid "Unable to parse message content"
 msgstr "Impossibile analizzare il contenuto del messaggio"
 
-#: ../camel/camel-gpg-context.c:1854 ../camel/camel-gpg-context.c:1899
+#: ../camel/camel-gpg-context.c:1860 ../camel/camel-gpg-context.c:1905
 #: ../camel/camel-tcp-stream-openssl.c:627
 #: ../camel/providers/imap4/camel-imap4-utils.c:614
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
@@ -1800,12 +1800,12 @@ msgstr "Errore nel leggere il file di posta: %s"
 #: ../camel/camel-movemail.c:271
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr "Errore nello scrivere il file temp di posta: %s"
+msgstr "Errore nello scrivere il file temporaneo di posta: %s"
 
 #: ../camel/camel-movemail.c:464 ../camel/camel-movemail.c:531
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr "Errore nel copiare il file temp di posta: %s"
+msgstr "Errore nel copiare il file temporaneo di posta: %s"
 
 #: ../camel/camel-multipart-signed.c:592
 msgid "parse error"
@@ -2452,19 +2452,16 @@ msgstr "Il certificato è scaduto"
 
 # tolto CRL, non appare negli altri messaggi simili
 #: ../camel/camel-tcp-stream-openssl.c:582
-#| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) not yet valid"
 msgstr "Elenco revoche dei certificati non ancora valido"
 
 # tolto CRL, non appare negli altri messaggi simili
 #: ../camel/camel-tcp-stream-openssl.c:584
-#| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) has expired"
 msgstr "Elenco revoche dei certificati scaduto"
 
 # tolto CRL, non appare negli altri messaggi simili
 #: ../camel/camel-tcp-stream-openssl.c:589
-#| msgid "Unable to get Certificate Revocation List"
 msgid "Error in Certificate Revocation List (CRL)"
 msgstr "Errore nell'elenco revoche dei certificati"
 
@@ -2518,15 +2515,15 @@ msgstr "Certificato respinto"
 
 #: ../camel/camel-tcp-stream-openssl.c:616
 msgid "Subject/Issuer mismatch"
-msgstr "Oggetto/Emittente sconnessi"
+msgstr "Discrepanza oggetto/emittente"
 
 #: ../camel/camel-tcp-stream-openssl.c:618
 msgid "AKID/SKID mismatch"
-msgstr "AKID/SKID sconnessi"
+msgstr "Discrepanza AKID/SKID"
 
 #: ../camel/camel-tcp-stream-openssl.c:620
 msgid "AKID/Issuer serial mismatch"
-msgstr "AKID/Seriale Emittente sconnessi"
+msgstr "Discrepanza AKID/seriale emittente"
 
 #: ../camel/camel-tcp-stream-openssl.c:622
 msgid "Key usage does not support certificate signing"
@@ -2747,7 +2744,6 @@ msgstr "Impossibile caricare l'indice per %s"
 # aggiunto in
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1012
 #, c-format
-#| msgid "Checking for new messages"
 msgid "Checking for deleted messages %s"
 msgstr "Controllo messaggi eliminati in %s"
 
@@ -3109,14 +3105,14 @@ msgstr "Questo messaggio non è al momento disponibile"
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
-"Risposta del server incompleta: non è stata fornita nessuna informazione per "
+"Risposta del server incompleta: non è stata fornita alcuna informazione per "
 "il messaggio %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3632
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
-"Risposta del server incompleta: non è stato fornito nessun UID per il "
+"Risposta del server incompleta: non è stato fornito alcun UID per il "
 "messaggio %d"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3846
@@ -3313,7 +3309,6 @@ msgid "Unknown parent folder: %s"
 msgstr "Cartella di livello superiore sconosciuta: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:3053
-#| msgid "Server unexpectedly disconnected: %s"
 msgid "Server unexpectedly disconnected"
 msgstr "Disconnessione inattesa del server"
 
@@ -3715,7 +3710,6 @@ msgstr "~%s (%s)"
 #: ../camel/providers/local/camel-local-folder.c:399
 #: ../camel/providers/local/camel-local-folder.c:402
 #, c-format
-#| msgid "mailbox:%s (%s)"
 msgid "mailbox: %s (%s)"
 msgstr "mailbox: %s (%s)"
 
@@ -3846,7 +3840,7 @@ msgstr "Impossibile aggiungere il messaggio all'indice: motivo sconosciuto"
 # certo che l'originale è ben strano...
 #: ../camel/providers/local/camel-maildir-folder.c:228
 msgid "Maildir append message canceled"
-msgstr "Accodamento di messaggio maildir annullata"
+msgstr "Accodamento di messaggio maildir annullato"
 
 #: ../camel/providers/local/camel-maildir-folder.c:231
 #, c-format
@@ -4143,7 +4137,7 @@ msgstr "Impossibile creare la cartella «%s»: %s"
 #: ../camel/providers/local/camel-mh-store.c:244
 #, c-format
 msgid "Cannot get folder '%s': not a directory."
-msgstr "Impossibile ottenere la cartella «%s»: non è una cartella"
+msgstr "Impossibile ottenere la cartella «%s»: non è una directory"
 
 #: ../camel/providers/local/camel-mh-summary.c:240
 #, c-format
@@ -4158,7 +4152,7 @@ msgstr "Impossibile aprire lo spool «%s»: %s"
 #: ../camel/providers/local/camel-spool-store.c:146
 #, c-format
 msgid "Spool '%s' is not a regular file or directory"
-msgstr "Lo spool «%s» non è un file o una directory normale"
+msgstr "Lo spool «%s» non è un file normale o una directory"
 
 #: ../camel/providers/local/camel-spool-store.c:165
 #, c-format
@@ -4448,7 +4442,7 @@ msgstr "_Lasciare i messaggi sul server"
 #: ../camel/providers/pop3/camel-pop3-provider.c:47
 #, c-format
 msgid "_Delete after %s day(s)"
-msgstr "Eli_minare dopo %s giorno(i)"
+msgstr "Eli_minare dopo %s giorni"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:49
 msgid "Disable _support for all POP3 extensions"
@@ -4711,7 +4705,7 @@ msgstr "Transazione non riuscita"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:209
 msgid "A password transition is needed"
-msgstr "È necessaria una password di transizione."
+msgstr "È necessario passare attraverso la verifica della password"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:211
 msgid "Authentication mechanism is too weak"
@@ -4743,7 +4737,7 @@ msgstr "Comando STARTTLS non riuscito: %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:355
 msgid "STARTTLS command failed"
-msgstr "Comando STARTTLP non riuscito"
+msgstr "Comando STARTTLS non riuscito"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:496
 #, c-format
@@ -5211,39 +5205,33 @@ msgid "_Search:"
 msgstr "C_erca:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2455
+#: ../libedataserverui/e-name-selector-entry.c:2494
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_spandere %s in linea"
 
-# Controllare acceleratore !!
-#
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2470
+#: ../libedataserverui/e-name-selector-entry.c:2509
 #, c-format
 msgid "Cop_y %s"
-msgstr "Cop_ia %s"
+msgstr "Co_pia %s"
 
-# Controllare acceleratore !!
-#
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2480
+#: ../libedataserverui/e-name-selector-entry.c:2519
 #, c-format
 msgid "C_ut %s"
-msgstr "_Taglia %s"
+msgstr "T_aglia %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2497
+#: ../libedataserverui/e-name-selector-entry.c:2536
 #, c-format
 msgid "_Edit %s"
-msgstr "_Modifica %s"
+msgstr "M_odifica %s"
 
-# conflitto con sopra??
-#
 #: ../libedataserverui/e-name-selector-list.c:469
 #, c-format
 msgid "_Delete %s"
-msgstr "Eli_mina %s"
+msgstr "_Elimina %s"
 
 #: ../libedataserverui/e-passwords.c:234
 #, c-format
@@ -5458,7 +5446,7 @@ msgstr "Elenco indirizzi globale"
 msgid "Deleted Items"
 msgstr "Posta eliminata"
 
-# Traduzione in outlook/echange
+# Traduzione in outlook/exchange
 #
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
 msgid "Drafts"
@@ -5470,7 +5458,7 @@ msgstr "Bozze"
 msgid "Journal"
 msgstr "Diario"
 
-# Era 'Note', ma la traduzione in outlook/exhcange è 'Note'
+# Era 'Note', ma la traduzione in outlook/exchange è 'Note'
 #
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
 msgid "Notes"
@@ -5524,30 +5512,3 @@ msgstr "Servizio di controllo interfaccia di Evolution Data Server"
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
 msgstr "Servizio di log di Evolution Data Server"
-
-#~ msgid "CRL not yet valid"
-#~ msgstr "CRL non ancora valido"
-
-# il ? la?
-#~ msgid "CRL has expired"
-#~ msgstr "Il CRL è scaduto"
-
-#~ msgid "Error in CRL"
-#~ msgstr "Errore nel CRL"
-
-#~ msgid "Sent"
-#~ msgstr "Inviata"
-
-#~ msgid "Templates"
-#~ msgstr "Modelli"
-
-#~ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-#~ msgstr ""
-#~ "Più di un errore di tipo segmentation fault: impossibile mostrare un "
-#~ "dialogo di errore\n"
-
-#~ msgid "Failed to create create child process '%s': %s"
-#~ msgstr "Creazione del processo figlio «%s» non riuscita: %s"
-
-#~ msgid "Decoder failed, error %d"
-#~ msgstr "Decodificatore non riuscito, errore %d"
