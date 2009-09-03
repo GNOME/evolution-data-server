@@ -1093,7 +1093,6 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 	GPtrArray *match, *all;
 	GHashTable *allhash, *matchhash, *fullhash;
 	GSList *del_list = NULL;
-	CamelFolder *f = source;
 	CamelFolder *folder = (CamelFolder *)vf;
 	gint i, n, count, start, last;
 	struct _update_data u;
@@ -1129,7 +1128,7 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 			/* We take this to mean the results have not been cached.
 			 * XXX: It will also trigger if the result set is empty. */
 			match == NULL) {
-			match = camel_folder_search_by_expression(f, vf->expression, ex);
+			match = camel_folder_search_by_expression(source, vf->expression, ex);
 			if (match == NULL) /* Search failed */
 				return 0;
 			rebuilded = TRUE;
@@ -1148,21 +1147,22 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 
 	CAMEL_VEE_FOLDER_LOCK(vf, summary_lock);
 
-	/* we build 2 hash tables, one for all uid's not matched, the other for all matched uid's,
-	   we just ref the real memory */
+	/* we build 2 hash tables, one for all uid's not matched, the
+	   other for all matched uid's, we just ref the real memory */
 	matchhash = g_hash_table_new(g_str_hash, g_str_equal);
 	for (i=0;i<match->len;i++)
 		g_hash_table_insert(matchhash, match->pdata[i], GINT_TO_POINTER (1));
 
 	allhash = g_hash_table_new(g_str_hash, g_str_equal);
 	fullhash = g_hash_table_new(g_str_hash, g_str_equal);
-	all = camel_folder_summary_array(f->summary);
+	all = camel_folder_summary_array(source->summary);
 	for (i=0;i<all->len;i++) {
 		if (g_hash_table_lookup(matchhash, all->pdata[i]) == NULL)
 			g_hash_table_insert(allhash, all->pdata[i], GINT_TO_POINTER (1));
 		g_hash_table_insert(fullhash, all->pdata[i], GINT_TO_POINTER (1));
 
 	}
+	/* remove uids that can't be found in the source folder */
 	count = match->len;
 	for (i=0; i<count; i++) {
 		if (!g_hash_table_lookup(fullhash, match->pdata[i])) {
@@ -1178,7 +1178,9 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 	if (folder_unmatched != NULL)
 		CAMEL_VEE_FOLDER_LOCK(folder_unmatched, summary_lock);
 
-	/* scan, looking for "old" uid's to be removed */
+	/* scan, looking for "old" uid's to be removed. "old" uid's
+	   are those that are from previous added sources (not in
+	   current source) */
 	start = -1;
 	last = -1;
 	count = camel_folder_summary_count(folder->summary);
@@ -1295,8 +1297,8 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 		g_ptr_array_foreach (match, (GFunc) camel_pstring_free, NULL);
 		g_ptr_array_free(match, TRUE);
 	} else
-		camel_folder_search_free(f, match);
-	camel_folder_free_summary (f, all);
+		camel_folder_search_free(source, match);
+	camel_folder_free_summary (source, all);
 
 	if (unmatched_changes) {
 		camel_object_trigger_event((CamelObject *)folder_unmatched, "folder_changed", unmatched_changes);
