@@ -1258,7 +1258,6 @@ camel_db_reset_folder_version (CamelDB *cdb, const gchar *folder_name, gint rese
 	gchar *version_insert_query;
 	gchar *drop_folder_query;
 
-
 	drop_folder_query = sqlite3_mprintf ("DROP TABLE IF EXISTS '%q_version'", folder_name);
 	version_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_version' ( version TEXT )", folder_name);
 

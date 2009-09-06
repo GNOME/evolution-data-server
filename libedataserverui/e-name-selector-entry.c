@@ -1578,7 +1578,7 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 static gboolean
 user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
 {
-	int n;
+	gint n;
 	GList *l, *known;
 	GString *str = g_string_new ("");
 	EDestination *dest_dummy = e_destination_new ();
@@ -1591,7 +1591,7 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 		EDestination *dest = l->data;
 
 		if (dest) {
-			char *text;
+			gchar *text;
 
 			text = get_destination_textrep (dest);
 			if (text) {
@@ -1604,14 +1604,14 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 		}
 	}
 	g_list_free (known);
-	
+
 	/* Add a blank destination */
 	e_destination_store_append_destination (name_selector_entry->destination_store, dest_dummy);
 	if (str->str && str->str[0])
 		g_string_append (str, ", ");
 
 	gtk_entry_set_text (GTK_ENTRY (name_selector_entry), str->str);
-	
+
 	g_string_free (str, TRUE);
 
 	g_signal_handlers_unblock_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);

@@ -1580,7 +1580,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
 	}
-	
+
 	if (ex && camel_exception_is_set (ex) && strstr (camel_exception_get_description (ex), "26 columns but 28 values") != NULL) {
 		/* This is an error is previous migration. Let remigrate this folder alone. */
 		camel_db_abort_transaction (cdb, ex);
@@ -1597,7 +1597,6 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 			return -1;
 		}
 	}
-
 
 	camel_db_end_transaction (cdb, ex);
 
