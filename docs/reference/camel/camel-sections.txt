@@ -260,6 +260,7 @@ camel_db_start_in_memory_transactions
 camel_db_flush_in_memory_transactions
 camel_db_get_folder_preview
 camel_db_write_preview_record
+camel_db_reset_folder_version
 <SUBSECTION Private>
 CamelDBPrivate
 </SECTION>
