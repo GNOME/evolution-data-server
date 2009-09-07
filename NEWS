@@ -1,4 +1,32 @@
-Evolution-Data-Server 2.27.90 2009-08-24
+Evolution-Data-Server 2.27.92 2009-09-07
+----------------------------------------
+
+Bug Fixes:
+
+Mailer:
+	#350007 - evolution busy-waits on GPG signing operations (Milan Crha)
+	#578910 - Fixes problem of missing migration for left out folders
+	          (Srinivasa Ragavan)
+
+Other Fixes:
+	Show filename in password file load/save warnings (Matthew Barnes)
+	Paste of e-mail always goes to the left most position (Bharath Acharya)
+	Expand <group> inline adds control codes (Bharath Acharya)
+	vee_rebuild_folder() code cleanup and adding comments (Yan Li)
+
+Translations:
+	Runa Bhattacharjee (bn_IN)
+	Jiri Eischmann (cs)
+	Inaki Larranaga (eu)
+	Claude Paroz (fr)
+	Gabor Kelemen (hu)
+	Luca Ferretti (it)
+	Manoj Kumar Giri (or)
+	Duarte Loreto (pt)
+	Miloš Popović (sr)
+	ifelix (ta)
+
+Evolution-Data-Server 2.27.91 2009-08-24
 ----------------------------------------
 
 Bug Fixes:
