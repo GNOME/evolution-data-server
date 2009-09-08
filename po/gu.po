@@ -1,21 +1,20 @@
-# translation of evolution-data-server.HEAD.gu.po to Gujarati
+# translation of evolution-data-server.gnome-2-28.gu.po to Gujarati
 # Ankit Patel <ankit644@yahoo.com>, 2005, 2006.
 # Ankit Patel <ankit@redhat.com>, 2007, 2008, 2009.
 # Sweta Kothari <swkothar@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server.HEAD.gu\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-08-11 14:04+0000\n"
-"PO-Revision-Date: 2009-03-09 23:31+0530\n"
-"Last-Translator: Ankit Patel <ankit@redhat.com>\n"
-"Language-Team: Gujarati <fedora-trans-gu@redhat.com>\n"
+"Project-Id-Version: evolution-data-server.gnome-2-28.gu\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
+"POT-Creation-Date: 2009-09-07 14:12+0000\n"
+"PO-Revision-Date: 2009-09-08 13:43+0530\n"
+"Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
+"Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "\n"
 "\n"
 "\n"
@@ -1606,68 +1605,68 @@ msgid "Failed to encrypt: No valid recipients specified."
 msgstr "એનક્રિપ્ટ કરવામાં નિષ્ફળ: કોઈ માન્ય મેળવનારો સ્પષ્ટ કરેલ નથી."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1205 ../camel/camel-gpg-context.c:1330
-#: ../camel/camel-gpg-context.c:1852 ../camel/camel-gpg-context.c:1897
+#: ../camel/camel-gpg-context.c:1212 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1859 ../camel/camel-gpg-context.c:1904
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpg ચલાવવામાં નિષ્ફળ: %s"
 
-#: ../camel/camel-gpg-context.c:1298 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "સહી કરવાની માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1345 ../camel/camel-gpg-context.c:1546
-#: ../camel/camel-gpg-context.c:1562 ../camel/camel-gpg-context.c:1642
-#: ../camel/camel-gpg-context.c:1657 ../camel/camel-gpg-context.c:1773
-#: ../camel/camel-gpg-context.c:1788 ../camel/camel-gpg-context.c:1868
-#: ../camel/camel-gpg-context.c:1913
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1553
+#: ../camel/camel-gpg-context.c:1569 ../camel/camel-gpg-context.c:1649
+#: ../camel/camel-gpg-context.c:1664 ../camel/camel-gpg-context.c:1780
+#: ../camel/camel-gpg-context.c:1795 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1920
 msgid "Failed to execute gpg."
 msgstr "gpg ચલાવવામાં નિષ્ફળ."
 
-#: ../camel/camel-gpg-context.c:1364
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "આ ડિજીટલ રીતે સહી કરલે સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1450 ../camel/camel-gpg-context.c:1456
-#: ../camel/camel-gpg-context.c:1462 ../camel/camel-gpg-context.c:1477
+#: ../camel/camel-gpg-context.c:1457 ../camel/camel-gpg-context.c:1463
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1484
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1516
+#: ../camel/camel-gpg-context.c:1523
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "સંદેશાની સહી ચકાસી શકતા નથી: કામચલાઉ ફાઈલ બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1625
+#: ../camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "એનક્રિપ્શન માહિતી બનાવી શક્યા નહિં: %s"
 
-#: ../camel/camel-gpg-context.c:1675
+#: ../camel/camel-gpg-context.c:1682
 msgid "This is a digitally encrypted message part"
 msgstr "આ ડિજીટલ રીતે એનક્રિપ્ટ કરેલ સંદેશાનો ભાગ છે"
 
-#: ../camel/camel-gpg-context.c:1728 ../camel/camel-gpg-context.c:1736
-#: ../camel/camel-gpg-context.c:1755
+#: ../camel/camel-gpg-context.c:1735 ../camel/camel-gpg-context.c:1743
+#: ../camel/camel-gpg-context.c:1762
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "સંદેશો ડિક્રિપ્ટ કરી શકતા નથી: અયોગ્ય સંદેશા બંધારણ"
 
-#: ../camel/camel-gpg-context.c:1745
+#: ../camel/camel-gpg-context.c:1752
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME ભાગ ડિક્રિપ્ટ કરવામાં ભૂલ: પ્રોટોકોલ ભૂલ"
 
-#: ../camel/camel-gpg-context.c:1810 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1817 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "એનક્રિપ્ટ કરેલ સમાવિષ્ટ"
 
-#: ../camel/camel-gpg-context.c:1829
+#: ../camel/camel-gpg-context.c:1836
 msgid "Unable to parse message content"
 msgstr "સંદેશાના સમાવિષ્ટોનું પદચ્છેદ કરવામાં અસમર્થ"
 
-#: ../camel/camel-gpg-context.c:1853 ../camel/camel-gpg-context.c:1898
+#: ../camel/camel-gpg-context.c:1860 ../camel/camel-gpg-context.c:1905
 #: ../camel/camel-tcp-stream-openssl.c:627
 #: ../camel/providers/imap4/camel-imap4-utils.c:614
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
@@ -1703,8 +1702,7 @@ msgstr "%s માટે તાળા ફાઈલ બનાવી શક્ય�
 #: ../camel/camel-lock.c:144
 #, c-format
 msgid "Timed out trying to get lock file on %s. Try again later."
-msgstr ""
-"%s પર તાળા ફાઈલ મેળવવાનો પ્રયત્ન કરતાં સમય સમાપ્ત થઈ ગયો. પછી ફરીથી પ્રયત્ન કરો."
+msgstr "%s પર તાળા ફાઈલ મેળવવાનો પ્રયત્ન કરતાં સમય સમાપ્ત થઈ ગયો. પછી ફરીથી પ્રયત્ન કરો."
 
 #: ../camel/camel-lock.c:199
 #, c-format
@@ -1897,8 +1895,7 @@ msgstr "CRAM-MD5"
 msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
-msgstr ""
-"આ વિકલ્પ સર્વર સાથે સુરક્ષિત CRAM-MD5 પાસવર્ડથી જોડાશે, જો સર્વરતેને આધાર આપતુ હોય તો."
+msgstr "આ વિકલ્પ સર્વર સાથે સુરક્ષિત CRAM-MD5 પાસવર્ડથી જોડાશે, જો સર્વરતેને આધાર આપતુ હોય તો."
 
 #: ../camel/camel-sasl-digest-md5.c:48
 msgid "DIGEST-MD5"
@@ -1908,8 +1905,7 @@ msgstr "DIGEST-MD5"
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
-msgstr ""
-"આ વિકલ્પ સર્વર સાથે સુરક્ષિત DIGEST-MD5 પાસવર્ડથી જોડાશે, જો સર્વરતેને આધાર આપતુ હોય તો."
+msgstr "આ વિકલ્પ સર્વર સાથે સુરક્ષિત DIGEST-MD5 પાસવર્ડથી જોડાશે, જો સર્વરતેને આધાર આપતુ હોય તો."
 
 #: ../camel/camel-sasl-digest-md5.c:844
 msgid "Server challenge too long (>2048 octets)"
@@ -2047,8 +2043,7 @@ msgstr "NTLM / SPA"
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
-msgstr ""
-"આ વિકલ્પ વિન્ડોઝ આધારિત સર્વરો સાથે NTLM / સુરક્ષિત પાસવર્ડ સત્તાધિકરણ સાથે જોડાશે."
+msgstr "આ વિકલ્પ વિન્ડોઝ આધારિત સર્વરો સાથે NTLM / સુરક્ષિત પાસવર્ડ સત્તાધિકરણ સાથે જોડાશે."
 
 #: ../camel/camel-sasl-plain.c:36
 msgid "PLAIN"
@@ -2387,22 +2382,19 @@ msgid "Certificate has expired"
 msgstr "પ્રમાણપત્રની મર્યાદા પૂરી થઈ ગઈ"
 
 #: ../camel/camel-tcp-stream-openssl.c:582
-#, fuzzy
 #| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) not yet valid"
-msgstr "પ્રમાણપત્ર કાયદાની યાદીની સહી નિષ્ફળ"
+msgstr "Certificate Revocation List (CRL) હજુ યોગ્ય નથી"
 
 #: ../camel/camel-tcp-stream-openssl.c:584
-#, fuzzy
 #| msgid "Certificate Revocation List signature failure"
 msgid "Certificate Revocation List (CRL) has expired"
-msgstr "પ્રમાણપત્ર કાયદાની યાદીની સહી નિષ્ફળ"
+msgstr "Certificate Revocation List (CRL) નિવૃત્ત થયેલ છે"
 
 #: ../camel/camel-tcp-stream-openssl.c:589
-#, fuzzy
 #| msgid "Unable to get Certificate Revocation List"
 msgid "Error in Certificate Revocation List (CRL)"
-msgstr "પ્રમાણપત્ર કાયદાની યાદી મેળવવા સમર્થ નથી"
+msgstr "Certificate Revocation List (CRL) માં ભૂલ"
 
 #: ../camel/camel-tcp-stream-openssl.c:591
 msgid "Out of memory"
@@ -2616,11 +2608,11 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:136
-#: ../camel/providers/local/camel-maildir-folder.c:255
-#: ../camel/providers/local/camel-maildir-folder.c:281
+#: ../camel/providers/local/camel-maildir-folder.c:262
+#: ../camel/providers/local/camel-maildir-folder.c:291
 #: ../camel/providers/local/camel-mbox-folder.c:363
 #: ../camel/providers/local/camel-mbox-folder.c:414
-#: ../camel/providers/local/camel-mh-folder.c:216
+#: ../camel/providers/local/camel-mh-folder.c:226
 msgid "No such message"
 msgstr "આવો કોઈ સંદેશો નથી"
 
@@ -2672,10 +2664,10 @@ msgid "Could not load summary for %s"
 msgstr "%s માટે સાર લાવી શક્યા નહિં"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1012
-#, fuzzy, c-format
+#, c-format
 #| msgid "Checking for new messages"
 msgid "Checking for deleted messages %s"
-msgstr "નવા સંદેશાઓ માટે ચકાસી રહ્યા છીએ"
+msgstr "કાઢી નાંખેલ સંદેશાઓ %s માટે ચકાસી રહ્યા છે"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1287
 msgid "Trash Folder Full. Please Empty."
@@ -2782,8 +2774,7 @@ msgid "Password"
 msgstr "પાસવર્ડ"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:106
-msgid ""
-"This option will connect to the GroupWise server using a plaintext password."
+msgid "This option will connect to the GroupWise server using a plaintext password."
 msgstr "આ વિકલ્પ સાદા લખાણના પાસવર્ડની મદદથી જૂથપ્રમાણેના સર્વર સાથે જોડાશે."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:102
@@ -3199,8 +3190,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2242
 #: ../camel/providers/imap4/camel-imap4-store.c:954
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "ફોલ્ડર નામ \"%s\" એ અમાન્ય છે કારણ કે તે \"%c\" અક્ષર ધરાવે છે"
 
 #: ../camel/providers/imap/camel-imap-store.c:1978
@@ -3217,10 +3207,9 @@ msgid "Unknown parent folder: %s"
 msgstr "અજ્ઞાત પિતૃ ફોલ્ડર: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:3053
-#, fuzzy
 #| msgid "Server unexpectedly disconnected: %s"
 msgid "Server unexpectedly disconnected"
-msgstr "સર્વરનું અનિચ્છનિય રીતે જોડાણ તૂટી ગયું: %s"
+msgstr "સર્વરનું અનિચ્છનિય રીતે જોડાણ તૂટી ગયું"
 
 #: ../camel/providers/imap4/camel-imap4-command.c:572
 #: ../camel/providers/imap4/camel-imap4-command.c:579
@@ -3366,8 +3355,7 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "IMAPv4rev1 સર્વરો પર મેઈલ વાંચવા અને સંગ્રહવા માટે."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:85
-msgid ""
-"This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "આ વિકલ્પ IMAPv4rev1 સર્વર સાથે સરળ લખાણવાળા પાસવર્ડ વાપરીને જોડાશે."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:259
@@ -3384,8 +3372,7 @@ msgstr "જોડાણ રદ થઈ ગયેલ"
 msgid ""
 "Failed to connect to IMAP server %s in secure mode: Server does not support "
 "STARTTLS"
-msgstr ""
-"IMAP સર્વર %s ને સુરક્ષિત સ્થિતિમાં જોડવામાં નિષ્ફળ: સર્વર STARTTLS ને આધાર આપતું નથી"
+msgstr "IMAP સર્વર %s ને સુરક્ષિત સ્થિતિમાં જોડવામાં નિષ્ફળ: સર્વર STARTTLS ને આધાર આપતું નથી"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:326
 #: ../camel/providers/pop3/camel-pop3-store.c:249
@@ -3394,8 +3381,7 @@ msgstr "TLS નું ભાવતાલ નિષ્ફળ"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:411
 #, c-format
-msgid ""
-"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "IMAP સર્વર %s ને %s સત્તાધિકરણની મદદથી સત્તાધિકરમ કરી શકતા નથી"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:534
@@ -3577,10 +3563,10 @@ msgstr "~%s (%s)"
 #. /var/spool/mail relative path + protocol
 #: ../camel/providers/local/camel-local-folder.c:399
 #: ../camel/providers/local/camel-local-folder.c:402
-#, fuzzy, c-format
+#, c-format
 #| msgid "mailbox:%s (%s)"
 msgid "mailbox: %s (%s)"
-msgstr "મેઈલબોક્સ:%s (%s)"
+msgstr "મેઈલબોક્સ: %s (%s)"
 
 #. a full path + protocol
 #: ../camel/providers/local/camel-local-folder.c:406
@@ -3701,27 +3687,27 @@ msgstr "ફોલ્ડર મેટા ફાઈલ '%s' કાઢી શક્
 msgid "Unable to add message to summary: unknown reason"
 msgstr "સારમાં સંદેશો ઉમેરવા માટે અસમર્થ: અજ્ઞાત કારણ"
 
-#: ../camel/providers/local/camel-maildir-folder.c:229
+#: ../camel/providers/local/camel-maildir-folder.c:228
 msgid "Maildir append message canceled"
 msgstr "Maildir ઉમેરો સંદેશો રદ થઈ ગયેલ"
 
-#: ../camel/providers/local/camel-maildir-folder.c:232
+#: ../camel/providers/local/camel-maildir-folder.c:231
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "Maildir ફોલ્ડરમાં સંદેશો ઉમેરી શકતા નથી: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:254
-#: ../camel/providers/local/camel-maildir-folder.c:280
-#: ../camel/providers/local/camel-maildir-folder.c:294
-#: ../camel/providers/local/camel-maildir-folder.c:303
+#: ../camel/providers/local/camel-maildir-folder.c:261
+#: ../camel/providers/local/camel-maildir-folder.c:290
+#: ../camel/providers/local/camel-maildir-folder.c:304
+#: ../camel/providers/local/camel-maildir-folder.c:312
 #: ../camel/providers/local/camel-mbox-folder.c:362
 #: ../camel/providers/local/camel-mbox-folder.c:413
 #: ../camel/providers/local/camel-mbox-folder.c:434
 #: ../camel/providers/local/camel-mbox-folder.c:465
 #: ../camel/providers/local/camel-mbox-folder.c:473
-#: ../camel/providers/local/camel-mh-folder.c:215
-#: ../camel/providers/local/camel-mh-folder.c:226
-#: ../camel/providers/local/camel-mh-folder.c:235
+#: ../camel/providers/local/camel-mh-folder.c:225
+#: ../camel/providers/local/camel-mh-folder.c:236
+#: ../camel/providers/local/camel-mh-folder.c:244
 #, c-format
 msgid ""
 "Cannot get message: %s from folder %s\n"
@@ -3730,7 +3716,7 @@ msgstr ""
 "સંદેશો મેળવી શકતા નથી: %s ને ફોલ્ડર %s માંથી\n"
 "  %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:304
+#: ../camel/providers/local/camel-maildir-folder.c:313
 msgid "Invalid message contents"
 msgstr "સંદેશાના સમાવિષ્ટો અયોગ્ય છે"
 
@@ -3793,7 +3779,7 @@ msgstr "ફોલ્ડરની કિંમત ચકાસી રહ્યા
 msgid "Checking for new messages"
 msgstr "નવા સંદેશાઓ માટે ચકાસી રહ્યા છીએ"
 
-#: ../camel/providers/local/camel-maildir-summary.c:744
+#: ../camel/providers/local/camel-maildir-summary.c:748
 #: ../camel/providers/local/camel-mbox-summary.c:526
 #: ../camel/providers/local/camel-mbox-summary.c:722
 #: ../camel/providers/local/camel-mbox-summary.c:842
@@ -3826,7 +3812,7 @@ msgid "The folder appears to be irrecoverably corrupted."
 msgstr "ફોલ્ડર પાછું મેળવી શકાય નહિં એમ બગડી ગયું લાગે છે."
 
 #: ../camel/providers/local/camel-mbox-folder.c:474
-#: ../camel/providers/local/camel-mh-folder.c:236
+#: ../camel/providers/local/camel-mh-folder.c:245
 msgid "Message construction failed."
 msgstr "સંદેશો બનાવવાનું નિષ્ફળ."
 
@@ -3969,11 +3955,11 @@ msgstr "કામચલાઉ મેઈલબોક્સમાં લખવા�
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "કામચલાઉ મેઈલબોક્સમાં લખવામાં નિષ્ફળ: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:181
+#: ../camel/providers/local/camel-mh-folder.c:180
 msgid "MH append message canceled"
 msgstr "MH ઉમેરો સંદેશો રદ થઈ ગયેલ"
 
-#: ../camel/providers/local/camel-mh-folder.c:184
+#: ../camel/providers/local/camel-mh-folder.c:183
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
 msgstr "mh ફોલ્ડરમાં સંદેશો ઉમેરી શકતા નથી: %s: %s"
@@ -4105,8 +4091,7 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "તમે NNTP ફોલ્ડરમાંથી સંદેશાઓ નકલ કરી શકતા નથી!"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid ""
-"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr "ટૂંકા નોટેશનમાં ફોલ્ડરો બતાવો (દા.ત. comp.os.linux ની જગ્યાએ c.o.linux) (_S)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
@@ -4337,8 +4322,7 @@ msgstr "POP સર્વર %s સાથે જોડાણ કરી શક્�
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
 "mechanism."
-msgstr ""
-"POP સર્વર %s સાથે સંપર્ક કરવા સમર્થ નથી: મંજૂરી કરાયેલ સત્તાધિકરણ માટે કોઈ આધાર નથી."
+msgstr "POP સર્વર %s સાથે સંપર્ક કરવા સમર્થ નથી: મંજૂરી કરાયેલ સત્તાધિકરણ માટે કોઈ આધાર નથી."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:418
 #, c-format
@@ -4396,8 +4380,7 @@ msgstr "મેઈલમોકલો"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
-"મેઈલ મોકલવા માટે તેને સ્થાનિક સિસ્ટમ પર \"મેઈલમોકલો\" કાર્યક્રમ દ્વારા પસાર કરીને."
+msgstr "મેઈલ મોકલવા માટે તેને સ્થાનિક સિસ્ટમ પર \"મેઈલમોકલો\" કાર્યક્રમ દ્વારા પસાર કરીને."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:113
 msgid "Could not parse recipient list"
@@ -5026,25 +5009,25 @@ msgid "_Search:"
 msgstr "શોધો (_S):"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2455
+#: ../libedataserverui/e-name-selector-entry.c:2494
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "%s લીટીમાં વિસ્તૃત કરો (_x)"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2470
+#: ../libedataserverui/e-name-selector-entry.c:2509
 #, c-format
 msgid "Cop_y %s"
 msgstr "%s ની નકલ કરો (_y)"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2480
+#: ../libedataserverui/e-name-selector-entry.c:2519
 #, c-format
 msgid "C_ut %s"
 msgstr "%s કાપો (_u)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2497
+#: ../libedataserverui/e-name-selector-entry.c:2536
 #, c-format
 msgid "_Edit %s"
 msgstr "%s માં ફેરફાર કરો (_E)"
@@ -5282,20 +5265,3 @@ msgstr "ઈવોલ્યુશન માહિતી સર્વર ઈન્
 msgid "Evolution Data Server logging service"
 msgstr "ઈવોલ્યુશન માહિતી સર્વર પ્રવેશ સેવા"
 
-#~ msgid "CRL not yet valid"
-#~ msgstr "CRL હજુ માન્ય નથી"
-
-#~ msgid "CRL has expired"
-#~ msgstr "CRL ની મર્યાદા પૂરી થઈ ગઈ"
-
-#~ msgid "Error in CRL"
-#~ msgstr "CRL માં ભૂલ"
-
-#~ msgid "Sent"
-#~ msgstr "મોકલાયેલ"
-
-#~ msgid "Templates"
-#~ msgstr "ટેમ્પલેટો"
-
-#~ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-#~ msgstr "ઘણી સેગ્મેન્ટેશન ભૂલો થઈ; ભૂલ સંવાદ દર્શાવી શકતા નથી\n"
