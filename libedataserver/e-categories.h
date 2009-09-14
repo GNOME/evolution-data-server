@@ -24,24 +24,32 @@
 
 G_BEGIN_DECLS
 
-GList      *e_categories_get_list (void);
+GList *		e_categories_get_list		(void);
 
 /* 'unused' parameter was 'color', but it is deprecated now (see bug #308815) */
-void        e_categories_add (const gchar *category, const gchar *unused, const gchar *icon_file, gboolean searchable);
+void		e_categories_add		(const gchar *category,
+						 const gchar *unused,
+						 const gchar *icon_file,
+						 gboolean searchable);
+void		e_categories_remove		(const gchar *category);
+gboolean	e_categories_exist		(const gchar *category);
+const gchar *	e_categories_get_icon_file_for	(const gchar *category);
+void		e_categories_set_icon_file_for	(const gchar *category,
+						 const gchar *icon_file);
+gboolean	e_categories_is_searchable	(const gchar *category);
 
-void        e_categories_remove (const gchar *category);
+void		e_categories_register_change_listener
+						(GCallback listener,
+						 gpointer user_data);
+void		e_categories_unregister_change_listener
+						(GCallback listener,
+						 gpointer user_data);
 
-gboolean    e_categories_exist (const gchar *category);
 #ifndef EDS_DISABLE_DEPRECATED
-const gchar *e_categories_get_color_for (const gchar *category);
-void        e_categories_set_color_for (const gchar *category, const gchar *color);
+const gchar *	e_categories_get_color_for	(const gchar *category);
+void		e_categories_set_color_for	(const gchar *category,
+						 const gchar *color);
 #endif
-const gchar *e_categories_get_icon_file_for (const gchar *category);
-void        e_categories_set_icon_file_for (const gchar *category, const gchar *icon_file);
-gboolean    e_categories_is_searchable (const gchar *category);
-
-void e_categories_register_change_listener   (GCallback listener, gpointer user_data);
-void e_categories_unregister_change_listener (GCallback listener, gpointer user_data);
 
 G_END_DECLS
 
