@@ -164,6 +164,19 @@ static CamelLocalSummary *maildir_create_summary(CamelLocalFolder *lf, const gch
 	return (CamelLocalSummary *)camel_maildir_summary_new((CamelFolder *)lf, path, folder, index);
 }
 
+
+static gboolean
+skip_summary_check (void)
+{
+	const char *skip = g_getenv ("SKIP_LSUMMARY_CHECK");
+
+	if (skip) 
+		return TRUE;
+	else
+		return FALSE;	
+	
+}
+
 static void
 maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
 {
@@ -178,6 +191,9 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	/* If we can't lock, don't do anything */
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return;
+
+	if (!skip_summary_check () && camel_local_summary_check ((CamelLocalSummary*) folder->summary, lf->changes, ex) == -1)
+		goto check_changed;
 
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
@@ -283,6 +299,9 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return NULL;
+
+	if (!skip_summary_check () && camel_local_summary_check ((CamelLocalSummary*) folder->summary, lf->changes, ex) == -1)
+		goto fail;
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {

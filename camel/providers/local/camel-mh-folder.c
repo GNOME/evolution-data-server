@@ -58,6 +58,7 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 static gchar * mh_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
 
 static void mh_finalize(CamelObject * object);
+static gboolean skip_summary_check (void);
 
 static void camel_mh_folder_class_init(CamelObjectClass * camel_mh_folder_class)
 {
@@ -139,6 +140,9 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return;
 
+	if (!skip_summary_check () && camel_local_summary_check ((CamelLocalSummary*) folder->summary, lf->changes, ex) == -1)
+		goto check_changed;
+
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add((CamelLocalSummary *)folder->summary, message, info, lf->changes, ex);
 	if (camel_exception_is_set (ex))
@@ -206,6 +210,18 @@ static gchar * mh_get_filename (CamelFolder *folder, const gchar *uid, CamelExce
 	return g_strdup_printf("%s/%s", lf->folder_path, uid);
 }
 
+static gboolean
+skip_summary_check (void)
+{
+	const char *skip = g_getenv ("SKIP_LSUMMARY_CHECK");
+
+	if (skip) 
+		return TRUE;
+	else
+		return FALSE;	
+	
+}
+
 static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex)
 {
 	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
@@ -218,6 +234,9 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, ex) == -1)
 		return NULL;
+
+	if (!skip_summary_check () && camel_local_summary_check ((CamelLocalSummary*) folder->summary, lf->changes, ex) == -1)
+		goto fail;
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
