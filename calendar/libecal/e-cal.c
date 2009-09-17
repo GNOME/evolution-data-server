@@ -4678,7 +4678,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	CORBA_Environment ev;
 	ECalendarStatus status = E_CALENDAR_STATUS_OK;
 	ECalendarOp *our_op;
-	icalcomponent *icalcomp;
+	icalcomponent *icalcomp = NULL;
 	const gchar *systzid;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
@@ -4777,7 +4777,6 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 		 * caller.
 		 */
 		icaltimezone *syszone = icaltimezone_get_builtin_timezone_from_tzid (systzid);
-		g_assert (syszone);
 		if (syszone) {
 			gboolean found = FALSE;
 			icalproperty *prop;
@@ -4793,7 +4792,6 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 				prop = icalcomponent_get_next_property(icalcomp,
 								       ICAL_ANY_PROPERTY);
 			}
-			g_assert (found);
 		} else {
 			status = E_CALENDAR_STATUS_INVALID_OBJECT;
 		}
