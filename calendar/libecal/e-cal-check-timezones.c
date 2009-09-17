@@ -69,7 +69,7 @@ static const gchar *e_cal_match_location(const gchar *location)
 const gchar *e_cal_match_tzid(const gchar *tzid)
 {
     const gchar *location;
-    const gchar *systzid;
+    const gchar *systzid = NULL;
     gsize len = strlen(tzid);
     gssize eostr;
 
@@ -95,7 +95,7 @@ const gchar *e_cal_match_tzid(const gchar *tzid)
             systzid = e_cal_match_tzid(strippedtzid);
             g_free(strippedtzid);
             if (systzid) {
-                return systzid;
+                goto done;
             }
         }
     }
@@ -113,13 +113,28 @@ const gchar *e_cal_match_tzid(const gchar *tzid)
                                        location + 1 :
                                        location);
         if (systzid) {
-            return systzid;
+            goto done;
         }
     }
 
     /* TODO: lookup table for Exchange TZIDs */
 
-    return NULL;
+ done:
+    if (systzid && !strcmp(systzid, "UTC")) {
+        /**
+         * UTC is special: it doesn't have a real VTIMEZONE in
+         * EDS. Matching some pseudo VTTIMEZONE with UTC in the TZID
+         * to our internal UTC "timezone" breaks
+         * e_cal_check_timezones() (it patches the event to use
+         * TZID=UTC, which cannot be exported correctly later on) and
+         * e_cal_get_timezone() (triggers an assert).
+         *
+         * So better avoid matching against it...
+         */
+        return NULL;
+    } else {
+        return systzid;
+    }
 }
 
 static void patch_tzids(icalcomponent *subcomp,
