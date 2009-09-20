@@ -10,9 +10,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-30 00:00+0200\n"
-"PO-Revision-Date: 2009-08-28 22:06-0500\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&component=general\n"
+"POT-Creation-Date: 2009-09-16 21:33+0000\n"
+"PO-Revision-Date: 2009-09-19 22:21-0330\n"
 "Last-Translator: Jiri Eischmann <jiri@eischmann.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,29 +22,29 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:560
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2330
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:474
 msgid "Loading..."
 msgstr "Načítání..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:563
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2260
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2282
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4510
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
 msgid "Searching..."
 msgstr "Vyhledávání..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2696
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4674
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Stahování kontaktů (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2845
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3029
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3073
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2844
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3028
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3072
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Aktualizace cache kontaktů (%d)... "
@@ -80,12 +81,97 @@ msgstr "Přijímání výsledků hledání LDAP..."
 msgid "Error performing search"
 msgstr "Chyba při hledání"
 
-#: ../addressbook/libebook/e-book.c:1837
+#. translators: the placeholders will be filled by
+#. * function names, e.g.
+#. * "e_book_add_contact" on book before
+#. * "e_book_open
+#: ../addressbook/libebook/e-book.c:287 ../addressbook/libebook/e-book.c:291
+#: ../addressbook/libebook/e-book.c:495 ../addressbook/libebook/e-book.c:499
+#: ../addressbook/libebook/e-book.c:637 ../addressbook/libebook/e-book.c:641
+#: ../addressbook/libebook/e-book.c:727 ../addressbook/libebook/e-book.c:731
+#: ../addressbook/libebook/e-book.c:1024 ../addressbook/libebook/e-book.c:1029
+#: ../addressbook/libebook/e-book.c:1206 ../addressbook/libebook/e-book.c:1210
+#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
+#: ../addressbook/libebook/e-book.c:1570 ../addressbook/libebook/e-book.c:1574
+#: ../addressbook/libebook/e-book.c:1813 ../addressbook/libebook/e-book.c:1817
+#: ../addressbook/libebook/e-book.c:2050 ../addressbook/libebook/e-book.c:2054
+#: ../addressbook/libebook/e-book.c:2257 ../addressbook/libebook/e-book.c:2261
+#: ../addressbook/libebook/e-book.c:3445
+#, c-format
+msgid "\"%s\" on book before \"%s\""
+msgstr "\"%s\" na adresáři před \"%s\""
+
+#: ../addressbook/libebook/e-book.c:300 ../addressbook/libebook/e-book.c:508
+#: ../addressbook/libebook/e-book.c:650 ../addressbook/libebook/e-book.c:740
+#: ../addressbook/libebook/e-book.c:1039 ../addressbook/libebook/e-book.c:1220
+#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1583
+#: ../addressbook/libebook/e-book.c:1826 ../addressbook/libebook/e-book.c:2064
+#: ../addressbook/libebook/e-book.c:2270 ../addressbook/libebook/e-book.c:2679
+#: ../addressbook/libebook/e-book.c:2877
+#, c-format
+msgid "book busy"
+msgstr "adresář se používá"
+
+#: ../addressbook/libebook/e-book.c:331 ../addressbook/libebook/e-book.c:335
+#: ../addressbook/libebook/e-book.c:539 ../addressbook/libebook/e-book.c:543
+#: ../addressbook/libebook/e-book.c:677 ../addressbook/libebook/e-book.c:681
+#: ../addressbook/libebook/e-book.c:767 ../addressbook/libebook/e-book.c:771
+#: ../addressbook/libebook/e-book.c:1066 ../addressbook/libebook/e-book.c:1069
+#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
+#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
+#: ../addressbook/libebook/e-book.c:1619 ../addressbook/libebook/e-book.c:1623
+#: ../addressbook/libebook/e-book.c:1873 ../addressbook/libebook/e-book.c:1877
+#: ../addressbook/libebook/e-book.c:2094 ../addressbook/libebook/e-book.c:2098
+#: ../addressbook/libebook/e-book.c:2296 ../addressbook/libebook/e-book.c:2300
+#: ../addressbook/libebook/e-book.c:2531 ../addressbook/libebook/e-book.c:2705
+#: ../addressbook/libebook/e-book.c:2709 ../addressbook/libebook/e-book.c:2903
+#: ../addressbook/libebook/e-book.c:2907 ../addressbook/libebook/e-book.c:3454
+#, c-format
+msgid "CORBA exception making \"%s\" call"
+msgstr "Výjimka CORBA při volání \"%s\""
+
+#: ../addressbook/libebook/e-book.c:2520
+#, c-format
+msgid "%s: there is no current operation"
+msgstr "%s: není žádná aktuální operace"
+
+#: ../addressbook/libebook/e-book.c:2549 ../addressbook/libebook/e-book.c:2594
+#: ../addressbook/libebook/e-book.c:2633
+#, c-format
+msgid "%s: could not cancel"
+msgstr "%s: nelze zrušit"
+
+#: ../addressbook/libebook/e-book.c:2665 ../addressbook/libebook/e-book.c:2669
+#, c-format
+msgid "\"%s\" on book after \"%s\""
+msgstr "\"%s\" na adresáři po \"%s\""
+
+#: ../addressbook/libebook/e-book.c:2733
+#, c-format
+msgid "%s: canceled"
+msgstr "%s: zrušeno"
+
+#: ../addressbook/libebook/e-book.c:3310
+#, c-format
+msgid "%s: Invalid source."
+msgstr "%s: Neplatný zdroj."
+
+#: ../addressbook/libebook/e-book.c:3318 ../addressbook/libebook/e-book.c:3383
+#, c-format
+msgid "%s: no factories available for URI `%s'"
+msgstr "%s: pro uri `%s' nejsou dostupné generátory"
+
+#: ../addressbook/libebook/e-book.c:3329
+#, c-format
+msgid "%s: Could not create EBookListener"
+msgstr "%s: Nelze vytvořit EBookListener"
+
+#: ../addressbook/libebook/e-book.c:3595
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: v gconf nebylo uloženo uid kontaktu sama sebe"
 
-#: ../addressbook/libebook/e-book.c:1967
+#: ../addressbook/libebook/e-book.c:3727
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: v gconf nebyl uložen zdroj pro uid `%s'."
@@ -276,7 +362,7 @@ msgstr "URL weblogu"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:632
+#: ../libedataserverui/e-categories-dialog.c:609
 msgid "Categories"
 msgstr "Kategorie"
 
@@ -657,7 +743,7 @@ msgstr "Nelze vytvořit thread pro získání změn"
 #: ../calendar/backends/google/e-cal-backend-google.c:1189
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1080
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1381
-#: ../calendar/backends/http/e-cal-backend-http.c:673
+#: ../calendar/backends/http/e-cal-backend-http.c:659
 #: ../calendar/backends/weather/e-cal-backend-weather.c:486
 msgid "Could not create cache file"
 msgstr "Nelze vytvořit soubor pro cache"
@@ -706,15 +792,15 @@ msgstr "Neplatné URI serveru"
 msgid "Authentication failed"
 msgstr "Autentizace selhala"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:330
+#: ../calendar/backends/http/e-cal-backend-http.c:316
 msgid "Redirected to Invalid URI"
 msgstr "Přesměrováno na neplatné URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:353
+#: ../calendar/backends/http/e-cal-backend-http.c:339
 msgid "Bad file format."
 msgstr "Špatný formát souboru."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:360
+#: ../calendar/backends/http/e-cal-backend-http.c:346
 msgid "Not a calendar."
 msgstr "Není to kalendář."
 
@@ -1437,7 +1523,7 @@ msgstr "Učení se tomu, co není nevyžádanou poštou"
 msgid "Filtering new message(s)"
 msgstr "Filtrování nové zprávy"
 
-#: ../camel/camel-gpg-context.c:752
+#: ../camel/camel-gpg-context.c:751
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1448,15 +1534,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:767
+#: ../camel/camel-gpg-context.c:766
 msgid "Failed to parse gpg userid hint."
 msgstr "Nelze zpracovat nápovědy gpg userid."
 
-#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:790 ../camel/camel-gpg-context.c:804
 msgid "Failed to parse gpg passphrase request."
 msgstr "Nelze zpracovat požadavek hesla gpg."
 
-#: ../camel/camel-gpg-context.c:825
+#: ../camel/camel-gpg-context.c:824
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1465,7 +1551,7 @@ msgstr ""
 "Potřebujete PIN k odemčení klíče své\n"
 "SmartCard: \"%s\""
 
-#: ../camel/camel-gpg-context.c:829
+#: ../camel/camel-gpg-context.c:828
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1474,92 +1560,92 @@ msgstr ""
 "Potřebujete heslo k odemčení klíče\n"
 "uživatele: \"%s\""
 
-#: ../camel/camel-gpg-context.c:834
+#: ../camel/camel-gpg-context.c:833
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Neočekávaný požadavek od GnuPG pro '%s'"
 
-#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:1068
+#: ../camel/camel-gpg-context.c:858 ../camel/camel-gpg-context.c:1067
 #: ../camel/providers/nntp/camel-nntp-store.c:1313
 msgid "Canceled."
 msgstr "Zrušeno."
 
-#: ../camel/camel-gpg-context.c:873
+#: ../camel/camel-gpg-context.c:872
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Nelze odemknout tajný klíč. Byla zadána tři chybná hesla."
 
-#: ../camel/camel-gpg-context.c:881
+#: ../camel/camel-gpg-context.c:880
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Neočekávaná odpověď od GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:944
+#: ../camel/camel-gpg-context.c:943
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Nelze zašifrovat zprávu: Nejsou určeni platní příjemci."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1331
-#: ../camel/camel-gpg-context.c:1853 ../camel/camel-gpg-context.c:1898
+#: ../camel/camel-gpg-context.c:1212 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1859 ../camel/camel-gpg-context.c:1904
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Nelze spustit gpg: %s"
 
-#: ../camel/camel-gpg-context.c:1299 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Nelze vygenerovat data podpisu: %s"
 
-#: ../camel/camel-gpg-context.c:1346 ../camel/camel-gpg-context.c:1547
-#: ../camel/camel-gpg-context.c:1563 ../camel/camel-gpg-context.c:1643
-#: ../camel/camel-gpg-context.c:1658 ../camel/camel-gpg-context.c:1774
-#: ../camel/camel-gpg-context.c:1789 ../camel/camel-gpg-context.c:1869
-#: ../camel/camel-gpg-context.c:1914
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1553
+#: ../camel/camel-gpg-context.c:1569 ../camel/camel-gpg-context.c:1649
+#: ../camel/camel-gpg-context.c:1664 ../camel/camel-gpg-context.c:1780
+#: ../camel/camel-gpg-context.c:1795 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1920
 msgid "Failed to execute gpg."
 msgstr "Nelze spustit gpg."
 
-#: ../camel/camel-gpg-context.c:1365
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "Toto je digitálně podepsaná část zprávy"
 
-#: ../camel/camel-gpg-context.c:1451 ../camel/camel-gpg-context.c:1457
-#: ../camel/camel-gpg-context.c:1463 ../camel/camel-gpg-context.c:1478
+#: ../camel/camel-gpg-context.c:1457 ../camel/camel-gpg-context.c:1463
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1484
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nelze ověřit podpis zprávy: Nesprávný formát zprávy"
 
-#: ../camel/camel-gpg-context.c:1517
+#: ../camel/camel-gpg-context.c:1523
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "Nelze ověřit podpis zprávy: nelze vytvořit dočasný soubor: %s"
 
-#: ../camel/camel-gpg-context.c:1626
+#: ../camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Nelze vygenerovat data šifrování: %s"
 
-#: ../camel/camel-gpg-context.c:1676
+#: ../camel/camel-gpg-context.c:1682
 msgid "This is a digitally encrypted message part"
 msgstr "Toto je digitálně šifrovaná část zprávy"
 
-#: ../camel/camel-gpg-context.c:1729 ../camel/camel-gpg-context.c:1737
-#: ../camel/camel-gpg-context.c:1756
+#: ../camel/camel-gpg-context.c:1735 ../camel/camel-gpg-context.c:1743
+#: ../camel/camel-gpg-context.c:1762
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nelze dešifrovat zprávu: Nesprávný formát zprávy"
 
-#: ../camel/camel-gpg-context.c:1746
+#: ../camel/camel-gpg-context.c:1752
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Nelze dešifrovat část MIME: chyba protokolu"
 
-#: ../camel/camel-gpg-context.c:1811 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1817 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "Šifrovaný obsah"
 
-#: ../camel/camel-gpg-context.c:1830
+#: ../camel/camel-gpg-context.c:1836
 msgid "Unable to parse message content"
 msgstr "Nelze zpracovat obsah zprávy"
 
-#: ../camel/camel-gpg-context.c:1854 ../camel/camel-gpg-context.c:1899
+#: ../camel/camel-gpg-context.c:1860 ../camel/camel-gpg-context.c:1905
 #: ../camel/camel-tcp-stream-openssl.c:627
 #: ../camel/providers/imap4/camel-imap4-utils.c:614
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
@@ -2505,11 +2591,11 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:136
-#: ../camel/providers/local/camel-maildir-folder.c:262
-#: ../camel/providers/local/camel-maildir-folder.c:291
+#: ../camel/providers/local/camel-maildir-folder.c:278
+#: ../camel/providers/local/camel-maildir-folder.c:310
 #: ../camel/providers/local/camel-mbox-folder.c:363
 #: ../camel/providers/local/camel-mbox-folder.c:414
-#: ../camel/providers/local/camel-mh-folder.c:226
+#: ../camel/providers/local/camel-mh-folder.c:245
 msgid "No such message"
 msgstr "Taková zpráva neexistuje"
 
@@ -3600,27 +3686,27 @@ msgstr "Nelze odstranit metasoubor složky '%s': %s"
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Nelze přidat zprávu do souhrnu: neznámý důvod"
 
-#: ../camel/providers/local/camel-maildir-folder.c:228
+#: ../camel/providers/local/camel-maildir-folder.c:244
 msgid "Maildir append message canceled"
 msgstr "Přidaní zprávy maildir zrušeno"
 
-#: ../camel/providers/local/camel-maildir-folder.c:231
+#: ../camel/providers/local/camel-maildir-folder.c:247
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "Nelze přidat zprávu do složky maildir: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:261
-#: ../camel/providers/local/camel-maildir-folder.c:290
-#: ../camel/providers/local/camel-maildir-folder.c:304
-#: ../camel/providers/local/camel-maildir-folder.c:312
+#: ../camel/providers/local/camel-maildir-folder.c:277
+#: ../camel/providers/local/camel-maildir-folder.c:309
+#: ../camel/providers/local/camel-maildir-folder.c:323
+#: ../camel/providers/local/camel-maildir-folder.c:331
 #: ../camel/providers/local/camel-mbox-folder.c:362
 #: ../camel/providers/local/camel-mbox-folder.c:413
 #: ../camel/providers/local/camel-mbox-folder.c:434
 #: ../camel/providers/local/camel-mbox-folder.c:465
 #: ../camel/providers/local/camel-mbox-folder.c:473
-#: ../camel/providers/local/camel-mh-folder.c:225
-#: ../camel/providers/local/camel-mh-folder.c:236
 #: ../camel/providers/local/camel-mh-folder.c:244
+#: ../camel/providers/local/camel-mh-folder.c:255
+#: ../camel/providers/local/camel-mh-folder.c:263
 #, c-format
 msgid ""
 "Cannot get message: %s from folder %s\n"
@@ -3629,7 +3715,7 @@ msgstr ""
 "Nelze získat zprávu: %s ze složky %s\n"
 "  %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:313
+#: ../camel/providers/local/camel-maildir-folder.c:332
 msgid "Invalid message contents"
 msgstr "Neplatný obsah zprávy"
 
@@ -3725,7 +3811,7 @@ msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Složka je zřejmě nenapravitelně poškozená."
 
 #: ../camel/providers/local/camel-mbox-folder.c:474
-#: ../camel/providers/local/camel-mh-folder.c:245
+#: ../camel/providers/local/camel-mh-folder.c:264
 msgid "Message construction failed."
 msgstr "Vytvoření zprávy selhalo."
 
@@ -3868,11 +3954,11 @@ msgstr "Zápis do dočasné schránky selhal: %s"
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Zápis do dočasné schránky selhal: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:180
+#: ../camel/providers/local/camel-mh-folder.c:184
 msgid "MH append message canceled"
 msgstr "Přidání zprávy MH zrušeno"
 
-#: ../camel/providers/local/camel-mh-folder.c:183
+#: ../camel/providers/local/camel-mh-folder.c:187
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
 msgstr "Nelze přidat zprávu do adresáře mh: %s: %s"
@@ -4815,50 +4901,50 @@ msgstr "Probíhá anonymní přístup k serveru LDAP"
 msgid "Failed to authenticate.\n"
 msgstr "Nelze se autentizovat.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:338
+#: ../libedataserverui/e-categories-dialog.c:327
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "Kategorie '%s' již v nastavení existuje. Použijte prosím jiný název"
 
-#: ../libedataserverui/e-categories-dialog.c:641
+#: ../libedataserverui/e-categories-dialog.c:618
 msgid "Icon"
 msgstr "Ikona"
 
-#: ../libedataserverui/e-categories-dialog.c:646
+#: ../libedataserverui/e-categories-dialog.c:623
 msgid "Category"
 msgstr "Kategorie"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:1
+#: ../libedataserverui/e-categories-dialog.glade.h:1
 msgid "Category Icon"
 msgstr "Ikona kategorie"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:2
+#: ../libedataserverui/e-categories-dialog.glade.h:2
 msgid "Category Properties"
 msgstr "Vlastnosti kategorie"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:3
+#: ../libedataserverui/e-categories-dialog.glade.h:3
 msgid "Category _Icon"
 msgstr "_Ikona kategorie"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:4
+#: ../libedataserverui/e-categories-dialog.glade.h:4
 msgid "Category _Name"
 msgstr "_Název kategorie"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:5
+#: ../libedataserverui/e-categories-dialog.glade.h:5
 msgid "Item(s) belong to these _categories:"
 msgstr "Položky patří do těchto _kategorií:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:6
+#: ../libedataserverui/e-categories-dialog.glade.h:6
 msgid "_Available Categories:"
 msgstr "_Dostupné kategorie:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:7
+#: ../libedataserverui/e-categories-dialog.glade.h:7
 msgid "_Edit"
 msgstr "_Upravit"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:8
+#: ../libedataserverui/e-categories-dialog.glade.h:8
 msgid "categories"
 msgstr "kategorie"
 
@@ -4875,80 +4961,80 @@ msgstr "Informace o barvě"
 msgid "The color to render"
 msgstr "Barva pro vykreslení"
 
-#: ../libedataserverui/e-name-selector-dialog.c:292
+#: ../libedataserverui/e-name-selector-dialog.c:276
 msgid "Select Contacts from Address Book"
 msgstr "Vyberte kontakty z adresáře"
 
-#: ../libedataserverui/e-name-selector-dialog.c:579
+#: ../libedataserverui/e-name-selector-dialog.c:563
 msgid "_Add"
 msgstr "_Přidat"
 
-#: ../libedataserverui/e-name-selector-dialog.c:604
+#: ../libedataserverui/e-name-selector-dialog.c:588
 msgid "_Remove"
 msgstr "_Odstranit"
 
-#: ../libedataserverui/e-name-selector-dialog.c:781
-#: ../libedataserverui/e-name-selector-dialog.ui.h:6
+#: ../libedataserverui/e-name-selector-dialog.c:765
+#: ../libedataserverui/e-name-selector-dialog.glade.h:6
 msgid "Any Category"
 msgstr "Jakákoliv kategorie"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:1
+#: ../libedataserverui/e-name-selector-dialog.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:2
+#: ../libedataserverui/e-name-selector-dialog.glade.h:2
 msgid "<b>Co_ntacts</b>"
 msgstr "<b>_Kontakty</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:3
+#: ../libedataserverui/e-name-selector-dialog.glade.h:3
 msgid "<b>Show Contacts</b>"
 msgstr "<b>Zobrazit kontakty</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:4
+#: ../libedataserverui/e-name-selector-dialog.glade.h:4
 msgid "Address B_ook:"
 msgstr "_Adresář:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:5
+#: ../libedataserverui/e-name-selector-dialog.glade.h:5
 msgid "Address Book"
 msgstr "Adresář"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:7
+#: ../libedataserverui/e-name-selector-dialog.glade.h:7
 msgid "Cate_gory:"
 msgstr "_Kategorie:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:8
+#: ../libedataserverui/e-name-selector-dialog.glade.h:8
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
 msgid "Contacts"
 msgstr "Kontakty"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:9
+#: ../libedataserverui/e-name-selector-dialog.glade.h:9
 msgid "Search"
 msgstr "Hledat"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:10
+#: ../libedataserverui/e-name-selector-dialog.glade.h:10
 msgid "_Search:"
 msgstr "_Hledat:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2455
+#: ../libedataserverui/e-name-selector-entry.c:2494
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "_Rozšířit %s jako vložené"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2470
+#: ../libedataserverui/e-name-selector-entry.c:2509
 #, c-format
 msgid "Cop_y %s"
 msgstr "_Kopírovat %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2480
+#: ../libedataserverui/e-name-selector-entry.c:2519
 #, c-format
 msgid "C_ut %s"
 msgstr "_Vyjmout %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2497
+#: ../libedataserverui/e-name-selector-entry.c:2536
 #, c-format
 msgid "_Edit %s"
 msgstr "_Upravit %s"
@@ -4993,13 +5079,13 @@ msgid "_Destination"
 msgstr "_Cíl"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1694
-#: ../servers/exchange/storage/exchange-account.c:954
+#: ../servers/exchange/storage/exchange-account.c:955
 #, c-format
 msgid "Enter password for %s"
 msgstr "Zadejte heslo pro %s"
 
 #: ../servers/exchange/lib/e2k-autoconfig.c:1695
-#: ../servers/exchange/storage/exchange-account.c:959
+#: ../servers/exchange/storage/exchange-account.c:960
 msgid "Enter password"
 msgstr "Zadejte heslo"
 
@@ -5103,26 +5189,26 @@ msgstr "Tuto operaci nelze provést v režimu offline"
 
 #. i18n: This is the title of an "other user's folders"
 #. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:639
+#: ../servers/exchange/storage/exchange-account.c:640
 #, c-format
 msgid "%s's Folders"
 msgstr "Složky uživatele %s"
 
-#: ../servers/exchange/storage/exchange-account.c:1259
+#: ../servers/exchange/storage/exchange-account.c:1260
 msgid "Personal Folders"
 msgstr "Osobní složky"
 
-#: ../servers/exchange/storage/exchange-account.c:1274
+#: ../servers/exchange/storage/exchange-account.c:1275
 msgid "Favorite Public Folders"
 msgstr "Oblíbené veřejné složky"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1291
+#: ../servers/exchange/storage/exchange-account.c:1292
 msgid "All Public Folders"
 msgstr "Všechny veřejné složky"
 
 #. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1305
+#: ../servers/exchange/storage/exchange-account.c:1306
 msgid "Global Address List"
 msgstr "Globální seznam adres"
 
@@ -5144,79 +5230,45 @@ msgstr "Poznámky"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
-msgstr ""
+msgstr "K odeslání"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
-#, fuzzy
 msgid "Sent Items"
-msgstr "Odstraněné položky"
+msgstr "Odeslané položky"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
-#, fuzzy
 msgid "Tasks"
-msgstr "Koš"
+msgstr "Úkoly"
 
 #: ../servers/groupwise/e-gw-connection.c:225
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Neplatný objekt"
+msgstr "Neplatné připojení"
 
 #: ../servers/groupwise/e-gw-connection.c:229
-#, fuzzy
 msgid "Invalid response from server"
-msgstr "Neplatná odpověď autentizace od serveru."
+msgstr "Neplatná odpověď serveru"
 
 #: ../servers/groupwise/e-gw-connection.c:231
-#, fuzzy
 msgid "No response from the server"
-msgstr "Neplatná odpověď autentizace od serveru."
+msgstr "Žádná odpověď serveru"
 
 #: ../servers/groupwise/e-gw-connection.c:237
 msgid "Bad parameter"
-msgstr ""
+msgstr "Špatný parametr"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr ""
+msgstr "Souborová obsluha pro Adresář Evolutionu"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr ""
+msgstr "Souborová a webcal obsluha pro Kalendář Evolutionu"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
-msgstr ""
+msgstr "Služba kontroly rozhraní pro Evolution Data Server "
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
-msgstr ""
+msgstr "Služba logování pro Evolution Data Server"
 
-#~ msgid "\"%s\" on book before \"%s\""
-#~ msgstr "\"%s\" na adresáři před \"%s\""
-
-#~ msgid "book busy"
-#~ msgstr "adresář se používá"
-
-#~ msgid "CORBA exception making \"%s\" call"
-#~ msgstr "Výjimka CORBA při volání \"%s\""
-
-#~ msgid "%s: there is no current operation"
-#~ msgstr "%s: není žádná aktuální operace"
-
-#~ msgid "%s: could not cancel"
-#~ msgstr "%s: nelze zrušit"
-
-#~ msgid "\"%s\" on book after \"%s\""
-#~ msgstr "\"%s\" na adresáři po \"%s\""
-
-#~ msgid "%s: canceled"
-#~ msgstr "%s: zrušeno"
-
-#~ msgid "%s: Invalid source."
-#~ msgstr "%s: Neplatný zdroj."
-
-#~ msgid "%s: no factories available for URI `%s'"
-#~ msgstr "%s: pro uri `%s' nejsou dostupné generátory"
-
-#~ msgid "%s: Could not create EBookListener"
-#~ msgstr "%s: Nelze vytvořit EBookListener"
