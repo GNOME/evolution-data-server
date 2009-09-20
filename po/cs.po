@@ -10,9 +10,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-30 00:05+0200\n"
-"PO-Revision-Date: 2009-08-28 22:06-0500\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&component=general\n"
+"POT-Creation-Date: 2009-09-16 21:33+0000\n"
+"PO-Revision-Date: 2009-09-19 22:21-0330\n"
 "Last-Translator: Jiri Eischmann <jiri@eischmann.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1522,7 +1523,7 @@ msgstr "Učení se tomu, co není nevyžádanou poštou"
 msgid "Filtering new message(s)"
 msgstr "Filtrování nové zprávy"
 
-#: ../camel/camel-gpg-context.c:752
+#: ../camel/camel-gpg-context.c:751
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1533,15 +1534,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:767
+#: ../camel/camel-gpg-context.c:766
 msgid "Failed to parse gpg userid hint."
 msgstr "Nelze zpracovat nápovědy gpg userid."
 
-#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:790 ../camel/camel-gpg-context.c:804
 msgid "Failed to parse gpg passphrase request."
 msgstr "Nelze zpracovat požadavek hesla gpg."
 
-#: ../camel/camel-gpg-context.c:825
+#: ../camel/camel-gpg-context.c:824
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1550,7 +1551,7 @@ msgstr ""
 "Potřebujete PIN k odemčení klíče své\n"
 "SmartCard: \"%s\""
 
-#: ../camel/camel-gpg-context.c:829
+#: ../camel/camel-gpg-context.c:828
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1559,92 +1560,92 @@ msgstr ""
 "Potřebujete heslo k odemčení klíče\n"
 "uživatele: \"%s\""
 
-#: ../camel/camel-gpg-context.c:834
+#: ../camel/camel-gpg-context.c:833
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Neočekávaný požadavek od GnuPG pro '%s'"
 
-#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:1068
+#: ../camel/camel-gpg-context.c:858 ../camel/camel-gpg-context.c:1067
 #: ../camel/providers/nntp/camel-nntp-store.c:1313
 msgid "Canceled."
 msgstr "Zrušeno."
 
-#: ../camel/camel-gpg-context.c:873
+#: ../camel/camel-gpg-context.c:872
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Nelze odemknout tajný klíč. Byla zadána tři chybná hesla."
 
-#: ../camel/camel-gpg-context.c:881
+#: ../camel/camel-gpg-context.c:880
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Neočekávaná odpověď od GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:944
+#: ../camel/camel-gpg-context.c:943
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Nelze zašifrovat zprávu: Nejsou určeni platní příjemci."
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1331
-#: ../camel/camel-gpg-context.c:1853 ../camel/camel-gpg-context.c:1898
+#: ../camel/camel-gpg-context.c:1212 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1859 ../camel/camel-gpg-context.c:1904
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Nelze spustit gpg: %s"
 
-#: ../camel/camel-gpg-context.c:1299 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Nelze vygenerovat data podpisu: %s"
 
-#: ../camel/camel-gpg-context.c:1346 ../camel/camel-gpg-context.c:1547
-#: ../camel/camel-gpg-context.c:1563 ../camel/camel-gpg-context.c:1643
-#: ../camel/camel-gpg-context.c:1658 ../camel/camel-gpg-context.c:1774
-#: ../camel/camel-gpg-context.c:1789 ../camel/camel-gpg-context.c:1869
-#: ../camel/camel-gpg-context.c:1914
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1553
+#: ../camel/camel-gpg-context.c:1569 ../camel/camel-gpg-context.c:1649
+#: ../camel/camel-gpg-context.c:1664 ../camel/camel-gpg-context.c:1780
+#: ../camel/camel-gpg-context.c:1795 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1920
 msgid "Failed to execute gpg."
 msgstr "Nelze spustit gpg."
 
-#: ../camel/camel-gpg-context.c:1365
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "Toto je digitálně podepsaná část zprávy"
 
-#: ../camel/camel-gpg-context.c:1451 ../camel/camel-gpg-context.c:1457
-#: ../camel/camel-gpg-context.c:1463 ../camel/camel-gpg-context.c:1478
+#: ../camel/camel-gpg-context.c:1457 ../camel/camel-gpg-context.c:1463
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1484
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nelze ověřit podpis zprávy: Nesprávný formát zprávy"
 
-#: ../camel/camel-gpg-context.c:1517
+#: ../camel/camel-gpg-context.c:1523
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "Nelze ověřit podpis zprávy: nelze vytvořit dočasný soubor: %s"
 
-#: ../camel/camel-gpg-context.c:1626
+#: ../camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Nelze vygenerovat data šifrování: %s"
 
-#: ../camel/camel-gpg-context.c:1676
+#: ../camel/camel-gpg-context.c:1682
 msgid "This is a digitally encrypted message part"
 msgstr "Toto je digitálně šifrovaná část zprávy"
 
-#: ../camel/camel-gpg-context.c:1729 ../camel/camel-gpg-context.c:1737
-#: ../camel/camel-gpg-context.c:1756
+#: ../camel/camel-gpg-context.c:1735 ../camel/camel-gpg-context.c:1743
+#: ../camel/camel-gpg-context.c:1762
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nelze dešifrovat zprávu: Nesprávný formát zprávy"
 
-#: ../camel/camel-gpg-context.c:1746
+#: ../camel/camel-gpg-context.c:1752
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Nelze dešifrovat část MIME: chyba protokolu"
 
-#: ../camel/camel-gpg-context.c:1811 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1817 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "Šifrovaný obsah"
 
-#: ../camel/camel-gpg-context.c:1830
+#: ../camel/camel-gpg-context.c:1836
 msgid "Unable to parse message content"
 msgstr "Nelze zpracovat obsah zprávy"
 
-#: ../camel/camel-gpg-context.c:1854 ../camel/camel-gpg-context.c:1899
+#: ../camel/camel-gpg-context.c:1860 ../camel/camel-gpg-context.c:1905
 #: ../camel/camel-tcp-stream-openssl.c:627
 #: ../camel/providers/imap4/camel-imap4-utils.c:614
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
@@ -2590,11 +2591,11 @@ msgstr ""
 "  %s"
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:136
-#: ../camel/providers/local/camel-maildir-folder.c:262
-#: ../camel/providers/local/camel-maildir-folder.c:291
+#: ../camel/providers/local/camel-maildir-folder.c:278
+#: ../camel/providers/local/camel-maildir-folder.c:310
 #: ../camel/providers/local/camel-mbox-folder.c:363
 #: ../camel/providers/local/camel-mbox-folder.c:414
-#: ../camel/providers/local/camel-mh-folder.c:226
+#: ../camel/providers/local/camel-mh-folder.c:245
 msgid "No such message"
 msgstr "Taková zpráva neexistuje"
 
@@ -3685,27 +3686,27 @@ msgstr "Nelze odstranit metasoubor složky '%s': %s"
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Nelze přidat zprávu do souhrnu: neznámý důvod"
 
-#: ../camel/providers/local/camel-maildir-folder.c:228
+#: ../camel/providers/local/camel-maildir-folder.c:244
 msgid "Maildir append message canceled"
 msgstr "Přidaní zprávy maildir zrušeno"
 
-#: ../camel/providers/local/camel-maildir-folder.c:231
+#: ../camel/providers/local/camel-maildir-folder.c:247
 #, c-format
 msgid "Cannot append message to maildir folder: %s: %s"
 msgstr "Nelze přidat zprávu do složky maildir: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:261
-#: ../camel/providers/local/camel-maildir-folder.c:290
-#: ../camel/providers/local/camel-maildir-folder.c:304
-#: ../camel/providers/local/camel-maildir-folder.c:312
+#: ../camel/providers/local/camel-maildir-folder.c:277
+#: ../camel/providers/local/camel-maildir-folder.c:309
+#: ../camel/providers/local/camel-maildir-folder.c:323
+#: ../camel/providers/local/camel-maildir-folder.c:331
 #: ../camel/providers/local/camel-mbox-folder.c:362
 #: ../camel/providers/local/camel-mbox-folder.c:413
 #: ../camel/providers/local/camel-mbox-folder.c:434
 #: ../camel/providers/local/camel-mbox-folder.c:465
 #: ../camel/providers/local/camel-mbox-folder.c:473
-#: ../camel/providers/local/camel-mh-folder.c:225
-#: ../camel/providers/local/camel-mh-folder.c:236
 #: ../camel/providers/local/camel-mh-folder.c:244
+#: ../camel/providers/local/camel-mh-folder.c:255
+#: ../camel/providers/local/camel-mh-folder.c:263
 #, c-format
 msgid ""
 "Cannot get message: %s from folder %s\n"
@@ -3714,7 +3715,7 @@ msgstr ""
 "Nelze získat zprávu: %s ze složky %s\n"
 "  %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:313
+#: ../camel/providers/local/camel-maildir-folder.c:332
 msgid "Invalid message contents"
 msgstr "Neplatný obsah zprávy"
 
@@ -3810,7 +3811,7 @@ msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Složka je zřejmě nenapravitelně poškozená."
 
 #: ../camel/providers/local/camel-mbox-folder.c:474
-#: ../camel/providers/local/camel-mh-folder.c:245
+#: ../camel/providers/local/camel-mh-folder.c:264
 msgid "Message construction failed."
 msgstr "Vytvoření zprávy selhalo."
 
@@ -3953,11 +3954,11 @@ msgstr "Zápis do dočasné schránky selhal: %s"
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Zápis do dočasné schránky selhal: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:180
+#: ../camel/providers/local/camel-mh-folder.c:184
 msgid "MH append message canceled"
 msgstr "Přidání zprávy MH zrušeno"
 
-#: ../camel/providers/local/camel-mh-folder.c:183
+#: ../camel/providers/local/camel-mh-folder.c:187
 #, c-format
 msgid "Cannot append message to mh folder: %s: %s"
 msgstr "Nelze přidat zprávu do adresáře mh: %s: %s"
@@ -5015,25 +5016,25 @@ msgid "_Search:"
 msgstr "_Hledat:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2455
+#: ../libedataserverui/e-name-selector-entry.c:2494
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "_Rozšířit %s jako vložené"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2470
+#: ../libedataserverui/e-name-selector-entry.c:2509
 #, c-format
 msgid "Cop_y %s"
 msgstr "_Kopírovat %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2480
+#: ../libedataserverui/e-name-selector-entry.c:2519
 #, c-format
 msgid "C_ut %s"
 msgstr "_Vyjmout %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2497
+#: ../libedataserverui/e-name-selector-entry.c:2536
 #, c-format
 msgid "_Edit %s"
 msgstr "_Upravit %s"
@@ -5229,49 +5230,45 @@ msgstr "Poznámky"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
 msgid "Outbox"
-msgstr ""
+msgstr "K odeslání"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
-#, fuzzy
 msgid "Sent Items"
-msgstr "Odstraněné položky"
+msgstr "Odeslané položky"
 
 #: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
-#, fuzzy
 msgid "Tasks"
-msgstr "Koš"
+msgstr "Úkoly"
 
 #: ../servers/groupwise/e-gw-connection.c:225
-#, fuzzy
 msgid "Invalid connection"
-msgstr "Neplatný objekt"
+msgstr "Neplatné připojení"
 
 #: ../servers/groupwise/e-gw-connection.c:229
-#, fuzzy
 msgid "Invalid response from server"
-msgstr "Neplatná odpověď autentizace od serveru."
+msgstr "Neplatná odpověď serveru"
 
 #: ../servers/groupwise/e-gw-connection.c:231
-#, fuzzy
 msgid "No response from the server"
-msgstr "Neplatná odpověď autentizace od serveru."
+msgstr "Žádná odpověď serveru"
 
 #: ../servers/groupwise/e-gw-connection.c:237
 msgid "Bad parameter"
-msgstr ""
+msgstr "Špatný parametr"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
 msgid "Evolution Addressbook file backend"
-msgstr ""
+msgstr "Souborová obsluha pro Adresář Evolutionu"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
 msgid "Evolution Calendar file and webcal backend"
-msgstr ""
+msgstr "Souborová a webcal obsluha pro Kalendář Evolutionu"
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
 msgid "Evolution Data Server interface check service"
-msgstr ""
+msgstr "Služba kontroly rozhraní pro Evolution Data Server "
 
 #: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
 msgid "Evolution Data Server logging service"
-msgstr ""
+msgstr "Služba logování pro Evolution Data Server"
+
