@@ -1,3 +1,35 @@
+Evolution-Data-Server 2.28.0 2009-09-21
+----------------------------------------
+
+Notable changes in 2.28.0,
+	Better Calendar cache
+	Improved Caldav support
+	Conversation threading support for GroupWise
+
+Bug Fixes:
+
+Calendar:
+	#494394 - Check backends with their uri too for backward compat. (Milan Crha)
+Mailer:
+	#592310 - Adds an environment variable to skip summary check. (Chenthill Palanisamy)
+
+Translations:
+	Žygimantas Beručka (lt)
+	Sweta Kothari (gu)
+	Piotr Drąg (pl)
+	krishnababu k (te)
+	Mario Blättermann (de)
+	Matej Urbančič (sl)
+	Philip Withnall (en_GB)
+	Ask H. Larsen (da)
+	A S Alam (pa)
+	Ani (ml)
+	Adi Roiban (ro)
+	David Planela (ca)
+	Takayuki KUSANO (ja)
+	Rajesh Ranjan (hi)
+	Astur (ast)	
+
 Evolution-Data-Server 2.27.92 2009-09-07
 ----------------------------------------
 
