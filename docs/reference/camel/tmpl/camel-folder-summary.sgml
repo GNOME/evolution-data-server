@@ -87,6 +87,7 @@ CamelFolderSummary
 @content: 
 @headers: 
 @preview: 
+@bodystructure: 
 
 <!-- ##### STRUCT CamelFolderMetaSummary ##### -->
 <para>
@@ -462,6 +463,7 @@ CamelFolderSummary
 
 @summary: 
 @message: 
+@bodystructure: 
 @Returns: 
 
 

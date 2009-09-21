@@ -126,6 +126,7 @@ CamelDB
 @usertags: 
 @cinfo: 
 @bdata: 
+@bodystructure: 
 
 <!-- ##### STRUCT CamelFIRecord ##### -->
 <para>
