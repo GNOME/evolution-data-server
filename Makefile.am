@@ -40,8 +40,6 @@ EXTRA_DIST = 						\
 	$(LIBDB_FILES)
 
 DISTCLEANFILES = \
-	doltcompile					\
-	doltlibtool					\
 	intltool-extract				\
 	intltool-merge					\
 	intltool-update					\
