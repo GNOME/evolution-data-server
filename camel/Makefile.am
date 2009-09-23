@@ -78,7 +78,6 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-smime-context.c			\
 	camel-store-summary.c			\
 	camel-store.c				\
-	camel-tcp-stream-openssl.c		\
 	camel-tcp-stream-raw.c			\
 	camel-tcp-stream-ssl.c			\
 	camel-tcp-stream.c			\

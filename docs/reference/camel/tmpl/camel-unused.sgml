@@ -423,12 +423,6 @@ camel-types
 </para>
 
 
-<!-- ##### STRUCT CamelTcpStreamOpenSSL ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### MACRO NI_MAXHOST ##### -->
 <para>
 

@@ -325,12 +325,6 @@ camel-types
 </para>
 
 
-<!-- ##### STRUCT CamelTcpStreamOpenSSL ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT CamelHttpStream ##### -->
 <para>
 

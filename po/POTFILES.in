@@ -120,7 +120,6 @@ camel/camel-stream-null.c
 camel/camel-stream-process.c
 camel/camel-stream.c
 camel/camel-string-utils.c
-camel/camel-tcp-stream-openssl.c
 camel/camel-tcp-stream-raw.c
 camel/camel-tcp-stream-ssl.c
 camel/camel-tcp-stream.c
