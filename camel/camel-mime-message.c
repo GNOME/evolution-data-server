@@ -77,7 +77,7 @@ typedef enum {
 static const gchar *header_names[] = {
 	/* dont include HEADER_UNKNOWN string */
 	"From", "Reply-To", "Subject", "To", "Resent-To", "Cc", "Resent-Cc",
-	"Bcc", "Resent-Bcc", "Date", "Message-Id", NULL
+	"Bcc", "Resent-Bcc", "Date", "Message-ID", NULL
 };
 
 static GHashTable *header_name_table;
@@ -290,7 +290,7 @@ camel_mime_message_get_date_received (CamelMimeMessage *msg, gint *offset)
 	return msg->date_received;
 }
 
-/* **** Message-Id: */
+/* **** Message-ID: */
 
 /**
  * camel_mime_message_set_message_id:
@@ -316,7 +316,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const gchar *
 
 	mime_message->message_id = id;
 	id = g_strdup_printf ("<%s>", mime_message->message_id);
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (mime_message), "Message-Id", id);
+	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (mime_message), "Message-ID", id);
 	g_free (id);
 }
 
