@@ -115,12 +115,6 @@ load_books_thread (gpointer user_data)
 			if (!priv->load_cancelled) {
 				EContactStore *store;
 
-				if (name_selector->model) {
-					store = e_name_selector_model_peek_contact_store  (name_selector->model);
-					if (store)
-						e_contact_store_add_book (store, source_book.book);
-				}
-
 				if (name_selector->sections) {
 					gint j;
 
