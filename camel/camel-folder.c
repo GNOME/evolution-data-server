@@ -282,16 +282,6 @@ camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 
 	folder->name = g_strdup (name);
 	folder->full_name = g_strdup (full_name);
-
-	store_db_path = g_build_filename (service->url->path, CAMEL_DB_FILE, NULL);
-	camel_exception_init(&ex);
-	if (strlen (store_db_path) < 2) {
-		gchar *store_path = camel_session_get_storage_path ((CamelSession *)camel_service_get_session (service), service, &ex);
-
-		g_free (store_db_path);
-		store_db_path = g_build_filename (store_path, CAMEL_DB_FILE, NULL);
-		g_free (store_path);
-	}
 }
 
 static void
