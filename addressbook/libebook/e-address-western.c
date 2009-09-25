@@ -303,12 +303,9 @@ e_address_western_parse (const gchar *in_address)
 	gint linecntr, lineindex;
 	gchar *address;
 	gint cntr;
-	gboolean found_po_box, found_postal;
+	gboolean found_postal;
 
 	EAddressWestern *eaw;
-#if 0
-	gint start, end;  /* To be used to classify address lines. */
-#endif
 
 	if (in_address == NULL)
 		return NULL;
@@ -363,14 +360,12 @@ e_address_western_parse (const gchar *in_address)
 	e_address_western_remove_blank_lines (lines, &linecntr);
 
 	/* Let's just test these functions. */
-	found_po_box = FALSE;
 	found_postal = FALSE;
 
 	for (cntr = 0; cntr < linecntr; cntr++)  {
 		if (e_address_western_is_po_box (lines[cntr])) {
 			if (eaw->po_box == NULL)
 				eaw->po_box = e_address_western_extract_po_box (lines[cntr]);
-			found_po_box = TRUE;
 		}
 		else if (e_address_western_is_postal (lines[cntr])) {
 			if (eaw->locality == NULL)
