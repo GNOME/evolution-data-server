@@ -601,7 +601,7 @@ imap4_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	}
 	CAMEL_SERVICE_REC_UNLOCK (store, connect_lock);
 
-	return 0;
+	return FALSE;
 }
 
 extern CamelServiceAuthType camel_imap4_password_authtype;
