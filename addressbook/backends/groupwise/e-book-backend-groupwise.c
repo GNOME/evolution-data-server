@@ -2590,7 +2590,7 @@ build_cache (EBookBackendGroupwise *ebgw)
 
 	status = e_gw_connection_get_items (ebgw->priv->cnc, ebgw->priv->container_id, "name email default members", NULL, &gw_items);
 	if (status != E_GW_CONNECTION_STATUS_OK)
-		return FALSE;
+		return NULL;
 
 	for (; gw_items != NULL; gw_items = g_list_next(gw_items)) {
 		contact_num++;
