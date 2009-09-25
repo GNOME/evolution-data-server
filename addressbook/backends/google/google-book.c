@@ -1097,7 +1097,7 @@ google_book_get_contact (GoogleBook *book,
     priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
-    g_return_val_if_fail (IS_GOOGLE_BOOK (book), FALSE);
+    g_return_val_if_fail (IS_GOOGLE_BOOK (book), NULL);
 
     google_book_cache_refresh_if_needed (book, error);
 
@@ -1130,7 +1130,7 @@ google_book_get_all_contacts (GoogleBook *book,
     priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
-    g_return_val_if_fail (IS_GOOGLE_BOOK (book), FALSE);
+    g_return_val_if_fail (IS_GOOGLE_BOOK (book), NULL);
 
     google_book_cache_refresh_if_needed (book, error);
 
@@ -1171,7 +1171,7 @@ google_book_get_all_contacts_in_live_mode (GoogleBook *book)
     priv = GET_PRIVATE (book);
 
     __debug__ (G_STRFUNC);
-    g_return_val_if_fail (IS_GOOGLE_BOOK (book), FALSE);
+    g_return_val_if_fail (IS_GOOGLE_BOOK (book), NULL);
 
     priv->live_mode = TRUE;
 
