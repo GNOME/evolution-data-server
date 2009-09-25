@@ -569,10 +569,6 @@ scan_attendee (GSList **attendee_list, icalproperty *prop)
 static void
 scan_datetime (ECalComponent *comp, struct datetime *datetime, icalproperty *prop)
 {
-	ECalComponentPrivate *priv;
-
-	priv = comp->priv;
-
 	datetime->prop = prop;
 	datetime->tzid_param = icalproperty_get_first_parameter (prop, ICAL_TZID_PARAMETER);
 }
@@ -3951,8 +3947,6 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 			nth = r->by_month_day[0];
 			if (nth < 1 && nth != -1)
 				goto cleanup;
-
-			simple = TRUE;
 
 		} else if (n_by_day == 1) {
 			enum icalrecurrencetype_weekday weekday;
