@@ -381,12 +381,9 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
 	gchar *real_key, *uid, *comp_str;
 	gchar *rid;
 	gboolean retval;
-	ECalBackendCachePrivate *priv;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CACHE (cache), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
-
-	priv = cache->priv;
 
 	e_cal_component_get_uid (comp, (const gchar **) &uid);
 	if (e_cal_component_is_instance (comp)) {
