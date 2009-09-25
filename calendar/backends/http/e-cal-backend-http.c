@@ -1256,10 +1256,8 @@ static ECalBackendSyncStatus
 e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
 {
 	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
 
 	g_return_val_if_fail (calobj != NULL, GNOME_Evolution_Calendar_InvalidObject);
 
