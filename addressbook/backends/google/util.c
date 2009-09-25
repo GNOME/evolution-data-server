@@ -329,7 +329,7 @@ struct RelTypeMap {
     const gchar * types[3];
 };
 
-const struct RelTypeMap rel_type_map_phone[] = {
+static const struct RelTypeMap rel_type_map_phone[] = {
     {"fax", { "FAX", NULL, NULL}},
     {"home", { "HOME", "VOICE", NULL}},
     {"home_fax", { "HOME", "FAX", NULL}},
@@ -340,7 +340,7 @@ const struct RelTypeMap rel_type_map_phone[] = {
     {"work_fax", { "WORK", "FAX", NULL}}
 };
 
-const struct RelTypeMap rel_type_map_others[] = {
+static const struct RelTypeMap rel_type_map_others[] = {
     {"home", { "HOME", NULL, NULL}},
     {"other", { "OTHER", NULL, NULL}},
     {"work", { "WORK", NULL, NULL}},
