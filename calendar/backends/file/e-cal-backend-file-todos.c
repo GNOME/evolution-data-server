@@ -122,13 +122,11 @@ static void
 e_cal_backend_file_todos_finalize (GObject *object)
 {
 	ECalBackendFileTodos *cbfile;
-	ECalBackendFileTodosPrivate *priv;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND_FILE_TODOS (object));
 
 	cbfile = E_CAL_BACKEND_FILE_TODOS (object);
-	priv = cbfile->priv;
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
