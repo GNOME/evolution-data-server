@@ -2710,7 +2710,7 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 			 * be embedded in a soap message
 			 */
 			encoded = g_base64_encode ((guchar *) content, len);
-			attach = icalattach_new_from_data ((guchar *) encoded, 0, 0);
+			attach = icalattach_new_from_data ((guchar *) encoded, NULL, NULL);
 			g_free(content);
 			g_free(encoded);
 
@@ -4157,7 +4157,7 @@ caldav_get_free_busy (ECalBackendSync  *backend,
 	e_cal_component_set_dtend (comp, &dt);
 
 	if (priv->username) {
-		ECalComponentOrganizer organizer = {0};
+		ECalComponentOrganizer organizer = {NULL};
 
 		organizer.value = priv->username;
 		e_cal_component_set_organizer (comp, &organizer);
