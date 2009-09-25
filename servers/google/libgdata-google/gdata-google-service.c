@@ -299,7 +299,7 @@ gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GEr
 	const gchar *entry_edit_url;
 	gboolean retval = FALSE;
 
-	g_return_val_if_fail (service !=NULL, FALSE);
+	g_return_val_if_fail (service != NULL, FALSE);
 	g_return_val_if_fail (GDATA_IS_GOOGLE_SERVICE(service), FALSE);
 
 	if (!service_is_authenticated( GDATA_GOOGLE_SERVICE(service) )) {
@@ -347,8 +347,8 @@ gdata_google_service_update_entry (GDataService *service, GDataEntry *entry, GEr
 {
 	const gchar *entry_edit_url;
 
-	g_return_val_if_fail (service !=NULL, FALSE);
-	g_return_val_if_fail (GDATA_IS_GOOGLE_SERVICE (service), FALSE);
+	g_return_val_if_fail (service != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_GOOGLE_SERVICE (service), NULL);
 
 	entry_edit_url = gdata_entry_get_edit_link (entry);
 
@@ -374,9 +374,9 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 	gchar *entry_xml;
 	GDataEntry *updated_entry = NULL;
 
-	g_return_val_if_fail (service !=NULL, FALSE);
-	g_return_val_if_fail (GDATA_IS_GOOGLE_SERVICE (service), FALSE);
-	g_return_val_if_fail (edit_link !=NULL, FALSE);
+	g_return_val_if_fail (service != NULL, NULL);
+	g_return_val_if_fail (GDATA_IS_GOOGLE_SERVICE (service), NULL);
+	g_return_val_if_fail (edit_link != NULL, NULL);
 
 	if (!service_is_authenticated( GDATA_GOOGLE_SERVICE(service) )) {
 		if (FALSE == gdata_google_service_authenticate(GDATA_GOOGLE_SERVICE(service), error))
