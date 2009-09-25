@@ -86,12 +86,10 @@ e_cal_backend_google_utils_populate_cache (ECalBackendGoogle *cbgo)
 	EGoItem *item;
 	ECalBackendGooglePrivate *priv;
 	icalcomponent_kind kind;
-	icaltimetype temp;
 	GSList *entries = NULL, *list = NULL;
 
 	cache = e_cal_backend_google_get_cache (cbgo);
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND(cbgo));
-	temp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 
 	item = e_cal_backend_google_get_item (cbgo);
 	entries = gdata_feed_get_entries (item->feed);
@@ -462,8 +460,6 @@ e_go_item_to_cal_component (EGoItem *item, ECalBackendGoogle *cbgo)
 	category_ids = NULL;
 	category_ids = gdata_entry_get_categories (item->entry);
 
-	uid = gdata_entry_get_id (item->entry);
-
 	/* Classification or Visibility */
 	temp = NULL;
 	temp = gdata_entry_get_visibility (item->entry);
@@ -776,7 +772,7 @@ utils_update_deletion (ECalBackendGoogle *cbgo, ECalBackendCache *cache, GSList 
  * @dt a #ECalComponentDateTime value
  **/
 /* FIXME use proper functions to manipulate the dates */
-gchar *
+static gchar *
 get_date (ECalComponentDateTime dt)
 {
 	gchar *temp;
