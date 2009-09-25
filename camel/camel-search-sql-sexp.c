@@ -559,7 +559,7 @@ sql_exp (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 static struct {
 	const gchar *name;
 	ESExpFunc *func;
-	gint immediate :1;
+	guint immediate :1;
 } symbols[] = {
 	{ "and", (ESExpFunc *) func_and, 1 },
 	{ "or", (ESExpFunc *) func_or, 1},
