@@ -141,7 +141,7 @@ camel_search_build_match_regex (regex_t *pattern, camel_search_flags_t type, gin
 	if (err != 0) {
 		/* regerror gets called twice to get the full error string
 		   length to do proper posix error reporting */
-		gint len = regerror (err, pattern, 0, 0);
+		gint len = regerror (err, pattern, NULL, 0);
 		gchar *buffer = g_malloc0 (len + 1);
 
 		regerror (err, pattern, buffer, len);

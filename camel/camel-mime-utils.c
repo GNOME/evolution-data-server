@@ -1433,7 +1433,7 @@ rfc2047_encode_word(GString *outstring, const gchar *in, gsize len, const gchar 
 				inptr += convlen;
 			} else {
 				/* make sure we flush out any shift state */
-				camel_iconv (ic, NULL, 0, &out, &outlen);
+				camel_iconv (ic, NULL, NULL, &out, &outlen);
 			}
 			inlen -= (inptr - p);
 		}
@@ -2063,7 +2063,7 @@ header_convert(const gchar *to, const gchar *from, const gchar *in, gsize inlen)
 
 	ret = camel_iconv(ic, &in, &inlen, &outbuf, &outlen);
 	if (ret != (gsize) -1) {
-		camel_iconv(ic, NULL, 0, &outbuf, &outlen);
+		camel_iconv(ic, NULL, NULL, &outbuf, &outlen);
 		*outbuf = '\0';
 		result = g_strdup(outbase);
 	}
@@ -2166,7 +2166,7 @@ camel_header_set_param (struct _camel_header_param **l, const gchar *name, const
 		return NULL;
 
 	pn = g_malloc (sizeof (*pn));
-	pn->next = 0;
+	pn->next = NULL;
 	pn->name = g_strdup (name);
 	pn->value = g_strdup (value);
 	p->next = pn;
@@ -2837,7 +2837,7 @@ camel_header_references_list_append_asis(struct _camel_header_references **list,
 		w = w->next;
 	n = g_malloc(sizeof(*n));
 	n->id = ref;
-	n->next = 0;
+	n->next = NULL;
 	w->next = n;
 }
 
@@ -3324,11 +3324,12 @@ header_encode_param (const guchar *in, gboolean *encoded, gboolean is_filename)
 	return str;
 }
 
-/* HACK: Set to non-zero when you want the 'filename' and 'name' headers encode in RFC 2047 way,
+/* HACK: Set to non-zero when you want the 'filename' and 'name' headers encoded in RFC 2047 way,
    otherwise they will be encoded in the correct RFC 2231 way. It's because Outlook and GMail
    do not understand the correct standard and refuse attachments with localized name sent
-   from evolution. */
-gint camel_header_param_encode_filenames_in_rfc_2047 = 0;
+   from evolution. This seems to have been fixed in Exchange 2007 at least - not sure about
+   standalone Outlook. */
+static gint camel_header_param_encode_filenames_in_rfc_2047 = 0;
 
 void
 camel_header_param_list_format_append (GString *out, struct _camel_header_param *p)
