@@ -1071,7 +1071,7 @@ e_cal_init (ECal *ecal, ECalClass *klass)
 	priv->cal_address = NULL;
 	priv->alarm_email_address = NULL;
 	priv->ldap_attribute = NULL;
-	priv->capabilities = FALSE;
+	priv->capabilities = NULL;
 	priv->factories = NULL;
 	priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->default_zone = icaltimezone_get_utc_timezone ();
@@ -1980,8 +1980,8 @@ e_cal_uri_list (ECal *ecal, CalMode mode)
 	CORBA_Environment ev;
 	GList *f;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	g_return_val_if_fail (ecal != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL (ecal), NULL);
 
 	priv = ecal->priv;
 
@@ -2602,11 +2602,11 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 	gboolean retval = TRUE;
 	CORBA_Environment ev;
 
-	g_return_val_if_fail (ecal != NULL, -1);
-	g_return_val_if_fail (E_IS_CAL (ecal), -1);
+	g_return_val_if_fail (ecal != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
 
 	priv = ecal->priv;
-	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, -1);
+	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_Calendar_Cal_setMode (priv->cal, mode, &ev);
@@ -4182,9 +4182,6 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 	gint initial_vcal_string_len;
 	ForeachTZIDCallbackData cbdata;
 	gchar *obj_string;
-	ECalPrivate *priv;
-
-	priv = ecal->priv;
 
 	timezone_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
