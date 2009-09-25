@@ -1,8 +1,11 @@
+/*-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* Evolution calendar - Live view client object
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
+ * Copyright (C) 2009 Intel Corporation
  *
- * Author: Federico Mena-Quintero <federico@ximian.com>
+ * Authors: Federico Mena-Quintero <federico@ximian.com>
+ *          Ross Burton <ross@linux.intel.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
@@ -23,24 +26,18 @@
 #endif
 
 #include <string.h>
-#include <bonobo/bonobo-exception.h>
 #include "e-cal-marshal.h"
 #include "e-cal.h"
 #include "e-cal-view.h"
-#include "e-cal-view-listener.h"
 #include "e-cal-view-private.h"
+#include "e-data-cal-view-bindings.h"
 
-
+G_DEFINE_TYPE(ECalView, e_cal_view, G_TYPE_OBJECT);
+#define E_CAL_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_VIEW, ECalViewPrivate))
 
 /* Private part of the ECalView structure */
 struct _ECalViewPrivate {
-	/* Handle to the view in the server */
-	GNOME_Evolution_Calendar_CalView view;
-
-	/* Our view listener implementation */
-	ECalViewListener *listener;
-
-	/* The CalClient associated with this view */
+	DBusGProxy *view_proxy;
 	ECal *client;
 };
 
@@ -48,7 +45,6 @@ struct _ECalViewPrivate {
 enum props {
 	PROP_0,
 	PROP_VIEW,
-	PROP_LISTENER,
 	PROP_CLIENT
 };
 
@@ -66,46 +62,109 @@ static guint signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class;
 
-
+
+static GList *
+build_object_list (const gchar **seq)
+{
+	GList *list;
+	int i;
+
+	list = NULL;
+	for (i = 0; seq[i]; i++) {
+		icalcomponent *comp;
+
+		comp = icalcomponent_new_from_string ((char*)seq[i]);
+		if (!comp)
+			continue;
+
+		list = g_list_prepend (list, comp);
+	}
+
+	return list;
+}
+
+static GList *
+build_id_list (const gchar **seq)
+{
+	GList *list;
+	int i;
+
+	list = NULL;
+	for (i = 0; seq[i]; i++) {
+		ECalComponentId *id;
+		id = g_new (ECalComponentId, 1);
+		id->uid = g_strdup (seq[i]);
+		id->rid = NULL; /* TODO */
+		list = g_list_prepend (list, id);
+	}
+	return list;
+}
 
 static void
-objects_added_cb (ECalViewListener *listener, GList *objects, gpointer data)
+objects_added_cb (DBusGProxy *proxy, const gchar **objects, gpointer data)
 {
 	ECalView *view;
+        GList *list;
 
 	view = E_CAL_VIEW (data);
-
 	g_object_ref (view);
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_ADDED], 0, objects);
+
+	list = build_object_list (objects);
+
+	g_signal_emit (G_OBJECT (view), signals[OBJECTS_ADDED], 0, list);
+
+        while (list) {
+          icalcomponent_free (list->data);
+          list = g_list_delete_link (list, list);
+        }
+
 	g_object_unref (view);
 }
 
 static void
-objects_modified_cb (ECalViewListener *listener, GList *objects, gpointer data)
+objects_modified_cb (DBusGProxy *proxy, const gchar **objects, gpointer data)
 {
 	ECalView *view;
+        GList *list;
 
 	view = E_CAL_VIEW (data);
-
 	g_object_ref (view);
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_MODIFIED], 0, objects);
+
+	list = build_object_list (objects);
+
+	g_signal_emit (G_OBJECT (view), signals[OBJECTS_MODIFIED], 0, list);
+
+        while (list) {
+          icalcomponent_free (list->data);
+          list = g_list_delete_link (list, list);
+        }
+
 	g_object_unref (view);
 }
 
 static void
-objects_removed_cb (ECalViewListener *listener, GList *ids, gpointer data)
+objects_removed_cb (DBusGProxy *proxy, const gchar **uids, gpointer data)
 {
 	ECalView *view;
+        GList *list;
 
 	view = E_CAL_VIEW (data);
-
 	g_object_ref (view);
-	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, ids);
+
+	list = build_id_list (uids);
+
+	g_signal_emit (G_OBJECT (view), signals[OBJECTS_REMOVED], 0, list);
+
+        while (list) {
+		e_cal_component_free_id (list->data);
+		list = g_list_delete_link (list, list);
+        }
+
 	g_object_unref (view);
 }
 
 static void
-view_progress_cb (ECalViewListener *listener, const gchar *message, gint percent, gpointer data)
+progress_cb (DBusGProxy *proxy, const gchar *message, int percent, gpointer data)
 {
 	ECalView *view;
 
@@ -115,7 +174,7 @@ view_progress_cb (ECalViewListener *listener, const gchar *message, gint percent
 }
 
 static void
-view_done_cb (ECalViewListener *listener, ECalendarStatus status, gpointer data)
+done_cb (DBusGProxy *proxy, ECalendarStatus status, gpointer data)
 {
 	ECalView *view;
 
@@ -126,15 +185,9 @@ view_done_cb (ECalViewListener *listener, ECalendarStatus status, gpointer data)
 
 /* Object initialization function for the calendar view */
 static void
-e_cal_view_init (ECalView *view, ECalViewClass *klass)
+e_cal_view_init (ECalView *view)
 {
-	ECalViewPrivate *priv;
-
-	priv = g_new0 (ECalViewPrivate, 1);
-	view->priv = priv;
-
-	priv->listener = NULL;
-	priv->view = CORBA_OBJECT_NIL;
+	view->priv = E_CAL_VIEW_GET_PRIVATE (view);
 }
 
 static void
@@ -144,33 +197,31 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 	ECalViewPrivate *priv;
 
 	view = E_CAL_VIEW (object);
-	priv = view->priv;
+	priv = E_CAL_VIEW_GET_PRIVATE(view);
 
 	switch (property_id) {
 	case PROP_VIEW:
-		if (priv->view != CORBA_OBJECT_NIL)
-			bonobo_object_release_unref (priv->view, NULL);
+		if (priv->view_proxy != NULL)
+			g_object_unref (priv->view_proxy);
 
-		priv->view = bonobo_object_dup_ref (g_value_get_pointer (value), NULL);
-		break;
-	case PROP_LISTENER:
-		if (priv->listener) {
-			g_signal_handlers_disconnect_matched (priv->listener, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
-			bonobo_object_unref (BONOBO_OBJECT (priv->listener));
-		}
+		priv->view_proxy = g_object_ref (g_value_get_pointer (value));
 
-		priv->listener = bonobo_object_ref (g_value_get_pointer (value));
+                dbus_g_proxy_add_signal (priv->view_proxy, "ObjectsAdded", G_TYPE_STRV, G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (priv->view_proxy, "ObjectsAdded", G_CALLBACK (objects_added_cb), view, NULL);
 
-		g_signal_connect (G_OBJECT (priv->listener), "objects_added",
-				  G_CALLBACK (objects_added_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "objects_modified",
-				  G_CALLBACK (objects_modified_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "objects_removed",
-				  G_CALLBACK (objects_removed_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "view_progress",
-				  G_CALLBACK (view_progress_cb), view);
-		g_signal_connect (G_OBJECT (priv->listener), "view_done",
-				  G_CALLBACK (view_done_cb), view);
+                dbus_g_proxy_add_signal (priv->view_proxy, "ObjectsModified", G_TYPE_STRV, G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (priv->view_proxy, "ObjectsModified", G_CALLBACK (objects_modified_cb), view, NULL);
+
+                dbus_g_proxy_add_signal (priv->view_proxy, "ObjectsRemoved", G_TYPE_STRV, G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (priv->view_proxy, "ObjectsRemoved", G_CALLBACK (objects_removed_cb), view, NULL);
+
+                dbus_g_object_register_marshaller (e_cal_marshal_VOID__STRING_UINT, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_INVALID);
+                dbus_g_proxy_add_signal (priv->view_proxy, "Progress", G_TYPE_STRING, G_TYPE_UINT, G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (priv->view_proxy, "Progress", G_CALLBACK (progress_cb), view, NULL);
+
+                dbus_g_proxy_add_signal (priv->view_proxy, "Done", G_TYPE_UINT, G_TYPE_INVALID);
+                dbus_g_proxy_connect_signal (priv->view_proxy, "Done", G_CALLBACK (done_cb), view, NULL);
+
 		break;
 	case PROP_CLIENT:
 		priv->client = E_CAL (g_value_dup_object (value));
@@ -188,14 +239,11 @@ e_cal_view_get_property (GObject *object, guint property_id, GValue *value, GPar
 	ECalViewPrivate *priv;
 
 	view = E_CAL_VIEW (object);
-	priv = view->priv;
+	priv = E_CAL_VIEW_GET_PRIVATE(view);
 
 	switch (property_id) {
 	case PROP_VIEW:
-		g_value_set_pointer (value, priv->view);
-		break;
-	case PROP_LISTENER:
-		g_value_set_pointer (value, priv->listener);
+		g_value_set_pointer (value, priv->view_proxy);
 		break;
 	case PROP_CLIENT:
 		g_value_set_object (value, priv->client);
@@ -219,14 +267,10 @@ e_cal_view_finalize (GObject *object)
 	view = E_CAL_VIEW (object);
 	priv = view->priv;
 
-	/* The server keeps a copy of the view listener, so we must unref it */
-	g_signal_handlers_disconnect_matched (priv->listener, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
-	bonobo_object_unref (BONOBO_OBJECT (priv->listener));
+	if (priv->view_proxy != NULL)
+		g_object_unref (priv->view_proxy);
 
-	if (priv->view != CORBA_OBJECT_NIL)
-		bonobo_object_release_unref (priv->view, NULL);
-
-	g_free (priv);
+	g_object_unref (priv->client);
 
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -247,13 +291,11 @@ e_cal_view_class_init (ECalViewClass *klass)
 	object_class->get_property = e_cal_view_get_property;
 	object_class->finalize = e_cal_view_finalize;
 
-	param =  g_param_spec_pointer ("view", "The corba view object", NULL,
+	g_type_class_add_private (klass, sizeof (ECalViewPrivate));
+
+	param =  g_param_spec_pointer ("view", "The DBus view proxy", NULL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_VIEW, param);
-	/* FIXME type this property as object? */
-	param =  g_param_spec_pointer ("listener", "The view listener object to use", NULL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_LISTENER, param);
 	param =  g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
 				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
 	g_object_class_install_property (object_class, PROP_CLIENT, param);
@@ -288,8 +330,8 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, view_progress),
 			      NULL, NULL,
-			      e_cal_marshal_VOID__STRING_INT,
-			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_INT);
+			      e_cal_marshal_VOID__STRING_UINT,
+			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
 	signals[VIEW_DONE] =
 		g_signal_new ("view_done",
 			      G_TYPE_FROM_CLASS (klass),
@@ -301,39 +343,8 @@ e_cal_view_class_init (ECalViewClass *klass)
 }
 
 /**
- * e_cal_view_get_type:
- *
- * Registers the #ECalView class if necessary, and returns the type ID assigned
- * to it.
- *
- * Return value: The type ID of the #ECalView class.
- **/
-GType
-e_cal_view_get_type (void)
-{
-	static GType e_cal_view_type = 0;
-
-	if (!e_cal_view_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalViewClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_view_class_init,
-                        NULL, NULL,
-                        sizeof (ECalView),
-                        0,
-                        (GInstanceInitFunc) e_cal_view_init
-                };
-		e_cal_view_type = g_type_register_static (G_TYPE_OBJECT, "ECalView", &info, 0);
-	}
-
-	return e_cal_view_type;
-}
-
-/**
  * e_cal_view_new:
  * @corba_view: The CORBA object for the view.
- * @listener: An #ECalViewListener.
  * @client: An #ECal object.
  *
  * Creates a new view object by issuing the view creation request to the
@@ -342,12 +353,11 @@ e_cal_view_get_type (void)
  * Return value: A newly-created view object, or NULL if the request failed.
  **/
 ECalView *
-e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *listener, ECal *client)
+e_cal_view_new (DBusGProxy *view_proxy, ECal *client)
 {
 	ECalView *view;
 
-	view = g_object_new (E_TYPE_CAL_VIEW, "view", corba_view, "listener",
-			      listener, "client", client, NULL);
+	view = g_object_new (E_TYPE_CAL_VIEW, "view", view_proxy, "client", client, NULL);
 
 	return view;
 }
@@ -378,18 +388,16 @@ void
 e_cal_view_start (ECalView *view)
 {
 	ECalViewPrivate *priv;
-	CORBA_Environment ev;
+	GError *error = NULL;
 
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
-	priv = view->priv;
+	priv = E_CAL_VIEW_GET_PRIVATE(view);
 
-	CORBA_exception_init (&ev);
-
-	GNOME_Evolution_Calendar_CalView_start (priv->view, &ev);
-	if (BONOBO_EX (&ev))
+	if (!org_gnome_evolution_dataserver_calendar_CalView_start (priv->view_proxy, &error)) {
+		g_printerr("%s: %s\n", __FUNCTION__, error->message);
+		g_error_free (error);
 		g_warning (G_STRLOC ": Unable to start view");
-
-	CORBA_exception_free (&ev);
+	}
 }

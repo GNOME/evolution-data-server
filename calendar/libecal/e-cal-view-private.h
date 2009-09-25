@@ -23,13 +23,12 @@
 
 #include <libecal/e-cal-types.h>
 #include <libecal/e-cal-view.h>
-#include <libecal/e-cal-view-listener.h>
 
-#include "Evolution-DataServer-Calendar.h"
+#include <dbus/dbus-glib.h>
 
 G_BEGIN_DECLS
 
-ECalView *e_cal_view_new (GNOME_Evolution_Calendar_CalView corba_view, ECalViewListener *listener, struct _ECal *client);
+ECalView *e_cal_view_new (DBusGProxy *view_proxy, struct _ECal *client);
 
 G_END_DECLS
 
