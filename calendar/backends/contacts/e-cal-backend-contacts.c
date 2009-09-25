@@ -916,7 +916,7 @@ init_sources_cb (ECalBackendContacts *cbc)
         ECalBackendContactsPrivate *priv;
         GSList *i;
 
-	g_return_val_if_fail (cbc != NULL, FALSE);
+	g_return_val_if_fail (cbc != NULL, NULL);
 
 	priv = cbc->priv;
 
