@@ -1151,7 +1151,7 @@ e_destination_get_textrepv (EDestination **destv)
  *
  * Return value: Pointer to the root node of the XML tree.
  **/
-xmlNodePtr
+static xmlNodePtr
 e_destination_xml_encode (const EDestination *dest)
 {
 	xmlNodePtr dest_node;
@@ -1234,7 +1234,7 @@ e_destination_xml_encode (const EDestination *dest)
  *
  * Return value: %TRUE if the XML tree was well-formed, %FALSE otherwise.
  **/
-gboolean
+static gboolean
 e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 {
 	gchar *name = NULL, *email = NULL, *source_uid = NULL, *card_uid = NULL;
