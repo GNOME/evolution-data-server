@@ -254,7 +254,7 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
 		dd(printf("Checking expire cycle time on dir '%s'\n", dir));
 
 		/* This has a race, but at worst we re-run an expire cycle which is safe */
-		now = time(0);
+		now = time(NULL);
 		if (cdc->priv->expire_last[hash] + CAMEL_DATA_CACHE_CYCLE_TIME < now) {
 			cdc->priv->expire_last[hash] = now;
 			data_cache_expire(cdc, dir, key, now);

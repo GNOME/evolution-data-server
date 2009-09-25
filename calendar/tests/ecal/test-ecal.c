@@ -699,7 +699,7 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 	results = all_tests (*client, uri);
 	cl_printf (*client, "\n\n\n*************Tests run: %d****************\n\n", tests_run);
 	cl_printf (*client, "*************Tests passed: %d*************\n\n\n", tests_passed);
-	if (results != 0)
+	if (results != NULL)
 		cl_printf (*client, "***Failures********%s\n", results);
 
 	cl_printf (*client, "dump of the test calendar data");

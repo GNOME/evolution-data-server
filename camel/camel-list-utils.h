@@ -72,7 +72,7 @@ struct _CamelDList {
 	struct _CamelDListNode *tailpred;
 };
 
-#define CAMEL_DLIST_INITIALISER(l) { (CamelDListNode *)&l.tail, 0, (CamelDListNode *)&l.head }
+#define CAMEL_DLIST_INITIALISER(l) { (CamelDListNode *)&l.tail, NULL, (CamelDListNode *)&l.head }
 
 void camel_dlist_init(CamelDList *v);
 CamelDListNode *camel_dlist_addhead(CamelDList *l, CamelDListNode *n);
