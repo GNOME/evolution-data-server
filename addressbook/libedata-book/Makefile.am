@@ -2,7 +2,7 @@ DBUS_GENERATED_H = e-data-book-glue.h e-data-book-factory-glue.h e-data-book-vie
 %-glue.h: %.xml
 	dbus-binding-tool --mode=glib-server --output=$@ --prefix=$(subst -,_,$*) $^
 
-include glib-gen.mak
+include $(top_srcdir)/glib-gen.mak
 glib_enum_headers=e-data-book-types.h
 glib_enum_define=E_DATA_BOOK
 glib_enum_prefix=e_data_book
