@@ -146,11 +146,9 @@ impl_notifyObjectsModified (PortableServer_Servant servant,
 			    CORBA_Environment *ev)
 {
 	ECalViewListener *ql;
-	ECalViewListenerPrivate *priv;
 	GList *object_list, *l;
 
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
-	priv = ql->priv;
 
 	object_list = build_object_list (objects);
 
@@ -167,11 +165,9 @@ impl_notifyObjectsRemoved (PortableServer_Servant servant,
 			   CORBA_Environment *ev)
 {
 	ECalViewListener *ql;
-	ECalViewListenerPrivate *priv;
 	GList *id_list, *l;
 
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
-	priv = ql->priv;
 
 	id_list = build_id_list (ids);
 
@@ -189,10 +185,8 @@ impl_notifyQueryProgress (PortableServer_Servant servant,
 			  CORBA_Environment *ev)
 {
 	ECalViewListener *ql;
-	ECalViewListenerPrivate *priv;
 
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
-	priv = ql->priv;
 
 	g_signal_emit (G_OBJECT (ql), signals[VIEW_PROGRESS], 0, message, percent);
 }
@@ -203,10 +197,8 @@ impl_notifyQueryDone (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
 	ECalViewListener *ql;
-	ECalViewListenerPrivate *priv;
 
 	ql = E_CAL_VIEW_LISTENER (bonobo_object_from_servant (servant));
-	priv = ql->priv;
 
 	g_signal_emit (G_OBJECT (ql), signals[VIEW_DONE], 0, convert_status (status));
 }
