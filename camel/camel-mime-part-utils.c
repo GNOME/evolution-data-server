@@ -142,12 +142,10 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 gboolean
 camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 {
-	gchar *mime_type;
 	CamelDataWrapper *dw;
 	gboolean got_plain = FALSE;
 
 	dw = camel_medium_get_content_object((CamelMedium *)msg);
-	mime_type = camel_data_wrapper_get_mime_type(dw);
 	if (camel_content_type_is (dw->mime_type, "multipart", "*")) {
 		gint i, nparts;
 		CamelMultipart *mp = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)msg);
@@ -161,20 +159,19 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 		}
 
 	} else if (camel_content_type_is (dw->mime_type, "text", "*") &&
-		//    !camel_content_type_is (dw->mime_type, "text", "html") &&
+		/*    !camel_content_type_is (dw->mime_type, "text", "html") && */
 		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
 		CamelStream *mstream, *bstream;
 		mstream = camel_stream_mem_new();
 		if (camel_data_wrapper_decode_to_stream (dw, mstream) > 0) {
 			gchar *line = NULL;
-			gboolean stop = FALSE;
 			GString *str = g_string_new (NULL);
 
 			camel_stream_reset (mstream);
 			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ|CAMEL_STREAM_BUFFER_BUFFER);
 
 			/* We should fetch just 200 unquoted lines. */
-			while ((line = camel_stream_buffer_read_line((CamelStreamBuffer *)bstream)) && !stop && str->len < 200) {
+			while ((line = camel_stream_buffer_read_line((CamelStreamBuffer *)bstream)) && str->len < 200) {
 				gchar *tmp = line;
 				if (!line)
 					continue;
@@ -183,9 +180,8 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 					g_free(tmp);
 					continue;
 				}
-				if (line [0]== '-' && line[1] == '-') {
+				if (g_str_has_prefix (line, "--")) {
 					g_free(tmp);
-					stop = TRUE;
 					line = NULL;
 					break;
 				}
