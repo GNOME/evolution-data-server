@@ -3413,7 +3413,6 @@ imap_update_summary (CamelFolder *folder, gint exists,
 	} else
 		uidval = 0;
 
-	size = (exists - seq) * (IMAP_PRETEND_SIZEOF_FLAGS + IMAP_PRETEND_SIZEOF_SIZE + IMAP_PRETEND_SIZEOF_HEADERS);
 	got = 0;
 	if (!camel_imap_command_start (store, folder, ex,
 				       "UID FETCH %d:* (FLAGS RFC822.SIZE INTERNALDATE BODYSTRUCTURE BODY.PEEK[%s])",

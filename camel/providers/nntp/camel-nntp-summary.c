@@ -452,7 +452,6 @@ camel_nntp_summary_check(CamelNNTPSummary *cns, CamelNNTPStore *store, gchar *li
 	s = (CamelFolderSummary *)cns;
 
 	line +=3;
-	n = strtoul(line, &line, 10);
 	f = strtoul(line, &line, 10);
 	l = strtoul(line, &line, 10);
 	if (line[0] == ' ') {
