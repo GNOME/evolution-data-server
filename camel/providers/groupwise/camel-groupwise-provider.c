@@ -47,7 +47,7 @@ static guint groupwise_url_hash (gconstpointer key);
 static gint check_equal (gchar *s1, gchar *s2);
 static gint groupwise_url_equal (gconstpointer a, gconstpointer b);
 
-CamelProviderConfEntry groupwise_conf_entries[] = {
+static CamelProviderConfEntry groupwise_conf_entries[] = {
 	/* override the labels/defaults of the standard settings */
 
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
@@ -100,7 +100,7 @@ static CamelProvider groupwise_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_groupwise_password_authtype = {
+static CamelServiceAuthType camel_groupwise_password_authtype = {
 	N_("Password"),
 
 	N_("This option will connect to the GroupWise server using a "
