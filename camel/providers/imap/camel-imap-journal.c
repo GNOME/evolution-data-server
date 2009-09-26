@@ -65,7 +65,7 @@ static CamelOfflineJournalClass *parent_class = NULL;
 CamelType
 camel_imap_journal_get_type (void)
 {
-	static CamelType type = 0;
+	static CamelType type = NULL;
 
 	if (!type) {
 		type = camel_type_register (camel_offline_journal_get_type (),
@@ -330,7 +330,7 @@ journal_decode_folder (CamelIMAPJournal *journal, const gchar *name)
 	return folder;
 }
 
-gint
+static gint
 imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, CamelException *ex)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
