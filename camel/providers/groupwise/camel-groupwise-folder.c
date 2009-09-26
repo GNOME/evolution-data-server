@@ -102,8 +102,8 @@ static void groupwise_refresh_folder(CamelFolder *folder, CamelException *ex);
 
 #define d(x)
 
-const gchar * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
-const gchar * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
+static const gchar * GET_ITEM_VIEW_WITH_CACHE = "peek default recipient threading attachments subject status priority startDate created delivered size recurrenceKey message notification";
+static const gchar * GET_ITEM_VIEW_WITHOUT_CACHE = "peek default recipient threading hasAttachment subject status priority startDate created delivered size recurrenceKey";
 
 static gchar *
 groupwise_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
