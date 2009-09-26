@@ -1821,7 +1821,7 @@ cal_obj_initialize_recur_data (RecurData  *recur_data,
 			       CalObjTime *event_start)
 {
 	GList *elem;
-	gint month, yearday, monthday, weekday, week_num, hour, minute, second;
+	gint month, yearday, monthday, weekday, hour, minute, second;
 
 	/* Clear the entire RecurData. */
 	memset (recur_data, 0, sizeof (RecurData));
@@ -1871,12 +1871,8 @@ cal_obj_initialize_recur_data (RecurData  *recur_data,
 	elem = recur->byday;
 	while (elem) {
 		weekday = GPOINTER_TO_INT (elem->data);
-		elem = elem->next;
-		/* The week number is not used when filtering. */
-		week_num = GPOINTER_TO_INT (elem->data);
-		elem = elem->next;
-
 		recur_data->weekdays[weekday] = 1;
+		elem = elem->next;
 	}
 
 	/* Create an array of hours from byhour for fast lookup. */

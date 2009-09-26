@@ -570,7 +570,6 @@ static void
 delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
 {
 	GtkTreePath *parent_path;
-	gint         parent_index;
 	GArray      *parent_group;
 	GArray      *group;
 	gint         index;
@@ -583,10 +582,8 @@ delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 
 	if (node) {
 		group = node->child_nodes;
-		parent_index = gtk_tree_path_get_indices (parent_path) [gtk_tree_path_get_depth (parent_path) - 1];
 	} else {
 		group = tree_model_generator->root_nodes;
-		parent_index = -1;
 	}
 
 	gtk_tree_path_free (parent_path);
@@ -1209,7 +1206,7 @@ e_tree_model_generator_iter_n_children (GtkTreeModel *tree_model,
 	GArray              *group;
 	gint                 index;
 
-	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), FALSE);
+	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), 0);
 
 	if (iter == NULL)
 		return tree_model_generator->root_nodes ?
