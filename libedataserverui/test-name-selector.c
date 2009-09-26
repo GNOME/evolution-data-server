@@ -31,8 +31,8 @@
 #include <gtk/gtk.h>
 #include <camel/camel.h>
 
-ENameSelectorDialog *name_selector_dialog;
-GtkWidget           *name_selector_entry_window;
+static ENameSelectorDialog *name_selector_dialog;
+static GtkWidget           *name_selector_entry_window;
 
 static void
 close_dialog (GtkWidget *widget, gint response, gpointer data)
