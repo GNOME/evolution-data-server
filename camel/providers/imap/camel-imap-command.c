@@ -263,12 +263,12 @@ camel_imap_command_continuation (CamelImapStore *store, const gchar *cmd,
 
 	if (!store->ostream) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No output stream"));
-		return FALSE;
+		return NULL;
 	}
 
 	if (!store->istream) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_STORE_INVALID, _("No input stream"));
-		return FALSE;
+		return NULL;
 	}
 
 	if (camel_stream_write (store->ostream, cmd, cmdlen) == -1 ||
@@ -372,7 +372,7 @@ camel_imap_command_response (CamelImapStore *store, gchar **response,
 	return type;
 }
 
-CamelImapResponse *
+static CamelImapResponse *
 imap_read_response (CamelImapStore *store, CamelException *ex)
 {
 	CamelImapResponse *response;
