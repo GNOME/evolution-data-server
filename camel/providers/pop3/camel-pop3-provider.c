@@ -70,7 +70,7 @@ static CamelProvider pop3_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_pop3_password_authtype = {
+static CamelServiceAuthType camel_pop3_password_authtype = {
 	N_("Password"),
 
 	N_("This option will connect to the POP server using a plaintext "
@@ -80,7 +80,7 @@ CamelServiceAuthType camel_pop3_password_authtype = {
 	TRUE
 };
 
-CamelServiceAuthType camel_pop3_apop_authtype = {
+static CamelServiceAuthType camel_pop3_apop_authtype = {
 	"APOP",
 
 	N_("This option will connect to the POP server using an encrypted "
