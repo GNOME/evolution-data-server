@@ -308,7 +308,6 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			attachment->size = temp_len;
 			g_free (temp_str);
 			temp_str = NULL;
-			temp_len = 0;
 		} else {
 			attachment->data = g_base64_encode(content->buffer->data, content->buffer->len);
 			attachment->size = strlen (attachment->data);
@@ -325,7 +324,6 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 			attachment->size = temp_len;
 			g_free (temp_str);
 			temp_str = NULL;
-			temp_len = 0;
 		}
 	}
 
