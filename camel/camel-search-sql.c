@@ -103,13 +103,13 @@ typedef struct Node {
 	gchar post_token; /* post token to apppend with substitute */
 	gchar rval; /* rhs value for binary ops */
 	gint level; /* depth in the hier */
-	gint prefix:1; /* unary operator to be searched ?*/
-	gint sys_node:1; /* is it a predefined term ? */
-	gint ignore_lhs:1; /* ignore lhs value ?*/
-	gint swap :1;
-	gint prenode :1;
-	gint operator:1;
-	gint execute:1;
+	guint prefix:1; /* unary operator to be searched ?*/
+	guint sys_node:1; /* is it a predefined term ? */
+	guint ignore_lhs:1; /* ignore lhs value ?*/
+	guint swap :1;
+	guint prenode :1;
+	guint operator:1;
+	guint execute:1;
 	gint ref;
 }Node;
 
@@ -278,8 +278,8 @@ camel_sexp_to_sql (const gchar *txt)
 
 								if (token != G_TOKEN_LEFT_PAREN) {
 									/* remove #t*/
-									token = g_scanner_get_next_token (scanner);
-									token = g_scanner_get_next_token (scanner);
+									g_scanner_get_next_token (scanner);
+									g_scanner_get_next_token (scanner);
 								}
 
 							}
