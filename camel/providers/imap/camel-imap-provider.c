@@ -39,7 +39,7 @@ static guint imap_url_hash (gconstpointer key);
 static gint check_equal (gchar *s1, gchar *s2);
 static gint imap_url_equal (gconstpointer a, gconstpointer b);
 
-CamelProviderConfEntry imap_conf_entries[] = {
+static CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for New Mail") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
@@ -96,7 +96,7 @@ static CamelProvider imap_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_imap_password_authtype = {
+static CamelServiceAuthType camel_imap_password_authtype = {
 	N_("Password"),
 
 	N_("This option will connect to the IMAP server using a "
