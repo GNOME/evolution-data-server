@@ -3329,7 +3329,7 @@ header_encode_param (const guchar *in, gboolean *encoded, gboolean is_filename)
    do not understand the correct standard and refuse attachments with localized name sent
    from evolution. This seems to have been fixed in Exchange 2007 at least - not sure about
    standalone Outlook. */
-static gint camel_header_param_encode_filenames_in_rfc_2047 = 0;
+gint camel_header_param_encode_filenames_in_rfc_2047 = 0;
 
 void
 camel_header_param_list_format_append (GString *out, struct _camel_header_param *p)
