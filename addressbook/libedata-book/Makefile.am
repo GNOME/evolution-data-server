@@ -101,6 +101,3 @@ EXTRA_DIST = 						\
 	e-data-book.xml					\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	$(service_in_files)
-
-dist-hook:
-	cd $(distdir); rm -f $(BUILT_SOURCES)
