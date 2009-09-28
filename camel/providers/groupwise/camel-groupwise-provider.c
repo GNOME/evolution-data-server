@@ -100,7 +100,7 @@ static CamelProvider groupwise_provider = {
 	/* ... */
 };
 
-static CamelServiceAuthType camel_groupwise_password_authtype = {
+CamelServiceAuthType camel_groupwise_password_authtype = {
 	N_("Password"),
 
 	N_("This option will connect to the GroupWise server using a "

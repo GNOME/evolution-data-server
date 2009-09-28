@@ -89,7 +89,7 @@ static CamelProvider hula_provider = {
 	/* ... */
 };
 
-static CamelServiceAuthType camel_hula_password_authtype = {
+CamelServiceAuthType camel_hula_password_authtype = {
 	N_("Password"),
 
 	N_("This option will connect to the Hula server using a "
