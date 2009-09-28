@@ -11,7 +11,7 @@ CALENDAR_DIR = calendar src
 endif
 
 SUBDIRS = $(LIBDB) win32 libedataserver libebackend servers camel addressbook $(CALENDAR_DIR) libedataserverui docs art po
-DIST_SUBDIRS = win32 libedataserver libebackend servers camel addressbook calendar libedataserverui docs art po
+DIST_SUBDIRS = win32 libedataserver libebackend servers camel addressbook calendar src libedataserverui docs art po
 
 changelogs =			\
 	ChangeLog
