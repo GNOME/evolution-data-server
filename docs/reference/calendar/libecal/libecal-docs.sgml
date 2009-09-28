@@ -10,9 +10,7 @@
     <title>Evolution-Data-Server Manual: Calendar Client (libecal)</title>
     <xi:include href="xml/e-cal.xml"/>
     <xi:include href="xml/e-cal-component.xml"/>
-    <xi:include href="xml/e-cal-listener.xml"/>
     <xi:include href="xml/e-cal-view.xml"/>
-    <xi:include href="xml/e-cal-view-listener.xml"/>
     <xi:include href="xml/e-cal-recur.xml"/>
     <xi:include href="xml/e-cal-time-util.xml"/>
     <xi:include href="xml/e-cal-types.xml"/>

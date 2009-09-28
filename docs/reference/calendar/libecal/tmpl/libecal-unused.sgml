@@ -1,3 +1,51 @@
+<!-- ##### SECTION ./tmpl/e-cal-listener.sgml:Long_Description ##### -->
+<para>
+Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-cal-listener.sgml:See_Also ##### -->
+<para>
+#ECal, #ECalViewListener
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-cal-listener.sgml:Short_Description ##### -->
+Listens for responses and event notifications sent by an #e-cal.
+
+
+<!-- ##### SECTION ./tmpl/e-cal-listener.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-cal-listener.sgml:Title ##### -->
+ECalListener
+
+
+<!-- ##### SECTION ./tmpl/e-cal-view-listener.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-cal-view-listener.sgml:See_Also ##### -->
+<para>
+#e-cal-view
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-cal-view-listener.sgml:Short_Description ##### -->
+Listens for responses and event notifications sent by #e-cal-view.
+
+
+<!-- ##### SECTION ./tmpl/e-cal-view-listener.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-cal-view-listener.sgml:Title ##### -->
+ECalViewListener
+
+
 <!-- ##### SECTION ./tmpl/libecal-unused.sgml:Stability_Level ##### -->
 
 
@@ -42,6 +90,238 @@
 @E_CAL_GET_SUCCESS: 
 @E_CAL_GET_NOT_FOUND: 
 @E_CAL_GET_SYNTAX_ERROR: 
+
+<!-- ##### STRUCT ECalListener ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ECalListener::add-timezone ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::alarm-address ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::attachment-list ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::auth-required ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+
+<!-- ##### SIGNAL ECalListener::backend-error ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::cal-address ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::create-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::default-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::discard-alarm ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::get-changes ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@Param3: 
+
+<!-- ##### SIGNAL ECalListener::get-free-busy ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@Param3: 
+
+<!-- ##### SIGNAL ECalListener::get-timezone ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::ldap-attribute ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::modify-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::object-list ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::open ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::query ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::read-only ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL ECalListener::receive-objects ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::remove ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::remove-object ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::send-objects ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@Param3: 
+@Param4: 
+
+<!-- ##### SIGNAL ECalListener::set-default-timezone ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalListener::static-capabilities ##### -->
+<para>
+
+</para>
+
+@ecallistener: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### USER_FUNCTION ECalListenerCalSetModeFn ##### -->
+<para>
+
+</para>
+
+@listener: 
+@status: 
+@mode: 
+@data: 
 
 <!-- ##### USER_FUNCTION ECalListenerCategoriesChangedFn ##### -->
 <para>
@@ -88,6 +368,59 @@
 @E_CAL_RESULT_INVALID_OBJECT: 
 @E_CAL_RESULT_NOT_FOUND: 
 @E_CAL_RESULT_PERMISSION_DENIED: 
+
+<!-- ##### ARG ECalView:listener ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT ECalViewListener ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ECalViewListener::objects-added ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::objects-modified ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::objects-removed ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::view-done ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalViewListener::view-progress ##### -->
+<para>
+
+</para>
+
+@ecalviewlistener: the object which received the signal.
+@arg1: 
+@arg2: 
 
 <!-- ##### STRUCT ECalViewListenerPrivate ##### -->
 <para>
@@ -147,6 +480,32 @@
 
 @klass: 
 
+<!-- ##### FUNCTION e_cal_listener_construct ##### -->
+<para>
+
+</para>
+
+@listener: 
+@cal_set_mode_fn: 
+@fn_data: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_listener_new ##### -->
+<para>
+
+</para>
+
+@cal_set_mode_fn: 
+@fn_data: 
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_listener_stop_notification ##### -->
+<para>
+
+</para>
+
+@listener: 
+
 <!-- ##### FUNCTION e_cal_remove_calendar ##### -->
 <para>
 
@@ -175,6 +534,13 @@
 @Returns: 
 
 <!-- ##### FUNCTION e_cal_view_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION e_cal_view_listener_new ##### -->
 <para>
 
 </para>

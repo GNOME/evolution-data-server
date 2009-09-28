@@ -168,44 +168,6 @@ e_cal_component_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-cal-listener</FILE>
-<TITLE>ECalListener</TITLE>
-ECalListener
-ECalListenerCalSetModeFn
-e_cal_listener_construct
-e_cal_listener_new
-e_cal_listener_stop_notification
-<SUBSECTION Standard>
-E_CAL_LISTENER
-E_IS_CAL_LISTENER
-E_TYPE_CAL_LISTENER
-E_CAL_LISTENER_CLASS
-E_IS_CAL_LISTENER_CLASS
-ECalListenerClass
-<SUBSECTION Private>
-ECalListenerPrivate
-e_cal_listener_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-cal-view-listener</FILE>
-<TITLE>ECalViewListener</TITLE>
-ECalViewListener
-e_cal_view_listener_new
-<SUBSECTION Standard>
-E_CAL_VIEW_LISTENER
-E_IS_CAL_VIEW_LISTENER
-E_TYPE_CAL_VIEW_LISTENER
-E_CAL_VIEW_LISTENER_CLASS
-E_IS_CAL_VIEW_LISTENER_CLASS
-E_CAL_VIEW_LISTENER_GET_CLASS
-ECalViewListenerClass
-<SUBSECTION Private>
-ECalViewListenerPrivate
-e_cal_view_listener_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-cal</FILE>
 <TITLE>ECal</TITLE>
 ECal
