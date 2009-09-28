@@ -4,7 +4,6 @@
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include <libedata-cal/e-cal-backend-sync.h>
 #include <libedata-cal/e-data-cal.h>
-#include <libedata-cal/e-data-cal-factory.h>
 #include <libedata-cal/e-data-cal-view.h>
 
 e_cal_backend_get_type
@@ -13,5 +12,4 @@ e_cal_backend_factory_get_type
 e_cal_backend_sexp_get_type
 e_cal_backend_sync_get_type
 e_data_cal_get_type
-e_data_cal_factory_get_type
 e_data_cal_view_get_type

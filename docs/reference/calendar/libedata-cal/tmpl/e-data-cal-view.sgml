@@ -39,18 +39,9 @@ Implementation of the calendar CORBA search interface.
 </para>
 
 @backend: 
-@ql: 
+@path: 
 @sexp: 
 @Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_view_add_listener ##### -->
-<para>
-
-</para>
-
-@query: 
-@ql: 
 
 
 <!-- ##### FUNCTION e_data_cal_view_get_text ##### -->

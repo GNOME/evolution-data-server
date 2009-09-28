@@ -17,37 +17,17 @@ Implementation of the calendar CORBA client interface.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### FUNCTION e_data_cal_construct ##### -->
-<para>
-
-</para>
-
-@cal: 
-@backend: 
-@listener: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_data_cal_new ##### -->
 <para>
 
 </para>
 
 @backend: 
-@listener: 
+@source: 
 @Returns: 
 
 
 <!-- ##### FUNCTION e_data_cal_get_backend ##### -->
-<para>
-
-</para>
-
-@cal: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_get_listener ##### -->
 <para>
 
 </para>
@@ -72,6 +52,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @address: 
 
@@ -82,6 +63,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @address: 
 
@@ -92,6 +74,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @attribute: 
 
@@ -102,6 +85,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @capabilities: 
 
@@ -112,6 +96,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 
 
@@ -121,6 +106,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 
 
@@ -130,6 +116,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @uid: 
 @object: 
@@ -141,6 +128,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @old_object: 
 @object: 
@@ -152,6 +140,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @id: 
 @old_object: 
@@ -164,6 +153,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 
 
@@ -173,6 +163,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 
 
@@ -182,6 +173,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @users: 
 @calobj: 
@@ -193,6 +185,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @object: 
 
@@ -203,6 +196,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @object: 
 
@@ -213,6 +207,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @objects: 
 
@@ -223,8 +218,9 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
-@query: 
+@query_path: 
 
 
 <!-- ##### FUNCTION e_data_cal_notify_timezone_requested ##### -->
@@ -233,6 +229,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @object: 
 
@@ -243,6 +240,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @tzid: 
 
@@ -253,6 +251,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 
 
@@ -262,6 +261,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @adds: 
 @modifies: 
@@ -274,6 +274,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @freebusy: 
 
@@ -311,6 +312,7 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @cal: 
+@context: 
 @status: 
 @objects: 
 

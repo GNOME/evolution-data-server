@@ -108,13 +108,43 @@ e-data-cal-common
 </para>
 
 
+<!-- ##### SIGNAL EDataCal::auth-required ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+
+<!-- ##### SIGNAL EDataCal::backend-error ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCal::mode ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCal::readonly ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+@arg1: 
+
 <!-- ##### STRUCT EDataCalClass ##### -->
 <para>
 
 </para>
 
 @parent_class: 
-@epv: 
 
 <!-- ##### STRUCT EDataCalView ##### -->
 <para>
@@ -122,19 +152,48 @@ e-data-cal-common
 </para>
 
 
-<!-- ##### SIGNAL EDataCalView::last-listener-gone ##### -->
+<!-- ##### SIGNAL EDataCalView::done ##### -->
 <para>
 
 </para>
 
 @edatacalview: the object which received the signal.
+@arg1: 
 
-<!-- ##### ARG EDataCalView:backend ##### -->
+<!-- ##### SIGNAL EDataCalView::objects-added ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG EDataCalView:listener ##### -->
+@edatacalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCalView::objects-modified ##### -->
+<para>
+
+</para>
+
+@edatacalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCalView::objects-removed ##### -->
+<para>
+
+</para>
+
+@edatacalview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCalView::progress ##### -->
+<para>
+
+</para>
+
+@edatacalview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ARG EDataCalView:backend ##### -->
 <para>
 
 </para>
@@ -150,8 +209,6 @@ e-data-cal-common
 </para>
 
 @parent_class: 
-@epv: 
-@last_listener_gone: 
 
 <!-- ##### STRUCT ECalBackendSExp ##### -->
 <para>

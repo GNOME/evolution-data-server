@@ -262,29 +262,6 @@ e_cal_backend_file_store_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-data-cal-factory</FILE>
-<TITLE>EDataCalFactory</TITLE>
-EDataCalFactory
-e_data_cal_factory_new
-e_data_cal_factory_register_storage
-e_data_cal_factory_register_backend
-e_data_cal_factory_register_backends
-e_data_cal_factory_get_n_backends
-e_data_cal_factory_dump_active_backends
-e_data_cal_factory_set_backend_mode
-<SUBSECTION Standard>
-E_DATA_CAL_FACTORY
-E_IS_DATA_CAL_FACTORY
-E_TYPE_DATA_CAL_FACTORY
-E_DATA_CAL_FACTORY_CLASS
-E_IS_DATA_CAL_FACTORY_CLASS
-EDataCalFactoryClass
-<SUBSECTION Private>
-EDataCalFactoryPrivate
-e_data_cal_factory_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-data-cal</FILE>
 <TITLE>EDataCal</TITLE>
 e_data_cal_construct
