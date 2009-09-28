@@ -62,25 +62,6 @@ e_account_list_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-component-listener</FILE>
-<TITLE>EComponentListener</TITLE>
-EComponentListener
-e_component_listener_new
-e_component_listener_get_component
-e_component_listener_set_component
-<SUBSECTION Standard>
-E_COMPONENT_LISTENER_TYPE
-E_COMPONENT_LISTENER
-E_IS_COMPONENT_LISTENER
-E_COMPONENT_LISTENER_CLASS
-E_IS_COMPONENT_LISTENER_CLASS
-EComponentListenerClass
-<SUBSECTION Private>
-EComponentListenerPrivate
-e_component_listener_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-flag</FILE>
 <TITLE>EFlag</TITLE>
 EFlag
