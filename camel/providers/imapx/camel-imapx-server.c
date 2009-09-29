@@ -935,6 +935,8 @@ imapx_expunged(CamelIMAPXServer *imap)
 
 	printf("Processing '%d' expunges\n", imap->expunged->len);
 
+/*	Change implementation 
+	
 	expunge = g_array_index(imap->expunged, guint32, index++);
 	iter = camel_folder_summary_search(imap->select_folder->summary, NULL, NULL, NULL, NULL);
 	while ((iterinfo = camel_iterator_next(iter, NULL))) {
@@ -949,7 +951,7 @@ imapx_expunged(CamelIMAPXServer *imap)
 			count++;
 	}
 	camel_iterator_free(iter);
-	g_array_set_size(imap->expunged, 0);
+	g_array_set_size(imap->expunged, 0); */
 }
 
 /* handle any untagged responses */
@@ -1903,6 +1905,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 		qsort(infos->data, infos->len, sizeof(struct _refresh_info), imapx_refresh_info_cmp);
 
+		/*
 		iter = camel_folder_summary_search(s, NULL, NULL, NULL, NULL);
 		iterinfo = imapx_iterator_next(iter, NULL);
 
@@ -1936,7 +1939,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 //			camel_change_info_remove(job->u.refresh_info.changes, iterinfo);
 			camel_folder_summary_remove(s, (CamelMessageInfo *)iterinfo);
 			iterinfo = imapx_iterator_next(iter, NULL);
-		}
+		} */
 
 /*		if (camel_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
@@ -2614,7 +2617,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 
 	g_free(job);
 
-	{
+/*	{
 		int i;
 		int c = 3;
 		pthread_t ids[10];
@@ -2627,7 +2630,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 		for (i=0;i<c;i++)
 			pthread_join(ids[i], NULL);
 		camel_iterator_free(threaditer);
-	}
+	} */
 }
 
 static void
