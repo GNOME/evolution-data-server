@@ -1758,6 +1758,7 @@ camel/providers/Makefile
 camel/providers/groupwise/Makefile
 camel/providers/hula/Makefile
 camel/providers/imap/Makefile
+camel/providers/imapx/Makefile
 camel/providers/imapp/Makefile
 camel/providers/imap4/Makefile
 camel/providers/local/Makefile

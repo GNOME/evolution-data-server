@@ -1,0 +1,40 @@
+## Process this file with automake to produce Makefile.in
+
+camel_provider_LTLIBRARIES = libcamelimapx.la
+camel_provider_DATA = libcamelimapx.urls
+
+INCLUDES = -I.. \
+	-I$(srcdir)/..				\
+	-I$(top_srcdir)/camel			\
+	-I$(top_srcdir)/intl			\
+	-I$(top_srcdir)/e-util			\
+	-I$(top_srcdir)				\
+	$(CAMEL_CFLAGS)				\
+	-DG_LOG_DOMAIN=\"camel-imapx\"
+
+libcamelimapx_la_SOURCES =			\
+	camel-imapx-exception.c			\
+	camel-imapx-provider.c			\
+	camel-imapx-store-summary.c		\
+	camel-imapx-summary.c			\
+	camel-imapx-store.c			\
+	camel-imapx-folder.c			\
+	camel-imapx-server.c			\
+	camel-imapx-stream.c			
+
+noinst_HEADERS =				\
+	camel-imapx-exception.h			\
+	camel-imapx-stream.h			\
+	camel-imapx-store-summary.h		\
+	camel-imapx-summary.h			\
+	camel-imapx-folder.h			\
+	camel-imapx-store.h			\
+	camel-imapx-server.h			\
+	camel-imapx-utils.h
+
+camel-imapx-tokenise.h: camel-imapx-tokens.txt
+	gperf -H imap_hash -N imap_tokenise_struct -L ANSI-C -o -t -k1,$$ $< > $@
+
+libcamelimapx_la_LDFLAGS = -avoid-version -module
+
+EXTRA_DIST = libcamelimapx.urls
