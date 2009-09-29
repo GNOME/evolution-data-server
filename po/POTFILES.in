@@ -11,6 +11,8 @@ addressbook/backends/vcf/e-book-backend-vcf.c
 addressbook/libebook/e-book.c
 addressbook/libebook/e-contact.c
 addressbook/libebook/e-destination.c
+addressbook/libedata-book/e-data-book-factory.c
+addressbook/libedata-book/e-data-book.c
 calendar/backends/contacts/e-cal-backend-contacts.c
 calendar/backends/file/e-cal-backend-file.c
 calendar/backends/google/e-cal-backend-google-utils.c
