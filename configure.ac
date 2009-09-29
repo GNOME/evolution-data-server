@@ -306,36 +306,23 @@ dnl ******************************
 dnl libdb checking
 dnl ******************************
 AC_ARG_WITH([libdb],
-	AS_HELP_STRING([--with-libdb],[Prefix where libdb is installed]),
-	[dynamic_libdb=yes], [dynamic_libdb=no])
+	AS_HELP_STRING([--with-libdb=PREFIX],
+	[Prefix where libdb is installed]),
+	[libdb_prefix="$withval"], [libdb_prefix="${prefix}"])
 
-if test "x${dynamic_libdb}" = "xyes"; then
-	DB_CFLAGS="-I$withval/include"
-	DB_LIBS="-L$withval/lib -ldb"
+DB_CFLAGS="-I$libdb_prefix/include"
+DB_LIBS="-L$libdb_prefix/lib -ldb"
 
-	AC_MSG_CHECKING([Berkeley DB])
-	save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
-	save_libs=$LIBS; LIBS="$DB_LIBS"
-	AC_LINK_IFELSE([AC_LANG_PROGRAM(
-		[[#include <db.h>]],
-		[[db_create(NULL, NULL, 0)]])],
-		[AC_MSG_RESULT([yes])],
-		[AC_MSG_ERROR([cannot find libdb])])
-	CFLAGS=$save_cflags
-	LIBS=$save_libs
-	msg_libdb="dynamically linked"
-else
-	DB_CFLAGS="-I\$(top_builddir)/libdb/dist"
-	DB_LIBS="\$(top_builddir)/libdb/dist/libdb-4.1.la"
-	if test $os_win32 = yes; then
-		dnl Don't pointlessly auto-export the global symbols
-		dnl from the static libdb
-		DB_LIBS="$DB_LIBS -Wl,--exclude-libs=libdb-4.1.a"
-	fi
-	AC_MSG_NOTICE([Using local libdb])
-	msg_libdb="statically linked to local copy"
-fi
-AM_CONDITIONAL(WITH_LIBDB, [test "x$dynamic_libdb" != "xno"])
+AC_MSG_CHECKING([Berkeley DB])
+save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
+save_libs=$LIBS; LIBS="$DB_LIBS"
+AC_LINK_IFELSE([AC_LANG_PROGRAM(
+	[[#include <db.h>]],
+	[[db_create(NULL, NULL, 0)]])],
+	[AC_MSG_RESULT([yes])],
+	[AC_MSG_ERROR([Cannot find libdb])])
+CFLAGS=$save_cflags
+LIBS=$save_libs
 AC_SUBST(DB_CFLAGS)
 AC_SUBST(DB_LIBS)
 
@@ -1730,10 +1717,6 @@ export privlibdir
 export privincludedir
 export privdatadir
 
-if test $dynamic_libdb = no; then
-	AC_CONFIG_SUBDIRS(libdb/dist)
-fi
-
 AC_CONFIG_FILES([
 Makefile
 evolution-data-server-zip
@@ -1792,7 +1775,6 @@ camel/tests/smime/Makefile
 camel/tests/stream/Makefile
 camel/camel.pc
 camel/camel-provider.pc
-libdb/Makefile
 libebackend/Makefile
 libebackend/libebackend.pc
 libedataserver/Makefile
@@ -1831,13 +1813,6 @@ po/Makefile.in
 ])
 AC_OUTPUT
 
-case $host in
-*-mingw*)
-	dnl Override the old libtool in libdb/dist with the one from here
-	cp libtool libdb/dist
-	;;
-esac
-
 echo "
 	evolution-data-server has been configured as follows:
 	Calendar:		$msg_calendar
@@ -1850,7 +1825,6 @@ echo "
 	SSL support:		$msg_ssl
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
-	Berkeley DB:		$msg_libdb
 	Exchange support:	$msg_exchange
 	Dot Locking:		$msg_dot
 	File Locking:		$msg_file
