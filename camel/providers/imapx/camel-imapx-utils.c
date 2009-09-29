@@ -1382,3 +1382,38 @@ unsigned char imapx_is_mask(const char *p)
 	return v;
 }
 
+gchar *
+imapx_path_to_physical (const gchar *prefix, const gchar *vpath)
+{
+	GString *out = g_string_new(prefix);
+	const gchar *p = vpath;
+	gchar c, *res;
+
+	g_string_append_c(out, '/');
+	p = vpath;
+	while ((c = *p++)) {
+		if (c == '/') {
+			g_string_append(out, "/" SUBFOLDER_DIR_NAME "/");
+			while (*p == '/')
+				p++;
+		} else
+			g_string_append_c(out, c);
+	}
+
+	res = out->str;
+	g_string_free(out, FALSE);
+
+	return res;
+}
+
+gchar *
+imapx_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffix)
+{
+	gsize len;
+
+	len = strlen (prefix);
+	if (len == 0 || prefix[len - 1] == imap_store->dir_sep)
+		return g_strdup_printf ("%s%s", prefix, suffix);
+	else
+		return g_strdup_printf ("%s%c%s", prefix, imap_store->dir_sep, suffix);
+}

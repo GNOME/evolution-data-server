@@ -1066,7 +1066,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 
 				mp = camel_mime_parser_new();
 				camel_mime_parser_init_with_stream(mp, finfo->header);
-				mi = camel_message_info_new_from_parser(job->folder->summary, mp);
+				mi = camel_folder_summary_info_new_from_parser(job->folder->summary, mp);
 				camel_object_unref(mp);
 
 				if (mi) {
@@ -1083,7 +1083,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 							((CamelMessageInfoBase *)mi)->flags = r->server_flags;
 							((CamelIMAPXMessageInfo *)mi)->server_flags = r->server_flags;
 							camel_flag_list_copy(&((CamelMessageInfoBase *)mi)->user_flags, &r->server_user_flags);
-							((CamelIMAPXMessageInfo *)mi)->server_flags = r->server_user_flags; /*check this*/
+							((CamelIMAPXMessageInfo *)mi)->server_user_flags = r->server_user_flags;
 							break;
 						}
 					}
@@ -2517,7 +2517,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 		goto fail;
 	}
 
-	info = camel_message_info_new_from_message(folder->summary, message, mi);
+	info = camel_folder_summary_info_new_from_message((CamelFolderSummary *)folder->summary, message, NULL);
 	info->uid = uid;
 	uid = NULL;
 	camel_folder_summary_add(folder->summary, info);
@@ -2676,7 +2676,7 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrA
 		}
 
 		uflags = ((CamelMessageInfoBase *)info)->user_flags;
-		suflags = info->server_flags; /*check*/
+		suflags = info->server_user_flags;
 		while (uflags || suflags) {
 			int res;
 

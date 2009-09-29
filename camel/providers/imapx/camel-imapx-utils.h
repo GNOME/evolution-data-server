@@ -4,6 +4,7 @@
 
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-folder-summary.h>
+#include "camel-imapx-store.h"
 
 struct _CamelIMAPXStream;
 struct _CamelFlag;
@@ -185,5 +186,9 @@ unsigned char imapx_is_mask(const char *p);
 /* ********************************************************************** */
 
 void imapx_utils_init(void);
+
+/* chen adds from old imap provider - place it in right place */
+gchar *imapx_path_to_physical (const gchar *prefix, const gchar *vpath);
+gchar *imapx_concat (CamelIMAPXStore *imap_store, const gchar *prefix, const gchar *suffix);
 
 #endif

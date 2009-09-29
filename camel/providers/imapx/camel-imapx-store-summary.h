@@ -70,7 +70,7 @@ struct _CamelIMAPXStoreSummaryClass {
 };
 
 CamelType			 camel_imapx_store_summary_get_type	(void);
-CamelIMAPXStoreSummary      *camel_iMAPX_store_summary_new	(void);
+CamelIMAPXStoreSummary      *camel_imapx_store_summary_new	(void);
 
 /* TODO: this api needs some more work, needs to support lists */
 CamelIMAPXStoreNamespace *camel_imapx_store_summary_namespace_new(CamelIMAPXStoreSummary *s, const gchar *full_name, gchar dir_sep);

@@ -52,7 +52,7 @@ typedef struct {
 	struct _CamelIMAPXServer *server;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
-	gchar *namespace, *dir_sep, *base_url, *storage_path;
+	gchar *namespace, dir_sep, *base_url, *storage_path;
 
 	/* if we had a login error, what to show to user */
 	char *login_error;

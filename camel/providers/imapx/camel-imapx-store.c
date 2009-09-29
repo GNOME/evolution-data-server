@@ -235,9 +235,10 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 			folder_name = "INBOX";
 
 		storage_path = g_strdup_printf("%s/folders", imapx_store->storage_path);
-		folder_dir = imap_path_to_physical (storage_path, folder_name);
+		folder_dir = imapx_path_to_physical (storage_path, folder_name);
 		g_free(storage_path);
-		new_folder = camel_imap_folder_new (store, folder_name, folder_dir, ex);
+		/* FIXME */
+		new_folder = camel_imapx_folder_new (store, folder_dir, folder_name);
 		g_free(folder_dir);
 
 		camel_store_summary_info_free((CamelStoreSummary *)imapx_store->summary, si);
@@ -253,7 +254,7 @@ static CamelFolder *
 imap_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
-	CamelIMAPXFolder *folder;
+	CamelFolder *folder;
 
 	folder = get_folder_offline(store, folder_name, flags, ex);
 	if (folder == NULL) {
@@ -261,7 +262,7 @@ imap_get_folder (CamelStore *store, const char *folder_name, guint32 flags, Came
 		return NULL;
 	}
 
-	return (CamelFolder *)folder;
+	return folder;
 }
 
 static CamelFolder *
@@ -420,6 +421,47 @@ folder_info_fill(CamelStore *store, CamelFolderInfo *fi)
 	}
 }
 
+
+/* folder_name is path name */
+static CamelFolderInfo *
+imapx_build_folder_info (CamelIMAPXStore *imap_store, const gchar *folder_name)
+{
+	CamelURL *url;
+	const gchar *name;
+	CamelFolderInfo *fi;
+
+	fi = camel_folder_info_new ();
+	fi->full_name = g_strdup(folder_name);
+	fi->unread = -1;
+	fi->total = -1;
+
+	url = camel_url_new (imap_store->base_url, NULL);
+	g_free (url->path);
+	url->path = g_strdup_printf ("/%s", folder_name);
+	fi->uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
+	camel_url_free(url);
+	name = strrchr (fi->full_name, '/');
+	if (name == NULL)
+		name = fi->full_name;
+	else
+		name++;
+	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
+		fi->name = g_strdup (_("Inbox"));
+	/* Do not localize the rest, these are from a server, thus shouldn't be localized */
+	/*else if (!g_ascii_strcasecmp (fi->full_name, "Drafts"))
+		fi->name = g_strdup (_("Drafts"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Sent"))
+		fi->name = g_strdup (_("Sent"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Templates"))
+		fi->name = g_strdup (_("Templates"));
+	else if (!g_ascii_strcasecmp (fi->full_name, "Trash"))
+		fi->name = g_strdup (_("Trash"));*/
+	else
+		fi->name = g_strdup (name);
+
+	return fi;
+}
+
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store, const gchar *top,
 			 guint32 flags, CamelException *ex)
@@ -456,7 +498,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			name = camel_imapx_store_summary_path_to_full(imapx_store->summary, top, imapx_store->dir_sep);
 	}
 
-	pattern = imap_concat(imapx_store, name, "*");
+	pattern = imapx_concat(imapx_store, name, "*");
 
 	/* folder_info_build will insert parent nodes as necessary and mark
 	 * them as noselect, which is information we actually don't have at
@@ -483,7 +525,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			&&((flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))) {
 
-			fi = imap_build_folder_info(imapx_store, camel_store_info_path((CamelStoreSummary *)imapx_store->summary, si));
+			fi = imapx_build_folder_info(imapx_store, camel_store_info_path((CamelStoreSummary *)imapx_store->summary, si));
 			fi->unread = si->unread;
 			fi->total = si->total;
 			fi->flags = si->flags;

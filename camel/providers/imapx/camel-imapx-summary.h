@@ -51,6 +51,7 @@ typedef struct _CamelIMAPXMessageInfo {
 	CamelMessageInfoBase info;
 
 	guint32 server_flags;
+	struct _CamelFlag *server_user_flags;
 } CamelIMAPXMessageInfo;
 
 struct _CamelIMAPXSummary {
