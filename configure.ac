@@ -1065,6 +1065,26 @@ fi
 AM_CONDITIONAL(ENABLE_IMAP4, [test x$enable_imap4 = xyes])
 
 dnl ******************************
+dnl IMAPX code support.
+dnl ******************************
+AC_ARG_ENABLE(imapx,
+	AS_HELP_STRING([--enable-imapx=no/yes],
+	[Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
+	[],[enable_imapx=no])
+
+if test "x$enable_imapx" = "xyes"; then
+	AC_DEFINE(ENABLE_IMAPX,1,[Really don't try this at home])
+	AC_PATH_PROG(GPERF, gperf)
+	if test -z "$GPERF" ; then
+		AC_MSG_ERROR([You need gperf to compile imapx provider])
+	fi
+	msg_imapx=yes
+else
+	msg_imapx=no
+fi
+AM_CONDITIONAL(ENABLE_IMAPX, [test x$enable_imapx = xyes])
+
+dnl ******************************
 dnl Hula support
 dnl ******************************
 AC_ARG_ENABLE([hula],
@@ -1834,6 +1854,12 @@ echo "
 "
 if test "$msg_hula" = "yes"; then
 	echo "Hula support:	$msg_hula"
+fi
+
+if test "$msg_imapx" = "yes"; then
+	echo "
+	IMAPX support:		$msg_imapx
+"
 fi
 
 if test "$msg_no_ntlm" != "no" ; then
