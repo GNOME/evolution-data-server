@@ -308,7 +308,7 @@ dnl ******************************
 AC_ARG_WITH([libdb],
 	AS_HELP_STRING([--with-libdb=PREFIX],
 	[Prefix where libdb is installed]),
-	[libdb_prefix="$withval"], [libdb_prefix="${prefix}"])
+	[libdb_prefix="$withval"], [libdb_prefix='${prefix}'])
 
 DB_CFLAGS="-I$libdb_prefix/include"
 DB_LIBS="-L$libdb_prefix/lib -ldb"
