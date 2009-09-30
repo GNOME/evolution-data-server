@@ -1471,7 +1471,7 @@ imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls)
 	CamelStream * volatile tcp_stream = NULL;
 	int ret;
 
-	CAMEL_TRY {
+	{
 #ifdef HAVE_SSL
 		const char *mode;
 #endif
@@ -1540,18 +1540,21 @@ imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls)
 		ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
 		imapx_command_run(is, ic);
 		camel_imapx_command_free(ic);
-	} CAMEL_CATCH(e) {
+	} 
+	
+	
+/*	CAMEL_CATCH(e) {
 		if (tcp_stream)
 			camel_object_unref(tcp_stream);
 		camel_exception_throw_ex(e);
-	} CAMEL_DONE;
+	} CAMEL_DONE; */
 }
 
 static void
 imapx_reconnect(CamelIMAPXServer *is)
 {
 retry:
-	CAMEL_TRY {
+	{
 		CamelSasl *sasl;
 		CamelIMAPXCommand *ic;
 
@@ -1592,15 +1595,26 @@ retry:
 		imapx_command_run(is, ic);
 		camel_imapx_command_free(ic);
 		is->state = IMAPX_AUTHENTICATED;
-	} CAMEL_CATCH(e) {
-		/* Shrug, either way this re-loops back ... */
-		if (TRUE /*e->ex != CAMEL_EXCEPTION_USER_CANCEL*/) {
+	} 
+
+/*	if (camel_exception_is_set (e)) {
+		if (*e->ex  CAMEL_EXCEPTION_USER_CANCEL) {
 			printf("Re Connection failed: %s\n", e->desc);
 			sleep(5);
 			// camelexception_done?
 			goto retry;
 		}
-	} CAMEL_DONE;
+	} */
+	
+/*	CAMEL_CATCH(e) {
+		/* Shrug, either way this re-loops back ... 
+		if (TRUE /*e->ex != CAMEL_EXCEPTION_USER_CANCEL) {
+			printf("Re Connection failed: %s\n", e->desc);
+			sleep(5);
+			// camelexception_done?
+			goto retry;
+		}
+	} CAMEL_DONE; */
 }
 
 /* ********************************************************************** */
@@ -2183,7 +2197,8 @@ imapx_server_loop(void *d)
 
 	// FIXME: handle exceptions
 	while (1) {
-		CAMEL_TRY {
+		{
+			printf ("Inside try catch loop \n");
 			if (!is->stream)
 				imapx_reconnect(is);
 
@@ -2265,10 +2280,12 @@ imapx_server_loop(void *d)
 			}
 #endif
 #endif
-		} CAMEL_CATCH(e) {
-			printf("######### Got main loop exception: %s\n", e->desc);
-			sleep(1);
-		} CAMEL_DONE;
+		} 
+		
+//		CAMEL_CATCH(e) {
+//			printf("######### Got main loop exception: %s\n", e->desc);
+//			sleep(1);
+//		} CAMEL_DONE;
 	}
 
 	return NULL;

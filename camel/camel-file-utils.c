@@ -752,3 +752,38 @@ camel_file_util_savename(const gchar *filename)
 
 	return retval;
 }
+
+/**
+ * camel_mkdir:
+ * @path: directory path to create
+ * @mode: permissions
+ *
+ * Creates the directory path described in @path, creating any parent
+ * directories as necessary.
+ *
+ * Returns 0 on success or -1 on fail. In the case of failure, errno
+ * will be set appropriately.
+ **/
+int
+camel_mkdir (const char *path, mode_t mode)
+{
+	char *copy, *p;
+	
+	g_assert(path && path[0] == '/');
+	
+	p = copy = g_alloca (strlen (path) + 1);
+	strcpy(copy, path);
+	do {
+		p = strchr(p + 1, '/');
+		if (p)
+			*p = '\0';
+		if (access(copy, F_OK) == -1) {
+			if (mkdir(copy, mode) == -1)
+				return -1;
+		}
+		if (p)
+			*p = '/';
+	} while (p);
+	
+	return 0;
+}

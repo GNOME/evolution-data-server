@@ -20,6 +20,7 @@ libcamelimapx_la_SOURCES =			\
 	camel-imapx-store.c			\
 	camel-imapx-folder.c			\
 	camel-imapx-server.c			\
+	camel-imapx-utils.c			\
 	camel-imapx-stream.c			
 
 noinst_HEADERS =				\
@@ -36,5 +37,14 @@ camel-imapx-tokenise.h: camel-imapx-tokens.txt
 	gperf -H imap_hash -N imap_tokenise_struct -L ANSI-C -o -t -k1,$$ $< > $@
 
 libcamelimapx_la_LDFLAGS = -avoid-version -module
+
+noinst_PROGRAMS = test-imapx
+
+test_imapx_SOURCES = test-imapx.c
+test_imapx_LDADD =							\ 
+	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(top_builddir)/camel/libcamel-provider-1.2.la			\
+	$(top_builddir)/camel/providers/imapx/libcamelimapx.la
+
 
 EXTRA_DIST = libcamelimapx.urls

@@ -25,9 +25,9 @@
 #include <camel/camel-object.h>
 #include <camel/camel-store-summary.h>
 
-#define CAMEL_IMAPX_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_iMAPX_store_summary_get_type (), CamelIMAPXStoreSummary)
-#define CAMEL_IMAPX_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_iMAPX_store_summary_get_type (), CamelIMAPXStoreSummaryClass)
-#define CAMEL_IS_IMAPX_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_iMAPX_store_summary_get_type ())
+#define CAMEL_IMAPX_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imapx_store_summary_get_type (), CamelIMAPXStoreSummary)
+#define CAMEL_IMAPX_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapx_store_summary_get_type (), CamelIMAPXStoreSummaryClass)
+#define CAMEL_IS_IMAPX_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_imapx_store_summary_get_type ())
 
 G_BEGIN_DECLS
 

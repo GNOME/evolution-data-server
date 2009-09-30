@@ -20,6 +20,7 @@
 #define d(x)
 
 #include "camel-imapx-tokenise.h"
+#define SUBFOLDER_DIR_NAME     "subfolders"
 
 #ifdef __GNUC__
 __inline
@@ -44,7 +45,7 @@ static struct {
 	{ "\\DRAFT", CAMEL_MESSAGE_DRAFT },
 	{ "\\FLAGGED", CAMEL_MESSAGE_FLAGGED },
 	{ "\\SEEN", CAMEL_MESSAGE_SEEN },
-	{ "\\RECENT", CAMEL_MESSAGE_RECENT },
+//	{ "\\RECENT", CAMEL_MESSAGE_RECENT },
 	{ "\\*", CAMEL_MESSAGE_USER },
 };
 
@@ -1407,7 +1408,7 @@ imapx_path_to_physical (const gchar *prefix, const gchar *vpath)
 }
 
 gchar *
-imapx_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffix)
+imapx_concat (CamelIMAPXStore *imap_store, const gchar *prefix, const gchar *suffix)
 {
 	gsize len;
 

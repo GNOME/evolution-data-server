@@ -55,6 +55,7 @@
 #include "camel-imapx-exception.h"
 #include "camel-imapx-utils.h"
 #include "camel-imapx-server.h"
+#include "camel-imapx-summary.h"
 #include "camel-net-utils.h"
 
 /* Specified in RFC 2060 section 2.1 */
@@ -461,6 +462,56 @@ imapx_build_folder_info (CamelIMAPXStore *imap_store, const gchar *folder_name)
 
 	return fi;
 }
+
+static void
+fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
+{
+	CamelFolder *folder;
+
+	folder = camel_object_bag_peek(store->folders, fi->full_name);
+	if (folder) {
+		CamelIMAPXSummary *ims;
+
+		if (folder->summary)
+			ims = (CamelIMAPXSummary *) folder->summary;
+		else
+			ims = (CamelIMAPXSummary *) camel_imapx_summary_new (folder, NULL);
+
+		fi->unread = ((CamelFolderSummary *)ims)->unread_count;
+		fi->total = ((CamelFolderSummary *)ims)->saved_count;
+
+		if (!folder->summary)
+			camel_object_unref (ims);
+		camel_object_unref(folder);
+	}
+}
+
+static gint 
+imap_match_pattern(gchar dir_sep, const gchar *pattern, const gchar *name)
+{
+	gchar p, n;
+
+	p = *pattern++;
+	n = *name++;
+	while (n && p) {
+		if (n == p) {
+			p = *pattern++;
+			n = *name++;
+		} else if (p == '%') {
+			if (n != dir_sep) {
+				n = *name++;
+			} else {
+				p = *pattern++;
+			}
+		} else if (p == '*') {
+			return TRUE;
+		} else
+			return FALSE;
+	}
+
+	return n == 0 && (p == '%' || p == 0);
+}
+
 
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store, const gchar *top,
