@@ -1033,22 +1033,6 @@ AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
 AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 
 dnl ******************************
-dnl New IMAP code support.
-dnl ******************************
-AC_ARG_ENABLE([imapp],
-	AS_HELP_STRING([--enable-imapp=no/yes],
-	[Attempt to compile alternative, incomplete, very unsupported IMAPv4r1 code]),
-	[],[enable_imapp=no])
-
-if test "x$enable_imapp" = "xyes"; then
-	AC_DEFINE(ENABLE_IMAPP,1,[Really don't try this at home])
-	msg_imapp=yes
-else
-	msg_imapp=no
-fi
-AM_CONDITIONAL(ENABLE_IMAPP, [test x$enable_imapp = xyes])
-
-dnl ******************************
 dnl IMAP4rev1 code support.
 dnl ******************************
 AC_ARG_ENABLE(imap4,
