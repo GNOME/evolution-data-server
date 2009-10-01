@@ -634,7 +634,7 @@ e_data_book_respond_get_changes (EDataBook *book, guint32 opid, EDataBookStatus 
 static gboolean
 impl_AddressBook_Book_cancelOperation(EDataBook *book, GError **error)
 {
-	if (!e_book_backend_cancel_operation (e_data_book_get_backend (book), book)) {
+	if (e_book_backend_cancel_operation (e_data_book_get_backend (book), book) != GNOME_Evolution_Addressbook_Success) {
 		g_set_error (error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_COULD_NOT_CANCEL, "Failed to cancel operation");
 		return FALSE;
 	}
