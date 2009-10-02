@@ -100,4 +100,13 @@ e_calendar_factory_SOURCES = \
 	e-data-cal-factory.h \
 	e-cal-backend-loader-factory.c \
 	e-cal-backend-loader-factory.h
+e_calendar_factory_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"libedata-cal\"			\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/calendar			\
+	-I$(top_builddir)/calendar			\
+	$(LIBICAL_CFLAGS)				\
+	$(EVOLUTION_CALENDAR_CFLAGS)
 e_calendar_factory_LDADD = $(builddir)/libedata-cal-1.2.la
