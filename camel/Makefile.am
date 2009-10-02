@@ -12,9 +12,7 @@ else
 LIBCAMEL_PLATFORM_DEP_SOURCES = \
 	camel-lock-client.c \
 	camel-stream-process.c
-LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES =	\
-	camel-movemail.c			\
-	camel-sasl-kerberos4.c
+LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES = camel-movemail.c
 LOCK_HELPER = camel-lock-helper-1.2
 endif
 
@@ -119,7 +117,6 @@ libcamel_providerinclude_HEADERS =		\
 	camel-sasl-cram-md5.h			\
 	camel-sasl-digest-md5.h			\
 	camel-sasl-gssapi.h			\
-	camel-sasl-kerberos4.h			\
 	camel-sasl-login.h			\
 	camel-sasl-ntlm.h			\
 	camel-sasl-plain.h			\

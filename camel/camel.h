@@ -100,7 +100,6 @@
 #include <camel/camel-sasl-cram-md5.h>
 #include <camel/camel-sasl-digest-md5.h>
 #include <camel/camel-sasl-gssapi.h>
-#include <camel/camel-sasl-kerberos4.h>
 #include <camel/camel-sasl-login.h>
 #include <camel/camel-sasl-ntlm.h>
 #include <camel/camel-sasl-plain.h>

@@ -1153,21 +1153,6 @@ AC_ARG_WITH([krb5-includes],
 	[Location of Kerberos 5 headers]),
 	[with_krb5_includes="$withval"], [with_krb5_includes=""])
 
-AC_ARG_WITH([krb4],
-	AS_HELP_STRING([--with-krb4=PATH],
-	[Location of Kerberos 4 install dir]),
-	[with_krb4="$withval"], [with_krb4="no"])
-
-AC_ARG_WITH([krb4-libs],
-	AS_HELP_STRING([--with-krb4-libs=DIR],
-	[Location of Kerberos 4 libraries]),
-	[with_krb4_libs="$withval"], [with_krb4_libs="$with_krb4/lib"])
-
-AC_ARG_WITH([krb4-includes],
-	AS_HELP_STRING([--with-krb4-includes=DIR],
-	[Location of Kerberos 4 headers]),
-	[with_krb4_includes="$withval"], [with_krb4_includes=""])
-
 dnl ******************************
 dnl Kerberos 5
 dnl ******************************
@@ -1250,76 +1235,8 @@ AC_CHECK_HEADER([com_err.h],
 		#endif
 	]])
 
-dnl ******************************
-dnl Kerberos 4
-dnl ******************************
-msg_krb4="no"
-if test "x${with_krb4}" != "xno"; then
-	LIBS_save="$LIBS"
-	AC_CACHE_CHECK([for Kerberos 4], [ac_cv_lib_kerberos4],
-	[
-		ac_cv_lib_kerberos4="no"
-
-		mitcompatlibs="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
-		dnl Look for MIT krb5 compat krb4
-		LIBS="$LIBS_save -L$with_krb4_libs $mitcompatlibs"
-		AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
-		[ac_cv_lib_kerberos4="$mitcompatlibs"])
-
-		if test "$ac_cv_lib_kerberos4" = "no"; then
-			dnl Look for KTH krb4
-			LIBS="$LIBS_save -L$with_krb4_libs -lkrb -lcrypto -lcom_err -lroken"
-			AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
-			[ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken"])
-		fi
-		if test "$ac_cv_lib_kerberos4" = "no"; then
-			dnl Look for old MIT krb4
-			LIBS="$LIBS_save -L$with_krb4_libs -lkrb"
-			AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
-			[ac_cv_lib_kerberos4="-lkrb"],
-			[
-				LIBS="$LIBS -ldes"
-				AC_LINK_IFELSE([AC_LANG_CALL([], [krb_mk_req])],
-				[ac_cv_lib_kerberos4="-lkrb -ldes"])
-			])
-		fi
-	])
-	LIBS="$LIBS_save"
-	if test "$ac_cv_lib_kerberos4" != "no"; then
-		AC_DEFINE(HAVE_KRB4,1,[Define if you have Krb4])
-		msg_krb4="yes"
-
-		if test -z "$with_krb4_includes"; then
-			if test -f "$with_krb4/include/krb.h" -o -f "$with_krb4/include/port-sockets.h"; then
-				KRB4_CFLAGS="-I$with_krb4/include"
-			fi
-			if test -d "$with_krb4/include/kerberosIV"; then
-				KRB4_CFLAGS="$KRB4_CFLAGS -I$with_krb4/include/kerberosIV"
-			fi
-		else
-			KRB4_CFLAGS="-I$with_krb4_includes"
-		fi
-		KRB4_LIBS="-L$with_krb4_libs $ac_cv_lib_kerberos4"
-
-		CFLAGS_save="$CFLAGS"
-		CFLAGS="$CFLAGS $KRB4_CFLAGS"
-		AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
-			[[	#include "krb.h"
-				int krb_sendauth;
-			]],
-			[[	return 0	]]
-			)],[AC_DEFINE(NEED_KRB_SENDAUTH_PROTO,1,[Need krb_sendauth proto])],[])
-		CFLAGS="$CFLAGS_save"
-	fi
-else
-	AC_MSG_CHECKING([for Kerberos 4])
-	AC_MSG_RESULT([${with_krb4}])
-fi
-
 AC_SUBST(KRB5_CFLAGS)
 AC_SUBST(KRB5_LIBS)
-AC_SUBST(KRB4_CFLAGS)
-AC_SUBST(KRB4_LIBS)
 
 dnl ******************************
 dnl Purify support
@@ -1824,7 +1741,7 @@ echo "
 	Mail Directory:		$system_mail_dir, $system_mail_perm
 	LDAP support:		$msg_ldap
 	NNTP support:		$msg_nntp
-	Kerberos 4/5:		$msg_krb4/$msg_krb5
+	Kerberos 5:		$msg_krb5
 	Gnome Keyring:		$enable_gnome_keyring/$with_gnome_keyring
 	SSL support:		$msg_ssl
 	SMIME support:		$msg_smime

@@ -40,7 +40,6 @@
             <link linkend="CamelSaslCramMd5">CamelSaslCramMd5</link>
             <link linkend="CamelSaslDigestMd5">CamelSaslDigestMd5</link>
             <link linkend="CamelSaslGssapi">CamelSaslGssapi</link>
-            <link linkend="CamelSaslKerberos4">CamelSaslKerberos4</link>
             <link linkend="CamelSaslLogin">CamelSaslLogin</link>
             <link linkend="CamelSaslNTLM">CamelSaslNTLM</link>
             <link linkend="CamelSaslPlain">CamelSaslPlain</link>

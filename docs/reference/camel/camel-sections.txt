@@ -1509,21 +1509,6 @@ camel_sasl_gssapi_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-sasl-kerberos4</FILE>
-<TITLE>CamelSaslKerberos4</TITLE>
-CamelSaslKerberos4
-camel_sasl_kerberos4_authtype
-<SUBSECTION Standard>
-CAMEL_SASL_KERBEROS4
-CAMEL_IS_SASL_KERBEROS4
-CAMEL_SASL_KERBEROS4_TYPE
-CAMEL_SASL_KERBEROS4_CLASS
-CamelSaslKerberos4Class
-<SUBSECTION Private>
-camel_sasl_kerberos4_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-sasl-login</FILE>
 <TITLE>CamelSaslLogin</TITLE>
 CamelSaslLogin

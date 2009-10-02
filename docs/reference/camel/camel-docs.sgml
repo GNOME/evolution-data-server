@@ -81,7 +81,6 @@
 <!ENTITY CamelSASLCRAMMD5 SYSTEM "xml/camel-sasl-cram-md5.xml">
 <!ENTITY CamelSASLDigestMD5 SYSTEM "xml/camel-sasl-digest-md5.xml">
 <!ENTITY CamelSASLGSSAPI SYSTEM "xml/camel-sasl-gssapi.xml">
-<!ENTITY CamelSASLKerberos4 SYSTEM "xml/camel-sasl-kerberos4.xml">
 <!ENTITY CamelSASLLogin SYSTEM "xml/camel-sasl-login.xml">
 <!ENTITY CamelSASLNTLM SYSTEM "xml/camel-sasl-ntlm.xml">
 <!ENTITY CamelSASLPlain SYSTEM "xml/camel-sasl-plain.xml">
@@ -260,7 +259,6 @@
       &CamelSASLCRAMMD5;
       &CamelSASLDigestMD5;
       &CamelSASLGSSAPI;
-      &CamelSASLKerberos4;
       &CamelSASLLogin;
       &CamelSASLNTLM;
       &CamelSASLPlain;
