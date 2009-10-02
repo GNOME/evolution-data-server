@@ -1,25 +1,26 @@
+noinst_PROGRAMS = create-account soap-test
 
-AM_CPPFLAGS =						\
+SERVERS_GROUPWISE_CPPFLAGS= \
 	-DG_LOG_DOMAIN=\"libegroupwise\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(SOUP_CFLAGS)					\
 	$(E_DATA_SERVER_CFLAGS)
 
-noinst_PROGRAMS = create-account soap-test 
-
+create_account_CPPFLAGS = $(SERVERS_GROUPWISE_CPPFLAGS)
 create_account_SOURCES = create-account.c
 create_account_LDADD = 						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(SOUP_LIBS)						\
 	$(E_DATA_SERVER_LIBS)
 
+soap_test_CPPFLAGS = $(SERVERS_GROUPWISE_CPPFLAGS)
 soap_test_SOURCES = soap-test.c
 soap_test_LDADD = 						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(SOUP_LIBS)						\
 	libegroupwise-1.2.la					\
-	$(E_DATA_SERVER_LIBS) 
+	$(E_DATA_SERVER_LIBS)
 
 build-timestamp.h : $(top_builddir)/config.h
 	echo "const char *build_timestamp = \"Evolution-Data-Server-@BASE_VERSION@-`date +%F`\";" > $@
@@ -29,6 +30,14 @@ NODIST_FILES = build-timestamp.h
 CLEANFILES = build-timestamp.h
 
 lib_LTLIBRARIES = libegroupwise-1.2.la
+
+libegroupwise_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"libegroupwise\"		\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	$(SOUP_CFLAGS)					\
+	$(E_DATA_SERVER_CFLAGS)
 
 libegroupwise_1_2_la_SOURCES =			\
 	e-gw-connection.c			\

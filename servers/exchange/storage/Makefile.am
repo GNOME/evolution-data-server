@@ -1,11 +1,15 @@
-# Fix the code to not use E_DATA_SERVER_UI_CFLAGS
-
 if OS_WIN32
 WIN32_BOOTSTRAP_LIBS =					\
 	$(top_builddir)/win32/libedataserverui-1.2.la
 endif
 
-AM_CPPFLAGS =							\
+lib_LTLIBRARIES =						\
+	libexchange-storage-1.2.la
+
+# Fix the code to not use E_DATA_SERVER_UI_CFLAGS
+
+libexchange_storage_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)						\
 	-DG_LOG_DOMAIN=\"evolution-exchange-storage\"		\
 	-DPREFIX=\"$(prefix)\"					\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
@@ -22,9 +26,6 @@ AM_CPPFLAGS =							\
 	$(SOUP_CFLAGS)						\
 	$(E_DATA_SERVER_CFLAGS)					\
 	$(E_DATA_SERVER_UI_CFLAGS)
-
-lib_LTLIBRARIES =						\
-	libexchange-storage-1.2.la
 
 libexchange_storage_1_2_la_SOURCES =				\
 	e-folder.c						\

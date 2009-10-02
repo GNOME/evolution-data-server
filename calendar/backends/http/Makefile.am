@@ -1,4 +1,7 @@
-AM_CPPFLAGS =						\
+extension_LTLIBRARIES = libecalbackendhttp.la
+
+libecalbackendhttp_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libecalbackendhttp\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -6,8 +9,6 @@ AM_CPPFLAGS =						\
 	-I$(top_builddir)/calendar			\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(SOUP_CFLAGS)
-
-extension_LTLIBRARIES = libecalbackendhttp.la
 
 libecalbackendhttp_la_SOURCES =		\
 	e-cal-backend-http-factory.c	\

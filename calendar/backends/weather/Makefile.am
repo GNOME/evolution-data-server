@@ -1,4 +1,7 @@
-AM_CPPFLAGS =						\
+extension_LTLIBRARIES = libecalbackendweather.la
+
+libecalbackendweather_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libecalbackendweather\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -11,8 +14,6 @@ AM_CPPFLAGS =						\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(SOUP_CFLAGS)					\
 	$(LIBGWEATHER_CFLAGS)
-
-extension_LTLIBRARIES = libecalbackendweather.la
 
 libecalbackendweather_la_SOURCES =	\
 	e-cal-backend-weather-factory.c	\

@@ -1,13 +1,14 @@
-AM_CPPFLAGS = \
-	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	-I$(top_srcdir)/addressbook \
-	-I$(top_builddir)/addressbook \
-	$(SOUP_CFLAGS) \
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
-
 extension_LTLIBRARIES = libebookbackendwebdav.la
+
+libebookbackendwebdav_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" 	\
+	-I$(top_srcdir) 				\
+	-I$(top_builddir) 				\
+	-I$(top_srcdir)/addressbook 			\
+	-I$(top_builddir)/addressbook 			\
+	$(SOUP_CFLAGS) 					\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libebookbackendwebdav_la_SOURCES = \
 	e-book-backend-webdav-factory.c \
@@ -21,5 +22,4 @@ libebookbackendwebdav_la_LIBADD = \
 	$(SOUP_LIBS) \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-libebookbackendwebdav_la_LDFLAGS = \
-	-module -avoid-version $(NO_UNDEFINED)
+libebookbackendwebdav_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED)

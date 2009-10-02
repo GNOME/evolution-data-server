@@ -1,11 +1,11 @@
-AM_CPPFLAGS = 				\
+noinst_PROGRAMS = dump-vcard
+
+dump_vcard_CPPFLAGS = \
 	-I$(top_srcdir)			\
 	-I$(top_builddir)		\
 	-I$(top_srcdir)/addressbook	\
 	-I$(top_builddir)/addressbook	\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
-
-noinst_PROGRAMS = dump-vcard
 
 dump_vcard_LDADD = 						\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\

@@ -1,4 +1,7 @@
-AM_CPPFLAGS =						\
+extension_LTLIBRARIES = libecalbackendgroupwise.la
+
+libecalbackendgroupwise_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libecalbackendgroupwise\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -9,8 +12,6 @@ AM_CPPFLAGS =						\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(SOUP_CFLAGS)					\
 	$(DEBUG_CFLAGS)
-
-extension_LTLIBRARIES = libecalbackendgroupwise.la
 
 libecalbackendgroupwise_la_SOURCES =		\
 	e-cal-backend-groupwise-factory.c	\

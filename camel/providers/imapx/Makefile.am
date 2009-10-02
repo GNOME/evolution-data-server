@@ -1,9 +1,9 @@
-## Process this file with automake to produce Makefile.in
-
 camel_provider_LTLIBRARIES = libcamelimapx.la
 camel_provider_DATA = libcamelimapx.urls
 
-INCLUDES = -I.. \
+libcamelimapx_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I..					\
 	-I$(srcdir)/..				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/intl			\
@@ -40,11 +40,20 @@ libcamelimapx_la_LDFLAGS = -avoid-version -module
 
 noinst_PROGRAMS = test-imapx
 
+test_imapx_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I..					\
+	-I$(srcdir)/..				\
+	-I$(top_srcdir)/camel			\
+	-I$(top_srcdir)/intl			\
+	-I$(top_srcdir)/e-util			\
+	-I$(top_srcdir)				\
+	$(CAMEL_CFLAGS)				\
+	-DG_LOG_DOMAIN=\"camel-imapx\"
 test_imapx_SOURCES = test-imapx.c
 test_imapx_LDADD =							\ 
 	$(top_builddir)/camel/libcamel-1.2.la				\
 	$(top_builddir)/camel/libcamel-provider-1.2.la			\
-	$(top_builddir)/camel/providers/imapx/libcamelimapx.la
-
+	libcamelimapx.la
 
 EXTRA_DIST = libcamelimapx.urls

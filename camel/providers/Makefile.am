@@ -1,5 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
 if ENABLE_NNTP
 NNTP_DIR=nntp
 endif

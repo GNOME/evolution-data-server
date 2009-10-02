@@ -1,14 +1,3 @@
-AM_CPPFLAGS =						\
-	-DG_LOG_DOMAIN=\"libecal\"			\
-	-I$(top_srcdir)/calendar			\
-	-I$(srcdir) -I$(top_srcdir) 			\
-	-I. 						\
-	-I.. 						\
-	-I$(top_builddir)				\
-	-I$(top_builddir)/calendar/libecal		\
-	$(LIBICAL_CFLAGS)				\
-	$(EVOLUTION_CALENDAR_CFLAGS)
-
 # The corba stubs and skels
 CORBA_GENERATED_C =				\
 	Evolution-DataServer-Calendar-common.c		\
@@ -34,6 +23,16 @@ MARSHAL_GENERATED = e-cal-marshal.c e-cal-marshal.h
 
 # The library
 lib_LTLIBRARIES = libecal-1.2.la
+
+libecal_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)							\
+	-DG_LOG_DOMAIN=\"libecal\"				\
+	-I$(top_srcdir) 						\
+	-I$(top_srcdir)/calendar				\
+	-I$(top_builddir)						\
+	-I$(top_builddir)/calendar/libecal		\
+	$(LIBICAL_CFLAGS)						\
+	$(EVOLUTION_CALENDAR_CFLAGS)
 
 libecal_1_2_la_SOURCES =	\
 	$(CORBA_GENERATED_C)	\
@@ -91,4 +90,3 @@ EXTRA_DIST = 						\
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
-

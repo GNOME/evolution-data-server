@@ -1,9 +1,9 @@
-## Process this file with automake to produce Makefile.in
-
 camel_provider_LTLIBRARIES = libcamelnntp.la
 camel_provider_DATA = libcamelnntp.urls
 
-AM_CPPFLAGS = -I../..				\
+libcamelnntp_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I../..					\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\

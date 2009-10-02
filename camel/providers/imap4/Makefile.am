@@ -1,9 +1,8 @@
-## Process this file with automake to produce Makefile.in
-
 camel_provider_LTLIBRARIES = libcamelimap4.la
 camel_provider_DATA = libcamelimap4.urls
 
-AM_CPPFLAGS = 					\
+libcamelimap4_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\

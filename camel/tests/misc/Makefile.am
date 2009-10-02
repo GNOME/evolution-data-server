@@ -1,5 +1,5 @@
-
-AM_CPPFLAGS =						\
+MISC_TESTS_CPPFLAGS= \
+	$(AM_CPPFLAGS)					\
 	-I$(includedir)					\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/camel				\
@@ -7,7 +7,7 @@ AM_CPPFLAGS =						\
 	-DG_LOG_DOMAIN=\"evolution-tests\"		\
 	$(CAMEL_CFLAGS)
 
-LDADD = \
+MISC_TESTS_LDADD= \
 	$(top_builddir)/camel/libcamel-provider-${API_VERSION}.la 	\
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 		\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
@@ -21,8 +21,19 @@ check_PROGRAMS =  	\
 	url-scan	\
 	utf7		\
 	split		\
-	rfc2047		\
-	test2
-	split
+	rfc2047
 
-#TESTS = url utf7 split url-scan rfc2047 test2
+test1_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+test1_LDADD = $(MISC_TESTS_LDADD)
+test2_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+test2_LDADD = $(MISC_TESTS_LDADD)
+url_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+url_LDADD = $(MISC_TESTS_LDADD)
+url_scan_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+url_scan_LDADD  = $(MISC_TESTS_LDADD)
+utf7_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+utf7_LDADD = $(MISC_TESTS_LDADD)
+split_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+split_LDADD = $(MISC_TESTS_LDADD)
+rfc2047_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
+rfc2047_LDADD = $(MISC_TESTS_LDADD)

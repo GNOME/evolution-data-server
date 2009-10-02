@@ -1,5 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
 SUBDIRS = . providers tests
 
 if OS_WIN32
@@ -31,12 +29,16 @@ camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 
 lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
 
-AM_CPPFLAGS = -I.. -I$(srcdir)/.. 			 	\
-	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"	\
+libcamel_provider_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)									\
+	-I$(top_srcdir) 								\
+	-I$(top_builddir)								\
+	-I$(srcdir)										\
+	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
-	-DG_LOG_DOMAIN=\"camel\"			\
-	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"		\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-DG_LOG_DOMAIN=\"camel\"						\
+	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
 	$(CAMEL_CFLAGS)
 
 libcamel_provider_1_2_la_SOURCES = 		\
@@ -147,6 +149,18 @@ libcamel_provider_1_2_la_LIBADD =			\
 	$(CAMEL_LIBS)				\
 	$(SOCKET_LIBS)				\
 	$(REGEX_LIBS)
+
+libcamel_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)									\
+	-I$(top_srcdir) 								\
+	-I$(top_builddir)								\
+	-I$(srcdir)										\
+	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
+	-DG_LOG_DOMAIN=\"camel\"						\
+	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	$(CAMEL_CFLAGS)
 
 libcamel_1_2_la_SOURCES = 			\
 	camel-address.c				\
@@ -302,21 +316,45 @@ libcamel_1_2_la_LIBADD =				\
 	$(ICONV_LIBS)							\
 	$(REGEX_LIBS)
 
+camel_lock_helper_1_2_CPPFLAGS = \
+	$(AM_CPPFLAGS)									\
+	-I$(top_srcdir) 								\
+	-I$(top_builddir)								\
+	-I$(srcdir)										\
+	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
+	-DG_LOG_DOMAIN=\"camel\"						\
+	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	$(CAMEL_CFLAGS)
 
-camel_lock_helper_1_2_SOURCES = 		\
+camel_lock_helper_1_2_SOURCES = \
+	camel-lock.c					\
+	camel-lock.h					\
 	camel-lock-helper.c 			\
 	camel-lock-helper.h
 
 # NOTE: This needs to be cleaned up, it shouldn't link with all this crap,
 # because it might be setuid.
-camel_lock_helper_1_2_LDADD =			\
-	camel-lock.o				\
+camel_lock_helper_1_2_LDADD = \
 	$(libcamel_1_2_la_LIBADD)
 
-camel_index_control_1_2_SOURCES =		\
+camel_index_control_1_2_CPPFLAGS = \
+	$(AM_CPPFLAGS)									\
+	-I$(top_srcdir) 								\
+	-I$(top_builddir)								\
+	-I$(srcdir)										\
+	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
+	-DG_LOG_DOMAIN=\"camel\"						\
+	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	$(CAMEL_CFLAGS)
+
+camel_index_control_1_2_SOURCES = \
 	camel-index-control.c
 
-camel_index_control_1_2_LDADD =			\
+camel_index_control_1_2_LDADD = \
 	libcamel-1.2.la				\
 	$(libcamel_1_2_la_LIBADD)
 

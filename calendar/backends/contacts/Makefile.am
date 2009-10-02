@@ -1,4 +1,7 @@
-AM_CPPFLAGS =						\
+extension_LTLIBRARIES = libecalbackendcontacts.la
+
+libecalbackendcontacts_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libecalbackendcontact\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -7,8 +10,6 @@ AM_CPPFLAGS =						\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
-
-extension_LTLIBRARIES = libecalbackendcontacts.la
 
 libecalbackendcontacts_la_SOURCES =		\
 	e-cal-backend-contacts-factory.c	\

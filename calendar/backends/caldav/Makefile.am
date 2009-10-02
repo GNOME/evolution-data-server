@@ -1,12 +1,13 @@
-AM_CPPFLAGS = \
+extension_LTLIBRARIES = libecalbackendcaldav.la
+
+libecalbackendcaldav_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)	\
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/calendar \
 	-I$(top_builddir)/calendar \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(SOUP_CFLAGS) \
 	-DG_LOG_DOMAIN=\"e-cal-backend-caldav\"
-
-extension_LTLIBRARIES = libecalbackendcaldav.la
 
 libecalbackendcaldav_la_SOURCES = \
 	e-cal-backend-caldav-factory.c \

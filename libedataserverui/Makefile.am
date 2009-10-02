@@ -1,22 +1,24 @@
-AM_CPPFLAGS =								\
-	-I$(top_srcdir)							\
-	-I$(top_srcdir)/addressbook					\
-	-I$(top_builddir)/addressbook					\
-	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
-	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"			\
-	$(E_DATA_SERVER_UI_CFLAGS)
-
 # The marshallers
 MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 @EVO_MARSHAL_RULE@
 
 lib_LTLIBRARIES = libedataserverui-1.2.la
+
 noinst_PROGRAMS = 			\
-	test-category-completion		\
+	test-category-completion	\
 	test-source-combo-box		\
 	test-source-selector		\
 	test-contact-store		\
 	test-name-selector
+
+libedataserverui_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/addressbook		\
+	-I$(top_builddir)/addressbook		\
+	-DG_LOG_DOMAIN=\"e-data-server-ui\"	\
+	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"	\
+	$(E_DATA_SERVER_UI_CFLAGS)
 
 libedataserverui_1_2_la_SOURCES =	\
 	$(MARSHAL_GENERATED)		\
@@ -67,36 +69,40 @@ libedataserveruiinclude_HEADERS =	\
 	e-tree-model-generator.h	\
 	e-cell-renderer-color.h
 
+TEST_EDATASERVERUI_CPPFLAGS= \
+	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/addressbook		\
+	-I$(top_builddir)/addressbook		\
+	-DG_LOG_DOMAIN=\"e-data-server-ui\"	\
+	$(E_DATA_SERVER_UI_CFLAGS)
+
+TEST_EDATASERVERUI_LDFLAGS = \
+	libedataserverui-1.2.la 				\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(E_DATA_SERVER_UI_LIBS)
+
+
 # Test programs
+test_category_completion_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_category_completion_SOURCES = test-category-completion.c
-test_category_completion_LDADD = 					\
-	libedataserverui-1.2.la 				\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
+test_category_completion_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
+test_source_selector_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_source_selector_SOURCES = test-source-selector.c
-test_source_selector_LDADD = 					\
-	libedataserverui-1.2.la 				\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
+test_source_selector_LDADD =  $(TEST_EDATASERVERUI_LDFLAGS)
 
+test_source_combo_box_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_source_combo_box_SOURCES = test-source-combo-box.c
-test_source_combo_box_LDADD = 					\
-	libedataserverui-1.2.la 				\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
+test_source_combo_box_LDADD =  $(TEST_EDATASERVERUI_LDFLAGS)
 
+test_contact_store_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_contact_store_SOURCES = test-contact-store.c
-test_contact_store_LDADD =					\
-	libedataserverui-1.2.la 				\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
+test_contact_store_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
+test_name_selector_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_name_selector_SOURCES = test-name-selector.c
-test_name_selector_LDADD =					\
-	libedataserverui-1.2.la 				\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_DATA_SERVER_UI_LIBS)
+test_name_selector_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

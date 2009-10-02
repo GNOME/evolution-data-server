@@ -1,4 +1,7 @@
-AM_CPPFLAGS =						\
+extension_LTLIBRARIES = libebookbackendldap.la
+
+libebookbackendldap_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libebookbackend\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -6,8 +9,6 @@ AM_CPPFLAGS =						\
 	-I$(top_builddir)/addressbook			\
 	$(LDAP_CFLAGS)					\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
-
-extension_LTLIBRARIES = libebookbackendldap.la
 
 libebookbackendldap_la_SOURCES =			\
 	e-book-backend-ldap.c				\
@@ -22,10 +23,9 @@ libebookbackendldap_la_LIBADD =						\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
 	$(LDAP_LIBS)
 
-libebookbackendldap_la_LDFLAGS =	\
-	-module -avoid-version $(NO_UNDEFINED)
+libebookbackendldap_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED)
 
-LDAP_SCHEMA =						\
+LDAP_SCHEMA = \
 	evolutionperson.schema
 
 ldapschemadir = $(privdatadir)

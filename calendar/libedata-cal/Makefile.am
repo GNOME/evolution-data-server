@@ -1,13 +1,3 @@
-AM_CPPFLAGS =						\
-	-DG_LOG_DOMAIN=\"libedata-cal\"			\
-	-DBASE_VERSION=\""$(BASE_VERSION)"\"		\
-	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)/calendar			\
-	$(LIBICAL_CFLAGS)				\
-	$(EVOLUTION_CALENDAR_CFLAGS)
-
 CORBA_GENERATED_H =				\
 	Evolution-DataServer-Calendar.h
 
@@ -30,6 +20,17 @@ $(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
 # The libraray
 lib_LTLIBRARIES = libedata-cal-1.2.la
+
+libedata_cal_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"libedata-cal\"			\
+	-DBASE_VERSION=\""$(BASE_VERSION)"\"		\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/calendar			\
+	-I$(top_builddir)/calendar			\
+	$(LIBICAL_CFLAGS)				\
+	$(EVOLUTION_CALENDAR_CFLAGS)
 
 libedata_cal_1_2_la_SOURCES =		\
 	$(CORBA_GENERATED_C)		\

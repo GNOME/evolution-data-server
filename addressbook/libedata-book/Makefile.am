@@ -1,16 +1,3 @@
-AM_CPPFLAGS =						\
-	-DG_LOG_DOMAIN=\"libedata-book\"		\
-	-DLIBEXECDIR=\"$(libexecdir)\"			\
-	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	-I$(top_srcdir)/addressbook			\
-	-I$(top_builddir)/addressbook			\
-	$(DB_CFLAGS)					\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
-
-# The library
-lib_LTLIBRARIES = libedata-book-1.2.la
-
 DBUS_GENERATED_H = e-data-book-glue.h e-data-book-factory-glue.h e-data-book-view-glue.h
 %-glue.h: %.xml
 	dbus-binding-tool --mode=glib-server --output=$@ --prefix=$(subst -,_,$*) $^
@@ -21,6 +8,20 @@ glib_enum_define=E_DATA_BOOK
 glib_enum_prefix=e_data_book
 
 ENUM_GENERATED = e-data-book-enumtypes.h e-data-book-enumtypes.c
+
+# The library
+lib_LTLIBRARIES = libedata-book-1.2.la
+
+libedata_book_1_2_la_CPPFLAGS =				\
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"libedata-book\"		\
+	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/addressbook			\
+	-I$(top_builddir)/addressbook			\
+	$(DB_CFLAGS)					\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libedata_book_1_2_la_SOURCES =				\
 	$(DBUS_GENERATED_H)				\
@@ -62,6 +63,23 @@ libedata_bookinclude_HEADERS =				\
 	e-book-backend-cache.h 				\
 	e-book-backend-db-cache.h
 
+factorydir = $(libexecdir)
+
+factory_PROGRAMS = e-addressbook-factory
+
+e_addressbook_factory_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)		\
+	-DG_LOG_DOMAIN=\"libedata-book\"	\
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	-I$(top_srcdir)/addressbook		\
+	-I$(top_builddir)/addressbook
+
+e_addressbook_factory_SOURCES = e-data-book-factory.c e-data-book-factory.h offline-listener.c	offline-listener.h
+
+e_addressbook_factory_LDADD = libedata-book-1.2.la
+
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
@@ -86,9 +104,3 @@ EXTRA_DIST = 						\
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
-
-factorydir = $(libexecdir)
-factory_PROGRAMS = e-addressbook-factory
-
-e_addressbook_factory_SOURCES = e-data-book-factory.c e-data-book-factory.h offline-listener.c	offline-listener.h
-e_addressbook_factory_LDADD = libedata-book-1.2.la

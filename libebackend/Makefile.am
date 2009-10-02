@@ -1,11 +1,12 @@
-AM_CPPFLAGS =								\
-	-I$(top_srcdir)							\
-	-DG_LOG_DOMAIN=\"e-data-server\"				\
-	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
-	$(DB_CFLAGS)							\
-	$(E_BACKEND_CFLAGS)
-
 lib_LTLIBRARIES = libebackend-1.2.la
+
+libebackend_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)						\
+	-I$(top_srcdir)						\
+	-DG_LOG_DOMAIN=\"e-data-server\"			\
+	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"	\
+	$(DB_CFLAGS)						\
+	$(E_BACKEND_CFLAGS)
 
 libebackend_1_2_la_SOURCES =		\
 	e-data-server-module.c		\

@@ -1,10 +1,11 @@
-AM_CPPFLAGS =						\
+lib_LTLIBRARIES = libgdata-1.2.la
+
+libgdata_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libgdata\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(GDATA_CFLAGS)
-
-lib_LTLIBRARIES = libgdata-1.2.la
 
 libgdata_1_2_la_SOURCES =			\
 	gdata-feed.c                            \

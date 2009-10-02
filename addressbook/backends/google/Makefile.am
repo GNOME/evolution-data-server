@@ -1,17 +1,18 @@
-AM_CPPFLAGS = \
-	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	-I$(top_srcdir)/addressbook \
-	-I$(top_builddir)/addressbook \
-	-I$(top_srcdir)/servers/google/libgdata \
-	-I$(top_builddir)/servers/google/libgdata \
-	-I$(top_srcdir)/servers/google/libgdata-google \
-	-I$(top_builddir)/servers/google/libgdata-google \
-	$(SOUP_CFLAGS) \
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
-
 extension_LTLIBRARIES = libebookbackendgoogle.la
+
+libebookbackendgoogle_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" 	\
+	-I$(top_srcdir) 				\
+	-I$(top_builddir) 				\
+	-I$(top_srcdir)/addressbook 			\
+	-I$(top_builddir)/addressbook 			\
+	-I$(top_srcdir)/servers/google/libgdata 	\
+	-I$(top_builddir)/servers/google/libgdata 	\
+	-I$(top_srcdir)/servers/google/libgdata-google 	\
+	-I$(top_builddir)/servers/google/libgdata-google \
+	$(SOUP_CFLAGS) 					\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libebookbackendgoogle_la_SOURCES = \
 	util.h \

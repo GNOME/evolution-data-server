@@ -1,4 +1,8 @@
-AM_CPPFLAGS =								\
+lib_LTLIBRARIES = libedataserver-1.2.la
+noinst_PROGRAMS = test-source-list
+
+libedataserver_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)							\
 	-I$(top_srcdir)							\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"				\
@@ -8,9 +12,6 @@ AM_CPPFLAGS =								\
 	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
 	$(E_DATA_SERVER_CFLAGS)						\
 	$(SOUP_CFLAGS)
-
-lib_LTLIBRARIES = libedataserver-1.2.la
-noinst_PROGRAMS = test-source-list
 
 libedataserver_1_2_la_SOURCES =		\
 	e-account-list.c		\
@@ -78,7 +79,15 @@ libedataserverinclude_HEADERS =		\
 	eds-version.h			\
 	md5-utils.h
 
+test_source_list_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
+	-I$(top_srcdir)				\
+	-DG_LOG_DOMAIN=\"e-data-server\"	\
+	$(E_DATA_SERVER_CFLAGS)			\
+	$(SOUP_CFLAGS)
+
 test_source_list_SOURCES = test-source-list.c
+
 test_source_list_LDADD = libedataserver-1.2.la $(E_DATA_SERVER_LIBS)
 
 %-$(API_VERSION).pc: %.pc

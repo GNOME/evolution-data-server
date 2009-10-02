@@ -1,15 +1,3 @@
-# Fix the code to not use E_DATA_SERVER_UI_CFLAGS
-
-AM_CPPFLAGS =                                                      \
-	-DCONNECTOR_PREFIX=\""$(prefix)"\"			\
-	-I$(top_srcdir)						\
-	-I$(top_srcdir)/servers/exchange/xntlm			\
-	$(LDAP_CFLAGS)						\
-	$(KRB5_CFLAGS)						\
-	$(SOUP_CFLAGS)						\
-	$(E_DATA_SERVER_CFLAGS)					\
-	$(E_DATA_SERVER_UI_CFLAGS)
-
 noinst_LTLIBRARIES =						\
 	libexchange.la
 
@@ -69,6 +57,18 @@ else
 KERBEROS_FILES =
 endif
 
+# Fix the code to not use E_DATA_SERVER_UI_CFLAGS
+
+libexchange_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)						\
+	-DCONNECTOR_PREFIX=\""$(prefix)"\"			\
+	-I$(top_srcdir)						\
+	-I$(top_srcdir)/servers/exchange/xntlm			\
+	$(LDAP_CFLAGS)						\
+	$(KRB5_CFLAGS)						\
+	$(SOUP_CFLAGS)						\
+	$(E_DATA_SERVER_CFLAGS)					\
+	$(E_DATA_SERVER_UI_CFLAGS)
 
 libexchange_la_SOURCES =					\
 	$(MARSHAL_GENERATED)					\

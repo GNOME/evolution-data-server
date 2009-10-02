@@ -1,5 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
 camel_provider_LTLIBRARIES = libcamellocal.la
 camel_provider_DATA = libcamellocal.urls
 
@@ -18,7 +16,8 @@ SYSDEP_PROVIDER_SOURCES = \
 	camel-spool-summary.c
 endif
 
-AM_CPPFLAGS = \
+libcamellocal_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\

@@ -1,5 +1,5 @@
-
-AM_CPPFLAGS =						\
+MIMEFILTER_TESTS_CPPFLAGS= \
+	$(AM_CPPFLAGS)					\
 	-I$(includedir)					\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/camel				\
@@ -8,7 +8,7 @@ AM_CPPFLAGS =						\
 	-DSOURCEDIR=\"$(srcdir)\"				\
 	$(CAMEL_CFLAGS)
 
-LDADD = \
+MIMEFILTER_TESTS_LDADD= \
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 		\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
@@ -28,5 +28,11 @@ check_PROGRAMS =  		\
 	test-charset		\
 	test-tohtml
 
-#TESTS = test1 \
-#	test-crlf test-charset test-tohtml
+test1_CPPFLAGS = $(MIMEFILTER_TESTS_CPPFLAGS)
+test1_LDADD = $(MIMEFILTER_TESTS_LDADD)
+test_crlf_CPPFLAGS = $(MIMEFILTER_TESTS_CPPFLAGS)
+test_crlf_LDFLAGS = $(MIMEFILTER_TESTS_LDADD)
+test_charset_CPPFLAGS = $(MIMEFILTER_TESTS_CPPFLAGS)
+test_charset_LDFLAGS = $(MIMEFILTER_TESTS_LDADD)
+test_tohtml_CPPFLAGS = $(MIMEFILTER_TESTS_CPPFLAGS)
+test_tohtml_LDFLAGS = $(MIMEFILTER_TESTS_LDADD)

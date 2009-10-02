@@ -1,11 +1,11 @@
-## Process this file with automake to produce Makefile.in
-
 camel_provider_LTLIBRARIES = libcamelgroupwise.la
 camel_provider_DATA = libcamelgroupwise.urls
 
-AM_CPPFLAGS = -I.. \
+libcamelgroupwise_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
+	-I$(top_srcdir)/camel/providers		\
 	-I$(top_srcdir)/camel/providers/imap    \
         -I$(top_srcdir)/libedataserver          \
 	-I$(top_srcdir)/servers/groupwise       \
@@ -35,8 +35,8 @@ noinst_HEADERS =         			\
 	camel-groupwise-utils.h			\
 	camel-groupwise-transport.h		
 
-
 libcamelgroupwise_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+
 libcamelgroupwise_la_LIBADD =                                            \
         $(top_builddir)/servers/groupwise/libegroupwise-1.2.la           \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la             \

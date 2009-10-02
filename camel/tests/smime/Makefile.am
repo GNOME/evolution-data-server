@@ -1,5 +1,5 @@
-
-AM_CPPFLAGS =						\
+SMIME_TESTS_CPPFLAGS= \
+	$(AM_CPPFLAGS)					\
 	-I$(includedir)					\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/camel				\
@@ -8,7 +8,7 @@ AM_CPPFLAGS =						\
 	-DTEST_DATA_DIR=\"$(top_srcdir)/camel/tests/data\"\
 	$(CAMEL_CFLAGS)
 
-LDADD = \
+SMIME_TESTS_LDADD= \
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
 	$(top_builddir)/camel/libcamel-provider-${API_VERSION}.la 		\
@@ -20,4 +20,10 @@ check_PROGRAMS =  	\
 #	pgp-mime	
 #	pkcs7
 
-#TESTS = pgp #pgp-mime pkcs7
+pgp_CPPFLAGS = $(SMIME_TESTS_CPPFLAGS)
+pgp_LDADD = $(SMIME_TESTS_LDADD)
+
+# pgp_mime_CPPFLAGS = $(SMIME_TESTS_CPPFLAGS)
+# pgp_mime_LDADD = $(SMIME_TESTS_LDADD)
+# pkcs7_CPPFLAGS = $(SMIME_TESTS_CPPFLAGS)
+# pkcs7_LDADD = $(SMIME_TESTS_LDADD)

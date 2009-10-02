@@ -1,4 +1,12 @@
-AM_CPPFLAGS =						\
+# The marshallers
+MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
+@EVO_MARSHAL_RULE@
+
+# The library
+lib_LTLIBRARIES = libebook-1.2.la
+
+libebook_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-DG_LOG_DOMAIN=\"libebook\"			\
 	-I$(top_srcdir)					\
@@ -8,14 +16,7 @@ AM_CPPFLAGS =						\
 	-I$(top_builddir)/addressbook/libebook		\
         $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-# The marshallers
-MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
-@EVO_MARSHAL_RULE@
-
-# The library
-lib_LTLIBRARIES = libebook-1.2.la
-
-libebook_1_2_la_SOURCES =					\
+libebook_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
 	$(DBUS_GENERATED_H)				\
 	e-address-western.c				\

@@ -1,9 +1,8 @@
-## Process this file with automake to produce Makefile.in
-
 camel_provider_LTLIBRARIES = libcamelpop3.la
 camel_provider_DATA = libcamelpop3.urls
 
-AM_CPPFLAGS =					\
+libcamelpop3_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)				\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\

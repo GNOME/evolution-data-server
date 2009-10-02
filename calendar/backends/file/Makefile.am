@@ -1,4 +1,7 @@
-AM_CPPFLAGS =						\
+extension_LTLIBRARIES = libecalbackendfile.la
+
+libecalbackendfile_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
 	-DG_LOG_DOMAIN=\"libecalbackendfile\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -6,18 +9,16 @@ AM_CPPFLAGS =						\
 	-I$(top_builddir)/calendar			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-extension_LTLIBRARIES = libecalbackendfile.la
-
 libecalbackendfile_la_SOURCES =		\
-	e-cal-backend-file-factory.c\
-	e-cal-backend-file-factory.h\
-	e-cal-backend-file-events.c\
-	e-cal-backend-file-events.h\
-	e-cal-backend-file-journal.c\
-	e-cal-backend-file-journal.h\
-	e-cal-backend-file-todos.c\
-	e-cal-backend-file-todos.h\
-	e-cal-backend-file.c	\
+	e-cal-backend-file-factory.c	\
+	e-cal-backend-file-factory.h	\
+	e-cal-backend-file-events.c	\
+	e-cal-backend-file-events.h	\
+	e-cal-backend-file-journal.c	\
+	e-cal-backend-file-journal.h	\
+	e-cal-backend-file-todos.c	\
+	e-cal-backend-file-todos.h	\
+	e-cal-backend-file.c		\
 	e-cal-backend-file.h
 
 libecalbackendfile_la_LIBADD =							\

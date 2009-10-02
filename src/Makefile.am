@@ -1,19 +1,3 @@
-AM_CPPFLAGS =						\
-	-DG_LOG_DOMAIN=\"evolution-data-server\"	\
-	-DPREFIX=\"$(prefix)\"				\
-	-DSYSCONFDIR=\"$(sysconfdir)\"			\
-	-DDATADIR=\"$(datadir)\"			\
-	-DLIBDIR=\"$(libdir)\"				\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)/calendar			\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
-	$(SOUP_CFLAGS)					\
-	$(E_FACTORY_CFLAGS)				\
-	$(E_DATA_SERVER_CFLAGS)
-
-
 IDLS = \
 	Evolution-DataServer.idl
 
@@ -35,6 +19,22 @@ $(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
 noinst_PROGRAMS =			\
 	evolution-data-server
+
+evolution_data_server_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DG_LOG_DOMAIN=\"evolution-data-server\"	\
+	-DPREFIX=\"$(prefix)\"				\
+	-DSYSCONFDIR=\"$(sysconfdir)\"			\
+	-DDATADIR=\"$(datadir)\"			\
+	-DLIBDIR=\"$(libdir)\"				\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/calendar			\
+	-I$(top_srcdir)/calendar			\
+	-I$(top_builddir)/calendar			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	$(SOUP_CFLAGS)					\
+	$(E_FACTORY_CFLAGS)				\
+	$(E_DATA_SERVER_CFLAGS)
 
 evolution_data_server_SOURCES = \
 	$(IDL_GENERATED)		\

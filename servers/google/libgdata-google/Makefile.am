@@ -1,11 +1,12 @@
-AM_CPPFLAGS =							\
+lib_LTLIBRARIES = libgdata-google-1.2.la
+
+libgdata_google_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)						\
 	-DG_LOG_DOMAIN=\"libgdata-google\"			\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
 	-I$(top_srcdir)/servers/google/libgdata			\
 	$(GDATA_CFLAGS)
-
-lib_LTLIBRARIES = libgdata-google-1.2.la
 
 libgdata_google_1_2_la_SOURCES =				\
 	gdata-google-service.c					\
