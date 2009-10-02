@@ -100,7 +100,6 @@ camel/camel-sasl-anonymous.c
 camel/camel-sasl-cram-md5.c
 camel/camel-sasl-digest-md5.c
 camel/camel-sasl-gssapi.c
-camel/camel-sasl-kerberos4.c
 camel/camel-sasl-login.c
 camel/camel-sasl-ntlm.c
 camel/camel-sasl-plain.c
@@ -168,8 +167,9 @@ camel/providers/imap4/camel-imap4-store.c
 camel/providers/imap4/camel-imap4-stream.c
 camel/providers/imap4/camel-imap4-summary.c
 camel/providers/imap4/camel-imap4-utils.c
-camel/providers/imapp/camel-imapp-provider.c
-camel/providers/imapp/camel-imapp-store.c
+camel/providers/imapx/camel-imapx-provider.c
+camel/providers/imapx/camel-imapx-server.c
+camel/providers/imapx/camel-imapx-store.c
 camel/providers/local/camel-local-folder.c
 camel/providers/local/camel-local-provider.c
 camel/providers/local/camel-local-store.c
