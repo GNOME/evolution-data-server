@@ -495,10 +495,6 @@ AC_ARG_ENABLE(smime,
   AS_HELP_STRING([--enable-smime=@<:@yes/no@:>@],[Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)]),
   enable_smime="$enableval", enable_smime="yes")
 
-AC_ARG_ENABLE(gnome-keyring,
-  AS_HELP_STRING([--enable-gnome-keyring=@<:@yes/no@:>@],[Attempt to use Gnome Keyring for storing passwords]),
-  enable_gnome_keyring="$enableval", enable_gnome_keyring="no")
-
 AC_ARG_WITH(nspr-includes,
   AS_HELP_STRING([--with-nspr-includes=PREFIX],[Location of Mozilla nspr4 includes.]),
   with_nspr_includes="$withval")
@@ -514,16 +510,6 @@ AC_ARG_WITH(nss-includes,
 AC_ARG_WITH(nss-libs,
   AS_HELP_STRING([--with-nss-libs=PREFIX],[Location of Mozilla nss3 libs.]),
   with_nss_libs="$withval")
-
-if test "x${enable_gnome_keyring}" = "xyes"; then
-	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1 >= gnome_keyring_minimum_version, with_gnome_keyring="yes", with_gnome_keyring="no");
-	if test "x$with_gnome_keyring" = "xyes"; then
-		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])
-		GNOME_KEYRING_REQUIREMENT="gnome-keyring-1"
-	else
-		GNOME_KEYRING_REQUIREMENT=""
-	fi
-fi
 
 if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 	if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}" || test "x${enable_nss}" = "xstatic"; then
@@ -1370,6 +1356,24 @@ PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= dbus_glib_minimum_version)
 AC_SUBST(DBUS_GLIB_CFLAGS)
 AC_SUBST(DBUS_GLIB_LIBS)
 
+dnl ***********************
+dnl Gnome keyring support
+dnl ***********************
+AC_ARG_ENABLE([gnome-keyring],
+	AS_HELP_STRING([--enable-gnome-keyring],
+	[Attempt to use Gnome Keyring for storing passwords @<:@default=yes@:>@]),
+	[enable_gnome_keyring="$enableval"],[enable_gnome_keyring="yes"])
+
+if test "x${enable_gnome_keyring}" = "xyes"; then
+	PKG_CHECK_MODULES(GNOME_KEYRING, gnome-keyring-1 >= gnome_keyring_minimum_version, have_gnome_keyring="yes", have_gnome_keyring="no");
+	if test "x${have_gnome_keyring}" = "xyes"; then
+		AC_DEFINE(WITH_GNOME_KEYRING, 1, [Gnome Keyring available])
+		GNOME_KEYRING_REQUIREMENT="gnome-keyring-1"
+	else
+		AC_MSG_ERROR([gnome-keyring >= gnome_keyring_minimum_version is required for gnome keyring support. Use --disable-gnome-keyring if you want to disable gnome-keyring support.])
+	fi
+fi
+
 dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
 dnl EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
@@ -1703,7 +1707,7 @@ echo "
 	LDAP support:		$msg_ldap
 	NNTP support:		$msg_nntp
 	Kerberos 5:		$msg_krb5
-	Gnome Keyring:		$enable_gnome_keyring/$with_gnome_keyring
+	Gnome Keyring:		$enable_gnome_keyring
 	SSL support:		$msg_ssl
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
