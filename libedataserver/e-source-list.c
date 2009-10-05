@@ -192,7 +192,7 @@ sync_idle_callback (ESourceList *list)
 	GError *error = NULL;
 
 	if (! e_source_list_sync (list, &error)) {
-		g_warning ("Cannot update \"%s\": %s", list->priv->gconf_path, error->message);
+		g_warning ("Cannot update \"%s\": %s", list->priv->gconf_path, error ? error->message : "Unknown error");
 		g_error_free (error);
 	}
 
