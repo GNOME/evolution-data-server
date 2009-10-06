@@ -1402,7 +1402,7 @@ EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS,
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
 AC_SUBST(E_DATA_SERVER_UI_LIBS)
 
-E_BACKEND_DEPS="gobject-2.0 libxml-2.0 gmodule-2.0"
+E_BACKEND_DEPS="gobject-2.0 libxml-2.0 gmodule-2.0 gconf-2.0"
 
 dnl ******************************
 dnl libebackend flags

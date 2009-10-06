@@ -972,10 +972,12 @@ async_signal_idle_cb (DBusGProxy *proxy, GError *error, gpointer user_data)
 	ECalendarStatus status;
 
 	ecal = E_CAL (user_data);
-	if (error)
+	if (error) {
 		status = get_status_from_error (error);
-	else
+	} else {
 		status = E_CALENDAR_STATUS_OK;
+		org_gnome_evolution_dataserver_calendar_Cal_is_read_only (ecal->priv->proxy, NULL);
+	}
 
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
 }
@@ -1057,7 +1059,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	priv->load_state = E_CAL_LOAD_LOADING;
 
 	*status = E_CALENDAR_STATUS_OK;
-	if (!async ) {
+	if (!async) {
 		if (!org_gnome_evolution_dataserver_calendar_Cal_open (priv->proxy, only_if_exists, username ? username : "", password ? password : "", error))
 			*status = E_CALENDAR_STATUS_CORBA_EXCEPTION;
 	} else {
@@ -1071,9 +1073,12 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 	if (*status == E_CALENDAR_STATUS_OK) {
 		GError *error = NULL;
 		priv->load_state = E_CAL_LOAD_LOADED;
-		org_gnome_evolution_dataserver_calendar_Cal_is_read_only (priv->proxy, &error);
-	} else
+
+		if (!async)
+			org_gnome_evolution_dataserver_calendar_Cal_is_read_only (priv->proxy, &error);
+	} else {
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
+	}
 
 	E_CALENDAR_CHECK_STATUS (*status, error);
 }

@@ -267,10 +267,6 @@ void
 camel_folder_construct (CamelFolder *folder, CamelStore *parent_store,
 			const gchar *full_name, const gchar *name)
 {
-	gchar *store_db_path;
-	CamelService *service = (CamelService *) parent_store;
-	CamelException ex;
-
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	g_return_if_fail (CAMEL_IS_STORE (parent_store));
 	g_return_if_fail (folder->parent_store == NULL);

@@ -37,6 +37,7 @@
 #include "libedataserver/e-source.h"
 #include "libedataserver/e-source-list.h"
 #include "libebackend/e-data-server-module.h"
+#include <libebackend/e-offline-listener.h>
 #include "libecal/e-cal.h"
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
@@ -397,7 +398,7 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 
 	path = construct_cal_factory_path ();
 	dbus_g_connection_register_g_object (connection, path, G_OBJECT (calendar));
-	g_object_weak_ref (G_OBJECT (calendar), (GWeakNotify)my_remove, g_strdup (path));
+	g_object_weak_ref (G_OBJECT (calendar), (GWeakNotify)my_remove, path);
 
 	g_hash_table_insert (priv->calendars, g_strdup (path), calendar);
 
@@ -647,6 +648,16 @@ die (const char *prefix, GError *error)
 	exit(1);
 }
 
+static void
+offline_state_changed_cb (EOfflineListener *eol, EDataCalFactory *factory)
+{
+	EOfflineListenerState state = e_offline_listener_get_state (eol);
+
+	g_return_if_fail (state == EOL_STATE_ONLINE || state == EOL_STATE_OFFLINE);
+
+	e_data_cal_factory_set_backend_mode (factory, state == EOL_STATE_ONLINE ? GNOME_Evolution_Calendar_MODE_REMOTE : GNOME_Evolution_Calendar_MODE_LOCAL);
+}
+
 #define E_DATA_CAL_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.Calendar"
 
 int
@@ -655,6 +666,7 @@ main (gint argc, gchar **argv)
 	GError *error = NULL;
 	DBusGProxy *bus_proxy;
 	guint32 request_name_ret;
+	EOfflineListener *eol;
 
 	g_type_init ();
 	if (!g_thread_supported ()) g_thread_init (NULL);
@@ -690,9 +702,15 @@ main (gint argc, gchar **argv)
 		exit (1);
 	}
 
+	eol = e_offline_listener_new ();
+	offline_state_changed_cb (eol, factory);
+	g_signal_connect (eol, "changed", G_CALLBACK (offline_state_changed_cb), factory);
+
 	g_main_loop_run (loop);
 
 	dbus_g_connection_unref (connection);
+
+	g_object_unref (eol);
 
 	printf ("Bye.\n");
 

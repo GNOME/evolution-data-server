@@ -20,44 +20,39 @@
  * Author: Sivaiah Nallagatla <snallagatla@novell.com>
  */
 
-/*Note : Copied from src/offline_listner.c . This should be replaced */
+/*Note : Copied from src/offline_listener.c . This should be replaced */
 /* with network manager code */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include "offline-listener.h"
-#include <libedata-book/e-data-book-factory.h>
+#include "e-offline-listener.h"
 #include <gconf/gconf-client.h>
 
 enum {
-
-	OFFLINE_MODE=0,
-	ONLINE_MODE
+	CHANGED,
+	NUM_SIGNALS
 };
+
+static guint signals[NUM_SIGNALS] = { 0 };
 
 static GObjectClass *parent_class = NULL;
 
-struct _OfflineListenerPrivate
+struct _EOfflineListenerPrivate
 {
 	GConfClient *default_client;
-
-	EDataBookFactory *book_factory;
-
 	gboolean is_offline_now;
 };
 
-
 static void
-set_online_status (OfflineListener *offline_listener, gboolean is_offline)
+set_online_status (EOfflineListener *eol, gboolean is_offline)
 {
-	OfflineListenerPrivate *priv;
+	EOfflineListenerPrivate *priv;
 
-	priv = offline_listener->priv;
+	priv = eol->priv;
 
-	e_data_book_factory_set_backend_mode
-		(priv->book_factory, is_offline ? OFFLINE_MODE : ONLINE_MODE);
+	g_signal_emit (eol, signals[CHANGED], 0);
 }
 
 static void
@@ -65,119 +60,135 @@ online_status_changed (GConfClient *client, gint cnxn_id, GConfEntry *entry, gpo
 {
 	GConfValue *value;
 	gboolean offline;
-        OfflineListener *offline_listener;
-	OfflineListenerPrivate *priv;
+        EOfflineListener *eol;
+	EOfflineListenerPrivate *priv;
 
-	offline_listener = OFFLINE_LISTENER(data);
-	priv = offline_listener->priv;
+	eol = E_OFFLINE_LISTENER (data);
+	g_return_if_fail (eol != NULL);
+
+	priv = eol->priv;
 	offline = FALSE;
 	value = gconf_entry_get_value (entry);
 	if (value)
 		offline = gconf_value_get_bool (value);
+
 	if (priv->is_offline_now != offline) {
 		priv->is_offline_now = offline;
-		set_online_status (offline_listener ,offline);
-	}
 
+		set_online_status (eol, offline);
+	}
 }
 
 
 static void
-setup_offline_listener (OfflineListener *offline_listener)
+setup_offline_listener (EOfflineListener *eol)
 {
-	OfflineListenerPrivate *priv = offline_listener->priv;
+	EOfflineListenerPrivate *priv = eol->priv;
 
 	priv->default_client = gconf_client_get_default ();
 	gconf_client_add_dir (priv->default_client, "/apps/evolution/shell", GCONF_CLIENT_PRELOAD_RECURSIVE,NULL);
 	gconf_client_notify_add (priv->default_client, "/apps/evolution/shell/start_offline", 
 				 (GConfClientNotifyFunc)online_status_changed, 
-				 offline_listener, NULL, NULL);
+				 eol, NULL, NULL);
 
 	priv->is_offline_now = gconf_client_get_bool (priv->default_client, "/apps/evolution/shell/start_offline", NULL);
-	set_online_status (offline_listener, priv->is_offline_now);
+	set_online_status (eol, priv->is_offline_now);
 }
 
-OfflineListener*
-offline_listener_new (EDataBookFactory *book_factory)
+EOfflineListener*
+e_offline_listener_new (void)
 {
-	OfflineListener *offline_listener = g_object_new (OFFLINE_TYPE_LISTENER, NULL);
-	OfflineListenerPrivate *priv = offline_listener->priv;
+	EOfflineListener *eol = g_object_new (E_TYPE_OFFLINE_LISTENER, NULL);
 
-	priv->book_factory = book_factory;
-	setup_offline_listener (offline_listener);
-	return offline_listener;
+	setup_offline_listener (eol);
 
+	return eol;
 }
-
 
 static void
-offline_listener_dispose (GObject *object)
+eol_dispose (GObject *object)
 {
-	OfflineListener *offline_listener = OFFLINE_LISTENER (object);
-	if (offline_listener->priv->default_client) {
-		g_object_unref (offline_listener->priv->default_client);
-		offline_listener->priv->default_client = NULL;
+	EOfflineListener *eol = E_OFFLINE_LISTENER (object);
+	if (eol->priv->default_client) {
+		g_object_unref (eol->priv->default_client);
+		eol->priv->default_client = NULL;
 	}
+
 	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
 }
 
 static void
-offline_listener_finalize (GObject *object)
+eol_finalize (GObject *object)
 {
-	OfflineListener *offline_listener;
-	OfflineListenerPrivate *priv;
+	EOfflineListener *eol;
+	EOfflineListenerPrivate *priv;
 
-	offline_listener = OFFLINE_LISTENER (object);
-	priv = offline_listener->priv;
+	eol = E_OFFLINE_LISTENER (object);
+	priv = eol->priv;
 
 	g_free (priv);
-	offline_listener->priv = NULL;
+	eol->priv = NULL;
 
 	parent_class->finalize (object);
 }
 
 static void
-offline_listener_init (OfflineListener *listener)
+eol_init (EOfflineListener *eol)
 {
-	OfflineListenerPrivate *priv;
+	EOfflineListenerPrivate *priv;
 
-	priv =g_new0 (OfflineListenerPrivate, 1);
-	listener->priv = priv;
-
+	priv = g_new0 (EOfflineListenerPrivate, 1);
+	eol->priv = priv;
 }
 
-
-
 static void
-offline_listener_class_init (OfflineListener *klass)
+eol_class_init (EOfflineListenerClass *klass)
 {
 	GObjectClass *object_class;
 
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class = G_OBJECT_CLASS (klass);
-	object_class->dispose = offline_listener_dispose;
-	object_class->finalize = offline_listener_finalize;
+	object_class->dispose = eol_dispose;
+	object_class->finalize = eol_finalize;
+	
+	signals[CHANGED] =
+		g_signal_new ("changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EOfflineListenerClass, changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 }
 
 GType
-offline_listener_get_type (void)
+e_offline_listener_get_type (void)
 {
 	static GType type = 0;
 
 	if (!type) {
 		static GTypeInfo info = {
-                        sizeof (OfflineListenerClass),
+                        sizeof (EOfflineListenerClass),
                         (GBaseInitFunc) NULL,
                         (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) offline_listener_class_init,
+                        (GClassInitFunc) eol_class_init,
                         NULL, NULL,
-                        sizeof (OfflineListener),
+                        sizeof (EOfflineListener),
                         0,
-                        (GInstanceInitFunc) offline_listener_init,
+                        (GInstanceInitFunc) eol_init,
                 };
-		type = g_type_register_static (G_TYPE_OBJECT, "OfflineListener", &info, 0);
+
+		type = g_type_register_static (G_TYPE_OBJECT, "EOfflineListener", &info, 0);
 	}
 
 	return type;
+}
+
+EOfflineListenerState
+e_offline_listener_get_state (EOfflineListener *eol)
+{
+	g_return_val_if_fail (E_IS_OFFLINE_LISTENER (eol), EOL_STATE_OFFLINE);
+
+	return eol->priv->is_offline_now ? EOL_STATE_OFFLINE : EOL_STATE_ONLINE;
 }

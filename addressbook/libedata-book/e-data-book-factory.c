@@ -30,12 +30,12 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib-bindings.h>
 #include <libebackend/e-data-server-module.h>
+#include <libebackend/e-offline-listener.h>
 #include "e-book-backend-factory.h"
 #include "e-data-book-factory.h"
 #include "e-data-book.h"
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
-#include "offline-listener.h"
 
 static void impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context);
 #include "e-data-book-factory-glue.h"
@@ -355,6 +355,16 @@ die (const char *prefix, GError *error)
 	exit(1);
 }
 
+static void
+offline_state_changed_cb (EOfflineListener *eol, EDataBookFactory *factory)
+{
+	EOfflineListenerState state = e_offline_listener_get_state (eol);
+
+	g_return_if_fail (state == EOL_STATE_ONLINE || state == EOL_STATE_OFFLINE);
+
+	e_data_book_factory_set_backend_mode (factory, state == EOL_STATE_ONLINE ? E_DATA_BOOK_MODE_REMOTE : E_DATA_BOOK_MODE_LOCAL);
+}
+
 #define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
 
 int
@@ -363,8 +373,7 @@ main (int argc, char **argv)
 	GError *error = NULL;
 	DBusGProxy *bus_proxy;
 	guint32 request_name_ret;
-
-	OfflineListener *offline_listener = NULL;
+	EOfflineListener *eol;
 
 	g_type_init ();
 	if (!g_thread_supported ()) g_thread_init (NULL);
@@ -400,11 +409,13 @@ main (int argc, char **argv)
 				 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (bus_proxy, "NameOwnerChanged", G_CALLBACK (name_owner_changed), factory, NULL);
 
-	offline_listener = offline_listener_new (factory);
+	eol = e_offline_listener_new ();
+	offline_state_changed_cb (eol, factory);
+	g_signal_connect (eol, "changed", G_CALLBACK (offline_state_changed_cb), factory);
 
 	g_main_loop_run (loop);
 
-	g_object_unref (offline_listener);
+	g_object_unref (eol);
 
 	dbus_g_connection_unref (connection);
 

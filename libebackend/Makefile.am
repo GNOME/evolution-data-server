@@ -10,6 +10,7 @@ libebackend_1_2_la_CPPFLAGS = \
 
 libebackend_1_2_la_SOURCES =		\
 	e-data-server-module.c		\
+	e-offline-listener.c		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
 	e-file-cache.c
@@ -26,6 +27,7 @@ libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS =		\
 	e-data-server-module.h		\
+	e-offline-listener.h		\
 	e-db3-utils.h			\
 	e-dbhash.h			\
 	e-file-cache.h
