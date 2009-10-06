@@ -26,6 +26,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <glib/gi18n.h>
 #include <glib-object.h>
 #include <dbus/dbus-glib.h>
@@ -43,10 +44,10 @@
 #include "e-data-cal-factory.h"
 #include "e-cal-backend-loader-factory.h"
 
+#define d(x)
+
 static void impl_CalFactory_getCal (EDataCalFactory *factory, const char *IN_uri, EDataCalObjType type, DBusGMethodInvocation *context);
 #include "e-data-cal-factory-glue.h"
-
-static gchar *nm_dbus_escape_object_path (const gchar *utf8_string);
 
 static GMainLoop *loop;
 static EDataCalFactory *factory;
@@ -78,6 +79,12 @@ struct _EDataCalFactoryPrivate {
 	GHashTable *connections;
 
 	gint mode;
+
+	/* this is for notifications of source changes */
+	ESourceList *lists[E_CAL_SOURCE_TYPE_LAST];
+
+	/* backends divided by their type */
+	GSList *backends_by_type[E_CAL_SOURCE_TYPE_LAST];
 
 	guint exit_timeout;
 };
@@ -126,6 +133,57 @@ icalkind_to_ecalsourcetype (const icalcomponent_kind kind)
 	return E_CAL_SOURCE_TYPE_LAST;
 }
 
+static void
+update_source_in_backend (ECalBackend *backend, ESource *updated_source)
+{
+	xmlNodePtr xml;
+
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (updated_source != NULL);
+
+	xml = xmlNewNode (NULL, (const xmlChar *)"dummy");
+	e_source_dump_to_xml_node (updated_source, xml);
+	e_source_update_from_xml_node (e_cal_backend_get_source (backend), xml->children, NULL);
+	xmlFreeNode (xml);
+}
+
+static void
+source_list_changed_cb (ESourceList *list, EDataCalFactory *factory)
+{
+	EDataCalFactoryPrivate *priv;
+	gint i;
+
+	g_return_if_fail (list != NULL);
+	g_return_if_fail (factory != NULL);
+	g_return_if_fail (E_IS_DATA_CAL_FACTORY (factory));
+
+	priv = factory->priv;
+
+	g_mutex_lock (priv->backends_mutex);
+
+	for (i = 0; i < E_CAL_SOURCE_TYPE_LAST; i++) {
+		if (list == priv->lists[i]) {
+			GSList *l;
+
+			for (l = priv->backends_by_type [i]; l; l = l->next) {
+				ECalBackend *backend = l->data;
+				ESource *source, *list_source;
+
+				source = e_cal_backend_get_source (backend);
+				list_source = e_source_list_peek_source_by_uid (priv->lists[i], e_source_peek_uid (source));
+
+				if (list_source) {
+					update_source_in_backend (backend, list_source);
+				}
+			}
+
+			break;
+		}
+	}
+
+	g_mutex_unlock (priv->backends_mutex);
+}
+
 static ECalBackendFactory *
 get_backend_factory (GHashTable *methods, const gchar *method, icalcomponent_kind kind)
 {
@@ -143,26 +201,78 @@ get_backend_factory (GHashTable *methods, const gchar *method, icalcomponent_kin
 }
 
 static gchar *
-make_path_name (const gchar* uri)
+construct_cal_factory_path (void)
 {
-	gchar *s, *path;
-	s = nm_dbus_escape_object_path (uri);
-	path = g_strdup_printf ("/org/gnome/evolution/dataserver/calendar/%s", s);
-	g_free (s);
-	return path;
+	static volatile gint counter = 1;
+
+	return g_strdup_printf (
+		"/org/gnome/evolution/dataserver/calendar/%d/%u",
+		getpid (),
+		g_atomic_int_exchange_and_add (&counter, 1));
 }
 
 static void
 my_remove (gchar *key, GObject *dead)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
-	g_debug ("%s (%p) is dead", key, dead);
+	GHashTableIter iter;
+	gpointer hkey, hvalue;
+
+	d (g_debug ("%s (%p) is dead", key, dead));
+
 	g_hash_table_remove (priv->calendars, key);
+
+	g_hash_table_iter_init (&iter, priv->connections);
+	while (g_hash_table_iter_next (&iter, &hkey, &hvalue)) {
+		GList *calendars = hvalue;
+
+		if (g_list_find (calendars, dead)) {
+			calendars = g_list_remove (calendars, dead);
+			if (calendars) {
+				g_hash_table_insert (priv->connections, g_strdup (hkey), calendars);
+			} else {
+				g_hash_table_remove (priv->connections, hkey);
+			}
+
+			break;
+		}
+	}
+
 	g_free (key);
 
 	/* If there are no open calendars, start a timer to quit */
 	if (priv->exit_timeout == 0 && g_hash_table_size (priv->calendars) == 0) {
 		priv->exit_timeout = g_timeout_add (10000, (GSourceFunc)g_main_loop_quit, loop);
+	}
+}
+
+struct find_backend_data
+{
+	const gchar *str_uri;
+	ECalBackend *backend;
+	icalcomponent_kind kind;
+};
+
+static void
+find_backend_cb (gpointer key, gpointer value, gpointer data)
+{
+	struct find_backend_data *fbd = data;
+
+	if (fbd && fbd->str_uri && !fbd->backend) {
+		ECalBackend *backend = value;
+		gchar *str_uri;
+
+		str_uri = e_source_get_uri (e_cal_backend_get_source (backend));
+
+		if (str_uri && g_str_equal (str_uri, fbd->str_uri)) {
+			const gchar *uid_kind = key, *pos;
+
+			pos = strrchr (uid_kind, ':');
+			if (pos && atoi (pos + 1) == fbd->kind)
+				fbd->backend = backend;
+		}
+
+		g_free (str_uri);
 	}
 }
 
@@ -229,6 +339,25 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 
 	/* Look for an existing backend */
 	backend = g_hash_table_lookup (factory->priv->backends, uid_type_string);
+
+	if (!backend) {
+		/* find backend by URL, if opened, thus functions like e_cal_system_new_* will not
+		   create new backends for the same url */
+		struct find_backend_data fbd;
+
+		fbd.str_uri = str_uri;
+		fbd.kind = calobjtype_to_icalkind (type);
+		fbd.backend = NULL;
+
+		g_hash_table_foreach (priv->backends, find_backend_cb, &fbd);
+
+		if (fbd.backend) {
+			backend = fbd.backend;
+			g_object_unref (source);
+			source = g_object_ref (e_cal_backend_get_source (backend));
+		}
+	}
+
 	if (!backend) {
 		ECalSourceType st;
 
@@ -245,17 +374,32 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 			goto cleanup;
 		}
 
+		st = icalkind_to_ecalsourcetype (e_cal_backend_get_kind (backend));
+		if (st != E_CAL_SOURCE_TYPE_LAST) {
+			if (!priv->lists[st] && e_cal_get_sources (&(priv->lists[st]), st, NULL)) {
+				g_signal_connect (priv->lists[st], "changed", G_CALLBACK (source_list_changed_cb), factory);
+			}
+
+			if (priv->lists[st])
+				priv->backends_by_type[st] = g_slist_prepend (priv->backends_by_type[st], backend);
+		}
+
 		/* Track the backend */
 		g_hash_table_insert (priv->backends, g_strdup (uid_type_string), backend);
+	} else if (!e_source_equal (source, e_cal_backend_get_source (backend))) {
+		/* source changed, update it in a backend */
+		update_source_in_backend (backend, source);
 	}
 
 	calendar = e_data_cal_new (backend, source);
 	e_cal_backend_add_client (backend, calendar);
 	e_cal_backend_set_mode (backend, priv->mode);
 
-	path = make_path_name (str_uri);
+	path = construct_cal_factory_path ();
 	dbus_g_connection_register_g_object (connection, path, G_OBJECT (calendar));
 	g_object_weak_ref (G_OBJECT (calendar), (GWeakNotify)my_remove, g_strdup (path));
+
+	g_hash_table_insert (priv->calendars, g_strdup (path), calendar);
 
 	sender = dbus_g_method_get_sender (context);
 	list = g_hash_table_lookup (priv->connections, sender);
@@ -313,7 +457,7 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 							(GDestroyNotify) g_free, (GDestroyNotify) g_hash_table_destroy);
 
 	factory->priv->backends_mutex = g_mutex_new ();
-	factory->priv->backends = g_hash_table_new (g_str_hash, g_str_equal);
+	factory->priv->backends = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	factory->priv->calendars = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	factory->priv->connections = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -550,40 +694,7 @@ main (gint argc, gchar **argv)
 
 	dbus_g_connection_unref (connection);
 
+	printf ("Bye.\n");
+
 	return 0;
-}
-
-/* Stolen from http://cvs.gnome.org/viewcvs/NetworkManager/utils/nm-utils.c */
-static gchar *
-nm_dbus_escape_object_path (const gchar *utf8_string)
-{
-	const gchar *p;
-	GString *string;
-
-	g_return_val_if_fail (utf8_string != NULL, NULL);
-	g_return_val_if_fail (g_utf8_validate (utf8_string, -1, NULL), NULL);
-
-	string = g_string_sized_new ((strlen (utf8_string) + 1) * 2);
-
-	for (p = utf8_string; *p != '\0'; p = g_utf8_next_char (p))
-		{
-			gunichar character;
-
-			character = g_utf8_get_char (p);
-
-			if (((character >= ((gunichar) 'a')) &&
-			     (character <= ((gunichar) 'z'))) ||
-			    ((character >= ((gunichar) 'A')) &&
-			     (character <= ((gunichar) 'Z'))) ||
-			    ((character >= ((gunichar) '0')) &&
-			     (character <= ((gunichar) '9'))))
-				{
-					g_string_append_c (string, (gchar) character);
-					continue;
-				}
-
-			g_string_append_printf (string, "_%x_", character);
-		}
-
-	return g_string_free (string, FALSE);
 }

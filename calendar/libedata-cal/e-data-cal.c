@@ -195,6 +195,7 @@ impl_Cal_open (EDataCal *cal,
 static gboolean
 impl_Cal_close (EDataCal *cal, GError **error)
 {
+	e_cal_backend_remove_client (cal->priv->backend, cal);
 	g_object_unref (cal);
 	return TRUE;
 }
