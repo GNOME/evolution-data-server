@@ -486,38 +486,44 @@ dnl ****************************************************************************
 msg_ssl="no"
 msg_smime="no"
 
-dnl these 2 enable's are inverses of each other
-AC_ARG_ENABLE(nss,
-  AS_HELP_STRING([--enable-nss=@<:@yes/no/static@:>@],[Attempt to use Mozilla libnss for SSL support.]),
-  enable_nss="$enableval", enable_nss="yes")
+AC_ARG_ENABLE([ssl],
+	AS_HELP_STRING([--enable-ssl],
+	[Enable SSL support through Mozilla nss @<:@default=yes@:>@]),
+	[enable_ssl="$enableval"],[enable_ssl="yes"])
 
-AC_ARG_ENABLE(smime,
-  AS_HELP_STRING([--enable-smime=@<:@yes/no@:>@],[Attempt to use Mozilla libnss for SMIME support (this requires --enable-nss)]),
-  enable_smime="$enableval", enable_smime="yes")
+AC_ARG_ENABLE([smime],
+	AS_HELP_STRING([--enable-smime],
+	[Enable SMIME support through Mozilla nss @<:@default=yes,requires --enable-ssl@:>@ ]),
+	[enable_smime="$enableval"],[enable_smime="yes"])
 
-AC_ARG_WITH(nspr-includes,
-  AS_HELP_STRING([--with-nspr-includes=PREFIX],[Location of Mozilla nspr4 includes.]),
-  with_nspr_includes="$withval")
+AC_ARG_WITH([nspr-includes],
+	AS_HELP_STRING([--with-nspr-includes],
+	[Prefix of Mozilla nspr4 includes.]),
+	[with_nspr_includes="$withval"])
 
-AC_ARG_WITH(nspr-libs,
-  AS_HELP_STRING([--with-nspr-libs=PREFIX],[Location of Mozilla nspr4 libs.]),
-  with_nspr_libs="$withval")
+AC_ARG_WITH([nspr-libs],
+	AS_HELP_STRING([--with-nspr-libs],
+	[Prefix of Mozilla nspr4 libs.]),
+	[with_nspr_libs="$withval"])
 
-AC_ARG_WITH(nss-includes,
-  AS_HELP_STRING([--with-nss-includes=PREFIX],[Location of Mozilla nss3 includes.]),
-  with_nss_includes="$withval")
+AC_ARG_WITH([nss-includes],
+	AS_HELP_STRING([--with-nss-includes],
+	[Prefix of Mozilla nss3 includes.]),
+	[with_nss_includes="$withval"])
 
-AC_ARG_WITH(nss-libs,
-  AS_HELP_STRING([--with-nss-libs=PREFIX],[Location of Mozilla nss3 libs.]),
-  with_nss_libs="$withval")
+AC_ARG_WITH([nss-libs],
+	AS_HELP_STRING([--with-nss-libs],
+	[Prefix of Mozilla nss3 libs.]),
+	[with_nss_libs="$withval"])
 
-if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
-	if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}" || test "x${enable_nss}" = "xstatic"; then
+if test "x${enable_ssl}" = "xyes"; then
+	if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}"; then
 		check_manually="yes"
 	else
 		check_manually="no"
 	fi
 
+dnl check if pkg-config files exist (which are only shipped by distributions, not upstream)
 	if test "x${check_manually}" = "xno"; then
 		AC_MSG_CHECKING(Mozilla NSPR pkg-config module name)
 		mozilla_nspr_pcs="nspr mozilla-nspr firefox-nspr xulrunner-nspr seamonkey-nspr"
@@ -540,10 +546,10 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 		done
 
 		if test -n "$mozilla_nspr" -a -n "$mozilla_nss"; then
-			msg_ssl="yes (Mozilla NSS)"
+			msg_ssl="yes"
 			if test "x$enable_smime" = "xyes"; then
 				AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
-				msg_smime="yes (Mozilla NSS)"
+				msg_smime="yes"
 			fi
 			AC_DEFINE(HAVE_NSS,1,[Define if you have NSS])
 			AC_DEFINE(HAVE_SSL,1,[Define if you have a supported SSL library])
@@ -559,158 +565,110 @@ if test "x${enable_nss}" = "xyes" || test "x${enable_nss}" = "xstatic"; then
 	fi
 
 	if test "x${check_manually}" = "xyes"; then
-		have_nspr_includes="no"
-		if test "x${with_nspr_includes}" != "xno"; then
+	dnl ******************
+	dnl Check for NSPR 4
+	dnl ******************
+		AC_MSG_CHECKING([for Mozilla nspr4 includes])
 			CPPFLAGS_save="$CPPFLAGS"
-
-			AC_MSG_CHECKING(for Mozilla nspr4 includes in $with_nspr_includes)
-			AC_MSG_RESULT("")
-
 			CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
-			AC_CHECK_HEADERS(nspr.h prio.h, [ moz_nspr_includes="yes" ])
+
+			AC_CHECK_HEADERS(nspr.h prio.h,
+			[moz_nspr_includes="yes"],[moz_nspr_includes="no"])
 			CPPFLAGS="$CPPFLAGS_save"
 
-			if test "x{$moz_nspr_includes}" != "xno" -a "x{$moz_nspr_includes}" != "x" ; then
-				have_nspr_includes="yes"
+			if test "x${moz_nspr_includes}" = "xyes"; then
 				MANUAL_NSPR_CFLAGS="-I$with_nspr_includes"
+			else
+				AC_MSG_FAILURE([NSPR headers not found. Use --with-nspr-includes to specify the include dir of NSPR.])
 			fi
-		else
-			AC_MSG_CHECKING(for Mozilla nspr4 includes)
-			AC_MSG_RESULT(no)
-		fi
+		AC_MSG_RESULT([$moz_nspr_includes])
 
-		have_nspr_libs="no"
-		if test "x${with_nspr_libs}" != "xno" -a "x${have_nspr_includes}" != "xno"; then
+		AC_MSG_CHECKING([for Mozilla nspr libraries])
 			CFLAGS_save="$CFLAGS"
 			LDFLAGS_save="$LDFLAGS"
+			LIBS_save="$LIBS"
+			nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
 
-			if test "$enable_nss" = "static"; then
-				if test -z "${with_nspr_libs}"; then
-					AC_MSG_ERROR([Static linkage requested, but path to nspr libraries not set.]
-[Please specify the path to libnspr4.a]
-[Example: --with-nspr-libs=/usr/lib])
-       				else
-	       				nsprlibs="$DL_LIB $with_nspr_libs/libplc4.a $with_nspr_libs/libplds4.a $with_nspr_libs/libnspr4.a $PTHREAD_LIB"
-				fi
+			CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
+			LIBS="$nsprlibs"
+			dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
+			if test -n "${with_nspr_libs}"; then
+				LDFLAGS="$LDFLAGS -L$with_nspr_libs"
 			else
-				nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
+				LDFLAGS="$LDFLAGS"
 			fi
 
-			AC_CACHE_CHECK([for Mozilla nspr libraries], ac_cv_moz_nspr_libs,
-			[
-		       		LIBS_save="$LIBS"
-				CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
+			AC_LINK_IFELSE([AC_LANG_CALL([],[PR_Init])],
+			[moz_nspr_libs="yes"],[moz_nspr_libs="no"])
 
-				if test "x${with_nspr_libs}" != "x"; then
-		       			LIBS="$nsprlibs"
-		       			LDFLAGS="$LDFLAGS -L$with_nspr_libs"
+			CFLAGS="$CFLAGS_save"
+			LDFLAGS="$LDFLAGS_save"
+			LIBS="$LIBS_save"
+
+			if test -n "${moz_nspr_libs}"; then
+				if test -n "${with_nspr_libs}"; then
+					MANUAL_NSPR_LIBS="-L$with_nspr_libs $nsprlibs"
 				else
-		       			LIBS="$nsprlibs"
-		       			LDFLAGS="$LDFLAGS"
+					MANUAL_NSPR_LIBS="$nsprlibs"
 				fi
-
-				AC_TRY_LINK_FUNC(PR_Init, ac_cv_moz_nspr_libs="yes", ac_cv_moz_nspr_libs="no")
-				CFLAGS="$CFLAGS_save"
-				LDFLAGS="$LDFLAGS_save"
-	 			LIBS="$LIBS_save"
-			])
-			if test "x$ac_cv_moz_nspr_libs" != "xno"; then
-				have_nspr_libs="yes"
-				MANUAL_NSPR_LIBS="-L$with_nspr_libs $nsprlibs"
 			else
-				MANUAL_NSPR_CLFAGS=""
+				AC_MSG_FAILURE([NSPR libs not found. Use --with-nspr-libs to specify the libdir of NSPR.])
 			fi
-		else
-			AC_MSG_CHECKING(for Mozilla nspr4 libraries)
-			AC_MSG_RESULT(no)
-		fi
+		AC_MSG_RESULT([$moz_nspr_libs])
 
-		if test "x${with_nss_includes}" != "xno" -a "x${have_nspr_libs}" != "xno"; then
+	dnl *****************
+	dnl Check for NSS 3
+	dnl *****************
+		AC_MSG_CHECKING([for Mozilla nss3 includes])
 			CPPFLAGS_save="$CPPFLAGS"
-
-			AC_MSG_CHECKING(for Mozilla nss3 includes in $with_nss_includes)
-			AC_MSG_RESULT("")
-
-			if test "x${with_nspr_includes}" != "x"; then
-				CPPFLAGS="$CPPFLAGS -I$with_nspr_includes -I$with_nss_includes"
-			else
-				CPPFLAGS="$CPPFLAGS -I$with_nss_includes"
-			fi
+			CPPFLAGS="$CPPFLAGS -I$with_nspr_includes -I$with_nss_includes"
 
 			AC_CHECK_HEADERS(nss.h ssl.h smime.h,
-				[ have_nss_includes="yes" ],
-				[ have_nss_includes="no" ])
-
+			[moz_nss_includes="yes"],[moz_nss_includes="no"])
 			CPPFLAGS="$CPPFLAGS_save"
 
-			if test "x${have_nss_includes}" = "xyes"; then
-				have_nss_includes="yes"
+			if test "x${moz_nss_includes}" = "xyes"; then
 				MANUAL_NSS_CFLAGS="-I$with_nss_includes"
 			else
-				MANUAL_NSPR_CFLAGS=""
-				MANUAL_NSPR_LIBS=""
+				AC_MSG_FAILURE([NSS headers not found. Use --with-nss-includes to specify the include dir of NSS.])
 			fi
-		else
-			AC_MSG_CHECKING(for Mozilla nss3 includes)
-			AC_MSG_RESULT(no)
-		fi
+		AC_MSG_RESULT($moz_nss_includes)
 
-		if test "x${with_nss_libs}" != "xno" -a "x${have_nss_includes}" != "xno"; then
+		AC_MSG_CHECKING([for Mozilla nss libraries])
 			LDFLAGS_save="$LDFLAGS"
+			LIBS_save="$LIBS"
+			nsslibs="-lssl3 -lsmime3 -lnss3"
 
-			if test "$enable_nss" = "static"; then
-		    		if test -z "${with_nss_libs}"; then
-					AC_MSG_ERROR([Static linkage requested, but path to nss libraries not set.]
-[Please specify the path to libnss3.a]
-[Example: --with-nspr-libs=/usr/lib/mozilla])
-				else
-					nsslibs="-ldb1 $with_nss_libs/libnssckfw.a $with_nss_libs/libasn1.a $with_nss_libs/libcrmf.a $with_nss_libs/libswfci.a $with_nss_libs/libjar.a $with_nss_libs/libpkcs12.a $with_nss_libs/libpkcs7.a $with_nss_libs/libpki1.a $with_nss_libs/libsmime.a $with_nss_libs/libssl.a $with_nss_libs/libnss.a $with_nss_libs/libpk11wrap.a $with_nss_libs/libsoftokn.a $with_nss_libs/libfreebl.a $with_nss_libs/libnsspki.a $with_nss_libs/libnssdev.a $with_nss_libs/libcryptohi.a $with_nss_libs/libcerthi.a $with_nss_libs/libcertdb.a $with_nss_libs/libsecutil.a $with_nss_libs/libnssb.a"
-					case "$host" in
-						*solaris*)
-						nsslibs="$nsslibs $with_nss_libs/libfreebl.a"
-					;;
-					esac
-				fi
+			LIBS="$nsslibs $nsprlibs"
+			dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
+			if test -n "${with_nss_libs}"; then
+				LDFLAGS="$LDFLAGS $-L$with_nss_libs"
 			else
-		 		nsslibs="-lssl3 -lsmime3 -lnss3"
-	 		fi
+				LDFLAGS="$LDFLAGS $LDFLAGS_NSPR"
+			fi
 
-			AC_CACHE_CHECK([for Mozilla nss libraries], ac_cv_moz_nss_libs,
-			[
-	 			LIBS_save="$LIBS"
-				LDFLAGS="$LDFLAGS -L$with_nspr_libs $nsprlibs -L$with_nss_libs $nsslibs"
-		      		LIBS="$nsslibs $nsprlibs"
-				AC_TRY_LINK_FUNC(NSS_Init, ac_cv_moz_nss_libs="yes", ac_cv_moz_nss_libs="no")
-				if test "$ac_cv_moz_nss_libs" = no; then
-					nsslibs="-lssl3 -lsmime3 -lnss3"
-					LDFLAGS="$LDFLAGS -L$with_nspr_libs $nsprlibs -L$with_nss_libs $nsslibs"
-					AC_TRY_LINK_FUNC(NSS_Init, ac_cv_moz_nss_libs="yes", ac_cv_moz_nss_libs="no")
-				fi
-				LDFLAGS="$LDFLAGS_save"
-	 			LIBS="$LIBS_save"
-			])
-			if test "$ac_cv_moz_nss_libs" != no; then
+			AC_LINK_IFELSE([AC_LANG_CALL([],[NSS_Init])],
+			[moz_nss_libs="yes"],[moz_nss_libs="no"])
+			LDFLAGS="$LDFLAGS_save"
+			LIBS="$LIBS_save"
+
+			if test "x${moz_nss_libs}" = "xyes"; then
 				AC_DEFINE(HAVE_NSS)
 				AC_DEFINE(HAVE_SSL)
-				if test "$enable_nss" = "static"; then
-					msg_ssl="yes (Mozilla NSS:static)"
-		 		else
-					msg_ssl="yes (Mozilla NSS)"
-				fi # static_nss
-				if test "$enable_smime" = "yes"; then
+				msg_ssl="yes"
+				if test "x${enable_smime}" = "xyes"; then
 					AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
-					msg_smime="yes (Mozilla NSS)"
+					msg_smime="yes"
 				fi
-				MANUAL_NSS_LIBS="-L$with_nss_libs $nsslibs"
+				if test -n "${with_nss_libs}"; then
+					MANUAL_NSS_LIBS="-L$with_nss_libs $nsslibs"
+				else
+					MANUAL_NSS_LIBS="$nsslibs"
+				fi
 			else
-				MANUAL_NSS_CFLAGS=""
-				MANUAL_NSPR_CFLAGS=""
-				MANUAL_NSPR_LIBS=""
+				AC_MSG_FAILURE([NSS libs not found. Use --with-nss-libs to specify the libdir of NSS.])
 			fi
-		else
-			AC_MSG_CHECKING(for Mozilla nss libraries)
-			AC_MSG_RESULT(no)
-		fi
+		AC_MSG_RESULT([$moz_nss_libs])
 
 		MANUAL_NSS_CFLAGS="$MANUAL_NSPR_CFLAGS $MANUAL_NSS_CFLAGS"
 		MANUAL_NSS_LIBS="$MANUAL_NSPR_LIBS $MANUAL_NSS_LIBS"
@@ -1582,7 +1540,7 @@ AC_SUBST(EVO_SUBST_SERVER_RULE)
 AC_SUBST(EVO_NAME_SERVER_RULE)
 
 dnl *******************
-dnl D-BUS service stuff 
+dnl D-BUS service stuff
 dnl *******************
 EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@BINDIR\@|$(bindir)|" -e "s|\@LIBEXECDIR\@|$(libexecdir)|" -e "s|\@COMPONENTDIR\@|$(componentdir)|" -e "s|\@IMPORTERSDIR\@|$(importersdir)|" -e "s|\@VERSION\@|$(BASE_VERSION)|" -e "s|\@INTERFACE_VERSION\@|$(INTERFACE_VERSION)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
