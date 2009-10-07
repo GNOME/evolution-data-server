@@ -642,7 +642,7 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 			LIBS="$nsslibs $nsprlibs"
 			dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
 			if test -n "${with_nss_libs}"; then
-				LDFLAGS="$LDFLAGS $-L$with_nss_libs"
+				LDFLAGS="$LDFLAGS -L$with_nss_libs"
 			else
 				LDFLAGS="$LDFLAGS $LDFLAGS_NSPR"
 			fi
@@ -1092,7 +1092,7 @@ AC_ARG_WITH([krb5-libs],
 AC_ARG_WITH([krb5-includes],
 	AS_HELP_STRING([--with-krb5-includes=PATH],
 	[Location of Kerberos 5 headers]),
-	[with_krb5_includes="$withval"], [with_krb5_includes=""])
+	[with_krb5_includes="$withval"], [with_krb5_includes="$with_krb5/include"])
 
 dnl ******************************
 dnl Kerberos 5
@@ -1486,7 +1486,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, [test "x$enable_largefile" = "xyes"])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, $THREADS_CFLAGS $KRB4_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $THREADS_LIBS $KRB4_LIBS $KRB5_LIBS $MANUAL_NSS_LIBS)
+EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, $THREADS_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $THREADS_LIBS $KRB5_LIBS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 AC_SUBST(CAMEL_GROUPWISE_CFLAGS)
