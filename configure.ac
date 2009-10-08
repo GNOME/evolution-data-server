@@ -1178,18 +1178,6 @@ dnl ******************************
 EVO_PURIFY_SUPPORT
 
 dnl ******************************
-dnl Exchange debug
-dnl ******************************
-AC_ARG_ENABLE([e2k-debug],
-	AS_HELP_STRING([--enable-e2kdebug],
-	[Allow debugging]),
-	[enable_e2kdebug=$enableval],[enable_e2kdebug="no"])
-
-if test "$enable_e2kdebug" = "yes"; then
-	AC_DEFINE(E2K_DEBUG, 1, [Define if you want E2K_DEBUG to be available])
-fi
-
-dnl ******************************
 dnl LDAP support.
 dnl ******************************
 if test "$os_win32" != yes; then
