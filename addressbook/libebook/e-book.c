@@ -2269,30 +2269,51 @@ unwrap_gerror (GError *error, GError **client_error)
 static EBookStatus
 get_status_from_error (GError *error)
 {
+	#define err(a,b) "org.gnome.evolution.dataserver.addressbook.Book." a, b
+	static struct {
+		const gchar *name;
+		EBookStatus err_code;
+	} errors[] = {
+		{ err ("E_DATA_BOOK_STATUS_SUCCESS",				E_BOOK_ERROR_OK) },
+		{ err ("E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE",			E_BOOK_ERROR_REPOSITORY_OFFLINE) },
+		{ err ("E_DATA_BOOK_STATUS_PERMISSION_DENIED",			E_BOOK_ERROR_PERMISSION_DENIED) },
+		{ err ("E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND",			E_BOOK_ERROR_CONTACT_NOT_FOUND) },
+		{ err ("E_DATA_BOOK_STATUS_CONTACTID_ALREADY_EXISTS",		E_BOOK_ERROR_CONTACT_ID_ALREADY_EXISTS) },
+		{ err ("E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED",		E_BOOK_ERROR_AUTHENTICATION_FAILED) },
+		{ err ("E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED",		E_BOOK_ERROR_AUTHENTICATION_REQUIRED) },
+		{ err ("E_DATA_BOOK_STATUS_UNSUPPORTED_FIELD",			E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("E_DATA_BOOK_STATUS_UNSUPPORTED_AUTHENTICATION_METHOD",	E_BOOK_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
+		{ err ("E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE",			E_BOOK_ERROR_TLS_NOT_AVAILABLE) },
+		{ err ("E_DATA_BOOK_STATUS_NO_SUCH_BOOK",			E_BOOK_ERROR_NO_SUCH_BOOK) },
+		{ err ("E_DATA_BOOK_STATUS_BOOK_REMOVED",			E_BOOK_ERROR_NO_SUCH_SOURCE) },
+		{ err ("E_DATA_BOOK_STATUS_OFFLINE_UNAVAILABLE",		E_BOOK_ERROR_OFFLINE_UNAVAILABLE) },
+		{ err ("E_DATA_BOOK_STATUS_SEARCH_SIZE_LIMIT_EXCEEDED",		E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("E_DATA_BOOK_STATUS_SEARCH_TIME_LIMIT_EXCEEDED",		E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("E_DATA_BOOK_STATUS_INVALID_QUERY",			E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("E_DATA_BOOK_STATUS_QUERY_REFUSED",			E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("E_DATA_BOOK_STATUS_COULD_NOT_CANCEL",			E_BOOK_ERROR_COULD_NOT_CANCEL) },
+		{ err ("E_DATA_BOOK_STATUS_OTHER_ERROR",			E_BOOK_ERROR_OTHER_ERROR) },
+		{ err ("E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION",		E_BOOK_ERROR_INVALID_SERVER_VERSION) },
+		{ err ("E_DATA_BOOK_STATUS_NO_SPACE",				E_BOOK_ERROR_NO_SPACE) }
+	};
+	#undef err
+
 	if G_LIKELY (error == NULL)
 			    return E_BOOK_ERROR_OK;
+
 	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
 		const char *name;
+		gint i;
+
 		name = dbus_g_error_get_name (error);
-		if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND") == 0) {
-			return E_BOOK_ERROR_CONTACT_NOT_FOUND;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_INVALID_QUERY") == 0) {
-			return E_BOOK_ERROR_INVALID_ARG;
-		/*FIXME find the right enum for cancelled */
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.cancelled") == 0) {
-			return E_BOOK_ERROR_CANCELLED;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_PERMISSION_DENIED") == 0) {
-			return E_BOOK_ERROR_PERMISSION_DENIED;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_NO_SPACE") == 0) {
-			return E_BOOK_ERROR_NO_SPACE;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_REPOSITORY_OFFLINE") == 0) {
-			return E_BOOK_ERROR_REPOSITORY_OFFLINE;
-		} else if (strcmp (name, "org.gnome.evolution.dataserver.addressbook.Book.E_DATA_BOOK_STATUS_OTHER_ERROR") == 0) {
-			return E_BOOK_ERROR_OTHER_ERROR;
-		} else {
-			g_warning (G_STRLOC ": unmatched error name %s", name);
-			return E_BOOK_ERROR_OTHER_ERROR;
+
+		for (i = 0; i < G_N_ELEMENTS (errors); i++) {
+			if (g_ascii_strcasecmp (errors[i].name, name) == 0)
+				return errors[i].err_code;
 		}
+
+		g_warning (G_STRLOC ": unmatched error name %s", name);
+		return E_BOOK_ERROR_OTHER_ERROR;
 	} else {
 		/* In this case the error was caused by DBus. Dump the message to the
 		   console as otherwise we have no idea what the problem is. */

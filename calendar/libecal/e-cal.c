@@ -182,67 +182,59 @@ e_calendar_error_quark (void)
  * If the GError is a remote error, extract the EBookStatus embedded inside.
  * Otherwise return CORBA_EXCEPTION (I know this is DBus...).
  */
- /* TODO: Do this better :p */
 static ECalendarStatus
 get_status_from_error (GError *error)
 {
-  if G_LIKELY (error == NULL)
-    return Success;
-  if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-    const gchar *name;
-    name = dbus_g_error_get_name (error);
-    if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.repositoryoffline") == 0) {
-      return E_CALENDAR_STATUS_REPOSITORY_OFFLINE;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.permissiondenied") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.invalidrange") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.objectnotfound") == 0) {
-      return E_CALENDAR_STATUS_OBJECT_NOT_FOUND;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.invalidobject") == 0) {
-      return E_CALENDAR_STATUS_INVALID_OBJECT;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.objectidalreadyexists") == 0) {
-      return E_CALENDAR_STATUS_OBJECT_ID_ALREADY_EXISTS;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.authenticationfailed") == 0) {
-      return E_CALENDAR_STATUS_AUTHENTICATION_FAILED;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.authenticationrequired") == 0) {
-      return E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.unsupportedfield") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.unsupportedmethod") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.unsupportedauthenticationmethod") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.tlsnotavailable") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.nosuchcal") == 0) {
-      return E_CALENDAR_STATUS_NO_SUCH_CALENDAR;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.unknownuser") == 0) {
-      return E_CALENDAR_STATUS_UNKNOWN_USER;
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.offlineunavailable") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.searchsizelimitexceeded") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.searchtimelimitexceeded") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.invalidquery") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-/*    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.queryrefused") == 0) {
-      return E_CALENDAR_STATUS_PERMISSION_DENIED;*/
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.couldnotcancel") == 0) {
-      return E_CALENDAR_STATUS_COULD_NOT_CANCEL;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.othererror") == 0) {
-      return E_CALENDAR_STATUS_OTHER_ERROR;
-    } else if (strcmp (name, "org.gnome.evolution.dataserver.calendar.Cal.invalidserverversion") == 0) {
-      return E_CALENDAR_STATUS_INVALID_SERVER_VERSION;
-    } else {
-      g_warning ("Unmatched error name %s", name);
-      return E_CALENDAR_STATUS_OTHER_ERROR;
-    }
-  } else {
-    /* In this case the error was caused by DBus */
-    return E_CALENDAR_STATUS_CORBA_EXCEPTION;
-  }
+	#define err(a,b) "org.gnome.evolution.dataserver.calendar.Cal." a, b
+	static struct {
+		const gchar *name;
+		ECalendarStatus err_code;
+	} errors[] = {
+		{ err ("Success",				E_CALENDAR_STATUS_OK) },
+		{ err ("RepositoryOffline",			E_CALENDAR_STATUS_REPOSITORY_OFFLINE) },
+		{ err ("PermissionDenied",			E_CALENDAR_STATUS_PERMISSION_DENIED) },
+		{ err ("InvalidRange",				E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("ObjectNotFound",			E_CALENDAR_STATUS_OBJECT_NOT_FOUND) },
+		{ err ("InvalidObject",				E_CALENDAR_STATUS_INVALID_OBJECT) },
+		{ err ("ObjectIdAlreadyExists",			E_CALENDAR_STATUS_OBJECT_ID_ALREADY_EXISTS) },
+		{ err ("AuthenticationFailed",			E_CALENDAR_STATUS_AUTHENTICATION_FAILED) },
+		{ err ("AuthenticationRequired",		E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED) },
+		{ err ("UnsupportedField",			E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("UnsupportedMethod",			E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("UnsupportedAuthenticationMethod",	E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("TLSNotAvailable",			E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("NoSuchCal",				E_CALENDAR_STATUS_NO_SUCH_CALENDAR) },
+		{ err ("UnknownUser",				E_CALENDAR_STATUS_UNKNOWN_USER) },
+		{ err ("OfflineUnavailable",			E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("SearchSizeLimitExceeded",		E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("SearchTimeLimitExceeded",		E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("InvalidQuery",				E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("QueryRefused",				E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("CouldNotCancel",			E_CALENDAR_STATUS_COULD_NOT_CANCEL) },
+		{ err ("OtherError",				E_CALENDAR_STATUS_OTHER_ERROR) },
+		{ err ("InvalidServerVersion",			E_CALENDAR_STATUS_INVALID_SERVER_VERSION) }
+	};
+	#undef err
+
+	if G_LIKELY (error == NULL)
+		return Success;
+
+	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
+		const gchar *name;
+		gint i;
+
+		name = dbus_g_error_get_name (error);
+		for (i = 0; i < G_N_ELEMENTS (errors); i++) {
+			if (g_ascii_strcasecmp (errors[i].name, name) == 0)
+				return errors[i].err_code;
+		}
+
+		g_warning ("Unmatched error name %s", name);
+		return E_CALENDAR_STATUS_OTHER_ERROR;
+	} else {
+		/* In this case the error was caused by DBus */
+		return E_CALENDAR_STATUS_CORBA_EXCEPTION;
+	}
 }
 
 /**
@@ -1804,7 +1796,6 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 	}
 
 	if (!org_gnome_evolution_dataserver_calendar_Cal_get_object (priv->proxy, uid, rid ? rid : "", &object, error)) {
-		g_warning ("%s failed with uid %s, rid %s", G_STRFUNC, uid, rid ? rid : "");
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
@@ -3173,7 +3164,8 @@ gboolean
 e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error)
 {
 	ECalPrivate *priv;
-	gchar *obj;
+	gchar *obj, *muid = NULL;
+
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
@@ -3183,17 +3175,23 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	if (!org_gnome_evolution_dataserver_calendar_Cal_create_object (priv->proxy, obj, uid, error)) {
+	if (!org_gnome_evolution_dataserver_calendar_Cal_create_object (priv->proxy, obj, &muid, error)) {
 		g_free (obj);
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
 	g_free (obj);
 
-	if (!uid)
+	if (!muid) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OTHER_ERROR, error);
-	else {
-		icalcomponent_set_uid (icalcomp, *uid);
+	} else {
+		icalcomponent_set_uid (icalcomp, muid);
+
+		if (uid)
+			*uid = muid;
+		else
+			g_free (muid);
+
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
 }
