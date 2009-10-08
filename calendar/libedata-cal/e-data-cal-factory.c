@@ -117,6 +117,23 @@ calobjtype_to_icalkind (const EDataCalObjType type)
 	return ICAL_NO_COMPONENT;
 }
 
+static const gchar *
+calobjtype_to_string (const EDataCalObjType type)
+{
+	switch (type){
+	case Event:
+		return "VEVENT";
+	case Todo:
+		return "VTODO";
+	case Journal:
+		return "VJOURNAL";
+	case AnyType:
+		break;
+	}
+
+	return "UNKNOWN COMPONENT";
+}
+
 static ECalSourceType
 icalkind_to_ecalsourcetype (const icalcomponent_kind kind)
 {
@@ -277,7 +294,6 @@ find_backend_cb (gpointer key, gpointer value, gpointer data)
 	}
 }
 
-/* TODO: Error checking! */
 static void
 impl_CalFactory_getCal (EDataCalFactory		*factory,
                         const gchar		*source_xml,
@@ -292,8 +308,9 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 	gchar *str_uri;
 	EUri *uri;
 	gchar *uid_type_string;
-	gchar *path, *sender;
+	gchar *path = NULL, *sender;
 	GList *list;
+	GError *error = NULL;
 
 	/* Remove a pending exit */
 	if (priv->exit_timeout) {
@@ -303,7 +320,6 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 
 	source = e_source_new_from_standalone_xml (source_xml);
 	if (!source) {
-		/* TODO ERROR */
 		dbus_g_method_return_error (context, g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid source")));
 		return;
 	}
@@ -313,7 +329,6 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 	if (!str_uri) {
 		g_object_unref (source);
 
-		/* TODO ERROR */
 		dbus_g_method_return_error (context, g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid source")));
 		return;
 	}
@@ -321,7 +336,6 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 	/* Parse the uri */
 	uri = e_uri_new (str_uri);
 	if (!uri) {
-		/* TODO ERROR */
 		dbus_g_method_return_error (context, g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Invalid URI")));
 		return;
 	}
@@ -331,8 +345,10 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 	/* Find the associated backend factory (if any) */
 	backend_factory = get_backend_factory (priv->methods, uri->protocol, calobjtype_to_icalkind (type));
 	if (!backend_factory) {
-		/* FIXME Distinguish between method and kind failures? */
-		/* TODO ERROR */
+		gchar *msg = g_strdup_printf (_("No backend factory for '%s' of '%s'"), uri->protocol, calobjtype_to_string (type));
+		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, msg);
+		g_free (msg);
+
 		goto cleanup2;
 	}
 
@@ -370,8 +386,7 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 			backend = e_cal_backend_factory_new_backend (backend_factory, source);
 
 		if (!backend) {
-			g_warning (G_STRLOC ": could not instantiate backend");
-			/* TODO ERROR */
+			error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, _("Could not instantiate backend"));
 			goto cleanup;
 		}
 
@@ -419,7 +434,10 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 	g_free (uid_type_string);
 	g_object_unref (source);
 
-	dbus_g_method_return (context, path);
+	if (error)
+		dbus_g_method_return_error (context, error);
+	else
+		dbus_g_method_return (context, path);
 }
 
 static void

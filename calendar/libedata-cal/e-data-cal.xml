@@ -4,9 +4,9 @@
 	<interface name="org.gnome.evolution.dataserver.calendar.Cal">
 		<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="EDataCal"/>
 		
-		<signal name="auth-required"/>
+		<signal name="auth_required"/>
 
-		<signal name="backend-error">
+		<signal name="backend_error">
                   <arg name="error" type="s"/>
                 </signal>
 

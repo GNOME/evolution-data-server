@@ -740,7 +740,7 @@ e_cal_new (ESource *source, ECalSourceType type)
 	GError *error = NULL;
 
 	if (!e_cal_activate (&error)) {
-		g_warning("Cannot activate ECal: %s\n", error->message);
+		g_warning("Cannot activate ECal: %s\n", error ? error->message : "Unknown error");
 		g_error_free (error);
 		return NULL;
 	}
@@ -755,7 +755,7 @@ e_cal_new (ESource *source, ECalSourceType type)
 	xml = e_source_to_standalone_xml (priv->source);
 	if (!org_gnome_evolution_dataserver_calendar_CalFactory_get_cal (factory_proxy, xml, convert_type (priv->type), &path, &error)) {
 		g_free (xml);
-		g_warning ("Cannot get cal from factory: %s", error->message);
+		g_warning ("Cannot get cal from factory: %s", error ? error->message : "Unknown error");
 		g_error_free (error);
 		g_object_unref (ecal);
 		return NULL;
@@ -1653,7 +1653,7 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
 	if (!org_gnome_evolution_dataserver_calendar_Cal_set_mode (priv->proxy, mode, &error)) {
-		g_printerr("%s: %s\n", __FUNCTION__, error->message);
+		g_printerr ("%s: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
 		g_error_free (error);
 		return FALSE;
 	}
@@ -1804,7 +1804,7 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 	}
 
 	if (!org_gnome_evolution_dataserver_calendar_Cal_get_object (priv->proxy, uid, rid ? rid : "", &object, error)) {
-		g_warning ("%s failed with uid %s, rid %s", __FUNCTION__, uid, rid ? rid : "");
+		g_warning ("%s failed with uid %s, rid %s", G_STRFUNC, uid, rid ? rid : "");
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
 	}
 
@@ -2486,7 +2486,7 @@ try_again:
 				goto try_again;
 			}
 
-			g_message ("Failed to get recurrence objects for uid %s \n", error->message);
+			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
 			g_clear_error (&error);
 			return;
 		}
