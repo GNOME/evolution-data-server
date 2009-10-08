@@ -1,1 +1,0 @@
-SUBDIRS = xntlm lib storage

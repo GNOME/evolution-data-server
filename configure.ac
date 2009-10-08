@@ -87,10 +87,6 @@ LIBCAMEL_CURRENT=14
 LIBCAMEL_REVISION=1
 LIBCAMEL_AGE=0
 
-LIBEXCHANGE_STORAGE_CURRENT=3
-LIBEXCHANGE_STORAGE_REVISION=0
-LIBEXCHANGE_STORAGE_AGE=0
-
 LIBGDATA_CURRENT=1
 LIBGDATA_REVISION=0
 LIBGDATA_AGE=0
@@ -130,9 +126,6 @@ AC_SUBST(LIBEGROUPWISE_AGE)
 AC_SUBST(LIBCAMEL_CURRENT)
 AC_SUBST(LIBCAMEL_REVISION)
 AC_SUBST(LIBCAMEL_AGE)
-AC_SUBST(LIBEXCHANGE_STORAGE_CURRENT)
-AC_SUBST(LIBEXCHANGE_STORAGE_REVISION)
-AC_SUBST(LIBEXCHANGE_STORAGE_AGE)
 AC_SUBST(LIBGDATA_CURRENT)
 AC_SUBST(LIBGDATA_REVISION)
 AC_SUBST(LIBGDATA_AGE)
@@ -1238,26 +1231,6 @@ dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
 	fi
 	AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
 
-	SAVE_CFLAGS="$CFLAGS"
-	SAVE_LIBS="$LIBS"
-	LDAP_CFLAGS="$LDAP_CFLAGS -DLDAP_DEPRECATED"
-	CFLAGS="$CFLAGS $LDAP_CFLAGS"
-	LIBS="$LIBS $LDAP_LIBS"
-	AC_CHECK_FUNCS(ldap_ntlm_bind)
-	CFLAGS="$SAVE_CFLAGS"
-	LIBS="$SAVE_LIBS"
-	dnl You need to enable LDAP and Kerberos to enable Exchange support in e-d-s
-	msg_no_ntlm="no"
-	msg_exchange="no"
-	if test "$msg_ldap" != "no" ; then
-		if test "$ac_cv_func_ldap_ntlm_bind" != no ; then
-			msg_exchange="yes"
-		else
-		dnl The user wanted to build with openldap, but his openldap did not have NTLM
-		dnl support. Make him aware of this with a warning message at the end.
-			msg_no_ntlm="yes"
-		fi
-	fi
 else
 	dnl Win32 LDAP support
 	LDAP_CFLAGS="-DLDAP_DEPRECATED"
@@ -1268,8 +1241,6 @@ else
 	AM_CONDITIONAL(ENABLE_LDAP, true)
 	AM_CONDITIONAL(SUNLDAP, false)
 	msg_ldap="yes"
-	msg_no_ntlm="no"
-	msg_exchange="yes"
 fi
 
 DBUS_GLIB_REQUIRED=dbus_glib_minimum_version
@@ -1630,11 +1601,6 @@ libedataserverui/libedataserverui.pc
 servers/Makefile
 servers/groupwise/Makefile
 servers/groupwise/libegroupwise.pc
-servers/exchange/Makefile
-servers/exchange/xntlm/Makefile
-servers/exchange/lib/Makefile
-servers/exchange/storage/Makefile
-servers/exchange/storage/libexchange-storage.pc
 servers/google/Makefile
 servers/google/libgdata/Makefile
 servers/google/libgdata/libgdata.pc
@@ -1669,7 +1635,6 @@ echo "
 	SSL support:		$msg_ssl
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
-	Exchange support:	$msg_exchange
 	Dot Locking:		$msg_dot
 	File Locking:		$msg_file
 	Large files:		$enable_largefile
@@ -1683,14 +1648,4 @@ if test "$msg_imapx" = "yes"; then
 	echo "
 	IMAPX support:		$msg_imapx
 "
-fi
-
-if test "$msg_no_ntlm" != "no" ; then
-	echo ""
-	AC_MSG_WARN([
-No NTLM support in OpenLDAP; Plaintext password authentication will be
-used when connecting to the Exchange Global Catalog server. Consider
-installing the evo-openldap package, or building OpenLDAP with the
-patch in servers/exchange/docs/openldap-ntlm.diff
-])
 fi
