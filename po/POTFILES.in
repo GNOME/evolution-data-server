@@ -28,6 +28,7 @@ calendar/libecal/e-cal.c
 calendar/libedata-cal/e-cal-backend-sexp.c
 calendar/libedata-cal/e-cal-backend-util.c
 calendar/libedata-cal/e-data-cal.c
+calendar/libedata-cal/e-data-cal-factory.c
 camel/camel-address.c
 camel/camel-arg.c
 camel/camel-block-file.c
