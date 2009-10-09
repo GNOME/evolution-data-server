@@ -598,7 +598,7 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 			LDFLAGS="$LDFLAGS_save"
 			LIBS="$LIBS_save"
 
-			if test -n "${moz_nspr_libs}"; then
+			if test "x${moz_nspr_libs}" = "xyes"; then
 				if test -n "${with_nspr_libs}"; then
 					MANUAL_NSPR_LIBS="-L$with_nspr_libs $nsprlibs"
 				else
