@@ -161,9 +161,6 @@ camel_folder_summary_init (CamelFolderSummary *s)
 	s->content_info_chunks = NULL;
 	p->need_preview = FALSE;
 	p->preview_updates = g_hash_table_new (g_str_hash, g_str_equal);
-#if defined (DOEPOOLV)
-	s->message_info_strings = CAMEL_MESSAGE_INFO_LAST;
-#endif
 
 	s->version = CAMEL_FOLDER_SUMMARY_VERSION;
 	s->flags = 0;

@@ -29,10 +29,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#if defined (DOEPOOLV)
-#include <libedataserver/e-memory.h>
-#endif
-
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-exception.h"

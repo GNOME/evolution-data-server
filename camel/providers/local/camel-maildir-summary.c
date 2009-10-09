@@ -132,10 +132,6 @@ camel_maildir_summary_init (CamelMaildirSummary *o)
 	s->message_info_size = sizeof(CamelMaildirMessageInfo);
 	s->content_info_size = sizeof(CamelMaildirMessageContentInfo);
 
-#if defined (DOEPOOLV)
-	s->message_info_strings = CAMEL_MAILDIR_INFO_LAST;
-#endif
-
 	if (gethostname(hostname, 256) == 0) {
 		o->priv->hostname = g_strdup(hostname);
 	} else {
@@ -342,11 +338,10 @@ static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary * s, st
 static void
 message_info_free(CamelFolderSummary *s, CamelMessageInfo *mi)
 {
-#if !defined (DOEPOOLV)
 	CamelMaildirMessageInfo *mdi = (CamelMaildirMessageInfo *)mi;
 
 	g_free(mdi->filename);
-#endif
+
 	((CamelFolderSummaryClass *) parent_class)->message_info_free(s, mi);
 }
 
@@ -626,12 +621,8 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 			filename = camel_maildir_info_filename(mdi);
 			/* TODO: only store the extension in the mdi->filename struct, not the whole lot */
 			if (filename == NULL || strcmp(filename, d->d_name) != 0) {
-#ifdef DOEPOOLV
-				info->strings = e_poolv_set(info->strings, CAMEL_MAILDIR_INFO_FILENAME, d->d_name, FALSE);
-#else
 				g_free(mdi->filename);
 				mdi->filename = g_strdup(d->d_name);
-#endif
 			}
 			camel_message_info_free(info);
 		}
@@ -770,12 +761,8 @@ maildir_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChange
 					/* TODO: If this is made mt-safe, then this code could be a problem, since
 					   the estrv is being modified.
 					   Sigh, this may mean the maildir name has to be cached another way */
-#ifdef DOEPOOLV
-					info->strings = e_poolv_set(info->strings, CAMEL_MAILDIR_INFO_FILENAME, newname, TRUE);
-#else
 					g_free(mdi->filename);
 					mdi->filename = newname;
-#endif
 				}
 				g_free(name);
 				g_free(dest);
