@@ -5210,7 +5210,8 @@ start_views (EBookBackend *backend)
 #endif
 
 static void
-e_book_backend_ldap_set_mode (EBookBackend *backend, gint mode)
+e_book_backend_ldap_set_mode (EBookBackend *backend,
+                              GNOME_Evolution_Addressbook_BookMode mode)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 

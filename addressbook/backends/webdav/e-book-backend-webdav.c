@@ -1058,7 +1058,8 @@ e_book_backend_webdav_remove(EBookBackend *backend,	EDataBook *book,
 }
 
 static void
-e_book_backend_webdav_set_mode(EBookBackend *backend, gint mode)
+e_book_backend_webdav_set_mode(EBookBackend *backend,
+                               GNOME_Evolution_Addressbook_BookMode mode)
 {
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV(backend);
 

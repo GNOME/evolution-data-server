@@ -3713,7 +3713,8 @@ e_book_backend_groupwise_get_supported_auth_methods (EBookBackend *backend, EDat
 }
 
 static void
-e_book_backend_groupwise_set_mode (EBookBackend *backend, gint mode)
+e_book_backend_groupwise_set_mode (EBookBackend *backend,
+                                   GNOME_Evolution_Addressbook_BookMode mode)
 {
 	EBookBackendGroupwise *bg;
 

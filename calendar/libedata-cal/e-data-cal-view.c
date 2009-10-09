@@ -497,7 +497,7 @@ GList *
 e_data_cal_view_get_matched_objects (EDataCalView *query)
 {
 	g_return_val_if_fail (IS_QUERY (query), NULL);
-#warning TODO e_data_cal_view_get_matched_objects
+	/* TODO e_data_cal_view_get_matched_objects */
 	return NULL;
 }
 

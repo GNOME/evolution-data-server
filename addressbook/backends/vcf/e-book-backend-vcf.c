@@ -673,7 +673,8 @@ e_book_backend_vcf_cancel_operation (EBookBackend *backend, EDataBook *book)
 }
 
 static void
-e_book_backend_vcf_set_mode (EBookBackend *backend, gint mode)
+e_book_backend_vcf_set_mode (EBookBackend *backend,
+                             GNOME_Evolution_Addressbook_BookMode mode)
 {
 	if (e_book_backend_is_loaded (backend)) {
 		e_book_backend_notify_writable (backend, TRUE);
