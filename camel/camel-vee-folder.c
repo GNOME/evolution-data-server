@@ -29,7 +29,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#if defined (DOEPOOLV) || defined (DOESTRV)
+#if defined (DOEPOOLV)
 #include <libedataserver/e-memory.h>
 #endif
 

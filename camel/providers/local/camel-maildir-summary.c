@@ -132,7 +132,7 @@ camel_maildir_summary_init (CamelMaildirSummary *o)
 	s->message_info_size = sizeof(CamelMaildirMessageInfo);
 	s->content_info_size = sizeof(CamelMaildirMessageContentInfo);
 
-#if defined (DOEPOOLV) || defined (DOESTRV)
+#if defined (DOEPOOLV)
 	s->message_info_strings = CAMEL_MAILDIR_INFO_LAST;
 #endif
 
@@ -342,7 +342,7 @@ static CamelMessageInfo *message_info_new_from_header(CamelFolderSummary * s, st
 static void
 message_info_free(CamelFolderSummary *s, CamelMessageInfo *mi)
 {
-#if !defined (DOEPOOLV) && !defined (DOESTRV)
+#if !defined (DOEPOOLV)
 	CamelMaildirMessageInfo *mdi = (CamelMaildirMessageInfo *)mi;
 
 	g_free(mdi->filename);
@@ -626,23 +626,11 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 			filename = camel_maildir_info_filename(mdi);
 			/* TODO: only store the extension in the mdi->filename struct, not the whole lot */
 			if (filename == NULL || strcmp(filename, d->d_name) != 0) {
-#ifdef DOESTRV
-/* FIXME[disk-summary] cannot modify the estrv after its been setup,
- * for mt-safe code */
-				CAMEL_SUMMARY_LOCK(s, summary_lock);
-				/* need to update the summary hash ref */
-				g_hash_table_remove(s->messages_uid, camel_message_info_uid(info));
-				info->strings = e_strv_set_ref(info->strings, CAMEL_MAILDIR_INFO_FILENAME, d->d_name);
-				info->strings = e_strv_pack(info->strings);
-				g_hash_table_insert(s->messages_uid, (gchar *)camel_message_info_uid(info), info);
-				CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-#else
-# ifdef DOEPOOLV
+#ifdef DOEPOOLV
 				info->strings = e_poolv_set(info->strings, CAMEL_MAILDIR_INFO_FILENAME, d->d_name, FALSE);
-# else
+#else
 				g_free(mdi->filename);
 				mdi->filename = g_strdup(d->d_name);
-# endif
 #endif
 			}
 			camel_message_info_free(info);
@@ -734,9 +722,6 @@ maildir_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChange
 	gint count, i;
 	CamelMessageInfo *info;
 	CamelMaildirMessageInfo *mdi;
-#ifdef DOESTRV
-	CamelFolderSummary *s = (CamelFolderSummary *)cls;
-#endif
 	gchar *name;
 	struct stat st;
 
@@ -785,22 +770,11 @@ maildir_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChange
 					/* TODO: If this is made mt-safe, then this code could be a problem, since
 					   the estrv is being modified.
 					   Sigh, this may mean the maildir name has to be cached another way */
-#ifdef DOESTRV
-/* FIXME[disk-summary] cannot modify the estrv after its been setup, for mt-safe code */
-					CAMEL_SUMMARY_LOCK(s, summary_lock);
-					/* need to update the summary hash ref */
-					g_hash_table_remove(s->messages_uid, camel_message_info_uid(info));
-					info->strings = e_strv_set_ref_free(info->strings, CAMEL_MAILDIR_INFO_FILENAME, newname);
-					info->strings = e_strv_pack(info->strings);
-					g_hash_table_insert(s->messages_uid, (gchar *)camel_message_info_uid(info), info);
-					CAMEL_SUMMARY_UNLOCK(s, summary_lock);
-#else
-# ifdef DOEPOOLV
+#ifdef DOEPOOLV
 					info->strings = e_poolv_set(info->strings, CAMEL_MAILDIR_INFO_FILENAME, newname, TRUE);
-# else
+#else
 					g_free(mdi->filename);
 					mdi->filename = newname;
-# endif
 #endif
 				}
 				g_free(name);

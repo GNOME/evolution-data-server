@@ -161,7 +161,7 @@ camel_folder_summary_init (CamelFolderSummary *s)
 	s->content_info_chunks = NULL;
 	p->need_preview = FALSE;
 	p->preview_updates = g_hash_table_new (g_str_hash, g_str_equal);
-#if defined (DOESTRV) || defined (DOEPOOLV)
+#if defined (DOEPOOLV)
 	s->message_info_strings = CAMEL_MESSAGE_INFO_LAST;
 #endif
 
@@ -1930,13 +1930,6 @@ camel_folder_summary_add (CamelFolderSummary *s, CamelMessageInfo *info)
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 
-/* unnecessary for pooled vectors */
-#ifdef DOESTRV
-	/* this is vitally important, and also if this is ever modified, then
-	   the hash table needs to be resynced */
-	info->strings = e_strv_pack(info->strings);
-#endif
-
 	/* Summary always holds a ref for the loaded infos */
 	/* camel_message_info_ref(info); FIXME: Check how things are loaded. */
 	/* FIXME[disk-summary] SHould we ref it or redesign it later on */
@@ -1957,13 +1950,6 @@ camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboo
 		return;
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-
-/* unnecessary for pooled vectors */
-#ifdef DOESTRV
-	/* this is vitally important, and also if this is ever modified, then
-	   the hash table needs to be resynced */
-	info->strings = e_strv_pack(info->strings);
-#endif
 
 	/* Summary always holds a ref for the loaded infos */
 	/* camel_message_info_ref(info); FIXME: Check how things are loaded. */
