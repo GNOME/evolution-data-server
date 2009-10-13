@@ -79,12 +79,14 @@ struct _ECalBackendContactsPrivate {
 };
 
 typedef struct _BookRecord {
+	ECalBackendContacts *cbc;
         EBook     *book;
         EBookView *book_view;
 } BookRecord;
 
 typedef struct _ContactRecord {
         ECalBackendContacts *cbc;
+	EBook               *book; /* where it comes from */
         EContact            *contact;
         ECalComponent       *comp_birthday, *comp_anniversary;
 } ContactRecord;
@@ -146,10 +148,20 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
         e_book_view_start (book_view);
 
         br = g_new (BookRecord, 1);
+	br->cbc = cbc;
         br->book = book;
         br->book_view = book_view;
 
         return br;
+}
+
+static gboolean
+remove_by_book (gpointer key, gpointer value, gpointer user_data)
+{
+	ContactRecord *cr = value;
+	EBook *book = user_data;
+
+	return (cr && cr->book == book);
 }
 
 static void
@@ -158,6 +170,7 @@ book_record_free (BookRecord *br)
         if (!br)
                 return;
 
+	g_hash_table_foreach_remove (br->cbc->priv->tracked_contacts, remove_by_book, br->book);
         g_object_unref (br->book_view);
         g_object_unref (br->book);
 
@@ -166,12 +179,13 @@ book_record_free (BookRecord *br)
 
 /* ContactRecord methods */
 static ContactRecord *
-contact_record_new (ECalBackendContacts *cbc, EContact *contact)
+contact_record_new (ECalBackendContacts *cbc, EBook *book, EContact *contact)
 {
         ContactRecord *cr = g_new0 (ContactRecord, 1);
 	gchar *comp_str;
 
         cr->cbc = cbc;
+	cr->book = book;
         cr->contact = contact;
         cr->comp_birthday = create_birthday (cbc, contact);
         cr->comp_anniversary = create_anniversary (cbc, contact);
@@ -275,6 +289,22 @@ contact_record_cb (gpointer key, gpointer value, gpointer user_data)
         }
 }
 
+static gboolean
+is_source_usable (ESource *source, ESourceGroup *group)
+{
+	const gchar *base_uri;
+	const gchar *prop;
+
+        base_uri = e_source_group_peek_base_uri (group);
+        if (!base_uri)
+                return FALSE;
+
+	prop = e_source_get_property (source, "use-in-contacts-calendar");
+
+	/* the later check is for backward compatibility */
+	return (prop && g_str_equal (prop, "1")) || (!prop && g_str_has_prefix (base_uri, "file://"));
+}
+
 /* SourceList callbacks */
 static void
 add_source (ECalBackendContacts *cbc, ESource *source)
@@ -295,7 +325,8 @@ source_added_cb (ESourceGroup *group, ESource *source, gpointer user_data)
 
         g_return_if_fail (cbc);
 
-        add_source (cbc, source);
+	if (is_source_usable (source, group))
+		add_source (cbc, source);
 }
 
 static void
@@ -310,29 +341,56 @@ source_removed_cb (ESourceGroup *group, ESource *source, gpointer user_data)
 }
 
 static void
+source_list_changed_cb (ESourceList *source_list, gpointer user_data)
+{
+        ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
+        GSList *g, *s;
+
+        g_return_if_fail (cbc);
+
+	for (g = e_source_list_peek_groups (source_list); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+
+		if (!group)
+			continue;
+
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+			const gchar *uid;
+
+			if (!source)
+				continue;
+
+			uid = e_source_peek_uid (source);
+			if (!uid)
+				continue;
+
+			if (is_source_usable (source, group)) {
+				if (!g_hash_table_lookup (cbc->priv->addressbooks, uid))
+					source_added_cb (group, source, cbc);
+			} else if (g_hash_table_lookup (cbc->priv->addressbooks, uid)) {
+				source_removed_cb (group, source, cbc);
+			}
+		}
+	}
+}
+
+static void
 source_group_added_cb (ESourceList *source_list, ESourceGroup *group, gpointer user_data)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-        const gchar *base_uri;
         GSList *i;
 
         g_return_if_fail (cbc);
 
-        base_uri = e_source_group_peek_base_uri (group);
-        if (!base_uri)
-                return;
-
-        /* Load all address books from this group */
-	if (!strncmp (base_uri, "file", 4)) {
-		for (i = e_source_group_peek_sources (group); i; i = i->next) {
-			ESource *source = E_SOURCE (i->data);
-			add_source (cbc, source);
-		}
-
-		/* Watch for future changes */
-		g_signal_connect (group, "source_added", G_CALLBACK (source_added_cb), cbc);
-		g_signal_connect (group, "source_removed", G_CALLBACK (source_removed_cb), cbc);
+	for (i = e_source_group_peek_sources (group); i; i = i->next) {
+		ESource *source = E_SOURCE (i->data);
+		source_added_cb (group, source, cbc);
 	}
+
+	/* Watch for future changes */
+	g_signal_connect (group, "source_added", G_CALLBACK (source_added_cb), cbc);
+	g_signal_connect (group, "source_removed", G_CALLBACK (source_removed_cb), cbc);
 }
 
 static void
@@ -358,22 +416,29 @@ static void
 contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
+	EBook *book = e_book_view_get_book (book_view);
         const GList *i;
 
         for (i = contacts; i; i = i->next) {
                 EContact *contact = E_CONTACT (i->data);
                 const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
+                EContactDate *birthday, *anniversary;
 
                 /* Because this is a change of contact, then always remove old tracked data
 		   and if possible, add with (possibly) new values.
 		*/
 		g_hash_table_remove (cbc->priv->tracked_contacts, (gchar *)uid);
 
-                if (e_contact_get (contact, E_CONTACT_BIRTH_DATE) ||
-                    e_contact_get (contact, E_CONTACT_ANNIVERSARY)) {
-                        ContactRecord *cr = contact_record_new (cbc, contact);
+                birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
+                anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
+
+                if (birthday || anniversary) {
+                        ContactRecord *cr = contact_record_new (cbc, book, contact);
                         g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
                 }
+
+                e_contact_date_free (birthday);
+                e_contact_date_free (anniversary);
         }
 }
 
@@ -381,6 +446,7 @@ static void
 contacts_added_cb (EBookView *book_view, const GList *contacts, gpointer user_data)
 {
         ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
+	EBook *book = e_book_view_get_book (book_view);
         const GList *i;
 
         /* See if any new contacts have BIRTHDAY or ANNIVERSARY fields */
@@ -393,7 +459,7 @@ contacts_added_cb (EBookView *book_view, const GList *contacts, gpointer user_da
                 anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
 
                 if (birthday || anniversary) {
-                        ContactRecord *cr = contact_record_new (cbc, contact);
+                        ContactRecord *cr = contact_record_new (cbc, book, contact);
                         const gchar    *uid = e_contact_get_const (contact, E_CONTACT_UID);
 
                         g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
@@ -928,6 +994,7 @@ init_sources_cb (ECalBackendContacts *cbc)
         }
 
         /* Listen for source list changes */
+        g_signal_connect (priv->addressbook_sources, "changed", G_CALLBACK (source_list_changed_cb), cbc);
         g_signal_connect (priv->addressbook_sources, "group_added", G_CALLBACK (source_group_added_cb), cbc);
         g_signal_connect (priv->addressbook_sources, "group_removed", G_CALLBACK (source_group_removed_cb), cbc);
 
