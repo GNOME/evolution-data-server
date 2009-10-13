@@ -5,47 +5,48 @@
 #
 # Jayaradha N <jaya@pune.redhat.com>, 2004.
 # Felix <ifelix25@gmail.com>, 2006.
-# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008.
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007, 2008, 2009.
 # I. Felix <ifelix@redhat.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-08-25 12:55+0000\n"
-"PO-Revision-Date: 2009-08-27 12:20+0530\n"
-"Last-Translator: I. Felix <ifelix@redhat.com>\n"
-"Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-10-09 16:52+0530\n"
+"PO-Revision-Date: 2009-10-12 19:47+0530\n"
+"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
+"Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\\n\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\\n"
 "\n"
-"X-Generator: KBabel 1.11.4\n"
+"\n"
+"X-Generator: Lokalize 0.3\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:560
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2329
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2330
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:474
 msgid "Loading..."
 msgstr "ஏற்றுகிறது..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:563
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2260
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2282
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2327
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4510
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
 msgid "Searching..."
 msgstr "தேடிகிறது..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2695
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2696
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4674
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "தொடர்புகளை பதிவிறக்கம் செய்கிறது (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2844
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3028
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3072
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2845
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3029
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3073
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "தொடர்புகள் இடமாற்றினை மேம்படுத்துகிறது (%d)... "
@@ -82,97 +83,12 @@ msgstr "LDAP இல் தேடலின் முடிவை பெறுக�
 msgid "Error performing search"
 msgstr "பிழையான செயற்பாட்டை சோதனையிடுதல்"
 
-#. translators: the placeholders will be filled by
-#. * function names, e.g.
-#. * "e_book_add_contact" on book before
-#. * "e_book_open
-#: ../addressbook/libebook/e-book.c:287 ../addressbook/libebook/e-book.c:291
-#: ../addressbook/libebook/e-book.c:495 ../addressbook/libebook/e-book.c:499
-#: ../addressbook/libebook/e-book.c:637 ../addressbook/libebook/e-book.c:641
-#: ../addressbook/libebook/e-book.c:727 ../addressbook/libebook/e-book.c:731
-#: ../addressbook/libebook/e-book.c:1024 ../addressbook/libebook/e-book.c:1029
-#: ../addressbook/libebook/e-book.c:1206 ../addressbook/libebook/e-book.c:1210
-#: ../addressbook/libebook/e-book.c:1365 ../addressbook/libebook/e-book.c:1369
-#: ../addressbook/libebook/e-book.c:1570 ../addressbook/libebook/e-book.c:1574
-#: ../addressbook/libebook/e-book.c:1813 ../addressbook/libebook/e-book.c:1817
-#: ../addressbook/libebook/e-book.c:2050 ../addressbook/libebook/e-book.c:2054
-#: ../addressbook/libebook/e-book.c:2257 ../addressbook/libebook/e-book.c:2261
-#: ../addressbook/libebook/e-book.c:3445
-#, c-format
-msgid "\"%s\" on book before \"%s\""
-msgstr "\"%s\" முன் பதிவு செய் \"%s\""
-
-#: ../addressbook/libebook/e-book.c:300 ../addressbook/libebook/e-book.c:508
-#: ../addressbook/libebook/e-book.c:650 ../addressbook/libebook/e-book.c:740
-#: ../addressbook/libebook/e-book.c:1039 ../addressbook/libebook/e-book.c:1220
-#: ../addressbook/libebook/e-book.c:1379 ../addressbook/libebook/e-book.c:1583
-#: ../addressbook/libebook/e-book.c:1826 ../addressbook/libebook/e-book.c:2064
-#: ../addressbook/libebook/e-book.c:2270 ../addressbook/libebook/e-book.c:2679
-#: ../addressbook/libebook/e-book.c:2877
-#, c-format
-msgid "book busy"
-msgstr "பதிவு வேலையில் உள்ளது"
-
-#: ../addressbook/libebook/e-book.c:331 ../addressbook/libebook/e-book.c:335
-#: ../addressbook/libebook/e-book.c:539 ../addressbook/libebook/e-book.c:543
-#: ../addressbook/libebook/e-book.c:677 ../addressbook/libebook/e-book.c:681
-#: ../addressbook/libebook/e-book.c:767 ../addressbook/libebook/e-book.c:771
-#: ../addressbook/libebook/e-book.c:1066 ../addressbook/libebook/e-book.c:1069
-#: ../addressbook/libebook/e-book.c:1250 ../addressbook/libebook/e-book.c:1253
-#: ../addressbook/libebook/e-book.c:1406 ../addressbook/libebook/e-book.c:1410
-#: ../addressbook/libebook/e-book.c:1619 ../addressbook/libebook/e-book.c:1623
-#: ../addressbook/libebook/e-book.c:1873 ../addressbook/libebook/e-book.c:1877
-#: ../addressbook/libebook/e-book.c:2094 ../addressbook/libebook/e-book.c:2098
-#: ../addressbook/libebook/e-book.c:2296 ../addressbook/libebook/e-book.c:2300
-#: ../addressbook/libebook/e-book.c:2531 ../addressbook/libebook/e-book.c:2705
-#: ../addressbook/libebook/e-book.c:2709 ../addressbook/libebook/e-book.c:2903
-#: ../addressbook/libebook/e-book.c:2907 ../addressbook/libebook/e-book.c:3454
-#, c-format
-msgid "CORBA exception making \"%s\" call"
-msgstr "CORBA பிழை \"%s\" ஐ அழைக்கிறது"
-
-#: ../addressbook/libebook/e-book.c:2520
-#, c-format
-msgid "%s: there is no current operation"
-msgstr "வழக்கத்திலுள்ள செயல்முறை எதுவும் அங்கே இல்லை (%s:)"
-
-#: ../addressbook/libebook/e-book.c:2549 ../addressbook/libebook/e-book.c:2594
-#: ../addressbook/libebook/e-book.c:2633
-#, c-format
-msgid "%s: could not cancel"
-msgstr " ரத்து செய்ய முடியாது (%s: )"
-
-#: ../addressbook/libebook/e-book.c:2665 ../addressbook/libebook/e-book.c:2669
-#, c-format
-msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" பதிவுக்கு பின் \"%s\""
-
-#: ../addressbook/libebook/e-book.c:2733
-#, c-format
-msgid "%s: canceled"
-msgstr " ரத்து செய்யப்பட்டது (%s:)"
-
-#: ../addressbook/libebook/e-book.c:3310
-#, c-format
-msgid "%s: Invalid source."
-msgstr "பயன்றற மூலகாரணம். (%s: )"
-
-#: ../addressbook/libebook/e-book.c:3318 ../addressbook/libebook/e-book.c:3383
-#, c-format
-msgid "%s: no factories available for URI `%s'"
-msgstr " யூஆர்ஐ(URI) `%s'க்கான செயல்முறை கிடைக்க பெறவில்லை  (%s:)"
-
-#: ../addressbook/libebook/e-book.c:3329
-#, c-format
-msgid "%s: Could not create EBookListener"
-msgstr "கவணிப்பானை உருவாக்க இயலவில்லை ( %s:)"
-
-#: ../addressbook/libebook/e-book.c:3595
+#: ../addressbook/libebook/e-book.c:1837
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr " UID பற்றிய தனித் தொடர்பு gconf இல் சேமிக்கப்படவில்லை (%s:)"
 
-#: ../addressbook/libebook/e-book.c:3727
+#: ../addressbook/libebook/e-book.c:1967
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: uid க்கு மூலம் எதுவும் இல்லை`%s' gconfல் சேமிக்கப்பட்டுள்ளது."
@@ -363,7 +279,7 @@ msgstr "வலைப்பூ வலைமனை"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:609
+#: ../libedataserverui/e-categories-dialog.c:632
 msgid "Categories"
 msgstr "வகைகள்"
 
@@ -712,6 +628,65 @@ msgstr "SIP முகவரி"
 msgid "Unnamed List"
 msgstr "பெயரில்லாத பட்டியல்"
 
+#: ../addressbook/libedata-book/e-data-book-factory.c:281
+#, c-format
+msgid "Empty URI"
+msgstr "வெற்று யூஆர்ஐ"
+
+#: ../addressbook/libedata-book/e-data-book-factory.c:295
+#: ../calendar/libedata-cal/e-data-cal-factory.c:323
+#: ../calendar/libedata-cal/e-data-cal-factory.c:332, c-format
+msgid "Invalid source"
+msgstr "பயனற்ற மூலம்."
+
+#: ../addressbook/libedata-book/e-data-book.c:302
+msgid "Cannot open book"
+msgstr "புத்தகத்தை திறக்க முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:320
+msgid "Cannot remove book"
+msgstr "புத்தகத்தை நீக்க முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:332
+#: ../addressbook/libedata-book/e-data-book.c:347
+msgid "Cannot get contact"
+msgstr "தொடர்பை பெறமுடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:359
+msgid "Empty query"
+msgstr "வெற்று கேள்வி"
+
+#: ../addressbook/libedata-book/e-data-book.c:404
+msgid "Cannot authenticate user"
+msgstr "பயனரை அங்கீகரிக்க முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:416
+#: ../addressbook/libedata-book/e-data-book.c:431
+msgid "Cannot add contact"
+msgstr "தொடர்பை சேர்க்க முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:446
+#: ../addressbook/libedata-book/e-data-book.c:461
+msgid "Cannot modify contact"
+msgstr "தொடர்பை மாற்ற முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:496
+msgid "Cannot remove contacts"
+msgstr "தொடர்புகளை நீக்க முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:571
+#: ../calendar/libedata-cal/e-cal-backend-util.c:139
+msgid "Invalid query"
+msgstr "செல்லுபடியாகாத கேள்வி"
+
+#: ../addressbook/libedata-book/e-data-book.c:600
+msgid "Cannot get changes"
+msgstr "மாற்றங்களை பெற முடியவில்லை"
+
+#: ../addressbook/libedata-book/e-data-book.c:708
+msgid "Cannot complete operation"
+msgstr "செயலை முடிக்க இயலவில்லை"
+
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:649
 #: ../libedataserver/e-categories.c:46
 msgid "Birthday"
@@ -736,20 +711,20 @@ msgstr "தவறான யூஆர்ஐ(URI) நாள்காட்டி �
 msgid "Cannot save calendar data"
 msgstr "நாள்காட்டி தரவை சேமிக்க முடியாது"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:344
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:342
 msgid "Could not create thread for getting deltas"
 msgstr "டெல்டாக்களை பெற த்ரட்டை உருவாக்க முடியாது"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:376
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:374
 #: ../calendar/backends/google/e-cal-backend-google.c:1189
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1080
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1381
-#: ../calendar/backends/http/e-cal-backend-http.c:659
+#: ../calendar/backends/http/e-cal-backend-http.c:673
 #: ../calendar/backends/weather/e-cal-backend-weather.c:486
 msgid "Could not create cache file"
 msgstr "தற்காலிக கோப்பை உருவாக்க முடியவில்லை"
 
-#: ../calendar/backends/google/e-cal-backend-google-utils.c:389
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:387
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1093
 msgid "Could not create thread for populating cache"
 msgstr "இடமாற்றினை பரப்ப த்ரட்டை உருவாக்க முடியாது"
@@ -770,7 +745,6 @@ msgid "Loading %s items"
 msgstr "பொறுப்பான வகைகள் (%s)"
 
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:260
 msgid "Calendar"
 msgstr "நாள்காட்டி"
 
@@ -781,7 +755,7 @@ msgstr "செல்லாத யூஆர்ஐ(URI) சேவகன்"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:995
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1004
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: ../calendar/libecal/e-cal.c:5117
+#: ../calendar/libecal/e-cal.c:3698
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1291
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1327
@@ -793,15 +767,15 @@ msgstr "செல்லாத யூஆர்ஐ(URI) சேவகன்"
 msgid "Authentication failed"
 msgstr "அனுமதித்தல் தோல்வி"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:316
+#: ../calendar/backends/http/e-cal-backend-http.c:330
 msgid "Redirected to Invalid URI"
 msgstr "செல்லாத யூஆர்ஐ(URI) க்கு திசை மாற்றப்பட்டது"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:339
+#: ../calendar/backends/http/e-cal-backend-http.c:353
 msgid "Bad file format."
 msgstr "மோசமான கோப்பு அமைப்பு"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:346
+#: ../calendar/backends/http/e-cal-backend-http.c:360
 msgid "Not a calendar."
 msgstr "நாள்காட்டி இல்லை"
 
@@ -849,131 +823,131 @@ msgstr "வானிலை: இடி மழை"
 msgid "Forecast"
 msgstr "வானிலை"
 
-#: ../calendar/libecal/e-cal-component.c:1320
+#: ../calendar/libecal/e-cal-component.c:1316
 msgid "Untitled appointment"
 msgstr "தலைப்பில்லாத நேர ஒதுக்கம்"
 
-#: ../calendar/libecal/e-cal-recur.c:3945
+#: ../calendar/libecal/e-cal-recur.c:3941
 msgid "1st"
 msgstr "முதன்"
 
-#: ../calendar/libecal/e-cal-recur.c:3946
+#: ../calendar/libecal/e-cal-recur.c:3942
 msgid "2nd"
 msgstr "2 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3947
+#: ../calendar/libecal/e-cal-recur.c:3943
 msgid "3rd"
 msgstr "3 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3948
+#: ../calendar/libecal/e-cal-recur.c:3944
 msgid "4th"
 msgstr "4 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3949
+#: ../calendar/libecal/e-cal-recur.c:3945
 msgid "5th"
 msgstr "5 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3950
+#: ../calendar/libecal/e-cal-recur.c:3946
 msgid "6th"
 msgstr "6 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3951
+#: ../calendar/libecal/e-cal-recur.c:3947
 msgid "7th"
 msgstr "7 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3952
+#: ../calendar/libecal/e-cal-recur.c:3948
 msgid "8th"
 msgstr "8 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3953
+#: ../calendar/libecal/e-cal-recur.c:3949
 msgid "9th"
 msgstr "9 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3954
+#: ../calendar/libecal/e-cal-recur.c:3950
 msgid "10th"
 msgstr "10 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3955
+#: ../calendar/libecal/e-cal-recur.c:3951
 msgid "11th"
 msgstr "11 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3956
+#: ../calendar/libecal/e-cal-recur.c:3952
 msgid "12th"
 msgstr "12 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3957
+#: ../calendar/libecal/e-cal-recur.c:3953
 msgid "13th"
 msgstr "13ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3958
+#: ../calendar/libecal/e-cal-recur.c:3954
 msgid "14th"
 msgstr "14 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3959
+#: ../calendar/libecal/e-cal-recur.c:3955
 msgid "15th"
 msgstr "15 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3960
+#: ../calendar/libecal/e-cal-recur.c:3956
 msgid "16th"
 msgstr "16 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3961
+#: ../calendar/libecal/e-cal-recur.c:3957
 msgid "17th"
 msgstr "17 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3962
+#: ../calendar/libecal/e-cal-recur.c:3958
 msgid "18th"
 msgstr "18 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3963
+#: ../calendar/libecal/e-cal-recur.c:3959
 msgid "19th"
 msgstr "19 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3964
+#: ../calendar/libecal/e-cal-recur.c:3960
 msgid "20th"
 msgstr "20 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3965
+#: ../calendar/libecal/e-cal-recur.c:3961
 msgid "21st"
 msgstr "21 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3966
+#: ../calendar/libecal/e-cal-recur.c:3962
 msgid "22nd"
 msgstr "22 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3967
+#: ../calendar/libecal/e-cal-recur.c:3963
 msgid "23rd"
 msgstr "23 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3968
+#: ../calendar/libecal/e-cal-recur.c:3964
 msgid "24th"
 msgstr "24 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3969
+#: ../calendar/libecal/e-cal-recur.c:3965
 msgid "25th"
 msgstr "25 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3970
+#: ../calendar/libecal/e-cal-recur.c:3966
 msgid "26th"
 msgstr "26 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3971
+#: ../calendar/libecal/e-cal-recur.c:3967
 msgid "27th"
 msgstr "27 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3972
+#: ../calendar/libecal/e-cal-recur.c:3968
 msgid "28th"
 msgstr "28 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3973
+#: ../calendar/libecal/e-cal-recur.c:3969
 msgid "29th"
 msgstr "29 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3974
+#: ../calendar/libecal/e-cal-recur.c:3970
 msgid "30th"
 msgstr "30 ஆவது"
 
-#: ../calendar/libecal/e-cal-recur.c:3975
+#: ../calendar/libecal/e-cal-recur.c:3971
 msgid "31st"
 msgstr "31 ஆவது"
 
@@ -994,7 +968,7 @@ msgstr "குறைவான்"
 msgid "Undefined"
 msgstr "குறிப்பில்லா"
 
-#: ../calendar/libecal/e-cal.c:1693 ../libedataserverui/e-book-auth-util.c:199
+#: ../calendar/libecal/e-cal.c:1012 ../libedataserverui/e-book-auth-util.c:199
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "%s க்கு கடவுச்சொல்லை உள்ளிடவும் (பயனர் %s)"
@@ -1003,90 +977,89 @@ msgstr "%s க்கு கடவுச்சொல்லை உள்ளிட�
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1707
+#: ../calendar/libecal/e-cal.c:1026
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%s பயனருக்கு பதிலாளை செயல்படுத்த %sக்கு கடவுச்சொல்லை உள்ளிடவும்"
 
-#: ../calendar/libecal/e-cal.c:5089
+#: ../calendar/libecal/e-cal.c:3670
 msgid "Invalid argument"
 msgstr "தவரான அளவுரு"
 
-#: ../calendar/libecal/e-cal.c:5091
+#: ../calendar/libecal/e-cal.c:3672
 msgid "Backend is busy"
 msgstr "பின்தரவு தளம் வேலையில் உள்ளது"
 
-#: ../calendar/libecal/e-cal.c:5093
+#: ../calendar/libecal/e-cal.c:3674
 #: ../calendar/libedata-cal/e-cal-backend-util.c:105
 msgid "Repository is offline"
 msgstr "கிடங்கு இணையத்தொடர்பில் இல்லை"
 
-#: ../calendar/libecal/e-cal.c:5095
+#: ../calendar/libecal/e-cal.c:3676
 #: ../calendar/libedata-cal/e-cal-backend-util.c:129
 msgid "No such calendar"
 msgstr "இப்படி ஒரு நாள்காட்டி இல்லை"
 
-#: ../calendar/libecal/e-cal.c:5097
+#: ../calendar/libecal/e-cal.c:3678
 #: ../calendar/libedata-cal/e-cal-backend-util.c:111
 #: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "பொருள் காணவில்லை"
 
-#: ../calendar/libecal/e-cal.c:5099
+#: ../calendar/libecal/e-cal.c:3680
 #: ../calendar/libedata-cal/e-cal-backend-util.c:113
 #: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "பயன்றற நோக்கம்"
 
-#: ../calendar/libecal/e-cal.c:5101
+#: ../calendar/libecal/e-cal.c:3682
 msgid "URI not loaded"
 msgstr "யூஆர்ஐ(URI) ஏற்றப்படவில்லை"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:3684
 msgid "URI already loaded"
 msgstr "யூஆர்ஐ(URI) ஏற்கெனவே ஏற்றப்பட்டது"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:3686
 #: ../calendar/libedata-cal/e-cal-backend-util.c:107
-#: ../servers/exchange/storage/e-storage.c:573
 msgid "Permission denied"
 msgstr "அனுமதி மறுக்கப்பட்டது"
 
-#: ../calendar/libecal/e-cal.c:5107
+#: ../calendar/libecal/e-cal.c:3688
 #: ../calendar/libedata-cal/e-cal-backend-util.c:131
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "பயனபடுத்துவதை அறிந்திராதவர் "
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:3690
 #: ../calendar/libedata-cal/e-cal-backend-util.c:115
 msgid "Object ID already exists"
 msgstr "நோக்கம் ID ஏற்கெனவே தோற்றுவிக்கப் பட்டுள்ளது"
 
-#: ../calendar/libecal/e-cal.c:5111
+#: ../calendar/libecal/e-cal.c:3692
 msgid "Protocol not supported"
 msgstr "விதிமுறைக்கு ஆதரவு இல்லை"
 
-#: ../calendar/libecal/e-cal.c:5113
+#: ../calendar/libecal/e-cal.c:3694
 msgid "Operation has been canceled"
 msgstr "செயல்பாடு ரத்து செய்யப்பட்டது"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:3696
 #: ../calendar/libedata-cal/e-cal-backend-util.c:143
 msgid "Could not cancel operation"
 msgstr "செயல்பாட்டை ரத்து செய்ய முடியவில்லை"
 
-#: ../calendar/libecal/e-cal.c:5119
+#: ../calendar/libecal/e-cal.c:3700
 #: ../calendar/libedata-cal/e-cal-backend-util.c:119
 #: ../camel/providers/smtp/camel-smtp-transport.c:217
 msgid "Authentication required"
 msgstr "அனுமதி தேவை"
 
-#: ../calendar/libecal/e-cal.c:5121
+#: ../calendar/libecal/e-cal.c:3702
 msgid "A CORBA exception has occurred"
 msgstr "CORBA பிழை நேர்ந்தது"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:3704
 #: ../calendar/libedata-cal/e-cal-backend-util.c:146
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:214
 #: ../camel/providers/imap/camel-imap-command.c:432
@@ -1101,14 +1074,12 @@ msgstr "CORBA பிழை நேர்ந்தது"
 #: ../camel/providers/pop3/camel-pop3-store.c:552
 #: ../camel/providers/pop3/camel-pop3-store.c:559
 #: ../camel/providers/pop3/camel-pop3-store.c:565
-#: ../servers/exchange/storage/e-storage.c:587
 #: ../servers/groupwise/e-gw-connection.c:241
 msgid "Unknown error"
 msgstr "தெரியாத பிழை"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:3706
 #: ../calendar/libedata-cal/e-cal-backend-util.c:103
-#: ../servers/exchange/storage/e-storage.c:555
 msgid "No error"
 msgstr "பிழை இல்லை"
 
@@ -1239,10 +1210,6 @@ msgstr "தேடு அளவு வரையரை மீறப்பட்ட
 msgid "Search time limit exceeded"
 msgstr "தேடு நேரம் வரையரை மீறப்பட்டது"
 
-#: ../calendar/libedata-cal/e-cal-backend-util.c:139
-msgid "Invalid query"
-msgstr "செல்லுபடியாகாத கேள்வி"
-
 #: ../calendar/libedata-cal/e-cal-backend-util.c:141
 msgid "Query refused"
 msgstr "கேள்வி நிராகரிக்கப்பட்டது"
@@ -1250,6 +1217,108 @@ msgstr "கேள்வி நிராகரிக்கப்பட்டத�
 #: ../calendar/libedata-cal/e-cal-backend-util.c:148
 msgid "Invalid server version"
 msgstr "தவறான சேவையக பதிப்பு "
+
+#: ../calendar/libedata-cal/e-data-cal.c:485, c-format
+msgid "Cannot retrieve calendar address"
+msgstr "நாள்காட்டி முகவரியை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:503, c-format
+msgid "Cannot retrieve calendar alarm e-mail address"
+msgstr "நாள்காட்டி எச்சரிக்கை மின்னஞ்சல் முகவரியை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:521, c-format
+msgid "Cannot retrieve calendar's ldap attribute"
+msgstr "நாள்காட்டி எல்டேப் பண்புக்கூற்றை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:539, c-format
+msgid "Cannot retrieve calendar scheduling information"
+msgstr "நாள்காட்டி திட்ட அட்டவணை தகவலை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:556, c-format
+msgid "Cannot open calendar"
+msgstr "நாள்காட்டியை திறக்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:573, c-format
+msgid "Cannot remove calendar"
+msgstr "நாள்காட்டியை நீக்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:592, c-format
+msgid "Cannot create calendar object"
+msgstr "நாள்காட்டியை பொருளை உருவாக்க முடியவில்லை "
+
+#: ../calendar/libedata-cal/e-data-cal.c:614, c-format
+msgid "Cannot modify calender object"
+msgstr "நாள்காட்டியை பொருளை மாற்ற முடியவில்லை "
+
+#: ../calendar/libedata-cal/e-data-cal.c:638, c-format
+msgid "Cannot remove calendar object"
+msgstr "நாள்காட்டியை பொருளை நீக்க முடியவில்லை "
+
+#: ../calendar/libedata-cal/e-data-cal.c:657, c-format
+msgid "Cannot receive calendar objects"
+msgstr "நாள்காட்டியை பொருட்களை பெற முடியவில்லை "
+
+#: ../calendar/libedata-cal/e-data-cal.c:674, c-format
+msgid "Cannot discard calendar alarm"
+msgstr "நாள்காட்டி எச்சரிக்கையை நீக்க முடியாது"
+
+#: ../calendar/libedata-cal/e-data-cal.c:693, c-format
+msgid "Cannot send calendar objects"
+msgstr "நாள்காட்டி  பொருளை அனுப்ப முடியாது"
+
+#: ../calendar/libedata-cal/e-data-cal.c:728, c-format
+msgid "Cannot retrieve default calendar object path"
+msgstr "முன்னிருப்பு நாள்காட்டி பொருள் பாதையை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:746, c-format
+msgid "Cannot retrieve calendar object path"
+msgstr "நாள்காட்டி பொருள் பாதையை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:764, c-format
+msgid "Cannot retrieve calendar object list"
+msgstr "நாள்காட்டி பொருள் பட்டியலை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:802, c-format
+msgid "Could not retrieve attachment list"
+msgstr "இணைப்பு பட்டியலை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:824, c-format
+msgid "Could not complete calendar query"
+msgstr "நாள்காட்டி உசாவலை முடிக்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:842, c-format
+msgid "Could not retrieve calendar time zone"
+msgstr "நாள்காட்டி நேர மண்டலத்தை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:860, c-format
+msgid "Could not add calendar time zone"
+msgstr "நாள்காட்டி நேர மண்டலத்தை சேர்க்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:877
+#, c-format
+msgid "Could not set default calendar time zone"
+msgstr "முன்னிருப்பு நாள்காட்டி நேர மண்டலத்தை அமைக்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:898, c-format
+msgid "Cannot retrieve calendar changes"
+msgstr "நாள்காட்டி மாற்றங்களை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal.c:948, c-format
+msgid "Cannot retrieve calendar free/busy list"
+msgstr "நாள்காட்டி ஓய்வு/வேலையில் பட்டியலை மீட்க முடியவில்லை"
+
+#: ../calendar/libedata-cal/e-data-cal-factory.c:339, c-format
+msgid "Invalid URI"
+msgstr "செல்லாத யூஆர்ஐ"
+
+#: ../calendar/libedata-cal/e-data-cal-factory.c:348
+#, c-format
+msgid "No backend factory for '%s' of '%s'"
+msgstr " '%s' இல் '%s' க்கு பின்இயக்கி தொழிற்சாலை இல்லை"
+
+#: ../calendar/libedata-cal/e-data-cal-factory.c:389, c-format
+msgid "Could not instantiate backend"
+msgstr "பின்  இயக்கியை துவக்க முடியவில்லை"
 
 #: ../camel/camel-cipher-context.c:102
 msgid "Signing is not supported by this cipher"
@@ -1484,47 +1553,47 @@ msgstr "(%s) அணி விடை தேவைப்படுகிறது"
 msgid "(%s) requires the folder set"
 msgstr "(%s)  அடைவை அமைக்க வேண்டியது அவசியம்"
 
-#: ../camel/camel-folder.c:683
+#: ../camel/camel-folder.c:669
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "ஆதரவில்லா செயல்:%s க்கான செய்தி புதுப்பிக்கப்படுகிறது"
 
-#: ../camel/camel-folder.c:1388
+#: ../camel/camel-folder.c:1374
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "ஆதரவில்லா செயல்: தொடர்களாக தேடு: %s"
 
-#: ../camel/camel-folder.c:1429
+#: ../camel/camel-folder.c:1415
 #, c-format
 msgid "Unsupported operation: count by expression: for %s"
 msgstr "ஆதரவில்லா செயல்: தொடர்களாக தேடு: %sக்கு"
 
-#: ../camel/camel-folder.c:1468
+#: ../camel/camel-folder.c:1454
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "ஆதரவில்லா செயல்பாடு: %s\"க்கு பதிலாக UIDs ஆல் தேடவும்: "
 
-#: ../camel/camel-folder.c:1581
+#: ../camel/camel-folder.c:1567
 msgid "Moving messages"
 msgstr "செய்திகளை நகர்த்துகிறது"
 
-#: ../camel/camel-folder.c:1581
+#: ../camel/camel-folder.c:1567
 msgid "Copying messages"
 msgstr "செய்திகளை படியெடுக்கிறது"
 
-#: ../camel/camel-folder.c:1922
+#: ../camel/camel-folder.c:1908
 msgid "Learning junk"
 msgstr "தேவையற்றவையை படிக்கிறது"
 
-#: ../camel/camel-folder.c:1939
+#: ../camel/camel-folder.c:1925
 msgid "Learning non-junk"
 msgstr "தேயையானவையை படிக்கிறது"
 
-#: ../camel/camel-folder.c:1958
+#: ../camel/camel-folder.c:1944
 msgid "Filtering new message(s)"
 msgstr "புதிய செய்தி(களை) வடிகட்டுகிறது"
 
-#: ../camel/camel-gpg-context.c:752
+#: ../camel/camel-gpg-context.c:751
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1535,15 +1604,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:767
+#: ../camel/camel-gpg-context.c:766
 msgid "Failed to parse gpg userid hint."
 msgstr "gpg பயனீட்டாளர் அடையாள எண் குறிப்பை பகுக்க முடியவில்லை"
 
-#: ../camel/camel-gpg-context.c:791 ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:790 ../camel/camel-gpg-context.c:804
 msgid "Failed to parse gpg passphrase request."
 msgstr "gpg கடவுச்சொல் கோரிக்கையை பகுத்தல் தோல்வியடைந்தது"
 
-#: ../camel/camel-gpg-context.c:825
+#: ../camel/camel-gpg-context.c:824
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1552,7 +1621,7 @@ msgstr ""
 "நீங்கள் ஸ்மார்ட்கார்ட் பூட்டை \n"
 "திறக்க கடவுச்சொல் தேவை: \"%s\""
 
-#: ../camel/camel-gpg-context.c:829
+#: ../camel/camel-gpg-context.c:828
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1561,93 +1630,92 @@ msgstr ""
 "இந்த பயனருக்கு பூட்டை திறக்க கடவுச்சொல் தேவை \n"
 ": \"%s\""
 
-#: ../camel/camel-gpg-context.c:834
+#: ../camel/camel-gpg-context.c:833
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "'%s' க்கு க்னுபிஜி இடமிருந்து எதிர்பாராத விண்ணப்பம்"
 
-#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:1068
+#: ../camel/camel-gpg-context.c:858 ../camel/camel-gpg-context.c:1067
 #: ../camel/providers/nntp/camel-nntp-store.c:1313
 msgid "Canceled."
 msgstr "நீக்கப்பட்டுள்ளது."
 
-#: ../camel/camel-gpg-context.c:873
+#: ../camel/camel-gpg-context.c:872
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "ரகசிய பூட்டை திறக்க முடியவில்லை 3 முறை தவறாக கடவுச்சொல் தரப்பட்டது"
 
-#: ../camel/camel-gpg-context.c:881
+#: ../camel/camel-gpg-context.c:880
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "GnuPG விலிருந்து எதிர்பாராத கோரிக்கை : %s"
 
-#: ../camel/camel-gpg-context.c:944
+#: ../camel/camel-gpg-context.c:943
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "குறிமுறையாக்க முடியவில்லை: சரியான பெறுநர் குறிப்பிடப்படவில்லை"
 
 #. always called on an i/o error
-#: ../camel/camel-gpg-context.c:1206 ../camel/camel-gpg-context.c:1331
-#: ../camel/camel-gpg-context.c:1853 ../camel/camel-gpg-context.c:1898
+#: ../camel/camel-gpg-context.c:1212 ../camel/camel-gpg-context.c:1337
+#: ../camel/camel-gpg-context.c:1859 ../camel/camel-gpg-context.c:1904
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "gpgயை இயக்க முடியவில்லை: %s"
 
-#: ../camel/camel-gpg-context.c:1299 ../camel/camel-smime-context.c:602
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "தகவல் கைஓப்பத்தை உருவாக்க முடியவில்லை: %s"
 
-#: ../camel/camel-gpg-context.c:1346 ../camel/camel-gpg-context.c:1547
-#: ../camel/camel-gpg-context.c:1563 ../camel/camel-gpg-context.c:1643
-#: ../camel/camel-gpg-context.c:1658 ../camel/camel-gpg-context.c:1774
-#: ../camel/camel-gpg-context.c:1789 ../camel/camel-gpg-context.c:1869
-#: ../camel/camel-gpg-context.c:1914
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1553
+#: ../camel/camel-gpg-context.c:1569 ../camel/camel-gpg-context.c:1649
+#: ../camel/camel-gpg-context.c:1664 ../camel/camel-gpg-context.c:1780
+#: ../camel/camel-gpg-context.c:1795 ../camel/camel-gpg-context.c:1875
+#: ../camel/camel-gpg-context.c:1920
 msgid "Failed to execute gpg."
 msgstr "gpg யை இயக்க முடியவில்லை"
 
-#: ../camel/camel-gpg-context.c:1365
+#: ../camel/camel-gpg-context.c:1371
 msgid "This is a digitally signed message part"
 msgstr "இது டிஜிடல் கையொப்பமிடப்பட்ட பகுதி"
 
-#: ../camel/camel-gpg-context.c:1451 ../camel/camel-gpg-context.c:1457
-#: ../camel/camel-gpg-context.c:1463 ../camel/camel-gpg-context.c:1478
+#: ../camel/camel-gpg-context.c:1457 ../camel/camel-gpg-context.c:1463
+#: ../camel/camel-gpg-context.c:1469 ../camel/camel-gpg-context.c:1484
 #: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
 #: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "செய்தி கையொப்பத்தை சரிபார்க்க முடியவில்லை: தவறான வடிவம்"
 
-#: ../camel/camel-gpg-context.c:1517
+#: ../camel/camel-gpg-context.c:1523
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "செய்தி கையொப்பத்தை சரிபார்க்க முடியவில்லை: தற்காலிக கோப்பை உருவாக்க முடியவில்லை: %s"
 
-#: ../camel/camel-gpg-context.c:1626
+#: ../camel/camel-gpg-context.c:1632
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "குறியாக்கப்பட்ட தகவலை உருவாக்க முடியவில்லை: %s"
 
-#: ../camel/camel-gpg-context.c:1676
+#: ../camel/camel-gpg-context.c:1682
 msgid "This is a digitally encrypted message part"
 msgstr "இது டிஜிடல் குறியாக்கம் செய்யப்பட்ட தகவல்"
 
-#: ../camel/camel-gpg-context.c:1729 ../camel/camel-gpg-context.c:1737
-#: ../camel/camel-gpg-context.c:1756
+#: ../camel/camel-gpg-context.c:1735 ../camel/camel-gpg-context.c:1743
+#: ../camel/camel-gpg-context.c:1762
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "செய்தியை குறிமுறை நீக்க முடியாது: தவறான செய்தி வடிவம்"
 
-#: ../camel/camel-gpg-context.c:1746
+#: ../camel/camel-gpg-context.c:1752
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME பகுதியை மறைநீக்கம் செய்வது தோல்வியுற்றது: விதிமுறை பிழை"
 
-#: ../camel/camel-gpg-context.c:1811 ../camel/camel-smime-context.c:1186
+#: ../camel/camel-gpg-context.c:1817 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "குறியாக்கம் செய்யப்பட்ட தகவல்"
 
-#: ../camel/camel-gpg-context.c:1830
+#: ../camel/camel-gpg-context.c:1836
 msgid "Unable to parse message content"
 msgstr "செய்தியை பகுக்க முடியவில்லை"
 
-#: ../camel/camel-gpg-context.c:1854 ../camel/camel-gpg-context.c:1899
-#: ../camel/camel-tcp-stream-openssl.c:627
+#: ../camel/camel-gpg-context.c:1860 ../camel/camel-gpg-context.c:1905
 #: ../camel/providers/imap4/camel-imap4-utils.c:614
 #: ../camel/providers/smtp/camel-smtp-transport.c:165
 #: ../camel/providers/smtp/camel-smtp-transport.c:220
@@ -1937,7 +2005,8 @@ msgstr "கொடுக்கப்பட்ட சேருமிட_n பெ�
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
-msgstr "கொடுக்கப்பட்ட சேருமிட_ n பெயர்களின் பயனிலையில் செல்லாத அல்லது ஆதரவு இல்லாத பெயர் உள்ளது."
+msgstr ""
+"கொடுக்கப்பட்ட சேருமிட_ n பெயர்களின் பயனிலையில் செல்லாத அல்லது ஆதரவு இல்லாத பெயர் உள்ளது."
 
 #: ../camel/camel-sasl-gssapi.c:171
 msgid ""
@@ -1977,7 +2046,6 @@ msgstr "கொடுக்கப்பட்ட நம்பக தகவலி�
 
 #: ../camel/camel-sasl-gssapi.c:200 ../camel/camel-sasl-gssapi.c:248
 #: ../camel/camel-sasl-gssapi.c:284 ../camel/camel-sasl-gssapi.c:299
-#: ../camel/camel-sasl-kerberos4.c:230
 #: ../camel/providers/imap/camel-imap-store.c:1274
 msgid "Bad authentication response from server."
 msgstr "சேவகனிலிருந்து மோசமான அனுமதி சோதனை பதில்"
@@ -1985,23 +2053,6 @@ msgstr "சேவகனிலிருந்து மோசமான அனு�
 #: ../camel/camel-sasl-gssapi.c:309
 msgid "Unsupported security layer."
 msgstr "ஆதரவு இல்லாத பாதுகாப்பு அடுக்கு"
-
-#: ../camel/camel-sasl-kerberos4.c:47
-msgid "Kerberos 4"
-msgstr "கர்ப்ரோஸ் 4"
-
-#: ../camel/camel-sasl-kerberos4.c:49
-msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "இந்த தேர்வு சேவகனுடன் கர்ப்ரோஸ் 4 அனுமதி சோதனை பயன்படுத்தி இணையும்"
-
-#: ../camel/camel-sasl-kerberos4.c:173
-#, c-format
-msgid ""
-"Could not get Kerberos ticket:\n"
-"%s"
-msgstr ""
-"கர்ப்ரோஸ் டிக்கெட்டை பெற முடியவில்லை:\n"
-"%s"
 
 #: ../camel/camel-sasl-login.c:36
 msgid "Login"
@@ -2169,7 +2220,8 @@ msgstr "மோசமான கையொப்பம்"
 
 #: ../camel/camel-smime-context.c:703
 msgid "Content tampered with or altered in transit"
-msgstr " பரிமாற்றத்தின் போது தகவலில் குறுக்கீடு நிகழ்ந்தது அல்லது தகவலில் மாற்றம் நிகழ்ந்துள்ளது"
+msgstr ""
+" பரிமாற்றத்தின் போது தகவலில் குறுக்கீடு நிகழ்ந்தது அல்லது தகவலில் மாற்றம் நிகழ்ந்துள்ளது"
 
 #: ../camel/camel-smime-context.c:705
 msgid "Signing certificate not found"
@@ -2327,123 +2379,7 @@ msgstr "குப்பைதொட்டி"
 msgid "Junk"
 msgstr "தேவையற்ற"
 
-#: ../camel/camel-tcp-stream-openssl.c:564
-msgid "Unable to get issuer's certificate"
-msgstr "வழங்கியவரின் சான்றிதழை பெற முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:566
-msgid "Unable to get Certificate Revocation List"
-msgstr "மீட்கும் பட்டியலிலிருந்து சான்றிதழை பெற முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:568
-msgid "Unable to decrypt certificate signature"
-msgstr "சான்றிதழ் கையொப்பத்தை மறை நீக்கம் செய்ய முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:570
-msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr "மீட்டலுக்கான கையொப்ப பட்டியலில் சான்றிதழை மறை நீக்கம் செய்ய முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:572
-msgid "Unable to decode issuer's public key"
-msgstr "வழங்கியவரின் பொது சங்கேதத்தை மறை நீக்கம் செய்ய முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:574
-msgid "Certificate signature failure"
-msgstr "சான்றிதழ் கையொப்பம் தோல்வியுற்றது"
-
-#: ../camel/camel-tcp-stream-openssl.c:576
-msgid "Certificate Revocation List signature failure"
-msgstr "சான்றிதழ் மீட்டல் பட்டியலில் கையொப்பம் தோல்வியுற்றது"
-
-#: ../camel/camel-tcp-stream-openssl.c:578
-msgid "Certificate not yet valid"
-msgstr "சான்றிதழ் செல்லாது"
-
-#: ../camel/camel-tcp-stream-openssl.c:580
-msgid "Certificate has expired"
-msgstr "சான்றிதழ் காலாவதியாகிவிட்டது"
-
-#: ../camel/camel-tcp-stream-openssl.c:582
-msgid "Certificate Revocation List (CRL) not yet valid"
-msgstr "சான்றிதழ் மீட்டல் பட்டியல் (CRL) இன்னும் செல்லுபடியாகாதது"
-
-#: ../camel/camel-tcp-stream-openssl.c:584
-msgid "Certificate Revocation List (CRL) has expired"
-msgstr "சான்றிதழ் மீட்டல் பட்டியல் (CRL) காலாவதி ஆனது"
-
-#: ../camel/camel-tcp-stream-openssl.c:589
-msgid "Error in Certificate Revocation List (CRL)"
-msgstr "சான்றிதழ் மீட்டல் பட்டியல் (CRL) இல் பிழை"
-
-#: ../camel/camel-tcp-stream-openssl.c:591
-msgid "Out of memory"
-msgstr "நினைவிடம் போதவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:593
-msgid "Zero-depth self-signed certificate"
-msgstr "பூஜ்ஜிய-ஆழம் தானாக-கையொப்பமிடப்பட்ட சான்றிதழ்"
-
-#: ../camel/camel-tcp-stream-openssl.c:595
-msgid "Self-signed certificate in chain"
-msgstr "தானாக கையொப்பம் இடப்பட்ட பட்டியல் தொடர்"
-
-#: ../camel/camel-tcp-stream-openssl.c:597
-msgid "Unable to get issuer's certificate locally"
-msgstr "வழங்கியவரின் சான்றிதழை பெற முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:599
-msgid "Unable to verify leaf signature"
-msgstr "இதழ் சான்றிதழை பெற முடியவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:601
-msgid "Certificate chain too long"
-msgstr "சான்றிதம் தொடர் பெரிதாக உள்ளது"
-
-#: ../camel/camel-tcp-stream-openssl.c:603
-msgid "Certificate Revoked"
-msgstr "சான்றிதழ் மீண்டும் துவக்கப்பட்டது"
-
-#: ../camel/camel-tcp-stream-openssl.c:605
-msgid "Invalid Certificate Authority (CA)"
-msgstr "செல்லாத சான்றிதழ் வினியோகிப்பாளர் (CA)"
-
-#: ../camel/camel-tcp-stream-openssl.c:607
-msgid "Path length exceeded"
-msgstr "பாதை நீளம் அதிகமாக உள்ளது"
-
-#: ../camel/camel-tcp-stream-openssl.c:609
-msgid "Invalid purpose"
-msgstr "செல்லாத காரணம்"
-
-#: ../camel/camel-tcp-stream-openssl.c:611
-msgid "Certificate untrusted"
-msgstr "சான்றிதழில் நம்பக தன்மை இல்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:613
-msgid "Certificate rejected"
-msgstr "சான்றிதழ் நிராகரிக்கப்பட்டது"
-
-#: ../camel/camel-tcp-stream-openssl.c:616
-msgid "Subject/Issuer mismatch"
-msgstr "தலைப்பு/வழங்கியவர் பொருந்தவில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:618
-msgid "AKID/SKID mismatch"
-msgstr "AKID/SKID பொருத்தமில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:620
-msgid "AKID/Issuer serial mismatch"
-msgstr "AKID/வழங்கியவர் எண் பொருத்தமில்லை"
-
-#: ../camel/camel-tcp-stream-openssl.c:622
-msgid "Key usage does not support certificate signing"
-msgstr "விசை பயன்பாடு சான்றிதழ் கையொப்பத்திற்கு ஆதரவு தராது"
-
-#: ../camel/camel-tcp-stream-openssl.c:625
-msgid "Error in application verification"
-msgstr "பயன்பாட்டை சரிபார்த்தலில் பிழை"
-
-#: ../camel/camel-tcp-stream-openssl.c:692 ../camel/camel-tcp-stream-ssl.c:873
+#: ../camel/camel-tcp-stream-ssl.c:870
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2456,35 +2392,16 @@ msgstr ""
 "கைரேகை:       %s\n"
 "கையொப்பம்:         %s"
 
-#: ../camel/camel-tcp-stream-openssl.c:698 ../camel/camel-tcp-stream-ssl.c:879
+#: ../camel/camel-tcp-stream-ssl.c:876
 msgid "GOOD"
 msgstr "நன்று"
 
-#: ../camel/camel-tcp-stream-openssl.c:698 ../camel/camel-tcp-stream-ssl.c:879
+#: ../camel/camel-tcp-stream-ssl.c:876
 msgid "BAD"
 msgstr "தவறு"
 
-#: ../camel/camel-tcp-stream-openssl.c:700
-#, c-format
-msgid ""
-"Bad certificate from %s:\n"
-"\n"
-"%s\n"
-"\n"
-"%s\n"
-"\n"
-"Do you wish to accept anyway?"
-msgstr ""
-" தவறான சான்றிதழ்%s:\n"
-"\n"
-"%s\n"
-"\n"
-"%s\n"
-"\n"
-"எப்படி இருந்தாலும் ஏற்க விருப்பமா?"
-
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:883
+#: ../camel/camel-tcp-stream-ssl.c:880
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2499,7 +2416,7 @@ msgstr ""
 "\n"
 "ஏற்க விருப்பமா?"
 
-#: ../camel/camel-tcp-stream-ssl.c:927
+#: ../camel/camel-tcp-stream-ssl.c:924
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2508,7 +2425,7 @@ msgstr ""
 "சான்றிதழ் பிரச்சனை %s\n"
 "வழங்கியவர்: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:979
+#: ../camel/camel-tcp-stream-ssl.c:976
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2517,7 +2434,7 @@ msgstr ""
 "தவறான சான்றிதழ்: %s\n"
 "வழங்கியவர்: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:997
+#: ../camel/camel-tcp-stream-ssl.c:994
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2526,7 +2443,7 @@ msgstr ""
 "சான்றிதழ் காலாவதியானது: %s\n"
 "வழங்கியவர்: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:1014
+#: ../camel/camel-tcp-stream-ssl.c:1011
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2644,7 +2561,6 @@ msgstr "%s க்கான சுருக்கத்தை உருவாக�
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1012
 #, c-format
-#| msgid "Checking for new messages"
 msgid "Checking for deleted messages %s"
 msgstr "அழிக்கப்பட்ட செய்திகள் %sக்கு சோதிக்கிறது"
 
@@ -2655,8 +2571,8 @@ msgstr "பயன்றற அடைவுகள் நிரம்பியு�
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1521
 #: ../camel/providers/groupwise/camel-groupwise-store.c:633
 #: ../camel/providers/groupwise/camel-groupwise-store.c:763
-#: ../camel/providers/imap/camel-imap-folder.c:3421
-#: ../camel/providers/imap/camel-imap-folder.c:3497
+#: ../camel/providers/imap/camel-imap-folder.c:3423
+#: ../camel/providers/imap/camel-imap-folder.c:3499
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "சுருக்க தகவலுக்கான புதிய செய்திகளை %s உள்ளே ஏற்றவும்"
@@ -2748,7 +2664,7 @@ msgstr "நாவல் குழுவாயிலாக சேவையகத�
 #: ../camel/providers/hula/camel-hula-provider.c:93
 #: ../camel/providers/imap/camel-imap-provider.c:100
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
-#: ../camel/providers/imapp/camel-imapp-provider.c:67
+#: ../camel/providers/imapx/camel-imapx-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid "Password"
@@ -2774,6 +2690,7 @@ msgstr "நடப்பு சேவையக பதிப்பில் சி
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1849
 #: ../camel/providers/imap/camel-imap-store.c:2047
+#: ../camel/providers/imapx/camel-imapx-store.c:248
 #, c-format
 msgid "No such folder %s"
 msgstr "இப்படி ஒரு அடைவு இல்லை %s"
@@ -2986,22 +2903,22 @@ msgid "No such message available."
 msgstr "அப்படிப்பட்ட செய்தி ஏதும். இல்லை "
 
 #: ../camel/providers/imap/camel-imap-folder.c:2975
-#: ../camel/providers/imap/camel-imap-folder.c:3808
+#: ../camel/providers/imap/camel-imap-folder.c:3810
 #: ../camel/providers/nntp/camel-nntp-folder.c:238
 msgid "This message is not currently available"
 msgstr "இந்த செய்தி தற்போது கிடைக்கவில்லை"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3624
+#: ../camel/providers/imap/camel-imap-folder.c:3626
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "முடியாத சேவகன் பதில்:%d க்கான தகவல் எதுவுமில்லை"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3632
+#: ../camel/providers/imap/camel-imap-folder.c:3634
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "அறைகுறையாக சேவகன் பதில் : %d செய்திக்கான UID கொடுக்கப்படவில்லை"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3846
+#: ../camel/providers/imap/camel-imap-folder.c:3848
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH பதிலில் செய்தியை காணவில்லை"
 
@@ -3056,7 +2973,7 @@ msgid "For reading and storing mail on IMAP servers."
 msgstr "மின்னஞ்சல்களை படிக்கவும் மற்றும் IMAP சேவையத்தில் சேமிக்கவும்"
 
 #: ../camel/providers/imap/camel-imap-provider.c:102
-#: ../camel/providers/imapp/camel-imapp-provider.c:69
+#: ../camel/providers/imapx/camel-imapx-provider.c:68
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "இந்த தேர்வு IMAP சேவகனை சாதாரண உரை கடவுச்சொல்லை பயன்படுத்தி இணைக்கம்வு"
 
@@ -3096,6 +3013,7 @@ msgstr "SSL கிடைக்கவில்லை"
 
 #: ../camel/providers/imap/camel-imap-store.c:580
 #: ../camel/providers/imap/camel-imap-store.c:862
+#: ../camel/providers/imapx/camel-imapx-server.c:1526
 msgid "Connection cancelled"
 msgstr "இணைப்பு ரத்து செய்யபப்ட்டது"
 
@@ -3135,13 +3053,13 @@ msgstr "\"%s\" கட்டளையுடன் இணைய முடியவ
 #: ../camel/providers/imap/camel-imap-store.c:2400
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:356
 #: ../camel/providers/imap4/camel-imap4-store.c:1403
+#: ../camel/providers/imapx/camel-imapx-store.c:450
 #: ../camel/providers/local/camel-maildir-folder.c:80
 #: ../camel/providers/local/camel-maildir-store.c:219
 #: ../camel/providers/local/camel-maildir-store.c:291
 #: ../camel/providers/local/camel-maildir-store.c:517
 #: ../camel/providers/local/camel-maildir-store.c:530
 #: ../camel/providers/local/camel-spool-store.c:463
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:264
 msgid "Inbox"
 msgstr "உள்பெட்டி"
 
@@ -3188,7 +3106,6 @@ msgid "Unknown parent folder: %s"
 msgstr "தெரியாத முதன்மை அடைவு: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:3053
-#| msgid "Server unexpectedly disconnected: %s"
 msgid "Server unexpectedly disconnected"
 msgstr "எதிர்பாராமல் சேவையகம் துண்டிக்கப்பட்டது"
 
@@ -3342,7 +3259,6 @@ msgid "This option will connect to the IMAPv4rev1 server using a plaintext passw
 msgstr "இந்த தேர்வு IMAPv4rev1 சேவகனுடன் சாதாரணஉரை கடவுச்சொல்லை பயன்படுத்தி இணைக்கும்"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:259
-#: ../camel/providers/imapp/camel-imapp-store.c:249
 #: ../camel/providers/nntp/camel-nntp-store.c:194
 #: ../camel/providers/nntp/camel-nntp-store.c:213
 #: ../camel/providers/pop3/camel-pop3-store.c:181
@@ -3502,16 +3418,16 @@ msgstr "தகவல் இல்லை"
 msgid "IMAP server %s unexpectedly disconnected: %s"
 msgstr "MAP சேவகன் %s எதிர்பாராமல் துண்டிக்கப்பட்டது : %s"
 
-#: ../camel/providers/imapp/camel-imapp-provider.c:41
+#: ../camel/providers/imapx/camel-imapx-provider.c:40
 #: ../camel/providers/pop3/camel-pop3-provider.c:43
 msgid "Message storage"
 msgstr "செய்தி சேகரிப்பு"
 
-#: ../camel/providers/imapp/camel-imapp-provider.c:49
+#: ../camel/providers/imapx/camel-imapx-provider.c:48
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapp/camel-imapp-provider.c:51
+#: ../camel/providers/imapx/camel-imapx-provider.c:50
 msgid ""
 "Experimental IMAP 4(.1) client\n"
 "This is untested and unsupported code, you want to use plain imap instead.\n"
@@ -3523,12 +3439,17 @@ msgstr ""
 "\n"
 " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 
-#: ../camel/providers/imapp/camel-imapp-store.c:252
+#: ../camel/providers/imapx/camel-imapx-server.c:1529
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
 msgstr " %s (port %s): %s இணைக்க முடியவில்லை"
 
-#: ../camel/providers/imapp/camel-imapp-store.c:348
+#: ../camel/providers/imapx/camel-imapx-server.c:1565
+#: ../camel/providers/imapx/camel-imapx-store.c:148, c-format
+msgid "%sPlease enter the IMAP password for %s@%s"
+msgstr "%s %s@%s க்கான ஐமாப் கடவுச்சொல்லை உள்ளிடவும்"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:131
 #, c-format
 msgid "Could not connect to POP server on %s"
 msgstr "POP சேவகனுடன் இணைக்க முடியவில்லை (%s)"
@@ -4878,50 +4799,50 @@ msgstr "LDAP சேவையகத்தை யார்வேண்டுமா
 msgid "Failed to authenticate.\n"
 msgstr "உறுதிப்படுத்த முடியவில்லை.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:327
+#: ../libedataserverui/e-categories-dialog.c:338
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
 msgstr "ஏற்கனவே வகையின் வெளித்தோற்றம் உள்ளது.ஏற்ற வேறு பெயரை பயன்படுத்தவும் ('%s')"
 
-#: ../libedataserverui/e-categories-dialog.c:618
+#: ../libedataserverui/e-categories-dialog.c:641
 msgid "Icon"
 msgstr "சின்னம்"
 
-#: ../libedataserverui/e-categories-dialog.c:623
+#: ../libedataserverui/e-categories-dialog.c:646
 msgid "Category"
 msgstr "வகை"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:1
+#: ../libedataserverui/e-categories-dialog.ui.h:1
 msgid "Category Icon"
 msgstr "வகையின் உருவம்"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:2
+#: ../libedataserverui/e-categories-dialog.ui.h:2
 msgid "Category Properties"
 msgstr "உடைமை வகைகள்"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:3
+#: ../libedataserverui/e-categories-dialog.ui.h:3
 msgid "Category _Icon"
 msgstr "வகை ( _Icon)"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:4
+#: ../libedataserverui/e-categories-dialog.ui.h:4
 msgid "Category _Name"
 msgstr "வகையின் பெயர் (_N)"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:5
+#: ../libedataserverui/e-categories-dialog.ui.h:5
 msgid "Item(s) belong to these _categories:"
 msgstr "இந்த வகைகளை சார்ந்த உருப்படி(s) (_c:)"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:6
+#: ../libedataserverui/e-categories-dialog.ui.h:6
 msgid "_Available Categories:"
 msgstr "கிடைக்கக் கூடிய வகைகள்:_A"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:7
+#: ../libedataserverui/e-categories-dialog.ui.h:7
 msgid "_Edit"
 msgstr " திருத்தவும் (_E)"
 
-#: ../libedataserverui/e-categories-dialog.glade.h:8
+#: ../libedataserverui/e-categories-dialog.ui.h:8
 msgid "categories"
 msgstr "வகைகள்"
 
@@ -4938,80 +4859,79 @@ msgstr "வண்ண தகவல்"
 msgid "The color to render"
 msgstr "வரைவதற்கு நிறம்"
 
-#: ../libedataserverui/e-name-selector-dialog.c:276
+#: ../libedataserverui/e-name-selector-dialog.c:292
 msgid "Select Contacts from Address Book"
 msgstr "முகவரிப்புத்தகத்திலிருந்து தொடர்புகளை தேர்வுசெய்"
 
-#: ../libedataserverui/e-name-selector-dialog.c:563
+#: ../libedataserverui/e-name-selector-dialog.c:579
 msgid "_Add"
 msgstr "சேர்(_A)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:588
+#: ../libedataserverui/e-name-selector-dialog.c:604
 msgid "_Remove"
 msgstr "நீக்கவும் (_R)"
 
-#: ../libedataserverui/e-name-selector-dialog.c:765
-#: ../libedataserverui/e-name-selector-dialog.glade.h:6
+#: ../libedataserverui/e-name-selector-dialog.c:781
+#: ../libedataserverui/e-name-selector-dialog.ui.h:6
 msgid "Any Category"
 msgstr "எந்த ஒரு வகையானாலும்"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:1
+#: ../libedataserverui/e-name-selector-dialog.ui.h:1
 msgid "*"
 msgstr "*"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:2
+#: ../libedataserverui/e-name-selector-dialog.ui.h:2
 msgid "<b>Co_ntacts</b>"
 msgstr "<b>தொடர்புகள் (_n)</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:3
+#: ../libedataserverui/e-name-selector-dialog.ui.h:3
 msgid "<b>Show Contacts</b>"
 msgstr "<b>தொடர்புகளை காட்டு</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:4
+#: ../libedataserverui/e-name-selector-dialog.ui.h:4
 msgid "Address B_ook:"
 msgstr "முகவரி புத்தகம் (_o) :"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:5
+#: ../libedataserverui/e-name-selector-dialog.ui.h:5
 msgid "Address Book"
 msgstr "முகவரி  புத்தகம்"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:7
+#: ../libedataserverui/e-name-selector-dialog.ui.h:7
 msgid "Cate_gory:"
 msgstr "வகை:(_g)"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:8
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:261
+#: ../libedataserverui/e-name-selector-dialog.ui.h:8
 msgid "Contacts"
 msgstr "தொடர்புகள்"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:9
+#: ../libedataserverui/e-name-selector-dialog.ui.h:9
 msgid "Search"
 msgstr "தேடல்"
 
-#: ../libedataserverui/e-name-selector-dialog.glade.h:10
+#: ../libedataserverui/e-name-selector-dialog.ui.h:10
 msgid "_Search:"
 msgstr "தேடல்: (_S)"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2455
+#: ../libedataserverui/e-name-selector-entry.c:2494
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "விரிவான வழிமுறை (E_)%s"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2470
+#: ../libedataserverui/e-name-selector-entry.c:2509
 #, c-format
 msgid "Cop_y %s"
 msgstr "%s ஐ பிரதி எடு (_y)"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2480
+#: ../libedataserverui/e-name-selector-entry.c:2519
 #, c-format
 msgid "C_ut %s"
 msgstr "%s ஐ வெட்டுக"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2497
+#: ../libedataserverui/e-name-selector-entry.c:2536
 #, c-format
 msgid "_Edit %s"
 msgstr "%s ஐ திருத்தியமை (_E)"
@@ -5055,168 +4975,6 @@ msgstr "சேருமிடத்தை தேர்வு செய்"
 msgid "_Destination"
 msgstr "சேருமிடம் (_D)"
 
-#: ../servers/exchange/lib/e2k-autoconfig.c:1694
-#: ../servers/exchange/storage/exchange-account.c:955
-#, c-format
-msgid "Enter password for %s"
-msgstr "கடவுச்சொல்லிற்கு பதிலாய் புகுத்தவும் %s "
-
-#: ../servers/exchange/lib/e2k-autoconfig.c:1695
-#: ../servers/exchange/storage/exchange-account.c:960
-msgid "Enter password"
-msgstr "கடவுச்சொல்லை பதிவுச்செய்தல்"
-
-#. i18n: These are Outlook's words for the default roles in
-#. the folder permissions dialog.
-#: ../servers/exchange/lib/e2k-security-descriptor.c:844
-msgid "Owner"
-msgstr "உரிமையாளர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:854
-msgid "Publishing Editor"
-msgstr "வெளியிடும் தொகுப்பாளர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:862
-msgid "Editor"
-msgstr "தொகுப்பாளர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:869
-msgid "Publishing Author"
-msgstr "நூல்களை வெளியிடுபவர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:875
-msgid "Author"
-msgstr "நூலாசிரியர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:880
-msgid "Non-editing Author"
-msgstr "திருத்தம் செய்யாத ஆசிரியர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:884
-msgid "Reviewer"
-msgstr "விமரிசகர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:886
-msgid "Contributor"
-msgstr "நிதி வழங்குபவர்"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:888
-msgid "None"
-msgstr "எதுவுமில்லாது"
-
-#: ../servers/exchange/lib/e2k-security-descriptor.c:903
-msgid "Custom"
-msgstr "வழக்கம்"
-
-#: ../servers/exchange/storage/e-storage.c:557
-msgid "Generic error"
-msgstr "பொதுவான பிழை"
-
-#: ../servers/exchange/storage/e-storage.c:559
-msgid "A folder with the same name already exists"
-msgstr "இந்த அடைவு ஏற்கனவே அதே பெயரில் உள்ளது"
-
-#: ../servers/exchange/storage/e-storage.c:561
-msgid "The specified folder type is not valid"
-msgstr "குறிப்பிட்ட அடைவு வகை தவறானது"
-
-#: ../servers/exchange/storage/e-storage.c:563
-msgid "I/O error"
-msgstr "பிழை I/O"
-
-#: ../servers/exchange/storage/e-storage.c:565
-msgid "Not enough space to create the folder"
-msgstr "புதிதான அடைவை உருவாக்க போதுமான இடம் இல்லை"
-
-#: ../servers/exchange/storage/e-storage.c:567
-msgid "The folder is not empty"
-msgstr "இந்த அடைவு பொருளற்றது இல்லை"
-
-#: ../servers/exchange/storage/e-storage.c:569
-msgid "The specified folder was not found"
-msgstr "குறிப்பிட்ட அடைவுகள் இல்லை"
-
-#: ../servers/exchange/storage/e-storage.c:571
-msgid "Function not implemented in this storage"
-msgstr "இந்த நிகழ்வு அமலுக்கு கொண்டு வரப்படவில்லை"
-
-#: ../servers/exchange/storage/e-storage.c:575
-msgid "Operation not supported"
-msgstr "செயல் முறைக்கு ஆதரவு இல்லை"
-
-#: ../servers/exchange/storage/e-storage.c:577
-msgid "The specified type is not supported in this storage"
-msgstr "சேமிப்பகத்தில் குறிப்பிட்ட வகைக்கு ஆதரவு இல்லை"
-
-#: ../servers/exchange/storage/e-storage.c:579
-msgid "The specified folder cannot be modified or removed"
-msgstr "குறிப்பிட்ட அடைவு மாற்றப்பட அல்லது நீக்கப்பட முடியாது"
-
-#: ../servers/exchange/storage/e-storage.c:581
-msgid "Cannot make a folder a child of one of its descendants"
-msgstr "குழந்தையின் சந்ததி பற்றிய ஒரு அடைவை உருவாக்க இயலவில்லை"
-
-#: ../servers/exchange/storage/e-storage.c:583
-msgid "Cannot create a folder with that name"
-msgstr "இப்பெயரில் அடைவை உருவாக்க முடியவில்லை"
-
-#: ../servers/exchange/storage/e-storage.c:585
-msgid "This operation cannot be performed in off-line mode"
-msgstr "இந்த இணைய முறையை செயற் படுத்த முடியவில்லை"
-
-#. i18n: This is the title of an "other user's folders"
-#. hierarchy. Eg, "John Doe's Folders".
-#: ../servers/exchange/storage/exchange-account.c:640
-#, c-format
-msgid "%s's Folders"
-msgstr "%s's அடைவுகள்"
-
-#: ../servers/exchange/storage/exchange-account.c:1260
-msgid "Personal Folders"
-msgstr "தனிப்பட்ட அடைவுகள்"
-
-#: ../servers/exchange/storage/exchange-account.c:1275
-msgid "Favorite Public Folders"
-msgstr "விருப்பமான பொது அடைவுகள்"
-
-#. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1292
-msgid "All Public Folders"
-msgstr "அனைத்து பொது அணைவுகள்"
-
-#. i18n: Outlookism
-#: ../servers/exchange/storage/exchange-account.c:1306
-msgid "Global Address List"
-msgstr "கோள வடிவான முகவரி பட்டியல்"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:262
-msgid "Deleted Items"
-msgstr "நீக்கப்பட்ட உருப்படிகள்"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:263
-msgid "Drafts"
-msgstr "வரைவுகள்"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:265
-msgid "Journal"
-msgstr "நாட்குறிப்பேடு"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:266
-msgid "Notes"
-msgstr "குறிப்புகள்"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:267
-msgid "Outbox"
-msgstr "செல் அஞ்சல்"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:268
-msgid "Sent Items"
-msgstr "அனுப்பட்ட உருப்படிகள்"
-
-#: ../servers/exchange/storage/exchange-hierarchy-foreign.c:269
-msgid "Tasks"
-msgstr "பணிகள்"
-
 #: ../servers/groupwise/e-gw-connection.c:225
 msgid "Invalid connection"
 msgstr "செல்லாத இணைப்பு"
@@ -5233,19 +4991,273 @@ msgstr "சேவையகத்திலிருந்து எந்த ப�
 msgid "Bad parameter"
 msgstr "தவறான நிலையளவுரு"
 
-#: ../src/GNOME_Evolution_DataServer.server.in.in.h:1
-msgid "Evolution Addressbook file backend"
-msgstr " முகவரிபுத்தக கோப்பு பின்னிலையை தோற்றுவித்தல் "
+#~ msgid "\"%s\" on book before \"%s\""
+#~ msgstr "\"%s\" முன் பதிவு செய் \"%s\""
 
-#: ../src/GNOME_Evolution_DataServer.server.in.in.h:2
-msgid "Evolution Calendar file and webcal backend"
-msgstr "எவல்யூஷன் நாள்காட்டி கோப்பு மற்றும் வெப்கால் பின்புலம்"
+#~ msgid "book busy"
+#~ msgstr "பதிவு வேலையில் உள்ளது"
 
-#: ../src/GNOME_Evolution_DataServer.server.in.in.h:3
-msgid "Evolution Data Server interface check service"
-msgstr "சேவையகம் தோற்றுவித்த செய்திப் பணியை சரிபார்க்கவும்"
+#~ msgid "CORBA exception making \"%s\" call"
+#~ msgstr "CORBA பிழை \"%s\" ஐ அழைக்கிறது"
 
-#: ../src/GNOME_Evolution_DataServer.server.in.in.h:4
-msgid "Evolution Data Server logging service"
-msgstr "சேவையகம் தோற்றுவித்த செய்தி பணியை பதிவு செய்யவும்"
+#~ msgid "%s: there is no current operation"
+#~ msgstr "வழக்கத்திலுள்ள செயல்முறை எதுவும் அங்கே இல்லை (%s:)"
 
+#~ msgid "%s: could not cancel"
+#~ msgstr " ரத்து செய்ய முடியாது (%s: )"
+
+#~ msgid "\"%s\" on book after \"%s\""
+#~ msgstr "\"%s\" பதிவுக்கு பின் \"%s\""
+
+#~ msgid "%s: canceled"
+#~ msgstr " ரத்து செய்யப்பட்டது (%s:)"
+
+#~ msgid "%s: no factories available for URI `%s'"
+#~ msgstr " யூஆர்ஐ(URI) `%s'க்கான செயல்முறை கிடைக்க பெறவில்லை  (%s:)"
+
+#~ msgid "%s: Could not create EBookListener"
+#~ msgstr "கவணிப்பானை உருவாக்க இயலவில்லை ( %s:)"
+
+#~ msgid "Kerberos 4"
+#~ msgstr "கர்ப்ரோஸ் 4"
+
+#~ msgid ""
+#~ "This option will connect to the server using Kerberos 4 authentication."
+#~ msgstr "இந்த தேர்வு சேவகனுடன் கர்ப்ரோஸ் 4 அனுமதி சோதனை பயன்படுத்தி இணையும்"
+
+#~ msgid ""
+#~ "Could not get Kerberos ticket:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "கர்ப்ரோஸ் டிக்கெட்டை பெற முடியவில்லை:\n"
+#~ "%s"
+
+#~ msgid "Unable to get issuer's certificate"
+#~ msgstr "வழங்கியவரின் சான்றிதழை பெற முடியவில்லை"
+
+#~ msgid "Unable to get Certificate Revocation List"
+#~ msgstr "மீட்கும் பட்டியலிலிருந்து சான்றிதழை பெற முடியவில்லை"
+
+#~ msgid "Unable to decrypt certificate signature"
+#~ msgstr "சான்றிதழ் கையொப்பத்தை மறை நீக்கம் செய்ய முடியவில்லை"
+
+#~ msgid "Unable to decrypt Certificate Revocation List signature"
+#~ msgstr "மீட்டலுக்கான கையொப்ப பட்டியலில் சான்றிதழை மறை நீக்கம் செய்ய முடியவில்லை"
+
+#~ msgid "Unable to decode issuer's public key"
+#~ msgstr "வழங்கியவரின் பொது சங்கேதத்தை மறை நீக்கம் செய்ய முடியவில்லை"
+
+#~ msgid "Certificate signature failure"
+#~ msgstr "சான்றிதழ் கையொப்பம் தோல்வியுற்றது"
+
+#~ msgid "Certificate Revocation List signature failure"
+#~ msgstr "சான்றிதழ் மீட்டல் பட்டியலில் கையொப்பம் தோல்வியுற்றது"
+
+#~ msgid "Certificate not yet valid"
+#~ msgstr "சான்றிதழ் செல்லாது"
+
+#~ msgid "Certificate has expired"
+#~ msgstr "சான்றிதழ் காலாவதியாகிவிட்டது"
+
+#~ msgid "Certificate Revocation List (CRL) not yet valid"
+#~ msgstr "சான்றிதழ் மீட்டல் பட்டியல் (CRL) இன்னும் செல்லுபடியாகாதது"
+
+#~ msgid "Certificate Revocation List (CRL) has expired"
+#~ msgstr "சான்றிதழ் மீட்டல் பட்டியல் (CRL) காலாவதி ஆனது"
+
+#~ msgid "Error in Certificate Revocation List (CRL)"
+#~ msgstr "சான்றிதழ் மீட்டல் பட்டியல் (CRL) இல் பிழை"
+
+#~ msgid "Out of memory"
+#~ msgstr "நினைவிடம் போதவில்லை"
+
+#~ msgid "Zero-depth self-signed certificate"
+#~ msgstr "பூஜ்ஜிய-ஆழம் தானாக-கையொப்பமிடப்பட்ட சான்றிதழ்"
+
+#~ msgid "Self-signed certificate in chain"
+#~ msgstr "தானாக கையொப்பம் இடப்பட்ட பட்டியல் தொடர்"
+
+#~ msgid "Unable to get issuer's certificate locally"
+#~ msgstr "வழங்கியவரின் சான்றிதழை பெற முடியவில்லை"
+
+#~ msgid "Unable to verify leaf signature"
+#~ msgstr "இதழ் சான்றிதழை பெற முடியவில்லை"
+
+#~ msgid "Certificate chain too long"
+#~ msgstr "சான்றிதம் தொடர் பெரிதாக உள்ளது"
+
+#~ msgid "Certificate Revoked"
+#~ msgstr "சான்றிதழ் மீண்டும் துவக்கப்பட்டது"
+
+#~ msgid "Invalid Certificate Authority (CA)"
+#~ msgstr "செல்லாத சான்றிதழ் வினியோகிப்பாளர் (CA)"
+
+#~ msgid "Path length exceeded"
+#~ msgstr "பாதை நீளம் அதிகமாக உள்ளது"
+
+#~ msgid "Invalid purpose"
+#~ msgstr "செல்லாத காரணம்"
+
+#~ msgid "Certificate untrusted"
+#~ msgstr "சான்றிதழில் நம்பக தன்மை இல்லை"
+
+#~ msgid "Certificate rejected"
+#~ msgstr "சான்றிதழ் நிராகரிக்கப்பட்டது"
+
+#~ msgid "Subject/Issuer mismatch"
+#~ msgstr "தலைப்பு/வழங்கியவர் பொருந்தவில்லை"
+
+#~ msgid "AKID/SKID mismatch"
+#~ msgstr "AKID/SKID பொருத்தமில்லை"
+
+#~ msgid "AKID/Issuer serial mismatch"
+#~ msgstr "AKID/வழங்கியவர் எண் பொருத்தமில்லை"
+
+#~ msgid "Key usage does not support certificate signing"
+#~ msgstr "விசை பயன்பாடு சான்றிதழ் கையொப்பத்திற்கு ஆதரவு தராது"
+
+#~ msgid "Error in application verification"
+#~ msgstr "பயன்பாட்டை சரிபார்த்தலில் பிழை"
+
+#~ msgid ""
+#~ "Bad certificate from %s:\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "Do you wish to accept anyway?"
+#~ msgstr ""
+#~ " தவறான சான்றிதழ்%s:\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "எப்படி இருந்தாலும் ஏற்க விருப்பமா?"
+
+#~ msgid "Enter password for %s"
+#~ msgstr "கடவுச்சொல்லிற்கு பதிலாய் புகுத்தவும் %s "
+
+#~ msgid "Enter password"
+#~ msgstr "கடவுச்சொல்லை பதிவுச்செய்தல்"
+
+#~ msgid "Owner"
+#~ msgstr "உரிமையாளர்"
+
+#~ msgid "Publishing Editor"
+#~ msgstr "வெளியிடும் தொகுப்பாளர்"
+
+#~ msgid "Editor"
+#~ msgstr "தொகுப்பாளர்"
+
+#~ msgid "Publishing Author"
+#~ msgstr "நூல்களை வெளியிடுபவர்"
+
+#~ msgid "Author"
+#~ msgstr "நூலாசிரியர்"
+
+#~ msgid "Non-editing Author"
+#~ msgstr "திருத்தம் செய்யாத ஆசிரியர்"
+
+#~ msgid "Reviewer"
+#~ msgstr "விமரிசகர்"
+
+#~ msgid "Contributor"
+#~ msgstr "நிதி வழங்குபவர்"
+
+#~ msgid "None"
+#~ msgstr "எதுவுமில்லாது"
+
+#~ msgid "Custom"
+#~ msgstr "வழக்கம்"
+
+#~ msgid "Generic error"
+#~ msgstr "பொதுவான பிழை"
+
+#~ msgid "A folder with the same name already exists"
+#~ msgstr "இந்த அடைவு ஏற்கனவே அதே பெயரில் உள்ளது"
+
+#~ msgid "The specified folder type is not valid"
+#~ msgstr "குறிப்பிட்ட அடைவு வகை தவறானது"
+
+#~ msgid "I/O error"
+#~ msgstr "பிழை I/O"
+
+#~ msgid "Not enough space to create the folder"
+#~ msgstr "புதிதான அடைவை உருவாக்க போதுமான இடம் இல்லை"
+
+#~ msgid "The folder is not empty"
+#~ msgstr "இந்த அடைவு பொருளற்றது இல்லை"
+
+#~ msgid "The specified folder was not found"
+#~ msgstr "குறிப்பிட்ட அடைவுகள் இல்லை"
+
+#~ msgid "Function not implemented in this storage"
+#~ msgstr "இந்த நிகழ்வு அமலுக்கு கொண்டு வரப்படவில்லை"
+
+#~ msgid "Operation not supported"
+#~ msgstr "செயல் முறைக்கு ஆதரவு இல்லை"
+
+#~ msgid "The specified type is not supported in this storage"
+#~ msgstr "சேமிப்பகத்தில் குறிப்பிட்ட வகைக்கு ஆதரவு இல்லை"
+
+#~ msgid "The specified folder cannot be modified or removed"
+#~ msgstr "குறிப்பிட்ட அடைவு மாற்றப்பட அல்லது நீக்கப்பட முடியாது"
+
+#~ msgid "Cannot make a folder a child of one of its descendants"
+#~ msgstr "குழந்தையின் சந்ததி பற்றிய ஒரு அடைவை உருவாக்க இயலவில்லை"
+
+#~ msgid "Cannot create a folder with that name"
+#~ msgstr "இப்பெயரில் அடைவை உருவாக்க முடியவில்லை"
+
+#~ msgid "This operation cannot be performed in off-line mode"
+#~ msgstr "இந்த இணைய முறையை செயற் படுத்த முடியவில்லை"
+
+#~ msgid "%s's Folders"
+#~ msgstr "%s's அடைவுகள்"
+
+#~ msgid "Personal Folders"
+#~ msgstr "தனிப்பட்ட அடைவுகள்"
+
+#~ msgid "Favorite Public Folders"
+#~ msgstr "விருப்பமான பொது அடைவுகள்"
+
+#~ msgid "All Public Folders"
+#~ msgstr "அனைத்து பொது அணைவுகள்"
+
+#~ msgid "Global Address List"
+#~ msgstr "கோள வடிவான முகவரி பட்டியல்"
+
+#~ msgid "Deleted Items"
+#~ msgstr "நீக்கப்பட்ட உருப்படிகள்"
+
+#~ msgid "Drafts"
+#~ msgstr "வரைவுகள்"
+
+#~ msgid "Journal"
+#~ msgstr "நாட்குறிப்பேடு"
+
+#~ msgid "Notes"
+#~ msgstr "குறிப்புகள்"
+
+#~ msgid "Outbox"
+#~ msgstr "செல் அஞ்சல்"
+
+#~ msgid "Sent Items"
+#~ msgstr "அனுப்பட்ட உருப்படிகள்"
+
+#~ msgid "Tasks"
+#~ msgstr "பணிகள்"
+
+#~ msgid "Evolution Addressbook file backend"
+#~ msgstr " முகவரிபுத்தக கோப்பு பின்னிலையை தோற்றுவித்தல் "
+
+#~ msgid "Evolution Calendar file and webcal backend"
+#~ msgstr "எவல்யூஷன் நாள்காட்டி கோப்பு மற்றும் வெப்கால் பின்புலம்"
+
+#~ msgid "Evolution Data Server interface check service"
+#~ msgstr "சேவையகம் தோற்றுவித்த செய்திப் பணியை சரிபார்க்கவும்"
+
+#~ msgid "Evolution Data Server logging service"
+#~ msgstr "சேவையகம் தோற்றுவித்த செய்தி பணியை பதிவு செய்யவும்"
