@@ -1396,10 +1396,10 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 					g_free (decoded);
 				}
 			}
-
-			result = caldav_server_get_object (cbdav, object);
-			was_get = TRUE;
 		}
+
+		result = caldav_server_get_object (cbdav, object);
+		was_get = TRUE;
 
 		if (result == GNOME_Evolution_Calendar_Success) {
 			icalcomponent *use_comp = NULL;
@@ -2627,7 +2627,7 @@ remove_property (gpointer prop, gpointer icomp)
 }
 
 static void
-strip_x_evolution_caldav (icalcomponent *icomp)
+strip_unneeded_x_props (icalcomponent *icomp)
 {
 	icalproperty *prop;
 	GSList *to_remove = NULL;
@@ -2641,6 +2641,12 @@ strip_x_evolution_caldav (icalcomponent *icomp)
 		if (g_str_has_prefix (icalproperty_get_x_name (prop), X_E_CALDAV)) {
 			to_remove = g_slist_prepend (to_remove, prop);
 		}
+	}
+
+	for (prop = icalcomponent_get_first_property (icomp, ICAL_XLICERROR_PROPERTY);
+	     prop;
+	     prop = icalcomponent_get_next_property (icomp, ICAL_XLICERROR_PROPERTY)) {
+		to_remove = g_slist_prepend (to_remove, prop);
 	}
 
 	g_slist_foreach (to_remove, remove_property, icomp);
@@ -2945,7 +2951,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 		calcomp = e_cal_util_new_top_level ();
 
 		cclone = icalcomponent_new_clone (icomp);
-		strip_x_evolution_caldav (cclone);
+		strip_unneeded_x_props (cclone);
 		convert_to_inline_attachment (cbdav, cclone);
 		icalcomponent_add_component (calcomp, cclone);
 		add_timezones_from_component (cbdav, calcomp, cclone);
@@ -2957,7 +2963,7 @@ pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 		for (subcomp = icalcomponent_get_first_component (calcomp, my_kind);
 		     subcomp;
 		     subcomp = icalcomponent_get_next_component (calcomp, my_kind)) {
-			strip_x_evolution_caldav (subcomp);
+			strip_unneeded_x_props (subcomp);
 			convert_to_inline_attachment (cbdav, subcomp);
 			add_timezones_from_component (cbdav, calcomp, subcomp);
 		}
@@ -3396,10 +3402,19 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 
 	if (status == GNOME_Evolution_Calendar_Success) {
 		if (new_object && !*new_object) {
-			icalcomponent *master = get_master_comp (cbdav, cache_comp);
+			/* read the comp from cache again, as some servers can modify it on put */
+			icalcomponent *newcomp = get_comp_from_cache (cbdav, id->uid, NULL, NULL, NULL), *master;
+
+			if (!newcomp)
+				newcomp = cache_comp;
+
+			master = get_master_comp (cbdav, newcomp);
 
 			if (master)
 				*new_object = icalcomponent_as_ical_string_r (master);
+
+			if (cache_comp != newcomp)
+				icalcomponent_free (newcomp);
 		}
 	}
 
@@ -4034,8 +4049,7 @@ caldav_get_object_list (ECalBackendSync  *backend,
 
 		if (!do_search ||
 		    e_cal_backend_sexp_match_comp (sexp, comp, bkend)) {
-			gchar *str = e_cal_component_get_as_string (comp);
-			*objects = g_list_prepend (*objects, str);
+			*objects = g_list_prepend (*objects, e_cal_component_get_as_string (comp));
 		}
 
 		g_object_unref (comp);
@@ -4374,6 +4388,17 @@ caldav_internal_get_timezone (ECalBackend *backend,
 	icaltimezone *zone;
 
 	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+	if (!zone) {
+		ECalBackendCalDAV *cbdav;
+		ECalBackendCalDAVPrivate *priv;
+
+		cbdav = E_CAL_BACKEND_CALDAV (backend);
+		priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+		if (priv->store)
+			zone = (icaltimezone *) e_cal_backend_store_get_timezone (priv->store, tzid);
+	}
 
 	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
 		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
