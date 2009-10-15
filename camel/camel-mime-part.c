@@ -143,19 +143,10 @@ init_header_name_table(void)
 		(gpointer) "Content-Disposition", write_raw);
 	g_hash_table_insert (
 		header_formatted_table,
-		(gpointer) "To", write_raw);
-	g_hash_table_insert (
-		header_formatted_table,
 		(gpointer) "From", write_raw);
 	g_hash_table_insert (
 		header_formatted_table,
 		(gpointer) "Reply-To", write_raw);
-	g_hash_table_insert (
-		header_formatted_table,
-		(gpointer) "Cc", write_raw);
-	g_hash_table_insert (
-		header_formatted_table,
-		(gpointer) "Bcc", write_raw);
 	g_hash_table_insert (
 		header_formatted_table,
 		(gpointer) "Message-ID", write_raw);
