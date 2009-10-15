@@ -1618,6 +1618,9 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 		/* If BYMONTHDAY & BYDAY are both set we need to expand them
 		   in parallel and add the results. */
 		if (recur->bymonthday && recur->byday) {
+			CalObjTime *prev_occ = NULL;
+			GArray *new_occs = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
+
 			/* Copy the occs array. */
 			occs2 = g_array_new (FALSE, FALSE,
 					     sizeof (CalObjTime));
@@ -1629,9 +1632,24 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 			occs2 = cal_obj_byday_expand_monthly (recur_data,
 							      occs2);
 
-			/* Add the 2 resulting arrays together. */
+			/* Add only intersection of those two arrays. */
 			g_array_append_vals (occs, occs2->data, occs2->len);
+			cal_obj_sort_occurrences (occs);
+			for (i = 0; i < occs->len; i++) {
+				CalObjTime *act_occ = &g_array_index (occs, CalObjTime, i);
+
+				if (prev_occ && cal_obj_time_compare_func (act_occ, prev_occ) == 0) {
+					prev_occ = NULL;
+					g_array_append_vals (new_occs, act_occ, 1);
+				} else {
+					prev_occ = act_occ;
+				}
+			}
+
+			g_array_free (occs, TRUE);
 			g_array_free (occs2, TRUE);
+
+			occs = new_occs;
 		} else {
 			occs = (*vtable->bymonthday_filter) (recur_data, occs);
 			/* Note that we explicitly call the monthly version
