@@ -1985,8 +1985,13 @@ e_book_set_default_source (ESource *source, GError **error)
 	if (!e_source_list_sync (sources, &err)) {
 		if (error)
 			g_propagate_error (error, err);
+
+		g_object_unref (sources);
+
 		return FALSE;
 	}
+
+	g_object_unref (sources);
 
 	return TRUE;
 }
@@ -2082,6 +2087,59 @@ e_book_new (ESource *source, GError **error)
 	return book;
 }
 
+/* for each known source calls check_func, which should return TRUE if the required
+   source have been found. Function returns NULL or the source on which was returned
+   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
+static ESource *
+search_known_sources (gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, GError **error)
+{
+	ESourceList *sources;
+	ESource *res = NULL;
+	GSList *g;
+	GError *err = NULL;
+
+	g_return_val_if_fail (check_func != NULL, NULL);
+
+	if (!e_book_get_addressbooks (&sources, &err)) {
+		g_propagate_error (error, err);
+		return NULL;
+	}
+
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+		GSList *s;
+
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+
+			if (check_func (source, user_data)) {
+				res = g_object_ref (source);
+				break;
+			}
+		}
+
+		if (res)
+			break;
+	}
+
+	g_object_unref (sources);
+
+	return res;
+}
+
+static gboolean
+check_uri (ESource *source, gpointer uri)
+{
+	const gchar *suri;
+
+	g_return_val_if_fail (source != NULL, FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	suri = e_source_peek_absolute_uri (source);
+
+	return suri && g_ascii_strcasecmp (suri, uri) == 0;
+}
+
 /**
  * e_book_new_from_uri:
  * @uri: the URI to load
@@ -2097,16 +2155,53 @@ e_book_new_from_uri (const gchar *uri, GError **error)
 {
 	ESource *source;
 	EBook *book;
+	GError *err = NULL;
 
 	e_return_error_if_fail (uri, E_BOOK_ERROR_INVALID_ARG);
 
-	source = e_source_new_with_absolute_uri ("", uri);
+	source = search_known_sources (check_uri, (gpointer) uri, &err);
+	if (err) {
+		g_propagate_error (error, err);
+		return NULL;
+	}
 
-	book = e_book_new (source, error);
+	if (!source)
+		source = e_source_new_with_absolute_uri ("", uri);
+
+	book = e_book_new (source, &err);
+	if (err)
+		g_propagate_error (error, err);
 
 	g_object_unref (source);
 
 	return book;
+}
+
+struct check_system_data
+{
+	const gchar *uri;
+	ESource *uri_source;
+};
+
+static gboolean
+check_system (ESource *source, gpointer data)
+{
+	struct check_system_data *csd = data;
+
+	g_return_val_if_fail (source != NULL, FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	if (e_source_get_property (source, "system")) {
+		return TRUE;
+	}
+
+	if (check_uri (source, (gpointer) csd->uri)) {
+		if (csd->uri_source)
+			g_object_unref (csd->uri_source);
+		csd->uri_source = g_object_ref (source);
+	}
+
+	return FALSE;
 }
 
 /**
@@ -2122,61 +2217,58 @@ e_book_new_from_uri (const gchar *uri, GError **error)
 EBook*
 e_book_new_system_addressbook (GError **error)
 {
-	ESourceList *sources;
-	GSList *g;
 	GError *err = NULL;
 	ESource *system_source = NULL;
 	EBook *book;
+	gchar *uri, *filename;
+	struct check_system_data csd;
 
-	if (!e_book_get_addressbooks (&sources, &err)) {
-		if (error)
-			g_propagate_error (error, err);
+	filename = g_build_filename (g_get_home_dir(),
+				     ".evolution/addressbook/local/system",
+				     NULL);
+	uri = g_filename_to_uri (filename, NULL, NULL);
+	g_free (filename);
+
+	csd.uri = uri;
+	csd.uri_source = NULL;
+
+	system_source = search_known_sources (check_system, &csd, &err);
+	if (err) {
+		g_propagate_error (error, err);
+		g_free (uri);
+
 		return NULL;
 	}
 
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (g->data);
-		GSList *s;
-		for (s = e_source_group_peek_sources (group); s; s = s->next) {
-			ESource *source = E_SOURCE (s->data);
-
-			if (e_source_get_property (source, "system")) {
-				system_source = source;
-				break;
-			}
-		}
-
-		if (system_source)
-			break;
+	if (!system_source) {
+		system_source = csd.uri_source;
+		csd.uri_source = NULL;
 	}
 
 	if (system_source) {
 		book = e_book_new (system_source, &err);
-	}
-	else {
-		gchar *filename;
-		gchar *uri;
-
-		filename = g_build_filename (g_get_home_dir(),
-					     ".evolution/addressbook/local/system",
-					     NULL);
-		uri = g_filename_to_uri (filename, NULL, NULL);
-
-		g_free (filename);
-
-		book = e_book_new_from_uri (uri, error);
-
-		g_free (uri);
+		g_object_unref (system_source);
+	} else {
+		book = e_book_new_from_uri (uri, &err);
 	}
 
-	if (!book) {
-		if (error)
-			g_propagate_error (error, err);
-	}
+	if (csd.uri_source)
+		g_object_unref (csd.uri_source);
 
-	g_object_unref (sources);
+	g_free (uri);
+
+	if (err)
+		g_propagate_error (error, err);
 
 	return book;
+}
+
+static gboolean
+check_default (ESource *source, gpointer data)
+{
+	g_return_val_if_fail (source != NULL, FALSE);
+
+	return e_source_get_property (source, "default") != NULL;
 }
 
 /**
@@ -2192,45 +2284,25 @@ e_book_new_system_addressbook (GError **error)
 EBook*
 e_book_new_default_addressbook   (GError **error)
 {
-	ESourceList *sources;
-	GSList *g;
 	GError *err = NULL;
 	ESource *default_source = NULL;
 	EBook *book;
 
-	if (!e_book_get_addressbooks (&sources, &err)) {
-		if (error)
-			g_propagate_error (error, err);
+	default_source = search_known_sources (check_default, NULL, &err);
+	if (err) {
+		g_propagate_error (error, err);
 		return NULL;
 	}
 
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (g->data);
-		GSList *s;
-		for (s = e_source_group_peek_sources (group); s; s = s->next) {
-			ESource *source = E_SOURCE (s->data);
-
-			if (e_source_get_property (source, "default")) {
-				default_source = source;
-				break;
-			}
-		}
-
-		if (default_source)
-			break;
-	}
-
-	if (default_source)
+	if (default_source) {
 		book = e_book_new (default_source, &err);
-	else
+		g_object_unref (default_source);
+	} else {
 		book = e_book_new_system_addressbook (&err);
-
-	if (!book) {
-		if (error)
-			g_propagate_error (error, err);
 	}
 
-	g_object_unref (sources);
+	if (err)
+		g_propagate_error (error, err);
 
 	return book;
 }

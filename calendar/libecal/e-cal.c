@@ -777,6 +777,59 @@ e_cal_new (ESource *source, ECalSourceType type)
 	return ecal;
 }
 
+/* for each known source calls check_func, which should return TRUE if the required
+   source have been found. Function returns NULL or the source on which was returned
+   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
+static ESource *
+search_known_sources (ECalSourceType type, gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, GError **error)
+{
+	ESourceList *sources;
+	ESource *res = NULL;
+	GSList *g;
+	GError *err = NULL;
+
+	g_return_val_if_fail (check_func != NULL, NULL);
+
+	if (!e_cal_get_sources (&sources, type, &err)) {
+		g_propagate_error (error, err);
+		return NULL;
+	}
+
+	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
+		ESourceGroup *group = E_SOURCE_GROUP (g->data);
+		GSList *s;
+
+		for (s = e_source_group_peek_sources (group); s; s = s->next) {
+			ESource *source = E_SOURCE (s->data);
+
+			if (check_func (source, user_data)) {
+				res = g_object_ref (source);
+				break;
+			}
+		}
+
+		if (res)
+			break;
+	}
+
+	g_object_unref (sources);
+
+	return res;
+}
+
+static gboolean
+check_uri (ESource *source, gpointer uri)
+{
+	const gchar *suri;
+
+	g_return_val_if_fail (source != NULL, FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	suri = e_source_peek_absolute_uri (source);
+
+	return suri && g_ascii_strcasecmp (suri, uri) == 0;
+}
+
 /**
  * e_cal_new_from_uri:
  * @uri: The URI pointing to the calendar to open.
@@ -794,7 +847,10 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
 	ESource *source;
 	ECal *cal;
 
-	source = e_source_new_with_absolute_uri ("", uri);
+	source = search_known_sources (type, check_uri, (gpointer) uri, NULL);
+	if (!source)
+		source = e_source_new_with_absolute_uri ("", uri);
+
 	cal = e_cal_new (source, type);
 
 	g_object_unref (source);
@@ -3713,80 +3769,11 @@ e_cal_get_error_message (ECalendarStatus status)
 }
 
 static gboolean
-get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
+check_default (ESource *source, gpointer data)
 {
-	GSList *g;
-	GError *err = NULL;
-	ESource *default_source = NULL;
-	gboolean rv = TRUE;
+	g_return_val_if_fail (source != NULL, FALSE);
 
-	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (g->data);
-		GSList *s;
-		for (s = e_source_group_peek_sources (group); s; s = s->next) {
-			ESource *source = E_SOURCE (s->data);
-
-			if (e_source_get_property (source, "default")) {
-				default_source = source;
-				break;
-			}
-		}
-
-		if (default_source)
-			break;
-	}
-
-	if (default_source) {
-		*ecal = e_cal_new (default_source, type);
-		if (!*ecal) {
-			g_propagate_error (error, err);
-			rv = FALSE;
-			goto done;
-		}
-
-		e_cal_set_auth_func (*ecal, func, data);
-		if (!e_cal_open (*ecal, TRUE, &err)) {
-			g_propagate_error (error, err);
-			rv = FALSE;
-			goto done;
-		}
-	} else {
-		switch (type) {
-		case E_CAL_SOURCE_TYPE_EVENT:
-			*ecal = e_cal_new_system_calendar ();
-			break;
-		case E_CAL_SOURCE_TYPE_TODO:
-			*ecal = e_cal_new_system_tasks ();
-			break;
-		case E_CAL_SOURCE_TYPE_JOURNAL:
-			*ecal = e_cal_new_system_memos ();
-			break;
-		default:
-			break;
-		}
-
-		if (!*ecal) {
-			g_propagate_error (error, err);
-			rv = FALSE;
-			goto done;
-		}
-
-		e_cal_set_auth_func (*ecal, func, data);
-		if (!e_cal_open (*ecal, TRUE, &err)) {
-			g_propagate_error (error, err);
-			rv = FALSE;
-			goto done;
-		}
-	}
-
- done:
-	if (!rv && *ecal) {
-		g_object_unref (*ecal);
-		*ecal = NULL;
-	}
-	g_object_unref (sources);
-
-	return rv;
+	return e_source_get_property (source, "default") != NULL;
 }
 
 /**
@@ -3804,18 +3791,55 @@ get_default (ECal **ecal, ESourceList *sources, ECalSourceType type, ECalAuthFun
 gboolean
 e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
 {
-	ESourceList *sources;
 	GError *err = NULL;
+	ESource *default_source;
+	gboolean res = TRUE;
 
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*ecal = NULL;
 
-	if (!e_cal_get_sources (&sources, type, &err)) {
+	default_source = search_known_sources (type, check_default, NULL, &err);
+
+	if (err) {
 		g_propagate_error (error, err);
 		return FALSE;
 	}
 
-	return get_default (ecal, sources, type, func, data, error);
+	if (default_source) {
+		*ecal = e_cal_new (default_source, type);
+	} else {
+		switch (type) {
+		case E_CAL_SOURCE_TYPE_EVENT:
+			*ecal = e_cal_new_system_calendar ();
+			break;
+		case E_CAL_SOURCE_TYPE_TODO:
+			*ecal = e_cal_new_system_tasks ();
+			break;
+		case E_CAL_SOURCE_TYPE_JOURNAL:
+			*ecal = e_cal_new_system_memos ();
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (!*ecal) {
+		g_propagate_error (error, err);
+		res = FALSE;
+	} else {
+		e_cal_set_auth_func (*ecal, func, data);
+		if (!e_cal_open (*ecal, TRUE, &err)) {
+			g_propagate_error (error, err);
+			res = FALSE;
+		}
+	}
+
+	if (!res && *ecal) {
+		g_object_unref (*ecal);
+		*ecal = NULL;
+	}
+
+	return res;
 }
 
 /**
