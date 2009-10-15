@@ -296,6 +296,7 @@ e_cal_backend_file_dispose (GObject *object)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ESource *source;
 
 	cbfile = E_CAL_BACKEND_FILE (object);
 	priv = cbfile->priv;
@@ -305,6 +306,10 @@ e_cal_backend_file_dispose (GObject *object)
 		save_file_when_idle (cbfile);
 
 	free_calendar_data (cbfile);
+
+	source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+	if (source)
+		g_signal_handlers_disconnect_matched (source, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, cbfile);
 
 	if (G_OBJECT_CLASS (parent_class)->dispose)
 		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
@@ -1233,6 +1238,43 @@ add_timezone (icalcomponent *icalcomp, icaltimezone *tzone)
 	return add || to_remove != NULL;
 }
 
+static void
+source_changed_cb (ESource *source, ECalBackend *backend)
+{
+	const gchar *value;
+
+	g_return_if_fail (source != NULL);
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	value = e_source_get_property (source, "custom-file");
+	if (value && *value) {
+		ECalBackendFile *cbfile;
+		gboolean forced_readonly;
+
+		cbfile = E_CAL_BACKEND_FILE (backend);
+		g_return_if_fail (cbfile != NULL);
+
+		value = e_source_get_property (source, "custom-file-readonly");
+		forced_readonly = value && g_str_equal (value, "1");
+
+		if ((forced_readonly != FALSE) != (cbfile->priv->read_only != FALSE)) {
+			cbfile->priv->read_only = forced_readonly;
+			if (!forced_readonly) {
+				gchar *str_uri = get_uri_string (backend);
+
+				g_return_if_fail (str_uri != NULL);
+
+				cbfile->priv->read_only = g_access (str_uri, W_OK) != 0;
+
+				g_free (str_uri);
+			}
+
+			e_cal_backend_notify_readonly (backend, cbfile->priv->read_only);
+		}
+	}
+}
+
 /* Open handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
@@ -1275,8 +1317,12 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, gboolean only_
 		if (!priv->read_only) {
 			ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
 
-			if (source && e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
-				priv->read_only = TRUE;
+			if (source) {
+				g_signal_connect (source, "changed", G_CALLBACK (source_changed_cb), backend);
+
+				if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+					priv->read_only = TRUE;
+			}
 		}
 
 		if (priv->default_zone && add_timezone (priv->icalcomp, priv->default_zone)) {
