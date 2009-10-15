@@ -1121,6 +1121,7 @@ dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
 	fi
 	AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
 
+	LDAP_CFLAGS="$LDAP_CFLAGS -DLDAP_DEPRECATED"
 else
 	dnl Win32 LDAP support
 	LDAP_CFLAGS="-DLDAP_DEPRECATED"

@@ -856,15 +856,15 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
 
+	if (NULL != blpriv->ldap) {
+		gint ldap_error;
+
 #if defined (DEBUG) && defined (LDAP_OPT_DEBUG_LEVEL)
 	{
 		gint debug_level = 4;
 		ldap_set_option (blpriv->ldap, LDAP_OPT_DEBUG_LEVEL, &debug_level);
 	}
 #endif
-	if (NULL != blpriv->ldap) {
-		gint ldap_error;
-
 		ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_PROTOCOL_VERSION, &protocol_version);
 		if (LDAP_SUCCESS != ldap_error) {
 			g_warning ("failed to set protocol version to LDAPv3");
