@@ -31,6 +31,11 @@
 
 G_BEGIN_DECLS
 
+enum {
+	CAMEL_MIME_FILTER_LINEWRAP_NOINDENT = (1<<0), /* does not indent; it's forced for indent_char = 0 */
+	CAMEL_MIME_FILTER_LINEWRAP_WORD     = (1<<1), /* indents on word boundary */
+};
+
 typedef struct _CamelMimeFilterLinewrapClass CamelMimeFilterLinewrapClass;
 
 struct _CamelMimeFilterLinewrap {
@@ -40,6 +45,7 @@ struct _CamelMimeFilterLinewrap {
 	guint max_len;
 	gchar indent;
 	gint nchars;
+	guint32 flags;
 };
 
 struct _CamelMimeFilterLinewrapClass {
@@ -48,7 +54,7 @@ struct _CamelMimeFilterLinewrapClass {
 
 CamelType camel_mime_filter_linewrap_get_type (void);
 
-CamelMimeFilter *camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent_char);
+CamelMimeFilter *camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent_char, guint32 flags);
 
 G_END_DECLS
 

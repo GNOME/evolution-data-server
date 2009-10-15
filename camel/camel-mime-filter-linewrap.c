@@ -86,10 +86,12 @@ filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
 		} else if (isspace (*p)) {
 			if (nchars >= linewrap->wrap_len) {
 				*q++ = '\n';
-				p++;
+				while (p < inend && isspace (*p))
+					p++;
 				nchars = 0;
 			} else {
 				*q++ = *p++;
+				nchars++;
 			}
 		} else {
 			*q++ = *p++;
@@ -97,10 +99,48 @@ filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
 		}
 
 		/* line is getting way too long, we must force a wrap here */
-		if (nchars >= (linewrap->max_len - 1) && *p != '\n') {
-			*q++ = '\n';
-			*q++ = linewrap->indent;
-			nchars = 0;
+		if (nchars >= linewrap->max_len && *p != '\n') {
+			gboolean wrapped = FALSE;
+
+			if (isspace (*p)) {
+				while (p < inend && isspace (*p) && *p != '\n')
+					p++;
+			} else if ((linewrap->flags & CAMEL_MIME_FILTER_LINEWRAP_WORD) != 0) {
+				gchar *r = q - 1;
+
+				/* find the first space backward */
+				while (r > f->outbuf && !isspace (*r))
+					r--;
+
+				if (r > f->outbuf && *r != '\n') {
+					/* found some valid */
+					*r = '\n';
+					wrapped = TRUE;
+
+					if ((linewrap->flags & CAMEL_MIME_FILTER_LINEWRAP_NOINDENT) == 0) {
+						gchar *s = q + 1;
+
+						while (s > r) {
+							*s = *(s - 1);
+							s--;
+						}
+
+						*r = linewrap->indent;
+						q++;
+					}
+
+					nchars = q - r - 1;
+				}
+			}
+
+			if (!wrapped) {
+				*q++ = '\n';
+				if ((linewrap->flags & CAMEL_MIME_FILTER_LINEWRAP_NOINDENT) == 0) {
+					*q++ = linewrap->indent;
+					nchars = 1;
+				} else
+					nchars = 0;
+			}
 		}
 	}
 
@@ -128,7 +168,7 @@ reset (CamelMimeFilter *f)
 }
 
 CamelMimeFilter *
-camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent_char)
+camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent_char, guint32 flags)
 {
 	CamelMimeFilterLinewrap *linewrap =
 		CAMEL_MIME_FILTER_LINEWRAP (camel_object_new (CAMEL_MIME_FILTER_LINEWRAP_TYPE));
@@ -137,6 +177,7 @@ camel_mime_filter_linewrap_new (guint preferred_len, guint max_len, gchar indent
 	linewrap->wrap_len = preferred_len;
 	linewrap->max_len = max_len;
 	linewrap->nchars = 0;
+	linewrap->flags = flags | (indent_char == 0 ? CAMEL_MIME_FILTER_LINEWRAP_NOINDENT : 0);
 
 	return (CamelMimeFilter *) linewrap;
 }
