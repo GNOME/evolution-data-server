@@ -273,7 +273,23 @@ files_are_identical_inode (struct stat *a_stat,
 			   gsize	a_content_len,
 			   const gchar  *b_filename)
 {
-	return (a_stat->st_ino == b_stat->st_ino);
+	gboolean res = a_stat->st_ino == b_stat->st_ino;
+
+	if (res) {
+		const char *filename;
+
+		filename = strrchr (b_filename, '/');
+		if (filename)
+			filename++;
+		else
+			filename = b_filename;
+
+		/* There is a 'localtime' soft link to /etc/localtime in the zoneinfo
+		   directory on Slackware, thus rather skip this file. */
+		res = !g_str_equal (filename, "localtime");
+	}
+
+	return res;
 }
 
 /* Determine if /etc/localtime is a hard link to some file, by looking at
