@@ -514,6 +514,17 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
 	register gint sofar = *save;  /* keeps track of how many chars on a line */
 	register gint last = *statep; /* keeps track if last gchar to end was a space cr etc */
 
+	#define output_last()				\
+		if (sofar + 3 > 74) {			\
+			*outptr++ = '=';		\
+			*outptr++ = '\n';		\
+			sofar = 0;			\
+		}					\
+		*outptr++ = '=';			\
+		*outptr++ = tohex[(last >> 4) & 0xf];	\
+		*outptr++ = tohex[last & 0xf];		\
+		sofar += 3;
+
 	inptr = in;
 	inend = in + len;
 	outptr = out;
@@ -521,17 +532,12 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
 		c = *inptr++;
 		if (c == '\r') {
 			if (last != -1) {
-				*outptr++ = '=';
-				*outptr++ = tohex[(last >> 4) & 0xf];
-				*outptr++ = tohex[last & 0xf];
-				sofar += 3;
+				output_last ();
 			}
 			last = c;
 		} else if (c == '\n') {
 			if (last != -1 && last != '\r') {
-				*outptr++ = '=';
-				*outptr++ = tohex[(last >> 4) & 0xf];
-				*outptr++ = tohex[last & 0xf];
+				output_last ();
 			}
 			*outptr++ = '\n';
 			sofar = 0;
@@ -542,10 +548,7 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
 					*outptr++ = last;
 					sofar++;
 				} else {
-					*outptr++ = '=';
-					*outptr++ = tohex[(last >> 4) & 0xf];
-					*outptr++ = tohex[last & 0xf];
-					sofar += 3;
+					output_last ();
 				}
 			}
 
@@ -581,6 +584,8 @@ camel_quoted_encode_step (guchar *in, gsize len, guchar *out, gint *statep, gint
 	}
 	*save = sofar;
 	*statep = last;
+
+	#undef output_last
 
 	return (outptr - out);
 }
