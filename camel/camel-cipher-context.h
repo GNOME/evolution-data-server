@@ -76,6 +76,10 @@ struct _CamelCipherCertInfo {
 
 	gchar *name;		/* common name */
 	gchar *email;
+
+	void *cert_data;  /* custom certificate data; can be NULL */
+	void (*cert_data_free) (void *cert_data); /* called to free cert_data; can be NULL only if cert_data is NULL */
+	void *(*cert_data_clone) (void *cert_data); /* called to clone cert_data; can be NULL only if cert_data is NULL */
 };
 
 struct _CamelCipherValidity {
@@ -174,6 +178,14 @@ void                 camel_cipher_validity_set_description (CamelCipherValidity 
 void                 camel_cipher_validity_clear (CamelCipherValidity *validity);
 CamelCipherValidity *camel_cipher_validity_clone(CamelCipherValidity *vin);
 void		     camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email);
+void		     camel_cipher_validity_add_certinfo_ex (
+					CamelCipherValidity *vin,
+					camel_cipher_validity_mode_t mode,
+					const gchar *name,
+					const gchar *email,
+					void *cert_data,
+					void (*cert_data_free) (void *cert_data),
+					void *(*cert_data_clone) (void *cert_data));
 void		     camel_cipher_validity_envelope(CamelCipherValidity *parent, CamelCipherValidity *valid);
 void                 camel_cipher_validity_free (CamelCipherValidity *validity);
 

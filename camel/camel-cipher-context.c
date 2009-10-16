@@ -361,6 +361,10 @@ ccv_certinfo_free(CamelCipherCertInfo *info)
 {
 	g_free(info->name);
 	g_free(info->email);
+
+	if (info->cert_data && info->cert_data_free)
+		info->cert_data_free (info->cert_data);
+
 	g_free(info);
 }
 
@@ -444,13 +448,19 @@ camel_cipher_validity_clone(CamelCipherValidity *vin)
 
 	info = (CamelCipherCertInfo *)vin->sign.signers.head;
 	while (info->next) {
-		camel_cipher_validity_add_certinfo(vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email);
+		if (info->cert_data && info->cert_data_clone && info->cert_data_free)
+			camel_cipher_validity_add_certinfo_ex (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email, info->cert_data_clone (info->cert_data), info->cert_data_free, info->cert_data_clone);
+		else
+			camel_cipher_validity_add_certinfo (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email);
 		info = info->next;
 	}
 
 	info = (CamelCipherCertInfo *)vin->encrypt.encrypters.head;
 	while (info->next) {
-		camel_cipher_validity_add_certinfo(vo, CAMEL_CIPHER_VALIDITY_ENCRYPT, info->name, info->email);
+		if (info->cert_data && info->cert_data_clone && info->cert_data_free)
+			camel_cipher_validity_add_certinfo_ex (vo, CAMEL_CIPHER_VALIDITY_SIGN, info->name, info->email, info->cert_data_clone (info->cert_data), info->cert_data_free, info->cert_data_clone);
+		else
+			camel_cipher_validity_add_certinfo (vo, CAMEL_CIPHER_VALIDITY_ENCRYPT, info->name, info->email);
 		info = info->next;
 	}
 
@@ -469,17 +479,38 @@ camel_cipher_validity_clone(CamelCipherValidity *vin)
 void
 camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email)
 {
+	camel_cipher_validity_add_certinfo_ex (vin, mode, name, email, NULL, NULL, NULL);
+}
+
+/**
+ * camel_cipher_validity_add_certinfo_ex:
+ *
+ * Add a cert info to the signer or encrypter info, with extended data set.
+ **/
+void
+camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email, void *cert_data, void (*cert_data_free)(void *cert_data), void *(*cert_data_clone)(void *cert_data))
+{
 	CamelCipherCertInfo *info;
 	CamelDList *list;
 
 	info = g_malloc0(sizeof(*info));
 	info->name = g_strdup(name);
 	info->email = g_strdup(email);
+	if (cert_data) {
+		if (cert_data_free && cert_data_clone) {
+			info->cert_data = cert_data;
+			info->cert_data_free = cert_data_free;
+			info->cert_data_clone = cert_data_clone;
+		} else {
+			if (!cert_data_free)
+				g_warning ("%s: requires non-NULL cert_data_free function!", G_STRFUNC);
+			if (!cert_data_clone)
+				g_warning ("%s: requires non-NULL cert_data_clone function!", G_STRFUNC);
+		}
+	}
 
 	list = (mode==CAMEL_CIPHER_VALIDITY_SIGN)?&vin->sign.signers:&vin->encrypt.encrypters;
 	camel_dlist_addtail(list, (CamelDListNode *)info);
-
-	d (printf ("adding certinfo %s <%s>\n", name?name:"unset", email?email:"unset"));
 }
 
 /**

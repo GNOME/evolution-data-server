@@ -62,6 +62,9 @@
 
 #define d(x)
 
+void smime_cert_data_free (void *cert_data);
+void *smime_cert_data_clone (void *cert_data);
+
 struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
 
@@ -716,6 +719,22 @@ sm_status_description(NSSCMSVerificationStatus status)
 	}
 }
 
+void
+smime_cert_data_free (void *cert_data)
+{
+	g_return_if_fail (cert_data != NULL);
+
+	CERT_DestroyCertificate (cert_data);
+}
+
+void *
+smime_cert_data_clone (void *cert_data)
+{
+	g_return_val_if_fail (cert_data != NULL, NULL);
+
+	return CERT_DupCertificate (cert_data);
+}
+
 static CamelCipherValidity *
 sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *extstream, CamelException *ex)
 {
@@ -841,7 +860,7 @@ sm_verify_cmsg(CamelCipherContext *context, NSSCMSMessage *cmsg, CamelStream *ex
 							       cn?cn:"<unknown>", em?em:"<unknown>",
 							       sm_status_description(status));
 
-					camel_cipher_validity_add_certinfo(valid, CAMEL_CIPHER_VALIDITY_SIGN, cn, em);
+					camel_cipher_validity_add_certinfo_ex (valid, CAMEL_CIPHER_VALIDITY_SIGN, cn, em, smime_cert_data_clone (NSS_CMSSignerInfo_GetSigningCertificate (si, p->certdb)), smime_cert_data_free, smime_cert_data_clone);
 
 					if (cn)
 						PORT_Free(cn);
