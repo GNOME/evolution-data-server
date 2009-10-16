@@ -42,6 +42,7 @@
 
 #include "camel-imap-store.h"
 #include "camel-imap-summary.h"
+#include "camel-imap-store-summary.h"
 #include "camel-imap-utils.h"
 
 #define d(x)
@@ -1347,12 +1348,13 @@ gchar *
 imap_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffix)
 {
 	gsize len;
+	CamelImapStoreNamespace *ns = camel_imap_store_summary_get_main_namespace (imap_store->summary);
 
 	len = strlen (prefix);
-	if (len == 0 || prefix[len - 1] == imap_store->dir_sep)
+	if (len == 0 || !ns || prefix[len - 1] == ns->sep)
 		return g_strdup_printf ("%s%s", prefix, suffix);
 	else
-		return g_strdup_printf ("%s%c%s", prefix, imap_store->dir_sep, suffix);
+		return g_strdup_printf ("%s%c%s", prefix, ns->sep, suffix);
 }
 
 gchar *

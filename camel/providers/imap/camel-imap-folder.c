@@ -4021,7 +4021,9 @@ imap_get_quota_info (CamelFolder *folder)
 		goto done;
 
 	if (imap_store->capabilities & IMAP_CAPABILITY_QUOTA) {
-		gchar *folder_name = camel_imap_store_summary_path_to_full (imap_store->summary, camel_folder_get_full_name (folder), imap_store->dir_sep);
+		const gchar *full_name = camel_folder_get_full_name (folder);
+		CamelImapStoreNamespace *ns = camel_imap_store_summary_namespace_find_full (imap_store->summary, full_name);
+		gchar *folder_name = camel_imap_store_summary_path_to_full (imap_store->summary, full_name, ns ? ns->sep : '/');
 
 		response = camel_imap_command (imap_store, NULL, NULL, "GETQUOTAROOT \"%s\"", folder_name);
 

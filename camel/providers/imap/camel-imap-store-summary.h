@@ -52,6 +52,8 @@ struct _CamelImapStoreNamespace {
 	gchar *path;		/* display path */
 	gchar *full_name;	/* real name */
 	gchar sep;		/* directory separator */
+
+	struct _CamelImapStoreNamespace *next;
 };
 
 struct _CamelImapStoreSummary {
@@ -62,7 +64,7 @@ struct _CamelImapStoreSummary {
 	/* header info */
 	guint32 version;	/* version of base part of file */
 	guint32 capabilities;
-	CamelImapStoreNamespace *namespace; /* eventually to be a list */
+	CamelImapStoreNamespace *namespace; /* list of namespaces, the first is always main namespace */
 };
 
 struct _CamelImapStoreSummaryClass {
@@ -72,9 +74,9 @@ struct _CamelImapStoreSummaryClass {
 CamelType			 camel_imap_store_summary_get_type	(void);
 CamelImapStoreSummary      *camel_imap_store_summary_new	(void);
 
-/* TODO: this api needs some more work, needs to support lists */
-CamelImapStoreNamespace *camel_imap_store_summary_namespace_new(CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep);
-void camel_imap_store_summary_namespace_set(CamelImapStoreSummary *s, CamelImapStoreNamespace *ns);
+void camel_imap_store_summary_namespace_set_main (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep);
+void camel_imap_store_summary_namespace_add_secondary (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep);
+CamelImapStoreNamespace *camel_imap_store_summary_get_main_namespace (CamelImapStoreSummary *s);
 CamelImapStoreNamespace *camel_imap_store_summary_namespace_find_path(CamelImapStoreSummary *s, const gchar *path);
 CamelImapStoreNamespace *camel_imap_store_summary_namespace_find_full(CamelImapStoreSummary *s, const gchar *full_name);
 

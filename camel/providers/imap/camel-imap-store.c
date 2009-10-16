@@ -185,8 +185,8 @@ camel_imap_store_finalize (CamelObject *object)
 	if (imap_store->storage_path)
 		g_free (imap_store->storage_path);
 
-	g_free (imap_store->namespace);
-	imap_store->namespace = NULL;
+	g_free (imap_store->users_namespace);
+	imap_store->users_namespace = NULL;
 
 	g_free (imap_store->custom_headers);
 }
@@ -199,6 +199,7 @@ camel_imap_store_init (gpointer object, gpointer klass)
 	imap_store->istream = NULL;
 	imap_store->ostream = NULL;
 
+	/* TODO: support dir_sep per namespace */
 	imap_store->dir_sep = '\0';
 	imap_store->current_folder = NULL;
 	imap_store->connected = FALSE;
@@ -258,8 +259,8 @@ construct (CamelService *service, CamelSession *session,
 		imap_store->parameters |= IMAP_PARAM_SUBSCRIPTIONS;
 	if (camel_url_get_param (url, "override_namespace") && camel_url_get_param (url, "namespace")) {
 		imap_store->parameters |= IMAP_PARAM_OVERRIDE_NAMESPACE;
-		g_free(imap_store->namespace);
-		imap_store->namespace = g_strdup (camel_url_get_param (url, "namespace"));
+		g_free(imap_store->users_namespace);
+		imap_store->users_namespace = g_strdup (camel_url_get_param (url, "namespace"));
 	}
 	if (camel_url_get_param (url, "check_all"))
 		imap_store->parameters |= IMAP_PARAM_CHECK_ALL;
@@ -297,11 +298,8 @@ construct (CamelService *service, CamelSession *session,
 
 		if (is->namespace) {
 			/* if namespace has changed, clear folder list */
-			if (imap_store->namespace && strcmp(imap_store->namespace, is->namespace->full_name) != 0) {
+			if (imap_store->users_namespace && strcmp(imap_store->users_namespace, is->namespace->full_name) != 0) {
 				camel_store_summary_clear((CamelStoreSummary *)is);
-			} else {
-				imap_store->namespace = g_strdup(is->namespace->full_name);
-				imap_store->dir_sep = is->namespace->sep;
 			}
 		}
 
@@ -327,9 +325,9 @@ imap_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 
 		switch (tag) {
 		case CAMEL_IMAP_STORE_NAMESPACE:
-			if (strcmp (store->namespace, args->argv[i].ca_str) != 0) {
-				g_free (store->namespace);
-				store->namespace = g_strdup (args->argv[i].ca_str);
+			if (strcmp (store->users_namespace, args->argv[i].ca_str) != 0) {
+				g_free (store->users_namespace);
+				store->users_namespace = g_strdup (args->argv[i].ca_str);
 				/* the current imap code will need to do a reconnect for this to take effect */
 				/*reconnect = TRUE;*/
 			}
@@ -401,7 +399,7 @@ imap_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 
 		switch (tag) {
 		case CAMEL_IMAP_STORE_NAMESPACE:
-			*args->argv[i].ca_str = store->namespace;
+			*args->argv[i].ca_str = store->users_namespace;
 			break;
 		case CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE:
 			*args->argv[i].ca_int = store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE ? TRUE : FALSE;
@@ -1400,10 +1398,8 @@ imap_connect (CamelService *service, CamelException *ex)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 	CamelImapResponse *response;
-	/*struct _namespaces *namespaces;*/
 	gchar *result, *name;
 	gsize len;
-	CamelImapStoreNamespace *ns;
 
 	if (((CamelOfflineStore *) store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return TRUE;
@@ -1417,8 +1413,9 @@ imap_connect (CamelService *service, CamelException *ex)
 	}
 
 	/* Get namespace and hierarchy separator */
-	if ((store->capabilities & IMAP_CAPABILITY_NAMESPACE) &&
-	    !(store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE)) {
+	if (store->capabilities & IMAP_CAPABILITY_NAMESPACE) {
+		struct _namespaces *namespaces;
+
 		response = camel_imap_command (store, NULL, ex, "NAMESPACE");
 		if (!response)
 			goto done;
@@ -1427,41 +1424,85 @@ imap_connect (CamelService *service, CamelException *ex)
 		if (!result)
 			goto done;
 
-#if 0
-		/* new code... */
 		namespaces = imap_parse_namespace_response (result);
+
+		if (!(store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE)) {
+			g_free (store->users_namespace);
+			store->users_namespace = NULL;
+		}
+
+		if (namespaces && !store->users_namespace) {
+			struct _namespace *np = NULL;
+
+			if (namespaces->personal)
+				np = namespaces->personal;
+			else if (namespaces->other)
+				np = namespaces->other;
+			else if (namespaces->shared)
+				np = namespaces->shared;
+
+			if (np) {
+				store->users_namespace = g_strdup (np->prefix);
+			}
+		}
+
+		if (namespaces) {
+			#define add_all(_ns) 									\
+				if (_ns) {									\
+					struct _namespace *ns;							\
+														\
+					for (ns = _ns; ns; ns = ns->next) {					\
+						if (ns->prefix)							\
+							camel_imap_store_summary_namespace_add_secondary	\
+								(store->summary, ns->prefix, ns->delim);	\
+					}									\
+				}
+
+			add_all (namespaces->personal);
+			add_all (namespaces->other);
+			add_all (namespaces->shared);
+
+			#undef add_all
+		}
+
 		imap_namespaces_destroy (namespaces);
-		/* end new code */
-#endif
 
-		name = camel_strstrcase (result, "NAMESPACE ((");
-		if (name) {
-			gchar *sep;
+		if (!store->users_namespace) {
+			/* fallback for a broken result */
+			name = camel_strstrcase (result, "NAMESPACE ((");
+			if (name) {
+				gchar *sep;
 
-			name += 12;
-			store->namespace = imap_parse_string ((const gchar **) &name, &len);
-			if (name && *name++ == ' ') {
-				sep = imap_parse_string ((const gchar **) &name, &len);
-				if (sep) {
-					store->dir_sep = *sep;
-					g_free (sep);
+				name += 12;
+				store->users_namespace = imap_parse_string ((const gchar **) &name, &len);
+				if (name && *name++ == ' ') {
+					sep = imap_parse_string ((const gchar **) &name, &len);
+					if (sep) {
+						store->dir_sep = *sep;
+						g_free (sep);
+					}
 				}
 			}
 		}
 		g_free (result);
 	}
 
-	if (!store->namespace)
-		store->namespace = g_strdup ("");
+	if (!store->users_namespace)
+		store->users_namespace = g_strdup ("");
 
 	if (!store->dir_sep) {
+		const gchar *use_namespace = store->summary->namespace ? store->summary->namespace->full_name : NULL;
+
+		if (!use_namespace)
+			use_namespace = store->users_namespace;
+
 		if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
 			/* This idiom means "tell me the hierarchy separator
 			 * for the given path, even if that path doesn't exist.
 			 */
 			response = camel_imap_command (store, NULL, ex,
 						       "LIST %G \"\"",
-						       store->namespace);
+						       use_namespace);
 		} else {
 			/* Plain IMAP4 doesn't have that idiom, so we fall back
 			 * to "tell me about this folder", which will fail if
@@ -1469,7 +1510,7 @@ imap_connect (CamelService *service, CamelException *ex)
 			 */
 			response = camel_imap_command (store, NULL, ex,
 						       "LIST \"\" %G",
-						       store->namespace);
+						       use_namespace);
 		}
 		if (!response)
 			goto done;
@@ -1485,30 +1526,19 @@ imap_connect (CamelService *service, CamelException *ex)
 
 	}
 
-	/* canonicalize the namespace to end with dir_sep */
-	len = strlen (store->namespace);
-	if (len && store->namespace[len - 1] != store->dir_sep) {
-		gchar *tmp;
+	/* canonicalize the namespace to not end with dir_sep */
+	len = strlen (store->users_namespace);
+	if (len && store->users_namespace[len - 1] == store->dir_sep)
+		store->users_namespace[len - 1] = 0;
 
-		tmp = g_strdup_printf ("%s%c", store->namespace, store->dir_sep);
-		g_free (store->namespace);
-		store->namespace = tmp;
-	}
-
-	ns = camel_imap_store_summary_namespace_new(store->summary, store->namespace, store->dir_sep);
-	camel_imap_store_summary_namespace_set(store->summary, ns);
+	camel_imap_store_summary_namespace_set_main (store->summary, store->users_namespace, store->dir_sep);
 
 	if ((store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
 	    && camel_store_summary_count((CamelStoreSummary *)store->summary) == 0) {
 		CamelStoreInfo *si;
-		gchar *pattern;
 
-		get_folders_sync(store, store->namespace, ex);
-		if (camel_exception_is_set(ex))
-			goto done;
-		pattern = imap_concat(store, store->namespace, "*");
-		get_folders_sync(store, pattern, ex);
-		g_free (pattern);
+		/* look in all namespaces */
+		get_folders_sync (store, NULL, ex);
 		if (camel_exception_is_set(ex))
 			goto done;
 
@@ -1578,9 +1608,9 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 		store->authtypes = NULL;
 	}
 
-	if (store->namespace && !(store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE)) {
-		g_free (store->namespace);
-		store->namespace = NULL;
+	if (store->users_namespace && !(store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE)) {
+		g_free (store->users_namespace);
+		store->users_namespace = NULL;
 	}
 
 	return TRUE;
@@ -2424,9 +2454,14 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 	return fi;
 }
 
-static gint imap_match_pattern(gchar dir_sep, const gchar *pattern, const gchar *name)
+static gint imap_match_pattern (CamelImapStoreNamespace *ns, const gchar *pattern, const gchar *name)
 {
-	gchar p, n;
+	gchar p, n, dir_sep;
+
+	if (!ns)
+		return TRUE;
+
+	dir_sep = ns->sep;
 
 	p = *pattern++;
 	n = *name++;
@@ -2481,7 +2516,7 @@ get_folders_free(gpointer k, gpointer v, gpointer d)
 }
 
 static void
-get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelException *ex)
+get_folders_sync (CamelImapStore *imap_store, const gchar *ppattern, CamelException *ex)
 {
 	CamelImapResponse *response;
 	CamelFolderInfo *fi, *hfi;
@@ -2489,40 +2524,64 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 	gint i, count, j;
 	GHashTable *present;
 	CamelStoreInfo *si;
+	const gchar *pattern = ppattern;
+	CamelImapStoreNamespace *ns;
 
 	/* We do a LIST followed by LSUB, and merge the results.  LSUB may not be a strict
 	   subset of LIST for some servers, so we can't use either or separately */
 	present = g_hash_table_new(folder_hash, folder_eq);
 
-	for (j=0;j<2;j++) {
-		response = camel_imap_command (imap_store, NULL, ex,
-					       "%s \"\" %G", j==1 ? "LSUB" : "LIST",
-					       pattern);
-		if (!response)
-			goto fail;
+	if (!pattern)
+		pattern = "";
 
-		for (i = 0; i < response->untagged->len; i++) {
-			list = response->untagged->pdata[i];
-			fi = parse_list_response_as_folder_info (imap_store, list);
-			if (fi && fi->full_name && *fi->full_name) {
-				hfi = g_hash_table_lookup(present, fi->full_name);
-				if (hfi == NULL) {
-					if (j == 1) {
-						fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-						if ((fi->flags & (CAMEL_IMAP_FOLDER_MARKED | CAMEL_IMAP_FOLDER_UNMARKED)))
-							imap_store->capabilities |= IMAP_CAPABILITY_useful_lsub;
-					}
-					g_hash_table_insert(present, fi->full_name, fi);
-				} else {
-					if (j == 1)
-						hfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-					camel_folder_info_free(fi);
-				}
-			} else if (fi) {
-				camel_folder_info_free (fi);
-			}
+	for (ns = imap_store->summary->namespace; ns; ns = ns->next) {
+		gchar *tmp = NULL;
+
+		if (!ppattern) {
+			if (!ns->full_name || !*ns->full_name)
+				tmp = g_strdup ("*");
+			else
+				tmp = g_strdup_printf ("%s%c*", ns->full_name, ns->sep);
+			pattern = tmp;
 		}
-		camel_imap_response_free (imap_store, response);
+
+		for (j = 0; j < 2; j++) {
+			response = camel_imap_command (imap_store, NULL, ex,
+							"%s \"\" %G", j==1 ? "LSUB" : "LIST",
+							pattern);
+			if (!response)
+				goto fail;
+
+			for (i = 0; i < response->untagged->len; i++) {
+				list = response->untagged->pdata[i];
+				fi = parse_list_response_as_folder_info (imap_store, list);
+				if (fi && *fi->full_name) {
+					hfi = g_hash_table_lookup(present, fi->full_name);
+					if (hfi == NULL) {
+						if (j == 1) {
+							fi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+							if ((fi->flags & (CAMEL_IMAP_FOLDER_MARKED | CAMEL_IMAP_FOLDER_UNMARKED)))
+								imap_store->capabilities |= IMAP_CAPABILITY_useful_lsub;
+						}
+						g_hash_table_insert(present, fi->full_name, fi);
+					} else {
+						if (j == 1)
+							hfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+						camel_folder_info_free(fi);
+					}
+				} else if (fi) {
+					camel_folder_info_free (fi);
+				}
+			}
+
+			camel_imap_response_free (imap_store, response);
+		}
+
+		g_free (tmp);
+
+		/* look for matching only, if ppattern was non-NULL */
+		if (ppattern)
+			break;
 	}
 
 	/* Sync summary to match */
@@ -2543,7 +2602,7 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 			continue;
 		}
 
-		if (imap_match_pattern (imap_store->dir_sep, pattern, full_name)) {
+		if (!ppattern || imap_match_pattern (camel_imap_store_summary_namespace_find_full (imap_store->summary, full_name), pattern, full_name)) {
 			if ((fi = g_hash_table_lookup(present, camel_store_info_path(imap_store->summary, si))) != NULL) {
 				if (((fi->flags ^ si->flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 					si->flags = (si->flags & ~CAMEL_FOLDER_SUBSCRIBED) | (fi->flags & CAMEL_FOLDER_SUBSCRIBED);
@@ -2564,8 +2623,9 @@ get_folders_sync(CamelImapStore *imap_store, const gchar *pattern, CamelExceptio
 
 					g_free (dup_folder_name);
 					camel_exception_clear (&eex);
-				} else
+				} else {
 					camel_store_summary_remove ((CamelStoreSummary *)imap_store->summary, si);
+				}
 
 				count--;
 				i--;
@@ -2595,10 +2655,10 @@ dumpfi(CamelFolderInfo *fi)
 	}
 
 	while (fi) {
-		printf("%-40s %-30s %*s\n", fi->path, fi->full_name, depth*2+strlen(fi->url), fi->url);
+		printf("%-25s %-25s %*s\n", fi->name, fi->full_name, (gint)(depth*2+strlen(fi->uri)), fi->uri);
 		if (fi->child)
 			dumpfi(fi->child);
-		fi = fi->sibling;
+		fi = fi->next;
 	}
 }
 #endif
@@ -2637,28 +2697,14 @@ static void
 refresh_refresh(CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _refresh_msg *m = (struct _refresh_msg *)msg;
-	CamelImapStore *store = (CamelImapStore *)m->store;
 
 	CAMEL_SERVICE_REC_LOCK(m->store, connect_lock);
 
 	if (!camel_imap_store_connected((CamelImapStore *)m->store, &m->ex))
 		goto done;
 
-	if (store->namespace && store->namespace[0]) {
-		gchar *pattern;
-
-		get_folders_sync(store, "INBOX", &m->ex);
-		if (camel_exception_is_set(&m->ex))
-			goto done;
-		get_folders_sync(store, store->namespace, &m->ex);
-		if (camel_exception_is_set(&m->ex))
-			goto done;
-		pattern = imap_concat(store, store->namespace, "*");
-		get_folders_sync(store, pattern, &m->ex);
-		g_free(pattern);
-	} else {
-		get_folders_sync((CamelImapStore *)m->store, "*", &m->ex);
-	}
+	/* look in all namespaces */
+	get_folders_sync((CamelImapStore *)m->store, NULL, &m->ex);
 	camel_store_summary_save((CamelStoreSummary *)((CamelImapStore *)m->store)->summary);
 done:
 	CAMEL_SERVICE_REC_UNLOCK(m->store, connect_lock);
@@ -2725,6 +2771,7 @@ get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelExcept
 	} else {
 		gchar *pattern;
 		gint i;
+		CamelImapStoreNamespace *ns;
 
 		CAMEL_SERVICE_REC_LOCK(store, connect_lock);
 
@@ -2732,23 +2779,10 @@ get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelExcept
 			goto fail;
 
 		if (top[0] == 0) {
-			if (imap_store->namespace && imap_store->namespace[0]) {
-				get_folders_sync(imap_store, "INBOX", ex);
-				if (camel_exception_is_set(ex))
-					goto fail;
-
-				i = strlen(imap_store->namespace)-1;
-				pattern = g_alloca(i+5);
-				strcpy(pattern, imap_store->namespace);
-				while (i>0 && pattern[i] == imap_store->dir_sep)
-					pattern[i--] = 0;
-				i++;
-			} else {
-				pattern = g_alloca(2);
-				pattern[0] = '*';
-				pattern[1] = 0;
-				i=0;
-			}
+			pattern = g_alloca (2);
+			pattern[0] = '*';
+			pattern[1] = 0;
+			i = 0;
 		} else {
 			gchar *name;
 
@@ -2762,11 +2796,12 @@ get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelExcept
 			g_free(name);
 		}
 
+		ns = camel_imap_store_summary_get_main_namespace (imap_store->summary);
 		get_folders_sync(imap_store, pattern, ex);
 		if (camel_exception_is_set(ex))
 			goto fail;
-		if (pattern[0] != '*' && imap_store->dir_sep) {
-			pattern[i] = imap_store->dir_sep;
+		if (pattern[0] != '*' && ns) {
+			pattern[i] = ns->sep;
 			pattern[i+1] = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)?'*':'%';
 			pattern[i+2] = 0;
 			get_folders_sync(imap_store, pattern, ex);
@@ -2793,6 +2828,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	GPtrArray *folders;
 	gchar *pattern, *name;
 	gint i;
+	CamelImapStoreNamespace *main_ns, *ns;
 
 	if (camel_debug("imap:folder_info"))
 		printf("get folder info offline\n");
@@ -2808,17 +2844,14 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 
 	/* get starting point */
 	if (top[0] == 0) {
-		if (imap_store->namespace && imap_store->namespace[0]) {
-			name = g_strdup(imap_store->summary->namespace->full_name);
-			top = imap_store->summary->namespace->path;
-		} else
-			name = g_strdup("");
+		name = g_strdup("");
 	} else {
 		name = camel_imap_store_summary_full_from_path(imap_store->summary, top);
 		if (name == NULL)
 			name = camel_imap_store_summary_path_to_full(imap_store->summary, top, imap_store->dir_sep);
 	}
 
+	main_ns = camel_imap_store_summary_get_main_namespace (imap_store->summary);
 	pattern = imap_concat(imap_store, name, "*");
 
 	/* folder_info_build will insert parent nodes as necessary and mark
@@ -2839,12 +2872,16 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			continue;
 		}
 
-		if ((!strcmp(name, full_name)
-		     || imap_match_pattern(imap_store->dir_sep, pattern, full_name)
+		ns = camel_imap_store_summary_namespace_find_full (imap_store->summary, full_name);
+
+		if ((g_str_equal (name, full_name)
+		     || imap_match_pattern (ns, pattern, full_name)
 		     || (include_inbox && !g_ascii_strcasecmp (full_name, "INBOX")))
-		    && ((imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS) == 0
-			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0
-			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))) {
+		    && ((ns == main_ns && 
+			((imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS) == 0
+			   || (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0))
+			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
+			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0)) {
 
 			fi = imap_build_folder_info(imap_store, camel_store_info_path((CamelStoreSummary *)imap_store->summary, si));
 			fi->unread = si->unread;
