@@ -64,6 +64,7 @@
 #include "camel-stream-filter.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
+#include "camel-stream-null.h"
 
 #define d(x)
 
@@ -1111,7 +1112,8 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 			goto exception;
 
 		if (nread > 0) {
-			if (camel_stream_write (gpg->ostream, buffer, (gsize) nread) == -1)
+			gsize written = camel_stream_write (gpg->ostream, buffer, (gsize) nread);
+			if (written != nread)
 				goto exception;
 		} else {
 			gpg->seen_eof1 = TRUE;
@@ -1798,8 +1800,21 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 
 	camel_stream_reset(ostream);
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {
+		CamelDataWrapper *dw;
+		CamelStream *null = camel_stream_null_new ();
+
 		/* Multipart encrypted - parse a full mime part */
-		rv = camel_data_wrapper_construct_from_stream((CamelDataWrapper *)opart, ostream);
+		rv = camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)opart, ostream);
+
+		dw = camel_medium_get_content_object ((CamelMedium *)opart);
+		if (!camel_data_wrapper_decode_to_stream (dw, null)) {
+			/* nothing had been decoded from the stream, it doesn't
+			   contain any header, like Content-Type or such, thus
+			   write it as a message body */
+			rv = camel_data_wrapper_construct_from_stream (dw, ostream);
+		}
+
+		camel_object_unref (null);
 	} else {
 		/* Inline signed - raw data (may not be a mime part) */
 		CamelDataWrapper *dw;
