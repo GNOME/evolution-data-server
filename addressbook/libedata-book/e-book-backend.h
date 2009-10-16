@@ -67,7 +67,7 @@ struct _EBookBackendClass {
 	void (*get_supported_fields) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	void (*get_supported_auth_methods) (EBookBackend *backend, EDataBook *book, guint32 opid);
 	GNOME_Evolution_Addressbook_CallStatus (*cancel_operation) (EBookBackend *backend, EDataBook *book);
-	void (*set_mode) (EBookBackend *backend, GNOME_Evolution_Addressbook_BookMode  mode);
+	void (*set_mode) (EBookBackend *backend, GNOME_Evolution_Addressbook_BookMode mode);
 
 	/* Notification signals */
 	void (* last_client_gone) (EBookBackend *backend);

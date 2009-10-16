@@ -23,6 +23,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <glib-object.h>
 #include <glib/gi18n.h>
 #include <dbus/dbus-protocol.h>
@@ -37,10 +38,10 @@
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
 
+#define d(x)
+
 static void impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context);
 #include "e-data-book-factory-glue.h"
-
-static gchar *nm_dbus_escape_object_path (const gchar *utf8_string);
 
 static GMainLoop *loop;
 static EDataBookFactory *factory;
@@ -61,7 +62,7 @@ G_DEFINE_TYPE(EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);
 
 struct _EDataBookFactoryPrivate {
 	/* TODO: as the factory is not threaded these locks could be removed */
-	GMutex *backend_lock;
+	GMutex *backends_lock;
 	GHashTable *backends;
 
 	GMutex *books_lock;
@@ -184,7 +185,7 @@ e_data_book_factory_init (EDataBookFactory *factory)
 {
 	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
-	factory->priv->backend_lock = g_mutex_new ();
+	factory->priv->backends_lock = g_mutex_new ();
 	factory->priv->backends = g_hash_table_new (g_str_hash, g_str_equal);
 
 	factory->priv->books_lock = g_mutex_new ();
@@ -233,45 +234,57 @@ e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
 	return backend_factory;
 }
 
-static char *
-make_path_name (const char* uri)
+static gchar *
+construct_book_factory_path (void)
 {
-	char *s, *path;
-	s = nm_dbus_escape_object_path (uri);
-	path = g_strdup_printf ("/org/gnome/evolution/dataserver/addressbook/%s", s);
-	g_free (s);
-	return path;
+	static volatile gint counter = 1;
+
+	return g_strdup_printf (
+		"/org/gnome/evolution/dataserver/addressbook/%d/%u",
+		getpid (),
+		g_atomic_int_exchange_and_add (&counter, 1));
 }
 
 static void
 my_remove (char *key, GObject *dead)
 {
-	g_mutex_lock (factory->priv->books_lock);
-	g_hash_table_remove (factory->priv->books, key);
-	g_mutex_unlock (factory->priv->books_lock);
+	EDataBookFactoryPrivate *priv = factory->priv;
+	GHashTableIter iter;
+	gpointer hkey, hvalue;
+
+	d (g_debug ("%s (%p) is dead", key, dead));
+
+	g_hash_table_remove (priv->books, key);
+
+	g_hash_table_iter_init (&iter, priv->connections);
+	while (g_hash_table_iter_next (&iter, &hkey, &hvalue)) {
+		GList *books = hvalue;
+
+		if (g_list_find (books, dead)) {
+			books = g_list_remove (books, dead);
+			if (books) {
+				g_hash_table_insert (priv->connections, g_strdup (hkey), books);
+			} else {
+				g_hash_table_remove (priv->connections, hkey);
+			}
+
+			break;
+		}
+	}
 
 	g_free (key);
 
 	/* If there are no open books, start a timer to quit */
-	if (factory->priv->exit_timeout == 0 && g_hash_table_size (factory->priv->books) == 0) {
-		factory->priv->exit_timeout = g_timeout_add (10000, (GSourceFunc)g_main_loop_quit, loop);
+	if (priv->exit_timeout == 0 && g_hash_table_size (priv->books) == 0) {
+		priv->exit_timeout = g_timeout_add (10000, (GSourceFunc)g_main_loop_quit, loop);
 	}
-}
-
-static void
-book_closed_cb (EDataBook *book, const char *client)
-{
-	GList *list;
-
-	list = g_hash_table_lookup (factory->priv->connections, client);
-	list = g_list_remove (list, book);
-	g_hash_table_insert (factory->priv->connections, g_strdup (client), list);
 }
 
 static void
 impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusGMethodInvocation *context)
 {
 	EDataBook *book;
+	EBookBackend *backend;
 	EDataBookFactoryPrivate *priv = factory->priv;
 	ESource *source;
 	char *uri, *path, *sender;
@@ -288,30 +301,47 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusG
 		priv->exit_timeout = 0;
 	}
 
-	g_mutex_lock (priv->books_lock);
+	g_mutex_lock (priv->backends_lock);
 
 	source = e_source_new_from_standalone_xml (IN_source);
 	if (!source) {
+		g_mutex_unlock (priv->backends_lock);
 		dbus_g_method_return_error (context, g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Invalid source")));
+		return;
 	}
 
 	uri = e_source_get_uri (source);
-	path = make_path_name (uri);
-	book = g_hash_table_lookup (priv->books, path);
-	if (book == NULL) {
-		EBookBackend *backend = NULL;
-		backend = e_book_backend_factory_new_backend (e_data_book_factory_lookup_backend_factory (factory, uri));
-		book = e_data_book_new (backend, source, book_closed_cb);
-		e_book_backend_set_mode (backend, factory->priv->mode);
-		g_hash_table_insert (priv->books, g_strdup (path), book);
-		e_book_backend_add_client (backend, book);
-		dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));
-		g_object_weak_ref (G_OBJECT (book), (GWeakNotify)my_remove, g_strdup (path));
-		g_object_unref (backend); /* The book takes a reference to the backend */
-	} else {
-		g_object_ref (book);
+
+	g_mutex_lock (priv->books_lock);
+	backend = g_hash_table_lookup (priv->backends, uri);
+
+	if (!backend) {
+		EBookBackendFactory *backend_factory = e_data_book_factory_lookup_backend_factory (factory, uri);
+
+		if (backend_factory)
+			backend = e_book_backend_factory_new_backend (backend_factory);
+
+		if (backend)
+			g_hash_table_insert (priv->backends, g_strdup (uri), backend);
 	}
-	g_object_unref (source);
+
+	if (!backend) {
+		g_free (uri);
+		g_object_unref (source);
+
+		g_mutex_unlock (priv->books_lock);
+		g_mutex_unlock (priv->backends_lock);
+		dbus_g_method_return_error (context, g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Invalid source")));
+		return;
+	}
+
+	path = construct_book_factory_path ();
+	book = e_data_book_new (backend, source);
+	e_book_backend_set_mode (backend, priv->mode);
+	g_hash_table_insert (priv->books, g_strdup (path), book);
+	e_book_backend_add_client (backend, book);
+	dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));
+	g_object_weak_ref (G_OBJECT (book), (GWeakNotify)my_remove, g_strdup (path));
 
 	/* Update the hash of open connections */
 	g_mutex_lock (priv->connections_lock);
@@ -322,6 +352,10 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusG
 	g_mutex_unlock (priv->connections_lock);
 
 	g_mutex_unlock (priv->books_lock);
+	g_mutex_unlock (priv->backends_lock);
+
+	g_object_unref (source);
+	g_free (uri);
 
 	dbus_g_method_return (context, path);
 }
@@ -419,39 +453,7 @@ main (int argc, char **argv)
 
 	dbus_g_connection_unref (connection);
 
+	printf ("Bye.\n");
+
 	return 0;
-}
-
-/* Stolen from http://cvs.gnome.org/viewcvs/NetworkManager/utils/nm-utils.c */
-static gchar *nm_dbus_escape_object_path (const gchar *utf8_string)
-{
-	const gchar *p;
-	GString *string;
-
-	g_return_val_if_fail (utf8_string != NULL, NULL);
-	g_return_val_if_fail (g_utf8_validate (utf8_string, -1, NULL), NULL);
-
-	string = g_string_sized_new ((strlen (utf8_string) + 1) * 2);
-
-	for (p = utf8_string; *p != '\0'; p = g_utf8_next_char (p))
-		{
-			gunichar character;
-
-			character = g_utf8_get_char (p);
-
-			if (((character >= ((gunichar) 'a')) &&
-			     (character <= ((gunichar) 'z'))) ||
-			    ((character >= ((gunichar) 'A')) &&
-			     (character <= ((gunichar) 'Z'))) ||
-			    ((character >= ((gunichar) '0')) &&
-			     (character <= ((gunichar) '9'))))
-				{
-					g_string_append_c (string, (gchar) character);
-					continue;
-				}
-
-			g_string_append_printf (string, "_%x_", character);
-		}
-
-	return g_string_free (string, FALSE);
 }

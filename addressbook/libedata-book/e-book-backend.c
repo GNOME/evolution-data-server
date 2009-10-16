@@ -470,31 +470,6 @@ e_book_backend_cancel_operation (EBookBackend *backend,
 }
 
 static void
-book_destroy_cb (gpointer data, GObject *where_book_was)
-{
-	EBookBackend *backend = E_BOOK_BACKEND (data);
-
-	e_book_backend_remove_client (backend, (EDataBook *)where_book_was);
-}
-
-static gboolean
-idle_remove_client (gpointer data)
-{
-	EDataBook *book = (EDataBook *) data;
-
-	e_book_backend_remove_client (e_data_book_get_backend (book), book);
-	g_object_unref ((GObject *) book);
-
-	return FALSE;
-}
-static void
-listener_died_cb (gpointer cnx, gpointer user_data)
-{
-	g_object_ref ((GObject *)user_data);
-	g_idle_add (idle_remove_client, user_data);
-}
-
-static void
 last_client_gone (EBookBackend *backend)
 {
 	g_signal_emit (backend, e_book_backend_signals[LAST_CLIENT_GONE], 0);
@@ -572,7 +547,6 @@ e_book_backend_add_client (EBookBackend      *backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
-	g_object_weak_ref (G_OBJECT (book), book_destroy_cb, backend);
 	g_mutex_lock (backend->priv->clients_mutex);
 	backend->priv->clients = g_list_prepend (backend->priv->clients, book);
 	g_mutex_unlock (backend->priv->clients_mutex);

@@ -38,14 +38,10 @@ G_BEGIN_DECLS
 #define E_IS_DATA_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK))
 #define E_DATA_BOOK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_DATA_BOOK, EDataBookClass))
 
-typedef void (* EDataBookClosedCallback) (EDataBook *book, const char *client);
-
 struct _EDataBook {
 	GObject parent;
 	EBookBackend *backend;
 	ESource *source;
-	/* TODO: move to private data */
-	EDataBookClosedCallback closed_cb;
 };
 
 struct _EDataBookClass {
@@ -55,11 +51,9 @@ struct _EDataBookClass {
 GQuark e_data_book_error_quark (void);
 #define E_DATA_BOOK_ERROR e_data_book_error_quark ()
 
-EDataBook                *e_data_book_new                    (EBookBackend *backend,
-							      ESource *source,
-							 EDataBookClosedCallback closed_cb);
-EBookBackend             *e_data_book_get_backend            (EDataBook                                *book);
-ESource                *e_data_book_get_source             (EDataBook                                *book);
+EDataBook		*e_data_book_new                    (EBookBackend *backend, ESource *source);
+EBookBackend		*e_data_book_get_backend            (EDataBook *book);
+ESource			*e_data_book_get_source             (EDataBook *book);
 
 void                    e_data_book_respond_open           (EDataBook *book,
 							    guint32 opid,

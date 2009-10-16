@@ -257,13 +257,14 @@ e_data_book_init (EDataBook *ebook)
 }
 
 EDataBook *
-e_data_book_new (EBookBackend *backend, ESource *source, EDataBookClosedCallback closed_cb)
+e_data_book_new (EBookBackend *backend, ESource *source)
 {
 	EDataBook *book;
+
 	book = g_object_new (E_TYPE_DATA_BOOK, NULL);
 	book->backend = g_object_ref (backend);
 	book->source = g_object_ref (source);
-	book->closed_cb = closed_cb;
+
 	return book;
 }
 
@@ -645,14 +646,7 @@ impl_AddressBook_Book_cancelOperation(EDataBook *book, GError **error)
 static void
 impl_AddressBook_Book_close(EDataBook *book, DBusGMethodInvocation *context)
 {
-	char *sender;
-
-	sender = dbus_g_method_get_sender (context);
-
-	book->closed_cb (book, sender);
-
-	g_free (sender);
-
+	e_book_backend_remove_client (e_data_book_get_backend (book), book);
 	g_object_unref (book);
 
 	dbus_g_method_return (context);
