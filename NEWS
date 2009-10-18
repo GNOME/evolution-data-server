@@ -1,3 +1,14 @@
+Evolution-Data-Server 2.28.1 2009-10-19
+---------------------------------------
+
+Bug Fixes:
+	#270893 - Support client certificates for IMAP (Craig Ringer)
+	#593019 - Importing event with pseudo "Etc/UTC" timezone crashed
+                  (Patrick Ohly)
+	#595082 - Contacts displayed twice in new email contact list
+	          (Milan Crha)
+	#596157 - Use "Message-ID" instead of "Message-Id" (Jeremy Visser)
+
 Evolution-Data-Server 2.28.0 2009-09-21
 ----------------------------------------
 
