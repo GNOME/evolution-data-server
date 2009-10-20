@@ -5,18 +5,18 @@
 # Copyright (C) 2007-2009 The GNOME Project.
 # This file is distributed under the same license as the evolution package.
 #
-# Ilmar Kerm <ikerm@hot.ee>, 2001.
-# Ivar Smolin <okul@linux.ee>, 2002, 2005-2009.
-# Kaarel Jogi <kaarel@gg.ee>, 2002.
-# Priit Laes <amd@store20.com>, 2006.
+# Ilmar Kerm <ikerm hot ee>, 2001.
+# Ivar Smolin <okul linux ee>, 2002, 2005-2009.
+# Kaarel Jogi <kaarel gg ee>, 2002.
+# Priit Laes <amd store20 com>, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server HEAD\n"
+"Project-Id-Version: Evolution-data-server MASTER\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-06-29 10:32+0000\n"
-"PO-Revision-Date: 2009-07-01 14:22+0300\n"
+"POT-Creation-Date: 2009-10-15 14:23+0000\n"
+"PO-Revision-Date: 2009-10-20 05:54+0300\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -61,50 +61,6 @@ msgstr "LDAP otsingutulemuste vastuvõtmine..."
 
 msgid "Error performing search"
 msgstr "Viga otsingu teostamisel"
-
-#. translators: the placeholders will be filled by
-#. * function names, e.g.
-#. * "e_book_add_contact" on book before
-#. * "e_book_open
-#, c-format
-msgid "\"%s\" on book before \"%s\""
-msgstr "\"%s\" raamatus enne \"%s\""
-
-#, c-format
-msgid "book busy"
-msgstr "raamat on hõivatud"
-
-#, c-format
-msgid "CORBA exception making \"%s\" call"
-msgstr "CORBA erandolukord \"%s\" käsu täitmisel"
-
-#, c-format
-msgid "%s: there is no current operation"
-msgstr "%s: käimasolevat toimingut ei ole"
-
-#, c-format
-msgid "%s: could not cancel"
-msgstr "%s: pole võimalik tühistada"
-
-#, c-format
-msgid "\"%s\" on book after \"%s\""
-msgstr "\"%s\" raamatus pärast \"%s\""
-
-#, c-format
-msgid "%s: canceled"
-msgstr "%s: tühistatud"
-
-#, c-format
-msgid "%s: Invalid source."
-msgstr "%s: Vigane allikas"
-
-#, c-format
-msgid "%s: no factories available for URI `%s'"
-msgstr "%s: URI-le `%s' pole saadaval ühtegi factory't"
-
-#, c-format
-msgid "%s: Could not create EBookListener"
-msgstr "%s: EBookListener'i pole võimalik luua"
 
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
@@ -518,6 +474,51 @@ msgstr "SIP-aadress"
 msgid "Unnamed List"
 msgstr "Nimetute nimekiri"
 
+#, c-format
+msgid "Empty URI"
+msgstr "Tühi URI"
+
+#, c-format
+msgid "Invalid source"
+msgstr "Vigane allikas"
+
+msgid "Cannot open book"
+msgstr "Raamatut võimalik avada"
+
+msgid "Cannot remove book"
+msgstr "Raamatut võimalik eemaldada"
+
+msgid "Cannot get contact"
+msgstr "Kontakti pole võimalik hankida"
+
+msgid "Empty query"
+msgstr "Tühi päring"
+
+msgid "Cannot authenticate user"
+msgstr "Kasutajat pole võimalik autentida"
+
+msgid "Cannot add contact"
+msgstr "Kontakti pole võimalik lisada"
+
+msgid "Cannot modify contact"
+msgstr "Kontakti pole võimalik redigeerida"
+
+msgid "Cannot remove contacts"
+msgstr "Kontakte pole võimalik eemaldada"
+
+msgid "Invalid query"
+msgstr "Vigane päring"
+
+#, fuzzy
+#| msgid "Cannot get message %s: %s"
+msgid "Cannot get changes"
+msgstr "Sõnumit %s pole võimalik hankida: %s"
+
+#, fuzzy
+#| msgid "Could not cancel operation"
+msgid "Cannot complete operation"
+msgstr "Toimingut pole võimalik katkestada"
+
 msgid "Birthday"
 msgstr "Sünnipäev"
 
@@ -863,14 +864,121 @@ msgstr "Otsingu suuruspiirang on ületatud"
 msgid "Search time limit exceeded"
 msgstr "Otsingu ajapiirang on ületatud"
 
-msgid "Invalid query"
-msgstr "Vigane päring"
-
 msgid "Query refused"
 msgstr "Päringust keelduti"
 
 msgid "Invalid server version"
 msgstr "Vigane serveri versioon"
+
+#, c-format
+msgid "Cannot retrieve calendar address"
+msgstr "Kalendri aadressi pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot retrieve calendar alarm e-mail address"
+msgstr "Kalendrialarmi e-posti aadressi pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot retrieve calendar's ldap attribute"
+msgstr "Kalendri LDAP-rekvisiiti pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot retrieve calendar scheduling information"
+msgstr "Kalendri ajastamisandmeid pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot open calendar"
+msgstr "Kalendrit pole võimalik avada"
+
+#, c-format
+msgid "Cannot remove calendar"
+msgstr "Kalendrit pole võimalik eemaldada"
+
+#, fuzzy, c-format
+#| msgid "Cannot create encoder context"
+msgid "Cannot create calendar object"
+msgstr "Kodeerija konteksti pole võimalik luua"
+
+#, fuzzy, c-format
+#| msgid "Cannot save calendar data"
+msgid "Cannot modify calender object"
+msgstr "Kalendri andmeid pole võimalik salvestada"
+
+#, c-format
+msgid "Cannot remove calendar object"
+msgstr "Kalendriobjekti pole võimalik eemaldada"
+
+#, fuzzy, c-format
+#| msgid "Cannot save calendar data"
+msgid "Cannot receive calendar objects"
+msgstr "Kalendri andmeid pole võimalik salvestada"
+
+#, fuzzy, c-format
+#| msgid "Cannot save calendar data"
+msgid "Cannot discard calendar alarm"
+msgstr "Kalendri andmeid pole võimalik salvestada"
+
+#, fuzzy, c-format
+#| msgid "Cannot save calendar data"
+msgid "Cannot send calendar objects"
+msgstr "Kalendri andmeid pole võimalik salvestada"
+
+#, c-format
+msgid "Cannot retrieve default calendar object path"
+msgstr "Vaikimisi kalendriobjekti rada pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot retrieve calendar object path"
+msgstr "Kalendriobjekti rada pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot retrieve calendar object list"
+msgstr "Kalendriobjektide nimekirja pole võimalik vastu võtta"
+
+#, fuzzy, c-format
+#| msgid "Could not retrieve weather data"
+msgid "Could not retrieve attachment list"
+msgstr "Ilmajaama andmeid pole võimalik vastu võtta"
+
+#, fuzzy, c-format
+#| msgid "Could not create cache file"
+msgid "Could not complete calendar query"
+msgstr "Puhverfaili pole võimalik luua"
+
+#, fuzzy, c-format
+#| msgid "Could not retrieve weather data"
+msgid "Could not retrieve calendar time zone"
+msgstr "Ilmajaama andmeid pole võimalik vastu võtta"
+
+#, fuzzy, c-format
+#| msgid "Could not cancel operation"
+msgid "Could not add calendar time zone"
+msgstr "Toimingut pole võimalik katkestada"
+
+#, c-format
+msgid "Could not set default calendar time zone"
+msgstr ""
+
+#, c-format
+msgid "Cannot retrieve calendar changes"
+msgstr "Kalendri muutusei pole võimalik vastu võtta"
+
+#, c-format
+msgid "Cannot retrieve calendar free/busy list"
+msgstr "Kalendri vaba/hõivatud nimekirja pole võimalik vastu võtta"
+
+#, c-format
+msgid "Invalid URI"
+msgstr "Vigane URI"
+
+#, c-format
+msgid "No backend factory for '%s' of '%s'"
+msgstr ""
+
+#, fuzzy, c-format
+#| msgid "Could not create cache file"
+msgid "Could not instantiate backend"
+msgstr "Puhverfaili pole võimalik luua"
 
 msgid "Signing is not supported by this cipher"
 msgstr "See šiffer ei toeta allkirjastamist"
@@ -1446,20 +1554,6 @@ msgstr "Serverilt saadi vigane autentimise vastus."
 msgid "Unsupported security layer."
 msgstr "Toetamata turvakiht."
 
-msgid "Kerberos 4"
-msgstr "Kerberos 4"
-
-msgid "This option will connect to the server using Kerberos 4 authentication."
-msgstr "See valik ühendub serverisse kasutades Kerberos 4 autentimist."
-
-#, c-format
-msgid ""
-"Could not get Kerberos ticket:\n"
-"%s"
-msgstr ""
-"Kerberose piletit pole võimalik hankida:\n"
-"%s"
-
 msgid "Login"
 msgstr "Kasutajanimi"
 
@@ -1708,94 +1802,6 @@ msgstr "Prügikast"
 msgid "Junk"
 msgstr "Rämps"
 
-msgid "Unable to get issuer's certificate"
-msgstr "Väljaandja sertifikaati pole võimalik hankida"
-
-msgid "Unable to get Certificate Revocation List"
-msgstr "Sertifikaatide tühistusnimekirja pole võimalik hankida"
-
-msgid "Unable to decrypt certificate signature"
-msgstr "Sertifikaadi signatuuri pole võimalik lahti krüptida"
-
-msgid "Unable to decrypt Certificate Revocation List signature"
-msgstr ""
-"Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
-
-msgid "Unable to decode issuer's public key"
-msgstr "Väljaandja avalikku võtit pole võimalik dekodeerida"
-
-msgid "Certificate signature failure"
-msgstr "Sertifikaadi signatuuri tõrge"
-
-msgid "Certificate Revocation List signature failure"
-msgstr "Tõrge Sertifikaatide tühistusnimekirja signatuuri kontrollimisel"
-
-msgid "Certificate not yet valid"
-msgstr "Sertifikaat ei ole veel kehtiv"
-
-msgid "Certificate has expired"
-msgstr "Sertifikaat on aegunud"
-
-msgid "Certificate Revocation List (CRL) not yet valid"
-msgstr "Sertifikaatide tühistusnimekiri (CRL) pole veel kehtiv"
-
-msgid "Certificate Revocation List (CRL) has expired"
-msgstr "Sertifikaatide tühistusnimekiri (CRL) on aegunud"
-
-msgid "Error in Certificate Revocation List (CRL)"
-msgstr "Viga sertifikaatide tühistusnimekirjas (CRL)"
-
-msgid "Out of memory"
-msgstr "Mälu puudujääk"
-
-msgid "Zero-depth self-signed certificate"
-msgstr "Isesigneeritud nulltaseme sertifikaat"
-
-msgid "Self-signed certificate in chain"
-msgstr "Ahelas on isesigneeritud sertifikaat"
-
-msgid "Unable to get issuer's certificate locally"
-msgstr "Väljaandja sertifikaati pole kohapeal võimalik hankida"
-
-msgid "Unable to verify leaf signature"
-msgstr "Harusignatuuri pole võimalik verifitseerida"
-
-msgid "Certificate chain too long"
-msgstr "Sertifikaadiahel on liiga pikk"
-
-msgid "Certificate Revoked"
-msgstr "Sertifikaat tühistatud"
-
-msgid "Invalid Certificate Authority (CA)"
-msgstr "Vigane sertifitseerimiskeskus (CA)"
-
-msgid "Path length exceeded"
-msgstr "Raja piirang on ületatud"
-
-msgid "Invalid purpose"
-msgstr "Vigane eesmärk"
-
-msgid "Certificate untrusted"
-msgstr "Sertifikaat pole usaldusväärne"
-
-msgid "Certificate rejected"
-msgstr "Sertifikaat lükati tagasi"
-
-msgid "Subject/Issuer mismatch"
-msgstr "Teema/väljastaja vastuolu"
-
-msgid "AKID/SKID mismatch"
-msgstr "AKID/SKID sobimatus"
-
-msgid "AKID/Issuer serial mismatch"
-msgstr "AKID/Väljaandja seerianumbri sobimatus"
-
-msgid "Key usage does not support certificate signing"
-msgstr "Võtmekasutus ei toeta sertifikaatide signeerimist"
-
-msgid "Error in application verification"
-msgstr "Viga rakenduse verifitseerimisel"
-
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -1813,24 +1819,6 @@ msgstr "HEA"
 
 msgid "BAD"
 msgstr "HALB"
-
-#, c-format
-msgid ""
-"Bad certificate from %s:\n"
-"\n"
-"%s\n"
-"\n"
-"%s\n"
-"\n"
-"Do you wish to accept anyway?"
-msgstr ""
-"Halb sertifikaat %s isikult:\n"
-"\n"
-"%s\n"
-"\n"
-"%s\n"
-"\n"
-"Kas soovid seda siiski vastu võtta?"
 
 #. construct our user prompt
 #, c-format
@@ -2264,15 +2252,6 @@ msgstr "Käsu \"%s\" abil pole võimalik ühenduda: %s"
 msgid "Inbox"
 msgstr "Sisendkast"
 
-msgid "Drafts"
-msgstr "Mustandid"
-
-msgid "Sent"
-msgstr "Saadetud"
-
-msgid "Templates"
-msgstr "Mallid"
-
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP server %s ei toeta küsitud autentimistüüpi %s"
@@ -2578,6 +2557,11 @@ msgstr ""
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Hostiga %s pole võimalik ühendust luua (port %s): %s"
 
+#, fuzzy, c-format
+#| msgid "Please enter the %s password for %s on host %s."
+msgid "%sPlease enter the IMAP password for %s@%s"
+msgstr "Palun sisesta %s parool %s jaoks hostil %s"
+
 #, c-format
 msgid "Could not connect to POP server on %s"
 msgstr "POP serveriga %s pole võimalik ühenduda"
@@ -2700,6 +2684,11 @@ msgstr ""
 
 msgid "Invalid message contents"
 msgstr "Vigane sõnumi sisu"
+
+#, fuzzy
+#| msgid "Cannot copy messages to the Junk folder"
+msgid "Cannot transfer message to destination folder"
+msgstr "Sõnumeid pole võimalik rämpsukausta kopeerida"
 
 #, c-format
 msgid "Cannot create folder '%s': %s"
@@ -3634,7 +3623,9 @@ msgstr "Kategooria _ikoon"
 msgid "Category _Name"
 msgstr "Kategooria _nimi"
 
-msgid "Item(s) belong to these _categories:"
+#, fuzzy
+#| msgid "Item(s) belong to these _categories:"
+msgid "Item(s) _belong to these categories:"
 msgstr "Kirje(d) kuulub (kuuluvad) nendesse _kategooriatesse:"
 
 msgid "_Available Categories:"
@@ -3745,126 +3736,6 @@ msgstr "Sihtkoha valimine"
 msgid "_Destination"
 msgstr "_Sihtkoht"
 
-#, c-format
-msgid "Enter password for %s"
-msgstr "Sisesta parool %s jaoks"
-
-msgid "Enter password"
-msgstr "Sisesta parool"
-
-#. i18n: These are Outlook's words for the default roles in
-#. the folder permissions dialog.
-msgid "Owner"
-msgstr "Omanik"
-
-msgid "Publishing Editor"
-msgstr "Vastutav toimetaja"
-
-msgid "Editor"
-msgstr "Toimetaja"
-
-msgid "Publishing Author"
-msgstr "Vastutav autor"
-
-msgid "Author"
-msgstr "Autor"
-
-msgid "Non-editing Author"
-msgstr "Kaasautor"
-
-msgid "Reviewer"
-msgstr "Korrektor"
-
-msgid "Contributor"
-msgstr "Kaastöötaja"
-
-msgid "None"
-msgstr "Puudub"
-
-msgid "Custom"
-msgstr "Kohandatud"
-
-msgid "Generic error"
-msgstr "Üldine viga"
-
-msgid "A folder with the same name already exists"
-msgstr "Sama nimega kaust on juba olemas"
-
-msgid "The specified folder type is not valid"
-msgstr "Määratud kaustatüüp on vigane"
-
-msgid "I/O error"
-msgstr "S/V viga"
-
-msgid "Not enough space to create the folder"
-msgstr "Selle kataloogi loomiseks pole piisavalt vaba ruumi"
-
-msgid "The folder is not empty"
-msgstr "Kaust ei ole tühi"
-
-msgid "The specified folder was not found"
-msgstr "Määratud kausta ei leitud"
-
-msgid "Function not implemented in this storage"
-msgstr "Funktsioon pole selle salvesti puhul teostatud"
-
-msgid "Operation not supported"
-msgstr "Toetamata toiming"
-
-msgid "The specified type is not supported in this storage"
-msgstr "Määratud tüüp pole selle salvesti poolt toetatud"
-
-msgid "The specified folder cannot be modified or removed"
-msgstr "Määratud kausta pole võimalik muuta ega eemaldada"
-
-msgid "Cannot make a folder a child of one of its descendants"
-msgstr ""
-"Kausta pole võimalik määrata sellest kaustast tuletatud kausta alamkaustaks"
-
-msgid "Cannot create a folder with that name"
-msgstr "Sellise nimega kausta pole võimalik luua"
-
-msgid "This operation cannot be performed in off-line mode"
-msgstr "See toiming pole võrguvabas režiimis teostatav"
-
-#. i18n: This is the title of an "other user's folders"
-#. hierarchy. Eg, "John Doe's Folders".
-#, c-format
-msgid "%s's Folders"
-msgstr "%s' kaustad"
-
-msgid "Personal Folders"
-msgstr "Isiklikud kaustad"
-
-msgid "Favorite Public Folders"
-msgstr "Lemmikud avalikud kaustad"
-
-#. i18n: Outlookism
-msgid "All Public Folders"
-msgstr "Kõik avalikud kaustad"
-
-#. i18n: Outlookism
-msgid "Global Address List"
-msgstr "Globaalne aadresside loend"
-
-msgid "Deleted Items"
-msgstr "Kustutatud"
-
-msgid "Journal"
-msgstr "Päevik"
-
-msgid "Notes"
-msgstr "Märkused"
-
-msgid "Outbox"
-msgstr "Väljundkast"
-
-msgid "Sent Items"
-msgstr "Saadetud"
-
-msgid "Tasks"
-msgstr "Ülesanded"
-
 msgid "Invalid connection"
 msgstr "Vigane ühendus"
 
@@ -3877,14 +3748,282 @@ msgstr "Serverilt ei saabunud vastust"
 msgid "Bad parameter"
 msgstr "Vigane parameeter"
 
-msgid "Evolution Addressbook file backend"
-msgstr "Evolutioni aadressiraamatu faili taustaprogramm"
+#~ msgid "\"%s\" on book before \"%s\""
+#~ msgstr "\"%s\" raamatus enne \"%s\""
 
-msgid "Evolution Calendar file and webcal backend"
-msgstr "Evolutioni kalendrifaili taustaprogramm"
+#~ msgid "book busy"
+#~ msgstr "raamat on hõivatud"
 
-msgid "Evolution Data Server interface check service"
-msgstr "Evolution'i andmeserveri liidesekontrolli teenus"
+#~ msgid "CORBA exception making \"%s\" call"
+#~ msgstr "CORBA erandolukord \"%s\" käsu täitmisel"
 
-msgid "Evolution Data Server logging service"
-msgstr "Evolution'i andmeserveri logimisteenus"
+#~ msgid "%s: there is no current operation"
+#~ msgstr "%s: käimasolevat toimingut ei ole"
+
+#~ msgid "%s: could not cancel"
+#~ msgstr "%s: pole võimalik tühistada"
+
+#~ msgid "\"%s\" on book after \"%s\""
+#~ msgstr "\"%s\" raamatus pärast \"%s\""
+
+#~ msgid "%s: canceled"
+#~ msgstr "%s: tühistatud"
+
+#~ msgid "%s: no factories available for URI `%s'"
+#~ msgstr "%s: URI-le `%s' pole saadaval ühtegi factory't"
+
+#~ msgid "%s: Could not create EBookListener"
+#~ msgstr "%s: EBookListener'i pole võimalik luua"
+
+#~ msgid "Kerberos 4"
+#~ msgstr "Kerberos 4"
+
+#~ msgid ""
+#~ "This option will connect to the server using Kerberos 4 authentication."
+#~ msgstr "See valik ühendub serverisse kasutades Kerberos 4 autentimist."
+
+#~ msgid ""
+#~ "Could not get Kerberos ticket:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Kerberose piletit pole võimalik hankida:\n"
+#~ "%s"
+
+#~ msgid "Unable to get issuer's certificate"
+#~ msgstr "Väljaandja sertifikaati pole võimalik hankida"
+
+#~ msgid "Unable to get Certificate Revocation List"
+#~ msgstr "Sertifikaatide tühistusnimekirja pole võimalik hankida"
+
+#~ msgid "Unable to decrypt certificate signature"
+#~ msgstr "Sertifikaadi signatuuri pole võimalik lahti krüptida"
+
+#~ msgid "Unable to decrypt Certificate Revocation List signature"
+#~ msgstr ""
+#~ "Sertifikaatide tühistusnimekirja signatuuri pole võimalik lahti krüptida"
+
+#~ msgid "Unable to decode issuer's public key"
+#~ msgstr "Väljaandja avalikku võtit pole võimalik dekodeerida"
+
+#~ msgid "Certificate signature failure"
+#~ msgstr "Sertifikaadi signatuuri tõrge"
+
+#~ msgid "Certificate Revocation List signature failure"
+#~ msgstr "Tõrge Sertifikaatide tühistusnimekirja signatuuri kontrollimisel"
+
+#~ msgid "Certificate not yet valid"
+#~ msgstr "Sertifikaat ei ole veel kehtiv"
+
+#~ msgid "Certificate has expired"
+#~ msgstr "Sertifikaat on aegunud"
+
+#~ msgid "Certificate Revocation List (CRL) not yet valid"
+#~ msgstr "Sertifikaatide tühistusnimekiri (CRL) pole veel kehtiv"
+
+#~ msgid "Certificate Revocation List (CRL) has expired"
+#~ msgstr "Sertifikaatide tühistusnimekiri (CRL) on aegunud"
+
+#~ msgid "Error in Certificate Revocation List (CRL)"
+#~ msgstr "Viga sertifikaatide tühistusnimekirjas (CRL)"
+
+#~ msgid "Out of memory"
+#~ msgstr "Mälu puudujääk"
+
+#~ msgid "Zero-depth self-signed certificate"
+#~ msgstr "Isesigneeritud nulltaseme sertifikaat"
+
+#~ msgid "Self-signed certificate in chain"
+#~ msgstr "Ahelas on isesigneeritud sertifikaat"
+
+#~ msgid "Unable to get issuer's certificate locally"
+#~ msgstr "Väljaandja sertifikaati pole kohapeal võimalik hankida"
+
+#~ msgid "Unable to verify leaf signature"
+#~ msgstr "Harusignatuuri pole võimalik verifitseerida"
+
+#~ msgid "Certificate chain too long"
+#~ msgstr "Sertifikaadiahel on liiga pikk"
+
+#~ msgid "Certificate Revoked"
+#~ msgstr "Sertifikaat tühistatud"
+
+#~ msgid "Invalid Certificate Authority (CA)"
+#~ msgstr "Vigane sertifitseerimiskeskus (CA)"
+
+#~ msgid "Path length exceeded"
+#~ msgstr "Raja piirang on ületatud"
+
+#~ msgid "Invalid purpose"
+#~ msgstr "Vigane eesmärk"
+
+#~ msgid "Certificate untrusted"
+#~ msgstr "Sertifikaat pole usaldusväärne"
+
+#~ msgid "Certificate rejected"
+#~ msgstr "Sertifikaat lükati tagasi"
+
+#~ msgid "Subject/Issuer mismatch"
+#~ msgstr "Teema/väljastaja vastuolu"
+
+#~ msgid "AKID/SKID mismatch"
+#~ msgstr "AKID/SKID sobimatus"
+
+#~ msgid "AKID/Issuer serial mismatch"
+#~ msgstr "AKID/Väljaandja seerianumbri sobimatus"
+
+#~ msgid "Key usage does not support certificate signing"
+#~ msgstr "Võtmekasutus ei toeta sertifikaatide signeerimist"
+
+#~ msgid "Error in application verification"
+#~ msgstr "Viga rakenduse verifitseerimisel"
+
+#~ msgid ""
+#~ "Bad certificate from %s:\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "Do you wish to accept anyway?"
+#~ msgstr ""
+#~ "Halb sertifikaat %s isikult:\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "Kas soovid seda siiski vastu võtta?"
+
+#~ msgid "Drafts"
+#~ msgstr "Mustandid"
+
+#~ msgid "Sent"
+#~ msgstr "Saadetud"
+
+#~ msgid "Templates"
+#~ msgstr "Mallid"
+
+#~ msgid "Enter password for %s"
+#~ msgstr "Sisesta parool %s jaoks"
+
+#~ msgid "Enter password"
+#~ msgstr "Sisesta parool"
+
+#~ msgid "Owner"
+#~ msgstr "Omanik"
+
+#~ msgid "Publishing Editor"
+#~ msgstr "Vastutav toimetaja"
+
+#~ msgid "Editor"
+#~ msgstr "Toimetaja"
+
+#~ msgid "Publishing Author"
+#~ msgstr "Vastutav autor"
+
+#~ msgid "Author"
+#~ msgstr "Autor"
+
+#~ msgid "Non-editing Author"
+#~ msgstr "Kaasautor"
+
+#~ msgid "Reviewer"
+#~ msgstr "Korrektor"
+
+#~ msgid "Contributor"
+#~ msgstr "Kaastöötaja"
+
+#~ msgid "None"
+#~ msgstr "Puudub"
+
+#~ msgid "Custom"
+#~ msgstr "Kohandatud"
+
+#~ msgid "Generic error"
+#~ msgstr "Üldine viga"
+
+#~ msgid "A folder with the same name already exists"
+#~ msgstr "Sama nimega kaust on juba olemas"
+
+#~ msgid "The specified folder type is not valid"
+#~ msgstr "Määratud kaustatüüp on vigane"
+
+#~ msgid "I/O error"
+#~ msgstr "S/V viga"
+
+#~ msgid "Not enough space to create the folder"
+#~ msgstr "Selle kataloogi loomiseks pole piisavalt vaba ruumi"
+
+#~ msgid "The folder is not empty"
+#~ msgstr "Kaust ei ole tühi"
+
+#~ msgid "The specified folder was not found"
+#~ msgstr "Määratud kausta ei leitud"
+
+#~ msgid "Function not implemented in this storage"
+#~ msgstr "Funktsioon pole selle salvesti puhul teostatud"
+
+#~ msgid "Operation not supported"
+#~ msgstr "Toetamata toiming"
+
+#~ msgid "The specified type is not supported in this storage"
+#~ msgstr "Määratud tüüp pole selle salvesti poolt toetatud"
+
+#~ msgid "The specified folder cannot be modified or removed"
+#~ msgstr "Määratud kausta pole võimalik muuta ega eemaldada"
+
+#~ msgid "Cannot make a folder a child of one of its descendants"
+#~ msgstr ""
+#~ "Kausta pole võimalik määrata sellest kaustast tuletatud kausta "
+#~ "alamkaustaks"
+
+#~ msgid "Cannot create a folder with that name"
+#~ msgstr "Sellise nimega kausta pole võimalik luua"
+
+#~ msgid "This operation cannot be performed in off-line mode"
+#~ msgstr "See toiming pole võrguvabas režiimis teostatav"
+
+#~ msgid "%s's Folders"
+#~ msgstr "%s' kaustad"
+
+#~ msgid "Personal Folders"
+#~ msgstr "Isiklikud kaustad"
+
+#~ msgid "Favorite Public Folders"
+#~ msgstr "Lemmikud avalikud kaustad"
+
+#~ msgid "All Public Folders"
+#~ msgstr "Kõik avalikud kaustad"
+
+#~ msgid "Global Address List"
+#~ msgstr "Globaalne aadresside loend"
+
+#~ msgid "Deleted Items"
+#~ msgstr "Kustutatud"
+
+#~ msgid "Journal"
+#~ msgstr "Päevik"
+
+#~ msgid "Notes"
+#~ msgstr "Märkused"
+
+#~ msgid "Outbox"
+#~ msgstr "Väljundkast"
+
+#~ msgid "Sent Items"
+#~ msgstr "Saadetud"
+
+#~ msgid "Tasks"
+#~ msgstr "Ülesanded"
+
+#~ msgid "Evolution Addressbook file backend"
+#~ msgstr "Evolutioni aadressiraamatu faili taustaprogramm"
+
+#~ msgid "Evolution Calendar file and webcal backend"
+#~ msgstr "Evolutioni kalendrifaili taustaprogramm"
+
+#~ msgid "Evolution Data Server interface check service"
+#~ msgstr "Evolution'i andmeserveri liidesekontrolli teenus"
+
+#~ msgid "Evolution Data Server logging service"
+#~ msgstr "Evolution'i andmeserveri logimisteenus"
