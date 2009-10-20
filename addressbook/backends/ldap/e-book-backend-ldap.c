@@ -5055,6 +5055,8 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	if (str)
 		limit = atoi (str);
 
+	bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_NO;
+
 	str = e_source_get_property (source, "ssl");
 	if (str) {
 		if (!strcmp (str, "always"))
@@ -5064,8 +5066,6 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		else if (strcmp (str, "never"))
 			g_warning ("Unhandled value for 'ssl', not using it.");
 	}
-	else
-		bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_NO;
 
 	str = e_source_get_property (source, "timeout");
 	if (str)
