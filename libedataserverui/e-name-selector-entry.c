@@ -1530,6 +1530,20 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
+update_text (ENameSelectorEntry *name_selector_entry, const gchar *text)
+{
+	gint start = 0, end = 0;
+	gboolean has_selection;
+
+	has_selection = gtk_editable_get_selection_bounds (GTK_EDITABLE (name_selector_entry), &start, &end);
+
+	gtk_entry_set_text (GTK_ENTRY (name_selector_entry), text);
+
+	if (has_selection)
+		gtk_editable_select_region (GTK_EDITABLE (name_selector_entry), start, end);
+}
+
+static void
 sanitize_entry (ENameSelectorEntry *name_selector_entry)
 {
 	gint n;
@@ -1565,7 +1579,7 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 	}
 	g_list_free (del);
 
-	gtk_entry_set_text (GTK_ENTRY (name_selector_entry), str->str);
+	update_text (name_selector_entry, str->str);
 
 	g_string_free (str, TRUE);
 
