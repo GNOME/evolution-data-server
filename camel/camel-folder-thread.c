@@ -598,7 +598,6 @@ CamelFolderThread *
 camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean thread_subject)
 {
 	CamelFolderThread *thread;
-	GHashTable *wanted = NULL;
 	GPtrArray *summary;
 	GPtrArray *fsummary;
 	gint i;
@@ -611,36 +610,28 @@ camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean
 	thread->folder = folder;
 	camel_object_ref((CamelObject *)folder);
 
-	/* get all of the summary items of interest in summary order */
-	if (uids) {
-		wanted = g_hash_table_new(g_str_hash, g_str_equal);
-		for (i=0;i<uids->len;i++)
-			g_hash_table_insert(wanted, uids->pdata[i], uids->pdata[i]);
-	}
-
 	fsummary = camel_folder_summary_array (folder->summary);
 	thread->summary = summary = g_ptr_array_new();
 	if (fsummary->len - camel_folder_summary_cache_size (folder->summary) > 50)
 		camel_folder_summary_reload_from_db (folder->summary, NULL);
 
-	for (i = 0; i < fsummary->len; i++) {
-		CamelMessageInfo *info;
-		gchar *uid = fsummary->pdata[i];
+	/* prefer given order from the summary order */
+	if (!uids)
+		uids = fsummary;
 
-		if (wanted == NULL || g_hash_table_lookup(wanted, uid) != NULL) {
-			info = camel_folder_get_message_info (folder, uid);
-			if (info)
-				g_ptr_array_add(summary, info);
-			/* FIXME: Check if the info is leaking */
-		}
+	for (i = 0; i < uids->len; i++) {
+		CamelMessageInfo *info;
+		gchar *uid = uids->pdata[i];
+
+		info = camel_folder_get_message_info (folder, uid);
+		if (info)
+			g_ptr_array_add (summary, info);
+		/* FIXME: Check if the info is leaking */
 	}
 
 	camel_folder_free_summary(folder, fsummary);
 
 	thread_summary(thread, summary);
-
-	if (wanted)
-		g_hash_table_destroy(wanted);
 
 	return thread;
 }
