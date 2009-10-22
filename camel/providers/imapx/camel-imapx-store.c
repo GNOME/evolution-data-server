@@ -93,19 +93,15 @@ static void imap_construct(CamelService *service, CamelSession *session, CamelPr
 	if (camel_exception_is_set(ex))
 		return;
 
-	CAMEL_TRY {
-		store->summary = camel_imapx_store_summary_new();
-		store->storage_path = camel_session_get_storage_path(session, service, ex);
-		if (store->storage_path) {
-			summary = g_build_filename(store->storage_path, ".ev-store-summary", NULL);
-			camel_store_summary_set_filename((CamelStoreSummary *)store->summary, summary);
-			/* FIXME: need to remove params, passwords, etc */
-			camel_store_summary_set_uri_base((CamelStoreSummary *)store->summary, service->url);
-			camel_store_summary_load((CamelStoreSummary *)store->summary);
-		}
-	} CAMEL_CATCH(e) {
-		camel_exception_xfer(ex, e);
-	} CAMEL_DONE;
+	store->summary = camel_imapx_store_summary_new();
+	store->storage_path = camel_session_get_storage_path(session, service, ex);
+	if (store->storage_path) {
+		summary = g_build_filename(store->storage_path, ".ev-store-summary", NULL);
+		camel_store_summary_set_filename((CamelStoreSummary *)store->summary, summary);
+		/* FIXME: need to remove params, passwords, etc */
+		camel_store_summary_set_uri_base((CamelStoreSummary *)store->summary, service->url);
+		camel_store_summary_load((CamelStoreSummary *)store->summary);
+	}
 }
 
 

@@ -14,14 +14,14 @@ libcamelimapx_la_CPPFLAGS = \
 
 libcamelimapx_la_SOURCES =			\
 	camel-imapx-exception.c			\
+	camel-imapx-stream.c			\	
+	camel-imapx-utils.c			\
 	camel-imapx-provider.c			\
 	camel-imapx-store-summary.c		\
 	camel-imapx-summary.c			\
 	camel-imapx-store.c			\
 	camel-imapx-folder.c			\
-	camel-imapx-server.c			\
-	camel-imapx-utils.c			\
-	camel-imapx-stream.c			
+	camel-imapx-server.c			
 
 noinst_HEADERS =				\
 	camel-imapx-exception.h			\

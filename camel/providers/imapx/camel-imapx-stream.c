@@ -253,12 +253,12 @@ skip_ws(CamelIMAPXStream *is, unsigned char *pp, unsigned char *pe)
 /* FIXME: these should probably handle it themselves,
    and get rid of the token interface? */
 int
-camel_imapx_stream_atom(CamelIMAPXStream *is, unsigned char **data, unsigned int *lenp)
+camel_imapx_stream_atom(CamelIMAPXStream *is, unsigned char **data, unsigned int *lenp, CamelException *ex)
 {
 	unsigned char *p, c;
 
 	/* this is only 'approximate' atom */
-	switch(camel_imapx_stream_token(is, data, lenp)) {
+	switch(camel_imapx_stream_token(is, data, lenp, ex)) {
 	case IMAP_TOK_TOKEN:
 		p = *data;
 		while ((c = *p))
@@ -268,7 +268,7 @@ camel_imapx_stream_atom(CamelIMAPXStream *is, unsigned char **data, unsigned int
 	case IMAP_TOK_ERROR:
 		return IMAP_TOK_ERROR;
 	default:
-		camel_exception_throw(1, "expecting atom");
+		camel_exception_set (ex, 1, "expecting atom");
 		printf("expecting atom!\n");
 		return IMAP_TOK_PROTOCOL;
 	}
@@ -276,12 +276,12 @@ camel_imapx_stream_atom(CamelIMAPXStream *is, unsigned char **data, unsigned int
 
 /* gets an atom, a quoted_string, or a literal */
 int
-camel_imapx_stream_astring(CamelIMAPXStream *is, unsigned char **data)
+camel_imapx_stream_astring(CamelIMAPXStream *is, unsigned char **data, CamelException *ex)
 {
 	unsigned char *p, *start;
 	unsigned int len, inlen;
 
-	switch(camel_imapx_stream_token(is, data, &len)) {
+	switch(camel_imapx_stream_token(is, data, &len, ex)) {
 	case IMAP_TOK_TOKEN:
 	case IMAP_TOK_INT:
 	case IMAP_TOK_STRING:
@@ -289,7 +289,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, unsigned char **data)
 	case IMAP_TOK_LITERAL:
 		/* FIXME: just grow buffer */
 		if (len >= CAMEL_IMAPX_STREAM_TOKEN) {
-			camel_exception_throw(1, "astring: literal too long");
+			camel_exception_set (ex, 1, "astring: literal too long");
 			printf("astring too long\n");
 			return IMAP_TOK_PROTOCOL;
 		}
@@ -308,7 +308,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, unsigned char **data)
 		/* wont get unless no exception hanlder*/
 		return IMAP_TOK_ERROR;
 	default:
-		camel_exception_throw(1, "expecting astring");
+		camel_exception_set (ex, 1, "expecting astring");
 		printf("expecting astring!\n");
 		return IMAP_TOK_PROTOCOL;
 	}
@@ -316,18 +316,18 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, unsigned char **data)
 
 /* check for NIL or (small) quoted_string or literal */
 int
-camel_imapx_stream_nstring(CamelIMAPXStream *is, unsigned char **data)
+camel_imapx_stream_nstring(CamelIMAPXStream *is, unsigned char **data, CamelException *ex)
 {
 	unsigned char *p, *start;
 	unsigned int len, inlen;
 
-	switch(camel_imapx_stream_token(is, data, &len)) {
+	switch(camel_imapx_stream_token(is, data, &len, ex)) {
 	case IMAP_TOK_STRING:
 		return 0;
 	case IMAP_TOK_LITERAL:
 		/* FIXME: just grow buffer */
 		if (len >= CAMEL_IMAPX_STREAM_TOKEN) {
-			camel_exception_throw(1, "nstring: literal too long");
+			camel_exception_set (ex, 1, "nstring: literal too long");
 			return IMAP_TOK_PROTOCOL;
 		}
 		p = is->tokenptr;
@@ -348,7 +348,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, unsigned char **data)
 			return 0;
 		}
 	default:
-		camel_exception_throw(1, "expecting nstring");
+		camel_exception_set (ex, 1, "expecting nstring");
 		return IMAP_TOK_PROTOCOL;
 	case IMAP_TOK_ERROR:
 		/* we'll never get this unless there are no exception  handlers anyway */
@@ -359,7 +359,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, unsigned char **data)
 
 /* parse an nstring as a stream */
 int
-camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream)
+camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream, CamelException *ex)
 /* throws IO,PARSE exception */
 {
 	unsigned char *token;
@@ -369,8 +369,7 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream)
 
 	*stream = NULL;
 
-	CAMEL_TRY {
-		switch(camel_imapx_stream_token(is, &token, &len)) {
+	switch(camel_imapx_stream_token(is, &token, &len, ex)) {
 		case IMAP_TOK_STRING:
 			mem = camel_stream_mem_new_with_buffer(token, len);
 			*stream = mem;
@@ -379,8 +378,12 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream)
 			/* if len is big, we could automatically use a file backing */
 			camel_imapx_stream_set_literal(is, len);
 			mem = camel_stream_mem_new();
-			if (camel_stream_write_to_stream((CamelStream *)is, mem) == -1)
-				camel_exception_throw(1, "nstring: io error: %s", strerror(errno));
+			if (camel_stream_write_to_stream((CamelStream *)is, mem) == -1) {
+				camel_exception_setv (ex, 1, "nstring: io error: %s", strerror(errno));
+				camel_object_unref((CamelObject *)mem);
+				ret = -1;
+				break;
+			}
 			camel_stream_reset(mem);
 			*stream = mem;
 			break;
@@ -391,26 +394,20 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream)
 			}
 		default:
 			ret = -1;
-			camel_exception_throw(1, "nstring: token not string");
-		}
-	} CAMEL_CATCH(ex) {
-		if (mem)
-			camel_object_unref((CamelObject *)mem);
-		camel_exception_throw_ex(ex);
-	} CAMEL_DONE;
+			camel_exception_set (ex, 1, "nstring: token not string");
+	}
 
-	/* never reaches here anyway */
 	return ret;
 }
 
 guint32
-camel_imapx_stream_number(CamelIMAPXStream *is)
+camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex)
 {
 	unsigned char *token;
 	unsigned int len;
 
-	if (camel_imapx_stream_token(is, &token, &len) != IMAP_TOK_INT) {
-		camel_exception_throw(1, "expecting number");
+	if (camel_imapx_stream_token(is, &token, &len, ex) != IMAP_TOK_INT) {
+		camel_exception_set (ex, 1, "expecting number");
 		return 0;
 	}
 
@@ -418,16 +415,15 @@ camel_imapx_stream_number(CamelIMAPXStream *is)
 }
 
 int
-camel_imapx_stream_text(CamelIMAPXStream *is, unsigned char **text)
+camel_imapx_stream_text(CamelIMAPXStream *is, unsigned char **text, CamelException *ex)
 {
 	GByteArray *build = g_byte_array_new();
 	unsigned char *token;
 	unsigned int len;
 	int tok;
 
-	CAMEL_TRY {
-		while (is->unget > 0) {
-			switch (is->unget_tok) {
+	while (is->unget > 0) {
+		switch (is->unget_tok) {
 			case IMAP_TOK_TOKEN:
 			case IMAP_TOK_STRING:
 			case IMAP_TOK_INT:
@@ -435,22 +431,21 @@ camel_imapx_stream_text(CamelIMAPXStream *is, unsigned char **text)
 				g_byte_array_append(build, " ", 1);
 			default: /* invalid, but we'll ignore */
 				break;
-			}
-			is->unget--;
 		}
+		is->unget--;
+	}
 
-		do {
-			tok = camel_imapx_stream_gets(is, &token, &len);
-			if (tok < 0)
-				camel_exception_throw(1, "io error: %s", strerror(errno));
-			if (len)
-				g_byte_array_append(build, token, len);
-		} while (tok > 0);
-	} CAMEL_CATCH(ex) {
-		*text = NULL;
-		g_byte_array_free(build, TRUE);
-		camel_exception_throw_ex(ex);
-	} CAMEL_DONE;
+	do {
+		tok = camel_imapx_stream_gets(is, &token, &len);
+		if (tok < 0) {
+			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
+			*text = NULL;
+			g_byte_array_free(build, TRUE);
+			return -1;
+		}
+		if (len)
+			g_byte_array_append(build, token, len);
+	} while (tok > 0);
 
 	g_byte_array_append(build, "", 1);
 	*text = build->data;
@@ -462,7 +457,7 @@ camel_imapx_stream_text(CamelIMAPXStream *is, unsigned char **text)
 /* Get one token from the imap stream */
 camel_imapx_token_t
 /* throws IO,PARSE exception */
-camel_imapx_stream_token(CamelIMAPXStream *is, unsigned char **data, unsigned int *len)
+camel_imapx_stream_token(CamelIMAPXStream *is, unsigned char **data, unsigned int *len, CamelException *ex)
 {
 	register unsigned char c, *p, *o, *oe;
 	unsigned char *e;
@@ -618,7 +613,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, unsigned char **data, unsigned in
 	/* Had an i/o erorr */
 io_error:
 	printf("Got io error\n");
-	camel_exception_throw(1, "io error");
+	camel_exception_set (ex, 1, "io error");
 	return IMAP_TOK_ERROR;
 
 	/* Protocol error, skip until next lf? */
@@ -630,7 +625,7 @@ protocol_error:
 	else
 		is->ptr = p;
 
-	camel_exception_throw(1, "protocol error");
+	camel_exception_set (ex, 1, "protocol error");
 	return IMAP_TOK_PROTOCOL;
 }
 
@@ -705,14 +700,14 @@ int camel_imapx_stream_getl(CamelIMAPXStream *is, unsigned char **start, unsigne
 
 /* skip the rest of the line of tokens */
 int
-camel_imapx_stream_skip(CamelIMAPXStream *is)
+camel_imapx_stream_skip(CamelIMAPXStream *is, CamelException *ex)
 {
 	int tok;
 	unsigned char *token;
 	unsigned int len;
 
 	do {
-		tok = camel_imapx_stream_token(is, &token, &len);
+		tok = camel_imapx_stream_token(is, &token, &len, ex);
 		if (tok == IMAP_TOK_LITERAL) {
 			camel_imapx_stream_set_literal(is, len);
 			while ((tok = camel_imapx_stream_getl(is, &token, &len)) > 0) {

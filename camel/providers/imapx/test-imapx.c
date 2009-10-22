@@ -30,5 +30,8 @@ main (int argc, char *argv [])
 	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, ex);
 	camel_service_connect (service, ex);
 
+	while (1)
+	{
+	}
 	return 0;
 }

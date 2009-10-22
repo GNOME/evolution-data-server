@@ -232,7 +232,7 @@ enum {
 
 
 
-static void imapx_select(CamelIMAPXServer *is, CamelFolder *folder);
+static void imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
 
 
 
@@ -732,7 +732,7 @@ imapx_command_start(CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 
 /* must have QUEUE lock */
 static void
-imapx_command_start_next(CamelIMAPXServer *imap)
+imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 {
 	CamelIMAPXCommand *ic, *nc;
 	int count = 0;
@@ -811,7 +811,7 @@ imapx_command_start_next(CamelIMAPXServer *imap)
 	/* If we need to select a folder for the first command, do it now, once
 	   it is complete it will re-call us if it succeeded */
 	if (ic->job->folder) {
-		imapx_select(imap, ic->job->folder);
+		imapx_select(imap, ic->job->folder, ex);
 	} else {
 		pri = ic->pri;
 		nc = ic->next;
@@ -860,7 +860,7 @@ imapx_command_queue(CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 		scan->prev = ic;
 	}
 
-	imapx_command_start_next(imap);
+	imapx_command_start_next(imap, NULL);
 
 	QUEUE_UNLOCK(imap);
 }
@@ -956,7 +956,7 @@ imapx_expunged(CamelIMAPXServer *imap)
 
 /* handle any untagged responses */
 static int
-imapx_untagged(CamelIMAPXServer *imap)
+imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 {
 	unsigned int id, len;
 	unsigned char *token, *p, c;
@@ -965,10 +965,10 @@ imapx_untagged(CamelIMAPXServer *imap)
 	
 	e(printf("got untagged response\n"));
 	id = 0;
-	tok = camel_imapx_stream_token(imap->stream, &token, &len);
+	tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
 	if (tok == IMAP_TOK_INT) {
 		id = strtoul(token, NULL, 10);
-		tok = camel_imapx_stream_token(imap->stream, &token, &len);
+		tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
 	}
 
 	if (tok == '\n')
@@ -983,7 +983,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 	case IMAP_CAPABILITY:
 		if (imap->cinfo)
 			imap_free_capability(imap->cinfo);
-		imap->cinfo = imap_parse_capability(imap->stream);
+		imap->cinfo = imap_parse_capability(imap->stream, ex);
 		printf("got capability flags %08x\n", imap->cinfo->capa);
 		return 0;
 	case IMAP_EXPUNGE: {
@@ -1000,7 +1000,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 	case IMAP_FLAGS: {
 		guint32 flags;
 
-		imap_parse_flags(imap->stream, &flags, NULL);
+		imap_parse_flags(imap->stream, &flags, NULL, ex);
 
 		printf("flags: %08x\n", flags);
 		break;
@@ -1008,7 +1008,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 	case IMAP_FETCH: {
 		struct _fetch_info *finfo;
 
-		finfo = imap_parse_fetch(imap->stream);
+		finfo = imap_parse_fetch(imap->stream, ex);
 
 		//imap_dump_fetch(finfo);
 
@@ -1098,7 +1098,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 		break;
 	}
 	case IMAP_LIST: case IMAP_LSUB: {
-		struct _list_info *linfo = imap_parse_list(imap->stream);
+		struct _list_info *linfo = imap_parse_list(imap->stream, ex);
 		CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_LIST, linfo->name);
 
 		// TODO: we want to make sure the names match?
@@ -1120,7 +1120,7 @@ imapx_untagged(CamelIMAPXServer *imap)
 		/* TODO: validate which ones of these can happen as unsolicited responses */
 		/* TODO: handle bye/preauth differently */
 		camel_imapx_stream_ungettoken(imap->stream, tok, token, len);
-		sinfo = imap_parse_status(imap->stream);
+		sinfo = imap_parse_status(imap->stream, ex);
 		camel_object_trigger_event(imap, "status", sinfo);
 		switch(sinfo->condition) {
 		case IMAP_READ_WRITE:
@@ -1156,13 +1156,13 @@ imapx_untagged(CamelIMAPXServer *imap)
 		printf("unknown token: %s\n", token);
 	}
 
-	return camel_imapx_stream_skip(imap->stream);
+	return camel_imapx_stream_skip(imap->stream, ex);
 }
 
 /* handle any continuation requests
    either data continuations, or auth continuation */
 static int
-imapx_continuation(CamelIMAPXServer *imap)
+imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 {
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
@@ -1176,7 +1176,7 @@ imapx_continuation(CamelIMAPXServer *imap)
 
 	ic = imap->literal;
 	if (ic == NULL) {
-		camel_imapx_stream_skip(imap->stream);
+		camel_imapx_stream_skip(imap->stream, ex);
 		printf("got continuation response with no outstanding continuation requests?\n");
 		return 1;
 	}
@@ -1193,16 +1193,14 @@ imapx_continuation(CamelIMAPXServer *imap)
 		camel_stream_write_to_stream((CamelStream *)cp->ob, (CamelStream *)imap->stream);
 		break;
 	case CAMEL_IMAPX_COMMAND_AUTH: {
-		CamelException *ex = camel_exception_new();
 		char *resp;
 		unsigned char *token;
 		int tok, len;
 		
-		tok = camel_imapx_stream_token(imap->stream, &token, &len);
+		tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
 		resp = camel_sasl_challenge_base64((CamelSasl *)cp->ob, token, ex);
 		if (camel_exception_is_set(ex))
-			camel_exception_throw_ex(ex);
-		camel_exception_free(ex);
+			return -1;
 		
 		printf("got auth continuation, feeding token '%s' back to auth mech\n", resp);
 		
@@ -1232,10 +1230,11 @@ imapx_continuation(CamelIMAPXServer *imap)
 	default:
 		/* should we just ignore? */
 		imap->literal = NULL;
-		camel_exception_throw(1, "continuation response for non-continuation request");
+		camel_exception_set (ex, 1, "continuation response for non-continuation request");
+		return -1;
 	}
 	
-	camel_imapx_stream_skip(imap->stream);
+	camel_imapx_stream_skip(imap->stream, ex);
 	
 	cp = cp->next;
 	if (cp->next) {
@@ -1255,7 +1254,7 @@ imapx_continuation(CamelIMAPXServer *imap)
 	QUEUE_LOCK(imap);
 	imap->literal = newliteral;
 
-	imapx_command_start_next(imap);
+	imapx_command_start_next(imap, ex);
 	QUEUE_UNLOCK(imap);
 
 	return 1;
@@ -1263,7 +1262,7 @@ imapx_continuation(CamelIMAPXServer *imap)
 
 /* handle a completion line */
 static int
-imapx_completion(CamelIMAPXServer *imap, unsigned char *token, int len)
+imapx_completion(CamelIMAPXServer *imap, unsigned char *token, int len, CamelException *ex)
 {
 	CamelIMAPXCommand * volatile ic;
 	unsigned int tag;
@@ -1298,7 +1297,7 @@ imapx_completion(CamelIMAPXServer *imap, unsigned char *token, int len)
 //	}
 
 	QUEUE_UNLOCK(imap);
-	ic->status = imap_parse_status(imap->stream);
+	ic->status = imap_parse_status(imap->stream, ex);
 
 	if (ic->complete)
 		ic->complete(imap, ic);
@@ -1311,14 +1310,14 @@ imapx_completion(CamelIMAPXServer *imap, unsigned char *token, int len)
 		e_dlist_remove((EDListNode *)ic);
 		camel_imapx_command_free(ic);
 	}
-	imapx_command_start_next(imap);
+	imapx_command_start_next(imap, ex);
 	QUEUE_UNLOCK(imap);
 
 	return 1;
 }
 
 static void
-imapx_step(CamelIMAPXServer *is)
+imapx_step(CamelIMAPXServer *is, CamelException *ex)
 /* throws IO,PARSE exception */
 {
 	unsigned int len;
@@ -1326,13 +1325,13 @@ imapx_step(CamelIMAPXServer *is)
 	int tok;
 
 	// poll ?  wait for other stuff? loop?
-	tok = camel_imapx_stream_token(is->stream, &token, &len);
+	tok = camel_imapx_stream_token(is->stream, &token, &len, ex);
 	if (tok == '*')
-		imapx_untagged(is);
+		imapx_untagged(is, ex);
 	else if (tok == IMAP_TOK_TOKEN)
-		imapx_completion(is, token, len);
+		imapx_completion(is, token, len, ex);
 	else if (tok == '+')
-		imapx_continuation(is);
+		imapx_continuation(is, ex);
 	else
 		camel_exception_throw(1, "unexpected server response: %s", token);
 }
@@ -1340,7 +1339,7 @@ imapx_step(CamelIMAPXServer *is)
 /* Used to run 1 command synchronously,
    use for capa, login, and selecting only. */
 static void
-imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic, CamelException *ex)
 /* throws IO,PARSE exception */
 {
 	camel_imapx_command_close(ic);
@@ -1349,7 +1348,7 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	imapx_command_start(is, ic);
 	QUEUE_UNLOCK(is);
 	do {
-		imapx_step(is);
+		imapx_step(is, ex);
 	} while (ic->status == NULL);
 
 	e_dlist_remove((EDListNode *)ic);
@@ -1413,7 +1412,7 @@ imapx_select_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_select(CamelIMAPXServer *is, CamelFolder *folder)
+imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 {
 	CamelIMAPXCommand *ic;
 
@@ -1440,7 +1439,7 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder)
 	if (is->select_folder) {
 		while (!e_dlist_empty(&is->active)) {
 			QUEUE_UNLOCK(is);
-			imapx_step(is);
+			imapx_step(is, ex);
 			QUEUE_LOCK(is);
 		}
 		g_free(is->select);
@@ -1465,123 +1464,125 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder)
 }
 
 static void
-imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls)
+imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls, CamelException *ex)
 /* throws IO exception */
 {
-	CamelStream * volatile tcp_stream = NULL;
+	CamelStream * tcp_stream = NULL;
 	int ret;
 
-	{
 #ifdef HAVE_SSL
-		const char *mode;
+	const char *mode;
 #endif
-		unsigned char *buffer;
-		int len;
-		char *serv;
-		const char *port = NULL;
-		struct addrinfo *ai, hints = { 0 };
-		CamelException ex = { 0 };
-		CamelIMAPXCommand *ic;
+	guchar *buffer = NULL;
+	int len;
+	char *serv;
+	const char *port = NULL;
+	struct addrinfo *ai, hints = { 0 };
+	CamelIMAPXCommand *ic;
 
-		if (is->url->port) {
-			serv = g_alloca(16);
-			sprintf(serv, "%d", is->url->port);
-		} else {
-			serv = "imap";
-			port = "143";
-		}
+	if (is->url->port) {
+		serv = g_alloca(16);
+		sprintf(serv, "%d", is->url->port);
+	} else {
+		serv = "imap";
+		port = "143";
+	}
 #ifdef HAVE_SSL
-		mode = camel_url_get_param(is->url, "use_ssl");
-		if (mode && strcmp(mode, "never") != 0) {
-			if (!strcmp(mode, "when-possible")) {
-				tcp_stream = camel_tcp_stream_ssl_new_raw(is->session, is->url->host, STARTTLS_FLAGS);
-			} else {
-				if (is->url->port == 0) {
-					serv = "imaps";
-					port = "993";
-				}
-				tcp_stream = camel_tcp_stream_ssl_new(is->session, is->url->host, SSL_PORT_FLAGS);
-			}
+	mode = camel_url_get_param(is->url, "use_ssl");
+	if (mode && strcmp(mode, "never") != 0) {
+		if (!strcmp(mode, "when-possible")) {
+			tcp_stream = camel_tcp_stream_ssl_new_raw(is->session, is->url->host, STARTTLS_FLAGS);
 		} else {
-			tcp_stream = camel_tcp_stream_raw_new ();
+			if (is->url->port == 0) {
+				serv = "imaps";
+				port = "993";
+			}
+			tcp_stream = camel_tcp_stream_ssl_new(is->session, is->url->host, SSL_PORT_FLAGS);
 		}
-#else	
+	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
+	}
+#else	
+	tcp_stream = camel_tcp_stream_raw_new ();
 #endif /* HAVE_SSL */
 
-		hints.ai_socktype = SOCK_STREAM;
-		ai = camel_getaddrinfo(is->url->host, serv, &hints, &ex);
-		if (ex.id && ex.id != CAMEL_EXCEPTION_USER_CANCEL && port != NULL) {
-			camel_exception_clear(&ex);
-			ai = camel_getaddrinfo(is->url->host, port, &hints, &ex);
-		}
+	hints.ai_socktype = SOCK_STREAM;
+	ai = camel_getaddrinfo(is->url->host, serv, &hints, ex);
+	if (ex->id && ex->id != CAMEL_EXCEPTION_USER_CANCEL && port != NULL) {
+		camel_exception_clear(ex);
+		ai = camel_getaddrinfo(is->url->host, port, &hints, ex);
+	}
 
-		if (ex.id)
-			camel_exception_throw_ex(&ex);
-	
-		ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai);
-		camel_freeaddrinfo(ai);
-		if (ret == -1) {
-			if (errno == EINTR)
-				camel_exception_throw(CAMEL_EXCEPTION_USER_CANCEL, _("Connection cancelled"));
-			else
-				camel_exception_throw(CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-						      _("Could not connect to %s (port %s): %s"),
-						      is->url->host, serv, g_strerror(errno));
-		}
-
-		is->stream = (CamelIMAPXStream *)camel_imapx_stream_new(tcp_stream);
+	if (ex->id) {
+		g_message ("Unable to connect %d %s \n", ex->id, ex->desc);
 		camel_object_unref(tcp_stream);
-		tcp_stream = NULL;
+		return;	
+	}
 
-		camel_imapx_stream_gets(is->stream, &buffer, &len);
-		printf("Got greeting '%.*s'\n", len, buffer);
+	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai);
+	camel_freeaddrinfo(ai);
+	if (ret == -1) {
+		if (errno == EINTR) 
+			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Connection cancelled"));
+		else
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+					_("Could not connect to %s (port %s): %s"),
+					is->url->host, serv, g_strerror(errno));
+		camel_object_unref(tcp_stream);
+		return;
+	}
 
-		ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-		imapx_command_run(is, ic);
-		camel_imapx_command_free(ic);
-	} 
-	
-	
-/*	CAMEL_CATCH(e) {
-		if (tcp_stream)
-			camel_object_unref(tcp_stream);
-		camel_exception_throw_ex(e);
-	} CAMEL_DONE; */
+	is->stream = (CamelIMAPXStream *)camel_imapx_stream_new(tcp_stream);
+	camel_object_unref(tcp_stream);
+	tcp_stream = NULL;
+
+	camel_imapx_stream_gets(is->stream, &buffer, &len);
+	printf("Got greeting '%.*s'\n", len, buffer);
+
+	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
+	imapx_command_run(is, ic, ex);
+	camel_imapx_command_free(ic);
 }
 
 static void
-imapx_reconnect(CamelIMAPXServer *is)
+imapx_reconnect(CamelIMAPXServer *is, CamelException *ex)
 {
-retry:
-	{
 		CamelSasl *sasl;
 		CamelIMAPXCommand *ic;
-
-		imapx_connect(is, 0, 0);
-
+retry:
+		g_message ("Connecting \n");
+		imapx_connect(is, 0, 0, ex);
+		g_message ("Connected \n");
+		
 		if (is->url->passwd == NULL) {
-			CamelException ex = { 0 };
+			CamelException ex = { 0, NULL };
 			char *prompt = g_strdup_printf(_("%sPlease enter the IMAP password for %s@%s"), "", is->url->user, is->url->host);
+			const gchar *auth_domain;
 
+			auth_domain = camel_url_get_param (is->url, "auth-domain");
 			is->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
-								     camel_url_get_param(is->url, "auth-domain"),
-								     prompt, "password", 0, &ex);
+					auth_domain,
+					prompt, "password", 0, &ex);
+
 			g_free(prompt);
-			if (ex.id)
-				camel_exception_throw_ex(&ex);
+			if (ex.id) {
+				g_message ("Unable to connect %d ", ex.id);
+				return;
+			}
 		}
 
 		if (is->url->authmech
-		    && (sasl = camel_sasl_new("imap", is->url->authmech, NULL))) {
+				&& (sasl = camel_sasl_new("imap", is->url->authmech, NULL))) {
 			ic = camel_imapx_command_new("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
 			camel_object_unref(sasl);
 		} else {
 			ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", is->url->user, is->url->passwd);
 		}
 
+		g_message ("Logged in now!! \n");
+
 		// TODO freeing data?
-		imapx_command_run(is, ic);
+		imapx_command_run(is, ic, ex);
 		if (ic->status->result != IMAP_OK)
 			camel_exception_throw(CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, "Login failed: %s", ic->status->text);
 		camel_imapx_command_free(ic);
@@ -1592,29 +1593,19 @@ retry:
 			is->cinfo = NULL;
 		}
 		ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-		imapx_command_run(is, ic);
+		imapx_command_run(is, ic, ex);
 		camel_imapx_command_free(ic);
 		is->state = IMAPX_AUTHENTICATED;
-	} 
 
-/*	if (camel_exception_is_set (e)) {
-		if (*e->ex  CAMEL_EXCEPTION_USER_CANCEL) {
-			printf("Re Connection failed: %s\n", e->desc);
-			sleep(5);
-			// camelexception_done?
-			goto retry;
-		}
-	} */
-	
-/*	CAMEL_CATCH(e) {
-		/* Shrug, either way this re-loops back ... 
-		if (TRUE /*e->ex != CAMEL_EXCEPTION_USER_CANCEL) {
-			printf("Re Connection failed: %s\n", e->desc);
-			sleep(5);
-			// camelexception_done?
-			goto retry;
-		}
-	} CAMEL_DONE; */
+		if (camel_exception_is_set (ex))
+			/* Shrug, either way this re-loops back ... */
+			if (TRUE /*e->ex != CAMEL_EXCEPTION_USER_CANCEL*/) {
+				printf("Re Connection failed: %s\n", ex->desc);
+				sleep(5);
+				// camelexception_done?
+				camel_exception_clear (ex);
+				goto retry;
+			}
 }
 
 /* ********************************************************************** */
@@ -2176,6 +2167,7 @@ imapx_server_loop(void *d)
 {
 	CamelIMAPXServer *is = d;
 	CamelIMAPXJob *job;
+	CamelException ex = {0, NULL};
 
 	/*
 	  The main processing (reading) loop.
@@ -2197,95 +2189,91 @@ imapx_server_loop(void *d)
 
 	// FIXME: handle exceptions
 	while (1) {
-		{
-			printf ("Inside try catch loop \n");
-			if (!is->stream)
-				imapx_reconnect(is);
+		if (!is->stream)
+			imapx_reconnect(is, &ex);
 
-			job = (CamelIMAPXJob *)e_msgport_get(is->port);
-			if (job) {
-				e_dlist_addtail(&is->jobs, (EDListNode *)job);
-				job->start(is, job);
-			}
+		job = (CamelIMAPXJob *)e_msgport_get(is->port);
+		if (job) {
+			e_dlist_addtail(&is->jobs, (EDListNode *)job);
+			job->start(is, job);
+		}
 
-			if (!e_dlist_empty(&is->active)
-			    || camel_imapx_stream_buffered(is->stream))
-				imapx_step(is);
-			else
-				e_msgport_wait(is->port);
+		if (!e_dlist_empty(&is->active)
+				|| camel_imapx_stream_buffered(is->stream))
+			imapx_step(is, &ex);
+		else
+			e_msgport_wait(is->port);
 #if 0
-			/* TODO:
-			   This poll stuff wont work - we might block
-			   waiting for results inside loops etc.
+		/* TODO:
+		   This poll stuff wont work - we might block
+		   waiting for results inside loops etc.
 
-			   Requires a different approach:
+		   Requires a different approach:
 
-			   New commands are queued in other threads as well
-			   as this thread, and get pipelined over the socket.
+		   New commands are queued in other threads as well
+		   as this thread, and get pipelined over the socket.
 
-			   Main area of locking required is command_queue
-			   and command_start_next, the 'literal' command,
-			   the jobs queue, the active queue, the queue
-			   queue. */
+		   Main area of locking required is command_queue
+		   and command_start_next, the 'literal' command,
+		   the jobs queue, the active queue, the queue
+		   queue. */
 
-			/* if ssl stream ... */
+		/* if ssl stream ... */
 #ifdef HAVE_SSL
-			{
-				PRPollDesc pollfds[2] = { };
-				int res;
+		{
+			PRPollDesc pollfds[2] = { };
+			int res;
 
-				printf("\nGoing to sleep waiting for work to do\n\n");
+			printf("\nGoing to sleep waiting for work to do\n\n");
 
-				pollfds[0].fd = camel_tcp_stream_ssl_sockfd((CamelTcpStreamSSL *)is->stream->source);
-				pollfds[0].in_flags = PR_POLL_READ;
-				pollfds[1].fd = e_msgport_prfd(is->port);
-				pollfds[1].in_flags = PR_POLL_READ;
+			pollfds[0].fd = camel_tcp_stream_ssl_sockfd((CamelTcpStreamSSL *)is->stream->source);
+			pollfds[0].in_flags = PR_POLL_READ;
+			pollfds[1].fd = e_msgport_prfd(is->port);
+			pollfds[1].in_flags = PR_POLL_READ;
 
-				res = PR_Poll(pollfds, 2, PR_TicksPerSecond() / 10);
-				if (res == -1)
-					sleep(1) /* ?? */ ;
-				else if ((pollfds[0].out_flags & PR_POLL_READ)) {
-					printf(" * woken * have data ready\n");
-					do {
-						/* This is quite shitty, it will often block on each
-						   part of the decode, causing significant
-						   processing delays. */
-						imapx_step(is);
-					} while (camel_imapx_stream_buffered(is->stream));
-				} else if (pollfds[1].out_flags & PR_POLL_READ) {
-					printf(" * woken * have new job\n");
-					/* job is handled in main loop */
-				}
+			res = PR_Poll(pollfds, 2, PR_TicksPerSecond() / 10);
+			if (res == -1)
+				sleep(1) /* ?? */ ;
+			else if ((pollfds[0].out_flags & PR_POLL_READ)) {
+				printf(" * woken * have data ready\n");
+				do {
+					/* This is quite shitty, it will often block on each
+					   part of the decode, causing significant
+					   processing delays. */
+					imapx_step(is);
+				} while (camel_imapx_stream_buffered(is->stream));
+			} else if (pollfds[1].out_flags & PR_POLL_READ) {
+				printf(" * woken * have new job\n");
+				/* job is handled in main loop */
 			}
+		}
 #else
-			{
-				struct pollfd[2] = { 0 };
-				int res;
+		{
+			struct pollfd[2] = { 0 };
+			int res;
 
-				pollfd[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
-				pollfd[0].events = POLLIN;
-				pollfd[1].fd = e_msgport_fd(is->port);
-				pollfd[1].events = POLLIN;
+			pollfd[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
+			pollfd[0].events = POLLIN;
+			pollfd[1].fd = e_msgport_fd(is->port);
+			pollfd[1].events = POLLIN;
 
-				res = poll(pollfd, 2, 1000*30);
-				if (res == -1)
-					sleep(1) /* ?? */ ;
-				else if (res == 0)
-					/* timed out */;
-				else if (pollfds[0].revents & POLLIN) {
-					do {
-						imapx_step(is);
-					} while (camel_imapx_stream_buffered(is->stream));
-				}
+			res = poll(pollfd, 2, 1000*30);
+			if (res == -1)
+				sleep(1) /* ?? */ ;
+			else if (res == 0)
+				/* timed out */;
+			else if (pollfds[0].revents & POLLIN) {
+				do {
+					imapx_step(is);
+				} while (camel_imapx_stream_buffered(is->stream));
 			}
+		}
 #endif
 #endif
-		} 
-		
-//		CAMEL_CATCH(e) {
-//			printf("######### Got main loop exception: %s\n", e->desc);
-//			sleep(1);
-//		} CAMEL_DONE;
+		if (camel_exception_is_set (&ex)) {
+			printf("######### Got main loop exception: %s\n", ex.desc);
+			sleep(1);
+		}
 	}
 
 	return NULL;
@@ -2360,7 +2348,7 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 	is->store = store;
 
 	is->url = camel_url_copy(url);
-	camel_url_set_user(is->url, "camel");
+//	camel_url_set_user(is->url, "camel");
 	camel_url_set_passwd(is->url, "camel");
 
 	return is;
