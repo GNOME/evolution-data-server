@@ -2327,7 +2327,7 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 
 	is->url = camel_url_copy(url);
 //	camel_url_set_user(is->url, "camel");
-	camel_url_set_passwd(is->url, "camel");
+	camel_url_set_passwd(is->url, "novell");
 
 	return is;
 }
@@ -2369,8 +2369,8 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	}
 
 	if (!job->noreply) {
-		e_msgport_wait(reply);
-		g_assert(e_msgport_get(reply) == (EMsg *)job);
+		EMsg *completed = e_msgport_wait(reply);
+		g_assert(completed == (EMsg *)job);
 		e_msgport_destroy(reply);
 	}
 }
