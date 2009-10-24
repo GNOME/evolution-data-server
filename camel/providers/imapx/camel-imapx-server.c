@@ -17,8 +17,9 @@
 #include <prerr.h>
 #endif
 
+#include <camel/camel-list-utils.h>
+#include <camel/camel-msgport.h>
 #include <camel/camel-object.h>
-#include <libedataserver/e-msgport.h>
 #include <camel/camel-url.h>
 #include <camel/camel-session.h>
 #include <camel/camel-stream-fs.h>
@@ -121,7 +122,7 @@ struct _CamelIMAPXCommand {
 	guint32 tag;
 
 	struct _CamelStreamMem *mem;	/* for building the part TOOD: just use a GString? */
-	EDList parts;
+	CamelDList parts;
 	CamelIMAPXCommandPart *current;
 
 	CamelIMAPXCommandFunc complete;
@@ -387,7 +388,7 @@ imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, g
 	/* FIXME: hackish? */
 	g_byte_array_set_size(ic->mem->buffer, 0);
 
-	e_dlist_addtail(&ic->parts, (EDListNode *)cp);
+	camel_dlist_addtail(&ic->parts, (CamelDListNode *)cp);
 }
 
 static void
@@ -573,7 +574,7 @@ camel_imapx_command_new(const gchar *name, const gchar *select, const gchar *fmt
 	ic->name = name;
 	ic->mem = (CamelStreamMem *)camel_stream_mem_new();
 	ic->select = g_strdup(select);
-	e_dlist_init(&ic->parts);
+	camel_dlist_init(&ic->parts);
 
 	if (fmt && fmt[0]) {
 		va_start(ap, fmt);
@@ -611,7 +612,7 @@ camel_imapx_command_free(CamelIMAPXCommand *ic)
 	imap_free_status(ic->status);
 	g_free(ic->select);
 
-	while ( (cp = ((CamelIMAPXCommandPart *)e_dlist_remhead(&ic->parts))) ) {
+	while ( (cp = ((CamelIMAPXCommandPart *)camel_dlist_remhead(&ic->parts))) ) {
 		g_free(cp->data);
 		if (cp->ob) {
 			switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
@@ -702,9 +703,9 @@ imapx_command_start(CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 	if (cp->type & CAMEL_IMAPX_COMMAND_CONTINUATION)
 		imap->literal = ic;
 
-	e_dlist_addtail(&imap->active, (EDListNode *)ic);
+	camel_dlist_addtail(&imap->active, (CamelDListNode *)ic);
 
-	printf("Staring command (active=%d,%s) %c%05u %s\r\n", e_dlist_length(&imap->active), imap->literal?" literal":"", imap->tagprefix, ic->tag, cp->data);
+	printf("Staring command (active=%d,%s) %c%05u %s\r\n", camel_dlist_length(&imap->active), imap->literal?" literal":"", imap->tagprefix, ic->tag, cp->data);
 	camel_stream_printf((CamelStream *)imap->stream, "%c%05u %s\r\n", imap->tagprefix, ic->tag, cp->data);
 }
 
@@ -772,7 +773,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 			if (ic->select == NULL || strcmp(ic->select, imap->select) == 0) {
 				printf("--> starting '%s'\n", ic->name);
 				pri = ic->pri;
-				e_dlist_remove((EDListNode *)ic);
+				camel_dlist_remove((CamelDListNode *)ic);
 				imapx_command_start(imap, ic);
 				count++;
 			}
@@ -798,7 +799,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 			if (ic->select == NULL || (imap->select && strcmp(ic->select, imap->select))) {
 				printf("* queueing job %3d '%s'\n", (gint)ic->pri, ic->name);
 				pri = ic->pri;
-				e_dlist_remove((EDListNode *)ic);
+				camel_dlist_remove((CamelDListNode *)ic);
 				imapx_command_start(imap, ic);
 				count++;
 			}
@@ -824,7 +825,7 @@ imapx_command_queue(CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 
 	scan = (CamelIMAPXCommand *)imap->queue.head;
 	if (scan->next == NULL)
-		e_dlist_addtail(&imap->queue, (EDListNode *)ic);
+		camel_dlist_addtail(&imap->queue, (CamelDListNode *)ic);
 	else {
 		while (scan->next) {
 			if (ic->pri >= scan->pri)
@@ -1258,8 +1259,8 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 
 	printf("Got completion response for command %05u '%s'\n", ic->tag, ic->name);
 
-	e_dlist_remove((EDListNode *)ic);
-	e_dlist_addtail(&imap->done, (EDListNode *)ic);
+	camel_dlist_remove((CamelDListNode *)ic);
+	camel_dlist_addtail(&imap->done, (CamelDListNode *)ic);
 	if (imap->literal == ic)
 		imap->literal = NULL;
 
@@ -1285,7 +1286,7 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 
 	QUEUE_LOCK(imap);
 	if (ic->complete) {
-		e_dlist_remove((EDListNode *)ic);
+		camel_dlist_remove((CamelDListNode *)ic);
 		camel_imapx_command_free(ic);
 	}
 	imapx_command_start_next(imap, ex);
@@ -1322,14 +1323,14 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic, CamelException *e
 {
 	camel_imapx_command_close(ic);
 	QUEUE_LOCK(is);
-	g_assert(e_dlist_empty(&is->active));
+	g_assert(camel_dlist_empty(&is->active));
 	imapx_command_start(is, ic);
 	QUEUE_UNLOCK(is);
 	do {
 		imapx_step(is, ex);
 	} while (ic->status == NULL);
 
-	e_dlist_remove((EDListNode *)ic);
+	camel_dlist_remove((CamelDListNode *)ic);
 }
 
 /* ********************************************************************** */
@@ -1338,7 +1339,7 @@ imapx_select_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 
 	if (ic->status->result != IMAP_OK) {
-		EDList failed = E_DLIST_INITIALISER(failed);
+		CamelDList failed = E_DLIST_INITIALISER(failed);
 		CamelIMAPXCommand *cw, *cn;
 
 		printf("Select failed\n");
@@ -1348,8 +1349,8 @@ imapx_select_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		cn = cw->next;
 		while (cn) {
 			if (cw->select && strcmp(cw->select, is->select_pending->full_name) == 0) {
-				e_dlist_remove((EDListNode *)cw);
-				e_dlist_addtail(&failed, (EDListNode *)cw);
+				camel_dlist_remove((CamelDListNode *)cw);
+				camel_dlist_addtail(&failed, (CamelDListNode *)cw);
 			}
 			cw = cn;
 			cn = cn->next;
@@ -1415,7 +1416,7 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 	is->select_pending = folder;
 	camel_object_ref(folder);
 	if (is->select_folder) {
-		while (!e_dlist_empty(&is->active)) {
+		while (!camel_dlist_empty(&is->active)) {
 			QUEUE_UNLOCK(is);
 			imapx_step(is, ex);
 			QUEUE_LOCK(is);
@@ -1593,12 +1594,12 @@ imapx_job_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 
-	e_dlist_remove((EDListNode *)job);
+	camel_dlist_remove((CamelDListNode *)job);
 	if (job->noreply) {
 		camel_exception_clear(job->ex);
 		g_free(job);
 	} else
-		e_msgport_reply((EMsg *)job);
+		camel_msgport_reply((EMsg *)job);
 }
 
 /* ********************************************************************** */
@@ -1835,8 +1836,8 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		g_free(r->uid);
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
-	e_dlist_remove((EDListNode *)job);
-	e_msgport_reply((EMsg *)job);
+	camel_dlist_remove((CamelDListNode *)job);
+	camel_msgport_reply((EMsg *)job);
 }
 
 static gint
@@ -1944,8 +1945,8 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		g_free(r->uid);
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
-	e_dlist_remove((EDListNode *)job);
-	e_msgport_reply((EMsg *)job);
+	camel_dlist_remove((CamelDListNode *)job);
+	camel_msgport_reply((EMsg *)job);
 }
 
 static void
@@ -2049,8 +2050,8 @@ imapx_job_sync_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				/* FIXME: move over user flags too
 			}*/
 		}
-		e_dlist_remove((EDListNode *)job);
-		e_msgport_reply((EMsg *)job);
+		camel_dlist_remove((CamelDListNode *)job);
+		camel_msgport_reply((EMsg *)job);
 	}
 }
 
@@ -2133,8 +2134,8 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	if (job->commands == 0) {
 		printf("Hmm, we didn't have any work to do afterall?  hmm, this isn't right\n");
 
-		e_dlist_remove((EDListNode *)job);
-		e_msgport_reply((EMsg *)job);
+		camel_dlist_remove((CamelDListNode *)job);
+		camel_msgport_reply((EMsg *)job);
 	}
 }
 
@@ -2170,17 +2171,17 @@ imapx_server_loop(gpointer d)
 		if (!is->stream)
 			imapx_reconnect(is, &ex);
 
-		job = (CamelIMAPXJob *)e_msgport_get(is->port);
+		job = (CamelIMAPXJob *)camel_msgport_get(is->port);
 		if (job) {
-			e_dlist_addtail(&is->jobs, (EDListNode *)job);
+			camel_dlist_addtail(&is->jobs, (CamelDListNode *)job);
 			job->start(is, job);
 		}
 
-		if (!e_dlist_empty(&is->active)
+		if (!camel_dlist_empty(&is->active)
 				|| camel_imapx_stream_buffered(is->stream))
 			imapx_step(is, &ex);
 		else
-			e_msgport_wait(is->port);
+			camel_msgport_wait(is->port);
 #if 0
 		/* TODO:
 		   This poll stuff wont work - we might block
@@ -2206,7 +2207,7 @@ imapx_server_loop(gpointer d)
 
 			pollfds[0].fd = camel_tcp_stream_ssl_sockfd((CamelTcpStreamSSL *)is->stream->source);
 			pollfds[0].in_flags = PR_POLL_READ;
-			pollfds[1].fd = e_msgport_prfd(is->port);
+			pollfds[1].fd = camel_msgport_prfd(is->port);
 			pollfds[1].in_flags = PR_POLL_READ;
 
 			res = PR_Poll(pollfds, 2, PR_TicksPerSecond() / 10);
@@ -2232,7 +2233,7 @@ imapx_server_loop(gpointer d)
 
 			pollfd[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
 			pollfd[0].events = POLLIN;
-			pollfd[1].fd = e_msgport_fd(is->port);
+			pollfd[1].fd = camel_msgport_fd(is->port);
 			pollfd[1].events = POLLIN;
 
 			res = poll(pollfd, 2, 1000*30);
@@ -2268,10 +2269,10 @@ imapx_server_class_init(CamelIMAPXServerClass *ieclass)
 static void
 imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 {
-	e_dlist_init(&ie->queue);
-	e_dlist_init(&ie->active);
-	e_dlist_init(&ie->done);
-	e_dlist_init(&ie->jobs);
+	camel_dlist_init(&ie->queue);
+	camel_dlist_init(&ie->active);
+	camel_dlist_init(&ie->done);
+	camel_dlist_init(&ie->jobs);
 
 	ie->queue_lock = g_mutex_new();
 
@@ -2283,7 +2284,7 @@ imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 
 	ie->state = IMAPX_DISCONNECTED;
 
-	ie->port = e_msgport_new();
+	ie->port = camel_msgport_new();
 
 	ie->expunged = g_array_new(FALSE, FALSE, sizeof(guint32));
 }
@@ -2349,10 +2350,10 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 static void
 imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
-	EMsgPort *reply;
+	CamelMsgPort *reply;
 
 	if (!job->noreply) {
-		reply = e_msgport_new();
+		reply = camel_msgport_new();
 		job->msg.reply_port = reply;
 	}
 
@@ -2361,17 +2362,17 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	if (FALSE /*is->state >= IMAPX_AUTHENTICATED*/) {
 		/* NB: Must catch exceptions, cleanup/etc if we fail here? */
 		QUEUE_LOCK(is);
-		e_dlist_addhead(&is->jobs, (EDListNode *)job);
+		camel_dlist_addhead(&is->jobs, (CamelDListNode *)job);
 		QUEUE_UNLOCK(is);
 		job->start(is, job);
 	} else {
-		e_msgport_put(is->port, (EMsg *)job);
+		camel_msgport_put(is->port, (EMsg *)job);
 	}
 
 	if (!job->noreply) {
-		EMsg *completed = e_msgport_wait(reply);
+		CamelMsg *completed = camel_msgport_wait(reply);
 		g_assert(completed == (EMsg *)job);
-		e_msgport_destroy(reply);
+		camel_msgport_destroy(reply);
 	}
 }
 

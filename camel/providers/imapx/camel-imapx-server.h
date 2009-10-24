@@ -22,7 +22,8 @@
 #ifndef _CAMEL_IMAPX_SERVER_H
 #define _CAMEL_IMAPX_SERVER_H
 
-#include <libedataserver/e-msgport.h>
+#include <camel/camel-msgport.h>
+#include <camel/camel-list-utils.h>
 
 struct _CamelFolder;
 struct _CamelException;
@@ -51,8 +52,8 @@ struct _CamelIMAPXServer {
 	struct _capability_info *cinfo;
 
 	/* incoming jobs */
-	EMsgPort *port;
-	EDList jobs;
+	CamelMsgPort *port;
+	CamelDList jobs;
 
 	gchar tagprefix;
 	gint state:4;
@@ -61,9 +62,9 @@ struct _CamelIMAPXServer {
 	   all the time, so they can be cleaned up in exception cases */
 	gpointer queue_lock;
 	struct _CamelIMAPXCommand *literal;
-	EDList queue;
-	EDList active;
-	EDList done;
+	CamelDList queue;
+	CamelDList active;
+	CamelDList done;
 
 	/* info on currently selected folder */
 	struct _CamelFolder *select_folder;
