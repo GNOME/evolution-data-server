@@ -1780,7 +1780,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
-		gchar *str = "";
+		const gchar *str = "";
 		const gchar *gw_field_name;
 
 		gw_field_name = NULL;

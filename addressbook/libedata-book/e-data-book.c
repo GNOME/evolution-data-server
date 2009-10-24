@@ -390,7 +390,7 @@ data_book_return_error (DBusGMethodInvocation *context, gint code, const char *e
 {
 	GError *error;
 	
-	error = g_error_new (E_DATA_BOOK_ERROR, code, error_str) ;
+	error = g_error_new (E_DATA_BOOK_ERROR, code, "%s", error_str) ;
 	dbus_g_method_return_error (context, error);
 	
 	g_error_free (error);

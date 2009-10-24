@@ -151,19 +151,19 @@ static GObjectClass *parent_class;
        };				}G_STMT_END
 #endif
 
-#define E_CALENDAR_CHECK_STATUS(status,error) G_STMT_START{		\
-	if ((status) == E_CALENDAR_STATUS_OK) {				\
+#define E_CALENDAR_CHECK_STATUS(status,error)				\
+G_STMT_START{								\
+	if ((status) == E_CALENDAR_STATUS_OK)				\
 		return TRUE;						\
-	}								\
-	else {                                                          \
-		if (error) { \
-			return unwrap_gerror (error); \
-		} \
-                const gchar *msg;                                        \
-                msg = e_cal_get_error_message ((status));          \
+	else {								\
+		const gchar *msg;					\
+		if (error)						\
+			return unwrap_gerror (error);			\
+		msg = e_cal_get_error_message ((status));		\
 		g_set_error ((error), E_CALENDAR_ERROR, (status), "%s", msg);	\
 		return FALSE;						\
-	}				}G_STMT_END
+	}								\
+} G_STMT_END
 
 
 

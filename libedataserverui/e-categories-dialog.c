@@ -89,7 +89,7 @@ static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
 	CategoryPropertiesDialog *prop_dialog;
-	gchar *ui_to_load[] = { "properties-dialog", NULL };
+	const gchar *ui_to_load[] = { "properties-dialog", NULL };
 	gchar *uifile;
 	GError *error = NULL;
 
@@ -101,7 +101,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 	prop_dialog->gui = gtk_builder_new ();
 	gtk_builder_set_translation_domain (prop_dialog->gui, GETTEXT_PACKAGE);
 	
-	if (!gtk_builder_add_objects_from_file (prop_dialog->gui, uifile, ui_to_load, &error)) {
+	if (!gtk_builder_add_objects_from_file (prop_dialog->gui, uifile, (gchar **) ui_to_load, &error)) {
 		g_object_unref (prop_dialog->gui);
 		g_free (prop_dialog);
 		g_free (uifile);
@@ -564,7 +564,7 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	GtkWidget *main_widget;
 	GtkWidget *content_area;
 	gchar *uifile;
-	gchar *ui_to_load[] = {"table-categories", NULL};
+	const gchar *ui_to_load[] = {"table-categories", NULL};
 	GError *error = NULL;
 
 	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
@@ -577,7 +577,7 @@ categories_dialog_init (ECategoriesDialog *dialog)
 	dialog->priv->gui = gtk_builder_new ();
 	gtk_builder_set_translation_domain (dialog->priv->gui, GETTEXT_PACKAGE);
 
-	if (!gtk_builder_add_objects_from_file (dialog->priv->gui, uifile, ui_to_load, &error)) {
+	if (!gtk_builder_add_objects_from_file (dialog->priv->gui, uifile, (gchar **) ui_to_load, &error)) {
 		g_free (uifile);
 		g_object_unref (dialog->priv->gui);
 		dialog->priv->gui = NULL;

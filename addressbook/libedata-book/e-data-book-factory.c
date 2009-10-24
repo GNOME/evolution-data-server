@@ -381,7 +381,7 @@ name_owner_changed (DBusGProxy *proxy,
 }
 
 /* Convenience function to print an error and exit */
-static void
+G_GNUC_NORETURN static void
 die (const char *prefix, GError *error)
 {
 	g_error("%s: %s", prefix, error->message);

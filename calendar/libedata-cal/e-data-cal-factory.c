@@ -345,9 +345,10 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 	/* Find the associated backend factory (if any) */
 	backend_factory = get_backend_factory (priv->methods, uri->protocol, calobjtype_to_icalkind (type));
 	if (!backend_factory) {
-		gchar *msg = g_strdup_printf (_("No backend factory for '%s' of '%s'"), uri->protocol, calobjtype_to_string (type));
-		error = g_error_new (E_DATA_CAL_ERROR, NoSuchCal, msg);
-		g_free (msg);
+		error = g_error_new (
+			E_DATA_CAL_ERROR, NoSuchCal,
+			_("No backend factory for '%s' of '%s'"),
+			uri->protocol, calobjtype_to_string (type));
 
 		goto cleanup2;
 	}
@@ -658,7 +659,7 @@ e_data_cal_factory_dump_active_backends (EDataCalFactory *factory)
 }
 
 /* Convenience function to print an error and exit */
-static void
+G_GNUC_NORETURN static void
 die (const char *prefix, GError *error)
 {
 	g_error("%s: %s", prefix, error->message);
