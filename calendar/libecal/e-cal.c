@@ -340,12 +340,10 @@ cal_mode_enum_get_type (void)
 	return cal_mode_enum_type;
 }
 
-
-
 static EDataCalObjType
 convert_type (ECalSourceType type)
 {
-	switch (type){
+	switch (type) {
 	case E_CAL_SOURCE_TYPE_EVENT:
 		return Event;
 	case E_CAL_SOURCE_TYPE_TODO:
@@ -551,7 +549,6 @@ e_cal_activate(GError **error)
 	done = TRUE;
 	return TRUE;
 }
-
 
 static gboolean
 reopen_with_auth (gpointer data)
@@ -1708,7 +1705,6 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 
 	return TRUE;
 }
-
 
 /* This is used in the callback which fetches all the timezones needed for an
    object. */

@@ -62,8 +62,8 @@
 
 #define d(x)
 
-void smime_cert_data_free (void *cert_data);
-void *smime_cert_data_clone (void *cert_data);
+void smime_cert_data_free (gpointer cert_data);
+gpointer smime_cert_data_clone (gpointer cert_data);
 
 struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
@@ -720,15 +720,15 @@ sm_status_description(NSSCMSVerificationStatus status)
 }
 
 void
-smime_cert_data_free (void *cert_data)
+smime_cert_data_free (gpointer cert_data)
 {
 	g_return_if_fail (cert_data != NULL);
 
 	CERT_DestroyCertificate (cert_data);
 }
 
-void *
-smime_cert_data_clone (void *cert_data)
+gpointer
+smime_cert_data_clone (gpointer cert_data)
 {
 	g_return_val_if_fail (cert_data != NULL, NULL);
 

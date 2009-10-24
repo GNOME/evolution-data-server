@@ -62,18 +62,17 @@ static guint signals[LAST_SIGNAL];
 
 static GObjectClass *parent_class;
 
-
 static GList *
 build_object_list (const gchar **seq)
 {
 	GList *list;
-	int i;
+	gint i;
 
 	list = NULL;
 	for (i = 0; seq[i]; i++) {
 		icalcomponent *comp;
 
-		comp = icalcomponent_new_from_string ((char*)seq[i]);
+		comp = icalcomponent_new_from_string ((gchar *)seq[i]);
 		if (!comp)
 			continue;
 
@@ -87,7 +86,7 @@ static GList *
 build_id_list (const gchar **seq)
 {
 	GList *list;
-	int i;
+	gint i;
 
 	list = NULL;
 	for (i = 0; seq[i]; i++) {
@@ -164,7 +163,7 @@ objects_removed_cb (DBusGProxy *proxy, const gchar **uids, gpointer data)
 }
 
 static void
-progress_cb (DBusGProxy *proxy, const gchar *message, int percent, gpointer data)
+progress_cb (DBusGProxy *proxy, const gchar *message, gint percent, gpointer data)
 {
 	ECalView *view;
 

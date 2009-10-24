@@ -39,24 +39,24 @@ DBusGConnection *connection;
 /* DBus glue */
 static void impl_AddressBook_Book_open(EDataBook *book, gboolean only_if_exists, DBusGMethodInvocation *context);
 static void impl_AddressBook_Book_remove(EDataBook *book, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_getContact(EDataBook *book, const char *IN_uid, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_getContactList(EDataBook *book, const char *query, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_authenticateUser(EDataBook *book, const char *IN_user, const char *IN_passwd, const char *IN_auth_method, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_addContact(EDataBook *book, const char *IN_vcard, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_modifyContact(EDataBook *book, const char *IN_vcard, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_removeContacts(EDataBook *book, const char **IN_uids, DBusGMethodInvocation *context);
-static gboolean impl_AddressBook_Book_getStaticCapabilities(EDataBook *book, char **OUT_capabilities, GError **error);
+static void impl_AddressBook_Book_getContact(EDataBook *book, const gchar *IN_uid, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_getContactList(EDataBook *book, const gchar *query, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_authenticateUser(EDataBook *book, const gchar *IN_user, const gchar *IN_passwd, const gchar *IN_auth_method, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_addContact(EDataBook *book, const gchar *IN_vcard, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_modifyContact(EDataBook *book, const gchar *IN_vcard, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_removeContacts(EDataBook *book, const gchar **IN_uids, DBusGMethodInvocation *context);
+static gboolean impl_AddressBook_Book_getStaticCapabilities(EDataBook *book, gchar **OUT_capabilities, GError **error);
 static void impl_AddressBook_Book_getSupportedFields(EDataBook *book, DBusGMethodInvocation *context);
 static void impl_AddressBook_Book_getRequiredFields(EDataBook *book, DBusGMethodInvocation *context);
 static void impl_AddressBook_Book_getSupportedAuthMethods(EDataBook *book, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_getBookView (EDataBook *book, const char *search, const guint max_results, DBusGMethodInvocation *context);
-static void impl_AddressBook_Book_getChanges(EDataBook *book, const char *IN_change_id, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_getBookView (EDataBook *book, const gchar *search, const guint max_results, DBusGMethodInvocation *context);
+static void impl_AddressBook_Book_getChanges(EDataBook *book, const gchar *IN_change_id, DBusGMethodInvocation *context);
 static gboolean impl_AddressBook_Book_cancelOperation(EDataBook *book, GError **error);
 static void impl_AddressBook_Book_close(EDataBook *book, DBusGMethodInvocation *context);
 #include "e-data-book-glue.h"
 
 static void return_status_and_list (guint32 opid, EDataBookStatus status, GList *list, gboolean free_data);
-static void data_book_return_error (DBusGMethodInvocation *context, gint code, const char *error_str);
+static void data_book_return_error (DBusGMethodInvocation *context, gint code, const gchar *error_str);
 
 enum {
 	WRITABLE,
@@ -89,23 +89,23 @@ typedef struct {
 		gboolean only_if_exists;
 		/* OP_AUTHENTICATE */
 		struct {
-			char *username;
-			char *password;
-			char *method;
+			gchar *username;
+			gchar *password;
+			gchar *method;
 		} auth;
 		/* OP_ADD_CONTACT */
 		/* OP_MODIFY_CONTACT */
-		char *vcard;
+		gchar *vcard;
 		/* OP_GET_CONTACT */
-		char *uid;
+		gchar *uid;
 		/* OP_GET_CONTACTS */
-		char *query;
+		gchar *query;
 		/* OP_MODIFY_CONTACT */
-		char **vcards;
+		gchar **vcards;
 		/* OP_REMOVE_CONTACTS */
 		GList *ids;
 		/* OP_GET_CHANGES */
-		char *change_id;
+		gchar *change_id;
 	};
 } OperationData;
 
@@ -174,7 +174,6 @@ op_new (OperationID op, EDataBook *book, DBusGMethodInvocation *context)
 	return data;
 }
 
-
 /* Create the EDataBook error quark */
 GQuark
 e_data_book_error_quark (void)
@@ -184,7 +183,6 @@ e_data_book_error_quark (void)
 		quark = g_quark_from_static_string ("e-data-book-error");
 	return quark;
 }
-
 
 /* Generate the GObject boilerplate */
 G_DEFINE_TYPE(EDataBook, e_data_book, G_TYPE_OBJECT)
@@ -325,7 +323,7 @@ e_data_book_respond_remove (EDataBook *book, guint opid, EDataBookStatus status)
 }
 
 static void
-impl_AddressBook_Book_getContact (EDataBook *book, const char *IN_uid, DBusGMethodInvocation *context)
+impl_AddressBook_Book_getContact (EDataBook *book, const gchar *IN_uid, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -352,7 +350,7 @@ e_data_book_respond_get_contact (EDataBook *book, guint32 opid, EDataBookStatus 
 }
 
 static void
-impl_AddressBook_Book_getContactList (EDataBook *book, const char *query, DBusGMethodInvocation *context)
+impl_AddressBook_Book_getContactList (EDataBook *book, const gchar *query, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -373,7 +371,7 @@ e_data_book_respond_get_contact_list (EDataBook *book, guint32 opid, EDataBookSt
 }
 
 static void
-impl_AddressBook_Book_authenticateUser(EDataBook *book, const char *IN_user, const char *IN_passwd, const char *IN_auth_method, DBusGMethodInvocation *context)
+impl_AddressBook_Book_authenticateUser(EDataBook *book, const gchar *IN_user, const gchar *IN_passwd, const gchar *IN_auth_method, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -384,15 +382,14 @@ impl_AddressBook_Book_authenticateUser(EDataBook *book, const char *IN_user, con
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
-
 static void
-data_book_return_error (DBusGMethodInvocation *context, gint code, const char *error_str)
+data_book_return_error (DBusGMethodInvocation *context, gint code, const gchar *error_str)
 {
 	GError *error;
-	
-	error = g_error_new (E_DATA_BOOK_ERROR, code, "%s", error_str) ;
+
+	error = g_error_new (E_DATA_BOOK_ERROR, code, "%s", error_str);
 	dbus_g_method_return_error (context, error);
-	
+
 	g_error_free (error);
 }
 
@@ -409,7 +406,7 @@ e_data_book_respond_authenticate_user (EDataBook *book, guint32 opid, EDataBookS
 }
 
 static void
-impl_AddressBook_Book_addContact (EDataBook *book, const char *IN_vcard, DBusGMethodInvocation *context)
+impl_AddressBook_Book_addContact (EDataBook *book, const gchar *IN_vcard, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -439,7 +436,7 @@ e_data_book_respond_create (EDataBook *book, guint32 opid, EDataBookStatus statu
 }
 
 static void
-impl_AddressBook_Book_modifyContact (EDataBook *book, const char *IN_vcard, DBusGMethodInvocation *context)
+impl_AddressBook_Book_modifyContact (EDataBook *book, const gchar *IN_vcard, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -469,7 +466,7 @@ e_data_book_respond_modify (EDataBook *book, guint32 opid, EDataBookStatus statu
 }
 
 static void
-impl_AddressBook_Book_removeContacts(EDataBook *book, const char **IN_uids, DBusGMethodInvocation *context)
+impl_AddressBook_Book_removeContacts(EDataBook *book, const gchar **IN_uids, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -507,7 +504,7 @@ e_data_book_respond_remove_contacts (EDataBook *book, guint32 opid, EDataBookSta
 }
 
 static gboolean
-impl_AddressBook_Book_getStaticCapabilities(EDataBook *book, char **OUT_capabilities, GError **error)
+impl_AddressBook_Book_getStaticCapabilities(EDataBook *book, gchar **OUT_capabilities, GError **error)
 {
 	*OUT_capabilities = e_book_backend_get_static_capabilities (e_data_book_get_backend (book));
 	return TRUE;
@@ -549,7 +546,7 @@ e_data_book_respond_get_supported_auth_methods (EDataBook *book, guint32 opid, E
 	return_status_and_list (opid, status, auth_methods, FALSE);
 }
 
-static char*
+static gchar *
 construct_bookview_path (void)
 {
 	static volatile guint counter = 1;
@@ -560,12 +557,12 @@ construct_bookview_path (void)
 }
 
 static void
-impl_AddressBook_Book_getBookView (EDataBook *book, const char *search, const guint max_results, DBusGMethodInvocation *context)
+impl_AddressBook_Book_getBookView (EDataBook *book, const gchar *search, const guint max_results, DBusGMethodInvocation *context)
 {
 	EBookBackend *backend = e_data_book_get_backend (book);
 	EBookBackendSExp *card_sexp;
 	EDataBookView *book_view;
-	char *path;
+	gchar *path;
 
 	card_sexp = e_book_backend_sexp_new (search);
 	if (!card_sexp) {
@@ -583,7 +580,7 @@ impl_AddressBook_Book_getBookView (EDataBook *book, const char *search, const gu
 }
 
 static void
-impl_AddressBook_Book_getChanges(EDataBook *book, const char *IN_change_id, DBusGMethodInvocation *context)
+impl_AddressBook_Book_getChanges(EDataBook *book, const gchar *IN_change_id, DBusGMethodInvocation *context)
 {
 	OperationData *op;
 
@@ -602,7 +599,7 @@ e_data_book_respond_get_changes (EDataBook *book, guint32 opid, EDataBookStatus 
 	} else {
 		/* The DBus interface to this is a(us), an array of structs of unsigned ints
 		   and strings.  In dbus-glib this is a GPtrArray of GValueArray of unsigned
-		   int and strings. */
+		   gint and strings. */
 		GPtrArray *array;
 
 		array = g_ptr_array_new ();
@@ -682,11 +679,11 @@ return_status_and_list (guint32 opid, EDataBookStatus status, GList *list, gbool
 	DBusGMethodInvocation *context = opid_fetch (opid);
 
 	if (status == E_DATA_BOOK_STATUS_SUCCESS) {
-		char **array;
+		gchar **array;
 		GList *l;
-		int i = 0;
+		gint i = 0;
 
-		array = g_new0 (char*, g_list_length (list) + 1);
+		array = g_new0 (gchar *, g_list_length (list) + 1);
 		for (l = list; l != NULL; l = l->next) {
 			array[i++] = l->data;
 		}

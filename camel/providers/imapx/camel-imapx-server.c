@@ -55,7 +55,6 @@
 
 /* All comms with server go here */
 
-
 /* Try pipelining fetch requests, 'in bits' */
 #define MULTI_FETCH
 #define MULTI_SIZE (8196)
@@ -65,17 +64,16 @@
 
 struct _uidset_state {
 	struct _CamelIMAPXEngine *ie;
-	int entries, uids;
-	int total, limit;
+	gint entries, uids;
+	gint total, limit;
 	guint32 start;
 	guint32 last;
 };
 
 struct _CamelIMAPXCommand;
-void imapx_uidset_init(struct _uidset_state *ss, int total, int limit);
-int imapx_uidset_done(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
-int imapx_uidset_add(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const char *uid);
-
+void imapx_uidset_init(struct _uidset_state *ss, gint total, gint limit);
+gint imapx_uidset_done(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
+gint imapx_uidset_add(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
 
 typedef struct _CamelIMAPXCommandPart CamelIMAPXCommandPart;
 typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
@@ -97,26 +95,26 @@ struct _CamelIMAPXCommandPart {
 
 	struct _CamelIMAPXCommand *parent;
 
-	int data_size;
-	char *data;
+	gint data_size;
+	gchar *data;
 
 	camel_imapx_command_part_t type;
 
-	int ob_size;
-	void *ob;
+	gint ob_size;
+	gpointer ob;
 };
 
-typedef int (*CamelIMAPXEngineFunc)(struct _CamelIMAPXServer *engine, guint32 id, void *data);
+typedef gint (*CamelIMAPXEngineFunc)(struct _CamelIMAPXServer *engine, guint32 id, gpointer data);
 typedef void (*CamelIMAPXCommandFunc)(struct _CamelIMAPXServer *engine, struct _CamelIMAPXCommand *);
 
 struct _CamelIMAPXCommand {
 	struct _CamelIMAPXCommand *next, *prev;
 
-	char pri;
+	gchar pri;
 
-	const char *name;	/* command name/type (e.g. FETCH) */
+	const gchar *name;	/* command name/type (e.g. FETCH) */
 
-	char *select;		/* folder to select */
+	gchar *select;		/* folder to select */
 
 	struct _status_info *status; /* status for command, indicates it is complete if != NULL */
 
@@ -130,8 +128,8 @@ struct _CamelIMAPXCommand {
 	struct _CamelIMAPXJob *job;
 };
 
-CamelIMAPXCommand *camel_imapx_command_new(const char *name, const char *select, const char *fmt, ...);
-void camel_imapx_command_add(CamelIMAPXCommand *ic, const char *fmt, ...);
+CamelIMAPXCommand *camel_imapx_command_new(const gchar *name, const gchar *select, const gchar *fmt, ...);
+void camel_imapx_command_add(CamelIMAPXCommand *ic, const gchar *fmt, ...);
 void camel_imapx_command_free(CamelIMAPXCommand *ic);
 void camel_imapx_command_close(CamelIMAPXCommand *ic);
 
@@ -144,7 +142,7 @@ enum {
 };
 
 struct _refresh_info {
-	char *uid;
+	gchar *uid;
 	guint32 server_flags;
 	CamelFlag *server_user_flags;
 };
@@ -160,7 +158,7 @@ enum {
 
 struct _imapx_flag_change {
 	GPtrArray *infos;
-	char *name;
+	gchar *name;
 };
 
 typedef struct _CamelIMAPXJob CamelIMAPXJob;
@@ -174,9 +172,9 @@ struct _CamelIMAPXJob {
 	// ??
 	//CamelOperation *op;
 
-	int noreply:1;		/* dont wait for reply */
-	char type;		/* operation type */
-	char pri;		/* the command priority */
+	gint noreply:1;		/* dont wait for reply */
+	gchar type;		/* operation type */
+	gchar pri;		/* the command priority */
 	short commands;		/* counts how many commands are outstanding */
 
 	CamelFolder *folder;
@@ -184,20 +182,20 @@ struct _CamelIMAPXJob {
 	union {
 		struct {
 			/* in: uid requested */
-			char *uid;
+			gchar *uid;
 			/* in/out: message content stream output */
 			CamelStream *stream;
 			/* working variables */
-			size_t body_offset;
-			ssize_t body_len;
-			size_t fetch_offset;
+			gsize body_offset;
+			gssize body_len;
+			gsize fetch_offset;
 		} get_message;
 		struct {
 			/* array of refresh info's */
 			GArray *infos;
 			/* used for biulding uidset stuff */
-			int index;
-			int last_index;
+			gint index;
+			gint last_index;
 			struct _uidset_state uidset;
 			/* changes during refresh */
 //			CamelChangeInfo *changes;
@@ -210,11 +208,11 @@ struct _CamelIMAPXJob {
 			GArray *off_user;
 		} sync_changes;
 		struct {
-			char *path;
+			gchar *path;
 			CamelMessageInfo *info;
 		} append_message;
 		struct {
-			char *pattern;
+			gchar *pattern;
 			guint32 flags;
 			GHashTable *folders;
 		} list;
@@ -230,11 +228,7 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
-
-
 static void imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
-
-
 
 /*
   this creates a uid (or sequence number) set directly into a command,
@@ -242,7 +236,7 @@ static void imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelExcepti
   if limit is set, then we break it up into limit entries (i.e. command length)
 */
 void
-imapx_uidset_init(struct _uidset_state *ss, int total, int limit)
+imapx_uidset_init(struct _uidset_state *ss, gint total, gint limit)
 {
 	ss->uids = 0;
 	ss->entries = 0;
@@ -252,10 +246,10 @@ imapx_uidset_init(struct _uidset_state *ss, int total, int limit)
 	ss->limit = limit;
 }
 
-int
+gint
 imapx_uidset_done(struct _uidset_state *ss, CamelIMAPXCommand *ic)
 {
-	int ret = 0;
+	gint ret = 0;
 
 	if (ss->last != 0 && ss->last != ss->start) {
 		camel_imapx_command_add(ic, ":%d", ss->last);
@@ -271,8 +265,8 @@ imapx_uidset_done(struct _uidset_state *ss, CamelIMAPXCommand *ic)
 	return ret;
 }
 
-int
-imapx_uidset_add(struct _uidset_state *ss, CamelIMAPXCommand *ic, const char *uid)
+gint
+imapx_uidset_add(struct _uidset_state *ss, CamelIMAPXCommand *ic, const gchar *uid)
 {
 	guint32 uidn;
 
@@ -316,21 +310,16 @@ imapx_uidset_add(struct _uidset_state *ss, CamelIMAPXCommand *ic, const char *ui
 	return 0;
 }
 
-
-
-
-
-
 static void
-imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, void *o)
+imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, gpointer o)
 {
 	CamelIMAPXCommandPart *cp;
 	CamelStreamNull *null;
-	unsigned int ob_size = 0;
+	guint ob_size = 0;
 
 	/* TODO: literal+? */
-	
-	switch(type & CAMEL_IMAPX_COMMAND_MASK) {
+
+	switch (type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
 	case CAMEL_IMAPX_COMMAND_STREAM: {
 		CamelObject *ob = o;
@@ -362,7 +351,7 @@ imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, v
 		break;
 	}
 	case CAMEL_IMAPX_COMMAND_FILE: {
-		char *path = o;
+		gchar *path = o;
 		struct stat st;
 
 		if (stat(path, &st) == 0) {
@@ -402,33 +391,33 @@ imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, v
 }
 
 static void
-imapx_command_addv(CamelIMAPXCommand *ic, const char *fmt, va_list ap)
+imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 {
-	const unsigned char *p, *ps, *start;
-	unsigned char c;
-	unsigned int width;
-	char ch;
-	int llong;
-	int left;
-	int fill;
-	int zero;
-	char *s;
-	char *P;
-	int d;
-	long int l;
+	const guchar *p, *ps, *start;
+	guchar c;
+	guint width;
+	gchar ch;
+	gint llong;
+	gint left;
+	gint fill;
+	gint zero;
+	gchar *s;
+	gchar *P;
+	gint d;
+	glong l;
 	guint32 f;
 	CamelFlag *F;
 	CamelStream *S;
 	CamelDataWrapper *D;
 	CamelSasl *A;
-	char buffer[16];
+	gchar buffer[16];
 
 	c(printf("adding command, fmt = '%s'\n", fmt));
 
 	p = fmt;
 	ps = fmt;
 	while ( ( c = *p++ ) ) {
-		switch(c) {
+		switch (c) {
 		case '%':
 			if (*p == '%') {
 				camel_stream_write((CamelStream *)ic->mem, ps, p-ps);
@@ -466,7 +455,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const char *fmt, va_list ap)
 					c = *p++;
 				}
 
-				switch(c) {
+				switch (c) {
 				case 'A': /* auth object - sasl auth, treat as special kind of continuation */
 					A = va_arg(ap, CamelSasl *);
 					imapx_command_add_part(ic, CAMEL_IMAPX_COMMAND_AUTH, A);
@@ -482,26 +471,26 @@ imapx_command_addv(CamelIMAPXCommand *ic, const char *fmt, va_list ap)
 					imapx_command_add_part(ic, CAMEL_IMAPX_COMMAND_DATAWRAPPER, D);
 					break;
 				case 'P': /* filename path */
-					P = va_arg(ap, char *);
+					P = va_arg(ap, gchar *);
 					c(printf("got file path '%s'\n", P));
 					imapx_command_add_part(ic, CAMEL_IMAPX_COMMAND_FILE, P);
 					break;
 				case 't': /* token */
-					s = va_arg(ap, char *);
+					s = va_arg(ap, gchar *);
 					camel_stream_write((CamelStream *)ic->mem, s, strlen(s));
 					break;
 				case 's': /* simple string */
-					s = va_arg(ap, char *);
+					s = va_arg(ap, gchar *);
 					c(printf("got string '%s'\n", s));
 					if (*s) {
-						unsigned char mask = imapx_is_mask(s);
+						guchar mask = imapx_is_mask(s);
 
 						if (mask & IMAPX_TYPE_ATOM_CHAR)
 							camel_stream_write((CamelStream *)ic->mem, s, strlen(s));
 						else if (mask & IMAPX_TYPE_TEXT_CHAR) {
 							camel_stream_write((CamelStream *)ic->mem, "\"", 1);
 							while (*s) {
-								char *start = s;
+								gchar *start = s;
 
 								while (*s && imapx_is_quoted_char(*s))
 									s++;
@@ -521,7 +510,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const char *fmt, va_list ap)
 					}
 					break;
 				case 'f': /* imap folder name */
-					s = va_arg(ap, char *);
+					s = va_arg(ap, gchar *);
 					c(printf("got folder '%s'\n", s));
 					/* FIXME: encode folder name */
 					/* FIXME: namespace? */
@@ -533,21 +522,21 @@ imapx_command_addv(CamelIMAPXCommand *ic, const char *fmt, va_list ap)
 					imap_write_flags((CamelStream *)ic->mem, f, F);
 					break;
 				case 'c':
-					d = va_arg(ap, int);
+					d = va_arg(ap, gint);
 					ch = d;
 					camel_stream_write((CamelStream *)ic->mem, &ch, 1);
 					break;
 				case 'd': /* int/unsigned */
 				case 'u':
 					if (llong) {
-						l = va_arg(ap, long int);
-						c(printf("got long int '%d'\n", (int)l));
+						l = va_arg(ap, glong);
+						c(printf("got glong '%d'\n", (gint)l));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, l);
 					} else {
-						d = va_arg(ap, int);
-						c(printf("got int '%d'\n", d));
+						d = va_arg(ap, gint);
+						c(printf("got gint '%d'\n", d));
 						memcpy(buffer, start, p-start);
 						buffer[p-start] = 0;
 						camel_stream_printf((CamelStream *)ic->mem, buffer, d);
@@ -572,22 +561,11 @@ imapx_command_addv(CamelIMAPXCommand *ic, const char *fmt, va_list ap)
 	camel_stream_write((CamelStream *)ic->mem, ps, p-ps-1);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 CamelIMAPXCommand *
-camel_imapx_command_new(const char *name, const char *select, const char *fmt, ...)
+camel_imapx_command_new(const gchar *name, const gchar *select, const gchar *fmt, ...)
 {
 	CamelIMAPXCommand *ic;
-	static int tag = 0;
+	static gint tag = 0;
 	va_list ap;
 
 	ic = g_malloc0(sizeof(*ic));
@@ -607,7 +585,7 @@ camel_imapx_command_new(const char *name, const char *select, const char *fmt, .
 }
 
 void
-camel_imapx_command_add(CamelIMAPXCommand *ic, const char *fmt, ...)
+camel_imapx_command_add(CamelIMAPXCommand *ic, const gchar *fmt, ...)
 {
 	va_list ap;
 
@@ -655,10 +633,10 @@ void
 camel_imapx_command_close(CamelIMAPXCommand *ic)
 {
 	if (ic->mem) {
-		c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (int)ic->mem->buffer->len, ic->mem->buffer->data));
+		c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (gint)ic->mem->buffer->len, ic->mem->buffer->data));
 		if (ic->mem->buffer->len > 0)
 			imapx_command_add_part(ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);
-	
+
 		camel_object_unref((CamelObject *)ic->mem);
 		ic->mem = NULL;
 	}
@@ -672,10 +650,10 @@ camel_imapx_engine_command_queue(CamelIMAPXEngine *imap, CamelIMAPXCommand *ic)
 	CamelIMAPXCommandPart *cp;
 
 	if (ic->mem) {
-		c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (int)ic->mem->buffer->len, ic->mem->buffer->data));
+		c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (gint)ic->mem->buffer->len, ic->mem->buffer->data));
 		if (ic->mem->buffer->len > 0)
 			imapx_command_add_part(imap, ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);
-	
+
 		camel_object_unref((CamelObject *)ic->mem);
 		ic->mem = NULL;
 	}
@@ -685,10 +663,10 @@ camel_imapx_engine_command_queue(CamelIMAPXEngine *imap, CamelIMAPXCommand *ic)
 #endif
 
 /* Get a path into the cache, works like maildir, but isn't */
-static char *
-imapx_get_path_uid(CamelIMAPXServer *is, CamelFolder *folder, const char *bit, const char *uid)
+static gchar *
+imapx_get_path_uid(CamelIMAPXServer *is, CamelFolder *folder, const gchar *bit, const gchar *uid)
 {
-	char *dir, *path;
+	gchar *dir, *path;
 
 	// big fixme of course, we need to create the path if it doesn't exist,
 	// base it on the server, blah blah
@@ -735,8 +713,8 @@ static void
 imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 {
 	CamelIMAPXCommand *ic, *nc;
-	int count = 0;
-	int pri = -128;
+	gint count = 0;
+	gint pri = -128;
 
 	/* See if we can start another task yet.
 
@@ -775,7 +753,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 	if (imap->select) {
 		printf("- we're selected on '%s', current jobs?\n", imap->select);
 		for (ic = (CamelIMAPXCommand *)imap->active.head;ic->next;ic=ic->next) {
-			printf("-  %3d '%s'\n", (int)ic->pri, ic->name);
+			printf("-  %3d '%s'\n", (gint)ic->pri, ic->name);
 			if (ic->pri > pri)
 				pri = ic->pri;
 			count++;
@@ -790,7 +768,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 		ic = (CamelIMAPXCommand *)imap->queue.head;
 		nc = ic->next;
 		while (nc && imap->literal == NULL && count < MAX_COMMANDS && ic->pri >= pri) {
-			printf("-- %3d '%s'?\n", (int)ic->pri, ic->name);
+			printf("-- %3d '%s'?\n", (gint)ic->pri, ic->name);
 			if (ic->select == NULL || strcmp(ic->select, imap->select) == 0) {
 				printf("--> starting '%s'\n", ic->name);
 				pri = ic->pri;
@@ -818,7 +796,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 		count = 0;
 		while (nc && imap->literal == NULL && count < MAX_COMMANDS && ic->pri >= pri) {
 			if (ic->select == NULL || (imap->select && strcmp(ic->select, imap->select))) {
-				printf("* queueing job %3d '%s'\n", (int)ic->pri, ic->name);
+				printf("* queueing job %3d '%s'\n", (gint)ic->pri, ic->name);
 				pri = ic->pri;
 				e_dlist_remove((EDListNode *)ic);
 				imapx_command_start(imap, ic);
@@ -867,7 +845,7 @@ imapx_command_queue(CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 
 /* Must have QUEUE lock */
 static CamelIMAPXCommand *
-imapx_find_command_tag(CamelIMAPXServer *imap, unsigned int tag)
+imapx_find_command_tag(CamelIMAPXServer *imap, guint tag)
 {
 	CamelIMAPXCommand *ic;
 
@@ -884,7 +862,7 @@ imapx_find_command_tag(CamelIMAPXServer *imap, unsigned int tag)
 
 /* Must not have QUEUE lock */
 static CamelIMAPXJob *
-imapx_find_job(CamelIMAPXServer *imap, int type, const char *uid)
+imapx_find_job(CamelIMAPXServer *imap, gint type, const gchar *uid)
 {
 	CamelIMAPXJob *job;
 
@@ -924,7 +902,7 @@ found:
 static void
 imapx_expunged(CamelIMAPXServer *imap)
 {
-	int count = 1, index=0, expunge;
+	gint count = 1, index=0, expunge;
 	const CamelMessageInfo *iterinfo;
 	CamelIterator *iter;
 
@@ -935,8 +913,8 @@ imapx_expunged(CamelIMAPXServer *imap)
 
 	printf("Processing '%d' expunges\n", imap->expunged->len);
 
-/*	Change implementation 
-	
+/*	Change implementation
+
 	expunge = g_array_index(imap->expunged, guint32, index++);
 	iter = camel_folder_summary_search(imap->select_folder->summary, NULL, NULL, NULL, NULL);
 	while ((iterinfo = camel_iterator_next(iter, NULL))) {
@@ -955,14 +933,14 @@ imapx_expunged(CamelIMAPXServer *imap)
 }
 
 /* handle any untagged responses */
-static int
+static gint
 imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 {
-	unsigned int id, len;
-	unsigned char *token, *p, c;
-	int tok;
+	guint id, len;
+	guchar *token, *p, c;
+	gint tok;
 	struct _status_info *sinfo;
-	
+
 	e(printf("got untagged response\n"));
 	id = 0;
 	tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
@@ -1073,7 +1051,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 				if (mi) {
 					GArray *infos = job->u.refresh_info.infos;
-					int i = job->u.refresh_info.last_index;
+					gint i = job->u.refresh_info.last_index;
 
 					/* This is rather inefficent, but should be ok if we're expecting it
 					   since we break each fetch into lots of 100 */
@@ -1122,7 +1100,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		camel_imapx_stream_ungettoken(imap->stream, tok, token, len);
 		sinfo = imap_parse_status(imap->stream, ex);
 		camel_object_trigger_event(imap, "status", sinfo);
-		switch(sinfo->condition) {
+		switch (sinfo->condition) {
 		case IMAP_READ_WRITE:
 			imap->mode = IMAPX_MODE_READ|IMAPX_MODE_WRITE;
 			printf("folder is read-write\n");
@@ -1161,12 +1139,12 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 /* handle any continuation requests
    either data continuations, or auth continuation */
-static int
+static gint
 imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 {
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
-	
+
 	printf("got continuation response\n");
 
 	/* The 'literal' pointer is like a write-lock, nothing else
@@ -1183,7 +1161,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 
 	printf("got continuation response for data\n");
 	cp = ic->current;
-	switch(cp->type & CAMEL_IMAPX_COMMAND_MASK) {
+	switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
 		printf("writing data wrapper to literal\n");
 		camel_data_wrapper_write_to_stream((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream);
@@ -1193,28 +1171,28 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 		camel_stream_write_to_stream((CamelStream *)cp->ob, (CamelStream *)imap->stream);
 		break;
 	case CAMEL_IMAPX_COMMAND_AUTH: {
-		char *resp;
-		unsigned char *token;
-		int tok, len;
-		
+		gchar *resp;
+		guchar *token;
+		gint tok, len;
+
 		tok = camel_imapx_stream_token(imap->stream, &token, &len, ex);
 		resp = camel_sasl_challenge_base64((CamelSasl *)cp->ob, token, ex);
 		if (camel_exception_is_set(ex))
 			return -1;
-		
+
 		printf("got auth continuation, feeding token '%s' back to auth mech\n", resp);
-		
+
 		camel_stream_write((CamelStream *)imap->stream, resp, strlen(resp));
-		
+
 		/* we want to keep getting called until we get a status reponse from the server
 		   ignore what sasl tells us */
 		newliteral = ic;
-		
+
 		break; }
 	case CAMEL_IMAPX_COMMAND_FILE: {
 		CamelStream *file;
 
-		printf("writing file '%s' to literal\n", (char *)cp->ob);
+		printf("writing file '%s' to literal\n", (gchar *)cp->ob);
 
 		// FIXME: errors
 		if (cp->ob && (file = camel_stream_fs_new_with_name(cp->ob, O_RDONLY, 0))) {
@@ -1233,9 +1211,9 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 		camel_exception_set (ex, 1, "continuation response for non-continuation request");
 		return -1;
 	}
-	
+
 	camel_imapx_stream_skip(imap->stream, ex);
-	
+
 	cp = cp->next;
 	if (cp->next) {
 		ic->current = cp;
@@ -1261,11 +1239,11 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 }
 
 /* handle a completion line */
-static int
-imapx_completion(CamelIMAPXServer *imap, unsigned char *token, int len, CamelException *ex)
+static gint
+imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException *ex)
 {
 	CamelIMAPXCommand * volatile ic;
-	unsigned int tag;
+	guint tag;
 
 	if (token[0] != imap->tagprefix)
 		camel_exception_throw(1, "Server sent unexpected response: %s", token);
@@ -1320,9 +1298,9 @@ static void
 imapx_step(CamelIMAPXServer *is, CamelException *ex)
 /* throws IO,PARSE exception */
 {
-	unsigned int len;
-	unsigned char *token;
-	int tok;
+	guint len;
+	guchar *token;
+	gint tok;
 
 	// poll ?  wait for other stuff? loop?
 	tok = camel_imapx_stream_token(is->stream, &token, &len, ex);
@@ -1464,19 +1442,19 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 }
 
 static void
-imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls, CamelException *ex)
+imapx_connect(CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelException *ex)
 /* throws IO exception */
 {
 	CamelStream * tcp_stream = NULL;
-	int ret;
+	gint ret;
 
 #ifdef HAVE_SSL
-	const char *mode;
+	const gchar *mode;
 #endif
 	guchar *buffer = NULL;
-	int len;
-	char *serv;
-	const char *port = NULL;
+	gint len;
+	gchar *serv;
+	const gchar *port = NULL;
 	struct addrinfo *ai, hints = { 0 };
 	CamelIMAPXCommand *ic;
 
@@ -1502,7 +1480,7 @@ imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls, CamelExcepti
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
 	}
-#else	
+#else
 	tcp_stream = camel_tcp_stream_raw_new ();
 #endif /* HAVE_SSL */
 
@@ -1516,13 +1494,13 @@ imapx_connect(CamelIMAPXServer *is, int ssl_mode, int try_starttls, CamelExcepti
 	if (ex->id) {
 		g_message ("Unable to connect %d %s \n", ex->id, ex->desc);
 		camel_object_unref(tcp_stream);
-		return;	
+		return;
 	}
 
 	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai);
 	camel_freeaddrinfo(ai);
 	if (ret == -1) {
-		if (errno == EINTR) 
+		if (errno == EINTR)
 			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Connection cancelled"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -1553,10 +1531,10 @@ retry:
 		g_message ("Connecting \n");
 		imapx_connect(is, 0, 0, ex);
 		g_message ("Connected \n");
-		
+
 		if (is->url->passwd == NULL) {
 			CamelException ex = { 0, NULL };
-			char *prompt = g_strdup_printf(_("%sPlease enter the IMAP password for %s@%s"), "", is->url->user, is->url->host);
+			gchar *prompt = g_strdup_printf(_("%sPlease enter the IMAP password for %s@%s"), "", is->url->user, is->url->host);
 			const gchar *auth_domain;
 
 			auth_domain = camel_url_get_param (is->url, "auth-domain");
@@ -1671,7 +1649,7 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 #ifdef MULTI_FETCH
-	int i;
+	gint i;
 #endif
 	// FIXME: MUST ensure we never try to get the same message
 	// twice at the same time.
@@ -1713,7 +1691,7 @@ imapx_job_append_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 	CamelMessageInfo *mi;
-	char *cur;
+	gchar *cur;
 
 	/* Append done.  If we the server supports UIDPLUS we will get an APPENDUID response
 	   with the new uid.  This lets us move the message we have directly to the cache
@@ -1722,10 +1700,10 @@ imapx_job_append_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	if (ic->status->result == IMAP_OK) {
 		if (ic->status->condition == IMAP_APPENDUID) {
-			printf("Got appenduid %d %d\n", (int)ic->status->u.appenduid.uidvalidity, (int)ic->status->u.appenduid.uid);
+			printf("Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == is->uidvalidity) {
 				mi = camel_message_info_clone(job->u.append_message.info);
-				mi->uid = g_strdup_printf("%u", (unsigned int)ic->status->u.appenduid.uid);
+				mi->uid = g_strdup_printf("%u", (guint)ic->status->u.appenduid.uid);
 				cur = imapx_get_path_uid(is, job->folder, NULL, mi->uid);
 				printf("Moving cache item %s to %s\n", job->u.append_message.path, cur);
 				link(job->u.append_message.path, cur);
@@ -1755,7 +1733,7 @@ imapx_job_append_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	// FIXME: We dont need anything selected for this command to run ... 
+	// FIXME: We dont need anything selected for this command to run ...
 	//imapx_select(is, job->folder);
 	/* TODO: we could supply the original append date from the file timestamp */
 	ic = camel_imapx_command_new("APPEND", NULL,
@@ -1773,13 +1751,13 @@ imapx_job_append_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 /* ********************************************************************** */
 
-static int
-imapx_refresh_info_uid_cmp(const void *ap, const void *bp)
+static gint
+imapx_refresh_info_uid_cmp(gconstpointer ap, gconstpointer bp)
 {
-	unsigned int av, bv;
+	guint av, bv;
 
-	av = strtoul((const char *)ap, NULL, 10);
-	bv = strtoul((const char *)bp, NULL, 10);
+	av = strtoul((const gchar *)ap, NULL, 10);
+	bv = strtoul((const gchar *)bp, NULL, 10);
 
 	if (av<bv)
 		return -1;
@@ -1789,8 +1767,8 @@ imapx_refresh_info_uid_cmp(const void *ap, const void *bp)
 		return 0;
 }
 
-static int
-imapx_refresh_info_cmp(const void *ap, const void *bp)
+static gint
+imapx_refresh_info_cmp(gconstpointer ap, gconstpointer bp)
 {
 	const struct _refresh_info *a = ap;
 	const struct _refresh_info *b = bp;
@@ -1815,7 +1793,7 @@ static void
 imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
-	int i = job->u.refresh_info.index;
+	gint i = job->u.refresh_info.index;
 	GArray *infos = job->u.refresh_info.infos;
 
 /*	if (camel_change_info_changed(job->u.refresh_info.changes))
@@ -1829,7 +1807,7 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		job->u.refresh_info.last_index = i;
 
 		for (;i<infos->len;i++) {
-			int res;
+			gint res;
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
 			if (r->uid) {
@@ -1861,11 +1839,11 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	e_msgport_reply((EMsg *)job);
 }
 
-static int
-imapx_uid_cmp(const void *ap, const void *bp, void *data)
+static gint
+imapx_uid_cmp(gconstpointer ap, gconstpointer bp, gpointer data)
 {
-	const char *a = ap, *b = bp;
-	char *ae, *be;
+	const gchar *a = ap, *b = bp;
+	gchar *ae, *be;
 	unsigned long av, bv;
 
 	av = strtoul(a, &ae, 10);
@@ -1888,7 +1866,7 @@ static void
 imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
-	int i;
+	gint i;
 	GArray *infos = job->u.refresh_info.infos;
 
 	if (ic->status->result == IMAP_OK) {
@@ -1897,7 +1875,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		const CamelMessageInfo *iterinfo;
 		CamelIMAPXMessageInfo *info;
 		CamelFolderSummary *s = job->folder->summary;
-		int i, count=0;
+		gint i, count=0;
 
 		/* Here we do the typical sort/iterate/merge loop.
 		   If the server flags dont match what we had, we modify our
@@ -2019,7 +1997,7 @@ imapx_job_list_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 /* FIXME: this is basically a copy of the same in camel-imapx-utils.c */
 static struct {
-	char *name;
+	gchar *name;
 	guint32 flag;
 } flags_table[] = {
 	{ "\\ANSWERED", CAMEL_MESSAGE_ANSWERED },
@@ -2055,21 +2033,21 @@ imapx_job_sync_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	   Not that ... given all the asynchronicity going on, we're guaranteed
 	   that what we just set is actually what is on the server now .. but
 	   if it isn't, i guess we'll fix up next refresh */
-	   
+
 	if (ic->status->result != IMAP_OK && !camel_exception_is_set(job->ex))
 		camel_exception_setv(job->ex, 1, "Error syncing changes: %s", ic->status->text);
 
 	if (job->commands == 0) {
 		if (!camel_exception_is_set(job->ex)) {
-			int i;
+			gint i;
 /*
 			for (i=0;i<job->u.sync_changes.infos->len;i++) {
 				CamelIMAPXMessageInfo *info = job->u.sync_changes.infos->pdata[i];
 
 				info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
 
-				/* FIXME: move over user flags too 
-			}*/ 
+				/* FIXME: move over user flags too
+			}*/
 		}
 		e_dlist_remove((EDListNode *)job);
 		e_msgport_reply((EMsg *)job);
@@ -2082,7 +2060,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	guint32 i, j;
 	struct _uidset_state ss;
 	GPtrArray *infos = job->u.sync_changes.infos;
-	int on;
+	gint on;
 
 	for (on=0;on<2;on++) {
 		guint32 orset = on?job->u.sync_changes.on_set:job->u.sync_changes.off_set;
@@ -2101,7 +2079,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 				CamelIMAPXMessageInfo *info = infos->pdata[i];
 				guint32 flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
 				guint32 sflags = info->server_flags & CAMEL_IMAPX_SERVER_FLAGS;
-				int send = 0;
+				gint send = 0;
 
 				if ( (on && (((flags ^ sflags) & flags) & flag))
 				     || (!on && (((flags ^ sflags) & ~flags) & flag))) {
@@ -2162,8 +2140,8 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 /* ********************************************************************** */
 
-static void *
-imapx_server_loop(void *d)
+static gpointer
+imapx_server_loop(gpointer d)
 {
 	CamelIMAPXServer *is = d;
 	CamelIMAPXJob *job;
@@ -2222,7 +2200,7 @@ imapx_server_loop(void *d)
 #ifdef HAVE_SSL
 		{
 			PRPollDesc pollfds[2] = { };
-			int res;
+			gint res;
 
 			printf("\nGoing to sleep waiting for work to do\n\n");
 
@@ -2250,7 +2228,7 @@ imapx_server_loop(void *d)
 #else
 		{
 			struct pollfd[2] = { 0 };
-			int res;
+			gint res;
 
 			pollfd[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
 			pollfd[0].events = POLLIN;
@@ -2334,7 +2312,7 @@ camel_imapx_server_get_type (void)
 			(CamelObjectInitFunc) imapx_server_init,
 			(CamelObjectFinalizeFunc) imapx_server_finalise);
 	}
-	
+
 	return type;
 }
 
@@ -2357,7 +2335,7 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 /* Client commands */
 
 void
-camel_imapx_server_connect(CamelIMAPXServer *is, int state)
+camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 {
 	if (state) {
 		pthread_t id;
@@ -2398,11 +2376,11 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 }
 
 static CamelStream *
-imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const char *uid, int pri, CamelException *ex)
+imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, gint pri, CamelException *ex)
 {
 	CamelStream *stream;
 	CamelIMAPXJob *job;
-	char *tmp, *name;
+	gchar *tmp, *name;
 
 	/* Get a message, we either get it from the local cache,
 	   Or we ask for it, which will put it in the local cache,
@@ -2431,7 +2409,7 @@ imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const char *
 	job->type = IMAPX_JOB_GET_MESSAGE;
 	job->start = imapx_job_get_message_start;
 	job->folder = folder;
-	job->u.get_message.uid = (char *)uid;
+	job->u.get_message.uid = (gchar *)uid;
 	job->u.get_message.stream = camel_stream_fs_new_with_name(tmp, O_WRONLY|O_CREAT|O_TRUNC, 0666);
 	if (job->u.get_message.stream == NULL) {
 		g_free(tmp);
@@ -2470,7 +2448,7 @@ imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const char *
 }
 
 CamelStream *
-camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const char *uid, CamelException *ex)
+camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	return imapx_server_get_message(is, folder, uid, 100, ex);
 }
@@ -2478,12 +2456,12 @@ camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const 
 void
 camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *mi, CamelException *ex)
 {
-	char *uid = NULL, *tmp = NULL, *new = NULL;
+	gchar *uid = NULL, *tmp = NULL, *new = NULL;
 	CamelStream *stream, *filter;
 	CamelMimeFilter *canon;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *info;
-	int res;
+	gint res;
 
 	/* Append just assumes we have no/a dodgy connection.  We dump stuff into the 'new'
 	   directory, and let the summary know it's there.  Then we fire off a no-reply
@@ -2492,7 +2470,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 
 	// FIXME: assign a real uid!  start with last known uid, add some maildir-like stuff?
 	do {
-		static int nextappend;
+		static gint nextappend;
 
 		g_free(uid);
 		g_free(tmp);
@@ -2513,7 +2491,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	res = camel_data_wrapper_write_to_stream((CamelDataWrapper *)message, filter);
 	camel_object_unref(canon);
 	camel_object_unref(filter);
-	
+
 	if (res == -1) {
 		camel_exception_setv(ex, 2, "Cannot create spool file: %s", g_strerror(errno));
 		goto fail;
@@ -2563,8 +2541,8 @@ static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 static CamelIterator *threaditer;
 static CamelFolder *threadfolder;
 
-static void *
-getmsgs(void *d)
+static gpointer
+getmsgs(gpointer d)
 {
 	CamelIMAPXServer *is = ((CamelIMAPXStore *)threadfolder->parent_store)->server;
 	const CamelMessageInfo *info;
@@ -2576,8 +2554,8 @@ getmsgs(void *d)
 
 	pthread_mutex_lock(&lock);
 	while ((info = imapx_iterator_next(threaditer, NULL))) {
-		char *cur = imapx_get_path_uid(is, threadfolder, NULL, camel_message_info_uid(info));
-		char *uid = g_strdup(camel_message_info_uid(info));
+		gchar *cur = imapx_get_path_uid(is, threadfolder, NULL, camel_message_info_uid(info));
+		gchar *uid = g_strdup(camel_message_info_uid(info));
 		struct stat st;
 
 		pthread_mutex_unlock(&lock);
@@ -2623,8 +2601,8 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 	g_free(job);
 
 /*	{
-		int i;
-		int c = 3;
+		gint i;
+		gint c = 3;
 		pthread_t ids[10];
 
 		threadfolder = folder;
@@ -2641,7 +2619,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 static void
 imapx_sync_free_user(GArray *user_set)
 {
-	int i;
+	gint i;
 
 	if (user_set == NULL)
 		return;
@@ -2686,7 +2664,7 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrA
 		uflags = ((CamelMessageInfoBase *)info)->user_flags;
 		suflags = info->server_user_flags;
 		while (uflags || suflags) {
-			int res;
+			gint res;
 
 			if (uflags) {
 				if (suflags)
@@ -2800,15 +2778,15 @@ imapx_name_equal(gconstpointer a, gconstpointer b)
 }
 
 static void
-imapx_list_flatten(void *k, void *v, void *d)
+imapx_list_flatten(gpointer k, gpointer v, gpointer d)
 {
 	GPtrArray *folders = d;
 
 	g_ptr_array_add(folders, v);
 }
 
-static int
-imapx_list_cmp(const void *ap, const void *bp)
+static gint
+imapx_list_cmp(gconstpointer ap, gconstpointer bp)
 {
 	struct _list_info *a = ((struct _list_info **)ap)[0];
 	struct _list_info *b = ((struct _list_info **)bp)[0];
@@ -2817,7 +2795,7 @@ imapx_list_cmp(const void *ap, const void *bp)
 }
 
 GPtrArray *
-camel_imapx_server_list(CamelIMAPXServer *is, const char *top, guint32 flags, CamelException *ex)
+camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelIMAPXJob *job;
 	GPtrArray *folders;

@@ -112,7 +112,7 @@ typedef enum {
 
 typedef struct {
 	EDataBookChangeType change_type;
-	char *vcard;
+	gchar *vcard;
 } EDataBookChange;
 
 /* Transition typedef */

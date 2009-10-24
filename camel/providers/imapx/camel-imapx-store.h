@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-store.h : class for an imap store */
 
-/* 
+/*
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -20,7 +20,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-
 
 #ifndef CAMEL_IMAPX_STORE_H
 #define CAMEL_IMAPX_STORE_H 1
@@ -55,7 +54,7 @@ typedef struct {
 	gchar *namespace, dir_sep, *base_url, *storage_path;
 
 	/* if we had a login error, what to show to user */
-	char *login_error;
+	gchar *login_error;
 
 	GPtrArray *pending_list;
 } CamelIMAPXStore;
@@ -73,5 +72,4 @@ CamelType camel_imapx_store_get_type (void);
 #endif /* __cplusplus */
 
 #endif /* CAMEL_IMAPX_STORE_H */
-
 

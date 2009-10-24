@@ -43,11 +43,11 @@ static CamelViewSummaryDiskClass *cmvs_parent;
  * camel_imapx_view_summary_new:
  *
  * Create a new CamelIMAPXViewSummary object.
- * 
+ *
  * Return value: A new CamelIMAPXViewSummary widget.
  **/
 CamelIMAPXViewSummary *
-camel_imapx_view_summary_new(const char *base, CamelException *ex)
+camel_imapx_view_summary_new(const gchar *base, CamelException *ex)
 {
 	return (CamelIMAPXViewSummary *)camel_view_summary_disk_construct(camel_object_new(camel_imapx_view_summary_get_type()), base, ex);
 }
@@ -77,10 +77,10 @@ void camel_imapx_view_last_uid(CamelIMAPXView *view, guint32 uid)
 #endif
 }
 
-static int
+static gint
 imapx_view_decode(CamelViewSummaryDisk *s, CamelView *view, CamelRecordDecoder *crd)
 {
-	int tag, ver;
+	gint tag, ver;
 
 	((CamelViewSummaryDiskClass *)cmvs_parent)->decode(s, view, crd);
 
@@ -147,7 +147,7 @@ CamelType
 camel_imapx_view_summary_get_type(void)
 {
 	static CamelType type = CAMEL_INVALID_TYPE;
-	
+
 	if (type == CAMEL_INVALID_TYPE) {
 		cmvs_parent = (CamelViewSummaryDiskClass *)camel_view_summary_disk_get_type();
 		type = camel_type_register((CamelType)cmvs_parent, "CamelIMAPXViewSummary",
@@ -158,6 +158,6 @@ camel_imapx_view_summary_get_type(void)
 					   (CamelObjectInitFunc) camel_imapx_view_summary_init,
 					   (CamelObjectFinalizeFunc) camel_imapx_view_summary_finalise);
 	}
-	
+
 	return type;
 }

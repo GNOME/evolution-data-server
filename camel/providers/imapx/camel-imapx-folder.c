@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-folder.c : class for a imap folder */
 
-/* 
+/*
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -53,12 +53,12 @@
 static CamelFolderClass *parent_class;
 
 CamelFolder *
-camel_imapx_folder_new(CamelStore *store, const char *path, const char *raw)
+camel_imapx_folder_new(CamelStore *store, const gchar *path, const gchar *raw)
 {
 	CamelFolder *folder;
 
 	d(printf("opening imap folder '%s'\n", path));
-	
+
 	folder = CAMEL_FOLDER (camel_object_new (CAMEL_IMAPX_FOLDER_TYPE));
 	camel_folder_construct(folder, store, path, path);
 
@@ -83,7 +83,7 @@ camel_imapx_folder_delete(CamelIMAPXFolder *folder, CamelException *ex)
 }
 
 void
-camel_imapx_folder_rename(CamelIMAPXFolder *folder, const char *new, CamelException *ex)
+camel_imapx_folder_rename(CamelIMAPXFolder *folder, const gchar *new, CamelException *ex)
 {
 }
 
@@ -93,7 +93,7 @@ camel_imapx_folder_close(CamelIMAPXFolder *folder, CamelException *ex)
 }
 #endif
 
-static void 
+static void
 imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 {
 	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
@@ -120,7 +120,7 @@ imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 }
 
 static CamelMimeMessage *
-imapx_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
+imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelMimeMessage *msg = NULL;
 	CamelStream *stream;
@@ -145,7 +145,7 @@ imapx_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 }
 
 static void
-imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, char **appended_uid, CamelException *ex)
+imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, gchar **appended_uid, CamelException *ex)
 {
 	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
 
@@ -216,7 +216,7 @@ imap_folder_class_init (CamelIMAPXFolderClass *klass)
 {
 	((CamelFolderClass *)klass)->refresh_info = imapx_refresh_info;
 	((CamelFolderClass *)klass)->sync = imapx_sync;
-	
+
 	((CamelFolderClass *)klass)->get_message = imapx_get_message;
 	((CamelFolderClass *)klass)->append_message = imapx_append_message;
 }
@@ -229,7 +229,7 @@ imap_folder_init(CamelObject *o, CamelObjectClass *klass)
 
 	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
 				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
-	
+
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
 		CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_USER;
@@ -247,7 +247,7 @@ CamelType
 camel_imapx_folder_get_type (void)
 {
 	static CamelType camel_imapx_folder_type = CAMEL_INVALID_TYPE;
-	
+
 	if (!camel_imapx_folder_type) {
 		camel_imapx_folder_type = camel_type_register (CAMEL_FOLDER_TYPE, "CamelIMAPXFolder",
 							      sizeof (CamelIMAPXFolder),
@@ -258,6 +258,6 @@ camel_imapx_folder_get_type (void)
 							      (CamelObjectFinalizeFunc)imap_finalise);
 		parent_class = (CamelFolderClass *)camel_folder_get_type();
 	}
-	
+
 	return camel_imapx_folder_type;
 }

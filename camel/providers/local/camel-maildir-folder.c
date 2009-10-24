@@ -374,7 +374,7 @@ maildir_sort_uids (CamelFolder *folder, GPtrArray *uids)
 	CAMEL_FOLDER_CLASS (parent_class)->sort_uids (folder, uids);
 }
 
-static void 
+static void
 maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest, GPtrArray **transferred_uids, gboolean delete_originals, CamelException *ex)
 {
 	gboolean fallback = FALSE;
@@ -390,8 +390,8 @@ maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder 
 		camel_folder_freeze (source);
 
 		for (i = 0; i < uids->len; i++) {
-			char *uid = (char *) uids->pdata[i];
-			char *s_filename, *d_filename, *tmp; 
+			gchar *uid = (gchar *) uids->pdata[i];
+			gchar *s_filename, *d_filename, *tmp;
 			CamelMaildirMessageInfo *mdi;
 			CamelMessageInfo *info;
 

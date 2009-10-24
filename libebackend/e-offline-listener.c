@@ -79,7 +79,6 @@ online_status_changed (GConfClient *client, gint cnxn_id, GConfEntry *entry, gpo
 	}
 }
 
-
 static void
 setup_offline_listener (EOfflineListener *eol)
 {
@@ -87,8 +86,8 @@ setup_offline_listener (EOfflineListener *eol)
 
 	priv->default_client = gconf_client_get_default ();
 	gconf_client_add_dir (priv->default_client, "/apps/evolution/shell", GCONF_CLIENT_PRELOAD_RECURSIVE,NULL);
-	gconf_client_notify_add (priv->default_client, "/apps/evolution/shell/start_offline", 
-				 (GConfClientNotifyFunc)online_status_changed, 
+	gconf_client_notify_add (priv->default_client, "/apps/evolution/shell/start_offline",
+				 (GConfClientNotifyFunc)online_status_changed,
 				 eol, NULL, NULL);
 
 	priv->is_offline_now = gconf_client_get_bool (priv->default_client, "/apps/evolution/shell/start_offline", NULL);
@@ -151,7 +150,7 @@ eol_class_init (EOfflineListenerClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->dispose = eol_dispose;
 	object_class->finalize = eol_finalize;
-	
+
 	signals[CHANGED] =
 		g_signal_new ("changed",
 			      G_OBJECT_CLASS_TYPE (object_class),

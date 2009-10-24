@@ -488,7 +488,7 @@ camel_cipher_validity_add_certinfo(CamelCipherValidity *vin, enum _camel_cipher_
  * Add a cert info to the signer or encrypter info, with extended data set.
  **/
 void
-camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email, void *cert_data, void (*cert_data_free)(void *cert_data), void *(*cert_data_clone)(void *cert_data))
+camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email, gpointer cert_data, void (*cert_data_free)(gpointer cert_data), gpointer (*cert_data_clone)(gpointer cert_data))
 {
 	CamelCipherCertInfo *info;
 	CamelDList *list;

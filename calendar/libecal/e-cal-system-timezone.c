@@ -276,7 +276,7 @@ files_are_identical_inode (struct stat *a_stat,
 	gboolean res = a_stat->st_ino == b_stat->st_ino;
 
 	if (res) {
-		const char *filename;
+		const gchar *filename;
 
 		filename = strrchr (b_filename, '/');
 		if (filename)

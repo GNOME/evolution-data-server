@@ -100,7 +100,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 				      NULL);
 	prop_dialog->gui = gtk_builder_new ();
 	gtk_builder_set_translation_domain (prop_dialog->gui, GETTEXT_PACKAGE);
-	
+
 	if (!gtk_builder_add_objects_from_file (prop_dialog->gui, uifile, (gchar **) ui_to_load, &error)) {
 		g_object_unref (prop_dialog->gui);
 		g_free (prop_dialog);

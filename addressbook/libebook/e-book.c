@@ -38,14 +38,13 @@
 
 #define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
 
-static char** flatten_stringlist(GList *list);
-static GList *array_to_stringlist (char **list);
+static gchar ** flatten_stringlist(GList *list);
+static GList *array_to_stringlist (gchar **list);
 static gboolean unwrap_gerror(GError *error, GError **client_error);
 static EBookStatus get_status_from_error (GError *error);
 
 G_DEFINE_TYPE(EBook, e_book, G_TYPE_OBJECT)
 #define E_BOOK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_BOOK, EBookPrivate))
-
 
 enum {
 	WRITABLE_STATUS,
@@ -59,12 +58,12 @@ static guint e_book_signals [LAST_SIGNAL];
 
 struct _EBookPrivate {
 	ESource *source;
-	char *uri;
+	gchar *uri;
 	DBusGProxy *proxy;
 	gboolean loaded;
 	gboolean writable;
 	gboolean connected;
-	char *cap;
+	gchar *cap;
 	gboolean cap_queried;
 };
 
@@ -73,7 +72,7 @@ static DBusGProxy *factory_proxy = NULL;
 
 typedef struct {
 	EBook *book;
-	void *callback; /* TODO union */
+	gpointer callback; /* TODO union */
 	gpointer closure;
 	gpointer data;
 } AsyncData;
@@ -293,7 +292,7 @@ e_book_add_contact (EBook           *book,
 		    GError         **error)
 {
 	GError *err = NULL;
-	char *vcard, *uid = NULL;
+	gchar *vcard, *uid = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -310,7 +309,7 @@ e_book_add_contact (EBook           *book,
 }
 
 static void
-add_contact_reply (DBusGProxy *proxy, char *uid, GError *error, gpointer user_data)
+add_contact_reply (DBusGProxy *proxy, gchar *uid, GError *error, gpointer user_data)
 {
 	AsyncData *data = user_data;
 	EBookIdCallback cb = data->callback;
@@ -426,7 +425,7 @@ e_book_async_commit_contact (EBook                 *book,
 			     EBookCallback          cb,
 			     gpointer               closure)
 {
-	char *vcard;
+	gchar *vcard;
 	AsyncData *data;
 
 	e_return_async_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -444,7 +443,6 @@ e_book_async_commit_contact (EBook                 *book,
 	g_free (vcard);
 	return 0;
 }
-
 
 /**
  * e_book_get_required_fields:
@@ -465,7 +463,7 @@ e_book_get_required_fields  (EBook            *book,
 			      GError          **error)
 {
 	GError *err = NULL;
-	char **list = NULL;
+	gchar **list = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -480,11 +478,11 @@ e_book_get_required_fields  (EBook            *book,
 }
 
 static void
-get_required_fields_reply(DBusGProxy *proxy, char **fields, GError *error, gpointer user_data)
+get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpointer user_data)
 {
 	AsyncData *data = user_data;
 	EBookEListCallback cb = data->callback;
-	char **i = fields;
+	gchar **i = fields;
 	EList *efields = e_list_new (NULL,
 				     (EListFreeFunc) g_free,
 				     NULL);
@@ -551,7 +549,7 @@ e_book_get_supported_fields  (EBook            *book,
 			      GError          **error)
 {
 	GError *err = NULL;
-	char **list = NULL;
+	gchar **list = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -566,11 +564,11 @@ e_book_get_supported_fields  (EBook            *book,
 }
 
 static void
-get_supported_fields_reply(DBusGProxy *proxy, char **fields, GError *error, gpointer user_data)
+get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpointer user_data)
 {
 	AsyncData *data = user_data;
 	EBookEListCallback cb = data->callback;
-	char **i = fields;
+	gchar **i = fields;
 	EList *efields = e_list_new (NULL,  (EListFreeFunc) g_free, NULL);
 
 	while (*i != NULL) {
@@ -636,7 +634,7 @@ e_book_get_supported_auth_methods (EBook            *book,
 				   GError          **error)
 {
 	GError *err = NULL;
-	char **list = NULL;
+	gchar **list = NULL;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -651,11 +649,11 @@ e_book_get_supported_auth_methods (EBook            *book,
 }
 
 static void
-get_supported_auth_methods_reply(DBusGProxy *proxy, char **methods, GError *error, gpointer user_data)
+get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *error, gpointer user_data)
 {
 	AsyncData *data = user_data;
 	EBookEListCallback cb = data->callback;
-	char **i = methods;
+	gchar **i = methods;
 	EList *emethods = e_list_new (NULL,
 				      (EListFreeFunc) g_free,
 				      NULL);
@@ -821,7 +819,7 @@ e_book_get_contact (EBook       *book,
 }
 
 static void
-get_contact_reply(DBusGProxy *proxy, char *vcard, GError *error, gpointer user_data)
+get_contact_reply(DBusGProxy *proxy, gchar *vcard, GError *error, gpointer user_data)
 {
 	AsyncData *data = user_data;
 	EBookContactCallback cb = data->callback;
@@ -941,7 +939,7 @@ e_book_remove_contacts (EBook    *book,
 			GError  **error)
 {
 	GError *err = NULL;
-	char **l;
+	gchar **l;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -949,7 +947,7 @@ e_book_remove_contacts (EBook    *book,
 
 	l = flatten_stringlist (ids);
 
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts (book->priv->proxy, (const char **) l, &err);
+	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts (book->priv->proxy, (const gchar **) l, &err);
 	g_free (l);
 	return unwrap_gerror (err, error);
 }
@@ -1091,7 +1089,7 @@ e_book_async_remove_contacts (EBook                 *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, (const char **) l, remove_contacts_reply, data);
+	org_gnome_evolution_dataserver_addressbook_Book_remove_contacts_async (book->priv->proxy, (const gchar **) l, remove_contacts_reply, data);
 	g_free (l);
 	return 0;
 }
@@ -1121,7 +1119,7 @@ e_book_get_book_view (EBook       *book,
 {
 	GError *err = NULL;
 	DBusGProxy *view_proxy;
-	char *sexp, *view_path;
+	gchar *sexp, *view_path;
 	gboolean ret = TRUE;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
@@ -1245,8 +1243,8 @@ e_book_get_contacts (EBook       *book,
 		     GError     **error)
 {
 	GError *err = NULL;
-	char **list = NULL;
-	char *sexp;
+	gchar **list = NULL;
+	gchar *sexp;
 
 	e_return_error_if_fail (E_IS_BOOK (book), E_BOOK_ERROR_INVALID_ARG);
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
@@ -1256,7 +1254,7 @@ e_book_get_contacts (EBook       *book,
 	g_free (sexp);
 	if (!err) {
 		GList *l = NULL;
-		char **i = list;
+		gchar **i = list;
 		while (*i != NULL) {
 			l = g_list_prepend (l, e_contact_new_from_vcard (*i++));
 		}
@@ -1269,13 +1267,13 @@ e_book_get_contacts (EBook       *book,
 }
 
 static void
-get_contacts_reply(DBusGProxy *proxy, char **vcards, GError *error, gpointer user_data)
+get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer user_data)
 {
 	AsyncData *data = user_data;
 	GList *list = NULL;
 	EBookListCallback cb = data->callback;
 	if (vcards) {
-		char **i = vcards;
+		gchar **i = vcards;
 		while (*i != NULL) {
 			list = g_list_prepend (list, e_contact_new_from_vcard (*i++));
 		}
@@ -1330,7 +1328,7 @@ static GList *
 parse_changes_array (GPtrArray *array)
 {
 	GList *l = NULL;
-	int i;
+	gint i;
 
 	if (array == NULL)
 		return NULL;
@@ -1700,7 +1698,7 @@ e_book_get_static_capabilities (EBook   *book,
 	e_return_error_if_fail (book->priv->proxy, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	if (!book->priv->cap_queried) {
-		char *cap = NULL;
+		gchar *cap = NULL;
 
 		if (!org_gnome_evolution_dataserver_addressbook_Book_get_static_capabilities (book->priv->proxy, &cap, error)) {
 			return NULL;
@@ -2036,7 +2034,7 @@ e_book_new (ESource *source, GError **error)
 {
 	GError *err = NULL;
 	EBook *book;
-	char *path, *xml;
+	gchar *path, *xml;
 
 	e_return_error_if_fail (E_IS_SOURCE (source), E_BOOK_ERROR_INVALID_ARG);
 
@@ -2374,7 +2372,7 @@ get_status_from_error (GError *error)
 			    return E_BOOK_ERROR_OK;
 
 	if (error->domain == DBUS_GERROR && error->code == DBUS_GERROR_REMOTE_EXCEPTION) {
-		const char *name;
+		const gchar *name;
 		gint i;
 
 		name = dbus_g_error_get_name (error);
@@ -2397,12 +2395,12 @@ get_status_from_error (GError *error)
 /**
  * Turn a GList of strings into an array of strings.
  */
-static char **
+static gchar **
 flatten_stringlist (GList *list)
 {
-	char **array = g_new0 (char *, g_list_length (list) + 1);
+	gchar **array = g_new0 (gchar *, g_list_length (list) + 1);
 	GList *l = list;
-	int i = 0;
+	gint i = 0;
 	while (l != NULL) {
 		array[i++] = l->data;
 		l = l->next;
@@ -2414,10 +2412,10 @@ flatten_stringlist (GList *list)
  * Turn an array of strings into a GList.
  */
 static GList *
-array_to_stringlist (char **list)
+array_to_stringlist (gchar **list)
 {
 	GList *l = NULL;
-	char **i = list;
+	gchar **i = list;
 	while (*i != NULL) {
 		l = g_list_prepend (l, (*i++));
 	}

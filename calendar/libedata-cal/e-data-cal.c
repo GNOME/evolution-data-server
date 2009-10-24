@@ -54,7 +54,7 @@ static void impl_Cal_getDefaultObject (EDataCal *cal, DBusGMethodInvocation *con
 static void impl_Cal_getObject (EDataCal *cal, const gchar *uid, const gchar *rid, DBusGMethodInvocation *context);
 static void impl_Cal_getObjectList (EDataCal *cal, const gchar *sexp, DBusGMethodInvocation *context);
 static void impl_Cal_getChanges (EDataCal *cal, const gchar *change_id, DBusGMethodInvocation *context);
-static void impl_Cal_getFreeBusy (EDataCal *cal, const char **user_list, const gulong start, const gulong end, DBusGMethodInvocation *context);
+static void impl_Cal_getFreeBusy (EDataCal *cal, const gchar **user_list, const gulong start, const gulong end, DBusGMethodInvocation *context);
 static void impl_Cal_discardAlarm (EDataCal *cal, const gchar *uid, const gchar *auid, DBusGMethodInvocation *context);
 static void impl_Cal_createObject (EDataCal *cal, const gchar *calobj, DBusGMethodInvocation *context);
 static void impl_Cal_modifyObject (EDataCal *cal, const gchar *calobj, const EDataCalObjModType mod, DBusGMethodInvocation *context);
@@ -257,7 +257,7 @@ impl_Cal_setMode (EDataCal *cal,
 static void
 impl_Cal_getDefaultObject (EDataCal *cal, DBusGMethodInvocation *context)
 {
- 	e_cal_backend_get_default_object (cal->priv->backend, cal, context);
+	e_cal_backend_get_default_object (cal->priv->backend, cal, context);
 }
 
 /* EDataCal::getObject method */
@@ -291,7 +291,7 @@ impl_Cal_getChanges (EDataCal *cal,
 /* EDataCal::getFreeBusy method */
 static void
 impl_Cal_getFreeBusy (EDataCal *cal,
-		      const char **user_list,
+		      const gchar **user_list,
 		      const gulong start,
 		      const gulong end,
 		      DBusGMethodInvocation *context)
@@ -299,7 +299,7 @@ impl_Cal_getFreeBusy (EDataCal *cal,
 	GList *users = NULL;
 
 	if (user_list) {
-		int i;
+		gint i;
 
 		for (i = 0; user_list[i]; i++)
 			users = g_list_append (users, (gpointer)user_list[i]);
@@ -381,7 +381,7 @@ impl_Cal_getAttachmentList (EDataCal *cal,
 }
 
 /* Function to get a new EDataCalView path, used by getQuery below */
-static gchar*
+static gchar *
 construct_calview_path (void)
 {
   static guint counter = 1;
@@ -396,7 +396,7 @@ impl_Cal_getQuery (EDataCal *cal,
 {
 	EDataCalView *query;
 	ECalBackendSExp *obj_sexp;
-	char *path;
+	gchar *path;
 
 	/* we handle this entirely here, since it doesn't require any
 	   backend involvement now that we have e_cal_view_start to
@@ -431,8 +431,6 @@ impl_Cal_getTimezone (EDataCal *cal,
 {
 	e_cal_backend_get_timezone (cal->priv->backend, cal, context, tzid);
 }
-
-
 
 /* EDataCal::addTimezone method */
 static void
@@ -514,7 +512,7 @@ e_data_cal_notify_alarm_email_address (EDataCal *cal, EServerMethodContext conte
  * Notifies listeners of the completion of the get_ldap_attribute method call.
  */
 void
-e_data_cal_notify_ldap_attribute (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const char *attribute)
+e_data_cal_notify_ldap_attribute (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, const gchar *attribute)
 {
 	DBusGMethodInvocation *method = context;
 	if (status != Success)
@@ -692,19 +690,19 @@ e_data_cal_notify_objects_sent (EDataCal *cal, EServerMethodContext context, EDa
 	if (status != Success) {
 		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot send calendar objects")));
 	} else {
-		char **users_array = NULL;
+		gchar **users_array = NULL;
 
 		if (users) {
 			GList *l;
-			char **user;
+			gchar **user;
 
-			users_array = g_new0 (char *, g_list_length (users)+1);
+			users_array = g_new0 (gchar *, g_list_length (users)+1);
 			if (users_array)
 				for (l = users, user = users_array; l != NULL; l = l->next, user++)
 					*user = g_strdup (l->data);
 		}
 		else
-			users_array = g_new0 (char *, 1);
+			users_array = g_new0 (gchar *, 1);
 
 		dbus_g_method_return (method, users_array, calobj ? calobj : "");
 		if (users_array)
@@ -763,11 +761,11 @@ e_data_cal_notify_object_list (EDataCal *cal, EServerMethodContext context, EDat
 	if (status != Success) {
 		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar object list")));
 	} else {
-		char **seq = NULL;
+		gchar **seq = NULL;
 		GList *l;
-		int i;
+		gint i;
 
-		seq = g_new0 (char *, g_list_length (objects)+1);
+		seq = g_new0 (gchar *, g_list_length (objects)+1);
 		for (l = objects, i = 0; l; l = l->next, i++) {
 			seq[i] = l->data;
 		}
@@ -789,11 +787,11 @@ void
 e_data_cal_notify_attachment_list (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status, GSList *attachments)
 {
 	DBusGMethodInvocation *method = context;
-	char **seq;
+	gchar **seq;
 	GSList *l;
-	int i;
+	gint i;
 
-	seq = g_new0 (char *, g_slist_length (attachments));
+	seq = g_new0 (gchar *, g_slist_length (attachments));
 	for (l = attachments, i = 0; l; l = l->next, i++) {
 		seq[i] = g_strdup (l->data);
 	}
@@ -897,13 +895,13 @@ e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, EDataCal
 	if (status != Success) {
 		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar changes")));
 	} else {
-		char **additions, **modifications, **removals;
+		gchar **additions, **modifications, **removals;
 		GList *l;
-		int i;
+		gint i;
 
 		additions = NULL;
 		if (adds) {
-			additions = g_new0 (char *, g_list_length (adds) + 1);
+			additions = g_new0 (gchar *, g_list_length (adds) + 1);
 			if (additions)
 				for (i = 0, l = adds; l; i++, l = l->next)
 					additions[i] = g_strdup (l->data);
@@ -911,7 +909,7 @@ e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, EDataCal
 
 		modifications = NULL;
 		if (modifies) {
-			modifications = g_new0 (char *, g_list_length (modifies) + 1);
+			modifications = g_new0 (gchar *, g_list_length (modifies) + 1);
 			if (modifications)
 				for (i = 0, l = modifies; l; i++, l = l->next)
 					modifications[i] = g_strdup (l->data);
@@ -919,7 +917,7 @@ e_data_cal_notify_changes (EDataCal *cal, EServerMethodContext context, EDataCal
 
 		removals = NULL;
 		if (deletes) {
-			removals = g_new0 (char *, g_list_length (deletes) + 1);
+			removals = g_new0 (gchar *, g_list_length (deletes) + 1);
 			if (removals)
 				for (i = 0, l = deletes; l; i++, l = l->next)
 					removals[i] = g_strdup (l->data);
@@ -947,11 +945,11 @@ e_data_cal_notify_free_busy (EDataCal *cal, EServerMethodContext context, EDataC
 	if (status != Success) {
 		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot retrieve calendar free/busy list")));
 	} else {
-		char **seq;
+		gchar **seq;
 		GList *l;
-		int i;
+		gint i;
 
-		seq = g_new0 (char *, g_list_length (freebusy));
+		seq = g_new0 (gchar *, g_list_length (freebusy));
 		for (i = 0, l = freebusy; l; i++, l = l->next) {
 			seq[i] = g_strdup (l->data);
 		}

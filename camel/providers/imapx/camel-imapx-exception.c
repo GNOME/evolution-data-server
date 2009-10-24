@@ -50,7 +50,7 @@ camel_exception_throw_ex(CamelException *ex)
 }
 
 void
-camel_exception_throw(int id, char *fmt, ...)
+camel_exception_throw(gint id, gchar *fmt, ...)
 {
 	CamelException *ex;
 	va_list ap;

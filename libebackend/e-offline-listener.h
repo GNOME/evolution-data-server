@@ -45,7 +45,6 @@ typedef enum {
 	EOL_STATE_OFFLINE = 0,
 	EOL_STATE_ONLINE = 1
 } EOfflineListenerState;
-	
 
 struct _EOfflineListener {
 	GObject parent;

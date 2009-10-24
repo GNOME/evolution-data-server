@@ -35,13 +35,13 @@ typedef struct _CamelIMAPXView CamelIMAPXView;
 struct _CamelIMAPXView {
 	CamelViewDisk view;
 
-	char separator;
+	gchar separator;
 
 	/* This data is only set on the root views */
-	char *raw_name;
+	gchar *raw_name;
 	guint32 exists;
 	guint32 uidvalidity;
-	guint32 permanentflags;	
+	guint32 permanentflags;
 };
 
 struct _CamelIMAPXViewSummary {
@@ -53,7 +53,7 @@ struct _CamelIMAPXViewSummaryClass {
 };
 
 CamelType		camel_imapx_view_summary_get_type	(void);
-CamelIMAPXViewSummary      *camel_imapx_view_summary_new	(const char *base, CamelException *ex);
+CamelIMAPXViewSummary      *camel_imapx_view_summary_new	(const gchar *base, CamelException *ex);
 
 /* called on root view */
 guint32 camel_imapx_view_next_uid(CamelIMAPXView *view);

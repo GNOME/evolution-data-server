@@ -40,7 +40,7 @@
 
 #define d(x)
 
-static void impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_uri, DBusGMethodInvocation *context);
+static void impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_uri, DBusGMethodInvocation *context);
 #include "e-data-book-factory-glue.h"
 
 static GMainLoop *loop;
@@ -170,8 +170,6 @@ e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
 	g_mutex_unlock (priv->connections_lock);
 }
 
-
-
 static void
 e_data_book_factory_class_init (EDataBookFactoryClass *e_data_book_factory_class)
 {
@@ -199,10 +197,10 @@ e_data_book_factory_init (EDataBookFactory *factory)
 }
 
 /* TODO: write dispose to kill hash */
-static char *
-e_data_book_factory_extract_proto_from_uri (const char *uri)
+static gchar *
+e_data_book_factory_extract_proto_from_uri (const gchar *uri)
 {
-	char *proto, *p;
+	gchar *proto, *p;
 	p = strchr (uri, ':');
 	if (p == NULL)
 		return NULL;
@@ -246,7 +244,7 @@ construct_book_factory_path (void)
 }
 
 static void
-my_remove (char *key, GObject *dead)
+my_remove (gchar *key, GObject *dead)
 {
 	EDataBookFactoryPrivate *priv = factory->priv;
 	GHashTableIter iter;
@@ -281,13 +279,13 @@ my_remove (char *key, GObject *dead)
 }
 
 static void
-impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusGMethodInvocation *context)
+impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_source, DBusGMethodInvocation *context)
 {
 	EDataBook *book;
 	EBookBackend *backend;
 	EDataBookFactoryPrivate *priv = factory->priv;
 	ESource *source;
-	char *uri, *path, *sender;
+	gchar *uri, *path, *sender;
 	GList *list;
 
 	if (IN_source == NULL || IN_source[0] == '\0') {
@@ -362,13 +360,13 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const char *IN_source, DBusG
 
 static void
 name_owner_changed (DBusGProxy *proxy,
-                    const char *name,
-                    const char *prev_owner,
-                    const char *new_owner,
+                    const gchar *name,
+                    const gchar *prev_owner,
+                    const gchar *new_owner,
                     EDataBookFactory *factory)
 {
 	if (strcmp (new_owner, "") == 0 && strcmp (name, prev_owner) == 0) {
-		char *key;
+		gchar *key;
 		GList *list = NULL;
 		g_mutex_lock (factory->priv->connections_lock);
 		if (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
@@ -382,7 +380,7 @@ name_owner_changed (DBusGProxy *proxy,
 
 /* Convenience function to print an error and exit */
 G_GNUC_NORETURN static void
-die (const char *prefix, GError *error)
+die (const gchar *prefix, GError *error)
 {
 	g_error("%s: %s", prefix, error->message);
 	g_error_free (error);
@@ -401,8 +399,8 @@ offline_state_changed_cb (EOfflineListener *eol, EDataBookFactory *factory)
 
 #define E_DATA_BOOK_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.AddressBook"
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc, gchar **argv)
 {
 	GError *error = NULL;
 	DBusGProxy *bus_proxy;

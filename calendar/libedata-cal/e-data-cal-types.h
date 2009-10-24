@@ -31,10 +31,10 @@ typedef enum {
 	QueryRefused,
 
 	CouldNotCancel,
-	
+
 	OtherError,
 	InvalidServerVersion
-	
+
 } EDataCalCallStatus;
 
 /* Some hacks so the backends compile without change */

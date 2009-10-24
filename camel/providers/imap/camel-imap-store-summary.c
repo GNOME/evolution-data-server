@@ -575,7 +575,7 @@ namespaces_save (CamelImapStoreSummary *s, FILE *in, CamelImapStoreNamespace *ns
 {
 	while (ns) {
 		if (camel_file_util_encode_string(in, ns->path) == -1
-	    	    || camel_file_util_encode_string(in, ns->full_name) == -1
+		    || camel_file_util_encode_string(in, ns->full_name) == -1
 		    || camel_file_util_encode_uint32(in, (guint32)ns->sep) == -1)
 			return FALSE;
 

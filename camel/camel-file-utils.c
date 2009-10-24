@@ -764,13 +764,13 @@ camel_file_util_savename(const gchar *filename)
  * Returns 0 on success or -1 on fail. In the case of failure, errno
  * will be set appropriately.
  **/
-int
-camel_mkdir (const char *path, mode_t mode)
+gint
+camel_mkdir (const gchar *path, mode_t mode)
 {
-	char *copy, *p;
-	
+	gchar *copy, *p;
+
 	g_assert(path && path[0] == '/');
-	
+
 	p = copy = g_alloca (strlen (path) + 1);
 	strcpy(copy, path);
 	do {
@@ -784,6 +784,6 @@ camel_mkdir (const char *path, mode_t mode)
 		if (p)
 			*p = '/';
 	} while (p);
-	
+
 	return 0;
 }

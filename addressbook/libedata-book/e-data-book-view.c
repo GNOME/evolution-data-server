@@ -48,9 +48,9 @@ struct _EDataBookViewPrivate {
 	EDataBook *book;
 	EBookBackend *backend;
 
-	char* card_query;
+	gchar * card_query;
 	EBookBackendSExp *card_sexp;
-	int max_results;
+	gint max_results;
 
 	gboolean running;
 	GMutex *pending_mutex;
@@ -139,9 +139,9 @@ e_data_book_view_init (EDataBookView *book_view)
 	priv->running = FALSE;
 	priv->pending_mutex = g_mutex_new ();
 
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
 
 	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal,
 					   g_free, NULL);
@@ -205,7 +205,7 @@ send_pending_removes (EDataBookView *view)
  * @vcard.
  */
 static void
-notify_change (EDataBookView *view, char *vcard)
+notify_change (EDataBookView *view, gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
 	send_pending_adds (view);
@@ -218,7 +218,7 @@ notify_change (EDataBookView *view, char *vcard)
  * Queue @id to be sent as a change notification. This takes ownership of @id.
  */
 static void
-notify_remove (EDataBookView *view, char *id)
+notify_remove (EDataBookView *view, gchar *id)
 {
 	EDataBookViewPrivate *priv = view->priv;
 
@@ -234,7 +234,7 @@ notify_remove (EDataBookView *view, char *id)
  * @vcard but not @id.
  */
 static void
-notify_add (EDataBookView *view, const char *id, char *vcard)
+notify_add (EDataBookView *view, const gchar *id, gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
 	send_pending_changes (view);
@@ -620,8 +620,8 @@ impl_BookView_dispose (EDataBookView *book_view, GError **eror)
 
 void
 e_data_book_view_set_thresholds (EDataBookView *book_view,
-                                 int minimum_grouping_threshold,
-                                 int maximum_grouping_threshold)
+                                 gint minimum_grouping_threshold,
+                                 gint maximum_grouping_threshold)
 {
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
 

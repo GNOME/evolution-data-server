@@ -1447,7 +1447,7 @@ imap_connect (CamelService *service, CamelException *ex)
 		}
 
 		if (namespaces) {
-			#define add_all(_ns) 									\
+			#define add_all(_ns)									\
 				if (_ns) {									\
 					struct _namespace *ns;							\
 														\
@@ -2877,7 +2877,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 		if ((g_str_equal (name, full_name)
 		     || imap_match_pattern (ns, pattern, full_name)
 		     || (include_inbox && !g_ascii_strcasecmp (full_name, "INBOX")))
-		    && ((ns == main_ns && 
+		    && ((ns == main_ns &&
 			((imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS) == 0
 			   || (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0))
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)

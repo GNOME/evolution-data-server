@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-store.c : class for a imap store */
 
-/* 
+/*
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2000-2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -86,7 +86,7 @@ imapx_name_equal(gconstpointer a, gconstpointer b)
 
 static void imap_construct(CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
-	char *base, *summary;
+	gchar *base, *summary;
 	CamelIMAPXStore *store = (CamelIMAPXStore *)service;
 
 	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
@@ -103,7 +103,6 @@ static void imap_construct(CamelService *service, CamelSession *session, CamelPr
 		camel_store_summary_load((CamelStoreSummary *)store->summary);
 	}
 }
-
 
 extern CamelServiceAuthType camel_imapx_password_authtype;
 extern CamelServiceAuthType camel_imapx_apop_authtype;
@@ -136,11 +135,11 @@ static void
 store_get_pass(CamelIMAPXStore *store)
 {
 	if (((CamelService *)store)->url->passwd == NULL) {
-		char *prompt;
+		gchar *prompt;
 		CamelException ex;
 
 		camel_exception_init(&ex);
-		
+
 		prompt = g_strdup_printf (_("%sPlease enter the IMAP password for %s@%s"),
 					  store->login_error?store->login_error:"",
 					  ((CamelService *)store)->url->user,
@@ -166,10 +165,10 @@ store_get_sasl(struct _CamelIMAPXDriver *driver, CamelIMAPXStore *store)
 }
 
 static void
-store_get_login(struct _CamelIMAPXDriver *driver, char **login, char **pass, CamelIMAPXStore *store)
+store_get_login(struct _CamelIMAPXDriver *driver, gchar **login, gchar **pass, CamelIMAPXStore *store)
 {
 	store_get_pass(store);
-	
+
 	*login = g_strdup(((CamelService *)store)->url->user);
 	*pass = g_strdup(((CamelService *)store)->url->passwd);
 }
@@ -198,7 +197,7 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 
 	if (store->server)
 		camel_imapx_server_connect(store->server, 0);
-	
+
 	return TRUE;
 }
 
@@ -248,7 +247,7 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 }
 
 static CamelFolder *
-imap_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex)
+imap_get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelException *ex)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
 	CamelFolder *folder;
@@ -273,7 +272,7 @@ imap_get_inbox(CamelStore *store, CamelException *ex)
 static CamelFolderInfo *
 folders_build_info(CamelURL *base, struct _list_info *li)
 {
-	char *path, *full_name, *name;
+	gchar *path, *full_name, *name;
 	CamelFolderInfo *fi;
 
 	full_name = imapx_list_get_path(li);
@@ -318,15 +317,15 @@ folders_build_info(CamelURL *base, struct _list_info *li)
 /* note, pname is the raw name, not the folderinfo name */
 /* note also this free's as we go, since we never go 'backwards' */
 static CamelFolderInfo *
-folders_build_rec(CamelURL *base, GPtrArray *folders, int *ip, CamelFolderInfo *pfi, char *pname)
+folders_build_rec(CamelURL *base, GPtrArray *folders, gint *ip, CamelFolderInfo *pfi, gchar *pname)
 {
-	int plen = 0;
+	gint plen = 0;
 	CamelFolderInfo *last = NULL, *first = NULL;
 
 	if (pfi)
 		plen = strlen(pname);
 
-	for(;(*ip)<(int)folders->len;) {
+	for (;(*ip)<(gint)folders->len;) {
 		CamelFolderInfo *fi;
 		struct _list_info *li;
 
@@ -344,7 +343,7 @@ folders_build_rec(CamelURL *base, GPtrArray *folders, int *ip, CamelFolderInfo *
 
 		/* is this not an immediate child of the parent? */
 #if 0
-		char *p;
+		gchar *p;
 		if (pfi != NULL
 		    && li->separator != 0
 		    && (p = strchr(li->name + plen + 1, li->separator)) != NULL) {
@@ -381,9 +380,9 @@ folders_build_rec(CamelURL *base, GPtrArray *folders, int *ip, CamelFolderInfo *
 }
 
 static void
-folder_info_dump(CamelFolderInfo *fi, int depth)
+folder_info_dump(CamelFolderInfo *fi, gint depth)
 {
-	char *s;
+	gchar *s;
 
 	s = alloca(depth+1);
 	memset(s, ' ', depth);
@@ -394,7 +393,7 @@ folder_info_dump(CamelFolderInfo *fi, int depth)
 			folder_info_dump(fi->child, depth+2);
 		fi = fi->next;
 	}
-	
+
 }
 
 // THIS IS VERY CRAP AND VERY TEMPORARY
@@ -417,7 +416,6 @@ folder_info_fill(CamelStore *store, CamelFolderInfo *fi)
 		fi = fi->next;
 	}
 }
-
 
 /* folder_name is path name */
 static CamelFolderInfo *
@@ -482,7 +480,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 	}
 }
 
-static gint 
+static gint
 imap_match_pattern(gchar dir_sep, const gchar *pattern, const gchar *name)
 {
 	gchar p, n;
@@ -507,7 +505,6 @@ imap_match_pattern(gchar dir_sep, const gchar *pattern, const gchar *name)
 
 	return n == 0 && (p == '%' || p == 0);
 }
-
 
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store, const gchar *top,
@@ -612,14 +609,14 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 }
 
 static CamelFolderInfo *
-imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+imap_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
 	CamelFolderInfo * fi= NULL;
 	GPtrArray *folders = NULL;
 	CamelURL *base;
 	CamelIterator *iter;
-	int i;
+	gint i;
 
 	if (istore->server == NULL) {
 		camel_service_connect((CamelService *)store, ex);
@@ -634,7 +631,7 @@ imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 		folders = camel_imapx_server_list(istore->server, "", flags, ex);
 		for (i=0;!camel_exception_is_set(ex) && i<folders->len;i++) {
 			struct _list_info *li = folders->pdata[i];
-			char *name;
+			gchar *name;
 
 			name = imapx_list_get_path(li);
 			g_free(name);
@@ -655,19 +652,19 @@ imap_get_folder_info(CamelStore *store, const char *top, guint32 flags, CamelExc
 }
 
 static void
-imap_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
+imap_delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
 	camel_exception_setv(ex, 1, "delete_folder::unimplemented");
 }
 
 static void
-imap_rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex)
+imap_rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
 {
 	camel_exception_setv(ex, 1, "rename_folder::unimplemented");
 }
 
 static CamelFolderInfo *
-imap_create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex)
+imap_create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
 {
 	camel_exception_setv(ex, 1, "create_folder::unimplemented");
 	return NULL;
@@ -675,7 +672,7 @@ imap_create_folder(CamelStore *store, const char *parent_name, const char *folde
 
 /* ********************************************************************** */
 #if 0
-static int store_resp_fetch(CamelIMAPXEngine *ie, guint32 id, void *data)
+static gint store_resp_fetch(CamelIMAPXEngine *ie, guint32 id, gpointer data)
 {
 	struct _fetch_info *finfo;
 	CamelIMAPXStore *istore = data;
@@ -762,7 +759,7 @@ static int store_resp_fetch(CamelIMAPXEngine *ie, guint32 id, void *data)
 					if (pending == NULL) {
 						pending = e_memchunk_alloc(istore->pending_fetch_chunks);
 						pending->info = info;
-						g_hash_table_insert(istore->pending_fetch_table, (char *)camel_message_info_uid(info), pending);
+						g_hash_table_insert(istore->pending_fetch_table, (gchar *)camel_message_info_uid(info), pending);
 						e_dlist_addtail(&istore->pending_fetch_list, (EDListNode *)pending);
 					}
 				} else {
@@ -796,7 +793,7 @@ camel_imapx_store_folder_selected(CamelIMAPXStore *store, CamelIMAPXFolder *fold
 {
 	CamelIMAPXCommand * volatile ic = NULL;
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
-	int i;
+	gint i;
 	struct _uidset_state ss;
 	GPtrArray *fetch;
 	CamelMessageInfo *info;
@@ -876,14 +873,14 @@ camel_imapx_store_folder_selected(CamelIMAPXStore *store, CamelIMAPXFolder *fold
 #if 0
 /*char *uids[] = {"1", "2", "4", "5", "6", "7", "9", "11", "12", 0};*/
 /*char *uids[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 0};*/
-char *uids[] = {"1", "3", "5", "7", "9", "11", "12", "13", "14", "15", "20", "21", "24", "25", "26", 0};
+gchar *uids[] = {"1", "3", "5", "7", "9", "11", "12", "13", "14", "15", "20", "21", "24", "25", "26", 0};
 
 void
 uidset_test(CamelIMAPXEngine *ie)
 {
 	struct _uidset_state ss;
 	CamelIMAPXCommand *ic;
-	int i;
+	gint i;
 
 	/*ic = camel_imapx_engine_command_new(ie, 0, "FETCH", NULL, "FETCH ");*/
 	uidset_init(&ss, 0, 0);
@@ -906,7 +903,7 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS(klass);
 
 	parent_class = CAMEL_STORE_CLASS(camel_type_get_global_classfuncs(camel_store_get_type()));
-	
+
 	camel_service_class->construct = imap_construct;
 	camel_service_class->query_auth_types = imap_query_auth_types;
 	camel_service_class->connect = imap_connect;

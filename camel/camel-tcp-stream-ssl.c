@@ -1064,13 +1064,13 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 
 	SSL_SetURL (ssl_fd, ssl->priv->expected_host);
 
- 	/* NSS provides a default implementation for the SSL_GetClientAuthDataHook callback
- 	 * but does not enable it by default. It must be explicltly requested by the application.
- 	 * See: http://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslfnc.html#1126622 */
- 	SSL_GetClientAuthDataHook (ssl_fd, (SSLGetClientAuthData)&NSS_GetClientAuthData, NULL );
- 
- 	/* NSS provides _and_ installs a default implementation for the
- 	 * SSL_AuthCertificateHook callback so we _don't_ need to install one. */
+	/* NSS provides a default implementation for the SSL_GetClientAuthDataHook callback
+	 * but does not enable it by default. It must be explicltly requested by the application.
+	 * See: http://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslfnc.html#1126622 */
+	SSL_GetClientAuthDataHook (ssl_fd, (SSLGetClientAuthData)&NSS_GetClientAuthData, NULL );
+
+	/* NSS provides _and_ installs a default implementation for the
+	 * SSL_AuthCertificateHook callback so we _don't_ need to install one. */
 	SSL_BadCertHook (ssl_fd, ssl_bad_cert, ssl);
 
 	ssl->priv->ssl_mode = TRUE;

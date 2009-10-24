@@ -3,14 +3,13 @@
 #include "camel-imapx-folder.h"
 #include <camel/camel-session.h>
 
-int 
-main (int argc, char *argv [])
+gint
+main (gint argc, gchar *argv [])
 {
 	CamelSession *session;
 	CamelException *ex;
 	gchar *uri = NULL;
 	CamelService *service;
-
 
 	if (argc != 2) {
 		printf ("Pass the account url argument \n");
@@ -23,7 +22,7 @@ main (int argc, char *argv [])
 	camel_init ("/tmp/test-camel-imapx");
 	camel_provider_init ();
 	ex = camel_exception_new ();
-	
+
 	session = CAMEL_SESSION (camel_object_new (CAMEL_SESSION_TYPE));
 	camel_session_construct (session, "/tmp/test-camel-imapx");
 

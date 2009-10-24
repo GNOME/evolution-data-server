@@ -1,13 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /* camel-imap-folder.h : Class for a IMAP folder */
 
-/* 
+/*
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * Copyright (C) 2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of version 2 of the GNU General Public 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
  * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -39,7 +39,7 @@ extern "C" {
 typedef struct _CamelIMAPXFolder {
 	CamelFolder parent_object;
 
-	char *raw_name;
+	gchar *raw_name;
 //	CamelChangeInfo *changes;
 } CamelIMAPXFolder;
 
@@ -51,7 +51,7 @@ typedef struct _CamelIMAPXFolderClass {
 CamelType camel_imapx_folder_get_type (void);
 
 /* public methods */
-CamelFolder *camel_imapx_folder_new(CamelStore *parent, const char *path, const char *raw);
+CamelFolder *camel_imapx_folder_new(CamelStore *parent, const gchar *path, const gchar *raw);
 
 #ifdef __cplusplus
 }

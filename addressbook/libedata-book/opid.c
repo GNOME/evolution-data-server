@@ -22,7 +22,7 @@
 #include "opid.h"
 
 G_LOCK_DEFINE_STATIC (lock);
-static int counter = 0;
+static gint counter = 0;
 static GHashTable *hash = NULL;
 
 static void
@@ -35,7 +35,7 @@ opid_init (void)
 guint32
 opid_store (gpointer p)
 {
-	int id;
+	gint id;
 
 	g_return_val_if_fail (p, 0);
 

@@ -47,7 +47,7 @@
 
 #define d(x)
 
-static void impl_CalFactory_getCal (EDataCalFactory *factory, const char *IN_uri, EDataCalObjType type, DBusGMethodInvocation *context);
+static void impl_CalFactory_getCal (EDataCalFactory *factory, const gchar *IN_uri, EDataCalObjType type, DBusGMethodInvocation *context);
 #include "e-data-cal-factory-glue.h"
 
 static GMainLoop *loop;
@@ -103,7 +103,7 @@ e_data_cal_factory_error_quark (void)
 static icalcomponent_kind
 calobjtype_to_icalkind (const EDataCalObjType type)
 {
-	switch (type){
+	switch (type) {
 	case Event:
 		return ICAL_VEVENT_COMPONENT;
 	case Todo:
@@ -120,7 +120,7 @@ calobjtype_to_icalkind (const EDataCalObjType type)
 static const gchar *
 calobjtype_to_string (const EDataCalObjType type)
 {
-	switch (type){
+	switch (type) {
 	case Event:
 		return "VEVENT";
 	case Todo:
@@ -443,13 +443,13 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 
 static void
 name_owner_changed (DBusGProxy      *proxy,
-                    const char      *name,
-                    const char      *prev_owner,
-                    const char      *new_owner,
+                    const gchar      *name,
+                    const gchar      *prev_owner,
+                    const gchar      *new_owner,
                     EDataCalFactory *factory)
 {
 	if (strcmp (new_owner, "") == 0 && strcmp (name, prev_owner) == 0) {
-		char *key;
+		gchar *key;
 		GList *list = NULL;
 		if (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
 			g_list_foreach (list, (GFunc)g_object_unref, NULL);
@@ -660,7 +660,7 @@ e_data_cal_factory_dump_active_backends (EDataCalFactory *factory)
 
 /* Convenience function to print an error and exit */
 G_GNUC_NORETURN static void
-die (const char *prefix, GError *error)
+die (const gchar *prefix, GError *error)
 {
 	g_error("%s: %s", prefix, error->message);
 	g_error_free (error);
@@ -679,7 +679,7 @@ offline_state_changed_cb (EOfflineListener *eol, EDataCalFactory *factory)
 
 #define E_DATA_CAL_FACTORY_SERVICE_NAME "org.gnome.evolution.dataserver.Calendar"
 
-int
+gint
 main (gint argc, gchar **argv)
 {
 	GError *error = NULL;

@@ -17,7 +17,6 @@
 	 return FALSE;							\
        };				}G_STMT_END
 
-
 #define e_return_async_error_if_fail(expr, error) G_STMT_START { \
     if G_LIKELY (expr) {} else {                                 \
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL,                 \

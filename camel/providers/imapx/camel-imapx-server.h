@@ -54,12 +54,12 @@ struct _CamelIMAPXServer {
 	EMsgPort *port;
 	EDList jobs;
 
-	char tagprefix;
-	int state:4;
+	gchar tagprefix;
+	gint state:4;
 
 	/* Current command/work queue.  All commands are stored in one list,
 	   all the time, so they can be cleaned up in exception cases */
-	void *queue_lock;
+	gpointer queue_lock;
 	struct _CamelIMAPXCommand *literal;
 	EDList queue;
 	EDList active;
@@ -67,7 +67,7 @@ struct _CamelIMAPXServer {
 
 	/* info on currently selected folder */
 	struct _CamelFolder *select_folder;
-	char *select;
+	gchar *select;
 	struct _CamelFolderChangeInfo *changes;
 	struct _CamelFolder *select_pending;
 	guint32 permanentflags;
@@ -85,21 +85,21 @@ struct _CamelIMAPXServer {
 struct _CamelIMAPXServerClass {
 	CamelObjectClass cclass;
 
-	char tagprefix;
+	gchar tagprefix;
 };
 
 CamelType               camel_imapx_server_get_type     (void);
 CamelIMAPXServer *camel_imapx_server_new(struct _CamelStore *store, struct _CamelURL *url);
 
-void camel_imapx_server_connect(CamelIMAPXServer *is, int state);
+void camel_imapx_server_connect(CamelIMAPXServer *is, gint state);
 
-GPtrArray *camel_imapx_server_list(CamelIMAPXServer *is, const char *top, guint32 flags, CamelException *ex);
+GPtrArray *camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, CamelException *ex);
 
 void camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelException *ex);
 void camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrArray *infos, CamelException *ex);
 void camel_imapx_server_expunge(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
 
-CamelStream *camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const char *uid, struct _CamelException *ex);
+CamelStream *camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, struct _CamelException *ex);
 void camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelMimeMessage *message, const struct _CamelMessageInfo *mi, CamelException *ex);
 
 #endif /* ! _CAMEL_IMAPX_SERVER_H */

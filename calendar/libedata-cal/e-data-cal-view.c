@@ -60,7 +60,7 @@ struct _EDataCalViewPrivate {
 
 	GHashTable *ids;
 
-	char *path;
+	gchar *path;
 };
 
 G_DEFINE_TYPE (EDataCalView, e_data_cal_view, G_TYPE_OBJECT);
@@ -183,16 +183,16 @@ e_data_cal_view_init (EDataCalView *view)
 	priv->started = FALSE;
 	priv->sexp = NULL;
 
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (char*), THRESHOLD);
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
+	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD);
 
 	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify)e_cal_component_free_id, NULL);
 }
 
 EDataCalView *
 e_data_cal_view_new (ECalBackend *backend,
-		     const char *path, ECalBackendSExp *sexp)
+		     const gchar *path, ECalBackendSExp *sexp)
 {
 	EDataCalView *query;
 
@@ -204,7 +204,7 @@ e_data_cal_view_new (ECalBackend *backend,
 	return query;
 }
 
-const char *
+const gchar *
 e_data_cal_view_get_dbus_path (EDataCalView *view)
 {
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
@@ -266,7 +266,7 @@ send_pending_removes (EDataCalView *view)
 }
 
 static void
-notify_add (EDataCalView *view, char *obj)
+notify_add (EDataCalView *view, gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	ECalComponent *comp;
@@ -287,7 +287,7 @@ notify_add (EDataCalView *view, char *obj)
 }
 
 static void
-notify_change (EDataCalView *view, char *obj)
+notify_change (EDataCalView *view, gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 
@@ -301,7 +301,7 @@ static void
 notify_remove (EDataCalView *view, ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv = view->priv;
-	char *uid;
+	gchar *uid;
 
 	send_pending_adds (view);
 	send_pending_changes (view);
@@ -324,7 +324,6 @@ notify_done (EDataCalView *view)
 
 	g_signal_emit (view, signals[DONE], 0, priv->done_status);
 }
-
 
 static gboolean
 impl_EDataCalView_start (EDataCalView *query, GError **error)

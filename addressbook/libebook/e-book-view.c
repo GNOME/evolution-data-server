@@ -109,7 +109,7 @@ contacts_removed_cb (DBusGProxy *proxy, const gchar **ids, EBookView *book_view)
 		return;
 
 	for (p = ids; *p; p++) {
-		list = g_list_prepend (list, (char*)*p);
+		list = g_list_prepend (list, (gchar *)*p);
 	}
 	list = g_list_reverse (list);
 

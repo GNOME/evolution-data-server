@@ -69,7 +69,7 @@ gssize camel_read_socket (gint fd, gchar *buf, gsize n);
 gssize camel_write_socket (gint fd, const gchar *buf, gsize n);
 
 gchar *camel_file_util_savename(const gchar *filename);
-int camel_mkdir (const char *path, mode_t mode);
+gint camel_mkdir (const gchar *path, mode_t mode);
 
 G_END_DECLS
 

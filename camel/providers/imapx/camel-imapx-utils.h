@@ -46,7 +46,7 @@ typedef enum _camel_imapx_id_t {
 } camel_imapx_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */
-camel_imapx_id_t imap_tokenise(register const char *str, register unsigned int len);
+camel_imapx_id_t imap_tokenise(register const gchar *str, register guint len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
@@ -83,7 +83,7 @@ struct _CamelMessageContentInfo *imap_parse_body_fields(struct _CamelIMAPXStream
 struct _camel_header_address *imap_parse_address_list(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
 struct _CamelMessageInfo *imap_parse_envelope(struct _CamelIMAPXStream *is, CamelException *ex) /* IO, PARSE */;
 struct _CamelMessageContentInfo *imap_parse_body(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
-char *imap_parse_section(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
+gchar *imap_parse_section(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
 void imap_free_body(struct _CamelMessageContentInfo *cinfo);
 
 /* ********************************************************************** */
@@ -100,9 +100,9 @@ struct _fetch_info {
 	guint32 offset;		/* start offset of a BODY[]<offset.length> request */
 	guint32 flags;		/* FLAGS */
 	struct _CamelFlag *user_flags;
-	char *date;		/* INTERNALDATE */
-	char *section;		/* section for a BODY[section] request */
-	char *uid;		/* UID */
+	gchar *date;		/* INTERNALDATE */
+	gchar *section;		/* section for a BODY[section] request */
+	gchar *uid;		/* UID */
 };
 
 #define FETCH_BODY (1<<0)
@@ -129,8 +129,8 @@ struct _status_info {
 
 	union {
 		struct {
-			char *oldname;
-			char *newname;
+			gchar *oldname;
+			gchar *newname;
 		} newname;
 		guint32 permanentflags;
 		guint32 uidvalidity;
@@ -141,7 +141,7 @@ struct _status_info {
 		} appenduid;
 	} u;
 
-	char *text;
+	gchar *text;
 };
 
 struct _status_info *imap_parse_status(struct _CamelIMAPXStream *is, CamelException *ex);
@@ -150,21 +150,21 @@ void imap_free_status(struct _status_info *sinfo);
 
 /* ********************************************************************** */
 
-/* should this just return a FolderInfo? 
+/* should this just return a FolderInfo?
    should this just return the name & flags & separator by reference? */
 struct _list_info {
 	guint32 flags:24;
-	char separator;
-	char *name;
+	gchar separator;
+	gchar *name;
 };
 
 struct _list_info *imap_parse_list(struct _CamelIMAPXStream *is, CamelException *ex);
-char *imapx_list_get_path(struct _list_info *li);
+gchar *imapx_list_get_path(struct _list_info *li);
 void imap_free_list(struct _list_info *linfo);
 
 /* ********************************************************************** */
 
-extern unsigned char imapx_specials[256];
+extern guchar imapx_specials[256];
 
 #define IMAPX_TYPE_CHAR (1<<0)
 #define IMAPX_TYPE_TEXT_CHAR (1<<1)
@@ -173,7 +173,7 @@ extern unsigned char imapx_specials[256];
 #define IMAPX_TYPE_TOKEN_CHAR (1<<4)
 #define IMAPX_TYPE_NOTID_CHAR (1<<5)
 
-unsigned char imapx_is_mask(const char *p);
+guchar imapx_is_mask(const gchar *p);
 
 #define imapx_is_text_char(c) ((imapx_specials[((unsigned char)(c))&0xff] & IMAPX_TYPE_TEXT_CHAR) != 0)
 #define imapx_is_quoted_char(c) ((imapx_specials[((unsigned char)(c))&0xff] & IMAPX_TYPE_QUOTED_CHAR) != 0)

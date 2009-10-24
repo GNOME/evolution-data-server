@@ -764,7 +764,7 @@ e_book_backend_sync (EBookBackend *backend)
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 EDataBookChange *
-e_book_backend_change_add_new     (const char *vcard)
+e_book_backend_change_add_new     (const gchar *vcard)
 {
   EDataBookChange *new_change = g_new (EDataBookChange, 1);
 
@@ -784,7 +784,7 @@ e_book_backend_change_add_new     (const char *vcard)
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 EDataBookChange *
-e_book_backend_change_modify_new  (const char *vcard)
+e_book_backend_change_modify_new  (const gchar *vcard)
 {
   EDataBookChange *new_change = g_new (EDataBookChange, 1);
 
@@ -804,7 +804,7 @@ e_book_backend_change_modify_new  (const char *vcard)
  * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 EDataBookChange *
-e_book_backend_change_delete_new  (const char *vcard)
+e_book_backend_change_delete_new  (const gchar *vcard)
 {
   EDataBookChange *new_change = g_new (EDataBookChange, 1);
 
