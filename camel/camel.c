@@ -162,10 +162,12 @@ camel_shutdown (void)
 	/* These next calls must come last. */
 
 #if defined (HAVE_NSS)
-	PR_Lock(nss_initlock);
-	if (nss_initialized)
-		NSS_Shutdown ();
-	PR_Unlock(nss_initlock);
+	if (nss_initlock != NULL) {
+		PR_Lock(nss_initlock);
+		if (nss_initialized)
+			NSS_Shutdown ();
+		PR_Unlock(nss_initlock);
+	}
 #endif /* HAVE_NSS */
 
 	initialised = FALSE;
