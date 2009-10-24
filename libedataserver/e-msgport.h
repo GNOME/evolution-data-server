@@ -5,6 +5,7 @@
 #include <time.h>
 #include <glib.h>
 
+#ifndef EDS_DISABLE_DEPRECATED
 /* double-linked list yeah another one, deal */
 typedef struct _EDListNode {
 	struct _EDListNode *next;
@@ -27,6 +28,7 @@ EDListNode *e_dlist_remhead(EDList *l);
 EDListNode *e_dlist_remtail(EDList *l);
 gint e_dlist_empty(EDList *l);
 gint e_dlist_length(EDList *l);
+#endif
 
 /* a time-based cache */
 typedef struct _EMCache EMCache;
