@@ -13,8 +13,6 @@
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-mime-message.h>
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *imap_drivers[] = { "imap4" };
 static gchar *remote_providers[] = {
 	"IMAP_TEST_URL",
@@ -37,7 +35,7 @@ gint main(gint argc, gchar **argv)
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
-	for (i=0;i<ARRAY_LEN(remote_providers);i++) {
+	for (i = 0; i < G_N_ELEMENTS (remote_providers); i++) {
 		path = getenv(remote_providers[i]);
 
 		if (path == NULL) {

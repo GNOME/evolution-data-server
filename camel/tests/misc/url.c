@@ -69,7 +69,6 @@ struct {
 	{ "pop://us%3ar@host", "pop://us%3ar@host" },
 	{ "pop://us%2fr@host", "pop://us%2fr@host" }
 };
-gint num_tests = sizeof (tests) / sizeof (tests[0]);
 
 gint
 main (gint argc, gchar **argv)
@@ -101,7 +100,7 @@ main (gint argc, gchar **argv)
 	camel_test_pull ();
 	g_free (url_string);
 
-	for (i = 0; i < num_tests; i++) {
+	for (i = 0; i < G_N_ELEMENTS (tests); i++) {
 		camel_test_push ("<%s> + <%s> = <%s>?", base, tests[i].url_string, tests[i].result);
 		url = camel_url_new_with_base (base_url, tests[i].url_string);
 		if (!url) {

@@ -17,8 +17,6 @@
 
 #define d(x)
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *local_drivers[] = { "local" };
 
 static CamelSession *session;
@@ -164,21 +162,21 @@ gint main(gint argc, gchar **argv)
 	fi = camel_store_get_folder_info(store, "", CAMEL_STORE_FOLDER_INFO_RECURSIVE, ex);
 	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 	check(fi != NULL);
-	check_fi(fi, fi_list_1, ARRAY_LEN(fi_list_1));
+	check_fi(fi, fi_list_1, G_N_ELEMENTS (fi_list_1));
 	camel_test_pull();
 
 	camel_test_push("folder info, flat");
 	fi = camel_store_get_folder_info(store, "", 0, ex);
 	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 	check(fi != NULL);
-	check_fi(fi, fi_list_2, ARRAY_LEN(fi_list_2));
+	check_fi(fi, fi_list_2, G_N_ELEMENTS (fi_list_2));
 	camel_test_pull();
 
 	camel_test_push("folder info, recursive, non root");
 	fi = camel_store_get_folder_info(store, "testbox", CAMEL_STORE_FOLDER_INFO_RECURSIVE, ex);
 	check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 	check(fi != NULL);
-	check_fi(fi, fi_list_3, ARRAY_LEN(fi_list_3));
+	check_fi(fi, fi_list_3, G_N_ELEMENTS (fi_list_3));
 	camel_test_pull();
 
 	check_unref(store, 1);

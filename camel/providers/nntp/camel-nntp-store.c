@@ -125,7 +125,7 @@ xover_setup(CamelNNTPStore *store, CamelException *ex)
 		while ((c = *p++)) {
 			if (c == ':') {
 				p[-1] = 0;
-				for (i=0;i<sizeof(headers)/sizeof(headers[0]);i++) {
+				for (i = 0; i < G_N_ELEMENTS (headers); i++) {
 					if (strcmp(line, headers[i].name) == 0) {
 						xover->name = headers[i].name;
 						if (strncmp((gchar *) p, "full", 4) == 0)

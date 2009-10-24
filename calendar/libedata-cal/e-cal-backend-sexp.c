@@ -1167,7 +1167,6 @@ static struct prop_info {
 	LIST_PROP ( "category", "category", compare_category ),
 	LIST_PROP ( "arbitrary", "arbitrary", compare_arbitrary )
 };
-static gint num_prop_infos = sizeof(prop_info_table) / sizeof(prop_info_table[0]);
 
 static ESExpResult *
 entry_compare(SearchContext *ctx, struct _ESExp *f,
@@ -1188,7 +1187,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		propname = argv[0]->value.string;
 
 		any_field = !strcmp(propname, "x-evolution-any-field");
-		for (i = 0; i < num_prop_infos; i ++) {
+		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i ++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
 				info = &prop_info_table[i];

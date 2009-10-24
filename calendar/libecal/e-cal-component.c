@@ -3882,7 +3882,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 		goto cleanup;
 
 	/* Any funky BY_* */
-#define N_HAS_BY(field) (count_by_xxx (field, sizeof (field) / sizeof (field[0])))
+#define N_HAS_BY(field) (count_by_xxx (field, G_N_ELEMENTS (field)))
 
 	n_by_second = N_HAS_BY (r->by_second);
 	n_by_minute = N_HAS_BY (r->by_minute);

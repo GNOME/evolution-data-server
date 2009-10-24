@@ -196,9 +196,9 @@ gchar *camel_maildir_summary_info_to_name(const CamelMaildirMessageInfo *info)
 	gint i;
 
 	uid = camel_message_info_uid (info);
-	buf = g_alloca (strlen (uid) + strlen (":2,") +  (sizeof (flagbits) / sizeof (flagbits[0])) + 1);
+	buf = g_alloca (strlen (uid) + strlen (":2,") + G_N_ELEMENTS (flagbits) + 1);
 	p = buf + sprintf (buf, "%s:2,", uid);
-	for (i = 0; i < sizeof (flagbits) / sizeof (flagbits[0]); i++) {
+	for (i = 0; i < G_N_ELEMENTS (flagbits); i++) {
 		if (info->info.info.flags & flagbits[i].flagbit)
 			*p++ = flagbits[i].flag;
 	}
@@ -222,7 +222,7 @@ gint camel_maildir_summary_name_to_info(CamelMaildirMessageInfo *info, const gch
 		p+=3;
 		while ((c = *p++)) {
 			/* we could assume that the flags are in order, but its just as easy not to require */
-			for (i=0; i < sizeof(flagbits)/sizeof(flagbits[0]);i++) {
+			for (i = 0; i < G_N_ELEMENTS (flagbits); i++) {
 				if (flagbits[i].flag == c && (info->info.info.flags & flagbits[i].flagbit) == 0) {
 					set |= flagbits[i].flagbit;
 				}

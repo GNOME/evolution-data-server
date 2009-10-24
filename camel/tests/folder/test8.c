@@ -18,8 +18,6 @@
 
 #define d(x)
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *local_drivers[] = { "local" };
 
 static gchar *local_providers[] = {
@@ -147,7 +145,7 @@ gint main(gint argc, gchar **argv)
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
-	for (j=0;j<ARRAY_LEN(local_providers);j++) {
+	for (j = 0; j < G_N_ELEMENTS (local_providers); j++) {
 		for (index=0;index<2;index++) {
 			path = g_strdup_printf("method %s %s", local_providers[j], index?"indexed":"nonindexed");
 			camel_test_start(path);

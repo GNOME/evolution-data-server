@@ -35,7 +35,7 @@ main (gint argc, gchar **argv)
 
 	camel_test_start("references decoding");
 
-	for (i=0;i<sizeof(test1)/sizeof(test1[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (test1); i++) {
 		struct _camel_header_references *head, *node;
 
 		camel_test_push("references decoding[%d] '%s'", i, test1[i].header);

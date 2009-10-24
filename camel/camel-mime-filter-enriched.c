@@ -88,8 +88,6 @@ static struct {
 	{ "/param",      " -->",                FALSE, NULL               },
 };
 
-#define NUM_ENRICHED_TAGS (sizeof (enriched_tags) / sizeof (enriched_tags[0]))
-
 static GHashTable *enriched_hash = NULL;
 
 static void camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *klass);
@@ -137,7 +135,7 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *klass)
 
 	if (!enriched_hash) {
 		enriched_hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-		for (i = 0; i < NUM_ENRICHED_TAGS; i++)
+		for (i = 0; i < G_N_ELEMENTS (enriched_tags); i++)
 			g_hash_table_insert (
 				enriched_hash,
 				(gpointer) enriched_tags[i].enriched,
@@ -164,7 +162,7 @@ enriched_tag_needs_param (const gchar *tag)
 {
 	gint i;
 
-	for (i = 0; i < NUM_ENRICHED_TAGS; i++)
+	for (i = 0; i < G_N_ELEMENTS (enriched_tags); i++)
 		if (!g_ascii_strcasecmp (tag, enriched_tags[i].enriched))
 			return enriched_tags[i].needs_param;
 
@@ -182,8 +180,6 @@ static const gchar *valid_colours[] = {
 	"red", "green", "blue", "yellow", "cyan", "magenta", "black", "white"
 };
 
-#define NUM_VALID_COLOURS  (sizeof (valid_colours) / sizeof (valid_colours[0]))
-
 static gchar *
 param_parse_colour (const gchar *inptr, gint inlen)
 {
@@ -192,7 +188,7 @@ param_parse_colour (const gchar *inptr, gint inlen)
 	guint v;
 	gint i;
 
-	for (i = 0; i < NUM_VALID_COLOURS; i++) {
+	for (i = 0; i < G_N_ELEMENTS (valid_colours); i++) {
 		if (!g_ascii_strncasecmp (inptr, valid_colours[i], inlen))
 			return g_strdup (valid_colours[i]);
 	}
@@ -260,7 +256,7 @@ param_parse (const gchar *enriched, const gchar *inptr, gint inlen)
 {
 	gint i;
 
-	for (i = 0; i < NUM_ENRICHED_TAGS; i++) {
+	for (i = 0; i < G_N_ELEMENTS (enriched_tags); i++) {
 		if (!g_ascii_strcasecmp (enriched, enriched_tags[i].enriched))
 			return enriched_tags[i].parse_param (inptr, inlen);
 	}

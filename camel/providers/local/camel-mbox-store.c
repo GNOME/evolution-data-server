@@ -114,7 +114,7 @@ ignore_file(const gchar *filename, gboolean sbd)
 	if (flen > 0 && filename[flen-1] == '~')
 		return TRUE;
 
-	for (i = 0; i <(sizeof(extensions) / sizeof(extensions[0])); i++) {
+	for (i = 0; i < G_N_ELEMENTS (extensions); i++) {
 		len = strlen(extensions[i]);
 		if (len < flen && !strcmp(filename + flen - len, extensions[i]))
 			return TRUE;

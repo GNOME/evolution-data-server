@@ -226,7 +226,7 @@ camel_imap_folder_get_type (void)
 					     (CamelObjectFinalizeFunc) imap_finalize);
 
 		/* only localize here, do not create GSList, we do not want to leak */
-		for (i = 0; i < sizeof (imap_property_list)/sizeof (imap_property_list [0]); i++)
+		for (i = 0; i < G_N_ELEMENTS (imap_property_list); i++)
 			imap_property_list [i].description = _(imap_property_list [i].description);
 	}
 
@@ -523,7 +523,7 @@ imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			props.argv[0] = *arg;
 			((CamelObjectClass *)parent_class)->getv(object, ex, &props);
 
-			for (i = 0; i < sizeof (imap_property_list)/sizeof (imap_property_list [0]); i++)
+			for (i = 0; i < G_N_ELEMENTS (imap_property_list); i++)
 				*arg->ca_ptr = g_slist_append (*arg->ca_ptr, &imap_property_list[i]);
 			break; }
 			/* imap args */

@@ -18,8 +18,6 @@
 
 #define d(x)
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *local_drivers[] = { "local" };
 static gchar *local_providers[] = {
 	"mbox",
@@ -80,7 +78,7 @@ gint main(gint argc, gchar **argv)
 		else
 			camel_test_start("store and folder bag torture test, unstacked references");
 
-		for (j=0;j<ARRAY_LEN(local_providers);j++) {
+		for (j = 0; j < G_N_ELEMENTS (local_providers); j++) {
 
 			camel_test_push("provider %s", local_providers[j]);
 			path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);

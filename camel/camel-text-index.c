@@ -238,7 +238,7 @@ text_index_add_name_to_word(CamelIndex *idx, const gchar *word, camel_key_t name
 		camel_dlist_addhead(&p->word_cache, (CamelDListNode *)w);
 		w->names[w->used] = nameid;
 		w->used++;
-		if (w->used == sizeof(w->names)/sizeof(w->names[0])) {
+		if (w->used == G_N_ELEMENTS (w->names)) {
 			io(printf("writing key file entry '%s' [%x]\n", w->word, w->data));
 			if (camel_key_file_write(p->links, &w->data, w->used, w->names) != -1) {
 				rb->keys++;
@@ -453,7 +453,7 @@ text_index_compress_nosync(CamelIndex *idx)
 				newkeyid = (camel_key_t)GPOINTER_TO_INT(g_hash_table_lookup(remap, GINT_TO_POINTER(records[i])));
 				if (newkeyid) {
 					newrecords[newcount++] = newkeyid;
-					if (newcount == sizeof(newrecords)/sizeof(newrecords[0])) {
+					if (newcount == G_N_ELEMENTS (newrecords)) {
 						if (camel_key_file_write(newp->links, &newdata, newcount, newrecords) == -1) {
 							g_free(records);
 							goto fail;
@@ -1056,7 +1056,7 @@ add_partition(GHashTable *map, CamelBlockFile *blocks, camel_block_t id)
 		}
 
 		pm = (CamelPartitionMapBlock *)&bl->data;
-		if (pm->used > sizeof(pm->partition)/sizeof(pm->partition[0])) {
+		if (pm->used > G_N_ELEMENTS (pm->partition)) {
 			g_warning("Partition block %x invalid\n", id);
 			camel_block_file_unref_block(blocks, bl);
 			return;

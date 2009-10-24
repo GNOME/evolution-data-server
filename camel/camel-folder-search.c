@@ -224,7 +224,7 @@ camel_folder_search_construct (CamelFolderSearch *search)
 	gint i;
 	CamelFolderSearchClass *klass = (CamelFolderSearchClass *)CAMEL_OBJECT_GET_CLASS(search);
 
-	for (i=0;i<sizeof(builtins)/sizeof(builtins[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (builtins); i++) {
 		gpointer func;
 		/* c is sure messy sometimes */
 		func = *((gpointer *)(((gchar *)klass)+builtins[i].offset));

@@ -68,8 +68,6 @@ static struct {
 	{ CONVERT_ADDRSPEC, { "@",         "mailto:", camel_url_addrspec_start, camel_url_addrspec_end } },
 };
 
-#define NUM_URL_PATTERNS (sizeof (patterns) / sizeof (patterns[0]))
-
 static void camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass);
 static void camel_mime_filter_tohtml_init       (CamelMimeFilterToHTML *filter);
 static void camel_mime_filter_tohtml_finalize   (CamelObject *obj);
@@ -456,7 +454,7 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
 	new->flags = flags;
 	new->colour = colour;
 
-	for (i = 0; i < NUM_URL_PATTERNS; i++) {
+	for (i = 0; i < G_N_ELEMENTS (patterns); i++) {
 		if (patterns[i].mask & flags)
 			camel_url_scanner_add (new->scanner, &patterns[i].pattern);
 	}

@@ -466,7 +466,7 @@ static void tokenise_setup(void)
 
 	if (entities == NULL) {
 		entities = g_hash_table_new(g_str_hash, g_str_equal);
-		for (i=0;i<sizeof(entity_map)/sizeof(entity_map[0]);i++) {
+		for (i = 0; i < G_N_ELEMENTS (entity_map); i++) {
 			g_hash_table_insert(entities, (gchar *)entity_map[i].name, GUINT_TO_POINTER(entity_map[i].val));
 		}
 	}

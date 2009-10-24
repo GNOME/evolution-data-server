@@ -64,7 +64,7 @@ main (gint argc, gchar **argv)
 
 	camel_test_start("canonicalisation filter tests");
 
-	for (i=0;i<sizeof(tests)/sizeof(tests[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (tests); i++) {
 		gint step;
 
 		camel_test_push("Data test %d '%s'\n", i, tests[i].in);

@@ -18,8 +18,6 @@
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-mime-message.h>
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *local_drivers[] = { "local" };
 
 static gchar *stores[] = {
@@ -45,7 +43,7 @@ gint main(gint argc, gchar **argv)
 	session = camel_test_session_new ("/tmp/camel-test");
 
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
-	for (i=0;i<ARRAY_LEN(stores);i++) {
+	for (i = 0; i < G_N_ELEMENTS (stores); i++) {
 		gchar *name = stores[i];
 
 		test_folder_message_ops(session, name, TRUE, "testbox");

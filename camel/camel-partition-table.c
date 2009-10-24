@@ -383,8 +383,6 @@ camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_
 	struct _CamelPartitionKey keys[CAMEL_BLOCK_SIZE/4];
 	gint ret = -1;
 
-#define KEY_SIZE (sizeof(kb->keys)/sizeof(kb->keys[0]))
-
 	hashid = hash_key(key);
 
 	CAMEL_PARTITION_TABLE_LOCK(cpi, lock);
@@ -403,7 +401,7 @@ camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_
 
 	/* TODO: Keep the key array in sorted order, cheaper lookups and split operation */
 
-	if (kb->used < sizeof(kb->keys)/sizeof(kb->keys[0])) {
+	if (kb->used < G_N_ELEMENTS (kb->keys)) {
 		/* Have room, just put it in */
 		kb->keys[kb->used].hashid = hashid;
 		kb->keys[kb->used].keyid = keyid;
@@ -431,8 +429,8 @@ camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_
 			nkb = (CamelPartitionKeyBlock *)&nblock->data;
 		}
 
-		if (pblock && pkb->used < KEY_SIZE) {
-			if (nblock && nkb->used < KEY_SIZE) {
+		if (pblock && pkb->used < G_N_ELEMENTS (kb->keys)) {
+			if (nblock && nkb->used < G_N_ELEMENTS (kb->keys)) {
 				if (pkb->used < nkb->used) {
 					newindex = index+1;
 					newblock = nblock;
@@ -445,7 +443,7 @@ camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_
 				newblock = pblock;
 			}
 		} else {
-			if (nblock && nkb->used < KEY_SIZE) {
+			if (nblock && nkb->used < G_N_ELEMENTS (kb->keys)) {
 				newindex = index+1;
 				newblock = nblock;
 			}
@@ -454,7 +452,7 @@ camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_
 		/* We had no room, need to split across another block */
 		if (newblock == NULL) {
 			/* See if we have room in the partition table for this block or need to split that too */
-			if (ptb->used >= sizeof(ptb->partition)/sizeof(ptb->partition[0])) {
+			if (ptb->used >= G_N_ELEMENTS (ptb->partition)) {
 				/* TODO: Could check next block to see if it'll fit there first */
 				ptnblock = camel_block_file_new_block(cpi->blocks);
 				if (ptnblock == NULL) {

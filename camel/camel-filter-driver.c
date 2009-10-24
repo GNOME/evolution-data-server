@@ -218,7 +218,7 @@ camel_filter_driver_init (CamelFilterDriver *obj)
 
 	p->eval = e_sexp_new ();
 	/* Load in builtin symbols */
-	for (i = 0; i < sizeof (symbols) / sizeof (symbols[0]); i++) {
+	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction (p->eval, 0, symbols[i].name, (ESExpIFunc *)symbols[i].func, obj);
 		} else {

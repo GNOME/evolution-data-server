@@ -72,7 +72,7 @@ main (gint argc, gchar **argv)
 
 	camel_test_start("Param list decoding");
 
-	for (i=0;i<sizeof(test1)/sizeof(test1[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (test1); i++) {
 		struct _camel_header_param *head, *node;
 
 		camel_test_push("param decoding[%d] '%s'", i, test1[i].list);
@@ -94,7 +94,7 @@ main (gint argc, gchar **argv)
 
 	camel_test_start("Param list encoding");
 
-	for (i=0;i<sizeof(test2)/sizeof(test2[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (test2); i++) {
 		struct _camel_header_param *head = NULL, *scan;
 		gchar *text;
 

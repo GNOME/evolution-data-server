@@ -2577,11 +2577,9 @@ static const gchar * tokens[] = {
 	"us-ascii",		/* 25 words */
 };
 
-#define tokens_len (sizeof(tokens)/sizeof(tokens[0]))
-
 /* baiscally ...
     0 = null
-    1-tokens_len == tokens[id-1]
+    1-len(tokens) == tokens[id-1]
     >=32 string, length = n-32
 */
 
@@ -2624,11 +2622,11 @@ camel_folder_summary_encode_token(FILE *out, const gchar *str)
 				lower[i] = tolower(str[i]);
 			lower[i] = 0;
 #ifdef USE_BSEARCH
-			match = bsearch(lower, tokens, tokens_len, sizeof(gchar *), (gint (*)(gconstpointer , gconstpointer ))token_search_cmp);
+			match = bsearch(lower, tokens, G_N_ELEMENTS (tokens), sizeof(gchar *), (gint (*)(gconstpointer , gconstpointer ))token_search_cmp);
 			if (match)
 				token = match-tokens;
 #else
-			for (i=0;i<tokens_len;i++) {
+			for (i = 0; i < G_N_ELEMENTS (tokens); i++) {
 				if (!strcmp(tokens[i], lower)) {
 					token = i;
 					break;
@@ -2674,7 +2672,7 @@ camel_folder_summary_decode_token(FILE *in, gchar **str)
 	if (len<32) {
 		if (len <= 0) {
 			ret = NULL;
-		} else if (len<= tokens_len) {
+		} else if (len<= G_N_ELEMENTS (tokens)) {
 			ret = g_strdup(tokens[len-1]);
 		} else {
 			io(printf ("Invalid token encountered: %d", len));

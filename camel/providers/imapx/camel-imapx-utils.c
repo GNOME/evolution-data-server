@@ -71,7 +71,7 @@ imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fla
 				// FIXME: ascii_toupper
 				while ((c=*p))
 					*p++ = toupper(c);
-				for (i=0;i<(gint)(sizeof(flag_table)/sizeof(flag_table[0]));i++)
+				for (i = 0; i < G_N_ELEMENTS (flag_table); i++)
 					if (!strcmp(token, flag_table[i].name)) {
 						flags |= flag_table[i].flag;
 						goto found;
@@ -103,7 +103,7 @@ imap_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags)
 	if (camel_stream_write(stream, "(", 1) == -1)
 		camel_exception_throw(1, "io error: %s", strerror(errno));
 
-	for (i=0;flags!=0 && i<(gint)(sizeof(flag_table)/sizeof(flag_table[0]));i++) {
+	for (i=0;flags!=0 && i< G_N_ELEMENTS (flag_table);i++) {
 		if (flag_table[i].flag & flags) {
 			if (camel_stream_write(stream, flag_table[i].name, strlen(flag_table[i].name)) == -1)
 				camel_exception_throw(1, "io error: %s", strerror(errno));
@@ -166,7 +166,7 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 					*p++ = toupper(c);
 			case IMAP_TOK_INT:
 				printf(" cap: '%s'\n", token);
-				for (i=0;i<(gint)(sizeof(capa_table)/sizeof(capa_table[0]));i++)
+				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
 					if (strcmp(token, capa_table[i].name))
 						cinfo->capa |= capa_table[i].flag;
 				break;
@@ -1250,7 +1250,7 @@ imap_parse_list(CamelIMAPXStream *is, CamelException *ex)
 			p = token;
 			while ((c=*p))
 				*p++ = toupper(c);
-			for (i=0;i<(gint)(sizeof(list_flag_table)/sizeof(list_flag_table[0]));i++)
+			for (i = 0; i < G_N_ELEMENTS (list_flag_table); i++)
 				if (!strcmp(token, list_flag_table[i].name))
 					linfo->flags |= list_flag_table[i].flag;
 		} else {

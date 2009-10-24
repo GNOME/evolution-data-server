@@ -980,26 +980,22 @@ e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 
 	r->week_start_day = e_cal_recur_ical_weekday_to_weekday (ir.week_start);
 
-	r->bymonth = array_to_list (ir.by_month,
-				    sizeof (ir.by_month) / sizeof (ir.by_month[0]));
+	r->bymonth = array_to_list (ir.by_month, G_N_ELEMENTS (ir.by_month));
 	for (elem = r->bymonth; elem; elem = elem->next) {
 		/* We need to convert from 1-12 to 0-11, i.e. subtract 1. */
 		gint month = GPOINTER_TO_INT (elem->data) - 1;
 		elem->data = GINT_TO_POINTER (month);
 	}
 
-	r->byweekno = array_to_list (ir.by_week_no,
-				     sizeof (ir.by_week_no) / sizeof (ir.by_week_no[0]));
+	r->byweekno = array_to_list (ir.by_week_no, G_N_ELEMENTS (ir.by_week_no));
 
-	r->byyearday = array_to_list (ir.by_year_day,
-				      sizeof (ir.by_year_day) / sizeof (ir.by_year_day[0]));
+	r->byyearday = array_to_list (ir.by_year_day, G_N_ELEMENTS (ir.by_year_day));
 
-	r->bymonthday = array_to_list (ir.by_month_day,
-				       sizeof (ir.by_month_day) / sizeof (ir.by_month_day[0]));
+	r->bymonthday = array_to_list (ir.by_month_day, G_N_ELEMENTS (ir.by_month_day));
 
 	/* FIXME: libical only supports 8 values, out of possible 107 * 7. */
 	r->byday = NULL;
-	max_elements = sizeof (ir.by_day) / sizeof (ir.by_day[0]);
+	max_elements = G_N_ELEMENTS (ir.by_day);
 	for (i = 0; i < max_elements && ir.by_day[i] != ICAL_RECURRENCE_ARRAY_MAX; i++) {
 		enum icalrecurrencetype_weekday day;
 		gint weeknum, weekday;
@@ -1015,17 +1011,13 @@ e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 					   GINT_TO_POINTER (weekday));
 	}
 
-	r->byhour = array_to_list (ir.by_hour,
-				   sizeof (ir.by_hour) / sizeof (ir.by_hour[0]));
+	r->byhour = array_to_list (ir.by_hour, G_N_ELEMENTS (ir.by_hour));
 
-	r->byminute = array_to_list (ir.by_minute,
-				     sizeof (ir.by_minute) / sizeof (ir.by_minute[0]));
+	r->byminute = array_to_list (ir.by_minute, G_N_ELEMENTS (ir.by_minute));
 
-	r->bysecond = array_to_list (ir.by_second,
-				     sizeof (ir.by_second) / sizeof (ir.by_second[0]));
+	r->bysecond = array_to_list (ir.by_second, G_N_ELEMENTS (ir.by_second));
 
-	r->bysetpos = array_to_list (ir.by_set_pos,
-				     sizeof (ir.by_set_pos) / sizeof (ir.by_set_pos[0]));
+	r->bysetpos = array_to_list (ir.by_set_pos, G_N_ELEMENTS (ir.by_set_pos));
 
 	return r;
 }

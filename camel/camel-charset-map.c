@@ -140,7 +140,7 @@ gint main (gint argc, gchar **argv)
 	iconv_t cd;
 
 	/* dont count the terminator */
-	bytes = ((sizeof (tables) / sizeof (tables[0])) + 7 - 1) / 8;
+	bytes = (G_N_ELEMENTS (tables) + 7 - 1) / 8;
 	g_assert (bytes <= 4);
 
 	for (i = 0; i < 128; i++)

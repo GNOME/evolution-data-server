@@ -49,8 +49,6 @@ struct _CamelMimeFilterHTMLPrivate {
 
 /* well we odnt use this stuff yet */
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof((x)[0]))
-
 static struct {
 	gchar *element;
 	gchar *remap;

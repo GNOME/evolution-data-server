@@ -870,7 +870,7 @@ e_book_backend_sexp_new (const gchar *text)
 
 	sexp->priv->search_sexp = e_sexp_new();
 
-	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp->priv->search_sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, sexp->priv->search_context);

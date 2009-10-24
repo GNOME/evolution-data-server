@@ -1775,7 +1775,7 @@ e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit
 		*two_digit_year = FALSE;
 	}
 
-	status = parse_with_strptime (value, result, format, sizeof (format)/sizeof (format [0]));
+	status = parse_with_strptime (value, result, format, G_N_ELEMENTS (format));
 
 	if (status == E_TIME_PARSE_OK && !has_correct_date (result))
 		status = E_TIME_PARSE_INVALID;

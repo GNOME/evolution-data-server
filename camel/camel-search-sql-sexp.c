@@ -598,7 +598,7 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 
 	sexp = e_sexp_new();
 
-	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].immediate)
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *) symbols[i].func, NULL);

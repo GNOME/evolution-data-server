@@ -2067,7 +2067,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 		guint32 orset = on?job->u.sync_changes.on_set:job->u.sync_changes.off_set;
 		GArray *user_set = on?job->u.sync_changes.on_user:job->u.sync_changes.off_user;
 
-		for (j=0;j<sizeof(flags_table)/sizeof(flags_table[0]);j++) {
+		for (j = 0; j < G_N_ELEMENTS (flags_table); j++) {
 			guint32 flag = flags_table[j].flag;
 			CamelIMAPXCommand *ic = NULL;
 

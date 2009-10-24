@@ -16,8 +16,6 @@
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-mime-message.h>
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static void
 test_folder_search_sub(CamelFolder *folder, const gchar *expr, gint expected)
 {
@@ -130,7 +128,7 @@ run_search(CamelFolder *folder, gint m)
 		j = 2;
 
 	push("performing searches, expected %d", m);
-	for (i=0;i<ARRAY_LEN(searches);i++) {
+	for (i = 0; i < G_N_ELEMENTS (searches); i++) {
 		push("running search %d: %s", i, searches[i].expr);
 		test_folder_search(folder, searches[i].expr, searches[i].counts[j]);
 		pull();
@@ -171,7 +169,7 @@ gint main(gint argc, gchar **argv)
 	/* todo: work out how to do imap/pop/nntp tests */
 
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
-	for (i=0;i<ARRAY_LEN(stores);i++) {
+	for (i = 0; i < G_N_ELEMENTS (stores); i++) {
 		gchar *name = stores[i];
 		for (indexed = 0;indexed<2;indexed++) {
 			gchar *what = g_strdup_printf("folder search: %s (%sindexed)", name, indexed?"":"non-");

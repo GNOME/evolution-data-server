@@ -175,7 +175,7 @@ camel_disco_folder_get_type (void)
 			(CamelObjectClassInitFunc)camel_disco_folder_class_init, NULL,
 			(CamelObjectInitFunc)camel_disco_folder_init, NULL);
 
-		for (i=0;i<sizeof(disco_property_list)/sizeof(disco_property_list[0]);i++) {
+		for (i = 0; i < G_N_ELEMENTS (disco_property_list); i++) {
 			disco_property_list[i].description = _(disco_property_list[i].description);
 			disco_folder_properties = g_slist_prepend(disco_folder_properties, &disco_property_list[i]);
 		}

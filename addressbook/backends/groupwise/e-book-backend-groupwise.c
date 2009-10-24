@@ -1856,7 +1856,7 @@ e_book_backend_groupwise_build_gw_filter (EBookBackendGroupwise *ebgw, const gch
 	sexp_data->auto_completion = 0;
 	sexp_data->search_string = NULL;
 
-	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, sexp_data);

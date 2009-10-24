@@ -213,7 +213,7 @@ cmd_capa(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 					tok = next;
 				}
 			} else {
-				for (i=0;i<sizeof(capa)/sizeof(capa[0]);i++) {
+				for (i = 0; i < G_N_ELEMENTS (capa); i++) {
 					if (strcmp((gchar *) capa[i].cap, (gchar *) line) == 0)
 						pe->capa |= capa[i].flag;
 				}

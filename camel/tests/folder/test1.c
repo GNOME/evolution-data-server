@@ -9,8 +9,6 @@
 #include <camel/camel-service.h>
 #include <camel/camel-store.h>
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *local_drivers[] = {
 	"local"
 };
@@ -41,7 +39,7 @@ gint main(gint argc, gchar **argv)
 	/* todo: cross-check everything with folder_info checks as well */
 	/* todo: subscriptions? */
 	/* todo: work out how to do imap/pop/nntp tests */
-	for (i=0;i<ARRAY_LEN(local_providers);i++) {
+	for (i = 0; i < G_N_ELEMENTS (local_providers); i++) {
 		path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[i], local_providers[i]);
 
 		test_folder_basic(session, path, TRUE, FALSE);

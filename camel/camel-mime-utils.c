@@ -3046,7 +3046,7 @@ static const gchar *encodings[] = {
 const gchar *
 camel_transfer_encoding_to_string (CamelTransferEncoding encoding)
 {
-	if (encoding >= sizeof (encodings) / sizeof (encodings[0]))
+	if (encoding >= G_N_ELEMENTS (encodings))
 		encoding = 0;
 
 	return encodings[encoding];
@@ -3058,7 +3058,7 @@ camel_transfer_encoding_from_string (const gchar *string)
 	gint i;
 
 	if (string != NULL) {
-		for (i = 0; i < sizeof (encodings) / sizeof (encodings[0]); i++)
+		for (i = 0; i < G_N_ELEMENTS (encodings); i++)
 			if (!g_ascii_strcasecmp (string, encodings[i]))
 				return i;
 	}
@@ -4540,7 +4540,7 @@ camel_header_raw_check_mailing_list(struct _camel_header_raw **list)
 
 	pthread_once(&mailing_list_init_once, mailing_list_init);
 
-	for (i = 0; i < sizeof (mail_list_magic) / sizeof (mail_list_magic[0]); i++) {
+	for (i = 0; i < G_N_ELEMENTS (mail_list_magic); i++) {
 		v = camel_header_raw_find (list, mail_list_magic[i].name, NULL);
 		for (j=0;j<3;j++) {
 			match[j].rm_so = -1;

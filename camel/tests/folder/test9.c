@@ -18,8 +18,6 @@
 #include "camel/camel-filter-driver.h"
 #include "camel/camel-stream-fs.h"
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *local_drivers[] = { "local" };
 
 struct {
@@ -81,7 +79,7 @@ static CamelFolder *get_folder(CamelFilterDriver *d, const gchar *uri, gpointer 
 {
 	gint i;
 
-	for (i=0;i<ARRAY_LEN(mailboxes);i++)
+	for (i = 0; i < G_N_ELEMENTS (mailboxes); i++)
 		if (!strcmp(mailboxes[i].name, uri)) {
 			camel_object_ref((CamelObject *)mailboxes[i].folder);
 			return mailboxes[i].folder;
@@ -122,7 +120,7 @@ gint main(gint argc, gchar **argv)
 	pull();
 
 	push("Creating output folders");
-	for (i=0;i<ARRAY_LEN(mailboxes);i++) {
+	for (i = 0; i < G_N_ELEMENTS (mailboxes); i++) {
 		push("creating %s", mailboxes[i].name);
 		mailboxes[i].folder = folder = camel_store_get_folder(store, mailboxes[i].name, CAMEL_STORE_FOLDER_CREATE, ex);
 		check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
@@ -171,7 +169,7 @@ gint main(gint argc, gchar **argv)
 	push("Building filters");
 	driver = camel_filter_driver_new(session);
 	camel_filter_driver_set_folder_func(driver, get_folder, NULL);
-	for (i=0;i<ARRAY_LEN(rules);i++) {
+	for (i = 0; i < G_N_ELEMENTS (rules); i++) {
 		camel_filter_driver_add_rule(driver, rules[i].name, rules[i].match, rules[i].action);
 	}
 	pull();
@@ -188,7 +186,7 @@ gint main(gint argc, gchar **argv)
 
 	/* this tests that invalid rules are caught */
 	push("Testing broken match rules");
-	for (i=0;i<ARRAY_LEN(brokens);i++) {
+	for (i = 0; i < G_N_ELEMENTS (brokens); i++) {
 		push("rule %s", brokens[i].match);
 		driver = camel_filter_driver_new(session);
 		camel_filter_driver_set_folder_func(driver, get_folder, NULL);
@@ -202,7 +200,7 @@ gint main(gint argc, gchar **argv)
 	pull();
 
 	push("Testing broken action rules");
-	for (i=0;i<ARRAY_LEN(brokena);i++) {
+	for (i = 0; i < G_N_ELEMENTS (brokena); i++) {
 		push("rule %s", brokena[i].action);
 		driver = camel_filter_driver_new(session);
 		camel_filter_driver_set_folder_func(driver, get_folder, NULL);
@@ -215,7 +213,7 @@ gint main(gint argc, gchar **argv)
 	}
 	pull();
 
-	for (i=0;i<ARRAY_LEN(mailboxes);i++) {
+	for (i = 0; i < G_N_ELEMENTS (mailboxes); i++) {
 		check_unref(mailboxes[i].folder, 1);
 	}
 

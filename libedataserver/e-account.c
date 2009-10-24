@@ -854,13 +854,13 @@ ea_setting_setup (void)
 		return;
 
 	ea_option_table = g_hash_table_new(g_str_hash, g_str_equal);
-	for (i=0;i<sizeof(ea_option_list)/sizeof(ea_option_list[0]);i++)
+	for (i = 0; i < G_N_ELEMENTS (ea_option_list); i++)
 		g_hash_table_insert(ea_option_table, (gpointer) ea_option_list[i].key, &ea_option_list[i]);
 
 	gconf_client_add_dir(gconf, LOCK_BASE, GCONF_CLIENT_PRELOAD_NONE, NULL);
 
 	ea_system_table = g_hash_table_new(g_str_hash, g_str_equal);
-	for (i=0;i<sizeof(system_perms)/sizeof(system_perms[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (system_perms); i++) {
 		g_hash_table_insert(ea_system_table, (gchar *)system_perms[i].key, &system_perms[i]);
 		sprintf(key, LOCK_BASE "/%s", system_perms[i].key);
 		entry = gconf_client_get_entry(gconf, key, NULL, TRUE, &err);

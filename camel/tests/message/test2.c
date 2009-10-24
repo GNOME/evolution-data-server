@@ -80,8 +80,6 @@ fail:
 #define to_utf8(in, type) convert(in, type, "utf-8")
 #define from_utf8(in, type) convert(in, "utf-8", type)
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 gint main(gint argc, gchar **argv)
 {
 	gint i;
@@ -220,7 +218,7 @@ gint main(gint argc, gchar **argv)
 
 	camel_test_start("CamelInternetAddress, I18N");
 
-	for (i=0;i<ARRAY_LEN(test_lines);i++) {
+	for (i = 0;i < G_N_ELEMENTS (test_lines); i++) {
 		push("Testing text line %d (%s) '%s'", i, test_lines[i].type, test_lines[i].line);
 
 		addr = camel_internet_address_new();
@@ -295,7 +293,7 @@ gint main(gint argc, gchar **argv)
 
 	camel_test_start("CamelInternetAddress, I18N decode");
 
-	for (i=0;i<ARRAY_LEN(test_address);i++) {
+	for (i = 0; i < G_N_ELEMENTS (test_address); i++) {
 		push("Testing address line %d '%s'", i, test_address[i].addr);
 
 		addr = camel_internet_address_new();

@@ -195,7 +195,7 @@ camel_local_folder_get_type(void)
 							     (CamelObjectInitFunc) local_init,
 							     (CamelObjectFinalizeFunc) local_finalize);
 
-		for (i=0;i<sizeof(local_property_list)/sizeof(local_property_list[0]);i++) {
+		for (i = 0; i < G_N_ELEMENTS (local_property_list); i++) {
 			local_property_list[i].description = _(local_property_list[i].description);
 			local_folder_properties = g_slist_prepend(local_folder_properties, &local_property_list[i]);
 		}

@@ -598,8 +598,6 @@ static const struct {
 	{ "koi8-u",      "uk" }
 };
 
-#define NUM_CJKR_LANGS (sizeof (cjkr_lang_map) / sizeof (cjkr_lang_map[0]))
-
 const gchar *
 e_iconv_charset_language (const gchar *charset)
 {
@@ -609,7 +607,7 @@ e_iconv_charset_language (const gchar *charset)
 		return NULL;
 
 	charset = e_iconv_charset_name (charset);
-	for (i = 0; i < NUM_CJKR_LANGS; i++) {
+	for (i = 0; i < G_N_ELEMENTS (cjkr_lang_map); i++) {
 		if (!g_ascii_strcasecmp (cjkr_lang_map[i].charset, charset))
 			return cjkr_lang_map[i].lang;
 	}

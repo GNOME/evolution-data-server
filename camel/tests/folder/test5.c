@@ -9,8 +9,6 @@
 #include <camel/camel-service.h>
 #include <camel/camel-store.h>
 
-#define ARRAY_LEN(x) (sizeof(x)/sizeof(x[0]))
-
 static const gchar *nntp_drivers[] = { "nntp" };
 
 static gchar *remote_providers[] = {
@@ -36,7 +34,7 @@ gint main(gint argc, gchar **argv)
 
 	/* todo: cross-check everything with folder_info checks as well */
 	/* todo: subscriptions? */
-	for (i=0;i<ARRAY_LEN(remote_providers);i++) {
+	for (i = 0; i < G_N_ELEMENTS (remote_providers); i++) {
 		path = getenv(remote_providers[i]);
 
 		if (path == NULL) {

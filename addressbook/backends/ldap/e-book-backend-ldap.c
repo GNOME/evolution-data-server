@@ -419,8 +419,6 @@ static struct prop_info {
 #undef GROUP_PROP
 };
 
-static gint num_prop_infos = sizeof(prop_info) / sizeof(prop_info[0]);
-
 #if 0
 static void
 remove_view (gint msgid, LDAPOp *op, EDataBookView *view)
@@ -565,7 +563,7 @@ add_oc_attributes_to_supported_fields (EBookBackendLDAP *bl, LDAPObjectClass *oc
 	gint i;
 	GHashTable *attr_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-	for (i = 0; i < num_prop_infos; i ++)
+	for (i = 0; i < G_N_ELEMENTS (prop_info); i ++)
 		g_hash_table_insert (attr_hash, (gpointer) prop_info[i].ldap_attr, (gchar *)e_contact_field_name (prop_info[i].field_id));
 
 	if (oc->oc_at_oids_must)
@@ -1318,7 +1316,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl, EContact *current, EContact *new
 	/* we walk down the list of properties we can deal with (that
 	 big table at the top of the file) */
 
-	for (i = 0; i < num_prop_infos; i ++) {
+	for (i = 0; i < G_N_ELEMENTS (prop_info); i ++) {
 		gboolean include;
 		gboolean new_prop_present = FALSE;
 		gboolean current_prop_present = FALSE;
@@ -3768,13 +3766,13 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 
 			query_length = 3; /* strlen ("(|") + strlen (")") */
 
-			for (i = 0; i < num_prop_infos; i ++) {
+			for (i = 0; i < G_N_ELEMENTS (prop_info); i ++) {
 				query_length += 1 /* strlen ("(") */ + strlen(prop_info[i].ldap_attr) + strlen (match_str);
 			}
 
 			big_query = g_malloc0(query_length + 1);
 			strcat (big_query, "(|");
-			for (i = 0; i < num_prop_infos; i ++) {
+			for (i = 0; i < G_N_ELEMENTS (prop_info); i ++) {
 				strcat (big_query, "(");
 				strcat (big_query, prop_info[i].ldap_attr);
 				strcat (big_query, match_str);
@@ -3942,13 +3940,13 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 
 			query_length = 3; /* strlen ("(|") + strlen (")") */
 
-			for (i = 0; i < num_prop_infos; i ++) {
+			for (i = 0; i < G_N_ELEMENTS (prop_info); i ++) {
 				query_length += 1 /* strlen ("(") */ + strlen(prop_info[i].ldap_attr) + strlen (match_str);
 			}
 
 			big_query = g_malloc0(query_length + 1);
 			strcat (big_query, "(|");
-			for (i = 0; i < num_prop_infos; i ++) {
+			for (i = 0; i < G_N_ELEMENTS (prop_info); i ++) {
 				strcat (big_query, "(");
 				strcat (big_query, prop_info[i].ldap_attr);
 				strcat (big_query, match_str);
@@ -4006,7 +4004,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const gchar *query)
 
 	sexp = e_sexp_new();
 
-	for (i=0;i<sizeof(symbols)/sizeof(symbols[0]);i++) {
+	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
 			e_sexp_add_ifunction(sexp, 0, symbols[i].name,
 					     (ESExpIFunc *)symbols[i].func, &data);
@@ -4062,7 +4060,7 @@ query_prop_to_ldap (gchar *query_prop)
 {
 	gint i;
 
-	for (i = 0; i < num_prop_infos; i ++)
+	for (i = 0; i < G_N_ELEMENTS (prop_info); i ++)
 		if (!strcmp (query_prop, e_contact_field_name (prop_info[i].field_id)))
 			return prop_info[i].ldap_attr;
 
@@ -4133,7 +4131,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 			ldap_value_free (values);
 		}
 		else {
-			for (i = 0; i < num_prop_infos; i ++)
+			for (i = 0; i < G_N_ELEMENTS (prop_info); i ++)
 				if (!g_ascii_strcasecmp (attr, prop_info[i].ldap_attr)) {
 					info = &prop_info[i];
 					break;
