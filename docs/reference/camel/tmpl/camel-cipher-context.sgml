@@ -47,6 +47,9 @@ CamelCipherContext
 @prev: 
 @name: 
 @email: 
+@cert_data: 
+@cert_data_free: 
+@cert_data_clone: 
 
 <!-- ##### ENUM CamelCipherHash ##### -->
 <para>

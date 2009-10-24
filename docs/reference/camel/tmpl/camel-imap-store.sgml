@@ -46,7 +46,7 @@ CamelImapStore
 @server_level: 
 @capabilities: 
 @parameters: 
-@namespace: 
+@users_namespace: 
 @dir_sep: 
 @base_url: 
 @storage_path: 

@@ -33,6 +33,7 @@ CamelImapStoreSummary
 @path: 
 @full_name: 
 @sep: 
+@next: 
 
 <!-- ##### STRUCT CamelImapStoreSummary ##### -->
 <para>
@@ -51,26 +52,6 @@ CamelImapStoreSummary
 </para>
 
 @Returns: 
-
-
-<!-- ##### FUNCTION camel_imap_store_summary_namespace_new ##### -->
-<para>
-
-</para>
-
-@s: 
-@full_name: 
-@dir_sep: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_imap_store_summary_namespace_set ##### -->
-<para>
-
-</para>
-
-@s: 
-@ns: 
 
 
 <!-- ##### FUNCTION camel_imap_store_summary_namespace_find_path ##### -->

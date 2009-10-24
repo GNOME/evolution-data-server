@@ -492,6 +492,24 @@ camel-types
 @summary: 
 @array: 
 
+<!-- ##### FUNCTION camel_imap_store_summary_namespace_new ##### -->
+<para>
+
+</para>
+
+@s: 
+@full_name: 
+@dir_sep: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap_store_summary_namespace_set ##### -->
+<para>
+
+</para>
+
+@s: 
+@ns: 
+
 <!-- ##### FUNCTION camel_index_name_get_type ##### -->
 <para>
 
