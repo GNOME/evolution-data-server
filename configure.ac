@@ -161,7 +161,6 @@ AS_COMPILER_FLAGS(WARNING_FLAGS,
 	-Wmissing-declarations -Wmissing-include-dirs
 	-Wmissing-noreturn -Wnested-externs -Wpointer-arith
 	-Wredundant-decls -Wundef -Wwrite-strings")
-AC_SUBST(WARNING_FLAGS)
 
 dnl Other useful compiler warnings for test builds only.
 dnl These may produce warnings we have no control over.
@@ -169,7 +168,9 @@ dnl
 dnl	-Wformat-nonliteral
 dnl	-Wmissing-format-attribute
 dnl	-Wshadow
-CFLAGS="$CFLAGS $WARNING_FLAGS"
+
+AM_CPPFLAGS="$WARNING_FLAGS"
+AC_SUBST(AM_CPPFLAGS)
 
 dnl ******************************
 dnl Initialize maintainer mode
