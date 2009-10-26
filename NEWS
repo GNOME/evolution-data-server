@@ -1,3 +1,162 @@
+Evolution-Data-Server 2.29.1 2009-10-26
+----------------------------------------
+
+Bug Fixes:
+	Bug #484839 - Keep uids order as is before doing threading (Milan Crha)
+	Bug #598971 - Preserve selection in ENameSelectorEntry if possible 
+	(Milan Crha)
+	Bug #593953 - LDAP - first unset SSL mode, then try to change it 
+	(Milan Crha)
+	Bug #592159 - Support multiple factories for address-book with dbus 
+	(Milan Crha)
+	Bug #413422 - IMAP Subscribing/Viewing of Shared Folders does not work 
+	(Milan Crha)
+	Bug #556933 - Too long quoted-printable lines in edge case (Milan Crha)
+	Bug #386468 - gpg encrypted message not shown (Milan Crha)
+	Bug #372435 - Pass signer's certificate to the camel_cipher_validity 
+	(Milan Crha)
+	Bug #596095 - Open saved ESource-s for e_cal_/e_book__new_system_* calls 
+	(Milan Crha)
+	Bug #593953 - Define LDAP_DEPRECATED as we use deprecated functions 
+	(Milan Crha)
+	Bug #581508 - /usr/share/zoneinfo/ isn't being parsed correctly 
+	(Milan Crha)
+	Bug #516000 - Wrong formatted quoted text (Milan Crha)
+	Bug #592873 - Connect to "changed" signal on a source in file backend 
+	(Milan Crha)
+	Bug #499180 - BYDAY and BYMONTHDAY combination show too many entries 
+	(Milan Crha)
+	Bug #594502 - Some google calendar meetings don't show up (Milan Crha)
+	Bug #593023 - Deleting an imported recurrent event will remain 
+	(Milan Crha)
+	Bug #482526 - E-mail list truncated in To/Cc/Bcc (Milan Crha)
+	Bug #523399 - Maildir speedup when moving items to another Maildir 
+	(Philip Van Hoof)
+	Bug #329100 - Choosing adress book for birthdays (Milan Crha)
+	Bug #498095 - Fixing mnemonics (Milan Crha)
+	Bug #597932 - Split out Kerberos 5 check into an macro (H. Habighorst)
+	Bug #596619 - Fixup problems in building docs (H. Habighorst)
+	Bug #597855 - Fix for NSS/NSPR check (H. Habighorst)
+	Bug #597836 - Remove E2K_DEBUG (Matthew Barnes)
+	Bug #597716 - Fixes for KRB5/SSL and KRB4 removal (H. Habighorst)
+	Bug #597157 - Better error handling and dbus signal names without '-' 
+	(Milan Crha)
+	Bug #597513 - Uninitialized variable after e_cal_get_object_list 
+	(Milan Crha)
+	Bug #597182 - Rewrite autoconf check of NSS\NSPR (H. Habighorst)
+	Bug #597566 - Remote calendars are marked as readonly (Milan Crha)
+	Bug #597157 - Crashes e-calendar-factory on multiple EDataCal requests 
+	(Milan Crha)
+	Bug #513031 - Partial Fix (Milan Crha)
+	Bug #597173 - Rewrite autoconf check of gnome-keyring (H.Habighorst)
+	Bug #595393 - Use per-target CPPFLAGS in EDS (Matthew Barnes)
+	Bug #596971 - Drop support for Kerberos 4 (H.Habighorst)
+	Bug #596834 - Fix misquoting in libdb configuration (H.Habighorst)
+	Bug #410164 - Remove local copy of Berkeley DB (libdb) (Matthew Barnes)
+	Bug #270893 - Support client certificates for IMAP (Craig Ringer)
+	Bug #596157 - Use "Message-ID" instead of "Message-Id" (Jeremy Visser)
+	Bug #595082 - contacts displayed twice in new email contact list 
+	(Milan Crha)
+	Bug #595351 - Drop OpenSSL support in Camel (H.Habighorst)
+	Bug #595327 - Bump libtool to 2.2 and remove dolt (H.Habighorst)
+	Bug #350007 - evolution busy-waits on GPG signing operations (Milan Crha)
+	Bug #474948 (BNC) - Expand <group> Inline Adds Control Codes.
+	(Bharath Acharya)
+	Bug #499179 (BNC) - Paste of e-mail always goes to left most position
+	(Bharath Acharya)
+	Bug #578910 - Removed debug printf and changed other console print 
+	(Milan Crha)
+	Bug #429317 - (Petr Tomasek)
+	Bug #578910 - Fixes problem of missing migration for left out 
+	(Srinivasa Ragavan)
+	Bug #592310 - Deadlock in maildir provider after doing expunge 
+        (Milan Crha)
+	Bug #581288 - Use GtkBuilder instead of libglade (Milan Crha)
+	Bug #590575 - Do not crash while searching unmatched categories. 
+	(Chenthill Palanisamy)
+	Bug #590574 - Do not allow hyphen in error names. Fixes memory leaks. 
+	(Chenthill Palanisamy)
+	Bug #590227 - missing evolution-data-server idl (Bharath Acharya)
+	Bug #591377 - Fails to detect krb5 in configure with -as-needed 
+	(H.Habighorst)
+	Bug #591324 – Cosmetic changes and fixes in configure.ac (H.Habighorst)
+	Bug #590044 - Drop index on all columns of sqlite database	
+	(Romuald Brunet)
+	Bug #571206 - Index files on Maildir accounts are not updated on move 
+	(Milan Crha)
+
+Other Fixes:
+	Coding style and whitespace cleanup. (Matthew Barnes)
+	Automatic Gtk-Doc updates. (Matthew Barnes)
+	Put compiler warning flags in AM_CPPFLAGS instead of CFLAGS.
+        (Matthew Barnes)
+	Remove the structured exception handling as it may cause 
+	(Chenthill Palanisamy)
+	Remove dead Camel code that uses EPoolv. (Matthew Barnes)
+	Remove dead Camel code that uses EStrv. (Matthew Barnes)
+	Fix compiler warnings. (Matthew Barnes)
+	Move servers/exchange to evolution-exchange. (Matthew Barnes)
+        Full list of errors returned from EDataCal/EDataBook (Milan Crha)
+	Fix the libecal documentation build (Ross Burton)
+	Port libecal to DBus (Ross Burton)
+	Port libedata-cal to DBus (Ross Burton)
+	Remove calendar/idl (Ross Burton)
+	Remove EComponentListener (Ross Burton)
+	Remove the Bonobo factory (Ross Burton)
+	Remove unused Bonobo checks (Ross Burton)
+	Switch calendar to DBus instead of Bonobo (Ross Burton)
+	Unbreak Camel providers. (Matthew Barnes)
+	Remove unused assignments (Kjartan Maraas)
+	Remove unused code (Kjartan Maraas)
+	Mark data static (Kjartan Maraas)
+	libecal: importing event with pseudo "Etc/UTC" timezone crashed 
+        (Bug #593019) (Patrick Ohly)	
+	Retrieving and storing bodystructure from IMAP servers (Philip Van Hoof)
+	Let offline listener set local/remote mode in factory. (Johnny Jacob)
+	Added a crude gconf based offline listener for e-addressbook-factory 
+	(Johnny Jacob)
+	Port libedata-book to DBus (Ross Burton)
+	Port libebook to DBus (Ross Burton)
+	Migrate eds pkgconfig to dbus (Ross Burton)
+	Build the ORBit server only if the calendar is enabled (Rob Bradford)
+	Remove the addressbook support from the ORBit server (Ross Burton)
+	Add DBUS related gubbins to configure. (Rob Bradford)
+
+Translations:
+	Ivar Smolin (et)
+	Jorge González (es)
+	drtvasudevan (ta)
+	ifelix (ta)
+	Kjartan Maraas (nb)
+	Amitakhya Phukan (as)
+	Jiri Eischmann (cs)
+	Astur (ast)
+	Takayuki KUSANO (ja)
+	David Planela (ca)
+	Adi Roiban (ro)
+	A S Alam (pa)
+	Ask H. Larsen (da)
+	Philip Withnall (en_GB)
+	Matej Urbančič (sl)
+	Shankar Prasad (kn)
+	Mario Blättermann (de)
+	krishnababu k (te)
+	Piotr Drąg (pl)
+	Sweta Kothari (gu)
+	Žygimantas Beručka (lt)
+	Gabor Kelemen (hu)
+	Luca Ferretti (it)
+	Duarte Loreto (pt)
+	Daniel Nylander (sv)
+	Aron Xu (zh_CN)
+	Claude Paroz (fr)
+	Inaki Larranaga Murgoitio (eu)
+	Manoj Kumar Giri (or)
+	Seán de Búrca (ga)
+	Alexander Shopov (bg)
+	Antón Méixome (gl)
+	Sandeep Shedmake (mr)
+
 Evolution-Data-Server 2.27.90 2009-08-10
 ----------------------------------------
 
