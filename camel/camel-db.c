@@ -398,7 +398,6 @@ camel_db_open (const gchar *path, CamelException *ex)
 	static GOnce vfs_once = G_ONCE_INIT;
 	CamelDB *cdb;
 	sqlite3 *db;
-	gchar *cache;
 	gint ret;
 
 	g_once (&vfs_once, (GThreadFunc) init_sqlite_vfs, NULL);
@@ -429,11 +428,13 @@ camel_db_open (const gchar *path, CamelException *ex)
 	d(g_print ("\nDatabase succesfully opened  \n"));
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
-	if (g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL)
-		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
+	if (g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL) {
+		gchar *cache = NULL;
 
-	camel_db_command (cdb, cache, NULL);
-	g_free (cache);
+		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
+		camel_db_command (cdb, cache, NULL);
+		g_free (cache);
+	}		
 
 	camel_db_command (cdb, "ATTACH DATABASE ':memory:' AS mem", NULL);
 
