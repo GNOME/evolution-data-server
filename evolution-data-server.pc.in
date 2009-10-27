@@ -15,4 +15,4 @@ execversion=@BASE_VERSION@
 Name: evolution-data-server
 Description: The evolution data server for the calendar and addressbook
 Version: @VERSION@
-Requires: dbus-glib-1
+Requires: dbus-glib-1, @mozilla_nss@, @mozilla_nspr@

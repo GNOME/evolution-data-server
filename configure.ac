@@ -671,6 +671,10 @@ fi
 
 AM_CONDITIONAL(ENABLE_SMIME, test "x$msg_smime" != "xno")
 
+dnl For pkgconfig files.
+AC_SUBST(mozilla_nss)
+AC_SUBST(mozilla_nspr)
+
 AC_SUBST(MANUAL_NSPR_CFLAGS)
 AC_SUBST(MANUAL_NSPR_LIBS)
 AC_SUBST(MANUAL_NSS_CFLAGS)
