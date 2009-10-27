@@ -1488,7 +1488,7 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
 	/* XXX Because we stuff three renderers in a single column,
 	 *     we have to manually hunt for the text renderer. */
 	renderer = NULL;
-	list = gtk_tree_view_column_get_cell_renderers (column);
+	list = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT (column));
 	while (list != NULL) {
 		renderer = list->data;
 		if (GTK_IS_CELL_RENDERER_TEXT (renderer))
