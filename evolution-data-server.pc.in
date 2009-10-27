@@ -8,8 +8,6 @@ datarootdir=@datarootdir@
 datadir=@datadir@
 privdatadir=@privdatadir@
 
-idldir=@idldir@
-IDL_INCLUDES=-I${idldir} @IDL_INCLUDES@
 execversion=@BASE_VERSION@
 
 Name: evolution-data-server

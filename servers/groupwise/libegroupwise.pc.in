@@ -5,9 +5,6 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 
-idldir=@idldir@
-IDL_INCLUDES=-I${idldir} @IDL_INCLUDES@
-
 privincludedir=@privincludedir@
 
 Name: libegroupwise
