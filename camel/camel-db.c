@@ -398,7 +398,7 @@ camel_db_open (const gchar *path, CamelException *ex)
 	static GOnce vfs_once = G_ONCE_INIT;
 	CamelDB *cdb;
 	sqlite3 *db;
-	gchar *cache;
+	gchar *cache=NULL;
 	gint ret;
 
 	g_once (&vfs_once, (GThreadFunc) init_sqlite_vfs, NULL);
