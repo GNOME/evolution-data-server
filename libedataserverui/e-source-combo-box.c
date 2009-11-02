@@ -92,6 +92,16 @@ source_list_changed_cb (ESourceList *source_list,
 	model = gtk_combo_box_get_model (combo_box);
 	store = GTK_LIST_STORE (model);
 
+	if (source_list == NULL) {
+		gtk_list_store_clear (store);
+		return;
+	}
+
+	/* XXX The algorithm below is needlessly complex.  Would be
+	 *     easier just to clear and rebuild the store.  There's
+	 *     hardly a performance issue here since source lists
+	 *     are short. */
+
 	gtk_tree_model_get_iter_first (model, &iter);
 
 	for (groups = e_source_list_peek_groups (source_list);
@@ -225,26 +235,9 @@ e_source_combo_box_set_property (GObject *object,
 
 	switch (property_id) {
 		case PROP_SOURCE_LIST:
-
-			if (priv->source_list != NULL) {
-				g_signal_handler_disconnect (
-					priv->source_list, priv->handler_id);
-				g_object_unref (priv->source_list);
-			}
-
-			priv->source_list = g_value_dup_object (value);
-
-			/* Reset the tree store. */
-			source_list_changed_cb (
-				priv->source_list,
-				E_SOURCE_COMBO_BOX (object));
-
-			/* Watch for source list changes. */
-			priv->handler_id = g_signal_connect_object (
-				priv->source_list, "changed",
-				G_CALLBACK (source_list_changed_cb),
-				object, 0);
-
+			e_source_combo_box_set_source_list (
+				E_SOURCE_COMBO_BOX (object),
+				g_value_get_object (value));
 			return;
 	}
 
@@ -263,7 +256,9 @@ e_source_combo_box_get_property (GObject *object,
 
 	switch (property_id) {
 		case PROP_SOURCE_LIST:
-			g_value_set_object (value, priv->source_list);
+			g_value_set_object (
+				value, e_source_combo_box_get_source_list (
+				E_SOURCE_COMBO_BOX (object)));
 			return;
 	}
 
@@ -278,6 +273,8 @@ e_source_combo_box_dispose (GObject *object)
 	priv = E_SOURCE_COMBO_BOX_GET_PRIVATE (object);
 
 	if (priv->source_list != NULL) {
+		g_signal_handler_disconnect (
+			priv->source_list, priv->handler_id);
 		g_object_unref (priv->source_list);
 		priv->source_list = NULL;
 	}
@@ -397,13 +394,9 @@ e_source_combo_box_new (ESourceList *source_list)
 ESourceList *
 e_source_combo_box_get_source_list (ESourceComboBox *source_combo_box)
 {
-	ESourceList *source_list;
-
 	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box), NULL);
 
-	g_object_get (source_combo_box, "source-list", &source_list, NULL);
-
-	return source_list;
+	return source_combo_box->priv->source_list;
 }
 
 /**
@@ -419,9 +412,35 @@ e_source_combo_box_set_source_list (ESourceComboBox *source_combo_box,
                                     ESourceList *source_list)
 {
 	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box));
-	g_return_if_fail (E_IS_SOURCE_LIST (source_list));
 
-	g_object_set (source_combo_box, "source-list", source_list, NULL);
+	if (source_list != NULL) {
+		g_return_if_fail (E_IS_SOURCE_LIST (source_list));
+		g_object_ref (source_list);
+	}
+
+	if (source_combo_box->priv->source_list != NULL) {
+		g_signal_handler_disconnect (
+			source_combo_box->priv->source_list,
+			source_combo_box->priv->handler_id);
+		g_object_unref (source_combo_box->priv->source_list);
+		source_combo_box->priv->handler_id = 0;
+	}
+
+	source_combo_box->priv->source_list = source_list;
+
+	/* Reset the tree store. */
+	source_list_changed_cb (source_list, source_combo_box);
+
+	/* Watch for source list changes. */
+	if (source_list != NULL) {
+		source_combo_box->priv->handler_id =
+			g_signal_connect_object (
+				source_list, "changed",
+				G_CALLBACK (source_list_changed_cb),
+				source_combo_box, 0);
+	}
+
+	g_object_notify (G_OBJECT (source_combo_box), "source-list");
 }
 
 /**
