@@ -51,42 +51,20 @@ enum {
 
 static gpointer parent_class = NULL;
 
-/**
- * compare_source_names
- * Compares sources by name.
- **/
 static gint
-compare_source_names (gconstpointer a, gconstpointer b)
+compare_source_names (ESource *source_a,
+                      ESource *source_b)
 {
-	g_return_val_if_fail (E_IS_SOURCE (a), -1);
-	g_return_val_if_fail (E_IS_SOURCE (b),  1);
+	const gchar *name_a;
+	const gchar *name_b;
 
-	return g_utf8_collate (e_source_peek_name (E_SOURCE (a)), e_source_peek_name (E_SOURCE (b)));
-}
+	g_return_val_if_fail (E_IS_SOURCE (source_a), -1);
+	g_return_val_if_fail (E_IS_SOURCE (source_b),  1);
 
-/**
- * get_sorted_sources
- * Creates copy of GSList of sources (do not increase reference count for data members),
- * and sorts this list alphabetically by source names.
- *
- * @param sources List of sources.
- * @return New GSList of sorted sources, should be freed by g_slist_free,
- *         but do not unref data members.
- **/
-static GSList *
-get_sorted_sources (GSList *sources)
-{
-	GSList *res = NULL, *p;
+	name_a = e_source_peek_name (source_a);
+	name_b = e_source_peek_name (source_b);
 
-	if (!sources)
-		return NULL;
-
-	for (p = sources; p != NULL; p = p->next)
-		res = g_slist_prepend (res, p->data);
-
-	res = g_slist_sort (res, compare_source_names);
-
-	return res;
+	return g_utf8_collate (name_a, name_b);
 }
 
 static void
@@ -135,7 +113,13 @@ source_list_changed_cb (ESourceList *source_list,
 			-1);
 		gtk_tree_model_iter_next (model, &iter);
 
-		sources = get_sorted_sources (e_source_group_peek_sources (groups->data));
+		sources = e_source_group_peek_sources (groups->data);
+
+		/* Create a shallow copy and sort by name. */
+		sources = g_slist_sort (
+			g_slist_copy (sources),
+			(GCompareFunc) compare_source_names);
+
 		for (s = sources; s != NULL; s = s->next) {
 			const gchar *color_spec;
 			GdkColor color;
