@@ -49,10 +49,17 @@ struct _CamelIMAPXStoreInfo {
 typedef struct _CamelIMAPXStoreNamespace CamelIMAPXStoreNamespace;
 
 struct _CamelIMAPXStoreNamespace {
+	struct _CamelIMAPXStoreNamespace *next;
 	gchar *path;		/* display path */
 	gchar *full_name;	/* real name */
 	gchar sep;		/* directory separator */
 };
+
+typedef struct _CamelIMAPXNamespaceList {
+	CamelIMAPXStoreNamespace *personal;
+	CamelIMAPXStoreNamespace *other;
+	CamelIMAPXStoreNamespace *shared;	
+} CamelIMAPXNamespaceList;
 
 struct _CamelIMAPXStoreSummary {
 	CamelStoreSummary summary;
@@ -62,7 +69,7 @@ struct _CamelIMAPXStoreSummary {
 	/* header info */
 	guint32 version;	/* version of base part of file */
 	guint32 capabilities;
-	CamelIMAPXStoreNamespace *namespace; /* eventually to be a list */
+	CamelIMAPXNamespaceList *namespaces; /* eventually to be a list */
 };
 
 struct _CamelIMAPXStoreSummaryClass {
@@ -87,6 +94,8 @@ CamelIMAPXStoreInfo *camel_imapx_store_summary_add_from_full(CamelIMAPXStoreSumm
 
 /* a convenience lookup function. always use this if path known */
 gchar *camel_imapx_store_summary_full_from_path(CamelIMAPXStoreSummary *s, const gchar *path);
+
+void camel_imapx_store_summary_set_namespaces (CamelIMAPXStoreSummary *summary, const CamelIMAPXNamespaceList *nsl);
 
 /* helpe macro's */
 #define camel_imapx_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_IMAP_STORE_INFO_FULL_NAME))

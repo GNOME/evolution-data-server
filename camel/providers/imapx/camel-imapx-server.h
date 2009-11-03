@@ -51,6 +51,8 @@ struct _CamelIMAPXServer {
 	struct _CamelIMAPXStream *stream;
 	struct _capability_info *cinfo;
 
+	CamelIMAPXNamespaceList *nsl;
+
 	/* incoming jobs */
 	CamelMsgPort *port;
 	CamelDList jobs;

@@ -8,6 +8,7 @@
 
 struct _CamelIMAPXStream;
 struct _CamelFlag;
+struct _CamelIMAPXNamespaceList;
 
 /* list of strings we know about that can be *quickly* tokenised */
 typedef enum _camel_imapx_id_t {
@@ -27,6 +28,7 @@ typedef enum _camel_imapx_id_t {
 	IMAP_INTERNALDATE,
 	IMAP_LIST,
 	IMAP_LSUB,
+	IMAP_NAMESPACE,
 	IMAP_NEWNAME,
 	IMAP_NO,
 	IMAP_OK,
@@ -190,5 +192,9 @@ void imapx_utils_init(void);
 /* chen adds from old imap provider - place it in right place */
 gchar *imapx_path_to_physical (const gchar *prefix, const gchar *vpath);
 gchar *imapx_concat (CamelIMAPXStore *imap_store, const gchar *prefix, const gchar *suffix);
+
+void camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl);
+struct _CamelIMAPXNamespaceList * imap_parse_namespace_list (struct _CamelIMAPXStream *stream, CamelException *ex);
+struct _CamelIMAPXNamespaceList *camel_imapx_namespace_list_copy (const struct _CamelIMAPXNamespaceList *nsl);
 
 #endif

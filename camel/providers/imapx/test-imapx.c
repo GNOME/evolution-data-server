@@ -1,6 +1,7 @@
 #include <glib.h>
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
+#include <camel/camel.h>
 #include <camel/camel-session.h>
 
 gint
@@ -19,7 +20,7 @@ main (gint argc, gchar *argv [])
 	uri = argv [1];
 	g_thread_init (NULL);
 	system ("rm -rf /tmp/test-camel-imapx");
-	camel_init ("/tmp/test-camel-imapx");
+	camel_init ("/tmp/test-camel-imapx", 0);
 	camel_provider_init ();
 	ex = camel_exception_new ();
 

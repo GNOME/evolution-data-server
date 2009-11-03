@@ -10,6 +10,7 @@
 
 #include "camel-imapx-folder.h"
 #include "camel-imapx-stream.h"
+#include "camel-imapx-store-summary.h"
 #include "camel-imapx-utils.h"
 #include "camel-imapx-exception.h"
 #include "libedataserver/e-memory.h"
@@ -35,6 +36,8 @@ imap_tokenise (register const gchar *str, register guint len)
 	return 0;
 }
 
+static void imapx_namespace_clear (CamelIMAPXStoreNamespace **ns);
+
 /* flag table */
 static struct {
 	gchar *name;
@@ -56,7 +59,8 @@ void
 imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_flagsp, CamelException *ex)
 /* throws IO,PARSE exception */
 {
-	gint tok, len, i;
+	gint tok, i;
+	guint len;
 	guchar *token, *p, c;
 	guint32 flags = 0;
 
@@ -72,12 +76,12 @@ imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fla
 				while ((c=*p))
 					*p++ = toupper(c);
 				for (i = 0; i < G_N_ELEMENTS (flag_table); i++)
-					if (!strcmp(token, flag_table[i].name)) {
+					if (!strcmp((gchar *)token, flag_table[i].name)) {
 						flags |= flag_table[i].flag;
 						goto found;
 					}
 				if (user_flagsp)
-					camel_flag_set(user_flagsp, token, TRUE);
+					camel_flag_set(user_flagsp, (gchar *)token, TRUE);
 			found:
 				tok = tok; /* fixes stupid warning */
 			} else if (tok != ')') {
@@ -184,9 +188,105 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	return cinfo;
 }
 
+
 void imap_free_capability(struct _capability_info *cinfo)
 {
 	g_free(cinfo);
+}
+
+struct _CamelIMAPXNamespaceList *
+imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
+{
+	CamelIMAPXStoreNamespace *namespaces[3], *node, *tail;
+	CamelIMAPXNamespaceList *nsl = NULL;
+	gint tok, len, i;
+	guchar *token, *p, c;
+	gint n = 0;
+
+	nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
+	nsl->personal = NULL;
+	nsl->shared = NULL;
+	nsl->other = NULL;
+
+	tok = camel_imapx_stream_token (stream, &token, &len, ex);
+	do {
+		namespaces[n] = NULL;
+		tail = (CamelIMAPXStoreNamespace *) &namespaces[n];
+		
+		if (tok == '(') {
+			tok = camel_imapx_stream_token (stream, &token, &len, ex);
+
+			if (tok != IMAP_TOK_STRING) {
+				camel_exception_set (ex, 1, "namespace: expected a string path name");
+				goto exception;
+			}
+
+			node = g_new0 (CamelIMAPXStoreNamespace, 1);
+			node->next = NULL;
+			node->path = g_strdup (token);
+			g_message ("namespace: Node path is %s \n", node->path);
+
+			tok = camel_imapx_stream_token (stream, &token, &len, ex);
+			
+			if (tok == IMAP_TOK_STRING) {
+				if (strlen (token) == 1) {
+					node->sep = *token;
+				} else {
+					if (*token) 
+						node->sep = node->path [strlen (node->path) - 1];
+					else
+						node->sep = '\0';
+				}
+				break;
+			} else if (tok == IMAP_TOK_TOKEN) {
+				/* will a NIL be possible here? */
+				node->sep = '\0';
+			} else {
+				camel_exception_set (ex, 1, "namespace: expected a string separator");
+				g_free (node->path);
+				g_free (node);
+				goto exception;
+			}
+
+			tail->next = node;
+			tail = node;
+
+			if (node->path [strlen (node->path) -1] == node->sep)
+				node->path [strlen (node->path) - 1] = '\0';
+
+			if (!g_ascii_strncasecmp (node->path, "INBOX", 5) && 
+					(node->path [6] == '\0' || node->path [6] == node->sep ))
+				memcpy (node->path, "INBOX", 5);
+			tok = camel_imapx_stream_token (stream, &token, &len, ex);
+			if (tok != ')') {
+				camel_exception_set (ex, 1, "namespace: expected a ')'");
+				goto exception;
+			}
+			
+			tok = camel_imapx_stream_token (stream, &token, &len, ex);
+
+		} else if (tok == IMAP_TOK_TOKEN && !strcmp (token, "NIL")) {
+			namespaces [n] = NULL;
+		} else {
+			camel_exception_set (ex, 1, "namespace: expected either a '(' or NIL");
+			goto exception;
+		}
+
+		tok = camel_imapx_stream_token (stream, &token, &len, ex);
+		n++;
+	} while (n < 3);
+
+	nsl->personal = namespaces [0];
+	nsl->shared = namespaces [1];
+	nsl->other = namespaces [2];
+
+	return nsl;
+exception:
+	g_free (nsl);
+	for (i=0; i < 3; i++) 
+		imapx_namespace_clear (&namespaces [i]);
+	
+	return NULL;
 }
 
 /*
@@ -1446,4 +1546,65 @@ imapx_concat (CamelIMAPXStore *imap_store, const gchar *prefix, const gchar *suf
 		return g_strdup_printf ("%s%s", prefix, suffix);
 	else
 		return g_strdup_printf ("%s%c%s", prefix, imap_store->dir_sep, suffix);
+}
+
+static void
+imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
+{
+	CamelIMAPXStoreNamespace *node, *next;
+
+	node = *ns;
+	while (node != NULL) {
+		next = node->next;
+		g_free (node->path);
+		g_free (node);
+		node = next;
+	}
+
+	*ns = NULL;
+}
+
+void
+camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl)
+{
+	imapx_namespace_clear (&nsl->personal);
+	imapx_namespace_clear (&nsl->shared);
+	imapx_namespace_clear (&nsl->other);
+	
+	g_free (nsl);
+	nsl = NULL;
+}
+
+static CamelIMAPXStoreNamespace *
+imapx_namespace_copy (const CamelIMAPXStoreNamespace *ns)
+{
+	CamelIMAPXStoreNamespace *list, *node, *tail;
+
+	list = NULL;
+	tail = (CamelIMAPXStoreNamespace *) &list;
+
+	while (ns != NULL) {
+		tail->next = node = g_malloc (sizeof (CamelIMAPXStoreNamespace));
+		node->path = g_strdup (ns->path);
+		node->sep = ns->sep;
+		ns = ns->next;
+		tail = node;
+	}
+
+	tail->next = NULL;
+
+	return list;
+}
+
+struct _CamelIMAPXNamespaceList *
+camel_imapx_namespace_list_copy (const struct _CamelIMAPXNamespaceList *nsl)
+{
+	CamelIMAPXNamespaceList *new;
+
+	new = g_malloc (sizeof (CamelIMAPXNamespaceList));
+	new->personal = imapx_namespace_copy (nsl->personal);
+	new->other = imapx_namespace_copy (nsl->other);
+	new->shared = imapx_namespace_copy (nsl->shared);
+
+	return new;
 }

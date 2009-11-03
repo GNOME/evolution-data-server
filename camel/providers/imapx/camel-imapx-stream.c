@@ -58,7 +58,7 @@ stream_fill(CamelIMAPXStream *is)
 		memcpy(is->buf, is->ptr, left);
 		is->end = is->buf + left;
 		is->ptr = is->buf;
-		left = camel_stream_read(is->source, is->end, CAMEL_IMAPX_STREAM_SIZE - (is->end - is->buf));
+		left = camel_stream_read(is->source, (gchar *) is->end, CAMEL_IMAPX_STREAM_SIZE - (is->end - is->buf));
 		if (left > 0) {
 			is->end += left;
 			io(printf("camel_imapx_read: buffer is '%.*s'\n", (gint)(is->end - is->ptr), is->ptr));
@@ -280,6 +280,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, CamelException *
 {
 	guchar *p, *start;
 	guint len, inlen;
+	gint ret;
 
 	switch (camel_imapx_stream_token(is, data, &len, ex)) {
 	case IMAP_TOK_TOKEN:
@@ -296,12 +297,12 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, CamelException *
 		p = is->tokenptr;
 		camel_imapx_stream_set_literal(is, len);
 		do {
-			len = camel_imapx_stream_getl(is, &start, &inlen);
-			if (len < 0)
-				return len;
+			ret = camel_imapx_stream_getl(is, &start, &inlen);
+			if (ret < 0)
+				return ret;
 			memcpy(p, start, inlen);
 			p += inlen;
-		} while (len > 0);
+		} while (ret > 0);
 		*data = is->tokenptr;
 		return 0;
 	case IMAP_TOK_ERROR:
@@ -320,6 +321,7 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, guchar **data, CamelException *
 {
 	guchar *p, *start;
 	guint len, inlen;
+	gint ret;
 
 	switch (camel_imapx_stream_token(is, data, &len, ex)) {
 	case IMAP_TOK_STRING:
@@ -333,12 +335,12 @@ camel_imapx_stream_nstring(CamelIMAPXStream *is, guchar **data, CamelException *
 		p = is->tokenptr;
 		camel_imapx_stream_set_literal(is, len);
 		do {
-			len = camel_imapx_stream_getl(is, &start, &inlen);
-			if (len < 0)
-				return len;
+			ret = camel_imapx_stream_getl(is, &start, &inlen);
+			if (ret < 0)
+				return ret;
 			memcpy(p, start, inlen);
 			p += inlen;
-		} while (len > 0);
+		} while (ret > 0);
 		*data = is->tokenptr;
 		return 0;
 	case IMAP_TOK_TOKEN:
@@ -365,13 +367,13 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream, Ca
 	guchar *token;
 	guint len;
 	gint ret = 0;
-	CamelStream * volatile mem = NULL;
+	CamelStream * mem = NULL;
 
 	*stream = NULL;
 
 	switch (camel_imapx_stream_token(is, &token, &len, ex)) {
 		case IMAP_TOK_STRING:
-			mem = camel_stream_mem_new_with_buffer(token, len);
+			mem = camel_stream_mem_new_with_buffer((gchar *)token, len);
 			*stream = mem;
 			break;
 		case IMAP_TOK_LITERAL:
@@ -411,7 +413,7 @@ camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex)
 		return 0;
 	}
 
-	return strtoul(token, 0, 10);
+	return strtoul((gchar *)token, 0, 10);
 }
 
 gint
@@ -427,8 +429,8 @@ camel_imapx_stream_text(CamelIMAPXStream *is, guchar **text, CamelException *ex)
 			case IMAP_TOK_TOKEN:
 			case IMAP_TOK_STRING:
 			case IMAP_TOK_INT:
-				g_byte_array_append(build, is->unget_token, is->unget_len);
-				g_byte_array_append(build, " ", 1);
+				g_byte_array_append(build, (guint8 *) is->unget_token, is->unget_len);
+				g_byte_array_append(build, (guint8 *) " ", 1);
 			default: /* invalid, but we'll ignore */
 				break;
 		}
@@ -447,7 +449,7 @@ camel_imapx_stream_text(CamelIMAPXStream *is, guchar **text, CamelException *ex)
 			g_byte_array_append(build, token, len);
 	} while (tok > 0);
 
-	g_byte_array_append(build, "", 1);
+	g_byte_array_append(build, (guint8 *) "", 1);
 	*text = build->data;
 	g_byte_array_free(build, FALSE);
 

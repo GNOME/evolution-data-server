@@ -517,8 +517,8 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	gchar *pattern, *name;
 	gint i;
 
-	if (camel_debug("imap:folder_info"))
-		printf("get folder info offline\n");
+//	if (camel_debug("imap:folder_info"))
+	printf("get folder info offline\n");
 
 	/* FIXME: obey other flags */
 
@@ -532,8 +532,8 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	/* get starting point */
 	if (top[0] == 0) {
 		if (imapx_store->namespace && imapx_store->namespace[0]) {
-			name = g_strdup(imapx_store->summary->namespace->full_name);
-			top = imapx_store->summary->namespace->path;
+			name = g_strdup(imapx_store->summary->namespaces->personal->full_name);
+			top = imapx_store->summary->namespaces->personal->path;
 		} else
 			name = g_strdup("");
 	} else {

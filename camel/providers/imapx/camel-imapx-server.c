@@ -164,7 +164,7 @@ struct _imapx_flag_change {
 
 typedef struct _CamelIMAPXJob CamelIMAPXJob;
 struct _CamelIMAPXJob {
-	EMsg msg;
+	CamelMsg msg;
 
 	CamelException *ex;
 
@@ -866,10 +866,12 @@ static CamelIMAPXJob *
 imapx_find_job(CamelIMAPXServer *imap, gint type, const gchar *uid)
 {
 	CamelIMAPXJob *job;
+	CamelDListNode *node;
 
 	QUEUE_LOCK(imap);
 
-	for (job = (CamelIMAPXJob *)imap->jobs.head;job->msg.ln.next;job = (CamelIMAPXJob *)job->msg.ln.next) {
+	for (node = imap->jobs.head;node->next;node = node->next) {
+		job = (CamelIMAPXJob *) node;
 		if (job->type != type)
 			continue;
 
@@ -972,6 +974,19 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		g_array_append_val(imap->expunged, expunge);
 		break;
 	}
+	case IMAP_NAMESPACE: {
+		CamelIMAPXNamespaceList *nsl = NULL;				     
+		
+		nsl = imap_parse_namespace_list (imap->stream, ex);
+		if (nsl != NULL) {
+			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) imap->store;
+
+			imapx_store->summary->namespaces = nsl;
+			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary); 
+		}
+
+		break;	
+	}			     
 	case IMAP_EXISTS:
 		printf("exists: %d\n", id);
 		imap->exists = id;
@@ -1339,10 +1354,13 @@ imapx_select_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 
 	if (ic->status->result != IMAP_OK) {
-		CamelDList failed = E_DLIST_INITIALISER(failed);
+		CamelDList failed;
 		CamelIMAPXCommand *cw, *cn;
 
 		printf("Select failed\n");
+		failed.head = NULL;
+		failed.tail = NULL;
+		failed.tailpred = NULL;
 
 		QUEUE_LOCK(is);
 		cw = (CamelIMAPXCommand *)is->queue.head;
@@ -1585,6 +1603,13 @@ retry:
 				camel_exception_clear (ex);
 				goto retry;
 			}
+		
+		/* Fetch namespaces */
+		if (is->cinfo->capa & IMAP_CAPABILITY_NAMESPACE) {
+			ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
+			imapx_command_run (is, ic, ex);
+			camel_imapx_command_free (ic);
+		}
 }
 
 /* ********************************************************************** */
@@ -1599,7 +1624,7 @@ imapx_job_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		camel_exception_clear(job->ex);
 		g_free(job);
 	} else
-		camel_msgport_reply((EMsg *)job);
+		camel_msgport_reply((CamelMsg *)job);
 }
 
 /* ********************************************************************** */
@@ -1837,7 +1862,7 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
 	camel_dlist_remove((CamelDListNode *)job);
-	camel_msgport_reply((EMsg *)job);
+	camel_msgport_reply((CamelMsg *)job);
 }
 
 static gint
@@ -1946,7 +1971,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
 	camel_dlist_remove((CamelDListNode *)job);
-	camel_msgport_reply((EMsg *)job);
+	camel_msgport_reply((CamelMsg *)job);
 }
 
 static void
@@ -2051,7 +2076,7 @@ imapx_job_sync_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			}*/
 		}
 		camel_dlist_remove((CamelDListNode *)job);
-		camel_msgport_reply((EMsg *)job);
+		camel_msgport_reply((CamelMsg *)job);
 	}
 }
 
@@ -2135,7 +2160,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 		printf("Hmm, we didn't have any work to do afterall?  hmm, this isn't right\n");
 
 		camel_dlist_remove((CamelDListNode *)job);
-		camel_msgport_reply((EMsg *)job);
+		camel_msgport_reply((CamelMsg *)job);
 	}
 }
 
@@ -2171,7 +2196,7 @@ imapx_server_loop(gpointer d)
 		if (!is->stream)
 			imapx_reconnect(is, &ex);
 
-		job = (CamelIMAPXJob *)camel_msgport_get(is->port);
+		job = (CamelIMAPXJob *)camel_msgport_try_pop (is->port);
 		if (job) {
 			camel_dlist_addtail(&is->jobs, (CamelDListNode *)job);
 			job->start(is, job);
@@ -2181,7 +2206,7 @@ imapx_server_loop(gpointer d)
 				|| camel_imapx_stream_buffered(is->stream))
 			imapx_step(is, &ex);
 		else
-			camel_msgport_wait(is->port);
+			camel_msgport_pop (is->port);
 #if 0
 		/* TODO:
 		   This poll stuff wont work - we might block
@@ -2366,12 +2391,12 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 		QUEUE_UNLOCK(is);
 		job->start(is, job);
 	} else {
-		camel_msgport_put(is->port, (EMsg *)job);
+		camel_msgport_push (is->port, (CamelMsg *)job);
 	}
 
 	if (!job->noreply) {
-		CamelMsg *completed = camel_msgport_wait(reply);
-		g_assert(completed == (EMsg *)job);
+		CamelMsg *completed = camel_msgport_pop (reply);
+		g_assert(completed == (CamelMsg *)job);
 		camel_msgport_destroy(reply);
 	}
 }
