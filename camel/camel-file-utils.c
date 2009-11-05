@@ -767,23 +767,8 @@ camel_file_util_savename(const gchar *filename)
 gint
 camel_mkdir (const gchar *path, mode_t mode)
 {
-	gchar *copy, *p;
+	g_assert(path);
+	g_assert (g_path_is_absolute (path[0]));
 
-	g_assert(path && path[0] == '/');
-
-	p = copy = g_alloca (strlen (path) + 1);
-	strcpy(copy, path);
-	do {
-		p = strchr(p + 1, '/');
-		if (p)
-			*p = '\0';
-		if (access(copy, F_OK) == -1) {
-			if (mkdir(copy, mode) == -1)
-				return -1;
-		}
-		if (p)
-			*p = '/';
-	} while (p);
-
-	return 0;
+	return g_mkdir_with_parents (path, mode);
 }
