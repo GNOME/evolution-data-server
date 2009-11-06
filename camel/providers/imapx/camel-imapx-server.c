@@ -675,7 +675,7 @@ imapx_get_path_uid(CamelIMAPXServer *is, CamelFolder *folder, const gchar *bit, 
 		bit = strchr(uid, '-') == NULL?"cur":"new";
 	dir = g_strdup_printf("/tmp/imap-cache/%s/%s", folder->full_name, bit);
 
-	camel_mkdir(dir, 0777);
+	g_mkdir_with_parents(dir, 0777);
 	path = g_strdup_printf("%s/%s", dir, uid);
 	g_free(dir);
 

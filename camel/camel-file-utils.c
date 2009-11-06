@@ -767,8 +767,5 @@ camel_file_util_savename(const gchar *filename)
 gint
 camel_mkdir (const gchar *path, mode_t mode)
 {
-	g_assert(path);
-	g_assert (g_path_is_absolute (path[0]));
-
 	return g_mkdir_with_parents (path, mode);
 }
