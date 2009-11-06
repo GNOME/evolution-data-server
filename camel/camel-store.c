@@ -1043,10 +1043,10 @@ camel_folder_info_build (GPtrArray *folders, const gchar *namespace,
 	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), folder_info_cmp);
 
 	/* Hash the folders. */
-	hash = g_hash_table_new (g_str_hash, g_str_equal);
+	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
-		g_hash_table_insert (hash, fi->full_name, fi);
+		g_hash_table_insert (hash, g_strdup (fi->full_name), fi);
 	}
 
 	/* Now find parents. */
