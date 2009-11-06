@@ -1258,7 +1258,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 static gint
 imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException *ex)
 {
-	CamelIMAPXCommand * volatile ic;
+	CamelIMAPXCommand *ic;
 	guint tag;
 
 	if (token[0] != imap->tagprefix)
@@ -1628,7 +1628,7 @@ imapx_job_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		camel_exception_clear(job->ex);
 		g_free(job);
 	} else
-		camel_msgport_reply((CamelMsg *)job);
+		camel_msgport_reply(job->msg.reply_port);
 }
 
 /* ********************************************************************** */

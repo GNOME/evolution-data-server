@@ -30,6 +30,8 @@ main (gint argc, gchar *argv [])
 	service = camel_session_get_service (session, uri, CAMEL_PROVIDER_STORE, ex);
 	camel_service_connect (service, ex);
 
+	camel_store_get_folder_info ((CamelStore *)service, "", 3, NULL);
+
 	while (1)
 	{
 	}
