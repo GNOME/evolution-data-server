@@ -2866,6 +2866,7 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	l = e_cal_backend_store_get_components_by_uid (priv->store, uid);
 	len = g_slist_length (l);
+	g_slist_foreach (l, (GFunc)g_object_unref, NULL);
 	g_slist_free (l);
 	if (len > 0)
 		return;
