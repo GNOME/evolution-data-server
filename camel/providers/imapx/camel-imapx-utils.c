@@ -155,7 +155,8 @@ struct _capability_info *
 imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 {
 	gint tok, len, i;
-	guchar *token, *p, c;
+	guchar *token, *p, c, *temp;
+	gboolean free_token = FALSE;
 	struct _capability_info * volatile cinfo;
 
 	cinfo = g_malloc0(sizeof(*cinfo));
@@ -163,6 +164,9 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	/* FIXME: handle auth types */
 	while (!camel_exception_is_set (ex) && (tok = camel_imapx_stream_token(stream, &token, &len, ex)) != '\n') {
 		switch (tok) {
+			case 43:
+				token = g_strconcat (token, "+", NULL);
+				free_token = TRUE;
 			case IMAP_TOK_TOKEN:
 			case IMAP_TOK_STRING:
 				p = token;
@@ -173,6 +177,11 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
 					if (strcmp(token, capa_table[i].name))
 						cinfo->capa |= capa_table[i].flag;
+				if (free_token) {
+					g_free (token);
+					token = NULL;
+				}
+				free_token = FALSE;
 				break;
 			default:
 				camel_exception_set (ex, 1, "capability: expecting name");
@@ -212,58 +221,65 @@ imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 	do {
 		namespaces[n] = NULL;
 		tail = (CamelIMAPXStoreNamespace *) &namespaces[n];
-		
+	
 		if (tok == '(') {
 			tok = camel_imapx_stream_token (stream, &token, &len, ex);
 
-			if (tok != IMAP_TOK_STRING) {
-				camel_exception_set (ex, 1, "namespace: expected a string path name");
-				goto exception;
-			}
-
-			node = g_new0 (CamelIMAPXStoreNamespace, 1);
-			node->next = NULL;
-			node->path = g_strdup (token);
-			g_message ("namespace: Node path is %s \n", node->path);
-
-			tok = camel_imapx_stream_token (stream, &token, &len, ex);
-			
-			if (tok == IMAP_TOK_STRING) {
-				if (strlen (token) == 1) {
-					node->sep = *token;
-				} else {
-					if (*token) 
-						node->sep = node->path [strlen (node->path) - 1];
-					else
-						node->sep = '\0';
+			while (tok == '(') {
+				tok = camel_imapx_stream_token (stream, &token, &len, ex);
+				if (tok != IMAP_TOK_STRING) {
+					camel_exception_set (ex, 1, "namespace: expected a string path name");
+					goto exception;
 				}
-				break;
-			} else if (tok == IMAP_TOK_TOKEN) {
-				/* will a NIL be possible here? */
-				node->sep = '\0';
-			} else {
-				camel_exception_set (ex, 1, "namespace: expected a string separator");
-				g_free (node->path);
-				g_free (node);
-				goto exception;
+
+				node = g_new0 (CamelIMAPXStoreNamespace, 1);
+				node->next = NULL;
+				node->path = g_strdup (token);
+				g_message ("namespace: Node path is %s \n", node->path);
+
+				tok = camel_imapx_stream_token (stream, &token, &len, ex);
+
+				if (tok == IMAP_TOK_STRING) {
+					if (strlen (token) == 1) {
+						node->sep = *token;
+					} else {
+						if (*token) 
+							node->sep = node->path [strlen (node->path) - 1];
+						else
+							node->sep = '\0';
+					}
+				} else if (tok == IMAP_TOK_TOKEN) {
+					/* will a NIL be possible here? */
+					node->sep = '\0';
+				} else {
+					camel_exception_set (ex, 1, "namespace: expected a string separator");
+					g_free (node->path);
+					g_free (node);
+					goto exception;
+				}
+
+				tail->next = node;
+				tail = node;
+
+				if (node->path [strlen (node->path) -1] == node->sep)
+					node->path [strlen (node->path) - 1] = '\0';
+
+				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) && 
+						(node->path [6] == '\0' || node->path [6] == node->sep ))
+					memcpy (node->path, "INBOX", 5);
+				tok = camel_imapx_stream_token (stream, &token, &len, ex);
+				if (tok != ')') {
+					camel_exception_set (ex, 1, "namespace: expected a ')'");
+					goto exception;
+				}
+
+				tok = camel_imapx_stream_token (stream, &token, &len, ex);
 			}
 
-			tail->next = node;
-			tail = node;
-
-			if (node->path [strlen (node->path) -1] == node->sep)
-				node->path [strlen (node->path) - 1] = '\0';
-
-			if (!g_ascii_strncasecmp (node->path, "INBOX", 5) && 
-					(node->path [6] == '\0' || node->path [6] == node->sep ))
-				memcpy (node->path, "INBOX", 5);
-			tok = camel_imapx_stream_token (stream, &token, &len, ex);
 			if (tok != ')') {
 				camel_exception_set (ex, 1, "namespace: expected a ')'");
 				goto exception;
 			}
-			
-			tok = camel_imapx_stream_token (stream, &token, &len, ex);
 
 		} else if (tok == IMAP_TOK_TOKEN && !strcmp (token, "NIL")) {
 			namespaces [n] = NULL;

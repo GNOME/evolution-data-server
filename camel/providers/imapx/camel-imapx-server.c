@@ -985,7 +985,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary); 
 		}
 
-		break;	
+		return 0;
 	}			     
 	case IMAP_EXISTS:
 		printf("exists: %d\n", id);
@@ -1549,6 +1549,10 @@ imapx_reconnect(CamelIMAPXServer *is, CamelException *ex)
 retry:
 		g_message ("Connecting \n");
 		imapx_connect(is, 0, 0, ex);
+		if (camel_exception_is_set (ex)) {
+			return;	
+		}
+
 		g_message ("Connected \n");
 
 		if (is->url->passwd == NULL) {
@@ -2195,6 +2199,10 @@ imapx_server_loop(gpointer d)
 	while (1) {
 		if (!is->stream)
 			imapx_reconnect(is, &ex);
+
+		if (camel_exception_is_set (&ex)) {
+			break;		
+		}
 
 		job = (CamelIMAPXJob *)camel_msgport_try_pop (is->port);
 		if (job) {
