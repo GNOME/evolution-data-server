@@ -13,10 +13,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ro\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-09-14 11:21+0000\n"
-"PO-Revision-Date: 2009-09-15 00:18+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-08 20:47+0200\n"
+"PO-Revision-Date: 2009-11-08 20:48+0200\n"
 "Last-Translator: Adi Roiban <adi@roiban.ro>\n"
 "Language-Team: Română Gnome Romanian Team <gnomero-list@lists.sourceforge."
 "net>\n"
@@ -786,7 +785,7 @@ msgstr "Adresă (URI) server nevalidă"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:995
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1004
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
-#: ../calendar/libecal/e-cal.c:5117
+#: ../calendar/libecal/e-cal.c:5115
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1291
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1327
@@ -1015,85 +1014,85 @@ msgstr ""
 "Introduceți parola pentru %s pentru activarea proxy-ului pentru utilizatorul "
 "%s"
 
-#: ../calendar/libecal/e-cal.c:5089
+#: ../calendar/libecal/e-cal.c:5087
 msgid "Invalid argument"
 msgstr "Argument nevalid"
 
-#: ../calendar/libecal/e-cal.c:5091
+#: ../calendar/libecal/e-cal.c:5089
 msgid "Backend is busy"
 msgstr "Backend-ul este ocupat"
 
-#: ../calendar/libecal/e-cal.c:5093
+#: ../calendar/libecal/e-cal.c:5091
 #: ../calendar/libedata-cal/e-cal-backend-util.c:105
 msgid "Repository is offline"
 msgstr "Arhiva este deconectată"
 
-#: ../calendar/libecal/e-cal.c:5095
+#: ../calendar/libecal/e-cal.c:5093
 #: ../calendar/libedata-cal/e-cal-backend-util.c:129
 msgid "No such calendar"
 msgstr "Nu există calendarul căutat"
 
-#: ../calendar/libecal/e-cal.c:5097
+#: ../calendar/libecal/e-cal.c:5095
 #: ../calendar/libedata-cal/e-cal-backend-util.c:111
 #: ../servers/groupwise/e-gw-connection.c:233
 msgid "Object not found"
 msgstr "Obiectul nu a fost găsit"
 
-#: ../calendar/libecal/e-cal.c:5099
+#: ../calendar/libecal/e-cal.c:5097
 #: ../calendar/libedata-cal/e-cal-backend-util.c:113
 #: ../servers/groupwise/e-gw-connection.c:227
 msgid "Invalid object"
 msgstr "Obiect nevalid"
 
-#: ../calendar/libecal/e-cal.c:5101
+#: ../calendar/libecal/e-cal.c:5099
 msgid "URI not loaded"
 msgstr "Adresă (URI) neîncărcată"
 
-#: ../calendar/libecal/e-cal.c:5103
+#: ../calendar/libecal/e-cal.c:5101
 msgid "URI already loaded"
 msgstr "Adresă (URI) deja încărcată"
 
-#: ../calendar/libecal/e-cal.c:5105
+#: ../calendar/libecal/e-cal.c:5103
 #: ../calendar/libedata-cal/e-cal-backend-util.c:107
 #: ../servers/exchange/storage/e-storage.c:573
 msgid "Permission denied"
 msgstr "Acces interzis"
 
-#: ../calendar/libecal/e-cal.c:5107
+#: ../calendar/libecal/e-cal.c:5105
 #: ../calendar/libedata-cal/e-cal-backend-util.c:131
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Unknown User"
 msgstr "Utilizator necunoscut"
 
-#: ../calendar/libecal/e-cal.c:5109
+#: ../calendar/libecal/e-cal.c:5107
 #: ../calendar/libedata-cal/e-cal-backend-util.c:115
 msgid "Object ID already exists"
 msgstr "Identificatorul obiectului există deja"
 
-#: ../calendar/libecal/e-cal.c:5111
+#: ../calendar/libecal/e-cal.c:5109
 msgid "Protocol not supported"
 msgstr "Protocol nesuportat"
 
-#: ../calendar/libecal/e-cal.c:5113
+#: ../calendar/libecal/e-cal.c:5111
 msgid "Operation has been canceled"
 msgstr "Operația a fost anulată"
 
-#: ../calendar/libecal/e-cal.c:5115
+#: ../calendar/libecal/e-cal.c:5113
 #: ../calendar/libedata-cal/e-cal-backend-util.c:143
 msgid "Could not cancel operation"
 msgstr "Nu s-a putut anula operația"
 
-#: ../calendar/libecal/e-cal.c:5119
+#: ../calendar/libecal/e-cal.c:5117
 #: ../calendar/libedata-cal/e-cal-backend-util.c:119
 #: ../camel/providers/smtp/camel-smtp-transport.c:217
 msgid "Authentication required"
 msgstr "Necesită autentificare"
 
-#: ../calendar/libecal/e-cal.c:5121
+#: ../calendar/libecal/e-cal.c:5119
 msgid "A CORBA exception has occurred"
 msgstr "S-a produs o excepție CORBA"
 
-#: ../calendar/libecal/e-cal.c:5123
+#: ../calendar/libecal/e-cal.c:5121
 #: ../calendar/libedata-cal/e-cal-backend-util.c:146
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:214
 #: ../camel/providers/imap/camel-imap-command.c:432
@@ -1113,7 +1112,7 @@ msgstr "S-a produs o excepție CORBA"
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
-#: ../calendar/libecal/e-cal.c:5125
+#: ../calendar/libecal/e-cal.c:5123
 #: ../calendar/libedata-cal/e-cal-backend-util.c:103
 #: ../servers/exchange/storage/e-storage.c:555
 msgid "No error"
@@ -5096,25 +5095,25 @@ msgid "_Search:"
 msgstr "_Caută:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2494
+#: ../libedataserverui/e-name-selector-entry.c:2508
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandează %s intercalat"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2509
+#: ../libedataserverui/e-name-selector-entry.c:2523
 #, c-format
 msgid "Cop_y %s"
 msgstr "Cop_iază %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2519
+#: ../libedataserverui/e-name-selector-entry.c:2533
 #, c-format
 msgid "C_ut %s"
 msgstr "_Taie %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2536
+#: ../libedataserverui/e-name-selector-entry.c:2550
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editează %s"
@@ -5356,6 +5355,171 @@ msgstr "Serviciul de verificare a interfeței Evolution Data Server"
 msgid "Evolution Data Server logging service"
 msgstr "Serviciul de logare în Evolution Data Server"
 
+#, fuzzy
+#~| msgid "Cannot open message"
+#~ msgid "Cannot open book"
+#~ msgstr "Nu s-a putut deschide mesajul"
+
+#, fuzzy
+#~| msgid "Cannot get folder container %s"
+#~ msgid "Cannot get contact"
+#~ msgstr "Nu s-a putut obține containerul dosarului %s"
+
+#, fuzzy
+#~| msgid "Cannot authenticate to server: %s"
+#~ msgid "Cannot authenticate user"
+#~ msgstr "Nu s-a putut autentifica la server: %s"
+
+#, fuzzy
+#~| msgid "Cannot add encryption certificate"
+#~ msgid "Cannot add contact"
+#~ msgstr "Nu s-a putut adăuga certificatul de criptare"
+
+#, fuzzy
+#~| msgid "Cannot create encoder context"
+#~ msgid "Cannot modify contact"
+#~ msgstr "Nu s-a putut crea contextul pentru codare"
+
+#, fuzzy
+#~| msgid "Cannot create encoder context"
+#~ msgid "Cannot remove contacts"
+#~ msgstr "Nu s-a putut crea contextul pentru codare"
+
+#, fuzzy
+#~| msgid "Cannot get message %s: %s"
+#~ msgid "Cannot get changes"
+#~ msgstr "Nu s-a putut obține mesajul %s: %s"
+
+#, fuzzy
+#~| msgid "Could not cancel operation"
+#~ msgid "Cannot complete operation"
+#~ msgstr "Nu s-a putut anula operația"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve calendar address"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data: Malformed URI."
+#~ msgid "Cannot retrieve calendar alarm e-mail address"
+#~ msgstr "Nu s-au putut salva datele calendarului: Adresă (URI) malformată."
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve calendar's ldap attribute"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot create CMS Recipient information"
+#~ msgid "Cannot retrieve calendar scheduling information"
+#~ msgstr "Nu s-a putut crea informația de destinatar CMS"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot open calendar"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot remove calendar"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot create encoder context"
+#~ msgid "Cannot create calendar object"
+#~ msgstr "Nu s-a putut crea contextul pentru codare"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot modify calender object"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot remove calendar object"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot receive calendar objects"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot discard calendar alarm"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot send calendar objects"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve default calendar object path"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve calendar object path"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve calendar object list"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Could not retrieve weather data"
+#~ msgid "Could not retrieve attachment list"
+#~ msgstr "Nu s-au putut descărca datele meteorologice"
+
+#, fuzzy
+#~| msgid "Could not create cache file"
+#~ msgid "Could not complete calendar query"
+#~ msgstr "Nu s-a putut crea fișierul cache"
+
+#, fuzzy
+#~| msgid "Could not retrieve weather data"
+#~ msgid "Could not retrieve calendar time zone"
+#~ msgstr "Nu s-au putut descărca datele meteorologice"
+
+#, fuzzy
+#~| msgid "Could not cancel operation"
+#~ msgid "Could not add calendar time zone"
+#~ msgstr "Nu s-a putut anula operația"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve calendar changes"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Cannot save calendar data"
+#~ msgid "Cannot retrieve calendar free/busy list"
+#~ msgstr "Nu s-au putut salva datele din calendar"
+
+#, fuzzy
+#~| msgid "Invalid server URI"
+#~ msgid "Invalid URI"
+#~ msgstr "Adresă (URI) server nevalidă"
+
+#, fuzzy
+#~| msgid "Could not create cache file"
+#~ msgid "Could not instantiate backend"
+#~ msgstr "Nu s-a putut crea fișierul cache"
+
+#, fuzzy
+#~| msgid "Please enter the %s password for %s on host %s."
+#~ msgid "%sPlease enter the IMAP password for %s@%s"
+#~ msgstr "Introduceți parola %s pentru %s la gazda %s."
+
+#, fuzzy
+#~| msgid "Cannot copy messages to the Junk folder"
+#~ msgid "Cannot transfer message to destination folder"
+#~ msgstr "Nu pot copia mesajele în dosarul Spam"
+
 #~ msgid "Decoder failed, error %d"
 #~ msgstr "Decodarea a eșuat, eroare %d"
 
@@ -5449,7 +5613,7 @@ msgstr "Serviciul de logare în Evolution Data Server"
 #~ msgstr "Burniță cu gheață"
 
 #~ msgid "Very cold/wind chill"
-#~ msgstr "Vînt rece/foarte rece"
+#~ msgstr "Vânt rece/foarte rece"
 
 #~ msgid "Rain"
 #~ msgstr "Ploaie"
