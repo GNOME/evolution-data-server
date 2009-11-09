@@ -154,7 +154,7 @@ category_completion_complete (GtkEntryCompletion *completion,
 	/* Complete the partially typed category. */
 	gtk_editable_delete_text (editable, start_pos, end_pos);
 	gtk_editable_insert_text (editable, category, -1, &start_pos);
-	gtk_editable_insert_text (editable, ", ", 2, &start_pos);
+	gtk_editable_insert_text (editable, ",", 1, &start_pos);
 	gtk_editable_set_position (editable, start_pos);
 }
 
@@ -292,6 +292,33 @@ category_completion_update_prefix (GtkEntryCompletion *completion)
 	g_free (input);
 }
 
+static gboolean
+category_completion_sanitize_suffix (GtkEntry *entry, GdkEventFocus *event, GtkEntryCompletion *completion)
+{
+	const gchar *text;
+
+	g_return_val_if_fail (entry != NULL, FALSE);
+	g_return_val_if_fail (completion != NULL, FALSE);
+
+	text = gtk_entry_get_text (entry);
+	if (text) {
+		gint len = strlen (text), old_len = len;
+
+		while (len > 0 && (text [len -1] == ' ' || text [len - 1] == ','))
+			len--;
+
+		if (old_len != len) {
+			gchar *tmp = g_strndup (text, len);
+
+			gtk_entry_set_text (entry, tmp);
+
+			g_free (tmp);
+		}
+	}
+
+	return FALSE;
+}
+
 static void
 category_completion_track_entry (GtkEntryCompletion *completion)
 {
@@ -322,6 +349,10 @@ category_completion_track_entry (GtkEntryCompletion *completion)
 	g_signal_connect_swapped (
 		priv->last_known_entry, "notify::text",
 		G_CALLBACK (category_completion_update_prefix), completion);
+
+	g_signal_connect (
+		priv->last_known_entry, "focus-out-event",
+		G_CALLBACK (category_completion_sanitize_suffix), completion);
 
 	category_completion_update_prefix (completion);
 }

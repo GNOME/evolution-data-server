@@ -233,7 +233,7 @@ add_comma_sep_categories (gpointer key, gpointer value, gpointer user_data)
 	GString **str = user_data;
 
 	if (strlen ((*str)->str) > 0)
-		*str = g_string_append (*str, ", ");
+		*str = g_string_append (*str, ",");
 
 	*str = g_string_append (*str, (const gchar *) key);
 }
@@ -716,10 +716,27 @@ const gchar *
 e_categories_dialog_get_categories (ECategoriesDialog *dialog)
 {
 	GtkEntry *entry;
+	const gchar *text;
 
 	g_return_val_if_fail (E_IS_CATEGORIES_DIALOG (dialog), NULL);
 
 	entry = GTK_ENTRY (dialog->priv->categories_entry);
+
+	text = gtk_entry_get_text (entry);
+	if (text) {
+		gint len = strlen (text), old_len = len;
+
+		while (len > 0 && (text [len -1] == ' ' || text [len - 1] == ','))
+			len--;
+
+		if (old_len != len) {
+			gchar *tmp = g_strndup (text, len);
+
+			gtk_entry_set_text (entry, tmp);
+
+			g_free (tmp);
+		}
+	}
 
 	return gtk_entry_get_text (entry);
 }
@@ -751,7 +768,10 @@ e_categories_dialog_set_categories (ECategoriesDialog *dialog,
 	if (arr) {
 		gint i = 0;
 		while (arr[i] != NULL) {
-			g_hash_table_insert (priv->selected_categories, g_strdup (arr[i]), g_strdup (arr[i]));
+			arr[i] = g_strstrip (arr[i]);
+
+			if (arr[i][0])
+				g_hash_table_insert (priv->selected_categories, g_strdup (arr[i]), g_strdup (arr[i]));
 			i++;
 		}
 
