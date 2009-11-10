@@ -636,9 +636,9 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 			LIBS="$nsslibs $nsprlibs"
 			dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
 			if test -n "${with_nss_libs}"; then
-				LDFLAGS="$LDFLAGS -L$with_nss_libs"
+				LDFLAGS="$LDFLAGS -L$with_nss_libs $MANUAL_NSPR_LIBS"
 			else
-				LDFLAGS="$LDFLAGS $LDFLAGS_NSPR"
+				LDFLAGS="$LDFLAGS $LDFLAGS_NSPR $MANUAL_NSPR_LIBS"
 			fi
 
 			AC_LINK_IFELSE([AC_LANG_CALL([],[NSS_Init])],
