@@ -85,6 +85,16 @@ update_preview (GtkFileChooser *chooser, gpointer user_data)
 	g_free (filename);
 }
 
+static void
+file_chooser_response (GtkDialog *dialog, gint response_id, GtkFileChooser *button)
+{
+	g_return_if_fail (button != NULL);
+
+	if (response_id == GTK_RESPONSE_NO) {
+		gtk_file_chooser_unselect_all (button);
+	}
+}
+
 static CategoryPropertiesDialog *
 load_properties_dialog (ECategoriesDialog *parent)
 {
@@ -92,6 +102,7 @@ load_properties_dialog (ECategoriesDialog *parent)
 	const gchar *ui_to_load[] = { "properties-dialog", NULL };
 	gchar *uifile;
 	GError *error = NULL;
+	GtkWidget *table;
 
 	prop_dialog = g_new0 (CategoryPropertiesDialog, 1);
 
@@ -122,21 +133,42 @@ load_properties_dialog (ECategoriesDialog *parent)
 	gtk_window_set_transient_for (GTK_WINDOW (prop_dialog->the_dialog), GTK_WINDOW (parent));
 
 	prop_dialog->category_name = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "category-name"));
-	prop_dialog->category_icon = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "category-icon"));
+	table = GTK_WIDGET (gtk_builder_get_object (prop_dialog->gui, "table-category-properties"));
 
-	if (prop_dialog->category_icon) {
-		GtkFileChooser *chooser = GTK_FILE_CHOOSER (prop_dialog->category_icon);
+	if (table) {
+		GtkFileChooser *chooser;
+		GtkWidget *dialog, *button;
+		GtkWidget *image = gtk_image_new ();
 
-		if (chooser) {
-			GtkWidget *image = gtk_image_new ();
+		dialog = gtk_file_chooser_dialog_new ( _("Category Icon"),
+			NULL,
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			NULL);
 
-			gtk_widget_show (image);
+		button = gtk_button_new_with_mnemonic (_("_No Image"));
+		gtk_button_set_image (GTK_BUTTON (button), gtk_image_new_from_stock (GTK_STOCK_CLOSE, GTK_ICON_SIZE_BUTTON));
+		gtk_widget_show (button);
+		gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_NO);
+		gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT);
+		button = NULL;
 
-			gtk_file_chooser_set_preview_widget (chooser, image);
-			gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
+		chooser = GTK_FILE_CHOOSER (gtk_file_chooser_button_new_with_dialog (dialog));
 
-			g_signal_connect (G_OBJECT (chooser), "update-preview", (GCallback) update_preview, NULL);
-		}
+		gtk_file_chooser_set_local_only (chooser, TRUE);
+
+		g_signal_connect (dialog, "response", (GCallback) file_chooser_response, chooser);
+
+		prop_dialog->category_icon = GTK_WIDGET (chooser);
+		gtk_widget_show (prop_dialog->category_icon);
+		gtk_table_attach (GTK_TABLE (table), prop_dialog->category_icon, 1, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
+
+		gtk_widget_show (image);
+
+		gtk_file_chooser_set_preview_widget (chooser, image);
+		gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
+
+		g_signal_connect (G_OBJECT (chooser), "update-preview", (GCallback) update_preview, NULL);
 	}
 
 	return prop_dialog;
@@ -401,9 +433,11 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 
 		category_icon = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (prop_dialog->category_icon));
 
+		e_categories_set_icon_file_for (category_name, category_icon);
+
 		if (category_icon) {
 			GdkPixbuf *icon = NULL;
-			e_categories_set_icon_file_for (category_name, category_icon);
+
 			icon = gdk_pixbuf_new_from_file (category_icon, NULL);
 			if (icon) {
 				gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ICON, icon, -1);
@@ -411,7 +445,10 @@ edit_button_clicked_cb (GtkButton *button, gpointer user_data)
 			}
 
 			g_free (category_icon);
+		} else {
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_ICON, NULL, -1);
 		}
+
 		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
 	}
 
