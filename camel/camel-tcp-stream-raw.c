@@ -46,6 +46,8 @@
 #define SOCKET_CLOSE(fd) closesocket (fd)
 #define SOCKET_ERROR_IS_EINPROGRESS() (WSAGetLastError () == WSAEWOULDBLOCK)
 #define SOCKET_ERROR_IS_EINTR() 0 /* No WSAEINTR in WinSock2 */
+#undef ETIMEDOUT		/* In case pthreads-win32's <pthread.h> bogusly defined it */
+#define ETIMEDOUT EAGAIN
 #endif
 
 static CamelTcpStreamClass *parent_class = NULL;

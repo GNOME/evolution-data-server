@@ -622,7 +622,7 @@ camel_read_socket (gint fd, gchar *buf, gsize n)
 			if (res == -1)
 				;
 			else if (res == 0)
-				errno = ETIMEDOUT;
+				errno = EAGAIN;
 			else if (FD_ISSET (cancel_fd, &rdset)) {
 				errno = EINTR;
 				goto failed;
@@ -697,7 +697,7 @@ camel_write_socket (gint fd, const gchar *buf, gsize n)
 			if (res == SOCKET_ERROR) {
 				/* w still being -1 will catch this */
 			} else if (res == 0)
-				errno = ETIMEDOUT;
+				errno = EAGAIN;
 			else if (FD_ISSET (cancel_fd, &rdset))
 				errno = EINTR;
 			else {
