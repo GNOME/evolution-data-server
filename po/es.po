@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-10-27 06:30+0000\n"
-"PO-Revision-Date: 2009-11-02 01:43+0100\n"
+"POT-Creation-Date: 2009-11-10 15:55+0000\n"
+"PO-Revision-Date: 2009-11-10 21:03+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -281,7 +281,7 @@ msgstr "URL de weblog"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:632
+#: ../libedataserverui/e-categories-dialog.c:669
 msgid "Categories"
 msgstr "Categorías"
 
@@ -640,12 +640,10 @@ msgstr "URI vacío"
 #: ../calendar/libedata-cal/e-data-cal-factory.c:323
 #: ../calendar/libedata-cal/e-data-cal-factory.c:332
 #, c-format
-#| msgid "%s: Invalid source."
 msgid "Invalid source"
 msgstr "Fuente inválida"
 
 #: ../addressbook/libedata-book/e-data-book.c:301
-#| msgid "Cannot open message"
 msgid "Cannot open book"
 msgstr "No se puede abrir la libreta"
 
@@ -655,7 +653,6 @@ msgstr "No se puede quitar la libreta"
 
 #: ../addressbook/libedata-book/e-data-book.c:331
 #: ../addressbook/libedata-book/e-data-book.c:346
-#| msgid "Cannot get folder container %s"
 msgid "Cannot get contact"
 msgstr "No se puede obtener el contacto"
 
@@ -664,24 +661,20 @@ msgid "Empty query"
 msgstr "Consulta vacía"
 
 #: ../addressbook/libedata-book/e-data-book.c:402
-#| msgid "Cannot authenticate to server: %s"
 msgid "Cannot authenticate user"
 msgstr "No se puede autenticar al usuario"
 
 #: ../addressbook/libedata-book/e-data-book.c:414
 #: ../addressbook/libedata-book/e-data-book.c:429
-#| msgid "Cannot add encryption certificate"
 msgid "Cannot add contact"
 msgstr "No se puede añadir el contacto"
 
 #: ../addressbook/libedata-book/e-data-book.c:444
 #: ../addressbook/libedata-book/e-data-book.c:459
-#| msgid "Cannot create encoder context"
 msgid "Cannot modify contact"
 msgstr "No se puede modificar el contacto"
 
 #: ../addressbook/libedata-book/e-data-book.c:494
-#| msgid "Cannot create encoder context"
 msgid "Cannot remove contacts"
 msgstr "No se pueden quitar los contactos"
 
@@ -691,12 +684,10 @@ msgid "Invalid query"
 msgstr "Consulta no válida"
 
 #: ../addressbook/libedata-book/e-data-book.c:598
-#| msgid "Cannot get message %s: %s"
 msgid "Cannot get changes"
 msgstr "No se pueden obtener los cambios"
 
 #: ../addressbook/libedata-book/e-data-book.c:699
-#| msgid "Could not cancel operation"
 msgid "Cannot complete operation"
 msgstr "No se puede completar la operación"
 
@@ -1234,115 +1225,96 @@ msgstr "Versión del servidor no válida"
 
 #: ../calendar/libedata-cal/e-data-cal.c:483
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar address"
 msgstr "No se puede obtener la dirección del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:501
 #, c-format
-#| msgid "Cannot save calendar data: Malformed URI."
 msgid "Cannot retrieve calendar alarm e-mail address"
 msgstr "No se puede obtener la dirección de alerta del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:519
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar's ldap attribute"
 msgstr "No se puede obtener el atributo LDAP del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:537
 #, c-format
-#| msgid "Cannot create CMS Recipient information"
 msgid "Cannot retrieve calendar scheduling information"
 msgstr "No se puede obtener la información de planificación del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:554
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot open calendar"
 msgstr "No se puede abrir el calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:571
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar"
 msgstr "No se puede quitar el calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:590
 #, c-format
-#| msgid "Cannot create encoder context"
 msgid "Cannot create calendar object"
 msgstr "No se puede crear el objeto del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:612
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot modify calender object"
 msgstr "No se puede modificar el objeto del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:636
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar object"
 msgstr "No se puede quitar el objeto del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:655
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot receive calendar objects"
 msgstr "No se pueden recibir objetos del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:672
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot discard calendar alarm"
 msgstr "No se puede descartar la alerta del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:691
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot send calendar objects"
 msgstr "No se pueden enviar los objetos del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:726
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve default calendar object path"
 msgstr "No se puede obtener la ruta del objeto del calendario predeterminado"
 
 #: ../calendar/libedata-cal/e-data-cal.c:744
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar object path"
 msgstr "No se puede obtener la ruta del objeto del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:762
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar object list"
 msgstr "No se puede obtener la lista de objetos del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:800
 #, c-format
-#| msgid "Could not retrieve weather data"
 msgid "Could not retrieve attachment list"
 msgstr "No se pudo obtener la lista de adjuntos"
 
 #: ../calendar/libedata-cal/e-data-cal.c:822
 #, c-format
-#| msgid "Could not create cache file"
 msgid "Could not complete calendar query"
 msgstr "No se pudo completar la consulta sobre el calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:840
 #, c-format
-#| msgid "Could not retrieve weather data"
 msgid "Could not retrieve calendar time zone"
 msgstr "No se pudo obtener la zona horaria del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:858
 #, c-format
-#| msgid "Could not cancel operation"
 msgid "Could not add calendar time zone"
 msgstr "No se pudo añadir la zona horaria para el calendario"
 
@@ -1353,19 +1325,16 @@ msgstr "No se pudo establecer la zona horaria predeterminada del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:896
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar changes"
 msgstr "No se pueden obtener los cambios del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal.c:946
 #, c-format
-#| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar free/busy list"
 msgstr "No se pudo obtener la lista de disponibilidad del calendario"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:339
 #, c-format
-#| msgid "Invalid server URI"
 msgid "Invalid URI"
 msgstr "URI no válido"
 
@@ -1376,7 +1345,6 @@ msgstr "No existe una fábrica del «backend» para «%s» de «%s»"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:390
 #, c-format
-#| msgid "Could not create cache file"
 msgid "Could not instantiate backend"
 msgstr "No se pudo instanciar el «backend»"
 
@@ -1429,7 +1397,7 @@ msgstr "No se pudo crear la ruta a la caché"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "No se pudo quitar la entrada de caché: %s: %s"
 
-#: ../camel/camel-db.c:412
+#: ../camel/camel-db.c:411
 msgid "Insufficient memory"
 msgstr "Memoria insuficiente"
 
@@ -3108,7 +3076,7 @@ msgstr "SSL no disponible"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:860
-#: ../camel/providers/imapx/camel-imapx-server.c:1505
+#: ../camel/providers/imapx/camel-imapx-server.c:1523
 msgid "Connection cancelled"
 msgstr "Conexión cancelada"
 
@@ -3560,15 +3528,14 @@ msgstr ""
 "\n"
 " !!! NO USAR ESTO PARA CORREO EN PRODUCCIÓN  !!!\n"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1508
+#: ../camel/providers/imapx/camel-imapx-server.c:1526
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
 msgstr "No se pudo conectar con %s (puerto %s): %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1538
+#: ../camel/providers/imapx/camel-imapx-server.c:1560
 #: ../camel/providers/imapx/camel-imapx-store.c:143
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%s Escriba la contraseña IMAP para %s@%s"
 
@@ -3750,7 +3717,6 @@ msgid "Invalid message contents"
 msgstr "Contenido inválido en el mensaje"
 
 #: ../camel/providers/local/camel-maildir-folder.c:419
-#| msgid "Cannot copy messages to the Junk folder"
 msgid "Cannot transfer message to destination folder"
 msgstr "No se puede transferir el mensaje a la carpeta de destino"
 
@@ -4944,7 +4910,15 @@ msgstr "Acceder a un servidor LDAP anónimamente"
 msgid "Failed to authenticate.\n"
 msgstr "Falló al autenticarme.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:338
+#: ../libedataserverui/e-categories-dialog.c:143
+msgid "Category Icon"
+msgstr "Icono de categoría"
+
+#: ../libedataserverui/e-categories-dialog.c:149
+msgid "_No Image"
+msgstr "_Sin imagen"
+
+#: ../libedataserverui/e-categories-dialog.c:370
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4952,44 +4926,39 @@ msgid ""
 msgstr ""
 "Ya hay una categoría «%s» en la configuración. Por favor, use otro nombre"
 
-#: ../libedataserverui/e-categories-dialog.c:641
+#: ../libedataserverui/e-categories-dialog.c:678
 msgid "Icon"
 msgstr "Icono"
 
-#: ../libedataserverui/e-categories-dialog.c:646
+#: ../libedataserverui/e-categories-dialog.c:683
 msgid "Category"
 msgstr "Categoría"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:1
-msgid "Category Icon"
-msgstr "Icono de categoría"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:2
 msgid "Category Properties"
 msgstr "Propiedades de la categoría"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:3
+#: ../libedataserverui/e-categories-dialog.ui.h:2
 msgid "Category _Icon"
 msgstr "_Icono de categoría"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:4
+#: ../libedataserverui/e-categories-dialog.ui.h:3
 msgid "Category _Name"
 msgstr "_Nombre de la categoría"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:5
-#| msgid "Item(s) belong to these _categories:"
+#: ../libedataserverui/e-categories-dialog.ui.h:4
 msgid "Item(s) _belong to these categories:"
 msgstr "Los elementos perte_necen a estas categorías:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:6
+#: ../libedataserverui/e-categories-dialog.ui.h:5
 msgid "_Available Categories:"
 msgstr "Categorías _disponibles:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:7
+#: ../libedataserverui/e-categories-dialog.ui.h:6
 msgid "_Edit"
 msgstr "_Editar"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:8
+#: ../libedataserverui/e-categories-dialog.ui.h:7
 msgid "categories"
 msgstr "categorías"
 
