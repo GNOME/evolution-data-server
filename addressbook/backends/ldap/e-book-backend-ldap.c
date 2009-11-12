@@ -4794,7 +4794,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 
 	if (!g_ascii_strncasecmp (auth_method, LDAP_SIMPLE_PREFIX, strlen (LDAP_SIMPLE_PREFIX))) {
 
-		if (!strcmp (auth_method, "ldap/simple-email")) {
+		if (bl->priv->ldap && !strcmp (auth_method, "ldap/simple-email")) {
 			LDAPMessage    *res, *e;
 			gchar *query = g_strdup_printf ("(mail=%s)", user);
 
@@ -4824,6 +4824,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 
 				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 				entry_dn = ldap_get_dn (bl->priv->ldap, e);
+				bl->priv->connected = FALSE; /* to reconnect with credentials */
 				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				dn = g_strdup(entry_dn);
 
@@ -5038,6 +5039,7 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	const gchar *str;
 	const gchar *offline;
 	gint result;
+	gboolean auth_required;
 
 	g_assert (bl->priv->connected == FALSE);
 
@@ -5125,7 +5127,8 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	}
 
 	str = e_source_get_property (source, "auth");
-	if (str && *str && !g_str_equal (str, "none") && !g_str_equal (str, "0")) {
+	auth_required = str && *str && !g_str_equal (str, "none") && !g_str_equal (str, "0");
+	if (auth_required && !g_str_equal (str, "ldap/simple-email")) {
 		/* Requires authentication, do not try to bind without it,
 		   but report success instead, as we are loaded. */
 		if (enable_debug)
@@ -5140,6 +5143,11 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 	if (result != GNOME_Evolution_Addressbook_Success) {
 		if (enable_debug)
 			printf ("e_book_backend_ldap_load_source ... failed to connect to server \n");
+		return result;
+	}
+
+	if (auth_required) {
+		e_book_backend_notify_auth_required (E_BOOK_BACKEND (bl));
 		return result;
 	}
 
