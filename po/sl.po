@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-11-06 04:57+0000\n"
-"PO-Revision-Date: 2009-11-06 07:56+0100\n"
+"POT-Creation-Date: 2009-11-12 15:11+0000\n"
+"PO-Revision-Date: 2009-11-13 07:17+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -275,7 +275,7 @@ msgstr "URL bloga"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:176
-#: ../libedataserverui/e-categories-dialog.c:632
+#: ../libedataserverui/e-categories-dialog.c:669
 msgid "Categories"
 msgstr "kategorije"
 
@@ -3473,7 +3473,7 @@ msgstr ""
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Ni se mogoče povezati s %s (vrata %s): %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1556
+#: ../camel/providers/imapx/camel-imapx-server.c:1560
 #: ../camel/providers/imapx/camel-imapx-store.c:143
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
@@ -4819,48 +4819,52 @@ msgstr "Anonimni dostop do strežnika LDAP"
 msgid "Failed to authenticate.\n"
 msgstr "Overitev ni uspela.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:338
+#: ../libedataserverui/e-categories-dialog.c:143
+msgid "Category Icon"
+msgstr "Ikona kategorije"
+
+#: ../libedataserverui/e-categories-dialog.c:149
+msgid "_No Image"
+msgstr "_Brez slike"
+
+#: ../libedataserverui/e-categories-dialog.c:370
 #, c-format
 msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Kategorija '%s' že obstaja v nastavitvah. Uporabite drugo ime"
 
-#: ../libedataserverui/e-categories-dialog.c:641
+#: ../libedataserverui/e-categories-dialog.c:678
 msgid "Icon"
 msgstr "Ikona"
 
-#: ../libedataserverui/e-categories-dialog.c:646
+#: ../libedataserverui/e-categories-dialog.c:683
 msgid "Category"
 msgstr "Kategorija"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:1
-msgid "Category Icon"
-msgstr "Ikona kategorije"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:2
 msgid "Category Properties"
 msgstr "Lastnosti kategorije"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:3
+#: ../libedataserverui/e-categories-dialog.ui.h:2
 msgid "Category _Icon"
 msgstr "_Ikona kategorije"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:4
+#: ../libedataserverui/e-categories-dialog.ui.h:3
 msgid "Category _Name"
 msgstr "I_me kategorije"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:5
+#: ../libedataserverui/e-categories-dialog.ui.h:4
 msgid "Item(s) _belong to these categories:"
 msgstr "Predmeti, ki pripadajo _kategorijam:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:6
+#: ../libedataserverui/e-categories-dialog.ui.h:5
 msgid "_Available Categories:"
 msgstr "K_ategorije na voljo:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:7
+#: ../libedataserverui/e-categories-dialog.ui.h:6
 msgid "_Edit"
 msgstr "_Uredi"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:8
+#: ../libedataserverui/e-categories-dialog.ui.h:7
 msgid "categories"
 msgstr "kategorije"
 
