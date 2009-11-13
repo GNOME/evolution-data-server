@@ -36,6 +36,7 @@ G_DEFINE_TYPE(EBookView, e_book_view, G_TYPE_OBJECT);
 struct _EBookViewPrivate {
 	EBook *book;
 	DBusGProxy *view_proxy;
+	GStaticRecMutex *view_proxy_lock;
 	gboolean running;
 };
 
@@ -128,6 +129,9 @@ complete_cb (DBusGProxy *proxy, guint status, EBookView *book_view)
 	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, status);
 }
 
+#define LOCK_CONN()   g_static_rec_mutex_lock (book_view->priv->view_proxy_lock)
+#define UNLOCK_CONN() g_static_rec_mutex_unlock (book_view->priv->view_proxy_lock)
+
 /*
  * e_book_view_new:
  * @book: an #EBook
@@ -140,7 +144,7 @@ complete_cb (DBusGProxy *proxy, guint status, EBookView *book_view)
  * Return value: A new #EBookView.
  **/
 EBookView *
-_e_book_view_new (EBook *book, DBusGProxy *view_proxy)
+_e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *view_proxy_lock)
 {
 	EBookView *view;
 	EBookViewPrivate *priv;
@@ -152,6 +156,7 @@ _e_book_view_new (EBook *book, DBusGProxy *view_proxy)
 
 	/* Take ownership of the view_proxy object */
 	priv->view_proxy = view_proxy;
+	priv->view_proxy_lock = view_proxy_lock;
 	g_object_add_weak_pointer (G_OBJECT (view_proxy), (gpointer)&priv->view_proxy);
 
 	dbus_g_proxy_add_signal (view_proxy, "StatusMessage", G_TYPE_STRING, G_TYPE_INVALID);
@@ -200,7 +205,9 @@ e_book_view_start (EBookView *book_view)
 	book_view->priv->running = TRUE;
 
 	if (book_view->priv->view_proxy) {
+		LOCK_CONN ();
 		org_gnome_evolution_dataserver_addressbook_BookView_start (book_view->priv->view_proxy, &error);
+		UNLOCK_CONN ();
 		if (error) {
 			g_warning ("Cannot start book view: %s\n", error->message);
 
@@ -230,7 +237,9 @@ e_book_view_stop (EBookView *book_view)
 	book_view->priv->running = FALSE;
 
 	if (book_view->priv->view_proxy) {
+		LOCK_CONN ();
 		org_gnome_evolution_dataserver_addressbook_BookView_stop (book_view->priv->view_proxy, &error);
+		UNLOCK_CONN ();
 		if (error) {
 			g_warning ("Cannot stop book view: %s\n", error->message);
 			g_error_free (error);
@@ -245,6 +254,7 @@ e_book_view_init (EBookView *book_view)
 
 	priv->book = NULL;
 	priv->view_proxy = NULL;
+	priv->view_proxy_lock = NULL;
 	priv->running = FALSE;
 
 	book_view->priv = priv;
@@ -253,17 +263,19 @@ e_book_view_init (EBookView *book_view)
 static void
 e_book_view_dispose (GObject *object)
 {
-	EBookView *view = E_BOOK_VIEW (object);
+	EBookView *book_view = E_BOOK_VIEW (object);
 
-	if (view->priv->view_proxy) {
-		org_gnome_evolution_dataserver_addressbook_BookView_dispose (view->priv->view_proxy, NULL);
-		g_object_unref (view->priv->view_proxy);
-		view->priv->view_proxy = NULL;
+	if (book_view->priv->view_proxy) {
+		LOCK_CONN ();
+		org_gnome_evolution_dataserver_addressbook_BookView_dispose (book_view->priv->view_proxy, NULL);
+		g_object_unref (book_view->priv->view_proxy);
+		book_view->priv->view_proxy = NULL;
+		UNLOCK_CONN ();
 	}
 
-	if (view->priv->book) {
-		g_object_unref (view->priv->book);
-		view->priv->book = NULL;
+	if (book_view->priv->book) {
+		g_object_unref (book_view->priv->book);
+		book_view->priv->book = NULL;
 	}
 }
 

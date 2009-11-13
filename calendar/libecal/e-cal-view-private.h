@@ -28,7 +28,7 @@
 
 G_BEGIN_DECLS
 
-ECalView *e_cal_view_new (DBusGProxy *view_proxy, struct _ECal *client);
+ECalView *_e_cal_view_new (struct _ECal *client, DBusGProxy *view_proxy, GStaticRecMutex *connection_lock);
 
 G_END_DECLS
 

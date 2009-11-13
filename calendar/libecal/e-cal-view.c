@@ -35,9 +35,13 @@
 G_DEFINE_TYPE(ECalView, e_cal_view, G_TYPE_OBJECT);
 #define E_CAL_VIEW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), E_TYPE_CAL_VIEW, ECalViewPrivate))
 
+#define LOCK_VIEW()   g_static_rec_mutex_lock (priv->view_proxy_lock)
+#define UNLOCK_VIEW() g_static_rec_mutex_unlock (priv->view_proxy_lock)
+
 /* Private part of the ECalView structure */
 struct _ECalViewPrivate {
 	DBusGProxy *view_proxy;
+	GStaticRecMutex *view_proxy_lock;
 	ECal *client;
 };
 
@@ -45,6 +49,7 @@ struct _ECalViewPrivate {
 enum props {
 	PROP_0,
 	PROP_VIEW,
+	PROP_VIEW_LOCK,
 	PROP_CLIENT
 };
 
@@ -222,6 +227,9 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
                 dbus_g_proxy_connect_signal (priv->view_proxy, "Done", G_CALLBACK (done_cb), view, NULL);
 
 		break;
+	case PROP_VIEW_LOCK:
+		priv->view_proxy_lock = g_value_get_pointer (value);
+		break;
 	case PROP_CLIENT:
 		priv->client = E_CAL (g_value_dup_object (value));
 		break;
@@ -243,6 +251,9 @@ e_cal_view_get_property (GObject *object, guint property_id, GValue *value, GPar
 	switch (property_id) {
 	case PROP_VIEW:
 		g_value_set_pointer (value, priv->view_proxy);
+		break;
+	case PROP_VIEW_LOCK:
+		g_value_set_pointer (value, priv->view_proxy_lock);
 		break;
 	case PROP_CLIENT:
 		g_value_set_object (value, priv->client);
@@ -280,7 +291,6 @@ static void
 e_cal_view_class_init (ECalViewClass *klass)
 {
 	GObjectClass *object_class;
-	GParamSpec *param;
 
 	object_class = (GObjectClass *) klass;
 
@@ -292,12 +302,17 @@ e_cal_view_class_init (ECalViewClass *klass)
 
 	g_type_class_add_private (klass, sizeof (ECalViewPrivate));
 
-	param =  g_param_spec_pointer ("view", "The DBus view proxy", NULL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_VIEW, param);
-	param =  g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
-				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY);
-	g_object_class_install_property (object_class, PROP_CLIENT, param);
+	g_object_class_install_property (object_class, PROP_VIEW,
+		g_param_spec_pointer ("view", "The DBus view proxy", NULL,
+				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (object_class, PROP_VIEW_LOCK,
+		g_param_spec_pointer ("view-lock", "The DBus view proxy lock", NULL,
+				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+
+	g_object_class_install_property (object_class, PROP_CLIENT,
+		g_param_spec_object ("client", "The e-cal for the view", NULL, E_TYPE_CAL,
+				      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 
 	signals[OBJECTS_ADDED] =
 		g_signal_new ("objects_added",
@@ -342,7 +357,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 }
 
 /**
- * e_cal_view_new:
+ * _e_cal_view_new:
  * @corba_view: The CORBA object for the view.
  * @client: An #ECal object.
  *
@@ -352,11 +367,15 @@ e_cal_view_class_init (ECalViewClass *klass)
  * Return value: A newly-created view object, or NULL if the request failed.
  **/
 ECalView *
-e_cal_view_new (DBusGProxy *view_proxy, ECal *client)
+_e_cal_view_new (ECal *client, DBusGProxy *view_proxy, GStaticRecMutex *connection_lock)
 {
 	ECalView *view;
 
-	view = g_object_new (E_TYPE_CAL_VIEW, "view", view_proxy, "client", client, NULL);
+	view = g_object_new (E_TYPE_CAL_VIEW,
+		"client", client,
+		"view", view_proxy,
+		"view-lock", connection_lock,
+		NULL);
 
 	return view;
 }
@@ -394,9 +413,13 @@ e_cal_view_start (ECalView *view)
 
 	priv = E_CAL_VIEW_GET_PRIVATE(view);
 
+	LOCK_VIEW ();
 	if (!org_gnome_evolution_dataserver_calendar_CalView_start (priv->view_proxy, &error)) {
+		UNLOCK_VIEW ();
 		g_printerr("%s: %s\n", __FUNCTION__, error->message);
 		g_error_free (error);
 		g_warning (G_STRLOC ": Unable to start view");
+		return;
 	}
+	UNLOCK_VIEW ();
 }
