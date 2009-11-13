@@ -141,15 +141,13 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
 static void
 set_backend_online_status (gpointer key, gpointer value, gpointer data)
 {
-#if 0
-	GList *books = (GList *) value;
+	GList *books;
 	EBookBackend *backend = NULL;
 
-	while (books = g_list_next (books)) {
+	for (books = (GList *) value; books; books = g_list_next (books)) {
 		backend =  E_BOOK_BACKEND (books->data);
 		e_book_backend_set_mode (backend,  GPOINTER_TO_INT (data));
 	}
-#endif
 }
 
 /**

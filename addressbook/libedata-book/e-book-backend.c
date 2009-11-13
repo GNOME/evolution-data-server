@@ -120,20 +120,20 @@ e_book_backend_open (EBookBackend *backend,
 	g_mutex_lock (backend->priv->open_mutex);
 
 	if (backend->priv->loaded) {
-		e_data_book_respond_open (
-			book, opid, GNOME_Evolution_Addressbook_Success);
-
 		e_data_book_report_writable (book, backend->priv->writable);
 		e_data_book_report_connection_status (book, backend->priv->online);
+
+		e_data_book_respond_open (
+			book, opid, GNOME_Evolution_Addressbook_Success);
 	} else {
 		GNOME_Evolution_Addressbook_CallStatus status =
 			e_book_backend_load_source (backend, e_data_book_get_source (book), only_if_exists);
 
-		e_data_book_respond_open (book, opid, status);
-
 		if (status == GNOME_Evolution_Addressbook_Success || status == GNOME_Evolution_Addressbook_InvalidServerVersion)
 			e_data_book_report_writable (book, backend->priv->writable);
 			e_data_book_report_connection_status (book, backend->priv->online);
+
+		e_data_book_respond_open (book, opid, status);
 	}
 
 	g_mutex_unlock (backend->priv->open_mutex);
