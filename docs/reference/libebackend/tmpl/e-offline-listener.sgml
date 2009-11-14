@@ -1,5 +1,5 @@
 <!-- ##### SECTION Title ##### -->
-EDataBookFactory
+EOfflineListener
 
 <!-- ##### SECTION Short_Description ##### -->
 
@@ -17,21 +17,15 @@ EDataBookFactory
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### MACRO E_DATA_BOOK_FACTORY_ERROR ##### -->
+<!-- ##### ENUM EOfflineListenerState ##### -->
 <para>
 
 </para>
 
+@EOL_STATE_OFFLINE: 
+@EOL_STATE_ONLINE: 
 
-
-<!-- ##### ENUM EDataBookFactoryError ##### -->
-<para>
-
-</para>
-
-@E_DATA_BOOK_FACTORY_ERROR_GENERIC: 
-
-<!-- ##### STRUCT EDataBookFactory ##### -->
+<!-- ##### STRUCT EOfflineListener ##### -->
 <para>
 
 </para>
@@ -39,12 +33,20 @@ EDataBookFactory
 @parent: 
 @priv: 
 
-<!-- ##### FUNCTION e_data_book_factory_set_backend_mode ##### -->
+<!-- ##### FUNCTION e_offline_listener_new ##### -->
 <para>
 
 </para>
 
-@factory: 
-@mode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_offline_listener_get_state ##### -->
+<para>
+
+</para>
+
+@eol: 
+@Returns: 
 
 

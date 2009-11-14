@@ -15,8 +15,10 @@ HFILE_GLOB = $(top_srcdir)/calendar/libecal/*.h
 CFILE_GLOB = $(top_srcdir)/calendar/libecal/*.c
 
 IGNORE_HFILES = \
-	Evolution-DataServer-Calendar.h	\
-	e-cal-marshal.h
+	e-cal-marshal.h						\
+	e-data-cal-bindings.h					\
+	e-data-cal-factory-bindings.h				\
+	e-data-cal-view-bindings.h
 
 GTKDOC_CFLAGS = \
 	-I$(top_srcdir) 					\

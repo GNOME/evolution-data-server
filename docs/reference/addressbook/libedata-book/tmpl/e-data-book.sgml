@@ -46,6 +46,13 @@ EDataBook
 @edatabook: the object which received the signal.
 @arg1: 
 
+<!-- ##### MACRO E_DATA_BOOK_ERROR ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION e_data_book_new ##### -->
 <para>
 

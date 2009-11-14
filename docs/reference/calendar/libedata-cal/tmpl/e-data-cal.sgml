@@ -17,6 +17,13 @@ Implementation of the calendar CORBA client interface.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### MACRO E_DATA_CAL_ERROR ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION e_data_cal_new ##### -->
 <para>
 
@@ -28,6 +35,15 @@ Implementation of the calendar CORBA client interface.
 
 
 <!-- ##### FUNCTION e_data_cal_get_backend ##### -->
+<para>
+
+</para>
+
+@cal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_get_source ##### -->
 <para>
 
 </para>

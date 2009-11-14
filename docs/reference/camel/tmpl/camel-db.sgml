@@ -759,3 +759,15 @@ CamelDB
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_db_reset_folder_version ##### -->
+<para>
+
+</para>
+
+@cdb: 
+@folder_name: 
+@reset_version: 
+@ex: 
+@Returns: 
+
+

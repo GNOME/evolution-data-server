@@ -44,6 +44,15 @@ Implementation of the calendar CORBA search interface.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_data_cal_view_get_dbus_path ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_data_cal_view_get_text ##### -->
 <para>
 

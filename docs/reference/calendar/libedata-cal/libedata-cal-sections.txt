@@ -264,10 +264,10 @@ e_cal_backend_file_store_get_type
 <SECTION>
 <FILE>e-data-cal</FILE>
 <TITLE>EDataCal</TITLE>
-e_data_cal_construct
+E_DATA_CAL_ERROR
 e_data_cal_new
 e_data_cal_get_backend
-e_data_cal_get_listener
+e_data_cal_get_source
 e_data_cal_notify_read_only
 e_data_cal_notify_cal_address
 e_data_cal_notify_alarm_email_address
@@ -300,9 +300,20 @@ E_IS_DATA_CAL
 E_TYPE_DATA_CAL
 E_DATA_CAL_CLASS
 E_IS_DATA_CAL_CLASS
+E_TYPE_DATA_CAL_CALL_STATUS
+E_TYPE_DATA_CAL_MODE
+E_TYPE_DATA_CAL_OBJ_MOD_TYPE
+E_TYPE_DATA_CAL_OBJ_TYPE
+E_TYPE_DATA_CAL_VIEW_LISTENER_SET_MODE_STATUS
 <SUBSECTION Private>
 EDataCalPrivate
 e_data_cal_get_type
+e_data_cal_error_quark
+e_data_cal_call_status_get_type
+e_data_cal_mode_get_type
+e_data_cal_obj_mod_type_get_type
+e_data_cal_obj_type_get_type
+e_data_cal_view_listener_set_mode_status_get_type
 </SECTION>
 
 <SECTION>
@@ -323,6 +334,31 @@ EDataCalView
 EDataCalViewClass
 ECalBackendSExp
 ECalBackendSExpClass
+EServerMethodContext
+</SECTION>
+
+<SECTION>
+<FILE>e-data-cal-factory</FILE>
+<TITLE>EDataCalFactory</TITLE>
+E_DATA_CAL_FACTORY_ERROR
+EDataCalFactoryError
+EDataCalFactory
+e_data_cal_factory_register_backend
+e_data_cal_factory_register_backends
+e_data_cal_factory_get_n_backends
+e_data_cal_factory_dump_active_backends
+e_data_cal_factory_set_backend_mode
+<SUBSECTION Standard>
+E_DATA_CAL_FACTORY
+E_IS_DATA_CAL_FACTORY
+E_TYPE_DATA_CAL_FACTORY
+E_DATA_CAL_FACTORY_CLASS
+E_IS_DATA_CAL_FACTORY_CLASS
+EDataCalFactoryClass
+<SUBSECTION Private>
+EDataCalFactoryPrivate
+e_data_cal_factory_get_type
+e_data_cal_factory_error_quark
 </SECTION>
 
 <SECTION>
@@ -331,7 +367,7 @@ ECalBackendSExpClass
 QUERY
 IS_QUERY
 e_data_cal_view_new
-e_data_cal_view_add_listener
+e_data_cal_view_get_dbus_path
 e_data_cal_view_get_text
 e_data_cal_view_get_object_sexp
 e_data_cal_view_object_matches

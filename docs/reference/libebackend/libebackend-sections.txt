@@ -58,3 +58,21 @@ e_db3_utils_maybe_recover
 e_db3_utils_upgrade_format
 </SECTION>
 
+<SECTION>
+<FILE>e-offline-listener</FILE>
+<TITLE>EOfflineListener</TITLE>
+EOfflineListenerState
+EOfflineListener
+e_offline_listener_new
+e_offline_listener_get_state
+<SUBSECTION Standard>
+E_OFFLINE_LISTENER
+E_IS_OFFLINE_LISTENER
+E_TYPE_OFFLINE_LISTENER
+E_OFFLINE_LISTENER_CLASS
+E_IS_OFFLINE_LISTENER_CLASS
+EOfflineListenerClass
+<SUBSECTION Private>
+EOfflineListenerPrivate
+e_offline_listener_get_type
+</SECTION>

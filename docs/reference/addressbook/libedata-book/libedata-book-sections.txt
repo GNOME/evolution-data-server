@@ -156,30 +156,6 @@ e_book_backend_summary_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-data-book-factory</FILE>
-<TITLE>EDataBookFactory</TITLE>
-EDataBookFactory
-e_data_book_factory_new
-e_data_book_factory_register_backend
-e_data_book_factory_get_n_backends
-e_data_book_factory_register_backends
-e_data_book_factory_dump_active_backends
-e_data_book_factory_activate
-e_data_book_factory_set_backend_mode
-<SUBSECTION Standard>
-E_DATA_BOOK_FACTORY
-E_IS_DATA_BOOK_FACTORY
-E_TYPE_DATA_BOOK_FACTORY
-E_DATA_BOOK_FACTORY_CLASS
-E_IS_DATA_BOOK_FACTORY_CLASS
-E_DATA_BOOK_FACTORY_GET_CLASS
-EDataBookFactoryClass
-<SUBSECTION Private>
-EDataBookFactoryPrivate
-e_data_book_factory_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-book-backend-cache</FILE>
 <TITLE>EBookBackendCache</TITLE>
 EBookBackendCache
@@ -211,8 +187,8 @@ e_book_backend_cache_get_type
 <FILE>e-data-book</FILE>
 <TITLE>EDataBook</TITLE>
 EDataBook
+E_DATA_BOOK_ERROR
 e_data_book_new
-e_data_book_get_listener
 e_data_book_get_backend
 e_data_book_get_source
 e_data_book_respond_open
@@ -224,7 +200,6 @@ e_data_book_respond_authenticate_user
 e_data_book_respond_get_supported_fields
 e_data_book_respond_get_required_fields
 e_data_book_respond_get_supported_auth_methods
-e_data_book_respond_get_book_view
 e_data_book_respond_get_contact
 e_data_book_respond_get_contact_list
 e_data_book_respond_get_changes
@@ -238,10 +213,38 @@ E_TYPE_DATA_BOOK
 E_DATA_BOOK_CLASS
 E_IS_DATA_BOOK_CLASS
 E_DATA_BOOK_GET_CLASS
+E_TYPE_DATA_BOOK_CHANGE_TYPE
+E_TYPE_DATA_BOOK_MODE
+E_TYPE_DATA_BOOK_STATUS
 EDataBookClass
 <SUBSECTION Private>
 EDataBookPrivate
 e_data_book_get_type
+e_data_book_error_quark
+e_data_book_change_type_get_type
+e_data_book_mode_get_type
+e_data_book_status_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-data-book-factory</FILE>
+<TITLE>EDataBookFactory</TITLE>
+E_DATA_BOOK_FACTORY_ERROR
+EDataBookFactoryError
+EDataBookFactory
+e_data_book_factory_set_backend_mode
+<SUBSECTION Standard>
+E_DATA_BOOK_FACTORY
+E_IS_DATA_BOOK_FACTORY
+E_TYPE_DATA_BOOK_FACTORY
+E_DATA_BOOK_FACTORY_CLASS
+E_IS_DATA_BOOK_FACTORY_CLASS
+E_DATA_BOOK_FACTORY_GET_CLASS
+EDataBookFactoryClass
+<SUBSECTION Private>
+EDataBookFactoryPrivate
+e_data_book_factory_get_type
+e_data_book_factory_error_quark
 </SECTION>
 
 <SECTION>
@@ -254,8 +257,6 @@ e_data_book_view_get_card_query
 e_data_book_view_get_card_sexp
 e_data_book_view_get_max_results
 e_data_book_view_get_backend
-e_data_book_view_get_listener
-e_data_book_view_get_mutex
 e_data_book_view_notify_update
 e_data_book_view_notify_update_vcard
 e_data_book_view_notify_update_prefiltered_vcard

@@ -39,6 +39,7 @@ HFILE_GLOB=$(top_srcdir)/camel/*.h
 CFILE_GLOB=$(top_srcdir)/camel/*.c
 
 # Header files to ignore when scanning
+# XXX Ignore the imapx provider for now.
 IGNORE_HFILES = 			\
 	broken-date-parser.h		\
 	camel-charset-map-private.h	\
@@ -51,7 +52,17 @@ IGNORE_HFILES = 			\
 	camel-nntp-types.h		\
 	camel-private.h			\
 	camel-search-private.h		\
-	camel-types.h
+	camel-types.h			\
+	camel-imapx-exception.h		\
+	camel-imapx-folder.h		\
+	camel-imapx-server.h		\
+	camel-imapx-store.h		\
+	camel-imapx-store-summary.h	\
+	camel-imapx-stream.h		\
+	camel-imapx-summary.h		\
+	camel-imapx-tokenise.h		\
+	camel-imapx-utils.h		\
+	camel-imapx-view-summary.h
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

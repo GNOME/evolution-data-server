@@ -15,8 +15,10 @@ HFILE_GLOB = $(top_srcdir)/addressbook/libebook/*.h
 CFILE_GLOB = $(top_srcdir)/addressbook/libebook/*.c
 
 IGNORE_HFILES = \
-	Evolution-DataServer-Addressbook.h		\
-	e-book-marshal.h
+	e-book-marshal.h				\
+	e-data-book-bindings.h				\
+	e-data-book-factory-bindings.h			\
+	e-data-book-view-bindings.h
 
 GTKDOC_CFLAGS = \
 	-I$(top_srcdir) 				\

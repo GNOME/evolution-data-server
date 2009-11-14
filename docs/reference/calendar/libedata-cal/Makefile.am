@@ -19,7 +19,11 @@ HFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.h
 CFILE_GLOB = $(top_srcdir)/calendar/libedata-cal/*.c
 
 IGNORE_HFILES = \
-	Evolution-DataServer-Calendar.h	
+	e-data-cal-glue.h				\
+	e-data-cal-factory-glue.h			\
+	e-data-cal-view-glue.h				\
+	e-data-cal-marshal.h				\
+	e-data-cal-types.h
 
 GTKDOC_CFLAGS = \
 	-I$(top_srcdir) 				\

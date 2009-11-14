@@ -285,6 +285,20 @@ CamelCipherContext
 @email: 
 
 
+<!-- ##### FUNCTION camel_cipher_validity_add_certinfo_ex ##### -->
+<para>
+
+</para>
+
+@vin: 
+@mode: 
+@name: 
+@email: 
+@cert_data: 
+@cert_data_free: 
+@cert_data_clone: 
+
+
 <!-- ##### FUNCTION camel_cipher_validity_envelope ##### -->
 <para>
 

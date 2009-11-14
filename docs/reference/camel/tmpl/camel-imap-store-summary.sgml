@@ -54,6 +54,35 @@ CamelImapStoreSummary
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_imap_store_summary_namespace_set_main ##### -->
+<para>
+
+</para>
+
+@s: 
+@full_name: 
+@dir_sep: 
+
+
+<!-- ##### FUNCTION camel_imap_store_summary_namespace_add_secondary ##### -->
+<para>
+
+</para>
+
+@s: 
+@full_name: 
+@dir_sep: 
+
+
+<!-- ##### FUNCTION camel_imap_store_summary_get_main_namespace ##### -->
+<para>
+
+</para>
+
+@s: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_imap_store_summary_namespace_find_path ##### -->
 <para>
 

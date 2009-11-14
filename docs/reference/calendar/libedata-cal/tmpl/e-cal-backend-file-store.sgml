@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+ECalBackendFileStore
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT ECalBackendFileStore ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### FUNCTION e_cal_backend_file_store_new ##### -->
+<para>
+
+</para>
+
+@uri: 
+@source_type: 
+@Returns: 
+
+

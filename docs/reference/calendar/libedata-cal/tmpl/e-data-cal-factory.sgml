@@ -17,36 +17,27 @@ Implementation of the calendar CORBA factory.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### MACRO E_DATA_CAL_FACTORY_ERROR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM EDataCalFactoryError ##### -->
+<para>
+
+</para>
+
+@E_DATA_CAL_FACTORY_ERROR_GENERIC: 
+
 <!-- ##### STRUCT EDataCalFactory ##### -->
 <para>
 
 </para>
 
-
-<!-- ##### SIGNAL EDataCalFactory::last-calendar-gone ##### -->
-<para>
-
-</para>
-
-@edatacalfactory: the object which received the signal.
-
-<!-- ##### FUNCTION e_data_cal_factory_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_factory_register_storage ##### -->
-<para>
-
-</para>
-
-@factory: 
-@iid: 
-@Returns: 
-
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION e_data_cal_factory_register_backend ##### -->
 <para>

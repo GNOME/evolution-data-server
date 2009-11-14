@@ -12,5 +12,6 @@
     <xi:include href="xml/e-dbhash.xml"/>
     <xi:include href="xml/e-data-server-module.xml"/>
     <xi:include href="xml/e-db3-utils.xml"/>
+    <xi:include href="xml/e-offline-listener.xml"/>
   </chapter>
 </book>

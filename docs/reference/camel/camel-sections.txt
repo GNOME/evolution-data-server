@@ -132,6 +132,7 @@ camel_cipher_validity_set_description
 camel_cipher_validity_clear
 camel_cipher_validity_clone
 camel_cipher_validity_add_certinfo
+camel_cipher_validity_add_certinfo_ex
 camel_cipher_validity_envelope
 camel_cipher_validity_free
 camel_cipher_canonical_to_stream
@@ -260,6 +261,7 @@ camel_db_start_in_memory_transactions
 camel_db_flush_in_memory_transactions
 camel_db_get_folder_preview
 camel_db_write_preview_record
+camel_db_reset_folder_version
 <SUBSECTION Private>
 CamelDBPrivate
 </SECTION>
@@ -2370,8 +2372,9 @@ CamelImapStoreInfo
 CamelImapStoreNamespace
 CamelImapStoreSummary
 camel_imap_store_summary_new
-camel_imap_store_summary_namespace_new
-camel_imap_store_summary_namespace_set
+camel_imap_store_summary_namespace_set_main
+camel_imap_store_summary_namespace_add_secondary
+camel_imap_store_summary_get_main_namespace
 camel_imap_store_summary_namespace_find_path
 camel_imap_store_summary_namespace_find_full
 camel_imap_store_summary_full_to_path
@@ -3333,6 +3336,7 @@ camel_write
 camel_read_socket
 camel_write_socket
 camel_file_util_savename
+camel_mkdir
 </SECTION>
 
 <SECTION>
