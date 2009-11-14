@@ -391,7 +391,7 @@ CamelIMAPXStoreNamespace *camel_imapx_store_summary_namespace_new(CamelIMAPXStor
 void camel_imapx_store_summary_namespace_set(CamelIMAPXStoreSummary *s, CamelIMAPXStoreNamespace *ns)
 {
 	d(printf("Setting namesapce to '%s' '%c' -> '%s'\n", ns->full_name, ns->sep, ns->path));
-	
+
 	/* CHEN not needed  */
 	camel_store_summary_touch((CamelStoreSummary *)s);
 }
@@ -500,8 +500,8 @@ namespace_load(CamelStoreSummary *s, FILE *in)
 	return nsl;
 exception:
 	camel_imapx_namespace_list_clear (nsl);
-	
-	return NULL;	
+
+	return NULL;
 }
 
 static gint
@@ -533,7 +533,7 @@ namespace_save(CamelStoreSummary *s, FILE *out, CamelIMAPXNamespaceList *nsl)
 		while (ns != NULL) {
 			if (camel_file_util_encode_string (out, ns->path) == -1)
 				return -1;
-			
+
 			if (camel_file_util_encode_string (out, ns->full_name) == -1)
 				return -1;
 
@@ -571,7 +571,7 @@ summary_header_load(CamelStoreSummary *s, FILE *in)
 		return -1;
 
 	is->capabilities = capabilities;
-	
+
 	/* namespaces */
 	if ((is->namespaces = namespace_load(s, in)) == NULL)
 		return -1;
@@ -583,7 +583,6 @@ static gint
 summary_header_save(CamelStoreSummary *s, FILE *out)
 {
 	CamelIMAPXStoreSummary *is = (CamelIMAPXStoreSummary *)s;
-
 
 	/* always write as latest version */
 	if (camel_imapx_store_summary_parent->summary_header_save((CamelStoreSummary *)s, out) == -1

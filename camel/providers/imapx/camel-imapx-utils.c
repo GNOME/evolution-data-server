@@ -197,7 +197,6 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	return cinfo;
 }
 
-
 void imap_free_capability(struct _capability_info *cinfo)
 {
 	g_free(cinfo);
@@ -221,7 +220,7 @@ imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 	do {
 		namespaces[n] = NULL;
 		tail = (CamelIMAPXStoreNamespace *) &namespaces[n];
-	
+
 		if (tok == '(') {
 			tok = camel_imapx_stream_token (stream, &token, &len, ex);
 
@@ -243,7 +242,7 @@ imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 					if (strlen (token) == 1) {
 						node->sep = *token;
 					} else {
-						if (*token) 
+						if (*token)
 							node->sep = node->path [strlen (node->path) - 1];
 						else
 							node->sep = '\0';
@@ -264,7 +263,7 @@ imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 				if (node->path [strlen (node->path) -1] == node->sep)
 					node->path [strlen (node->path) - 1] = '\0';
 
-				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) && 
+				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&
 						(node->path [6] == '\0' || node->path [6] == node->sep ))
 					memcpy (node->path, "INBOX", 5);
 				tok = camel_imapx_stream_token (stream, &token, &len, ex);
@@ -299,9 +298,9 @@ imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 	return nsl;
 exception:
 	g_free (nsl);
-	for (i=0; i < 3; i++) 
+	for (i=0; i < 3; i++)
 		imapx_namespace_clear (&namespaces [i]);
-	
+
 	return NULL;
 }
 
@@ -1586,7 +1585,7 @@ camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl)
 	imapx_namespace_clear (&nsl->personal);
 	imapx_namespace_clear (&nsl->shared);
 	imapx_namespace_clear (&nsl->other);
-	
+
 	g_free (nsl);
 	nsl = NULL;
 }

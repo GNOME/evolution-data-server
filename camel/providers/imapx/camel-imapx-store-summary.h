@@ -58,7 +58,7 @@ struct _CamelIMAPXStoreNamespace {
 typedef struct _CamelIMAPXNamespaceList {
 	CamelIMAPXStoreNamespace *personal;
 	CamelIMAPXStoreNamespace *other;
-	CamelIMAPXStoreNamespace *shared;	
+	CamelIMAPXStoreNamespace *shared;
 } CamelIMAPXNamespaceList;
 
 struct _CamelIMAPXStoreSummary {

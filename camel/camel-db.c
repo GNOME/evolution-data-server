@@ -434,7 +434,7 @@ camel_db_open (const gchar *path, CamelException *ex)
 		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
 		camel_db_command (cdb, cache, NULL);
 		g_free (cache);
-	}		
+	}
 
 	camel_db_command (cdb, "ATTACH DATABASE ':memory:' AS mem", NULL);
 

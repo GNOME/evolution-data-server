@@ -975,18 +975,18 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		break;
 	}
 	case IMAP_NAMESPACE: {
-		CamelIMAPXNamespaceList *nsl = NULL;				     
-		
+		CamelIMAPXNamespaceList *nsl = NULL;
+
 		nsl = imap_parse_namespace_list (imap->stream, ex);
 		if (nsl != NULL) {
 			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) imap->store;
 
 			imapx_store->summary->namespaces = nsl;
-			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary); 
+			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
 		}
 
 		return 0;
-	}			     
+	}
 	case IMAP_EXISTS:
 		printf("exists: %d\n", id);
 		imap->exists = id;
@@ -1550,7 +1550,7 @@ retry:
 		g_message ("Connecting \n");
 		imapx_connect(is, 0, 0, ex);
 		if (camel_exception_is_set (ex)) {
-			return;	
+			return;
 		}
 
 		g_message ("Connected \n");
@@ -1607,7 +1607,7 @@ retry:
 				camel_exception_clear (ex);
 				goto retry;
 			}
-		
+
 		/* Fetch namespaces */
 		if (is->cinfo->capa & IMAP_CAPABILITY_NAMESPACE) {
 			ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
@@ -2201,7 +2201,7 @@ imapx_server_loop(gpointer d)
 			imapx_reconnect(is, &ex);
 
 		if (camel_exception_is_set (&ex)) {
-			break;		
+			break;
 		}
 
 		job = (CamelIMAPXJob *)camel_msgport_try_pop (is->port);

@@ -75,6 +75,11 @@ ECalView is a view of the ECal.
 
 </para>
 
+<!-- ##### ARG ECalView:view-lock ##### -->
+<para>
+
+</para>
+
 <!-- ##### FUNCTION e_cal_view_get_client ##### -->
 <para>
 
