@@ -1,0 +1,4078 @@
+# Shavian translation for evolution-data-server.
+# Copyright (C) 2009 The Gnome Foundation.
+# Thomas Thurman <tthurman@gnome.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: evolution-data-server\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2009-11-06 19:17+0200\n"
+"Last-Translator: Thomas Thurman <tthurman@gnome.org>\n"
+"Language-Team: Shavian <ubuntu-l10n-en-shaw@lists.launchpad.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../addressbook/backends/file/e-book-backend-file.c:560
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2330
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:474
+msgid "Loading..."
+msgstr "𐑤𐑴𐑛𐑦𐑙..."
+
+#: ../addressbook/backends/file/e-book-backend-file.c:563
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4508
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
+msgid "Searching..."
+msgstr "𐑕𐑻𐑗𐑦𐑙..."
+
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2696
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4672
+#, c-format
+msgid "Downloading contacts (%d)... "
+msgstr "𐑛𐑬𐑯𐑤𐑴𐑛𐑦𐑙 𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕 (%d)... "
+
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2845
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3029
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3073
+#, c-format
+msgid "Updating contacts cache (%d)... "
+msgstr "𐑳𐑐𐑛𐑱𐑑𐑦𐑙 𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕 𐑒𐑨𐑖 (%d)... "
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:789
+msgid "Using Email Address"
+msgstr "𐑿𐑟𐑦𐑙 𐑰𐑥𐑱𐑤 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1065
+msgid "Reconnecting to LDAP server..."
+msgstr "𐑮𐑰𐑒𐑩𐑯𐑧𐑒𐑑𐑦𐑙 𐑑 LDAP 𐑕𐑻𐑝𐑼..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1709
+msgid "Adding contact to LDAP server..."
+msgstr "𐑨𐑛𐑦𐑙 𐑒𐑪𐑯𐑑𐑨𐑒𐑑 𐑑 LDAP 𐑕𐑻𐑝𐑼..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1843
+msgid "Removing contact from LDAP server..."
+msgstr "𐑮𐑦𐑥𐑵𐑝𐑦𐑙 𐑒𐑪𐑯𐑑𐑨𐑒𐑑 𐑓𐑮𐑪𐑥 LDAP 𐑕𐑻𐑝𐑼..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2280
+msgid "Modifying contact from LDAP server..."
+msgstr "𐑥𐑪𐑛𐑦𐑓𐑲𐑦𐑙 𐑒𐑪𐑯𐑑𐑨𐑒𐑑 𐑓𐑮𐑪𐑥 LDAP 𐑕𐑻𐑝𐑼..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4369
+msgid "Receiving LDAP search results..."
+msgstr "𐑮𐑦𐑕𐑰𐑝𐑦𐑙 LDAP 𐑕𐑻𐑗 𐑮𐑦𐑟𐑳𐑤𐑑𐑕..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4530
+msgid "Error performing search"
+msgstr "𐑻𐑼 𐑐𐑼𐑓𐑹𐑥𐑦𐑙 𐑕𐑻𐑗"
+
+#. Dummy row as EContactField starts from 1
+#: ../addressbook/libebook/e-contact.c:113
+msgid "Unique ID"
+msgstr "𐑿𐑯𐑰𐑒 ID"
+
+#: ../addressbook/libebook/e-contact.c:114
+msgid "File Under"
+msgstr "𐑓𐑲𐑤 𐑳𐑯𐑛𐑼"
+
+#. URI of the book to which the contact belongs to
+#: ../addressbook/libebook/e-contact.c:116
+msgid "Book URI"
+msgstr "𐑚𐑫𐑒 URI"
+
+#. Name fields
+#. FN isn't really a structured field - we use a getter/setter
+#. so we can set the N property (since evo 1.4 works fine with
+#. vcards that don't even have a N attribute.  *sigh*)
+#: ../addressbook/libebook/e-contact.c:122
+msgid "Full Name"
+msgstr "𐑓𐑫𐑤 𐑯𐑱𐑥"
+
+#: ../addressbook/libebook/e-contact.c:123
+msgid "Given Name"
+msgstr "𐑜𐑦𐑝𐑩𐑯 𐑯𐑱𐑥"
+
+#: ../addressbook/libebook/e-contact.c:124
+msgid "Family Name"
+msgstr "𐑓𐑨𐑥𐑦𐑤𐑦 𐑯𐑱𐑥"
+
+#: ../addressbook/libebook/e-contact.c:125
+msgid "Nickname"
+msgstr "𐑯𐑦𐑒𐑯𐑱𐑥"
+
+#. Email fields
+#: ../addressbook/libebook/e-contact.c:128
+msgid "Email 1"
+msgstr "𐑰𐑥𐑱𐑤 1"
+
+#: ../addressbook/libebook/e-contact.c:129
+msgid "Email 2"
+msgstr "𐑰𐑥𐑱𐑤 2"
+
+#: ../addressbook/libebook/e-contact.c:130
+msgid "Email 3"
+msgstr "𐑰𐑥𐑱𐑤 3"
+
+#: ../addressbook/libebook/e-contact.c:131
+msgid "Email 4"
+msgstr "𐑰𐑥𐑱𐑤 4"
+
+#: ../addressbook/libebook/e-contact.c:133
+msgid "Mailer"
+msgstr "𐑥𐑱𐑤𐑼"
+
+#. Address Labels
+#: ../addressbook/libebook/e-contact.c:136
+msgid "Home Address Label"
+msgstr "𐑣𐑴𐑥 𐑩𐑛𐑮𐑧𐑕 𐑤𐑱𐑚𐑩𐑤"
+
+#: ../addressbook/libebook/e-contact.c:137
+msgid "Work Address Label"
+msgstr "𐑢𐑻𐑒 𐑩𐑛𐑮𐑧𐑕 𐑤𐑱𐑚𐑩𐑤"
+
+#: ../addressbook/libebook/e-contact.c:138
+msgid "Other Address Label"
+msgstr "𐑳𐑞𐑼 𐑩𐑛𐑮𐑧𐑕 𐑤𐑱𐑚𐑩𐑤"
+
+#. Phone fields
+#: ../addressbook/libebook/e-contact.c:141
+msgid "Assistant Phone"
+msgstr "𐑩𐑕𐑦𐑕𐑑𐑩𐑯𐑑 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:142
+msgid "Business Phone"
+msgstr "𐑚𐑦𐑟𐑯𐑩𐑕 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:143
+msgid "Business Phone 2"
+msgstr "𐑚𐑦𐑟𐑯𐑩𐑕 𐑓𐑴𐑯 2"
+
+#: ../addressbook/libebook/e-contact.c:144
+msgid "Business Fax"
+msgstr "𐑚𐑦𐑟𐑯𐑩𐑕 𐑓𐑨𐑒𐑕"
+
+#: ../addressbook/libebook/e-contact.c:146
+msgid "Car Phone"
+msgstr "𐑒𐑸 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:147
+msgid "Company Phone"
+msgstr "𐑒𐑳𐑥𐑐𐑩𐑯𐑦 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:148
+msgid "Home Phone"
+msgstr "𐑣𐑴𐑥 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:149
+msgid "Home Phone 2"
+msgstr "𐑣𐑴𐑥 𐑓𐑴𐑯 2"
+
+#: ../addressbook/libebook/e-contact.c:150
+msgid "Home Fax"
+msgstr "𐑣𐑴𐑥 𐑓𐑨𐑒𐑕"
+
+#: ../addressbook/libebook/e-contact.c:152
+msgid "Mobile Phone"
+msgstr "𐑥𐑴𐑚𐑲𐑤 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:153
+msgid "Other Phone"
+msgstr "𐑳𐑞𐑼 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:154
+msgid "Other Fax"
+msgstr "𐑳𐑞𐑼 𐑓𐑨𐑒𐑕"
+
+#: ../addressbook/libebook/e-contact.c:155
+msgid "Pager"
+msgstr "𐑐𐑱𐑡𐑻"
+
+#: ../addressbook/libebook/e-contact.c:156
+msgid "Primary Phone"
+msgstr "𐑐𐑮𐑲𐑥𐑼𐑦 𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:157
+msgid "Radio"
+msgstr "𐑮𐑱𐑛𐑦𐑴"
+
+#: ../addressbook/libebook/e-contact.c:158
+msgid "Telex"
+msgstr "𐑑𐑧𐑤𐑧𐑒𐑕"
+
+#. Organizational fields
+#: ../addressbook/libebook/e-contact.c:163
+msgid "Organization"
+msgstr "𐑹𐑜𐑩𐑯𐑦𐑟𐑱𐑖𐑩𐑯"
+
+#: ../addressbook/libebook/e-contact.c:164
+msgid "Organizational Unit"
+msgstr "𐑪𐑮𐑜𐑩𐑯𐑩𐑟𐑱𐑖𐑩𐑯𐑩𐑤 𐑿𐑯𐑦𐑑"
+
+#: ../addressbook/libebook/e-contact.c:165
+msgid "Office"
+msgstr "𐑪𐑓𐑦𐑕"
+
+#: ../addressbook/libebook/e-contact.c:166
+msgid "Title"
+msgstr "𐑑𐑲𐑑𐑩𐑤"
+
+#: ../addressbook/libebook/e-contact.c:167
+msgid "Role"
+msgstr "𐑮𐑴𐑤"
+
+#: ../addressbook/libebook/e-contact.c:168
+msgid "Manager"
+msgstr "𐑥𐑨𐑯𐑩𐑡𐑼"
+
+#: ../addressbook/libebook/e-contact.c:169
+msgid "Assistant"
+msgstr "𐑩𐑕𐑦𐑕𐑑𐑩𐑯𐑑"
+
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:176
+#: ../libedataserverui/e-categories-dialog.c:632
+msgid "Categories"
+msgstr "𐑒𐑨𐑑𐑩𐑜𐑪𐑮𐑰𐑟"
+
+#. Collaboration fields
+#: ../addressbook/libebook/e-contact.c:179
+msgid "Calendar URI"
+msgstr "𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑘𐑻𐑰"
+
+#: ../addressbook/libebook/e-contact.c:180
+msgid "Free/Busy URL"
+msgstr "𐑓𐑮𐑰/𐑚𐑦𐑟𐑰 URL"
+
+#: ../addressbook/libebook/e-contact.c:182
+msgid "Video Conferencing URL"
+msgstr "𐑝𐑦𐑛𐑦𐑴 𐑒𐑭𐑯𐑓𐑮𐑩𐑯𐑕𐑦𐑙 URL"
+
+#. Misc fields
+#: ../addressbook/libebook/e-contact.c:185
+msgid "Spouse's Name"
+msgstr "𐑕𐑐𐑶𐑕𐑧𐑟 𐑯𐑱𐑥"
+
+#: ../addressbook/libebook/e-contact.c:186
+msgid "Note"
+msgstr "𐑯𐑴𐑑"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:189
+msgid "AIM Home Screen Name 1"
+msgstr "·𐑱𐑥 𐑣𐑴𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 1"
+
+#: ../addressbook/libebook/e-contact.c:190
+msgid "AIM Home Screen Name 2"
+msgstr "·𐑱𐑥 𐑣𐑴𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 2"
+
+#: ../addressbook/libebook/e-contact.c:191
+msgid "AIM Home Screen Name 3"
+msgstr "·𐑱𐑥 𐑣𐑴𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 3"
+
+#: ../addressbook/libebook/e-contact.c:192
+msgid "AIM Work Screen Name 1"
+msgstr "·𐑱𐑥 𐑢𐑻𐑒 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 1"
+
+#: ../addressbook/libebook/e-contact.c:193
+msgid "AIM Work Screen Name 2"
+msgstr "·𐑱𐑥 𐑢𐑻𐑒 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 2"
+
+#: ../addressbook/libebook/e-contact.c:194
+msgid "AIM Work Screen Name 3"
+msgstr "·𐑱𐑥 𐑢𐑻𐑒 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 3"
+
+#: ../addressbook/libebook/e-contact.c:201
+msgid "Jabber Home Id 1"
+msgstr "·𐑡𐑨𐑚𐑼 𐑣𐑴𐑥 ID 1"
+
+#: ../addressbook/libebook/e-contact.c:202
+msgid "Jabber Home Id 2"
+msgstr "·𐑡𐑨𐑚𐑼 𐑣𐑴𐑥 ID 2"
+
+#: ../addressbook/libebook/e-contact.c:203
+msgid "Jabber Home Id 3"
+msgstr "·𐑡𐑨𐑚𐑼 𐑣𐑴𐑥 ID 3"
+
+#: ../addressbook/libebook/e-contact.c:204
+msgid "Jabber Work Id 1"
+msgstr "·𐑡𐑨𐑚𐑼 𐑢𐑻𐑒 ID 1"
+
+#: ../addressbook/libebook/e-contact.c:205
+msgid "Jabber Work Id 2"
+msgstr "·𐑡𐑨𐑚𐑼 𐑢𐑻𐑒 ID 2"
+
+#: ../addressbook/libebook/e-contact.c:206
+msgid "Jabber Work Id 3"
+msgstr "·𐑡𐑨𐑚𐑼 𐑢𐑻𐑒 ID 3"
+
+#: ../addressbook/libebook/e-contact.c:207
+msgid "Yahoo! Home Screen Name 1"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑣𐑴𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 1"
+
+#: ../addressbook/libebook/e-contact.c:208
+msgid "Yahoo! Home Screen Name 2"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑣𐑴𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 2"
+
+#: ../addressbook/libebook/e-contact.c:209
+msgid "Yahoo! Home Screen Name 3"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑣𐑴𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 3"
+
+#: ../addressbook/libebook/e-contact.c:210
+msgid "Yahoo! Work Screen Name 1"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑢𐑻𐑒 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 1"
+
+#: ../addressbook/libebook/e-contact.c:211
+msgid "Yahoo! Work Screen Name 2"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑢𐑻𐑒 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 2"
+
+#: ../addressbook/libebook/e-contact.c:212
+msgid "Yahoo! Work Screen Name 3"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑢𐑻𐑒 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 3"
+
+#. Last modified time
+#: ../addressbook/libebook/e-contact.c:227
+msgid "Last Revision"
+msgstr "𐑤𐑭𐑕𐑑 𐑮𐑰𐑝𐑦𐑠𐑩𐑯"
+
+#: ../addressbook/libebook/e-contact.c:228
+msgid "Name or Org"
+msgstr "𐑯𐑱𐑥 𐑹 𐑹𐑜"
+
+#. Address fields
+#: ../addressbook/libebook/e-contact.c:231
+msgid "Address List"
+msgstr "𐑩𐑛𐑮𐑧𐑕 𐑤𐑦𐑕𐑑"
+
+#: ../addressbook/libebook/e-contact.c:232
+msgid "Home Address"
+msgstr "𐑣𐑴𐑥 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../addressbook/libebook/e-contact.c:233
+msgid "Work Address"
+msgstr "𐑢𐑻𐑒 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../addressbook/libebook/e-contact.c:234
+msgid "Other Address"
+msgstr "𐑳𐑞𐑼 𐑩𐑛𐑮𐑧𐑕"
+
+#. Contact categories
+#: ../addressbook/libebook/e-contact.c:237
+msgid "Category List"
+msgstr "𐑒𐑨𐑑𐑧𐑜𐑹𐑰 𐑤𐑦𐑕𐑑"
+
+#. Photo/Logo
+#: ../addressbook/libebook/e-contact.c:240
+msgid "Photo"
+msgstr "𐑓𐑴𐑑𐑴"
+
+#: ../addressbook/libebook/e-contact.c:241
+msgid "Logo"
+msgstr "𐑤𐑴𐑜𐑴"
+
+#: ../addressbook/libebook/e-contact.c:243
+msgid "Name"
+msgstr "𐑯𐑱𐑥"
+
+#: ../addressbook/libebook/e-contact.c:244
+msgid "Email List"
+msgstr "𐑰𐑥𐑱𐑤 𐑤𐑦𐑕𐑑"
+
+#. Instant messaging fields
+#: ../addressbook/libebook/e-contact.c:247
+msgid "AIM Screen Name List"
+msgstr "·𐑱𐑥 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 𐑤𐑦𐑕𐑑"
+
+#: ../addressbook/libebook/e-contact.c:249
+msgid "Jabber Id List"
+msgstr "·𐑡𐑨𐑚𐑼 𐑦𐑛 𐑤𐑦𐑕𐑑"
+
+#: ../addressbook/libebook/e-contact.c:250
+msgid "Yahoo! Screen Name List"
+msgstr "·𐑘𐑭𐑣𐑵! 𐑕𐑒𐑮𐑰𐑯 𐑯𐑱𐑥 𐑤𐑦𐑕𐑑"
+
+#: ../addressbook/libebook/e-contact.c:254
+msgid "Wants HTML Mail"
+msgstr "𐑢𐑪𐑯𐑑𐑕 HTML 𐑥𐑱𐑤"
+
+#: ../addressbook/libebook/e-contact.c:256
+msgid "List"
+msgstr "𐑤𐑦𐑕𐑑"
+
+#: ../addressbook/libebook/e-contact.c:257
+msgid "List Show Addresses"
+msgstr "𐑤𐑦𐑕𐑑 𐑖𐑴 𐑩𐑛𐑮𐑧𐑕𐑩𐑟"
+
+#: ../addressbook/libebook/e-contact.c:259
+msgid "Birth Date"
+msgstr "𐑚𐑻𐑔 𐑛𐑱𐑑"
+
+#: ../addressbook/libebook/e-contact.c:260
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:713
+#: ../libedataserver/e-categories.c:45
+msgid "Anniversary"
+msgstr "𐑨𐑯𐑩𐑝𐑻𐑕𐑻𐑰"
+
+#. Security fields
+#: ../addressbook/libebook/e-contact.c:263
+msgid "X.509 Certificate"
+msgstr "X.509 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#. Geo information
+#: ../addressbook/libebook/e-contact.c:274
+msgid "Geographic Information"
+msgstr "𐑡𐑰𐑩𐑜𐑮𐑨𐑓𐑦𐑒 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯"
+
+#: ../addressbook/libebook/e-contact.c:276
+msgid "Telephone"
+msgstr "𐑑𐑧𐑤𐑩𐑓𐑴𐑯"
+
+#: ../addressbook/libebook/e-contact.c:286
+msgid "SIP address"
+msgstr "·𐑕𐑦𐑐 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../addressbook/libebook/e-contact.c:1535
+#: ../addressbook/libebook/e-destination.c:761
+msgid "Unnamed List"
+msgstr "𐑩𐑯𐑯𐑱𐑥𐑛 𐑤𐑦𐑕𐑑"
+
+#: ../addressbook/libedata-book/e-data-book-factory.c:292
+#, c-format
+msgid "Empty URI"
+msgstr "𐑧𐑥𐑐𐑑𐑦 URI"
+
+#: ../addressbook/libedata-book/e-data-book-factory.c:307
+#: ../addressbook/libedata-book/e-data-book-factory.c:332
+#: ../calendar/libedata-cal/e-data-cal-factory.c:323
+#: ../calendar/libedata-cal/e-data-cal-factory.c:332
+#, c-format
+msgid "Invalid source"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑕𐑹𐑕"
+
+#: ../addressbook/libedata-book/e-data-book.c:301
+msgid "Cannot open book"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑚𐑫𐑒"
+
+#: ../addressbook/libedata-book/e-data-book.c:319
+msgid "Cannot remove book"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑥𐑵𐑝 𐑚𐑫𐑒"
+
+#: ../addressbook/libedata-book/e-data-book.c:331
+#: ../addressbook/libedata-book/e-data-book.c:346
+msgid "Cannot get contact"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑒𐑪𐑯𐑑𐑨𐑒𐑑"
+
+#: ../addressbook/libedata-book/e-data-book.c:358
+msgid "Empty query"
+msgstr "𐑧𐑥𐑐𐑑𐑦 𐑒𐑢𐑽𐑦"
+
+#: ../addressbook/libedata-book/e-data-book.c:402
+msgid "Cannot authenticate user"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑 𐑿𐑟𐑼"
+
+#: ../addressbook/libedata-book/e-data-book.c:414
+#: ../addressbook/libedata-book/e-data-book.c:429
+msgid "Cannot add contact"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑨𐑛 𐑒𐑪𐑯𐑑𐑨𐑒𐑑"
+
+#: ../addressbook/libedata-book/e-data-book.c:444
+#: ../addressbook/libedata-book/e-data-book.c:459
+msgid "Cannot modify contact"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑥𐑪𐑛𐑦𐑓𐑲 𐑒𐑪𐑯𐑑𐑨𐑒𐑑"
+
+#: ../addressbook/libedata-book/e-data-book.c:494
+msgid "Cannot remove contacts"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑥𐑵𐑝 𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕"
+
+#: ../addressbook/libedata-book/e-data-book.c:569
+#: ../calendar/libedata-cal/e-cal-backend-util.c:139
+msgid "Invalid query"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑒𐑢𐑽𐑦"
+
+#: ../addressbook/libedata-book/e-data-book.c:598
+msgid "Cannot get changes"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑗𐑱𐑯𐑡𐑩𐑟"
+
+#: ../addressbook/libedata-book/e-data-book.c:699
+msgid "Cannot complete operation"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑩𐑥𐑐𐑤𐑰𐑑 𐑪𐑐𐑼𐑱𐑖𐑩𐑯"
+
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:715
+#: ../libedataserver/e-categories.c:46
+msgid "Birthday"
+msgstr "𐑚𐑻𐑔𐑛𐑱"
+
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:744
+#, c-format
+msgid "Birthday: %s"
+msgstr "𐑚𐑻𐑔𐑛𐑱: %s"
+
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:768
+#, c-format
+msgid "Anniversary: %s"
+msgstr "𐑨𐑯𐑩𐑝𐑻𐑕𐑻𐑰: %s"
+
+#: ../calendar/backends/file/e-cal-backend-file.c:234
+msgid "Cannot save calendar data: Malformed URI."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑱𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑛𐑱𐑑𐑩: 𐑥𐑨𐑤𐑓𐑹𐑥𐑛 𐑘𐑻𐑰."
+
+#: ../calendar/backends/file/e-cal-backend-file.c:241
+#: ../calendar/backends/file/e-cal-backend-file.c:247
+msgid "Cannot save calendar data"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑱𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑛𐑱𐑑𐑩"
+
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:342
+msgid "Could not create thread for getting deltas"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑔𐑮𐑧𐑛 𐑓𐑹 𐑜𐑧𐑑𐑦𐑙 𐑛𐑧𐑤𐑑𐑩𐑟"
+
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:374
+#: ../calendar/backends/google/e-cal-backend-google.c:1189
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1080
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1381
+#: ../calendar/backends/http/e-cal-backend-http.c:673
+#: ../calendar/backends/weather/e-cal-backend-weather.c:486
+msgid "Could not create cache file"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑒𐑨𐑖 𐑓𐑲𐑤"
+
+#: ../calendar/backends/google/e-cal-backend-google-utils.c:387
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1093
+msgid "Could not create thread for populating cache"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑔𐑮𐑧𐑛 𐑓𐑹 𐑐𐑪𐑐𐑿𐑤𐑱𐑑𐑦𐑙 𐑒𐑨𐑖"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1082
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2078
+msgid "Reply Requested: by "
+msgstr "𐑮𐑦𐑐𐑤𐑲 𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛: 𐑚𐑲 "
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1087
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2083
+msgid "Reply Requested: When convenient"
+msgstr "𐑮𐑦𐑐𐑤𐑲 𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛: 𐑢𐑧𐑯 𐑒𐑩𐑯𐑝𐑰𐑯𐑦𐑩𐑯𐑑"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:281
+#, c-format
+msgid "Loading %s items"
+msgstr "𐑤𐑴𐑛𐑦𐑙 %s 𐑲𐑑𐑩𐑥𐑟"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
+msgid "Calendar"
+msgstr "𐑒𐑨𐑤𐑩𐑯𐑛𐑼"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:976
+msgid "Invalid server URI"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑕𐑻𐑝𐑼 URI"
+
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:995
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1004
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
+#: ../calendar/libecal/e-cal.c:3750
+#: ../calendar/libedata-cal/e-cal-backend-util.c:117
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1291
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1327
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1342
+#: ../camel/providers/groupwise/camel-groupwise-store.c:598
+#: ../camel/providers/groupwise/camel-groupwise-store.c:773
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:154
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:181
+msgid "Authentication failed"
+msgstr "𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑓𐑱𐑤𐑛"
+
+#: ../calendar/backends/http/e-cal-backend-http.c:330
+msgid "Redirected to Invalid URI"
+msgstr "𐑮𐑰𐑛𐑻𐑧𐑒𐑑𐑦𐑛 𐑑 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 URI"
+
+#: ../calendar/backends/http/e-cal-backend-http.c:353
+msgid "Bad file format."
+msgstr "𐑚𐑨𐑛 𐑓𐑲𐑤 𐑓𐑹𐑥𐑨𐑑."
+
+#: ../calendar/backends/http/e-cal-backend-http.c:360
+msgid "Not a calendar."
+msgstr "𐑯𐑪𐑑 𐑩 𐑒𐑨𐑤𐑩𐑯𐑛𐑼."
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:150
+msgid "Could not retrieve weather data"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑢𐑧𐑞𐑼 𐑛𐑱𐑑𐑩"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+msgid "Weather: Fog"
+msgstr "𐑢𐑧𐑞𐑼: 𐑓𐑪𐑜"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+msgid "Weather: Cloudy"
+msgstr "𐑢𐑧𐑞𐑼: 𐑒𐑤𐑶𐑛𐑰"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+msgid "Weather: Cloudy Night"
+msgstr "𐑢𐑧𐑞𐑼: 𐑒𐑤𐑶𐑛𐑰 𐑯𐑲𐑑"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+msgid "Weather: Overcast"
+msgstr "𐑢𐑧𐑞𐑼: 𐑴𐑝𐑻𐑒𐑨𐑕𐑑"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+msgid "Weather: Showers"
+msgstr "𐑢𐑧𐑞𐑼: 𐑖𐑬𐑼𐑟"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+msgid "Weather: Snow"
+msgstr "𐑢𐑧𐑞𐑼: 𐑕𐑯𐑴"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+msgid "Weather: Sunny"
+msgstr "𐑢𐑧𐑞𐑼: 𐑕𐑳𐑯𐑦"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+msgid "Weather: Clear Night"
+msgstr "𐑢𐑧𐑞𐑼: 𐑒𐑤𐑽 𐑯𐑲𐑑"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+msgid "Weather: Thunderstorms"
+msgstr "𐑢𐑧𐑞𐑼: 𐑔𐑩𐑯𐑛𐑻𐑕𐑑𐑪𐑮𐑥𐑟"
+
+#: ../calendar/backends/weather/e-cal-backend-weather.c:400
+msgid "Forecast"
+msgstr "𐑓𐑹𐑒𐑭𐑕𐑑"
+
+#: ../calendar/libecal/e-cal-recur.c:3951
+msgid "1st"
+msgstr "1st"
+
+#: ../calendar/libecal/e-cal-recur.c:3952
+msgid "2nd"
+msgstr "2nd"
+
+#: ../calendar/libecal/e-cal-recur.c:3953
+msgid "3rd"
+msgstr "3rd"
+
+#: ../calendar/libecal/e-cal-recur.c:3954
+msgid "4th"
+msgstr "4th"
+
+#: ../calendar/libecal/e-cal-recur.c:3955
+msgid "5th"
+msgstr "5th"
+
+#: ../calendar/libecal/e-cal-recur.c:3956
+msgid "6th"
+msgstr "6th"
+
+#: ../calendar/libecal/e-cal-recur.c:3957
+msgid "7th"
+msgstr "7th"
+
+#: ../calendar/libecal/e-cal-recur.c:3958
+msgid "8th"
+msgstr "8th"
+
+#: ../calendar/libecal/e-cal-recur.c:3959
+msgid "9th"
+msgstr "9th"
+
+#: ../calendar/libecal/e-cal-recur.c:3960
+msgid "10th"
+msgstr "10th"
+
+#: ../calendar/libecal/e-cal-recur.c:3961
+msgid "11th"
+msgstr "11th"
+
+#: ../calendar/libecal/e-cal-recur.c:3962
+msgid "12th"
+msgstr "12th"
+
+#: ../calendar/libecal/e-cal-recur.c:3963
+msgid "13th"
+msgstr "13th"
+
+#: ../calendar/libecal/e-cal-recur.c:3964
+msgid "14th"
+msgstr "14th"
+
+#: ../calendar/libecal/e-cal-recur.c:3965
+msgid "15th"
+msgstr "15th"
+
+#: ../calendar/libecal/e-cal-recur.c:3966
+msgid "16th"
+msgstr "16th"
+
+#: ../calendar/libecal/e-cal-recur.c:3967
+msgid "17th"
+msgstr "17th"
+
+#: ../calendar/libecal/e-cal-recur.c:3968
+msgid "18th"
+msgstr "18th"
+
+#: ../calendar/libecal/e-cal-recur.c:3969
+msgid "19th"
+msgstr "19th"
+
+#: ../calendar/libecal/e-cal-recur.c:3970
+msgid "20th"
+msgstr "20th"
+
+#: ../calendar/libecal/e-cal-recur.c:3971
+msgid "21st"
+msgstr "21st"
+
+#: ../calendar/libecal/e-cal-recur.c:3972
+msgid "22nd"
+msgstr "22nd"
+
+#: ../calendar/libecal/e-cal-recur.c:3973
+msgid "23rd"
+msgstr "23rd"
+
+#: ../calendar/libecal/e-cal-recur.c:3974
+msgid "24th"
+msgstr "24th"
+
+#: ../calendar/libecal/e-cal-recur.c:3975
+msgid "25th"
+msgstr "25th"
+
+#: ../calendar/libecal/e-cal-recur.c:3976
+msgid "26th"
+msgstr "26th"
+
+#: ../calendar/libecal/e-cal-recur.c:3977
+msgid "27th"
+msgstr "27th"
+
+#: ../calendar/libecal/e-cal-recur.c:3978
+msgid "28th"
+msgstr "28th"
+
+#: ../calendar/libecal/e-cal-recur.c:3979
+msgid "29th"
+msgstr "29th"
+
+#: ../calendar/libecal/e-cal-recur.c:3980
+msgid "30th"
+msgstr "30th"
+
+#: ../calendar/libecal/e-cal-recur.c:3981
+msgid "31st"
+msgstr "31st"
+
+#: ../calendar/libecal/e-cal-util.c:685 ../calendar/libecal/e-cal-util.c:712
+msgid "High"
+msgstr "𐑣𐑲"
+
+#: ../calendar/libecal/e-cal-util.c:687 ../calendar/libecal/e-cal-util.c:714
+msgid "Normal"
+msgstr "𐑯𐑹𐑥𐑩𐑤"
+
+#: ../calendar/libecal/e-cal-util.c:689 ../calendar/libecal/e-cal-util.c:716
+msgid "Low"
+msgstr "𐑤𐑴"
+
+#. An empty string is the same as 'None'.
+#: ../calendar/libecal/e-cal-util.c:710
+msgid "Undefined"
+msgstr "𐑩𐑯𐑛𐑦𐑓𐑲𐑯𐑛"
+
+#: ../calendar/libecal/e-cal.c:1065 ../libedataserverui/e-book-auth-util.c:199
+#, c-format
+msgid "Enter password for %s (user %s)"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 %s (𐑿𐑟𐑼 %s)"
+
+#.
+#. This password prompt will be prompted rarely. Since the key that is passed to
+#. the auth_func corresponds to the parent user.
+#.
+#: ../calendar/libecal/e-cal.c:1079
+#, c-format
+msgid "Enter password for %s to enable proxy for user %s"
+msgstr "𐑧𐑯𐑑𐑼 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 %s 𐑑 𐑦𐑯𐑱𐑚𐑩𐑤 𐑐𐑮𐑪𐑒𐑕𐑦 𐑓𐑹 𐑿𐑟𐑼 %s"
+
+#: ../calendar/libecal/e-cal.c:3722
+msgid "Invalid argument"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑"
+
+#: ../calendar/libecal/e-cal.c:3724
+msgid "Backend is busy"
+msgstr "𐑚𐑨𐑒𐑧𐑯𐑛 𐑦𐑟 𐑚𐑦𐑟𐑰"
+
+#: ../calendar/libecal/e-cal.c:3726
+#: ../calendar/libedata-cal/e-cal-backend-util.c:105
+msgid "Repository is offline"
+msgstr "𐑮𐑰𐑐𐑭𐑟𐑩𐑑𐑪𐑮𐑰 𐑦𐑟 𐑪𐑓𐑤𐑲𐑯"
+
+#: ../calendar/libecal/e-cal.c:3728
+#: ../calendar/libedata-cal/e-cal-backend-util.c:129
+msgid "No such calendar"
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑒𐑨𐑤𐑩𐑯𐑛𐑼"
+
+#: ../calendar/libecal/e-cal.c:3730
+#: ../calendar/libedata-cal/e-cal-backend-util.c:111
+#: ../servers/groupwise/e-gw-connection.c:233
+msgid "Object not found"
+msgstr "𐑩𐑚𐑡𐑧𐑒𐑑 𐑯𐑪𐑑 𐑓𐑬𐑯𐑛"
+
+#: ../calendar/libecal/e-cal.c:3732
+#: ../calendar/libedata-cal/e-cal-backend-util.c:113
+#: ../servers/groupwise/e-gw-connection.c:227
+msgid "Invalid object"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑩𐑚𐑡𐑧𐑒𐑑"
+
+#: ../calendar/libecal/e-cal.c:3734
+msgid "URI not loaded"
+msgstr "URI 𐑯𐑪𐑑 𐑤𐑴𐑛𐑩𐑛"
+
+#: ../calendar/libecal/e-cal.c:3736
+msgid "URI already loaded"
+msgstr "URI 𐑷𐑤𐑮𐑧𐑛𐑦 𐑤𐑴𐑛𐑩𐑛"
+
+#: ../calendar/libecal/e-cal.c:3738
+#: ../calendar/libedata-cal/e-cal-backend-util.c:107
+msgid "Permission denied"
+msgstr "𐑐𐑻𐑥𐑦𐑖𐑪𐑯 𐑛𐑦𐑯𐑲𐑛"
+
+#: ../calendar/libecal/e-cal.c:3740
+#: ../calendar/libedata-cal/e-cal-backend-util.c:131
+#: ../servers/groupwise/e-gw-connection.c:235
+msgid "Unknown User"
+msgstr "𐑳𐑯𐑴𐑯 𐑿𐑟𐑼"
+
+#: ../calendar/libecal/e-cal.c:3742
+#: ../calendar/libedata-cal/e-cal-backend-util.c:115
+msgid "Object ID already exists"
+msgstr "𐑩𐑚𐑡𐑧𐑒𐑑 ID 𐑷𐑤𐑮𐑧𐑛𐑦 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../calendar/libecal/e-cal.c:3744
+msgid "Protocol not supported"
+msgstr "𐑐𐑮𐑴𐑑𐑩𐑒𐑪𐑤 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛"
+
+#: ../calendar/libecal/e-cal.c:3746
+msgid "Operation has been canceled"
+msgstr "𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑣𐑨𐑟 𐑚𐑰𐑯 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../calendar/libecal/e-cal.c:3748
+#: ../calendar/libedata-cal/e-cal-backend-util.c:143
+msgid "Could not cancel operation"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑨𐑯𐑕𐑩𐑤 𐑪𐑐𐑼𐑱𐑖𐑩𐑯"
+
+#: ../calendar/libecal/e-cal.c:3752
+#: ../calendar/libedata-cal/e-cal-backend-util.c:119
+#: ../camel/providers/smtp/camel-smtp-transport.c:217
+msgid "Authentication required"
+msgstr "𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑮𐑦𐑒𐑢𐑲𐑼𐑛"
+
+#: ../calendar/libecal/e-cal.c:3756
+#: ../calendar/libedata-cal/e-cal-backend-util.c:146
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:214
+#: ../camel/providers/imap/camel-imap-command.c:432
+#: ../camel/providers/imap/camel-imap-store.c:741
+#: ../camel/providers/imap4/camel-imap4-engine.c:1547
+#: ../camel/providers/imap4/camel-imap4-engine.c:1585
+#: ../camel/providers/imap4/camel-imap4-engine.c:1629
+#: ../camel/providers/imap4/camel-imap4-engine.c:1684
+#: ../camel/providers/imap4/camel-imap4-store.c:311
+#: ../camel/providers/imap4/camel-imap4-store.c:818
+#: ../camel/providers/imap4/camel-imap4-store.c:1574
+#: ../camel/providers/pop3/camel-pop3-store.c:552
+#: ../camel/providers/pop3/camel-pop3-store.c:559
+#: ../camel/providers/pop3/camel-pop3-store.c:565
+#: ../servers/groupwise/e-gw-connection.c:241
+msgid "Unknown error"
+msgstr "𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../calendar/libecal/e-cal.c:3758
+#: ../calendar/libedata-cal/e-cal-backend-util.c:103
+msgid "No error"
+msgstr "𐑯𐑴 𐑻𐑼"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:67
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:693
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:802
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:830
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1023
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1050
+#, c-format
+msgid "\"%s\" expects no arguments"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑯𐑴 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:100
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:210
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:252
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:288
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1088
+#, c-format
+msgid "\"%s\" expects one argument"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑢𐑳𐑯 𐑸𐑜𐑿𐑥𐑩𐑯𐑑"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:106
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:113
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:294
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:735
+#, c-format
+msgid "\"%s\" expects the first argument to be a string"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑓𐑻𐑕𐑑 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩 𐑕𐑑𐑮𐑦𐑙"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
+#, c-format
+msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑓𐑻𐑕𐑑 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩𐑯 ISO 8601 𐑛𐑱𐑑/𐑑𐑲𐑥 𐑕𐑑𐑮𐑦𐑙"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:729
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:862
+#, c-format
+msgid "\"%s\" expects two arguments"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑑𐑵 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:166
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:216
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:258
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:367
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:419
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:868
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1094
+#, c-format
+msgid "\"%s\" expects the first argument to be a time_t"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑓𐑻𐑕𐑑 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩 time_t"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:174
+#, c-format
+msgid "\"%s\" expects the second argument to be an integer"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑕𐑧𐑒𐑩𐑯𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩𐑯 𐑦𐑯𐑑𐑩𐑡𐑼"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:375
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:428
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:876
+#, c-format
+msgid "\"%s\" expects the second argument to be a time_t"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑕𐑧𐑒𐑩𐑯𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩 time_t"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:743
+#, c-format
+msgid "\"%s\" expects the second argument to be a string"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑕𐑧𐑒𐑩𐑯𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩 𐑕𐑑𐑮𐑦𐑙"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:773
+#, c-format
+msgid ""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
+"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
+"\"classification\""
+msgstr ""
+"\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑞 𐑓𐑻𐑕𐑑 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑲𐑞𐑼 \"any\", \"summary\", 𐑹 "
+"\"description\", 𐑹 \"location\", 𐑹 \"attendee\", 𐑹 \"organizer\", 𐑹 "
+"\"classification\""
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:925
+#, c-format
+msgid "\"%s\" expects at least one argument"
+msgstr "\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑨𐑑 𐑤𐑰𐑕𐑑 𐑢𐑳𐑯 𐑸𐑜𐑿𐑥𐑩𐑯𐑑"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:939
+#, c-format
+msgid ""
+"\"%s\" expects all arguments to be strings or one and only one argument to "
+"be a boolean false (#f)"
+msgstr ""
+"\"%s\" 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑷𐑤 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕 𐑑 𐑚𐑰 𐑕𐑑𐑮𐑦𐑙𐑟 𐑹 𐑢𐑳𐑯 𐑯 𐑴𐑯𐑤𐑦 𐑢𐑳𐑯 𐑸𐑜𐑿𐑥𐑩𐑯𐑑 𐑑 𐑚𐑰 𐑩 "
+"𐑚𐑵𐑤𐑰𐑩𐑯 𐑓𐑷𐑤𐑕 (#f)"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:109
+msgid "Invalid range"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑮𐑱𐑯𐑡"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:121
+msgid "Unsupported field"
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑓𐑰𐑤𐑛"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:123
+msgid "Unsupported method"
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑥𐑧𐑔𐑩𐑛"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:125
+msgid "Unsupported authentication method"
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑥𐑧𐑔𐑩𐑛"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:133
+msgid "Offline mode unavailable"
+msgstr "𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛 𐑩𐑯𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:135
+msgid "Search size limit exceeded"
+msgstr "𐑕𐑻𐑗 𐑕𐑲𐑟 𐑤𐑦𐑥𐑦𐑑 𐑩𐑒𐑕𐑰𐑛𐑩𐑛"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:137
+msgid "Search time limit exceeded"
+msgstr "𐑕𐑻𐑗 𐑑𐑲𐑥 𐑤𐑦𐑥𐑦𐑑 𐑩𐑒𐑕𐑰𐑛𐑩𐑛"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:141
+msgid "Query refused"
+msgstr "𐑒𐑢𐑽𐑦 𐑮𐑦𐑓𐑿𐑟𐑛"
+
+#: ../calendar/libedata-cal/e-cal-backend-util.c:148
+msgid "Invalid server version"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑕𐑻𐑝𐑼 𐑝𐑻𐑠𐑩𐑯"
+
+#: ../calendar/libedata-cal/e-data-cal.c:483
+#, c-format
+msgid "Cannot retrieve calendar address"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../calendar/libedata-cal/e-data-cal.c:501
+#, c-format
+msgid "Cannot retrieve calendar alarm e-mail address"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑤𐑸𐑥 𐑧-𐑥𐑱𐑤 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../calendar/libedata-cal/e-data-cal.c:519
+#, c-format
+msgid "Cannot retrieve calendar's ldap attribute"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼'𐑕 LDAP 𐑩𐑑𐑮𐑦𐑚𐑿𐑑"
+
+#: ../calendar/libedata-cal/e-data-cal.c:537
+#, c-format
+msgid "Cannot retrieve calendar scheduling information"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑖𐑧𐑛𐑿𐑤𐑦𐑙 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯"
+
+#: ../calendar/libedata-cal/e-data-cal.c:554
+#, c-format
+msgid "Cannot open calendar"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑒𐑨𐑤𐑩𐑯𐑛𐑼"
+
+#: ../calendar/libedata-cal/e-data-cal.c:571
+#, c-format
+msgid "Cannot remove calendar"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑥𐑵𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼"
+
+#: ../calendar/libedata-cal/e-data-cal.c:590
+#, c-format
+msgid "Cannot create calendar object"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑚𐑡𐑧𐑒𐑑"
+
+#: ../calendar/libedata-cal/e-data-cal.c:636
+#, c-format
+msgid "Cannot remove calendar object"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑥𐑵𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑚𐑡𐑧𐑒𐑑"
+
+#: ../calendar/libedata-cal/e-data-cal.c:655
+#, c-format
+msgid "Cannot receive calendar objects"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑕𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑪𐑚𐑡𐑧𐑒𐑑𐑕"
+
+#: ../calendar/libedata-cal/e-data-cal.c:672
+#, c-format
+msgid "Cannot discard calendar alarm"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑕𐑒𐑭𐑮𐑛 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑤𐑸𐑥"
+
+#: ../calendar/libedata-cal/e-data-cal.c:691
+#, c-format
+msgid "Cannot send calendar objects"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑧𐑯𐑛 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑪𐑚𐑡𐑧𐑒𐑑𐑕"
+
+#: ../calendar/libedata-cal/e-data-cal.c:726
+#, c-format
+msgid "Cannot retrieve default calendar object path"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑚𐑡𐑧𐑒𐑑 𐑐𐑭𐑔"
+
+#: ../calendar/libedata-cal/e-data-cal.c:744
+#, c-format
+msgid "Cannot retrieve calendar object path"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑚𐑡𐑧𐑒𐑑 𐑐𐑭𐑔"
+
+#: ../calendar/libedata-cal/e-data-cal.c:762
+#, c-format
+msgid "Cannot retrieve calendar object list"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑩𐑚𐑡𐑧𐑒𐑑 𐑤𐑦𐑕𐑑"
+
+#: ../calendar/libedata-cal/e-data-cal.c:800
+#, c-format
+msgid "Could not retrieve attachment list"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑩𐑑𐑨𐑗𐑥𐑩𐑯𐑑 𐑤𐑦𐑕𐑑"
+
+#: ../calendar/libedata-cal/e-data-cal.c:822
+#, c-format
+msgid "Could not complete calendar query"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑩𐑥𐑐𐑤𐑰𐑑 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑒𐑢𐑽𐑦"
+
+#: ../calendar/libedata-cal/e-data-cal.c:840
+#, c-format
+msgid "Could not retrieve calendar time zone"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑑𐑲𐑥 𐑟𐑴𐑯"
+
+#: ../calendar/libedata-cal/e-data-cal.c:858
+#, c-format
+msgid "Could not add calendar time zone"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑨𐑛 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑑𐑲𐑥 𐑟𐑴𐑯"
+
+#: ../calendar/libedata-cal/e-data-cal.c:875
+#, c-format
+msgid "Could not set default calendar time zone"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑧𐑑 𐑛𐑦𐑓𐑷𐑤𐑑 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑑𐑲𐑥 𐑟𐑴𐑯"
+
+#: ../calendar/libedata-cal/e-data-cal.c:896
+#, c-format
+msgid "Cannot retrieve calendar changes"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑗𐑱𐑯𐑡𐑩𐑟"
+
+#: ../calendar/libedata-cal/e-data-cal.c:946
+#, c-format
+msgid "Cannot retrieve calendar free/busy list"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑒𐑨𐑤𐑩𐑯𐑛𐑼 𐑓𐑮𐑰/𐑚𐑦𐑟𐑰 𐑤𐑦𐑕𐑑"
+
+#: ../calendar/libedata-cal/e-data-cal-factory.c:339
+#, c-format
+msgid "Invalid URI"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 URI"
+
+#: ../calendar/libedata-cal/e-data-cal-factory.c:350
+#, c-format
+msgid "No backend factory for '%s' of '%s'"
+msgstr "𐑯𐑴 𐑚𐑨𐑒𐑧𐑯𐑛 𐑓𐑨𐑒𐑑𐑼𐑦 𐑓𐑹 '%s' 𐑝 '%s'"
+
+#: ../calendar/libedata-cal/e-data-cal-factory.c:390
+#, c-format
+msgid "Could not instantiate backend"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑦𐑯𐑕𐑑𐑨𐑯𐑖𐑰𐑱𐑑 𐑚𐑨𐑒𐑧𐑯𐑛"
+
+#: ../camel/camel-cipher-context.c:102
+msgid "Signing is not supported by this cipher"
+msgstr "𐑕𐑲𐑯𐑦𐑙 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑚𐑲 𐑞𐑦𐑕 𐑕𐑲𐑓𐑼"
+
+#: ../camel/camel-cipher-context.c:128
+msgid "Signing message"
+msgstr "𐑕𐑲𐑯𐑦𐑙 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/camel-cipher-context.c:145
+msgid "Verifying is not supported by this cipher"
+msgstr "𐑝𐑧𐑮𐑦𐑓𐑲𐑦𐑙 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑚𐑲 𐑞𐑦𐑕 𐑕𐑲𐑓𐑼"
+
+#: ../camel/camel-cipher-context.c:171
+msgid "Verifying message"
+msgstr "𐑝𐑧𐑮𐑦𐑓𐑲𐑦𐑙 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/camel-cipher-context.c:189
+msgid "Encryption is not supported by this cipher"
+msgstr "𐑦𐑯𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑚𐑲 𐑞𐑦𐑕 𐑕𐑲𐑓𐑼"
+
+#: ../camel/camel-cipher-context.c:215
+msgid "Encrypting message"
+msgstr "𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑦𐑙 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/camel-cipher-context.c:254
+msgid "Decrypting message"
+msgstr "𐑛𐑦𐑒𐑮𐑦𐑐𐑑𐑦𐑙 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/camel-cipher-context.c:271
+msgid "You may not import keys with this cipher"
+msgstr "𐑿 𐑥𐑱 𐑯𐑪𐑑 𐑦𐑥𐑐𐑹𐑑 𐑒𐑰𐑟 𐑢𐑦𐑞 𐑞𐑦𐑕 𐑕𐑲𐑓𐑼"
+
+#: ../camel/camel-cipher-context.c:301
+msgid "You may not export keys with this cipher"
+msgstr "𐑿 𐑥𐑱 𐑯𐑪𐑑 𐑧𐑒𐑕𐑐𐑹𐑑 𐑒𐑰𐑟 𐑢𐑦𐑞 𐑞𐑦𐑕 𐑕𐑲𐑓𐑼"
+
+#: ../camel/camel-data-cache.c:136
+msgid "Unable to create cache path"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑒𐑨𐑖 𐑐𐑭𐑔"
+
+#: ../camel/camel-data-cache.c:402
+#, c-format
+msgid "Could not remove cache entry: %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑦𐑥𐑵𐑝 𐑒𐑨𐑖 𐑧𐑯𐑑𐑮𐑦: %s: %s"
+
+#: ../camel/camel-db.c:411
+msgid "Insufficient memory"
+msgstr "𐑦𐑯𐑕𐑩𐑓𐑦𐑖𐑩𐑯𐑑 𐑥𐑧𐑥𐑼𐑦"
+
+#: ../camel/camel-disco-diary.c:197
+#, c-format
+msgid ""
+"Could not write log entry: %s\n"
+"Further operations on this server will not be replayed when you\n"
+"reconnect to the network."
+msgstr ""
+"𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑲𐑑 𐑤𐑪𐑜 𐑧𐑯𐑑𐑮𐑦: %s\n"
+"𐑓𐑻𐑞𐑼 𐑪𐑐𐑼𐑱𐑖𐑩𐑯𐑟 𐑪𐑯 𐑞𐑦𐑕 𐑕𐑻𐑝𐑼 𐑢𐑦𐑤 𐑯𐑪𐑑 𐑚𐑰 𐑮𐑰𐑐𐑤𐑱𐑛 𐑢𐑧𐑯 𐑿\n"
+"𐑮𐑰𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 𐑞 𐑯𐑧𐑑𐑢𐑻𐑒."
+
+#: ../camel/camel-disco-folder.c:43 ../camel/camel-offline-folder.c:51
+msgid "Copy folder content locally for offline operation"
+msgstr "𐑒𐑪𐑐𐑦 𐑓𐑴𐑤𐑛𐑼 𐑒𐑪𐑯𐑑𐑧𐑯𐑑 𐑤𐑴𐑒𐑩𐑤𐑦 𐑓𐑹 𐑪𐑓𐑤𐑲𐑯 𐑪𐑐𐑼𐑱𐑖𐑩𐑯"
+
+#: ../camel/camel-disco-folder.c:105 ../camel/camel-offline-folder.c:107
+msgid "Downloading new messages for offline mode"
+msgstr "𐑛𐑬𐑯𐑤𐑴𐑛𐑦𐑙 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑓𐑹 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛"
+
+#: ../camel/camel-disco-folder.c:466
+#, c-format
+msgid "Preparing folder '%s' for offline"
+msgstr "𐑐𐑮𐑰𐑐𐑺𐑦𐑙 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑓𐑹 𐑪𐑓𐑤𐑲𐑯"
+
+#: ../camel/camel-disco-store.c:400
+#: ../camel/providers/groupwise/camel-groupwise-store.c:223
+#: ../camel/providers/imap/camel-imap-store.c:1001
+#: ../camel/providers/imap/camel-imap-store.c:1843
+#: ../camel/providers/imap/camel-imap-store.c:2259
+#: ../camel/providers/imap/camel-imap-store.c:3051
+msgid "You must be working online to complete this operation"
+msgstr "𐑿 𐑥𐑳𐑕𐑑 𐑚𐑰 𐑢𐑻𐑒𐑦𐑙 𐑪𐑯𐑤𐑲𐑯 𐑑 𐑒𐑩𐑥𐑐𐑤𐑰𐑑 𐑞𐑦𐑕 𐑪𐑐𐑼𐑱𐑖𐑩𐑯"
+
+#: ../camel/camel-exception.c:260
+msgid "No description available"
+msgstr "𐑯𐑴 𐑛𐑦𐑕𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/camel-filter-driver.c:794 ../camel/camel-filter-search.c:579
+#, c-format
+msgid "Failed to create child process '%s': %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑒𐑮𐑦𐑱𐑑 𐑗𐑲𐑤𐑛 𐑐𐑮𐑴𐑕𐑧𐑕 '%s': %s"
+
+#: ../camel/camel-filter-driver.c:836
+#, c-format
+msgid "Invalid message stream received from %s: %s"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑧𐑕𐑦𐑡 𐑕𐑑𐑮𐑰𐑥 𐑮𐑦𐑕𐑰𐑝𐑛 𐑓𐑮𐑪𐑥 %s: %s"
+
+#: ../camel/camel-filter-driver.c:1121 ../camel/camel-filter-driver.c:1522
+#, c-format
+msgid "Error parsing filter: %s: %s"
+msgstr "𐑻𐑼 𐑐𐑸𐑕𐑦𐑙 𐑓𐑦𐑤𐑑𐑼: %s: %s"
+
+#: ../camel/camel-filter-driver.c:1130 ../camel/camel-filter-driver.c:1531
+#, c-format
+msgid "Error executing filter: %s: %s"
+msgstr "𐑻𐑼 𐑧𐑒𐑕𐑩𐑒𐑿𐑑𐑦𐑙 𐑓𐑦𐑤𐑑𐑼: %s: %s"
+
+#: ../camel/camel-filter-driver.c:1216
+msgid "Unable to open spool folder"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑴𐑐𐑩𐑯 𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/camel-filter-driver.c:1225
+msgid "Unable to process spool folder"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑐𐑮𐑴𐑕𐑧𐑕 𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/camel-filter-driver.c:1241
+#, c-format
+msgid "Getting message %d (%d%%)"
+msgstr "𐑜𐑧𐑑𐑦𐑙 𐑥𐑧𐑕𐑦𐑡 %d (%d%%)"
+
+#: ../camel/camel-filter-driver.c:1245
+msgid "Cannot open message"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/camel-filter-driver.c:1246 ../camel/camel-filter-driver.c:1264
+#, c-format
+msgid "Failed on message %d"
+msgstr "𐑓𐑱𐑤𐑛 𐑪𐑯 𐑥𐑧𐑕𐑦𐑡 %d"
+
+#: ../camel/camel-filter-driver.c:1282 ../camel/camel-filter-driver.c:1373
+msgid "Complete"
+msgstr "𐑒𐑩𐑥𐑐𐑤𐑰𐑑"
+
+#: ../camel/camel-filter-driver.c:1338
+#, c-format
+msgid "Getting message %d of %d"
+msgstr "𐑜𐑧𐑑𐑦𐑙 𐑥𐑧𐑕𐑦𐑡 %d 𐑝 %d"
+
+#: ../camel/camel-filter-driver.c:1353
+#, c-format
+msgid "Failed at message %d of %d"
+msgstr "𐑓𐑱𐑤𐑛 𐑨𐑑 𐑥𐑧𐑕𐑦𐑡 %d 𐑝 %d"
+
+#: ../camel/camel-filter-search.c:137
+msgid "Failed to retrieve message"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/camel-filter-search.c:399
+msgid "Invalid arguments to (system-flag)"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕 𐑑 (𐑕𐑦𐑕𐑑𐑩𐑥-𐑓𐑤𐑨𐑜)"
+
+#: ../camel/camel-filter-search.c:414
+msgid "Invalid arguments to (user-tag)"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕 𐑑 (𐑿𐑟𐑼-𐑑𐑨𐑜)"
+
+#. A filter search is a search through your filters, ie. your filters is the corpus being searched thru.
+#: ../camel/camel-filter-search.c:735 ../camel/camel-filter-search.c:743
+#, c-format
+msgid "Error executing filter search: %s: %s"
+msgstr "𐑻𐑼 𐑧𐑒𐑕𐑩𐑒𐑿𐑑𐑦𐑙 𐑓𐑦𐑤𐑑𐑼 𐑕𐑻𐑗: %s: %s"
+
+#: ../camel/camel-folder-search.c:351 ../camel/camel-folder-search.c:453
+#: ../camel/camel-folder-search.c:608
+#, c-format
+msgid ""
+"Cannot parse search expression: %s:\n"
+"%s"
+msgstr ""
+"𐑒𐑨𐑯𐑪𐑑 𐑐𐑸𐑕 𐑕𐑻𐑗 𐑦𐑒𐑕𐑐𐑮𐑧𐑖𐑩𐑯: %s:\n"
+"%s"
+
+#: ../camel/camel-folder-search.c:361 ../camel/camel-folder-search.c:463
+#: ../camel/camel-folder-search.c:618
+#, c-format
+msgid ""
+"Error executing search expression: %s:\n"
+"%s"
+msgstr ""
+"𐑻𐑼 𐑧𐑒𐑕𐑩𐑒𐑿𐑑𐑦𐑙 𐑕𐑻𐑗 𐑦𐑒𐑕𐑐𐑮𐑧𐑖𐑩𐑯: %s:\n"
+"%s"
+
+#: ../camel/camel-folder-search.c:905
+#, c-format
+msgid "(%s) not allowed inside %s"
+msgstr "(%s) 𐑯𐑪𐑑 𐑩𐑤𐑬𐑛 𐑦𐑯𐑕𐑲𐑛 %s"
+
+#: ../camel/camel-folder-search.c:911 ../camel/camel-folder-search.c:918
+#, c-format
+msgid "(%s) requires a match type string"
+msgstr "(%s) 𐑮𐑦𐑒𐑢𐑲𐑼𐑟 𐑩 𐑥𐑨𐑗 𐑑𐑲𐑐 𐑕𐑑𐑮𐑦𐑙"
+
+#: ../camel/camel-folder-search.c:945
+#, c-format
+msgid "(%s) expects an array result"
+msgstr "(%s) 𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑕 𐑩𐑯 𐑼𐑱 𐑮𐑦𐑟𐑳𐑤𐑑"
+
+#: ../camel/camel-folder-search.c:954
+#, c-format
+msgid "(%s) requires the folder set"
+msgstr "(%s) 𐑮𐑦𐑒𐑢𐑲𐑼𐑟 𐑞 𐑓𐑴𐑤𐑛𐑼 𐑕𐑧𐑑"
+
+#: ../camel/camel-folder.c:669
+#, c-format
+msgid "Unsupported operation: append message: for %s"
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯: 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡: 𐑓𐑹 %s"
+
+#: ../camel/camel-folder.c:1374
+#, c-format
+msgid "Unsupported operation: search by expression: for %s"
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯: 𐑕𐑻𐑗 𐑚𐑲 𐑦𐑒𐑕𐑐𐑮𐑧𐑖𐑩𐑯: 𐑓𐑹 %s"
+
+#: ../camel/camel-folder.c:1415
+#, c-format
+msgid "Unsupported operation: count by expression: for %s"
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯: 𐑒𐑬𐑯𐑑 𐑚𐑲 𐑦𐑒𐑕𐑐𐑮𐑧𐑖𐑩𐑯: 𐑓𐑹 %s"
+
+#: ../camel/camel-folder.c:1567
+#: ../camel/providers/local/camel-maildir-folder.c:387
+msgid "Moving messages"
+msgstr "𐑥𐑵𐑝𐑦𐑙 𐑥𐑧𐑕𐑦𐑡𐑩𐑟"
+
+#: ../camel/camel-folder.c:1567
+msgid "Copying messages"
+msgstr "𐑒𐑪𐑐𐑦𐑦𐑙 𐑥𐑧𐑕𐑦𐑡𐑩𐑟"
+
+#: ../camel/camel-folder.c:1908
+msgid "Learning junk"
+msgstr "𐑤𐑻𐑯𐑦𐑙 𐑡𐑩𐑙𐑒"
+
+#: ../camel/camel-folder.c:1925
+msgid "Learning non-junk"
+msgstr "𐑤𐑻𐑯𐑦𐑙 𐑯𐑪𐑯-𐑡𐑩𐑙𐑒"
+
+#: ../camel/camel-folder.c:1944
+msgid "Filtering new message(s)"
+msgstr "𐑓𐑦𐑤𐑑𐑼𐑦𐑙 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡(𐑧𐑟)"
+
+#: ../camel/camel-gpg-context.c:752
+#, c-format
+msgid ""
+"Unexpected GnuPG status message encountered:\n"
+"\n"
+"%s"
+msgstr ""
+"𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 GnuPG 𐑕𐑑𐑱𐑑𐑫𐑕 𐑥𐑧𐑕𐑦𐑡 𐑦𐑯𐑒𐑶𐑯𐑑𐑻𐑛:\n"
+"\n"
+"%s"
+
+#: ../camel/camel-gpg-context.c:825
+#, c-format
+msgid ""
+"You need a PIN to unlock the key for your\n"
+"SmartCard: \"%s\""
+msgstr ""
+"𐑿 𐑯𐑰𐑛 𐑩 PIN 𐑑 𐑩𐑯𐑤𐑭𐑒 𐑞 𐑒𐑰 𐑓𐑹 𐑿𐑼\n"
+"𐑕𐑥𐑭𐑮𐑑𐑒𐑭𐑮𐑛: \"%s\""
+
+#: ../camel/camel-gpg-context.c:834
+#, c-format
+msgid "Unexpected request from GnuPG for '%s'"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑮𐑦𐑒𐑢𐑧𐑕𐑑 𐑓𐑮𐑪𐑥 GnuPG 𐑓𐑹 '%s'"
+
+#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:1068
+#: ../camel/providers/nntp/camel-nntp-store.c:1313
+msgid "Canceled."
+msgstr "𐑒𐑨𐑯𐑕𐑩𐑤𐑛."
+
+#: ../camel/camel-gpg-context.c:881
+#, c-format
+msgid "Unexpected response from GnuPG: %s"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 GnuPG: %s"
+
+#: ../camel/camel-gpg-context.c:944
+msgid "Failed to encrypt: No valid recipients specified."
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑦𐑯𐑒𐑮𐑦𐑐𐑑: 𐑯𐑴 𐑝𐑨𐑤𐑦𐑛 𐑮𐑦𐑕𐑦𐑐𐑰𐑩𐑯𐑑𐑕 𐑕𐑐𐑧𐑕𐑦𐑓𐑲𐑛."
+
+#: ../camel/camel-gpg-context.c:1307 ../camel/camel-smime-context.c:605
+#, c-format
+msgid "Could not generate signing data: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑡𐑧𐑯𐑼𐑱𐑑 𐑕𐑲𐑯𐑦𐑙 𐑛𐑱𐑑𐑩: %s"
+
+#: ../camel/camel-gpg-context.c:1373
+msgid "This is a digitally signed message part"
+msgstr "𐑞𐑦𐑕 𐑦𐑟 𐑩 𐑛𐑦𐑡𐑩𐑑𐑩𐑤𐑰 𐑕𐑲𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑐𐑸𐑑"
+
+#: ../camel/camel-gpg-context.c:1459 ../camel/camel-gpg-context.c:1465
+#: ../camel/camel-gpg-context.c:1471 ../camel/camel-gpg-context.c:1486
+#: ../camel/camel-smime-context.c:929 ../camel/camel-smime-context.c:940
+#: ../camel/camel-smime-context.c:947
+msgid "Cannot verify message signature: Incorrect message format"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑝𐑧𐑮𐑦𐑓𐑲 𐑥𐑧𐑕𐑦𐑡 𐑕𐑦𐑜𐑯𐑩𐑗𐑼: 𐑦𐑯𐑒𐑼𐑧𐑒𐑑 𐑥𐑧𐑕𐑦𐑡 𐑓𐑹𐑥𐑨𐑑"
+
+#: ../camel/camel-gpg-context.c:1525
+#, c-format
+msgid "Cannot verify message signature: could not create temp file: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑝𐑧𐑮𐑦𐑓𐑲 𐑥𐑧𐑕𐑦𐑡 𐑕𐑦𐑜𐑯𐑩𐑗𐑼: 𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑑𐑧𐑥𐑐 𐑓𐑲𐑤: %s"
+
+#: ../camel/camel-gpg-context.c:1634
+#, c-format
+msgid "Could not generate encrypting data: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑡𐑧𐑯𐑼𐑱𐑑 𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑦𐑙 𐑛𐑱𐑑𐑩: %s"
+
+#: ../camel/camel-gpg-context.c:1684
+msgid "This is a digitally encrypted message part"
+msgstr "𐑞𐑦𐑕 𐑦𐑟 𐑩 𐑛𐑦𐑡𐑩𐑑𐑩𐑤𐑰 𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑩𐑛 𐑥𐑧𐑕𐑦𐑡 𐑐𐑸𐑑"
+
+#: ../camel/camel-gpg-context.c:1737 ../camel/camel-gpg-context.c:1745
+#: ../camel/camel-gpg-context.c:1764
+msgid "Cannot decrypt message: Incorrect message format"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑒𐑮𐑦𐑐𐑑 𐑥𐑧𐑕𐑦𐑡: 𐑦𐑯𐑒𐑼𐑧𐑒𐑑 𐑥𐑧𐑕𐑦𐑡 𐑓𐑹𐑥𐑨𐑑"
+
+#: ../camel/camel-gpg-context.c:1754
+msgid "Failed to decrypt MIME part: protocol error"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑛𐑦𐑒𐑮𐑦𐑐𐑑 MIME 𐑐𐑸𐑑: 𐑐𐑮𐑴𐑑𐑩𐑒𐑪𐑤 𐑻𐑼"
+
+#: ../camel/camel-gpg-context.c:1832 ../camel/camel-smime-context.c:1205
+msgid "Encrypted content"
+msgstr "𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑩𐑛 𐑒𐑪𐑯𐑑𐑧𐑯𐑑"
+
+#: ../camel/camel-gpg-context.c:1851
+msgid "Unable to parse message content"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑐𐑸𐑕 𐑥𐑧𐑕𐑦𐑡 𐑒𐑪𐑯𐑑𐑧𐑯𐑑"
+
+#: ../camel/camel-gpg-context.c:1875 ../camel/camel-gpg-context.c:1920
+#: ../camel/providers/imap4/camel-imap4-utils.c:614
+#: ../camel/providers/smtp/camel-smtp-transport.c:165
+#: ../camel/providers/smtp/camel-smtp-transport.c:220
+msgid "Unknown"
+msgstr "𐑳𐑯𐑴𐑯"
+
+#: ../camel/camel-lock-client.c:104
+#, c-format
+msgid "Cannot build locking helper pipe: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑚𐑦𐑤𐑛 𐑤𐑪𐑒𐑦𐑙 𐑣𐑧𐑤𐑐𐑼 𐑐𐑲𐑐: %s"
+
+#: ../camel/camel-lock-client.c:126
+#, c-format
+msgid "Cannot fork locking helper: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑓𐑹𐑒 𐑤𐑪𐑒𐑦𐑙 𐑣𐑧𐑤𐑐𐑼: %s"
+
+#: ../camel/camel-lock-client.c:203 ../camel/camel-lock-client.c:226
+#, c-format
+msgid "Could not lock '%s': protocol error with lock-helper"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑤𐑪𐑒 '%s': 𐑐𐑮𐑴𐑑𐑩𐑒𐑪𐑤 𐑻𐑼 𐑢𐑦𐑞 𐑤𐑪𐑒-𐑣𐑧𐑤𐑐𐑼"
+
+#: ../camel/camel-lock-client.c:216
+#, c-format
+msgid "Could not lock '%s'"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑤𐑪𐑒 '%s'"
+
+#: ../camel/camel-lock.c:103
+#, c-format
+msgid "Could not create lock file for %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑤𐑪𐑒 𐑓𐑲𐑤 𐑓𐑹 %s: %s"
+
+#: ../camel/camel-lock.c:144
+#, c-format
+msgid "Timed out trying to get lock file on %s. Try again later."
+msgstr "𐑑𐑲𐑥𐑛 𐑬𐑑 𐑑𐑮𐑲𐑦𐑙 𐑑 𐑜𐑧𐑑 𐑤𐑪𐑒 𐑓𐑲𐑤 𐑪𐑯 %s. 𐑑𐑮𐑲 𐑩𐑜𐑱𐑯 𐑤𐑱𐑑𐑼."
+
+#: ../camel/camel-lock.c:262
+#, c-format
+msgid "Failed to get lock using flock(2): %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑜𐑧𐑑 𐑤𐑪𐑒 𐑿𐑟𐑦𐑙 flock(2): %s"
+
+#: ../camel/camel-movemail.c:106
+#, c-format
+msgid "Could not check mail file %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑗𐑧𐑒 𐑥𐑱𐑤 𐑓𐑲𐑤 %s: %s"
+
+#: ../camel/camel-movemail.c:119
+#, c-format
+msgid "Could not open mail file %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑥𐑱𐑤 𐑓𐑲𐑤 %s: %s"
+
+#: ../camel/camel-movemail.c:127
+#, c-format
+msgid "Could not open temporary mail file %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑥𐑱𐑤 𐑓𐑲𐑤 %s: %s"
+
+#: ../camel/camel-movemail.c:156
+#, c-format
+msgid "Failed to store mail in temp file %s: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑕𐑑𐑹 𐑥𐑱𐑤 𐑦𐑯 𐑑𐑧𐑥𐑐 𐑓𐑲𐑤 %s: %s"
+
+#: ../camel/camel-movemail.c:186
+#, c-format
+msgid "Could not create pipe: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑐𐑲𐑐: %s"
+
+#: ../camel/camel-movemail.c:198
+#, c-format
+msgid "Could not fork: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑓𐑹𐑒: %s"
+
+#: ../camel/camel-movemail.c:237
+msgid "(Unknown error)"
+msgstr "(𐑳𐑯𐑴𐑯 𐑻𐑼)"
+
+#: ../camel/camel-movemail.c:260
+#, c-format
+msgid "Error reading mail file: %s"
+msgstr "𐑻𐑼 𐑮𐑰𐑛𐑦𐑙 𐑥𐑱𐑤 𐑓𐑲𐑤: %s"
+
+#: ../camel/camel-movemail.c:271
+#, c-format
+msgid "Error writing mail temp file: %s"
+msgstr "𐑻𐑼 𐑮𐑲𐑑𐑦𐑙 𐑥𐑱𐑤 𐑑𐑧𐑥𐑐 𐑓𐑲𐑤: %s"
+
+#: ../camel/camel-movemail.c:464 ../camel/camel-movemail.c:531
+#, c-format
+msgid "Error copying mail temp file: %s"
+msgstr "𐑻𐑼 𐑒𐑪𐑐𐑦𐑦𐑙 𐑥𐑱𐑤 𐑑𐑧𐑥𐑐 𐑓𐑲𐑤: %s"
+
+#: ../camel/camel-multipart-signed.c:592
+msgid "parse error"
+msgstr "𐑐𐑸𐑕 𐑻𐑼"
+
+#: ../camel/camel-net-utils.c:503 ../camel/camel-net-utils.c:674
+#: ../camel/camel-net-utils.c:806
+#: ../camel/providers/pop3/camel-pop3-store.c:446
+#: ../camel/providers/pop3/camel-pop3-store.c:546
+msgid "Canceled"
+msgstr "𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/camel-net-utils.c:522
+msgid "cannot create thread"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑔𐑮𐑧𐑛"
+
+#: ../camel/camel-net-utils.c:678
+#, c-format
+msgid "Resolving: %s"
+msgstr "𐑮𐑦𐑟𐑪𐑤𐑝𐑦𐑙: %s"
+
+#: ../camel/camel-net-utils.c:700
+msgid "Host lookup failed"
+msgstr "𐑣𐑴𐑕𐑑 𐑤𐑫𐑒𐑩𐑐 𐑓𐑱𐑤𐑛"
+
+#: ../camel/camel-net-utils.c:702
+#, c-format
+msgid "Host lookup failed: %s: %s"
+msgstr "𐑣𐑴𐑕𐑑 𐑤𐑫𐑒𐑩𐑐 𐑓𐑱𐑤𐑛: %s: %s"
+
+#: ../camel/camel-net-utils.c:810
+msgid "Resolving address"
+msgstr "𐑮𐑦𐑟𐑪𐑤𐑝𐑦𐑙 𐑩𐑛𐑮𐑧𐑕"
+
+#: ../camel/camel-net-utils.c:830
+msgid "Name lookup failed"
+msgstr "𐑯𐑱𐑥 𐑤𐑫𐑒𐑩𐑐 𐑓𐑱𐑤𐑛"
+
+#: ../camel/camel-net-utils.c:833
+#, c-format
+msgid "Name lookup failed: %s"
+msgstr "𐑯𐑱𐑥 𐑤𐑫𐑒𐑩𐑐 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/camel-offline-journal.c:159 ../camel/camel-offline-journal.c:182
+#, c-format
+msgid "Cannot write offline journal for folder '%s': %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑲𐑑 𐑪𐑓𐑤𐑲𐑯 𐑡𐑻𐑯𐑩𐑤 𐑓𐑹 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/camel-provider.c:60
+msgid "Virtual folder email provider"
+msgstr "𐑝𐑻𐑗𐑫𐑩𐑤 𐑓𐑴𐑤𐑛𐑼 𐑰𐑥𐑱𐑤 𐑐𐑮𐑩𐑝𐑲𐑛𐑻"
+
+#: ../camel/camel-provider.c:62
+msgid "For reading mail as a query of another set of folders"
+msgstr "𐑓𐑹 𐑮𐑰𐑛𐑦𐑙 𐑥𐑱𐑤 𐑨𐑟 𐑩 𐑒𐑢𐑽𐑦 𐑝 𐑩𐑯𐑳𐑞𐑼 𐑕𐑧𐑑 𐑝 𐑓𐑴𐑤𐑛𐑼𐑟"
+
+#: ../camel/camel-provider.c:184
+#, c-format
+msgid "Could not load %s: Module loading not supported on this system."
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑤𐑴𐑛 %s: 𐑥𐑪𐑛𐑿𐑤 𐑤𐑴𐑛𐑦𐑙 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑪𐑯 𐑞𐑦𐑕 𐑕𐑦𐑕𐑑𐑩𐑥."
+
+#: ../camel/camel-provider.c:193
+#, c-format
+msgid "Could not load %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑤𐑴𐑛 %s: %s"
+
+#: ../camel/camel-provider.c:379 ../camel/camel-session.c:182
+#, c-format
+msgid "No provider available for protocol '%s'"
+msgstr "𐑯𐑴 𐑐𐑮𐑩𐑝𐑲𐑛𐑻 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑓𐑹 𐑐𐑮𐑴𐑑𐑩𐑒𐑪𐑤 '%s'"
+
+#: ../camel/camel-sasl-anonymous.c:36
+msgid "Anonymous"
+msgstr "𐑩𐑯𐑪𐑯𐑦𐑥𐑩𐑕"
+
+#: ../camel/camel-sasl-anonymous.c:38
+msgid "This option will connect to the server using an anonymous login."
+msgstr "𐑞𐑦𐑕 𐑪𐑐𐑖𐑩𐑯 𐑢𐑦𐑤 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 𐑞 𐑕𐑻𐑝𐑼 𐑿𐑟𐑦𐑙 𐑩𐑯 𐑩𐑯𐑪𐑯𐑦𐑥𐑩𐑕 𐑤𐑪𐑜𐑦𐑯."
+
+#: ../camel/camel-sasl-anonymous.c:121 ../camel/camel-sasl-plain.c:91
+msgid "Authentication failed."
+msgstr "𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑓𐑱𐑤𐑛."
+
+#: ../camel/camel-sasl-anonymous.c:130
+#, c-format
+msgid ""
+"Invalid email address trace information:\n"
+"%s"
+msgstr ""
+"𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑰𐑥𐑱𐑤 𐑩𐑛𐑮𐑧𐑕 𐑑𐑮𐑱𐑕 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯:\n"
+"%s"
+
+#: ../camel/camel-sasl-anonymous.c:142
+#, c-format
+msgid ""
+"Invalid opaque trace information:\n"
+"%s"
+msgstr ""
+"𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑴𐑐𐑱𐑒 𐑑𐑮𐑱𐑕 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯:\n"
+"%s"
+
+#: ../camel/camel-sasl-anonymous.c:154
+#, c-format
+msgid ""
+"Invalid trace information:\n"
+"%s"
+msgstr ""
+"𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑑𐑮𐑱𐑕 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯:\n"
+"%s"
+
+#: ../camel/camel-sasl-cram-md5.c:38
+msgid "CRAM-MD5"
+msgstr "CRAM-MD5"
+
+#: ../camel/camel-sasl-cram-md5.c:40
+msgid ""
+"This option will connect to the server using a secure CRAM-MD5 password, if "
+"the server supports it."
+msgstr ""
+"𐑞𐑦𐑕 𐑪𐑐𐑖𐑩𐑯 𐑢𐑦𐑤 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 𐑞 𐑕𐑻𐑝𐑼 𐑿𐑟𐑦𐑙 𐑩 𐑕𐑦𐑒𐑘𐑫𐑼 CRAM-MD5 𐑐𐑭𐑕𐑢𐑼𐑛, 𐑦𐑓 𐑞 𐑕𐑻𐑝𐑼 "
+"𐑕𐑩𐑐𐑹𐑑𐑕 𐑦𐑑."
+
+#: ../camel/camel-sasl-digest-md5.c:48
+msgid "DIGEST-MD5"
+msgstr "𐑛𐑲𐑡𐑧𐑕𐑑-MD5"
+
+#: ../camel/camel-sasl-digest-md5.c:50
+msgid ""
+"This option will connect to the server using a secure DIGEST-MD5 password, "
+"if the server supports it."
+msgstr ""
+"𐑞𐑦𐑕 𐑪𐑐𐑖𐑩𐑯 𐑢𐑦𐑤 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 𐑞 𐑕𐑻𐑝𐑼 𐑿𐑟𐑦𐑙 𐑩 𐑕𐑦𐑒𐑘𐑫𐑼 DIGEST-MD5 𐑐𐑭𐑕𐑢𐑼𐑛, 𐑦𐑓 𐑞 𐑕𐑻𐑝𐑼 "
+"𐑕𐑩𐑐𐑹𐑑𐑕 𐑦𐑑."
+
+#: ../camel/camel-sasl-digest-md5.c:853
+msgid "Server challenge invalid\n"
+msgstr "𐑕𐑻𐑝𐑼 𐑗𐑨𐑤𐑩𐑯𐑡 𐑦𐑯𐑝𐑨𐑤𐑦𐑛\n"
+
+#: ../camel/camel-sasl-digest-md5.c:859
+msgid "Server challenge contained invalid \"Quality of Protection\" token"
+msgstr "𐑕𐑻𐑝𐑼 𐑗𐑨𐑤𐑩𐑯𐑡 𐑒𐑩𐑯𐑑𐑱𐑯𐑛 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 \"𐑒𐑢𐑪𐑤𐑦𐑑𐑰 𐑝 𐑐𐑮𐑩𐑑𐑧𐑒𐑖𐑩𐑯\" 𐑑𐑴𐑒𐑩𐑯"
+
+#: ../camel/camel-sasl-digest-md5.c:889
+msgid "Server response did not contain authorization data"
+msgstr "𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑛𐑦𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑑𐑱𐑯 𐑷𐑔𐑼𐑦𐑟𐑱𐑖𐑩𐑯 𐑛𐑱𐑑𐑩"
+
+#: ../camel/camel-sasl-digest-md5.c:907
+msgid "Server response contained incomplete authorization data"
+msgstr "𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑒𐑩𐑯𐑑𐑱𐑯𐑛 𐑦𐑯𐑒𐑩𐑥𐑐𐑤𐑰𐑑 𐑷𐑔𐑼𐑦𐑟𐑱𐑖𐑩𐑯 𐑛𐑱𐑑𐑩"
+
+#: ../camel/camel-sasl-digest-md5.c:917
+msgid "Server response does not match"
+msgstr "𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑥𐑨𐑗"
+
+#: ../camel/camel-sasl-gssapi.c:159
+msgid ""
+"The specified mechanism is not supported by the provided credential, or is "
+"unrecognized by the implementation."
+msgstr ""
+"𐑞 𐑕𐑐𐑧𐑕𐑦𐑓𐑲𐑛 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥 𐑦𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑚𐑲 𐑞 𐑐𐑮𐑩𐑝𐑲𐑛𐑩𐑛 𐑒𐑮𐑦𐑛𐑧𐑯𐑗𐑩𐑤, 𐑹 𐑦𐑟 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛 "
+"𐑚𐑲 𐑞 𐑦𐑥𐑐𐑤𐑩𐑥𐑧𐑯𐑑𐑱𐑖𐑩𐑯."
+
+#: ../camel/camel-sasl-gssapi.c:164
+msgid "The provided target_name parameter was ill-formed."
+msgstr "𐑞 𐑐𐑮𐑩𐑝𐑲𐑛𐑩𐑛 target_name 𐑐𐑼𐑨𐑥𐑩𐑑𐑼 𐑢𐑪𐑟 𐑦𐑤-𐑓𐑹𐑥𐑛."
+
+#: ../camel/camel-sasl-gssapi.c:167
+msgid ""
+"The provided target_name parameter contained an invalid or unsupported type "
+"of name."
+msgstr ""
+"𐑞 𐑐𐑮𐑩𐑝𐑲𐑛𐑩𐑛 target_name 𐑐𐑼𐑨𐑥𐑩𐑑𐑼 𐑒𐑩𐑯𐑑𐑱𐑯𐑛 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑹 𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑑𐑲𐑐 𐑝 𐑯𐑱𐑥."
+
+#: ../camel/camel-sasl-gssapi.c:176
+msgid ""
+"The input_token contains an invalid signature, or a signature that could not "
+"be verified."
+msgstr ""
+"𐑞 input_token 𐑒𐑩𐑯𐑑𐑱𐑯𐑟 𐑩𐑯 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑕𐑦𐑜𐑯𐑩𐑗𐑼, 𐑹 𐑩 𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑞𐑨𐑑 𐑒𐑫𐑛 𐑯𐑪𐑑 𐑚𐑰 𐑝𐑧𐑮𐑦𐑓𐑲𐑛."
+
+#: ../camel/camel-sasl-gssapi.c:180
+msgid ""
+"The supplied credentials were not valid for context initiation, or the "
+"credential handle did not reference any credentials."
+msgstr ""
+"𐑞 𐑕𐑩𐑐𐑤𐑲𐑛 𐑒𐑮𐑩𐑛𐑧𐑯𐑖𐑩𐑤𐑟 𐑢𐑻 𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛 𐑓𐑹 𐑒𐑪𐑯𐑑𐑧𐑒𐑕𐑑 𐑦𐑯𐑦𐑖𐑰𐑱𐑖𐑩𐑯, 𐑹 𐑞 𐑒𐑮𐑦𐑛𐑧𐑯𐑗𐑩𐑤 𐑣𐑨𐑯𐑛𐑩𐑤 "
+"𐑛𐑦𐑛 𐑯𐑪𐑑 𐑮𐑧𐑓𐑼𐑩𐑯𐑕 𐑧𐑯𐑦 𐑒𐑮𐑩𐑛𐑧𐑯𐑖𐑩𐑤𐑟."
+
+#: ../camel/camel-sasl-gssapi.c:185
+msgid "The supplied context handle did not refer to a valid context."
+msgstr "𐑞 𐑕𐑩𐑐𐑤𐑲𐑛 𐑒𐑪𐑯𐑑𐑧𐑒𐑕𐑑 𐑣𐑨𐑯𐑛𐑩𐑤 𐑛𐑦𐑛 𐑯𐑪𐑑 𐑮𐑦𐑓𐑻 𐑑 𐑩 𐑝𐑨𐑤𐑦𐑛 𐑒𐑪𐑯𐑑𐑧𐑒𐑕𐑑."
+
+#: ../camel/camel-sasl-gssapi.c:188
+msgid "The consistency checks performed on the input_token failed."
+msgstr "𐑞 𐑒𐑩𐑯𐑕𐑦𐑕𐑑𐑩𐑯𐑕𐑰 𐑗𐑧𐑒𐑕 𐑐𐑼𐑓𐑹𐑥𐑛 𐑪𐑯 𐑞 input_token 𐑓𐑱𐑤𐑛."
+
+#: ../camel/camel-sasl-gssapi.c:191
+msgid "The consistency checks performed on the credential failed."
+msgstr "𐑞 𐑒𐑩𐑯𐑕𐑦𐑕𐑑𐑩𐑯𐑕𐑰 𐑗𐑧𐑒𐑕 𐑐𐑼𐑓𐑹𐑥𐑛 𐑪𐑯 𐑞 𐑒𐑮𐑦𐑛𐑧𐑯𐑗𐑩𐑤 𐑓𐑱𐑤𐑛."
+
+#: ../camel/camel-sasl-gssapi.c:194
+msgid "The referenced credentials have expired."
+msgstr "𐑞 𐑮𐑧𐑓𐑼𐑩𐑯𐑕𐑑 𐑒𐑮𐑩𐑛𐑧𐑯𐑖𐑩𐑤𐑟 𐑣𐑨𐑝 𐑦𐑒𐑕𐑐𐑲𐑮𐑛."
+
+#: ../camel/camel-sasl-gssapi.c:200 ../camel/camel-sasl-gssapi.c:248
+#: ../camel/camel-sasl-gssapi.c:284 ../camel/camel-sasl-gssapi.c:299
+#: ../camel/providers/imap/camel-imap-store.c:1272
+msgid "Bad authentication response from server."
+msgstr "𐑚𐑨𐑛 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 𐑕𐑻𐑝𐑼."
+
+#: ../camel/camel-sasl-gssapi.c:309
+msgid "Unsupported security layer."
+msgstr "𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑕𐑦𐑒𐑘𐑫𐑼𐑦𐑑𐑦 𐑤𐑱𐑼."
+
+#: ../camel/camel-sasl-login.c:36
+msgid "Login"
+msgstr "𐑤𐑪𐑜𐑦𐑯"
+
+#: ../camel/camel-sasl-login.c:38 ../camel/camel-sasl-plain.c:38
+msgid "This option will connect to the server using a simple password."
+msgstr "𐑞𐑦𐑕 𐑪𐑐𐑖𐑩𐑯 𐑢𐑦𐑤 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 𐑞 𐑕𐑻𐑝𐑼 𐑿𐑟𐑦𐑙 𐑩 𐑕𐑦𐑥𐑐𐑩𐑤 𐑐𐑭𐑕𐑢𐑼𐑛."
+
+#: ../camel/camel-sasl-login.c:134
+msgid "Unknown authentication state."
+msgstr "𐑳𐑯𐑴𐑯 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑕𐑑𐑱𐑑."
+
+#: ../camel/camel-sasl-plain.c:36
+msgid "PLAIN"
+msgstr "𐑐𐑤𐑱𐑯"
+
+#: ../camel/camel-sasl-popb4smtp.c:106
+msgid "POP Source URI"
+msgstr "POP 𐑕𐑹𐑕 URI"
+
+#: ../camel/camel-search-private.c:149
+#, c-format
+msgid "Regular expression compilation failed: %s: %s"
+msgstr "𐑮𐑧𐑜𐑘𐑫𐑤𐑼 𐑦𐑒𐑕𐑐𐑮𐑧𐑖𐑩𐑯 𐑒𐑭𐑥𐑐𐑩𐑤𐑱𐑖𐑩𐑯 𐑓𐑱𐑤𐑛: %s: %s"
+
+#: ../camel/camel-service.c:265
+#, c-format
+msgid "URL '%s' needs a username component"
+msgstr "URL '%s' 𐑯𐑰𐑛𐑟 𐑩 𐑿𐑟𐑼𐑯𐑱𐑥 𐑒𐑩𐑥𐑐𐑴𐑯𐑩𐑯𐑑"
+
+#: ../camel/camel-service.c:269
+#, c-format
+msgid "URL '%s' needs a host component"
+msgstr "URL '%s' 𐑯𐑰𐑛𐑟 𐑩 𐑣𐑴𐑕𐑑 𐑒𐑩𐑥𐑐𐑴𐑯𐑩𐑯𐑑"
+
+#: ../camel/camel-service.c:273
+#, c-format
+msgid "URL '%s' needs a path component"
+msgstr "URL '%s' 𐑯𐑰𐑛𐑟 𐑩 𐑐𐑭𐑔 𐑒𐑩𐑥𐑐𐑴𐑯𐑩𐑯𐑑"
+
+#: ../camel/camel-session.c:307
+#, c-format
+msgid ""
+"Could not create directory %s:\n"
+"%s"
+msgstr ""
+"𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦 %s:\n"
+"%s"
+
+#: ../camel/camel-session.c:479
+#, c-format
+msgid "Please enter the %s password for %s on host %s."
+msgstr "𐑐𐑤𐑰𐑟 𐑧𐑯𐑑𐑼 𐑞 %s 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 %s 𐑪𐑯 𐑣𐑴𐑕𐑑 %s."
+
+#: ../camel/camel-smime-context.c:447 ../camel/camel-smime-context.c:1012
+#, c-format
+msgid "Cannot find certificate for '%s'"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑓𐑲𐑯𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑓𐑹 '%s'"
+
+#: ../camel/camel-smime-context.c:483
+msgid "Cannot find certificate chain"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑓𐑲𐑯𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑗𐑱𐑯"
+
+#: ../camel/camel-smime-context.c:511 ../camel/camel-smime-context.c:523
+#, c-format
+msgid "Encryption certificate for '%s' does not exist"
+msgstr "𐑦𐑯𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑓𐑹 '%s' 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑"
+
+#: ../camel/camel-smime-context.c:540
+msgid "Cannot add encryption certificate"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑨𐑛 𐑦𐑯𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑"
+
+#: ../camel/camel-smime-context.c:616 ../camel/camel-smime-context.c:1084
+msgid "Cannot create encoder context"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑧𐑯𐑒𐑴𐑛𐑼 𐑒𐑪𐑯𐑑𐑧𐑒𐑕𐑑"
+
+#: ../camel/camel-smime-context.c:627 ../camel/camel-smime-context.c:1101
+msgid "Failed to encode data"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑧𐑯𐑒𐑴𐑛 𐑛𐑱𐑑𐑩"
+
+#: ../camel/camel-smime-context.c:700
+msgid "Unverified"
+msgstr "𐑩𐑯𐑝𐑧𐑮𐑦𐑓𐑲𐑛"
+
+#: ../camel/camel-smime-context.c:702
+msgid "Good signature"
+msgstr "𐑜𐑫𐑛 𐑕𐑦𐑜𐑯𐑩𐑗𐑼"
+
+#: ../camel/camel-smime-context.c:704
+msgid "Bad signature"
+msgstr "𐑚𐑨𐑛 𐑕𐑦𐑜𐑯𐑩𐑗𐑼"
+
+#: ../camel/camel-smime-context.c:706
+msgid "Content tampered with or altered in transit"
+msgstr "𐑒𐑪𐑯𐑑𐑧𐑯𐑑 𐑑𐑨𐑥𐑐𐑻𐑛 𐑢𐑦𐑞 𐑹 𐑷𐑤𐑑𐑼𐑛 𐑦𐑯 𐑑𐑮𐑨𐑯𐑟𐑦𐑑"
+
+#: ../camel/camel-smime-context.c:708
+msgid "Signing certificate not found"
+msgstr "𐑕𐑲𐑯𐑦𐑙 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑯𐑪𐑑 𐑓𐑬𐑯𐑛"
+
+#: ../camel/camel-smime-context.c:710
+msgid "Signing certificate not trusted"
+msgstr "𐑕𐑲𐑯𐑦𐑙 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑯𐑪𐑑 𐑑𐑮𐑳𐑕𐑑𐑩𐑛"
+
+#: ../camel/camel-smime-context.c:712
+msgid "Signature algorithm unknown"
+msgstr "𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑨𐑤𐑜𐑻𐑦𐑞𐑩𐑥 𐑳𐑯𐑴𐑯"
+
+#: ../camel/camel-smime-context.c:714
+msgid "Signature algorithm unsupported"
+msgstr "𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑨𐑤𐑜𐑻𐑦𐑞𐑩𐑥 𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛"
+
+#: ../camel/camel-smime-context.c:716
+msgid "Malformed signature"
+msgstr "𐑥𐑨𐑤𐑓𐑹𐑥𐑛 𐑕𐑦𐑜𐑯𐑩𐑗𐑼"
+
+#: ../camel/camel-smime-context.c:718
+msgid "Processing error"
+msgstr "𐑐𐑮𐑴𐑕𐑧𐑕𐑦𐑙 𐑻𐑼"
+
+#: ../camel/camel-smime-context.c:772
+msgid "No signed data in signature"
+msgstr "𐑯𐑴 𐑕𐑲𐑯𐑛 𐑛𐑱𐑑𐑩 𐑦𐑯 𐑕𐑦𐑜𐑯𐑩𐑗𐑼"
+
+#: ../camel/camel-smime-context.c:777
+msgid "Digests missing from enveloped data"
+msgstr "𐑛𐑩𐑡𐑧𐑕𐑑𐑕 𐑥𐑦𐑕𐑦𐑙 𐑓𐑮𐑪𐑥 𐑧𐑯𐑝𐑧𐑤𐑩𐑐𐑑 𐑛𐑱𐑑𐑩"
+
+#: ../camel/camel-smime-context.c:790 ../camel/camel-smime-context.c:800
+msgid "Cannot calculate digests"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑨𐑤𐑒𐑿𐑤𐑱𐑑 𐑛𐑩𐑡𐑧𐑕𐑑𐑕"
+
+#: ../camel/camel-smime-context.c:807 ../camel/camel-smime-context.c:811
+msgid "Cannot set message digests"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑧𐑑 𐑥𐑧𐑕𐑦𐑡 𐑛𐑩𐑡𐑧𐑕𐑑𐑕"
+
+#: ../camel/camel-smime-context.c:821 ../camel/camel-smime-context.c:826
+msgid "Certificate import failed"
+msgstr "𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑦𐑥𐑐𐑹𐑑 𐑓𐑱𐑤𐑛"
+
+#: ../camel/camel-smime-context.c:836
+#, c-format
+msgid "Certificate is the only message, cannot verify certificates"
+msgstr "𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑦𐑟 𐑞 𐑴𐑯𐑤𐑦 𐑥𐑧𐑕𐑦𐑡, 𐑒𐑨𐑯𐑪𐑑 𐑝𐑧𐑮𐑦𐑓𐑲 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑𐑕"
+
+#: ../camel/camel-smime-context.c:839
+#, c-format
+msgid "Certificate is the only message, certificates imported and verified"
+msgstr "𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑦𐑟 𐑞 𐑴𐑯𐑤𐑦 𐑥𐑧𐑕𐑦𐑡, 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑𐑕 𐑦𐑥𐑐𐑹𐑑𐑩𐑛 𐑯 𐑝𐑧𐑮𐑦𐑓𐑲𐑛"
+
+#: ../camel/camel-smime-context.c:843
+msgid "Cannot find signature digests"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑓𐑲𐑯𐑛 𐑕𐑦𐑜𐑯𐑩𐑗𐑼 𐑛𐑩𐑡𐑧𐑕𐑑𐑕"
+
+#: ../camel/camel-smime-context.c:859
+#, c-format
+msgid "Signer: %s <%s>: %s\n"
+msgstr "𐑕𐑲𐑯𐑼: %s <%s>: %s\n"
+
+#: ../camel/camel-smime-context.c:960 ../camel/camel-smime-context.c:1184
+msgid "Decoder failed"
+msgstr "𐑛𐑰𐑒𐑴𐑛𐑼 𐑓𐑱𐑤𐑛"
+
+#: ../camel/camel-smime-context.c:1019
+msgid "Cannot find common bulk encryption algorithm"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑓𐑲𐑯𐑛 𐑒𐑪𐑥𐑩𐑯 𐑚𐑩𐑤𐑒 𐑦𐑯𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑨𐑤𐑜𐑻𐑦𐑞𐑩𐑥"
+
+#: ../camel/camel-smime-context.c:1027
+msgid "Cannot allocate slot for encryption bulk key"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑨𐑤𐑴𐑒𐑱𐑑 𐑕𐑤𐑪𐑑 𐑓𐑹 𐑦𐑯𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑚𐑩𐑤𐑒 𐑒𐑰"
+
+#: ../camel/camel-smime-context.c:1095
+msgid "Failed to add data to encoder"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑨𐑛 𐑛𐑱𐑑𐑩 𐑑 𐑧𐑯𐑒𐑴𐑛𐑼"
+
+#: ../camel/camel-smime-context.c:1191
+msgid "S/MIME Decrypt: No encrypted content found"
+msgstr "S/MIME 𐑛𐑦𐑒𐑮𐑦𐑐𐑑: 𐑯𐑴 𐑦𐑯𐑒𐑮𐑦𐑐𐑑𐑩𐑛 𐑒𐑪𐑯𐑑𐑧𐑯𐑑 𐑓𐑬𐑯𐑛"
+
+#: ../camel/camel-store.c:283
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:171
+msgid "Cannot get folder: Invalid operation on this store"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼: 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑪𐑯 𐑞𐑦𐑕 𐑕𐑑𐑹"
+
+#: ../camel/camel-store.c:316
+#, c-format
+msgid "Cannot create folder '%s': folder exists"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑓𐑴𐑤𐑛𐑼 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../camel/camel-store.c:395
+msgid "Cannot create folder: Invalid operation on this store"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼: 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑪𐑯 𐑞𐑦𐑕 𐑕𐑑𐑹"
+
+#: ../camel/camel-store.c:423
+#, c-format
+msgid "Cannot create folder: %s: folder exists"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼: %s: 𐑓𐑴𐑤𐑛𐑼 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../camel/camel-store.c:487 ../camel/camel-vee-store.c:377
+#: ../camel/providers/local/camel-maildir-store.c:219
+#, c-format
+msgid "Cannot delete folder: %s: Invalid operation"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼: %s: 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯"
+
+#: ../camel/camel-store.c:544 ../camel/camel-vee-store.c:414
+#: ../camel/providers/local/camel-maildir-store.c:291
+#, c-format
+msgid "Cannot rename folder: %s: Invalid operation"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼: %s: 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑪𐑐𐑼𐑱𐑖𐑩𐑯"
+
+#. the name of the Trash folder, used for deleted messages
+#: ../camel/camel-store.c:900 ../camel/camel-vtrash-folder.c:54
+msgid "Trash"
+msgstr "𐑑𐑮𐑨𐑖"
+
+#. the name of the Junk folder, used for spam messages
+#: ../camel/camel-store.c:903 ../camel/camel-vtrash-folder.c:56
+msgid "Junk"
+msgstr "𐑡𐑩𐑙𐑒"
+
+#: ../camel/camel-tcp-stream-ssl.c:870
+#, c-format
+msgid ""
+"Issuer:            %s\n"
+"Subject:           %s\n"
+"Fingerprint:       %s\n"
+"Signature:         %s"
+msgstr ""
+"𐑦𐑖𐑵𐑼:            %s\n"
+"𐑕𐑩𐑚𐑡𐑧𐑒𐑑:           %s\n"
+"𐑓𐑦𐑙𐑜𐑼𐑐𐑮𐑦𐑯𐑑:       %s\n"
+"𐑕𐑦𐑜𐑯𐑩𐑗𐑼:         %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:876
+msgid "GOOD"
+msgstr "𐑜𐑫𐑛"
+
+#: ../camel/camel-tcp-stream-ssl.c:876
+msgid "BAD"
+msgstr "𐑚𐑨𐑛"
+
+#. construct our user prompt
+#: ../camel/camel-tcp-stream-ssl.c:880
+#, c-format
+msgid ""
+"SSL Certificate check for %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept?"
+msgstr ""
+"SSL 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑗𐑧𐑒 𐑓𐑹 %s:\n"
+"\n"
+"%s\n"
+"\n"
+"𐑛𐑵 𐑿 𐑢𐑦𐑖 𐑑 𐑨𐑒𐑕𐑧𐑐𐑑?"
+
+#: ../camel/camel-tcp-stream-ssl.c:924
+#, c-format
+msgid ""
+"Certificate problem: %s\n"
+"Issuer: %s"
+msgstr ""
+"𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑐𐑮𐑪𐑚𐑤𐑩𐑥: %s\n"
+"𐑦𐑖𐑵𐑼: %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:976
+#, c-format
+msgid ""
+"Bad certificate domain: %s\n"
+"Issuer: %s"
+msgstr ""
+"𐑚𐑨𐑛 𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑛𐑴𐑥𐑱𐑯: %s\n"
+"𐑦𐑖𐑵𐑼: %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:994
+#, c-format
+msgid ""
+"Certificate expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑦𐑒𐑕𐑐𐑲𐑮𐑛: %s\n"
+"𐑦𐑖𐑵𐑼: %s"
+
+#: ../camel/camel-tcp-stream-ssl.c:1011
+#, c-format
+msgid ""
+"Certificate revocation list expired: %s\n"
+"Issuer: %s"
+msgstr ""
+"𐑕𐑩𐑑𐑦𐑓𐑦𐑒𐑩𐑑 𐑮𐑧𐑝𐑩𐑒𐑱𐑖𐑩𐑯 𐑤𐑦𐑕𐑑 𐑦𐑒𐑕𐑐𐑲𐑮𐑛: %s\n"
+"𐑦𐑖𐑵𐑼: %s"
+
+#: ../camel/camel-url.c:313
+#, c-format
+msgid "Could not parse URL '%s'"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑐𐑸𐑕 URL '%s'"
+
+#: ../camel/camel-vee-folder.c:576
+#, c-format
+msgid "Error storing '%s': %s"
+msgstr "𐑻𐑼 𐑕𐑑𐑹𐑦𐑙 '%s': %s"
+
+#: ../camel/camel-vee-folder.c:653
+#, c-format
+msgid "No such message %s in %s"
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑥𐑧𐑕𐑦𐑡 %s 𐑦𐑯 %s"
+
+#: ../camel/camel-vee-folder.c:812 ../camel/camel-vee-folder.c:818
+msgid "Cannot copy or move messages into a Virtual Folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑪𐑐𐑦 𐑹 𐑥𐑵𐑝 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑦𐑯𐑑𐑫 𐑩 𐑝𐑻𐑗𐑫𐑩𐑤 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/camel-vee-store.c:113 ../camel/camel-vee-store.c:114
+#: ../camel/camel-vee-store.c:353
+msgid "Unmatched"
+msgstr "𐑩𐑯𐑥𐑨𐑗𐑑"
+
+#: ../camel/camel-vee-store.c:400
+#, c-format
+msgid "Cannot delete folder: %s: No such folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼: %s: 𐑯𐑴 𐑕𐑳𐑗 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/camel-vee-store.c:422
+#, c-format
+msgid "Cannot rename folder: %s: No such folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼: %s: 𐑯𐑴 𐑕𐑳𐑗 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/camel-vtrash-folder.c:55
+msgid "Cannot copy messages to the Trash folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑪𐑐𐑦 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑑 𐑞 𐑑𐑮𐑨𐑖 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/camel-vtrash-folder.c:57
+msgid "Cannot copy messages to the Junk folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑪𐑐𐑦 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑑 𐑞 𐑡𐑩𐑙𐑒 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
+#, c-format
+msgid ""
+"Cannot get message: %s\n"
+"  %s"
+msgstr ""
+"𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡: %s\n"
+"  %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
+#: ../camel/providers/local/camel-maildir-folder.c:264
+#: ../camel/providers/local/camel-maildir-folder.c:293
+#: ../camel/providers/local/camel-maildir-folder.c:401
+#: ../camel/providers/local/camel-mbox-folder.c:363
+#: ../camel/providers/local/camel-mbox-folder.c:414
+#: ../camel/providers/local/camel-mh-folder.c:226
+msgid "No such message"
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
+#: ../camel/providers/imap4/camel-imap4-folder.c:814
+#: ../camel/providers/nntp/camel-nntp-folder.c:175
+#: ../camel/providers/nntp/camel-nntp-folder.c:250
+#: ../camel/providers/nntp/camel-nntp-folder.c:410
+#: ../camel/providers/pop3/camel-pop3-folder.c:268
+#: ../camel/providers/pop3/camel-pop3-folder.c:578
+#: ../camel/providers/pop3/camel-pop3-folder.c:639
+#: ../camel/providers/pop3/camel-pop3-folder.c:657
+msgid "User canceled"
+msgstr "𐑿𐑟𐑼 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:155
+#: ../camel/providers/imap4/camel-imap4-folder.c:819
+#: ../camel/providers/nntp/camel-nntp-folder.c:166
+#: ../camel/providers/nntp/camel-nntp-folder.c:168
+#: ../camel/providers/nntp/camel-nntp-folder.c:177
+#: ../camel/providers/nntp/camel-nntp-folder.c:252
+#: ../camel/providers/pop3/camel-pop3-folder.c:388
+#: ../camel/providers/pop3/camel-pop3-folder.c:581
+#: ../camel/providers/pop3/camel-pop3-folder.c:642
+#: ../camel/providers/pop3/camel-pop3-folder.c:649
+#: ../camel/providers/pop3/camel-pop3-folder.c:660
+#, c-format
+msgid "Cannot get message %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡 %s: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2463
+#: ../camel/providers/imap4/camel-imap4-folder.c:837
+msgid "This message is not available in offline mode."
+msgstr "𐑞𐑦𐑕 𐑥𐑧𐑕𐑦𐑡 𐑦𐑟 𐑯𐑪𐑑 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛."
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:194
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:201
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1966
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2017
+msgid "Could not get message"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:939
+#: ../camel/providers/imap/camel-imap-folder.c:296
+#, c-format
+msgid "Could not load summary for %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑤𐑴𐑛 𐑕𐑳𐑥𐑼𐑦 𐑓𐑹 %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1012
+#, c-format
+msgid "Checking for deleted messages %s"
+msgstr "𐑗𐑧𐑒𐑦𐑙 𐑓𐑹 𐑛𐑦𐑤𐑰𐑑𐑩𐑛 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1287
+msgid "Trash Folder Full. Please Empty."
+msgstr "𐑑𐑮𐑨𐑖 𐑓𐑴𐑤𐑛𐑼 𐑓𐑫𐑤. 𐑐𐑤𐑰𐑟 𐑧𐑥𐑐𐑑𐑦."
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1521
+#: ../camel/providers/groupwise/camel-groupwise-store.c:633
+#: ../camel/providers/groupwise/camel-groupwise-store.c:763
+#: ../camel/providers/imap/camel-imap-folder.c:3423
+#: ../camel/providers/imap/camel-imap-folder.c:3499
+#, c-format
+msgid "Fetching summary information for new messages in %s"
+msgstr "𐑓𐑧𐑗𐑦𐑙 𐑕𐑳𐑥𐑼𐑦 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯 𐑓𐑹 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑦𐑯 %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2317
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2360
+#, c-format
+msgid "Cannot append message to folder '%s': %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2348
+#, c-format
+msgid "Cannot create message: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑥𐑧𐑕𐑦𐑡: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:281
+#, c-format
+msgid "Cannot get folder container %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼 𐑒𐑩𐑯𐑑𐑱𐑯𐑼 %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:343
+#: ../camel/providers/imap4/camel-imap4-journal.c:311
+msgid "Cannot append message in offline mode: cache unavailable"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛: 𐑒𐑨𐑖 𐑩𐑯𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/providers/groupwise/camel-groupwise-journal.c:359
+#: ../camel/providers/imap4/camel-imap4-journal.c:327
+#, c-format
+msgid "Cannot append message in offline mode: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛: %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:54
+#: ../camel/providers/imap4/camel-imap4-provider.c:38
+msgid "Checking for new mail"
+msgstr "𐑗𐑧𐑒𐑦𐑙 𐑓𐑹 𐑯𐑿 𐑥𐑱𐑤"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:59
+#: ../camel/providers/imap/camel-imap-provider.c:68
+#: ../camel/providers/imap4/camel-imap4-provider.c:51
+#: ../camel/providers/local/camel-local-provider.c:46
+#: ../camel/providers/local/camel-local-provider.c:86
+#: ../camel/providers/local/camel-local-provider.c:106
+msgid "Options"
+msgstr "𐑪𐑐𐑖𐑩𐑯𐑟"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:72
+msgid "SOAP Settings"
+msgstr "𐑕𐑴𐑐 𐑕𐑧𐑑𐑦𐑙𐑟"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:75
+msgid "Post Office Agent SOAP _Port:"
+msgstr "𐑐𐑴𐑕𐑑 𐑪𐑓𐑦𐑕 𐑱𐑡𐑩𐑯𐑑 𐑕𐑴𐑐 _𐑐𐑹𐑑:"
+
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:104
+#: ../camel/providers/hula/camel-hula-provider.c:93
+#: ../camel/providers/imap/camel-imap-provider.c:100
+#: ../camel/providers/imap4/camel-imap4-provider.c:83
+#: ../camel/providers/imapx/camel-imapx-provider.c:66
+#: ../camel/providers/nntp/camel-nntp-provider.c:74
+#: ../camel/providers/pop3/camel-pop3-provider.c:74
+msgid "Password"
+msgstr "𐑐𐑭𐑕𐑢𐑼𐑛"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:102
+msgid "Host or user not available in url"
+msgstr "𐑣𐑴𐑕𐑑 𐑹 𐑿𐑟𐑼 𐑯𐑪𐑑 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑦𐑯 URL"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:204
+#: ../camel/providers/imap/camel-imap-store.c:1356
+msgid "You did not enter a password."
+msgstr "𐑿 𐑛𐑦𐑛 𐑯𐑪𐑑 𐑧𐑯𐑑𐑼 𐑩 𐑐𐑭𐑕𐑢𐑼𐑛."
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:319
+msgid "Some features may not work correctly with your current server version"
+msgstr "𐑕𐑳𐑥 𐑓𐑰𐑗𐑼𐑟 𐑥𐑱 𐑯𐑪𐑑 𐑢𐑻𐑒 𐑒𐑼𐑧𐑒𐑑𐑤𐑦 𐑢𐑦𐑞 𐑿𐑼 𐑒𐑳𐑮𐑩𐑯𐑑 𐑕𐑻𐑝𐑼 𐑝𐑻𐑠𐑩𐑯"
+
+#: ../camel/providers/groupwise/camel-groupwise-store.c:540
+#: ../camel/providers/imap/camel-imap-store.c:1879
+#: ../camel/providers/imap/camel-imap-store.c:2077
+#: ../camel/providers/imapx/camel-imapx-store.c:243
+#, c-format
+msgid "No such folder %s"
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑓𐑴𐑤𐑛𐑼 %s"
+
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:164
+msgid "Sending Message"
+msgstr "𐑕𐑧𐑯𐑛𐑦𐑙 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/providers/groupwise/camel-groupwise-transport.c:214
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:207
+#, c-format
+msgid "Could not send message: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡: %s"
+
+#: ../camel/providers/hula/camel-hula-provider.c:48
+#: ../camel/providers/imap/camel-imap-provider.c:44
+msgid "Checking for New Mail"
+msgstr "𐑗𐑧𐑒𐑦𐑙 𐑓𐑹 𐑯𐑿 𐑥𐑱𐑤"
+
+#: ../camel/providers/hula/camel-hula-provider.c:53
+#: ../camel/providers/imap/camel-imap-provider.c:52
+msgid "Connection to Server"
+msgstr "𐑒𐑩𐑯𐑧𐑒𐑖𐑩𐑯 𐑑 𐑕𐑻𐑝𐑼"
+
+#: ../camel/providers/hula/camel-hula-provider.c:55
+#: ../camel/providers/imap/camel-imap-provider.c:54
+msgid "_Use custom command to connect to server"
+msgstr "_𐑿𐑟 𐑒𐑳𐑕𐑑𐑩𐑥 𐑒𐑩𐑥𐑭𐑯𐑛 𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 𐑕𐑻𐑝𐑼"
+
+#: ../camel/providers/hula/camel-hula-provider.c:57
+#: ../camel/providers/imap/camel-imap-provider.c:56
+msgid "Command:"
+msgstr "𐑒𐑩𐑥𐑭𐑯𐑛:"
+
+#: ../camel/providers/hula/camel-hula-provider.c:60
+#: ../camel/providers/imap/camel-imap-provider.c:60
+#: ../camel/providers/imap4/camel-imap4-provider.c:43
+#: ../camel/providers/nntp/camel-nntp-provider.c:44
+msgid "Folders"
+msgstr "𐑓𐑴𐑤𐑛𐑼𐑟"
+
+#: ../camel/providers/hula/camel-hula-provider.c:62
+#: ../camel/providers/imap/camel-imap-provider.c:62
+#: ../camel/providers/imap4/camel-imap4-provider.c:45
+msgid "_Show only subscribed folders"
+msgstr "_𐑖𐑴 𐑴𐑯𐑤𐑦 𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚𐑛 𐑓𐑴𐑤𐑛𐑼𐑟"
+
+#: ../camel/providers/hula/camel-hula-provider.c:66
+msgid "Namespace"
+msgstr "𐑯𐑱𐑥𐑕𐑐𐑱𐑕"
+
+#: ../camel/providers/hula/camel-hula-provider.c:76
+msgid "Hula"
+msgstr "𐑣𐑵𐑤𐑩"
+
+#: ../camel/providers/hula/camel-hula-provider.c:78
+msgid "For accessing Hula servers"
+msgstr "𐑓𐑹 𐑨𐑒𐑕𐑧𐑕𐑦𐑙 𐑣𐑵𐑤𐑩 𐑕𐑻𐑝𐑼𐑟"
+
+#: ../camel/providers/imap/camel-imap-command.c:181
+#: ../camel/providers/imap/camel-imap-command.c:265
+msgid "No output stream"
+msgstr "𐑯𐑴 𐑬𐑑𐑐𐑫𐑑 𐑕𐑑𐑮𐑰𐑥"
+
+#: ../camel/providers/imap/camel-imap-command.c:186
+#: ../camel/providers/imap/camel-imap-command.c:270
+msgid "No input stream"
+msgstr "𐑯𐑴 𐑦𐑯𐑐𐑫𐑑 𐑕𐑑𐑮𐑰𐑥"
+
+#: ../camel/providers/imap/camel-imap-command.c:229
+#: ../camel/providers/imap/camel-imap-command.c:278
+#: ../camel/providers/imap/camel-imap-command.c:492
+#: ../camel/providers/imap/camel-imap-store.c:3088
+msgid "Operation cancelled"
+msgstr "𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/providers/imap/camel-imap-command.c:331
+#: ../camel/providers/imap/camel-imap-store.c:3093
+#, c-format
+msgid "Server unexpectedly disconnected: %s"
+msgstr "𐑕𐑻𐑝𐑼 𐑩𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑦𐑛𐑤𐑰 𐑛𐑦𐑕𐑒𐑩𐑯𐑧𐑒𐑑𐑩𐑛: %s"
+
+#. for imap ALERT codes, account user@host
+#. we might get a ']' from a BAD response since we +12, but who cares?
+#: ../camel/providers/imap/camel-imap-command.c:352
+#, c-format
+msgid ""
+"Alert from IMAP server %s@%s:\n"
+"%s"
+msgstr ""
+"𐑩𐑤𐑻𐑑 𐑓𐑮𐑪𐑥 IMAP 𐑕𐑻𐑝𐑼 %s@%s:\n"
+"%s"
+
+#: ../camel/providers/imap/camel-imap-command.c:421
+#, c-format
+msgid "Unexpected response from IMAP server: %s"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 IMAP 𐑕𐑻𐑝𐑼: %s"
+
+#: ../camel/providers/imap/camel-imap-command.c:431
+#, c-format
+msgid "IMAP command failed: %s"
+msgstr "IMAP 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/providers/imap/camel-imap-command.c:506
+msgid "Server response ended too soon."
+msgstr "𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑧𐑯𐑛𐑩𐑛 𐑑𐑵 𐑕𐑵𐑯."
+
+#: ../camel/providers/imap/camel-imap-command.c:712
+#, c-format
+msgid "IMAP server response did not contain %s information"
+msgstr "IMAP 𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑛𐑦𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑑𐑱𐑯 %s 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯"
+
+#: ../camel/providers/imap/camel-imap-command.c:748
+#, c-format
+msgid "Unexpected OK response from IMAP server: %s"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 OK 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 IMAP 𐑕𐑻𐑝𐑼: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:91
+msgid "Always check for new mail in this folder"
+msgstr "𐑷𐑤𐑢𐑱𐑟 𐑗𐑧𐑒 𐑓𐑹 𐑯𐑿 𐑥𐑱𐑤 𐑦𐑯 𐑞𐑦𐑕 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/providers/imap/camel-imap-folder.c:277
+#, c-format
+msgid "Could not create directory %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦 %s: %s"
+
+#. Check UIDs and flags of all messages we already know of.
+#: ../camel/providers/imap/camel-imap-folder.c:919
+#, c-format
+msgid "Scanning for changed messages in %s"
+msgstr "𐑕𐑒𐑨𐑯𐑦𐑙 𐑓𐑹 𐑗𐑱𐑯𐑡𐑛 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑦𐑯 %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:1987
+#, c-format
+msgid "Unexpected response status '%s' after APPEND command"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑕𐑑𐑱𐑑𐑫𐑕 '%s' 𐑭𐑓𐑑𐑼 𐑩𐑐𐑧𐑯𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2002
+msgid "No response on continuation after APPEND command"
+msgstr "𐑯𐑴 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑪𐑯 𐑒𐑩𐑯𐑑𐑦𐑯𐑘𐑵𐑱𐑖𐑩𐑯 𐑭𐑓𐑑𐑼 𐑩𐑐𐑧𐑯𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2047
+msgid "Unknown error occurred during APPEND command!"
+msgstr "𐑳𐑯𐑴𐑯 𐑻𐑼 𐑪𐑒𐑻𐑛 𐑛𐑘𐑫𐑼𐑦𐑙 𐑩𐑐𐑧𐑯𐑛 𐑒𐑩𐑥𐑭𐑯𐑛!"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2878
+#, c-format
+msgid "Unable to retrieve message: %s"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑮𐑦𐑑𐑮𐑰𐑝 𐑥𐑧𐑕𐑦𐑡: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2913
+#, c-format
+msgid "Cannot get message with message ID %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡 𐑢𐑦𐑞 𐑥𐑧𐑕𐑦𐑡 ID %s: %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:2914
+msgid "No such message available."
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑥𐑧𐑕𐑦𐑡 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤."
+
+#: ../camel/providers/imap/camel-imap-folder.c:2975
+#: ../camel/providers/imap/camel-imap-folder.c:3810
+#: ../camel/providers/nntp/camel-nntp-folder.c:238
+msgid "This message is not currently available"
+msgstr "𐑞𐑦𐑕 𐑥𐑧𐑕𐑦𐑡 𐑦𐑟 𐑯𐑪𐑑 𐑒𐑳𐑮𐑩𐑯𐑑𐑤𐑦 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/providers/imap/camel-imap-folder.c:3626
+#, c-format
+msgid "Incomplete server response: no information provided for message %d"
+msgstr "𐑦𐑯𐑒𐑩𐑥𐑐𐑤𐑰𐑑 𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕: 𐑯𐑴 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯 𐑐𐑮𐑩𐑝𐑲𐑛𐑩𐑛 𐑓𐑹 𐑥𐑧𐑕𐑦𐑡 %d"
+
+#: ../camel/providers/imap/camel-imap-folder.c:3848
+msgid "Could not find message body in FETCH response."
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑓𐑲𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑚𐑪𐑛𐑦 𐑦𐑯 𐑓𐑧𐑗 𐑮𐑦𐑕𐑐𐑪𐑯𐑕."
+
+#: ../camel/providers/imap/camel-imap-message-cache.c:181
+#: ../camel/providers/imap/camel-imap-message-cache.c:244
+#, c-format
+msgid "Could not open cache directory: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑒𐑨𐑖 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦: %s"
+
+#: ../camel/providers/imap/camel-imap-message-cache.c:330
+#: ../camel/providers/imap/camel-imap-message-cache.c:387
+#: ../camel/providers/imap/camel-imap-message-cache.c:418
+#: ../camel/providers/imap/camel-imap-message-cache.c:450
+#, c-format
+msgid "Failed to cache message %s: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑒𐑨𐑖 𐑥𐑧𐑕𐑦𐑡 %s: %s"
+
+#: ../camel/providers/imap/camel-imap-message-cache.c:530
+#, c-format
+msgid "Failed to cache %s: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑒𐑨𐑖 %s: %s"
+
+#: ../camel/providers/imap/camel-imap-provider.c:66
+#: ../camel/providers/imap4/camel-imap4-provider.c:49
+msgid "Namespace:"
+msgstr "𐑯𐑱𐑥𐑕𐑐𐑱𐑕:"
+
+#: ../camel/providers/imap/camel-imap-provider.c:83
+msgid "IMAP"
+msgstr "IMAP"
+
+#: ../camel/providers/imap/camel-imap-provider.c:85
+msgid "For reading and storing mail on IMAP servers."
+msgstr "𐑓𐑹 𐑮𐑰𐑛𐑦𐑙 𐑯 𐑕𐑑𐑹𐑦𐑙 𐑥𐑱𐑤 𐑪𐑯 IMAP 𐑕𐑻𐑝𐑼𐑟."
+
+#: ../camel/providers/imap/camel-imap-store.c:435
+#: ../camel/providers/imap4/camel-imap4-store.c:210
+#, c-format
+msgid "IMAP server %s"
+msgstr "IMAP 𐑕𐑻𐑝𐑼 %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:437
+#: ../camel/providers/imap4/camel-imap4-store.c:212
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "IMAP 𐑕𐑻𐑝𐑦𐑕 𐑓𐑹 %s 𐑪𐑯 %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:566
+#: ../camel/providers/imap/camel-imap-store.c:581
+#: ../camel/providers/imap4/camel-imap4-store.c:247
+#: ../camel/providers/imap4/camel-imap4-store.c:262
+#: ../camel/providers/nntp/camel-nntp-store.c:182
+#: ../camel/providers/nntp/camel-nntp-store.c:197
+#: ../camel/providers/pop3/camel-pop3-store.c:170
+#: ../camel/providers/pop3/camel-pop3-store.c:184
+#: ../camel/providers/smtp/camel-smtp-transport.c:259
+#: ../camel/providers/smtp/camel-smtp-transport.c:274
+#, c-format
+msgid "Could not connect to %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 %s: %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:567
+#: ../camel/providers/imap4/camel-imap4-store.c:248
+#: ../camel/providers/nntp/camel-nntp-store.c:183
+#: ../camel/providers/pop3/camel-pop3-store.c:171
+#: ../camel/providers/smtp/camel-smtp-transport.c:260
+msgid "SSL unavailable"
+msgstr "SSL 𐑩𐑯𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/providers/imap/camel-imap-store.c:578
+#: ../camel/providers/imap/camel-imap-store.c:860
+#: ../camel/providers/imapx/camel-imapx-server.c:1505
+msgid "Connection cancelled"
+msgstr "𐑒𐑩𐑯𐑧𐑒𐑖𐑩𐑯 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/providers/imap/camel-imap-store.c:689
+#: ../camel/providers/imap/camel-imap-store.c:708
+#: ../camel/providers/imap/camel-imap-store.c:714
+#: ../camel/providers/imap/camel-imap-store.c:740
+#: ../camel/providers/imap4/camel-imap4-store.c:310
+#: ../camel/providers/imap4/camel-imap4-store.c:325
+#: ../camel/providers/imap4/camel-imap4-store.c:334
+#, c-format
+msgid "Failed to connect to IMAP server %s in secure mode: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 IMAP 𐑕𐑻𐑝𐑼 %s 𐑦𐑯 𐑕𐑦𐑒𐑘𐑫𐑼 𐑥𐑴𐑛: %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:709
+msgid "SSL negotiations failed"
+msgstr "SSL 𐑯𐑩𐑜𐑴𐑖𐑰𐑱𐑖𐑩𐑯𐑟 𐑓𐑱𐑤𐑛"
+
+#: ../camel/providers/imap/camel-imap-store.c:715
+#: ../camel/providers/imap4/camel-imap4-store.c:335
+#: ../camel/providers/smtp/camel-smtp-transport.c:371
+msgid "SSL is not available in this build"
+msgstr "SSL 𐑦𐑟 𐑯𐑪𐑑 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑦𐑯 𐑞𐑦𐑕 𐑚𐑦𐑤𐑛"
+
+#: ../camel/providers/imap/camel-imap-store.c:863
+#, c-format
+msgid "Could not connect with command \"%s\": %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑢𐑦𐑞 𐑒𐑩𐑥𐑭𐑯𐑛 \"%s\": %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1303
+#, c-format
+msgid "IMAP server %s does not support requested authentication type %s"
+msgstr "IMAP 𐑕𐑻𐑝𐑼 %s 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑕𐑩𐑐𐑹𐑑 𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑑𐑲𐑐 %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1313
+#: ../camel/providers/smtp/camel-smtp-transport.c:506
+#, c-format
+msgid "No support for authentication type %s"
+msgstr "𐑯𐑴 𐑕𐑩𐑐𐑹𐑑 𐑓𐑹 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑑𐑲𐑐 %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:1387
+#, c-format
+msgid ""
+"Unable to authenticate to IMAP server.\n"
+"%s\n"
+"\n"
+msgstr ""
+"𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑 𐑑 IMAP 𐑕𐑻𐑝𐑼.\n"
+"%s\n"
+"\n"
+
+#: ../camel/providers/imap/camel-imap-store.c:1891
+#: ../camel/providers/imap/camel-imap-store.c:2272
+#: ../camel/providers/imap4/camel-imap4-store.c:954
+#, c-format
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr "𐑞 𐑓𐑴𐑤𐑛𐑼 𐑯𐑱𐑥 \"%s\" 𐑦𐑟 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑚𐑦𐑒𐑪𐑟 𐑦𐑑 𐑒𐑩𐑯𐑑𐑱𐑯𐑟 𐑞 𐑒𐑸𐑩𐑒𐑑𐑼 \"%c\""
+
+#: ../camel/providers/imap/camel-imap-store.c:2008
+#: ../camel/providers/local/camel-maildir-store.c:192
+#: ../camel/providers/local/camel-mbox-store.c:204
+#: ../camel/providers/local/camel-mh-store.c:249
+#, c-format
+msgid "Cannot create folder '%s': folder exists."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑓𐑴𐑤𐑛𐑼 𐑧𐑒𐑟𐑦𐑕𐑑𐑕."
+
+#: ../camel/providers/imap/camel-imap-store.c:2283
+#, c-format
+msgid "Unknown parent folder: %s"
+msgstr "𐑳𐑯𐑴𐑯 𐑐𐑺𐑩𐑯𐑑 𐑓𐑴𐑤𐑛𐑼: %s"
+
+#: ../camel/providers/imap/camel-imap-store.c:3090
+msgid "Server unexpectedly disconnected"
+msgstr "𐑕𐑻𐑝𐑼 𐑩𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑦𐑛𐑤𐑰 𐑛𐑦𐑕𐑒𐑩𐑯𐑧𐑒𐑑𐑩𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-command.c:572
+#: ../camel/providers/imap4/camel-imap4-command.c:579
+#, c-format
+msgid "Failed sending command to IMAP server %s: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑕𐑧𐑯𐑛𐑦𐑙 𐑒𐑩𐑥𐑭𐑯𐑛 𐑑 IMAP 𐑕𐑻𐑝𐑼 %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-command.c:681
+#, c-format
+msgid "Unexpected response from IMAP4 server %s: %s"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 IMAP4 𐑕𐑻𐑝𐑼 %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:215
+#, c-format
+msgid "Unexpected greeting from IMAP server %s."
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑜𐑮𐑰𐑑𐑦𐑙 𐑓𐑮𐑪𐑥 IMAP 𐑕𐑻𐑝𐑼 %s."
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:440
+#, c-format
+msgid "Cannot select folder '%s': Invalid mailbox name"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑩𐑤𐑧𐑒𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:446
+#, c-format
+msgid "Cannot select folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑩𐑤𐑧𐑒𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:1414
+#, c-format
+msgid "Failed to send command to IMAP server %s: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑕𐑧𐑯𐑛 𐑒𐑩𐑥𐑭𐑯𐑛 𐑑 IMAP 𐑕𐑻𐑝𐑼 %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:1416
+msgid "service unavailable"
+msgstr "𐑕𐑻𐑝𐑦𐑕 𐑩𐑯𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/providers/imap4/camel-imap4-engine.c:1546
+#: ../camel/providers/imap4/camel-imap4-engine.c:1584
+#: ../camel/providers/imap4/camel-imap4-engine.c:1628
+#: ../camel/providers/imap4/camel-imap4-engine.c:1683
+#, c-format
+msgid "IMAP4 server %s unexpectedly disconnected: %s"
+msgstr "IMAP4 𐑕𐑻𐑝𐑼 %s 𐑩𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑦𐑛𐑤𐑰 𐑛𐑦𐑕𐑒𐑩𐑯𐑧𐑒𐑑𐑩𐑛: %s"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:88
+msgid "Expire cached messages that haven't been read in X seconds"
+msgstr "𐑦𐑒𐑕𐑐𐑲𐑮 𐑒𐑨𐑖𐑑 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑞𐑨𐑑 𐑣𐑱𐑝𐑩𐑯'𐑑𐑰 𐑚𐑰𐑯 𐑮𐑧𐑛 𐑦𐑯 X 𐑕𐑧𐑒𐑩𐑯𐑛𐑟"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:89
+msgid "Expire cached messages older than X seconds"
+msgstr "𐑦𐑒𐑕𐑐𐑲𐑮 𐑒𐑨𐑖𐑑 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑴𐑤𐑛𐑼 𐑞𐑨𐑯 X 𐑕𐑧𐑒𐑩𐑯𐑛𐑟"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:427
+#, c-format
+msgid "Cannot access folder '%s': %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑨𐑒𐑕𐑧𐑕 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:484
+#, c-format
+msgid "Cannot sync flags to folder '%s': Unknown error"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑦𐑙𐑒 𐑓𐑤𐑨𐑜𐑟 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:490
+#, c-format
+msgid "Cannot sync flags to folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑦𐑙𐑒 𐑓𐑤𐑨𐑜𐑟 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:630
+#, c-format
+msgid "Cannot expunge folder '%s': Unknown error"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑒𐑕𐑐𐑩𐑯𐑡 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:635
+#, c-format
+msgid "Cannot expunge folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑦𐑒𐑕𐑐𐑩𐑯𐑡 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:891
+#, c-format
+msgid "Cannot get message %s from folder '%s': No such message"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡 %s 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑯𐑴 𐑕𐑳𐑗 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:896
+#, c-format
+msgid "Cannot get message %s from folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡 %s 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:940
+#, c-format
+msgid "Cannot append message to folder '%s': Folder is read-only"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑓𐑴𐑤𐑛𐑼 𐑦𐑟 𐑮𐑧𐑛-𐑴𐑯𐑤𐑦"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1033
+#, c-format
+msgid "Cannot append message to folder '%s': Unknown error"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1063
+#, c-format
+msgid "Cannot append message to folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1182
+#, c-format
+msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑥𐑵𐑝 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1186
+#, c-format
+msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑪𐑐𐑦 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1194
+#, c-format
+msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑥𐑵𐑝 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-folder.c:1198
+#, c-format
+msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑪𐑐𐑦 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:55
+msgid "Check new messages for _Junk contents"
+msgstr "𐑗𐑧𐑒 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑓𐑹 _𐑡𐑩𐑙𐑒 𐑒𐑪𐑯𐑑𐑩𐑯𐑑𐑕"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:66
+msgid "IMAP4rev1"
+msgstr "IMAP4rev1"
+
+#: ../camel/providers/imap4/camel-imap4-provider.c:68
+msgid "For reading and storing mail on IMAPv4rev1 servers."
+msgstr "𐑓𐑹 𐑮𐑰𐑛𐑦𐑙 𐑯 𐑕𐑑𐑹𐑦𐑙 𐑥𐑱𐑤 𐑪𐑯 IMAPv4rev1 𐑕𐑻𐑝𐑼𐑟."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:259
+#: ../camel/providers/nntp/camel-nntp-store.c:194
+#: ../camel/providers/nntp/camel-nntp-store.c:213
+#: ../camel/providers/pop3/camel-pop3-store.c:181
+#: ../camel/providers/smtp/camel-smtp-transport.c:271
+msgid "Connection canceled"
+msgstr "𐑒𐑩𐑯𐑧𐑒𐑖𐑩𐑯 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:411
+#, c-format
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑 𐑑 IMAP 𐑕𐑻𐑝𐑼 %s 𐑿𐑟𐑦𐑙 𐑞 %s 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:534
+#, c-format
+msgid "Cannot authenticate to IMAP server %s using %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑 𐑑 IMAP 𐑕𐑻𐑝𐑼 %s 𐑿𐑟𐑦𐑙 %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:697
+#: ../camel/providers/imap4/camel-imap4-store.c:964
+msgid "Cannot create IMAP folders in offline mode."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 IMAP 𐑓𐑴𐑤𐑛𐑼𐑟 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:736
+#, c-format
+msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑪𐑯 IMAP 𐑕𐑻𐑝𐑼 %s: 𐑳𐑯𐑴𐑯 𐑻𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:816
+#, c-format
+msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑤𐑦𐑕𐑑 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯 𐑓𐑹 '%s' 𐑪𐑯 IMAP 𐑕𐑻𐑝𐑼 %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:818
+#: ../camel/providers/imap4/camel-imap4-store.c:1574
+msgid "Bad command"
+msgstr "𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:897
+#, c-format
+msgid "Cannot create folder '%s': Invalid mailbox name"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:902
+#, c-format
+msgid "Cannot create folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1008
+#, c-format
+msgid "Cannot delete folder '%s': Special folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑕𐑐𐑧𐑖𐑩𐑤 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1015
+msgid "Cannot delete IMAP folders in offline mode."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 IMAP 𐑓𐑴𐑤𐑛𐑼𐑟 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1074
+#, c-format
+msgid "Cannot delete folder '%s': Invalid mailbox name"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1079
+#, c-format
+msgid "Cannot delete folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1099
+#, c-format
+msgid "Cannot rename folder '%s' to '%s': Special folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 '%s': 𐑕𐑐𐑧𐑖𐑩𐑤 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1106
+msgid "Cannot rename IMAP folders in offline mode."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 IMAP 𐑓𐑴𐑤𐑛𐑼𐑟 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1137
+#, c-format
+msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 '%s': 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1142
+#, c-format
+msgid "Cannot rename folder '%s' to '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼 '%s' 𐑑 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#. Translators: the first %s is an IMAP4 command, either LSUB or LIST.
+#. * The fourth one is an error message.
+#: ../camel/providers/imap4/camel-imap4-store.c:1572
+#, c-format
+msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 %s 𐑦𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯 𐑓𐑹 𐑐𐑨𐑑𐑼𐑯 '%s' 𐑪𐑯 IMAP 𐑕𐑻𐑝𐑼 %s: %s"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1633
+msgid "Cannot subscribe to IMAP folders in offline mode."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑑 IMAP 𐑓𐑴𐑤𐑛𐑼𐑟 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1678
+#, c-format
+msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1683
+#, c-format
+msgid "Cannot subscribe to folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1705
+msgid "Cannot unsubscribe from IMAP folders in offline mode."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑯𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑓𐑮𐑪𐑥 IMAP 𐑓𐑴𐑤𐑛𐑼𐑟 𐑦𐑯 𐑪𐑓𐑤𐑲𐑯 𐑥𐑴𐑛."
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1750
+#, c-format
+msgid "Cannot unsubscribe from folder '%s': Invalid mailbox name"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑯𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥"
+
+#: ../camel/providers/imap4/camel-imap4-store.c:1755
+#, c-format
+msgid "Cannot unsubscribe from folder '%s': Bad command"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑯𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑚𐑨𐑛 𐑒𐑩𐑥𐑭𐑯𐑛"
+
+#: ../camel/providers/imap4/camel-imap4-summary.c:1590
+msgid "Scanning for changed messages"
+msgstr "𐑕𐑒𐑨𐑯𐑦𐑙 𐑓𐑹 𐑗𐑱𐑯𐑡𐑛 𐑥𐑧𐑕𐑦𐑡𐑩𐑟"
+
+#: ../camel/providers/imap4/camel-imap4-summary.c:1611
+#, c-format
+msgid "IMAP server %s is in an inconsistent state."
+msgstr "IMAP 𐑕𐑻𐑝𐑼 %s 𐑦𐑟 𐑦𐑯 𐑩𐑯 𐑦𐑯𐑒𐑩𐑯𐑕𐑦𐑕𐑑𐑩𐑯𐑑 𐑕𐑑𐑱𐑑."
+
+#: ../camel/providers/imap4/camel-imap4-summary.c:1638
+msgid "Fetching envelopes of new messages"
+msgstr "𐑓𐑧𐑗𐑦𐑙 𐑧𐑯𐑝𐑩𐑤𐑴𐑐𐑕 𐑝 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡𐑩𐑟"
+
+#: ../camel/providers/imap4/camel-imap4-utils.c:429
+#, c-format
+msgid "Unexpected token in response from IMAP server %s: "
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑑𐑴𐑒𐑩𐑯 𐑦𐑯 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 IMAP 𐑕𐑻𐑝𐑼 %s: "
+
+#: ../camel/providers/imap4/camel-imap4-utils.c:452
+msgid "No data"
+msgstr "𐑯𐑴 𐑛𐑱𐑑𐑩"
+
+#: ../camel/providers/imap4/camel-imap4-utils.c:613
+#, c-format
+msgid "IMAP server %s unexpectedly disconnected: %s"
+msgstr "IMAP 𐑕𐑻𐑝𐑼 %s 𐑩𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑦𐑛𐑤𐑰 𐑛𐑦𐑕𐑒𐑩𐑯𐑧𐑒𐑑𐑩𐑛: %s"
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:40
+#: ../camel/providers/pop3/camel-pop3-provider.c:43
+msgid "Message storage"
+msgstr "𐑥𐑧𐑕𐑦𐑡 𐑕𐑑𐑹𐑦𐑡"
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:48
+msgid "IMAP+"
+msgstr "IMAP+"
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:50
+msgid ""
+"Experimental IMAP 4(.1) client\n"
+"This is untested and unsupported code, you want to use plain imap instead.\n"
+"\n"
+" !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
+msgstr ""
+"𐑦𐑒𐑕𐑐𐑧𐑮𐑩𐑥𐑧𐑯𐑑𐑩𐑤 IMAP 4(.1) 𐑒𐑤𐑲𐑩𐑯𐑑\n"
+"𐑞𐑦𐑕 𐑦𐑟 𐑩𐑯𐑑𐑧𐑕𐑑𐑦𐑛 𐑯 𐑳𐑯𐑕𐑩𐑐𐑹𐑑𐑩𐑛 𐑒𐑴𐑛, 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑿𐑕 𐑐𐑤𐑱𐑯 IMAP 𐑦𐑯𐑕𐑑𐑧𐑛.\n"
+"\n"
+" !!! 𐑛𐑵 𐑯𐑪𐑑 𐑿𐑟 𐑞𐑦𐑕 𐑓𐑹 𐑐𐑮𐑩𐑛𐑳𐑒𐑖𐑩𐑯 𐑰𐑥𐑱𐑤  !!!\n"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:1508
+#, c-format
+msgid "Could not connect to %s (port %s): %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 %s (𐑐𐑹𐑑 %s): %s"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:126
+#, c-format
+msgid "Could not connect to POP server on %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 POP 𐑕𐑻𐑝𐑼 𐑪𐑯 %s"
+
+#: ../camel/providers/local/camel-local-folder.c:178
+msgid "Index message body data"
+msgstr "𐑦𐑯𐑛𐑧𐑒𐑕 𐑥𐑧𐑕𐑦𐑡 𐑚𐑪𐑛𐑦 𐑛𐑱𐑑𐑩"
+
+#. $HOME relative path + protocol string
+#: ../camel/providers/local/camel-local-folder.c:395
+#, c-format
+msgid "~%s (%s)"
+msgstr "~%s (%s)"
+
+#. /var/spool/mail relative path + protocol
+#: ../camel/providers/local/camel-local-folder.c:399
+#: ../camel/providers/local/camel-local-folder.c:402
+#, c-format
+msgid "mailbox: %s (%s)"
+msgstr "𐑥𐑱𐑤𐑚𐑪𐑒𐑕: %s (%s)"
+
+#. a full path + protocol
+#: ../camel/providers/local/camel-local-folder.c:406
+#, c-format
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#: ../camel/providers/local/camel-local-provider.c:55
+msgid "MH-format mail directories"
+msgstr "MH-𐑓𐑹𐑥𐑨𐑑 𐑥𐑱𐑤 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦𐑟"
+
+#: ../camel/providers/local/camel-local-provider.c:56
+msgid "For storing local mail in MH-like mail directories."
+msgstr "𐑓𐑹 𐑕𐑑𐑹𐑦𐑙 𐑤𐑴𐑒𐑩𐑤 𐑥𐑱𐑤 𐑦𐑯 MH-𐑤𐑲𐑒 𐑥𐑱𐑤 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦𐑟."
+
+#: ../camel/providers/local/camel-local-provider.c:73
+msgid "Local delivery"
+msgstr "𐑤𐑴𐑒𐑩𐑤 𐑛𐑦𐑤𐑦𐑝𐑼𐑦"
+
+#: ../camel/providers/local/camel-local-provider.c:108
+msgid "_Store status headers in Elm/Pine/Mutt format"
+msgstr "_𐑕𐑑𐑹 𐑕𐑑𐑱𐑑𐑫𐑕 𐑣𐑧𐑛𐑼𐑟 𐑦𐑯 𐑧𐑤𐑥/𐑐𐑲𐑯/𐑥𐑩𐑑 𐑓𐑹𐑥𐑨𐑑"
+
+#: ../camel/providers/local/camel-local-store.c:165
+#: ../camel/providers/local/camel-local-store.c:276
+#: ../camel/providers/local/camel-mbox-store.c:359
+#: ../camel/providers/local/camel-spool-store.c:128
+#, c-format
+msgid "Store root %s is not an absolute path"
+msgstr "𐑕𐑑𐑹 𐑮𐑵𐑑 %s 𐑦𐑟 𐑯𐑪𐑑 𐑩𐑯 𐑨𐑚𐑕𐑴𐑤𐑵𐑑 𐑐𐑭𐑔"
+
+#: ../camel/providers/local/camel-local-store.c:172
+#, c-format
+msgid "Store root %s is not a regular directory"
+msgstr "𐑕𐑑𐑹 𐑮𐑵𐑑 %s 𐑦𐑟 𐑯𐑪𐑑 𐑩 𐑮𐑧𐑜𐑘𐑫𐑤𐑼 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦"
+
+#: ../camel/providers/local/camel-local-store.c:181
+#: ../camel/providers/local/camel-local-store.c:189
+#: ../camel/providers/local/camel-local-store.c:287
+#, c-format
+msgid "Cannot get folder: %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼: %s: %s"
+
+#: ../camel/providers/local/camel-local-store.c:247
+#, c-format
+msgid "Local mail file %s"
+msgstr "𐑤𐑴𐑒𐑩𐑤 𐑥𐑱𐑤 𐑓𐑲𐑤 %s"
+
+#: ../camel/providers/local/camel-local-store.c:342
+#, c-format
+msgid "Could not rename folder %s to %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼 %s 𐑑 %s: %s"
+
+#: ../camel/providers/local/camel-local-store.c:410
+#, c-format
+msgid "Could not rename '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 '%s': %s"
+
+#: ../camel/providers/local/camel-local-store.c:435
+#: ../camel/providers/local/camel-mbox-store.c:300
+#, c-format
+msgid "Could not delete folder index file '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 𐑦𐑯𐑛𐑧𐑒𐑕 𐑓𐑲𐑤 '%s': %s"
+
+#: ../camel/providers/local/camel-local-store.c:458
+#: ../camel/providers/local/camel-mbox-store.c:324
+#, c-format
+msgid "Could not delete folder meta file '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 𐑥𐑰𐑑𐑩 𐑓𐑲𐑤 '%s': %s"
+
+#: ../camel/providers/local/camel-local-summary.c:515
+msgid "Unable to add message to summary: unknown reason"
+msgstr "𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑨𐑛 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑕𐑳𐑥𐑼𐑦: 𐑳𐑯𐑴𐑯 𐑮𐑰𐑟𐑩𐑯"
+
+#: ../camel/providers/local/camel-maildir-folder.c:263
+#: ../camel/providers/local/camel-maildir-folder.c:292
+#: ../camel/providers/local/camel-maildir-folder.c:306
+#: ../camel/providers/local/camel-maildir-folder.c:314
+#: ../camel/providers/local/camel-maildir-folder.c:400
+#: ../camel/providers/local/camel-mbox-folder.c:362
+#: ../camel/providers/local/camel-mbox-folder.c:413
+#: ../camel/providers/local/camel-mbox-folder.c:434
+#: ../camel/providers/local/camel-mbox-folder.c:465
+#: ../camel/providers/local/camel-mbox-folder.c:473
+#: ../camel/providers/local/camel-mh-folder.c:225
+#: ../camel/providers/local/camel-mh-folder.c:236
+#: ../camel/providers/local/camel-mh-folder.c:244
+#, c-format
+msgid ""
+"Cannot get message: %s from folder %s\n"
+"  %s"
+msgstr ""
+"𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑥𐑧𐑕𐑦𐑡: %s 𐑓𐑮𐑪𐑥 𐑓𐑴𐑤𐑛𐑼 %s\n"
+"  %s"
+
+#: ../camel/providers/local/camel-maildir-folder.c:315
+msgid "Invalid message contents"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑥𐑧𐑕𐑦𐑡 𐑒𐑪𐑯𐑑𐑩𐑯𐑑𐑕"
+
+#: ../camel/providers/local/camel-maildir-folder.c:419
+msgid "Cannot transfer message to destination folder"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑑𐑮𐑭𐑯𐑕𐑓𐑼 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑛𐑧𐑕𐑑𐑦𐑯𐑱𐑖𐑩𐑯 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/providers/local/camel-maildir-store.c:148
+#: ../camel/providers/local/camel-maildir-store.c:173
+#: ../camel/providers/local/camel-mbox-store.c:176
+#: ../camel/providers/local/camel-mbox-store.c:188
+#, c-format
+msgid "Cannot create folder '%s': %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:161
+#: ../camel/providers/local/camel-mbox-store.c:147
+#: ../camel/providers/local/camel-mh-store.c:217
+#, c-format
+msgid "Cannot get folder '%s': %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:165
+#: ../camel/providers/local/camel-mbox-store.c:155
+#: ../camel/providers/local/camel-mh-store.c:224
+#, c-format
+msgid "Cannot get folder '%s': folder does not exist."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑓𐑴𐑤𐑛𐑼 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑."
+
+#: ../camel/providers/local/camel-maildir-store.c:234
+#: ../camel/providers/local/camel-maildir-store.c:272
+#: ../camel/providers/local/camel-mh-store.c:273
+#, c-format
+msgid "Could not delete folder '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/local/camel-maildir-store.c:440
+#: ../camel/providers/local/camel-spool-store.c:330
+#: ../camel/providers/local/camel-spool-store.c:344
+#, c-format
+msgid "Could not scan folder '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑒𐑨𐑯 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/local/camel-maildir-summary.c:544
+msgid "Checking folder consistency"
+msgstr "𐑗𐑧𐑒𐑦𐑙 𐑓𐑴𐑤𐑛𐑼 𐑒𐑩𐑯𐑕𐑦𐑕𐑑𐑩𐑯𐑕𐑰"
+
+#: ../camel/providers/local/camel-maildir-summary.c:637
+msgid "Checking for new messages"
+msgstr "𐑗𐑧𐑒𐑦𐑙 𐑓𐑹 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡𐑩𐑟"
+
+#: ../camel/providers/local/camel-maildir-summary.c:724
+#: ../camel/providers/local/camel-mbox-summary.c:526
+#: ../camel/providers/local/camel-mbox-summary.c:722
+#: ../camel/providers/local/camel-mbox-summary.c:842
+#: ../camel/providers/local/camel-spool-summary.c:150
+msgid "Storing folder"
+msgstr "𐑕𐑑𐑹𐑦𐑙 𐑓𐑴𐑤𐑛𐑼"
+
+#: ../camel/providers/local/camel-mbox-folder.c:167
+#: ../camel/providers/local/camel-spool-folder.c:150
+#, c-format
+msgid "Cannot create folder lock on %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 𐑤𐑪𐑒 𐑪𐑯 %s: %s"
+
+#: ../camel/providers/local/camel-mbox-folder.c:231
+#, c-format
+msgid "Cannot open mailbox: %s: %s\n"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑥𐑱𐑤𐑚𐑪𐑒𐑕: %s: %s\n"
+
+#: ../camel/providers/local/camel-mbox-folder.c:297
+msgid "Mail append canceled"
+msgstr "𐑥𐑱𐑤 𐑩𐑐𐑧𐑯𐑛 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/providers/local/camel-mbox-folder.c:474
+#: ../camel/providers/local/camel-mh-folder.c:245
+msgid "Message construction failed."
+msgstr "𐑥𐑧𐑕𐑦𐑡 𐑒𐑩𐑯𐑕𐑑𐑮𐑳𐑒𐑖𐑩𐑯 𐑓𐑱𐑤𐑛."
+
+#: ../camel/providers/local/camel-mbox-store.c:166
+#: ../camel/providers/local/camel-mbox-store.c:365
+msgid "Cannot create a folder by this name."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑓𐑴𐑤𐑛𐑼 𐑚𐑲 𐑞𐑦𐑕 𐑯𐑱𐑥."
+
+#: ../camel/providers/local/camel-mbox-store.c:198
+#, c-format
+msgid "Cannot get folder '%s': not a regular file."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑯𐑪𐑑 𐑩 𐑮𐑧𐑜𐑘𐑫𐑤𐑼 𐑓𐑲𐑤."
+
+#: ../camel/providers/local/camel-mbox-store.c:228
+#: ../camel/providers/local/camel-mbox-store.c:239
+#: ../camel/providers/local/camel-mbox-store.c:262
+#, c-format
+msgid ""
+"Could not delete folder '%s':\n"
+"%s"
+msgstr ""
+"𐑒𐑫𐑛 𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 '%s':\n"
+"%s"
+
+#: ../camel/providers/local/camel-mbox-store.c:247
+#, c-format
+msgid "'%s' is not a regular file."
+msgstr "'%s' 𐑦𐑟 𐑯𐑪𐑑 𐑩 𐑮𐑧𐑜𐑘𐑫𐑤𐑼 𐑓𐑲𐑤."
+
+#: ../camel/providers/local/camel-mbox-store.c:254
+#, c-format
+msgid "Folder '%s' is not empty. Not deleted."
+msgstr "𐑓𐑴𐑤𐑛𐑼 '%s' 𐑦𐑟 𐑯𐑪𐑑 𐑧𐑥𐑐𐑑𐑦. 𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑𐑩𐑛."
+
+#: ../camel/providers/local/camel-mbox-store.c:276
+#: ../camel/providers/local/camel-mbox-store.c:288
+#, c-format
+msgid "Could not delete folder summary file '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑛𐑦𐑤𐑰𐑑 𐑓𐑴𐑤𐑛𐑼 𐑕𐑳𐑥𐑼𐑦 𐑓𐑲𐑤 '%s': %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:378
+#, c-format
+msgid "Cannot create directory '%s': %s."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦 '%s': %s."
+
+#: ../camel/providers/local/camel-mbox-store.c:392
+#, c-format
+msgid "Cannot create folder: %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:394
+msgid "Folder already exists"
+msgstr "𐑓𐑴𐑤𐑛𐑼 𐑷𐑤𐑮𐑧𐑛𐑦 𐑧𐑒𐑟𐑦𐑕𐑑𐑕"
+
+#: ../camel/providers/local/camel-mbox-store.c:485
+msgid "The new folder name is illegal."
+msgstr "𐑞 𐑯𐑿 𐑓𐑴𐑤𐑛𐑼 𐑯𐑱𐑥 𐑦𐑟 𐑦𐑤𐑰𐑜𐑩𐑤."
+
+#: ../camel/providers/local/camel-mbox-store.c:498
+#, c-format
+msgid "Could not rename '%s': '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 '%s': '%s': %s"
+
+#: ../camel/providers/local/camel-mbox-store.c:579
+#, c-format
+msgid "Could not rename '%s' to %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 '%s' 𐑑 %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:532
+#, c-format
+msgid "Could not open folder: %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑓𐑴𐑤𐑛𐑼: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:659
+#, c-format
+msgid "Cannot check folder: %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑗𐑧𐑒 𐑓𐑴𐑤𐑛𐑼: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:727
+#: ../camel/providers/local/camel-mbox-summary.c:847
+#: ../camel/providers/local/camel-spool-summary.c:155
+#, c-format
+msgid "Could not open file: %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑓𐑲𐑤: %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:739
+#: ../camel/providers/local/camel-spool-summary.c:168
+#, c-format
+msgid "Cannot open temporary mailbox: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑥𐑱𐑤𐑚𐑪𐑒𐑕: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:752
+#: ../camel/providers/local/camel-mbox-summary.c:956
+#, c-format
+msgid "Could not close source folder %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑤𐑴𐑟 𐑕𐑹𐑕 𐑓𐑴𐑤𐑛𐑼 %s: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:761
+#, c-format
+msgid "Could not close temporary folder: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑤𐑴𐑟 𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑓𐑴𐑤𐑛𐑼: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:776
+#, c-format
+msgid "Could not rename folder: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑓𐑴𐑤𐑛𐑼: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:858
+#: ../camel/providers/local/camel-mbox-summary.c:1083
+#, c-format
+msgid "Could not store folder: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑑𐑹 𐑓𐑴𐑤𐑛𐑼: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:897
+#: ../camel/providers/local/camel-mbox-summary.c:905
+#: ../camel/providers/local/camel-mbox-summary.c:1113
+#: ../camel/providers/local/camel-mbox-summary.c:1121
+msgid "Summary and folder mismatch, even after a sync"
+msgstr "𐑕𐑳𐑥𐑼𐑦 𐑯 𐑓𐑴𐑤𐑛𐑼 𐑥𐑦𐑕𐑥𐑨𐑗, 𐑰𐑝𐑩𐑯 𐑭𐑓𐑑𐑼 𐑩 𐑕𐑦𐑙𐑒"
+
+#: ../camel/providers/local/camel-mbox-summary.c:1046
+#: ../camel/providers/local/camel-spool-summary.c:334
+#, c-format
+msgid "Unknown error: %s"
+msgstr "𐑳𐑯𐑴𐑯 𐑻𐑼: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:1189
+#: ../camel/providers/local/camel-mbox-summary.c:1215
+#, c-format
+msgid "Writing to temporary mailbox failed: %s"
+msgstr "𐑮𐑲𐑑𐑦𐑙 𐑑 𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/providers/local/camel-mbox-summary.c:1206
+#, c-format
+msgid "Writing to temporary mailbox failed: %s: %s"
+msgstr "𐑮𐑲𐑑𐑦𐑙 𐑑 𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑓𐑱𐑤𐑛: %s: %s"
+
+#: ../camel/providers/local/camel-mh-folder.c:180
+msgid "MH append message canceled"
+msgstr "MH 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑒𐑨𐑯𐑕𐑩𐑤𐑛"
+
+#: ../camel/providers/local/camel-mh-folder.c:183
+#, c-format
+msgid "Cannot append message to mh folder: %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑩𐑐𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡 𐑑 𐑧𐑥𐑱𐑗 𐑓𐑴𐑤𐑛𐑼: %s: %s"
+
+#: ../camel/providers/local/camel-mh-store.c:232
+#, c-format
+msgid "Could not create folder '%s': %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': %s"
+
+#: ../camel/providers/local/camel-mh-store.c:244
+#, c-format
+msgid "Cannot get folder '%s': not a directory."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 𐑓𐑴𐑤𐑛𐑼 '%s': 𐑯𐑪𐑑 𐑩 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦."
+
+#: ../camel/providers/local/camel-mh-summary.c:240
+#, c-format
+msgid "Cannot open MH directory path: %s: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 MH 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦 𐑐𐑭𐑔: %s: %s"
+
+#: ../camel/providers/local/camel-spool-store.c:134
+#, c-format
+msgid "Spool '%s' cannot be opened: %s"
+msgstr "𐑕𐑐𐑵𐑤 '%s' 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑴𐑐𐑩𐑯𐑛: %s"
+
+#: ../camel/providers/local/camel-spool-store.c:146
+#, c-format
+msgid "Spool '%s' is not a regular file or directory"
+msgstr "𐑕𐑐𐑵𐑤 '%s' 𐑦𐑟 𐑯𐑪𐑑 𐑩 𐑮𐑧𐑜𐑘𐑫𐑤𐑼 𐑓𐑲𐑤 𐑹 𐑛𐑲𐑮𐑧𐑒𐑑𐑼𐑦"
+
+#: ../camel/providers/local/camel-spool-store.c:165
+#, c-format
+msgid "Folder '%s/%s' does not exist."
+msgstr "𐑓𐑴𐑤𐑛𐑼 '%s/%s' 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑."
+
+#: ../camel/providers/local/camel-spool-store.c:175
+#, c-format
+msgid ""
+"Could not open folder '%s':\n"
+"%s"
+msgstr ""
+"𐑒𐑫𐑛 𐑯𐑪𐑑 𐑴𐑐𐑩𐑯 𐑓𐑴𐑤𐑛𐑼 '%s':\n"
+"%s"
+
+#: ../camel/providers/local/camel-spool-store.c:179
+#, c-format
+msgid "Folder '%s' does not exist."
+msgstr "𐑓𐑴𐑤𐑛𐑼 '%s' 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑."
+
+#: ../camel/providers/local/camel-spool-store.c:184
+#, c-format
+msgid ""
+"Could not create folder '%s':\n"
+"%s"
+msgstr ""
+"𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑓𐑴𐑤𐑛𐑼 '%s':\n"
+"%s"
+
+#: ../camel/providers/local/camel-spool-store.c:192
+#, c-format
+msgid "'%s' is not a mailbox file."
+msgstr "'%s' 𐑦𐑟 𐑯𐑪𐑑 𐑩 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑓𐑲𐑤."
+
+#: ../camel/providers/local/camel-spool-store.c:221
+#, c-format
+msgid "Spool mail file %s"
+msgstr "𐑕𐑐𐑵𐑤 𐑥𐑱𐑤 𐑓𐑲𐑤 %s"
+
+#: ../camel/providers/local/camel-spool-store.c:221
+#, c-format
+msgid "Spool folder tree %s"
+msgstr "𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼 𐑑𐑮𐑰 %s"
+
+#: ../camel/providers/local/camel-spool-store.c:229
+msgid "Spool folders cannot be renamed"
+msgstr "𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼𐑟 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑮𐑰𐑯𐑱𐑥𐑛"
+
+#: ../camel/providers/local/camel-spool-store.c:237
+msgid "Spool folders cannot be deleted"
+msgstr "𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼𐑟 𐑒𐑨𐑯𐑪𐑑 𐑚𐑰 𐑛𐑦𐑤𐑰𐑑𐑩𐑛"
+
+#: ../camel/providers/local/camel-spool-summary.c:180
+#: ../camel/providers/local/camel-spool-summary.c:190
+#: ../camel/providers/local/camel-spool-summary.c:200
+#, c-format
+msgid "Could not sync temporary folder %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑦𐑙𐑒 𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑓𐑴𐑤𐑛𐑼 %s: %s"
+
+#: ../camel/providers/local/camel-spool-summary.c:216
+#, c-format
+msgid "Could not sync spool folder %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑦𐑙𐑒 𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼 %s: %s"
+
+#: ../camel/providers/local/camel-spool-summary.c:246
+#: ../camel/providers/local/camel-spool-summary.c:263
+#: ../camel/providers/local/camel-spool-summary.c:274
+#, c-format
+msgid ""
+"Could not sync spool folder %s: %s\n"
+"Folder may be corrupt, copy saved in '%s'"
+msgstr ""
+"𐑒𐑫𐑛 𐑯𐑪𐑑 𐑕𐑦𐑙𐑒 𐑕𐑐𐑵𐑤 𐑓𐑴𐑤𐑛𐑼 %s: %s\n"
+"𐑓𐑴𐑤𐑛𐑼 𐑥𐑱 𐑚𐑰 𐑒𐑼𐑳𐑐𐑑, 𐑒𐑪𐑐𐑦 𐑕𐑱𐑝𐑛 𐑦𐑯 '%s'"
+
+#: ../camel/providers/nntp/camel-nntp-folder.c:367
+#: ../camel/providers/nntp/camel-nntp-folder.c:370
+#: ../camel/providers/nntp/camel-nntp-folder.c:412
+#: ../camel/providers/nntp/camel-nntp-folder.c:414
+#, c-format
+msgid "Posting failed: %s"
+msgstr "𐑐𐑴𐑕𐑑𐑦𐑙 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:46
+msgid ""
+"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr ""
+"_𐑖𐑴 𐑓𐑴𐑤𐑛𐑼𐑟 𐑦𐑯 𐑖𐑹𐑑 𐑯𐑴𐑑𐑱𐑖𐑩𐑯 (𐑧.𐑡𐑰. 𐑕𐑰.𐑴.·𐑤𐑦𐑯𐑩𐑒𐑕 𐑮𐑭𐑞𐑼 𐑞𐑨𐑯 𐑒𐑭𐑥𐑐.𐑭𐑕.·𐑤𐑦𐑯𐑩𐑒𐑕)"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:48
+msgid "In the subscription _dialog, show relative folder names"
+msgstr "𐑦𐑯 𐑞 𐑕𐑩𐑚𐑕𐑒𐑮𐑦𐑐𐑖𐑩𐑯 _𐑛𐑲𐑩𐑤𐑪𐑜, 𐑖𐑴 𐑮𐑧𐑤𐑩𐑑𐑦𐑝 𐑓𐑴𐑤𐑛𐑼 𐑯𐑱𐑥𐑟"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:55
+msgid "USENET news"
+msgstr "·𐑘𐑵𐑟𐑯𐑧𐑑 𐑯𐑿𐑟"
+
+#: ../camel/providers/nntp/camel-nntp-provider.c:57
+msgid "This is a provider for reading from and posting to USENET newsgroups."
+msgstr "𐑞𐑦𐑕 𐑦𐑟 𐑩 𐑐𐑮𐑩𐑝𐑲𐑛𐑻 𐑓𐑹 𐑮𐑰𐑛𐑦𐑙 𐑓𐑮𐑪𐑥 𐑯 𐑐𐑴𐑕𐑑𐑦𐑙 𐑑 ·𐑘𐑵𐑟𐑯𐑧𐑑 𐑯𐑵𐑟𐑜𐑮𐑵𐑐𐑕."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:216
+#, c-format
+msgid "Could not read greeting from %s: %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑮𐑧𐑛 𐑜𐑮𐑰𐑑𐑦𐑙 𐑓𐑮𐑪𐑥 %s: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:410
+#, c-format
+msgid "USENET News via %s"
+msgstr "·𐑘𐑵𐑟𐑯𐑧𐑑 𐑯𐑿𐑟 𐑝𐑲𐑩 %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:819
+#, c-format
+msgid ""
+"Error retrieving newsgroups:\n"
+"\n"
+"%s"
+msgstr ""
+"𐑻𐑼 𐑮𐑦𐑑𐑮𐑰𐑝𐑦𐑙 𐑯𐑵𐑟𐑜𐑮𐑵𐑐𐑕:\n"
+"\n"
+"%s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:913
+msgid ""
+"You cannot subscribe to this newsgroup:\n"
+"\n"
+"No such newsgroup. The selected item is a probably a parent folder."
+msgstr ""
+"𐑿 𐑒𐑨𐑯𐑪𐑑 𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑑 𐑞𐑦𐑕 𐑯𐑵𐑟𐑜𐑮𐑵𐑐:\n"
+"\n"
+"𐑯𐑴 𐑕𐑳𐑗 𐑯𐑵𐑟𐑜𐑮𐑵𐑐. 𐑞 𐑕𐑩𐑤𐑧𐑒𐑑𐑩𐑛 𐑲𐑑𐑩𐑥 𐑦𐑟 𐑩 𐑐𐑮𐑪𐑚𐑩𐑚𐑤𐑦 𐑩 𐑐𐑺𐑩𐑯𐑑 𐑓𐑴𐑤𐑛𐑼."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:945
+msgid ""
+"You cannot unsubscribe to this newsgroup:\n"
+"\n"
+"newsgroup does not exist!"
+msgstr ""
+"𐑿 𐑒𐑨𐑯𐑪𐑑 𐑩𐑯𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑑 𐑞𐑦𐑕 𐑯𐑵𐑟𐑜𐑮𐑵𐑐:\n"
+"\n"
+"𐑯𐑵𐑟𐑜𐑮𐑵𐑐 𐑛𐑳𐑟 𐑯𐑪𐑑 𐑧𐑒𐑟𐑦𐑕𐑑!"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:970
+msgid "You cannot create a folder in a News store: subscribe instead."
+msgstr "𐑿 𐑒𐑨𐑯𐑪𐑑 𐑒𐑮𐑦𐑱𐑑 𐑩 𐑓𐑴𐑤𐑛𐑼 𐑦𐑯 𐑩 𐑯𐑿𐑟 𐑕𐑑𐑹: 𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑦𐑯𐑕𐑑𐑧𐑛."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:978
+msgid "You cannot rename a folder in a News store."
+msgstr "𐑿 𐑒𐑨𐑯𐑪𐑑 𐑮𐑰𐑯𐑱𐑥 𐑩 𐑓𐑴𐑤𐑛𐑼 𐑦𐑯 𐑩 𐑯𐑿𐑟 𐑕𐑑𐑹."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:986
+msgid "You cannot remove a folder in a News store: unsubscribe instead."
+msgstr "𐑿 𐑒𐑨𐑯𐑪𐑑 𐑮𐑦𐑥𐑵𐑝 𐑩 𐑓𐑴𐑤𐑛𐑼 𐑦𐑯 𐑩 𐑯𐑿𐑟 𐑕𐑑𐑹: 𐑩𐑯𐑕𐑩𐑚𐑕𐑒𐑮𐑲𐑚 𐑦𐑯𐑕𐑑𐑧𐑛."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1180
+msgid "Authentication requested but no username provided"
+msgstr "𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑚𐑳𐑑 𐑯𐑴 𐑿𐑟𐑼𐑯𐑱𐑥 𐑐𐑮𐑩𐑝𐑲𐑛𐑩𐑛"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1192
+#, c-format
+msgid "Cannot authenticate to server: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑 𐑑 𐑕𐑻𐑝𐑼: %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1369
+msgid "Not connected."
+msgstr "𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑𐑩𐑛."
+
+#: ../camel/providers/nntp/camel-nntp-store.c:1422
+#, c-format
+msgid "No such folder: %s"
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑓𐑴𐑤𐑛𐑼: %s"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:272
+#: ../camel/providers/nntp/camel-nntp-summary.c:370
+#, c-format
+msgid "%s: Scanning new messages"
+msgstr "%s: 𐑕𐑒𐑨𐑯𐑦𐑙 𐑯𐑿 𐑥𐑧𐑕𐑦𐑡𐑩𐑟"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:384
+#, c-format
+msgid "Unexpected server response from head: %s"
+msgstr "𐑳𐑯𐑦𐑒𐑕𐑐𐑧𐑒𐑑𐑩𐑛 𐑕𐑻𐑝𐑼 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 𐑣𐑧𐑛: %s"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:420
+msgid "Use cancel"
+msgstr "𐑿𐑟 𐑒𐑨𐑯𐑕𐑩𐑤"
+
+#: ../camel/providers/nntp/camel-nntp-summary.c:422
+#, c-format
+msgid "Operation failed: %s"
+msgstr "𐑪𐑐𐑼𐑱𐑖𐑩𐑯 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:253
+msgid "Retrieving POP summary"
+msgstr "𐑮𐑦𐑑𐑮𐑰𐑝𐑦𐑙 POP 𐑕𐑳𐑥𐑼𐑦"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:271
+#, c-format
+msgid "Cannot get POP summary: %s"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑜𐑧𐑑 POP 𐑕𐑳𐑥𐑼𐑦: %s"
+
+#. Sigh, most of the crap in this function is so that the cancel button
+#. returns the proper exception code.  Sigh.
+#: ../camel/providers/pop3/camel-pop3-folder.c:559
+#, c-format
+msgid "Retrieving POP message %d"
+msgstr "𐑮𐑦𐑑𐑮𐑰𐑝𐑦𐑙 POP 𐑥𐑧𐑕𐑦𐑡 %d"
+
+#: ../camel/providers/pop3/camel-pop3-folder.c:649
+msgid "Unknown reason"
+msgstr "𐑳𐑯𐑴𐑯 𐑮𐑰𐑟𐑩𐑯"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:45
+msgid "_Leave messages on server"
+msgstr "_𐑤𐑰𐑝 𐑥𐑧𐑕𐑦𐑡𐑩𐑟 𐑪𐑯 𐑕𐑻𐑝𐑼"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:47
+#, c-format
+msgid "_Delete after %s day(s)"
+msgstr "_𐑛𐑦𐑤𐑰𐑑 𐑭𐑓𐑑𐑼 %s 𐑛𐑱(𐑕)"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:49
+msgid "Disable _support for all POP3 extensions"
+msgstr "𐑛𐑦𐑕𐑱𐑚𐑩𐑤 _𐑕𐑩𐑐𐑹𐑑 𐑓𐑹 𐑷𐑤 POP3 𐑩𐑒𐑕𐑑𐑧𐑯𐑖𐑩𐑯𐑟"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:57
+msgid "POP"
+msgstr "POP"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:59
+msgid "For connecting to and downloading mail from POP servers."
+msgstr "𐑓𐑹 𐑒𐑩𐑯𐑧𐑒𐑑𐑦𐑙 𐑑 𐑯 𐑛𐑬𐑯𐑤𐑴𐑛𐑦𐑙 𐑥𐑱𐑤 𐑓𐑮𐑪𐑥 POP 𐑕𐑻𐑝𐑼𐑟."
+
+#: ../camel/providers/pop3/camel-pop3-store.c:207
+#, c-format
+msgid "Failed to read a valid greeting from POP server %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑮𐑰𐑛 𐑩 𐑝𐑨𐑤𐑦𐑛 𐑜𐑮𐑰𐑑𐑦𐑙 𐑓𐑮𐑪𐑥 POP 𐑕𐑻𐑝𐑼 %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:224
+#: ../camel/providers/pop3/camel-pop3-store.c:238
+#: ../camel/providers/pop3/camel-pop3-store.c:248
+#: ../camel/providers/pop3/camel-pop3-store.c:254
+#, c-format
+msgid "Failed to connect to POP server %s in secure mode: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 POP 𐑕𐑻𐑝𐑼 %s 𐑦𐑯 𐑕𐑦𐑒𐑘𐑫𐑼 𐑥𐑴𐑛: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:361
+#, c-format
+msgid "Could not connect to POP server %s"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 POP 𐑕𐑻𐑝𐑼 %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:402
+#: ../camel/providers/pop3/camel-pop3-store.c:535
+#, c-format
+msgid ""
+"Unable to connect to POP server %s: No support for requested authentication "
+"mechanism."
+msgstr ""
+"𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 POP 𐑕𐑻𐑝𐑼 %s: 𐑯𐑴 𐑕𐑩𐑐𐑹𐑑 𐑓𐑹 𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥."
+
+#: ../camel/providers/pop3/camel-pop3-store.c:449
+#, c-format
+msgid "Failed to authenticate on POP server %s: %s"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑 𐑪𐑯 POP 𐑕𐑻𐑝𐑼 %s: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:549
+#: ../camel/providers/pop3/camel-pop3-store.c:562
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending password: %s"
+msgstr ""
+"𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 POP 𐑕𐑻𐑝𐑼 %s.\n"
+"𐑻𐑼 𐑕𐑧𐑯𐑛𐑦𐑙 𐑐𐑭𐑕𐑢𐑼𐑛: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:556
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending username: %s"
+msgstr ""
+"𐑳𐑯𐑱𐑚𐑩𐑤 𐑑 𐑒𐑩𐑯𐑧𐑒𐑑 𐑑 POP 𐑕𐑻𐑝𐑼 %s.\n"
+"𐑻𐑼 𐑕𐑧𐑯𐑛𐑦𐑙 𐑿𐑟𐑼𐑯𐑱𐑥: %s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:669
+#, c-format
+msgid "No such folder '%s'."
+msgstr "𐑯𐑴 𐑕𐑳𐑗 𐑓𐑴𐑤𐑛𐑼 '%s'."
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:113
+msgid "Could not parse recipient list"
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑐𐑸𐑕 𐑮𐑩𐑕𐑦𐑐𐑰𐑩𐑯𐑑 𐑤𐑦𐑕𐑑"
+
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:242
+#, c-format
+msgid "Could not execute %s: mail not sent."
+msgstr "𐑒𐑫𐑛 𐑯𐑪𐑑 𐑧𐑒𐑕𐑩𐑒𐑿𐑑 %s: 𐑥𐑱𐑤 𐑯𐑪𐑑 𐑕𐑧𐑯𐑑."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:167
+msgid "Syntax error, command unrecognized"
+msgstr "𐑕𐑦𐑯𐑑𐑨𐑒𐑕 𐑻𐑼, 𐑒𐑩𐑥𐑭𐑯𐑛 𐑩𐑯𐑮𐑧𐑒𐑩𐑜𐑯𐑲𐑟𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:169
+msgid "Syntax error in parameters or arguments"
+msgstr "𐑕𐑦𐑯𐑑𐑨𐑒𐑕 𐑻𐑼 𐑦𐑯 𐑐𐑼𐑨𐑥𐑩𐑑𐑼𐑟 𐑹 𐑸𐑜𐑿𐑥𐑩𐑯𐑑𐑕"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:171
+msgid "Command not implemented"
+msgstr "𐑒𐑩𐑥𐑭𐑯𐑛 𐑯𐑪𐑑 𐑦𐑥𐑐𐑤𐑩𐑥𐑧𐑯𐑑𐑩𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:173
+msgid "Command parameter not implemented"
+msgstr "𐑒𐑩𐑥𐑭𐑯𐑛 𐑐𐑼𐑨𐑥𐑩𐑑𐑼 𐑯𐑪𐑑 𐑦𐑥𐑐𐑤𐑩𐑥𐑧𐑯𐑑𐑩𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:175
+msgid "System status, or system help reply"
+msgstr "𐑕𐑦𐑕𐑑𐑩𐑥 𐑕𐑑𐑱𐑑𐑫𐑕, 𐑹 𐑕𐑦𐑕𐑑𐑩𐑥 𐑣𐑧𐑤𐑐 𐑮𐑦𐑐𐑤𐑲"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:177
+msgid "Help message"
+msgstr "𐑣𐑧𐑤𐑐 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:179
+msgid "Service ready"
+msgstr "𐑕𐑻𐑝𐑦𐑕 𐑮𐑧𐑛𐑦"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:181
+msgid "Service closing transmission channel"
+msgstr "𐑕𐑻𐑝𐑦𐑕 𐑒𐑤𐑴𐑟𐑦𐑙 𐑑𐑮𐑨𐑯𐑟𐑥𐑦𐑖𐑩𐑯 𐑗𐑨𐑯𐑩𐑤"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:183
+msgid "Service not available, closing transmission channel"
+msgstr "𐑕𐑻𐑝𐑦𐑕 𐑯𐑪𐑑 𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤, 𐑒𐑤𐑴𐑟𐑦𐑙 𐑑𐑮𐑨𐑯𐑟𐑥𐑦𐑖𐑩𐑯 𐑗𐑨𐑯𐑩𐑤"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:185
+msgid "Requested mail action okay, completed"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑥𐑱𐑤 𐑨𐑒𐑖𐑩𐑯 𐑴𐑒𐑱, 𐑒𐑩𐑥𐑐𐑤𐑰𐑑𐑩𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:187
+msgid "User not local; will forward to <forward-path>"
+msgstr "𐑿𐑟𐑼 𐑯𐑪𐑑 𐑤𐑴𐑒𐑩𐑤; 𐑢𐑦𐑤 𐑓𐑹𐑢𐑼𐑛 𐑑 <forward-path>"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:189
+msgid "Requested mail action not taken: mailbox unavailable"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑥𐑱𐑤 𐑨𐑒𐑖𐑩𐑯 𐑯𐑪𐑑 𐑑𐑱𐑒𐑩𐑯: 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑩𐑯𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:191
+msgid "Requested action not taken: mailbox unavailable"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑨𐑒𐑖𐑩𐑯 𐑯𐑪𐑑 𐑑𐑱𐑒𐑩𐑯: 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑩𐑯𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:193
+msgid "Requested action aborted: error in processing"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑨𐑒𐑖𐑩𐑯 𐑩𐑚𐑹𐑑𐑩𐑛: 𐑻𐑼 𐑦𐑯 𐑐𐑮𐑴𐑕𐑧𐑕𐑦𐑙"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:195
+msgid "User not local; please try <forward-path>"
+msgstr "𐑿𐑟𐑼 𐑯𐑪𐑑 𐑤𐑴𐑒𐑩𐑤; 𐑐𐑤𐑰𐑟 𐑑𐑮𐑲 <forward-path>"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:197
+msgid "Requested action not taken: insufficient system storage"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑨𐑒𐑖𐑩𐑯 𐑯𐑪𐑑 𐑑𐑱𐑒𐑩𐑯: 𐑦𐑯𐑕𐑩𐑓𐑦𐑖𐑩𐑯𐑑 𐑕𐑦𐑕𐑑𐑩𐑥 𐑕𐑑𐑹𐑦𐑡"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:199
+msgid "Requested mail action aborted: exceeded storage allocation"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑥𐑱𐑤 𐑨𐑒𐑖𐑩𐑯 𐑩𐑚𐑹𐑑𐑩𐑛: 𐑩𐑒𐑕𐑰𐑛𐑩𐑛 𐑕𐑑𐑹𐑦𐑡 𐑨𐑤𐑴𐑒𐑱𐑖𐑩𐑯"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:201
+msgid "Requested action not taken: mailbox name not allowed"
+msgstr "𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑨𐑒𐑖𐑩𐑯 𐑯𐑪𐑑 𐑑𐑱𐑒𐑩𐑯: 𐑥𐑱𐑤𐑚𐑪𐑒𐑕 𐑯𐑱𐑥 𐑯𐑪𐑑 𐑩𐑤𐑬𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:205
+msgid "Transaction failed"
+msgstr "𐑑𐑮𐑨𐑯𐑟𐑨𐑒𐑖𐑩𐑯 𐑓𐑱𐑤𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:209
+msgid "A password transition is needed"
+msgstr "𐑩 𐑐𐑭𐑕𐑢𐑼𐑛 𐑑𐑮𐑨𐑯𐑟𐑦𐑖𐑩𐑯 𐑦𐑟 𐑯𐑰𐑛𐑩𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:211
+msgid "Authentication mechanism is too weak"
+msgstr "𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥 𐑦𐑟 𐑑𐑵 𐑢𐑰𐑒"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:213
+msgid "Encryption required for requested authentication mechanism"
+msgstr "𐑦𐑯𐑒𐑮𐑦𐑐𐑖𐑩𐑯 𐑮𐑦𐑒𐑢𐑲𐑼𐑛 𐑓𐑹 𐑮𐑦𐑒𐑢𐑧𐑕𐑑𐑩𐑛 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑥𐑧𐑒𐑩𐑯𐑦𐑟𐑥"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:215
+msgid "Temporary authentication failure"
+msgstr "𐑑𐑧𐑥𐑐𐑼𐑼𐑦 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑓𐑱𐑤𐑘𐑼"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:296
+msgid "Welcome response error"
+msgstr "𐑢𐑧𐑤𐑒𐑩𐑥 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑻𐑼"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:720
+msgid "Cannot send message: service not connected."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡: 𐑕𐑻𐑝𐑦𐑕 𐑯𐑪𐑑 𐑒𐑩𐑯𐑧𐑒𐑑𐑩𐑛."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:726
+msgid "Cannot send message: sender address not valid."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡: 𐑕𐑧𐑯𐑛𐑻 𐑩𐑛𐑮𐑧𐑕 𐑯𐑪𐑑 𐑝𐑨𐑤𐑦𐑛."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:730
+msgid "Sending message"
+msgstr "𐑕𐑧𐑯𐑛𐑦𐑙 𐑥𐑧𐑕𐑦𐑡"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:745
+msgid "Cannot send message: no recipients defined."
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡: 𐑯𐑴 𐑮𐑦𐑕𐑦𐑐𐑰𐑩𐑯𐑑𐑕 𐑛𐑦𐑓𐑲𐑯𐑛."
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:756
+msgid "Cannot send message: one or more invalid recipients"
+msgstr "𐑒𐑨𐑯𐑪𐑑 𐑕𐑧𐑯𐑛 𐑥𐑧𐑕𐑦𐑡: 𐑢𐑳𐑯 𐑹 𐑥𐑹 𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑮𐑦𐑕𐑦𐑐𐑰𐑩𐑯𐑑𐑕"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1116
+#: ../camel/providers/smtp/camel-smtp-transport.c:1127
+#, c-format
+msgid "AUTH command failed: %s"
+msgstr "𐑪𐑔 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1133
+msgid "AUTH command failed"
+msgstr "𐑪𐑔 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1203
+msgid "Bad authentication response from server.\n"
+msgstr "𐑚𐑨𐑛 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑖𐑩𐑯 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 𐑕𐑻𐑝𐑼.\n"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1230
+#, c-format
+msgid "MAIL FROM command failed: %s: mail not sent"
+msgstr "𐑥𐑱𐑤 𐑓𐑮𐑪𐑥 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛: %s: 𐑥𐑱𐑤 𐑯𐑪𐑑 𐑕𐑧𐑯𐑑"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1247
+msgid "MAIL FROM command failed"
+msgstr "𐑥𐑱𐑤 𐑓𐑮𐑪𐑥 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1330
+#: ../camel/providers/smtp/camel-smtp-transport.c:1399
+#: ../camel/providers/smtp/camel-smtp-transport.c:1418
+#, c-format
+msgid "DATA command failed: %s: mail not sent"
+msgstr "𐑛𐑱𐑑𐑩 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛: %s: 𐑥𐑱𐑤 𐑯𐑪𐑑 𐑕𐑧𐑯𐑑"
+
+#. we should have gotten instructions on how to use the DATA command:
+#. * 354 Enter mail, end with "." on a line by itself
+#.
+#: ../camel/providers/smtp/camel-smtp-transport.c:1347
+#: ../camel/providers/smtp/camel-smtp-transport.c:1434
+msgid "DATA command failed"
+msgstr "𐑛𐑱𐑑𐑩 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1496
+#, c-format
+msgid "QUIT command failed: %s"
+msgstr "𐑒𐑢𐑦𐑑 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛: %s"
+
+#: ../camel/providers/smtp/camel-smtp-transport.c:1510
+msgid "QUIT command failed"
+msgstr "𐑒𐑢𐑦𐑑 𐑒𐑩𐑥𐑭𐑯𐑛 𐑓𐑱𐑤𐑛"
+
+#: ../libedataserver/e-categories.c:47
+msgid "Business"
+msgstr "𐑚𐑦𐑟𐑯𐑩𐑕"
+
+#: ../libedataserver/e-categories.c:48
+msgid "Competition"
+msgstr "𐑒𐑪𐑥𐑐𐑩𐑑𐑦𐑖𐑩𐑯"
+
+#: ../libedataserver/e-categories.c:49
+msgid "Favorites"
+msgstr "𐑓𐑱𐑝𐑼𐑦𐑑𐑕"
+
+#: ../libedataserver/e-categories.c:50
+msgid "Gifts"
+msgstr "𐑜𐑦𐑓𐑑𐑕"
+
+#: ../libedataserver/e-categories.c:51
+msgid "Goals/Objectives"
+msgstr "𐑜𐑴𐑤𐑟/𐑩𐑚𐑡𐑧𐑒𐑑𐑦𐑝𐑟"
+
+#: ../libedataserver/e-categories.c:52
+msgid "Holiday"
+msgstr "𐑣𐑪𐑤𐑦𐑛𐑱"
+
+#: ../libedataserver/e-categories.c:53
+msgid "Holiday Cards"
+msgstr "𐑣𐑪𐑤𐑦𐑛𐑱 𐑒𐑸𐑛𐑟"
+
+#. important people (e.g. new business partners)
+#: ../libedataserver/e-categories.c:55
+msgid "Hot Contacts"
+msgstr "𐑣𐑪𐑑 𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕"
+
+#: ../libedataserver/e-categories.c:56
+msgid "Ideas"
+msgstr "𐑲𐑛𐑾𐑟"
+
+#: ../libedataserver/e-categories.c:57
+msgid "International"
+msgstr "𐑦𐑯𐑑𐑼𐑯𐑨𐑖𐑩𐑯𐑩𐑤"
+
+#: ../libedataserver/e-categories.c:58
+msgid "Key Customer"
+msgstr "𐑒𐑰 𐑒𐑳𐑕𐑑𐑩𐑥𐑼"
+
+#: ../libedataserver/e-categories.c:59
+msgid "Miscellaneous"
+msgstr "𐑥𐑦𐑕𐑩𐑤𐑱𐑯𐑰𐑩𐑕"
+
+#: ../libedataserver/e-categories.c:60
+msgid "Personal"
+msgstr "𐑐𐑻𐑕𐑩𐑯𐑩𐑤"
+
+#: ../libedataserver/e-categories.c:61
+msgid "Phone Calls"
+msgstr "𐑓𐑴𐑯 𐑒𐑷𐑤𐑟"
+
+#. Translators: "Status" is a category name; it can mean anything user wants to
+#: ../libedataserver/e-categories.c:63
+msgid "Status"
+msgstr "𐑕𐑑𐑱𐑑𐑫𐑕"
+
+#: ../libedataserver/e-categories.c:64
+msgid "Strategies"
+msgstr "𐑕𐑑𐑮𐑨𐑑𐑩𐑡𐑰𐑟"
+
+#: ../libedataserver/e-categories.c:65
+msgid "Suppliers"
+msgstr "𐑕𐑩𐑐𐑤𐑲𐑼𐑟"
+
+#: ../libedataserver/e-categories.c:66
+msgid "Time & Expenses"
+msgstr "𐑑𐑲𐑥 & 𐑦𐑒𐑕𐑐𐑧𐑯𐑕𐑩𐑟"
+
+#: ../libedataserver/e-categories.c:68
+msgid "Waiting"
+msgstr "𐑢𐑱𐑑𐑦𐑙"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format.
+#: ../libedataserver/e-time-utils.c:1635 ../libedataserver/e-time-utils.c:1900
+msgid "%a %m/%d/%Y %I:%M:%S %p"
+msgstr "%a %m/%d/%Y %I:%M:%S %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format.
+#: ../libedataserver/e-time-utils.c:1640 ../libedataserver/e-time-utils.c:1891
+msgid "%a %m/%d/%Y %H:%M:%S"
+msgstr "%a %m/%d/%Y %H:%M:%S"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 12-hour format, without seconds.
+#: ../libedataserver/e-time-utils.c:1645 ../libedataserver/e-time-utils.c:1896
+msgid "%a %m/%d/%Y %I:%M %p"
+msgstr "%a %m/%d/%Y %I:%M %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without seconds.
+#. strftime format of a weekday, a date and a
+#. time, in 24-hour format, without seconds.
+#: ../libedataserver/e-time-utils.c:1650 ../libedataserver/e-time-utils.c:1887
+msgid "%a %m/%d/%Y %H:%M"
+msgstr "%a %m/%d/%Y %H:%M"
+
+#. strptime format of a weekday, a date and a time,
+#. in 12-hour format, without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:1655
+msgid "%a %m/%d/%Y %I %p"
+msgstr "%a %m/%d/%Y %I %p"
+
+#. strptime format of a weekday, a date and a time,
+#. in 24-hour format, without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:1660
+msgid "%a %m/%d/%Y %H"
+msgstr "%a %m/%d/%Y %H"
+
+#. strptime format of a weekday and a date.
+#. strftime format of a weekday and a date.
+#: ../libedataserver/e-time-utils.c:1663 ../libedataserver/e-time-utils.c:1763
+#: ../libedataserver/e-time-utils.c:1882
+msgid "%a %m/%d/%Y"
+msgstr "%a %m/%d/%Y"
+
+#. strptime format of a date and a time, in 12-hour format.
+#: ../libedataserver/e-time-utils.c:1670
+msgid "%m/%d/%Y %I:%M:%S %p"
+msgstr "%m/%d/%Y %I:%M:%S %p"
+
+#. strptime format of a date and a time, in 24-hour format.
+#: ../libedataserver/e-time-utils.c:1674
+msgid "%m/%d/%Y %H:%M:%S"
+msgstr "%m/%d/%Y %H:%M:%S"
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:1679
+msgid "%m/%d/%Y %I:%M %p"
+msgstr "%m/%d/%Y %I:%M %p"
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:1684
+msgid "%m/%d/%Y %H:%M"
+msgstr "%m/%d/%Y %H:%M"
+
+#. strptime format of a date and a time, in 12-hour format,
+#. without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:1689
+msgid "%m/%d/%Y %I %p"
+msgstr "%m/%d/%Y %I %p"
+
+#. strptime format of a date and a time, in 24-hour format,
+#. without minutes or seconds.
+#: ../libedataserver/e-time-utils.c:1694
+msgid "%m/%d/%Y %H"
+msgstr "%m/%d/%Y %H"
+
+#. strptime format of a weekday and a date.
+#. This is the preferred date format for the locale.
+#: ../libedataserver/e-time-utils.c:1697 ../libedataserver/e-time-utils.c:1766
+msgid "%m/%d/%Y"
+msgstr "%m/%d/%Y"
+
+#. strptime format for a time of day, in 12-hour format.
+#. strftime format of a time in 12-hour format.
+#: ../libedataserver/e-time-utils.c:1824 ../libedataserver/e-time-utils.c:1944
+msgid "%I:%M:%S %p"
+msgstr "%I:%M:%S %p"
+
+#. strptime format for a time of day, in 24-hour format.
+#. strftime format of a time in 24-hour format.
+#: ../libedataserver/e-time-utils.c:1828 ../libedataserver/e-time-utils.c:1936
+msgid "%H:%M:%S"
+msgstr "%H:%M:%S"
+
+#. strptime format for time of day, without seconds,
+#. in 12-hour format.
+#. strftime format of a time in 12-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:1833 ../libedataserver/e-time-utils.c:1941
+msgid "%I:%M %p"
+msgstr "%I:%M %p"
+
+#. strptime format for time of day, without seconds 24-hour format.
+#. strftime format of a time in 24-hour format,
+#. without seconds.
+#: ../libedataserver/e-time-utils.c:1837 ../libedataserver/e-time-utils.c:1933
+msgid "%H:%M"
+msgstr "%H:%M"
+
+#. strptime format for time of day, without seconds 24-hour format, and no colon.
+#: ../libedataserver/e-time-utils.c:1840
+msgid "%H%M"
+msgstr "%H%M"
+
+#. strptime format for hour and AM/PM, 12-hour format.
+#: ../libedataserver/e-time-utils.c:1844
+msgid "%I %p"
+msgstr "%I %p"
+
+#: ../libedataserverui/e-book-auth-util.c:90
+msgid "Accessing LDAP Server anonymously"
+msgstr "𐑨𐑒𐑕𐑧𐑕𐑦𐑙 LDAP 𐑕𐑻𐑝𐑼 𐑩𐑯𐑪𐑯𐑦𐑥𐑩𐑕𐑤𐑦"
+
+#: ../libedataserverui/e-book-auth-util.c:192
+msgid "Failed to authenticate.\n"
+msgstr "𐑓𐑱𐑤𐑛 𐑑 𐑷𐑔𐑧𐑯𐑑𐑦𐑒𐑱𐑑.\n"
+
+#: ../libedataserverui/e-categories-dialog.c:338
+#, c-format
+msgid ""
+"There is already a category '%s' in the configuration. Please use another "
+"name"
+msgstr "𐑞𐑺 𐑦𐑟 𐑷𐑤𐑮𐑧𐑛𐑦 𐑩 𐑒𐑨𐑑𐑧𐑜𐑹𐑰 '%s' 𐑦𐑯 𐑞 𐑒𐑩𐑯𐑓𐑦𐑜𐑘𐑼𐑱𐑖𐑩𐑯. 𐑐𐑤𐑰𐑟 𐑿𐑟 𐑩𐑯𐑳𐑞𐑼 𐑯𐑱𐑥"
+
+#: ../libedataserverui/e-categories-dialog.c:641
+msgid "Icon"
+msgstr "𐑲𐑒𐑪𐑯"
+
+#: ../libedataserverui/e-categories-dialog.c:646
+msgid "Category"
+msgstr "𐑒𐑨𐑑𐑧𐑜𐑹𐑰"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:1
+msgid "Category Icon"
+msgstr "𐑒𐑨𐑑𐑧𐑜𐑹𐑰 𐑲𐑒𐑪𐑯"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:2
+msgid "Category Properties"
+msgstr "𐑒𐑨𐑑𐑧𐑜𐑹𐑰 𐑐𐑮𐑪𐑐𐑼𐑑𐑦𐑟"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:3
+msgid "Category _Icon"
+msgstr "𐑒𐑨𐑑𐑧𐑜𐑹𐑰 _𐑲𐑒𐑪𐑯"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:4
+msgid "Category _Name"
+msgstr "𐑒𐑨𐑑𐑧𐑜𐑹𐑰 _𐑯𐑱𐑥"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:5
+msgid "Item(s) _belong to these categories:"
+msgstr "𐑲𐑑𐑩𐑥(𐑕) _𐑚𐑦𐑤𐑪𐑙 𐑑 𐑞𐑰𐑟 𐑒𐑨𐑑𐑩𐑜𐑪𐑮𐑰𐑟:"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:6
+msgid "_Available Categories:"
+msgstr "_𐑩𐑝𐑱𐑤𐑩𐑚𐑩𐑤 𐑒𐑨𐑑𐑩𐑜𐑪𐑮𐑰𐑟:"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:7
+msgid "_Edit"
+msgstr "_𐑧𐑛𐑦𐑑"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:8
+msgid "categories"
+msgstr "𐑒𐑨𐑑𐑩𐑜𐑪𐑮𐑰𐑟"
+
+#: ../libedataserverui/e-category-completion.c:290
+#, c-format
+msgid "Create category \"%s\""
+msgstr "𐑒𐑮𐑦𐑱𐑑 𐑒𐑨𐑑𐑧𐑜𐑹𐑰 \"%s\""
+
+#: ../libedataserverui/e-cell-renderer-color.c:222
+msgid "Color Info"
+msgstr "𐑒𐑳𐑤𐑼 𐑦𐑯𐑓𐑴"
+
+#: ../libedataserverui/e-cell-renderer-color.c:223
+msgid "The color to render"
+msgstr "𐑞 𐑒𐑳𐑤𐑼 𐑑 𐑮𐑧𐑯𐑛𐑻"
+
+#: ../libedataserverui/e-name-selector-dialog.c:292
+msgid "Select Contacts from Address Book"
+msgstr "𐑕𐑩𐑤𐑧𐑒𐑑 𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕 𐑓𐑮𐑪𐑥 𐑩𐑛𐑮𐑧𐑕 𐑚𐑫𐑒"
+
+#: ../libedataserverui/e-name-selector-dialog.c:579
+msgid "_Add"
+msgstr "_𐑨𐑛"
+
+#: ../libedataserverui/e-name-selector-dialog.c:604
+msgid "_Remove"
+msgstr "_𐑮𐑦𐑥𐑵𐑝"
+
+#: ../libedataserverui/e-name-selector-dialog.c:781
+#: ../libedataserverui/e-name-selector-dialog.ui.h:6
+msgid "Any Category"
+msgstr "𐑧𐑯𐑦 𐑒𐑨𐑑𐑧𐑜𐑹𐑰"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:1
+msgid "*"
+msgstr "*"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:3
+msgid "<b>Show Contacts</b>"
+msgstr "<b>𐑖𐑴 𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕</b>"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:5
+msgid "Address Book"
+msgstr "𐑩𐑛𐑮𐑧𐑕 𐑚𐑫𐑒"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:8
+msgid "Contacts"
+msgstr "𐑒𐑪𐑯𐑑𐑨𐑒𐑑𐑕"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:9
+msgid "Search"
+msgstr "𐑕𐑻𐑗"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:10
+msgid "_Search:"
+msgstr "_𐑕𐑻𐑗:"
+
+#. Edit Contact item
+#: ../libedataserverui/e-name-selector-entry.c:2550
+#, c-format
+msgid "_Edit %s"
+msgstr "_𐑧𐑛𐑦𐑑 %s"
+
+#: ../libedataserverui/e-name-selector-list.c:469
+#, c-format
+msgid "_Delete %s"
+msgstr "_𐑛𐑦𐑤𐑰𐑑 %s"
+
+#: ../libedataserverui/e-passwords.c:234
+#, c-format
+msgid "Keyring key is unusable: no user or host name"
+msgstr "𐑒𐑰𐑮𐑦𐑙 𐑒𐑰 𐑦𐑟 𐑩𐑯𐑘𐑵𐑟𐑩𐑚𐑩𐑤: 𐑯𐑴 𐑿𐑟𐑼 𐑹 𐑣𐑴𐑕𐑑 𐑯𐑱𐑥"
+
+#: ../libedataserverui/e-passwords.c:1093
+msgid "You have the Caps Lock key on."
+msgstr "𐑿 𐑣𐑨𐑝 𐑞 𐑒𐑨𐑐𐑕 𐑤𐑪𐑒 𐑒𐑰 𐑪𐑯."
+
+#: ../libedataserverui/e-passwords.c:1221
+msgid "_Remember this password"
+msgstr "_𐑮𐑦𐑥𐑧𐑥𐑚𐑼 𐑞𐑦𐑕 𐑐𐑭𐑕𐑢𐑼𐑛"
+
+#: ../libedataserverui/e-passwords.c:1222
+msgid "_Remember this password for the remainder of this session"
+msgstr "_𐑮𐑦𐑥𐑧𐑥𐑚𐑼 𐑞𐑦𐑕 𐑐𐑭𐑕𐑢𐑼𐑛 𐑓𐑹 𐑞 𐑮𐑦𐑥𐑱𐑯𐑛𐑼 𐑝 𐑞𐑦𐑕 𐑕𐑧𐑖𐑩𐑯"
+
+#. prepare the dialog
+#: ../libedataserverui/e-source-selector-dialog.c:100
+msgid "Select destination"
+msgstr "𐑕𐑩𐑤𐑧𐑒𐑑 𐑛𐑧𐑕𐑑𐑦𐑯𐑱𐑖𐑩𐑯"
+
+#: ../libedataserverui/e-source-selector-dialog.c:156
+msgid "_Destination"
+msgstr "_𐑛𐑧𐑕𐑑𐑦𐑯𐑱𐑖𐑩𐑯"
+
+#: ../servers/groupwise/e-gw-connection.c:225
+msgid "Invalid connection"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑒𐑩𐑯𐑧𐑒𐑖𐑩𐑯"
+
+#: ../servers/groupwise/e-gw-connection.c:229
+msgid "Invalid response from server"
+msgstr "𐑦𐑯𐑝𐑨𐑤𐑦𐑛 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 𐑕𐑻𐑝𐑼"
+
+#: ../servers/groupwise/e-gw-connection.c:231
+msgid "No response from the server"
+msgstr "𐑯𐑴 𐑮𐑦𐑕𐑐𐑪𐑯𐑕 𐑓𐑮𐑪𐑥 𐑞 𐑕𐑻𐑝𐑼"
+
+#: ../servers/groupwise/e-gw-connection.c:237
+msgid "Bad parameter"
+msgstr "𐑚𐑨𐑛 𐑐𐑼𐑨𐑥𐑩𐑑𐑼"
