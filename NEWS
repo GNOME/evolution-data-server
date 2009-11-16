@@ -1,3 +1,54 @@
+Evolution-Data-Server 2.29.2 2009-11-16
+---------------------------------------
+
+Bug Fixes:
+	#599955 - Addressbook's writable signal received late (Milan Crha)
+	#597648 - Crash due to DBus used from more threads in one time
+	(Milan Crha)
+	#600573 - e-addressbook-factory aborts on ldap lookup (Milan Crha)
+	#332496 - Category icons not removable (Milan Crha)
+	#600527 - Do not use space-and-comma as a category delimiter
+	(Milan Crha)
+	#600792 - build failure: e_calendar_factory (Yan Li)
+	#600792 - build failure: undefined reference to
+	`e_offline_listener_new' (Yan Li)
+	#344790 - Add nss/nspr package names to pkgconfig requirements
+	(Matthew Barnes)
+	#599735 - evolution crashes on start up (Chenthill Palanisamy)
+	#599671 - gtk_tree_view_column_get_cell_renderers() is deprecated
+	(Matthew Barnes)
+
+Other Changes:
+	Update API documentation. (Matthew Barnes)
+	Whitespace cleanups. (Matthew Barnes)
+	Add MANUAL_NSPR_LIBS, too, to LDFLAGS for duration of one test
+	(Tor Lillqvist)
+	Use EAGAIN instead of ETIMEDOUT on Windows (Tor Lillqvist)
+	Don't use commas on the Requires line (Tor Lillqvist)
+	Do not skip the + symbol while parsing namespaces and parse all
+	namespaces. (Chenthill Palanisamy)
+	Deprecate camel_mkdir() and remove assertions. (Matthew Barnes)
+	Use g_mkdir_with_parents() in camel_mkdir() (Tor Lillqvist)
+	Allow ESourceComboBox to exist with no ESourceList. (Matthew Barnes)
+	Remove the IDL stuff from our pkgconfig files. (Matthew Barnes)
+	Use SQLite's default cache size of 2000 pages in folders.db
+	(C de-Avillez)
+	Don't pass NULL to PR_Lock() during camel_shutdown(). (Matthew Barnes)
+	Deprecate EDList. (Matthew Barnes)
+	Use CamelDList and CamelMsgPort in imapx. (Matthew Barnes)
+
+Translations:
+	Thomas Thurman (en@shaw)
+	Jorge González (es)
+	Antón Méixome (gl)
+	Kjartan Maraas (nb)
+	Dumitru Mișu Moldovan (ro)
+	Matej Urbančič (sl)
+	Daniel Nylander (sv)
+	Matej Urbančič (sl)
+	drtvasudevan (ta)
+
+
 Evolution-Data-Server 2.29.1 2009-10-26
 ----------------------------------------
 
