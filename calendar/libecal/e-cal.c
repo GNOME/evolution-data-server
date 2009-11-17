@@ -382,6 +382,31 @@ e_cal_init (ECal *ecal)
 	priv->default_zone = icaltimezone_get_utc_timezone ();
 }
 
+/*
+ * Called when the calendar server dies.
+ */
+static void
+proxy_destroyed (gpointer data, GObject *object)
+{
+        ECal *ecal = data;
+	ECalPrivate *priv;
+
+        g_assert (E_IS_CAL (ecal));
+
+	priv = ecal->priv;
+
+        g_warning (G_STRLOC ": e-d-s proxy died");
+
+        /* Ensure that everything relevant is reset */
+        LOCK_CONN ();
+        factory_proxy = NULL;
+        priv->proxy = NULL;
+	priv->load_state = E_CAL_LOAD_NOT_LOADED;
+        UNLOCK_CONN ();
+
+        g_signal_emit (G_OBJECT (ecal), e_cal_signals [BACKEND_DIED], 0);
+}
+
 /* Dispose handler for the calendar ecal */
 static void
 e_cal_dispose (GObject *object)
@@ -395,6 +420,7 @@ e_cal_dispose (GObject *object)
 	if (priv->proxy) {
 		GError *error = NULL;
 
+                g_object_weak_unref (G_OBJECT (priv->proxy), proxy_destroyed, ecal);
 		LOCK_CONN ();
 		org_gnome_evolution_dataserver_calendar_Cal_close (priv->proxy, &error);
 		g_object_unref (priv->proxy);
@@ -799,6 +825,8 @@ e_cal_new (ESource *source, ECalSourceType type)
 	if (!priv->proxy)
 		return NULL;
 
+	g_object_weak_ref (G_OBJECT (priv->proxy), proxy_destroyed, ecal);
+
 	dbus_g_proxy_add_signal (priv->proxy, "auth_required", G_TYPE_INVALID);
 	dbus_g_proxy_connect_signal (priv->proxy, "auth_required", G_CALLBACK (auth_required_cb), ecal, NULL);
 	dbus_g_proxy_add_signal (priv->proxy, "backend_error", G_TYPE_STRING, G_TYPE_INVALID);
@@ -1080,8 +1108,8 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
 
 	e_return_error_if_fail (ecal != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (!needs_auth && priv->load_state == E_CAL_LOAD_LOADED) {
 		return TRUE;
@@ -1263,10 +1291,9 @@ e_cal_remove (ECal *ecal, GError **error)
 {
 	ECalPrivate *priv;
 
-	g_return_val_if_fail (ecal != NULL, FALSE);
-	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	LOCK_CONN ();
 	if (!org_gnome_evolution_dataserver_calendar_Cal_remove (priv->proxy, error)) {
@@ -1497,15 +1524,14 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
 {
 	ECalPrivate *priv;
 
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (cal_address != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*cal_address = NULL;
 
-	if (!(ecal && E_IS_CAL (ecal)))
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_INVALID_ARG, error);
-
-	priv = ecal->priv;
-
 	if (priv->cal_address == NULL) {
+		e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 		if (priv->load_state != E_CAL_LOAD_LOADED) {
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 		}
@@ -1540,11 +1566,10 @@ e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error
 	ECalPrivate *priv;
 
 	e_return_error_if_fail (alarm_address != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*alarm_address = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*alarm_address = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -1577,11 +1602,10 @@ e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error)
 	ECalPrivate *priv;
 
 	e_return_error_if_fail (ldap_attribute != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*ldap_attribute = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*ldap_attribute = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -1603,6 +1627,7 @@ load_static_capabilities (ECal *ecal, GError **error)
 	ECalPrivate *priv;
 
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->capabilities)
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
@@ -1763,6 +1788,7 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 	g_return_val_if_fail (mode & CAL_MODE_ANY, FALSE);
 
 	priv = ecal->priv;
+	g_return_val_if_fail (priv->proxy, FALSE);
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
 
 	LOCK_CONN ();
@@ -1807,11 +1833,10 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
 	gchar *object;
 
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*icalcomp = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*icalcomp = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -1862,11 +1887,10 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
 
 	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (list != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*list = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*list = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -1916,11 +1940,10 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 
 	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*icalcomp = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*icalcomp = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -1997,11 +2020,10 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
 
 	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*objects = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*objects = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -2115,12 +2137,11 @@ e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError *
 	gchar **additions, **modifications, **removals;
 
 	e_return_error_if_fail (changes != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*changes = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-	e_return_error_if_fail (change_id, E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (change_id != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*changes = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -2226,12 +2247,11 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
 	gchar **object_array;
 
 	e_return_error_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*objects = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*objects = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -2375,11 +2395,10 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 
 	e_return_error_if_fail (users != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (freebusy != NULL, E_CALENDAR_STATUS_INVALID_ARG);
-	*freebusy = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*freebusy = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3116,8 +3135,8 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError 
 	g_return_val_if_fail (comp != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 	g_return_val_if_fail (auid != NULL, FALSE);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3320,11 +3339,11 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
 	ECalPrivate *priv;
 	gchar *obj, *muid = NULL;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3378,12 +3397,12 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 	ECalPrivate *priv;
 	gchar *obj;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3427,11 +3446,11 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 {
 	ECalPrivate *priv;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3485,11 +3504,11 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 {
 	ECalPrivate *priv;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3531,12 +3550,11 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 	e_return_error_if_fail (modified_icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 	*users = NULL;
 	*modified_icalcomp = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
-	priv = ecal->priv;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3586,11 +3604,10 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 	const gchar *systzid = NULL;
 
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
-	*zone = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*zone = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3698,10 +3715,10 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
 	gchar *tzobj;
 	icalcomponent *icalcomp;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (izone, E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3756,11 +3773,10 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 
 	e_return_error_if_fail (sexp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
-	*query = NULL;
-
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
-
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+	*query = NULL;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
@@ -3811,10 +3827,10 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	icalcomponent *icalcomp = NULL;
 	gchar *tzobj;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (zone, E_CALENDAR_STATUS_INVALID_ARG);
-
 	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
 	/* Don't set the same timezone multiple times */
 	if (priv->default_zone == zone)
