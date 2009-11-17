@@ -31,6 +31,7 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
+#include <libical/ical.h>
 #include <libedataserver/e-url.h>
 
 #include <dbus/dbus-glib-lowlevel.h>
@@ -586,12 +587,17 @@ reopen_with_auth (gpointer data)
 static void
 auth_required_cb (DBusGProxy *proxy, ECal *cal)
 {
+	g_return_if_fail (E_IS_CAL (cal));
+
 	g_idle_add (reopen_with_auth, (gpointer)cal);
 }
 
 static void
 mode_cb (DBusGProxy *proxy, EDataCalMode mode, ECal *cal)
 {
+	g_return_if_fail (E_IS_CAL (cal));
+	g_return_if_fail (mode & AnyMode);
+
 	g_signal_emit (G_OBJECT (cal), e_cal_signals[CAL_SET_MODE],
 		       0, E_CALENDAR_STATUS_OK, mode);
 }
@@ -600,7 +606,8 @@ static void
 readonly_cb (DBusGProxy *proxy, gboolean read_only, ECal *cal)
 {
 	ECalPrivate *priv;
-	g_return_if_fail(cal && E_IS_CAL (cal));
+
+	g_return_if_fail (cal && E_IS_CAL (cal));
 
 	priv = cal->priv;
 	priv->read_only = read_only;
@@ -643,6 +650,8 @@ static void
 backend_error_cb (DBusGProxy *proxy, const gchar *message, ECal *ecal)
 {
 	ECalErrorData *error_data;
+
+	g_return_if_fail (E_IS_CAL (ecal));
 
 	error_data = g_new0 (ECalErrorData, 1);
 
@@ -751,6 +760,9 @@ e_cal_new (ESource *source, ECalSourceType type)
 	ECalPrivate *priv;
 	gchar *path, *xml;
 	GError *error = NULL;
+
+	g_return_val_if_fail (source && E_IS_SOURCE (source), NULL);
+	g_return_val_if_fail (type < E_CAL_SOURCE_TYPE_LAST, NULL);
 
 	if (!e_cal_activate (&error)) {
 		g_warning("Cannot activate ECal: %s\n", error ? error->message : "Unknown error");
@@ -1045,6 +1057,9 @@ async_signal_idle_cb (DBusGProxy *proxy, GError *error, gpointer user_data)
 	ECalendarStatus status;
 
 	ecal = E_CAL (user_data);
+
+	g_return_if_fail (ecal && E_IS_CAL (ecal));
+
 	if (error) {
 		status = get_status_from_error (error);
 	} else {
@@ -1745,6 +1760,7 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	g_return_val_if_fail (mode & CAL_MODE_ANY, FALSE);
 
 	priv = ecal->priv;
 	g_return_val_if_fail (priv->load_state == E_CAL_LOAD_LOADED, FALSE);
@@ -1844,6 +1860,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
 	ECalendarStatus status;
 	gchar **list_array;
 
+	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (list != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*list = NULL;
 
@@ -1897,6 +1914,7 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
 	icalcomponent *tmp_icalcomp;
 	icalcomponent_kind kind;
 
+	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*icalcomp = NULL;
 
@@ -1977,6 +1995,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
 	ECalendarStatus status;
 	gchar *object;
 
+	e_return_error_if_fail (uid != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (objects != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*objects = NULL;
 
@@ -2354,6 +2373,7 @@ e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
 	GList *l;
 	gint i;
 
+	e_return_error_if_fail (users != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (freebusy != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*freebusy = NULL;
 
@@ -3093,6 +3113,9 @@ e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError 
 
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
+	g_return_val_if_fail (auid != NULL, FALSE);
 
 	priv = ecal->priv;
 
@@ -3298,6 +3321,8 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
 	gchar *obj, *muid = NULL;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3355,6 +3380,8 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3402,6 +3429,7 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (mod & CALOBJ_MOD_ALL, E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3458,6 +3486,8 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
 	ECalPrivate *priv;
 
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 
 	priv = ecal->priv;
 
@@ -3499,6 +3529,8 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
 
 	e_return_error_if_fail (users != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (modified_icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
+	e_return_error_if_fail (icalcomponent_is_valid (icalcomp), E_CALENDAR_STATUS_INVALID_ARG);
 	*users = NULL;
 	*modified_icalcomp = NULL;
 
@@ -3549,7 +3581,7 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
 {
 	ECalPrivate *priv;
 	ECalendarStatus status = E_CALENDAR_STATUS_OK;
-	icalcomponent *icalcomp;
+	icalcomponent *icalcomp = NULL;
 	gchar *object;
 	const gchar *systzid = NULL;
 
@@ -3722,6 +3754,7 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
 	gchar *query_path;
 	DBusGProxy *query_proxy;
 
+	e_return_error_if_fail (sexp, E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (query, E_CALENDAR_STATUS_INVALID_ARG);
 	*query = NULL;
 
