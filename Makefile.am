@@ -34,10 +34,32 @@ EXTRA_DIST = 						\
 	evolution-data-server-zip.in			\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
-DISTCLEANFILES = \
-	intltool-extract				\
-	intltool-merge					\
-	intltool-update					\
+DISTCLEANFILES =					\
 	iconv-detect.h					\
 	$(pkgconfig_DATA)
 
+MAINTAINERCLEANFILES =					\
+	$(srcdir)/INSTALL				\
+	$(srcdir)/aclocal.m4				\
+	$(srcdir)/autoscan.log				\
+	$(srcdir)/compile				\
+	$(srcdir)/config.guess				\
+	$(srcdir)/config.h.in				\
+	$(srcdir)/config.sub				\
+	$(srcdir)/configure.scan			\
+	$(srcdir)/depcomp				\
+	$(srcdir)/install-sh				\
+	$(srcdir)/ltmain.sh				\
+	$(srcdir)/missing				\
+	$(srcdir)/mkinstalldirs				\
+	$(srcdir)/gtk-doc.make				\
+	$(srcdir)/m4/gtk-doc.m4				\
+	$(srcdir)/m4/intltool.m4			\
+	$(srcdir)/m4/libtool.m4				\
+	$(srcdir)/m4/ltoptions.m4			\
+	$(srcdir)/m4/ltsugar.m4				\
+	$(srcdir)/m4/ltversion.m4			\
+	$(srcdir)/m4/lt~obsolete.m4
+
+
+-include $(top_srcdir)/git.mk

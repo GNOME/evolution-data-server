@@ -36,3 +36,5 @@ test_charset_CPPFLAGS = $(MIMEFILTER_TESTS_CPPFLAGS)
 test_charset_LDFLAGS = $(MIMEFILTER_TESTS_LDADD)
 test_tohtml_CPPFLAGS = $(MIMEFILTER_TESTS_CPPFLAGS)
 test_tohtml_LDFLAGS = $(MIMEFILTER_TESTS_LDADD)
+
+-include $(top_srcdir)/git.mk

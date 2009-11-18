@@ -34,3 +34,5 @@ EXTRA_DIST = $(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)
 
+
+-include $(top_srcdir)/git.mk

@@ -44,3 +44,5 @@ test8_LDADD = $(FOLDER_TESTS_LDADD)
 test9_LDADD = $(FOLDER_TESTS_LDADD)
 test10_LDADD = $(FOLDER_TESTS_LDADD)
 test11_LDADD = $(FOLDER_TESTS_LDADD)
+
+-include $(top_srcdir)/git.mk

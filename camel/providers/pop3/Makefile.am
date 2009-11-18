@@ -30,3 +30,5 @@ libcamelpop3_la_LIBADD = \
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelpop3.urls
+
+-include $(top_srcdir)/git.mk

@@ -47,3 +47,5 @@ libcamelgroupwise_la_LIBADD =                                            \
 	$(E_DATA_SERVER_LIBS)
 
 EXTRA_DIST = libcamelgroupwise.urls
+
+-include $(top_srcdir)/git.mk

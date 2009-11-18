@@ -24,3 +24,5 @@ test3_CPPFLAGS = $(STREAM_TESTS_CPPFLAGS)
 test3_LDADD = $(STREAM_TESTS_LDADD)
 
 #TESTS = test1 test2 test3
+
+-include $(top_srcdir)/git.mk

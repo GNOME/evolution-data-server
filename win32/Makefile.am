@@ -17,3 +17,5 @@ libedataserverui-1.2.la: dummy.la libedataserverui.def
 	$(DLLTOOL) --output-lib=.libs/libedataserverui-1.2.dll.a --dllname=libedataserverui-1.2-$(libedataserverui_current_minus_age).dll --input-def=libedataserverui.def
 
 CLEANFILES = $(BOOTSTRAP_LIBS)
+
+-include $(top_srcdir)/git.mk

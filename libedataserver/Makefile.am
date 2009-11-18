@@ -99,3 +99,5 @@ EXTRA_DIST = 						\
 	eds-version.h.in
 
 DISTCLEANFILES = eds-version.h $(pkgconfig_DATA)
+
+-include $(top_srcdir)/git.mk

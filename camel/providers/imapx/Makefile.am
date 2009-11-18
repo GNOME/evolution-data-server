@@ -57,3 +57,5 @@ test_imapx_LDADD =							\
 	libcamelimapx.la
 
 EXTRA_DIST = libcamelimapx.urls
+
+-include $(top_srcdir)/git.mk

@@ -407,3 +407,5 @@ EXTRA_DIST =					\
 
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
+
+-include $(top_srcdir)/git.mk

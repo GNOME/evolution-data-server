@@ -22,3 +22,5 @@ endif
 SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap $(IMAPX_DIR) $(IMAP4_DIR) $(NNTP_DIR) local groupwise $(HULA_DIR)
 
 
+
+-include $(top_srcdir)/git.mk

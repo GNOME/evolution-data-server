@@ -61,3 +61,5 @@ libcamellocal_la_LIBADD = \
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamellocal.urls
+
+-include $(top_srcdir)/git.mk

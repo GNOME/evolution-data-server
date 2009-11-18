@@ -23,3 +23,5 @@ libebookbackendwebdav_la_LIBADD = \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libebookbackendwebdav_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED)
+
+-include $(top_srcdir)/git.mk

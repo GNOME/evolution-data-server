@@ -73,3 +73,5 @@ EXTRA_DIST += 				\
 	$(DOC_MODULE)-docs.sgml		\
 	$(DOC_MODULE)-sections.txt	\
 	camel.hierarchy
+
+-include $(top_srcdir)/git.mk

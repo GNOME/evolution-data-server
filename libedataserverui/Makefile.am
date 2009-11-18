@@ -112,8 +112,13 @@ pkgconfig_DATA = libedataserverui-$(API_VERSION).pc
 
 ui_DATA = e-categories-dialog.ui e-name-selector-dialog.ui
 
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+
 EXTRA_DIST = 						\
 	$(ui_DATA)					\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
+CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
+
+-include $(top_srcdir)/git.mk

@@ -37,3 +37,5 @@ split_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
 split_LDADD = $(MISC_TESTS_LDADD)
 rfc2047_CPPFLAGS = $(MISC_TESTS_CPPFLAGS)
 rfc2047_LDADD = $(MISC_TESTS_LDADD)
+
+-include $(top_srcdir)/git.mk

@@ -48,3 +48,5 @@ test_search_LDADD =								\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
 	$(LIBICAL_LIBS)								\
 	$(EVOLUTION_CALENDAR_LIBS)
+
+-include $(top_srcdir)/git.mk

@@ -36,3 +36,5 @@ libebookbackendgoogle_la_LIBADD = \
 
 libebookbackendgoogle_la_LDFLAGS = \
 	-module -avoid-version $(NO_UNDEFINED)
+
+-include $(top_srcdir)/git.mk

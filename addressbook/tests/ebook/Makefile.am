@@ -42,3 +42,5 @@ test_untyped_phones_LDADD=$(TEST_LIBS)
 test_untyped_phones_CPPFLAGS=$(TEST_CPPFLAGS)
 test_stress_bookviews_LDADD=$(TEST_LIBS)
 test_stress_bookviews_CPPFLAGS=$(TEST_CPPFLAGS)
+
+-include $(top_srcdir)/git.mk

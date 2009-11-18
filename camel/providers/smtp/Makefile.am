@@ -24,3 +24,5 @@ libcamelsmtp_la_LIBADD = \
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelsmtp.urls
+
+-include $(top_srcdir)/git.mk

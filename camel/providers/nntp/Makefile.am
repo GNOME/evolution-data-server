@@ -38,3 +38,5 @@ libcamelnntp_la_LIBADD = \
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelnntp.urls
+
+-include $(top_srcdir)/git.mk

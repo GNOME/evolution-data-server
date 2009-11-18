@@ -27,3 +27,5 @@ pgp_LDADD = $(SMIME_TESTS_LDADD)
 # pgp_mime_LDADD = $(SMIME_TESTS_LDADD)
 # pkcs7_CPPFLAGS = $(SMIME_TESTS_CPPFLAGS)
 # pkcs7_LDADD = $(SMIME_TESTS_LDADD)
+
+-include $(top_srcdir)/git.mk

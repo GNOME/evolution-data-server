@@ -32,3 +32,5 @@ ldapschemadir = $(privdatadir)
 ldapschema_DATA= $(LDAP_SCHEMA)
 
 EXTRA_DIST = $(LDAP_SCHEMA) openldap-extract.h
+
+-include $(top_srcdir)/git.mk

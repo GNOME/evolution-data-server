@@ -45,3 +45,5 @@ libcamelimap4_la_LIBADD = \
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelimap4.urls
+
+-include $(top_srcdir)/git.mk

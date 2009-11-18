@@ -47,3 +47,5 @@ weatherdata_DATA = $(weatherdata_in_files:.xml.in=.xml)
 
 DISTCLEANFILES = Locations.xml
 EXTRA_DIST = Locations.xml.in
+
+-include $(top_srcdir)/git.mk

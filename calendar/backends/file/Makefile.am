@@ -29,3 +29,5 @@ libecalbackendfile_la_LIBADD =							\
 
 libecalbackendfile_la_LDFLAGS =		\
 	-module -avoid-version $(NO_UNDEFINED)
+
+-include $(top_srcdir)/git.mk

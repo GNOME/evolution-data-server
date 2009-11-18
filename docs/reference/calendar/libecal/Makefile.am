@@ -35,3 +35,5 @@ GTKDOC_LIBS = \
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
+
+-include $(top_srcdir)/git.mk

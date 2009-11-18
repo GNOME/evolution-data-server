@@ -48,3 +48,5 @@ create_account_LDADD =  $(top_builddir)/addressbook/libedata-book/libedata-book-
         $(top_builddir)/servers/groupwise/libegroupwise-1.2.la \
         $(E_DATA_SERVER_LIBS)
 
+
+-include $(top_srcdir)/git.mk

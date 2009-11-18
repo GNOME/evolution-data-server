@@ -23,3 +23,5 @@ libcamelhula_la_LIBADD = \
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelhula.urls
+
+-include $(top_srcdir)/git.mk

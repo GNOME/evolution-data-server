@@ -23,3 +23,5 @@ libebookbackendvcf_la_LIBADD =						\
 
 libebookbackendvcf_la_LDFLAGS =		\
 	-module -avoid-version $(NO_UNDEFINED)
+
+-include $(top_srcdir)/git.mk

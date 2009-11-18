@@ -5,3 +5,5 @@ LDAP_SUBDIR =
 endif
 
 SUBDIRS = file vcf $(LDAP_SUBDIR) google groupwise webdav
+
+-include $(top_srcdir)/git.mk

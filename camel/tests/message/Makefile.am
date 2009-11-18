@@ -30,3 +30,5 @@ test3_LDADD = $(MESSAGE_TESTS_LDADD)
 test4_LDADD = $(MESSAGE_TESTS_LDADD)
 
 CLEANFILES = test3.msg test3-2.msg test3-3.msg
+
+-include $(top_srcdir)/git.mk

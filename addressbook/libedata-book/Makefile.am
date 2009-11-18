@@ -103,3 +103,5 @@ EXTRA_DIST = 						\
 	e-data-book.xml					\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
 	$(service_in_files)
+
+-include $(top_srcdir)/git.mk
