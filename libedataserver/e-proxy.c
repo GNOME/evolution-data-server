@@ -638,14 +638,19 @@ ep_set_proxy (GConfClient *client,
 	}
 
 	if (gconf_client_get_bool (client, RIGHT_KEY (HTTP_USE_AUTH), NULL)) {
-		gchar *proxy_user, *proxy_pw, *tmp;
+		gchar *proxy_user, *proxy_pw, *tmp = NULL;
 
 		proxy_user = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_USER), NULL);
 		proxy_pw = gconf_client_get_string (client, RIGHT_KEY (HTTP_AUTH_PWD), NULL);
 
-		tmp = uri_http;
-
-		uri_http = g_strdup_printf ("http://%s:%s@%s", proxy_user, proxy_pw, tmp + strlen ("http://"));
+		if (proxy_user && *proxy_user && proxy_pw && *proxy_pw) {
+			tmp = uri_http;
+			uri_http = g_strdup_printf ("http://%s:%s@%s", proxy_user, proxy_pw, tmp + strlen ("http://"));
+		} else if (proxy_user && *proxy_user) {
+			/* proxy without password, just try it */
+			tmp = uri_http;
+			uri_http = g_strdup_printf ("http://%s@%s", proxy_user, tmp + strlen ("http://"));
+		}
 
 		g_free (proxy_user);
 		g_free (proxy_pw);
