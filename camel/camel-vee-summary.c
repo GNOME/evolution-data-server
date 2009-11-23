@@ -342,14 +342,12 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 	/* FIXME[disk-summary] too bad design. Need to peek it from cfs
 	 * instead of hacking ugly like this */
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	CAMEL_SUMMARY_LOCK(s, ref_lock);
 
 	info = g_hash_table_lookup (s->loaded_infos, uid);
 
 	if (info)
-		info->refcount++;
+		camel_message_info_ref (info);
 
-	CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	if (!info) {
@@ -503,6 +501,7 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 			camel_object_ref(summary);
 		}
 
+		camel_message_info_ref (mi);
 		return mi;
 	}
 
