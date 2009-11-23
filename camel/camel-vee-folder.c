@@ -46,6 +46,7 @@
 #include "camel-vee-summary.h"
 #include "camel-string-utils.h"
 #include "camel-vee-folder.h"
+#include "camel-vtrash-folder.h"
 
 #define d(x)
 #define dd(x) (camel_debug("vfolder")?(x):0)
@@ -1113,8 +1114,12 @@ vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex)
 
 	camel_vee_folder_hash_folder(source, u.hash);
 	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", u.hash[0], u.hash[1], u.hash[2], u.hash[3], u.hash[4], u.hash[5], u.hash[6], u.hash[7]);
-	if (!g_hash_table_lookup (vf->hashes, shash))
+	if (!g_hash_table_lookup (vf->hashes, shash)) {
 		g_hash_table_insert (vf->hashes, g_strdup(shash), source->summary);
+	}
+	if (folder_unmatched && !g_hash_table_lookup (folder_unmatched->hashes, shash)) {
+		g_hash_table_insert (folder_unmatched->hashes, g_strdup (shash), source->summary);
+	}
 
 	/* if we have no expression, or its been cleared, then act as if no matches */
 	if (vf->expression == NULL) {
@@ -1938,12 +1943,18 @@ static void
 vee_remove_folder(CamelVeeFolder *vf, CamelFolder *sub)
 {
 	gchar *shash, hash[8];
+	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 
 	camel_vee_folder_hash_folder(sub, hash);
 	vee_folder_remove_folder(vf, sub);
 	shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
-	if (g_hash_table_lookup (vf->hashes, shash))
+	if (g_hash_table_lookup (vf->hashes, shash)) {
 		g_hash_table_remove (vf->hashes, shash);
+	}
+
+	if (folder_unmatched && g_hash_table_lookup (folder_unmatched->hashes, shash)) {
+		g_hash_table_remove (folder_unmatched->hashes, shash);
+	}
 
 	g_free(shash);
 
