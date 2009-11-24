@@ -94,7 +94,7 @@ struct _CamelIMAPXServerClass {
 CamelType               camel_imapx_server_get_type     (void);
 CamelIMAPXServer *camel_imapx_server_new(struct _CamelStore *store, struct _CamelURL *url);
 
-void camel_imapx_server_connect(CamelIMAPXServer *is, gint state);
+gboolean camel_imapx_server_connect(CamelIMAPXServer *is, gint state);
 
 GPtrArray *camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, CamelException *ex);
 

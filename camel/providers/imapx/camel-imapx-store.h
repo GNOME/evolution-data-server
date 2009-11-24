@@ -32,6 +32,7 @@ extern "C" {
 #include <camel/camel-types.h>
 #include <camel/camel-store.h>
 #include "camel-imapx-store-summary.h"
+#include <camel/camel-offline-store.h>
 
 #define CAMEL_IMAPX_STORE_TYPE     (camel_imapx_store_get_type ())
 #define CAMEL_IMAPX_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPX_STORE_TYPE, CamelIMAPXStore))
@@ -46,7 +47,7 @@ struct _pending_fetch {
 };
 
 typedef struct {
-	CamelStore parent_object;
+	CamelOfflineStore parent_object;
 
 	struct _CamelIMAPXServer *server;
 
@@ -60,7 +61,7 @@ typedef struct {
 } CamelIMAPXStore;
 
 typedef struct {
-	CamelStoreClass parent_class;
+	CamelOfflineStoreClass parent_class;
 
 } CamelIMAPXStoreClass;
 

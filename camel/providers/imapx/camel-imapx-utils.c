@@ -157,7 +157,7 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	gint tok, len, i;
 	guchar *token, *p, c, *temp;
 	gboolean free_token = FALSE;
-	struct _capability_info * volatile cinfo;
+	struct _capability_info * cinfo;
 
 	cinfo = g_malloc0(sizeof(*cinfo));
 
@@ -175,7 +175,7 @@ imap_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 			case IMAP_TOK_INT:
 				printf(" cap: '%s'\n", token);
 				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
-					if (strcmp(token, capa_table[i].name))
+					if (!strcmp(token, capa_table[i].name))
 						cinfo->capa |= capa_table[i].flag;
 				if (free_token) {
 					g_free (token);
@@ -233,6 +233,7 @@ imap_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 
 				node = g_new0 (CamelIMAPXStoreNamespace, 1);
 				node->next = NULL;
+				node->full_name = g_strdup (token);
 				node->path = g_strdup (token);
 				g_message ("namespace: Node path is %s \n", node->path);
 
@@ -1335,8 +1336,8 @@ static struct {
 } list_flag_table[] = {
 	{ "\\NOINFERIORS", CAMEL_FOLDER_NOINFERIORS },
 	{ "\\NOSELECT", CAMEL_FOLDER_NOSELECT },
-	{ "\\MARKED", 1<<8 },
-	{ "\\UNMARKED", 1<<9 },
+	{ "\\MARKED", 1<< 16},
+	{ "\\UNMARKED", 1<< 17},
 };
 
 struct _list_info *
@@ -1345,7 +1346,7 @@ imap_parse_list(CamelIMAPXStream *is, CamelException *ex)
 {
 	gint tok, len, i;
 	guchar *token, *p, c;
-	struct _list_info * volatile linfo;
+	struct _list_info * linfo;
 
 	linfo = g_malloc0(sizeof(*linfo));
 
@@ -1582,6 +1583,9 @@ imapx_namespace_clear (CamelIMAPXStoreNamespace **ns)
 void
 camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl)
 {
+	if (!nsl)
+		return;
+	
 	imapx_namespace_clear (&nsl->personal);
 	imapx_namespace_clear (&nsl->shared);
 	imapx_namespace_clear (&nsl->other);

@@ -17,6 +17,8 @@
 #include <prerr.h>
 #endif
 
+#include <poll.h>
+
 #include <camel/camel-list-utils.h>
 #include <camel/camel-msgport.h>
 #include <camel/camel-object.h>
@@ -870,7 +872,7 @@ imapx_find_job(CamelIMAPXServer *imap, gint type, const gchar *uid)
 
 	QUEUE_LOCK(imap);
 
-	for (node = imap->jobs.head;node->next;node = node->next) {
+	for (node = imap->jobs.head;node->next;node = job->msg.ln.next) {
 		job = (CamelIMAPXJob *) node;
 		if (job->type != type)
 			continue;
@@ -942,6 +944,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 	guint id, len;
 	guchar *token, *p, c;
 	gint tok;
+	gboolean lsub = FALSE;
 	struct _status_info *sinfo;
 
 	e(printf("got untagged response\n"));
@@ -1091,7 +1094,9 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		imap_free_fetch(finfo);
 		break;
 	}
-	case IMAP_LIST: case IMAP_LSUB: {
+	case IMAP_LSUB: 
+		lsub = TRUE;
+	case IMAP_LIST: {
 		struct _list_info *linfo = imap_parse_list(imap->stream, ex);
 		CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_LIST, linfo->name);
 
@@ -1099,6 +1104,8 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		printf("list: '%s' (%c)\n", linfo->name, linfo->separator);
 		if (job && g_hash_table_lookup(job->u.list.folders, linfo->name) == NULL) {
+			if (lsub)
+				linfo->flags |= CAMEL_FOLDER_SUBSCRIBED;
 			g_hash_table_insert(job->u.list.folders, linfo->name, linfo);
 		} else {
 			g_warning("got list response but no current listing job happening?\n");
@@ -1613,6 +1620,21 @@ retry:
 			ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
 			imapx_command_run (is, ic, ex);
 			camel_imapx_command_free (ic);
+		} else {
+			CamelIMAPXNamespaceList *nsl = NULL;
+			CamelIMAPXStoreNamespace *ns = NULL;
+			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
+		
+			/* set a default namespace */	
+			nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
+			ns = g_new0 (CamelIMAPXStoreNamespace, 1);
+			ns->next = NULL;
+			ns->path = g_strdup ("");
+			ns->full_name = g_strdup ("");
+			/* FIXME needs to be identified from list response */
+			ns->sep = '/';
+			nsl->personal = ns;
+			imapx_store->summary->namespaces = nsl;
 		}
 }
 
@@ -1628,7 +1650,7 @@ imapx_job_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		camel_exception_clear(job->ex);
 		g_free(job);
 	} else
-		camel_msgport_reply(job->msg.reply_port);
+		camel_msgport_reply((CamelMsg *) job);
 }
 
 /* ********************************************************************** */
@@ -2204,18 +2226,18 @@ imapx_server_loop(gpointer d)
 			break;
 		}
 
-		job = (CamelIMAPXJob *)camel_msgport_try_pop (is->port);
+/*		job = (CamelIMAPXJob *)camel_msgport_try_pop (is->port);
 		if (job) {
 			camel_dlist_addtail(&is->jobs, (CamelDListNode *)job);
 			job->start(is, job);
-		}
+		} */
 
-		if (!camel_dlist_empty(&is->active)
+/*		if (!camel_dlist_empty(&is->active)
 				|| camel_imapx_stream_buffered(is->stream))
 			imapx_step(is, &ex);
 		else
-			camel_msgport_pop (is->port);
-#if 0
+			camel_msgport_pop (is->port); */
+#if 1
 		/* TODO:
 		   This poll stuff wont work - we might block
 		   waiting for results inside loops etc.
@@ -2232,6 +2254,7 @@ imapx_server_loop(gpointer d)
 
 		/* if ssl stream ... */
 #ifdef HAVE_SSL
+		if (CAMEL_IS_TCP_STREAM_SSL (is->stream->source))
 		{
 			PRPollDesc pollfds[2] = { };
 			gint res;
@@ -2242,6 +2265,7 @@ imapx_server_loop(gpointer d)
 			pollfds[0].in_flags = PR_POLL_READ;
 			pollfds[1].fd = camel_msgport_prfd(is->port);
 			pollfds[1].in_flags = PR_POLL_READ;
+#include <prio.h>
 
 			res = PR_Poll(pollfds, 2, PR_TicksPerSecond() / 10);
 			if (res == -1)
@@ -2252,35 +2276,35 @@ imapx_server_loop(gpointer d)
 					/* This is quite shitty, it will often block on each
 					   part of the decode, causing significant
 					   processing delays. */
-					imapx_step(is);
+					imapx_step(is, &ex);
 				} while (camel_imapx_stream_buffered(is->stream));
 			} else if (pollfds[1].out_flags & PR_POLL_READ) {
 				printf(" * woken * have new job\n");
 				/* job is handled in main loop */
 			}
 		}
-#else
+#endif
+		if (CAMEL_IS_TCP_STREAM (is->stream->source))
 		{
-			struct pollfd[2] = { 0 };
+			struct pollfd fds[2] = { 0 };
 			gint res;
 
-			pollfd[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
-			pollfd[0].events = POLLIN;
-			pollfd[1].fd = camel_msgport_fd(is->port);
-			pollfd[1].events = POLLIN;
+			fds[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
+			fds[0].events = POLLIN;
+			fds[1].fd = camel_msgport_fd(is->port);
+			fds[1].events = POLLIN;
 
-			res = poll(pollfd, 2, 1000*30);
+			res = poll(fds, 2, 1000*30);
 			if (res == -1)
 				sleep(1) /* ?? */ ;
 			else if (res == 0)
 				/* timed out */;
-			else if (pollfds[0].revents & POLLIN) {
+			else if (fds[0].revents & POLLIN) {
 				do {
-					imapx_step(is);
+					imapx_step(is, &ex);
 				} while (camel_imapx_stream_buffered(is->stream));
 			}
 		}
-#endif
 #endif
 		if (camel_exception_is_set (&ex)) {
 			printf("######### Got main loop exception: %s\n", ex.desc);
@@ -2368,15 +2392,24 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 
 /* Client commands */
 
-void
+gboolean
 camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 {
 	if (state) {
 		pthread_t id;
+		CamelException ex = {0, NULL};
+
+		imapx_reconnect (is, &ex);
+		if (camel_exception_is_set (&ex))
+			return FALSE;
 
 		pthread_create(&id, NULL, imapx_server_loop, is);
+
+		return TRUE;
 	} else {
 		/* tell processing thread to die, and wait till it does? */
+
+		return TRUE;
 	}
 }
 
@@ -2392,7 +2425,7 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	/* Umm, so all these jobs 'select' first, which means reading(!)
 	   we can't read from this thread ... hrm ... */
-	if (FALSE /*is->state >= IMAPX_AUTHENTICATED*/) {
+	if (is->state >= IMAPX_AUTHENTICATED) {
 		/* NB: Must catch exceptions, cleanup/etc if we fail here? */
 		QUEUE_LOCK(is);
 		camel_dlist_addhead(&is->jobs, (CamelDListNode *)job);
