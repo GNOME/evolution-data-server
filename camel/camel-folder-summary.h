@@ -475,6 +475,8 @@ void camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolea
 void camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info);
 gboolean camel_folder_summary_get_need_preview (CamelFolderSummary *summary);
 
+CamelMessageContentInfo * camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype);
+
 /* debugging functions */
 void camel_content_info_dump (CamelMessageContentInfo *ci, gint depth);
 
