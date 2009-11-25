@@ -947,18 +947,26 @@ _e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, EServerMethodC
 static icaltimezone *
 _e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
-	gint i, slashes = 0;
+	icaltimezone *zone = NULL;
+	const gchar *s, *slash1 = NULL, *slash2 = NULL;
 
 	if (!tzid || !*tzid)
 		return NULL;
 
-	for (i = 0; tzid [i]; i++) {
-		if (tzid [i] == '/')
-			slashes++;
+	/* get builtin by a location, if any */
+	for (s = tzid; *s; s++) {
+		if (*s == '/') {
+			slash1 = slash2;
+			slash2 = s;
+		}
 	}
 
-	/* try if it contains only location of the timezone */
-	return slashes == 1 ? icaltimezone_get_builtin_timezone (tzid) : NULL;
+	if (slash1)
+		zone = icaltimezone_get_builtin_timezone (slash1 + 1);
+	else if (slash2)
+		zone = icaltimezone_get_builtin_timezone (tzid);
+
+	return zone;
 }
 
 static void
