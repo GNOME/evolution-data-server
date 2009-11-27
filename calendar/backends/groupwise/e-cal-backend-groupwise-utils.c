@@ -1919,9 +1919,9 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 				if (!strcmp (accept_level, "Busy"))
 					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSY");
 				else if (!strcmp (accept_level, "Tentative"))
-					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSYTENTATIVE");
+					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSY-TENTATIVE");
 				else if (!strcmp (accept_level, "OutOfOffice"))
-					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSYUNAVAILABLE");
+					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "BUSY-UNAVAILABLE");
 				else if (!strcmp (accept_level, "Free"))
 					icalproperty_set_parameter_from_string (icalprop, "FBTYPE", "FREE");
 				g_free (accept_level);
