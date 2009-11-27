@@ -33,6 +33,7 @@
 #include <camel/camel-net-utils.h>
 #include <camel/camel-tcp-stream-ssl.h>
 #include <camel/camel-tcp-stream-raw.h>
+#include <camel/camel-db.h>
 
 #include <camel/camel-sasl.h>
 #include <camel/camel-i18n.h>
@@ -201,7 +202,7 @@ struct _CamelIMAPXJob {
 			gint last_index;
 			struct _uidset_state uidset;
 			/* changes during refresh */
-//			CamelChangeInfo *changes;
+			CamelFolderChangeInfo *changes;
 		} refresh_info;
 		struct {
 			GPtrArray *infos;
@@ -1007,7 +1008,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		finfo = imap_parse_fetch(imap->stream, ex);
 
-		//imap_dump_fetch(finfo);
+		imap_dump_fetch(finfo);
 
 		if ((finfo->got & (FETCH_BODY|FETCH_UID)) == (FETCH_BODY|FETCH_UID)) {
 			CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_GET_MESSAGE, finfo->uid);
@@ -1829,16 +1830,28 @@ imapx_refresh_info_cmp(gconstpointer ap, gconstpointer bp)
 }
 
 /* skips over non-server uids (pending appends) */
-static const CamelMessageInfo *
-imapx_iterator_next(CamelIterator *iter, CamelException *ex)
+static guint 
+imapx_index_next (CamelFolderSummary *s, guint index)
 {
-	const CamelMessageInfo *iterinfo;
+	guint count = 0;
 
-	while ((iterinfo = camel_iterator_next(iter, NULL))
-	       && strchr(camel_message_info_uid(iterinfo), '-') != NULL)
-		printf("Ignoring offline uid '%s'\n", camel_message_info_uid(iterinfo));
+	count = camel_folder_summary_count (s);
 
-	return iterinfo;
+	while (index < count) {
+		const CamelMessageInfo *info;
+		
+		index++;
+		info = camel_folder_summary_index (s, index);
+		if (!info)
+			continue;
+	       
+		if (info && (strchr(camel_message_info_uid(info), '-') != NULL)) {
+			printf("Ignoring offline uid '%s'\n", camel_message_info_uid(info));
+		} else
+			break;
+	}	
+
+	return index;
 }
 
 static void
@@ -1848,9 +1861,9 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	gint i = job->u.refresh_info.index;
 	GArray *infos = job->u.refresh_info.infos;
 
-/*	if (camel_change_info_changed(job->u.refresh_info.changes))
+	if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 		camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
-	camel_change_info_clear(job->u.refresh_info.changes); */
+	camel_folder_change_info_clear(job->u.refresh_info.changes); 
 
 	if (i<infos->len) {
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name, "UID FETCH ");
@@ -1881,6 +1894,7 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 	}
 
+	camel_folder_summary_save_to_db (job->folder->summary, NULL);
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
@@ -1923,11 +1937,13 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	if (ic->status->result == IMAP_OK) {
 		GCompareDataFunc uid_cmp = imapx_uid_cmp;
-		CamelIterator *iter;
-		const CamelMessageInfo *iterinfo;
+		const CamelMessageInfo *s_minfo = NULL;
 		CamelIMAPXMessageInfo *info;
 		CamelFolderSummary *s = job->folder->summary;
-		gint i, count=0;
+		GSList *removed = NULL;
+		gboolean fetch_new = FALSE;
+		gint i;
+		guint j = 0, total = 0;
 
 		/* Here we do the typical sort/iterate/merge loop.
 		   If the server flags dont match what we had, we modify our
@@ -1939,49 +1955,64 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		   for all outstanding messages to be uploaded */
 
 		qsort(infos->data, infos->len, sizeof(struct _refresh_info), imapx_refresh_info_cmp);
-
-		/*
-		iter = camel_folder_summary_search(s, NULL, NULL, NULL, NULL);
-		iterinfo = imapx_iterator_next(iter, NULL);
-
-		for (i=0;i<infos->len;i++) {
+		total = camel_folder_summary_count (s);
+		s_minfo = camel_folder_summary_index (s, 0);
+		
+		for (i=0; i<infos->len ; i++) {
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
-			while (iterinfo && uid_cmp(camel_message_info_uid(iterinfo), r->uid, s) < 0) {
-				printf("Message %s vanished\n", iterinfo->uid);
-//				camel_change_info_remove(job->u.refresh_info.changes, iterinfo);
-				camel_folder_summary_remove(s, (CamelMessageInfo *)iterinfo);
-				iterinfo = imapx_iterator_next(iter, NULL);
+			while (s_minfo && uid_cmp(camel_message_info_uid(s_minfo), r->uid, s) < 0) {
+				const char *uid = camel_message_info_uid (s_minfo);
+
+				camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
+				removed = g_slist_prepend (removed, (gpointer )uid);
+				camel_folder_summary_remove_uid_fast (s, s_minfo->uid);
+				j = imapx_index_next (s, j);
+				s_minfo = camel_folder_summary_index (s, j);
 			}
 
 			info = NULL;
-			if (iterinfo && uid_cmp(iterinfo->uid, r->uid, s) == 0) {
+			if (s_minfo && uid_cmp(s_minfo->uid, r->uid, s) == 0) {
 				printf("already have '%s'\n", r->uid);
-				info = (CamelIMAPXMessageInfo *)iterinfo;
-//				if (info->server_flags !=  r->server_flags
-//				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags))
-//					camel_change_info_change(job->u.refresh_info.changes, iterinfo);
-				iterinfo = imapx_iterator_next(iter, NULL);
+				info = (CamelIMAPXMessageInfo *)s_minfo;
+				if (info->server_flags !=  r->server_flags
+				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags))
+					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
 				g_free(r->uid);
 				r->uid = NULL;
-			} else {
-				count++;
-			}
+			} else 
+				fetch_new = TRUE;
+			
+			j = imapx_index_next (s, j);
+			s_minfo = camel_folder_summary_index (s, j);
+
+			if (j > total)
+				break;
 		}
 
-		while (iterinfo) {
-			printf("Message %s vanished\n", iterinfo->uid);
-//			camel_change_info_remove(job->u.refresh_info.changes, iterinfo);
-			camel_folder_summary_remove(s, (CamelMessageInfo *)iterinfo);
-			iterinfo = imapx_iterator_next(iter, NULL);
-		} */
+		while (j < total) {
+			s_minfo = camel_folder_summary_index (s, j);
 
-/*		if (camel_change_info_changed(job->u.refresh_info.changes))
+			if (!s_minfo) {
+				j++;	
+				continue;
+			}
+			
+			printf("Message %s vanished\n", s_minfo->uid);
+			camel_folder_change_info_remove_uid (job->u.refresh_info.changes, s_minfo->uid);
+			camel_folder_summary_remove_uid_fast (s, s_minfo->uid);
+			removed = g_slist_prepend (removed, s_minfo->uid);
+			j++;
+		} 
+
+		camel_db_delete_uids (is->store, s->folder->full_name, removed, NULL);
+
+		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
-		camel_change_info_clear(job->u.refresh_info.changes);*/
+		camel_folder_change_info_clear(job->u.refresh_info.changes);
 
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
-		if (count) {
+		if (fetch_new) {
 			imapx_uidset_init(&job->u.refresh_info.uidset, 100, 0);
 			imapx_job_refresh_info_step_done(is, ic);
 			return;
@@ -2005,14 +2036,13 @@ imapx_job_refresh_info_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	// temp ... we shouldn't/dont want to force select?  or do we?
-	//imapx_select(is, job->folder);
-	ic = camel_imapx_command_new("FETCH", job->folder->full_name,
+	/* Should we force a select here ? */
+	ic = camel_imapx_command_new ("FETCH", job->folder->full_name,
 				     "FETCH 1:* (UID FLAGS)");
 	ic->job = job;
 	ic->complete = imapx_job_refresh_info_done;
-	job->u.refresh_info.infos = g_array_new(0, 0, sizeof(struct _refresh_info));
-	imapx_command_queue(is, ic);
+	job->u.refresh_info.infos = g_array_new (0, 0, sizeof(struct _refresh_info));
+	imapx_command_queue (is, ic);
 }
 
 /* ********************************************************************** */
@@ -2603,7 +2633,7 @@ fail:
 }
 
 #include "camel-imapx-store.h"
-
+/*
 static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 static CamelIterator *threaditer;
 static CamelFolder *threadfolder;
@@ -2615,7 +2645,7 @@ getmsgs(gpointer d)
 	const CamelMessageInfo *info;
 	CamelException ex = { 0 };
 
-	/* FIXME: detach? */
+	/* FIXME: detach? 
 
 	printf("Checking thread, downloading messages in the background ...\n");
 
@@ -2645,7 +2675,7 @@ getmsgs(gpointer d)
 	pthread_mutex_unlock(&lock);
 
 	return NULL;
-}
+} */
 
 void
 camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
@@ -2657,7 +2687,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 	job->start = imapx_job_refresh_info_start;
 	job->folder = folder;
 	job->ex = ex;
-//	job->u.refresh_info.changes = camel_change_info_new(NULL);
+	job->u.refresh_info.changes = camel_folder_change_info_new();
 
 	imapx_run_job(is, job);
 

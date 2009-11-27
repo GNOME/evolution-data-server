@@ -11,6 +11,7 @@ main (gint argc, gchar *argv [])
 	CamelException *ex;
 	gchar *uri = NULL;
 	CamelService *service;
+	CamelFolder *folder;
 
 	if (argc != 2) {
 		printf ("Pass the account url argument \n");
@@ -31,6 +32,8 @@ main (gint argc, gchar *argv [])
 	camel_service_connect (service, ex);
 
 	camel_store_get_folder_info ((CamelStore *)service, "", 3, NULL);
+	folder = camel_store_get_folder ((CamelStore *)service, "INBOX", 0, NULL);
+	camel_folder_refresh_info (folder, NULL);
 
 	while (1)
 	{
