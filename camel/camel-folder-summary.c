@@ -5081,14 +5081,14 @@ camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType 
 {
 	CamelMessageInfoBase *bmi = (CamelMessageInfoBase *) mi;
 	CamelMessageContentInfo *ci = bmi->content;
-	
+
 	while (ci) {
 		CamelMessageContentInfo *child = ci;
-		
+
 		do {
 			if (match_content_type (child->type, ctype))
 				return child;
-		
+
 			child = child->next;
 		} while (child != NULL);
 

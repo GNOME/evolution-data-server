@@ -1315,7 +1315,7 @@ stream_get_remote_address (CamelTcpStream *stream, socklen_t *len)
 PRFileDesc *
 camel_tcp_stream_ssl_sockfd (CamelTcpStreamSSL *stream)
 {
-	return stream->priv->sockfd;	
+	return stream->priv->sockfd;
 }
 
 #endif /* HAVE_NSS */

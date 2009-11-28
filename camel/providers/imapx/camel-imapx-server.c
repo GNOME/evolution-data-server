@@ -1095,7 +1095,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		imap_free_fetch(finfo);
 		break;
 	}
-	case IMAP_LSUB: 
+	case IMAP_LSUB:
 		lsub = TRUE;
 	case IMAP_LIST: {
 		struct _list_info *linfo = imap_parse_list(imap->stream, ex);
@@ -1625,8 +1625,8 @@ retry:
 			CamelIMAPXNamespaceList *nsl = NULL;
 			CamelIMAPXStoreNamespace *ns = NULL;
 			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
-		
-			/* set a default namespace */	
+
+			/* set a default namespace */
 			nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
 			ns = g_new0 (CamelIMAPXStoreNamespace, 1);
 			ns->next = NULL;
@@ -1830,7 +1830,7 @@ imapx_refresh_info_cmp(gconstpointer ap, gconstpointer bp)
 }
 
 /* skips over non-server uids (pending appends) */
-static guint 
+static guint
 imapx_index_next (CamelFolderSummary *s, guint index)
 {
 	guint count = 0;
@@ -1839,17 +1839,17 @@ imapx_index_next (CamelFolderSummary *s, guint index)
 
 	while (index < count) {
 		const CamelMessageInfo *info;
-		
+
 		index++;
 		info = camel_folder_summary_index (s, index);
 		if (!info)
 			continue;
-	       
+
 		if (info && (strchr(camel_message_info_uid(info), '-') != NULL)) {
 			printf("Ignoring offline uid '%s'\n", camel_message_info_uid(info));
 		} else
 			break;
-	}	
+	}
 
 	return index;
 }
@@ -1863,7 +1863,7 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 		camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
-	camel_folder_change_info_clear(job->u.refresh_info.changes); 
+	camel_folder_change_info_clear(job->u.refresh_info.changes);
 
 	if (i<infos->len) {
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name, "UID FETCH ");
@@ -1957,12 +1957,12 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		qsort(infos->data, infos->len, sizeof(struct _refresh_info), imapx_refresh_info_cmp);
 		total = camel_folder_summary_count (s);
 		s_minfo = camel_folder_summary_index (s, 0);
-		
-		for (i=0; i<infos->len ; i++) {
+
+		for (i=0; i<infos->len; i++) {
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
 			while (s_minfo && uid_cmp(camel_message_info_uid(s_minfo), r->uid, s) < 0) {
-				const char *uid = camel_message_info_uid (s_minfo);
+				const gchar *uid = camel_message_info_uid (s_minfo);
 
 				camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
 				removed = g_slist_prepend (removed, (gpointer )uid);
@@ -1980,9 +1980,9 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
 				g_free(r->uid);
 				r->uid = NULL;
-			} else 
+			} else
 				fetch_new = TRUE;
-			
+
 			j = imapx_index_next (s, j);
 			s_minfo = camel_folder_summary_index (s, j);
 
@@ -1994,16 +1994,16 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			s_minfo = camel_folder_summary_index (s, j);
 
 			if (!s_minfo) {
-				j++;	
+				j++;
 				continue;
 			}
-			
+
 			printf("Message %s vanished\n", s_minfo->uid);
 			camel_folder_change_info_remove_uid (job->u.refresh_info.changes, s_minfo->uid);
 			camel_folder_summary_remove_uid_fast (s, s_minfo->uid);
 			removed = g_slist_prepend (removed, s_minfo->uid);
 			j++;
-		} 
+		}
 
 		camel_db_delete_uids (is->store, s->folder->full_name, removed, NULL);
 
@@ -2645,7 +2645,7 @@ getmsgs(gpointer d)
 	const CamelMessageInfo *info;
 	CamelException ex = { 0 };
 
-	/* FIXME: detach? 
+	/* FIXME: detach?
 
 	printf("Checking thread, downloading messages in the background ...\n");
 

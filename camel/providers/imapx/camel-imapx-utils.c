@@ -1585,7 +1585,7 @@ camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl)
 {
 	if (!nsl)
 		return;
-	
+
 	imapx_namespace_clear (&nsl->personal);
 	imapx_namespace_clear (&nsl->shared);
 	imapx_namespace_clear (&nsl->other);

@@ -508,7 +508,7 @@ static gint folder_eq(gconstpointer ap, gconstpointer bp)
 	return g_str_equal(a, b);
 }
 
-static gboolean 
+static gboolean
 imap_match_pattern(CamelIMAPXStoreNamespace *ns, const gchar *pattern, const gchar *name)
 {
 	gchar p, n, dir_sep;
@@ -584,7 +584,6 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 		CamelStoreInfo *si = camel_store_summary_index((CamelStoreSummary *)imapx_store->summary, i);
 		const gchar *full_name;
 		CamelIMAPXStoreNamespace *ns;
-		
 
 		if (si == NULL)
 			continue;
@@ -604,7 +603,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 		    && ( TRUE
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
 			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0)) {
-			
+
 			fi = imapx_build_folder_info(imapx_store, camel_store_info_path((CamelStoreSummary *)imapx_store->summary, si));
 			fi->unread = si->unread;
 			fi->total = si->total;
@@ -661,14 +660,14 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		if (!si)
 			continue;
 
-		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) | 
+		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) |
 						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
 
 		if (si->info.flags != new_flags) {
 			si->info.flags = new_flags;
 			camel_store_summary_touch ((CamelStoreSummary *) istore->summary);
 		}
-		
+
 		if (!table)
 			continue;
 
@@ -719,10 +718,10 @@ static void
 fetch_folders_for_pattern (CamelIMAPXStore *istore, const gchar *pattern, guint32 flags, GHashTable **table, CamelException *ex)
 {
 	GPtrArray *folders = NULL;
-	
+
 	folders = camel_imapx_server_list (istore->server, pattern, flags, ex);
 	add_folders_to_summary (istore, folders, table);
-	
+
 	g_ptr_array_foreach (folders, free_list, folders);
 	g_ptr_array_free (folders, TRUE);
 }
@@ -750,18 +749,18 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, Cam
 {
 	GHashTable *folders = NULL;
 	GSList *namespaces = NULL, *l;
-	
+
 	folders = g_hash_table_new (folder_hash, folder_eq);
 	namespaces = get_namespaces (istore);
 
 	for (l = namespaces; l != NULL; l = g_slist_next (l))
 	{
-		CamelIMAPXStoreNamespace *ns = l->data;	
+		CamelIMAPXStoreNamespace *ns = l->data;
 
 		while (ns) {
 			guint32 flags = 0;
 			gchar *pat = NULL;
-			
+
 			if (!pattern) {
 				if (!*ns->path)
 					pat = g_strdup ("");
@@ -776,8 +775,8 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, Cam
 			fetch_folders_for_pattern (istore, pat, flags, &folders, ex);
 
 			g_free (pat);
-		
-			if (pattern)	
+
+			if (pattern)
 				return folders;
 
 			ns = ns->next;
@@ -802,11 +801,11 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 		CamelStoreInfo *si;
 		const gchar *full_name;
 		CamelFolderInfo *fi;
-		
+
 		si = camel_store_summary_index ((CamelStoreSummary *) istore->summary, i);
 		if (!si)
 			continue;
-		
+
 		full_name = camel_imapx_store_info_full_name (istore->summary, si);
 		if (!full_name || !*full_name) {
 			camel_store_summary_info_free ((CamelStoreSummary *)istore->summary, si);
@@ -829,7 +828,7 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 					CamelException eex;
 
 					camel_exception_init (&eex);
-					
+
 					/* Delete the folder from cache */
 
 					g_free (dup_folder_name);
@@ -863,18 +862,18 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 		fi = get_folder_info_offline (store, top, flags, ex);
 		return fi;
 	}
-	
+
 	if (istore->server == NULL) {
 		camel_service_connect((CamelService *)store, ex);
 		if (camel_exception_is_set(ex))
 			return NULL;
 	}
-	
+
 	if (camel_store_summary_count (istore->summary) == 0) {
 		sync_folders (istore, top, ex);
 		camel_store_summary_save((CamelStoreSummary *)istore->summary);
 	}
-	
+
 	fi = get_folder_info_offline (store, top, flags, ex);
 
 	return fi;

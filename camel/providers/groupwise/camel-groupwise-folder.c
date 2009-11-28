@@ -689,16 +689,15 @@ sync_flags (CamelFolder *folder, GList *uids)
 	}
 }
 
-
 static gboolean
 groupwise_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flags, guint32 set)
 {
 	CamelMessageInfo *info;
 	gint res;
 	const gchar *sync_immediately;
-	
+
 	g_return_val_if_fail (folder->summary != NULL, FALSE);
-	
+
 	info = camel_folder_summary_uid (folder->summary, uid);
 	if (info == NULL)
 		return FALSE;
@@ -706,12 +705,12 @@ groupwise_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flag
 	res = camel_message_info_set_flags (info, flags, set);
 
 	sync_immediately = g_getenv ("GW_SYNC_IMMEDIATE");
-	
+
 	if (sync_immediately) {
 		CamelException ex;
-		
+
 		camel_exception_init (&ex);
-		groupwise_sync (folder, FALSE, info, &ex); 
+		groupwise_sync (folder, FALSE, info, &ex);
 		camel_exception_clear (&ex);
 	}
 
@@ -722,7 +721,7 @@ groupwise_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flag
 static void
 groupwise_sync_all (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
-	groupwise_sync (folder, expunge, NULL, ex);	
+	groupwise_sync (folder, expunge, NULL, ex);
 }
 
 /* This may need to be reorganized. */
@@ -769,7 +768,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 	for (i=0; i < count; i++) {
 		guint32 flags = 0;
-		
+
 		if (update_single != NULL) {
 			info = update_single;
 			camel_message_info_ref (info);
@@ -881,7 +880,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 				}
 			}
 		}
-		
+
 		camel_message_info_free (info);
 	}
 
