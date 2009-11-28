@@ -599,6 +599,7 @@ camel_message_info_set_user_tag
 camel_folder_summary_set_need_preview
 camel_folder_summary_add_preview
 camel_folder_summary_get_need_preview
+camel_folder_summary_guess_content_info
 camel_content_info_dump
 camel_message_info_dump
 camel_folder_summary_migrate_infos
@@ -2021,6 +2022,7 @@ CAMEL_TCP_STREAM_SSL_ENABLE_TLS
 camel_tcp_stream_ssl_new
 camel_tcp_stream_ssl_new_raw
 camel_tcp_stream_ssl_enable_ssl
+camel_tcp_stream_ssl_sockfd
 <SUBSECTION Standard>
 CAMEL_TCP_STREAM_SSL
 CAMEL_IS_TCP_STREAM_SSL

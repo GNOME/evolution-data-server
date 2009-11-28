@@ -1049,6 +1049,16 @@ CamelFolderSummary
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_folder_summary_guess_content_info ##### -->
+<para>
+
+</para>
+
+@mi: 
+@ctype: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_content_info_dump ##### -->
 <para>
 

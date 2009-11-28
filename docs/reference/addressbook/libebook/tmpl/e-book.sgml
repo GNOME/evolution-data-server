@@ -408,6 +408,15 @@ The writable status for this book is being reported.
 @Returns: 
 
 
+<!-- ##### MACRO e_return_error_if_fail ##### -->
+<para>
+
+</para>
+
+@expr: 
+@error_code: 
+
+
 <!-- ##### USER_FUNCTION EBookCallback ##### -->
 <para>
 
