@@ -107,22 +107,6 @@ e_cal_backend_google_internal_get_default_timezone (ECalBackend *backend)
 	return cbgo->priv->default_zone;
 }
 
-static icaltimezone *
-e_cal_backend_google_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
-{
-	icaltimezone *zone;
-
-	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-
-	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
-		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
-
-	if (!zone)
-		return icaltimezone_get_utc_timezone ();
-
-	return zone;
-}
-
 static ECalBackendSyncStatus
 e_cal_backend_google_get_free_busy (ECalBackendSync *backend,
 				    EDataCal *cal,
@@ -217,37 +201,6 @@ e_cal_backend_google_get_mode (ECalBackend *backend)
 	priv = cbgo->priv;
 
 	return priv->mode;
-}
-
-static ECalBackendSyncStatus
-e_cal_backend_google_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
-{
-	ECalBackendGoogle *cbgo;
-	ECalBackendGooglePrivate *priv;
-
-	icaltimezone *zone;
-	icalcomponent *icalcomp;
-
-	cbgo = E_CAL_BACKEND_GOOGLE (backend);
-	priv = cbgo->priv;
-
-	g_return_val_if_fail (tzid!=NULL, GNOME_Evolution_Calendar_ObjectNotFound);
-
-	if (!strcmp (tzid, "UTC")) {
-		zone = icaltimezone_get_utc_timezone ();
-	} else {
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-		if (!zone)
-			return GNOME_Evolution_Calendar_ObjectNotFound;
-	}
-
-	icalcomp = icaltimezone_get_component (zone);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_InvalidObject;
-
-	*object = icalcomponent_as_ical_string_r (icalcomp);
-
-	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
@@ -1384,7 +1337,6 @@ e_cal_backend_google_class_init (ECalBackendGoogleClass *class)
 	sync_class->get_object_sync = e_cal_backend_google_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_google_get_object_list;
 	sync_class->get_attachment_list_sync = e_cal_backend_google_get_attachment_list;
-	sync_class->get_timezone_sync = e_cal_backend_google_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_google_add_timezone;
 	sync_class->set_default_zone_sync = e_cal_backend_google_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_google_get_free_busy;
@@ -1394,7 +1346,6 @@ e_cal_backend_google_class_init (ECalBackendGoogleClass *class)
 	backend_class->get_mode = e_cal_backend_google_get_mode;
 	backend_class->set_mode = e_cal_backend_google_set_mode;
 	backend_class->internal_get_default_timezone = e_cal_backend_google_internal_get_default_timezone;
-	backend_class->internal_get_timezone = e_cal_backend_google_internal_get_timezone;
 }
 
 /**

@@ -859,37 +859,6 @@ e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/* Get_timezone_object handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_http_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
-{
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-	const icaltimezone *zone;
-	icalcomponent *icalcomp;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
-	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
-
-	/* first try to get the timezone from the cache */
-	zone = e_cal_backend_store_get_timezone (priv->store, tzid);
-	if (!zone) {
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-		if (!zone)
-			return GNOME_Evolution_Calendar_ObjectNotFound;
-	}
-
-	icalcomp = icaltimezone_get_component ((icaltimezone *)zone);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_InvalidObject;
-
-	*object = icalcomponent_as_ical_string_r (icalcomp);
-
-	return GNOME_Evolution_Calendar_Success;
-}
-
 /* Add_timezone handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
@@ -1336,10 +1305,13 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const gchar *tzi
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
+	g_return_val_if_fail (tzid != NULL, NULL);
+
 	if (!strcmp (tzid, "UTC"))
 		zone = icaltimezone_get_utc_timezone ();
 	else {
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+		/* first try to get the timezone from the cache */
+		zone = (icaltimezone *) e_cal_backend_store_get_timezone (priv->store, tzid);
 
 		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
 			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
@@ -1398,7 +1370,6 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	sync_class->get_default_object_sync = e_cal_backend_http_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_http_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_http_get_object_list;
-	sync_class->get_timezone_sync = e_cal_backend_http_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_http_add_timezone;
 	sync_class->set_default_zone_sync = e_cal_backend_http_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_http_get_free_busy;

@@ -1558,48 +1558,6 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/* Get_timezone_object handler for the file backend */
-static ECalBackendSyncStatus
-e_cal_backend_file_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
-{
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
-	icaltimezone *zone;
-	icalcomponent *icalcomp;
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
-	priv = cbfile->priv;
-
-	g_return_val_if_fail (priv->icalcomp != NULL, GNOME_Evolution_Calendar_NoSuchCal);
-	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
-
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
-
-	if (!strcmp (tzid, "UTC")) {
-		zone = icaltimezone_get_utc_timezone ();
-	} else {
-		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
-		if (!zone) {
-			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-			if (!zone) {
-				g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-				return GNOME_Evolution_Calendar_ObjectNotFound;
-			}
-		}
-	}
-
-	icalcomp = icaltimezone_get_component (zone);
-	if (!icalcomp) {
-		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-		return GNOME_Evolution_Calendar_InvalidObject;
-	}
-
-	*object = icalcomponent_as_ical_string_r (icalcomp);
-
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-	return GNOME_Evolution_Calendar_Success;
-}
-
 /* Add_timezone handler for the file backend */
 static ECalBackendSyncStatus
 e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
@@ -2123,8 +2081,6 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzi
 		zone = icaltimezone_get_utc_timezone ();
 	else {
 		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
-		if (!zone)
-			zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
 		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
 			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
@@ -3150,7 +3106,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	sync_class->get_object_sync = e_cal_backend_file_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_file_get_object_list;
 	sync_class->get_attachment_list_sync = e_cal_backend_file_get_attachment_list;
-	sync_class->get_timezone_sync = e_cal_backend_file_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_file_add_timezone;
 	sync_class->set_default_zone_sync = e_cal_backend_file_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_file_get_free_busy;

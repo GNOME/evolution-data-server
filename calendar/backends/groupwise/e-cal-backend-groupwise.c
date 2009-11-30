@@ -1577,37 +1577,6 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 	return GNOME_Evolution_Calendar_ObjectNotFound;
 }
 
-/* Get_timezone_object handler for the groupwise backend */
-static ECalBackendSyncStatus
-e_cal_backend_groupwise_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
-{
-	ECalBackendGroupwise *cbgw;
-        ECalBackendGroupwisePrivate *priv;
-        icaltimezone *zone;
-        icalcomponent *icalcomp;
-
-        cbgw = E_CAL_BACKEND_GROUPWISE (backend);
-        priv = cbgw->priv;
-
-        g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
-
-        if (!strcmp (tzid, "UTC")) {
-                zone = icaltimezone_get_utc_timezone ();
-        } else {
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-		if (!zone)
-			return GNOME_Evolution_Calendar_ObjectNotFound;
-        }
-
-        icalcomp = icaltimezone_get_component (zone);
-        if (!icalcomp)
-                return GNOME_Evolution_Calendar_InvalidObject;
-
-        *object = icalcomponent_as_ical_string_r (icalcomp);
-
-        return GNOME_Evolution_Calendar_Success;
-}
-
 /* Add_timezone handler for the groupwise backend */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
@@ -1920,14 +1889,17 @@ static icaltimezone *
 e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
 	icaltimezone *zone;
+	ECalBackendGroupwise *cbgw;
 
-	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	g_return_val_if_fail (cbgw != NULL, NULL);
+	g_return_val_if_fail (cbgw->priv != NULL, NULL);
+
+	if (cbgw->priv->store)
+		zone = (icaltimezone *) e_cal_backend_store_get_timezone (cbgw->priv->store, tzid);
 
 	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
 		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
-
-	if (!zone)
-		return icaltimezone_get_utc_timezone();
 
 	return zone;
 }
@@ -2881,7 +2853,6 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	sync_class->get_object_sync = e_cal_backend_groupwise_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_groupwise_get_object_list;
 	sync_class->get_attachment_list_sync = e_cal_backend_groupwise_get_attachment_list;
-	sync_class->get_timezone_sync = e_cal_backend_groupwise_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_groupwise_add_timezone;
 	sync_class->set_default_zone_sync = e_cal_backend_groupwise_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_groupwise_get_free_busy;

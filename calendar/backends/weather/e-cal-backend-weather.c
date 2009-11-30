@@ -614,32 +614,6 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, 
 }
 
 static ECalBackendSyncStatus
-e_cal_backend_weather_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
-{
-	ECalBackendWeather *cbw;
-	ECalBackendWeatherPrivate *priv;
-	icaltimezone *zone;
-	icalcomponent *icalcomp;
-
-	cbw = E_CAL_BACKEND_WEATHER (backend);
-	priv = cbw->priv;
-
-	g_return_val_if_fail (tzid != NULL, GNOME_Evolution_Calendar_ObjectNotFound);
-
-	zone = e_cal_backend_internal_get_timezone (E_CAL_BACKEND (backend), tzid);
-	if (!zone)
-		return GNOME_Evolution_Calendar_ObjectNotFound;
-
-	icalcomp = icaltimezone_get_component (zone);
-	if (!icalcomp)
-		return GNOME_Evolution_Calendar_InvalidObject;
-
-	*object = icalcomponent_as_ical_string_r (icalcomp);
-
-	return GNOME_Evolution_Calendar_Success;
-}
-
-static ECalBackendSyncStatus
 e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
 {
 	ECalBackendWeather *cbw;
@@ -859,13 +833,22 @@ static icaltimezone *
 e_cal_backend_weather_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
 	icaltimezone *zone;
-	if (!strcmp (tzid, "UTC"))
-		zone = icaltimezone_get_utc_timezone ();
-	else
-		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
-	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
-		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+	g_return_val_if_fail (tzid != NULL, NULL);
+
+	if (!strcmp (tzid, "UTC")) {
+		zone = icaltimezone_get_utc_timezone ();
+	} else {
+		ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
+
+		g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
+		g_return_val_if_fail (cbw->priv != NULL, NULL);
+
+		zone = g_hash_table_lookup (cbw->priv->zones, tzid);
+
+		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+	}
 
 	return zone;
 }
@@ -975,7 +958,6 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class->get_default_object_sync = e_cal_backend_weather_get_default_object;
 	sync_class->get_object_sync = e_cal_backend_weather_get_object;
 	sync_class->get_object_list_sync = e_cal_backend_weather_get_object_list;
-	sync_class->get_timezone_sync = e_cal_backend_weather_get_timezone;
 	sync_class->add_timezone_sync = e_cal_backend_weather_add_timezone;
 	sync_class->set_default_zone_sync = e_cal_backend_weather_set_default_zone;
 	sync_class->get_freebusy_sync = e_cal_backend_weather_get_free_busy;
