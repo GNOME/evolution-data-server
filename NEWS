@@ -1,3 +1,58 @@
+Evolution-Data-Server 2.29.3 2009-11-30
+---------------------------------------
+
+Bug Fixes:
+
+Mailer:
+	#600449 - segfault in camel_msgport_destroy (Milan Crha)
+	#549221 (BNC) - delete, sync flags immediately (Chenthill Palanisamy)
+	#361145 - Evolution hangs when formatting message - fixes part of it.
+	(Chenthill Palanisamy)
+	#574940 - Crash in message_info_to_db() (Milan Crha)
+
+Calendar:
+	#394567 - Use correct FBTYPE values in GroupWise calendar backend
+	(Jari Urpalainen)
+	#347845 - Early Hour AM iCal Calendar Entries Do Not Load (Milan Crha)
+	Bug 603311 -  Prepare for new weather_info_get_icon_name() return values
+	(Frank Solensky)
+	Bug 494394 -  No way for the user to refresh a calendar (Milan Crha)
+
+Misc:
+	#602719 - Crash in ep_set_proxy with no proxy user or password
+	(Milan Crha)
+
+
+Other Changes:
+
+Calendar:
+	Check the proxy state at the beginning of each function(Travis Reitter)
+	Add a bit more input validation for D-Bus-bound ECal functions.
+	(Travis Reitter)
+
+Contacts:
+	Documentation fix (Patrick Ohly)
+
+Camel:
+	Coding style and whitespace cleanup. (Matthew Barnes)
+	Fetch message summary - imapx. (Chenthill Palanisamy)
+	Add camel cflags for nameselector test program. (Chenthill Palanisamy)
+	Fetches the folderinfo from multiple namespaces - imapx.
+	(Chenthill Palanisamy)
+	Pass the port directly which to exchange message(Chenthill Palanisamy)
+	Revert 'Remove unused assignments' as it breaks nntp summary
+	(Lucian Langa)
+	Serializes the connect, notify new messages to UI, fixes a crash - imapx
+	(Chenthill Palanisamy)
+
+Misc:
+	Update API documentation. (Matthew Barnes)
+	Enable automatic .gitignore generation. (Matthew Barnes)
+	
+Translations:
+	Ivar Smolin (et)
+
+
 Evolution-Data-Server 2.29.2 2009-11-16
 ---------------------------------------
 
