@@ -43,6 +43,7 @@ DBusGConnection *connection;
 static void impl_Cal_get_uri (EDataCal *cal, DBusGMethodInvocation *context);
 static void impl_Cal_open (EDataCal *cal, gboolean only_if_exists, gchar *username, gchar *password, DBusGMethodInvocation *context);
 static gboolean impl_Cal_close (EDataCal *cal, GError **error);
+static void impl_Cal_refresh (EDataCal *cal, DBusGMethodInvocation *context);
 static void impl_Cal_remove (EDataCal *cal, DBusGMethodInvocation *context);
 static void impl_Cal_isReadOnly (EDataCal *cal, DBusGMethodInvocation *context);
 static void impl_Cal_getCalAddress (EDataCal *cal, DBusGMethodInvocation *context);
@@ -198,6 +199,13 @@ impl_Cal_close (EDataCal *cal, GError **error)
 	e_cal_backend_remove_client (cal->priv->backend, cal);
 	g_object_unref (cal);
 	return TRUE;
+}
+
+/* EDataCal::refresh method */
+static void
+impl_Cal_refresh (EDataCal *cal, DBusGMethodInvocation *context)
+{
+	e_cal_backend_refresh (cal->priv->backend, cal, context);
 }
 
 /* EDataCal::remove method */
@@ -552,6 +560,23 @@ e_data_cal_notify_open (EDataCal *cal, EServerMethodContext context, EDataCalCal
 	DBusGMethodInvocation *method = context;
 	if (status != Success)
 		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot open calendar")));
+	else
+		dbus_g_method_return (method);
+}
+
+/**
+ * e_data_cal_notify_refresh:
+ * @cal: A calendar client interface.
+ * @status: Status code.
+ *
+ * Notifies listeners of the completion of the refresh method call.
+ */
+void
+e_data_cal_notify_refresh (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)
+{
+	DBusGMethodInvocation *method = context;
+	if (status != Success)
+		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot refresh calendar")));
 	else
 		dbus_g_method_return (method);
 }

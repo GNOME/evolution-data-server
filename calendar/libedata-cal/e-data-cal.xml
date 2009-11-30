@@ -32,6 +32,11 @@
 			<arg name="password" type="s" direction="in"/>
 		</method>
 
+		<method name="refresh">
+			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Cal_refresh"/>
+			<annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+		</method>		
+
 		<method name="close">
 			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="impl_Cal_close"/>
 		</method>

@@ -39,6 +39,7 @@ struct _ECalBackendSyncClass {
 	ECalBackendSyncStatus (*get_static_capabilities_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities);
 
 	ECalBackendSyncStatus (*open_sync)  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists, const gchar *username, const gchar *password);
+	ECalBackendSyncStatus (*refresh_sync)  (ECalBackendSync *backend, EDataCal *cal);
 	ECalBackendSyncStatus (*remove_sync)  (ECalBackendSync *backend, EDataCal *cal);
 
 	ECalBackendSyncStatus (*create_object_sync)  (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid);
@@ -98,8 +99,10 @@ ECalBackendSyncStatus e_cal_backend_sync_open                    (ECalBackendSyn
 								  gboolean         only_if_exists,
 								  const gchar *username,
 								  const gchar *password);
+ECalBackendSyncStatus e_cal_backend_sync_refresh                  (ECalBackendSync  *backend,
+							          EDataCal             *cal);
 ECalBackendSyncStatus e_cal_backend_sync_remove                  (ECalBackendSync  *backend,
-							       EDataCal             *cal);
+							          EDataCal             *cal);
 ECalBackendSyncStatus e_cal_backend_sync_create_object           (ECalBackendSync  *backend,
 								  EDataCal             *cal,
 								  gchar           **calobj,

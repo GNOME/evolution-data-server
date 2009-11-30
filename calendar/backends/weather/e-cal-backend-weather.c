@@ -458,7 +458,8 @@ e_cal_backend_weather_get_static_capabilities (ECalBackendSync *backend, EDataCa
 				  CAL_STATIC_CAPABILITY_NO_PROCEDURE_ALARMS  ","
 				  CAL_STATIC_CAPABILITY_NO_TASK_ASSIGNMENT  ","
 				  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE  ","
-				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
+				  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+				  CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -503,6 +504,29 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, gboolean on
 		if (!priv->begin_retrival_id)
 			priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, cbw);
 	}
+
+	return GNOME_Evolution_Calendar_Success;
+}
+
+static ECalBackendSyncStatus
+e_cal_backend_weather_refresh (ECalBackendSync *backend, EDataCal *cal)
+{
+	ECalBackendWeather *cbw;
+	ECalBackendWeatherPrivate *priv;
+
+	cbw = E_CAL_BACKEND_WEATHER (backend);
+	priv = cbw->priv;
+
+	if (!priv->opened ||
+	    priv->is_loading)
+		return GNOME_Evolution_Calendar_Success;
+
+	if (priv->reload_timeout_id)
+		g_source_remove (priv->reload_timeout_id);
+	priv->reload_timeout_id = 0;
+
+	/* wait a second, then start reloading */
+	priv->reload_timeout_id = g_timeout_add (1000, (GSourceFunc) reload_cb, cbw);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -785,25 +809,29 @@ e_cal_backend_weather_set_mode (ECalBackend *backend, CalMode mode)
 
 	loaded = e_cal_backend_weather_is_loaded (backend);
 
-	switch (mode) {
-		case CAL_MODE_LOCAL:
-		case CAL_MODE_REMOTE:
-			priv->mode = mode;
-			set_mode = cal_mode_to_corba (mode);
-			if (loaded && priv->reload_timeout_id) {
-				g_source_remove (priv->reload_timeout_id);
-				priv->reload_timeout_id = 0;
-			}
-			break;
-		case CAL_MODE_ANY:
-			priv->mode = mode;
-			set_mode = cal_mode_to_corba (mode);
-			if (loaded && !priv->begin_retrival_id)
-				priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
-			break;
-		default:
-			set_mode = GNOME_Evolution_Calendar_MODE_ANY;
-			break;
+	if (priv->mode != mode) {
+		switch (mode) {
+			case CAL_MODE_LOCAL:
+			case CAL_MODE_REMOTE:
+				priv->mode = mode;
+				set_mode = cal_mode_to_corba (mode);
+				if (loaded && priv->reload_timeout_id) {
+					g_source_remove (priv->reload_timeout_id);
+					priv->reload_timeout_id = 0;
+				}
+				break;
+			case CAL_MODE_ANY:
+				priv->mode = mode;
+				set_mode = cal_mode_to_corba (mode);
+				if (loaded && !priv->begin_retrival_id)
+					priv->begin_retrival_id = g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
+				break;
+			default:
+				set_mode = GNOME_Evolution_Calendar_MODE_ANY;
+				break;
+		}
+	} else {
+		set_mode = cal_mode_to_corba (priv->mode);
 	}
 
 	if (loaded) {
@@ -939,6 +967,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class->get_ldap_attribute_sync = e_cal_backend_weather_get_ldap_attribute;
 	sync_class->get_static_capabilities_sync = e_cal_backend_weather_get_static_capabilities;
 	sync_class->open_sync = e_cal_backend_weather_open;
+	sync_class->refresh_sync = e_cal_backend_weather_refresh;
 	sync_class->remove_sync = e_cal_backend_weather_remove;
 	sync_class->discard_alarm_sync = e_cal_backend_weather_discard_alarm;
 	sync_class->receive_objects_sync = e_cal_backend_weather_receive_objects;

@@ -72,6 +72,7 @@ void e_data_cal_notify_static_capabilities (EDataCal *cal, EServerMethodContext 
 					    const gchar *capabilities);
 
 void e_data_cal_notify_open   (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status);
+void e_data_cal_notify_refresh(EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status);
 void e_data_cal_notify_remove (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status);
 
 void e_data_cal_notify_object_created  (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status,

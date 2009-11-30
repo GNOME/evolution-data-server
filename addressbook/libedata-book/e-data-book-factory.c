@@ -317,8 +317,10 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_source, DBus
 		if (backend_factory)
 			backend = e_book_backend_factory_new_backend (backend_factory);
 
-		if (backend)
+		if (backend) {
 			g_hash_table_insert (priv->backends, g_strdup (uri), backend);
+			e_book_backend_set_mode (backend, priv->mode);
+		}
 	}
 
 	if (!backend) {
@@ -333,7 +335,6 @@ impl_BookFactory_getBook(EDataBookFactory *factory, const gchar *IN_source, DBus
 
 	path = construct_book_factory_path ();
 	book = e_data_book_new (backend, source);
-	e_book_backend_set_mode (backend, priv->mode);
 	g_hash_table_insert (priv->books, g_strdup (path), book);
 	e_book_backend_add_client (backend, book);
 	dbus_g_connection_register_g_object (connection, path, G_OBJECT (book));

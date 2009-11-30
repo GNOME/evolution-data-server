@@ -211,6 +211,29 @@ e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
 }
 
 /**
+ * e_cal_backend_sync_refresh:
+ * @backend: An ECalBackendSync object.
+ * @cal: An EDataCal object.
+ *
+ * Calls the refresh method on the given backend.
+ *
+ * Return value: Status code.
+ */
+ECalBackendSyncStatus
+e_cal_backend_sync_refresh  (ECalBackendSync *backend, EDataCal *cal)
+{
+	ECalBackendSyncStatus status;
+
+	g_return_val_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), GNOME_Evolution_Calendar_OtherError);
+	g_return_val_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->refresh_sync != NULL,
+			      GNOME_Evolution_Calendar_UnsupportedMethod);
+
+	LOCK_WRAPPER (refresh_sync, (backend, cal));
+
+	return status;
+}
+
+/**
  * e_cal_backend_sync_create_object:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
@@ -710,6 +733,16 @@ _e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext c
 }
 
 static void
+_e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
+{
+	ECalBackendSyncStatus status;
+
+	status = e_cal_backend_sync_refresh (E_CAL_BACKEND_SYNC (backend), cal);
+
+	e_data_cal_notify_refresh (cal, context, status);
+}
+
+static void
 _e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
 {
 	ECalBackendSyncStatus status;
@@ -1072,6 +1105,7 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->get_ldap_attribute = _e_cal_backend_get_ldap_attribute;
 	backend_class->get_static_capabilities = _e_cal_backend_get_static_capabilities;
 	backend_class->open = _e_cal_backend_open;
+	backend_class->refresh = _e_cal_backend_refresh;
 	backend_class->remove = _e_cal_backend_remove;
 	backend_class->create_object = _e_cal_backend_create_object;
 	backend_class->modify_object = _e_cal_backend_modify_object;

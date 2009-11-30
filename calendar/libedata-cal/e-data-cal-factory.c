@@ -403,6 +403,8 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 
 		/* Track the backend */
 		g_hash_table_insert (priv->backends, g_strdup (uid_type_string), backend);
+
+		e_cal_backend_set_mode (backend, priv->mode);
 	} else if (!e_source_equal (source, e_cal_backend_get_source (backend))) {
 		/* source changed, update it in a backend */
 		update_source_in_backend (backend, source);
@@ -410,7 +412,6 @@ impl_CalFactory_getCal (EDataCalFactory		*factory,
 
 	calendar = e_data_cal_new (backend, source);
 	e_cal_backend_add_client (backend, calendar);
-	e_cal_backend_set_mode (backend, priv->mode);
 
 	path = construct_cal_factory_path ();
 	dbus_g_connection_register_g_object (connection, path, G_OBJECT (calendar));

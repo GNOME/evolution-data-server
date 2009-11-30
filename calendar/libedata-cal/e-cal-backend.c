@@ -636,6 +636,23 @@ e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext co
 }
 
 /**
+ * e_cal_backend_refresh:
+ * @backend: A calendar backend.
+ * @cal: An #EDataCal object.
+ *
+ * Refreshes the calendar being accessed by the given backend.
+ */
+void
+e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)
+{
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+
+	g_assert (CLASS (backend)->refresh != NULL);
+	(* CLASS (backend)->refresh) (backend, cal, context);
+}
+
+/**
  * e_cal_backend_remove:
  * @backend: A calendar backend.
  * @cal: An #EDataCal object.

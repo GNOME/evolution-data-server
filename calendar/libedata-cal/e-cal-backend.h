@@ -76,6 +76,7 @@ struct _ECalBackendClass {
 	void (* get_static_capabilities) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
 	void (* open) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, gboolean only_if_exists, const gchar *username, const gchar *password);
+	void (* refresh) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 	void (* remove) (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
 	/* Object related virtual methods */
@@ -134,6 +135,7 @@ void e_cal_backend_get_ldap_attribute (ECalBackend *backend, EDataCal *cal, ESer
 void e_cal_backend_get_static_capabilities (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
 void e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, gboolean only_if_exists, const gchar *username, const gchar *password);
+void e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 void e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext context);
 
 void e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, EServerMethodContext context, const gchar *calobj);

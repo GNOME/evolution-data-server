@@ -1278,6 +1278,34 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 }
 
 /**
+ * e_cal_refresh:
+ * @ecal: A calendar client.
+ * @error: Placeholder for error information.
+ *
+ * Invokes refresh on a calendar. See @e_cal_get_refresh_supported.
+ *
+ * Return value: TRUE if calendar supports refresh and it was invoked, FALSE otherwise.
+ **/
+gboolean
+e_cal_refresh (ECal *ecal, GError **error)
+{
+	ECalPrivate *priv;
+
+	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	priv = ecal->priv;
+	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
+
+	LOCK_CONN ();
+	if (!org_gnome_evolution_dataserver_calendar_Cal_refresh (priv->proxy, error)) {
+		UNLOCK_CONN ();
+		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_CORBA_EXCEPTION, error);
+	}
+	UNLOCK_CONN ();
+
+	return TRUE;
+}
+
+/**
  * e_cal_remove:
  * @ecal: A calendar client.
  * @error: Placeholder for error information.
@@ -1766,6 +1794,23 @@ e_cal_get_organizer_must_accept (ECal *ecal)
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
 
 	return check_capability (ecal, CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT);
+}
+
+/**
+ * e_cal_get_refresh_supported:
+ * @ecal: A calendar client.
+ *
+ * Checks whether a calendar supports explicit refreshing (see @e_cal_refresh).
+ *
+ * Return value: TRUE if the calendar supports refreshing, FALSE otherwise.
+ */
+gboolean
+e_cal_get_refresh_supported (ECal *ecal)
+{
+	g_return_val_if_fail (ecal != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
+
+	return check_capability (ecal, CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
 }
 
 /**

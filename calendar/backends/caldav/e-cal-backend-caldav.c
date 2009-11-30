@@ -2110,11 +2110,13 @@ caldav_get_static_capabilities (ECalBackendSync  *backend,
 
 	if (priv && priv->is_google)
 		*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
+					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+					  CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
 	else
 		*capabilities = g_strdup (CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS ","
 					  CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR);
+					  CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
+					  CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -2377,6 +2379,36 @@ caldav_do_open (ECalBackendSync *backend,
 	g_mutex_unlock (priv->busy_lock);
 
 	return status;
+}
+
+static ECalBackendSyncStatus
+caldav_refresh (ECalBackendSync *backend, EDataCal *cal)
+{
+	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAVPrivate *priv;
+	ECalBackendSyncStatus     status;
+	gboolean                  online;
+
+	cbdav = E_CAL_BACKEND_CALDAV (backend);
+	priv  = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
+
+	g_mutex_lock (priv->busy_lock);
+
+	if (!priv->loaded
+	    || priv->slave_cmd != SLAVE_SHOULD_SLEEP
+	    || check_state (cbdav, &online) != GNOME_Evolution_Calendar_Success
+	    || !online) {
+		g_mutex_unlock (priv->busy_lock);
+		return GNOME_Evolution_Calendar_Success;
+	}
+
+	priv->slave_cmd = SLAVE_SHOULD_WORK;
+
+	/* wake it up */
+	g_cond_signal (priv->cond);
+	g_mutex_unlock (priv->busy_lock);
+
+	return GNOME_Evolution_Calendar_Success;
 }
 
 static ECalBackendSyncStatus
@@ -4596,6 +4628,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	sync_class->get_static_capabilities_sync = caldav_get_static_capabilities;
 
 	sync_class->open_sync                    = caldav_do_open;
+	sync_class->refresh_sync                 = caldav_refresh;
 	sync_class->remove_sync                  = caldav_remove;
 
 	sync_class->create_object_sync = caldav_create_object;
