@@ -1008,7 +1008,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		finfo = imap_parse_fetch(imap->stream, ex);
 
-		imap_dump_fetch(finfo);
+//		imap_dump_fetch(finfo);
 
 		if ((finfo->got & (FETCH_BODY|FETCH_UID)) == (FETCH_BODY|FETCH_UID)) {
 			CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_GET_MESSAGE, finfo->uid);
@@ -1088,6 +1088,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						}
 					}
 					camel_folder_summary_add(job->folder->summary, mi);
+					camel_folder_change_info_add_uid (job->u.refresh_info.changes, mi->uid);
 				}
 			}
 		}
@@ -1547,96 +1548,94 @@ imapx_connect(CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExcep
 	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
 	imapx_command_run(is, ic, ex);
 	camel_imapx_command_free(ic);
+
+	/* Fetch namespaces */
+	if (is->cinfo->capa & IMAP_CAPABILITY_NAMESPACE) {
+		ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
+		imapx_command_run (is, ic, ex);
+		camel_imapx_command_free (ic);
+	} else {
+		CamelIMAPXNamespaceList *nsl = NULL;
+		CamelIMAPXStoreNamespace *ns = NULL;
+		CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
+
+		/* set a default namespace */	
+		nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
+		ns = g_new0 (CamelIMAPXStoreNamespace, 1);
+		ns->next = NULL;
+		ns->path = g_strdup ("");
+		ns->full_name = g_strdup ("");
+		/* FIXME needs to be identified from list response */
+		ns->sep = '/';
+		nsl->personal = ns;
+		imapx_store->summary->namespaces = nsl;
+	}
 }
 
 static void
 imapx_reconnect(CamelIMAPXServer *is, CamelException *ex)
 {
-		CamelSasl *sasl;
-		CamelIMAPXCommand *ic;
+	CamelSasl *sasl;
+	CamelIMAPXCommand *ic;
 retry:
-		g_message ("Connecting \n");
-		imapx_connect(is, 0, 0, ex);
-		if (camel_exception_is_set (ex)) {
+	imapx_connect(is, 0, 0, ex);
+	if (camel_exception_is_set (ex)) {
+		return;
+	}
+
+	if (is->url->passwd == NULL) {
+		CamelException ex = { 0, NULL };
+		gchar *prompt = g_strdup_printf(_("%sPlease enter the IMAP password for %s@%s"), "", is->url->user, is->url->host);
+		const gchar *auth_domain;
+
+		auth_domain = camel_url_get_param (is->url, "auth-domain");
+		is->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
+				auth_domain,
+				prompt, "password", 0, &ex);
+
+		g_free(prompt);
+		if (ex.id) {
+			g_message ("Unable to connect %d ", ex.id);
 			return;
 		}
+	}
 
-		g_message ("Connected \n");
+	if (is->url->authmech
+			&& (sasl = camel_sasl_new("imap", is->url->authmech, NULL))) {
+		ic = camel_imapx_command_new("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
+		camel_object_unref(sasl);
+	} else {
+		ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", is->url->user, is->url->passwd);
+	}
 
-		if (is->url->passwd == NULL) {
-			CamelException ex = { 0, NULL };
-			gchar *prompt = g_strdup_printf(_("%sPlease enter the IMAP password for %s@%s"), "", is->url->user, is->url->host);
-			const gchar *auth_domain;
+	g_message ("Logged in now!! \n");
 
-			auth_domain = camel_url_get_param (is->url, "auth-domain");
-			is->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
-					auth_domain,
-					prompt, "password", 0, &ex);
+	// TODO freeing data?
+	imapx_command_run(is, ic, ex);
+	if (ic->status->result != IMAP_OK)
+		camel_exception_throw(CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, "Login failed: %s", ic->status->text);
+	camel_imapx_command_free(ic);
 
-			g_free(prompt);
-			if (ex.id) {
-				g_message ("Unable to connect %d ", ex.id);
-				return;
-			}
+	/* After login we re-capa */
+	if (is->cinfo) {
+		imap_free_capability(is->cinfo);
+		is->cinfo = NULL;
+	}
+	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
+	imapx_command_run(is, ic, ex);
+	camel_imapx_command_free(ic);
+	is->state = IMAPX_AUTHENTICATED;
+
+	if (camel_exception_is_set (ex))
+		/* Shrug, either way this re-loops back ... */
+		if (TRUE /*e->ex != CAMEL_EXCEPTION_USER_CANCEL*/) {
+			printf("Re Connection failed: %s\n", ex->desc);
+			sleep(5);
+			// camelexception_done?
+			camel_exception_clear (ex);
+			goto retry;
 		}
 
-		if (is->url->authmech
-				&& (sasl = camel_sasl_new("imap", is->url->authmech, NULL))) {
-			ic = camel_imapx_command_new("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
-			camel_object_unref(sasl);
-		} else {
-			ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", is->url->user, is->url->passwd);
-		}
-
-		g_message ("Logged in now!! \n");
-
-		// TODO freeing data?
-		imapx_command_run(is, ic, ex);
-		if (ic->status->result != IMAP_OK)
-			camel_exception_throw(CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, "Login failed: %s", ic->status->text);
-		camel_imapx_command_free(ic);
-
-		/* After login we re-capa */
-		if (is->cinfo) {
-			imap_free_capability(is->cinfo);
-			is->cinfo = NULL;
-		}
-		ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-		imapx_command_run(is, ic, ex);
-		camel_imapx_command_free(ic);
-		is->state = IMAPX_AUTHENTICATED;
-
-		if (camel_exception_is_set (ex))
-			/* Shrug, either way this re-loops back ... */
-			if (TRUE /*e->ex != CAMEL_EXCEPTION_USER_CANCEL*/) {
-				printf("Re Connection failed: %s\n", ex->desc);
-				sleep(5);
-				// camelexception_done?
-				camel_exception_clear (ex);
-				goto retry;
-			}
-
-		/* Fetch namespaces */
-		if (is->cinfo->capa & IMAP_CAPABILITY_NAMESPACE) {
-			ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
-			imapx_command_run (is, ic, ex);
-			camel_imapx_command_free (ic);
-		} else {
-			CamelIMAPXNamespaceList *nsl = NULL;
-			CamelIMAPXStoreNamespace *ns = NULL;
-			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
-
-			/* set a default namespace */
-			nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
-			ns = g_new0 (CamelIMAPXStoreNamespace, 1);
-			ns->next = NULL;
-			ns->path = g_strdup ("");
-			ns->full_name = g_strdup ("");
-			/* FIXME needs to be identified from list response */
-			ns->sep = '/';
-			nsl->personal = ns;
-			imapx_store->summary->namespaces = nsl;
-		}
 }
 
 /* ********************************************************************** */
@@ -1678,7 +1677,7 @@ imapx_job_get_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 		camel_exception_setv(job->ex, 1, "Error retriving message: %s", ic->status->text);
 	}
-
+/*
 #ifdef MULTI_FETCH
 	if (job->u.get_message.body_len == MULTI_SIZE) {
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name,
@@ -1693,6 +1692,7 @@ imapx_job_get_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		imapx_command_queue(is, ic);
 	}
 #endif
+*/
 	if (job->commands == 0)
 		imapx_job_done(is, ic);
 }
@@ -1713,6 +1713,7 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	   This doesn't work yet, so we always force a select every time
 	*/
 	//imapx_select(is, job->folder);
+/*	
 #ifdef MULTI_FETCH
 	for (i=0;i<3;i++) {
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name,
@@ -1726,7 +1727,7 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 		job->commands++;
 		imapx_command_queue(is, ic);
 	}
-#else
+#else */
 	ic = camel_imapx_command_new("FETCH", job->folder->full_name,
 				     "UID FETCH %t (BODY.PEEK[])", job->u.get_message.uid);
 	ic->complete = imapx_job_get_message_done;
@@ -1734,7 +1735,7 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	ic->pri = job->pri;
 	job->commands++;
 	imapx_command_queue(is, ic);
-#endif
+/* #endif */
 }
 
 /* ********************************************************************** */
@@ -2005,7 +2006,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			j++;
 		}
 
-		camel_db_delete_uids (is->store, s->folder->full_name, removed, NULL);
+//		camel_db_delete_uids (is->store, s->folder->full_name, removed, NULL);
 
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
@@ -2362,6 +2363,7 @@ imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 	camel_dlist_init(&ie->jobs);
 
 	ie->queue_lock = g_mutex_new();
+	ie->connect_lock = g_mutex_new ();
 
 	ie->tagprefix = ieclass->tagprefix;
 	ieclass->tagprefix++;
@@ -2380,6 +2382,7 @@ static void
 imapx_server_finalise(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 {
 	g_mutex_free(ie->queue_lock);
+	g_mutex_free (ie->connect_lock);;
 
 	g_array_free(ie->expunged, TRUE);
 }
@@ -2425,22 +2428,33 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 gboolean
 camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 {
+	gboolean ret = FALSE;
+
+	g_mutex_lock (is->connect_lock);
 	if (state) {
 		pthread_t id;
 		CamelException ex = {0, NULL};
 
+		if (is->state & (IMAPX_AUTHENTICATED | IMAPX_SELECTED))
+			return TRUE;
+
 		imapx_reconnect (is, &ex);
-		if (camel_exception_is_set (&ex))
-			return FALSE;
+		if (camel_exception_is_set (&ex)) {
+			ret = FALSE;
+			goto EXIT;
+		}
 
 		pthread_create(&id, NULL, imapx_server_loop, is);
-
-		return TRUE;
+		ret = TRUE;
 	} else {
 		/* tell processing thread to die, and wait till it does? */
 
-		return TRUE;
+		ret = TRUE;
 	}
+
+EXIT:
+	g_mutex_unlock (is->connect_lock);
+	return ret;
 }
 
 static void
@@ -2691,9 +2705,9 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 
 	imapx_run_job(is, job);
 
-/*	if (camel_change_info_changed(job->u.refresh_info.changes))
+	if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 		camel_object_trigger_event(folder, "folder_changed", job->u.refresh_info.changes);
-	camel_change_info_free(job->u.refresh_info.changes);*/
+	camel_folder_change_info_free(job->u.refresh_info.changes);
 
 	g_free(job);
 

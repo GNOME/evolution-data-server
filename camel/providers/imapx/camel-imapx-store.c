@@ -187,9 +187,7 @@ imap_connect (CamelService *service, CamelException *ex)
 	if (store->server == NULL)
 		store->server = camel_imapx_server_new((CamelStore *)store, service->url);
 
-	camel_imapx_server_connect(store->server, 1);
-
-	return TRUE;
+	return camel_imapx_server_connect(store->server, 1);
 }
 
 static gboolean

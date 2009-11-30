@@ -38,7 +38,7 @@
 #include "camel-imapx-exception.h"
 
 #define t(x) 
-#define io(x) x
+#define io(x) 
 
 static CamelObjectClass *parent_class = NULL;
 

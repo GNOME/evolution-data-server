@@ -421,14 +421,15 @@ camel_imapx_store_summary_namespace_find_path(CamelIMAPXStoreSummary *s, const g
 CamelIMAPXStoreNamespace *
 camel_imapx_store_summary_namespace_find_full(CamelIMAPXStoreSummary *s, const gchar *full)
 {
-	gint len;
+	gint len = 0;
 	CamelIMAPXStoreNamespace *ns;
 
 	/* NB: this currently only compares against 1 namespace, in future compare against others */
 	/* CHEN TODO */
 	ns = s->namespaces->personal;
 	while (ns) {
-		len = strlen(ns->full_name);
+		if (ns->full_name)
+			len = strlen(ns->full_name);
 		d(printf("find_full: comparing namespace '%s' to name '%s'\n", ns->full_name, full));
 		if (len == 0
 		    || (strncmp(ns->full_name, full, len) == 0
