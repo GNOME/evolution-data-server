@@ -245,13 +245,13 @@ getCategory (WeatherInfo *report)
 		const gchar *icon_name;
 	} categories[] = {
 		{ N_("Weather: Fog"),		"weather-fog" },
-		{ N_("Weather: Cloudy"),	"weather-few-clouds" },
 		{ N_("Weather: Cloudy Night"),	"weather-few-clouds-night" },
+		{ N_("Weather: Cloudy"),	"weather-few-clouds" },
 		{ N_("Weather: Overcast"),	"weather-overcast" },
 		{ N_("Weather: Showers"),	"weather-showers" },
 		{ N_("Weather: Snow"),		"weather-snow" },
-		{ N_("Weather: Sunny"),	"weather-clear" },
 		{ N_("Weather: Clear Night"),	"weather-clear-night" },
+		{ N_("Weather: Sunny"),		"weather-clear" },
 		{ N_("Weather: Thunderstorms"), "weather-storm" },
 		{ NULL,				NULL }
 	};
@@ -263,7 +263,8 @@ getCategory (WeatherInfo *report)
 		return NULL;
 
 	for (i = 0; categories [i].description; i++) {
-		if (g_str_equal (categories [i].icon_name, icon_name))
+		if (!g_ascii_strncasecmp (categories [i].icon_name,
+					      icon_name, strlen(icon_name)))
 			return _(categories [i].description);
 	}
 
