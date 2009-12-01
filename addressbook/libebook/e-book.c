@@ -30,6 +30,7 @@
 #include "e-book.h"
 #include "e-error.h"
 #include "e-contact.h"
+#include "e-name-western.h"
 #include "e-book-view-private.h"
 #include "e-data-book-factory-bindings.h"
 #include "e-data-book-bindings.h"
@@ -1897,6 +1898,43 @@ e_book_is_online (EBook *book)
 
 #define SELF_UID_KEY "/apps/evolution/addressbook/self/self_uid"
 
+static EContact *
+make_me_card (void)
+{
+	GString *vcard;
+	const char *s;
+	EContact *contact;
+
+	vcard = g_string_new ("BEGIN:VCARD\nVERSION:3.0\n");
+
+	s = g_get_user_name ();
+	if (s)
+		g_string_append_printf (vcard, "NICKNAME:%s\n", s);
+
+	s = g_get_real_name ();
+	if (s && strcmp (s, "Unknown") != 0) {
+		ENameWestern *western;
+
+		g_string_append_printf (vcard, "FN:%s\n", s);
+
+		western = e_name_western_parse (s);
+		g_string_append_printf (vcard, "N:%s;%s;%s;%s;%s\n",
+					western->last ?: "",
+					western->first ?: "",
+					western->middle ?: "",
+					western->prefix ?: "",
+					western->suffix ?: "");
+		e_name_western_free (western);
+	}
+	g_string_append (vcard, "END:VCARD");
+
+	contact = e_contact_new_from_vcard (vcard->str);
+
+	g_string_free (vcard, TRUE);
+
+	return contact;
+}
+
 /**
  * e_book_get_self:
  * @contact: an #EContact pointer to set
@@ -1937,24 +1975,29 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
 	g_object_unref (gconf);
 
-	if (!uid) {
-		g_object_unref (*book);
-		*book = NULL;
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SELF_CONTACT,
-			     _("%s: there was no self contact UID stored in gconf"), "e_book_get_self");
-		return FALSE;
+	if (uid) {
+		gboolean got;
+
+		/* Don't care about errors because we'll create a new card on failure */
+		got = e_book_get_contact (*book, uid, contact, NULL);
+		g_free (uid);
+		if (got)
+			return TRUE;
 	}
 
-	if (!e_book_get_contact (*book, uid, contact, &e)) {
+	*contact = make_me_card ();
+	if (!e_book_add_contact (*book, *contact, &e)) {
+		/* TODO: return NULL or the contact anyway? */
 		g_object_unref (*book);
 		*book = NULL;
-		g_free (uid);
+		g_object_unref (*contact);
+		*contact = NULL;
 		if (error)
 			g_propagate_error (error, e);
 		return FALSE;
 	}
 
-	g_free (uid);
+	e_book_set_self (*book, *contact, NULL);
 
 	return TRUE;
 }
