@@ -71,13 +71,14 @@ camel_imapx_folder_new(CamelStore *store, const gchar *path, const gchar *folder
 
 	folder = CAMEL_FOLDER (camel_object_new (CAMEL_IMAPX_FOLDER_TYPE));
 	camel_folder_construct(folder, store, folder_name, short_name);
-	ifolder = folder;
+	ifolder = (CamelIMAPXFolder *) folder;
 
 	((CamelIMAPXFolder *)folder)->raw_name = g_strdup(folder_name);
 
 	summary_file = g_strdup_printf ("%s/summary", path);
 	folder->summary = camel_imapx_summary_new(folder, summary_file);
 	ifolder->search = camel_folder_search_new ();
+	ifolder->search_lock = g_mutex_new ();
 
 	g_free (summary_file);
 
@@ -236,7 +237,11 @@ imapx_search_free (CamelFolder *folder, GPtrArray *uids)
 
 	g_return_if_fail (ifolder->search);
 
+	g_mutex_lock (ifolder->search_lock);
+	
 	camel_folder_search_free_result (ifolder->search, uids);
+	
+	g_mutex_unlock (ifolder->search_lock);
 }
 
 static GPtrArray *
@@ -248,8 +253,12 @@ imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *u
 	if (uids->len == 0)
 		return g_ptr_array_new();
 
+	g_mutex_lock (ifolder->search_lock);
+
 	camel_folder_search_set_folder(ifolder->search, folder);
 	matches = camel_folder_search_search(ifolder->search, expression, uids, ex);
+	
+	g_mutex_unlock (ifolder->search_lock);
 
 	return matches;
 }
@@ -260,8 +269,12 @@ imapx_count_by_expression (CamelFolder *folder, const gchar *expression, CamelEx
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER(folder);
 	guint32 matches;
 
+	g_mutex_lock (ifolder->search_lock);
+
 	camel_folder_search_set_folder (ifolder->search, folder);
 	matches = camel_folder_search_count (ifolder->search, expression, ex);
+
+	g_mutex_unlock (ifolder->search_lock);
 
 	return matches;
 }
@@ -272,8 +285,12 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, CamelE
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	GPtrArray *matches;
 
+	g_mutex_lock (ifolder->search_lock);
+
 	camel_folder_search_set_folder (ifolder->search, folder);
 	matches = camel_folder_search_search(ifolder->search, expression, NULL, ex);
+
+	g_mutex_unlock (ifolder->search_lock);
 
 	return matches;
 }
@@ -309,6 +326,11 @@ imap_folder_init(CamelObject *o, CamelObjectClass *klass)
 static void
 imap_finalise(CamelObject *object)
 {
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) object;
+
+	g_mutex_free (ifolder->search_lock);
+	if (ifolder->search)
+		camel_object_unref (CAMEL_OBJECT (ifolder->search));
 
 }
 

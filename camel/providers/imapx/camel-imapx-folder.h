@@ -41,7 +41,7 @@ typedef struct _CamelIMAPXFolder {
 
 	gchar *raw_name;
 	CamelFolderSearch *search;
-//	CamelChangeInfo *changes;
+	GMutex *search_lock;
 } CamelIMAPXFolder;
 
 typedef struct _CamelIMAPXFolderClass {
