@@ -182,6 +182,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 		obj = icalcomponent_as_ical_string_r (icomp);
 		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
 		g_free (obj);
+		g_object_unref (comp);
 
 		forecasts = weather_info_get_forecast_list (info);
 		if (forecasts) {
@@ -199,6 +200,7 @@ finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
 						obj = icalcomponent_as_ical_string_r (icomp);
 						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
 						g_free (obj);
+						g_object_unref (comp);
 					}
 				}
 			}

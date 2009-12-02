@@ -2090,8 +2090,13 @@ e_cal_backend_groupwise_store_settings (GwSettings *hold)
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 
 	/* TODO implement send options for Notes */
-	if (kind == ICAL_VJOURNAL_COMPONENT)
+	if (kind == ICAL_VJOURNAL_COMPONENT) {
+		g_object_unref (gconf);
+		g_object_unref (hold->opts);
+		g_free (hold);
+
 		return FALSE;
+	}
 
 	gopts = e_gw_sendoptions_get_general_options (opts);
 	if (kind == ICAL_VEVENT_COMPONENT) {

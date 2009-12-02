@@ -637,10 +637,14 @@ scan_vcalendar (ECalBackendFileStore *fstore, icalcomponent *top_icalcomp)
 
 		comp = e_cal_component_new ();
 
-		if (!e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp)))
+		if (!e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp))) {
+			g_object_unref (comp);
 			continue;
+		}
 
 		put_component (fstore, comp);
+
+		g_object_unref (comp);
 	}
 }
 

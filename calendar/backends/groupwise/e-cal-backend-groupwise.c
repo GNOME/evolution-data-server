@@ -338,7 +338,7 @@ get_deltas (gpointer handle)
 	ECalBackendStore *store;
 	EGwConnectionStatus status;
 	icalcomponent_kind kind;
-	GList *item_list, *total_list = NULL, *l;
+	GList *item_list = NULL, *total_list = NULL, *l;
 	GSList *cache_ids = NULL, *ls;
 	GPtrArray *uid_array = NULL;
 	gchar *time_string = NULL;
@@ -452,6 +452,7 @@ get_deltas (gpointer handle)
 
 		e_cal_component_get_uid (modified_comp, &uid);
 		cache_comp = e_cal_backend_store_get_component (store, uid, rid);
+		g_free (rid);
 		e_cal_component_commit_sequence (modified_comp);
 
 		e_cal_component_get_last_modified (modified_comp, &tt);
@@ -474,7 +475,6 @@ get_deltas (gpointer handle)
 
 			g_free (modif_comp_str);
 			g_free (cache_comp_str);
-			g_free (rid);
 			cache_comp_str = NULL;
 			e_cal_backend_store_put_component (store, modified_comp);
 		}
@@ -544,12 +544,10 @@ get_deltas (gpointer handle)
 		status = e_gw_connection_read_cal_ids (cnc, cbgw->priv->container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-				g_static_mutex_unlock (&connecting);
-				return TRUE;
+				goto err_done;
 			}
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
-			g_static_mutex_unlock (&connecting);
-			return TRUE;
+			goto err_done;
 		}
 
 		if (!item_list  || g_list_length (item_list) == 0)
@@ -663,6 +661,7 @@ get_deltas (gpointer handle)
 	g_ptr_array_foreach (uid_array, (GFunc) g_free, NULL);
 	g_ptr_array_free (uid_array, TRUE);
 
+ err_done:
 	if (item_list) {
 		g_list_free (item_list);
 		item_list = NULL;

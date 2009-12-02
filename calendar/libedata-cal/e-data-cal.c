@@ -974,7 +974,7 @@ e_data_cal_notify_free_busy (EDataCal *cal, EServerMethodContext context, EDataC
 		GList *l;
 		gint i;
 
-		seq = g_new0 (gchar *, g_list_length (freebusy));
+		seq = g_new0 (gchar *, g_list_length (freebusy) + 1);
 		for (i = 0, l = freebusy; l; i++, l = l->next) {
 			seq[i] = g_strdup (l->data);
 		}
