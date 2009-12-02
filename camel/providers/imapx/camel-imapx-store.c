@@ -861,11 +861,9 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 		return fi;
 	}
 
-	if (istore->server == NULL) {
-		camel_service_connect((CamelService *)store, ex);
-		if (camel_exception_is_set(ex))
-			return NULL;
-	}
+	camel_service_connect((CamelService *)store, ex);
+	if (camel_exception_is_set(ex))
+		return NULL;
 
 	if (camel_store_summary_count (istore->summary) == 0) {
 		sync_folders (istore, top, ex);
