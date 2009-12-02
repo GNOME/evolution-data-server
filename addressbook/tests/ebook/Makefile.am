@@ -2,7 +2,7 @@ TEST_LIBS=							\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-noinst_PROGRAMS= test-changes test-categories test-date test-ebook test-ebook-async test-ebook-view test-nonexistent-id test-photo test-query test-self test-string test-undefinedfield test-untyped-phones test-search test-stress-bookviews
+noinst_PROGRAMS= test-book-remove test-changes test-categories test-date test-ebook test-ebook-async test-ebook-view test-nonexistent-id test-photo test-query test-self test-string test-undefinedfield test-untyped-phones test-search test-stress-bookviews
 
 TEST_CPPFLAGS= \
 	$(AM_CPPFLAGS)			\
@@ -12,6 +12,8 @@ TEST_CPPFLAGS= \
 	-I$(top_builddir)/addressbook	\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
+test_book_remove_LDADD=$(TEST_LIBS)
+test_book_remove_CPPFLAGS=$(TEST_CPPFLAGS)
 test_search_LDADD=$(TEST_LIBS)
 test_search_CPPFLAGS=$(TEST_CPPFLAGS)
 test_date_LDADD=$(TEST_LIBS)
