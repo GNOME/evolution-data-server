@@ -58,7 +58,7 @@ enum {
 /* ********************************************************************** */
 
 void imap_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, CamelException *ex);
-void imap_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags);
+void imap_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, CamelException *ex);
 
 /* ********************************************************************** */
 enum {

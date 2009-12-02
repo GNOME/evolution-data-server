@@ -447,7 +447,8 @@ namespace_load(CamelStoreSummary *s, FILE *in)
 {
 	CamelIMAPXStoreNamespace *ns, *tail;
 	CamelIMAPXNamespaceList *nsl;
-	guint32 i, j, n;
+	guint32 i, j;
+	gint32 n;
 
 	nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
 	nsl->personal = NULL;

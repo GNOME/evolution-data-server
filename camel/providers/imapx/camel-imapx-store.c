@@ -270,6 +270,7 @@ imap_get_inbox(CamelStore *store, CamelException *ex)
 	return NULL;
 }
 
+#if 0
 static CamelFolderInfo *
 folders_build_info(CamelURL *base, struct _list_info *li)
 {
@@ -379,44 +380,7 @@ folders_build_rec(CamelURL *base, GPtrArray *folders, gint *ip, CamelFolderInfo 
 
 	return first;
 }
-
-static void
-folder_info_dump(CamelFolderInfo *fi, gint depth)
-{
-	gchar *s;
-
-	s = alloca(depth+1);
-	memset(s, ' ', depth);
-	s[depth] = 0;
-	while (fi) {
-		printf("%s%s (%s)\n", s, fi->name, fi->uri);
-		if (fi->child)
-			folder_info_dump(fi->child, depth+2);
-		fi = fi->next;
-	}
-
-}
-
-// THIS IS VERY CRAP AND VERY TEMPORARY
-// we re-lookup the table, after we just looked it up
-// in the first place to create the list, to get the counts.
-static void
-folder_info_fill(CamelStore *store, CamelFolderInfo *fi)
-{
-//	CamelView *view;
-
-	while (fi) {
-/*		view = camel_view_summary_get(store->view_summary, fi->full_name);
-		if (view) {
-			fi->total = view->total_count;
-			fi->unread = view->unread_count;
-			camel_view_unref(view); */
-//		}
-		if (fi->child)
-			folder_info_fill(store, fi->child);
-		fi = fi->next;
-	}
-}
+#endif
 
 /* folder_name is path name */
 static CamelFolderInfo *
@@ -787,8 +751,6 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, Cam
 static void
 sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 {
-	struct _list_info *li = NULL;
-	guint32 flags = 0;
 	GHashTable *folders_from_server;
 	gint i, total;
 
@@ -848,11 +810,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
 	CamelFolderInfo * fi= NULL;
-	GPtrArray *folders = NULL;
-	CamelURL *base;
-	CamelIterator *iter;
-	gint i;
-
+	
 	if (top == NULL)
 		top = "";
 
@@ -865,9 +823,9 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 	if (camel_exception_is_set(ex))
 		return NULL;
 
-	if (camel_store_summary_count (istore->summary) == 0) {
+	if (camel_store_summary_count ((CamelStoreSummary *) istore->summary) == 0) {
 		sync_folders (istore, top, ex);
-		camel_store_summary_save((CamelStoreSummary *)istore->summary);
+		camel_store_summary_save((CamelStoreSummary *) istore->summary);
 	}
 
 	fi = get_folder_info_offline (store, top, flags, ex);

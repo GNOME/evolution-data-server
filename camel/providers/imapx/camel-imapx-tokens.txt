@@ -1,6 +1,6 @@
 /* This contains all of the keywords we care about.  These
    can be converted to an id very efficiently */
-struct _imap_keyword { char *name; camel_imapx_id_t id; };
+struct _imap_keyword {const gchar *name; camel_imapx_id_t id; };
 %%
 ALERT,          IMAP_ALERT
 APPENDUID,	IMAP_APPENDUID

@@ -415,6 +415,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar buffer[16];
+	CamelException ex = {0, NULL};
 
 	c(printf("adding command, fmt = '%s'\n", fmt));
 
@@ -523,7 +524,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 				case 'F': /* IMAP flags set */
 					f = va_arg(ap, guint32);
 					F = va_arg(ap, CamelFlag *);
-					imap_write_flags((CamelStream *)ic->mem, f, F);
+					imap_write_flags((CamelStream *)ic->mem, f, F, &ex);
 					break;
 				case 'c':
 					d = va_arg(ap, gint);
