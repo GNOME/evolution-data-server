@@ -2132,12 +2132,15 @@ imapx_job_sync_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				CamelIMAPXMessageInfo *info = camel_folder_summary_peek_info (job->folder->summary, 
 										job->u.sync_changes.changed_uids->pdata[i]);
 
-				if (info)
-					info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
+				info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
+				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+				info->info.dirty = TRUE;
 
 				/* FIXME: move over user flags too */
 			}
 		}
+
+		camel_folder_summary_touch (job->folder->summary);
 		camel_dlist_remove((CamelDListNode *)job);
 		camel_msgport_reply((CamelMsg *)job);
 	}
