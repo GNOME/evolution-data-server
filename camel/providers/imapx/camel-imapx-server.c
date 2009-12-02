@@ -2195,6 +2195,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 			for (j=0 ; j<user_set->len; j++) {
 				struct _imapx_flag_change *c = &g_array_index(user_set, struct _imapx_flag_change, j);
 
+				imapx_uidset_init(&ss, 0, 100);
 				for (i=0 ; i < c->infos->len; i++) {
 					CamelIMAPXMessageInfo *info = c->infos->pdata[i];
 
@@ -2204,8 +2205,9 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 						ic->job = job;
 						ic->pri = job->pri;
 					}
-					if (imapx_uidset_add(&ss, ic, camel_message_info_uid(info))
-					    || (i==c->infos->len-1 && imapx_uidset_done(&ss, ic))) {
+
+					if (imapx_uidset_add(&ss, ic, camel_message_info_uid (info))
+					    || (i == c->infos->len-1 && imapx_uidset_done (&ss, ic))) {
 						job->commands++;
 						camel_imapx_command_add(ic, " %tFLAGS.SILENT (%t)", on?"+":"-", c->name);
 						imapx_command_queue(is, ic);
