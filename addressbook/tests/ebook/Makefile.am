@@ -1,16 +1,48 @@
-TEST_LIBS=							\
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
-	$(EVOLUTION_ADDRESSBOOK_LIBS)
+noinst_LTLIBRARIES = libebook-test-utils.la
+libebook_test_utils_la_SOURCES = ebook-test-utils.c ebook-test-utils.h
 
-noinst_PROGRAMS = test-changes test-categories test-date test-ebook test-ebook-async test-ebook-remove test-ebook-view test-nonexistent-id test-photo test-query test-self test-string test-undefinedfield test-untyped-phones test-search test-stress-bookviews
+# FIXME: reduct redundancy
+libebook_test_utils_la_CPPFLAGS = \
+        $(AM_CPPFLAGS)                  \
+        -I$(top_srcdir)                 \
+        -I$(top_builddir)               \
+        -I$(top_srcdir)/addressbook     \
+        -I$(top_builddir)/addressbook   \
+        $(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(NULL)
+
+libebook_test_utils_la_LIBADD = \
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)                           \
+	$(NULL)
+
+TEST_LIBS =							\
+	$(libebook_test_utils_la_LIBADD) \
+	libebook-test-utils.la	         \
+	$(NULL)
+
+noinst_PROGRAMS = \
+	test-changes                         \
+	test-categories                      \
+	test-date                            \
+	test-ebook                           \
+	test-ebook-async                     \
+	test-ebook-remove                    \
+	test-ebook-view                      \
+	test-nonexistent-id                  \
+	test-photo                           \
+	test-query                           \
+	test-self                            \
+	test-string                          \
+	test-undefinedfield                  \
+	test-untyped-phones                  \
+	test-search                          \
+	test-stress-bookviews                \
+	$(NULL)
 
 TEST_CPPFLAGS= \
-	$(AM_CPPFLAGS)			\
-	-I$(top_srcdir)			\
-	-I$(top_builddir)		\
-	-I$(top_srcdir)/addressbook	\
-	-I$(top_builddir)/addressbook	\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(libebook_test_utils_la_CPPFLAGS) \
+	$(NULL)
 
 test_search_LDADD=$(TEST_LIBS)
 test_search_CPPFLAGS=$(TEST_CPPFLAGS)

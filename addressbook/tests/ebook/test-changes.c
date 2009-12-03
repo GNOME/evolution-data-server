@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
+#include "ebook-test-utils.h"
+
 #define NEW_VCARD "BEGIN:VCARD\n\
 X-EVOLUTION-FILE-AS:Toshok, Chris\n\
 FN:Chris Toshok\n\
@@ -18,32 +20,11 @@ main (gint argc, gchar **argv)
 	GList *changes;
 	GError *error = NULL;
 	EBookChange *change;
-	gchar *file_template;
 	gchar *uri;
 
 	g_type_init ();
 
-	file_template = g_build_filename (g_get_tmp_dir (),
-					  "change-test-XXXXXX",
-					  NULL);
-	g_mkstemp (file_template);
-
-	uri = g_filename_to_uri (file_template, NULL, &error);
-	if (!uri) {
-		printf ("failed to convert %s to an URI: %s\n",
-			file_template, error->message);
-		exit (0);
-	}
-	g_free (file_template);
-
-	/* create a temp addressbook in /tmp */
-	printf ("loading addressbook\n");
-	book = e_book_new_from_uri (uri, &error);
-	if (!book) {
-		printf ("failed to create addressbook: `%s': %s\n",
-			uri, error->message);
-		exit(0);
-	}
+	book = ebook_test_utils_create_temp_addressbook (&uri);
 
 	if (!e_book_open (book, FALSE, &error)) {
 		printf ("failed to open addressbook: `%s': %s\n",
