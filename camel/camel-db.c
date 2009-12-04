@@ -1019,7 +1019,7 @@ camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex
 	 gint ret;
 	 GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-	 sel_query = sqlite3_mprintf("SELECT uid, preview FROM '%s_preview'", folder_name);
+	 sel_query = sqlite3_mprintf("SELECT uid, preview FROM '%q_preview'", folder_name);
 
 	 ret = camel_db_select (db, sel_query, read_preview_callback, hash, ex);
 	 sqlite3_free (sel_query);
@@ -1038,7 +1038,7 @@ camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid
 	gchar *query;
 	gint ret;
 
-	query = sqlite3_mprintf("INSERT OR REPLACE INTO '%s_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
+	query = sqlite3_mprintf("INSERT OR REPLACE INTO '%q_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
 
 	ret = camel_db_add_to_transaction (db, query, ex);
 	sqlite3_free (query);
