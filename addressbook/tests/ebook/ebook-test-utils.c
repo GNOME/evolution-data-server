@@ -24,6 +24,44 @@ ebook_test_utils_book_add_contact (EBook    *book,
         return e_contact_get (contact, E_CONTACT_UID);
 }
 
+static void
+add_contact_cb (EBook            *book,
+                EBookStatus       status,
+                const char       *uid,
+                EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously add the contact '%s': "
+                                "status %d", uid, status);
+                exit (1);
+        }
+
+        g_print ("successfully asynchronously added the contact "
+                        "addressbook\n");
+        if (closure) {
+                (*closure->cb) (closure->user_data);
+                g_free (closure);
+        }
+}
+
+void
+ebook_test_utils_book_async_add_contact (EBook       *book,
+                                         EContact    *contact,
+                                         GSourceFunc  callback,
+                                         gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_add_contact (book, contact,
+                                (EBookIdCallback) add_contact_cb, closure)) {
+                g_warning ("failed to set up contact add");
+                exit(1);
+        }
+}
+
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
                                    const char *uid)

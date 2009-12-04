@@ -43,6 +43,11 @@ ebook_test_utils_book_new_temp (char **uri);
 char*
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact);
+void
+ebook_test_utils_book_async_add_contact (EBook       *book,
+                                         EContact    *contact,
+                                         GSourceFunc  callback,
+                                         gpointer     user_data);
 
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
