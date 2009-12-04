@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2009-08-11 14:04+0000\n"
-"PO-Revision-Date: 2009-07-01 14:22+0300\n"
+"PO-Revision-Date: 2009-12-01 10:50+0200\n"
 "Last-Translator: Ivar Smolin <okul@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -1116,7 +1116,7 @@ msgstr ""
 
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
-msgstr "Ootamatu GnuPG päring  '%s' jaoks"
+msgstr "Ootamatu GnuPG päring '%s' jaoks"
 
 msgid "Canceled."
 msgstr "Tühistatud."
