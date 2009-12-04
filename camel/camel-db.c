@@ -1018,7 +1018,7 @@ camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex
 	 gint ret;
 	 GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-	 sel_query = sqlite3_mprintf("SELECT uid, preview FROM '%s_preview'", folder_name);
+	 sel_query = sqlite3_mprintf("SELECT uid, preview FROM '%q_preview'", folder_name);
 
 	 ret = camel_db_select (db, sel_query, read_preview_callback, hash, ex);
 	 sqlite3_free (sel_query);
@@ -1037,7 +1037,7 @@ camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid
 	gchar *query;
 	gint ret;
 
-	query = sqlite3_mprintf("INSERT OR REPLACE INTO '%s_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
+	query = sqlite3_mprintf("INSERT OR REPLACE INTO '%q_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
 
 	ret = camel_db_add_to_transaction (db, query, ex);
 	sqlite3_free (query);
@@ -1143,7 +1143,7 @@ camel_db_create_message_info_table (CamelDB *cdb, const gchar *folder_name, Came
 	sqlite3_free (table_creation_query);
 
 	/* Create message preview table. */
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%s_preview' (  uid TEXT PRIMARY KEY , preview TEXT)", folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_preview' (  uid TEXT PRIMARY KEY , preview TEXT)", folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	sqlite3_free (table_creation_query);
 
@@ -1156,7 +1156,7 @@ camel_db_create_message_info_table (CamelDB *cdb, const gchar *folder_name, Came
 
 	/* INDEX on preview */
 	safe_index = g_strdup_printf("SINDEX-%s-preview", folder_name);
-	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON '%s_preview' (uid, preview)", safe_index, folder_name);
+	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON '%q_preview' (uid, preview)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, ex);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
