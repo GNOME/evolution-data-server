@@ -27,6 +27,7 @@ noinst_PROGRAMS = \
 	test-date                            \
 	test-ebook                           \
 	test-ebook-async                     \
+	test-ebook-get-contact               \
 	test-ebook-remove                    \
 	test-ebook-view                      \
 	test-nonexistent-id                  \
@@ -52,6 +53,8 @@ test_ebook_LDADD=$(TEST_LIBS)
 test_ebook_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_async_LDADD=$(TEST_LIBS)
 test_ebook_async_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_get_contact_LDADD=$(TEST_LIBS)
+test_ebook_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_LDADD=$(TEST_LIBS)
 test_ebook_remove_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_view_LDADD=$(TEST_LIBS)
