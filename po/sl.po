@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2009-11-30 12:21+0000\n"
-"PO-Revision-Date: 2009-11-30 14:58+0100\n"
+"POT-Creation-Date: 2009-12-04 13:29+0000\n"
+"PO-Revision-Date: 2009-12-04 15:22+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,13 +29,13 @@ msgstr "Nalaganje ..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4508
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4522
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
 msgid "Searching..."
 msgstr "Iskanje ..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2696
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4672
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4686
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Prejemanje stikov (%d) ..."
@@ -71,20 +71,15 @@ msgstr "Odstranjujem stik iz strežnika LDAP ..."
 msgid "Modifying contact from LDAP server..."
 msgstr "Spreminjam stik na strežniku LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4369
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4383
 msgid "Receiving LDAP search results..."
 msgstr "Dobivam rezultate iskanja LDAP ..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4530
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4544
 msgid "Error performing search"
 msgstr "Napaka ob iskanju"
 
-#: ../addressbook/libebook/e-book.c:1944
-#, c-format
-msgid "%s: there was no self contact UID stored in gconf"
-msgstr "%s: v gconf ni bilo shranjenega UID lastnega stika"
-
-#: ../addressbook/libebook/e-book.c:2074
+#: ../addressbook/libebook/e-book.c:2117
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: v gconf ni shranjenega vira za UID '%s'."
@@ -714,16 +709,16 @@ msgid "Could not create thread for getting deltas"
 msgstr "Ni mogoče ustvariti niti za pridobivanje delt"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:374
-#: ../calendar/backends/google/e-cal-backend-google.c:1189
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1080
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1381
+#: ../calendar/backends/google/e-cal-backend-google.c:1142
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1079
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1380
 #: ../calendar/backends/http/e-cal-backend-http.c:676
-#: ../calendar/backends/weather/e-cal-backend-weather.c:488
+#: ../calendar/backends/weather/e-cal-backend-weather.c:490
 msgid "Could not create cache file"
 msgstr "Ni mogoče ustvariti datoteke s predpomnilnikom"
 
 #: ../calendar/backends/google/e-cal-backend-google-utils.c:387
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1093
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1092
 msgid "Could not create thread for populating cache"
 msgstr "Ni mogoče ustvariti niti za naselitev predpomnilnika"
 
@@ -742,17 +737,17 @@ msgstr "Zahtevan odgovor: ko ustreza"
 msgid "Loading %s items"
 msgstr "Nalaganje %s predmetov"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:918
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:917
 msgid "Calendar"
 msgstr "Koledar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:976
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:975
 msgid "Invalid server URI"
 msgstr "Neveljaven URI strežnika"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:995
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1004
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1098
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:994
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1003
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1097
 #: ../calendar/libecal/e-cal.c:3953
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1335
@@ -781,43 +776,43 @@ msgstr "Ni koledar."
 msgid "Could not retrieve weather data"
 msgstr "Podatkov o vremenu ni mogoče pridobiti"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:247
+#: ../calendar/backends/weather/e-cal-backend-weather.c:249
 msgid "Weather: Fog"
 msgstr "Vreme: megleno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:248
+#: ../calendar/backends/weather/e-cal-backend-weather.c:250
 msgid "Weather: Cloudy Night"
 msgstr "Vreme: oblačna noč"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:249
+#: ../calendar/backends/weather/e-cal-backend-weather.c:251
 msgid "Weather: Cloudy"
 msgstr "Vreme: oblačno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:250
+#: ../calendar/backends/weather/e-cal-backend-weather.c:252
 msgid "Weather: Overcast"
 msgstr "Vreme: oblačno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:251
+#: ../calendar/backends/weather/e-cal-backend-weather.c:253
 msgid "Weather: Showers"
 msgstr "Vreme: plohe"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:252
+#: ../calendar/backends/weather/e-cal-backend-weather.c:254
 msgid "Weather: Snow"
 msgstr "Vreme: sneženo"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:255
 msgid "Weather: Clear Night"
 msgstr "Vreme: jasna noč"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:256
 msgid "Weather: Sunny"
 msgstr "Vreme: sončno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:257
 msgid "Weather: Thunderstorms"
 msgstr "Vreme: nevihtno"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:401
+#: ../calendar/backends/weather/e-cal-backend-weather.c:403
 msgid "Forecast"
 msgstr "Napoved"
 
@@ -949,23 +944,23 @@ msgstr "30."
 msgid "31st"
 msgstr "31."
 
-#: ../calendar/libecal/e-cal-util.c:685
-#: ../calendar/libecal/e-cal-util.c:712
+#: ../calendar/libecal/e-cal-util.c:688
+#: ../calendar/libecal/e-cal-util.c:715
 msgid "High"
 msgstr "visoka"
 
-#: ../calendar/libecal/e-cal-util.c:687
-#: ../calendar/libecal/e-cal-util.c:714
+#: ../calendar/libecal/e-cal-util.c:690
+#: ../calendar/libecal/e-cal-util.c:717
 msgid "Normal"
 msgstr "običajna"
 
-#: ../calendar/libecal/e-cal-util.c:689
-#: ../calendar/libecal/e-cal-util.c:716
+#: ../calendar/libecal/e-cal-util.c:692
+#: ../calendar/libecal/e-cal-util.c:719
 msgid "Low"
 msgstr "nizka"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:710
+#: ../calendar/libecal/e-cal-util.c:713
 msgid "Undefined"
 msgstr "ni definirana"
 
@@ -3053,7 +3048,7 @@ msgstr "SSL ni na voljo"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:860
-#: ../camel/providers/imapx/camel-imapx-server.c:1532
+#: ../camel/providers/imapx/camel-imapx-server.c:1544
 msgid "Connection cancelled"
 msgstr "Povezava prekinjena"
 
@@ -3093,8 +3088,8 @@ msgstr "Ni se mogoče povezati z ukazom \"%s\": %s"
 #: ../camel/providers/imap/camel-imap-store.c:2430
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:356
 #: ../camel/providers/imap4/camel-imap4-store.c:1403
-#: ../camel/providers/imapx/camel-imapx-store.c:445
-#: ../camel/providers/imapx/camel-imapx-store.c:676
+#: ../camel/providers/imapx/camel-imapx-store.c:409
+#: ../camel/providers/imapx/camel-imapx-store.c:640
 #: ../camel/providers/local/camel-maildir-folder.c:81
 #: ../camel/providers/local/camel-maildir-store.c:219
 #: ../camel/providers/local/camel-maildir-store.c:291
@@ -3474,12 +3469,12 @@ msgstr ""
 "\n"
 " !!! NE UPORABLJAJTE ZA VSAKODNEVNO RABO !!!\n"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1535
+#: ../camel/providers/imapx/camel-imapx-server.c:1547
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Ni se mogoče povezati s %s (vrata %s): %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1588
+#: ../camel/providers/imapx/camel-imapx-server.c:1600
 #: ../camel/providers/imapx/camel-imapx-store.c:147
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
@@ -5019,6 +5014,8 @@ msgstr "Brez odgovora strežnika"
 msgid "Bad parameter"
 msgstr "Napačen parameter"
 
+#~ msgid "%s: there was no self contact UID stored in gconf"
+#~ msgstr "%s: v gconf ni bilo shranjenega UID lastnega stika"
 #~ msgid "\"%s\" on book before \"%s\""
 #~ msgstr "\"%s\" v knjigi pred \"%s\""
 #~ msgid "book busy"
