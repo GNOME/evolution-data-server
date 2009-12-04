@@ -106,7 +106,7 @@ typedef struct {
 		GList *ids;
 		/* OP_GET_CHANGES */
 		gchar *change_id;
-	};
+	} d;
 } OperationData;
 
 static void
@@ -119,41 +119,41 @@ operation_thread (gpointer data, gpointer user_data)
 
 	switch (op->op) {
 	case OP_OPEN:
-		e_book_backend_open (backend, op->book, op->id, op->only_if_exists);
+		e_book_backend_open (backend, op->book, op->id, op->d.only_if_exists);
 		break;
 	case OP_AUTHENTICATE:
 		e_book_backend_authenticate_user (backend, op->book, op->id,
-						  op->auth.username,
-						  op->auth.password,
-						  op->auth.method);
-		g_free (op->auth.username);
-		g_free (op->auth.password);
-		g_free (op->auth.method);
+						  op->d.auth.username,
+						  op->d.auth.password,
+						  op->d.auth.method);
+		g_free (op->d.auth.username);
+		g_free (op->d.auth.password);
+		g_free (op->d.auth.method);
 		break;
 	case OP_ADD_CONTACT:
-		e_book_backend_create_contact (backend, op->book, op->id, op->vcard);
-		g_free (op->vcard);
+		e_book_backend_create_contact (backend, op->book, op->id, op->d.vcard);
+		g_free (op->d.vcard);
 		break;
 	case OP_GET_CONTACT:
-		e_book_backend_get_contact (backend, op->book, op->id, op->uid);
-		g_free (op->uid);
+		e_book_backend_get_contact (backend, op->book, op->id, op->d.uid);
+		g_free (op->d.uid);
 		break;
 	case OP_GET_CONTACTS:
-		e_book_backend_get_contact_list (backend, op->book, op->id, op->query);
-		g_free (op->query);
+		e_book_backend_get_contact_list (backend, op->book, op->id, op->d.query);
+		g_free (op->d.query);
 		break;
 	case OP_MODIFY_CONTACT:
-		e_book_backend_modify_contact (backend, op->book, op->id, op->vcard);
-		g_free (op->vcard);
+		e_book_backend_modify_contact (backend, op->book, op->id, op->d.vcard);
+		g_free (op->d.vcard);
 		break;
 	case OP_REMOVE_CONTACTS:
-		e_book_backend_remove_contacts (backend, op->book, op->id, op->ids);
-		g_list_foreach (op->ids, (GFunc)g_free, NULL);
-		g_list_free (op->ids);
+		e_book_backend_remove_contacts (backend, op->book, op->id, op->d.ids);
+		g_list_foreach (op->d.ids, (GFunc)g_free, NULL);
+		g_list_free (op->d.ids);
 		break;
 	case OP_GET_CHANGES:
-		e_book_backend_get_changes (backend, op->book, op->id, op->change_id);
-		g_free (op->change_id);
+		e_book_backend_get_changes (backend, op->book, op->id, op->d.change_id);
+		g_free (op->d.change_id);
 		break;
 	}
 
@@ -288,7 +288,7 @@ impl_AddressBook_Book_open(EDataBook *book, gboolean only_if_exists, DBusGMethod
 	OperationData *op;
 
 	op = op_new (OP_OPEN, book, context);
-	op->only_if_exists = only_if_exists;
+	op->d.only_if_exists = only_if_exists;
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
@@ -333,7 +333,7 @@ impl_AddressBook_Book_getContact (EDataBook *book, const gchar *IN_uid, DBusGMet
 	}
 
 	op = op_new (OP_GET_CONTACT, book, context);
-	op->uid = g_strdup (IN_uid);
+	op->d.uid = g_strdup (IN_uid);
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
@@ -360,7 +360,7 @@ impl_AddressBook_Book_getContactList (EDataBook *book, const gchar *query, DBusG
 	}
 
 	op = op_new (OP_GET_CONTACTS, book, context);
-	op->query = g_strdup (query);
+	op->d.query = g_strdup (query);
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
@@ -376,9 +376,9 @@ impl_AddressBook_Book_authenticateUser(EDataBook *book, const gchar *IN_user, co
 	OperationData *op;
 
 	op = op_new (OP_AUTHENTICATE, book, context);
-	op->auth.username = g_strdup (IN_user);
-	op->auth.password = g_strdup (IN_passwd);
-	op->auth.method = g_strdup (IN_auth_method);
+	op->d.auth.username = g_strdup (IN_user);
+	op->d.auth.password = g_strdup (IN_passwd);
+	op->d.auth.method = g_strdup (IN_auth_method);
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
@@ -416,7 +416,7 @@ impl_AddressBook_Book_addContact (EDataBook *book, const gchar *IN_vcard, DBusGM
 	}
 
 	op = op_new (OP_ADD_CONTACT, book, context);
-	op->vcard = g_strdup (IN_vcard);
+	op->d.vcard = g_strdup (IN_vcard);
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
@@ -446,7 +446,7 @@ impl_AddressBook_Book_modifyContact (EDataBook *book, const gchar *IN_vcard, DBu
 	}
 
 	op = op_new (OP_MODIFY_CONTACT, book, context);
-	op->vcard = g_strdup (IN_vcard);
+	op->d.vcard = g_strdup (IN_vcard);
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
@@ -479,7 +479,7 @@ impl_AddressBook_Book_removeContacts(EDataBook *book, const gchar **IN_uids, DBu
 	op = op_new (OP_REMOVE_CONTACTS, book, context);
 
 	for (; *IN_uids; IN_uids++) {
-		op->ids = g_list_prepend (op->ids, g_strdup (*IN_uids));
+		op->d.ids = g_list_prepend (op->d.ids, g_strdup (*IN_uids));
 	}
 
 	g_thread_pool_push (op_pool, op, NULL);
@@ -585,7 +585,7 @@ impl_AddressBook_Book_getChanges(EDataBook *book, const gchar *IN_change_id, DBu
 	OperationData *op;
 
 	op = op_new (OP_GET_CHANGES, book, context);
-	op->change_id = g_strdup (IN_change_id);
+	op->d.change_id = g_strdup (IN_change_id);
 	g_thread_pool_push (op_pool, op, NULL);
 }
 
