@@ -280,21 +280,21 @@ imapx_uidset_add(struct _uidset_state *ss, CamelIMAPXCommand *ic, const gchar *u
 
 	ss->uids++;
 
-	printf("uidset add '%s'\n", uid);
+	e(printf("uidset add '%s'\n", uid));
 
 	if (ss->last == 0) {
-		printf(" start\n");
+		e(printf(" start\n"));
 		camel_imapx_command_add(ic, "%d", uidn);
 		ss->entries++;
 		ss->start = uidn;
 	} else {
 		if (ss->last != uidn-1) {
 			if (ss->last == ss->start) {
-				printf(" ,next\n");
+				e(printf(" ,next\n"));
 				camel_imapx_command_add(ic, ",%d", uidn);
 				ss->entries++;
 			} else {
-				printf(" :range\n");
+				e(printf(" :range\n"));
 				camel_imapx_command_add(ic, ":%d,%d", ss->last, uidn);
 				ss->entries+=2;
 			}
@@ -306,7 +306,7 @@ imapx_uidset_add(struct _uidset_state *ss, CamelIMAPXCommand *ic, const gchar *u
 
 	if ((ss->limit && ss->entries >= ss->limit)
 	    || (ss->total && ss->uids >= ss->total)) {
-		printf(" done, %d entries, %d uids\n", ss->entries, ss->uids);
+		e(printf(" done, %d entries, %d uids\n", ss->entries, ss->uids));
 		imapx_uidset_done(ss, ic);
 		return 1;
 	}
@@ -1022,7 +1022,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 			imapx_store->summary->namespaces = nsl;
 			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
-		}
+		} 
 
 		return 0;
 	}
@@ -1492,7 +1492,7 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 	if (is->select_folder) {
 		while (!camel_dlist_empty(&is->active)) {
 			QUEUE_UNLOCK(is);
-			imapx_step(is, ex);
+			sleep (1);
 			QUEUE_LOCK(is);
 		}
 		g_free(is->select);
@@ -1606,7 +1606,9 @@ imapx_connect(CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExcep
 		ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
 		imapx_command_run (is, ic, ex);
 		camel_imapx_command_free (ic);
-	} else {
+	} 
+	
+	if (((CamelIMAPXStore *) is->store)->summary->namespaces == NULL) {
 		CamelIMAPXNamespaceList *nsl = NULL;
 		CamelIMAPXStoreNamespace *ns = NULL;
 		CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
@@ -2120,6 +2122,7 @@ imapx_job_refresh_info_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	CamelIMAPXCommand *ic;
 
 	/* Should we force a select here ? */
+	//imapx_select (is, job->folder, job->ex);
 	ic = camel_imapx_command_new ("FETCH", job->folder->full_name,
 				     "FETCH 1:* (UID FLAGS)");
 	ic->job = job;
@@ -2521,10 +2524,7 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 	is->session = ((CamelService *)store)->session;
 	camel_object_ref(is->session);
 	is->store = store;
-
 	is->url = camel_url_copy(url);
-//	camel_url_set_user(is->url, "camel");
-	camel_url_set_passwd(is->url, "novell");
 
 	return is;
 }
