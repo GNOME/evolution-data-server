@@ -937,6 +937,40 @@ imapx_expunged(CamelIMAPXServer *imap)
 	g_array_set_size(imap->expunged, 0); */
 }
 
+static void
+update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
+{
+	gint unread=0, deleted=0, junk=0;
+	guint32 flags = info->flags;
+
+	if (!(flags & CAMEL_MESSAGE_SEEN))
+		unread = 1;
+
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = 1;
+
+	if (summary) {
+
+		if (unread)
+			summary->unread_count += unread;
+		if (deleted)
+			summary->deleted_count += deleted;
+		if (junk)
+			summary->junk_count += junk;
+		if (junk && !deleted)
+			summary->junk_not_deleted_count += junk;
+		summary->visible_count++;
+		if (junk ||  deleted)
+			summary->visible_count -= junk ? junk : deleted;
+
+		summary->saved_count++;
+		camel_folder_summary_touch(summary);
+	}
+}
+
 /* handle any untagged responses */
 static gint
 imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
@@ -1091,6 +1125,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 					
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
 						camel_folder_summary_add(job->folder->summary, mi);
+						update_summary (job->folder->summary, (CamelMessageInfoBase *) mi);
 						camel_folder_change_info_add_uid (job->u.refresh_info.changes, mi->uid);
 					} 
 				}
@@ -1348,7 +1383,7 @@ imapx_step(CamelIMAPXServer *is, CamelException *ex)
 	else if (tok == '+')
 		imapx_continuation(is, ex);
 	else
-		camel_exception_setv (ex, 1, "unexpected server response: %s", token);
+		camel_exception_set (ex, 1, "unexpected server response:");
 }
 
 /* Used to run 1 command synchronously,
@@ -1364,7 +1399,7 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic, CamelException *e
 	QUEUE_UNLOCK(is);
 	do {
 		imapx_step(is, ex);
-	} while (ic->status == NULL);
+	} while (ic->status == NULL && !camel_exception_is_set (ex));
 
 	camel_dlist_remove((CamelDListNode *)ic);
 }
@@ -1561,6 +1596,11 @@ imapx_connect(CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExcep
 	imapx_command_run(is, ic, ex);
 	camel_imapx_command_free(ic);
 
+	if (camel_exception_is_set (ex)) {
+		g_message ("Unable to connect %d %s \n", ex->id, ex->desc);
+		return;
+	}
+	
 	/* Fetch namespaces */
 	if (is->cinfo->capa & IMAP_CAPABILITY_NAMESPACE) {
 		ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
@@ -1871,13 +1911,33 @@ imapx_index_next (CamelFolderSummary *s, guint index)
 }
 
 static void
+update_store_summary (CamelFolder *folder, CamelException *ex)
+{
+	CamelStoreInfo *si;
+
+	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
+	if (si) {
+		guint32 unread, total;
+
+		camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+		if (si->unread != unread || si->total != total) {
+			si->unread = unread;
+			si->total = total;
+			
+			g_message ("Unread count is %d \n", unread);
+			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
+			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
+		}
+	}
+}
+
+static void
 imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 	gint i = job->u.refresh_info.index;
 	GArray *infos = job->u.refresh_info.infos;
 
-	g_usleep (100000);
 	if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 		camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
 	camel_folder_change_info_clear(job->u.refresh_info.changes);
@@ -1911,6 +1971,7 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 	}
 
+	update_store_summary (job->folder, job->ex);
 	camel_folder_summary_save_to_db (job->folder->summary, NULL);
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
@@ -1945,6 +2006,7 @@ imapx_uid_cmp(gconstpointer ap, gconstpointer bp, gpointer data)
 	return strcmp(ae, be);
 }
 
+
 static void
 imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
@@ -1975,6 +2037,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		total = camel_folder_summary_count (s);
 		s_minfo = camel_folder_summary_index (s, 0);
 
+		camel_folder_freeze (job->folder);
 		for (i=0; i<infos->len; i++) {
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
@@ -1992,8 +2055,9 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			if (s_minfo && uid_cmp(s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *)s_minfo;
 				if (info->server_flags !=  r->server_flags
-				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags))
+				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags)) 
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
+				
 				g_free(r->uid);
 				r->uid = NULL;
 			} else 
@@ -2022,10 +2086,13 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 
 		camel_db_delete_uids (is->store->cdb_w, s->folder->full_name, removed, NULL);
+		update_store_summary (job->folder, job->ex);
+		camel_folder_thaw (job->folder);
 
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
 		camel_folder_change_info_clear(job->u.refresh_info.changes);
+
 
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
 		if (fetch_new) {
@@ -2146,12 +2213,32 @@ imapx_job_sync_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
 				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				info->info.dirty = TRUE;
+			
+				camel_folder_summary_touch (job->folder->summary);
 
 				/* FIXME: move over user flags too */
 			}
 		}
 
-		camel_folder_summary_touch (job->folder->summary);
+		if (job->folder->summary && (job->folder->summary->flags & CAMEL_SUMMARY_DIRTY) != 0) {
+			CamelStoreInfo *si;
+
+			/* ... and store's summary when folder's summary is dirty */
+			si = camel_store_summary_path ((CamelStoreSummary *)((CamelIMAPXStore *) job->folder->parent_store)->summary, job->folder->full_name);
+			if (si) {
+				if (si->total != job->folder->summary->saved_count || si->unread != job->folder->summary->unread_count) {
+					si->total = job->folder->summary->saved_count;
+					si->unread = job->folder->summary->unread_count;
+					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) job->folder->parent_store)->summary);
+				}
+
+				camel_store_summary_info_free ((CamelStoreSummary *)((CamelIMAPXStore *) job->folder->parent_store)->summary, si);
+			}
+		}
+
+		camel_folder_summary_save_to_db (job->folder->summary, job->ex);
+		camel_store_summary_save((CamelStoreSummary *)((CamelIMAPXStore *) job->folder->parent_store)->summary);
+
 		camel_dlist_remove((CamelDListNode *)job);
 		camel_msgport_reply((CamelMsg *)job);
 	}
@@ -2313,8 +2400,6 @@ imapx_server_loop(gpointer d)
 			PRPollDesc pollfds[2] = { };
 			gint res;
 
-			printf("\nGoing to sleep waiting for work to do\n\n");
-
 			pollfds[0].fd = camel_tcp_stream_ssl_sockfd((CamelTcpStreamSSL *)is->stream->source);
 			pollfds[0].in_flags = PR_POLL_READ;
 			pollfds[1].fd = camel_msgport_prfd(is->port);
@@ -2325,15 +2410,13 @@ imapx_server_loop(gpointer d)
 			if (res == -1)
 				sleep(1) /* ?? */ ;
 			else if ((pollfds[0].out_flags & PR_POLL_READ)) {
-				printf(" * woken * have data ready\n");
 				do {
 					/* This is quite shitty, it will often block on each
 					   part of the decode, causing significant
 					   processing delays. */
 					imapx_step(is, &ex);
-				} while (camel_imapx_stream_buffered(is->stream));
+				} while (camel_imapx_stream_buffered(is->stream) && !camel_exception_is_set (&ex));
 			} else if (pollfds[1].out_flags & PR_POLL_READ) {
-				printf(" * woken * have new job\n");
 				/* job is handled in main loop */
 			}
 		}
@@ -2356,7 +2439,7 @@ imapx_server_loop(gpointer d)
 			else if (fds[0].revents & POLLIN) {
 				do {
 					imapx_step(is, &ex);
-				} while (camel_imapx_stream_buffered(is->stream));
+				} while (camel_imapx_stream_buffered(is->stream) && !camel_exception_is_set (&ex));
 			}
 		}
 #endif

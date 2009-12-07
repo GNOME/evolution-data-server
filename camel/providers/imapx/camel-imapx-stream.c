@@ -614,7 +614,6 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 
 	/* Had an i/o erorr */
 io_error:
-	printf("Got io error\n");
 	camel_exception_set (ex, 1, "io error");
 	return IMAP_TOK_ERROR;
 

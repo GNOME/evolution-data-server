@@ -21,7 +21,7 @@ main (gint argc, gchar *argv [])
 	uri = argv [1];
 	g_thread_init (NULL);
 	system ("rm -rf /tmp/test-camel-imapx");
-	camel_init ("/tmp/test-camel-imapx", 0);
+	camel_init ("/tmp/test-camel-imapx", TRUE);
 	camel_provider_init ();
 	ex = camel_exception_new ();
 

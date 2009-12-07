@@ -819,8 +819,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 		return fi;
 	}
 
-	camel_service_connect((CamelService *)store, ex);
-	if (camel_exception_is_set(ex))
+	if (!camel_service_connect((CamelService *)store, ex))
 		return NULL;
 
 	if (camel_store_summary_count ((CamelStoreSummary *) istore->summary) == 0) {

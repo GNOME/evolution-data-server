@@ -37,6 +37,7 @@ imap_tokenise (register const gchar *str, register guint len)
 }
 
 static void imapx_namespace_clear (CamelIMAPXStoreNamespace **ns);
+static const gchar * rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo);
 
 /* flag table */
 static struct {
@@ -80,8 +81,12 @@ imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fla
 						flags |= flag_table[i].flag;
 						goto found;
 					}
-				if (user_flagsp)
-					camel_flag_set(user_flagsp, (gchar *)token, TRUE);
+				if (user_flagsp) {
+					const char *flag_name = rename_label_flag ((gchar *) token, strlen ((gchar *) token), TRUE);
+					
+					camel_flag_set(user_flagsp, flag_name, TRUE);
+					
+				}
 			found:
 				tok = tok; /* fixes stupid warning */
 			} else if (tok != ')') {
@@ -95,6 +100,42 @@ imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fla
 	}
 
 	*flagsp = flags;
+}
+
+
+/*
+ * rename_flag
+ * Converts label flag name on server to name used in Evolution or back.
+ * if the flags does not match returns the original one as it is.
+ * It will never return NULL, it will return empty string, instead.
+ *
+ * @param flag Flag to rename.
+ * @param len Length of the flag name.
+ * @param server_to_evo if TRUE, then converting server names to evo's names, if FALSE then opposite.
+ */
+static const gchar *
+rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
+{
+	gint i;
+	const gchar *labels[] = {
+		"$Label1", "$Labelimportant",
+		"$Label2", "$Labelwork",
+		"$Label3", "$Labelpersonal",
+		"$Label4", "$Labeltodo",
+		"$Label5", "$Labellater",
+		NULL,      NULL };
+
+	/* It really can pass zero-length flags inside, in that case it was able
+	   to always add first label, which is definitely wrong. */
+	if (!len || !flag || !*flag)
+		return "";
+
+	for (i = 0 + (server_to_evo ? 0 : 1); labels[i]; i = i + 2) {
+		if (!g_ascii_strncasecmp (flag, labels[i], len))
+			return labels [i + (server_to_evo ? 1 : -1)];
+	}
+
+	return flag;
 }
 
 void
@@ -125,7 +166,10 @@ imap_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Came
 	}
 
 	while (user_flags) {
-		if (camel_stream_write(stream, user_flags->name, strlen(user_flags->name)) == -1) {
+		const char *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
+		
+		
+		if (camel_stream_write(stream, flag_name, strlen (flag_name)) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 			return;
 		}
