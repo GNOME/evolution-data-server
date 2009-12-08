@@ -493,7 +493,7 @@ namespace_load(CamelStoreSummary *s, FILE *in)
 			tail->next = ns = g_malloc (sizeof (CamelIMAPXStoreNamespace));
 			ns->sep = sep;
 			ns->path = path;
-			ns->path = full_name;
+			ns->full_name = full_name;
 			ns->next = NULL;
 			tail = ns;
 		}

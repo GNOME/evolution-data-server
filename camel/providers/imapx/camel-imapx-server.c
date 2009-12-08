@@ -1115,10 +1115,23 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
 						if (r->uid && !strcmp(r->uid, finfo->uid)) {
-							((CamelMessageInfoBase *)mi)->flags = r->server_flags;
-							((CamelIMAPXMessageInfo *)mi)->server_flags = r->server_flags;
-							camel_flag_list_copy(&((CamelMessageInfoBase *)mi)->user_flags, &r->server_user_flags);
-							((CamelIMAPXMessageInfo *)mi)->server_user_flags = r->server_user_flags;
+							CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) mi;
+							CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) mi;
+							gboolean set_cal = FALSE;
+
+							binfo->flags = (binfo->flags & ~(xinfo->server_flags ^ r->server_flags)) | r->server_flags;
+							xinfo->server_flags = r->server_flags;
+							
+							if (camel_flag_get (&binfo->user_flags, "$has_cal"))
+								set_cal = TRUE;
+							
+							camel_flag_list_copy(&binfo->user_flags, &r->server_user_flags);
+						
+							/* reset the calendar flag if it was set in messageinfo before */	
+							if (set_cal)
+								camel_flag_set (&binfo->user_flags, "$has_cal", TRUE);
+
+							xinfo->server_user_flags = r->server_user_flags;
 							break;
 						}
 					}
@@ -1368,7 +1381,6 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 
 static void
 imapx_step(CamelIMAPXServer *is, CamelException *ex)
-/* throws IO,PARSE exception */
 {
 	guint len;
 	guchar *token;
@@ -1975,6 +1987,7 @@ imapx_job_refresh_info_step_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	update_store_summary (job->folder, job->ex);
 	camel_folder_summary_save_to_db (job->folder->summary, NULL);
+
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 

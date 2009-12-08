@@ -873,10 +873,10 @@ imap_parse_body(CamelIMAPXStream *is, CamelException *ex)
 	gint tok;
 	guint len;
 	guchar *token;
-	struct _CamelMessageContentInfo * volatile cinfo = NULL;
+	struct _CamelMessageContentInfo * cinfo = NULL;
 	struct _CamelMessageContentInfo *subinfo, *last;
-	struct _CamelContentDisposition * volatile dinfo = NULL;
-	struct _CamelMessageInfo * volatile minfo = NULL;
+	struct _CamelContentDisposition * dinfo = NULL;
+	struct _CamelMessageInfo * minfo = NULL;
 
 	/* body            ::= "(" body_type_1part / body_type_mpart ")" */
 
