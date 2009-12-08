@@ -32,6 +32,52 @@ ebook_test_utils_new_vcard_from_test_case (const char *case_name)
         return vcard;
 }
 
+char*
+ebook_test_utils_book_add_contact_from_test_case_verify (EBook       *book,
+                                                         const char  *case_name,
+                                                         EContact   **contact)
+{
+        char *vcard;
+        EContact *contact_orig;
+        EContact *contact_final;
+        char *uid;
+
+        vcard = ebook_test_utils_new_vcard_from_test_case (case_name);
+        contact_orig = e_contact_new_from_vcard (vcard);
+        uid = g_strdup (ebook_test_utils_book_add_contact (book, contact_orig));
+        contact_final = ebook_test_utils_book_get_contact (book, uid);
+
+        /* verify the contact was added "successfully" (not thorough) */
+        g_assert (ebook_test_utils_contacts_are_equal_shallow (contact_orig, contact_final));
+
+        if (contact)
+                *contact = g_object_ref (contact_final);
+
+        return uid;
+}
+
+/* This is not a thorough comparison (which is difficult, assuming we give the
+ * back-ends leniency in implementation) and is best suited for simple tests */
+gboolean
+ebook_test_utils_contacts_are_equal_shallow (EContact *a,
+                                             EContact *b)
+
+{
+        const char *uid_a, *uid_b;
+
+        /* Avoid warnings if one or more are NULL, to make this function
+         * "NULL-friendly" */
+        if (!a && !b)
+                return TRUE;
+        if (!E_IS_CONTACT (a) || !E_IS_CONTACT (b))
+                return FALSE;
+
+        uid_a = e_contact_get_const (a, E_CONTACT_UID);
+        uid_b = e_contact_get_const (b, E_CONTACT_UID);
+
+        return g_strcmp0 (uid_a, uid_b) == 0;
+}
+
 const char*
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact)
@@ -146,6 +192,152 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
                                 (EBookContactCallback) get_contact_cb,
                                 closure)) {
                 g_warning ("failed to set up async getContact");
+                exit(1);
+        }
+}
+
+void
+ebook_test_utils_book_remove_contact (EBook      *book,
+                                      const char *uid)
+{
+        GError *error = NULL;
+
+        if (!e_book_remove_contact (book, uid, &error)) {
+                const char *uri;
+
+                uri = e_book_get_uri (book);
+                g_warning ("failed to remove contact '%s' from addressbook: `%s': %s",
+                                uid, uri, error->message);
+                exit(1);
+        }
+}
+
+static void
+remove_contact_cb (EBook            *book,
+                   EBookStatus       status,
+                   EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously remove the contact: "
+                                "status %d", status);
+                exit (1);
+        }
+
+        g_print ("successfully asynchronously removed the contact\n");
+
+        if (closure) {
+                (*closure->cb) (closure->user_data);
+                g_free (closure);
+        }
+}
+
+void
+ebook_test_utils_book_async_remove_contact (EBook       *book,
+                                            EContact    *contact,
+                                            GSourceFunc  callback,
+                                            gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_remove_contact (book, contact,
+                                (EBookCallback) remove_contact_cb,
+                                closure)) {
+                g_warning ("failed to set up async removeContacts (for a single contact)");
+                exit(1);
+        }
+}
+
+static void
+remove_contact_by_id_cb (EBook            *book,
+                         EBookStatus       status,
+                         EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously remove the contact by id: "
+                                "status %d", status);
+                exit (1);
+        }
+
+        g_print ("successfully asynchronously removed the contact by id\n");
+
+        if (closure) {
+                (*closure->cb) (closure->user_data);
+                g_free (closure);
+        }
+}
+
+void
+ebook_test_utils_book_async_remove_contact_by_id (EBook       *book,
+                                                  const char  *uid,
+                                                  GSourceFunc  callback,
+                                                  gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_remove_contact_by_id (book, uid,
+                                (EBookCallback) remove_contact_by_id_cb,
+                                closure)) {
+                g_warning ("failed to set up async removeContacts (by id)");
+                exit(1);
+        }
+}
+
+void
+ebook_test_utils_book_remove_contacts (EBook *book,
+                                       GList *ids)
+{
+        GError *error = NULL;
+
+        if (!e_book_remove_contacts (book, ids, &error)) {
+                const char *uri;
+
+                uri = e_book_get_uri (book);
+                g_warning ("failed to remove contacts from addressbook: `%s': %s",
+                                uri, error->message);
+                exit(1);
+        }
+}
+
+static void
+remove_contacts_cb (EBook            *book,
+                    EBookStatus       status,
+                    EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously remove the contacts: "
+                                "status %d", status);
+                exit (1);
+        }
+
+        g_print ("successfully asynchronously removed the contacts\n");
+
+        if (closure) {
+                (*closure->cb) (closure->user_data);
+                g_free (closure);
+        }
+}
+
+void
+ebook_test_utils_book_async_remove_contacts (EBook       *book,
+                                             GList       *uids,
+                                             GSourceFunc  callback,
+                                             gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_remove_contacts (book, uids,
+                                (EBookCallback) remove_contacts_cb,
+                                closure)) {
+                g_warning ("failed to set up async removeContacts");
                 exit(1);
         }
 }

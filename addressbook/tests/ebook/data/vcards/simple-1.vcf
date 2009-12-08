@@ -1,0 +1,4 @@
+BEGIN:VCARD
+FN:Foo Bar
+EMAIL;INTERNET:foo.bar@example.org
+END:VCARD

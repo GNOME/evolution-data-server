@@ -10,11 +10,8 @@ main (gint argc, gchar **argv)
 {
 	EBook *book;
 	GMainLoop *loop;
-	char *vcard;
-	EContact *contact;
 	EContact *contact_final;
 	const char *uid;
-	const char *contact_final_uid;
 
 	g_type_init ();
 
@@ -24,31 +21,12 @@ main (gint argc, gchar **argv)
 	book = ebook_test_utils_book_new_temp (NULL);
 	ebook_test_utils_book_open (book, FALSE);
 
-	vcard = ebook_test_utils_new_vcard_from_test_case ("simple-1");
-	contact = e_contact_new_from_vcard (vcard);
-	uid = ebook_test_utils_book_add_contact (book, contact);
-
 	/*
 	 * Sync version
 	 */
-	contact_final = ebook_test_utils_book_get_contact (book, uid);
-	contact_final_uid = e_contact_get_const (contact_final, E_CONTACT_UID);
-
-	/* This is not a thorough comparison (which is difficult, assuming we
-	 * give the back-ends leniency in implementation), since that's better
-	 * suited to more advanced tests */
-	if (g_strcmp0 (uid, contact_final_uid)) {
-		const char *uri;
-
-		uri = e_book_get_uri (book);
-
-		g_warning ("retrieved contact uid '%s' does not match added "
-				"contact uid '%s'", contact_final_uid, uid);
-		exit(1);
-	}
+	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", &contact_final);
 
 	g_print ("successfully added and retrieved contact '%s'\n", uid);
-	g_object_unref (contact);
 	g_object_unref (contact_final);
 
 	/*
@@ -60,7 +38,6 @@ main (gint argc, gchar **argv)
 	g_main_loop_run (loop);
 
 	ebook_test_utils_book_remove (book);
-	g_free (vcard);
 
 	return 0;
 }

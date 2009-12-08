@@ -1,0 +1,4 @@
+BEGIN:VCARD
+FN:Baz Qux
+EMAIL;INTERNET:baz.qux@example.com
+END:VCARD

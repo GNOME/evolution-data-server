@@ -30,6 +30,9 @@ noinst_PROGRAMS = \
 	test-ebook-add-contact               \
 	test-ebook-get-contact               \
 	test-ebook-remove                    \
+	test-ebook-remove-contact            \
+	test-ebook-remove-contact-by-id      \
+	test-ebook-remove-contacts           \
 	test-ebook-view                      \
 	test-nonexistent-id                  \
 	test-photo                           \
@@ -60,6 +63,12 @@ test_ebook_get_contact_LDADD=$(TEST_LIBS)
 test_ebook_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_LDADD=$(TEST_LIBS)
 test_ebook_remove_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_remove_contact_LDADD=$(TEST_LIBS)
+test_ebook_remove_contact_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_remove_contact_by_id_LDADD=$(TEST_LIBS)
+test_ebook_remove_contact_by_id_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
+test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_view_LDADD=$(TEST_LIBS)
 test_ebook_view_CPPFLAGS=$(TEST_CPPFLAGS)
 test_changes_LDADD=$(TEST_LIBS)

@@ -36,6 +36,15 @@ typedef struct {
 char*
 ebook_test_utils_new_vcard_from_test_case (const char *case_name);
 
+char*
+ebook_test_utils_book_add_contact_from_test_case_verify (EBook       *book,
+                                                         const char  *case_name,
+							 EContact   **contact);
+
+gboolean
+ebook_test_utils_contacts_are_equal_shallow (EContact *a,
+                                             EContact *b);
+
 EBook*
 ebook_test_utils_book_new_temp (char **uri);
 
@@ -56,6 +65,29 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
                                          const char  *uid,
                                          GSourceFunc  callback,
                                          gpointer     user_data);
+
+void
+ebook_test_utils_book_remove_contact (EBook      *book,
+                                      const char *uid);
+void
+ebook_test_utils_book_async_remove_contact (EBook       *book,
+					    EContact    *contact,
+					    GSourceFunc  callback,
+					    gpointer     user_data);
+void
+ebook_test_utils_book_async_remove_contact_by_id (EBook       *book,
+                                                  const char  *uid,
+                                                  GSourceFunc  callback,
+                                                  gpointer     user_data);
+
+void
+ebook_test_utils_book_remove_contacts (EBook *book,
+                                       GList *ids);
+void
+ebook_test_utils_book_async_remove_contacts (EBook       *book,
+                                             GList       *uids,
+                                             GSourceFunc  callback,
+                                             gpointer     user_data);
 
 void
 ebook_test_utils_book_open (EBook    *book,
