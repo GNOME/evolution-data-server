@@ -30,6 +30,7 @@ noinst_PROGRAMS = \
 	test-ebook-add-contact               \
 	test-ebook-commit-contact            \
 	test-ebook-get-contact               \
+	test-ebook-get-static-capabilities   \
 	test-ebook-remove                    \
 	test-ebook-remove-contact            \
 	test-ebook-remove-contact-by-id      \
@@ -64,6 +65,8 @@ test_ebook_commit_contact_LDADD=$(TEST_LIBS)
 test_ebook_commit_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_get_contact_LDADD=$(TEST_LIBS)
 test_ebook_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_get_static_capabilities_LDADD=$(TEST_LIBS)
+test_ebook_get_static_capabilities_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_LDADD=$(TEST_LIBS)
 test_ebook_remove_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contact_LDADD=$(TEST_LIBS)

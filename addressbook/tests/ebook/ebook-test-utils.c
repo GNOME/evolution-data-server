@@ -260,6 +260,24 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
         }
 }
 
+const char*
+ebook_test_utils_book_get_static_capabilities (EBook *book)
+{
+        GError *error = NULL;
+        const char *caps;
+
+        if (!(caps = e_book_get_static_capabilities (book, &error))) {
+                const char *uri;
+
+                uri = e_book_get_uri (book);
+                g_warning ("failed to get capabilities for addressbook: `%s': "
+                                "%s", uri, error->message);
+                exit(1);
+        }
+
+        return caps;
+}
+
 void
 ebook_test_utils_book_remove_contact (EBook      *book,
                                       const char *uid)

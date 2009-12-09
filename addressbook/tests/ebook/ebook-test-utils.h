@@ -78,6 +78,9 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
                                          GSourceFunc  callback,
                                          gpointer     user_data);
 
+const char*
+ebook_test_utils_book_get_static_capabilities (EBook *book);
+
 void
 ebook_test_utils_book_remove_contact (EBook      *book,
                                       const char *uid);

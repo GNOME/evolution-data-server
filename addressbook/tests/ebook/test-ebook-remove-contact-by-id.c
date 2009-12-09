@@ -14,12 +14,6 @@ main (gint argc, gchar **argv)
         g_type_init ();
         
         /*
-         * Setup
-         */
-        book = ebook_test_utils_book_new_temp (NULL);
-        ebook_test_utils_book_open (book, FALSE);
-
-        /*
          * Async version
          */
         book = ebook_test_utils_book_new_temp (NULL);
