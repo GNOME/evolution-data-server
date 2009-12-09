@@ -134,6 +134,61 @@ ebook_test_utils_book_async_add_contact (EBook       *book,
         }
 }
 
+void
+ebook_test_utils_book_commit_contact (EBook    *book,
+                                      EContact *contact)
+{
+        GError *error = NULL;
+
+        if (!e_book_commit_contact (book, contact, &error)) {
+                const char *uid;
+                const char *uri;
+
+                uid = (const char*) e_contact_get_const (contact, E_CONTACT_UID);
+                uri = e_book_get_uri (book);
+                g_warning ("failed to commit changes to contact '%s' to addressbook: `%s': %s",
+                                uid, uri, error->message);
+                exit(1);
+        }
+}
+
+static void
+commit_contact_cb (EBook            *book,
+                   EBookStatus       status,
+                   EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously commit the contact: "
+                                "status %d", status);
+                exit (1);
+        }
+
+        g_print ("successfully asynchronously committed the contact to the "
+                        "addressbook\n");
+        if (closure) {
+                (*closure->cb) (closure);
+                g_free (closure);
+        }
+}
+
+void
+ebook_test_utils_book_async_commit_contact (EBook       *book,
+                                            EContact    *contact,
+                                            GSourceFunc  callback,
+                                            gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_commit_contact (book, contact,
+                                (EBookCallback) commit_contact_cb, closure)) {
+                g_warning ("failed to set up contact commit");
+                exit(1);
+        }
+}
+
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
                                    const char *uid)

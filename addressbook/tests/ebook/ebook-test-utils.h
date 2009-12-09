@@ -57,6 +57,15 @@ ebook_test_utils_book_async_add_contact (EBook       *book,
                                          GSourceFunc  callback,
                                          gpointer     user_data);
 
+void
+ebook_test_utils_book_commit_contact (EBook    *book,
+                                      EContact *contact);
+void
+ebook_test_utils_book_async_commit_contact (EBook       *book,
+                                            EContact    *contact,
+                                            GSourceFunc  callback,
+                                            gpointer     user_data);
+
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
                                    const char *uid);

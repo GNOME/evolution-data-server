@@ -28,6 +28,7 @@ noinst_PROGRAMS = \
 	test-ebook                           \
 	test-ebook-async                     \
 	test-ebook-add-contact               \
+	test-ebook-commit-contact            \
 	test-ebook-get-contact               \
 	test-ebook-remove                    \
 	test-ebook-remove-contact            \
@@ -59,6 +60,8 @@ test_ebook_async_LDADD=$(TEST_LIBS)
 test_ebook_async_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_add_contact_LDADD=$(TEST_LIBS)
 test_ebook_add_contact_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_commit_contact_LDADD=$(TEST_LIBS)
+test_ebook_commit_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_get_contact_LDADD=$(TEST_LIBS)
 test_ebook_get_contact_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_LDADD=$(TEST_LIBS)
