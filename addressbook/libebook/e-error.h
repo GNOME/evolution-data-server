@@ -6,13 +6,13 @@
 		"file %s: line %d (%s): assertion `%s' failed",		\
 		__FILE__,						\
 		__LINE__,						\
-		__PRETTY_FUNCTION__,					\
+		G_STRFUNC,					\
 		#expr);							\
 	 g_set_error (error, E_BOOK_ERROR, (error_code),                \
 		"file %s: line %d (%s): assertion `%s' failed",		\
 		__FILE__,						\
 		__LINE__,						\
-		__PRETTY_FUNCTION__,					\
+		G_STRFUNC,					\
 		#expr);							\
 	 return FALSE;							\
        };				}G_STMT_END
@@ -21,7 +21,7 @@
     if G_LIKELY (expr) {} else {                                 \
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL,                 \
              "file %s: line %d (%s): assertion `%s' failed",     \
-             __FILE__, __LINE__, __PRETTY_FUNCTION__, #expr);    \
+             __FILE__, __LINE__, G_STRFUNC, #expr);    \
       cb (book, error, closure);                           \
       return 0;                                                  \
     }                                                            \
@@ -31,7 +31,7 @@
     if G_LIKELY (expr) {} else {                                 \
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL,                 \
              "file %s: line %d (%s): assertion `%s' failed",     \
-             __FILE__, __LINE__, __PRETTY_FUNCTION__, #expr);    \
+             __FILE__, __LINE__, G_STRFUNC, #expr);    \
       cb (book, error, NULL, closure);                           \
       return 0;                                                  \
     }                                                            \
