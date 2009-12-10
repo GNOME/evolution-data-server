@@ -22,31 +22,32 @@ TEST_LIBS =							\
 	$(NULL)
 
 noinst_PROGRAMS = \
-	test-changes                         \
-	test-categories                      \
-	test-date                            \
-	test-ebook                           \
-	test-ebook-async                     \
-	test-ebook-add-contact               \
-	test-ebook-commit-contact            \
-	test-ebook-get-contact               \
-	test-ebook-get-required-fields       \
-	test-ebook-get-static-capabilities   \
-	test-ebook-get-supported-fields      \
-	test-ebook-remove                    \
-	test-ebook-remove-contact            \
-	test-ebook-remove-contact-by-id      \
-	test-ebook-remove-contacts           \
-	test-ebook-view                      \
-	test-nonexistent-id                  \
-	test-photo                           \
-	test-query                           \
-	test-self                            \
-	test-string                          \
-	test-undefinedfield                  \
-	test-untyped-phones                  \
-	test-search                          \
-	test-stress-bookviews                \
+	test-changes				     \
+	test-categories				     \
+	test-date				     \
+	test-ebook				     \
+	test-ebook-async			     \
+	test-ebook-add-contact			     \
+	test-ebook-commit-contact		     \
+	test-ebook-get-contact			     \
+	test-ebook-get-required-fields		     \
+	test-ebook-get-static-capabilities	     \
+	test-ebook-get-supported-fields		     \
+	test-ebook-get-supported-auth-methods	     \
+	test-ebook-remove			     \
+	test-ebook-remove-contact		     \
+	test-ebook-remove-contact-by-id		     \
+	test-ebook-remove-contacts		     \
+	test-ebook-view				     \
+	test-nonexistent-id			     \
+	test-photo				     \
+	test-query				     \
+	test-self				     \
+	test-string				     \
+	test-undefinedfield			     \
+	test-untyped-phones			     \
+	test-search				     \
+	test-stress-bookviews			     \
 	$(NULL)
 
 TEST_CPPFLAGS= \
@@ -71,6 +72,8 @@ test_ebook_get_required_fields_LDADD=$(TEST_LIBS)
 test_ebook_get_required_fields_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_get_static_capabilities_LDADD=$(TEST_LIBS)
 test_ebook_get_static_capabilities_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_get_supported_auth_methods_LDADD=$(TEST_LIBS)
+test_ebook_get_supported_auth_methods_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_get_supported_fields_LDADD=$(TEST_LIBS)
 test_ebook_get_supported_fields_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_LDADD=$(TEST_LIBS)

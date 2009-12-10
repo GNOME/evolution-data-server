@@ -337,6 +337,65 @@ ebook_test_utils_book_get_static_capabilities (EBook *book)
 }
 
 GList*
+ebook_test_utils_book_get_supported_auth_methods (EBook *book)
+{
+        GList *fields = NULL;
+        GError *error = NULL;
+
+        if (!e_book_get_supported_auth_methods (book, &fields, &error)) {
+                const char *uri;
+
+                uri = e_book_get_uri (book);
+                g_warning ("failed to get supported auth methods for "
+                                "addressbook `%s': %s", uri, error->message);
+                exit(1);
+        }
+
+        return fields;
+}
+
+static void
+get_supported_auth_methods_cb (EBook            *book,
+                               EBookStatus       status,
+                               EList            *methods,
+                               EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously get the supported auth "
+                                "methods: status %d", status);
+                exit (1);
+        }
+
+        closure->list = methods;
+
+        g_print ("successfully asynchronously retrieved the supported auth "
+                        "methods\n");
+
+        if (closure) {
+                (*closure->cb) (closure);
+                g_free (closure);
+        }
+}
+
+void
+ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,
+                                                        GSourceFunc  callback,
+                                                        gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_get_supported_auth_methods (book,
+                                (EBookEListCallback) get_supported_auth_methods_cb,
+                                closure)) {
+                g_warning ("failed to set up async getSupportedAuthMethods");
+                exit(1);
+        }
+}
+
+GList*
 ebook_test_utils_book_get_supported_fields (EBook *book)
 {
         GList *fields = NULL;

@@ -93,6 +93,13 @@ ebook_test_utils_book_async_get_supported_fields (EBook       *book,
 						  GSourceFunc  callback,
                                                   gpointer     user_data);
 
+GList*
+ebook_test_utils_book_get_supported_auth_methods (EBook *book);
+void
+ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,
+							GSourceFunc  callback,
+							gpointer     user_data);
+
 const char*
 ebook_test_utils_book_get_static_capabilities (EBook *book);
 
