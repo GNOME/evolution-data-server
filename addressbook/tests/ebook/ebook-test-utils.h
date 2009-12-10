@@ -29,8 +29,9 @@
 #define EBOOK_TEST_UTILS_VCARDS_DIR "vcards"
 
 typedef struct {
-        GSourceFunc    cb;
-        gpointer       user_data;
+        GSourceFunc  cb;
+        gpointer     user_data;
+	EList       *list;
 } EBookTestClosure;
 
 gboolean
@@ -77,6 +78,13 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
                                          const char  *uid,
                                          GSourceFunc  callback,
                                          gpointer     user_data);
+
+GList*
+ebook_test_utils_book_get_required_fields (EBook *book);
+void
+ebook_test_utils_book_async_get_required_fields (EBook       *book,
+                                                 GSourceFunc  callback,
+                                                 gpointer     user_data);
 
 const char*
 ebook_test_utils_book_get_static_capabilities (EBook *book);
