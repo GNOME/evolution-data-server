@@ -123,9 +123,12 @@ e_cal_util_new_component (icalcomponent_kind kind)
 {
 	icalcomponent *comp;
 	struct icaltimetype dtstamp;
+	gchar *uid;
 
 	comp = icalcomponent_new (kind);
-	icalcomponent_set_uid (comp, e_cal_component_gen_uid ());
+	uid = e_cal_component_gen_uid ();
+	icalcomponent_set_uid (comp, uid);
+	g_free (uid);
 	dtstamp = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 	icalcomponent_set_dtstamp (comp, dtstamp);
 
