@@ -31,6 +31,7 @@
 typedef struct {
         GSourceFunc  cb;
         gpointer     user_data;
+	EBookView   *view;
 	EList       *list;
 } EBookTestClosure;
 
@@ -136,5 +137,15 @@ void
 ebook_test_utils_book_async_remove (EBook          *book,
                                     GSourceFunc     callback,
                                     gpointer        user_data);
+
+void
+ebook_test_utils_book_get_book_view (EBook       *book,
+                                     EBookQuery  *query,
+                                     EBookView  **view);
+void
+ebook_test_utils_book_async_get_book_view (EBook       *book,
+                                           EBookQuery  *query,
+                                           GSourceFunc  callback,
+                                           gpointer     user_data);
 
 #endif /* _EBOOK_TEST_UTILS_H */

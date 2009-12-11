@@ -697,3 +697,57 @@ ebook_test_utils_book_async_remove (EBook       *book,
                 exit(1);
         }
 }
+
+void
+ebook_test_utils_book_get_book_view (EBook       *book,
+                                     EBookQuery  *query,
+                                     EBookView  **view)
+{
+        GError *error = NULL;
+
+        if (!e_book_get_book_view (book, query, NULL, -1, view, &error)) {
+                const char *uri;
+
+                uri = e_book_get_uri (book);
+
+                g_warning ("failed to get view for addressbook: `%s': %s", uri,
+                                error->message);
+                exit(1);
+        }
+}
+
+static void
+get_book_view_cb (EBook            *book,
+                  EBookStatus       status,
+                  EBookView        *view,
+                  EBookTestClosure *closure)
+{
+        if (status != E_BOOK_ERROR_OK) {
+                g_warning ("failed to asynchronously get book view for the "
+                                "book: status %d", status);
+                exit (1);
+        }
+
+        closure->view = view;
+
+        g_print ("successfully asynchronously retrieved the book view\n");
+        if (closure)
+                (*closure->cb) (closure);
+}
+
+void
+ebook_test_utils_book_async_get_book_view (EBook       *book,
+                                           EBookQuery  *query,
+                                           GSourceFunc  callback,
+                                           gpointer     user_data)
+{
+        EBookTestClosure *closure;
+
+        closure = g_new0 (EBookTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+        if (e_book_async_get_book_view (book, query, NULL, -1, (EBookBookViewCallback) get_book_view_cb, closure)) {
+                g_warning ("failed to set up book view retrieval");
+                exit(1);
+        }
+}
