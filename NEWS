@@ -1,3 +1,37 @@
+Evolution-Data-Server 2.28.2 2009-12-14
+---------------------------------------
+
+Bug Fixes:
+	#394567 - Use correct FBTYPE values in GroupWise calendar backend
+	          (Jari Urpalainen)
+	#574940 - Crash in message_info_to_db() (Milan Crha)
+	#593023 - Deleting an imported recurrent event will remain (Milan Crha)
+	#594502 - Some google calendar meetings don't show up (Milan Crha)
+	#598971 - Preserve selection in ENameSelectorEntry if possible
+	          (Milan Crha)
+	#599671 - gtk_tree_view_column_get_cell_renderers() is deprecated
+	          (Matthew Barnes)
+	#600449 - segfault in camel_msgport_destroy (Milan Crha)
+	#600573 - e-addressbook-factory aborts on ldap lookup (Milan Crha)
+	#602719 - Crash in ep_set_proxy with no proxy user or password
+	          (Milan Crha)
+	#603437 - Fix few memory leaks (Milan Crha)
+	#603689 - Improper escaping of folder name (Lucian Langa)
+
+Other Changes:
+	Use EAGAIN instead of ETIMEDOUT on Windows (Tor Lillqvist)
+	Don't use commas on the Requires line (Tor Lillqvist)
+	Fix a memory leak. (Wang Xin)
+	Fix a crash due to un initialized variable. (Srinivasa Ragavan)
+	Use SQLite's default cache size of 2000 pages in folders.db
+	(C de-Avillez)
+
+Translations:
+	Ivar Smolin (et)
+	Lucian Grijincu (ro)
+	Leonid Kanter (ru)
+
+
 Evolution-Data-Server 2.28.1 2009-10-19
 ---------------------------------------
 
