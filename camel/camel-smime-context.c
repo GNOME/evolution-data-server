@@ -442,7 +442,7 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const gchar *nick, SECOidTag h
 	if ((cert = CERT_FindUserCertByUsage(p->certdb,
 					     (gchar *)nick,
 					     certUsageEmailSigner,
-					     PR_FALSE,
+					     PR_TRUE,
 					     NULL)) == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot find certificate for '%s'"), nick);
 		return NULL;
@@ -507,7 +507,7 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const gchar *nick, SECOidTag h
 			if ((ekpcert = CERT_FindUserCertByUsage(
 				     p->certdb,
 				     p->encrypt_key,
-				     certUsageEmailRecipient, PR_FALSE, NULL)) == NULL) {
+				     certUsageEmailRecipient, PR_TRUE, NULL)) == NULL) {
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Encryption certificate for '%s' does not exist"), p->encrypt_key);
 				goto fail;
 			}
@@ -519,7 +519,7 @@ sm_signing_cmsmessage(CamelSMIMEContext *context, const gchar *nick, SECOidTag h
 			/* encrypt key uses same nick */
 			if ((ekpcert = CERT_FindUserCertByUsage(
 				     p->certdb, (gchar *)nick,
-				     certUsageEmailRecipient, PR_FALSE, NULL)) == NULL) {
+				     certUsageEmailRecipient, PR_TRUE, NULL)) == NULL) {
 				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Encryption certificate for '%s' does not exist"), nick);
 				goto fail;
 			}
