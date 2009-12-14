@@ -614,6 +614,8 @@ rn_to_sql (E2kRestriction *rn, GString *sql, E2kRestrictionType inside)
 		g_string_append_printf (sql, "\"%s\" ", pv->prop.name);
 
 		switch (E2K_FL_MATCH_TYPE (rn->res.content.fuzzy_level)) {
+		case E2K_FL_SUFFIX:
+			/* make suffix same as substring; it'll be checked for suffixes only later */
 		case E2K_FL_SUBSTRING:
 			g_string_append (sql, "LIKE '%");
 			append_sql_quoted (sql, pv->value);
@@ -624,12 +626,6 @@ rn_to_sql (E2kRestriction *rn, GString *sql, E2kRestrictionType inside)
 			g_string_append (sql, "LIKE '");
 			append_sql_quoted (sql, pv->value);
 			g_string_append (sql, "%'");
-			break;
-
-		case E2K_FL_SUFFIX:
-			g_string_append (sql, "LIKE '%");
-			append_sql_quoted (sql, pv->value);
-			g_string_append_c (sql, '\'');
 			break;
 
 		case E2K_FL_FULLSTRING:
