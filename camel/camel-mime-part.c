@@ -435,7 +435,7 @@ camel_mime_part_set_disposition (CamelMimePart *mime_part, const gchar *disposit
  *
  * Get the disposition of the MIME part.
  *
- * Returns: the dispisition
+ * Returns: the disposition
  **/
 const gchar *
 camel_mime_part_get_disposition (CamelMimePart *mime_part)
@@ -444,6 +444,23 @@ camel_mime_part_get_disposition (CamelMimePart *mime_part)
 		return mime_part->disposition->disposition;
 	else
 		return NULL;
+}
+
+/**
+ * camel_mime_part_get_content_disposition:
+ * @mime_part: a #CamelMimePart object
+ *
+ * Get the disposition of the MIME part as a structure.
+ * Returned pointer is owned by #mime_part.
+ *
+ * Returns: the disposition structure
+ **/
+const CamelContentDisposition *
+camel_mime_part_get_content_disposition (CamelMimePart *mime_part)
+{
+	g_return_val_if_fail (mime_part != NULL, NULL);
+
+	return mime_part->disposition;
 }
 
 /* **** Content-Disposition: filename="xxx" */
