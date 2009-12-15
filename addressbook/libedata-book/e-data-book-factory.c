@@ -368,11 +368,14 @@ name_owner_changed (DBusGProxy *proxy,
 		gchar *key;
 		GList *list = NULL;
 		g_mutex_lock (factory->priv->connections_lock);
-		if (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
-			g_list_foreach (list, (GFunc)g_object_unref, NULL);
-			g_list_free (list);
-			g_hash_table_remove (factory->priv->connections, prev_owner);
+		while (g_hash_table_lookup_extended (factory->priv->connections, prev_owner, (gpointer)&key, (gpointer)&list)) {
+			/* this should trigger the book's weak ref notify
+			 * function, which will remove it from the list before
+			 * it's freed, and will remove the connection from
+			 * priv->connections once they're all gone */
+			g_object_unref (list->data);
 		}
+
 		g_mutex_unlock (factory->priv->connections_lock);
 	}
 }
