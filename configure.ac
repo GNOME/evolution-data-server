@@ -1273,11 +1273,11 @@ EVO_PURIFY_SUPPORT
 
 dnl Exchange debug
 AC_ARG_ENABLE([e2k-debug],
-	AS_HELP_STRING([--enable-e2kdebug],
+	AS_HELP_STRING([--enable-e2k-debug],
 	[Allow debugging]),
 	[enable_e2kdebug=$enableval],[enable_e2kdebug="no"])
 
-if test "$enable_e2kdebug" = "yes"; then
+if test "x$enable_e2kdebug" = "xyes" ; then
 	AC_DEFINE(E2K_DEBUG, 1, [Define if you want E2K_DEBUG to be available])
 fi
 
