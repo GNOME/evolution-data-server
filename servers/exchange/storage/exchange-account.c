@@ -1385,6 +1385,7 @@ exchange_account_connect (ExchangeAccount *account, const gchar *pword,
 	E2kGlobalCatalogEntry *entry;
 	E2kOperation gcop;
 	gchar *user_name = NULL;
+	gboolean tried_ntlm = FALSE, tried_basic = FALSE;
 
 	*info_result = EXCHANGE_ACCOUNT_UNKNOWN_ERROR;
 	g_return_val_if_fail (EXCHANGE_IS_ACCOUNT (account), NULL);
@@ -1442,6 +1443,9 @@ exchange_account_connect (ExchangeAccount *account, const gchar *pword,
 
 	e2k_autoconfig_set_password (ac, pword);
 
+	tried_basic = !ac->use_ntlm;
+	tried_ntlm = ac->use_ntlm;
+
  try_connect_again:
 	account->priv->ctx = e2k_autoconfig_get_context (ac, NULL, &result);
 
@@ -1477,16 +1481,27 @@ exchange_account_connect (ExchangeAccount *account, const gchar *pword,
 			return NULL;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_NTLM:
+			if (tried_ntlm)
+				break;
+
+			tried_ntlm = TRUE;
 			ac->use_ntlm = 1;
 			goto try_connect_again;
 
 		case E2K_AUTOCONFIG_AUTH_ERROR_TRY_BASIC:
+			if (tried_basic)
+				break;
+
+			tried_basic = TRUE;
 			ac->use_ntlm = 0;
 			goto try_connect_again;
 
 		case E2K_AUTOCONFIG_REDIRECT:
-			if (!redirected && account_moved (account, ac))
+			if (!redirected && account_moved (account, ac)) {
+				tried_basic = !ac->use_ntlm;
+				tried_ntlm = ac->use_ntlm;
 				goto try_connect_again;
+			}
 			break;
 
 		case E2K_AUTOCONFIG_TRY_SSL:

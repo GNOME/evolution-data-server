@@ -58,6 +58,7 @@ krb5_result_to_e2k_kerberos_result (gint result)
 
 	case KRB5KRB_AP_ERR_BAD_INTEGRITY:
 	case KRB5KDC_ERR_PREAUTH_FAILED:
+	case KRB5KDC_ERR_CLIENT_REVOKED:
 		return E2K_KERBEROS_PASSWORD_INCORRECT;
 
 	case KRB5KDC_ERR_KEY_EXP:
@@ -71,6 +72,8 @@ krb5_result_to_e2k_kerberos_result (gint result)
 
 	default:
 		g_warning ("Unexpected kerberos error %d", result);
+
+	case KRB5_REALM_UNKNOWN:
 		return E2K_KERBEROS_FAILED;
 	}
 }
