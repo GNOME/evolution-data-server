@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.29.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-05 12:14+0100\n"
+"POT-Creation-Date: 2009-12-15 20:14+0100\n"
 "PO-Revision-Date: 2009-12-05 12:20+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
@@ -3049,7 +3049,7 @@ msgstr "SSL er ikke tilgjengelig"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:860
-#: ../camel/providers/imapx/camel-imapx-server.c:1544
+#: ../camel/providers/imapx/camel-imapx-server.c:1591
 msgid "Connection cancelled"
 msgstr "Tilkobling avbrutt"
 
@@ -3489,12 +3489,12 @@ msgstr ""
 "\n"
 " !!! IKKE BRUK DENNE I PRODUKSJON  !!!\n"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1547
+#: ../camel/providers/imapx/camel-imapx-server.c:1594
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Kunne ikke koble til %s (port %s): %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1600
+#: ../camel/providers/imapx/camel-imapx-server.c:1654
 #: ../camel/providers/imapx/camel-imapx-store.c:147
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
