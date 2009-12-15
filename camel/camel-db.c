@@ -1110,7 +1110,7 @@ camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelExce
 }
 
 gint
-camel_db_add_to_vfolder_transaction (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex)
+camel_db_add_to_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, CamelException *ex)
 {
 	 gchar *ins_query;
 	 gint ret;
