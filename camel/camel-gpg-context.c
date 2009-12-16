@@ -55,6 +55,7 @@
 #include "camel-debug.h"
 #include "camel-gpg-context.h"
 #include "camel-iconv.h"
+#include "camel-internet-address.h"
 #include "camel-mime-filter-canon.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-part.h"
@@ -228,6 +229,7 @@ struct _GpgCtx {
 	guint nopubkey:1;
 	guint nodata:1;
 	guint trust:3;
+	GString *signers;
 
 	guint diagflushed:1;
 
@@ -286,6 +288,7 @@ gpg_ctx_new (CamelSession *session)
 	gpg->validsig = FALSE;
 	gpg->nopubkey = FALSE;
 	gpg->trust = GPG_TRUST_NONE;
+	gpg->signers = NULL;
 
 	gpg->istream = NULL;
 	gpg->ostream = NULL;
@@ -461,6 +464,9 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 		camel_object_unref (gpg->ostream);
 
 	camel_object_unref (gpg->diagnostics);
+
+	if (gpg->signers)
+		g_string_free (gpg->signers, TRUE);
 
 	g_free (gpg);
 }
@@ -921,6 +927,36 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 			} else if (!strncmp ((gchar *) status, "GOODSIG ", 8)) {
 				gpg->goodsig = TRUE;
 				gpg->hadsig = TRUE;
+				status += 8;
+				/* there's a key ID, then the email address */
+				status = (const guchar *)strchr ((const gchar *)status, ' ');
+				if (status) {
+					const gchar *str = (const gchar *) status + 1;
+					const gchar *eml = strchr (str, '<');
+
+					if (eml && eml > str) {
+						eml--;
+						if (strchr (str, ' ') >= eml)
+							eml = NULL;
+					} else {
+						eml = NULL;
+					}
+
+					if (gpg->signers) {
+						g_string_append (gpg->signers, ", ");
+					} else {
+						gpg->signers = g_string_new ("");
+					}
+
+					if (eml) {
+						g_string_append (gpg->signers, "\"");
+						g_string_append_len (gpg->signers, str, eml - str);
+						g_string_append (gpg->signers, "\"");
+						g_string_append (gpg->signers, eml);
+					} else {
+						g_string_append (gpg->signers, str);
+					}
+				}
 			} else if (!strncmp ((gchar *) status, "VALIDSIG ", 9)) {
 				gpg->validsig = TRUE;
 			} else if (!strncmp ((gchar *) status, "BADSIG ", 7)) {
@@ -1429,6 +1465,33 @@ swrite (CamelMimePart *sigpart)
 	return template;
 }
 
+static void
+add_signers (CamelCipherValidity *validity, const GString *signers)
+{
+	CamelInternetAddress *address;
+	gint i, count;
+
+	g_return_if_fail (validity != NULL);
+
+	if (!signers || !signers->str || !*signers->str)
+		return;
+
+	address = camel_internet_address_new ();
+	g_return_if_fail (address != NULL);
+
+	count = camel_address_decode (CAMEL_ADDRESS (address), signers->str);
+	for (i = 0; i < count; i++) {
+		const gchar *name = NULL, *email = NULL;
+
+		if (!camel_internet_address_get (address, i, &name, &email))
+			break;
+
+		camel_cipher_validity_add_certinfo (validity, CAMEL_CIPHER_VALIDITY_SIGN, name, email);
+	}
+
+	camel_object_unref (address);
+}
+
 static CamelCipherValidity *
 gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 {
@@ -1588,6 +1651,8 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 		validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 	}
 
+	add_signers (validity, gpg->signers);
+
 	gpg_ctx_free (gpg);
 
 	if (sigfile) {
@@ -1652,7 +1717,7 @@ gpg_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipi
 		goto fail;
 	}
 
-	/* FIXME: move tihs to a common routine */
+	/* FIXME: move this to a common routine */
 	while (!gpg_ctx_op_complete(gpg)) {
 		if (gpg_ctx_op_step (gpg, ex) == -1)
 			goto fail;
@@ -1845,6 +1910,8 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 			} else {
 				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 			}
+
+			add_signers (valid, gpg->signers);
 		}
 	} else {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
