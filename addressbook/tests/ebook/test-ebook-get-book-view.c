@@ -49,6 +49,8 @@ contacts_removed (EBookView *book_view, const GList *ids)
 static void
 sequence_complete (EBookView *book_view, EBookViewStatus status)
 {
+	e_book_view_stop (book_view);
+	g_object_unref (book_view);
 	g_main_loop_quit (loop);
 }
 
