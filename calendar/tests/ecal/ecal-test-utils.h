@@ -53,4 +53,7 @@ ecal_test_utils_cal_get_alarm_email_address (ECal *cal);
 char*
 ecal_test_utils_cal_get_cal_address (ECal *cal);
 
+char*
+ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
+
 #endif /* _ECAL_TEST_UTILS_H */

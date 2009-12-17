@@ -163,3 +163,18 @@ ecal_test_utils_cal_get_cal_address (ECal *cal)
 
 	return address;
 }
+
+char*
+ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
+{
+        GError *error = NULL;
+	char *attr = NULL;
+
+        if (!e_cal_get_ldap_attribute (cal, &attr, &error)) {
+                g_warning ("failed to get ldap attribute; %s\n", error->message);
+                exit(1);
+        }
+        g_print ("successfully got the ldap attribute\n");
+
+	return attr;
+}
