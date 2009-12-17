@@ -37,6 +37,7 @@ TESTS = \
         test-ecal-get-alarm-email-address	\
         test-ecal-get-cal-address		\
         test-ecal-get-ldap-attribute		\
+        test-ecal-get-capabilities		\
         $(NULL)
 
 # The test program
@@ -53,6 +54,8 @@ test_ecal_get_cal_address_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_cal_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_ldap_attribute_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_ldap_attribute_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_capabilities_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_capabilities_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
