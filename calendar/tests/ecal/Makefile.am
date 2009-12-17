@@ -34,6 +34,7 @@ test_scripts =                         \
 TESTS = \
         test-ecal-remove			\
         test-ecal-open				\
+        test-ecal-get-alarm-email-address	\
         test-ecal-get-cal-address		\
         $(NULL)
 
@@ -45,6 +46,8 @@ TEST_ECAL_CPPFLAGS= \
 	$(NULL)
 
 # ordered alphanumerically
+test_ecal_get_alarm_email_address_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_alarm_email_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_cal_address_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_cal_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)

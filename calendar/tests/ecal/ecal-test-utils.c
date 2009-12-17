@@ -135,6 +135,21 @@ ecal_test_utils_cal_remove (ECal *cal)
 }
 
 char*
+ecal_test_utils_cal_get_alarm_email_address (ECal *cal)
+{
+        GError *error = NULL;
+	char *address = NULL;
+
+        if (!e_cal_get_alarm_email_address (cal, &address, &error)) {
+                g_warning ("failed to get alarm email address; %s\n", error->message);
+                exit(1);
+        }
+        g_print ("successfully got the alarm email address\n");
+
+	return address;
+}
+
+char*
 ecal_test_utils_cal_get_cal_address (ECal *cal)
 {
         GError *error = NULL;
