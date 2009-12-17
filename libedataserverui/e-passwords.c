@@ -1304,15 +1304,26 @@ e_passwords_cancel (void)
 void
 e_passwords_shutdown (void)
 {
-	e_passwords_cancel ();
+	EPassMsg *msg;
+
+	G_LOCK (passwords);
+
+	while ((msg = g_queue_pop_head (&message_queue)) != NULL)
+		e_flag_set (msg->done);
 
 	if (password_cache != NULL) {
 		g_hash_table_destroy (password_cache);
 		password_cache = NULL;
 	}
+
 #ifdef WITH_GNOME_KEYRING
 	g_free (default_keyring);
 #endif
+
+	G_UNLOCK (passwords);
+
+	if (password_dialog != NULL)
+		gtk_dialog_response (password_dialog, GTK_RESPONSE_CANCEL);
 }
 
 /**
