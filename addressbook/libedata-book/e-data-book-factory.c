@@ -410,6 +410,7 @@ main (gint argc, gchar **argv)
 	EOfflineListener *eol;
 
 	g_type_init ();
+	g_set_prgname (E_PRGNAME);
 	if (!g_thread_supported ()) g_thread_init (NULL);
 	dbus_g_thread_init ();
 
@@ -446,6 +447,8 @@ main (gint argc, gchar **argv)
 	eol = e_offline_listener_new ();
 	offline_state_changed_cb (eol, factory);
 	g_signal_connect (eol, "changed", G_CALLBACK (offline_state_changed_cb), factory);
+
+	printf ("Server is up and running...\n");
 
 	g_main_loop_run (loop);
 
