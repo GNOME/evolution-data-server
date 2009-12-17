@@ -30,9 +30,11 @@ test_scripts =                         \
 	test-runner.sh                 \
 	cleanup.sh
 
+# ordered by relative complexity
 TESTS = \
         test-ecal-remove			\
         test-ecal-open				\
+        test-ecal-get-cal-address		\
         $(NULL)
 
 # The test program
@@ -42,6 +44,9 @@ TEST_ECAL_CPPFLAGS= \
 	$(libecal_test_utils_la_CPPFLAGS) \
 	$(NULL)
 
+# ordered alphanumerically
+test_ecal_get_cal_address_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_cal_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)

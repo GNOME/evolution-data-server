@@ -47,4 +47,7 @@ ecal_test_utils_cal_async_open (ECal        *cal,
 void
 ecal_test_utils_cal_remove (ECal *cal);
 
+char*
+ecal_test_utils_cal_get_cal_address (ECal *cal);
+
 #endif /* _ECAL_TEST_UTILS_H */

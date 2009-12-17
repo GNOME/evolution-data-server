@@ -141,3 +141,18 @@ ecal_test_utils_cal_remove (ECal *cal)
 
         g_object_unref (cal);
 }
+
+char*
+ecal_test_utils_cal_get_cal_address (ECal *cal)
+{
+        GError *error = NULL;
+	char *address = NULL;
+
+        if (!e_cal_get_cal_address (cal, &address, &error)) {
+                g_warning ("failed to get calendar address; %s\n", error->message);
+                exit(1);
+        }
+        g_print ("successfully got the calendar address\n");
+
+	return address;
+}
