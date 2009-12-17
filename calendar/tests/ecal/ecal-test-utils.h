@@ -25,6 +25,11 @@
 #include <glib.h>
 #include <libecal/e-cal.h>
 
+typedef struct {
+        GSourceFunc  cb;
+        gpointer     user_data;
+} ECalTestClosure;
+
 ECal*
 ecal_test_utils_cal_new_temp (char           **uri,
 		              ECalSourceType   type);
@@ -32,6 +37,12 @@ ecal_test_utils_cal_new_temp (char           **uri,
 void
 ecal_test_utils_cal_open (ECal     *cal,
                           gboolean  only_if_exists);
+
+void
+ecal_test_utils_cal_async_open (ECal        *cal,
+                                gboolean     only_if_exists,
+                                GSourceFunc  callback,
+                                gpointer     user_data);
 
 void
 ecal_test_utils_cal_remove (ECal *cal);

@@ -31,7 +31,8 @@ test_scripts =                         \
 	cleanup.sh
 
 TESTS = \
-        test-ecal-remove                            \
+        test-ecal-remove			\
+        test-ecal-open				\
         $(NULL)
 
 # The test program
@@ -41,6 +42,8 @@ TEST_ECAL_CPPFLAGS= \
 	$(libecal_test_utils_la_CPPFLAGS) \
 	$(NULL)
 
+test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 

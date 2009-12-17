@@ -80,6 +80,54 @@ ecal_test_utils_cal_open (ECal     *cal,
         }
 }
 
+static void
+open_cb (ECal            *cal,
+	 ECalendarStatus  status,
+	 ECalTestClosure *closure)
+{
+	if (FALSE) {
+	} else if (status == E_CALENDAR_STATUS_BUSY) {
+		g_print ("calendar server is busy; waiting...");
+		return;
+	} else if (status != E_CALENDAR_STATUS_OK) {
+                g_warning ("failed to asynchronously remove the calendar: "
+                                "status %d", status);
+                exit (1);
+        }
+
+        g_print ("successfully asynchronously removed the temporary "
+                        "calendar\n");
+        if (closure)
+                (*closure->cb) (closure);
+
+	g_signal_handlers_disconnect_by_func (cal, open_cb, closure);
+	g_free (closure);
+}
+
+void
+ecal_test_utils_cal_async_open (ECal        *cal,
+				gboolean     only_if_exists,
+                                GSourceFunc  callback,
+                                gpointer     user_data)
+{
+        ECalTestClosure *closure;
+
+        closure = g_new0 (ECalTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+
+	g_signal_connect (G_OBJECT (cal), "cal_opened", G_CALLBACK (open_cb), closure);
+	e_cal_open_async (cal, only_if_exists);
+
+	/* FIXME: cut this
+	if (FALSE)
+	{
+                g_warning ("failed to set up cal removal");
+                exit(1);
+        }
+	*/
+}
+
 void
 ecal_test_utils_cal_remove (ECal *cal)
 {
