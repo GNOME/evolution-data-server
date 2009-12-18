@@ -262,3 +262,45 @@ ecal_test_utils_cal_get_capabilities (ECal *cal)
 				 CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING))
 		 );
 }
+
+static void
+cal_set_mode_cb (ECal            *cal,
+	         ECalendarStatus  status,
+		 CalMode          mode,
+	         ECalTestClosure *closure)
+{
+	if (FALSE) {
+	} else if (status == E_CALENDAR_STATUS_BUSY) {
+		g_print ("calendar server is busy; waiting...");
+		return;
+	} else if (status != E_CALENDAR_STATUS_OK) {
+                g_warning ("failed to asynchronously remove the calendar: "
+                                "status %d", status);
+                exit (1);
+        }
+
+	closure->mode = mode;
+
+        g_print ("successfully set the calendar mode to %d\n", mode);
+        if (closure)
+                (*closure->cb) (closure);
+
+	g_signal_handlers_disconnect_by_func (cal, cal_set_mode_cb, closure);
+	g_free (closure);
+}
+
+void
+ecal_test_utils_cal_set_mode (ECal        *cal,
+			      CalMode      mode,
+			      GSourceFunc  callback,
+			      gpointer     user_data)
+{
+        ECalTestClosure *closure;
+
+        closure = g_new0 (ECalTestClosure, 1);
+        closure->cb = callback;
+        closure->user_data = user_data;
+
+	g_signal_connect (G_OBJECT (cal), "cal_set_mode", G_CALLBACK (cal_set_mode_cb), closure);
+	e_cal_set_mode (cal, mode);
+}

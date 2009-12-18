@@ -28,6 +28,7 @@
 typedef struct {
         GSourceFunc  cb;
         gpointer     user_data;
+	CalMode      mode;
 } ECalTestClosure;
 
 ECal*
@@ -58,5 +59,11 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
 
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal);
+
+void
+ecal_test_utils_cal_set_mode (ECal        *cal,
+                              CalMode      mode,
+                              GSourceFunc  callback,
+                              gpointer     user_data);
 
 #endif /* _ECAL_TEST_UTILS_H */

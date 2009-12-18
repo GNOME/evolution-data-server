@@ -38,6 +38,7 @@ TESTS = \
         test-ecal-get-cal-address		\
         test-ecal-get-ldap-attribute		\
         test-ecal-get-capabilities		\
+        test-ecal-set-mode			\
         $(NULL)
 
 # The test program
@@ -60,6 +61,8 @@ test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_set_mode_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_set_mode_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 
 # monolithic tests
 test_ecal_SOURCES = test-ecal.c
