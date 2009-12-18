@@ -9,19 +9,17 @@
  */
 
 #include <config.h>
+#define _XOPEN_SOURCE
 
-#ifdef __linux__
-/* We need this to get a prototype for strptime. */
-#define _GNU_SOURCE
-#endif /* __linux__ */
+/* For tm_gmtoff */
+#define _BSD_SOURCE
 
 #include <time.h>
 #include <sys/time.h>
 
-#ifdef __linux__
+#ifdef HAVE_NL_LANGINFO
 #include <langinfo.h>
-#undef _GNU_SOURCE
-#endif /* __linux__ */
+#endif /* HAVE_NL_LANGINFO */
 
 #include <string.h>
 #include <ctype.h>
@@ -2028,7 +2026,7 @@ e_time_get_d_fmt_with_4digit_year (void)
 {
 	gchar *p;
 	gchar *res = NULL;
-#if defined(__linux__)
+#if defined(HAVE_NL_LANGINFO)
 	res = g_strdup (nl_langinfo (D_FMT) );
 #elif defined(G_OS_WIN32)
   #define GET_LOCALE_INFO(str, len) GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)

@@ -261,7 +261,7 @@ dnl Check for posix compatible alloca()
 AC_FUNC_ALLOCA
 
 dnl Checks for functions
-AC_CHECK_FUNCS(fsync strptime strtok_r)
+AC_CHECK_FUNCS(fsync strptime strtok_r nl_langinfo)
 
 dnl Check for base dependencies early.
 PKG_CHECK_MODULES(GNOME_PLATFORM,
