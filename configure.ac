@@ -269,7 +269,7 @@ AC_FUNC_ALLOCA
 dnl ******************************
 dnl Checks for functions
 dnl ******************************
-AC_CHECK_FUNCS(fsync strptime strtok_r nl_langinfo)
+AC_CHECK_FUNCS(fsync strptime strtok_r)
 
 dnl ***********************************
 dnl Check for base dependencies early.
