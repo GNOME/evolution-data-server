@@ -60,6 +60,9 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal);
 
+icalcomponent*
+ecal_test_utils_cal_get_default_object (ECal *cal);
+
 void
 ecal_test_utils_cal_set_mode (ECal        *cal,
                               CalMode      mode,

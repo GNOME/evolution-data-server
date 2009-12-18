@@ -38,6 +38,7 @@ TESTS = \
         test-ecal-get-cal-address		\
         test-ecal-get-ldap-attribute		\
         test-ecal-get-capabilities		\
+        test-ecal-get-default-object		\
         test-ecal-set-mode			\
         $(NULL)
 
@@ -53,6 +54,8 @@ test_ecal_get_alarm_email_address_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_alarm_email_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_cal_address_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_cal_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_default_object_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_default_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_ldap_attribute_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_ldap_attribute_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_capabilities_LDADD=$(TEST_ECAL_LIBS)

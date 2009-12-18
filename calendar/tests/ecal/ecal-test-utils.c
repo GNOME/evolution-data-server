@@ -263,6 +263,25 @@ ecal_test_utils_cal_get_capabilities (ECal *cal)
 		 );
 }
 
+icalcomponent*
+ecal_test_utils_cal_get_default_object (ECal *cal)
+{
+        GError *error = NULL;
+	icalcomponent *component = NULL;
+
+        if (!e_cal_get_default_object (cal, &component, &error)) {
+                g_warning ("failed to get default icalcomponent object; %s\n", error->message);
+                exit(1);
+        }
+        if (!icalcomponent_is_valid (component)) {
+                g_warning ("default icalcomponent is invalid\n");
+                exit(1);
+        }
+        g_print ("successfully got the default icalcomponent object\n");
+
+	return component;
+}
+
 static void
 cal_set_mode_cb (ECal            *cal,
 	         ECalendarStatus  status,
