@@ -1348,17 +1348,21 @@ get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer us
 	AsyncData *data = user_data;
 	GList *list = NULL;
 	EBookListCallback cb = data->callback;
-	if (vcards) {
+
+	if (!error && vcards) {
 		gchar **i = vcards;
+
 		while (*i != NULL) {
 			list = g_list_prepend (list, e_contact_new_from_vcard (*i++));
 		}
+
+		g_strfreev (vcards);
+
+		list = g_list_reverse (list);
 	}
-	list = g_list_reverse (list);
 
 	if (cb)
 		cb (data->book, get_status_from_error (error), list, data->closure);
-	g_strfreev (vcards);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
