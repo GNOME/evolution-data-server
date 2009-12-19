@@ -82,10 +82,10 @@ imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fla
 						goto found;
 					}
 				if (user_flagsp) {
-					const char *flag_name = rename_label_flag ((gchar *) token, strlen ((gchar *) token), TRUE);
-					
+					const gchar *flag_name = rename_label_flag ((gchar *) token, strlen ((gchar *) token), TRUE);
+
 					camel_flag_set(user_flagsp, flag_name, TRUE);
-					
+
 				}
 			found:
 				tok = tok; /* fixes stupid warning */
@@ -101,7 +101,6 @@ imap_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fla
 
 	*flagsp = flags;
 }
-
 
 /*
  * rename_flag
@@ -166,9 +165,8 @@ imap_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Came
 	}
 
 	while (user_flags) {
-		const char *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
-		
-		
+		const gchar *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
+
 		if (camel_stream_write(stream, flag_name, strlen (flag_name)) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 			return;
@@ -176,7 +174,7 @@ imap_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Came
 
 		if (user_flags->next && camel_stream_write(stream, " ", 1) == -1) {
 			camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
-			return;	
+			return;
 		}
 
 		user_flags = user_flags->next;

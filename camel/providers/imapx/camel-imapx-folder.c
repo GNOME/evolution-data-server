@@ -132,12 +132,12 @@ imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	/* Sync twice - make sure deleted flags are written out,
 	   then sync again incase expunge changed anything */
 	camel_exception_clear(ex);
-	
+
 	changed_uids = camel_folder_summary_get_changed (folder->summary);
 
 	if (is->server) {
 		camel_imapx_server_sync_changes (is->server, folder, changed_uids, ex);
-		
+
 		if (camel_exception_is_set (ex))
 			goto exception;
 	}
@@ -252,9 +252,9 @@ imapx_search_free (CamelFolder *folder, GPtrArray *uids)
 	g_return_if_fail (ifolder->search);
 
 	g_mutex_lock (ifolder->search_lock);
-	
+
 	camel_folder_search_free_result (ifolder->search, uids);
-	
+
 	g_mutex_unlock (ifolder->search_lock);
 }
 
@@ -271,7 +271,7 @@ imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *u
 
 	camel_folder_search_set_folder(ifolder->search, folder);
 	matches = camel_folder_search_search(ifolder->search, expression, uids, ex);
-	
+
 	g_mutex_unlock (ifolder->search_lock);
 
 	return matches;

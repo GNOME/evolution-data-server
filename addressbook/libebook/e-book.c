@@ -1906,7 +1906,7 @@ static EContact *
 make_me_card (void)
 {
 	GString *vcard;
-	const char *s;
+	const gchar *s;
 	EContact *contact;
 
 	vcard = g_string_new ("BEGIN:VCARD\nVERSION:3.0\n");

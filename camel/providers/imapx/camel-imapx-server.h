@@ -83,7 +83,7 @@ struct _CamelIMAPXServer {
 	/* any expunges that happened from the last command, they are
 	   processed after the command completes. */
 	GArray *expunged;
-	
+
 	GMutex *connect_lock;
 };
 

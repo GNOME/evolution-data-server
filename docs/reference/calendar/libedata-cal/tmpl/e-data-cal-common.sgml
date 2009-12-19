@@ -79,6 +79,7 @@ e-data-cal-common
 @get_ldap_attribute: 
 @get_static_capabilities: 
 @open: 
+@refresh: 
 @remove: 
 @create_object: 
 @modify_object: 

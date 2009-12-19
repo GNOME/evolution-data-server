@@ -991,7 +991,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 	if (tok == '\n') {
 		camel_exception_set (ex, 1, "truncated server response");
-		return -1;	
+		return -1;
 	}
 
 	e(printf("Have token '%s' id %d\n", token, id));
@@ -1022,7 +1022,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 			imapx_store->summary->namespaces = nsl;
 			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
-		} 
+		}
 
 		return 0;
 	}
@@ -1121,13 +1121,13 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 							binfo->flags = (binfo->flags & ~(xinfo->server_flags ^ r->server_flags)) | r->server_flags;
 							xinfo->server_flags = r->server_flags;
-							
+
 							if (camel_flag_get (&binfo->user_flags, "$has_cal"))
 								set_cal = TRUE;
-							
+
 							camel_flag_list_copy(&binfo->user_flags, &r->server_user_flags);
-						
-							/* reset the calendar flag if it was set in messageinfo before */	
+
+							/* reset the calendar flag if it was set in messageinfo before */
 							if (set_cal)
 								camel_flag_set (&binfo->user_flags, "$has_cal", TRUE);
 
@@ -1135,12 +1135,12 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 							break;
 						}
 					}
-					
+
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
 						camel_folder_summary_add(job->folder->summary, mi);
 						update_summary (job->folder->summary, (CamelMessageInfoBase *) mi);
 						camel_folder_change_info_add_uid (job->u.refresh_info.changes, mi->uid);
-					} 
+					}
 				}
 			}
 		}
@@ -1612,20 +1612,20 @@ imapx_connect(CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExcep
 		g_message ("Unable to connect %d %s \n", ex->id, ex->desc);
 		return;
 	}
-	
+
 	/* Fetch namespaces */
 	if (is->cinfo->capa & IMAP_CAPABILITY_NAMESPACE) {
 		ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
 		imapx_command_run (is, ic, ex);
 		camel_imapx_command_free (ic);
-	} 
-	
+	}
+
 	if (((CamelIMAPXStore *) is->store)->summary->namespaces == NULL) {
 		CamelIMAPXNamespaceList *nsl = NULL;
 		CamelIMAPXStoreNamespace *ns = NULL;
 		CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
 
-		/* set a default namespace */	
+		/* set a default namespace */
 		nsl = g_malloc0(sizeof(CamelIMAPXNamespaceList));
 		ns = g_new0 (CamelIMAPXStoreNamespace, 1);
 		ns->next = NULL;
@@ -1680,7 +1680,7 @@ retry:
 	imapx_command_run(is, ic, ex);
 	if (ic->status->result != IMAP_OK) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, "Login failed: %s", ic->status->text);
-		return;	
+		return;
 	}
 
 	camel_imapx_command_free(ic);
@@ -1780,9 +1780,9 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	   select the folder to make sure it runs immmediately ...
 
 	   This doesn't work yet, so we always force a select every time
-	
+
 	//imapx_select(is, job->folder);
-	
+
 #ifdef MULTI_FETCH
 	for (i=0;i<3;i++) {
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name,
@@ -1937,7 +1937,7 @@ update_store_summary (CamelFolder *folder, CamelException *ex)
 		if (si->unread != unread || si->total != total) {
 			si->unread = unread;
 			si->total = total;
-			
+
 			g_message ("Unread count is %d \n", unread);
 			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
 			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
@@ -2021,7 +2021,6 @@ imapx_uid_cmp(gconstpointer ap, gconstpointer bp, gpointer data)
 	return strcmp(ae, be);
 }
 
-
 static void
 imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
@@ -2070,12 +2069,12 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			if (s_minfo && uid_cmp(s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *)s_minfo;
 				if (info->server_flags !=  r->server_flags
-				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags)) 
+				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags))
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
-				
+
 				g_free(r->uid);
 				r->uid = NULL;
-			} else 
+			} else
 				fetch_new = TRUE;
 
 			j = imapx_index_next (s, j);
@@ -2107,7 +2106,6 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
 		camel_folder_change_info_clear(job->u.refresh_info.changes);
-
 
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
 		if (fetch_new) {
@@ -2223,13 +2221,13 @@ imapx_job_sync_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			gint i;
 
 			for (i=0;i<job->u.sync_changes.changed_uids->len;i++) {
-				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *) camel_folder_summary_peek_info (job->folder->summary, 
+				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *) camel_folder_summary_peek_info (job->folder->summary,
 										job->u.sync_changes.changed_uids->pdata[i]);
 
 				info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
 				info->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				info->info.dirty = TRUE;
-			
+
 				camel_folder_summary_touch (job->folder->summary);
 
 				/* FIXME: move over user flags too */
@@ -2282,7 +2280,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 			printf("checking/storing %s flags '%s'\n", on?"on":"off", flags_table[j].name);
 			imapx_uidset_init(&ss, 0, 100);
 			for (i = 0; i < uids->len; i++) {
-				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *)camel_folder_summary_peek_info 
+				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *)camel_folder_summary_peek_info
 										(job->folder->summary, uids->pdata[i]);
 
 				guint32 flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
@@ -2311,11 +2309,11 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 		if (user_set) {
 			CamelIMAPXCommand *ic = NULL;
 
-			for (j=0 ; j<user_set->len; j++) {
+			for (j=0; j<user_set->len; j++) {
 				struct _imapx_flag_change *c = &g_array_index(user_set, struct _imapx_flag_change, j);
 
 				imapx_uidset_init(&ss, 0, 100);
-				for (i=0 ; i < c->infos->len; i++) {
+				for (i=0; i < c->infos->len; i++) {
 					CamelIMAPXMessageInfo *info = c->infos->pdata[i];
 
 					if (ic == NULL) {
@@ -2933,7 +2931,7 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrA
 				}
 
 				/* Could sort this and binary search */
-				for (j = 0; j < user_set->len ; j++) {
+				for (j = 0; j < user_set->len; j++) {
 					change = &g_array_index(user_set, struct _imapx_flag_change, j);
 					if (strcmp(change->name, user_flag->name) == 0)
 						goto found;
