@@ -1406,7 +1406,7 @@ gpg_sign (CamelCipherContext *context, const gchar *userid, CamelCipherHash hash
 	camel_medium_set_content_object((CamelMedium *)sigpart, dw);
 	camel_object_unref(dw);
 
-	camel_mime_part_set_description(sigpart, _("This is a digitally signed message part"));
+	camel_mime_part_set_description(sigpart, "This is a digitally signed message part");
 
 	mps = camel_multipart_signed_new();
 	ct = camel_content_type_new("multipart", "signed");
