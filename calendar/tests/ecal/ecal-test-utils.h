@@ -80,6 +80,10 @@ icalcomponent*
 ecal_test_utils_cal_get_default_object (ECal *cal);
 
 GList*
+ecal_test_utils_cal_get_object_list (ECal       *cal,
+                                     const char *query);
+
+GList*
 ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
 					 const char *uid);
 
@@ -92,5 +96,15 @@ ecal_test_utils_cal_set_mode (ECal        *cal,
                               CalMode      mode,
                               GSourceFunc  callback,
                               gpointer     user_data);
+
+void
+ecal_test_utils_create_component (ECal           *cal,
+                                  const char     *dtstart,
+                                  const char     *dtstart_tzid,
+                                  const char     *dtend,
+                                  const char     *dtend_tzid,
+                                  const char     *summary,
+                                  ECalComponent **comp_out,
+                                  char          **uid_out);
 
 #endif /* _ECAL_TEST_UTILS_H */

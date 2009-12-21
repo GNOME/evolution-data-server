@@ -26,6 +26,7 @@
 
 #include "ecal-test-utils.h"
 
+
 ECal*
 ecal_test_utils_cal_new_temp (char           **uri,
                               ECalSourceType   type)
@@ -362,6 +363,22 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
 }
 
 GList*
+ecal_test_utils_cal_get_object_list (ECal       *cal,
+				     const char *query)
+{
+        GError *error = NULL;
+	GList *objects = NULL;
+
+        if (!e_cal_get_object_list (cal, query, &objects, &error)) {
+                g_warning ("failed to get list of icalcomponent objects for query '%s'; %s\n", query, error->message);
+                exit(1);
+        }
+        g_print ("successfully got list of icalcomponent objects for the query '%s'\n", query);
+
+	return objects;
+}
+
+GList*
 ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
 					 const char *uid)
 {
@@ -443,4 +460,47 @@ ecal_test_utils_cal_set_mode (ECal        *cal,
 
 	g_signal_connect (G_OBJECT (cal), "cal_set_mode", G_CALLBACK (cal_set_mode_cb), closure);
 	e_cal_set_mode (cal, mode);
+}
+
+void
+ecal_test_utils_create_component (ECal           *cal,
+				  const char     *dtstart,
+				  const char     *dtstart_tzid,
+				  const char     *dtend,
+				  const char     *dtend_tzid,
+				  const char     *summary,
+				  ECalComponent **comp_out,
+				  char          **uid_out)
+{
+        ECalComponent *comp;
+        icalcomponent *icalcomp;
+        struct icaltimetype tt;
+        ECalComponentText text;
+        ECalComponentDateTime dt;
+        char *uid;
+
+        comp = e_cal_component_new ();
+        /* set fields */
+        e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_EVENT);
+        text.value = summary;
+        text.altrep = NULL;
+        e_cal_component_set_summary (comp, &text);
+        tt = icaltime_from_string (dtstart);
+        dt.value = &tt;
+        dt.tzid = dtstart_tzid;
+        e_cal_component_set_dtstart (comp, &dt);
+        tt = icaltime_from_string (dtend);
+        dt.value = &tt;
+        dt.tzid = dtend_tzid;
+        e_cal_component_set_dtend (comp, &dt);
+        e_cal_component_set_transparency (comp, E_CAL_COMPONENT_TRANSP_OPAQUE);
+
+        e_cal_component_commit_sequence (comp);
+        icalcomp = e_cal_component_get_icalcomponent (comp);
+
+        uid = ecal_test_utils_cal_create_object (cal, icalcomp);
+        e_cal_component_commit_sequence (comp);
+
+        *comp_out = comp;
+        *uid_out = uid;
 }

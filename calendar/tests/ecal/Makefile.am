@@ -44,6 +44,7 @@ TESTS = \
         test-ecal-create-object--2		\
         test-ecal-get-objects-for-uid		\
         test-ecal-remove-object			\
+        test-ecal-get-object-list		\
         $(NULL)
 
 # The test program
@@ -68,6 +69,8 @@ test_ecal_get_ldap_attribute_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_ldap_attribute_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_capabilities_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_capabilities_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_object_list_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_object_list_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_objects_for_uid_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_objects_for_uid_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
