@@ -1,3 +1,48 @@
+Evolution-Data-Server 2.29.4 2009-12-21
+---------------------------------------
+
+Bug Fixes:
+Mailer:
+	#604865 - Message part description shouldn't be translated (Matthew Barnes) 
+	#553057 - Add information about signers to a validity structure (Matthew W. S. Bell)
+	#603342 - Memory leak fixes (Milan Crha)
+	#592317 - Sign S/MIME with valid certificates only (Milan Crha)
+	#604305 -  Attachments not properly indicated in message summary (Milan Crha)
+	#603689 -  Improper escaping of folder name (Lucian Langa)
+	#487988 - Bad search filter for LDAP address book (Alex Larsson)
+Calendar:
+	#603437 - Fixes for valgrind reports on e-calendar-factory (Milan Crha)
+	 #602945 - Avoid code duplication with timezone fetching from backends (Milan Crha)
+Contacts:
+	#601513 - Crashes when trying to add a new contact in MAPI (Milan Crha)
+
+Misc:
+	#604550 - e_passwords_shutdown is buggy password_cache is destroyed without properly 
+	acquiring the lock. (Wenli).
+	#603770, Replace __PRETY_FUNCTION__ with G_STRFUNC (Jeff Cai)
+	#603772 - Include e-data-server-ui-marshal.list in tarballs (Matthew Barnes)
+
+Other Changes:
+	Get the prototype for strptime() when it's available  Instead of only getting it on Linux. 
+	Also use nl_langinfo() (Emilio Pozuelo Monfort)
+	In the factories, don't double-free some memory (and crash) when the DBus service name owner changes.
+	(Travis Reitter)
+	Fixes a crash in select - imapx. (Chenthill Palanisamy)
+	Sync up the store summary and rename labels for backward, thunderbird compatibility - imapx (Chenthill 
+	Palanisamy)
+	Get rid of rest of the warnings. (Chenthill Palanisamy)
+	Initialize the uidset before sync user flags. (Chenthill Palanisamy)
+	Sync the changes - imapx. (Chenthill Palanisamy)
+	Lock the search. (Chenthill Palanisamy)
+	Create a new me-card in e_book_get_self() if one doesn't exist (Ross Burton)
+
+Translations:
+	Lucian Adrian Grijincu (ro)
+	Kjartan Maraas (nb)
+	Ivar Smolin (et)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 2.29.3 2009-11-30
 ---------------------------------------
 
