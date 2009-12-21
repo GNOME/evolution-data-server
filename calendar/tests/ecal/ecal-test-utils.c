@@ -263,6 +263,85 @@ ecal_test_utils_cal_get_capabilities (ECal *cal)
 		 );
 }
 
+void
+ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
+						  icalcomponent *b)
+{
+	const char *uid_a, *uid_b;
+
+	if (!icalcomponent_is_valid (a) && !icalcomponent_is_valid (b)) {
+		g_warning ("both components invalid");
+		return;
+	}
+
+	if (!icalcomponent_is_valid (a) || !icalcomponent_is_valid (b)) {
+		g_error ("exactly one of the components being compared is invalid");
+	}
+
+	uid_a = icalcomponent_get_uid (a);
+	uid_b = icalcomponent_get_uid (b);
+        if (g_strcmp0 (uid_a, uid_b)) {
+                g_error ("icomponents not equal:\n"
+			 "        uid A: '%s'\n"
+			 "        uid b: '%s'\n",
+			 uid_a, uid_b);
+        }
+}
+
+void
+ecal_test_utils_cal_assert_e_cal_components_equal (ECalComponent *a,
+						   ECalComponent *b)
+{
+	icalcomponent *ical_a, *ical_b;
+	ECalComponentTransparency transp_a, transp_b;
+
+	ical_a = e_cal_component_get_icalcomponent (a);
+	ical_b = e_cal_component_get_icalcomponent (b);
+        ecal_test_utils_cal_assert_objects_equal_shallow (ical_a, ical_b);
+
+        /* Dumping icalcomp into a string is not useful as the retrieved object
+         * has some generated information like timestamps. We compare
+         * member values we set during creation*/
+        g_assert (e_cal_component_event_dates_match (a, b));
+
+	e_cal_component_get_transparency (a, &transp_a);
+	e_cal_component_get_transparency (b, &transp_b);
+	g_assert (transp_a == transp_b);
+}
+
+icalcomponent*
+ecal_test_utils_cal_get_object (ECal       *cal,
+				const char *uid)
+{
+        GError *error = NULL;
+	icalcomponent *component = NULL;
+
+        if (!e_cal_get_object (cal, uid, NULL, &component, &error)) {
+                g_warning ("failed to get icalcomponent object '%s'; %s\n", uid, error->message);
+                exit(1);
+        }
+        if (!icalcomponent_is_valid (component)) {
+                g_warning ("retrieved icalcomponent is invalid\n");
+                exit(1);
+        }
+        g_print ("successfully got the icalcomponent object '%s'\n", uid);
+
+	return component;
+}
+
+void
+ecal_test_utils_cal_remove_object (ECal       *cal,
+				   const char *uid)
+{
+        GError *error = NULL;
+
+        if (!e_cal_remove_object (cal, uid, &error)) {
+                g_warning ("failed to remove icalcomponent object '%s'; %s\n", uid, error->message);
+                exit(1);
+        }
+        g_print ("successfully remoed the icalcomponent object '%s'\n", uid);
+}
+
 icalcomponent*
 ecal_test_utils_cal_get_default_object (ECal *cal)
 {
@@ -280,6 +359,48 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
         g_print ("successfully got the default icalcomponent object\n");
 
 	return component;
+}
+
+GList*
+ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
+					 const char *uid)
+{
+        GError *error = NULL;
+	GList *objects = NULL;
+
+        if (!e_cal_get_objects_for_uid (cal, uid, &objects, &error)) {
+                g_warning ("failed to get icalcomponent objects for UID '%s'; %s\n", uid, error->message);
+                exit(1);
+        }
+        g_print ("successfully got objects for the icalcomponent with UID '%s'\n", uid);
+
+	return objects;
+}
+
+char*
+ecal_test_utils_cal_create_object (ECal          *cal,
+				   icalcomponent *component)
+{
+        GError *error = NULL;
+	char *uid = NULL;
+	char *ical_string = NULL;
+
+        if (!icalcomponent_is_valid (component)) {
+                g_warning ("supplied icalcomponent is invalid\n");
+                exit(1);
+        }
+
+        if (!e_cal_create_object (cal, component, &uid, &error)) {
+                g_warning ("failed to get create an icalcomponent object; %s\n", error->message);
+                exit(1);
+        }
+
+	ical_string = icalcomponent_as_ical_string (component);
+        g_print ("successfully created icalcomponent object '%s'\n%s\n", uid,
+			ical_string);
+	g_free (ical_string);
+
+	return uid;
 }
 
 static void

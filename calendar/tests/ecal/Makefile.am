@@ -40,6 +40,10 @@ TESTS = \
         test-ecal-get-capabilities		\
         test-ecal-get-default-object		\
         test-ecal-set-mode			\
+        test-ecal-create-object			\
+        test-ecal-create-object--2		\
+        test-ecal-get-objects-for-uid		\
+        test-ecal-remove-object			\
         $(NULL)
 
 # The test program
@@ -50,6 +54,10 @@ TEST_ECAL_CPPFLAGS= \
 	$(NULL)
 
 # ordered alphanumerically
+test_ecal_create_object_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_create_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_create_object__2_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_create_object__2_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_alarm_email_address_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_alarm_email_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_cal_address_LDADD=$(TEST_ECAL_LIBS)
@@ -60,10 +68,14 @@ test_ecal_get_ldap_attribute_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_ldap_attribute_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_capabilities_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_capabilities_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_objects_for_uid_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_objects_for_uid_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_remove_object_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_remove_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_set_mode_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_mode_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 

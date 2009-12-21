@@ -60,8 +60,32 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal);
 
+void
+ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
+                                                  icalcomponent *b);
+
+void
+ecal_test_utils_cal_assert_e_cal_components_equal (ECalComponent *a,
+                                                   ECalComponent *b);
+
+icalcomponent*
+ecal_test_utils_cal_get_object (ECal       *cal,
+                                const char *uid);
+
+void
+ecal_test_utils_cal_remove_object (ECal       *cal,
+				   const char *uid);
+
 icalcomponent*
 ecal_test_utils_cal_get_default_object (ECal *cal);
+
+GList*
+ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
+					 const char *uid);
+
+char*
+ecal_test_utils_cal_create_object (ECal          *cal,
+				   icalcomponent *component);
 
 void
 ecal_test_utils_cal_set_mode (ECal        *cal,
