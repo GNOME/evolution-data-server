@@ -464,6 +464,10 @@ toggle_cell_data_func (GtkTreeViewColumn *column,
 	gpointer data;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
+	if (data == NULL) {
+		g_object_set (renderer, "visible", FALSE, NULL);
+		return;
+	}
 
 	if (E_IS_SOURCE_GROUP (data)) {
 		g_object_set (renderer, "visible", FALSE, NULL);
@@ -490,6 +494,10 @@ text_cell_data_func (GtkTreeViewColumn *column,
 	gpointer data;
 
 	gtk_tree_model_get (model, iter, 0, &data, -1);
+	if (data == NULL) {
+		g_object_set (renderer, "visible", FALSE, NULL);
+		return;
+	}
 
 	if (E_IS_SOURCE_GROUP (data)) {
 		g_object_set (renderer,
