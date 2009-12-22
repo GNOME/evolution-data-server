@@ -120,4 +120,8 @@ icaltimezone*
 ecal_test_utils_cal_get_timezone (ECal       *cal,
                                   const char *tzid);
 
+void
+ecal_test_utils_cal_add_timezone (ECal         *cal,
+                                  icaltimezone *zone);
+
 #endif /* _ECAL_TEST_UTILS_H */
