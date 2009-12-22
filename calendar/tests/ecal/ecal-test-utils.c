@@ -563,3 +563,19 @@ ecal_test_utils_cal_add_timezone (ECal         *cal,
         }
         g_print ("successfully added icaltimezone '%s'\n", name);
 }
+
+void
+ecal_test_utils_cal_set_default_timezone (ECal         *cal,
+					  icaltimezone *zone)
+{
+        GError *error = NULL;
+	const char *name;
+
+	name = icaltimezone_get_display_name (zone);
+
+        if (!e_cal_set_default_timezone (cal, zone, &error)) {
+                g_warning ("failed to set default icaltimezone '%s'; %s\n", name, error->message);
+                exit(1);
+        }
+        g_print ("successfully set default icaltimezone '%s'\n", name);
+}

@@ -36,6 +36,7 @@ TESTS = \
         test-ecal-open				\
         test-ecal-get-timezone			\
         test-ecal-add-timezone			\
+        test-ecal-set-default-timezone		\
         test-ecal-get-alarm-email-address	\
         test-ecal-get-cal-address		\
         test-ecal-get-ldap-attribute		\
@@ -88,6 +89,8 @@ test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_object_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_set_default_timezone_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_set_default_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_set_mode_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_mode_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 
