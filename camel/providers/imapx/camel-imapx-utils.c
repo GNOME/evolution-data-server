@@ -49,8 +49,8 @@ static struct {
 	{ "\\DRAFT", CAMEL_MESSAGE_DRAFT },
 	{ "\\FLAGGED", CAMEL_MESSAGE_FLAGGED },
 	{ "\\SEEN", CAMEL_MESSAGE_SEEN },
-//	{ "\\RECENT", CAMEL_MESSAGE_RECENT },
-	{ "\\*", CAMEL_MESSAGE_USER },
+	{ "\\RECENT", CAMEL_IMAPX_MESSAGE_RECENT },
+	{ "\\*", CAMEL_MESSAGE_USER }
 };
 
 /* utility functions
@@ -150,7 +150,10 @@ imap_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Came
 
 	for (i=0;flags!=0 && i< G_N_ELEMENTS (flag_table);i++) {
 		if (flag_table[i].flag & flags) {
-			if (camel_stream_write(stream, flag_table[i].name, strlen(flag_table[i].name)) == -1) {
+			if (flags & CAMEL_IMAPX_MESSAGE_RECENT)
+				continue;
+
+			if (camel_stream_write (stream, flag_table[i].name, strlen(flag_table[i].name)) == -1) {
 				camel_exception_setv (ex,1, "io error: %s", strerror(errno));
 				return;
 			}

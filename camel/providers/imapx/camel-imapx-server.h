@@ -85,6 +85,8 @@ struct _CamelIMAPXServer {
 	GArray *expunged;
 
 	GMutex *connect_lock;
+	pthread_t parser_thread_id;
+	gboolean disconnect;
 };
 
 struct _CamelIMAPXServerClass {

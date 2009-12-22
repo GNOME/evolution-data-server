@@ -45,6 +45,8 @@ typedef enum _camel_imapx_id_t {
 	IMAP_UID,
 	IMAP_UIDVALIDITY,
 	IMAP_UNSEEN,
+	IMAP_UIDNEXT,
+	IMAP_USER_CANCEL
 } camel_imapx_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */
@@ -52,7 +54,7 @@ camel_imapx_id_t imap_tokenise(register const gchar *str, register guint len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
-	CAMEL_IMAPX_MESSAGE_RECENT = (1<<8),
+	CAMEL_IMAPX_MESSAGE_RECENT = (1<<21),
 };
 
 /* ********************************************************************** */
@@ -126,7 +128,7 @@ void imap_dump_fetch(struct _fetch_info *finfo);
 /* ********************************************************************** */
 
 struct _status_info {
-	camel_imapx_id_t result; /* ok/no/bad/preauth only */
+	camel_imapx_id_t result; /* ok/no/bad/preauth only, user_cancel - client response */
 	camel_imapx_id_t condition; /* read-only/read-write/alert/parse/trycreate/newname/permanentflags/uidvalidity/unseen */
 
 	union {
