@@ -45,6 +45,7 @@ TESTS = \
         test-ecal-get-objects-for-uid		\
         test-ecal-remove-object			\
         test-ecal-get-object-list		\
+        test-ecal-modify-object			\
         $(NULL)
 
 # The test program
@@ -73,6 +74,8 @@ test_ecal_get_object_list_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_object_list_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_objects_for_uid_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_objects_for_uid_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_modify_object_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_modify_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_open_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)

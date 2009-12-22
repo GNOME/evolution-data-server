@@ -331,6 +331,24 @@ ecal_test_utils_cal_get_object (ECal       *cal,
 }
 
 void
+ecal_test_utils_cal_modify_object (ECal          *cal,
+				   icalcomponent *component,
+				   CalObjModType  mod_type)
+{
+        GError *error = NULL;
+
+        if (!icalcomponent_is_valid (component)) {
+                g_warning (G_STRLOC ": icalcomponent argument is invalid\n");
+                exit(1);
+        }
+        if (!e_cal_modify_object (cal, component, mod_type, &error)) {
+                g_warning ("failed to modify icalcomponent object; %s\n", error->message);
+                exit(1);
+        }
+        g_print ("successfully modified the icalcomponent object\n");
+}
+
+void
 ecal_test_utils_cal_remove_object (ECal       *cal,
 				   const char *uid)
 {
@@ -503,4 +521,13 @@ ecal_test_utils_create_component (ECal           *cal,
 
         *comp_out = comp;
         *uid_out = uid;
+}
+
+void
+ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
+						 icalcomponent *component)
+{
+        if (!e_cal_component_set_icalcomponent (e_component, component)) {
+                g_error ("Could not set icalcomponent\n");
+        }
 }

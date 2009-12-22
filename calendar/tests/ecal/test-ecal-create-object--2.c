@@ -25,11 +25,8 @@ main (gint argc, gchar **argv)
 
 	icalcomponent_final = ecal_test_utils_cal_get_object (cal, uid);
         e_component_final = e_cal_component_new ();
-	if (!e_cal_component_set_icalcomponent (e_component_final,
-				icalcomponent_final)) {
-                g_error ("Could not set icalcomponent\n");
-        }
-
+	ecal_test_utils_cal_component_set_icalcomponent (e_component_final,
+				icalcomponent_final);
 	ecal_test_utils_cal_assert_e_cal_components_equal (e_component,
 			e_component_final);
 

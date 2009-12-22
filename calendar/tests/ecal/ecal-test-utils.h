@@ -73,6 +73,11 @@ ecal_test_utils_cal_get_object (ECal       *cal,
                                 const char *uid);
 
 void
+ecal_test_utils_cal_modify_object (ECal          *cal,
+                                   icalcomponent *component,
+                                   CalObjModType  mod_type);
+
+void
 ecal_test_utils_cal_remove_object (ECal       *cal,
 				   const char *uid);
 
@@ -106,5 +111,9 @@ ecal_test_utils_create_component (ECal           *cal,
                                   const char     *summary,
                                   ECalComponent **comp_out,
                                   char          **uid_out);
+
+void
+ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
+						 icalcomponent *component);
 
 #endif /* _ECAL_TEST_UTILS_H */
