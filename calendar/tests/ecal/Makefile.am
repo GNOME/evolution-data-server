@@ -34,6 +34,7 @@ test_scripts =                         \
 TESTS = \
         test-ecal-remove			\
         test-ecal-open				\
+        test-ecal-get-timezone			\
         test-ecal-get-alarm-email-address	\
         test-ecal-get-cal-address		\
         test-ecal-get-ldap-attribute		\
@@ -74,6 +75,8 @@ test_ecal_get_object_list_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_object_list_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_objects_for_uid_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_objects_for_uid_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_timezone_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_modify_object_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_modify_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_open_LDADD=$(TEST_ECAL_LIBS)

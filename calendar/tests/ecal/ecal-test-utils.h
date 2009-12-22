@@ -116,4 +116,8 @@ void
 ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
 						 icalcomponent *component);
 
+icaltimezone*
+ecal_test_utils_cal_get_timezone (ECal       *cal,
+                                  const char *tzid);
+
 #endif /* _ECAL_TEST_UTILS_H */

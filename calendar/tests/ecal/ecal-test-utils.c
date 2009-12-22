@@ -531,3 +531,19 @@ ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
                 g_error ("Could not set icalcomponent\n");
         }
 }
+
+icaltimezone*
+ecal_test_utils_cal_get_timezone (ECal       *cal,
+				  const char *tzid)
+{
+        GError *error = NULL;
+	icaltimezone *zone = NULL;
+
+        if (!e_cal_get_timezone (cal, tzid, &zone, &error)) {
+                g_warning ("failed to get icaltimezone* for ID '%s'; %s\n", tzid, error->message);
+                exit(1);
+        }
+        g_print ("successfully got icaltimezone* for ID '%s'\n", tzid);
+
+	return zone;
+}
