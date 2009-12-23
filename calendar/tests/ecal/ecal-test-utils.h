@@ -140,5 +140,8 @@ ecal_test_utils_cal_send_objects (ECal           *cal,
                                   GList         **users,
                                   icalcomponent **component_final);
 
+void
+ecal_test_utils_cal_receive_objects (ECal          *cal,
+                                     icalcomponent *component);
 
 #endif /* _ECAL_TEST_UTILS_H */

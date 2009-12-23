@@ -634,3 +634,16 @@ ecal_test_utils_cal_send_objects (ECal           *cal,
 		g_print ("        %s\n", (const char*) l->data);
 	}
 }
+
+void
+ecal_test_utils_cal_receive_objects (ECal          *cal,
+				     icalcomponent *component)
+{
+	GError *error = NULL;
+
+	if (!e_cal_receive_objects (cal, component, &error)) {
+		g_error ("receiving objects: %s\n", error->message);
+	}
+
+	g_print ("successfully received the objects\n");
+}
