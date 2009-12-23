@@ -611,3 +611,26 @@ ecal_test_utils_cal_get_free_busy (ECal   *cal,
 
 	return free_busy;
 }
+
+void
+ecal_test_utils_cal_send_objects (ECal           *cal,
+				  icalcomponent  *component,
+				  GList         **users,
+				  icalcomponent **component_final)
+{
+	GList *l = NULL;
+	GError *error = NULL;
+
+	if (!e_cal_send_objects (cal, component, users, component_final, &error)) {
+		g_error ("sending objects: %s\n", error->message);
+	}
+
+	g_print ("successfully sent the objects to the following users:\n");
+	if (g_list_length (*users) <= 0) {
+		g_print ("        (none)\n");
+		return;
+	}
+	for (l = *users; l; l = l->next) {
+		g_print ("        %s\n", (const char*) l->data);
+	}
+}

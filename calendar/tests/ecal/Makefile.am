@@ -50,6 +50,7 @@ TESTS = \
         test-ecal-remove-object			\
         test-ecal-get-object-list		\
         test-ecal-modify-object			\
+        test-ecal-send-objects			\
         $(NULL)
 
 # The test program
@@ -92,6 +93,8 @@ test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_remove_object_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_remove_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_send_objects_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_send_objects_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_set_default_timezone_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_default_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_set_mode_LDADD=$(TEST_ECAL_LIBS)

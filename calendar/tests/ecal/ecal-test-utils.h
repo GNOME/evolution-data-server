@@ -134,4 +134,11 @@ void
 ecal_test_utils_cal_set_default_timezone (ECal         *cal,
 					  icaltimezone *zone);
 
+void
+ecal_test_utils_cal_send_objects (ECal           *cal,
+                                  icalcomponent  *component,
+                                  GList         **users,
+                                  icalcomponent **component_final);
+
+
 #endif /* _ECAL_TEST_UTILS_H */
