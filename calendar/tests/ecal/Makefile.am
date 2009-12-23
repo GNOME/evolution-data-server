@@ -34,6 +34,7 @@ test_scripts =                         \
 TESTS = \
         test-ecal-remove			\
         test-ecal-open				\
+        test-ecal-get-free-busy			\
         test-ecal-get-timezone			\
         test-ecal-add-timezone			\
         test-ecal-set-default-timezone		\
@@ -71,6 +72,8 @@ test_ecal_get_cal_address_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_cal_address_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_default_object_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_default_object_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_free_busy_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_free_busy_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_ldap_attribute_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_ldap_attribute_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_capabilities_LDADD=$(TEST_ECAL_LIBS)

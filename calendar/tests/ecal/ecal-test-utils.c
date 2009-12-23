@@ -579,3 +579,35 @@ ecal_test_utils_cal_set_default_timezone (ECal         *cal,
         }
         g_print ("successfully set default icaltimezone '%s'\n", name);
 }
+
+GList*
+ecal_test_utils_cal_get_free_busy (ECal   *cal,
+				   GList  *users,
+				   time_t  start,
+				   time_t  end)
+{
+	GList *free_busy = NULL;
+	GList *l = NULL;
+	GError *error = NULL;
+
+	if (!e_cal_get_free_busy (cal, users, start, end, &free_busy, &error)) {
+		g_error ("Test free/busy : Could not retrieve free busy information :  %s\n", error->message);
+	}
+	if (free_busy) {
+		g_print ("Printing free/busy information\n");
+
+		for (l = free_busy; l; l = l->next) {
+			gchar *comp_string;
+			ECalComponent *comp = E_CAL_COMPONENT (l->data);
+
+			comp_string = e_cal_component_get_as_string (comp);
+			g_print ("%s\n", comp_string);
+			g_object_unref (comp);
+			g_free (comp_string);
+		}
+	} else {
+		g_error ("got empty free/busy information");
+	}
+
+	return free_busy;
+}

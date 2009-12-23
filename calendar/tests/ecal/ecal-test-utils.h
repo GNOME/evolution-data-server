@@ -60,6 +60,12 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal);
 
+GList*
+ecal_test_utils_cal_get_free_busy (ECal   *cal,
+                                   GList  *users,
+                                   time_t  start,
+                                   time_t  end);
+
 void
 ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
                                                   icalcomponent *b);
