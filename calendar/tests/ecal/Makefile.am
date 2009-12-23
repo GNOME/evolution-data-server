@@ -52,6 +52,7 @@ TESTS = \
         test-ecal-modify-object			\
         test-ecal-send-objects			\
         test-ecal-receive-objects		\
+        test-ecal-get-query			\
         $(NULL)
 
 # The test program
@@ -84,6 +85,8 @@ test_ecal_get_object_list_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_object_list_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_objects_for_uid_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_objects_for_uid_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_get_query_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_get_query_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_get_timezone_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_get_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_modify_object_LDADD=$(TEST_ECAL_LIBS)

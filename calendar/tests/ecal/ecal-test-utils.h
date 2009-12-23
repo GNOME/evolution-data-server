@@ -144,4 +144,8 @@ void
 ecal_test_utils_cal_receive_objects (ECal          *cal,
                                      icalcomponent *component);
 
+ECalView*
+ecal_test_utils_get_query (ECal       *cal,
+                           const char *sexp);
+
 #endif /* _ECAL_TEST_UTILS_H */

@@ -647,3 +647,19 @@ ecal_test_utils_cal_receive_objects (ECal          *cal,
 
 	g_print ("successfully received the objects\n");
 }
+
+ECalView*
+ecal_test_utils_get_query (ECal       *cal,
+			   const char *sexp)
+{
+	GError *error = NULL;
+	ECalView *query = NULL;
+
+	if (!e_cal_get_query (cal, sexp, &query, &error)) {
+		g_error (G_STRLOC ": Unable to obtain calendar view: %s\n",
+				error->message);
+	}
+	g_print ("successfully retrieved calendar view for query '%s'", sexp);
+
+	return query;
+}
