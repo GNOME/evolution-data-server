@@ -56,6 +56,8 @@ struct _CamelIMAPXServer {
 	/* incoming jobs */
 	CamelMsgPort *port;
 	CamelDList jobs;
+	/* in micro seconds */
+	guint job_timeout;
 
 	gchar tagprefix;
 	gint state:4;
@@ -86,7 +88,6 @@ struct _CamelIMAPXServer {
 
 	GMutex *connect_lock;
 	pthread_t parser_thread_id;
-	gboolean disconnect;
 };
 
 struct _CamelIMAPXServerClass {

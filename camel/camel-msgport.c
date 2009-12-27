@@ -415,6 +415,30 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
 	return msg;
 }
 
+CamelMsg *
+camel_msgport_timed_pop (CamelMsgPort *msgport, GTimeVal *end_time)
+{
+	CamelMsg *msg;
+
+	g_return_val_if_fail (msgport != NULL, NULL);
+
+	g_async_queue_lock (msgport->queue);
+
+	msg = g_async_queue_timed_pop_unlocked (msgport->queue, end_time);
+
+	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
+		msgport_sync_with_pipe (msgport->pipe[0]);
+#ifdef HAVE_NSS
+	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
+		msgport_sync_with_prpipe (msgport->prpipe[0]);
+#endif
+
+	g_async_queue_unlock (msgport->queue);
+
+	return msg;
+}
+
+
 void
 camel_msgport_reply (CamelMsg *msg)
 {

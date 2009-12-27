@@ -2441,6 +2441,7 @@ cancel_all_jobs (CamelIMAPXServer *is)
 			camel_dlist_remove ((CamelDListNode *)cw);
 
 			cw->status = create_cancel_status ();
+			camel_exception_set (cw->job->ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled");
 			cw->complete (is, cw);
 			camel_imapx_command_free (cw);
 
@@ -2504,6 +2505,7 @@ imapx_server_loop(gpointer d)
  
 		/* if ssl stream ... */
 #ifdef HAVE_SSL
+		if (CAMEL_IS_TCP_STREAM_SSL (is->stream->source))
 		{
 			PRPollDesc pollfds[2] = { };
 			gint res;
@@ -2528,8 +2530,9 @@ imapx_server_loop(gpointer d)
 				errno = EINTR;
 			}
 		}
-#else
+#endif
 		
+		if (!CAMEL_IS_TCP_STREAM_SSL (is->stream->source))
 		{
 			struct pollfd fds[2] = { {0, 0, 0}, {0, 0, 0} };
 			gint res;
@@ -2552,7 +2555,7 @@ imapx_server_loop(gpointer d)
 				errno = EINTR;
 			}
 		}
-#endif
+
 		if (errno == EINTR)
 			camel_exception_setv (&ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled: %s", g_strerror(errno));
 
@@ -2592,6 +2595,8 @@ imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 	camel_dlist_init(&ie->active);
 	camel_dlist_init(&ie->done);
 	camel_dlist_init(&ie->jobs);
+	
+	ie->job_timeout = 20 * 1000 * 1000;
 
 	ie->queue_lock = g_mutex_new();
 	ie->connect_lock = g_mutex_new ();
@@ -2715,7 +2720,7 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	CamelMsgPort *reply;
 
 	if (!job->noreply) {
-		reply = camel_msgport_new();
+		reply = camel_msgport_new ();
 		job->msg.reply_port = reply;
 	}
 
@@ -2723,23 +2728,35 @@ imapx_run_job(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	   we can't read from this thread ... hrm ... */
 	if (is->state >= IMAPX_AUTHENTICATED) {
 		/* NB: Must catch exceptions, cleanup/etc if we fail here? */
-		QUEUE_LOCK(is);
-		camel_dlist_addhead(&is->jobs, (CamelDListNode *)job);
-		QUEUE_UNLOCK(is);
-		job->start(is, job);
+		QUEUE_LOCK (is);
+		camel_dlist_addhead (&is->jobs, (CamelDListNode *)job);
+		QUEUE_UNLOCK (is);
+		job->start (is, job);
 	} else {
 		camel_msgport_push (is->port, (CamelMsg *)job);
 	}
 
 	if (!job->noreply) {
-		CamelMsg *completed = camel_msgport_pop (reply);
+		GTimeVal end_time;
+		CamelMsg *completed;
+
+		g_get_current_time (&end_time);
+		g_time_val_add (&end_time, is->job_timeout);
+
+		completed = camel_msgport_timed_pop (reply, &end_time);
+		camel_msgport_destroy (reply);
+
+		if (completed == NULL) {
+			camel_exception_set (job->ex, 1, "Operation timed out" );
+			return;
+		}
+
 		g_assert(completed == (CamelMsg *)job);
-		camel_msgport_destroy(reply);
 	}
 }
 
 static CamelStream *
-imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, gint pri, CamelException *ex)
+imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, gint pri, CamelException *ex)
 {
 	CamelStream *stream;
 	CamelIMAPXJob *job;
@@ -2753,8 +2770,8 @@ imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar 
 	   which handles concurrent adds properly.
 	   EXCEPT!  It wont handle the 'new' dir directly ... do we care? */
 
-	name = imapx_get_path_uid(is, folder, NULL, uid);
-	stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0);
+	name = imapx_get_path_uid (is, folder, NULL, uid);
+	stream = camel_stream_fs_new_with_name (name, O_RDONLY, 0);
 	if (stream) {
 		g_free(name);
 		return stream;
