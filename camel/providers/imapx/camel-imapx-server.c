@@ -47,7 +47,7 @@
 #include "camel-imapx-store.h"
 #include "camel-imapx-summary.h"
 
-#define c(x) 
+#define c(x)
 #define e(x) 
 
 #define CFS_CLASS(x) ((CamelFolderSummaryClass *)((CamelObject *)x)->klass)
@@ -2089,12 +2089,12 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	gint i;
 	GArray *infos = job->u.refresh_info.infos;
 
-	if (ic->status->result == IMAP_OK) {
+	if (ic->status->result == IMAP_OK && !camel_exception_is_set (job->ex)) {
 		GCompareDataFunc uid_cmp = imapx_uid_cmp;
 		const CamelMessageInfo *s_minfo = NULL;
 		CamelIMAPXMessageInfo *info;
 		CamelFolderSummary *s = job->folder->summary;
-		GSList *removed = NULL;
+		GSList *removed = NULL, *l;
 		gboolean fetch_new = FALSE;
 		gint i;
 		guint j = 0, total = 0;
@@ -2121,7 +2121,6 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 				camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
 				removed = g_slist_prepend (removed, (gpointer )uid);
-				camel_folder_summary_remove_uid_fast (s, s_minfo->uid);
 				j = imapx_index_next (s, j);
 				s_minfo = camel_folder_summary_index (s, j);
 			}
@@ -2136,7 +2135,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 				g_free(r->uid);
 				r->uid = NULL;
-			} else
+			} else 
 				fetch_new = TRUE;
 
 			j = imapx_index_next (s, j);
@@ -2155,10 +2154,13 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			}
 
 			printf("Message %s vanished\n", s_minfo->uid);
-			camel_folder_change_info_remove_uid (job->u.refresh_info.changes, s_minfo->uid);
 			camel_folder_summary_remove_uid_fast (s, s_minfo->uid);
 			removed = g_slist_prepend (removed, (gpointer) s_minfo->uid);
 			j++;
+		}
+
+		for (l = removed; l != NULL; l = g_slist_next (l)) {
+			camel_folder_summary_remove_uid_fast (s, (gchar *) l->data);
 		}
 
 		camel_db_delete_uids (is->store->cdb_w, s->folder->full_name, removed, NULL);
