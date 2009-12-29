@@ -909,37 +909,37 @@ found:
 	return job;
 }
 
-/* Process all expunged results we had from the last command.
-   This can be somewhat slow ... */
+/* Process all expunged results we had from the last command. */
 static void
 imapx_expunged(CamelIMAPXServer *imap)
 {
-//	gint count = 1, index=0, expunge;
+	gint index=0;
+        guint expunge;
+	GSList *removed = NULL;
 
 	g_assert(imap->select_folder);
 
 	if (imap->expunged->len == 0)
 		return;
 
-	printf("Processing '%d' expunges\n", imap->expunged->len);
-
-/*	Change implementation
+	c(printf("Processing '%d' expunges\n", imap->expunged->len));
 
 	expunge = g_array_index(imap->expunged, guint32, index++);
-	iter = camel_folder_summary_search(imap->select_folder->summary, NULL, NULL, NULL, NULL);
-	while ((iterinfo = camel_iterator_next(iter, NULL))) {
-		if (count == expunge) {
-			printf("expunging '%d' - '%s'\n", expunge, camel_message_info_subject(iterinfo));
-			camel_folder_summary_remove(imap->select_folder->summary, (CamelMessageInfo *)iterinfo);
-			if (index >= imap->expunged->len)
-				break;
-			expunge = g_array_index(imap->expunged, guint32, index++);
-		} else
-			//FIXME: skip over offline uids
-			count++;
+	
+	while (index < imap->expunged->len) {
+		gchar *uid = g_strdup_printf ("%d",expunge);
+		camel_folder_summary_remove_uid_fast (imap->select_folder->summary, uid);
+		removed = g_slist_prepend (removed, uid);
+		
+		expunge = g_array_index(imap->expunged, guint32, index++);
 	}
-	camel_iterator_free(iter);
-	g_array_set_size(imap->expunged, 0); */
+
+	if (removed != NULL) {
+		camel_db_delete_uids (imap->store->cdb_w, imap->select_folder->full_name, removed, NULL);
+		g_slist_foreach (removed, (GFunc) g_free, NULL);
+	}
+
+	g_array_set_size(imap->expunged, 0);
 }
 
 static void
