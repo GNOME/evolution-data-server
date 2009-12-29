@@ -5,62 +5,28 @@
 
 #include "ebook-test-utils.h"
 
-static GMainLoop *loop;
-
-static void
-remove_cb (EBook *book, EBookStatus status, gpointer closure)
-{
-        if (status != E_BOOK_ERROR_OK) {
-                printf ("failed to asynchronously remove the book: status %d\n",
-                                status);
-                exit (1);
-        }
-
-        printf ("successfully asynchronously removed the temporary addressbook\n");
-        g_main_loop_quit (loop);
-}
-
 gint
 main (gint argc, gchar **argv)
 {
 	EBook *book;
         char *uri = NULL;
-	GError *error = NULL;
+        GMainLoop *loop;
 
 	g_type_init ();
 
         /* Sync version */
-        book = ebook_test_utils_create_temp_addressbook (&uri);
-
-	if (!e_book_open (book, FALSE, &error)) {
-		printf ("failed to open addressbook: `%s': %s\n",
-			uri, error->message);
-		exit(1);
-	}
-
-	if (!e_book_remove (book, &error)) {
-		printf ("failed to remove book; %s\n", error->message);
-		exit(1);
-	}
-	printf ("successfully removed the temporary addressbook\n");
-
-	g_object_unref (book);
+        book = ebook_test_utils_book_new_temp (&uri);
+        ebook_test_utils_book_open (book, FALSE);
+        ebook_test_utils_book_remove (book);
 
         /* Async version */
-        book = ebook_test_utils_create_temp_addressbook (&uri);
-
-	if (!e_book_open (book, FALSE, &error)) {
-		printf ("failed to open addressbook: `%s': %s\n",
-			uri, error->message);
-		exit(1);
-	}
-
-	if (e_book_async_remove (book, remove_cb, NULL)) {
-		printf ("failed to set up book removal\n");
-		exit(1);
-	}
+        book = ebook_test_utils_book_new_temp (&uri);
+        ebook_test_utils_book_open (book, FALSE);
 
         loop = g_main_loop_new (NULL, TRUE);
+	ebook_test_utils_book_async_remove (book,
+                        (GSourceFunc) g_main_loop_quit, loop);
+
         g_main_loop_run (loop);
 
 	return 0;

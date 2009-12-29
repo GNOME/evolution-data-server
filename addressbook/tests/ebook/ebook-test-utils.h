@@ -24,6 +24,16 @@
 
 #include <libebook/e-book.h>
 
-EBook* ebook_test_utils_create_temp_addressbook (char **uri);
+typedef struct {
+        GSourceFunc    cb;
+        gpointer       user_data;
+} EBookTestClosure;
+
+EBook* ebook_test_utils_book_new_temp (char **uri);
+void   ebook_test_utils_book_open (EBook *book, gboolean only_if_exists);
+void   ebook_test_utils_book_remove (EBook *book);
+void   ebook_test_utils_book_async_remove (EBook          *book,
+                                           GSourceFunc     callback,
+                                           gpointer        user_data);
 
 #endif /* _EBOOK_TEST_UTILS_H */

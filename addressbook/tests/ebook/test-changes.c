@@ -24,13 +24,8 @@ main (gint argc, gchar **argv)
 
 	g_type_init ();
 
-	book = ebook_test_utils_create_temp_addressbook (&uri);
-
-	if (!e_book_open (book, FALSE, &error)) {
-		printf ("failed to open addressbook: `%s': %s\n",
-			uri, error->message);
-		exit(0);
-	}
+	book = ebook_test_utils_book_new_temp (&uri);
+        ebook_test_utils_book_open (book, FALSE);
 
 	/* get an initial change set */
 	if (!e_book_get_changes (book, "changeidtest", &changes, &error)) {
@@ -67,12 +62,7 @@ main (gint argc, gchar **argv)
 
 	e_book_free_change_list (changes);
 
-	if (!e_book_remove (book, &error)) {
-		printf ("failed to remove book; %s\n", error->message);
-		exit(0);
-	}
-
-	g_object_unref (book);
+        ebook_test_utils_book_remove (book);
 
 	return 0;
 }

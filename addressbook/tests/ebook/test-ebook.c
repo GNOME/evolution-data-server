@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <libebook/e-book.h>
 
+#include "ebook-test-utils.h"
+
 static void
 print_email (EContact *contact)
 {
@@ -72,7 +74,6 @@ gint
 main (gint argc, gchar **argv)
 {
 	EBook *book;
-	gboolean status;
 
 	g_type_init ();
 
@@ -87,11 +88,7 @@ main (gint argc, gchar **argv)
 		exit(0);
 	}
 
-	status = e_book_open (book, FALSE, NULL);
-	if (status == FALSE) {
-		printf ("failed to open local addressbook\n");
-		exit(0);
-	}
+        ebook_test_utils_book_open (book, FALSE);
 
 	printf ("printing one contact\n");
 	print_one_email (book);
