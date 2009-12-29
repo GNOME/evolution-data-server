@@ -21,23 +21,28 @@ TEST_LIBS =							\
 	libebook-test-utils.la	         \
 	$(NULL)
 
+# Should be kept ordered approximately from least to most difficult/complex
+TESTS = \
+	test-ebook-remove			     \
+	test-ebook-get-required-fields		     \
+	test-ebook-get-static-capabilities	     \
+	test-ebook-get-supported-fields		     \
+	test-ebook-get-supported-auth-methods	     \
+	test-ebook-add-contact			     \
+	test-ebook-get-contact			     \
+	test-ebook-commit-contact		     \
+	test-ebook-remove-contact		     \
+	test-ebook-remove-contact-by-id		     \
+	test-ebook-remove-contacts		     \
+	$(NULL)
+
 noinst_PROGRAMS = \
+	$(TESTS)				     \
 	test-changes				     \
 	test-categories				     \
 	test-date				     \
 	test-ebook				     \
 	test-ebook-async			     \
-	test-ebook-add-contact			     \
-	test-ebook-commit-contact		     \
-	test-ebook-get-contact			     \
-	test-ebook-get-required-fields		     \
-	test-ebook-get-static-capabilities	     \
-	test-ebook-get-supported-fields		     \
-	test-ebook-get-supported-auth-methods	     \
-	test-ebook-remove			     \
-	test-ebook-remove-contact		     \
-	test-ebook-remove-contact-by-id		     \
-	test-ebook-remove-contacts		     \
 	test-ebook-view				     \
 	test-nonexistent-id			     \
 	test-photo				     \
