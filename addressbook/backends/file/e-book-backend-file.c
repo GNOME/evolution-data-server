@@ -899,6 +899,16 @@ e_book_backend_file_get_required_fields (EBookBackendSync *backend,
 }
 
 static EBookBackendSyncStatus
+e_book_backend_file_get_supported_auth_methods (EBookBackendSync *backend,
+						EDataBook *book,
+						guint32 opid,
+						GList **methods_out)
+{
+	*methods_out = NULL;
+	return GNOME_Evolution_Addressbook_Success;
+}
+
+static EBookBackendSyncStatus
 e_book_backend_file_get_supported_fields (EBookBackendSync *backend,
 					  EDataBook *book,
 					  guint32 opid,
@@ -1497,23 +1507,24 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	backend_class = E_BOOK_BACKEND_CLASS (klass);
 
 	/* Set the virtual methods. */
-	backend_class->load_source             = e_book_backend_file_load_source;
-	backend_class->get_static_capabilities = e_book_backend_file_get_static_capabilities;
-	backend_class->start_book_view         = e_book_backend_file_start_book_view;
-	backend_class->stop_book_view          = e_book_backend_file_stop_book_view;
-	backend_class->cancel_operation        = e_book_backend_file_cancel_operation;
-	backend_class->set_mode                = e_book_backend_file_set_mode;
-	backend_class->sync                    = e_book_backend_file_sync;
-	sync_class->remove_sync                = e_book_backend_file_remove;
-	sync_class->create_contact_sync        = e_book_backend_file_create_contact;
-	sync_class->remove_contacts_sync       = e_book_backend_file_remove_contacts;
-	sync_class->modify_contact_sync        = e_book_backend_file_modify_contact;
-	sync_class->get_contact_sync           = e_book_backend_file_get_contact;
-	sync_class->get_contact_list_sync      = e_book_backend_file_get_contact_list;
-	sync_class->get_changes_sync           = e_book_backend_file_get_changes;
-	sync_class->authenticate_user_sync     = e_book_backend_file_authenticate_user;
-	sync_class->get_supported_fields_sync  = e_book_backend_file_get_supported_fields;
-	sync_class->get_required_fields_sync   = e_book_backend_file_get_required_fields;
+	backend_class->load_source			= e_book_backend_file_load_source;
+	backend_class->get_static_capabilities		= e_book_backend_file_get_static_capabilities;
+	backend_class->start_book_view			= e_book_backend_file_start_book_view;
+	backend_class->stop_book_view			= e_book_backend_file_stop_book_view;
+	backend_class->cancel_operation			= e_book_backend_file_cancel_operation;
+	backend_class->set_mode				= e_book_backend_file_set_mode;
+	backend_class->sync				= e_book_backend_file_sync;
+	sync_class->remove_sync				= e_book_backend_file_remove;
+	sync_class->create_contact_sync			= e_book_backend_file_create_contact;
+	sync_class->remove_contacts_sync		= e_book_backend_file_remove_contacts;
+	sync_class->modify_contact_sync			= e_book_backend_file_modify_contact;
+	sync_class->get_contact_sync			= e_book_backend_file_get_contact;
+	sync_class->get_contact_list_sync		= e_book_backend_file_get_contact_list;
+	sync_class->get_changes_sync			= e_book_backend_file_get_changes;
+	sync_class->authenticate_user_sync		= e_book_backend_file_authenticate_user;
+	sync_class->get_supported_auth_methods_sync	= e_book_backend_file_get_supported_auth_methods;
+	sync_class->get_supported_fields_sync		= e_book_backend_file_get_supported_fields;
+	sync_class->get_required_fields_sync		= e_book_backend_file_get_required_fields;
 
 	object_class->dispose = e_book_backend_file_dispose;
 	object_class->finalize = e_book_backend_file_finalize;
