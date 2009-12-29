@@ -2578,14 +2578,15 @@ imapx_server_loop(gpointer d)
 			camel_exception_setv (&ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled: %s", g_strerror(errno));
 
 		if (camel_exception_is_set (&ex)) {
-			printf("######### Got main loop exception: %s\n", ex.desc);
-	
 			if (errno == EINTR) {
 				cancel_all_jobs (is);
 			
 				imapx_disconnect (is);
 				return NULL;
 			}
+
+			if (!g_ascii_strcasecmp (ex.desc, "io error"))
+				imapx_disconnect (is);
 
 			camel_exception_clear (&ex);
 			sleep(1);
