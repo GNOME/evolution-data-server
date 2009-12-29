@@ -74,7 +74,7 @@ ebook_test_utils_book_async_commit_contact (EBook       *book,
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
                                    const char *uid);
-void   
+void
 ebook_test_utils_book_async_get_contact (EBook       *book,
                                          const char  *uid,
                                          GSourceFunc  callback,

@@ -229,7 +229,7 @@ get_contact_cb (EBook            *book,
                 g_warning ("failed to asynchronously get the contact: "
                                 "status %d", status);
                 exit (1);
-        }                       
+        }
 
         uid = e_contact_get_const (contact, E_CONTACT_UID);
         g_print ("successfully asynchronously retrieved the contact '%s'\n",
@@ -241,14 +241,14 @@ get_contact_cb (EBook            *book,
         }
 }
 
-void   
+void
 ebook_test_utils_book_async_get_contact (EBook       *book,
                                          const char  *uid,
                                          GSourceFunc  callback,
                                          gpointer     user_data)
-{       
+{
         EBookTestClosure *closure;
-        
+
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
@@ -661,9 +661,9 @@ ebook_test_utils_book_remove (EBook *book)
         if (!e_book_remove (book, &error)) {
                 g_warning ("failed to remove book; %s\n", error->message);
                 exit(1);
-        }       
+        }
         g_print ("successfully removed the temporary addressbook\n");
-        
+
         g_object_unref (book);
 }
 
@@ -674,21 +674,21 @@ remove_cb (EBook *book, EBookStatus status, EBookTestClosure *closure)
                 g_warning ("failed to asynchronously remove the book: "
                                 "status %d", status);
                 exit (1);
-        }                       
-                
+        }
+
         g_print ("successfully asynchronously removed the temporary "
                         "addressbook\n");
         if (closure)
                 (*closure->cb) (closure);
 }
 
-void   
+void
 ebook_test_utils_book_async_remove (EBook       *book,
                                     GSourceFunc  callback,
                                     gpointer     user_data)
-{       
+{
         EBookTestClosure *closure;
-        
+
         closure = g_new0 (EBookTestClosure, 1);
         closure->cb = callback;
         closure->user_data = user_data;
