@@ -34,7 +34,8 @@ main (gint argc, gchar **argv)
 	 */
 	loop = g_main_loop_new (NULL, TRUE);
 	ebook_test_utils_book_async_get_contact (book, uid,
-			(GSourceFunc) g_main_loop_quit, loop);
+			ebook_test_utils_callback_quit, loop);
+
 	g_main_loop_run (loop);
 
 	ebook_test_utils_book_remove (book);

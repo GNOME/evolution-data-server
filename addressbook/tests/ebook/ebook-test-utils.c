@@ -7,6 +7,15 @@
 
 #include "ebook-test-utils.h"
 
+gboolean
+ebook_test_utils_callback_quit (gpointer user_data)
+{
+        EBookTestClosure *closure = user_data;
+        g_main_loop_quit ((GMainLoop*) closure->user_data);
+
+        return FALSE;
+}
+
 char*
 ebook_test_utils_new_vcard_from_test_case (const char *case_name)
 {
@@ -111,7 +120,7 @@ add_contact_cb (EBook            *book,
         g_print ("successfully asynchronously added the contact "
                         "addressbook\n");
         if (closure) {
-                (*closure->cb) (closure->user_data);
+                (*closure->cb) (closure);
                 g_free (closure);
         }
 }
@@ -227,7 +236,7 @@ get_contact_cb (EBook            *book,
                         uid);
 
         if (closure) {
-                (*closure->cb) (closure->user_data);
+                (*closure->cb) (closure);
                 g_free (closure);
         }
 }
@@ -281,7 +290,7 @@ remove_contact_cb (EBook            *book,
         g_print ("successfully asynchronously removed the contact\n");
 
         if (closure) {
-                (*closure->cb) (closure->user_data);
+                (*closure->cb) (closure);
                 g_free (closure);
         }
 }
@@ -319,7 +328,7 @@ remove_contact_by_id_cb (EBook            *book,
         g_print ("successfully asynchronously removed the contact by id\n");
 
         if (closure) {
-                (*closure->cb) (closure->user_data);
+                (*closure->cb) (closure);
                 g_free (closure);
         }
 }
@@ -373,7 +382,7 @@ remove_contacts_cb (EBook            *book,
         g_print ("successfully asynchronously removed the contacts\n");
 
         if (closure) {
-                (*closure->cb) (closure->user_data);
+                (*closure->cb) (closure);
                 g_free (closure);
         }
 }
@@ -477,7 +486,7 @@ remove_cb (EBook *book, EBookStatus status, EBookTestClosure *closure)
         g_print ("successfully asynchronously removed the temporary "
                         "addressbook\n");
         if (closure)
-                (*closure->cb) (closure->user_data);
+                (*closure->cb) (closure);
 }
 
 void   

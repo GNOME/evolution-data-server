@@ -33,6 +33,9 @@ typedef struct {
         gpointer       user_data;
 } EBookTestClosure;
 
+gboolean
+ebook_test_utils_callback_quit (gpointer user_data);
+
 char*
 ebook_test_utils_new_vcard_from_test_case (const char *case_name);
 
