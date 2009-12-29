@@ -2,9 +2,35 @@
 
 #include <stdlib.h>
 #include <glib.h>
+#include <gio/gio.h>
 #include <libebook/e-book.h>
 
 #include "ebook-test-utils.h"
+
+char*
+ebook_test_utils_new_vcard_from_test_case (const char *case_name)
+{
+        char *filename;
+        char *case_filename;
+        GFile* file;
+        GError *error = NULL;
+        char *vcard;
+
+        case_filename = g_strdup_printf ("%s.vcf", case_name);
+        filename = g_build_filename (EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
+        file = g_file_new_for_path (filename);
+        if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
+                g_warning ("failed to read test contact file '%s': %s",
+                                filename, error->message);
+                exit(1);
+        }
+
+        g_free (case_filename);
+        g_free (filename);
+        g_object_unref (file);
+
+        return vcard;
+}
 
 const char*
 ebook_test_utils_book_add_contact (EBook    *book,

@@ -10,6 +10,7 @@ main (gint argc, gchar **argv)
 {
 	EBook *book;
 	GMainLoop *loop;
+	char *vcard;
 	EContact *contact;
 	EContact *contact_final;
 	char *uid;
@@ -23,7 +24,8 @@ main (gint argc, gchar **argv)
 	book = ebook_test_utils_book_new_temp (NULL);
 	ebook_test_utils_book_open (book, FALSE);
 
-	contact = e_contact_new_from_vcard (EBOOK_TEST_UTILS_VCARD_SIMPLE);
+	vcard = ebook_test_utils_new_vcard_from_test_case ("simple-1");
+	contact = e_contact_new_from_vcard (vcard);
 	uid = g_strdup (ebook_test_utils_book_add_contact (book, contact));
 
 	/*
@@ -56,7 +58,7 @@ main (gint argc, gchar **argv)
 	 */
 	book = ebook_test_utils_book_new_temp (NULL);
 	ebook_test_utils_book_open (book, FALSE);
-	contact = e_contact_new_from_vcard (EBOOK_TEST_UTILS_VCARD_SIMPLE);
+	contact = e_contact_new_from_vcard (vcard);
 
 	loop = g_main_loop_new (NULL, TRUE);
 	ebook_test_utils_book_async_add_contact (book, contact,
@@ -66,6 +68,7 @@ main (gint argc, gchar **argv)
 	g_main_loop_run (loop);
 
 	ebook_test_utils_book_remove (book);
+	g_free (vcard);
 
 	return 0;
 }

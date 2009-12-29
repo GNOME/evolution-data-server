@@ -25,17 +25,16 @@
 #include <glib.h>
 #include <libebook/e-book.h>
 
-/* TODO: build up a library of vcards as separate files; don't hardcode here */
-#define EBOOK_TEST_UTILS_VCARD_SIMPLE \
-"BEGIN:VCARD\n\
-FN:Foo Bar\n\
-EMAIL;INTERNET:foo.bar@example.org\n\
-END:VCARD"
+#define EBOOK_TEST_UTILS_DATA_DIR "data"
+#define EBOOK_TEST_UTILS_VCARDS_DIR "vcards"
 
 typedef struct {
         GSourceFunc    cb;
         gpointer       user_data;
 } EBookTestClosure;
+
+char*
+ebook_test_utils_new_vcard_from_test_case (const char *case_name);
 
 EBook*
 ebook_test_utils_book_new_temp (char **uri);
