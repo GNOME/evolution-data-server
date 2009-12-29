@@ -1,3 +1,27 @@
+noinst_LTLIBRARIES = libecal-test-utils.la
+libecal_test_utils_la_SOURCES = ecal-test-utils.c ecal-test-utils.h
+
+libecal_test_utils_la_CPPFLAGS = \
+	$(AM_CPPFLAGS)					\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)				\
+	-I$(top_srcdir)/calendar			\
+	-I$(top_builddir)/calendar			\
+	$(LIBICAL_CFLAGS)				\
+	$(EVOLUTION_CALENDAR_CFLAGS)                    \
+	$(NULL)
+
+libecal_test_utils_la_LIBADD = \
+        $(top_builddir)/calendar/libecal/libecal-1.2.la    \
+        $(EVOLUTION_CALENDAR_LIBS)                         \
+        $(NULL)
+
+TEST_ECAL_LIBS = \
+        $(libecal_test_utils_la_LIBADD) \
+        libecal-test-utils.la           \
+        $(NULL)
+
 EXTRA_DIST =                          \
 	$(test_scripts)               \
 	testdata.ics
@@ -6,19 +30,21 @@ test_scripts =                         \
 	test-runner.sh                 \
 	cleanup.sh
 
+TESTS = \
+        test-ecal-remove                            \
+        $(NULL)
+
 # The test program
-noinst_PROGRAMS = test-ecal test-recur test-search
+noinst_PROGRAMS = $(TESTS) test-ecal test-recur test-search
 
 TEST_ECAL_CPPFLAGS= \
-	$(AM_CPPFLAGS)					\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
-	-I$(top_srcdir)					\
-	-I$(top_builddir)				\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_builddir)/calendar			\
-	$(LIBICAL_CFLAGS)				\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(libecal_test_utils_la_CPPFLAGS) \
+	$(NULL)
 
+test_ecal_remove_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_remove_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+
+# monolithic tests
 test_ecal_SOURCES = test-ecal.c
 test_ecal_CPPFLAGS = $(TEST_ECAL_CPPFLAGS)
 test_ecal_INCLUDES =			\
