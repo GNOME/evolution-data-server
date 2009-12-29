@@ -285,7 +285,7 @@ get_required_fields_cb (EBook            *book,
                         EBookTestClosure *closure)
 {
         if (status != E_BOOK_ERROR_OK) {
-                g_warning ("failed to asynchronously get the contact: "
+                g_warning ("failed to asynchronously get the required fields: "
                                 "status %d", status);
                 exit (1);
         }
@@ -420,7 +420,7 @@ get_supported_fields_cb (EBook            *book,
                         EBookTestClosure *closure)
 {
         if (status != E_BOOK_ERROR_OK) {
-                g_warning ("failed to asynchronously get the contact: "
+                g_warning ("failed to asynchronously get the supported fields: "
                                 "status %d", status);
                 exit (1);
         }

@@ -58,6 +58,7 @@ main (gint argc, gchar **argv)
 
 	g_print ("successfully retrieved required fields:\n");
 	g_list_foreach (fields, (GFunc) list_member_print_and_free, NULL);
+	g_print ("----------------\n");
 	g_list_free (fields);
 
 	/*
