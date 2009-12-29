@@ -35,6 +35,9 @@ TESTS = \
 	test-ebook-remove-contact		     \
 	test-ebook-remove-contact-by-id		     \
 	test-ebook-remove-contacts		     \
+	test-ebook-stress-factory--serial	     \
+	test-ebook-stress-factory--fifo		     \
+	test-ebook-stress-factory--single-book	     \
 	$(NULL)
 
 noinst_PROGRAMS = \
@@ -91,6 +94,12 @@ test_ebook_remove_contact_by_id_LDADD=$(TEST_LIBS)
 test_ebook_remove_contact_by_id_CPPFLAGS=$(TEST_CPPFLAGS)
 test_ebook_remove_contacts_LDADD=$(TEST_LIBS)
 test_ebook_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_stress_factory__fifo_LDADD=$(TEST_LIBS)
+test_ebook_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_stress_factory__serial_LDADD=$(TEST_LIBS)
+test_ebook_stress_factory__serial_CPPFLAGS=$(TEST_CPPFLAGS)
+test_ebook_stress_factory__single_book_LDADD=$(TEST_LIBS)
+test_ebook_stress_factory__single_book_CPPFLAGS=$(TEST_CPPFLAGS)
 test_changes_LDADD=$(TEST_LIBS)
 test_changes_CPPFLAGS=$(TEST_CPPFLAGS)
 test_categories_LDADD=$(TEST_LIBS)

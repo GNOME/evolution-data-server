@@ -55,6 +55,9 @@ ebook_test_utils_contacts_are_equal_shallow (EContact *a,
                                              EContact *b);
 
 EBook*
+ebook_test_utils_book_new_from_uri (const char *uri);
+
+EBook*
 ebook_test_utils_book_new_temp (char **uri);
 
 const char*

@@ -624,6 +624,22 @@ ebook_test_utils_book_async_remove_contacts (EBook       *book,
 }
 
 EBook*
+ebook_test_utils_book_new_from_uri (const char *uri)
+{
+        EBook *book;
+	GError *error = NULL;
+
+	test_print ("loading addressbook\n");
+	book = e_book_new_from_uri (uri, &error);
+	if (!book) {
+                g_error ("failed to create addressbook: `%s': %s", uri,
+                                error->message);
+	}
+
+	return book;
+}
+
+EBook*
 ebook_test_utils_book_new_temp (char **uri)
 {
         EBook *book;
@@ -643,14 +659,7 @@ ebook_test_utils_book_new_temp (char **uri)
 	}
 	g_free (file_template);
 
-	/* create a temp addressbook in /tmp */
-	test_print ("loading addressbook\n");
-	book = e_book_new_from_uri (uri_result, &error);
-	if (!book) {
-                g_warning ("failed to create addressbook: `%s': %s", *uri,
-                                error->message);
-		exit(1);
-	}
+	book = ebook_test_utils_book_new_from_uri (uri_result);
 
         if (uri)
                 *uri = g_strdup (uri_result);
