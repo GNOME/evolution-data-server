@@ -118,14 +118,6 @@ ecal_test_utils_cal_async_open (ECal        *cal,
 
 	g_signal_connect (G_OBJECT (cal), "cal_opened", G_CALLBACK (open_cb), closure);
 	e_cal_open_async (cal, only_if_exists);
-
-	/* FIXME: cut this
-	if (FALSE)
-	{
-                g_warning ("failed to set up cal removal");
-                exit(1);
-        }
-	*/
 }
 
 void
