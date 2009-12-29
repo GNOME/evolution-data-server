@@ -12,7 +12,7 @@ main (gint argc, gchar **argv)
         GMainLoop *loop;
         EContact *contact;
         EContact *contact_final;
-        char *uid;
+        const char *uid;
         const char *contact_final_uid;
 
 	g_type_init ();
@@ -55,7 +55,6 @@ main (gint argc, gchar **argv)
         loop = g_main_loop_new (NULL, TRUE);
         ebook_test_utils_book_async_get_contact (book, uid,
                         (GSourceFunc) g_main_loop_quit, loop);
-        g_free (uid);
         g_main_loop_run (loop);
 
         ebook_test_utils_book_remove (book);

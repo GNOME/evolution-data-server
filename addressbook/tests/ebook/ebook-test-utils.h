@@ -40,7 +40,7 @@ typedef struct {
 EBook*
 ebook_test_utils_book_new_temp (char **uri);
 
-char*
+const char*
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact);
 void

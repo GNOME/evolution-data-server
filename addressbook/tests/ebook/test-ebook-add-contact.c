@@ -24,7 +24,7 @@ main (gint argc, gchar **argv)
         ebook_test_utils_book_open (book, FALSE);
 
         contact = e_contact_new_from_vcard (EBOOK_TEST_UTILS_VCARD_SIMPLE);
-        uid = ebook_test_utils_book_add_contact (book, contact);
+        uid = g_strdup (ebook_test_utils_book_add_contact (book, contact));
 
         /*
          * Sync version

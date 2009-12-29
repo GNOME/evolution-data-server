@@ -35,10 +35,7 @@ main (gint argc, gchar **argv)
 
 	/* make a change to the book */
 	contact = e_contact_new_from_vcard (NEW_VCARD);
-	if (!e_book_add_contact (book, contact, &error)) {
-		printf ("failed to add new contact: %s\n", error->message);
-		exit(0);
-	}
+	ebook_test_utils_book_add_contact (book, contact);
 
 	/* get another change set */
 	if (!e_book_get_changes (book, "changeidtest", &changes, &error)) {
@@ -62,7 +59,8 @@ main (gint argc, gchar **argv)
 
 	e_book_free_change_list (changes);
 
-        ebook_test_utils_book_remove (book);
+	g_object_unref (contact);
+	ebook_test_utils_book_remove (book);
 
 	return 0;
 }

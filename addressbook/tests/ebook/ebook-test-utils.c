@@ -6,7 +6,7 @@
 
 #include "ebook-test-utils.h"
 
-char*
+const char*
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact)
 {
@@ -21,7 +21,7 @@ ebook_test_utils_book_add_contact (EBook    *book,
                 exit(1);
         }
 
-        return e_contact_get (contact, E_CONTACT_UID);
+        return e_contact_get_const (contact, E_CONTACT_UID);
 }
 
 static void
