@@ -32,7 +32,7 @@ main (gint argc, gchar **argv)
 
 	ecal_test_utils_cal_remove (cal);
 
-	g_list_foreach (free_busy, (GFunc) icalcomponent_free, NULL);
+	g_list_foreach (free_busy, (GFunc) g_object_unref, NULL);
 	g_list_free (free_busy);
 
 	return 0;
