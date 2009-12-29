@@ -26,7 +26,7 @@ main (gint argc, gchar **argv)
 	 */
 	uid = ebook_test_utils_book_add_contact_from_test_case_verify (book, "simple-1", &contact_final);
 
-	g_print ("successfully added and retrieved contact '%s'\n", uid);
+	test_print ("successfully added and retrieved contact '%s'\n", uid);
 	g_object_unref (contact_final);
 
 	/*

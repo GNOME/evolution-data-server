@@ -24,7 +24,7 @@ main (gint argc, gchar **argv)
 	 */
 	caps = ebook_test_utils_book_get_static_capabilities (book);
 
-	g_print ("successfully retrieved static capabilities: '%s'\n", caps);
+	test_print ("successfully retrieved static capabilities: '%s'\n", caps);
 
 	ebook_test_utils_book_remove (book);
 

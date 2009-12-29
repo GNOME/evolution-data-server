@@ -9,7 +9,7 @@ static void
 list_member_print_and_free (char     *member,
 		            gpointer  user_data)
 {
-	g_print ("    %s\n", member);
+	test_print ("    %s\n", member);
 	g_free (member);
 }
 
@@ -22,13 +22,13 @@ get_supported_fields_cb (EBookTestClosure *closure)
 		EIterator *iter;
 		const char *field;
 
-		g_print ("supported fields:\n");
+		test_print ("supported fields:\n");
 		iter = e_list_get_iterator (closure->list);
 		while ((field = e_iterator_get (iter))) {
-			g_print ("    %s\n", field);
+			test_print ("    %s\n", field);
 			e_iterator_next (iter);
 		}
-		g_print ("----------------\n");
+		test_print ("----------------\n");
 	}
 
 	g_object_unref (closure->list);
@@ -56,9 +56,9 @@ main (gint argc, gchar **argv)
 	 */
 	fields = ebook_test_utils_book_get_supported_fields (book);
 
-	g_print ("successfully retrieved supported fields:\n");
+	test_print ("successfully retrieved supported fields:\n");
 	g_list_foreach (fields, (GFunc) list_member_print_and_free, NULL);
-	g_print ("----------------\n");
+	test_print ("----------------\n");
 	g_list_free (fields);
 
 	/*

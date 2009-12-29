@@ -12,18 +12,18 @@ print_contact (EContact *contact)
 {
 	GList *emails, *e;
 
-	g_print ("Contact: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
-	g_print ("UID: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
-	g_print ("Email addresses:\n");
+	test_print ("Contact: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+	test_print ("UID: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
+	test_print ("Email addresses:\n");
 
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		g_print ("\t%s\n",  (gchar *)e->data);
+		test_print ("\t%s\n",  (gchar *)e->data);
 	}
 	g_list_foreach (emails, (GFunc)g_free, NULL);
 	g_list_free (emails);
 
-	g_print ("\n");
+	test_print ("\n");
 }
 
 static void
@@ -42,7 +42,7 @@ contacts_removed (EBookView *book_view, const GList *ids)
 	GList *l;
 
 	for (l = (GList*)ids; l; l = l->next) {
-		g_print ("Removed contact: %s\n", (gchar *)l->data);
+		test_print ("Removed contact: %s\n", (gchar *)l->data);
 	}
 }
 
@@ -104,7 +104,7 @@ main (gint argc, gchar **argv)
 	ebook_test_utils_book_get_book_view (book, query, &view);
 	setup_and_start_view (view);
 
-	g_print ("successfully set up the book view\n");
+	test_print ("successfully set up the book view\n");
 
 	loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (loop);

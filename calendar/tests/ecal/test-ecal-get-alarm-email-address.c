@@ -18,7 +18,7 @@ main (gint argc, gchar **argv)
 	ecal_test_utils_cal_open (cal, FALSE);
 
 	address = ecal_test_utils_cal_get_alarm_email_address (cal);
-	g_print ("alarm email address: '%s'\n", address);
+	test_print ("alarm email address: '%s'\n", address);
 
 	ecal_test_utils_cal_remove (cal);
 

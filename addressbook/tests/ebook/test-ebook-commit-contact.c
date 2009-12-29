@@ -69,7 +69,7 @@ main (gint argc, gchar **argv)
 
 	verify_commit (contact);
 
-	g_print ("successfully committed changes to contact contact '%s'\n", uid);
+	test_print ("successfully committed changes to contact contact '%s'\n", uid);
 	g_object_unref (contact);
 	g_free (uid);
 

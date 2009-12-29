@@ -47,7 +47,7 @@ objects_added_cb (GObject *object, GList *objects, gpointer data)
         GList *l;
 
         for (l = objects; l; l = l->next)
-                g_print ("Object added %s\n", icalcomponent_get_uid (l->data));
+                test_print ("Object added %s\n", icalcomponent_get_uid (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_ADDED);
 }
@@ -58,7 +58,7 @@ objects_modified_cb (GObject *object, GList *objects, gpointer data)
         GList *l;
 
         for (l = objects; l; l = l->next)
-                g_print ("Object modified %s\n", icalcomponent_get_uid (l->data));
+                test_print ("Object modified %s\n", icalcomponent_get_uid (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_MODIFIED);
 }
@@ -71,7 +71,7 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
         for (l = objects; l; l = l->next) {
 		ECalComponentId *id = l->data;
 
-                g_print ("Object removed: uid: %s, rid: %s\n", id->uid,
+                test_print ("Object removed: uid: %s, rid: %s\n", id->uid,
 				id->rid);
 	}
 
@@ -81,7 +81,7 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
 static void
 view_done_cb (GObject *object, ECalendarStatus status, gpointer data)
 {
-        g_print ("View done\n");
+        test_print ("View done\n");
 
 	g_source_remove (complete_timeout_id);
 

@@ -18,7 +18,7 @@ main (gint argc, gchar **argv)
 	ecal_test_utils_cal_open (cal, FALSE);
 
 	attr = ecal_test_utils_cal_get_ldap_attribute (cal);
-	g_print ("LDAP attribute: '%s'\n", attr);
+	test_print ("LDAP attribute: '%s'\n", attr);
 
 	ecal_test_utils_cal_remove (cal);
 

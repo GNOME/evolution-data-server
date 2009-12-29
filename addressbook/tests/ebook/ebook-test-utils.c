@@ -7,6 +7,30 @@
 
 #include "ebook-test-utils.h"
 
+void
+test_print (const char *format,
+	    ...)
+{
+	va_list args;
+	const char *debug_string;
+	static gboolean debug_set = FALSE;
+	static gboolean debug = FALSE;
+
+	if (!debug_set) {
+		debug_string = g_getenv ("EDS_TEST_DEBUG");
+		if (debug_string) {
+			debug = (g_ascii_strtoll (debug_string, NULL, 10) >= 1);
+		}
+		debug_set = TRUE;
+	}
+
+	if (debug) {
+		va_start (args, format);
+		vprintf (format, args);
+		va_end (args);
+	}
+}
+
 gboolean
 ebook_test_utils_callback_quit (gpointer user_data)
 {
@@ -117,7 +141,7 @@ add_contact_cb (EBook            *book,
                 exit (1);
         }
 
-        g_print ("successfully asynchronously added the contact "
+        test_print ("successfully asynchronously added the contact "
                         "addressbook\n");
         if (closure) {
                 (*closure->cb) (closure);
@@ -172,7 +196,7 @@ commit_contact_cb (EBook            *book,
                 exit (1);
         }
 
-        g_print ("successfully asynchronously committed the contact to the "
+        test_print ("successfully asynchronously committed the contact to the "
                         "addressbook\n");
         if (closure) {
                 (*closure->cb) (closure);
@@ -232,7 +256,7 @@ get_contact_cb (EBook            *book,
         }
 
         uid = e_contact_get_const (contact, E_CONTACT_UID);
-        g_print ("successfully asynchronously retrieved the contact '%s'\n",
+        test_print ("successfully asynchronously retrieved the contact '%s'\n",
                         uid);
 
         if (closure) {
@@ -292,7 +316,7 @@ get_required_fields_cb (EBook            *book,
 
         closure->list = fields;
 
-        g_print ("successfully asynchronously retrieved the required fields\n");
+        test_print ("successfully asynchronously retrieved the required fields\n");
 
         if (closure) {
                 (*closure->cb) (closure);
@@ -368,7 +392,7 @@ get_supported_auth_methods_cb (EBook            *book,
 
         closure->list = methods;
 
-        g_print ("successfully asynchronously retrieved the supported auth "
+        test_print ("successfully asynchronously retrieved the supported auth "
                         "methods\n");
 
         if (closure) {
@@ -427,7 +451,7 @@ get_supported_fields_cb (EBook            *book,
 
         closure->list = fields;
 
-        g_print ("successfully asynchronously retrieved the supported fields\n");
+        test_print ("successfully asynchronously retrieved the supported fields\n");
 
         if (closure) {
                 (*closure->cb) (closure);
@@ -480,7 +504,7 @@ remove_contact_cb (EBook            *book,
                 exit (1);
         }
 
-        g_print ("successfully asynchronously removed the contact\n");
+        test_print ("successfully asynchronously removed the contact\n");
 
         if (closure) {
                 (*closure->cb) (closure);
@@ -518,7 +542,7 @@ remove_contact_by_id_cb (EBook            *book,
                 exit (1);
         }
 
-        g_print ("successfully asynchronously removed the contact by id\n");
+        test_print ("successfully asynchronously removed the contact by id\n");
 
         if (closure) {
                 (*closure->cb) (closure);
@@ -572,7 +596,7 @@ remove_contacts_cb (EBook            *book,
                 exit (1);
         }
 
-        g_print ("successfully asynchronously removed the contacts\n");
+        test_print ("successfully asynchronously removed the contacts\n");
 
         if (closure) {
                 (*closure->cb) (closure);
@@ -620,7 +644,7 @@ ebook_test_utils_book_new_temp (char **uri)
 	g_free (file_template);
 
 	/* create a temp addressbook in /tmp */
-	g_print ("loading addressbook\n");
+	test_print ("loading addressbook\n");
 	book = e_book_new_from_uri (uri_result, &error);
 	if (!book) {
                 g_warning ("failed to create addressbook: `%s': %s", *uri,
@@ -662,7 +686,7 @@ ebook_test_utils_book_remove (EBook *book)
                 g_warning ("failed to remove book; %s\n", error->message);
                 exit(1);
         }
-        g_print ("successfully removed the temporary addressbook\n");
+        test_print ("successfully removed the temporary addressbook\n");
 
         g_object_unref (book);
 }
@@ -676,7 +700,7 @@ remove_cb (EBook *book, EBookStatus status, EBookTestClosure *closure)
                 exit (1);
         }
 
-        g_print ("successfully asynchronously removed the temporary "
+        test_print ("successfully asynchronously removed the temporary "
                         "addressbook\n");
         if (closure)
                 (*closure->cb) (closure);
@@ -730,7 +754,7 @@ get_book_view_cb (EBook            *book,
 
         closure->view = view;
 
-        g_print ("successfully asynchronously retrieved the book view\n");
+        test_print ("successfully asynchronously retrieved the book view\n");
         if (closure)
                 (*closure->cb) (closure);
 }

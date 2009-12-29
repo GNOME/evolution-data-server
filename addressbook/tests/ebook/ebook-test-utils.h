@@ -35,6 +35,10 @@ typedef struct {
 	EList       *list;
 } EBookTestClosure;
 
+void
+test_print (const char *format,
+	    ...);
+
 gboolean
 ebook_test_utils_callback_quit (gpointer user_data);
 

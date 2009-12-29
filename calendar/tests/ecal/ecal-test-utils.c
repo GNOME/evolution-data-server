@@ -26,6 +26,29 @@
 
 #include "ecal-test-utils.h"
 
+void
+test_print (const char *format,
+	    ...)
+{
+	va_list args;
+	const char *debug_string;
+	static gboolean debug_set = FALSE;
+	static gboolean debug = FALSE;
+
+	if (!debug_set) {
+		debug_string = g_getenv ("EDS_TEST_DEBUG");
+		if (debug_string) {
+			debug = (g_ascii_strtoll (debug_string, NULL, 10) >= 1);
+		}
+		debug_set = TRUE;
+	}
+
+	if (debug) {
+		va_start (args, format);
+		vprintf (format, args);
+		va_end (args);
+	}
+}
 
 ECal*
 ecal_test_utils_cal_new_temp (char           **uri,
@@ -49,7 +72,7 @@ ecal_test_utils_cal_new_temp (char           **uri,
         g_free (file_template);
 
         /* create a temp calendar in /tmp */
-        g_print ("loading calendar\n");
+        test_print ("loading calendar\n");
         cal = e_cal_new_from_uri (uri_result, type);
         if (!cal) {
                 g_warning ("failed to create calendar: `%s'", *uri);
@@ -88,7 +111,7 @@ open_cb (ECal            *cal,
 {
 	if (FALSE) {
 	} else if (status == E_CALENDAR_STATUS_BUSY) {
-		g_print ("calendar server is busy; waiting...");
+		test_print ("calendar server is busy; waiting...");
 		return;
 	} else if (status != E_CALENDAR_STATUS_OK) {
                 g_warning ("failed to asynchronously remove the calendar: "
@@ -96,7 +119,7 @@ open_cb (ECal            *cal,
                 exit (1);
         }
 
-        g_print ("successfully asynchronously removed the temporary "
+        test_print ("successfully asynchronously removed the temporary "
                         "calendar\n");
         if (closure)
                 (*closure->cb) (closure);
@@ -130,7 +153,7 @@ ecal_test_utils_cal_remove (ECal *cal)
                 g_warning ("failed to remove calendar; %s\n", error->message);
                 exit(1);
         }
-        g_print ("successfully removed the temporary calendar\n");
+        test_print ("successfully removed the temporary calendar\n");
 
         g_object_unref (cal);
 }
@@ -145,7 +168,7 @@ ecal_test_utils_cal_get_alarm_email_address (ECal *cal)
                 g_warning ("failed to get alarm email address; %s\n", error->message);
                 exit(1);
         }
-        g_print ("successfully got the alarm email address\n");
+        test_print ("successfully got the alarm email address\n");
 
 	return address;
 }
@@ -160,7 +183,7 @@ ecal_test_utils_cal_get_cal_address (ECal *cal)
                 g_warning ("failed to get calendar address; %s\n", error->message);
                 exit(1);
         }
-        g_print ("successfully got the calendar address\n");
+        test_print ("successfully got the calendar address\n");
 
 	return address;
 }
@@ -175,7 +198,7 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
                 g_warning ("failed to get ldap attribute; %s\n", error->message);
                 exit(1);
         }
-        g_print ("successfully got the ldap attribute\n");
+        test_print ("successfully got the ldap attribute\n");
 
 	return attr;
 }
@@ -189,8 +212,8 @@ b2s (gboolean value)
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal)
 {
-        g_print ("calendar capabilities:\n");
-        g_print ("        One alarm only:                  %s\n"
+        test_print ("calendar capabilities:\n");
+        test_print ("        One alarm only:                  %s\n"
                  "        Organizers must attend meetings: %s\n"
                  "        Organizers must accept meetings: %s\n"
                  "        Master object for recurrences:   %s\n"
@@ -325,7 +348,7 @@ ecal_test_utils_cal_get_object (ECal       *cal,
                 g_warning ("retrieved icalcomponent is invalid\n");
                 exit(1);
         }
-        g_print ("successfully got the icalcomponent object '%s'\n", uid);
+        test_print ("successfully got the icalcomponent object '%s'\n", uid);
 
 	return component;
 }
@@ -345,7 +368,7 @@ ecal_test_utils_cal_modify_object (ECal          *cal,
                 g_warning ("failed to modify icalcomponent object; %s\n", error->message);
                 exit(1);
         }
-        g_print ("successfully modified the icalcomponent object\n");
+        test_print ("successfully modified the icalcomponent object\n");
 }
 
 void
@@ -358,7 +381,7 @@ ecal_test_utils_cal_remove_object (ECal       *cal,
                 g_warning ("failed to remove icalcomponent object '%s'; %s\n", uid, error->message);
                 exit(1);
         }
-        g_print ("successfully remoed the icalcomponent object '%s'\n", uid);
+        test_print ("successfully remoed the icalcomponent object '%s'\n", uid);
 }
 
 icalcomponent*
@@ -375,7 +398,7 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
                 g_warning ("default icalcomponent is invalid\n");
                 exit(1);
         }
-        g_print ("successfully got the default icalcomponent object\n");
+        test_print ("successfully got the default icalcomponent object\n");
 
 	return component;
 }
@@ -391,7 +414,7 @@ ecal_test_utils_cal_get_object_list (ECal       *cal,
                 g_warning ("failed to get list of icalcomponent objects for query '%s'; %s\n", query, error->message);
                 exit(1);
         }
-        g_print ("successfully got list of icalcomponent objects for the query '%s'\n", query);
+        test_print ("successfully got list of icalcomponent objects for the query '%s'\n", query);
 
 	return objects;
 }
@@ -407,7 +430,7 @@ ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
                 g_warning ("failed to get icalcomponent objects for UID '%s'; %s\n", uid, error->message);
                 exit(1);
         }
-        g_print ("successfully got objects for the icalcomponent with UID '%s'\n", uid);
+        test_print ("successfully got objects for the icalcomponent with UID '%s'\n", uid);
 
 	return objects;
 }
@@ -431,7 +454,7 @@ ecal_test_utils_cal_create_object (ECal          *cal,
         }
 
 	ical_string = icalcomponent_as_ical_string (component);
-        g_print ("successfully created icalcomponent object '%s'\n%s\n", uid,
+        test_print ("successfully created icalcomponent object '%s'\n%s\n", uid,
 			ical_string);
 	g_free (ical_string);
 
@@ -446,7 +469,7 @@ cal_set_mode_cb (ECal            *cal,
 {
 	if (FALSE) {
 	} else if (status == E_CALENDAR_STATUS_BUSY) {
-		g_print ("calendar server is busy; waiting...");
+		test_print ("calendar server is busy; waiting...");
 		return;
 	} else if (status != E_CALENDAR_STATUS_OK) {
                 g_warning ("failed to asynchronously remove the calendar: "
@@ -456,7 +479,7 @@ cal_set_mode_cb (ECal            *cal,
 
 	closure->mode = mode;
 
-        g_print ("successfully set the calendar mode to %d\n", mode);
+        test_print ("successfully set the calendar mode to %d\n", mode);
         if (closure)
                 (*closure->cb) (closure);
 
@@ -543,7 +566,7 @@ ecal_test_utils_cal_get_timezone (ECal       *cal,
                 g_warning ("failed to get icaltimezone* for ID '%s'; %s\n", tzid, error->message);
                 exit(1);
         }
-        g_print ("successfully got icaltimezone* for ID '%s'\n", tzid);
+        test_print ("successfully got icaltimezone* for ID '%s'\n", tzid);
 
 	return zone;
 }
@@ -561,7 +584,7 @@ ecal_test_utils_cal_add_timezone (ECal         *cal,
                 g_warning ("failed to add icaltimezone '%s'; %s\n", name, error->message);
                 exit(1);
         }
-        g_print ("successfully added icaltimezone '%s'\n", name);
+        test_print ("successfully added icaltimezone '%s'\n", name);
 }
 
 void
@@ -577,7 +600,7 @@ ecal_test_utils_cal_set_default_timezone (ECal         *cal,
                 g_warning ("failed to set default icaltimezone '%s'; %s\n", name, error->message);
                 exit(1);
         }
-        g_print ("successfully set default icaltimezone '%s'\n", name);
+        test_print ("successfully set default icaltimezone '%s'\n", name);
 }
 
 GList*
@@ -594,14 +617,14 @@ ecal_test_utils_cal_get_free_busy (ECal   *cal,
 		g_error ("Test free/busy : Could not retrieve free busy information :  %s\n", error->message);
 	}
 	if (free_busy) {
-		g_print ("Printing free/busy information\n");
+		test_print ("Printing free/busy information\n");
 
 		for (l = free_busy; l; l = l->next) {
 			gchar *comp_string;
 			ECalComponent *comp = E_CAL_COMPONENT (l->data);
 
 			comp_string = e_cal_component_get_as_string (comp);
-			g_print ("%s\n", comp_string);
+			test_print ("%s\n", comp_string);
 			g_object_unref (comp);
 			g_free (comp_string);
 		}
@@ -625,13 +648,13 @@ ecal_test_utils_cal_send_objects (ECal           *cal,
 		g_error ("sending objects: %s\n", error->message);
 	}
 
-	g_print ("successfully sent the objects to the following users:\n");
+	test_print ("successfully sent the objects to the following users:\n");
 	if (g_list_length (*users) <= 0) {
-		g_print ("        (none)\n");
+		test_print ("        (none)\n");
 		return;
 	}
 	for (l = *users; l; l = l->next) {
-		g_print ("        %s\n", (const char*) l->data);
+		test_print ("        %s\n", (const char*) l->data);
 	}
 }
 
@@ -645,7 +668,7 @@ ecal_test_utils_cal_receive_objects (ECal          *cal,
 		g_error ("receiving objects: %s\n", error->message);
 	}
 
-	g_print ("successfully received the objects\n");
+	test_print ("successfully received the objects\n");
 }
 
 ECalView*
@@ -659,7 +682,7 @@ ecal_test_utils_get_query (ECal       *cal,
 		g_error (G_STRLOC ": Unable to obtain calendar view: %s\n",
 				error->message);
 	}
-	g_print ("successfully retrieved calendar view for query '%s'", sexp);
+	test_print ("successfully retrieved calendar view for query '%s'", sexp);
 
 	return query;
 }

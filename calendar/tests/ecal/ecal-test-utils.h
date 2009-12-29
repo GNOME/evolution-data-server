@@ -31,6 +31,10 @@ typedef struct {
 	CalMode      mode;
 } ECalTestClosure;
 
+void
+test_print (const char *format,
+            ...);
+
 ECal*
 ecal_test_utils_cal_new_temp (char           **uri,
 		              ECalSourceType   type);
