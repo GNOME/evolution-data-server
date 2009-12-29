@@ -2434,7 +2434,7 @@ create_cancel_status (void)
 }
 
 static void
-cancel_all_jobs (CamelIMAPXServer *is)
+cancel_all_jobs (CamelIMAPXServer *is, CamelException *ex)
 {
 	CamelIMAPXCommand *cw, *cn;
 	int i = 0;
@@ -2456,7 +2456,7 @@ cancel_all_jobs (CamelIMAPXServer *is)
 			QUEUE_UNLOCK(is);
 
 			cw->status = create_cancel_status ();
-			camel_exception_set (cw->job->ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled");
+			camel_exception_xfer (cw->job->ex, ex);
 			cw->complete (is, cw);
 			camel_imapx_command_free (cw);
 
@@ -2476,7 +2476,7 @@ cancel_all_jobs (CamelIMAPXServer *is)
 /* ********************************************************************** */
 
 static gpointer
-imapx_server_loop(gpointer d)
+imapx_parser_thread (gpointer d)
 {
 	CamelIMAPXServer *is = d;
 	CamelException ex = {0, NULL};
@@ -2534,10 +2534,12 @@ imapx_server_loop(gpointer d)
 			pollfds[1].in_flags = PR_POLL_READ;
 #include <prio.h>
  
-			res = PR_Poll(pollfds, 2, PR_TicksPerSecond()/1000);
+			res = PR_Poll(pollfds, 2, PR_MillisecondsToInterval (30 * 1000));
 			if (res == -1)
 				sleep(1) /* ?? */ ;
-			else if ((pollfds[0].out_flags & PR_POLL_READ)) {
+			else if (res == 0) {
+				/* timed out */	
+			} else if ((pollfds[0].out_flags & PR_POLL_READ)) {
 				do {
 					/* This is quite shitty, it will often block on each
 					   part of the decode, causing significant
@@ -2578,15 +2580,13 @@ imapx_server_loop(gpointer d)
 			camel_exception_setv (&ex, CAMEL_EXCEPTION_USER_CANCEL, "Operation Cancelled: %s", g_strerror(errno));
 
 		if (camel_exception_is_set (&ex)) {
-			if (errno == EINTR) {
-				cancel_all_jobs (is);
-			
+			if (errno == EINTR || !g_ascii_strcasecmp (ex.desc, "io error")) {
+				cancel_all_jobs (is, &ex);
 				imapx_disconnect (is);
-				return NULL;
 			}
 
-			if (!g_ascii_strcasecmp (ex.desc, "io error"))
-				imapx_disconnect (is);
+			if (errno == EINTR)
+				return NULL;
 
 			camel_exception_clear (&ex);
 			sleep(1);
@@ -2717,7 +2717,7 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 			goto exit;
 		}
 
-		pthread_create(&id, NULL, imapx_server_loop, is);
+		pthread_create(&id, NULL, imapx_parser_thread, is);
 		is->parser_thread_id = id;
 		ret = TRUE;
 	} else {
