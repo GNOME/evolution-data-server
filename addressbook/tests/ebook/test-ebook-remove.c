@@ -9,25 +9,25 @@ gint
 main (gint argc, gchar **argv)
 {
 	EBook *book;
-        char *uri = NULL;
-        GMainLoop *loop;
+	char *uri = NULL;
+	GMainLoop *loop;
 
 	g_type_init ();
 
-        /* Sync version */
-        book = ebook_test_utils_book_new_temp (&uri);
-        ebook_test_utils_book_open (book, FALSE);
-        ebook_test_utils_book_remove (book);
+	/* Sync version */
+	book = ebook_test_utils_book_new_temp (&uri);
+	ebook_test_utils_book_open (book, FALSE);
+	ebook_test_utils_book_remove (book);
 
-        /* Async version */
-        book = ebook_test_utils_book_new_temp (&uri);
-        ebook_test_utils_book_open (book, FALSE);
+	/* Async version */
+	book = ebook_test_utils_book_new_temp (&uri);
+	ebook_test_utils_book_open (book, FALSE);
 
-        loop = g_main_loop_new (NULL, TRUE);
+	loop = g_main_loop_new (NULL, TRUE);
 	ebook_test_utils_book_async_remove (book,
-                        (GSourceFunc) g_main_loop_quit, loop);
+			(GSourceFunc) g_main_loop_quit, loop);
 
-        g_main_loop_run (loop);
+	g_main_loop_run (loop);
 
 	return 0;
 }
