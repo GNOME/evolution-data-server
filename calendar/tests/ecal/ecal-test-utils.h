@@ -29,11 +29,16 @@ typedef struct {
         GSourceFunc  cb;
         gpointer     user_data;
 	CalMode      mode;
+	ECal        *cal;
 } ECalTestClosure;
 
 void
 test_print (const char *format,
             ...);
+
+ECal*
+ecal_test_utils_cal_new_from_uri (const char     *uri,
+				  ECalSourceType  type);
 
 ECal*
 ecal_test_utils_cal_new_temp (char           **uri,

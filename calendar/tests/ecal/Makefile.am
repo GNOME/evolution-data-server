@@ -53,6 +53,10 @@ TESTS = \
         test-ecal-send-objects			\
         test-ecal-receive-objects		\
         test-ecal-get-query			\
+        test-ecal-stress-factory--serial	\
+        test-ecal-stress-factory--fifo		\
+        test-ecal-stress-factory--single-cal	\
+        test-ecal-stress-factory--open-async	\
         $(NULL)
 
 # The test program
@@ -105,6 +109,14 @@ test_ecal_set_default_timezone_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_default_timezone_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 test_ecal_set_mode_LDADD=$(TEST_ECAL_LIBS)
 test_ecal_set_mode_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_stress_factory__fifo_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_stress_factory__fifo_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_stress_factory__open_async_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_stress_factory__open_async_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_stress_factory__serial_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_stress_factory__serial_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
+test_ecal_stress_factory__single_cal_LDADD=$(TEST_ECAL_LIBS)
+test_ecal_stress_factory__single_cal_CPPFLAGS=$(TEST_ECAL_CPPFLAGS)
 
 # monolithic tests
 test_ecal_SOURCES = test-ecal.c

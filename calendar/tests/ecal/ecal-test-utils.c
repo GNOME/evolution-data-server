@@ -51,6 +51,20 @@ test_print (const char *format,
 }
 
 ECal*
+ecal_test_utils_cal_new_from_uri (const char     *uri,
+				  ECalSourceType  type)
+{
+        ECal *cal;
+
+        test_print ("loading calendar '%s'\n", uri);
+        cal = e_cal_new_from_uri (uri, type);
+        if (!cal)
+                g_error ("failed to create calendar: `%s'", uri);
+
+        return cal;
+}
+
+ECal*
 ecal_test_utils_cal_new_temp (char           **uri,
                               ECalSourceType   type)
 {
@@ -65,19 +79,12 @@ ecal_test_utils_cal_new_temp (char           **uri,
 
         uri_result = g_filename_to_uri (file_template, NULL, &error);
         if (!uri_result) {
-                g_warning ("failed to convert %s to an URI: %s", file_template,
+                g_error ("failed to convert %s to an URI: %s", file_template,
                                 error->message);
-                exit (1);
         }
         g_free (file_template);
 
-        /* create a temp calendar in /tmp */
-        test_print ("loading calendar\n");
-        cal = e_cal_new_from_uri (uri_result, type);
-        if (!cal) {
-                g_warning ("failed to create calendar: `%s'", *uri);
-                exit(1);
-        }
+	cal = ecal_test_utils_cal_new_from_uri (uri_result, type);
 
         if (uri)
                 *uri = g_strdup (uri_result);
@@ -118,6 +125,8 @@ open_cb (ECal            *cal,
                                 "status %d", status);
                 exit (1);
         }
+
+	closure->cal = cal;
 
         test_print ("successfully asynchronously removed the temporary "
                         "calendar\n");
