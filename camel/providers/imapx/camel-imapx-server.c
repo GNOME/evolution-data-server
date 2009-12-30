@@ -1700,7 +1700,7 @@ retry:
 		auth_domain = camel_url_get_param (is->url, "auth-domain");
 		is->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
 				auth_domain,
-				prompt, "password", 0, &ex);
+				prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, &ex);
 
 		g_free(prompt);
 		if (ex.id) {
