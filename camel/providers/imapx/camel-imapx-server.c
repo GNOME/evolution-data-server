@@ -2580,7 +2580,10 @@ imapx_parser_thread (gpointer d)
 		if (camel_exception_is_set (&ex)) {
 			if (errno == EINTR || !g_ascii_strcasecmp (ex.desc, "io error")) {
 				cancel_all_jobs (is, &ex);
+
+				g_mutex_lock (is->connect_lock);
 				imapx_disconnect (is);
+				g_mutex_unlock (is->connect_lock);
 			}
 
 			if (errno == EINTR)
@@ -2672,12 +2675,18 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 	return is;
 }
 
-
+/* Called with a connect lock */
 static gboolean
 imapx_disconnect (CamelIMAPXServer *is)
 {
+	gboolean ret = TRUE;
+	
+	if (!is->stream)
+		goto done;
+	
 	if (camel_stream_close (is->stream->source) == -1) {
-		return FALSE;
+		ret = FALSE;
+		goto done;
 	}
 			
 	camel_object_unref (CAMEL_OBJECT (is->stream));
@@ -2690,7 +2699,8 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_free(is->select);
 	is->select = NULL;
 	
-	return TRUE;
+done:
+	return ret;
 }
 
 /* Client commands */
