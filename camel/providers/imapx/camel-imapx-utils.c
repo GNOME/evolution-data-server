@@ -1338,6 +1338,9 @@ imap_parse_status(CamelIMAPXStream *is, CamelException *ex)
 			case IMAP_UIDVALIDITY:
 				sinfo->u.uidvalidity = camel_imapx_stream_number(is, ex);
 				break;
+			case IMAP_UIDNEXT:
+				sinfo->u.uidnext = camel_imapx_stream_number (is, ex);
+				break;
 			case IMAP_UNSEEN:
 				sinfo->u.unseen = camel_imapx_stream_number(is, ex);
 				break;

@@ -138,6 +138,7 @@ struct _status_info {
 		} newname;
 		guint32 permanentflags;
 		guint32 uidvalidity;
+		guint32 uidnext;
 		guint32 unseen;
 		struct {
 			guint32 uidvalidity;

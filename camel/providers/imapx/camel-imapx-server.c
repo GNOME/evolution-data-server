@@ -744,14 +744,14 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 	c(printf("** Starting next command\n"));
 
 	if (imap->literal != NULL || imap->select_pending != NULL) {
-		printf("* no, waiting for literal/pending select '%s'\n", imap->select_pending->full_name);
+		c(printf("* no, waiting for literal/pending select '%s'\n", imap->select_pending->full_name));
 		return;
 	}
 
 	ic = (CamelIMAPXCommand *)imap->queue.head;
 	nc = ic->next;
 	if (nc == NULL) {
-		printf("* no, no jobs\n");
+		c(printf("* no, no jobs\n"));
 		return;
 	}
 
@@ -1035,7 +1035,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		return 0;
 	}
 	case IMAP_EXISTS:
-		printf("exists: %d\n", id);
+		c(printf("exists: %d\n", id));
 		imap->exists = id;
 		break;
 	case IMAP_FLAGS: {
@@ -1043,7 +1043,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		imap_parse_flags(imap->stream, &flags, NULL, ex);
 
-		printf("flags: %08x\n", flags);
+		c(printf("flags: %08x\n", flags));
 		break;
 	}
 	case IMAP_FETCH: {
