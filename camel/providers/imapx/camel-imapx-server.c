@@ -233,7 +233,7 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 
-static void imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
+static void imapx_select(CamelIMAPXServer *is, CamelFolder *folder, gboolean force, CamelException *ex);
 
 /*
   this creates a uid (or sequence number) set directly into a command,
@@ -795,7 +795,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 	/* If we need to select a folder for the first command, do it now, once
 	   it is complete it will re-call us if it succeeded */
 	if (ic->job->folder) {
-		imapx_select(imap, ic->job->folder, ex);
+		imapx_select(imap, ic->job->folder, FALSE, ex);
 	} else {
 		pri = ic->pri;
 		nc = ic->next;
@@ -1498,7 +1498,7 @@ imapx_select_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
+imapx_select(CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelException *ex)
 {
 	CamelIMAPXCommand *ic;
 
@@ -1517,7 +1517,7 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 	if (is->select_pending)
 		return;
 
-	if (is->select && strcmp(is->select, folder->full_name) == 0)
+	if (is->select && strcmp(is->select, folder->full_name) == 0 && !forced)
 		return;
 
 	is->select_pending = folder;
@@ -2206,8 +2206,7 @@ imapx_job_refresh_info_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	/* Should we force a select here ? */
-	//imapx_select (is, job->folder, job->ex);
+	imapx_select (is, job->folder, TRUE, job->ex);
 	ic = camel_imapx_command_new ("FETCH", job->folder->full_name,
 				     "FETCH 1:* (UID FLAGS)");
 	ic->job = job;
@@ -2223,7 +2222,6 @@ imapx_job_expunge_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	//imapx_select(is, job->folder);
 	ic = camel_imapx_command_new("EXPUNGE", job->folder->full_name, "EXPUNGE");
 	ic->job = job;
 	ic->complete = imapx_job_done;
