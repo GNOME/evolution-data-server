@@ -130,31 +130,21 @@ static void
 imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
-	GPtrArray *changed_uids;
 
 	/* Sync twice - make sure deleted flags are written out,
 	   then sync again incase expunge changed anything */
 	camel_exception_clear(ex);
 
-	changed_uids = camel_folder_summary_get_changed (folder->summary);
-
 	if (is->server) {
 		camel_imapx_server_connect (is->server, 1);
 
-		camel_imapx_server_sync_changes (is->server, folder, changed_uids, ex);
-
-		if (camel_exception_is_set (ex))
-			goto exception;
+		camel_imapx_server_sync_changes (is->server, folder, ex);
 	}
 
 	if (is->server && expunge) {
 		camel_imapx_server_expunge(is->server, folder, ex);
 		camel_exception_clear(ex);
 	}
-
-exception:
-	g_ptr_array_foreach (changed_uids, (GFunc) camel_pstring_free, NULL);
-	g_ptr_array_free (changed_uids, TRUE);
 }
 
 static CamelMimeMessage *

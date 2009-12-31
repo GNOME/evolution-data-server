@@ -30,6 +30,7 @@
 #include <camel/camel-stream-filter.h>
 #include <camel/camel-mime-filter-canon.h>
 #include <camel/camel-mime-message.h>
+#include "camel/camel-string-utils.h"
 #include <camel/camel-net-utils.h>
 #include <camel/camel-tcp-stream-ssl.h>
 #include <camel/camel-tcp-stream-raw.h>
@@ -3124,7 +3125,10 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 		camel_folder_change_info_clear(job->u.refresh_info.changes);
 	}
 
+	/* Sync changes before fetching status, else unread check later would fail. need to think about better ways for this */
+	camel_imapx_server_sync_changes (is, folder, ex);
 	total = camel_folder_summary_count (folder->summary);
+
 	/* Check if a rescan is needed */
 	if (is->exists == total) {
 		CamelIMAPXCommand *ic;
@@ -3166,9 +3170,10 @@ imapx_sync_free_user(GArray *user_set)
 }
 
 void
-camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrArray *uids, CamelException *ex)
+camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 {
 	guint i, on_orset, off_orset;
+	GPtrArray *uids;
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelIMAPXMessageInfo *info;
 	CamelIMAPXJob *job;
@@ -3183,6 +3188,12 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrA
 	   one for each flag being turned off, including each
 	   info being turned off, and one for each flag being turned on.
 	*/
+	uids = camel_folder_summary_get_changed (folder->summary);
+
+	if (uids->len == 0) {
+		g_ptr_array_free (uids, TRUE);
+		return;
+	}
 
 	off_orset = on_orset = 0;
 	for (i=0; i < uids->len; i++) {
@@ -3279,6 +3290,9 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, GPtrA
 
 	imapx_sync_free_user(on_user);
 	imapx_sync_free_user(off_user);
+
+	g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
+	g_ptr_array_free (uids, TRUE);
 }
 
 /* expunge-uids? */
