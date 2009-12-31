@@ -83,6 +83,7 @@ void imapx_uidset_init(struct _uidset_state *ss, gint total, gint limit);
 gint imapx_uidset_done(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
 gint imapx_uidset_add(struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
 static gboolean imapx_disconnect (CamelIMAPXServer *is);
+static gint imapx_uid_cmp(gconstpointer ap, gconstpointer bp, gpointer data);
 
 typedef struct _CamelIMAPXCommandPart CamelIMAPXCommandPart;
 typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
@@ -156,6 +157,7 @@ enum {
 
 struct _refresh_info {
 	gchar *uid;
+	gboolean exists;
 	guint32 server_flags;
 	CamelFlag *server_user_flags;
 };
@@ -803,7 +805,9 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 	/* If we need to select a folder for the first command, do it now, once
 	   it is complete it will re-call us if it succeeded */
 	if (ic->job->folder) {
+		QUEUE_UNLOCK (imap);
 		imapx_select(imap, ic->job->folder, FALSE, ex);
+		QUEUE_LOCK (imap);
 	} else {
 		pri = ic->pri;
 		nc = ic->next;
@@ -982,6 +986,8 @@ update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
 		summary->saved_count++;
 		camel_folder_summary_touch(summary);
 	}
+	
+	info->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 }
 
 static void
@@ -1122,6 +1128,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				r.server_flags = finfo->flags;
 				r.server_user_flags = finfo->user_flags;
 				finfo->user_flags = NULL;
+				r.exists = FALSE;
 				g_array_append_val(job->u.refresh_info.infos, r);
 			} else {
 				printf("Unsolicited flags response '%s' %08x\n", finfo->uid, finfo->flags);
@@ -1151,21 +1158,43 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 					if (!(finfo->got & FETCH_FLAGS))
 					{
+						struct _refresh_info *r = NULL;
 						GArray *infos = job->u.refresh_info.infos;
-						gint i = job->u.refresh_info.last_index;
+						gint min = job->u.refresh_info.last_index;
+						gint max, mid;
+						gboolean found = FALSE;
 
-						/* This is rather inefficent, but should be ok if we're expecting it
-						   since we break each fetch into lots of 100. */
-						for (i= 0;i<infos->len;i++) {
-							struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
+						if ((min + BATCH_FETCH_COUNT) < infos->len)
+							max = min + BATCH_FETCH_COUNT;
+						else
+							max = infos->len;
 
-							if (r->uid && !strcmp(r->uid, finfo->uid)) {
-								update_flags_for_new_summary (mi, r->server_flags, r->server_user_flags);
-								break;
-							}
-						}
-					} else 
+						/* array is sorted, so use a binary search */
+						do {
+							gint cmp = 0;
+							
+							mid = (min + max)/2;
+							r = &g_array_index(infos, struct _refresh_info, mid);
+							cmp = imapx_uid_cmp (finfo->uid, r->uid, NULL);
+
+							if (cmp > 0)
+								min = mid + 1;
+							else if (cmp < 0)
+								max = mid - 1;
+							else
+								found = TRUE;
+
+						} while (!found && min <= max);
+
+						if (!found)
+							g_assert_not_reached ();
+					
+						update_flags_for_new_summary (mi, r->server_flags, r->server_user_flags);
+					} else {
 						update_flags_for_new_summary (mi, finfo->flags, finfo->user_flags);
+						/* free user_flags ? */
+						finfo->user_flags = NULL;
+					}
 
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
 						camel_folder_summary_add(job->folder->summary, mi);
@@ -1551,8 +1580,9 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	camel_imapx_command_free (ic);
 }
 
+/* Should not have a queue lock. TODO Change the way select is written */
 static void
-imapx_select(CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelException *ex)
+imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelException *ex)
 {
 	CamelIMAPXCommand *ic;
 
@@ -1577,11 +1607,14 @@ imapx_select(CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelEx
 	is->select_pending = folder;
 	camel_object_ref(folder);
 	if (is->select_folder) {
+		QUEUE_LOCK(is);
 		while (!camel_dlist_empty(&is->active)) {
 			QUEUE_UNLOCK(is);
 			sleep (1);
 			QUEUE_LOCK(is);
 		}
+		QUEUE_UNLOCK(is);
+
 		g_free(is->select);
 		camel_object_unref(is->select_folder);
 		is->select = NULL;
@@ -2092,7 +2125,7 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			gint res;
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
-			if (r->uid) {
+			if (!r->exists) {
 				res = imapx_uidset_add(&job->u.refresh_info.uidset, ic, r->uid);
 				if (res == 1) {
 					camel_imapx_command_add(ic, " (RFC822.SIZE RFC822.HEADER)");
@@ -2195,9 +2228,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				if (info->server_flags !=  r->server_flags
 				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags))
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
-
-				g_free(r->uid);
-				r->uid = NULL;
+				r->exists = TRUE;
 			} else 
 				fetch_new = TRUE;
 
