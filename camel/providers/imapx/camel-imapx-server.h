@@ -24,6 +24,7 @@
 
 #include <camel/camel-msgport.h>
 #include <camel/camel-list-utils.h>
+#include <libedataserver/e-flag.h>
 
 struct _CamelFolder;
 struct _CamelException;
@@ -81,6 +82,7 @@ struct _CamelIMAPXServer {
 	guint32 exists;
 	guint32 recent;
 	guint32 mode;
+	guint32 unread;
 
 	/* any expunges that happened from the last command, they are
 	   processed after the command completes. */

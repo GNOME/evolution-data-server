@@ -28,6 +28,7 @@ typedef enum _camel_imapx_id_t {
 	IMAP_INTERNALDATE,
 	IMAP_LIST,
 	IMAP_LSUB,
+	IMAP_MESSAGES,
 	IMAP_NAMESPACE,
 	IMAP_NEWNAME,
 	IMAP_NO,
@@ -41,6 +42,7 @@ typedef enum _camel_imapx_id_t {
 	IMAP_RFC822_HEADER,
 	IMAP_RFC822_SIZE,
 	IMAP_RFC822_TEXT,
+	IMAP_STATUS,
 	IMAP_TRYCREATE,
 	IMAP_UID,
 	IMAP_UIDVALIDITY,
@@ -152,6 +154,19 @@ struct _status_info {
 struct _status_info *imap_parse_status(struct _CamelIMAPXStream *is, CamelException *ex);
 struct _status_info *imap_copy_status(struct _status_info *sinfo);
 void imap_free_status(struct _status_info *sinfo);
+
+/* ********************************************************************** */
+/* parses the response from the status command */
+struct _state_info {
+	guint32 messages;
+	guint32 recent;
+	guint32 uidnext;
+	guint32 uidvalidity;
+	guint32 unseen;
+};
+
+/* use g_free to free the return value */
+struct _state_info *imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex);
 
 /* ********************************************************************** */
 

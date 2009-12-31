@@ -1269,6 +1269,59 @@ imap_parse_fetch(CamelIMAPXStream *is, CamelException *ex)
 	return finfo;
 }
 
+struct _state_info *
+imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
+{
+	struct _state_info *sinfo;
+	gint tok;
+	guint len;
+	guchar *token;
+	
+	sinfo = g_malloc0 (sizeof(*sinfo));
+
+	/* skip the folder name */
+	camel_imapx_stream_token (is, &token, &len, ex);
+
+	tok = camel_imapx_stream_token(is, &token, &len, ex);
+	if (tok != '(') {
+		camel_exception_set (ex, 1, "parse status info: expecting '('");
+		g_free (sinfo);
+		return NULL;
+	}
+
+	while ( (tok = camel_imapx_stream_token(is, &token, &len, ex)) == IMAP_TOK_TOKEN ) {
+		switch (imap_tokenise((gchar *) token, len)) {
+			case IMAP_MESSAGES:
+				sinfo->messages = camel_imapx_stream_number (is, ex);
+				break;
+			case IMAP_RECENT:
+				sinfo->recent = camel_imapx_stream_number (is, ex);
+				break;
+			case IMAP_UIDNEXT:				
+				sinfo->uidnext = camel_imapx_stream_number (is, ex);
+				break;
+			case IMAP_UIDVALIDITY:				
+				sinfo->uidvalidity = camel_imapx_stream_number (is, ex);
+				break;
+			case IMAP_UNSEEN:				
+				sinfo->unseen = camel_imapx_stream_number (is, ex);
+				break;
+			default:
+				g_free (sinfo);
+				camel_exception_set (ex, 1, "unknown status response");
+				return NULL;
+		}
+	}
+	
+	if (tok != ')') {
+		camel_exception_set (ex, 1, "missing closing ')' on status response");
+		g_free (sinfo);
+		return NULL;
+	}
+
+	return sinfo;
+}
+
 /* rfc 2060 section 7.1 Status Responses */
 /* shoudl this start after [ or before the [? token_unget anyone? */
 struct _status_info *

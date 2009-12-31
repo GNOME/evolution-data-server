@@ -31,12 +31,12 @@
 #line 3 "camel-imapx-tokens.txt"
 struct _imap_keyword {const gchar *name; camel_imapx_id_t id; };
 
-#define TOTAL_KEYWORDS 33
+#define TOTAL_KEYWORDS 35
 #define MIN_WORD_LENGTH 2
 #define MAX_WORD_LENGTH 14
-#define MIN_HASH_VALUE 6
-#define MAX_HASH_VALUE 49
-/* maximum key range = 44, duplicates = 0 */
+#define MIN_HASH_VALUE 5
+#define MAX_HASH_VALUE 56
+/* maximum key range = 52, duplicates = 0 */
 
 #ifdef __GNUC__
 __inline
@@ -50,32 +50,32 @@ imap_hash (register const char *str, register unsigned int len)
 {
   static unsigned char asso_values[] =
     {
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 20, 15, 10, 20,  0,
-      10, 50, 15,  0, 50,  0, 25, 50, 25, 15,
-      15, 50,  0,  0, 10, 10, 50, 50, 50,  5,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-      50, 50, 50, 50, 50, 50
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 25, 15,  5, 20,  0,
+       5, 57,  5, 10, 57,  5, 30, 10, 25, 10,
+       0, 57,  0, 25, 10, 10, 57, 57, 57,  5,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
+      57, 57, 57, 57, 57, 57
     };
   return len + asso_values[(unsigned char)str[len - 1]] + asso_values[(unsigned char)str[0]];
 }
@@ -88,80 +88,87 @@ imap_tokenise_struct (register const char *str, register unsigned int len)
 {
   static struct _imap_keyword wordlist[] =
     {
-      {""}, {""}, {""}, {""}, {""}, {""},
-#line 13 "camel-imapx-tokens.txt"
-      {"EXISTS",		IMAP_EXISTS},
+      {""}, {""}, {""}, {""}, {""},
+#line 25 "camel-imapx-tokens.txt"
+      {"PARSE",		IMAP_PARSE},
+      {""},
 #line 14 "camel-imapx-tokens.txt"
       {"EXPUNGE",	IMAP_EXPUNGE},
 #line 12 "camel-imapx-tokens.txt"
       {"ENVELOPE",	IMAP_ENVELOPE},
       {""},
-#line 28 "camel-imapx-tokens.txt"
-      {"READ-WRITE",	IMAP_READ_WRITE},
-#line 31 "camel-imapx-tokens.txt"
-      {"RFC822.SIZE",	IMAP_RFC822_SIZE},
-#line 17 "camel-imapx-tokens.txt"
-      {"INTERNALDATE",	IMAP_INTERNALDATE},
-#line 30 "camel-imapx-tokens.txt"
-      {"RFC822.HEADER",	IMAP_RFC822_HEADER},
-#line 27 "camel-imapx-tokens.txt"
-      {"READ-ONLY",	IMAP_READ_ONLY},
-#line 16 "camel-imapx-tokens.txt"
-      {"FLAGS",		IMAP_FLAGS},
 #line 29 "camel-imapx-tokens.txt"
+      {"READ-WRITE",	IMAP_READ_WRITE},
+#line 32 "camel-imapx-tokens.txt"
+      {"RFC822.SIZE",	IMAP_RFC822_SIZE},
+#line 27 "camel-imapx-tokens.txt"
+      {"PREAUTH",	IMAP_PREAUTH},
+#line 31 "camel-imapx-tokens.txt"
+      {"RFC822.HEADER",	IMAP_RFC822_HEADER},
+#line 28 "camel-imapx-tokens.txt"
+      {"READ-ONLY",	IMAP_READ_ONLY},
+#line 15 "camel-imapx-tokens.txt"
+      {"FETCH",		IMAP_FETCH},
+#line 30 "camel-imapx-tokens.txt"
       {"RECENT",		IMAP_RECENT},
-#line 23 "camel-imapx-tokens.txt"
+#line 24 "camel-imapx-tokens.txt"
       {"OK",		IMAP_OK},
 #line 10 "camel-imapx-tokens.txt"
       {"BYE",		IMAP_BYE},
-#line 33 "camel-imapx-tokens.txt"
+#line 35 "camel-imapx-tokens.txt"
       {"TRYCREATE",	IMAP_TRYCREATE},
-#line 24 "camel-imapx-tokens.txt"
-      {"PARSE",		IMAP_PARSE},
-#line 32 "camel-imapx-tokens.txt"
-      {"RFC822.TEXT",	IMAP_RFC822_TEXT},
-      {""}, {""},
-#line 8 "camel-imapx-tokens.txt"
-      {"BODY",		IMAP_BODY},
 #line 11 "camel-imapx-tokens.txt"
       {"CAPABILITY",	IMAP_CAPABILITY},
-#line 35 "camel-imapx-tokens.txt"
-      {"UIDVALIDITY",	IMAP_UIDVALIDITY},
+#line 33 "camel-imapx-tokens.txt"
+      {"RFC822.TEXT",	IMAP_RFC822_TEXT},
+#line 17 "camel-imapx-tokens.txt"
+      {"INTERNALDATE",	IMAP_INTERNALDATE},
+      {""},
+#line 8 "camel-imapx-tokens.txt"
+      {"BODY",		IMAP_BODY},
+      {""},
 #line 37 "camel-imapx-tokens.txt"
+      {"UIDVALIDITY",	IMAP_UIDVALIDITY},
+#line 39 "camel-imapx-tokens.txt"
       {"UIDNEXT",	IMAP_UIDNEXT},
 #line 9 "camel-imapx-tokens.txt"
       {"BODYSTRUCTURE",	IMAP_BODYSTRUCTURE},
-#line 25 "camel-imapx-tokens.txt"
-      {"PERMANENTFLAGS",	IMAP_PERMANENTFLAGS},
-#line 15 "camel-imapx-tokens.txt"
-      {"FETCH",		IMAP_FETCH},
-      {""},
-#line 21 "camel-imapx-tokens.txt"
+      {""}, {""},
+#line 13 "camel-imapx-tokens.txt"
+      {"EXISTS",		IMAP_EXISTS},
+#line 22 "camel-imapx-tokens.txt"
       {"NEWNAME",	IMAP_NEWNAME},
-#line 34 "camel-imapx-tokens.txt"
+#line 36 "camel-imapx-tokens.txt"
       {"UID",		IMAP_UID},
-#line 20 "camel-imapx-tokens.txt"
+#line 21 "camel-imapx-tokens.txt"
       {"NAMESPACE",	IMAP_NAMESPACE},
-#line 5 "camel-imapx-tokens.txt"
-      {"ALERT",          IMAP_ALERT},
+#line 16 "camel-imapx-tokens.txt"
+      {"FLAGS",		IMAP_FLAGS},
       {""},
-#line 26 "camel-imapx-tokens.txt"
-      {"PREAUTH",	IMAP_PREAUTH},
+#line 23 "camel-imapx-tokens.txt"
+      {"NO",		IMAP_NO},
 #line 7 "camel-imapx-tokens.txt"
       {"BAD",		IMAP_BAD},
+#line 26 "camel-imapx-tokens.txt"
+      {"PERMANENTFLAGS",	IMAP_PERMANENTFLAGS},
+#line 5 "camel-imapx-tokens.txt"
+      {"ALERT",          IMAP_ALERT},
+#line 38 "camel-imapx-tokens.txt"
+      {"UNSEEN",		IMAP_UNSEEN},
+      {""},
+#line 20 "camel-imapx-tokens.txt"
+      {"MESSAGES",	IMAP_MESSAGES},
 #line 18 "camel-imapx-tokens.txt"
       {"LIST",		IMAP_LIST},
-      {""},
-#line 36 "camel-imapx-tokens.txt"
-      {"UNSEEN",		IMAP_UNSEEN},
-#line 22 "camel-imapx-tokens.txt"
-      {"NO",		IMAP_NO},
-      {""},
+      {""}, {""}, {""}, {""},
 #line 19 "camel-imapx-tokens.txt"
       {"LSUB",		IMAP_LSUB},
       {""}, {""}, {""}, {""},
 #line 6 "camel-imapx-tokens.txt"
-      {"APPENDUID",	IMAP_APPENDUID}
+      {"APPENDUID",	IMAP_APPENDUID},
+      {""},
+#line 34 "camel-imapx-tokens.txt"
+      {"STATUS",		IMAP_STATUS}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
