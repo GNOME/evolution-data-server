@@ -118,11 +118,8 @@ imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (istore->server) {
-		camel_imapx_server_connect (istore->server, 1);
-
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
 		camel_imapx_server_refresh_info(istore->server, folder, ex);
-	}
 
 }
 
@@ -135,11 +132,8 @@ imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	   then sync again incase expunge changed anything */
 	camel_exception_clear(ex);
 
-	if (is->server) {
-		camel_imapx_server_connect (is->server, 1);
-
+	if (is->server && camel_imapx_server_connect (is->server, 1))
 		camel_imapx_server_sync_changes (is->server, folder, ex);
-	}
 
 	if (is->server && expunge) {
 		camel_imapx_server_expunge(is->server, folder, ex);
