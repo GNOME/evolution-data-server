@@ -32,8 +32,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel-file-utils.h"
 #include "camel-list-utils.h"
 #include "camel-object.h"

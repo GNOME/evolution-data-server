@@ -40,8 +40,6 @@
 #define EWOULDBLOCK EAGAIN
 #endif
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel-file-utils.h"
 #include "camel-operation.h"
 #include "camel-url.h"

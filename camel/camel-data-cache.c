@@ -37,7 +37,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-data-server-util.h>
 #include "camel-data-cache.h"
 #include "camel-exception.h"
 #include "camel-stream-fs.h"

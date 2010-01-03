@@ -33,8 +33,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel/camel-data-cache.h"
 #include "camel/camel-data-wrapper.h"
 #include "camel/camel-exception.h"

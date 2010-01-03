@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <glib.h>
 #include "camel-search-sql-sexp.h"
-#include "libedataserver/e-sexp.h"
 #define d(x) /* x;printf("\n"); */
 
 #ifdef TEST_MAIN

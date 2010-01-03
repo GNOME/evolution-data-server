@@ -35,8 +35,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel-file-utils.h"
 #include "camel-private.h"
 #include "camel-uid-cache.h"

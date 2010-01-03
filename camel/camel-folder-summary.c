@@ -38,8 +38,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-file-utils.h"
