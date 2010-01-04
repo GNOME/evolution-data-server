@@ -86,7 +86,7 @@ struct _CamelIMAPXServer {
 
 	/* any expunges that happened from the last command, they are
 	   processed after the command completes. */
-	GArray *expunged;
+	GSList *expunged;
 
 	GMutex *connect_lock;
 	pthread_t parser_thread_id;
@@ -108,6 +108,7 @@ GPtrArray *camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint
 void camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelException *ex);
 void camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
 void camel_imapx_server_expunge(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
+void camel_imapx_server_noop (CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
 
 CamelStream *camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, struct _CamelException *ex);
 void camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelMimeMessage *message, const struct _CamelMessageInfo *mi, CamelException *ex);

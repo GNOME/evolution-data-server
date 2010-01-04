@@ -10,6 +10,7 @@
 
 #include "camel-imapx-folder.h"
 #include "camel-imapx-stream.h"
+#include "camel-imapx-summary.h"
 #include "camel-imapx-store-summary.h"
 #include "camel-imapx-utils.h"
 #include "camel-imapx-exception.h"
@@ -186,6 +187,185 @@ imap_write_flags(CamelStream *stream, guint32 flags, CamelFlag *user_flags, Came
 	if (camel_stream_write(stream, ")", 1) == -1) {
 		camel_exception_setv (ex, 1, "io error: %s", strerror(errno));
 		return;
+	}
+}
+
+static gboolean
+imap_update_user_flags (CamelMessageInfo *info, CamelFlag *server_user_flags)
+{
+	gboolean changed = FALSE;
+	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
+	gboolean set_cal = FALSE;
+
+	if (camel_flag_get (&binfo->user_flags, "$has_cal"))
+		set_cal = TRUE;
+
+	changed = camel_flag_list_copy(&binfo->user_flags, &server_user_flags);
+
+	/* reset the calendar flag if it was set in messageinfo before */
+	if (set_cal)
+		camel_flag_set (&binfo->user_flags, "$has_cal", TRUE);
+
+	return changed;
+}
+
+gboolean
+imap_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder)
+{
+	gboolean changed = FALSE;
+	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
+
+	if (server_flags != xinfo->server_flags)
+	{
+		guint32 server_set, server_cleared;
+		gint read=0, deleted=0, junk=0;
+
+		server_set = server_flags & ~xinfo->server_flags;
+		server_cleared = xinfo->server_flags & ~server_flags;
+
+		if (server_set & CAMEL_MESSAGE_SEEN)
+			read = 1;
+		else if (server_cleared & CAMEL_MESSAGE_SEEN)
+			read = -1;
+
+		if (server_set & CAMEL_MESSAGE_DELETED)
+			deleted = 1;
+		else if (server_cleared & CAMEL_MESSAGE_DELETED)
+			deleted = -1;
+
+		if (server_set & CAMEL_MESSAGE_JUNK)
+			junk = 1;
+		else if (server_cleared & CAMEL_MESSAGE_JUNK)
+			junk = -1;
+
+		d(printf("%s %s %s %s\n", xinfo->info.uid, read == 1 ? "read" : ( read == -1 ? "unread" : ""),
+					deleted == 1 ? "deleted" : ( deleted == -1 ? "undeleted" : ""),
+					junk == 1 ? "junk" : ( junk == -1 ? "unjunked" : "")));
+
+		if (read)
+			folder->summary->unread_count -= read;
+		if (deleted)
+			folder->summary->deleted_count += deleted;
+		if (junk)
+			folder->summary->junk_count += junk;
+		if (junk && !deleted)
+			folder->summary->junk_not_deleted_count += junk;
+		if (junk ||  deleted)
+			folder->summary->visible_count -= junk ? junk : deleted;
+
+		xinfo->info.flags = (xinfo->info.flags | server_set) & ~server_cleared;
+		xinfo->server_flags = server_flags;
+		xinfo->info.dirty = TRUE;
+		if (info->summary)
+			camel_folder_summary_touch (info->summary);
+		changed = TRUE;
+	}
+	
+	if ((folder->permanent_flags & CAMEL_MESSAGE_USER) != 0 && imap_update_user_flags (info, server_user_flags))
+		changed = TRUE;
+
+	return changed;
+}
+
+void
+imap_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder)
+{
+	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
+	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
+	gint unread=0, deleted=0, junk=0;
+	guint32 flags;
+
+	binfo->flags |= server_flags;
+	xinfo->server_flags = server_flags;
+	
+	if (folder->permanent_flags & CAMEL_MESSAGE_USER)
+		imap_update_user_flags (info, server_user_flags);
+	
+	/* update the summary count */
+	flags = binfo->flags;
+
+	if (!(flags & CAMEL_MESSAGE_SEEN))
+		unread = 1;
+
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = 1;
+
+	if (folder->summary) {
+
+		if (unread)
+			folder->summary->unread_count += unread;
+		if (deleted)
+			folder->summary->deleted_count += deleted;
+		if (junk)
+			folder->summary->junk_count += junk;
+		if (junk && !deleted)
+			folder->summary->junk_not_deleted_count += junk;
+		folder->summary->visible_count++;
+		if (junk ||  deleted)
+			folder->summary->visible_count -= junk ? junk : deleted;
+
+		folder->summary->saved_count++;
+		camel_folder_summary_touch(folder->summary);
+	}
+
+	binfo->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+}
+
+
+void
+imap_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder)
+{
+	CamelMessageInfoBase *dinfo = (CamelMessageInfoBase *) info;
+	gint unread=0, deleted=0, junk=0;
+	guint32 flags;
+
+	flags = dinfo->flags;
+	if (!(flags & CAMEL_MESSAGE_SEEN))
+		unread = 1;
+
+	if (flags & CAMEL_MESSAGE_DELETED)
+		deleted = 1;
+
+	if (flags & CAMEL_MESSAGE_JUNK)
+		junk = 1;
+
+	if (unread)
+		folder->summary->unread_count--;
+
+	if (deleted)
+		folder->summary->deleted_count--;
+	if (junk)
+		folder->summary->junk_count--;
+
+	if (junk && !deleted)
+		folder->summary->junk_not_deleted_count--;
+
+	if (!junk &&  !deleted)
+		folder->summary->visible_count--;
+
+	folder->summary->saved_count--;
+}
+
+void
+imap_update_store_summary (CamelFolder *folder)
+{	
+	CamelStoreInfo *si;
+
+	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
+	if (si) {
+		guint32 unread, total;
+
+		camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+		if (si->unread != unread || si->total != total) {
+			si->unread = unread;
+			si->total = total;
+
+			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
+			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
+		}
 	}
 }
 

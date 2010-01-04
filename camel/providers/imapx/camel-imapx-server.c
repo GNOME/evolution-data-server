@@ -172,6 +172,7 @@ enum {
 	IMAPX_JOB_REFRESH_INFO,
 	IMAPX_JOB_SYNC_CHANGES,
 	IMAPX_JOB_EXPUNGE,
+	IMAPX_JOB_NOOP,
 	IMAPX_JOB_LIST,
 };
 
@@ -938,97 +939,6 @@ found:
 	return job;
 }
 
-/* Process all expunged results we had from the last command. */
-static void
-imapx_expunged(CamelIMAPXServer *imap)
-{
-	gint index=0;
-        guint expunge;
-	GSList *removed = NULL;
-
-	g_assert(imap->select_folder);
-
-	if (imap->expunged->len == 0)
-		return;
-
-	c(printf("Processing '%d' expunges\n", imap->expunged->len));
-
-	expunge = g_array_index(imap->expunged, guint32, index++);
-	
-	while (index < imap->expunged->len) {
-		gchar *uid = g_strdup_printf ("%d",expunge);
-		camel_folder_summary_remove_uid_fast (imap->select_folder->summary, uid);
-		removed = g_slist_prepend (removed, uid);
-		
-		expunge = g_array_index(imap->expunged, guint32, index++);
-	}
-
-	if (removed != NULL) {
-		camel_db_delete_uids (imap->store->cdb_w, imap->select_folder->full_name, removed, NULL);
-		g_slist_foreach (removed, (GFunc) g_free, NULL);
-	}
-
-	g_array_set_size(imap->expunged, 0);
-}
-
-static void
-update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info)
-{
-	gint unread=0, deleted=0, junk=0;
-	guint32 flags = info->flags;
-
-	if (!(flags & CAMEL_MESSAGE_SEEN))
-		unread = 1;
-
-	if (flags & CAMEL_MESSAGE_DELETED)
-		deleted = 1;
-
-	if (flags & CAMEL_MESSAGE_JUNK)
-		junk = 1;
-
-	if (summary) {
-
-		if (unread)
-			summary->unread_count += unread;
-		if (deleted)
-			summary->deleted_count += deleted;
-		if (junk)
-			summary->junk_count += junk;
-		if (junk && !deleted)
-			summary->junk_not_deleted_count += junk;
-		summary->visible_count++;
-		if (junk ||  deleted)
-			summary->visible_count -= junk ? junk : deleted;
-
-		summary->saved_count++;
-		camel_folder_summary_touch(summary);
-	}
-	
-	info->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-}
-
-static void
-update_flags_for_new_summary (CamelMessageInfo *mi, guint32 server_flags, CamelFlag *server_user_flags)
-{
-	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) mi;
-	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) mi;
-	gboolean set_cal = FALSE;
-
-	binfo->flags |= server_flags;
-	xinfo->server_flags = server_flags;
-
-	if (camel_flag_get (&binfo->user_flags, "$has_cal"))
-		set_cal = TRUE;
-
-	camel_flag_list_copy(&binfo->user_flags, &server_user_flags);
-
-	/* reset the calendar flag if it was set in messageinfo before */
-	if (set_cal)
-		camel_flag_set (&binfo->user_flags, "$has_cal", TRUE);
-
-	xinfo->server_user_flags = server_user_flags;
-}
-
 /* handle any untagged responses */
 static gint
 imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
@@ -1071,7 +981,26 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		guint32 expunge = id;
 
 		printf("expunged: %d\n", id);
-		g_array_append_val(imap->expunged, expunge);
+		if (imap->select_folder) {
+			gchar *uid = NULL;
+			CamelMessageInfo *mi;
+
+			if (imap->changes == NULL)
+				imap->changes = camel_folder_change_info_new();
+
+			uid = camel_folder_summary_uid_from_index (imap->select_folder->summary, expunge - 1);
+			mi = camel_folder_summary_uid (imap->select_folder->summary, uid);
+			if (mi) {
+				imap_update_summary_for_removed_message (mi, imap->select_folder);
+				camel_message_info_free (mi);
+			}
+
+			camel_folder_summary_remove_uid_fast (imap->select_folder->summary, uid);
+			imap->expunged = g_slist_prepend (imap->expunged, uid);
+
+			camel_folder_change_info_remove_uid (imap->changes, uid);
+		}
+
 		break;
 	}
 	case IMAP_NAMESPACE: {
@@ -1128,6 +1057,38 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			}
 		}
 
+		if (finfo->got & FETCH_FLAGS && !(finfo->got & FETCH_UID)) {
+			if (imap->select_folder) {
+				CamelFolder *folder;
+				CamelMessageInfo *mi;
+				gboolean changed = FALSE;
+				gchar *uid = NULL;
+
+				camel_object_ref(imap->select_folder);
+				folder = imap->select_folder;
+
+				printf("flag changed: %d\n", id);
+
+				if ( (uid = camel_folder_summary_uid_from_index (folder->summary, id - 1)))
+				{
+					mi = camel_folder_summary_uid (folder->summary, uid);
+					if (mi)
+						changed = imap_update_message_info_flags (mi, finfo->flags, finfo->user_flags, folder);
+					finfo->user_flags = NULL;
+				}
+
+				if (changed) {
+					if (imap->changes == NULL)
+						imap->changes = camel_folder_change_info_new();
+
+					camel_folder_change_info_change_uid(imap->changes, camel_message_info_uid(mi));
+					g_free (uid);
+				}
+
+				camel_object_unref (folder);
+			}
+		}
+
 		if ((finfo->got & (FETCH_FLAGS|FETCH_UID)) == (FETCH_FLAGS|FETCH_UID) && !(finfo->got & FETCH_HEADER)) {
 			CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_REFRESH_INFO, NULL);
 
@@ -1146,8 +1107,6 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				r.exists = FALSE;
 				g_array_append_val(job->u.refresh_info.infos, r);
 			} else {
-				printf("Unsolicited flags response '%s' %08x\n", finfo->uid, finfo->flags);
-				// TODO, we need the folder as well as the name in the select field.
 			}
 		}
 
@@ -1169,6 +1128,9 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				camel_object_unref(mp);
 
 				if (mi) {
+					guint32 server_flags;
+					CamelFlag *server_user_flags;
+
 					mi->uid = g_strdup(finfo->uid);
 
 					if (!(finfo->got & FETCH_FLAGS))
@@ -1199,16 +1161,18 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						if (!found)
 							g_assert_not_reached ();
 					
-						update_flags_for_new_summary (mi, r->server_flags, r->server_user_flags);
+						server_flags = r->server_flags;
+						server_user_flags = r->server_user_flags;
 					} else {
-						update_flags_for_new_summary (mi, finfo->flags, finfo->user_flags);
+						server_flags = finfo->flags;
+						server_user_flags = finfo->user_flags;
 						/* free user_flags ? */
 						finfo->user_flags = NULL;
 					}
 
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
 						camel_folder_summary_add(job->folder->summary, mi);
-						update_summary (job->folder->summary, (CamelMessageInfoBase *) mi);
+						imap_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, job->folder);
 						camel_folder_change_info_add_uid (job->u.refresh_info.changes, mi->uid);
 					}
 				}
@@ -1420,6 +1384,22 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 
 	c(printf("Got completion response for command %05u '%s'\n", ic->tag, ic->name));
 
+	if (camel_folder_change_info_changed (imap->changes)) {
+		if (imap->changes->uid_changed->len)
+			camel_folder_summary_save_to_db (imap->select_folder->summary, NULL);
+		else
+			camel_db_delete_uids (imap->store->cdb_w, imap->select_folder->full_name, imap->expunged, NULL);
+		
+		if (imap->expunged) {
+			g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
+			imap->expunged = NULL;
+		}
+
+		imap_update_store_summary (imap->select_folder);
+		camel_object_trigger_event(imap->select_folder, "folder_changed", imap->changes);
+		camel_folder_change_info_clear (imap->changes);
+	}
+
 	QUEUE_LOCK(imap);
 
 	camel_dlist_remove((CamelDListNode *)ic);
@@ -1444,9 +1424,6 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 	QUEUE_UNLOCK(imap);
 	ic->status = imap_parse_status(imap->stream, ex);
 
-	if (imap->expunged->len)
-		imapx_expunged(imap);
-	
 	if (ic->complete)
 		ic->complete(imap, ic);
 
@@ -2106,26 +2083,6 @@ imapx_index_next (CamelFolderSummary *s, guint index)
 }
 
 static void
-update_store_summary (CamelFolder *folder, CamelException *ex)
-{
-	CamelStoreInfo *si;
-
-	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
-	if (si) {
-		guint32 unread, total;
-
-		camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
-		if (si->unread != unread || si->total != total) {
-			si->unread = unread;
-			si->total = total;
-
-			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
-			camel_store_summary_save ((CamelStoreSummary *)((CamelIMAPXStore *) folder->parent_store)->summary);
-		}
-	}
-}
-
-static void
 imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
@@ -2142,7 +2099,7 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 	
 	if (camel_folder_change_info_changed(job->u.refresh_info.changes)) {
-		update_store_summary (job->folder, job->ex);
+		imap_update_store_summary (job->folder);
 		camel_folder_summary_save_to_db (job->folder->summary, NULL);
 		camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
 	}
@@ -2246,7 +2203,6 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		total = camel_folder_summary_count (s);
 		s_minfo = camel_folder_summary_index (s, 0);
 
-		camel_folder_freeze (job->folder);
 		for (i=0; i<infos->len; i++) {
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
@@ -2264,7 +2220,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				info = (CamelIMAPXMessageInfo *)s_minfo;
 
 				if (info->server_flags !=  r->server_flags
-				    && camel_message_info_set_flags((CamelMessageInfo *)info, info->server_flags ^ r->server_flags, r->server_flags))
+				    &&	imap_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, job->folder))
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
 				r->exists = TRUE;
 			} else 
@@ -2286,18 +2242,26 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			}
 
 			printf("Message %s vanished\n", s_minfo->uid);
-			camel_folder_summary_remove_uid_fast (s, s_minfo->uid);
 			removed = g_slist_prepend (removed, (gpointer) s_minfo->uid);
 			j++;
 		}
 
 		for (l = removed; l != NULL; l = g_slist_next (l)) {
-			camel_folder_summary_remove_uid_fast (s, (gchar *) l->data);
+			gchar *uid = (gchar *) l->data;
+			CamelMessageInfo *mi;
+
+			mi = camel_folder_summary_uid (is->select_folder->summary, uid);
+			if (mi) {
+				imap_update_summary_for_removed_message (mi, is->select_folder);
+				camel_message_info_free (mi);
+			}
+
+			camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
+			camel_folder_summary_remove_uid_fast (s, uid);
 		}
 
 		camel_db_delete_uids (is->store->cdb_w, s->folder->full_name, removed, NULL);
-		update_store_summary (job->folder, job->ex);
-		camel_folder_thaw (job->folder);
+		imap_update_store_summary (job->folder);
 
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(job->folder, "folder_changed", job->u.refresh_info.changes);
@@ -2351,7 +2315,11 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 		else
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
-		
+	
+	if (ic->job->folder->summary->flags & CAMEL_SUMMARY_DIRTY)
+		camel_folder_summary_save_to_db (ic->job->folder->summary, NULL);
+	imap_update_store_summary (ic->job->folder);
+
 	imapx_job_done (ic->job);
 	camel_imapx_command_free (ic);
 }
@@ -2443,6 +2411,31 @@ imapx_job_list_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	ic->pri = job->pri;
 	ic->job = job;
 	ic->complete = imapx_command_list_done;
+	imapx_command_queue(is, ic);
+}
+
+static void
+imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
+		if (!camel_exception_is_set (ic->ex))	
+			camel_exception_setv(ic->job->ex, 1, "Error performing NOOP: %s", ic->status->text);
+		else
+			camel_exception_xfer (ic->job->ex, ic->ex);
+	}
+	
+	imapx_job_done (ic->job);
+	camel_imapx_command_free (ic);
+}
+	
+static void
+imapx_job_noop_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	CamelIMAPXCommand *ic;
+	
+	ic = camel_imapx_command_new ("NOOP", job->folder->full_name, "NOOP");
+	ic->job = job;
+	ic->complete = imapx_command_noop_done;
 	imapx_command_queue(is, ic);
 }
 
@@ -2820,7 +2813,8 @@ imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 
 	ie->state = IMAPX_DISCONNECTED;
 
-	ie->expunged = g_array_new(FALSE, FALSE, sizeof(guint32));
+	ie->expunged = NULL;
+	ie->changes = camel_folder_change_info_new ();
 }
 
 static void
@@ -2829,7 +2823,7 @@ imapx_server_finalise(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 	g_mutex_free(ie->queue_lock);
 	g_mutex_free (ie->connect_lock);;
 
-	g_array_free(ie->expunged, TRUE);
+	camel_folder_change_info_free (ie->changes);
 }
 
 CamelType
@@ -3194,6 +3188,21 @@ getmsgs(gpointer d)
 } */
 
 void
+camel_imapx_server_noop (CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
+{
+	CamelIMAPXJob *job;
+	
+	job = g_malloc0(sizeof(*job));
+	job->type = IMAPX_JOB_NOOP;
+	job->start = imapx_job_noop_start;
+	job->folder = folder;
+	job->ex = ex;
+
+	imapx_run_job(is, job);
+	g_free(job);
+}
+	
+void
 camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex)
 {
 	CamelIMAPXJob *job;
@@ -3213,26 +3222,11 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 
 	/* Check if there are any new messages. The old imap doc says one needs to reselect in case of inbox to fetch
 	    new messages. Need to check if its still true. Just use noop now */
-	ic = camel_imapx_command_new ("NOOP", folder->full_name, "NOOP");
-	ic->job = job;
-	imapx_command_run_sync (is, ic);
+	camel_imapx_server_noop (is, folder, ex);
 
-	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
-		if (!camel_exception_is_set (ic->ex))	
-			camel_exception_setv(job->ex, 1, "Error refreshing folder: %s", ic->status->text);
-		else
-			camel_exception_xfer (job->ex, ic->ex);
-
-		camel_imapx_command_free (ic);
+	if (camel_exception_is_set (ex))
 		goto done;
-	}
-	camel_imapx_command_free (ic);
-		
-	job->start = imapx_job_refresh_info_start;
 	
-	if (camel_exception_is_set (job->ex))
-		goto done;
-
 	total = camel_folder_summary_count (folder->summary);
 	/* Fetch the new messages */
 	if (is->exists > total)
@@ -3242,10 +3236,10 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 		if (camel_folder_change_info_changed(job->u.refresh_info.changes))
 			camel_object_trigger_event(folder, "folder_changed", job->u.refresh_info.changes);
 		camel_folder_change_info_clear(job->u.refresh_info.changes);
-	}
 	
-	if (camel_exception_is_set (job->ex))
-		goto done;
+		if (camel_exception_is_set (job->ex))
+			goto done;
+	}
 
 	/* Sync changes before fetching status, else unread check later would fail. need to think about better ways for this */
 	camel_imapx_server_sync_changes (is, folder, ex);
@@ -3278,6 +3272,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 			goto done;
 	}
 
+	/* sync all the changed messages */
 	job->start = imapx_job_refresh_info_start;
 	imapx_run_job (is, job);
 
