@@ -818,9 +818,7 @@ imapx_command_start_next(CamelIMAPXServer *imap, CamelException *ex)
 	/* If we need to select a folder for the first command, do it now, once
 	   it is complete it will re-call us if it succeeded */
 	if (ic->job->folder) {
-		QUEUE_UNLOCK (imap);
 		imapx_select(imap, ic->job->folder, FALSE, ex);
-		QUEUE_LOCK (imap);
 	} else {
 		pri = ic->pri;
 		nc = ic->next;
@@ -1110,8 +1108,6 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			return -1;
 		}
 
-//		imap_dump_fetch(finfo);
-
 		if ((finfo->got & (FETCH_BODY|FETCH_UID)) == (FETCH_BODY|FETCH_UID)) {
 			CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_GET_MESSAGE, finfo->uid);
 
@@ -1180,13 +1176,8 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						struct _refresh_info *r = NULL;
 						GArray *infos = job->u.refresh_info.infos;
 						gint min = job->u.refresh_info.last_index;
-						gint max, mid;
+						gint max = job->u.refresh_info.index, mid;
 						gboolean found = FALSE;
-
-						if ((min + BATCH_FETCH_COUNT) < infos->len)
-							max = min + BATCH_FETCH_COUNT;
-						else
-							max = infos->len;
 
 						/* array is sorted, so use a binary search */
 						do {
@@ -1521,7 +1512,6 @@ static void
 imapx_command_run_sync (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXCommandFunc complete = NULL;
-	gboolean ret;
 
 	ic->flag = e_flag_new ();
 	complete = ic->complete;
@@ -1529,13 +1519,8 @@ imapx_command_run_sync (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	camel_imapx_command_close (ic);
 	ic->complete = imapx_command_complete;	
 	
-	QUEUE_LOCK (is);
-	ret = imapx_command_start (is, ic);
-	QUEUE_UNLOCK (is);
-
-	
-	if (ret)
-		e_flag_wait (ic->flag);
+	imapx_command_queue (is, ic);
+	e_flag_wait (ic->flag);
 
 	e_flag_free (ic->flag);
 	ic->flag = NULL;
@@ -1604,7 +1589,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	camel_imapx_command_free (ic);
 }
 
-/* Should not have a queue lock. TODO Change the way select is written */
+/* Should have a queue lock. TODO Change the way select is written */
 static void
 imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelException *ex)
 {
@@ -1631,13 +1616,11 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	is->select_pending = folder;
 	camel_object_ref(folder);
 	if (is->select_folder) {
-		QUEUE_LOCK(is);
 		while (!camel_dlist_empty(&is->active)) {
 			QUEUE_UNLOCK(is);
 			sleep (1);
 			QUEUE_LOCK(is);
 		}
-		QUEUE_UNLOCK(is);
 
 		g_free(is->select);
 		camel_object_unref(is->select_folder);
@@ -1656,8 +1639,8 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	is->state = IMAPX_AUTHENTICATED;
 
 	ic = camel_imapx_command_new("SELECT", NULL, "SELECT %s", CIF(folder)->raw_name);
-	imapx_command_run_sync (is, ic);
-	imapx_command_select_done (is, ic);
+	ic->complete = imapx_command_select_done;
+	imapx_command_start (is, ic);
 }
 
 static void
@@ -2165,9 +2148,10 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 
 	camel_folder_change_info_clear(job->u.refresh_info.changes);
-	camel_imapx_command_free (ic);
 
 	if (i<infos->len) {
+		camel_imapx_command_free (ic);
+
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name, "UID FETCH ");
 		ic->complete = imapx_command_step_fetch_done;
 		ic->job = job;
@@ -3214,6 +3198,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 {
 	CamelIMAPXJob *job;
 	guint32 total;
+	CamelIMAPXCommand *ic;
 
 	job = imapx_find_job (is, IMAPX_JOB_REFRESH_INFO, NULL);
 	if (job)
@@ -3226,12 +3211,30 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 	job->ex = ex;
 	job->u.refresh_info.changes = camel_folder_change_info_new();
 
-	imapx_select (is, job->folder, TRUE, ex);
-	total = camel_folder_summary_count (folder->summary);
+	/* Check if there are any new messages. The old imap doc says one needs to reselect in case of inbox to fetch
+	    new messages. Need to check if its still true. Just use noop now */
+	ic = camel_imapx_command_new ("NOOP", folder->full_name, "NOOP");
+	ic->job = job;
+	imapx_command_run_sync (is, ic);
+
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
+		if (!camel_exception_is_set (ic->ex))	
+			camel_exception_setv(job->ex, 1, "Error refreshing folder: %s", ic->status->text);
+		else
+			camel_exception_xfer (job->ex, ic->ex);
+
+		camel_imapx_command_free (ic);
+		goto done;
+	}
+	camel_imapx_command_free (ic);
+		
+	job->start = imapx_job_refresh_info_start;
 	
 	if (camel_exception_is_set (job->ex))
 		goto done;
 
+	total = camel_folder_summary_count (folder->summary);
+	/* Fetch the new messages */
 	if (is->exists > total)
 	{
 		imapx_run_job(is, job);
@@ -3253,7 +3256,6 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 
 	/* Check if a rescan is needed */
 	if (is->exists == total) {
-		CamelIMAPXCommand *ic;
 		guint32 unread;
 
 		ic = camel_imapx_command_new ("STATUS", folder->full_name, "STATUS %s (MESSAGES UNSEEN)", folder->full_name);
