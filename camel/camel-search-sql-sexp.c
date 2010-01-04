@@ -210,6 +210,8 @@ eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 		g_string_append (str, " )");
 		r->value.string = str->str;
 		g_string_free(str, FALSE);
+	} else {
+		r->value.string = g_strdup ("(0)");
 	}
 	return r;
 }
@@ -458,12 +460,17 @@ user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 
 	d(printf("executing user-flag: %d", argc));
 
-	tstr = g_strdup_printf("%c%s%c", '%', argv[0]->value.string, '%');
-	qstr = get_db_safe_string(tstr);
-	g_free(tstr);
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
-	r->value.string = g_strdup_printf("(labels LIKE %s)", qstr);
-	g_free(qstr);
+
+	if (argc != 1) {
+		r->value.string = g_strdup ("(0)");
+	} else {
+		tstr = g_strdup_printf("%%%s%%", argv[0]->value.string);
+		qstr = get_db_safe_string(tstr);
+		g_free(tstr);
+		r->value.string = g_strdup_printf("(labels LIKE %s)", qstr);
+		g_free(qstr);
+	}
 
 	return r;
 }
@@ -476,10 +483,15 @@ system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer d
 
 	d(printf("executing system-flag: %d", argc));
 
-	tstr = camel_db_get_column_name(argv[0]->value.string);
 	r = e_sexp_result_new(f, ESEXP_RES_STRING);
-	r->value.string = g_strdup_printf("(%s = 1)", tstr);
-	g_free(tstr);
+
+	if (argc != 1) {
+		r->value.string = g_strdup ("(0)");
+	} else {
+		tstr = camel_db_get_column_name(argv[0]->value.string);
+		r->value.string = g_strdup_printf("(%s = 1)", tstr);
+		g_free(tstr);
+	}
 
 	return r;
 }
