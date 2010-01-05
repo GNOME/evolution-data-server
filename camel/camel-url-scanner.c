@@ -82,6 +82,10 @@ camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, 
 	inptr = (const guchar *) in;
 	inend = inptr + inlen;
 
+	/* check validity of a string first */
+	if (!g_utf8_validate (in, inlen, NULL))
+		return FALSE;
+
 	do {
 		if (!(pos = camel_trie_search (scanner->trie, (const gchar *)inptr, inlen, &pattern)))
 			return FALSE;
