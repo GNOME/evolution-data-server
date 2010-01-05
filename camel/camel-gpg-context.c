@@ -229,6 +229,7 @@ struct _GpgCtx {
 	guint nopubkey:1;
 	guint nodata:1;
 	guint trust:3;
+	guint processing:1;
 	GString *signers;
 
 	guint diagflushed:1;
@@ -288,6 +289,7 @@ gpg_ctx_new (CamelSession *session)
 	gpg->validsig = FALSE;
 	gpg->nopubkey = FALSE;
 	gpg->trust = GPG_TRUST_NONE;
+	gpg->processing = FALSE;
 	gpg->signers = NULL;
 
 	gpg->istream = NULL;
@@ -893,6 +895,12 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 		/* But we ignore it anyway, we should get other response codes to say why */
 		gpg->nodata = TRUE;
 	} else {
+		if (!strncmp ((gchar *) status, "BEGIN_", 6)) {
+			gpg->processing = TRUE;
+		} else if (!strncmp ((gchar *) status, "END_", 4)) {
+			gpg->processing = FALSE;
+		}
+
 		/* check to see if we are complete */
 		switch (gpg->mode) {
 		case GPG_CTX_MODE_SIGN:
@@ -1060,6 +1068,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 #ifndef G_OS_WIN32
 	GPollFD polls[6];
 	gint status, i, cancel_fd;
+	gboolean read_data = FALSE, wrote_data = FALSE;
 
 	for (i=0;i<6;i++) {
 		polls[i].fd = -1;
@@ -1154,6 +1163,8 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		} else {
 			gpg->seen_eof1 = TRUE;
 		}
+
+		read_data = TRUE;
 	}
 
 	if (polls[1].revents & (G_IO_IN|G_IO_HUP)) {
@@ -1227,6 +1238,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 				goto exception;
 
 			d(printf ("wrote %d (out of %d) bytes to gpg's stdin\n", nwritten, nread));
+			wrote_data = TRUE;
 		}
 
 		if (camel_stream_eos (gpg->istream)) {
@@ -1236,11 +1248,11 @@ gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
 		}
 	}
 
-	if (gpg->need_id) {
-		/* do not ask more than ten times per second when looking for a pass phrase,
+	if (gpg->need_id && !gpg->processing && !read_data && !wrote_data) {
+		/* do not ask more than hundred times per second when looking for a pass phrase,
 		   in case user has the use-agent set, it'll not use the all CPU when
 		   agent is asking for a pass phrase, instead of us */
-		g_usleep (G_USEC_PER_SEC / 10);
+		g_usleep (G_USEC_PER_SEC / 100);
 	}
 
 	return 0;
