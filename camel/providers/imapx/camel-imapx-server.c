@@ -1484,6 +1484,19 @@ imapx_command_complete (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	e_flag_set (ic->flag);
 }
 
+/* change status to a job and remove command_run_sync */
+static void
+imapx_command_status_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) ic->job->folder;
+
+
+	ifolder->exists_on_server = is->exists;
+	ifolder->unread_on_server = is->unread;
+
+	e_flag_set (ic->flag);
+}
+
 /* The caller should free the command as well */
 static void
 imapx_command_run_sync (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
@@ -1494,8 +1507,9 @@ imapx_command_run_sync (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	complete = ic->complete;
 
 	camel_imapx_command_close (ic);
-	ic->complete = imapx_command_complete;
-
+	if (!ic->complete)
+		ic->complete = imapx_command_complete;	
+	
 	imapx_command_queue (is, ic);
 	e_flag_wait (ic->flag);
 
@@ -1544,11 +1558,13 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		if (is->select_pending)
 			camel_object_unref(is->select_pending);
 	} else {
+		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_pending;
 		printf("Select ok!\n");
 
 		is->select_folder = is->select_pending;
 		is->select = g_strdup(is->select_folder->full_name);
 		is->state = IMAPX_SELECTED;
+		ifolder->exists_on_server = is->exists;
 #if 0
 		/* This must trigger a complete index rebuild! */
 		if (is->uidvalidity && is->uidvalidity != ((CamelIMAPXSummary *)is->select_folder->summary)->uidvalidity)
@@ -2328,12 +2344,13 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	guint32 total, diff;
 	gchar *uid = NULL;
 
 	total = camel_folder_summary_count (folder->summary);
-	diff = is->exists - total;
-
+	diff = ifolder->exists_on_server - total;
+	
 	if (total > 0)
 		uid = camel_folder_summary_uid_from_index (folder->summary, total - 1);
 	else
@@ -3207,6 +3224,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 	CamelIMAPXJob *job;
 	guint32 total;
 	CamelIMAPXCommand *ic;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 
 	job = imapx_find_job (is, IMAPX_JOB_REFRESH_INFO, NULL);
 	if (job)
@@ -3228,7 +3246,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 
 	total = camel_folder_summary_count (folder->summary);
 	/* Fetch the new messages */
-	if (is->exists > total)
+	if (ifolder->exists_on_server > total)
 	{
 		imapx_run_job(is, job);
 
@@ -3248,11 +3266,12 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 	total = camel_folder_summary_count (folder->summary);
 
 	/* Check if a rescan is needed */
-	if (is->exists == total) {
+	if (ifolder->exists_on_server == total) {
 		guint32 unread;
 
 		ic = camel_imapx_command_new ("STATUS", folder->full_name, "STATUS %s (MESSAGES UNSEEN)", folder->full_name);
 		ic->job = job;
+		ic->complete = imapx_command_status_done;
 		imapx_command_run_sync (is, ic);
 
 		if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
@@ -3267,7 +3286,7 @@ camel_imapx_server_refresh_info(CamelIMAPXServer *is, CamelFolder *folder, Camel
 		camel_imapx_command_free (ic);
 
 		camel_object_get (folder, NULL, CAMEL_FOLDER_UNREAD, &unread, NULL);
-		if (is->exists == total && unread == is->unread)
+		if (ifolder->exists_on_server == total && unread == ifolder->unread_on_server)
 			goto done;
 	}
 

@@ -41,6 +41,10 @@ typedef struct _CamelIMAPXFolder {
 
 	gchar *raw_name;
 	CamelFolderSearch *search;
+	
+	guint32 exists_on_server;
+	guint32 unread_on_server;
+	
 	GMutex *search_lock;
 } CamelIMAPXFolder;
 
