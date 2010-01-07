@@ -4628,6 +4628,8 @@ info_ptr(const CamelMessageInfo *mi, gint id)
 		return ((const CamelMessageInfoBase *)mi)->user_tags;
 	case CAMEL_MESSAGE_INFO_HEADERS:
 		return ((const CamelMessageInfoBase *)mi)->headers;
+	case CAMEL_MESSAGE_INFO_CONTENT:
+		return ((const CamelMessageInfoBase *)mi)->content;
 	case CAMEL_MESSAGE_INFO_PREVIEW:
 		return ((const CamelMessageInfoBase *)mi)->preview;
 
@@ -5076,14 +5078,13 @@ match_content_type (CamelContentType *info_ctype, CamelContentType *ctype)
 	return TRUE;
 }
 
-CamelMessageContentInfo *
+const CamelMessageContentInfo *
 camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype)
 {
-	CamelMessageInfoBase *bmi = (CamelMessageInfoBase *) mi;
-	CamelMessageContentInfo *ci = bmi->content;
+	const CamelMessageContentInfo *ci = camel_message_info_content (mi);
 
 	while (ci) {
-		CamelMessageContentInfo *child = ci;
+		const CamelMessageContentInfo *child = ci;
 
 		do {
 			if (match_content_type (child->type, ctype))

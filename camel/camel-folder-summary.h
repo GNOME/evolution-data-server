@@ -142,6 +142,7 @@ enum {
 
 	CAMEL_MESSAGE_INFO_HEADERS,
 	CAMEL_MESSAGE_INFO_PREVIEW,
+	CAMEL_MESSAGE_INFO_CONTENT,
 	CAMEL_MESSAGE_INFO_LAST
 };
 
@@ -463,6 +464,7 @@ time_t camel_message_info_time(const CamelMessageInfo *mi, gint id);
 #define camel_message_info_user_tags(mi) ((const CamelTag *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_USER_TAGS))
 
 #define camel_message_info_headers(mi) ((const struct _camel_header_param *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_HEADERS))
+#define camel_message_info_content(mi) ((const CamelMessageContentInfo *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_CONTENT))
 
 gboolean camel_message_info_user_flag(const CamelMessageInfo *mi, const gchar *id);
 const gchar *camel_message_info_user_tag(const CamelMessageInfo *mi, const gchar *id);
@@ -475,7 +477,7 @@ void camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolea
 void camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info);
 gboolean camel_folder_summary_get_need_preview (CamelFolderSummary *summary);
 
-CamelMessageContentInfo * camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype);
+const CamelMessageContentInfo * camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype);
 
 /* debugging functions */
 void camel_content_info_dump (CamelMessageContentInfo *ci, gint depth);
