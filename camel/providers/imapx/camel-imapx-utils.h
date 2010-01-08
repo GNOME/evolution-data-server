@@ -214,6 +214,7 @@ void imapx_utils_init(void);
 /* chen adds from old imap provider - place it in right place */
 gchar *imapx_path_to_physical (const gchar *prefix, const gchar *vpath);
 gchar *imapx_concat (CamelIMAPXStore *imap_store, const gchar *prefix, const gchar *suffix);
+gchar * imapx_get_temp_uid (void);
 
 void camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl);
 struct _CamelIMAPXNamespaceList * imap_parse_namespace_list (struct _CamelIMAPXStream *stream, CamelException *ex);

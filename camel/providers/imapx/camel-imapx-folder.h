@@ -30,6 +30,7 @@ extern "C" {
 #endif /* __cplusplus }*/
 
 #include <camel/camel-folder.h>
+#include <camel/camel-data-cache.h>
 
 #define CAMEL_IMAPX_FOLDER_TYPE     (camel_imapx_folder_get_type ())
 #define CAMEL_IMAPX_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPX_FOLDER_TYPE, CamelIMAPXFolder))
@@ -40,6 +41,7 @@ typedef struct _CamelIMAPXFolder {
 	CamelFolder parent_object;
 
 	gchar *raw_name;
+	CamelDataCache *cache;
 	CamelFolderSearch *search;
 	
 	guint32 exists_on_server;
@@ -56,7 +58,8 @@ typedef struct _CamelIMAPXFolderClass {
 CamelType camel_imapx_folder_get_type (void);
 
 /* public methods */
-CamelFolder *camel_imapx_folder_new(CamelStore *parent, const gchar *path, const gchar *raw);
+CamelFolder *camel_imapx_folder_new(CamelStore *parent, const gchar *path, const gchar *raw, CamelException *ex);
+gchar * imapx_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex);
 
 #ifdef __cplusplus
 }

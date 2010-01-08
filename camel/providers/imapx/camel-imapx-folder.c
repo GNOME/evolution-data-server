@@ -26,6 +26,7 @@
 #endif
 
 #include <errno.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel/camel-exception.h"
 #include "camel/camel-stream-mem.h"
@@ -55,14 +56,14 @@
 static CamelFolderClass *parent_class;
 
 CamelFolder *
-camel_imapx_folder_new(CamelStore *store, const gchar *path, const gchar *folder_name)
+camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex)
 {
 	CamelFolder *folder;
 	CamelIMAPXFolder *ifolder;
 	const gchar *short_name;
 	gchar *summary_file;
 
-	d(printf("opening imap folder '%s'\n", path));
+	d(printf("opening imap folder '%s'\n", folder_dir));
 
 	short_name = strrchr (folder_name, '/');
 	if (short_name)
@@ -76,8 +77,23 @@ camel_imapx_folder_new(CamelStore *store, const gchar *path, const gchar *folder
 
 	((CamelIMAPXFolder *)folder)->raw_name = g_strdup(folder_name);
 
-	summary_file = g_strdup_printf ("%s/summary", path);
+	summary_file = g_strdup_printf ("%s/summary", folder_dir);
 	folder->summary = camel_imapx_summary_new(folder, summary_file);
+	if (!folder->summary) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Could not create folder summary for %s"),
+				short_name);
+		return NULL;
+	}
+
+	ifolder->cache = camel_data_cache_new (folder_dir, 0, ex);
+	if (!ifolder->cache) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not create cache for %s"),
+				      short_name);
+		return NULL;
+	}
+	
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
 	ifolder->exists_on_server = -1;
@@ -147,22 +163,42 @@ static CamelMimeMessage *
 imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelMimeMessage *msg = NULL;
-	CamelStream *stream;
-	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
+	CamelStream *stream = NULL;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+	const char *path = NULL;
+	gboolean offline_message = FALSE;
 
-	if (is->server) {
-		stream = camel_imapx_server_get_message(is->server, folder, uid, ex);
-		if (stream) {
-			msg = camel_mime_message_new();
-			if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
-				camel_exception_setv(ex, 1, "error building message?");
-				camel_object_unref(msg);
-				msg = NULL;
-			}
-			camel_object_unref(stream);
+	if (!strchr (uid, '-'))
+		path = "cur";
+	else {
+		path = "new";
+		offline_message = TRUE;	
+	}
+
+	stream = camel_data_cache_get (ifolder->cache, path, uid, NULL);
+	if (!stream) {
+		if (offline_message) {
+			camel_exception_setv(ex, 2, "Offline message vanished from disk: %s", uid);
+			return NULL;
 		}
-	} else {
-		camel_exception_setv(ex, 1, "not ready");
+
+		if (istore->server && camel_imapx_server_connect (istore->server, 1)) {
+			stream = camel_imapx_server_get_message(istore->server, folder, uid, ex);
+		} else {
+			camel_exception_setv(ex, 1, "not authenticated");
+			return NULL;
+		}
+	}
+	
+	if (!camel_exception_is_set (ex)) {
+		msg = camel_mime_message_new();
+		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
+			camel_exception_setv(ex, 1, "error building message?");
+			camel_object_unref(msg);
+			msg = NULL;
+		}
+		camel_object_unref(stream);
 	}
 
 	return msg;
@@ -177,6 +213,14 @@ imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const Camel
 		*appended_uid = NULL;
 
 	camel_imapx_server_append_message(is->server, folder, message, info, ex);
+}
+
+gchar *
+imapx_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
+{
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+
+	return camel_data_cache_get_filename (ifolder->cache, "cache", uid, NULL);
 }
 
 /* Algorithm for selecting a folder:
@@ -312,6 +356,7 @@ imap_folder_class_init (CamelIMAPXFolderClass *klass)
 
 	((CamelFolderClass *)klass)->get_message = imapx_get_message;
 	((CamelFolderClass *)klass)->append_message = imapx_append_message;
+	((CamelFolderClass *)klass)->get_filename = imapx_get_filename;
 }
 
 static void
@@ -329,14 +374,15 @@ imap_folder_init(CamelObject *o, CamelObjectClass *klass)
 }
 
 static void
-imap_finalise(CamelObject *object)
+imap_finalize (CamelObject *object)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) object;
+
+	camel_object_unref (CAMEL_OBJECT (ifolder->cache));
 
 	g_mutex_free (ifolder->search_lock);
 	if (ifolder->search)
 		camel_object_unref (CAMEL_OBJECT (ifolder->search));
-
 }
 
 CamelType
@@ -351,7 +397,7 @@ camel_imapx_folder_get_type (void)
 							      (CamelObjectClassInitFunc)imap_folder_class_init,
 							      NULL,
 							      imap_folder_init,
-							      (CamelObjectFinalizeFunc)imap_finalise);
+							      (CamelObjectFinalizeFunc) imap_finalize);
 		parent_class = (CamelFolderClass *)camel_folder_get_type();
 	}
 

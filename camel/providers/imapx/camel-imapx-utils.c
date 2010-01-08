@@ -1934,3 +1934,20 @@ camel_imapx_namespace_list_copy (const struct _CamelIMAPXNamespaceList *nsl)
 
 	return new;
 }
+
+gchar *
+imapx_get_temp_uid (void)
+{
+	gchar *res;
+
+	static gint counter = 0;
+	G_LOCK_DEFINE_STATIC (lock);
+
+	G_LOCK (lock);
+	res = g_strdup_printf ("tempuid-%lx-%d",
+			       (gulong) time (NULL),
+			       counter++);
+	G_UNLOCK (lock);
+
+	return res;
+}

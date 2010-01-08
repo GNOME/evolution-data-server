@@ -236,9 +236,9 @@ get_folder_offline (CamelStore *store, const gchar *folder_name,
 		folder_dir = imapx_path_to_physical (storage_path, folder_name);
 		g_free(storage_path);
 		/* FIXME */
-		new_folder = camel_imapx_folder_new (store, folder_dir, folder_name);
-		g_free(folder_dir);
+		new_folder = camel_imapx_folder_new (store, folder_dir, folder_name, ex);
 
+		g_free(folder_dir);
 		camel_store_summary_info_free((CamelStoreSummary *)imapx_store->summary, si);
 	} else {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,

@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 
 // fixme, use own type funcs
 #include <ctype.h>
@@ -684,25 +685,6 @@ camel_imapx_engine_command_queue(CamelIMAPXEngine *imap, CamelIMAPXCommand *ic)
 	/* now have completed command? */
 }
 #endif
-
-/* Get a path into the cache, works like maildir, but isn't */
-static gchar *
-imapx_get_path_uid(CamelIMAPXServer *is, CamelFolder *folder, const gchar *bit, const gchar *uid)
-{
-	gchar *dir, *path;
-
-	// big fixme of course, we need to create the path if it doesn't exist,
-	// base it on the server, blah blah
-	if (bit == NULL)
-		bit = strchr(uid, '-') == NULL?"cur":"new";
-	dir = g_strdup_printf("/tmp/imap-cache/%s/%s", folder->full_name, bit);
-
-	g_mkdir_with_parents(dir, 0777);
-	path = g_strdup_printf("%s/%s", dir, uid);
-	g_free(dir);
-
-	return path;
-}
 
 /* Must hold QUEUE_LOCK */
 static gboolean
@@ -1982,36 +1964,48 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
-imapx_command_append_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 	CamelMessageInfo *mi;
-	gchar *cur;
+	gchar *cur, *old_uid;
 
 	/* Append done.  If we the server supports UIDPLUS we will get an APPENDUID response
 	   with the new uid.  This lets us move the message we have directly to the cache
 	   and also create a correctly numbered MessageInfo, without losing any information.
 	   Otherwise we have to wait for the server to less us know it was appended. */
 
+	mi = camel_message_info_clone(job->u.append_message.info);
+	old_uid = g_strdup (mi->uid);
+
 	if (!camel_exception_is_set (ic->ex) && ic->status->result == IMAP_OK) {
 		if (ic->status->condition == IMAP_APPENDUID) {
 			printf("Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == is->uidvalidity) {
-				mi = camel_message_info_clone(job->u.append_message.info);
+				CamelFolderChangeInfo *changes;
+
 				mi->uid = g_strdup_printf("%u", (guint)ic->status->u.appenduid.uid);
-				cur = imapx_get_path_uid(is, job->folder, NULL, mi->uid);
+				
+				cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
 				printf("Moving cache item %s to %s\n", job->u.append_message.path, cur);
-				link(job->u.append_message.path, cur);
-				g_free(cur);
-				camel_folder_summary_add(job->folder->summary, mi);
+				link (job->u.append_message.path, cur);
+				
+				/* should we update the message count ? */
+				camel_folder_summary_add (job->folder->summary, mi);
+				
+				changes = camel_folder_change_info_new ();
+				camel_folder_change_info_add_uid (changes, mi->uid);
+				camel_object_trigger_event (CAMEL_OBJECT (job->folder), "folder_changed",
+						changes);
+				camel_folder_change_info_free (changes);
+
 				camel_message_info_free(mi);
+				g_free(cur);
 			} else {
 				printf("but uidvalidity changed, uh ...\n");
 			}
 		}
-		camel_folder_summary_remove(job->folder->summary, job->u.append_message.info);
-		// should the folder-summary remove the file ?
-		unlink(job->u.append_message.path);
 	} else {
 		if (!camel_exception_is_set (ic->ex))
 			camel_exception_setv(job->ex, 1, "Error appending message: %s", ic->status->text);
@@ -2019,6 +2013,8 @@ imapx_command_append_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (job->ex, ic->ex);
 	}
 
+	camel_data_cache_remove (ifolder->cache, "tmp", old_uid, NULL);
+	g_free (old_uid);
 	camel_message_info_free(job->u.append_message.info);
 	g_free(job->u.append_message.path);
 	camel_object_unref(job->folder);
@@ -3002,30 +2998,19 @@ static CamelStream *
 imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, gint pri, CamelException *ex)
 {
 	CamelStream *stream;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelIMAPXJob *job;
-	gchar *tmp, *name;
+	gchar *cache_file = NULL;
 
-	/* Get a message, we either get it from the local cache,
-	   Or we ask for it, which will put it in the local cache,
-	   then return that copy */
-
-	/* FIXME: The storage logic should use camel-data-cache,
-	   which handles concurrent adds properly.
-	   EXCEPT!  It wont handle the 'new' dir directly ... do we care? */
-
-	name = imapx_get_path_uid (is, folder, NULL, uid);
-	stream = camel_stream_fs_new_with_name (name, O_RDONLY, 0);
-	if (stream) {
-		g_free(name);
-		return stream;
-	} else if (strchr(uid, '-')) {
-		camel_exception_setv(ex, 2, "Offline message vanished from disk: %s", uid);
-		g_free(name);
-		camel_object_unref(stream);
+	cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", uid, NULL);
+	if (g_file_test (cache_file, G_FILE_TEST_EXISTS)) {
+		camel_exception_set (ex, 1, "cache already exists \n");
+		g_free (cache_file);
+//		g_assert_not_reached ();
 		return NULL;
 	}
 
-	tmp = imapx_get_path_uid(is, folder, "tmp", uid);
+	stream = camel_data_cache_add (ifolder->cache, "tmp", uid, NULL);
 
 	job = g_malloc0(sizeof(*job));
 	job->pri = pri;
@@ -3033,40 +3018,47 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 	job->start = imapx_job_get_message_start;
 	job->folder = folder;
 	job->u.get_message.uid = (gchar *)uid;
-	job->u.get_message.stream = camel_stream_fs_new_with_name(tmp, O_WRONLY|O_CREAT|O_TRUNC, 0666);
-	if (job->u.get_message.stream == NULL) {
-		g_free(tmp);
-		tmp = NULL;
+	job->u.get_message.stream = stream;
+	if (job->u.get_message.stream == NULL) 
 		job->u.get_message.stream = camel_stream_mem_new();
-	}
+	
 	job->ex = ex;
-
 	imapx_run_job(is, job);
 
 	stream = job->u.get_message.stream;
 	g_free(job);
 
 	if (stream) {
-		if (tmp == NULL)
+		if (CAMEL_IS_STREAM_MEM (stream))
 			camel_stream_reset(stream);
 		else {
+			char *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", uid, NULL);
+			
 			if (camel_stream_flush(stream) == 0 && camel_stream_close(stream) == 0) {
-				camel_object_unref(stream);
-				stream = NULL;
-				if (link(tmp, name) == 0)
-					stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0);
+				gchar *temp = g_strrstr (cache_file, "/"), *dir;
+
+				dir = g_strndup (cache_file, temp - cache_file);
+				g_mkdir_with_parents (dir, 0700);
+				g_free (dir);
+
+				if (link (tmp, cache_file) == 0)
+					stream = camel_stream_fs_new_with_name(cache_file, O_RDONLY, 0);
+				else {
+					camel_exception_set (ex, 1, "failed to copy the tmp file");
+					g_assert_not_reached ();
+				}
 			} else {
 				camel_exception_setv(ex, 1, "closing tmp stream failed: %s", g_strerror(errno));
 				camel_object_unref(stream);
 				stream = NULL;
 			}
-			unlink(tmp);
+		
+			camel_data_cache_remove (ifolder->cache, "tmp", uid, NULL);
+			g_free (tmp);
 		}
 	}
 
-	g_free(tmp);
-	g_free(name);
-
+	g_free (cache_file);
 	return stream;
 }
 
@@ -3079,8 +3071,9 @@ camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const 
 void
 camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *mi, CamelException *ex)
 {
-	gchar *uid = NULL, *tmp = NULL, *new = NULL;
+	gchar *uid = NULL, *tmp = NULL;
 	CamelStream *stream, *filter;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelMimeFilter *canon;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *info;
@@ -3091,17 +3084,9 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	   job which will asynchronously upload the message at some point in the future,
 	   and fix up the summary to match */
 
-	// FIXME: assign a real uid!  start with last known uid, add some maildir-like stuff?
-	do {
-		static gint nextappend;
-
-		g_free(uid);
-		g_free(tmp);
-		uid = g_strdup_printf("%s-%d", "1000", nextappend++);
-		tmp = imapx_get_path_uid(is, folder, "tmp", uid);
-		stream = camel_stream_fs_new_with_name(tmp, O_WRONLY|O_CREAT|O_EXCL, 0666);
-	} while (stream == NULL && (errno == EINTR || errno == EEXIST));
-
+	/* chen cleanup this later */
+	uid = imapx_get_temp_uid ();
+	stream = camel_data_cache_add (ifolder->cache, "tmp", uid, NULL);
 	if (stream == NULL) {
 		camel_exception_setv(ex, 2, "Cannot create spool file: %s", g_strerror((gint) errno));
 		goto fail;
@@ -3120,16 +3105,10 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 		goto fail;
 	}
 
-	new = imapx_get_path_uid(is, folder, "new", uid);
-	if (link(tmp, new) == -1) {
-		camel_exception_setv(ex, 2, "Cannot create spool file: %s", g_strerror(errno));
-		goto fail;
-	}
-
+	tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", uid, NULL);
 	info = camel_folder_summary_info_new_from_message((CamelFolderSummary *)folder->summary, message, NULL);
 	info->uid = uid;
 	uid = NULL;
-	camel_folder_summary_add(folder->summary, info);
 
 	// FIXME
 
@@ -3146,8 +3125,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	job->folder = folder;
 	camel_object_ref(folder);
 	job->u.append_message.info = info;
-	job->u.append_message.path = new;
-	new = NULL;
+	job->u.append_message.path = tmp;
 
 	imapx_run_job(is, job);
 fail:
@@ -3155,7 +3133,6 @@ fail:
 		unlink(tmp);
 	g_free(uid);
 	g_free(tmp);
-	g_free(new);
 }
 
 #include "camel-imapx-store.h"
