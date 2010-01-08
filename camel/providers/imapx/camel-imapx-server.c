@@ -62,8 +62,7 @@
 /* All comms with server go here */
 
 /* Try pipelining fetch requests, 'in bits' */
-#define MULTI_FETCH
-#define MULTI_SIZE (8196)
+#define MULTI_SIZE (10240)
 
 /* How many outstanding commands do we allow before we just queue them? */
 #define MAX_COMMANDS (10)
@@ -210,6 +209,7 @@ struct _CamelIMAPXJob {
 			gsize body_offset;
 			gssize body_len;
 			gsize fetch_offset;
+			gboolean use_multi_fetch;
 		} get_message;
 		struct {
 			/* array of refresh info's */
@@ -1026,10 +1026,11 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			   in the right spot */
 
 			if (job) {
-#ifdef MULTI_FETCH
-				job->u.get_message.body_offset = finfo->offset;
-				camel_seekable_stream_seek((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, CAMEL_STREAM_SET);
-#endif
+				if (job->u.get_message.use_multi_fetch) {
+					job->u.get_message.body_offset = finfo->offset;
+					camel_seekable_stream_seek((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, CAMEL_STREAM_SET);
+				}
+
 				job->u.get_message.body_len = camel_stream_write_to_stream(finfo->body, job->u.get_message.stream);
 				if (job->u.get_message.body_len == -1) {
 					camel_exception_setv(job->ex, 1, "error writing to cache stream: %s\n", g_strerror(errno));
@@ -1093,7 +1094,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		}
 
 		if ((finfo->got & (FETCH_HEADER|FETCH_UID)) == (FETCH_HEADER|FETCH_UID)) {
-			CamelIMAPXJob *job = imapx_find_job(imap, IMAPX_JOB_REFRESH_INFO, NULL);
+			CamelIMAPXJob *job = imapx_find_job (imap, IMAPX_JOB_REFRESH_INFO, NULL);
 
 			/* This must be a refresh info job as well, but it has asked for
 			   new messages to be added to the index */
@@ -1112,6 +1113,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				if (mi) {
 					guint32 server_flags;
 					CamelFlag *server_user_flags;
+					CamelMessageInfoBase *binfo;
 
 					mi->uid = g_strdup(finfo->uid);
 
@@ -1151,6 +1153,9 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 						/* free user_flags ? */
 						finfo->user_flags = NULL;
 					}
+
+					binfo = (CamelMessageInfoBase *) mi;
+					binfo->size = finfo->size;
 
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
 						camel_folder_summary_add(job->folder->summary, mi);
@@ -1889,22 +1894,25 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 	}
 
-/*
-#ifdef MULTI_FETCH
-	if (!failed && job->u.get_message.body_len == MULTI_SIZE) {
-		ic = camel_imapx_command_new("FETCH", job->folder->full_name,
-					     "UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
-		camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
-		camel_imapx_command_add(ic, ")");
-		ic->complete = imapx_job_get_message_done;
-		ic->job = job;
-		ic->pri = job->pri;
-		job->u.get_message.fetch_offset += MULTI_SIZE;
-		job->commands++;
-		imapx_command_queue(is, ic);
+	if (job->u.get_message.use_multi_fetch) {
+
+		if (!failed && job->u.get_message.body_len == MULTI_SIZE) {
+			camel_imapx_command_free (ic);
+
+			ic = camel_imapx_command_new("FETCH", job->folder->full_name,
+					"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
+			camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
+			camel_imapx_command_add(ic, ")");
+			ic->complete = imapx_command_fetch_message_done;
+			ic->job = job;
+			ic->pri = job->pri;
+			job->u.get_message.fetch_offset += MULTI_SIZE;
+			job->commands++;
+			imapx_command_queue(is, ic);
+			return;
+		}
 	}
-#endif
-*/
+
 	if (job->commands == 0) {
 		/* return the exception from last command */
 		if (failed) {
@@ -1924,41 +1932,38 @@ static void
 imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
-/*#ifdef MULTI_FETCH
 	gint i;
-#endif
-	// FIXME: MUST ensure we never try to get the same message
-	// twice at the same time.
+	
+	/* FIXME: MUST ensure we never try to get the same message
+	 twice at the same time.
 
 	 If this is a high-priority get, then we also
 	   select the folder to make sure it runs immmediately ...
 
-	   This doesn't work yet, so we always force a select every time
+	This doesn't work yet, so we always force a select every time */
 
-	//imapx_select(is, job->folder);
-
-#ifdef MULTI_FETCH
-	for (i=0;i<3;i++) {
+	if (job->u.get_message.use_multi_fetch) {
+		for (i=0;i < 1;i++) {
+			ic = camel_imapx_command_new("FETCH", job->folder->full_name,
+					"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
+			camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
+			camel_imapx_command_add(ic, ")");
+			ic->complete = imapx_command_fetch_message_done;
+			ic->job = job;
+			ic->pri = job->pri;
+			job->u.get_message.fetch_offset += MULTI_SIZE;
+			job->commands++;
+			imapx_command_queue(is, ic);
+		}
+	} else {
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name,
-						     "UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
-		camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
-		camel_imapx_command_add(ic, ")");
+				"UID FETCH %t (BODY.PEEK[])", job->u.get_message.uid);
 		ic->complete = imapx_command_fetch_message_done;
 		ic->job = job;
 		ic->pri = job->pri;
-		job->u.get_message.fetch_offset += MULTI_SIZE;
 		job->commands++;
 		imapx_command_queue(is, ic);
 	}
-#else */
-	ic = camel_imapx_command_new("FETCH", job->folder->full_name,
-				     "UID FETCH %t (BODY.PEEK[])", job->u.get_message.uid);
-	ic->complete = imapx_command_fetch_message_done;
-	ic->job = job;
-	ic->pri = job->pri;
-	job->commands++;
-	imapx_command_queue(is, ic);
-/* #endif */
 }
 
 /* ********************************************************************** */
@@ -3001,6 +3006,7 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelIMAPXJob *job;
 	gchar *cache_file = NULL;
+	CamelMessageInfo *mi;
 
 	cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", uid, NULL);
 	if (g_file_test (cache_file, G_FILE_TEST_EXISTS)) {
@@ -3021,8 +3027,13 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 	job->u.get_message.stream = stream;
 	if (job->u.get_message.stream == NULL) 
 		job->u.get_message.stream = camel_stream_mem_new();
-	
 	job->ex = ex;
+
+	mi = camel_folder_summary_uid (folder->summary, uid);
+	if (((CamelMessageInfoBase *) mi)->size > MULTI_SIZE)
+		job->u.get_message.use_multi_fetch = TRUE;
+	camel_message_info_free (mi);
+
 	imapx_run_job(is, job);
 
 	stream = job->u.get_message.stream;
