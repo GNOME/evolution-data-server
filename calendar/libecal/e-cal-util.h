@@ -127,7 +127,7 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_NO_ORGANIZER		 "no-organizer"
 #define CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY		 "delegate-to-many"
 #define CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING     "has-unaccepted-meeting"
-#define CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED      	 "refresh-supported"
+#define CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED		"refresh-supported"
 
 /* Recurrent events. Management for instances */
 icalcomponent *e_cal_util_construct_instance (icalcomponent *icalcomp,

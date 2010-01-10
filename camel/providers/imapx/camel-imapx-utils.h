@@ -63,11 +63,10 @@ enum {
 void imap_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, CamelException *ex);
 void imap_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, CamelException *ex);
 gboolean imap_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder);
-void imap_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, 
+void imap_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags,
 							CamelFolder *folder);
 void imap_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder);
 void imap_update_store_summary (CamelFolder *folder);
-
 
 /* ********************************************************************** */
 enum {

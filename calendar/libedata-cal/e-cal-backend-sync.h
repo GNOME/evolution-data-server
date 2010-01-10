@@ -100,9 +100,9 @@ ECalBackendSyncStatus e_cal_backend_sync_open                    (ECalBackendSyn
 								  const gchar *username,
 								  const gchar *password);
 ECalBackendSyncStatus e_cal_backend_sync_refresh                  (ECalBackendSync  *backend,
-							          EDataCal             *cal);
+								   EDataCal             *cal);
 ECalBackendSyncStatus e_cal_backend_sync_remove                  (ECalBackendSync  *backend,
-							          EDataCal             *cal);
+								  EDataCal             *cal);
 ECalBackendSyncStatus e_cal_backend_sync_create_object           (ECalBackendSync  *backend,
 								  EDataCal             *cal,
 								  gchar           **calobj,

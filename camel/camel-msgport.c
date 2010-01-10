@@ -438,7 +438,6 @@ camel_msgport_timed_pop (CamelMsgPort *msgport, GTimeVal *end_time)
 	return msg;
 }
 
-
 void
 camel_msgport_reply (CamelMsg *msg)
 {

@@ -260,7 +260,7 @@ imap_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, Ca
 			camel_folder_summary_touch (info->summary);
 		changed = TRUE;
 	}
-	
+
 	if ((folder->permanent_flags & CAMEL_MESSAGE_USER) != 0 && imap_update_user_flags (info, server_user_flags))
 		changed = TRUE;
 
@@ -277,10 +277,10 @@ imap_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 ser
 
 	binfo->flags |= server_flags;
 	xinfo->server_flags = server_flags;
-	
+
 	if (folder->permanent_flags & CAMEL_MESSAGE_USER)
 		imap_update_user_flags (info, server_user_flags);
-	
+
 	/* update the summary count */
 	flags = binfo->flags;
 
@@ -313,7 +313,6 @@ imap_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 ser
 
 	binfo->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 }
-
 
 void
 imap_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder)
@@ -351,7 +350,7 @@ imap_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *fo
 
 void
 imap_update_store_summary (CamelFolder *folder)
-{	
+{
 	CamelStoreInfo *si;
 
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
@@ -1456,7 +1455,7 @@ imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 	gint tok;
 	guint len;
 	guchar *token;
-	
+
 	sinfo = g_malloc0 (sizeof(*sinfo));
 
 	/* skip the folder name */
@@ -1477,13 +1476,13 @@ imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 			case IMAP_RECENT:
 				sinfo->recent = camel_imapx_stream_number (is, ex);
 				break;
-			case IMAP_UIDNEXT:				
+			case IMAP_UIDNEXT:
 				sinfo->uidnext = camel_imapx_stream_number (is, ex);
 				break;
-			case IMAP_UIDVALIDITY:				
+			case IMAP_UIDVALIDITY:
 				sinfo->uidvalidity = camel_imapx_stream_number (is, ex);
 				break;
-			case IMAP_UNSEEN:				
+			case IMAP_UNSEEN:
 				sinfo->unseen = camel_imapx_stream_number (is, ex);
 				break;
 			default:
@@ -1492,7 +1491,7 @@ imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 				return NULL;
 		}
 	}
-	
+
 	if (tok != ')') {
 		camel_exception_set (ex, 1, "missing closing ')' on status response");
 		g_free (sinfo);
