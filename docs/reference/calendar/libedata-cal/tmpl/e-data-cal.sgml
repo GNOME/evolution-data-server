@@ -116,6 +116,16 @@ Implementation of the calendar CORBA client interface.
 @status: 
 
 
+<!-- ##### FUNCTION e_data_cal_notify_refresh ##### -->
+<para>
+
+</para>
+
+@cal: 
+@context: 
+@status: 
+
+
 <!-- ##### FUNCTION e_data_cal_notify_remove ##### -->
 <para>
 

@@ -591,6 +591,7 @@ camel_message_info_references
 camel_message_info_user_flags
 camel_message_info_user_tags
 camel_message_info_headers
+camel_message_info_content
 camel_message_info_user_flag
 camel_message_info_user_tag
 camel_message_info_set_flags
@@ -1178,6 +1179,7 @@ camel_mime_part_set_description
 camel_mime_part_get_description
 camel_mime_part_set_disposition
 camel_mime_part_get_disposition
+camel_mime_part_get_content_disposition
 camel_mime_part_set_filename
 camel_mime_part_get_filename
 camel_mime_part_set_content_id
@@ -1218,6 +1220,7 @@ camel_msgport_fd
 camel_msgport_push
 camel_msgport_pop
 camel_msgport_try_pop
+camel_msgport_timed_pop
 camel_msgport_reply
 camel_msgport_prfd
 </SECTION>

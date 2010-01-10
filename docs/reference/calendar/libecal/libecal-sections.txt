@@ -189,6 +189,7 @@ e_cal_new_system_memos
 e_cal_set_auth_func
 e_cal_open
 e_cal_open_async
+e_cal_refresh
 e_cal_remove
 e_cal_uri_list
 e_cal_get_source_type
@@ -204,6 +205,7 @@ e_cal_get_organizer_must_attend
 e_cal_get_save_schedules
 e_cal_get_static_capability
 e_cal_get_organizer_must_accept
+e_cal_get_refresh_supported
 e_cal_set_mode
 e_cal_get_default_object
 e_cal_get_object
@@ -351,6 +353,7 @@ CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED
 CAL_STATIC_CAPABILITY_NO_ORGANIZER
 CAL_STATIC_CAPABILITY_DELEGATE_TO_MANY
 CAL_STATIC_CAPABILITY_HAS_UNACCEPTED_MEETING
+CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED
 e_cal_util_construct_instance
 e_cal_util_remove_instances
 e_cal_util_get_system_timezone_location

@@ -114,6 +114,16 @@ Base class for synchronous backends.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_cal_backend_sync_refresh ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_backend_sync_remove ##### -->
 <para>
 

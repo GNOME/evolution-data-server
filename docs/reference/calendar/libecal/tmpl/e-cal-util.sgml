@@ -411,6 +411,13 @@ Various utility functions.
 
 
 
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION e_cal_util_construct_instance ##### -->
 <para>
 

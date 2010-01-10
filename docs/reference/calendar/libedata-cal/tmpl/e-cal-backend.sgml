@@ -151,6 +151,16 @@ Base class for calendar/tasks backend implementations.
 @password: 
 
 
+<!-- ##### FUNCTION e_cal_backend_refresh ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@context: 
+
+
 <!-- ##### FUNCTION e_cal_backend_remove ##### -->
 <para>
 

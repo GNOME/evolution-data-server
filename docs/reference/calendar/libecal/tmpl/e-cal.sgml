@@ -216,6 +216,16 @@ Represents an entire calendar or task list, not individual items within them.2
 @only_if_exists: 
 
 
+<!-- ##### FUNCTION e_cal_refresh ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_remove ##### -->
 <para>
 
@@ -354,6 +364,15 @@ Represents an entire calendar or task list, not individual items within them.2
 
 
 <!-- ##### FUNCTION e_cal_get_organizer_must_accept ##### -->
+<para>
+
+</para>
+
+@ecal: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_get_refresh_supported ##### -->
 <para>
 
 </para>

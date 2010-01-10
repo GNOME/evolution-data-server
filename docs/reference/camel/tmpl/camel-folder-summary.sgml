@@ -969,6 +969,14 @@ CamelFolderSummary
 @mi: 
 
 
+<!-- ##### MACRO camel_message_info_content ##### -->
+<para>
+
+</para>
+
+@mi: 
+
+
 <!-- ##### FUNCTION camel_message_info_user_flag ##### -->
 <para>
 

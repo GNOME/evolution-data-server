@@ -84,6 +84,16 @@ CamelMsgPort
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_msgport_timed_pop ##### -->
+<para>
+
+</para>
+
+@msgport: 
+@end_time: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_msgport_reply ##### -->
 <para>
 
