@@ -169,6 +169,7 @@ camel/providers/imap4/camel-imap4-store.c
 camel/providers/imap4/camel-imap4-stream.c
 camel/providers/imap4/camel-imap4-summary.c
 camel/providers/imap4/camel-imap4-utils.c
+camel/providers/imapx/camel-imapx-folder.c
 camel/providers/imapx/camel-imapx-provider.c
 camel/providers/imapx/camel-imapx-server.c
 camel/providers/imapx/camel-imapx-store.c
