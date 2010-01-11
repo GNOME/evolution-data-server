@@ -1,3 +1,28 @@
+Evolution-Data-Server 2.29.5 2009-01-11
+---------------------------------------
+
+Bug Fixes:
+	#550622 - Always update attachment flag on IMAP message fetch
+	          (Milan Crha)
+	#597816 - Do not crash on incorrect parameters used in sexp to SQL
+	          (Milan Crha)
+	#604236 - Slow GPG processing (Milan Crha)
+	#605125 - Crash while trying to access ldap address book (Milan Crha)
+	#605432 - Renaming source allows entering same name (Milan Crha)
+	#605682 - Do not scan url in invalid UTF8 strings (Milan Crha)
+	#606316 - Mail with an attachment in a Junk folder crashes Evo
+	          (Milan Crha)
+
+Other Changes:
+	Do not show the passwd in the dialog while typing (Bharath Acharya)
+	Steady progress on the new IMAPX backend (Chenthill Palanisamy)
+	Bump libedata-cal soname from 6 to 7. (Matthew Barnes)
+
+Translations:
+	Xandru Armesto Fernandez (ast)
+	Daniel Nylander (sv)
+	Maxim V. Dziumanenko (uk)
+
 Evolution-Data-Server 2.29.4 2009-12-21
 ---------------------------------------
 
