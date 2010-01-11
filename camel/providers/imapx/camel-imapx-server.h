@@ -90,6 +90,10 @@ struct _CamelIMAPXServer {
 
 	GMutex *connect_lock;
 	pthread_t parser_thread_id;
+
+	/* Idle */
+	struct _CamelIMAPXIdle *idle;
+	gboolean use_idle;
 };
 
 struct _CamelIMAPXServerClass {

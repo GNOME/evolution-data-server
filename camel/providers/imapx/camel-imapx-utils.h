@@ -77,6 +77,7 @@ enum {
 	IMAP_CAPABILITY_UIDPLUS			= (1 << 4),
 	IMAP_CAPABILITY_LITERALPLUS		= (1 << 5),
 	IMAP_CAPABILITY_STARTTLS                = (1 << 6),
+	IMAP_CAPABILITY_IDLE			= (1 << 7),
 };
 
 struct _capability_info {
