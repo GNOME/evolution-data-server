@@ -39,7 +39,8 @@ libcamel_provider_1_2_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"camel\"						\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
-	$(CAMEL_CFLAGS)
+	$(CAMEL_CFLAGS)						\
+	$(DBUS_GLIB_CFLAGS)
 
 libcamel_provider_1_2_la_SOURCES = 		\
 	camel-cipher-context.c			\
@@ -148,7 +149,8 @@ libcamel_provider_1_2_la_LIBADD =			\
 	libcamel-1.2.la				\
 	$(CAMEL_LIBS)				\
 	$(SOCKET_LIBS)				\
-	$(REGEX_LIBS)
+	$(REGEX_LIBS)				\
+	$(DBUS_GLIB_LIBS)	
 
 libcamel_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)									\

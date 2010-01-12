@@ -31,6 +31,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <krb5/krb5.h>
 #ifdef HAVE_ET_COM_ERR_H
 #include <et/com_err.h>
 #else
@@ -56,8 +57,16 @@ extern gss_OID gss_nt_service_name;
 
 #include <glib/gi18n-lib.h>
 
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 #include "camel-net-utils.h"
 #include "camel-sasl-gssapi.h"
+#include "camel-session.h"
+
+#define DBUS_PATH		"/org/gnome/KrbAuthDialog"
+#define DBUS_INTERFACE		"org.gnome.KrbAuthDialog"
+#define DBUS_METHOD		"org.gnome.KrbAuthDialog.acquireTgt"
 
 CamelServiceAuthType camel_sasl_gssapi_authtype = {
 	N_("GSSAPI"),
@@ -203,6 +212,65 @@ gssapi_set_exception (OM_uint32 major, OM_uint32 minor, CamelException *ex)
 	camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, str);
 }
 
+/* DBUS Specific code */
+
+static gboolean
+send_dbus_message (char *name)
+{
+	DBusMessage *message, *reply;
+	DBusError dbus_error;
+	int success = FALSE;
+	DBusConnection *bus = NULL;
+
+	dbus_error_init (&dbus_error);
+	if (!(bus = dbus_bus_get (DBUS_BUS_SESSION, &dbus_error))) {
+		g_warning ("could not get system bus: %s\n", dbus_error.message);
+		dbus_error_free (&dbus_error);
+		return FALSE;
+	}
+
+	dbus_error_free (&dbus_error);
+
+	dbus_connection_setup_with_g_main (bus, NULL);
+	dbus_connection_set_exit_on_disconnect (bus, FALSE);
+
+	/* Create a new message on the DBUS_INTERFACE */
+	if (!(message = dbus_message_new_method_call (DBUS_INTERFACE, DBUS_PATH, DBUS_INTERFACE, "acquireTgt"))) {
+		g_object_unref (bus);
+		return FALSE;
+	}
+	/* Appends the data as an argument to the message */
+	if (strchr(name, '\\'))
+		name = strchr(name, '\\');	
+	dbus_message_append_args (message,
+				  DBUS_TYPE_STRING, &name,
+				  DBUS_TYPE_INVALID);
+	dbus_error_init(&dbus_error);
+
+	/* Sends the message: Have a 300 sec wait timeout  */
+	reply = dbus_connection_send_with_reply_and_block (bus, message, 300 * 1000, &dbus_error);
+
+	if (dbus_error_is_set(&dbus_error))
+		g_warning ("%s: %s\n", dbus_error.name, dbus_error.message);
+	dbus_error_free(&dbus_error);
+
+        if (reply)
+        {
+                dbus_error_init(&dbus_error);
+                dbus_message_get_args(reply, &dbus_error, DBUS_TYPE_BOOLEAN, &success, DBUS_TYPE_INVALID);
+                dbus_error_free(&dbus_error);
+                dbus_message_unref(reply);
+        }
+	
+	/* Free the message */
+	dbus_message_unref (message);
+	dbus_connection_unref (bus);
+
+	return success;
+}
+
+/* END DBus stuff */
+
 static GByteArray *
 gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 {
@@ -268,7 +336,13 @@ gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			priv->state = GSSAPI_STATE_CONTINUE_NEEDED;
 			break;
 		default:
-			gssapi_set_exception (major, minor, ex);
+			if (major == (OM_uint32)GSS_S_FAILURE &&
+		    	    (minor == (OM_uint32)KRB5KRB_AP_ERR_TKT_EXPIRED ||
+		     	     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID)) {			
+				if (send_dbus_message (sasl->service->url->user))
+					goto challenge;
+			} else
+				gssapi_set_exception (major, minor, ex);
 			return NULL;
 		}
 
