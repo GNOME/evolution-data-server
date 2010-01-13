@@ -523,7 +523,7 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
 		LOCK_WRAPPER (get_timezone_sync, (backend, cal, tzid, object));
 	}
 
-	if (object && !object) {
+	if (object && !*object) {
 		icaltimezone *zone = NULL;
 
 		if (backend->priv->mutex_lock)
