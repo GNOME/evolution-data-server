@@ -1923,11 +1923,11 @@ make_me_card (void)
 
 		western = e_name_western_parse (s);
 		g_string_append_printf (vcard, "N:%s;%s;%s;%s;%s\n",
-					western->last ?: "",
-					western->first ?: "",
-					western->middle ?: "",
-					western->prefix ?: "",
-					western->suffix ?: "");
+					western->last ? western->last : "",
+					western->first ? western->first : "",
+					western->middle ? western->middle : "",
+					western->prefix ? western->prefix : "",
+					western->suffix ? western->suffix : "");
 		e_name_western_free (western);
 	}
 	g_string_append (vcard, "END:VCARD");
