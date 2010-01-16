@@ -14,7 +14,7 @@ libcamelimapx_la_CPPFLAGS = \
 
 libcamelimapx_la_SOURCES =			\
 	camel-imapx-exception.c			\
-	camel-imapx-stream.c			\	
+	camel-imapx-stream.c			\
 	camel-imapx-utils.c			\
 	camel-imapx-provider.c			\
 	camel-imapx-store-summary.c		\
@@ -51,7 +51,7 @@ test_imapx_CPPFLAGS = \
 	$(CAMEL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"camel-imapx\"
 test_imapx_SOURCES = test-imapx.c
-test_imapx_LDADD =							\ 
+test_imapx_LDADD =							\
 	$(top_builddir)/camel/libcamel-1.2.la				\
 	$(top_builddir)/camel/libcamel-provider-1.2.la			\
 	libcamelimapx.la
