@@ -3401,6 +3401,11 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 				cache_comp = icomp;
 			}
 
+			if (cache_comp && priv->is_google) {
+				icalcomponent_set_sequence (cache_comp, icalcomponent_get_sequence (cache_comp) + 1);
+				icalcomponent_set_sequence (new_comp, icalcomponent_get_sequence (new_comp) + 1);
+			}
+
 			/* add the detached instance finally */
 			icalcomponent_add_component (cache_comp, icalcomponent_new_clone (new_comp));
 		} else {
