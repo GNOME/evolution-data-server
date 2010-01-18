@@ -29,7 +29,6 @@
 <!ENTITY CamelGPGContext SYSTEM "xml/camel-gpg-context.xml">
 <!ENTITY CamelHTMLParser SYSTEM "xml/camel-html-parser.xml">
 <!ENTITY CamelHttpStream SYSTEM "xml/camel-http-stream.xml">
-<!ENTITY CamelI18N SYSTEM "xml/camel-i18n.xml">
 <!ENTITY CamelIconv SYSTEM "xml/camel-iconv.xml">
 <!ENTITY CamelIndex SYSTEM "xml/camel-index.xml">
 <!ENTITY CamelInternetAddress SYSTEM "xml/camel-internet-address.xml">
@@ -318,7 +317,6 @@
       &CamelDiscoDiary;
       &CamelDiscoFolder;
       &CamelDiscoStore;
-      &CamelI18N;
       &CamelNewsAddress;
       &CamelProcess;
     </chapter>

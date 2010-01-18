@@ -3365,17 +3365,6 @@ camel_folder_threaded_messages_dump
 </SECTION>
 
 <SECTION>
-<FILE>camel-i18n</FILE>
-_
-N_
-textdomain
-gettext
-dgettext
-dcgettext
-bindtextdomain
-</SECTION>
-
-<SECTION>
 <FILE>camel-iconv</FILE>
 camel_iconv_locale_charset
 camel_iconv_locale_language
