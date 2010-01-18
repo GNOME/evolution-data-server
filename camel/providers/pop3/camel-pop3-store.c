@@ -60,6 +60,9 @@
 #define POP3_PORT "110"
 #define POP3S_PORT "995"
 
+/* defines the length of the server error message we can display in the error dialog */
+#define POP3_ERROR_SIZE_LIMIT 60
+
 static CamelStoreClass *parent_class = NULL;
 
 static void finalize (CamelObject *object);
@@ -146,6 +149,25 @@ enum {
 #define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 #define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
 #endif
+
+/* returns error message with ': ' as prefix */
+static gchar *
+get_valid_utf8_error (const gchar *text)
+{
+	gchar *tmp = camel_utf8_make_valid (text);
+	gchar *ret = NULL;
+
+	/*TODO If the error message > size limit log it somewhere */
+	if (!tmp || g_utf8_strlen (tmp, -1) > POP3_ERROR_SIZE_LIMIT) {
+		g_free (tmp);
+		return NULL;
+	}
+
+	ret = g_strconcat (": ", tmp, NULL);
+
+	g_free (tmp);
+	return ret;
+}
 
 static gboolean
 connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, CamelException *ex)
@@ -234,9 +256,13 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	camel_pop3_engine_command_free (store->engine, pc);
 
 	if (ret == FALSE) {
+		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			_("Failed to connect to POP server %s in secure mode: %s"),
-			service->url->host, store->engine->line);
+				_("Failed to connect to POP server %s in secure mode%s"),
+				service->url->host, tmp ? tmp:"");
+
+		g_free (tmp);
 		goto stls_exception;
 	}
 
@@ -414,9 +440,13 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 		if (strncmp((gchar *) line, "+OK", 3) == 0)
 			break;
 		if (strncmp((gchar *) line, "-ERR", 4) == 0) {
+			gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-					      _("SASL '%s' Login failed for POP server %s: %s"),
-					      mech, CAMEL_SERVICE (store)->url->host, line);
+					      _("SASL '%s' Login failed for POP server %s%s"),
+					      mech, CAMEL_SERVICE (store)->url->host, tmp ? tmp : "");
+
+			g_free (tmp);
 			goto done;
 		}
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
@@ -552,17 +582,23 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 					      errno ? g_strerror (errno) : _("Unknown error"));
 		}
 	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
+		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 				      _("Unable to connect to POP server %s.\n"
-					"Error sending username: %s"),
+					"Error sending username%s"),
 				      CAMEL_SERVICE (store)->url->host,
-				      store->engine->line ? (gchar *)store->engine->line : _("Unknown error"));
+				      tmp ? tmp : "");
+		g_free (tmp);
 	} else if (pcp->state != CAMEL_POP3_COMMAND_OK) {
+		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 				      _("Unable to connect to POP server %s.\n"
-					"Error sending password: %s"),
+					"Error sending password%s"),
 				      CAMEL_SERVICE (store)->url->host,
-				      store->engine->line ? (gchar *)store->engine->line : _("Unknown error"));
+				      tmp ? tmp :"");
+		g_free (tmp);
 	}
 
 	camel_pop3_engine_command_free (store->engine, pcp);
@@ -609,9 +645,7 @@ pop3_connect (CamelService *service, CamelException *ex)
 
 		/* we only re-prompt if we failed to authenticate, any other error and we just abort */
 		if (status == 0 && camel_exception_get_id (ex) == CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE) {
-			gchar *tmp = camel_utf8_make_valid (camel_exception_get_description (ex));
-			errbuf = g_markup_printf_escaped ("%s\n\n", tmp);
-			g_free (tmp);
+			errbuf = g_markup_printf_escaped ("%s\n\n", camel_exception_get_description (ex));
 			camel_exception_clear (ex);
 
 			camel_session_forget_password (session, service, NULL, "password", ex);
