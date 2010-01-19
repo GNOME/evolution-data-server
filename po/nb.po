@@ -1,14 +1,14 @@
 # Norwegian translation of evolution-data-server (bokmål dialect).
 # Copyright (C) 1998-2004, 2005 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998-2009.
+# Kjartan Maraas <kmaraas@gnome.org>, 1998-2010.
 # Terance Edward Sola <terance@lyse.net>, 2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.29.x\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-13 16:18+0100\n"
-"PO-Revision-Date: 2010-01-13 16:19+0100\n"
+"Report-Msgid-Bugs-To:\n"
+"POT-Creation-Date: 2010-01-19 18:29+0100\n"
+"PO-Revision-Date: 2010-01-19 18:30+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -1060,9 +1060,7 @@ msgstr "Et CORBA-unntak har oppstått"
 #: ../camel/providers/imap4/camel-imap4-store.c:311
 #: ../camel/providers/imap4/camel-imap4-store.c:818
 #: ../camel/providers/imap4/camel-imap4-store.c:1574
-#: ../camel/providers/pop3/camel-pop3-store.c:552
-#: ../camel/providers/pop3/camel-pop3-store.c:559
-#: ../camel/providers/pop3/camel-pop3-store.c:565
+#: ../camel/providers/pop3/camel-pop3-store.c:582
 #: ../servers/groupwise/e-gw-connection.c:241
 msgid "Unknown error"
 msgstr "Ukjent feil"
@@ -1838,8 +1836,8 @@ msgstr "lesefeil"
 
 #: ../camel/camel-net-utils.c:503 ../camel/camel-net-utils.c:674
 #: ../camel/camel-net-utils.c:805
-#: ../camel/providers/pop3/camel-pop3-store.c:446
-#: ../camel/providers/pop3/camel-pop3-store.c:546
+#: ../camel/providers/pop3/camel-pop3-store.c:476
+#: ../camel/providers/pop3/camel-pop3-store.c:576
 msgid "Canceled"
 msgstr "Avbrutt"
 
@@ -3030,8 +3028,8 @@ msgstr "IMAP-tjeneste for %s på %s"
 #: ../camel/providers/imap4/camel-imap4-store.c:262
 #: ../camel/providers/nntp/camel-nntp-store.c:182
 #: ../camel/providers/nntp/camel-nntp-store.c:197
-#: ../camel/providers/pop3/camel-pop3-store.c:170
-#: ../camel/providers/pop3/camel-pop3-store.c:184
+#: ../camel/providers/pop3/camel-pop3-store.c:192
+#: ../camel/providers/pop3/camel-pop3-store.c:206
 #: ../camel/providers/smtp/camel-smtp-transport.c:259
 #: ../camel/providers/smtp/camel-smtp-transport.c:274
 #, c-format
@@ -3041,7 +3039,7 @@ msgstr "Kunne ikke koble til %s: %s"
 #: ../camel/providers/imap/camel-imap-store.c:567
 #: ../camel/providers/imap4/camel-imap4-store.c:248
 #: ../camel/providers/nntp/camel-nntp-store.c:183
-#: ../camel/providers/pop3/camel-pop3-store.c:171
+#: ../camel/providers/pop3/camel-pop3-store.c:193
 #: ../camel/providers/smtp/camel-smtp-transport.c:260
 msgid "SSL unavailable"
 msgstr "SSL er ikke tilgjengelig"
@@ -3307,7 +3305,7 @@ msgstr ""
 #: ../camel/providers/imap4/camel-imap4-store.c:259
 #: ../camel/providers/nntp/camel-nntp-store.c:194
 #: ../camel/providers/nntp/camel-nntp-store.c:213
-#: ../camel/providers/pop3/camel-pop3-store.c:181
+#: ../camel/providers/pop3/camel-pop3-store.c:203
 #: ../camel/providers/smtp/camel-smtp-transport.c:271
 msgid "Connection canceled"
 msgstr "Tilkobling avbrutt"
@@ -3322,7 +3320,7 @@ msgstr ""
 "STARTTLS"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:326
-#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:275
 msgid "TLS negotiations failed"
 msgstr "TLS-forhandling feilet"
 
@@ -4271,34 +4269,38 @@ msgstr ""
 "passord via APOP-protokollen. Dette vil kanskje ikke virke for alle brukere "
 "selv på tjenere som hevder å støtte det."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:207
+#: ../camel/providers/pop3/camel-pop3-store.c:229
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Kunne ikke lese en gyldig hilsen fra POP-tjener %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:224
-#: ../camel/providers/pop3/camel-pop3-store.c:238
-#: ../camel/providers/pop3/camel-pop3-store.c:248
-#: ../camel/providers/pop3/camel-pop3-store.c:254
+#: ../camel/providers/pop3/camel-pop3-store.c:246
+#: ../camel/providers/pop3/camel-pop3-store.c:274
+#: ../camel/providers/pop3/camel-pop3-store.c:280
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til POP-tjener %s i sikker modus: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:225
+#: ../camel/providers/pop3/camel-pop3-store.c:247
 msgid "STLS not supported by server"
 msgstr "STLS er ikke støttet av tjeneren"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:255
+#: ../camel/providers/pop3/camel-pop3-store.c:262
+#, c-format
+msgid "Failed to connect to POP server %s in secure mode%s"
+msgstr "Kunne ikke koble til POP-tjener %s i sikker modus%s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:281
 msgid "TLS is not available in this build"
 msgstr "TLS er ikke støttet i denne versjonen"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:387
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "Kunne ikke koble til POP-tjener %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:402
-#: ../camel/providers/pop3/camel-pop3-store.c:535
+#: ../camel/providers/pop3/camel-pop3-store.c:428
+#: ../camel/providers/pop3/camel-pop3-store.c:565
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4307,22 +4309,22 @@ msgstr ""
 "Kunne ikke koble til POP-tjener %s: Ingen støtte for forespurt "
 "autentiseringsmekanisme."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:418
+#: ../camel/providers/pop3/camel-pop3-store.c:446
 #, c-format
-msgid "SASL '%s' Login failed for POP server %s: %s"
-msgstr "SASL «%s»-login feilet for POP-tjener %s: %s"
+msgid "SASL '%s' Login failed for POP server %s%s"
+msgstr "SASL «%s»-login feilet for POP-tjener %s%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:430
+#: ../camel/providers/pop3/camel-pop3-store.c:460
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Kan ikke logge inn til POP-tjener %s: SASL-protokollfeil"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:449
+#: ../camel/providers/pop3/camel-pop3-store.c:479
 #, c-format
 msgid "Failed to authenticate on POP server %s: %s"
 msgstr "Kunne ikke autentisere mot POP-tjener %s: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:508
+#: ../camel/providers/pop3/camel-pop3-store.c:538
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4331,8 +4333,7 @@ msgstr ""
 "Kan ikke koble til POP-tjener %s:\\tUgyldig APOP-ID mottatt. Mulig "
 "identitetstyveri. Kontakt din administrator."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:549
-#: ../camel/providers/pop3/camel-pop3-store.c:562
+#: ../camel/providers/pop3/camel-pop3-store.c:579
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4341,16 +4342,25 @@ msgstr ""
 "Kunne ikke koble til POP-tjener %s.\n"
 "Feil ved oversending av passord: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:556
+#: ../camel/providers/pop3/camel-pop3-store.c:588
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
-"Error sending username: %s"
+"Error sending username%s"
 msgstr ""
 "Kunne ikke koble til POP-tjener %s.\n"
-"Feil ved oversending av brukernavn: %s"
+"Feil ved oversending av brukernavn%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:669
+#: ../camel/providers/pop3/camel-pop3-store.c:597
+#, c-format
+msgid ""
+"Unable to connect to POP server %s.\n"
+"Error sending password%s"
+msgstr ""
+"Kunne ikke koble til POP-tjener %s.\n"
+"Feil ved oversending av passord%s"
+
+#: ../camel/providers/pop3/camel-pop3-store.c:703
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Ingen slik mappe «%s»."
