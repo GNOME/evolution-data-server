@@ -134,11 +134,15 @@ write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 
 	CAMEL_IMAP_WRAPPER_LOCK (imap_wrapper, lock);
 	if (data_wrapper->offline) {
+		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 		CamelStream *datastream;
 
 		datastream = camel_imap_folder_fetch_data (
 			imap_wrapper->folder, imap_wrapper->uid,
-			imap_wrapper->part_spec, FALSE, NULL);
+			imap_wrapper->part_spec, FALSE, &ex);
+
+		camel_exception_clear (&ex);
+
 		if (!datastream) {
 			CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
 #ifdef ENETUNREACH

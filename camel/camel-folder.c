@@ -1901,16 +1901,17 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 	gint i, status = 0;
 	CamelURL *uri;
 	gchar *source_url;
-	CamelException ex;
+	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 	CamelJunkPlugin *csp = ((CamelService *)m->folder->parent_store)->session->junk_plugin;
 
 	if (m->junk) {
 		camel_operation_start (NULL, _("Learning junk"));
 
 		for (i = 0; i < m->junk->len; i ++) {
-			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->junk->pdata[i], NULL);
+			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->junk->pdata[i], &ex);
 			gint pc = 100 * i / m->junk->len;
 
+			camel_exception_clear (&ex);
 			camel_operation_progress(NULL, pc);
 
 			if (msg) {
@@ -1924,9 +1925,10 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 	if (m->notjunk) {
 		camel_operation_start (NULL, _("Learning non-junk"));
 		for (i = 0; i < m->notjunk->len; i ++) {
-			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->notjunk->pdata[i], NULL);
+			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->notjunk->pdata[i], &ex);
 			gint pc = 100 * i / m->notjunk->len;
 
+			camel_exception_clear (&ex);
 			camel_operation_progress(NULL, pc);
 
 			if (msg) {
@@ -1973,7 +1975,6 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 			camel_folder_free_message_info(m->folder, info);
 		}
 
-		camel_exception_init(&ex);
 		camel_filter_driver_flush(m->driver, &ex);
 		if (!camel_exception_is_set(&m->ex))
 			camel_exception_xfer(&m->ex, &ex);

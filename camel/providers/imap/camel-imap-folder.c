@@ -3767,8 +3767,11 @@ imap_thaw (CamelFolder *folder)
 
 	imap_folder = CAMEL_IMAP_FOLDER (folder);
 	if (imap_folder->need_refresh) {
+		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
+
 		imap_folder->need_refresh = FALSE;
-		imap_refresh_info (folder, NULL);
+		imap_refresh_info (folder, &ex);
+		camel_exception_clear (&ex);
 	}
 }
 
