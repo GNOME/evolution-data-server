@@ -78,6 +78,9 @@ void                 e_name_selector_model_add_section         (ENameSelectorMod
 void                 e_name_selector_model_remove_section      (ENameSelectorModel *name_selector_model,
 								const gchar *name);
 
+GList *e_name_selector_model_get_contact_emails_without_used (ENameSelectorModel *name_selector_model, EContact *contact, gboolean remove_used);
+void   e_name_selector_model_free_emails_list (GList *email_list);
+
 G_END_DECLS
 
 #endif /* E_NAME_SELECTOR_MODEL_H */

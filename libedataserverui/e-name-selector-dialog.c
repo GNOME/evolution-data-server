@@ -395,9 +395,17 @@ sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkT
 }
 
 static void
-add_destination (EDestinationStore *destination_store, EContact *contact, gint email_n)
+add_destination (ENameSelectorModel *name_selector_model, EDestinationStore *destination_store, EContact *contact, gint email_n)
 {
 	EDestination *destination;
+	GList *email_list, *nth;
+
+	/* get the correct index of an email in the contact */
+	email_list = e_name_selector_model_get_contact_emails_without_used (name_selector_model, contact, FALSE);
+	while (nth = g_list_nth (email_list, email_n), nth && nth->data == NULL) {
+		email_n++;
+	}
+	e_name_selector_model_free_emails_list (email_list);
 
 	/* Transfer (actually, copy into a destination and let the model filter out the
 	 * source automatically) */
@@ -873,7 +881,7 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 		return;
 	}
 
-	add_destination (destination_store, contact, email_n);
+	add_destination (name_selector_dialog->name_selector_model, destination_store, contact, email_n);
 }
 
 static void
@@ -1044,7 +1052,7 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 			return;
 		}
 
-		add_destination (destination_store, contact, email_n);
+		add_destination (name_selector_dialog->name_selector_model, destination_store, contact, email_n);
 	}
 	g_list_free (rows);
 }
@@ -1142,17 +1150,6 @@ shutdown_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 }
 
 static void
-deep_free_list (GList *list)
-{
-	GList *l;
-
-	for (l = list; l; l = g_list_next (l))
-		g_free (l->data);
-
-	g_list_free (list);
-}
-
-static void
 contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model,
 			  GtkTreeIter *iter, ENameSelectorDialog *name_selector_dialog)
 {
@@ -1170,7 +1167,7 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 
 	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
 	contact = e_contact_store_get_contact (contact_store, &contact_store_iter);
-	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+	email_list = e_name_selector_model_get_contact_emails_without_used (name_selector_dialog->name_selector_model, contact, TRUE);
 	email_str = g_list_nth_data (email_list, email_n);
 	full_name_str = e_contact_get (contact, E_CONTACT_FULL_NAME);
 
@@ -1183,7 +1180,7 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 	}
 
 	g_free (full_name_str);
-	deep_free_list (email_list);
+	e_name_selector_model_free_emails_list (email_list);
 
 	g_object_set (cell, "text", string, NULL);
 	g_free (string);

@@ -159,8 +159,7 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 {
 	EContact    *contact;
 	const gchar *contact_uid;
-	gboolean     result = TRUE;
-	gint         n_rows;
+	gint         n_rows, used_rows = 0;
 	gint         i;
 
 	contact = e_contact_store_get_contact (contact_store, iter);
@@ -168,9 +167,9 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 
 	contact_uid = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!contact_uid)
-		return TRUE;  /* Can happen with broken databases */
+		return 0;  /* Can happen with broken databases */
 
-	for (i = 0; i < name_selector_model->sections->len && result == TRUE; i++) {
+	for (i = 0; i < name_selector_model->sections->len; i++) {
 		Section *section;
 		GList   *destinations;
 		GList   *l;
@@ -184,27 +183,24 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 
 			destination_uid = e_destination_get_contact_uid (destination);
 			if (destination_uid && !strcmp (contact_uid, destination_uid)) {
-				result = FALSE;
-				break;
+				used_rows++;
 			}
 		}
 
 		g_list_free (destinations);
 	}
 
-	if (result) {
+	if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
+		n_rows = 1 - used_rows;
+	} else {
 		GList    *email_list;
 
-		if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
-			n_rows = 1;
-		} else {
-			email_list = e_contact_get (contact, E_CONTACT_EMAIL);
-			n_rows = g_list_length (email_list);
-			deep_free_list (email_list);
-		}
-	} else {
-		n_rows = 0;
+		email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+		n_rows = g_list_length (email_list) - used_rows;
+		deep_free_list (email_list);
 	}
+
+	g_return_val_if_fail (n_rows >= 0, 0);
 
 	return n_rows;
 }
@@ -220,10 +216,11 @@ override_email_address (EContactStore *contact_store, GtkTreeIter *iter,
 		gchar    *email;
 
 		contact = e_contact_store_get_contact (contact_store, iter);
-		email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+		email_list = e_name_selector_model_get_contact_emails_without_used (name_selector_model, contact, TRUE);
+		g_return_if_fail (g_list_length (email_list) <= permutation_n);
 		email = g_strdup (g_list_nth_data (email_list, permutation_n));
 		g_value_set_string (value, email);
-		deep_free_list (email_list);
+		e_name_selector_model_free_emails_list (email_list);
 	} else {
 		gtk_tree_model_get_value (GTK_TREE_MODEL (contact_store), iter, column, value);
 	}
@@ -241,18 +238,27 @@ typedef struct
 HashCompare;
 
 static void
-emit_destination_uid_changes_cb (const gchar *uid, gpointer value, HashCompare *hash_compare)
+emit_destination_uid_changes_cb (gchar *uid_num, gpointer value, HashCompare *hash_compare)
 {
 	EContactStore *contact_store = hash_compare->name_selector_model->contact_store;
 
-	if (!hash_compare->other_hash || !g_hash_table_lookup (hash_compare->other_hash, uid)) {
+	if (!hash_compare->other_hash || !g_hash_table_lookup (hash_compare->other_hash, uid_num)) {
 		GtkTreeIter  iter;
 		GtkTreePath *path;
+		gchar *sep;
 
-		if (e_contact_store_find_contact (contact_store, uid, &iter)) {
+		sep = strrchr (uid_num, ':');
+		g_return_if_fail (sep != NULL);
+
+		*sep = '\0';
+		if (e_contact_store_find_contact (contact_store, uid_num, &iter)) {
+			*sep = ':';
+
 			path = gtk_tree_model_get_path (GTK_TREE_MODEL (contact_store), &iter);
 			gtk_tree_model_row_changed (GTK_TREE_MODEL (contact_store), path, &iter);
 			gtk_tree_path_free (path);
+		} else {
+			*sep = ':';
 		}
 	}
 }
@@ -281,7 +287,7 @@ destinations_changed (ENameSelectorModel *name_selector_model)
 			destination_uid = e_destination_get_contact_uid (destination);
 			if (destination_uid)
 				g_hash_table_insert (destination_uid_hash_new,
-						     g_strdup (destination_uid),
+						     g_strdup_printf ("%s:%d", destination_uid, e_destination_get_email_num (destination)),
 						     GINT_TO_POINTER (TRUE));
 		}
 
@@ -519,4 +525,89 @@ e_name_selector_model_peek_section (ENameSelectorModel *name_selector_model, con
 		*destination_store = section->destination_store;
 
 	return TRUE;
+}
+
+/**
+ * e_name_selector_model_get_contact_emails_without_used:
+ * @name_selector_model: an #ENameSelectorModel
+ * @contact: to get emails from
+ * @remove_used: set to %TRUE to remove used from a list; or set to %FALSE to
+ * set used indexes to %NULL and keep them in the returned list
+ *
+ * Returns list of all email from @contact, without all used
+ * in any section. Each item is a string, an email address.
+ * Returned list should be freed with @e_name_selector_model_free_emails_list.
+ **/
+GList *
+e_name_selector_model_get_contact_emails_without_used (ENameSelectorModel *name_selector_model, EContact *contact, gboolean remove_used)
+{
+	GList *email_list;
+	gint emails;
+	gint i;
+	const gchar *contact_uid;
+
+	g_return_val_if_fail (name_selector_model != NULL, NULL);
+	g_return_val_if_fail (E_IS_NAME_SELECTOR_MODEL (name_selector_model), NULL);
+	g_return_val_if_fail (contact != NULL, NULL);
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	contact_uid = e_contact_get_const (contact, E_CONTACT_UID);
+	g_return_val_if_fail (contact_uid != NULL, NULL);
+
+	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
+	emails = g_list_length (email_list);
+
+	for (i = 0; i < name_selector_model->sections->len; i++) {
+		Section *section;
+		GList   *destinations;
+		GList   *l;
+
+		section = &g_array_index (name_selector_model->sections, Section, i);
+		destinations = e_destination_store_list_destinations (section->destination_store);
+
+		for (l = destinations; l; l = g_list_next (l)) {
+			EDestination *destination = l->data;
+			const gchar  *destination_uid;
+
+			destination_uid = e_destination_get_contact_uid (destination);
+			if (destination_uid && !strcmp (contact_uid, destination_uid)) {
+				gint email_num = e_destination_get_email_num (destination);
+
+				if (email_num < 0 || email_num >= emails) {
+					g_warning ("%s: Destination's email_num %d out of bounds 0..%d", G_STRFUNC, email_num, emails - 1);
+				} else {
+					GList *nth = g_list_nth (email_list, email_num);
+
+					g_return_val_if_fail (nth != NULL, NULL);
+
+					g_free (nth->data);
+					nth->data = NULL;
+				}
+			}
+		}
+
+		g_list_free (destinations);
+	}
+
+	if (remove_used) {
+		/* remove all with data NULL, which are those used already */
+		do {
+			emails = g_list_length (email_list);
+			email_list = g_list_remove (email_list, NULL);
+		} while (g_list_length (email_list) != emails);
+	}
+
+	return email_list;
+}
+
+/**
+ * e_name_selector_model_free_emails_list:
+ * @email_list: list of emails returned from @e_name_selector_model_get_contact_emails_without_used
+ *
+ * Frees a list of emails returned from @e_name_selector_model_get_contact_emails_without_used.
+ **/
+void
+e_name_selector_model_free_emails_list (GList *email_list)
+{
+	deep_free_list (email_list);
 }
