@@ -11,15 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-27 05:59+0530\n"
+"POT-Creation-Date: 2009-10-27 12:00+0530\n"
 "PO-Revision-Date: 2009-10-27 11:19+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: Tamil <Ubuntu-l10n-tam@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\\n"
-"\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\\n\n"
 "\n"
 "X-Generator: Lokalize 0.3\n"
 
@@ -1116,7 +1115,8 @@ msgstr "\"%s\" முதல் அளபுரு சரமாக இருக�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" முதல் அளபுரு ISO 860 தேதி/நேர சரமாக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
+msgstr ""
+"\"%s\" முதல் அளபுரு ISO 860 தேதி/நேர சரமாக இருக்க வேண்டும் என எதிர்பார்க்கிறது"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:160
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:361
@@ -1713,7 +1713,8 @@ msgstr "செய்தி கையொப்பத்தை சரிபார�
 #: ../camel/camel-gpg-context.c:1525
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
-msgstr "செய்தி கையொப்பத்தை சரிபார்க்க முடியவில்லை: தற்காலிக கோப்பை உருவாக்க முடியவில்லை: %s"
+msgstr ""
+"செய்தி கையொப்பத்தை சரிபார்க்க முடியவில்லை: தற்காலிக கோப்பை உருவாக்க முடியவில்லை: %s"
 
 #: ../camel/camel-gpg-context.c:1634
 #, c-format
@@ -2021,7 +2022,8 @@ msgstr "இந்த தேர்வு கர்ப்ரோஸ் கடவு
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
-msgstr "குறிப்பிட்ட செயலுக்கு தேவையான ஆதரவு இல்லை அல்லது செயல்பாட்டை புரிந்துகொள்ள முடியவில்லை."
+msgstr ""
+"குறிப்பிட்ட செயலுக்கு தேவையான ஆதரவு இல்லை அல்லது செயல்பாட்டை புரிந்துகொள்ள முடியவில்லை."
 
 #: ../camel/camel-sasl-gssapi.c:164
 msgid "The provided target_name parameter was ill-formed."
@@ -2052,7 +2054,8 @@ msgstr "input_token இல் செல்லாத கையொப்பம் 
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
-msgstr "தொடரை துவக்க கொடுக்கப்பட்ட தகவல்கள் போதாது அல்லது தகவல் குறிப்பை அணுக முடியவில்லை"
+msgstr ""
+"தொடரை துவக்க கொடுக்கப்பட்ட தகவல்கள் போதாது அல்லது தகவல் குறிப்பை அணுக முடியவில்லை"
 
 #: ../camel/camel-sasl-gssapi.c:185
 msgid "The supplied context handle did not refer to a valid context."
@@ -2698,7 +2701,8 @@ msgid "Password"
 msgstr "கடவுச்சொல்"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:106
-msgid "This option will connect to the GroupWise server using a plaintext password."
+msgid ""
+"This option will connect to the GroupWise server using a plaintext password."
 msgstr "இந்த தேர்வு க்ரூப்வைஸ் சேவகனை சாதாரண உரை கடவுச்சொல்லை பயன்படுத்தி இணைக்கும்"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:102
@@ -3116,7 +3120,8 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2272
 #: ../camel/providers/imap4/camel-imap4-store.c:954
 #, c-format
-msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "அடைவின் பெயர் \"%s\" செல்லாது காரணம் எழுத்து \"%c\" உள்ளது"
 
 #: ../camel/providers/imap/camel-imap-store.c:2008
@@ -3248,22 +3253,26 @@ msgstr " '%s' அடைவுக்கு செய்தி சேர்க்�
 #: ../camel/providers/imap4/camel-imap4-folder.c:1182
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
-msgstr "அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகர்த்த முடியவில்லை: தெரியாத தவறு"
+msgstr ""
+"அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகர்த்த முடியவில்லை: தெரியாத தவறு"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1186
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
-msgstr "அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகர்த்த முடியவில்லை:  தெரியாத தவறு"
+msgstr ""
+"அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகர்த்த முடியவில்லை:  தெரியாத தவறு"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1194
 #, c-format
 msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-msgstr "அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகர்த்த முடியவில்லை: தவறான கட்டளை"
+msgstr ""
+"அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகர்த்த முடியவில்லை: தவறான கட்டளை"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:1198
 #, c-format
 msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-msgstr "அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகலெடுக்க முடியவில்லை: தவறான கட்டளை"
+msgstr ""
+"அடைவு '%s' இலிருந்து அடைவு '%s' க்கு செய்திகளை நகலெடுக்க முடியவில்லை: தவறான கட்டளை"
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:55
 msgid "Check new messages for _Junk contents"
@@ -3282,7 +3291,8 @@ msgid "For reading and storing mail on IMAPv4rev1 servers."
 msgstr "மின்னஞ்சல்களை படிக்க மற்றும் IMAPv4rev1 சேவையகத்தில் சேமிக்கவும்."
 
 #: ../camel/providers/imap4/camel-imap4-provider.c:85
-msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
+msgid ""
+"This option will connect to the IMAPv4rev1 server using a plaintext password."
 msgstr "இந்த தேர்வு IMAPv4rev1 சேவகனுடன் சாதாரணஉரை கடவுச்சொல்லை பயன்படுத்தி இணைக்கும்"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:259
@@ -3298,7 +3308,8 @@ msgstr "இணைப்பினை ரத்து செய்யதல்"
 msgid ""
 "Failed to connect to IMAP server %s in secure mode: Server does not support "
 "STARTTLS"
-msgstr "IMAP சேவகன் %s உடன் பாதுகாப்பாக இணைப்பதில் தோல்வி. சேவையகம் STARTTLS ஐ ஆதரிக்கவில்லை."
+msgstr ""
+"IMAP சேவகன் %s உடன் பாதுகாப்பாக இணைப்பதில் தோல்வி. சேவையகம் STARTTLS ஐ ஆதரிக்கவில்லை."
 
 #: ../camel/providers/imap4/camel-imap4-store.c:326
 #: ../camel/providers/pop3/camel-pop3-store.c:249
@@ -3307,7 +3318,8 @@ msgstr "TLS பேச்சு வார்த்தை தோல்வியு
 
 #: ../camel/providers/imap4/camel-imap4-store.c:411
 #, c-format
-msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+msgid ""
+"Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 msgstr "IMAP சேவகன் %s ஐ %s அனுமதி முறையை பயன்படுத்தி அனுமதிக்க முடியாது"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:534
@@ -3376,7 +3388,8 @@ msgstr " IMAP அடைவை இணைய முறையில் புது
 #: ../camel/providers/imap4/camel-imap4-store.c:1137
 #, c-format
 msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-msgstr "அடைவு '%s' ஐ  '%s' என மறு பெயர் இட  முடியவில்லை: செல்லுபடியாகாத அஞ்சல் பெட்டி பெயர்"
+msgstr ""
+"அடைவு '%s' ஐ  '%s' என மறு பெயர் இட  முடியவில்லை: செல்லுபடியாகாத அஞ்சல் பெட்டி பெயர்"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1142
 #, c-format
@@ -4027,8 +4040,10 @@ msgid "You cannot copy messages from a NNTP folder!"
 msgstr "NNTP அடைவை நகலெடுக்க முடியாது"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
-msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr "(_S) சிறு குறிப்பாக அடைவை காட்டு (எ-டு comp.os.linux க்கு பதில் c.o.linux )"
+msgid ""
+"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr ""
+"(_S) சிறு குறிப்பாக அடைவை காட்டு (எ-டு comp.os.linux க்கு பதில் c.o.linux )"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription _dialog, show relative folder names"
