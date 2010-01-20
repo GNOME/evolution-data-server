@@ -2470,7 +2470,6 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 cleanup:
 	camel_operation_end (job->op);
 	
-
 	for (i=0;i<infos->len;i++) {
 		struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
@@ -2711,7 +2710,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
 		if (!camel_exception_is_set (ic->ex))
-			camel_exception_setv(ic->job->ex, 1, "Error fetching new messages : %s", ic->status->text);
+			camel_exception_setv(ic->job->ex, 1, "Error expunging message : %s", ic->status->text);
 		else
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
@@ -2770,6 +2769,9 @@ imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		else
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
+	
+	if (ic->job->folder) 
+		((CamelIMAPXFolder *) ic->job->folder)->exists_on_server = is->exists;
 
 	imapx_job_done (ic->job);
 	camel_imapx_command_free (ic);
