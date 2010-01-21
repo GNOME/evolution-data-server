@@ -20,7 +20,7 @@ m4_define([api_version], [1.2])
 dnl Autoconf / Automake Initialization
 AC_PREREQ(2.58)
 AC_INIT([evolution-data-server],[eds_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server])
-AM_INIT_AUTOMAKE([gnu 1.9 tar-ustar])
+AM_INIT_AUTOMAKE([gnu 1.9 tar-ustar -Wall -Werror foreign])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_HEADERS(config.h)
@@ -161,6 +161,7 @@ AS_COMPILER_FLAGS(WARNING_FLAGS,
 	-Wmissing-declarations -Wmissing-include-dirs
 	-Wmissing-noreturn -Wnested-externs -Wpointer-arith
 	-Wredundant-decls -Wundef -Wwrite-strings")
+AC_SUBST(WARNING_FLAGS)
 
 dnl Other useful compiler warnings for test builds only.
 dnl These may produce warnings we have no control over.
@@ -171,6 +172,8 @@ dnl	-Wshadow
 
 AM_CPPFLAGS="$WARNING_FLAGS"
 AC_SUBST(AM_CPPFLAGS)
+
+LDFLAGS="$LDFLAGS -Wl,--no-undefined"
 
 dnl ******************************
 dnl Initialize maintainer mode
@@ -196,7 +199,7 @@ dnl ******************************
 dnl Test whether jw is installed
 dnl ******************************
 AC_PATH_PROG(JW,jw,no)
-if test x$JW = xno; then
+if test "x$JW" = "xno"; then
 	HAVE_JW="no"
 else
 	HAVE_JW="yes"
@@ -227,26 +230,29 @@ LT_INIT(disable-static win32-dll)
 PKG_PROG_PKG_CONFIG
 
 dnl ******************************
+dnl Gtk Doc stuff
+dnl ******************************
+GTK_DOC_CHECK(1.9)
+
+dnl ******************************
 dnl Check for Win32
 dnl ******************************
 AC_MSG_CHECKING([for Win32])
 case "$host" in
 *-mingw*)
-	os_win32=yes
+	os_win32='yes'
 	NO_UNDEFINED='-no-undefined'
 	SOCKET_LIBS='-lws2_32 -ldnsapi'
 	DL_LIB=''
-	SOFTOKN3_LIB=''
 	LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
 	AC_CACHE_VAL(ac_cv_have_addrinfo, [ac_cv_have_addrinfo=yes])
 	AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
 	;;
 *)
-	os_win32=no
+	os_win32='no'
 	NO_UNDEFINED=''
 	SOCKET_LIBS=''
 	DL_LIB='-ldl'
-	SOFTOKN3_LIB='-lsoftokn3'
 	LIBEXECDIR_IN_SERVER_FILE="$libexecdir"
 	;;
 esac
@@ -320,7 +326,7 @@ AC_SUBST(DB_LIBS)
 dnl ******************************
 dnl iconv checking
 dnl ******************************
-have_iconv=no
+have_iconv="no"
 save_LIBS="$LIBS"
 LIBS="$LIBS -liconv"
 AC_CACHE_CHECK([for iconv in -liconv], [ac_cv_libiconv],
@@ -335,21 +341,21 @@ AC_CACHE_CHECK([for iconv in -liconv], [ac_cv_libiconv],
 	]]
 	)],[ac_cv_libiconv=yes],[ac_cv_libiconv=no]))
 
-if test $ac_cv_libiconv = yes; then
+if test "x$ac_cv_libiconv" = "xyes"; then
 	ICONV_LIBS="-liconv"
-	if test $os_win32 = yes; then
+	if test "x$os_win32" = "xyes"; then
 		dnl Don't pointlessly auto-export the global symbols
 		dnl from a potentially static libiconv.a
 		ICONV_LIBS="$ICONV_LIBS -Wl,--exclude-libs=libiconv.a"
 	fi
-	have_iconv=yes
+	have_iconv="yes"
 else
 	LIBS="$save_LIBS"
-	AC_CHECK_FUNC(iconv, have_iconv=yes, have_iconv=no)
+	AC_CHECK_FUNC(iconv, [have_iconv=yes], [have_iconv=no])
 fi
 
-if test $have_iconv = yes; then
-	if test $ac_cv_libiconv = no; then
+if test "x$have_iconv" = "xyes"; then
+	if test "x$ac_cv_libiconv" = "xno"; then
 		AC_CHECK_FUNCS(gnu_get_libc_version)
 	fi
 AC_CACHE_CHECK([if iconv() handles UTF-8], [ac_cv_libiconv_utf8],
@@ -386,7 +392,7 @@ AC_CACHE_CHECK([if iconv() handles UTF-8], [ac_cv_libiconv_utf8],
 	],[ac_cv_libiconv_utf8=yes],[ac_cv_libiconv_utf8=no; have_iconv=no],[ac_cv_libiconv_utf8=hopefully]))
 fi
 
-if test "$have_iconv" = no; then
+if test "x$have_iconv" = "xno"; then
 	AC_MSG_ERROR([You need to install a working iconv implementation, such as ftp://ftp.gnu.org/pub/gnu/libiconv])
 fi
 AC_SUBST(ICONV_LIBS)
@@ -407,7 +413,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 		*** working iconv library such as the one found at
 		*** ftp://ftp.gnu.org/pub/gnu/libiconv
 	])],
-	[if test x$os_win32 = xyes; then
+	[if test "x$os_win32" = xyes; then
 		AC_MSG_RESULT([using known win32 result])
 		echo '/* This is an auto-generated header, DO NOT EDIT! */' > iconv-detect.h
 		echo  >>iconv-detect.h
@@ -436,7 +442,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	[[#include <langinfo.h>]],
 	[[char *codeset = nl_langinfo (CODESET);]]
 	)],[ac_cv_langinfo_codeset=yes],[ac_cv_langinfo_codeset=no])
-if test x$ac_cv_langinfo_codeset = xyes; then
+if test "x$ac_cv_langinfo_codeset" = "xyes"; then
 	AC_DEFINE(HAVE_CODESET, 1, [Have nl_langinfo (CODESET)])
 fi
 AC_MSG_RESULT([$ac_cv_langinfo_codeset])
@@ -732,7 +738,7 @@ AC_CACHE_CHECK(for tm_gmtoff in struct tm, [ac_cv_struct_tm_gmtoff],
 		tm.tm_gmtoff = 1;
 	]]
 	)],[ac_cv_struct_tm_gmtoff=yes],[ac_cv_struct_tm_gmtoff=no]))
-if test $ac_cv_struct_tm_gmtoff = yes; then
+if test "x$ac_cv_struct_tm_gmtoff" = "xyes"; then
 	AC_DEFINE(HAVE_TM_GMTOFF, 1, [Define if struct tm has a tm_gmtoff member])
 else
 	AC_CACHE_CHECK(for timezone variable, [ac_cv_var_timezone],
@@ -740,14 +746,14 @@ else
 		[[	#include <time.h> ]],
 		[[	timezone = 1;	]]
 		)],[ac_cv_var_timezone=yes],[ac_cv_var_timezone=no]))
-	if test $ac_cv_var_timezone = yes; then
+	if test "x$ac_cv_var_timezone" = "xyes"; then
 		AC_DEFINE(HAVE_TIMEZONE, 1, [Define if libc defines a timezone variable])
 		AC_CACHE_CHECK(for altzone variable, [ac_cv_var_altzone],
 			AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 			[[	#include <time.h>	]],
 			[[	altzone = 1; ]]
 			)],[ac_cv_var_altzone=yes],[ac_cv_var_altzone=no]))
-		if test $ac_cv_var_altzone = yes; then
+		if test "x$ac_cv_var_altzone" = "xyes"; then
 			AC_DEFINE(HAVE_ALTZONE, 1, [Define if libc defines an altzone variable])
 		fi
 	else
@@ -768,7 +774,7 @@ AC_CACHE_CHECK([if ctime_r wants three arguments], [ac_cv_ctime_r_three_args],
 	)],[ac_cv_ctime_r_three_args=yes],[ac_cv_ctime_r_three_args=no])
 ])
 
-if test x"$ac_cv_ctime_r_three_args" = xyes ; then
+if test "x$ac_cv_ctime_r_three_args" = "xyes" ; then
 	AC_DEFINE(CTIME_R_THREE_ARGS, 1, [Solaris-style ctime_r])
 fi
 
@@ -887,19 +893,19 @@ AC_CACHE_CHECK([if system supports getaddrinfo and getnameinfo], [ac_cv_have_add
 	)],[ac_cv_have_addrinfo=yes],[ac_cv_have_addrinfo=no])
 ])
 
-if test x"$ac_cv_have_addrinfo" = "xno" ; then
+if test "x$ac_cv_have_addrinfo" = "xno" ; then
 	AC_DEFINE(NEED_ADDRINFO,1,[Enable getaddrinfo emulation])
-	if test x"$enable_ipv6" = "xyes" ; then
+	if test "x$enable_ipv6" = "xyes" ; then
 		AC_MSG_ERROR([system doesn't support necessary interfaces for ipv6 support])
 	fi
-	msg_ipv6=no
+	msg_ipv6="no"
 else
 	AC_ARG_ENABLE([ipv6],
 	AS_HELP_STRING([--enable-ipv6=no/yes],
 	[Enable support for resolving IPv6 addresses.]),
 	[enable_ipv6=$enableval],[enable_ipv6=yes])
-	if test x"$enable_ipv6" = "xyes"; then
-		msg_ipv6=yes
+	if test "x$enable_ipv6" = "xyes"; then
+		msg_ipv6="yes"
 		AC_DEFINE(ENABLE_IPv6,1,[Enable IPv6 support])
 		AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 		[[	#include "confdefs.h"
@@ -913,7 +919,7 @@ else
 		]]
 		)],[AC_DEFINE(HAVE_AI_ADDRCONFIG,1,[Define if the system defines the AI_ADDRCONFIG flag for getaddrinfo])],[])
 	else
-		msg_ipv6=no
+		msg_ipv6="no"
 	fi
 fi
 
@@ -948,7 +954,7 @@ if test "$enable_calendar" = "no"; then
 fi
 
 AC_MSG_RESULT([$use_gweather])
-if test "$use_gweather" = "yes"; then
+if test "x$use_gweather" = "xyes"; then
 	PKG_CHECK_MODULES([LIBGWEATHER], [gweather >= gweather_minimum_version],[],
 	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --without-weather as a configure option to avoid building the backend.])])
 fi
@@ -963,9 +969,9 @@ AC_ARG_ENABLE([nntp],
 	[enable_nntp=$enableval],[enable_nntp=yes])
 if test "x$enable_nntp" = "xyes"; then
 	AC_DEFINE(ENABLE_NNTP,1,[Build NNTP backend])
-	msg_nntp=yes
+	msg_nntp="yes"
 else
-	msg_nntp=no
+	msg_nntp="no"
 fi
 AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
 
@@ -981,9 +987,9 @@ AC_ARG_ENABLE(imap4,
 
 if test "x$enable_imap4" = "xyes"; then
 	AC_DEFINE(ENABLE_IMAP4,1,[Really don't try this at home])
-	msg_imap4=yes
+	msg_imap4="yes"
 else
-	msg_imap4=no
+	msg_imap4="no"
 fi
 AM_CONDITIONAL(ENABLE_IMAP4, [test x$enable_imap4 = xyes])
 
@@ -1001,9 +1007,9 @@ if test "x$enable_imapx" = "xyes"; then
 	if test -z "$GPERF" ; then
 		AC_MSG_ERROR([You need gperf to compile imapx provider])
 	fi
-	msg_imapx=yes
+	msg_imapx="yes"
 else
-	msg_imapx=no
+	msg_imapx="no"
 fi
 AM_CONDITIONAL(ENABLE_IMAPX, [test x$enable_imapx = xyes])
 
@@ -1017,9 +1023,9 @@ AC_ARG_ENABLE([hula],
 
 if test "x$enable_hula" = "xyes"; then
 	AC_DEFINE(ENABLE_HULA,1,[Build Hula backend])
-	msg_hula=yes
+	msg_hula="yes"
 else
-	msg_hula=no
+	msg_hula="no"
 fi
 AM_CONDITIONAL(ENABLE_HULA, [test x$enable_hula = xyes])
 
@@ -1031,11 +1037,11 @@ AC_ARG_ENABLE([dot-locking],
 	[Enable support for locking mail files with dot locking]),
 	[enable_dot_locking=$enableval],[enable_dot_locking=yes])
 
-if test $os_win32 != yes -a "x$enable_dot_locking" = "xyes"; then
+if test "x$os_win32" != "xyes" -a "x$enable_dot_locking" = "xyes"; then
 	AC_DEFINE(USE_DOT,1,[Define to use dot locking for mbox files])
-	msg_dot=yes
+	msg_dot="yes"
 else
-	msg_dot=no
+	msg_dot="no"
 fi
 
 AC_ARG_ENABLE([file-locking],
@@ -1043,15 +1049,15 @@ AC_ARG_ENABLE([file-locking],
 	[Enable support for locking mail files with file locking]),
 	[],[enable_file_locking=fcntl])
 
-if test $os_win32 != yes -a "x$enable_file_locking" = "xfcntl"; then
+if test "x$os_win32" != "xyes" -a "x$enable_file_locking" = "xfcntl"; then
 	AC_DEFINE(USE_FCNTL,1,[Define to use fcntl locking for mbox files])
-	msg_file=fcntl
+	msg_file="fcntl"
 else
-	if test $os_win32 != yes -a "x$enable_file_locking" = "xflock"; then
+	if test "x$os_win32" != "xyes" -a "x$enable_file_locking" = "xflock"; then
 		AC_DEFINE(USE_FLOCK,1,[Define to use flock locking for mbox files])
-		msg_file=flock
+		msg_file="flock"
 	else
-		msg_file=no
+		msg_file="no"
 	fi
 fi
 
@@ -1087,11 +1093,11 @@ EVO_PURIFY_SUPPORT
 dnl ******************************
 dnl LDAP support.
 dnl ******************************
-if test "$os_win32" != yes; then
+if test "x$os_win32" != "xyes"; then
 	EVO_LDAP_CHECK(no)
 	case $with_openldap in
 	no)
-		msg_ldap=no
+		msg_ldap="no"
 	;;
 	*)
 		case $with_static_ldap in
@@ -1105,11 +1111,11 @@ if test "$os_win32" != yes; then
 	esac
 
 dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
-	if test "$with_openldap" = no ; then
+	if test "x$with_openldap" = "xno" ; then
 		EVO_SUNLDAP_CHECK(no)
 		case $with_sunldap in
 		no)
-			msg_ldap=no
+			msg_ldap="no"
 			;;
 		*)
 			case $with_static_sunldap in
@@ -1122,7 +1128,7 @@ dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
 		esac
 	esac
 	else
-		with_sunldap=no
+		with_sunldap="no"
 	fi
 	AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
 
@@ -1292,10 +1298,10 @@ dnl ******************************
 SQLITE_REQUIRED=sqlite_minimum_version
 AC_SUBST(SQLITE_REQUIRED)
 
-zlib_found=false
+zlib_found="false"
 dnl deflateInit is a #define, use deflateEnd instead
-AC_CHECK_LIB(z, deflateEnd,
-	[AC_CHECK_HEADER(zlib.h, zlib_found=true)])
+AC_CHECK_LIB([z], [deflateEnd], [AC_CHECK_HEADER(zlib.h, [zlib_found=true])])
+
 if test "x$zlib_found" = "xfalse"; then
 	AC_MSG_ERROR([*** zlib is required])
 fi
@@ -1313,7 +1319,7 @@ if test "x$enable_largefile" != "xno"; then
 	AC_CACHE_CHECK([for _LARGEFILE64_SOURCE value needed for large files], [ac_cv_largefile64_source],
 	[AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	[[	#include <sys/types.h>
-			#include <sys/stat.h>
+		#include <sys/stat.h>
 		#include <fcntl.h>
 	]],
 	[[	int fd = open ("__o_largefile", O_CREAT | O_RDWR | O_LARGEFILE, 0644);	]]
@@ -1385,7 +1391,7 @@ AC_SUBST(extensiondir)
 uidir="$privdatadir/ui"
 AC_SUBST(uidir)
 
-if test $use_gweather = yes; then
+if test "x$use_gweather" = "xyes"; then
 	weatherdatadir="$privdatadir/weather"
 	AC_SUBST(weatherdatadir)
 fi
@@ -1415,13 +1421,8 @@ AC_SUBST(EVO_SUBST_SERVICE_RULE)
 dnl ******************************
 dnl GConf stuff
 dnl ******************************
-AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+AC_PATH_PROG(GCONFTOOL, gconftool-2, [no])
 AM_GCONF_SOURCE_2
-
-dnl ******************************
-dnl Gtk Doc stuff
-dnl ******************************
-GTK_DOC_CHECK(1.9)
 
 dnl ******************************
 dnl Makefiles
@@ -1536,11 +1537,11 @@ echo "
 	Large files:		$enable_largefile
 	Gtk Doc:		$enable_gtk_doc
 "
-if test "$msg_hula" = "yes"; then
+if test "x$msg_hula" = "xyes"; then
 	echo "Hula support:	$msg_hula"
 fi
 
-if test "$msg_imapx" = "yes"; then
+if test "x$msg_imapx" = "xyes"; then
 	echo "
 	IMAPX support:		$msg_imapx
 "
