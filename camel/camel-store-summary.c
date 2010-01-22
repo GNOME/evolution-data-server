@@ -967,6 +967,7 @@ store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *info, gint type, co
 		g_hash_table_remove(s->folders_path, (gchar *)camel_store_info_path(s, info));
 		g_free(info->path);
 		g_free(info->uri);
+		info->uri = NULL;
 		info->path = g_strdup(str);
 		g_hash_table_insert(s->folders_path, (gchar *)camel_store_info_path(s, info), info);
 		s->flags |= CAMEL_STORE_SUMMARY_DIRTY;
@@ -986,6 +987,8 @@ store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *info, gint type, co
 		}
 		g_free(info->path);
 		info->path = v;
+		g_free (info->uri);
+		info->uri = NULL;
 		g_hash_table_insert(s->folders_path, (gchar *)camel_store_info_path(s, info), info);
 		CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
 		break;
