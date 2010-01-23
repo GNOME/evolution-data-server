@@ -3,12 +3,13 @@ libebook_test_utils_la_SOURCES = ebook-test-utils.c ebook-test-utils.h
 
 # FIXME: reduct redundancy
 libebook_test_utils_la_CPPFLAGS = \
-        $(AM_CPPFLAGS)                  \
-        -I$(top_srcdir)                 \
-        -I$(top_builddir)               \
-        -I$(top_srcdir)/addressbook     \
-        -I$(top_builddir)/addressbook   \
-        $(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(AM_CPPFLAGS)                  \
+	-I$(top_srcdir)                 \
+	-I$(top_builddir)               \
+	-I$(top_srcdir)/addressbook     \
+	-I$(top_builddir)/addressbook   \
+	-DSRCDIR=\""$(srcdir)"\"        \
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(NULL)
 
 libebook_test_utils_la_LIBADD = \
@@ -60,6 +61,12 @@ noinst_PROGRAMS = \
 
 TEST_CPPFLAGS= \
 	$(libebook_test_utils_la_CPPFLAGS) \
+	$(NULL)
+
+EXTRA_DIST = \
+	$(srcdir)/data/vcards/name-only.vcf	\
+	$(srcdir)/data/vcards/simple-1.vcf	\
+	$(srcdir)/data/vcards/simple-2.vcf	\
 	$(NULL)
 
 test_search_LDADD=$(TEST_LIBS)

@@ -50,7 +50,7 @@ ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
         gchar *vcard;
 
         case_filename = g_strdup_printf ("%s.vcf", case_name);
-        filename = g_build_filename (EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
+        filename = g_build_filename (SRCDIR, EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
         file = g_file_new_for_path (filename);
         if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
                 g_warning ("failed to read test contact file '%s': %s",
