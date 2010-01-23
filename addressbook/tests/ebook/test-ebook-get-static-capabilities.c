@@ -9,7 +9,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	EBook *book;
-	const char *caps;
+	const gchar *caps;
 
 	g_type_init ();
 

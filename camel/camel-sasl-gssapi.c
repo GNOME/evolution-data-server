@@ -215,11 +215,11 @@ gssapi_set_exception (OM_uint32 major, OM_uint32 minor, CamelException *ex)
 /* DBUS Specific code */
 
 static gboolean
-send_dbus_message (char *name)
+send_dbus_message (gchar *name)
 {
 	DBusMessage *message, *reply;
 	DBusError dbus_error;
-	int success = FALSE;
+	gint success = FALSE;
 	DBusConnection *bus = NULL;
 
 	dbus_error_init (&dbus_error);
@@ -241,7 +241,7 @@ send_dbus_message (char *name)
 	}
 	/* Appends the data as an argument to the message */
 	if (strchr(name, '\\'))
-		name = strchr(name, '\\');	
+		name = strchr(name, '\\');
 	dbus_message_append_args (message,
 				  DBUS_TYPE_STRING, &name,
 				  DBUS_TYPE_INVALID);
@@ -261,7 +261,7 @@ send_dbus_message (char *name)
                 dbus_error_free(&dbus_error);
                 dbus_message_unref(reply);
         }
-	
+
 	/* Free the message */
 	dbus_message_unref (message);
 	dbus_connection_unref (bus);
@@ -337,8 +337,8 @@ gssapi_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 			break;
 		default:
 			if (major == (OM_uint32)GSS_S_FAILURE &&
-		    	    (minor == (OM_uint32)KRB5KRB_AP_ERR_TKT_EXPIRED ||
-		     	     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID)) {			
+			    (minor == (OM_uint32)KRB5KRB_AP_ERR_TKT_EXPIRED ||
+			     minor == (OM_uint32)KRB5KDC_ERR_NEVER_VALID)) {
 				if (send_dbus_message (sasl->service->url->user))
 					goto challenge;
 			} else

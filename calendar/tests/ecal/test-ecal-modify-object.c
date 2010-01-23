@@ -18,13 +18,13 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	ECalComponent *e_component;
 	ECalComponent *e_component_final;
 	icalcomponent *component;
 	icalcomponent *component_final;
 	struct icaltimetype icaltime;
-	char *uid;
+	gchar *uid;
 
 	g_type_init ();
 

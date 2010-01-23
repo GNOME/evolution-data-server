@@ -9,7 +9,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	EBook *book;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	GMainLoop *loop;
 
 	g_type_init ();

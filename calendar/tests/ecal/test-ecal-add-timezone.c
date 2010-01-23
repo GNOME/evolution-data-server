@@ -13,7 +13,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	icalproperty *property;
 	icalcomponent *component;
 	icaltimezone *zone;
@@ -32,7 +32,7 @@ main (gint argc, gchar **argv)
 	icalcomponent_add_property (component, property);
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, component);
-	
+
 	/* add */
 	ecal_test_utils_cal_add_timezone (cal, zone);
 

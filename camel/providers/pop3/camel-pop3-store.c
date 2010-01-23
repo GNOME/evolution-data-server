@@ -257,7 +257,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 
 	if (ret == FALSE) {
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
-		
+
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Failed to connect to POP server %s in secure mode%s"),
 				service->url->host, tmp ? tmp:"");
@@ -583,7 +583,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 		}
 	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
-		
+
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 				      _("Unable to connect to POP server %s.\n"
 					"Error sending username%s"),
@@ -592,7 +592,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 		g_free (tmp);
 	} else if (pcp->state != CAMEL_POP3_COMMAND_OK) {
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
-		
+
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
 				      _("Unable to connect to POP server %s.\n"
 					"Error sending password%s"),

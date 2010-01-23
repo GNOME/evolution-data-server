@@ -10,12 +10,12 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
         GList *users = NULL;
 	ECalComponent *e_component = NULL;
 	icalcomponent *component = NULL;
 	icalcomponent *modified_component = NULL;
-	char *uid = NULL;
+	gchar *uid = NULL;
 
 	g_type_init ();
 

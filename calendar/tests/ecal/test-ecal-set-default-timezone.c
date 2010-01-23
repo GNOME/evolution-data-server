@@ -14,7 +14,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	icalproperty *property;
 	icalcomponent *component;
 	icaltimezone *zone;

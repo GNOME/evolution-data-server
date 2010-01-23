@@ -36,18 +36,18 @@ typedef struct {
 } EBookTestClosure;
 
 void
-test_print (const char *format,
+test_print (const gchar *format,
 	    ...);
 
 gboolean
 ebook_test_utils_callback_quit (gpointer user_data);
 
-char*
-ebook_test_utils_new_vcard_from_test_case (const char *case_name);
+gchar *
+ebook_test_utils_new_vcard_from_test_case (const gchar *case_name);
 
-char*
+gchar *
 ebook_test_utils_book_add_contact_from_test_case_verify (EBook       *book,
-                                                         const char  *case_name,
+                                                         const gchar  *case_name,
 							 EContact   **contact);
 
 gboolean
@@ -55,12 +55,12 @@ ebook_test_utils_contacts_are_equal_shallow (EContact *a,
                                              EContact *b);
 
 EBook*
-ebook_test_utils_book_new_from_uri (const char *uri);
+ebook_test_utils_book_new_from_uri (const gchar *uri);
 
 EBook*
-ebook_test_utils_book_new_temp (char **uri);
+ebook_test_utils_book_new_temp (gchar **uri);
 
-const char*
+const gchar *
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact);
 void
@@ -80,10 +80,10 @@ ebook_test_utils_book_async_commit_contact (EBook       *book,
 
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
-                                   const char *uid);
+                                   const gchar *uid);
 void
 ebook_test_utils_book_async_get_contact (EBook       *book,
-                                         const char  *uid,
+                                         const gchar  *uid,
                                          GSourceFunc  callback,
                                          gpointer     user_data);
 
@@ -108,12 +108,12 @@ ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,
 							GSourceFunc  callback,
 							gpointer     user_data);
 
-const char*
+const gchar *
 ebook_test_utils_book_get_static_capabilities (EBook *book);
 
 void
 ebook_test_utils_book_remove_contact (EBook      *book,
-                                      const char *uid);
+                                      const gchar *uid);
 void
 ebook_test_utils_book_async_remove_contact (EBook       *book,
 					    EContact    *contact,
@@ -121,7 +121,7 @@ ebook_test_utils_book_async_remove_contact (EBook       *book,
 					    gpointer     user_data);
 void
 ebook_test_utils_book_async_remove_contact_by_id (EBook       *book,
-                                                  const char  *uid,
+                                                  const gchar  *uid,
                                                   GSourceFunc  callback,
                                                   gpointer     user_data);
 

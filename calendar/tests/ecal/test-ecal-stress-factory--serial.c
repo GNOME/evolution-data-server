@@ -10,7 +10,7 @@
 gint
 main (gint argc, gchar **argv)
 {
-	char *uri = NULL;
+	gchar *uri = NULL;
 	gint i;
 
 	g_type_init ();

@@ -10,9 +10,9 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	icalcomponent *component;
-	char *component_string;
+	gchar *component_string;
 
 	g_type_init ();
 

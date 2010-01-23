@@ -11,7 +11,7 @@ main (gint argc, gchar **argv)
 	EBook *book;
 	GMainLoop *loop;
 	EContact *contact_final;
-	const char *uid;
+	const gchar *uid;
 
 	g_type_init ();
 

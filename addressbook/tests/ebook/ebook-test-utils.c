@@ -8,11 +8,11 @@
 #include "ebook-test-utils.h"
 
 void
-test_print (const char *format,
+test_print (const gchar *format,
 	    ...)
 {
 	va_list args;
-	const char *debug_string;
+	const gchar *debug_string;
 	static gboolean debug_set = FALSE;
 	static gboolean debug = FALSE;
 
@@ -40,14 +40,14 @@ ebook_test_utils_callback_quit (gpointer user_data)
         return FALSE;
 }
 
-char*
-ebook_test_utils_new_vcard_from_test_case (const char *case_name)
+gchar *
+ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 {
-        char *filename;
-        char *case_filename;
+        gchar *filename;
+        gchar *case_filename;
         GFile* file;
         GError *error = NULL;
-        char *vcard;
+        gchar *vcard;
 
         case_filename = g_strdup_printf ("%s.vcf", case_name);
         filename = g_build_filename (EBOOK_TEST_UTILS_DATA_DIR, EBOOK_TEST_UTILS_VCARDS_DIR, case_filename, NULL);
@@ -65,15 +65,15 @@ ebook_test_utils_new_vcard_from_test_case (const char *case_name)
         return vcard;
 }
 
-char*
+gchar *
 ebook_test_utils_book_add_contact_from_test_case_verify (EBook       *book,
-                                                         const char  *case_name,
+                                                         const gchar  *case_name,
                                                          EContact   **contact)
 {
-        char *vcard;
+        gchar *vcard;
         EContact *contact_orig;
         EContact *contact_final;
-        char *uid;
+        gchar *uid;
 
         vcard = ebook_test_utils_new_vcard_from_test_case (case_name);
         contact_orig = e_contact_new_from_vcard (vcard);
@@ -96,7 +96,7 @@ ebook_test_utils_contacts_are_equal_shallow (EContact *a,
                                              EContact *b)
 
 {
-        const char *uid_a, *uid_b;
+        const gchar *uid_a, *uid_b;
 
         /* Avoid warnings if one or more are NULL, to make this function
          * "NULL-friendly" */
@@ -111,14 +111,14 @@ ebook_test_utils_contacts_are_equal_shallow (EContact *a,
         return g_strcmp0 (uid_a, uid_b) == 0;
 }
 
-const char*
+const gchar *
 ebook_test_utils_book_add_contact (EBook    *book,
                                    EContact *contact)
 {
         GError *error = NULL;
 
         if (!e_book_add_contact (book, contact, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to add contact to addressbook: `%s': %s",
@@ -132,7 +132,7 @@ ebook_test_utils_book_add_contact (EBook    *book,
 static void
 add_contact_cb (EBook            *book,
                 EBookStatus       status,
-                const char       *uid,
+                const gchar       *uid,
                 EBookTestClosure *closure)
 {
         if (status != E_BOOK_ERROR_OK) {
@@ -174,10 +174,10 @@ ebook_test_utils_book_commit_contact (EBook    *book,
         GError *error = NULL;
 
         if (!e_book_commit_contact (book, contact, &error)) {
-                const char *uid;
-                const char *uri;
+                const gchar *uid;
+                const gchar *uri;
 
-                uid = (const char*) e_contact_get_const (contact, E_CONTACT_UID);
+                uid = (const gchar *) e_contact_get_const (contact, E_CONTACT_UID);
                 uri = e_book_get_uri (book);
                 g_warning ("failed to commit changes to contact '%s' to addressbook: `%s': %s",
                                 uid, uri, error->message);
@@ -224,13 +224,13 @@ ebook_test_utils_book_async_commit_contact (EBook       *book,
 
 EContact*
 ebook_test_utils_book_get_contact (EBook      *book,
-                                   const char *uid)
+                                   const gchar *uid)
 {
         EContact *contact = NULL;
         GError *error = NULL;
 
         if (!e_book_get_contact (book, uid, &contact, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to get contact '%s' in addressbook: `%s': "
@@ -247,7 +247,7 @@ get_contact_cb (EBook            *book,
                 EContact         *contact,
                 EBookTestClosure *closure)
 {
-        const char *uid;
+        const gchar *uid;
 
         if (status != E_BOOK_ERROR_OK) {
                 g_warning ("failed to asynchronously get the contact: "
@@ -267,7 +267,7 @@ get_contact_cb (EBook            *book,
 
 void
 ebook_test_utils_book_async_get_contact (EBook       *book,
-                                         const char  *uid,
+                                         const gchar  *uid,
                                          GSourceFunc  callback,
                                          gpointer     user_data)
 {
@@ -291,7 +291,7 @@ ebook_test_utils_book_get_required_fields (EBook *book)
         GError *error = NULL;
 
         if (!e_book_get_required_fields (book, &fields, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to get required fields for addressbook "
@@ -342,14 +342,14 @@ ebook_test_utils_book_async_get_required_fields (EBook       *book,
         }
 }
 
-const char*
+const gchar *
 ebook_test_utils_book_get_static_capabilities (EBook *book)
 {
         GError *error = NULL;
-        const char *caps;
+        const gchar *caps;
 
         if (!(caps = e_book_get_static_capabilities (book, &error))) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to get capabilities for addressbook: `%s': "
@@ -367,7 +367,7 @@ ebook_test_utils_book_get_supported_auth_methods (EBook *book)
         GError *error = NULL;
 
         if (!e_book_get_supported_auth_methods (book, &fields, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to get supported auth methods for "
@@ -426,7 +426,7 @@ ebook_test_utils_book_get_supported_fields (EBook *book)
         GError *error = NULL;
 
         if (!e_book_get_supported_fields (book, &fields, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to get supported fields for addressbook "
@@ -479,12 +479,12 @@ ebook_test_utils_book_async_get_supported_fields (EBook       *book,
 
 void
 ebook_test_utils_book_remove_contact (EBook      *book,
-                                      const char *uid)
+                                      const gchar *uid)
 {
         GError *error = NULL;
 
         if (!e_book_remove_contact (book, uid, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to remove contact '%s' from addressbook: `%s': %s",
@@ -552,7 +552,7 @@ remove_contact_by_id_cb (EBook            *book,
 
 void
 ebook_test_utils_book_async_remove_contact_by_id (EBook       *book,
-                                                  const char  *uid,
+                                                  const gchar  *uid,
                                                   GSourceFunc  callback,
                                                   gpointer     user_data)
 {
@@ -576,7 +576,7 @@ ebook_test_utils_book_remove_contacts (EBook *book,
         GError *error = NULL;
 
         if (!e_book_remove_contacts (book, ids, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
                 g_warning ("failed to remove contacts from addressbook: `%s': %s",
@@ -624,7 +624,7 @@ ebook_test_utils_book_async_remove_contacts (EBook       *book,
 }
 
 EBook*
-ebook_test_utils_book_new_from_uri (const char *uri)
+ebook_test_utils_book_new_from_uri (const gchar *uri)
 {
         EBook *book;
 	GError *error = NULL;
@@ -640,12 +640,12 @@ ebook_test_utils_book_new_from_uri (const char *uri)
 }
 
 EBook*
-ebook_test_utils_book_new_temp (char **uri)
+ebook_test_utils_book_new_temp (gchar **uri)
 {
         EBook *book;
 	GError *error = NULL;
 	gchar *file_template;
-        char *uri_result;
+        gchar *uri_result;
 
         file_template = g_build_filename (g_get_tmp_dir (),
                         "ebook-test-XXXXXX/", NULL);
@@ -676,7 +676,7 @@ ebook_test_utils_book_open (EBook    *book,
         GError *error = NULL;
 
         if (!e_book_open (book, only_if_exists, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
 
@@ -739,7 +739,7 @@ ebook_test_utils_book_get_book_view (EBook       *book,
         GError *error = NULL;
 
         if (!e_book_get_book_view (book, query, NULL, -1, view, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_book_get_uri (book);
 

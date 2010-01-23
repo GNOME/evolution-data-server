@@ -12,10 +12,10 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
         ECalComponent *e_component, *e_component_final;
         icalcomponent *icalcomponent_final;
-	char *uid;
+	gchar *uid;
 
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
 	ecal_test_utils_cal_open (cal, FALSE);

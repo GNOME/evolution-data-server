@@ -4,17 +4,17 @@
 
 #include "ebook-test-utils.h"
 
-gint 
+gint
 main (gint argc, gchar **argv)
-{       
+{
         EBook *book;
         GMainLoop *loop;
         EContact *contact_final;
-        char *uid_1, *uid_2; 
+        gchar *uid_1, *uid_2;
 	GList *uids = NULL;
-        
+
         g_type_init ();
-        
+
         /*
          * Setup
          */
@@ -43,7 +43,7 @@ main (gint argc, gchar **argv)
         g_free (uid_1);
         g_free (uid_2);
 	g_list_free (uids);
-        
+
         /*
          * Async version
          */
@@ -59,7 +59,7 @@ main (gint argc, gchar **argv)
         loop = g_main_loop_new (NULL, TRUE);
         ebook_test_utils_book_async_remove_contacts (book, uids,
 			ebook_test_utils_callback_quit, loop);
-        
+
         g_main_loop_run (loop);
 
         ebook_test_utils_book_remove (book);

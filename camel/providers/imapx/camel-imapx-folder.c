@@ -93,7 +93,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 				      short_name);
 		return NULL;
 	}
-	
+
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
 	ifolder->exists_on_server = -1;
@@ -166,14 +166,14 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	CamelStream *stream = NULL;
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-	const char *path = NULL;
+	const gchar *path = NULL;
 	gboolean offline_message = FALSE;
 
 	if (!strchr (uid, '-'))
 		path = "cur";
 	else {
 		path = "new";
-		offline_message = TRUE;	
+		offline_message = TRUE;
 	}
 
 	stream = camel_data_cache_get (ifolder->cache, path, uid, NULL);
@@ -190,7 +190,7 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 			return NULL;
 		}
 	}
-	
+
 	if (!camel_exception_is_set (ex)) {
 		msg = camel_mime_message_new();
 		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {

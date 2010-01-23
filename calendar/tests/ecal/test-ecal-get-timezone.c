@@ -10,7 +10,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	icaltimezone *zone;
 	icaltimezone *utc_zone;
 

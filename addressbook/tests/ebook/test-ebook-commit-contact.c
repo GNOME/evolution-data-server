@@ -8,7 +8,7 @@
 #define EMAIL_ADD "foo@bar.com"
 
 static EBook *book;
-static char *uid;
+static gchar *uid;
 
 static void
 verify_precommit_and_prepare_contact (EContact *contact)
@@ -25,7 +25,7 @@ static void
 verify_commit (EContact *contact)
 {
 	EVCardAttribute *attr;
-	char *email_value;
+	gchar *email_value;
 
 	g_assert ((attr = e_vcard_get_attribute (E_VCARD (contact), EVC_EMAIL)));
 	g_assert (e_vcard_attribute_is_single_valued (attr));

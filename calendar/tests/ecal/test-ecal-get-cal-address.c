@@ -9,8 +9,8 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
-	char *address;
+	gchar *uri = NULL;
+	gchar *address;
 
 	g_type_init ();
 

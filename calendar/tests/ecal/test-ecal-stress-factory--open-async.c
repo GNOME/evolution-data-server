@@ -38,7 +38,7 @@ open_timeout_cb (gpointer user_data)
 gint
 main (gint argc, gchar **argv)
 {
-	char *uri = NULL;
+	gchar *uri = NULL;
 	GMainLoop *loop;
 	gint i;
 

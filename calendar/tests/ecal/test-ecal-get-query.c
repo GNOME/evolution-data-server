@@ -102,7 +102,7 @@ alter_cal_cb (ECal *cal)
 	icalcomponent *component;
 	icalcomponent *component_final;
 	struct icaltimetype icaltime;
-	char *uid;
+	gchar *uid;
 
 	/* create a calendar object */
 	ecal_test_utils_create_component (cal, INITIAL_BEGIN_TIME,
@@ -149,7 +149,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
 	ECalView *view = NULL;
 
 	g_type_init ();

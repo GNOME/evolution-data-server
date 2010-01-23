@@ -6,8 +6,8 @@
 #include "ebook-test-utils.h"
 
 static void
-list_member_print_and_free (char     *member,
-		            gpointer  user_data)
+list_member_print_and_free (gchar     *member,
+			    gpointer  user_data)
 {
 	test_print ("    %s\n", member);
 	g_free (member);
@@ -20,7 +20,7 @@ get_required_fields_cb (EBookTestClosure *closure)
 	 * we do get */
 	if (closure->list) {
 		EIterator *iter;
-		const char *field;
+		const gchar *field;
 
 		test_print ("required fields:\n");
 		iter = e_list_get_iterator (closure->list);

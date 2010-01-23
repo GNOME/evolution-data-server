@@ -11,7 +11,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	ECal *cal;
-	char *uri = NULL;
+	gchar *uri = NULL;
         GList *users = NULL;
         icaltimezone *utc;
         time_t start = time (NULL), end;

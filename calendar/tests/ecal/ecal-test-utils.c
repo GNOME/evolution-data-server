@@ -27,11 +27,11 @@
 #include "ecal-test-utils.h"
 
 void
-test_print (const char *format,
+test_print (const gchar *format,
 	    ...)
 {
 	va_list args;
-	const char *debug_string;
+	const gchar *debug_string;
 	static gboolean debug_set = FALSE;
 	static gboolean debug = FALSE;
 
@@ -51,7 +51,7 @@ test_print (const char *format,
 }
 
 ECal*
-ecal_test_utils_cal_new_from_uri (const char     *uri,
+ecal_test_utils_cal_new_from_uri (const gchar     *uri,
 				  ECalSourceType  type)
 {
         ECal *cal;
@@ -65,13 +65,13 @@ ecal_test_utils_cal_new_from_uri (const char     *uri,
 }
 
 ECal*
-ecal_test_utils_cal_new_temp (char           **uri,
+ecal_test_utils_cal_new_temp (gchar           **uri,
                               ECalSourceType   type)
 {
         ECal *cal;
         GError *error = NULL;
         gchar *file_template;
-        char *uri_result;
+        gchar *uri_result;
 
         file_template = g_build_filename (g_get_tmp_dir (),
                         "ecal-test-XXXXXX/", NULL);
@@ -101,7 +101,7 @@ ecal_test_utils_cal_open (ECal     *cal,
         GError *error = NULL;
 
         if (!e_cal_open (cal, only_if_exists, &error)) {
-                const char *uri;
+                const gchar *uri;
 
                 uri = e_cal_get_uri (cal);
 
@@ -167,11 +167,11 @@ ecal_test_utils_cal_remove (ECal *cal)
         g_object_unref (cal);
 }
 
-char*
+gchar *
 ecal_test_utils_cal_get_alarm_email_address (ECal *cal)
 {
         GError *error = NULL;
-	char *address = NULL;
+	gchar *address = NULL;
 
         if (!e_cal_get_alarm_email_address (cal, &address, &error)) {
                 g_warning ("failed to get alarm email address; %s\n", error->message);
@@ -182,11 +182,11 @@ ecal_test_utils_cal_get_alarm_email_address (ECal *cal)
 	return address;
 }
 
-char*
+gchar *
 ecal_test_utils_cal_get_cal_address (ECal *cal)
 {
         GError *error = NULL;
-	char *address = NULL;
+	gchar *address = NULL;
 
         if (!e_cal_get_cal_address (cal, &address, &error)) {
                 g_warning ("failed to get calendar address; %s\n", error->message);
@@ -197,11 +197,11 @@ ecal_test_utils_cal_get_cal_address (ECal *cal)
 	return address;
 }
 
-char*
+gchar *
 ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
 {
         GError *error = NULL;
-	char *attr = NULL;
+	gchar *attr = NULL;
 
         if (!e_cal_get_ldap_attribute (cal, &attr, &error)) {
                 g_warning ("failed to get ldap attribute; %s\n", error->message);
@@ -212,7 +212,7 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
 	return attr;
 }
 
-static const char*
+static const gchar *
 b2s (gboolean value)
 {
         return value ? "true" : "false";
@@ -300,7 +300,7 @@ void
 ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
 						  icalcomponent *b)
 {
-	const char *uid_a, *uid_b;
+	const gchar *uid_a, *uid_b;
 
 	if (!icalcomponent_is_valid (a) && !icalcomponent_is_valid (b)) {
 		g_warning ("both components invalid");
@@ -344,7 +344,7 @@ ecal_test_utils_cal_assert_e_cal_components_equal (ECalComponent *a,
 
 icalcomponent*
 ecal_test_utils_cal_get_object (ECal       *cal,
-				const char *uid)
+				const gchar *uid)
 {
         GError *error = NULL;
 	icalcomponent *component = NULL;
@@ -382,7 +382,7 @@ ecal_test_utils_cal_modify_object (ECal          *cal,
 
 void
 ecal_test_utils_cal_remove_object (ECal       *cal,
-				   const char *uid)
+				   const gchar *uid)
 {
         GError *error = NULL;
 
@@ -414,7 +414,7 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
 
 GList*
 ecal_test_utils_cal_get_object_list (ECal       *cal,
-				     const char *query)
+				     const gchar *query)
 {
         GError *error = NULL;
 	GList *objects = NULL;
@@ -430,7 +430,7 @@ ecal_test_utils_cal_get_object_list (ECal       *cal,
 
 GList*
 ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
-					 const char *uid)
+					 const gchar *uid)
 {
         GError *error = NULL;
 	GList *objects = NULL;
@@ -444,13 +444,13 @@ ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
 	return objects;
 }
 
-char*
+gchar *
 ecal_test_utils_cal_create_object (ECal          *cal,
 				   icalcomponent *component)
 {
         GError *error = NULL;
-	char *uid = NULL;
-	char *ical_string = NULL;
+	gchar *uid = NULL;
+	gchar *ical_string = NULL;
 
         if (!icalcomponent_is_valid (component)) {
                 g_warning ("supplied icalcomponent is invalid\n");
@@ -472,9 +472,9 @@ ecal_test_utils_cal_create_object (ECal          *cal,
 
 static void
 cal_set_mode_cb (ECal            *cal,
-	         ECalendarStatus  status,
+		 ECalendarStatus  status,
 		 CalMode          mode,
-	         ECalTestClosure *closure)
+		 ECalTestClosure *closure)
 {
 	if (FALSE) {
 	} else if (status == E_CALENDAR_STATUS_BUSY) {
@@ -514,20 +514,20 @@ ecal_test_utils_cal_set_mode (ECal        *cal,
 
 void
 ecal_test_utils_create_component (ECal           *cal,
-				  const char     *dtstart,
-				  const char     *dtstart_tzid,
-				  const char     *dtend,
-				  const char     *dtend_tzid,
-				  const char     *summary,
+				  const gchar     *dtstart,
+				  const gchar     *dtstart_tzid,
+				  const gchar     *dtend,
+				  const gchar     *dtend_tzid,
+				  const gchar     *summary,
 				  ECalComponent **comp_out,
-				  char          **uid_out)
+				  gchar          **uid_out)
 {
         ECalComponent *comp;
         icalcomponent *icalcomp;
         struct icaltimetype tt;
         ECalComponentText text;
         ECalComponentDateTime dt;
-        char *uid;
+        gchar *uid;
 
         comp = e_cal_component_new ();
         /* set fields */
@@ -566,7 +566,7 @@ ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
 
 icaltimezone*
 ecal_test_utils_cal_get_timezone (ECal       *cal,
-				  const char *tzid)
+				  const gchar *tzid)
 {
         GError *error = NULL;
 	icaltimezone *zone = NULL;
@@ -585,7 +585,7 @@ ecal_test_utils_cal_add_timezone (ECal         *cal,
 				  icaltimezone *zone)
 {
         GError *error = NULL;
-	const char *name;
+	const gchar *name;
 
 	name = icaltimezone_get_display_name (zone);
 
@@ -601,7 +601,7 @@ ecal_test_utils_cal_set_default_timezone (ECal         *cal,
 					  icaltimezone *zone)
 {
         GError *error = NULL;
-	const char *name;
+	const gchar *name;
 
 	name = icaltimezone_get_display_name (zone);
 
@@ -663,7 +663,7 @@ ecal_test_utils_cal_send_objects (ECal           *cal,
 		return;
 	}
 	for (l = *users; l; l = l->next) {
-		test_print ("        %s\n", (const char*) l->data);
+		test_print ("        %s\n", (const gchar *) l->data);
 	}
 }
 
@@ -682,7 +682,7 @@ ecal_test_utils_cal_receive_objects (ECal          *cal,
 
 ECalView*
 ecal_test_utils_get_query (ECal       *cal,
-			   const char *sexp)
+			   const gchar *sexp)
 {
 	GError *error = NULL;
 	ECalView *query = NULL;

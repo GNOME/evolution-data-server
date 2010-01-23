@@ -10,10 +10,10 @@ main (gint argc, gchar **argv)
 {
 	EBook *book;
 	GMainLoop *loop;
-	char *vcard;
+	gchar *vcard;
 	EContact *contact;
 	EContact *contact_final;
-	char *uid;
+	gchar *uid;
 
 	g_type_init ();
 
