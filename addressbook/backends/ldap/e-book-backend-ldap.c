@@ -500,14 +500,6 @@ can_browse (EBookBackend *backend)
 		strcmp (e_source_get_property (e_book_backend_get_source (backend), "can-browse"), "1") == 0;
 }
 
-static void
-book_view_notify_status (EDataBookView *view, const gchar *status)
-{
-	if (!view)
-		return;
-	e_data_book_view_notify_status_message (view, status);
-}
-
 static EDataBookView*
 find_book_view (EBookBackendLDAP *bl)
 {
@@ -526,6 +518,36 @@ find_book_view (EBookBackendLDAP *bl)
 	g_object_unref (views);
 
 	return rv;
+}
+
+static gboolean
+book_view_is_valid (EBookBackendLDAP *bl, EDataBookView *book_view)
+{
+	gboolean found = FALSE;
+	EList *views;
+	EIterator *iter;
+
+	if (!book_view)
+		return FALSE;
+
+	views = e_book_backend_get_book_views (E_BOOK_BACKEND (bl));
+
+	for (iter = e_list_get_iterator (views); e_iterator_is_valid (iter) && !found; e_iterator_next (iter)) {
+		found = book_view == e_iterator_get (iter);
+	}
+
+	g_object_unref (iter);
+	g_object_unref (views);
+
+	return found;
+}
+
+static void
+book_view_notify_status (EBookBackendLDAP *bl, EDataBookView *view, const gchar *status)
+{
+	if (!book_view_is_valid (bl, view))
+		return;
+	e_data_book_view_notify_status_message (view, status);
 }
 
 static void
@@ -1063,14 +1085,12 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl, EDataBookView *book_view, g
 		GNOME_Evolution_Addressbook_CallStatus status;
 		gint ldap_error = LDAP_SUCCESS;
 
-		if (book_view)
-			book_view_notify_status (book_view, _("Reconnecting to LDAP server..."));
+		book_view_notify_status (bl, book_view, _("Reconnecting to LDAP server..."));
 
 		status = e_book_backend_ldap_connect (bl);
 
 		if (status != GNOME_Evolution_Addressbook_Success) {
-			if (book_view)
-				book_view_notify_status (book_view, "");
+			book_view_notify_status (bl, book_view, "");
 			if (enable_debug)
 				printf ("e_book_backend_ldap_reconnect ... failed (server down?)\n");
 			return FALSE;
@@ -1083,8 +1103,7 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl, EDataBookView *book_view, g
 							bl->priv->auth_passwd);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
-		if (book_view)
-			book_view_notify_status (book_view, "");
+		book_view_notify_status (bl, book_view, "");
 
 		if (enable_debug) {
 			printf ("e_book_backend_ldap_reconnect ... returning %d\n", ldap_error);
@@ -1147,7 +1166,7 @@ ldap_op_finished (LDAPOp *op)
 	g_hash_table_remove (bl->priv->id_to_op, &op->id);
 
 	/* clear the status message too */
-	book_view_notify_status (find_book_view (bl), "");
+	book_view_notify_status (bl, find_book_view (bl), "");
 
 	/* should handle errors here */
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -1708,7 +1727,7 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 		ldap_mods = (LDAPMod**)mod_array->pdata;
 
 		do {
-			book_view_notify_status (book_view, _("Adding contact to LDAP server..."));
+			book_view_notify_status (bl, book_view, _("Adding contact to LDAP server..."));
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			err = ldap_add_ext (bl->priv->ldap, create_op->dn, ldap_mods,
 					    NULL, NULL, &create_contact_msgid);
@@ -1842,7 +1861,7 @@ e_book_backend_ldap_remove_contacts (EBookBackend *backend,
 		remove_op->id = g_strdup (ids->data);
 
 		do {
-			book_view_notify_status (book_view, _("Removing contact from LDAP server..."));
+			book_view_notify_status (bl, book_view, _("Removing contact from LDAP server..."));
 
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_delete_ext (bl->priv->ldap,
@@ -2279,7 +2298,7 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 		modify_op->id = e_contact_get_const (modify_op->contact, E_CONTACT_UID);
 
 		do {
-			book_view_notify_status (book_view, _("Modifying contact from LDAP server..."));
+			book_view_notify_status (bl, book_view, _("Modifying contact from LDAP server..."));
 
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_search_ext (bl->priv->ldap, modify_op->id,
@@ -4240,7 +4259,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 								while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
 
 								if (ldap_error != LDAP_SUCCESS) {
-									book_view_notify_status (book_view,
+									book_view_notify_status (bl, book_view,
 												 ldap_err2string(ldap_error));
 									continue;
 								}
@@ -4368,7 +4387,7 @@ ldap_search_handler (LDAPOp *op, LDAPMessage *res)
 
 	if (!search_op->notified_receiving_results) {
 		search_op->notified_receiving_results = TRUE;
-		book_view_notify_status (op->view, _("Receiving LDAP search results..."));
+		book_view_notify_status (bl, op->view, _("Receiving LDAP search results..."));
 	}
 
 	msg_type = ldap_msgtype (res);
@@ -4507,7 +4526,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 				view_limit);
 
 			do {
-				book_view_notify_status (view, _("Searching..."));
+				book_view_notify_status (bl, view, _("Searching..."));
 
 				g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 				ldap_err = ldap_search_ext (bl->priv->ldap, bl->priv->ldap_rootdn,
@@ -4524,11 +4543,11 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 			g_free (ldap_query);
 
 			if (ldap_err != LDAP_SUCCESS) {
-				book_view_notify_status (view, ldap_err2string(ldap_err));
+				book_view_notify_status (bl, view, ldap_err2string(ldap_err));
 				return;
 			}
 			else if (search_msgid == -1) {
-				book_view_notify_status (view,
+				book_view_notify_status (bl, view,
 							 _("Error performing search"));
 				return;
 			}
@@ -4673,7 +4692,7 @@ generate_cache_handler (LDAPOp *op, LDAPMessage *res)
 			if (book_view) {
 				status_msg = g_strdup_printf (_("Downloading contacts (%d)... "),
 								 contact_num);
-				e_data_book_view_notify_status_message (book_view, status_msg);
+				book_view_notify_status (bl, book_view, status_msg);
 				g_free (status_msg);
 			}
 			e_book_backend_cache_add_contact (bl->priv->cache, contact);
@@ -4875,9 +4894,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		 * we get a fresh ldap handle Fixes #67541 */
 
 		if (ldap_error == LDAP_SERVER_DOWN) {
-			EDataBookView *view = find_book_view (bl);
-
-			if (e_book_backend_ldap_reconnect (bl, view, ldap_error)) {
+			if (e_book_backend_ldap_reconnect (bl, find_book_view (bl), ldap_error)) {
 				ldap_error = LDAP_SUCCESS;
 			}
 
