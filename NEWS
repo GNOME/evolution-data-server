@@ -1,3 +1,108 @@
+Evolution-Data-Server 2.29.5 2009-01-25
+---------------------------------------
+
+Bug Fixes:
+	#605232 - configure.ac quoting fixes and sync with evolution 
+		  (H.Habighorst)
+	#607588 - Fix leak in camel_folder_info_build() (Jonathon Jongsma)
+	#602983 - Unresponsive IMAP Inbox (Milan Crha)
+	#345401 - Cannot include 2 emails from same contact in To: dialog 
+		  (Milan Crha)
+	#590762 - Reocurring google calendar items are not changeable 
+		  (Milan Crha)
+	#607191 - Do not install gtk-docs that claim lower-level functions 
+		  (Matthew Barnes)
+	#568822 - (bnc) - crash caused overly large window due to malicious 
+		  POP3 server (Chenthill Palanisamy)
+	#607169 - Remove space and tab trailing backspace 
+		  (Thomas Hindoe Paaboel Andersen)
+	#606765 - e_cal_get_timezone() broken for sync backends(Travis Reitter)
+	#599879 - Dbus integration with krb5-auth-dialog for renewing ticket 
+		  when it expires. (Srinivasa Ragavan)
+
+Other Changes:
+	Fix distcheck errors. (Matthew Barnes)
+	Coding style and whitespace cleanups. (Matthew Barnes)
+	Fix possible access to already freed memory in camel-store-summary.c 
+	(Milan Crha)
+	Update the folder count in NOOP (Chenthill Palanisamy)
+	A bit less 'camel_exception_get_id called with NULL parameter' on 
+	console (Milan Crha)
+	Change the conditional sentences. Solaris CC does not support a ? : ""
+	Change them to a ? a : "" (caiqm)
+
+Added tests for various modules (Travis Reitter)
+	Add tests to stress-test the addressbook factory. (Travis Reitter)
+	Add tests to stress-test the calendar factory. (Travis Reitter)
+	Make tests silent by default. (Travis Reitter)
+	Use the proper freeing function for the members of the list returned 
+	by e_cal_get_free_busy(). (Travis Reitter)
+	Add test for EDataCal method 'getQuery' and the view's 'start' method.
+	(Travis Reitter)
+	Add a test for EDataCal method 'receiveObjects'. (Travis Reitter)
+	Add a test for EDataCal method 'sendObjects'. (Travis Reitter)
+	Add test for EDataCal method 'getFreeBusy'. (Travis Reitter)
+	Add test for EDataCal method 'setDefaultTimezone'. (Travis Reitter)
+	Add test for EDataCal method 'addTimezone'. (Travis Reitter)
+	Add test for EDataCal method 'getTimezone'. (Travis Reitter)
+	Add test for EDataCal method 'modifyObject'. (Travis Reitter)
+	Add test for EDataCal method 'getObjectList'; factor out some common 
+	test code as a utility. (Travis Reitter)
+	Add tests for EDataCal methods '{get,create,remove}Object'.
+	(Travis Reitter)
+	Add test for EDataCal method 'getDefaultObject'. (Travis Reitter)
+	Add test for EDataCal method 'setMode'. (Travis Reitter)
+	Add test for EDataCal method 'getSchedulingInformation'.
+	(Travis Reitter)
+	Add test for EDataCal method 'getLdapAttribute'. (Travis Reitter)
+	Add test for EDataCal method 'getAlarmEmailAddress'. (Travis Reitter)
+	Cut commented code. (Travis Reitter)
+	Add test for EDataCal method 'getCalAddress'. (Travis Reitter)
+	Add test for EDataCal D-Bus methods 'open'. (Travis Reitter)
+	Add a test for e-cal's 'remove' method to libecal (as the beginning 
+	of an automated test suite, like libebook has). (Travis Reitter)
+	Add a test program for the e-book book view. (Travis Reitter)
+	Cut some trailing whitespace. (Travis Reitter)
+	Add a test for the e-book 'getBookView' method. (Travis Reitter)
+	Move all the well-formed addressbook tests into the list of tests to 
+	run for 'make check' (Travis Reitter)
+	Trivial clean-ups for the output of the test utils and a couple tests
+	(Travis Reitter)
+	Add a test for the e-book 'getSupportedAuthMethods' method.
+	(Travis Reitter)
+	Don't crash when getSupportedAuthMethods is called on the file backend
+	(Travis Reitter)
+	Add a test for the e-book 'getSupportedFields' method.(Travis Reitter)
+	Add a test for the e-book 'getRequiredFields' method.(Travis Reitter)
+	Add a test for the e-book 'getStaticCapabilities' method.
+	(Travis Reitter)
+	Pass the full closure into the test util async callback functions, for
+	greater flexibility in the tests. (Travis Reitter)
+	Add a test for the e-book 'removeContacts' method. (Travis Reitter)
+	Add a test for the e-book 'removeContacts' method. (Travis Reitter)
+	Factor out test vcard into its own file, so we can add additional ones
+	in a clean way. (Travis Reitter)
+	Use consistent style with the new tests. (Travis Reitter)
+	Take advantage of add-contact util function in test-changes and don't 
+	return newly-allocated memory when the caller may not care about the 
+	return value. (Travis Reitter) 
+	Add a test program for the e-book 'addContact' method. (Travis Reitter)
+	Add test program for the e-book 'getContact' method. (Travis Reitter)
+	Additional test factoring (Travis Reitter)
+	Begin factoring out ebook test functions (Travis Reitter)
+	Rename test-book-remove to test-ebook-remove for a little more 
+	consistency. (Travis Reitter)
+	Add a test for e_book.*_remove() (Travis Reitter)
+
+Translations:
+	Chao-Hsiung Liao (zh_HK) (zh_TW)
+	Vasudeven (ta)
+	Kjartan Maraas (nb)
+	Jorge González (es)
+	Daniel Nylander (sv)
+	Krasimir Chonov (bg)
+	Stéphane Raimbault (fr)
+
 Evolution-Data-Server 2.29.5 2009-01-11
 ---------------------------------------
 
