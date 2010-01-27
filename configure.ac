@@ -1218,7 +1218,7 @@ AC_DEFUN([EVO_SET_COMPILE_FLAGS], [
 dnl ******************************
 dnl libedataserver flags
 dnl ******************************
-E_DATA_SERVER_DEPS="libxml-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="libxml-2.0 gthread-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
