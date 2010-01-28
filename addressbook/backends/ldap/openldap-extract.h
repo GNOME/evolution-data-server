@@ -70,6 +70,19 @@
 #ifdef G_OS_WIN32
 #define ldap_msgtype(lm) (lm)->lm_msgtype
 #define ldap_msgid(lm) (lm)->lm_msgid
+#ifndef LDAP_TYPE_OR_VALUE_EXISTS
+#define LDAP_TYPE_OR_VALUE_EXISTS 0x14
+#endif
+#ifndef LDAP_SCOPE_DEFAULT
+#define LDAP_SCOPE_DEFAULT -1
+#endif
+#ifndef LDAP_OPT_SUCCESS
+#define LDAP_OPT_SUCCESS 0x00
+#endif
+#ifndef LDAP_INSUFFICIENT_ACCESS
+#define LDAP_INSUFFICIENT_ACCESS 0x32
+#endif
+ 
 #endif
 
 #define LDAP_SCHERR_OUTOFMEM		1
