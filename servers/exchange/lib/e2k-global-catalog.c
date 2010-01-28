@@ -1115,6 +1115,9 @@ lookup_passwd_max_age (E2kGlobalCatalog *gc, E2kOperation *op)
 	return maxAge;
 }
 
+#if defined(G_OS_WIN32) || !defined(LDAP_TYPE_OR_VALUE_EXISTS)
+#define LDAP_TYPE_OR_VALUE_EXISTS 0x14
+#endif
 static E2kGlobalCatalogStatus
 do_delegate_op (E2kGlobalCatalog *gc, E2kOperation *op, gint deleg_op,
 		const gchar *self_dn, const gchar *delegate_dn)

@@ -30,6 +30,10 @@
 
 #ifdef _WIN32
 #include <winsock2.h>
+#ifndef IN6_ARE_ADDR_EQUAL
+#define IN6_ARE_ADDR_EQUAL(a, b)	\
+    (memcmp ((void*)(a), (void*)(b), sizeof (struct in6_addr)) == 0)
+#endif
 #else
 #include <netinet/in.h>
 #include <sys/socket.h>
