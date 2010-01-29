@@ -1817,9 +1817,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		CamelIMAPXCommand *cw, *cn;
 
 		printf("Select failed\n");
-		failed.head = NULL;
-		failed.tail = NULL;
-		failed.tailpred = NULL;
+		camel_dlist_init (&failed);
 
 		QUEUE_LOCK(is);
 		cw = (CamelIMAPXCommand *)is->queue.head;
@@ -1839,6 +1837,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			cn = cw->next;
 			while (cn) {
 				cw->status = imap_copy_status(ic->status);
+				camel_exception_setv (cw->ex, 1, "select %s failed", cw->select);
 				cw->complete(is, cw);
 				cw = cn;
 				cn = cn->next;
