@@ -1186,7 +1186,7 @@ e_book_backend_file_load_source (EBookBackend           *backend,
 			/* the database didn't exist, so we create the
 			   directory then the .db */
 			db->close (db, 0);
-			rv = g_mkdir_with_parents (dirname, 0777);
+			rv = g_mkdir_with_parents (dirname, 0700);
 			if (rv == -1 && errno != EEXIST) {
 				g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
 				g_free (dirname);

@@ -1831,7 +1831,7 @@ gint camel_object_state_write(gpointer vo)
 
 	savename = camel_file_util_savename(file);
 	dirname = g_path_get_dirname(savename);
-	g_mkdir_with_parents(dirname, 0777);
+	g_mkdir_with_parents(dirname, 0700);
 	g_free(dirname);
 	fp = g_fopen(savename, "wb");
 	if (fp != NULL) {
