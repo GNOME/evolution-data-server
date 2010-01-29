@@ -34,6 +34,8 @@
 #include "camel-mime-filter-crlf.h"
 #include "camel-mime-part.h"
 #include "camel-stream-filter.h"
+#include "camel-service.h"
+#include "camel-url.h"
 
 #include "camel-imap-folder.h"
 #include "camel-imap-wrapper.h"
@@ -169,12 +171,16 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 			CamelMimePart *part)
 {
 	CamelImapWrapper *imap_wrapper;
+	CamelStore *store = (((CamelFolder *) imap_folder)->parent_store);
 	CamelStream *stream;
+	gboolean sync_offline = FALSE;
+
+	sync_offline = (camel_url_get_param (((CamelService *) store)->url, "sync_offline") != NULL ||
+					((CamelOfflineFolder *)imap_folder)->sync_offline);
 
 	imap_wrapper = (CamelImapWrapper *)camel_object_new(camel_imap_wrapper_get_type());
-
 	camel_data_wrapper_set_mime_type_field (CAMEL_DATA_WRAPPER (imap_wrapper), type);
-	((CamelDataWrapper *)imap_wrapper)->offline = TRUE;
+	((CamelDataWrapper *)imap_wrapper)->offline = !sync_offline;
 	((CamelDataWrapper *)imap_wrapper)->encoding = encoding;
 
 	imap_wrapper->folder = imap_folder;
@@ -185,9 +191,10 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 	/* Don't ref this, it's our parent. */
 	imap_wrapper->part = part;
 
-	/* Try the cache. */
+	/* Download the attachments if sync_offline is set, else skip them by checking only in cache */
 	stream = camel_imap_folder_fetch_data (imap_folder, uid, part_spec,
-					       TRUE, NULL);
+			!sync_offline, NULL);
+
 	if (stream) {
 		imap_wrapper_hydrate (imap_wrapper, stream);
 		camel_object_unref (stream);
