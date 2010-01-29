@@ -192,6 +192,7 @@ camel_folder_init (gpointer object, gpointer klass)
 	folder->priv = g_malloc0(sizeof(*folder->priv));
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new();
+	folder->priv->async_rec_locks = FALSE;
 	g_static_rec_mutex_init(&folder->priv->lock);
 	g_static_mutex_init(&folder->priv->change_lock);
 }
@@ -220,6 +221,12 @@ camel_folder_finalize (CamelObject *object)
 	g_static_mutex_free(&p->change_lock);
 
 	g_free(p);
+}
+
+void
+camel_folder_set_lock_async (CamelFolder *folder, gboolean async)
+{
+	folder->priv->async_rec_locks = async;
 }
 
 CamelType

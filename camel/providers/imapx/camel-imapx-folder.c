@@ -371,6 +371,7 @@ imap_folder_init(CamelObject *o, CamelObjectClass *klass)
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
 		CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_USER;
 
+	camel_folder_set_lock_async (folder, TRUE);
 }
 
 static void
