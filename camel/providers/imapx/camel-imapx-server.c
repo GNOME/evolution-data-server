@@ -33,6 +33,7 @@
 #include <camel/camel-mime-message.h>
 #include "camel/camel-string-utils.h"
 #include <camel/camel-net-utils.h>
+#include "camel/camel-private.h"
 #include <camel/camel-tcp-stream-ssl.h>
 #include <camel/camel-tcp-stream-raw.h>
 #include <camel/camel-db.h>
@@ -3030,8 +3031,11 @@ imapx_parser_thread (gpointer d)
 	op = camel_operation_new (NULL, NULL);
 	op = camel_operation_register (op);
 	while (TRUE) {
+		
+		CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 		if (!is->stream)
 			imapx_reconnect(is, &ex);
+		CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 
 		/* TODO:
 		   This poll stuff wont work - we might block
@@ -3108,9 +3112,10 @@ imapx_parser_thread (gpointer d)
 
 		if (camel_exception_is_set (&ex)) {
 			if (errno == EINTR || !g_ascii_strcasecmp (ex.desc, "io error")) {
-				g_mutex_lock (is->connect_lock);
+
+				CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 				imapx_disconnect (is);
-				g_mutex_unlock (is->connect_lock);
+				CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 
 				cancel_all_jobs (is, &ex);
 			}
@@ -3149,7 +3154,6 @@ imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 	ie->job_timeout = 29 * 60 * 1000 * 1000;
 
 	ie->queue_lock = g_mutex_new();
-	ie->connect_lock = g_mutex_new ();
 
 	ie->tagprefix = ieclass->tagprefix;
 	ieclass->tagprefix++;
@@ -3167,7 +3171,6 @@ static void
 imapx_server_finalise(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 {
 	g_mutex_free(ie->queue_lock);
-	g_mutex_free (ie->connect_lock);;
 
 	camel_folder_change_info_free (ie->changes);
 }
@@ -3253,7 +3256,7 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 {
 	gboolean ret = FALSE;
 
-	g_mutex_lock (is->connect_lock);
+	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 	if (state) {
 		pthread_t id;
 		CamelException ex = {0, NULL};
@@ -3280,7 +3283,7 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 	}
 
 exit:
-	g_mutex_unlock (is->connect_lock);
+	CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 	return ret;
 }
 
