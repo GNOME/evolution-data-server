@@ -146,7 +146,7 @@ camel_groupwise_store_summary_full_to_path(CamelGroupwiseStoreSummary *s, const 
 	if (dir_sep != '/') {
 		p = path = alloca(strlen(full_name)*3+1);
 		f = full_name;
-		while ( (c = *f++ & 0xff) ) {
+		while ((c = *f++ & 0xff)) {
 			if (c == dir_sep)
 				*p++ = '/';
 			else if (c == '/' || c == '%')
@@ -258,7 +258,7 @@ camel_groupwise_store_summary_path_to_full(CamelGroupwiseStoreSummary *s, const 
 	else
 		p = path;
 
-	while ( (c = camel_utf8_getc((const guchar **)&p)) ) {
+	while ((c = camel_utf8_getc((const guchar **)&p))) {
 		switch (state) {
 			case 0:
 				if (c == '%')

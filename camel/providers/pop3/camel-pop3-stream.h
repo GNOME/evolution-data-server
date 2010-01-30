@@ -69,4 +69,4 @@ gint		 camel_pop3_stream_getd		(CamelPOP3Stream *is, guchar **start, guint *len)
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_POP3_STREAM_H */
+#endif /* _CAMEL_POP3_STREAM_H */

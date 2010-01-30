@@ -79,4 +79,4 @@ const GPtrArray *camel_html_parser_attr_list(CamelHTMLParser *hp, const GPtrArra
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_HTML_PARSER_H */
+#endif /* _CAMEL_HTML_PARSER_H */

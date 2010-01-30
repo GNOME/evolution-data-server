@@ -940,7 +940,7 @@ e_book_backend_sexp_get_type (void)
 {
 	static GType type = 0;
 
-	if (! type) {
+	if (!type) {
 		GTypeInfo info = {
 			sizeof (EBookBackendSExpClass),
 			NULL, /* base_class_init */

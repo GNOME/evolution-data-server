@@ -202,7 +202,7 @@ data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, tim
 		return;
 
 	s = g_string_new("");
-	while ( (dname = g_dir_read_name(dir)) ) {
+	while ((dname = g_dir_read_name(dir))) {
 		if (strcmp(dname, keep) == 0)
 			continue;
 

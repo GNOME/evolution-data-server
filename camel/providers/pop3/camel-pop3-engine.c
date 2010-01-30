@@ -364,12 +364,12 @@ camel_pop3_engine_iterate(CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 	return pe->current==NULL?0:1;
 ioerror:
 	/* we assume all outstanding commands are gunna fail now */
-	while ( (pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->active)) ) {
+	while ((pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->active))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
 		camel_dlist_addtail(&pe->done, (CamelDListNode *)pw);
 	}
 
-	while ( (pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->queue)) ) {
+	while ((pw = (CamelPOP3Command*)camel_dlist_remhead(&pe->queue))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
 		camel_dlist_addtail(&pe->done, (CamelDListNode *)pw);
 	}

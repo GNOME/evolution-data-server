@@ -48,4 +48,4 @@ CamelStream *camel_stream_null_new (void);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_STREAM_NULL_H */
+#endif /* _CAMEL_STREAM_NULL_H */

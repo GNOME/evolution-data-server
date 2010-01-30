@@ -94,4 +94,4 @@ void	     camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_VEE_FOLDER_H */
+#endif /* _CAMEL_VEE_FOLDER_H */

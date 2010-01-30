@@ -342,7 +342,7 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 
 	/* Check equality of contacts. */
 	if (pa->contact || pb->contact) {
-		if (! (pa->contact && pb->contact))
+		if (!(pa->contact && pb->contact))
 			return FALSE;
 
 		if (pa->contact == pb->contact || !strcmp (e_contact_get_const (pa->contact, E_CONTACT_UID),
@@ -355,7 +355,7 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 	/* Just in case name returns NULL */
 	na = e_destination_get_name (a);
 	nb = e_destination_get_name (b);
-	if ((na || nb) && !(na && nb && ! utf8_casefold_collate (na, nb)))
+	if ((na || nb) && !(na && nb && !utf8_casefold_collate (na, nb)))
 		return FALSE;
 
 	if (!g_ascii_strcasecmp (e_destination_get_email (a), e_destination_get_email (b)))
@@ -1458,7 +1458,7 @@ e_destination_import (const gchar *str)
 	dest_doc = xmlParseMemory ((gchar *) str, strlen (str));
 	if (dest_doc && dest_doc->xmlRootNode) {
 		dest = e_destination_new ();
-		if (! e_destination_xml_decode (dest, dest_doc->xmlRootNode)) {
+		if (!e_destination_xml_decode (dest, dest_doc->xmlRootNode)) {
 			g_object_unref (dest);
 			dest = NULL;
 		}
@@ -1493,7 +1493,7 @@ e_destination_exportv (EDestination **destv)
 	xmlDocSetRootElement (destv_doc, destv_node);
 
 	for (i = 0; destv[i]; i++) {
-		if (! e_destination_empty (destv[i])) {
+		if (!e_destination_empty (destv[i])) {
 			xmlNodePtr dest_node = e_destination_xml_encode (destv[i]);
 			if (dest_node)
 				xmlAddChild (destv_node, dest_node);

@@ -49,6 +49,6 @@ CamelNewsAddress      *camel_news_address_new	(void);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_NEWS_ADDRESS_H */
+#endif /* _CAMEL_NEWS_ADDRESS_H */
 
 #endif /* CAMEL_DISABLE_DEPRECATED */

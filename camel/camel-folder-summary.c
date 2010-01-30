@@ -1115,56 +1115,56 @@ mir_from_cols (CamelMIRecord *mir, CamelFolderSummary *s, gint ncol, gchar ** co
 
 	for (i = 0; i < ncol; ++i) {
 
-		if ( !strcmp (name [i], "uid") )
+		if (!strcmp (name [i], "uid"))
 			mir->uid = (gchar *) camel_pstring_strdup (cols [i]);
-		else if ( !strcmp (name [i], "flags") )
+		else if (!strcmp (name [i], "flags"))
 			mir->flags = cols [i] ? strtoul (cols [i], NULL, 10) : 0;
-		else if ( !strcmp (name [i], "read") )
+		else if (!strcmp (name [i], "read"))
 			mir->read =  (cols [i]) ? ( ((strtoul (cols [i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
-		else if ( !strcmp (name [i], "deleted") )
+		else if (!strcmp (name [i], "deleted"))
 			mir->deleted = (cols [i]) ? ( ((strtoul (cols [i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
-		else if ( !strcmp (name [i], "replied") )
+		else if (!strcmp (name [i], "replied"))
 			mir->replied = (cols [i]) ? ( ((strtoul (cols [i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
-		else if ( !strcmp (name [i], "important") )
+		else if (!strcmp (name [i], "important"))
 			mir->important = (cols [i]) ? ( ((strtoul (cols [i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
-		else if ( !strcmp (name [i], "junk") )
+		else if (!strcmp (name [i], "junk"))
 			mir->junk = (cols [i]) ? ( ((strtoul (cols [i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
-		else if ( !strcmp (name [i], "attachment") )
+		else if (!strcmp (name [i], "attachment"))
 			mir->attachment = (cols [i]) ? ( ((strtoul (cols [i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
-		else if ( !strcmp (name [i], "size") )
+		else if (!strcmp (name [i], "size"))
 			mir->size =  cols [i] ? strtoul (cols [i], NULL, 10) : 0;
-		else if ( !strcmp (name [i], "dsent") )
+		else if (!strcmp (name [i], "dsent"))
 			mir->dsent = cols [i] ? strtol (cols [i], NULL, 10) : 0;
-		else if ( !strcmp (name [i], "dreceived") )
+		else if (!strcmp (name [i], "dreceived"))
 			mir->dreceived = cols [i] ? strtol (cols [i], NULL, 10) : 0;
-		else if ( !strcmp (name [i], "subject") )
+		else if (!strcmp (name [i], "subject"))
 			mir->subject = (gchar *) camel_pstring_strdup (cols [i]);
-		else if ( !strcmp (name [i], "mail_from") )
+		else if (!strcmp (name [i], "mail_from"))
 			mir->from = (gchar *) camel_pstring_strdup (cols [i]);
-		else if ( !strcmp (name [i], "mail_to") )
+		else if (!strcmp (name [i], "mail_to"))
 			mir->to = (gchar *) camel_pstring_strdup (cols [i]);
-		else if ( !strcmp (name [i], "mail_cc") )
+		else if (!strcmp (name [i], "mail_cc"))
 			mir->cc = (gchar *) camel_pstring_strdup(cols [i]);
-		else if ( !strcmp (name [i], "mlist") )
+		else if (!strcmp (name [i], "mlist"))
 			mir->mlist = (gchar *) camel_pstring_strdup (cols [i]);
-		else if ( !strcmp (name [i], "followup_flag") )
+		else if (!strcmp (name [i], "followup_flag"))
 			mir->followup_flag = (gchar *) camel_pstring_strdup(cols [i]);
-		else if ( !strcmp (name [i], "followup_completed_on") )
+		else if (!strcmp (name [i], "followup_completed_on"))
 			mir->followup_completed_on = (gchar *) camel_pstring_strdup(cols [i]);
-		else if ( !strcmp (name [i], "followup_due_by") )
+		else if (!strcmp (name [i], "followup_due_by"))
 			mir->followup_due_by = (gchar *) camel_pstring_strdup(cols [i]);
-		else if ( !strcmp (name [i], "part") )
+		else if (!strcmp (name [i], "part"))
 			mir->part = g_strdup (cols [i]);
-		else if ( !strcmp (name [i], "labels") )
+		else if (!strcmp (name [i], "labels"))
 			mir->labels = g_strdup (cols [i]);
-		else if ( !strcmp (name [i], "usertags") )
+		else if (!strcmp (name [i], "usertags"))
 			mir->usertags = g_strdup (cols [i]);
-		else if ( !strcmp (name [i], "cinfo") )
+		else if (!strcmp (name [i], "cinfo"))
 			mir->cinfo = g_strdup(cols [i]);
-		else if ( !strcmp (name [i], "bdata") )
+		else if (!strcmp (name [i], "bdata"))
 			mir->bdata = g_strdup(cols [i]);
 		/* Evolution itself doesn't yet use this, ignoring
-		else if ( !strcmp (name [i], "bodystructure") )
+		else if (!strcmp (name [i], "bodystructure"))
 			mir->bodystructure = g_strdup(cols [i]); */
 
 	}

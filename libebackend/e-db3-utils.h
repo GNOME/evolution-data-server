@@ -20,5 +20,5 @@ gint e_db3_utils_upgrade_format (const gchar *filename);
 
 G_END_DECLS
 
-#endif /* ! __E_DB3_UTILS_H__ */
+#endif /* __E_DB3_UTILS_H__ */
 

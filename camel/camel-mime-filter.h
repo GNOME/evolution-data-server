@@ -86,4 +86,4 @@ void camel_mime_filter_set_size(CamelMimeFilter *filter, gsize size, gint keep);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_H */
+#endif /* _CAMEL_MIME_FILTER_H */

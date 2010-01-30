@@ -70,4 +70,4 @@ typedef struct {
 
 G_END_DECLS
 
-#endif /* ! __E_BOOK_TYPES_H__ */
+#endif /* __E_BOOK_TYPES_H__ */

@@ -1378,7 +1378,7 @@ camel_nntp_command (CamelNNTPStore *store, CamelException *ex, CamelNNTPFolder *
 		    && !camel_service_connect (CAMEL_SERVICE (store), ex))
 			return -1;
 
-		/* Check for unprocessed data, ! */
+		/* Check for unprocessed data, !*/
 		if (store->stream->mode == CAMEL_NNTP_STREAM_DATA) {
 			g_warning("Unprocessed data left in stream, flushing");
 			while (camel_nntp_stream_getd(store->stream, (guchar **)&p, &u) > 0)

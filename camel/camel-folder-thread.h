@@ -65,4 +65,4 @@ gint camel_folder_threaded_messages_dump(CamelFolderThreadNode *c);
 
 G_END_DECLS
 
-#endif /* !_CAMEL_FOLDER_THREAD_H */
+#endif /* _CAMEL_FOLDER_THREAD_H */

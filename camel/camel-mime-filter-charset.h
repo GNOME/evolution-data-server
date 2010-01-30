@@ -54,4 +54,4 @@ CamelMimeFilterCharset      *camel_mime_filter_charset_new_convert	(const gchar 
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_CHARSET_H */
+#endif /* _CAMEL_MIME_FILTER_CHARSET_H */

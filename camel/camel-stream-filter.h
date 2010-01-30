@@ -54,4 +54,4 @@ void camel_stream_filter_remove	(CamelStreamFilter *stream, gint id);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_STREAM_FILTER_H */
+#endif /* _CAMEL_STREAM_FILTER_H */

@@ -1867,7 +1867,7 @@ e_contact_date_from_string (const gchar *str)
 		date->year = str[0] * 1000 + str[1] * 100 + str[2] * 10 + str[3] - '0' * 1111;
 		date->month = str[5] * 10 + str[6] - '0' * 11;
 		date->day = str[8] * 10 + str[9] - '0' * 11;
-	} else if ( length == 8 ) {
+	} else if (length == 8) {
 		date->year = str[0] * 1000 + str[1] * 100 + str[2] * 10 + str[3] - '0' * 1111;
 		date->month = str[4] * 10 + str[5] - '0' * 11;
 		date->day = str[6] * 10 + str[7] - '0' * 11;

@@ -145,4 +145,4 @@ gint            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, gsiz
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_BLOCK_FILE_H */
+#endif /* _CAMEL_BLOCK_FILE_H */

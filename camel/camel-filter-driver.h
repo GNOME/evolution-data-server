@@ -111,4 +111,4 @@ struct filter_option *camel_filter_driver_rule_get (CamelFilterDriver *d, gint n
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_FILTER_DRIVER_H */
+#endif /* _CAMEL_FILTER_DRIVER_H */

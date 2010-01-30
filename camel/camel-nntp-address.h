@@ -51,4 +51,4 @@ gboolean		camel_nntp_address_get	(const CamelNNTPAddress *a, gint index, const g
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_NNTP_ADDRESS_H */
+#endif /* _CAMEL_NNTP_ADDRESS_H */

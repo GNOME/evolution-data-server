@@ -82,7 +82,7 @@ gint main(gint argc, gchar **argv) {
 //	rc = sqlite3_open_v2("test.db", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE , NULL);
 	rc = sqlite3_open("test.db", &db);
 
-	if ( rc ) {
+	if (rc) {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
 		exit(1);

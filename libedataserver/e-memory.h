@@ -77,4 +77,4 @@ void e_poolv_destroy(EPoolv *poolv);
 
 G_END_DECLS
 
-#endif /* ! _E_MEMORY_H */
+#endif /* _E_MEMORY_H */

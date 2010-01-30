@@ -59,5 +59,5 @@ CamelIMAPXViewSummary      *camel_imapx_view_summary_new	(const gchar *base, Cam
 guint32 camel_imapx_view_next_uid(CamelIMAPXView *view);
 void camel_imapx_view_last_uid(CamelIMAPXView *view, guint32 uid);
 
-#endif /* ! _CAMEL_IMAPX_VIEW_SUMMARY_H */
+#endif /* _CAMEL_IMAPX_VIEW_SUMMARY_H */
 

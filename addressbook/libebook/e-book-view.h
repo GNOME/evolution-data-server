@@ -65,4 +65,4 @@ struct _EBook     *e_book_view_get_book               (EBookView *book_view);
 
 G_END_DECLS
 
-#endif /* ! __E_BOOK_VIEW_H__ */
+#endif /* __E_BOOK_VIEW_H__ */

@@ -95,4 +95,4 @@ gchar *camel_imap_store_summary_full_from_path(CamelImapStoreSummary *s, const g
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_IMAP_STORE_SUMMARY_H */
+#endif /* _CAMEL_IMAP_STORE_SUMMARY_H */

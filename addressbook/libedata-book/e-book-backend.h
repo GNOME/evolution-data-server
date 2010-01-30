@@ -195,5 +195,5 @@ GNOME_Evolution_Addressbook_BookChangeItem* e_book_backend_change_delete_new  (c
 
 G_END_DECLS
 
-#endif /* ! __E_BOOK_BACKEND_H__ */
+#endif /* __E_BOOK_BACKEND_H__ */
 

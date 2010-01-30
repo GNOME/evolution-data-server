@@ -47,5 +47,5 @@ typedef struct {
 EBookBackend *e_book_backend_vcf_new      (void);
 GType       e_book_backend_vcf_get_type (void);
 
-#endif /* ! __E_BOOK_BACKEND_VCF_H__ */
+#endif /* __E_BOOK_BACKEND_VCF_H__ */
 

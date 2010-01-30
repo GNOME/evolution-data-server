@@ -524,7 +524,7 @@ on_idle_do_stuff (gpointer unused_data)
 	if (dump)
 		dump_list ();
 
-	if (! listen)
+	if (!listen)
 		g_main_loop_quit (main_loop);
 
 	return FALSE;

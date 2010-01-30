@@ -166,4 +166,4 @@ CamelIndexCursor  *camel_index_names(CamelIndex *idx);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_INDEX_H */
+#endif /* _CAMEL_INDEX_H */

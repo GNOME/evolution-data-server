@@ -518,7 +518,7 @@ check_state (ECalBackendCalDAV *cbdav, gboolean *online)
 
 	if (priv->mode == CAL_MODE_LOCAL) {
 
-		if (! priv->do_offline) {
+		if (!priv->do_offline) {
 			return GNOME_Evolution_Calendar_RepositoryOffline;
 		}
 
@@ -949,7 +949,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 
 	send_and_handle_redirection (priv->session, message, NULL);
 
-	if (! SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		guint status_code = message->status_code;
 
 		g_object_unref (message);
@@ -980,7 +980,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav)
 	g_object_unref (message);
 
 	if (calendar_access) {
-		priv->read_only = ! (put_allowed && delete_allowed);
+		priv->read_only = !(put_allowed && delete_allowed);
 		return GNOME_Evolution_Calendar_Success;
 	}
 

@@ -57,4 +57,4 @@ CamelMimeFilter *camel_mime_filter_canon_new(guint32 flags);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_CANON_H */
+#endif /* _CAMEL_MIME_FILTER_CANON_H */

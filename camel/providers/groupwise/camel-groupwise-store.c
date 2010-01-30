@@ -1002,7 +1002,7 @@ groupwise_folders_sync (CamelGroupwiseStore *store, CamelException *ex)
 
 		if (e_gw_container_is_root(container))
 			continue;
-		if ( (type == E_GW_CONTAINER_TYPE_CALENDAR) || (type == E_GW_CONTAINER_TYPE_CONTACTS) )
+		if ((type == E_GW_CONTAINER_TYPE_CALENDAR) || (type == E_GW_CONTAINER_TYPE_CONTACTS))
 			continue;
 
 		info = convert_to_folder_info (store, E_GW_CONTAINER (folder_list->data), (const gchar *)url, ex);

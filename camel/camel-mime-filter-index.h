@@ -56,4 +56,4 @@ void camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter, struct _Ca
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_INDEX_H */
+#endif /* _CAMEL_MIME_FILTER_INDEX_H */

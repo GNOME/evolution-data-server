@@ -233,7 +233,7 @@ void               camel_folder_refresh_info           (CamelFolder *folder,
 void               camel_folder_sync                   (CamelFolder *folder,
 							gboolean expunge,
 							CamelException *ex);
-void		   camel_folder_set_lock_async 	       (CamelFolder *folder, 
+void		   camel_folder_set_lock_async 	       (CamelFolder *folder,
 							gboolean async);
 
 CamelStore *       camel_folder_get_parent_store       (CamelFolder *folder);

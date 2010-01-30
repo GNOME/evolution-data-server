@@ -139,4 +139,4 @@ off_t camel_mime_parser_tell_start_boundary(CamelMimeParser *parser);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_PARSER_H */
+#endif /* _CAMEL_MIME_PARSER_H */

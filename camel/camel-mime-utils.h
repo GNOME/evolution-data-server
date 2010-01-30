@@ -283,4 +283,4 @@ extern unsigned short camel_mime_special_table[256];
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_UTILS_H */
+#endif /* _CAMEL_MIME_UTILS_H */

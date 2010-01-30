@@ -221,7 +221,7 @@ camel_slist_remove (CamelSList *l, CamelSListNode *n)
 	CamelSListNode *p, *q;
 
 	p = (CamelSListNode *)l;
-	while ( (q = p->next) ) {
+	while ((q = p->next)) {
 		if (q == n) {
 			p->next = n->next;
 			return n;

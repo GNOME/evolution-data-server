@@ -69,4 +69,4 @@ gint camel_spool_summary_write_headers(gint fd, struct _camel_header_raw *header
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_SPOOL_SUMMARY_H */
+#endif /* _CAMEL_SPOOL_SUMMARY_H */

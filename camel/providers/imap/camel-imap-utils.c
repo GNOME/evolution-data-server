@@ -1448,7 +1448,7 @@ find_folders_recursive (const gchar *physical_path, const gchar *path,
 					     dirent);
 
 		if (g_stat (file_path, &file_stat) < 0 ||
-		    ! S_ISDIR (file_stat.st_mode)) {
+		    !S_ISDIR (file_stat.st_mode)) {
 			g_free (file_path);
 			continue;
 		}

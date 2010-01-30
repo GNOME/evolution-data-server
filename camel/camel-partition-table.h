@@ -153,4 +153,4 @@ camel_key_t camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **ke
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_PARTITION_TABLE_H */
+#endif /* _CAMEL_PARTITION_TABLE_H */

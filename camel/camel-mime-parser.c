@@ -1585,7 +1585,7 @@ tail_recurse:
 #else
 	case CAMEL_MIME_PARSER_STATE_INITIAL:
 	case CAMEL_MIME_PARSER_STATE_PRE_FROM:
-#endif /* !USE_FROM */
+#endif /* USE_FROM */
 
 	scan_header:
 	case CAMEL_MIME_PARSER_STATE_FROM:

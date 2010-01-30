@@ -1360,7 +1360,7 @@ e_sexp_encode_string(GString *s, const gchar *string)
 	else
 		p = string;
 	g_string_append(s, " \"");
-	while ( (c = *p++) ) {
+	while ((c = *p++)) {
 		if (c=='\\' || c=='\"' || c=='\'')
 			g_string_append_c(s, '\\');
 		g_string_append_c(s, c);

@@ -66,4 +66,4 @@ gint		 camel_nntp_stream_getd		(CamelNNTPStream *is, guchar **start, guint *len)
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_NNTP_STREAM_H */
+#endif /* _CAMEL_NNTP_STREAM_H */

@@ -1179,7 +1179,7 @@ find_attachment (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
 		}
 	}
 
-	return ! (*found);
+	return !(*found);
 }
 
 /**

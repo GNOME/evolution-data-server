@@ -62,4 +62,4 @@ CamelFolder    *camel_vtrash_folder_new		(CamelStore *parent_store, camel_vtrash
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_VTRASH_FOLDER_H */
+#endif /* _CAMEL_VTRASH_FOLDER_H */

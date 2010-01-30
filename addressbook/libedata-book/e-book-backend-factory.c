@@ -30,7 +30,7 @@ e_book_backend_factory_get_type (void)
 {
 	static GType type = 0;
 
-	if (! type) {
+	if (!type) {
 		GTypeInfo info = {
 			sizeof (EBookBackendFactoryClass),
 			NULL, /* base_class_init */

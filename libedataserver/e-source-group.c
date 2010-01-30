@@ -62,7 +62,7 @@ static void
 source_changed_callback (ESource *source,
 			 ESourceGroup *group)
 {
-	if (! group->priv->ignore_source_changed)
+	if (!group->priv->ignore_source_changed)
 		g_signal_emit (group, signals[CHANGED], 0);
 }
 
@@ -489,7 +489,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 			g_signal_handlers_disconnect_by_func (source, source_changed_callback, group);
 		}
 
-		if (! changed && q != NULL) {
+		if (!changed && q != NULL) {
 			if (q->data != p->data)
 				changed = TRUE;
 			q = q->next;

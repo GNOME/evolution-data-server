@@ -3314,7 +3314,7 @@ header_encode_param (const guchar *in, gboolean *encoded, gboolean is_filename)
 	out = g_string_new (charset);
 	g_string_append(out, "''");
 
-	while ( (c = *inptr++) ) {
+	while ((c = *inptr++)) {
 		if (camel_mime_is_attrchar(c))
 			g_string_append_c (out, c);
 		else
@@ -4234,7 +4234,7 @@ camel_header_location_decode(const gchar *in)
 		quote = 1;
 	}
 
-	while ( (c = *in++) ) {
+	while ((c = *in++)) {
 		if (quote && c=='"')
 			break;
 		if (!camel_mime_is_lwsp(c))

@@ -56,4 +56,4 @@ void e_data_book_factory_set_backend_mode (EDataBookFactory *factory, gint mode)
 
 G_END_DECLS
 
-#endif /* ! __E_DATA_BOOK_FACTORY_H__ */
+#endif /* __E_DATA_BOOK_FACTORY_H__ */

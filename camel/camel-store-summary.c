@@ -430,7 +430,7 @@ camel_store_summary_save(CamelStoreSummary *s)
 	}
 
 	out = fdopen(fd, "wb");
-	if ( out == NULL ) {
+	if (out == NULL) {
 		i = errno;
 		printf("**  fdopen error: %s\n", g_strerror (errno));
 		close(fd);

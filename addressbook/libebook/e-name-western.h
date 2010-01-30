@@ -24,4 +24,4 @@ void          e_name_western_free  (ENameWestern *w);
 
 G_END_DECLS
 
-#endif /* ! __E_NAME_WESTERN_H__ */
+#endif /* __E_NAME_WESTERN_H__ */

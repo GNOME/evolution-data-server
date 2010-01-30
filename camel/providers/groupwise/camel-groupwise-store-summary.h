@@ -86,4 +86,4 @@ void camel_groupwise_store_summary_namespace_set(CamelGroupwiseStoreSummary *s, 
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_IMAP_STORE_SUMMARY_H */
+#endif /* _CAMEL_IMAP_STORE_SUMMARY_H */

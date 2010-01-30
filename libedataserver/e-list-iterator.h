@@ -46,4 +46,4 @@ GType      e_list_iterator_get_type (void);
 
 G_END_DECLS
 
-#endif /* ! __E_LIST_ITERATOR_H__ */
+#endif /* __E_LIST_ITERATOR_H__ */

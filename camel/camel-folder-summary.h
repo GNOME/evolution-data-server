@@ -489,4 +489,4 @@ gint camel_folder_summary_migrate_infos(CamelFolderSummary *s);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_FOLDER_SUMMARY_H */
+#endif /* _CAMEL_FOLDER_SUMMARY_H */

@@ -180,4 +180,4 @@ void camel_store_info_set_string(CamelStoreSummary *summary, CamelStoreInfo *inf
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_STORE_SUMMARY_H */
+#endif /* _CAMEL_STORE_SUMMARY_H */

@@ -64,4 +64,4 @@ CamelMimeFilter *camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direct
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_CRLF_H */
+#endif /* _CAMEL_MIME_FILTER_CRLF_H */

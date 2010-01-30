@@ -55,4 +55,4 @@ CamelVeeStore      *camel_vee_store_new	(void);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_VEE_STORE_H */
+#endif /* _CAMEL_VEE_STORE_H */

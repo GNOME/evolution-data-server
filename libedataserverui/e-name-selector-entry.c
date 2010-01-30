@@ -2486,7 +2486,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 			show_menu = TRUE;
 			g_object_set_data (G_OBJECT (menu_item), "order", GINT_TO_POINTER (i));
 
-			if ( i == email_num && len > 1 ) {
+			if (i == email_num && len > 1) {
 				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
 				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_email),
 							  name_selector_entry);

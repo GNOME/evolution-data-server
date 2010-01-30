@@ -214,7 +214,7 @@ again:
 		default:
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Could not lock '%s'"), path);
-			d(printf("locking failed ! status = %d\n", msg->id));
+			d(printf("locking failed !status = %d\n", msg->id));
 			break;
 		}
 	} else if (retry > 0) {
@@ -289,7 +289,7 @@ again:
 			res = 0;
 			break;
 		default:
-			d(printf("locking failed ! \n"));
+			d(printf("locking failed !\n"));
 			break;
 		}
 	} else if (retry > 0) {

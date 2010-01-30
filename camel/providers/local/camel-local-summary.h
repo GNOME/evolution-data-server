@@ -97,4 +97,4 @@ gint camel_local_summary_write_headers(gint fd, struct _camel_header_raw *header
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_LOCAL_SUMMARY_H */
+#endif /* _CAMEL_LOCAL_SUMMARY_H */

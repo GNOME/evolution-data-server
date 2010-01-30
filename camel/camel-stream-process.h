@@ -50,4 +50,4 @@ gint camel_stream_process_connect(CamelStreamProcess *, const gchar *, const gch
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_STREAM_PROCESS_H */
+#endif /* _CAMEL_STREAM_PROCESS_H */

@@ -350,7 +350,7 @@ static gint scan_dir(CamelStore *store, GHashTable *visited, gchar *root, const 
 		parent = fi;
 	}
 
-	while ( (d = readdir(dir)) ) {
+	while ((d = readdir(dir))) {
 		if (strcmp(d->d_name, ".") == 0
 		    || strcmp(d->d_name, "..") == 0)
 			continue;

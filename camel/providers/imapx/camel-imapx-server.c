@@ -467,7 +467,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 
 	p = fmt;
 	ps = fmt;
-	while ( ( c = *p++ ) ) {
+	while (( c = *p++ )) {
 		switch (c) {
 		case '%':
 			if (*p == '%') {
@@ -663,7 +663,7 @@ camel_imapx_command_free(CamelIMAPXCommand *ic)
 	imap_free_status(ic->status);
 	g_free(ic->select);
 
-	while ( (cp = ((CamelIMAPXCommandPart *)camel_dlist_remhead(&ic->parts))) ) {
+	while ((cp = ((CamelIMAPXCommandPart *)camel_dlist_remhead(&ic->parts)))) {
 		g_free(cp->data);
 		if (cp->ob) {
 			switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
@@ -3031,7 +3031,7 @@ imapx_parser_thread (gpointer d)
 	op = camel_operation_new (NULL, NULL);
 	op = camel_operation_register (op);
 	while (TRUE) {
-		
+
 		CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 		if (!is->stream)
 			imapx_reconnect(is, &ex);

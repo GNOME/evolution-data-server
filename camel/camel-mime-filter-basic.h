@@ -63,4 +63,4 @@ CamelMimeFilterBasic      *camel_mime_filter_basic_new_type	(CamelMimeFilterBasi
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_BASIC_H */
+#endif /* _CAMEL_MIME_FILTER_BASIC_H */

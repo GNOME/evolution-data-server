@@ -114,4 +114,4 @@ void camel_text_index_validate(CamelTextIndex *idx);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_TEXT_INDEX_H */
+#endif /* _CAMEL_TEXT_INDEX_H */

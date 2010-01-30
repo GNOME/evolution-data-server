@@ -76,4 +76,4 @@ gint camel_maildir_summary_name_to_info(CamelMaildirMessageInfo *info, const gch
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MAILDIR_SUMMARY_H */
+#endif /* _CAMEL_MAILDIR_SUMMARY_H */

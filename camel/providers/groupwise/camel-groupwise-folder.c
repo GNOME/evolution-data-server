@@ -1351,7 +1351,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 	if (!is_proxy) {
 		const gchar *source;
 
-		if ( !strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT) ) {
+		if (!strcmp (folder->full_name, RECEIVED) || !strcmp(folder->full_name, SENT)) {
 			source = NULL;
 		} else {
 			source = "sent received";
@@ -2161,7 +2161,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 			     !g_ascii_strcasecmp (attach->name, "meeting.ics")) && (attach->hidden == TRUE))
 				continue;
 
-			if ( (attach->item_reference) && (!g_ascii_strcasecmp (attach->item_reference, "1")) ) {
+			if ((attach->item_reference) && (!g_ascii_strcasecmp (attach->item_reference, "1"))) {
 				CamelMimeMessage *temp_msg = NULL;
 				status = e_gw_connection_get_item (cnc, container_id, attach->id, GET_ITEM_VIEW_WITH_CACHE, &temp_item);
 				if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -2502,7 +2502,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 				break;
 
 			if (delete_originals) {
-				if ( !strcmp(source->full_name, SENT) ) {
+				if (!strcmp(source->full_name, SENT)) {
 					camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 							_("This message is not available in offline mode."));
 

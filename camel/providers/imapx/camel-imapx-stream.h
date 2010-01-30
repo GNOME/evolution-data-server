@@ -92,4 +92,4 @@ guint32		 camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex);
 /* skips the rest of a line, including literals, etc */
 gint camel_imapx_stream_skip(CamelIMAPXStream *is, CamelException *ex);
 
-#endif /* ! _CAMEL_IMAPX_STREAM_H */
+#endif /* _CAMEL_IMAPX_STREAM_H */

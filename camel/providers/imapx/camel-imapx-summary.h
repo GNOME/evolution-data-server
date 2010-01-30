@@ -80,4 +80,4 @@ void camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary,
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_IMAPX_SUMMARY_H */
+#endif /* _CAMEL_IMAPX_SUMMARY_H */

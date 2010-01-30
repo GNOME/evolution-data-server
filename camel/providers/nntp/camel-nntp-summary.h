@@ -56,5 +56,5 @@ gint camel_nntp_summary_check(CamelNNTPSummary *cns, struct _CamelNNTPStore *sto
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_NNTP_SUMMARY_H */
+#endif /* _CAMEL_NNTP_SUMMARY_H */
 

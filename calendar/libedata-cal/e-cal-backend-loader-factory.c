@@ -38,7 +38,7 @@ e_cal_backend_loader_factory_get_type (void)
 {
 	static GType type = 0;
 
-	if (! type) {
+	if (!type) {
 		GTypeInfo info = {
 			sizeof (ECalBackendLoaderFactoryClass),
 			NULL, /* base_class_init */

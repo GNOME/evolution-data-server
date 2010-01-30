@@ -45,4 +45,4 @@ const gchar *camel_charset_iso_to_windows (const gchar *isocharset);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_CHARSET_MAP_H */
+#endif /* _CAMEL_CHARSET_MAP_H */

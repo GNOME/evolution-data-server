@@ -47,4 +47,4 @@ G_END_DECLS
 
 #endif /* EDS_DISABLE_DEPRECATED */
 
-#endif /* !_E_ICONV_H_ */
+#endif /* _E_ICONV_H_ */

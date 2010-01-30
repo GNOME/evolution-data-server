@@ -92,4 +92,4 @@ gchar *camel_nntp_store_summary_full_from_path(CamelNNTPStoreSummary *s, const g
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_NNTP_STORE_SUMMARY_H */
+#endif /* _CAMEL_NNTP_STORE_SUMMARY_H */

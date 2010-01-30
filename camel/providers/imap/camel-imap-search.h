@@ -63,4 +63,4 @@ CamelFolderSearch *camel_imap_search_new      (const gchar *cachedir);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_IMAP_SEARCH_H */
+#endif /* _CAMEL_IMAP_SEARCH_H */

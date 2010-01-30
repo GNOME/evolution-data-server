@@ -53,4 +53,4 @@ CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *, const gchar *filenam
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MH_SUMMARY_H */
+#endif /* _CAMEL_MH_SUMMARY_H */

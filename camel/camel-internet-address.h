@@ -57,4 +57,4 @@ gchar *			camel_internet_address_format_address(const gchar *name, const gchar *
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_INTERNET_ADDRESS_H */
+#endif /* _CAMEL_INTERNET_ADDRESS_H */

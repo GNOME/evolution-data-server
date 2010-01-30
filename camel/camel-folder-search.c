@@ -769,7 +769,7 @@ search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 			gint res = TRUE;
 
 			if (argv[0]->type == ESEXP_RES_BOOL)
-				res = ! argv[0]->value.bool;
+				res = !argv[0]->value.bool;
 
 			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 			r->value.bool = res;

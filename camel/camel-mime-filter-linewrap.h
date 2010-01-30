@@ -58,4 +58,4 @@ CamelMimeFilter *camel_mime_filter_linewrap_new (guint preferred_len, guint max_
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_LINEWRAP_H */
+#endif /* _CAMEL_MIME_FILTER_LINEWRAP_H */

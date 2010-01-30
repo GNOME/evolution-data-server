@@ -95,4 +95,4 @@ EBookBackendSyncStatus e_book_backend_sync_get_supported_auth_methods (EBookBack
 
 G_END_DECLS
 
-#endif /* ! __E_BOOK_BACKEND_SYNC_H__ */
+#endif /* __E_BOOK_BACKEND_SYNC_H__ */

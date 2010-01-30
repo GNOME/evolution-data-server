@@ -90,4 +90,4 @@ void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_BESTENC_H */
+#endif /* _CAMEL_MIME_FILTER_BESTENC_H */

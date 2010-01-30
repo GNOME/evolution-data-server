@@ -556,7 +556,7 @@ book_view_thread (gpointer data)
 	db = bf->priv->file_db;
 	query = e_data_book_view_get_card_query (book_view);
 
-	if ( ! strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
+	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
 		e_data_book_view_notify_status_message (book_view, _("Loading..."));
 		allcontacts = TRUE;
 	} else {
@@ -1383,7 +1383,7 @@ e_book_backend_file_construct (EBookBackendFile *backend)
 	g_assert (backend != NULL);
 	g_assert (E_IS_BOOK_BACKEND_FILE (backend));
 
-	if (! e_book_backend_construct (E_BOOK_BACKEND (backend)))
+	if (!e_book_backend_construct (E_BOOK_BACKEND (backend)))
 		return FALSE;
 
 	return TRUE;
@@ -1399,7 +1399,7 @@ e_book_backend_file_new (void)
 
 	backend = g_object_new (E_TYPE_BOOK_BACKEND_FILE, NULL);
 
-	if (! e_book_backend_file_construct (backend)) {
+	if (!e_book_backend_file_construct (backend)) {
 		g_object_unref (backend);
 
 		return NULL;

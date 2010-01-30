@@ -66,5 +66,5 @@ void camel_vee_summary_load_check_unread_vfolder  (CamelVeeSummary *vs);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_VEE_SUMMARY_H */
+#endif /* _CAMEL_VEE_SUMMARY_H */
 

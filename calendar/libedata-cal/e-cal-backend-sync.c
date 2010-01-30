@@ -1188,7 +1188,7 @@ e_cal_backend_sync_get_type (void)
 {
 	static GType type = 0;
 
-	if (! type) {
+	if (!type) {
 		GTypeInfo info = {
 			sizeof (ECalBackendSyncClass),
 			NULL, /* base_class_init */

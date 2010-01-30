@@ -49,5 +49,5 @@ typedef struct {
 EBookBackend *e_book_backend_file_new      (void);
 GType       e_book_backend_file_get_type (void);
 
-#endif /* ! __E_BOOK_BACKEND_FILE_H__ */
+#endif /* __E_BOOK_BACKEND_FILE_H__ */
 

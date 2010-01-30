@@ -586,7 +586,7 @@ e_book_backend_sync_get_type (void)
 {
 	static GType type = 0;
 
-	if (! type) {
+	if (!type) {
 		GTypeInfo info = {
 			sizeof (EBookBackendSyncClass),
 			NULL, /* base_class_init */

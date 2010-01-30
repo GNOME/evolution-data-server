@@ -116,4 +116,4 @@ void camel_imapx_server_noop (CamelIMAPXServer *is, CamelFolder *folder, CamelEx
 CamelStream *camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, struct _CamelException *ex);
 void camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelMimeMessage *message, const struct _CamelMessageInfo *mi, CamelException *ex);
 
-#endif /* ! _CAMEL_IMAPX_SERVER_H */
+#endif /* _CAMEL_IMAPX_SERVER_H */

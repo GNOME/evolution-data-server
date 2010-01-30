@@ -177,7 +177,7 @@ find_folders_recursive (const gchar *physical_path, const gchar *path,
 		file_path = g_strdup_printf ("%s/%s", subfolder_directory_path, dirent);
 
 		if (g_stat (file_path, &file_stat) < 0 ||
-		    ! S_ISDIR (file_stat.st_mode)) {
+		    !S_ISDIR (file_stat.st_mode)) {
 			g_free (file_path);
 			continue;
 		}

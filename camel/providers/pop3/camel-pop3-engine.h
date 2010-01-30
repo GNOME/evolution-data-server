@@ -135,4 +135,4 @@ CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 fl
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_POP3_ENGINE_H */
+#endif /* _CAMEL_POP3_ENGINE_H */

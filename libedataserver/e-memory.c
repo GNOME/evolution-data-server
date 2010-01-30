@@ -1114,7 +1114,7 @@ e_poolv_set (EPoolv *poolv, gint index, gchar *str, gint freeit)
 		poolv->s[index] = e_mempool_strdup(poolv_mempool, str);
 		g_hash_table_insert(poolv_pool, poolv->s[index], poolv->s[index]);
 	}
-#endif /* !POOLV_REFCNT */
+#endif /* POOLV_REFCNT */
 
 #ifdef G_THREADS_ENABLED
 	g_static_mutex_unlock(&poolv_mutex);

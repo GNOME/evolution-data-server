@@ -177,7 +177,7 @@ camel_imap_store_summary_full_to_path(CamelImapStoreSummary *s, const gchar *ful
 	if (dir_sep != '/') {
 		p = path = alloca(strlen(full_name)*3+1);
 		f = full_name;
-		while ( (c = *f++ & 0xff) ) {
+		while ((c = *f++ & 0xff)) {
 			if (c == dir_sep)
 				*p++ = '/';
 			else if (c == '/' || c == '%')

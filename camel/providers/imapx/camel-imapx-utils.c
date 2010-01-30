@@ -1364,7 +1364,7 @@ imap_parse_fetch(CamelIMAPXStream *is, CamelException *ex)
 		return NULL;
 	}
 
-	while ( (tok = camel_imapx_stream_token(is, &token, &len, ex)) == IMAP_TOK_TOKEN ) {
+	while ((tok = camel_imapx_stream_token(is, &token, &len, ex)) == IMAP_TOK_TOKEN) {
 
 		p = token;
 		while ((c=*p))
@@ -1469,7 +1469,7 @@ imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 		return NULL;
 	}
 
-	while ( (tok = camel_imapx_stream_token(is, &token, &len, ex)) == IMAP_TOK_TOKEN ) {
+	while ((tok = camel_imapx_stream_token(is, &token, &len, ex)) == IMAP_TOK_TOKEN) {
 		switch (imap_tokenise((gchar *) token, len)) {
 			case IMAP_MESSAGES:
 				sinfo->messages = camel_imapx_stream_number (is, ex);
@@ -1669,7 +1669,7 @@ imap_parse_list(CamelIMAPXStream *is, CamelException *ex)
 		return NULL;
 	}
 
-	while ( (tok = camel_imapx_stream_token(is, &token, &len, ex)) != ')' ) {
+	while ((tok = camel_imapx_stream_token(is, &token, &len, ex)) != ')') {
 		if (tok == IMAP_TOK_STRING || tok == IMAP_TOK_TOKEN) {
 			p = token;
 			while ((c=*p))
@@ -1702,7 +1702,7 @@ imapx_list_get_path(struct _list_info *li)
 	if (li->separator != 0 && li->separator != '/') {
 		p = path = alloca(strlen(li->name)*3+1);
 		f = li->name;
-		while ( (c = *f++ & 0xff) ) {
+		while ((c = *f++ & 0xff)) {
 			if (c == li->separator)
 				*p++ = '/';
 			else if (c == '/' || c == '%')

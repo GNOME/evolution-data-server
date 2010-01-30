@@ -438,7 +438,7 @@ static gint maildir_summary_load(CamelLocalSummary *cls, gint forceindex, CamelE
 	mds->priv->load_map = g_hash_table_new(g_str_hash, g_str_equal);
 	pool = e_mempool_new(1024, 512, E_MEMPOOL_ALIGN_BYTE);
 
-	while ( (d = readdir(dir)) ) {
+	while ((d = readdir(dir))) {
 		if (d->d_name[0] == '.')
 			continue;
 
@@ -575,11 +575,11 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 	/* joy, use this to pre-count the total, so we can report progress meaningfully */
 	total = 0;
 	count = 0;
-	while ( (d = readdir(dir)) )
+	while ((d = readdir(dir)))
 		total++;
 	rewinddir(dir);
 
-	while ( (d = readdir(dir)) ) {
+	while ((d = readdir(dir))) {
 		gint pc = count * 100 / total;
 
 		camel_operation_progress(NULL, pc);
@@ -641,11 +641,11 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 	if (dir != NULL) {
 		total = 0;
 		count = 0;
-		while ( (d = readdir(dir)) )
+		while ((d = readdir(dir)))
 			total++;
 		rewinddir(dir);
 
-		while ( (d = readdir(dir)) ) {
+		while ((d = readdir(dir))) {
 			gchar *name, *newname, *destname, *destfilename;
 			gchar *src, *dest;
 			gint pc = count * 100 / total;

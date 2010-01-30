@@ -161,4 +161,4 @@ ECalBackendSyncStatus e_cal_backend_sync_get_free_busy (ECalBackendSync *backend
 
 G_END_DECLS
 
-#endif /* ! __E_CAL_BACKEND_SYNC_H__ */
+#endif /* __E_CAL_BACKEND_SYNC_H__ */

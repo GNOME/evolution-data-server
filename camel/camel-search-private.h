@@ -89,4 +89,4 @@ void camel_search_words_free(struct _camel_search_words *);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_SEARCH_PRIVATE_H */
+#endif /* _CAMEL_SEARCH_PRIVATE_H */

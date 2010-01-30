@@ -55,6 +55,6 @@ CamelFolder *camel_digest_folder_new      (CamelStore *parent_store, CamelMimeMe
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_DIGEST_FOLDER_H */
+#endif /* _CAMEL_DIGEST_FOLDER_H */
 
 #endif /* CAMEL_DISABLE_DEPRECATED */

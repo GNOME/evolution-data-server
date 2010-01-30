@@ -143,7 +143,7 @@ camel_lock_dot(const gchar *path, CamelException *ex)
 
 	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Timed out trying to get lock file on %s. Try again later."), path);
 	return -1;
-#else /* ! USE_DOT */
+#else /* !USE_DOT */
 	return 0;
 #endif
 }

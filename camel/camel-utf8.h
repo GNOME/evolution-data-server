@@ -45,4 +45,4 @@ gchar *camel_utf8_make_valid (const gchar *text);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_UTF8_H */
+#endif /* _CAMEL_UTF8_H */

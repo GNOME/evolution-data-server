@@ -28,4 +28,4 @@ gchar * camel_sexp_to_sql (const gchar *sexp);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_SEARCH_SQL_H */
+#endif /* _CAMEL_SEARCH_SQL_H */

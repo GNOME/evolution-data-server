@@ -442,4 +442,4 @@ camel_charset_iso_to_windows (const gchar *isocharset)
 	return isocharset;
 }
 
-#endif /* !BUILD_MAP */
+#endif /* BUILD_MAP */

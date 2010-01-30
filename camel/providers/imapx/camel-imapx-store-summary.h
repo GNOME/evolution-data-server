@@ -102,4 +102,4 @@ void camel_imapx_store_summary_set_namespaces (CamelIMAPXStoreSummary *summary, 
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_IMAP_STORE_SUMMARY_H */
+#endif /* _CAMEL_IMAP_STORE_SUMMARY_H */

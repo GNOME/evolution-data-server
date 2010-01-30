@@ -831,7 +831,7 @@ void e_thread_destroy(EThread *e)
 	GList *l;
 
 	/* make sure we soak up all the messages first */
-	while ( (msg = e_msgport_get(e->server_port)) ) {
+	while ((msg = e_msgport_get(e->server_port))) {
 		thread_destroy_msg(e, msg);
 	}
 

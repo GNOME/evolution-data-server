@@ -185,7 +185,7 @@ skip_to_next_line (gchar **p)
 		lp = g_utf8_next_char (lp);
 
 	/* -- skip over the endline */
-	while ( *lp == '\r' || *lp == '\n' ) {
+	while (*lp == '\r' || *lp == '\n') {
 		lp = g_utf8_next_char (lp);
 	}
 

@@ -306,7 +306,7 @@ camel_utf8_utf7(const gchar *ptr)
 
 	out = g_string_new("");
 
-	while ( (c = camel_utf8_getc(&p)) ) {
+	while ((c = camel_utf8_getc(&p))) {
 		if (c >= 0x20 && c <= 0x7e) {
 			if (state == 1) {
 				utf7_closeb64(out, v, i);
@@ -360,7 +360,7 @@ camel_utf8_ucs2(const gchar *pptr)
 
 	/* what if c is > 0xffff ? */
 
-	while ( (c = camel_utf8_getc(&ptr)) ) {
+	while ((c = camel_utf8_getc(&ptr))) {
 		guint16 s = g_htons(c);
 
 		g_byte_array_append(work, (guchar *) &s, 2);
@@ -390,7 +390,7 @@ gchar *camel_ucs2_utf8(const gchar *ptr)
 	GString *work = g_string_new("");
 	gchar *out;
 
-	while ( (c = *ucs++) )
+	while ((c = *ucs++))
 		g_string_append_u(work, g_ntohs(c));
 
 	out = g_strdup(work->str);

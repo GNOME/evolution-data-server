@@ -76,4 +76,4 @@ gint camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFol
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MBOX_SUMMARY_H */
+#endif /* _CAMEL_MBOX_SUMMARY_H */

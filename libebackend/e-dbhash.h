@@ -45,5 +45,5 @@ void e_dbhash_destroy (EDbHash *edbh);
 
 G_END_DECLS
 
-#endif /* ! __E_DBHASH_H__ */
+#endif /* __E_DBHASH_H__ */
 

@@ -256,7 +256,7 @@ locale_parse_lang (const gchar *locale)
 	}
 }
 
-/* NOTE: Owns the lock on return if keep is TRUE ! */
+/* NOTE: Owns the lock on return if keep is TRUE !*/
 static void
 camel_iconv_init(gint keep)
 {

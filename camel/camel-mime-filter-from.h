@@ -48,4 +48,4 @@ CamelMimeFilterFrom      *camel_mime_filter_from_new	(void);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_MIME_FILTER_FROM_H */
+#endif /* _CAMEL_MIME_FILTER_FROM_H */

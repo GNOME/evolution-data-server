@@ -147,4 +147,4 @@ void camel_folder_search_free_result(CamelFolderSearch *search, GPtrArray *);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_FOLDER_SEARCH_H */
+#endif /* _CAMEL_FOLDER_SEARCH_H */

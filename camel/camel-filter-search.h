@@ -45,4 +45,4 @@ gint camel_filter_search_match (CamelSession *session,
 
 G_END_DECLS
 
-#endif /* ! CAMEL_FILTER_SEARCH_H */
+#endif /* CAMEL_FILTER_SEARCH_H */

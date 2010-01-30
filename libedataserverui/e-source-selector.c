@@ -626,7 +626,7 @@ selection_func (GtkTreeSelection *selection,
 	if (path_currently_selected)
 		return TRUE;
 
-	if (! gtk_tree_model_get_iter (model, &iter, path))
+	if (!gtk_tree_model_get_iter (model, &iter, path))
 		return FALSE;
 
 	gtk_tree_model_get (model, &iter, 0, &data, -1);
@@ -680,7 +680,7 @@ cell_toggled_callback (GtkCellRendererToggle *renderer,
 	ESource *source;
 	gpointer data;
 
-	if (! gtk_tree_model_get_iter (model, &iter, path)) {
+	if (!gtk_tree_model_get_iter (model, &iter, path)) {
 		gtk_tree_path_free (path);
 		return;
 	}
@@ -1587,14 +1587,14 @@ e_source_selector_peek_primary_selection (ESourceSelector *selector)
 		}
 	}
 
-	if (!have_iter && ! gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (selector)), NULL, &iter))
+	if (!have_iter && !gtk_tree_selection_get_selected (gtk_tree_view_get_selection (GTK_TREE_VIEW (selector)), NULL, &iter))
 		return NULL;
 
 	gtk_tree_model_get (model, &iter, 0, &data, -1);
 	if (!data)
 		return NULL;
 
-	if (! E_IS_SOURCE (data)) {
+	if (!E_IS_SOURCE (data)) {
 		g_object_unref (data);
 
 		return NULL;

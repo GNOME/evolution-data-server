@@ -22,5 +22,5 @@ void e_address_western_free (EAddressWestern *eaw);
 
 G_END_DECLS
 
-#endif  /* ! __E_ADDRESS_WESTERN_H__ */
+#endif  /* !__E_ADDRESS_WESTERN_H__ */
 

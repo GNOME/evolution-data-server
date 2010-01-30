@@ -242,7 +242,7 @@ e_book_backend_summary_get_type (void)
 {
 	static GType type = 0;
 
-	if (! type) {
+	if (!type) {
 		GTypeInfo info = {
 			sizeof (EBookBackendSummaryClass),
 			NULL, /* base_class_init */

@@ -209,7 +209,7 @@ enum ptime_locale_status { not, loc, raw };
 # endif  /* GCC.  */
 #endif  /* Not __P.  */
 
-#if ! HAVE_LOCALTIME_R && ! defined localtime_r
+#if !HAVE_LOCALTIME_R && !defined localtime_r
 # ifdef _LIBC
 #  define localtime_r __localtime_r
 # else
@@ -222,13 +222,13 @@ localtime_r (t, tp)
      struct tm *tp;
 {
   struct tm *l = localtime (t);
-  if (! l)
+  if (!l)
     return 0;
   *tp = *l;
   return tp;
 }
-# endif /* ! _LIBC */
-#endif /* ! HAVE_LOCALTIME_R && ! defined (localtime_r) */
+# endif /* !_LIBC */
+#endif /* HAVE_LOCALTIME_R && !defined (localtime_r) */
 
 #define match_char(ch1, ch2) if (ch1 != ch2) return NULL
 #if defined _LIBC && defined __GNUC__ && __GNUC__ >= 2
@@ -1108,7 +1108,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 						- (int64_t) era->start_date[0])
 					       * era->absolute_direction));
 			}
-		      if (! match)
+		      if (!match)
 			return NULL;
 
 		      break;

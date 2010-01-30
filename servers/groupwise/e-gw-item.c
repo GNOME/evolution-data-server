@@ -693,7 +693,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 			SoupSoapParameter *temp_param;
 
 			recipient->status_enabled = TRUE;
-			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted")) ) {
+			if ((temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "deleted"))) {
 				recipient->status = E_GW_ITEM_STAT_DELETED;
 				value = soup_soap_parameter_get_string_value (temp_param);
 				formatted_date = e_gw_connection_format_date_string (value);
@@ -701,7 +701,7 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				g_free (value), value = NULL;
 				g_free (formatted_date), formatted_date = NULL;
 			}
-			if ( (temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "declined")) ) {
+			if ((temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "declined"))) {
 				recipient->status = E_GW_ITEM_STAT_DECLINED;
 				value = soup_soap_parameter_get_string_value (temp_param);
 				formatted_date = e_gw_connection_format_date_string (value);
@@ -791,7 +791,7 @@ set_sendoptions_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 
 	priv = item->priv;
 
-	if ( (subparam = soup_soap_parameter_get_first_child_by_name (param, "requestReply")) ) {
+	if ((subparam = soup_soap_parameter_get_first_child_by_name (param, "requestReply"))) {
 		child = soup_soap_parameter_get_first_child_by_name (subparam, "whenConvenient");
 		if (child) {
 			value = soup_soap_parameter_get_string_value (child);

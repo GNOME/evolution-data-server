@@ -72,4 +72,4 @@ void		camel_address_remove	(CamelAddress *addr, gint index);
 
 G_END_DECLS
 
-#endif /* ! _CAMEL_ADDRESS_H */
+#endif /* _CAMEL_ADDRESS_H */
