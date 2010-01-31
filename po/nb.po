@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.29.x\n"
-"Report-Msgid-Bugs-To:\n"
-"POT-Creation-Date: 2010-01-19 18:29+0100\n"
-"PO-Revision-Date: 2010-01-19 18:30+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-01-31 20:05+0100\n"
+"PO-Revision-Date: 2010-01-31 20:07+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -25,13 +25,13 @@ msgstr "Laster..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4524
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4551
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
 msgid "Searching..."
 msgstr "Søker..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2696
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4688
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4715
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Laster ned kontakter (%d)..."
@@ -43,35 +43,35 @@ msgstr "Laster ned kontakter (%d)..."
 msgid "Updating contacts cache (%d)... "
 msgstr "Oppdaterer buffer for kontakter (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:786
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:816
 msgid "Using Distinguished Name (DN)"
 msgstr "Bruker distinguished name (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:789
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:819
 msgid "Using Email Address"
 msgstr "Bruker e-post-adresse"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1067
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1096
 msgid "Reconnecting to LDAP server..."
 msgstr "Kobler til LDAP-tjener på nytt..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1711
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1738
 msgid "Adding contact to LDAP server..."
 msgstr "Legger til kontakt på LDAP-tjener..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1845
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1872
 msgid "Removing contact from LDAP server..."
 msgstr "Fjerner kontakt fra LDAP-tjener..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2282
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2309
 msgid "Modifying contact from LDAP server..."
 msgstr "Endrer kontakt fra LDAP-tjener..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4385
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4412
 msgid "Receiving LDAP search results..."
 msgstr "Mottar søkeresultater fra LDAP-tjener..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4546
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4573
 msgid "Error performing search"
 msgstr "Feil ved utføring av søk"
 
@@ -1247,7 +1247,7 @@ msgstr "Kan ikke lage kalenderobjekt"
 
 #: ../calendar/libedata-cal/e-data-cal.c:637
 #, c-format
-msgid "Cannot modify calender object"
+msgid "Cannot modify calendar object"
 msgstr "Kan ikke endre kalenderobjekt"
 
 #: ../calendar/libedata-cal/e-data-cal.c:661
@@ -1433,7 +1433,7 @@ msgstr "Forbereder mappe «%s» på frakobling"
 #: ../camel/providers/imap/camel-imap-store.c:1001
 #: ../camel/providers/imap/camel-imap-store.c:1843
 #: ../camel/providers/imap/camel-imap-store.c:2259
-#: ../camel/providers/imap/camel-imap-store.c:3051
+#: ../camel/providers/imap/camel-imap-store.c:3068
 msgid "You must be working online to complete this operation"
 msgstr "Du må arbeide tilknyttet for å fullføre denne operasjonen"
 
@@ -1568,44 +1568,44 @@ msgstr "(%s) forventer resultat på tabellform"
 msgid "(%s) requires the folder set"
 msgstr "(%s) krever et mappesett"
 
-#: ../camel/camel-folder.c:669
+#: ../camel/camel-folder.c:676
 #, c-format
 msgid "Unsupported operation: append message: for %s"
 msgstr "Ustøttet operasjon: legg til melding: for %s"
 
-#: ../camel/camel-folder.c:1374
+#: ../camel/camel-folder.c:1381
 #, c-format
 msgid "Unsupported operation: search by expression: for %s"
 msgstr "Ustøttet operasjon: søk etter uttrykk: etter %s"
 
-#: ../camel/camel-folder.c:1415
+#: ../camel/camel-folder.c:1422
 #, c-format
 msgid "Unsupported operation: count by expression: for %s"
 msgstr "Ustøttet operasjon: antall etter uttrykk: etter %s"
 
-#: ../camel/camel-folder.c:1454
+#: ../camel/camel-folder.c:1461
 #, c-format
 msgid "Unsupported operation: search by UIDs: for %s"
 msgstr "Ustøttet operasjon: søk på UID: etter %s"
 
-#: ../camel/camel-folder.c:1567
+#: ../camel/camel-folder.c:1574
 #: ../camel/providers/local/camel-maildir-folder.c:387
 msgid "Moving messages"
 msgstr "Flytter meldinger"
 
-#: ../camel/camel-folder.c:1567
+#: ../camel/camel-folder.c:1574
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#: ../camel/camel-folder.c:1908
+#: ../camel/camel-folder.c:1915
 msgid "Learning junk"
 msgstr "Oppdaterer data om søppel"
 
-#: ../camel/camel-folder.c:1925
+#: ../camel/camel-folder.c:1933
 msgid "Learning non-junk"
 msgstr "Oppdaterer data om gyldige meldinger"
 
-#: ../camel/camel-folder.c:1944
+#: ../camel/camel-folder.c:1953
 msgid "Filtering new message(s)"
 msgstr "Filtrerer ny(e) melding(er)"
 
@@ -2598,8 +2598,8 @@ msgstr "Papirkurven er full. Vennligst tøm den."
 #: ../camel/providers/groupwise/camel-groupwise-store.c:763
 #: ../camel/providers/imap/camel-imap-folder.c:3429
 #: ../camel/providers/imap/camel-imap-folder.c:3505
-#: ../camel/providers/imapx/camel-imapx-server.c:2604
-#: ../camel/providers/imapx/camel-imapx-server.c:2688
+#: ../camel/providers/imapx/camel-imapx-server.c:2600
+#: ../camel/providers/imapx/camel-imapx-server.c:2684
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
@@ -2845,12 +2845,12 @@ msgstr "Ingen inndatastrøm"
 #: ../camel/providers/imap/camel-imap-command.c:229
 #: ../camel/providers/imap/camel-imap-command.c:278
 #: ../camel/providers/imap/camel-imap-command.c:492
-#: ../camel/providers/imap/camel-imap-store.c:3088
+#: ../camel/providers/imap/camel-imap-store.c:3105
 msgid "Operation cancelled"
 msgstr "Operasjon avbrutt"
 
 #: ../camel/providers/imap/camel-imap-command.c:331
-#: ../camel/providers/imap/camel-imap-store.c:3093
+#: ../camel/providers/imap/camel-imap-store.c:3110
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Tjener koblet fra uventet: %s"
@@ -2901,7 +2901,7 @@ msgstr "Kan ikke opprette katalog %s: %s"
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:918
-#: ../camel/providers/imapx/camel-imapx-server.c:2634
+#: ../camel/providers/imapx/camel-imapx-server.c:2630
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Søker etter endrede meldinger i %s"
@@ -2934,7 +2934,7 @@ msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
 #: ../camel/providers/imap/camel-imap-folder.c:2974
-#: ../camel/providers/imap/camel-imap-folder.c:3816
+#: ../camel/providers/imap/camel-imap-folder.c:3819
 #: ../camel/providers/nntp/camel-nntp-folder.c:236
 msgid "This message is not currently available"
 msgstr "Denne meldingen er ikke tilgjengelig"
@@ -2949,7 +2949,7 @@ msgstr "Uferdig svar fra tjener: ingen informasjon gitt for melding %d"
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Uferdig svar fra tjener: ingen UID oppgitt for melding %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3854
+#: ../camel/providers/imap/camel-imap-folder.c:3857
 msgid "Could not find message body in FETCH response."
 msgstr "Kunne ikke finne meldingskropp i FETCH-svar."
 
@@ -3046,7 +3046,7 @@ msgstr "SSL er ikke tilgjengelig"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:860
-#: ../camel/providers/imapx/camel-imapx-server.c:1993
+#: ../camel/providers/imapx/camel-imapx-server.c:1990
 msgid "Connection cancelled"
 msgstr "Tilkobling avbrutt"
 
@@ -3057,20 +3057,20 @@ msgstr "Tilkobling avbrutt"
 #: ../camel/providers/imap4/camel-imap4-store.c:310
 #: ../camel/providers/imap4/camel-imap4-store.c:325
 #: ../camel/providers/imap4/camel-imap4-store.c:334
-#: ../camel/providers/imapx/camel-imapx-server.c:2033
-#: ../camel/providers/imapx/camel-imapx-server.c:2047
+#: ../camel/providers/imapx/camel-imapx-server.c:2030
+#: ../camel/providers/imapx/camel-imapx-server.c:2044
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:690
-#: ../camel/providers/imapx/camel-imapx-server.c:2034
+#: ../camel/providers/imapx/camel-imapx-server.c:2031
 #: ../camel/providers/smtp/camel-smtp-transport.c:332
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
 #: ../camel/providers/imap/camel-imap-store.c:709
-#: ../camel/providers/imapx/camel-imapx-server.c:2048
+#: ../camel/providers/imapx/camel-imapx-server.c:2045
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandling feilet"
 
@@ -3144,7 +3144,7 @@ msgstr "Kan ikke opprette mappe «%s»: mappen eksisterer."
 msgid "Unknown parent folder: %s"
 msgstr "Ukjent opphavsmappe: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:3090
+#: ../camel/providers/imap/camel-imap-store.c:3107
 msgid "Server unexpectedly disconnected"
 msgstr "Tjener koblet fra uventet"
 
@@ -3500,12 +3500,12 @@ msgstr ""
 "\n"
 " !!! IKKE BRUK DENNE I PRODUKSJON  !!!\n"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1996
+#: ../camel/providers/imapx/camel-imapx-server.c:1993
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Kunne ikke koble til %s (port %s): %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2076
+#: ../camel/providers/imapx/camel-imapx-server.c:2073
 #: ../camel/providers/imapx/camel-imapx-store.c:147
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
@@ -4959,15 +4959,15 @@ msgstr "Farge som skal vises"
 msgid "Select Contacts from Address Book"
 msgstr "Velg kontakter fra adresseboken"
 
-#: ../libedataserverui/e-name-selector-dialog.c:579
+#: ../libedataserverui/e-name-selector-dialog.c:587
 msgid "_Add"
 msgstr "_Legg til"
 
-#: ../libedataserverui/e-name-selector-dialog.c:604
+#: ../libedataserverui/e-name-selector-dialog.c:612
 msgid "_Remove"
 msgstr "_Fjern"
 
-#: ../libedataserverui/e-name-selector-dialog.c:781
+#: ../libedataserverui/e-name-selector-dialog.c:789
 #: ../libedataserverui/e-name-selector-dialog.ui.h:6
 msgid "Any Category"
 msgstr "Hvilken som helst kategori"
