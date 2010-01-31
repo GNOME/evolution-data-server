@@ -1225,7 +1225,7 @@ e_cal_backend_groupwise_is_read_only (ECalBackendSync *backend, EDataCal *cal, g
 	return GNOME_Evolution_Calendar_Success;
 }
 
-/* return email address of the person who opened the calender */
+/* return email address of the person who opened the calendar */
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_get_cal_address (ECalBackendSync *backend, EDataCal *cal, gchar **address)
 {

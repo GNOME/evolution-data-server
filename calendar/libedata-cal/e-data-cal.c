@@ -634,7 +634,7 @@ e_data_cal_notify_object_modified (EDataCal *cal, EServerMethodContext context, 
 {
 	DBusGMethodInvocation *method = context;
 	if (status != Success) {
-		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot modify calender object")));
+		dbus_g_method_return_error (method, g_error_new (E_DATA_CAL_ERROR, status, _("Cannot modify calendar object")));
 	} else {
 		e_cal_backend_notify_object_modified (cal->priv->backend, old_object, object);
 		dbus_g_method_return (method);
