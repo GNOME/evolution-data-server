@@ -213,8 +213,26 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	return TRUE;
 }
 
+
 static CamelFolder *
-imap_get_trash (CamelStore *store, CamelException *ex)
+imapx_get_junk(CamelStore *store, CamelException *ex)
+{
+	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_junk(store, ex);
+
+	if (folder) {
+		gchar *state = g_build_filename(((CamelIMAPXStore *)store)->storage_path, "system", "Junk.cmeta", NULL);
+
+		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		g_free(state);
+		/* no defaults? */
+		camel_object_state_read(folder);
+	}
+
+	return folder;
+}
+
+static CamelFolder *
+imapx_get_trash (CamelStore *store, CamelException *ex)
 {	
 	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
 
@@ -228,6 +246,28 @@ imap_get_trash (CamelStore *store, CamelException *ex)
 	}
 
 	return folder;
+}
+
+
+static guint
+imapx_hash_folder_name (gconstpointer key)
+{
+	if (g_ascii_strcasecmp (key, "INBOX") == 0)
+		return g_str_hash ("INBOX");
+	else
+		return g_str_hash (key);
+}
+
+static gint
+imapx_compare_folder_name (gconstpointer a, gconstpointer b)
+{
+	gconstpointer aname = a, bname = b;
+
+	if (g_ascii_strcasecmp (a, "INBOX") == 0)
+		aname = "INBOX";
+	if (g_ascii_strcasecmp (b, "INBOX") == 0)
+		bname = "INBOX";
+	return g_str_equal (aname, bname);
 }
 
 static CamelFolder *
@@ -1111,9 +1151,12 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 	camel_service_class->connect = imap_connect;
 	camel_service_class->disconnect = imap_disconnect;
 
-	camel_store_class->get_trash = imap_get_trash;
+	camel_store_class->get_trash = imapx_get_trash;
+	camel_store_class->get_junk = imapx_get_junk;
 	camel_store_class->get_folder = imap_get_folder;
 	camel_store_class->get_inbox = imap_get_inbox;
+	camel_store_class->hash_folder_name = imapx_hash_folder_name;
+	camel_store_class->compare_folder_name = imapx_compare_folder_name;
 
 	camel_store_class->create_folder = imap_create_folder;
 	camel_store_class->rename_folder = imap_rename_folder;
