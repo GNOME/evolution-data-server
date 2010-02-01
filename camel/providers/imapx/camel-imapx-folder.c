@@ -96,8 +96,8 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
-	ifolder->exists_on_server = -1;
-	ifolder->unread_on_server = -1;
+	ifolder->exists_on_server = 0;
+	ifolder->unread_on_server = 0;
 
 	g_free (summary_file);
 
