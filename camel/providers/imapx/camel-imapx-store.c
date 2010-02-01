@@ -178,6 +178,16 @@ store_get_login(struct _CamelIMAPXDriver *driver, gchar **login, gchar **pass, C
 }
 #endif
 
+static gchar *
+imapx_get_name (CamelService *service, gboolean brief)
+{
+	if (brief)
+		return g_strdup_printf (_("IMAP server %s"), service->url->host);
+	else
+		return g_strdup_printf (_("IMAP service for %s on %s"),
+					service->url->user, service->url->host);
+}
+
 static gboolean
 imap_connect (CamelService *service, CamelException *ex)
 {
@@ -1097,6 +1107,7 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 
 	camel_service_class->construct = imap_construct;
 	camel_service_class->query_auth_types = imap_query_auth_types;
+	camel_service_class->get_name = imapx_get_name;
 	camel_service_class->connect = imap_connect;
 	camel_service_class->disconnect = imap_disconnect;
 
