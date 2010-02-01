@@ -205,9 +205,19 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 
 static CamelFolder *
 imap_get_trash (CamelStore *store, CamelException *ex)
-{
-	/* no-op */
-	return NULL;
+{	
+	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
+
+	if (folder) {
+		gchar *state = g_build_filename(((CamelIMAPXStore *)store)->storage_path, "system", "Trash.cmeta", NULL);
+
+		camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state, NULL);
+		g_free(state);
+		/* no defaults? */
+		camel_object_state_read(folder);
+	}
+
+	return folder;
 }
 
 static CamelFolder *
