@@ -71,6 +71,8 @@
 /* How many message headers to fetch at a time update summary for new messages*/
 #define BATCH_FETCH_COUNT 500
 
+extern gint camel_application_is_exiting;
+
 struct _uidset_state {
 	struct _CamelIMAPXEngine *ie;
 	gint entries, uids;
@@ -1767,6 +1769,9 @@ static void
 imapx_start_idle (CamelIMAPXServer *is)
 {
 	CamelIMAPXIdle *idle = is->idle;
+
+	if (camel_application_is_exiting)
+		return;
 
 	IDLE_LOCK (idle);
 
