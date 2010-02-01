@@ -3108,6 +3108,9 @@ imapx_parser_thread (gpointer d)
 				CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 
 				cancel_all_jobs (is, &ex);
+				
+				if (imapx_idle_supported (is))
+					imapx_exit_idle (is);
 			}
 
 			if (errno == EINTR)
@@ -3204,9 +3207,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 {
 	gboolean ret = TRUE;
 
-	if (imapx_idle_supported (is))
-		imapx_exit_idle (is);
-
 	if (is->stream) {
 		if (camel_stream_close (is->stream->source) == -1)
 			ret = FALSE;
@@ -3267,6 +3267,9 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 		ret = TRUE;
 	} else {
 		imapx_disconnect (is);
+
+		if (imapx_idle_supported (is))
+			imapx_exit_idle (is);
 
 		pthread_join (is->parser_thread_id, NULL);
 		ret = TRUE;
