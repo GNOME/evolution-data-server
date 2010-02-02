@@ -20,6 +20,7 @@ typedef enum _camel_imapx_id_t {
 	IMAP_BODYSTRUCTURE,
 	IMAP_BYE,
 	IMAP_CAPABILITY,
+	IMAP_COPYUID,
 	IMAP_ENVELOPE,
 	IMAP_EXISTS,
 	IMAP_EXPUNGE,
@@ -151,6 +152,11 @@ struct _status_info {
 			guint32 uidvalidity;
 			guint32 uid;
 		} appenduid;
+		struct {
+			guint32 uidvalidity;
+			GPtrArray *uids;
+			GPtrArray *copied_uids;
+		} copyuid;
 	} u;
 
 	gchar *text;

@@ -1502,6 +1502,56 @@ imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 	return sinfo;
 }
 
+
+static void
+generate_uids_from_sequence (GPtrArray *uids, guint32 end_uid)
+{
+	guint32 uid = GPOINTER_TO_UINT (g_ptr_array_index (uids, uids->len - 1));
+	
+	uid++;
+	while (uid <= end_uid) {
+		g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
+		uid++;
+	}
+}
+
+static GPtrArray *
+imap_parse_uids (CamelIMAPXStream *is, CamelException *ex)
+{
+	GPtrArray *uids = g_ptr_array_new ();
+	gboolean is_prev_number = FALSE, sequence = FALSE;
+	guchar *token;
+	guint len;
+	gint tok;
+
+	tok = camel_imapx_stream_token (is, &token, &len, ex);
+	while (tok != ']'|| !(is_prev_number && tok == IMAP_TOK_INT)) {
+		if (tok == ',') {
+			is_prev_number = FALSE;
+			sequence = FALSE;
+		} else if (tok == ':') {
+			sequence = TRUE;
+			is_prev_number = FALSE;
+		} else {
+			guint32 uid = strtoul ((char *) token, NULL, 10);
+
+			is_prev_number = TRUE;
+			sequence = FALSE;
+			
+			if (sequence)
+				generate_uids_from_sequence (uids, uid);
+			else
+				g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
+		}
+		camel_imapx_stream_token (is, &token, &len, ex);
+	}
+
+	if (is_prev_number && tok == IMAP_TOK_INT)
+		camel_imapx_stream_ungettoken (is, tok, token, len);
+
+	return uids;
+}
+
 /* rfc 2060 section 7.1 Status Responses */
 /* shoudl this start after [ or before the [? token_unget anyone? */
 struct _status_info *
@@ -1556,6 +1606,11 @@ imap_parse_status(CamelIMAPXStream *is, CamelException *ex)
 			case IMAP_APPENDUID:
 				sinfo->u.appenduid.uidvalidity = camel_imapx_stream_number(is, ex);
 				sinfo->u.appenduid.uid = camel_imapx_stream_number(is, ex);
+				break;
+			case IMAP_COPYUID:
+				sinfo->u.copyuid.uidvalidity = camel_imapx_stream_number(is, ex);
+				sinfo->u.copyuid.uids = imap_parse_uids (is, ex);
+				sinfo->u.copyuid.copied_uids = imap_parse_uids (is, ex);
 				break;
 			case IMAP_NEWNAME:
 				/* the rfc doesn't specify the bnf for this */
@@ -1627,6 +1682,11 @@ imap_free_status(struct _status_info *sinfo)
 	case IMAP_NEWNAME:
 		g_free(sinfo->u.newname.oldname);
 		g_free(sinfo->u.newname.newname);
+		break;
+	case IMAP_COPYUID:
+		g_ptr_array_free (sinfo->u.copyuid.uids, FALSE);
+		g_ptr_array_free (sinfo->u.copyuid.copied_uids, FALSE);
+		break;
 	default:
 		break;
 	}

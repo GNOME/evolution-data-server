@@ -114,6 +114,7 @@ void camel_imapx_server_expunge(CamelIMAPXServer *is, CamelFolder *folder, Camel
 void camel_imapx_server_noop (CamelIMAPXServer *is, CamelFolder *folder, CamelException *ex);
 
 CamelStream *camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, struct _CamelException *ex);
+void camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, CamelFolder *dest, GPtrArray *uids, gboolean delete_originals, CamelException *ex);
 void camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelMimeMessage *message, const struct _CamelMessageInfo *mi, CamelException *ex);
 
 #endif /* _CAMEL_IMAPX_SERVER_H */

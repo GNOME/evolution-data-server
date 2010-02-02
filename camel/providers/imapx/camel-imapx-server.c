@@ -71,6 +71,8 @@
 /* How many message headers to fetch at a time update summary for new messages*/
 #define BATCH_FETCH_COUNT 500
 
+#define MAX_COMMAND_LEN 1000
+
 extern gint camel_application_is_exiting;
 
 struct _uidset_state {
@@ -173,6 +175,7 @@ struct _refresh_info {
 enum {
 	IMAPX_JOB_GET_MESSAGE,
 	IMAPX_JOB_APPEND_MESSAGE,
+	IMAPX_JOB_COPY_MESSAGE,
 	IMAPX_JOB_REFRESH_INFO,
 	IMAPX_JOB_SYNC_CHANGES,
 	IMAPX_JOB_EXPUNGE,
@@ -240,6 +243,14 @@ struct _CamelIMAPXJob {
 			CamelMessageInfo *info;
 		} append_message;
 		struct {
+			CamelFolder *dest;
+			GPtrArray *uids;
+			gboolean delete_originals;
+			gint index;
+			gint last_index;
+			struct _uidset_state uidset;
+		} copy_messages;
+		struct {
 			gchar *pattern;
 			guint32 flags;
 			GHashTable *folders;
@@ -250,6 +261,8 @@ struct _CamelIMAPXJob {
 static void imapx_job_done (CamelIMAPXJob *job);
 static void imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job);
+static void imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic);
+static gint imapx_refresh_info_uid_cmp(gconstpointer ap, gconstpointer bp);
 
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _CamelIMAPXIdle {
@@ -2276,6 +2289,87 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 /* ********************************************************************** */
 
 static void
+imapx_command_copy_messages_step_start (CamelIMAPXServer *is, CamelIMAPXJob *job, gint index)
+{
+	CamelIMAPXCommand *ic;
+	GPtrArray *uids = job->u.copy_messages.uids;
+	gint i = index;
+	
+	ic = camel_imapx_command_new ("COPY", job->folder->full_name, "UID COPY ");
+	ic->complete = imapx_command_copy_messages_step_done;
+	ic->job = job;
+	job->u.copy_messages.last_index = i;
+
+	for (;i < uids->len; i++) {
+		gint res;
+		const gchar *uid = (gchar *) g_ptr_array_index (uids, i);
+
+		res = imapx_uidset_add (&job->u.copy_messages.uidset, ic, uid);
+		if (res == 1) {
+			camel_imapx_command_add (ic, " %f", job->u.copy_messages.dest->full_name);
+			job->u.copy_messages.index = i;
+			imapx_command_queue (is, ic);
+			return;
+		}
+	}
+
+	job->u.copy_messages.index = i;
+	if (imapx_uidset_done (&job->u.copy_messages.uidset, ic)) {
+		camel_imapx_command_add (ic, " %s", job->u.copy_messages.dest->full_name);
+		imapx_command_queue (is, ic);
+		return;
+	}
+}
+
+static void
+imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	CamelIMAPXJob *job = ic->job;
+	gint i = job->u.copy_messages.index;
+	GPtrArray *uids = job->u.copy_messages.uids;
+	
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_set (job->ex, 1, "Error copying messages");
+		else
+			camel_exception_xfer (job->ex, ic->ex);
+
+		goto cleanup;
+	}
+
+	if (job->u.copy_messages.delete_originals) {
+		gint j;
+
+		for (j = job->u.copy_messages.last_index; j < i; j++)
+			camel_folder_delete_message (job->folder, uids->pdata [j]);
+	}
+
+	/* TODO copy the summary and cached messages to the new folder. We might need a sorted insert to avoid refreshing the dest folder */
+	if (ic->status->condition == IMAP_COPYUID) {
+		
+	}
+
+	if (i < uids->len) {
+		camel_imapx_command_free (ic);
+		imapx_command_copy_messages_step_start (is, job, i);
+	}
+
+cleanup:
+	imapx_job_done (job);
+	camel_imapx_command_free (ic);
+}
+
+static void
+imapx_job_copy_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	g_ptr_array_sort (job->u.copy_messages.uids, (GCompareFunc) imapx_refresh_info_uid_cmp);
+	imapx_uidset_init(&job->u.copy_messages.uidset, 0, MAX_COMMAND_LEN);
+	imapx_command_copy_messages_step_start (is, job, 0);
+}
+
+/* ********************************************************************** */
+
+static void
 imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
@@ -3415,6 +3509,26 @@ camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const 
 {
 	return imapx_server_get_message(is, folder, uid, 100, ex);
 }
+
+void
+camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, CamelFolder *dest, GPtrArray *uids, gboolean delete_originals, CamelException *ex)
+{
+	CamelIMAPXJob *job;
+
+	job = g_malloc0(sizeof(*job));
+	job->pri = -60;
+	job->type = IMAPX_JOB_COPY_MESSAGE;
+	job->start = imapx_job_copy_messages_start;
+	job->folder = source;
+	job->u.copy_messages.dest = dest;
+	job->u.copy_messages.uids = uids;
+	job->u.copy_messages.delete_originals = delete_originals;
+	
+	camel_object_ref(source);
+	camel_object_ref (dest);
+
+	imapx_run_job (is, job);
+} 
 
 void
 camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *mi, CamelException *ex)
