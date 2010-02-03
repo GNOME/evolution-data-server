@@ -2177,8 +2177,20 @@ initialize_backend (ECalBackendCalDAV *cbdav)
 
 		/* properly encode uri */
 		if (suri && suri->path) {
-			gchar *tmp = soup_uri_encode (suri->path, NULL);
-			gchar *path = soup_uri_normalize (tmp, "/");
+			gchar *tmp, *path;
+
+			if (suri->path && strchr (suri->path, '%')) {
+				/* If path contains anything already encoded, then decode it first,
+				   thus it'll be managed properly. For example, the '#' in a path
+				   is in URI shown as %23 and not doing this decode makes it being
+				   like %2523, which is not what is wanted here. */
+				tmp = soup_uri_decode (suri->path);
+				soup_uri_set_path (suri, tmp);
+				g_free (tmp);
+			}
+
+			tmp = soup_uri_encode (suri->path, NULL);
+			path = soup_uri_normalize (tmp, "/");
 
 			soup_uri_set_path (suri, path);
 
