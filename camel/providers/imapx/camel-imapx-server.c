@@ -63,7 +63,7 @@
 /* All comms with server go here */
 
 /* Try pipelining fetch requests, 'in bits' */
-#define MULTI_SIZE (10240)
+#define MULTI_SIZE (20480)
 
 /* How many outstanding commands do we allow before we just queue them? */
 #define MAX_COMMANDS (10)
@@ -845,7 +845,8 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 				camel_dlist_remove((CamelDListNode *)ic);
 				imapx_command_start(is, ic);
 				count++;
-			}
+			} else
+				break;
 			ic = nc;
 			nc = nc->next;
 		}
@@ -1519,7 +1520,7 @@ imapx_completion(CamelIMAPXServer *imap, guchar *token, gint len, CamelException
 	ic->status = imap_parse_status(imap->stream, ex);
 
 	if (ic->complete)
-		ic->complete(imap, ic);
+		ic->complete (imap, ic);
 
 	QUEUE_LOCK(imap);
 	imapx_command_start_next(imap, ex);
@@ -1906,16 +1907,13 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 
 	if (is->select && strcmp(is->select, folder->full_name) == 0 && !forced)
 		return;
+		
+	if (!camel_dlist_empty(&is->active))
+		return;
 
 	is->select_pending = folder;
 	camel_object_ref(folder);
 	if (is->select_folder) {
-		while (!camel_dlist_empty(&is->active)) {
-			QUEUE_UNLOCK(is);
-			sleep (1);
-			QUEUE_LOCK(is);
-		}
-
 		g_free(is->select);
 		camel_object_unref(is->select_folder);
 		is->select = NULL;
@@ -2169,7 +2167,7 @@ exception:
 	if (ex->id != CAMEL_EXCEPTION_USER_CANCEL) {
 		printf("Re Connection failed: %s\n", ex->desc);
 		imapx_disconnect (is);
-		sleep(5);
+		sleep(1);
 		// camelexception_done?
 		camel_exception_clear (ex);
 		goto retry;
@@ -2224,7 +2222,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_imapx_command_add(ic, ")");
 			ic->complete = imapx_command_fetch_message_done;
 			ic->job = job;
-			ic->pri = job->pri;
+			ic->pri = job->pri - 1;
 			job->u.get_message.fetch_offset += MULTI_SIZE;
 			job->commands++;
 			imapx_command_queue(is, ic);
@@ -2263,7 +2261,7 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	This doesn't work yet, so we always force a select every time */
 
 	if (job->u.get_message.use_multi_fetch) {
-		for (i=0;i < 1;i++) {
+		for (i=0; i < 3 && job->u.get_message.fetch_offset < job->u.get_message.size;i++) {
 			ic = camel_imapx_command_new("FETCH", job->folder->full_name,
 					"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
 			camel_imapx_command_add(ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
@@ -2355,6 +2353,9 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 	}
 
 cleanup:
+	camel_object_unref (job->u.copy_messages.dest);
+	camel_object_unref (job->folder);
+
 	imapx_job_done (job);
 	camel_imapx_command_free (ic);
 }
@@ -2531,6 +2532,7 @@ imapx_command_step_fetch_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		ic = camel_imapx_command_new("FETCH", job->folder->full_name, "UID FETCH ");
 		ic->complete = imapx_command_step_fetch_done;
 		ic->job = job;
+		ic->pri = job->pri - 1;
 		job->u.refresh_info.last_index = i;
 
 		for (;i<infos->len;i++) {
@@ -2746,9 +2748,10 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 		camel_object_trigger_event(ic->job->folder, "folder_changed", ic->job->u.refresh_info.changes);
 	}
 
-	camel_operation_end (ic->job->op);
 
 exception:
+	camel_operation_end (ic->job->op);
+	
 	if (ic->job->noreply)
 		camel_folder_change_info_free(ic->job->u.refresh_info.changes);
 
