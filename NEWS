@@ -1,4 +1,32 @@
-Evolution-Data-Server 2.29.5 2009-01-25
+Evolution-Data-Server 2.29.90 2010-02-08
+----------------------------------------
+
+Bug Fixes:
+	#581604 - Permissions on mail/local folders are too open
+	          (Chenthill Palanisamy)
+	#602820 - Test validity of a book_view before using it in LDAP
+	          (Milan Crha)
+	#607812 - Properly encode CalDAV URL (Milan Crha)
+
+Other Changes:
+	Disable strict aliasing optimization. (Matthew Barnes)
+	Steady progress on the new IMAPX backend (Chenthill Palanisamy)
+	Fix a misspelling of "calendar". (Bruce Cowan)
+	Use conditional locks in camel-folder (Srinivasa Ragavan)
+	Level the differences with the alternative runtime/header set
+	(Fridrich Strba)
+	Fix missing LDFLAGS for imapx. (Srinivasa Ragavan)
+	Add gthread-2.0 to E_DATA_SERVER.  At times soap test fails.
+	(Srinivasa Ragavan)
+
+Translations:
+	Krasimir Chonov (bg)
+	Jamil Ahmed (bn)
+	Jorge González (es)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+
+Evolution-Data-Server 2.29.5 2010-01-25
 ---------------------------------------
 
 Bug Fixes:
@@ -103,7 +131,7 @@ Translations:
 	Krasimir Chonov (bg)
 	Stéphane Raimbault (fr)
 
-Evolution-Data-Server 2.29.5 2009-01-11
+Evolution-Data-Server 2.29.5 2010-01-11
 ---------------------------------------
 
 Bug Fixes:
