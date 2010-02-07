@@ -145,7 +145,7 @@ static void
 imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
-	
+
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
@@ -210,7 +210,6 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return msg;
 }
 
-
 static void
 imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		      CamelFolder *dest, GPtrArray **transferred_uids,
@@ -220,7 +219,7 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
-		
+
 	if (istore->server && camel_imapx_server_connect (istore->server, 1))
 		camel_imapx_server_copy_message (istore->server, source, dest, uids, delete_originals, ex);
 

@@ -45,10 +45,10 @@ __inline
 inline
 #endif
 #endif
-static unsigned int
-imap_hash (register const char *str, register unsigned int len)
+static guint
+imap_hash (register const gchar *str, register guint len)
 {
-  static unsigned char asso_values[] =
+  static guchar asso_values[] =
     {
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
@@ -77,14 +77,14 @@ imap_hash (register const char *str, register unsigned int len)
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
       57, 57, 57, 57, 57, 57
     };
-  return len + asso_values[(unsigned char)str[len - 1]] + asso_values[(unsigned char)str[0]];
+  return len + asso_values[(guchar)str[len - 1]] + asso_values[(guchar)str[0]];
 }
 
 #ifdef __GNUC__
 __inline
 #endif
 struct _imap_keyword *
-imap_tokenise_struct (register const char *str, register unsigned int len)
+imap_tokenise_struct (register const gchar *str, register guint len)
 {
   static struct _imap_keyword wordlist[] =
     {
@@ -174,11 +174,11 @@ imap_tokenise_struct (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = imap_hash (str, len);
+      register gint key = imap_hash (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
         {
-          register const char *s = wordlist[key].name;
+          register const gchar *s = wordlist[key].name;
 
           if (*str == *s && !strcmp (str + 1, s + 1))
             return &wordlist[key];

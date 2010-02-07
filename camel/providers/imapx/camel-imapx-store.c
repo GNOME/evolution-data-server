@@ -213,7 +213,6 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	return TRUE;
 }
 
-
 static CamelFolder *
 imapx_get_junk(CamelStore *store, CamelException *ex)
 {
@@ -233,7 +232,7 @@ imapx_get_junk(CamelStore *store, CamelException *ex)
 
 static CamelFolder *
 imapx_get_trash (CamelStore *store, CamelException *ex)
-{	
+{
 	CamelFolder *folder = CAMEL_STORE_CLASS(parent_class)->get_trash(store, ex);
 
 	if (folder) {
@@ -247,7 +246,6 @@ imapx_get_trash (CamelStore *store, CamelException *ex)
 
 	return folder;
 }
-
 
 static guint
 imapx_hash_folder_name (gconstpointer key)

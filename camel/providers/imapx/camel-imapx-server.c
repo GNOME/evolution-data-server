@@ -2294,7 +2294,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is, CamelIMAPXJob *job
 	CamelIMAPXCommand *ic;
 	GPtrArray *uids = job->u.copy_messages.uids;
 	gint i = index;
-	
+
 	ic = camel_imapx_command_new ("COPY", job->folder->full_name, "UID COPY ");
 	ic->complete = imapx_command_copy_messages_step_done;
 	ic->job = job;
@@ -2327,7 +2327,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 	CamelIMAPXJob *job = ic->job;
 	gint i = job->u.copy_messages.index;
 	GPtrArray *uids = job->u.copy_messages.uids;
-	
+
 	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAP_OK) {
 		if (!camel_exception_is_set (ic->ex))
 			camel_exception_set (job->ex, 1, "Error copying messages");
@@ -2346,7 +2346,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 
 	/* TODO copy the summary and cached messages to the new folder. We might need a sorted insert to avoid refreshing the dest folder */
 	if (ic->status->condition == IMAP_COPYUID) {
-		
+
 	}
 
 	if (i < uids->len) {
@@ -3207,7 +3207,7 @@ imapx_parser_thread (gpointer d)
 				CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 
 				cancel_all_jobs (is, &ex);
-				
+
 				if (imapx_idle_supported (is))
 					imapx_exit_idle (is);
 			}
@@ -3523,12 +3523,12 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, Came
 	job->u.copy_messages.dest = dest;
 	job->u.copy_messages.uids = uids;
 	job->u.copy_messages.delete_originals = delete_originals;
-	
+
 	camel_object_ref(source);
 	camel_object_ref (dest);
 
 	imapx_run_job (is, job);
-} 
+}
 
 void
 camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *mi, CamelException *ex)

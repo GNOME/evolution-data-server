@@ -1502,12 +1502,11 @@ imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 	return sinfo;
 }
 
-
 static void
 generate_uids_from_sequence (GPtrArray *uids, guint32 end_uid)
 {
 	guint32 uid = GPOINTER_TO_UINT (g_ptr_array_index (uids, uids->len - 1));
-	
+
 	uid++;
 	while (uid <= end_uid) {
 		g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
@@ -1533,11 +1532,11 @@ imap_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 			sequence = TRUE;
 			is_prev_number = FALSE;
 		} else {
-			guint32 uid = strtoul ((char *) token, NULL, 10);
+			guint32 uid = strtoul ((gchar *) token, NULL, 10);
 
 			is_prev_number = TRUE;
 			sequence = FALSE;
-			
+
 			if (sequence)
 				generate_uids_from_sequence (uids, uid);
 			else
