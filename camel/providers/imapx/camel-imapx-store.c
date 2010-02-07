@@ -909,6 +909,33 @@ imap_create_folder(CamelStore *store, const gchar *parent_name, const gchar *fol
 	return NULL;
 }
 
+static gboolean
+imap_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)
+{
+	gboolean res;
+
+	res = CAMEL_STORE_CLASS(parent_class)->can_refresh_folder (store, info, ex) ||
+	      (camel_url_get_param (((CamelService *)store)->url, "check_all") != NULL) ||
+	      (camel_url_get_param (((CamelService *)store)->url, "check_lsub") != NULL && (info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
+
+	if (!res && !camel_exception_is_set (ex) && CAMEL_IS_IMAP_STORE (store)) {
+		CamelStoreInfo *si;
+		CamelStoreSummary *sm = CAMEL_STORE_SUMMARY (((CamelIMAPXStore *)(store))->summary);
+
+		if (!sm)
+			return FALSE;
+
+		si = camel_store_summary_path (sm, info->full_name);
+		if (si) {
+			res = (si->flags & CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW) != 0 ? TRUE : FALSE;
+
+			camel_store_summary_info_free (sm, si);
+		}
+	}
+
+	return res;
+}
+
 /* ********************************************************************** */
 #if 0
 static gint store_resp_fetch(CamelIMAPXEngine *ie, guint32 id, gpointer data)
@@ -1156,6 +1183,7 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 	camel_store_class->hash_folder_name = imapx_hash_folder_name;
 	camel_store_class->compare_folder_name = imapx_compare_folder_name;
 
+	camel_store_class->can_refresh_folder = imap_can_refresh_folder;
 	camel_store_class->create_folder = imap_create_folder;
 	camel_store_class->rename_folder = imap_rename_folder;
 	camel_store_class->delete_folder = imap_delete_folder;

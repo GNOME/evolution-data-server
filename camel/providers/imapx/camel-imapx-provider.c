@@ -36,8 +36,44 @@
 #include "camel-imapx-store.h"
 
 CamelProviderConfEntry imapx_conf_entries[] = {
-	{ CAMEL_PROVIDER_CONF_SECTION_START, "storage", NULL,
-	  N_("Message storage") },
+		{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
+	  N_("Checking for New Mail") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_idle", NULL,
+	  N_("Use Idle if the server supports it"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
+	  N_("C_heck for new messages in all folders"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_lsub", NULL,
+	  N_("Ch_eck for new messages in subscribed folders"), "0" },
+	{ CAMEL_PROVIDER_CONF_SECTION_END },
+#ifndef G_OS_WIN32
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
+	  N_("Connection to Server") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_command", NULL,
+	  N_("_Use custom command to connect to server"), "0" },
+	{ CAMEL_PROVIDER_CONF_ENTRY, "command", "use_command",
+	  N_("Command:"), "ssh -C -l %u %h exec /usr/sbin/imapd" },
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "cached_conn", NULL,
+	  N_("Number of _cached connections to use"), "y:1:5:7" },
+	{ CAMEL_PROVIDER_CONF_SECTION_END },
+#endif
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
+	  N_("Folders") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_lsub", NULL,
+	  N_("_Show only subscribed folders"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "override_namespace", NULL,
+	  N_("O_verride server-supplied folder namespace"), "0" },
+	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "override_namespace",
+	  N_("Namespace:") },
+	{ CAMEL_PROVIDER_CONF_SECTION_END },
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
+	  N_("_Apply filters to new messages in INBOX on this server"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk", NULL,
+	  N_("Check new messages for Jun_k contents"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk_inbox", "filter_junk",
+	  N_("Only check for Junk messages in the IN_BOX folder"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "sync_offline", NULL,
+	  N_("Automatically synchroni_ze remote mail locally"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
@@ -47,9 +83,7 @@ static CamelProvider imapx_provider = {
 
 	N_("IMAP+"),
 
-	N_("Experimental IMAP 4(.1) client\n"
-	   "This is untested and unsupported code, you want to use plain imap instead.\n\n"
-	   " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"),
+	N_("For reading and storing mail on IMAP servers."),
 	"mail",
 
 	CAMEL_PROVIDER_IS_REMOTE | CAMEL_PROVIDER_IS_SOURCE |
@@ -83,11 +117,10 @@ camel_imapx_module_init(void)
 	imapx_provider.object_types[CAMEL_PROVIDER_STORE] = camel_imapx_store_get_type();
 	imapx_provider.url_hash = camel_url_hash;
 	imapx_provider.url_equal = camel_url_equal;
-
-	imapx_provider.authtypes = g_list_prepend(imapx_provider.authtypes, camel_sasl_authtype_list(FALSE));
+	imapx_provider.authtypes = camel_sasl_authtype_list(FALSE);
 	imapx_provider.authtypes = g_list_prepend(imapx_provider.authtypes, &camel_imapx_password_authtype);
+	imapx_provider.translation_domain = GETTEXT_PACKAGE;
 
-	/* blah ... could just use it in object setup? */
 	/* TEMPORARY */
 	camel_exception_setup();
 	imapx_utils_init();
