@@ -44,6 +44,7 @@ IGNORE_HFILES = 			\
 	broken-date-parser.h		\
 	camel-charset-map-private.h	\
 	camel-groupwise-private.h	\
+	camel-i18n.h			\
 	camel-imap-private.h		\
 	camel-imap-types.h		\
 	camel-local-private.h		\

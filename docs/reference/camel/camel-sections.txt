@@ -395,6 +395,7 @@ CAMEL_FOLDER_FILTER_JUNK
 camel_folder_construct
 camel_folder_refresh_info
 camel_folder_sync
+camel_folder_set_lock_async
 camel_folder_get_parent_store
 camel_folder_expunge
 camel_folder_get_name

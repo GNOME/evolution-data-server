@@ -133,6 +133,15 @@ CamelFolder
 @ex: 
 
 
+<!-- ##### FUNCTION camel_folder_set_lock_async ##### -->
+<para>
+
+</para>
+
+@folder: 
+@async: 
+
+
 <!-- ##### FUNCTION camel_folder_get_parent_store ##### -->
 <para>
 

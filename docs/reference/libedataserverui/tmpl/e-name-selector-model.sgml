@@ -106,3 +106,22 @@ ENameSelectorModel
 @name: 
 
 
+<!-- ##### FUNCTION e_name_selector_model_get_contact_emails_without_used ##### -->
+<para>
+
+</para>
+
+@name_selector_model: 
+@contact: 
+@remove_used: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_name_selector_model_free_emails_list ##### -->
+<para>
+
+</para>
+
+@email_list: 
+
+
