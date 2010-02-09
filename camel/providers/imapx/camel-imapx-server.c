@@ -476,7 +476,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar buffer[16];
-	CamelException ex = {0, NULL};
+	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 
 	c(printf("adding command, fmt = '%s'\n", fmt));
 
@@ -3106,7 +3106,7 @@ static gpointer
 imapx_parser_thread (gpointer d)
 {
 	CamelIMAPXServer *is = d;
-	CamelException ex = {0, NULL};
+	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 	CamelOperation *op;
 
 	/*
@@ -3358,7 +3358,7 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 	if (state) {
 		pthread_t id;
-		CamelException ex = {0, NULL};
+		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 
 		if (is->state == IMAPX_AUTHENTICATED || is->state == IMAPX_SELECTED) {
 			ret = TRUE;
