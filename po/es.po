@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2010-02-07 19:04+0000\n"
-"PO-Revision-Date: 2010-02-07 21:40+0100\n"
+"POT-Creation-Date: 2010-02-09 12:28+0000\n"
+"PO-Revision-Date: 2010-02-09 18:41+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2616,8 +2616,8 @@ msgstr "La papelera está llena. Por favor vacíela."
 #: ../camel/providers/groupwise/camel-groupwise-store.c:763
 #: ../camel/providers/imap/camel-imap-folder.c:3429
 #: ../camel/providers/imap/camel-imap-folder.c:3505
-#: ../camel/providers/imapx/camel-imapx-server.c:2694
-#: ../camel/providers/imapx/camel-imapx-server.c:2779
+#: ../camel/providers/imapx/camel-imapx-server.c:2697
+#: ../camel/providers/imapx/camel-imapx-server.c:2782
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
@@ -2744,7 +2744,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1879
 #: ../camel/providers/imap/camel-imap-store.c:2077
-#: ../camel/providers/imapx/camel-imapx-store.c:303
+#: ../camel/providers/imapx/camel-imapx-store.c:315
 #, c-format
 msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
@@ -2934,7 +2934,7 @@ msgstr "No se pudo crear el directorio %s: %s"
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:918
-#: ../camel/providers/imapx/camel-imapx-server.c:2724
+#: ../camel/providers/imapx/camel-imapx-server.c:2727
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensajes modificados en %s"
@@ -3135,8 +3135,8 @@ msgstr "No se pudo conectar con el comando «%s»: %s"
 #: ../camel/providers/imap/camel-imap-store.c:2430
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:356
 #: ../camel/providers/imap4/camel-imap4-store.c:1403
-#: ../camel/providers/imapx/camel-imapx-store.c:467
-#: ../camel/providers/imapx/camel-imapx-store.c:698
+#: ../camel/providers/imapx/camel-imapx-store.c:479
+#: ../camel/providers/imapx/camel-imapx-store.c:708
 #: ../camel/providers/local/camel-maildir-folder.c:81
 #: ../camel/providers/local/camel-maildir-store.c:219
 #: ../camel/providers/local/camel-maildir-store.c:291
@@ -3537,12 +3537,14 @@ msgid "Could not create cache for %s"
 msgstr "No se pudo crear la caché para %s"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:42
-msgid "Use Idle if the server supports it"
-msgstr "Usar inactividad si el servidor lo soporta"
+#| msgid "Use Idle if the server supports it"
+msgid "Use I_dle if the server supports it"
+msgstr "Usar i_nactividad si el servidor lo soporta"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:56
-msgid "Number of _cached connections to use"
-msgstr "Número de conexiones _cacheadas que usar"
+#| msgid "Number of _cached connections to use"
+msgid "Numbe_r of cached connections to use"
+msgstr "Núme_ro de conexiones cacheadas que usar"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:84
 msgid "IMAP+"
