@@ -12,47 +12,47 @@ struct _CamelIMAPXNamespaceList;
 
 /* list of strings we know about that can be *quickly* tokenised */
 typedef enum _camel_imapx_id_t {
-	IMAP_UNKNOWN = 0,
-	IMAP_ALERT,
-	IMAP_APPENDUID,
-	IMAP_BAD,
-	IMAP_BODY,
-	IMAP_BODYSTRUCTURE,
-	IMAP_BYE,
-	IMAP_CAPABILITY,
-	IMAP_COPYUID,
-	IMAP_ENVELOPE,
-	IMAP_EXISTS,
-	IMAP_EXPUNGE,
-	IMAP_FETCH,
-	IMAP_FLAGS,
-	IMAP_INTERNALDATE,
-	IMAP_LIST,
-	IMAP_LSUB,
-	IMAP_MESSAGES,
-	IMAP_NAMESPACE,
-	IMAP_NEWNAME,
-	IMAP_NO,
-	IMAP_OK,
-	IMAP_PARSE,
-	IMAP_PERMANENTFLAGS,
-	IMAP_PREAUTH,
-	IMAP_READ_ONLY,
-	IMAP_READ_WRITE,
-	IMAP_RECENT,
-	IMAP_RFC822_HEADER,
-	IMAP_RFC822_SIZE,
-	IMAP_RFC822_TEXT,
-	IMAP_STATUS,
-	IMAP_TRYCREATE,
-	IMAP_UID,
-	IMAP_UIDVALIDITY,
-	IMAP_UNSEEN,
-	IMAP_UIDNEXT,
+	IMAPX_UNKNOWN = 0,
+	IMAPX_ALERT,
+	IMAPX_APPENDUID,
+	IMAPX_BAD,
+	IMAPX_BODY,
+	IMAPX_BODYSTRUCTURE,
+	IMAPX_BYE,
+	IMAPX_CAPABILITY,
+	IMAPX_COPYUID,
+	IMAPX_ENVELOPE,
+	IMAPX_EXISTS,
+	IMAPX_EXPUNGE,
+	IMAPX_FETCH,
+	IMAPX_FLAGS,
+	IMAPX_INTERNALDATE,
+	IMAPX_LIST,
+	IMAPX_LSUB,
+	IMAPX_MESSAGES,
+	IMAPX_NAMESPACE,
+	IMAPX_NEWNAME,
+	IMAPX_NO,
+	IMAPX_OK,
+	IMAPX_PARSE,
+	IMAPX_PERMANENTFLAGS,
+	IMAPX_PREAUTH,
+	IMAPX_READ_ONLY,
+	IMAPX_READ_WRITE,
+	IMAPX_RECENT,
+	IMAPX_RFC822_HEADER,
+	IMAPX_RFC822_SIZE,
+	IMAPX_RFC822_TEXT,
+	IMAPX_STATUS,
+	IMAPX_TRYCREATE,
+	IMAPX_UID,
+	IMAPX_UIDVALIDITY,
+	IMAPX_UNSEEN,
+	IMAPX_UIDNEXT,
 } camel_imapx_id_t;
 
 /* str MUST be in upper case, tokenised using gperf function */
-camel_imapx_id_t imap_tokenise(register const gchar *str, register guint len);
+camel_imapx_id_t imapx_tokenise(register const gchar *str, register guint len);
 
 /* this flag should be part of imapfoldersummary */
 enum {
@@ -61,24 +61,24 @@ enum {
 
 /* ********************************************************************** */
 
-void imap_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, CamelException *ex);
-void imap_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, CamelException *ex);
-gboolean imap_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder);
-void imap_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags,
+void imapx_parse_flags(struct _CamelIMAPXStream *stream, guint32 *flagsp, struct _CamelFlag **user_flagsp, CamelException *ex);
+void imapx_write_flags(CamelStream *stream, guint32 flags, struct _CamelFlag *user_flags, CamelException *ex);
+gboolean imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder);
+void imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags,
 							CamelFolder *folder);
-void imap_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder);
-void imap_update_store_summary (CamelFolder *folder);
+void imapx_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder);
+void imapx_update_store_summary (CamelFolder *folder);
 
 /* ********************************************************************** */
 enum {
-	IMAP_CAPABILITY_IMAP4			= (1 << 0),
-	IMAP_CAPABILITY_IMAP4REV1		= (1 << 1),
-	IMAP_CAPABILITY_STATUS			= (1 << 2),
-	IMAP_CAPABILITY_NAMESPACE		= (1 << 3),
-	IMAP_CAPABILITY_UIDPLUS			= (1 << 4),
-	IMAP_CAPABILITY_LITERALPLUS		= (1 << 5),
-	IMAP_CAPABILITY_STARTTLS                = (1 << 6),
-	IMAP_CAPABILITY_IDLE			= (1 << 7),
+	IMAPX_CAPABILITY_IMAP4			= (1 << 0),
+	IMAPX_CAPABILITY_IMAP4REV1		= (1 << 1),
+	IMAPX_CAPABILITY_STATUS			= (1 << 2),
+	IMAPX_CAPABILITY_NAMESPACE		= (1 << 3),
+	IMAPX_CAPABILITY_UIDPLUS			= (1 << 4),
+	IMAPX_CAPABILITY_LITERALPLUS		= (1 << 5),
+	IMAPX_CAPABILITY_STARTTLS                = (1 << 6),
+	IMAPX_CAPABILITY_IDLE			= (1 << 7),
 };
 
 struct _capability_info {
@@ -86,17 +86,17 @@ struct _capability_info {
 	/* auth stuff here */
 };
 
-struct _capability_info *imap_parse_capability(struct _CamelIMAPXStream *stream, CamelException *ex);
-void imap_free_capability(struct _capability_info *);
+struct _capability_info *imapx_parse_capability(struct _CamelIMAPXStream *stream, CamelException *ex);
+void imapx_free_capability(struct _capability_info *);
 
-void imap_parse_param_list(struct _CamelIMAPXStream *is, struct _camel_header_param **plist, CamelException *ex) /* IO,PARSE */;
-struct _CamelContentDisposition *imap_parse_ext_optional(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
-struct _CamelMessageContentInfo *imap_parse_body_fields(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
-struct _camel_header_address *imap_parse_address_list(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
-struct _CamelMessageInfo *imap_parse_envelope(struct _CamelIMAPXStream *is, CamelException *ex) /* IO, PARSE */;
-struct _CamelMessageContentInfo *imap_parse_body(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
-gchar *imap_parse_section(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
-void imap_free_body(struct _CamelMessageContentInfo *cinfo);
+void imapx_parse_param_list(struct _CamelIMAPXStream *is, struct _camel_header_param **plist, CamelException *ex) /* IO,PARSE */;
+struct _CamelContentDisposition *imapx_parse_ext_optional(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
+struct _CamelMessageContentInfo *imapx_parse_body_fields(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
+struct _camel_header_address *imapx_parse_address_list(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
+struct _CamelMessageInfo *imapx_parse_envelope(struct _CamelIMAPXStream *is, CamelException *ex) /* IO, PARSE */;
+struct _CamelMessageContentInfo *imapx_parse_body(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
+gchar *imapx_parse_section(struct _CamelIMAPXStream *is, CamelException *ex) /* IO,PARSE */;
+void imapx_free_body(struct _CamelMessageContentInfo *cinfo);
 
 /* ********************************************************************** */
 /* all the possible stuff we might get from a fetch request */
@@ -129,9 +129,9 @@ struct _fetch_info {
 #define FETCH_SECTION (1<<9)
 #define FETCH_UID (1<<10)
 
-struct _fetch_info *imap_parse_fetch(struct _CamelIMAPXStream *is, CamelException *ex);
-void imap_free_fetch(struct _fetch_info *finfo);
-void imap_dump_fetch(struct _fetch_info *finfo);
+struct _fetch_info *imapx_parse_fetch(struct _CamelIMAPXStream *is, CamelException *ex);
+void imapx_free_fetch(struct _fetch_info *finfo);
+void imapx_dump_fetch(struct _fetch_info *finfo);
 
 /* ********************************************************************** */
 
@@ -162,9 +162,9 @@ struct _status_info {
 	gchar *text;
 };
 
-struct _status_info *imap_parse_status(struct _CamelIMAPXStream *is, CamelException *ex);
-struct _status_info *imap_copy_status(struct _status_info *sinfo);
-void imap_free_status(struct _status_info *sinfo);
+struct _status_info *imapx_parse_status(struct _CamelIMAPXStream *is, CamelException *ex);
+struct _status_info *imapx_copy_status(struct _status_info *sinfo);
+void imapx_free_status(struct _status_info *sinfo);
 
 /* ********************************************************************** */
 /* parses the response from the status command */
@@ -177,7 +177,7 @@ struct _state_info {
 };
 
 /* use g_free to free the return value */
-struct _state_info *imap_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex);
+struct _state_info *imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex);
 
 /* ********************************************************************** */
 
@@ -189,9 +189,9 @@ struct _list_info {
 	gchar *name;
 };
 
-struct _list_info *imap_parse_list(struct _CamelIMAPXStream *is, CamelException *ex);
+struct _list_info *imapx_parse_list(struct _CamelIMAPXStream *is, CamelException *ex);
 gchar *imapx_list_get_path(struct _list_info *li);
-void imap_free_list(struct _list_info *linfo);
+void imapx_free_list(struct _list_info *linfo);
 
 /* ********************************************************************** */
 
@@ -220,11 +220,11 @@ void imapx_utils_init(void);
 
 /* chen adds from old imap provider - place it in right place */
 gchar *imapx_path_to_physical (const gchar *prefix, const gchar *vpath);
-gchar *imapx_concat (CamelIMAPXStore *imap_store, const gchar *prefix, const gchar *suffix);
+gchar *imapx_concat (CamelIMAPXStore *imapx_store, const gchar *prefix, const gchar *suffix);
 gchar * imapx_get_temp_uid (void);
 
 void camel_imapx_namespace_list_clear (struct _CamelIMAPXNamespaceList *nsl);
-struct _CamelIMAPXNamespaceList * imap_parse_namespace_list (struct _CamelIMAPXStream *stream, CamelException *ex);
+struct _CamelIMAPXNamespaceList * imapx_parse_namespace_list (struct _CamelIMAPXStream *stream, CamelException *ex);
 struct _CamelIMAPXNamespaceList *camel_imapx_namespace_list_copy (const struct _CamelIMAPXNamespaceList *nsl);
 
 #endif

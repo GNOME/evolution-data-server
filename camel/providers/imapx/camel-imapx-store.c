@@ -741,7 +741,7 @@ static void
 free_list (gpointer data, gpointer user_data)
 {
 	struct _list_info *li = data;
-	imap_free_list (li);
+	imapx_free_list (li);
 }
 
 static void

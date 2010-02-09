@@ -31,12 +31,12 @@ typedef struct _CamelIMAPXStreamClass CamelIMAPXStreamClass;
 typedef struct _CamelIMAPXStream CamelIMAPXStream;
 
 typedef enum {
-	IMAP_TOK_PROTOCOL = -2,
-	IMAP_TOK_ERROR = -1,
-	IMAP_TOK_TOKEN = 256,
-	IMAP_TOK_STRING,
-	IMAP_TOK_INT,
-	IMAP_TOK_LITERAL,
+	IMAPX_TOK_PROTOCOL = -2,
+	IMAPX_TOK_ERROR = -1,
+	IMAPX_TOK_TOKEN = 256,
+	IMAPX_TOK_STRING,
+	IMAPX_TOK_INT,
+	IMAPX_TOK_LITERAL,
 } camel_imapx_token_t;
 
 struct _CamelIMAPXStream {

@@ -34,7 +34,7 @@ noinst_HEADERS =				\
 	camel-imapx-utils.h
 
 camel-imapx-tokenise.h: camel-imapx-tokens.txt
-	gperf -H imap_hash -N imap_tokenise_struct -L ANSI-C -o -t -k1,$$ $< > $@
+	gperf -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k1,$$ $< > $@
 
 libcamelimapx_la_LIBADD = \
         $(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
