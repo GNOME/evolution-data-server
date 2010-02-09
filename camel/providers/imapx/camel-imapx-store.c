@@ -247,6 +247,18 @@ imapx_get_trash (CamelStore *store, CamelException *ex)
 	return folder;
 }
 
+static void
+imapx_noop (CamelStore *store, CamelException *ex)
+{
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
+	
+	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+		return;
+		
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+		camel_imapx_server_noop (istore->server, NULL, ex);
+}
+
 static guint
 imapx_hash_folder_name (gconstpointer key)
 {
@@ -568,8 +580,6 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	GPtrArray *folders;
 	gchar *pattern, *name;
 	gint i;
-
-	printf("get folder info offline\n");
 
 	/* FIXME: obey other flags */
 
@@ -1178,6 +1188,7 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 
 	camel_store_class->get_trash = imapx_get_trash;
 	camel_store_class->get_junk = imapx_get_junk;
+	camel_store_class->noop = imapx_noop;
 	camel_store_class->get_folder = imap_get_folder;
 	camel_store_class->get_inbox = imap_get_inbox;
 	camel_store_class->hash_folder_name = imapx_hash_folder_name;

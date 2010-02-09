@@ -258,7 +258,7 @@ struct _CamelIMAPXJob {
 	} u;
 };
 
-static void imapx_job_done (CamelIMAPXJob *job);
+static void imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic);
@@ -1644,7 +1644,7 @@ imapx_command_idle_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	idle->started = FALSE;
 	IDLE_UNLOCK (idle);
 
-	imapx_job_done (ic->job);
+	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2177,9 +2177,12 @@ exception:
 /* ********************************************************************** */
 /* Should be called when there are no more commands needed to complete the job */
 static void
-imapx_job_done (CamelIMAPXJob *job)
+imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
+	QUEUE_LOCK (is);
 	camel_dlist_remove((CamelDListNode *)job);
+	QUEUE_UNLOCK (is);
+
 	if (job->noreply) {
 		camel_exception_clear(job->ex);
 		g_free(job);
@@ -2240,7 +2243,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		}
 
 		camel_operation_end (job->op);
-		imapx_job_done (job);
+		imapx_job_done (is, job);
 	}
 
 	camel_imapx_command_free (ic);
@@ -2356,7 +2359,7 @@ cleanup:
 	camel_object_unref (job->u.copy_messages.dest);
 	camel_object_unref (job->folder);
 
-	imapx_job_done (job);
+	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2427,7 +2430,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	g_free(job->u.append_message.path);
 	camel_object_unref(job->folder);
 
-	imapx_job_done (job);
+	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2568,7 +2571,7 @@ cleanup:
 	}
 	g_array_free(job->u.refresh_info.infos, TRUE);
 
-	imapx_job_done (job);
+	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2712,7 +2715,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	camel_operation_end (job->op);
 	g_array_free(job->u.refresh_info.infos, TRUE);
-	imapx_job_done (job);
+	imapx_job_done (is, job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2755,7 +2758,7 @@ exception:
 	if (ic->job->noreply)
 		camel_folder_change_info_free(ic->job->u.refresh_info.changes);
 
-	imapx_job_done (ic->job);
+	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2807,7 +2810,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
 
-	imapx_job_done (ic->job);
+	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2834,7 +2837,7 @@ imapx_command_list_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
 
-	imapx_job_done (ic->job);
+	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2862,7 +2865,7 @@ imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
 
-	imapx_job_done (ic->job);
+	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
 
@@ -2871,7 +2874,11 @@ imapx_job_noop_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
-	ic = camel_imapx_command_new ("NOOP", job->folder->full_name, "NOOP");
+	if (job->folder)
+		ic = camel_imapx_command_new ("NOOP", job->folder->full_name, "NOOP");
+	else
+		ic = camel_imapx_command_new ("NOOP", NULL, "NOOP");
+	
 	ic->job = job;
 	ic->complete = imapx_command_noop_done;
 	imapx_command_queue(is, ic);
@@ -2966,7 +2973,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		camel_folder_summary_save_to_db (job->folder->summary, job->ex);
 		camel_store_summary_save((CamelStoreSummary *)((CamelIMAPXStore *) job->folder->parent_store)->summary);
 
-		imapx_job_done (job);
+		imapx_job_done (is, job);
 	}
 	camel_imapx_command_free (ic);
 }
@@ -3053,7 +3060,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 	if (job->commands == 0) {
 		printf("Hmm, we didn't have any work to do afterall?  hmm, this isn't right\n");
-		imapx_job_done (job);
+		imapx_job_done (is, job);
 	}
 }
 
@@ -3245,7 +3252,7 @@ imapx_server_init(CamelIMAPXServer *ie, CamelIMAPXServerClass *ieclass)
 	camel_dlist_init(&ie->done);
 	camel_dlist_init(&ie->jobs);
 
-	/* disabling it for the moment using a large value */
+	/* not used at the moment. Use it in future */
 	ie->job_timeout = 29 * 60 * 1000 * 1000;
 
 	ie->queue_lock = g_mutex_new();
@@ -3406,22 +3413,13 @@ imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	}
 
 	if (!job->noreply) {
-		GTimeVal end_time;
 		CamelMsg *completed;
 
-		g_get_current_time (&end_time);
-		g_time_val_add (&end_time, is->job_timeout);
-
-		completed = camel_msgport_timed_pop (reply, &end_time);
+		completed = camel_msgport_pop (reply);
 		camel_msgport_destroy (reply);
 
 		if (completed == NULL) {
-			/* need to remove the commands from queue as well */
-			QUEUE_LOCK (is);
-			camel_dlist_remove ((CamelDListNode *) job);
-			QUEUE_UNLOCK (is);
-
-			camel_exception_set (job->ex, 1, "Operation timed out" );
+			g_assert_not_reached ();
 			return;
 		}
 
