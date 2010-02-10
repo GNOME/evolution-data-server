@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.29.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-31 20:05+0100\n"
-"PO-Revision-Date: 2010-01-31 20:07+0100\n"
+"POT-Creation-Date: 2010-02-10 22:13+0100\n"
+"PO-Revision-Date: 2010-02-10 22:13+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmal <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -2598,8 +2598,8 @@ msgstr "Papirkurven er full. Vennligst tøm den."
 #: ../camel/providers/groupwise/camel-groupwise-store.c:763
 #: ../camel/providers/imap/camel-imap-folder.c:3429
 #: ../camel/providers/imap/camel-imap-folder.c:3505
-#: ../camel/providers/imapx/camel-imapx-server.c:2600
-#: ../camel/providers/imapx/camel-imapx-server.c:2684
+#: ../camel/providers/imapx/camel-imapx-server.c:2720
+#: ../camel/providers/imapx/camel-imapx-server.c:2805
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
@@ -2640,12 +2640,14 @@ msgstr "Ser etter nye meldinger"
 #: ../camel/providers/hula/camel-hula-provider.c:50
 #: ../camel/providers/imap/camel-imap-provider.c:46
 #: ../camel/providers/imap4/camel-imap4-provider.c:40
+#: ../camel/providers/imapx/camel-imapx-provider.c:48
 msgid "C_heck for new messages in all folders"
 msgstr "_Se etter nye meldinger i alle mapper"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:59
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imap4/camel-imap4-provider.c:51
+#: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/local/camel-local-provider.c:46
 #: ../camel/providers/local/camel-local-provider.c:86
 #: ../camel/providers/local/camel-local-provider.c:106
@@ -2662,6 +2664,7 @@ msgstr "Se etter s_øppelinnhold i nye meldinger"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:65
 #: ../camel/providers/imap/camel-imap-provider.c:74
+#: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "Se kun etter søppelinnhold i nye meldinger i inn_boksen"
 
@@ -2689,7 +2692,7 @@ msgstr "For tilgang til Novell GroupWise-tjenere"
 #: ../camel/providers/hula/camel-hula-provider.c:93
 #: ../camel/providers/imap/camel-imap-provider.c:100
 #: ../camel/providers/imap4/camel-imap4-provider.c:83
-#: ../camel/providers/imapx/camel-imapx-provider.c:66
+#: ../camel/providers/imapx/camel-imapx-provider.c:104
 #: ../camel/providers/nntp/camel-nntp-provider.c:74
 #: ../camel/providers/pop3/camel-pop3-provider.c:74
 msgid "Password"
@@ -2718,7 +2721,7 @@ msgstr ""
 #: ../camel/providers/groupwise/camel-groupwise-store.c:540
 #: ../camel/providers/imap/camel-imap-store.c:1879
 #: ../camel/providers/imap/camel-imap-store.c:2077
-#: ../camel/providers/imapx/camel-imapx-store.c:245
+#: ../camel/providers/imapx/camel-imapx-store.c:297
 #, c-format
 msgid "No such folder %s"
 msgstr "Mappen %s eksisterer ikke"
@@ -2777,27 +2780,32 @@ msgstr "Kunne ikke sende meldingen: %s"
 
 #: ../camel/providers/hula/camel-hula-provider.c:48
 #: ../camel/providers/imap/camel-imap-provider.c:44
+#: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Checking for New Mail"
 msgstr "Ser etter nye meldinger"
 
 #: ../camel/providers/hula/camel-hula-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:52
+#: ../camel/providers/imapx/camel-imapx-provider.c:54
 msgid "Connection to Server"
 msgstr "Tilkobling til tjener"
 
 #: ../camel/providers/hula/camel-hula-provider.c:55
 #: ../camel/providers/imap/camel-imap-provider.c:54
+#: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "_Use custom command to connect to server"
 msgstr "Br_uk egendefinert kommando for å koble til tjener"
 
 #: ../camel/providers/hula/camel-hula-provider.c:57
 #: ../camel/providers/imap/camel-imap-provider.c:56
+#: ../camel/providers/imapx/camel-imapx-provider.c:58
 msgid "Command:"
 msgstr "Kommando:"
 
 #: ../camel/providers/hula/camel-hula-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imap4/camel-imap4-provider.c:43
+#: ../camel/providers/imapx/camel-imapx-provider.c:64
 #: ../camel/providers/nntp/camel-nntp-provider.c:44
 msgid "Folders"
 msgstr "Mapper"
@@ -2805,12 +2813,14 @@ msgstr "Mapper"
 #: ../camel/providers/hula/camel-hula-provider.c:62
 #: ../camel/providers/imap/camel-imap-provider.c:62
 #: ../camel/providers/imap4/camel-imap4-provider.c:45
+#: ../camel/providers/imapx/camel-imapx-provider.c:66
 msgid "_Show only subscribed folders"
 msgstr "Vi_s kun abonnerte mapper"
 
 #: ../camel/providers/hula/camel-hula-provider.c:64
 #: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imap4/camel-imap4-provider.c:47
+#: ../camel/providers/imapx/camel-imapx-provider.c:68
 msgid "O_verride server-supplied folder namespace"
 msgstr "O_verstyr tjeners navneområde for mapper"
 
@@ -2901,7 +2911,7 @@ msgstr "Kan ikke opprette katalog %s: %s"
 
 #. Check UIDs and flags of all messages we already know of.
 #: ../camel/providers/imap/camel-imap-folder.c:918
-#: ../camel/providers/imapx/camel-imapx-server.c:2630
+#: ../camel/providers/imapx/camel-imapx-server.c:2750
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Søker etter endrede meldinger i %s"
@@ -2973,25 +2983,30 @@ msgid "Failed to cache %s: %s"
 msgstr "Feil ved mellomlagring av %s: %s"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
+#: ../camel/providers/imapx/camel-imapx-provider.c:50
 msgid "Ch_eck for new messages in subscribed folders"
 msgstr "S_e etter nye meldinger i abonnerte mapper"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imap4/camel-imap4-provider.c:49
+#: ../camel/providers/imapx/camel-imapx-provider.c:70
 msgid "Namespace:"
 msgstr "Navneområde:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imap4/camel-imap4-provider.c:53
+#: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_Bruk filtre for nye meldinger i INBOX på denne tjeneren"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
+#: ../camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Check new messages for Jun_k contents"
 msgstr "Se etter søppelinn_hold i nye meldinger"
 
 #: ../camel/providers/imap/camel-imap-provider.c:76
 #: ../camel/providers/imap4/camel-imap4-provider.c:59
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "S_ynkroniser eksterne meldinger med lokale meldinger automatisk"
 
@@ -3000,11 +3015,12 @@ msgid "IMAP"
 msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:85
+#: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
 msgstr "For lesing og lagring av e-post på IMAP-tjenere."
 
 #: ../camel/providers/imap/camel-imap-provider.c:102
-#: ../camel/providers/imapx/camel-imapx-provider.c:68
+#: ../camel/providers/imapx/camel-imapx-provider.c:106
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Dette valget vil la deg koble til en IMAP-tjener ved å bruke et klartekst-"
@@ -3012,12 +3028,14 @@ msgstr ""
 
 #: ../camel/providers/imap/camel-imap-store.c:435
 #: ../camel/providers/imap4/camel-imap4-store.c:210
+#: ../camel/providers/imapx/camel-imapx-store.c:167
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP-tjener %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:437
 #: ../camel/providers/imap4/camel-imap4-store.c:212
+#: ../camel/providers/imapx/camel-imapx-store.c:169
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-tjeneste for %s på %s"
@@ -3046,7 +3064,7 @@ msgstr "SSL er ikke tilgjengelig"
 
 #: ../camel/providers/imap/camel-imap-store.c:578
 #: ../camel/providers/imap/camel-imap-store.c:860
-#: ../camel/providers/imapx/camel-imapx-server.c:1990
+#: ../camel/providers/imapx/camel-imapx-server.c:2009
 msgid "Connection cancelled"
 msgstr "Tilkobling avbrutt"
 
@@ -3057,20 +3075,20 @@ msgstr "Tilkobling avbrutt"
 #: ../camel/providers/imap4/camel-imap4-store.c:310
 #: ../camel/providers/imap4/camel-imap4-store.c:325
 #: ../camel/providers/imap4/camel-imap4-store.c:334
-#: ../camel/providers/imapx/camel-imapx-server.c:2030
-#: ../camel/providers/imapx/camel-imapx-server.c:2044
+#: ../camel/providers/imapx/camel-imapx-server.c:2049
+#: ../camel/providers/imapx/camel-imapx-server.c:2063
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:690
-#: ../camel/providers/imapx/camel-imapx-server.c:2031
+#: ../camel/providers/imapx/camel-imapx-server.c:2050
 #: ../camel/providers/smtp/camel-smtp-transport.c:332
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
 #: ../camel/providers/imap/camel-imap-store.c:709
-#: ../camel/providers/imapx/camel-imapx-server.c:2045
+#: ../camel/providers/imapx/camel-imapx-server.c:2064
 msgid "SSL negotiations failed"
 msgstr "SSL-forhandling feilet"
 
@@ -3090,8 +3108,8 @@ msgstr "Kunne ikke koble til med kommando «%s»: %s"
 #: ../camel/providers/imap/camel-imap-store.c:2430
 #: ../camel/providers/imap4/camel-imap4-store-summary.c:356
 #: ../camel/providers/imap4/camel-imap4-store.c:1403
-#: ../camel/providers/imapx/camel-imapx-store.c:409
-#: ../camel/providers/imapx/camel-imapx-store.c:640
+#: ../camel/providers/imapx/camel-imapx-store.c:349
+#: ../camel/providers/imapx/camel-imapx-store.c:578
 #: ../camel/providers/local/camel-maildir-folder.c:81
 #: ../camel/providers/local/camel-maildir-store.c:219
 #: ../camel/providers/local/camel-maildir-store.c:291
@@ -3478,43 +3496,27 @@ msgstr "Kunne ikke lage sammendrag for mappe %s"
 msgid "Could not create cache for %s"
 msgstr "Kunne ikke lage bufferfil for %s"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:40
-#: ../camel/providers/pop3/camel-pop3-provider.c:43
-msgid "Message storage"
-msgstr "Meldingslager"
+#: ../camel/providers/imapx/camel-imapx-provider.c:46
+msgid "Use I_dle if the server supports it"
+msgstr "Bruk i_dle hvis tjeneren støtter det"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:48
+#: ../camel/providers/imapx/camel-imapx-provider.c:60
+msgid "Numbe_r of cached connections to use"
+msgstr "Antall mellomlag_rede tilkoblinger som skal brukes"
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:50
-msgid ""
-"Experimental IMAP 4(.1) client\n"
-"This is untested and unsupported code, you want to use plain imap instead.\n"
-"\n"
-" !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
-msgstr ""
-"Eksperimentell IMAP 4(.1) klient\n"
-"Denne koden er ikke testet eller støttet. Du vil kanskje bruke ordinær IMAP "
-"i stedet.\n"
-"\n"
-" !!! IKKE BRUK DENNE I PRODUKSJON  !!!\n"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:1993
+#: ../camel/providers/imapx/camel-imapx-server.c:2012
 #, c-format
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Kunne ikke koble til %s (port %s): %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2073
-#: ../camel/providers/imapx/camel-imapx-store.c:147
+#: ../camel/providers/imapx/camel-imapx-server.c:2092
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr "%sVennligst oppgi IMAP-passord for %s@%s"
-
-#: ../camel/providers/imapx/camel-imapx-store.c:130
-#, c-format
-msgid "Could not connect to POP server on %s"
-msgstr "Kunne ikke koble til POP-tjener på %s"
 
 #: ../camel/providers/local/camel-local-folder.c:178
 msgid "Index message body data"
@@ -4228,6 +4230,10 @@ msgstr "Henter POP-melding %d"
 #: ../camel/providers/pop3/camel-pop3-folder.c:649
 msgid "Unknown reason"
 msgstr "Ukjent årsak"
+
+#: ../camel/providers/pop3/camel-pop3-provider.c:43
+msgid "Message storage"
+msgstr "Meldingslager"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:45
 msgid "_Leave messages on server"
