@@ -39,12 +39,14 @@ extern "C" {
 #define CAMEL_IMAPX_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAPX_STORE_TYPE, CamelIMAPXStoreClass))
 #define CAMEL_IS_IMAP_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPX_STORE_TYPE))
 
-struct _pending_fetch {
-	struct _pending_fetch *next;
-	struct _pending_fetch *prev;
-
-	struct _CamelMessageInfo *info;
-};
+#define IMAPX_OVERRIDE_NAMESPACE	(1 << 0)
+#define IMAPX_CHECK_ALL			(1 << 1)
+#define IMAPX_FILTER_INBOX		(1 << 2)
+#define IMAPX_FILTER_JUNK		(1 << 3)
+#define IMAPX_FILTER_JUNK_INBOX		(1 << 4)
+#define IMAPX_SUBSCRIPTIONS		(1 << 5)
+#define IMAPX_CHECK_LSUB		(1 << 6)
+#define IMAPX_USE_IDLE			(1 << 7)
 
 typedef struct {
 	CamelOfflineStore parent_object;
@@ -54,6 +56,8 @@ typedef struct {
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar *namespace, dir_sep, *base_url, *storage_path;
 
+	guint32 rec_options;
+	
 	/* if we had a login error, what to show to user */
 	gchar *login_error;
 

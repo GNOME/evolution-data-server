@@ -3488,7 +3488,6 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 					stream = camel_stream_fs_new_with_name(cache_file, O_RDONLY, 0);
 				else {
 					camel_exception_set (ex, 1, "failed to copy the tmp file");
-					g_assert_not_reached ();
 				}
 			} else {
 				camel_exception_setv(ex, 1, "closing tmp stream failed: %s", g_strerror(errno));
