@@ -577,7 +577,7 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		} else
 			fi->name = g_strdup(camel_store_info_name(istore->summary, si));
 
-		hfi = g_hash_table_lookup (table, fi->name);
+		hfi = g_hash_table_lookup (table, fi->full_name);
 		if (hfi) {
 			if (subcribed)
 				hfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
@@ -609,7 +609,7 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		fi->total = -1;
 		fi->unread = -1;
 
-		g_hash_table_insert (table, fi->name, fi);
+		g_hash_table_insert (table, fi->full_name, fi);
 	}
 }
 
