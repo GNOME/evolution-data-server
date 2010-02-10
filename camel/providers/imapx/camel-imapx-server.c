@@ -1273,7 +1273,11 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		// TODO: we want to make sure the names match?
 
-		printf("list: '%s' (%c)\n", linfo->name, linfo->separator);
+		if (job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)
+			printf("lsub: '%s' (%c)\n", linfo->name, linfo->separator);
+		else
+			printf("list: '%s' (%c)\n", linfo->name, linfo->separator);
+		
 		if (job && g_hash_table_lookup(job->u.list.folders, linfo->name) == NULL) {
 			if (lsub)
 				linfo->flags |= CAMEL_FOLDER_SUBSCRIBED;
@@ -1835,14 +1839,18 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		QUEUE_LOCK(is);
 		cw = (CamelIMAPXCommand *)is->queue.head;
 		cn = cw->next;
-		while (cn) {
-			if (cw->select && strcmp(cw->select, is->select_pending->full_name) == 0) {
-				camel_dlist_remove((CamelDListNode *)cw);
-				camel_dlist_addtail(&failed, (CamelDListNode *)cw);
+		
+		if (is->select_pending) {
+			while (cn) {
+				if (cw->select && strcmp(cw->select, is->select_pending->full_name) == 0) {
+					camel_dlist_remove((CamelDListNode *)cw);
+					camel_dlist_addtail(&failed, (CamelDListNode *)cw);
+				}
+				cw = cn;
+				cn = cn->next;
 			}
-			cw = cn;
-			cn = cn->next;
 		}
+
 		QUEUE_UNLOCK(is);
 
 		cw = (CamelIMAPXCommand *)failed.head;
@@ -2837,6 +2845,7 @@ imapx_command_list_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
 
+	printf ("==== list or lsub completed ==== \n");
 	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
