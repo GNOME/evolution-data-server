@@ -5085,7 +5085,7 @@ camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType 
 		const CamelMessageContentInfo *child = ci;
 
 		do {
-			if (match_content_type (child->type, ctype))
+			if (child->type && match_content_type (child->type, ctype))
 				return child;
 
 			child = child->next;
