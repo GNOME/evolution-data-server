@@ -978,6 +978,9 @@ imapx_match_active_job (CamelIMAPXServer *is, gint type, const gchar *uid)
 			    && strcmp(job->folder->full_name, is->select) == 0)
 				goto found;
 			break;
+		case IMAPX_JOB_EXPUNGE:
+			if (is->select && strcmp (job->folder->full_name, is->select) == 0)
+				goto found;
 		case IMAPX_JOB_LIST:
 			goto found;
 		}
@@ -1029,7 +1032,12 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		return 0;
 	case IMAPX_EXPUNGE: {
 		guint32 expunge = id;
+		CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_EXPUNGE, NULL);
 
+		/* If there is a job running, let it handle the deletion */
+		if (job)
+			break;
+		
 		printf("expunged: %d\n", id);
 		if (imap->select_folder) {
 			gchar *uid = NULL;
@@ -2641,13 +2649,14 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		for (i=0; i<infos->len; i++) {
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
-			while (s_minfo && uid_cmp(camel_message_info_uid(s_minfo), r->uid, s) < 0) {
+			while (s_minfo && uid_cmp(camel_message_info_uid(s_minfo), r->uid, s) != 0) {
 				const gchar *uid = camel_message_info_uid (s_minfo);
 
 				camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
 				removed = g_slist_prepend (removed, (gpointer ) g_strdup (uid));
-				j = imapx_index_next (s, j);
 				camel_message_info_free (s_minfo);
+				
+				j = imapx_index_next (s, j);
 				s_minfo = camel_folder_summary_index (s, j);
 			}
 
@@ -2655,8 +2664,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			if (s_minfo && uid_cmp(s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *)s_minfo;
 
-				if (info->server_flags !=  r->server_flags
-				    &&	imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, job->folder))
+				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, job->folder))
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
 				r->exists = TRUE;
 			} else
@@ -2664,12 +2672,12 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 			if (s_minfo)
 				camel_message_info_free (s_minfo);
+			
+			if (j > total)
+				break;
 
 			j = imapx_index_next (s, j);
 			s_minfo = camel_folder_summary_index (s, j);
-
-			if (j > total)
-				break;
 		}
 
 		if (s_minfo)
@@ -2831,6 +2839,42 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_setv(ic->job->ex, 1, "Error expunging message : %s", ic->status->text);
 		else
 			camel_exception_xfer (ic->job->ex, ic->ex);
+	} else {
+		GPtrArray *uids;
+		CamelFolder *folder = ic->job->folder;
+			
+		camel_folder_summary_save_to_db (folder->summary, ic->job->ex);
+		uids = camel_db_get_folder_deleted_uids (folder->parent_store->cdb_r, folder->full_name, ic->job->ex);
+		
+		if (uids->len)	{
+			CamelFolderChangeInfo *changes;
+			GSList *removed = NULL;
+			gint i;
+
+			changes = camel_folder_change_info_new ();
+			for (i = 0; i < uids->len; i++) {
+				gchar *uid = uids->pdata [i];
+				CamelMessageInfo *mi = camel_folder_summary_uid (folder->summary, uid);
+
+				if (mi) {
+					imapx_update_summary_for_removed_message (mi, folder);
+					camel_message_info_free (mi);
+				}
+
+				camel_folder_summary_remove_uid_fast (folder->summary, uid);
+				camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
+				removed = g_slist_prepend (removed, (gpointer) uids->pdata[i]);
+			}
+
+			camel_db_delete_uids (folder->parent_store->cdb_w, folder->full_name, removed, ic->job->ex);
+			camel_folder_summary_save_to_db (folder->summary, ic->job->ex);
+			camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+			camel_folder_change_info_free (changes);
+
+			g_slist_free (removed);
+			g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
+			g_ptr_array_free (uids, TRUE);
+		}
 	}
 
 	imapx_job_done (is, ic->job);
@@ -2842,6 +2886,7 @@ imapx_job_expunge_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 
+	/* TODO handle UIDPLUS capability */
 	ic = camel_imapx_command_new("EXPUNGE", job->folder->full_name, "EXPUNGE");
 	ic->job = job;
 	ic->complete = imapx_command_expunge_done;
