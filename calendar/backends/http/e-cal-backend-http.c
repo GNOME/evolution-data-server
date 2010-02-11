@@ -284,6 +284,7 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 	icalcomponent *icalcomp, *subcomp;
 	icalcomponent_kind kind;
 	const gchar *newuri;
+        SoupURI *uri_parsed;
 	GHashTable *old_cache;
 	GSList *comps_in_cache;
 
@@ -303,9 +304,22 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 		newuri = soup_message_headers_get (msg->response_headers,
 						   "Location");
 
-		d(g_message ("Redirected to %s\n", newuri));
+		d(g_message ("Redirected from %s to %s\n", priv->uri, newuri));
 
 		if (newuri) {
+			if (newuri[0]=='/') {
+				g_warning ("Hey! Relative URI returned! Working around...\n");
+
+				uri_parsed = soup_uri_new (priv->uri);
+				soup_uri_set_path (uri_parsed, newuri);
+				soup_uri_set_query (uri_parsed, NULL);
+				// g_free(newuri);
+
+				newuri = soup_uri_to_string (uri_parsed, FALSE);
+				g_message ("Translated URI: %s\n", newuri);
+				soup_uri_free (uri_parsed);
+			}
+
 			g_free (priv->uri);
 
 			priv->uri = webcal_to_http_method (newuri, FALSE);
