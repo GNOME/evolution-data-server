@@ -217,6 +217,31 @@ e_book_init (EBook *book)
 	book->priv = priv;
 }
 
+static DBusHandlerResult
+filter_dbus_msgs_cb (DBusConnection *pconnection, DBusMessage *message, void *user_data)
+{
+	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
+		DBusGConnection *conn = connection;
+
+		LOCK_CONN ();
+		factory_proxy = NULL;
+		connection = NULL;
+		UNLOCK_CONN ();
+		dbus_g_connection_unref (conn);
+		return DBUS_HANDLER_RESULT_HANDLED;
+	}
+
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+static void
+factory_proxy_destroy_cb (DBusGProxy *proxy, gpointer user_data)
+{
+	LOCK_CONN ();
+	factory_proxy = NULL;
+	UNLOCK_CONN ();
+}
+
 static gboolean
 e_book_activate(GError **error)
 {
@@ -235,6 +260,8 @@ e_book_activate(GError **error)
 			UNLOCK_CONN ();
 			return FALSE;
 		}
+
+		dbus_connection_add_filter (dbus_g_connection_get_connection (connection), filter_dbus_msgs_cb, NULL, NULL);
 	}
 
 	dbus_error_init (&derror);
@@ -257,7 +284,8 @@ e_book_activate(GError **error)
 			UNLOCK_CONN ();
 			return FALSE;
 		}
-		g_object_add_weak_pointer (G_OBJECT (factory_proxy), (gpointer)&factory_proxy);
+
+		g_signal_connect (factory_proxy, "destroy", G_CALLBACK (factory_proxy_destroy_cb), NULL);
 	}
 
 	UNLOCK_CONN ();
