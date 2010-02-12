@@ -163,7 +163,7 @@ G_STMT_START{								\
 		return TRUE;						\
 	else {								\
 		const gchar *msg;					\
-		if (error)						\
+		if (error && *error)					\
 			return unwrap_gerror (error);			\
 		msg = e_cal_get_error_message ((status));		\
 		g_set_error ((error), E_CALENDAR_ERROR, (status), "%s", msg);	\
@@ -237,6 +237,8 @@ get_status_from_error (GError *error)
 
 		g_warning ("Unmatched error name %s", name);
 		return E_CALENDAR_STATUS_OTHER_ERROR;
+	} else if (error->domain == E_CALENDAR_ERROR) {
+		return error->code;
 	} else {
 		/* In this case the error was caused by DBus */
 		return E_CALENDAR_STATUS_CORBA_EXCEPTION;
@@ -1264,6 +1266,30 @@ e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 	return result;
 }
 
+struct idle_async_error_reply_data
+{
+	ECal *ecal; /* ref-ed */
+	GError *error; /* cannot be NULL */
+};
+
+static gboolean
+idle_async_error_reply_cb (gpointer user_data)
+{
+	struct idle_async_error_reply_data *data = user_data;
+
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (data->ecal != NULL, FALSE);
+	g_return_val_if_fail (data->error != NULL, FALSE);
+
+	async_signal_idle_cb (NULL, data->error, data->ecal);
+
+	g_object_unref (data->ecal);
+	g_error_free (data->error);
+	g_free (data);
+
+	return FALSE;
+}
+
 /**
  * e_cal_open_async:
  * @ecal: A calendar client.
@@ -1304,6 +1330,14 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	}
 
 	open_calendar (ecal, only_if_exists, &error, &status, FALSE, TRUE);
+	if (error) {
+		struct idle_async_error_reply_data *data;
+
+		data = g_new0 (struct idle_async_error_reply_data, 1);
+		data->ecal = g_object_ref (ecal);
+		data->error = error;
+		g_idle_add (idle_async_error_reply_cb, data);
+	}
 }
 
 /**
