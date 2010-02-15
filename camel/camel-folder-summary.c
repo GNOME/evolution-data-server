@@ -546,7 +546,6 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 	gint ret;
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	CAMEL_SUMMARY_LOCK(s, ref_lock);
 
 	info = g_hash_table_lookup (s->loaded_infos, uid);
 
@@ -563,7 +562,6 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		folder_name = s->folder->full_name;
 		cdb = s->folder->parent_store->cdb_r;
 
-		CAMEL_SUMMARY_UNLOCK(s, ref_lock);
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 		data.summary = s;
@@ -577,7 +575,6 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 		}
 
 		CAMEL_SUMMARY_LOCK(s, summary_lock);
-		CAMEL_SUMMARY_LOCK(s, ref_lock);
 
 		/* We would have double reffed at camel_read_mir_callback */
 		info = g_hash_table_lookup (s->loaded_infos, uid);
@@ -591,10 +588,11 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 			camel_exception_clear (&ex);
 			g_free (errmsg);
 		}
-	} else
-		info->refcount++;
+	}
 
-	CAMEL_SUMMARY_UNLOCK(s, ref_lock);
+	if (info)
+		camel_message_info_ref (info);
+
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	return info;
@@ -2362,11 +2360,12 @@ summary_remove_uid (CamelFolderSummary *s, const gchar *uid)
 void
 camel_folder_summary_remove (CamelFolderSummary *s, CamelMessageInfo *info)
 {
-
+	gboolean found;
 	gint ret;
 
 	CAMEL_SUMMARY_LOCK(s, summary_lock);
 
+	found = g_hash_table_lookup (s->loaded_infos, camel_message_info_uid (info)) != NULL;
 	g_hash_table_remove (s->loaded_infos, camel_message_info_uid(info));
 	ret = summary_remove_uid (s, camel_message_info_uid(info));
 
@@ -2377,7 +2376,8 @@ camel_folder_summary_remove (CamelFolderSummary *s, CamelMessageInfo *info)
 	if (!ret && camel_db_delete_uid (s->folder->parent_store->cdb_w, s->folder->full_name, camel_message_info_uid(info), NULL) != 0)
 		return;
 
-	camel_message_info_free(info);
+	if (found)
+		camel_message_info_free (info);
 }
 
 /**
@@ -3507,7 +3507,7 @@ message_info_free(CamelFolderSummary *s, CamelMessageInfo *info)
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *)info;
 
 	if (mi->uid) {
-		if (g_hash_table_lookup (s->loaded_infos, mi->uid) == mi) {
+		if (s && g_hash_table_lookup (s->loaded_infos, mi->uid) == mi) {
 			g_hash_table_remove (s->loaded_infos, mi->uid);
 		}
 		camel_pstring_free(mi->uid);
