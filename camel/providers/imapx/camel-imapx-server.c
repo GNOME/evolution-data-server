@@ -2846,7 +2846,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		camel_folder_summary_save_to_db (folder->summary, ic->job->ex);
 		uids = camel_db_get_folder_deleted_uids (folder->parent_store->cdb_r, folder->full_name, ic->job->ex);
 		
-		if (uids->len)	{
+		if (uids && uids->len)	{
 			CamelFolderChangeInfo *changes;
 			GSList *removed = NULL;
 			gint i;
