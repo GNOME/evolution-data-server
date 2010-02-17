@@ -44,9 +44,11 @@ G_STMT_START {                                              \
 	(iter)->user_data2 = GINT_TO_POINTER (index);       \
 } G_STMT_END
 
-static void         e_tree_model_generator_init            (ETreeModelGenerator      *tree_model_generator);
-static void         e_tree_model_generator_class_init      (ETreeModelGeneratorClass *class);
-static void         e_tree_model_generator_tree_model_init (GtkTreeModelIface  *iface);
+static void e_tree_model_generator_tree_model_init (GtkTreeModelIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (ETreeModelGenerator, e_tree_model_generator, G_TYPE_OBJECT, 0,
+	G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, e_tree_model_generator_tree_model_init))
+
 static void         e_tree_model_generator_finalize        (GObject            *object);
 static GtkTreeModelFlags e_tree_model_generator_get_flags       (GtkTreeModel       *tree_model);
 static gint         e_tree_model_generator_get_n_columns   (GtkTreeModel       *tree_model);
@@ -153,42 +155,6 @@ e_tree_model_generator_set_property (GObject *object, guint prop_id,
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 			break;
 	}
-}
-
-GType
-e_tree_model_generator_get_type (void)
-{
-	static GType tree_model_generator_type = 0;
-
-	if (!tree_model_generator_type) {
-		static const GTypeInfo tree_model_generator_info =
-		{
-			sizeof (ETreeModelGeneratorClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
-			(GClassInitFunc) e_tree_model_generator_class_init,
-			NULL,		/* class_finalize */
-			NULL,		/* class_data */
-			sizeof (ETreeModelGenerator),
-			0,
-			(GInstanceInitFunc) e_tree_model_generator_init,
-		};
-
-		static const GInterfaceInfo tree_model_info =
-		{
-			(GInterfaceInitFunc) e_tree_model_generator_tree_model_init,
-			NULL,
-			NULL
-		};
-
-		tree_model_generator_type = g_type_register_static (G_TYPE_OBJECT, "ETreeModelGenerator",
-								    &tree_model_generator_info, 0);
-		g_type_add_interface_static (tree_model_generator_type,
-					     GTK_TYPE_TREE_MODEL,
-					     &tree_model_info);
-	}
-
-	return tree_model_generator_type;
 }
 
 static void

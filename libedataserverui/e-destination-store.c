@@ -36,9 +36,17 @@ G_STMT_START {                                        \
 	(iter)->user_data = GINT_TO_POINTER (index);  \
 } G_STMT_END
 
-static void         e_destination_store_init            (EDestinationStore      *destination_store);
-static void         e_destination_store_class_init      (EDestinationStoreClass *class);
-static void         e_destination_store_tree_model_init (GtkTreeModelIface  *iface);
+static GType column_types [E_DESTINATION_STORE_NUM_COLUMNS];
+
+static void e_destination_store_tree_model_init (GtkTreeModelIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (EDestinationStore, e_destination_store, G_TYPE_OBJECT, 0,
+	G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, e_destination_store_tree_model_init);
+	column_types [E_DESTINATION_STORE_COLUMN_NAME]    = G_TYPE_STRING;
+	column_types [E_DESTINATION_STORE_COLUMN_EMAIL]   = G_TYPE_STRING;
+	column_types [E_DESTINATION_STORE_COLUMN_ADDRESS] = G_TYPE_STRING;
+	)
+
 static void         e_destination_store_finalize        (GObject            *object);
 static GtkTreeModelFlags e_destination_store_get_flags       (GtkTreeModel       *tree_model);
 static gint         e_destination_store_get_n_columns   (GtkTreeModel       *tree_model);
@@ -76,47 +84,6 @@ static void stop_destination    (EDestinationStore *destination_store, EDestinat
  * ------------------ */
 
 static GObjectClass *parent_class = NULL;
-static GType         column_types [E_DESTINATION_STORE_NUM_COLUMNS];
-
-GType
-e_destination_store_get_type (void)
-{
-	static GType destination_store_type = 0;
-
-	if (!destination_store_type) {
-		static const GTypeInfo destination_store_info =
-		{
-			sizeof (EDestinationStoreClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
-			(GClassInitFunc) e_destination_store_class_init,
-			NULL,		/* class_finalize */
-			NULL,		/* class_data */
-			sizeof (EDestinationStore),
-			0,
-			(GInstanceInitFunc) e_destination_store_init,
-		};
-
-		static const GInterfaceInfo tree_model_info =
-		{
-			(GInterfaceInitFunc) e_destination_store_tree_model_init,
-			NULL,
-			NULL
-		};
-
-		column_types [E_DESTINATION_STORE_COLUMN_NAME]    = G_TYPE_STRING;
-		column_types [E_DESTINATION_STORE_COLUMN_EMAIL]   = G_TYPE_STRING;
-		column_types [E_DESTINATION_STORE_COLUMN_ADDRESS] = G_TYPE_STRING;
-
-		destination_store_type = g_type_register_static (G_TYPE_OBJECT, "EDestinationStore",
-								 &destination_store_info, 0);
-		g_type_add_interface_static (destination_store_type,
-					     GTK_TYPE_TREE_MODEL,
-					     &tree_model_info);
-	}
-
-	return destination_store_type;
-}
 
 static void
 e_destination_store_class_init (EDestinationStoreClass *class)

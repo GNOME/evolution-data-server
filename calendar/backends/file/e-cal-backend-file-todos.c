@@ -25,6 +25,8 @@
 
 #include "e-cal-backend-file-todos.h"
 
+G_DEFINE_TYPE (ECalBackendFileTodos, e_cal_backend_file_todos, E_TYPE_CAL_BACKEND_FILE)
+
 
 
 /* Private part of the ECalBackendFileTodos structure */
@@ -34,46 +36,12 @@ struct _ECalBackendFileTodosPrivate {
 
 
 
-static void e_cal_backend_file_todos_class_init (ECalBackendFileTodosClass *class);
-static void e_cal_backend_file_todos_init (ECalBackendFileTodos *cbfile, ECalBackendFileTodosClass *class);
 static void e_cal_backend_file_todos_dispose (GObject *object);
 static void e_cal_backend_file_todos_finalize (GObject *object);
 
 static ECalBackendFileClass *parent_class;
 
 
-
-/**
- * e_cal_backend_file_todos_get_type:
- * @void:
- *
- * Registers the #ECalBackendFileTodos class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendFileTodos class.
- **/
-GType
-e_cal_backend_file_todos_get_type (void)
-{
-	static GType e_cal_backend_file_todos_type = 0;
-
-	if (!e_cal_backend_file_todos_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendFileTodosClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_file_todos_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendFileTodos),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_file_todos_init
-                };
-		e_cal_backend_file_todos_type = g_type_register_static (E_TYPE_CAL_BACKEND_FILE,
-								      "ECalBackendFileTodos", &info, 0);
-	}
-
-	return e_cal_backend_file_todos_type;
-}
 
 /* Class initialization function for the file backend */
 static void
@@ -93,7 +61,7 @@ e_cal_backend_file_todos_class_init (ECalBackendFileTodosClass *klass)
 
 /* Object initialization function for the file backend */
 static void
-e_cal_backend_file_todos_init (ECalBackendFileTodos *cbfile, ECalBackendFileTodosClass *class)
+e_cal_backend_file_todos_init (ECalBackendFileTodos *cbfile)
 {
 	ECalBackendFileTodosPrivate *priv;
 

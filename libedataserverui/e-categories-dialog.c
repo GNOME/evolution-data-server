@@ -34,6 +34,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate))
 
+G_DEFINE_TYPE (ECategoriesDialog, e_categories_dialog, GTK_TYPE_DIALOG)
+
 struct _ECategoriesDialogPrivate {
 	GtkBuilder *gui;
 	GtkWidget *categories_entry;
@@ -578,7 +580,7 @@ categories_dialog_finalize (GObject *object)
 }
 
 static void
-categories_dialog_class_init (ECategoriesDialogClass *class)
+e_categories_dialog_class_init (ECategoriesDialogClass *class)
 {
 	GObjectClass *object_class;
 
@@ -591,7 +593,7 @@ categories_dialog_class_init (ECategoriesDialogClass *class)
 }
 
 static void
-categories_dialog_init (ECategoriesDialog *dialog)
+e_categories_dialog_init (ECategoriesDialog *dialog)
 {
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
@@ -688,32 +690,6 @@ categories_dialog_init (ECategoriesDialog *dialog)
 
 	e_categories_register_change_listener (
 		G_CALLBACK (categories_dialog_listener_cb), dialog);
-}
-
-GType
-e_categories_dialog_get_type (void)
-{
-	static GType type = 0;
-
-	if (G_UNLIKELY (type == 0)) {
-		static const GTypeInfo type_info = {
-			sizeof (ECategoriesDialogClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) categories_dialog_class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,  /* class_data */
-			sizeof (ECategoriesDialog),
-			0,     /* n_preallocs */
-			(GInstanceInitFunc) categories_dialog_init,
-			NULL   /* value_table */
-		};
-
-		type = g_type_register_static (
-			GTK_TYPE_DIALOG, "ECategoriesDialog", &type_info, 0);
-	}
-
-	return type;
 }
 
 /**

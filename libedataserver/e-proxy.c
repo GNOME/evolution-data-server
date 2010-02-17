@@ -49,6 +49,8 @@
 #include <libsoup/soup-uri.h>
 #include "e-proxy.h"
 
+G_DEFINE_TYPE (EProxy, e_proxy, G_TYPE_OBJECT)
+
 /* Debug */
 #define d(x)
 
@@ -179,7 +181,7 @@ e_proxy_class_init (EProxyClass *klass)
 }
 
 static void
-e_proxy_init (EProxy *pxy, EProxyClass *klass)
+e_proxy_init (EProxy *pxy)
 {
 	EProxyPrivate *priv;
 
@@ -243,28 +245,6 @@ e_proxy_dispose (GObject *object)
 		g_free (priv);
 		priv = NULL;
 	}
-}
-
-GType
-e_proxy_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EProxyClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_proxy_class_init,
-                        NULL, NULL,
-                        sizeof (EProxy),
-                        0,
-                        (GInstanceInitFunc) e_proxy_init
-                };
-		type = g_type_register_static (G_TYPE_OBJECT, "EProxy", &info, 0);
-	}
-
-	return type;
 }
 
 static gboolean

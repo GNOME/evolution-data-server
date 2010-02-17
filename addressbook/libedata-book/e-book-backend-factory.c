@@ -15,38 +15,16 @@
 
 #include "e-book-backend-factory.h"
 
+G_DEFINE_TYPE (EBookBackendFactory, e_book_backend_factory, G_TYPE_OBJECT)
+
 static void
-e_book_backend_factory_instance_init (EBookBackendFactory *factory)
+e_book_backend_factory_init (EBookBackendFactory *factory)
 {
 }
 
 static void
 e_book_backend_factory_class_init (EBookBackendFactoryClass *klass)
 {
-}
-
-GType
-e_book_backend_factory_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendFactoryClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_factory_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendFactory),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_factory_instance_init
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "EBookBackendFactory", &info, 0);
-	}
-
-	return type;
 }
 
 /**

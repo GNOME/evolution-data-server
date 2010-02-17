@@ -25,6 +25,8 @@
 
 #include "e-cal-backend-file-events.h"
 
+G_DEFINE_TYPE (ECalBackendFileEvents, e_cal_backend_file_events, E_TYPE_CAL_BACKEND_FILE)
+
 
 
 /* Private part of the CalBackendFileEvents structure */
@@ -34,46 +36,12 @@ struct _ECalBackendFileEventsPrivate {
 
 
 
-static void e_cal_backend_file_events_class_init (ECalBackendFileEventsClass *class);
-static void e_cal_backend_file_events_init (ECalBackendFileEvents *cbfile, ECalBackendFileEventsClass *class);
 static void e_cal_backend_file_events_dispose (GObject *object);
 static void e_cal_backend_file_events_finalize (GObject *object);
 
 static GObjectClass *parent_class;
 
 
-
-/**
- * e_cal_backend_file_events_get_type:
- * @void:
- *
- * Registers the #ECalBackendFileEvents class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendFileEvents class.
- **/
-GType
-e_cal_backend_file_events_get_type (void)
-{
-	static GType e_cal_backend_file_events_type = 0;
-
-	if (!e_cal_backend_file_events_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendFileEventsClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_file_events_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendFileEvents),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_file_events_init
-                };
-		e_cal_backend_file_events_type = g_type_register_static (E_TYPE_CAL_BACKEND_FILE,
-								      "ECalBackendFileEvents", &info, 0);
-	}
-
-	return e_cal_backend_file_events_type;
-}
 
 /* Class initialization function for the file backend */
 static void
@@ -93,7 +61,7 @@ e_cal_backend_file_events_class_init (ECalBackendFileEventsClass *klass)
 
 /* Object initialization function for the file backend */
 static void
-e_cal_backend_file_events_init (ECalBackendFileEvents *cbfile, ECalBackendFileEventsClass *class)
+e_cal_backend_file_events_init (ECalBackendFileEvents *cbfile)
 {
 	ECalBackendFileEventsPrivate *priv;
 

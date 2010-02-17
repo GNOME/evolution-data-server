@@ -276,9 +276,10 @@ unwrap_gerror(GError **error)
 GType
 e_cal_source_type_enum_get_type (void)
 {
-	static GType e_cal_source_type_enum_type = 0;
+	static volatile gsize enum_type__volatile = 0;
 
-	if (!e_cal_source_type_enum_type) {
+	if (g_once_init_enter (&enum_type__volatile)) {
+		GType enum_type;
 		static GEnumValue values [] = {
 			{ E_CAL_SOURCE_TYPE_EVENT, "Event", NULL},
 			{ E_CAL_SOURCE_TYPE_TODO, "ToDo", NULL},
@@ -287,11 +288,11 @@ e_cal_source_type_enum_get_type (void)
 			{ -1, NULL, NULL}
 		};
 
-		e_cal_source_type_enum_type =
-			g_enum_register_static ("ECalSourceTypeEnum", values);
+		enum_type = g_enum_register_static ("ECalSourceTypeEnum", values);
+		g_once_init_leave (&enum_type__volatile, enum_type);
 	}
 
-	return e_cal_source_type_enum_type;
+	return enum_type__volatile;
 }
 
 /**
@@ -304,21 +305,22 @@ e_cal_source_type_enum_get_type (void)
 GType
 e_cal_set_mode_status_enum_get_type (void)
 {
-	static GType e_cal_set_mode_status_enum_type = 0;
+	static volatile gsize enum_type__volatile = 0;
 
-	if (!e_cal_set_mode_status_enum_type) {
+	if (g_once_init_enter (&enum_type__volatile)) {
+		GType enum_type;
 		static GEnumValue values [] = {
 			{ E_CAL_SET_MODE_SUCCESS,          "ECalSetModeSuccess",         "success"     },
 			{ E_CAL_SET_MODE_ERROR,            "ECalSetModeError",           "error"       },
 			{ E_CAL_SET_MODE_NOT_SUPPORTED,    "ECalSetModeNotSupported",    "unsupported" },
-			{ -1,                                   NULL,                              NULL          }
+			{ -1,                                   NULL,                              NULL}
 		};
 
-		e_cal_set_mode_status_enum_type =
-			g_enum_register_static ("ECalSetModeStatusEnum", values);
+		enum_type = g_enum_register_static ("ECalSetModeStatusEnum", values);
+		g_once_init_leave (&enum_type__volatile, enum_type);
 	}
 
-	return e_cal_set_mode_status_enum_type;
+	return enum_type__volatile;
 }
 
 /**
@@ -331,9 +333,10 @@ e_cal_set_mode_status_enum_get_type (void)
 GType
 cal_mode_enum_get_type (void)
 {
-	static GType cal_mode_enum_type = 0;
+	static volatile gsize enum_type__volatile = 0;
 
-	if (!cal_mode_enum_type) {
+	if (g_once_init_enter (&enum_type__volatile)) {
+		GType enum_type;
 		static GEnumValue values [] = {
 			{ CAL_MODE_INVALID,                     "CalModeInvalid",                  "invalid" },
 			{ CAL_MODE_LOCAL,                       "CalModeLocal",                    "local"   },
@@ -342,10 +345,11 @@ cal_mode_enum_get_type (void)
 			{ -1,                                   NULL,                              NULL      }
 		};
 
-		cal_mode_enum_type = g_enum_register_static ("CalModeEnum", values);
+		enum_type = g_enum_register_static ("CalModeEnum", values);
+		g_once_init_leave (&enum_type__volatile, enum_type);
 	}
 
-	return cal_mode_enum_type;
+	return enum_type__volatile;
 }
 
 static EDataCalObjType

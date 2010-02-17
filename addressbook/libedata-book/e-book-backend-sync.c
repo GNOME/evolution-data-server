@@ -12,6 +12,8 @@
 
 #include "e-book-backend-sync.h"
 
+G_DEFINE_TYPE (EBookBackendSync, e_book_backend_sync, E_TYPE_BOOK_BACKEND)
+
 struct _EBookBackendSyncPrivate {
   gint mumble;
 };
@@ -576,31 +578,4 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	backend_class->get_supported_auth_methods = _e_book_backend_get_supported_auth_methods;
 
 	object_class->dispose = e_book_backend_sync_dispose;
-}
-
-/**
- * e_book_backend_get_type:
- */
-GType
-e_book_backend_sync_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendSyncClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_sync_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendSync),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_sync_init
-		};
-
-		type = g_type_register_static (E_TYPE_BOOK_BACKEND, "EBookBackendSync", &info, 0);
-	}
-
-	return type;
 }

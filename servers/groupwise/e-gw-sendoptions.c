@@ -29,6 +29,8 @@
 #include "e-gw-sendoptions.h"
 #include "e-gw-message.h"
 
+G_DEFINE_TYPE (EGwSendOptions, e_gw_sendoptions, G_TYPE_OBJECT)
+
 struct _EGwSendOptionsPrivate {
 	EGwSendOptionsGeneral *gopts;
 	EGwSendOptionsStatusTracking *mopts;
@@ -39,10 +41,6 @@ struct _EGwSendOptionsPrivate {
 static GObjectClass *parent_class = NULL;
 
 static gboolean e_gw_sendoptions_store_settings (SoupSoapParameter *param, EGwSendOptions *opts);
-static void e_gw_sendoptions_init (GObject *object);
-static void e_gw_sendoptions_class_init (GObjectClass *klass);
-static void e_gw_sendoptions_dispose (GObject *object);
-static void e_gw_sendoptions_finalize (GObject *object);
 
 EGwSendOptionsGeneral*
 e_gw_sendoptions_get_general_options (EGwSendOptions *opts)
@@ -119,7 +117,7 @@ e_gw_sendoptions_finalize (GObject *object)
 }
 
 static void
-e_gw_sendoptions_class_init (GObjectClass *klass)
+e_gw_sendoptions_class_init (EGwSendOptionsClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
@@ -130,12 +128,9 @@ e_gw_sendoptions_class_init (GObjectClass *klass)
 }
 
 static void
-e_gw_sendoptions_init (GObject *object)
+e_gw_sendoptions_init (EGwSendOptions *opts)
 {
-	EGwSendOptions *opts;
 	EGwSendOptionsPrivate *priv;
-
-	opts = E_GW_SENDOPTIONS (object);
 
 	/* allocate internal structure */
 	priv = g_new0 (EGwSendOptionsPrivate, 1);
@@ -144,29 +139,6 @@ e_gw_sendoptions_init (GObject *object)
 	priv->copts = g_new0 (EGwSendOptionsStatusTracking, 1);
 	priv->topts = g_new0 (EGwSendOptionsStatusTracking, 1);
 	opts->priv = priv;
-}
-
-GType
-e_gw_sendoptions_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EGwSendOptionsClass),
-                        NULL,
-                        NULL,
-                        (GClassInitFunc) e_gw_sendoptions_class_init,
-                        NULL, NULL,
-                        sizeof (EGwSendOptions),
-                        0,
-                        (GInstanceInitFunc) e_gw_sendoptions_init,
-			NULL
-                };
-		type = g_type_register_static (G_TYPE_OBJECT, "EGwSendOptions", &info, 0);
-	}
-
-	return type;
 }
 
 static void

@@ -41,6 +41,8 @@
 
 #define d(x)
 
+G_DEFINE_TYPE (EContact, e_contact, E_TYPE_VCARD)
+
 struct _EContactPrivate {
 	gchar *cached_strings [E_CONTACT_FIELD_LAST];
 };
@@ -372,30 +374,6 @@ static void
 e_contact_init (EContact *ec)
 {
 	ec->priv = g_new0 (EContactPrivate, 1);
-}
-
-GType
-e_contact_get_type (void)
-{
-	static GType contact_type = 0;
-
-	if (!contact_type) {
-		static const GTypeInfo contact_info =  {
-			sizeof (EContactClass),
-			NULL,           /* base_init */
-			NULL,           /* base_finalize */
-			(GClassInitFunc) e_contact_class_init,
-			NULL,           /* class_finalize */
-			NULL,           /* class_data */
-			sizeof (EContact),
-			0,             /* n_preallocs */
-			(GInstanceInitFunc) e_contact_init,
-		};
-
-		contact_type = g_type_register_static (E_TYPE_VCARD, "EContact", &contact_info, 0);
-	}
-
-	return contact_type;
 }
 
 static EVCardAttribute*
@@ -1827,17 +1805,26 @@ e_contact_name_free (EContactName *name)
 	g_free (name);
 }
 
-GType
-e_contact_name_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id)
-		type_id = g_boxed_type_register_static ("EContactName",
-							(GBoxedCopyFunc) e_contact_name_copy,
-							(GBoxedFreeFunc) e_contact_name_free);
-	return type_id;
+#define E_CONTACT_DEFINE_BOXED_TYPE(_tp,_nm)				\
+	GType								\
+	_tp ## _get_type (void)						\
+	{								\
+		static volatile gsize type_id__volatile = 0;		\
+									\
+		if (g_once_init_enter (&type_id__volatile)) {		\
+			GType type_id;					\
+									\
+			type_id = g_boxed_type_register_static (_nm,	\
+				(GBoxedCopyFunc) _tp ## _copy,		\
+				(GBoxedFreeFunc) _tp ## _free);		\
+									\
+			g_once_init_leave (&type_id__volatile, type_id);\
+	}								\
+									\
+	return type_id__volatile;					\
 }
+
+E_CONTACT_DEFINE_BOXED_TYPE (e_contact_name, "EContactName")
 
 /**
  * e_contact_date_from_string:
@@ -1948,17 +1935,7 @@ e_contact_date_free (EContactDate *date)
 	g_free (date);
 }
 
-GType
-e_contact_date_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id)
-		type_id = g_boxed_type_register_static ("EContactDate",
-							(GBoxedCopyFunc) e_contact_date_copy,
-							(GBoxedFreeFunc) e_contact_date_free);
-	return type_id;
-}
+E_CONTACT_DEFINE_BOXED_TYPE (e_contact_date, "EContactDate")
 
 /**
  * e_contact_date_new:
@@ -2032,17 +2009,7 @@ e_contact_photo_copy (EContactPhoto *photo)
 	return photo2;
 }
 
-GType
-e_contact_photo_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id)
-		type_id = g_boxed_type_register_static ("EContactPhoto",
-							(GBoxedCopyFunc) e_contact_photo_copy,
-							(GBoxedFreeFunc) e_contact_photo_free);
-	return type_id;
-}
+E_CONTACT_DEFINE_BOXED_TYPE (e_contact_photo, "EContactPhoto")
 
 /**
  * e_contact_geo_free:
@@ -2066,17 +2033,7 @@ e_contact_geo_copy (EContactGeo *geo)
 	return geo2;
 }
 
-GType
-e_contact_geo_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id)
-		type_id = g_boxed_type_register_static ("EContactGeo",
-							(GBoxedCopyFunc) e_contact_geo_copy,
-							(GBoxedFreeFunc) e_contact_geo_free);
-	return type_id;
-}
+E_CONTACT_DEFINE_BOXED_TYPE (e_contact_geo, "EContactGeo")
 
 /**
  * e_contact_address_free:
@@ -2119,17 +2076,7 @@ e_contact_address_copy (EContactAddress *address)
 	return address2;
 }
 
-GType
-e_contact_address_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id)
-		type_id = g_boxed_type_register_static ("EContactAddress",
-							(GBoxedCopyFunc) e_contact_address_copy,
-							(GBoxedFreeFunc) e_contact_address_free);
-	return type_id;
-}
+E_CONTACT_DEFINE_BOXED_TYPE (e_contact_address, "EContactAddress")
 
 /**
  * e_contact_cert_free:
@@ -2158,14 +2105,4 @@ e_contact_cert_copy (EContactCert *cert)
 	return cert2;
 }
 
-GType
-e_contact_cert_get_type (void)
-{
-	static GType type_id = 0;
-
-	if (!type_id)
-		type_id = g_boxed_type_register_static ("EContactCert",
-							(GBoxedCopyFunc) e_contact_cert_copy,
-							(GBoxedFreeFunc) e_contact_cert_free);
-	return type_id;
-}
+E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")

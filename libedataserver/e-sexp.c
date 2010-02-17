@@ -98,6 +98,10 @@
 #define r(x)			/* run debug */
 #define d(x)			/* general debug */
 
+#ifdef E_SEXP_IS_G_OBJECT
+G_DEFINE_TYPE (ESExp, e_sexp, G_TYPE_OBJECT)
+#endif
+
 static struct _ESExpTerm * parse_list(ESExp *f, gint gotbrace);
 static struct _ESExpTerm * parse_value(ESExp *f);
 
@@ -1136,32 +1140,6 @@ e_sexp_init (ESExp *s)
 	s->refcount = 1;
 #endif
 }
-
-#ifdef E_SEXP_IS_G_OBJECT
-GType
-e_sexp_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static const GTypeInfo info = {
-			sizeof (ESExpClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc) e_sexp_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (ESExp),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_sexp_init,
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "ESExp", &info, 0);
-	}
-
-	return type;
-}
-#endif
 
 ESExp *
 e_sexp_new (void)

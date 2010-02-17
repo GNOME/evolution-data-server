@@ -23,6 +23,8 @@
 
 #include <string.h>
 
+G_DEFINE_TYPE (EWeatherSource, e_weather_source, G_TYPE_OBJECT)
+
 void
 e_weather_source_parse (EWeatherSource *source, EWeatherSourceFinished done, gpointer data)
 {
@@ -42,28 +44,6 @@ static void
 e_weather_source_init (EWeatherSource *source)
 {
 	/* nothing to do here */
-}
-
-GType
-e_weather_source_get_type (void)
-{
-	static GType e_weather_source_type = 0;
-
-	if (!e_weather_source_type) {
-		static GTypeInfo info = {
-			sizeof (EWeatherSourceClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) e_weather_source_class_init,
-			NULL, NULL,
-			sizeof (EWeatherSource),
-			0,
-			(GInstanceInitFunc) e_weather_source_init
-		};
-		e_weather_source_type = g_type_register_static (G_TYPE_OBJECT, "EWeatherSource", &info, 0);
-	}
-
-	return e_weather_source_type;
 }
 
 EWeatherSource*	e_weather_source_new (const gchar *uri)

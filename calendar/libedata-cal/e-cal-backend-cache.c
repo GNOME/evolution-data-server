@@ -29,6 +29,8 @@
 #include <libecal/e-cal-util.h>
 #include "e-cal-backend-cache.h"
 
+G_DEFINE_TYPE (ECalBackendCache, e_cal_backend_cache, E_TYPE_FILE_CACHE)
+
 struct _ECalBackendCachePrivate {
 	gchar *uri;
 	ECalSourceType source_type;
@@ -244,42 +246,6 @@ e_cal_backend_cache_init (ECalBackendCache *cache)
 
 	cache->priv = priv;
 
-}
-
-/**
- * e_cal_backend_cache_get_type:
- * @void:
- *
- * Registers the #ECalBackendCache class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendCache class.
- **/
-GType
-e_cal_backend_cache_get_type (void)
-{
-	static GType type = 0;
-	static GStaticMutex registering = G_STATIC_MUTEX_INIT;
-
-	g_static_mutex_lock (&registering);
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendCacheClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_cache_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendCache),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_cache_init,
-                };
-		/* Check if the type is already registered */
-		if (!(type = g_type_from_name ("ECalBackendCache")))
-			type = g_type_register_static (E_TYPE_FILE_CACHE, "ECalBackendCache", &info, 0);
-	}
-	g_static_mutex_unlock (&registering);
-
-	return type;
 }
 
 /**

@@ -28,6 +28,8 @@
 #include "e-gw-filter.h"
 #include "e-gw-message.h"
 
+G_DEFINE_TYPE (EGwFilter, e_gw_filter, G_TYPE_OBJECT)
+
 static GObjectClass *parent_class = NULL;
 
 struct _FilterComponent {
@@ -232,7 +234,7 @@ e_gw_filter_dispose (GObject *object)
 }
 
 static void
-e_gw_filter_init (EGwFilter *filter, EGwFilterClass *klass)
+e_gw_filter_init (EGwFilter *filter)
 {
 	EGwFilterPrivate *priv;
 
@@ -250,28 +252,6 @@ e_gw_filter_class_init (EGwFilterClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 	object_class->dispose = e_gw_filter_dispose;
 	object_class->finalize = e_gw_filter_finalize;
-}
-
-GType
-e_gw_filter_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-			sizeof (EGwFilterClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) e_gw_filter_class_init,
-			NULL, NULL,
-			sizeof (EGwFilter),
-			0,
-			(GInstanceInitFunc) e_gw_filter_init
-		};
-		type = g_type_register_static (G_TYPE_OBJECT, "EGwFilter", &info, 0);
-	}
-
-	return type;
 }
 
 EGwFilter *

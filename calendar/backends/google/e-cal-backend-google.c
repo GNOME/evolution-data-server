@@ -56,6 +56,8 @@
 #define O_BINARY 0
 #endif
 
+G_DEFINE_TYPE (ECalBackendGoogle, e_cal_backend_google, E_TYPE_CAL_BACKEND_SYNC)
+
 static ECalBackendGoogleClass *parent_class = NULL;
 struct _ECalBackendGooglePrivate {
 	ECalBackendCache *cache;
@@ -1274,7 +1276,7 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 
 /* Object initialisation function for google backend */
 static void
-e_cal_backend_google_init (ECalBackendGoogle *cbgo, ECalBackendGoogleClass *class)
+e_cal_backend_google_init (ECalBackendGoogle *cbgo)
 {
 	ECalBackendGooglePrivate *priv;
 
@@ -1346,35 +1348,6 @@ e_cal_backend_google_class_init (ECalBackendGoogleClass *class)
 	backend_class->get_mode = e_cal_backend_google_get_mode;
 	backend_class->set_mode = e_cal_backend_google_set_mode;
 	backend_class->internal_get_default_timezone = e_cal_backend_google_internal_get_default_timezone;
-}
-
-/**
- * e_cal_backend_google_get_type:
- * @void:
- * Registers the #ECalBackendGoogle class if necessary and returns the type ID
- * associated with it
- * Return value: The type id of the #ECalBackendGoogle class.
- **/
-GType
-e_cal_backend_google_get_type (void)
-{
-	static	GType e_cal_backend_google_type = 0;
-
-	if (!e_cal_backend_google_type) {
-		static GTypeInfo info = {
-			sizeof (ECalBackendGoogleClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) e_cal_backend_google_class_init,
-			NULL, NULL,
-			sizeof (ECalBackendGoogle),
-			0,
-			(GInstanceInitFunc) e_cal_backend_google_init
-		};
-		e_cal_backend_google_type = g_type_register_static (E_TYPE_CAL_BACKEND_SYNC,
-				"ECalBackendGoogle", &info, 0);
-	}
-	return e_cal_backend_google_type;
 }
 
 /***************************************** Helper Functions ****************************************************/

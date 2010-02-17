@@ -28,6 +28,8 @@
 #include "e-gw-container.h"
 #include "e-gw-message.h"
 
+G_DEFINE_TYPE (EGwContainer, e_gw_container, G_TYPE_OBJECT)
+
 struct _EGwContainerPrivate {
 	gchar *name;
 	gchar *id;
@@ -137,7 +139,7 @@ e_gw_container_class_init (EGwContainerClass *klass)
 }
 
 static void
-e_gw_container_init (EGwContainer *container, EGwContainerClass *klass)
+e_gw_container_init (EGwContainer *container)
 {
 	EGwContainerPrivate *priv;
 
@@ -146,28 +148,6 @@ e_gw_container_init (EGwContainer *container, EGwContainerClass *klass)
 	priv->is_writable = TRUE;
 	priv->is_frequent_contacts = FALSE;
 	container->priv = priv;
-}
-
-GType
-e_gw_container_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EGwContainerClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_gw_container_class_init,
-                        NULL, NULL,
-                        sizeof (EGwContainer),
-                        0,
-                        (GInstanceInitFunc) e_gw_container_init
-                };
-		type = g_type_register_static (G_TYPE_OBJECT, "EGwContainer", &info, 0);
-	}
-
-	return type;
 }
 
 EGwContainer *

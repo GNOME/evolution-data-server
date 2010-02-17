@@ -15,10 +15,12 @@
 
 #include "e-cal-backend-loader-factory.h"
 
+G_DEFINE_TYPE (ECalBackendLoaderFactory, e_cal_backend_loader_factory, E_TYPE_CAL_BACKEND_FACTORY)
+
 static GObjectClass *parent_class = NULL;
 
 static void
-e_cal_backend_loader_factory_instance_init (ECalBackendLoaderFactory *factory)
+e_cal_backend_loader_factory_init (ECalBackendLoaderFactory *factory)
 {
 }
 
@@ -32,28 +34,3 @@ e_cal_backend_loader_factory_class_init (ECalBackendLoaderFactoryClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 
 }
-
-GType
-e_cal_backend_loader_factory_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (ECalBackendLoaderFactoryClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_cal_backend_loader_factory_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (ECalBackend),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_cal_backend_loader_factory_instance_init
-		};
-
-		type = g_type_register_static (E_TYPE_CAL_BACKEND_FACTORY, "ECalBackendLoaderFactory", &info, 0);
-	}
-
-	return type;
-}
-

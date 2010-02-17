@@ -34,6 +34,8 @@
 
 #define WEATHER_UID_EXT "-weather"
 
+G_DEFINE_TYPE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYNC)
+
 static gboolean reload_cb (ECalBackendWeather *cbw);
 static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
 static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast);
@@ -910,7 +912,7 @@ e_cal_backend_weather_finalize (GObject *object)
 
 /* Object initialization function for the weather backend */
 static void
-e_cal_backend_weather_init (ECalBackendWeather *cbw, ECalBackendWeatherClass *class)
+e_cal_backend_weather_init (ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv;
 
@@ -971,35 +973,4 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 
 	backend_class->internal_get_default_timezone = e_cal_backend_weather_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_weather_internal_get_timezone;
-}
-
-/**
- * e_cal_backend_weather_get_type:
- * @void:
- *
- * Registers the #ECalBackendWeather class if necessary, and returns
- * the type ID associated to it.
- *
- * Return value: The type ID of the #ECalBackendWeather class.
- **/
-GType
-e_cal_backend_weather_get_type (void)
-{
-	static GType e_cal_backend_weather_type = 0;
-
-	if (!e_cal_backend_weather_type) {
-		static GTypeInfo info = {
-			sizeof (ECalBackendWeatherClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) e_cal_backend_weather_class_init,
-			NULL, NULL,
-			sizeof (ECalBackendWeather),
-			0,
-			(GInstanceInitFunc) e_cal_backend_weather_init
-		};
-		e_cal_backend_weather_type = g_type_register_static (E_TYPE_CAL_BACKEND_SYNC, "ECalBackendWeather", &info, 0);
-	}
-
-	return e_cal_backend_weather_type;
 }

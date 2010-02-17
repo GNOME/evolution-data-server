@@ -23,63 +23,16 @@
 
 #include <libebackend/e-data-server-module.h>
 #include <libedata-book/e-book-backend-factory.h>
-#include "e-book-backend-google-factory.h"
 #include "e-book-backend-google.h"
 
-static GType google_type;
+E_BOOK_BACKEND_FACTORY_SIMPLE (google, Google, e_book_backend_google_new)
 
-static void
-e_book_backend_google_factory_instance_init (EBookBackendGoogleFactory *factory)
-{
-}
-
-static const gchar *
-_get_protocol (EBookBackendFactory *factory)
-{
-    return "google";
-}
-
-static EBookBackend*
-_new_backend (EBookBackendFactory *factory)
-{
-    return e_book_backend_google_new ();
-}
-
-static void
-e_book_backend_google_factory_class_init (EBookBackendGoogleFactoryClass *klass)
-{
-  E_BOOK_BACKEND_FACTORY_CLASS (klass)->get_protocol = _get_protocol;
-  E_BOOK_BACKEND_FACTORY_CLASS (klass)->new_backend = _new_backend;
-}
-
-GType
-e_book_backend_google_factory_get_type (GTypeModule *module)
-{
-    static GType  type = 0;
-
-    if (!type) {
-        GTypeInfo info = {
-            sizeof (EBookBackendGoogleFactoryClass),
-            NULL, /* base_class_init */
-            NULL, /* base_class_finalize */
-            (GClassInitFunc)  e_book_backend_google_factory_class_init,
-            NULL, /* class_finalize */
-            NULL, /* class_data */
-            sizeof (EBookBackend),
-            0,    /* n_preallocs */
-            (GInstanceInitFunc) e_book_backend_google_factory_instance_init
-        };
-
-        type = g_type_module_register_type (module, E_TYPE_BOOK_BACKEND_FACTORY,
-                                            "EBookBackendGoogleFactory", &info, 0);
-    }
-    return type;
-}
+GType google_type;
 
 void
 eds_module_initialize (GTypeModule *module)
 {
-    google_type = e_book_backend_google_factory_get_type (module);
+    google_type = _google_factory_get_type (module);
 }
 
 void

@@ -43,6 +43,8 @@
 
 #include "libedataserver/e-source-list.h"
 
+G_DEFINE_TYPE (ECalBackendContacts, e_cal_backend_contacts, E_TYPE_CAL_BACKEND_SYNC)
+
 static ECalBackendSyncClass *parent_class;
 
 typedef enum
@@ -1241,7 +1243,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 
 /* Object initialization function for the contacts backend */
 static void
-e_cal_backend_contacts_init (ECalBackendContacts *cbc, ECalBackendContactsClass *class)
+e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 {
 	ECalBackendContactsPrivate *priv;
 
@@ -1324,36 +1326,4 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 
 	backend_class->internal_get_default_timezone = e_cal_backend_contacts_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_contacts_internal_get_timezone;
-}
-
-/**
- * e_cal_backend_contacts_get_type:
- * @void:
- *
- * Registers the #ECalBackendContacts class if necessary, and returns
- * the type ID associated to it.
- *
- * Return value: The type ID of the #ECalBackendContacts class.
- **/
-GType
-e_cal_backend_contacts_get_type (void)
-{
-	static GType e_cal_backend_contacts_type = 0;
-
-	if (!e_cal_backend_contacts_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendContactsClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_contacts_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendContacts),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_contacts_init
-                };
-		e_cal_backend_contacts_type = g_type_register_static (E_TYPE_CAL_BACKEND_SYNC,
-                                                                     "ECalBackendContacts", &info, 0);
-	}
-
-	return e_cal_backend_contacts_type;
 }

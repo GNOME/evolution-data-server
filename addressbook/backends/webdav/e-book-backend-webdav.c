@@ -55,6 +55,8 @@
 #define USERAGENT             "Evolution/" VERSION
 #define WEBDAV_CLOSURE_NAME   "EBookBackendWebdav.BookView::closure"
 
+G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
+
 static EBookBackendClass *parent_class;
 
 struct _EBookBackendWebdavPrivate {
@@ -1166,27 +1168,3 @@ e_book_backend_webdav_init(EBookBackendWebdav *backend)
 			E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavPrivate);
 }
 
-GType
-e_book_backend_webdav_get_type(void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof(EBookBackendWebdavClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_webdav_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof(EBookBackendWebdav),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_webdav_init
-		};
-
-		type = g_type_register_static(E_TYPE_BOOK_BACKEND, "EBookBackendWebdav",
-				&info, 0);
-	}
-
-	return type;
-}

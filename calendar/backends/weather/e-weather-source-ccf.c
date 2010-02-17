@@ -54,6 +54,8 @@
 #define strtok_r(s,sep,lasts) (*(lasts)=strtok((s),(sep)))
 #endif
 
+G_DEFINE_TYPE (EWeatherSourceCCF, e_weather_source_ccf, E_TYPE_WEATHER_SOURCE)
+
 struct search_struct
 {
 	const gchar *code;
@@ -455,26 +457,4 @@ e_weather_source_ccf_init (EWeatherSourceCCF *source)
 {
 	source->location = NULL;
 	source->info = NULL;
-}
-
-GType
-e_weather_source_ccf_get_type (void)
-{
-	static GType e_weather_source_ccf_type = 0;
-
-	if (!e_weather_source_ccf_type) {
-		static GTypeInfo info = {
-			sizeof (EWeatherSourceCCFClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) e_weather_source_ccf_class_init,
-			NULL, NULL,
-			sizeof (EWeatherSourceCCF),
-			0,
-			(GInstanceInitFunc) e_weather_source_ccf_init
-		};
-		e_weather_source_ccf_type = g_type_register_static (E_TYPE_WEATHER_SOURCE, "EWeatherSourceCCF", &info, 0);
-	}
-
-	return e_weather_source_ccf_type;
 }

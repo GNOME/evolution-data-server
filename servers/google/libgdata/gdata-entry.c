@@ -35,6 +35,8 @@
 
 #define GDATA_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_ENTRY, GDataEntryPrivate))
 
+G_DEFINE_TYPE (GDataEntry, gdata_entry, G_TYPE_OBJECT)
+
 struct _GDataEntryPrivate {
 	GSList *authors;
 	GSList *categories;
@@ -172,11 +174,10 @@ static void destroy_postal_address (gpointer data, gpointer user_data)
 	g_free (address);
 }
 
-static void gdata_entry_init (GTypeInstance *instance,
-		gpointer      g_class)
+static void gdata_entry_init (GDataEntry *instance)
 {
+	GDataEntry *self = instance;
 	GDataEntryPrivate *priv;
-	GDataEntry *self = (GDataEntry *)instance;
 
 	/* Private data set by g_type_class_add_private */
 	priv = GDATA_ENTRY_GET_PRIVATE(self);
@@ -290,38 +291,15 @@ static void gdata_entry_set_property (GObject *obj,
 	priv = GDATA_ENTRY_GET_PRIVATE(self);
 }
 
-static void gdata_entry_class_init (gpointer g_class,
-		gpointer g_class_data)
+static void gdata_entry_class_init (GDataEntryClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS(g_class);
-	GDataEntryClass *klass = GDATA_ENTRY_CLASS(g_class);
+	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 
 	g_type_class_add_private(klass, sizeof (GDataEntryPrivate));
 	gobject_class->set_property = gdata_entry_set_property;
 	gobject_class->get_property = gdata_entry_get_property;
 	gobject_class->dispose  = gdata_entry_dispose;
 	gobject_class->finalize = gdata_entry_finalize;
-}
-
-GType gdata_entry_get_type (void)
-{
-	static GType type = 0;
-	if (type == 0) {
-		static const GTypeInfo info = {
-			sizeof (GDataEntryClass),
-			NULL, /* base init */
-			NULL, /* base finalize */
-			gdata_entry_class_init, /* class init */
-			NULL, /* class finalize */
-			NULL, /* class data */
-			sizeof (GDataEntry),
-			0, /* n_preallocs */
-			gdata_entry_init /* instance init */
-		};
-		type = g_type_register_static(G_TYPE_OBJECT,"GDataEntryType", &info,0);
-	}
-
-	return type;
 }
 
 /*** API ***/

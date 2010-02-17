@@ -39,6 +39,8 @@
 #include <libsoup/soup.h>
 #include "e-cal-backend-http.h"
 
+G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_BACKEND_SYNC)
+
 
 
 /* Private part of the ECalBackendHttp structure */
@@ -1322,7 +1324,7 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const gchar *tzi
 
 /* Object initialization function for the file backend */
 static void
-e_cal_backend_http_init (ECalBackendHttp *cbhttp, ECalBackendHttpClass *class)
+e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 
@@ -1382,36 +1384,4 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 
 	backend_class->internal_get_default_timezone = e_cal_backend_http_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_http_internal_get_timezone;
-}
-
-/**
- * e_cal_backend_http_get_type:
- * @void:
- *
- * Registers the #ECalBackendHttp class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendHttp class.
- **/
-GType
-e_cal_backend_http_get_type (void)
-{
-	static GType e_cal_backend_http_type = 0;
-
-	if (!e_cal_backend_http_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendHttpClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_http_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendHttp),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_http_init
-                };
-		e_cal_backend_http_type = g_type_register_static (E_TYPE_CAL_BACKEND_SYNC,
-								  "ECalBackendHttp", &info, 0);
-	}
-
-	return e_cal_backend_http_type;
 }

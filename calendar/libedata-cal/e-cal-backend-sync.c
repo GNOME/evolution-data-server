@@ -13,6 +13,8 @@
 #include "e-cal-backend-sync.h"
 #include <libical/icaltz-util.h>
 
+G_DEFINE_TYPE (ECalBackendSync, e_cal_backend_sync, E_TYPE_CAL_BACKEND)
+
 struct _ECalBackendSyncPrivate {
 	GMutex *sync_mutex;
 
@@ -1174,35 +1176,4 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->internal_get_timezone = _e_cal_backend_internal_get_timezone;
 
 	object_class->dispose = e_cal_backend_sync_dispose;
-}
-
-/**
- * e_cal_backend_get_type:
- *
- * Registers the ECalBackendSync class if needed.
- *
- * Return value: The ID of the ECalBackendSync class.
- */
-GType
-e_cal_backend_sync_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (ECalBackendSyncClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_cal_backend_sync_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (ECalBackendSync),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_cal_backend_sync_init
-		};
-
-		type = g_type_register_static (E_TYPE_CAL_BACKEND, "ECalBackendSync", &info, 0);
-	}
-
-	return type;
 }

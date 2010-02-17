@@ -48,6 +48,8 @@
 
 #define d(x)
 
+G_DEFINE_TYPE (EDestination, e_destination, G_TYPE_OBJECT)
+
 struct _EDestinationPrivate {
 	gchar *raw;
 
@@ -155,30 +157,6 @@ e_destination_init (EDestination *dest)
 
 	dest->priv->auto_recipient = FALSE;
 	dest->priv->ignored = FALSE;
-}
-
-GType
-e_destination_get_type (void)
-{
-	static GType dest_type = 0;
-
-	if (!dest_type) {
-		GTypeInfo dest_info = {
-			sizeof (EDestinationClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_destination_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EDestination),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_destination_init
-		};
-
-		dest_type = g_type_register_static (G_TYPE_OBJECT, "EDestination", &dest_info, 0);
-	}
-
-	return dest_type;
 }
 
 /**

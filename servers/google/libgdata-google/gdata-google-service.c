@@ -31,6 +31,11 @@
 
 #define GDATA_GOOGLE_SERVICE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_GOOGLE_SERVICE, GDataGoogleServicePrivate))
 
+static void gdata_google_service_iface_init (GDataServiceIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (GDataGoogleService, gdata_google_service, G_TYPE_OBJECT, 0,
+	G_IMPLEMENT_INTERFACE (GDATA_TYPE_SERVICE, gdata_google_service_iface_init))
+
 static GDataEntry * gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *entry, const gchar *edit_link, GError **error);
 static GDataEntry * gdata_google_service_insert_entry (GDataService *service, const gchar *feed_url, GDataEntry *entry, GError **error);
 static gboolean     gdata_google_service_delete_entry (GDataService *service, GDataEntry *entry, GError **error);
@@ -424,10 +429,9 @@ gdata_google_service_update_entry_with_link (GDataService *service, GDataEntry *
 	return updated_entry;
 }
 
-static void gdata_google_service_iface_init(gpointer  g_iface, gpointer iface_data)
+static void
+gdata_google_service_iface_init (GDataServiceIface *iface)
 {
-	GDataServiceIface *iface = (GDataServiceIface *)g_iface;
-
 	iface->set_proxy = gdata_google_service_set_proxy;
 	iface->set_credentials = gdata_google_service_set_credentials;
 	iface->get_feed = gdata_google_service_get_feed;
@@ -438,11 +442,11 @@ static void gdata_google_service_iface_init(gpointer  g_iface, gpointer iface_da
 	return;
 }
 
-static void gdata_google_service_instance_init(GTypeInstance *instance,
-		gpointer      g_class)
+static void
+gdata_google_service_init (GDataGoogleService *instance)
 {
 	GDataGoogleServicePrivate *priv;
-	GDataGoogleService *self = (GDataGoogleService *)instance;
+	GDataGoogleService *self = instance;
 
 	/* Private data set by g_type_class_add_private */
 	priv = GDATA_GOOGLE_SERVICE_GET_PRIVATE(self);
@@ -569,11 +573,9 @@ static void gdata_google_service_set_property (GObject *obj,
 	}
 }
 
-static void gdata_google_service_class_init(gpointer g_class,
-		gpointer g_class_data)
+static void gdata_google_service_class_init (GDataGoogleServiceClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS(g_class);
-	GDataGoogleServiceClass *klass = GDATA_GOOGLE_SERVICE_CLASS(g_class);
+	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 
 	g_type_class_add_private(klass, sizeof (GDataGoogleServicePrivate));
 
@@ -603,44 +605,6 @@ static void gdata_google_service_class_init(gpointer g_class,
 				G_PARAM_STATIC_BLURB));
 
 	return;
-}
-
-GType  gdata_google_service_get_type (void)
-{
-	static GType type = 0;
-
-	if (G_UNLIKELY(type == 0))
-	{
-		static const GTypeInfo info =
-		{
-			sizeof (GDataGoogleServiceClass),
-			NULL,   /* base_init */
-			NULL,   /* base_finalize */
-			(GClassInitFunc) gdata_google_service_class_init, /* class_init */
-			NULL,   /* class_finalize */
-			NULL,   /* class_data */
-			sizeof (GDataGoogleService),
-			0,      /* n_preallocs */
-			gdata_google_service_instance_init    /* instance_init */
-		};
-
-		static const GInterfaceInfo gdata_google_service_iface_info =
-		{
-			(GInterfaceInitFunc) gdata_google_service_iface_init, /* interface_init */
-			NULL,         /* interface_finalize */
-			NULL          /* interface_data */
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT,
-				"GDataGoogleServiceType",
-				&info, 0);
-
-		g_type_add_interface_static (type, GDATA_TYPE_SERVICE,
-				&gdata_google_service_iface_info);
-
-	}
-
-	return type;
 }
 
 /*********API******* */

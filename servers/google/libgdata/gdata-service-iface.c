@@ -87,10 +87,9 @@ gdata_service_base_init (gpointer g_class)
 GType
 gdata_service_get_type (void)
 {
-	static GType type = 0;
+        static volatile gsize define_type_id__volatile = 0;
 
-	if (G_UNLIKELY(type == 0))
-	{
+	if (g_once_init_enter (&define_type_id__volatile)) {
 		static const GTypeInfo info =
 		{
 			sizeof (GDataServiceIface),
@@ -103,10 +102,12 @@ gdata_service_get_type (void)
 			0,      /* n_preallocs */
 			NULL    /* instance_init */
 		};
-		type = g_type_register_static (G_TYPE_INTERFACE,
-				"GDataService", &info, 0);
-		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT );
+		GType type = g_type_register_static (G_TYPE_INTERFACE, "GDataService", &info, 0);
+
+		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
+
+		g_once_init_leave (&define_type_id__volatile, type);
 	}
 
-	return type;
+	return define_type_id__volatile;
 }

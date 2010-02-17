@@ -36,6 +36,8 @@
 
 #define GDATA_FEED_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_FEED, GDataFeedPrivate))
 
+G_DEFINE_TYPE (GDataFeed, gdata_feed, G_TYPE_OBJECT)
+
 struct _GDataFeedAuthor {
 	gchar *email;
 	gchar *name;
@@ -149,12 +151,10 @@ static void destroy_entries(gpointer data, gpointer user_data)
 }
 
 static void
-gdata_feed_init(GTypeInstance *instance,
-		gpointer      g_class)
+gdata_feed_init (GDataFeed *instance)
 {
+	GDataFeed *self = instance;
 	GDataFeedPrivate *priv;
-
-	GDataFeed *self = (GDataFeed *)instance;
 
 	/* Private data set by g_type_class_add_private */
 	priv = GDATA_FEED_GET_PRIVATE(self);
@@ -294,11 +294,9 @@ static GObject * gdata_feed_constructor(GType type,
 }
 
 static void
-gdata_feed_class_init(gpointer g_class,
-		gpointer g_class_data)
+gdata_feed_class_init (GDataFeedClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS(g_class);
-	GDataFeedClass *klass = GDATA_FEED_CLASS(g_class);
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
 	g_type_class_add_private(klass, sizeof (GDataFeedPrivate));
 
@@ -308,27 +306,6 @@ gdata_feed_class_init(gpointer g_class,
 	gobject_class->dispose     = gdata_feed_dispose;
 	gobject_class->finalize    = gdata_feed_finalize;
 	gobject_class->constructor = gdata_feed_constructor;
-
-}
-
-GType gdata_feed_get_type(void)
-{
-  static GType type = 0;
-  if (type == 0) {
-    static const GTypeInfo info = {
-      sizeof (GDataFeedClass),
-      NULL, /* base init */
-      NULL, /* base finalize */
-      gdata_feed_class_init, /* class init */
-      NULL, /* class finalize */
-      NULL, /* class data */
-      sizeof (GDataFeed),
-      0, /* n_preallocs */
-      gdata_feed_init /* instance init */
-    };
-    type = g_type_register_static(G_TYPE_OBJECT,"GDataFeedType", &info,0);
-  }
-  return type;
 }
 
 /*** API ***/

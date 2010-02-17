@@ -41,6 +41,8 @@
 /* Soup session proxy-uri property */
 #define SOUP_SESSION_PROXY_URI "proxy-uri"
 
+G_DEFINE_TYPE (EGwConnection, e_gw_connection, G_TYPE_OBJECT)
+
 static GObjectClass *parent_class = NULL;
 static GHashTable *loaded_connections_permissions = NULL;
 
@@ -422,7 +424,7 @@ e_gw_connection_class_init (EGwConnectionClass *klass)
 }
 
 static void
-e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
+e_gw_connection_init (EGwConnection *cnc)
 {
 	EGwConnectionPrivate *priv;
 	guint timeout = GW_SOUP_SESSION_TIMEOUT;
@@ -463,28 +465,6 @@ e_gw_connection_init (EGwConnection *cnc, EGwConnectionClass *klass)
 		}
 	}
 	*/
-}
-
-GType
-e_gw_connection_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EGwConnectionClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_gw_connection_class_init,
-                        NULL, NULL,
-                        sizeof (EGwConnection),
-                        0,
-                        (GInstanceInitFunc) e_gw_connection_init
-                };
-		type = g_type_register_static (G_TYPE_OBJECT, "EGwConnection", &info, 0);
-	}
-
-	return type;
 }
 
 static SoupSoapMessage*

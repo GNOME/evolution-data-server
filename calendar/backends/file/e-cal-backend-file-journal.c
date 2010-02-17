@@ -20,48 +20,16 @@
 
 #include "e-cal-backend-file-journal.h"
 
+G_DEFINE_TYPE (ECalBackendFileJournal, e_cal_backend_file_journal, E_TYPE_CAL_BACKEND_FILE)
+
 struct _ECalBackendFileJournalPrivate {
 	guint reserved;
 };
 
-static void e_cal_backend_file_journal_class_init (ECalBackendFileJournalClass *class);
-static void e_cal_backend_file_journal_init (ECalBackendFileJournal *cbfile, ECalBackendFileJournalClass *class);
 static void e_cal_backend_file_journal_dispose (GObject *object);
 static void e_cal_backend_file_journal_finalize (GObject *object);
 
 static ECalBackendFileClass *parent_class;
-
-/**
- * e_cal_backend_file_journal_get_type:
- * @void:
- *
- * Registers the #ECalBackendFileJournal class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendFileJournal class.
- **/
-GType
-e_cal_backend_file_journal_get_type (void)
-{
-	static GType e_cal_backend_file_journal_type = 0;
-
-	if (!e_cal_backend_file_journal_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendFileJournalClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_file_journal_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendFileJournal),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_file_journal_init
-                };
-		e_cal_backend_file_journal_type = g_type_register_static (E_TYPE_CAL_BACKEND_FILE,
-									  "ECalBackendFileJournal", &info, 0);
-	}
-
-	return e_cal_backend_file_journal_type;
-}
 
 /* Class initialization function for the journal file backend */
 static void
@@ -81,7 +49,7 @@ e_cal_backend_file_journal_class_init (ECalBackendFileJournalClass *klass)
 
 /* Object initialization function for the journal file backend */
 static void
-e_cal_backend_file_journal_init (ECalBackendFileJournal *cbfile, ECalBackendFileJournalClass *klass)
+e_cal_backend_file_journal_init (ECalBackendFileJournal *cbfile)
 {
 	ECalBackendFileJournalPrivate *priv;
 

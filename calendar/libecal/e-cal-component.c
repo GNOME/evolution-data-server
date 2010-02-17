@@ -34,6 +34,8 @@
 #define getppid() 0
 #endif
 
+G_DEFINE_TYPE (ECalComponent, e_cal_component, G_TYPE_OBJECT)
+
 /* Extension property for alarm components so that we can reference them by UID */
 #define EVOLUTION_ALARM_UID_PROPERTY "X-EVOLUTION-ALARM-UID"
 
@@ -190,43 +192,11 @@ struct _ECalComponentAlarm {
 
 
 
-static void e_cal_component_class_init (ECalComponentClass *klass);
-static void e_cal_component_init (ECalComponent *comp, ECalComponentClass *klass);
 static void e_cal_component_finalize (GObject *object);
 
 static GObjectClass *parent_class;
 
 
-
-/**
- * e_cal_component_get_type:
- *
- * Registers the #ECalComponent class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalComponent class.
- **/
-GType
-e_cal_component_get_type (void)
-{
-	static GType e_cal_component_type = 0;
-
-	if (!e_cal_component_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalComponentClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_component_class_init,
-                        NULL, NULL,
-                        sizeof (ECalComponent),
-                        0,
-                        (GInstanceInitFunc) e_cal_component_init
-                };
-		e_cal_component_type = g_type_register_static (G_TYPE_OBJECT, "ECalComponent", &info, 0);
-	}
-
-	return e_cal_component_type;
-}
 
 /* Class initialization function for the calendar component object */
 static void
@@ -243,7 +213,7 @@ e_cal_component_class_init (ECalComponentClass *klass)
 
 /* Object initialization function for the calendar component object */
 static void
-e_cal_component_init (ECalComponent *comp, ECalComponentClass *klass)
+e_cal_component_init (ECalComponent *comp)
 {
 	ECalComponentPrivate *priv;
 

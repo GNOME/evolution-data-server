@@ -45,6 +45,8 @@
 #define O_BINARY 0
 #endif
 
+G_DEFINE_TYPE (ECalBackendFile, e_cal_backend_file, E_TYPE_CAL_BACKEND_SYNC)
+
 /* Placeholder for each component and its recurrences */
 typedef struct {
 	ECalComponent *full_object;
@@ -3118,38 +3120,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	backend_class->internal_get_default_timezone = e_cal_backend_file_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_file_internal_get_timezone;
-}
-
-/**
- * e_cal_backend_file_get_type:
- * @void:
- *
- * Registers the #ECalBackendFile class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendFile class.
- **/
-GType
-e_cal_backend_file_get_type (void)
-{
-	static GType e_cal_backend_file_type = 0;
-
-	if (!e_cal_backend_file_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendFileClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_file_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendFile),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_file_init
-                };
-		e_cal_backend_file_type = g_type_register_static (E_TYPE_CAL_BACKEND_SYNC,
-								"ECalBackendFile", &info, 0);
-	}
-
-	return e_cal_backend_file_type;
 }
 
 void

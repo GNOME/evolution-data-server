@@ -30,6 +30,8 @@
 #include "e-offline-listener.h"
 #include <gconf/gconf-client.h>
 
+G_DEFINE_TYPE (EOfflineListener, e_offline_listener, G_TYPE_OBJECT)
+
 enum {
 	CHANGED,
 	NUM_SIGNALS
@@ -105,7 +107,7 @@ e_offline_listener_new (void)
 }
 
 static void
-eol_dispose (GObject *object)
+e_offline_listener_dispose (GObject *object)
 {
 	EOfflineListener *eol = E_OFFLINE_LISTENER (object);
 	if (eol->priv->default_client) {
@@ -117,7 +119,7 @@ eol_dispose (GObject *object)
 }
 
 static void
-eol_finalize (GObject *object)
+e_offline_listener_finalize (GObject *object)
 {
 	EOfflineListener *eol;
 	EOfflineListenerPrivate *priv;
@@ -132,7 +134,7 @@ eol_finalize (GObject *object)
 }
 
 static void
-eol_init (EOfflineListener *eol)
+e_offline_listener_init (EOfflineListener *eol)
 {
 	EOfflineListenerPrivate *priv;
 
@@ -141,15 +143,15 @@ eol_init (EOfflineListener *eol)
 }
 
 static void
-eol_class_init (EOfflineListenerClass *klass)
+e_offline_listener_class_init (EOfflineListenerClass *klass)
 {
 	GObjectClass *object_class;
 
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class = G_OBJECT_CLASS (klass);
-	object_class->dispose = eol_dispose;
-	object_class->finalize = eol_finalize;
+	object_class->dispose = e_offline_listener_dispose;
+	object_class->finalize = e_offline_listener_finalize;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",
@@ -159,29 +161,6 @@ eol_class_init (EOfflineListenerClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-}
-
-GType
-e_offline_listener_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EOfflineListenerClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) eol_class_init,
-                        NULL, NULL,
-                        sizeof (EOfflineListener),
-                        0,
-                        (GInstanceInitFunc) eol_init,
-                };
-
-		type = g_type_register_static (G_TYPE_OBJECT, "EOfflineListener", &info, 0);
-	}
-
-	return type;
 }
 
 EOfflineListenerState

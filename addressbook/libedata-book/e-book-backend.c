@@ -12,6 +12,8 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
+G_DEFINE_TYPE (EBookBackend, e_book_backend, G_TYPE_OBJECT)
+
 struct _EBookBackendPrivate {
 	GMutex *open_mutex;
 
@@ -1046,31 +1048,4 @@ e_book_backend_class_init (EBookBackendClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-}
-
-/**
- * e_book_backend_get_type:
- */
-GType
-e_book_backend_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackend),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_init
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "EBookBackend", &info, 0);
-	}
-
-	return type;
 }

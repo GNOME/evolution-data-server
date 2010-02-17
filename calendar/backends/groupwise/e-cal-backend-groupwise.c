@@ -61,6 +61,8 @@
 #define SERVER_UTC_TIME "server_utc_time"
 #define CACHE_MARKER "populated"
 
+G_DEFINE_TYPE (ECalBackendGroupwise, e_cal_backend_groupwise, E_TYPE_CAL_BACKEND_SYNC)
+
 typedef struct {
 	GCond *cond;
 	GMutex *mutex;
@@ -2801,7 +2803,7 @@ e_cal_backend_groupwise_send_objects (ECalBackendSync *backend, EDataCal *cal, c
 
 /* Object initialization function for the file backend */
 static void
-e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseClass *class)
+e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw)
 {
 	ECalBackendGroupwisePrivate *priv;
 
@@ -2863,38 +2865,6 @@ e_cal_backend_groupwise_class_init (ECalBackendGroupwiseClass *class)
 	backend_class->set_mode = e_cal_backend_groupwise_set_mode;
 	backend_class->internal_get_default_timezone = e_cal_backend_groupwise_internal_get_default_timezone;
 	backend_class->internal_get_timezone = e_cal_backend_groupwise_internal_get_timezone;
-}
-
-/**
- * e_cal_backend_groupwise_get_type:
- * @void:
- *
- * Registers the #ECalBackendGroupwise class if necessary, and returns the type ID
- * associated to it.
- *
- * Return value: The type ID of the #ECalBackendGroupwise class.
- **/
-GType
-e_cal_backend_groupwise_get_type (void)
-{
-	static GType e_cal_backend_groupwise_type = 0;
-
-	if (!e_cal_backend_groupwise_type) {
-		static GTypeInfo info = {
-                        sizeof (ECalBackendGroupwiseClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_cal_backend_groupwise_class_init,
-                        NULL, NULL,
-                        sizeof (ECalBackendGroupwise),
-                        0,
-                        (GInstanceInitFunc) e_cal_backend_groupwise_init
-                };
-		e_cal_backend_groupwise_type = g_type_register_static (E_TYPE_CAL_BACKEND_SYNC,
-								  "ECalBackendGroupwise", &info, 0);
-	}
-
-	return e_cal_backend_groupwise_type;
 }
 
 void

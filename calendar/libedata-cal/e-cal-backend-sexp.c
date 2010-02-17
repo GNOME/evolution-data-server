@@ -29,6 +29,8 @@
 
 #include "e-cal-backend-sexp.h"
 
+G_DEFINE_TYPE (ECalBackendSExp, e_cal_backend_sexp, G_TYPE_OBJECT)
+
 static GObjectClass *parent_class;
 
 typedef struct _SearchContext SearchContext;
@@ -1443,35 +1445,4 @@ e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 
 	sexp->priv = priv;
 	priv->search_context = g_new (SearchContext, 1);
-}
-
-/**
- * e_cal_backend_sexp_get_type:
- *
- * Registers the #ECalBackendSExp class if needed.
- *
- * Return value: The unique identifier of the class.
- */
-GType
-e_cal_backend_sexp_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (ECalBackendSExpClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_cal_backend_sexp_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (ECalBackendSExp),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_cal_backend_sexp_init
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "ECalBackendSExp", &info, 0);
-	}
-
-	return type;
 }

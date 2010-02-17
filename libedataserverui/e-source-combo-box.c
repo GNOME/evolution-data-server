@@ -29,6 +29,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_SOURCE_COMBO_BOX, ESourceComboBoxPrivate))
 
+G_DEFINE_TYPE (ESourceComboBox, e_source_combo_box, GTK_TYPE_COMBO_BOX)
+
 struct _ESourceComboBoxPrivate {
 	ESourceList *source_list;
 	GHashTable *uid_index;
@@ -335,32 +337,6 @@ e_source_combo_box_init (ESourceComboBox *source_combo_box)
 			g_str_hash, g_str_equal,
 			(GDestroyNotify) g_free,
 			(GDestroyNotify) gtk_tree_row_reference_free);
-}
-
-GType
-e_source_combo_box_get_type (void)
-{
-	static GType type = 0;
-
-	if (G_UNLIKELY (type == 0)) {
-		static const GTypeInfo type_info = {
-			sizeof (ESourceComboBoxClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) e_source_combo_box_class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,  /* class_data */
-			sizeof (ESourceComboBox),
-			0,     /* n_preallocs */
-			(GInstanceInitFunc) e_source_combo_box_init,
-			NULL   /* value_table */
-		};
-
-		type = g_type_register_static (
-			GTK_TYPE_COMBO_BOX, "ESourceComboBox", &type_info, 0);
-	}
-
-	return type;
 }
 
 /**

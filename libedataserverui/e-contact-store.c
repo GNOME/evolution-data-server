@@ -36,9 +36,11 @@ G_STMT_START {                                            \
 	(iter)->user_data = GINT_TO_POINTER (index);        \
 } G_STMT_END
 
-static void         e_contact_store_init            (EContactStore      *contact_store);
-static void         e_contact_store_class_init      (EContactStoreClass *class);
-static void         e_contact_store_tree_model_init (GtkTreeModelIface  *iface);
+static void e_contact_store_tree_model_init (GtkTreeModelIface *iface);
+
+G_DEFINE_TYPE_EXTENDED (EContactStore, e_contact_store, G_TYPE_OBJECT, 0,
+	G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, e_contact_store_tree_model_init))
+
 static void         e_contact_store_finalize        (GObject            *object);
 static GtkTreeModelFlags e_contact_store_get_flags       (GtkTreeModel       *tree_model);
 static gint         e_contact_store_get_n_columns   (GtkTreeModel       *tree_model);
@@ -91,42 +93,6 @@ static void stop_view             (EContactStore *contact_store, EBookView *view
  * ------------------ */
 
 static GObjectClass *parent_class = NULL;
-
-GType
-e_contact_store_get_type (void)
-{
-	static GType contact_store_type = 0;
-
-	if (!contact_store_type) {
-		static const GTypeInfo contact_store_info =
-		{
-			sizeof (EContactStoreClass),
-			NULL,		/* base_init */
-			NULL,		/* base_finalize */
-			(GClassInitFunc) e_contact_store_class_init,
-			NULL,		/* class_finalize */
-			NULL,		/* class_data */
-			sizeof (EContactStore),
-			0,
-			(GInstanceInitFunc) e_contact_store_init,
-		};
-
-		static const GInterfaceInfo tree_model_info =
-		{
-			(GInterfaceInitFunc) e_contact_store_tree_model_init,
-			NULL,
-			NULL
-		};
-
-		contact_store_type = g_type_register_static (G_TYPE_OBJECT, "EContactStore",
-							     &contact_store_info, 0);
-		g_type_add_interface_static (contact_store_type,
-					     GTK_TYPE_TREE_MODEL,
-					     &tree_model_info);
-	}
-
-	return contact_store_type;
-}
 
 static void
 e_contact_store_class_init (EContactStoreClass *class)

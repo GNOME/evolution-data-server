@@ -42,6 +42,8 @@
 
 #include "e-book-backend-summary.h"
 
+G_DEFINE_TYPE (EBookBackendSummary, e_book_backend_summary, G_TYPE_OBJECT)
+
 static GObjectClass *parent_class;
 
 struct _EBookBackendSummaryPrivate {
@@ -232,33 +234,6 @@ e_book_backend_summary_init (EBookBackendSummary *summary)
 #ifdef SUMMARY_STATS
 	priv->size = 0;
 #endif
-}
-
-/**
- * e_book_backend_summary_get_type:
- */
-GType
-e_book_backend_summary_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		GTypeInfo info = {
-			sizeof (EBookBackendSummaryClass),
-			NULL, /* base_class_init */
-			NULL, /* base_class_finalize */
-			(GClassInitFunc)  e_book_backend_summary_class_init,
-			NULL, /* class_finalize */
-			NULL, /* class_data */
-			sizeof (EBookBackendSummary),
-			0,    /* n_preallocs */
-			(GInstanceInitFunc) e_book_backend_summary_init
-		};
-
-		type = g_type_register_static (G_TYPE_OBJECT, "EBookBackendSummary", &info, 0);
-	}
-
-	return type;
 }
 
 

@@ -29,6 +29,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_CATEGORY_COMPLETION, ECategoryCompletionPrivate))
 
+G_DEFINE_TYPE (ECategoryCompletion, e_category_completion, GTK_TYPE_ENTRY_COMPLETION)
+
 struct _ECategoryCompletionPrivate {
 	GtkWidget *last_known_entry;
 	gchar *create;
@@ -424,7 +426,7 @@ category_completion_action_activated (GtkEntryCompletion *completion,
 }
 
 static void
-category_completion_class_init (ECategoryCompletionClass *class)
+e_category_completion_class_init (ECategoryCompletionClass *class)
 {
 	GObjectClass *object_class;
 	GtkEntryCompletionClass *entry_completion_class;
@@ -442,7 +444,7 @@ category_completion_class_init (ECategoryCompletionClass *class)
 }
 
 static void
-category_completion_init (ECategoryCompletion *category_completion)
+e_category_completion_init (ECategoryCompletion *category_completion)
 {
 	GtkCellRenderer *renderer;
 	GtkEntryCompletion *completion;
@@ -472,33 +474,6 @@ category_completion_init (ECategoryCompletion *category_completion)
 		completion);
 
 	category_completion_build_model (completion);
-}
-
-GType
-e_category_completion_get_type (void)
-{
-	static GType type = 0;
-
-	if (G_UNLIKELY (type == 0)) {
-		static const GTypeInfo type_info = {
-			sizeof (ECategoryCompletionClass),
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) category_completion_class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,  /* class_data */
-			sizeof (ECategoryCompletion),
-			0,     /* n_preallocs */
-			(GInstanceInitFunc) category_completion_init,
-			NULL   /* value_table */
-		};
-
-		type = g_type_register_static (
-			GTK_TYPE_ENTRY_COMPLETION, "ECategoryCompletion",
-			&type_info, 0);
-	}
-
-	return type;
 }
 
 GtkEntryCompletion *

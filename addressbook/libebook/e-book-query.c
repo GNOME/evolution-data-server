@@ -729,13 +729,19 @@ e_book_query_to_string    (EBookQuery *q)
 GType
 e_book_query_get_type (void)
 {
-	static GType type_id = 0;
+	static volatile gsize type_id__volatile = 0;
 
-	if (!type_id)
+	if (g_once_init_enter (&type_id__volatile)) {
+		GType type_id;
+
 		type_id = g_boxed_type_register_static ("EBookQuery",
 							(GBoxedCopyFunc) e_book_query_copy,
 							(GBoxedFreeFunc) e_book_query_unref);
-	return type_id;
+
+		g_once_init_leave (&type_id__volatile, type_id);
+	}
+
+	return type_id__volatile;
 }
 
 /**

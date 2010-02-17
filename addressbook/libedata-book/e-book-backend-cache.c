@@ -27,6 +27,8 @@
 #include "e-book-backend-cache.h"
 #include "e-book-backend-sexp.h"
 
+G_DEFINE_TYPE (EBookBackendCache, e_book_backend_cache, E_TYPE_FILE_CACHE)
+
 struct _EBookBackendCachePrivate {
 	gchar *uri;
 };
@@ -187,28 +189,6 @@ e_book_backend_cache_init (EBookBackendCache *cache)
 
 	cache->priv = priv;
 
-}
-
-GType
-e_book_backend_cache_get_type (void)
-{
-	static GType type = 0;
-
-	if (!type) {
-		static GTypeInfo info = {
-                        sizeof (EBookBackendCacheClass),
-                        (GBaseInitFunc) NULL,
-                        (GBaseFinalizeFunc) NULL,
-                        (GClassInitFunc) e_book_backend_cache_class_init,
-                        NULL, NULL,
-                        sizeof (EBookBackendCache),
-                        0,
-                        (GInstanceInitFunc) e_book_backend_cache_init,
-                };
-		type = g_type_register_static (E_TYPE_FILE_CACHE, "EBookBackendCache", &info, 0);
-	}
-
-	return type;
 }
 
 /**
