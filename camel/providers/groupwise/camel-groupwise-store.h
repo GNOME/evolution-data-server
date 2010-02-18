@@ -56,7 +56,6 @@ struct _CamelGroupwiseStore {
 	/* the parameters field is not to be included not. probably for 2.6*/
 	/*guint32 parameters;*/
 	time_t refresh_stamp;
-	guint list_loaded;
 };
 
 struct _CamelGroupwiseStoreClass {

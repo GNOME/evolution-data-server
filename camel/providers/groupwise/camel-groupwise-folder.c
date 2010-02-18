@@ -744,14 +744,10 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 
 	deleted_items = deleted_head = NULL;
 
-	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL ||
-			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
+	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		groupwise_sync_summary (folder, ex);
 		return;
 	}
-	cnc = cnc_lookup (priv);
-
-	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
 
 	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 	if (!camel_groupwise_store_connected (gw_store, ex)) {
@@ -760,6 +756,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		return;
 	}
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+
+	cnc = cnc_lookup (priv);
+	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
 
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)
 		return;
