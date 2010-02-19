@@ -19,7 +19,6 @@ libebookbackendgoogle_la_SOURCES = \
 	util.c \
 	google-book.h \
 	google-book.c \
-	e-book-backend-google-factory.h \
 	e-book-backend-google-factory.c \
 	e-book-backend-google.h \
 	e-book-backend-google.c
