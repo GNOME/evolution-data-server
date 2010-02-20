@@ -2,10 +2,10 @@
 # Copyright (C) 2003, 2004, 2007, 2008 Free Software Foundation, Inc.
 # Christian Neumair <chris@gnome-de.org>, 2003, 2004.
 # Frank Arnold <frank@scirocco-5v-turbo.de>, 2005.
-# Hendrik Richter <hendrikr@gnome.org>, 2005, 2006, 2007.
+# Hendrik Richter <hendrikr@gnome.org>, 2005-2007.
 # Christian Kintner <mail@christian-kintner.de>, 2006.
-# Andre Klapper <ak-47@gmx.net>, 2007, 2008, 2009.
-# Mario Blättermann <mariobl@gnome.org>, 2009.
+# Andre Klapper <ak-47@gmx.net>, 2007-2009.
+# Mario Blättermann <mariobl@gnome.org>, 2009, 2010.
 # Christian Kirbach <Christian.Kirbach@googlemail.com>, 2010.
 #
 # Based on German Evolution translation.
@@ -16,9 +16,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2010-02-19 14:46+0000\n"
-"PO-Revision-Date: 2010-02-19 22:12+0100\n"
-"Last-Translator: Christian Kirbach <Christian.Kirbach@googlemail.com>\n"
+"POT-Creation-Date: 2010-02-20 15:05+0000\n"
+"PO-Revision-Date: 2010-02-20 16:08+0100\n"
+"Last-Translator: Mario Blättermann <mariobl@gnome.org>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -982,8 +982,8 @@ msgstr "Geben Sie das Passwort für %s ein (Benutzer %s)"
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
-"Geben Sie das Passwort für %s ein, um die Stellvertretung für den Benutzer %"
-"s zu aktivieren"
+"Geben Sie das Passwort für %s ein, um die Stellvertretung für den Benutzer %s "
+"zu aktivieren"
 
 #: ../calendar/libecal/e-cal.c:3992
 msgid "Invalid argument"
@@ -1174,11 +1174,11 @@ msgstr "»%s« erwartet mindestens ein Argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:941
 #, c-format
 msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
+"\"%s\" expects all arguments to be strings or one and only one argument to be "
+"a boolean false (#f)"
 msgstr ""
-"»%s« erwartet als Argumente Zeichenketten, oder aber ein einziges Argument "
-"mit dem Wahrheitswert »falsch« (#f)"
+"»%s« erwartet als Argumente Zeichenketten, oder aber ein einziges Argument mit "
+"dem Wahrheitswert »falsch« (#f)"
 
 #: ../calendar/libedata-cal/e-cal-backend-util.c:109
 msgid "Invalid range"
@@ -1998,8 +1998,8 @@ msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:50
 msgid ""
-"This option will connect to the server using a secure DIGEST-MD5 password, "
-"if the server supports it."
+"This option will connect to the server using a secure DIGEST-MD5 password, if "
+"the server supports it."
 msgstr ""
 "Dies stellt eine Verbindung mit dem SMTP-Server her und verwendet dazu ein "
 "sicheres DIGEST-MD5-Passwort, falls der Server dies unterstützt."
@@ -2014,8 +2014,7 @@ msgstr "Server-Herausforderung ungültig\n"
 
 #: ../camel/camel-sasl-digest-md5.c:859
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr ""
-"Server-Herausforderung enthielt ungültiges »Quality-of-Protection«-Token"
+msgstr "Server-Herausforderung enthielt ungültiges »Quality-of-Protection«-Token"
 
 #: ../camel/camel-sasl-digest-md5.c:889
 msgid "Server response did not contain authorization data"
@@ -2037,8 +2036,8 @@ msgstr "GSSAPI"
 #: ../camel/camel-sasl-gssapi.c:74
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
-"Dies stellt eine Verbindung mit dem Server her und verwendet zur "
-"Legitimation Kerberos 5"
+"Dies stellt eine Verbindung mit dem Server her und verwendet zur Legitimation "
+"Kerberos 5"
 
 #: ../camel/camel-sasl-gssapi.c:168
 msgid ""
@@ -2824,8 +2823,8 @@ msgstr "Nachricht wird verschickt"
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:212
 msgid ""
 "You have exceeded this account's storage limit. Your messages are queued in "
-"your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
-"of your mail.\n"
+"your Outbox. Resend by pressing Send/Receive after deleting/archiving some of "
+"your mail.\n"
 msgstr ""
 "Sie haben das Speicherplatzlimit für dieses Konto überschritten. Ihre "
 "Nachrichten sind im Ausgang abgelegt. Senden Sie diese erneut durch drücken "
@@ -3286,8 +3285,7 @@ msgstr ""
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:89
 msgid "Expire cached messages older than X seconds"
-msgstr ""
-"Zwischengespeicherte Nachrichten löschen, die älter als X Sekunden sind"
+msgstr "Zwischengespeicherte Nachrichten löschen, die älter als X Sekunden sind"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:427
 #, c-format
@@ -3327,8 +3325,7 @@ msgstr ""
 #, c-format
 msgid "Cannot get message %s from folder '%s': Bad command"
 msgstr ""
-"Nachricht %s konnte nicht aus Ordner »%s« abgerufen werden: Fehlerhafter "
-"Befehl"
+"Nachricht %s konnte nicht aus Ordner »%s« abgerufen werden: Fehlerhafter Befehl"
 
 #: ../camel/providers/imap4/camel-imap4-folder.c:940
 #, c-format
@@ -3451,8 +3448,8 @@ msgstr ""
 #, c-format
 msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 msgstr ""
-"LIST-Informationen für »%s« auf IMAP-Server %s konnten nicht abgerufen "
-"werden: %s"
+"LIST-Informationen für »%s« auf IMAP-Server %s konnten nicht abgerufen werden: "
+"%s"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:818
 #: ../camel/providers/imap4/camel-imap4-store.c:1574
@@ -3586,11 +3583,11 @@ msgstr "Zwischenspeicher konnte nicht für »%s« angelegt werden"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "Use I_dle if the server supports it"
-msgstr ""
+msgstr "»Untätig« verwen_den, falls der Server es unterstützt"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:60
 msgid "Numbe_r of cached connections to use"
-msgstr ""
+msgstr "Anzahl de_r zu verwendenden zwischengespeicherten Verbindungen"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
@@ -3743,8 +3740,7 @@ msgstr "Ordner-Metadatei »%s« konnte nicht gelöscht werden: %s"
 #: ../camel/providers/local/camel-local-summary.c:515
 msgid "Unable to add message to summary: unknown reason"
 msgstr ""
-"Nachricht konnte nicht zur Zusammenfassung hinzugefügt werden: Grund "
-"unbekannt"
+"Nachricht konnte nicht zur Zusammenfassung hinzugefügt werden: Grund unbekannt"
 
 #: ../camel/providers/local/camel-maildir-folder.c:230
 msgid "Maildir append message canceled"
@@ -4179,8 +4175,7 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:76
 msgid ""
-"This option will authenticate with the NNTP server using a plaintext "
-"password."
+"This option will authenticate with the NNTP server using a plaintext password."
 msgstr ""
 "Dies führt die Legitimation am NNTP-Server mit einem unverschlüsselten "
 "Passwort durch."
@@ -4230,8 +4225,7 @@ msgstr "Sie können diese Newsgroup nicht abonnieren, da sie nicht existiert."
 #: ../camel/providers/nntp/camel-nntp-store.c:970
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
-"Sie können in Newsgroups keine Ordner anlegen: Abonnieren Sie sie "
-"stattdessen."
+"Sie können in Newsgroups keine Ordner anlegen: Abonnieren Sie sie stattdessen."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:978
 msgid "You cannot rename a folder in a News store."
@@ -4363,8 +4357,8 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-provider.c:86
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
-"the APOP protocol. This may not work for all users even on servers that "
-"claim to support it."
+"the APOP protocol. This may not work for all users even on servers that claim "
+"to support it."
 msgstr ""
 "Dies stellt unter Verwendung eines verschlüsselten Passworts eine Verbindung "
 "mit dem POP-Server über das APO-Protokoll her. Das funktioniert "
@@ -4682,8 +4676,7 @@ msgstr "Nachricht konnte nicht verschickt werden: Dienst nicht verbunden."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:726
 msgid "Cannot send message: sender address not valid."
-msgstr ""
-"Nachricht konnte nicht verschickt werden: Absenderadresse nicht gültig."
+msgstr "Nachricht konnte nicht verschickt werden: Absenderadresse nicht gültig."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:730
 msgid "Sending message"
@@ -5014,8 +5007,7 @@ msgstr "_Kein Bild"
 #: ../libedataserverui/e-categories-dialog.c:372
 #, c-format
 msgid ""
-"There is already a category '%s' in the configuration. Please use another "
-"name"
+"There is already a category '%s' in the configuration. Please use another name"
 msgstr ""
 "Es gibt bereits eine Kategorie »%s« in dieser Konfiguration. Bitte einen "
 "anderen Namen verwenden."
@@ -5280,13 +5272,11 @@ msgstr "Fehlerhafter Parameter"
 
 #~ msgid "Unable to decrypt Certificate Revocation List signature"
 #~ msgstr ""
-#~ "Die Signatur der Zertifikatrücknahmeliste konnte nicht entschlüsselt "
-#~ "werden"
+#~ "Die Signatur der Zertifikatrücknahmeliste konnte nicht entschlüsselt werden"
 
 #~ msgid "Unable to decode issuer's public key"
 #~ msgstr ""
-#~ "Der öffentliche Schlüssel des Ausstellers konnte nicht entschlüsselt "
-#~ "werden"
+#~ "Der öffentliche Schlüssel des Ausstellers konnte nicht entschlüsselt werden"
 
 #~ msgid "Certificate signature failure"
 #~ msgstr "Zertifikatsignatur fehlerhaft"
@@ -5299,315 +5289,3 @@ msgstr "Fehlerhafter Parameter"
 
 #~ msgid "Certificate has expired"
 #~ msgstr "Das Zertifikat ist nicht mehr gültig"
-
-#~| msgid "Certificate Revocation List signature failure"
-#~ msgid "Certificate Revocation List (CRL) not yet valid"
-#~ msgstr "Zertifikat-Rücklaufliste (CRL) ist fehlerhaft"
-
-#~| msgid "Certificate Revocation List signature failure"
-#~ msgid "Certificate Revocation List (CRL) has expired"
-#~ msgstr "Zertifikat-Rücklaufliste (CRL) ist abgelaufen"
-
-#~| msgid "Unable to get Certificate Revocation List"
-#~ msgid "Error in Certificate Revocation List (CRL)"
-#~ msgstr "Fehler in der Zertifikatrücklaufliste (CRL)"
-
-#~ msgid "Out of memory"
-#~ msgstr "Nicht genügend Speicher"
-
-#~ msgid "Zero-depth self-signed certificate"
-#~ msgstr "Selbst signiertes Zertifikat mit Tiefe null"
-
-#~ msgid "Self-signed certificate in chain"
-#~ msgstr "Selbst signiertes Zertifikat in der Kette"
-
-#~ msgid "Unable to get issuer's certificate locally"
-#~ msgstr "Zertifikat des Ausstellers konnte lokal nicht abgerufen werden"
-
-#~ msgid "Unable to verify leaf signature"
-#~ msgstr "Die Leaf-Signatur konnte nicht verifiziert werden"
-
-#~ msgid "Certificate chain too long"
-#~ msgstr "Zertifikatkette zu lang"
-
-#~ msgid "Certificate Revoked"
-#~ msgstr "Zertifikat zurückgenommen"
-
-#~ msgid "Invalid Certificate Authority (CA)"
-#~ msgstr "Ungültige Zertifizierungsstelle (CA)"
-
-#~ msgid "Path length exceeded"
-#~ msgstr "Pfadlänge überschritten"
-
-#~ msgid "Invalid purpose"
-#~ msgstr "Ungültiger Verwendungszweck"
-
-#~ msgid "Certificate untrusted"
-#~ msgstr "Zertifikat nicht vertrauenswürdig"
-
-#~ msgid "Certificate rejected"
-#~ msgstr "Zertifikat abgewiesen"
-
-#~ msgid "Subject/Issuer mismatch"
-#~ msgstr "Empfänger/Aussteller passen nicht zusammen"
-
-#~ msgid "AKID/SKID mismatch"
-#~ msgstr "Kennung des Authority-Keys/Subject-Keys passen nicht zusammen"
-
-#~ msgid "AKID/Issuer serial mismatch"
-#~ msgstr ""
-#~ "Serielle Kennung des Authority-Keys/Aussteller passen nicht zusammen"
-
-#~ msgid "Key usage does not support certificate signing"
-#~ msgstr ""
-#~ "Schlüsselverwendung unterstützt das Signieren von Zertifikaten nicht"
-
-#~ msgid "Error in application verification"
-#~ msgstr "Fehler bei der Anwendungsüberprüfung"
-
-#~ msgid ""
-#~ "Bad certificate from %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Do you wish to accept anyway?"
-#~ msgstr ""
-#~ "Ungültiges Zertifikat von %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Möchten Sie es dennoch akzeptieren?"
-
-#~ msgid "Enter password for %s"
-#~ msgstr "Geben Sie das Passwort für %s ein"
-
-#~ msgid "Enter password"
-#~ msgstr "Passwort eingeben"
-
-#~ msgid "Owner"
-#~ msgstr "Besitzer"
-
-#~ msgid "Publishing Editor"
-#~ msgstr "Veröffentlichender Editor"
-
-#~ msgid "Editor"
-#~ msgstr "Editor"
-
-#~ msgid "Publishing Author"
-#~ msgstr "Veröffentlichender Autor"
-
-#~ msgid "Author"
-#~ msgstr "Autor"
-
-#~ msgid "Non-editing Author"
-#~ msgstr "Nicht-bearbeitender Autor"
-
-#~ msgid "Reviewer"
-#~ msgstr "Prüfer"
-
-#~ msgid "Contributor"
-#~ msgstr "Mitarbeiter"
-
-#~ msgid "None"
-#~ msgstr "Keine"
-
-#~ msgid "Custom"
-#~ msgstr "Benutzerdefiniert"
-
-#~ msgid "Generic error"
-#~ msgstr "Allgemeiner Fehler"
-
-#~ msgid "A folder with the same name already exists"
-#~ msgstr "Es existiert bereits ein gleichnamiger Ordner"
-
-#~ msgid "The specified folder type is not valid"
-#~ msgstr "Der angegebene Ordnertyp ist ungültig"
-
-#~ msgid "I/O error"
-#~ msgstr "Ein-/Ausgabefehler"
-
-#~ msgid "Not enough space to create the folder"
-#~ msgstr "Unzureichender Speicherplatz zum Anlegen des Ordners"
-
-#~ msgid "The folder is not empty"
-#~ msgstr "Der Ordner ist nicht leer"
-
-#~ msgid "The specified folder was not found"
-#~ msgstr "Der angegebene Ordner wurde nicht gefunden"
-
-#~ msgid "Function not implemented in this storage"
-#~ msgstr "Funktion in diesem Speicher nicht implementiert"
-
-#~ msgid "Operation not supported"
-#~ msgstr "Operation nicht unterstützt"
-
-#~ msgid "The specified type is not supported in this storage"
-#~ msgstr "Der angegebene Typ wird in diesem Speicher nicht unterstützt"
-
-#~ msgid "The specified folder cannot be modified or removed"
-#~ msgstr "Der angegebene Ordner kann weder geändert noch entfernt werden"
-
-#~ msgid "Cannot make a folder a child of one of its descendants"
-#~ msgstr "Ein Ordner kann nicht in einen seiner Unterordner verschoben werden"
-
-#~ msgid "Cannot create a folder with that name"
-#~ msgstr "Es konnte kein Ordner mit diesem Namen angelegt werden"
-
-#~ msgid "This operation cannot be performed in off-line mode"
-#~ msgstr "Diese Aktion kann im Offline-Modus nicht ausgeführt werden"
-
-#~ msgid "%s's Folders"
-#~ msgstr "Ordner von %s"
-
-#~ msgid "Personal Folders"
-#~ msgstr "Persönliche Ordner"
-
-#~ msgid "Favorite Public Folders"
-#~ msgstr "Bevorzugte öffentliche Ordner"
-
-#~ msgid "All Public Folders"
-#~ msgstr "Alle öffentlichen Ordner"
-
-#~ msgid "Global Address List"
-#~ msgstr "Globale Adressliste"
-
-#~ msgid "Deleted Items"
-#~ msgstr "Gelöschte Objekte"
-
-#~ msgid "Drafts"
-#~ msgstr "Entwürfe"
-
-#~ msgid "Journal"
-#~ msgstr "Journal"
-
-#~ msgid "Notes"
-#~ msgstr "Notizen"
-
-#~ msgid "Outbox"
-#~ msgstr "Ausgang"
-
-#~ msgid "Sent Items"
-#~ msgstr "Verschickte Objekte"
-
-#~ msgid "Tasks"
-#~ msgstr "Aufgaben"
-
-#~ msgid "Evolution Addressbook file backend"
-#~ msgstr "Evolution-Adressbuch-Datei-Backend"
-
-#~ msgid "Evolution Calendar file and webcal backend"
-#~ msgstr "Evolution-Kalender Datei- und Webcal-Backend"
-
-#~ msgid "Evolution Data Server interface check service"
-#~ msgstr "Evolution-Data-Server Schnittstellenüberprüfungsdienst"
-
-#~ msgid "Evolution Data Server logging service"
-#~ msgstr "Evolution-Data-Server Protokollierungsdienst"
-
-#~ msgid "CRL not yet valid"
-#~ msgstr "Die ZRL ist noch nicht gültig"
-
-#~ msgid "CRL has expired"
-#~ msgstr "Die ZRL ist nicht mehr gültig"
-
-#~ msgid "Error in CRL"
-#~ msgstr "Fehler in der ZRL"
-
-#~ msgid "Sent"
-#~ msgstr "Verschickt"
-
-#~ msgid "Templates"
-#~ msgstr "Entwürfe"
-
-#~ msgid "Multiple segmentation faults occurred; cannot display error dialog\n"
-#~ msgstr ""
-#~ "Es sind mehrere Speicherzugriffsfehler aufgetreten; der Fehlerdialog kann "
-#~ "nicht angezeigt werden\n"
-
-#~ msgid "Failed to create create child process '%s': %s"
-#~ msgstr "Kindprozess »%s« konnte nicht erstellt werden: %s"
-
-#~ msgid "Decoder failed, error %d"
-#~ msgstr "Dekodierer gescheitert, Fehler %d"
-
-#~ msgid "Fair"
-#~ msgstr "Heiter"
-
-#~ msgid "Snow showers"
-#~ msgstr "Schneeschauer"
-
-#~ msgid "Snow"
-#~ msgstr "Schneefall"
-
-#~ msgid "Partly cloudy"
-#~ msgstr "Vereinzelt Wolken"
-
-#~ msgid "Smoke"
-#~ msgstr "Rauch"
-
-#~ msgid "Thunderstorms"
-#~ msgstr "Gewitter"
-
-#~ msgid "Cloudy"
-#~ msgstr "Wolkig"
-
-#~ msgid "Drizzle"
-#~ msgstr "Nieselregen"
-
-#~ msgid "Sunny"
-#~ msgstr "Sonnig"
-
-#~ msgid "Dust"
-#~ msgstr "Staub"
-
-#~ msgid "Clear"
-#~ msgstr "Klar"
-
-#~ msgid "Mostly cloudy"
-#~ msgstr "Größtenteils bewölkt"
-
-#~ msgid "Windy"
-#~ msgstr "Windig"
-
-#~ msgid "Rain showers"
-#~ msgstr "Regenschauer"
-
-#~ msgid "Foggy"
-#~ msgstr "Neblig"
-
-#~ msgid "Rain/snow mixed"
-#~ msgstr "Regen/Schnee gemischt"
-
-#~ msgid "Sleet"
-#~ msgstr "Schneeregen"
-
-#~ msgid "Very hot/humid"
-#~ msgstr "Sehr heiß/schwül"
-
-#~ msgid "Blizzard"
-#~ msgstr "Schneesturm"
-
-#~ msgid "Freezing rain"
-#~ msgstr "Eisregen"
-
-#~ msgid "Haze"
-#~ msgstr "Dunst"
-
-#~ msgid "Blowing snow"
-#~ msgstr "Schneetreiben"
-
-#~ msgid "Freezing drizzle"
-#~ msgstr "Eisiger Nieselregen"
-
-#~ msgid "Very cold/wind chill"
-#~ msgstr "Sehr kalt/kalter Wind"
-
-#~ msgid "Rain"
-#~ msgstr "Regen"
-
-#~ msgid "Weather: Partly Cloudy"
-#~ msgstr "Wetter: Teilweise bewölkt"
