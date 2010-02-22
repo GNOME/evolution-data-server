@@ -1,3 +1,40 @@
+Evolution-Data-Server 2.29.91 2010-02-22
+----------------------------------------
+
+Bug Fixes:
+	#603506 - Use thread safe G_DEFINE_TYPE/G_DEFINE_TYPE_EXTENDED (Milan Crha)
+	#609964 -  Crash in imapx_command_expunge_done (Chenthill Palanisamy)
+	#574940 - Always ref returned info from message_info_from_uid (Milan Crha)
+	#609649 - Doesn't emit cal-opened on password prompt cancel (Milan Crha)
+	#609646 - Unset global DBus variables on destroy or disconnect (Milan Crha)
+	#609614 -  Folder -> expunge doesn't work in imapx (Chenthill Palanisamy)
+	#606811 - evolution crashed in match_content_type at camel-folder-summary.c:5066 (Bharath Acharya)
+	#609398 -  [IMAPX] Subscriptions are not respected. (Chenthill Palanisamy)
+	#609390 -  search folders don't work in imapx (Chenthill Palanisamy)
+	#609393 -  evolution crashed when clicked on search folder (Chenthill Palanisamy)
+	#609375 -  Duplicate mnemonic in imapx preference (Chenthill Palanisamy)
+	#609310 -  IMAPX - Crasher - imapx_job_done (Chenthill Palanisamy)
+	#609374 -  Missing mnemonic in imapx preference (Chenthill Palanisamy)
+
+Other Fixes
+	Fix distcheck error. (Matthew Barnes)
+	Remove libglade-2.0 from libedataserverui.pc. (Matthew Barnes)
+	More imapx fixes (Chenthill Palanisamy)
+
+Translations:
+	Mario Blättermann (de)
+	Christian Kirbach (de)
+	Antonio Fernandes C. Neto (pt_BR)
+	Petr Kovar (cs)
+	vasudeven (ta)
+	Mattias Põldaru (et)
+	Fran Diéguez (gl)
+	Chao-Hsiung Liao (zh_HK)
+	Lucian Adrian Grijincu (ro)
+	Matej Urbančič (sl)
+	Kjartan Maraas (nb)
+	Jorge González (es)
+	
 Evolution-Data-Server 2.29.90 2010-02-08
 ----------------------------------------
 
