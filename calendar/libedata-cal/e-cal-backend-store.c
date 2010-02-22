@@ -77,6 +77,8 @@ set_store_path (ECalBackendStore *store)
 
 		priv->path = g_build_filename (g_get_home_dir (), ".evolution/cache/",
 				component, mangled_uri, NULL);
+
+		g_free (mangled_uri);
 	}
 }
 

@@ -1006,6 +1006,8 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 			db_error = dbc->c_get(dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 		}
 
+		dbc->c_close (dbc);
+
 		if (card_failed) {
 			g_warning ("failed to update %d cards", card_failed);
 			return FALSE;
