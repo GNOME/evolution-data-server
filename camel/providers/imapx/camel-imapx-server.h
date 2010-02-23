@@ -51,6 +51,7 @@ struct _CamelIMAPXServer {
 	struct _CamelURL *url;
 	struct _CamelIMAPXStream *stream;
 	struct _capability_info *cinfo;
+	gboolean is_ssl_stream;
 
 	CamelIMAPXNamespaceList *nsl;
 
@@ -89,6 +90,7 @@ struct _CamelIMAPXServer {
 	GSList *expunged;
 
 	pthread_t parser_thread_id;
+	GStaticRecMutex ostream_lock;
 
 	/* Idle */
 	struct _CamelIMAPXIdle *idle;
