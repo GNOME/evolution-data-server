@@ -3681,6 +3681,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 	tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", uid, NULL);
 	info = camel_folder_summary_info_new_from_message((CamelFolderSummary *)folder->summary, message, NULL);
 	info->uid = uid;
+	((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
 	uid = NULL;
 
 	// FIXME
