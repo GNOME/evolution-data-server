@@ -89,6 +89,8 @@ struct _CamelIMAPXServer {
 	   processed after the command completes. */
 	GSList *expunged;
 
+	/* connect_lock used for locking input stream locking and 
+	   ostream_lock for locking output stream */
 	pthread_t parser_thread_id;
 	GStaticRecMutex ostream_lock;
 

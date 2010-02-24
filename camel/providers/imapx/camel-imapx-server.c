@@ -2662,7 +2662,7 @@ imapx_job_refresh_info_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		for (i=0; i<infos->len; i++) {
 			struct _refresh_info *r = &g_array_index(infos, struct _refresh_info, i);
 
-			while (s_minfo && uid_cmp(camel_message_info_uid(s_minfo), r->uid, s) != 0) {
+			while (s_minfo && uid_cmp(camel_message_info_uid(s_minfo), r->uid, s) < 0) {
 				const gchar *uid = camel_message_info_uid (s_minfo);
 
 				camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
@@ -3408,7 +3408,6 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 	return is;
 }
 
-/* Called with a connect lock */
 static gboolean
 imapx_disconnect (CamelIMAPXServer *is)
 {
@@ -3417,6 +3416,9 @@ imapx_disconnect (CamelIMAPXServer *is)
 	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 	g_static_rec_mutex_lock (&is->ostream_lock);
 
+	if (is->state == IMAPX_DISCONNECTED)
+		goto exit;
+
 	if (is->stream) {
 		if (camel_stream_close (is->stream->source) == -1)
 			ret = FALSE;
@@ -3424,8 +3426,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 		camel_object_unref (CAMEL_OBJECT (is->stream));
 		is->stream = NULL;
 	}
-
-	is->state = IMAPX_DISCONNECTED;
 
 	if (is->select_folder) {
 		camel_object_unref(is->select_folder);
@@ -3446,7 +3446,10 @@ imapx_disconnect (CamelIMAPXServer *is)
 		camel_imapx_command_free (is->literal);
 		is->literal = NULL;
 	}
-				
+	
+	is->state = IMAPX_DISCONNECTED;
+
+exit:	
 	g_static_rec_mutex_unlock (&is->ostream_lock);
 	CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 
@@ -3486,8 +3489,10 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 		if (imapx_idle_supported (is))
 			imapx_exit_idle (is);
 
+		CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
+
 		pthread_join (is->parser_thread_id, NULL);
-		ret = TRUE;
+		return TRUE;
 	}
 
 exit:
