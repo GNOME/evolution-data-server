@@ -3022,7 +3022,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		gint i;
 
 		for (i=0;i<job->u.sync_changes.changed_uids->len;i++) {
-			CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *) camel_folder_summary_peek_info (job->folder->summary,
+			CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *) camel_folder_summary_uid (job->folder->summary,
 					job->u.sync_changes.changed_uids->pdata[i]);
 
 			info->server_flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
@@ -3083,7 +3083,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 			printf("checking/storing %s flags '%s'\n", on?"on":"off", flags_table[j].name);
 			imapx_uidset_init(&ss, 0, 100);
 			for (i = 0; i < uids->len; i++) {
-				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *)camel_folder_summary_peek_info
+				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *)camel_folder_summary_uid
 										(job->folder->summary, uids->pdata[i]);
 
 				guint32 flags = ((CamelMessageInfoBase *)info)->flags & CAMEL_IMAPX_SERVER_FLAGS;
@@ -3905,7 +3905,7 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, Camel
 		CamelFlag *uflags, *suflags;
 		guint j = 0;
 
-		info = (CamelIMAPXMessageInfo *) camel_folder_summary_peek_info (folder->summary, uids->pdata[i]);
+		info = (CamelIMAPXMessageInfo *) camel_folder_summary_uid (folder->summary, uids->pdata[i]);
 
 		if (!(info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			camel_message_info_free (info);
@@ -3999,8 +3999,7 @@ camel_imapx_server_sync_changes(CamelIMAPXServer *is, CamelFolder *folder, Camel
 	imapx_sync_free_user(on_user);
 	imapx_sync_free_user(off_user);
 
-	g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
-	g_ptr_array_free (uids, TRUE);
+	camel_folder_free_uids (folder, uids);
 }
 
 /* expunge-uids? */
