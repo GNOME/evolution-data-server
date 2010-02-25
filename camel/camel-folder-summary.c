@@ -66,7 +66,7 @@
 #define USE_GSLICE 1
 
 /* Make 5 minutes as default cache drop */
-#define SUMMARY_CACHE_DROP 300
+#define SUMMARY_CACHE_DROP 300 
 #define dd(x) if (camel_debug("sync")) x
 
 static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -3282,7 +3282,7 @@ message_info_load(CamelFolderSummary *s, FILE *in)
 	camel_file_util_decode_string(in, &cc);
 	camel_file_util_decode_string(in, &mlist);
 
-	mi->uid = uid;
+	mi->uid = camel_pstring_add (uid, TRUE);
 	mi->subject = camel_pstring_add (subject, TRUE);
 	mi->from = camel_pstring_add (from, TRUE);
 	mi->to = camel_pstring_add (to, TRUE);

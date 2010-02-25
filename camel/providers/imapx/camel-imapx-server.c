@@ -1217,7 +1217,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 					CamelFlag *server_user_flags;
 					CamelMessageInfoBase *binfo;
 
-					mi->uid = g_strdup(finfo->uid);
+					mi->uid = camel_pstring_strdup (finfo->uid);
 
 					if (!(finfo->got & FETCH_FLAGS))
 					{
@@ -2426,8 +2426,10 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			printf("Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == is->uidvalidity) {
 				CamelFolderChangeInfo *changes;
+				char *uid;
 
-				mi->uid = g_strdup_printf("%u", (guint)ic->status->u.appenduid.uid);
+				uid = g_strdup_printf("%u", (guint)ic->status->u.appenduid.uid);
+				mi->uid = camel_pstring_add (uid, TRUE);
 
 				cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
 				printf("Moving cache item %s to %s\n", job->u.append_message.path, cur);
