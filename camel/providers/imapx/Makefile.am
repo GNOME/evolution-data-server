@@ -62,6 +62,6 @@ test_imapx_LDADD =							\
 	$(top_builddir)/camel/libcamel-provider-1.2.la			\
 	libcamelimapx.la
 
-EXTRA_DIST = libcamelimapx.urls
+EXTRA_DIST = libcamelimapx.urls camel-imapx-tokens.txt
 
 -include $(top_srcdir)/git.mk
