@@ -224,6 +224,18 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 }
 
 static void
+imapx_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
+{
+	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
+	
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+		return;
+
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+		camel_imapx_server_sync_message (istore->server, folder, uid, ex);
+}
+
+static void
 imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		      CamelFolder *dest, GPtrArray **transferred_uids,
 		      gboolean delete_originals, CamelException *ex)
@@ -395,6 +407,7 @@ imap_folder_class_init (CamelIMAPXFolderClass *klass)
 
 	((CamelFolderClass *)klass)->expunge = imapx_expunge;
 	((CamelFolderClass *)klass)->get_message = imapx_get_message;
+	((CamelFolderClass *)klass)->sync_message = imapx_sync_message;
 	((CamelFolderClass *)klass)->append_message = imapx_append_message;
 	((CamelFolderClass *)klass)->transfer_messages_to = imapx_transfer_messages_to;
 	((CamelFolderClass *)klass)->get_filename = imapx_get_filename;

@@ -3730,6 +3730,24 @@ camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const 
 }
 
 void
+camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, CamelException *ex)
+{
+	gchar *cache_file = NULL;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+	CamelStream *stream;
+
+	cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", uid, NULL);
+	if (g_file_test (cache_file, G_FILE_TEST_EXISTS)) {
+		g_free (cache_file);
+		return;
+	}
+
+	stream = imapx_server_get_message (is, folder, uid, 10, ex);
+	if (stream)
+		camel_object_unref(stream);
+}
+
+void
 camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, CamelFolder *dest, GPtrArray *uids, gboolean delete_originals, CamelException *ex)
 {
 	CamelIMAPXJob *job;
