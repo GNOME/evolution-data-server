@@ -2251,7 +2251,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	if (job->u.get_message.use_multi_fetch) {
 
-		if (!failed && job->u.get_message.body_len == MULTI_SIZE) {
+		if (!failed && job->u.get_message.fetch_offset <= job->u.get_message.size) {
 			camel_imapx_command_free (ic);
 			camel_operation_progress (job->op, (job->u.get_message.fetch_offset *100)/job->u.get_message.size);
 
