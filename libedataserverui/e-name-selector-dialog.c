@@ -1172,6 +1172,8 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 	full_name_str = e_contact_get (contact, E_CONTACT_FULL_NAME);
 
 	if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
+		if (!full_name_str)
+			full_name_str = e_contact_get (contact, E_CONTACT_FILE_AS);
 		string = g_strdup_printf ("%s", full_name_str ? full_name_str : "?");
 	} else {
 		string = g_strdup_printf ("%s%s<%s>", full_name_str ? full_name_str : "",
