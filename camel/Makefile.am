@@ -107,7 +107,6 @@ libcamel_providerinclude_HEADERS =		\
 	camel-gpg-context.h			\
 	camel-http-stream.h			\
 	camel-html-parser.h			\
-	camel-iconv.h				\
 	camel-lock-helper.h			\
 	camel-movemail.h			\
 	camel-news-address.h			\
