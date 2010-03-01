@@ -778,21 +778,13 @@ cfs_count_dirty (CamelFolderSummary *s)
 
 /* FIXME[disk-summary] I should have a better LRU algorithm  */
 static gboolean
-remove_item (gchar *key, CamelMessageInfoBase *info, CamelFolderSummary *s)
+remove_item (gchar *key, CamelMessageInfoBase *info, GSList **to_free_list)
 {
 	d(printf("%d(%d)\t", info->refcount, info->dirty)); /* camel_message_info_dump (info); */
-	CAMEL_SUMMARY_LOCK(info->summary, ref_lock);
 	if (info->refcount == 1 && !info->dirty && !(info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
-		CAMEL_SUMMARY_UNLOCK(info->summary, ref_lock);
-		/* Hackit so that hashtable isn;t corrupted. */
-		/* FIXME: These uid strings are not yet freed. We should get this done soon. */
-		camel_pstring_free (info->uid);
-		info->uid = NULL;
-		/* Noone seems to need it. Why not free it then. */
-		camel_message_info_free (info);
+		*to_free_list = g_slist_prepend (*to_free_list, info);
 		return TRUE;
 	}
-	CAMEL_SUMMARY_UNLOCK(info->summary, ref_lock);
 	return FALSE;
 }
 
@@ -807,6 +799,7 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 	struct _folder_summary_free_msg *m = (struct _folder_summary_free_msg *)msg;
 	CamelFolderSummary *s = m->summary;
 	CamelException ex;
+	GSList *to_free_list = NULL, *l;
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 	camel_exception_init (&ex);
@@ -819,7 +812,17 @@ remove_cache (CamelSession *session, CamelSessionThreadMsg *msg)
 	dd(printf("removing cache for  %s %d %p\n", s->folder ? s->folder->full_name : s->summary_path, g_hash_table_size (s->loaded_infos), (gpointer) s->loaded_infos));
 	/* FIXME[disk-summary] hack. fix it */
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
-	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, s);
+
+	CAMEL_SUMMARY_LOCK(s, ref_lock);
+	g_hash_table_foreach_remove  (s->loaded_infos, (GHRFunc) remove_item, &to_free_list);
+	CAMEL_SUMMARY_UNLOCK(s, ref_lock);
+
+	/* Deferred freeing as _free function will try to remove
+	   entries from the hash_table in foreach_remove otherwise */
+	for (l = to_free_list; l; l = l->next)
+		camel_message_info_free (l->data);
+	g_slist_free (to_free_list);
+
 	CAMEL_SUMMARY_UNLOCK (s, summary_lock);
 	dd(printf("done .. now %d\n",g_hash_table_size (s->loaded_infos)));
 
