@@ -17,6 +17,9 @@ Does the low-level parsing work for contact information. This data is more conve
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EVCard ##### -->
 <para>
 
@@ -48,6 +51,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 </para>
 
+@void: 
 @Returns: 
 
 

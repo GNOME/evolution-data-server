@@ -19,6 +19,9 @@ Evolution:BookListener interface.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO E_BOOK_ERROR ##### -->
 <para>
 
@@ -31,6 +34,7 @@ Evolution:BookListener interface.
 
 </para>
 
+@void: 
 @Returns: 
 
 

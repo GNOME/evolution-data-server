@@ -18,6 +18,9 @@ EBookTypes
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EBookViewListener ##### -->
 <para>
 
@@ -59,6 +62,7 @@ Asynchronous events that are listened for.
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -19,6 +19,9 @@ addressbook itself.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EBookView ##### -->
 <para>
 #EBookView has no publicly available members.

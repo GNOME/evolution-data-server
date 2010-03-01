@@ -17,11 +17,15 @@ camel-iconv
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_iconv_locale_charset ##### -->
 <para>
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -30,6 +34,7 @@ camel-iconv
 
 </para>
 
+@void: 
 @Returns: 
 
 

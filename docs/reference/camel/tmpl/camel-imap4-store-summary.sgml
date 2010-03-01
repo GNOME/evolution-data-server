@@ -17,6 +17,9 @@ CamelIMAP4StoreSummary
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelIMAP4StoreInfo ##### -->
 <para>
 
@@ -40,6 +43,7 @@ CamelIMAP4StoreSummary
 
 </para>
 
+@void: 
 @Returns: 
 
 

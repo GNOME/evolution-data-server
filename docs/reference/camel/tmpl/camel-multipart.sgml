@@ -17,6 +17,9 @@ CamelMultipart
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMultipart ##### -->
 <para>
 
@@ -32,6 +35,7 @@ CamelMultipart
 
 </para>
 
+@void: 
 @Returns: 
 
 

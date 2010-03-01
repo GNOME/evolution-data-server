@@ -17,6 +17,9 @@ Contrast with the #e-cal-view-listener, which listens to #e-cal-view.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECalListener ##### -->
 <para>
 

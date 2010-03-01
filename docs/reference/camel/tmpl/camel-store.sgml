@@ -17,6 +17,9 @@ CamelStore
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelStore ##### -->
 <para>
 
@@ -435,6 +438,7 @@ CamelStore
 
 </para>
 
+@void: 
 @Returns: 
 
 

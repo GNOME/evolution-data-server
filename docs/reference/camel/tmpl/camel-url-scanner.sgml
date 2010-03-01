@@ -17,6 +17,9 @@ camel-url-scanner
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT urlmatch_t ##### -->
 <para>
 
@@ -132,6 +135,7 @@ camel-url-scanner
 
 </para>
 
+@void: 
 @Returns: 
 
 

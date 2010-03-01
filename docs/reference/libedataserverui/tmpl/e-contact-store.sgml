@@ -17,6 +17,9 @@ EContactStore
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EContactStore ##### -->
 <para>
 
@@ -28,6 +31,7 @@ EContactStore
 
 </para>
 
+@void: 
 @Returns: 
 
 

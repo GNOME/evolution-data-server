@@ -17,6 +17,9 @@ CamelNNTPAddress
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelNNTPAddress ##### -->
 <para>
 
@@ -30,6 +33,7 @@ CamelNNTPAddress
 
 </para>
 
+@void: 
 @Returns: 
 
 

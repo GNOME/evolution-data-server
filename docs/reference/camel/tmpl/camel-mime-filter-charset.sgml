@@ -17,6 +17,9 @@ CamelMimeFilterCharset
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelMimeFilterCharset ##### -->
 <para>
 
@@ -33,6 +36,7 @@ CamelMimeFilterCharset
 
 </para>
 
+@void: 
 @Returns: 
 
 

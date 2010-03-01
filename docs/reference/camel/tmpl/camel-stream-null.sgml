@@ -17,6 +17,9 @@ CamelStreamNull
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelStreamNull ##### -->
 <para>
 
@@ -30,6 +33,7 @@ CamelStreamNull
 
 </para>
 
+@void: 
 @Returns: 
 
 

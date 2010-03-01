@@ -17,6 +17,9 @@ camel-nntp-utils
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_nntp_get_headers ##### -->
 <para>
 

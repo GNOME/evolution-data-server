@@ -17,6 +17,9 @@ e-iconv
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION e_iconv_charset_name ##### -->
 <para>
 
@@ -62,6 +65,7 @@ e-iconv
 
 </para>
 
+@void: 
 @Returns: 
 
 
@@ -70,6 +74,7 @@ e-iconv
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ Listens for responses and event notifications sent by #e-cal-view.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT ECalViewListener ##### -->
 <para>
 
@@ -69,6 +72,7 @@ Listens for responses and event notifications sent by #e-cal-view.
 
 </para>
 
+@void: 
 @Returns: 
 
 

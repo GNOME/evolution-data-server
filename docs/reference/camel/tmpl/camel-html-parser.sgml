@@ -17,6 +17,9 @@ CamelHTMLParser
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelHTMLParser ##### -->
 <para>
 
@@ -50,6 +53,7 @@ CamelHTMLParser
 
 </para>
 
+@void: 
 @Returns: 
 
 

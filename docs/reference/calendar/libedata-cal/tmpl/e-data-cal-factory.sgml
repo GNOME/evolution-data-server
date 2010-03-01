@@ -17,6 +17,9 @@ Implementation of the calendar CORBA factory.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EDataCalFactory ##### -->
 <para>
 
@@ -35,6 +38,7 @@ Implementation of the calendar CORBA factory.
 
 </para>
 
+@void: 
 @Returns: 
 
 

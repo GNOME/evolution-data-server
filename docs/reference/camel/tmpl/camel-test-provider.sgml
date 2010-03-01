@@ -17,6 +17,9 @@ camel-test-provider
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_test_provider_init ##### -->
 <para>
 

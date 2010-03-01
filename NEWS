@@ -1,3 +1,39 @@
+Evolution-Data-Server 2.28.3 2010-03-01
+---------------------------------------
+
+Bug Fixes:
+        #602723 - Contact list name doesn't get displayed in 'To' dialog 
+	          (Milan Crha) 
+	#600322 - assertion failed: (reply == msg) in cs_waitinfo() 
+	          (Milan Crha)		  
+	#564727 - Few memory leaks (Milan Crha)
+	#574940 - Always ref returned info from message_info_from_uid 
+		  (Milan Crha)
+	#429317 - Use the relative URI returned if the server re-directs 
+		  a request (Petr Tomasek)
+	#602820 - Test validity of a book_view before using it in LDAP 
+	          (Milan Crha)
+	#590762 - Recurring google calendar items are not changeable
+	          (Milan Crha)
+	#604236 - Slow GPG processing (Milan Crha)
+	#597816 - Do not crash on incorrect parameters used in sexp to SQL 
+	          (Milan Crha)
+	#604544 - Try Exchange fallback authentication only once (Milan Crha)
+	#600778 - Fix --enable-e2k-debug configure option resolution (Milan Crha)
+	#260407 - 'endswith' address book search doesn't work (Milan Crha)
+	#549221 - (bnc) delete, sync flags immediately (Chenthill Palanisamy)
+
+Other Changes:
+	Level the differencies with the alternative runtime/header set 
+	(Fridrich Strba)
+	Get the prototype for strptime() when it's available
+	(Emilio Pozuelo Monfort)
+
+Translations:
+	Jiri Eischmann (cs)
+	Petr Kovar (cs) 
+	Stéphane Raimbault (fr)    
+
 Evolution-Data-Server 2.28.2 2009-12-14
 ---------------------------------------
 

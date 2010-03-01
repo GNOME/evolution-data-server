@@ -17,6 +17,9 @@ camel-utf8
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_utf8_putc ##### -->
 <para>
 

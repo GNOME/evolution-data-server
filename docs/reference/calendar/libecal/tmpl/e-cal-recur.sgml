@@ -17,6 +17,9 @@ Functions to expand recurrences for recurrent appointments.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### USER_FUNCTION ECalRecurInstanceFn ##### -->
 <para>
 
@@ -59,6 +62,7 @@ Functions to expand recurrences for recurrent appointments.
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ Utility functions for backends.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION e_cal_backend_mail_account_get_default ##### -->
 <para>
 

@@ -17,6 +17,9 @@ camel-search-sql-sexp
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### FUNCTION camel_sexp_to_sql_sexp ##### -->
 <para>
 

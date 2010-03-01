@@ -17,6 +17,9 @@ camel-imapp-exception
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelExceptionEnv ##### -->
 <para>
 
@@ -67,6 +70,7 @@ camel-imapp-exception
 
 </para>
 
+@void: 
 
 
 <!-- ##### FUNCTION camel_exception_try ##### -->

@@ -17,6 +17,9 @@ CamelIMAPPStoreSummary
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelIMAPPStoreSummary ##### -->
 <para>
 
@@ -50,6 +53,7 @@ CamelIMAPPStoreSummary
 
 </para>
 
+@void: 
 @Returns: 
 
 

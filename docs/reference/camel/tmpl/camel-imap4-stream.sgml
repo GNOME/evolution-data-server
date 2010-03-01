@@ -17,6 +17,9 @@ CamelIMAP4Stream
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO IMAP4_READ_PRELEN ##### -->
 <para>
 

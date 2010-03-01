@@ -17,6 +17,9 @@ EDataBookFactory
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EDataBookFactory ##### -->
 <para>
 
@@ -30,6 +33,7 @@ EDataBookFactory
 
 </para>
 
+@void: 
 @Returns: 
 
 

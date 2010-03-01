@@ -17,6 +17,9 @@ CamelStreamMem
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelStreamMem ##### -->
 <para>
 
@@ -32,6 +35,7 @@ CamelStreamMem
 
 </para>
 
+@void: 
 @Returns: 
 
 

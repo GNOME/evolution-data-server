@@ -17,6 +17,9 @@ camel-exception
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### ENUM ExceptionId ##### -->
 <para>
 
@@ -43,6 +46,7 @@ camel-exception
 
 </para>
 
+@void: 
 @Returns: 
 
 

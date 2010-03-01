@@ -17,6 +17,9 @@ EDestinationStore
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EDestinationStore ##### -->
 <para>
 
@@ -38,6 +41,7 @@ EDestinationStore
 
 </para>
 
+@void: 
 @Returns: 
 
 

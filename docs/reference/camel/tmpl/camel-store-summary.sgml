@@ -17,6 +17,9 @@ CamelStoreSummary
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelStoreInfo ##### -->
 <para>
 
@@ -86,6 +89,7 @@ CamelStoreSummary
 
 </para>
 
+@void: 
 @Returns: 
 
 

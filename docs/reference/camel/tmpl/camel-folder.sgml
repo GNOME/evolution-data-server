@@ -17,6 +17,9 @@ CamelFolder
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelFolder ##### -->
 <para>
 
@@ -604,6 +607,7 @@ CamelFolder
 
 </para>
 
+@void: 
 @Returns: 
 
 

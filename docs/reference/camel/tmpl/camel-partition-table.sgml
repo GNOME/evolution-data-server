@@ -17,6 +17,9 @@ CamelKeyTable
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### TYPEDEF camel_hash_t ##### -->
 <para>
 

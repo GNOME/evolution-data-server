@@ -18,6 +18,9 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT EBookListener ##### -->
 <para>
 
@@ -76,6 +79,7 @@ Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
 
 </para>
 
+@void: 
 @Returns: 
 
 

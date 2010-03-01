@@ -17,6 +17,9 @@ EAccount
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### ENUM e_account_item_t ##### -->
 <para>
 
@@ -113,6 +116,7 @@ EAccount
 
 </para>
 
+@void: 
 @Returns: 
 
 

@@ -17,6 +17,9 @@ CamelCipherContext
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelCipherContext ##### -->
 <para>
 
@@ -207,6 +210,7 @@ CamelCipherContext
 
 </para>
 
+@void: 
 @Returns: 
 
 

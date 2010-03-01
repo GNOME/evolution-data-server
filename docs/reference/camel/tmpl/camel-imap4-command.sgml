@@ -17,6 +17,9 @@ camel-imap4-command
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT CamelIMAP4Command ##### -->
 <para>
 
