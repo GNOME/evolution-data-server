@@ -264,6 +264,7 @@ static void imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static void imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic);
 static gint imapx_refresh_info_uid_cmp(gconstpointer ap, gconstpointer bp);
+static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
 
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _CamelIMAPXIdle {
@@ -2402,7 +2403,7 @@ cleanup:
 static void
 imapx_job_copy_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
-	g_ptr_array_sort (job->u.copy_messages.uids, (GCompareFunc) imapx_refresh_info_uid_cmp);
+	g_ptr_array_sort (job->u.copy_messages.uids, (GCompareFunc) imapx_uids_array_cmp);
 	imapx_uidset_init(&job->u.copy_messages.uidset, 0, MAX_COMMAND_LEN);
 	imapx_command_copy_messages_step_start (is, job, 0);
 }
@@ -3905,6 +3906,9 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, Came
 	job->op = camel_operation_registered ();
 	job->u.refresh_info.changes = camel_folder_change_info_new();
 
+	if (g_ascii_strcasecmp(folder->full_name, "INBOX") == 0)
+		job->pri += 10;
+	
 	imapx_run_job (is, job);
 
 	if (camel_folder_change_info_changed(job->u.refresh_info.changes))
