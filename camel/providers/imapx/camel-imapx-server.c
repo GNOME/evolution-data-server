@@ -803,11 +803,11 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 
 		if (imapx_in_idle (is) && !camel_dlist_empty (&is->queue)) {
 			imapx_stop_idle (is, ex);
-			printf ("waiting for idle to stop \n");
+			c(printf ("waiting for idle to stop \n"));
 			return;
 		} else if (empty && !imapx_in_idle (is)) {
 			imapx_start_idle (is);
-			printf ("starting idle \n");
+			c(printf ("starting idle \n"));
 			return;
 		}
 	}
@@ -823,12 +823,12 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 	if (is->select) {
 		c(printf("- we're selected on '%s', current jobs?\n", is->select));
 		for (ic = (CamelIMAPXCommand *)is->active.head;ic->next;ic=ic->next) {
-			printf("-  %3d '%s'\n", (gint)ic->pri, ic->name);
+			c(printf("-  %3d '%s'\n", (gint)ic->pri, ic->name));
 			if (ic->pri > pri)
 				pri = ic->pri;
 			count++;
 			if (count > MAX_COMMANDS) {
-				printf("** too many jobs busy, waiting for results for now\n");
+				c(printf("** too many jobs busy, waiting for results for now\n"));
 				return;
 			}
 		}
@@ -838,7 +838,7 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 		ic = (CamelIMAPXCommand *)is->queue.head;
 		nc = ic->next;
 		while (nc && is->literal == NULL && count < MAX_COMMANDS && ic->pri >= pri) {
-			printf("-- %3d '%s'?\n", (gint)ic->pri, ic->name);
+			c(printf("-- %3d '%s'?\n", (gint)ic->pri, ic->name));
 			if (ic->select == NULL || strcmp(ic->select, is->select) == 0) {
 				c(printf("--> starting '%s'\n", ic->name));
 				pri = ic->pri;
@@ -1027,7 +1027,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		if (imap->cinfo)
 			imapx_free_capability(imap->cinfo);
 		imap->cinfo = imapx_parse_capability(imap->stream, ex);
-		printf("got capability flags %08x\n", imap->cinfo->capa);
+		c(printf("got capability flags %08x\n", imap->cinfo->capa));
 		return 0;
 	case IMAPX_EXPUNGE: {
 		guint32 expunge = id;
@@ -1037,7 +1037,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		if (job)
 			break;
 		
-		printf("expunged: %d\n", id);
+		c(printf("expunged: %d\n", id));
 		if (imap->select_folder) {
 			gchar *uid = NULL;
 			CamelMessageInfo *mi;
@@ -1147,7 +1147,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 				camel_object_ref(imap->select_folder);
 				folder = imap->select_folder;
 
-				printf("flag changed: %d\n", id);
+				c(printf("flag changed: %d\n", id));
 
 				if ( (uid = camel_folder_summary_uid_from_index (folder->summary, id - 1)))
 				{
@@ -1285,10 +1285,12 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 
 		// TODO: we want to make sure the names match?
 
-		if (job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)
-			printf("lsub: '%s' (%c)\n", linfo->name, linfo->separator);
-		else
-			printf("list: '%s' (%c)\n", linfo->name, linfo->separator);
+		if (job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
+			c(printf("lsub: '%s' (%c)\n", linfo->name, linfo->separator));
+			
+		} else {
+			c(printf("list: '%s' (%c)\n", linfo->name, linfo->separator));
+		}
 		
 		if (job && g_hash_table_lookup(job->u.list.folders, linfo->name) == NULL) {
 			if (lsub)
@@ -1301,7 +1303,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		break;
 	}
 	case IMAPX_RECENT:
-		printf("recent: %d\n", id);
+		c(printf("recent: %d\n", id));
 		imap->recent = id;
 		break;
 	case IMAPX_STATUS: {
@@ -1324,11 +1326,11 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		switch (sinfo->condition) {
 		case IMAPX_READ_WRITE:
 			imap->mode = IMAPX_MODE_READ|IMAPX_MODE_WRITE;
-			printf("folder is read-write\n");
+			c(printf("folder is read-write\n"));
 			break;
 		case IMAPX_READ_ONLY:
 			imap->mode = IMAPX_MODE_READ;
-			printf("folder is read-only\n");
+			c(printf("folder is read-only\n"));
 			break;
 		case IMAPX_UIDVALIDITY:
 			imap->uidvalidity = sinfo->u.uidvalidity;
@@ -1340,10 +1342,10 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			imap->permanentflags = sinfo->u.permanentflags;
 			break;
 		case IMAPX_ALERT:
-			printf("ALERT!: %s\n", sinfo->text);
+			c(printf("ALERT!: %s\n", sinfo->text));
 			break;
 		case IMAPX_PARSE:
-			printf("PARSE: %s\n", sinfo->text);
+			c(printf("PARSE: %s\n", sinfo->text));
 			break;
 		default:
 			break;
@@ -1352,7 +1354,7 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		return 0;
 	default:
 		/* unknown response, just ignore it */
-		printf("unknown token: %s\n", token);
+		c(printf("unknown token: %s\n", token));
 	}
 
 	return camel_imapx_stream_skip(imap->stream, ex);
@@ -1366,7 +1368,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 	CamelIMAPXCommand *ic, *newliteral = NULL;
 	CamelIMAPXCommandPart *cp;
 
-	printf("got continuation response\n");
+	c(printf("got continuation response\n"));
 
 	CAMEL_SERVICE_REC_LOCK (imap->store, connect_lock);
 	/* The 'literal' pointer is like a write-lock, nothing else
@@ -1378,7 +1380,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 
 		CAMEL_SERVICE_REC_UNLOCK (imap->store, connect_lock);
 		
-		printf("Got continuation response for IDLE \n");
+		c(printf("Got continuation response for IDLE \n"));
 		imap->idle->started = TRUE;
 
 		QUEUE_LOCK(imap);
@@ -1393,19 +1395,19 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 	if (ic == NULL) {
 		camel_imapx_stream_skip(imap->stream, ex);
 		CAMEL_SERVICE_REC_UNLOCK (imap->store, connect_lock);
-		printf("got continuation response with no outstanding continuation requests?\n");
+		c(printf("got continuation response with no outstanding continuation requests?\n"));
 		return 1;
 	}
 
-	printf("got continuation response for data\n");
+	c(printf("got continuation response for data\n"));
 	cp = ic->current;
 	switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
-		printf("writing data wrapper to literal\n");
+		c(printf("writing data wrapper to literal\n"));
 		camel_data_wrapper_write_to_stream((CamelDataWrapper *)cp->ob, (CamelStream *)imap->stream);
 		break;
 	case CAMEL_IMAPX_COMMAND_STREAM:
-		printf("writing stream to literal\n");
+		c(printf("writing stream to literal\n"));
 		camel_stream_write_to_stream((CamelStream *)cp->ob, (CamelStream *)imap->stream);
 		break;
 	case CAMEL_IMAPX_COMMAND_AUTH: {
@@ -1419,7 +1421,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 		if (camel_exception_is_set(ex))
 			return -1;
 
-		printf("got auth continuation, feeding token '%s' back to auth mech\n", resp);
+		c(printf("got auth continuation, feeding token '%s' back to auth mech\n", resp));
 
 		camel_stream_write((CamelStream *)imap->stream, resp, strlen(resp));
 
@@ -1431,7 +1433,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 	case CAMEL_IMAPX_COMMAND_FILE: {
 		CamelStream *file;
 
-		printf("writing file '%s' to literal\n", (gchar *)cp->ob);
+		c(printf("writing file '%s' to literal\n", (gchar *)cp->ob));
 
 		// FIXME: errors
 		if (cp->ob && (file = camel_stream_fs_new_with_name(cp->ob, O_RDONLY, 0))) {
@@ -1457,7 +1459,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 	cp = cp->next;
 	if (cp->next) {
 		ic->current = cp;
-		printf("next part of command \"A%05u: %s\"\n", ic->tag, cp->data);
+		c(printf("next part of command \"A%05u: %s\"\n", ic->tag, cp->data));
 		camel_stream_printf((CamelStream *)imap->stream, "%s\r\n", cp->data);
 		if (cp->type & CAMEL_IMAPX_COMMAND_CONTINUATION) {
 			newliteral = ic;
@@ -1465,7 +1467,7 @@ imapx_continuation(CamelIMAPXServer *imap, CamelException *ex)
 			g_assert(cp->next->next == NULL);
 		}
 	} else {
-		printf("%p: queueing continuation\n", ic);
+		c(printf("%p: queueing continuation\n", ic));
 		camel_stream_printf((CamelStream *)imap->stream, "\r\n");
 	}
 	
@@ -1745,7 +1747,7 @@ idle_thread (gpointer data)
 			imapx_server_fetch_new_messages (is, is->select_folder, TRUE, ex);
 
 		if (camel_exception_is_set (ex)) {
-			printf ("Caught exception in idle thread:  %s \n", ex->desc);
+			e(printf ("Caught exception in idle thread:  %s \n", ex->desc));
 			/* No way to asyncronously notify UI ? */
 			camel_exception_clear (ex);
 		}
@@ -1859,7 +1861,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 		CamelDList failed;
 		CamelIMAPXCommand *cw, *cn;
 
-		printf("Select failed\n");
+		c(printf("Select failed\n"));
 		camel_dlist_init (&failed);
 
 		QUEUE_LOCK(is);
@@ -1895,7 +1897,7 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_object_unref(is->select_pending);
 	} else {
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_pending;
-		printf("Select ok!\n");
+		c(printf("Select ok!\n"));
 
 		is->select_folder = is->select_pending;
 		is->select = g_strdup(is->select_folder->full_name);
@@ -2202,7 +2204,7 @@ retry:
 
 exception:
 	if (ex->id != CAMEL_EXCEPTION_USER_CANCEL) {
-		printf("Re Connection failed: %s\n", ex->desc);
+		c(printf("Re Connection failed: %s\n", ex->desc));
 		imapx_disconnect (is);
 		sleep(1);
 		// camelexception_done?
@@ -2428,7 +2430,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	if (!camel_exception_is_set (ic->ex) && ic->status->result == IMAPX_OK) {
 		if (ic->status->condition == IMAPX_APPENDUID) {
-			printf("Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid);
+			c(printf("Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid));
 			if (ic->status->u.appenduid.uidvalidity == is->uidvalidity) {
 				CamelFolderChangeInfo *changes;
 				char *uid;
@@ -2437,7 +2439,6 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				mi->uid = camel_pstring_add (uid, TRUE);
 
 				cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
-				printf("Moving cache item %s to %s\n", job->u.append_message.path, cur);
 				link (job->u.append_message.path, cur);
 
 				/* should we update the message count ? */
@@ -2451,7 +2452,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 				g_free(cur);
 			} else {
-				printf("but uidvalidity changed, uh ...\n");
+				g_message ("but uidvalidity changed \n");
 			}
 		}
 	} else {
@@ -2545,7 +2546,7 @@ imapx_index_next (GPtrArray *uids, CamelFolderSummary *s, guint index)
 
 		if (info && (strchr(camel_message_info_uid(info), '-') != NULL)) {
 			camel_message_info_free (info);
-			printf("Ignoring offline uid '%s'\n", camel_message_info_uid(info));
+			e(printf("Ignoring offline uid '%s'\n", camel_message_info_uid(info)));
 		} else {
 			camel_message_info_free (info);
 			break;
@@ -2734,7 +2735,7 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				continue;
 			}
 
-			printf("Message %s vanished\n", s_minfo->uid);
+			e(printf("Message %s vanished\n", s_minfo->uid));
 			removed = g_slist_prepend (removed, (gpointer) g_strdup (s_minfo->uid));
 			camel_message_info_free (s_minfo);
 			j++;
@@ -2894,7 +2895,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	}
 
 	/* Fetch the new messages */
-	if (ifolder->exists_on_server > total || total == 0)
+	if (ifolder->exists_on_server > total)
 	{
 		imapx_server_fetch_new_messages (is, folder, FALSE, job->ex);
 		if (camel_exception_is_set (job->ex))
@@ -3017,7 +3018,7 @@ imapx_command_list_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (ic->job->ex, ic->ex);
 	}
 
-	printf ("==== list or lsub completed ==== \n");
+	e(printf ("==== list or lsub completed ==== \n"));
 	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
 }
@@ -3182,7 +3183,7 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 			if ((orset & flag) == 0)
 				continue;
 
-			printf("checking/storing %s flags '%s'\n", on?"on":"off", flags_table[j].name);
+			c(printf("checking/storing %s flags '%s'\n", on?"on":"off", flags_table[j].name));
 			imapx_uidset_init(&ss, 0, 100);
 			for (i = 0; i < uids->len; i++) {
 				CamelIMAPXMessageInfo *info = (CamelIMAPXMessageInfo *)camel_folder_summary_uid
@@ -3251,7 +3252,6 @@ imapx_job_sync_changes_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	   lock the commands count, ho hum */
 
 	if (job->commands == 0) {
-		printf("Hmm, we didn't have any work to do afterall?  hmm, this isn't right\n");
 		imapx_job_done (is, job);
 	}
 }
@@ -3626,7 +3626,7 @@ imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 		job->start (is, job);
 	} else {
-		printf ("NO connection yet, maybe user cancellled jobs earlier ?");
+		e(printf ("NO connection yet, maybe user cancelled jobs earlier ?"));
 		camel_exception_set (job->ex, CAMEL_EXCEPTION_SERVICE_NOT_CONNECTED, "Not authenticated");
 		return;
 	}
@@ -3908,7 +3908,6 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is, CamelFolder *folder, Came
 
 	if (g_ascii_strcasecmp(folder->full_name, "INBOX") == 0)
 		job->pri += 10;
-	
 	imapx_run_job (is, job);
 
 	if (camel_folder_change_info_changed(job->u.refresh_info.changes))

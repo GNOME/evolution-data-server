@@ -69,7 +69,7 @@ stream_fill(CamelIMAPXStream *is)
 		}
 	}
 
-	printf("camel_imapx_read: -1\n");
+	io(printf("camel_imapx_read: -1\n"));
 
 	return -1;
 }
@@ -269,7 +269,7 @@ camel_imapx_stream_atom(CamelIMAPXStream *is, guchar **data, guint *lenp, CamelE
 		return IMAPX_TOK_ERROR;
 	default:
 		camel_exception_set (ex, 1, "expecting atom");
-		printf("expecting atom!\n");
+		io(printf("expecting atom!\n"));
 		return IMAPX_TOK_PROTOCOL;
 	}
 }
@@ -291,7 +291,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, CamelException *
 		/* FIXME: just grow buffer */
 		if (len >= CAMEL_IMAPX_STREAM_TOKEN) {
 			camel_exception_set (ex, 1, "astring: literal too long");
-			printf("astring too long\n");
+			io(printf("astring too long\n"));
 			return IMAPX_TOK_PROTOCOL;
 		}
 		p = is->tokenptr;
@@ -310,7 +310,7 @@ camel_imapx_stream_astring(CamelIMAPXStream *is, guchar **data, CamelException *
 		return IMAPX_TOK_ERROR;
 	default:
 		camel_exception_set (ex, 1, "expecting astring");
-		printf("expecting astring!\n");
+		io(printf("expecting astring!\n"));
 		return IMAPX_TOK_PROTOCOL;
 	}
 }
@@ -524,10 +524,11 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 						e = is->end;
 					}
 				} else {
-					if (isdigit(c))
-						printf("Protocol error: literal too big\n");
-					else
-						printf("Protocol error: literal contains invalid gchar %02x '%c'\n", c, isprint(c)?c:c);
+					if (isdigit(c)) {
+						io(printf("Protocol error: literal too big\n"));
+					} else {
+						io(printf("Protocol error: literal contains invalid gchar %02x '%c'\n", c, isprint(c)?c:c));
+					}
 					goto protocol_error;
 				}
 			}
@@ -562,10 +563,13 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 				}
 
 				if (c == '\n' || c == '\r' || o>=oe) {
-					if (o >= oe)
-						printf("Protocol error: string too long\n");
-					else
-						printf("Protocol error: truncated string\n");
+					if (o >= oe) {
+						io(printf("Protocol error: string too long\n"));
+						
+					} else {
+						io(printf("Protocol error: truncated string\n"));
+					}
+
 					goto protocol_error;
 				} else {
 					*o++ = c;
@@ -600,7 +604,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 					digits &= isdigit(c);
 					*o++ = c;
 				} else {
-					printf("Protocol error: token too long\n");
+					io(printf("Protocol error: token too long\n"));
 					goto protocol_error;
 				}
 			}
@@ -619,7 +623,7 @@ io_error:
 
 	/* Protocol error, skip until next lf? */
 protocol_error:
-	printf("Got protocol error\n");
+	io(printf("Got protocol error\n"));
 
 	if (c == '\n')
 		is->ptr = p-1;
@@ -712,7 +716,7 @@ camel_imapx_stream_skip(CamelIMAPXStream *is, CamelException *ex)
 		if (tok == IMAPX_TOK_LITERAL) {
 			camel_imapx_stream_set_literal(is, len);
 			while ((tok = camel_imapx_stream_getl(is, &token, &len)) > 0) {
-				printf("Skip literal data '%.*s'\n", (gint)len, token);
+				io(printf("Skip literal data '%.*s'\n", (gint)len, token));
 			}
 		}
 	} while (tok != '\n' && tok >= 0);

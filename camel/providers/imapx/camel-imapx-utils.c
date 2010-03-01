@@ -413,7 +413,7 @@ imapx_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 				while ((c = *p))
 					*p++ = toupper(c);
 			case IMAPX_TOK_INT:
-				printf(" cap: '%s'\n", token);
+				d(printf(" cap: '%s'\n", token));
 				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
 					if (!strcmp((gchar *) token, capa_table[i].name))
 						cinfo->capa |= capa_table[i].flag;
@@ -1301,9 +1301,9 @@ imapx_dump_fetch(struct _fetch_info *finfo)
 	CamelStream *sout;
 	gint fd;
 
-	printf("Fetch info:\n");
+	d(printf("Fetch info:\n"));
 	if (finfo == NULL) {
-		printf("Empty\n");
+		d(printf("Empty\n"));
 		return;
 	}
 
@@ -1633,7 +1633,7 @@ imapx_parse_status(CamelIMAPXStream *is, CamelException *ex)
 				break;
 			default:
 				sinfo->condition = IMAPX_UNKNOWN;
-				printf("Got unknown response code: %s: ignored\n", token);
+				d(printf("Got unknown response code: %s: ignored\n", token));
 		}
 
 		/* ignore anything we dont know about */
