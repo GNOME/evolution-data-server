@@ -66,7 +66,7 @@ struct _CamelIMAPXServer {
 
 	/* Current command/work queue.  All commands are stored in one list,
 	   all the time, so they can be cleaned up in exception cases */
-	gpointer queue_lock;
+	GStaticRecMutex queue_lock;
 	struct _CamelIMAPXCommand *literal;
 	CamelDList queue;
 	CamelDList active;

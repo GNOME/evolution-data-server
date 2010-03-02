@@ -210,10 +210,9 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 		}
 	}
 
-	if (!camel_exception_is_set (ex)) {
+	if (!camel_exception_is_set (ex) && stream) {
 		msg = camel_mime_message_new();
 		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
-			camel_exception_setv(ex, 1, "error building message?");
 			camel_object_unref(msg);
 			msg = NULL;
 		}
