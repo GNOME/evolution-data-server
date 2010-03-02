@@ -883,7 +883,9 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 static void
 camel_imapx_store_init (gpointer object, gpointer klass)
 {
-	/*CamelIMAPXStore *istore = object;*/
+	CamelStore *store = (CamelStore *) object;
+
+	store->flags |= CAMEL_STORE_ASYNC;
 }
 
 static void

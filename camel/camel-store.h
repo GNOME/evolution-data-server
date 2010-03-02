@@ -116,6 +116,7 @@ typedef struct _CamelRenameInfo {
 #define CAMEL_STORE_VJUNK		(1 << 3)
 #define CAMEL_STORE_PROXY		(1 << 4)
 #define CAMEL_STORE_IS_MIGRATING (1 << 5)
+#define CAMEL_STORE_ASYNC		(1 << 6)
 
 struct _CamelDB;
 

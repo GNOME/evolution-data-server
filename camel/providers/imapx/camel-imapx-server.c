@@ -3731,7 +3731,7 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 	
 	if (imapx_is_job_in_queue (is, folder->full_name, IMAPX_JOB_GET_MESSAGE, uid)) {
 		/* TODO set a right exception */
-		camel_exception_set (ex, 1, "Dowloading message... \n");
+		camel_exception_set (ex, CAMEL_EXCEPTION_OPERATION_IN_PROGRESS, "Downloading message...");
 		QUEUE_UNLOCK (is);
 		return NULL;
 	}
