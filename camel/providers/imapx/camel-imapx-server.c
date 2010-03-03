@@ -270,7 +270,7 @@ typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _CamelIMAPXIdle {
 	GMutex *idle_lock;
 	EFlag *idle_start_watch;
-	pthread_t idle_thread_id;
+	GThread *idle_thread;
 
 	gboolean idle_issue_done;
 	gboolean in_idle;
@@ -1823,7 +1823,7 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is, CamelFolder *folder, gboo
 }
 
 static gpointer
-idle_thread (gpointer data)
+imapx_idle_thread (gpointer data)
 {
 	CamelException *ex = camel_exception_new ();
 	CamelIMAPXServer *is = (CamelIMAPXServer *) data;
@@ -1851,6 +1851,7 @@ idle_thread (gpointer data)
 	}
 
 	camel_exception_free (ex);
+	is->idle->idle_thread = NULL;
 	return NULL;
 }
 
@@ -1886,13 +1887,15 @@ imapx_exit_idle (CamelIMAPXServer *is)
 
 	IDLE_LOCK (idle);
 
-	if (idle->idle_thread_id) {
+	if (idle->idle_thread) {
 		idle->idle_exit = TRUE;
 		e_flag_set (idle->idle_start_watch);
 
-		pthread_join (idle->idle_thread_id, NULL);
+		if (idle->idle_thread)
+			g_thread_join (idle->idle_thread);
 	}
 
+	idle->idle_thread = NULL;
 	IDLE_UNLOCK (idle);
 
 	g_mutex_free (idle->idle_lock);
@@ -1913,9 +1916,9 @@ imapx_start_idle (CamelIMAPXServer *is)
 
 	IDLE_LOCK (idle);
 
-	if (!idle->idle_thread_id) {
+	if (!idle->idle_thread) {
 		idle->idle_start_watch = e_flag_new ();
-		pthread_create (&idle->idle_thread_id, NULL, idle_thread, is);
+		idle->idle_thread = g_thread_create ((GThreadFunc) imapx_idle_thread, is, TRUE, NULL);
 	} else
 		e_flag_set (idle->idle_start_watch);
 
@@ -3541,6 +3544,7 @@ quit:
 	if (op)
 		camel_operation_unref (op);
 
+	is->parser_thread = NULL;
 	return NULL;
 }
 
@@ -3676,7 +3680,6 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 
 	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
 	if (state) {
-		pthread_t id;
 		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 
 		if (is->state == IMAPX_AUTHENTICATED || is->state == IMAPX_SELECTED) {
@@ -3692,8 +3695,7 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 			goto exit;
 		}
 
-		pthread_create(&id, NULL, imapx_parser_thread, is);
-		is->parser_thread_id = id;
+		is->parser_thread = g_thread_create((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
 		ret = TRUE;
 	} else {
 		imapx_disconnect (is);
@@ -3703,7 +3705,8 @@ camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
 
 		CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
 
-		pthread_join (is->parser_thread_id, NULL);
+		if (is->parser_thread)
+			g_thread_join (is->parser_thread);
 		return TRUE;
 	}
 

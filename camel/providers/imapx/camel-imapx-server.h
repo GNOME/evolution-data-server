@@ -91,7 +91,7 @@ struct _CamelIMAPXServer {
 
 	/* connect_lock used for locking input stream locking and 
 	   ostream_lock for locking output stream */
-	pthread_t parser_thread_id;
+	GThread *parser_thread;
 	GStaticRecMutex ostream_lock;
 
 	/* Idle */
