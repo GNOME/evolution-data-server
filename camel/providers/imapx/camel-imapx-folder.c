@@ -53,7 +53,8 @@
 #define d(x)
 
 #define CF_CLASS(o) (CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(o)))
-static CamelFolderClass *parent_class;
+static CamelObjectClass *parent_class;
+static CamelOfflineFolderClass *offline_folder_class = NULL;
 
 CamelFolder *
 camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *folder_name, CamelException *ex)
@@ -397,6 +398,8 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, CamelE
 static void
 imap_folder_class_init (CamelIMAPXFolderClass *klass)
 {
+	offline_folder_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
+	
 	((CamelFolderClass *)klass)->refresh_info = imapx_refresh_info;
 	((CamelFolderClass *)klass)->sync = imapx_sync;
 	((CamelFolderClass *)klass)->search_by_expression = imapx_search_by_expression;
@@ -445,14 +448,14 @@ camel_imapx_folder_get_type (void)
 	static CamelType camel_imapx_folder_type = CAMEL_INVALID_TYPE;
 
 	if (!camel_imapx_folder_type) {
-		camel_imapx_folder_type = camel_type_register (CAMEL_FOLDER_TYPE, "CamelIMAPXFolder",
+		parent_class = camel_offline_folder_get_type();
+		camel_imapx_folder_type = camel_type_register (parent_class, "CamelIMAPXFolder",
 							      sizeof (CamelIMAPXFolder),
 							      sizeof (CamelIMAPXFolderClass),
 							      (CamelObjectClassInitFunc)imap_folder_class_init,
 							      NULL,
 							      imap_folder_init,
 							      (CamelObjectFinalizeFunc) imap_finalize);
-		parent_class = (CamelFolderClass *)camel_folder_get_type();
 	}
 
 	return camel_imapx_folder_type;

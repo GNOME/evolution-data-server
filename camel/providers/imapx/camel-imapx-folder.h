@@ -29,6 +29,7 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus }*/
 
+#include <camel/camel-offline-folder.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-data-cache.h>
 
@@ -38,7 +39,7 @@ extern "C" {
 #define CAMEL_IS_IMAPX_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPX_FOLDER_TYPE))
 
 typedef struct _CamelIMAPXFolder {
-	CamelFolder parent_object;
+	CamelOfflineFolder parent_object;
 
 	gchar *raw_name;
 	CamelDataCache *cache;
@@ -51,7 +52,7 @@ typedef struct _CamelIMAPXFolder {
 } CamelIMAPXFolder;
 
 typedef struct _CamelIMAPXFolderClass {
-	CamelFolderClass parent_class;
+	CamelOfflineFolderClass parent_class;
 } CamelIMAPXFolderClass;
 
 /* Standard Camel function */

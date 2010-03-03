@@ -61,7 +61,7 @@
 /* Specified in RFC 2060 section 2.1 */
 #define IMAP_PORT 143
 
-static CamelStoreClass *parent_class = NULL;
+static CamelOfflineStoreClass *parent_class = NULL;
 
 static guint
 imapx_name_hash(gconstpointer key)
@@ -852,7 +852,7 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 	CamelServiceClass *camel_service_class = CAMEL_SERVICE_CLASS(klass);
 	CamelStoreClass *camel_store_class = CAMEL_STORE_CLASS(klass);
 
-	parent_class = CAMEL_STORE_CLASS(camel_type_get_global_classfuncs(camel_store_get_type()));
+	parent_class = CAMEL_OFFLINE_STORE_CLASS (camel_type_get_global_classfuncs (camel_offline_store_get_type ()));
 
 	camel_service_class->construct = imapx_construct;
 	camel_service_class->query_auth_types = imapx_query_auth_types;
