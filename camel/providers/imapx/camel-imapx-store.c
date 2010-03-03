@@ -518,8 +518,10 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
-			if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
+			if (!g_ascii_strcasecmp(fi->full_name, "inbox")) {
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
+				fi->flags |= CAMEL_FOLDER_SYSTEM;	
+			}
 
 			if (si->flags & CAMEL_FOLDER_NOSELECT) {
 				CamelURL *url = camel_url_new(fi->uri, NULL);
