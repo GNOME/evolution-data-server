@@ -2332,7 +2332,8 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 		if (!failed && job->u.get_message.fetch_offset <= job->u.get_message.size) {
 			camel_imapx_command_free (ic);
-			camel_operation_progress (job->op, (job->u.get_message.fetch_offset *100)/job->u.get_message.size);
+			if (job->op)
+				camel_operation_progress (job->op, (job->u.get_message.fetch_offset *100)/job->u.get_message.size);
 
 			ic = camel_imapx_command_new("FETCH", job->folder->full_name,
 					"UID FETCH %t (BODY.PEEK[]", job->u.get_message.uid);
@@ -2383,7 +2384,8 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 		if (stream)
 			camel_object_unref (stream);
-		camel_operation_end (job->op);
+		if (job->op)
+			camel_operation_end (job->op);
 		imapx_job_done (is, job);
 	}
 
@@ -3711,7 +3713,7 @@ exit:
 }
 
 static CamelStream *
-imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, gint pri, CamelException *ex)
+imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperation *op, const gchar *uid, gint pri, CamelException *ex)
 {
 	CamelStream *stream = NULL, *tmp_stream;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
@@ -3743,7 +3745,7 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 	job->type = IMAPX_JOB_GET_MESSAGE;
 	job->start = imapx_job_get_message_start;
 	job->folder = folder;
-	job->op = camel_operation_registered ();
+	job->op = op;
 	job->u.get_message.uid = (gchar *)uid;
 	job->u.get_message.stream = tmp_stream;
 	job->ex = ex;
@@ -3763,8 +3765,6 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 		stream = camel_data_cache_get (ifolder->cache, "cur", uid, NULL);
 	}
 
-	if (job->op)
-		camel_operation_unref (job->op);
 	g_free(job);
 
 	return stream;
@@ -3773,7 +3773,14 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar
 CamelStream *
 camel_imapx_server_get_message(CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
-	return imapx_server_get_message(is, folder, uid, 100, ex);
+	CamelStream *stream;
+	CamelOperation *op = camel_operation_registered ();
+	
+	stream = imapx_server_get_message(is, folder, op, uid, 100, ex);
+	if (op)
+		camel_operation_unref (op);
+
+	return stream;
 }
 
 void
@@ -3789,7 +3796,7 @@ camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder, cons
 		return;
 	}
 
-	stream = imapx_server_get_message (is, folder, uid, 10, ex);
+	stream = imapx_server_get_message (is, folder, NULL, uid, 10, ex);
 	if (stream)
 		camel_object_unref(stream);
 }
