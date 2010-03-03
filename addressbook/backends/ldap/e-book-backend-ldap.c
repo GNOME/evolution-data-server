@@ -50,6 +50,7 @@
 #undef interface
 #include <winldap.h>
 #define LDAP_RES_RENAME LDAP_RES_MODRDN
+#include <winber.h>
 #include "openldap-extract.h"
 
 /* map between the WinLDAP API and OpenLDAP API */
