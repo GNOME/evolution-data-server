@@ -93,6 +93,9 @@ struct _CamelIMAPXServer {
 	   ostream_lock for locking output stream */
 	GThread *parser_thread;
 	GStaticRecMutex ostream_lock;
+	GStaticRecMutex istream_lock;
+	gboolean parser_quit;
+	CamelOperation *op;
 
 	/* Idle */
 	struct _CamelIMAPXIdle *idle;

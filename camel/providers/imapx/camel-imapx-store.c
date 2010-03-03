@@ -687,8 +687,18 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, Cam
 
 			flags |= CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 			fetch_folders_for_pattern (istore, pat, flags, folders, ex);
+			if (camel_exception_is_set (ex)) {
+				g_free (pat);
+				goto exception;
+			}
+			
 			flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
+			
 			fetch_folders_for_pattern (istore, pat, flags, folders, ex);
+			if (camel_exception_is_set (ex)) {
+				g_free (pat);
+				goto exception;
+			}
 
 			g_free (pat);
 
@@ -700,6 +710,10 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, Cam
 	}
 
 	return folders;
+
+exception:
+	g_hash_table_destroy (folders);
+	return NULL;
 }
 
 static void
@@ -709,6 +723,8 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 	gint i, total;
 
 	folders_from_server = fetch_folders_for_namespaces (istore, pattern, ex);
+	if (camel_exception_is_set (ex))
+		return;
 
 	total = camel_store_summary_count ((CamelStoreSummary *) istore->summary);
 	for (i = 0; i < total; i++) {
