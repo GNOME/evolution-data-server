@@ -2286,7 +2286,7 @@ exception:
 	if (ex->id != CAMEL_EXCEPTION_USER_CANCEL) {
 		c(printf("Re Connection failed: %s\n", ex->desc));
 		imapx_disconnect (is);
-		g_sleep(1);
+		g_usleep(1);
 		// camelexception_done?
 		camel_exception_clear (ex);
 		goto retry;
@@ -3442,7 +3442,7 @@ imapx_parser_thread (gpointer d)
 
 			res = PR_Poll(pollfds, 2, PR_MillisecondsToInterval (30 * 1000));
 			if (res == -1)
-				sleep(1) /* ?? */ ;
+				g_usleep(1) /* ?? */ ;
 			else if (res == 0) {
 				/* timed out */
 			} else if ((pollfds[0].out_flags & PR_POLL_READ)) {
@@ -3467,7 +3467,7 @@ imapx_parser_thread (gpointer d)
 
 			res = g_poll(fds, 2, 1000*30);
 			if (res == -1)
-				sleep(1) /* ?? */ ;
+				g_usleep(1) /* ?? */ ;
 			else if (res == 0)
 				/* timed out */;
 			else if (fds[0].revents & G_IO_IN) {
