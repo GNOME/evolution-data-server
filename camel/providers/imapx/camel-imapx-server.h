@@ -89,13 +89,13 @@ struct _CamelIMAPXServer {
 	   processed after the command completes. */
 	GSList *expunged;
 
-	/* connect_lock used for locking input stream locking and 
-	   ostream_lock for locking output stream */
 	GThread *parser_thread;
+	/* Protects the output stream between parser thread (which can disconnect from server) and other threads that issue
+	   commands. Input stream does not require a lock since only parser_thread can operate on it */
 	GStaticRecMutex ostream_lock;
-	GStaticRecMutex istream_lock;
-	gboolean parser_quit;
+	/* Used for canceling operations as well as signaling parser thread to disconnnect/quit */
 	CamelOperation *op;
+	gboolean parser_quit;
 
 	/* Idle */
 	struct _CamelIMAPXIdle *idle;

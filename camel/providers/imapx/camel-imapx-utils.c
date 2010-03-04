@@ -39,6 +39,7 @@ imapx_tokenise (register const gchar *str, register guint len)
 
 static void imapx_namespace_clear (CamelIMAPXStoreNamespace **ns);
 static const gchar * rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo);
+static GPtrArray *imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex);
 
 /* flag table */
 static struct {
@@ -1503,51 +1504,43 @@ imapx_parse_status_info (struct _CamelIMAPXStream *is, CamelException *ex)
 }
 
 static void
-generate_uids_from_sequence (GPtrArray *uids, guint32 end_uid)
+generate_uids_from_sequence (GPtrArray *uids, guint32 begin_uid, guint32 end_uid)
 {
-	guint32 uid = GPOINTER_TO_UINT (g_ptr_array_index (uids, uids->len - 1));
+	guint32 i;
 
-	uid++;
-	while (uid <= end_uid) {
-		g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
-		uid++;
-	}
+	for (i = begin_uid; i <= end_uid; i++)
+		g_ptr_array_add (uids, GUINT_TO_POINTER (i));
 }
 
 static GPtrArray *
 imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 {
 	GPtrArray *uids = g_ptr_array_new ();
-	gboolean is_prev_number = FALSE, sequence = FALSE;
 	guchar *token;
-	guint len;
-	gint tok;
+	gchar **splits;
+	guint len, str_len;
+	gint tok, i;
 
 	tok = camel_imapx_stream_token (is, &token, &len, ex);
-	while (tok != ']'|| !(is_prev_number && tok == IMAPX_TOK_INT)) {
-		if (tok == ',') {
-			is_prev_number = FALSE;
-			sequence = FALSE;
-		} else if (tok == ':') {
-			sequence = TRUE;
-			is_prev_number = FALSE;
+	splits = g_strsplit ((gchar *) token, ",", -1);
+	str_len = g_strv_length (splits);
+
+	for (i = 0; i < str_len; i++)	{
+		if (g_strstr_len (splits [i], -1, ":")) {
+			gchar **seq = g_strsplit (splits [i], ":", -1);
+			guint32 uid1 = strtoul ((gchar *) seq [0], NULL, 10);
+			guint32 uid2 = strtoul ((gchar *) seq [1], NULL, 10);
+
+			generate_uids_from_sequence (uids, uid1, uid2);
+			g_strfreev (seq);
 		} else {
 			guint32 uid = strtoul ((gchar *) token, NULL, 10);
-
-			is_prev_number = TRUE;
-			sequence = FALSE;
-
-			if (sequence)
-				generate_uids_from_sequence (uids, uid);
-			else
-				g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
+			g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
 		}
-		camel_imapx_stream_token (is, &token, &len, ex);
 	}
-
-	if (is_prev_number && tok == IMAPX_TOK_INT)
-		camel_imapx_stream_ungettoken (is, tok, token, len);
-
+	
+	g_strfreev (splits);
+	
 	return uids;
 }
 

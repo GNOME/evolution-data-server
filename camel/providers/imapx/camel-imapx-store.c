@@ -640,6 +640,9 @@ fetch_folders_for_pattern (CamelIMAPXStore *istore, const gchar *pattern, guint3
 	GPtrArray *folders = NULL;
 
 	folders = camel_imapx_server_list (istore->server, pattern, flags, ex);
+	if (camel_exception_is_set (ex))
+		return;
+
 	add_folders_to_summary (istore, folders, table, (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED));
 
 	g_ptr_array_foreach (folders, free_list, folders);
