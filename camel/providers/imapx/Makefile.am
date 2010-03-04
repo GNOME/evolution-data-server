@@ -6,8 +6,6 @@ libcamelimapx_la_CPPFLAGS = \
 	-I..					\
 	-I$(srcdir)/..				\
 	-I$(top_srcdir)/camel			\
-	-I$(top_srcdir)/intl			\
-	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"camel-imapx\"
@@ -51,8 +49,6 @@ test_imapx_CPPFLAGS = \
 	-I..					\
 	-I$(srcdir)/..				\
 	-I$(top_srcdir)/camel			\
-	-I$(top_srcdir)/intl			\
-	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"camel-imapx\"
