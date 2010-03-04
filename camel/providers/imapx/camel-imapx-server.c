@@ -18,7 +18,9 @@
 #include <prerr.h>
 #endif
 
-#include <poll.h>
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
 
 #include <camel/camel-list-utils.h>
 #include <camel/camel-msgport.h>
@@ -2284,7 +2286,7 @@ exception:
 	if (ex->id != CAMEL_EXCEPTION_USER_CANCEL) {
 		c(printf("Re Connection failed: %s\n", ex->desc));
 		imapx_disconnect (is);
-		sleep(1);
+		g_sleep(1);
 		// camelexception_done?
 		camel_exception_clear (ex);
 		goto retry;
@@ -3451,26 +3453,26 @@ imapx_parser_thread (gpointer d)
 #endif
 
 		if (!is->is_ssl_stream)	{
-			struct pollfd fds[2] = { {0, 0, 0}, {0, 0, 0} };
+			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
 			gint res;
 
 			g_static_rec_mutex_lock (&is->istream_lock);
 			
 			fds[0].fd = ((CamelTcpStreamRaw *)is->stream->source)->sockfd;
-			fds[0].events = POLLIN;
+			fds[0].events = G_IO_IN;
 			fds[1].fd = camel_operation_cancel_fd (op);
-			fds[1].events = POLLIN;
+			fds[1].events = G_IO_IN;
 			
 			g_static_rec_mutex_unlock (&is->istream_lock);
 
-			res = poll(fds, 2, 1000*30);
+			res = g_poll(fds, 2, 1000*30);
 			if (res == -1)
 				sleep(1) /* ?? */ ;
 			else if (res == 0)
 				/* timed out */;
-			else if (fds[0].revents & POLLIN) {
+			else if (fds[0].revents & G_IO_IN) {
 				parse_contents (is, &ex);
-			} else if (fds[1].revents & POLLIN)
+			} else if (fds[1].revents & G_IO_IN)
 				errno = EINTR;
 		}
 	
