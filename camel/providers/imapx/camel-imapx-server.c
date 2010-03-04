@@ -18,10 +18,6 @@
 #include <prerr.h>
 #endif
 
-#ifdef G_OS_WIN32
-#include <windows.h>
-#endif
-
 #include <camel/camel-list-utils.h>
 #include <camel/camel-msgport.h>
 #include <camel/camel-object.h>
