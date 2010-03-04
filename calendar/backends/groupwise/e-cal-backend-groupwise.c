@@ -368,6 +368,7 @@ get_deltas (gpointer handle)
 
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	cnc = priv->cnc;
+	container_id = g_strdup (cbgw->priv->container_id);
 
 	store = priv->store;
 	item_list = NULL;
@@ -403,15 +404,14 @@ get_deltas (gpointer handle)
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_AND, 2);
 
-	container_id = g_strdup (cbgw->priv->container_id);
 	PRIV_UNLOCK (priv);
 
 	status = e_gw_connection_get_items (cnc, container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 		status = e_gw_connection_get_items (cnc, container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+
 	PRIV_LOCK (priv);
 
-	g_free (container_id);
 	g_object_unref (filter);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
@@ -427,6 +427,8 @@ get_deltas (gpointer handle)
 		attempts = g_strdup_printf ("%d", failures);
 		e_cal_backend_store_put_key_value (store, ATTEMPTS_KEY, attempts);
 		g_free (attempts);
+
+		g_free (container_id);
 
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
 			PRIV_UNLOCK (priv);
@@ -532,10 +534,16 @@ get_deltas (gpointer handle)
 	filter = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
 
-	status = e_gw_connection_create_cursor (cnc, cbgw->priv->container_id, "id iCalId recurrenceKey startDate", filter, &cursor);
+	PRIV_UNLOCK (priv);
+	status = e_gw_connection_create_cursor (cnc, container_id, "id iCalId recurrenceKey startDate", filter, &cursor);
+	PRIV_LOCK (priv);
+
 	g_object_unref (filter);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
+
+		g_free (container_id);
+
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
 			PRIV_UNLOCK (priv);
 			return TRUE;
@@ -550,7 +558,9 @@ get_deltas (gpointer handle)
 
 	done = FALSE;
 	while (!done) {
-		status = e_gw_connection_read_cal_ids (cnc, cbgw->priv->container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
+		PRIV_UNLOCK (priv);
+		status = e_gw_connection_read_cal_ids (cnc, container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
+		PRIV_LOCK (priv);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
 				goto err_done;
@@ -573,7 +583,9 @@ get_deltas (gpointer handle)
 		position = E_GW_CURSOR_POSITION_CURRENT;
 
 	}
-	e_gw_connection_destroy_cursor (cnc, cbgw->priv->container_id, cursor);
+	PRIV_UNLOCK (priv);
+	e_gw_connection_destroy_cursor (cnc, container_id, cursor);
+	PRIV_LOCK (priv);
 	e_cal_backend_store_freeze_changes (store);
 
 	uid_array = g_ptr_array_new ();
@@ -636,10 +648,12 @@ get_deltas (gpointer handle)
 	}
 
 	if (needs_to_get) {
-		e_gw_connection_get_items_from_ids (priv->cnc,
-				priv->container_id,
-				"attachments recipients message recipientStatus default peek",
-				uid_array, &item_list);
+		PRIV_UNLOCK (priv);
+		e_gw_connection_get_items_from_ids (
+			cnc, container_id,
+			"attachments recipients message recipientStatus default peek",
+			uid_array, &item_list);
+		PRIV_LOCK (priv);
 
 		for (l = item_list; l != NULL; l = l->next) {
 			ECalComponent *comp = NULL;
@@ -671,6 +685,8 @@ get_deltas (gpointer handle)
 	g_ptr_array_free (uid_array, TRUE);
 
  err_done:
+	g_free (container_id);
+
 	if (item_list) {
 		g_list_free (item_list);
 		item_list = NULL;
@@ -1723,6 +1739,9 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 			}
 		}
         }
+
+	g_message (G_STRLOC ": object list length %d from %d objects",
+		   g_list_length (*objects), g_slist_length (components));
 
 	g_object_unref (cbsexp);
 	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
