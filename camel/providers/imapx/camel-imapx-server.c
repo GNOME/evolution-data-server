@@ -1148,18 +1148,15 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 			/* This must've been a get-message request, fill out the body stream,
 			   in the right spot */
 
-			if (job) {
+			if (job && !camel_exception_is_set (job->ex)) {
 				if (job->u.get_message.use_multi_fetch) {
 					job->u.get_message.body_offset = finfo->offset;
 					camel_seekable_stream_seek((CamelSeekableStream *)job->u.get_message.stream, finfo->offset, CAMEL_STREAM_SET);
 				}
 
 				job->u.get_message.body_len = camel_stream_write_to_stream(finfo->body, job->u.get_message.stream);
-				if (job->u.get_message.body_len == -1) {
+				if (job->u.get_message.body_len == -1) 
 					camel_exception_setv(job->ex, 1, "error writing to cache stream: %s\n", g_strerror(errno));
-					camel_object_unref(job->u.get_message.stream);
-					job->u.get_message.stream = NULL;
-				}
 			}
 		}
 
@@ -2312,13 +2309,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
 		failed = TRUE;
 		job->u.get_message.body_len = -1;
-		if (job->u.get_message.stream) {
-			camel_object_unref(job->u.get_message.stream);
-			job->u.get_message.stream = 0;
-		}
-	}
-
-	if (job->u.get_message.use_multi_fetch) {
+	} else  if (job->u.get_message.use_multi_fetch) {
 
 		if (!failed && job->u.get_message.fetch_offset <= job->u.get_message.size) {
 			camel_imapx_command_free (ic);
@@ -2340,7 +2331,9 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	}
 
 	if (job->commands == 0) {
+		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 		CamelStream *stream = job->u.get_message.stream;
+	
 		/* return the exception from last command */
 		if (failed) {
 			if (!camel_exception_is_set (ic->ex))
@@ -2348,9 +2341,8 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			else
 				camel_exception_xfer (job->ex, ic->ex);
 		} else {
-#ifndef G_OS_WIN32
 			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
-
+			
 			if (stream) {
 				gchar *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
 
@@ -2362,20 +2354,18 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 					g_mkdir_with_parents (dir, 0700);
 					g_free (dir);
 
-					if (link (tmp, cache_file) != 0)
+					if (g_rename (tmp, cache_file) != 0)
 						camel_exception_set (job->ex, 1, "failed to copy the tmp file");
 					g_free (cache_file);
 				} else 
 					camel_exception_setv(job->ex, 1, "closing tmp stream failed: %s", g_strerror(errno));
 
-				camel_data_cache_remove (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
 				g_free (tmp);
 			}
-#endif /* G_OS_WIN32 */
 		}
 
-		if (stream)
-			camel_object_unref (stream);
+		camel_object_unref (stream);
+		camel_data_cache_remove (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
 		imapx_job_done (is, job);
 	}
 
@@ -2387,14 +2377,6 @@ imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	gint i;
-
-	/* FIXME: MUST ensure we never try to get the same message
-	 twice at the same time.
-
-	 If this is a high-priority get, then we also
-	   select the folder to make sure it runs immmediately ...
-
-	This doesn't work yet, so we always force a select every time */
 
 	if (job->u.get_message.use_multi_fetch) {
 		for (i=0; i < 3 && job->u.get_message.fetch_offset < job->u.get_message.size;i++) {
@@ -2519,8 +2501,8 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 	   and also create a correctly numbered MessageInfo, without losing any information.
 	   Otherwise we have to wait for the server to less us know it was appended. */
 
-	mi = camel_message_info_clone(job->u.append_message.info);
-	old_uid = g_strdup (mi->uid);
+	mi = camel_message_info_clone (job->u.append_message.info);
+	old_uid = g_strdup (job->u.append_message.info->uid);
 
 	if (!camel_exception_is_set (ic->ex) && ic->status->result == IMAPX_OK) {
 		if (ic->status->condition == IMAPX_APPENDUID) {
@@ -2533,9 +2515,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				mi->uid = camel_pstring_add (uid, TRUE);
 
 				cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
-#ifndef G_OS_WIN32
-				link (job->u.append_message.path, cur);
-#endif /* G_OS_WIN32 */
+				g_rename (job->u.append_message.path, cur);
 
 				/* should we update the message count ? */
 				camel_folder_summary_add (job->folder->summary, mi);
@@ -2558,8 +2538,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			camel_exception_xfer (job->ex, ic->ex);
 	}
 
-	if (old_uid)
-		camel_data_cache_remove (ifolder->cache, "tmp", old_uid, NULL);
+	camel_data_cache_remove (ifolder->cache, "new", old_uid, NULL);
 	g_free (old_uid);
 	camel_message_info_free(job->u.append_message.info);
 	g_free(job->u.append_message.path);
@@ -3794,10 +3773,10 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 
 	/* chen cleanup this later */
 	uid = imapx_get_temp_uid ();
-	stream = camel_data_cache_add (ifolder->cache, "tmp", uid, NULL);
+	stream = camel_data_cache_add (ifolder->cache, "new", uid, NULL);
 	if (stream == NULL) {
 		camel_exception_setv(ex, 2, "Cannot create spool file: %s", g_strerror((gint) errno));
-		goto fail;
+		return;
 	}
 
 	filter = (CamelStream *)camel_stream_filter_new_with_stream(stream);
@@ -3810,16 +3789,15 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 
 	if (res == -1) {
 		camel_exception_setv(ex, 2, "Cannot create spool file: %s", g_strerror(errno));
-		goto fail;
+		camel_data_cache_remove (ifolder->cache, "new", uid, NULL);
+		return;
 	}
 
-	tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", uid, NULL);
+	tmp = camel_data_cache_get_filename (ifolder->cache, "new", uid, NULL);
 	info = camel_folder_summary_info_new_from_message((CamelFolderSummary *)folder->summary, message, NULL);
 	info->uid = uid;
 	((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
 	uid = NULL;
-
-	// FIXME
 
 	/* So, we actually just want to let the server loop that
 	   messages need appending, i think.  This is so the same
@@ -3838,7 +3816,6 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 
 	if (imapx_register_job (is, job))
 		imapx_run_job(is, job);
-fail:
 	return;
 }
 
