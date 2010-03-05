@@ -1491,7 +1491,6 @@ servers/google/libgdata/Makefile
 servers/google/libgdata/libgdata.pc
 servers/google/libgdata-google/Makefile
 servers/google/libgdata-google/libgdata-google.pc
-win32/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile
