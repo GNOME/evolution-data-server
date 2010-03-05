@@ -12,7 +12,7 @@ endif
 
 if OS_WIN32
 else
-ISENDMAIL_DIR=sendmail
+SENDMAIL_DIR=sendmail
 endif
 
 SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap imapx $(IMAP4_DIR) $(NNTP_DIR) local groupwise $(HULA_DIR)
