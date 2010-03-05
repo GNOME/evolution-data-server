@@ -273,6 +273,7 @@ e_source_selector_new
 e_source_selector_get_source_list
 e_source_selector_select_source
 e_source_selector_unselect_source
+e_source_selector_select_exclusive
 e_source_selector_source_is_selected
 e_source_selector_get_selection
 e_source_selector_free_selection
@@ -289,6 +290,7 @@ E_IS_SOURCE_SELECTOR
 E_TYPE_SOURCE_SELECTOR
 E_SOURCE_SELECTOR_CLASS
 E_IS_SOURCE_SELECTOR_CLASS
+E_SOURCE_SELECTOR_GET_CLASS
 ESourceSelectorClass
 <SUBSECTION Private>
 ESourceSelectorPrivate

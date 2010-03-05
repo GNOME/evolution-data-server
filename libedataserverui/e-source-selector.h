@@ -86,6 +86,9 @@ void		e_source_selector_select_source	(ESourceSelector *selector,
 void		e_source_selector_unselect_source
 						(ESourceSelector *selector,
 						 ESource *source);
+void		e_source_selector_select_exclusive
+						(ESourceSelector *selector,
+						 ESource *source);
 gboolean	e_source_selector_source_is_selected
 						(ESourceSelector *selector,
 						 ESource *source);

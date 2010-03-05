@@ -100,6 +100,15 @@ ESourceSelector
 @source: 
 
 
+<!-- ##### FUNCTION e_source_selector_select_exclusive ##### -->
+<para>
+
+</para>
+
+@selector: 
+@source: 
+
+
 <!-- ##### FUNCTION e_source_selector_source_is_selected ##### -->
 <para>
 
