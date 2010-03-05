@@ -2348,6 +2348,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			else
 				camel_exception_xfer (job->ex, ic->ex);
 		} else {
+#ifndef G_OS_WIN32
 			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 
 			if (stream) {
@@ -2370,6 +2371,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				camel_data_cache_remove (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
 				g_free (tmp);
 			}
+#endif /* G_OS_WIN32 */
 		}
 
 		if (stream)
@@ -2531,7 +2533,9 @@ imapx_command_append_message_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				mi->uid = camel_pstring_add (uid, TRUE);
 
 				cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
+#ifndef G_OS_WIN32
 				link (job->u.append_message.path, cur);
+#endif /* G_OS_WIN32 */
 
 				/* should we update the message count ? */
 				camel_folder_summary_add (job->folder->summary, mi);
