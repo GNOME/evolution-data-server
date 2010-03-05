@@ -477,7 +477,6 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 				node->next = NULL;
 				node->full_name = g_strdup ((gchar *) token);
 				node->path = g_strdup ((gchar *) token);
-				g_message ("namespace: Node path is %s \n", node->path);
 
 				tok = camel_imapx_stream_token (stream, &token, &len, ex);
 
@@ -503,7 +502,7 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 				tail->next = node;
 				tail = node;
 
-				if (node->path [strlen (node->path) -1] == node->sep)
+				if (*node->path && node->path [strlen (node->path) -1] == node->sep)
 					node->path [strlen (node->path) - 1] = '\0';
 
 				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&

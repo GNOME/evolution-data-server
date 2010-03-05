@@ -105,30 +105,6 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	return folder;
 }
 
-#if 0
-/* experimental interfaces */
-void
-camel_imapx_folder_open(CamelIMAPXFolder *folder, CamelException *ex)
-{
-	/* */
-}
-
-void
-camel_imapx_folder_delete(CamelIMAPXFolder *folder, CamelException *ex)
-{
-}
-
-void
-camel_imapx_folder_rename(CamelIMAPXFolder *folder, const gchar *new, CamelException *ex)
-{
-}
-
-void
-camel_imapx_folder_close(CamelIMAPXFolder *folder, CamelException *ex)
-{
-}
-#endif
-
 static void
 imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 {
@@ -396,7 +372,7 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, CamelE
 }
 
 static void
-imap_folder_class_init (CamelIMAPXFolderClass *klass)
+imapx_folder_class_init (CamelIMAPXFolderClass *klass)
 {
 	offline_folder_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
 	
@@ -416,7 +392,7 @@ imap_folder_class_init (CamelIMAPXFolderClass *klass)
 }
 
 static void
-imap_folder_init(CamelObject *o, CamelObjectClass *klass)
+imapx_folder_init(CamelObject *o, CamelObjectClass *klass)
 {
 	CamelFolder *folder = (CamelFolder *)o;
 
@@ -431,7 +407,7 @@ imap_folder_init(CamelObject *o, CamelObjectClass *klass)
 }
 
 static void
-imap_finalize (CamelObject *object)
+imapx_finalize (CamelObject *object)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) object;
 
@@ -452,10 +428,10 @@ camel_imapx_folder_get_type (void)
 		camel_imapx_folder_type = camel_type_register (parent_class, "CamelIMAPXFolder",
 							      sizeof (CamelIMAPXFolder),
 							      sizeof (CamelIMAPXFolderClass),
-							      (CamelObjectClassInitFunc)imap_folder_class_init,
+							      (CamelObjectClassInitFunc)imapx_folder_class_init,
 							      NULL,
-							      imap_folder_init,
-							      (CamelObjectFinalizeFunc) imap_finalize);
+							      imapx_folder_init,
+							      (CamelObjectFinalizeFunc) imapx_finalize);
 	}
 
 	return camel_imapx_folder_type;

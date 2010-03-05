@@ -1692,7 +1692,7 @@ imapx_register_job (CamelIMAPXServer *is, CamelIMAPXJob *job)
 static void
 imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
-	CamelMsgPort *reply;
+	CamelMsgPort *reply = NULL;
 
 	if (!job->noreply) {
 		reply = camel_msgport_new ();
@@ -1804,9 +1804,8 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is, CamelFolder *folder, gboo
 	if (imapx_register_job (is, job))
 		imapx_run_job (is, job);
 	
-	if (job->op)
-		camel_operation_unref (job->op);
-	g_free (job);
+	if (!async)
+		g_free (job);
 }
 
 static gpointer
@@ -2923,6 +2922,9 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 exception:
 	if (ic->job->noreply)
 		camel_folder_change_info_free(ic->job->u.refresh_info.changes);
+	
+	if (ic->job->op)
+		camel_operation_unref (ic->job->op);
 
 	imapx_job_done (is, ic->job);
 	camel_imapx_command_free (ic);
