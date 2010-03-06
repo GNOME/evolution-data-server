@@ -259,6 +259,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
 
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				/* Translators: Last %s is an optional explanation beginning with ": " separator */
 				_("Failed to connect to POP server %s in secure mode%s"),
 				service->url->host, tmp ? tmp:"");
 
@@ -443,6 +444,7 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 			gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
 
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+					      /* Translators: Last %s is an optional explanation beginning with ": " separator */
 					      _("SASL '%s' Login failed for POP server %s%s"),
 					      mech, CAMEL_SERVICE (store)->url->host, tmp ? tmp : "");
 
@@ -585,6 +587,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
 
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+				      /* Translators: Last %s is an optional explanation beginning with ": " separator */
 				      _("Unable to connect to POP server %s.\n"
 					"Error sending username%s"),
 				      CAMEL_SERVICE (store)->url->host,
@@ -594,6 +597,7 @@ pop3_try_authenticate (CamelService *service, gboolean reprompt, const gchar *er
 		gchar *tmp = get_valid_utf8_error ((gchar *) store->engine->line);
 
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
+				      /* Translators: Last %s is an optional explanation beginning with ": " separator */
 				      _("Unable to connect to POP server %s.\n"
 					"Error sending password%s"),
 				      CAMEL_SERVICE (store)->url->host,
