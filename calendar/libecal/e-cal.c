@@ -3944,9 +3944,9 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	priv = ecal->priv;
 	e_return_error_if_fail (priv->proxy, E_CALENDAR_STATUS_REPOSITORY_OFFLINE);
 
-	/* Don't set the same timezone multiple times */
+	/* If the same timezone is already set, we don't have to do anything. */
 	if (priv->default_zone == zone)
-		return FALSE;
+		return TRUE;
 
 	if (priv->load_state != E_CAL_LOAD_LOADED) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
