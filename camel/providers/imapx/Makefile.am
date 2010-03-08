@@ -40,7 +40,7 @@ libcamelimapx_la_LIBADD = \
         $(top_builddir)/camel/libcamel-1.2.la                           \
         $(CAMEL_LIBS)
 
-libcamelimapx_la_LDFLAGS = -avoid-version -module
+libcamelimapx_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 
 noinst_PROGRAMS = test-imapx
 
