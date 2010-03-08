@@ -59,7 +59,7 @@ pkgconfig_DATA = libecal-$(API_VERSION).pc
 DBUS_GENERATED_H = e-data-cal-factory-bindings.h e-data-cal-bindings.h e-data-cal-view-bindings.h
 
 %-bindings.h: $(top_srcdir)/calendar/libedata-cal/%.xml
-	dbus-binding-tool --mode=glib-client --output=$@ --prefix=$(subst -,_,$*) $^
+	@DBUS_BINDING_TOOL@ --mode=glib-client --output=$@ --prefix=$(subst -,_,$*) $^
 
 BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)

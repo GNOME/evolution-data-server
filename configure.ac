@@ -1175,6 +1175,13 @@ PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= dbus_glib_minimum_version)
 AC_SUBST(DBUS_GLIB_CFLAGS)
 AC_SUBST(DBUS_GLIB_LIBS)
 
+AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool, [no])
+if test x$DBUS_BINDING_TOOL -eq xno; then
+  AC_MSG_ERROR(["Could not find dbus-binding-tools"])
+fi
+AC_SUBST(DBUS_BINDING_TOOL)
+
+
 dnl ***********************
 dnl Gnome keyring support
 dnl ***********************

@@ -1,5 +1,5 @@
 /* ANSI-C code produced by gperf version 3.0.2 */
-/* Command-line: gperf -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k'1,$' camel-imapx-tokens.txt  */
+/* Command-line: /usr/bin/gperf -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k'1,$' camel-imapx-tokens.txt  */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
@@ -45,10 +45,10 @@ __inline
 inline
 #endif
 #endif
-static guint
-imapx_hash (register const gchar *str, register guint len)
+static unsigned int
+imapx_hash (register const char *str, register unsigned int len)
 {
-  static guchar asso_values[] =
+  static unsigned char asso_values[] =
     {
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
@@ -77,14 +77,14 @@ imapx_hash (register const gchar *str, register guint len)
       57, 57, 57, 57, 57, 57, 57, 57, 57, 57,
       57, 57, 57, 57, 57, 57
     };
-  return len + asso_values[(guchar)str[len - 1]] + asso_values[(guchar)str[0]];
+  return len + asso_values[(unsigned char)str[len - 1]] + asso_values[(unsigned char)str[0]];
 }
 
 #ifdef __GNUC__
 __inline
 #endif
 struct _imapx_keyword *
-imapx_tokenise_struct (register const gchar *str, register guint len)
+imapx_tokenise_struct (register const char *str, register unsigned int len)
 {
   static struct _imapx_keyword wordlist[] =
     {
@@ -174,11 +174,11 @@ imapx_tokenise_struct (register const gchar *str, register guint len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register gint key = imapx_hash (str, len);
+      register int key = imapx_hash (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
         {
-          register const gchar *s = wordlist[key].name;
+          register const char *s = wordlist[key].name;
 
           if (*str == *s && !strcmp (str + 1, s + 1))
             return &wordlist[key];

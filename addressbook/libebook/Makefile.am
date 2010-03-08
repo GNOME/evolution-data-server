@@ -63,7 +63,7 @@ pkgconfig_DATA = libebook-$(API_VERSION).pc
 
 DBUS_GENERATED_H = e-data-book-factory-bindings.h e-data-book-bindings.h e-data-book-view-bindings.h
 %-bindings.h: $(top_srcdir)/addressbook/libedata-book/%.xml
-	dbus-binding-tool --mode=glib-client --output=$@ --prefix=$(subst -,_,$*) $^
+	@DBUS_BINDING_TOOL@ --mode=glib-client --output=$@ --prefix=$(subst -,_,$*) $^
 
 BUILT_SOURCES = $(DBUS_GENERATED_H) $(MARSHAL_GENERATED)
 CLEANFILES    = $(BUILT_SOURCES)
