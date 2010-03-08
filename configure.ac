@@ -1177,10 +1177,8 @@ AC_SUBST(DBUS_GLIB_LIBS)
 
 AC_PATH_PROG(DBUS_BINDING_TOOL, dbus-binding-tool, [no])
 if test x$DBUS_BINDING_TOOL -eq xno; then
-  AC_MSG_ERROR(["Could not find dbus-binding-tools"])
+  AC_MSG_ERROR([You need dbus-binding-tools to build evolution-data-server])
 fi
-AC_SUBST(DBUS_BINDING_TOOL)
-
 
 dnl ***********************
 dnl Gnome keyring support
@@ -1423,6 +1421,9 @@ dnl ******************************
 dnl gperf stuff
 dnl ******************************
 AC_PATH_PROG(GPERF, gperf, [no])
+if test x$GPERF -eq xno; then
+  AC_MSG_ERROR([You need gperf to build evolution-data-server])
+fi
 
 dnl ******************************
 dnl Makefiles
