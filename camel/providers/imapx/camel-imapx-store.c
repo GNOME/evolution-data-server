@@ -93,7 +93,7 @@ imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
 {
 	if (camel_url_get_param (url, "use_lsub"))
 		istore->rec_options |= IMAPX_SUBSCRIPTIONS;
-	
+
 	if (camel_url_get_param (url, "override_namespace") && camel_url_get_param (url, "namespace")) {
 		istore->rec_options |= IMAPX_OVERRIDE_NAMESPACE;
 		g_free(istore->namespace);
@@ -120,8 +120,8 @@ imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
 	if (camel_url_get_param (url, "use_idle"))
 		istore->rec_options |= IMAPX_USE_IDLE;
 }
-	
-static void 
+
+static void
 imapx_construct(CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
 	gchar *summary;
@@ -237,10 +237,10 @@ static void
 imapx_noop (CamelStore *store, CamelException *ex)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
-	
+
 	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
-		
+
 	if (istore->server && camel_imapx_server_connect (istore->server, 1))
 		camel_imapx_server_noop (istore->server, NULL, ex);
 }
@@ -391,7 +391,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 
 /* imap needs to treat inbox case insensitive */
 /* we'll assume the names are normalised already */
-static guint 
+static guint
 folder_hash(gconstpointer ap)
 {
 	const gchar *a = ap;
@@ -402,7 +402,7 @@ folder_hash(gconstpointer ap)
 	return g_str_hash(a);
 }
 
-static gint 
+static gint
 folder_eq(gconstpointer ap, gconstpointer bp)
 {
 	const gchar *a = ap;
@@ -524,7 +524,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
 			if (!g_ascii_strcasecmp(fi->full_name, "inbox")) {
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
-				fi->flags |= CAMEL_FOLDER_SYSTEM;	
+				fi->flags |= CAMEL_FOLDER_SYSTEM;
 			}
 
 			if (si->flags & CAMEL_FOLDER_NOSELECT) {
@@ -589,7 +589,7 @@ add_folders_to_summary (CamelIMAPXStore *istore, GPtrArray *folders, GHashTable 
 		if (hfi) {
 			if (subcribed)
 				hfi->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			
+
 			camel_folder_info_free (fi);
 			continue;
 		}
@@ -698,9 +698,9 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore, const gchar *pattern, Cam
 				g_free (pat);
 				goto exception;
 			}
-			
+
 			flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
-			
+
 			fetch_folders_for_pattern (istore, pat, flags, folders, ex);
 			if (camel_exception_is_set (ex)) {
 				g_free (pat);

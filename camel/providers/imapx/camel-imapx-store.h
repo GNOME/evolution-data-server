@@ -57,7 +57,7 @@ typedef struct {
 	gchar *namespace, dir_sep, *base_url, *storage_path;
 
 	guint32 rec_options;
-	
+
 	/* if we had a login error, what to show to user */
 	gchar *login_error;
 

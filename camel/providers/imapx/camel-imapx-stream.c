@@ -565,7 +565,7 @@ camel_imapx_stream_token(CamelIMAPXStream *is, guchar **data, guint *len, CamelE
 				if (c == '\n' || c == '\r' || o>=oe) {
 					if (o >= oe) {
 						io(printf("Protocol error: string too long\n"));
-						
+
 					} else {
 						io(printf("Protocol error: truncated string\n"));
 					}

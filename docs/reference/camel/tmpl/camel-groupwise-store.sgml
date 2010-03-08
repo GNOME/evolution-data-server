@@ -35,7 +35,6 @@ CamelGroupwiseStore
 @priv: 
 @current_folder: 
 @refresh_stamp: 
-@list_loaded: 
 
 <!-- ##### STRUCT CamelGroupwiseStorePrivate ##### -->
 <para>

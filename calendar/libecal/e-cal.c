@@ -560,7 +560,7 @@ e_cal_class_init (ECalClass *klass)
 }
 
 static DBusHandlerResult
-filter_dbus_msgs_cb (DBusConnection *pconnection, DBusMessage *message, void *user_data)
+filter_dbus_msgs_cb (DBusConnection *pconnection, DBusMessage *message, gpointer user_data)
 {
 	if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
 		DBusGConnection *conn = connection;

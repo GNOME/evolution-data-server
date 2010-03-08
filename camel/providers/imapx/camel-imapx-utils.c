@@ -1537,9 +1537,9 @@ imapx_parse_uids (CamelIMAPXStream *is, CamelException *ex)
 			g_ptr_array_add (uids, GUINT_TO_POINTER (uid));
 		}
 	}
-	
+
 	g_strfreev (splits);
-	
+
 	return uids;
 }
 

@@ -118,7 +118,7 @@ imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 
 }
 
-static void 
+static void
 imapx_expunge (CamelFolder *folder, CamelException *ex)
 {
 	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
@@ -203,7 +203,7 @@ static void
 imapx_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)folder->parent_store;
-	
+
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
@@ -375,7 +375,7 @@ static void
 imapx_folder_class_init (CamelIMAPXFolderClass *klass)
 {
 	offline_folder_class = CAMEL_OFFLINE_FOLDER_CLASS (camel_type_get_global_classfuncs (camel_offline_folder_get_type ()));
-	
+
 	((CamelFolderClass *)klass)->refresh_info = imapx_refresh_info;
 	((CamelFolderClass *)klass)->sync = imapx_sync;
 	((CamelFolderClass *)klass)->search_by_expression = imapx_search_by_expression;

@@ -139,7 +139,7 @@ CamelFolder
 </para>
 
 @folder: 
-@async: 
+@skip_folder_lock: 
 
 
 <!-- ##### FUNCTION camel_folder_get_parent_store ##### -->
