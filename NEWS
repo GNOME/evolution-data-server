@@ -1,3 +1,36 @@
+Evolution-Data-Server 2.29.92 2010-03-08
+----------------------------------------
+
+Bug Fixes:
+	#529331 - Be able to disallow selection of a certain ESource
+	          (Milan Crha)
+	#600322 - assertion failed: (reply == msg) in cs_waitinfo()
+                  (Milan Crha)
+	#602723 - Contact list name doesn't get displayed in 'To' dialog
+	          (Milan Crha)
+	#611125 - Duplicate definition of camel-iconv.h in install targets
+	          (Priit Laes)
+	#611355 - calendar/tests/ecal/test-ecal-create-object--2 test
+	          (Priit Laes)
+	#611860 - Pilot calendar, todo, memo do not sync when timezone is
+	          set to UTC (Matt McCutchen 2)
+	#611873 - Make triple-clicking a shortcut for "Show Only This ..."
+	          (Matthew Barnes)
+
+Other Changes:
+	Locking improvements in Camel (Michael Meeks)
+	Steady progress on the new IMAPX backend (Chenthill Palanisamy)
+	Various cleanups for Windows support (Fridrich Strba)
+
+Translations:
+	Alexander Shopov (bg)
+	Simos Xenitellis (el)
+	Bruce Cowan (en_GB)
+	Inaki Larranaga Murgoitio (eu)
+	Claude Paroz (fr)
+	Yuri Kozlov (ru)
+	Daniel Nylander (sv)
+
 Evolution-Data-Server 2.29.91 2010-02-22
 ----------------------------------------
 
