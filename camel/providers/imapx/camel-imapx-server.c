@@ -3663,8 +3663,17 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 	QUEUE_LOCK (is);
 
 	if (imapx_is_job_in_queue (is, folder->full_name, IMAPX_JOB_GET_MESSAGE, uid)) {
-		/* TODO set a right exception */
 		camel_exception_set (ex, CAMEL_EXCEPTION_OPERATION_IN_PROGRESS, "Downloading message...");
+		QUEUE_UNLOCK (is);
+		return NULL;
+	}
+
+	mi = camel_folder_summary_uid (folder->summary, uid);
+	if (!mi) {
+		camel_exception_setv (
+				ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				_("Cannot get message with message ID %s: %s"),
+				uid, _("No such message available."));
 		QUEUE_UNLOCK (is);
 		return NULL;
 	}
@@ -3681,7 +3690,6 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 	job->u.get_message.stream = tmp_stream;
 	job->ex = ex;
 
-	mi = camel_folder_summary_uid (folder->summary, uid);
 	if (((CamelMessageInfoBase *) mi)->size > MULTI_SIZE)
 		job->u.get_message.use_multi_fetch = TRUE;
 
