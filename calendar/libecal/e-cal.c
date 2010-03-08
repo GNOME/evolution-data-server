@@ -5008,9 +5008,9 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 
 	priv = ecal->priv;
 
-	/* Don't set the same timezone multiple times */
+	/* If the same timezone is already set, we don't have to do anything. */
 	if (priv->default_zone == zone)
-		return FALSE;
+		return TRUE;
 
 	g_mutex_lock (priv->mutex);
 
