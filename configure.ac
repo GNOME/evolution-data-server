@@ -1413,6 +1413,11 @@ AC_PATH_PROG(GCONFTOOL, gconftool-2, [no])
 AM_GCONF_SOURCE_2
 
 dnl ******************************
+dnl gperf stuff
+dnl ******************************
+AC_PATH_PROG(GPERF, gperf, [no])
+
+dnl ******************************
 dnl Makefiles
 dnl ******************************
 export privlibdir
