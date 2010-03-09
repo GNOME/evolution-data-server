@@ -38,6 +38,7 @@
 
 #include <camel/camel-sasl.h>
 #include <camel/camel-i18n.h>
+#include <camel/camel-utf8.h>
 #include <camel/camel-file-utils.h>
 
 #include "camel-imapx-utils.h"
@@ -490,6 +491,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar buffer[16];
+	gchar *fname = NULL, *encoded = NULL;
 	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 
 	c(printf("adding command, fmt = '%s'\n", fmt));
@@ -592,9 +594,16 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 				case 'f': /* imap folder name */
 					s = va_arg(ap, gchar *);
 					c(printf("got folder '%s'\n", s));
-					/* FIXME: encode folder name */
-					/* FIXME: namespace? */
+					fname = camel_imapx_store_summary_full_from_path(((CamelIMAPXStore *)ic->job->folder->parent_store)->summary, s);
+					if (fname) {
+						encoded = camel_utf8_utf7(fname);
+						g_free (fname);
+					} else
+						encoded = camel_utf8_utf7 (s);
+
 					camel_stream_printf((CamelStream *)ic->mem, "\"%s\"", s?s:"");
+
+					g_free (encoded);
 					break;
 				case 'F': /* IMAP flags set */
 					f = va_arg(ap, guint32);

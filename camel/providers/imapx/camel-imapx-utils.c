@@ -1738,7 +1738,7 @@ imapx_parse_list(CamelIMAPXStream *is, CamelException *ex)
 	camel_imapx_stream_nstring(is, &token, ex);
 	linfo->separator = token?*token:0;
 	camel_imapx_stream_astring(is, &token, ex);
-	linfo->name = g_strdup((gchar *) token);
+	linfo->name = camel_utf7_utf8 ((gchar *) token);
 
 	return linfo;
 }
