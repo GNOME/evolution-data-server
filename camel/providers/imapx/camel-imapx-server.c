@@ -2490,6 +2490,10 @@ cleanup:
 static void
 imapx_job_copy_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
+	camel_imapx_server_sync_changes (is, job->folder, job->ex);
+	if (camel_exception_is_set (job->ex))
+		imapx_job_done (is, job);
+
 	g_ptr_array_sort (job->u.copy_messages.uids, (GCompareFunc) imapx_uids_array_cmp);
 	imapx_uidset_init(&job->u.copy_messages.uidset, 0, MAX_COMMAND_LEN);
 	imapx_command_copy_messages_step_start (is, job, 0);
@@ -3762,6 +3766,7 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source, Came
 	job->u.copy_messages.dest = dest;
 	job->u.copy_messages.uids = uids;
 	job->u.copy_messages.delete_originals = delete_originals;
+	job->ex = ex;
 
 	camel_object_ref(source);
 	camel_object_ref (dest);
