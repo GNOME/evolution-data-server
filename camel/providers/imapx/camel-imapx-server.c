@@ -183,9 +183,11 @@ enum {
 	IMAPX_JOB_IDLE = 1<<8,
 	IMAPX_JOB_LIST = 1<<9,
 	IMAPX_JOB_MANAGE_SUBSCRIPTION = 1<<10,
+	IMAPX_JOB_CREATE_FOLDER = 1<<11,
 };
 
 enum {
+	IMAPX_PRIORITY_CREATE_FOLDER = 200,
 	IMAPX_PRIORITY_MANAGE_SUBSCRIPTION = 200,
 	IMAPX_PRIORITY_GET_MESSAGE = 100,
 	IMAPX_PRIORITY_REFRESH_INFO = 0,
@@ -276,6 +278,8 @@ struct _CamelIMAPXJob {
 			const gchar *folder_name;
 			gboolean subscribe;
 		} manage_subscriptions;
+
+		const gchar *folder_name;
 	} u;
 };
 
@@ -1122,9 +1126,15 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 		nsl = imapx_parse_namespace_list (imap->stream, ex);
 		if (nsl != NULL) {
 			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) imap->store;
+			CamelIMAPXStoreNamespace *ns;
 
 			imapx_store->summary->namespaces = nsl;
 			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
+
+			/* TODO Need to remove imapx_store->dir_sep to support multiple namespaces */
+			ns = nsl->personal;
+			if (ns)
+				imapx_store->dir_sep = ns->sep;
 		}
 
 		return 0;
@@ -3187,6 +3197,39 @@ imapx_job_manage_subscription_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 }
 
 /* ********************************************************************** */
+
+static void
+imapx_command_create_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_setv(ic->job->ex, 1, "Error creating to folder : %s", ic->status->text);
+		else
+			camel_exception_xfer (ic->job->ex, ic->ex);
+	}
+
+	imapx_job_done (is, ic->job);
+	camel_imapx_command_free (ic);
+}
+
+static void
+imapx_job_create_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	CamelIMAPXCommand *ic;
+	gchar *encoded_fname = NULL;
+
+	encoded_fname = camel_utf8_utf7 (job->u.folder_name);
+	ic = camel_imapx_command_new ("CREATE", NULL, "CREATE %s", encoded_fname);
+	ic->pri = job->pri;
+	ic->job = job;
+	ic->complete = imapx_command_create_folder_done;
+	imapx_command_queue(is, ic);
+
+	g_free (encoded_fname);
+}
+
+/* ********************************************************************** */
+
 static void
 imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
@@ -4257,3 +4300,22 @@ camel_imapx_server_manage_subscription (CamelIMAPXServer *is, const gchar *folde
 
 	g_free (job);
 }
+
+void
+camel_imapx_server_create_folder (CamelIMAPXServer *is, const gchar *folder_name, CamelException *ex)
+{
+	CamelIMAPXJob *job;
+	
+	job = g_malloc0(sizeof(*job));
+	job->type = IMAPX_JOB_CREATE_FOLDER;
+	job->start = imapx_job_create_folder_start;
+	job->pri = IMAPX_PRIORITY_CREATE_FOLDER;
+	job->ex = ex;
+	job->u.folder_name = folder_name;
+
+	if (imapx_register_job (is, job))
+		imapx_run_job (is, job);
+
+	g_free (job);
+}
+

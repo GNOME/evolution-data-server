@@ -577,6 +577,96 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_nam
 	camel_folder_info_free (fi);
 }
 
+static void
+imapx_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
+{
+	camel_exception_setv(ex, 1, "delete_folder::unimplemented");
+}
+
+static void
+imapx_rename_folder (CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
+{
+	camel_exception_setv(ex, 1, "rename_folder::unimplemented");
+}
+
+static CamelFolderInfo *
+imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
+{	
+	const gchar *c;
+	CamelStoreInfo *si;
+	CamelIMAPXStoreNamespace *ns;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
+	gchar *real_name, *full_name, *parent_real;
+	CamelFolderInfo *fi = NULL;
+	gchar dir_sep;
+	
+	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				     _("You must be working online to complete this operation"));
+		return NULL;
+	}
+	
+	if (!parent_name)
+		parent_name = "";
+
+	ns = camel_imapx_store_summary_namespace_find_path (istore->summary, parent_name);
+	if (ns)
+		dir_sep = ns->sep;
+	else
+		dir_sep = '/';
+
+	c = folder_name;
+	while (*c && *c != dir_sep && !strchr ("#%*", *c))
+		c++;
+
+	if (*c != '\0') {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_PATH,
+				      _("The folder name \"%s\" is invalid because it contains the character \"%c\""),
+				      folder_name, *c);
+		return NULL;
+	}
+	
+	parent_real = camel_imapx_store_summary_full_from_path(istore->summary, parent_name);
+	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, parent_name);
+	if (si == NULL || parent_real == NULL) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
+				     _("Unknown parent folder: %s"), parent_name);
+		return NULL;
+	}
+
+	if (si->flags & CAMEL_STORE_INFO_FOLDER_NOINFERIORS) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
+				_("The parent folder is not allowed to contain subfolders"));
+		return NULL;
+	}
+
+	camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
+
+	real_name = camel_imapx_store_summary_path_to_full (istore->summary, folder_name, dir_sep);
+	full_name = imapx_concat (istore, parent_real, real_name);
+	g_free(real_name);
+
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+		camel_imapx_server_create_folder (istore->server, full_name, ex);
+
+	if (!camel_exception_is_set (ex)) {
+		CamelIMAPXStoreInfo *si;
+
+		si = camel_imapx_store_summary_add_from_full(istore->summary, full_name, dir_sep);
+		camel_store_summary_save((CamelStoreSummary *)istore->summary);
+		fi = imapx_build_folder_info(istore, camel_store_info_path(istore->summary, si));
+		fi->flags |= CAMEL_FOLDER_NOCHILDREN;
+		camel_object_trigger_event (CAMEL_OBJECT (store), "folder_created", fi);
+	}
+
+
+	g_free (full_name);
+	g_free(parent_real);
+
+	return fi;
+}
+
+
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store, const gchar *top,
 			 guint32 flags, CamelException *ex)
@@ -958,25 +1048,6 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 
 	fi = get_folder_info_offline (store, top, flags, ex);
 	return fi;
-}
-
-static void
-imapx_delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
-{
-	camel_exception_setv(ex, 1, "delete_folder::unimplemented");
-}
-
-static void
-imapx_rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
-{
-	camel_exception_setv(ex, 1, "rename_folder::unimplemented");
-}
-
-static CamelFolderInfo *
-imapx_create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_name, CamelException *ex)
-{
-	camel_exception_setv(ex, 1, "create_folder::unimplemented");
-	return NULL;
 }
 
 static gboolean
