@@ -601,7 +601,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					} else
 						encoded = camel_utf8_utf7 (s);
 
-					camel_stream_printf((CamelStream *)ic->mem, "\"%s\"", s?s:"");
+					camel_stream_printf((CamelStream *)ic->mem, "\"%s\"", encoded?encoded:"");
 
 					g_free (encoded);
 					break;
@@ -2281,10 +2281,10 @@ retry:
 		ns->next = NULL;
 		ns->path = g_strdup ("");
 		ns->full_name = g_strdup ("");
-		/* FIXME needs to be identified from list response */
 		ns->sep = '/';
 		nsl->personal = ns;
 		imapx_store->summary->namespaces = nsl;
+		/* FIXME needs to be identified from list response */
 		imapx_store->dir_sep = ns->sep;
 	}
 
