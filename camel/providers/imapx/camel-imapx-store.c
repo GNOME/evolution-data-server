@@ -921,6 +921,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
 	CamelFolderInfo * fi= NULL;
+	gboolean initial_setup = FALSE;
 
 	if (top == NULL)
 		top = "";
@@ -933,8 +934,27 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 	if (!camel_service_connect((CamelService *)store, ex))
 		return NULL;
 
+	if (camel_store_summary_count ((CamelStoreSummary *) istore->summary) == 0)
+		initial_setup = TRUE;
+
 	sync_folders (istore, top, ex);
 	camel_store_summary_save((CamelStoreSummary *) istore->summary);
+
+	/* ensure the INBOX is subscribed if lsub was preferred*/
+	if (initial_setup && istore->rec_options & IMAPX_SUBSCRIPTIONS) {
+		CamelStoreInfo *si;
+		
+		si = camel_store_summary_path((CamelStoreSummary *) istore->summary, "INBOX");
+		if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
+			imapx_subscribe_folder (store, "INBOX", FALSE, ex);
+			
+			if (!camel_exception_is_set(ex) && !si)
+				sync_folders (istore, "INBOX", ex);
+		
+			if (si)
+				camel_store_summary_info_free((CamelStoreSummary *) istore->summary, si);
+		}
+	}
 
 	fi = get_folder_info_offline (store, top, flags, ex);
 	return fi;
