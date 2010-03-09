@@ -38,6 +38,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <glib/gstdio.h>
 
 #include "camel/camel-operation.h"
 
@@ -49,6 +50,7 @@
 #include "camel/camel-data-cache.h"
 #include "camel/camel-tcp-stream.h"
 #include "camel/camel-tcp-stream-raw.h"
+#include "camel/camel-db.h"
 #ifdef HAVE_SSL
 #include "camel/camel-tcp-stream-ssl.h"
 #endif
@@ -446,6 +448,76 @@ imapx_match_pattern(CamelIMAPXStoreNamespace *ns, const gchar *pattern, const gc
 	return n == 0 && (p == '%' || p == 0);
 }
 
+static void
+imapx_folder_unsubscribe_from_cache (CamelIMAPXStore *istore,
+				     const gchar *folder_name, CamelException *ex)
+{
+	CamelFolderInfo *fi;
+	CamelStoreInfo *si;
+
+	si = camel_store_summary_path((CamelStoreSummary *)istore->summary, folder_name);
+	if (si) {
+		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
+			si->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+			camel_store_summary_touch((CamelStoreSummary *)istore->summary);
+			camel_store_summary_save((CamelStoreSummary *)istore->summary);
+		}
+		camel_store_summary_info_free((CamelStoreSummary *)istore->summary, si);
+	}
+
+	/* handle rename */
+
+	fi = imapx_build_folder_info(istore, folder_name);
+	camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_unsubscribed", fi);
+	camel_folder_info_free (fi);
+}
+
+static void
+imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_name, CamelException *ex)
+{
+	gchar *state_file;
+	gchar *folder_dir, *storage_path;
+	CamelFolderInfo *fi;
+	const gchar *name = NULL;
+
+	name = strrchr (folder_name, istore->dir_sep);
+	if (name)
+		name++;
+	else
+		name = folder_name;
+
+	storage_path = g_strdup_printf ("%s/folders", istore->storage_path);
+	folder_dir = imapx_path_to_physical (storage_path, folder_name);
+	g_free (storage_path);
+	if (g_access (folder_dir, F_OK) != 0) {
+		g_free (folder_dir);
+		goto event;
+	}
+
+	/* Delete summary and all the data */
+	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
+	g_unlink (state_file);
+	g_free (state_file);
+
+	camel_db_delete_folder (((CamelStore *)istore)->cdb_w, folder_name, ex);
+	g_rmdir (folder_dir);
+
+	state_file = g_strdup_printf("%s/subfolders", folder_dir);
+	g_rmdir(state_file);
+	g_free(state_file);
+
+	g_rmdir (folder_dir);
+	g_free (folder_dir);
+
+ event:
+	camel_store_summary_remove_path((CamelStoreSummary *)istore->summary, folder_name);
+	camel_store_summary_save((CamelStoreSummary *)istore->summary);
+
+	fi = imapx_build_folder_info(istore, folder_name);
+	camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_deleted", fi);
+	camel_folder_info_free (fi);
+}
+
 static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store, const gchar *top,
 			 guint32 flags, CamelException *ex)
@@ -765,9 +837,9 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 					CamelException eex;
 
 					camel_exception_init (&eex);
-
-					/* Delete the folder from cache */
-
+					imapx_folder_unsubscribe_from_cache (istore,dup_folder_name, &eex);
+					imapx_delete_folder_from_cache (istore, dup_folder_name, &eex);
+					
 					g_free (dup_folder_name);
 					camel_exception_clear (&eex);
 				} else {

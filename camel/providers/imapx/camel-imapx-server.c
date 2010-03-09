@@ -2285,6 +2285,7 @@ retry:
 		ns->sep = '/';
 		nsl->personal = ns;
 		imapx_store->summary->namespaces = nsl;
+		imapx_store->dir_sep = ns->sep;
 	}
 
 	if (!camel_exception_is_set (ex))
