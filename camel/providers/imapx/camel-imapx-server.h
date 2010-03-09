@@ -125,4 +125,6 @@ void camel_imapx_server_copy_message (CamelIMAPXServer *is, CamelFolder *source,
 void camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, struct _CamelMimeMessage *message, const struct _CamelMessageInfo *mi, CamelException *ex);
 void camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder, const gchar *uid, CamelException *ex);
 
+void camel_imapx_server_manage_subscription (CamelIMAPXServer *is, const gchar *folder_name, gboolean subscribe, CamelException *ex);
+
 #endif /* _CAMEL_IMAPX_SERVER_H */

@@ -449,10 +449,8 @@ imapx_match_pattern(CamelIMAPXStoreNamespace *ns, const gchar *pattern, const gc
 }
 
 static void
-imapx_folder_unsubscribe_from_cache (CamelIMAPXStore *istore,
-				     const gchar *folder_name, CamelException *ex)
+imapx_unmark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_name, gboolean emit_signal, CamelException *ex)
 {
-	CamelFolderInfo *fi;
 	CamelStoreInfo *si;
 
 	si = camel_store_summary_path((CamelStoreSummary *)istore->summary, folder_name);
@@ -465,11 +463,79 @@ imapx_folder_unsubscribe_from_cache (CamelIMAPXStore *istore,
 		camel_store_summary_info_free((CamelStoreSummary *)istore->summary, si);
 	}
 
-	/* handle rename */
+	if (emit_signal) {
+		CamelFolderInfo *fi;
 
-	fi = imapx_build_folder_info(istore, folder_name);
-	camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_unsubscribed", fi);
-	camel_folder_info_free (fi);
+		fi = imapx_build_folder_info(istore, folder_name);
+		camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_unsubscribed", fi);
+		camel_folder_info_free (fi);
+	}
+}
+
+static void
+imapx_mark_folder_subscribed (CamelIMAPXStore *istore, const gchar *folder_name, gboolean emit_signal, CamelException *ex)
+{
+	CamelStoreInfo *si;
+
+	si = camel_store_summary_path((CamelStoreSummary *)istore->summary, folder_name);
+	if (si) {
+		if ((si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0) {
+			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+			camel_store_summary_touch((CamelStoreSummary *)istore->summary);
+			camel_store_summary_save((CamelStoreSummary *)istore->summary);
+		}
+		camel_store_summary_info_free((CamelStoreSummary *)istore->summary, si);
+	}
+	
+	if (emit_signal) {
+		CamelFolderInfo *fi;
+
+		fi = imapx_build_folder_info(istore, folder_name);
+		camel_object_trigger_event (CAMEL_OBJECT (istore), "folder_subscribed", fi);
+		camel_folder_info_free (fi);
+	}
+}
+
+static void
+imapx_subscribe_folder (CamelStore *store, const gchar *folder_name, gboolean emit_signal, CamelException *ex)
+{
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
+
+	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+		return;
+
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+		camel_imapx_server_manage_subscription (istore->server, folder_name, TRUE, ex);
+
+	if (!camel_exception_is_set (ex))
+		imapx_mark_folder_subscribed (istore, folder_name, emit_signal, ex);
+}
+
+static void
+imapx_unsubscribe_folder (CamelStore *store, const gchar *folder_name, gboolean emit_signal, CamelException *ex)
+{
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
+
+	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
+		return;
+
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+		camel_imapx_server_manage_subscription (istore->server, folder_name, FALSE, ex);
+	
+	if (!camel_exception_is_set (ex))
+		imapx_unmark_folder_subscribed (istore, folder_name, emit_signal, ex);
+}
+
+static void
+imapx_store_subscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
+{
+	imapx_subscribe_folder (store, folder_name, TRUE, ex);
+}
+
+static void
+imapx_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
+{
+	imapx_unsubscribe_folder (store, folder_name, TRUE, ex);
 }
 
 static void
@@ -830,7 +896,7 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 					CamelException eex;
 
 					camel_exception_init (&eex);
-					imapx_folder_unsubscribe_from_cache (istore,dup_folder_name, &eex);
+					imapx_unmark_folder_subscribed (istore,dup_folder_name, TRUE, &eex);
 					imapx_delete_folder_from_cache (istore, dup_folder_name, &eex);
 					
 					g_free (dup_folder_name);
@@ -962,6 +1028,8 @@ camel_imapx_store_class_init(CamelIMAPXStoreClass *klass)
 	camel_store_class->create_folder = imapx_create_folder;
 	camel_store_class->rename_folder = imapx_rename_folder;
 	camel_store_class->delete_folder = imapx_delete_folder;
+	camel_store_class->subscribe_folder = imapx_store_subscribe_folder;
+	camel_store_class->unsubscribe_folder = imapx_store_unsubscribe_folder;
 	camel_store_class->get_folder_info = imapx_get_folder_info;
 	camel_store_class->folder_subscribed = imapx_folder_subscribed;
 	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
@@ -975,7 +1043,7 @@ camel_imapx_store_init (gpointer object, gpointer klass)
 {
 	CamelStore *store = (CamelStore *) object;
 
-	store->flags |= CAMEL_STORE_ASYNC;
+	store->flags |= CAMEL_STORE_ASYNC | CAMEL_STORE_SUBSCRIPTIONS;
 }
 
 static void

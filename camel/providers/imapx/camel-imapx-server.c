@@ -182,9 +182,11 @@ enum {
 	IMAPX_JOB_NOOP = 1<<7,
 	IMAPX_JOB_IDLE = 1<<8,
 	IMAPX_JOB_LIST = 1<<9,
+	IMAPX_JOB_MANAGE_SUBSCRIPTION = 1<<10,
 };
 
 enum {
+	IMAPX_PRIORITY_MANAGE_SUBSCRIPTION = 200,
 	IMAPX_PRIORITY_GET_MESSAGE = 100,
 	IMAPX_PRIORITY_REFRESH_INFO = 0,
 	IMAPX_PRIORITY_NOOP = 0,
@@ -269,6 +271,11 @@ struct _CamelIMAPXJob {
 			guint32 flags;
 			GHashTable *folders;
 		} list;
+
+		struct {
+			const gchar *folder_name;
+			gboolean subscribe;
+		} manage_subscriptions;
 	} u;
 };
 
@@ -3123,7 +3130,63 @@ imapx_job_list_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	ic->complete = imapx_command_list_done;
 	imapx_command_queue(is, ic);
 }
+/* ********************************************************************** */
 
+
+static gchar *
+imapx_encode_folder_name (CamelIMAPXStore *istore, const gchar *folder_name)
+{
+	gchar *fname, *encoded;
+
+	fname = camel_imapx_store_summary_full_from_path(istore->summary, folder_name);
+	if (fname) {
+		encoded = camel_utf8_utf7(fname);
+		g_free (fname);
+	} else
+		encoded = camel_utf8_utf7 (folder_name);
+	
+	return encoded;
+}
+
+static void
+imapx_command_subscription_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_setv(ic->job->ex, 1, "Error subscribing to folder : %s", ic->status->text);
+		else
+			camel_exception_xfer (ic->job->ex, ic->ex);
+	}
+
+	imapx_job_done (is, ic->job);
+	camel_imapx_command_free (ic);
+}
+
+static void
+imapx_job_manage_subscription_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	CamelIMAPXCommand *ic;
+	const gchar *str = NULL;
+	gchar *encoded_fname = NULL;
+	
+	
+	if (job->u.manage_subscriptions.subscribe)
+		str = "SUBSCRIBE";
+	else
+		str = "UNSUBSCRIBE";
+
+	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.manage_subscriptions.folder_name);
+	ic = camel_imapx_command_new (str, NULL, "%s %s", str, encoded_fname);
+	
+	ic->pri = job->pri;
+	ic->job = job;
+	ic->complete = imapx_command_subscription_done;
+	imapx_command_queue(is, ic);
+
+	g_free (encoded_fname);
+}
+
+/* ********************************************************************** */
 static void
 imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
@@ -4174,4 +4237,23 @@ camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, C
 	g_free(job);
 
 	return folders;
+}
+
+void
+camel_imapx_server_manage_subscription (CamelIMAPXServer *is, const gchar *folder_name, gboolean subscribe, CamelException *ex)
+{
+	CamelIMAPXJob *job;
+	
+	job = g_malloc0(sizeof(*job));
+	job->type = IMAPX_JOB_MANAGE_SUBSCRIPTION;
+	job->start = imapx_job_manage_subscription_start;
+	job->pri = IMAPX_PRIORITY_MANAGE_SUBSCRIPTION;
+	job->ex = ex;
+	job->u.manage_subscriptions.subscribe = subscribe;
+	job->u.manage_subscriptions.folder_name = folder_name;
+	
+	if (imapx_register_job (is, job))
+		imapx_run_job (is, job);
+
+	g_free (job);
 }
