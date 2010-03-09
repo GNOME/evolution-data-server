@@ -478,13 +478,6 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_nam
 	gchar *state_file;
 	gchar *folder_dir, *storage_path;
 	CamelFolderInfo *fi;
-	const gchar *name = NULL;
-
-	name = strrchr (folder_name, istore->dir_sep);
-	if (name)
-		name++;
-	else
-		name = folder_name;
 
 	storage_path = g_strdup_printf ("%s/folders", istore->storage_path);
 	folder_dir = imapx_path_to_physical (storage_path, folder_name);

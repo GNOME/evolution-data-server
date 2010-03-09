@@ -491,6 +491,7 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar buffer[16];
+	CamelFolder *folder;
 	gchar *fname = NULL, *encoded = NULL;
 	CamelException ex = CAMEL_EXCEPTION_INITIALISER;
 
@@ -592,14 +593,14 @@ imapx_command_addv(CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					}
 					break;
 				case 'f': /* imap folder name */
-					s = va_arg(ap, gchar *);
+					folder = va_arg(ap, CamelFolder *);
 					c(printf("got folder '%s'\n", s));
-					fname = camel_imapx_store_summary_full_from_path(((CamelIMAPXStore *)ic->job->folder->parent_store)->summary, s);
+					fname = camel_imapx_store_summary_full_from_path(((CamelIMAPXStore *) folder->parent_store)->summary, folder->full_name);
 					if (fname) {
 						encoded = camel_utf8_utf7(fname);
 						g_free (fname);
 					} else
-						encoded = camel_utf8_utf7 (s);
+						encoded = camel_utf8_utf7 (folder->full_name);
 
 					camel_stream_printf((CamelStream *)ic->mem, "\"%s\"", encoded?encoded:"");
 
@@ -2054,7 +2055,7 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	/* Hrm, what about reconnecting? */
 	is->state = IMAPX_AUTHENTICATED;
 
-	ic = camel_imapx_command_new("SELECT", NULL, "SELECT %s", CIF(folder)->raw_name);
+	ic = camel_imapx_command_new("SELECT", NULL, "SELECT %f", folder);
 	ic->complete = imapx_command_select_done;
 	imapx_command_start (is, ic);
 }
@@ -2286,6 +2287,7 @@ retry:
 		imapx_store->summary->namespaces = nsl;
 		/* FIXME needs to be identified from list response */
 		imapx_store->dir_sep = ns->sep;
+
 	}
 
 	if (!camel_exception_is_set (ex))
@@ -2432,7 +2434,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is, CamelIMAPXJob *job
 
 		res = imapx_uidset_add (&job->u.copy_messages.uidset, ic, uid);
 		if (res == 1) {
-			camel_imapx_command_add (ic, " %f", job->u.copy_messages.dest->full_name);
+			camel_imapx_command_add (ic, " %f", job->u.copy_messages.dest);
 			job->u.copy_messages.index = i;
 			imapx_command_queue (is, ic);
 			return;
@@ -2570,7 +2572,7 @@ imapx_job_append_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 	/* TODO: we could supply the original append date from the file timestamp */
 	ic = camel_imapx_command_new("APPEND", NULL,
 				     "APPEND %f %F %P",
-				     job->folder->full_name,
+				     job->folder,
 				     ((CamelMessageInfoBase *)job->u.append_message.info)->flags,
 				     ((CamelMessageInfoBase *)job->u.append_message.info)->user_flags,
 				     job->u.append_message.path);
@@ -2999,7 +3001,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		guint32 unread;
 		CamelIMAPXCommand *ic;
 
-		ic = camel_imapx_command_new ("STATUS", folder->full_name, "STATUS %s (MESSAGES UNSEEN)", folder->full_name);
+		ic = camel_imapx_command_new ("STATUS", folder->full_name, "STATUS %f (MESSAGES UNSEEN)", folder);
 		ic->job = job;
 		ic->complete = imapx_command_status_done;
 		imapx_command_run_sync (is, ic);
