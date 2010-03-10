@@ -184,10 +184,14 @@ enum {
 	IMAPX_JOB_LIST = 1<<9,
 	IMAPX_JOB_MANAGE_SUBSCRIPTION = 1<<10,
 	IMAPX_JOB_CREATE_FOLDER = 1<<11,
+	IMAPX_JOB_DELETE_FOLDER = 1<<12,
 };
 
+/* Operations on the store (folder_tree) will have highest priority as we know for sure they are sync
+   and user triggered. */
 enum {
 	IMAPX_PRIORITY_CREATE_FOLDER = 200,
+	IMAPX_PRIORITY_DELETE_FOLDER = 200,
 	IMAPX_PRIORITY_MANAGE_SUBSCRIPTION = 200,
 	IMAPX_PRIORITY_GET_MESSAGE = 100,
 	IMAPX_PRIORITY_REFRESH_INFO = 0,
@@ -2460,7 +2464,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is, CamelIMAPXJob *job
 
 	job->u.copy_messages.index = i;
 	if (imapx_uidset_done (&job->u.copy_messages.uidset, ic)) {
-		camel_imapx_command_add (ic, " %s", job->u.copy_messages.dest->full_name);
+		camel_imapx_command_add (ic, " %f", job->u.copy_messages.dest);
 		imapx_command_queue (is, ic);
 		return;
 	}
@@ -3223,6 +3227,40 @@ imapx_job_create_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 	ic->pri = job->pri;
 	ic->job = job;
 	ic->complete = imapx_command_create_folder_done;
+	imapx_command_queue(is, ic);
+
+	g_free (encoded_fname);
+}
+
+/* ********************************************************************** */
+
+static void
+imapx_command_delete_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_setv(ic->job->ex, 1, "Error deleting to folder : %s", ic->status->text);
+		else
+			camel_exception_xfer (ic->job->ex, ic->ex);
+	}
+
+	imapx_job_done (is, ic->job);
+	camel_imapx_command_free (ic);
+}
+
+static void
+imapx_job_delete_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	CamelIMAPXCommand *ic;
+	gchar *encoded_fname = NULL;
+
+	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.folder_name);
+
+	/* make sure to-be-deleted folder is not selected by selecting INBOX for this operation */
+	ic = camel_imapx_command_new ("DELETE", "INBOX", "DELETE %s", encoded_fname);
+	ic->pri = job->pri;
+	ic->job = job;
+	ic->complete = imapx_command_delete_folder_done;
 	imapx_command_queue(is, ic);
 
 	g_free (encoded_fname);
@@ -4254,6 +4292,9 @@ camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, C
 {
 	CamelIMAPXJob *job;
 	GPtrArray *folders = NULL;
+	gchar *encoded_name;
+
+	encoded_name = camel_utf8_utf7 (top);
 
 	job = g_malloc0(sizeof(*job));
 	job->type = IMAPX_JOB_LIST;
@@ -4262,11 +4303,11 @@ camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, C
 	job->ex = ex;
 	job->u.list.flags = flags;
 	job->u.list.folders = g_hash_table_new(imapx_name_hash, imapx_name_equal);
-	job->u.list.pattern = g_alloca(strlen(top)+5);
+	job->u.list.pattern = g_alloca(strlen(encoded_name)+5);
 	if (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
-		sprintf(job->u.list.pattern, "%s*", top);
+		sprintf(job->u.list.pattern, "%s*", encoded_name);
 	else
-		sprintf(job->u.list.pattern, "%s", top);
+		sprintf(job->u.list.pattern, "%s", encoded_name);
 
 	if (imapx_register_job (is, job)) {
 		imapx_run_job (is, job);
@@ -4277,6 +4318,7 @@ camel_imapx_server_list(CamelIMAPXServer *is, const gchar *top, guint32 flags, C
 	}
 
 	g_hash_table_destroy(job->u.list.folders);
+	g_free (encoded_name);
 	g_free(job);
 
 	return folders;
@@ -4319,3 +4361,20 @@ camel_imapx_server_create_folder (CamelIMAPXServer *is, const gchar *folder_name
 	g_free (job);
 }
 
+void
+camel_imapx_server_delete_folder (CamelIMAPXServer *is, const gchar *folder_name, CamelException *ex)
+{
+	CamelIMAPXJob *job;
+	
+	job = g_malloc0(sizeof(*job));
+	job->type = IMAPX_JOB_DELETE_FOLDER;
+	job->start = imapx_job_delete_folder_start;
+	job->pri = IMAPX_PRIORITY_DELETE_FOLDER;
+	job->ex = ex;
+	job->u.folder_name = folder_name;
+
+	if (imapx_register_job (is, job))
+		imapx_run_job (is, job);
+
+	g_free (job);
+}

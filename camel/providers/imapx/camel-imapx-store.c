@@ -535,6 +535,11 @@ imapx_store_subscribe_folder (CamelStore *store, const gchar *folder_name, Camel
 static void
 imapx_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
+	CamelException eex = CAMEL_EXCEPTION_INITIALISER;
+	
+	if (!ex)
+		ex = &eex;
+
 	imapx_unsubscribe_folder (store, folder_name, TRUE, ex);
 }
 
@@ -580,7 +585,19 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore, const gchar *folder_nam
 static void
 imapx_delete_folder (CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
-	camel_exception_setv(ex, 1, "delete_folder::unimplemented");
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
+
+	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				     _("You must be working online to complete this operation"));
+		return;
+	}
+
+	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+		camel_imapx_server_delete_folder (istore->server, folder_name, ex);
+
+	if (!camel_exception_is_set (ex))
+		imapx_delete_folder_from_cache (istore, folder_name, ex);
 }
 
 static void
@@ -1006,12 +1023,32 @@ sync_folders (CamelIMAPXStore *istore, const gchar *pattern, CamelException *ex)
 	g_hash_table_destroy (folders_from_server);
 }
 
+
+static void
+discover_inbox (CamelStore *store, CamelException *ex)
+{
+	CamelStoreInfo *si;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
+	
+	si = camel_store_summary_path((CamelStoreSummary *) istore->summary, "INBOX");
+	if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
+		imapx_subscribe_folder (store, "INBOX", FALSE, ex);
+		
+		if (!camel_exception_is_set(ex) && !si)
+			sync_folders (istore, "INBOX", ex);
+	
+		if (si)
+			camel_store_summary_info_free((CamelStoreSummary *) istore->summary, si);
+	}
+}
+
 static CamelFolderInfo *
 imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelException *ex)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *)store;
 	CamelFolderInfo * fi= NULL;
 	gboolean initial_setup = FALSE;
+	gchar *pattern;
 
 	if (top == NULL)
 		top = "";
@@ -1027,24 +1064,32 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 	if (camel_store_summary_count ((CamelStoreSummary *) istore->summary) == 0)
 		initial_setup = TRUE;
 
-	sync_folders (istore, top, ex);
+	if (*top) {
+		gchar *name;
+		gint i;
+
+		name = camel_imapx_store_summary_full_from_path(istore->summary, top);
+		if (name == NULL)
+			name = camel_imapx_store_summary_path_to_full(istore->summary, top, istore->dir_sep);
+
+		i = strlen(name);
+		pattern = g_alloca(i+5);
+		strcpy(pattern, name);
+		g_free(name);
+	} else {
+		pattern = g_alloca (1);
+		pattern[0] = '\0';
+	}
+
+	sync_folders (istore, pattern, ex);
+	if (camel_exception_is_set (ex))
+		return NULL;
+
 	camel_store_summary_save((CamelStoreSummary *) istore->summary);
 
 	/* ensure the INBOX is subscribed if lsub was preferred*/
-	if (initial_setup && istore->rec_options & IMAPX_SUBSCRIPTIONS) {
-		CamelStoreInfo *si;
-		
-		si = camel_store_summary_path((CamelStoreSummary *) istore->summary, "INBOX");
-		if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
-			imapx_subscribe_folder (store, "INBOX", FALSE, ex);
-			
-			if (!camel_exception_is_set(ex) && !si)
-				sync_folders (istore, "INBOX", ex);
-		
-			if (si)
-				camel_store_summary_info_free((CamelStoreSummary *) istore->summary, si);
-		}
-	}
+	if (initial_setup && istore->rec_options & IMAPX_SUBSCRIPTIONS)
+		discover_inbox (store, ex);
 
 	fi = get_folder_info_offline (store, top, flags, ex);
 	return fi;

@@ -37,8 +37,8 @@ typedef struct _CamelIMAPXStoreSummaryClass CamelIMAPXStoreSummaryClass;
 typedef struct _CamelIMAPXStoreInfo CamelIMAPXStoreInfo;
 
 enum {
-	CAMEL_IMAP_STORE_INFO_FULL_NAME = CAMEL_STORE_INFO_LAST,
-	CAMEL_IMAP_STORE_INFO_LAST
+	CAMEL_IMAPX_STORE_INFO_FULL_NAME = CAMEL_STORE_INFO_LAST,
+	CAMEL_IMAPX_STORE_INFO_LAST
 };
 
 struct _CamelIMAPXStoreInfo {
@@ -98,7 +98,7 @@ gchar *camel_imapx_store_summary_full_from_path(CamelIMAPXStoreSummary *s, const
 void camel_imapx_store_summary_set_namespaces (CamelIMAPXStoreSummary *summary, const CamelIMAPXNamespaceList *nsl);
 
 /* helpe macro's */
-#define camel_imapx_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_IMAP_STORE_INFO_FULL_NAME))
+#define camel_imapx_store_info_full_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_IMAPX_STORE_INFO_FULL_NAME))
 
 G_END_DECLS
 

@@ -127,5 +127,6 @@ void camel_imapx_server_sync_message (CamelIMAPXServer *is, CamelFolder *folder,
 
 void camel_imapx_server_manage_subscription (CamelIMAPXServer *is, const gchar *folder_name, gboolean subscribe, CamelException *ex);
 void camel_imapx_server_create_folder (CamelIMAPXServer *is, const gchar *folder_name, CamelException *ex);
+void camel_imapx_server_delete_folder (CamelIMAPXServer *is, const gchar *folder_name, CamelException *ex);
 
 #endif /* _CAMEL_IMAPX_SERVER_H */

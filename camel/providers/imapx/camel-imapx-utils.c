@@ -475,7 +475,6 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 
 				node = g_new0 (CamelIMAPXStoreNamespace, 1);
 				node->next = NULL;
-				node->full_name = g_strdup ((gchar *) token);
 				node->path = g_strdup ((gchar *) token);
 
 				tok = camel_imapx_stream_token (stream, &token, &len, ex);
@@ -508,6 +507,10 @@ imapx_parse_namespace_list (CamelIMAPXStream *stream, CamelException *ex)
 				if (!g_ascii_strncasecmp (node->path, "INBOX", 5) &&
 						(node->path [6] == '\0' || node->path [6] == node->sep ))
 					memcpy (node->path, "INBOX", 5);
+				
+				/* TODO remove full_name later. not required */
+				node->full_name = g_strdup (node->path);
+
 				tok = camel_imapx_stream_token (stream, &token, &len, ex);
 				if (tok != ')') {
 					camel_exception_set (ex, 1, "namespace: expected a ')'");
