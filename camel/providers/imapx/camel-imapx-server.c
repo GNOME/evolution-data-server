@@ -224,7 +224,7 @@ struct _CamelIMAPXJob {
 
 	gint noreply:1;		/* dont wait for reply */
 	guint32 type;		/* operation type */
-	gchar pri;		/* the command priority */
+	guint32 pri;		/* the command priority */
 	short commands;		/* counts how many commands are outstanding */
 
 	CamelFolder *folder;
@@ -3106,6 +3106,8 @@ static void
 imapx_job_expunge_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
+
+	camel_imapx_server_sync_changes (is, job->folder, job->ex);
 
 	/* TODO handle UIDPLUS capability */
 	ic = camel_imapx_command_new("EXPUNGE", job->folder->full_name, "EXPUNGE");
