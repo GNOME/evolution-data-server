@@ -1421,7 +1421,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 			GList *list = g_list_copy (e_vcard_attribute_get_values (attr));
 			GList *l;
 			for (l = list; l; l = l->next)
-				l->data = g_strdup (l->data);
+				l->data = g_strstrip (g_strdup (l->data));
 			return list;
 		}
 	}
@@ -1435,7 +1435,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 				v = e_vcard_attribute_get_values (attr);
 				v = g_list_nth (v, info->list_elem);
 
-				return v ? g_strdup (v->data) : NULL;
+				return v ? g_strstrip (g_strdup (v->data)) : NULL;
 			}
 		}
 	}
@@ -1456,7 +1456,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 					if (num_left-- == 0) {
 						GList *v = e_vcard_attribute_get_values (attr);
 
-						return v ? g_strdup (v->data) : NULL;
+						return v ? g_strstrip (g_strdup (v->data)) : NULL;
 					}
 				}
 			}
@@ -1468,7 +1468,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
 			if (attr) {
 				GList *p = e_vcard_attribute_get_values (attr);
-				return g_strdup (p->data);
+				return g_strstrip (g_strdup (p->data));
 			}
 			else {
 				return NULL;
@@ -1494,7 +1494,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
 			return (gpointer)info->boxed_type_getter();
 		else
-			return g_strdup (rv);
+			return g_strstrip (g_strdup (rv));
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
 		switch (info->field_id) {
@@ -1515,7 +1515,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 					str = e_contact_get_const (contact, E_CONTACT_EMAIL_1);
 			}
 
-			return g_strdup (str);
+			return g_strstrip (g_strdup (str));
 		}
 		case E_CONTACT_CATEGORIES: {
 			EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
@@ -1558,10 +1558,10 @@ e_contact_get (EContact *contact, EContactField field_id)
 				v = e_vcard_attribute_get_values (attr);
 
 				if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-					return v ? g_strdup (v->data) : NULL;
+					return v ? g_strstrip (g_strdup (v->data)) : NULL;
 				}
 				else {
-					rv = g_list_append (rv, v ? g_strdup (v->data) : NULL);
+					rv = g_list_append (rv, v ? g_strstrip (g_strdup (v->data)) : NULL);
 				}
 			}
 		}
