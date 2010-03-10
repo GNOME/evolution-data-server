@@ -644,20 +644,21 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 	}
 	
 	parent_real = camel_imapx_store_summary_full_from_path(istore->summary, parent_name);
-	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, parent_name);
-	if (si == NULL || parent_real == NULL) {
+	if (parent_real == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
 				     _("Unknown parent folder: %s"), parent_name);
 		return NULL;
 	}
 
-	if (si->flags & CAMEL_STORE_INFO_FOLDER_NOINFERIORS) {
+	si = camel_store_summary_path ((CamelStoreSummary *)istore->summary, parent_name);
+	if (si && si->flags & CAMEL_STORE_INFO_FOLDER_NOINFERIORS) {
 		camel_exception_set (ex, CAMEL_EXCEPTION_FOLDER_INVALID_STATE,
 				_("The parent folder is not allowed to contain subfolders"));
 		return NULL;
 	}
 
-	camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
+	if (si)
+		camel_store_summary_info_free ((CamelStoreSummary *) istore->summary, si);
 
 	real_name = camel_imapx_store_summary_path_to_full (istore->summary, folder_name, dir_sep);
 	full_name = imapx_concat (istore, parent_real, real_name);
