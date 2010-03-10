@@ -50,6 +50,7 @@ static void
 enl_popup_size (ENameSelectorList *list)
 {
 	gint height = 0, count;
+	GtkAllocation allocation;
 	GtkTreeViewColumn *column = NULL;
 
 	column = gtk_tree_view_get_column ( GTK_TREE_VIEW (list->tree_view), 0);
@@ -63,19 +64,23 @@ enl_popup_size (ENameSelectorList *list)
 	if (count <= 0)
 		count = 1;
 
-	gtk_widget_set_size_request (list->tree_view, ((GtkWidget *)list)->allocation.width - 3 , height * count);
+	gtk_widget_get_allocation (GTK_WIDGET (list), &allocation);
+	gtk_widget_set_size_request (list->tree_view, allocation.width - 3 , height * count);
 }
 
 static void
 enl_popup_position (ENameSelectorList *list)
 {
+	GtkAllocation allocation;
 	GdkWindow *window;
 	gint x,y;
+
+	gtk_widget_get_allocation (GTK_WIDGET (list), &allocation);
 
 	enl_popup_size (list);
 	window = gtk_widget_get_window (GTK_WIDGET (list));
 	gdk_window_get_origin (window, &x, &y);
-	y = y +((GtkWidget *)list)->allocation.height;
+	y = y + allocation.height;
 
 	gtk_window_move (list->popup, x, y);
 }
@@ -110,11 +115,11 @@ enl_popup_grab (ENameSelectorList *list)
 static void
 enl_popup_ungrab (ENameSelectorList *list)
 {
-	if (!GTK_WIDGET_HAS_GRAB(list->popup))
+	if (!gtk_widget_has_grab (GTK_WIDGET (list->popup)))
 		return;
 
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
-	gtk_grab_remove ( GTK_WIDGET (list->popup));
+	gtk_grab_remove (GTK_WIDGET (list->popup));
 	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
 }
 
@@ -134,7 +139,8 @@ static gboolean
 enl_entry_focus_out (ENameSelectorList *list, GdkEventFocus *event, gpointer dummy)
 {
 	/* When we lose focus and popup is still present hide it. Dont do it, when we click the popup. Look for grab */
-	if (GTK_WIDGET_VISIBLE (list->popup) && !GTK_WIDGET_HAS_GRAB(list->popup)) {
+	if (gtk_widget_get_visible (GTK_WIDGET (list->popup))
+            && !gtk_widget_has_grab (GTK_WIDGET (list->popup))) {
 		enl_popup_ungrab (list);
 		gtk_widget_hide ((GtkWidget *)list->popup);
 
@@ -149,7 +155,11 @@ enl_popup_button_press (GtkWidget *widget,
 			GdkEventButton *event,
 			ENameSelectorList *list)
 {
+#if GTK_CHECK_VERSION (2,19,5)
+	if (!gtk_widget_get_mapped (widget))
+#else
 	if (!GTK_WIDGET_MAPPED (widget))
+#endif
 		return FALSE;
 	/* if we come here, it's usually time to popdown */
 	gtk_widget_hide ((GtkWidget *)list->popup);
@@ -172,7 +182,7 @@ enl_popup_enter_notify (GtkWidget        *widget,
 			GdkEventCrossing *event,
 			ENameSelectorList *list)
 {
-  if (event->type == GDK_ENTER_NOTIFY && !GTK_WIDGET_HAS_GRAB (list->popup))
+  if (event->type == GDK_ENTER_NOTIFY && !gtk_widget_has_grab (GTK_WIDGET (list->popup)))
 	enl_popup_grab (list);
 
   return TRUE;
@@ -357,7 +367,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 	PopupDeleteRowInfo *row_info;
 	GtkTreeIter   iter;
 
-	if ( !GTK_WIDGET_HAS_GRAB (list->popup))
+	if (!gtk_widget_has_grab (GTK_WIDGET (list->popup)))
 		enl_popup_grab (list);
 
 	gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW (list->tree_view), event->x, event->y, &path, NULL);
@@ -518,7 +528,7 @@ void
 e_name_selector_list_expand_clicked(ENameSelectorList *list)
 {
 
-	if (!GTK_WIDGET_VISIBLE (list->popup)) {
+	if (!gtk_widget_get_visible (GTK_WIDGET (list->popup))) {
 		enl_popup_position (list);
 		gtk_widget_show_all (GTK_WIDGET (list->popup));
 		enl_popup_grab (list);

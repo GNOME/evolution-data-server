@@ -33,7 +33,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 dnl Required Package Versions
 m4_define([glib_minimum_version], [2.16.1])
-m4_define([gtk_minimum_version], [2.14.0])
+m4_define([gtk_minimum_version], [2.18.0])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.3.0])
