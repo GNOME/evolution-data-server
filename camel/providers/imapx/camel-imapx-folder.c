@@ -113,9 +113,9 @@ imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
+	camel_service_connect((CamelService *)istore, ex);
 	if (istore->server && camel_imapx_server_connect (istore->server, 1))
 		camel_imapx_server_refresh_info(istore->server, folder, ex);
-
 }
 
 static void
