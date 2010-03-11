@@ -63,6 +63,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	CamelIMAPXFolder *ifolder;
 	const gchar *short_name;
 	gchar *summary_file;
+	CamelIMAPXStore *istore;
 
 	d(printf("opening imap folder '%s'\n", folder_dir));
 
@@ -97,8 +98,18 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
+	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL); 
 	ifolder->exists_on_server = 0;
 	ifolder->unread_on_server = 0;
+
+	istore = (CamelIMAPXStore *) store;
+	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
+		if ((istore->rec_options & IMAPX_FILTER_INBOX))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+		if ((istore->rec_options & IMAPX_FILTER_INBOX))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+	} else if ((istore->rec_options & (IMAPX_FILTER_JUNK | IMAPX_FILTER_JUNK_INBOX)) == IMAPX_FILTER_JUNK)
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;	
 
 	g_free (summary_file);
 
@@ -412,6 +423,9 @@ imapx_finalize (CamelObject *object)
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) object;
 
 	camel_object_unref (CAMEL_OBJECT (ifolder->cache));
+	
+	if (ifolder->ignore_recent)
+		g_hash_table_unref (ifolder->ignore_recent);
 
 	g_mutex_free (ifolder->search_lock);
 	if (ifolder->search)

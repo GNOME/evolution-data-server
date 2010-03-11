@@ -1326,9 +1326,16 @@ imapx_untagged(CamelIMAPXServer *imap, CamelException *ex)
 					binfo->size = finfo->size;
 
 					if (!camel_folder_summary_check_uid (job->folder->summary, mi->uid)) {
+						CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)job->folder;
+						
 						camel_folder_summary_add(job->folder->summary, mi);
 						imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, job->folder);
 						camel_folder_change_info_add_uid (job->u.refresh_info.changes, mi->uid);
+
+						if (!g_hash_table_lookup (ifolder->ignore_recent, mi->uid)) {
+							camel_folder_change_info_recent_uid (job->u.refresh_info.changes, mi->uid);
+							g_hash_table_remove (ifolder->ignore_recent, mi->uid);
+						}
 
 						if (job->op)
 							camel_operation_progress (job->op, (camel_folder_summary_count (job->folder->summary) * 100)/imap->exists);
@@ -2504,7 +2511,16 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is, CamelIMAPXCommand *
 
 	/* TODO copy the summary and cached messages to the new folder. We might need a sorted insert to avoid refreshing the dest folder */
 	if (ic->status->condition == IMAPX_COPYUID) {
-
+		gint i;
+		
+		for (i = 0; i < ic->status->u.copyuid.copied_uids->len; i++) {
+			guint32 uid = GPOINTER_TO_UINT(g_ptr_array_index (ic->status->u.copyuid.copied_uids, i));
+			gchar *str = g_strdup_printf ("%d",uid);
+			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->u.copy_messages.dest;
+			
+			g_hash_table_insert (ifolder->ignore_recent, str, GINT_TO_POINTER (1));
+		}
+				
 	}
 
 	if (i < uids->len) {
