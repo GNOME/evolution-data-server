@@ -175,6 +175,7 @@ ep_key_file_save (void)
 {
 	gchar *contents;
 	gchar *filename;
+	gchar* pathname;
 	gsize length = 0;
 	GError *error = NULL;
 
@@ -183,9 +184,14 @@ ep_key_file_save (void)
 
 	filename = ep_key_file_get_filename ();
 	contents = g_key_file_to_data (key_file, &length, &error);
+	pathname = g_path_get_dirname (filename);
 
-	if (!error)
+	if (!error) {
+		g_mkdir_with_parents (pathname, 0700);
 		g_file_set_contents (filename, contents, length, &error);
+	}
+	
+	g_free (pathname);
 
 	if (error != NULL) {
 		g_warning ("%s: %s", filename, error->message);
