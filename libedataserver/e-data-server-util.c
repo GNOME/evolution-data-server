@@ -522,7 +522,7 @@ static const gchar *cp_prefix;
 static const gchar *localedir;
 static const gchar *extensiondir;
 static const gchar *imagesdir;
-static const gchar *ui_gladedir;
+static const gchar *ui_uidir;
 
 static HMODULE hmodule;
 G_LOCK_DEFINE_STATIC (mutex);
@@ -602,7 +602,7 @@ setup (void)
 	localedir = replace_prefix (cp_prefix, EVOLUTION_LOCALEDIR);
 	extensiondir = replace_prefix (prefix, E_DATA_SERVER_EXTENSIONDIR);
 	imagesdir = replace_prefix (prefix, E_DATA_SERVER_IMAGESDIR);
-	ui_gladedir = replace_prefix (prefix, E_DATA_SERVER_UI_GLADEDIR);
+	ui_uidir = replace_prefix (prefix, E_DATA_SERVER_UI_UIDIR);
 
 	G_UNLOCK (mutex);
 }
@@ -627,7 +627,7 @@ e_util_get_##varbl (void)			\
 
 PRIVATE_GETTER(extensiondir)
 PRIVATE_GETTER(imagesdir)
-PRIVATE_GETTER(ui_gladedir)
+PRIVATE_GETTER(ui_uidir)
 
 PUBLIC_GETTER(prefix)
 PUBLIC_GETTER(cp_prefix)

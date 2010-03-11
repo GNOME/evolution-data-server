@@ -9,7 +9,7 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			\
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\"		\
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\"			\
-	-DE_DATA_SERVER_UI_GLADEDIR=\""$(gladedir)"\"			\
+	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"			\
 	$(E_DATA_SERVER_CFLAGS)						\
 	$(SOUP_CFLAGS)
 

@@ -28,7 +28,7 @@
 
 const gchar *_libedataserver_get_extensiondir (void) G_GNUC_CONST;
 const gchar *_libedataserver_get_imagesdir (void) G_GNUC_CONST;
-const gchar *_libedataserver_get_ui_gladedir (void) G_GNUC_CONST;
+const gchar *_libedataserver_get_ui_uidir (void) G_GNUC_CONST;
 
 #undef E_DATA_SERVER_EXTENSIONDIR
 #define E_DATA_SERVER_EXTENSIONDIR _libedataserver_get_extensiondir ()
@@ -36,8 +36,8 @@ const gchar *_libedataserver_get_ui_gladedir (void) G_GNUC_CONST;
 #undef E_DATA_SERVER_IMAGESDIR
 #define E_DATA_SERVER_IMAGESDIR _libedataserver_get_imagesdir ()
 
-#undef E_DATA_SERVER_UI_GLADEDIR
-#define E_DATA_SERVER_UI_GLADEDIR _libedataserver_get_ui_gladedir ()
+#undef E_DATA_SERVER_UI_UIDIR
+#define E_DATA_SERVER_UI_UIDIR _libedataserver_get_ui_uidir ()
 
 #endif	/* G_OS_WIN32 */
 
