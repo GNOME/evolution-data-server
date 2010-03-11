@@ -175,7 +175,7 @@ ep_key_file_save (void)
 {
 	gchar *contents;
 	gchar *filename;
-	gchar* pathname;
+	gchar *pathname;
 	gsize length = 0;
 	GError *error = NULL;
 
