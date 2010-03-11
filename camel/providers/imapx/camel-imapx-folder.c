@@ -62,7 +62,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 	CamelFolder *folder;
 	CamelIMAPXFolder *ifolder;
 	const gchar *short_name;
-	gchar *summary_file;
+	gchar *summary_file, *state_file;
 	CamelIMAPXStore *istore;
 
 	d(printf("opening imap folder '%s'\n", folder_dir));
@@ -95,6 +95,11 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 				      short_name);
 		return NULL;
 	}
+
+	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
+	camel_object_set(folder, NULL, CAMEL_OBJECT_STATE_FILE, state_file, NULL);
+	g_free(state_file);
+	camel_object_state_read(folder);
 
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
