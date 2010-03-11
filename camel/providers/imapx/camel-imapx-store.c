@@ -63,6 +63,7 @@
 #include "camel-imapx-server.h"
 #include "camel-imapx-summary.h"
 #include "camel-net-utils.h"
+#include "camel/camel-private.h"
 
 /* Specified in RFC 2060 section 2.1 */
 #define IMAP_PORT 143
@@ -152,20 +153,45 @@ imapx_construct(CamelService *service, CamelSession *session, CamelProvider *pro
 }
 
 extern CamelServiceAuthType camel_imapx_password_authtype;
-extern CamelServiceAuthType camel_imapx_apop_authtype;
 
-/* TODO implement */
 static GList *
 imapx_query_auth_types (CamelService *service, CamelException *ex)
 {
-	/*CamelIMAPXStore *store = CAMEL_IMAPX_STORE (service);*/
-	GList *types = NULL;
+	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
+	CamelServiceAuthType *authtype;
+	GList *sasl_types, *t, *next;
+	gboolean connected;
+	
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				     _("You must be working online to complete this operation"));
+		return NULL;
+	}
 
-        types = CAMEL_SERVICE_CLASS (parent_class)->query_auth_types (service, ex);
-	if (types == NULL)
+	CAMEL_SERVICE_REC_LOCK (istore, connect_lock);
+	
+	if (istore->server == NULL)
+		istore->server = camel_imapx_server_new((CamelStore *)istore, service->url);
+	
+	connected = istore->server->stream != NULL;
+	if (!connected)
+		connected = imapx_connect_to_server (istore->server, ex);
+	CAMEL_SERVICE_REC_UNLOCK (istore, connect_lock);
+	if (!connected)
 		return NULL;
 
-	return types;
+	sasl_types = camel_sasl_authtype_list (FALSE);
+	for (t = sasl_types; t; t = next) {
+		authtype = t->data;
+		next = t->next;
+
+		if (!g_hash_table_lookup (istore->server->cinfo->auth_types, authtype->authproto)) {
+			sasl_types = g_list_remove_link (sasl_types, t);
+			g_list_free_1 (t);
+		}
+	}
+
+	return g_list_prepend (sasl_types, &camel_imapx_password_authtype);
 }
 
 static gchar *
@@ -181,24 +207,24 @@ imapx_get_name (CamelService *service, gboolean brief)
 static gboolean
 imapx_connect (CamelService *service, CamelException *ex)
 {
-	CamelIMAPXStore *store = (CamelIMAPXStore *)service;
+	CamelIMAPXStore *istore = (CamelIMAPXStore *)service;
 
 	/* We never really are 'connected' or 'disconnected' */
-	if (store->server == NULL)
-		store->server = camel_imapx_server_new((CamelStore *)store, service->url);
+	if (istore->server == NULL)
+		istore->server = camel_imapx_server_new((CamelStore *)istore, service->url);
 
-	return camel_imapx_server_connect(store->server, 1);
+	return camel_imapx_server_connect (istore->server, TRUE, ex);
 }
 
 static gboolean
 imapx_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 {
-	CamelIMAPXStore *store = CAMEL_IMAPX_STORE (service);
+	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
 
 	CAMEL_SERVICE_CLASS (parent_class)->disconnect (service, clean, ex);
 
-	if (store->server)
-		camel_imapx_server_connect(store->server, 0);
+	if (istore->server)
+		camel_imapx_server_connect(istore->server, FALSE, ex);
 
 	return TRUE;
 }
@@ -245,7 +271,7 @@ imapx_noop (CamelStore *store, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_noop (istore->server, NULL, ex);
 }
 
@@ -506,7 +532,7 @@ imapx_subscribe_folder (CamelStore *store, const gchar *folder_name, gboolean em
 	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_manage_subscription (istore->server, folder_name, TRUE, ex);
 
 	if (!camel_exception_is_set (ex))
@@ -521,7 +547,7 @@ imapx_unsubscribe_folder (CamelStore *store, const gchar *folder_name, gboolean 
 	if (CAMEL_OFFLINE_STORE(store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_manage_subscription (istore->server, folder_name, FALSE, ex);
 	
 	if (!camel_exception_is_set (ex))
@@ -595,7 +621,7 @@ imapx_delete_folder (CamelStore *store, const gchar *folder_name, CamelException
 		return;
 	}
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_delete_folder (istore->server, folder_name, ex);
 
 	if (!camel_exception_is_set (ex))
@@ -625,7 +651,7 @@ imapx_create_folder (CamelStore *store, const gchar *parent_name, const gchar *f
 		return NULL;
 	}
 	
-	if (!(istore->server && camel_imapx_server_connect (istore->server, 1)))
+	if (!(istore->server && camel_imapx_server_connect (istore->server, TRUE, ex)))
 		return NULL;
 
 	if (!parent_name)

@@ -130,7 +130,7 @@ imapx_refresh_info (CamelFolder *folder, CamelException *ex)
 		return;
 
 	camel_service_connect((CamelService *)istore, ex);
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_refresh_info(istore->server, folder, ex);
 }
 
@@ -142,7 +142,7 @@ imapx_expunge (CamelFolder *folder, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (is->server && camel_imapx_server_connect (is->server, 1))
+	if (is->server && camel_imapx_server_connect (is->server, TRUE, ex))
 		camel_imapx_server_expunge(is->server, folder, ex);
 
 }
@@ -155,7 +155,7 @@ imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (is->server && camel_imapx_server_connect (is->server, 1))
+	if (is->server && camel_imapx_server_connect (is->server, TRUE, ex))
 		camel_imapx_server_sync_changes (is->server, folder, ex);
 
 	/* Sync twice - make sure deleted flags are written out,
@@ -195,7 +195,7 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 		if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 			return NULL;
 
-		if (istore->server && camel_imapx_server_connect (istore->server, 1)) {
+		if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex)) {
 			stream = camel_imapx_server_get_message(istore->server, folder, uid, ex);
 		} else {
 			camel_exception_setv(ex, 1, "not authenticated");
@@ -223,7 +223,7 @@ imapx_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_sync_message (istore->server, folder, uid, ex);
 }
 
@@ -237,7 +237,7 @@ imapx_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_copy_message (istore->server, source, dest, uids, delete_originals, ex);
 
 	imapx_refresh_info (dest, ex);
@@ -254,7 +254,7 @@ imapx_append_message(CamelFolder *folder, CamelMimeMessage *message, const Camel
 	if (appended_uid)
 		*appended_uid = NULL;
 
-	if (istore->server && camel_imapx_server_connect (istore->server, 1))
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
 		camel_imapx_server_append_message(istore->server, folder, message, info, ex);
 }
 

@@ -401,6 +401,7 @@ imapx_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 	struct _capability_info * cinfo;
 
 	cinfo = g_malloc0(sizeof(*cinfo));
+	cinfo->auth_types = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
 	/* FIXME: handle auth types */
 	while (!camel_exception_is_set (ex) && (tok = camel_imapx_stream_token(stream, &token, &len, ex)) != '\n') {
@@ -413,6 +414,12 @@ imapx_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 				p = token;
 				while ((c = *p))
 					*p++ = toupper(c);
+				if (!strncmp ((gchar *) token, "AUTH=", 5)) {
+					g_hash_table_insert (cinfo->auth_types,
+							g_strdup ((gchar *)token + 5),
+							GINT_TO_POINTER (1));
+					break;
+				}
 			case IMAPX_TOK_INT:
 				d(printf(" cap: '%s'\n", token));
 				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
@@ -440,6 +447,7 @@ imapx_parse_capability(CamelIMAPXStream *stream, CamelException *ex)
 
 void imapx_free_capability(struct _capability_info *cinfo)
 {
+	g_hash_table_destroy (cinfo->auth_types);
 	g_free(cinfo);
 }
 

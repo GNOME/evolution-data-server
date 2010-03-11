@@ -1650,7 +1650,6 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic, CamelException *e
 	camel_imapx_command_close(ic);
 
 	QUEUE_LOCK(is);
-	g_assert(camel_dlist_empty(&is->active));
 	imapx_command_start(is, ic);
 	QUEUE_UNLOCK(is);
 
@@ -2097,12 +2096,12 @@ imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean forced, CamelE
 	imapx_command_start (is, ic);
 }
 
-static void
-imapx_connect (CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelException *ex)
+gboolean
+imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 {
 	CamelStream * tcp_stream = NULL;
 	CamelSockOptData sockopt;
-	gint ret;
+	gint ret, ssl_mode = 0;
 
 #ifdef HAVE_SSL
 	const gchar *mode;
@@ -2154,7 +2153,7 @@ imapx_connect (CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExce
 	if (ex->id) {
 		e(printf ("Unable to connect %d %s \n", ex->id, ex->desc));
 		camel_object_unref(tcp_stream);
-		return;
+		return FALSE;
 	}
 
 	ret = camel_tcp_stream_connect(CAMEL_TCP_STREAM(tcp_stream), ai);
@@ -2167,7 +2166,7 @@ imapx_connect (CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExce
 					_("Could not connect to %s (port %s): %s"),
 					is->url->host, serv, g_strerror(errno));
 		camel_object_unref(tcp_stream);
-		return;
+		return FALSE;
 	}
 
 	is->stream = (CamelIMAPXStream *) camel_imapx_stream_new(tcp_stream);
@@ -2186,14 +2185,19 @@ imapx_connect (CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExce
 	camel_imapx_stream_gets (is->stream, &buffer, &len);
 	e(printf("Got greeting '%.*s'\n", len, buffer));
 
-	return;
-
 	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
 	imapx_command_run(is, ic, ex);
-	camel_imapx_command_free(ic);
 
-	if (camel_exception_is_set (ex))
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s", ic->status->text);
+		else
+			camel_exception_xfer (ex, ic->ex);
+
+		camel_imapx_command_free(ic);
 		goto exit;
+	}
+	camel_imapx_command_free(ic);
 
 #ifdef HAVE_SSL
 	if (ssl_mode == 2)
@@ -2208,10 +2212,18 @@ imapx_connect (CamelIMAPXServer *is, gint ssl_mode, gint try_starttls, CamelExce
 
 		ic = camel_imapx_command_new ("STARTTLS", NULL, "STARTTLS");
 		imapx_command_run (is, ic, ex);
-		camel_imapx_command_free(ic);
+		
+		if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+			if (!camel_exception_is_set (ic->ex))
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, "%s", ic->status->text);
+			else
+				camel_exception_xfer (ex, ic->ex);
 
-		if (camel_exception_is_set (ex))
+
+			camel_imapx_command_free(ic);
 			goto exit;
+		}
+		camel_imapx_command_free(ic);
 
 		if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream)) == -1) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
@@ -2227,9 +2239,16 @@ exit:
 		e(printf("Unable to connect %d %s \n", ex->id, ex->desc));
 		camel_object_unref (is->stream);
 		is->stream = NULL;
+		
+		if (is->cinfo) {
+			imapx_free_capability(is->cinfo);
+			is->cinfo = NULL;
+		}
 
-		return;
+		return FALSE;
 	}
+
+	return TRUE;
 }
 
 static void
@@ -2237,48 +2256,83 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 {
 	CamelSasl *sasl;
 	CamelIMAPXCommand *ic;
-retry:
-	imapx_connect(is, 0, 0, ex);
-	if (camel_exception_is_set (ex))
-		return;
+	gchar *errbuf = NULL;
+	CamelService *service = (CamelService *) is->store;
+	const gchar *auth_domain = NULL;
+	gboolean authenticated = FALSE;
 
-	if (is->url->passwd == NULL) {
-		CamelException ex = { 0, NULL };
-		gchar *prompt = g_strdup_printf(_("%sPlease enter the IMAP password for %s@%s"), "", is->url->user, is->url->host);
-		const gchar *auth_domain;
-
-		auth_domain = camel_url_get_param (is->url, "auth-domain");
-		is->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
-				auth_domain,
-				prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, &ex);
-
-		g_free(prompt);
-		if (ex.id) {
-			g_message ("Unable to connect %d ", ex.id);
-			return;
+	while (!authenticated) {
+		if (errbuf) {
+			/* We need to un-cache the password before prompting again */
+			camel_session_forget_password (is->session, service, auth_domain, "password", ex);
+			g_free (service->url->passwd);
+			service->url->passwd = NULL;
+			camel_exception_clear (ex);
 		}
+
+		imapx_connect_to_server (is, ex);
+		if (camel_exception_is_set (ex))
+			goto exception;
+
+		if (service->url->passwd == NULL) {
+			gchar *base_prompt;
+			gchar *full_prompt;
+
+			base_prompt = camel_session_build_password_prompt (
+					"IMAP", service->url->user, service->url->host);
+
+			if (errbuf != NULL)
+				full_prompt = g_strconcat (errbuf, base_prompt, NULL);
+			else
+				full_prompt = g_strdup (base_prompt);
+
+			auth_domain = camel_url_get_param (service->url, "auth-domain");
+			service->url->passwd = camel_session_get_password(is->session, (CamelService *)is->store,
+					auth_domain,
+					full_prompt, "password", CAMEL_SESSION_PASSWORD_SECRET, ex);
+
+			g_free (base_prompt);
+			g_free (full_prompt);
+			g_free (errbuf);
+			errbuf = NULL;
+
+			if (!service->url->passwd) {
+				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+						_("You did not enter a password."));
+				goto exception;
+			}
+		}
+
+		if (service->url->authmech
+				&& (sasl = camel_sasl_new("imap", service->url->authmech, NULL))) {
+			ic = camel_imapx_command_new("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
+			camel_object_unref(sasl);
+		} else {
+			ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", service->url->user, service->url->passwd);
+		}
+
+		imapx_command_run(is, ic, ex);
+
+		if (!(camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK))
+			authenticated = TRUE;
+		else {
+			/* If exception is set, it might be mostly due to cancellation and we would get an 
+			   io error, else re-prompt */
+			if (camel_exception_is_set (ic->ex)) {
+				camel_imapx_command_free(ic);
+				goto exception;
+			}
+
+			errbuf = g_markup_printf_escaped (
+					_("Unable to authenticate to IMAP server.\n%s\n\n"),
+					 ic->status->text);
+			camel_exception_clear (ex);
+
+		}
+		
+		camel_imapx_command_free(ic);
 	}
-
-	if (is->url->authmech
-			&& (sasl = camel_sasl_new("imap", is->url->authmech, NULL))) {
-		ic = camel_imapx_command_new("AUTHENTICATE", NULL, "AUTHENTICATE %A", sasl);
-		camel_object_unref(sasl);
-	} else {
-		ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", is->url->user, is->url->passwd);
-	}
-
-	// TODO freeing data?
-	imapx_command_run(is, ic, ex);
-	if (camel_exception_is_set (ex)) {
-		if (ic->status)
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE, "Login failed: %s", ic->status->text);
-		return;
-	}
-
-	camel_imapx_command_free(ic);
-	if (camel_exception_is_set (ex))
-		goto exception;
-
+	
 	/* After login we re-capa */
 	if (is->cinfo) {
 		imapx_free_capability(is->cinfo);
@@ -2294,7 +2348,11 @@ retry:
 
 	is->state = IMAPX_AUTHENTICATED;
 
-	is->use_idle = TRUE;
+	if (((CamelIMAPXStore *)is->store)->rec_options & IMAPX_USE_IDLE)
+		is->use_idle = TRUE;
+	else
+		is->use_idle = FALSE;
+	
 	if (imapx_idle_supported (is))
 		imapx_init_idle (is);
 
@@ -2330,13 +2388,11 @@ retry:
 		return;
 
 exception:
-	if (ex->id != CAMEL_EXCEPTION_USER_CANCEL) {
-		c(printf("Re Connection failed: %s\n", ex->desc));
-		imapx_disconnect (is);
-		g_usleep(1);
-		// camelexception_done?
-		camel_exception_clear (ex);
-		goto retry;
+	imapx_disconnect (is);
+	
+	if (is->cinfo) {
+		imapx_free_capability(is->cinfo);
+		is->cinfo = NULL;
 	}
 }
 
@@ -3760,9 +3816,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 
 	g_static_rec_mutex_lock (&is->ostream_lock);
 
-	if (is->state == IMAPX_DISCONNECTED)
-		goto exit;
-
 	if (is->stream) {
 		if (camel_stream_close (is->stream->source) == -1)
 			ret = FALSE;
@@ -3792,9 +3845,13 @@ imapx_disconnect (CamelIMAPXServer *is)
 		is->literal = NULL;
 	}
 
+	if (is->cinfo) {
+		imapx_free_capability(is->cinfo);
+		is->cinfo = NULL;	
+	}
+
 	is->state = IMAPX_DISCONNECTED;
 
-exit:
 	g_static_rec_mutex_unlock (&is->ostream_lock);
 
 	return ret;
@@ -3802,24 +3859,22 @@ exit:
 
 /* Client commands */
 gboolean
-camel_imapx_server_connect(CamelIMAPXServer *is, gint state)
+camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelException *ex)
 {
 	gboolean ret = FALSE;
 
 	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
-	if (state) {
-		CamelException ex = CAMEL_EXCEPTION_INITIALISER;
-
+	if (connect) {
 		if (is->state == IMAPX_AUTHENTICATED || is->state == IMAPX_SELECTED) {
 			ret = TRUE;
 			goto exit;
 		}
 
 		g_static_rec_mutex_lock (&is->ostream_lock);
-		imapx_reconnect (is, &ex);
+		imapx_reconnect (is, ex);
 		g_static_rec_mutex_unlock (&is->ostream_lock);
 
-		if (camel_exception_is_set (&ex)) {
+		if (camel_exception_is_set (ex)) {
 			ret = FALSE;
 			goto exit;
 		}

@@ -83,7 +83,7 @@ enum {
 
 struct _capability_info {
 	guint32 capa;
-	/* auth stuff here */
+	GHashTable *auth_types;
 };
 
 struct _capability_info *imapx_parse_capability(struct _CamelIMAPXStream *stream, CamelException *ex);
