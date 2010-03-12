@@ -151,9 +151,13 @@ static void
 imapx_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
 	CamelIMAPXStore *is = (CamelIMAPXStore *)folder->parent_store;
+	CamelException eex = CAMEL_EXCEPTION_INITIALISER;
 
 	if (CAMEL_OFFLINE_STORE (is)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL)
 		return;
+
+	if (!ex)
+		ex = &eex;
 
 	if (is->server && camel_imapx_server_connect (is->server, TRUE, ex))
 		camel_imapx_server_sync_changes (is->server, folder, ex);

@@ -2145,12 +2145,12 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 
 	hints.ai_socktype = SOCK_STREAM;
 	ai = camel_getaddrinfo(is->url->host, serv, &hints, ex);
-	if (ex->id && ex->id != CAMEL_EXCEPTION_USER_CANCEL && port != NULL) {
+	if (ex && ex->id && ex->id != CAMEL_EXCEPTION_USER_CANCEL && port != NULL) {
 		camel_exception_clear(ex);
 		ai = camel_getaddrinfo(is->url->host, port, &hints, ex);
 	}
 
-	if (ex->id) {
+	if (ex && ex->id) {
 		e(printf ("Unable to connect %d %s \n", ex->id, ex->desc));
 		camel_object_unref(tcp_stream);
 		return FALSE;
