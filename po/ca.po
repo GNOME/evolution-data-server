@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-12 07:35+0100\n"
-"PO-Revision-Date: 2010-03-11 07:36+0100\n"
+"PO-Revision-Date: 2010-03-12 08:04+0100\n"
 "Last-Translator: David Planella <david.planella@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -4416,7 +4416,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:448
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
-msgstr "Ha fallat l'entrada amb SASL «%s» al servidor POP %s: %s"
+msgstr "Ha fallat l'entrada amb SASL «%s» al servidor POP %s%s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:462
 #, c-format
@@ -4457,7 +4457,7 @@ msgid ""
 "Error sending username%s"
 msgstr ""
 "No s'ha pogut connectar amb el servidor POP %s.\n"
-"S'ha produït un error en enviar el nom d'usuari: %s"
+"S'ha produït un error en enviar el nom d'usuari%s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:601
@@ -4467,7 +4467,7 @@ msgid ""
 "Error sending password%s"
 msgstr ""
 "No s'ha pogut connectar amb el servidor POP %s.\n"
-"S'ha produït un error en enviar la contrasenya: %s"
+"S'ha produït un error en enviar la contrasenya%s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:707
 #, c-format
