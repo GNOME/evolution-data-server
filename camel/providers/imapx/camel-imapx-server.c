@@ -777,7 +777,8 @@ imapx_command_start (CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 
 		camel_exception_set (ic->ex, 1, "Failed to issue the command");
 		camel_dlist_remove ((CamelDListNode *)ic);
-		ic->complete (imap, ic);
+		if (ic && ic->complete)
+			ic->complete (imap, ic);
 		return FALSE;
 	}
 
