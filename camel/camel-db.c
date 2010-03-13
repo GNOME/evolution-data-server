@@ -1012,6 +1012,11 @@ read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	return 0;
 }
 
+/**
+ * camel_db_get_folder_preview:
+ *
+ * Since: 2.28
+ **/
 GHashTable *
 camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex)
 {
@@ -1032,6 +1037,11 @@ camel_db_get_folder_preview (CamelDB *db, gchar *folder_name, CamelException *ex
 	 return hash;
 }
 
+/**
+ * camel_db_write_preview_record:
+ *
+ * Since: 2.28
+ **/
 gint
 camel_db_write_preview_record (CamelDB *db, gchar *folder_name, const gchar *uid, const gchar *msg, CamelException *ex)
 {
@@ -1254,6 +1264,11 @@ camel_db_migrate_folder_recreate (CamelDB *cdb, const gchar *folder_name, gint v
 	return ret;
 }
 
+/**
+ * camel_db_reset_folder_version:
+ *
+ * Since: 2.28
+ **/
 gint
 camel_db_reset_folder_version (CamelDB *cdb, const gchar *folder_name, gint reset_version, CamelException *ex)
 {

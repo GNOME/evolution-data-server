@@ -938,6 +938,11 @@ e_cal_backend_file_store_init (ECalBackendFileStore *self)
 	priv->save_timeout_id = 0;
 }
 
+/**
+ * e_cal_backend_file_store_new:
+ *
+ * Since: 2.28
+ **/
 ECalBackendFileStore*
 e_cal_backend_file_store_new (const gchar *uri, ECalSourceType source_type)
 {

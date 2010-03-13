@@ -1187,6 +1187,8 @@ find_attachment (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
  * @message: a #CamelMimeMessage object
  *
  * Returns whether message contains at least one attachment part.
+ *
+ * Since: 2.28
  **/
 gboolean
 camel_mime_message_has_attachment (CamelMimeMessage *message)

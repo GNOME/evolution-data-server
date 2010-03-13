@@ -901,7 +901,13 @@ parse_values(ESExp *f, gint *len)
 	return terms;
 }
 
-ESExpTerm * e_sexp_parse_value (ESExp *f)
+/**
+ * e_sexp_parse_value:
+ *
+ * Since: 2.28
+ **/
+ESExpTerm *
+e_sexp_parse_value (ESExp *f)
 {
 	return parse_value (f);
 }

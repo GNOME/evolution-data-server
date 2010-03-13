@@ -1,4 +1,4 @@
-/* ANSI-C code produced by gperf version 3.0.2 */
+/* ANSI-C code produced by gperf version 3.0.3 */
 /* Command-line: /usr/bin/gperf -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k'1,$' camel-imapx-tokens.txt  */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -82,6 +82,9 @@ imapx_hash (register const char *str, register unsigned int len)
 
 #ifdef __GNUC__
 __inline
+#ifdef __GNUC_STDC_INLINE__
+__attribute__ ((__gnu_inline__))
+#endif
 #endif
 struct _imapx_keyword *
 imapx_tokenise_struct (register const char *str, register unsigned int len)

@@ -46,6 +46,11 @@ G_BEGIN_DECLS
 
 typedef struct _ECalBackendFileStorePrivate ECalBackendFileStorePrivate;
 
+/**
+ * ECalBackendFileStore:
+ *
+ * Since: 2.28
+ **/
 typedef struct {
 	ECalBackendStore parent;
 	ECalBackendFileStorePrivate *priv;

@@ -434,6 +434,8 @@ system_timezone_find (void)
  *
  * Returns system timezone location string, NULL on an error.
  * Returned pointer should be freed with g_free().
+ *
+ * Since: 2.28
  **/
 gchar *
 e_cal_system_timezone_get_location (void)

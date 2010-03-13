@@ -287,6 +287,8 @@ e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2)
  * e_util_utf8_remove_accents:
  *
  * Returns newly allocates string, copy of 'str', without accents.
+ *
+ * Since: 2.28
  **/
 gchar *
 e_util_utf8_remove_accents (const gchar *str)

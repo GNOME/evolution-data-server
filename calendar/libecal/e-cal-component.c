@@ -3390,6 +3390,11 @@ e_cal_component_get_percent (ECalComponent *comp, gint **percent)
 		*percent = NULL;
 }
 
+/**
+ * e_cal_component_set_percent_as_int:
+ *
+ * Since: 2.28
+ **/
 void
 e_cal_component_set_percent_as_int (ECalComponent *comp, gint percent)
 {
@@ -3422,6 +3427,11 @@ e_cal_component_set_percent_as_int (ECalComponent *comp, gint percent)
 
 }
 
+/**
+ * e_cal_component_get_percent_as_int:
+ *
+ * Since: 2.28
+ **/
 gint
 e_cal_component_get_percent_as_int (ECalComponent *comp)
 {

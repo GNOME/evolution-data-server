@@ -235,6 +235,8 @@ e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list)
  * Selects default source in the dialog.
  *
  * Return value: Whether found any default source.
+ *
+ * Since: 2.28
  **/
 gboolean
 e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog)

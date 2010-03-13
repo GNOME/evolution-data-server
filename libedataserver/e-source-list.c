@@ -447,7 +447,10 @@ e_source_list_peek_group_by_name (ESourceList *list,
 
 /**
  * e_source_list_peek_group_by_base_uri:
+ *
  * Returns the first group which base uri begins with a base_uri.
+ *
+ * Since: 2.28
  **/
 ESourceGroup *
 e_source_list_peek_group_by_base_uri (ESourceList *list, const gchar *base_uri)
@@ -493,10 +496,13 @@ check_group_property (const gchar *property_name, const gchar *property_value, s
 
 /**
  * e_source_list_peek_group_by_properties:
+ *
  * Peeks group by its properties. Parameters are pairs of strings
  * property_name, property_value, terminated by NULL! ESourceGroup
  * is returned only if matches all the properties. Values are compared
  * case insensitively.
+ *
+ * Since: 2.28
  **/
 ESourceGroup *
 e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property_name, ...)
@@ -636,9 +642,12 @@ e_source_list_remove_group_by_uid (ESourceList *list,
 
 /**
  * e_source_list_ensure_group:
+ *
  * Ensures group with the @base_uri will exists in the @list and its name will be @name.
  * If ret_it will be TRUE the group will be also returned, in that case caller should
  * g_object_unref the group. Otherwise it returns NULL.
+ *
+ * Since: 2.28
  **/
 ESourceGroup *
 e_source_list_ensure_group (ESourceList *list, const gchar *name, const gchar *base_uri, gboolean ret_it)
@@ -679,8 +688,11 @@ e_source_list_ensure_group (ESourceList *list, const gchar *name, const gchar *b
 
 /**
  * e_source_list_remove_group_by_base_uri:
+ *
  * Removes group with given base_uri.
  * Returns TRUE if group was found.
+ *
+ * Since: 2.28
  **/
 gboolean
 e_source_list_remove_group_by_base_uri (ESourceList *list, const gchar *base_uri)

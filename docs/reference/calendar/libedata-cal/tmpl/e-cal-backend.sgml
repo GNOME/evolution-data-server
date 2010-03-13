@@ -17,6 +17,50 @@ Base class for calendar/tasks backend implementations.
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### STRUCT ECalBackend ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ECalBackend::last-client-gone ##### -->
+<para>
+
+</para>
+
+@ecalbackend: the object which received the signal.
+
+<!-- ##### SIGNAL ECalBackend::opened ##### -->
+<para>
+
+</para>
+
+@ecalbackend: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalBackend::removed ##### -->
+<para>
+
+</para>
+
+@ecalbackend: the object which received the signal.
+@arg1: 
+
+<!-- ##### ARG ECalBackend:kind ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalBackend:source ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalBackend:uri ##### -->
+<para>
+
+</para>
+
 <!-- ##### FUNCTION e_cal_backend_get_source ##### -->
 <para>
 

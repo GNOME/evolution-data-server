@@ -24,6 +24,43 @@ Implementation of the calendar CORBA client interface.
 
 
 
+<!-- ##### STRUCT EDataCal ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL EDataCal::auth-required ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+
+<!-- ##### SIGNAL EDataCal::backend-error ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCal::mode ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDataCal::readonly ##### -->
+<para>
+
+</para>
+
+@edatacal: the object which received the signal.
+@arg1: 
+
 <!-- ##### FUNCTION e_data_cal_new ##### -->
 <para>
 

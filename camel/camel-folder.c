@@ -1272,6 +1272,8 @@ cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)
  *
  * Note that the default compare function expects a decimal number at the beginning of a uid,
  * thus if provider uses different uid values, then it should subclass this function.
+ *
+ * Since: 2.28
  **/
 gint
 camel_folder_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2)

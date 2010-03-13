@@ -218,6 +218,11 @@ e_cal_backend_store_init (ECalBackendStore *store)
 	priv->loaded = FALSE;
 }
 
+/**
+ * e_cal_backend_store_get_path:
+ *
+ * Since: 2.28
+ **/
 const gchar *
 e_cal_backend_store_get_path (ECalBackendStore *store)
 {
@@ -231,6 +236,11 @@ e_cal_backend_store_get_path (ECalBackendStore *store)
 	return priv->path;
 }
 
+/**
+ * e_cal_backend_store_load:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_load (ECalBackendStore *store)
 {
@@ -249,6 +259,11 @@ e_cal_backend_store_load (ECalBackendStore *store)
 	return priv->loaded;
 }
 
+/**
+ * e_cal_backend_store_remove:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_remove (ECalBackendStore *store)
 {
@@ -258,6 +273,11 @@ e_cal_backend_store_remove (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove (store);
 }
 
+/**
+ * e_cal_backend_store_clean:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_clean (ECalBackendStore *store)
 {
@@ -267,6 +287,11 @@ e_cal_backend_store_clean (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->clean (store);
 }
 
+/**
+ * e_cal_backend_store_get_component:
+ *
+ * Since: 2.28
+ **/
 ECalComponent *
 e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
@@ -277,6 +302,11 @@ e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, co
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component (store, uid, rid);
 }
 
+/**
+ * e_cal_backend_store_has_component:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
@@ -287,6 +317,11 @@ e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, co
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->has_component (store, uid, rid);
 }
 
+/**
+ * e_cal_backend_store_put_component:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 {
@@ -298,6 +333,11 @@ e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
 }
 
+/**
+ * e_cal_backend_store_remove_component:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
 {
@@ -308,6 +348,11 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid);
 }
 
+/**
+ * e_cal_backend_store_get_timezone:
+ *
+ * Since: 2.28
+ **/
 const icaltimezone *
 e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
 {
@@ -318,6 +363,11 @@ e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_timezone (store, tzid);
 }
 
+/**
+ * e_cal_backend_store_put_timezone:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *zone)
 {
@@ -328,6 +378,11 @@ e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *z
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_timezone (store, zone);
 }
 
+/**
+ * e_cal_backend_store_remove_timezone:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
 {
@@ -338,6 +393,11 @@ e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_timezone (store, tzid);
 }
 
+/**
+ * e_cal_backend_store_get_default_timezone:
+ *
+ * Since: 2.28
+ **/
 const icaltimezone *
 e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 {
@@ -347,6 +407,11 @@ e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_default_timezone (store);
 }
 
+/**
+ * e_cal_backend_store_set_default_timezone:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone)
 {
@@ -357,6 +422,11 @@ e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltim
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->set_default_timezone (store, zone);
 }
 
+/**
+ * e_cal_backend_store_get_components_by_uid:
+ *
+ * Since: 2.28
+ **/
 GSList *
 e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid)
 {
@@ -367,6 +437,11 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar 
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components_by_uid (store, uid);
 }
 
+/**
+ * e_cal_backend_store_get_components:
+ *
+ * Since: 2.28
+ **/
 GSList *
 e_cal_backend_store_get_components (ECalBackendStore *store)
 {
@@ -376,6 +451,11 @@ e_cal_backend_store_get_components (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components (store);
 }
 
+/**
+ * e_cal_backend_store_get_component_ids:
+ *
+ * Since: 2.28
+ **/
 GSList *
 e_cal_backend_store_get_component_ids (ECalBackendStore *store)
 {
@@ -385,6 +465,11 @@ e_cal_backend_store_get_component_ids (ECalBackendStore *store)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component_ids (store);
 }
 
+/**
+ * e_cal_backend_store_get_key_value:
+ *
+ * Since: 2.28
+ **/
 const gchar *
 e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
 {
@@ -395,6 +480,11 @@ e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_key_value (store, key);
 }
 
+/**
+ * e_cal_backend_store_put_key_value:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_store_put_key_value (ECalBackendStore *store, const gchar *key, const gchar *value)
 {
@@ -405,6 +495,11 @@ e_cal_backend_store_put_key_value (ECalBackendStore *store, const gchar *key, co
 	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_key_value (store, key, value);
 }
 
+/**
+ * e_cal_backend_store_thaw_changes:
+ *
+ * Since: 2.28
+ **/
 void
 e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 {
@@ -414,6 +509,11 @@ e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 	(E_CAL_BACKEND_STORE_GET_CLASS (store))->thaw_changes (store);
 }
 
+/**
+ * e_cal_backend_store_freeze_changes:
+ *
+ * Since: 2.28
+ **/
 void
 e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 {

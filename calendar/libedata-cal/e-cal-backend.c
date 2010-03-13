@@ -1503,6 +1503,8 @@ e_cal_backend_notify_error (ECalBackend *backend, const gchar *message)
  *
  * Empties backend's cache with all notifications and so on, thus all listening
  * will know there is nothing in this backend.
+ *
+ * Since: 2.28
  **/
 void
 e_cal_backend_empty_cache (ECalBackend *backend, ECalBackendCache *cache)

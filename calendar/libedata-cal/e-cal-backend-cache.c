@@ -857,6 +857,11 @@ e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key)
 	return value;
 }
 
+/**
+ * e_cal_backend_cache_remove:
+ *
+ * Since: 2.28
+ **/
 gboolean
 e_cal_backend_cache_remove (const gchar *uri, ECalSourceType source_type)
 {

@@ -1009,6 +1009,11 @@ camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 	return ret == 0 ? 0 : -1;
 }
 
+/**
+ * camel_folder_summary_add_preview:
+ *
+ * Since: 2.28
+ **/
 void
 camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
 {
@@ -1025,6 +1030,8 @@ camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info)
  * @ex: #CamelException object.
  *
  * Loads all infos into memory, if they are not yet.
+ *
+ * Since: 2.28
  **/
 void
 camel_folder_summary_ensure_infos_loaded (CamelFolderSummary *s, gint at_least, CamelException *ex)
@@ -5037,13 +5044,22 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *klass)
 
 }
 
-/* Utils */
+/**
+ * camel_folder_summary_set_need_preview:
+ *
+ * Since: 2.28
+ **/
 void
 camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolean preview)
 {
 	_PRIVATE(summary)->need_preview = preview;
 }
 
+/**
+ * camel_folder_summary_get_need_preview:
+ *
+ * Since: 2.28
+ **/
 gboolean
 camel_folder_summary_get_need_preview (CamelFolderSummary *summary)
 {

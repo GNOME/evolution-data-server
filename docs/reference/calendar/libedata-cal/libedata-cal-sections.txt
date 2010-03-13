@@ -124,6 +124,7 @@ e_cal_backend_sync_get_type
 <SECTION>
 <FILE>e-cal-backend</FILE>
 <TITLE>ECalBackend</TITLE>
+ECalBackend
 e_cal_backend_get_source
 e_cal_backend_get_uri
 e_cal_backend_get_kind
@@ -185,6 +186,7 @@ E_TYPE_CAL_BACKEND
 E_CAL_BACKEND_CLASS
 E_IS_CAL_BACKEND_CLASS
 E_CAL_BACKEND_GET_CLASS
+ECalBackendClass
 <SUBSECTION Private>
 ECalBackendPrivate
 e_cal_backend_get_type
@@ -267,6 +269,7 @@ e_cal_backend_file_store_get_type
 <FILE>e-data-cal</FILE>
 <TITLE>EDataCal</TITLE>
 E_DATA_CAL_ERROR
+EDataCal
 e_data_cal_new
 e_data_cal_get_backend
 e_data_cal_get_source
@@ -308,6 +311,7 @@ E_TYPE_DATA_CAL_MODE
 E_TYPE_DATA_CAL_OBJ_MOD_TYPE
 E_TYPE_DATA_CAL_OBJ_TYPE
 E_TYPE_DATA_CAL_VIEW_LISTENER_SET_MODE_STATUS
+EDataCalClass
 <SUBSECTION Private>
 EDataCalPrivate
 e_data_cal_get_type
@@ -329,12 +333,6 @@ e_cal_backend_user_declined
 
 <SECTION>
 <FILE>e-data-cal-common</FILE>
-ECalBackend
-ECalBackendClass
-EDataCal
-EDataCalClass
-EDataCalView
-EDataCalViewClass
 ECalBackendSExp
 ECalBackendSExpClass
 EServerMethodContext

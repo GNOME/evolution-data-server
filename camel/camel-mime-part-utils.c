@@ -139,6 +139,11 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	g_free (encoding);
 }
 
+/**
+ * camel_mime_message_build_preview:
+ *
+ * Since: 2.28
+ **/
 gboolean
 camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 {

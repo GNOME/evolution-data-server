@@ -1145,6 +1145,8 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
  *
  * Returns system timezone location string, NULL on an error.
  * Returned pointer should be freed with g_free().
+ *
+ * Since: 2.28
  **/
 gchar *
 e_cal_util_get_system_timezone_location (void)
@@ -1157,6 +1159,8 @@ e_cal_util_get_system_timezone_location (void)
  *
  * Returns icaltimezone object of the system timezone. NULL on an error.
  * Returned pointer is part of the built-in timezones, thus do not free it.
+ *
+ * Since: 2.28
  **/
 icaltimezone *
 e_cal_util_get_system_timezone (void)
