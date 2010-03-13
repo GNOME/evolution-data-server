@@ -1312,6 +1312,14 @@ stream_get_remote_address (CamelTcpStream *stream, socklen_t *len)
 	return sockaddr_from_praddr(&addr, len);
 }
 
+/**
+ * camel_tcp_stream_ssl_sockfd:
+ * @stream: a #CamelTcpStreamSSL
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 PRFileDesc *
 camel_tcp_stream_ssl_sockfd (CamelTcpStreamSSL *stream)
 {

@@ -1,3 +1,10 @@
+/**
+ * e_return_error_if_fail:
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
      if G_LIKELY(expr) { } else						\
        {								\

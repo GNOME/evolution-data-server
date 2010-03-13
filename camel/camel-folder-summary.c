@@ -5079,6 +5079,15 @@ match_content_type (CamelContentType *info_ctype, CamelContentType *ctype)
 	return TRUE;
 }
 
+/**
+ * camel_folder_summary_guess_content_info:
+ * @mi: a #CamelMessageInfo
+ * @ctype: a #CamelContentType
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 const CamelMessageContentInfo *
 camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype)
 {

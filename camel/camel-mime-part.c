@@ -454,6 +454,8 @@ camel_mime_part_get_disposition (CamelMimePart *mime_part)
  * Returned pointer is owned by #mime_part.
  *
  * Returns: the disposition structure
+ *
+ * Since: 2.30
  **/
 const CamelContentDisposition *
 camel_mime_part_get_content_disposition (CamelMimePart *mime_part)

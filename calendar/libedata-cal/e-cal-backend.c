@@ -641,6 +641,8 @@ e_cal_backend_open (ECalBackend *backend, EDataCal *cal, EServerMethodContext co
  * @cal: An #EDataCal object.
  *
  * Refreshes the calendar being accessed by the given backend.
+ *
+ * Since: 2.30
  */
 void
 e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, EServerMethodContext context)

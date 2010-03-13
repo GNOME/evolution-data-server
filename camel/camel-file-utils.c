@@ -761,6 +761,8 @@ camel_file_util_savename(const gchar *filename)
  *
  * Returns 0 on success or -1 on fail. In the case of failure, errno
  * will be set appropriately.
+ *
+ * Since: 2.30
  **/
 gint
 camel_mkdir (const gchar *path, mode_t mode)

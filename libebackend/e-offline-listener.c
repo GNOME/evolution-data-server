@@ -96,6 +96,15 @@ setup_offline_listener (EOfflineListener *eol)
 	set_online_status (eol, priv->is_offline_now);
 }
 
+/**
+ * e_offline_listener_new:
+ *
+ * Returns a new #EOfflineListener.
+ *
+ * Returns: a new #EOfflineListener
+ *
+ * Since: 2.30
+ **/
 EOfflineListener*
 e_offline_listener_new (void)
 {
@@ -163,6 +172,14 @@ e_offline_listener_class_init (EOfflineListenerClass *klass)
 			      G_TYPE_NONE, 0);
 }
 
+/**
+ * e_offline_listener_get_state:
+ * @eol: an #EOfflineListener
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 EOfflineListenerState
 e_offline_listener_get_state (EOfflineListener *eol)
 {

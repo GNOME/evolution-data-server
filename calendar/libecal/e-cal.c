@@ -1352,6 +1352,8 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
  * Invokes refresh on a calendar. See @e_cal_get_refresh_supported.
  *
  * Return value: TRUE if calendar supports refresh and it was invoked, FALSE otherwise.
+ *
+ * Since: 2.30
  **/
 gboolean
 e_cal_refresh (ECal *ecal, GError **error)
@@ -1870,6 +1872,8 @@ e_cal_get_organizer_must_accept (ECal *ecal)
  * Checks whether a calendar supports explicit refreshing (see @e_cal_refresh).
  *
  * Return value: TRUE if the calendar supports refreshing, FALSE otherwise.
+ *
+ * Since: 2.30
  */
 gboolean
 e_cal_get_refresh_supported (ECal *ecal)

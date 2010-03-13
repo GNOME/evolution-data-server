@@ -223,6 +223,15 @@ camel_folder_finalize (CamelObject *object)
 	g_free(p);
 }
 
+/**
+ * camel_folder_set_lock_async:
+ * @folder: a #CamelFolder
+ * @skip_folder_lock:
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 void
 camel_folder_set_lock_async (CamelFolder *folder, gboolean skip_folder_lock)
 {

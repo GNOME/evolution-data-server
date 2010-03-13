@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
-               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
   <bookinfo>
     <title>Evolution-Data-Server Manual: Address Book Backend (libedata-book)</title>
@@ -21,7 +23,12 @@
     <xi:include href="xml/ximian-vcard.xml"/>
   </chapter>
 
-  <index>
+  <index id="api-index-full">
     <title>Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-2.30" role="2.30">
+    <title>Index of new symbols in 2.30</title>
+    <xi:include href="xml/api-index-2.30.xml"><xi:fallback /></xi:include>
   </index>
 </book>

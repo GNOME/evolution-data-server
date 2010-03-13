@@ -40,6 +40,12 @@ G_BEGIN_DECLS
 #define E_IS_DATA_CAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_DATA_CAL))
 
 GQuark e_data_cal_error_quark (void);
+
+/**
+ * E_DATA_CAL_ERROR:
+ *
+ * Since: 2.30
+ **/
 #define E_DATA_CAL_ERROR e_data_cal_error_quark ()
 
 typedef struct _EDataCalPrivate EDataCalPrivate;

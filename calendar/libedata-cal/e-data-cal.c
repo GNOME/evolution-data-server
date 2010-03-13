@@ -163,6 +163,16 @@ e_data_cal_new (ECalBackend *backend, ESource *source)
 	return cal;
 }
 
+/**
+ * e_data_cal_get_source:
+ * @cal: an #EDataCal
+ *
+ * Returns the #ESource for @cal.
+ *
+ * Returns: the #ESource for @cal
+ *
+ * Since: 2.30
+ **/
 ESource*
 e_data_cal_get_source (EDataCal *cal)
 {
@@ -570,6 +580,8 @@ e_data_cal_notify_open (EDataCal *cal, EServerMethodContext context, EDataCalCal
  * @status: Status code.
  *
  * Notifies listeners of the completion of the refresh method call.
+ *
+ * Since: 2.30
  */
 void
 e_data_cal_notify_refresh (EDataCal *cal, EServerMethodContext context, EDataCalCallStatus status)

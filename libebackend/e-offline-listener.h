@@ -41,11 +41,23 @@ typedef struct _EOfflineListener         EOfflineListener;
 typedef struct _EOfflineListenerPrivate  EOfflineListenerPrivate;
 typedef struct _EOfflineListenerClass    EOfflineListenerClass;
 
+/**
+ * EOfflineListenerState:
+ * @EOL_STATE_OFFLINE:
+ * @EOL_STATE_ONLINE:
+ *
+ * Since: 2.30
+ **/
 typedef enum {
 	EOL_STATE_OFFLINE = 0,
 	EOL_STATE_ONLINE = 1
 } EOfflineListenerState;
 
+/**
+ * EOfflineListener:
+ *
+ * Since: 2.30
+ **/
 struct _EOfflineListener {
 	GObject parent;
 	EOfflineListenerPrivate *priv;

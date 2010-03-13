@@ -204,6 +204,16 @@ e_data_cal_view_new (ECalBackend *backend,
 	return query;
 }
 
+/**
+ * e_data_cal_view_get_dbus_path:
+ * @view: an #EDataCalView
+ *
+ * Returns the D-Bus path for @view.
+ *
+ * Returns: the D-Bus path for @view
+ *
+ * Since: 2.30
+ **/
 const gchar *
 e_data_cal_view_get_dbus_path (EDataCalView *view)
 {

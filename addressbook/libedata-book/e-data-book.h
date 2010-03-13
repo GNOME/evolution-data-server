@@ -49,6 +49,12 @@ struct _EDataBookClass {
 };
 
 GQuark e_data_book_error_quark (void);
+
+/**
+ * E_DATA_BOOK_ERROR:
+ *
+ * Since: 2.30
+ **/
 #define E_DATA_BOOK_ERROR e_data_book_error_quark ()
 
 EDataBook		*e_data_book_new                    (EBookBackend *backend, ESource *source);

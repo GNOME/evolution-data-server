@@ -537,6 +537,8 @@ e_name_selector_model_peek_section (ENameSelectorModel *name_selector_model, con
  * Returns list of all email from @contact, without all used
  * in any section. Each item is a string, an email address.
  * Returned list should be freed with @e_name_selector_model_free_emails_list.
+ *
+ * Since: 2.30
  **/
 GList *
 e_name_selector_model_get_contact_emails_without_used (ENameSelectorModel *name_selector_model, EContact *contact, gboolean remove_used)
@@ -605,6 +607,8 @@ e_name_selector_model_get_contact_emails_without_used (ENameSelectorModel *name_
  * @email_list: list of emails returned from @e_name_selector_model_get_contact_emails_without_used
  *
  * Frees a list of emails returned from @e_name_selector_model_get_contact_emails_without_used.
+ *
+ * Since: 2.30
  **/
 void
 e_name_selector_model_free_emails_list (GList *email_list)

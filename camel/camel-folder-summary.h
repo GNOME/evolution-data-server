@@ -464,6 +464,15 @@ time_t camel_message_info_time(const CamelMessageInfo *mi, gint id);
 #define camel_message_info_user_tags(mi) ((const CamelTag *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_USER_TAGS))
 
 #define camel_message_info_headers(mi) ((const struct _camel_header_param *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_HEADERS))
+
+/**
+ * camel_message_info_content:
+ * @mi: a #CamelMessageInfo
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 #define camel_message_info_content(mi) ((const CamelMessageContentInfo *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_CONTENT))
 
 gboolean camel_message_info_user_flag(const CamelMessageInfo *mi, const gchar *id);

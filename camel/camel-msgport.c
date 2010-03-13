@@ -415,6 +415,15 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
 	return msg;
 }
 
+/**
+ * camel_msgport_timed_pop:
+ * @msgport: a #CamelMsgPort
+ * @end_time: a #GTimeVal
+ *
+ * FIXME Document me!
+ *
+ * Since: 2.30
+ **/
 CamelMsg *
 camel_msgport_timed_pop (CamelMsgPort *msgport, GTimeVal *end_time)
 {

@@ -1594,6 +1594,8 @@ source_selector_select_exclusive_foreach (GtkTreeModel *model,
  * @source: An #ESource.
  *
  * Select @source in @selector and unselect all others.
+ *
+ * Since: 2.30
  **/
 void
 e_source_selector_select_exclusive (ESourceSelector *selector,

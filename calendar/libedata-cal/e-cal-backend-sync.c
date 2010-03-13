@@ -220,6 +220,8 @@ e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
  * Calls the refresh method on the given backend.
  *
  * Return value: Status code.
+ *
+ * Since: 2.30
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_refresh  (ECalBackendSync *backend, EDataCal *cal)
