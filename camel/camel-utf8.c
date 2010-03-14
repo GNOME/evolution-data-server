@@ -405,6 +405,8 @@ gchar *camel_ucs2_utf8(const gchar *ptr)
  *
  * Ensures the returned text will be valid UTF-8 string, with incorrect letters
  * changed to question marks. Returned pointer should be freed with g_free.
+ *
+ * Since: 2.26
  **/
 gchar *
 camel_utf8_make_valid (const gchar *text)

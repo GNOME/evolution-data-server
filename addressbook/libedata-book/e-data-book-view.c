@@ -701,6 +701,8 @@ e_data_book_view_get_backend (EDataBookView *book_view)
  *
  * Increase the reference count of the book view. This is a function to aid
  * the transition from Bonobo to DBUS.
+ *
+ * Since: 2.26
  */
 void
 e_data_book_view_ref (EDataBookView *book_view)
@@ -714,6 +716,8 @@ e_data_book_view_ref (EDataBookView *book_view)
  *
  * Decrease the reference count of the book view. This is a function to aid
  * the transition from Bonobo to DBUS.
+ *
+ * Since: 2.26
  */
 void
 e_data_book_view_unref (EDataBookView *book_view)

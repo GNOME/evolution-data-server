@@ -196,6 +196,11 @@ vee_info_set_user_tag(CamelMessageInfo *mi, const gchar *name, const gchar *valu
 	return res;
 }
 
+/**
+ * camel_vee_summary_load_check_unread_vfolder:
+ *
+ * Since: 2.26
+ **/
 void
 camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 {

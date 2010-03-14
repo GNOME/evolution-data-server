@@ -599,6 +599,11 @@ static struct {
 /*	{ "uid", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, uid), 1 },	*/
 };
 
+/**
+ * camel_sexp_to_sql_sexp:
+ *
+ * Since: 2.26
+ **/
 gchar *
 camel_sexp_to_sql_sexp (const gchar *sql)
 {

@@ -419,6 +419,8 @@ camel_folder_search_execute_expression(CamelFolderSearch *search, const gchar *e
  * it must implement summaries.
  *
  * Return value: Number of messages that match the query.
+ *
+ * Since: 2.26
  **/
 
 guint32

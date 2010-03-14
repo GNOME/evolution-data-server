@@ -421,6 +421,11 @@ e_book_backend_db_cache_is_populated (DB *db)
 	}
 }
 
+/**
+ * e_book_backend_db_cache_set_time:
+ *
+ * Since: 2.26
+ **/
 void
 e_book_backend_db_cache_set_time(DB *db, const gchar *t)
 {
@@ -436,6 +441,11 @@ e_book_backend_db_cache_set_time(DB *db, const gchar *t)
 	}
 }
 
+/**
+ * e_book_backend_db_cache_get_time:
+ *
+ * Since: 2.26
+ **/
 gchar *
 e_book_backend_db_cache_get_time (DB *db)
 {

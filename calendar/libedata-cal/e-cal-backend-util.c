@@ -203,6 +203,8 @@ is_attendee_declined (icalcomponent *icalcomp, const gchar *email)
  * @param icalcomp Component where to check.
  * @return Whether icalcomp contains attendee with a mail same as any of configured
  *         enabled mail account and whether this user declined.
+ *
+ * Since: 2.26
  **/
 gboolean
 e_cal_backend_user_declined (icalcomponent *icalcomp)

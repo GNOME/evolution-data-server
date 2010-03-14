@@ -476,6 +476,11 @@ e_category_completion_init (ECategoryCompletion *category_completion)
 	category_completion_build_model (completion);
 }
 
+/**
+ * e_category_completion_new:
+ *
+ * Since: 2.26
+ **/
 GtkEntryCompletion *
 e_category_completion_new (void)
 {

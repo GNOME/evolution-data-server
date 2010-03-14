@@ -494,6 +494,8 @@ camel_folder_summary_array(CamelFolderSummary *s)
  * It must be freed using camel_folder_summary_free_hashtable
  *
  * Returns: a #GHashTable of uids
+ *
+ * Since: 2.26
  **/
 GHashTable *
 camel_folder_summary_get_hashtable(CamelFolderSummary *s)
@@ -511,6 +513,11 @@ camel_folder_summary_get_hashtable(CamelFolderSummary *s)
 	return hash;
 }
 
+/**
+ * camel_folder_summary_free_hashtable:
+ *
+ * Since: 2.26
+ **/
 void
 camel_folder_summary_free_hashtable (GHashTable *ht)
 {
@@ -518,6 +525,11 @@ camel_folder_summary_free_hashtable (GHashTable *ht)
 	g_hash_table_destroy (ht);
 }
 
+/**
+ * camel_folder_summary_peek_info:
+ *
+ * Since: 2.26
+ **/
 CamelMessageInfo *
 camel_folder_summary_peek_info (CamelFolderSummary *s, const gchar *uid)
 {
@@ -1061,6 +1073,11 @@ camel_folder_summary_dump (CamelFolderSummary *s)
 }
 #endif
 
+/**
+ * camel_folder_summary_get_flag_cache:
+ *
+ * Since: 2.26
+ **/
 GHashTable *
 camel_folder_summary_get_flag_cache (CamelFolderSummary *summary)
 {
@@ -4837,11 +4854,17 @@ info_set_flags(CamelMessageInfo *info, guint32 flags, guint32 set)
 	return TRUE;
 }
 
+/**
+ * camel_folder_summary_update_flag_cache:
+ *
+ * Since: 2.26
+ **/
 void
 camel_folder_summary_update_flag_cache (CamelFolderSummary *s, const gchar *uid, guint32 flag)
 {
 	g_hash_table_replace (_PRIVATE(s)->flag_cache, (gchar *) uid, GUINT_TO_POINTER(flag));
 }
+
 /**
  * camel_message_info_set_flags:
  * @mi: a #CamelMessageInfo

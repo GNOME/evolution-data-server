@@ -71,13 +71,49 @@ struct _CamelArgGet {
 		gpointer *ca_ptr;
 	} u;
 };
+
+/**
+ * ca_object:
+ *
+ * Since: 2.26
+ **/
 #define ca_object u.ca_object
+
+/**
+ * ca_int:
+ *
+ * Since: 2.26
+ **/
 #define ca_int u.ca_int
+
+/**
+ * ca_double:
+ *
+ * Since: 2.26
+ **/
 #define ca_double u.ca_double
+
+/**
+ * ca_str:
+ *
+ * Since: 2.26
+ **/
 #define ca_str u.ca_str
+
+/**
+ * ca_ptr:
+ *
+ * Since: 2.26
+ **/
 #define ca_ptr u.ca_ptr
 
-/* maximum no of args processed at any one time, not the max of all args */
+/**
+ * CAMEL_ARGV_MAX:
+ *
+ * Maximum no of args processed at any one time, not the max of all args.
+ *
+ * Since: 2.26
+ **/
 #define CAMEL_ARGV_MAX (20)
 
 struct _CamelArgV {

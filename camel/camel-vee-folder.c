@@ -2194,6 +2194,11 @@ camel_vee_folder_init (CamelVeeFolder *obj)
 	p->unread_vfolder = -1;
 }
 
+/**
+ * camel_vee_folder_mask_event_folder_changed:
+ *
+ * Since: 2.26
+ **/
 void
 camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub)
 {
@@ -2201,6 +2206,11 @@ camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub
 
 }
 
+/**
+ * camel_vee_folder_unmask_event_folder_changed:
+ *
+ * Since: 2.26
+ **/
 void
 camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub)
 {

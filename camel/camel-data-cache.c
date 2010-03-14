@@ -359,6 +359,8 @@ camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, C
  * Lookup the filename for an item in the cache
  *
  * Return value: The filename for a cache item
+ *
+ * Since: 2.26
  **/
 gchar *
 camel_data_cache_get_filename (CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)

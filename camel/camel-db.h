@@ -8,8 +8,26 @@
 #define CAMEL_DB_FILE "folders.db"
 
 /* Hopefully no one will create a folder named EVO_IN_meM_hAnDlE */
+
+/**
+ * CAMEL_DB_IN_MEMORY_TABLE:
+ *
+ * Since: 2.26
+ **/
 #define CAMEL_DB_IN_MEMORY_TABLE "EVO_IN_meM_hAnDlE.temp"
+
+/**
+ * CAMEL_DB_IN_MEMORY_DB:
+ *
+ * Since: 2.26
+ **/
 #define CAMEL_DB_IN_MEMORY_DB "EVO_IN_meM_hAnDlE"
+
+/**
+ * CAMEL_DB_IN_MEMORY_TABLE_LIMIT:
+ *
+ * Since: 2.26
+ **/
 #define CAMEL_DB_IN_MEMORY_TABLE_LIMIT 100000
 
 #include "camel-exception.h"

@@ -45,6 +45,11 @@ typedef struct _ECategoryCompletion ECategoryCompletion;
 typedef struct _ECategoryCompletionClass ECategoryCompletionClass;
 typedef struct _ECategoryCompletionPrivate ECategoryCompletionPrivate;
 
+/**
+ * ECategoryCompletion:
+ *
+ * Since: 2.26
+ **/
 struct _ECategoryCompletion {
 	GtkEntryCompletion parent;
 	ECategoryCompletionPrivate *priv;

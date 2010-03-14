@@ -1654,6 +1654,8 @@ e_source_selector_source_is_selected (ESourceSelector *selector,
  *
  * Allows the user to rename the primary selected source by opening an
  * entry box directly in @selector.
+ *
+ * Since: 2.26
  **/
 void
 e_source_selector_edit_primary_selection (ESourceSelector *selector)

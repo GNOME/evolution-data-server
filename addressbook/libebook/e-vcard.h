@@ -81,9 +81,23 @@ G_BEGIN_DECLS
 #define EVC_X_LIST		"X-EVOLUTION-LIST"
 #define EVC_X_MANAGER	"X-EVOLUTION-MANAGER"
 #define EVC_X_MSN		"X-MSN"
+
+/**
+ * EVC_X_SKYPE:
+ *
+ * Since: 2.26
+ **/
 #define EVC_X_SKYPE		"X-SKYPE"
+
 #define EVC_X_RADIO		"X-EVOLUTION-RADIO"
+
+/**
+ * EVC_X_SIP:
+ *
+ * Since: 2.26
+ **/
 #define EVC_X_SIP		"X-SIP"
+
 #define EVC_X_SPOUSE		"X-EVOLUTION-SPOUSE"
 #define EVC_X_TELEX		"X-EVOLUTION-TELEX"
 #define EVC_X_TTYTDD		"X-EVOLUTION-TTYTDD"

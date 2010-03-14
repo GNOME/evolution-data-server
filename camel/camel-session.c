@@ -823,6 +823,8 @@ session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage
  * @message Message to forward.
  * @address Where forward to.
  * @ex Exception.
+ *
+ * Since: 2.26
  **/
 void
 camel_session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex)

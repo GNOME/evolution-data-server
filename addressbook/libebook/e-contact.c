@@ -1366,6 +1366,8 @@ e_contact_field_id (const gchar *field_name)
  * Gets the #EContactField corresponding to the @vcard_field.
  *
  * Return value: An #EContactField corresponding to @vcard_field, or %0 if it doesn't exist.
+ *
+ * Since: 2.26
  **/
 EContactField
 e_contact_field_id_from_vcard (const gchar *vcard_field)

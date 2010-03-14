@@ -750,6 +750,11 @@ e_proxy_setup_proxy (EProxy* proxy)
 	g_object_unref (client);
 }
 
+/**
+ * e_proxy_peek_uri_for:
+ *
+ * Since: 2.26
+ **/
 SoupURI*
 e_proxy_peek_uri_for (EProxy* proxy, const gchar *uri)
 {

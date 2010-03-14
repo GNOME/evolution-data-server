@@ -264,6 +264,11 @@ get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	return g_strdup ("/dev/null");
 }
 
+/**
+ * camel_folder_get_filename:
+ *
+ * Since: 2.26
+ **/
 gchar *
 camel_folder_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 {
@@ -1142,7 +1147,7 @@ camel_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException 
  * Ensure that a message identified by UID has been synced in the folder (so
  * that camel_folder_get_message on it later will work in offline mode).
  *
- * Returns: void.
+ * Since: 2.26
  **/
 void
 camel_folder_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
@@ -1245,6 +1250,8 @@ get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
  * which are locally cached but should never filter out a uid which is not
  * locally cached. Free the result by called #camel_folder_free_uids.
  * Frees the array of UIDs returned by #camel_folder_get_uids.
+ *
+ * Since: 2.26
  **/
 GPtrArray *
 camel_folder_get_uncached_uids (CamelFolder *folder, GPtrArray * uids, CamelException *ex)
@@ -1448,6 +1455,8 @@ count_by_expression (CamelFolder *folder, const gchar *expression,
  * Searches the folder for count of messages matching the given search expression.
  *
  * Returns: an interger
+ *
+ * Since: 2.26
  **/
 guint32
 camel_folder_count_by_expression (CamelFolder *folder, const gchar *expression,

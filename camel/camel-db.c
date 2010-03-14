@@ -449,6 +449,11 @@ camel_db_open (const gchar *path, CamelException *ex)
 	return cdb;
 }
 
+/**
+ * camel_db_clone:
+ *
+ * Since: 2.26
+ **/
 CamelDB *
 camel_db_clone (CamelDB *cdb, CamelException *ex)
 {
@@ -600,6 +605,11 @@ count_cb (gpointer data, gint argc, gchar **argv, gchar **azColName)
 	return 0;
 }
 
+/**
+ * camel_db_count_message_info:
+ *
+ * Since: 2.26
+ **/
 gint
 camel_db_count_message_info (CamelDB *cdb, const gchar *query, guint32 *count, CamelException *ex)
 {
@@ -894,6 +904,11 @@ read_uids_flags_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	 return 0;
 }
 
+/**
+ * camel_db_get_folder_uids_flags:
+ *
+ * Since: 2.26
+ **/
 gint
 camel_db_get_folder_uids_flags (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *summary, GHashTable *table, CamelException *ex)
 {
@@ -1362,6 +1377,11 @@ camel_db_prepare_message_info_table (CamelDB *cdb, const gchar *folder_name, Cam
 	return ret;
 }
 
+/**
+ * camel_db_write_fresh_message_info_record:
+ *
+ * Since: 2.26
+ **/
 gint
 camel_db_write_fresh_message_info_record (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelException *ex)
 {
@@ -1687,6 +1707,11 @@ camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, Cam
 	return cdb_delete_ids (cdb, folder_name, uids, "", "uid", ex);
 }
 
+/**
+ * camel_db_delete_vuids:
+ *
+ * Since: 2.26
+ **/
 gint
 camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *hash, GSList *uids, CamelException *ex)
 {
@@ -1901,7 +1926,13 @@ camel_db_migrate_vfolders_to_14 (CamelDB *cdb, const gchar *folder, CamelExcepti
 	return ret;
 }
 
-gint camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex)
+/**
+ * camel_db_start_in_memory_transactions:
+ *
+ * Since: 2.26
+ **/
+gint
+camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex)
 {
 	gint ret;
 	gchar *cmd = sqlite3_mprintf ("ATTACH DATABASE ':memory:' AS %s", CAMEL_DB_IN_MEMORY_DB);
@@ -1918,7 +1949,13 @@ gint camel_db_start_in_memory_transactions (CamelDB *cdb, CamelException *ex)
 	return ret;
 }
 
-gint camel_db_flush_in_memory_transactions (CamelDB *cdb, const gchar * folder_name, CamelException *ex)
+/**
+ * camel_db_flush_in_memory_transactions:
+ *
+ * Since: 2.26
+ **/
+gint
+camel_db_flush_in_memory_transactions (CamelDB *cdb, const gchar * folder_name, CamelException *ex)
 {
 	gint ret;
 	gchar *cmd = sqlite3_mprintf ("INSERT INTO %Q SELECT * FROM %Q", folder_name, CAMEL_DB_IN_MEMORY_TABLE);
