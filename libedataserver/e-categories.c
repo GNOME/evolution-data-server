@@ -194,13 +194,14 @@ idle_saver_cb (gpointer user_data)
 	GString *buffer;
 	gchar *contents;
 	gchar *filename;
+	gchar *pathname;
 	GError *error = NULL;
 
 	if (!save_is_pending)
 		goto exit;
 
 	filename = build_categories_filename ();
-
+	
 	g_debug ("Saving categories to \"%s\"", filename);
 
 	/* build the file contents */
@@ -209,11 +210,15 @@ idle_saver_cb (gpointer user_data)
 	g_string_append_len (buffer, "</categories>\n", 14);
 	contents = g_string_free (buffer, FALSE);
 
+	pathname = g_path_get_dirname (filename);
+	g_mkdir_with_parents (pathname, 0700);
+
 	if (!g_file_set_contents (filename, contents, -1, &error)) {
 		g_warning ("Unable to save categories: %s", error->message);
 		g_error_free (error);
 	}
 
+	g_free (pathname);
 	g_free (contents);
 	g_free (filename);
 	save_is_pending = FALSE;
