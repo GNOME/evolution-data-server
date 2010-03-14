@@ -468,6 +468,11 @@ camel_vee_summary_new(CamelFolder *parent)
 	return &s->summary;
 }
 
+/**
+ * camel_vee_summary_get_ids:
+ *
+ * Since: 2.24
+ **/
 GPtrArray *
 camel_vee_summary_get_ids (CamelVeeSummary *summary, gchar hash[8])
 {

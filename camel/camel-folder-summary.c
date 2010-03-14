@@ -410,6 +410,8 @@ camel_folder_summary_index (CamelFolderSummary *s, gint i)
  * free'd as appropriate.
  *
  * Returns: the summary item's uid , or %NULL if @index is out of range
+ *
+ * Since: 2.24
  **/
 gchar *
 camel_folder_summary_uid_from_index (CamelFolderSummary *s, gint i)
@@ -435,6 +437,8 @@ camel_folder_summary_uid_from_index (CamelFolderSummary *s, gint i)
  *
  *
  * Returns: if the uid is present in the summary or not  (%TRUE or %FALSE)
+ *
+ * Since: 2.24
  **/
 gboolean
 camel_folder_summary_check_uid (CamelFolderSummary *s, const gchar *uid)
@@ -755,12 +759,19 @@ append_changed_uids (gchar *key, CamelMessageInfoBase *info, GPtrArray *array)
 		g_ptr_array_add (array, (gpointer)camel_pstring_strdup((camel_message_info_uid(info))));
 }
 
-/* FIXME[disk-summary] sucks, this function returns from memory. We need to
- * have collate or something to get the modified ones from DB and merge */
+/**
+ * camel_folder_summary_get_changed:
+ *
+ * Since: 2.24
+ **/
 GPtrArray *
 camel_folder_summary_get_changed (CamelFolderSummary *s)
 {
 	GPtrArray *res = g_ptr_array_new();
+
+	/* FIXME[disk-summary] sucks, this function returns from memory.
+	 * We need to have collate or something to get the modified ones
+	 * from DB and merge */
 
 	CAMEL_SUMMARY_LOCK (s, summary_lock);
 	g_hash_table_foreach (s->loaded_infos, (GHFunc) append_changed_uids, res);
@@ -878,6 +889,11 @@ cfs_try_release_memory (CamelFolderSummary *s)
 	return TRUE;
 }
 
+/**
+ * camel_folder_summary_cache_size:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_cache_size (CamelFolderSummary *s)
 {
@@ -983,6 +999,12 @@ static CamelSessionThreadOps preview_update_ops = {
 };
 
 /* end */
+
+/**
+ * camel_folder_summary_reload_from_db:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_reload_from_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -1086,6 +1108,11 @@ camel_folder_summary_get_flag_cache (CamelFolderSummary *summary)
 	return p->flag_cache;
 }
 
+/**
+ * camel_folder_summary_load_from_db:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -1328,6 +1355,11 @@ error:
 
 }
 
+/**
+ * camel_folder_summary_migrate_infos:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_migrate_infos(CamelFolderSummary *s)
 {
@@ -1567,6 +1599,11 @@ msg_save_preview (const gchar *uid, gpointer value, CamelFolder *folder)
 	camel_db_write_preview_record (folder->parent_store->cdb_w, folder->full_name, uid, (gchar *)value, NULL);
 }
 
+/**
+ * camel_folder_summary_save_to_db:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -1646,6 +1683,11 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s, CamelException *ex)
 	return ret;
 }
 
+/**
+ * camel_folder_summary_header_save_to_db:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_header_save_to_db (CamelFolderSummary *s, CamelException *ex)
 {
@@ -1817,6 +1859,11 @@ exception:
 	return -1;
 }
 
+/**
+ * camel_folder_summary_header_load_from_db:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_folder_summary_header_load_from_db (CamelFolderSummary *s, CamelStore *store, const gchar *folder_name, CamelException *ex)
 {
@@ -1962,6 +2009,11 @@ camel_folder_summary_add (CamelFolderSummary *s, CamelMessageInfo *info)
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 }
 
+/**
+ * camel_folder_summary_insert:
+ *
+ * Since: 2.24
+ **/
 void
 camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboolean load)
 {
@@ -2305,15 +2357,20 @@ camel_folder_summary_clear(CamelFolderSummary *s)
 	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 }
 
-/* FIXME: This is non-sense. Neither an exception is passed,
-nor a value returned. How is the caller supposed to know,
-whether the operation is succesful */
-
+/**
+ * camel_folder_summary_clear_db:
+ *
+ * Since: 2.24
+ **/
 void
 camel_folder_summary_clear_db (CamelFolderSummary *s)
 {
 	CamelDB *cdb;
 	gchar *folder_name;
+
+	/* FIXME: This is non-sense. Neither an exception is passed,
+	nor a value returned. How is the caller supposed to know,
+	whether the operation is succesful */
 
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
@@ -2432,6 +2489,12 @@ camel_folder_summary_remove_uid(CamelFolderSummary *s, const gchar *uid)
 }
 
 /* _fast doesn't deal with db and leaves it to the caller. */
+
+/**
+ * camel_folder_summary_remove_uid_fast:
+ *
+ * Since: 2.24
+ **/
 void
 camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const gchar *uid)
 {
@@ -2461,6 +2524,11 @@ camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const gchar *uid)
 		}
 }
 
+/**
+ * camel_folder_summary_remove_index_fast:
+ *
+ * Since: 2.24
+ **/
 void
 camel_folder_summary_remove_index_fast (CamelFolderSummary *s, gint index)
 {

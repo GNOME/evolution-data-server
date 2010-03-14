@@ -100,15 +100,6 @@ gint  camel_filter_driver_filter_mbox          (CamelFilterDriver *driver, const
 gint  camel_filter_driver_filter_folder        (CamelFilterDriver *driver, CamelFolder *folder, CamelUIDCache *cache,
 					       GPtrArray *uids, gboolean remove, CamelException *ex);
 
-#if 0
-/* generate the search query/action string for a filter option */
-void camel_filter_driver_expand_option (CamelFilterDriver *d, GString *s, GString *action, struct filter_option *op);
-
-/* get info about rules (options) */
-gint camel_filter_driver_rule_count (CamelFilterDriver *d);
-struct filter_option *camel_filter_driver_rule_get (CamelFilterDriver *d, gint n);
-#endif
-
 G_END_DECLS
 
 #endif /* _CAMEL_FILTER_DRIVER_H */

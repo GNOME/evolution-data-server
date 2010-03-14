@@ -158,6 +158,7 @@
 
     <chapter id="Fundamentals">
       <title>Fundamentals</title>
+      &CamelInit;
       &CamelArg;
       &CamelDebug;
       &CamelException;
@@ -341,6 +342,10 @@
     <index id="api-index-2.26" role="2.26">
       <title>Index of new symbols in 2.26</title>
       <xi:include href="xml/api-index-2.26.xml"><xi:fallback /></xi:include>
+    </index>
+    <index id="api-index-2.24" role="2.24">
+      <title>Index of new symbols in 2.24</title>
+      <xi:include href="xml/api-index-2.24.xml"><xi:fallback /></xi:include>
     </index>
   </part>
 </book>

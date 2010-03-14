@@ -1316,6 +1316,8 @@ sort_uids (CamelFolder *folder, GPtrArray *uids)
  * @uids: array of uids
  *
  * Sorts the array of UIDs.
+ *
+ * Since: 2.24
  **/
 void
 camel_folder_sort_uids (CamelFolder *folder, GPtrArray *uids)
@@ -1831,6 +1833,8 @@ get_quota_info (CamelFolder *folder)
  * @folder: a #CamelFolder object
  *
  * Returns: list of known quota(s) for the folder.
+ *
+ * Since: 2.24
  **/
 CamelFolderQuotaInfo *
 camel_folder_get_quota_info (CamelFolder *folder)
@@ -1848,6 +1852,8 @@ camel_folder_get_quota_info (CamelFolder *folder)
  *
  * Returns: newly allocated #CamelFolderQuotaInfo structure with
  * initialized values based on the parameters, with next member set to NULL.
+ *
+ * Since: 2.24
  **/
 CamelFolderQuotaInfo *
 camel_folder_quota_info_new (const gchar *name, guint64 used, guint64 total)
@@ -1868,6 +1874,8 @@ camel_folder_quota_info_new (const gchar *name, guint64 used, guint64 total)
  * @info: a #CamelFolderQuotaInfo object to clone.
  *
  * Makes a copy of the given info and all next-s.
+ *
+ * Since: 2.24
  **/
 CamelFolderQuotaInfo *
 camel_folder_quota_info_clone (const CamelFolderQuotaInfo *info)
@@ -1894,6 +1902,8 @@ camel_folder_quota_info_clone (const CamelFolderQuotaInfo *info)
  * @info: a #CamelFolderQuotaInfo object to free.
  *
  * Frees this and all next objects.
+ *
+ * Since: 2.24
  **/
 void
 camel_folder_quota_info_free (CamelFolderQuotaInfo *info)

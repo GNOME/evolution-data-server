@@ -94,6 +94,8 @@ e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
  * e_cal_backend_status_to_string:
  *
  * Converts status code to string.
+ *
+ * Since: 2.24
  **/
 const gchar *
 e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)

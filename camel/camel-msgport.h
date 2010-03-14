@@ -26,9 +26,20 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CamelMsgPort:
+ *
+ * Since: 2.24
+ **/
+
 typedef struct _CamelMsg CamelMsg;
 typedef struct _CamelMsgPort CamelMsgPort;
 
+/**
+ * CamelMsg:
+ *
+ * Since: 2.24
+ **/
 struct _CamelMsg {
 	CamelDListNode ln;
 	CamelMsgPort *reply_port;

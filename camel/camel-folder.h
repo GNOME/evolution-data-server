@@ -86,6 +86,11 @@ struct _CamelFolderChangeInfo {
 
 typedef struct _CamelFolderQuotaInfo CamelFolderQuotaInfo;
 
+/**
+ * CamelFolderQuotaInfo:
+ *
+ * Since: 2.24
+ **/
 struct _CamelFolderQuotaInfo {
 	gchar *name;
 	guint64 used;

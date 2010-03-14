@@ -50,7 +50,19 @@
 	((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryClass))
 
 #define MINIMUM_QUERY_LENGTH "/apps/evolution/addressbook/completion/minimum_query_length"
+
+/**
+ * FORCE_SHOW_ADDRESS:
+ *
+ * Since: 2.24
+ **/
 #define FORCE_SHOW_ADDRESS   "/apps/evolution/addressbook/completion/show_address"
+
+/**
+ * USER_QUERY_FIELDS:
+ *
+ * Since: 2.24
+ **/
 #define USER_QUERY_FIELDS "/apps/evolution/addressbook/completion/user_query_fields"
 
 G_BEGIN_DECLS

@@ -49,6 +49,8 @@ struct _trie_match {
  * CamelTrie:
  *
  * A trie data structure.
+ *
+ * Since: 2.24
  **/
 struct _CamelTrie {
 	struct _trie_state root;
@@ -110,6 +112,8 @@ trie_utf8_getc (const guchar **in, gsize inlen)
  * done by the CamelTrie will be case insensitive.
  *
  * Returns: The newly-created #CamelTrie.
+ *
+ * Since: 2.24
  **/
 CamelTrie *
 camel_trie_new (gboolean icase)
@@ -136,6 +140,8 @@ camel_trie_new (gboolean icase)
  * @trie: The #CamelTrie to free.
  *
  * Frees the memory associated with the #CamelTrie @trie.
+ *
+ * Since: 2.24
  **/
 void
 camel_trie_free (CamelTrie *trie)
@@ -230,6 +236,8 @@ dump_trie (struct _trie_state *s, gint depth)
  * @pattern_id: The id to use for the pattern.
  *
  * Add a new pattern to the #CamelTrie @trie.
+ *
+ * Since: 2.24
  **/
 void
 camel_trie_add (CamelTrie *trie, const gchar *pattern, gint pattern_id)
@@ -326,6 +334,8 @@ camel_trie_add (CamelTrie *trie, const gchar *pattern, gint pattern_id)
  * Try to match the string @buffer with a pattern in @trie.
  *
  * Returns: The matched pattern, or %NULL if no pattern is matched.
+ *
+ * Since: 2.24
  **/
 const gchar *
 camel_trie_search (CamelTrie *trie, const gchar *buffer, gsize buflen,

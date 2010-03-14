@@ -392,6 +392,11 @@ cdb_sql_exec (sqlite3 *db, const gchar * stmt, CamelException *ex)
 	return 0;
 }
 
+/**
+ * camel_db_open:
+ *
+ * Since: 2.24
+ **/
 CamelDB *
 camel_db_open (const gchar *path, CamelException *ex)
 {
@@ -460,6 +465,11 @@ camel_db_clone (CamelDB *cdb, CamelException *ex)
 	return camel_db_open(cdb->priv->file_name, ex);
 }
 
+/**
+ * camel_db_close:
+ *
+ * Since: 2.24
+ **/
 void
 camel_db_close (CamelDB *cdb)
 {
@@ -471,6 +481,11 @@ camel_db_close (CamelDB *cdb)
 	}
 }
 
+/**
+ * camel_db_set_collate:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, CamelDBCollate func)
 {
@@ -488,24 +503,35 @@ camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, Came
 		return ret;
 }
 
-/* Should this be really exposed ? */
+/**
+ * camel_db_command:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_command (CamelDB *cdb, const gchar *stmt, CamelException *ex)
 {
-		gint ret;
+	gint ret;
 
-		if (!cdb)
-			return TRUE;
-		g_mutex_lock (cdb->lock);
+	/* XXX Should this be really exposed ? */
 
-		START(stmt);
-		ret = cdb_sql_exec (cdb->db, stmt, ex);
-		END;
-		g_mutex_unlock (cdb->lock);
+	if (!cdb)
+		return TRUE;
+	g_mutex_lock (cdb->lock);
 
-		return ret;
+	START(stmt);
+	ret = cdb_sql_exec (cdb->db, stmt, ex);
+	END;
+	g_mutex_unlock (cdb->lock);
+
+	return ret;
 }
 
+/**
+ * camel_db_begin_transaction:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_begin_transaction (CamelDB *cdb, CamelException *ex)
 {
@@ -520,6 +546,11 @@ camel_db_begin_transaction (CamelDB *cdb, CamelException *ex)
 	return (cdb_sql_exec (cdb->db, "BEGIN", ex));
 }
 
+/**
+ * camel_db_end_transaction:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 {
@@ -538,6 +569,11 @@ camel_db_end_transaction (CamelDB *cdb, CamelException *ex)
 	return ret;
 }
 
+/**
+ * camel_db_abort_transaction:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_abort_transaction (CamelDB *cdb, CamelException *ex)
 {
@@ -552,6 +588,11 @@ camel_db_abort_transaction (CamelDB *cdb, CamelException *ex)
 	return ret;
 }
 
+/**
+ * camel_db_add_to_transaction:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_add_to_transaction (CamelDB *cdb, const gchar *stmt, CamelException *ex)
 {
@@ -561,6 +602,11 @@ camel_db_add_to_transaction (CamelDB *cdb, const gchar *stmt, CamelException *ex
 	return (cdb_sql_exec (cdb->db, stmt, ex));
 }
 
+/**
+ * camel_db_transaction_command:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, CamelException *ex)
 {
@@ -651,6 +697,11 @@ camel_db_count_message_info (CamelDB *cdb, const gchar *query, guint32 *count, C
 	return ret;
 }
 
+/**
+ * camel_db_count_junk_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_junk_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -668,6 +719,11 @@ camel_db_count_junk_message_info (CamelDB *cdb, const gchar *table_name, guint32
 	return ret;
 }
 
+/**
+ * camel_db_count_unread_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_unread_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -685,6 +741,11 @@ camel_db_count_unread_message_info (CamelDB *cdb, const gchar *table_name, guint
 	return ret;
 }
 
+/**
+ * camel_db_count_visible_unread_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_visible_unread_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -702,6 +763,11 @@ camel_db_count_visible_unread_message_info (CamelDB *cdb, const gchar *table_nam
 	return ret;
 }
 
+/**
+ * camel_db_count_visible_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_visible_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -719,6 +785,11 @@ camel_db_count_visible_message_info (CamelDB *cdb, const gchar *table_name, guin
 	return ret;
 }
 
+/**
+ * camel_db_count_junk_not-deleted_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -736,6 +807,11 @@ camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const gchar *table_n
 	return ret;
 }
 
+/**
+ * camel_db_count_deleted_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_deleted_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -753,6 +829,11 @@ camel_db_count_deleted_message_info (CamelDB *cdb, const gchar *table_name, guin
 	return ret;
 }
 
+/**
+ * camel_db_count_total_message_info:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_count_total_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, CamelException *ex)
 {
@@ -771,6 +852,11 @@ camel_db_count_total_message_info (CamelDB *cdb, const gchar *table_name, guint3
 	return ret;
 }
 
+/**
+ * camel_db_select:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpointer data, CamelException *ex)
 {
@@ -816,6 +902,11 @@ camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpo
 	return ret;
 }
 
+/**
+ * camel_db_create_vfolder:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_create_vfolder (CamelDB *db, const gchar *folder_name, CamelException *ex)
 {
@@ -839,6 +930,11 @@ camel_db_create_vfolder (CamelDB *db, const gchar *folder_name, CamelException *
 	return ret;
 }
 
+/**
+ * camel_db_recreate_vfolder:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_recreate_vfolder (CamelDB *db, const gchar *folder_name, CamelException *ex)
 {
@@ -854,6 +950,11 @@ camel_db_recreate_vfolder (CamelDB *db, const gchar *folder_name, CamelException
 	return camel_db_create_vfolder (db, folder_name, ex);
 }
 
+/**
+ * camel_db_delete_uid_from_vfolder:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_delete_uid_from_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex)
 {
@@ -869,6 +970,11 @@ camel_db_delete_uid_from_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, 
 	 return ret;
 }
 
+/**
+ * camel_db_delete_uid_from_vfolder_transaction:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, CamelException *ex)
 {
@@ -953,6 +1059,11 @@ read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	 return 0;
 }
 
+/**
+ * camel_db_get_folder_uids:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *array, CamelException *ex)
 {
@@ -967,6 +1078,11 @@ camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *so
 	 return ret;
 }
 
+/**
+ * camel_db_get_folder_junk_uids:
+ *
+ * Since: 2.24
+ **/
 GPtrArray *
 camel_db_get_folder_junk_uids (CamelDB *db, gchar *folder_name, CamelException *ex)
 {
@@ -987,6 +1103,11 @@ camel_db_get_folder_junk_uids (CamelDB *db, gchar *folder_name, CamelException *
 	 return array;
 }
 
+/**
+ * camel_db_get_folder_deleted_uids:
+ *
+ * Since: 2.24
+ **/
 GPtrArray *
 camel_db_get_folder_deleted_uids (CamelDB *db, gchar *folder_name, CamelException *ex)
 {
@@ -1090,6 +1211,11 @@ read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 	 return 0;
 }
 
+/**
+ * camel_db_get_vuids_from_vfolder:
+ *
+ * Since: 2.24
+ **/
 GPtrArray *
 camel_db_get_vuids_from_vfolder (CamelDB *db, gchar *folder_name, gchar *filter, CamelException *ex)
 {
@@ -1119,6 +1245,11 @@ camel_db_get_vuids_from_vfolder (CamelDB *db, gchar *folder_name, gchar *filter,
 	 return array;
 }
 
+/**
+ * camel_db_add_to_vfolder:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelException *ex)
 {
@@ -1134,6 +1265,11 @@ camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, CamelExce
 	 return ret;
 }
 
+/**
+ * camel_db_add_to_vfolder_transaction:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_add_to_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, CamelException *ex)
 {
@@ -1149,6 +1285,11 @@ camel_db_add_to_vfolder_transaction (CamelDB *db, const gchar *folder_name, cons
 	 return ret;
 }
 
+/**
+ * camel_db_create_folders_table:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_create_folders_table (CamelDB *cdb, CamelException *ex)
 {
@@ -1354,6 +1495,11 @@ camel_db_get_folder_version (CamelDB *cdb, const gchar *folder_name, CamelExcept
 	return version;
 }
 
+/**
+ * camel_db_prepare_message_info_table:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_prepare_message_info_table (CamelDB *cdb, const gchar *folder_name, CamelException *ex)
 {
@@ -1388,6 +1534,11 @@ camel_db_write_fresh_message_info_record (CamelDB *cdb, const gchar *folder_name
 	return write_mir (cdb, folder_name, record, ex, FALSE);
 }
 
+/**
+ * camel_db_write_message_info_record:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_write_message_info_record (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelException *ex)
 {
@@ -1447,6 +1598,11 @@ write_mir (CamelDB *cdb, const gchar *folder_name, CamelMIRecord *record, CamelE
 	return ret;
 }
 
+/**
+ * camel_db_write_folder_info_record:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_write_folder_info_record (CamelDB *cdb, CamelFIRecord *record, CamelException *ex)
 {
@@ -1535,6 +1691,11 @@ read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
 	return 0;
 }
 
+/**
+ * camel_db_read_folder_info_record:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_read_folder_info_record (CamelDB *cdb, const gchar *folder_name, CamelFIRecord **record, CamelException *ex)
 {
@@ -1548,6 +1709,11 @@ camel_db_read_folder_info_record (CamelDB *cdb, const gchar *folder_name, CamelF
 	return (ret);
 }
 
+/**
+ * camel_db_read_message_info_record_with_uid:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_read_message_info_record_with_uid (CamelDB *cdb, const gchar *folder_name, const gchar *uid, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex)
 {
@@ -1561,6 +1727,11 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb, const gchar *folder_na
 	return (ret);
 }
 
+/**
+ * camel_db_read_message_info_records:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_read_message_info_records (CamelDB *cdb, const gchar *folder_name, gpointer p, CamelDBSelectCB read_mir_callback, CamelException *ex)
 {
@@ -1574,6 +1745,11 @@ camel_db_read_message_info_records (CamelDB *cdb, const gchar *folder_name, gpoi
 	return (ret);
 }
 
+/**
+ * camel_db_create_deleted_table:
+ *
+ * Since: 2.24
+ **/
 static gint
 camel_db_create_deleted_table (CamelDB *cdb, CamelException *ex)
 {
@@ -1597,6 +1773,11 @@ camel_db_trim_deleted_table (CamelDB *cdb, CamelException *ex)
 	return ret;
 }
 
+/**
+ * camel_db_delete_uid:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, CamelException *ex)
 {
@@ -1698,6 +1879,11 @@ cdb_delete_ids (CamelDB *cdb, const gchar * folder_name, GSList *uids, const gch
 	return ret;
 }
 
+/**
+ * camel_db_delete_uids:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, CamelException *ex)
 {
@@ -1718,6 +1904,11 @@ camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *has
 	return cdb_delete_ids (cdb, folder_name, uids, hash, "vuid", ex);
 }
 
+/**
+ * camel_db_clear_folder_summary:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_clear_folder_summary (CamelDB *cdb, gchar *folder, CamelException *ex)
 {
@@ -1755,6 +1946,11 @@ camel_db_clear_folder_summary (CamelDB *cdb, gchar *folder, CamelException *ex)
 	return ret;
 }
 
+/**
+ * camel_db_delete_folder:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_delete_folder (CamelDB *cdb, const gchar *folder, CamelException *ex)
 {
@@ -1790,6 +1986,11 @@ camel_db_delete_folder (CamelDB *cdb, const gchar *folder, CamelException *ex)
 	return ret;
 }
 
+/**
+ * camel_db_rename_folder:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_rename_folder (CamelDB *cdb, const gchar *old_folder, const gchar *new_folder, CamelException *ex)
 {
@@ -1828,6 +2029,11 @@ camel_db_rename_folder (CamelDB *cdb, const gchar *old_folder, const gchar *new_
 	return ret;
 }
 
+/**
+ * camel_db_camel_mir_free:
+ *
+ * Since: 2.24
+ **/
 void
 camel_db_camel_mir_free (CamelMIRecord *record)
 {
@@ -1852,12 +2058,22 @@ camel_db_camel_mir_free (CamelMIRecord *record)
 	}
 }
 
+/**
+ * camel_db_sqlize_string:
+ *
+ * Since: 2.24
+ **/
 gchar *
 camel_db_sqlize_string (const gchar *string)
 {
 	return sqlite3_mprintf ("%Q", string);
 }
 
+/**
+ * camel_db_free_sqlized_string:
+ *
+ * Since: 2.24
+ **/
 void
 camel_db_free_sqlized_string (gchar *string)
 {
@@ -1879,6 +2095,11 @@ followup_flag TEXT ,
 followup_completed_on TEXT ,
 followup_due_by TEXT ," */
 
+/**
+ * camel_db_get_column_name:
+ *
+ * Since: 2.24
+ **/
 gchar *
 camel_db_get_column_name (const gchar *raw_name)
 {
@@ -1913,6 +2134,11 @@ camel_db_get_column_name (const gchar *raw_name)
 
 }
 
+/**
+ * camel_db_migrate_vfolders_to_14:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_db_migrate_vfolders_to_14 (CamelDB *cdb, const gchar *folder, CamelException *ex)
 {

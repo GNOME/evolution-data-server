@@ -2286,6 +2286,11 @@ vee_folder_stop_folder(CamelVeeFolder *vf, CamelFolder *sub)
 	camel_object_unref((CamelObject *)sub);
 }
 
+/**
+ * camel_vee_folder_sync_headers:
+ *
+ * Since: 2.24
+ **/
 void
 camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex)
 {

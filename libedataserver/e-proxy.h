@@ -38,6 +38,11 @@ typedef struct _EProxy        EProxy;
 typedef struct _EProxyClass   EProxyClass;
 typedef struct _EProxyPrivate EProxyPrivate;
 
+/**
+ * EProxy:
+ *
+ * Since: 2.24
+ **/
 struct _EProxy {
 	GObject parent;
 	EProxyPrivate *priv;

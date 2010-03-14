@@ -824,6 +824,8 @@ e_source_to_standalone_xml (ESource *source)
  *
  * Return value: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
+ *
+ * Since: 2.24
  **/
 gboolean
 e_source_equal (ESource *a, ESource *b)
@@ -880,6 +882,8 @@ e_source_equal (ESource *a, ESource *b)
  *
  * Return value: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
+ *
+ * Since: 2.24
  **/
 gboolean
 e_source_xmlstr_equal (const gchar *a, const gchar *b)

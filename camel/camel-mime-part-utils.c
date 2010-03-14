@@ -78,13 +78,20 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	camel_object_unref (mem);
 }
 
-/* This replaces the data wrapper repository ... and/or could be replaced by it? */
+/**
+ * camel_mime_part_construct_content_from_parser:
+ *
+ * Since: 2.24
+ **/
 void
 camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 {
 	CamelDataWrapper *content = NULL;
 	CamelContentType *ct;
 	gchar *encoding;
+
+	/* This replaces the data wrapper repository ... and/or could be
+	 * replaced by it? */
 
 	if (!dw)
 		return;

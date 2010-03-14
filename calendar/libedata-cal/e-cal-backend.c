@@ -501,6 +501,8 @@ e_cal_backend_get_queries (ECalBackend *backend)
  * @query: An #EDataCalView object, previously added with @ref e_cal_backend_add_query.
  *
  * Removes query from the list of live queries for the backend.
+ *
+ * Since: 2.24
  **/
 void
 e_cal_backend_remove_query (ECalBackend *backend, EDataCalView *query)
@@ -1221,6 +1223,8 @@ match_query_and_notify (EDataCalView *query, const gchar *old_object, const gcha
  *
  * This methods has to be used before e_cal_backend_notify_view_progress.
  * Sets last notified percent value to 0.
+ *
+ * Since: 2.24
  **/
 void
 e_cal_backend_notify_view_progress_start (ECalBackend *backend)
@@ -1413,18 +1417,33 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
 	g_object_unref (iter);
 }
 
+/**
+ * e_cal_backend_notify_objects_added:
+ *
+ * Since: 2.24
+ **/
 void
 e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *query, const GList *objects)
 {
 	e_data_cal_view_notify_objects_added (query, objects);
 }
 
+/**
+ * e_cal_backend_notify_objects_removed:
+ *
+ * Since: 2.24
+ **/
 void
 e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *query, const GList *ids)
 {
 	e_data_cal_view_notify_objects_removed (query, ids);
 }
 
+/**
+ * e_cal_backend_notify_objects_modified:
+ *
+ * Since: 2.24
+ **/
 void
 e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *query, const GList *objects)
 {

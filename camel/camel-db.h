@@ -5,6 +5,11 @@
 #include <sqlite3.h>
 #include <glib.h>
 
+/**
+ * CAMEL_DB_FILE:
+ *
+ * Since: 2.24
+ **/
 #define CAMEL_DB_FILE "folders.db"
 
 /* Hopefully no one will create a folder named EVO_IN_meM_hAnDlE */
@@ -34,47 +39,110 @@
 
 typedef struct _CamelDBPrivate CamelDBPrivate;
 
+/**
+ * CamelDBCollate:
+ *
+ * Since: 2.24
+ **/
 typedef gint(*CamelDBCollate)(gpointer ,int,gconstpointer ,int,gconstpointer );
 
+/**
+ * CamelDB:
+ *
+ * Since: 2.24
+ **/
 struct _CamelDB {
 	sqlite3 *db;
 	GMutex *lock;
 	CamelDBPrivate *priv;
 };
 
+/**
+ * CAMEL_DB_FREE_CACHE_SIZE:
+ *
+ * Since: 2.24
+ **/
 #define CAMEL_DB_FREE_CACHE_SIZE 2 * 1024 * 1024
+
+/**
+ * CAMEL_DB_SLEEP_INTERVAL:
+ *
+ * Since: 2.24
+ **/
 #define CAMEL_DB_SLEEP_INTERVAL 1*10*10
+
+/**
+ * CAMEL_DB_RELEASE_SQLITE_MEMORY:
+ *
+ * Since: 2.24
+ **/
 #define CAMEL_DB_RELEASE_SQLITE_MEMORY if(!g_getenv("CAMEL_SQLITE_FREE_CACHE")) sqlite3_release_memory(CAMEL_DB_FREE_CACHE_SIZE);
+
+/**
+ * CAMEL_DB_USE_SHARED_CACHE:
+ *
+ * Since: 2.24
+ **/
 #define CAMEL_DB_USE_SHARED_CACHE if(g_getenv("CAMEL_SQLITE_SHARED_CACHE")) sqlite3_enable_shared_cache(TRUE);
 
-/* The extensive DB format, supporting basic searching and sorting
-  uid, - Message UID
-  flags, - Camel Message info flags
-  unread/read, - boolean read/unread status
-  deleted, - boolean deleted status
-  replied, - boolean replied status
-  imp, - boolean important status
-  junk, - boolean junk status
-  size, - size of the mail
-  attachment, boolean attachment status
-  dsent, - sent date
-  dreceived, - received date
-  subject, - subject of the mail
-  from, - sender
-  to, - recipient
-  cc, - CC members
-  mlist, - message list headers
-  follow-up-flag, - followup flag / also can be queried to see for followup or not
-  completed-on-set, - completed date, can be used to see if completed
-  due-by,  - to see the due by date
-  Location - This can be derived from the database location/name. No need to store.
-  label, - labels of mails also called as userflags
-  usertags, composite string of user tags
-  cinfo, content info string - composite string
-  bdata, provider specific data
-  part, part/references/thread id
-*/
-
+/**
+ * CamelMIRecord:
+ * @uid:
+ * 	Message UID
+ * @flags:
+ * 	Camel Message info flags
+ * @msg_type:
+ * @dirty:
+ * @read:
+ * 	boolean read status
+ * @deleted:
+ * 	boolean deleted status
+ * @replied:
+ * 	boolean replied status
+ * @important:
+ * 	boolean important status
+ * @junk:
+ * 	boolean junk status
+ * @attachment:
+ * 	boolean attachment status
+ * @size:
+ * 	size of the mail
+ * @dsent:
+ * 	date sent
+ * @dreceived:
+ * 	date received
+ * @subject:
+ * 	subject of the mail
+ * @from:
+ * 	sender
+ * @to:
+ * 	recipient
+ * @cc:
+ * 	CC members
+ * @mlist:
+ * 	message list headers
+ * @followup_flag:
+ * 	followup flag / also can be queried to see for followup or not
+ * @followup_completed_on:
+ * 	completed date, can be used to see if completed
+ * @followup_due_by:
+ * 	to see the due by date
+ * @part:
+ * 	part / references / thread id
+ * @labels:
+ * 	labels of mails also called as userflags
+ * @usertags:
+ * 	composite string of user tags
+ * @cinfo:
+ * 	content info string - composite string
+ * @bdata:
+ * 	provider specific data
+ * @bodystructure:
+ *
+ * The extensive DB format, supporting basic searching and sorting.
+ *
+ * Since: 2.24
+ **/
 typedef struct _CamelMIRecord {
 	gchar *uid;
 	guint32 flags;
@@ -105,6 +173,11 @@ typedef struct _CamelMIRecord {
 	gchar *bodystructure;
 } CamelMIRecord;
 
+/**
+ * CamelFIRecord:
+ *
+ * Since: 2.24
+ **/
 typedef struct _CamelFIRecord {
 	gchar *folder_name;
 	guint32 version;
@@ -121,6 +194,12 @@ typedef struct _CamelFIRecord {
 } CamelFIRecord;
 
 typedef struct _CamelDB CamelDB;
+
+/**
+ * CamelDBSelectCB:
+ *
+ * Since: 2.24
+ **/
 typedef gint (*CamelDBSelectCB) (gpointer data, gint ncol, gchar **colvalues, gchar **colnames);
 
 CamelDB * camel_db_open (const gchar *path, CamelException *ex);

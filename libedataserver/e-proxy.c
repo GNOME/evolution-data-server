@@ -702,6 +702,11 @@ ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpo
 	}
 }
 
+/**
+ * e_proxy_new:
+ *
+ * Since: 2.24
+ **/
 EProxy*
 e_proxy_new (void)
 {
@@ -712,6 +717,11 @@ e_proxy_new (void)
 	return proxy;
 }
 
+/**
+ * e_proxxy_setup_proxy:
+ *
+ * Since: 2.24
+ **/
 void
 e_proxy_setup_proxy (EProxy* proxy)
 {
@@ -773,6 +783,11 @@ e_proxy_peek_uri_for (EProxy* proxy, const gchar *uri)
 	return proxy->priv->uri_http;
 }
 
+/**
+ * e_proxy_require_proxy_for_uri:
+ *
+ * Since: 2.24
+ **/
 gboolean
 e_proxy_require_proxy_for_uri (EProxy* proxy, const gchar * uri)
 {

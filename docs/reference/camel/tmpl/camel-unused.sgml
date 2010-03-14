@@ -484,6 +484,33 @@ camel-types
 @value: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_filter_driver_expand_option ##### -->
+<para>
+
+</para>
+
+@d: 
+@s: 
+@action: 
+@op: 
+
+<!-- ##### FUNCTION camel_filter_driver_rule_count ##### -->
+<para>
+
+</para>
+
+@d: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_filter_driver_rule_get ##### -->
+<para>
+
+</para>
+
+@d: 
+@n: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>
 

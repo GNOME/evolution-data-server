@@ -1340,6 +1340,8 @@ e_source_selector_new (ESourceList *list)
  * Returns the #ESourceList that @selector is rendering.
  *
  * Returns: an #ESourceList
+ *
+ * Since: 2.24
  **/
 ESourceList *
 e_source_selector_get_source_list (ESourceSelector *selector)

@@ -680,6 +680,8 @@ e_categories_is_searchable (const gchar *category)
  * Registers callback to be called on change of any category.
  * Pair listener and user_data is used to distinguish between listeners.
  * Listeners can be unregistered with @e_categories_unregister_change_listener.
+ *
+ * Since: 2.24
  **/
 void
 e_categories_register_change_listener (GCallback listener, gpointer user_data)
@@ -697,6 +699,8 @@ e_categories_register_change_listener (GCallback listener, gpointer user_data)
  *
  * Removes previously registered callback from the list of listeners on changes.
  * If it was not registered, then does nothing.
+ *
+ * Since: 2.24
  **/
 void
 e_categories_unregister_change_listener (GCallback listener, gpointer user_data)

@@ -199,6 +199,8 @@ camel_pstring_add (gchar *str, gboolean own)
  *
  * Return value: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
+ *
+ * Since: 2.24
  **/
 const gchar *
 camel_pstring_peek (const gchar *str)

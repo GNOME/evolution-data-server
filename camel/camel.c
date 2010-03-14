@@ -145,6 +145,11 @@ camel_init (const gchar *configdir, gboolean nss_init)
 	return 0;
 }
 
+/**
+ * camel_shutdown:
+ *
+ * Since: 2.24
+ **/
 void
 camel_shutdown (void)
 {

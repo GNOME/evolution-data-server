@@ -37,6 +37,11 @@ G_BEGIN_DECLS
 
 typedef struct _ECalBackendLoaderFactoryPrivate ECalBackendLoaderFactoryPrivate;
 
+/**
+ * ECalBackendLoaderFactory:
+ *
+ * Since: 2.24
+ **/
 typedef struct {
 	ECalBackendFactory	parent_object;
 } ECalBackendLoaderFactory;

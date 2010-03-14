@@ -1605,8 +1605,11 @@ e_book_cancel (EBook   *book,
 
 /**
  * e_book_cancel_async_op:
+ *
  * Similar to above e_book_cancel function, only cancels last, still running,
  * asynchronous operation.
+ *
+ * Since: 2.24
  **/
 gboolean
 e_book_cancel_async_op (EBook *book, GError **error)

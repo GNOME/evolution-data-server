@@ -480,9 +480,12 @@ escape_sexp_string (const gchar *string)
 
 /**
  * ens_util_populate_user_query_fields:
+ *
  * Populates list of user query fields to string usable in query string.
  * Returned pointer is either newly allocated string, supposed to be freed with g_free,
  * or NULL if no fields defined.
+ *
+ * Since: 2.24
  **/
 gchar *
 ens_util_populate_user_query_fields (GSList *user_query_fields, const gchar *cue_str, const gchar *encoded_cue_str)

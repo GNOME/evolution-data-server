@@ -105,6 +105,8 @@ camel_stream_vfs_get_type (void)
  * will be closed. This will not increase reference counter on the stream.
  *
  * Returns: a new #CamelStreamVFS
+ *
+ * Since: 2.24
  **/
 CamelStream *
 camel_stream_vfs_new_with_stream (GObject *stream)
@@ -175,6 +177,8 @@ camel_stream_vfs_new_with_uri (const gchar *uri, CamelStreamVFSOpenMethod mode)
  * @stream_vfs: a #CamelStreamVFS instance
  *
  * Returns: whether is the underlying stream writable or not.
+ *
+ * Since: 2.24
  **/
 gboolean
 camel_stream_vfs_is_writable (CamelStreamVFS *stream_vfs)

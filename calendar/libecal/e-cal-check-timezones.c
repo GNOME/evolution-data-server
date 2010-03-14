@@ -63,10 +63,15 @@ static const gchar *e_cal_match_location(const gchar *location)
 
 /**
  * e_cal_match_tzid:
- * matches a TZID against the system timezone definitions
- * and returns the matching TZID, or NULL if none found
+ * @tzid: a timezone ID
+ *
+ * Matches @tzid against the system timezone definitions
+ * and returns the matching TZID, or %NULL if none found
+ *
+ * Since: 2.24
  */
-const gchar *e_cal_match_tzid(const gchar *tzid)
+const gchar *
+e_cal_match_tzid(const gchar *tzid)
 {
     const gchar *location;
     const gchar *systzid = NULL;
@@ -242,14 +247,17 @@ static void addsystemtz(gpointer key,
  * accordingly.
  *
  * Return value: TRUE if successful, FALSE otherwise.
+ *
+ * Since: 2.24
  */
-gboolean e_cal_check_timezones(icalcomponent *comp,
-                               GList *comps,
-                               icaltimezone *(*tzlookup)(const gchar *tzid,
-                                                         gconstpointer custom,
-                                                         GError **error),
-                               gconstpointer custom,
-                               GError **error)
+gboolean
+e_cal_check_timezones (icalcomponent *comp,
+                       GList *comps,
+                       icaltimezone *(*tzlookup)(const gchar *tzid,
+                                                 gconstpointer custom,
+                                                 GError **error),
+                       gconstpointer custom,
+                       GError **error)
 {
     gboolean success = TRUE;
     icalcomponent *subcomp = NULL;
@@ -449,10 +457,13 @@ gboolean e_cal_check_timezones(icalcomponent *comp,
  *
  * An implementation of the tzlookup callback which clients
  * can use. Calls #e_cal_get_timezone.
+ *
+ * Since: 2.24
  */
-icaltimezone *e_cal_tzlookup_ecal(const gchar *tzid,
-                                  gconstpointer custom,
-                                  GError **error)
+icaltimezone *
+e_cal_tzlookup_ecal (const gchar *tzid,
+                     gconstpointer custom,
+                     GError **error)
 {
     ECal *ecal = (ECal *)custom;
     icaltimezone *zone = NULL;
@@ -483,10 +494,13 @@ icaltimezone *e_cal_tzlookup_ecal(const gchar *tzid,
  * An implementation of the tzlookup callback which backends
  * like the file backend can use. Searches for the timezone
  * in the component list.
+ *
+ * Since: 2.24
  */
-icaltimezone *e_cal_tzlookup_icomp(const gchar *tzid,
-                                   gconstpointer custom,
-                                   GError **error)
+icaltimezone *
+e_cal_tzlookup_icomp (const gchar *tzid,
+                      gconstpointer custom,
+                      GError **error)
 {
     icalcomponent *icomp = (icalcomponent *)custom;
 

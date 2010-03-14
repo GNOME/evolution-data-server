@@ -822,6 +822,8 @@ compare_source_lists (GSList *a, GSList *b)
  *
  * Return value: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
+ *
+ * Since: 2.24
  **/
 gboolean
 e_source_group_equal (ESourceGroup *a, ESourceGroup *b)
@@ -867,6 +869,8 @@ e_source_group_equal (ESourceGroup *a, ESourceGroup *b)
  *
  * Return value: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
+ *
+ * Since: 2.24
  **/
 gboolean
 e_source_group_xmlstr_equal (const gchar *a, const gchar *b)

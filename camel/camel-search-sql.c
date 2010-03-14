@@ -199,13 +199,14 @@ escape_values (gchar *str)
 }
 
 /**
- * camel_search_sexp_to_sql:
+ * camel_sexp_to_sql:
  * @txt: A valid sexp expression
  *
  * Converts a valid sexp expression to a sql statement with table fields converted into it.
  * This is very specific to Evolution. It might crash is the sexp is invalid. The callers must ensure that the sexp is valid
+ *
+ * Since: 2.24
  **/
-
 gchar *
 camel_sexp_to_sql (const gchar *txt)
 {

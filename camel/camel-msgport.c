@@ -249,6 +249,11 @@ msgport_sync_with_prpipe (PRFileDesc *prfd)
 }
 #endif
 
+/**
+ * camel_msgport_new:
+ *
+ * Since: 2.24
+ **/
 CamelMsgPort *
 camel_msgport_new (void)
 {
@@ -266,6 +271,11 @@ camel_msgport_new (void)
 	return msgport;
 }
 
+/**
+ * camel_msgport_destroy:
+ *
+ * Since: 2.24
+ **/
 void
 camel_msgport_destroy (CamelMsgPort *msgport)
 {
@@ -286,6 +296,11 @@ camel_msgport_destroy (CamelMsgPort *msgport)
 	g_slice_free (CamelMsgPort, msgport);
 }
 
+/**
+ * camel_msgport_fd:
+ *
+ * Since: 2.24
+ **/
 gint
 camel_msgport_fd (CamelMsgPort *msgport)
 {
@@ -303,6 +318,11 @@ camel_msgport_fd (CamelMsgPort *msgport)
 }
 
 #ifdef HAVE_NSS
+/**
+ * camel_msgport_prfd:
+ *
+ * Since: 2.24
+ **/
 PRFileDesc *
 camel_msgport_prfd (CamelMsgPort *msgport)
 {
@@ -320,6 +340,11 @@ camel_msgport_prfd (CamelMsgPort *msgport)
 }
 #endif
 
+/**
+ * camel_msgport_push:
+ *
+ * Since: 2.24
+ **/
 void
 camel_msgport_push (CamelMsgPort *msgport, CamelMsg *msg)
 {
@@ -367,6 +392,11 @@ camel_msgport_push (CamelMsgPort *msgport, CamelMsg *msg)
 	g_async_queue_unlock (msgport->queue);
 }
 
+/**
+ * camel_msgport_pop:
+ *
+ * Since: 2.24
+ **/
 CamelMsg *
 camel_msgport_pop (CamelMsgPort *msgport)
 {
@@ -392,6 +422,11 @@ camel_msgport_pop (CamelMsgPort *msgport)
 	return msg;
 }
 
+/**
+ * camel_msgport_try_pop:
+ *
+ * Since: 2.24
+ **/
 CamelMsg *
 camel_msgport_try_pop (CamelMsgPort *msgport)
 {
@@ -420,8 +455,6 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
  * @msgport: a #CamelMsgPort
  * @end_time: a #GTimeVal
  *
- * FIXME Document me!
- *
  * Since: 2.30
  **/
 CamelMsg *
@@ -447,6 +480,11 @@ camel_msgport_timed_pop (CamelMsgPort *msgport, GTimeVal *end_time)
 	return msg;
 }
 
+/**
+ * camel_msgport_reply:
+ *
+ * Since: 2.24
+ **/
 void
 camel_msgport_reply (CamelMsg *msg)
 {
