@@ -61,7 +61,7 @@ soup_soap_response_init (SoupSoapResponse *response)
  * Create a new empty #SoupSoapResponse object, which can be modified
  * with the accessor functions provided with this class.
  *
- * Return value: the new #SoupSoapResponse (or %NULL if there was an
+ * Returns: the new #SoupSoapResponse (or %NULL if there was an
  * error).
  */
 SoupSoapResponse *
@@ -80,7 +80,7 @@ soup_soap_response_new (void)
  * Create a new #SoupSoapResponse object from the XML string contained
  * in @xmlstr.
  *
- * Return value: the new #SoupSoapResponse (or %NULL if there was an
+ * Returns: the new #SoupSoapResponse (or %NULL if there was an
  * error).
  */
 SoupSoapResponse *
@@ -125,7 +125,7 @@ parse_parameters (SoupSoapResponsePrivate *priv, xmlNodePtr xml_method)
  * Parses the string contained in @xmlstr and sets all properties from
  * it in the @response object.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  */
 gboolean
 soup_soap_response_from_string (SoupSoapResponse *response, const gchar *xmlstr)
@@ -194,7 +194,7 @@ soup_soap_response_from_string (SoupSoapResponse *response, const gchar *xmlstr)
  *
  * Gets the method name from the SOAP response.
  *
- * Return value: the method name.
+ * Returns: the method name.
  */
 const gchar *
 soup_soap_response_get_method_name (SoupSoapResponse *response)
@@ -234,7 +234,7 @@ soup_soap_response_set_method_name (SoupSoapResponse *response, const gchar *met
  *
  * Returns the parameter name.
  *
- * Return value: the parameter name.
+ * Returns: the parameter name.
  */
 const gchar *
 soup_soap_parameter_get_name (SoupSoapParameter *param)
@@ -250,7 +250,7 @@ soup_soap_parameter_get_name (SoupSoapParameter *param)
  *
  * Returns the parameter's (integer) value.
  *
- * Return value: the parameter value as an integer
+ * Returns: the parameter value as an integer
  */
 gint
 soup_soap_parameter_get_int_value (SoupSoapParameter *param)
@@ -276,7 +276,7 @@ soup_soap_parameter_get_int_value (SoupSoapParameter *param)
  *
  * Returns the parameter's value.
  *
- * Return value: the parameter value as a string, which must be freed
+ * Returns: the parameter value as a string, which must be freed
  * by the caller.
  */
 gchar *
@@ -301,7 +301,7 @@ soup_soap_parameter_get_string_value (SoupSoapParameter *param)
  * for compound data types, which can contain several parameters
  * themselves.
  *
- * Return value: the first child or %NULL if there are no children.
+ * Returns: the first child or %NULL if there are no children.
  */
 SoupSoapParameter *
 soup_soap_parameter_get_first_child (SoupSoapParameter *param)
@@ -319,7 +319,7 @@ soup_soap_parameter_get_first_child (SoupSoapParameter *param)
  * Gets the first child of the given #SoupSoapParameter whose name is
  * @name.
  *
- * Return value: the first child with the given name or %NULL if there
+ * Returns: the first child with the given name or %NULL if there
  * are no children.
  */
 SoupSoapParameter *
@@ -350,7 +350,7 @@ soup_soap_parameter_get_first_child_by_name (SoupSoapParameter *param, const gch
  *
  * FIXME: the name of this method is wrong
  *
- * Return value: the next sibling, or %NULL if there are no more
+ * Returns: the next sibling, or %NULL if there are no more
  * siblings.
  */
 SoupSoapParameter *
@@ -371,7 +371,7 @@ soup_soap_parameter_get_next_child (SoupSoapParameter *param)
  *
  * FIXME: the name of this method is wrong
  *
- * Return value: the next sibling with the given name, or %NULL
+ * Returns: the next sibling with the given name, or %NULL
  */
 SoupSoapParameter *
 soup_soap_parameter_get_next_child_by_name (SoupSoapParameter *param,
@@ -399,7 +399,7 @@ soup_soap_parameter_get_next_child_by_name (SoupSoapParameter *param,
  *
  * Returns the named property of @param.
  *
- * Return value: the property, which must be freed by the caller.
+ * Returns: the property, which must be freed by the caller.
  */
 gchar *
 soup_soap_parameter_get_property (SoupSoapParameter *param, const gchar *prop_name)
@@ -423,7 +423,7 @@ soup_soap_parameter_get_property (SoupSoapParameter *param, const gchar *prop_na
  *
  * Returns the list of parameters received in the SOAP response.
  *
- * Return value: a list of #SoupSoapParameter
+ * Returns: a list of #SoupSoapParameter
  */
 const GList *
 soup_soap_response_get_parameters (SoupSoapResponse *response)
@@ -442,7 +442,7 @@ soup_soap_response_get_parameters (SoupSoapResponse *response)
  *
  * Retrieves the first parameter contained in the SOAP response.
  *
- * Return value: a #SoupSoapParameter representing the first
+ * Returns: a #SoupSoapParameter representing the first
  * parameter, or %NULL if there are no parameters.
  */
 SoupSoapParameter *
@@ -464,7 +464,7 @@ soup_soap_response_get_first_parameter (SoupSoapResponse *response)
  * Retrieves the first parameter contained in the SOAP response whose
  * name is @name.
  *
- * Return value: a #SoupSoapParameter representing the first parameter
+ * Returns: a #SoupSoapParameter representing the first parameter
  * with the given name, or %NULL.
  */
 SoupSoapParameter *
@@ -496,7 +496,7 @@ soup_soap_response_get_first_parameter_by_name (SoupSoapResponse *response,
  * Retrieves the parameter following @from in the #SoupSoapResponse
  * object.
  *
- * Return value: a #SoupSoapParameter representing the parameter.
+ * Returns: a #SoupSoapParameter representing the parameter.
  */
 SoupSoapParameter *
 soup_soap_response_get_next_parameter (SoupSoapResponse *response,
@@ -525,7 +525,7 @@ soup_soap_response_get_next_parameter (SoupSoapResponse *response,
  * Retrieves the first parameter following @from in the
  * #SoupSoapResponse object whose name matches @name.
  *
- * Return value: a #SoupSoapParameter representing the parameter.
+ * Returns: a #SoupSoapParameter representing the parameter.
  */
 SoupSoapParameter *
 soup_soap_response_get_next_parameter_by_name (SoupSoapResponse *response,

@@ -294,7 +294,7 @@ e_address_western_extract_street (gchar *line, gchar **street, gchar **extended)
  * Parses a string representing a mailing address into a
  * structure of type #EAddressWestern.
  *
- * Return value: A new #EAddressWestern structure, or %NULL if the parsing failed.
+ * Returns: A new #EAddressWestern structure, or %NULL if the parsing failed.
  **/
 EAddressWestern *
 e_address_western_parse (const gchar *in_address)

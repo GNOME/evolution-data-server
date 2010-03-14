@@ -161,7 +161,7 @@ e_cal_backend_google_utils_create_cache (ECalBackendGoogle *cbgo)
  * @handle:
  * Call this to Update changes, made to the calendar.
  *
- * Return value: TRUE if update is successful FALSE otherwise .
+ * Returns: TRUE if update is successful FALSE otherwise .
  **/
 gpointer
 e_cal_backend_google_utils_update (gpointer handle)

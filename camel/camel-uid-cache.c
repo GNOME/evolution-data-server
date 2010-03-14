@@ -52,7 +52,7 @@ struct _uid_state {
  * doesn't already exist, the UID cache will be empty. Otherwise, if
  * it does exist but can't be read, the function will return %NULL.
  *
- * Return value: a new UID cache, or %NULL
+ * Returns: a new UID cache, or %NULL
  **/
 CamelUIDCache *
 camel_uid_cache_new (const gchar *filename)
@@ -144,7 +144,7 @@ maybe_write_uid (gpointer key, gpointer value, gpointer data)
  *
  * Attempts to save @cache back to disk.
  *
- * Return value: success or failure
+ * Returns: success or failure
  **/
 gboolean
 camel_uid_cache_save (CamelUIDCache *cache)
@@ -258,7 +258,7 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
  * Returns an array of UIDs from @uids that are not in @cache, and
  * removes UIDs from @cache that aren't in @uids.
  *
- * Return value: an array of new UIDs, which must be freed with
+ * Returns: an array of new UIDs, which must be freed with
  * camel_uid_cache_free_uids().
  **/
 GPtrArray *

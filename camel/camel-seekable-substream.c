@@ -106,7 +106,7 @@ camel_seekable_substream_get_type (void)
  * the current position of @parent_stream. After the substream has been
  * closed, @parent_stream will stabilize again.
  *
- * Return value: the substream
+ * Returns: the substream
  **/
 CamelStream *
 camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, off_t end)

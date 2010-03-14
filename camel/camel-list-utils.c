@@ -50,7 +50,7 @@ camel_dlist_init (CamelDList *v)
  *
  * Add the list node @n to the head (start) of the list @l.
  *
- * Return value: @n.
+ * Returns: @n.
  **/
 CamelDListNode *
 camel_dlist_addhead (CamelDList *l, CamelDListNode *n)
@@ -69,7 +69,7 @@ camel_dlist_addhead (CamelDList *l, CamelDListNode *n)
  *
  * Add the list onde @n to the tail (end) of the list @l.
  *
- * Return value: @n.
+ * Returns: @n.
  **/
 CamelDListNode *
 camel_dlist_addtail (CamelDList *l, CamelDListNode *n)
@@ -87,7 +87,7 @@ camel_dlist_addtail (CamelDList *l, CamelDListNode *n)
  *
  * Remove @n from the list it's in.  @n must belong to a list.
  *
- * Return value: @n.
+ * Returns: @n.
  **/
 CamelDListNode *
 camel_dlist_remove (CamelDListNode *n)
@@ -127,7 +127,7 @@ camel_dlist_remhead (CamelDList *l)
  *
  * Remove the last node in the list.
  *
- * Return value: The previously last-node in the list, or NULL if @l
+ * Returns: The previously last-node in the list, or NULL if @l
  * is an empty list.
  **/
 CamelDListNode *
@@ -151,7 +151,7 @@ camel_dlist_remtail (CamelDList *l)
  *
  * Returns %TRUE if @l is an empty list.
  *
- * Return value: %TRUE if @l is an empty list, %FALSE otherwise.
+ * Returns: %TRUE if @l is an empty list, %FALSE otherwise.
  **/
 gint
 camel_dlist_empty (CamelDList *l)
@@ -165,7 +165,7 @@ camel_dlist_empty (CamelDList *l)
  *
  * Returns the number of nodes in the list @l.
  *
- * Return value: The number of nodes.
+ * Returns: The number of nodes.
  **/
 gint
 camel_dlist_length (CamelDList *l)

@@ -37,7 +37,7 @@ static EAccountList *accounts;
  *
  * Retrieve the default mail account as stored in Evolution configuration.
  *
- * Return value: TRUE if there is a default account, FALSE otherwise.
+ * Returns: TRUE if there is a default account, FALSE otherwise.
  */
 gboolean
 e_cal_backend_mail_account_get_default (gchar **address, gchar **name)
@@ -68,7 +68,7 @@ e_cal_backend_mail_account_get_default (gchar **address, gchar **name)
  *
  * Checks that a mail account is valid, and returns its name.
  *
- * Return value: TRUE if the account is valid, FALSE if not.
+ * Returns: TRUE if the account is valid, FALSE if not.
  */
 gboolean
 e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
@@ -155,10 +155,11 @@ e_cal_backend_status_to_string (GNOME_Evolution_Calendar_CallStatus status)
 
 /**
  * is_attendee_declined:
- * @param icalcomp Component where to check the attendee list.
- * @param email Attendee's email to look for.
- * @return Whether the required attendee declined or not.
- *         It's not necessary to have this attendee in the list.
+ * @icalcomp: Component where to check the attendee list.
+ * @email: Attendee's email to look for.
+ *
+ * Returns: Whether the required attendee declined or not.
+ *          It's not necessary to have this attendee in the list.
  **/
 static gboolean
 is_attendee_declined (icalcomponent *icalcomp, const gchar *email)
@@ -202,9 +203,10 @@ is_attendee_declined (icalcomponent *icalcomp, const gchar *email)
 
 /**
  * e_cal_backend_user_declined:
- * @param icalcomp Component where to check.
- * @return Whether icalcomp contains attendee with a mail same as any of configured
- *         enabled mail account and whether this user declined.
+ * @icalcomp: Component where to check.
+ *
+ * Returns: Whether icalcomp contains attendee with a mail same as any of
+ *          configured enabled mail account and whether this user declined.
  *
  * Since: 2.26
  **/

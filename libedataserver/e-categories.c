@@ -478,7 +478,7 @@ add_hash_to_list (gpointer key, gpointer value, gpointer user_data)
  *
  * Returns a sorted list of all the category names currently configured.
  *
- * Return value: a sorted GList containing the names of the categories. The
+ * Returns: a sorted GList containing the names of the categories. The
  * list should be freed using g_list_free, but the names of the categories
  * should not be touched at all, they are internal strings.
  */
@@ -553,7 +553,7 @@ e_categories_remove (const gchar *category)
  *
  * Checks whether the given category is available in the configuration.
  *
- * Return value: %TRUE if the category is available, %FALSE otherwise.
+ * Returns: %TRUE if the category is available, %FALSE otherwise.
  */
 gboolean
 e_categories_exist (const gchar *category)
@@ -602,7 +602,7 @@ e_categories_set_color_for (const gchar *category, const gchar *color)
  *
  * Gets the icon file associated with the given category.
  *
- * Return value: icon file name.
+ * Returns: icon file name.
  */
 const gchar *
 e_categories_get_icon_file_for (const gchar *category)

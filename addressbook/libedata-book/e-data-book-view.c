@@ -635,7 +635,7 @@ e_data_book_view_set_thresholds (EDataBookView *book_view,
  * Gets the text representation of the s-expression used
  * for matching contacts to @book_view.
  *
- * Return value: The textual s-expression used.
+ * Returns: The textual s-expression used.
  **/
 const gchar *
 e_data_book_view_get_card_query (EDataBookView *book_view)
@@ -652,7 +652,7 @@ e_data_book_view_get_card_query (EDataBookView *book_view)
  * Gets the s-expression used for matching contacts to
  * @book_view.
  *
- * Return value: The #EBookBackendSExp used.
+ * Returns: The #EBookBackendSExp used.
  **/
 EBookBackendSExp*
 e_data_book_view_get_card_sexp (EDataBookView *book_view)
@@ -669,7 +669,7 @@ e_data_book_view_get_card_sexp (EDataBookView *book_view)
  * Gets the maximum number of results returned by
  * @book_view's query.
  *
- * Return value: The maximum number of results returned.
+ * Returns: The maximum number of results returned.
  **/
 gint
 e_data_book_view_get_max_results (EDataBookView *book_view)
@@ -685,7 +685,7 @@ e_data_book_view_get_max_results (EDataBookView *book_view)
  *
  * Gets the backend that @book_view is querying.
  *
- * Return value: The associated #EBookBackend.
+ * Returns: The associated #EBookBackend.
  **/
 EBookBackend*
 e_data_book_view_get_backend (EDataBookView *book_view)

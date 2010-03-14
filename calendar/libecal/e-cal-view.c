@@ -364,7 +364,7 @@ e_cal_view_class_init (ECalViewClass *klass)
  * Creates a new view object by issuing the view creation request to the
  * calendar server.
  *
- * Return value: A newly-created view object, or NULL if the request failed.
+ * Returns: A newly-created view object, or NULL if the request failed.
  **/
 ECalView *
 _e_cal_view_new (ECal *client, DBusGProxy *view_proxy, GStaticRecMutex *connection_lock)
@@ -386,7 +386,7 @@ _e_cal_view_new (ECal *client, DBusGProxy *view_proxy, GStaticRecMutex *connecti
  *
  * Get the #ECal associated with this view.
  *
- * Return value: the associated client.
+ * Returns: the associated client.
  *
  * Since: 2.22
  */

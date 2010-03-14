@@ -3702,7 +3702,7 @@ static const gchar tm_days [][4] = {
  * Allocates a string buffer containing the rfc822 formatted date
  * string represented by @time and @tz_offset.
  *
- * Return value: a valid string representation of the date.
+ * Returns: a valid string representation of the date.
  **/
 gchar *
 camel_header_format_date (time_t date, gint tz_offset)

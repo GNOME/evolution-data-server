@@ -803,7 +803,7 @@ static struct {
  *
  * Checks if @contact matches @sexp.
  *
- * Return value: %TRUE if the contact matches, %FALSE otherwise.
+ * Returns: %TRUE if the contact matches, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
@@ -836,7 +836,7 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
  *
  * Checks if @vcard matches @sexp.
  *
- * Return value: %TRUE if the VCard matches, %FALSE otherwise.
+ * Returns: %TRUE if the VCard matches, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const gchar *vcard)
@@ -861,7 +861,7 @@ e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp, const gchar *vcard)
  *
  * Creates a new #EBookBackendSExp from @text.
  *
- * Return value: A new #EBookBackendSExp.
+ * Returns: A new #EBookBackendSExp.
  **/
 EBookBackendSExp *
 e_book_backend_sexp_new (const gchar *text)

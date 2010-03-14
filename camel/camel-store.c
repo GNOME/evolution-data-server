@@ -989,7 +989,7 @@ camel_folder_info_free (CamelFolderInfo *fi)
 /**
  * camel_folder_info_new:
  *
- * Return value: a new empty CamelFolderInfo instance
+ * Returns: a new empty CamelFolderInfo instance
  *
  * Since: 2.22
  **/

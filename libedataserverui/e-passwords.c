@@ -1426,7 +1426,7 @@ e_passwords_forget_password (const gchar *component_name, const gchar *key)
  * e_passwords_get_password:
  * @key: the key
  *
- * Return value: the password associated with @key, or %NULL.  Caller
+ * Returns: the password associated with @key, or %NULL.  Caller
  * must free the returned password.
  **/
 gchar *
@@ -1490,7 +1490,7 @@ e_passwords_add_password (const gchar *key, const gchar *passwd)
  *
  * Asks the user for a password.
  *
- * Return value: the password, which the caller must free, or %NULL if
+ * Returns: the password, which the caller must free, or %NULL if
  * the user cancelled the operation. *@remember will be set if the
  * return value is non-%NULL and @remember_type is not
  * E_PASSWORDS_DO_NOT_REMEMBER.

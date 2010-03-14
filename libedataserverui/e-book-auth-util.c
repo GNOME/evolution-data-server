@@ -277,7 +277,7 @@ load_source_cb (EBook *book, EBookStatus status, gpointer closure)
  * if it succeeded or not. If you don't care, you can pass %NULL for
  * @open_func, and no action will be taken on completion.
  *
- * Return value: A new #EBook that is being opened.
+ * Returns: A new #EBook that is being opened.
  **/
 EBook *
 e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data)

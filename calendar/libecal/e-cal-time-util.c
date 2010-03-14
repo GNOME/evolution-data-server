@@ -55,7 +55,7 @@ static const gint days_in_month[12] = {
  * to make it valid time, any further calls to time_add_day() will also return
  * this hour, which may not be what you want.
  *
- * Return value: a time_t value containing @time plus the days added.
+ * Returns: a time_t value containing @time plus the days added.
  */
 time_t
 time_add_day (time_t time, gint days)
@@ -76,7 +76,7 @@ time_add_day (time_t time, gint days)
  *
  * Adds the given number of weeks to a time value.
  *
- * Return value: a time_t value containing @time plus the weeks added.
+ * Returns: a time_t value containing @time plus the weeks added.
  */
 time_t
 time_add_week (time_t time, gint weeks)
@@ -90,7 +90,7 @@ time_add_week (time_t time, gint weeks)
  *
  * Returns the start of the day, according to the local time.
  *
- * Return value: the time corresponding to the beginning of the day.
+ * Returns: the time corresponding to the beginning of the day.
  */
 time_t
 time_day_begin (time_t t)
@@ -110,7 +110,7 @@ time_day_begin (time_t t)
  *
  * Returns the end of the day, according to the local time.
  *
- * Return value: the time corresponding to the end of the day.
+ * Returns: the time corresponding to the end of the day.
  */
 time_t
 time_day_end (time_t t)
@@ -145,7 +145,7 @@ time_day_end (time_t t)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: a time_t value containing @time plus the days added.
+ * Returns: a time_t value containing @time plus the days added.
  */
 time_t
 time_add_day_with_zone (time_t time, gint days, icaltimezone *zone)
@@ -174,7 +174,7 @@ time_add_day_with_zone (time_t time, gint days, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: a time_t value containing @time plus the weeks added.
+ * Returns: a time_t value containing @time plus the weeks added.
  */
 time_t
 time_add_week_with_zone (time_t time, gint weeks, icaltimezone *zone)
@@ -199,7 +199,7 @@ time_add_week_with_zone (time_t time, gint weeks, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: a time_t value containing @time plus the months added.
+ * Returns: a time_t value containing @time plus the months added.
  */
 time_t
 time_add_month_with_zone (time_t time, gint months, icaltimezone *zone)
@@ -243,7 +243,7 @@ time_add_month_with_zone (time_t time, gint months, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: the beginning of the year.
+ * Returns: the beginning of the year.
  */
 time_t
 time_year_begin_with_zone (time_t time, icaltimezone *zone)
@@ -275,7 +275,7 @@ time_year_begin_with_zone (time_t time, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: the beginning of the month.
+ * Returns: the beginning of the month.
  */
 time_t
 time_month_begin_with_zone (time_t time, icaltimezone *zone)
@@ -308,7 +308,7 @@ time_month_begin_with_zone (time_t time, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: the beginning of the week.
+ * Returns: the beginning of the week.
  */
 time_t
 time_week_begin_with_zone (time_t time, gint week_start_day, icaltimezone *zone)
@@ -349,7 +349,7 @@ time_week_begin_with_zone (time_t time, gint week_start_day, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: the beginning of the day.
+ * Returns: the beginning of the day.
  */
 time_t
 time_day_begin_with_zone (time_t time, icaltimezone *zone)
@@ -379,7 +379,7 @@ time_day_begin_with_zone (time_t time, icaltimezone *zone)
  * functions easier. New code should use icaltimetype values and
  * icaltime_adjust() to add or subtract days, hours, minutes & seconds.
  *
- * Return value: the end of the day.
+ * Returns: the end of the day.
  */
 time_t
 time_day_end_with_zone (time_t time, icaltimezone *zone)
@@ -438,7 +438,7 @@ time_to_gdate_with_zone (GDate *date, time_t time, icaltimezone *zone)
  * Returns the number of days in the month. Year is the normal year, e.g. 2001.
  * Month is 0 (Jan) to 11 (Dec).
  *
- * Return value: number of days in the given month/year.
+ * Returns: number of days in the given month/year.
  */
 gint
 time_days_in_month (gint year, gint month)
@@ -464,7 +464,7 @@ time_days_in_month (gint year, gint month)
  * Returns the 1-based day number within the year of the specified date.
  * Year is the normal year, e.g. 2001. Month is 0 to 11.
  *
- * Return value: the day of the year.
+ * Returns: the day of the year.
  */
 gint
 time_day_of_year (gint day, gint month, gint year)
@@ -491,7 +491,7 @@ time_day_of_year (gint day, gint month, gint year)
  * For the days that were removed on the Gregorian reformation, it returns
  * Thursday. Year is the normal year, e.g. 2001. Month is 0 to 11.
  *
- * Return value: the day of the week for the given date.
+ * Returns: the day of the week for the given date.
  */
 gint
 time_day_of_week (gint day, gint month, gint year)
@@ -517,7 +517,7 @@ time_day_of_week (gint day, gint month, gint year)
  * Returns whether the specified year is a leap year. Year is the normal year,
  * e.g. 2001.
  *
- * Return value: TRUE if the year is leap, FALSE if not.
+ * Returns: TRUE if the year is leap, FALSE if not.
  */
 gboolean
 time_is_leap_year (gint year)
@@ -535,7 +535,7 @@ time_is_leap_year (gint year)
  * Returns the number of leap years since year 1 up to (but not including) the
  * specified year. Year is the normal year, e.g. 2001.
  *
- * Return value: number of leap years.
+ * Returns: number of leap years.
  */
 gint
 time_leap_years_up_to (gint year)
@@ -554,7 +554,7 @@ time_leap_years_up_to (gint year)
  *
  * Creates an ISO 8601 UTC representation from a time value.
  *
- * Return value: String with the ISO 8601 representation of the UTC time.
+ * Returns: String with the ISO 8601 representation of the UTC time.
  **/
 gchar *
 isodate_from_time_t (time_t t)
@@ -576,7 +576,7 @@ isodate_from_time_t (time_t t)
  *
  * Converts an ISO 8601 UTC time string into a time_t value.
  *
- * Return value: Time_t corresponding to the specified ISO string.
+ * Returns: Time_t corresponding to the specified ISO string.
  * Note that we only allow UTC times at present.
  **/
 time_t
@@ -634,7 +634,7 @@ time_from_isodate (const gchar *str)
  *
  * Convers an icaltimetype structure into a GLibc's struct tm.
  *
- * Return value: The converted time as a struct tm. All fields will be
+ * Returns: The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
  *
  * Since: 2.22
@@ -670,7 +670,7 @@ icaltimetype_to_tm (struct icaltimetype *itt)
  * Converts a time value from one timezone to another, and returns a struct tm
  * representation of the time.
  *
- * Return value: The converted time as a struct tm. All fields will be
+ * Returns: The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
  *
  * Since: 2.22
@@ -703,7 +703,7 @@ icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
  *
  * Converts a struct tm into an icaltimetype.
  *
- * Return value: The converted time as an icaltimetype.
+ * Returns: The converted time as an icaltimetype.
  *
  * Since: 2.22
  */

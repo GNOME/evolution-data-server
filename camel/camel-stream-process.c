@@ -110,7 +110,7 @@ camel_stream_process_get_type (void)
  *
  * Returns a PROCESS stream.
  *
- * Return value: the stream
+ * Returns: the stream
  **/
 CamelStream *
 camel_stream_process_new (void)

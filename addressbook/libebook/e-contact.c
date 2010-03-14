@@ -1195,7 +1195,7 @@ e_contact_get_property (GObject *object,
  *
  * Creates a new, blank #EContact.
  *
- * Return value: A new #EContact.
+ * Returns: A new #EContact.
  **/
 EContact*
 e_contact_new (void)
@@ -1209,7 +1209,7 @@ e_contact_new (void)
  *
  * Creates a new #EContact based on a vcard.
  *
- * Return value: A new #EContact.
+ * Returns: A new #EContact.
  **/
 EContact*
 e_contact_new_from_vcard  (const gchar *vcard)
@@ -1267,7 +1267,7 @@ e_contact_new_from_vcard  (const gchar *vcard)
  *
  * Creates a copy of @contact.
  *
- * Return value: A new #EContact identical to @contact.
+ * Returns: A new #EContact identical to @contact.
  **/
 EContact*
 e_contact_duplicate (EContact *contact)
@@ -1290,7 +1290,7 @@ e_contact_duplicate (EContact *contact)
  *
  * Gets the string representation of @field_id.
  *
- * Return value: The string representation of @field_id, or %NULL if it doesn't exist.
+ * Returns: The string representation of @field_id, or %NULL if it doesn't exist.
  **/
 const gchar *
 e_contact_field_name (EContactField field_id)
@@ -1307,7 +1307,7 @@ e_contact_field_name (EContactField field_id)
  * Gets a human-readable, translated string representation
  * of @field_id.
  *
- * Return value: The human-readable representation of @field_id, or %NULL if it doesn't exist.
+ * Returns: The human-readable representation of @field_id, or %NULL if it doesn't exist.
  **/
 const gchar *
 e_contact_pretty_name (EContactField field_id)
@@ -1328,7 +1328,7 @@ e_contact_pretty_name (EContactField field_id)
  *
  * Gets the vcard attribute corresponding to @field_id, as a string.
  *
- * Return value: The vcard attribute corresponding to @field_id, or %NULL if it doesn't exist.
+ * Returns: The vcard attribute corresponding to @field_id, or %NULL if it doesn't exist.
  **/
 const gchar *
 e_contact_vcard_attribute  (EContactField field_id)
@@ -1344,7 +1344,7 @@ e_contact_vcard_attribute  (EContactField field_id)
  *
  * Gets the #EContactField corresponding to the @field_name.
  *
- * Return value: An #EContactField corresponding to @field_name, or %0 if it doesn't exist.
+ * Returns: An #EContactField corresponding to @field_name, or %0 if it doesn't exist.
  **/
 EContactField
 e_contact_field_id (const gchar *field_name)
@@ -1365,7 +1365,7 @@ e_contact_field_id (const gchar *field_name)
  *
  * Gets the #EContactField corresponding to the @vcard_field.
  *
- * Return value: An #EContactField corresponding to @vcard_field, or %0 if it doesn't exist.
+ * Returns: An #EContactField corresponding to @vcard_field, or %0 if it doesn't exist.
  *
  * Since: 2.26
  **/
@@ -1394,7 +1394,7 @@ e_contact_field_id_from_vcard (const gchar *vcard_field)
  *
  * Gets the value of @contact's field specified by @field_id.
  *
- * Return value: Depends on the field's type, owned by the caller.
+ * Returns: Depends on the field's type, owned by the caller.
  **/
 gpointer
 e_contact_get (EContact *contact, EContactField field_id)
@@ -1580,7 +1580,7 @@ e_contact_get (EContact *contact, EContactField field_id)
  * Gets the value of @contact's field specified by @field_id, caching
  * the result so it can be freed later.
  *
- * Return value: Depends on the field's type, owned by the #EContact.
+ * Returns: Depends on the field's type, owned by the #EContact.
  **/
 gconstpointer
 e_contact_get_const (EContact *contact, EContactField field_id)
@@ -1633,7 +1633,7 @@ e_contact_set (EContact *contact, EContactField field_id, gconstpointer value)
  *
  * Gets a list of the vcard attributes for @contact's @field_id.
  *
- * Return value: A #GList of pointers to #EVCardAttribute, owned by the caller.
+ * Returns: A #GList of pointers to #EVCardAttribute, owned by the caller.
  **/
 GList*
 e_contact_get_attributes (EContact *contact, EContactField field_id)
@@ -1694,7 +1694,7 @@ e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attr
  *
  * Creates a new #EContactName struct.
  *
- * Return value: A new #EContactName struct.
+ * Returns: A new #EContactName struct.
  **/
 EContactName*
 e_contact_name_new (void)
@@ -1708,7 +1708,7 @@ e_contact_name_new (void)
  *
  * Generates a string representation of @name.
  *
- * Return value: The string representation of @name.
+ * Returns: The string representation of @name.
  **/
 gchar *
 e_contact_name_to_string(const EContactName *name)
@@ -1737,7 +1737,7 @@ e_contact_name_to_string(const EContactName *name)
  *
  * Creates a new #EContactName based on the parsed @name_str.
  *
- * Return value: A new #EContactName struct.
+ * Returns: A new #EContactName struct.
  **/
 EContactName*
 e_contact_name_from_string (const gchar *name_str)
@@ -1766,7 +1766,7 @@ e_contact_name_from_string (const gchar *name_str)
  *
  * Creates a copy of @n.
  *
- * Return value: A new #EContactName identical to @n.
+ * Returns: A new #EContactName identical to @n.
  **/
 EContactName*
 e_contact_name_copy (EContactName *n)
@@ -1834,7 +1834,7 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_name, "EContactName")
  *
  * Creates a new #EContactDate based on @str.
  *
- * Return value: A new #EContactDate struct.
+ * Returns: A new #EContactDate struct.
  **/
 EContactDate*
 e_contact_date_from_string (const gchar *str)
@@ -1872,7 +1872,7 @@ e_contact_date_from_string (const gchar *str)
  * Generates a date string in the format YYYY-MM-DD based
  * on the values of @dt.
  *
- * Return value: A date string, owned by the caller.
+ * Returns: A date string, owned by the caller.
  **/
 gchar *
 e_contact_date_to_string (EContactDate *dt)
@@ -1893,7 +1893,7 @@ e_contact_date_to_string (EContactDate *dt)
  *
  * Checks if @dt1 and @dt2 are the same date.
  *
- * Return value: %TRUE if @dt1 and @dt2 are equal, %FALSE otherwise.
+ * Returns: %TRUE if @dt1 and @dt2 are equal, %FALSE otherwise.
  **/
 gboolean
 e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
@@ -1912,7 +1912,7 @@ e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
  *
  * Creates a copy of @dt.
  *
- * Return value: A new #EContactDate struct identical to @dt.
+ * Returns: A new #EContactDate struct identical to @dt.
  **/
 static EContactDate *
 e_contact_date_copy (EContactDate *dt)
@@ -1944,7 +1944,7 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_date, "EContactDate")
  *
  * Creates a new #EContactDate struct.
  *
- * Return value: A new #EContactDate struct.
+ * Returns: A new #EContactDate struct.
  **/
 EContactDate*
 e_contact_date_new (void)
@@ -1986,7 +1986,7 @@ e_contact_photo_free (EContactPhoto *photo)
  *
  * Creates a copy of @photo.
  *
- * Return value: A new #EContactPhoto struct identical to @photo.
+ * Returns: A new #EContactPhoto struct identical to @photo.
  **/
 static EContactPhoto *
 e_contact_photo_copy (EContactPhoto *photo)

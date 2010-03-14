@@ -126,7 +126,7 @@ e_book_backend_db_cache_get_filename(DB *db)
  * newly created, and must be unreffed by the caller when no longer
  * needed.
  *
- * Return value: A cached #EContact, or %NULL if @uid is not cached.
+ * Returns: A cached #EContact, or %NULL if @uid is not cached.
  **/
 EContact *
 e_book_backend_db_cache_get_contact (DB *db, const gchar *uid)
@@ -159,7 +159,7 @@ e_book_backend_db_cache_get_contact (DB *db, const gchar *uid)
  *
  * Adds @contact to @cache.
  *
- * Return value: %TRUE if the contact was cached successfully, %FALSE otherwise.
+ * Returns: %TRUE if the contact was cached successfully, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_db_cache_add_contact (DB *db,
@@ -203,7 +203,7 @@ e_book_backend_db_cache_add_contact (DB *db,
  *
  * Removes the contact identified by @uid from @cache.
  *
- * Return value: %TRUE if the contact was found and removed, %FALSE otherwise.
+ * Returns: %TRUE if the contact was found and removed, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_db_cache_remove_contact (DB *db,
@@ -234,7 +234,7 @@ e_book_backend_db_cache_remove_contact (DB *db,
  *
  * Checks if the contact identified by @uid exists in @cache.
  *
- * Return value: %TRUE if the cache contains the contact, %FALSE otherwise.
+ * Returns: %TRUE if the cache contains the contact, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_db_cache_check_contact (DB *db, const gchar *uid)
@@ -266,7 +266,7 @@ e_book_backend_db_cache_check_contact (DB *db, const gchar *uid)
  * When done with the list, the caller must unref the contacts and
  * free the list.
  *
- * Return value: A #GList of pointers to #EContact.
+ * Returns: A #GList of pointers to #EContact.
  **/
 GList *
 e_book_backend_db_cache_get_contacts (DB *db, const gchar *query)
@@ -327,7 +327,7 @@ e_book_backend_db_cache_get_contacts (DB *db, const gchar *query)
  * in @cache matching @query. When done with the array, the caller must
  * free the ID strings and the array.
  *
- * Return value: A #GPtrArray of pointers to contact ID strings.
+ * Returns: A #GPtrArray of pointers to contact ID strings.
  **/
 GPtrArray *
 e_book_backend_db_cache_search (DB *db, const gchar *query)
@@ -354,7 +354,7 @@ e_book_backend_db_cache_search (DB *db, const gchar *query)
  *
  * Checks if an #EBookBackendCache exists at @uri.
  *
- * Return value: %TRUE if cache exists, %FALSE if not.
+ * Returns: %TRUE if cache exists, %FALSE if not.
  **/
 gboolean
 e_book_backend_db_cache_exists (const gchar *uri)
@@ -399,7 +399,7 @@ e_book_backend_db_cache_set_populated (DB *db)
  *
  * Checks if @cache is populated.
  *
- * Return value: %TRUE if @cache is populated, %FALSE otherwise.
+ * Returns: %TRUE if @cache is populated, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_db_cache_is_populated (DB *db)

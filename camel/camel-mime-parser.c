@@ -238,7 +238,7 @@ camel_mime_parser_get_type (void)
  *
  * Create a new CamelMimeParser object.
  *
- * Return value: A new CamelMimeParser widget.
+ * Returns: A new CamelMimeParser widget.
  **/
 CamelMimeParser *
 camel_mime_parser_new (void)
@@ -260,7 +260,7 @@ camel_mime_parser_new (void)
  * a filter has been set, all content returned by a filter_step() with a state
  * of CAMEL_MIME_PARSER_STATE_BODY will have passed through the filter.
  *
- * Return value: An id that may be passed to filter_remove() to remove
+ * Returns: An id that may be passed to filter_remove() to remove
  * the filter, or -1 if the operation failed.
  *
  * Since: 2.22
@@ -326,7 +326,7 @@ camel_mime_parser_filter_remove(CamelMimeParser *m, gint id)
  *
  * Lookup a header by name.
  *
- * Return value: The header value, or NULL if the header is not
+ * Returns: The header value, or NULL if the header is not
  * defined.
  **/
 const gchar *
@@ -349,7 +349,7 @@ camel_mime_parser_header(CamelMimeParser *m, const gchar *name, gint *offset)
  * current state of the parser.  These headers are valid
  * until the next call to parser_step(), or parser_drop_step().
  *
- * Return value: The raw headers, or NULL if there are no headers
+ * Returns: The raw headers, or NULL if there are no headers
  * defined for the current part or state.  These are READ ONLY.
  *
  * Since: 2.22
@@ -383,7 +383,7 @@ byte_array_to_string(GByteArray *array)
  * Retrieve the preface text for the current multipart.
  * Can only be used when the state is CAMEL_MIME_PARSER_STATE_MULTIPART_END.
  *
- * Return value: The preface text, or NULL if there wasn't any.
+ * Returns: The preface text, or NULL if there wasn't any.
  *
  * Since: 2.22
  **/
@@ -406,7 +406,7 @@ camel_mime_parser_preface(CamelMimeParser *m)
  * Only returns valid data when the current state if
  * CAMEL_MIME_PARSER_STATE_MULTIPART_END.
  *
- * Return value: The postface text, or NULL if there wasn't any.
+ * Returns: The postface text, or NULL if there wasn't any.
  *
  * Since: 2.22
  **/
@@ -432,7 +432,7 @@ camel_mime_parser_postface(CamelMimeParser *m)
  * The return value will remain valid while in the CAMEL_MIME_PARSER_STATE_FROM
  * state, or any deeper state.
  *
- * Return value: The From line, or NULL if called out of context.
+ * Returns: The From line, or NULL if called out of context.
  *
  * Since: 2.22
  **/
@@ -457,7 +457,7 @@ camel_mime_parser_from_line(CamelMimeParser *m)
  * descriptor.  As a result, seekable descritors should
  * be seeked using the parser seek functions.
  *
- * Return value: Returns -1 on error.
+ * Returns: Returns -1 on error.
  **/
 gint
 camel_mime_parser_init_with_fd(CamelMimeParser *m, gint fd)
@@ -477,7 +477,7 @@ camel_mime_parser_init_with_fd(CamelMimeParser *m, gint fd)
  * the stream.  As a result, seekable streams should only
  * be seeked using the parser seek function.
  *
- * Return value: -1 on error.
+ * Returns: -1 on error.
  **/
 gint
 camel_mime_parser_init_with_stream(CamelMimeParser *m, CamelStream *stream)
@@ -534,7 +534,7 @@ camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre_from
  *
  * Get the content type defined in the current part.
  *
- * Return value: A content_type structure, or NULL if there
+ * Returns: A content_type structure, or NULL if there
  * is no content-type defined for this part of state of the
  * parser.
  **/
@@ -612,7 +612,7 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
  * the states an application is gauranteed to get from the
  * scanner.
  *
- * Return value: The current new state of the parser
+ * Returns: The current new state of the parser
  * is returned.
  **/
 camel_mime_parser_state_t
@@ -658,7 +658,7 @@ camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *data
  * occurs, so no state changes occur, but the seek position
  * is updated appropriately.
  *
- * Return value: The number of bytes available, or -1 on error.
+ * Returns: The number of bytes available, or -1 on error.
  **/
 gint
 camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint len)
@@ -709,7 +709,7 @@ camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint 
  * the next section of the scan (the last position + 1 of
  * the respective current state).
  *
- * Return value: See above.
+ * Returns: See above.
  *
  * Since: 2.22
  **/
@@ -729,7 +729,7 @@ camel_mime_parser_tell (CamelMimeParser *parser)
  * headers started, this is cached by the parser
  * at the time.
  *
- * Return value: The header start position, or -1 if
+ * Returns: The header start position, or -1 if
  * no headers were scanned in the current state.
  *
  * Since: 2.22
@@ -749,7 +749,7 @@ camel_mime_parser_tell_start_headers (CamelMimeParser *parser)
  * If the parser is scanning From lines, then this returns
  * the position of the start of the From line.
  *
- * Return value: The start of the from line, or -1 if there
+ * Returns: The start of the from line, or -1 if there
  * was no From line, or From lines are not being scanned.
  *
  * Since: 2.22
@@ -769,7 +769,7 @@ camel_mime_parser_tell_start_from (CamelMimeParser *parser)
  * When parsing a multipart, this returns the start of the last
  * boundary.
  *
- * Return value: The start of the boundary, or -1 if there
+ * Returns: The start of the boundary, or -1 if there
  * was no boundary encountered yet.
  *
  * Since: 2.22
@@ -795,7 +795,7 @@ camel_mime_parser_tell_start_boundary(CamelMimeParser *parser)
  * is specified (whence != SEEK_CUR), then the seek
  * position may not match the desired seek position.
  *
- * Return value: The new seek offset, or -1 on
+ * Returns: The new seek offset, or -1 on
  * an error (for example, trying to seek on a non-seekable
  * stream or file descriptor).
  *
@@ -815,7 +815,7 @@ camel_mime_parser_seek(CamelMimeParser *parser, off_t offset, gint whence)
  *
  * Get the current parser state.
  *
- * Return value: The current parser state.
+ * Returns: The current parser state.
  **/
 camel_mime_parser_state_t
 camel_mime_parser_state (CamelMimeParser *parser)
@@ -858,7 +858,7 @@ camel_mime_parser_push_state(CamelMimeParser *mp, camel_mime_parser_state_t news
  * be read from directly (without saving and restoring
  * the seek position in between).
  *
- * Return value: The stream from _init_with_stream(), or NULL
+ * Returns: The stream from _init_with_stream(), or NULL
  * if the parser is reading from a file descriptor or is
  * uninitialised.
  **/
@@ -881,7 +881,7 @@ camel_mime_parser_stream (CamelMimeParser *parser)
  * or the seek offset can be reset before the next parse
  * step.
  *
- * Return value: The file descriptor or -1 if the parser
+ * Returns: The file descriptor or -1 if the parser
  * is reading from a stream or has not been initialised.
  **/
 gint

@@ -58,7 +58,7 @@ static void do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp,
  *
  * If @prefix is non-%NULL, it will be prepended to the returned path.
  *
- * Return value: the expanded path
+ * Returns: the expanded path
  **/
 gchar *
 e_path_to_physical (const gchar *prefix, const gchar *vpath)
@@ -205,7 +205,7 @@ find_folders_recursive (const gchar *physical_path, const gchar *path,
  * Walks the folder tree starting at @prefix and calls @callback
  * on each folder.
  *
- * Return value: %TRUE on success, %FALSE if an error occurs at any point
+ * Returns: %TRUE on success, %FALSE if an error occurs at any point
  **/
 gboolean
 e_path_find_folders (const gchar *prefix,
@@ -224,7 +224,7 @@ e_path_find_folders (const gchar *prefix,
  * and attempts to remove its parent "subfolders" directory too
  * if it's empty.
  *
- * Return value: -1 (with errno set) if it failed to rmdir the
+ * Returns: -1 (with errno set) if it failed to rmdir the
  * specified directory. 0 otherwise, whether or not it removed
  * the parent directory.
  **/

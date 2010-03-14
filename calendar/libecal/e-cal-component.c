@@ -379,7 +379,7 @@ e_cal_component_finalize (GObject *object)
  *
  * Generates a unique identifier suitable for calendar components.
  *
- * Return value: A unique identifier string.  Every time this function is called
+ * Returns: A unique identifier string.  Every time this function is called
  * a different string is returned.
  **/
 gchar *
@@ -424,7 +424,7 @@ e_cal_component_gen_uid (void)
  * existing #icalcomponent structure by using e_cal_component_set_icalcomponent() or with a
  * new empty component type by using e_cal_component_set_new_vtype().
  *
- * Return value: A newly-created calendar component object.
+ * Returns: A newly-created calendar component object.
  **/
 ECalComponent *
 e_cal_component_new (void)
@@ -438,7 +438,7 @@ e_cal_component_new (void)
  *
  * Creates a new calendar component object from the given iCalendar string.
  *
- * Return value: A calendar component representing the given iCalendar string on
+ * Returns: A calendar component representing the given iCalendar string on
  * success, NULL if there was an error.
  **/
 ECalComponent *
@@ -471,7 +471,7 @@ e_cal_component_new_from_string (const gchar *calobj)
  * Creates a new calendar component object by copying the information from
  * another one.
  *
- * Return value: A newly-created calendar component with the same values as the
+ * Returns: A newly-created calendar component with the same values as the
  * original one.
  **/
 ECalComponent *
@@ -1047,7 +1047,7 @@ e_cal_component_set_new_vtype (ECalComponent *comp, ECalComponentVType type)
  *
  * Supported component types are VEVENT, VTODO, VJOURNAL, VFREEBUSY, and VTIMEZONE.
  *
- * Return value: TRUE on success, FALSE if @icalcomp is an unsupported component
+ * Returns: TRUE on success, FALSE if @icalcomp is an unsupported component
  * type.
  **/
 gboolean
@@ -1095,7 +1095,7 @@ e_cal_component_set_icalcomponent (ECalComponent *comp, icalcomponent *icalcomp)
  * Queries the #icalcomponent structure that a calendar component object is
  * wrapping.
  *
- * Return value: An #icalcomponent structure, or NULL if the @comp has no
+ * Returns: An #icalcomponent structure, or NULL if the @comp has no
  * #icalcomponent set to it.
  **/
 icalcomponent *
@@ -1163,7 +1163,7 @@ e_cal_component_strip_errors (ECalComponent *comp)
  *
  * Queries the type of a calendar component object.
  *
- * Return value: The type of the component, as defined by RFC 2445.
+ * Returns: The type of the component, as defined by RFC 2445.
  **/
 ECalComponentVType
 e_cal_component_get_vtype (ECalComponent *comp)
@@ -1209,7 +1209,7 @@ e_cal_component_get_vtype (ECalComponent *comp)
  * call e_cal_component_commit_sequence() before this function to ensure that the
  * component's sequence number is consistent with the state of the object.
  *
- * Return value: String representation of the calendar component according to
+ * Returns: String representation of the calendar component according to
  * RFC 2445.
  **/
 gchar *
@@ -1388,7 +1388,7 @@ e_cal_component_abort_sequence (ECalComponent *comp)
  * Get the ID of the component as a #ECalComponentId.  The return value should
  * be freed with e_cal_component_free_id() when you have finished with it.
  *
- * Return value: the id of the component
+ * Returns: the id of the component
  */
 ECalComponentId *
 e_cal_component_get_id (ECalComponent *comp)
@@ -1597,7 +1597,7 @@ e_cal_component_set_attachment_list (ECalComponent *comp, GSList *attachment_lis
  *
  * Queries the component to see if it has attachments.
  *
- * Return value: TRUE if there are attachments, FALSE otherwise.
+ * Returns: TRUE if there are attachments, FALSE otherwise.
  */
 gboolean
 e_cal_component_has_attachments (ECalComponent *comp)
@@ -1621,7 +1621,7 @@ e_cal_component_has_attachments (ECalComponent *comp)
  *
  * Get the number of attachments to this calendar component object.
  *
- * Return value: the number of attachments.
+ * Returns: the number of attachments.
  */
 gint
 e_cal_component_get_num_attachments (ECalComponent *comp)
@@ -2904,7 +2904,7 @@ e_cal_component_set_exdate_list (ECalComponent *comp, GSList *exdate_list)
  * Queries whether a calendar component object has any exception dates defined
  * for it.
  *
- * Return value: TRUE if the component has exception dates, FALSE otherwise.
+ * Returns: TRUE if the component has exception dates, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_exdates (ECalComponent *comp)
@@ -3065,7 +3065,7 @@ e_cal_component_set_exrule_list (ECalComponent *comp, GSList *recur_list)
  * Queries whether a calendar component object has any exception rules defined
  * for it.
  *
- * Return value: TRUE if the component has exception rules, FALSE otherwise.
+ * Returns: TRUE if the component has exception rules, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_exrules (ECalComponent *comp)
@@ -3088,7 +3088,7 @@ e_cal_component_has_exrules (ECalComponent *comp)
  * Queries whether a calendar component object has any exception dates
  * or exception rules.
  *
- * Return value: TRUE if the component has exceptions, FALSE otherwise.
+ * Returns: TRUE if the component has exceptions, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_exceptions (ECalComponent *comp)
@@ -3348,7 +3348,7 @@ e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
  *
  * Check whether a calendar component object has an organizer or not.
  *
- * Return value: TRUE if there is an organizer, FALSE otherwise.
+ * Returns: TRUE if there is an organizer, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_organizer (ECalComponent *comp)
@@ -3582,7 +3582,7 @@ e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
  *
  * Gets the recurrence ID property as a string.
  *
- * Return value: the recurrence ID as a string.
+ * Returns: the recurrence ID as a string.
  */
 gchar *
 e_cal_component_get_recurid_as_string (ECalComponent *comp)
@@ -3685,7 +3685,7 @@ e_cal_component_set_rdate_list (ECalComponent *comp, GSList *period_list)
  * Queries whether a calendar component object has any recurrence dates defined
  * for it.
  *
- * Return value: TRUE if the component has recurrence dates, FALSE otherwise.
+ * Returns: TRUE if the component has recurrence dates, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_rdates (ECalComponent *comp)
@@ -3778,7 +3778,7 @@ e_cal_component_set_rrule_list (ECalComponent *comp, GSList *recur_list)
  * Queries whether a calendar component object has any recurrence rules defined
  * for it.
  *
- * Return value: TRUE if the component has recurrence rules, FALSE otherwise.
+ * Returns: TRUE if the component has recurrence rules, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_rrules (ECalComponent *comp)
@@ -3801,7 +3801,7 @@ e_cal_component_has_rrules (ECalComponent *comp)
  * Queries whether a calendar component object has any recurrence dates or
  * recurrence rules.
  *
- * Return value: TRUE if the component has recurrences, FALSE otherwise.
+ * Returns: TRUE if the component has recurrences, FALSE otherwise.
  **/
 gboolean
 e_cal_component_has_recurrences (ECalComponent *comp)
@@ -3829,7 +3829,7 @@ count_by_xxx (short *field, gint max_elements)
  * Checks whether the given calendar component object has simple recurrence
  * rules or more complicated ones.
  *
- * Return value: TRUE if it has a simple recurrence rule, FALSE otherwise.
+ * Returns: TRUE if it has a simple recurrence rule, FALSE otherwise.
  */
 gboolean
 e_cal_component_has_simple_recurrence (ECalComponent *comp)
@@ -3996,7 +3996,7 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
  * Checks whether a calendar component object is an instance of a recurring
  * event.
  *
- * Return value: TRUE if it is an instance, FALSE if not.
+ * Returns: TRUE if it is an instance, FALSE if not.
  */
 gboolean
 e_cal_component_is_instance (ECalComponent *comp)
@@ -4640,7 +4640,7 @@ e_cal_component_set_attendee_list (ECalComponent *comp, GSList *attendee_list)
  *
  * Queries a calendar component object for the existence of attendees.
  *
- * Return value: TRUE if there are attendees, FALSE if not.
+ * Returns: TRUE if there are attendees, FALSE if not.
  */
 gboolean
 e_cal_component_has_attendees (ECalComponent *comp)
@@ -5001,7 +5001,7 @@ e_cal_component_free_attendee_list (GSList *attendee_list)
  *
  * Checks whether the component has any alarms.
  *
- * Return value: TRUE if the component has any alarms.
+ * Returns: TRUE if the component has any alarms.
  **/
 gboolean
 e_cal_component_has_alarms (ECalComponent *comp)
@@ -5207,7 +5207,7 @@ make_alarm (icalcomponent *subcomp)
  * Builds a list of the unique identifiers of the alarm subcomponents inside a
  * calendar component.
  *
- * Return value: List of unique identifiers for alarms.  This should be freed
+ * Returns: List of unique identifiers for alarms.  This should be freed
  * using cal_obj_uid_list_free().
  **/
 GList *
@@ -5258,7 +5258,7 @@ e_cal_component_get_alarm_uids (ECalComponent *comp)
  *
  * Queries a particular alarm subcomponent of a calendar component.
  *
- * Return value: The alarm subcomponent that corresponds to the specified @auid,
+ * Returns: The alarm subcomponent that corresponds to the specified @auid,
  * or #NULL if no alarm exists with that UID.  This should be freed using
  * e_cal_component_alarm_free().
  **/
@@ -5318,7 +5318,7 @@ e_cal_component_alarms_free (ECalComponentAlarms *alarms)
  *
  * Create a new alarm object.
  *
- * Return value: a new alarm component
+ * Returns: a new alarm component
  **/
 ECalComponentAlarm *
 e_cal_component_alarm_new (void)
@@ -5354,7 +5354,7 @@ e_cal_component_alarm_new (void)
  *
  * Creates a new alarm subcomponent by copying the information from another one.
  *
- * Return value: A newly-created alarm subcomponent with the same values as the
+ * Returns: A newly-created alarm subcomponent with the same values as the
  * original one.  Should be freed with e_cal_component_alarm_free().
  **/
 ECalComponentAlarm *
@@ -5410,7 +5410,7 @@ e_cal_component_alarm_free (ECalComponentAlarm *alarm)
  *
  * Queries the unique identifier of an alarm subcomponent.
  *
- * Return value: UID of the alarm.
+ * Returns: UID of the alarm.
  **/
 const gchar *
 e_cal_component_alarm_get_uid (ECalComponentAlarm *alarm)
@@ -5901,7 +5901,7 @@ e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm, GSList *atte
  *
  * Queries an alarm to see if it has attendees associated with it.
  *
- * Return value: TRUE if there are attendees in the alarm, FALSE if not.
+ * Returns: TRUE if there are attendees in the alarm, FALSE if not.
  */
 gboolean
 e_cal_component_alarm_has_attendees (ECalComponentAlarm *alarm)

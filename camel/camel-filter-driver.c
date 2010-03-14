@@ -279,7 +279,7 @@ camel_filter_driver_finalise (CamelObject *obj)
 /**
  * camel_filter_driver_new:
  *
- * Return value: A new CamelFilterDriver object
+ * Returns: A new CamelFilterDriver object
  **/
 CamelFilterDriver *
 camel_filter_driver_new (CamelSession *session)

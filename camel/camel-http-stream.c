@@ -143,7 +143,7 @@ camel_http_stream_get_type (void)
  * @session: active session
  * @url: URL to act upon
  *
- * Return value: a http stream
+ * Returns: a http stream
  **/
 CamelStream *
 camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, CamelURL *url)

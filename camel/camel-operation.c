@@ -119,7 +119,7 @@ co_getcc(void)
  * operations and to obtain notification messages of the internal
  * status of messages.
  *
- * Return value: A new operation handle.
+ * Returns: A new operation handle.
  **/
 CamelOperation *
 camel_operation_new (CamelOperationStatusFunc status, gpointer status_data)
@@ -381,7 +381,7 @@ camel_operation_unregister (CamelOperation *cc)
  * Check if cancellation has been applied to @cc.  If @cc is NULL,
  * then the CamelOperation registered for the current thread is used.
  *
- * Return value: TRUE if the operation has been cancelled.
+ * Returns: TRUE if the operation has been cancelled.
  **/
 gboolean
 camel_operation_cancel_check (CamelOperation *cc)
@@ -424,7 +424,7 @@ camel_operation_cancel_check (CamelOperation *cc)
  * Retrieve a file descriptor that can be waited on (select, or poll)
  * for read, to asynchronously detect cancellation.
  *
- * Return value: The fd, or -1 if cancellation is not available
+ * Returns: The fd, or -1 if cancellation is not available
  * (blocked, or has not been registered for this thread).
  **/
 gint
@@ -454,7 +454,7 @@ camel_operation_cancel_fd (CamelOperation *cc)
  * Retrieve a file descriptor that can be waited on (select, or poll)
  * for read, to asynchronously detect cancellation.
  *
- * Return value: The fd, or NULL if cancellation is not available
+ * Returns: The fd, or NULL if cancellation is not available
  * (blocked, or has not been registered for this thread).
  **/
 PRFileDesc *

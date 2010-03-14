@@ -446,7 +446,7 @@ camel_vee_summary_get_type (void)
  * This will create a new CamelVeeSummary object and read in the
  * summary data from disk, if it exists.
  *
- * Return value: A new CamelVeeSummary object.
+ * Returns: A new CamelVeeSummary object.
  **/
 CamelFolderSummary *
 camel_vee_summary_new(CamelFolder *parent)

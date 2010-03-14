@@ -200,7 +200,7 @@ camel_imapx_stream_get_type (void)
  * Returns a NULL stream.  A null stream is always at eof, and
  * always returns success for all reads and writes.
  *
- * Return value: the stream
+ * Returns: the stream
  **/
 CamelStream *
 camel_imapx_stream_new(CamelStream *source)

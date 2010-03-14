@@ -157,7 +157,7 @@ cache_put (CamelImapMessageCache *cache, const gchar *uid, const gchar *key,
  * @summary: CamelFolderSummary for the folder we are caching
  * @ex: a CamelException
  *
- * Return value: a new CamelImapMessageCache object using @path for
+ * Returns: a new CamelImapMessageCache object using @path for
  * storage. If cache files already exist in @path, then any that do not
  * correspond to messages in @summary will be deleted.
  * @path is scanned for its contents, which means creating a cache object can be
@@ -267,7 +267,7 @@ camel_imap_message_cache_delete (const gchar *path, CamelException *ex)
  * camel_imap_message_cache_max_uid:
  * @cache: the cache
  *
- * Return value: the largest (real) UID in the cache.
+ * Returns: the largest (real) UID in the cache.
  **/
 guint32
 camel_imap_message_cache_max_uid (CamelImapMessageCache *cache)
@@ -367,7 +367,7 @@ insert_finish (CamelImapMessageCache *cache, const gchar *uid, gchar *path,
  *
  * Caches the provided data into @cache.
  *
- * Return value: a CamelStream containing the cached data, which the
+ * Returns: a CamelStream containing the cached data, which the
  * caller must unref.
  **/
 CamelStream *
@@ -463,7 +463,7 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
  * @part_spec: the part_spec of the data to get
  * @ex: exception
  *
- * Return value: the filename of a cache item
+ * Returns: the filename of a cache item
  **/
 gchar *
 camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
@@ -493,7 +493,7 @@ camel_imap_message_cache_get_filename (CamelImapMessageCache *cache,
  * @part_spec: the part_spec of the data to get
  * @ex: exception
  *
- * Return value: a CamelStream containing the cached data (which the
+ * Returns: a CamelStream containing the cached data (which the
  * caller must unref), or %NULL if that data is not cached.
  **/
 CamelStream *

@@ -349,7 +349,7 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *name_selector_dialo
  *
  * Creates a new #ENameSelectorDialog.
  *
- * Return value: A new #ENameSelectorDialog.
+ * Returns: A new #ENameSelectorDialog.
  **/
 ENameSelectorDialog *
 e_name_selector_dialog_new (void)
@@ -1224,7 +1224,7 @@ destination_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, 
  *
  * Gets the #ENameSelectorModel used by @name_selector_model.
  *
- * Return value: The #ENameSelectorModel being used.
+ * Returns: The #ENameSelectorModel being used.
  **/
 ENameSelectorModel *
 e_name_selector_dialog_peek_model (ENameSelectorDialog *name_selector_dialog)

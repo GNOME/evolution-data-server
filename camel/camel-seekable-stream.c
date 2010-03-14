@@ -112,7 +112,7 @@ seek (CamelSeekableStream *stream, off_t offset,
  * to the range specified by its lower and upper bounds, and the
  * stream's eos state will be updated.
  *
- * Return value: new position, %-1 if operation failed.
+ * Returns: new position, %-1 if operation failed.
  **/
 off_t
 camel_seekable_stream_seek (CamelSeekableStream *stream, off_t offset,

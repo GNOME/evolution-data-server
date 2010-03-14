@@ -164,7 +164,7 @@ e_destination_init (EDestination *dest)
  *
  * Creates a new #EDestination with blank values.
  *
- * Return value: A newly created #EDestination.
+ * Returns: A newly created #EDestination.
  **/
 EDestination *
 e_destination_new (void)
@@ -178,7 +178,7 @@ e_destination_new (void)
  *
  * Creates a new #EDestination identical to @dest.
  *
- * Return value: A newly created #EDestination, identical to @dest.
+ * Returns: A newly created #EDestination, identical to @dest.
  */
 EDestination*
 e_destination_copy (const EDestination *dest)
@@ -272,7 +272,7 @@ nonempty (const gchar *s)
  *
  * Checks if @dest is blank.
  *
- * Return value: %TRUE if @dest is empty, %FALSE otherwise.
+ * Returns: %TRUE if @dest is empty, %FALSE otherwise.
  */
 gboolean
 e_destination_empty (const EDestination *dest)
@@ -301,7 +301,7 @@ e_destination_empty (const EDestination *dest)
  *
  * Checks if @a and @b are equal.
  *
- * Return value: %TRUE if the destinations are equal, %FALSE otherwise.
+ * Returns: %TRUE if the destinations are equal, %FALSE otherwise.
  **/
 gboolean
 e_destination_equal (const EDestination *a, const EDestination *b)
@@ -608,7 +608,7 @@ e_destination_from_contact (const EDestination *dest)
  * it was not explicitly specified by the user. This can be used
  * to hide it from some UI elements.
  *
- * Return value: %TRUE if destination is an auto recipient, %FALSE otherwise.
+ * Returns: %TRUE if destination is an auto recipient, %FALSE otherwise.
  **/
 gboolean
 e_destination_is_auto_recipient (const EDestination *dest)
@@ -643,7 +643,7 @@ e_destination_set_auto_recipient (EDestination *dest, gboolean value)
  *
  * Gets the contact @dest is pointing to, if any.
  *
- * Return value: An #EContact, or %NULL if none was set.
+ * Returns: An #EContact, or %NULL if none was set.
  **/
 EContact *
 e_destination_get_contact (const EDestination *dest)
@@ -659,7 +659,7 @@ e_destination_get_contact (const EDestination *dest)
  *
  * Gets the unique contact ID @dest is pointing to, if any.
  *
- * Return value: A unique contact ID, or %NULL if none was set.
+ * Returns: A unique contact ID, or %NULL if none was set.
  */
 const gchar *
 e_destination_get_contact_uid (const EDestination *dest)
@@ -676,7 +676,7 @@ e_destination_get_contact_uid (const EDestination *dest)
  * Gets the unique source ID @dest is pointing to, if any. The source
  * ID specifies which address book @dest's contact came from.
  *
- * Return value: A unique source ID, or %NULL if none was set.
+ * Returns: A unique source ID, or %NULL if none was set.
  */
 const gchar *
 e_destination_get_source_uid (const EDestination *dest)
@@ -693,7 +693,7 @@ e_destination_get_source_uid (const EDestination *dest)
  * Gets the index of the e-mail address of the contact that
  * @dest is pointing to, if any.
  *
- * Return value: The e-mail index, or -1 if none was set.
+ * Returns: The e-mail index, or -1 if none was set.
  **/
 gint
 e_destination_get_email_num (const EDestination *dest)
@@ -713,7 +713,7 @@ e_destination_get_email_num (const EDestination *dest)
  * Gets the full name of @dest's addressee, or if the addressee is
  * a contact list, the name the list was filed under.
  *
- * Return value: The full name of the addressee, or %NULL if none was set.
+ * Returns: The full name of the addressee, or %NULL if none was set.
  **/
 const gchar *
 e_destination_get_name (const EDestination *dest)
@@ -764,7 +764,7 @@ e_destination_get_name (const EDestination *dest)
  *
  * Check if @dest is to be ignored.
  *
- * Return value: #TRUE if this destination should be ignored, else #FALSE.
+ * Returns: #TRUE if this destination should be ignored, else #FALSE.
  */
 gboolean
 e_destination_is_ignored (const EDestination *dest)
@@ -791,7 +791,7 @@ e_destination_set_ignored (EDestination *dest, gboolean ignored)
  *
  * Gets the e-mail address of @dest's addressee.
  *
- * Return value: An e-mail address, or an empty string if none was set.
+ * Returns: An e-mail address, or an empty string if none was set.
  **/
 const gchar *
 e_destination_get_email (const EDestination *dest)
@@ -845,7 +845,7 @@ e_destination_get_email (const EDestination *dest)
  * Gets the formatted name and e-mail address, or in the case of
  * lists, the formatted list of e-mail addresses, from @dest.
  *
- * Return value: A formatted destination string, or %NULL if the destination was empty.
+ * Returns: A formatted destination string, or %NULL if the destination was empty.
  **/
 const gchar *
 e_destination_get_address (const EDestination *dest)
@@ -940,7 +940,7 @@ e_destination_set_raw (EDestination *dest, const gchar *raw)
  * Generates a textual representation of @dest, suitable for referring
  * to the destination during user interaction.
  *
- * Return value: A textual representation of the destination.
+ * Returns: A textual representation of the destination.
  **/
 const gchar *
 e_destination_get_textrep (const EDestination *dest, gboolean include_email)
@@ -983,7 +983,7 @@ e_destination_get_textrep (const EDestination *dest, gboolean include_email)
  *
  * Checks if @dest is a list of addresses.
  *
- * Return value: %TRUE if destination is a list, %FALSE if it is an individual.
+ * Returns: %TRUE if destination is a list, %FALSE if it is an individual.
  **/
 gboolean
 e_destination_is_evolution_list (const EDestination *dest)
@@ -1000,7 +1000,7 @@ e_destination_is_evolution_list (const EDestination *dest)
  * If @dest is a list, checks if the addresses in the list
  * should be presented to the user during interaction.
  *
- * Return value: %TRUE if addresses should be shown, %FALSE otherwise.
+ * Returns: %TRUE if addresses should be shown, %FALSE otherwise.
  **/
 gboolean
 e_destination_list_show_addresses (const EDestination *dest)
@@ -1020,7 +1020,7 @@ e_destination_list_show_addresses (const EDestination *dest)
  * If @dest is a list, gets the list of destinations. The list
  * and its elements belong to @dest, and should not be freed.
  *
- * Return value: A list of elements of type #EDestination, or %NULL.
+ * Returns: A list of elements of type #EDestination, or %NULL.
  **/
 const GList *
 e_destination_list_get_dests (const EDestination *dest)
@@ -1039,7 +1039,7 @@ e_destination_list_get_dests (const EDestination *dest)
  *
  * Check if @dest wants to get mail formatted as HTML.
  *
- * Return value: %TRUE if destination wants HTML, %FALSE if not.
+ * Returns: %TRUE if destination wants HTML, %FALSE if not.
  **/
 gboolean
 e_destination_get_html_mail_pref (const EDestination *dest)
@@ -1083,7 +1083,7 @@ e_destination_set_html_mail_pref (EDestination *dest, gboolean flag)
  * Generates a joint text representation of all the #EDestination
  * elements in @destv.
  *
- * Return value: The text representation of @destv.
+ * Returns: The text representation of @destv.
  **/
 gchar *
 e_destination_get_textrepv (EDestination **destv)
@@ -1127,7 +1127,7 @@ e_destination_get_textrepv (EDestination **destv)
  *
  * Generates an XML tree from @dest.
  *
- * Return value: Pointer to the root node of the XML tree.
+ * Returns: Pointer to the root node of the XML tree.
  **/
 static xmlNodePtr
 e_destination_xml_encode (const EDestination *dest)
@@ -1210,7 +1210,7 @@ e_destination_xml_encode (const EDestination *dest)
  * Initializes @dest based on the information encoded in the
  * XML tree under @node.
  *
- * Return value: %TRUE if the XML tree was well-formed, %FALSE otherwise.
+ * Returns: %TRUE if the XML tree was well-formed, %FALSE otherwise.
  **/
 static gboolean
 e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
@@ -1387,7 +1387,7 @@ null_terminate_and_remove_extra_whitespace (xmlChar *xml_in, gint size)
  *
  * Exports a destination to an XML document.
  *
- * Return value: An XML string, allocated with g_malloc.
+ * Returns: An XML string, allocated with g_malloc.
  **/
 gchar *
 e_destination_export (const EDestination *dest)
@@ -1422,7 +1422,7 @@ e_destination_export (const EDestination *dest)
  *
  * Creates an #EDestination from an XML document.
  *
- * Return value: An #EDestination, or %NULL if the document was not well-formed.
+ * Returns: An #EDestination, or %NULL if the document was not well-formed.
  **/
 EDestination *
 e_destination_import (const gchar *str)
@@ -1452,7 +1452,7 @@ e_destination_import (const gchar *str)
  *
  * Exports multiple #EDestination elements to a single XML document.
  *
- * Return value: An XML string, allocated with g_malloc.
+ * Returns: An XML string, allocated with g_malloc.
  **/
 gchar *
 e_destination_exportv (EDestination **destv)
@@ -1494,7 +1494,7 @@ e_destination_exportv (EDestination **destv)
  * Creates an array of pointers to #EDestination elements
  * from an XML document.
  *
- * Return value: A %NULL-terminated array of pointers to #EDestination elements.
+ * Returns: A %NULL-terminated array of pointers to #EDestination elements.
  **/
 EDestination **
 e_destination_importv (const gchar *str)

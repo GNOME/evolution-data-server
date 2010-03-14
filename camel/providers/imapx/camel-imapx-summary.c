@@ -186,7 +186,7 @@ uid_compare (gconstpointer va, gconstpointer vb)
  * This will create a new CamelIMAPXSummary object and read in the
  * summary data from disk, if it exists.
  *
- * Return value: A new CamelIMAPXSummary object.
+ * Returns: A new CamelIMAPXSummary object.
  **/
 CamelFolderSummary *
 camel_imapx_summary_new (struct _CamelFolder *folder, const gchar *filename)

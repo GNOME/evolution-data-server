@@ -151,7 +151,7 @@ camel_imap_search_get_type (void)
 /**
  * camel_imap_search_new:
  *
- * Return value: A new CamelImapSearch widget.
+ * Returns: A new CamelImapSearch widget.
  **/
 CamelFolderSearch *
 camel_imap_search_new (const gchar *cachedir)

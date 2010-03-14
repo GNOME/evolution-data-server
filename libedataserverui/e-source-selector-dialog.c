@@ -214,7 +214,7 @@ setup_dialog (GtkWindow *parent, ESourceSelectorDialog *dialog, ESourceList *sou
  *
  * Create a new source selector dialog for the given @list.
  *
- * Return value: The newly created widget.
+ * Returns: The newly created widget.
  */
 GtkWidget *
 e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list)
@@ -234,7 +234,7 @@ e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list)
  *
  * Selects default source in the dialog.
  *
- * Return value: Whether found any default source.
+ * Returns: Whether found any default source.
  *
  * Since: 2.28
  **/
@@ -282,7 +282,7 @@ e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog)
  *
  * Peek the currently selected source in the given @dialog.
  *
- * Return value: the selected ESource.
+ * Returns: the selected ESource.
  */
 ESource *
 e_source_selector_dialog_peek_primary_selection (ESourceSelectorDialog *dialog)

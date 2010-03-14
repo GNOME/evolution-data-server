@@ -150,7 +150,7 @@ nntp_remove	(CamelAddress *a, gint index)
  *
  * Create a new CamelNNTPAddress object.
  *
- * Return value: A new CamelNNTPAddress object.
+ * Returns: A new CamelNNTPAddress object.
  **/
 CamelNNTPAddress *
 camel_nntp_address_new (void)
@@ -166,7 +166,7 @@ camel_nntp_address_new (void)
  *
  * Add a new nntp address to the address object.  Duplicates are not added twice.
  *
- * Return value: Index of added entry, or existing matching entry.
+ * Returns: Index of added entry, or existing matching entry.
  **/
 gint
 camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
@@ -193,7 +193,7 @@ camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
  *
  * Get the address at @index.
  *
- * Return value: TRUE if such an address exists, or FALSE otherwise.
+ * Returns: TRUE if such an address exists, or FALSE otherwise.
  **/
 gboolean
 camel_nntp_address_get (const CamelNNTPAddress *a, gint index, const gchar **namep)

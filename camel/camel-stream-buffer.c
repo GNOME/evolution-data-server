@@ -211,7 +211,7 @@ camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
  * If @buf is NULL, then allocate and manage @size bytes
  * for all buffering.
  *
- * Return value: A new stream with buffering applied.
+ * Returns: A new stream with buffering applied.
  **/
 CamelStream *
 camel_stream_buffer_new_with_vbuf (CamelStream *stream, CamelStreamBufferMode mode, gchar *buf, guint32 size)

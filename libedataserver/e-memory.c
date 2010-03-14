@@ -123,7 +123,7 @@ typedef struct _EMemChunk {
  * e_memchunks are effectively the same as gmemchunks, only faster (much), and
  * they use less memory overhead for housekeeping.
  *
- * Return value: The new header.
+ * Returns: The new header.
  **/
 MemChunk *e_memchunk_new(gint atomcount, gint atomsize)
 {
@@ -397,7 +397,7 @@ static GStaticMutex mempool_mutex = G_STATIC_MUTEX_INIT;
  * However, each allocation cannot be freed individually, only all
  * or nothing.
  *
- * Return value:
+ * Returns:
  **/
 MemPool *e_mempool_new(gint blocksize, gint threshold, EMemPoolFlags flags)
 {
@@ -583,7 +583,7 @@ struct _e_strvunpacked {
  * change as arrays of this size suffer significant performance
  * penalties when looking up strings with high indices.
  *
- * Return value:
+ * Returns:
  **/
 struct _EStrv *
 e_strv_new(gint size)
@@ -640,7 +640,7 @@ strv_unpack(struct _EStrv *strv)
  * The memory used by the original @strv is not freed until
  * the new strv is packed, or freed itself.
  *
- * Return value: A new EStrv if the strv has already
+ * Returns: A new EStrv if the strv has already
  * been packed, otherwise @strv.
  **/
 struct _EStrv *
@@ -673,7 +673,7 @@ e_strv_set_ref(struct _EStrv *strv, gint index, gchar *str)
  * is not copied until the strv is packed, and not at
  * all if the index is overwritten.
  *
- * Return value: @strv if already unpacked, otherwise an packed
+ * Returns: @strv if already unpacked, otherwise an packed
  * EStrv.
  **/
 struct _EStrv *
@@ -710,7 +710,7 @@ e_strv_set_ref_free(struct _EStrv *strv, gint index, gchar *str)
  * If @strv has been packed, then it is unpacked ready
  * for more inserts, and should be packed again once finished with.
  *
- * Return value: A new EStrv if the strv has already
+ * Returns: A new EStrv if the strv has already
  * been packed, otherwise @strv.
  **/
 struct _EStrv *
@@ -745,7 +745,7 @@ e_strv_set(struct _EStrv *strv, gint index, const gchar *str)
  * All strings are packed into a single allocated block, separated
  * by single \0 characters, together with a count byte.
  *
- * Return value:
+ * Returns:
  **/
 struct _EStrv *
 e_strv_pack(struct _EStrv *strv)
@@ -789,7 +789,7 @@ e_strv_pack(struct _EStrv *strv)
  * identically on both packed and unpacked strv's, although
  * may be much slower on a packed strv.
  *
- * Return value:
+ * Returns:
  **/
 const gchar *
 e_strv_get(struct _EStrv *strv, gint index)
@@ -898,7 +898,7 @@ struct _EPoolv {
  * we should probably in the future ref count the strings contained in
  * the hash table, but for now let's not.
  *
- * Return value: new pooled string vector
+ * Returns: new pooled string vector
  **/
 EPoolv *
 e_poolv_new(guint size)
@@ -952,7 +952,7 @@ e_poolv_new(guint size)
  *
  * Copy the contents of a pooled string vector
  *
- * Return value: @dest, which may be re-allocated if the strings
+ * Returns: @dest, which may be re-allocated if the strings
  * are different lengths.
  **/
 EPoolv *
@@ -1044,7 +1044,7 @@ poolv_profile_update (void)
  * referencing the string, freeit should be TRUE.  Otherwise, this
  * will duplicate the string if it is not found in the pool.
  *
- * Return value: @poolv
+ * Returns: @poolv
  **/
 EPoolv *
 e_poolv_set (EPoolv *poolv, gint index, gchar *str, gint freeit)
@@ -1136,7 +1136,7 @@ e_poolv_set (EPoolv *poolv, gint index, gchar *str, gint freeit)
  * Since the pool is never freed, this string does not need to be
  * duplicated, but should not be modified.
  *
- * Return value: string at that index.
+ * Returns: string at that index.
  **/
 const gchar *
 e_poolv_get(EPoolv *poolv, gint index)

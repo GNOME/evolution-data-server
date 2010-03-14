@@ -296,7 +296,7 @@ struct _EMCache {
  * Setup a new timeout cache.  @nodesize is the size of nodes in the
  * cache, and @nodefree will be called to free YOUR content.
  *
- * Return value:
+ * Returns:
  **/
 EMCache *
 em_cache_new(time_t timeout, gsize nodesize, GFreeFunc nodefree)
@@ -336,7 +336,7 @@ em_cache_destroy(EMCache *emc)
  * Lookup a cache node.  once you're finished with it, you need to
  * unref it.
  *
- * Return value:
+ * Returns:
  **/
 EMCacheNode *
 em_cache_lookup(EMCache *emc, const gchar *key)
@@ -366,7 +366,7 @@ em_cache_lookup(EMCache *emc, const gchar *key)
  * Create a new key'd cache node.  The node will not be added to the
  * cache until you insert it.
  *
- * Return value:
+ * Returns:
  **/
 EMCacheNode *
 em_cache_node_new(EMCache *emc, const gchar *key)

@@ -591,7 +591,7 @@ thread_summary(CamelFolderThread *thread, GPtrArray *summary)
  *
  * This function is probably to be removed soon.
  *
- * Return value: A CamelFolderThread contianing a tree of CamelFolderThreadNode's
+ * Returns: A CamelFolderThread contianing a tree of CamelFolderThreadNode's
  * which represent the threaded structure of the messages.
  **/
 CamelFolderThread *
@@ -728,7 +728,7 @@ camel_folder_thread_messages_unref(CamelFolderThread *thread)
  * life of the CamelFolderThread created by this function, and it is upto the
  * caller to ensure this.
  *
- * Return value: A CamelFolderThread contianing a tree of CamelFolderThreadNode's
+ * Returns: A CamelFolderThread contianing a tree of CamelFolderThreadNode's
  * which represent the threaded structure of the messages.
  **/
 CamelFolderThread *

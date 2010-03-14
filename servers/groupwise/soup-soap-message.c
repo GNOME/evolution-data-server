@@ -754,7 +754,7 @@ soup_soap_message_persist (SoupSoapMessage *msg)
  * Returns the namespace prefix for @ns_uri (or an empty string if
  * @ns_uri is set to the default namespace)
  *
- * Return value: The namespace prefix, or %NULL if no namespace exists
+ * Returns: The namespace prefix, or %NULL if no namespace exists
  * for the URI given.
  */
 const gchar *
@@ -785,7 +785,7 @@ soup_soap_message_get_namespace_prefix (SoupSoapMessage *msg, const gchar *ns_ur
  * Returns the internal XML representation tree of the
  * #SoupSoapMessage pointed to by @msg.
  *
- * Return value: the #xmlDocPtr representing the SOAP message.
+ * Returns: the #xmlDocPtr representing the SOAP message.
  */
 xmlDocPtr
 soup_soap_message_get_xml_doc (SoupSoapMessage *msg)
@@ -804,7 +804,7 @@ soup_soap_message_get_xml_doc (SoupSoapMessage *msg)
  *
  * Parses the response returned by the server.
  *
- * Return value: a #SoupSoapResponse representing the response from
+ * Returns: a #SoupSoapResponse representing the response from
  * the server, or %NULL if there was an error.
  */
 SoupSoapResponse *

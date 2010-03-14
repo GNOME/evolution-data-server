@@ -444,7 +444,7 @@ e_data_cal_view_finalize (GObject *object)
  *
  * Get the expression used for the given query.
  *
- * Return value: the query expression used to search.
+ * Returns: the query expression used to search.
  */
 const gchar *
 e_data_cal_view_get_text (EDataCalView *query)
@@ -460,7 +460,7 @@ e_data_cal_view_get_text (EDataCalView *query)
  *
  * Get the #ECalBackendSExp object used for the given query.
  *
- * Return value: The expression object used to search.
+ * Returns: The expression object used to search.
  */
 ECalBackendSExp *
 e_data_cal_view_get_object_sexp (EDataCalView *query)
@@ -478,7 +478,7 @@ e_data_cal_view_get_object_sexp (EDataCalView *query)
  * Compares the given @object to the regular expression used for the
  * given query.
  *
- * Return value: TRUE if the object matches the expression, FALSE if not.
+ * Returns: TRUE if the object matches the expression, FALSE if not.
  */
 gboolean
 e_data_cal_view_object_matches (EDataCalView *query, const gchar *object)
@@ -500,7 +500,7 @@ e_data_cal_view_object_matches (EDataCalView *query, const gchar *object)
  *
  * Gets the list of objects already matched for the given query.
  *
- * Return value: A list of matched objects.
+ * Returns: A list of matched objects.
  */
 GList *
 e_data_cal_view_get_matched_objects (EDataCalView *query)
@@ -516,7 +516,7 @@ e_data_cal_view_get_matched_objects (EDataCalView *query)
  *
  * Checks whether the given query has already been started.
  *
- * Return value: TRUE if the query has already been started, FALSE otherwise.
+ * Returns: TRUE if the query has already been started, FALSE otherwise.
  */
 gboolean
 e_data_cal_view_is_started (EDataCalView *view)
@@ -535,7 +535,7 @@ e_data_cal_view_is_started (EDataCalView *view)
  * changes will be sent. In fact, even after done, notifications will still be sent
  * if there are changes in the objects matching the query search expression.
  *
- * Return value: TRUE if the query is done, FALSE if still in progress.
+ * Returns: TRUE if the query is done, FALSE if still in progress.
  */
 gboolean
 e_data_cal_view_is_done (EDataCalView *query)
@@ -556,7 +556,7 @@ e_data_cal_view_is_done (EDataCalView *query)
  * Gets the status code obtained when the initial matching of objects was done
  * for the given query.
  *
- * Return value: The query status.
+ * Returns: The query status.
  */
 EDataCalCallStatus
 e_data_cal_view_get_done_status (EDataCalView *query)

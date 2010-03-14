@@ -81,7 +81,7 @@ static gchar *imap_command_strdup_printf (CamelImapStore *store,
  * callers can grab and release it themselves if they need to run
  * multiple commands atomically.)
  *
- * Return value: %NULL if an error occurred (in which case @ex will
+ * Returns: %NULL if an error occurred (in which case @ex will
  * be set). Otherwise, a CamelImapResponse describing the server's
  * response, which the caller must free with camel_imap_response_free().
  **/
@@ -147,7 +147,7 @@ camel_imap_command (CamelImapStore *store, CamelFolder *folder,
  * recursive, so callers can grab and release it themselves if they
  * need to run multiple commands atomically.)
  *
- * Return value: %TRUE if the command was sent successfully, %FALSE if
+ * Returns: %TRUE if the command was sent successfully, %FALSE if
  * an error occurred (in which case @ex will be set).
  **/
 gboolean
@@ -251,7 +251,7 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
  *
  * This function assumes you have an exclusive lock on the imap stream.
  *
- * Return value: as for camel_imap_command(). On failure, the store's
+ * Returns: as for camel_imap_command(). On failure, the store's
  * connect_lock will be released.
  **/
 CamelImapResponse *
@@ -297,7 +297,7 @@ camel_imap_command_continuation (CamelImapStore *store, const gchar *cmd,
  * @store into *@response. The caller must free the string when it is
  * done with it.
  *
- * Return value: One of %CAMEL_IMAP_RESPONSE_CONTINUATION,
+ * Returns: One of %CAMEL_IMAP_RESPONSE_CONTINUATION,
  * %CAMEL_IMAP_RESPONSE_UNTAGGED, %CAMEL_IMAP_RESPONSE_TAGGED, or
  * %CAMEL_IMAP_RESPONSE_ERROR. If either of the last two, @store's
  * command lock will be unlocked.
@@ -679,7 +679,7 @@ camel_imap_response_free_without_processing (CamelImapStore *store,
  * and return %NULL. Either way, @response will be freed and the
  * store's connect_lock released.
  *
- * Return value: the desired response string, which the caller must free.
+ * Returns: the desired response string, which the caller must free.
  **/
 gchar *
 camel_imap_response_extract (CamelImapStore *store,
@@ -728,7 +728,7 @@ camel_imap_response_extract (CamelImapStore *store,
  * response, the function will set @ex, release @store's connect_lock,
  * and return %NULL. Either way, @response will be freed.
  *
- * Return value: the desired response string, which the caller must free.
+ * Returns: the desired response string, which the caller must free.
  **/
 gchar *
 camel_imap_response_extract_continuation (CamelImapStore *store,

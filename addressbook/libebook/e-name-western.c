@@ -929,7 +929,7 @@ e_name_western_fixup (ENameWestern *name, ENameWesternIdxs *idxs)
  * Parses @full_name and returns an #ENameWestern struct filled with
  * the component parts of the name.
  *
- * Return value: A new #ENameWestern struct.
+ * Returns: A new #ENameWestern struct.
  **/
 ENameWestern *
 e_name_western_parse (const gchar *full_name)

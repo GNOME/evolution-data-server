@@ -170,7 +170,7 @@ e_file_cache_init (EFileCache *cache)
  * Creates a new #EFileCache object, which implements a cache of
  * objects, very useful for remote backends.
  *
- * Return value: The newly created object.
+ * Returns: The newly created object.
  */
 EFileCache *
 e_file_cache_new (const gchar *filename)
@@ -494,7 +494,7 @@ e_file_cache_thaw_changes (EFileCache *cache)
  *
  * Gets the name of the file where the cache is being stored.
  *
- * Return value: The name of the cache.
+ * Returns: The name of the cache.
  */
 const gchar *
 e_file_cache_get_filename (EFileCache *cache)

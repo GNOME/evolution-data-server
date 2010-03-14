@@ -293,7 +293,7 @@ add_to_list (gpointer key, gpointer value, gpointer user_data)
  * is %TRUE, it will first load in all available providers that haven't
  * yet been loaded.
  *
- * Return value: a GList of providers, which the caller must free.
+ * Returns: a GList of providers, which the caller must free.
  **/
 GList *
 camel_provider_list(gboolean load)
@@ -341,7 +341,7 @@ camel_provider_list(gboolean load)
  * This returns the CamelProvider that would be used to handle
  * @url_string, loading it in from disk if necessary.
  *
- * Return value: the provider, or %NULL, in which case @ex will be set.
+ * Returns: the provider, or %NULL, in which case @ex will be set.
  **/
 CamelProvider *
 camel_provider_get(const gchar *url_string, CamelException *ex)

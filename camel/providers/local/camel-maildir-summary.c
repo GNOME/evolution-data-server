@@ -158,7 +158,7 @@ camel_maildir_summary_finalise(CamelObject *obj)
  *
  * Create a new CamelMaildirSummary object.
  *
- * Return value: A new #CamelMaildirSummary object.
+ * Returns: A new #CamelMaildirSummary object.
  **/
 CamelMaildirSummary
 *camel_maildir_summary_new(struct _CamelFolder *folder, const gchar *filename, const gchar *maildirdir, CamelIndex *index)

@@ -659,7 +659,7 @@ parse (EVCard *evc, const gchar *str)
  *
  * Escapes a string according to RFC2426, section 5.
  *
- * Return value: A newly allocated, escaped string.
+ * Returns: A newly allocated, escaped string.
  **/
 gchar *
 e_vcard_escape_string (const gchar *s)
@@ -704,7 +704,7 @@ e_vcard_escape_string (const gchar *s)
  *
  * Unescapes a string according to RFC2426, section 5.
  *
- * Return value: A newly allocated, unescaped string.
+ * Returns: A newly allocated, unescaped string.
  **/
 gchar *
 e_vcard_unescape_string (const gchar *s)
@@ -757,7 +757,7 @@ e_vcard_construct (EVCard *evc, const gchar *str)
  *
  * Creates a new, blank #EVCard.
  *
- * Return value: A new, blank #EVCard.
+ * Returns: A new, blank #EVCard.
  **/
 EVCard *
 e_vcard_new (void)
@@ -772,7 +772,7 @@ e_vcard_new (void)
  * Creates a new #EVCard from the passed-in string
  * representation.
  *
- * Return value: A new #EVCard.
+ * Returns: A new #EVCard.
  **/
 EVCard *
 e_vcard_new_from_string (const gchar *str)
@@ -943,7 +943,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
  * Exports @evc to a string representation, specified
  * by the @format argument.
  *
- * Return value: A newly allocated string representing the vcard.
+ * Returns: A newly allocated string representing the vcard.
  **/
 gchar *
 e_vcard_to_string (EVCard *evc, EVCardFormat format)
@@ -1015,7 +1015,7 @@ e_vcard_dump_structure (EVCard *evc)
  * Creates a new #EVCardAttribute with the specified group and
  * attribute names.
  *
- * Return value: A new #EVCardAttribute.
+ * Returns: A new #EVCardAttribute.
  **/
 EVCardAttribute*
 e_vcard_attribute_new (const gchar *attr_group, const gchar *attr_name)
@@ -1057,7 +1057,7 @@ e_vcard_attribute_free (EVCardAttribute *attr)
  *
  * Makes a copy of @attr.
  *
- * Return value: A new #EVCardAttribute identical to @attr.
+ * Returns: A new #EVCardAttribute identical to @attr.
  **/
 EVCardAttribute*
 e_vcard_attribute_copy (EVCardAttribute *attr)
@@ -1381,7 +1381,7 @@ e_vcard_attribute_remove_params (EVCardAttribute *attr)
  *
  * Creates a new parameter named @name.
  *
- * Return value: A new #EVCardAttributeParam.
+ * Returns: A new #EVCardAttributeParam.
  **/
 EVCardAttributeParam*
 e_vcard_attribute_param_new (const gchar *name)
@@ -1417,7 +1417,7 @@ e_vcard_attribute_param_free (EVCardAttributeParam *param)
  *
  * Makes a copy of @param.
  *
- * Return value: a new #EVCardAttributeParam identical to @param.
+ * Returns: a new #EVCardAttributeParam identical to @param.
  **/
 EVCardAttributeParam*
 e_vcard_attribute_param_copy (EVCardAttributeParam *param)
@@ -1688,7 +1688,7 @@ e_vcard_attribute_remove_param_value (EVCardAttribute *attr, const gchar *param_
  * Gets the list of attributes from @evcard. The list and its
  * contents are owned by @evcard, and must not be freed.
  *
- * Return value: A list of attributes of type #EVCardAttribute.
+ * Returns: A list of attributes of type #EVCardAttribute.
  **/
 GList*
 e_vcard_get_attributes (EVCard *evcard)
@@ -1707,7 +1707,7 @@ e_vcard_get_attributes (EVCard *evcard)
  * @evcard and should not be freed. If the attribute does not exist, #NULL is
  * returned.
  *
- * Return value: An #EVCardAttribute if found, or #NULL.
+ * Returns: An #EVCardAttribute if found, or #NULL.
  **/
 EVCardAttribute *
 e_vcard_get_attribute (EVCard     *evc,
@@ -1735,7 +1735,7 @@ e_vcard_get_attribute (EVCard     *evc,
  *
  * Gets the group name of @attr.
  *
- * Return value: The attribute's group name.
+ * Returns: The attribute's group name.
  **/
 const gchar *
 e_vcard_attribute_get_group (EVCardAttribute *attr)
@@ -1751,7 +1751,7 @@ e_vcard_attribute_get_group (EVCardAttribute *attr)
  *
  * Gets the name of @attr.
  *
- * Return value: The attribute's name.
+ * Returns: The attribute's name.
  **/
 const gchar *
 e_vcard_attribute_get_name (EVCardAttribute *attr)
@@ -1768,7 +1768,7 @@ e_vcard_attribute_get_name (EVCardAttribute *attr)
  * Gets the list of values from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
- * Return value: A list of string values.
+ * Returns: A list of string values.
  **/
 GList*
 e_vcard_attribute_get_values (EVCardAttribute *attr)
@@ -1786,7 +1786,7 @@ e_vcard_attribute_get_values (EVCardAttribute *attr)
  * necessary. The list and its contents are owned by @attr,
  * and must not be freed.
  *
- * Return value: A list of values of type #GString.
+ * Returns: A list of values of type #GString.
  **/
 GList*
 e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
@@ -1827,7 +1827,7 @@ e_vcard_attribute_get_values_decoded (EVCardAttribute *attr)
  *
  * Checks if @attr has a single value.
  *
- * Return value: %TRUE if the attribute has exactly one value, %FALSE otherwise.
+ * Returns: %TRUE if the attribute has exactly one value, %FALSE otherwise.
  **/
 gboolean
 e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
@@ -1847,7 +1847,7 @@ e_vcard_attribute_is_single_valued (EVCardAttribute *attr)
  *
  * Gets the value of a single-valued #EVCardAttribute, @attr.
  *
- * Return value: A newly allocated string representing the value.
+ * Returns: A newly allocated string representing the value.
  **/
 gchar *
 e_vcard_attribute_get_value (EVCardAttribute *attr)
@@ -1873,7 +1873,7 @@ e_vcard_attribute_get_value (EVCardAttribute *attr)
  *
  * Note: this function seems currently to be unused. Could be removed.
  *
- * Return value: A newly allocated #GString representing the value.
+ * Returns: A newly allocated #GString representing the value.
  **/
 GString*
 e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
@@ -1901,7 +1901,7 @@ e_vcard_attribute_get_value_decoded (EVCardAttribute *attr)
  *
  * Checks if @attr has an #EVCardAttributeParam of the specified type.
  *
- * Return value: %TRUE if such a parameter exists, %FALSE otherwise.
+ * Returns: %TRUE if such a parameter exists, %FALSE otherwise.
  **/
 gboolean
 e_vcard_attribute_has_type (EVCardAttribute *attr, const gchar *typestr)
@@ -1938,7 +1938,7 @@ e_vcard_attribute_has_type (EVCardAttribute *attr, const gchar *typestr)
  * Gets the list of parameters from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
- * Return value: A list of elements of type #EVCardAttributeParam.
+ * Returns: A list of elements of type #EVCardAttributeParam.
  **/
 GList*
 e_vcard_attribute_get_params (EVCardAttribute *attr)
@@ -1956,7 +1956,7 @@ e_vcard_attribute_get_params (EVCardAttribute *attr)
  * Gets the list of values for the paramater @name from @attr. The list and its
  * contents are owned by @attr, and must not be freed.
  *
- * Return value: A list of string elements representing the parameter's values.
+ * Returns: A list of string elements representing the parameter's values.
  **/
 GList *
 e_vcard_attribute_get_param (EVCardAttribute *attr, const gchar *name)
@@ -1984,7 +1984,7 @@ e_vcard_attribute_get_param (EVCardAttribute *attr, const gchar *name)
  *
  * Gets the name of @param.
  *
- * Return value: The name of the parameter.
+ * Returns: The name of the parameter.
  **/
 const gchar *
 e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
@@ -2001,7 +2001,7 @@ e_vcard_attribute_param_get_name (EVCardAttributeParam *param)
  * Gets the list of values from @param. The list and its
  * contents are owned by @param, and must not be freed.
  *
- * Return value: A list of string elements representing the parameter's values.
+ * Returns: A list of string elements representing the parameter's values.
  **/
 GList*
 e_vcard_attribute_param_get_values (EVCardAttributeParam *param)

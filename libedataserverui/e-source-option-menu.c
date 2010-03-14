@@ -271,7 +271,7 @@ e_source_option_menu_init (ESourceOptionMenu *source_option_menu)
  * Creates a new #ESourceOptionMenu widget that lets the user pick
  * an #ESource from the provided #ESourceList.
  *
- * Return value: A new #ESourceOptionMenu.
+ * Returns: A new #ESourceOptionMenu.
  **/
 GtkWidget *
 e_source_option_menu_new (ESourceList *source_list)
@@ -295,7 +295,7 @@ e_source_option_menu_new (ESourceList *source_list)
  * e_source_option_menu_peek_selected:
  * @menu: an #ESourceOptionMenu
  *
- * Return value: The selected #ESource, or %NULL if none was selected.
+ * Returns: The selected #ESource, or %NULL if none was selected.
  **/
 ESource *
 e_source_option_menu_peek_selected  (ESourceOptionMenu *menu)

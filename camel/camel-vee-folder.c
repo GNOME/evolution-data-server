@@ -122,7 +122,7 @@ camel_vee_folder_construct (CamelVeeFolder *vf, CamelStore *parent_store, const 
  *
  * Create a new CamelVeeFolder object.
  *
- * Return value: A new CamelVeeFolder widget.
+ * Returns: A new CamelVeeFolder widget.
  **/
 CamelFolder *
 camel_vee_folder_new(CamelStore *parent_store, const gchar *full, guint32 flags)
@@ -415,7 +415,7 @@ camel_vee_folder_hash_folder(CamelFolder *folder, gchar buffer[8])
  *
  * Find the real folder (and uid)
  *
- * Return value:
+ * Returns:
  **/
 CamelFolder *
 camel_vee_folder_get_location(CamelVeeFolder *vf, const CamelVeeMessageInfo *vinfo, gchar **realuid)

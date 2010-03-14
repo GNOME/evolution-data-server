@@ -58,7 +58,7 @@ static ESExpResult *func_is_completed (ESExp *esexp, gint argc, ESExpResult **ar
  *
  * Processes the (time-now) sexp expression.
  *
- * Return value: The result of the function.
+ * Returns: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_now (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
@@ -89,7 +89,7 @@ e_cal_backend_sexp_func_time_now (ESExp *esexp, gint argc, ESExpResult **argv, g
  *
  * Constructs a time_t value for the specified date.
  *
- * Return value: The result of the function.
+ * Returns: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_make_time (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
@@ -149,7 +149,7 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp, gint argc, ESExpResult **argv, 
  * FIXME: TIMEZONES - need to use a timezone or daylight saving changes will
  * make the result incorrect.
  *
- * Return value: The result of the function.
+ * Returns: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_add_day (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
@@ -200,7 +200,7 @@ e_cal_backend_sexp_func_time_add_day (ESExp *esexp, gint argc, ESExpResult **arg
  *
  * FIXME: TIMEZONES - this uses the current Unix timezone.
  *
- * Return value: The result of the function.
+ * Returns: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
@@ -242,7 +242,7 @@ e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **a
  *
  * FIXME: TIMEZONES - this uses the current Unix timezone.
  *
- * Return value: The result of the function.
+ * Returns: The result of the function.
  */
 ESExpResult *
 e_cal_backend_sexp_func_time_day_end (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
@@ -1280,7 +1280,7 @@ static struct {
  *
  * Matches the given ECalComponent against the expression.
  *
- * Return value: TRUE if the component matched the expression, FALSE if not.
+ * Returns: TRUE if the component matched the expression, FALSE if not.
  */
 gboolean
 e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalBackend *backend)
@@ -1320,7 +1320,7 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
  *
  * Match an iCalendar expression against the expression.
  *
- * Return value: TRUE if the object matches the expression, FALSE if not.
+ * Returns: TRUE if the object matches the expression, FALSE if not.
  */
 gboolean
 e_cal_backend_sexp_match_object (ECalBackendSExp *sexp, const gchar *object, ECalBackend *backend)
@@ -1351,7 +1351,7 @@ e_cal_backend_sexp_match_object (ECalBackendSExp *sexp, const gchar *object, ECa
  *
  * Creates a new #EXCalBackendSExp object.
  *
- * Return value: The newly created ECalBackendSExp object.
+ * Returns: The newly created ECalBackendSExp object.
  */
 ECalBackendSExp *
 e_cal_backend_sexp_new (const gchar *text)
@@ -1390,7 +1390,7 @@ e_cal_backend_sexp_new (const gchar *text)
  *
  * Retrieve the text expression for the given ECalBackendSExp object.
  *
- * Return value: The text expression.
+ * Returns: The text expression.
  */
 const gchar *
 e_cal_backend_sexp_text (ECalBackendSExp *sexp)

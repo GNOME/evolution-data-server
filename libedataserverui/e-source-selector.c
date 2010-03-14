@@ -1322,7 +1322,7 @@ e_source_selector_init (ESourceSelector *selector)
  * Create a new view for @list.  The view will update automatically when @list
  * changes.
  *
- * Return value: The newly created widget.
+ * Returns: The newly created widget.
  **/
 GtkWidget *
 e_source_selector_new (ESourceList *list)
@@ -1358,7 +1358,7 @@ e_source_selector_get_source_list (ESourceSelector *selector)
  * Get the list of selected sources, i.e. those that were enabled through the
  * corresponding checkboxes in the tree.
  *
- * Return value: A list of the ESources currently selected.  The sources will
+ * Returns: A list of the ESources currently selected.  The sources will
  * be in the same order as they appear on the screen, and the list should be
  * freed using e_source_selector_free_selection().
  **/
@@ -1399,7 +1399,7 @@ e_source_selector_get_selection (ESourceSelector *selector)
  *
  * Gets the primary source group associated with the selector.
  *
- * Return value: primary_source_group if selector is valid, NULL otherwise.
+ * Returns: primary_source_group if selector is valid, NULL otherwise.
  **/
 ESourceGroup *
 e_source_selector_get_primary_source_group (ESourceSelector *selector)
@@ -1457,7 +1457,7 @@ e_source_selector_show_selection (ESourceSelector *selector,
  *
  * Check whether the checkboxes in the ESourceSelector are being shown or not.
  *
- * Return value: %TRUE if the checkboxes are shown, %FALSE otherwise.
+ * Returns: %TRUE if the checkboxes are shown, %FALSE otherwise.
  **/
 gboolean
 e_source_selector_selection_shown (ESourceSelector *selector)
@@ -1635,7 +1635,7 @@ e_source_selector_select_exclusive (ESourceSelector *selector,
  *
  * Check whether @source is selected in @selector.
  *
- * Return value: %TRUE if @source is currently selected, %FALSE otherwise.
+ * Returns: %TRUE if @source is currently selected, %FALSE otherwise.
  **/
 gboolean
 e_source_selector_source_is_selected (ESourceSelector *selector,
@@ -1720,7 +1720,7 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
  * to the "normal" selection, which is the set of source whose checkboxes are
  * checked).
  *
- * Return value: The selected source.
+ * Returns: The selected source.
  **/
 ESource *
 e_source_selector_peek_primary_selection (ESourceSelector *selector)

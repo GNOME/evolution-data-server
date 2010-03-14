@@ -121,7 +121,7 @@ camel_mh_summary_finalise(CamelObject *obj)
  *
  * Create a new CamelMhSummary object.
  *
- * Return value: A new #CamelMhSummary object.
+ * Returns: A new #CamelMhSummary object.
  **/
 CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *folder, const gchar *filename, const gchar *mhdir, CamelIndex *index)
 {

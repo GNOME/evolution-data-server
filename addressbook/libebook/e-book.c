@@ -328,7 +328,7 @@ auth_required_cb (DBusGProxy *proxy, EBook *book)
  *
  * Adds @contact to @book.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
 e_book_add_contact (EBook           *book,
@@ -384,7 +384,7 @@ add_contact_reply (DBusGProxy *proxy, gchar *uid, GError *error, gpointer user_d
  *
  * Adds @contact to @book without blocking.
  *
- * Return value: %TRUE if the operation was started, %FALSE otherwise.
+ * Returns: %TRUE if the operation was started, %FALSE otherwise.
  **/
 gboolean
 e_book_async_add_contact (EBook                 *book,
@@ -422,7 +422,7 @@ e_book_async_add_contact (EBook                 *book,
  * Applies the changes made to @contact to the stored version in
  * @book.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_commit_contact (EBook           *book,
@@ -467,7 +467,7 @@ modify_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * Applies the changes made to @contact to the stored version in
  * @book without blocking.
  *
- * Return value: %TRUE if the operation was started, %FALSE otherwise.
+ * Returns: %TRUE if the operation was started, %FALSE otherwise.
  **/
 guint
 e_book_async_commit_contact (EBook                 *book,
@@ -507,7 +507,7 @@ e_book_async_commit_contact (EBook                 *book,
  * to allocated strings, and both the #GList and the strings
  * must be freed by the caller.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
 e_book_get_required_fields  (EBook            *book,
@@ -563,7 +563,7 @@ get_required_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpoi
  * Gets a list of fields that are required to be filled in for
  * all contacts in this @book. This function does not block.
  *
- * Return value: %TRUE if the operation was started, %FALSE otherwise.
+ * Returns: %TRUE if the operation was started, %FALSE otherwise.
  **/
 guint
 e_book_async_get_required_fields (EBook              *book,
@@ -597,7 +597,7 @@ e_book_async_get_required_fields (EBook              *book,
  * will contain pointers to allocated strings, and both the
  * #GList and the strings must be freed by the caller.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_supported_fields  (EBook            *book,
@@ -653,7 +653,7 @@ get_supported_fields_reply(DBusGProxy *proxy, gchar **fields, GError *error, gpo
  * in this @book. Other fields may be discarded. This
  * function does not block.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 guint
 e_book_async_get_supported_fields (EBook              *book,
@@ -687,7 +687,7 @@ e_book_async_get_supported_fields (EBook              *book,
  * The list will contain pointers to allocated strings, and both the
  * #GList and the strings must be freed by the caller.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_supported_auth_methods (EBook            *book,
@@ -744,7 +744,7 @@ get_supported_auth_methods_reply(DBusGProxy *proxy, gchar **methods, GError *err
  * Queries @book for the list of authentication methods it supports.
  * This function does not block.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
 **/
 guint
 e_book_async_get_supported_auth_methods (EBook              *book,
@@ -780,7 +780,7 @@ e_book_async_get_supported_auth_methods (EBook              *book,
  * @auth_method.  @auth_method must be one of the authentication
  * methods returned using e_book_get_supported_auth_methods.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_authenticate_user (EBook         *book,
@@ -828,7 +828,7 @@ authenticate_user_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
  * methods returned using e_book_get_supported_auth_methods.
  * This function does not block.
  *
- * Return value: %FALSE if successful, %TRUE otherwise.
+ * Returns: %FALSE if successful, %TRUE otherwise.
  **/
 guint
 e_book_async_authenticate_user (EBook                 *book,
@@ -868,7 +868,7 @@ e_book_async_authenticate_user (EBook                 *book,
  * Fills in @contact with the contents of the vcard in @book
  * corresponding to @id.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_contact (EBook       *book,
@@ -930,7 +930,7 @@ get_contact_reply(DBusGProxy *proxy, gchar *vcard, GError *error, gpointer user_
  *
  * Retrieves a contact specified by @id from @book.
  *
- * Return value: %FALSE if successful, %TRUE otherwise
+ * Returns: %FALSE if successful, %TRUE otherwise
  **/
 guint
 e_book_async_get_contact (EBook                 *book,
@@ -964,7 +964,7 @@ e_book_async_get_contact (EBook                 *book,
  *
  * Removes the contact with id @id from @book.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_remove_contact (EBook       *book,
@@ -1012,7 +1012,7 @@ remove_contact_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * have more than one id to remove, as some backends can implement it
  * as a batch request.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_remove_contacts (EBook    *book,
@@ -1046,7 +1046,7 @@ e_book_remove_contacts (EBook    *book,
  *
  * Removes @contact from @book.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 guint
 e_book_async_remove_contact (EBook                 *book,
@@ -1098,7 +1098,7 @@ remove_contact_by_id_reply (DBusGProxy *proxy, GError *error, gpointer user_data
  *
  * Removes the contact with id @id from @book.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 guint
 e_book_async_remove_contact_by_id (EBook                 *book,
@@ -1153,7 +1153,7 @@ remove_contacts_reply (DBusGProxy *proxy, GError *error, gpointer user_data)
  * have more than one id to remove, as some backends can implement it
  * as a batch request.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 guint
 e_book_async_remove_contacts (EBook                 *book,
@@ -1202,7 +1202,7 @@ e_book_async_remove_contacts (EBook                 *book,
  * specified by @requested_fields and limited at @max_results records. On an
  * error, @error is set and %FALSE returned.
  *
- * Return value: %TRUE if successful, %FALSE otherwise
+ * Returns: %TRUE if successful, %FALSE otherwise
  **/
 gboolean
 e_book_get_book_view (EBook       *book,
@@ -1295,7 +1295,7 @@ get_book_view_reply (DBusGProxy *proxy, gchar *view_path, GError *error, gpointe
  * Query @book with @query, creating a #EBookView with the fields
  * specified by @requested_fields and limited at @max_results records.
  *
- * Return value: %FALSE if successful, %TRUE otherwise
+ * Returns: %FALSE if successful, %TRUE otherwise
  **/
 guint
 e_book_async_get_book_view (EBook                 *book,
@@ -1336,7 +1336,7 @@ e_book_async_get_book_view (EBook                 *book,
  * Query @book with @query, setting @contacts to the list of contacts which
  * matched. On failed, @error will be set and %FALSE returned.
  *
- * Return value: %TRUE on success, %FALSE otherwise
+ * Returns: %TRUE on success, %FALSE otherwise
  **/
 gboolean
 e_book_get_contacts (EBook       *book,
@@ -1405,7 +1405,7 @@ get_contacts_reply(DBusGProxy *proxy, gchar **vcards, GError *error, gpointer us
  *
  * Query @book with @query.
  *
- * Return value: %FALSE on success, %TRUE otherwise
+ * Returns: %FALSE on success, %TRUE otherwise
  **/
 guint
 e_book_async_get_contacts (EBook             *book,
@@ -1473,7 +1473,7 @@ parse_changes_array (GPtrArray *array)
  * Get the set of changes since the previous call to #e_book_get_changes for a
  * given change ID.
  *
- * Return value: TRUE on success, FALSE otherwise
+ * Returns: TRUE on success, FALSE otherwise
  */
 gboolean
 e_book_get_changes (EBook       *book,
@@ -1525,7 +1525,7 @@ get_changes_reply (DBusGProxy *proxy, GPtrArray *changes, GError *error, gpointe
  * Get the set of changes since the previous call to #e_book_async_get_changes
  * for a given change ID.
  *
- * Return value: TRUE on success, FALSE otherwise
+ * Returns: TRUE on success, FALSE otherwise
  */
 guint
 e_book_async_get_changes (EBook             *book,
@@ -1585,7 +1585,7 @@ e_book_free_change_list (GList *change_list)
  * blocked e_book function corresponding to current operation will
  * return with a status of E_BOOK_STATUS_CANCELLED.
  *
- * Return value: %TRUE on success, %FALSE otherwise
+ * Returns: %TRUE on success, %FALSE otherwise
  **/
 gboolean
 e_book_cancel (EBook   *book,
@@ -1634,7 +1634,7 @@ e_book_cancel_async_op (EBook *book, GError **error)
  *
  * Opens the addressbook, making it ready for queries and other operations.
  *
- * Return value: %TRUE if the book was successfully opened, %FALSE otherwise.
+ * Returns: %TRUE if the book was successfully opened, %FALSE otherwise.
  */
 gboolean
 e_book_open (EBook     *book,
@@ -1694,7 +1694,7 @@ open_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
  * Opens the addressbook, making it ready for queries and other operations.
  * This function does not block.
  *
- * Return value: %FALSE if successful, %TRUE otherwise.
+ * Returns: %FALSE if successful, %TRUE otherwise.
  **/
 guint
 e_book_async_open (EBook                 *book,
@@ -1727,7 +1727,7 @@ e_book_async_open (EBook                 *book,
  * Removes the backing data for this #EBook. For example, with the file backend this
  * deletes the database file. You cannot get it back!
  *
- * Return value: %TRUE on success, %FALSE on failure.
+ * Returns: %TRUE on success, %FALSE on failure.
  */
 gboolean
 e_book_remove (EBook   *book,
@@ -1766,7 +1766,7 @@ remove_reply(DBusGProxy *proxy, GError *error, gpointer user_data)
  * Remove the backing data for this #EBook. For example, with the file backend this
  * deletes the database file. You cannot get it back!
  *
- * Return value: %FALSE if successful, %TRUE otherwise.
+ * Returns: %FALSE if successful, %TRUE otherwise.
  **/
 guint
 e_book_async_remove (EBook   *book,
@@ -1796,7 +1796,7 @@ e_book_async_remove (EBook   *book,
  *
  * Get the URI that this book has loaded. This string should not be freed.
  *
- * Return value: The URI.
+ * Returns: The URI.
  */
 const gchar *
 e_book_get_uri (EBook *book)
@@ -1812,7 +1812,7 @@ e_book_get_uri (EBook *book)
  *
  * Get the #ESource that this book has loaded.
  *
- * Return value: The source.
+ * Returns: The source.
  */
 ESource *
 e_book_get_source (EBook *book)
@@ -1830,7 +1830,7 @@ e_book_get_source (EBook *book)
  * Get the list of capabilities which the backend for this address book
  * supports. This string should not be freed.
  *
- * Return value: The capabilities list
+ * Returns: The capabilities list
  */
 const gchar *
 e_book_get_static_capabilities (EBook   *book,
@@ -1864,7 +1864,7 @@ e_book_get_static_capabilities (EBook   *book,
  * Check to see if the backend for this address book supports the capability
  * @cap.
  *
- * Return value: %TRUE if the backend supports @cap, %FALSE otherwise.
+ * Returns: %TRUE if the backend supports @cap, %FALSE otherwise.
  */
 gboolean
 e_book_check_static_capability (EBook *book,
@@ -1889,7 +1889,7 @@ e_book_check_static_capability (EBook *book,
  *
  * Check if this book has been opened.
  *
- * Return value: %TRUE if this book has been opened, otherwise %FALSE.
+ * Returns: %TRUE if this book has been opened, otherwise %FALSE.
  */
 gboolean
 e_book_is_opened (EBook *book)
@@ -1905,7 +1905,7 @@ e_book_is_opened (EBook *book)
  *
  * Check if this book is writable.
  *
- * Return value: %TRUE if this book is writable, otherwise %FALSE.
+ * Returns: %TRUE if this book is writable, otherwise %FALSE.
  */
 gboolean
 e_book_is_writable (EBook *book)
@@ -1921,7 +1921,7 @@ e_book_is_writable (EBook *book)
  *
  * Check if this book is connected.
  *
- * Return value: %TRUE if this book is connected, otherwise %FALSE.
+ * Returns: %TRUE if this book is connected, otherwise %FALSE.
  **/
 gboolean
 e_book_is_online (EBook *book)
@@ -1979,7 +1979,7 @@ make_me_card (void)
  * Get the #EContact referring to the user of the address book
  * and set it in @contact and @book.
  *
- * Return value: %TRUE if successful, otherwise %FALSE.
+ * Returns: %TRUE if successful, otherwise %FALSE.
  **/
 gboolean
 e_book_get_self (EContact **contact, EBook **book, GError **error)
@@ -2046,7 +2046,7 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
  * Specify that @contact residing in @book is the #EContact that
  * refers to the user of the address book.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
 e_book_set_self (EBook *book, EContact *contact, GError **error)
@@ -2069,7 +2069,7 @@ e_book_set_self (EBook *book, EContact *contact, GError **error)
  *
  * Check if @contact is the user of the address book.
  *
- * Return value: %TRUE if @contact is the user, %FALSE otherwise.
+ * Returns: %TRUE if @contact is the user, %FALSE otherwise.
  **/
 gboolean
 e_book_is_self (EContact *contact)
@@ -2101,7 +2101,7 @@ e_book_is_self (EContact *contact)
  * sets the #ESource of the #EBook as the "default" addressbook.  This is the source
  * that will be loaded in the e_book_get_default_addressbook call.
  *
- * Return value: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
+ * Returns: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
  */
 gboolean
 e_book_set_default_addressbook (EBook *book, GError **error)
@@ -2124,7 +2124,7 @@ e_book_set_default_addressbook (EBook *book, GError **error)
  * sets @source as the "default" addressbook.  This is the source that
  * will be loaded in the e_book_get_default_addressbook call.
  *
- * Return value: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
+ * Returns: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
  */
 gboolean
 e_book_set_default_source (ESource *source, GError **error)
@@ -2189,7 +2189,7 @@ e_book_set_default_source (ESource *source, GError **error)
  * Populate *addressbook_sources with the list of all sources which have been
  * added to Evolution.
  *
- * Return value: %TRUE if @addressbook_sources was set, otherwise %FALSE.
+ * Returns: %TRUE if @addressbook_sources was set, otherwise %FALSE.
  */
 gboolean
 e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
@@ -2214,7 +2214,7 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
  * only two operations that are valid on this book at this point:
  * e_book_open(), and e_book_remove().
  *
- * Return value: a new but unopened #EBook.
+ * Returns: a new but unopened #EBook.
  */
 EBook*
 e_book_new (ESource *source, GError **error)
@@ -2337,7 +2337,7 @@ check_uri (ESource *source, gpointer uri)
  * Creates a new #EBook corresponding to the given uri.  See the
  * documentation for e_book_new for further information.
  *
- * Return value: a new but unopened #EBook.
+ * Returns: a new but unopened #EBook.
  */
 EBook*
 e_book_new_from_uri (const gchar *uri, GError **error)
@@ -2401,7 +2401,7 @@ check_system (ESource *source, gpointer data)
  * addressbook.  See the documentation for e_book_new for further
  * information.
  *
- * Return value: a new but unopened #EBook.
+ * Returns: a new but unopened #EBook.
  */
 EBook*
 e_book_new_system_addressbook (GError **error)
@@ -2468,7 +2468,7 @@ check_default (ESource *source, gpointer data)
  * addressbook.  See the documentation for e_book_new for further
  * information.
  *
- * Return value: a new but unopened #EBook.
+ * Returns: a new but unopened #EBook.
  */
 EBook*
 e_book_new_default_addressbook   (GError **error)

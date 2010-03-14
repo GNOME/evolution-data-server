@@ -820,7 +820,7 @@ compare_source_lists (GSList *a, GSList *b)
  *
  * Compares if @a is equivalent to @b.
  *
- * Return value: %TRUE if @a is equivalent to @b,
+ * Returns: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
  *
  * Since: 2.24
@@ -867,7 +867,7 @@ e_source_group_equal (ESourceGroup *a, ESourceGroup *b)
  *
  * Compares if @a is equivalent to @b.
  *
- * Return value: %TRUE if @a is equivalent to @b,
+ * Returns: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
  *
  * Since: 2.24

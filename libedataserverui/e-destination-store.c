@@ -144,7 +144,7 @@ e_destination_store_finalize (GObject *object)
  *
  * Creates a new #EDestinationStore.
  *
- * Return value: A new #EDestinationStore.
+ * Returns: A new #EDestinationStore.
  **/
 EDestinationStore *
 e_destination_store_new (void)
@@ -280,7 +280,7 @@ destination_changed (EDestinationStore *destination_store, EDestination *destina
  *
  * Gets the #EDestination from @destination_store at @iter.
  *
- * Return value: An #EDestination.
+ * Returns: An #EDestination.
  **/
 EDestination *
 e_destination_store_get_destination (EDestinationStore *destination_store, GtkTreeIter *iter)
@@ -301,7 +301,7 @@ e_destination_store_get_destination (EDestinationStore *destination_store, GtkTr
  *
  * Gets a list of all the #EDestinations in @destination_store.
  *
- * Return value: A #GList of pointers to #EDestination. The list is owned
+ * Returns: A #GList of pointers to #EDestination. The list is owned
  * by the caller, but the #EDestination elements aren't.
  **/
 GList *

@@ -920,7 +920,7 @@ array_to_list (short *array, gint max_elements)
  * Converts an #icalproperty to a #ECalRecurrence.  This should be
  * freed using the e_cal_recur_free() function.
  *
- * Return value: #ECalRecurrence structure.
+ * Returns: #ECalRecurrence structure.
  **/
 static ECalRecurrence *
 e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,

@@ -274,7 +274,7 @@ compare_str_hashes (GHashTable *table1, GHashTable *table2)
  *
  * Update the ESource properties from @node.
  *
- * Return value: %TRUE if the data in @node was recognized and parsed into
+ * Returns: %TRUE if the data in @node was recognized and parsed into
  * acceptable values for @source, %FALSE otherwise.
  **/
 gboolean
@@ -408,7 +408,7 @@ e_source_update_from_xml_node (ESource *source,
  * Assuming that @node is a valid ESource specification, retrieve the name of
  * the source from it.
  *
- * Return value: Name of the source in the specified @node.  The caller must
+ * Returns: Name of the source in the specified @node.  The caller must
  * free the string.
  **/
 gchar *
@@ -653,7 +653,7 @@ e_source_peek_absolute_uri (ESource *source)
  * Return the textual representation of the color for @source, or %NULL if it
  * has none.  The returned string should be parsable by #gdk_color_parse().
  *
- * Return value: a string specifying the color
+ * Returns: a string specifying the color
  *
  * Since: 1.10
  **/
@@ -682,7 +682,7 @@ e_source_get_readonly (ESource *source)
  *
  * If @source has an associated color, return it in *@color_return.
  *
- * Return value: %TRUE if the @source has a defined color (and hence
+ * Returns: %TRUE if the @source has a defined color (and hence
  * *@color_return was set), %FALSE otherwise.
  **/
 gboolean
@@ -822,7 +822,7 @@ e_source_to_standalone_xml (ESource *source)
  *
  * Compares if @a is equivalent to @b.
  *
- * Return value: %TRUE if @a is equivalent to @b,
+ * Returns: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
  *
  * Since: 2.24
@@ -880,7 +880,7 @@ e_source_equal (ESource *a, ESource *b)
  *
  * Compares if @a is equivalent to @b.
  *
- * Return value: %TRUE if @a is equivalent to @b,
+ * Returns: %TRUE if @a is equivalent to @b,
  * %FALSE otherwise.
  *
  * Since: 2.24

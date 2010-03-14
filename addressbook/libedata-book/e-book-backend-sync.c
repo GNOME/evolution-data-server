@@ -26,7 +26,7 @@ static GObjectClass *parent_class;
  *
  * Does nothing.
  *
- * Return value: %TRUE.
+ * Returns: %TRUE.
  **/
 gboolean
 e_book_backend_sync_construct (EBookBackendSync *backend)
@@ -44,7 +44,7 @@ e_book_backend_sync_construct (EBookBackendSync *backend)
  *
  * Creates a new contact with the contents of @vcard in @backend.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_create_contact (EBookBackendSync *backend,
@@ -72,7 +72,7 @@ e_book_backend_sync_create_contact (EBookBackendSync *backend,
  * Remove @book's database and storage overhead from the storage
  * medium. This will delete all contacts in @book.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_remove (EBookBackendSync *backend,
@@ -99,7 +99,7 @@ e_book_backend_sync_remove (EBookBackendSync *backend,
  * of removed contacts is in the same format as the passed-in list, and must be
  * freed by the caller.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
@@ -129,7 +129,7 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  * Modifies the contact specified by the ID embedded in @vcard, to
  * reflect the full contents of @vcard.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_modify_contact (EBookBackendSync *backend,
@@ -158,7 +158,7 @@ e_book_backend_sync_modify_contact (EBookBackendSync *backend,
  *
  * Gets a contact from @book.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_get_contact (EBookBackendSync *backend,
@@ -188,7 +188,7 @@ e_book_backend_sync_get_contact (EBookBackendSync *backend,
  * Gets a list of contacts from @book. The list and its elements must be freed
  * by the caller.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
@@ -219,7 +219,7 @@ e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
  * The returned list will contain items of CORBA type
  * #GNOME_Evolution_Addressbook_BookChangeItem.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_get_changes (EBookBackendSync *backend,
@@ -249,7 +249,7 @@ e_book_backend_sync_get_changes (EBookBackendSync *backend,
  *
  * Authenticates @user against @book.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
@@ -279,7 +279,7 @@ e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
  * fields are represented by strings from #e_contact_field_name. The list
  * and its contents must be freed by the caller.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_get_required_fields (EBookBackendSync *backend,
@@ -307,7 +307,7 @@ e_book_backend_sync_get_required_fields (EBookBackendSync *backend,
  * may not be stored. The fields are represented by strings from #e_contact_field_name.
  * The list and its contents must be freed by the caller.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_get_supported_fields (EBookBackendSync *backend,
@@ -335,7 +335,7 @@ e_book_backend_sync_get_supported_fields (EBookBackendSync *backend,
  * methods are represented by strings. The list and its contents must
  * be freed by the caller.
  *
- * Return value: An #EBookBackendSyncStatus indicating the outcome of the operation.
+ * Returns: An #EBookBackendSyncStatus indicating the outcome of the operation.
  **/
 EBookBackendSyncStatus
 e_book_backend_sync_get_supported_auth_methods (EBookBackendSync *backend,

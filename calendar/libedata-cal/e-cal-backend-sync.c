@@ -58,7 +58,7 @@ e_cal_backend_sync_set_lock (ECalBackendSync *backend, gboolean lock)
  *
  * Calls the is_read_only method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gboolean *read_only)
@@ -81,7 +81,7 @@ e_cal_backend_sync_is_read_only  (ECalBackendSync *backend, EDataCal *cal, gbool
  *
  * Calls the get_cal_address method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, gchar **address)
@@ -104,7 +104,7 @@ e_cal_backend_sync_get_cal_address  (ECalBackendSync *backend, EDataCal *cal, gc
  *
  * Calls the get_alarm_email_address method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal *cal, gchar **address)
@@ -127,7 +127,7 @@ e_cal_backend_sync_get_alarm_email_address  (ECalBackendSync *backend, EDataCal 
  *
  * Calls the get_ldap_attribute method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal, gchar **attribute)
@@ -150,7 +150,7 @@ e_cal_backend_sync_get_ldap_attribute  (ECalBackendSync *backend, EDataCal *cal,
  *
  * Calls the get_capabilities method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal *cal, gchar **capabilities)
@@ -176,7 +176,7 @@ e_cal_backend_sync_get_static_capabilities  (ECalBackendSync *backend, EDataCal 
  *
  * Calls the open method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only_if_exists,
@@ -198,7 +198,7 @@ e_cal_backend_sync_open  (ECalBackendSync *backend, EDataCal *cal, gboolean only
  *
  * Calls the remove method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
@@ -219,7 +219,7 @@ e_cal_backend_sync_remove  (ECalBackendSync *backend, EDataCal *cal)
  *
  * Calls the refresh method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  *
  * Since: 2.30
  */
@@ -246,7 +246,7 @@ e_cal_backend_sync_refresh  (ECalBackendSync *backend, EDataCal *cal)
  *
  * Calls the create_object method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, gchar **calobj, gchar **uid)
@@ -275,7 +275,7 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, gchar
  *
  * Calls the modify_object method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj,
@@ -308,7 +308,7 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, const
  *
  * Calls the remove_object method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid,
@@ -334,7 +334,7 @@ e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, const
  *
  * Calls the discard_alarm method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *auid)
@@ -358,7 +358,7 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, const
  *
  * Calls the receive_objects method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj)
@@ -384,7 +384,7 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, con
  *
  * Calls the send_objects method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const gchar *calobj, GList **users,
@@ -409,7 +409,7 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, const 
  *
  * Calls the get_default_object method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, gchar **object)
@@ -435,7 +435,7 @@ e_cal_backend_sync_get_default_object (ECalBackendSync *backend, EDataCal *cal, 
  *
  * Calls the get_object method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, gchar **object)
@@ -459,7 +459,7 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, const gc
  *
  * Calls the get_object_list method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, const gchar *sexp, GList **objects)
@@ -484,7 +484,7 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, con
  *
  * Calls the get_attachment_list method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, EDataCal *cal, const gchar *uid, const gchar *rid, GSList **attachments)
@@ -514,7 +514,7 @@ e_cal_backend_sync_get_attachment_list (ECalBackendSync *backend, EDataCal *cal,
  * internal_get_timezone and can skip implementation of
  * get_timezone_sync completely.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid, gchar **object)
@@ -563,7 +563,7 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  *
  * Calls the add_timezone method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj)
@@ -585,7 +585,7 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, const 
  *
  * Calls the set_default_timezone method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, const gchar *tz)
@@ -629,7 +629,7 @@ e_cal_backend_sync_set_default_zone (ECalBackendSync *backend, EDataCal *cal, co
  *
  * Calls the set_default_timezone method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzid)
@@ -654,7 +654,7 @@ e_cal_backend_sync_set_default_timezone (ECalBackendSync *backend, EDataCal *cal
  *
  * Calls the get_changes method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const gchar *change_id,
@@ -680,7 +680,7 @@ e_cal_backend_sync_get_changes (ECalBackendSync *backend, EDataCal *cal, const g
  *
  * Calls the get_free_busy method on the given backend.
  *
- * Return value: Status code.
+ * Returns: Status code.
  */
 ECalBackendSyncStatus
 e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GList *users,

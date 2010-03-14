@@ -33,7 +33,7 @@ e_book_backend_factory_class_init (EBookBackendFactoryClass *klass)
  *
  * Gets the protocol that @factory creates backends for.
  *
- * Return value: A string representing a protocol.
+ * Returns: A string representing a protocol.
  **/
 const gchar *
 e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
@@ -49,7 +49,7 @@ e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
  *
  * Creates a new #EBookBackend with @factory's protocol.
  *
- * Return value: A new #EBookBackend.
+ * Returns: A new #EBookBackend.
  **/
 EBookBackend*
 e_book_backend_factory_new_backend (EBookBackendFactory *factory)

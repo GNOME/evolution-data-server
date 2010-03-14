@@ -43,7 +43,7 @@ static GObjectClass *parent_class;
  *
  * Does nothing.
  *
- * Return value: %TRUE.
+ * Returns: %TRUE.
  **/
 gboolean
 e_book_backend_construct (EBookBackend *backend)
@@ -59,7 +59,7 @@ e_book_backend_construct (EBookBackend *backend)
  *
  * Loads @source into @backend.
  *
- * Return value: A #GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
+ * Returns: A #GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
  **/
 GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_load_source (EBookBackend           *backend,
@@ -90,7 +90,7 @@ e_book_backend_load_source (EBookBackend           *backend,
  *
  * Queries the source that an addressbook backend is serving.
  *
- * Return value: ESource for the backend.
+ * Returns: ESource for the backend.
  **/
 ESource *
 e_book_backend_get_source (EBookBackend *backend)
@@ -457,7 +457,7 @@ e_book_backend_get_supported_auth_methods (EBookBackend *backend,
  *
  * Cancel @book's running operation on @backend.
  *
- * Return value: A GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
+ * Returns: A GNOME_Evolution_Addressbook_CallStatus indicating the outcome.
  **/
 GNOME_Evolution_Addressbook_CallStatus
 e_book_backend_cancel_operation (EBookBackend *backend,
@@ -483,7 +483,7 @@ last_client_gone (EBookBackend *backend)
  *
  * Gets the list of #EDataBookView views running on this backend.
  *
- * Return value: An #EList of #EDataBookView objects.
+ * Returns: An #EList of #EDataBookView objects.
  **/
 EList*
 e_book_backend_get_book_views (EBookBackend *backend)
@@ -540,7 +540,7 @@ e_book_backend_remove_book_view (EBookBackend *backend,
  *
  * Adds a client to an addressbook backend.
  *
- * Return value: TRUE on success, FALSE on failure to add the client.
+ * Returns: TRUE on success, FALSE on failure to add the client.
  */
 gboolean
 e_book_backend_add_client (EBookBackend      *backend,
@@ -596,7 +596,7 @@ e_book_backend_remove_client (EBookBackend *backend,
  *
  * Checks if @backend has clients running in other system processes.
  *
- * Return value: %TRUE if there are clients in other processes, %FALSE otherwise.
+ * Returns: %TRUE if there are clients in other processes, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
@@ -610,7 +610,7 @@ e_book_backend_has_out_of_proc_clients (EBookBackend *backend)
  *
  * Gets the capabilities offered by this @backend.
  *
- * Return value: A string listing the capabilities.
+ * Returns: A string listing the capabilities.
  **/
 gchar *
 e_book_backend_get_static_capabilities (EBookBackend *backend)
@@ -629,7 +629,7 @@ e_book_backend_get_static_capabilities (EBookBackend *backend)
  * Checks if @backend's storage has been opened and the backend
  * itself is ready for accessing.
  *
- * Return value: %TRUE if loaded, %FALSE otherwise.
+ * Returns: %TRUE if loaded, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_is_loaded (EBookBackend *backend)
@@ -661,7 +661,7 @@ e_book_backend_set_is_loaded (EBookBackend *backend, gboolean is_loaded)
  *
  * Checks if we can write to @backend.
  *
- * Return value: %TRUE if writeable, %FALSE if not.
+ * Returns: %TRUE if writeable, %FALSE if not.
  **/
 gboolean
 e_book_backend_is_writable (EBookBackend *backend)
@@ -693,7 +693,7 @@ e_book_backend_set_is_writable (EBookBackend *backend, gboolean is_writable)
  *
  * Checks if @backend has been removed from its physical storage.
  *
- * Return value: %TRUE if @backend has been removed, %FALSE otherwise.
+ * Returns: %TRUE if @backend has been removed, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_is_removed (EBookBackend *backend)
@@ -765,7 +765,7 @@ e_book_backend_sync (EBookBackend *backend)
  * Creates a new change item indicating @vcard was added.
  * Meant to be used by backend implementations.
  *
- * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ * Returns: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 EDataBookChange *
 e_book_backend_change_add_new     (const gchar *vcard)
@@ -785,7 +785,7 @@ e_book_backend_change_add_new     (const gchar *vcard)
  * Creates a new change item indicating @vcard was modified.
  * Meant to be used by backend implementations.
  *
- * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ * Returns: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 EDataBookChange *
 e_book_backend_change_modify_new  (const gchar *vcard)
@@ -805,7 +805,7 @@ e_book_backend_change_modify_new  (const gchar *vcard)
  * Creates a new change item indicating @vcard was deleted.
  * Meant to be used by backend implementations.
  *
- * Return value: A new #GNOME_Evolution_Addressbook_BookChangeItem.
+ * Returns: A new #GNOME_Evolution_Addressbook_BookChangeItem.
  **/
 EDataBookChange *
 e_book_backend_change_delete_new  (const gchar *vcard)

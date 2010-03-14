@@ -110,9 +110,9 @@ imapx_parse_flags(CamelIMAPXStream *stream, guint32 *flagsp, CamelFlag **user_fl
  * if the flags does not match returns the original one as it is.
  * It will never return NULL, it will return empty string, instead.
  *
- * @param flag Flag to rename.
- * @param len Length of the flag name.
- * @param server_to_evo if TRUE, then converting server names to evo's names, if FALSE then opposite.
+ * @flag: Flag to rename.
+ * @len: Length of the flag name.
+ * @server_to_evo: if TRUE, then converting server names to evo's names, if FALSE then opposite.
  */
 static const gchar *
 rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)

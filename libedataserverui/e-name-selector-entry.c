@@ -2742,7 +2742,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
  *
  * Creates a new #ENameSelectorEntry.
  *
- * Return value: A new #ENameSelectorEntry.
+ * Returns: A new #ENameSelectorEntry.
  **/
 ENameSelectorEntry *
 e_name_selector_entry_new (void)
@@ -2756,7 +2756,7 @@ e_name_selector_entry_new (void)
  *
  * Gets the #EContactStore being used by @name_selector_entry.
  *
- * Return value: An #EContactStore.
+ * Returns: An #EContactStore.
  **/
 EContactStore *
 e_name_selector_entry_peek_contact_store (ENameSelectorEntry *name_selector_entry)
@@ -2798,7 +2798,7 @@ e_name_selector_entry_set_contact_store (ENameSelectorEntry *name_selector_entry
  *
  * Gets the #EDestinationStore being used to store @name_selector_entry's destinations.
  *
- * Return value: An #EDestinationStore.
+ * Returns: An #EDestinationStore.
  **/
 EDestinationStore *
 e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_entry)

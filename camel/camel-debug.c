@@ -84,7 +84,7 @@ void camel_debug_init(void)
  * returns a boolean to indicate if the module or module and target is
  * currently activated for debug output.
  *
- * Return value:
+ * Returns:
  **/
 gboolean camel_debug(const gchar *mode)
 {
@@ -126,7 +126,7 @@ static pthread_mutex_t debug_lock = PTHREAD_MUTEX_INITIALIZER;
  * Start debug output for a given mode, used to make sure debug output
  * is output atomically and not interspersed with unrelated stuff.
  *
- * Return value: Returns true if mode is set, and in which case, you must
+ * Returns: Returns true if mode is set, and in which case, you must
  * call debug_end when finished any screen output.
  **/
 gboolean

@@ -44,7 +44,7 @@ static CamelViewSummaryDiskClass *cmvs_parent;
  *
  * Create a new CamelIMAPXViewSummary object.
  *
- * Return value: A new CamelIMAPXViewSummary widget.
+ * Returns: A new CamelIMAPXViewSummary widget.
  **/
 CamelIMAPXViewSummary *
 camel_imapx_view_summary_new(const gchar *base, CamelException *ex)

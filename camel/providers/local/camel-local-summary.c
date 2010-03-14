@@ -325,7 +325,7 @@ camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const Cam
  * If @status is non NULL, then a Status header line is also written.
  * The headers written are termianted with a blank line.
  *
- * Return value: -1 on error, otherwise the number of bytes written.
+ * Returns: -1 on error, otherwise the number of bytes written.
  **/
 gint
 camel_local_summary_write_headers(gint fd, struct _camel_header_raw *header, const gchar *xevline, const gchar *status, const gchar *xstatus)

@@ -271,7 +271,7 @@ unwrap_gerror(GError **error)
  *
  * Registers the #ECalSourceTypeEnum type with glib.
  *
- * Return value: the ID of the #ECalSourceTypeEnum type.
+ * Returns: the ID of the #ECalSourceTypeEnum type.
  */
 GType
 e_cal_source_type_enum_get_type (void)
@@ -300,7 +300,7 @@ e_cal_source_type_enum_get_type (void)
  *
  * Registers the #ECalSetModeStatusEnum type with glib.
  *
- * Return value: the ID of the #ECalSetModeStatusEnum type.
+ * Returns: the ID of the #ECalSetModeStatusEnum type.
  */
 GType
 e_cal_set_mode_status_enum_get_type (void)
@@ -328,7 +328,7 @@ e_cal_set_mode_status_enum_get_type (void)
  *
  * Registers the #CalModeEnum type with glib.
  *
- * Return value: the ID of the #CalModeEnum type.
+ * Returns: the ID of the #CalModeEnum type.
  */
 GType
 cal_mode_enum_get_type (void)
@@ -811,7 +811,7 @@ set_local_attachment_store (ECal *ecal)
  * Creates a new calendar client. This does not open the calendar itself,
  * for that, #e_cal_open or #e_cal_open_async needs to be called.
  *
- * Return value: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or NULL if the client could
  * not be constructed because it could not contact the calendar server.
  **/
 ECal *
@@ -938,7 +938,7 @@ check_uri (ESource *source, gpointer uri)
  * Creates a new calendar client. This does not open the calendar itself,
  * for that, #e_cal_open or #e_cal_open_async needs to be called.
  *
- * Return value: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or NULL if the client could
  * not be constructed because it could not contact the calendar server.
  **/
 ECal *
@@ -965,7 +965,7 @@ e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
  * all Evolution installations. This does not open the calendar itself,
  * for that, #e_cal_open or #e_cal_open_async needs to be called.
  *
- * Return value: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or NULL if the client could
  * not be constructed.
  */
 ECal *
@@ -993,7 +993,7 @@ e_cal_new_system_calendar (void)
  * all Evolution installations. This does not open the tasks list itself,
  * for that, #e_cal_open or #e_cal_open_async needs to be called.
  *
- * Return value: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or NULL if the client could
  * not be constructed.
  */
 ECal *
@@ -1021,7 +1021,7 @@ e_cal_new_system_tasks (void)
  * in all Evolution installations. This does not open the memos itself, for
  * that, #e_cal_open or #e_cal_open_async needs to be called.
  *
- * Return value: A newly-created calendar client, or NULL if the client could
+ * Returns: A newly-created calendar client, or NULL if the client could
  * not be constructed.
  */
 ECal *
@@ -1256,7 +1256,7 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error, ECalendarSta
  * client will emit the "cal_opened" signal when the response from the server is
  * received.
  *
- * Return value: TRUE on success, FALSE on failure to issue the open request.
+ * Returns: TRUE on success, FALSE on failure to issue the open request.
  **/
 gboolean
 e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
@@ -1351,7 +1351,7 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
  *
  * Invokes refresh on a calendar. See @e_cal_get_refresh_supported.
  *
- * Return value: TRUE if calendar supports refresh and it was invoked, FALSE otherwise.
+ * Returns: TRUE if calendar supports refresh and it was invoked, FALSE otherwise.
  *
  * Since: 2.30
  **/
@@ -1381,7 +1381,7 @@ e_cal_refresh (ECal *ecal, GError **error)
  *
  * Removes a calendar.
  *
- * Return value: TRUE if the calendar was removed, FALSE if there was an error.
+ * Returns: TRUE if the calendar was removed, FALSE if there was an error.
  */
 gboolean
 e_cal_remove (ECal *ecal, GError **error)
@@ -1424,7 +1424,7 @@ build_uri_list (GNOME_Evolution_Calendar_StringSeq *seq)
  *
  * Retrieves a list of all calendar clients for the given mode.
  *
- * Return value: list of uris.
+ * Returns: list of uris.
  */
 GList *
 e_cal_uri_list (ECal *ecal, CalMode mode)
@@ -1474,7 +1474,7 @@ e_cal_uri_list (ECal *ecal, CalMode mode)
  *
  * Gets the type of the calendar client.
  *
- * Return value: an #ECalSourceType value corresponding to the type
+ * Returns: an #ECalSourceType value corresponding to the type
  * of the calendar client.
  */
 ECalSourceType
@@ -1496,7 +1496,7 @@ e_cal_get_source_type (ECal *ecal)
  *
  * Queries the state of loading of a calendar client.
  *
- * Return value: A #ECalLoadState value indicating whether the client has
+ * Returns: A #ECalLoadState value indicating whether the client has
  * not been loaded with #e_cal_open yet, whether it is being
  * loaded, or whether it is already loaded.
  **/
@@ -1518,7 +1518,7 @@ e_cal_get_load_state (ECal *ecal)
  *
  * Queries the source that is open in a calendar client.
  *
- * Return value: The source of the calendar that is already loaded or is being
+ * Returns: The source of the calendar that is already loaded or is being
  * loaded, or NULL if the ecal has not started a load request yet.
  **/
 ESource *
@@ -1539,7 +1539,7 @@ e_cal_get_source (ECal *ecal)
  *
  * Queries the URI that is open in a calendar client.
  *
- * Return value: The URI of the calendar that is already loaded or is being
+ * Returns: The URI of the calendar that is already loaded or is being
  * loaded, or NULL if the client has not started a load request yet.
  **/
 const gchar *
@@ -1564,7 +1564,7 @@ e_cal_get_uri (ECal *ecal)
  * unless it specifically uses the attachments for open/sending
  * operations.
  *
- * Return value: The URL where the attachments are serialized in the
+ * Returns: The URL where the attachments are serialized in the
  * local filesystem.
  **/
 const gchar *
@@ -1589,7 +1589,7 @@ e_cal_get_local_attachment_store (ECal *ecal)
  * on the calendar or not. Whether the backend is read only or not
  * is specified, on exit, in the @read_only argument.
  *
- * Return value: TRUE if the call was successful, FALSE if there was an error.
+ * Returns: TRUE if the call was successful, FALSE if there was an error.
  */
 gboolean
 e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
@@ -1613,7 +1613,7 @@ e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
  *
  * Queries the calendar address associated with a calendar client.
  *
- * Return value: TRUE if the operation was successful, FALSE if there
+ * Returns: TRUE if the operation was successful, FALSE if there
  * was an error.
  **/
 gboolean
@@ -1654,7 +1654,7 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
  *
  * Queries the address to be used for alarms in a calendar client.
  *
- * Return value: TRUE if the operation was successful, FALSE if there was
+ * Returns: TRUE if the operation was successful, FALSE if there was
  * an error while contacting the backend.
  */
 gboolean
@@ -1690,7 +1690,7 @@ e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error
  *
  * Queries the LDAP attribute for a calendar client.
  *
- * Return value: TRUE if the call was successful, FALSE if there was an
+ * Returns: TRUE if the call was successful, FALSE if there was an
  * error contacting the backend.
  */
 gboolean
@@ -1764,7 +1764,7 @@ check_capability (ECal *ecal, const gchar *cap)
  *
  * Checks if a calendar supports only one alarm per component.
  *
- * Return value: TRUE if the calendar allows only one alarm, FALSE otherwise.
+ * Returns: TRUE if the calendar allows only one alarm, FALSE otherwise.
  */
 gboolean
 e_cal_get_one_alarm_only (ECal *ecal)
@@ -1781,7 +1781,7 @@ e_cal_get_one_alarm_only (ECal *ecal)
  *
  * Checks if a calendar forces organizers of meetings to be also attendees.
  *
- * Return value: TRUE if the calendar forces organizers to attend meetings,
+ * Returns: TRUE if the calendar forces organizers to attend meetings,
  * FALSE otherwise.
  */
 gboolean
@@ -1799,7 +1799,7 @@ e_cal_get_organizer_must_attend (ECal *ecal)
  *
  * Checks if the calendar has a master object for recurrences.
  *
- * Return value: TRUE if the calendar has a master object for recurrences,
+ * Returns: TRUE if the calendar has a master object for recurrences,
  * FALSE otherwise.
  */
 gboolean
@@ -1818,7 +1818,7 @@ e_cal_get_recurrences_no_master (ECal *ecal)
  *
  * Queries the calendar for static capabilities.
  *
- * Return value: TRUE if the capability is supported, FALSE otherwise.
+ * Returns: TRUE if the capability is supported, FALSE otherwise.
  */
 gboolean
 e_cal_get_static_capability (ECal *ecal, const gchar *cap)
@@ -1835,7 +1835,7 @@ e_cal_get_static_capability (ECal *ecal, const gchar *cap)
  *
  * Checks whether the calendar saves schedules.
  *
- * Return value: TRUE if it saves schedules, FALSE otherwise.
+ * Returns: TRUE if it saves schedules, FALSE otherwise.
  */
 gboolean
 e_cal_get_save_schedules (ECal *ecal)
@@ -1853,7 +1853,7 @@ e_cal_get_save_schedules (ECal *ecal)
  * Checks whether a calendar requires organizer to accept their attendance to
  * meetings.
  *
- * Return value: TRUE if the calendar requires organizers to accept, FALSE
+ * Returns: TRUE if the calendar requires organizers to accept, FALSE
  * otherwise.
  */
 gboolean
@@ -1871,7 +1871,7 @@ e_cal_get_organizer_must_accept (ECal *ecal)
  *
  * Checks whether a calendar supports explicit refreshing (see @e_cal_refresh).
  *
- * Return value: TRUE if the calendar supports refreshing, FALSE otherwise.
+ * Returns: TRUE if the calendar supports refreshing, FALSE otherwise.
  *
  * Since: 2.30
  */
@@ -1891,7 +1891,7 @@ e_cal_get_refresh_supported (ECal *ecal)
  *
  * Switches online/offline mode on the calendar.
  *
- * Return value: TRUE if the switch was successful, FALSE if there was an error.
+ * Returns: TRUE if the switch was successful, FALSE if there was an error.
  */
 gboolean
 e_cal_set_mode (ECal *ecal, CalMode mode)
@@ -1939,7 +1939,7 @@ struct _ECalGetTimezonesData {
  * Retrives an #icalcomponent from the backend that contains the default
  * values for properties needed.
  *
- * Return value: TRUE if the call was successful, FALSE otherwise.
+ * Returns: TRUE if the call was successful, FALSE otherwise.
  */
 gboolean
 e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
@@ -1992,7 +1992,7 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
  * Queries a calendar for a calendar component object based on its unique
  * identifier and gets the attachments for the component.
  *
- * Return value: TRUE if the call was successful, FALSE otherwise.
+ * Returns: TRUE if the call was successful, FALSE otherwise.
  **/
 gboolean
 e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, GSList **list, GError **error)
@@ -2043,7 +2043,7 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
  * Queries a calendar for a calendar component object based on its unique
  * identifier.
  *
- * Return value: TRUE if the call was successful, FALSE otherwise.
+ * Returns: TRUE if the call was successful, FALSE otherwise.
  **/
 gboolean
 e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent **icalcomp, GError **error)
@@ -2125,7 +2125,7 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
  * ID. This will return any recurring event and all its detached recurrences.
  * For non-recurring events, it will just return the object with that ID.
  *
- * Return value: TRUE if the call was successful, FALSE otherwise.
+ * Returns: TRUE if the call was successful, FALSE otherwise.
  **/
 gboolean
 e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError **error)
@@ -2213,7 +2213,7 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
  *
  * Resolves TZIDs for the recurrence generator.
  *
- * Return value: The timezone identified by the @tzid argument, or %NULL if
+ * Returns: The timezone identified by the @tzid argument, or %NULL if
  * it could not be found.
  */
 icaltimezone*
@@ -2244,7 +2244,7 @@ e_cal_resolve_tzid_cb (const gchar *tzid, gpointer data)
  * is identified by the @change_id argument, which is used by the backend to
  * compute the changes done.
  *
- * Return value: TRUE if the call was successful, FALSE otherwise.
+ * Returns: TRUE if the call was successful, FALSE otherwise.
  */
 gboolean
 e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError **error)
@@ -2354,7 +2354,7 @@ e_cal_free_change_list (GList *list)
  * argument, which is a list of #icalcomponent. When done, this list
  * should be freed by using the #e_cal_free_object_list function.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  **/
 gboolean
 e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError **error)
@@ -2405,7 +2405,7 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
  * by the @query argument. The objects will be returned in the @objects
  * argument, which is a list of #ECalComponent.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_get_object_list_as_comp (ECal *ecal, const gchar *query, GList **objects, GError **error)
@@ -3093,7 +3093,7 @@ build_component_alarms_list (ECal *ecal, GList *object_list, time_t start, time_
  * Queries a calendar for the alarms that trigger in the specified range of
  * time.
  *
- * Return value: A list of #ECalComponentAlarms structures.  This should be freed
+ * Returns: A list of #ECalComponentAlarms structures.  This should be freed
  * using the #e_cal_free_alarms() function, or by freeing each element
  * separately with #e_cal_component_alarms_free() and then freeing the list with
  * #g_slist_free().
@@ -3183,7 +3183,7 @@ e_cal_free_alarms (GSList *comp_alarms)
  * Queries a calendar for the alarms of a particular object that trigger in the
  * specified range of time.
  *
- * Return value: TRUE on success, FALSE if the object was not found.
+ * Returns: TRUE on success, FALSE if the object was not found.
  **/
 gboolean
 e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
@@ -3238,7 +3238,7 @@ e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
  * update internal information about the alarm be discarded, or, like
  * the file backend does, ignore the operation.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError **error)
@@ -3427,7 +3427,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
  * Gets a calendar component as an iCalendar string, with a toplevel
  * VCALENDAR component and all VTIMEZONEs needed for the component.
  *
- * Return value: the component as a complete iCalendar string, or NULL on
+ * Returns: the component as a complete iCalendar string, or NULL on
  * failure. The string should be freed after use.
  **/
 gchar *
@@ -3447,7 +3447,7 @@ e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp)
  * argument. Some backends would assign a specific UID to the newly created object,
  * in those cases that UID would be returned in the @uid argument.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error)
@@ -3505,7 +3505,7 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
  * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
  * CALOBJ_MOD_THISANDFUTURE).
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GError **error)
@@ -3554,7 +3554,7 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
  * signal, while it will get a "obj_removed" signal when all instances
  * are removed.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
@@ -3592,7 +3592,7 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
  * component, all clients will be notified and they will emit the "obj_removed"
  * signal.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  **/
 gboolean
 e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error)
@@ -3613,7 +3613,7 @@ e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error)
  * @icalcomp argument. This is used for iTIP confirmation/cancellation
  * messages for scheduled meetings.
  *
- * Return value: %TRUE if successful, %FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  */
 gboolean
 e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
@@ -3652,7 +3652,7 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
  * Requests a calendar backend to send meeting information to the specified list
  * of users.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomponent **modified_icalcomp, GError **error)
@@ -3708,7 +3708,7 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
  *
  * Retrieves a timezone object from the calendar backend.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError **error)
@@ -3876,7 +3876,7 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
  *
  * Creates a live query object from a loaded calendar.
  *
- * Return value: A query object that will emit notification signals as calendar
+ * Returns: A query object that will emit notification signals as calendar
  * components are added and removed from the query in the server.
  **/
 gboolean
@@ -3934,7 +3934,7 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
  * Sets the default timezone on the calendar. This should be called before opening
  * the calendar.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
@@ -4056,7 +4056,7 @@ check_default (ESource *source, gpointer data)
  *
  * Opens the default calendar.
  *
- * Return value: TRUE if it opened correctly, FALSE otherwise.
+ * Returns: TRUE if it opened correctly, FALSE otherwise.
  */
 gboolean
 e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointer data, GError **error)
@@ -4119,7 +4119,7 @@ e_cal_open_default (ECal **ecal, ECalSourceType type, ECalAuthFunc func, gpointe
  *
  * Sets a calendar as the default one.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_set_default (ECal *ecal, GError **error)
@@ -4184,7 +4184,7 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
  *
  * Sets the default source for the specified @type.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error)
@@ -4219,7 +4219,7 @@ get_sources (ESourceList **sources, const gchar *key, GError **error)
  *
  * Gets the list of sources defined in the configuration for the given @type.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)

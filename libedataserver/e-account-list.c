@@ -221,7 +221,7 @@ free_func (gpointer data, gpointer closure)
  * you must call e_account_list_save() to push the changes back to
  * GConf.
  *
- * Return value: the list of accounts
+ * Returns: the list of accounts
  **/
 EAccountList *
 e_account_list_new (GConfClient *gconf)
@@ -396,7 +396,7 @@ e_account_list_remove(EAccountList *accounts, EAccount *account)
  * Get the default account.  If no default is specified, or the default
  * has become stale, then the first account is made the default.
  *
- * Return value: The account or NULL if no accounts are defined.
+ * Returns: The account or NULL if no accounts are defined.
  **/
 const EAccount *
 e_account_list_get_default(EAccountList *accounts)
@@ -457,7 +457,7 @@ e_account_list_set_default(EAccountList *accounts, EAccount *account)
  * E_ACCOUNT_FIND_ID_NAME - Find an account by the owner's identity name.
  * E_ACCOUNT_FIND_ID_ADDRESS - Find an account by the owner's identity address.
  *
- * Return value: The account or NULL if it doesn't exist.
+ * Returns: The account or NULL if it doesn't exist.
  **/
 const EAccount *
 e_account_list_find(EAccountList *accounts, e_account_find_t type, const gchar *key)

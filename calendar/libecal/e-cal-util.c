@@ -83,7 +83,7 @@ cal_obj_uid_list_free (GList *list)
  *
  * Creates a new VCALENDAR component.
  *
- * Return value: the newly created top level component.
+ * Returns: the newly created top level component.
  */
 icalcomponent *
 e_cal_util_new_top_level (void)
@@ -116,7 +116,7 @@ e_cal_util_new_top_level (void)
  *
  * Creates a new #icalcomponent of the specified kind.
  *
- * Return value: the newly created component.
+ * Returns: the newly created component.
  */
 icalcomponent *
 e_cal_util_new_component (icalcomponent_kind kind)
@@ -165,7 +165,7 @@ read_line (const gchar *string)
  * string, something that Mozilla used to do and which libical does not
  * support.
  *
- * Return value: a newly created #icalcomponent or NULL if the string isn't a
+ * Returns: a newly created #icalcomponent or NULL if the string isn't a
  * valid iCalendar string.
  */
 icalcomponent *
@@ -228,7 +228,7 @@ get_line_fn (gchar *buf, gsize size, gpointer file)
  * Parses the given file, and, if it contains a valid iCalendar object,
  * parse it and return a new #icalcomponent.
  *
- * Return value: a newly created #icalcomponent or NULL if the file doesn't
+ * Returns: a newly created #icalcomponent or NULL if the file doesn't
  * contain a valid iCalendar object.
  */
 icalcomponent *
@@ -565,7 +565,7 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
  * structure, or NULL if no alarm instances occurred in the specified time
  * range.
  *
- * Return value: a list of all the alarms found for the given component on
+ * Returns: a list of all the alarms found for the given component on
  * the given time tange. The list of alarms should be freed by using the
  * #e_cal_component_free_alarm_list function.
  */
@@ -634,7 +634,7 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  * Iterates through all the components in the @comps list and generates alarm
  * instances for them; putting them in the @comp_alarms list.
  *
- * Return value: the number of elements it added to the list.
+ * Returns: the number of elements it added to the list.
  */
 gint
 e_cal_util_generate_alarms_for_list (GList *comps,
@@ -674,7 +674,7 @@ e_cal_util_generate_alarms_for_list (GList *comps,
  * Converts an iCalendar PRIORITY value to a translated string. Any unknown
  * priority value (i.e. not 0-9) will be returned as "" (undefined).
  *
- * Return value: a string representing the PRIORITY value. This value is a
+ * Returns: a string representing the PRIORITY value. This value is a
  * constant, so it should never be freed.
  */
 const gchar *
@@ -702,7 +702,7 @@ e_cal_util_priority_to_string (gint priority)
  *
  * Converts a translated priority string to an iCalendar priority value.
  *
- * Return value: the priority (0-9) or -1 if the priority string is not valid.
+ * Returns: the priority (0-9) or -1 if the priority string is not valid.
 */
 gint
 e_cal_util_priority_from_string (const gchar *string)
@@ -789,7 +789,7 @@ e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
  *
  * Checks whether an #icalcomponent is an instance of a recurring appointment or not.
  *
- * Return value: TRUE if it is an instance, FALSE if not.
+ * Returns: TRUE if it is an instance, FALSE if not.
  */
 gboolean
 e_cal_util_component_is_instance (icalcomponent *icalcomp)
@@ -808,7 +808,7 @@ e_cal_util_component_is_instance (icalcomponent *icalcomp)
  *
  * Checks whether an #icalcomponent has any alarm.
  *
- * Return value: TRUE if it has alarms, FALSE otherwise.
+ * Returns: TRUE if it has alarms, FALSE otherwise.
  */
 gboolean
 e_cal_util_component_has_alarms (icalcomponent *icalcomp)
@@ -827,7 +827,7 @@ e_cal_util_component_has_alarms (icalcomponent *icalcomp)
  *
  * Checks whether an #icalcomponent has an organizer or not.
  *
- * Return value: TRUE if there is an organizer, FALSE if not.
+ * Returns: TRUE if there is an organizer, FALSE if not.
  */
 gboolean
 e_cal_util_component_has_organizer (icalcomponent *icalcomp)
@@ -846,7 +846,7 @@ e_cal_util_component_has_organizer (icalcomponent *icalcomp)
  *
  * Checks if an #icalcomponent has any attendees.
  *
- * Return value: TRUE if there are attendees, FALSE if not.
+ * Returns: TRUE if there are attendees, FALSE if not.
  */
 gboolean
 e_cal_util_component_has_attendee (icalcomponent *icalcomp)
@@ -866,7 +866,7 @@ e_cal_util_component_has_attendee (icalcomponent *icalcomp)
  *
  * Checks if an #icalcomponent has recurrence dates or rules.
  *
- * Return value: TRUE if there are recurrence dates/rules, FALSE if not.
+ * Returns: TRUE if there are recurrence dates/rules, FALSE if not.
  */
 gboolean
 e_cal_util_component_has_recurrences (icalcomponent *icalcomp)
@@ -882,7 +882,7 @@ e_cal_util_component_has_recurrences (icalcomponent *icalcomp)
  *
  * Checks if an #icalcomponent has recurrence dates.
  *
- * Return value: TRUE if there are recurrence dates, FALSE if not.
+ * Returns: TRUE if there are recurrence dates, FALSE if not.
  */
 gboolean
 e_cal_util_component_has_rdates (icalcomponent *icalcomp)
@@ -901,7 +901,7 @@ e_cal_util_component_has_rdates (icalcomponent *icalcomp)
  *
  * Checks if an #icalcomponent has recurrence rules.
  *
- * Return value: TRUE if there are recurrence rules, FALSE if not.
+ * Returns: TRUE if there are recurrence rules, FALSE if not.
  */
 gboolean
 e_cal_util_component_has_rrules (icalcomponent *icalcomp)
@@ -921,7 +921,7 @@ e_cal_util_component_has_rrules (icalcomponent *icalcomp)
  *
  * Compare the dates of two #icalcomponent's to check if they match.
  *
- * Return value: TRUE if the dates of both components match, FALSE otherwise.
+ * Returns: TRUE if the dates of both components match, FALSE otherwise.
  */
 gboolean
 e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *icalcomp2)
@@ -993,7 +993,7 @@ check_instance (icalcomponent *comp, struct icaltime_span *span, gpointer data)
  * This checks that @rid indicates a valid recurrence of @icalcomp, and
  * if so, generates a copy of @comp containing a RECURRENCE-ID of @rid.
  *
- * Return value: the instance, or %NULL.
+ * Returns: the instance, or %NULL.
  **/
 icalcomponent *
 e_cal_util_construct_instance (icalcomponent *icalcomp,

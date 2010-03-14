@@ -689,7 +689,7 @@ child_row_deleted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
  *
  * Creates a new #ETreeModelGenerator wrapping @child_model.
  *
- * Return value: A new #ETreeModelGenerator.
+ * Returns: A new #ETreeModelGenerator.
  **/
 ETreeModelGenerator *
 e_tree_model_generator_new (GtkTreeModel *child_model)
@@ -706,7 +706,7 @@ e_tree_model_generator_new (GtkTreeModel *child_model)
  *
  * Gets the child model being wrapped by @tree_model_generator.
  *
- * Return value: A #GtkTreeModel being wrapped.
+ * Returns: A #GtkTreeModel being wrapped.
  **/
 GtkTreeModel *
 e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator)
@@ -771,7 +771,7 @@ e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generato
  *
  * Convert a path to a child row to a path to a @tree_model_generator row.
  *
- * Return value: A new GtkTreePath, owned by the caller.
+ * Returns: A new GtkTreePath, owned by the caller.
  **/
 GtkTreePath *
 e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_model_generator,
@@ -863,7 +863,7 @@ e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_mod
  *
  * Converts @generator_path to a corresponding #GtkTreePath in the child model.
  *
- * Return value: A new #GtkTreePath, owned by the caller.
+ * Returns: A new #GtkTreePath, owned by the caller.
  **/
 GtkTreePath *
 e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_model_generator,

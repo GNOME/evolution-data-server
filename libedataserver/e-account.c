@@ -169,7 +169,7 @@ finalize (GObject *object)
 /**
  * e_account_new:
  *
- * Return value: a blank new account which can be filled in and
+ * Returns: a blank new account which can be filled in and
  * added to an #EAccountList.
  **/
 EAccount *
@@ -187,7 +187,7 @@ e_account_new (void)
  * e_account_new_from_xml:
  * @xml: an XML account description
  *
- * Return value: a new #EAccount based on the data in @xml, or %NULL
+ * Returns: a new #EAccount based on the data in @xml, or %NULL
  * if @xml could not be parsed as valid account data.
  **/
 EAccount *
@@ -415,7 +415,7 @@ xml_set_service (xmlNodePtr node, EAccountService *service)
  *
  * Changes @account to match @xml.
  *
- * Return value: %TRUE if @account was changed, %FALSE if @account
+ * Returns: %TRUE if @account was changed, %FALSE if @account
  * already matched @xml or @xml could not be parsed
  **/
 gboolean
@@ -582,7 +582,7 @@ e_account_import (EAccount *dest, EAccount *src)
  * e_account_to_xml:
  * @account: an #EAccount
  *
- * Return value: an XML representation of @account, which the caller
+ * Returns: an XML representation of @account, which the caller
  * must free.
  **/
 gchar *
@@ -684,7 +684,7 @@ e_account_to_xml (EAccount *account)
  * e_account_uid_from_xml:
  * @xml: an XML account description
  *
- * Return value: the permanent UID of the account described by @xml
+ * Returns: the permanent UID of the account described by @xml
  * (or %NULL if @xml could not be parsed or did not contain a uid).
  * The caller must free this string.
  **/

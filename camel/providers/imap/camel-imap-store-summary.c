@@ -124,7 +124,7 @@ camel_imap_store_summary_get_type (void)
  *
  * Create a new CamelImapStoreSummary object.
  *
- * Return value: A new CamelImapStoreSummary widget.
+ * Returns: A new CamelImapStoreSummary widget.
  **/
 CamelImapStoreSummary *
 camel_imap_store_summary_new (void)
@@ -144,7 +144,7 @@ camel_imap_store_summary_new (void)
  * A referenced to the summary item is returned, which may be
  * ref'd or free'd as appropriate.
  *
- * Return value: The summary item, or NULL if the @full_name name
+ * Returns: The summary item, or NULL if the @full_name name
  * is not available.
  * It must be freed using camel_store_summary_info_free().
  **/

@@ -305,7 +305,7 @@ imap_parse_namespace_response (const gchar *response)
  * Parses a LIST or LSUB response and returns the desired parts of it.
  * If @folder is non-%NULL, its value must be freed by the caller.
  *
- * Return value: whether or not the response was successfully parsed.
+ * Returns: whether or not the response was successfully parsed.
  **/
 gboolean
 imap_parse_list_response (CamelImapStore *store, const gchar *buf, gint *flags, gchar *sep, gchar **folder)
@@ -465,9 +465,9 @@ imap_parse_folder_name (CamelImapStore *store, const gchar *folder_name)
  * Converts label flag name on server to name used in Evolution or back.
  * It will never return NULL, it will return empty string, instead.
  *
- * @param flag Flag to rename.
- * @param len Length of the flag name.
- * @param server_to_evo if TRUE, then converting server names to evo's names, if FALSE then opposite.
+ * @flag: Flag to rename.
+ * @len: Length of the flag name.
+ * @server_to_evo: if TRUE, then converting server names to evo's names, if FALSE then opposite.
  */
 static const gchar *
 rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
@@ -708,7 +708,7 @@ imap_is_atom(const gchar *in)
  * camel_imap_command(): that line breaks are indicated by LF rather
  * than CRLF.
  *
- * Return value: the parsed string, or %NULL if a NIL or no string
+ * Returns: the parsed string, or %NULL if a NIL or no string
  * was parsed. (In the former case, *@str_p will be %NULL; in the
  * latter, it will point to the character after the NIL.)
  **/
@@ -1136,7 +1136,7 @@ imap_parse_body (const gchar **body_p, CamelFolder *folder,
  * imap_quote_string:
  * @str: the string to quote, which must not contain CR or LF
  *
- * Return value: an IMAP "quoted" corresponding to the string, which
+ * Returns: an IMAP "quoted" corresponding to the string, which
  * the caller must free.
  **/
 gchar *
@@ -1202,7 +1202,7 @@ get_summary_uid_numeric (CamelFolderSummary *summary, gint index)
  *
  * Note: @uids MUST be in sorted order for this code to work properly.
  *
- * Return value: the set, which the caller must free with g_free()
+ * Returns: the set, which the caller must free with g_free()
  **/
 gchar *
 imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, gssize maxlen, gint *lastuid)
@@ -1268,7 +1268,7 @@ imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, g
  * of @summary, the function will assume that all of the "missing" UIDs
  * do exist.
  *
- * Return value: the array of uids, which the caller must free with
+ * Returns: the array of uids, which the caller must free with
  * imap_uid_array_free(). (Or %NULL if the uid set can't be parsed.)
  **/
 GPtrArray *
@@ -1476,7 +1476,7 @@ find_folders_recursive (const gchar *physical_path, const gchar *path,
  * Walks the folder tree starting at @prefix and calls @callback
  * on each folder.
  *
- * Return value: %TRUE on success, %FALSE if an error occurs at any point
+ * Returns: %TRUE on success, %FALSE if an error occurs at any point
  **/
 gboolean
 imap_path_find_folders (const gchar *prefix, IMAPPathFindFoldersCallback callback, gpointer data)

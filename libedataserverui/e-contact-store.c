@@ -160,7 +160,7 @@ e_contact_store_finalize (GObject *object)
  *
  * Creates a new #EContactStore.
  *
- * Return value: A new #EContactStore.
+ * Returns: A new #EContactStore.
  **/
 EContactStore *
 e_contact_store_new (void)
@@ -765,7 +765,7 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
  *
  * Gets the #EBook that provided the contact at @iter.
  *
- * Return value: An #EBook.
+ * Returns: An #EBook.
  **/
 EBook *
 e_contact_store_get_book (EContactStore *contact_store, GtkTreeIter *iter)
@@ -787,7 +787,7 @@ e_contact_store_get_book (EContactStore *contact_store, GtkTreeIter *iter)
  *
  * Gets the #EContact at @iter.
  *
- * Return value: An #EContact.
+ * Returns: An #EContact.
  **/
 EContact *
 e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
@@ -810,7 +810,7 @@ e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
  *
  * Sets @iter to point to the contact row matching @uid.
  *
- * Return value: %TRUE if the contact was found, and @iter was set. %FALSE otherwise.
+ * Returns: %TRUE if the contact was found, and @iter was set. %FALSE otherwise.
  **/
 gboolean
 e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
@@ -835,7 +835,7 @@ e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
  *
  * Gets the list of books that provide contacts for @contact_store.
  *
- * Return value: A #GList of pointers to #EBook. The caller owns the list,
+ * Returns: A #GList of pointers to #EBook. The caller owns the list,
  * but not the books.
  **/
 GList *
@@ -959,7 +959,7 @@ e_contact_store_set_query (EContactStore *contact_store, EBookQuery *book_query)
  * Gets the query that's being used to fetch contacts from the books
  * assigned to @contact_store.
  *
- * Return value: The #EBookQuery being used.
+ * Returns: The #EBookQuery being used.
  **/
 EBookQuery *
 e_contact_store_peek_query (EContactStore *contact_store)

@@ -112,7 +112,7 @@ camel_strdown (gchar *str)
  *
  * ASCII to-lower function.
  *
- * Return value:
+ * Returns:
  **/
 gchar camel_tolower(gchar c)
 {
@@ -128,7 +128,7 @@ gchar camel_tolower(gchar c)
  *
  * ASCII to-upper function.
  *
- * Return value:
+ * Returns:
  **/
 gchar camel_toupper(gchar c)
 {
@@ -151,7 +151,7 @@ static GHashTable *pstring_table = NULL;
  *
  * The NULL and empty strings are special cased to constant values.
  *
- * Return value: A pointer to an equivalent string of @s.  Use
+ * Returns: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  **/
 const gchar *
@@ -197,7 +197,7 @@ camel_pstring_add (gchar *str, gboolean own)
  *
  * The NULL and empty strings are special cased to constant values.
  *
- * Return value: A pointer to an equivalent string of @s.  Use
+ * Returns: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  *
  * Since: 2.24
@@ -239,7 +239,7 @@ camel_pstring_peek (const gchar *str)
  *
  * The NULL and empty strings are special cased to constant values.
  *
- * Return value: A pointer to an equivalent string of @s.  Use
+ * Returns: A pointer to an equivalent string of @s.  Use
  * camel_pstring_free() when it is no longer needed.
  **/
 const gchar *

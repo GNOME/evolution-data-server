@@ -255,7 +255,7 @@ e_cal_backend_cache_init (ECalBackendCache *cache)
  * Creates a new #ECalBackendCache object, which implements a cache of
  * calendar/tasks objects, very useful for remote backends.
  *
- * Return value: The newly created object.
+ * Returns: The newly created object.
  */
 ECalBackendCache *
 e_cal_backend_cache_new (const gchar *uri, ECalSourceType source_type)
@@ -294,7 +294,7 @@ get_key (const gchar *uid, const gchar *rid)
  *
  * Gets a component from the %ECalBackendCache object.
  *
- * Return value: The %ECalComponent representing the component found,
+ * Returns: The %ECalComponent representing the component found,
  * or %NULL if it was not found in the cache.
  */
 ECalComponent *
@@ -338,7 +338,7 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const gchar *uid, co
  * the component if it does not exist or replace it if there was a
  * previous version of it.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
@@ -381,7 +381,7 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
  *
  * Removes a component from the cache.
  *
- * Return value: TRUE if the component was removed, FALSE otherwise.
+ * Returns: TRUE if the component was removed, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_remove_component (ECalBackendCache *cache,
@@ -415,7 +415,7 @@ e_cal_backend_cache_remove_component (ECalBackendCache *cache,
  *
  * Retrieves a list of all the components stored in the cache.
  *
- * Return value: A list of all the components. Each item in the list is
+ * Returns: A list of all the components. Each item in the list is
  * an #ECalComponent, which should be freed when no longer needed.
  */
 GList *
@@ -465,7 +465,7 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
  *
  * Retrieves a ical components from the cache.
  *
- * Return value: The list of calendar components if found, or NULL otherwise.
+ * Returns: The list of calendar components if found, or NULL otherwise.
  */
 GSList *
 e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar *uid)
@@ -514,7 +514,7 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar 
  *
  * Retrieves a timezone component from the cache.
  *
- * Return value: The timezone if found, or NULL otherwise.
+ * Returns: The timezone if found, or NULL otherwise.
  */
 const icaltimezone *
 e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid)
@@ -562,7 +562,7 @@ e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid)
  * Puts the given timezone in the cache, adding it, if it did not exist, or
  * replacing it, if there was an older version.
  *
- * Return value: TRUE if the timezone was put on the cache, FALSE otherwise.
+ * Returns: TRUE if the timezone was put on the cache, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone)
@@ -613,7 +613,7 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
  *
  * Sets the default timezone on the cache.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone)
@@ -656,7 +656,7 @@ e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone 
  *
  * Retrieves the default timezone from the cache.
  *
- * Return value: The default timezone, or NULL if no default timezone
+ * Returns: The default timezone, or NULL if no default timezone
  * has been set on the cache.
  */
 icaltimezone *
@@ -697,7 +697,7 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
  *
  * Removes a timezone component from the cache.
  *
- * Return value: TRUE if the timezone was removed, FALSE otherwise.
+ * Returns: TRUE if the timezone was removed, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const gchar *tzid)
@@ -720,7 +720,7 @@ e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const gchar *tzid)
  *
  * Gets the list of unique keys in the cache file.
  *
- * Return value: A list of all the keys. The items in the list are pointers
+ * Returns: A list of all the keys. The items in the list are pointers
  * to internal data, so should not be freed, only the list should.
  */
 GSList *
@@ -751,7 +751,7 @@ e_cal_backend_cache_set_marker (ECalBackendCache *cache)
  * Gets the marker of the cache. If this field is present, it means the
  * cache has been populated.
  *
- * Return value: The value of the marker or NULL if the cache is still empty.
+ * Returns: The value of the marker or NULL if the cache is still empty.
  */
 const gchar *
 e_cal_backend_cache_get_marker (ECalBackendCache *cache)
@@ -767,7 +767,7 @@ e_cal_backend_cache_get_marker (ECalBackendCache *cache)
  * @cache: An #ECalBackendCache object.
  * @utc_str: UTC string.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const gchar *utc_str)
@@ -786,7 +786,7 @@ e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const gchar *u
  * e_cal_backend_cache_get_server_utc_time:
  * @cache: An #ECalBackendCache object.
  *
- * Return value: The server's UTC string.
+ * Returns: The server's UTC string.
  */
 const gchar *
 e_cal_backend_cache_get_server_utc_time (ECalBackendCache *cache)
@@ -811,7 +811,7 @@ get_keys_key (const gchar *key)
  * @keyp: The Key parameter to identify uniquely.
  * @valuep: The value for the keyp parameter.
  *
- * Return value: TRUE if the operation was successful, FALSE otherwise.
+ * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
 e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, const gchar *value)
@@ -840,7 +840,7 @@ e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, co
  * e_cal_backend_cache_get_key_value:
  * @cache: An #ECalBackendCache object.
  *
- * Return value: The value.
+ * Returns: The value.
  */
 const gchar *
 e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key)

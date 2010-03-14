@@ -156,7 +156,7 @@ clear_items (EBookBackendSummary *summary)
  * specifies how much time should elapse, at a minimum, from
  * the summary is changed until it is flushed to disk.
  *
- * Return value: A new #EBookBackendSummary.
+ * Returns: A new #EBookBackendSummary.
  **/
 EBookBackendSummary*
 e_book_backend_summary_new (const gchar *summary_path, gint flush_timeout_millis)
@@ -498,7 +498,7 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
  * the file was located, it was in the correct format, and it was
  * not out of date.
  *
- * Return value: %TRUE if the load succeeded, %FALSE if it failed.
+ * Returns: %TRUE if the load succeeded, %FALSE if it failed.
  **/
 gboolean
 e_book_backend_summary_load (EBookBackendSummary *summary)
@@ -651,7 +651,7 @@ e_book_backend_summary_save_item (EBookBackendSummary *summary, FILE *fp, EBookB
  *
  * Attempts to save @summary to disk.
  *
- * Return value: %TRUE if the save succeeded, %FALSE otherwise.
+ * Returns: %TRUE if the save succeeded, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_summary_save (EBookBackendSummary *summary)
@@ -826,7 +826,7 @@ e_book_backend_summary_remove_contact (EBookBackendSummary *summary, const gchar
  * Checks if a summary of the contact identified by @id
  * exists in @summary.
  *
- * Return value: %TRUE if the summary exists, %FALSE otherwise.
+ * Returns: %TRUE if the summary exists, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_summary_check_contact (EBookBackendSummary *summary, const gchar *id)
@@ -887,7 +887,7 @@ e_book_backend_summary_touch (EBookBackendSummary *summary)
  *
  * Checks if @summary is more recent than @t.
  *
- * Return value: %TRUE if the summary is up to date, %FALSE otherwise.
+ * Returns: %TRUE if the summary is up to date, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_summary_is_up_to_date (EBookBackendSummary *summary, time_t t)
@@ -950,7 +950,7 @@ static const struct {
  * Checks if @query can be satisfied by searching only the fields
  * stored by @summary.
  *
- * Return value: %TRUE if the query can be satisfied, %FALSE otherwise.
+ * Returns: %TRUE if the query can be satisfied, %FALSE otherwise.
  **/
 gboolean
 e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const gchar *query)
@@ -1175,7 +1175,7 @@ static const struct {
  *
  * Searches @summary for contacts matching @query.
  *
- * Return value: A #GPtrArray of pointers to contact ID strings.
+ * Returns: A #GPtrArray of pointers to contact ID strings.
  **/
 GPtrArray*
 e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
@@ -1233,7 +1233,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary, const gchar *query)
  * Constructs and returns a VCard from the contact summary specified
  * by @id.
  *
- * Return value: A new VCard, or %NULL if the contact summary didn't exist.
+ * Returns: A new VCard, or %NULL if the contact summary didn't exist.
  **/
 gchar *
 e_book_backend_summary_get_summary_vcard(EBookBackendSummary *summary, const gchar *id)

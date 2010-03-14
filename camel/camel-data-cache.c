@@ -122,7 +122,7 @@ camel_data_cache_get_type(void)
  *
  * Create a new data cache.
  *
- * Return value: A new cache object, or NULL if the base path cannot
+ * Returns: A new cache object, or NULL if the base path cannot
  * be written to.
  **/
 CamelDataCache *
@@ -282,7 +282,7 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
  * Potentially, expiry processing will be performed while this call
  * is executing.
  *
- * Return value: A CamelStream (file) opened in read-write mode.
+ * Returns: A CamelStream (file) opened in read-write mode.
  * The caller must unref this when finished.
  **/
 CamelStream *
@@ -327,7 +327,7 @@ camel_data_cache_add(CamelDataCache *cdc, const gchar *path, const gchar *key, C
  * multiple callers, so ensure the stream is in a valid state
  * through external locking.
  *
- * Return value: A cache item, or NULL if the cache item does not exist.
+ * Returns: A cache item, or NULL if the cache item does not exist.
  **/
 CamelStream *
 camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
@@ -358,7 +358,7 @@ camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, C
  *
  * Lookup the filename for an item in the cache
  *
- * Return value: The filename for a cache item
+ * Returns: The filename for a cache item
  *
  * Since: 2.26
  **/
@@ -381,7 +381,7 @@ camel_data_cache_get_filename (CamelDataCache *cdc, const gchar *path, const gch
  *
  * Remove/expire a cache item.
  *
- * Return value:
+ * Returns:
  **/
 gint
 camel_data_cache_remove(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
@@ -424,7 +424,7 @@ camel_data_cache_remove(CamelDataCache *cdc, const gchar *path, const gchar *key
  *
  * CURRENTLY UNIMPLEMENTED
  *
- * Return value: -1 on error.
+ * Returns: -1 on error.
  **/
 gint camel_data_cache_rename(CamelDataCache *cache,
 			    const gchar *old, const gchar *new, CamelException *ex)
@@ -443,7 +443,7 @@ gint camel_data_cache_rename(CamelDataCache *cache,
  *
  * CURRENTLY_UNIMPLEMENTED
  *
- * Return value: -1 on error.
+ * Returns: -1 on error.
  **/
 gint
 camel_data_cache_clear(CamelDataCache *cache, const gchar *path, CamelException *ex)

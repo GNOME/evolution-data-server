@@ -1730,7 +1730,7 @@ co_metadata_free(CamelObject *obj, CamelObjectMeta *meta)
  *
  * Get a meta-data on an object.
  *
- * Return value: NULL if the meta-data is not set.
+ * Returns: NULL if the meta-data is not set.
  **/
 gchar *
 camel_object_meta_get(gpointer vo, const gchar * name)
@@ -1781,7 +1781,7 @@ camel_object_meta_set(gpointer vo, const gchar * name, const gchar *value)
  *
  * Read persistent object state from object_set(CAMEL_OBJECT_STATE_FILE).
  *
- * Return value: -1 on error.
+ * Returns: -1 on error.
  **/
 gint camel_object_state_read(gpointer vo)
 {
@@ -1816,7 +1816,7 @@ gint camel_object_state_read(gpointer vo)
  *
  * Write persistent state to the file as set by object_set(CAMEL_OBJECT_STATE_FILE).
  *
- * Return value: -1 on error.
+ * Returns: -1 on error.
  **/
 gint camel_object_state_write(gpointer vo)
 {
@@ -1945,7 +1945,7 @@ camel_object_class_dump_tree(CamelType root)
  * camel-objects which can be updated atomically using transaction
  * semantics.
  *
- * Return value:
+ * Returns:
  **/
 CamelObjectBag *
 camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree)
@@ -2076,7 +2076,7 @@ camel_object_bag_add(CamelObjectBag *bag, gconstpointer key, gpointer vo)
  * Lookup an object by @key.  If the key is currently reserved, then
  * wait until the key has been committed before continuing.
  *
- * Return value: NULL if the object corresponding to @key is not
+ * Returns: NULL if the object corresponding to @key is not
  * in the bag.  Otherwise a ref'd object pointer which the caller owns
  * the ref to.
  **/
@@ -2142,7 +2142,7 @@ camel_object_bag_get(CamelObjectBag *bag, gconstpointer key)
  * Unlike other 'peek' operations, the object is still reffed if
  * found.
  *
- * Return value: A referenced object, or NULL if @key is not
+ * Returns: A referenced object, or NULL if @key is not
  * present in the bag.
  **/
 gpointer
@@ -2179,7 +2179,7 @@ camel_object_bag_peek(CamelObjectBag *bag, gconstpointer key)
  * You may reserve multiple keys from the same thread, but they should
  * always be reserved in the same order, to avoid deadlocks.
  *
- * Return value:
+ * Returns:
  **/
 gpointer
 camel_object_bag_reserve(CamelObjectBag *bag, gconstpointer key)

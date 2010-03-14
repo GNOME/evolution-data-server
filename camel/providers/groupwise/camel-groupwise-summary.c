@@ -153,7 +153,7 @@ camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
  * This will create a new CamelGroupwiseSummary object and read in the
  * summary data from disk, if it exists.
  *
- * Return value: A new CamelGroupwiseSummary object.
+ * Returns: A new CamelGroupwiseSummary object.
  **/
 CamelFolderSummary *
 camel_groupwise_summary_new (struct _CamelFolder *folder, const gchar *filename)

@@ -141,7 +141,7 @@ complete_cb (DBusGProxy *proxy, guint status, EBookView *book_view)
  * is a private function, applications should call #e_book_get_book_view or
  * #e_book_async_get_book_view.
  *
- * Return value: A new #EBookView.
+ * Returns: A new #EBookView.
  **/
 EBookView *
 _e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *view_proxy_lock)
@@ -179,7 +179,7 @@ _e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *view_pro
  *
  * Returns the #EBook that this book view is monitoring.
  *
- * Return value: an #EBook.
+ * Returns: an #EBook.
  *
  * Since: 2.22
  **/

@@ -276,7 +276,7 @@ disco_get_folder_info (CamelStore *store, const gchar *top,
  * camel_disco_store_status:
  * @store: a disconnectable store
  *
- * Return value: the current online/offline status of @store.
+ * Returns: the current online/offline status of @store.
  **/
 CamelDiscoStoreStatus
 camel_disco_store_status (CamelDiscoStore *store)
@@ -372,7 +372,7 @@ can_work_offline (CamelDiscoStore *disco_store)
  * camel_disco_store_can_work_offline:
  * @store: a disconnectable store
  *
- * Return value: whether or not @store can be used offline. (Will be
+ * Returns: whether or not @store can be used offline. (Will be
  * %FALSE if the store is not caching data to local disk, for example.)
  **/
 gboolean
@@ -390,7 +390,7 @@ camel_disco_store_can_work_offline (CamelDiscoStore *store)
  * can be used as a simple way to set a generic error message in @ex
  * for operations that won't work offline.
  *
- * Return value: whether or not @store is online.
+ * Returns: whether or not @store is online.
  **/
 gboolean
 camel_disco_store_check_online (CamelDiscoStore *store, CamelException *ex)

@@ -53,7 +53,7 @@ camel_news_address_get_type (void)
  *
  * Create a new CamelNewsAddress object.
  *
- * Return value: A new CamelNewsAddress widget.
+ * Returns: A new CamelNewsAddress widget.
  **/
 CamelNewsAddress *
 camel_news_address_new (void)

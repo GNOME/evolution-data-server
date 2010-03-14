@@ -246,7 +246,7 @@ static void addsystemtz(gpointer key,
  * the TZID. All items referencing the renamed TZID are adapted
  * accordingly.
  *
- * Return value: TRUE if successful, FALSE otherwise.
+ * Returns: TRUE if successful, FALSE otherwise.
  *
  * Since: 2.24
  */

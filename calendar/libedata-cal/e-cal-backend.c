@@ -324,7 +324,7 @@ e_cal_backend_finalize (GObject *object)
  *
  * Gets the #ESource associated with the given backend.
  *
- * Return value: The #ESource for the backend.
+ * Returns: The #ESource for the backend.
  */
 ESource *
 e_cal_backend_get_source (ECalBackend *backend)
@@ -346,7 +346,7 @@ e_cal_backend_get_source (ECalBackend *backend)
  * Queries the URI of a calendar backend, which must already have an open
  * calendar.
  *
- * Return value: The URI where the calendar is stored.
+ * Returns: The URI where the calendar is stored.
  **/
 const gchar *
 e_cal_backend_get_uri (ECalBackend *backend)
@@ -367,7 +367,7 @@ e_cal_backend_get_uri (ECalBackend *backend)
  *
  * Gets the kind of components the given backend stores.
  *
- * Return value: The kind of components for this backend.
+ * Returns: The kind of components for this backend.
  */
 icalcomponent_kind
 e_cal_backend_get_kind (ECalBackend *backend)
@@ -484,7 +484,7 @@ e_cal_backend_add_query (ECalBackend *backend, EDataCalView *query)
  *
  * Gets the list of live queries being run on the given backend.
  *
- * Return value: The list of live queries.
+ * Returns: The list of live queries.
  */
 EList *
 e_cal_backend_get_queries (ECalBackend *backend)
@@ -679,7 +679,7 @@ e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, EServerMethodContext 
  *
  * Queries whether a calendar backend has been loaded yet.
  *
- * Return value: TRUE if the backend has been loaded with data, FALSE
+ * Returns: TRUE if the backend has been loaded with data, FALSE
  * otherwise.
  */
 gboolean
@@ -737,7 +737,7 @@ e_cal_backend_start_query (ECalBackend *backend, EDataCalView *query)
  *
  * Queries whether a calendar backend is connected remotely.
  *
- * Return value: The current mode the calendar is in
+ * Returns: The current mode the calendar is in
  **/
 CalMode
 e_cal_backend_get_mode (ECalBackend *backend)

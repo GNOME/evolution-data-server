@@ -126,7 +126,7 @@ digest_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
  *
  * Create a new CamelDigestStore object.
  *
- * Return value: A new CamelDigestStore widget.
+ * Returns: A new CamelDigestStore widget.
  **/
 CamelStore *
 camel_digest_store_new (const gchar *url)
