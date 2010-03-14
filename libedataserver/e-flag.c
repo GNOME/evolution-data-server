@@ -31,6 +31,8 @@ struct _EFlag {
  * Creates a new #EFlag object.  It is initially unset.
  *
  * Returns: a new #EFlag
+ *
+ * Since: 1.12
  **/
 EFlag *
 e_flag_new (void)
@@ -52,6 +54,8 @@ e_flag_new (void)
  * Returns the state of @flag.
  *
  * Returns: %TRUE if @flag is set
+ *
+ * Since: 1.12
  **/
 gboolean
 e_flag_is_set (EFlag *flag)
@@ -74,6 +78,8 @@ e_flag_is_set (EFlag *flag)
  * Sets @flag.  All threads waiting on @flag are woken up.  Threads that
  * call e_flag_wait() or e_flag_timed_wait() once @flag is set will not
  * block at all.
+ *
+ * Since: 1.12
  **/
 void
 e_flag_set (EFlag *flag)
@@ -92,6 +98,8 @@ e_flag_set (EFlag *flag)
  *
  * Unsets @flag.  Subsequent calls to e_flag_wait() or e_flag_timed_wait()
  * will block until @flag is set.
+ *
+ * Since: 1.12
  **/
 void
 e_flag_clear (EFlag *flag)
@@ -109,6 +117,8 @@ e_flag_clear (EFlag *flag)
  *
  * Blocks until @flag is set.  If @flag is already set, the function returns
  * immediately.
+ *
+ * Since: 1.12
  **/
 void
 e_flag_wait (EFlag *flag)
@@ -136,6 +146,8 @@ e_flag_wait (EFlag *flag)
  * g_time_val_add() can be used.
  *
  * Returns: %TRUE if @flag is now set
+ *
+ * Since: 1.12
  **/
 gboolean
 e_flag_timed_wait (EFlag *flag, GTimeVal *abs_time)
@@ -159,6 +171,8 @@ e_flag_timed_wait (EFlag *flag, GTimeVal *abs_time)
  * @flag: an #EFlag
  *
  * Destroys @flag.
+ *
+ * Since: 1.12
  **/
 void
 e_flag_free (EFlag *flag)

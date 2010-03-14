@@ -935,6 +935,11 @@ e_source_get_property (ESource *source,
 	return g_hash_table_lookup (priv->properties, property);
 }
 
+/**
+ * e_source_get_duped_property:
+ *
+ * Since: 1.12
+ **/
 gchar *
 e_source_get_duped_property (ESource *source, const gchar *property)
 {

@@ -27,6 +27,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * EFlag:
+ *
+ * Since: 1.12
+ **/
 typedef struct _EFlag EFlag;
 
 EFlag *		e_flag_new			(void);

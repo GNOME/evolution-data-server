@@ -746,6 +746,8 @@ e_book_backend_set_mode (EBookBackend *backend,
  * Write all pending data to disk.  This is only required under special
  * circumstances (for example before a live backup) and should not be used in
  * normal use.
+ *
+ * Since: 1.12
  */
 void
 e_book_backend_sync (EBookBackend *backend)

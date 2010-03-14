@@ -2018,6 +2018,8 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_photo, "EContactPhoto")
  * @geo: an #EContactGeo
  *
  * Frees the @geo struct and its contents.
+ *
+ * Since: 1.12
  **/
 void
 e_contact_geo_free (EContactGeo *geo)

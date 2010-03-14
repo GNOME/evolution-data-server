@@ -232,6 +232,11 @@ typedef struct {
 	gchar *suffixes;
 } EContactName;
 
+/**
+ * EContactGeo:
+ *
+ * Since: 1.12
+ **/
 typedef struct {
 	gdouble latitude;
 	gdouble longitude;

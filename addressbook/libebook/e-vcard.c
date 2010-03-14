@@ -1333,7 +1333,7 @@ e_vcard_attribute_remove_value (EVCardAttribute *attr, const gchar *s)
  *
  * Removes the parameter @param_name from the attribute @attr.
  *
- * Since 1.11.3.
+ * Since: 1.12
  */
 void
 e_vcard_attribute_remove_param (EVCardAttribute *attr, const gchar *param_name)

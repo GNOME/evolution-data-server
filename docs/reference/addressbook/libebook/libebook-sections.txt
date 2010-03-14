@@ -147,12 +147,12 @@ e_contact_get_type
 e_contact_address_get_type
 e_contact_cert_get_type
 e_contact_photo_get_type
-e_contact_geo_get_type
 e_contact_name_get_type
 e_contact_date_get_type
 EContactPhotoType
 <SUBSECTION Private>
 EContactPrivate
+e_contact_geo_get_type
 </SECTION>
 
 <SECTION>

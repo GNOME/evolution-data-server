@@ -889,6 +889,11 @@ e_source_group_xmlstr_equal (const gchar *a, const gchar *b)
 	return retval;
 }
 
+/**
+ * e_source_group_get_property:
+ *
+ * Since: 1.12
+ **/
 gchar *
 e_source_group_get_property (ESourceGroup *source_group,
 			     const gchar *property)
@@ -901,6 +906,11 @@ e_source_group_get_property (ESourceGroup *source_group,
 	return g_strdup (g_hash_table_lookup (priv->properties, property));
 }
 
+/**
+ * e_source_group_set_property:
+ *
+ * Since: 1.12
+ **/
 void
 e_source_group_set_property (ESourceGroup *source_group,
 			     const gchar *property,
@@ -919,6 +929,11 @@ e_source_group_set_property (ESourceGroup *source_group,
 	g_signal_emit (source_group, signals[CHANGED], 0);
 }
 
+/**
+ * e_source_group_foreach_property:
+ *
+ * Since: 1.12
+ **/
 void
 e_source_group_foreach_property (ESourceGroup *source_group, GHFunc func, gpointer data)
 {
