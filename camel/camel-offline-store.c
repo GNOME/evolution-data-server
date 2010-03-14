@@ -176,6 +176,11 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, Cam
 	store->state = state;
 }
 
+/**
+ * camel_offline_store_prepare_for_offline:
+ *
+ * Since: 2.22
+ **/
 void
 camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelException *ex)
 {

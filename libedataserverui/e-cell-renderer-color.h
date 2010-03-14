@@ -47,6 +47,11 @@ typedef struct _ECellRendererColor ECellRendererColor;
 typedef struct _ECellRendererColorClass ECellRendererColorClass;
 typedef struct _ECellRendererColorPrivate ECellRendererColorPrivate;
 
+/**
+ * ECellRendererColor:
+ *
+ * Since: 2.22
+ **/
 struct _ECellRendererColor {
 	GtkCellRenderer parent;
 	ECellRendererColorPrivate *priv;

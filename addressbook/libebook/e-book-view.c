@@ -180,6 +180,8 @@ _e_book_view_new (EBook *book, DBusGProxy *view_proxy, GStaticRecMutex *view_pro
  * Returns the #EBook that this book view is monitoring.
  *
  * Return value: an #EBook.
+ *
+ * Since: 2.22
  **/
 EBook *
 e_book_view_get_book (EBookView *book_view)

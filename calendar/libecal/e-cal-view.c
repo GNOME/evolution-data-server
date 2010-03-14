@@ -387,6 +387,8 @@ _e_cal_view_new (ECal *client, DBusGProxy *view_proxy, GStaticRecMutex *connecti
  * Get the #ECal associated with this view.
  *
  * Return value: the associated client.
+ *
+ * Since: 2.22
  */
 ECal *
 e_cal_view_get_client (ECalView *view)
@@ -401,6 +403,8 @@ e_cal_view_get_client (ECalView *view)
  * @view: A #ECalView object.
  *
  * Starts a live query to the calendar/tasks backend.
+ *
+ * Since: 2.22
  */
 void
 e_cal_view_start (ECalView *view)

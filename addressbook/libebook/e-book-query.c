@@ -211,6 +211,8 @@ e_book_query_field_test (EContactField field,
  * Creates a new #EBookQuery which tests @field for @value using the test @test.
  *
  * Return value: the new #EBookQuery
+ *
+ * Since: 2.22
  **/
 EBookQuery *
 e_book_query_vcard_field_test (const gchar     *field,

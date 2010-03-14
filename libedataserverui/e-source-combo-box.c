@@ -347,6 +347,8 @@ e_source_combo_box_init (ESourceComboBox *source_combo_box)
  * from the provided #ESourceList.
  *
  * Returns: a new #ESourceComboBox
+ *
+ * Since: 2.22
  **/
 GtkWidget *
 e_source_combo_box_new (ESourceList *source_list)
@@ -366,6 +368,8 @@ e_source_combo_box_new (ESourceList *source_list)
  * @source_combo_box.
  *
  * Returns: an #ESourceList
+ *
+ * Since: 2.22
  **/
 ESourceList *
 e_source_combo_box_get_source_list (ESourceComboBox *source_combo_box)
@@ -382,6 +386,8 @@ e_source_combo_box_get_source_list (ESourceComboBox *source_combo_box)
  *
  * Sets the source list used by @source_combo_box to be @source_list.  This
  * causes the contents of @source_combo_box to be regenerated.
+ *
+ * Since: 2.22
  **/
 void
 e_source_combo_box_set_source_list (ESourceComboBox *source_combo_box,
@@ -427,6 +433,8 @@ e_source_combo_box_set_source_list (ESourceComboBox *source_combo_box,
  * if there is no active item.
  *
  * Returns: an #ESource or %NULL
+ *
+ * Since: 2.22
  **/
 ESource *
 e_source_combo_box_get_active (ESourceComboBox *source_combo_box)
@@ -455,6 +463,8 @@ e_source_combo_box_get_active (ESourceComboBox *source_combo_box)
  * @source: an #ESource
  *
  * Sets the active item to the one corresponding to @source.
+ *
+ * Since: 2.22
  **/
 void
 e_source_combo_box_set_active (ESourceComboBox *source_combo_box,
@@ -475,6 +485,8 @@ e_source_combo_box_set_active (ESourceComboBox *source_combo_box,
  * active item, or %NULL if there is no active item.
  *
  * Returns: a unique ID string or %NULL
+ *
+ * Since: 2.22
  **/
 const gchar *
 e_source_combo_box_get_active_uid (ESourceComboBox *source_combo_box)
@@ -496,6 +508,8 @@ e_source_combo_box_get_active_uid (ESourceComboBox *source_combo_box)
  * @uid: a unique ID of an #ESource
  *
  * Sets the active item to the one corresponding to @uid.
+ *
+ * Since: 2.22
  **/
 void
 e_source_combo_box_set_active_uid (ESourceComboBox *source_combo_box,

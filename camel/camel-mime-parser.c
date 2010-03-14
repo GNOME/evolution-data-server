@@ -262,6 +262,8 @@ camel_mime_parser_new (void)
  *
  * Return value: An id that may be passed to filter_remove() to remove
  * the filter, or -1 if the operation failed.
+ *
+ * Since: 2.22
  **/
 gint
 camel_mime_parser_filter_add(CamelMimeParser *m, CamelMimeFilter *mf)
@@ -292,6 +294,8 @@ camel_mime_parser_filter_add(CamelMimeParser *m, CamelMimeFilter *mf)
  *
  * Remove a processing filter from the pipeline.  There is no
  * restriction on the order the filters can be removed.
+ *
+ * Since: 2.22
  **/
 void
 camel_mime_parser_filter_remove(CamelMimeParser *m, gint id)
@@ -347,6 +351,8 @@ camel_mime_parser_header(CamelMimeParser *m, const gchar *name, gint *offset)
  *
  * Return value: The raw headers, or NULL if there are no headers
  * defined for the current part or state.  These are READ ONLY.
+ *
+ * Since: 2.22
  **/
 struct _camel_header_raw *
 camel_mime_parser_headers_raw(CamelMimeParser *m)
@@ -378,6 +384,8 @@ byte_array_to_string(GByteArray *array)
  * Can only be used when the state is CAMEL_MIME_PARSER_STATE_MULTIPART_END.
  *
  * Return value: The preface text, or NULL if there wasn't any.
+ *
+ * Since: 2.22
  **/
 const gchar *
 camel_mime_parser_preface(CamelMimeParser *m)
@@ -399,6 +407,8 @@ camel_mime_parser_preface(CamelMimeParser *m)
  * CAMEL_MIME_PARSER_STATE_MULTIPART_END.
  *
  * Return value: The postface text, or NULL if there wasn't any.
+ *
+ * Since: 2.22
  **/
 const gchar *
 camel_mime_parser_postface(CamelMimeParser *m)
@@ -423,6 +433,8 @@ camel_mime_parser_postface(CamelMimeParser *m)
  * state, or any deeper state.
  *
  * Return value: The From line, or NULL if called out of context.
+ *
+ * Since: 2.22
  **/
 const gchar *
 camel_mime_parser_from_line(CamelMimeParser *m)
@@ -698,6 +710,8 @@ camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint 
  * the respective current state).
  *
  * Return value: See above.
+ *
+ * Since: 2.22
  **/
 off_t
 camel_mime_parser_tell (CamelMimeParser *parser)
@@ -717,6 +731,8 @@ camel_mime_parser_tell (CamelMimeParser *parser)
  *
  * Return value: The header start position, or -1 if
  * no headers were scanned in the current state.
+ *
+ * Since: 2.22
  **/
 off_t
 camel_mime_parser_tell_start_headers (CamelMimeParser *parser)
@@ -735,6 +751,8 @@ camel_mime_parser_tell_start_headers (CamelMimeParser *parser)
  *
  * Return value: The start of the from line, or -1 if there
  * was no From line, or From lines are not being scanned.
+ *
+ * Since: 2.22
  **/
 off_t
 camel_mime_parser_tell_start_from (CamelMimeParser *parser)
@@ -753,6 +771,8 @@ camel_mime_parser_tell_start_from (CamelMimeParser *parser)
  *
  * Return value: The start of the boundary, or -1 if there
  * was no boundary encountered yet.
+ *
+ * Since: 2.22
  **/
 off_t
 camel_mime_parser_tell_start_boundary(CamelMimeParser *parser)
@@ -778,6 +798,8 @@ camel_mime_parser_tell_start_boundary(CamelMimeParser *parser)
  * Return value: The new seek offset, or -1 on
  * an error (for example, trying to seek on a non-seekable
  * stream or file descriptor).
+ *
+ * Since: 2.22
  **/
 off_t
 camel_mime_parser_seek(CamelMimeParser *parser, off_t offset, gint whence)

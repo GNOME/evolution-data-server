@@ -431,6 +431,11 @@ camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
 	return CS_CLASS (session)->alert_user (session, type, prompt, cancel);
 }
 
+/**
+ * camel_session_lookup_addressbook:
+ *
+ * Since: 2.22
+ **/
 gboolean
 camel_session_lookup_addressbook (CamelSession *session, const gchar *name)
 {
@@ -450,6 +455,8 @@ camel_session_lookup_addressbook (CamelSession *session, const gchar *name)
  * string contains markup tags.  Use g_free() to free it.
  *
  * Returns: a newly-allocated password prompt string
+ *
+ * Since: 2.22
  **/
 gchar *
 camel_session_build_password_prompt (const gchar *type,
@@ -778,6 +785,11 @@ camel_session_set_network_state (CamelSession *session,
 	session->network_state = network_state;
 }
 
+/**
+ * camel_session_set_junk_headers:
+ *
+ * Since: 2.22
+ **/
 void
 camel_session_set_junk_headers (CamelSession *session,
                                 const gchar **headers,
@@ -800,6 +812,11 @@ camel_session_set_junk_headers (CamelSession *session,
 	}
 }
 
+/**
+ * camel_session_get_junk_headers:
+ *
+ * Since: 2.22
+ **/
 const GHashTable *
 camel_session_get_junk_headers (CamelSession *session)
 {

@@ -990,6 +990,8 @@ camel_folder_info_free (CamelFolderInfo *fi)
  * camel_folder_info_new:
  *
  * Return value: a new empty CamelFolderInfo instance
+ *
+ * Since: 2.22
  **/
 CamelFolderInfo *
 camel_folder_info_new (void)
@@ -1381,6 +1383,8 @@ can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex
  * Default behavior is that all Inbox folders are intended to be refreshed.
  *
  * Returns: whether folder should be checked for new mails
+ *
+ * Since: 2.22
  **/
 gboolean
 camel_store_can_refresh_folder (CamelStore *store, CamelFolderInfo *info, CamelException *ex)

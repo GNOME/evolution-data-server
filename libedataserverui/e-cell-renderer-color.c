@@ -233,6 +233,11 @@ e_cell_renderer_color_init (ECellRendererColor *cellcolor)
 	g_object_set (cellcolor, "xpad", 4, NULL);
 }
 
+/**
+ * e_cell_renderer_color_new:
+ *
+ * Since: 2.22
+ **/
 GtkCellRenderer *
 e_cell_renderer_color_new (void)
 {

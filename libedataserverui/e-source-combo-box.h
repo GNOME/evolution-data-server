@@ -46,6 +46,11 @@ typedef struct _ESourceComboBox ESourceComboBox;
 typedef struct _ESourceComboBoxClass ESourceComboBoxClass;
 typedef struct _ESourceComboBoxPrivate ESourceComboBoxPrivate;
 
+/**
+ * ESourceComboBox:
+ *
+ * Since: 2.22
+ **/
 struct _ESourceComboBox {
 	GtkComboBox parent;
 

@@ -636,6 +636,8 @@ time_from_isodate (const gchar *str)
  *
  * Return value: The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
+ *
+ * Since: 2.22
  */
 struct tm
 icaltimetype_to_tm (struct icaltimetype *itt)
@@ -670,6 +672,8 @@ icaltimetype_to_tm (struct icaltimetype *itt)
  *
  * Return value: The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
+ *
+ * Since: 2.22
  **/
 struct tm
 icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
@@ -700,6 +704,8 @@ icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
  * Converts a struct tm into an icaltimetype.
  *
  * Return value: The converted time as an icaltimetype.
+ *
+ * Since: 2.22
  */
 struct icaltimetype
 tm_to_icaltimetype (struct tm *tm, gboolean is_date)

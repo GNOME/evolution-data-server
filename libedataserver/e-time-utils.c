@@ -1592,6 +1592,8 @@ has_correct_date (const struct tm *value)
  * Returns: E_TIME_PARSE_OK if the string was successfully parsed,
  *          E_TIME_PARSE_NONE if the string was empty, or
  *          E_TIME_PARSE_INVALID if the string could not be parsed.
+ *
+ * Since: 2.22
  */
 ETimeParseStatus
 e_time_parse_date_and_time_ex		(const gchar	*value,
@@ -1741,6 +1743,8 @@ e_time_parse_date_and_time		(const gchar	*value,
  *
  * Returns: An #ETimeParseStatus result code indicating whether
  * @value was an empty string, a valid date, or an invalid date.
+ *
+ * Since: 2.22
  **/
 ETimeParseStatus
 e_time_parse_date_ex (const gchar *value, struct tm *result, gboolean *two_digit_year)
@@ -2021,6 +2025,11 @@ static gint _e_string_replace(gchar **str, const gchar *old, const gchar *new)
 }
 #endif
 
+/**
+ * e_time_get_d_fmt_with_4digit_year:
+ *
+ * Since: 2.22
+ **/
 gchar *
 e_time_get_d_fmt_with_4digit_year (void)
 {
