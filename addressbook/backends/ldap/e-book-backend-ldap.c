@@ -341,6 +341,7 @@ static struct prop_info {
 	/* name fields */
 	STRING_PROP (E_CONTACT_FULL_NAME,   "cn" ),
 	/* WRITE_ONLY_STRING_PROP (E_CONTACT_FAMILY_NAME, "sn" ), */
+	STRING_PROP (E_CONTACT_GIVEN_NAME, "givenName"),
 	STRING_PROP (E_CONTACT_FAMILY_NAME, "sn" ),
 
 	/* email addresses */
