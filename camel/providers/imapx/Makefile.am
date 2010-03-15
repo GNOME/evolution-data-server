@@ -55,8 +55,7 @@ test_imapx_CPPFLAGS = \
 test_imapx_SOURCES = test-imapx.c
 test_imapx_LDADD =							\
 	$(top_builddir)/camel/libcamel-1.2.la				\
-	$(top_builddir)/camel/libcamel-provider-1.2.la			\
-	libcamelimapx.la
+	$(top_builddir)/camel/libcamel-provider-1.2.la
 
 BUILT_SOURCES = camel-imapx-tokenise.h
 CLEANFILES = $(BUILT_SOURCES)
