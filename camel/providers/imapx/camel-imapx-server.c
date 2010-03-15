@@ -847,7 +847,7 @@ imapx_command_start_next(CamelIMAPXServer *is, CamelException *ex)
 		c(printf("- we're selected on '%s', current jobs?\n", is->select));
 		for (ic = (CamelIMAPXCommand *)is->active.head;ic->next;ic=ic->next) {
 			c(printf("-  %3d '%s'\n", (gint)ic->pri, ic->name));
-			if (ic->select && ic->pri > pri)
+			if (ic->pri > pri)
 				pri = ic->pri;
 			count++;
 			if (count > MAX_COMMANDS) {
@@ -2445,6 +2445,8 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				camel_exception_setv(job->ex, 1, "Error fetching message: %s", ic->status->text);
 			else
 				camel_exception_xfer (job->ex, ic->ex);
+			camel_object_unref (stream);
+			job->u.get_message.stream = NULL;
 		} else {
 			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 
@@ -2466,10 +2468,10 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 					camel_exception_setv(job->ex, 1, "closing tmp stream failed: %s", g_strerror(errno));
 
 				g_free (tmp);
+				job->u.get_message.stream = camel_data_cache_get (ifolder->cache, "cur", job->u.get_message.uid, NULL);
 			}
 		}
 
-		camel_object_unref (stream);
 		camel_data_cache_remove (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
 		imapx_job_done (is, job);
 	}
@@ -2478,7 +2480,7 @@ imapx_command_fetch_message_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_job_get_message_start(CamelIMAPXServer *is, CamelIMAPXJob *job)
+imapx_job_get_message_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
 	gint i;
@@ -3766,6 +3768,8 @@ imapx_server_init(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 	is->expunged = NULL;
 	is->changes = camel_folder_change_info_new ();
 	is->parser_quit = FALSE;
+
+	is->uid_eflags = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify)g_free, (GDestroyNotify) e_flag_free);
 }
 
 static void
@@ -3773,6 +3777,7 @@ imapx_server_finalise(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 {
 	g_static_rec_mutex_free(&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);
+	g_hash_table_destroy (is->uid_eflags);
 
 	camel_folder_change_info_free (is->changes);
 }
@@ -3904,6 +3909,7 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 	gchar *cache_file = NULL;
 	CamelMessageInfo *mi;
 	gboolean registered;
+	EFlag *flag = NULL;
 
 	cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", uid, NULL);
 	if (g_file_test (cache_file, G_FILE_TEST_EXISTS)) {
@@ -3915,12 +3921,19 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 	QUEUE_LOCK (is);
 
 	if ((job = imapx_is_job_in_queue (is, folder->full_name, IMAPX_JOB_GET_MESSAGE, uid))) {
+		flag = g_hash_table_lookup (is->uid_eflags, uid);
+	
 		if (pri > job->pri)
 			job->pri = pri;
-
-		camel_exception_set (ex, CAMEL_EXCEPTION_OPERATION_IN_PROGRESS, "Downloading message...");
+	
 		QUEUE_UNLOCK (is);
-		return NULL;
+
+		e_flag_wait (flag);
+		
+		stream = camel_data_cache_get (ifolder->cache, "cur", uid, NULL);
+		if (!stream)
+			camel_exception_set (ex, 1, "Could not retrieve the message");
+		return stream;
 	}
 
 	mi = camel_folder_summary_uid (folder->summary, uid);
@@ -3951,15 +3964,24 @@ imapx_server_get_message (CamelIMAPXServer *is, CamelFolder *folder, CamelOperat
 	job->u.get_message.size = ((CamelMessageInfoBase *) mi)->size;
 	camel_message_info_free (mi);
 	registered = imapx_register_job (is, job);
+	flag = e_flag_new ();
+	g_hash_table_insert (is->uid_eflags, g_strdup (uid), flag);
 
 	QUEUE_UNLOCK (is);
 
-	if (registered) {
+	if (registered)
 		imapx_run_job(is, job);
-		stream = camel_data_cache_get (ifolder->cache, "cur", uid, NULL);
-	}
-
+	
+	e_flag_set (flag);
+	if (!camel_exception_is_set (job->ex))
+		stream = job->u.get_message.stream;
+	
 	g_free(job);
+
+	/* HACK FIXME just sleep for sometime so that the other waiting locks gets released by that time. Think of a
+	 better way..*/
+	g_usleep (1000);
+	g_hash_table_remove (is->uid_eflags, uid);
 
 	return stream;
 }

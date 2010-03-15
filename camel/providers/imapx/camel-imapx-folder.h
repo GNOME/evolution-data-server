@@ -52,6 +52,7 @@ typedef struct _CamelIMAPXFolder {
 	GHashTable *ignore_recent;
 	
 	GMutex *search_lock;
+	GMutex *stream_lock;
 } CamelIMAPXFolder;
 
 typedef struct _CamelIMAPXFolderClass {

@@ -100,6 +100,9 @@ struct _CamelIMAPXServer {
 	/* Idle */
 	struct _CamelIMAPXIdle *idle;
 	gboolean use_idle;
+
+	/* used for storing eflags to syncronize duplicate get_message requests */
+	GHashTable *uid_eflags;
 };
 
 struct _CamelIMAPXServerClass {

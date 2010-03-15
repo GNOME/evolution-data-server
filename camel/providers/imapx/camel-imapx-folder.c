@@ -103,6 +103,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 
 	ifolder->search = camel_folder_search_new ();
 	ifolder->search_lock = g_mutex_new ();
+	ifolder->stream_lock = g_mutex_new ();
 	ifolder->ignore_recent = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL); 
 	ifolder->exists_on_server = 0;
 	ifolder->unread_on_server = 0;
@@ -209,10 +210,13 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 
 	if (!camel_exception_is_set (ex) && stream) {
 		msg = camel_mime_message_new();
+	
+		g_mutex_lock (ifolder->stream_lock);
 		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
 			camel_object_unref(msg);
 			msg = NULL;
 		}
+		g_mutex_unlock (ifolder->stream_lock);
 		camel_object_unref(stream);
 	}
 
@@ -437,6 +441,7 @@ imapx_finalize (CamelObject *object)
 		g_hash_table_unref (ifolder->ignore_recent);
 
 	g_mutex_free (ifolder->search_lock);
+	g_mutex_free (ifolder->stream_lock);
 	if (ifolder->search)
 		camel_object_unref (CAMEL_OBJECT (ifolder->search));
 }
