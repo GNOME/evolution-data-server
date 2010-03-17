@@ -35,8 +35,7 @@ libecalbackendweather_la_LIBADD =						\
 	$(LIBGWEATHER_LIBS)
 
 libecalbackendweather_la_LDFLAGS =		\
-	-module -avoid-version $(NO_UNDEFINED)	\
-	$(LIBGWEATHER_LIBS)
+	-module -avoid-version $(NO_UNDEFINED)
 	
 
 weatherdata_in_files = Locations.xml.in
