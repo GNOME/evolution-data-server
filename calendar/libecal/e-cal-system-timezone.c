@@ -433,7 +433,6 @@ system_timezone_find (void)
 
 #else /* G_OS_WIN32 */
 #include <windows.h>
-#include <stdio.h>
 
 struct timezone_map_entry
 {
