@@ -1,20 +1,20 @@
 # translation of eu.po to Basque
-# Copyright (C) 2001, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 #
-# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2005, 2006,2007,2008, 2009.
+# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2005, 2006,2007,2008, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-18 21:59+0100\n"
-"PO-Revision-Date: 2009-02-18 21:59+0100\n"
+"POT-Creation-Date: 2010-03-22 20:04+0100\n"
+"PO-Revision-Date: 2010-03-22 20:04+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:560
@@ -27,13 +27,13 @@ msgstr "Kargatzen..."
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2322
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2344
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2389
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4288
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4323
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Bilatzen..."
 
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2759
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4452
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4487
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Kontaktuak deskargatzen (%d)..."
@@ -45,35 +45,35 @@ msgstr "Kontaktuak deskargatzen (%d)..."
 msgid "Updating contacts cache (%d)... "
 msgstr "Kontaktuen cache-a eguneratzen (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:751
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:788
 msgid "Using Distinguished Name (DN)"
-msgstr "Izen bereizitua (DN) erabiltzen"
+msgstr "DNa erabiltzen"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:754
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:791
 msgid "Using Email Address"
 msgstr "Helbide elektronikoa erabiltzen"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1019
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1054
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP zerbitzariarekin berriro konektatzen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1617
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1652
 msgid "Adding contact to LDAP server..."
 msgstr "LDAP zerbitzarian kontaktua gehitzen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1752
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1787
 msgid "Removing contact from LDAP server..."
 msgstr "LDAP zerbitzaritik kontaktua kentzen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2064
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2099
 msgid "Modifying contact from LDAP server..."
 msgstr "LDAP zerbitzariko kontaktua aldatzen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4148
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4183
 msgid "Receiving LDAP search results..."
 msgstr "LDAP bilaketaren emaitzak jasotzen..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4310
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4345
 msgid "Error performing search"
 msgstr "Errorea bilaketa egitean"
 
@@ -81,92 +81,93 @@ msgstr "Errorea bilaketa egitean"
 #. * function names, e.g.
 #. * "e_book_add_contact" on book before
 #. * "e_book_open
-#: ../addressbook/libebook/e-book.c:260 ../addressbook/libebook/e-book.c:264
-#: ../addressbook/libebook/e-book.c:469 ../addressbook/libebook/e-book.c:473
-#: ../addressbook/libebook/e-book.c:612 ../addressbook/libebook/e-book.c:616
-#: ../addressbook/libebook/e-book.c:703 ../addressbook/libebook/e-book.c:707
-#: ../addressbook/libebook/e-book.c:1003 ../addressbook/libebook/e-book.c:1008
-#: ../addressbook/libebook/e-book.c:1187 ../addressbook/libebook/e-book.c:1191
-#: ../addressbook/libebook/e-book.c:1346 ../addressbook/libebook/e-book.c:1350
-#: ../addressbook/libebook/e-book.c:1552 ../addressbook/libebook/e-book.c:1556
-#: ../addressbook/libebook/e-book.c:1795 ../addressbook/libebook/e-book.c:1799
-#: ../addressbook/libebook/e-book.c:2033 ../addressbook/libebook/e-book.c:2037
-#: ../addressbook/libebook/e-book.c:2242 ../addressbook/libebook/e-book.c:2246
-#: ../addressbook/libebook/e-book.c:3405
+#: ../addressbook/libebook/e-book.c:288 ../addressbook/libebook/e-book.c:292
+#: ../addressbook/libebook/e-book.c:496 ../addressbook/libebook/e-book.c:500
+#: ../addressbook/libebook/e-book.c:639 ../addressbook/libebook/e-book.c:643
+#: ../addressbook/libebook/e-book.c:730 ../addressbook/libebook/e-book.c:734
+#: ../addressbook/libebook/e-book.c:1028 ../addressbook/libebook/e-book.c:1033
+#: ../addressbook/libebook/e-book.c:1211 ../addressbook/libebook/e-book.c:1215
+#: ../addressbook/libebook/e-book.c:1370 ../addressbook/libebook/e-book.c:1374
+#: ../addressbook/libebook/e-book.c:1575 ../addressbook/libebook/e-book.c:1579
+#: ../addressbook/libebook/e-book.c:1818 ../addressbook/libebook/e-book.c:1822
+#: ../addressbook/libebook/e-book.c:2055 ../addressbook/libebook/e-book.c:2059
+#: ../addressbook/libebook/e-book.c:2263 ../addressbook/libebook/e-book.c:2267
+#: ../addressbook/libebook/e-book.c:3454
 #, c-format
 msgid "\"%s\" on book before \"%s\""
 msgstr "\"%s\" liburuan, honen aurretik: \"%s\""
 
-#: ../addressbook/libebook/e-book.c:273 ../addressbook/libebook/e-book.c:482
-#: ../addressbook/libebook/e-book.c:625 ../addressbook/libebook/e-book.c:716
-#: ../addressbook/libebook/e-book.c:1018 ../addressbook/libebook/e-book.c:1201
-#: ../addressbook/libebook/e-book.c:1360 ../addressbook/libebook/e-book.c:1565
-#: ../addressbook/libebook/e-book.c:1808 ../addressbook/libebook/e-book.c:2047
-#: ../addressbook/libebook/e-book.c:2255 ../addressbook/libebook/e-book.c:2634
-#: ../addressbook/libebook/e-book.c:2833
+#: ../addressbook/libebook/e-book.c:301 ../addressbook/libebook/e-book.c:509
+#: ../addressbook/libebook/e-book.c:652 ../addressbook/libebook/e-book.c:743
+#: ../addressbook/libebook/e-book.c:1043 ../addressbook/libebook/e-book.c:1225
+#: ../addressbook/libebook/e-book.c:1384 ../addressbook/libebook/e-book.c:1588
+#: ../addressbook/libebook/e-book.c:1831 ../addressbook/libebook/e-book.c:2069
+#: ../addressbook/libebook/e-book.c:2276 ../addressbook/libebook/e-book.c:2685
+#: ../addressbook/libebook/e-book.c:2883
 #, c-format
 msgid "book busy"
 msgstr "liburua okupatuta"
 
-#: ../addressbook/libebook/e-book.c:304 ../addressbook/libebook/e-book.c:308
-#: ../addressbook/libebook/e-book.c:513 ../addressbook/libebook/e-book.c:517
-#: ../addressbook/libebook/e-book.c:652 ../addressbook/libebook/e-book.c:656
-#: ../addressbook/libebook/e-book.c:743 ../addressbook/libebook/e-book.c:747
-#: ../addressbook/libebook/e-book.c:1045 ../addressbook/libebook/e-book.c:1048
-#: ../addressbook/libebook/e-book.c:1231 ../addressbook/libebook/e-book.c:1234
-#: ../addressbook/libebook/e-book.c:1387 ../addressbook/libebook/e-book.c:1391
-#: ../addressbook/libebook/e-book.c:1601 ../addressbook/libebook/e-book.c:1605
-#: ../addressbook/libebook/e-book.c:1855 ../addressbook/libebook/e-book.c:1859
-#: ../addressbook/libebook/e-book.c:2077 ../addressbook/libebook/e-book.c:2081
-#: ../addressbook/libebook/e-book.c:2281 ../addressbook/libebook/e-book.c:2285
-#: ../addressbook/libebook/e-book.c:2518 ../addressbook/libebook/e-book.c:2660
-#: ../addressbook/libebook/e-book.c:2664 ../addressbook/libebook/e-book.c:2859
-#: ../addressbook/libebook/e-book.c:2863 ../addressbook/libebook/e-book.c:3414
+#: ../addressbook/libebook/e-book.c:332 ../addressbook/libebook/e-book.c:336
+#: ../addressbook/libebook/e-book.c:540 ../addressbook/libebook/e-book.c:544
+#: ../addressbook/libebook/e-book.c:679 ../addressbook/libebook/e-book.c:683
+#: ../addressbook/libebook/e-book.c:770 ../addressbook/libebook/e-book.c:774
+#: ../addressbook/libebook/e-book.c:1070 ../addressbook/libebook/e-book.c:1073
+#: ../addressbook/libebook/e-book.c:1255 ../addressbook/libebook/e-book.c:1258
+#: ../addressbook/libebook/e-book.c:1411 ../addressbook/libebook/e-book.c:1415
+#: ../addressbook/libebook/e-book.c:1624 ../addressbook/libebook/e-book.c:1628
+#: ../addressbook/libebook/e-book.c:1878 ../addressbook/libebook/e-book.c:1882
+#: ../addressbook/libebook/e-book.c:2099 ../addressbook/libebook/e-book.c:2103
+#: ../addressbook/libebook/e-book.c:2302 ../addressbook/libebook/e-book.c:2306
+#: ../addressbook/libebook/e-book.c:2537 ../addressbook/libebook/e-book.c:2711
+#: ../addressbook/libebook/e-book.c:2715 ../addressbook/libebook/e-book.c:2909
+#: ../addressbook/libebook/e-book.c:2913 ../addressbook/libebook/e-book.c:3463
 #, c-format
 msgid "CORBA exception making \"%s\" call"
 msgstr "CORBA salbuespena \"%s\" deia egitean"
 
-#: ../addressbook/libebook/e-book.c:2507
+#: ../addressbook/libebook/e-book.c:2526
 #, c-format
 msgid "%s: there is no current operation"
 msgstr "%s: ez dago uneko eragiketarik"
 
-#: ../addressbook/libebook/e-book.c:2532
+#: ../addressbook/libebook/e-book.c:2555 ../addressbook/libebook/e-book.c:2600
+#: ../addressbook/libebook/e-book.c:2639
 #, c-format
 msgid "%s: could not cancel"
 msgstr "%s: izan da bertan behera utzi"
 
-#: ../addressbook/libebook/e-book.c:2620 ../addressbook/libebook/e-book.c:2624
+#: ../addressbook/libebook/e-book.c:2671 ../addressbook/libebook/e-book.c:2675
 #, c-format
 msgid "\"%s\" on book after \"%s\""
 msgstr "\"%s\" liburuan, honen ondoren: \"%s\""
 
-#: ../addressbook/libebook/e-book.c:2688
+#: ../addressbook/libebook/e-book.c:2739
 #, c-format
 msgid "%s: canceled"
 msgstr "%s: bertan behera utzi da"
 
-#: ../addressbook/libebook/e-book.c:3269
+#: ../addressbook/libebook/e-book.c:3318
 #, c-format
 msgid "%s: Invalid source."
 msgstr "%s: iturburu baliogabea."
 
-#: ../addressbook/libebook/e-book.c:3277 ../addressbook/libebook/e-book.c:3343
+#: ../addressbook/libebook/e-book.c:3326 ../addressbook/libebook/e-book.c:3392
 #, c-format
 msgid "%s: no factories available for URI `%s'"
 msgstr "%s: ez dago fabrikarik erabilgarri '%s' URIarentzat"
 
-#: ../addressbook/libebook/e-book.c:3289
+#: ../addressbook/libebook/e-book.c:3338
 #, c-format
 msgid "%s: Could not create EBookListener"
 msgstr "%s: ezin izan da sortu EBookListener"
 
-#: ../addressbook/libebook/e-book.c:3556
+#: ../addressbook/libebook/e-book.c:3605
 #, c-format
 msgid "%s: there was no self contact UID stored in gconf"
 msgstr "%s: ez dago UID auto-kontakturik gconf-en gordeta"
 
-#: ../addressbook/libebook/e-book.c:3689
+#: ../addressbook/libebook/e-book.c:3738
 #, c-format
 msgid "%s: there was no source for uid `%s' stored in gconf."
 msgstr "%s: ez dago '%s' uid-aren iturbururik gordeta gconf-en."
@@ -748,13 +749,13 @@ msgstr "Cache-fitxategia ezin izan da sortu"
 msgid "Could not create thread for populating cache"
 msgstr "Ezin izan da haria sortu cache-a osatzeko"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1055
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1917
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1089
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1898
 msgid "Reply Requested: by "
 msgstr "Erantzuna eskatuta: honek"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1060
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1922
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1094
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1903
 msgid "Reply Requested: When convenient"
 msgstr "Erantzuna eskatuta: komeni denean"
 
@@ -777,11 +778,11 @@ msgstr "Zerbitzari-URI baliogabea"
 #: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1071
 #: ../calendar/libecal/e-cal.c:5098
 #: ../calendar/libedata-cal/e-cal-backend-util.c:117
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1147
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1179
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1217
-#: ../camel/providers/groupwise/camel-groupwise-store.c:588
-#: ../camel/providers/groupwise/camel-groupwise-store.c:753
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1151
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1183
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1221
+#: ../camel/providers/groupwise/camel-groupwise-store.c:604
+#: ../camel/providers/groupwise/camel-groupwise-store.c:768
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:157
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:184
 msgid "Authentication failed"
@@ -1294,7 +1295,7 @@ msgstr "Ezin da cache-bidea sortu"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Ezin izan da kendu cache-sarrera: %s: %s"
 
-#: ../camel/camel-db.c:469
+#: ../camel/camel-db.c:409
 msgid "Insufficient memory"
 msgstr "Ez dago nahikoa memoria"
 
@@ -1561,7 +1562,7 @@ msgid "Unexpected request from GnuPG for '%s'"
 msgstr "'%s'(r)en ustekabeko erantzuna GnuPG-tik"
 
 #: ../camel/camel-gpg-context.c:862 ../camel/camel-gpg-context.c:1071
-#: ../camel/providers/nntp/camel-nntp-store.c:1287
+#: ../camel/providers/nntp/camel-nntp-store.c:1315
 msgid "Canceled."
 msgstr "Bertan behera utzita."
 
@@ -1580,20 +1581,20 @@ msgstr "Ezin da mezua enkriptatu: ez da hartzailerik zehaztu."
 
 #. always called on an i/o error
 #: ../camel/camel-gpg-context.c:1209 ../camel/camel-gpg-context.c:1337
-#: ../camel/camel-gpg-context.c:1832 ../camel/camel-gpg-context.c:1877
+#: ../camel/camel-gpg-context.c:1850 ../camel/camel-gpg-context.c:1895
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Huts egin du gpg exekutatzean: %s"
 
-#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:392
+#: ../camel/camel-gpg-context.c:1305 ../camel/camel-smime-context.c:602
 #, c-format
 msgid "Could not generate signing data: %s"
 msgstr "Ezin izan da sinatutako daturik sortu: %s"
 
-#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1537
-#: ../camel/camel-gpg-context.c:1622 ../camel/camel-gpg-context.c:1637
-#: ../camel/camel-gpg-context.c:1753 ../camel/camel-gpg-context.c:1768
-#: ../camel/camel-gpg-context.c:1848 ../camel/camel-gpg-context.c:1893
+#: ../camel/camel-gpg-context.c:1352 ../camel/camel-gpg-context.c:1554
+#: ../camel/camel-gpg-context.c:1640 ../camel/camel-gpg-context.c:1655
+#: ../camel/camel-gpg-context.c:1771 ../camel/camel-gpg-context.c:1786
+#: ../camel/camel-gpg-context.c:1866 ../camel/camel-gpg-context.c:1911
 msgid "Failed to execute gpg."
 msgstr "Huts egin du gpg exekutatzean."
 
@@ -1601,45 +1602,45 @@ msgstr "Huts egin du gpg exekutatzean."
 msgid "This is a digitally signed message part"
 msgstr "Hau digitalki sinatutako mezu-zatia da"
 
-#: ../camel/camel-gpg-context.c:1456 ../camel/camel-gpg-context.c:1462
-#: ../camel/camel-gpg-context.c:1468 ../camel/camel-gpg-context.c:1483
-#: ../camel/camel-smime-context.c:695 ../camel/camel-smime-context.c:706
-#: ../camel/camel-smime-context.c:713
+#: ../camel/camel-gpg-context.c:1458 ../camel/camel-gpg-context.c:1464
+#: ../camel/camel-gpg-context.c:1470 ../camel/camel-gpg-context.c:1485
+#: ../camel/camel-smime-context.c:910 ../camel/camel-smime-context.c:921
+#: ../camel/camel-smime-context.c:928
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Ezin da egiaztatu mezuaren sinadura: mezu-formatu baliogabea"
 
-#: ../camel/camel-gpg-context.c:1522
+#: ../camel/camel-gpg-context.c:1524
 #, c-format
 msgid "Cannot verify message signature: could not create temp file: %s"
 msgstr "Ezin da mezua egiaztatu: ezin izan da aldi baterako fitxategia sortu: %s"
 
-#: ../camel/camel-gpg-context.c:1605
+#: ../camel/camel-gpg-context.c:1623
 #, c-format
 msgid "Could not generate encrypting data: %s"
 msgstr "Ezin izan da enkriptatutako daturik sortu: %s"
 
-#: ../camel/camel-gpg-context.c:1655
+#: ../camel/camel-gpg-context.c:1673
 msgid "This is a digitally encrypted message part"
 msgstr "Hau digitalki sinatutako mezu-zatia da"
 
-#: ../camel/camel-gpg-context.c:1708 ../camel/camel-gpg-context.c:1716
-#: ../camel/camel-gpg-context.c:1735
+#: ../camel/camel-gpg-context.c:1726 ../camel/camel-gpg-context.c:1734
+#: ../camel/camel-gpg-context.c:1753
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Ezin da mezua desenkriptatu: mezu-formatu baliogabea"
 
-#: ../camel/camel-gpg-context.c:1725
+#: ../camel/camel-gpg-context.c:1743
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Huts egin du MIME zatia desenkriptatzean: protokolo-errorea"
 
-#: ../camel/camel-gpg-context.c:1790 ../camel/camel-smime-context.c:969
+#: ../camel/camel-gpg-context.c:1808 ../camel/camel-smime-context.c:1186
 msgid "Encrypted content"
 msgstr "Enkriptatutako edukia"
 
-#: ../camel/camel-gpg-context.c:1809
+#: ../camel/camel-gpg-context.c:1827
 msgid "Unable to parse message content"
 msgstr "Ezin da mezuaren edukia analizatu"
 
-#: ../camel/camel-gpg-context.c:1833 ../camel/camel-gpg-context.c:1878
+#: ../camel/camel-gpg-context.c:1851 ../camel/camel-gpg-context.c:1896
 #: ../camel/camel-tcp-stream-openssl.c:635
 #: ../camel/providers/imap4/camel-imap4-utils.c:624
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
@@ -1657,12 +1658,12 @@ msgstr "Ezin da blokeo-laguntzailearen kanalizaziorik eraiki: %s"
 msgid "Cannot fork locking helper: %s"
 msgstr "Ezin da blokeo-laguntzailea sardetu: %s"
 
-#: ../camel/camel-lock-client.c:204 ../camel/camel-lock-client.c:227
+#: ../camel/camel-lock-client.c:203 ../camel/camel-lock-client.c:226
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr "Ezin izan da '%s' blokeatu: protokolo-errorea blokeo-laguntzailearekin"
 
-#: ../camel/camel-lock-client.c:217
+#: ../camel/camel-lock-client.c:216
 #, c-format
 msgid "Could not lock '%s'"
 msgstr "Ezin izan da '%s' blokeatu"
@@ -1747,8 +1748,8 @@ msgstr "Errorea aldi baterako posta-fitxategia kopiatzean: %s"
 msgid "parse error"
 msgstr "analisi-errorea"
 
-#: ../camel/camel-net-utils.c:505 ../camel/camel-net-utils.c:667
-#: ../camel/camel-net-utils.c:799
+#: ../camel/camel-net-utils.c:505 ../camel/camel-net-utils.c:676
+#: ../camel/camel-net-utils.c:808
 #: ../camel/providers/pop3/camel-pop3-store.c:448
 #: ../camel/providers/pop3/camel-pop3-store.c:548
 msgid "Canceled"
@@ -1758,29 +1759,29 @@ msgstr "Bertan behera utzita"
 msgid "cannot create thread"
 msgstr "Ezin da haria sortu"
 
-#: ../camel/camel-net-utils.c:671
+#: ../camel/camel-net-utils.c:680
 #, c-format
 msgid "Resolving: %s"
 msgstr "Ebazten: %s"
 
-#: ../camel/camel-net-utils.c:693
+#: ../camel/camel-net-utils.c:702
 msgid "Host lookup failed"
 msgstr "Ostalari-bilaketak huts egin du"
 
-#: ../camel/camel-net-utils.c:695
+#: ../camel/camel-net-utils.c:704
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "Ostalari-bilaketak huts egin du: %s: %s"
 
-#: ../camel/camel-net-utils.c:803
+#: ../camel/camel-net-utils.c:812
 msgid "Resolving address"
 msgstr "Helbidea ebaztea"
 
-#: ../camel/camel-net-utils.c:823
+#: ../camel/camel-net-utils.c:832
 msgid "Name lookup failed"
 msgstr "Huts egin du izena bilatzean"
 
-#: ../camel/camel-net-utils.c:826
+#: ../camel/camel-net-utils.c:835
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "Huts egin du izena bilatzean: %s"
@@ -2098,208 +2099,202 @@ msgstr "Idatzi %2$s(r)en %1$s pasahitza %3$s ostalarian."
 msgid "Camel session doesn't support forwarding of a message."
 msgstr "Camel saioak ez du mezu bat birbidaltzea onartzen."
 
-#: ../camel/camel-smime-context.c:234 ../camel/camel-smime-context.c:778
+#: ../camel/camel-smime-context.c:444 ../camel/camel-smime-context.c:993
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Ezin da '%s'(r)en ziurtagiria aurkitu."
 
-#: ../camel/camel-smime-context.c:240
+#: ../camel/camel-smime-context.c:450
 msgid "Cannot create CMS message"
 msgstr "Ezin da CMS mezua sortu"
 
-#: ../camel/camel-smime-context.c:245
+#: ../camel/camel-smime-context.c:455
 msgid "Cannot create CMS signed data"
 msgstr "Ezin da CMSren sinatutako datua sortu"
 
-#: ../camel/camel-smime-context.c:251
+#: ../camel/camel-smime-context.c:461
 msgid "Cannot attach CMS signed data"
 msgstr "Ezin da CMSren sinatutako daturik erantsi"
 
-#: ../camel/camel-smime-context.c:258
+#: ../camel/camel-smime-context.c:468
 msgid "Cannot attach CMS data"
 msgstr "Ezin da CMS daturik erantsi"
 
-#: ../camel/camel-smime-context.c:264
+#: ../camel/camel-smime-context.c:474
 msgid "Cannot create CMS Signer information"
 msgstr "Ezin da CMS sinatzailearen datuak sortu"
 
-#: ../camel/camel-smime-context.c:270
+#: ../camel/camel-smime-context.c:480
 msgid "Cannot find certificate chain"
 msgstr "Ezin da ziurtagiri-katea aurkitu"
 
-#: ../camel/camel-smime-context.c:276
+#: ../camel/camel-smime-context.c:486
 msgid "Cannot add CMS Signing time"
 msgstr "Ezin da CMS sinadura-ordua gehitu"
 
-#: ../camel/camel-smime-context.c:298 ../camel/camel-smime-context.c:310
+#: ../camel/camel-smime-context.c:508 ../camel/camel-smime-context.c:520
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Ez dago \"%s\"(r)en enkriptatze-ziurtagiririk"
 
-#: ../camel/camel-smime-context.c:317
+#: ../camel/camel-smime-context.c:527
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "Ezin da SMIMEEncKeyPrefs atributua gehitu"
 
-#: ../camel/camel-smime-context.c:322
+#: ../camel/camel-smime-context.c:532
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "Ezin da MS SMIMEEncKeyPrefs atributua gehitu"
 
-#: ../camel/camel-smime-context.c:327
+#: ../camel/camel-smime-context.c:537
 msgid "Cannot add encryption certificate"
 msgstr "Ezin da enkriptatze-ziurtagiria gehitu"
 
-#: ../camel/camel-smime-context.c:333
+#: ../camel/camel-smime-context.c:543
 msgid "Cannot add CMS Signer information"
 msgstr "Ezin da CMS sinatzailearen datua gehitu"
 
-#: ../camel/camel-smime-context.c:403 ../camel/camel-smime-context.c:851
+#: ../camel/camel-smime-context.c:613 ../camel/camel-smime-context.c:1065
 msgid "Cannot create encoder context"
 msgstr "Ezin da kodetze-testuingurua sortu"
 
-#: ../camel/camel-smime-context.c:409
+#: ../camel/camel-smime-context.c:619
 msgid "Failed to add data to CMS encoder"
 msgstr "Huts egin du CMS kodeketari datua gehitzean"
 
-#: ../camel/camel-smime-context.c:414 ../camel/camel-smime-context.c:868
+#: ../camel/camel-smime-context.c:624 ../camel/camel-smime-context.c:1082
 msgid "Failed to encode data"
 msgstr "Huts egin du datua kodetzean"
 
-#: ../camel/camel-smime-context.c:487
+#: ../camel/camel-smime-context.c:697
 msgid "Unverified"
 msgstr "Egiaztatu gabe"
 
-#: ../camel/camel-smime-context.c:489
+#: ../camel/camel-smime-context.c:699
 msgid "Good signature"
 msgstr "Sinadura ona"
 
-#: ../camel/camel-smime-context.c:491
+#: ../camel/camel-smime-context.c:701
 msgid "Bad signature"
 msgstr "Sinadura txarra"
 
-#: ../camel/camel-smime-context.c:493
+#: ../camel/camel-smime-context.c:703
 msgid "Content tampered with or altered in transit"
 msgstr "Eduk¡a faltsutu edo aldatu egin da bidean"
 
-#: ../camel/camel-smime-context.c:495
+#: ../camel/camel-smime-context.c:705
 msgid "Signing certificate not found"
 msgstr "Sinadura-ziurtagiria ez da aurkitu."
 
-#: ../camel/camel-smime-context.c:497
+#: ../camel/camel-smime-context.c:707
 msgid "Signing certificate not trusted"
 msgstr "Sinadura-ziurtagiria ez da fidagarria"
 
-#: ../camel/camel-smime-context.c:499
+#: ../camel/camel-smime-context.c:709
 msgid "Signature algorithm unknown"
 msgstr "Sinadura-algoritmoa ezezaguna"
 
-#: ../camel/camel-smime-context.c:501
+#: ../camel/camel-smime-context.c:711
 msgid "Signature algorithm unsupported"
 msgstr "Sinadura-algoritmoa onartu gabea"
 
-#: ../camel/camel-smime-context.c:503
+#: ../camel/camel-smime-context.c:713
 msgid "Malformed signature"
 msgstr "Formatu okerreko sinadura"
 
-#: ../camel/camel-smime-context.c:505
+#: ../camel/camel-smime-context.c:715
 msgid "Processing error"
 msgstr "Prozesatze-errorea"
 
-#: ../camel/camel-smime-context.c:542
+#: ../camel/camel-smime-context.c:753
 msgid "No signed data in signature"
 msgstr "Ez dago daturik sinaduran"
 
-#: ../camel/camel-smime-context.c:549
+#: ../camel/camel-smime-context.c:758
 msgid "Digests missing from enveloped data"
 msgstr "Laburpena falta da bildutako datuan"
 
-#: ../camel/camel-smime-context.c:562 ../camel/camel-smime-context.c:572
+#: ../camel/camel-smime-context.c:771 ../camel/camel-smime-context.c:781
 msgid "Cannot calculate digests"
 msgstr "Ezin da laburpena kalkulatu"
 
-#: ../camel/camel-smime-context.c:577
+#: ../camel/camel-smime-context.c:788 ../camel/camel-smime-context.c:792
 msgid "Cannot set message digests"
 msgstr "Ezin da mezuaren laburpena ezarri"
 
-#: ../camel/camel-smime-context.c:587 ../camel/camel-smime-context.c:592
+#: ../camel/camel-smime-context.c:802 ../camel/camel-smime-context.c:807
 msgid "Certificate import failed"
 msgstr "Ziurtagiria inportatzeak huts egin du"
 
-#: ../camel/camel-smime-context.c:602
+#: ../camel/camel-smime-context.c:817
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "Mezuaren edukiak ziurtagiria bakarrik du, ezin dira ziurtagiriak egiaztatu"
 
-#: ../camel/camel-smime-context.c:605
+#: ../camel/camel-smime-context.c:820
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 "Mezuaren edukiak ziurtagiria bakarrik du, inportatutako eta egiaztatutako "
 "ziurtagiriak"
 
-#: ../camel/camel-smime-context.c:609
+#: ../camel/camel-smime-context.c:824
 msgid "Cannot find signature digests"
 msgstr "Ezin da sinadura-laburpena aurkitu"
 
-#: ../camel/camel-smime-context.c:625
+#: ../camel/camel-smime-context.c:840
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Sinatzailea: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:726
+#: ../camel/camel-smime-context.c:941 ../camel/camel-smime-context.c:1165
 msgid "Decoder failed"
-msgstr "Dekodetzaileak huts egin du"
+msgstr "Deskodetzaileak huts egin du"
 
-#: ../camel/camel-smime-context.c:785
+#: ../camel/camel-smime-context.c:1000
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Ezin da bloke-enkriptazioaren algoritmo arrunta aurkitu"
 
-#. PORT_GetError(); ??
-#: ../camel/camel-smime-context.c:794
+#: ../camel/camel-smime-context.c:1008
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Ezin da enkriptazioaren gako-blokea esleitu"
 
-#: ../camel/camel-smime-context.c:805
+#: ../camel/camel-smime-context.c:1019
 msgid "Cannot create CMS Message"
 msgstr "Ezin da CMS mezua sortu"
 
-#: ../camel/camel-smime-context.c:811
+#: ../camel/camel-smime-context.c:1025
 msgid "Cannot create CMS Enveloped data"
 msgstr "Ezin da bildutako CMS datua sortu"
 
-#: ../camel/camel-smime-context.c:817
+#: ../camel/camel-smime-context.c:1031
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Ezin da bildutako CMS datua erantsi"
 
-#: ../camel/camel-smime-context.c:823
+#: ../camel/camel-smime-context.c:1037
 msgid "Cannot attach CMS data object"
 msgstr "Ezin da CMS datu-objektua erantsi"
 
-#: ../camel/camel-smime-context.c:832
+#: ../camel/camel-smime-context.c:1046
 msgid "Cannot create CMS Recipient information"
 msgstr "Ezin da CMS edukiaren informazioa sortu"
 
-#: ../camel/camel-smime-context.c:837
+#: ../camel/camel-smime-context.c:1051
 msgid "Cannot add CMS Recipient information"
 msgstr "Ezin da CMS edukiaren informazioa gehitu"
 
-#: ../camel/camel-smime-context.c:862
+#: ../camel/camel-smime-context.c:1076
 msgid "Failed to add data to encoder"
 msgstr "Huts egin du datuak kodetzailean gehitzean"
 
-#: ../camel/camel-smime-context.c:949
-#, c-format
-msgid "Decoder failed, error %d"
-msgstr "Dekodetzaileak huts egin du: %d errorea"
-
-#: ../camel/camel-smime-context.c:956
+#: ../camel/camel-smime-context.c:1172
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME desenkriptatzea: ez da enkriptatutako edukirik aurkitu"
 
-#: ../camel/camel-smime-context.c:983
+#: ../camel/camel-smime-context.c:1200
 msgid "import keys: unimplemented"
 msgstr "inportatu gakoak: ez dago inplementatuta"
 
-#: ../camel/camel-smime-context.c:991
+#: ../camel/camel-smime-context.c:1208
 msgid "export keys: unimplemented"
 msgstr "esportatu gakoak: ez dago inplementatuta"
 
@@ -2322,13 +2317,13 @@ msgstr "Ezin da karpeta sortu: eragiketa baliogabea biltegi honetarako"
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Ezin da karpeta sortu: %s: karpeta badago lehendik"
 
-#: ../camel/camel-store.c:487 ../camel/camel-vee-store.c:384
+#: ../camel/camel-store.c:487 ../camel/camel-vee-store.c:385
 #: ../camel/providers/local/camel-maildir-store.c:219
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Ezin da karpeta ezabatu: %s: eragiketa baliogabea"
 
-#: ../camel/camel-store.c:544 ../camel/camel-vee-store.c:421
+#: ../camel/camel-store.c:544 ../camel/camel-vee-store.c:422
 #: ../camel/providers/local/camel-maildir-store.c:291
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -2568,21 +2563,21 @@ msgstr "Errorea %s gordetzean: %s"
 msgid "No such message %s in %s"
 msgstr "%s mezurik ez dago %s(e)n"
 
-#: ../camel/camel-vee-folder.c:820 ../camel/camel-vee-folder.c:826
+#: ../camel/camel-vee-folder.c:821 ../camel/camel-vee-folder.c:827
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Ezin dira mezuak Karpeta Birtual batera kopiatu edo eraman"
 
-#: ../camel/camel-vee-store.c:114 ../camel/camel-vee-store.c:115
-#: ../camel/camel-vee-store.c:360
+#: ../camel/camel-vee-store.c:115 ../camel/camel-vee-store.c:116
+#: ../camel/camel-vee-store.c:361
 msgid "Unmatched"
 msgstr "Ez dator bat"
 
-#: ../camel/camel-vee-store.c:407
+#: ../camel/camel-vee-store.c:408
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Ezin da karpeta ezabatu: %s: ez dago horrelako karpetarik"
 
-#: ../camel/camel-vee-store.c:429
+#: ../camel/camel-vee-store.c:430
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Ezin izan zaio izena aldatu karpetari: %s: ez dago horrelako karpetarik"
@@ -2595,7 +2590,7 @@ msgstr "Ezin dira mezuak Zakarrontzia karpetan kopiatu"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Ezin dira mezuak Baztergarria karpetan kopiatu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
 #, c-format
 msgid ""
 "Cannot get message: %s\n"
@@ -2604,7 +2599,7 @@ msgstr ""
 "Ezin da mezua hartu: %s\n"
 "  %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:136
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:137
 #: ../camel/providers/local/camel-maildir-folder.c:248
 #: ../camel/providers/local/camel-maildir-folder.c:275
 #: ../camel/providers/local/camel-mbox-folder.c:347
@@ -2613,7 +2608,7 @@ msgstr ""
 msgid "No such message"
 msgstr "Ez dago horrelako mezurik"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:148
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:149
 #: ../camel/providers/imap4/camel-imap4-folder.c:821
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
 #: ../camel/providers/nntp/camel-nntp-folder.c:251
@@ -2625,7 +2620,7 @@ msgstr "Ez dago horrelako mezurik"
 msgid "User canceled"
 msgstr "Erabiltzaileak bertan behera utzi du"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:155
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:156
 #: ../camel/providers/imap4/camel-imap4-folder.c:826
 #: ../camel/providers/nntp/camel-nntp-folder.c:166
 #: ../camel/providers/nntp/camel-nntp-folder.c:168
@@ -2640,46 +2635,46 @@ msgstr "Erabiltzaileak bertan behera utzi du"
 msgid "Cannot get message %s: %s"
 msgstr "Ezin da %s mezua hartu: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:172
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:180
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2303
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:173
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:181
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2284
 #: ../camel/providers/imap4/camel-imap4-folder.c:844
 msgid "This message is not available in offline mode."
 msgstr "Mezu hau ez dago erabilgarri lineaz kanpo moduan"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:192
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:199
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1818
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1869
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:193
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:200
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1799
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1850
 msgid "Could not get message"
 msgstr "Ezin izan da mezua eskuratu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:883
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:887
 #: ../camel/providers/imap/camel-imap-folder.c:265
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Ezin izan da %s(r)en laburpena kargatu"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1143
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1147
 msgid "Trash Folder Full. Please Empty."
 msgstr "Zakarrontzia beteta dago, hustu."
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1352
-#: ../camel/providers/groupwise/camel-groupwise-store.c:617
-#: ../camel/providers/groupwise/camel-groupwise-store.c:743
-#: ../camel/providers/imap/camel-imap-folder.c:3362
-#: ../camel/providers/imap/camel-imap-folder.c:3438
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1355
+#: ../camel/providers/groupwise/camel-groupwise-store.c:633
+#: ../camel/providers/groupwise/camel-groupwise-store.c:758
+#: ../camel/providers/imap/camel-imap-folder.c:3363
+#: ../camel/providers/imap/camel-imap-folder.c:3439
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Mezu berrien laburpen-informazioa eskuratzen %s(e)n"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2157
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2200
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2138
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2181
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "Ezin zaio mezua '%s' karpetari erantsi: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2188
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2169
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Ezin da mezua sortu: %s"
@@ -2779,40 +2774,40 @@ msgstr "Ostalaria edo erabiltzailea ez dago erabilgarri URLan"
 msgid "You did not enter a password."
 msgstr "Ez duzu idatzi pasahitza."
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:303
+#: ../camel/providers/groupwise/camel-groupwise-store.c:323
 msgid "Some features may not work correctly with your current server version"
 msgstr "Funtzio batzuk ez dute uneko zure zerbitzariaren bertsioarekin funtzionatuko"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:524
+#: ../camel/providers/groupwise/camel-groupwise-store.c:545
 #: ../camel/providers/imap/camel-imap-store.c:1849
 #: ../camel/providers/imap/camel-imap-store.c:2047
 #, c-format
 msgid "No such folder %s"
 msgstr "%s karpeta ez dago"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1241
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1256
 msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Ezin dira GroupWise-ren karpetak sortu lineaz kanpo moduan"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1255
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:1924
 #: ../camel/providers/imap/camel-imap-store.c:2304
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Karpeta gurasoak ez du azpikarpetak edukitzeko baimenik"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1333
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1359
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1345
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1368
 #, c-format
 msgid "Cannot rename GroupWise folder '%s' to '%s'"
 msgstr "Ezin da GroupWise-ren '%s' karpeta '%s' izenagatik aldatu"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1391
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1400
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:121
 #, c-format
 msgid "GroupWise server %s"
 msgstr "GroupWise zerbitzaria: %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-store.c:1393
+#: ../camel/providers/groupwise/camel-groupwise-store.c:1402
 #, c-format
 msgid "GroupWise service for %s on %s"
 msgstr "GroupWise zerbitzua %s(e)rako %s(e)n"
@@ -2912,12 +2907,12 @@ msgstr "Ez dago sarrerako korronterik"
 #: ../camel/providers/imap/camel-imap-command.c:231
 #: ../camel/providers/imap/camel-imap-command.c:280
 #: ../camel/providers/imap/camel-imap-command.c:494
-#: ../camel/providers/imap/camel-imap-store.c:3037
+#: ../camel/providers/imap/camel-imap-store.c:3035
 msgid "Operation cancelled"
 msgstr "Eragiketa bertan behera utzi da"
 
 #: ../camel/providers/imap/camel-imap-command.c:333
-#: ../camel/providers/imap/camel-imap-store.c:3040
+#: ../camel/providers/imap/camel-imap-store.c:3038
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Zerbitzaria deskonektatu egin da ustekabean: %s"
@@ -2967,55 +2962,55 @@ msgid "Could not create directory %s: %s"
 msgstr "Ezin izan da %s direktorioa sortu: %s"
 
 #. Check UIDs and flags of all messages we already know of.
-#: ../camel/providers/imap/camel-imap-folder.c:891
+#: ../camel/providers/imap/camel-imap-folder.c:892
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Aldatutako mezuen bila eskaneatzen %s(e)n"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1950
+#: ../camel/providers/imap/camel-imap-folder.c:1951
 #, c-format
 msgid "Unexpected response status '%s' after APPEND command"
 msgstr "Ustekabeko '%s' erantzun-egorea APPEND komandoaren ondoren"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1965
+#: ../camel/providers/imap/camel-imap-folder.c:1966
 msgid "No response on continuation after APPEND command"
 msgstr "Ez dago erantzunik APPEND komandoaren ondoren"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2010
+#: ../camel/providers/imap/camel-imap-folder.c:2011
 msgid "Unknown error occurred during APPEND command!"
 msgstr "Errore ezezaguna gertatuta da APPEND komandoan."
 
-#: ../camel/providers/imap/camel-imap-folder.c:2842
+#: ../camel/providers/imap/camel-imap-folder.c:2843
 #, c-format
 msgid "Unable to retrieve message: %s"
 msgstr "Ezin da mezua eskuratu: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2877
+#: ../camel/providers/imap/camel-imap-folder.c:2878
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ezin da %s IDa duen mezua hartu: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:2878
+#: ../camel/providers/imap/camel-imap-folder.c:2879
 msgid "No such message available."
 msgstr "Ez dago horrelako mezurik erabilgarri."
 
-#: ../camel/providers/imap/camel-imap-folder.c:2932
-#: ../camel/providers/imap/camel-imap-folder.c:3753
+#: ../camel/providers/imap/camel-imap-folder.c:2933
+#: ../camel/providers/imap/camel-imap-folder.c:3752
 #: ../camel/providers/nntp/camel-nntp-folder.c:239
 msgid "This message is not currently available"
 msgstr "Mezu hau orain ez dago erabilgarri"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3567
+#: ../camel/providers/imap/camel-imap-folder.c:3566
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Zerbitzariaren osatu gabeko erantzuna: ez da %d mezuaren informaziorik eman"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3575
+#: ../camel/providers/imap/camel-imap-folder.c:3574
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Zerbitzariaren osatu gabeko erantzuna: ez da %d mezuaren UIDrik eman"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3791
+#: ../camel/providers/imap/camel-imap-folder.c:3790
 msgid "Could not find message body in FETCH response."
 msgstr "Ezin izan da mezuaren gorputza aurkitu FETCH erantzunean."
 
@@ -3222,7 +3217,7 @@ msgstr "Karpetaren guraso ezezaguna: %s"
 msgid "Failed sending command to IMAP server %s: %s"
 msgstr "Huts egin du %s IMAP zerbitzarira komandoa bidaltzean: %s"
 
-#: ../camel/providers/imap4/camel-imap4-command.c:686
+#: ../camel/providers/imap4/camel-imap4-command.c:685
 #, c-format
 msgid "Unexpected response from IMAP4 server %s: %s"
 msgstr "Ustekabeko erantzuna %s IMAP4 zerbitzaritik: %s"
@@ -3698,7 +3693,7 @@ msgstr "Ezin izan da karpetaren '%s'indize-fitxategia ezabatu: %s"
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "Ezin izan da karpetaren '%s' meta-fitxategia ezabatu: %s"
 
-#: ../camel/providers/local/camel-local-summary.c:508
+#: ../camel/providers/local/camel-local-summary.c:515
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Ezin zaio mezua gehitu laburpenari: arrazoi ezezaguna"
 
@@ -3798,7 +3793,7 @@ msgstr "Mezu berrien bila eskaneatzen"
 #: ../camel/providers/local/camel-mbox-summary.c:529
 #: ../camel/providers/local/camel-mbox-summary.c:711
 #: ../camel/providers/local/camel-mbox-summary.c:831
-#: ../camel/providers/local/camel-spool-summary.c:148
+#: ../camel/providers/local/camel-spool-summary.c:150
 msgid "Storing folder"
 msgstr "Karpeta biltegiratzen"
 
@@ -3915,13 +3910,13 @@ msgstr "Ezin da karpeta egiaztatu: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:716
 #: ../camel/providers/local/camel-mbox-summary.c:836
-#: ../camel/providers/local/camel-spool-summary.c:153
+#: ../camel/providers/local/camel-spool-summary.c:155
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Ezin izan da fitxategia ireki: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:728
-#: ../camel/providers/local/camel-spool-summary.c:166
+#: ../camel/providers/local/camel-spool-summary.c:168
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Ezin da aldi baterako postontzia ireki: %s"
@@ -3956,7 +3951,7 @@ msgid "Summary and folder mismatch, even after a sync"
 msgstr "Laburpena eta karpeta falta dira, sinkronizatu ostean ere"
 
 #: ../camel/providers/local/camel-mbox-summary.c:1038
-#: ../camel/providers/local/camel-spool-summary.c:334
+#: ../camel/providers/local/camel-spool-summary.c:336
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Errore ezezaguna: %s"
@@ -4061,21 +4056,21 @@ msgstr "Ilara-karpetei ezin zaie izena aldatu"
 msgid "Spool folders cannot be deleted"
 msgstr "Ilara-karpetak ezin dira ezabatu"
 
-#: ../camel/providers/local/camel-spool-summary.c:179
-#: ../camel/providers/local/camel-spool-summary.c:189
-#: ../camel/providers/local/camel-spool-summary.c:199
+#: ../camel/providers/local/camel-spool-summary.c:181
+#: ../camel/providers/local/camel-spool-summary.c:191
+#: ../camel/providers/local/camel-spool-summary.c:201
 #, c-format
 msgid "Could not sync temporary folder %s: %s"
 msgstr "Ezin izan da %s aldi baterako karpeta sinkronizatu: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:215
+#: ../camel/providers/local/camel-spool-summary.c:217
 #, c-format
 msgid "Could not sync spool folder %s: %s"
 msgstr "Ezin izan da %s ilara-karpeta sinkronizatu: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:246
-#: ../camel/providers/local/camel-spool-summary.c:263
-#: ../camel/providers/local/camel-spool-summary.c:274
+#: ../camel/providers/local/camel-spool-summary.c:248
+#: ../camel/providers/local/camel-spool-summary.c:265
+#: ../camel/providers/local/camel-spool-summary.c:276
 #, c-format
 msgid ""
 "Could not sync spool folder %s: %s\n"
@@ -4141,12 +4136,12 @@ msgstr "Ezin izan da %s(e)tik agurra irakurri: %s"
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "%s NNTP zerbitzariak %d errore-kodea bidali du: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:406
+#: ../camel/providers/nntp/camel-nntp-store.c:411
 #, c-format
 msgid "USENET News via %s"
 msgstr "USENET berriak %s bidez"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:798
+#: ../camel/providers/nntp/camel-nntp-store.c:820
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4157,7 +4152,7 @@ msgstr ""
 "\n"
 " %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:892
+#: ../camel/providers/nntp/camel-nntp-store.c:914
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
 "\n"
@@ -4168,7 +4163,7 @@ msgstr ""
 "Ez dago halako berri-talderik. Hautatutako elementua karpeta gurasoa izan "
 "daiteke."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:924
+#: ../camel/providers/nntp/camel-nntp-store.c:946
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
 "\n"
@@ -4178,37 +4173,37 @@ msgstr ""
 "\n"
 "Berri-taldea ez dago"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:949
+#: ../camel/providers/nntp/camel-nntp-store.c:971
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Ezin duzu Berria biltegian karpeta sortu: harpidetu zaitez."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:957
+#: ../camel/providers/nntp/camel-nntp-store.c:979
 msgid "You cannot rename a folder in a News store."
 msgstr "Ezin duzu Berria biltegiko karpeta baten izena aldatu."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:965
+#: ../camel/providers/nntp/camel-nntp-store.c:987
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Ezin duzu Berria biltegiko karpeta bat lekuz aldatu: kendu harpidetza."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1154
+#: ../camel/providers/nntp/camel-nntp-store.c:1182
 msgid "Authentication requested but no username provided"
 msgstr "Autentifikazioa behar da baina ez da erabiltzaile-izenik eman"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1166
+#: ../camel/providers/nntp/camel-nntp-store.c:1194
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Ezin da zerbitzarian autentifikatu: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1289
+#: ../camel/providers/nntp/camel-nntp-store.c:1317
 #, c-format
 msgid "NNTP Command failed: %s"
 msgstr "NNTP komandoak huts egin du: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1343
+#: ../camel/providers/nntp/camel-nntp-store.c:1371
 msgid "Not connected."
 msgstr "Ez dago konektatuta"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1396
+#: ../camel/providers/nntp/camel-nntp-store.c:1424
 #, c-format
 msgid "No such folder: %s"
 msgstr "Karpeta ez dago: %s"
