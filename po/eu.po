@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&component=general\n"
 "POT-Creation-Date: 2010-03-02 07:08+0000\n"
-"PO-Revision-Date: 2010-03-06 13:55+0100\n"
+"PO-Revision-Date: 2010-03-22 20:01+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "Kontaktuen cache-a eguneratzen (%d)..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:816
 msgid "Using Distinguished Name (DN)"
-msgstr "Izen bereizitua (DN) erabiltzen"
+msgstr "DNa erabiltzen"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:819
 msgid "Using Email Address"
@@ -2350,7 +2350,7 @@ msgstr "Sinatzailea: %s <%s>: %s\n"
 
 #: ../camel/camel-smime-context.c:960 ../camel/camel-smime-context.c:1184
 msgid "Decoder failed"
-msgstr "Dekodetzaileak huts egin du"
+msgstr "Deskodetzaileak huts egin du"
 
 #: ../camel/camel-smime-context.c:1019
 msgid "Cannot find common bulk encryption algorithm"
