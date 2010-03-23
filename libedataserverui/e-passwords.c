@@ -112,6 +112,7 @@ check_key_file (const gchar *funcname)
 static gchar *
 ep_key_file_get_filename (void)
 {
+#ifndef G_OS_WIN32
 	const gchar *override;
 
 	/* XXX It would be nice to someday move this data elsewhere, or else
@@ -130,7 +131,7 @@ ep_key_file_get_filename (void)
 			"%s_private" G_DIR_SEPARATOR_S "Evolution",
 			realpath (override, resolved_path));
 	}
-
+#endif
 	return g_build_filename (
 		g_get_home_dir (), ".gnome2_private", "Evolution", NULL);
 }
