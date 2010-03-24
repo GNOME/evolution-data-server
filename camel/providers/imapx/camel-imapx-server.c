@@ -185,6 +185,7 @@ enum {
 	IMAPX_JOB_MANAGE_SUBSCRIPTION = 1<<10,
 	IMAPX_JOB_CREATE_FOLDER = 1<<11,
 	IMAPX_JOB_DELETE_FOLDER = 1<<12,
+	IMAPX_JOB_RENAME_FOLDER = 1<<13,
 };
 
 /* Operations on the store (folder_tree) will have highest priority as we know for sure they are sync
@@ -192,6 +193,7 @@ enum {
 enum {
 	IMAPX_PRIORITY_CREATE_FOLDER = 200,
 	IMAPX_PRIORITY_DELETE_FOLDER = 200,
+	IMAPX_PRIORITY_RENAME_FOLDER = 200,
 	IMAPX_PRIORITY_MANAGE_SUBSCRIPTION = 200,
 	IMAPX_PRIORITY_SYNC_CHANGES = 150,
 	IMAPX_PRIORITY_EXPUNGE = 150,
@@ -283,6 +285,11 @@ struct _CamelIMAPXJob {
 			gboolean subscribe;
 		} manage_subscriptions;
 
+		struct {
+			const gchar *ofolder_name;
+			const gchar *nfolder_name;
+		} rename_folder;
+		
 		const gchar *folder_name;
 	} u;
 };
@@ -3359,6 +3366,41 @@ imapx_job_delete_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 
 /* ********************************************************************** */
 
+	static void
+imapx_command_rename_folder_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+{
+	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
+		if (!camel_exception_is_set (ic->ex))
+			camel_exception_setv(ic->job->ex, 1, "Error renaming to folder : %s", ic->status->text);
+		else
+			camel_exception_xfer (ic->job->ex, ic->ex);
+	}
+
+	imapx_job_done (is, ic->job);
+	camel_imapx_command_free (ic);
+}
+
+static void
+imapx_job_rename_folder_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	CamelIMAPXCommand *ic;
+	gchar *en_ofname = NULL, *en_nfname = NULL;
+
+	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.ofolder_name);
+	en_nfname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.nfolder_name);
+	
+	ic = camel_imapx_command_new ("RENAME", "INBOX", "RENAME %s %s", en_ofname, en_nfname);
+	ic->pri = job->pri;
+	ic->job = job;
+	ic->complete = imapx_command_rename_folder_done;
+	imapx_command_queue(is, ic);
+
+	g_free (en_ofname);
+	g_free (en_nfname);
+}
+
+/* ********************************************************************** */
+
 static void
 imapx_command_noop_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 {
@@ -4507,4 +4549,24 @@ camel_imapx_server_delete_folder (CamelIMAPXServer *is, const gchar *folder_name
 		imapx_run_job (is, job);
 
 	g_free (job);
+}
+
+void
+camel_imapx_server_rename_folder (CamelIMAPXServer *is, const gchar *old_name, const gchar *new_name, CamelException *ex)
+{
+	CamelIMAPXJob *job;
+	
+	job = g_malloc0(sizeof(*job));
+	job->type = IMAPX_JOB_RENAME_FOLDER;
+	job->start = imapx_job_rename_folder_start;
+	job->pri = IMAPX_PRIORITY_RENAME_FOLDER;
+	job->ex = ex;
+	job->u.rename_folder.ofolder_name = old_name;
+	job->u.rename_folder.nfolder_name = new_name;
+
+	if (imapx_register_job (is, job))
+		imapx_run_job (is, job);
+
+	g_free (job);
+
 }

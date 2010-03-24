@@ -628,10 +628,89 @@ imapx_delete_folder (CamelStore *store, const gchar *folder_name, CamelException
 		imapx_delete_folder_from_cache (istore, folder_name, ex);
 }
 
+
+static void
+rename_folder_info (CamelIMAPXStore *istore, const gchar *old_name, const gchar *new_name, CamelException *ex)
+{
+	gint i, count;
+	CamelStoreInfo *si;
+	gint olen = strlen(old_name);
+	const gchar *path;
+	gchar *npath, *nfull;
+
+	count = camel_store_summary_count((CamelStoreSummary *)istore->summary);
+	for (i=0;i<count;i++) {
+		si = camel_store_summary_index((CamelStoreSummary *)istore->summary, i);
+		if (si == NULL)
+			continue;
+		path = camel_store_info_path(istore->summary, si);
+		if (strncmp(path, old_name, olen) == 0) {
+			if (strlen(path) > olen)
+				npath = g_strdup_printf("%s/%s", new_name, path+olen+1);
+			else
+				npath = g_strdup(new_name);
+			nfull = camel_imapx_store_summary_path_to_full(istore->summary, npath, istore->dir_sep);
+
+			/* workaround for broken server (courier uses '.') that doesn't rename
+			   subordinate folders as required by rfc 2060 */
+			if (istore->dir_sep == '.') {
+				camel_imapx_server_rename_folder (istore->server, path, nfull, ex);
+			}
+
+			camel_store_info_set_string((CamelStoreSummary *)istore->summary, si, CAMEL_STORE_INFO_PATH, npath);
+			camel_store_info_set_string((CamelStoreSummary *)istore->summary, si, CAMEL_IMAPX_STORE_INFO_FULL_NAME, nfull);
+
+			camel_store_summary_touch((CamelStoreSummary *)istore->summary);
+			g_free(nfull);
+			g_free(npath);
+		}
+		camel_store_summary_info_free((CamelStoreSummary *)istore->summary, si);
+	}
+}
+
 static void
 imapx_rename_folder (CamelStore *store, const gchar *old, const gchar *new, CamelException *ex)
 {
-	camel_exception_setv(ex, 1, "rename_folder::unimplemented");
+	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
+	gchar *oldpath, *newpath, *storage_path;
+
+
+	if (CAMEL_OFFLINE_STORE (store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+				     _("You must be working online to complete this operation"));
+		return;
+	}
+
+	if (istore->rec_options & IMAPX_SUBSCRIPTIONS)
+		imapx_unsubscribe_folder (store, old, FALSE, ex);
+
+	if (istore->server && camel_imapx_server_connect (istore->server, TRUE, ex))
+		camel_imapx_server_rename_folder (istore->server, old, new, ex);
+
+	if (camel_exception_is_set (ex)) {
+		imapx_subscribe_folder (store, old, FALSE, ex);
+		return;
+	}
+
+	/* rename summary, and handle broken server */
+	rename_folder_info(istore, old, new, ex);
+
+	if (istore->rec_options & IMAPX_SUBSCRIPTIONS)
+		imapx_subscribe_folder (store, new, FALSE, ex);
+
+	storage_path = g_strdup_printf("%s/folders", istore->storage_path);
+	oldpath = imapx_path_to_physical (storage_path, old);
+	newpath = imapx_path_to_physical (storage_path, new);
+	g_free(storage_path);
+
+	/* So do we care if this didn't work?  Its just a cache? */
+	if (g_rename (oldpath, newpath) == -1) {
+		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
+			   oldpath, newpath, g_strerror (errno));
+	}
+
+	g_free (oldpath);
+	g_free (newpath);
 }
 
 static CamelFolderInfo *
