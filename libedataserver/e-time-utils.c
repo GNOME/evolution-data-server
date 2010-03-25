@@ -209,7 +209,7 @@ enum ptime_locale_status { not, loc, raw };
 # endif  /* GCC.  */
 #endif  /* Not __P.  */
 
-#if !HAVE_LOCALTIME_R && !defined localtime_r
+#if !defined HAVE_LOCALTIME_R && !defined localtime_r
 # ifdef _LIBC
 #  define localtime_r __localtime_r
 # else
