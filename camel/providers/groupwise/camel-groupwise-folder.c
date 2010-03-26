@@ -736,6 +736,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	GList *read_items = NULL, *deleted_read_items = NULL, *unread_items = NULL;
 	flags_diff_t diff, unset_flags;
 	const gchar *container_id;
+	CamelFolderChangeInfo *changes;
 	EGwConnectionStatus status;
 	EGwConnection *cnc;
 	gint count, i;
@@ -763,6 +764,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)
 		return;
 
+	changes = camel_folder_change_info_new ();
 	count = camel_folder_summary_count (folder->summary);
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 	for (i=0; i < count; i++) {
@@ -823,9 +825,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 					if (diff.bits & CAMEL_MESSAGE_SEEN)
 						deleted_read_items = g_list_prepend (deleted_read_items, (gchar *) uid);
 
-					if (deleted_items)
+					if (deleted_items) {
 						deleted_items = g_list_prepend (deleted_items, (gchar *)camel_message_info_uid (info));
-					else {
+					} else {
 						g_list_free (deleted_head);
 						deleted_head = NULL;
 						deleted_head = deleted_items = g_list_prepend (deleted_items, (gchar *)camel_message_info_uid (info));
@@ -865,6 +867,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 								CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
 								camel_folder_summary_remove_uid (folder->summary, uid);
 								camel_data_cache_remove(gw_folder->cache, "cache", uid, NULL);
+								camel_folder_change_info_remove_uid (changes, uid);
 								CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
 								deleted_items = g_list_next (deleted_items);
 								count -= GROUPWISE_BULK_DELETE_LIMIT;
@@ -886,34 +889,8 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
 
 	/* Do things in bulk. Reduces server calls, network latency etc.  */
-
-	if (deleted_items) {
-		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
-		if (!strcmp (folder->full_name, "Trash")) {
-			status = e_gw_connection_purge_selected_items (cnc, deleted_items);
-			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-				status = e_gw_connection_purge_selected_items (cnc, deleted_items);
-		} else {
-			status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
-			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-				status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
-		}
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
-		if (status == E_GW_CONNECTION_STATUS_OK) {
-			gchar *uid;
-			while (deleted_items) {
-				uid = (gchar *)deleted_items->data;
-				CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
-				camel_folder_summary_remove_uid (folder->summary, uid);
-				camel_data_cache_remove(gw_folder->cache, "cache", uid, NULL);
-				CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
-				deleted_items = g_list_next (deleted_items);
-				count -= GROUPWISE_BULK_DELETE_LIMIT;
-				i -= GROUPWISE_BULK_DELETE_LIMIT;
-			}
-		}
-		g_list_free (deleted_head);
-	}
+	if (deleted_read_items)
+		read_items = g_list_concat (read_items, deleted_read_items);
 
 	if (read_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
@@ -927,6 +904,37 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		g_list_free (read_items);
 		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	}
+
+	if (deleted_items) {
+		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+		if (!strcmp (folder->full_name, "Trash")) {
+			status = e_gw_connection_purge_selected_items (cnc, deleted_items);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_purge_selected_items (cnc, deleted_items);
+		} else {
+			status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
+				status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
+		}
+		if (status == E_GW_CONNECTION_STATUS_OK) {
+			gchar *uid;
+			while (deleted_items) {
+				uid = (gchar *)deleted_items->data;
+				CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
+				camel_folder_summary_remove_uid (folder->summary, uid);
+				camel_data_cache_remove(gw_folder->cache, "cache", uid, NULL);
+				camel_folder_change_info_remove_uid (changes, uid);
+				CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
+				deleted_items = g_list_next (deleted_items);
+			}
+		}
+		g_list_free (deleted_items);
+		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	}
+
+	
+	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+	camel_folder_change_info_free (changes);
 
 	if (unread_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
