@@ -660,7 +660,16 @@ move_to_junk (CamelFolder *folder, CamelMessageInfo *info, CamelException *ex)
 static void
 groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 {
+	CamelStoreInfo *si;
+	guint32 unread, total;
+	
 	camel_folder_summary_save_to_db (folder->summary, ex);
+
+	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelGroupwiseStore *) folder->parent_store)->summary, folder->full_name);
+	camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
+	si->unread = unread;
+	si->total = total;
+
 	camel_store_summary_touch ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 	camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 }
@@ -932,10 +941,6 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
 	}
 
-	
-	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
-	camel_folder_change_info_free (changes);
-
 	if (unread_items) {
 		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 		status = e_gw_connection_mark_unread (cnc, unread_items);
@@ -961,6 +966,9 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
 	groupwise_sync_summary (folder, ex);
 	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	
+	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
+	camel_folder_change_info_free (changes);
 }
 
 CamelFolder *
@@ -1277,7 +1285,7 @@ update_summary_string (CamelFolder *folder, const gchar *time_string, CamelExcep
 
 	((CamelGroupwiseSummary *) folder->summary)->time_string = g_strdup (time_string);
 	camel_folder_summary_touch (folder->summary);
-	groupwise_sync_summary (folder, ex);
+	camel_folder_summary_save_to_db (folder->summary, ex);
 }
 
 static void
@@ -1607,6 +1615,13 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		}
 
 		/************************ First populate summary *************************/
+
+		item_status = e_gw_item_get_item_status (item);
+	
+		/* skip the deleted items */	
+		if (item_status & E_GW_ITEM_STAT_DELETED)
+			continue;
+		
 		mi = NULL;
 		pmi = NULL;
 		pmi = camel_folder_summary_uid (folder->summary, id);
@@ -1645,7 +1660,6 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		if (is_junk)
 			mi->info.flags |= CAMEL_GW_MESSAGE_JUNK;
 
-		item_status = e_gw_item_get_item_status (item);
 		if (item_status & E_GW_ITEM_STAT_READ)
 			mi->info.flags |= CAMEL_MESSAGE_SEEN;
 		else
@@ -1763,6 +1777,7 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 	camel_operation_end (NULL);
 	g_free (container_id);
 	g_string_free (str, TRUE);
+	groupwise_sync_summary (folder, ex);
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
 	camel_folder_change_info_free (changes);
@@ -2328,6 +2343,7 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 		index ++;
 	}
 
+	groupwise_sync_summary (folder, ex);
 	camel_object_trigger_event (folder, "folder_changed", changes);
 
 	if (item_list) {
