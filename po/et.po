@@ -13,10 +13,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Evolution-data-server MASTER\n"
+"Project-Id-Version: Evolution-data-server 2.30\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2010-02-16 16:01+0000\n"
+"POT-Creation-Date: 2010-03-22 20:40+0000\n"
 "PO-Revision-Date: 2010-02-17 00:30+0300\n"
 "Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
@@ -2542,10 +2542,6 @@ msgstr "IMAP+"
 msgid "Could not connect to %s (port %s): %s"
 msgstr "Hostiga %s pole võimalik ühendust luua (port %s): %s"
 
-#, c-format
-msgid "%sPlease enter the IMAP password for %s@%s"
-msgstr "%sPalun sisesta IMAP-parool %s jaoks hostil %s"
-
 msgid "Index message body data"
 msgstr "Sõnumite sisu indekseeritakse"
 
@@ -3116,6 +3112,7 @@ msgstr "Tõrge turvatud ühendumisel POP serveriga %s: %s"
 msgid "STLS not supported by server"
 msgstr "STLS pole serveri poolt toetatud"
 
+#. Translators: Last %s is an optional explanation beginning with ": " separator
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "Tõrge turvatud ühendumisel POP serveriga %s turvarežiimis%s"
@@ -3135,6 +3132,7 @@ msgstr ""
 "POP serveriga %s pole võimalik ühenduda: Puudub nõutud autentimismehhanismi "
 "tugi."
 
+#. Translators: Last %s is an optional explanation beginning with ": " separator
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
 msgstr "SASL '%s' tõrge sisselogimisel POP serverisse %s%s"
@@ -3164,6 +3162,7 @@ msgstr ""
 "POP serveriga %s pole võimalik ühenduda.\n"
 "Viga parooli saatmisel: %s"
 
+#. Translators: Last %s is an optional explanation beginning with ": " separator
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -3172,6 +3171,7 @@ msgstr ""
 "POP serveriga %s pole võimalik ühenduda.\n"
 "Tõrge kasutajanime saatmisel%s"
 
+#. Translators: Last %s is an optional explanation beginning with ": " separator
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
