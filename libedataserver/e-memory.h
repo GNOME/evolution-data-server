@@ -56,6 +56,7 @@ void e_mempool_flush(EMemPool *pool, gint freeall);
 void e_mempool_destroy(EMemPool *pool);
 #endif /* EDS_DISABLE_DEPRECATED */
 
+#ifndef EDS_DISABLE_DEPRECATED
 /* strv's string arrays that can be efficiently modified and then compressed mainly for retrival */
 /* building is relatively fast, once compressed it takes the minimum amount of memory possible to store */
 typedef struct _EStrv EStrv;
@@ -67,6 +68,7 @@ EStrv *e_strv_set(EStrv *strv, gint index, const gchar *str);
 EStrv *e_strv_pack(EStrv *strv);
 const gchar *e_strv_get(EStrv *strv, gint index);
 void e_strv_destroy(EStrv *strv);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 /* poolv's are similar to strv's, but they store common strings */
 typedef struct _EPoolv EPoolv;
