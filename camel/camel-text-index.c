@@ -36,10 +36,9 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-block-file.h"
 #include "camel-list-utils.h"
+#include "camel-mempool.h"
 #include "camel-object.h"
 #include "camel-partition-table.h"
 #include "camel-private.h"
@@ -69,7 +68,7 @@ typedef struct _CamelTextIndexNamePrivate CamelTextIndexNamePrivate;
 struct _CamelTextIndexNamePrivate {
 	GString *buffer;
 	camel_key_t nameid;
-	EMemPool *pool;
+	CamelMemPool *pool;
 };
 
 CamelTextIndexName *camel_text_index_name_new(CamelTextIndex *idx, const gchar *name, camel_key_t nameid);
@@ -1391,7 +1390,7 @@ text_index_name_add_word(CamelIndexName *idn, const gchar *word)
 	struct _CamelTextIndexNamePrivate *p = ((CamelTextIndexName *)idn)->priv;
 
 	if (g_hash_table_lookup(idn->words, word) == NULL) {
-		gchar *w = e_mempool_strdup(p->pool, word);
+		gchar *w = camel_mempool_strdup(p->pool, word);
 
 		g_hash_table_insert(idn->words, w, w);
 	}
@@ -1519,7 +1518,7 @@ camel_text_index_name_init(CamelTextIndexName *idn)
 
 	p = idn->priv = g_malloc0(sizeof(*idn->priv));
 	p->buffer = g_string_new("");
-	p->pool = e_mempool_new(256, 128, E_MEMPOOL_ALIGN_BYTE);
+	p->pool = camel_mempool_new(256, 128, CAMEL_MEMPOOL_ALIGN_BYTE);
 }
 
 static void
@@ -1530,7 +1529,7 @@ camel_text_index_name_finalise(CamelTextIndexName *idn)
 	g_hash_table_destroy(idn->parent.words);
 
 	g_string_free(p->buffer, TRUE);
-	e_mempool_destroy(p->pool);
+	camel_mempool_destroy(p->pool);
 
 	g_free(p);
 }
@@ -1562,7 +1561,7 @@ camel_text_index_name_new(CamelTextIndex *idx, const gchar *name, camel_key_t na
 
 	cin->index = (CamelIndex *)idx;
 	camel_object_ref((CamelObject *)idx);
-	cin->name = e_mempool_strdup(p->pool, name);
+	cin->name = camel_mempool_strdup(p->pool, name);
 	p->nameid = nameid;
 
 	return idn;

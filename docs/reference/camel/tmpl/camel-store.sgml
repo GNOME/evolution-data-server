@@ -236,6 +236,13 @@ CamelStore
 
 
 
+<!-- ##### MACRO CAMEL_STORE_ASYNC ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAMEL_STORE_FOLDER_CREATE ##### -->
 <para>
 

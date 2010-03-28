@@ -58,6 +58,7 @@
 #include <camel/camel-lock-client.h>
 #include <camel/camel-lock-helper.h>
 #include <camel/camel-medium.h>
+#include <camel/camel-mempool.h>
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-mime-filter-basic.h>
 #include <camel/camel-mime-filter-bestenc.h>

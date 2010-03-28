@@ -35,8 +35,7 @@
 
 #include <glib.h>
 
-#include <libedataserver/e-memory.h>
-
+#include "camel-mempool.h"
 #include "camel-mime-filter.h"
 #include "camel-mime-parser.h"
 #include "camel-mime-utils.h"
@@ -120,7 +119,7 @@ struct _header_scan_stack {
 	camel_mime_parser_state_t savestate; /* state at invocation of this part */
 
 #ifdef MEMPOOL
-	EMemPool *pool;		/* memory pool to keep track of headers/etc at this level */
+	CamelMemPool *pool;	/* memory pool to keep track of headers/etc at this level */
 #endif
 	struct _camel_header_raw *headers;	/* headers for this part */
 
@@ -1020,7 +1019,7 @@ folder_pull_part(struct _header_scan_state *s)
 		s->parts = h->parent;
 		g_free(h->boundary);
 #ifdef MEMPOOL
-		e_mempool_destroy(h->pool);
+		camel_mempool_destroy(h->pool);
 #else
 		camel_header_raw_clear(&h->headers);
 #endif
@@ -1128,18 +1127,18 @@ header_append_mempool(struct _header_scan_state *s, struct _header_scan_stack *h
 	content = strchr(header, ':');
 	if (content) {
 		register gint len;
-		n = e_mempool_alloc(h->pool, sizeof(*n));
+		n = camel_mempool_alloc(h->pool, sizeof(*n));
 		n->next = NULL;
 
 		len = content-header;
-		n->name = e_mempool_alloc(h->pool, len+1);
+		n->name = camel_mempool_alloc(h->pool, len+1);
 		memcpy(n->name, header, len);
 		n->name[len] = 0;
 
 		content++;
 
 		len = s->outptr - content;
-		n->value = e_mempool_alloc(h->pool, len+1);
+		n->value = camel_mempool_alloc(h->pool, len+1);
 		memcpy(n->value, content, len);
 		n->value[len] = 0;
 
@@ -1199,7 +1198,7 @@ folder_scan_header(struct _header_scan_state *s, gint *lastone)
 
 	h = g_malloc0(sizeof(*h));
 #ifdef MEMPOOL
-	h->pool = e_mempool_new(8192, 4096, E_MEMPOOL_ALIGN_STRUCT);
+	h->pool = camel_mempool_new(8192, 4096, CAMEL_MEMPOOL_ALIGN_STRUCT);
 #endif
 
 	if (s->parts)

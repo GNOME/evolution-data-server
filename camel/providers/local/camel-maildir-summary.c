@@ -36,9 +36,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-db.h"
+#include "camel-mempool.h"
 #include "camel-mime-message.h"
 #include "camel-operation.h"
 #include "camel-private.h"
@@ -419,7 +418,7 @@ static gint maildir_summary_load(CamelLocalSummary *cls, gint forceindex, CamelE
 	struct dirent *d;
 	CamelMaildirSummary *mds = (CamelMaildirSummary *)cls;
 	gchar *uid;
-	EMemPool *pool;
+	CamelMemPool *pool;
 	gint ret;
 
 	cur = g_strdup_printf("%s/cur", cls->folder_path);
@@ -436,7 +435,7 @@ static gint maildir_summary_load(CamelLocalSummary *cls, gint forceindex, CamelE
 	}
 
 	mds->priv->load_map = g_hash_table_new(g_str_hash, g_str_equal);
-	pool = e_mempool_new(1024, 512, E_MEMPOOL_ALIGN_BYTE);
+	pool = camel_mempool_new(1024, 512, CAMEL_MEMPOOL_ALIGN_BYTE);
 
 	while ((d = readdir(dir))) {
 		if (d->d_name[0] == '.')
@@ -446,12 +445,12 @@ static gint maildir_summary_load(CamelLocalSummary *cls, gint forceindex, CamelE
 		uid = strchr(d->d_name, ':');
 		if (uid) {
 			gint len = uid-d->d_name;
-			uid = e_mempool_alloc(pool, len+1);
+			uid = camel_mempool_alloc(pool, len+1);
 			memcpy(uid, d->d_name, len);
 			uid[len] = 0;
-			g_hash_table_insert(mds->priv->load_map, uid, e_mempool_strdup(pool, d->d_name));
+			g_hash_table_insert(mds->priv->load_map, uid, camel_mempool_strdup(pool, d->d_name));
 		} else {
-			uid = e_mempool_strdup(pool, d->d_name);
+			uid = camel_mempool_strdup(pool, d->d_name);
 			g_hash_table_insert(mds->priv->load_map, uid, uid);
 		}
 	}
@@ -462,7 +461,7 @@ static gint maildir_summary_load(CamelLocalSummary *cls, gint forceindex, CamelE
 
 	g_hash_table_destroy(mds->priv->load_map);
 	mds->priv->load_map = NULL;
-	e_mempool_destroy(pool);
+	camel_mempool_destroy(pool);
 
 	return ret;
 }

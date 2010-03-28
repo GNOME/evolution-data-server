@@ -38,6 +38,7 @@ void e_memchunk_empty(EMemChunk *m);
 void e_memchunk_clean(EMemChunk *m);
 void e_memchunk_destroy(EMemChunk *m);
 
+#ifndef EDS_DISABLE_DEPRECATED
 /* mempools - allocate variable sized blocks of memory, and free as one */
 /* allocation is very fast, but cannot be freed individually */
 typedef struct _EMemPool EMemPool;
@@ -53,6 +54,7 @@ gpointer e_mempool_alloc(EMemPool *pool, gint size);
 gchar *e_mempool_strdup(EMemPool *pool, const gchar *str);
 void e_mempool_flush(EMemPool *pool, gint freeall);
 void e_mempool_destroy(EMemPool *pool);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 /* strv's string arrays that can be efficiently modified and then compressed mainly for retrival */
 /* building is relatively fast, once compressed it takes the minimum amount of memory possible to store */

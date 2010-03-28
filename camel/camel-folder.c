@@ -31,13 +31,12 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-db.h"
 #include "camel-debug.h"
 #include "camel-exception.h"
 #include "camel-filter-driver.h"
 #include "camel-folder.h"
+#include "camel-mempool.h"
 #include "camel-mime-message.h"
 #include "camel-operation.h"
 #include "camel-private.h"
@@ -2050,7 +2049,7 @@ struct _CamelFolderChangeInfoPrivate {
 	GHashTable *uid_stored;	/* what we have stored, which array they're in */
 	GHashTable *uid_source;	/* used to create unique lists */
 	GPtrArray  *uid_filter; /* uids to be filtered */
-	struct _EMemPool *uid_pool;	/* pool used to store copies of uid strings */
+	CamelMemPool *uid_pool;	/* pool used to store copies of uid strings */
 };
 
 /* Event hooks that block emission when frozen */
@@ -2224,7 +2223,7 @@ camel_folder_change_info_new(void)
 	info->priv->uid_stored = g_hash_table_new(g_str_hash, g_str_equal);
 	info->priv->uid_source = NULL;
 	info->priv->uid_filter = g_ptr_array_new();
-	info->priv->uid_pool = e_mempool_new(512, 256, E_MEMPOOL_ALIGN_BYTE);
+	info->priv->uid_pool = camel_mempool_new(512, 256, CAMEL_MEMPOOL_ALIGN_BYTE);
 
 	return info;
 }
@@ -2249,7 +2248,7 @@ camel_folder_change_info_add_source(CamelFolderChangeInfo *info, const gchar *ui
 		p->uid_source = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if (g_hash_table_lookup(p->uid_source, uid) == NULL)
-		g_hash_table_insert(p->uid_source, e_mempool_strdup(p->uid_pool, uid), GINT_TO_POINTER (1));
+		g_hash_table_insert(p->uid_source, camel_mempool_strdup(p->uid_pool, uid), GINT_TO_POINTER (1));
 }
 
 /**
@@ -2277,7 +2276,7 @@ camel_folder_change_info_add_source_list(CamelFolderChangeInfo *info, const GPtr
 		gchar *uid = list->pdata[i];
 
 		if (g_hash_table_lookup(p->uid_source, uid) == NULL)
-			g_hash_table_insert(p->uid_source, e_mempool_strdup(p->uid_pool, uid), GINT_TO_POINTER (1));
+			g_hash_table_insert(p->uid_source, camel_mempool_strdup(p->uid_pool, uid), GINT_TO_POINTER (1));
 	}
 }
 
@@ -2386,7 +2385,7 @@ change_info_recent_uid(CamelFolderChangeInfo *info, const gchar *uid)
 
 	/* always add to recent, but dont let anyone else know */
 	if (!g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer *)&olduid, (gpointer *)&olduids)) {
-		olduid = e_mempool_strdup(p->uid_pool, uid);
+		olduid = camel_mempool_strdup(p->uid_pool, uid);
 	}
 	g_ptr_array_add(info->uid_recent, olduid);
 }
@@ -2402,7 +2401,7 @@ change_info_filter_uid(CamelFolderChangeInfo *info, const gchar *uid)
 
 	/* always add to filter, but dont let anyone else know */
 	if (!g_hash_table_lookup_extended(p->uid_stored, uid, (gpointer *)&olduid, (gpointer *)&olduids)) {
-		olduid = e_mempool_strdup(p->uid_pool, uid);
+		olduid = camel_mempool_strdup(p->uid_pool, uid);
 	}
 	g_ptr_array_add(p->uid_filter, olduid);
 }
@@ -2466,7 +2465,7 @@ camel_folder_change_info_add_uid(CamelFolderChangeInfo *info, const gchar *uid)
 		return;
 	}
 
-	olduid = e_mempool_strdup(p->uid_pool, uid);
+	olduid = camel_mempool_strdup(p->uid_pool, uid);
 	g_ptr_array_add(info->uid_added, olduid);
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_added);
 }
@@ -2499,7 +2498,7 @@ camel_folder_change_info_remove_uid(CamelFolderChangeInfo *info, const gchar *ui
 		return;
 	}
 
-	olduid = e_mempool_strdup(p->uid_pool, uid);
+	olduid = camel_mempool_strdup(p->uid_pool, uid);
 	g_ptr_array_add(info->uid_removed, olduid);
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_removed);
 }
@@ -2527,7 +2526,7 @@ camel_folder_change_info_change_uid(CamelFolderChangeInfo *info, const gchar *ui
 		return;
 	}
 
-	olduid = e_mempool_strdup(p->uid_pool, uid);
+	olduid = camel_mempool_strdup(p->uid_pool, uid);
 	g_ptr_array_add(info->uid_changed, olduid);
 	g_hash_table_insert(p->uid_stored, olduid, info->uid_changed);
 }
@@ -2594,7 +2593,7 @@ camel_folder_change_info_clear(CamelFolderChangeInfo *info)
 	g_hash_table_destroy(p->uid_stored);
 	p->uid_stored = g_hash_table_new(g_str_hash, g_str_equal);
 	g_ptr_array_set_size(p->uid_filter, 0);
-	e_mempool_flush(p->uid_pool, TRUE);
+	camel_mempool_flush(p->uid_pool, TRUE);
 }
 
 /**
@@ -2617,7 +2616,7 @@ camel_folder_change_info_free(CamelFolderChangeInfo *info)
 
 	g_hash_table_destroy(p->uid_stored);
 	g_ptr_array_free(p->uid_filter, TRUE);
-	e_mempool_destroy(p->uid_pool);
+	camel_mempool_destroy(p->uid_pool);
 	g_slice_free (struct _CamelFolderChangeInfoPrivate, p);
 
 	g_ptr_array_free(info->uid_added, TRUE);

@@ -14,7 +14,6 @@
 #include "camel-imapx-store-summary.h"
 #include "camel-imapx-utils.h"
 #include "camel-imapx-exception.h"
-#include "libedataserver/e-memory.h"
 
 /* high-level parser state */
 #define p(x)

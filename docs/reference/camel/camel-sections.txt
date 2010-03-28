@@ -366,9 +366,6 @@ camel_filter_driver_flush
 camel_filter_driver_filter_message
 camel_filter_driver_filter_mbox
 camel_filter_driver_filter_folder
-camel_filter_driver_expand_option
-camel_filter_driver_rule_count
-camel_filter_driver_rule_get
 <SUBSECTION Standard>
 CAMEL_FILTER_DRIVER
 CAMEL_IS_FILTER_DRIVER
@@ -1809,6 +1806,7 @@ CAMEL_STORE_FILTER_INBOX
 CAMEL_STORE_VJUNK
 CAMEL_STORE_PROXY
 CAMEL_STORE_IS_MIGRATING
+CAMEL_STORE_ASYNC
 CAMEL_STORE_FOLDER_CREATE
 CAMEL_STORE_FOLDER_EXCL
 CAMEL_STORE_FOLDER_BODY_INDEX
@@ -3442,6 +3440,17 @@ camel_unlock_fcntl
 camel_unlock_flock
 camel_lock_folder
 camel_unlock_folder
+</SECTION>
+
+<SECTION>
+<FILE>camel-mempool</FILE>
+CamelMemPool
+CamelMemPoolFlags
+camel_mempool_new
+camel_mempool_alloc
+camel_mempool_strdup
+camel_mempool_flush
+camel_mempool_destroy
 </SECTION>
 
 <SECTION>
