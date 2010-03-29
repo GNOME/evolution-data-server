@@ -157,7 +157,7 @@
       <xi:include href="xml/camel-multipart-signed.xml"/>
       <xi:include href="xml/camel-multipart-encrypted.xml"/>
       <xi:include href="xml/camel-mime-message.xml"/>
-      <xi:include href="xml/camel-mimeparser.xml"/>
+      <xi:include href="xml/camel-mime-parser.xml"/>
     </chapter>
 
     <chapter id="Storage">
