@@ -1652,7 +1652,7 @@ imapx_step(CamelIMAPXServer *is, CamelException *ex)
 /* Used to run 1 command synchronously,
    use for capa, login, and namespaces only. */
 static void
-imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic, CamelException *ex)
+imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 /* throws IO,PARSE exception */
 {
 	camel_imapx_command_close(ic);
@@ -1662,8 +1662,8 @@ imapx_command_run(CamelIMAPXServer *is, CamelIMAPXCommand *ic, CamelException *e
 	QUEUE_UNLOCK(is);
 
 	do {
-		imapx_step(is, ex);
-	} while (ic->status == NULL && !camel_exception_is_set (ex));
+		imapx_step(is, ic->ex);
+	} while (ic->status == NULL && !camel_exception_is_set (ic->ex));
 
 	QUEUE_LOCK(is);
 	camel_dlist_remove((CamelDListNode *)ic);
@@ -2194,7 +2194,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 	e(printf("Got greeting '%.*s'\n", len, buffer));
 
 	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-	imapx_command_run(is, ic, ex);
+	imapx_command_run(is, ic);
 
 	if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
 		if (!camel_exception_is_set (ic->ex))
@@ -2219,7 +2219,7 @@ imapx_connect_to_server (CamelIMAPXServer *is, CamelException *ex)
 		}
 
 		ic = camel_imapx_command_new ("STARTTLS", NULL, "STARTTLS");
-		imapx_command_run (is, ic, ex);
+		imapx_command_run (is, ic);
 		
 		if (camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK) {
 			if (!camel_exception_is_set (ic->ex))
@@ -2319,13 +2319,14 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 			ic = camel_imapx_command_new("LOGIN", NULL, "LOGIN %s %s", service->url->user, service->url->passwd);
 		}
 
-		imapx_command_run(is, ic, ex);
+		imapx_command_run (is, ic);
 
 		if (!(camel_exception_is_set (ic->ex) || ic->status->result != IMAPX_OK))
 			authenticated = TRUE;
 		else {
 			/* If exception is set, it might be mostly due to cancellation and we would get an 
-			   io error, else re-prompt */
+			   io error, else re-prompt. If authentication fails for other reasons ic->status would be
+			    set with the error message */
 			if (camel_exception_is_set (ic->ex)) {
 				camel_imapx_command_free(ic);
 				goto exception;
@@ -2348,7 +2349,8 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 	}
 
 	ic = camel_imapx_command_new("CAPABILITY", NULL, "CAPABILITY");
-	imapx_command_run(is, ic, ex);
+	imapx_command_run (is, ic);
+	camel_exception_xfer (ex, ic->ex);
 	camel_imapx_command_free(ic);
 
 	if (camel_exception_is_set (ex))
@@ -2367,7 +2369,8 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 	/* Fetch namespaces */
 	if (is->cinfo->capa & IMAPX_CAPABILITY_NAMESPACE) {
 		ic = camel_imapx_command_new ("NAMESPACE", NULL, "NAMESPACE");
-		imapx_command_run (is, ic, ex);
+		imapx_command_run (is, ic);
+		camel_exception_xfer (ex, ic->ex);
 		camel_imapx_command_free (ic);
 
 		if (camel_exception_is_set (ex))
