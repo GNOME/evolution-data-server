@@ -122,7 +122,7 @@
 <!ENTITY index-Class-Tree SYSTEM "tree_index.sgml">
 ]>
 
-<book id="index">
+<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
   <bookinfo>
     <title>Camel Reference Manual</title>
     <copyright>
