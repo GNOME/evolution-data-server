@@ -1,3 +1,72 @@
+Evolution-Data-Server 2.30.0 2010-03-29
+----------------------------------------
+
+Whats new ?
+Improved imap implementation with live view updates, non-blocking operations and IDLE support, imapx.
+DBus transport replacing bonobo for address-book and calendar.
+
+Bug Fixes:
+	#612121 - IMAPX: No UTF7 folder name encoding applied (Chenthill Palanisamy)
+	#612260 - IMAPX: Moving a message to other folder marks it as unread 
+		  (Chenthill Palanisamy)
+	#612116 - IMAPX: Problems with separator . and namespace INBOX.
+		  (Chenthill Palanisamy)
+	#604047 - Use accessor functions instead of direct access (Javier Jardón)
+	#612388 - IMAPX: can't move message from a folder to another 
+	          (Chenthill Palanisamy)
+	#612401 - IMAPX: cann't create folder in top hierarchy (Chenthill Palanisamy)
+	#611879 - IMAPX: 'copy folder content locally for offline' doesn't get remembered
+		  (Chenthill Palanisamy)
+	#610774 - IMAPX: automatic filtering doesn't work (Chenthill Palanisamy)
+	#611861 - IMAPX: Folder list does not show up immediately.
+	#612534 - IMAPX: cann't create sub folder (Chenthill Palanisamy)
+	#610909 - IMAPX: password failure isn't reported properly Implement query auth types.
+		  (Chenthill Palanisamy)
+	#612667 - Crash in imapx_connect_to_server at camel-imapx-server.c:2148 
+	          (Chenthill Palanisamy)
+	#612383 - IMAPX: Error while filtering message (Chenthill Palanisamy)
+	#613169 - Weather calendar backend links against out-of-tree library (Priit Laes)
+
+Other Changes:
+	Delete folders while syncronizing (Chenthill Palanisamy)
+	Implement create folder - imapx (Chenthill Palanisamy)
+	Implement folder_delete - imapx	 (Chenthill Palanisamy)
+	Ensure inbox is subscribed if lsub is used during initial setup. - imapx
+	(Chenthill Palanisamy)
+	Implement folder subscriptions - imapx (Chenthill Palanisamy)
+	Strip whitespace off strings returned from e_contact_get(). (Matthew Barnes)
+	Add "Since: 2.28" tags to the API documentation. (Matthew Barnes)
+	Add "Since: 2.30" tags to the API documentation. (Matthew Barnes)
+	Fix Gtk-Doc syntax in function block comments. (Matthew Barnes)
+	Sync changes before expunge (Chenthill Palanisamy)
+	Hide the un-implemented preference options. (Chenthill Palanisamy)
+	Check for dbus-binding-tool during configure. (Fridrich Strba)
+	Check for gperf during configure (Fridrich Strba)
+	Adapting to the surrounding AC_MSG_ERROR style (Fridrich Strba)
+	Create the .gnome2_private directory if it does not exist (Fridrich Strba)
+	Use the surrounding code style (Fridrich Strba)
+	Clean some relocations (E_DATA_SERVER_UI_GLADEDIR -> E_DATA_SERVER_UI_UIDIR)
+	(Fridrich Strba)
+	Support "givenName" LDAP attribute. (Robert Markula)
+	Avoid warning about linking with a loadable module (Fridrich Strba)
+
+Translations:
+	Gabor Kelemen (hu)
+	David Planella (ca)
+	Changwoo Ryu (ko)
+	Luca Ferretti (it)
+	Duarte Loreto (pt)
+	Юрий Козлов (ru)
+	Žygimantas Beručka (lt)
+	Inaki Larranaga Murgoitio (eu)
+	Thanos Lefteris (el)
+	Kenneth Nielsen (da)
+	Игор Несторовић (sr)
+	Maxim V. Dziumanenko (uk)
+	Mattias Põldaru (et)
+	Jamil Ahmed (bn)
+	A S Alam (pa)
+	
 Evolution-Data-Server 2.29.92 2010-03-08
 ----------------------------------------
 
