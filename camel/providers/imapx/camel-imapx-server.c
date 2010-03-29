@@ -2328,6 +2328,7 @@ imapx_reconnect (CamelIMAPXServer *is, CamelException *ex)
 			   io error, else re-prompt. If authentication fails for other reasons ic->status would be
 			    set with the error message */
 			if (camel_exception_is_set (ic->ex)) {
+				camel_exception_xfer (ex, ic->ex);
 				camel_imapx_command_free(ic);
 				goto exception;
 			}
