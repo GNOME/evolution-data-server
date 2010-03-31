@@ -32,9 +32,6 @@
 #include <camel/camel-cipher-context.h>
 #include <camel/camel-data-cache.h>
 #include <camel/camel-data-wrapper.h>
-#include <camel/camel-digest-folder.h>
-#include <camel/camel-digest-store.h>
-#include <camel/camel-digest-summary.h>
 #include <camel/camel-disco-diary.h>
 #include <camel/camel-disco-folder.h>
 #include <camel/camel-disco-store.h>
@@ -86,7 +83,6 @@
 #include <camel/camel-multipart-encrypted.h>
 #include <camel/camel-multipart-signed.h>
 #include <camel/camel-net-utils.h>
-#include <camel/camel-news-address.h>
 #include <camel/camel-nntp-address.h>
 #include <camel/camel-object.h>
 #include <camel/camel-offline-folder.h>
@@ -94,7 +90,6 @@
 #include <camel/camel-offline-store.h>
 #include <camel/camel-operation.h>
 #include <camel/camel-partition-table.h>
-#include <camel/camel-process.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-sasl.h>
 #include <camel/camel-sasl-anonymous.h>

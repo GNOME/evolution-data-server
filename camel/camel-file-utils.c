@@ -750,22 +750,3 @@ camel_file_util_savename(const gchar *filename)
 
 	return retval;
 }
-
-/**
- * camel_mkdir:
- * @path: directory path to create
- * @mode: permissions
- *
- * Creates the directory path described in @path, creating any parent
- * directories as necessary.
- *
- * Returns 0 on success or -1 on fail. In the case of failure, errno
- * will be set appropriately.
- *
- * Since: 2.30
- **/
-gint
-camel_mkdir (const gchar *path, mode_t mode)
-{
-	return g_mkdir_with_parents (path, mode);
-}

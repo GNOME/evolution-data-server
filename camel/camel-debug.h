@@ -36,10 +36,6 @@ gboolean camel_debug(const gchar *mode);
 gboolean camel_debug_start(const gchar *mode);
 void camel_debug_end(void);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-extern gint camel_verbose_debug;
-#endif
-
 G_END_DECLS
 
 #endif /* CAMEL_DEBUG_H */

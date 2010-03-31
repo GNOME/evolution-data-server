@@ -294,22 +294,6 @@ gboolean         camel_store_can_refresh_folder       (CamelStore *store,
 						       CamelFolderInfo *info,
 						       CamelException *ex);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-typedef struct _CamelISubscribe CamelISubscribe;
-struct _CamelISubscribe {
-	CamelInterface iface;
-
-	gboolean (*subscribed)(CamelStore *store, const gchar *folder_name);
-	void (*subscribe)(CamelStore *store, const gchar *folder_name, CamelException *ex);
-	void (*unsubscribe)(CamelStore *store, const gchar *folder_name, CamelException *ex);
-};
-
-CamelType camel_isubscribe_get_type (void);
-gboolean camel_isubscribe_subscribed(CamelStore *store, const gchar *name);
-void camel_isubscribe_subscribe(CamelStore *store, const gchar *folder_name, CamelException *ex);
-void camel_isubscribe_unsubscribe(CamelStore *store, const gchar *folder_name, CamelException *ex);
-#endif /* CAMEL_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* CAMEL_STORE_H */

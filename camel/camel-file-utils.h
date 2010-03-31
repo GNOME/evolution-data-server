@@ -70,10 +70,6 @@ gssize camel_write_socket (gint fd, const gchar *buf, gsize n);
 
 gchar *camel_file_util_savename(const gchar *filename);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-gint camel_mkdir (const gchar *path, mode_t mode);
-#endif
-
 G_END_DECLS
 
 #endif /* CAMEL_FILE_UTILS_H */

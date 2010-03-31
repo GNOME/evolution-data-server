@@ -267,48 +267,6 @@ CamelDBPrivate
 </SECTION>
 
 <SECTION>
-<FILE>camel-digest-folder</FILE>
-<TITLE>CamelDigestFolder</TITLE>
-CamelDigestFolder
-camel_digest_folder_new
-<SUBSECTION Standard>
-CAMEL_DIGEST_FOLDER
-CAMEL_IS_DIGEST_FOLDER
-CAMEL_DIGEST_FOLDER_CLASS
-CamelDigestFolderClass
-<SUBSECTION Private>
-camel_digest_folder_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-digest-store</FILE>
-<TITLE>CamelDigestStore</TITLE>
-CamelDigestStore
-camel_digest_store_new
-<SUBSECTION Standard>
-CAMEL_DIGEST_STORE
-CAMEL_IS_DIGEST_STORE
-CAMEL_DIGEST_STORE_CLASS
-CamelDigestStoreClass
-<SUBSECTION Private>
-camel_digest_store_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-digest-summary</FILE>
-<TITLE>CamelDigestSummary</TITLE>
-CamelDigestSummary
-camel_digest_summary_new
-<SUBSECTION Standard>
-CAMEL_DIGEST_SUMMARY
-CAMEL_IS_DIGEST_SUMMARY
-CAMEL_DIGEST_SUMMARY_CLASS
-CamelDigestSummaryClass
-<SUBSECTION Private>
-camel_digest_summary_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-disco-diary</FILE>
 <TITLE>CamelDiscoDiary</TITLE>
 CamelDiscoDiary
@@ -1281,20 +1239,6 @@ camel_multipart_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-news-address</FILE>
-<TITLE>CamelNewsAddress</TITLE>
-CamelNewsAddress
-camel_news_address_new
-<SUBSECTION Standard>
-CAMEL_NEWS_ADDRESS
-CAMEL_IS_NEWS_ADDRESS
-CAMEL_NEWS_ADDRESS_CLASS
-CamelNewsAddressClass
-<SUBSECTION Private>
-camel_news_address_get_type
-</SECTION>
-
-<SECTION>
 <FILE>camel-object</FILE>
 <TITLE>CamelObject</TITLE>
 CAMEL_OBJECT_TRACK_INSTANCES
@@ -1308,10 +1252,6 @@ camel_object_type
 CAMEL_OBJECT_TYPE
 CAMEL_OBJECT_GET_TYPE
 CamelObjectHookID
-CamelObjectMeta
-camel_interface_type
-CAMEL_INTERFACE_TYPE
-CamelInterface
 CamelObjectClassInitFunc
 CamelObjectClassFinalizeFunc
 CamelObjectInitFunc
@@ -1322,19 +1262,15 @@ CAMEL_INVALID_TYPE
 CamelObjectFlags
 camel_type_init
 camel_type_register
-camel_interface_register
 camel_type_get_global_classfuncs
 camel_type_to_name
 camel_name_to_type
 camel_object_class_add_event
-camel_object_class_add_interface
 camel_object_class_dump_tree
 camel_object_cast
 camel_object_is
 camel_object_class_cast
 camel_object_class_is
-camel_interface_cast
-camel_interface_is
 camel_object_new
 camel_object_ref
 camel_object_unref
@@ -1342,15 +1278,10 @@ camel_object_hook_event
 camel_object_remove_event
 camel_object_unhook_event
 camel_object_trigger_event
-camel_object_get_interface
 camel_object_set
 camel_object_setv
 camel_object_get
 camel_object_getv
-camel_object_get_ptr
-camel_object_get_int
-camel_object_meta_get
-camel_object_meta_set
 camel_object_state_read
 camel_object_state_write
 camel_object_free
@@ -1366,14 +1297,6 @@ camel_object_bag_rekey
 camel_object_bag_list
 camel_object_bag_remove
 camel_object_bag_destroy
-CAMEL_MAKE_CLASS
-CamelIteratorVTable
-CamelIterator
-camel_iterator_new
-camel_iterator_free
-camel_iterator_next
-camel_iterator_reset
-camel_iterator_length
 <SUBSECTION Standard>
 CAMEL_OBJECT
 CAMEL_IS_OBJECT
@@ -1840,10 +1763,6 @@ camel_store_unsubscribe_folder
 camel_store_noop
 camel_store_folder_uri_equal
 camel_store_can_refresh_folder
-CamelISubscribe
-camel_isubscribe_subscribed
-camel_isubscribe_subscribe
-camel_isubscribe_unsubscribe
 <SUBSECTION Standard>
 CAMEL_STORE
 CAMEL_IS_STORE
@@ -3297,7 +3216,6 @@ camel_debug_init
 camel_debug
 camel_debug_start
 camel_debug_end
-camel_verbose_debug
 </SECTION>
 
 <SECTION>
@@ -3340,7 +3258,6 @@ camel_write
 camel_read_socket
 camel_write_socket
 camel_file_util_savename
-camel_mkdir
 </SECTION>
 
 <SECTION>
@@ -3542,17 +3459,12 @@ camel_header_newsgroups_free
 camel_transfer_encoding_to_string
 camel_transfer_encoding_from_string
 camel_header_mime_decode
-camel_base64_decode_step
-camel_base64_encode_step
-camel_base64_encode_close
 camel_uudecode_step
 camel_uuencode_step
 camel_uuencode_close
 camel_quoted_decode_step
 camel_quoted_encode_step
 camel_quoted_encode_close
-camel_base64_encode_simple
-camel_base64_decode_simple
 camel_mime_is_ctrl
 camel_mime_is_lwsp
 camel_mime_is_tspecial
@@ -3631,12 +3543,6 @@ CamelKeyTableClass
 <SUBSECTION Private>
 camel_partition_table_get_type
 camel_key_table_get_type
-</SECTION>
-
-<SECTION>
-<FILE>camel-process</FILE>
-camel_process_fork
-camel_process_wait
 </SECTION>
 
 <SECTION>

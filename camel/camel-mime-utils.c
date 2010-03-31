@@ -87,116 +87,6 @@ static const guchar tohex[16] = {
 };
 
 /**
- * camel_base64_encode_close:
- * @in: input stream
- * @inlen: length of the input
- * @break_lines: whether or not to break long lines
- * @out: output string
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been encoded
- *
- * Base64 encodes the input stream to the output stream. Call this
- * when finished encoding data with #camel_base64_encode_step
- * to flush off the last little bit.
- *
- * Returns: the number of bytes encoded
- **/
-gsize
-camel_base64_encode_close(guchar *in, gsize inlen, gboolean break_lines, guchar *out, gint *state, gint *save)
-{
-	gsize bytes = 0;
-
-	if (inlen > 0)
-		bytes += g_base64_encode_step (in, inlen, break_lines, (gchar *) out, state, save);
-
-	bytes += g_base64_encode_close (break_lines, (gchar *) out, state, save);
-
-	return bytes;
-}
-
-/**
- * camel_base64_encode_step:
- * @in: input stream
- * @inlen: length of the input
- * @break_lines: break long lines
- * @out: output string
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been encoded
- *
- * Base64 encodes a chunk of data. Performs an 'encode step', only
- * encodes blocks of 3 characters to the output at a time, saves
- * left-over state in state and save (initialise to 0 on first
- * invocation).
- *
- * Returns: the number of bytes encoded
- **/
-gsize
-camel_base64_encode_step(guchar *in, gsize len, gboolean break_lines, guchar *out, gint *state, gint *save)
-{
-	return g_base64_encode_step (in, len, break_lines, (gchar *) out, state, save);
-}
-
-/**
- * camel_base64_decode_step: decode a chunk of base64 encoded data
- * @in: input stream
- * @len: max length of data to decode
- * @out: output stream
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been decoded
- *
- * Decodes a chunk of base64 encoded data
- *
- * Returns: the number of bytes decoded (which have been dumped in @out)
- **/
-gsize
-camel_base64_decode_step(guchar *in, gsize len, guchar *out, gint *state, guint *save)
-{
-	return g_base64_decode_step ((gchar *) in, len, out, state, save);
-}
-
-/**
- * camel_base64_encode_simple:
- * @data: binary stream of data to encode
- * @len: length of data
- *
- * Base64 encodes a block of memory.
- *
- * Returns: a string containing the base64 encoded data
- **/
-gchar *
-camel_base64_encode_simple (const gchar *data, gsize len)
-{
-	return g_base64_encode ((const guchar *) data, len);
-}
-
-/**
- * camel_base64_decode_simple:
- * @data: data to decode
- * @len: length of data
- *
- * Base64 decodes @data inline (overwrites @data with the decoded version).
- *
- * Returns: the new length of @data
- **/
-gsize
-camel_base64_decode_simple (gchar *data, gsize len)
-{
-	guchar *out_data;
-	gsize out_len = 0;
-
-	g_return_val_if_fail (data != NULL, 0);
-	g_return_val_if_fail (strlen (data) > 1, 0);
-
-	out_data = g_base64_decode (data, &out_len);
-	g_assert (out_len <= len); /* sanity check */
-	memcpy (data, out_data, out_len);
-	data[out_len] = '\0';
-	g_free (out_data);
-
-	return out_len;
-}
-
-/**
  * camel_uuencode_close:
  * @in: input stream
  * @len: input stream length
@@ -1053,7 +943,7 @@ rfc2047_decode_word (const gchar *in, gsize inlen, const gchar *default_charset)
 	case 'b':
 		inptr += 2;
 		decoded = g_alloca (inend - inptr);
-		declen = camel_base64_decode_step ((guchar *) inptr, inend - inptr, decoded, &state, &save);
+		declen = g_base64_decode_step ((gchar *) inptr, inend - inptr, decoded, &state, &save);
 		break;
 	case 'Q':
 	case 'q':

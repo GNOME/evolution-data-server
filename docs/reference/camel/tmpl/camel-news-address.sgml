@@ -17,19 +17,3 @@ CamelNewsAddress
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT CamelNewsAddress ##### -->
-<para>
-
-</para>
-
-@parent: 
-@priv: 
-
-<!-- ##### FUNCTION camel_news_address_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-

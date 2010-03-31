@@ -808,47 +808,6 @@ camel-mime-utils
 @min: 
 
 
-<!-- ##### FUNCTION camel_base64_decode_step ##### -->
-<para>
-
-</para>
-
-@in: 
-@len: 
-@out: 
-@state: 
-@save: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_base64_encode_step ##### -->
-<para>
-
-</para>
-
-@in: 
-@inlen: 
-@break_lines: 
-@out: 
-@state: 
-@save: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_base64_encode_close ##### -->
-<para>
-
-</para>
-
-@in: 
-@inlen: 
-@break_lines: 
-@out: 
-@state: 
-@save: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_uudecode_step ##### -->
 <para>
 
@@ -926,26 +885,6 @@ camel-mime-utils
 @out: 
 @state: 
 @save: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_base64_encode_simple ##### -->
-<para>
-
-</para>
-
-@data: 
-@len: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_base64_decode_simple ##### -->
-<para>
-
-</para>
-
-@data: 
-@len: 
 @Returns: 
 
 

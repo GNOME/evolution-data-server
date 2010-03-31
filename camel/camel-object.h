@@ -67,15 +67,6 @@ extern CamelType camel_object_type;
 typedef struct _CamelObjectClass CamelObjectClass;
 typedef struct _CamelObject CamelObject;
 typedef guint CamelObjectHookID;
-#ifndef CAMEL_DISABLE_DEPRECATED
-typedef struct _CamelObjectMeta CamelObjectMeta;
-#endif /* CAMEL_DISABLE_DEPRECATED */
-
-#ifndef CAMEL_DISABLE_DEPRECATED
-extern CamelType camel_interface_type;
-#define CAMEL_INTERFACE_TYPE (camel_interface_type)
-typedef struct _CamelInterface CamelInterface;
-#endif /* CAMEL_DISABLE_DEPRECATED */
 
 typedef void (*CamelObjectClassInitFunc) (CamelObjectClass *);
 typedef void (*CamelObjectClassFinalizeFunc) (CamelObjectClass *);
@@ -90,33 +81,19 @@ typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer, gpointer);
 /* camel object args. */
 enum {
 	/* Get a description of the object. */
-	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,	/* Get a copy of the meta-data list (should be freed) */
-	CAMEL_OBJECT_ARG_METADATA,
-	CAMEL_OBJECT_ARG_STATE_FILE,
-	CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES
+	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,
+	CAMEL_OBJECT_ARG_STATE_FILE
 };
 
 enum {
 	CAMEL_OBJECT_DESCRIPTION = CAMEL_OBJECT_ARG_DESCRIPTION | CAMEL_ARG_STR,
-	/* Returns a CamelObjectMeta list */
-	CAMEL_OBJECT_METADATA = CAMEL_OBJECT_ARG_METADATA | CAMEL_ARG_PTR,
 	/* sets where the persistent data should reside, otherwise it isn't persistent */
 	CAMEL_OBJECT_STATE_FILE = CAMEL_OBJECT_ARG_STATE_FILE | CAMEL_ARG_STR,
-	/* returns a GSList CamelProperties of persistent properties */
-	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES | CAMEL_ARG_PTR
 };
 
 typedef enum _CamelObjectFlags {
 	CAMEL_OBJECT_DESTROY = (1<<0)
 } CamelObjectFlags;
-
-/* returned by get::CAMEL_OBJECT_METADATA */
-struct _CamelObjectMeta {
-	struct _CamelObjectMeta *next;
-
-	gchar *value;
-	gchar name[1];		/* allocated as part of structure */
-};
 
 /* TODO: create a simpleobject which has no events on it, or an interface for events */
 struct _CamelObject {
@@ -178,21 +155,10 @@ struct _CamelObjectClass
 	/* we only free 1 at a time, and only pointer types, obviously */
 	void (*free)(struct _CamelObject *, guint32 tag, gpointer ptr);
 
-	/* get/set meta-data interface */
-	gchar *(*meta_get)(struct _CamelObject *, const gchar * name);
-	gboolean (*meta_set)(struct _CamelObject *, const gchar * name, const gchar *value);
-
 	/* persistence stuff */
 	gint (*state_read)(struct _CamelObject *, FILE *fp);
 	gint (*state_write)(struct _CamelObject *, FILE *fp);
 };
-
-#ifndef CAMEL_DISABLE_DEPRECATED
-/* an interface is just a class with no instance data */
-struct _CamelInterface {
-	struct _CamelObjectClass type;
-};
-#endif /* CAMEL_DISABLE_DEPRECATED */
 
 /* The type system .... it's pretty simple..... */
 void camel_type_init (void);
@@ -204,13 +170,6 @@ CamelType camel_type_register(CamelType parent, const gchar * name, /*guint ver,
 			      CamelObjectInitFunc instance_init,
 			      CamelObjectFinalizeFunc instance_finalize);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-CamelType camel_interface_register(CamelType parent, const gchar *name,
-				   gsize classfuncs_size,
-				   CamelObjectClassInitFunc class_init,
-				   CamelObjectClassFinalizeFunc class_finalize);
-#endif /* CAMEL_DISABLE_DEPRECATED */
-
 /* deprecated interface */
 #define camel_type_get_global_classfuncs(x) ((CamelObjectClass *)(x))
 
@@ -218,9 +177,6 @@ CamelType camel_interface_register(CamelType parent, const gchar *name,
 const gchar *camel_type_to_name (CamelType type);
 CamelType camel_name_to_type (const gchar *name);
 void camel_object_class_add_event (CamelObjectClass *klass, const gchar *name, CamelObjectEventPrepFunc prep);
-#ifndef CAMEL_DISABLE_DEPRECATED
-void camel_object_class_add_interface(CamelObjectClass *klass, CamelType itype);
-#endif /* CAMEL_DISABLE_DEPRECATED */
 
 void camel_object_class_dump_tree (CamelType root);
 
@@ -230,11 +186,6 @@ gboolean camel_object_is(CamelObject *obj, CamelType ctype);
 
 CamelObjectClass *camel_object_class_cast (CamelObjectClass *klass, CamelType ctype);
 gboolean camel_object_class_is (CamelObjectClass *klass, CamelType ctype);
-
-#ifndef CAMEL_DISABLE_DEPRECATED
-CamelObjectClass *camel_interface_cast(CamelObjectClass *klass, CamelType ctype);
-gboolean camel_interface_is(CamelObjectClass *k, CamelType ctype);
-#endif /* CAMEL_DISABLE_DEPRECATED */
 
 CamelType camel_object_get_type (void);
 
@@ -254,24 +205,11 @@ void camel_object_remove_event(gpointer obj, CamelObjectHookID id);
 void camel_object_unhook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);
 void camel_object_trigger_event(gpointer obj, const gchar *name, gpointer event_data);
 
-#ifndef CAMEL_DISABLE_DEPRECATED
-/* interfaces */
-gpointer camel_object_get_interface(gpointer vo, CamelType itype);
-#endif /* CAMEL_DISABLE_DEPRECATED */
-
 /* get/set methods */
 gint camel_object_set(gpointer obj, struct _CamelException *ex, ...);
 gint camel_object_setv(gpointer obj, struct _CamelException *ex, CamelArgV *);
 gint camel_object_get(gpointer obj, struct _CamelException *ex, ...);
 gint camel_object_getv(gpointer obj, struct _CamelException *ex, CamelArgGetV *);
-
-/* not very efficient one-time calls */
-gpointer camel_object_get_ptr(gpointer vo, CamelException *ex, gint tag);
-gint camel_object_get_int(gpointer vo, CamelException *ex, gint tag);
-
-/* meta-data for user-specific data */
-gchar *camel_object_meta_get(gpointer vo, const gchar * name);
-gboolean camel_object_meta_set(gpointer vo, const gchar * name, const gchar *value);
 
 /* reads/writes the state from/to the CAMEL_OBJECT_STATE_FILE */
 gint camel_object_state_read(gpointer vo);
@@ -294,57 +232,6 @@ void camel_object_bag_rekey(CamelObjectBag *bag, gpointer o, gconstpointer newke
 GPtrArray *camel_object_bag_list(CamelObjectBag *bag);
 void camel_object_bag_remove(CamelObjectBag *bag, gpointer o);
 void camel_object_bag_destroy(CamelObjectBag *bag);
-
-#define CAMEL_MAKE_CLASS(type, tname, parent, pname)				\
-static CamelType type##_type;							\
-static pname##Class * type##_parent_class;					\
-										\
-CamelType									\
-type##_get_type(void)								\
-{										\
-	if (type##_type == 0) {							\
-		type##_parent_class = (pname##Class *)parent##_get_type();	\
-		type##_type = camel_type_register(				\
-			type##_parent_class, #tname "Class",			\
-			sizeof(tname),						\
-			sizeof(tname ## Class),					\
-			(CamelObjectClassInitFunc) type##_class_init,		\
-			NULL,							\
-			(CamelObjectInitFunc) type##_init,			\
-			(CamelObjectFinalizeFunc) type##_finalise);		\
-	}									\
-										\
-	return type##_type;							\
-}
-
-#ifndef CAMEL_DISABLE_DEPRECATED
-/* Utility functions, not object specific, but too small to separate */
-typedef struct _CamelIteratorVTable CamelIteratorVTable;
-typedef struct _CamelIterator CamelIterator;
-
-struct _CamelIteratorVTable {
-	/* free fields, dont free base object */
-	void (*free)(gpointer it);
-	/* go to the next messageinfo */
-	gconstpointer (*next)(gpointer it, CamelException *ex);
-	/* go back to the start */
-	void (*reset)(gpointer it);
-	/* *ESTIMATE* how many results are in the iterator */
-	gint (*length)(gpointer it);
-};
-
-struct _CamelIterator {
-	CamelIteratorVTable *klass;
-
-	/* subclasses adds new fields afterwards */
-};
-
-gpointer camel_iterator_new(CamelIteratorVTable *klass, gsize size);
-void camel_iterator_free(gpointer it);
-gconstpointer camel_iterator_next(gpointer it, CamelException *ex);
-void camel_iterator_reset(gpointer it);
-gint camel_iterator_length(gpointer it);
-#endif /* CAMEL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

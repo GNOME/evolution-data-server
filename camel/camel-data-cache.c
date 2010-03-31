@@ -43,8 +43,6 @@
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"
 
-extern gint camel_verbose_debug;
-#define dd(x) (camel_verbose_debug?(x):0)
 #define d(x)
 
 /* how many 'bits' of hash are used to key the toplevel directory */
@@ -207,12 +205,10 @@ data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, tim
 			continue;
 
 		g_string_printf (s, "%s/%s", path, dname);
-		dd(printf("Checking '%s' for expiry\n", s->str));
 		if (g_stat(s->str, &st) == 0
 		    && S_ISREG(st.st_mode)
 		    && ((cdc->expire_age != -1 && st.st_mtime + cdc->expire_age < now)
 			|| (cdc->expire_access != -1 && st.st_atime + cdc->expire_access < now))) {
-			dd(printf("Has expired!  Removing!\n"));
 			g_unlink(s->str);
 			stream = camel_object_bag_get(cdc->priv->busy_bag, s->str);
 			if (stream) {
@@ -249,8 +245,6 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
 			g_mkdir_with_parents (dir, 0700);
 	} else if (cdc->expire_age != -1 || cdc->expire_access != -1) {
 		time_t now;
-
-		dd(printf("Checking expire cycle time on dir '%s'\n", dir));
 
 		/* This has a race, but at worst we re-run an expire cycle which is safe */
 		now = time(NULL);

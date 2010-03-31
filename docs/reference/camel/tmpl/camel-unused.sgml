@@ -1,3 +1,75 @@
+<!-- ##### SECTION ./tmpl/camel-digest-folder.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-folder.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-folder.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-folder.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-folder.sgml:Title ##### -->
+CamelDigestFolder
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-store.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-store.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-store.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-store.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-store.sgml:Title ##### -->
+CamelDigestStore
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-summary.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-summary.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-summary.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-summary.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-digest-summary.sgml:Title ##### -->
+CamelDigestSummary
+
+
 <!-- ##### SECTION ./tmpl/camel-groupwise-private.sgml:Long_Description ##### -->
 <para>
 
@@ -126,6 +198,30 @@ camel-md5-utils
 camel-mime-part-utils
 
 
+<!-- ##### SECTION ./tmpl/camel-news-address.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-news-address.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-news-address.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-news-address.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-news-address.sgml:Title ##### -->
+CamelNewsAddress
+
+
 <!-- ##### SECTION ./tmpl/camel-nntp-private.sgml:Long_Description ##### -->
 <para>
 
@@ -164,6 +260,30 @@ camel-nntp-private
 
 <!-- ##### SECTION ./tmpl/camel-nntp-types.sgml:Title ##### -->
 camel-nntp-types
+
+
+<!-- ##### SECTION ./tmpl/camel-process.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-process.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/camel-process.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-process.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/camel-process.sgml:Title ##### -->
+camel-process
 
 
 <!-- ##### SECTION ./tmpl/camel-search-private.sgml:Long_Description ##### -->
@@ -284,6 +404,12 @@ camel-types
 @f: 
 @l: 
 
+<!-- ##### MACRO CAMEL_INTERFACE_TYPE ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_LOCAL_FOLDER_LOCK ##### -->
 <para>
 
@@ -299,6 +425,16 @@ camel-types
 
 @f: 
 @l: 
+
+<!-- ##### MACRO CAMEL_MAKE_CLASS ##### -->
+<para>
+
+</para>
+
+@type: 
+@tname: 
+@parent: 
+@pname: 
 
 <!-- ##### MACRO CAMEL_NNTP_FOLDER_LOCK ##### -->
 <para>
@@ -332,6 +468,38 @@ camel-types
 @f: 
 @l: 
 
+<!-- ##### STRUCT CamelDigestFolder ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### STRUCT CamelDigestStore ##### -->
+<para>
+
+</para>
+
+@parent: 
+
+<!-- ##### STRUCT CamelDigestSummary ##### -->
+<para>
+
+</para>
+
+@parent_object: 
+
+<!-- ##### STRUCT CamelISubscribe ##### -->
+<para>
+
+</para>
+
+@iface: 
+@subscribed: 
+@subscribe: 
+@unsubscribe: 
+
 <!-- ##### STRUCT CamelImapFolderPrivate ##### -->
 <para>
 
@@ -344,6 +512,30 @@ camel-types
 
 </para>
 
+
+<!-- ##### STRUCT CamelInterface ##### -->
+<para>
+
+</para>
+
+@type: 
+
+<!-- ##### STRUCT CamelIterator ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+<!-- ##### STRUCT CamelIteratorVTable ##### -->
+<para>
+
+</para>
+
+@free: 
+@next: 
+@reset: 
+@length: 
 
 <!-- ##### STRUCT CamelLocalFolderPrivate ##### -->
 <para>
@@ -411,6 +603,23 @@ camel-types
 
 @dummy: 
 
+<!-- ##### STRUCT CamelNewsAddress ##### -->
+<para>
+
+</para>
+
+@parent: 
+@priv: 
+
+<!-- ##### STRUCT CamelObjectMeta ##### -->
+<para>
+
+</para>
+
+@next: 
+@value: 
+@name: 
+
 <!-- ##### STRUCT CamelSimpleDataWrapper ##### -->
 <para>
 
@@ -459,7 +668,87 @@ camel-types
 @ai_canonname: 
 @ai_next: 
 
+<!-- ##### FUNCTION camel_base64_decode_simple ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_base64_decode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@len: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_base64_encode_close ##### -->
+<para>
+
+</para>
+
+@in: 
+@inlen: 
+@break_lines: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_base64_encode_simple ##### -->
+<para>
+
+</para>
+
+@data: 
+@len: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_base64_encode_step ##### -->
+<para>
+
+</para>
+
+@in: 
+@inlen: 
+@break_lines: 
+@out: 
+@state: 
+@save: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_block_file_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_digest_folder_new ##### -->
+<para>
+
+</para>
+
+@parent_store: 
+@message: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_digest_store_new ##### -->
+<para>
+
+</para>
+
+@url: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_digest_summary_new ##### -->
 <para>
 
 </para>
@@ -544,12 +833,115 @@ camel-types
 
 @Returns: 
 
+<!-- ##### FUNCTION camel_interface_cast ##### -->
+<para>
+
+</para>
+
+@klass: 
+@ctype: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_interface_is ##### -->
+<para>
+
+</para>
+
+@k: 
+@ctype: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_interface_register ##### -->
+<para>
+
+</para>
+
+@parent: 
+@name: 
+@classfuncs_size: 
+@class_init: 
+@class_finalize: 
+@Returns: 
+
+<!-- ##### VARIABLE camel_interface_type ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION camel_isubscribe_get_type ##### -->
 <para>
 
 </para>
 
 @Returns: 
+
+<!-- ##### FUNCTION camel_isubscribe_subscribe ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+<!-- ##### FUNCTION camel_isubscribe_subscribed ##### -->
+<para>
+
+</para>
+
+@store: 
+@name: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_isubscribe_unsubscribe ##### -->
+<para>
+
+</para>
+
+@store: 
+@folder_name: 
+@ex: 
+
+<!-- ##### FUNCTION camel_iterator_free ##### -->
+<para>
+
+</para>
+
+@it: 
+
+<!-- ##### FUNCTION camel_iterator_length ##### -->
+<para>
+
+</para>
+
+@it: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_iterator_new ##### -->
+<para>
+
+</para>
+
+@klass: 
+@size: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_iterator_next ##### -->
+<para>
+
+</para>
+
+@it: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_iterator_reset ##### -->
+<para>
+
+</para>
+
+@it: 
 
 <!-- ##### FUNCTION camel_key_file_get_type ##### -->
 <para>
@@ -606,6 +998,78 @@ camel-types
 @buf: 
 @len: 
 
+<!-- ##### FUNCTION camel_mkdir ##### -->
+<para>
+
+</para>
+
+@path: 
+@mode: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_news_address_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_class_add_interface ##### -->
+<para>
+
+</para>
+
+@klass: 
+@itype: 
+
+<!-- ##### FUNCTION camel_object_get_int ##### -->
+<para>
+
+</para>
+
+@vo: 
+@ex: 
+@tag: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_get_interface ##### -->
+<para>
+
+</para>
+
+@vo: 
+@itype: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_get_ptr ##### -->
+<para>
+
+</para>
+
+@vo: 
+@ex: 
+@tag: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_meta_get ##### -->
+<para>
+
+</para>
+
+@vo: 
+@name: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_object_meta_set ##### -->
+<para>
+
+</para>
+
+@vo: 
+@name: 
+@value: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_object_new_name ##### -->
 <para>
 
@@ -619,6 +1083,27 @@ camel-types
 
 </para>
 
+@Returns: 
+
+<!-- ##### FUNCTION camel_process_fork ##### -->
+<para>
+
+</para>
+
+@path: 
+@argv: 
+@infd: 
+@outfd: 
+@errfd: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_process_wait ##### -->
+<para>
+
+</para>
+
+@pid: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_search_build_match_regex ##### -->
@@ -759,6 +1244,12 @@ camel-types
 @haystack: 
 @needle: 
 @Returns: 
+
+<!-- ##### VARIABLE camel_verbose_debug ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### FUNCTION groupwise_refresh_folder ##### -->
 <para>

@@ -39,6 +39,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel/camel-operation.h"
 
@@ -54,7 +55,6 @@
 #ifdef HAVE_SSL
 #include "camel/camel-tcp-stream-ssl.h"
 #endif
-#include "camel/camel-i18n.h"
 
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"

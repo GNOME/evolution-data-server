@@ -7,6 +7,7 @@
 #include <string.h>
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
 // fixme, use own type funcs
 #include <ctype.h>
@@ -37,7 +38,6 @@
 #include <camel/camel-db.h>
 
 #include <camel/camel-sasl.h>
-#include <camel/camel-i18n.h>
 #include <camel/camel-utf8.h>
 #include <camel/camel-file-utils.h>
 

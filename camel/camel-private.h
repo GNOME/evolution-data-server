@@ -34,6 +34,8 @@
 
 G_BEGIN_DECLS
 
+extern gint camel_verbose_debug;
+
 struct _CamelFolderPrivate {
 	GStaticRecMutex lock;
 	GStaticMutex change_lock;

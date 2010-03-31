@@ -36,10 +36,7 @@ static GHashTable *debug_table = NULL;
  * camel_debug_init:
  * @void:
  *
- * Init camel debug.  Maintain legacy CAMEL_VERBOSE_DEBUG as well as the
- * new CAMEL_DEBUG based environment variable interfaces.
- *
- * CAMEL_VERBOSE_DEBUG is set to a number to turn debug on.
+ * Init camel debug.
  *
  * CAMEL_DEBUG is set to a comma separated list of modules to debug.
  * The modules can contain module-specific specifiers after a ':', or
@@ -50,10 +47,6 @@ static GHashTable *debug_table = NULL;
 void camel_debug_init(void)
 {
 	gchar *d;
-
-	d = getenv("CAMEL_VERBOSE_DEBUG");
-	if (d)
-		camel_verbose_debug = atoi(d);
 
 	d = g_strdup(getenv("CAMEL_DEBUG"));
 	if (d) {

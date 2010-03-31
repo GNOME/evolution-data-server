@@ -513,7 +513,6 @@ imap_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		tag = arg->tag;
 
 		switch (tag & CAMEL_ARG_TAG) {
-		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
 		case CAMEL_FOLDER_ARG_PROPERTIES: {
 			CamelArgGetV props;
 			gint i;

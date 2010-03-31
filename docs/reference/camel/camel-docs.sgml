@@ -196,14 +196,9 @@
 
     <chapter id="Deprecated">
       <title>Deprecated Objects</title>
-      <xi:include href="xml/camel-digest-folder.xml"/>
-      <xi:include href="xml/camel-digest-store.xml"/>
-      <xi:include href="xml/camel-digest-summary.xml"/>
       <xi:include href="xml/camel-disco-diary.xml"/>
       <xi:include href="xml/camel-disco-folder.xml"/>
       <xi:include href="xml/camel-disco-store.xml"/>
-      <xi:include href="xml/camel-news-address.xml"/>
-      <xi:include href="xml/camel-process.xml"/>
     </chapter>
 
     <index id="api-index-full">

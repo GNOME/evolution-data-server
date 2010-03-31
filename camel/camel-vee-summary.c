@@ -156,12 +156,6 @@ vee_info_set_user_flag(CamelMessageInfo *mi, const gchar *name, gboolean value)
 
 	if (vf->priv->unread_vfolder == 1)
 		hacked_unread_folder = TRUE;
-	else {
-		gchar *meta = camel_object_meta_get (mi->summary->folder, "vfolder:unread");
-		if (meta && strcmp (meta, "true") == 0)
-			hacked_unread_folder = TRUE;
-		g_free(meta);
-	}
 
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
@@ -206,7 +200,6 @@ camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 {
 	static gint only_once = FALSE;
 	static gchar *exp = NULL;
-	gchar *meta;
 	gboolean hacked_unread_folder = FALSE;
 	CamelVeeFolder *vf;
 
@@ -227,11 +220,6 @@ camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 
 	if (vf->expression && strstr(exp, vf->expression) &&  (vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL) == 0)
 		hacked_unread_folder = TRUE;
-
-	meta = camel_object_meta_get (vf, "vfolder:unread");
-	if (!hacked_unread_folder && meta && strcmp (meta, "true") == 0)
-		hacked_unread_folder = TRUE;
-	g_free(meta);
 
 	if (hacked_unread_folder)
 		vf->priv->unread_vfolder = 1;
@@ -254,12 +242,6 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 
 	if (vf->priv->unread_vfolder == 1)
 		hacked_unread_folder = TRUE;
-	else {
-		gchar *meta = camel_object_meta_get (mi->summary->folder, "vfolder:unread");
-		if (meta && strcmp (meta, "true") == 0)
-			hacked_unread_folder = TRUE;
-		g_free(meta);
-	}
 
 	if (mi->uid) {
 		guint32 old_visible, old_unread, old_deleted, old_junked, old_junked_not_deleted;

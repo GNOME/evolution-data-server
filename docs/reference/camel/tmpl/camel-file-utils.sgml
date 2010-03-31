@@ -228,13 +228,3 @@ camel-file-utils
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_mkdir ##### -->
-<para>
-
-</para>
-
-@path: 
-@mode: 
-@Returns: 
-
-
