@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-06 11:16+0100\n"
-"PO-Revision-Date: 2010-03-22 20:03+0100\n"
+"POT-Creation-Date: 2010-03-31 19:43+0200\n"
+"PO-Revision-Date: 2010-03-31 19:44+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -3485,7 +3485,7 @@ msgstr "Ezin da '%s' karpetara harpidetu: komando okerra"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1705
 msgid "Cannot unsubscribe from IMAP folders in offline mode."
-msgstr "Ezin da IMAP karpetetik harpidetza kendu lineaz kanpo moduan"
+msgstr "Ezin da IMAP karpetatatik harpidetza kendu lineaz kanpo moduan"
 
 #: ../camel/providers/imap4/camel-imap4-store.c:1750
 #, c-format
