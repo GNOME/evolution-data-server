@@ -75,4 +75,6 @@ EXTRA_DIST += 				\
 	$(DOC_MODULE)-sections.txt	\
 	camel.hierarchy
 
+#TESTS = $(GTKDOC_CHECK)
+
 -include $(top_srcdir)/git.mk
