@@ -45,8 +45,6 @@
 #include "camel-imapx-exception.h"
 #include "camel-imapx-server.h"
 
-#include <libedataserver/md5-utils.h>
-
 #include <stdlib.h>
 #include <string.h>
 

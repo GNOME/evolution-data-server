@@ -53,24 +53,6 @@ e-categories
 @Returns: 
 
 
-<!-- ##### FUNCTION e_categories_get_color_for ##### -->
-<para>
-
-</para>
-
-@category: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_categories_set_color_for ##### -->
-<para>
-
-</para>
-
-@category: 
-@color: 
-
-
 <!-- ##### FUNCTION e_categories_get_icon_file_for ##### -->
 <para>
 

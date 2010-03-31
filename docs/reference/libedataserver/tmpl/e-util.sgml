@@ -23,16 +23,6 @@ Miscellaneous utility functions for evolution-data-server.
 </para>
 
 
-<!-- ##### FUNCTION e_util_mkdir_hier ##### -->
-<para>
-
-</para>
-
-@path: 
-@mode: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_util_strstrcase ##### -->
 <para>
 

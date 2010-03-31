@@ -151,23 +151,6 @@ ESource
 @readonly: 
 
 
-<!-- ##### FUNCTION e_source_set_color ##### -->
-<para>
-
-</para>
-
-@source: 
-@color: 
-
-
-<!-- ##### FUNCTION e_source_unset_color ##### -->
-<para>
-
-</para>
-
-@source: 
-
-
 <!-- ##### FUNCTION e_source_peek_group ##### -->
 <para>
 
@@ -228,16 +211,6 @@ ESource
 </para>
 
 @source: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_source_get_color ##### -->
-<para>
-
-</para>
-
-@source: 
-@color_return: 
 @Returns: 
 
 

@@ -263,25 +263,15 @@ parse_categories (const gchar *contents, gsize length)
 
 	for (node = node->xmlChildrenNode; node != NULL; node = node->next) {
 		xmlChar *category, *icon, *searchable;
-		#ifndef EDS_DISABLE_DEPRECATED
-		xmlChar *color;
-		#endif
 
 		category = xmlGetProp (node, (xmlChar *) "a");
 		icon = xmlGetProp (node, (xmlChar *) "icon");
-		#ifndef EDS_DISABLE_DEPRECATED
-		color = xmlGetProp (node, (xmlChar *) "color");
-		#endif
 		searchable = xmlGetProp (node, (xmlChar *) "searchable");
 
 		if (category != NULL) {
 			e_categories_add (
 				(gchar *) category,
-				#ifndef EDS_DISABLE_DEPRECATED
-				(gchar *) color,
-				#else
 				NULL,
-				#endif
 				(gchar *) icon,
 				(searchable != NULL) &&
 				strcmp ((gchar *) searchable, "0") != 0);
@@ -290,9 +280,6 @@ parse_categories (const gchar *contents, gsize length)
 
 		xmlFree (category);
 		xmlFree (icon);
-		#ifndef EDS_DISABLE_DEPRECATED
-		xmlFree (color);
-		#endif
 		xmlFree (searchable);
 	}
 
@@ -570,36 +557,6 @@ e_categories_exist (const gchar *category)
 
 	return (g_hash_table_lookup (categories_table, category) != NULL);
 }
-
-#ifndef EDS_DISABLE_DEPRECATED
-/**
- * e_categories_get_color_for:
- * @category: category to retrieve the color for.
- *
- * Returns: %NULL, always
- *
- * DEPRECATED!
- */
-const gchar *
-e_categories_get_color_for (const gchar *category)
-{
-	return NULL;
-}
-
-/**
- * e_categories_set_color_for:
- * @category: category to set the color for.
- * @color: X color.
- *
- * This function does nothing.
- *
- * DEPRECATED!
- */
-void
-e_categories_set_color_for (const gchar *category, const gchar *color)
-{
-}
-#endif /* EDS_DISABLE_DEPRECATED */
 
 /**
  * e_categories_get_icon_file_for:

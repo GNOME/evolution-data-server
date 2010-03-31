@@ -35,24 +35,6 @@
 #include "e-data-server-util.h"
 
 /**
- * e_util_mkdir_hier:
- * @path: The directory hierarchy to create.
- * @mode: The permissions to use for the directories.
- *
- * Creates a directory hierarchy based on the string @path. If @path
- * is an absolute path, the directories will be created relative to
- * the root of the file system; otherwise, the directories will be
- * created relative to the current directory.
- *
- * Returns: 0 on success; -1 on failure.
- **/
-gint
-e_util_mkdir_hier (const gchar *path, mode_t mode)
-{
-	return g_mkdir_with_parents (path, mode);
-}
-
-/**
  * e_util_strstrcase:
  * @haystack: The string to search in.
  * @needle: The string to search for.

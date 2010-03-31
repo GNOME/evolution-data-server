@@ -420,31 +420,6 @@ e_source_list_peek_group_by_uid (ESourceList *list,
 	return NULL;
 }
 
-#ifndef EDS_DISABLE_DEPRECATED
-/**
- * Note: This function isn't safe with respect of localized names,
- * use e_source_list_peek_group_by_base_uri instead.
- **/
-ESourceGroup *
-e_source_list_peek_group_by_name (ESourceList *list,
-				  const gchar *name)
-{
-	GSList *p;
-
-	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
-
-	for (p = list->priv->groups; p != NULL; p = p->next) {
-		ESourceGroup *group = E_SOURCE_GROUP (p->data);
-
-		if (strcmp (e_source_group_peek_name (group), name) == 0)
-			return group;
-	}
-
-	return NULL;
-}
-#endif
-
 /**
  * e_source_list_peek_group_by_base_uri:
  *

@@ -563,28 +563,6 @@ e_source_set_readonly (ESource  *source,
 
 }
 
-#ifndef EDS_DISABLE_DEPRECATED
-void
-e_source_set_color (ESource *source,
-		    guint32 color)
-{
-	gchar color_spec[8];
-
-	g_return_if_fail (E_IS_SOURCE (source));
-
-	g_snprintf (color_spec, sizeof (color_spec), "#%06x", color);
-	e_source_set_color_spec (source, color_spec);
-}
-
-void
-e_source_unset_color (ESource *source)
-{
-	g_return_if_fail (E_IS_SOURCE (source));
-
-	e_source_set_color_spec (source, NULL);
-}
-#endif
-
 /**
  * e_source_set_color_spec:
  * @source: an ESource
@@ -672,42 +650,6 @@ e_source_get_readonly (ESource *source)
 
 	return source->priv->readonly;
 }
-
-#ifndef EDS_DISABLE_DEPRECATED
-/**
- * e_source_get_color:
- * @source: An ESource
- * @color_return: Pointer to a variable where the returned color will be
- * stored.
- *
- * If @source has an associated color, return it in *@color_return.
- *
- * Returns: %TRUE if the @source has a defined color (and hence
- * *@color_return was set), %FALSE otherwise.
- **/
-gboolean
-e_source_get_color (ESource *source,
-		    guint32 *color_return)
-{
-	const gchar *color_spec;
-	guint32 color;
-
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	color_spec = e_source_peek_color_spec (source);
-
-	if (color_spec == NULL)
-		return FALSE;
-
-	if (sscanf (color_spec, "#%06x", &color) != 1)
-		return FALSE;
-
-	if (color_return != NULL)
-		*color_return = color;
-
-	return TRUE;
-}
-#endif
 
 gchar *
 e_source_get_uri (ESource *source)

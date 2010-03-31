@@ -45,12 +45,6 @@ void		e_categories_unregister_change_listener
 						(GCallback listener,
 						 gpointer user_data);
 
-#ifndef EDS_DISABLE_DEPRECATED
-const gchar *	e_categories_get_color_for	(const gchar *category);
-void		e_categories_set_color_for	(const gchar *category,
-						 const gchar *color);
-#endif
-
 G_END_DECLS
 
 #endif
