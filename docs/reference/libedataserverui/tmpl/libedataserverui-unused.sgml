@@ -1,8 +1,46 @@
+<!-- ##### SECTION ./tmpl/e-source-option-menu.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-source-option-menu.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/e-source-option-menu.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-source-option-menu.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/e-source-option-menu.sgml:Title ##### -->
+ESourceOptionMenu
+
+
 <!-- ##### STRUCT ECategoriesDialogPrivate ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### STRUCT ESourceOptionMenu ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ESourceOptionMenu::source-selected ##### -->
+<para>
+
+</para>
+
+@esourceoptionmenu: the object which received the signal.
+@arg1: 
 
 <!-- ##### STRUCT ESourceOptionMenuPrivate ##### -->
 <para>
@@ -45,4 +83,28 @@
 
 </para>
 
+
+<!-- ##### FUNCTION e_source_option_menu_new ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+<!-- ##### FUNCTION e_source_option_menu_peek_selected ##### -->
+<para>
+
+</para>
+
+@menu: 
+@Returns: 
+
+<!-- ##### FUNCTION e_source_option_menu_select ##### -->
+<para>
+
+</para>
+
+@menu: 
+@source: 
 

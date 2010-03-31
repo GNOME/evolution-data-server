@@ -7,7 +7,6 @@
 #include <libedataserverui/e-name-selector-list.h>
 #include <libedataserverui/e-name-selector-model.h>
 #include <libedataserverui/e-source-combo-box.h>
-#include <libedataserverui/e-source-option-menu.h>
 #include <libedataserverui/e-source-selector.h>
 #include <libedataserverui/e-source-selector-dialog.h>
 #include <libedataserverui/e-tree-model-generator.h>
@@ -21,7 +20,6 @@ e_name_selector_entry_get_type
 e_name_selector_list_get_type
 e_name_selector_model_get_type
 e_source_combo_box_get_type
-e_source_option_menu_get_type
 e_source_selector_get_type
 e_source_selector_dialog_get_type
 e_tree_model_generator_get_type

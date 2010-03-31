@@ -1277,24 +1277,3 @@ e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector
 
 	priv->destination_index = index;
 }
-
-/* ---------------------------------------- *
- * Widget creation functions for GtkBuilder *
- * ---------------------------------------- */
-
-#ifdef CATEGORIES_COMPONENTS_MOVED
-
-GtkWidget *
-e_name_selector_dialog_create_categories (void)
-{
-	ECategoriesMasterList *ecml;
-	GtkWidget             *option_menu;
-
-	ecml = e_categories_master_list_wombat_new ();
-	option_menu = e_categories_master_list_option_menu_new (ecml);
-	g_object_unref (ecml);
-
-	return option_menu;
-}
-
-#endif

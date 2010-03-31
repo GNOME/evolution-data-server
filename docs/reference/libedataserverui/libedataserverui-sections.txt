@@ -85,25 +85,6 @@ e_source_combo_box_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-source-option-menu</FILE>
-<TITLE>ESourceOptionMenu</TITLE>
-ESourceOptionMenu
-e_source_option_menu_new
-e_source_option_menu_peek_selected
-e_source_option_menu_select
-<SUBSECTION Standard>
-E_SOURCE_OPTION_MENU
-E_IS_SOURCE_OPTION_MENU
-E_TYPE_SOURCE_OPTION_MENU
-E_SOURCE_OPTION_MENU_CLASS
-E_IS_SOURCE_OPTION_MENU_CLASS
-ESourceOptionMenuClass
-<SUBSECTION Private>
-ESourceOptionMenuPrivate
-e_source_option_menu_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-name-selector-entry</FILE>
 <TITLE>ENameSelectorEntry</TITLE>
 MINIMUM_QUERY_LENGTH
