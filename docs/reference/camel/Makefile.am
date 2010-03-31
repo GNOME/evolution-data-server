@@ -17,7 +17,7 @@ SCAN_OPTIONS = --deprecated-guards="CAMEL_DISABLE_DEPRECATED"
 SCANGOBJ_OPTIONS=--type-init-func="camel_init (\".\", 0)"
 
 # Extra options to supply to gtkdoc-mkdb
-MKDB_OPTIONS = --sgml-mode --output-format=xml --ignore-files=trio
+MKDB_OPTIONS = --sgml-mode --output-format=xml --name-space=camel
 
 # CFLAGS and LDFLAGS for compiling gtkdoc-scangobj with your library.
 GTKDOC_CFLAGS = 		\
