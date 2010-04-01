@@ -336,7 +336,7 @@ static const struct RelTypeMap rel_type_map_phone[] = {
     {"mobile", { "CELL", NULL, NULL}},
     {"other", { "VOICE", NULL, NULL}},
     {"pager", { "PAGER", NULL, NULL}},
-    {"work", { "WORK", NULL, NULL}},
+    {"work", { "WORK", "VOICE", NULL}},
     {"work_fax", { "WORK", "FAX", NULL}}
 };
 
