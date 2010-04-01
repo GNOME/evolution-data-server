@@ -1389,8 +1389,10 @@ gpg_sign (CamelCipherContext *context, const gchar *userid, CamelCipherHash hash
 	}
 
 	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, ex) == -1)
+		if (gpg_ctx_op_step (gpg, ex) == -1) {
+			gpg_ctx_op_cancel (gpg);
 			goto fail;
+		}
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
@@ -1632,8 +1634,10 @@ gpg_verify (CamelCipherContext *context, CamelMimePart *ipart, CamelException *e
 	}
 
 	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, ex) == -1)
+		if (gpg_ctx_op_step (gpg, ex) == -1) {
+			gpg_ctx_op_cancel (gpg);
 			goto exception;
+		}
 	}
 
 	/* report error only when no data or didn't found signature */
@@ -1731,8 +1735,10 @@ gpg_encrypt (CamelCipherContext *context, const gchar *userid, GPtrArray *recipi
 
 	/* FIXME: move this to a common routine */
 	while (!gpg_ctx_op_complete(gpg)) {
-		if (gpg_ctx_op_step (gpg, ex) == -1)
+		if (gpg_ctx_op_step (gpg, ex) == -1) {
+			gpg_ctx_op_cancel (gpg);
 			goto fail;
+		}
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
@@ -1861,8 +1867,10 @@ gpg_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *op
 	}
 
 	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, ex) == -1)
+		if (gpg_ctx_op_step (gpg, ex) == -1) {
+			gpg_ctx_op_cancel (gpg);
 			goto fail;
+		}
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
@@ -1956,8 +1964,10 @@ gpg_import_keys (CamelCipherContext *context, CamelStream *istream, CamelExcepti
 	}
 
 	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, ex) == -1)
+		if (gpg_ctx_op_step (gpg, ex) == -1) {
+			gpg_ctx_op_cancel (gpg);
 			goto fail;
+		}
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
@@ -2001,8 +2011,10 @@ gpg_export_keys (CamelCipherContext *context, GPtrArray *keys, CamelStream *ostr
 	}
 
 	while (!gpg_ctx_op_complete (gpg)) {
-		if (gpg_ctx_op_step (gpg, ex) == -1)
+		if (gpg_ctx_op_step (gpg, ex) == -1) {
+			gpg_ctx_op_cancel (gpg);
 			goto fail;
+		}
 	}
 
 	if (gpg_ctx_op_wait (gpg) != 0) {
