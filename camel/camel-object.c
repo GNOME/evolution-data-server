@@ -326,9 +326,8 @@ cobject_state_read(CamelObject *obj, FILE *fp)
 
 		if (camel_file_util_decode_string(fp, &name) == 0
 		    && camel_file_util_decode_string(fp, &value) == 0) {
-			/*camel_object_meta_set(obj, name, value);*/
-			g_debug ("Reading meta data from state file:");
-			g_debug ("%s: %s", name, value);
+			/* XXX This no longer does anything.
+			 *     We're just eating dead data. */
 			g_free(name);
 			g_free(value);
 		} else {
