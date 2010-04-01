@@ -219,8 +219,8 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 		PROP_COLOR,
 		g_param_spec_boxed (
 			"color",
-			_("Color Info"),
-			_("The color to render"),
+			"Color Info",
+			"The color to render",
 			GDK_TYPE_COLOR,
 			G_PARAM_READWRITE));
 }
