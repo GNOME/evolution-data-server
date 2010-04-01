@@ -409,6 +409,7 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 			*arg->ca_str = folder->description;
 			break;
 
+		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
 		case CAMEL_FOLDER_ARG_PROPERTIES: {
 			CamelArgGetV props;
 

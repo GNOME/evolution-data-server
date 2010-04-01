@@ -182,6 +182,7 @@ offline_folder_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args
 		tag = arg->tag;
 
 		switch (tag & CAMEL_ARG_TAG) {
+		case CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES:
 		case CAMEL_FOLDER_ARG_PROPERTIES:
 			props.argc = 1;
 			props.argv[0] = *arg;
