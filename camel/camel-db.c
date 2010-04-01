@@ -28,8 +28,10 @@
 
 #include <config.h>
 
-#include <string.h>
+#include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -392,6 +394,47 @@ cdb_sql_exec (sqlite3 *db, const gchar * stmt, CamelException *ex)
 	return 0;
 }
 
+/* checks whether string 'where' contains whole word 'what',
+   case insensitively (ascii, not utf8, same as 'LIKE' in SQLite3)
+*/
+static void
+cdb_match_func (sqlite3_context *ctx, int nArgs, sqlite3_value **values)
+{
+	gboolean matches = FALSE;
+	const gchar *what, *where;
+
+	g_return_if_fail (ctx != NULL);
+	g_return_if_fail (nArgs == 2);
+	g_return_if_fail (values != NULL);
+
+	what = (const gchar *) sqlite3_value_text (values[0]);
+	where = (const gchar *) sqlite3_value_text (values[1]);
+
+	if (what && where && !*what) {
+		matches = TRUE;
+	} else if (what && where) {
+		gboolean word = TRUE;
+		gint i, j;
+
+		for (i = 0, j = 0; where[i] && !matches; i++) {
+			char c = where[i];
+
+			if (c == ' ') {
+				word = TRUE;
+				j = 0;
+			} else if (word && tolower (c) == tolower(what[j])) {
+				j++;
+				if (what[j] == 0 && (where[i + 1] == 0 || isspace (where[i + 1])))
+					matches = TRUE;
+			} else {
+				word = FALSE;
+			}
+		}
+	}
+
+	sqlite3_result_int (ctx, matches ? 1 : 0);
+}
+
 /**
  * camel_db_open:
  *
@@ -431,6 +474,8 @@ camel_db_open (const gchar *path, CamelException *ex)
 	cdb->priv->file_name = g_strdup(path);
 	cdb->priv->timer = NULL;
 	d(g_print ("\nDatabase succesfully opened  \n"));
+
+	sqlite3_create_function (db, "MATCH", 2, SQLITE_UTF8, NULL, cdb_match_func, NULL, NULL);
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
 	if (g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL) {

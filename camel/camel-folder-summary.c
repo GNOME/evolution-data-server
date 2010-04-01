@@ -3331,7 +3331,8 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record)
 
 			if (part[i] == ' ') {
 				part[i] = 0;
-				camel_flag_set(&mi->user_flags, label, TRUE);
+				if (*label)
+					camel_flag_set (&mi->user_flags, label, TRUE);
 				label = &(part[i+1]);
 			}
 		}
