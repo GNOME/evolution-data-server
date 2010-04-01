@@ -1941,7 +1941,7 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 	CamelJunkPlugin *csp = ((CamelService *)m->folder->parent_store)->session->junk_plugin;
 
 	if (m->junk) {
-		camel_operation_start (NULL, _("Learning junk"));
+		camel_operation_start (NULL, ngettext ("Learning new spam message", "Learning new spam messages", m->junk->len));
 
 		for (i = 0; i < m->junk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->junk->pdata[i], &ex);
@@ -1959,7 +1959,7 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 	}
 
 	if (m->notjunk) {
-		camel_operation_start (NULL, _("Learning non-junk"));
+		camel_operation_start (NULL, ngettext ("Learning new ham message", "Learning new ham messages", m->notjunk->len));
 		for (i = 0; i < m->notjunk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->notjunk->pdata[i], &ex);
 			gint pc = 100 * i / m->notjunk->len;
@@ -1979,7 +1979,7 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 		camel_junk_plugin_commit_reports (csp);
 
 	if (m->driver && m->recents) {
-		camel_operation_start(NULL, _("Filtering new message(s)"));
+		camel_operation_start(NULL, ngettext ("Filtering new message", "Filtering new messages", m->recents->len));
 
 		source_url = camel_service_get_url((CamelService *)m->folder->parent_store);
 		uri = camel_url_new(source_url, NULL);
