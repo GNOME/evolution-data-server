@@ -271,7 +271,10 @@ add_range_xover(CamelNNTPSummary *cns, CamelNNTPStore *store, guint high, guint 
 
 	camel_operation_start(NULL, _("%s: Scanning new messages"), ((CamelService *)store)->url->host);
 
-	ret = camel_nntp_raw_command_auth(store, ex, &line, "xover %r", low, high);
+	ret = camel_nntp_raw_command_auth (store, ex, &line, "over %r", low, high);
+	if (ret != 224)
+		ret = camel_nntp_raw_command_auth (store, ex, &line, "xover %r", low, high);
+
 	if (ret != 224) {
 		camel_operation_end(NULL);
 		if (ret != -1)
