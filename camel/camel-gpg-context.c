@@ -1037,11 +1037,10 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg, CamelException *ex)
 	gpg->statusleft -= len;                                           \
 } G_STMT_END
 
-#ifndef G_OS_WIN32
-
 static void
 gpg_ctx_op_cancel (struct _GpgCtx *gpg)
 {
+#ifndef G_OS_WIN32
 	pid_t retval;
 	gint status;
 
@@ -1058,9 +1057,8 @@ gpg_ctx_op_cancel (struct _GpgCtx *gpg)
 		sleep (1);
 		waitpid (gpg->pid, &status, WNOHANG);
 	}
-}
-
 #endif
+}
 
 static gint
 gpg_ctx_op_step (struct _GpgCtx *gpg, CamelException *ex)
