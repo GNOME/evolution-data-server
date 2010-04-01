@@ -294,6 +294,189 @@ cobject_free(CamelObject *o, guint32 tag, gpointer value)
 	}
 }
 
+/* State file for CamelObject data.  Any later versions should only append data.
+
+   version:uint32
+
+   Version 0 of the file:
+
+   version:uint32 = 0
+   count:uint32				-- count of meta-data items
+   ( name:string value:string ) *count		-- meta-data items
+
+   Version 1 of the file adds:
+   count:uint32					-- count of persistent properties
+   ( tag:uing32 value:tagtype ) *count		-- persistent properties
+
+*/
+
+static gint
+cobject_state_read(CamelObject *obj, FILE *fp)
+{
+	guint32 i, count, version;
+
+	/* NB: for later versions, just check the version is 1 .. known version */
+	if (camel_file_util_decode_uint32(fp, &version) == -1
+	    || version > 1
+	    || camel_file_util_decode_uint32(fp, &count) == -1)
+		return -1;
+
+	for (i=0;i<count;i++) {
+		gchar *name = NULL, *value = NULL;
+
+		if (camel_file_util_decode_string(fp, &name) == 0
+		    && camel_file_util_decode_string(fp, &value) == 0) {
+			/*camel_object_meta_set(obj, name, value);*/
+			g_debug ("Reading meta data from state file:");
+			g_debug ("%s: %s", name, value);
+			g_free(name);
+			g_free(value);
+		} else {
+			g_free(name);
+			g_free(value);
+
+			return -1;
+		}
+	}
+
+	if (version > 0) {
+		CamelArgV *argv;
+
+		if (camel_file_util_decode_uint32(fp, &count) == -1
+			|| count == 0 || count > 1024) {
+			/* maybe it was just version 0 afterall */
+			return 0;
+		}
+
+		count = MIN(count, CAMEL_ARGV_MAX);
+
+		/* we batch up the properties and set them in one go */
+		argv = g_try_malloc(sizeof(CamelArgV) -
+			((CAMEL_ARGV_MAX - count) * sizeof(CamelArg)));
+		if (argv == NULL)
+			return -1;
+
+		argv->argc = 0;
+		for (i=0;i<count;i++) {
+			if (camel_file_util_decode_uint32(fp, &argv->argv[argv->argc].tag) == -1)
+				goto cleanup;
+
+			/* so far,only do strings and ints, doubles could be added,
+			   object's would require a serialisation interface */
+
+			switch (argv->argv[argv->argc].tag & CAMEL_ARG_TYPE) {
+			case CAMEL_ARG_INT:
+			case CAMEL_ARG_BOO:
+				if (camel_file_util_decode_uint32(fp, (guint32 *) &argv->argv[argv->argc].ca_int) == -1)
+					goto cleanup;
+				break;
+			case CAMEL_ARG_STR:
+				if (camel_file_util_decode_string(fp, &argv->argv[argv->argc].ca_str) == -1)
+					goto cleanup;
+				break;
+			default:
+				goto cleanup;
+			}
+
+			argv->argc++;
+		}
+
+		camel_object_setv(obj, NULL, argv);
+	cleanup:
+		for (i=0;i<argv->argc;i++) {
+			if ((argv->argv[i].tag & CAMEL_ARG_TYPE) == CAMEL_ARG_STR)
+				g_free(argv->argv[i].ca_str);
+		}
+		g_free(argv);
+	}
+
+	return 0;
+}
+
+/* TODO: should pass exception around */
+static gint
+cobject_state_write(CamelObject *obj, FILE *fp)
+{
+	gint32 count, i;
+	gint res = -1;
+	GSList *props = NULL, *l;
+	CamelArgGetV *arggetv = NULL;
+	CamelArgV *argv = NULL;
+
+	/* current version is 1 */
+	if (camel_file_util_encode_uint32(fp, 1) == -1
+	    || camel_file_util_encode_uint32(fp, 0) == -1)
+		goto abort;
+
+	camel_object_get(obj, NULL, CAMEL_OBJECT_PERSISTENT_PROPERTIES, &props, NULL);
+
+	/* we build an arggetv to query the object atomically,
+	   we also need an argv to store the results - bit messy */
+
+	count = g_slist_length(props);
+	count = MIN(count, CAMEL_ARGV_MAX);
+
+	arggetv = g_malloc0(sizeof(CamelArgGetV) -
+		((CAMEL_ARGV_MAX - count) * sizeof(CamelArgGet)));
+	argv = g_malloc0(sizeof(CamelArgV) -
+		((CAMEL_ARGV_MAX - count) * sizeof(CamelArg)));
+	l = props;
+	i = 0;
+	while (l) {
+		CamelProperty *prop = l->data;
+
+		argv->argv[i].tag = prop->tag;
+		arggetv->argv[i].tag = prop->tag;
+		arggetv->argv[i].ca_ptr = &argv->argv[i].ca_ptr;
+
+		i++;
+		l = l->next;
+	}
+	arggetv->argc = i;
+	argv->argc = i;
+
+	camel_object_getv(obj, NULL, arggetv);
+
+	if (camel_file_util_encode_uint32(fp, count) == -1)
+		goto abort;
+
+	for (i=0;i<argv->argc;i++) {
+		CamelArg *arg = &argv->argv[i];
+
+		if (camel_file_util_encode_uint32(fp, arg->tag) == -1)
+			goto abort;
+
+		switch (arg->tag & CAMEL_ARG_TYPE) {
+		case CAMEL_ARG_INT:
+		case CAMEL_ARG_BOO:
+			if (camel_file_util_encode_uint32(fp, arg->ca_int) == -1)
+				goto abort;
+			break;
+		case CAMEL_ARG_STR:
+			if (camel_file_util_encode_string(fp, arg->ca_str) == -1)
+				goto abort;
+			break;
+		}
+	}
+
+	res = 0;
+abort:
+	for (i=0;i<argv->argc;i++) {
+		CamelArg *arg = &argv->argv[i];
+
+		if ((argv->argv[i].tag & CAMEL_ARG_TYPE) == CAMEL_ARG_STR)
+			camel_object_free(obj, arg->tag, arg->ca_str);
+	}
+
+	g_free(argv);
+	g_free(arggetv);
+
+	if (props)
+		camel_object_free(obj, CAMEL_OBJECT_PERSISTENT_PROPERTIES, props);
+
+	return res;
+}
+
 static void
 cobject_class_init(CamelObjectClass *klass)
 {
@@ -302,6 +485,9 @@ cobject_class_init(CamelObjectClass *klass)
 	klass->getv = cobject_getv;
 	klass->setv = cobject_setv;
 	klass->free = cobject_free;
+
+	klass->state_read = cobject_state_read;
+	klass->state_write = cobject_state_write;
 
 	camel_object_class_add_event(klass, "finalize", NULL);
 }

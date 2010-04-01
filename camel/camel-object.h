@@ -82,13 +82,16 @@ typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer, gpointer);
 enum {
 	/* Get a description of the object. */
 	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,
-	CAMEL_OBJECT_ARG_STATE_FILE
+	CAMEL_OBJECT_ARG_STATE_FILE,
+	CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES
 };
 
 enum {
 	CAMEL_OBJECT_DESCRIPTION = CAMEL_OBJECT_ARG_DESCRIPTION | CAMEL_ARG_STR,
 	/* sets where the persistent data should reside, otherwise it isn't persistent */
 	CAMEL_OBJECT_STATE_FILE = CAMEL_OBJECT_ARG_STATE_FILE | CAMEL_ARG_STR,
+	/* returns a GSList CamelProperties of persistent properties */
+	CAMEL_OBJECT_PERSISTENT_PROPERTIES = CAMEL_OBJECT_ARG_PERSISTENT_PROPERTIES
 };
 
 typedef enum _CamelObjectFlags {
