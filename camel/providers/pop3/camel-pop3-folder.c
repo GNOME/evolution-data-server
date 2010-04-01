@@ -411,7 +411,8 @@ camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete,	CamelException *
 	CamelPOP3FolderInfo *fi;
 	gint i;
 	CamelPOP3Store *pop3_store;
-	time_t temp, message_time;
+	CamelMimeMessage *message;
+	time_t temp, message_time = 0;
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (CAMEL_FOLDER(pop3_folder)->parent_store);
@@ -422,16 +423,24 @@ camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete,	CamelException *
 		fi = pop3_folder->uids->pdata[i];
 
 		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
-		if (pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
+		if (!pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
+			d(printf("could not get message time from cache, trying from pop3\n"));
+			message = pop3_get_message (folder, fi->uid, ex);
+			if (message) {
+				message_time = message->date + message->date_offset;
+				camel_object_unref(message);
+			}
+		}
+
+		if (message_time) {
 			gdouble time_diff = difftime(temp,message_time);
 			gint day_lag = time_diff/(60*60*24);
 
 			d(printf("%s(%d): message_time= [%ld]\n", __FILE__, __LINE__, message_time));
 			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
-				 __FILE__, __LINE__, day_lag, days_to_delete));
+				__FILE__, __LINE__, day_lag, days_to_delete));
 
-			if ( day_lag > days_to_delete)
-			{
+			if (day_lag > days_to_delete) {
 				if (fi->cmd) {
 					while (camel_pop3_engine_iterate(pop3_store->engine, fi->cmd) > 0) {
 						; /* do nothing - iterating until end */
