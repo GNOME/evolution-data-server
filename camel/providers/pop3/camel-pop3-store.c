@@ -163,7 +163,8 @@ get_valid_utf8_error (const gchar *text)
 		return NULL;
 	}
 
-	ret = g_strconcat (": ", tmp, NULL);
+	/* Translators: This is the separator between an error and an explanation */
+	ret = g_strconcat (_(": "), tmp, NULL);
 
 	g_free (tmp);
 	return ret;
