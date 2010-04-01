@@ -464,10 +464,10 @@ user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 	if (argc != 1) {
 		r->value.string = g_strdup ("(0)");
 	} else {
-		tstr = g_strdup_printf("%%%s%%", argv[0]->value.string);
+		tstr = g_strdup_printf("%s", argv[0]->value.string);
 		qstr = get_db_safe_string(tstr);
 		g_free(tstr);
-		r->value.string = g_strdup_printf("(labels LIKE %s)", qstr);
+		r->value.string = g_strdup_printf("(labels MATCH %s)", qstr);
 		g_free(qstr);
 	}
 
