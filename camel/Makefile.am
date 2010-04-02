@@ -400,7 +400,6 @@ BUILT_SOURCES = camel-mime-tables.c
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
 	gentables.pl				\
-	ChangeLog.pre-1-4			\
 	README
 
 CLEANFILES = $(BUILT_SOURCES)
