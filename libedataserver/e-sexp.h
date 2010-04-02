@@ -54,7 +54,7 @@ struct _ESExpResult {
 		GPtrArray *ptrarray;
 		gint number;
 		gchar *string;
-		gint bool;
+		gint boolean;
 		time_t time;
 	} value;
 };
@@ -92,7 +92,7 @@ struct _ESExpTerm {
 	union {
 		gchar *string;
 		gint number;
-		gint bool;
+		gint boolean;
 		time_t time;
 		struct {
 			struct _ESExpSymbol *sym;

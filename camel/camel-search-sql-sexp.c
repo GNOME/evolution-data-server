@@ -193,7 +193,7 @@ eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 			if (r2->type == ESEXP_RES_INT)
 				g_string_append_printf(str, "%d", r2->value.number);
 			if (r2->type == ESEXP_RES_BOOL)
-				g_string_append_printf(str, "%d", r2->value.bool);
+				g_string_append_printf(str, "%d", r2->value.boolean);
 			else if (r2->type == ESEXP_RES_TIME)
 				g_string_append_printf(str, "%ld", r2->value.time);
 			else if (r2->type == ESEXP_RES_STRING) {
@@ -238,7 +238,7 @@ eval_lt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 		if (r2->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r2->value.number);
 		if (r2->type == ESEXP_RES_BOOL)
-			g_string_append_printf(str, "%d", r2->value.bool);
+			g_string_append_printf(str, "%d", r2->value.boolean);
 		else if (r2->type == ESEXP_RES_TIME)
 			g_string_append_printf(str, "%ld", r2->value.time);
 		else if (r2->type == ESEXP_RES_STRING)
@@ -277,7 +277,7 @@ eval_gt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 		if (r2->type == ESEXP_RES_INT)
 			g_string_append_printf(str, "%d", r2->value.number);
 		if (r2->type == ESEXP_RES_BOOL)
-			g_string_append_printf(str, "%d", r2->value.bool);
+			g_string_append_printf(str, "%d", r2->value.boolean);
 		else if (r2->type == ESEXP_RES_TIME)
 			g_string_append_printf(str, "%ld", r2->value.time);
 		else if (r2->type == ESEXP_RES_STRING)
@@ -302,7 +302,7 @@ match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 		r = e_sexp_term_eval(f, argv[0]);
 	else {
 		r = e_sexp_result_new(f, ESEXP_RES_STRING);
-		r->value.string = g_strdup(argv[0]->value.bool ? "1" : "0");
+		r->value.string = g_strdup(argv[0]->value.boolean ? "1" : "0");
 	}
 
 	return r;

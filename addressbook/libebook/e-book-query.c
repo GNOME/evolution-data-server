@@ -375,7 +375,7 @@ func_and(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -407,7 +407,7 @@ func_or(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -425,7 +425,7 @@ func_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -460,7 +460,7 @@ func_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -489,7 +489,7 @@ func_is(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -518,7 +518,7 @@ func_beginswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -547,7 +547,7 @@ func_endswith(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }
@@ -570,7 +570,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = FALSE;
+	r->value.boolean = FALSE;
 
 	return r;
 }

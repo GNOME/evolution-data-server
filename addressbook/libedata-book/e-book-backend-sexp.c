@@ -384,7 +384,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 		}
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -744,7 +744,7 @@ func_exists(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 		}
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -776,7 +776,7 @@ func_exists_vcard(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoin
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -820,7 +820,7 @@ e_book_backend_sexp_match_contact (EBookBackendSExp *sexp, EContact *contact)
 
 	r = e_sexp_eval(sexp->priv->search_sexp);
 
-	retval = (r && r->type == ESEXP_RES_BOOL && r->value.bool);
+	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
 	g_object_unref(sexp->priv->search_context->contact);
 

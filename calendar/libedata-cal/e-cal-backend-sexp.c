@@ -312,7 +312,7 @@ func_uid (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 		equal = FALSE;
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = equal;
+	result->value.boolean = equal;
 
 	return result;
 }
@@ -393,7 +393,7 @@ func_occur_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer 
 					default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = ctx->occurs;
+	result->value.boolean = ctx->occurs;
 
 	return result;
 }
@@ -451,7 +451,7 @@ func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer da
 		retval = FALSE;
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = retval;
+	result->value.boolean = retval;
 
 	e_cal_component_free_datetime (&dt);
 
@@ -679,7 +679,7 @@ func_has_attachment (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = e_cal_component_has_attachments (ctx->comp);
+	result->value.boolean = e_cal_component_has_attachments (ctx->comp);
 
 	return result;
 }
@@ -780,7 +780,7 @@ func_contains (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = matches;
+	result->value.boolean = matches;
 
 	return result;
 }
@@ -808,7 +808,7 @@ func_has_start (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 
 	e_cal_component_get_dtstart (ctx->comp, &dt);
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = dt.value != NULL;
+	result->value.boolean = dt.value != NULL;
 	e_cal_component_free_datetime (&dt);
 
 	return result;
@@ -835,7 +835,7 @@ func_has_alarms (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = e_cal_component_has_alarms (ctx->comp);
+	result->value.boolean = e_cal_component_has_alarms (ctx->comp);
 
 	return result;
 }
@@ -893,10 +893,10 @@ func_has_alarms_in_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer 
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	if (alarms) {
-		result->value.bool = TRUE;
+		result->value.boolean = TRUE;
 		e_cal_component_alarms_free (alarms);
 	} else
-		result->value.bool = FALSE;
+		result->value.boolean = FALSE;
 
 	return result;
 }
@@ -956,7 +956,7 @@ func_has_categories (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	e_cal_component_get_categories_list (ctx->comp, &categories);
 	if (!categories) {
 		result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-		result->value.bool = unfiled;
+		result->value.boolean = unfiled;
 
 		return result;
 	}
@@ -966,7 +966,7 @@ func_has_categories (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	 */
 	if (unfiled) {
 		result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-		result->value.bool = FALSE;
+		result->value.boolean = FALSE;
 
 		return result;
 	}
@@ -1002,7 +1002,7 @@ func_has_categories (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	e_cal_component_free_categories_list (categories);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = matches;
+	result->value.boolean = matches;
 
 	return result;
 }
@@ -1028,7 +1028,7 @@ func_has_recurrences (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = (e_cal_component_has_recurrences (ctx->comp) || e_cal_component_is_instance (ctx->comp));
+	result->value.boolean = (e_cal_component_has_recurrences (ctx->comp) || e_cal_component_is_instance (ctx->comp));
 
 	return result;
 }
@@ -1061,7 +1061,7 @@ func_is_completed (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = complete;
+	result->value.boolean = complete;
 
 	return result;
 }
@@ -1124,7 +1124,7 @@ func_completed_before (ESExp *esexp, gint argc, ESExpResult **argv, gpointer dat
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
-	result->value.bool = retval;
+	result->value.boolean = retval;
 
 	return result;
 }
@@ -1237,7 +1237,7 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -1302,7 +1302,7 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
 	}
 	r = e_sexp_eval(sexp->priv->search_sexp);
 
-	retval = (r && r->type == ESEXP_RES_BOOL && r->value.bool);
+	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
 	g_object_unref (sexp->priv->search_context->comp);
 	g_object_unref (sexp->priv->search_context->backend);

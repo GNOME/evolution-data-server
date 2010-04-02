@@ -923,7 +923,7 @@ func_check(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer dat
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -984,7 +984,7 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary, const gch
 
 	r = e_sexp_eval(sexp);
 
-	retval = (r && r->type == ESEXP_RES_BOOL && r->value.bool);
+	retval = (r && r->type == ESEXP_RES_BOOL && r->value.boolean);
 
 	e_sexp_result_free(sexp, r);
 

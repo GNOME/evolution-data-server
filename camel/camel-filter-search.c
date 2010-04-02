@@ -194,7 +194,7 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.bool = matched;
+	r->value.boolean = matched;
 
 	return r;
 }
@@ -245,7 +245,7 @@ header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.bool = matched;
+	r->value.boolean = matched;
 
 	return r;
 }
@@ -263,10 +263,10 @@ header_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 	if (argc > 1 && argv[0]->type == ESEXP_RES_STRING
 	    && (contents = camel_medium_get_header (CAMEL_MEDIUM (message), argv[0]->value.string))
 	    && camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1, fms->ex) == 0) {
-		r->value.bool = regexec (&pattern, contents, 0, NULL, 0) == 0;
+		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		regfree (&pattern);
 	} else
-		r->value.bool = FALSE;
+		r->value.boolean = FALSE;
 
 	return r;
 }
@@ -309,11 +309,11 @@ header_full_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Filt
 					   argc, argv, fms->ex) == 0) {
 		message = camel_filter_search_get_message (fms, f);
 		contents = get_full_header (message);
-		r->value.bool = regexec (&pattern, contents, 0, NULL, 0) == 0;
+		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		g_free (contents);
 		regfree (&pattern);
 	} else
-		r->value.bool = FALSE;
+		r->value.boolean = FALSE;
 
 	return r;
 }
@@ -328,7 +328,7 @@ match_all (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, FilterMessageS
 		return e_sexp_term_eval (f, argv[0]);
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.bool = TRUE;
+	r->value.boolean = TRUE;
 
 	return r;
 }
@@ -342,10 +342,10 @@ body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 
 	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE, argc, argv, fms->ex) == 0) {
 		message = camel_filter_search_get_message (fms, f);
-		r->value.bool = camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern);
+		r->value.boolean = camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern);
 		regfree (&pattern);
 	} else
-		r->value.bool = FALSE;
+		r->value.boolean = FALSE;
 
 	return r;
 }
@@ -360,10 +360,10 @@ body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessa
 	if (camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_NEWLINE,
 					   argc, argv, fms->ex) == 0) {
 		message = camel_filter_search_get_message (fms, f);
-		r->value.bool = camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern);
+		r->value.boolean = camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern);
 		regfree (&pattern);
 	} else
-		r->value.bool = FALSE;
+		r->value.boolean = FALSE;
 
 	return r;
 }
@@ -385,7 +385,7 @@ user_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessag
 	}
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -399,7 +399,7 @@ system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMess
 		e_sexp_fatal_error(f, _("Invalid arguments to (system-flag)"));
 
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.bool = camel_system_flag_get (camel_message_info_flags(fms->info), argv[0]->value.string);
+	r->value.boolean = camel_system_flag_get (camel_message_info_flags(fms->info), argv[0]->value.string);
 
 	return r;
 }
@@ -492,7 +492,7 @@ header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 	}
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -746,7 +746,7 @@ camel_filter_search_match (CamelSession *session,
 	}
 
 	if (result->type == ESEXP_RES_BOOL)
-		retval = result->value.bool ? CAMEL_SEARCH_MATCHED : CAMEL_SEARCH_NOMATCH;
+		retval = result->value.boolean ? CAMEL_SEARCH_MATCHED : CAMEL_SEARCH_NOMATCH;
 	else
 		retval = CAMEL_SEARCH_NOMATCH;
 

@@ -281,7 +281,7 @@ term_eval_and(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 				g_hash_table_insert(ht, a1[j], GINT_TO_POINTER(n+1));
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
-			bool = bool && r1->value.bool;
+			bool = bool && r1->value.boolean;
 		}
 		e_sexp_result_free(f, r1);
 	}
@@ -294,7 +294,7 @@ term_eval_and(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
 		r->type = ESEXP_RES_BOOL;
-		r->value.bool = bool;
+		r->value.boolean = bool;
 	}
 
 	g_hash_table_destroy(ht);
@@ -340,7 +340,7 @@ term_eval_or(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer dat
 				g_hash_table_insert(ht, a1[j], (gpointer)1);
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
-			bool |= r1->value.bool;
+			bool |= r1->value.boolean;
 		}
 		e_sexp_result_free(f, r1);
 	}
@@ -353,7 +353,7 @@ term_eval_or(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer dat
 		r->value.ptrarray = lambdafoo.uids;
 	} else if (type == ESEXP_RES_BOOL) {
 		r->type = ESEXP_RES_BOOL;
-		r->value.bool = bool;
+		r->value.boolean = bool;
 	}
 	g_hash_table_destroy(ht);
 
@@ -369,11 +369,11 @@ term_eval_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer 
 
 	if (argc>0) {
 		if (argv[0]->type == ESEXP_RES_BOOL
-		    && argv[0]->value.bool)
+		    && argv[0]->value.boolean)
 			res = FALSE;
 	}
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = res;
+	r->value.boolean = res;
 	return r;
 }
 
@@ -395,13 +395,13 @@ term_eval_lt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer dat
 			e_sexp_fatal_error(f, "Incompatible types in compare <");
 		} else if (r1->type == ESEXP_RES_INT) {
 			r->type = ESEXP_RES_BOOL;
-			r->value.bool = r1->value.number < r2->value.number;
+			r->value.boolean = r1->value.number < r2->value.number;
 		} else if (r1->type == ESEXP_RES_TIME) {
 			r->type = ESEXP_RES_BOOL;
-			r->value.bool = r1->value.time < r2->value.time;
+			r->value.boolean = r1->value.time < r2->value.time;
 		} else if (r1->type == ESEXP_RES_STRING) {
 			r->type = ESEXP_RES_BOOL;
-			r->value.bool = strcmp(r1->value.string, r2->value.string) < 0;
+			r->value.boolean = strcmp(r1->value.string, r2->value.string) < 0;
 		}
 		e_sexp_result_free(f, r1);
 		e_sexp_result_free(f, r2);
@@ -427,13 +427,13 @@ term_eval_gt(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer dat
 			e_sexp_fatal_error(f, "Incompatible types in compare >");
 		} else if (r1->type == ESEXP_RES_INT) {
 			r->type = ESEXP_RES_BOOL;
-			r->value.bool = r1->value.number > r2->value.number;
+			r->value.boolean = r1->value.number > r2->value.number;
 		} else if (r1->type == ESEXP_RES_TIME) {
 			r->type = ESEXP_RES_BOOL;
-			r->value.bool = r1->value.time > r2->value.time;
+			r->value.boolean = r1->value.time > r2->value.time;
 		} else if (r1->type == ESEXP_RES_STRING) {
 			r->type = ESEXP_RES_BOOL;
-			r->value.bool = strcmp(r1->value.string, r2->value.string) > 0;
+			r->value.boolean = strcmp(r1->value.string, r2->value.string) > 0;
 		}
 		e_sexp_result_free(f, r1);
 		e_sexp_result_free(f, r2);
@@ -453,15 +453,15 @@ term_eval_eq(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer dat
 		r1 = e_sexp_term_eval(f, argv[0]);
 		r2 = e_sexp_term_eval(f, argv[1]);
 		if (r1->type != r2->type) {
-			r->value.bool = FALSE;
+			r->value.boolean = FALSE;
 		} else if (r1->type == ESEXP_RES_INT) {
-			r->value.bool = r1->value.number == r2->value.number;
+			r->value.boolean = r1->value.number == r2->value.number;
 		} else if (r1->type == ESEXP_RES_BOOL) {
-			r->value.bool = r1->value.bool == r2->value.bool;
+			r->value.boolean = r1->value.boolean == r2->value.boolean;
 		} else if (r1->type == ESEXP_RES_TIME) {
-			r->value.bool = r1->value.time == r2->value.time;
+			r->value.boolean = r1->value.time == r2->value.time;
 		} else if (r1->type == ESEXP_RES_STRING) {
-			r->value.bool = strcmp(r1->value.string, r2->value.string) == 0;
+			r->value.boolean = strcmp(r1->value.string, r2->value.string) == 0;
 		}
 		e_sexp_result_free(f, r1);
 		e_sexp_result_free(f, r2);
@@ -593,7 +593,7 @@ term_eval_castint(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoin
 		r->value.number = argv[0]->value.number;
 		break;
 	case ESEXP_RES_BOOL:
-		r->value.number = argv[0]->value.bool != 0;
+		r->value.number = argv[0]->value.boolean != 0;
 		break;
 	case ESEXP_RES_STRING:
 		r->value.number = strtoul(argv[0]->value.string, NULL, 10);
@@ -621,7 +621,7 @@ term_eval_caststring(struct _ESExp *f, gint argc, struct _ESExpResult **argv, gp
 		r->value.string = g_strdup_printf("%d", argv[0]->value.number);
 		break;
 	case ESEXP_RES_BOOL:
-		r->value.string = g_strdup_printf("%d", argv[0]->value.bool != 0);
+		r->value.string = g_strdup_printf("%d", argv[0]->value.boolean != 0);
 		break;
 	case ESEXP_RES_STRING:
 		r->value.string = g_strdup(argv[0]->value.string);
@@ -643,7 +643,7 @@ term_eval_if (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 
 	if (argc >=2 && argc<=3) {
 		r = e_sexp_term_eval(f, argv[0]);
-		doit = (r->type == ESEXP_RES_BOOL && r->value.bool);
+		doit = (r->type == ESEXP_RES_BOOL && r->value.boolean);
 		e_sexp_result_free(f, r);
 		if (doit) {
 			return e_sexp_term_eval(f, argv[1]);
@@ -700,7 +700,7 @@ e_sexp_term_eval(struct _ESExp *f, struct _ESExpTerm *t)
 	case ESEXP_TERM_BOOL:
 		r(printf(" (gint %d)\n", t->value.number));
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = t->value.bool;
+		r->value.boolean = t->value.boolean;
 		break;
 	case ESEXP_TERM_TIME:
 		r(printf(" (time_t %d)\n", t->value.time));
@@ -758,7 +758,7 @@ eval_dump_result(ESExpResult *r, gint depth)
 		printf("string: '%s'\n", r->value.string);
 		break;
 	case ESEXP_RES_BOOL:
-		printf("bool: %c\n", r->value.bool?'t':'f');
+		printf("bool: %c\n", r->value.boolean?'t':'f');
 		break;
 	case ESEXP_RES_TIME:
 		printf("time_t: %ld\n", (glong) r->value.time);
@@ -793,7 +793,7 @@ parse_dump_term(struct _ESExpTerm *t, gint depth)
 		printf(" %d", t->value.number);
 		break;
 	case ESEXP_TERM_BOOL:
-		printf(" #%c", t->value.bool?'t':'f');
+		printf(" #%c", t->value.boolean?'t':'f');
 		break;
 	case ESEXP_TERM_TIME:
 		printf(" %ld", (glong) t->value.time);
@@ -970,7 +970,7 @@ parse_value(ESExp *f)
 		}
 
 		t = parse_term_new(f, ESEXP_TERM_BOOL);
-		t->value.bool = (str[0] == 't');
+		t->value.boolean = (str[0] == 't');
 		break; }
 	case G_TOKEN_SYMBOL:
 		s = g_scanner_cur_value(gs).v_symbol;

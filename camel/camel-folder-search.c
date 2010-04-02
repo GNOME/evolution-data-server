@@ -709,7 +709,7 @@ search_dummy(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolde
 
 	if (search->current == NULL) {
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = FALSE;
+		r->value.boolean = FALSE;
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new();
@@ -771,14 +771,14 @@ search_not(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 			gint res = TRUE;
 
 			if (argv[0]->type == ESEXP_RES_BOOL)
-				res = !argv[0]->value.bool;
+				res = !argv[0]->value.boolean;
 
 			r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-			r->value.bool = res;
+			r->value.boolean = res;
 		}
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = TRUE;
+		r->value.boolean = TRUE;
 	}
 
 	return r;
@@ -801,12 +801,12 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 		d(printf("matching against 1 message: %s\n", camel_message_info_subject(search->current)));
 
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = FALSE;
+		r->value.boolean = FALSE;
 
 		if (argc>0) {
 			r1 = e_sexp_term_eval(f, argv[0]);
 			if (r1->type == ESEXP_RES_BOOL) {
-				r->value.bool = r1->value.bool;
+				r->value.boolean = r1->value.boolean;
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
 				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
@@ -815,7 +815,7 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 			}
 			e_sexp_result_free(f, r1);
 		} else {
-			r->value.bool = TRUE;
+			r->value.boolean = TRUE;
 		}
 		return r;
 	}
@@ -847,7 +847,7 @@ search_match_all(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFol
 		if (argc>0) {
 			r1 = e_sexp_term_eval(f, argv[0]);
 			if (r1->type == ESEXP_RES_BOOL) {
-				if (r1->value.bool)
+				if (r1->value.boolean)
 					g_ptr_array_add(r->value.ptrarray, (gchar *)uid);
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
@@ -1122,7 +1122,7 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFold
 	/* TODO: else, find all matches */
 
 	r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-	r->value.bool = truth;
+	r->value.boolean = truth;
 
 	return r;
 }
@@ -1169,7 +1169,7 @@ search_header_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, C
 	if (search->current) {
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 		if (argc == 1 && argv[0]->type == ESEXP_RES_STRING)
-			r->value.bool = camel_medium_get_header(CAMEL_MEDIUM(search->current), argv[0]->value.string) != NULL;
+			r->value.boolean = camel_medium_get_header(CAMEL_MEDIUM(search->current), argv[0]->value.string) != NULL;
 
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
@@ -1202,10 +1202,10 @@ search_header_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 		if (argc > 1 && argv[0]->type == ESEXP_RES_STRING
 		    && (contents = camel_medium_get_header (CAMEL_MEDIUM (msg), argv[0]->value.string))
 		    && camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1, search->priv->ex) == 0) {
-			r->value.bool = regexec (&pattern, contents, 0, NULL, 0) == 0;
+			r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 			regfree (&pattern);
 		} else
-			r->value.bool = FALSE;
+			r->value.boolean = FALSE;
 
 		camel_object_unref (msg);
 	} else {
@@ -1255,12 +1255,12 @@ search_header_full_regex (struct _ESExp *f, gint argc, struct _ESExpResult **arg
 			gchar *contents;
 
 			contents = get_full_header (msg);
-			r->value.bool = regexec (&pattern, contents, 0, NULL, 0) == 0;
+			r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 
 			g_free (contents);
 			regfree (&pattern);
 		} else
-			r->value.bool = FALSE;
+			r->value.boolean = FALSE;
 
 		camel_object_unref (msg);
 	} else {
@@ -1505,7 +1505,7 @@ search_body_contains(struct _ESExp *f, gint argc, struct _ESExpResult **argv, Ca
 			}
 		}
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = truth;
+		r->value.boolean = truth;
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new();
@@ -1558,10 +1558,10 @@ search_body_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Came
 		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 
 		if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_NEWLINE, argc, argv, search->priv->ex) == 0) {
-			r->value.bool = camel_search_message_body_contains ((CamelDataWrapper *) msg, &pattern);
+			r->value.boolean = camel_search_message_body_contains ((CamelDataWrapper *) msg, &pattern);
 			regfree (&pattern);
 		} else
-			r->value.bool = FALSE;
+			r->value.boolean = FALSE;
 
 		camel_object_unref (msg);
 	} else {
@@ -1618,7 +1618,7 @@ search_user_flag(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelF
 			}
 		}
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = truth;
+		r->value.boolean = truth;
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new();
@@ -1641,7 +1641,7 @@ search_system_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Cam
 			truth = camel_system_flag_get (camel_message_info_flags(search->current), argv[0]->value.string);
 
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = truth;
+		r->value.boolean = truth;
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
@@ -1760,7 +1760,7 @@ search_uid(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderS
 			}
 		}
 		r = e_sexp_result_new(f, ESEXP_RES_BOOL);
-		r->value.bool = truth;
+		r->value.boolean = truth;
 	} else {
 		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new();
@@ -1803,7 +1803,7 @@ search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv
 
 	if (search->current) {
 		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-		r->value.bool = same ? TRUE : FALSE;
+		r->value.boolean = same ? TRUE : FALSE;
 	} else {
 		r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
