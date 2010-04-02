@@ -19,11 +19,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_IMAP_STORE_SUMMARY_H
-#define _CAMEL_IMAP_STORE_SUMMARY_H
+#ifndef CAMEL_IMAP_STORE_SUMMARY_H
+#define CAMEL_IMAP_STORE_SUMMARY_H
 
-#include <camel/camel-object.h>
-#include <camel/camel-store-summary.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAP_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imap_store_summary_get_type (), CamelImapStoreSummary)
 #define CAMEL_IMAP_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imap_store_summary_get_type (), CamelImapStoreSummaryClass)
@@ -95,4 +94,4 @@ gchar *camel_imap_store_summary_full_from_path(CamelImapStoreSummary *s, const g
 
 G_END_DECLS
 
-#endif /* _CAMEL_IMAP_STORE_SUMMARY_H */
+#endif /* CAMEL_IMAP_STORE_SUMMARY_H */

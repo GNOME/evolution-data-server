@@ -32,11 +32,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel-data-wrapper.h"
-#include "camel-exception.h"
-#include "camel-stream-fs.h"
-#include "camel-string-utils.h"
-
 #include "camel-imap-message-cache.h"
 
 #ifndef O_BINARY

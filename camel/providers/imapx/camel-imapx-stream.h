@@ -18,10 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _CAMEL_IMAPX_STREAM_H
-#define _CAMEL_IMAPX_STREAM_H
+#ifndef CAMEL_IMAPX_STREAM_H
+#define CAMEL_IMAPX_STREAM_H
 
-#include <camel/camel-stream.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAPX_STREAM(obj)         CAMEL_CHECK_CAST (obj, camel_imapx_stream_get_type (), CamelIMAPXStream)
 #define CAMEL_IMAPX_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapx_stream_get_type (), CamelIMAPXStreamClass)
@@ -92,4 +92,4 @@ guint32		 camel_imapx_stream_number(CamelIMAPXStream *is, CamelException *ex);
 /* skips the rest of a line, including literals, etc */
 gint camel_imapx_stream_skip(CamelIMAPXStream *is, CamelException *ex);
 
-#endif /* _CAMEL_IMAPX_STREAM_H */
+#endif /* CAMEL_IMAPX_STREAM_H */

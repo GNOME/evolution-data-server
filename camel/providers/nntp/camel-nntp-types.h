@@ -22,7 +22,7 @@
  */
 
 #ifndef CAMEL_NNTP_TYPES_H
-#define CAMEL_NNTP_TYPES_H 1
+#define CAMEL_NNTP_TYPES_H
 
 G_BEGIN_DECLS
 

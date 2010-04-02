@@ -35,13 +35,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-wrapper.h"
-#include "camel-exception.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-message.h"
 #include "camel-sendmail-transport.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-fs.h"
 
 static gchar *get_name (CamelService *service, gboolean brief);
 

@@ -20,13 +20,11 @@
  */
 
 #ifndef CAMEL_LOCAL_FOLDER_H
-#define CAMEL_LOCAL_FOLDER_H 1
+#define CAMEL_LOCAL_FOLDER_H
 
-#include <camel/camel-folder.h>
-#include <camel/camel-folder-search.h>
-#include <camel/camel-index.h>
+#include <camel/camel.h>
+
 #include "camel-local-summary.h"
-#include "camel-lock.h"
 
 /*  #include "camel-store.h" */
 

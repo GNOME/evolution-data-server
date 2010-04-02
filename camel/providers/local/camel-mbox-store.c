@@ -34,12 +34,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-exception.h"
-#include "camel/camel-file-utils.h"
-#include "camel/camel-private.h"
-#include "camel/camel-text-index.h"
-#include "camel/camel-url.h"
-
 #include "camel-mbox-folder.h"
 #include "camel-mbox-store.h"
 

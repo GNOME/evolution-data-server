@@ -25,17 +25,9 @@
  */
 
 #ifndef CAMEL_GROUPWISE_FOLDER_H
-#define CAMEL_GROUPWISE_FOLDER_H 1
+#define CAMEL_GROUPWISE_FOLDER_H
 
-#include <camel/camel-offline-folder.h>
-#include <camel/camel-mime-message.h>
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-internet-address.h>
-#include <camel/camel-data-cache.h>
-#include <camel/camel-multipart.h>
-#include <camel/camel-multipart-signed.h>
-#include <camel/camel-multipart-encrypted.h>
-#include <camel/camel-offline-journal.h>
+#include <camel/camel.h>
 
 #include "camel-groupwise-summary.h"
 

@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_MIME_FILTER_FROM_H
-#define _CAMEL_MIME_FILTER_FROM_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_MIME_FILTER_FROM_H
+#define CAMEL_MIME_FILTER_FROM_H
 
 #include <camel/camel-mime-filter.h>
 
@@ -48,4 +52,4 @@ CamelMimeFilterFrom      *camel_mime_filter_from_new	(void);
 
 G_END_DECLS
 
-#endif /* _CAMEL_MIME_FILTER_FROM_H */
+#endif /* CAMEL_MIME_FILTER_FROM_H */

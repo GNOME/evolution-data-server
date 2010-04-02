@@ -21,7 +21,7 @@
  */
 
 #ifndef CAMEL_PRIVATE_H
-#define CAMEL_PRIVATE_H 1
+#define CAMEL_PRIVATE_H
 
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */
@@ -30,6 +30,7 @@
 #include "config.h"
 #endif
 
+#include <glib.h>
 #include <pthread.h>
 
 G_BEGIN_DECLS

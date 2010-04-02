@@ -3,11 +3,11 @@
 
 /* Still experimental code */
 
-#ifndef __CAMEL_IMAPX_EXCEPTION_H
-#define __CAMEL_IMAPX_EXCEPTION_H
+#ifndef CAMEL_IMAPX_EXCEPTION_H
+#define CAMEL_IMAPX_EXCEPTION_H
 
 #include <setjmp.h>
-#include "camel/camel-exception.h"
+#include <camel/camel.h>
 
 struct _CamelExceptionEnv {
 	struct _CamelExceptionEnv *parent;

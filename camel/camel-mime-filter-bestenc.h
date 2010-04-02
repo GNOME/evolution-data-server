@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_MIME_FILTER_BESTENC_H
-#define _CAMEL_MIME_FILTER_BESTENC_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_MIME_FILTER_BESTENC_H
+#define CAMEL_MIME_FILTER_BESTENC_H
 
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-mime-part.h>
@@ -90,4 +94,4 @@ void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint
 
 G_END_DECLS
 
-#endif /* _CAMEL_MIME_FILTER_BESTENC_H */
+#endif /* CAMEL_MIME_FILTER_BESTENC_H */

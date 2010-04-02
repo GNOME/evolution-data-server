@@ -29,10 +29,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "camel-file-utils.h"
-#include "camel-private.h"
-#include "camel-store.h"
-#include "camel-utf8.h"
+#include <camel/camel-private.h>
+
 #include "camel-imapx-utils.h"
 #include "camel-imapx-store-summary.h"
 

@@ -21,11 +21,10 @@
 
 /* currently, this is just a straigt s/imap/nntp from the IMAP file*/
 
-#ifndef _CAMEL_NNTP_STORE_SUMMARY_H
-#define _CAMEL_NNTP_STORE_SUMMARY_H
+#ifndef CAMEL_NNTP_STORE_SUMMARY_H
+#define CAMEL_NNTP_STORE_SUMMARY_H
 
-#include <camel/camel-object.h>
-#include <camel/camel-store-summary.h>
+#include <camel/camel.h>
 
 #define CAMEL_NNTP_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_nntp_store_summary_get_type (), CamelNNTPStoreSummary)
 #define CAMEL_NNTP_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_nntp_store_summary_get_type (), CamelNNTPStoreSummaryClass)
@@ -92,4 +91,4 @@ gchar *camel_nntp_store_summary_full_from_path(CamelNNTPStoreSummary *s, const g
 
 G_END_DECLS
 
-#endif /* _CAMEL_NNTP_STORE_SUMMARY_H */
+#endif /* CAMEL_NNTP_STORE_SUMMARY_H */

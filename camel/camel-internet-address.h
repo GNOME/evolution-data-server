@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_INTERNET_ADDRESS_H
-#define _CAMEL_INTERNET_ADDRESS_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_INTERNET_ADDRESS_H
+#define CAMEL_INTERNET_ADDRESS_H
 
 #include <camel/camel-address.h>
 
@@ -57,4 +61,4 @@ gchar *			camel_internet_address_format_address(const gchar *name, const gchar *
 
 G_END_DECLS
 
-#endif /* _CAMEL_INTERNET_ADDRESS_H */
+#endif /* CAMEL_INTERNET_ADDRESS_H */

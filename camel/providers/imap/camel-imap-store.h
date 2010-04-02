@@ -22,16 +22,17 @@
  */
 
 #ifndef CAMEL_IMAP_STORE_H
-#define CAMEL_IMAP_STORE_H 1
+#define CAMEL_IMAP_STORE_H
 
-#include "camel-imap-types.h"
-#include <camel/camel-msgport.h>
-#include <camel/camel-offline-store.h>
 #include <sys/time.h>
-
-#ifdef ENABLE_THREADS
+#include <camel/camel.h>
 
 G_BEGIN_DECLS
+
+typedef struct _CamelImapStore CamelImapStore;
+typedef struct _CamelImapStoreClass CamelImapStoreClass;
+
+#ifdef ENABLE_THREADS
 
 typedef struct _CamelImapMsg CamelImapMsg;
 
@@ -147,10 +148,9 @@ struct _CamelImapStore {
 	gchar *custom_headers;
 };
 
-typedef struct {
+struct _CamelImapStoreClass {
 	CamelOfflineStoreClass parent_class;
-
-} CamelImapStoreClass;
+};
 
 /* Standard Camel function */
 CamelType camel_imap_store_get_type (void);

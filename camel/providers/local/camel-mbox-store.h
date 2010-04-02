@@ -20,7 +20,7 @@
  */
 
 #ifndef CAMEL_MBOX_STORE_H
-#define CAMEL_MBOX_STORE_H 1
+#define CAMEL_MBOX_STORE_H
 
 #include "camel-local-store.h"
 

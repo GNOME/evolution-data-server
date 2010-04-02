@@ -17,12 +17,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CAMEL_GROUPWISE_UTILS__
-#define __CAMEL_GROUPWISE_UTILS__
+#ifndef CAMEL_GROUPWISE_UTILS
+#define CAMEL_GROUPWISE_UTILS
 
-#include <glib.h>
-#include <camel/camel-mime-message.h>
-#include <camel/camel-string-utils.h>
+#include <camel/camel.h>
 #include <e-gw-connection.h>
 #include <e-gw-container.h>
 #include <e-gw-item.h>

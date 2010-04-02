@@ -3,11 +3,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-store.h>
-#include <camel/camel-utf8.h>
-#include <camel/camel-string-utils.h>
-
 #include "camel-imapx-folder.h"
 #include "camel-imapx-stream.h"
 #include "camel-imapx-summary.h"
@@ -1301,8 +1296,6 @@ imapx_free_fetch(struct _fetch_info *finfo)
 	g_free(finfo->uid);
 	g_free(finfo);
 }
-
-#include <camel/camel-stream-fs.h>
 
 /* debug, dump one out */
 void

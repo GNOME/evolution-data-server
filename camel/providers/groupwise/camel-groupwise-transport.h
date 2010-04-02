@@ -22,9 +22,9 @@
  */
 
 #ifndef CAMEL_GROUPWISE_TRANSPORT_H
-#define CAMEL_GROUPWISE_TRANSPORT_H 1
+#define CAMEL_GROUPWISE_TRANSPORT_H
 
-#include <camel/camel-transport.h>
+#include <camel/camel.h>
 
 #define CAMEL_GROUPWISE_TRANSPORT_TYPE     (camel_groupwise_transport_get_type ())
 #define CAMEL_GROUPWISE_TRANSPORT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GROUPWISE_TRANSPORT_TYPE, CamelGroupwiseTransport))

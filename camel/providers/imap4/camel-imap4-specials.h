@@ -19,8 +19,8 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CAMEL_IMAP4_SPECIALS_H__
-#define __CAMEL_IMAP4_SPECIALS_H__
+#ifndef CAMEL_IMAP4_SPECIALS_H
+#define CAMEL_IMAP4_SPECIALS_H
 
 #include <glib.h>
 
@@ -48,4 +48,4 @@ void camel_imap4_specials_init (void);
 
 G_END_DECLS
 
-#endif /* __CAMEL_IMAP4_SPECIALS_H__ */
+#endif /* CAMEL_IMAP4_SPECIALS_H */

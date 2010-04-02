@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_MIME_FILTER_WINDOWS_H__
-#define __CAMEL_MIME_FILTER_WINDOWS_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_MIME_FILTER_WINDOWS_H
+#define CAMEL_MIME_FILTER_WINDOWS_H
 
 #include <camel/camel-mime-filter.h>
 
@@ -55,4 +59,4 @@ const gchar *camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *fil
 
 G_END_DECLS
 
-#endif /* __CAMEL_MIME_FILTER_WINDOWS_H__ */
+#endif /* CAMEL_MIME_FILTER_WINDOWS_H */

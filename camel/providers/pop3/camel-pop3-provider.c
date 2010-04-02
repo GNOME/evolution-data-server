@@ -30,10 +30,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-pop3-store.h"
-#include "camel-provider.h"
-#include "camel-sasl.h"
-#include "camel-session.h"
-#include "camel-url.h"
 
 static guint pop3_url_hash (gconstpointer key);
 static gint pop3_url_equal (gconstpointer a, gconstpointer b);

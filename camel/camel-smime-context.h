@@ -21,8 +21,12 @@
  *
  */
 
-#ifndef __CAMEL_SMIME_CONTEXT_H__
-#define __CAMEL_SMIME_CONTEXT_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_SMIME_CONTEXT_H
+#define CAMEL_SMIME_CONTEXT_H
 
 #include <camel/camel-cipher-context.h>
 
@@ -71,4 +75,4 @@ guint32 camel_smime_context_describe_part(CamelSMIMEContext *, struct _CamelMime
 
 G_END_DECLS
 
-#endif /* __CAMEL_SMIME_CONTEXT_H__ */
+#endif /* CAMEL_SMIME_CONTEXT_H */

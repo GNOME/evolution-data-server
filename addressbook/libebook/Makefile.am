@@ -14,7 +14,8 @@ libebook_1_2_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	-I$(top_builddir)/addressbook/libebook		\
-        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
+	$(CAMEL_CFLAGS)
 
 libebook_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
@@ -33,8 +34,9 @@ libebook_1_2_la_SOURCES =				\
 
 libebook_1_2_la_LIBADD =					\
 	$(top_builddir)/camel/libcamel-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la    \
-	$(EVOLUTION_ADDRESSBOOK_LIBS)
+	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
+	$(CAMEL_LIBS)
 
 libebook_1_2_la_LDFLAGS = 							\
 	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE) $(NO_UNDEFINED)

@@ -18,8 +18,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_BLOCK_FILE_H
-#define _CAMEL_BLOCK_FILE_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_BLOCK_FILE_H
+#define CAMEL_BLOCK_FILE_H
 
 #include <camel/camel-object.h>
 #include <camel/camel-list-utils.h>
@@ -145,4 +149,4 @@ gint            camel_key_file_read(CamelKeyFile *kf, camel_block_t *start, gsiz
 
 G_END_DECLS
 
-#endif /* _CAMEL_BLOCK_FILE_H */
+#endif /* CAMEL_BLOCK_FILE_H */

@@ -23,11 +23,9 @@
  */
 
 #ifndef CAMEL_IMAP_MESSAGE_CACHE_H
-#define CAMEL_IMAP_MESSAGE_CACHE_H 1
+#define CAMEL_IMAP_MESSAGE_CACHE_H
 
-#include "camel-imap-types.h"
-#include "camel-folder.h"
-#include <camel/camel-folder-search.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAP_MESSAGE_CACHE_TYPE     (camel_imap_message_cache_get_type ())
 #define CAMEL_IMAP_MESSAGE_CACHE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_MESSAGE_CACHE_TYPE, CamelImapFolder))
@@ -35,6 +33,9 @@
 #define CAMEL_IS_IMAP_MESSAGE_CACHE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_MESSAGE_CACHE_TYPE))
 
 G_BEGIN_DECLS
+
+typedef struct _CamelImapMessageCache CamelImapMessageCache;
+typedef struct _CamelImapMessageCacheClass CamelImapMessageCacheClass;
 
 struct _CamelImapMessageCache {
 	CamelObject parent_object;
@@ -51,12 +52,9 @@ struct _CamelImapMessageCache {
 	guint32 max_uid;
 };
 
-typedef struct {
+struct _CamelImapMessageCacheClass {
 	CamelFolderClass parent_class;
-
-	/* Virtual methods */
-
-} CamelImapMessageCacheClass;
+};
 
 /* public methods */
 CamelImapMessageCache *camel_imap_message_cache_new (const gchar *path,

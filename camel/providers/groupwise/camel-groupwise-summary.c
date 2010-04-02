@@ -33,12 +33,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include "camel-db.h"
-#include "camel-data-cache.h"
-#include "camel-file-utils.h"
-#include "camel-folder.h"
-#include "camel-string-utils.h"
-
 #include "camel-groupwise-folder.h"
 #include "camel-groupwise-summary.h"
 

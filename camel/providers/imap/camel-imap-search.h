@@ -23,12 +23,10 @@
  *
  */
 
-#ifndef _CAMEL_IMAP_SEARCH_H
-#define _CAMEL_IMAP_SEARCH_H
+#ifndef CAMEL_IMAP_SEARCH_H
+#define CAMEL_IMAP_SEARCH_H
 
-#include <camel/camel-folder-search.h>
-#include <camel/camel-list-utils.h>
-#include <camel/camel-data-cache.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAP_SEARCH_TYPE         (camel_imap_search_get_type ())
 #define CAMEL_IMAP_SEARCH(obj)         CAMEL_CHECK_CAST (obj, camel_imap_search_get_type (), CamelImapSearch)
@@ -37,6 +35,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelImapSearch CamelImapSearch;
 typedef struct _CamelImapSearchClass CamelImapSearchClass;
 
 struct _CamelImapSearch {
@@ -63,4 +62,4 @@ CamelFolderSearch *camel_imap_search_new      (const gchar *cachedir);
 
 G_END_DECLS
 
-#endif /* _CAMEL_IMAP_SEARCH_H */
+#endif /* CAMEL_IMAP_SEARCH_H */

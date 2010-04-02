@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_ICONV_H__
-#define __CAMEL_ICONV_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_ICONV_H
+#define CAMEL_ICONV_H
 
 #include <sys/types.h>
 #include <iconv.h>
@@ -46,4 +50,4 @@ void		camel_iconv_close		(iconv_t cd);
 
 G_END_DECLS
 
-#endif /* __CAMEL_ICONV_H__ */
+#endif /* CAMEL_ICONV_H */

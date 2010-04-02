@@ -18,8 +18,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_PARTITION_TABLE_H
-#define _CAMEL_PARTITION_TABLE_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_PARTITION_TABLE_H
+#define CAMEL_PARTITION_TABLE_H
 
 #include <camel/camel-object.h>
 #include <glib.h>
@@ -153,4 +157,4 @@ camel_key_t camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **ke
 
 G_END_DECLS
 
-#endif /* _CAMEL_PARTITION_TABLE_H */
+#endif /* CAMEL_PARTITION_TABLE_H */

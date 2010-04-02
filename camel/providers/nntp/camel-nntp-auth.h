@@ -23,9 +23,9 @@
  */
 
 #ifndef CAMEL_NNTP_AUTH_H
-#define CAMEL_NNTP_AUTH_H 1
+#define CAMEL_NNTP_AUTH_H
 
-#include <camel-nntp-store.h>
+#include "camel-nntp-store.h"
 
 G_BEGIN_DECLS
 

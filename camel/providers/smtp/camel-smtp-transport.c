@@ -36,31 +36,13 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <camel/camel-private.h>
+
+#include "camel-smtp-transport.h"
+
 #undef MIN
 #undef MAX
 
-#include "camel-exception.h"
-#include "camel-mime-filter-progress.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-message.h"
-#include "camel-mime-part.h"
-#include "camel-multipart.h"
-#include "camel-net-utils.h"
-#include "camel-operation.h"
-#include "camel-sasl.h"
-#include "camel-session.h"
-#include "camel-smtp-transport.h"
-#include "camel-stream-buffer.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-null.h"
-#include "camel-tcp-stream-raw.h"
-#include "camel-tcp-stream.h"
-
-#ifdef HAVE_SSL
-#include "camel-tcp-stream-ssl.h"
-#endif
-
-extern gint camel_verbose_debug;
 #define d(x) (camel_verbose_debug ? (x) : 0)
 
 /* Specified in RFC 821 */

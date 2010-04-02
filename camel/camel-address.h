@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_ADDRESS_H
-#define _CAMEL_ADDRESS_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_ADDRESS_H
+#define CAMEL_ADDRESS_H
 
 #include <glib.h>
 #include <camel/camel-object.h>
@@ -72,4 +76,4 @@ void		camel_address_remove	(CamelAddress *addr, gint index);
 
 G_END_DECLS
 
-#endif /* _CAMEL_ADDRESS_H */
+#endif /* CAMEL_ADDRESS_H */

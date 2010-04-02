@@ -21,7 +21,7 @@
  */
 
 #ifndef CAMEL_MH_FOLDER_H
-#define CAMEL_MH_FOLDER_H 1
+#define CAMEL_MH_FOLDER_H
 
 #include "camel-local-folder.h"
 

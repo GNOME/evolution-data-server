@@ -20,13 +20,10 @@
  */
 
 #ifndef CAMEL_SPOOL_FOLDER_H
-#define CAMEL_SPOOL_FOLDER_H 1
+#define CAMEL_SPOOL_FOLDER_H
 
 #include "camel-mbox-folder.h"
-#include <camel/camel-folder-search.h>
-#include <camel/camel-index.h>
 #include "camel-spool-summary.h"
-#include "camel-lock.h"
 
 /*  #include "camel-store.h" */
 

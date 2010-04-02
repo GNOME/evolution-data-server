@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_POP3_ENGINE_H
-#define _CAMEL_POP3_ENGINE_H
+#ifndef CAMEL_POP3_ENGINE_H
+#define CAMEL_POP3_ENGINE_H
 
-#include <camel/camel-object.h>
-#include <camel/camel-list-utils.h>
+#include <camel/camel.h>
+
 #include "camel-pop3-stream.h"
 
 #define CAMEL_POP3_ENGINE(obj)         CAMEL_CHECK_CAST (obj, camel_pop3_engine_get_type (), CamelPOP3Engine)
@@ -135,4 +135,4 @@ CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 fl
 
 G_END_DECLS
 
-#endif /* _CAMEL_POP3_ENGINE_H */
+#endif /* CAMEL_POP3_ENGINE_H */

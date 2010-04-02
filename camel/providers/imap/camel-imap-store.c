@@ -36,24 +36,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-db.h"
-#include "camel/camel-debug.h"
-#include "camel/camel-exception.h"
-#include "camel/camel-file-utils.h"
-#include "camel/camel-folder.h"
-#include "camel/camel-net-utils.h"
-#include "camel/camel-private.h"
-#include "camel/camel-sasl.h"
-#include "camel/camel-session.h"
-#include "camel/camel-stream-buffer.h"
-#include "camel/camel-stream-fs.h"
-#include "camel/camel-stream-process.h"
-#include "camel/camel-stream.h"
-#include "camel/camel-string-utils.h"
-#include "camel/camel-tcp-stream-raw.h"
-#include "camel/camel-tcp-stream-ssl.h"
-#include "camel/camel-url.h"
-#include "camel/camel-utf8.h"
+#include <camel/camel-private.h>
 
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"

@@ -18,15 +18,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_SEARCH_PRIVATE_H
-#define _CAMEL_SEARCH_PRIVATE_H
+#ifndef CAMEL_SEARCH_PRIVATE_H
+#define CAMEL_SEARCH_PRIVATE_H
 
 /* POSIX requires <sys/types.h> be included before <regex.h> */
 #include <sys/types.h>
 
 #include <regex.h>
 
-#include "camel-exception.h"
+#include <camel/camel.h>
+
 #include "libedataserver/e-sexp.h"
 
 G_BEGIN_DECLS
@@ -89,4 +90,4 @@ void camel_search_words_free(struct _camel_search_words *);
 
 G_END_DECLS
 
-#endif /* _CAMEL_SEARCH_PRIVATE_H */
+#endif /* CAMEL_SEARCH_PRIVATE_H */

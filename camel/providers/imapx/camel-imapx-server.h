@@ -19,11 +19,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _CAMEL_IMAPX_SERVER_H
-#define _CAMEL_IMAPX_SERVER_H
+#ifndef CAMEL_IMAPX_SERVER_H
+#define CAMEL_IMAPX_SERVER_H
 
-#include <camel/camel-msgport.h>
-#include <camel/camel-list-utils.h>
+#include <camel/camel.h>
 #include <libedataserver/e-flag.h>
 
 struct _CamelFolder;
@@ -134,4 +133,4 @@ void camel_imapx_server_create_folder (CamelIMAPXServer *is, const gchar *folder
 void camel_imapx_server_delete_folder (CamelIMAPXServer *is, const gchar *folder_name, CamelException *ex);
 void camel_imapx_server_rename_folder (CamelIMAPXServer *is, const gchar *old_name, const gchar *new_name, CamelException *ex);
 
-#endif /* _CAMEL_IMAPX_SERVER_H */
+#endif /* CAMEL_IMAPX_SERVER_H */

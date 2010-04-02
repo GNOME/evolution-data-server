@@ -22,16 +22,14 @@
  */
 
 #ifndef CAMEL_IMAPX_FOLDER_H
-#define CAMEL_IMAPX_FOLDER_H 1
+#define CAMEL_IMAPX_FOLDER_H
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
 #endif /* __cplusplus }*/
 
-#include <camel/camel-offline-folder.h>
-#include <camel/camel-folder.h>
-#include <camel/camel-data-cache.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAPX_FOLDER_TYPE     (camel_imapx_folder_get_type ())
 #define CAMEL_IMAPX_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPX_FOLDER_TYPE, CamelIMAPXFolder))

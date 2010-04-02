@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_OFFLINE_FOLDER_H__
-#define __CAMEL_OFFLINE_FOLDER_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_OFFLINE_FOLDER_H
+#define CAMEL_OFFLINE_FOLDER_H
 
 #include <camel/camel-folder.h>
 
@@ -62,4 +66,4 @@ void camel_offline_folder_downsync (CamelOfflineFolder *offline, const gchar *ex
 
 G_END_DECLS
 
-#endif /* __CAMEL_OFFLINE_FOLDER_H__ */
+#endif /* CAMEL_OFFLINE_FOLDER_H */

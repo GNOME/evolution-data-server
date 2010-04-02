@@ -36,10 +36,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "camel-folder.h"
-#include "camel-string-utils.h"
-#include "camel-utf8.h"
-
 #include "camel-imap-store.h"
 #include "camel-imap-summary.h"
 #include "camel-imap-store-summary.h"

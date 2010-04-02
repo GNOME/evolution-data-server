@@ -32,11 +32,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-exception.h"
-#include "camel-list-utils.h"
-#include "camel-private.h"
-#include "camel-url.h"
-
 #include "camel-maildir-folder.h"
 #include "camel-maildir-store.h"
 #include "camel-maildir-summary.h"

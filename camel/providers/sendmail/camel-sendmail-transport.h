@@ -24,9 +24,9 @@
  */
 
 #ifndef CAMEL_SENDMAIL_TRANSPORT_H
-#define CAMEL_SENDMAIL_TRANSPORT_H 1
+#define CAMEL_SENDMAIL_TRANSPORT_H
 
-#include "camel-transport.h"
+#include <camel/camel.h>
 
 #define CAMEL_SENDMAIL_TRANSPORT_TYPE     (camel_sendmail_transport_get_type ())
 #define CAMEL_SENDMAIL_TRANSPORT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SENDMAIL_TRANSPORT_TYPE, CamelSendmailTransport))

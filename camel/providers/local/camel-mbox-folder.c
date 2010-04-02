@@ -37,18 +37,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-data-wrapper.h"
-#include "camel/camel-exception.h"
-#include "camel/camel-mime-filter-from.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-mime-part-utils.h"
-#include "camel/camel-private.h"
-#include "camel/camel-stream-filter.h"
-#include "camel/camel-stream-fs.h"
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-stream-buffer.h>
-#include <camel/camel-multipart.h>
-
 #include "camel-mbox-folder.h"
 #include "camel-mbox-store.h"
 #include "camel-mbox-summary.h"

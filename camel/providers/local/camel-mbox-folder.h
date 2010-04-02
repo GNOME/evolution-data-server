@@ -20,7 +20,7 @@
  */
 
 #ifndef CAMEL_MBOX_FOLDER_H
-#define CAMEL_MBOX_FOLDER_H 1
+#define CAMEL_MBOX_FOLDER_H
 
 #include "camel-local-folder.h"
 #include "camel-mbox-summary.h"

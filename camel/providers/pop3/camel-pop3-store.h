@@ -24,10 +24,10 @@
  */
 
 #ifndef CAMEL_POP3_STORE_H
-#define CAMEL_POP3_STORE_H 1
+#define CAMEL_POP3_STORE_H
 
-#include <camel/camel-types.h>
-#include <camel/camel-store.h>
+#include <camel/camel.h>
+
 #include "camel-pop3-engine.h"
 
 #define CAMEL_POP3_STORE_TYPE     (camel_pop3_store_get_type ())

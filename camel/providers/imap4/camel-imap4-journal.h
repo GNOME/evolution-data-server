@@ -19,8 +19,8 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CAMEL_IMAP4_JOURNAL_H__
-#define __CAMEL_IMAP4_JOURNAL_H__
+#ifndef CAMEL_IMAP4_JOURNAL_H
+#define CAMEL_IMAP4_JOURNAL_H
 
 #include <stdarg.h>
 
@@ -81,4 +81,4 @@ void camel_imap4_journal_append (CamelIMAP4Journal *journal, CamelMimeMessage *m
 
 G_END_DECLS
 
-#endif /* __CAMEL_IMAP4_JOURNAL_H__ */
+#endif /* CAMEL_IMAP4_JOURNAL_H */

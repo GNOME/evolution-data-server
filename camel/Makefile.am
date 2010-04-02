@@ -30,15 +30,16 @@ camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
 
 libcamel_provider_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)									\
-	-I$(top_srcdir) 								\
-	-I$(top_builddir)								\
-	-I$(srcdir)										\
+	$(AM_CPPFLAGS)						\
+	-I$(top_srcdir) 					\
+	-I$(top_builddir)					\
+	-I$(srcdir)						\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
-	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
-	-DG_LOG_DOMAIN=\"camel\"						\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
+	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)						\
 	$(DBUS_GLIB_CFLAGS)
 
@@ -144,15 +145,16 @@ libcamel_provider_1_2_la_LIBADD =			\
 	$(DBUS_GLIB_LIBS)	
 
 libcamel_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)									\
-	-I$(top_srcdir) 								\
-	-I$(top_builddir)								\
-	-I$(srcdir)										\
+	$(AM_CPPFLAGS)						\
+	-I$(top_srcdir) 					\
+	-I$(top_builddir)					\
+	-I$(srcdir)						\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
-	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
-	-DG_LOG_DOMAIN=\"camel\"						\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
+	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)
 
 libcamel_1_2_la_SOURCES = 			\
@@ -311,15 +313,16 @@ libcamel_1_2_la_LIBADD =				\
 	$(REGEX_LIBS)
 
 camel_lock_helper_1_2_CPPFLAGS = \
-	$(AM_CPPFLAGS)									\
-	-I$(top_srcdir) 								\
-	-I$(top_builddir)								\
-	-I$(srcdir)										\
+	$(AM_CPPFLAGS)						\
+	-I$(top_srcdir) 					\
+	-I$(top_builddir)					\
+	-I$(srcdir)						\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
-	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
-	-DG_LOG_DOMAIN=\"camel\"						\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
+	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)
 
 camel_lock_helper_1_2_SOURCES = \
@@ -334,15 +337,16 @@ camel_lock_helper_1_2_LDADD = \
 	$(libcamel_1_2_la_LIBADD)
 
 camel_index_control_1_2_CPPFLAGS = \
-	$(AM_CPPFLAGS)									\
-	-I$(top_srcdir) 								\
-	-I$(top_builddir)								\
-	-I$(srcdir)										\
+	$(AM_CPPFLAGS)						\
+	-I$(top_srcdir) 					\
+	-I$(top_builddir)					\
+	-I$(srcdir)						\
 	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
-	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
-	-DG_LOG_DOMAIN=\"camel\"						\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
+	-DG_LOG_DOMAIN=\"camel\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DCAMEL_COMPILATION					\
 	$(CAMEL_CFLAGS)
 
 camel_index_control_1_2_SOURCES = \

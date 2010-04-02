@@ -24,12 +24,14 @@
  */
 
 #ifndef CAMEL_IMAP_COMMAND_H
-#define CAMEL_IMAP_COMMAND_H 1
+#define CAMEL_IMAP_COMMAND_H
 
 #include <glib.h>
-#include "camel-imap-types.h"
+#include "camel-imap-store.h"
 
 G_BEGIN_DECLS
+
+typedef struct _CamelImapResponse CamelImapResponse;
 
 typedef enum {
 	CAMEL_IMAP_RESPONSE_ERROR,

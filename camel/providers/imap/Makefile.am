@@ -34,7 +34,6 @@ noinst_HEADERS =			\
 	camel-imap-store-summary.h		\
 	camel-imap-summary.h			\
 	camel-imap-journal.h			\
-	camel-imap-types.h			\
 	camel-imap-utils.h			\
 	camel-imap-wrapper.h                    \
 	camel-imap-private.h

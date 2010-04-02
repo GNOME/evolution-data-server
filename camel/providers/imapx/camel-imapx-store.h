@@ -22,17 +22,16 @@
  */
 
 #ifndef CAMEL_IMAPX_STORE_H
-#define CAMEL_IMAPX_STORE_H 1
+#define CAMEL_IMAPX_STORE_H
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
 #endif /* __cplusplus }*/
 
-#include <camel/camel-types.h>
-#include <camel/camel-store.h>
+#include <camel/camel.h>
+
 #include "camel-imapx-store-summary.h"
-#include <camel/camel-offline-store.h>
 
 #define CAMEL_IMAPX_STORE_TYPE     (camel_imapx_store_get_type ())
 #define CAMEL_IMAPX_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAPX_STORE_TYPE, CamelIMAPXStore))

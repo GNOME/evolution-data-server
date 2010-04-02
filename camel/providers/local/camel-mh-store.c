@@ -31,12 +31,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-exception.h"
-#include "camel-private.h"
-#include "camel-stream-buffer.h"
-#include "camel-stream-fs.h"
-#include "camel-url.h"
-
 #include "camel-mh-folder.h"
 #include "camel-mh-store.h"
 #include "camel-mh-summary.h"

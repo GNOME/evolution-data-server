@@ -20,8 +20,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_VEE_SUMMARY_H
-#define _CAMEL_VEE_SUMMARY_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_VEE_SUMMARY_H
+#define CAMEL_VEE_SUMMARY_H
 
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-exception.h>
@@ -66,5 +70,5 @@ void camel_vee_summary_load_check_unread_vfolder  (CamelVeeSummary *vs);
 
 G_END_DECLS
 
-#endif /* _CAMEL_VEE_SUMMARY_H */
+#endif /* CAMEL_VEE_SUMMARY_H */
 

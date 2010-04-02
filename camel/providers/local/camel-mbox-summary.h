@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_MBOX_SUMMARY_H
-#define _CAMEL_MBOX_SUMMARY_H
+#ifndef CAMEL_MBOX_SUMMARY_H
+#define CAMEL_MBOX_SUMMARY_H
 
 #include "camel-local-summary.h"
 
@@ -76,4 +76,4 @@ gint camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFol
 
 G_END_DECLS
 
-#endif /* _CAMEL_MBOX_SUMMARY_H */
+#endif /* CAMEL_MBOX_SUMMARY_H */

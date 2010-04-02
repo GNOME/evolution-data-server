@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_FOLDER_THREAD_H
-#define _CAMEL_FOLDER_THREAD_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_FOLDER_THREAD_H
+#define CAMEL_FOLDER_THREAD_H
 
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder.h>
@@ -65,4 +69,4 @@ gint camel_folder_threaded_messages_dump(CamelFolderThreadNode *c);
 
 G_END_DECLS
 
-#endif /* _CAMEL_FOLDER_THREAD_H */
+#endif /* CAMEL_FOLDER_THREAD_H */

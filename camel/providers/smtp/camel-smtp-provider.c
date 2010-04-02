@@ -25,13 +25,10 @@
 #include <config.h>
 #endif
 
+#include <camel/camel.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel-provider.h"
-#include "camel-sasl.h"
-#include "camel-session.h"
 #include "camel-smtp-transport.h"
-#include "camel-url.h"
 
 static guint smtp_url_hash (gconstpointer key);
 static gint smtp_url_equal (gconstpointer a, gconstpointer b);

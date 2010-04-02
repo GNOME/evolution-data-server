@@ -31,8 +31,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "camel-exception.h"
-
 #include "camel-nntp-grouplist.h"
 #include "camel-nntp-resp-codes.h"
 

@@ -22,7 +22,7 @@
  */
 
 #ifndef CAMEL_NNTP_GROUPLIST_H
-#define CAMEL_NNTP_GROUPLIST_H 1
+#define CAMEL_NNTP_GROUPLIST_H
 
 #include <time.h>
 #include "camel-nntp-store.h"

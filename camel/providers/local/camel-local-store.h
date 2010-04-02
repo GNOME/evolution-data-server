@@ -21,9 +21,9 @@
  */
 
 #ifndef CAMEL_LOCAL_STORE_H
-#define CAMEL_LOCAL_STORE_H 1
+#define CAMEL_LOCAL_STORE_H
 
-#include "camel-store.h"
+#include <camel/camel.h>
 
 #define CAMEL_LOCAL_STORE_TYPE     (camel_local_store_get_type ())
 #define CAMEL_LOCAL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_LOCAL_STORE_TYPE, CamelLocalStore))

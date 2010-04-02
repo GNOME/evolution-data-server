@@ -20,8 +20,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_MIME_UTILS_H
-#define _CAMEL_MIME_UTILS_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_MIME_UTILS_H
+#define CAMEL_MIME_UTILS_H
 
 #include <time.h>
 #include <glib.h>
@@ -270,4 +274,4 @@ extern unsigned short camel_mime_special_table[256];
 
 G_END_DECLS
 
-#endif /* _CAMEL_MIME_UTILS_H */
+#endif /* CAMEL_MIME_UTILS_H */

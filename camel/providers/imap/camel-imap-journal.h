@@ -21,16 +21,11 @@
  *
  */
 
-#ifndef __CAMEL_IMAP_JOURNAL_H__
-#define __CAMEL_IMAP_JOURNAL_H__
+#ifndef CAMEL_IMAP_JOURNAL_H
+#define CAMEL_IMAP_JOURNAL_H
 
 #include <stdarg.h>
-
-#include <glib.h>
-
-#include <camel/camel-list-utils.h>
-#include <camel/camel-offline-journal.h>
-#include <camel/camel-mime-message.h>
+#include <camel/camel.h>
 
 #define CAMEL_TYPE_IMAP_JOURNAL            (camel_imap_journal_get_type ())
 #define CAMEL_IMAP_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_IMAP_JOURNAL, CamelIMAPJournal))
@@ -88,4 +83,4 @@ void camel_imap_journal_close_folders (CamelIMAPJournal *journal);
 
 G_END_DECLS
 
-#endif /* __CAMEL_IMAP_JOURNAL_H__ */
+#endif /* CAMEL_IMAP_JOURNAL_H */

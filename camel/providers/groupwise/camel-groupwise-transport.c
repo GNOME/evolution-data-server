@@ -31,15 +31,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-wrapper.h"
-#include "camel-medium.h"
-#include "camel-mime-message.h"
-#include "camel-mime-utils.h"
-#include "camel-multipart.h"
-#include "camel-session.h"
-#include "camel-stream-mem.h"
-#include "camel-stream.h"
-
 #include "camel-groupwise-store.h"
 #include "camel-groupwise-transport.h"
 #include "camel-groupwise-utils.h"

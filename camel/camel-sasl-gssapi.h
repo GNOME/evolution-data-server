@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_SASL_GSSAPI_H__
-#define __CAMEL_SASL_GSSAPI_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_SASL_GSSAPI_H
+#define CAMEL_SASL_GSSAPI_H
 
 #include <sys/types.h>
 #include <camel/camel-sasl.h>
@@ -55,4 +59,4 @@ extern CamelServiceAuthType camel_sasl_gssapi_authtype;
 
 G_END_DECLS
 
-#endif /* __CAMEL_SASL_GSSAPI_H__ */
+#endif /* CAMEL_SASL_GSSAPI_H */

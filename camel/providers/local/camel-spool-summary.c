@@ -34,12 +34,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-db.h"
-#include "camel-file-utils.h"
-#include "camel-mime-message.h"
-#include "camel-operation.h"
-#include "camel-store.h"
-
 #include "camel-spool-summary.h"
 #include "camel-local-private.h"
 

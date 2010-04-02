@@ -1,7 +1,11 @@
 /* Srinivasa Ragavan - <sragavan@novell.com> - GPL v2 or later */
 
-#ifndef __CAMEL_DB_H
-#define __CAMEL_DB_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_DB_H
+#define CAMEL_DB_H
 #include <sqlite3.h>
 #include <glib.h>
 

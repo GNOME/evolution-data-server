@@ -20,15 +20,11 @@
  *
  */
 
-#ifndef __CAMEL_GROUPWISE_JOURNAL_H__
-#define __CAMEL_GROUPWISE_JOURNAL_H__
+#ifndef CAMEL_GROUPWISE_JOURNAL_H
+#define CAMEL_GROUPWISE_JOURNAL_H
 
 #include <stdarg.h>
-
-#include <glib.h>
-
-#include <camel/camel-offline-journal.h>
-#include <camel/camel-mime-message.h>
+#include <camel/camel.h>
 
 #define CAMEL_TYPE_GROUPWISE_JOURNAL            (camel_groupwise_journal_get_type ())
 #define CAMEL_GROUPWISE_JOURNAL(obj)            (CAMEL_CHECK_CAST ((obj), CAMEL_TYPE_GROUPWISE_JOURNAL, CamelGroupwiseJournal))
@@ -82,4 +78,4 @@ void camel_groupwise_journal_transfer (CamelGroupwiseJournal *journal, CamelGrou
 
 G_END_DECLS
 
-#endif /* __CAMEL_GROUPWISE_JOURNAL_H__ */
+#endif /* CAMEL_GROUPWISE_JOURNAL_H */

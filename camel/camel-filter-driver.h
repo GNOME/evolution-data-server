@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_FILTER_DRIVER_H
-#define _CAMEL_FILTER_DRIVER_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_FILTER_DRIVER_H
+#define CAMEL_FILTER_DRIVER_H
 
 #include <glib.h>
 #include <camel/camel-object.h>
@@ -102,4 +106,4 @@ gint  camel_filter_driver_filter_folder        (CamelFilterDriver *driver, Camel
 
 G_END_DECLS
 
-#endif /* _CAMEL_FILTER_DRIVER_H */
+#endif /* CAMEL_FILTER_DRIVER_H */

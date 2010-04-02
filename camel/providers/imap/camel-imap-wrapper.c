@@ -28,15 +28,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include "camel-exception.h"
-#include "camel-mime-filter-basic.h"
-#include "camel-mime-filter-charset.h"
-#include "camel-mime-filter-crlf.h"
-#include "camel-mime-part.h"
-#include "camel-stream-filter.h"
-#include "camel-service.h"
-#include "camel-url.h"
-
 #include "camel-imap-folder.h"
 #include "camel-imap-wrapper.h"
 

@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_STREAM_NULL_H
-#define _CAMEL_STREAM_NULL_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_STREAM_PROCESS_H
+#define CAMEL_STREAM_PROCESS_H
 
 #include <camel/camel-stream.h>
 
@@ -50,4 +54,4 @@ gint camel_stream_process_connect(CamelStreamProcess *, const gchar *, const gch
 
 G_END_DECLS
 
-#endif /* _CAMEL_STREAM_PROCESS_H */
+#endif /* CAMEL_STREAM_PROCESS_H */

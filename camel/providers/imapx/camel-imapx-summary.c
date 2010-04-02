@@ -31,14 +31,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include "camel-db.h"
-#include "camel-folder.h"
-#include "camel-file-utils.h"
-#include "camel-string-utils.h"
-#include "camel-store.h"
-
 #include "camel-imapx-summary.h"
-//#include "camel-imap-utils.h"
 
 #define CAMEL_IMAPX_SUMMARY_VERSION (3)
 

@@ -34,18 +34,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel/camel-data-cache.h"
-#include "camel/camel-debug.h"
-#include "camel/camel-disco-diary.h"
-#include "camel/camel-disco-store.h"
-#include "camel/camel-net-utils.h"
-#include "camel/camel-private.h"
-#include "camel/camel-session.h"
-#include "camel/camel-stream-mem.h"
-#include "camel/camel-string-utils.h"
-#include "camel/camel-tcp-stream-raw.h"
-#include "camel/camel-tcp-stream-ssl.h"
-#include "camel/camel-url.h"
+#include <camel/camel-private.h>
 
 #include "camel-nntp-summary.h"
 #include "camel-nntp-store.h"

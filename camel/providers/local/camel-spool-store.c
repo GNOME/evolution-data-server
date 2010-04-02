@@ -38,12 +38,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-exception.h"
-#include "camel-file-utils.h"
-#include "camel-private.h"
-#include "camel-session.h"
-#include "camel-url.h"
-
 #include "camel-spool-folder.h"
 #include "camel-spool-store.h"
 

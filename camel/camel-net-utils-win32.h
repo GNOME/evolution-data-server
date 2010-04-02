@@ -3,8 +3,8 @@
  * This file is part of the w64 mingw-runtime package.
  * No warranty is given; refer to the file DISCLAIMER within this package.
  */
-#ifndef _CAMEL_NET_UTILS_WIN32_H_
-#define _CAMEL_NET_UTILS_WIN32_H_
+#ifndef CAMEL_NET_UTILS_WIN32_H_
+#define CAMEL_NET_UTILS_WIN32_H_
 
 #include <stdio.h>
 #include <stdlib.h>

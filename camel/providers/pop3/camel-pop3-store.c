@@ -37,24 +37,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-cache.h"
-#include "camel-exception.h"
-#include "camel-net-utils.h"
-#include "camel-operation.h"
-#include "camel-pop3-engine.h"
 #include "camel-pop3-folder.h"
 #include "camel-pop3-store.h"
-#include "camel-sasl.h"
-#include "camel-session.h"
-#include "camel-stream-buffer.h"
-#include "camel-tcp-stream-raw.h"
-#include "camel-tcp-stream.h"
-#include "camel-url.h"
-#include "camel-utf8.h"
-
-#ifdef HAVE_SSL
-#include "camel-tcp-stream-ssl.h"
-#endif
 
 /* Specified in RFC 1939 */
 #define POP3_PORT "110"

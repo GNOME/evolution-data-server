@@ -32,19 +32,10 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel/camel-data-cache.h"
-#include "camel/camel-db.h"
-#include "camel/camel-debug.h"
-#include "camel/camel-file-utils.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-operation.h"
-#include "camel/camel-stream-null.h"
-
 #include "camel-nntp-folder.h"
 #include "camel-nntp-store.h"
 #include "camel-nntp-stream.h"
 #include "camel-nntp-summary.h"
-#include "camel-string-utils.h"
 
 #define w(x)
 #define io(x)

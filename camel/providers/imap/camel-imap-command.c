@@ -35,11 +35,7 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-debug.h"
-#include "camel-exception.h"
-#include "camel-private.h"
-#include "camel-session.h"
-#include "camel-utf8.h"
+#include <camel/camel-private.h>
 
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"

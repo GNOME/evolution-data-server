@@ -1,6 +1,6 @@
 
-#ifndef _CAMEL_NNTP_NEWSRC_H_
-#define _CAMEL_NNTP_NEWSRC_H_
+#ifndef CAMEL_NNTP_NEWSRC_H
+#define CAMEL_NNTP_NEWSRC_H
 
 #include <stdio.h>
 #include "glib.h"
@@ -33,4 +33,4 @@ CamelNNTPNewsrc *camel_nntp_newsrc_read_for_server            (const gchar *serv
 
 G_END_DECLS
 
-#endif /* _CAMEL_NNTP_NEWSRC_H_ */
+#endif /* CAMEL_NNTP_NEWSRC_H */

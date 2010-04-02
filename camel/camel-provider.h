@@ -24,8 +24,12 @@
  * USA
  */
 
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
 #ifndef CAMEL_PROVIDER_H
-#define CAMEL_PROVIDER_H 1
+#define CAMEL_PROVIDER_H
 
 #include <camel/camel-types.h>
 #include <camel/camel-object.h>

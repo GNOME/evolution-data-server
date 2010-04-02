@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_OFFLINE_JOURNAL_H__
-#define __CAMEL_OFFLINE_JOURNAL_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_OFFLINE_JOURNAL_H
+#define CAMEL_OFFLINE_JOURNAL_H
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -75,4 +79,4 @@ gint camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException 
 
 G_END_DECLS
 
-#endif /* __CAMEL_OFFLINE_JOURNAL_H__ */
+#endif /* CAMEL_OFFLINE_JOURNAL_H */

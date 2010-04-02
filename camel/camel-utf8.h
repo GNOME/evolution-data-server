@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef _CAMEL_UTF8_H
-#define _CAMEL_UTF8_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_UTF8_H
+#define CAMEL_UTF8_H
 
 G_BEGIN_DECLS
 
@@ -45,4 +49,4 @@ gchar *camel_utf8_make_valid (const gchar *text);
 
 G_END_DECLS
 
-#endif /* _CAMEL_UTF8_H */
+#endif /* CAMEL_UTF8_H */

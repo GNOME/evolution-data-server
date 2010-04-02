@@ -24,12 +24,12 @@
  */
 
 #ifndef CAMEL_IMAP_FOLDER_H
-#define CAMEL_IMAP_FOLDER_H 1
+#define CAMEL_IMAP_FOLDER_H
 
-#include "camel-imap-types.h"
-#include <camel/camel-offline-folder.h>
-#include <camel/camel-folder-search.h>
-#include <camel/camel-offline-journal.h>
+#include <camel/camel.h>
+
+#include "camel-imap-command.h"
+#include "camel-imap-message-cache.h"
 
 #define CAMEL_IMAP_FOLDER_TYPE     (camel_imap_folder_get_type ())
 #define CAMEL_IMAP_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_FOLDER_TYPE, CamelImapFolder))
@@ -49,6 +49,7 @@ enum {
 	CAMEL_IMAP_FOLDER_CHECK_FOLDER = CAMEL_IMAP_FOLDER_ARG_CHECK_FOLDER | CAMEL_ARG_BOO
 };
 
+typedef struct _CamelImapFolder CamelImapFolder;
 typedef struct _CamelImapFolderClass CamelImapFolderClass;
 typedef struct _CamelImapFolderPrivate CamelImapFolderPrivate;
 

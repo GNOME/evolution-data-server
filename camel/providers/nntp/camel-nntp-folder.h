@@ -23,10 +23,9 @@
  */
 
 #ifndef CAMEL_NNTP_FOLDER_H
-#define CAMEL_NNTP_FOLDER_H 1
+#define CAMEL_NNTP_FOLDER_H
 
-#include "camel/camel-folder.h"
-#include "camel/camel-disco-folder.h"
+#include <camel/camel.h>
 
 /*  #include "camel-store.h" */
 

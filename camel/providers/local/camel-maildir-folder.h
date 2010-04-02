@@ -21,7 +21,7 @@
  */
 
 #ifndef CAMEL_MAILDIR_FOLDER_H
-#define CAMEL_MAILDIR_FOLDER_H 1
+#define CAMEL_MAILDIR_FOLDER_H
 
 #include "camel-local-folder.h"
 

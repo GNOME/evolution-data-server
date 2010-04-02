@@ -41,14 +41,7 @@
 #include <posix1_lim.h>
 #endif
 
-#include "camel-data-wrapper.h"
-#include "camel-exception.h"
-#include "camel-mime-filter-from.h"
-#include "camel-mime-message.h"
-#include "camel-private.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-fs.h"
-#include "camel-text-index.h"
+#include <camel/camel-private.h>
 
 #include "camel-local-folder.h"
 #include "camel-local-private.h"

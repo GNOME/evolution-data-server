@@ -22,8 +22,12 @@
  * USA
  */
 
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
 #ifndef CAMEL_STREAM_H
-#define CAMEL_STREAM_H 1
+#define CAMEL_STREAM_H
 
 #include <stdarg.h>
 #include <unistd.h>

@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_TEXT_INDEX_H
-#define _CAMEL_TEXT_INDEX_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_TEXT_INDEX_H
+#define CAMEL_TEXT_INDEX_H
 
 #include <camel/camel-exception.h>
 #include <camel/camel-object.h>
@@ -114,4 +118,4 @@ void camel_text_index_validate(CamelTextIndex *idx);
 
 G_END_DECLS
 
-#endif /* _CAMEL_TEXT_INDEX_H */
+#endif /* CAMEL_TEXT_INDEX_H */

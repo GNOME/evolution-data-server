@@ -35,11 +35,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel-data-wrapper.h"
-#include "camel-exception.h"
-#include "camel-mime-message.h"
-#include "camel-stream-fs.h"
-
 #include "camel-maildir-folder.h"
 #include "camel-maildir-store.h"
 #include "camel-maildir-summary.h"

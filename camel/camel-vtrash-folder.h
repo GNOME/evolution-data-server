@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef _CAMEL_VTRASH_FOLDER_H
-#define _CAMEL_VTRASH_FOLDER_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_VTRASH_FOLDER_H
+#define CAMEL_VTRASH_FOLDER_H
 
 #include <camel/camel-folder.h>
 #include <camel/camel-vee-folder.h>
@@ -62,4 +66,4 @@ CamelFolder    *camel_vtrash_folder_new		(CamelStore *parent_store, camel_vtrash
 
 G_END_DECLS
 
-#endif /* _CAMEL_VTRASH_FOLDER_H */
+#endif /* CAMEL_VTRASH_FOLDER_H */

@@ -18,13 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_MH_SUMMARY_H
-#define _CAMEL_MH_SUMMARY_H
+#ifndef CAMEL_MH_SUMMARY_H
+#define CAMEL_MH_SUMMARY_H
 
 #include "camel-local-summary.h"
-#include <camel/camel-folder.h>
-#include <camel/camel-exception.h>
-#include <camel/camel-index.h>
 
 #define CAMEL_MH_SUMMARY(obj)	CAMEL_CHECK_CAST (obj, camel_mh_summary_get_type (), CamelMhSummary)
 #define CAMEL_MH_SUMMARY_CLASS(klass)	CAMEL_CHECK_CLASS_CAST (klass, camel_mh_summary_get_type (), CamelMhSummaryClass)
@@ -53,4 +50,4 @@ CamelMhSummary	*camel_mh_summary_new(struct _CamelFolder *, const gchar *filenam
 
 G_END_DECLS
 
-#endif /* _CAMEL_MH_SUMMARY_H */
+#endif /* CAMEL_MH_SUMMARY_H */

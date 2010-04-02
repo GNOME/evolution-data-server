@@ -28,10 +28,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-provider.h"
-#include "camel-session.h"
-#include "camel-url.h"
-
 #include "camel-maildir-store.h"
 #include "camel-mbox-store.h"
 #include "camel-mh-store.h"

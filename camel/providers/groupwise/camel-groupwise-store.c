@@ -38,12 +38,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel-debug.h"
-#include "camel-folder.h"
-#include "camel-net-utils.h"
-#include "camel-private.h"
-#include "camel-session.h"
-#include "camel-types.h"
+#include <camel/camel-private.h>
 
 #include "camel-groupwise-folder.h"
 #include "camel-groupwise-store-summary.h"

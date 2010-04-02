@@ -44,43 +44,6 @@
 
 #define d(x)
 
-static inline guint32
-camel_utf8_getc(const guchar **ptr)
-{
-	register guchar *p = (guchar *)*ptr;
-	register guchar c, r;
-	register guint32 v, m;
-
-again:
-	r = *p++;
-loop:
-	if (r < 0x80) {
-		*ptr = p;
-		v = r;
-	} else if (r < 0xfe) { /* valid start char? */
-		v = r;
-		m = 0x7f80;	/* used to mask out the length bits */
-		do {
-			c = *p++;
-			if ((c & 0xc0) != 0x80) {
-				r = c;
-				goto loop;
-			}
-			v = (v<<6) | (c & 0x3f);
-			r<<=1;
-			m<<=5;
-		} while (r & 0x40);
-
-		*ptr = p;
-
-		v &= ~m;
-	} else {
-		goto again;
-	}
-
-	return v;
-}
-
 /* builds the regex into pattern */
 /* taken from camel-folder-search, with added isregex & exception parameter */
 /* Basically, we build a new regex, either based on subset regex's, or substrings,

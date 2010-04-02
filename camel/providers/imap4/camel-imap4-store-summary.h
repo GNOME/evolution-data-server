@@ -19,8 +19,8 @@
  *  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CAMEL_IMAP_STORE_SUMMARY_H__
-#define __CAMEL_IMAP_STORE_SUMMARY_H__
+#ifndef CAMEL_IMAP_STORE_SUMMARY_H
+#define CAMEL_IMAP_STORE_SUMMARY_H
 
 #include <camel/camel-store-summary.h>
 #include "camel-imap4-engine.h"
@@ -79,4 +79,4 @@ struct _CamelFolderInfo *camel_imap4_store_summary_get_folder_info (CamelIMAP4St
 
 G_END_DECLS
 
-#endif /* __CAMEL_IMAP4_STORE_SUMMARY_H__ */
+#endif /* CAMEL_IMAP4_STORE_SUMMARY_H */

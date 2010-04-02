@@ -30,8 +30,6 @@
 
 #include <glib.h>
 
-#include "camel-debug.h"
-
 #include "camel-nntp-stream.h"
 
 #define dd(x) (camel_debug("nntp:stream")?(x):0)

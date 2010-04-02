@@ -21,10 +21,10 @@
 /* This is *identical* to the camel-nntp-stream, so should probably
    work out a way to merge them */
 
-#ifndef _CAMEL_POP3_STREAM_H
-#define _CAMEL_POP3_STREAM_H
+#ifndef CAMEL_POP3_STREAM_H
+#define CAMEL_POP3_STREAM_H
 
-#include <camel/camel-stream.h>
+#include <camel/camel.h>
 
 #define CAMEL_POP3_STREAM(obj)         CAMEL_CHECK_CAST (obj, camel_pop3_stream_get_type (), CamelPOP3Stream)
 #define CAMEL_POP3_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_pop3_stream_get_type (), CamelPOP3StreamClass)
@@ -69,4 +69,4 @@ gint		 camel_pop3_stream_getd		(CamelPOP3Stream *is, guchar **start, guint *len)
 
 G_END_DECLS
 
-#endif /* _CAMEL_POP3_STREAM_H */
+#endif /* CAMEL_POP3_STREAM_H */

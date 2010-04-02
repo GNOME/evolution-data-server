@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_CERTDB_H__
-#define __CAMEL_CERTDB_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_CERTDB_H
+#define CAMEL_CERTDB_H
 
 #include <stdio.h>
 #include <camel/camel-object.h>
@@ -143,4 +147,4 @@ void camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust 
 
 G_END_DECLS
 
-#endif /* __CAMEL_CERTDB_H__ */
+#endif /* CAMEL_CERTDB_H */

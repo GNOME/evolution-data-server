@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_HTTP_STREAM_H__
-#define __CAMEL_HTTP_STREAM_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_HTTP_STREAM_H
+#define CAMEL_HTTP_STREAM_H
 
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-mime-utils.h>
@@ -95,4 +99,4 @@ CamelContentType *camel_http_stream_get_content_type (CamelHttpStream *http_stre
 
 G_END_DECLS
 
-#endif /* __CAMEL_HTTP_STREAM_H__ */
+#endif /* CAMEL_HTTP_STREAM_H */

@@ -28,12 +28,8 @@
 #endif
 
 #include <string.h>
+#include <camel/camel.h>
 #include <glib/gi18n-lib.h>
-
-#include "camel/camel-provider.h"
-#include "camel/camel-session.h"
-#include "camel/camel-url.h"
-#include "camel/camel-sasl.h"
 
 #include "camel-imapx-store.h"
 

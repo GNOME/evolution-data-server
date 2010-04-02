@@ -19,27 +19,7 @@
 #include <prerr.h>
 #endif
 
-#include <camel/camel-list-utils.h>
-#include <camel/camel-msgport.h>
-#include <camel/camel-object.h>
-#include <camel/camel-url.h>
-#include <camel/camel-session.h>
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-null.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-stream-filter.h>
-#include <camel/camel-mime-filter-canon.h>
-#include <camel/camel-mime-message.h>
-#include "camel/camel-string-utils.h"
-#include <camel/camel-net-utils.h>
-#include "camel/camel-private.h"
-#include <camel/camel-tcp-stream-ssl.h>
-#include <camel/camel-tcp-stream-raw.h>
-#include <camel/camel-db.h>
-
-#include <camel/camel-sasl.h>
-#include <camel/camel-utf8.h>
-#include <camel/camel-file-utils.h>
+#include <camel/camel-private.h>
 
 #include "camel-imapx-utils.h"
 #include "camel-imapx-exception.h"

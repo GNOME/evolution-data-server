@@ -21,7 +21,7 @@
  */
 
 #ifndef CAMEL_NNTP_RESP_CODES_H
-#define CAMEL_NNTP_RESP_CODES_H 1
+#define CAMEL_NNTP_RESP_CODES_H
 
 #define CAMEL_NNTP_OK(x) ((x) < 400)
 #define CAMEL_NNTP_ERR(x) (!CAMEL_NNTP_OK(x) && (x) < 500)

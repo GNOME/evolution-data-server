@@ -33,14 +33,8 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-cache.h"
-#include "camel-exception.h"
-#include "camel-mime-message.h"
-#include "camel-operation.h"
 #include "camel-pop3-folder.h"
 #include "camel-pop3-store.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-mem.h"
 
 #define d(x)
 

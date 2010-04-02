@@ -22,10 +22,10 @@
  */
 
 #ifndef CAMEL_GROUPWISE_STORE_H
-#define CAMEL_GROUPWISE_STORE_H 1
+#define CAMEL_GROUPWISE_STORE_H
 
-#include <camel/camel-store.h>
-#include <camel/camel-offline-store.h>
+#include <camel/camel.h>
+
 #include "camel-groupwise-store-summary.h"
 
 #include <e-gw-connection.h>

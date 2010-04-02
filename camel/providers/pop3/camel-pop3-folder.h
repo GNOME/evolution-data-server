@@ -24,9 +24,9 @@
  */
 
 #ifndef CAMEL_POP3_FOLDER_H
-#define CAMEL_POP3_FOLDER_H 1
+#define CAMEL_POP3_FOLDER_H
 
-#include "camel-folder.h"
+#include <camel/camel.h>
 
 #define CAMEL_POP3_FOLDER_TYPE     (camel_pop3_folder_get_type ())
 #define CAMEL_POP3_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_POP3_FOLDER_TYPE, CamelPOP3Folder))

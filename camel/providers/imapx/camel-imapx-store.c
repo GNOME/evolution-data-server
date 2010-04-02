@@ -41,20 +41,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel/camel-operation.h"
-
-#include "camel/camel-stream-buffer.h"
-#include "camel/camel-session.h"
-#include "camel/camel-exception.h"
-#include "camel/camel-url.h"
-#include "camel/camel-sasl.h"
-#include "camel/camel-data-cache.h"
-#include "camel/camel-tcp-stream.h"
-#include "camel/camel-tcp-stream-raw.h"
-#include "camel/camel-db.h"
-#ifdef HAVE_SSL
-#include "camel/camel-tcp-stream-ssl.h"
-#endif
+#include <camel/camel-private.h>
 
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
@@ -62,8 +49,6 @@
 #include "camel-imapx-utils.h"
 #include "camel-imapx-server.h"
 #include "camel-imapx-summary.h"
-#include "camel-net-utils.h"
-#include "camel/camel-private.h"
 
 /* Specified in RFC 2060 section 2.1 */
 #define IMAP_PORT 143

@@ -31,9 +31,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "camel-file-utils.h"
-#include "camel-private.h"
-#include "camel-utf8.h"
+#include <camel/camel-private.h>
 
 #include "camel-groupwise-store-summary.h"
 

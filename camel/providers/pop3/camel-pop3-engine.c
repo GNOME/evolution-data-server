@@ -31,10 +31,10 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include <camel/camel-private.h>
+
 #include "camel-pop3-engine.h"
 #include "camel-pop3-stream.h"
-#include "camel-sasl.h"
-#include "camel-service.h"
 
 /* max 'outstanding' bytes in output stream, so we can't deadlock waiting
    for the server to accept our data when pipelining */
@@ -43,7 +43,6 @@
 extern CamelServiceAuthType camel_pop3_password_authtype;
 extern CamelServiceAuthType camel_pop3_apop_authtype;
 
-extern gint camel_verbose_debug;
 #define dd(x) (camel_verbose_debug?(x):0)
 
 static void get_capabilities(CamelPOP3Engine *pe);

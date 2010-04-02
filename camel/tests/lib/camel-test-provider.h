@@ -1,6 +1,6 @@
 
-#ifndef _CAMEL_TEST_PROVIDER_H
-#define _CAMEL_TEST_PROVIDER_H
+#ifndef CAMEL_TEST_PROVIDER_H
+#define CAMEL_TEST_PROVIDER_H
 
 #include <glib.h>
 

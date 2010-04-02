@@ -34,13 +34,9 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-wrapper.h"
-#include "camel-exception.h"
 #include "camel-mh-folder.h"
 #include "camel-mh-store.h"
 #include "camel-mh-summary.h"
-#include "camel-mime-message.h"
-#include "camel-stream-fs.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 

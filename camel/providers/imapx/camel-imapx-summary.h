@@ -20,12 +20,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_IMAPX_SUMMARY_H
-#define _CAMEL_IMAPX_SUMMARY_H
+#ifndef CAMEL_IMAPX_SUMMARY_H
+#define CAMEL_IMAPX_SUMMARY_H
 
-//#include "camel-imap-types.h"
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-exception.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAPX_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imapx_summary_get_type (), CamelIMAPXSummary)
 #define CAMEL_IMAPX_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imapx_summary_get_type (), CamelIMAPXSummaryClass)
@@ -80,4 +78,4 @@ void camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary,
 
 G_END_DECLS
 
-#endif /* _CAMEL_IMAPX_SUMMARY_H */
+#endif /* CAMEL_IMAPX_SUMMARY_H */

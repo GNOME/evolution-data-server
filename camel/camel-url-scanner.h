@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_URL_SCANNER_H__
-#define __CAMEL_URL_SCANNER_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_URL_SCANNER_H
+#define CAMEL_URL_SCANNER_H
 
 #include <glib.h>
 #include <sys/types.h>
@@ -63,4 +67,4 @@ gboolean camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsiz
 
 G_END_DECLS
 
-#endif /* __CAMEL_URL_SCANNER_H__ */
+#endif /* CAMEL_URL_SCANNER_H */

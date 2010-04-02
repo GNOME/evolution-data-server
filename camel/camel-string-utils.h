@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_STRING_UTILS_H__
-#define __CAMEL_STRING_UTILS_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_STRING_UTILS_H
+#define CAMEL_STRING_UTILS_H
 
 #include <glib.h>
 
@@ -45,4 +49,4 @@ const gchar * camel_pstring_peek (const gchar *str);
 
 G_END_DECLS
 
-#endif /* __CAMEL_STRING_UTILS_H__ */
+#endif /* CAMEL_STRING_UTILS_H */

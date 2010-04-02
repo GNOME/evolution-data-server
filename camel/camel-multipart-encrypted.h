@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_MULTIPART_ENCRYPTED_H__
-#define __CAMEL_MULTIPART_ENCRYPTED_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_MULTIPART_ENCRYPTED_H
+#define CAMEL_MULTIPART_ENCRYPTED_H
 
 #include <camel/camel-multipart.h>
 
@@ -62,4 +66,4 @@ CamelMultipartEncrypted *camel_multipart_encrypted_new (void);
 
 G_END_DECLS
 
-#endif /* __CAMEL_MULTIPART_ENCRYPTED_H__ */
+#endif /* CAMEL_MULTIPART_ENCRYPTED_H */

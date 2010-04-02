@@ -20,12 +20,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_IMAP_SUMMARY_H
-#define _CAMEL_IMAP_SUMMARY_H
+#ifndef CAMEL_IMAP_SUMMARY_H
+#define CAMEL_IMAP_SUMMARY_H
 
-#include "camel-imap-types.h"
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-exception.h>
+#include <camel/camel.h>
 
 #define CAMEL_IMAP_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_imap_summary_get_type (), CamelImapSummary)
 #define CAMEL_IMAP_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_imap_summary_get_type (), CamelImapSummaryClass)
@@ -43,6 +41,7 @@ enum {
 	CAMEL_IMAP_MESSAGE_RECENT = 1<<17
 };
 
+typedef struct _CamelImapSummary CamelImapSummary;
 typedef struct _CamelImapSummaryClass CamelImapSummaryClass;
 
 typedef struct _CamelImapMessageContentInfo {
@@ -82,4 +81,4 @@ void camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary,
 
 G_END_DECLS
 
-#endif /* _CAMEL_IMAP_SUMMARY_H */
+#endif /* CAMEL_IMAP_SUMMARY_H */

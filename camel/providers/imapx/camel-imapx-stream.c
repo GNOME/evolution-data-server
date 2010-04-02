@@ -31,8 +31,6 @@
 
 #include <glib.h>
 
-#include <camel/camel-stream-mem.h>
-
 #include "camel-imapx-utils.h"
 #include "camel-imapx-stream.h"
 #include "camel-imapx-exception.h"

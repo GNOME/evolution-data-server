@@ -21,9 +21,9 @@
  */
 
 #ifndef CAMEL_NNTP_STORE_H
-#define CAMEL_NNTP_STORE_H 1
+#define CAMEL_NNTP_STORE_H
 
-#include <camel/camel-disco-store.h>
+#include <camel/camel.h>
 
 #include "camel-nntp-stream.h"
 #include "camel-nntp-store-summary.h"

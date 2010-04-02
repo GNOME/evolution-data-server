@@ -18,13 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_SPOOL_SUMMARY_H
-#define _CAMEL_SPOOL_SUMMARY_H
+#ifndef CAMEL_SPOOL_SUMMARY_H
+#define CAMEL_SPOOL_SUMMARY_H
 
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-folder.h>
-#include <camel/camel-exception.h>
-#include <camel/camel-index.h>
+#include <camel/camel.h>
+
 #include "camel-mbox-summary.h"
 
 #define CAMEL_SPOOL_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_spool_summary_get_type (), CamelSpoolSummary)
@@ -69,4 +67,4 @@ gint camel_spool_summary_write_headers(gint fd, struct _camel_header_raw *header
 
 G_END_DECLS
 
-#endif /* _CAMEL_SPOOL_SUMMARY_H */
+#endif /* CAMEL_SPOOL_SUMMARY_H */

@@ -21,12 +21,12 @@
  */
 
 #ifndef CAMEL_IMAP_UTILS_H
-#define CAMEL_IMAP_UTILS_H 1
+#define CAMEL_IMAP_UTILS_H
 
 #include <sys/types.h>
+#include <camel/camel.h>
 
-#include "camel-folder-summary.h"
-#include "camel-imap-types.h"
+#include "camel-imap-store.h"
 
 G_BEGIN_DECLS
 

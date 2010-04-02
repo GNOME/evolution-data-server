@@ -20,8 +20,12 @@
  *
  */
 
-#ifndef __CAMEL_MIME_FILTER_PROGRESS_H__
-#define __CAMEL_MIME_FILTER_PROGRESS_H__
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_MIME_FILTER_PROGRESS_H
+#define CAMEL_MIME_FILTER_PROGRESS_H
 
 #include <camel/camel-operation.h>
 #include <camel/camel-mime-filter.h>
@@ -59,4 +63,4 @@ CamelMimeFilter *camel_mime_filter_progress_new (CamelOperation *operation, gsiz
 
 G_END_DECLS
 
-#endif /* __CAMEL_MIME_FILTER_PROGRESS_H__ */
+#endif /* CAMEL_MIME_FILTER_PROGRESS_H */

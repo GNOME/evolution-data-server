@@ -36,13 +36,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-data-cache.h>
-#include <camel/camel-file-utils.h>
-#include <camel/camel-folder.h>
-#include <camel/camel-store.h>
-#include <camel/camel-session.h>
-
 #include "camel-imap-journal.h"
 #include "camel-imap-folder.h"
 

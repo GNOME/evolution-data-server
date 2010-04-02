@@ -23,7 +23,7 @@
  */
 
 #ifndef CAMEL_NNTP_UTILS_H
-#define CAMEL_NNTP_UTILS_H 1
+#define CAMEL_NNTP_UTILS_H
 
 G_BEGIN_DECLS
 

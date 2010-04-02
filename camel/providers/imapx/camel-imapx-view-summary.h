@@ -18,8 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _CAMEL_IMAPX_VIEW_SUMMARY_H
-#define _CAMEL_IMAPX_VIEW_SUMMARY_H
+#ifndef CAMEL_IMAPX_VIEW_SUMMARY_H
+#define CAMEL_IMAPX_VIEW_SUMMARY_H
 
 #include "camel-view-summary-disk.h"
 
@@ -59,5 +59,5 @@ CamelIMAPXViewSummary      *camel_imapx_view_summary_new	(const gchar *base, Cam
 guint32 camel_imapx_view_next_uid(CamelIMAPXView *view);
 void camel_imapx_view_last_uid(CamelIMAPXView *view, guint32 uid);
 
-#endif /* _CAMEL_IMAPX_VIEW_SUMMARY_H */
+#endif /* CAMEL_IMAPX_VIEW_SUMMARY_H */
 

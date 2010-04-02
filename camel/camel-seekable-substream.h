@@ -22,8 +22,12 @@
  * USA
  */
 
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
 #ifndef CAMEL_SEEKABLE_SUBSTREAM_H
-#define CAMEL_SEEKABLE_SUBSTREAM_H 1
+#define CAMEL_SEEKABLE_SUBSTREAM_H
 
 #include <camel/camel-seekable-stream.h>
 

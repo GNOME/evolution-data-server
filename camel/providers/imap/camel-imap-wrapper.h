@@ -20,10 +20,9 @@
  */
 
 #ifndef CAMEL_IMAP_WRAPPER_H
-#define CAMEL_IMAP_WRAPPER_H 1
+#define CAMEL_IMAP_WRAPPER_H
 
-#include <camel/camel-data-wrapper.h>
-#include "camel-imap-types.h"
+#include <camel/camel.h>
 
 #define CAMEL_IMAP_WRAPPER_TYPE     (camel_imap_wrapper_get_type ())
 #define CAMEL_IMAP_WRAPPER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_IMAP_WRAPPER_TYPE, CamelImapWrapper))
@@ -32,6 +31,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelImapWrapper CamelImapWrapper;
 typedef struct _CamelImapWrapperClass CamelImapWrapperClass;
 typedef struct _CamelImapWrapperPrivate CamelImapWrapperPrivate;
 

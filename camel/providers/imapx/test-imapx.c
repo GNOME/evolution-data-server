@@ -2,7 +2,6 @@
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
 #include <camel/camel.h>
-#include <camel/camel-session.h>
 
 gint
 main (gint argc, gchar *argv [])

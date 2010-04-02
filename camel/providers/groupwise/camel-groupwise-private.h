@@ -20,7 +20,7 @@
  */
 
 #ifndef CAMEL_GROUPWISE_PRIVATE_H
-#define CAMEL_GROUPWISE_PRIVATE_H 1
+#define CAMEL_GROUPWISE_PRIVATE_H
 
 /* need a way to configure and save this data, if this header is to
    be installed.  For now, dont install it */

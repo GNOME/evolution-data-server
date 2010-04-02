@@ -28,17 +28,6 @@
 #include <errno.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel/camel-exception.h"
-#include "camel/camel-stream-mem.h"
-#include "camel/camel-stream-filter.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-operation.h"
-#include "camel/camel-data-cache.h"
-#include "camel/camel-session.h"
-#include "camel/camel-file-utils.h"
-#include  "camel/camel-string-utils.h"
-#include "camel-folder-search.h"
-
 #include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-summary.h"

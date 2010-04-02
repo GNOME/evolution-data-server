@@ -35,8 +35,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "camel-folder-summary.h"
-
 #include "camel-nntp-newsrc.h"
 
 #define NEWSRC_LOCK(f, l) (g_mutex_lock(((CamelNNTPNewsrc *)f)->l))

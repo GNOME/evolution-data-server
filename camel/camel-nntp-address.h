@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_NNTP_ADDRESS_H
-#define _CAMEL_NNTP_ADDRESS_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_NNTP_ADDRESS_H
+#define CAMEL_NNTP_ADDRESS_H
 
 #include <camel/camel-address.h>
 
@@ -51,4 +55,4 @@ gboolean		camel_nntp_address_get	(const CamelNNTPAddress *a, gint index, const g
 
 G_END_DECLS
 
-#endif /* _CAMEL_NNTP_ADDRESS_H */
+#endif /* CAMEL_NNTP_ADDRESS_H */

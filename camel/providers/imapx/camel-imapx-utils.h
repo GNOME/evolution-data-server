@@ -1,9 +1,9 @@
 
-#ifndef _CAMEL_IMAPX_UTILS_H
-#define _CAMEL_IMAPX_UTILS_H
+#ifndef CAMEL_IMAPX_UTILS_H
+#define CAMEL_IMAPX_UTILS_H
 
-#include <camel/camel-mime-utils.h>
-#include <camel/camel-folder-summary.h>
+#include <camel/camel.h>
+
 #include "camel-imapx-store.h"
 
 struct _CamelIMAPXStream;

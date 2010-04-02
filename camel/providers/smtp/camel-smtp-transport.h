@@ -23,10 +23,9 @@
  */
 
 #ifndef CAMEL_SMTP_TRANSPORT_H
-#define CAMEL_SMTP_TRANSPORT_H 1
+#define CAMEL_SMTP_TRANSPORT_H
 
-#include "camel-transport.h"
-#include "camel-tcp-stream.h"
+#include <camel/camel.h>
 
 #define CAMEL_SMTP_TRANSPORT_TYPE     (camel_smtp_transport_get_type ())
 #define CAMEL_SMTP_TRANSPORT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SMTP_TRANSPORT_TYPE, CamelSmtpTransport))

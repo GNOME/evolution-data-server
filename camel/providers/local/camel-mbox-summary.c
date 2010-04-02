@@ -36,16 +36,7 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include "camel-db.h"
-#include "camel-file-utils.h"
-#include "camel-mime-message.h"
-#include "camel-operation.h"
-#include "camel-private.h"
-
 #include "camel-mbox-summary.h"
-#include "camel-string-utils.h"
-#include "camel-store.h"
-#include "camel-folder.h"
 #include "camel-local-private.h"
 
 #define io(x)

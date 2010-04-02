@@ -26,12 +26,10 @@
 #include <config.h>
 #endif
 
+#include <camel/camel.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel-provider.h"
 #include "camel-sendmail-transport.h"
-#include "camel-session.h"
-#include "camel-url.h"
 
 static CamelProvider sendmail_provider = {
 	"sendmail",

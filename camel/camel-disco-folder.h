@@ -21,10 +21,14 @@
  * USA
  */
 
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
 #ifndef CAMEL_DISABLE_DEPRECATED
 
 #ifndef CAMEL_DISCO_FOLDER_H
-#define CAMEL_DISCO_FOLDER_H 1
+#define CAMEL_DISCO_FOLDER_H
 
 #include "camel-folder.h"
 

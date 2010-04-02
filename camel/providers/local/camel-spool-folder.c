@@ -34,17 +34,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-data-wrapper.h"
-#include "camel-exception.h"
-#include "camel-file-utils.h"
-#include "camel-local-private.h"
-#include "camel-lock-client.h"
-#include "camel-mime-filter-from.h"
-#include "camel-mime-message.h"
-#include "camel-session.h"
-#include "camel-stream-filter.h"
-#include "camel-stream-fs.h"
-
 #include "camel-spool-folder.h"
 #include "camel-spool-store.h"
 #include "camel-spool-summary.h"

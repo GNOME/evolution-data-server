@@ -18,8 +18,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_INDEX_H
-#define _CAMEL_INDEX_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_INDEX_H
+#define CAMEL_INDEX_H
 
 #include <camel/camel-exception.h>
 #include <camel/camel-object.h>
@@ -166,4 +170,4 @@ CamelIndexCursor  *camel_index_names(CamelIndex *idx);
 
 G_END_DECLS
 
-#endif /* _CAMEL_INDEX_H */
+#endif /* CAMEL_INDEX_H */

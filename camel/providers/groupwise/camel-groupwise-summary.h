@@ -19,12 +19,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_GW_SUMMARY_H
-#define _CAMEL_GW_SUMMARY_H
+#ifndef CAMEL_GW_SUMMARY_H
+#define CAMEL_GW_SUMMARY_H
 
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-exception.h>
-#include <camel/camel-store.h>
+#include <camel/camel.h>
 
 #define CAMEL_GROUPWISE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_groupwise_summary_get_type (), CamelGroupwiseSummary)
 #define CAMEL_GROUPWISE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_groupwise_summary_get_type (), CamelGroupwiseSummaryClass)
@@ -76,4 +74,4 @@ void groupwise_summary_clear (CamelFolderSummary *summary, gboolean uncache);
 
 G_END_DECLS
 
-#endif /*_CAMEL_GW_SUMMARY_H*/
+#endif /* CAMEL_GW_SUMMARY_H */

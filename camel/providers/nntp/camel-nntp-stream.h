@@ -18,10 +18,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_NNTP_STREAM_H
-#define _CAMEL_NNTP_STREAM_H
+#ifndef CAMEL_NNTP_STREAM_H
+#define CAMEL_NNTP_STREAM_H
 
-#include <camel/camel-stream.h>
+#include <camel/camel.h>
 
 #define CAMEL_NNTP_STREAM(obj)         CAMEL_CHECK_CAST (obj, camel_nntp_stream_get_type (), CamelNNTPStream)
 #define CAMEL_NNTP_STREAM_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_nntp_stream_get_type (), CamelNNTPStreamClass)
@@ -66,4 +66,4 @@ gint		 camel_nntp_stream_getd		(CamelNNTPStream *is, guchar **start, guint *len)
 
 G_END_DECLS
 
-#endif /* _CAMEL_NNTP_STREAM_H */
+#endif /* CAMEL_NNTP_STREAM_H */

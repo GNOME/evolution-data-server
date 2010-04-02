@@ -31,8 +31,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-nntp-store.h"
-#include "camel-provider.h"
-#include "camel-session.h"
 
 static void add_hash (guint *hash, gchar *s);
 static guint nntp_url_hash (gconstpointer key);

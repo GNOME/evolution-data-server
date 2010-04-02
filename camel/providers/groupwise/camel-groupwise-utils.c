@@ -30,14 +30,6 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "camel/camel-address.h"
-#include "camel/camel-mime-filter-charset.h"
-#include "camel/camel-mime-message.h"
-#include "camel/camel-multipart.h"
-#include "camel/camel-service.h"
-#include "camel/camel-stream-filter.h"
-#include "camel/camel-stream-mem.h"
-
 #include "camel-groupwise-utils.h"
 
 #define SUBFOLDER_DIR_NAME     "subfolders"

@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_SEARCH_SQL_H
-#define _CAMEL_SEARCH_SQL_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_SEARCH_SQL_H
+#define CAMEL_SEARCH_SQL_H
 
 G_BEGIN_DECLS
 
@@ -28,4 +32,4 @@ gchar * camel_sexp_to_sql (const gchar *sexp);
 
 G_END_DECLS
 
-#endif /* _CAMEL_SEARCH_SQL_H */
+#endif /* CAMEL_SEARCH_SQL_H */

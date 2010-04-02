@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_VEE_FOLDER_H
-#define _CAMEL_VEE_FOLDER_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_VEE_FOLDER_H
+#define CAMEL_VEE_FOLDER_H
 
 #include <glib.h>
 #include <camel/camel-folder.h>
@@ -94,4 +98,4 @@ void	     camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex);
 
 G_END_DECLS
 
-#endif /* _CAMEL_VEE_FOLDER_H */
+#endif /* CAMEL_VEE_FOLDER_H */

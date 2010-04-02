@@ -19,8 +19,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef _CAMEL_STORE_SUMMARY_H
-#define _CAMEL_STORE_SUMMARY_H
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+#ifndef CAMEL_STORE_SUMMARY_H
+#define CAMEL_STORE_SUMMARY_H
 
 #include <stdio.h>
 
@@ -180,4 +184,4 @@ void camel_store_info_set_string(CamelStoreSummary *summary, CamelStoreInfo *inf
 
 G_END_DECLS
 
-#endif /* _CAMEL_STORE_SUMMARY_H */
+#endif /* CAMEL_STORE_SUMMARY_H */

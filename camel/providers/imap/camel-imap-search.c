@@ -30,9 +30,7 @@
 
 #include <string.h>
 
-#include "camel-mime-utils.h"	/* base64 encoding */
 #include "camel-search-private.h"
-#include "camel-seekable-stream.h"
 
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"

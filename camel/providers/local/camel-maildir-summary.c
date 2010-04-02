@@ -31,18 +31,10 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/types.h>
 #include <sys/uio.h>
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-db.h"
-#include "camel-mempool.h"
-#include "camel-mime-message.h"
-#include "camel-operation.h"
-#include "camel-private.h"
-#include "camel-store.h"
-#include "camel-string-utils.h"
 #include "camel-maildir-summary.h"
 
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
