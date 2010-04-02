@@ -358,8 +358,7 @@ mbox_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	info = (CamelMboxMessageInfo *) camel_folder_summary_uid(folder->summary, uid);
 
 	if (info == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     uid, lf->folder_path, _("No such message"));
 		goto fail;
 	}
@@ -409,8 +408,7 @@ retry:
 	info = (CamelMboxMessageInfo *) camel_folder_summary_uid(folder->summary, uid);
 
 	if (info == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     uid, lf->folder_path, _("No such message"));
 		goto fail;
 	}
@@ -430,8 +428,7 @@ retry:
 
 	fd = g_open(lf->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_SYSTEM,
 				      uid, lf->folder_path, g_strerror (errno));
 		goto fail;
 	}
@@ -461,17 +458,15 @@ retry:
 				goto retry;
 		}
 
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID,
-				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
-				     _("The folder appears to be irrecoverably corrupted."));
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID,
+				     uid, lf->folder_path, _("The folder appears to be irrecoverably corrupted."));
 		goto fail;
 	}
 
 	message = camel_mime_message_new();
 	if (camel_mime_part_construct_from_parser((CamelMimePart *)message, parser) == -1) {
-		camel_exception_setv(ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
-				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
-				     _("Message construction failed."));
+		set_cannot_get_message_ex (ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
+				     uid, lf->folder_path, _("Message construction failed."));
 		camel_object_unref((CamelObject *)message);
 		message = NULL;
 		goto fail;

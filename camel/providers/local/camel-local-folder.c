@@ -391,18 +391,27 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				sprintf (path, "%s/%s", tmp, folder->full_name);
 
 				if ((tmp = getenv("HOME")) && strncmp(tmp, path, strlen(tmp)) == 0)
-					/* $HOME relative path + protocol string */
+					/* Translators: This is used for a folder description, for folders being under $HOME.
+					   The first %s is replaced with a relative path under $HOME,
+					   the second %s is replaced with a protocol name, like mbox/maldir/... */
 					folder->description = g_strdup_printf(_("~%s (%s)"), path+strlen(tmp),
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else if ((tmp = "/var/spool/mail") && strncmp(tmp, path, strlen(tmp)) == 0)
-					/* /var/spool/mail relative path + protocol */
+					/* Translators: This is used for a folder description, for folders being under /var/spool/mail.
+					   The first %s is replaced with a relative path under /var/spool/mail,
+					   the second %s is replaced with a protocol name, like mbox/maldir/... */
 					folder->description = g_strdup_printf(_("mailbox: %s (%s)"), path+strlen(tmp),
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else if ((tmp = "/var/mail") && strncmp(tmp, path, strlen(tmp)) == 0)
+					/* Translators: This is used for a folder description, for folders being under /var/mail.
+					   The first %s is replaced with a relative path under /var/mail,
+					   the second %s is replaced with a protocol name, like mbox/maldir/... */
 					folder->description = g_strdup_printf(_("mailbox: %s (%s)"), path+strlen(tmp),
 									      ((CamelService *)folder->parent_store)->url->protocol);
 				else
-					/* a full path + protocol */
+					/* Translators: This is used for a folder description.
+					   The first %s is replaced with a folder's full path,
+					   the second %s is replaced with a protocol name, like mbox/maldir/... */
 					folder->description = g_strdup_printf(_("%s (%s)"), path,
 									      ((CamelService *)folder->parent_store)->url->protocol);
 			}
@@ -651,4 +660,13 @@ local_search_free(CamelFolder *folder, GPtrArray * result)
 	camel_folder_search_free_result(local_folder->search, result);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
+}
+
+void
+set_cannot_get_message_ex (CamelException *ex, ExceptionId exId, const gchar *msgID, const gchar *folder_path, const gchar *detailErr)
+{
+	/* Translators: The first %s is replaced with a message ID,
+	   the second %s is replaced with the folder path,
+	   the third %s is replaced with a detailed error string */
+	camel_exception_setv (ex, exId, _("Cannot get message %s from folder %s\n%s"), msgID, folder_path, detailErr);
 }

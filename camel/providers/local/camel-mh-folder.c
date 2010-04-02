@@ -221,9 +221,8 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
-				     _("No such message"));
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				     uid, lf->folder_path, _("No such message"));
 		goto fail;
 	}
 
@@ -232,17 +231,15 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 
 	name = g_strdup_printf("%s/%s", lf->folder_path, uid);
 	if ((message_stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0)) == NULL) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get message: %s from folder %s\n  %s"), name, lf->folder_path,
-				      g_strerror (errno));
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_SYSTEM,
+				      name, lf->folder_path, g_strerror (errno));
 		goto fail;
 	}
 
 	message = camel_mime_message_new();
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot get message: %s from folder %s\n  %s"), name, lf->folder_path,
-				      _("Message construction failed."));
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_SYSTEM,
+				      name, lf->folder_path, _("Message construction failed."));
 		camel_object_unref((CamelObject *)message);
 		message = NULL;
 

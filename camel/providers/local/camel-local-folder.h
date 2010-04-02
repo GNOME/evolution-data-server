@@ -98,6 +98,8 @@ CamelType camel_local_folder_get_type(void);
 gint camel_local_folder_lock(CamelLocalFolder *lf, CamelLockType type, CamelException *ex);
 gint camel_local_folder_unlock(CamelLocalFolder *lf);
 
+void set_cannot_get_message_ex (CamelException *ex, ExceptionId exId, const gchar *msgID, const gchar *folder_path, const gchar *detailErr);
+
 G_END_DECLS
 
 #endif /* CAMEL_LOCAL_FOLDER_H */

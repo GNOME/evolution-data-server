@@ -259,8 +259,7 @@ maildir_get_filename (CamelFolder *folder, const gchar *uid, CamelException *ex)
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     uid, lf->folder_path, _("No such message"));
 		return NULL;
 	}
@@ -288,8 +287,7 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 
 	/* get the message summary info */
 	if ((info = camel_folder_summary_uid(folder->summary, uid)) == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-				     _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     uid, lf->folder_path, _("No such message"));
 		goto fail;
 	}
@@ -302,16 +300,14 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 	camel_message_info_free(info);
 
 	if ((message_stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0)) == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_SYSTEM,
 				     uid, lf->folder_path, g_strerror(errno));
 		goto fail;
 	}
 
 	message = camel_mime_message_new();
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
-		camel_exception_setv(ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
-				     _("Cannot get message: %s from folder %s\n  %s"),
+		set_cannot_get_message_ex (ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
 				     uid, lf->folder_path, _("Invalid message contents"));
 		camel_object_unref((CamelObject *)message);
 		message = NULL;
@@ -396,8 +392,7 @@ maildir_transfer_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder 
 			CamelMessageInfo *info;
 
 			if ((info = camel_folder_summary_uid (source->summary, uid)) == NULL) {
-				camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
-						     _("Cannot get message: %s from folder %s\n  %s"),
+				set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 						     uid, lf->folder_path, _("No such message"));
 				return;
 			}
