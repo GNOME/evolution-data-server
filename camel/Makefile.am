@@ -297,7 +297,6 @@ libcamelinclude_HEADERS =			\
 	camel-string-utils.h			\
 	camel-text-index.h			\
 	camel-trie.h				\
-	camel-types.h				\
 	camel-url-scanner.h			\
 	camel-url.h				\
 	camel-utf8.h				\

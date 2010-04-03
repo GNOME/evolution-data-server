@@ -22,7 +22,7 @@ CamelMimeFilterGZip
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @mode: 
 @level: 

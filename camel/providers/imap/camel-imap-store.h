@@ -115,7 +115,7 @@ typedef enum {
 #define IMAP_FETCH_MINIMAL_HEADERS 3
 
 struct _CamelImapStore {
-	CamelOfflineStore parent_object;
+	CamelOfflineStore parent;
 
 	CamelStream *istream;
 	CamelStream *ostream;

@@ -22,7 +22,7 @@ CamelSaslPOPB4SMTP
 
 </para>
 
-@parent_object: 
+@parent: 
 
 <!-- ##### VARIABLE camel_sasl_popb4smtp_authtype ##### -->
 <para>

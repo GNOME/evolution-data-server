@@ -36,17 +36,17 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSaslCramMd5 {
-	CamelSasl parent_object;
+typedef struct _CamelSaslCramMd5 CamelSaslCramMd5;
+typedef struct _CamelSaslCramMd5Class CamelSaslCramMd5Class;
 
-} CamelSaslCramMd5;
+struct _CamelSaslCramMd5 {
+	CamelSasl parent;
+};
 
-typedef struct _CamelSaslCramMd5Class {
+struct _CamelSaslCramMd5Class {
 	CamelSaslClass parent_class;
+};
 
-} CamelSaslCramMd5Class;
-
-/* Standard Camel function */
 CamelType camel_sasl_cram_md5_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_cram_md5_authtype;

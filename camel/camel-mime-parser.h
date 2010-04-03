@@ -38,7 +38,9 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeParser CamelMimeParser;
 typedef struct _CamelMimeParserClass CamelMimeParserClass;
+typedef struct _CamelMimeParserPrivate CamelMimeParserPrivate;
 
 /* NOTE: if you add more states, you may need to bump the
    start of the END tags to 16 or 32, etc - so they are
@@ -67,8 +69,7 @@ typedef enum _camel_mime_parser_state_t {
 
 struct _CamelMimeParser {
 	CamelObject parent;
-
-	struct _CamelMimeParserPrivate *priv;
+	CamelMimeParserPrivate *priv;
 };
 
 struct _CamelMimeParserClass {

@@ -26,9 +26,6 @@
 #ifndef CAMEL_FILTER_DRIVER_H
 #define CAMEL_FILTER_DRIVER_H
 
-#include <glib.h>
-#include <camel/camel-object.h>
-#include <camel/camel-session.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-uid-cache.h>
 
@@ -39,12 +36,15 @@
 
 G_BEGIN_DECLS
 
+struct _CamelSession;
+
+typedef struct _CamelFilterDriver CamelFilterDriver;
 typedef struct _CamelFilterDriverClass CamelFilterDriverClass;
+typedef struct _CamelFilterDriverPrivate CamelFilterDriverPrivate;
 
 struct _CamelFilterDriver {
 	CamelObject parent;
-
-	struct _CamelFilterDriverPrivate *priv;
+	CamelFilterDriverPrivate *priv;
 };
 
 struct _CamelFilterDriverClass {
@@ -72,7 +72,7 @@ typedef void (CamelFilterPlaySoundFunc)  (CamelFilterDriver *driver, const gchar
 typedef void (CamelFilterSystemBeepFunc) (CamelFilterDriver *driver, gpointer data);
 
 CamelType          camel_filter_driver_get_type (void);
-CamelFilterDriver  *camel_filter_driver_new     (CamelSession *);
+CamelFilterDriver  *camel_filter_driver_new     (struct _CamelSession *);
 
 /* modifiers */
 void camel_filter_driver_set_logfile          (CamelFilterDriver *d, FILE *logfile);

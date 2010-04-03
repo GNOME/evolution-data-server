@@ -22,7 +22,7 @@ CamelMimeMessage
 
 </para>
 
-@parent_object: 
+@parent: 
 @date: 
 @date_offset: 
 @date_received: 

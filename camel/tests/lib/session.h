@@ -6,7 +6,7 @@
 #define CAMEL_TEST_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TEST_SESSION_TYPE))
 
 typedef struct _CamelTestSession {
-	CamelSession parent_object;
+	CamelSession parent;
 
 } CamelTestSession;
 

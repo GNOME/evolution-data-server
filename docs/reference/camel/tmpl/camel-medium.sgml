@@ -22,7 +22,7 @@ CamelMedium
 
 </para>
 
-@parent_object: 
+@parent: 
 @content: 
 
 <!-- ##### STRUCT CamelMediumHeader ##### -->
@@ -88,23 +88,5 @@ CamelMedium
 
 @medium: 
 @headers: 
-
-
-<!-- ##### FUNCTION camel_medium_get_content_object ##### -->
-<para>
-
-</para>
-
-@medium: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_medium_set_content_object ##### -->
-<para>
-
-</para>
-
-@medium: 
-@content: 
 
 

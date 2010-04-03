@@ -22,7 +22,7 @@ CamelMultipartEncrypted
 
 </para>
 
-@parent_object: 
+@parent: 
 @version: 
 @content: 
 @decrypted: 

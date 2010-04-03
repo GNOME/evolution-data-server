@@ -22,7 +22,7 @@ CamelCertDB
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @filename: 
 @version: 

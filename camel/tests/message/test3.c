@@ -33,7 +33,7 @@ gint main(gint argc, gchar **argv)
 	camel_multipart_set_boundary(mp, "_=,.XYZ_Kangaroo_Meat_is_!_ABADF00D");
 	check(strcmp(camel_multipart_get_boundary(mp), "_=,.XYZ_Kangaroo_Meat_is_!_ABADF00D") == 0);
 
-	camel_medium_set_content_object((CamelMedium *)msg, (CamelDataWrapper *)mp);
+	camel_medium_set_content ((CamelMedium *)msg, (CamelDataWrapper *)mp);
 	check(camel_multipart_get_number(mp) == 0);
 	check(camel_multipart_get_part(mp, 0) == NULL);
 	check(camel_multipart_get_part(mp, 1) == NULL);
@@ -105,7 +105,7 @@ gint main(gint argc, gchar **argv)
 	pull();
 
 	push("compre content of multipart");
-	mp2 = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)msg2);
+	mp2 = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg2);
 	check(mp2 != NULL);
 	check(CAMEL_IS_MULTIPART(mp2));
 	check(camel_multipart_get_number(mp2) == 3);
@@ -118,11 +118,11 @@ gint main(gint argc, gchar **argv)
 	check_msg(mp2->postface == NULL || strlen(mp2->postface) == 0, "postface: '%s'", mp2->postface);
 	camel_test_fatal();
 
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 0))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 0))),
 				     "content part 1", strlen("content part 1"));
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 1))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 1))),
 				     "content part 3", strlen("content part 3"));
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 2))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 2))),
 				     "content part 2", strlen("content part 2"));
 	pull();
 
@@ -132,7 +132,7 @@ gint main(gint argc, gchar **argv)
 	msg3 = test_message_read_file("test3-2.msg");
 
 	push("comparing again");
-	mp2 = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)msg3);
+	mp2 = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg3);
 	check(mp2 != NULL);
 	check(CAMEL_IS_MULTIPART(mp2));
 	check(camel_multipart_get_number(mp2) == 3);
@@ -142,11 +142,11 @@ gint main(gint argc, gchar **argv)
 
 	check_msg(mp2->postface == NULL || strlen(mp2->postface) == 0, "postface: '%s'", mp2->postface);
 
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 0))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 0))),
 				     "content part 1", strlen("content part 1"));
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 1))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 1))),
 				     "content part 3", strlen("content part 3"));
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 2))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 2))),
 				     "content part 2", strlen("content part 2"));
 	pull();
 	pull();
@@ -166,7 +166,7 @@ gint main(gint argc, gchar **argv)
 	test_message_write_file(msg, "test3-3.msg");
 	msg2 = test_message_read_file("test3-3.msg");
 
-	mp2 = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)msg2);
+	mp2 = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg2);
 	check(mp2 != NULL);
 	check(CAMEL_IS_MULTIPART(mp2));
 	check(camel_multipart_get_number(mp2) == 3);
@@ -174,11 +174,11 @@ gint main(gint argc, gchar **argv)
 	check(strcmp(camel_multipart_get_boundary(mp2), "_=,.XYZ_Kangaroo_Meat_is_!_ABADF00D") == 0);
 	check(mp2->preface && strcmp(mp2->preface, "pre-text\nLines.") == 0);
 	check(mp2->postface && strcmp(mp2->postface, "post-text, no lines.\nOne line.\n") == 0);
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 0))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 0))),
 					   "content part 1", strlen("content part 1"));
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 1))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 1))),
 				     "content part 3", strlen("content part 3"));
-	test_message_compare_content(camel_medium_get_content_object(CAMEL_MEDIUM(camel_multipart_get_part(mp2, 2))),
+	test_message_compare_content(camel_medium_get_content (CAMEL_MEDIUM(camel_multipart_get_part(mp2, 2))),
 				     "content part 2", strlen("content part 2"));
 	pull();
 	check_unref(msg2, 1);

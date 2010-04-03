@@ -29,7 +29,7 @@ CamelGroupwiseStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @summary: 
 @root_container: 
 @priv: 

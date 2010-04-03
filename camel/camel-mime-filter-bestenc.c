@@ -200,12 +200,12 @@ camel_mime_filter_bestenc_init (CamelMimeFilter *f)
  *
  * Returns: a new #CamelMimeFilterBestenc object
  **/
-CamelMimeFilterBestenc *
+CamelMimeFilter *
 camel_mime_filter_bestenc_new (guint flags)
 {
 	CamelMimeFilterBestenc *new = (CamelMimeFilterBestenc *)camel_object_new(camel_mime_filter_bestenc_get_type());
 	new->flags = flags;
-	return new;
+	return CAMEL_MIME_FILTER (new);
 }
 
 /**

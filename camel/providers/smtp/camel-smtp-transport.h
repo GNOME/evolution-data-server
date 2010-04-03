@@ -42,7 +42,7 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	CamelTransport parent_object;
+	CamelTransport parent;
 
 	CamelStream *istream, *ostream;
 

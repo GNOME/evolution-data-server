@@ -22,7 +22,7 @@ CamelDiscoDiary
 
 </para>
 
-@parent_object: 
+@parent: 
 @store: 
 @file: 
 @folders: 

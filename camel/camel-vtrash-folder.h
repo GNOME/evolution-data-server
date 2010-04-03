@@ -36,11 +36,11 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelVTrashFolder      CamelVTrashFolder;
+typedef struct _CamelVTrashFolder CamelVTrashFolder;
 typedef struct _CamelVTrashFolderClass CamelVTrashFolderClass;
 
-#define CAMEL_VTRASH_NAME ".#evolution/Trash"
-#define CAMEL_VJUNK_NAME ".#evolution/Junk"
+#define CAMEL_VTRASH_NAME	".#evolution/Trash"
+#define CAMEL_VJUNK_NAME	".#evolution/Junk"
 
 typedef enum {
 	CAMEL_VTRASH_FOLDER_TRASH,
@@ -57,12 +57,11 @@ struct _CamelVTrashFolder {
 
 struct _CamelVTrashFolderClass {
 	CamelVeeFolderClass parent_class;
-
 };
 
-CamelType       camel_vtrash_folder_get_type    (void);
-
-CamelFolder    *camel_vtrash_folder_new		(CamelStore *parent_store, camel_vtrash_folder_t type);
+CamelType	camel_vtrash_folder_get_type	(void);
+CamelFolder *	camel_vtrash_folder_new		(CamelStore *parent_store,
+						 camel_vtrash_folder_t type);
 
 G_END_DECLS
 

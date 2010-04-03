@@ -22,5 +22,5 @@ CamelSendmailTransport
 
 </para>
 
-@parent_object: 
+@parent: 
 

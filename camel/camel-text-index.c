@@ -62,9 +62,6 @@ static gint text_index_compress_nosync(CamelIndex *idx);
 
 /* ********************************************************************** */
 
-/* "private" data, shared between index/cursor/name classes */
-typedef struct _CamelTextIndexNamePrivate CamelTextIndexNamePrivate;
-
 struct _CamelTextIndexNamePrivate {
 	GString *buffer;
 	camel_key_t nameid;
@@ -74,8 +71,6 @@ struct _CamelTextIndexNamePrivate {
 CamelTextIndexName *camel_text_index_name_new(CamelTextIndex *idx, const gchar *name, camel_key_t nameid);
 
 /* ****************************** */
-
-typedef struct _CamelTextIndexCursorPrivate CamelTextIndexCursorPrivate;
 
 struct _CamelTextIndexCursorPrivate {
 	camel_block_t first;
@@ -92,7 +87,6 @@ struct _CamelTextIndexCursorPrivate {
 CamelTextIndexCursor *camel_text_index_cursor_new(CamelTextIndex *idx, camel_block_t data);
 
 /* ****************************** */
-typedef struct _CamelTextIndexKeyCursorPrivate CamelTextIndexKeyCursorPrivate;
 
 struct _CamelTextIndexKeyCursorPrivate {
 	CamelKeyTable *table;
@@ -816,7 +810,7 @@ camel_text_index_get_type(void)
 }
 
 static gchar *
-text_index_normalise(CamelIndex *idx, const gchar *in, gpointer data)
+text_index_normalize(CamelIndex *idx, const gchar *in, gpointer data)
 {
 	gchar *word;
 
@@ -837,7 +831,7 @@ camel_text_index_new(const gchar *path, gint flags)
 	CamelBlock *bl;
 
 	camel_index_construct((CamelIndex *)idx, path, flags);
-	camel_index_set_normalise((CamelIndex *)idx, text_index_normalise, NULL);
+	camel_index_set_normalize((CamelIndex *)idx, text_index_normalize, NULL);
 
 	p->blocks = camel_block_file_new(idx->parent.path, flags, CAMEL_TEXT_INDEX_VERSION, CAMEL_BLOCK_SIZE);
 	link = alloca(strlen(idx->parent.path)+7);

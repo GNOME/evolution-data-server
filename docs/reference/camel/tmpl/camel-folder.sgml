@@ -22,7 +22,7 @@ CamelFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @name: 
 @full_name: 
@@ -372,9 +372,9 @@ CamelFolder
 
 </para>
 
-@Param1: 
+@folder: 
 @uids: 
-@Param3: 
+@ex: 
 @Returns: 
 
 

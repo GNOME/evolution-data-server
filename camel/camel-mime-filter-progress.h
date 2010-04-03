@@ -36,8 +36,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMimeFilterProgressClass CamelMimeFilterProgressClass;
 typedef struct _CamelMimeFilterProgress CamelMimeFilterProgress;
+typedef struct _CamelMimeFilterProgressClass CamelMimeFilterProgressClass;
 
 /**
  * CamelMimeFilterProgress:
@@ -54,12 +54,12 @@ struct _CamelMimeFilterProgress {
 
 struct _CamelMimeFilterProgressClass {
 	CamelMimeFilterClass parent_class;
-
 };
 
-CamelType camel_mime_filter_progress_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_progress_new (CamelOperation *operation, gsize total);
+CamelType	camel_mime_filter_progress_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_progress_new	(CamelOperation *operation,
+						 gsize total);
 
 G_END_DECLS
 

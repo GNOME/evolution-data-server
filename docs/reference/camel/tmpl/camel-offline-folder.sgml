@@ -22,7 +22,7 @@ CamelOfflineFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 @sync_offline: 
 
 <!-- ##### FUNCTION camel_offline_folder_downsync ##### -->

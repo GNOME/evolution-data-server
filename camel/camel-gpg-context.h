@@ -28,6 +28,7 @@
 #define CAMEL_GPG_CONTEXT_H
 
 #include <camel/camel-cipher-context.h>
+#include <camel/camel-session.h>
 
 #define CAMEL_GPG_CONTEXT_TYPE     (camel_gpg_context_get_type ())
 #define CAMEL_GPG_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_GPG_CONTEXT_TYPE, CamelGpgContext))
@@ -40,7 +41,7 @@ typedef struct _CamelGpgContext CamelGpgContext;
 typedef struct _CamelGpgContextClass CamelGpgContextClass;
 
 struct _CamelGpgContext {
-	CamelCipherContext parent_object;
+	CamelCipherContext parent;
 
 	gboolean always_trust;
 };
@@ -50,11 +51,12 @@ struct _CamelGpgContextClass {
 
 };
 
-CamelType camel_gpg_context_get_type (void);
-
-CamelCipherContext *camel_gpg_context_new (CamelSession *session);
-
-void camel_gpg_context_set_always_trust (CamelGpgContext *ctx, gboolean trust);
+CamelType	camel_gpg_context_get_type	(void);
+CamelCipherContext *
+		camel_gpg_context_new		(CamelSession *session);
+void		camel_gpg_context_set_always_trust
+						(CamelGpgContext *context,
+						 gboolean always_trust);
 
 G_END_DECLS
 

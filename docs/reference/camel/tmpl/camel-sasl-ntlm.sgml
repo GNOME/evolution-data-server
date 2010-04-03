@@ -22,7 +22,7 @@ CamelSaslNTLM
 
 </para>
 
-@parent_object: 
+@parent: 
 
 <!-- ##### VARIABLE camel_sasl_ntlm_authtype ##### -->
 <para>

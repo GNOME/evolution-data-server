@@ -36,22 +36,25 @@ G_BEGIN_DECLS
 
 typedef struct _CamelNNTPAddress CamelNNTPAddress;
 typedef struct _CamelNNTPAddressClass CamelNNTPAddressClass;
+typedef struct _CamelNNTPAddressPrivate CamelNNTPAddressPrivate;
 
 struct _CamelNNTPAddress {
 	CamelAddress parent;
-
-	struct _CamelNNTPAddressPrivate *priv;
+	CamelNNTPAddressPrivate *priv;
 };
 
 struct _CamelNNTPAddressClass {
 	CamelAddressClass parent_class;
 };
 
-CamelType		camel_nntp_address_get_type	(void);
-CamelNNTPAddress   *camel_nntp_address_new	(void);
-
-gint			camel_nntp_address_add	(CamelNNTPAddress *a, const gchar *name);
-gboolean		camel_nntp_address_get	(const CamelNNTPAddress *a, gint index, const gchar **namep);
+CamelType	camel_nntp_address_get_type	(void);
+CamelNNTPAddress *
+		camel_nntp_address_new		(void);
+gint		camel_nntp_address_add		(CamelNNTPAddress *a,
+						 const gchar *name);
+gboolean	camel_nntp_address_get		(CamelNNTPAddress *a,
+						 gint index,
+						 const gchar **namep);
 
 G_END_DECLS
 

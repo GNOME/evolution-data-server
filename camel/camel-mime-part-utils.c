@@ -139,7 +139,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 
 		/* would you believe you have to set this BEFORE you set the content object???  oh my god !!!! */
 		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (dw));
-		camel_medium_set_content_object ((CamelMedium *)dw, content);
+		camel_medium_set_content ((CamelMedium *)dw, content);
 		camel_object_unref (content);
 	}
 
@@ -157,10 +157,10 @@ camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
 	CamelDataWrapper *dw;
 	gboolean got_plain = FALSE;
 
-	dw = camel_medium_get_content_object((CamelMedium *)msg);
+	dw = camel_medium_get_content ((CamelMedium *)msg);
 	if (camel_content_type_is (dw->mime_type, "multipart", "*")) {
 		gint i, nparts;
-		CamelMultipart *mp = (CamelMultipart *)camel_medium_get_content_object((CamelMedium *)msg);
+		CamelMultipart *mp = (CamelMultipart *)camel_medium_get_content ((CamelMedium *)msg);
 
 		if (!CAMEL_IS_MULTIPART(mp))
 			g_assert (0);

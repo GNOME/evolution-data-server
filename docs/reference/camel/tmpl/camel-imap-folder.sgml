@@ -22,7 +22,7 @@ CamelImapFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @search: 
 @cache: 

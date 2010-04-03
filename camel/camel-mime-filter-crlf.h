@@ -36,6 +36,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeFilterCRLF CamelMimeFilterCRLF;
 typedef struct _CamelMimeFilterCRLFClass CamelMimeFilterCRLFClass;
 
 typedef enum {
@@ -62,9 +63,10 @@ struct _CamelMimeFilterCRLFClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType camel_mime_filter_crlf_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction, CamelMimeFilterCRLFMode mode);
+CamelType	camel_mime_filter_crlf_get_type	(void);
+CamelMimeFilter *
+		camel_mime_filter_crlf_new	(CamelMimeFilterCRLFDirection direction,
+						 CamelMimeFilterCRLFMode mode);
 
 G_END_DECLS
 

@@ -48,7 +48,7 @@ extern "C" {
 #define IMAPX_USE_IDLE			(1 << 7)
 
 typedef struct {
-	CamelOfflineStore parent_object;
+	CamelOfflineStore parent;
 
 	struct _CamelIMAPXServer *server;
 

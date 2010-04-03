@@ -40,8 +40,9 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelHTMLParserClass CamelHTMLParserClass;
 typedef struct _CamelHTMLParser CamelHTMLParser;
+typedef struct _CamelHTMLParserClass CamelHTMLParserClass;
+typedef struct _CamelHTMLParserPrivate CamelHTMLParserPrivate;
 
 /* Parser/tokeniser states */
 typedef enum _camel_html_parser_t {
@@ -63,8 +64,7 @@ typedef enum _camel_html_parser_t {
 
 struct _CamelHTMLParser {
 	CamelObject parent;
-
-	struct _CamelHTMLParserPrivate *priv;
+	CamelHTMLParserPrivate *priv;
 };
 
 struct _CamelHTMLParserClass {

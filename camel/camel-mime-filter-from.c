@@ -175,11 +175,10 @@ camel_mime_filter_from_init (CamelMimeFilterFrom *obj)
  *
  * Returns: a new #CamelMimeFilterFrom object
  **/
-CamelMimeFilterFrom *
+CamelMimeFilter*
 camel_mime_filter_from_new (void)
 {
-	CamelMimeFilterFrom *new = CAMEL_MIME_FILTER_FROM ( camel_object_new (camel_mime_filter_from_get_type ()));
-	return new;
+	return (CamelMimeFilter *) camel_object_new (camel_mime_filter_from_get_type ());
 }
 
 #if 0

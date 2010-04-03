@@ -47,8 +47,9 @@ struct _CamelMimeFilterFromClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType		camel_mime_filter_from_get_type	(void);
-CamelMimeFilterFrom      *camel_mime_filter_from_new	(void);
+CamelType	camel_mime_filter_from_get_type	(void);
+CamelMimeFilter *
+		camel_mime_filter_from_new	(void);
 
 G_END_DECLS
 

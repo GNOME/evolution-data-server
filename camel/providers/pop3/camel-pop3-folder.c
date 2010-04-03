@@ -149,7 +149,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 
 	/* TODO; somehow work out the limit and use that for proper progress reporting
 	   We need a pointer to the folder perhaps? */
-	camel_operation_progress_count(NULL, fi->id);
+	camel_operation_progress (NULL, fi->id);
 
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	mp = camel_mime_parser_new();

@@ -26,6 +26,8 @@
 #ifndef CAMEL_SEARCH_SQL_SEXP_H
 #define CAMEL_SEARCH_SQL_SEXP_H
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 /* FIXME: Weird naming, since, I want both parsers to be there for some time.*/

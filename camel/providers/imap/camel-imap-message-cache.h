@@ -38,7 +38,7 @@ typedef struct _CamelImapMessageCache CamelImapMessageCache;
 typedef struct _CamelImapMessageCacheClass CamelImapMessageCacheClass;
 
 struct _CamelImapMessageCache {
-	CamelObject parent_object;
+	CamelObject parent;
 
 	gchar *path;
         /* parts contains two sorts of objects.

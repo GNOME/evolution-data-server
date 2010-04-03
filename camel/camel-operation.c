@@ -231,47 +231,6 @@ camel_operation_unref (CamelOperation *cc)
 }
 
 /**
- * camel_operation_cancel_block:
- * @cc: operation context
- *
- * Block cancellation for this operation.  If @cc is NULL, then the
- * current thread is blocked.
- **/
-void
-camel_operation_cancel_block (CamelOperation *cc)
-{
-	if (cc == NULL)
-		cc = co_getcc();
-
-	if (cc) {
-		LOCK();
-		cc->blocked++;
-		UNLOCK();
-	}
-}
-
-/**
- * camel_operation_cancel_unblock:
- * @cc: operation context
- *
- * Unblock cancellation, when the unblock count reaches the block
- * count, then this operation can be cancelled.  If @cc is NULL, then
- * the current thread is unblocked.
- **/
-void
-camel_operation_cancel_unblock (CamelOperation *cc)
-{
-	if (cc == NULL)
-		cc = co_getcc();
-
-	if (cc) {
-		LOCK();
-		cc->blocked--;
-		UNLOCK();
-	}
-}
-
-/**
  * camel_operation_cancel:
  * @cc: operation context
  *
@@ -634,18 +593,6 @@ camel_operation_progress (CamelOperation *cc, gint pc)
 		cc->status(cc, msg, pc, cc->status_data);
 		g_free(msg);
 	}
-}
-
-/**
- * camel_operation_progress_count:
- * @cc: operation context
- * @sofar:
- *
- **/
-void
-camel_operation_progress_count (CamelOperation *cc, gint sofar)
-{
-	camel_operation_progress(cc, sofar);
 }
 
 /**

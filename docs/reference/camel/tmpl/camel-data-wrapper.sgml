@@ -22,7 +22,7 @@ CamelDataWrapper
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @encoding: 
 @mime_type: 

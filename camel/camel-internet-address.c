@@ -30,7 +30,7 @@ static gint    internet_decode		(CamelAddress *, const gchar *raw);
 static gchar * internet_encode		(CamelAddress *);
 static gint    internet_unformat		(CamelAddress *, const gchar *raw);
 static gchar * internet_format		(CamelAddress *);
-static gint    internet_cat		(CamelAddress *dest, const CamelAddress *source);
+static gint    internet_cat		(CamelAddress *dest, CamelAddress *source);
 static void   internet_remove		(CamelAddress *, gint index);
 
 static void camel_internet_address_class_init (CamelInternetAddressClass *klass);
@@ -239,7 +239,7 @@ internet_format	(CamelAddress *a)
 }
 
 static gint
-internet_cat (CamelAddress *dest, const CamelAddress *source)
+internet_cat (CamelAddress *dest, CamelAddress *source)
 {
 	gint i;
 
@@ -321,7 +321,7 @@ camel_internet_address_add (CamelInternetAddress *addr, const gchar *name, const
  * Returns: %TRUE if such an address exists, or %FALSE otherwise
  **/
 gboolean
-camel_internet_address_get (const CamelInternetAddress *addr, gint index, const gchar **namep, const gchar **addressp)
+camel_internet_address_get (CamelInternetAddress *addr, gint index, const gchar **namep, const gchar **addressp)
 {
 	struct _address *a;
 

@@ -34,7 +34,7 @@
 
 typedef gchar * (*EnrichedParamParser) (const gchar *inptr, gint inlen);
 
-static gchar *param_parse_colour (const gchar *inptr, gint inlen);
+static gchar *param_parse_color (const gchar *inptr, gint inlen);
 static gchar *param_parse_font (const gchar *inptr, gint inlen);
 static gchar *param_parse_lang (const gchar *inptr, gint inlen);
 
@@ -72,7 +72,7 @@ static struct {
 	{ "np",          "<hr>",                FALSE, NULL               },
 	{ "fontfamily",  "<font face=\"%s\">",  TRUE,  param_parse_font   },
 	{ "/fontfamily", "</font>",             FALSE, NULL               },
-	{ "color",       "<font color=\"%s\">", TRUE,  param_parse_colour },
+	{ "color",       "<font color=\"%s\">", TRUE,  param_parse_color },
 	{ "/color",      "</font>",             FALSE, NULL               },
 	{ "lang",        "<span lang=\"%s\">",  TRUE,  param_parse_lang   },
 	{ "/lang",       "</span>",             FALSE, NULL               },
@@ -176,28 +176,28 @@ html_tag_needs_param (const gchar *tag)
 	return strstr (tag, "%s") != NULL;
 }
 
-static const gchar *valid_colours[] = {
+static const gchar *valid_colors[] = {
 	"red", "green", "blue", "yellow", "cyan", "magenta", "black", "white"
 };
 
 static gchar *
-param_parse_colour (const gchar *inptr, gint inlen)
+param_parse_color (const gchar *inptr, gint inlen)
 {
 	const gchar *inend, *end;
 	guint32 rgb = 0;
 	guint v;
 	gint i;
 
-	for (i = 0; i < G_N_ELEMENTS (valid_colours); i++) {
-		if (!g_ascii_strncasecmp (inptr, valid_colours[i], inlen))
-			return g_strdup (valid_colours[i]);
+	for (i = 0; i < G_N_ELEMENTS (valid_colors); i++) {
+		if (!g_ascii_strncasecmp (inptr, valid_colors[i], inlen))
+			return g_strdup (valid_colors[i]);
 	}
 
 	/* check for numeric r/g/b in the format: ####,####,#### */
 	if (inptr[4] != ',' || inptr[9] != ',') {
 		/* okay, mailer must have used a string name that
 		 * rfc1896 did not specify? do some simple scanning
-		 * action, a colour name MUST be [a-zA-Z] */
+		 * action, a color name MUST be [a-zA-Z] */
 		end = inptr;
 		inend = inptr + inlen;
 		while (end < inend && ((*end >= 'a' && *end <= 'z') || (*end >= 'A' && *end <= 'Z')))
@@ -221,7 +221,7 @@ param_parse_colour (const gchar *inptr, gint inlen)
 
  invalid_format:
 
-	/* default colour? */
+	/* default color? */
 	return g_strdup ("black");
 }
 

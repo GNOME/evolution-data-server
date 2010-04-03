@@ -73,7 +73,7 @@ enum {
 };
 
 struct _CamelIMAP4Stream {
-	CamelStream parent_object;
+	CamelStream parent;
 
 	CamelStream *stream;
 

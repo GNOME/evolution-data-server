@@ -38,19 +38,20 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelSeekableSubstream CamelSeekableSubstream;
+typedef struct _CamelSeekableSubstreamClass CamelSeekableSubstreamClass;
+
 struct _CamelSeekableSubstream {
-	CamelSeekableStream parent_object;
+	CamelSeekableStream parent;
 
 	/*  --**-- Private fields --**--  */
 	CamelSeekableStream *parent_stream;
 };
 
-typedef struct {
+struct _CamelSeekableSubstreamClass {
 	CamelSeekableStreamClass parent_class;
+};
 
-} CamelSeekableSubstreamClass;
-
-/* Standard Camel function */
 CamelType camel_seekable_substream_get_type (void);
 
 /* public methods */

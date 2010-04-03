@@ -453,7 +453,7 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 	gint truth = FALSE;
 	gint parts, i;
 
-	containee = camel_medium_get_content_object (CAMEL_MEDIUM (object));
+	containee = camel_medium_get_content (CAMEL_MEDIUM (object));
 
 	if (containee == NULL)
 		return FALSE;

@@ -37,18 +37,19 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSaslDigestMd5 {
-	CamelSasl parent_object;
-	struct _CamelSaslDigestMd5Private *priv;
+typedef struct _CamelSaslDigestMd5 CamelSaslDigestMd5;
+typedef struct _CamelSaslDigestMd5Class CamelSaslDigestMd5Class;
+typedef struct _CamelSaslDigestMd5Private CamelSaslDigestMd5Private;
 
-} CamelSaslDigestMd5;
+struct _CamelSaslDigestMd5 {
+	CamelSasl parent;
+	CamelSaslDigestMd5Private *priv;
+};
 
-typedef struct _CamelSaslDigestMd5Class {
+struct _CamelSaslDigestMd5Class {
 	CamelSaslClass parent_class;
+};
 
-} CamelSaslDigestMd5Class;
-
-/* Standard Camel function */
 CamelType camel_sasl_digest_md5_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_digest_md5_authtype;

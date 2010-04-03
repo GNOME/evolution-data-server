@@ -33,14 +33,6 @@ CamelMimeFilterCharset
 
 </para>
 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_mime_filter_charset_new_convert ##### -->
-<para>
-
-</para>
-
 @from_charset: 
 @to_charset: 
 @Returns: 

@@ -47,7 +47,7 @@ typedef struct {
 } CamelPOP3FolderInfo;
 
 typedef struct {
-	CamelFolder parent_object;
+	CamelFolder parent;
 
 	GPtrArray *uids;
 	GHashTable *uids_uid;	/* messageinfo by uid */

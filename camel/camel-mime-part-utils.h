@@ -35,8 +35,11 @@
 
 G_BEGIN_DECLS
 
-void camel_mime_part_construct_content_from_parser(CamelMimePart *, CamelMimeParser *mp);
-gboolean camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info);
+void		camel_mime_part_construct_content_from_parser
+						(CamelMimePart *mime_part,
+						 CamelMimeParser *mp);
+gboolean	camel_mime_message_build_preview(CamelMimePart *mime_part,
+						 CamelMessageInfo *info);
 
 G_END_DECLS
 

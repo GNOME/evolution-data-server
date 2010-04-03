@@ -324,7 +324,7 @@ nntp_connect_offline (CamelService *service, CamelException *ex)
 
 	/* setup store-wide cache */
 	if (nntp_store->cache == NULL) {
-		nntp_store->cache = camel_data_cache_new (nntp_store->storage_path, 0, ex);
+		nntp_store->cache = camel_data_cache_new (nntp_store->storage_path, ex);
 		if (nntp_store->cache == NULL)
 			return FALSE;
 
@@ -1113,7 +1113,7 @@ nntp_construct (CamelService *service, CamelSession *session,
 		nntp_store->folder_hierarchy_relative = FALSE;
 
 	/* setup store-wide cache */
-	nntp_store->cache = camel_data_cache_new(nntp_store->storage_path, 0, ex);
+	nntp_store->cache = camel_data_cache_new(nntp_store->storage_path, ex);
 	if (nntp_store->cache == NULL)
 		return;
 

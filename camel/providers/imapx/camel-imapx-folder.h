@@ -37,7 +37,7 @@ extern "C" {
 #define CAMEL_IS_IMAPX_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAPX_FOLDER_TYPE))
 
 typedef struct _CamelIMAPXFolder {
-	CamelOfflineFolder parent_object;
+	CamelOfflineFolder parent;
 
 	gchar *raw_name;
 	CamelDataCache *cache;

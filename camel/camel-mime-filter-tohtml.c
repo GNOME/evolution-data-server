@@ -107,7 +107,7 @@ camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 	filter->scanner = camel_url_scanner_new ();
 
 	filter->flags = 0;
-	filter->colour = 0;
+	filter->color = 0;
 	filter->column = 0;
 	filter->pre_open = FALSE;
 }
@@ -292,10 +292,10 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 
 		if (html->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) {
 			if ((depth = citation_depth (start)) > 0) {
-				/* FIXME: we could easily support multiple colour depths here */
+				/* FIXME: we could easily support multiple color depths here */
 
 				outptr = check_size (filter, outptr, &outend, 25);
-				outptr += sprintf(outptr, "<font color=\"#%06x\">", (html->colour & 0xffffff));
+				outptr += sprintf(outptr, "<font color=\"#%06x\">", (html->color & 0xffffff));
 			}
 #if FOOLISHLY_UNMUNGE_FROM
 			else if (*start == '>') {
@@ -436,7 +436,7 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
 /**
  * camel_mime_filter_tohtml_new:
  * @flags: bitwise flags defining the behaviour
- * @colour: colour to use when highlighting quoted text
+ * @color: color to use when highlighting quoted text
  *
  * Create a new #CamelMimeFilterToHTML object to convert plain text
  * into HTML.
@@ -444,7 +444,7 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
  * Returns: a new #CamelMimeFilterToHTML object
  **/
 CamelMimeFilter *
-camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
+camel_mime_filter_tohtml_new (guint32 flags, guint32 color)
 {
 	CamelMimeFilterToHTML *new;
 	gint i;
@@ -452,7 +452,7 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
 	new = CAMEL_MIME_FILTER_TOHTML (camel_object_new (camel_mime_filter_tohtml_get_type ()));
 
 	new->flags = flags;
-	new->colour = colour;
+	new->color = color;
 
 	for (i = 0; i < G_N_ELEMENTS (patterns); i++) {
 		if (patterns[i].mask & flags)
@@ -466,7 +466,7 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
  * camel_text_to_html:
  * @in: input text
  * @flags: bitwise flags defining the html conversion behaviour
- * @colour: colour to use when syntax highlighting
+ * @color: color to use when syntax highlighting
  *
  * Convert @in from plain text into HTML.
  *
@@ -474,7 +474,7 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 colour)
  * of @in
  **/
 gchar *
-camel_text_to_html (const gchar *in, guint32 flags, guint32 colour)
+camel_text_to_html (const gchar *in, guint32 flags, guint32 color)
 {
 	CamelMimeFilter *filter;
 	gsize outlen, outpre;
@@ -482,7 +482,7 @@ camel_text_to_html (const gchar *in, guint32 flags, guint32 colour)
 
 	g_return_val_if_fail (in != NULL, NULL);
 
-	filter = camel_mime_filter_tohtml_new (flags, colour);
+	filter = camel_mime_filter_tohtml_new (flags, color);
 
 	camel_mime_filter_complete (filter, (gchar *) in, strlen (in), 0,
 				    &outbuf, &outlen, &outpre);

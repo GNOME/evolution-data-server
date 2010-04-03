@@ -59,7 +59,7 @@ typedef struct _CamelMultipartSigned CamelMultipartSigned;
 
 struct _CamelMultipartSigned
 {
-	CamelMultipart parent_object;
+	CamelMultipart parent;
 
 	/* these are the client visible parts, decoded forms of our data wrapper content */
 	CamelMimePart *content;

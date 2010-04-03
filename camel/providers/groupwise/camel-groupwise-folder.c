@@ -999,7 +999,7 @@ camel_gw_folder_new(CamelStore *store, const gchar *folder_name, const gchar *fo
 	g_free(state_file);
 	camel_object_state_read(folder);
 
-	gw_folder->cache = camel_data_cache_new (folder_dir,0 ,ex);
+	gw_folder->cache = camel_data_cache_new (folder_dir ,ex);
 	if (!gw_folder->cache) {
 		camel_object_unref (folder);
 		return NULL;
@@ -2189,7 +2189,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 					part = camel_mime_part_new ();
 					camel_data_wrapper_set_mime_type_field(CAMEL_DATA_WRAPPER (temp_msg), ct);
 					camel_content_type_unref(ct);
-					camel_medium_set_content_object ( CAMEL_MEDIUM (part),CAMEL_DATA_WRAPPER(temp_msg));
+					camel_medium_set_content ( CAMEL_MEDIUM (part),CAMEL_DATA_WRAPPER(temp_msg));
 
 					camel_multipart_add_part (multipart,part);
 					camel_object_unref (temp_msg);
@@ -2290,7 +2290,7 @@ groupwise_folder_item_to_msg( CamelFolder *folder,
 	if (e_gw_item_get_security (item))
 		camel_medium_add_header ( CAMEL_MEDIUM (msg), "Security", e_gw_item_get_security(item));
 
-	camel_medium_set_content_object(CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
+	camel_medium_set_content (CAMEL_MEDIUM (msg), CAMEL_DATA_WRAPPER(multipart));
 	camel_object_unref (multipart);
 
 end:

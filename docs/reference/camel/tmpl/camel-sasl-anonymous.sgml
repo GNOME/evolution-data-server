@@ -22,7 +22,7 @@ CamelSaslAnonymous
 
 </para>
 
-@parent_object: 
+@parent: 
 @trace_info: 
 @type: 
 

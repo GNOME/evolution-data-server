@@ -44,8 +44,6 @@ static CamelObjectClass *camel_html_parser_parent;
 
 /* Parser definitions, see below object code for details */
 
-typedef struct _CamelHTMLParserPrivate CamelHTMLParserPrivate;
-
 struct _CamelHTMLParserPrivate {
 	gchar *inbuf,
 		*inptr,

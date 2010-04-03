@@ -54,7 +54,7 @@ typedef struct _CamelImapFolderClass CamelImapFolderClass;
 typedef struct _CamelImapFolderPrivate CamelImapFolderPrivate;
 
 struct _CamelImapFolder {
-	CamelOfflineFolder parent_object;
+	CamelOfflineFolder parent;
 
 	CamelImapFolderPrivate *priv;
 

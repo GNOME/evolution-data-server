@@ -28,11 +28,12 @@
 #ifndef CAMEL_FILTER_SEARCH_H
 #define CAMEL_FILTER_SEARCH_H
 
-#include <glib.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-folder-summary.h>
 
 G_BEGIN_DECLS
+
+struct _CamelSession;
 
 enum {
 	CAMEL_SEARCH_ERROR    = -1,
@@ -42,7 +43,7 @@ enum {
 
 typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, CamelException *ex);
 
-gint camel_filter_search_match (CamelSession *session,
+gint camel_filter_search_match (struct _CamelSession *session,
 			       CamelFilterSearchGetMessageFunc get_message, gpointer data,
 			       CamelMessageInfo *info, const gchar *source,
 			       const gchar *expression, CamelException *ex);

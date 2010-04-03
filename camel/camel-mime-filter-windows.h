@@ -35,8 +35,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMimeFilterWindowsClass CamelMimeFilterWindowsClass;
 typedef struct _CamelMimeFilterWindows CamelMimeFilterWindows;
+typedef struct _CamelMimeFilterWindowsClass CamelMimeFilterWindowsClass;
 
 struct _CamelMimeFilterWindows {
 	CamelMimeFilter parent;
@@ -47,15 +47,16 @@ struct _CamelMimeFilterWindows {
 
 struct _CamelMimeFilterWindowsClass {
 	CamelMimeFilterClass parent_class;
-
 };
 
-CamelType camel_mime_filter_windows_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_windows_new (const gchar *claimed_charset);
-
-gboolean camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter);
-const gchar *camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter);
+CamelType	camel_mime_filter_windows_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_windows_new
+					(const gchar *claimed_charset);
+gboolean	camel_mime_filter_windows_is_windows_charset
+					(CamelMimeFilterWindows *filter);
+const gchar *	camel_mime_filter_windows_real_charset
+					(CamelMimeFilterWindows *filter);
 
 G_END_DECLS
 

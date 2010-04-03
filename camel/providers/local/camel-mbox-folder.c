@@ -239,7 +239,7 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 		goto fail_write;
 
 	/* and write the content to the filtering stream, that translates '\nFrom' into '\n>From' */
-	filter_stream = (CamelStream *) camel_stream_filter_new_with_stream(output_stream);
+	filter_stream = camel_stream_filter_new (output_stream);
 	filter_from = (CamelMimeFilter *) camel_mime_filter_from_new();
 	camel_stream_filter_add((CamelStreamFilter *) filter_stream, filter_from);
 	camel_object_unref (filter_from);

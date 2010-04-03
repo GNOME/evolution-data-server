@@ -37,7 +37,7 @@ typedef enum _camel_spool_store_t {
 } camel_spool_store_t;
 
 typedef struct {
-	CamelMboxStore parent_object;
+	CamelMboxStore parent;
 
 	camel_spool_store_t type;
 } CamelSpoolStore;

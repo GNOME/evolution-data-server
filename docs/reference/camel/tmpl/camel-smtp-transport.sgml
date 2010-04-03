@@ -22,7 +22,7 @@ CamelSmtpTransport
 
 </para>
 
-@parent_object: 
+@parent: 
 @istream: 
 @ostream: 
 @flags: 

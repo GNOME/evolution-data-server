@@ -40,7 +40,7 @@ typedef struct _CamelIMAP4SearchClass CamelIMAP4SearchClass;
 struct _CamelIMAP4Engine;
 
 struct _CamelIMAP4Search {
-	CamelFolderSearch parent_object;
+	CamelFolderSearch parent;
 
 	struct _CamelIMAP4Engine *engine;
 

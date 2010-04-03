@@ -45,20 +45,19 @@ G_BEGIN_DECLS
 
 struct _CamelSession;
 
-struct _CamelTcpStreamSSL {
-	CamelTcpStream parent_object;
+typedef struct _CamelTcpStreamSSL CamelTcpStreamSSL;
+typedef struct _CamelTcpStreamSSLClass CamelTcpStreamSSLClass;
+typedef struct _CamelTcpStreamSSLPrivate CamelTcpStreamSSLPrivate;
 
-	struct _CamelTcpStreamSSLPrivate *priv;
+struct _CamelTcpStreamSSL {
+	CamelTcpStream parent;
+	CamelTcpStreamSSLPrivate *priv;
 };
 
-typedef struct {
+struct _CamelTcpStreamSSLClass {
 	CamelTcpStreamClass parent_class;
+};
 
-	/* virtual functions */
-
-} CamelTcpStreamSSLClass;
-
-/* Standard Camel function */
 CamelType camel_tcp_stream_ssl_get_type (void);
 
 /* public methods */

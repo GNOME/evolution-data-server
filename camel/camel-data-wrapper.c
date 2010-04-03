@@ -178,21 +178,21 @@ decode_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 	CamelStream *fstream;
 	gssize ret;
 
-	fstream = (CamelStream *) camel_stream_filter_new_with_stream (stream);
+	fstream = (CamelStream *) camel_stream_filter_new (stream);
 
 	switch (data_wrapper->encoding) {
 	case CAMEL_TRANSFER_ENCODING_BASE64:
-		filter = (CamelMimeFilter *) camel_mime_filter_basic_new_type (CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
+		filter = (CamelMimeFilter *) camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
 		camel_object_unref (filter);
 		break;
 	case CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE:
-		filter = (CamelMimeFilter *) camel_mime_filter_basic_new_type (CAMEL_MIME_FILTER_BASIC_QP_DEC);
+		filter = (CamelMimeFilter *) camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_QP_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
 		camel_object_unref (filter);
 		break;
 	case CAMEL_TRANSFER_ENCODING_UUENCODE:
-		filter = (CamelMimeFilter *) camel_mime_filter_basic_new_type (CAMEL_MIME_FILTER_BASIC_UU_DEC);
+		filter = (CamelMimeFilter *) camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_UU_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
 		camel_object_unref (filter);
 		break;

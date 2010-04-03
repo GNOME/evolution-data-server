@@ -26,7 +26,6 @@
 #ifndef CAMEL_ADDRESS_H
 #define CAMEL_ADDRESS_H
 
-#include <glib.h>
 #include <camel/camel-object.h>
 
 #define CAMEL_ADDRESS(obj)         CAMEL_CHECK_CAST (obj, camel_address_get_type (), CamelAddress)
@@ -35,44 +34,49 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelAddress CamelAddress;
 typedef struct _CamelAddressClass CamelAddressClass;
+typedef struct _CamelAddressPrivate CamelAddressPrivate;
 
 struct _CamelAddress {
 	CamelObject parent;
 
 	GPtrArray *addresses;
 
-	struct _CamelAddressPrivate *priv;
+	CamelAddressPrivate *priv;
 };
 
 struct _CamelAddressClass {
 	CamelObjectClass parent_class;
 
-	gint   (*decode)		(CamelAddress *, const gchar *raw);
-	gchar *(*encode)		(CamelAddress *);
-
-	gint   (*unformat)	(CamelAddress *, const gchar *raw);
-	gchar *(*format)		(CamelAddress *);
-
-	gint   (*cat)		(CamelAddress *, const CamelAddress *);
-
-	void  (*remove)		(CamelAddress *, gint index);
+	gint		(*decode)		(CamelAddress *addr,
+						 const gchar *raw);
+	gchar *		(*encode)		(CamelAddress *addr);
+	gint		(*unformat)		(CamelAddress *addr,
+						 const gchar *raw);
+	gchar *		(*format)		(CamelAddress *addr);
+	gint		(*cat)			(CamelAddress *dest,
+						 CamelAddress *source);
+	void		(*remove)		(CamelAddress *addr,
+						 gint index);
 };
 
-CamelType	camel_address_get_type	(void);
-CamelAddress   *camel_address_new	(void);
-CamelAddress   *camel_address_new_clone	(const CamelAddress *addr);
-gint		camel_address_length	(CamelAddress *addr);
-
-gint		camel_address_decode	(CamelAddress *addr, const gchar *raw);
-gchar	       *camel_address_encode	(CamelAddress *addr);
-gint		camel_address_unformat	(CamelAddress *addr, const gchar *raw);
-gchar	       *camel_address_format	(CamelAddress *addr);
-
-gint		camel_address_cat	(CamelAddress *dest, const CamelAddress *source);
-gint		camel_address_copy	(CamelAddress *dest, const CamelAddress *source);
-
-void		camel_address_remove	(CamelAddress *addr, gint index);
+CamelType	camel_address_get_type		(void);
+CamelAddress *	camel_address_new		(void);
+CamelAddress *	camel_address_new_clone		(CamelAddress *addr);
+gint		camel_address_length		(CamelAddress *addr);
+gint		camel_address_decode		(CamelAddress *addr,
+						 const gchar *raw);
+gchar *		camel_address_encode		(CamelAddress *addr);
+gint		camel_address_unformat		(CamelAddress *addr,
+						 const gchar *raw);
+gchar *		camel_address_format		(CamelAddress *addr);
+gint		camel_address_cat		(CamelAddress *dest,
+						 CamelAddress *source);
+gint		camel_address_copy		(CamelAddress *dest,
+						 CamelAddress *source);
+void		camel_address_remove		(CamelAddress *addr,
+						 gint index);
 
 G_END_DECLS
 

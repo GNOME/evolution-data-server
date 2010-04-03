@@ -31,7 +31,8 @@
 #define CAMEL_URL_H
 
 #include <glib.h>
-#include <camel/camel-types.h>
+
+#include <camel/camel-exception.h>
 
 G_BEGIN_DECLS
 

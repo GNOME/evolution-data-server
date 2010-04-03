@@ -22,7 +22,7 @@ CamelService
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @session: 
 @provider: 

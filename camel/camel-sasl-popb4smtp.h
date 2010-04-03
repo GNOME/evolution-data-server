@@ -36,17 +36,17 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSaslPOPB4SMTP {
-	CamelSasl parent_object;
+typedef struct _CamelSaslPOPB4SMTP CamelSaslPOPB4SMTP;
+typedef struct _CamelSaslPOPB4SMTPClass CamelSaslPOPB4SMTPClass;
 
-} CamelSaslPOPB4SMTP;
+struct _CamelSaslPOPB4SMTP {
+	CamelSasl parent;
+};
 
-typedef struct _CamelSaslPOPB4SMTPClass {
+struct _CamelSaslPOPB4SMTPClass {
 	CamelSaslClass parent_class;
+};
 
-} CamelSaslPOPB4SMTPClass;
-
-/* Standard Camel function */
 CamelType camel_sasl_popb4smtp_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_popb4smtp_authtype;

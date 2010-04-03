@@ -34,21 +34,22 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMimeFilterHTMLClass CamelMimeFilterHTMLClass;
 typedef struct _CamelMimeFilterHTML CamelMimeFilterHTML;
+typedef struct _CamelMimeFilterHTMLClass CamelMimeFilterHTMLClass;
+typedef struct _CamelMimeFilterHTMLPrivate CamelMimeFilterHTMLPrivate;
 
 struct _CamelMimeFilterHTML {
 	CamelMimeFilter parent;
-
-	struct _CamelMimeFilterHTMLPrivate *priv;
+	CamelMimeFilterHTMLPrivate *priv;
 };
 
 struct _CamelMimeFilterHTMLClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType		camel_mime_filter_html_get_type	(void);
-CamelMimeFilterHTML      *camel_mime_filter_html_new	(void);
+CamelType	camel_mime_filter_html_get_type	(void);
+CamelMimeFilter *
+		camel_mime_filter_html_new	(void);
 
 G_END_DECLS
 

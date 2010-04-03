@@ -22,7 +22,7 @@ CamelIMAP4Search
 
 </para>
 
-@parent_object: 
+@parent: 
 @engine: 
 @lastuid: 
 @validity: 

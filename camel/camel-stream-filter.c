@@ -143,15 +143,15 @@ camel_stream_filter_get_type (void)
  *
  * Returns: a new #CamelStreamFilter object.
  **/
-CamelStreamFilter *
-camel_stream_filter_new_with_stream(CamelStream *stream)
+CamelStream *
+camel_stream_filter_new (CamelStream *stream)
 {
 	CamelStreamFilter *new = CAMEL_STREAM_FILTER ( camel_object_new (camel_stream_filter_get_type ()));
 
 	new->source = stream;
 	camel_object_ref ((CamelObject *)stream);
 
-	return new;
+	return CAMEL_STREAM (new);
 }
 
 /**

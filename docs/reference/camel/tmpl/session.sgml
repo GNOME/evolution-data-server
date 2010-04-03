@@ -22,7 +22,7 @@ CamelTestSession
 
 </para>
 
-@parent_object: 
+@parent: 
 
 <!-- ##### FUNCTION camel_test_session_new ##### -->
 <para>

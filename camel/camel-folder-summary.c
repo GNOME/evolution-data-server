@@ -2215,10 +2215,11 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
 
 		if (p->index) {
 			if (p->filter_index == NULL)
-				p->filter_index = camel_mime_filter_index_new_index(p->index);
+				p->filter_index = camel_mime_filter_index_new (p->index);
 			camel_index_delete_name(p->index, camel_message_info_uid(info));
 			name = camel_index_add_name(p->index, camel_message_info_uid(info));
-			camel_mime_filter_index_set_name(p->filter_index, name);
+			camel_mime_filter_index_set_name (
+				CAMEL_MIME_FILTER_INDEX (p->filter_index), name);
 		}
 
 		/* always scan the content info, even if we dont save it */
@@ -2227,7 +2228,8 @@ camel_folder_summary_info_new_from_parser(CamelFolderSummary *s, CamelMimeParser
 		if (name && p->index) {
 			camel_index_write_name(p->index, name);
 			camel_object_unref((CamelObject *)name);
-			camel_mime_filter_index_set_name(p->filter_index, NULL);
+			camel_mime_filter_index_set_name (
+				CAMEL_MIME_FILTER_INDEX (p->filter_index), NULL);
 		}
 
 		CAMEL_SUMMARY_UNLOCK(s, filter_lock);
@@ -2266,15 +2268,16 @@ camel_folder_summary_info_new_from_message(CamelFolderSummary *s, CamelMimeMessa
 
 	if (p->index) {
 		if (p->filter_index == NULL)
-			p->filter_index = camel_mime_filter_index_new_index(p->index);
+			p->filter_index = camel_mime_filter_index_new (p->index);
 		camel_index_delete_name(p->index, camel_message_info_uid(info));
 		name = camel_index_add_name(p->index, camel_message_info_uid(info));
-		camel_mime_filter_index_set_name(p->filter_index, name);
+		camel_mime_filter_index_set_name (
+			CAMEL_MIME_FILTER_INDEX (p->filter_index), name);
 
 		if (p->filter_stream == NULL) {
 			CamelStream *null = camel_stream_null_new();
 
-			p->filter_stream = camel_stream_filter_new_with_stream(null);
+			p->filter_stream = camel_stream_filter_new (null);
 			camel_object_unref((CamelObject *)null);
 		}
 	}
@@ -2284,7 +2287,8 @@ camel_folder_summary_info_new_from_message(CamelFolderSummary *s, CamelMimeMessa
 	if (name) {
 		camel_index_write_name(p->index, name);
 		camel_object_unref((CamelObject *)name);
-		camel_mime_filter_index_set_name(p->filter_index, NULL);
+		camel_mime_filter_index_set_name (
+			CAMEL_MIME_FILTER_INDEX (p->filter_index), NULL);
 	}
 
 	CAMEL_SUMMARY_UNLOCK(s, filter_lock);
@@ -3884,7 +3888,7 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 	CamelContentType *ct;
 	gint enc_id = -1, chr_id = -1, html_id = -1, idx_id = -1;
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
-	CamelMimeFilterCharset *mfc;
+	CamelMimeFilter *mfc;
 	CamelMessageContentInfo *part;
 	const gchar *calendar_header;
 
@@ -3930,21 +3934,21 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 				if (!g_ascii_strcasecmp(encoding, "base64")) {
 					d(printf(" decoding base64\n"));
 					if (p->filter_64 == NULL)
-						p->filter_64 = camel_mime_filter_basic_new_type(CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
+						p->filter_64 = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
 					else
 						camel_mime_filter_reset((CamelMimeFilter *)p->filter_64);
 					enc_id = camel_mime_parser_filter_add(mp, (CamelMimeFilter *)p->filter_64);
 				} else if (!g_ascii_strcasecmp(encoding, "quoted-printable")) {
 					d(printf(" decoding quoted-printable\n"));
 					if (p->filter_qp == NULL)
-						p->filter_qp = camel_mime_filter_basic_new_type(CAMEL_MIME_FILTER_BASIC_QP_DEC);
+						p->filter_qp = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_QP_DEC);
 					else
 						camel_mime_filter_reset((CamelMimeFilter *)p->filter_qp);
 					enc_id = camel_mime_parser_filter_add(mp, (CamelMimeFilter *)p->filter_qp);
 				} else if (!g_ascii_strcasecmp (encoding, "x-uuencode")) {
 					d(printf(" decoding x-uuencode\n"));
 					if (p->filter_uu == NULL)
-						p->filter_uu = camel_mime_filter_basic_new_type(CAMEL_MIME_FILTER_BASIC_UU_DEC);
+						p->filter_uu = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_UU_DEC);
 					else
 						camel_mime_filter_reset((CamelMimeFilter *)p->filter_uu);
 					enc_id = camel_mime_parser_filter_add(mp, (CamelMimeFilter *)p->filter_uu);
@@ -3961,7 +3965,7 @@ summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, Cam
 				d(printf(" Adding conversion filter from %s to UTF-8\n", charset));
 				mfc = g_hash_table_lookup(p->filter_charset, charset);
 				if (mfc == NULL) {
-					mfc = camel_mime_filter_charset_new_convert(charset, "UTF-8");
+					mfc = camel_mime_filter_charset_new (charset, "UTF-8");
 					if (mfc)
 						g_hash_table_insert(p->filter_charset, g_strdup(charset), mfc);
 				} else {
@@ -4053,12 +4057,12 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 	if (s->build_content)
 		info = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->content_info_new_from_message(s, object);
 
-	containee = camel_medium_get_content_object(CAMEL_MEDIUM(object));
+	containee = camel_medium_get_content (CAMEL_MEDIUM(object));
 
 	if (containee == NULL)
 		return info;
 
-	/* TODO: I find it odd that get_part and get_content_object do not
+	/* TODO: I find it odd that get_part and get_content do not
 	   add a reference, probably need fixing for multithreading */
 
 	/* check for attachments */
@@ -4124,15 +4128,21 @@ summary_build_content_info_message(CamelFolderSummary *s, CamelMessageInfo *msgi
 				p->filter_html = camel_mime_filter_html_new();
 			else
 				camel_mime_filter_reset((CamelMimeFilter *)p->filter_html);
-			html_id = camel_stream_filter_add(p->filter_stream, (CamelMimeFilter *)p->filter_html);
+			html_id = camel_stream_filter_add (
+				CAMEL_STREAM_FILTER (p->filter_stream),
+				(CamelMimeFilter *)p->filter_html);
 		}
-		idx_id = camel_stream_filter_add(p->filter_stream, (CamelMimeFilter *)p->filter_index);
+		idx_id = camel_stream_filter_add (
+			CAMEL_STREAM_FILTER (p->filter_stream),
+			(CamelMimeFilter *)p->filter_index);
 
-		camel_data_wrapper_decode_to_stream(containee, (CamelStream *)p->filter_stream);
-		camel_stream_flush((CamelStream *)p->filter_stream);
+		camel_data_wrapper_decode_to_stream(containee, p->filter_stream);
+		camel_stream_flush(p->filter_stream);
 
-		camel_stream_filter_remove(p->filter_stream, idx_id);
-		camel_stream_filter_remove(p->filter_stream, html_id);
+		camel_stream_filter_remove (
+			CAMEL_STREAM_FILTER (p->filter_stream), idx_id);
+		camel_stream_filter_remove (
+			CAMEL_STREAM_FILTER (p->filter_stream), html_id);
 	}
 
 	return info;

@@ -32,7 +32,7 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	CamelLocalStore parent_object;
+	CamelLocalStore parent;
 
 } CamelMaildirStore;
 

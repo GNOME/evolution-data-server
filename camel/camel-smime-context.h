@@ -51,15 +51,15 @@ typedef enum _camel_smime_describe_t {
 
 typedef struct _CamelSMIMEContext CamelSMIMEContext;
 typedef struct _CamelSMIMEContextClass CamelSMIMEContextClass;
+typedef struct _CamelSMIMEContextPrivate CamelSMIMEContextPrivate;
 
 struct _CamelSMIMEContext {
-	CamelCipherContext cipher;
-
-	struct _CamelSMIMEContextPrivate *priv;
+	CamelCipherContext parent;
+	CamelSMIMEContextPrivate *priv;
 };
 
 struct _CamelSMIMEContextClass {
-	CamelCipherContextClass cipher_class;
+	CamelCipherContextClass parent_class;
 };
 
 CamelType camel_smime_context_get_type(void);

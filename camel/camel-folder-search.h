@@ -28,7 +28,6 @@
 
 #include <libedataserver/e-sexp.h>
 #include <camel/camel-folder.h>
-#include <camel/camel-object.h>
 #include <camel/camel-index.h>
 
 #define CAMEL_FOLDER_SEARCH_TYPE         (camel_folder_search_get_type ())
@@ -38,12 +37,13 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelFolderSearch CamelFolderSearch;
 typedef struct _CamelFolderSearchClass CamelFolderSearchClass;
+typedef struct _CamelFolderSearchPrivate CamelFolderSearchPrivate;
 
 struct _CamelFolderSearch {
 	CamelObject parent;
-
-	struct _CamelFolderSearchPrivate *priv;
+	CamelFolderSearchPrivate *priv;
 
 	ESExp *sexp;		/* s-exp evaluator */
 	gchar *last_search;	/* last searched expression */

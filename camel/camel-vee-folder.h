@@ -26,8 +26,9 @@
 #ifndef CAMEL_VEE_FOLDER_H
 #define CAMEL_VEE_FOLDER_H
 
-#include <glib.h>
 #include <camel/camel-folder.h>
+#include <camel/camel-folder-search.h>
+#include <camel/camel-store.h>
 #include <camel/camel-vee-summary.h>
 
 #define CAMEL_VEE_FOLDER(obj)         CAMEL_CHECK_CAST (obj, camel_vee_folder_get_type (), CamelVeeFolder)
@@ -36,13 +37,13 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelVeeFolder      CamelVeeFolder;
+typedef struct _CamelVeeFolder CamelVeeFolder;
 typedef struct _CamelVeeFolderClass CamelVeeFolderClass;
+typedef struct _CamelVeeFolderPrivate CamelVeeFolderPrivate;
 
 struct _CamelVeeFolder {
 	CamelFolder parent;
-
-	struct _CamelVeeFolderPrivate *priv;
+	CamelVeeFolderPrivate *priv;
 
 	gchar *expression;	/* query expression */
 

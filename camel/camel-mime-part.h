@@ -41,9 +41,12 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimePart CamelMimePart;
+typedef struct _CamelMimePartClass CamelMimePartClass;
+
 /* Do not change these values directly, you would regret it one day */
 struct _CamelMimePart {
-	CamelMedium parent_object;
+	CamelMedium parent;
 
 	struct _camel_header_raw *headers; /* mime headers */
 
@@ -58,12 +61,12 @@ struct _CamelMimePart {
 	CamelTransferEncoding encoding;
 };
 
-typedef struct _CamelMimePartClass {
+struct _CamelMimePartClass {
 	CamelMediumClass parent_class;
 
-	/* Virtual methods */
-	gint (*construct_from_parser) (CamelMimePart *, CamelMimeParser *);
-} CamelMimePartClass;
+	gint		(*construct_from_parser)(CamelMimePart *mime_part,
+						 CamelMimeParser *parser);
+};
 
 /* Standard Camel function */
 CamelType camel_mime_part_get_type (void);
@@ -84,8 +87,8 @@ const	  gchar  *camel_mime_part_get_filename		(CamelMimePart *mime_part);
 void             camel_mime_part_set_content_id		(CamelMimePart *mime_part, const gchar *contentid);
 const	  gchar  *camel_mime_part_get_content_id		(CamelMimePart *mime_part);
 
-void		 camel_mime_part_set_content_MD5	(CamelMimePart *mime_part, const gchar *md5sum);
-const	  gchar  *camel_mime_part_get_content_MD5	(CamelMimePart *mime_part);
+void		 camel_mime_part_set_content_md5	(CamelMimePart *mime_part, const gchar *md5sum);
+const	  gchar  *camel_mime_part_get_content_md5	(CamelMimePart *mime_part);
 
 void		 camel_mime_part_set_content_location	(CamelMimePart *mime_part, const gchar *location);
 const	  gchar  *camel_mime_part_get_content_location	(CamelMimePart *mime_part);

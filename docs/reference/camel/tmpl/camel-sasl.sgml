@@ -22,7 +22,7 @@ CamelSasl
 
 </para>
 
-@parent_object: 
+@parent: 
 @service_name: 
 @mech: 
 @service: 

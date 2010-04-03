@@ -66,7 +66,7 @@ struct _xover_header {
 };
 
 struct _CamelNNTPStore {
-	CamelDiscoStore parent_object;
+	CamelDiscoStore parent;
 
 	CamelNNTPStorePrivate *priv;
 

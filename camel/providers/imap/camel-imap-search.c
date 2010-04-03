@@ -159,7 +159,7 @@ camel_imap_search_new (const gchar *cachedir)
 
 	camel_folder_search_construct (new);
 
-	is->cache = camel_data_cache_new(cachedir, 0, NULL);
+	is->cache = camel_data_cache_new(cachedir, NULL);
 	if (is->cache) {
 		/* Expire entries after 14 days of inactivity */
 		camel_data_cache_set_expire_access(is->cache, 60*60*24*14);

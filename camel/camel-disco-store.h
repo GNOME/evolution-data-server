@@ -39,6 +39,11 @@
 
 G_BEGIN_DECLS
 
+struct _CamelDiscoDiary;
+
+typedef struct _CamelDiscoStore CamelDiscoStore;
+typedef struct _CamelDiscoStoreClass CamelDiscoStoreClass;
+
 enum {
 	CAMEL_DISCO_STORE_ARG_FIRST  = CAMEL_STORE_ARG_FIRST + 100
 };
@@ -50,13 +55,13 @@ typedef enum {
 } CamelDiscoStoreStatus;
 
 struct _CamelDiscoStore {
-	CamelStore parent_object;
+	CamelStore parent;
 
 	CamelDiscoStoreStatus status;
-	CamelDiscoDiary *diary;
+	struct _CamelDiscoDiary *diary;
 };
 
-typedef struct {
+struct _CamelDiscoStoreClass {
 	CamelStoreClass parent_class;
 
 	void              (*set_status)              (CamelDiscoStore *,
@@ -99,8 +104,7 @@ typedef struct {
 							const gchar *top,
 							guint32 flags,
 							CamelException *ex);
-
-} CamelDiscoStoreClass;
+};
 
 /* Standard Camel function */
 CamelType camel_disco_store_get_type (void);

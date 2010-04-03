@@ -84,7 +84,7 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
 	const gchar *from_addr, *addr, **argv;
 	gint i, len, fd[2], nullfd, wstat;
-	CamelStreamFilter *filter;
+	CamelStream *filter;
 	CamelMimeFilter *crlf;
 	sigset_t mask, omask;
 	CamelStream *out;
@@ -187,9 +187,9 @@ sendmail_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	out = camel_stream_fs_new_with_fd (fd[1]);
 
 	/* workaround for lame sendmail implementations that can't handle CRLF eoln sequences */
-	filter = camel_stream_filter_new_with_stream (out);
+	filter = camel_stream_filter_new (out);
 	crlf = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_DECODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
-	camel_stream_filter_add (filter, crlf);
+	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), crlf);
 	camel_object_unref (crlf);
 	camel_object_unref (out);
 

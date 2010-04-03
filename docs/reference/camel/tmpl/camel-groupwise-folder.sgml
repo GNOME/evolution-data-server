@@ -22,7 +22,7 @@ CamelGroupwiseFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @search: 
 @journal: 

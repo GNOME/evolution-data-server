@@ -36,7 +36,7 @@ typedef struct _CamelImapWrapperClass CamelImapWrapperClass;
 typedef struct _CamelImapWrapperPrivate CamelImapWrapperPrivate;
 
 struct _CamelImapWrapper {
-	CamelDataWrapper parent_object;
+	CamelDataWrapper parent;
 
 	CamelImapWrapperPrivate *priv;
 

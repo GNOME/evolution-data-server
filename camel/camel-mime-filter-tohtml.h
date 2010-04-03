@@ -46,8 +46,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMimeFilterToHTMLClass CamelMimeFilterToHTMLClass;
 typedef struct _CamelMimeFilterToHTML CamelMimeFilterToHTML;
+typedef struct _CamelMimeFilterToHTMLClass CamelMimeFilterToHTMLClass;
 
 struct _CamelMimeFilterToHTML {
 	CamelMimeFilter parent;
@@ -55,7 +55,7 @@ struct _CamelMimeFilterToHTML {
 	struct _CamelUrlScanner *scanner;
 
 	guint32 flags;
-	guint32 colour;
+	guint32 color;
 
 	guint32 column   : 31;
 	guint32 pre_open : 1;
@@ -65,13 +65,16 @@ struct _CamelMimeFilterToHTMLClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType        camel_mime_filter_tohtml_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_tohtml_new (guint32 flags, guint32 colour);
+CamelType	camel_mime_filter_tohtml_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_tohtml_new	(guint32 flags,
+						 guint32 color);
 
 /* utility functions to replace e_text_to_html */
 
-gchar *camel_text_to_html (const gchar *in, guint32 flags, guint32 colour);
+gchar *		camel_text_to_html		(const gchar *in,
+						 guint32 flags,
+						 guint32 color);
 
 G_END_DECLS
 

@@ -37,6 +37,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeFilterSave CamelMimeFilterSave;
 typedef struct _CamelMimeFilterSaveClass CamelMimeFilterSaveClass;
 
 struct _CamelMimeFilterSave {
@@ -49,10 +50,9 @@ struct _CamelMimeFilterSaveClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType camel_mime_filter_save_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_save_new (void);
-CamelMimeFilter *camel_mime_filter_save_new_with_stream (CamelStream *stream);
+CamelType	camel_mime_filter_save_get_type	(void);
+CamelMimeFilter *
+		camel_mime_filter_save_new	(CamelStream *stream);
 
 G_END_DECLS
 

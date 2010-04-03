@@ -22,7 +22,7 @@ CamelLocalStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @toplevel_dir: 
 
 <!-- ##### FUNCTION camel_local_store_get_toplevel_dir ##### -->

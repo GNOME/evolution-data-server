@@ -30,10 +30,11 @@
 #ifndef CAMEL_SESSION_H
 #define CAMEL_SESSION_H
 
-#include <camel/camel-msgport.h>
-#include <camel/camel-object.h>
-#include <camel/camel-provider.h>
+#include <camel/camel-filter-driver.h>
 #include <camel/camel-junk-plugin.h>
+#include <camel/camel-msgport.h>
+#include <camel/camel-provider.h>
+#include <camel/camel-service.h>
 
 #define CAMEL_SESSION_TYPE     (camel_session_get_type ())
 #define CAMEL_SESSION(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SESSION_TYPE, CamelSession))
@@ -41,6 +42,10 @@
 #define CAMEL_IS_SESSION(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SESSION_TYPE))
 
 G_BEGIN_DECLS
+
+typedef struct _CamelSession CamelSession;
+typedef struct _CamelSessionClass CamelSessionClass;
+typedef struct _CamelSessionPrivate CamelSessionPrivate;
 
 typedef gboolean (*CamelTimeoutCallback) (gpointer data);
 typedef enum {
@@ -56,10 +61,9 @@ enum {
 	CAMEL_SESSION_PASSPHRASE = 1 << 4
 };
 
-struct _CamelSession
-{
-	CamelObject parent_object;
-	struct _CamelSessionPrivate *priv;
+struct _CamelSession {
+	CamelObject parent;
+	CamelSessionPrivate *priv;
 
 	gchar *storage_path;
 	CamelJunkPlugin *junk_plugin;
@@ -72,7 +76,7 @@ struct _CamelSession
 typedef struct _CamelSessionThreadOps CamelSessionThreadOps;
 typedef struct _CamelSessionThreadMsg CamelSessionThreadMsg;
 
-typedef struct {
+struct _CamelSessionClass {
 	CamelObjectClass parent_class;
 
 	CamelService *  (*get_service)       (CamelSession *session,
@@ -122,15 +126,12 @@ typedef struct {
 	gboolean        (*lookup_addressbook)(CamelSession *session,
 					      const gchar *name);
 	void		(*forward_to)        (CamelSession *session,
-					      struct _CamelFolder *folder,
-					      struct _CamelMimeMessage *message,
+					      CamelFolder *folder,
+					      CamelMimeMessage *message,
 					      const gchar *address,
 					      CamelException *ex);
-} CamelSessionClass;
+};
 
-/* public methods */
-
-/* Standard Camel function */
 CamelType camel_session_get_type (void);
 
 void            camel_session_construct             (CamelSession *session,
@@ -191,8 +192,8 @@ void               camel_session_set_check_junk     (CamelSession *session,
 						     gboolean check_junk);
 
 struct _CamelSessionThreadOps {
-	void (*receive)(CamelSession *session, struct _CamelSessionThreadMsg *m);
-	void (*free)(CamelSession *session, struct _CamelSessionThreadMsg *m);
+	void (*receive)(CamelSession *session, CamelSessionThreadMsg *m);
+	void (*free)(CamelSession *session, CamelSessionThreadMsg *m);
 };
 
 struct _CamelSessionThreadMsg {
@@ -202,7 +203,7 @@ struct _CamelSessionThreadMsg {
 
 	CamelException ex;
 	CamelSessionThreadOps *ops;
-	struct _CamelOperation *op;
+	CamelOperation *op;
 	CamelSession *session;
 
 	gpointer data; /* free for implementation to define, not used by camel, do not use in client code */
@@ -231,8 +232,8 @@ gboolean           camel_session_lookup_addressbook (CamelSession *session,
 						     const gchar *name);
 
 void		   camel_session_forward_to         (CamelSession *session,
-						     struct _CamelFolder *folder,
-						     struct _CamelMimeMessage *message,
+						     CamelFolder *folder,
+						     CamelMimeMessage *message,
 						     const gchar *address,
 						     CamelException *ex);
 

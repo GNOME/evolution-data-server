@@ -595,7 +595,7 @@ camel_multipart_signed_get_content_stream(CamelMultipartSigned *mps, CamelExcept
 
 		/* first, prepare our parts */
 		sub = camel_seekable_substream_new((CamelSeekableStream *)((CamelDataWrapper *)mps)->stream, mps->start1, mps->end1);
-		constream = (CamelStream *)camel_stream_filter_new_with_stream(sub);
+		constream = camel_stream_filter_new (sub);
 		camel_object_unref((CamelObject *)sub);
 
 		/* Note: see rfc2015 or rfc3156, section 5 */

@@ -22,7 +22,7 @@ CamelTransport
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 
 <!-- ##### FUNCTION camel_transport_send_to ##### -->

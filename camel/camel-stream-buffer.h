@@ -40,6 +40,9 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelStreamBuffer CamelStreamBuffer;
+typedef struct _CamelStreamBufferClass CamelStreamBufferClass;
+
 typedef enum {
 	CAMEL_STREAM_BUFFER_BUFFER = 0,
 	CAMEL_STREAM_BUFFER_NONE,
@@ -48,9 +51,8 @@ typedef enum {
 	CAMEL_STREAM_BUFFER_MODE = 0x80
 } CamelStreamBufferMode;
 
-struct _CamelStreamBuffer
-{
-	CamelStream parent_object;
+struct _CamelStreamBuffer {
+	CamelStream parent;
 
 	/* these are all of course, private */
 	CamelStream *stream;
@@ -65,35 +67,31 @@ struct _CamelStreamBuffer
 	guint flags;	/* internal flags */
 };
 
-typedef struct {
+struct _CamelStreamBufferClass {
 	CamelStreamClass parent_class;
 
-	/* Virtual methods */
-	void (*init) (CamelStreamBuffer *stream_buffer, CamelStream *stream,
-		      CamelStreamBufferMode mode);
-	void (*init_vbuf) (CamelStreamBuffer *stream_buffer,
-			   CamelStream *stream, CamelStreamBufferMode mode,
-			   gchar *buf, guint32 size);
+	void		(*init)		(CamelStreamBuffer *stream_buffer,
+					 CamelStream *stream,
+					 CamelStreamBufferMode mode);
+	void		(*init_vbuf)	(CamelStreamBuffer *stream_buffer,
+					 CamelStream *stream,
+					 CamelStreamBufferMode mode,
+					 gchar *buf,
+					 guint32 size);
+};
 
-} CamelStreamBufferClass;
-
-/* Standard Camel function */
-CamelType camel_stream_buffer_get_type (void);
-
-/* public methods */
-CamelStream *camel_stream_buffer_new (CamelStream *stream,
-				      CamelStreamBufferMode mode);
-CamelStream *camel_stream_buffer_new_with_vbuf (CamelStream *stream,
-						CamelStreamBufferMode mode,
-						gchar *buf, guint32 size);
-
-/* unimplemented
-   CamelStream *camel_stream_buffer_set_vbuf (CamelStreamBuffer *b, CamelStreamBufferMode mode, gchar *buf, guint32 size); */
-
-/* read a line of characters */
-gint camel_stream_buffer_gets (CamelStreamBuffer *sbf, gchar *buf, guint max);
-
-gchar *camel_stream_buffer_read_line (CamelStreamBuffer *sbf);
+CamelType	camel_stream_buffer_get_type	(void);
+CamelStream *	camel_stream_buffer_new		(CamelStream *stream,
+						 CamelStreamBufferMode mode);
+CamelStream *	camel_stream_buffer_new_with_vbuf
+						(CamelStream *stream,
+						 CamelStreamBufferMode mode,
+						 gchar *buf,
+						 guint32 size);
+gint		camel_stream_buffer_gets	(CamelStreamBuffer *sbf,
+						 gchar *buf,
+						 guint max);
+gchar *		camel_stream_buffer_read_line	(CamelStreamBuffer *sbf);
 
 G_END_DECLS
 

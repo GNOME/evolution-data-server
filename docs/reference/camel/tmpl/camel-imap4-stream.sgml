@@ -43,7 +43,7 @@ CamelIMAP4Stream
 
 </para>
 
-@parent_object: 
+@parent: 
 @stream: 
 @disconnected: 
 @have_unget: 

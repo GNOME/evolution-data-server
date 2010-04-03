@@ -30,14 +30,6 @@ CamelMimeFilterSave
 
 </para>
 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_mime_filter_save_new_with_stream ##### -->
-<para>
-
-</para>
-
 @stream: 
 @Returns: 
 

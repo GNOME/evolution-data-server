@@ -56,7 +56,7 @@ enum {
 };
 
 struct _CamelIMAP4Folder {
-	CamelOfflineFolder parent_object;
+	CamelOfflineFolder parent;
 
 	CamelFolderSearch *search;
 

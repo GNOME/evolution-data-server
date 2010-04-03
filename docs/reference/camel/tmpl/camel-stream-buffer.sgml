@@ -22,7 +22,7 @@ CamelStreamBuffer
 
 </para>
 
-@parent_object: 
+@parent: 
 @stream: 
 @buf: 
 @ptr: 

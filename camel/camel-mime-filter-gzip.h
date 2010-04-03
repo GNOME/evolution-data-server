@@ -47,7 +47,7 @@ typedef enum {
 } CamelMimeFilterGZipMode;
 
 struct _CamelMimeFilterGZip {
-	CamelMimeFilter parent_object;
+	CamelMimeFilter parent;
 
 	struct _CamelMimeFilterGZipPrivate *priv;
 
@@ -57,12 +57,12 @@ struct _CamelMimeFilterGZip {
 
 struct _CamelMimeFilterGZipClass {
 	CamelMimeFilterClass parent_class;
-
 };
 
-CamelType camel_mime_filter_gzip_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_gzip_new (CamelMimeFilterGZipMode mode, gint level);
+CamelType	camel_mime_filter_gzip_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_gzip_new	(CamelMimeFilterGZipMode mode,
+						 gint level);
 
 G_END_DECLS
 

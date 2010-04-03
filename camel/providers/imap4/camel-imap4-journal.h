@@ -59,7 +59,7 @@ struct _CamelIMAP4JournalEntry {
 };
 
 struct _CamelIMAP4Journal {
-	CamelOfflineJournal parent_object;
+	CamelOfflineJournal parent;
 
 	GPtrArray *failed;
 };

@@ -22,7 +22,7 @@ CamelSaslDigestMd5
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 
 <!-- ##### VARIABLE camel_sasl_digest_md5_authtype ##### -->

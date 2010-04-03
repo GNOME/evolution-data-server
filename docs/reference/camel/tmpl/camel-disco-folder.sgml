@@ -22,7 +22,7 @@ CamelDiscoFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 @offline_sync: 
 
 <!-- ##### FUNCTION camel_disco_folder_expunge_uids ##### -->

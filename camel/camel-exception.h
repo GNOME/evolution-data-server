@@ -30,9 +30,11 @@
 #ifndef CAMEL_EXCEPTION_H
 #define CAMEL_EXCEPTION_H
 
-#include <camel/camel-types.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
+
+typedef struct _CamelException CamelException;
 
 typedef enum {
 #include "camel-exception-list.def"

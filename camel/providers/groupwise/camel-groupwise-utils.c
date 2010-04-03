@@ -398,7 +398,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 	recipient_list = g_slist_reverse (recipient_list);
 
 	/** Get the mime parts from CamelMimemessge **/
-	mp = (CamelMultipart *)camel_medium_get_content_object (CAMEL_MEDIUM (message));
+	mp = (CamelMultipart *)camel_medium_get_content (CAMEL_MEDIUM (message));
 	if (!mp) {
 		g_warning ("ERROR: Could not get content object");
 		camel_operation_end (NULL);
@@ -414,7 +414,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		CamelDataWrapper *dw = NULL;
 		CamelContentType *type;
 
-		dw = camel_medium_get_content_object (CAMEL_MEDIUM (message));
+		dw = camel_medium_get_content (CAMEL_MEDIUM (message));
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
 
 		if (camel_content_type_is (type, "text", "plain")) {
@@ -429,8 +429,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 
 			charset = camel_content_type_param (type, "charset");
 			if (charset && g_ascii_strcasecmp (charset, "US-ASCII") && g_ascii_strcasecmp (charset, "UTF-8")) {
-				filter = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "UTF-8");
-				filtered_stream = (CamelStream *) camel_stream_filter_new_with_stream ((CamelStream *) content);
+				filter = camel_mime_filter_charset_new (charset, "UTF-8");
+				filtered_stream = camel_stream_filter_new ((CamelStream *) content);
 				camel_stream_filter_add ((CamelStreamFilter *) filtered_stream, filter);
 				camel_object_unref (filter);
 			} else {
@@ -616,10 +616,10 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			continue;
 
 		type = camel_mime_part_get_content_type(part);
-		dw = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		dw = camel_medium_get_content (CAMEL_MEDIUM (part));
 
 		if (CAMEL_IS_MULTIPART (dw)) {
-			do_multipart (cnc, item, (CamelMultipart *) camel_medium_get_content_object ((CamelMedium *) part), attach_list);
+			do_multipart (cnc, item, (CamelMultipart *) camel_medium_get_content ((CamelMedium *) part), attach_list);
 			continue;
 		}
 
@@ -633,7 +633,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			temp_part = camel_multipart_get_part ((CamelMultipart *)dw, 1);
 			if (temp_part) {
 				is_alternative = TRUE;
-				temp_dw = camel_medium_get_content_object (CAMEL_MEDIUM (temp_part));
+				temp_dw = camel_medium_get_content (CAMEL_MEDIUM (temp_part));
 				camel_data_wrapper_write_to_stream(temp_dw, (CamelStream *)temp_content);
 				filename = camel_mime_part_get_filename (temp_part);
 				disposition = camel_mime_part_get_disposition (temp_part);
@@ -656,8 +656,8 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 
 			charset = camel_content_type_param (type, "charset");
 			if (charset && g_ascii_strcasecmp (charset, "US-ASCII") && g_ascii_strcasecmp (charset, "UTF-8")) {
-				filter = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "UTF-8");
-				filtered_stream = (CamelStream *) camel_stream_filter_new_with_stream ((CamelStream *) content);
+				filter = camel_mime_filter_charset_new (charset, "UTF-8");
+				filtered_stream = camel_stream_filter_new ((CamelStream *) content);
 				camel_stream_filter_add ((CamelStreamFilter *) filtered_stream, filter);
 				camel_object_unref (filter);
 			} else {

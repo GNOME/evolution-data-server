@@ -45,7 +45,7 @@ typedef struct _CamelGroupwiseStoreClass CamelGroupwiseStoreClass;
 typedef struct _CamelGroupwiseStorePrivate CamelGroupwiseStorePrivate;
 
 struct _CamelGroupwiseStore {
-	CamelOfflineStore parent_object;
+	CamelOfflineStore parent;
 
 	struct _CamelGroupwiseStoreSummary *summary;
 

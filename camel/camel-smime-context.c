@@ -157,7 +157,7 @@ camel_smime_context_describe_part(CamelSMIMEContext *context, CamelMimePart *par
 
 		/* FIXME: stream this to the decoder incrementally */
 		istream = (CamelStreamMem *)camel_stream_mem_new();
-		camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)part), (CamelStream *)istream);
+		camel_data_wrapper_decode_to_stream(camel_medium_get_content ((CamelMedium *)part), (CamelStream *)istream);
 		camel_stream_reset((CamelStream *)istream);
 
 		dec = NSS_CMSDecoder_Start(NULL,
@@ -645,7 +645,7 @@ sm_sign(CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, 
 		camel_data_wrapper_set_mime_type_field(dw, ct);
 		camel_content_type_unref(ct);
 
-		camel_medium_set_content_object((CamelMedium *)sigpart, dw);
+		camel_medium_set_content ((CamelMedium *)sigpart, dw);
 
 		camel_mime_part_set_filename(sigpart, "smime.p7s");
 		camel_mime_part_set_disposition(sigpart, "attachment");
@@ -664,7 +664,7 @@ sm_sign(CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, 
 		camel_stream_reset(istream);
 		camel_object_ref(istream);
 
-		camel_medium_set_content_object((CamelMedium *)opart, (CamelDataWrapper *)mps);
+		camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mps);
 	} else {
 		ct = camel_content_type_new("application", "x-pkcs7-mime");
 		camel_content_type_set_param(ct, "name", "smime.p7m");
@@ -672,7 +672,7 @@ sm_sign(CamelCipherContext *context, const gchar *userid, CamelCipherHash hash, 
 		camel_data_wrapper_set_mime_type_field(dw, ct);
 		camel_content_type_unref(ct);
 
-		camel_medium_set_content_object((CamelMedium *)opart, dw);
+		camel_medium_set_content ((CamelMedium *)opart, dw);
 
 		camel_mime_part_set_filename(opart, "smime.p7m");
 		camel_mime_part_set_description(opart, "S/MIME Signed Message");
@@ -911,7 +911,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 	CamelMimePart *sigpart;
 	CamelDataWrapper *dw;
 
-	dw = camel_medium_get_content_object((CamelMedium *)ipart);
+	dw = camel_medium_get_content ((CamelMedium *)ipart);
 	ct = dw->mime_type;
 
 	/* FIXME: we should stream this to the decoder */
@@ -953,7 +953,7 @@ sm_verify(CamelCipherContext *context, CamelMimePart *ipart, CamelException *ex)
 				   NULL, NULL,	/* password callback    */
 				   NULL, NULL); /* decrypt key callback */
 
-	camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)sigpart), (CamelStream *)mem);
+	camel_data_wrapper_decode_to_stream(camel_medium_get_content ((CamelMedium *)sigpart), (CamelStream *)mem);
 	(void)NSS_CMSDecoder_Update(dec, (gchar *) mem->buffer->data, mem->buffer->len);
 	cmsg = NSS_CMSDecoder_Finish(dec);
 	if (cmsg == NULL) {
@@ -1119,7 +1119,7 @@ sm_encrypt(CamelCipherContext *context, const gchar *userid, GPtrArray *recipien
 	camel_data_wrapper_set_mime_type_field(dw, ct);
 	camel_content_type_unref(ct);
 
-	camel_medium_set_content_object((CamelMedium *)opart, dw);
+	camel_medium_set_content ((CamelMedium *)opart, dw);
 	camel_object_unref(dw);
 
 	camel_mime_part_set_disposition(opart, "attachment");
@@ -1164,7 +1164,7 @@ sm_decrypt(CamelCipherContext *context, CamelMimePart *ipart, CamelMimePart *opa
 
 	/* FIXME: stream this to the decoder incrementally */
 	istream = (CamelStreamMem *)camel_stream_mem_new();
-	camel_data_wrapper_decode_to_stream(camel_medium_get_content_object((CamelMedium *)ipart), (CamelStream *)istream);
+	camel_data_wrapper_decode_to_stream(camel_medium_get_content ((CamelMedium *)ipart), (CamelStream *)istream);
 	camel_stream_reset((CamelStream *)istream);
 
 	dec = NSS_CMSDecoder_Start(NULL,

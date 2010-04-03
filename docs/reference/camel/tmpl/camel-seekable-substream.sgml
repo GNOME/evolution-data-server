@@ -22,7 +22,7 @@ CamelSeekableSubstream
 
 </para>
 
-@parent_object: 
+@parent: 
 @parent_stream: 
 
 <!-- ##### FUNCTION camel_seekable_substream_new ##### -->

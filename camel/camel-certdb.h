@@ -39,6 +39,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelCertDB CamelCertDB;
 typedef struct _CamelCertDBClass CamelCertDBClass;
+typedef struct _CamelCertDBPrivate CamelCertDBPrivate;
 
 enum {
 	CAMEL_CERTDB_DIRTY  = (1 << 0)
@@ -72,8 +73,8 @@ typedef struct {
 } CamelCert;
 
 struct _CamelCertDB {
-	CamelObject parent_object;
-	struct _CamelCertDBPrivate *priv;
+	CamelObject parent;
+	CamelCertDBPrivate *priv;
 
 	gchar *filename;
 	guint32 version;

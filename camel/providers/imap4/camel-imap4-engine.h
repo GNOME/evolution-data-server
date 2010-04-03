@@ -152,7 +152,7 @@ enum {
 typedef gboolean (* CamelIMAP4ReconnectFunc) (CamelIMAP4Engine *engine, CamelException *ex);
 
 struct _CamelIMAP4Engine {
-	CamelObject parent_object;
+	CamelObject parent;
 
 	CamelIMAP4ReconnectFunc reconnect;
 	gboolean reconnecting;

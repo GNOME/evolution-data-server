@@ -22,7 +22,7 @@ CamelStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @folders: 
 @cdb_r: 

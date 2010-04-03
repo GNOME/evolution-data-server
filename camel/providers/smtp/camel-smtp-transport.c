@@ -692,7 +692,7 @@ smtp_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	      CamelException *ex)
 {
 	CamelSmtpTransport *smtp_transport = CAMEL_SMTP_TRANSPORT (transport);
-	const CamelInternetAddress *cia;
+	CamelInternetAddress *cia;
 	gboolean has_8bit_parts;
 	const gchar *addr;
 	gint i, len;
@@ -1286,7 +1286,7 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 {
 	struct _camel_header_raw *header, *savedbcc, *n, *tail;
 	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
-	CamelStreamFilter *filtered_stream;
+	CamelStream *filtered_stream;
 	gchar *cmdbuf, *respbuf = NULL;
 	CamelMimeFilter *filter;
 	CamelStreamNull *null;
@@ -1357,17 +1357,17 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelExcept
 	null = CAMEL_STREAM_NULL (camel_stream_null_new ());
 	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (null));
 
-	filtered_stream = camel_stream_filter_new_with_stream (transport->ostream);
+	filtered_stream = camel_stream_filter_new (transport->ostream);
 
 	/* setup progress reporting for message sending... */
 	filter = camel_mime_filter_progress_new (NULL, null->written);
-	camel_stream_filter_add (filtered_stream, filter);
+	camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
 	camel_object_unref (filter);
 	camel_object_unref (null);
 
 	/* setup LF->CRLF conversion */
 	filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
-	camel_stream_filter_add (filtered_stream, filter);
+	camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), filter);
 	camel_object_unref (filter);
 
 	/* write the message */

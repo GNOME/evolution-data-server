@@ -405,7 +405,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 }
 
 /* imap needs to treat inbox case insensitive */
-/* we'll assume the names are normalised already */
+/* we'll assume the names are normalized already */
 static guint
 folder_hash(gconstpointer ap)
 {

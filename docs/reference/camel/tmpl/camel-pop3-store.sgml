@@ -22,7 +22,7 @@ CamelPOP3Store
 
 </para>
 
-@parent_object: 
+@parent: 
 @engine: 
 @cache: 
 @delete_after: 

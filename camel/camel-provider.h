@@ -31,7 +31,6 @@
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H
 
-#include <camel/camel-types.h>
 #include <camel/camel-object.h>
 #include <camel/camel-exception.h>
 #include <camel/camel-url.h>
@@ -222,18 +221,21 @@ struct _CamelProviderModule {
 	guint loaded:1;
 };
 
-void camel_provider_init(void);
-
-void camel_provider_load(const gchar *path, CamelException *ex);
-void camel_provider_register(CamelProvider *provider);
-GList *camel_provider_list(gboolean load);
-CamelProvider *camel_provider_get(const gchar *url_string, CamelException *ex);
+void		camel_provider_init		(void);
+void		camel_provider_load		(const gchar *path,
+						 CamelException *ex);
+void		camel_provider_register		(CamelProvider *provider);
+GList *		camel_provider_list		(gboolean load);
+CamelProvider *	camel_provider_get		(const gchar *url_string,
+						 CamelException *ex);
 
 /* This is defined by each module, not by camel-provider.c. */
-void camel_provider_module_init(void);
+void		camel_provider_module_init	(void);
 
-gint camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
-				GHashTable **auto_detected, CamelException *ex);
+gint		camel_provider_auto_detect	(CamelProvider *provider,
+						 CamelURL *url,
+						 GHashTable **auto_detected,
+						 CamelException *ex);
 
 G_END_DECLS
 

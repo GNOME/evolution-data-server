@@ -86,7 +86,7 @@ camel_address_new (void)
  * Returns: the cloned address
  **/
 CamelAddress *
-camel_address_new_clone (const CamelAddress *addr)
+camel_address_new_clone (CamelAddress *addr)
 {
 	CamelAddress *new = CAMEL_ADDRESS(camel_object_new(CAMEL_OBJECT_GET_TYPE(addr)));
 
@@ -186,7 +186,7 @@ camel_address_format (CamelAddress *addr)
  * Returns: the number of addresses concatenated
  **/
 gint
-camel_address_cat (CamelAddress *dest, const CamelAddress *source)
+camel_address_cat (CamelAddress *dest, CamelAddress *source)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(dest), -1);
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(source), -1);
@@ -204,7 +204,7 @@ camel_address_cat (CamelAddress *dest, const CamelAddress *source)
  * Returns: the number of addresses copied
  **/
 gint
-camel_address_copy (CamelAddress *dest, const CamelAddress *source)
+camel_address_copy (CamelAddress *dest, CamelAddress *source)
 {
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(dest), -1);
 	g_return_val_if_fail(CAMEL_IS_ADDRESS(source), -1);

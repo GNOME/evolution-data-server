@@ -32,14 +32,6 @@ CamelMimeFilterIndex
 
 </para>
 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_mime_filter_index_new_index ##### -->
-<para>
-
-</para>
-
 @index: 
 @Returns: 
 

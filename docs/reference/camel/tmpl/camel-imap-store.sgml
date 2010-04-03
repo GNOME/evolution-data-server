@@ -31,7 +31,7 @@ CamelImapStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @istream: 
 @ostream: 
 @summary: 

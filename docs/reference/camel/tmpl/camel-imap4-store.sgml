@@ -22,7 +22,7 @@ CamelIMAP4Store
 
 </para>
 
-@parent_object: 
+@parent: 
 @summary: 
 @engine: 
 @storage_path: 

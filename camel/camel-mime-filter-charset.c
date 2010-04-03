@@ -240,19 +240,6 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *obj)
 }
 
 /**
- * camel_mime_filter_charset_new:
- *
- * Create a new #CamelMimeFilterCharset object.
- *
- * Returns: a new #CamelMimeFilterCharset object
- **/
-CamelMimeFilterCharset *
-camel_mime_filter_charset_new (void)
-{
-	return CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
-}
-
-/**
  * camel_mime_filter_charset_new_convert:
  * @from_charset: charset to convert from
  * @to_charset: charset to convert to
@@ -262,8 +249,9 @@ camel_mime_filter_charset_new (void)
  *
  * Returns: a new #CamelMimeFilterCharset object
  **/
-CamelMimeFilterCharset *
-camel_mime_filter_charset_new_convert (const gchar *from_charset, const gchar *to_charset)
+CamelMimeFilter *
+camel_mime_filter_charset_new (const gchar *from_charset,
+                               const gchar *to_charset)
 {
 	CamelMimeFilterCharset *new;
 
@@ -282,5 +270,5 @@ camel_mime_filter_charset_new_convert (const gchar *from_charset, const gchar *t
 		new->to = g_strdup (to_charset);
 	}
 
-	return new;
+	return CAMEL_MIME_FILTER (new);
 }

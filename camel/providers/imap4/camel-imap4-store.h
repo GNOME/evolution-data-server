@@ -39,7 +39,7 @@ typedef struct _CamelIMAP4StoreClass CamelIMAP4StoreClass;
 struct _CamelIMAP4Engine;
 
 struct _CamelIMAP4Store {
-	CamelOfflineStore parent_object;
+	CamelOfflineStore parent;
 
 	struct _CamelIMAP4StoreSummary *summary;
 	struct _CamelIMAP4Engine *engine;

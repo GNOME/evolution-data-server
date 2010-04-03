@@ -22,7 +22,7 @@ CamelIMAP4Engine
 
 </para>
 
-@parent_object: 
+@parent: 
 @reconnect: 
 @reconnecting: 
 @session: 

@@ -22,7 +22,7 @@ CamelMimeFilterYenc
 
 </para>
 
-@parent_object: 
+@parent: 
 @direction: 
 @part: 
 @state: 

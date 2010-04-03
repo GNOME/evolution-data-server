@@ -22,7 +22,7 @@ CamelPOP3Folder
 
 </para>
 
-@parent_object: 
+@parent: 
 @uids: 
 @uids_uid: 
 @uids_id: 

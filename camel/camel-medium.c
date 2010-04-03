@@ -48,8 +48,8 @@ static gconstpointer get_header (CamelMedium *medium, const gchar *name);
 static GArray *get_headers (CamelMedium *medium);
 static void free_headers (CamelMedium *medium, GArray *headers);
 
-static CamelDataWrapper *get_content_object (CamelMedium *medium);
-static void set_content_object (CamelMedium *medium,
+static CamelDataWrapper *get_content (CamelMedium *medium);
+static void set_content (CamelMedium *medium,
 				CamelDataWrapper *content);
 
 static void
@@ -72,8 +72,8 @@ camel_medium_class_init (CamelMediumClass *camel_medium_class)
 	camel_medium_class->get_headers = get_headers;
 	camel_medium_class->free_headers = free_headers;
 
-	camel_medium_class->set_content_object = set_content_object;
-	camel_medium_class->get_content_object = get_content_object;
+	camel_medium_class->set_content = set_content;
+	camel_medium_class->get_content = get_content;
 }
 
 static void
@@ -273,13 +273,13 @@ camel_medium_free_headers (CamelMedium *medium, GArray *headers)
 }
 
 static CamelDataWrapper *
-get_content_object(CamelMedium *medium)
+get_content (CamelMedium *medium)
 {
 	return medium->content;
 }
 
 /**
- * camel_medium_get_content_object:
+ * camel_medium_get_content:
  * @medium: a #CamelMedium object
  *
  * Gets a data wrapper that represents the content of the medium,
@@ -288,15 +288,15 @@ get_content_object(CamelMedium *medium)
  * Returns: a #CamelDataWrapper containing @medium's content. Can return NULL.
  **/
 CamelDataWrapper *
-camel_medium_get_content_object (CamelMedium *medium)
+camel_medium_get_content (CamelMedium *medium)
 {
 	g_return_val_if_fail (CAMEL_IS_MEDIUM (medium), NULL);
 
-	return CM_CLASS (medium)->get_content_object (medium);
+	return CM_CLASS (medium)->get_content (medium);
 }
 
 static void
-set_content_object (CamelMedium *medium, CamelDataWrapper *content)
+set_content (CamelMedium *medium, CamelDataWrapper *content)
 {
 	if (medium->content)
 		camel_object_unref (medium->content);
@@ -305,18 +305,18 @@ set_content_object (CamelMedium *medium, CamelDataWrapper *content)
 }
 
 /**
- * camel_medium_set_content_object:
+ * camel_medium_set_content:
  * @medium: a #CamelMedium object
  * @content: a #CamelDataWrapper object
  *
  * Sets the content of @medium to be @content.
  **/
 void
-camel_medium_set_content_object (CamelMedium *medium,
+camel_medium_set_content (CamelMedium *medium,
 				 CamelDataWrapper *content)
 {
 	g_return_if_fail (CAMEL_IS_MEDIUM (medium));
 	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (content));
 
-	CM_CLASS (medium)->set_content_object (medium, content);
+	CM_CLASS (medium)->set_content (medium, content);
 }

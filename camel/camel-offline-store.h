@@ -51,7 +51,7 @@ enum {
 };
 
 struct _CamelOfflineStore {
-	CamelStore parent_object;
+	CamelStore parent;
 
 	gint state;
 };

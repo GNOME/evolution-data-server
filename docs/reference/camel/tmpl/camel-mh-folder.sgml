@@ -22,7 +22,7 @@ CamelMhFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 
 <!-- ##### FUNCTION camel_mh_folder_new ##### -->
 <para>

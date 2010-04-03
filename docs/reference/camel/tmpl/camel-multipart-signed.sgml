@@ -22,7 +22,7 @@ CamelMultipartSigned
 
 </para>
 
-@parent_object: 
+@parent: 
 @content: 
 @signature: 
 @contentraw: 

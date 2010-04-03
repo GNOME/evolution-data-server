@@ -22,7 +22,7 @@ CamelHttpStream
 
 </para>
 
-@parent_object: 
+@parent: 
 @parser: 
 @content_type: 
 @headers: 

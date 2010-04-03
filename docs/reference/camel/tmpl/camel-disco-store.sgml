@@ -22,7 +22,7 @@ CamelDiscoStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @status: 
 @diary: 
 

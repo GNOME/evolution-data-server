@@ -36,9 +36,11 @@
 
 G_BEGIN_DECLS
 
-struct _CamelTcpStreamRaw
-{
-	CamelTcpStream parent_object;
+typedef struct _CamelTcpStreamRaw CamelTcpStreamRaw;
+typedef struct _CamelTcpStreamRawClass CamelTcpStreamRawClass;
+
+struct _CamelTcpStreamRaw {
+	CamelTcpStream parent;
 
 	gint sockfd;
 #ifdef G_OS_WIN32
@@ -46,14 +48,10 @@ struct _CamelTcpStreamRaw
 #endif
 };
 
-typedef struct {
+struct _CamelTcpStreamRawClass {
 	CamelTcpStreamClass parent_class;
+};
 
-	/* virtual functions */
-
-} CamelTcpStreamRawClass;
-
-/* Standard Camel function */
 CamelType camel_tcp_stream_raw_get_type (void);
 
 /* public methods */

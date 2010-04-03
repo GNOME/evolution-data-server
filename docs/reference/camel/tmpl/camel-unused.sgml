@@ -731,6 +731,27 @@ camel-types
 
 @Returns: 
 
+<!-- ##### FUNCTION camel_data_cache_clear ##### -->
+<para>
+
+</para>
+
+@cache: 
+@path: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_data_cache_rename ##### -->
+<para>
+
+</para>
+
+@cache: 
+@old: 
+@new: 
+@ex: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_digest_folder_new ##### -->
 <para>
 
@@ -832,6 +853,15 @@ camel-types
 </para>
 
 @Returns: 
+
+<!-- ##### FUNCTION camel_index_set_normalise ##### -->
+<para>
+
+</para>
+
+@idx: 
+@func: 
+@data: 
 
 <!-- ##### FUNCTION camel_interface_cast ##### -->
 <para>
@@ -998,6 +1028,71 @@ camel-types
 @buf: 
 @len: 
 
+<!-- ##### FUNCTION camel_medium_get_content_object ##### -->
+<para>
+
+</para>
+
+@medium: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_medium_set_content_object ##### -->
+<para>
+
+</para>
+
+@medium: 
+@content: 
+
+<!-- ##### FUNCTION camel_mime_filter_basic_new_type ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_mime_filter_charset_new_convert ##### -->
+<para>
+
+</para>
+
+@from_charset: 
+@to_charset: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_mime_filter_index_new_index ##### -->
+<para>
+
+</para>
+
+@index: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_mime_filter_save_new_with_stream ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_mime_part_get_content_MD5 ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_mime_part_set_content_MD5 ##### -->
+<para>
+
+</para>
+
+@mime_part: 
+@md5sum: 
+
 <!-- ##### FUNCTION camel_mkdir ##### -->
 <para>
 
@@ -1077,6 +1172,28 @@ camel-types
 
 @name: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_operation_cancel_block ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+<!-- ##### FUNCTION camel_operation_cancel_unblock ##### -->
+<para>
+
+</para>
+
+@cc: 
+
+<!-- ##### FUNCTION camel_operation_progress_count ##### -->
+<para>
+
+</para>
+
+@cc: 
+@sofar: 
 
 <!-- ##### FUNCTION camel_partition_table_get_type ##### -->
 <para>
@@ -1206,6 +1323,14 @@ camel-types
 @len: 
 @type: 
 @words: 
+
+<!-- ##### FUNCTION camel_stream_filter_new_with_stream ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
 
 <!-- ##### FUNCTION camel_stream_vfs_new_with_handle ##### -->
 <para>

@@ -42,7 +42,7 @@ typedef struct _CamelMimeFilterEnriched CamelMimeFilterEnriched;
 typedef struct _CamelMimeFilterEnrichedClass CamelMimeFilterEnrichedClass;
 
 struct _CamelMimeFilterEnriched {
-	CamelMimeFilter parent_object;
+	CamelMimeFilter parent;
 
 	guint32 flags;
 	gint nofill;
@@ -50,13 +50,13 @@ struct _CamelMimeFilterEnriched {
 
 struct _CamelMimeFilterEnrichedClass {
 	CamelMimeFilterClass parent_class;
-
 };
 
-CamelType        camel_mime_filter_enriched_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_enriched_new (guint32 flags);
-gchar *camel_enriched_to_html(const gchar *in, guint32 flags);
+CamelType	camel_mime_filter_enriched_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_enriched_new	(guint32 flags);
+gchar *		camel_enriched_to_html		(const gchar *in,
+						 guint32 flags);
 
 G_END_DECLS
 

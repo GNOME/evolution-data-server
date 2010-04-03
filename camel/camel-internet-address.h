@@ -34,30 +34,45 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelInternetAddress CamelInternetAddress;
 typedef struct _CamelInternetAddressClass CamelInternetAddressClass;
+typedef struct _CamelInternetAddressPrivate CamelInternetAddressPrivate;
 
 struct _CamelInternetAddress {
 	CamelAddress parent;
-
-	struct _CamelInternetAddressPrivate *priv;
+	CamelInternetAddressPrivate *priv;
 };
 
 struct _CamelInternetAddressClass {
 	CamelAddressClass parent_class;
 };
 
-CamelType		camel_internet_address_get_type	(void);
-CamelInternetAddress   *camel_internet_address_new	(void);
-
-gint			camel_internet_address_add	(CamelInternetAddress *addr, const gchar *name, const gchar *address);
-gboolean		camel_internet_address_get	(const CamelInternetAddress *addr, gint index, const gchar **namep, const gchar **addressp);
-
-gint			camel_internet_address_find_name(CamelInternetAddress *addr, const gchar *name, const gchar **addressp);
-gint			camel_internet_address_find_address(CamelInternetAddress *addr, const gchar *address, const gchar **namep);
+CamelType	camel_internet_address_get_type	(void);
+CamelInternetAddress *
+		camel_internet_address_new	(void);
+gint		camel_internet_address_add	(CamelInternetAddress *addr,
+						 const gchar *name,
+						 const gchar *address);
+gboolean	camel_internet_address_get	(CamelInternetAddress *addr,
+						 gint index,
+						 const gchar **namep,
+						 const gchar **addressp);
+gint		camel_internet_address_find_name(CamelInternetAddress *addr,
+						 const gchar *name,
+						 const gchar **addressp);
+gint		camel_internet_address_find_address
+						(CamelInternetAddress *addr,
+						 const gchar *address,
+						 const gchar **namep);
 
 /* utility functions, for network/display formatting */
-gchar *			camel_internet_address_encode_address(gint *len, const gchar *name, const gchar *addr);
-gchar *			camel_internet_address_format_address(const gchar *name, const gchar *addr);
+gchar *		camel_internet_address_encode_address
+						(gint *len,
+						 const gchar *name,
+						 const gchar *addr);
+gchar *		camel_internet_address_format_address
+						(const gchar *name,
+						 const gchar *addr);
 
 G_END_DECLS
 

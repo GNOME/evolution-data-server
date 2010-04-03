@@ -22,7 +22,7 @@ CamelMaildirFolder
 
 </para>
 
-@parent_object: 
+@parent: 
 
 <!-- ##### FUNCTION camel_maildir_folder_new ##### -->
 <para>

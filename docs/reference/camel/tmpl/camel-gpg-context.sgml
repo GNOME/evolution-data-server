@@ -22,7 +22,7 @@ CamelGpgContext
 
 </para>
 
-@parent_object: 
+@parent: 
 @always_trust: 
 
 <!-- ##### FUNCTION camel_gpg_context_new ##### -->
@@ -39,7 +39,7 @@ CamelGpgContext
 
 </para>
 
-@ctx: 
-@trust: 
+@context: 
+@always_trust: 
 
 

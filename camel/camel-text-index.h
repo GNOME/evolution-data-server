@@ -36,17 +36,21 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelTextIndex      CamelTextIndex;
+typedef struct _CamelTextIndex CamelTextIndex;
 typedef struct _CamelTextIndexClass CamelTextIndexClass;
+typedef struct _CamelTextIndexPrivate CamelTextIndexPrivate;
 
-typedef struct _CamelTextIndexName      CamelTextIndexName;
+typedef struct _CamelTextIndexName CamelTextIndexName;
 typedef struct _CamelTextIndexNameClass CamelTextIndexNameClass;
+typedef struct _CamelTextIndexNamePrivate CamelTextIndexNamePrivate;
 
-typedef struct _CamelTextIndexCursor      CamelTextIndexCursor;
+typedef struct _CamelTextIndexCursor CamelTextIndexCursor;
 typedef struct _CamelTextIndexCursorClass CamelTextIndexCursorClass;
+typedef struct _CamelTextIndexCursorPrivate CamelTextIndexCursorPrivate;
 
-typedef struct _CamelTextIndexKeyCursor      CamelTextIndexKeyCursor;
+typedef struct _CamelTextIndexKeyCursor CamelTextIndexKeyCursor;
 typedef struct _CamelTextIndexKeyCursorClass CamelTextIndexKeyCursorClass;
+typedef struct _CamelTextIndexKeyCursorPrivate CamelTextIndexKeyCursorPrivate;
 
 typedef void (*CamelTextIndexFunc)(CamelTextIndex *idx, const gchar *word, gchar *buffer);
 
@@ -54,12 +58,11 @@ typedef void (*CamelTextIndexFunc)(CamelTextIndex *idx, const gchar *word, gchar
 
 struct _CamelTextIndexCursor {
 	CamelIndexCursor parent;
-
-	struct _CamelTextIndexCursorPrivate *priv;
+	CamelTextIndexCursorPrivate *priv;
 };
 
 struct _CamelTextIndexCursorClass {
-	CamelIndexCursorClass parent;
+	CamelIndexCursorClass parent_class;
 };
 
 CamelType camel_text_index_cursor_get_type(void);
@@ -68,12 +71,11 @@ CamelType camel_text_index_cursor_get_type(void);
 
 struct _CamelTextIndexKeyCursor {
 	CamelIndexCursor parent;
-
-	struct _CamelTextIndexKeyCursorPrivate *priv;
+	CamelTextIndexKeyCursorPrivate *priv;
 };
 
 struct _CamelTextIndexKeyCursorClass {
-	CamelIndexCursorClass parent;
+	CamelIndexCursorClass parent_class;
 };
 
 CamelType camel_text_index_key_cursor_get_type(void);
@@ -82,12 +84,11 @@ CamelType camel_text_index_key_cursor_get_type(void);
 
 struct _CamelTextIndexName {
 	CamelIndexName parent;
-
-	struct _CamelTextIndexNamePrivate *priv;
+	CamelTextIndexNamePrivate *priv;
 };
 
 struct _CamelTextIndexNameClass {
-	CamelIndexNameClass parent;
+	CamelIndexNameClass parent_class;
 };
 
 CamelType camel_text_index_name_get_type(void);
@@ -96,25 +97,26 @@ CamelType camel_text_index_name_get_type(void);
 
 struct _CamelTextIndex {
 	CamelIndex parent;
-
-	struct _CamelTextIndexPrivate *priv;
+	CamelTextIndexPrivate *priv;
 };
 
 struct _CamelTextIndexClass {
 	CamelIndexClass parent_class;
 };
 
-CamelType		   camel_text_index_get_type	(void);
-CamelTextIndex    *camel_text_index_new(const gchar *path, gint flags);
+CamelType	camel_text_index_get_type	(void);
+CamelTextIndex *camel_text_index_new		(const gchar *path,
+						 gint flags);
 
 /* static utility functions */
-gint camel_text_index_check(const gchar *path);
-gint camel_text_index_rename(const gchar *old, const gchar *new);
-gint camel_text_index_remove(const gchar *old);
+gint		camel_text_index_check		(const gchar *path);
+gint		camel_text_index_rename		(const gchar *old,
+						 const gchar *new);
+gint		camel_text_index_remove		(const gchar *old);
 
-void camel_text_index_dump(CamelTextIndex *idx);
-void camel_text_index_info(CamelTextIndex *idx);
-void camel_text_index_validate(CamelTextIndex *idx);
+void		camel_text_index_dump		(CamelTextIndex *idx);
+void		camel_text_index_info		(CamelTextIndex *idx);
+void		camel_text_index_validate	(CamelTextIndex *idx);
 
 G_END_DECLS
 

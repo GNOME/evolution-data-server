@@ -29,10 +29,10 @@
 #ifndef CAMEL_DATA_WRAPPER_H
 #define CAMEL_DATA_WRAPPER_H
 
-#include <glib.h>
 #include <sys/types.h>
-#include <camel/camel-object.h>
+
 #include <camel/camel-mime-utils.h>
+#include <camel/camel-stream.h>
 
 #define CAMEL_DATA_WRAPPER_TYPE     (camel_data_wrapper_get_type ())
 #define CAMEL_DATA_WRAPPER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_DATA_WRAPPER_TYPE, CamelDataWrapper))
@@ -41,9 +41,13 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelDataWrapper CamelDataWrapper;
+typedef struct _CamelDataWrapperClass CamelDataWrapperClass;
+typedef struct _CamelDataWrapperPrivate CamelDataWrapperPrivate;
+
 struct _CamelDataWrapper {
-	CamelObject parent_object;
-	struct _CamelDataWrapperPrivate *priv;
+	CamelObject parent;
+	CamelDataWrapperPrivate *priv;
 
 	CamelTransferEncoding encoding;
 
@@ -53,50 +57,47 @@ struct _CamelDataWrapper {
 	guint offline:1;
 };
 
-typedef struct {
+struct _CamelDataWrapperClass {
 	CamelObjectClass parent_class;
 
-	/* Virtual methods */
-	void                (*set_mime_type)          (CamelDataWrapper *data_wrapper,
-						       const gchar *mime_type);
-	gchar *              (*get_mime_type)          (CamelDataWrapper *data_wrapper);
-	CamelContentType *  (*get_mime_type_field)    (CamelDataWrapper *data_wrapper);
-	void                (*set_mime_type_field)    (CamelDataWrapper *data_wrapper,
-						       CamelContentType *mime_type_field);
+	void		(*set_mime_type)	(CamelDataWrapper *data_wrapper,
+						 const gchar *mime_type);
+	gchar *		(*get_mime_type)	(CamelDataWrapper *data_wrapper);
+	CamelContentType *
+			(*get_mime_type_field)	(CamelDataWrapper *data_wrapper);
+	void		(*set_mime_type_field)	(CamelDataWrapper *data_wrapper,
+						 CamelContentType *mime_type_field);
+	gssize		(*write_to_stream)	(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream);
+	gssize		(*decode_to_stream)	(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream);
+	gint		(*construct_from_stream)(CamelDataWrapper *data_wrapper,
+						 CamelStream *);
+	gboolean	(*is_offline)		(CamelDataWrapper *data_wrapper);
+};
 
-	gssize             (*write_to_stream)        (CamelDataWrapper *data_wrapper,
-						       CamelStream *stream);
-
-	gssize             (*decode_to_stream)       (CamelDataWrapper *data_wrapper,
-						       CamelStream *stream);
-
-	gint                 (*construct_from_stream)  (CamelDataWrapper *data_wrapper,
-						       CamelStream *);
-
-	gboolean            (*is_offline)             (CamelDataWrapper *data_wrapper);
-} CamelDataWrapperClass;
-
-/* Standard Camel function */
-CamelType camel_data_wrapper_get_type (void);
-
-/* public methods */
-CamelDataWrapper *camel_data_wrapper_new(void);
-gssize           camel_data_wrapper_write_to_stream        (CamelDataWrapper *data_wrapper,
-							     CamelStream *stream);
-gssize           camel_data_wrapper_decode_to_stream       (CamelDataWrapper *data_wrapper,
-							     CamelStream *stream);
-
-void              camel_data_wrapper_set_mime_type          (CamelDataWrapper *data_wrapper,
-							     const gchar *mime_type);
-gchar             *camel_data_wrapper_get_mime_type          (CamelDataWrapper *data_wrapper);
-CamelContentType *camel_data_wrapper_get_mime_type_field    (CamelDataWrapper *data_wrapper);
-void              camel_data_wrapper_set_mime_type_field    (CamelDataWrapper *data_wrapper,
-							     CamelContentType *mime_type);
-
-gint               camel_data_wrapper_construct_from_stream  (CamelDataWrapper *data_wrapper,
-							     CamelStream *stream);
-
-gboolean          camel_data_wrapper_is_offline             (CamelDataWrapper *data_wrapper);
+CamelType	camel_data_wrapper_get_type	(void);
+CamelDataWrapper *
+		camel_data_wrapper_new		(void);
+gssize		camel_data_wrapper_write_to_stream
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream);
+gssize		camel_data_wrapper_decode_to_stream
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream);
+void		camel_data_wrapper_set_mime_type(CamelDataWrapper *data_wrapper,
+						 const gchar *mime_type);
+gchar *		camel_data_wrapper_get_mime_type(CamelDataWrapper *data_wrapper);
+CamelContentType *
+		camel_data_wrapper_get_mime_type_field
+						(CamelDataWrapper *data_wrapper);
+void		camel_data_wrapper_set_mime_type_field
+						(CamelDataWrapper *data_wrapper,
+						 CamelContentType *mime_type);
+gint		camel_data_wrapper_construct_from_stream
+						(CamelDataWrapper *data_wrapper,
+						 CamelStream *stream);
+gboolean	camel_data_wrapper_is_offline	(CamelDataWrapper *data_wrapper);
 
 G_END_DECLS
 

@@ -27,8 +27,6 @@
 #ifndef CAMEL_TCP_STREAM_H
 #define CAMEL_TCP_STREAM_H
 
-#include <glib.h>
-
 #ifndef G_OS_WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -49,6 +47,9 @@
 #define CAMEL_IS_TCP_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TCP_STREAM_TYPE))
 
 G_BEGIN_DECLS
+
+typedef struct _CamelTcpStream CamelTcpStream;
+typedef struct _CamelTcpStreamClass CamelTcpStreamClass;
 
 typedef enum {
 	CAMEL_SOCKOPT_NONBLOCKING,     /* nonblocking io */
@@ -95,32 +96,41 @@ typedef struct _CamelSockOptData {
 } CamelSockOptData;
 
 struct _CamelTcpStream {
-	CamelStream parent_object;
-
+	CamelStream parent;
 };
 
-typedef struct {
+struct _CamelTcpStreamClass {
 	CamelStreamClass parent_class;
 
-	/* Virtual methods */
-	gint (*connect)    (CamelTcpStream *stream, struct addrinfo *host);
-	gint (*getsockopt) (CamelTcpStream *stream, CamelSockOptData *data);
-	gint (*setsockopt) (CamelTcpStream *stream, const CamelSockOptData *data);
+	gint		(*connect)		(CamelTcpStream *stream,
+						 struct addrinfo *host);
+	gint		(*getsockopt)		(CamelTcpStream *stream,
+						 CamelSockOptData *data);
+	gint		(*setsockopt)		(CamelTcpStream *stream,
+						 const CamelSockOptData *data);
+	struct sockaddr *
+			(*get_local_address)	(CamelTcpStream *stream,
+						 socklen_t *len);
+	struct sockaddr *
+			(*get_remote_address)	(CamelTcpStream *stream,
+						 socklen_t *len);
+};
 
-	struct sockaddr * (*get_local_address)  (CamelTcpStream *stream, socklen_t *len);
-	struct sockaddr * (*get_remote_address) (CamelTcpStream *stream, socklen_t *len);
-} CamelTcpStreamClass;
-
-/* Standard Camel function */
-CamelType camel_tcp_stream_get_type (void);
-
-/* public methods */
-gint         camel_tcp_stream_connect    (CamelTcpStream *stream, struct addrinfo *host);
-gint         camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
-gint         camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
-
-struct sockaddr *camel_tcp_stream_get_local_address  (CamelTcpStream *stream, socklen_t *len);
-struct sockaddr *camel_tcp_stream_get_remote_address (CamelTcpStream *stream, socklen_t *len);
+CamelType	camel_tcp_stream_get_type	(void);
+gint		camel_tcp_stream_connect	(CamelTcpStream *stream,
+						 struct addrinfo *host);
+gint		camel_tcp_stream_getsockopt	(CamelTcpStream *stream,
+						 CamelSockOptData *data);
+gint		camel_tcp_stream_setsockopt	(CamelTcpStream *stream,
+						 const CamelSockOptData *data);
+struct sockaddr *
+		camel_tcp_stream_get_local_address
+						(CamelTcpStream *stream,
+						 socklen_t *len);
+struct sockaddr *
+		camel_tcp_stream_get_remote_address
+						(CamelTcpStream *stream,
+						 socklen_t *len);
 
 G_END_DECLS
 

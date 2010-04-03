@@ -22,7 +22,7 @@ CamelTcpStreamRaw
 
 </para>
 
-@parent_object: 
+@parent: 
 @sockfd: 
 @is_nonblocking: 
 

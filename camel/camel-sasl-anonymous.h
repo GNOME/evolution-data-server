@@ -36,25 +36,26 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelSaslAnonymous CamelSaslAnonymous;
+typedef struct _CamelSaslAnonymousClass CamelSaslAnonymousClass;
+
 typedef enum {
 	CAMEL_SASL_ANON_TRACE_EMAIL,
 	CAMEL_SASL_ANON_TRACE_OPAQUE,
 	CAMEL_SASL_ANON_TRACE_EMPTY
 } CamelSaslAnonTraceType;
 
-typedef struct _CamelSaslAnonymous {
-	CamelSasl parent_object;
+struct _CamelSaslAnonymous {
+	CamelSasl parent;
 
 	gchar *trace_info;
 	CamelSaslAnonTraceType type;
-} CamelSaslAnonymous;
+};
 
-typedef struct _CamelSaslAnonymousClass {
+struct _CamelSaslAnonymousClass {
 	CamelSaslClass parent_class;
+};
 
-} CamelSaslAnonymousClass;
-
-/* Standard Camel function */
 CamelType camel_sasl_anonymous_get_type (void);
 
 /* public methods */

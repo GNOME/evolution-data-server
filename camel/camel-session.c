@@ -40,6 +40,7 @@
 
 #include "camel-exception.h"
 #include "camel-file-utils.h"
+#include "camel-filter-driver.h"
 #include "camel-private.h"
 #include "camel-session.h"
 #include "camel-store.h"

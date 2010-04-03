@@ -26,6 +26,8 @@
 #ifndef CAMEL_SEARCH_SQL_H
 #define CAMEL_SEARCH_SQL_H
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 gchar * camel_sexp_to_sql (const gchar *sexp);

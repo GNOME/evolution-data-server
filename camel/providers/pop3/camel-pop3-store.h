@@ -38,7 +38,7 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	CamelStore parent_object;
+	CamelStore parent;
 
 	CamelPOP3Engine *engine; /* pop processing engine */
 

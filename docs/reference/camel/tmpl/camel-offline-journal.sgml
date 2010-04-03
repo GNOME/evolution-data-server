@@ -22,7 +22,7 @@ CamelOfflineJournal
 
 </para>
 
-@parent_object: 
+@parent: 
 @folder: 
 @filename: 
 @queue: 

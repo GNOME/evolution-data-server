@@ -22,7 +22,7 @@ CamelNNTPStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @extensions: 
 @posting_allowed: 

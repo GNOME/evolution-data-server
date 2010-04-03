@@ -50,7 +50,7 @@ typedef struct _CamelLocalFolderClass CamelLocalFolderClass;
 typedef struct _CamelLocalFolderPrivate CamelLocalFolderPrivate;
 
 struct _CamelLocalFolder {
-	CamelFolder parent_object;
+	CamelFolder parent;
 	CamelLocalFolderPrivate *priv;
 
 	guint32 flags;		/* open mode flags */

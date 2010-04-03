@@ -32,33 +32,35 @@
 #define CAMEL_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_get_type (), CamelIndexClass)
 #define CAMEL_IS_INDEX(obj)      CAMEL_CHECK_TYPE (obj, camel_index_get_type ())
 
-G_BEGIN_DECLS
-
-typedef struct _CamelIndex      CamelIndex;
-typedef struct _CamelIndexClass CamelIndexClass;
-
 #define CAMEL_INDEX_NAME(obj)         CAMEL_CHECK_CAST (obj, camel_index_name_get_type (), CamelIndexName)
 #define CAMEL_INDEX_NAME_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_name_get_type (), CamelIndexNameClass)
 #define CAMEL_IS_INDEX_NAME(obj)      CAMEL_CHECK_TYPE (obj, camel_index_name_get_type ())
-
-typedef struct _CamelIndexName      CamelIndexName;
-typedef struct _CamelIndexNameClass CamelIndexNameClass;
 
 #define CAMEL_INDEX_CURSOR(obj)         CAMEL_CHECK_CAST (obj, camel_index_cursor_get_type (), CamelIndexCursor)
 #define CAMEL_INDEX_CURSOR_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_cursor_get_type (), CamelIndexCursorClass)
 #define CAMEL_IS_INDEX_CURSOR(obj)      CAMEL_CHECK_TYPE (obj, camel_index_cursor_get_type ())
 
-typedef struct _CamelIndexCursor      CamelIndexCursor;
-typedef struct _CamelIndexCursorClass CamelIndexCursorClass;
+G_BEGIN_DECLS
 
-typedef gchar * (*CamelIndexNorm)(CamelIndex *idx, const gchar *word, gpointer data);
+typedef struct _CamelIndex CamelIndex;
+typedef struct _CamelIndexClass CamelIndexClass;
+typedef struct _CamelIndexPrivate CamelIndexPrivate;
+
+typedef struct _CamelIndexName CamelIndexName;
+typedef struct _CamelIndexNameClass CamelIndexNameClass;
+typedef struct _CamelIndexNamePrivate CamelIndexNamePrivate;
+
+typedef struct _CamelIndexCursor CamelIndexCursor;
+typedef struct _CamelIndexCursorClass CamelIndexCursorClass;
+typedef struct _CamelIndexCursorPrivate CamelIndexCursorPrivate;
+
+typedef gchar * (*CamelIndexNorm)(CamelIndex *index, const gchar *word, gpointer data);
 
 /* ********************************************************************** */
 
 struct _CamelIndexCursor {
 	CamelObject parent;
-
-	struct _CamelIndexCursorPrivate *priv;
+	CamelIndexCursorPrivate *priv;
 
 	CamelIndex *index;
 };
@@ -72,7 +74,7 @@ struct _CamelIndexCursorClass {
 
 CamelType		   camel_index_cursor_get_type(void);
 
-CamelIndexCursor  *camel_index_cursor_new(CamelIndex *idx, const gchar *name);
+CamelIndexCursor  *camel_index_cursor_new(CamelIndex *index, const gchar *name);
 
 const gchar        *camel_index_cursor_next(CamelIndexCursor *idc);
 void               camel_index_cursor_reset(CamelIndexCursor *idc);
@@ -81,8 +83,7 @@ void               camel_index_cursor_reset(CamelIndexCursor *idc);
 
 struct _CamelIndexName {
 	CamelObject parent;
-
-	struct _CamelIndexNamePrivate *priv;
+	CamelIndexNamePrivate *priv;
 
 	CamelIndex *index;
 
@@ -102,7 +103,7 @@ struct _CamelIndexNameClass {
 
 CamelType		   camel_index_name_get_type	(void);
 
-CamelIndexName    *camel_index_name_new(CamelIndex *idx, const gchar *name);
+CamelIndexName    *camel_index_name_new(CamelIndex *index, const gchar *name);
 
 void               camel_index_name_add_word(CamelIndexName *name, const gchar *word);
 gsize             camel_index_name_add_buffer(CamelIndexName *name, const gchar *buffer, gsize len);
@@ -111,62 +112,80 @@ gsize             camel_index_name_add_buffer(CamelIndexName *name, const gchar 
 
 struct _CamelIndex {
 	CamelObject parent;
-
-	struct _CamelIndexPrivate *priv;
+	CamelIndexPrivate *priv;
 
 	gchar *path;
 	guint32 version;
 	guint32 flags;		/* open flags */
 	guint32 state;
 
-	CamelIndexNorm normalise;
-	gpointer normalise_data;
+	CamelIndexNorm normalize;
+	gpointer normalize_data;
 };
 
 struct _CamelIndexClass {
 	CamelObjectClass parent_class;
 
-	gint			(*sync)(CamelIndex *idx);
-	gint			(*compress)(CamelIndex *idx);
-	gint			(*delete)(CamelIndex *idx);
-
-	gint			(*rename)(CamelIndex *idx, const gchar *path);
-
-	gint			(*has_name)(CamelIndex *idx, const gchar *name);
-	CamelIndexName *	(*add_name)(CamelIndex *idx, const gchar *name);
-	gint			(*write_name)(CamelIndex *idx, CamelIndexName *idn);
-	CamelIndexCursor *	(*find_name)(CamelIndex *idx, const gchar *name);
-	void			(*delete_name)(CamelIndex *idx, const gchar *name);
-	CamelIndexCursor *	(*find)(CamelIndex *idx, const gchar *word);
-
-	CamelIndexCursor *      (*words)(CamelIndex *idx);
-	CamelIndexCursor *      (*names)(CamelIndex *idx);
+	gint		(*sync)			(CamelIndex *index);
+	gint		(*compress)		(CamelIndex *index);
+	gint		(*delete)		(CamelIndex *index);
+	gint		(*rename)		(CamelIndex *index,
+						 const gchar *path);
+	gint		(*has_name)		(CamelIndex *index,
+						 const gchar *name);
+	CamelIndexName *(*add_name)		(CamelIndex *index,
+						 const gchar *name);
+	gint		(*write_name)		(CamelIndex *index,
+						 CamelIndexName *idn);
+	CamelIndexCursor *
+			(*find_name)		(CamelIndex *index,
+						 const gchar *name);
+	void		(*delete_name)		(CamelIndex *index,
+						 const gchar *name);
+	CamelIndexCursor *
+			(*find)			(CamelIndex *index,
+						 const gchar *word);
+	CamelIndexCursor *
+			(*words)		(CamelIndex *index);
+	CamelIndexCursor *
+			(*names)		(CamelIndex *index);
 };
 
 /* flags, stored in 'state', set with set_state */
 #define CAMEL_INDEX_DELETED (1<<0)
 
-CamelType		   camel_index_get_type	(void);
-
-CamelIndex        *camel_index_new(const gchar *path, gint flags);
-void               camel_index_construct(CamelIndex *, const gchar *path, gint flags);
-gint		   camel_index_rename(CamelIndex *, const gchar *path);
-
-void               camel_index_set_normalise(CamelIndex *idx, CamelIndexNorm func, gpointer data);
-
-gint                camel_index_sync(CamelIndex *idx);
-gint                camel_index_compress(CamelIndex *idx);
-gint		   camel_index_delete(CamelIndex *idx);
-
-gint                camel_index_has_name(CamelIndex *idx, const gchar *name);
-CamelIndexName    *camel_index_add_name(CamelIndex *idx, const gchar *name);
-gint                camel_index_write_name(CamelIndex *idx, CamelIndexName *idn);
-CamelIndexCursor  *camel_index_find_name(CamelIndex *idx, const gchar *name);
-void               camel_index_delete_name(CamelIndex *idx, const gchar *name);
-CamelIndexCursor  *camel_index_find(CamelIndex *idx, const gchar *word);
-
-CamelIndexCursor  *camel_index_words(CamelIndex *idx);
-CamelIndexCursor  *camel_index_names(CamelIndex *idx);
+CamelType	camel_index_get_type		(void);
+CamelIndex *	camel_index_new			(const gchar *path,
+						 gint flags);
+void		camel_index_construct		(CamelIndex *index,
+						 const gchar *path,
+						 gint flags);
+gint		camel_index_rename		(CamelIndex *index,
+						 const gchar *path);
+void		camel_index_set_normalize	(CamelIndex *index,
+						 CamelIndexNorm func,
+						 gpointer data);
+gint		camel_index_sync		(CamelIndex *index);
+gint		camel_index_compress		(CamelIndex *index);
+gint		camel_index_delete		(CamelIndex *index);
+gint		camel_index_has_name		(CamelIndex *index,
+						 const gchar *name);
+CamelIndexName *camel_index_add_name		(CamelIndex *index,
+						 const gchar *name);
+gint		camel_index_write_name		(CamelIndex *index,
+						 CamelIndexName *idn);
+CamelIndexCursor *
+		camel_index_find_name		(CamelIndex *index,
+						 const gchar *name);
+void		camel_index_delete_name		(CamelIndex *index,
+						 const gchar *name);
+CamelIndexCursor *
+		camel_index_find		(CamelIndex *index,
+						 const gchar *word);
+CamelIndexCursor *
+		camel_index_words		(CamelIndex *index);
+CamelIndexCursor *
+		camel_index_names		(CamelIndex *index);
 
 G_END_DECLS
 

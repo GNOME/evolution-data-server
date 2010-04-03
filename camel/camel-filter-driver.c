@@ -49,6 +49,7 @@
 #include "camel-mime-message.h"
 #include "camel-private.h"
 #include "camel-service.h"
+#include "camel-session.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
 
@@ -141,7 +142,7 @@ static ESExpResult *do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **
 static ESExpResult *do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_stop (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_colour (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static ESExpResult *do_color (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_adjust_score(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
@@ -165,7 +166,7 @@ static struct {
 	{ "move-to",           (ESExpFunc *) do_move,      0 },
 	{ "stop",              (ESExpFunc *) do_stop,      0 },
 	{ "set-label",         (ESExpFunc *) do_label,     0 },
-	{ "set-colour",        (ESExpFunc *) do_colour,    0 },
+	{ "set-color",        (ESExpFunc *) do_color,    0 },
 	{ "set-score",         (ESExpFunc *) do_score,     0 },
 	{ "adjust-score",      (ESExpFunc *) do_adjust_score, 0 },
 	{ "set-system-flag",   (ESExpFunc *) set_flag,     0 },
@@ -624,17 +625,17 @@ do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-do_colour (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_color (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
 {
 	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
 
-	d(fprintf (stderr, "setting colour tag\n"));
+	d(fprintf (stderr, "setting color tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_user_tag (p->source, p->uid, "colour", argv[0]->value.string);
+			camel_folder_set_message_user_tag (p->source, p->uid, "color", argv[0]->value.string);
 		else
-			camel_message_info_set_user_tag(p->info, "colour", argv[0]->value.string);
-		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set colour to %s", argv[0]->value.string);
+			camel_message_info_set_user_tag(p->info, "color", argv[0]->value.string);
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set color to %s", argv[0]->value.string);
 	}
 
 	return NULL;

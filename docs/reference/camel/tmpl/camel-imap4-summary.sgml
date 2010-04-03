@@ -22,7 +22,7 @@ CamelIMAP4Summary
 
 </para>
 
-@parent_object: 
+@parent: 
 @version: 
 @exists: 
 @recent: 

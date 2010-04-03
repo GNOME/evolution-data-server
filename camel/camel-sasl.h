@@ -27,7 +27,6 @@
 #ifndef CAMEL_SASL_H
 #define CAMEL_SASL_H
 
-#include <glib.h>
 #include <camel/camel-object.h>
 #include <camel/camel-exception.h>
 #include <camel/camel-service.h>
@@ -39,36 +38,41 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSasl {
-	CamelObject parent_object;
+typedef struct _CamelSasl CamelSasl;
+typedef struct _CamelSaslClass CamelSaslClass;
+
+struct _CamelSasl {
+	CamelObject parent;
 
 	gchar *service_name;
 	gchar *mech;		/* mechanism */
 	CamelService *service;
 	gboolean authenticated;
-} CamelSasl;
+};
 
-typedef struct _CamelSaslClass {
+struct _CamelSaslClass {
 	CamelObjectClass parent_class;
 
-	GByteArray *    (*challenge)   (CamelSasl *sasl, GByteArray *token, CamelException *ex);
+	GByteArray *	(*challenge)		(CamelSasl *sasl,
+						 GByteArray *token,
+						 CamelException *ex);
+};
 
-} CamelSaslClass;
+CamelType	camel_sasl_get_type		(void);
+GByteArray *	camel_sasl_challenge		(CamelSasl *sasl,
+						 GByteArray *token,
+						 CamelException *ex);
+gchar *		camel_sasl_challenge_base64	(CamelSasl *sasl,
+						 const gchar *token,
+						 CamelException *ex);
+gboolean	camel_sasl_authenticated	(CamelSasl *sasl);
+CamelSasl *	camel_sasl_new			(const gchar *service_name,
+						 const gchar *mechanism,
+						 CamelService *service);
 
-/* Standard Camel function */
-CamelType  camel_sasl_get_type (void);
-
-/* public methods */
-GByteArray *camel_sasl_challenge        (CamelSasl *sasl, GByteArray *token, CamelException *ex);
-gchar       *camel_sasl_challenge_base64 (CamelSasl *sasl, const gchar *token, CamelException *ex);
-
-gboolean    camel_sasl_authenticated    (CamelSasl *sasl);
-
-/* utility functions */
-CamelSasl  *camel_sasl_new              (const gchar *service_name, const gchar *mechanism, CamelService *service);
-
-GList                *camel_sasl_authtype_list (gboolean include_plain);
-CamelServiceAuthType *camel_sasl_authtype      (const gchar *mechanism);
+GList *		camel_sasl_authtype_list	(gboolean include_plain);
+CamelServiceAuthType *
+		camel_sasl_authtype		(const gchar *mechanism);
 
 G_END_DECLS
 

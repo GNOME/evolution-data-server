@@ -36,7 +36,7 @@ enum {
 };
 
 typedef struct {
-	CamelLocalStore parent_object;
+	CamelLocalStore parent;
 
 	guint32 flags;
 } CamelMhStore;

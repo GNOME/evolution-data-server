@@ -6,6 +6,7 @@
 
 #ifndef CAMEL_DB_H
 #define CAMEL_DB_H
+
 #include <sqlite3.h>
 #include <glib.h>
 

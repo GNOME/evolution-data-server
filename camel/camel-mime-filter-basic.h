@@ -34,7 +34,9 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeFilterBasic CamelMimeFilterBasic;
 typedef struct _CamelMimeFilterBasicClass CamelMimeFilterBasicClass;
+typedef struct _CamelMimeFilterBasicPrivate CamelMimeFilterBasicPrivate;
 
 typedef enum {
 	CAMEL_MIME_FILTER_BASIC_BASE64_ENC = 1,
@@ -47,8 +49,7 @@ typedef enum {
 
 struct _CamelMimeFilterBasic {
 	CamelMimeFilter parent;
-
-	struct _CamelMimeFilterBasicPrivate *priv;
+	CamelMimeFilterBasicPrivate *priv;
 
 	CamelMimeFilterBasicType type;
 
@@ -61,9 +62,9 @@ struct _CamelMimeFilterBasicClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType		camel_mime_filter_basic_get_type	(void);
-CamelMimeFilterBasic      *camel_mime_filter_basic_new	(void);
-CamelMimeFilterBasic      *camel_mime_filter_basic_new_type	(CamelMimeFilterBasicType type);
+CamelType	camel_mime_filter_basic_get_type(void);
+CamelMimeFilter *
+		camel_mime_filter_basic_new	(CamelMimeFilterBasicType type);
 
 G_END_DECLS
 

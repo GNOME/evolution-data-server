@@ -61,7 +61,7 @@ struct _CamelIMAPJournalEntry {
 };
 
 struct _CamelIMAPJournal {
-	CamelOfflineJournal parent_object;
+	CamelOfflineJournal parent;
 
 	GHashTable *folders;
 	GHashTable *uidmap;

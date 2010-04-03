@@ -22,7 +22,7 @@ CamelIMAP4Folder
 
 </para>
 
-@parent_object: 
+@parent: 
 @search: 
 @journal: 
 @cache: 

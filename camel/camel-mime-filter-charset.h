@@ -35,6 +35,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeFilterCharset CamelMimeFilterCharset;
 typedef struct _CamelMimeFilterCharsetClass CamelMimeFilterCharsetClass;
 
 struct _CamelMimeFilterCharset {
@@ -51,10 +52,10 @@ struct _CamelMimeFilterCharsetClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType		camel_mime_filter_charset_get_type	(void);
-CamelMimeFilterCharset      *camel_mime_filter_charset_new	(void);
-
-CamelMimeFilterCharset      *camel_mime_filter_charset_new_convert	(const gchar *from_charset, const gchar *to_charset);
+CamelType	camel_mime_filter_charset_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_charset_new	(const gchar *from_charset,
+						 const gchar *to_charset);
 
 G_END_DECLS
 

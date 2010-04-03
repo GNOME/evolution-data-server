@@ -40,8 +40,6 @@ CamelFolderSummary
 @content_info_chunks: 
 @summary_path: 
 @build_content: 
-@messages: 
-@messages_uid: 
 @uids: 
 @loaded_infos: 
 @folder: 

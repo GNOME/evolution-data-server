@@ -34,17 +34,17 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSaslNTLM {
-	CamelSasl parent_object;
+typedef struct _CamelSaslNTLM CamelSaslNTLM;
+typedef struct _CamelSaslNTLMClass CamelSaslNTLMClass;
 
-} CamelSaslNTLM;
+struct _CamelSaslNTLM {
+	CamelSasl parent;
+};
 
-typedef struct _CamelSaslNTLMClass {
+struct _CamelSaslNTLMClass {
 	CamelSaslClass parent_class;
+};
 
-} CamelSaslNTLMClass;
-
-/* Standard Camel function */
 CamelType camel_sasl_ntlm_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_ntlm_authtype;

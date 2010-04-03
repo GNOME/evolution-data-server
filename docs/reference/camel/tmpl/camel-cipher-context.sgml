@@ -22,7 +22,7 @@ CamelCipherContext
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @session: 
 @sign_protocol: 

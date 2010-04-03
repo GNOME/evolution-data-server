@@ -75,7 +75,7 @@ camel_imapx_folder_new(CamelStore *store, const gchar *folder_dir, const gchar *
 		return NULL;
 	}
 
-	ifolder->cache = camel_data_cache_new (folder_dir, 0, ex);
+	ifolder->cache = camel_data_cache_new (folder_dir, ex);
 	if (!ifolder->cache) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Could not create cache for %s"),

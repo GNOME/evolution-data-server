@@ -25,7 +25,7 @@ CamelMimeFilterToHTML
 @parent: 
 @scanner: 
 @flags: 
-@colour: 
+@color: 
 @column: 
 @pre_open: 
 
@@ -105,7 +105,7 @@ CamelMimeFilterToHTML
 </para>
 
 @flags: 
-@colour: 
+@color: 
 @Returns: 
 
 
@@ -116,7 +116,7 @@ CamelMimeFilterToHTML
 
 @in: 
 @flags: 
-@colour: 
+@color: 
 @Returns: 
 
 

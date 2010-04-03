@@ -55,9 +55,10 @@ struct _CamelMimeFilterCanonClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType camel_mime_filter_canon_get_type (void);
+CamelType	camel_mime_filter_canon_get_type(void);
 
-CamelMimeFilter *camel_mime_filter_canon_new(guint32 flags);
+CamelMimeFilter *
+		camel_mime_filter_canon_new	(guint32 flags);
 
 G_END_DECLS
 

@@ -33,6 +33,11 @@
 #include <camel/camel-internet-address.h>
 #include <camel/camel-mime-filter-bestenc.h>
 
+#define CAMEL_MIME_MESSAGE_TYPE     (camel_mime_message_get_type ())
+#define CAMEL_MIME_MESSAGE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessage))
+#define CAMEL_MIME_MESSAGE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessageClass))
+#define CAMEL_IS_MIME_MESSAGE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_MESSAGE_TYPE))
+
 #define CAMEL_RECIPIENT_TYPE_TO "To"
 #define CAMEL_RECIPIENT_TYPE_CC "Cc"
 #define CAMEL_RECIPIENT_TYPE_BCC "Bcc"
@@ -41,19 +46,16 @@
 #define CAMEL_RECIPIENT_TYPE_RESENT_CC "Resent-Cc"
 #define CAMEL_RECIPIENT_TYPE_RESENT_BCC "Resent-Bcc"
 
-#define CAMEL_MIME_MESSAGE_TYPE     (camel_mime_message_get_type ())
-#define CAMEL_MIME_MESSAGE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessage))
-#define CAMEL_MIME_MESSAGE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_MESSAGE_TYPE, CamelMimeMessageClass))
-#define CAMEL_IS_MIME_MESSAGE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_MESSAGE_TYPE))
-
 /* specify local time */
 #define CAMEL_MESSAGE_DATE_CURRENT (~0)
 
 G_BEGIN_DECLS
 
-struct _CamelMimeMessage
-{
-	CamelMimePart parent_object;
+typedef struct _CamelMimeMessage CamelMimeMessage;
+typedef struct _CamelMimeMessageClass CamelMimeMessageClass;
+
+struct _CamelMimeMessage {
+	CamelMimePart parent;
 
 	/* header fields */
 	time_t date;
@@ -73,12 +75,9 @@ struct _CamelMimeMessage
 	GHashTable *recipients;	/* hash table of CamelInternetAddress's */
 };
 
-typedef struct {
+struct _CamelMimeMessageClass {
 	CamelMimePartClass parent_class;
-
-	/* Virtual methods */
-
-} CamelMimeMessageClass;
+};
 
 /* Standard Camel function */
 CamelType                   camel_mime_message_get_type           (void);
@@ -96,21 +95,21 @@ void                        camel_mime_message_set_message_id     (CamelMimeMess
 								   const gchar                 *message_id);
 const gchar                 *camel_mime_message_get_message_id     (CamelMimeMessage           *message);
 void                        camel_mime_message_set_reply_to       (CamelMimeMessage           *message,
-								   const CamelInternetAddress *reply_to);
-const CamelInternetAddress *camel_mime_message_get_reply_to       (CamelMimeMessage           *message);
+								   CamelInternetAddress *reply_to);
+CamelInternetAddress *      camel_mime_message_get_reply_to       (CamelMimeMessage           *message);
 
 void                        camel_mime_message_set_subject        (CamelMimeMessage           *message,
 								   const gchar                 *subject);
 const gchar                 *camel_mime_message_get_subject        (CamelMimeMessage           *message);
 void                        camel_mime_message_set_from           (CamelMimeMessage           *message,
-								   const CamelInternetAddress *from);
-const CamelInternetAddress *camel_mime_message_get_from           (CamelMimeMessage           *message);
+								   CamelInternetAddress *from);
+CamelInternetAddress *      camel_mime_message_get_from           (CamelMimeMessage           *message);
 
-const CamelInternetAddress *camel_mime_message_get_recipients     (CamelMimeMessage           *message,
+CamelInternetAddress *      camel_mime_message_get_recipients     (CamelMimeMessage           *message,
 								   const gchar                 *type);
 void                        camel_mime_message_set_recipients     (CamelMimeMessage           *message,
 								   const gchar                 *type,
-								   const CamelInternetAddress *recipients);
+								   CamelInternetAddress *recipients);
 
 void                        camel_mime_message_set_source         (CamelMimeMessage           *message,
 								   const gchar                 *identity);

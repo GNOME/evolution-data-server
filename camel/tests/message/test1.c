@@ -130,7 +130,7 @@ gint main(gint argc, gchar **argv)
 			pull();
 
 			push("compare original content");
-			test_message_compare_content(camel_medium_get_content_object((CamelMedium *)msg), text, len);
+			test_message_compare_content(camel_medium_get_content ((CamelMedium *)msg), text, len);
 			pull();
 
 			push("save message to test1.msg");
@@ -144,7 +144,7 @@ gint main(gint argc, gchar **argv)
 			pull();
 
 			push("compare read with original content");
-			test_message_compare_content(camel_medium_get_content_object((CamelMedium *)msg2), text, len);
+			test_message_compare_content(camel_medium_get_content ((CamelMedium *)msg2), text, len);
 			check_unref(msg2, 1);
 			pull();
 
@@ -183,7 +183,7 @@ gint main(gint argc, gchar **argv)
 			pull();
 
 			push("compare read with original content");
-			test_message_compare_content(camel_medium_get_content_object((CamelMedium *)msg2), text, len);
+			test_message_compare_content(camel_medium_get_content ((CamelMedium *)msg2), text, len);
 			check_unref(msg2, 1);
 			pull();
 

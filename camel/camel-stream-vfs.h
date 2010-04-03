@@ -42,19 +42,18 @@
 G_BEGIN_DECLS
 
 typedef struct _CamelStreamVFS CamelStreamVFS;
+typedef struct _CamelStreamVFSClass CamelStreamVFSClass;
 
 struct _CamelStreamVFS {
-	CamelStream parent_object;
+	CamelStream parent;
 
 	GObject *stream;
 };
 
-typedef struct {
+struct _CamelStreamVFSClass {
 	CamelStreamClass parent_class;
+};
 
-} CamelStreamVFSClass;
-
-/* Standard Camel function */
 CamelType camel_stream_vfs_get_type (void);
 
 /**

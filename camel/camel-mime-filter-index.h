@@ -26,6 +26,7 @@
 #ifndef CAMEL_MIME_FILTER_INDEX_H
 #define CAMEL_MIME_FILTER_INDEX_H
 
+#include <camel/camel-index.h>
 #include <camel/camel-mime-filter.h>
 
 #define CAMEL_MIME_FILTER_INDEX(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_index_get_type (), CamelMimeFilterIndex)
@@ -34,29 +35,32 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeFilterIndex CamelMimeFilterIndex;
 typedef struct _CamelMimeFilterIndexClass CamelMimeFilterIndexClass;
+typedef struct _CamelMimeFilterIndexPrivate CamelMimeFilterIndexPrivate;
 
 struct _CamelMimeFilterIndex {
 	CamelMimeFilter parent;
+	CamelMimeFilterIndexPrivate *priv;
 
-	struct _CamelMimeFilterIndexPrivate *priv;
-
-	struct _CamelIndex *index;
-	struct _CamelIndexName *name;
+	CamelIndex *index;
+	CamelIndexName *name;
 };
 
 struct _CamelMimeFilterIndexClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType		camel_mime_filter_index_get_type	(void);
-CamelMimeFilterIndex      *camel_mime_filter_index_new	(void);
-
-CamelMimeFilterIndex      *camel_mime_filter_index_new_index(struct _CamelIndex *index);
+CamelType	camel_mime_filter_index_get_type(void);
+CamelMimeFilter *
+		camel_mime_filter_index_new	(CamelIndex *index);
 
 /* Set the match name for any indexed words */
-void camel_mime_filter_index_set_name (CamelMimeFilterIndex *filter, struct _CamelIndexName *name);
-void camel_mime_filter_index_set_index (CamelMimeFilterIndex *filter, struct _CamelIndex *index);
+void		camel_mime_filter_index_set_name(CamelMimeFilterIndex *filter,
+						 CamelIndexName *name);
+void		camel_mime_filter_index_set_index
+						(CamelMimeFilterIndex *filter,
+						 CamelIndex *index);
 
 G_END_DECLS
 

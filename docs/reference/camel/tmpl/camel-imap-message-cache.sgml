@@ -22,7 +22,7 @@ CamelImapMessageCache
 
 </para>
 
-@parent_object: 
+@parent: 
 @path: 
 @parts: 
 @cached: 

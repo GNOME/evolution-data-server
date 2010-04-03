@@ -254,30 +254,16 @@ donothing:
 
 /**
  * camel_mime_filter_basic_new:
- *
- * Create a new #CamelMimeFilterBasic object.
- *
- * Returns: a new #CamelMimeFilterBasic object
- **/
-CamelMimeFilterBasic *
-camel_mime_filter_basic_new (void)
-{
-	CamelMimeFilterBasic *new = CAMEL_MIME_FILTER_BASIC ( camel_object_new (camel_mime_filter_basic_get_type ()));
-	return new;
-}
-
-/**
- * camel_mime_filter_basic_new_type:
  * @type: a #CamelMimeFilterBasicType type
  *
  * Create a new #CamelMimeFilterBasic object of type @type.
  *
  * Returns: a new #CamelMimeFilterBasic object
  **/
-CamelMimeFilterBasic *
-camel_mime_filter_basic_new_type(CamelMimeFilterBasicType type)
+CamelMimeFilter *
+camel_mime_filter_basic_new (CamelMimeFilterBasicType type)
 {
-	CamelMimeFilterBasic *new;
+	CamelMimeFilter *new;
 
 	switch (type) {
 	case CAMEL_MIME_FILTER_BASIC_BASE64_ENC:
@@ -286,15 +272,14 @@ camel_mime_filter_basic_new_type(CamelMimeFilterBasicType type)
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
 	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
 	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
-		new = camel_mime_filter_basic_new();
-		new->type = type;
+		new = camel_mime_filter_basic_new (type);
 		break;
 	default:
 		g_warning ("Invalid type of CamelMimeFilterBasic requested: %u", type);
 		new = NULL;
 		break;
 	}
-	camel_mime_filter_reset((CamelMimeFilter *)new);
+	camel_mime_filter_reset (new);
 	return new;
 }
 

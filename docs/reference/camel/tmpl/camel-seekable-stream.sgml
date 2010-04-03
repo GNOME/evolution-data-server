@@ -22,7 +22,7 @@ CamelSeekableStream
 
 </para>
 
-@parent_object: 
+@parent: 
 @position: 
 @bound_start: 
 @bound_end: 

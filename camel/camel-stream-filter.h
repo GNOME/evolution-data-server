@@ -35,26 +35,28 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelStreamFilter CamelStreamFilter;
 typedef struct _CamelStreamFilterClass CamelStreamFilterClass;
+typedef struct _CamelStreamFilterPrivate CamelStreamFilterPrivate;
 
 struct _CamelStreamFilter {
 	CamelStream parent;
 
 	CamelStream *source;
 
-	struct _CamelStreamFilterPrivate *priv;
+	CamelStreamFilterPrivate *priv;
 };
 
 struct _CamelStreamFilterClass {
 	CamelStreamClass parent_class;
 };
 
-CamelType			camel_stream_filter_get_type	(void);
-
-CamelStreamFilter      *camel_stream_filter_new_with_stream	(CamelStream *stream);
-
-gint camel_stream_filter_add	(CamelStreamFilter *stream, CamelMimeFilter *filter);
-void camel_stream_filter_remove	(CamelStreamFilter *stream, gint id);
+CamelType	camel_stream_filter_get_type	(void);
+CamelStream *	camel_stream_filter_new		(CamelStream *stream);
+gint		camel_stream_filter_add		(CamelStreamFilter *stream,
+						 CamelMimeFilter *filter);
+void		camel_stream_filter_remove	(CamelStreamFilter *stream,
+						 gint id);
 
 G_END_DECLS
 

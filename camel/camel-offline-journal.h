@@ -30,8 +30,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <glib.h>
-
 #include <camel/camel-list-utils.h>
 #include <camel/camel-object.h>
 
@@ -51,7 +49,7 @@ typedef struct _CamelOfflineJournalEntry CamelOfflineJournalEntry;
 struct _CamelFolder;
 
 struct _CamelOfflineJournal {
-	CamelObject parent_object;
+	CamelObject parent;
 
 	struct _CamelFolder *folder;
 	gchar *filename;

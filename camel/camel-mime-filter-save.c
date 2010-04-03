@@ -93,23 +93,6 @@ reset (CamelMimeFilter *f)
 
 /**
  * camel_mime_filter_save_new:
- *
- * Create a new #CamelMimeFilterSave filter object.
- *
- * Returns: a new #CamelMimeFilterSave object
- **/
-CamelMimeFilter *
-camel_mime_filter_save_new (void)
-{
-	CamelMimeFilterSave *save = CAMEL_MIME_FILTER_SAVE (camel_object_new (CAMEL_MIME_FILTER_SAVE_TYPE));
-
-	save->stream = camel_stream_mem_new ();
-
-	return (CamelMimeFilter *) save;
-}
-
-/**
- * camel_mime_filter_save_new_with_stream:
  * @stream: a #CamelStream object
  *
  * Create a new #CamelMimeFilterSave filter object that will save a
@@ -118,7 +101,7 @@ camel_mime_filter_save_new (void)
  * Returns: a new #CamelMimeFilterSave object
  **/
 CamelMimeFilter *
-camel_mime_filter_save_new_with_stream (CamelStream *stream)
+camel_mime_filter_save_new (CamelStream *stream)
 {
 	CamelMimeFilterSave *save = CAMEL_MIME_FILTER_SAVE (camel_object_new (CAMEL_MIME_FILTER_SAVE_TYPE));
 

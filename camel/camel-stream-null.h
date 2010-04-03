@@ -34,6 +34,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelStreamNull CamelStreamNull;
 typedef struct _CamelStreamNullClass CamelStreamNullClass;
 
 struct _CamelStreamNull {

@@ -66,7 +66,7 @@ typedef enum {
 #define CAMEL_MIME_YENCODE_CRC_FINAL(crc) (~crc)
 
 struct _CamelMimeFilterYenc {
-	CamelMimeFilter parent_object;
+	CamelMimeFilter parent;
 
 	CamelMimeFilterYencDirection direction;
 
@@ -79,26 +79,36 @@ struct _CamelMimeFilterYenc {
 
 struct _CamelMimeFilterYencClass {
 	CamelMimeFilterClass parent_class;
-
 };
 
-CamelType camel_mime_filter_yenc_get_type (void);
+CamelType	camel_mime_filter_yenc_get_type	(void);
+CamelMimeFilter *
+		camel_mime_filter_yenc_new	(CamelMimeFilterYencDirection direction);
+void		camel_mime_filter_yenc_set_state(CamelMimeFilterYenc *yenc,
+						 gint state);
+void		camel_mime_filter_yenc_set_crc	(CamelMimeFilterYenc *yenc,
+						 guint32 crc);
+guint32		camel_mime_filter_yenc_get_pcrc	(CamelMimeFilterYenc *yenc);
+guint32		camel_mime_filter_yenc_get_crc	(CamelMimeFilterYenc *yenc);
 
-CamelMimeFilter *camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction);
-
-void camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, gint state);
-void camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc);
-
-/*int     camel_mime_filter_yenc_get_part (CamelMimeFilterYenc *yenc);*/
-guint32 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc);
-guint32 camel_mime_filter_yenc_get_crc (CamelMimeFilterYenc *yenc);
-
-gsize camel_ydecode_step  (const guchar *in, gsize inlen, guchar *out,
-			    gint *state, guint32 *pcrc, guint32 *crc);
-gsize camel_yencode_step  (const guchar *in, gsize inlen, guchar *out,
-			    gint *state, guint32 *pcrc, guint32 *crc);
-gsize camel_yencode_close (const guchar *in, gsize inlen, guchar *out,
-			    gint *state, guint32 *pcrc, guint32 *crc);
+gsize		camel_ydecode_step		(const guchar *in,
+						 gsize inlen,
+						 guchar *out,
+						 gint *state,
+						 guint32 *pcrc,
+						 guint32 *crc);
+gsize		camel_yencode_step		(const guchar *in,
+						 gsize inlen,
+						 guchar *out,
+						 gint *state,
+						 guint32 *pcrc,
+						 guint32 *crc);
+gsize		camel_yencode_close		(const guchar *in,
+						 gsize inlen,
+						 guchar *out,
+						 gint *state,
+						 guint32 *pcrc,
+						 guint32 *crc);
 
 G_END_DECLS
 

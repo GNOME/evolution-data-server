@@ -83,7 +83,7 @@ test_message_set_content_simple(CamelMimePart *part, gint how, const gchar *type
                 camel_data_wrapper_set_mime_type (dw, type);
 
 		camel_data_wrapper_construct_from_stream(dw, (CamelStream *)content);
-		camel_medium_set_content_object((CamelMedium *)part, dw);
+		camel_medium_set_content ((CamelMedium *)part, dw);
 
 		check_unref(content, 2);
 		check_unref(dw, 2);
@@ -211,7 +211,7 @@ test_message_compare (CamelMimeMessage *msg)
 		printf("msg2:\n");
 		test_message_dump_structure(msg2);
 
-		content = camel_medium_get_content_object ((CamelMedium *) msg);
+		content = camel_medium_get_content ((CamelMedium *) msg);
 	}
 
 	check_unref(msg2, 1);
@@ -259,7 +259,7 @@ message_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint depth)
 	printf("%s encoding: %s\n", s, camel_transfer_encoding_to_string(((CamelDataWrapper *)part)->encoding));
 	printf("%s part encoding: %s\n", s, camel_transfer_encoding_to_string(part->encoding));
 
-	containee = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+	containee = camel_medium_get_content (CAMEL_MEDIUM (part));
 
 	if (containee == NULL)
 		return;

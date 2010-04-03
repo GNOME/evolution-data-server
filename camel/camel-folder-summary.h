@@ -28,8 +28,9 @@
 
 #include <stdio.h>
 #include <time.h>
+
+#include <camel/camel-mime-message.h>
 #include <camel/camel-mime-parser.h>
-#include <camel/camel-object.h>
 #include <camel/camel-index.h>
 
 #define CAMEL_FOLDER_SUMMARY_TYPE         camel_folder_summary_get_type ()
@@ -40,22 +41,26 @@
 G_BEGIN_DECLS
 
 struct _CamelFolder;
+struct _CamelStore;
 
-/*typedef struct _CamelFolderSummary      CamelFolderSummary;*/
+typedef struct _CamelFolderSummary CamelFolderSummary;
 typedef struct _CamelFolderSummaryClass CamelFolderSummaryClass;
+typedef struct _CamelFolderSummaryPrivate CamelFolderSummaryPrivate;
 
 typedef struct _CamelMessageInfo CamelMessageInfo;
 typedef struct _CamelMessageInfoBase CamelMessageInfoBase;
 
 typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
 
+typedef struct _CamelMessageContentInfo CamelMessageContentInfo;
+
 /* A tree of message content info structures
    describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
-	struct _CamelMessageContentInfo *next;
+	CamelMessageContentInfo *next;
 
-	struct _CamelMessageContentInfo *childs;
-	struct _CamelMessageContentInfo *parent;
+	CamelMessageContentInfo *childs;
+	CamelMessageContentInfo *parent;
 
 	CamelContentType *type;
 	gchar *id;
@@ -212,8 +217,7 @@ typedef enum _CamelFolderSummaryFlags {
 
 struct _CamelFolderSummary {
 	CamelObject parent;
-
-	struct _CamelFolderSummaryPrivate *priv;
+	CamelFolderSummaryPrivate *priv;
 
 	/* header info */
 	guint32 version;	/* version of file loaded/loading */
@@ -237,11 +241,6 @@ struct _CamelFolderSummary {
 
 	gchar *summary_path;
 	gboolean build_content;	/* do we try and parse/index the content, or not? */
-
-#if 0  /* Deprecated */
-	GPtrArray *messages;	/* CamelMessageInfo's */
-	GHashTable *messages_uid; /* CamelMessageInfo's by uid */
-#endif
 
 	/* New members to replace the above depreacted members */
 	GPtrArray *uids;
@@ -351,7 +350,7 @@ gint camel_folder_summary_load_from_db (CamelFolderSummary *s, CamelException *e
 
 /* only load the header */
 gint camel_folder_summary_header_load(CamelFolderSummary *summary);
-gint camel_folder_summary_header_load_from_db (CamelFolderSummary *s, CamelStore *store, const gchar *folder_name, CamelException *ex);
+gint camel_folder_summary_header_load_from_db (CamelFolderSummary *s, struct _CamelStore *store, const gchar *folder_name, CamelException *ex);
 gint camel_folder_summary_header_save_to_db (CamelFolderSummary *s, CamelException *ex);
 
 /* set the dirty bit on the summary */

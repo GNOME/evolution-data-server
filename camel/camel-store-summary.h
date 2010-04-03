@@ -28,8 +28,6 @@
 
 #include <stdio.h>
 
-#include <glib.h>
-
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
 #include <camel/camel-url.h>
@@ -40,8 +38,9 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelStoreSummary      CamelStoreSummary;
+typedef struct _CamelStoreSummary CamelStoreSummary;
 typedef struct _CamelStoreSummaryClass CamelStoreSummaryClass;
+typedef struct _CamelStoreSummaryPrivate CamelStoreSummaryPrivate;
 
 typedef struct _CamelStoreInfo CamelStoreInfo;
 
@@ -90,8 +89,7 @@ typedef enum _CamelStoreSummaryFlags {
 
 struct _CamelStoreSummary {
 	CamelObject parent;
-
-	struct _CamelStoreSummaryPrivate *priv;
+	CamelStoreSummaryPrivate *priv;
 
 	/* header info */
 	guint32 version;	/* version of base part of file */

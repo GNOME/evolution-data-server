@@ -22,7 +22,7 @@ CamelImapWrapper
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @folder: 
 @uid: 

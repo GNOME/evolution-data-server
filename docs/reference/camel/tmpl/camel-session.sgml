@@ -22,7 +22,7 @@ CamelSession
 
 </para>
 
-@parent_object: 
+@parent: 
 @priv: 
 @storage_path: 
 @junk_plugin: 

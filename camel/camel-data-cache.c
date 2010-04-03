@@ -115,7 +115,6 @@ camel_data_cache_get_type(void)
 /**
  * camel_data_cache_new:
  * @path: Base path of cache, subdirectories will be created here.
- * @flags: Open flags, none defined.
  * @ex:
  *
  * Create a new data cache.
@@ -124,7 +123,7 @@ camel_data_cache_get_type(void)
  * be written to.
  **/
 CamelDataCache *
-camel_data_cache_new(const gchar *path, guint32 flags, CamelException *ex)
+camel_data_cache_new(const gchar *path, CamelException *ex)
 {
 	CamelDataCache *cdc;
 
@@ -137,7 +136,6 @@ camel_data_cache_new(const gchar *path, guint32 flags, CamelException *ex)
 	cdc = (CamelDataCache *)camel_object_new(CAMEL_DATA_CACHE_TYPE);
 
 	cdc->path = g_strdup(path);
-	cdc->flags = flags;
 	cdc->expire_age = -1;
 	cdc->expire_access = -1;
 
@@ -406,42 +404,3 @@ camel_data_cache_remove(CamelDataCache *cdc, const gchar *path, const gchar *key
 	return ret;
 }
 
-/**
- * camel_data_cache_rename:
- * @cache:
- * @old:
- * @new:
- * @ex:
- *
- * Rename a cache path.  All cache items accessed from the old path
- * are accessible using the new path.
- *
- * CURRENTLY UNIMPLEMENTED
- *
- * Returns: -1 on error.
- **/
-gint camel_data_cache_rename(CamelDataCache *cache,
-			    const gchar *old, const gchar *new, CamelException *ex)
-{
-	/* blah dont care yet */
-	return -1;
-}
-
-/**
- * camel_data_cache_clear:
- * @cache:
- * @path: Path to clear, or NULL to clear all items in all paths.
- * @ex:
- *
- * Clear all items in a given cache path or all items in the cache.
- *
- * CURRENTLY_UNIMPLEMENTED
- *
- * Returns: -1 on error.
- **/
-gint
-camel_data_cache_clear(CamelDataCache *cache, const gchar *path, CamelException *ex)
-{
-	/* nor for this? */
-	return -1;
-}

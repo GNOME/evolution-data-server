@@ -22,7 +22,7 @@ CamelIMAP4Journal
 
 </para>
 
-@parent_object: 
+@parent: 
 @failed: 
 
 <!-- ##### STRUCT CamelIMAP4JournalEntry ##### -->

@@ -22,6 +22,6 @@ CamelMhStore
 
 </para>
 
-@parent_object: 
+@parent: 
 @flags: 
 

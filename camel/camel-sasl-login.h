@@ -36,19 +36,19 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelSaslLogin {
-	CamelSasl parent_object;
+typedef struct _CamelSaslLogin CamelSaslLogin;
+typedef struct _CamelSaslLoginClass CamelSaslLoginClass;
+typedef struct _CamelSaslLoginPrivate CamelSaslLoginPrivate;
 
-	struct _CamelSaslLoginPrivate *priv;
+struct _CamelSaslLogin {
+	CamelSasl parent;
+	CamelSaslLoginPrivate *priv;
+};
 
-} CamelSaslLogin;
-
-typedef struct _CamelSaslLoginClass {
+struct _CamelSaslLoginClass {
 	CamelSaslClass parent_class;
+};
 
-} CamelSaslLoginClass;
-
-/* Standard Camel function */
 CamelType camel_sasl_login_get_type (void);
 
 extern CamelServiceAuthType camel_sasl_login_authtype;

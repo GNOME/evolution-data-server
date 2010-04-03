@@ -28,7 +28,7 @@
 
 static gint    nntp_decode		(CamelAddress *, const gchar *raw);
 static gchar * nntp_encode		(CamelAddress *);
-static gint    nntp_cat		(CamelAddress *dest, const CamelAddress *source);
+static gint    nntp_cat		(CamelAddress *dest, CamelAddress *source);
 static void   nntp_remove		(CamelAddress *, gint index);
 
 static void camel_nntp_address_class_init (CamelNNTPAddressClass *klass);
@@ -123,7 +123,7 @@ nntp_encode(CamelAddress *a)
 }
 
 static gint
-nntp_cat (CamelAddress *dest, const CamelAddress *source)
+nntp_cat (CamelAddress *dest, CamelAddress *source)
 {
 	gint i;
 
@@ -196,7 +196,7 @@ camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
  * Returns: TRUE if such an address exists, or FALSE otherwise.
  **/
 gboolean
-camel_nntp_address_get (const CamelNNTPAddress *a, gint index, const gchar **namep)
+camel_nntp_address_get (CamelNNTPAddress *a, gint index, const gchar **namep)
 {
 	g_assert(CAMEL_IS_NNTP_ADDRESS(a));
 

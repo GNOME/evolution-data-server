@@ -33,7 +33,7 @@
 G_BEGIN_DECLS
 
 typedef struct {
-	CamelLocalFolder parent_object;
+	CamelLocalFolder parent;
 
 } CamelMhFolder;
 

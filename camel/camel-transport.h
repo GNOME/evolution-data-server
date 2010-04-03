@@ -30,7 +30,8 @@
 #ifndef CAMEL_TRANSPORT_H
 #define CAMEL_TRANSPORT_H
 
-#include <glib.h>
+#include <camel/camel-address.h>
+#include <camel/camel-mime-message.h>
 #include <camel/camel-service.h>
 
 #define CAMEL_TRANSPORT_TYPE     (camel_transport_get_type ())
@@ -40,25 +41,27 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelTransport CamelTransport;
+typedef struct _CamelTransportClass CamelTransportClass;
+typedef struct _CamelTransportPrivate CamelTransportPrivate;
+
 enum {
 	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
-struct _CamelTransport
-{
-	CamelService parent_object;
-
-	struct _CamelTransportPrivate *priv;
+struct _CamelTransport {
+	CamelService parent;
+	CamelTransportPrivate *priv;
 };
 
-typedef struct {
+struct _CamelTransportClass {
 	CamelServiceClass parent_class;
 
 	gboolean (*send_to) (CamelTransport *transport,
 			     CamelMimeMessage *message,
 			     CamelAddress *from, CamelAddress *recipients,
 			     CamelException *ex);
-} CamelTransportClass;
+};
 
 /* public methods */
 gboolean camel_transport_send_to (CamelTransport *transport,

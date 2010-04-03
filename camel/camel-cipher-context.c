@@ -644,7 +644,7 @@ cc_prepare_sign(CamelMimePart *part)
 	CamelTransferEncoding encoding;
 	gint parts, i;
 
-	dw = camel_medium_get_content_object((CamelMedium *)part);
+	dw = camel_medium_get_content ((CamelMedium *)part);
 	if (!dw)
 		return;
 
@@ -679,16 +679,16 @@ cc_prepare_sign(CamelMimePart *part)
 gint
 camel_cipher_canonical_to_stream(CamelMimePart *part, guint32 flags, CamelStream *ostream)
 {
-	CamelStreamFilter *filter;
+	CamelStream *filter;
 	CamelMimeFilter *canon;
 	gint res = -1;
 
 	if (flags & (CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_STRIP))
 		cc_prepare_sign(part);
 
-	filter = camel_stream_filter_new_with_stream(ostream);
+	filter = camel_stream_filter_new (ostream);
 	canon = camel_mime_filter_canon_new(flags);
-	camel_stream_filter_add(filter, canon);
+	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), canon);
 	camel_object_unref(canon);
 
 	if (camel_data_wrapper_write_to_stream((CamelDataWrapper *)part, (CamelStream *)filter) != -1

@@ -4089,7 +4089,7 @@ camel_imapx_server_append_message(CamelIMAPXServer *is, CamelFolder *folder, Cam
 		return;
 	}
 
-	filter = (CamelStream *)camel_stream_filter_new_with_stream(stream);
+	filter = camel_stream_filter_new (stream);
 	camel_object_unref(stream);
 	canon = camel_mime_filter_canon_new(CAMEL_MIME_FILTER_CANON_CRLF);
 	camel_stream_filter_add((CamelStreamFilter *)filter, canon);

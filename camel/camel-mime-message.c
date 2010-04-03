@@ -346,7 +346,7 @@ camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
  * Set the Reply-To of a message.
  **/
 void
-camel_mime_message_set_reply_to (CamelMimeMessage *msg, const CamelInternetAddress *reply_to)
+camel_mime_message_set_reply_to (CamelMimeMessage *msg, CamelInternetAddress *reply_to)
 {
 	gchar *addr;
 
@@ -376,7 +376,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, const CamelInternetAddre
  *
  * Returns: the Reply-Toa ddress of the message
  **/
-const CamelInternetAddress *
+CamelInternetAddress *
 camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
 {
 	g_assert (mime_message);
@@ -446,7 +446,7 @@ camel_mime_message_get_subject (CamelMimeMessage *mime_message)
  * Set the from address of a message.
  **/
 void
-camel_mime_message_set_from (CamelMimeMessage *msg, const CamelInternetAddress *from)
+camel_mime_message_set_from (CamelMimeMessage *msg, CamelInternetAddress *from)
 {
 	gchar *addr;
 
@@ -476,7 +476,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg, const CamelInternetAddress *
  *
  * Returns: the from address of the message
  **/
-const CamelInternetAddress *
+CamelInternetAddress *
 camel_mime_message_get_from (CamelMimeMessage *mime_message)
 {
 	g_assert (mime_message);
@@ -497,7 +497,7 @@ camel_mime_message_get_from (CamelMimeMessage *mime_message)
  * Set the recipients of a message.
  **/
 void
-camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *type, const CamelInternetAddress *r)
+camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *type, CamelInternetAddress *r)
 {
 	gchar *text;
 	CamelInternetAddress *addr;
@@ -517,7 +517,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
 	}
 
 	/* note this does copy, and not append (cat) */
-	camel_address_copy ((CamelAddress *)addr, (const CamelAddress *)r);
+	camel_address_copy ((CamelAddress *)addr, (CamelAddress *)r);
 
 	/* and sync our headers */
 	text = camel_address_encode (CAMEL_ADDRESS (addr));
@@ -534,7 +534,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
  *
  * Returns: the requested recipients
  **/
-const CamelInternetAddress *
+CamelInternetAddress *
 camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const gchar *type)
 {
 	g_assert(mime_message);
@@ -768,7 +768,7 @@ message_foreach_part_rec (CamelMimeMessage *msg, CamelMimePart *part, CamelPartF
 	if (callback (msg, part, data) == FALSE)
 		return FALSE;
 
-	containee = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+	containee = camel_medium_get_content (CAMEL_MEDIUM (part));
 
 	if (containee == NULL)
 		return go;
@@ -832,12 +832,12 @@ camel_mime_message_has_8bit_parts (CamelMimeMessage *msg)
 static CamelTransferEncoding
 find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBestencEncoding enctype, gchar **charsetp)
 {
-	CamelMimeFilterCharset *charenc = NULL;
+	CamelMimeFilter *charenc = NULL;
 	CamelTransferEncoding encoding;
-	CamelMimeFilterBestenc *bestenc;
+	CamelMimeFilter *bestenc;
 	guint flags, callerflags;
 	CamelDataWrapper *content;
-	CamelStreamFilter *filter;
+	CamelStream *filter;
 	const gchar *charsetin = NULL;
 	gchar *charset = NULL;
 	CamelStream *null;
@@ -850,7 +850,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 
 	d(printf("starting to check part\n"));
 
-	content = camel_medium_get_content_object ((CamelMedium *)part);
+	content = camel_medium_get_content ((CamelMedium *)part);
 	if (content == NULL) {
 		/* charset might not be right here, but it'll get the right stuff
 		   if it is ever set */
@@ -874,30 +874,34 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 
 	/* first a null stream, so any filtering is thrown away; we only want the sideeffects */
 	null = (CamelStream *)camel_stream_null_new ();
-	filter = camel_stream_filter_new_with_stream (null);
+	filter = camel_stream_filter_new (null);
 
 	/* if we're looking for the best charset, then we need to convert to UTF-8 */
 	if (istext && (required & CAMEL_BESTENC_GET_CHARSET) != 0
 	    && (charsetin = camel_content_type_param (content->mime_type, "charset"))) {
-		charenc = camel_mime_filter_charset_new_convert (charsetin, "UTF-8");
+		charenc = camel_mime_filter_charset_new (charsetin, "UTF-8");
 		if (charenc != NULL)
-			idc = camel_stream_filter_add (filter, (CamelMimeFilter *)charenc);
+			idc = camel_stream_filter_add (
+				CAMEL_STREAM_FILTER (filter), charenc);
 		charsetin = NULL;
 	}
 
 	bestenc = camel_mime_filter_bestenc_new (flags);
-	idb = camel_stream_filter_add (filter, (CamelMimeFilter *)bestenc);
+	idb = camel_stream_filter_add (
+		CAMEL_STREAM_FILTER (filter), bestenc);
 	d(printf("writing to checking stream\n"));
 	camel_data_wrapper_decode_to_stream (content, (CamelStream *)filter);
-	camel_stream_filter_remove (filter, idb);
+	camel_stream_filter_remove (
+		CAMEL_STREAM_FILTER (filter), idb);
 	if (idc != -1) {
-		camel_stream_filter_remove (filter, idc);
+		camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idc);
 		camel_object_unref (charenc);
 		charenc = NULL;
 	}
 
 	if (istext && (required & CAMEL_BESTENC_GET_CHARSET) != 0) {
-		charsetin = camel_mime_filter_bestenc_get_best_charset (bestenc);
+		charsetin = camel_mime_filter_bestenc_get_best_charset (
+			CAMEL_MIME_FILTER_BESTENC (bestenc));
 		d(printf("best charset = %s\n", charsetin ? charsetin : "(null)"));
 		charset = g_strdup (charsetin);
 
@@ -914,16 +918,20 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 		   a charset conversion filter as well, and then re-add the bestenc to filter the
 		   result to find the best encoding to use as well */
 
-		charenc = camel_mime_filter_charset_new_convert (charsetin, charset);
+		charenc = camel_mime_filter_charset_new (charsetin, charset);
 		if (charenc != NULL) {
 			/* otherwise, try another pass, converting to the real charset */
 
 			camel_mime_filter_reset ((CamelMimeFilter *)bestenc);
-			camel_mime_filter_bestenc_set_flags (bestenc, CAMEL_BESTENC_GET_ENCODING |
-							     CAMEL_BESTENC_LF_IS_CRLF | callerflags);
+			camel_mime_filter_bestenc_set_flags (
+				CAMEL_MIME_FILTER_BESTENC (bestenc),
+				CAMEL_BESTENC_GET_ENCODING |
+				CAMEL_BESTENC_LF_IS_CRLF | callerflags);
 
-			camel_stream_filter_add (filter, (CamelMimeFilter *)charenc);
-			camel_stream_filter_add (filter, (CamelMimeFilter *)bestenc);
+			camel_stream_filter_add (
+				CAMEL_STREAM_FILTER (filter), charenc);
+			camel_stream_filter_add (
+				CAMEL_STREAM_FILTER (filter), bestenc);
 
 			/* and write it to the new stream */
 			camel_data_wrapper_write_to_stream (content, (CamelStream *)filter);
@@ -932,7 +940,8 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 		}
 	}
 
-	encoding = camel_mime_filter_bestenc_get_best_encoding (bestenc, enctype);
+	encoding = camel_mime_filter_bestenc_get_best_encoding (
+		CAMEL_MIME_FILTER_BESTENC (bestenc), enctype);
 
 	camel_object_unref (filter);
 	camel_object_unref (bestenc);
@@ -961,7 +970,7 @@ best_encoding (CamelMimeMessage *msg, CamelMimePart *part, gpointer datap)
 	CamelDataWrapper *wrapper;
 	gchar *charset;
 
-	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+	wrapper = camel_medium_get_content (CAMEL_MEDIUM (part));
 	if (!wrapper)
 		return FALSE;
 
@@ -1217,7 +1226,7 @@ cmm_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 	printf("%sclass: %s\n", s, ((CamelObject *)part)->klass->name);
 	printf("%smime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)part)->mime_type));
 
-	containee = camel_medium_get_content_object((CamelMedium *)part);
+	containee = camel_medium_get_content ((CamelMedium *)part);
 
 	if (containee == NULL)
 		return;

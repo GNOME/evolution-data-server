@@ -109,22 +109,6 @@ camel-operation
 @cc: 
 
 
-<!-- ##### FUNCTION camel_operation_cancel_block ##### -->
-<para>
-
-</para>
-
-@cc: 
-
-
-<!-- ##### FUNCTION camel_operation_cancel_unblock ##### -->
-<para>
-
-</para>
-
-@cc: 
-
-
 <!-- ##### FUNCTION camel_operation_cancel_check ##### -->
 <para>
 
@@ -187,15 +171,6 @@ camel-operation
 
 @cc: 
 @pc: 
-
-
-<!-- ##### FUNCTION camel_operation_progress_count ##### -->
-<para>
-
-</para>
-
-@cc: 
-@sofar: 
 
 
 <!-- ##### FUNCTION camel_operation_end ##### -->

@@ -36,6 +36,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelMimeFilterBestenc CamelMimeFilterBestenc;
 typedef struct _CamelMimeFilterBestencClass CamelMimeFilterBestencClass;
 
 typedef enum _CamelBestencRequired {
@@ -85,12 +86,18 @@ struct _CamelMimeFilterBestencClass {
 	CamelMimeFilterClass parent_class;
 };
 
-CamelType		camel_mime_filter_bestenc_get_type	(void);
-CamelMimeFilterBestenc      *camel_mime_filter_bestenc_new	(guint flags);
-
-CamelTransferEncoding	camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required);
-const gchar *		camel_mime_filter_bestenc_get_best_charset(CamelMimeFilterBestenc *filter);
-void			camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint flags);
+CamelType	camel_mime_filter_bestenc_get_type (void);
+CamelMimeFilter *
+		camel_mime_filter_bestenc_new	(guint flags);
+CamelTransferEncoding
+		camel_mime_filter_bestenc_get_best_encoding
+						(CamelMimeFilterBestenc *filter,
+						 CamelBestencEncoding required);
+const gchar *	camel_mime_filter_bestenc_get_best_charset
+						(CamelMimeFilterBestenc *filter);
+void		camel_mime_filter_bestenc_set_flags
+						(CamelMimeFilterBestenc *filter,
+						 guint flags);
 
 G_END_DECLS
 

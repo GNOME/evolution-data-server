@@ -128,7 +128,6 @@
 #include <camel/camel-text-index.h>
 #include <camel/camel-transport.h>
 #include <camel/camel-trie.h>
-#include <camel/camel-types.h>
 #include <camel/camel-uid-cache.h>
 #include <camel/camel-url.h>
 #include <camel/camel-url-scanner.h>
@@ -139,8 +138,6 @@
 #include <camel/camel-vtrash-folder.h>
 
 #undef __CAMEL_H_INSIDE__
-
-#include <glib.h>
 
 G_BEGIN_DECLS
 

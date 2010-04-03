@@ -26,7 +26,6 @@
 #define CAMEL_PARTITION_TABLE_H
 
 #include <camel/camel-object.h>
-#include <glib.h>
 
 #include "camel-block-file.h"
 #include "camel-list-utils.h"
@@ -46,6 +45,7 @@ typedef struct _CamelPartitionMapBlock CamelPartitionMapBlock;
 
 typedef struct _CamelPartitionTable CamelPartitionTable;
 typedef struct _CamelPartitionTableClass CamelPartitionTableClass;
+typedef struct _CamelPartitionTablePrivate CamelPartitionTablePrivate;
 
 struct _CamelPartitionKey {
 	camel_hash_t hashid;
@@ -70,8 +70,7 @@ struct _CamelPartitionMapBlock {
 
 struct _CamelPartitionTable {
 	CamelObject parent;
-
-	struct _CamelPartitionTablePrivate *priv;
+	CamelPartitionTablePrivate *priv;
 
 	CamelBlockFile *blocks;
 	camel_block_t rootid;
@@ -87,13 +86,18 @@ struct _CamelPartitionTableClass {
 	CamelObjectClass parent;
 };
 
-CamelType camel_partition_table_get_type(void);
-
-CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel_block_t root);
-gint camel_partition_table_sync(CamelPartitionTable *cpi);
-gint camel_partition_table_add(CamelPartitionTable *cpi, const gchar *key, camel_key_t keyid);
-camel_key_t camel_partition_table_lookup(CamelPartitionTable *cpi, const gchar *key);
-void camel_partition_table_remove(CamelPartitionTable *cpi, const gchar *key);
+CamelType	camel_partition_table_get_type	(void);
+CamelPartitionTable *
+		camel_partition_table_new	(struct _CamelBlockFile *bs,
+						 camel_block_t root);
+gint		camel_partition_table_sync	(CamelPartitionTable *cpi);
+gint		camel_partition_table_add	(CamelPartitionTable *cpi,
+						 const gchar *key,
+						 camel_key_t keyid);
+camel_key_t	camel_partition_table_lookup	(CamelPartitionTable *cpi,
+						 const gchar *key);
+void		camel_partition_table_remove	(CamelPartitionTable *cpi,
+						 const gchar *key);
 
 /* ********************************************************************** */
 
@@ -104,6 +108,7 @@ typedef struct _CamelKeyRootBlock CamelKeyRootBlock;
 
 typedef struct _CamelKeyTable CamelKeyTable;
 typedef struct _CamelKeyTableClass CamelKeyTableClass;
+typedef struct _CamelKeyTablePrivate CamelKeyTablePrivate;
 
 struct _CamelKeyRootBlock {
 	camel_block_t first;
@@ -130,8 +135,7 @@ struct _CamelKeyBlock {
 
 struct _CamelKeyTable {
 	CamelObject parent;
-
-	struct _CamelKeyTablePrivate *priv;
+	CamelKeyTablePrivate *priv;
 
 	CamelBlockFile *blocks;
 
@@ -145,15 +149,30 @@ struct _CamelKeyTableClass {
 	CamelObjectClass parent;
 };
 
-CamelType camel_key_table_get_type(void);
-
-CamelKeyTable * camel_key_table_new(CamelBlockFile *bs, camel_block_t root);
-gint camel_key_table_sync(CamelKeyTable *ki);
-camel_key_t camel_key_table_add(CamelKeyTable *ki, const gchar *key, camel_block_t data, guint flags);
-void camel_key_table_set_data(CamelKeyTable *ki, camel_key_t keyid, camel_block_t data);
-void camel_key_table_set_flags(CamelKeyTable *ki, camel_key_t keyid, guint flags, guint set);
-camel_block_t camel_key_table_lookup(CamelKeyTable *ki, camel_key_t keyid, gchar **key, guint *flags);
-camel_key_t camel_key_table_next(CamelKeyTable *ki, camel_key_t next, gchar **keyp, guint *flagsp, camel_block_t *datap);
+CamelType	camel_key_table_get_type	(void);
+CamelKeyTable *	camel_key_table_new		(CamelBlockFile *bs,
+						 camel_block_t root);
+gint		camel_key_table_sync		(CamelKeyTable *ki);
+camel_key_t	camel_key_table_add		(CamelKeyTable *ki,
+						 const gchar *key,
+						 camel_block_t data,
+						 guint flags);
+void		camel_key_table_set_data	(CamelKeyTable *ki,
+						 camel_key_t keyid,
+						 camel_block_t data);
+void		camel_key_table_set_flags	(CamelKeyTable *ki,
+						 camel_key_t keyid,
+						 guint flags,
+						 guint set);
+camel_block_t	camel_key_table_lookup		(CamelKeyTable *ki,
+						 camel_key_t keyid,
+						 gchar **key,
+						 guint *flags);
+camel_key_t	camel_key_table_next		(CamelKeyTable *ki,
+						 camel_key_t next,
+						 gchar **keyp,
+						 guint *flagsp,
+						 camel_block_t *datap);
 
 G_END_DECLS
 

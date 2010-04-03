@@ -161,7 +161,7 @@ gint main (gint argc, gchar **argv)
 	conpart = camel_mime_part_new();
 	dw = camel_data_wrapper_new();
 	camel_data_wrapper_construct_from_stream(dw, stream1);
-	camel_medium_set_content_object((CamelMedium *)conpart, dw);
+	camel_medium_set_content ((CamelMedium *)conpart, dw);
 	camel_object_unref(stream1);
 	camel_object_unref(dw);
 
@@ -196,7 +196,7 @@ gint main (gint argc, gchar **argv)
 	dw = camel_data_wrapper_new();
 	camel_stream_reset(stream1);
 	camel_data_wrapper_construct_from_stream(dw, stream1);
-	camel_medium_set_content_object((CamelMedium *)conpart, dw);
+	camel_medium_set_content ((CamelMedium *)conpart, dw);
 	camel_object_unref(stream1);
 	camel_object_unref(dw);
 

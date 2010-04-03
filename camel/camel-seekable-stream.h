@@ -40,6 +40,9 @@
 
 G_BEGIN_DECLS
 
+typedef struct _CamelSeekableStream CamelSeekableStream;
+typedef struct _CamelSeekableStreamClass CamelSeekableStreamClass;
+
 typedef enum {
 	CAMEL_STREAM_SET = SEEK_SET,
 	CAMEL_STREAM_CUR = SEEK_CUR,
@@ -49,32 +52,33 @@ typedef enum {
 #define CAMEL_STREAM_UNBOUND (~0)
 
 struct _CamelSeekableStream {
-	CamelStream parent_object;
+	CamelStream parent;
 
 	off_t position;		/* current postion in the stream */
 	off_t bound_start;	/* first valid position */
 	off_t bound_end;	/* first invalid position */
 };
 
-typedef struct {
+struct _CamelSeekableStreamClass {
 	CamelStreamClass parent_class;
 
-	/* Virtual methods */
-	off_t (*seek)       (CamelSeekableStream *stream, off_t offset,
-			     CamelStreamSeekPolicy policy);
-	off_t (*tell)	    (CamelSeekableStream *stream);
-	gint  (*set_bounds)  (CamelSeekableStream *stream,
-			     off_t start, off_t end);
-} CamelSeekableStreamClass;
+	off_t		(*seek)			(CamelSeekableStream *stream,
+						 off_t offset,
+						 CamelStreamSeekPolicy policy);
+	off_t		(*tell)			(CamelSeekableStream *stream);
+	gint		(*set_bounds)		(CamelSeekableStream *stream,
+						 off_t start,
+						 off_t end);
+};
 
-/* Standard Camel function */
-CamelType camel_seekable_stream_get_type (void);
-
-/* public methods */
-off_t    camel_seekable_stream_seek            (CamelSeekableStream *stream, off_t offset,
-						CamelStreamSeekPolicy policy);
-off_t	 camel_seekable_stream_tell	       (CamelSeekableStream *stream);
-gint	 camel_seekable_stream_set_bounds      (CamelSeekableStream *stream, off_t start, off_t end);
+CamelType	camel_seekable_stream_get_type	(void);
+off_t		camel_seekable_stream_seek	(CamelSeekableStream *stream,
+						 off_t offset,
+						 CamelStreamSeekPolicy policy);
+off_t		camel_seekable_stream_tell	(CamelSeekableStream *stream);
+gint		camel_seekable_stream_set_bounds(CamelSeekableStream *stream,
+						 off_t start,
+						 off_t end);
 
 G_END_DECLS
 

@@ -57,7 +57,7 @@ struct _CamelGroupwiseJournalEntry {
 };
 
 struct _CamelGroupwiseJournal {
-	CamelOfflineJournal parent_object;
+	CamelOfflineJournal parent;
 
 };
 

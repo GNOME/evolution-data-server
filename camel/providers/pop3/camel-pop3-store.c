@@ -614,7 +614,7 @@ pop3_connect (CamelService *service, CamelException *ex)
 
 		root = camel_session_get_storage_path (session, service, ex);
 		if (root) {
-			store->cache = camel_data_cache_new(root, 0, ex);
+			store->cache = camel_data_cache_new(root, ex);
 			g_free(root);
 			if (store->cache) {
 				/* Default cache expiry - 1 week or not visited in a day */

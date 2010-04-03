@@ -35,18 +35,21 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMimeFilterPgp {
+typedef struct _CamelMimeFilterPgp CamelMimeFilterPgp;
+typedef struct _CamelMimeFilterPgpClass CamelMimeFilterPgpClass;
+
+struct _CamelMimeFilterPgp {
 	CamelMimeFilter filter;
 	gint state;
-} CamelMimeFilterPgp;
+};
 
-typedef struct _CamelMimeFilterPgpClass {
+struct _CamelMimeFilterPgpClass {
 	CamelMimeFilterClass parent_class;
-} CamelMimeFilterPgpClass;
+};
 
-CamelType camel_mime_filter_pgp_get_type (void);
-
-CamelMimeFilter *camel_mime_filter_pgp_new(void);
+CamelType	camel_mime_filter_pgp_get_type	(void);
+CamelMimeFilter *
+		camel_mime_filter_pgp_new	(void);
 
 G_END_DECLS
 

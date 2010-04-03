@@ -1909,7 +1909,7 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	CamelImapResponse *response, *response2;
 	CamelStream *memstream;
 	CamelMimeFilter *crlf_filter;
-	CamelStreamFilter *streamfilter;
+	CamelStream *streamfilter;
 	GByteArray *ba;
 	gchar *flagstr, *end;
 	guint32 flags = 0;
@@ -1922,10 +1922,11 @@ do_append (CamelFolder *folder, CamelMimeMessage *message,
 	ba = g_byte_array_new ();
 	camel_stream_mem_set_byte_array (CAMEL_STREAM_MEM (memstream), ba);
 
-	streamfilter = camel_stream_filter_new_with_stream (memstream);
+	streamfilter = camel_stream_filter_new (memstream);
 	crlf_filter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE,
 						  CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
-	camel_stream_filter_add (streamfilter, crlf_filter);
+	camel_stream_filter_add (
+		CAMEL_STREAM_FILTER (streamfilter), crlf_filter);
 	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message),
 					    CAMEL_STREAM (streamfilter));
 	camel_object_unref (CAMEL_OBJECT (streamfilter));
@@ -2744,7 +2745,7 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 				camel_data_wrapper_set_mime_type_field(content, camel_mime_part_get_content_type(part));
 			}
 
-			camel_medium_set_content_object (CAMEL_MEDIUM (part), content);
+			camel_medium_set_content (CAMEL_MEDIUM (part), content);
 			camel_object_unref(content);
 
 			camel_multipart_add_part (body_mp, part);
@@ -2825,7 +2826,7 @@ get_message (CamelImapFolder *imap_folder, const gchar *uid,
 	}
 
 	camel_data_wrapper_set_mime_type_field(content, camel_mime_part_get_content_type((CamelMimePart *)msg));
-	camel_medium_set_content_object (CAMEL_MEDIUM (msg), content);
+	camel_medium_set_content (CAMEL_MEDIUM (msg), content);
 	camel_object_unref (CAMEL_OBJECT (content));
 
 	return msg;

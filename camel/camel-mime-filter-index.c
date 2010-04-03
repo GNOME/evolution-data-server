@@ -103,37 +103,25 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *klass)
 
 /**
  * camel_mime_filter_index_new:
- *
- * Create a new #CamelMimeFilterIndex object
- *
- * Returns: a new #CamelMimeFilterIndex object
- **/
-CamelMimeFilterIndex *
-camel_mime_filter_index_new (void)
-{
-	CamelMimeFilterIndex *new = CAMEL_MIME_FILTER_INDEX ( camel_object_new (camel_mime_filter_index_get_type ()));
-	return new;
-}
-
-/**
- * camel_mime_filter_index_new_index:
  * @index: a #CamelIndex object
  *
  * Create a new #CamelMimeFilterIndex based on @index.
  *
  * Returns: a new #CamelMimeFilterIndex object
  **/
-CamelMimeFilterIndex *
-camel_mime_filter_index_new_index (CamelIndex *index)
+CamelMimeFilter *
+camel_mime_filter_index_new (CamelIndex *index)
 {
-	CamelMimeFilterIndex *new = camel_mime_filter_index_new();
+	CamelMimeFilterIndex *new;
+
+	new = CAMEL_MIME_FILTER_INDEX (camel_object_new (camel_mime_filter_index_get_type ()));
 
 	if (new) {
 		new->index = index;
 		if (index)
 			camel_object_ref (index);
 	}
-	return new;
+	return CAMEL_MIME_FILTER (new);
 }
 
 /* Set the match name for any indexed words */

@@ -22,7 +22,7 @@ CamelGroupwiseJournal
 
 </para>
 
-@parent_object: 
+@parent: 
 
 <!-- ##### STRUCT CamelGroupwiseJournalEntry ##### -->
 <para>

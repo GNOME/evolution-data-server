@@ -46,7 +46,7 @@ enum {
 };
 
 struct _CamelMultipartEncrypted {
-	CamelMultipart parent_object;
+	CamelMultipart parent;
 
 	CamelMimePart *version;
 	CamelMimePart *content;

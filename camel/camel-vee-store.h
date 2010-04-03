@@ -26,7 +26,6 @@
 #ifndef CAMEL_VEE_STORE_H
 #define CAMEL_VEE_STORE_H
 
-#include <glib.h>
 #include <camel/camel-store.h>
 
 #define CAMEL_VEE_STORE(obj)         CAMEL_CHECK_CAST (obj, camel_vee_store_get_type (), CamelVeeStore)
@@ -35,7 +34,7 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelVeeStore      CamelVeeStore;
+typedef struct _CamelVeeStore CamelVeeStore;
 typedef struct _CamelVeeStoreClass CamelVeeStoreClass;
 
 /* open mode for folder, vee folder auto-update */
@@ -60,8 +59,8 @@ struct _CamelVeeStoreClass {
 	CamelStoreClass parent_class;
 };
 
-CamelType		camel_vee_store_get_type	(void);
-CamelVeeStore      *camel_vee_store_new	(void);
+CamelType	camel_vee_store_get_type	(void);
+CamelVeeStore *	camel_vee_store_new		(void);
 
 G_END_DECLS
 

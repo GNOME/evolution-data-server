@@ -334,7 +334,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 {
 	CamelNNTPStore *nntp_store = (CamelNNTPStore *) folder->parent_store;
 	CamelStream *stream = (CamelStream*)nntp_store->stream;
-	CamelStreamFilter *filtered_stream;
+	CamelStream *filtered_stream;
 	CamelMimeFilter *crlffilter;
 	gint ret;
 	guint u;
@@ -361,8 +361,9 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 
 	/* setup stream filtering */
 	crlffilter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
-	filtered_stream = camel_stream_filter_new_with_stream (stream);
-	camel_stream_filter_add (filtered_stream, crlffilter);
+	filtered_stream = camel_stream_filter_new (stream);
+	camel_stream_filter_add (
+		CAMEL_STREAM_FILTER (filtered_stream), crlffilter);
 	camel_object_unref (crlffilter);
 
 	/* remove mail 'To', 'CC', and 'BCC' headers */

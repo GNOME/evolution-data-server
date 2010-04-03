@@ -41,16 +41,18 @@ G_BEGIN_DECLS
 
 struct _CamelMimeParser;
 
-struct _CamelMultipart
-{
-	CamelDataWrapper parent_object;
+typedef struct _CamelMultipart CamelMultipart;
+typedef struct _CamelMultipartClass CamelMultipartClass;
+
+struct _CamelMultipart {
+	CamelDataWrapper parent;
 
 	GList *parts;
 	gchar *preface;
 	gchar *postface;
 };
 
-typedef struct {
+struct _CamelMultipartClass {
 	CamelDataWrapperClass parent_class;
 
 	/* Virtual methods */
@@ -65,10 +67,8 @@ typedef struct {
 
 	gint (*construct_from_parser)(CamelMultipart *, struct _CamelMimeParser *);
 	/*int (*construct_from_stream)(CamelMultipart *, CamelStream *);*/
+};
 
-} CamelMultipartClass;
-
-/* Standard Camel function */
 CamelType camel_multipart_get_type (void);
 
 /* public methods */

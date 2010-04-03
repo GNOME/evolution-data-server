@@ -49,7 +49,7 @@ enum {
 };
 
 struct _CamelOfflineFolder {
-	CamelFolder parent_object;
+	CamelFolder parent;
 
 	guint sync_offline:1;
 };

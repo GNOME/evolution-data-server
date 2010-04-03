@@ -36,7 +36,7 @@
 #include <pthread.h>
 
 #include <camel/camel-arg.h>
-#include <camel/camel-types.h>	/* this is a @##$@#SF stupid header */
+#include <camel/camel-exception.h>
 
 /* turn on so that camel_object_class_dump_tree() dumps object instances as well */
 #define CAMEL_OBJECT_TRACK_INSTANCES
@@ -157,8 +157,8 @@ struct _CamelObjectClass
 	/* root-class fields follow, type system above */
 
 	/* get/set interface */
-	gint (*setv)(struct _CamelObject *, struct _CamelException *ex, CamelArgV *args);
-	gint (*getv)(struct _CamelObject *, struct _CamelException *ex, CamelArgGetV *args);
+	gint (*setv)(struct _CamelObject *, CamelException *ex, CamelArgV *args);
+	gint (*getv)(struct _CamelObject *, CamelException *ex, CamelArgGetV *args);
 	/* we only free 1 at a time, and only pointer types, obviously */
 	void (*free)(struct _CamelObject *, guint32 tag, gpointer ptr);
 
@@ -213,10 +213,10 @@ void camel_object_unhook_event(gpointer obj, const gchar *name, CamelObjectEvent
 void camel_object_trigger_event(gpointer obj, const gchar *name, gpointer event_data);
 
 /* get/set methods */
-gint camel_object_set(gpointer obj, struct _CamelException *ex, ...);
-gint camel_object_setv(gpointer obj, struct _CamelException *ex, CamelArgV *);
-gint camel_object_get(gpointer obj, struct _CamelException *ex, ...);
-gint camel_object_getv(gpointer obj, struct _CamelException *ex, CamelArgGetV *);
+gint camel_object_set(gpointer obj, CamelException *ex, ...);
+gint camel_object_setv(gpointer obj, CamelException *ex, CamelArgV *);
+gint camel_object_get(gpointer obj, CamelException *ex, ...);
+gint camel_object_getv(gpointer obj, CamelException *ex, CamelArgGetV *);
 
 /* reads/writes the state from/to the CAMEL_OBJECT_STATE_FILE */
 gint camel_object_state_read(gpointer vo);

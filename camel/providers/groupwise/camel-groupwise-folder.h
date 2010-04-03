@@ -41,7 +41,7 @@ G_BEGIN_DECLS
 typedef struct  _CamelGroupwiseFolder CamelGroupwiseFolder;
 typedef struct  _CamelGroupwiseFolderClass CamelGroupwiseFolderClass;
 struct _CamelGroupwiseFolder {
-	CamelOfflineFolder parent_object;
+	CamelOfflineFolder parent;
 
 	struct _CamelGroupwiseFolderPrivate *priv;
 
