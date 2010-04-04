@@ -37,6 +37,8 @@
 #define CAMEL_CIPHER_CONTEXT(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContext))
 #define CAMEL_CIPHER_CONTEXT_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_CIPHER_CONTEXT_TYPE, CamelCipherContextClass))
 #define CAMEL_IS_CIPHER_CONTEXT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_CIPHER_CONTEXT_TYPE))
+#define CAMEL_CIPHER_CONTEXT_GET_CLASS(obj) \
+	((CamelCipherContextClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
@@ -109,17 +111,15 @@ struct _CamelCipherValidity {
 struct _CamelCipherContext {
 	CamelObject parent;
 	CamelCipherContextPrivate *priv;
+};
 
-	CamelSession *session;
+struct _CamelCipherContextClass {
+	CamelObjectClass parent_class;
 
 	/* these MUST be set by implementors */
 	const gchar *sign_protocol;
 	const gchar *encrypt_protocol;
 	const gchar *key_protocol;
-};
-
-struct _CamelCipherContextClass {
-	CamelObjectClass parent_class;
 
 	CamelCipherHash	(*id_to_hash)		(CamelCipherContext *context,
 						 const gchar *id);
@@ -155,11 +155,11 @@ struct _CamelCipherContextClass {
 						 CamelException *ex);
 };
 
-CamelType            camel_cipher_context_get_type (void);
-
-CamelCipherContext  *camel_cipher_context_new (CamelSession *session);
-
-void                 camel_cipher_context_construct (CamelCipherContext *context, CamelSession *session);
+CamelType	camel_cipher_context_get_type	(void);
+CamelCipherContext *
+		camel_cipher_context_new	(CamelSession *session);
+void		camel_cipher_context_construct	(CamelCipherContext *context, CamelSession *session);
+CamelSession *	camel_cipher_context_get_session(CamelCipherContext *context);
 
 /* cipher context util routines */
 CamelCipherHash	     camel_cipher_id_to_hash (CamelCipherContext *context, const gchar *id);

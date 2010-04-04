@@ -174,7 +174,7 @@ camel_stream_mem_new_with_byte_array (GByteArray *buffer)
  * @mem: a #CamelStreamMem object
  *
  * Mark the memory stream as secure.  At the very least this means the
- * data in the buffer will be cleared when the buffer is finalised.
+ * data in the buffer will be cleared when the buffer is finalized.
  * This only applies to buffers owned by the stream.
  **/
 void

@@ -56,7 +56,7 @@ static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, co
 
 static void camel_imapx_store_summary_class_init (CamelIMAPXStoreSummaryClass *klass);
 static void camel_imapx_store_summary_init       (CamelIMAPXStoreSummary *obj);
-static void camel_imapx_store_summary_finalise   (CamelObject *obj);
+static void camel_imapx_store_summary_finalize   (CamelObject *obj);
 
 static CamelStoreSummaryClass *camel_imapx_store_summary_parent;
 
@@ -89,7 +89,7 @@ camel_imapx_store_summary_init (CamelIMAPXStoreSummary *s)
 }
 
 static void
-camel_imapx_store_summary_finalise (CamelObject *obj)
+camel_imapx_store_summary_finalize (CamelObject *obj)
 {
 	/*struct _CamelImapStoreSummaryPrivate *p;*/
 	/*CamelImapStoreSummary *s = (CamelImapStoreSummary *)obj;*/
@@ -111,7 +111,7 @@ camel_imapx_store_summary_get_type (void)
 					   (CamelObjectClassInitFunc) camel_imapx_store_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_imapx_store_summary_init,
-					   (CamelObjectFinalizeFunc) camel_imapx_store_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_imapx_store_summary_finalize);
 	}
 
 	return type;

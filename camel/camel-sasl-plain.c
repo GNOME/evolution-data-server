@@ -26,11 +26,14 @@
 
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-sasl-plain.h"
 #include "camel-service.h"
+
+struct _CamelSaslPlainPrivate {
+	gint placeholder;  /* allow for future expansion */
+};
 
 CamelServiceAuthType camel_sasl_plain_authtype = {
 	N_("PLAIN"),
@@ -44,20 +47,40 @@ CamelServiceAuthType camel_sasl_plain_authtype = {
 
 static CamelSaslClass *parent_class = NULL;
 
-/* Returns the class for a CamelSaslPlain */
-#define CSP_CLASS(so) CAMEL_SASL_PLAIN_CLASS (CAMEL_OBJECT_GET_CLASS (so))
+static GByteArray *
+sasl_plain_challenge (CamelSasl *sasl,
+                      GByteArray *token,
+                      CamelException *ex)
+{
+	GByteArray *buf = NULL;
+	CamelService *service;
+	CamelURL *url;
 
-static GByteArray *plain_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex);
+	service = camel_sasl_get_service (sasl);
+	url = service->url;
+	g_return_val_if_fail (url->passwd != NULL, NULL);
+
+	/* FIXME: make sure these are "UTF8-SAFE" */
+	buf = g_byte_array_new ();
+	g_byte_array_append (buf, (guint8 *) "", 1);
+	g_byte_array_append (buf, (guint8 *) url->user, strlen (url->user));
+	g_byte_array_append (buf, (guint8 *) "", 1);
+	g_byte_array_append (buf, (guint8 *) url->passwd, strlen (url->passwd));
+
+	camel_sasl_set_authenticated (sasl, TRUE);
+
+	return buf;
+}
 
 static void
-camel_sasl_plain_class_init (CamelSaslPlainClass *camel_sasl_plain_class)
+camel_sasl_plain_class_init (CamelSaslPlainClass *class)
 {
-	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_plain_class);
+	CamelSaslClass *sasl_class;
 
 	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
 
-	/* virtual method overload */
-	camel_sasl_class->challenge = plain_challenge;
+	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->challenge = sasl_plain_challenge;
 }
 
 CamelType
@@ -77,32 +100,4 @@ camel_sasl_plain_get_type (void)
 	}
 
 	return type;
-}
-
-static GByteArray *
-plain_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
-{
-	GByteArray *buf = NULL;
-	CamelURL *url = sasl->service->url;
-
-#if 0
-	if (token) {
-		camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_CANT_AUTHENTICATE,
-				     _("Authentication failed."));
-		return NULL;
-	}
-#endif
-
-	g_return_val_if_fail (url->passwd != NULL, NULL);
-
-	/* FIXME: make sure these are "UTF8-SAFE" */
-	buf = g_byte_array_new ();
-	g_byte_array_append (buf, (guint8 *) "", 1);
-	g_byte_array_append (buf, (guint8 *) url->user, strlen (url->user));
-	g_byte_array_append (buf, (guint8 *) "", 1);
-	g_byte_array_append (buf, (guint8 *) url->passwd, strlen (url->passwd));
-
-	sasl->authenticated = TRUE;
-
-	return buf;
 }

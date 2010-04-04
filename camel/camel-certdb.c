@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include <libedataserver/e-memory.h>
@@ -42,13 +41,7 @@
 #include "camel-file-utils.h"
 #include "camel-private.h"
 
-#define CAMEL_CERTDB_GET_CLASS(db)  ((CamelCertDBClass *) CAMEL_OBJECT_GET_CLASS (db))
-
 #define CAMEL_CERTDB_VERSION  0x100
-
-static void camel_certdb_class_init (CamelCertDBClass *klass);
-static void camel_certdb_init       (CamelCertDB *certdb);
-static void camel_certdb_finalize   (CamelObject *obj);
 
 static gint certdb_header_load (CamelCertDB *certdb, FILE *istream);
 static gint certdb_header_save (CamelCertDB *certdb, FILE *ostream);
@@ -62,45 +55,54 @@ static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, 
 
 static CamelObjectClass *parent_class = NULL;
 
-CamelType
-camel_certdb_get_type (void)
+static void
+certdb_finalize (CamelObject *object)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
+	CamelCertDB *certdb = CAMEL_CERTDB (object);
+	CamelCertDBPrivate *priv;
 
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_object_get_type (),
-					    "CamelCertDB",
-					    sizeof (CamelCertDB),
-					    sizeof (CamelCertDBClass),
-					    (CamelObjectClassInitFunc) camel_certdb_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_certdb_init,
-					    (CamelObjectFinalizeFunc) camel_certdb_finalize);
-	}
+	priv = certdb->priv;
 
-	return type;
+	if (certdb->flags & CAMEL_CERTDB_DIRTY)
+		camel_certdb_save (certdb);
+
+	camel_certdb_clear (certdb);
+	g_ptr_array_free (certdb->certs, TRUE);
+	g_hash_table_destroy (certdb->cert_hash);
+
+	g_free (certdb->filename);
+
+	if (certdb->cert_chunks)
+		e_memchunk_destroy (certdb->cert_chunks);
+
+	g_mutex_free (priv->db_lock);
+	g_mutex_free (priv->io_lock);
+	g_mutex_free (priv->alloc_lock);
+	g_mutex_free (priv->ref_lock);
+
+	g_free (priv);
 }
 
 static void
-camel_certdb_class_init (CamelCertDBClass *klass)
+camel_certdb_class_init (CamelCertDBClass *class)
 {
 	parent_class = camel_type_get_global_classfuncs (camel_object_get_type ());
 
-	klass->header_load = certdb_header_load;
-	klass->header_save = certdb_header_save;
+	class->header_load = certdb_header_load;
+	class->header_save = certdb_header_save;
 
-	klass->cert_new  = certdb_cert_new;
-	klass->cert_load = certdb_cert_load;
-	klass->cert_save = certdb_cert_save;
-	klass->cert_free = certdb_cert_free;
-	klass->cert_get_string = cert_get_string;
-	klass->cert_set_string = cert_set_string;
+	class->cert_new  = certdb_cert_new;
+	class->cert_load = certdb_cert_load;
+	class->cert_save = certdb_cert_save;
+	class->cert_free = certdb_cert_free;
+	class->cert_get_string = cert_get_string;
+	class->cert_set_string = cert_set_string;
 }
 
 static void
 camel_certdb_init (CamelCertDB *certdb)
 {
-	certdb->priv = g_malloc (sizeof (struct _CamelCertDBPrivate));
+	certdb->priv = g_malloc (sizeof (CamelCertDBPrivate));
 
 	certdb->filename = NULL;
 	certdb->version = CAMEL_CERTDB_VERSION;
@@ -119,32 +121,23 @@ camel_certdb_init (CamelCertDB *certdb)
 	certdb->priv->ref_lock = g_mutex_new ();
 }
 
-static void
-camel_certdb_finalize (CamelObject *obj)
+CamelType
+camel_certdb_get_type (void)
 {
-	CamelCertDB *certdb = (CamelCertDB *) obj;
-	struct _CamelCertDBPrivate *p;
+	static CamelType type = CAMEL_INVALID_TYPE;
 
-	p = certdb->priv;
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_object_get_type (),
+					    "CamelCertDB",
+					    sizeof (CamelCertDB),
+					    sizeof (CamelCertDBClass),
+					    (CamelObjectClassInitFunc) camel_certdb_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_certdb_init,
+					    (CamelObjectFinalizeFunc) certdb_finalize);
+	}
 
-	if (certdb->flags & CAMEL_CERTDB_DIRTY)
-		camel_certdb_save (certdb);
-
-	camel_certdb_clear (certdb);
-	g_ptr_array_free (certdb->certs, TRUE);
-	g_hash_table_destroy (certdb->cert_hash);
-
-	g_free (certdb->filename);
-
-	if (certdb->cert_chunks)
-		e_memchunk_destroy (certdb->cert_chunks);
-
-	g_mutex_free (p->db_lock);
-	g_mutex_free (p->io_lock);
-	g_mutex_free (p->alloc_lock);
-	g_mutex_free (p->ref_lock);
-
-	g_free (p);
+	return type;
 }
 
 CamelCertDB *
@@ -244,6 +237,7 @@ certdb_cert_load (CamelCertDB *certdb, FILE *istream)
 gint
 camel_certdb_load (CamelCertDB *certdb)
 {
+	CamelCertDBClass *class;
 	CamelCert *cert;
 	FILE *in;
 	gint i;
@@ -255,12 +249,16 @@ camel_certdb_load (CamelCertDB *certdb)
 	if (in == NULL)
 		return -1;
 
+	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	g_return_val_if_fail (class->header_load != NULL, -1);
+	g_return_val_if_fail (class->cert_load != NULL, -1);
+
 	CAMEL_CERTDB_LOCK (certdb, io_lock);
-	if (CAMEL_CERTDB_GET_CLASS (certdb)->header_load (certdb, in) == -1)
+	if (class->header_load (certdb, in) == -1)
 		goto error;
 
 	for (i = 0; i < certdb->saved_certs; i++) {
-		cert = CAMEL_CERTDB_GET_CLASS (certdb)->cert_load (certdb, in);
+		cert = class->cert_load (certdb, in);
 
 		if (cert == NULL)
 			goto error;
@@ -319,6 +317,7 @@ certdb_cert_save (CamelCertDB *certdb, CamelCert *cert, FILE *ostream)
 gint
 camel_certdb_save (CamelCertDB *certdb)
 {
+	CamelCertDBClass *class;
 	CamelCert *cert;
 	gchar *filename;
 	gint fd, i;
@@ -347,16 +346,20 @@ camel_certdb_save (CamelCertDB *certdb)
 		return -1;
 	}
 
+	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	g_return_val_if_fail (class->header_save != NULL, -1);
+	g_return_val_if_fail (class->cert_save != NULL, -1);
+
 	CAMEL_CERTDB_LOCK (certdb, io_lock);
 
 	certdb->saved_certs = certdb->certs->len;
-	if (CAMEL_CERTDB_GET_CLASS (certdb)->header_save (certdb, out) == -1)
+	if (class->header_save (certdb, out) == -1)
 		goto error;
 
 	for (i = 0; i < certdb->saved_certs; i++) {
 		cert = (CamelCert *) certdb->certs->pdata[i];
 
-		if (CAMEL_CERTDB_GET_CLASS (certdb)->cert_save (certdb, cert, out) == -1)
+		if (class->cert_save (certdb, cert, out) == -1)
 			goto error;
 	}
 
@@ -485,13 +488,17 @@ certdb_cert_new (CamelCertDB *certdb)
 CamelCert *
 camel_certdb_cert_new (CamelCertDB *certdb)
 {
+	CamelCertDBClass *class;
 	CamelCert *cert;
 
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
 
+	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	g_return_val_if_fail (class->cert_new != NULL, NULL);
+
 	CAMEL_CERTDB_LOCK (certdb, alloc_lock);
 
-	cert = CAMEL_CERTDB_GET_CLASS (certdb)->cert_new (certdb);
+	cert = class->cert_new (certdb);
 
 	CAMEL_CERTDB_UNLOCK (certdb, alloc_lock);
 
@@ -521,15 +528,21 @@ certdb_cert_free (CamelCertDB *certdb, CamelCert *cert)
 }
 
 void
-camel_certdb_cert_unref (CamelCertDB *certdb, CamelCert *cert)
+camel_certdb_cert_unref (CamelCertDB *certdb,
+                         CamelCert *cert)
 {
+	CamelCertDBClass *class;
+
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
+
+	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	g_return_if_fail (class->cert_free != NULL);
 
 	CAMEL_CERTDB_LOCK (certdb, ref_lock);
 
 	if (cert->refcount <= 1) {
-		CAMEL_CERTDB_GET_CLASS (certdb)->cert_free (certdb, cert);
+		class->cert_free (certdb, cert);
 		if (certdb->cert_chunks)
 			e_memchunk_free (certdb->cert_chunks, cert);
 		else
@@ -588,14 +601,21 @@ cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string)
 }
 
 const gchar *
-camel_cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string)
+camel_cert_get_string (CamelCertDB *certdb,
+                       CamelCert *cert,
+                       gint string)
 {
+	CamelCertDBClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
 	g_return_val_if_fail (cert != NULL, NULL);
 
+	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	g_return_val_if_fail (class->cert_get_string != NULL, NULL);
+
 	/* FIXME: do locking? */
 
-	return CAMEL_CERTDB_GET_CLASS (certdb)->cert_get_string (certdb, cert, string);
+	return class->cert_get_string (certdb, cert, string);
 }
 
 static void
@@ -624,14 +644,22 @@ cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar 
 }
 
 void
-camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value)
+camel_cert_set_string (CamelCertDB *certdb,
+                       CamelCert *cert,
+                       gint string,
+                       const gchar *value)
 {
+	CamelCertDBClass *class;
+
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
 
+	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	g_return_if_fail (class->cert_set_string != NULL);
+
 	/* FIXME: do locking? */
 
-	CAMEL_CERTDB_GET_CLASS (certdb)->cert_set_string (certdb, cert, string, value);
+	class->cert_set_string (certdb, cert, string, value);
 }
 
 CamelCertTrust

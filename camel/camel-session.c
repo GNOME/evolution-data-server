@@ -34,13 +34,11 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
 #include "camel-exception.h"
 #include "camel-file-utils.h"
-#include "camel-filter-driver.h"
 #include "camel-private.h"
 #include "camel-session.h"
 #include "camel-store.h"
@@ -52,117 +50,53 @@
 
 #define d(x)
 
-#define CS_CLASS(so) ((CamelSessionClass *)((CamelObject *)so)->klass)
-
-static CamelService *get_service (CamelSession *session,
-				  const gchar *url_string,
-				  CamelProviderType type,
-				  CamelException *ex);
-static gchar *get_storage_path (CamelSession *session,
-			       CamelService *service,
-			       CamelException *ex);
-
-static gpointer session_thread_msg_new(CamelSession *session, CamelSessionThreadOps *ops, guint size);
-static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg *msg);
-static gint session_thread_queue(CamelSession *session, CamelSessionThreadMsg *msg, gint flags);
-static void session_thread_wait(CamelSession *session, gint id);
-static void session_thread_status(CamelSession *session, CamelSessionThreadMsg *msg, const gchar *text, gint pc);
-static void session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex);
-
 static void
-camel_session_init (CamelSession *session)
+cs_thread_status (CamelOperation *op,
+                  const gchar *what,
+                  gint pc,
+                  gpointer data)
 {
-	session->online = TRUE;
-	session->network_state = TRUE;
-	session->priv = g_malloc0(sizeof(*session->priv));
+	CamelSessionThreadMsg *msg = data;
+	CamelSessionClass *class;
 
-	session->priv->lock = g_mutex_new();
-	session->priv->thread_lock = g_mutex_new();
-	session->priv->thread_id = 1;
-	session->priv->thread_active = g_hash_table_new(NULL, NULL);
-	session->priv->thread_pool = NULL;
-	session->priv->junk_headers = NULL;
+	class = CAMEL_SESSION_GET_CLASS (msg->session);
+	g_return_if_fail (class->thread_status != NULL);
+
+	class->thread_status (msg->session, msg, what, pc);
 }
 
 static void
-camel_session_finalise (CamelObject *o)
+session_finalize (CamelObject *object)
 {
-	CamelSession *session = (CamelSession *)o;
+	CamelSession *session = CAMEL_SESSION (object);
 	GThreadPool *thread_pool = session->priv->thread_pool;
 
-	g_hash_table_destroy(session->priv->thread_active);
+	g_hash_table_destroy (session->priv->thread_active);
 
 	if (thread_pool != NULL) {
 		/* there should be no unprocessed tasks */
-		g_assert(g_thread_pool_unprocessed (thread_pool) == 0);
-		g_thread_pool_free(thread_pool, FALSE, FALSE);
+		g_assert (g_thread_pool_unprocessed (thread_pool) == 0);
+		g_thread_pool_free (thread_pool, FALSE, FALSE);
 	}
 
-	g_free(session->storage_path);
+	g_free (session->storage_path);
 
-	g_mutex_free(session->priv->lock);
-	g_mutex_free(session->priv->thread_lock);
+	g_mutex_free (session->priv->lock);
+	g_mutex_free (session->priv->thread_lock);
+
 	if (session->priv->junk_headers) {
 		g_hash_table_remove_all (session->priv->junk_headers);
 		g_hash_table_destroy (session->priv->junk_headers);
 	}
+
 	g_free(session->priv);
 }
 
-static void
-camel_session_class_init (CamelSessionClass *camel_session_class)
-{
-	/* virtual method definition */
-	camel_session_class->get_service = get_service;
-	camel_session_class->get_storage_path = get_storage_path;
-
-	camel_session_class->thread_msg_new = session_thread_msg_new;
-	camel_session_class->thread_msg_free = session_thread_msg_free;
-	camel_session_class->thread_queue = session_thread_queue;
-	camel_session_class->thread_wait = session_thread_wait;
-	camel_session_class->thread_status = session_thread_status;
-
-	camel_session_class->forward_to = session_forward_to;
-
-	camel_object_class_add_event((CamelObjectClass *)camel_session_class, "online", NULL);
-}
-
-CamelType
-camel_session_get_type (void)
-{
-	static CamelType camel_session_type = CAMEL_INVALID_TYPE;
-
-	if (camel_session_type == CAMEL_INVALID_TYPE) {
-		camel_session_type = camel_type_register (
-			camel_object_get_type (), "CamelSession",
-			sizeof (CamelSession),
-			sizeof (CamelSessionClass),
-			(CamelObjectClassInitFunc) camel_session_class_init,
-			NULL,
-			(CamelObjectInitFunc) camel_session_init,
-			(CamelObjectFinalizeFunc) camel_session_finalise);
-	}
-
-	return camel_session_type;
-}
-
-/**
- * camel_session_construct:
- * @session: a #CamelSession object to construct
- * @storage_path: path to a directory the session can use for
- * persistent storage. (This directory must already exist.)
- *
- * Constructs @session.
- **/
-void
-camel_session_construct (CamelSession *session, const gchar *storage_path)
-{
-	session->storage_path = g_strdup (storage_path);
-}
-
 static CamelService *
-get_service (CamelSession *session, const gchar *url_string,
-	     CamelProviderType type, CamelException *ex)
+session_get_service (CamelSession *session,
+                     const gchar *url_string,
+                     CamelProviderType type,
+                     CamelException *ex)
 {
 	CamelURL *url;
 	CamelProvider *provider;
@@ -177,9 +111,10 @@ get_service (CamelSession *session, const gchar *url_string,
 	   the service in the provider's cache */
 	provider = camel_provider_get(url->protocol, ex);
 	if (provider && !provider->object_types[type]) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				      _("No provider available for protocol '%s'"),
-				      url->protocol);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+			_("No provider available for protocol '%s'"),
+			url->protocol);
 		provider = NULL;
 	}
 
@@ -215,6 +150,211 @@ get_service (CamelSession *session, const gchar *url_string,
 	return service;
 }
 
+static gchar *
+session_get_storage_path (CamelSession *session,
+                          CamelService *service,
+                          CamelException *ex)
+{
+	gchar *path, *p;
+
+	p = camel_service_get_path (service);
+	path = g_strdup_printf ("%s/%s", session->storage_path, p);
+	g_free (p);
+
+#ifdef G_OS_WIN32
+	if (g_access (path, F_OK) == 0)
+#else
+	if (access (path, F_OK) == 0)
+#endif
+		return path;
+
+	if (g_mkdir_with_parents (path, S_IRWXU) == -1) {
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not create directory %s:\n%s"),
+			path, g_strerror (errno));
+		g_free (path);
+		return NULL;
+	}
+
+	return path;
+}
+
+static gpointer
+session_thread_msg_new (CamelSession *session,
+                        CamelSessionThreadOps *ops,
+                        guint size)
+{
+	CamelSessionThreadMsg *m;
+
+	m = g_malloc0(size);
+	m->ops = ops;
+	m->session = session;
+	camel_object_ref (session);
+	m->op = camel_operation_new(cs_thread_status, m);
+	camel_exception_init(&m->ex);
+	CAMEL_SESSION_LOCK(session, thread_lock);
+	m->id = session->priv->thread_id++;
+	g_hash_table_insert(session->priv->thread_active, GINT_TO_POINTER(m->id), m);
+	CAMEL_SESSION_UNLOCK(session, thread_lock);
+
+	return m;
+}
+
+static void
+session_thread_msg_free (CamelSession *session,
+                         CamelSessionThreadMsg *msg)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (msg != NULL && msg->ops != NULL);
+
+	d(printf("free message %p session %p\n", msg, session));
+
+	CAMEL_SESSION_LOCK(session, thread_lock);
+	g_hash_table_remove(session->priv->thread_active, GINT_TO_POINTER(msg->id));
+	CAMEL_SESSION_UNLOCK(session, thread_lock);
+
+	d(printf("free msg, ops->free = %p\n", msg->ops->free));
+
+	if (msg->ops->free)
+		msg->ops->free(session, msg);
+	if (msg->op)
+		camel_operation_unref(msg->op);
+	camel_exception_clear(&msg->ex);
+	camel_object_unref (msg->session);
+	g_free(msg);
+}
+
+static void
+session_thread_proxy (CamelSessionThreadMsg *msg,
+                      CamelSession *session)
+{
+	if (msg->ops->receive) {
+		CamelOperation *oldop;
+
+		oldop = camel_operation_register(msg->op);
+		msg->ops->receive(session, msg);
+		camel_operation_register(oldop);
+	}
+
+	camel_session_thread_msg_free(session, msg);
+}
+
+static gint
+session_thread_queue (CamelSession *session,
+                      CamelSessionThreadMsg *msg,
+                      gint flags)
+{
+	GThreadPool *thread_pool;
+	gint id;
+
+	CAMEL_SESSION_LOCK(session, thread_lock);
+	thread_pool = session->priv->thread_pool;
+	if (thread_pool == NULL) {
+		thread_pool = g_thread_pool_new (
+			(GFunc) session_thread_proxy,
+			session, 1, FALSE, NULL);
+		session->priv->thread_pool = thread_pool;
+	}
+	CAMEL_SESSION_UNLOCK(session, thread_lock);
+
+	id = msg->id;
+	g_thread_pool_push(thread_pool, msg, NULL);
+
+	return id;
+}
+
+static void
+session_thread_wait (CamelSession *session,
+                     gint id)
+{
+	gint wait;
+
+	/* we just busy wait, only other alternative is to setup a reply port? */
+	do {
+		CAMEL_SESSION_LOCK(session, thread_lock);
+		wait = g_hash_table_lookup(session->priv->thread_active, GINT_TO_POINTER(id)) != NULL;
+		CAMEL_SESSION_UNLOCK(session, thread_lock);
+		if (wait) {
+			g_usleep(20000);
+		}
+	} while (wait);
+}
+
+static void
+session_thread_status (CamelSession *session,
+                       CamelSessionThreadMsg *msg,
+                       const gchar *text,
+                       gint pc)
+{
+}
+
+static void
+camel_session_class_init (CamelSessionClass *class)
+{
+	CamelObjectClass *camel_object_class;
+
+	class->get_service = session_get_service;
+	class->get_storage_path = session_get_storage_path;
+	class->thread_msg_new = session_thread_msg_new;
+	class->thread_msg_free = session_thread_msg_free;
+	class->thread_queue = session_thread_queue;
+	class->thread_wait = session_thread_wait;
+	class->thread_status = session_thread_status;
+
+	camel_object_class = CAMEL_OBJECT_CLASS (class);
+	camel_object_class_add_event (camel_object_class, "online", NULL);
+}
+
+static void
+camel_session_init (CamelSession *session)
+{
+	session->priv = g_malloc0(sizeof(*session->priv));
+
+	session->online = TRUE;
+	session->network_state = TRUE;
+
+	session->priv->lock = g_mutex_new();
+	session->priv->thread_lock = g_mutex_new();
+	session->priv->thread_id = 1;
+	session->priv->thread_active = g_hash_table_new(NULL, NULL);
+	session->priv->thread_pool = NULL;
+	session->priv->junk_headers = NULL;
+}
+
+CamelType
+camel_session_get_type (void)
+{
+	static CamelType camel_session_type = CAMEL_INVALID_TYPE;
+
+	if (camel_session_type == CAMEL_INVALID_TYPE) {
+		camel_session_type = camel_type_register (
+			camel_object_get_type (), "CamelSession",
+			sizeof (CamelSession),
+			sizeof (CamelSessionClass),
+			(CamelObjectClassInitFunc) camel_session_class_init,
+			NULL,
+			(CamelObjectInitFunc) camel_session_init,
+			(CamelObjectFinalizeFunc) session_finalize);
+	}
+
+	return camel_session_type;
+}
+
+/**
+ * camel_session_construct:
+ * @session: a #CamelSession object to construct
+ * @storage_path: path to a directory the session can use for
+ * persistent storage. (This directory must already exist.)
+ *
+ * Constructs @session.
+ **/
+void
+camel_session_construct (CamelSession *session, const gchar *storage_path)
+{
+	session->storage_path = g_strdup (storage_path);
+}
+
 /**
  * camel_session_get_service:
  * @session: a #CamelSession object
@@ -235,16 +375,22 @@ get_service (CamelSession *session, const gchar *url_string,
  * Returns: the requested #CamelService, or %NULL
  **/
 CamelService *
-camel_session_get_service (CamelSession *session, const gchar *url_string,
-			   CamelProviderType type, CamelException *ex)
+camel_session_get_service (CamelSession *session,
+                           const gchar *url_string,
+                           CamelProviderType type,
+                           CamelException *ex)
 {
+	CamelSessionClass *class;
 	CamelService *service;
 
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (url_string != NULL, NULL);
 
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->get_service != NULL, NULL);
+
 	CAMEL_SESSION_LOCK (session, lock);
-	service = CS_CLASS (session)->get_service (session, url_string, type, ex);
+	service = class->get_service (session, url_string, type, ex);
 	CAMEL_SESSION_UNLOCK (session, lock);
 
 	return service;
@@ -265,9 +411,9 @@ camel_session_get_service (CamelSession *session, const gchar *url_string,
  **/
 CamelService *
 camel_session_get_service_connected (CamelSession *session,
-				     const gchar *url_string,
-				     CamelProviderType type,
-				     CamelException *ex)
+                                     const gchar *url_string,
+                                     CamelProviderType type,
+                                     CamelException *ex)
 {
 	CamelService *svc;
 
@@ -283,33 +429,6 @@ camel_session_get_service_connected (CamelSession *session,
 	}
 
 	return svc;
-}
-
-static gchar *
-get_storage_path (CamelSession *session, CamelService *service, CamelException *ex)
-{
-	gchar *path, *p;
-
-	p = camel_service_get_path (service);
-	path = g_strdup_printf ("%s/%s", session->storage_path, p);
-	g_free (p);
-
-#ifdef G_OS_WIN32
-	if (g_access (path, F_OK) == 0)
-#else
-	if (access (path, F_OK) == 0)
-#endif
-		return path;
-
-	if (g_mkdir_with_parents (path, S_IRWXU) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create directory %s:\n%s"),
-				      path, g_strerror (errno));
-		g_free (path);
-		return NULL;
-	}
-
-	return path;
 }
 
 /**
@@ -328,13 +447,19 @@ get_storage_path (CamelSession *session, CamelService *service, CamelException *
  * occurs.
  **/
 gchar *
-camel_session_get_storage_path (CamelSession *session, CamelService *service,
-				CamelException *ex)
+camel_session_get_storage_path (CamelSession *session,
+                                CamelService *service,
+                                CamelException *ex)
 {
+	CamelSessionClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
-	return CS_CLASS (session)->get_storage_path (session, service, ex);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->get_storage_path != NULL, NULL);
+
+	return class->get_storage_path (session, service, ex);
 }
 
 /**
@@ -370,16 +495,25 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  * Returns: the authentication information or %NULL
  **/
 gchar *
-camel_session_get_password (CamelSession *session, CamelService *service,
-			    const gchar *domain, const gchar *prompt, const gchar *item,
-			    guint32 flags,
-			    CamelException *ex)
+camel_session_get_password (CamelSession *session,
+                            CamelService *service,
+                            const gchar *domain,
+                            const gchar *prompt,
+                            const gchar *item,
+                            guint32 flags,
+                            CamelException *ex)
 {
+	CamelSessionClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (prompt != NULL, NULL);
 	g_return_val_if_fail (item != NULL, NULL);
 
-	return CS_CLASS (session)->get_password (session, service, domain, prompt, item, flags, ex);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->get_password != NULL, NULL);
+
+	return class->get_password (
+		session, service, domain, prompt, item, flags, ex);
 }
 
 /**
@@ -399,13 +533,21 @@ camel_session_get_password (CamelSession *session, CamelService *service,
  * as with #camel_session_get_password.
  **/
 void
-camel_session_forget_password (CamelSession *session, CamelService *service,
-			       const gchar *domain, const gchar *item, CamelException *ex)
+camel_session_forget_password (CamelSession *session,
+                               CamelService *service,
+                               const gchar *domain,
+                               const gchar *item,
+                               CamelException *ex)
 {
+	CamelSessionClass *class;
+
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (item != NULL);
 
-	CS_CLASS (session)->forget_password (session, service, domain, item, ex);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->forget_password);
+
+	class->forget_password (session, service, domain, item, ex);
 }
 
 /**
@@ -423,13 +565,20 @@ camel_session_forget_password (CamelSession *session, CamelService *service,
  * Returns: %TRUE if the user accepts, %FALSE if they cancel.
  */
 gboolean
-camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
-			  const gchar *prompt, gboolean cancel)
+camel_session_alert_user (CamelSession *session,
+                          CamelSessionAlertType type,
+                          const gchar *prompt,
+                          gboolean cancel)
 {
+	CamelSessionClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 	g_return_val_if_fail (prompt != NULL, FALSE);
 
-	return CS_CLASS (session)->alert_user (session, type, prompt, cancel);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->alert_user != NULL, FALSE);
+
+	return class->alert_user (session, type, prompt, cancel);
 }
 
 /**
@@ -438,11 +587,18 @@ camel_session_alert_user (CamelSession *session, CamelSessionAlertType type,
  * Since: 2.22
  **/
 gboolean
-camel_session_lookup_addressbook (CamelSession *session, const gchar *name)
+camel_session_lookup_addressbook (CamelSession *session,
+                                  const gchar *name)
 {
+	CamelSessionClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
-	return CS_CLASS (session)->lookup_addressbook (session, name);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->lookup_addressbook != NULL, FALSE);
+
+	return class->lookup_addressbook (session, name);
 }
 
 /**
@@ -528,127 +684,18 @@ camel_session_set_online (CamelSession *session, gboolean online)
  **/
 CamelFilterDriver *
 camel_session_get_filter_driver (CamelSession *session,
-				 const gchar *type,
-				 CamelException *ex)
+                                 const gchar *type,
+                                 CamelException *ex)
 {
-	return CS_CLASS (session)->get_filter_driver (session, type, ex);
-}
+	CamelSessionClass *class;
 
-static void
-cs_thread_status(CamelOperation *op, const gchar *what, gint pc, gpointer data)
-{
-	CamelSessionThreadMsg *m = data;
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+	g_return_val_if_fail (type != NULL, NULL);
 
-	CS_CLASS(m->session)->thread_status(m->session, m, what, pc);
-}
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->get_filter_driver != NULL, NULL);
 
-static gpointer
-session_thread_msg_new (CamelSession *session,
-                        CamelSessionThreadOps *ops,
-                        guint size)
-{
-	CamelSessionThreadMsg *m;
-
-	m = g_malloc0(size);
-	m->ops = ops;
-	m->session = session;
-	camel_object_ref(session);
-	m->op = camel_operation_new(cs_thread_status, m);
-	camel_exception_init(&m->ex);
-	CAMEL_SESSION_LOCK(session, thread_lock);
-	m->id = session->priv->thread_id++;
-	g_hash_table_insert(session->priv->thread_active, GINT_TO_POINTER(m->id), m);
-	CAMEL_SESSION_UNLOCK(session, thread_lock);
-
-	return m;
-}
-
-static void
-session_thread_msg_free (CamelSession *session,
-                         CamelSessionThreadMsg *msg)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (msg != NULL && msg->ops != NULL);
-
-	d(printf("free message %p session %p\n", msg, session));
-
-	CAMEL_SESSION_LOCK(session, thread_lock);
-	g_hash_table_remove(session->priv->thread_active, GINT_TO_POINTER(msg->id));
-	CAMEL_SESSION_UNLOCK(session, thread_lock);
-
-	d(printf("free msg, ops->free = %p\n", msg->ops->free));
-
-	if (msg->ops->free)
-		msg->ops->free(session, msg);
-	if (msg->op)
-		camel_operation_unref(msg->op);
-	camel_exception_clear(&msg->ex);
-	camel_object_unref(msg->session);
-	g_free(msg);
-}
-
-static void
-session_thread_proxy (CamelSessionThreadMsg *msg,
-                      CamelSession *session)
-{
-	if (msg->ops->receive) {
-		CamelOperation *oldop;
-
-		oldop = camel_operation_register(msg->op);
-		msg->ops->receive(session, msg);
-		camel_operation_register(oldop);
-	}
-
-	camel_session_thread_msg_free(session, msg);
-}
-
-static gint
-session_thread_queue (CamelSession *session,
-                      CamelSessionThreadMsg *msg,
-                      gint flags)
-{
-	GThreadPool *thread_pool;
-	gint id;
-
-	CAMEL_SESSION_LOCK(session, thread_lock);
-	thread_pool = session->priv->thread_pool;
-	if (thread_pool == NULL) {
-		thread_pool = g_thread_pool_new (
-			(GFunc) session_thread_proxy,
-			session, 1, FALSE, NULL);
-		session->priv->thread_pool = thread_pool;
-	}
-	CAMEL_SESSION_UNLOCK(session, thread_lock);
-
-	id = msg->id;
-	g_thread_pool_push(thread_pool, msg, NULL);
-
-	return id;
-}
-
-static void
-session_thread_wait (CamelSession *session,
-                     gint id)
-{
-	gint wait;
-
-	/* we just busy wait, only other alternative is to setup a reply port? */
-	do {
-		CAMEL_SESSION_LOCK(session, thread_lock);
-		wait = g_hash_table_lookup(session->priv->thread_active, GINT_TO_POINTER(id)) != NULL;
-		CAMEL_SESSION_UNLOCK(session, thread_lock);
-		if (wait) {
-			g_usleep(20000);
-		}
-	} while (wait);
-}
-
-static void
-session_thread_status (CamelSession *session,
-                       CamelSessionThreadMsg *msg,
-                       const gchar *text,
-                       gint pc)
-{
+	return class->get_filter_driver (session, type, ex);
 }
 
 /**
@@ -670,11 +717,16 @@ camel_session_thread_msg_new (CamelSession *session,
                               CamelSessionThreadOps *ops,
                               guint size)
 {
+	CamelSessionClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (ops != NULL, NULL);
 	g_return_val_if_fail (size >= sizeof (CamelSessionThreadMsg), NULL);
 
-	return CS_CLASS (session)->thread_msg_new (session, ops, size);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->thread_msg_new != NULL, NULL);
+
+	return class->thread_msg_new (session, ops, size);
 }
 
 /**
@@ -689,10 +741,15 @@ void
 camel_session_thread_msg_free (CamelSession *session,
                                CamelSessionThreadMsg *msg)
 {
+	CamelSessionClass *class;
+
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (msg != NULL && msg->ops != NULL);
 
-	CS_CLASS (session)->thread_msg_free (session, msg);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->thread_msg_free != NULL);
+
+	class->thread_msg_free (session, msg);
 }
 
 /**
@@ -712,10 +769,15 @@ camel_session_thread_queue (CamelSession *session,
                             CamelSessionThreadMsg *msg,
                             gint flags)
 {
+	CamelSessionClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), -1);
 	g_return_val_if_fail (msg != NULL, -1);
 
-	return CS_CLASS (session)->thread_queue (session, msg, flags);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->thread_queue != NULL, -1);
+
+	return class->thread_queue (session, msg, flags);
 }
 
 /**
@@ -729,12 +791,17 @@ void
 camel_session_thread_wait (CamelSession *session,
                            gint id)
 {
+	CamelSessionClass *class;
+
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
 	if (id == -1)
 		return;
 
-	CS_CLASS (session)->thread_wait (session, id);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->thread_wait != NULL);
+
+	class->thread_wait (session, id);
 }
 
 /**
@@ -826,13 +893,6 @@ camel_session_get_junk_headers (CamelSession *session)
 	return session->priv->junk_headers;
 }
 
-static void
-session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex)
-{
-	if (ex)
-		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Camel session doesn't support forwarding of a message."));
-}
-
 /**
  * camel_session_forward_to:
  * Forwards message to some address(es) in a given type. The meaning of the forward_type defines session itself.
@@ -845,9 +905,21 @@ session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage
  * Since: 2.26
  **/
 void
-camel_session_forward_to (CamelSession *session, CamelFolder *folder, CamelMimeMessage *message, const gchar *address, CamelException *ex)
+camel_session_forward_to (CamelSession *session,
+                          CamelFolder *folder,
+                          CamelMimeMessage *message,
+                          const gchar *address,
+                          CamelException *ex)
 {
-	g_return_if_fail (CAMEL_IS_SESSION (session));
+	CamelSessionClass *class;
 
-	CS_CLASS (session)->forward_to (session, folder, message, address, ex);
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
+	g_return_if_fail (address != NULL);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->forward_to != NULL);
+
+	class->forward_to (session, folder, message, address, ex);
 }

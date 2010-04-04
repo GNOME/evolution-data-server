@@ -40,12 +40,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterEnriched CamelMimeFilterEnriched;
 typedef struct _CamelMimeFilterEnrichedClass CamelMimeFilterEnrichedClass;
+typedef struct _CamelMimeFilterEnrichedPrivate CamelMimeFilterEnrichedPrivate;
 
 struct _CamelMimeFilterEnriched {
 	CamelMimeFilter parent;
-
-	guint32 flags;
-	gint nofill;
+	CamelMimeFilterEnrichedPrivate *priv;
 };
 
 struct _CamelMimeFilterEnrichedClass {

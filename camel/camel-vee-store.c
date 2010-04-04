@@ -48,7 +48,7 @@ static CamelFolderInfo *vee_get_folder_info(CamelStore *store, const gchar *top,
 
 static void camel_vee_store_class_init (CamelVeeStoreClass *klass);
 static void camel_vee_store_init       (CamelVeeStore *obj);
-static void camel_vee_store_finalise   (CamelObject *obj);
+static void camel_vee_store_finalize   (CamelObject *obj);
 static void construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
 
 static CamelStoreClass *camel_vee_store_parent;
@@ -65,7 +65,7 @@ camel_vee_store_get_type (void)
 					    (CamelObjectClassInitFunc) camel_vee_store_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_vee_store_init,
-					    (CamelObjectFinalizeFunc) camel_vee_store_finalise);
+					    (CamelObjectFinalizeFunc) camel_vee_store_finalize);
 	}
 
 	return type;
@@ -123,7 +123,7 @@ cvs_free_unmatched(gpointer key, gpointer value, gpointer data)
 }
 
 static void
-camel_vee_store_finalise (CamelObject *obj)
+camel_vee_store_finalize (CamelObject *obj)
 {
 	CamelVeeStore *vstore = (CamelVeeStore *)obj;
 

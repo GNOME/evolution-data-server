@@ -38,6 +38,8 @@
 #define CAMEL_SERVICE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SERVICE_TYPE, CamelService))
 #define CAMEL_SERVICE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SERVICE_TYPE, CamelServiceClass))
 #define CAMEL_IS_SERVICE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SERVICE_TYPE))
+#define CAMEL_SERVICE_GET_CLASS(obj) \
+	((CamelServiceClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
@@ -45,6 +47,7 @@ struct _CamelSession;
 
 typedef struct _CamelService CamelService;
 typedef struct _CamelServiceClass CamelServiceClass;
+typedef struct _CamelServicePrivate CamelServicePrivate;
 
 enum {
 	CAMEL_SERVICE_ARG_FIRST  = CAMEL_ARG_FIRST + 100,
@@ -70,7 +73,7 @@ typedef enum {
 
 struct _CamelService {
 	CamelObject parent;
-	struct _CamelServicePrivate *priv;
+	CamelServicePrivate *priv;
 
 	struct _CamelSession *session;
 	CamelProvider *provider;

@@ -74,7 +74,7 @@ camel_offline_journal_get_type (void)
 static void
 camel_offline_journal_class_init (CamelOfflineJournalClass *klass)
 {
-	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
+	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
 }
 
 static void

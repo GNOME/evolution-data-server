@@ -71,7 +71,7 @@ static void vee_rename(CamelFolder *folder, const gchar *new);
 
 static void camel_vee_folder_class_init (CamelVeeFolderClass *klass);
 static void camel_vee_folder_init       (CamelVeeFolder *obj);
-static void camel_vee_folder_finalise   (CamelObject *obj);
+static void camel_vee_folder_finalize   (CamelObject *obj);
 
 static gint vee_rebuild_folder(CamelVeeFolder *vf, CamelFolder *source, CamelException *ex);
 static void vee_folder_remove_folder(CamelVeeFolder *vf, CamelFolder *source);
@@ -94,7 +94,7 @@ camel_vee_folder_get_type (void)
 					    (CamelObjectClassInitFunc) camel_vee_folder_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_vee_folder_init,
-					    (CamelObjectFinalizeFunc) camel_vee_folder_finalise);
+					    (CamelObjectFinalizeFunc) camel_vee_folder_finalize);
 	}
 
 	return type;
@@ -2308,7 +2308,7 @@ camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex)
 }
 
 static void
-camel_vee_folder_finalise (CamelObject *obj)
+camel_vee_folder_finalize (CamelObject *obj)
 {
 	CamelVeeFolder *vf = (CamelVeeFolder *)obj;
 	struct _CamelVeeFolderPrivate *p = _PRIVATE(vf);

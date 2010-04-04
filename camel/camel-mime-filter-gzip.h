@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterGZip CamelMimeFilterGZip;
 typedef struct _CamelMimeFilterGZipClass CamelMimeFilterGZipClass;
+typedef struct _CamelMimeFilterGZipPrivate CamelMimeFilterGZipPrivate;
 
 typedef enum {
 	CAMEL_MIME_FILTER_GZIP_MODE_ZIP,
@@ -48,11 +49,7 @@ typedef enum {
 
 struct _CamelMimeFilterGZip {
 	CamelMimeFilter parent;
-
-	struct _CamelMimeFilterGZipPrivate *priv;
-
-	CamelMimeFilterGZipMode mode;
-	gint level;
+	CamelMimeFilterGZipPrivate *priv;
 };
 
 struct _CamelMimeFilterGZipClass {

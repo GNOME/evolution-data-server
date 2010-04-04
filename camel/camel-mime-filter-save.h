@@ -39,11 +39,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterSave CamelMimeFilterSave;
 typedef struct _CamelMimeFilterSaveClass CamelMimeFilterSaveClass;
+typedef struct _CamelMimeFilterSavePrivate CamelMimeFilterSavePrivate;
 
 struct _CamelMimeFilterSave {
 	CamelMimeFilter parent;
-
-	CamelStream *stream;
+	CamelMimeFilterSavePrivate *priv;
 };
 
 struct _CamelMimeFilterSaveClass {

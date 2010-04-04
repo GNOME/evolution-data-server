@@ -23,10 +23,7 @@ CamelSasl
 </para>
 
 @parent: 
-@service_name: 
-@mech: 
-@service: 
-@authenticated: 
+@priv: 
 
 <!-- ##### FUNCTION camel_sasl_challenge ##### -->
 <para>
@@ -47,15 +44,6 @@ CamelSasl
 @sasl: 
 @token: 
 @ex: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_sasl_authenticated ##### -->
-<para>
-
-</para>
-
-@sasl: 
 @Returns: 
 
 

@@ -24,9 +24,6 @@ CamelMimeFilterCharset
 
 @parent: 
 @priv: 
-@ic: 
-@from: 
-@to: 
 
 <!-- ##### FUNCTION camel_mime_filter_charset_new ##### -->
 <para>

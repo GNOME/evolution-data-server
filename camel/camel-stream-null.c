@@ -46,7 +46,7 @@ camel_stream_null_class_init (CamelStreamClass *camel_stream_null_class)
 {
 	CamelStreamClass *camel_stream_class = (CamelStreamClass *)camel_stream_null_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_OBJECT_TYPE );
+	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
 
 	/* virtual method definition */
 	camel_stream_class->read = stream_read;

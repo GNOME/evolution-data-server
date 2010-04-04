@@ -34,40 +34,28 @@
 
 static CamelServiceClass *parent_class = NULL;
 
-/* Returns the class for a CamelTransport */
-#define CT_CLASS(so) CAMEL_TRANSPORT_CLASS (CAMEL_OBJECT_GET_CLASS(so))
+static void
+transport_finalize (CamelObject *object)
+{
+	CamelTransportPrivate *priv = CAMEL_TRANSPORT (object)->priv;
 
-static gint transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static gint transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
+	g_mutex_free (priv->send_lock);
+
+	g_free (priv);
+}
 
 static void
-camel_transport_class_init (CamelTransportClass *camel_transport_class)
+camel_transport_class_init (CamelTransportClass *class)
 {
-	CamelObjectClass *camel_object_class = CAMEL_OBJECT_CLASS (camel_transport_class);
-
 	parent_class = CAMEL_SERVICE_CLASS (camel_type_get_global_classfuncs (camel_service_get_type ()));
-
-	/* virtual method overload */
-	camel_object_class->setv = transport_setv;
-	camel_object_class->getv = transport_getv;
 }
 
 static void
-camel_transport_init (gpointer object, gpointer klass)
+camel_transport_init (CamelTransport *transport)
 {
-	CamelTransport *xport = object;
+	transport->priv = g_malloc0 (sizeof (struct _CamelTransportPrivate));
 
-	xport->priv = g_malloc0 (sizeof (struct _CamelTransportPrivate));
-	xport->priv->send_lock = g_mutex_new ();
-}
-
-static void
-camel_transport_finalize (CamelObject *object)
-{
-	CamelTransport *xport = CAMEL_TRANSPORT (object);
-
-	g_mutex_free (xport->priv->send_lock);
-	g_free (xport->priv);
+	transport->priv->send_lock = g_mutex_new ();
 }
 
 CamelType
@@ -83,24 +71,10 @@ camel_transport_get_type (void)
 					    (CamelObjectClassInitFunc) camel_transport_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_transport_init,
-					    (CamelObjectFinalizeFunc) camel_transport_finalize);
+					    (CamelObjectFinalizeFunc) transport_finalize);
 	}
 
 	return type;
-}
-
-static gint
-transport_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
-{
-	/* CamelTransport doesn't currently have anything to set */
-	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
-}
-
-static gint
-transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
-{
-	/* CamelTransport doesn't currently have anything to get */
-	return CAMEL_OBJECT_CLASS (parent_class)->getv (object, ex, args);
 }
 
 /**
@@ -118,10 +92,13 @@ transport_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
  * Return %TRUE on success or %FALSE on fail
  **/
 gboolean
-camel_transport_send_to (CamelTransport *transport, CamelMimeMessage *message,
-			 CamelAddress *from, CamelAddress *recipients,
-			 CamelException *ex)
+camel_transport_send_to (CamelTransport *transport,
+                         CamelMimeMessage *message,
+                         CamelAddress *from,
+                         CamelAddress *recipients,
+                         CamelException *ex)
 {
+	CamelTransportClass *class;
 	gboolean sent;
 
 	g_return_val_if_fail (CAMEL_IS_TRANSPORT (transport), FALSE);
@@ -129,9 +106,11 @@ camel_transport_send_to (CamelTransport *transport, CamelMimeMessage *message,
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (from), FALSE);
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (recipients), FALSE);
 
+	class = CAMEL_TRANSPORT_GET_CLASS (transport);
+	g_return_val_if_fail (class->send_to != NULL, FALSE);
+
 	CAMEL_TRANSPORT_LOCK (transport, send_lock);
-	sent = CT_CLASS (transport)->send_to (transport, message,
-					      from, recipients, ex);
+	sent = class->send_to (transport, message, from, recipients, ex);
 	CAMEL_TRANSPORT_UNLOCK (transport, send_lock);
 
 	return sent;

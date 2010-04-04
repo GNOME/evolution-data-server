@@ -761,7 +761,7 @@ camel_text_index_init(CamelTextIndex *idx)
 }
 
 static void
-camel_text_index_finalise(CamelTextIndex *idx)
+camel_text_index_finalize(CamelTextIndex *idx)
 {
 	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
 
@@ -803,7 +803,7 @@ camel_text_index_get_type(void)
 					   (CamelObjectClassInitFunc) camel_text_index_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_text_index_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_finalise);
+					   (CamelObjectFinalizeFunc) camel_text_index_finalize);
 	}
 
 	return type;
@@ -1516,7 +1516,7 @@ camel_text_index_name_init(CamelTextIndexName *idn)
 }
 
 static void
-camel_text_index_name_finalise(CamelTextIndexName *idn)
+camel_text_index_name_finalize(CamelTextIndexName *idn)
 {
 	CamelTextIndexNamePrivate *p = CIN_PRIVATE(idn);
 
@@ -1540,7 +1540,7 @@ camel_text_index_name_get_type(void)
 					   (CamelObjectClassInitFunc) camel_text_index_name_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_text_index_name_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_name_finalise);
+					   (CamelObjectFinalizeFunc) camel_text_index_name_finalize);
 	}
 
 	return type;
@@ -1635,7 +1635,7 @@ camel_text_index_cursor_init(CamelTextIndexCursor *idc)
 }
 
 static void
-camel_text_index_cursor_finalise(CamelTextIndexCursor *idc)
+camel_text_index_cursor_finalize(CamelTextIndexCursor *idc)
 {
 	struct _CamelTextIndexCursorPrivate *p = CIC_PRIVATE(idc);
 
@@ -1656,7 +1656,7 @@ camel_text_index_cursor_get_type(void)
 					   (CamelObjectClassInitFunc) camel_text_index_cursor_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_text_index_cursor_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_cursor_finalise);
+					   (CamelObjectFinalizeFunc) camel_text_index_cursor_finalize);
 	}
 
 	return type;
@@ -1746,7 +1746,7 @@ camel_text_index_key_cursor_init(CamelTextIndexKeyCursor *idc)
 }
 
 static void
-camel_text_index_key_cursor_finalise(CamelTextIndexKeyCursor *idc)
+camel_text_index_key_cursor_finalize(CamelTextIndexKeyCursor *idc)
 {
 	struct _CamelTextIndexKeyCursorPrivate *p = CIKC_PRIVATE(idc);
 
@@ -1768,7 +1768,7 @@ camel_text_index_key_cursor_get_type(void)
 					   (CamelObjectClassInitFunc) camel_text_index_key_cursor_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_text_index_key_cursor_init,
-					   (CamelObjectFinalizeFunc) camel_text_index_key_cursor_finalise);
+					   (CamelObjectFinalizeFunc) camel_text_index_key_cursor_finalize);
 	}
 
 	return type;

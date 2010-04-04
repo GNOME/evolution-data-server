@@ -129,7 +129,7 @@ camel_imapx_view_summary_init(CamelIMAPXViewSummary *obj)
 }
 
 static void
-camel_imapx_view_summary_finalise(CamelObject *obj)
+camel_imapx_view_summary_finalize(CamelObject *obj)
 {
 	/*CamelIMAPXViewSummary *mbs = CAMEL_IMAPX_VIEW_SUMMARY(obj);*/
 }
@@ -156,7 +156,7 @@ camel_imapx_view_summary_get_type(void)
 					   (CamelObjectClassInitFunc) camel_imapx_view_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_imapx_view_summary_init,
-					   (CamelObjectFinalizeFunc) camel_imapx_view_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_imapx_view_summary_finalize);
 	}
 
 	return type;

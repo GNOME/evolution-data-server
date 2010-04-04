@@ -38,6 +38,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterBestenc CamelMimeFilterBestenc;
 typedef struct _CamelMimeFilterBestencClass CamelMimeFilterBestencClass;
+typedef struct _CamelMimeFilterBestencPrivate CamelMimeFilterBestencPrivate;
 
 typedef enum _CamelBestencRequired {
 	CAMEL_BESTENC_GET_ENCODING = 1<<0,
@@ -60,26 +61,7 @@ typedef enum _CamelBestencEncoding {
 
 struct _CamelMimeFilterBestenc {
 	CamelMimeFilter parent;
-
-	guint flags;	/* our creation flags, see above */
-
-	guint count0;	/* count of NUL characters */
-	guint count8;	/* count of 8 bit characters */
-	guint total;	/* total characters read */
-
-	guint lastc;	/* the last character read */
-	gint crlfnoorder;	/* if crlf's occured where they shouldn't have */
-
-	gint startofline;	/* are we at the start of a new line? */
-
-	gint fromcount;
-	gchar fromsave[6];	/* save a few characters if we found an \n near the end of the buffer */
-	gint hadfrom;		/* did we encounter a "\nFrom " in the data? */
-
-	guint countline;	/* current count of characters on a given line */
-	guint maxline;	/* max length of any line */
-
-	CamelCharset charset;	/* used to determine the best charset to use */
+	CamelMimeFilterBestencPrivate *priv;
 };
 
 struct _CamelMimeFilterBestencClass {

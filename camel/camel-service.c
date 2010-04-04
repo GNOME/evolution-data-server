@@ -33,7 +33,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-exception.h"
@@ -45,55 +44,7 @@
 #define d(x)
 #define w(x)
 
-static CamelObjectClass *parent_class = NULL;
-
-/* Returns the class for a CamelService */
-#define CSERV_CLASS(so) CAMEL_SERVICE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-
-static void construct (CamelService *service, CamelSession *session,
-		       CamelProvider *provider, CamelURL *url,
-		       CamelException *ex);
-static gboolean service_connect(CamelService *service, CamelException *ex);
-static gboolean service_disconnect(CamelService *service, gboolean clean,
-				   CamelException *ex);
-static void cancel_connect (CamelService *service);
-static GList *query_auth_types (CamelService *service, CamelException *ex);
-static gchar *get_name (CamelService *service, gboolean brief);
-static gchar *get_path (CamelService *service);
-
-static gint service_setv (CamelObject *object, CamelException *ex, CamelArgV *args);
-static gint service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args);
-
-static void
-camel_service_class_init (CamelServiceClass *camel_service_class)
-{
-	CamelObjectClass *object_class = CAMEL_OBJECT_CLASS (camel_service_class);
-
-	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
-
-	/* virtual method overloading */
-	object_class->setv = service_setv;
-	object_class->getv = service_getv;
-
-	/* virtual method definition */
-	camel_service_class->construct = construct;
-	camel_service_class->connect = service_connect;
-	camel_service_class->disconnect = service_disconnect;
-	camel_service_class->cancel_connect = cancel_connect;
-	camel_service_class->query_auth_types = query_auth_types;
-	camel_service_class->get_name = get_name;
-	camel_service_class->get_path = get_path;
-}
-
-static void
-camel_service_init (gpointer o, gpointer k)
-{
-	CamelService *service = o;
-
-	service->priv = g_malloc0(sizeof(*service->priv));
-	g_static_rec_mutex_init(&service->priv->connect_lock);
-	g_static_mutex_init(&service->priv->connect_op_lock);
-}
+static CamelObjectClass *camel_service_parent_class = NULL;
 
 static void
 camel_service_finalize (CamelObject *object)
@@ -104,7 +55,7 @@ camel_service_finalize (CamelObject *object)
 		CamelException ex;
 
 		camel_exception_init (&ex);
-		CSERV_CLASS (service)->disconnect (service, TRUE, &ex);
+		CAMEL_SERVICE_GET_CLASS (service)->disconnect (service, TRUE, &ex);
 		if (camel_exception_is_set (&ex)) {
 			w(g_warning ("camel_service_finalize: silent disconnect failure: %s",
 				     camel_exception_get_description (&ex)));
@@ -114,6 +65,7 @@ camel_service_finalize (CamelObject *object)
 
 	if (service->url)
 		camel_url_free (service->url);
+
 	if (service->session)
 		camel_object_unref (service->session);
 
@@ -123,28 +75,10 @@ camel_service_finalize (CamelObject *object)
 	g_free (service->priv);
 }
 
-CamelType
-camel_service_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type =
-			camel_type_register (CAMEL_OBJECT_TYPE,
-					     "CamelService",
-					     sizeof (CamelService),
-					     sizeof (CamelServiceClass),
-					     (CamelObjectClassInitFunc) camel_service_class_init,
-					     NULL,
-					     (CamelObjectInitFunc) camel_service_init,
-					     camel_service_finalize );
-	}
-
-	return type;
-}
-
 static gint
-service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
+service_setv (CamelObject *object,
+              CamelException *ex,
+              CamelArgV *args)
 {
 	CamelService *service = (CamelService *) object;
 	CamelURL *url = service->url;
@@ -206,11 +140,14 @@ service_setv (CamelObject *object, CamelException *ex, CamelArgV *args)
 			camel_service_connect (service, ex);
 	}
 
-	return CAMEL_OBJECT_CLASS (parent_class)->setv (object, ex, args);
+	/* Chain up to parent's setv() method. */
+	return CAMEL_OBJECT_CLASS (camel_service_parent_class)->setv (object, ex, args);
 }
 
 static gint
-service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
+service_getv (CamelObject *object,
+              CamelException *ex,
+              CamelArgGetV *args)
 {
 	CamelService *service = (CamelService *) object;
 	CamelURL *url = service->url;
@@ -252,11 +189,16 @@ service_getv (CamelObject *object, CamelException *ex, CamelArgGetV *args)
 		}
 	}
 
-	return CAMEL_OBJECT_CLASS (parent_class)->getv (object, ex, args);
+	/* Chain up to parent's getv() method. */
+	return CAMEL_OBJECT_CLASS (camel_service_parent_class)->getv (object, ex, args);
 }
 
 static void
-construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
+service_construct (CamelService *service,
+                   CamelSession *session,
+                   CamelProvider *provider,
+                   CamelURL *url,
+                   CamelException *ex)
 {
 	gchar *err, *url_string;
 
@@ -285,232 +227,57 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 
 fail:
 	url_string = camel_url_to_string(url, CAMEL_URL_HIDE_PASSWORD);
-	camel_exception_setv(ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID, err, url_string);
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+		err, url_string);
 	g_free(url_string);
 }
 
-/**
- * camel_service_construct:
- * @service: a #CamelService object
- * @session: the #CamelSession for @service
- * @provider: the #CamelProvider associated with @service
- * @url: the default URL for the service (may be %NULL)
- * @ex: a #CamelException
- *
- * Constructs a #CamelService initialized with the given parameters.
- **/
-void
-camel_service_construct (CamelService *service, CamelSession *session,
-			 CamelProvider *provider, CamelURL *url,
-			 CamelException *ex)
-{
-	g_return_if_fail (CAMEL_IS_SERVICE (service));
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	CSERV_CLASS (service)->construct (service, session, provider, url, ex);
-}
-
 static gboolean
-service_connect (CamelService *service, CamelException *ex)
+service_connect (CamelService *service,
+                 CamelException *ex)
 {
 	/* Things like the CamelMboxStore can validly
-	 * not define a connect function.
-	 */
+	 * not define a connect function. */
 	 return TRUE;
 }
 
-/**
- * camel_service_connect:
- * @service: a #CamelService object
- * @ex: a #CamelException
- *
- * Connect to the service using the parameters it was initialized
- * with.
- *
- * Returns: %TRUE if the connection is made or %FALSE otherwise
- **/
-gboolean
-camel_service_connect (CamelService *service, CamelException *ex)
-{
-	gboolean ret = FALSE;
-	gboolean unreg = FALSE;
-	CamelOperation *connect_op;
-
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
-	g_return_val_if_fail (service->session != NULL, FALSE);
-	g_return_val_if_fail (service->url != NULL, FALSE);
-
-	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
-
-	if (service->status == CAMEL_SERVICE_CONNECTED) {
-		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
-		return TRUE;
-	}
-
-	/* Register a separate operation for connecting, so that
-	 * the offline code can cancel it.
-	 */
-	CAMEL_SERVICE_LOCK (service, connect_op_lock);
-	service->connect_op = camel_operation_registered ();
-	if (!service->connect_op) {
-		service->connect_op = camel_operation_new (NULL, NULL);
-		camel_operation_register (service->connect_op);
-		unreg = TRUE;
-	}
-	connect_op = service->connect_op;
-	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
-
-	service->status = CAMEL_SERVICE_CONNECTING;
-	ret = CSERV_CLASS (service)->connect (service, ex);
-	service->status = ret ? CAMEL_SERVICE_CONNECTED : CAMEL_SERVICE_DISCONNECTED;
-
-	CAMEL_SERVICE_LOCK (service, connect_op_lock);
-	if (connect_op) {
-		if (unreg && service->connect_op)
-			camel_operation_unregister (connect_op);
-
-		camel_operation_unref (connect_op);
-		service->connect_op = NULL;
-	}
-	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
-
-	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
-
-	return ret;
-}
-
 static gboolean
-service_disconnect (CamelService *service, gboolean clean, CamelException *ex)
+service_disconnect (CamelService *service,
+                    gboolean clean,
+                    CamelException *ex)
 {
-	/*service->connect_level--;*/
-
 	/* We let people get away with not having a disconnect
-	 * function -- CamelMboxStore, for example.
-	 */
-
+	 * function -- CamelMboxStore, for example. */
 	return TRUE;
 }
 
-/**
- * camel_service_disconnect:
- * @service: a #CamelService object
- * @clean: whether or not to try to disconnect cleanly
- * @ex: a #CamelException
- *
- * Disconnect from the service. If @clean is %FALSE, it should not
- * try to do any synchronizing or other cleanup of the connection.
- *
- * Returns: %TRUE if the disconnect was successful or %FALSE otherwise
- **/
-gboolean
-camel_service_disconnect (CamelService *service, gboolean clean,
-			  CamelException *ex)
-{
-	gboolean res = TRUE;
-	gint unreg = FALSE;
-
-	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
-
-	if (service->status != CAMEL_SERVICE_DISCONNECTED
-	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
-		CAMEL_SERVICE_LOCK (service, connect_op_lock);
-		service->connect_op = camel_operation_registered ();
-		if (!service->connect_op) {
-			service->connect_op = camel_operation_new (NULL, NULL);
-			camel_operation_register (service->connect_op);
-			unreg = TRUE;
-		}
-		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
-
-		service->status = CAMEL_SERVICE_DISCONNECTING;
-		res = CSERV_CLASS (service)->disconnect (service, clean, ex);
-		service->status = CAMEL_SERVICE_DISCONNECTED;
-
-		CAMEL_SERVICE_LOCK (service, connect_op_lock);
-		if (unreg)
-			camel_operation_unregister (service->connect_op);
-
-		camel_operation_unref (service->connect_op);
-		service->connect_op = NULL;
-		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
-	}
-
-	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
-
-		service->status = CAMEL_SERVICE_DISCONNECTED;
-	return res;
-}
-
 static void
-cancel_connect (CamelService *service)
+service_cancel_connect (CamelService *service)
 {
 	camel_operation_cancel (service->connect_op);
 }
 
-/**
- * camel_service_cancel_connect:
- * @service: a #CamelService object
- *
- * If @service is currently attempting to connect to or disconnect
- * from a server, this causes it to stop and fail. Otherwise it is a
- * no-op.
- **/
-void
-camel_service_cancel_connect (CamelService *service)
+static GList *
+service_query_auth_types (CamelService *service,
+                          CamelException *ex)
 {
-	CAMEL_SERVICE_LOCK (service, connect_op_lock);
-	if (service->connect_op)
-		CSERV_CLASS (service)->cancel_connect (service);
-	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
-}
-
-/**
- * camel_service_get_url:
- * @service: a #CamelService object
- *
- * Gets the URL representing @service. The returned URL must be
- * freed when it is no longer needed. For security reasons, this
- * routine does not return the password.
- *
- * Returns: the URL representing @service
- **/
-gchar *
-camel_service_get_url (CamelService *service)
-{
-	return camel_url_to_string (service->url, CAMEL_URL_HIDE_PASSWORD);
+	return NULL;
 }
 
 static gchar *
-get_name (CamelService *service, gboolean brief)
+service_get_name (CamelService *service,
+                  gboolean brief)
 {
-	w(g_warning ("CamelService::get_name not implemented for '%s'",
-		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service))));
-	return g_strdup ("???");
-}
+	g_warning (
+		"%s does not implement CamelServiceClass::get_name()",
+		camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service)));
 
-/**
- * camel_service_get_name:
- * @service: a #CamelService object
- * @brief: whether or not to use a briefer form
- *
- * This gets the name of the service in a "friendly" (suitable for
- * humans) form. If @brief is %TRUE, this should be a brief description
- * such as for use in the folder tree. If @brief is %FALSE, it should
- * be a more complete and mostly unambiguous description.
- *
- * Returns: a description of the service which the caller must free
- **/
-gchar *
-camel_service_get_name (CamelService *service, gboolean brief)
-{
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-	g_return_val_if_fail (service->url, NULL);
-
-	return CSERV_CLASS (service)->get_name (service, brief);
+	return g_strdup (camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service)));
 }
 
 static gchar *
-get_path (CamelService *service)
+service_get_path (CamelService *service)
 {
 	CamelProvider *prov = service->provider;
 	CamelURL *url = service->url;
@@ -552,6 +319,273 @@ get_path (CamelService *service)
 	return path;
 }
 
+static void
+camel_service_class_init (CamelServiceClass *class)
+{
+	CamelObjectClass *camel_object_class;
+
+	camel_service_parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
+
+	camel_object_class = CAMEL_OBJECT_CLASS (class);
+	camel_object_class->setv = service_setv;
+	camel_object_class->getv = service_getv;
+
+	class->construct = service_construct;
+	class->connect = service_connect;
+	class->disconnect = service_disconnect;
+	class->cancel_connect = service_cancel_connect;
+	class->query_auth_types = service_query_auth_types;
+	class->get_name = service_get_name;
+	class->get_path = service_get_path;
+}
+
+static void
+camel_service_init (CamelService *service)
+{
+	service->priv = g_malloc0(sizeof(*service->priv));
+
+	g_static_rec_mutex_init (&service->priv->connect_lock);
+	g_static_mutex_init (&service->priv->connect_op_lock);
+}
+
+CamelType
+camel_service_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type =
+			camel_type_register (CAMEL_TYPE_OBJECT,
+					     "CamelService",
+					     sizeof (CamelService),
+					     sizeof (CamelServiceClass),
+					     (CamelObjectClassInitFunc) camel_service_class_init,
+					     NULL,
+					     (CamelObjectInitFunc) camel_service_init,
+					     camel_service_finalize );
+	}
+
+	return type;
+}
+
+/**
+ * camel_service_construct:
+ * @service: a #CamelService object
+ * @session: the #CamelSession for @service
+ * @provider: the #CamelProvider associated with @service
+ * @url: the default URL for the service (may be %NULL)
+ * @ex: a #CamelException
+ *
+ * Constructs a #CamelService initialized with the given parameters.
+ **/
+void
+camel_service_construct (CamelService *service,
+                         CamelSession *session,
+                         CamelProvider *provider,
+                         CamelURL *url,
+                         CamelException *ex)
+{
+	CamelServiceClass *class;
+
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_if_fail (class->construct != NULL);
+
+	class->construct (service, session, provider, url, ex);
+}
+
+/**
+ * camel_service_connect:
+ * @service: a #CamelService object
+ * @ex: a #CamelException
+ *
+ * Connect to the service using the parameters it was initialized
+ * with.
+ *
+ * Returns: %TRUE if the connection is made or %FALSE otherwise
+ **/
+gboolean
+camel_service_connect (CamelService *service,
+                       CamelException *ex)
+{
+	CamelServiceClass *class;
+	gboolean ret = FALSE;
+	gboolean unreg = FALSE;
+	CamelOperation *connect_op;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (service->session != NULL, FALSE);
+	g_return_val_if_fail (service->url != NULL, FALSE);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->connect != NULL, FALSE);
+
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
+
+	if (service->status == CAMEL_SERVICE_CONNECTED) {
+		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+		return TRUE;
+	}
+
+	/* Register a separate operation for connecting, so that
+	 * the offline code can cancel it. */
+	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	service->connect_op = camel_operation_registered ();
+	if (!service->connect_op) {
+		service->connect_op = camel_operation_new (NULL, NULL);
+		camel_operation_register (service->connect_op);
+		unreg = TRUE;
+	}
+	connect_op = service->connect_op;
+	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+
+	service->status = CAMEL_SERVICE_CONNECTING;
+	ret = class->connect (service, ex);
+	service->status = ret ? CAMEL_SERVICE_CONNECTED : CAMEL_SERVICE_DISCONNECTED;
+
+	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	if (connect_op) {
+		if (unreg && service->connect_op)
+			camel_operation_unregister (connect_op);
+
+		camel_operation_unref (connect_op);
+		service->connect_op = NULL;
+	}
+	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+
+	return ret;
+}
+
+/**
+ * camel_service_disconnect:
+ * @service: a #CamelService object
+ * @clean: whether or not to try to disconnect cleanly
+ * @ex: a #CamelException
+ *
+ * Disconnect from the service. If @clean is %FALSE, it should not
+ * try to do any synchronizing or other cleanup of the connection.
+ *
+ * Returns: %TRUE if the disconnect was successful or %FALSE otherwise
+ **/
+gboolean
+camel_service_disconnect (CamelService *service,
+                          gboolean clean,
+                          CamelException *ex)
+{
+	CamelServiceClass *class;
+	gboolean res = TRUE;
+	gint unreg = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->disconnect != NULL, FALSE);
+
+	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
+
+	if (service->status != CAMEL_SERVICE_DISCONNECTED
+	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
+		CAMEL_SERVICE_LOCK (service, connect_op_lock);
+		service->connect_op = camel_operation_registered ();
+		if (!service->connect_op) {
+			service->connect_op = camel_operation_new (NULL, NULL);
+			camel_operation_register (service->connect_op);
+			unreg = TRUE;
+		}
+		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+
+		service->status = CAMEL_SERVICE_DISCONNECTING;
+		res = class->disconnect (service, clean, ex);
+		service->status = CAMEL_SERVICE_DISCONNECTED;
+
+		CAMEL_SERVICE_LOCK (service, connect_op_lock);
+		if (unreg)
+			camel_operation_unregister (service->connect_op);
+
+		camel_operation_unref (service->connect_op);
+		service->connect_op = NULL;
+		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+	}
+
+	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+
+		service->status = CAMEL_SERVICE_DISCONNECTED;
+	return res;
+}
+
+/**
+ * camel_service_cancel_connect:
+ * @service: a #CamelService object
+ *
+ * If @service is currently attempting to connect to or disconnect
+ * from a server, this causes it to stop and fail. Otherwise it is a
+ * no-op.
+ **/
+void
+camel_service_cancel_connect (CamelService *service)
+{
+	CamelServiceClass *class;
+
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_if_fail (class->cancel_connect != NULL);
+
+	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	if (service->connect_op)
+		class->cancel_connect (service);
+	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+}
+
+/**
+ * camel_service_get_url:
+ * @service: a #CamelService object
+ *
+ * Gets the URL representing @service. The returned URL must be
+ * freed when it is no longer needed. For security reasons, this
+ * routine does not return the password.
+ *
+ * Returns: the URL representing @service
+ **/
+gchar *
+camel_service_get_url (CamelService *service)
+{
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	return camel_url_to_string (service->url, CAMEL_URL_HIDE_PASSWORD);
+}
+
+/**
+ * camel_service_get_name:
+ * @service: a #CamelService object
+ * @brief: whether or not to use a briefer form
+ *
+ * This gets the name of the service in a "friendly" (suitable for
+ * humans) form. If @brief is %TRUE, this should be a brief description
+ * such as for use in the folder tree. If @brief is %FALSE, it should
+ * be a more complete and mostly unambiguous description.
+ *
+ * Returns: a description of the service which the caller must free
+ **/
+gchar *
+camel_service_get_name (CamelService *service,
+                        gboolean brief)
+{
+	CamelServiceClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+	g_return_val_if_fail (service->url, NULL);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->get_name != NULL, NULL);
+
+	return class->get_name (service, brief);
+}
+
 /**
  * camel_service_get_path:
  * @service: a #CamelService object
@@ -567,10 +601,15 @@ get_path (CamelService *service)
 gchar *
 camel_service_get_path (CamelService *service)
 {
+	CamelServiceClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 	g_return_val_if_fail (service->url, NULL);
 
-	return CSERV_CLASS (service)->get_path (service);
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->get_path != NULL, NULL);
+
+	return class->get_path (service);
 }
 
 /**
@@ -584,6 +623,8 @@ camel_service_get_path (CamelService *service)
 CamelSession *
 camel_service_get_session (CamelService *service)
 {
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
 	return service->session;
 }
 
@@ -598,13 +639,9 @@ camel_service_get_session (CamelService *service)
 CamelProvider *
 camel_service_get_provider (CamelService *service)
 {
-	return service->provider;
-}
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
-static GList *
-query_auth_types (CamelService *service, CamelException *ex)
-{
-	return NULL;
+	return service->provider;
 }
 
 /**
@@ -620,16 +657,21 @@ query_auth_types (CamelService *service, CamelException *ex)
  * must free the list with #g_list_free when it is done with it.
  **/
 GList *
-camel_service_query_auth_types (CamelService *service, CamelException *ex)
+camel_service_query_auth_types (CamelService *service,
+                                CamelException *ex)
 {
+	CamelServiceClass *class;
 	GList *ret;
 
-	g_return_val_if_fail (service != NULL, NULL);
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
-	/* note that we get the connect lock here, which means the callee
-	   must not call the connect functions itself */
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class->query_auth_types != NULL, NULL);
+
+	/* Note that we get the connect lock here, which means the
+	 * callee must not call the connect functions itself. */
 	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
-	ret = CSERV_CLASS (service)->query_auth_types (service, ex);
+	ret = class->query_auth_types (service, ex);
 	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
 
 	return ret;

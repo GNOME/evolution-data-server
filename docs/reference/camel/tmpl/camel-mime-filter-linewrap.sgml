@@ -23,11 +23,7 @@ CamelMimeFilterLinewrap
 </para>
 
 @parent: 
-@wrap_len: 
-@max_len: 
-@indent: 
-@nchars: 
-@flags: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_linewrap_new ##### -->
 <para>

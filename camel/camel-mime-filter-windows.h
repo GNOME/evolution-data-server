@@ -37,12 +37,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterWindows CamelMimeFilterWindows;
 typedef struct _CamelMimeFilterWindowsClass CamelMimeFilterWindowsClass;
+typedef struct _CamelMimeFilterWindowsPrivate CamelMimeFilterWindowsPrivate;
 
 struct _CamelMimeFilterWindows {
 	CamelMimeFilter parent;
-
-	gboolean is_windows;
-	gchar *claimed_charset;
+	CamelMimeFilterWindowsPrivate *priv;
 };
 
 struct _CamelMimeFilterWindowsClass {

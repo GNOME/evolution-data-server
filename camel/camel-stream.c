@@ -46,7 +46,7 @@ static gint       stream_reset      (CamelStream *stream) { return 0; }
 static void
 camel_stream_class_init (CamelStreamClass *camel_stream_class)
 {
-	parent_class = camel_type_get_global_classfuncs( CAMEL_OBJECT_TYPE );
+	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
 
 	/* virtual method definition */
 	camel_stream_class->read = stream_read;
@@ -63,7 +63,7 @@ camel_stream_get_type (void)
 	static CamelType camel_stream_type = CAMEL_INVALID_TYPE;
 
 	if (camel_stream_type == CAMEL_INVALID_TYPE) {
-		camel_stream_type = camel_type_register( CAMEL_OBJECT_TYPE,
+		camel_stream_type = camel_type_register( CAMEL_TYPE_OBJECT,
 							 "CamelStream",
 							 sizeof( CamelStream ),
 							 sizeof( CamelStreamClass ),

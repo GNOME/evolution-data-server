@@ -1460,7 +1460,7 @@ match_path(const gchar *path, const gchar *name)
 	return n == 0 && (p == '%' || p == 0);
 }
 
-/* GObject Init and finalise methods */
+/* GObject Init and finalize methods */
 static void
 camel_groupwise_store_class_init (CamelGroupwiseStoreClass *camel_groupwise_store_class)
 {

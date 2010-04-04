@@ -34,6 +34,8 @@
 #define CAMEL_CERTDB(obj)         (CAMEL_CHECK_CAST (obj, camel_certdb_get_type (), CamelCertDB))
 #define CAMEL_CERTDB_CLASS(klass) (CAMEL_CHECK_CLASS_CAST (klass, camel_certdb_get_type (), CamelCertDBClass))
 #define CAMEL_IS_CERTDB(obj)      (CAMEL_CHECK_TYPE (obj, camel_certdb_get_type ()))
+#define CAMEL_CERTDB_GET_CLASS(obj) \
+	((CamelCertDBClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 

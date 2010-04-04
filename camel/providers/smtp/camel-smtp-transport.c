@@ -455,7 +455,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 
 		sasl = camel_sasl_new ("smtp", "POPB4SMTP", service);
 		chal = camel_sasl_challenge (sasl, NULL, ex);
-		truth = camel_sasl_authenticated (sasl);
+		truth = camel_sasl_get_authenticated (sasl);
 		if (chal)
 			g_byte_array_free (chal, TRUE);
 		camel_object_unref (sasl);
@@ -1108,7 +1108,7 @@ smtp_auth (CamelSmtpTransport *transport, const gchar *mech, CamelException *ex)
 	respbuf = camel_stream_buffer_read_line (CAMEL_STREAM_BUFFER (transport->istream));
 	d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
 
-	while (!camel_sasl_authenticated (sasl)) {
+	while (!camel_sasl_get_authenticated (sasl)) {
 		if (!respbuf) {
 			camel_exception_setv (ex, errno == EINTR ? CAMEL_EXCEPTION_USER_CANCEL : CAMEL_EXCEPTION_SYSTEM,
 					      _("AUTH command failed: %s"), g_strerror (errno));

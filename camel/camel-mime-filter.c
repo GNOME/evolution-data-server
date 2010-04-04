@@ -36,47 +36,54 @@ struct _CamelMimeFilterPrivate {
 
 #define PRE_HEAD (64)
 #define BACK_HEAD (64)
-#define _PRIVATE(o) (((CamelMimeFilter *)(o))->priv)
-#define FCLASS(o) ((CamelMimeFilterClass *)(CAMEL_OBJECT_GET_CLASS(o)))
 
 static CamelObjectClass *camel_mime_filter_parent;
 
-static void complete (CamelMimeFilter *mf, const gchar *in, gsize len,
-		      gsize prespace, gchar **out, gsize *outlen,
-		      gsize *outprespace);
+static void
+mime_filter_finalize (CamelObject *object)
+{
+	CamelMimeFilter *mime_filter;
+
+	mime_filter = CAMEL_MIME_FILTER (object);
+
+	g_free (mime_filter->outreal);
+	g_free (mime_filter->backbuf);
+	g_free (mime_filter->priv->inbuf);
+	g_free (mime_filter->priv);
+}
 
 static void
-camel_mime_filter_class_init (CamelMimeFilterClass *klass)
+mime_filter_complete (CamelMimeFilter *mime_filter,
+                      const gchar *in,
+                      gsize len,
+                      gsize prespace,
+                      gchar **out,
+                      gsize *outlen,
+                      gsize *outprespace)
+{
+	/* default - do nothing */
+}
+
+static void
+camel_mime_filter_class_init (CamelMimeFilterClass *class)
 {
 	camel_mime_filter_parent = camel_type_get_global_classfuncs (camel_object_get_type ());
 
-	klass->complete = complete;
+	class->complete = mime_filter_complete;
 }
 
 static void
-camel_mime_filter_init (CamelMimeFilter *obj)
+camel_mime_filter_init (CamelMimeFilter *mime_filter)
 {
-	obj->outreal = NULL;
-	obj->outbuf = NULL;
-	obj->outsize = 0;
+	mime_filter->priv = g_malloc0(sizeof(*mime_filter->priv));
 
-	obj->backbuf = NULL;
-	obj->backsize = 0;
-	obj->backlen = 0;
+	mime_filter->outreal = NULL;
+	mime_filter->outbuf = NULL;
+	mime_filter->outsize = 0;
 
-	_PRIVATE(obj) = g_malloc0(sizeof(*obj->priv));
-}
-
-static void
-camel_mime_filter_finalize(CamelObject *o)
-{
-	CamelMimeFilter *f = (CamelMimeFilter *)o;
-	struct _CamelMimeFilterPrivate *p = _PRIVATE(f);
-
-	g_free(f->outreal);
-	g_free(f->backbuf);
-	g_free(p->inbuf);
-	g_free(p);
+	mime_filter->backbuf = NULL;
+	mime_filter->backsize = 0;
+	mime_filter->backlen = 0;
 }
 
 CamelType
@@ -85,22 +92,16 @@ camel_mime_filter_get_type (void)
 	static CamelType camel_mime_filter_type = CAMEL_INVALID_TYPE;
 
 	if (camel_mime_filter_type == CAMEL_INVALID_TYPE) {
-		camel_mime_filter_type = camel_type_register (CAMEL_OBJECT_TYPE, "CamelMimeFilter",
+		camel_mime_filter_type = camel_type_register (CAMEL_TYPE_OBJECT, "CamelMimeFilter",
 							      sizeof (CamelMimeFilter),
 							      sizeof (CamelMimeFilterClass),
 							      (CamelObjectClassInitFunc) camel_mime_filter_class_init,
 							      NULL,
 							      (CamelObjectInitFunc) camel_mime_filter_init,
-							      (CamelObjectFinalizeFunc) camel_mime_filter_finalize);
+							      (CamelObjectFinalizeFunc) mime_filter_finalize);
 	}
 
 	return camel_mime_filter_type;
-}
-
-static void
-complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
-{
-	/* default - do nothing */
 }
 
 /**
@@ -113,8 +114,7 @@ complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar 
 CamelMimeFilter *
 camel_mime_filter_new (void)
 {
-	CamelMimeFilter *new = CAMEL_MIME_FILTER ( camel_object_new (camel_mime_filter_get_type ()));
-	return new;
+	return CAMEL_MIME_FILTER ( camel_object_new (camel_mime_filter_get_type ()));
 }
 
 #ifdef MALLOC_CHECK
@@ -158,7 +158,7 @@ static void filter_run(CamelMimeFilter *f,
 	*/
 	if (prespace < f->backlen) {
 		gint newlen = len+prespace+f->backlen;
-		p = _PRIVATE(f);
+		p = f->priv;
 		if (p->inlen < newlen) {
 			/* NOTE: g_realloc copies data, we dont need that (slower) */
 			g_free(p->inbuf);
@@ -209,13 +209,24 @@ static void filter_run(CamelMimeFilter *f,
  **/
 void
 camel_mime_filter_filter (CamelMimeFilter *filter,
-			  const gchar *in, gsize len, gsize prespace,
-			  gchar **out, gsize *outlen, gsize *outprespace)
+                          const gchar *in,
+                          gsize len,
+                          gsize prespace,
+                          gchar **out,
+                          gsize *outlen,
+                          gsize *outprespace)
 {
-	if (FCLASS(filter)->filter)
-		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->filter);
-	else
-		g_error("Filter function unplmenented in class");
+	CamelMimeFilterClass *class;
+
+	g_return_if_fail (CAMEL_IS_MIME_FILTER (filter));
+	g_return_if_fail (in != NULL);
+
+	class = CAMEL_MIME_FILTER_GET_CLASS (filter);
+	g_return_if_fail (class->filter != NULL);
+
+	filter_run (
+		filter, in, len, prespace, out,
+		outlen, outprespace, class->filter);
 }
 
 /**
@@ -236,11 +247,24 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
  **/
 void
 camel_mime_filter_complete (CamelMimeFilter *filter,
-			    const gchar *in, gsize len, gsize prespace,
-			    gchar **out, gsize *outlen, gsize *outprespace)
+                            const gchar *in,
+                            gsize len,
+                            gsize prespace,
+                            gchar **out,
+                            gsize *outlen,
+                            gsize *outprespace)
 {
-	if (FCLASS(filter)->complete)
-		filter_run(filter, in, len, prespace, out, outlen, outprespace, FCLASS(filter)->complete);
+	CamelMimeFilterClass *class;
+
+	g_return_if_fail (CAMEL_IS_MIME_FILTER (filter));
+	g_return_if_fail (in != NULL);
+
+	class = CAMEL_MIME_FILTER_GET_CLASS (filter);
+	g_return_if_fail (class->complete != NULL);
+
+	filter_run (
+		filter, in, len, prespace, out,
+		outlen, outprespace, class->complete);
 }
 
 /**
@@ -250,11 +274,16 @@ camel_mime_filter_complete (CamelMimeFilter *filter,
  * Resets the state on @filter so that it may be used again.
  **/
 void
-camel_mime_filter_reset(CamelMimeFilter *filter)
+camel_mime_filter_reset (CamelMimeFilter *filter)
 {
-	if (FCLASS(filter)->reset) {
-		FCLASS(filter)->reset(filter);
-	}
+	CamelMimeFilterClass *class;
+
+	g_return_if_fail (CAMEL_IS_MIME_FILTER (filter));
+
+	class = CAMEL_MIME_FILTER_GET_CLASS (filter);
+
+	if (class->reset != NULL)
+		class->reset (filter);
 
 	/* could free some buffers, if they are really big? */
 	filter->backlen = 0;

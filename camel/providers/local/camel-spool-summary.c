@@ -50,7 +50,7 @@ static gint spool_summary_need_index(void);
 
 static void camel_spool_summary_class_init (CamelSpoolSummaryClass *klass);
 static void camel_spool_summary_init       (CamelSpoolSummary *obj);
-static void camel_spool_summary_finalise   (CamelObject *obj);
+static void camel_spool_summary_finalize   (CamelObject *obj);
 
 static CamelFolderSummaryClass *camel_spool_summary_parent;
 
@@ -66,7 +66,7 @@ camel_spool_summary_get_type(void)
 					   (CamelObjectClassInitFunc) camel_spool_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_spool_summary_init,
-					   (CamelObjectFinalizeFunc) camel_spool_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_spool_summary_finalize);
 	}
 
 	return type;
@@ -99,7 +99,7 @@ camel_spool_summary_init(CamelSpoolSummary *obj)
 }
 
 static void
-camel_spool_summary_finalise(CamelObject *obj)
+camel_spool_summary_finalize(CamelObject *obj)
 {
 	/*CamelSpoolSummary *mbs = CAMEL_SPOOL_SUMMARY(obj);*/
 }

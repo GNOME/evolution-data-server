@@ -70,7 +70,7 @@ camel_index_init(CamelIndex *idx)
 }
 
 static void
-camel_index_finalise(CamelIndex *idx)
+camel_index_finalize(CamelIndex *idx)
 {
 	g_free(idx->path);
 	g_free(idx->priv);
@@ -88,7 +88,7 @@ camel_index_get_type(void)
 					   (CamelObjectClassInitFunc) camel_index_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_index_init,
-					   (CamelObjectFinalizeFunc) camel_index_finalise);
+					   (CamelObjectFinalizeFunc) camel_index_finalize);
 	}
 
 	return type;
@@ -297,7 +297,7 @@ camel_index_name_init(CamelIndexName *idn)
 }
 
 static void
-camel_index_name_finalise(CamelIndexName *idn)
+camel_index_name_finalize(CamelIndexName *idn)
 {
 	if (idn->index)
 		camel_object_unref((CamelObject *)idn->index);
@@ -315,7 +315,7 @@ camel_index_name_get_type(void)
 					   (CamelObjectClassInitFunc) camel_index_name_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_index_name_init,
-					   (CamelObjectFinalizeFunc) camel_index_name_finalise);
+					   (CamelObjectFinalizeFunc) camel_index_name_finalize);
 	}
 
 	return type;
@@ -372,7 +372,7 @@ camel_index_cursor_init(CamelIndexCursor *idc)
 }
 
 static void
-camel_index_cursor_finalise(CamelIndexCursor *idc)
+camel_index_cursor_finalize(CamelIndexCursor *idc)
 {
 	if (idc->index)
 		camel_object_unref((CamelObject *)idc->index);
@@ -390,7 +390,7 @@ camel_index_cursor_get_type(void)
 					   (CamelObjectClassInitFunc) camel_index_cursor_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_index_cursor_init,
-					   (CamelObjectFinalizeFunc) camel_index_cursor_finalise);
+					   (CamelObjectFinalizeFunc) camel_index_cursor_finalize);
 	}
 
 	return type;

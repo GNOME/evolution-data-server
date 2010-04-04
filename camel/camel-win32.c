@@ -28,7 +28,6 @@
 
 #include <windows.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include <libedataserver/e-data-server-util.h>

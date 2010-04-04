@@ -32,7 +32,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "camel-file-utils.h"

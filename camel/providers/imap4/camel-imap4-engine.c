@@ -72,7 +72,7 @@ camel_imap4_engine_get_type (void)
 static void
 camel_imap4_engine_class_init (CamelIMAP4EngineClass *klass)
 {
-	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
+	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
 
 	klass->tagprefix = 'A';
 }

@@ -27,12 +27,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-mime-utils.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-service.h"
+
+struct _CamelSaslCramMd5Private {
+	gint placeholder;  /* allow for future expansion */
+};
 
 CamelServiceAuthType camel_sasl_cram_md5_authtype = {
 	N_("CRAM-MD5"),
@@ -46,48 +49,16 @@ CamelServiceAuthType camel_sasl_cram_md5_authtype = {
 
 static CamelSaslClass *parent_class = NULL;
 
-/* Returns the class for a CamelSaslCramMd5 */
-#define CSCM_CLASS(so) CAMEL_SASL_CRAM_MD5_CLASS (CAMEL_OBJECT_GET_CLASS (so))
-
-static GByteArray *cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex);
-
-static void
-camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *camel_sasl_cram_md5_class)
-{
-	CamelSaslClass *camel_sasl_class = CAMEL_SASL_CLASS (camel_sasl_cram_md5_class);
-
-	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
-
-	/* virtual method overload */
-	camel_sasl_class->challenge = cram_md5_challenge;
-}
-
-CamelType
-camel_sasl_cram_md5_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_sasl_get_type (),
-					    "CamelSaslCramMd5",
-					    sizeof (CamelSaslCramMd5),
-					    sizeof (CamelSaslCramMd5Class),
-					    (CamelObjectClassInitFunc) camel_sasl_cram_md5_class_init,
-					    NULL,
-					    NULL,
-					    NULL);
-	}
-
-	return type;
-}
-
 /* CRAM-MD5 algorithm:
  * MD5 ((passwd XOR opad), MD5 ((passwd XOR ipad), timestamp))
  */
 
 static GByteArray *
-cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
+sasl_cram_md5_challenge (CamelSasl *sasl,
+                         GByteArray *token,
+                         CamelException *ex)
 {
+	CamelService *service;
 	GChecksum *checksum;
 	guint8 *digest;
 	gsize length;
@@ -102,7 +73,8 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	if (!token)
 		return NULL;
 
-	g_return_val_if_fail (sasl->service->url->passwd != NULL, NULL);
+	service = camel_sasl_get_service (sasl);
+	g_return_val_if_fail (service->url->passwd != NULL, NULL);
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -110,7 +82,7 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	memset (ipad, 0, sizeof (ipad));
 	memset (opad, 0, sizeof (opad));
 
-	passwd = sasl->service->url->passwd;
+	passwd = service->url->passwd;
 	pw_len = strlen (passwd);
 	if (pw_len <= 64) {
 		memcpy (ipad, passwd, pw_len);
@@ -144,13 +116,43 @@ cram_md5_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
 	hex = g_checksum_get_string (checksum);
 
 	ret = g_byte_array_new ();
-	g_byte_array_append (ret, (guint8 *) sasl->service->url->user, strlen (sasl->service->url->user));
+	g_byte_array_append (ret, (guint8 *) service->url->user, strlen (service->url->user));
 	g_byte_array_append (ret, (guint8 *) " ", 1);
 	g_byte_array_append (ret, (guint8 *) hex, strlen (hex));
 
 	g_checksum_free (checksum);
 
-	sasl->authenticated = TRUE;
+	camel_sasl_set_authenticated (sasl, TRUE);
 
 	return ret;
+}
+
+static void
+camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
+{
+	CamelSaslClass *sasl_class;
+
+	parent_class = CAMEL_SASL_CLASS (camel_type_get_global_classfuncs (camel_sasl_get_type ()));
+
+	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->challenge = sasl_cram_md5_challenge;
+}
+
+CamelType
+camel_sasl_cram_md5_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_sasl_get_type (),
+					    "CamelSaslCramMd5",
+					    sizeof (CamelSaslCramMd5),
+					    sizeof (CamelSaslCramMd5Class),
+					    (CamelObjectClassInitFunc) camel_sasl_cram_md5_class_init,
+					    NULL,
+					    NULL,
+					    NULL);
+	}
+
+	return type;
 }

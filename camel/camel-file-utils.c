@@ -33,8 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
-
 #ifdef G_OS_WIN32
 #include <winsock2.h>
 #define EWOULDBLOCK EAGAIN
@@ -412,7 +410,9 @@ camel_file_util_safe_filename (const gchar *name)
  * be set appropriately.
  **/
 gssize
-camel_read (gint fd, gchar *buf, gsize n)
+camel_read (gint fd,
+            gchar *buf,
+            gsize n)
 {
 	gssize nread;
 	gint cancel_fd;
@@ -489,7 +489,9 @@ camel_read (gint fd, gchar *buf, gsize n)
  * be set appropriately.
  **/
 gssize
-camel_write (gint fd, const gchar *buf, gsize n)
+camel_write (gint fd,
+             const gchar *buf,
+             gsize n)
 {
 	gssize w, written = 0;
 	gint cancel_fd;
@@ -580,7 +582,9 @@ camel_write (gint fd, const gchar *buf, gsize n)
  * camel_read_socket() will retry the read until it gets something.
  **/
 gssize
-camel_read_socket (gint fd, gchar *buf, gsize n)
+camel_read_socket (gint fd,
+                   gchar *buf,
+                   gsize n)
 {
 #ifndef G_OS_WIN32
 	return camel_read (fd, buf, n);
@@ -650,7 +654,9 @@ camel_read_socket (gint fd, gchar *buf, gsize n)
  * be set appropriately.
  **/
 gssize
-camel_write_socket (gint fd, const gchar *buf, gsize n)
+camel_write_socket (gint fd,
+                    const gchar *buf,
+                    gsize n)
 {
 #ifndef G_OS_WIN32
 	return camel_write (fd, buf, n);

@@ -37,15 +37,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterCharset CamelMimeFilterCharset;
 typedef struct _CamelMimeFilterCharsetClass CamelMimeFilterCharsetClass;
+typedef struct _CamelMimeFilterCharsetPrivate CamelMimeFilterCharsetPrivate;
 
 struct _CamelMimeFilterCharset {
 	CamelMimeFilter parent;
-
-	struct _CamelMimeFilterCharsetPrivate *priv;
-
-	iconv_t ic;
-	gchar *from;
-	gchar *to;
+	CamelMimeFilterCharsetPrivate *priv;
 };
 
 struct _CamelMimeFilterCharsetClass {

@@ -31,6 +31,17 @@
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
 
+struct _CamelMimeFilterToHTMLPrivate {
+
+	CamelUrlScanner *scanner;
+
+	guint32 flags;
+	guint32 color;
+
+	guint32 column   : 31;
+	guint32 pre_open : 1;
+};
+
 /**
  * TODO: convert common text/plain 'markup' to html. eg.:
  *
@@ -68,74 +79,39 @@ static struct {
 	{ CONVERT_ADDRSPEC, { "@",         "mailto:", camel_url_addrspec_start, camel_url_addrspec_end } },
 };
 
-static void camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass);
-static void camel_mime_filter_tohtml_init       (CamelMimeFilterToHTML *filter);
-static void camel_mime_filter_tohtml_finalize   (CamelObject *obj);
-
 static CamelMimeFilterClass *camel_mime_filter_tohtml_parent;
 
-CamelType
-camel_mime_filter_tohtml_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (),
-					    "CamelMimeFilterToHTML",
-					    sizeof (CamelMimeFilterToHTML),
-					    sizeof (CamelMimeFilterToHTMLClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_tohtml_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_tohtml_init,
-					    (CamelObjectFinalizeFunc) camel_mime_filter_tohtml_finalize);
-	}
-
-	return type;
-}
-
-static void
-camel_mime_filter_tohtml_finalize (CamelObject *obj)
-{
-	CamelMimeFilterToHTML *filter = (CamelMimeFilterToHTML *) obj;
-
-	camel_url_scanner_free (filter->scanner);
-}
-
-static void
-camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
-{
-	filter->scanner = camel_url_scanner_new ();
-
-	filter->flags = 0;
-	filter->color = 0;
-	filter->column = 0;
-	filter->pre_open = FALSE;
-}
-
 static gchar *
-check_size (CamelMimeFilter *filter, gchar *outptr, gchar **outend, gsize len)
+check_size (CamelMimeFilter *mime_filter,
+            gchar *outptr,
+            gchar **outend,
+            gsize len)
 {
 	gsize offset;
 
 	if (*outend - outptr >= len)
 		return outptr;
 
-	offset = outptr - filter->outbuf;
+	offset = outptr - mime_filter->outbuf;
 
-	camel_mime_filter_set_size (filter, filter->outsize + len, TRUE);
+	camel_mime_filter_set_size (
+		mime_filter, mime_filter->outsize + len, TRUE);
 
-	*outend = filter->outbuf + filter->outsize;
+	*outend = mime_filter->outbuf + mime_filter->outsize;
 
-	return filter->outbuf + offset;
+	return mime_filter->outbuf + offset;
 }
 
 static gchar *
-append_string_verbatim (CamelMimeFilter *filter, const gchar *str, gchar *outptr, gchar **outend)
+append_string_verbatim (CamelMimeFilter *mime_filter,
+                        const gchar *str,
+                        gchar *outptr,
+                        gchar **outend)
 {
 	gsize len = strlen (str);
 
-	outptr = check_size (filter, outptr, outend, len);
-	memcpy(outptr, str, len);
+	outptr = check_size (mime_filter, outptr, outend, len);
+	memcpy (outptr, str, len);
 	outptr += len;
 
 	return outptr;
@@ -170,15 +146,21 @@ citation_depth (const gchar *in)
 }
 
 static gchar *
-writeln (CamelMimeFilter *filter, const guchar *in, const guchar *inend, gchar *outptr, gchar **outend)
+writeln (CamelMimeFilter *mime_filter,
+         const guchar *in,
+         const guchar *inend,
+         gchar *outptr,
+         gchar **outend)
 {
-	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
+	CamelMimeFilterToHTMLPrivate *priv;
 	const guchar *inptr = in;
+
+	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
 	while (inptr < inend) {
 		guint32 u;
 
-		outptr = check_size (filter, outptr, outend, 16);
+		outptr = check_size (mime_filter, outptr, outend, 16);
 
 		u = camel_utf8_getc_limit (&inptr, inend);
 		switch (u) {
@@ -187,35 +169,35 @@ writeln (CamelMimeFilter *filter, const guchar *in, const guchar *inend, gchar *
 			return outptr;
 		case '<':
 			outptr = g_stpcpy (outptr, "&lt;");
-			html->column++;
+			priv->column++;
 			break;
 		case '>':
 			outptr = g_stpcpy (outptr, "&gt;");
-			html->column++;
+			priv->column++;
 			break;
 		case '&':
 			outptr = g_stpcpy (outptr, "&amp;");
-			html->column++;
+			priv->column++;
 			break;
 		case '"':
 			outptr = g_stpcpy (outptr, "&quot;");
-			html->column++;
+			priv->column++;
 			break;
 		case '\t':
-			if (html->flags & (CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES)) {
+			if (priv->flags & (CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES)) {
 				do {
-					outptr = check_size (filter, outptr, outend, 7);
+					outptr = check_size (mime_filter, outptr, outend, 7);
 					outptr = g_stpcpy (outptr, "&nbsp;");
-					html->column++;
-				} while (html->column % 8);
+					priv->column++;
+				} while (priv->column % 8);
 				break;
 			}
 			/* otherwise, FALL THROUGH */
 		case ' ':
-			if (html->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES
+			if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_SPACES
 			    && ((inptr == (in + 1) || (inptr < inend && (*inptr == ' ' || *inptr == '\t'))))) {
 				outptr = g_stpcpy (outptr, "&nbsp;");
-				html->column++;
+				priv->column++;
 				break;
 			}
 			/* otherwise, FALL THROUGH */
@@ -223,12 +205,12 @@ writeln (CamelMimeFilter *filter, const guchar *in, const guchar *inend, gchar *
 			if (u >= 20 && u <0x80)
 				*outptr++ = u;
 			else {
-				if (html->flags & CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT)
+				if (priv->flags & CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT)
 					*outptr++ = '?';
 				else
 					outptr += sprintf(outptr, "&#%u;", u);
 			}
-			html->column++;
+			priv->column++;
 			break;
 		}
 	}
@@ -237,27 +219,35 @@ writeln (CamelMimeFilter *filter, const guchar *in, const guchar *inend, gchar *
 }
 
 static void
-html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize prespace,
-	      gchar **out, gsize *outlen, gsize *outprespace, gboolean flush)
+html_convert (CamelMimeFilter *mime_filter,
+              const gchar *in,
+              gsize inlen,
+              gsize prespace,
+              gchar **out,
+              gsize *outlen,
+              gsize *outprespace,
+              gboolean flush)
 {
-	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
+	CamelMimeFilterToHTMLPrivate *priv;
 	const gchar *inptr;
 	gchar *outptr, *outend;
 	const gchar *start;
 	const gchar *inend;
 	gint depth;
 
-	if (inlen == 0) {
-		if (html->pre_open) {
-			/* close the pre-tag */
-			outend = filter->outbuf + filter->outsize;
-			outptr = check_size (filter, filter->outbuf, &outend, 10);
-			outptr = g_stpcpy (outptr, "</pre>");
-			html->pre_open = FALSE;
+	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
 
-			*out = filter->outbuf;
-			*outlen = outptr - filter->outbuf;
-			*outprespace = filter->outpre;
+	if (inlen == 0) {
+		if (priv->pre_open) {
+			/* close the pre-tag */
+			outend = mime_filter->outbuf + mime_filter->outsize;
+			outptr = check_size (mime_filter, mime_filter->outbuf, &outend, 10);
+			outptr = g_stpcpy (outptr, "</pre>");
+			priv->pre_open = FALSE;
+
+			*out = mime_filter->outbuf;
+			*outlen = outptr - mime_filter->outbuf;
+			*outprespace = mime_filter->outpre;
 		} else {
 			*out = (gchar *) in;
 			*outlen = 0;
@@ -267,16 +257,16 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 		return;
 	}
 
-	camel_mime_filter_set_size (filter, inlen * 2 + 6, FALSE);
+	camel_mime_filter_set_size (mime_filter, inlen * 2 + 6, FALSE);
 
 	inptr = in;
 	inend = in + inlen;
-	outptr = filter->outbuf;
-	outend = filter->outbuf + filter->outsize;
+	outptr = mime_filter->outbuf;
+	outend = mime_filter->outbuf + mime_filter->outsize;
 
-	if (html->flags & CAMEL_MIME_FILTER_TOHTML_PRE && !html->pre_open) {
+	if (priv->flags & CAMEL_MIME_FILTER_TOHTML_PRE && !priv->pre_open) {
 		outptr = g_stpcpy (outptr, "<pre>");
-		html->pre_open = TRUE;
+		priv->pre_open = TRUE;
 	}
 
 	start = inptr;
@@ -287,15 +277,15 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 		if (inptr >= inend && !flush)
 			break;
 
-		html->column = 0;
+		priv->column = 0;
 		depth = 0;
 
-		if (html->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) {
+		if (priv->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) {
 			if ((depth = citation_depth (start)) > 0) {
 				/* FIXME: we could easily support multiple color depths here */
 
-				outptr = check_size (filter, outptr, &outend, 25);
-				outptr += sprintf(outptr, "<font color=\"#%06x\">", (html->color & 0xffffff));
+				outptr = check_size (mime_filter, outptr, &outend, 25);
+				outptr += sprintf(outptr, "<font color=\"#%06x\">", (priv->color & 0xffffff));
 			}
 #if FOOLISHLY_UNMUNGE_FROM
 			else if (*start == '>') {
@@ -303,23 +293,23 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 				start++;
 			}
 #endif
-		} else if (html->flags & CAMEL_MIME_FILTER_TOHTML_CITE) {
-			outptr = check_size (filter, outptr, &outend, 6);
+		} else if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CITE) {
+			outptr = check_size (mime_filter, outptr, &outend, 6);
 			outptr = g_stpcpy (outptr, "&gt; ");
-			html->column += 2;
+			priv->column += 2;
 		}
 
 #define CONVERT_URLS (CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS | CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES)
-		if (html->flags & CONVERT_URLS) {
+		if (priv->flags & CONVERT_URLS) {
 			gsize matchlen, len;
 			urlmatch_t match;
 
 			len = inptr - start;
 
 			do {
-				if (camel_url_scanner_scan (html->scanner, start, len, &match)) {
+				if (camel_url_scanner_scan (priv->scanner, start, len, &match)) {
 					/* write out anything before the first regex match */
-					outptr = writeln (filter, (const guchar *)start, (const guchar *)start + match.um_so,
+					outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)start + match.um_so,
 							  outptr, &outend);
 
 					start += match.um_so;
@@ -328,47 +318,47 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 					matchlen = match.um_eo - match.um_so;
 
 					/* write out the href tag */
-					outptr = append_string_verbatim (filter, "<a href=\"", outptr, &outend);
+					outptr = append_string_verbatim (mime_filter, "<a href=\"", outptr, &outend);
 					/* prefix shouldn't need escaping, but let's be safe */
-					outptr = writeln (filter,
+					outptr = writeln (mime_filter,
 							(const guchar *)match.prefix,
 							(const guchar *)match.prefix + strlen (match.prefix),
 							outptr, &outend);
-					outptr = writeln (filter,
+					outptr = writeln (mime_filter,
 							(const guchar *)start,
 							(const guchar *)start + matchlen,
 							outptr, &outend);
-					outptr = append_string_verbatim (filter, "\">", outptr, &outend);
+					outptr = append_string_verbatim (mime_filter, "\">", outptr, &outend);
 
 					/* now write the matched string */
-					outptr = writeln (filter,
+					outptr = writeln (mime_filter,
 							(const guchar *)start,
 							(const guchar *)start + matchlen,
 							outptr, &outend);
-					html->column += matchlen;
+					priv->column += matchlen;
 					start += matchlen;
 					len -= matchlen;
 
 					/* close the href tag */
-					outptr = append_string_verbatim (filter, "</a>", outptr, &outend);
+					outptr = append_string_verbatim (mime_filter, "</a>", outptr, &outend);
 				} else {
 					/* nothing matched so write out the remainder of this line buffer */
-					outptr = writeln (filter, (const guchar *)start, (const guchar *)start + len, outptr, &outend);
+					outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)start + len, outptr, &outend);
 					break;
 				}
 			} while (len > 0);
 		} else {
-			outptr = writeln (filter, (const guchar *)start, (const guchar *)inptr, outptr, &outend);
+			outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)inptr, outptr, &outend);
 		}
 
-		if ((html->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) && depth > 0) {
-			outptr = check_size (filter, outptr, &outend, 8);
+		if ((priv->flags & CAMEL_MIME_FILTER_TOHTML_MARK_CITATION) && depth > 0) {
+			outptr = check_size (mime_filter, outptr, &outend, 8);
 			outptr = g_stpcpy (outptr, "</font>");
 		}
 
 		if (inptr < inend) {
-			if (html->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL) {
-				outptr = check_size (filter, outptr, &outend, 5);
+			if (priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL) {
+				outptr = check_size (mime_filter, outptr, &outend, 5);
 				outptr = g_stpcpy (outptr, "<br>");
 			}
 
@@ -381,56 +371,108 @@ html_convert (CamelMimeFilter *filter, const gchar *in, gsize inlen, gsize presp
 	if (flush) {
 		/* flush the rest of our input buffer */
 		if (start < inend)
-			outptr = writeln (filter, (const guchar *)start, (const guchar *)inend, outptr, &outend);
+			outptr = writeln (mime_filter, (const guchar *)start, (const guchar *)inend, outptr, &outend);
 
-		if (html->pre_open) {
+		if (priv->pre_open) {
 			/* close the pre-tag */
-			outptr = check_size (filter, outptr, &outend, 10);
+			outptr = check_size (mime_filter, outptr, &outend, 10);
 			outptr = g_stpcpy (outptr, "</pre>");
 		}
 	} else if (start < inend) {
 		/* backup */
-		camel_mime_filter_backup (filter, start, (unsigned) (inend - start));
+		camel_mime_filter_backup (mime_filter, start, (unsigned) (inend - start));
 	}
 
-	*out = filter->outbuf;
-	*outlen = outptr - filter->outbuf;
-	*outprespace = filter->outpre;
+	*out = mime_filter->outbuf;
+	*outlen = outptr - mime_filter->outbuf;
+	*outprespace = mime_filter->outpre;
 }
 
 static void
-filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
-	       gchar **out, gsize *outlen, gsize *outprespace)
+camel_mime_filter_tohtml_finalize (CamelMimeFilterToHTML *mime_filter)
 {
-	html_convert (filter, in, len, prespace, out, outlen, outprespace, FALSE);
+	camel_url_scanner_free (mime_filter->priv->scanner);
+
+	g_free (mime_filter->priv);
 }
 
 static void
-filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
-		 gchar **out, gsize *outlen, gsize *outprespace)
+mime_filter_tohtml_filter (CamelMimeFilter *mime_filter,
+                           const gchar *in,
+                           gsize len,
+                           gsize prespace,
+                           gchar **out,
+                           gsize *outlen,
+                           gsize *outprespace)
 {
-	html_convert (filter, in, len, prespace, out, outlen, outprespace, TRUE);
+	html_convert (
+		mime_filter, in, len, prespace,
+		out, outlen, outprespace, FALSE);
 }
 
 static void
-filter_reset (CamelMimeFilter *filter)
+mime_filter_tohtml_complete (CamelMimeFilter *mime_filter,
+                             const gchar *in,
+                             gsize len,
+                             gsize prespace,
+                             gchar **out,
+                             gsize *outlen,
+                             gsize *outprespace)
 {
-	CamelMimeFilterToHTML *html = (CamelMimeFilterToHTML *) filter;
-
-	html->column = 0;
-	html->pre_open = FALSE;
+	html_convert (
+		mime_filter, in, len, prespace,
+		out, outlen, outprespace, TRUE);
 }
 
 static void
-camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
+mime_filter_tohtml_reset (CamelMimeFilter *mime_filter)
 {
-	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
+	CamelMimeFilterToHTMLPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+
+	priv->column = 0;
+	priv->pre_open = FALSE;
+}
+
+static void
+camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
 
 	camel_mime_filter_tohtml_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
-	filter_class->reset = filter_reset;
-	filter_class->filter = filter_filter;
-	filter_class->complete = filter_complete;
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_tohtml_filter;
+	mime_filter_class->complete = mime_filter_tohtml_complete;
+	mime_filter_class->reset = mime_filter_tohtml_reset;
+}
+
+static void
+camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
+{
+	filter->priv = g_new0 (CamelMimeFilterToHTMLPrivate, 1);
+
+	filter->priv->scanner = camel_url_scanner_new ();
+}
+
+CamelType
+camel_mime_filter_tohtml_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_mime_filter_get_type (),
+					    "CamelMimeFilterToHTML",
+					    sizeof (CamelMimeFilterToHTML),
+					    sizeof (CamelMimeFilterToHTMLClass),
+					    (CamelObjectClassInitFunc) camel_mime_filter_tohtml_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_mime_filter_tohtml_init,
+					    (CamelObjectFinalizeFunc) camel_mime_filter_tohtml_finalize);
+	}
+
+	return type;
 }
 
 /**
@@ -446,20 +488,23 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *klass)
 CamelMimeFilter *
 camel_mime_filter_tohtml_new (guint32 flags, guint32 color)
 {
-	CamelMimeFilterToHTML *new;
+	CamelMimeFilter *filter;
+	CamelMimeFilterToHTMLPrivate *priv;
 	gint i;
 
-	new = CAMEL_MIME_FILTER_TOHTML (camel_object_new (camel_mime_filter_tohtml_get_type ()));
+	filter = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_tohtml_get_type ()));
+	priv = CAMEL_MIME_FILTER_TOHTML (filter)->priv;
 
-	new->flags = flags;
-	new->color = color;
+	priv->flags = flags;
+	priv->color = color;
 
 	for (i = 0; i < G_N_ELEMENTS (patterns); i++) {
 		if (patterns[i].mask & flags)
-			camel_url_scanner_add (new->scanner, &patterns[i].pattern);
+			camel_url_scanner_add (
+				priv->scanner, &patterns[i].pattern);
 	}
 
-	return CAMEL_MIME_FILTER (new);
+	return filter;
 }
 
 /**

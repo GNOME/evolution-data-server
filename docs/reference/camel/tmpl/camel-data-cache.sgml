@@ -24,9 +24,6 @@ CamelDataCache
 
 @parent: 
 @priv: 
-@path: 
-@expire_age: 
-@expire_access: 
 
 <!-- ##### FUNCTION camel_data_cache_new ##### -->
 <para>

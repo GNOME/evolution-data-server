@@ -440,7 +440,7 @@ nntp_folder_init (CamelNNTPFolder *nntp_folder, CamelNNTPFolderClass *klass)
 }
 
 static void
-nntp_folder_finalise (CamelNNTPFolder *nntp_folder)
+nntp_folder_finalize (CamelNNTPFolder *nntp_folder)
 {
 	struct _CamelNNTPFolderPrivate *p;
 
@@ -501,7 +501,7 @@ camel_nntp_folder_get_type (void)
 							      (CamelObjectClassInitFunc) nntp_folder_class_init,
 							      NULL,
 							      (CamelObjectInitFunc) nntp_folder_init,
-							      (CamelObjectFinalizeFunc) nntp_folder_finalise);
+							      (CamelObjectFinalizeFunc) nntp_folder_finalize);
 	}
 
 	return camel_nntp_folder_type;

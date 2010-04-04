@@ -39,21 +39,22 @@ G_BEGIN_DECLS
 
 typedef struct _CamelGpgContext CamelGpgContext;
 typedef struct _CamelGpgContextClass CamelGpgContextClass;
+typedef struct _CamelGpgContextPrivate CamelGpgContextPrivate;
 
 struct _CamelGpgContext {
 	CamelCipherContext parent;
-
-	gboolean always_trust;
+	CamelGpgContextPrivate *priv;
 };
 
 struct _CamelGpgContextClass {
 	CamelCipherContextClass parent_class;
-
 };
 
 CamelType	camel_gpg_context_get_type	(void);
 CamelCipherContext *
 		camel_gpg_context_new		(CamelSession *session);
+gboolean	camel_gpg_context_get_always_trust
+						(CamelGpgContext *context);
 void		camel_gpg_context_set_always_trust
 						(CamelGpgContext *context,
 						 gboolean always_trust);

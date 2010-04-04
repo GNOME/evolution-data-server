@@ -28,7 +28,7 @@
 
 #include <camel/camel-mime-filter.h>
 
-#define CAMEL_MIME_FILTER_PGP_TYPE         (camel_mime_filter_canon_get_type ())
+#define CAMEL_MIME_FILTER_PGP_TYPE         (camel_mime_filter_pgp_get_type ())
 #define CAMEL_MIME_FILTER_PGP(obj)         CAMEL_CHECK_CAST (obj, CAMEL_MIME_FILTER_PGP_TYPE, CamelMimeFilterPgp)
 #define CAMEL_MIME_FILTER_PGP_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, CAMEL_MIME_FILTER_PGP_TYPE, CamelMimeFilterPgpClass)
 #define CAMEL_IS_MIME_FILTER_PGP(obj)      CAMEL_CHECK_TYPE (obj, CAMEL_MIME_FILTER_PGP_TYPE)
@@ -37,10 +37,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterPgp CamelMimeFilterPgp;
 typedef struct _CamelMimeFilterPgpClass CamelMimeFilterPgpClass;
+typedef struct _CamelMimeFilterPgpPrivate CamelMimeFilterPgpPrivate;
 
 struct _CamelMimeFilterPgp {
-	CamelMimeFilter filter;
-	gint state;
+	CamelMimeFilter parent;
+	CamelMimeFilterPgpPrivate *priv;
 };
 
 struct _CamelMimeFilterPgpClass {

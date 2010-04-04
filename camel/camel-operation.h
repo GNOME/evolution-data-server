@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-/* cancellation helper stuff, not yet finalised */
+/* cancellation helper stuff, not yet finalized */
 
 typedef struct _CamelOperation CamelOperation;
 

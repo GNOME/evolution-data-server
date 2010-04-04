@@ -468,6 +468,12 @@ camel-types
 @f: 
 @l: 
 
+<!-- ##### MACRO CAMEL_OBJECT_TYPE ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelDigestFolder ##### -->
 <para>
 
@@ -1221,6 +1227,14 @@ camel-types
 </para>
 
 @pid: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_sasl_authenticated ##### -->
+<para>
+
+</para>
+
+@sasl: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_search_build_match_regex ##### -->

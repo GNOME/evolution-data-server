@@ -38,9 +38,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSaslPlain CamelSaslPlain;
 typedef struct _CamelSaslPlainClass CamelSaslPlainClass;
+typedef struct _CamelSaslPlainPrivate CamelSaslPlainPrivate;
 
 struct _CamelSaslPlain {
 	CamelSasl parent;
+	CamelSaslPlainPrivate *priv;
 };
 
 struct _CamelSaslPlainClass {

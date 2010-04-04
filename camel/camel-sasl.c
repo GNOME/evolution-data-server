@@ -39,28 +39,65 @@
 
 #define w(x)
 
+struct _CamelSaslPrivate {
+	CamelService *service;
+	gboolean authenticated;
+	gchar *service_name;
+	gchar *mechanism;
+};
+
 static CamelObjectClass *parent_class = NULL;
 
-/* Returns the class for a CamelSasl */
-#define CS_CLASS(so) CAMEL_SASL_CLASS (CAMEL_OBJECT_GET_CLASS (so))
+static void
+sasl_set_mechanism (CamelSasl *sasl,
+                    const gchar *mechanism)
+{
+	g_return_if_fail (mechanism != NULL);
+	g_return_if_fail (sasl->priv->mechanism == NULL);
 
-static GByteArray *sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex);
+	sasl->priv->mechanism = g_strdup (mechanism);
+}
+
+static void
+sasl_set_service (CamelSasl *sasl,
+                  CamelService *service)
+{
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	g_return_if_fail (sasl->priv->service == NULL);
+
+	sasl->priv->service = service;
+	camel_object_ref (service);
+}
+
+static void
+sasl_set_service_name (CamelSasl *sasl,
+                       const gchar *service_name)
+{
+	g_return_if_fail (service_name != NULL);
+	g_return_if_fail (sasl->priv->service_name == NULL);
+
+	sasl->priv->service_name = g_strdup (service_name);
+}
+
+static void
+sasl_finalize (CamelSasl *sasl)
+{
+	g_free (sasl->priv->mechanism);
+	g_free (sasl->priv->service_name);
+	camel_object_unref (sasl->priv->service);
+	g_free (sasl->priv);
+}
 
 static void
 camel_sasl_class_init (CamelSaslClass *camel_sasl_class)
 {
-	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
-
-	/* virtual method definition */
-	camel_sasl_class->challenge = sasl_challenge;
+	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
 }
 
 static void
-camel_sasl_finalize (CamelSasl *sasl)
+camel_sasl_init (CamelSasl *sasl)
 {
-	g_free (sasl->service_name);
-	g_free (sasl->mech);
-	camel_object_unref (sasl->service);
+	sasl->priv = g_new0 (CamelSaslPrivate, 1);
 }
 
 CamelType
@@ -69,24 +106,17 @@ camel_sasl_get_type (void)
 	static CamelType type = CAMEL_INVALID_TYPE;
 
 	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (CAMEL_OBJECT_TYPE,
+		type = camel_type_register (CAMEL_TYPE_OBJECT,
 					    "CamelSasl",
 					    sizeof (CamelSasl),
 					    sizeof (CamelSaslClass),
 					    (CamelObjectClassInitFunc) camel_sasl_class_init,
 					    NULL,
-					    NULL,
-					    (CamelObjectFinalizeFunc) camel_sasl_finalize);
+					    (CamelObjectInitFunc) camel_sasl_init,
+					    (CamelObjectFinalizeFunc) sasl_finalize);
 	}
 
 	return type;
-}
-
-static GByteArray *
-sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
-{
-	w(g_warning ("sasl_challenge: Using default implementation!"));
-	return NULL;
 }
 
 /**
@@ -104,11 +134,18 @@ sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
  * also be set.
  **/
 GByteArray *
-camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
+camel_sasl_challenge (CamelSasl *sasl,
+                      GByteArray *token,
+                      CamelException *ex)
 {
+	CamelSaslClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 
-	return CS_CLASS (sasl)->challenge (sasl, token, ex);
+	class = CAMEL_SASL_GET_CLASS (sasl);
+	g_return_val_if_fail (class->challenge != NULL, NULL);
+
+	return class->challenge (sasl, token, ex);
 }
 
 /**
@@ -123,7 +160,9 @@ camel_sasl_challenge (CamelSasl *sasl, GByteArray *token, CamelException *ex)
  * Returns: the base64 encoded challenge string
  **/
 gchar *
-camel_sasl_challenge_base64 (CamelSasl *sasl, const gchar *token, CamelException *ex)
+camel_sasl_challenge_base64 (CamelSasl *sasl,
+                             const gchar *token,
+                             CamelException *ex)
 {
 	GByteArray *token_binary, *ret_binary;
 	gchar *ret;
@@ -157,21 +196,6 @@ camel_sasl_challenge_base64 (CamelSasl *sasl, const gchar *token, CamelException
 }
 
 /**
- * camel_sasl_authenticated:
- * @sasl: a #CamelSasl object
- *
- * Returns: whether or not @sasl has successfully authenticated the
- * user. This will be %TRUE after it returns the last needed response.
- * The caller must still pass that information on to the server and
- * verify that it has accepted it.
- **/
-gboolean
-camel_sasl_authenticated (CamelSasl *sasl)
-{
-	return sasl->authenticated;
-}
-
-/**
  * camel_sasl_new:
  * @service_name: the SASL service name
  * @mechanism: the SASL mechanism
@@ -182,7 +206,9 @@ camel_sasl_authenticated (CamelSasl *sasl)
  * supported.
  **/
 CamelSasl *
-camel_sasl_new (const gchar *service_name, const gchar *mechanism, CamelService *service)
+camel_sasl_new (const gchar *service_name,
+                const gchar *mechanism,
+                CamelService *service)
 {
 	CamelSasl *sasl;
 
@@ -211,12 +237,61 @@ camel_sasl_new (const gchar *service_name, const gchar *mechanism, CamelService 
 	else
 		return NULL;
 
-	sasl->mech = g_strdup (mechanism);
-	sasl->service_name = g_strdup (service_name);
-	sasl->service = service;
-	camel_object_ref (service);
+	sasl_set_mechanism (sasl, mechanism);
+	sasl_set_service (sasl, service);
+	sasl_set_service_name (sasl, service_name);
 
 	return sasl;
+}
+
+/**
+ * camel_sasl_get_authenticated:
+ * @sasl: a #CamelSasl object
+ *
+ * Returns: whether or not @sasl has successfully authenticated the
+ * user. This will be %TRUE after it returns the last needed response.
+ * The caller must still pass that information on to the server and
+ * verify that it has accepted it.
+ **/
+gboolean
+camel_sasl_get_authenticated (CamelSasl *sasl)
+{
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), FALSE);
+
+	return sasl->priv->authenticated;
+}
+
+void
+camel_sasl_set_authenticated (CamelSasl *sasl,
+                              gboolean authenticated)
+{
+	g_return_if_fail (CAMEL_IS_SASL (sasl));
+
+	sasl->priv->authenticated = authenticated;
+}
+
+const gchar *
+camel_sasl_get_mechanism (CamelSasl *sasl)
+{
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
+
+	return sasl->priv->mechanism;
+}
+
+CamelService *
+camel_sasl_get_service (CamelSasl *sasl)
+{
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
+
+	return sasl->priv->service;
+}
+
+const gchar *
+camel_sasl_get_service_name (CamelSasl *sasl)
+{
+	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
+
+	return sasl->priv->service_name;
 }
 
 /**

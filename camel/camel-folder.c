@@ -243,7 +243,7 @@ camel_folder_get_type (void)
 	static CamelType camel_folder_type = CAMEL_INVALID_TYPE;
 
 	if (camel_folder_type == CAMEL_INVALID_TYPE)	{
-		camel_folder_type = camel_type_register (CAMEL_OBJECT_TYPE, "CamelFolder",
+		camel_folder_type = camel_type_register (CAMEL_TYPE_OBJECT, "CamelFolder",
 							 sizeof (CamelFolder),
 							 sizeof (CamelFolderClass),
 							 (CamelObjectClassInitFunc) camel_folder_class_init,

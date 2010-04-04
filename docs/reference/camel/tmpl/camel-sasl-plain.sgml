@@ -23,6 +23,7 @@ CamelSaslPlain
 </para>
 
 @parent: 
+@priv: 
 
 <!-- ##### VARIABLE camel_sasl_plain_authtype ##### -->
 <para>

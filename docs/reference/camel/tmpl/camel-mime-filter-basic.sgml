@@ -24,10 +24,6 @@ CamelMimeFilterBasic
 
 @parent: 
 @priv: 
-@type: 
-@uubuf: 
-@state: 
-@save: 
 
 <!-- ##### ENUM CamelMimeFilterBasicType ##### -->
 <para>

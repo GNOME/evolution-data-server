@@ -43,19 +43,7 @@ CamelMimeFilterBestenc
 </para>
 
 @parent: 
-@flags: 
-@count0: 
-@count8: 
-@total: 
-@lastc: 
-@crlfnoorder: 
-@startofline: 
-@fromcount: 
-@fromsave: 
-@hadfrom: 
-@countline: 
-@maxline: 
-@charset: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_bestenc_new ##### -->
 <para>

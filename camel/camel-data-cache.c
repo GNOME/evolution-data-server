@@ -33,12 +33,10 @@
 #include <alloca.h>
 #endif
 
-#include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-data-cache.h"
-#include "camel-exception.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
 #include "camel-file-utils.h"
@@ -56,41 +54,47 @@
 struct _CamelDataCachePrivate {
 	CamelObjectBag *busy_bag;
 
+	gchar *path;
+
+	time_t expire_age;
+	time_t expire_access;
+
 	time_t expire_last[1<<CAMEL_DATA_CACHE_BITS];
 };
 
 static CamelObject *camel_data_cache_parent;
 
-static void data_cache_class_init(CamelDataCacheClass *klass)
+static void
+data_cache_finalize (CamelDataCache *cdc)
+{
+	CamelDataCachePrivate *priv = cdc->priv;
+
+	camel_object_bag_destroy (priv->busy_bag);
+	g_free (priv->path);
+	g_free (priv);
+
+}
+
+static void
+camel_data_cache_class_init (CamelDataCacheClass *class)
 {
 	camel_data_cache_parent = (CamelObject *)camel_object_get_type ();
-
-#if 0
-	klass->add = data_cache_add;
-	klass->get = data_cache_get;
-	klass->close = data_cache_close;
-	klass->remove = data_cache_remove;
-	klass->clear = data_cache_clear;
-#endif
 }
 
-static void data_cache_init(CamelDataCache *cdc, CamelDataCacheClass *klass)
+static void
+camel_data_cache_init (CamelDataCache *data_cache)
 {
-	struct _CamelDataCachePrivate *p;
+	CamelObjectBag *busy_bag;
 
-	p = cdc->priv = g_malloc0(sizeof(*cdc->priv));
-	p->busy_bag = camel_object_bag_new(g_str_hash, g_str_equal, (CamelCopyFunc)g_strdup, g_free);
-}
+	busy_bag = camel_object_bag_new (
+		g_str_hash, g_str_equal,
+		(CamelCopyFunc) g_strdup,
+		(GFreeFunc) g_free);
 
-static void data_cache_finalise(CamelDataCache *cdc)
-{
-	struct _CamelDataCachePrivate *p;
-
-	p = cdc->priv;
-	camel_object_bag_destroy(p->busy_bag);
-	g_free(p);
-
-	g_free (cdc->path);
+	data_cache->priv = g_malloc0(sizeof(*data_cache->priv));
+	data_cache->priv->busy_bag = busy_bag;
+	data_cache->priv->expire_age = -1;
+	data_cache->priv->expire_access = -1;
 }
 
 CamelType
@@ -100,13 +104,13 @@ camel_data_cache_get_type(void)
 
 	if (camel_data_cache_type == CAMEL_INVALID_TYPE) {
 		camel_data_cache_type = camel_type_register(
-			CAMEL_OBJECT_TYPE, "CamelDataCache",
+			CAMEL_TYPE_OBJECT, "CamelDataCache",
 			sizeof (CamelDataCache),
 			sizeof (CamelDataCacheClass),
-			(CamelObjectClassInitFunc) data_cache_class_init,
+			(CamelObjectClassInitFunc) camel_data_cache_class_init,
 			NULL,
-			(CamelObjectInitFunc) data_cache_init,
-			(CamelObjectFinalizeFunc) data_cache_finalise);
+			(CamelObjectInitFunc) camel_data_cache_init,
+			(CamelObjectFinalizeFunc) data_cache_finalize);
 	}
 
 	return camel_data_cache_type;
@@ -128,18 +132,36 @@ camel_data_cache_new(const gchar *path, CamelException *ex)
 	CamelDataCache *cdc;
 
 	if (g_mkdir_with_parents (path, 0700) == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Unable to create cache path"));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Unable to create cache path"));
 		return NULL;
 	}
 
 	cdc = (CamelDataCache *)camel_object_new(CAMEL_DATA_CACHE_TYPE);
 
-	cdc->path = g_strdup(path);
-	cdc->expire_age = -1;
-	cdc->expire_access = -1;
+	cdc->priv->path = g_strdup (path);
 
 	return cdc;
+}
+
+const gchar *
+camel_data_cache_get_path (CamelDataCache *cdc)
+{
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), NULL);
+
+	return cdc->priv->path;
+}
+
+void
+camel_data_cache_set_path (CamelDataCache *cdc,
+                           const gchar *path)
+{
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
+	g_return_if_fail (path != NULL);
+
+	g_free (cdc->priv->path);
+	cdc->priv->path = g_strdup (path);
 }
 
 /**
@@ -160,7 +182,7 @@ camel_data_cache_new(const gchar *path, CamelException *ex)
 void
 camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when)
 {
-	cdc->expire_age = when;
+	cdc->priv->expire_age = when;
 }
 
 /**
@@ -181,7 +203,7 @@ camel_data_cache_set_expire_age(CamelDataCache *cdc, time_t when)
 void
 camel_data_cache_set_expire_access(CamelDataCache *cdc, time_t when)
 {
-	cdc->expire_access = when;
+	cdc->priv->expire_access = when;
 }
 
 static void
@@ -205,13 +227,13 @@ data_cache_expire(CamelDataCache *cdc, const gchar *path, const gchar *keep, tim
 		g_string_printf (s, "%s/%s", path, dname);
 		if (g_stat(s->str, &st) == 0
 		    && S_ISREG(st.st_mode)
-		    && ((cdc->expire_age != -1 && st.st_mtime + cdc->expire_age < now)
-			|| (cdc->expire_access != -1 && st.st_atime + cdc->expire_access < now))) {
+		    && ((cdc->priv->expire_age != -1 && st.st_mtime + cdc->priv->expire_age < now)
+			|| (cdc->priv->expire_access != -1 && st.st_atime + cdc->priv->expire_access < now))) {
 			g_unlink(s->str);
 			stream = camel_object_bag_get(cdc->priv->busy_bag, s->str);
 			if (stream) {
 				camel_object_bag_remove(cdc->priv->busy_bag, stream);
-				camel_object_unref(stream);
+				camel_object_unref (stream);
 			}
 		}
 	}
@@ -231,8 +253,8 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
 
 	hash = g_str_hash(key);
 	hash = (hash>>5)&CAMEL_DATA_CACHE_MASK;
-	dir = alloca(strlen(cdc->path) + strlen(path) + 8);
-	sprintf(dir, "%s/%s/%02x", cdc->path, path, hash);
+	dir = alloca(strlen(cdc->priv->path) + strlen(path) + 8);
+	sprintf(dir, "%s/%s/%02x", cdc->priv->path, path, hash);
 
 #ifdef G_OS_WIN32
 	if (g_access(dir, F_OK) == -1) {
@@ -241,7 +263,7 @@ data_cache_path(CamelDataCache *cdc, gint create, const gchar *path, const gchar
 #endif
 		if (create)
 			g_mkdir_with_parents (dir, 0700);
-	} else if (cdc->expire_age != -1 || cdc->expire_access != -1) {
+	} else if (cdc->priv->expire_age != -1 || cdc->priv->expire_access != -1) {
 		time_t now;
 
 		/* This has a race, but at worst we re-run an expire cycle which is safe */
@@ -322,7 +344,10 @@ camel_data_cache_add(CamelDataCache *cdc, const gchar *path, const gchar *key, C
  * Returns: A cache item, or NULL if the cache item does not exist.
  **/
 CamelStream *
-camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
+camel_data_cache_get (CamelDataCache *cdc,
+                      const gchar *path,
+                      const gchar *key,
+                      CamelException *ex)
 {
 	gchar *real;
 	CamelStream *stream;
@@ -330,7 +355,7 @@ camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, C
 	real = data_cache_path(cdc, FALSE, path, key);
 	stream = camel_object_bag_reserve(cdc->priv->busy_bag, real);
 	if (!stream) {
-		stream = camel_stream_fs_new_with_name(real, O_RDWR, 0600);
+		stream = camel_stream_fs_new_with_name (real, O_RDWR, 0600);
 		if (stream)
 			camel_object_bag_add(cdc->priv->busy_bag, real, stream);
 		else
@@ -355,7 +380,10 @@ camel_data_cache_get(CamelDataCache *cdc, const gchar *path, const gchar *key, C
  * Since: 2.26
  **/
 gchar *
-camel_data_cache_get_filename (CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
+camel_data_cache_get_filename (CamelDataCache *cdc,
+                               const gchar *path,
+                               const gchar *key,
+                               CamelException *ex)
 {
 	gchar *real;
 
@@ -376,7 +404,10 @@ camel_data_cache_get_filename (CamelDataCache *cdc, const gchar *path, const gch
  * Returns:
  **/
 gint
-camel_data_cache_remove(CamelDataCache *cdc, const gchar *path, const gchar *key, CamelException *ex)
+camel_data_cache_remove (CamelDataCache *cdc,
+                         const gchar *path,
+                         const gchar *key,
+                         CamelException *ex)
 {
 	CamelStream *stream;
 	gchar *real;
@@ -386,14 +417,15 @@ camel_data_cache_remove(CamelDataCache *cdc, const gchar *path, const gchar *key
 	stream = camel_object_bag_get(cdc->priv->busy_bag, real);
 	if (stream) {
 		camel_object_bag_remove(cdc->priv->busy_bag, stream);
-		camel_object_unref(stream);
+		camel_object_unref (stream);
 	}
 
 	/* maybe we were a mem stream */
 	if (g_unlink (real) == -1 && errno != ENOENT) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not remove cache entry: %s: %s"),
-				      real, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not remove cache entry: %s: %s"),
+			real, g_strerror (errno));
 		ret = -1;
 	} else {
 		ret = 0;

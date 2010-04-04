@@ -258,7 +258,7 @@ locale_parse_lang (const gchar *locale)
 
 /* NOTE: Owns the lock on return if keep is TRUE !*/
 static void
-camel_iconv_init(gint keep)
+iconv_init(gint keep)
 {
 	gchar *from, *to, *locale;
 	gint i;
@@ -355,7 +355,7 @@ camel_iconv_charset_name (const gchar *charset)
 	strcpy (name, charset);
 	e_strdown (name);
 
-	camel_iconv_init(TRUE);
+	iconv_init(TRUE);
 	ret = g_hash_table_lookup(iconv_charsets, name);
 	if (ret != NULL) {
 		UNLOCK();
@@ -569,7 +569,7 @@ camel_iconv_close (iconv_t ip)
 const gchar *
 camel_iconv_locale_charset (void)
 {
-	camel_iconv_init(FALSE);
+	iconv_init(FALSE);
 
 	return locale_charset;
 }
@@ -577,7 +577,7 @@ camel_iconv_locale_charset (void)
 const gchar *
 camel_iconv_locale_language (void)
 {
-	camel_iconv_init (FALSE);
+	iconv_init (FALSE);
 
 	return locale_lang;
 }

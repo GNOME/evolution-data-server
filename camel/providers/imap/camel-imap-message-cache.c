@@ -66,7 +66,7 @@ camel_imap_message_cache_get_type (void)
 
 	if (camel_imap_message_cache_type == CAMEL_INVALID_TYPE) {
 		camel_imap_message_cache_type = camel_type_register (
-			CAMEL_OBJECT_TYPE, "CamelImapMessageCache",
+			CAMEL_TYPE_OBJECT, "CamelImapMessageCache",
 			sizeof (CamelImapMessageCache),
 			sizeof (CamelImapMessageCacheClass),
 			NULL,

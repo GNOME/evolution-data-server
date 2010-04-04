@@ -35,19 +35,18 @@
 #define CAMEL_SASL(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_SASL_TYPE, CamelSasl))
 #define CAMEL_SASL_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_SASL_TYPE, CamelSaslClass))
 #define CAMEL_IS_SASL(o)    (CAMEL_CHECK_TYPE((o), CAMEL_SASL_TYPE))
+#define CAMEL_SASL_GET_CLASS(obj) \
+	((CamelSaslClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
 typedef struct _CamelSasl CamelSasl;
 typedef struct _CamelSaslClass CamelSaslClass;
+typedef struct _CamelSaslPrivate CamelSaslPrivate;
 
 struct _CamelSasl {
 	CamelObject parent;
-
-	gchar *service_name;
-	gchar *mech;		/* mechanism */
-	CamelService *service;
-	gboolean authenticated;
+	CamelSaslPrivate *priv;
 };
 
 struct _CamelSaslClass {
@@ -65,10 +64,15 @@ GByteArray *	camel_sasl_challenge		(CamelSasl *sasl,
 gchar *		camel_sasl_challenge_base64	(CamelSasl *sasl,
 						 const gchar *token,
 						 CamelException *ex);
-gboolean	camel_sasl_authenticated	(CamelSasl *sasl);
 CamelSasl *	camel_sasl_new			(const gchar *service_name,
 						 const gchar *mechanism,
 						 CamelService *service);
+gboolean	camel_sasl_get_authenticated	(CamelSasl *sasl);
+void		camel_sasl_set_authenticated	(CamelSasl *sasl,
+						 gboolean authenticated);
+const gchar *	camel_sasl_get_mechanism	(CamelSasl *sasl);
+CamelService *	camel_sasl_get_service		(CamelSasl *sasl);
+const gchar *	camel_sasl_get_service_name	(CamelSasl *sasl);
 
 GList *		camel_sasl_authtype_list	(gboolean include_plain);
 CamelServiceAuthType *

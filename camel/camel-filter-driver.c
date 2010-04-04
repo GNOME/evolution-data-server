@@ -129,7 +129,7 @@ struct _CamelFilterDriverPrivate {
 
 static void camel_filter_driver_class_init (CamelFilterDriverClass *klass);
 static void camel_filter_driver_init       (CamelFilterDriver *obj);
-static void camel_filter_driver_finalise   (CamelObject *obj);
+static void camel_filter_driver_finalize   (CamelObject *obj);
 
 static void camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, const gchar *desc, ...);
 
@@ -186,14 +186,14 @@ camel_filter_driver_get_type (void)
 	static CamelType type = CAMEL_INVALID_TYPE;
 
 	if (type == CAMEL_INVALID_TYPE)	{
-		type = camel_type_register (CAMEL_OBJECT_TYPE,
+		type = camel_type_register (CAMEL_TYPE_OBJECT,
 					    "CamelFilterDriver",
 					    sizeof (CamelFilterDriver),
 					    sizeof (CamelFilterDriverClass),
 					    (CamelObjectClassInitFunc) camel_filter_driver_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_filter_driver_init,
-					    (CamelObjectFinalizeFunc) camel_filter_driver_finalise);
+					    (CamelObjectFinalizeFunc) camel_filter_driver_finalize);
 	}
 
 	return type;
@@ -242,7 +242,7 @@ free_hash_strings (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-camel_filter_driver_finalise (CamelObject *obj)
+camel_filter_driver_finalize (CamelObject *obj)
 {
 	CamelFilterDriver *driver = (CamelFilterDriver *) obj;
 	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);

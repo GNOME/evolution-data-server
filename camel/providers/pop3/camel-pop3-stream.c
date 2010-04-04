@@ -189,7 +189,7 @@ camel_pop3_stream_class_init (CamelStreamClass *camel_pop3_stream_class)
 {
 	CamelStreamClass *camel_stream_class = (CamelStreamClass *)camel_pop3_stream_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_OBJECT_TYPE );
+	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
 
 	/* virtual method definition */
 	camel_stream_class->read = stream_read;
@@ -216,7 +216,7 @@ camel_pop3_stream_init(CamelPOP3Stream *is, CamelPOP3StreamClass *isclass)
 }
 
 static void
-camel_pop3_stream_finalise(CamelPOP3Stream *is)
+camel_pop3_stream_finalize(CamelPOP3Stream *is)
 {
 	g_free(is->buf);
 	g_free(is->linebuf);
@@ -237,7 +237,7 @@ camel_pop3_stream_get_type (void)
 							    (CamelObjectClassInitFunc) camel_pop3_stream_class_init,
 							    NULL,
 							    (CamelObjectInitFunc) camel_pop3_stream_init,
-							    (CamelObjectFinalizeFunc) camel_pop3_stream_finalise );
+							    (CamelObjectFinalizeFunc) camel_pop3_stream_finalize );
 	}
 
 	return camel_pop3_stream_type;

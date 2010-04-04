@@ -34,7 +34,6 @@
 #include <string.h>
 #include <sys/types.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 #include <gmodule.h>
@@ -172,39 +171,42 @@ camel_provider_init (void)
  * itself with @session.
  **/
 void
-camel_provider_load(const gchar *path, CamelException *ex)
+camel_provider_load (const gchar *path,
+                     CamelException *ex)
 {
 	GModule *module;
-	CamelProvider *(*camel_provider_module_init) (void);
+	CamelProvider *(*provider_module_init) (void);
 
 	pthread_once(&setup_once, provider_setup);
 
 	if (!g_module_supported ()) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not load %s: Module loading "
-				      "not supported on this system."),
-				      path);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not load %s: Module loading "
+			  "not supported on this system."), path);
 		return;
 	}
 
 	module = g_module_open (path, G_MODULE_BIND_LAZY);
-	if (!module) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not load %s: %s"),
-				      path, g_module_error ());
+	if (module == NULL) {
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not load %s: %s"),
+			path, g_module_error ());
 		return;
 	}
 
 	if (!g_module_symbol (module, "camel_provider_module_init",
-			      (gpointer *)&camel_provider_module_init)) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not load %s: No initialization "
-					"code in module."), path);
+			      (gpointer *)&provider_module_init)) {
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not load %s: No initialization "
+			  "code in module."), path);
 		g_module_close (module);
 		return;
 	}
 
-	camel_provider_module_init ();
+	provider_module_init ();
 }
 
 /**
@@ -344,7 +346,8 @@ camel_provider_list(gboolean load)
  * Returns: the provider, or %NULL, in which case @ex will be set.
  **/
 CamelProvider *
-camel_provider_get(const gchar *url_string, CamelException *ex)
+camel_provider_get (const gchar *url_string,
+                    CamelException *ex)
 {
 	CamelProvider *provider = NULL;
 	gchar *protocol;
@@ -375,9 +378,10 @@ camel_provider_get(const gchar *url_string, CamelException *ex)
 	}
 
 	if (provider == NULL)
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
-				     _("No provider available for protocol '%s'"),
-				     protocol);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+			_("No provider available for protocol '%s'"),
+			protocol);
 fail:
 	UNLOCK();
 
@@ -406,8 +410,10 @@ fail:
  * Returns: 0 on success or -1 on fail.
  **/
 gint
-camel_provider_auto_detect (CamelProvider *provider, CamelURL *url,
-			    GHashTable **auto_detected, CamelException *ex)
+camel_provider_auto_detect (CamelProvider *provider,
+                            CamelURL *url,
+                            GHashTable **auto_detected,
+                            CamelException *ex)
 {
 	g_return_val_if_fail (provider != NULL, -1);
 

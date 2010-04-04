@@ -33,10 +33,6 @@
 
 #define d(x)
 
-static void camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass);
-static void camel_mime_filter_html_init       (CamelObject *o);
-static void camel_mime_filter_html_finalize   (CamelObject *o);
-
 static CamelMimeFilterClass *camel_mime_filter_html_parent;
 
 struct _CamelMimeFilterHTMLPrivate {
@@ -68,61 +64,34 @@ static struct {
 
 /* ********************************************************************** */
 
-CamelType
-camel_mime_filter_html_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterHTML",
-					    sizeof (CamelMimeFilterHTML),
-					    sizeof (CamelMimeFilterHTMLClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_html_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_html_init,
-					    (CamelObjectFinalizeFunc) camel_mime_filter_html_finalize);
-	}
-
-	return type;
-}
-
 static void
-camel_mime_filter_html_finalize(CamelObject *o)
+mime_filter_html_run (CamelMimeFilter *mime_filter,
+                      const gchar *in,
+                      gsize inlen,
+                      gsize prespace,
+                      gchar **out,
+                      gsize *outlenptr,
+                      gsize *outprespace,
+                      gint last)
 {
-	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *)o;
-
-	camel_object_unref((CamelObject *)f->priv->ctxt);
-	g_free(f->priv);
-}
-
-static void
-camel_mime_filter_html_init       (CamelObject *o)
-{
-	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *)o;
-
-	f->priv = g_malloc0(sizeof(*f->priv));
-	f->priv->ctxt = camel_html_parser_new();
-}
-
-static void
-run(CamelMimeFilter *mf, const gchar *in, gsize inlen, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace, gint last)
-{
-	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *) mf;
+	CamelMimeFilterHTMLPrivate *priv;
 	camel_html_parser_t state;
 	gchar *outp;
+
+	priv = CAMEL_MIME_FILTER_HTML (mime_filter)->priv;
 
 	d(printf("converting html:\n%.*s\n", (gint)inlen, in));
 
 	/* We should generally shrink the data, but this'll do */
-	camel_mime_filter_set_size (mf, inlen * 2 + 256, FALSE);
-	outp = mf->outbuf;
+	camel_mime_filter_set_size (mime_filter, inlen * 2 + 256, FALSE);
+	outp = mime_filter->outbuf;
 
-	camel_html_parser_set_data (f->priv->ctxt, in, inlen, last);
+	camel_html_parser_set_data (priv->ctxt, in, inlen, last);
 	do {
 		const gchar *data;
 		gint len;
 
-		state = camel_html_parser_step(f->priv->ctxt, &data, &len);
+		state = camel_html_parser_step(priv->ctxt, &data, &len);
 
 		switch (state) {
 		case CAMEL_HTML_PARSER_DATA:
@@ -139,44 +108,95 @@ run(CamelMimeFilter *mf, const gchar *in, gsize inlen, gsize prespace, gchar **o
 		}
 	} while (state != CAMEL_HTML_PARSER_EOF && state != CAMEL_HTML_PARSER_EOD);
 
-	*out = mf->outbuf;
-	*outlenptr = outp - mf->outbuf;
-	*outprespace = mf->outbuf - mf->outreal;
+	*out = mime_filter->outbuf;
+	*outlenptr = outp - mime_filter->outbuf;
+	*outprespace = mime_filter->outbuf - mime_filter->outreal;
 
 	d(printf("converted html end:\n%.*s\n", (gint)*outlenptr, *out));
 }
 
 static void
-complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace)
+mime_filter_html_finalize (CamelMimeFilterHTML *filter)
 {
-	run(mf, in, len, prespace, out, outlenptr, outprespace, TRUE);
+	camel_object_unref (filter->priv->ctxt);
+	g_free (filter->priv);
 }
 
 static void
-filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlenptr, gsize *outprespace)
+mime_filter_html_filter (CamelMimeFilter *mime_filter,
+                         const gchar *in,
+                         gsize len,
+                         gsize prespace,
+                         gchar **out,
+                         gsize *outlenptr,
+                         gsize *outprespace)
 {
-	run(mf, in, len, prespace, out, outlenptr, outprespace, FALSE);
+	mime_filter_html_run (
+		mime_filter, in, len, prespace,
+		out, outlenptr, outprespace, FALSE);
 }
 
 static void
-reset(CamelMimeFilter *mf)
+mime_filter_html_complete (CamelMimeFilter *mime_filter,
+                           const gchar *in,
+                           gsize len,
+                           gsize prespace,
+                           gchar **out,
+                           gsize *outlenptr,
+                           gsize *outprespace)
 {
-	CamelMimeFilterHTML *f = (CamelMimeFilterHTML *)mf;
-
-	camel_object_unref((CamelObject *)f->priv->ctxt);
-	f->priv->ctxt = camel_html_parser_new();
+	mime_filter_html_run (
+		mime_filter, in, len, prespace,
+		out, outlenptr, outprespace, TRUE);
 }
 
 static void
-camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *klass)
+mime_filter_html_reset (CamelMimeFilter *mime_filter)
 {
-	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
+	CamelMimeFilterHTMLPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_HTML (mime_filter)->priv;
+
+	camel_object_unref (priv->ctxt);
+	priv->ctxt = camel_html_parser_new ();
+}
+
+static void
+camel_mime_filter_html_class_init (CamelMimeFilterHTMLClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
 
 	camel_mime_filter_html_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
-	filter_class->reset = reset;
-	filter_class->filter = filter;
-	filter_class->complete = complete;
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_html_filter;
+	mime_filter_class->complete = mime_filter_html_complete;
+	mime_filter_class->reset = mime_filter_html_reset;
+}
+
+static void
+camel_mime_filter_html_init (CamelMimeFilterHTML *mime_filter)
+{
+	mime_filter->priv = g_new0 (CamelMimeFilterHTMLPrivate, 1);
+	mime_filter->priv->ctxt = camel_html_parser_new ();
+}
+
+CamelType
+camel_mime_filter_html_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterHTML",
+					    sizeof (CamelMimeFilterHTML),
+					    sizeof (CamelMimeFilterHTMLClass),
+					    (CamelObjectClassInitFunc) camel_mime_filter_html_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_mime_filter_html_init,
+					    (CamelObjectFinalizeFunc) mime_filter_html_finalize);
+	}
+
+	return type;
 }
 
 /**

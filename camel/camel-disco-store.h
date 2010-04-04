@@ -106,7 +106,6 @@ struct _CamelDiscoStoreClass {
 							CamelException *ex);
 };
 
-/* Standard Camel function */
 CamelType camel_disco_store_get_type (void);
 
 /* Public methods */

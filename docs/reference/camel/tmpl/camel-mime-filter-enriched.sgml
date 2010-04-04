@@ -23,8 +23,7 @@ CamelMimeFilterEnriched
 </para>
 
 @parent: 
-@flags: 
-@nofill: 
+@priv: 
 
 <!-- ##### MACRO CAMEL_MIME_FILTER_ENRICHED_IS_RICHTEXT ##### -->
 <para>

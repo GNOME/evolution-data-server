@@ -23,11 +23,7 @@ CamelMimeFilterCRLF
 </para>
 
 @parent: 
-@direction: 
-@mode: 
-@saw_cr: 
-@saw_lf: 
-@saw_dot: 
+@priv: 
 
 <!-- ##### ENUM CamelMimeFilterCRLFDirection ##### -->
 <para>

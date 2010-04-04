@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-exception.h"
@@ -53,8 +52,11 @@
 
    A small issue is that case-insenstivity wont work entirely correct for utf8 strings. */
 gint
-camel_search_build_match_regex (regex_t *pattern, camel_search_flags_t type, gint argc,
-				struct _ESExpResult **argv, CamelException *ex)
+camel_search_build_match_regex (regex_t *pattern,
+                                camel_search_flags_t type,
+                                gint argc,
+                                struct _ESExpResult **argv,
+                                CamelException *ex)
 {
 	GString *match = g_string_new("");
 	gint c, i, count=0, err;
@@ -106,9 +108,10 @@ camel_search_build_match_regex (regex_t *pattern, camel_search_flags_t type, gin
 		gchar *buffer = g_malloc0 (len + 1);
 
 		regerror (err, pattern, buffer, len);
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Regular expression compilation failed: %s: %s"),
-				      match->str, buffer);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Regular expression compilation failed: %s: %s"),
+			match->str, buffer);
 
 		regfree (pattern);
 	}
@@ -472,12 +475,15 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")
 		|| camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "x-evolution", "evolution-rss-feed")) {
 		/* for all other text parts, we look inside, otherwise we dont care */
-		CamelStreamMem *mem = (CamelStreamMem *)camel_stream_mem_new ();
+		CamelStream *stream;
+		GByteArray *byte_array;
 
-		camel_data_wrapper_write_to_stream (containee, CAMEL_STREAM (mem));
-		camel_stream_write (CAMEL_STREAM (mem), "", 1);
-		truth = regexec (pattern, (gchar *) mem->buffer->data, 0, NULL, 0) == 0;
-		camel_object_unref (mem);
+		byte_array = g_byte_array_new ();
+		stream = camel_stream_mem_new_with_byte_array (byte_array);
+		camel_data_wrapper_write_to_stream (containee, stream);
+		camel_stream_write (stream, "", 1);
+		truth = regexec (pattern, (gchar *) byte_array->data, 0, NULL, 0) == 0;
+		camel_object_unref (stream);
 	}
 
 	return truth;

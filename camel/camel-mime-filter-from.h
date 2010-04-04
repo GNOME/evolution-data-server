@@ -34,13 +34,13 @@
 
 G_BEGIN_DECLS
 
-typedef struct _CamelMimeFilterFrom      CamelMimeFilterFrom;
+typedef struct _CamelMimeFilterFrom CamelMimeFilterFrom;
 typedef struct _CamelMimeFilterFromClass CamelMimeFilterFromClass;
+typedef struct _CamelMimeFilterFromPrivate CamelMimeFilterFromPrivate;
 
 struct _CamelMimeFilterFrom {
 	CamelMimeFilter parent;
-
-	gint midline;		/* are we between lines? */
+	CamelMimeFilterFromPrivate *priv;
 };
 
 struct _CamelMimeFilterFromClass {

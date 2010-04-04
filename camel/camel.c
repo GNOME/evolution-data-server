@@ -34,7 +34,6 @@
 #include <ssl.h>
 #endif /* HAVE_NSS */
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel.h"
@@ -74,7 +73,7 @@ camel_init (const gchar *configdir, gboolean nss_init)
 	camel_debug_init();
 
 	/* initialise global camel_object_type */
-	camel_object_get_type();
+	camel_object_get_type ();
 
 #ifdef HAVE_NSS
 	if (nss_init) {

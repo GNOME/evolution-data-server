@@ -64,7 +64,7 @@ static gchar * mbox_get_filename (CamelFolder *folder, const gchar *uid, CamelEx
 static gint mbox_cmp_uids (CamelFolder *folder, const gchar *uid1, const gchar *uid2);
 static void mbox_sort_uids (CamelFolder *folder, GPtrArray *uids);
 
-static void mbox_finalise(CamelObject * object);
+static void mbox_finalize(CamelObject * object);
 
 static void
 camel_mbox_folder_class_init(CamelMboxFolderClass * camel_mbox_folder_class)
@@ -98,7 +98,7 @@ mbox_init(gpointer object, gpointer klass)
 }
 
 static void
-mbox_finalise(CamelObject * object)
+mbox_finalize(CamelObject * object)
 {
 	CamelMboxFolder *mbox_folder = (CamelMboxFolder *)object;
 
@@ -116,7 +116,7 @@ CamelType camel_mbox_folder_get_type(void)
 							     (CamelObjectClassInitFunc) camel_mbox_folder_class_init,
 							     NULL,
 							     (CamelObjectInitFunc) mbox_init,
-							     (CamelObjectFinalizeFunc) mbox_finalise);
+							     (CamelObjectFinalizeFunc) mbox_finalize);
 	}
 
 	return camel_mbox_folder_type;

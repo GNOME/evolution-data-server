@@ -23,7 +23,7 @@ CamelMimeFilterSave
 </para>
 
 @parent: 
-@stream: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_save_new ##### -->
 <para>

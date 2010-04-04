@@ -117,7 +117,7 @@ camel_imap_search_init(CamelImapSearch *is)
 }
 
 static void
-camel_imap_search_finalise(CamelImapSearch *is)
+camel_imap_search_finalize(CamelImapSearch *is)
 {
 	struct _match_record *mr;
 
@@ -140,7 +140,7 @@ camel_imap_search_get_type (void)
 			sizeof (CamelImapSearchClass),
 			(CamelObjectClassInitFunc) camel_imap_search_class_init, NULL,
 			(CamelObjectInitFunc) camel_imap_search_init,
-			(CamelObjectFinalizeFunc) camel_imap_search_finalise);
+			(CamelObjectFinalizeFunc) camel_imap_search_finalize);
 	}
 
 	return camel_imap_search_type;

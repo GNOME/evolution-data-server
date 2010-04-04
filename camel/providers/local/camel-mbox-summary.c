@@ -75,7 +75,7 @@ static gint mbox_summary_sync_full(CamelMboxSummary *cls, gboolean expunge, Came
 
 static void camel_mbox_summary_class_init (CamelMboxSummaryClass *klass);
 static void camel_mbox_summary_init       (CamelMboxSummary *obj);
-static void camel_mbox_summary_finalise   (CamelObject *obj);
+static void camel_mbox_summary_finalize   (CamelObject *obj);
 
 #ifdef STATUS_PINE
 /* Which status flags are stored in each separate header */
@@ -100,7 +100,7 @@ camel_mbox_summary_get_type(void)
 					   (CamelObjectClassInitFunc) camel_mbox_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_mbox_summary_init,
-					   (CamelObjectFinalizeFunc) camel_mbox_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_mbox_summary_finalize);
 	}
 
 	return type;
@@ -198,7 +198,7 @@ camel_mbox_summary_init(CamelMboxSummary *obj)
 }
 
 static void
-camel_mbox_summary_finalise(CamelObject *obj)
+camel_mbox_summary_finalize(CamelObject *obj)
 {
 	/*CamelMboxSummary *mbs = CAMEL_MBOX_SUMMARY(obj);*/
 }
@@ -842,7 +842,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 		return -1;
 	}
 
-	/* need to dup since mime parser closes its fd once it is finalised */
+	/* need to dup since mime parser closes its fd once it is finalized */
 	pfd = dup(fd);
 	if (pfd == -1) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,

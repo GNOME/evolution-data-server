@@ -22,22 +22,157 @@
 
 #include "camel-mime-filter-crlf.h"
 
-static void filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
-		    gchar **out, gsize *outlen, gsize *outprespace);
-static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
-		      gsize prespace, gchar **out, gsize *outlen,
-		      gsize *outprespace);
-static void reset (CamelMimeFilter *f);
+struct _CamelMimeFilterCRLFPrivate {
+	CamelMimeFilterCRLFDirection direction;
+	CamelMimeFilterCRLFMode mode;
+	gboolean saw_cr;
+	gboolean saw_lf;
+	gboolean saw_dot;
+};
 
 static void
-camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *klass)
+mime_filter_crlf_finalize (CamelMimeFilterCRLF *filter)
 {
-	CamelMimeFilterClass *mime_filter_class =
-		(CamelMimeFilterClass *) klass;
+	g_free (filter->priv);
+}
 
-	mime_filter_class->filter = filter;
-	mime_filter_class->complete = complete;
-	mime_filter_class->reset = reset;
+static void
+mime_filter_crlf_filter (CamelMimeFilter *mime_filter,
+                         const gchar *in,
+                         gsize len,
+                         gsize prespace,
+                         gchar **out,
+                         gsize *outlen,
+                         gsize *outprespace)
+{
+	CamelMimeFilterCRLFPrivate *priv;
+	register const gchar *inptr;
+	const gchar *inend;
+	gboolean do_dots;
+	gchar *outptr;
+
+	priv = CAMEL_MIME_FILTER_CRLF (mime_filter)->priv;
+
+	do_dots = priv->mode == CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS;
+
+	inptr = in;
+	inend = in + len;
+
+	if (priv->direction == CAMEL_MIME_FILTER_CRLF_ENCODE) {
+		camel_mime_filter_set_size (mime_filter, 3 * len, FALSE);
+
+		outptr = mime_filter->outbuf;
+		while (inptr < inend) {
+			if (*inptr == '\r') {
+				priv->saw_cr = TRUE;
+			} else if (*inptr == '\n') {
+				priv->saw_lf = TRUE;
+				if (!priv->saw_cr)
+					*outptr++ = '\r';
+				priv->saw_cr = FALSE;
+			} else {
+				if (do_dots && *inptr == '.' && priv->saw_lf)
+					*outptr++ = '.';
+
+				priv->saw_cr = FALSE;
+				priv->saw_lf = FALSE;
+			}
+
+			*outptr++ = *inptr++;
+		}
+	} else {
+		/* Output can "grow" by one byte if priv->saw_cr was set as
+		 * a carry-over from the previous invocation. This will happen
+		 * in practice, as the input is processed in arbitrarily-sized
+		 * blocks. */
+		camel_mime_filter_set_size (mime_filter, len + 1, FALSE);
+
+		outptr = mime_filter->outbuf;
+		while (inptr < inend) {
+			if (*inptr == '\r') {
+				priv->saw_cr = TRUE;
+			} else {
+				if (priv->saw_cr) {
+					priv->saw_cr = FALSE;
+
+					if (*inptr == '\n') {
+						priv->saw_lf = TRUE;
+						*outptr++ = *inptr++;
+						continue;
+					} else
+						*outptr++ = '\r';
+				}
+
+				*outptr++ = *inptr;
+			}
+
+			if (do_dots && *inptr == '.') {
+				if (priv->saw_lf) {
+					priv->saw_dot = TRUE;
+					priv->saw_lf = FALSE;
+					inptr++;
+				} else if (priv->saw_dot) {
+					priv->saw_dot = FALSE;
+				}
+			}
+
+			priv->saw_lf = FALSE;
+
+			inptr++;
+		}
+	}
+
+	*out = mime_filter->outbuf;
+	*outlen = outptr - mime_filter->outbuf;
+	*outprespace = mime_filter->outpre;
+}
+
+static void
+mime_filter_crlf_complete (CamelMimeFilter *mime_filter,
+                           const gchar *in,
+                           gsize len,
+                           gsize prespace,
+                           gchar **out,
+                           gsize *outlen,
+                           gsize *outprespace)
+{
+	if (len)
+		mime_filter_crlf_filter (
+			mime_filter, in, len, prespace,
+			out, outlen, outprespace);
+}
+
+static void
+mime_filter_crlf_reset (CamelMimeFilter *mime_filter)
+{
+	CamelMimeFilterCRLFPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_CRLF (mime_filter)->priv;
+
+	priv->saw_cr = FALSE;
+	priv->saw_lf = TRUE;
+	priv->saw_dot = FALSE;
+}
+
+static void
+camel_mime_filter_crlf_class_init (CamelMimeFilterCRLFClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
+
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_crlf_filter;
+	mime_filter_class->complete = mime_filter_crlf_complete;
+	mime_filter_class->reset = mime_filter_crlf_reset;
+}
+
+static void
+camel_mime_filter_crlf_init (CamelMimeFilterCRLF *filter)
+{
+	filter->priv = g_new0 (CamelMimeFilterCRLFPrivate, 1);
+
+	filter->priv->saw_cr = FALSE;
+	filter->priv->saw_lf = TRUE;
+	filter->priv->saw_dot = FALSE;
 }
 
 CamelType
@@ -51,113 +186,11 @@ camel_mime_filter_crlf_get_type (void)
 					    sizeof (CamelMimeFilterCRLFClass),
 					    (CamelObjectClassInitFunc) camel_mime_filter_crlf_class_init,
 					    NULL,
-					    NULL,
-					    NULL);
+					    (CamelObjectInitFunc) camel_mime_filter_crlf_init,
+					    (CamelObjectFinalizeFunc) mime_filter_crlf_finalize);
 	}
 
 	return type;
-}
-
-static void
-filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
-	gchar **out, gsize *outlen, gsize *outprespace)
-{
-	CamelMimeFilterCRLF *crlf = (CamelMimeFilterCRLF *)f;
-	register const gchar *inptr;
-	const gchar *inend;
-	gboolean do_dots;
-	gchar *outptr;
-
-	do_dots = crlf->mode == CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS;
-
-	inptr = in;
-	inend = in + len;
-
-	if (crlf->direction == CAMEL_MIME_FILTER_CRLF_ENCODE) {
-		camel_mime_filter_set_size (f, 3 * len, FALSE);
-
-		outptr = f->outbuf;
-		while (inptr < inend) {
-			if (*inptr == '\r') {
-				crlf->saw_cr = TRUE;
-			} else if (*inptr == '\n') {
-				crlf->saw_lf = TRUE;
-				if (!crlf->saw_cr)
-					*outptr++ = '\r';
-				crlf->saw_cr = FALSE;
-			} else {
-				if (do_dots && *inptr == '.' && crlf->saw_lf)
-					*outptr++ = '.';
-
-				crlf->saw_cr = FALSE;
-				crlf->saw_lf = FALSE;
-			}
-
-			*outptr++ = *inptr++;
-		}
-	} else {
-		/* Output can "grow" by one byte if crlf->saw_cr was set as
-		 * a carry-over from the previous invocation. This will happen
-		 * in practice, as the input is processed in arbitrarily-sized
-		 * blocks. */
-		camel_mime_filter_set_size (f, len + 1, FALSE);
-
-		outptr = f->outbuf;
-		while (inptr < inend) {
-			if (*inptr == '\r') {
-				crlf->saw_cr = TRUE;
-			} else {
-				if (crlf->saw_cr) {
-					crlf->saw_cr = FALSE;
-
-					if (*inptr == '\n') {
-						crlf->saw_lf = TRUE;
-						*outptr++ = *inptr++;
-						continue;
-					} else
-						*outptr++ = '\r';
-				}
-
-				*outptr++ = *inptr;
-			}
-
-			if (do_dots && *inptr == '.') {
-				if (crlf->saw_lf) {
-					crlf->saw_dot = TRUE;
-					crlf->saw_lf = FALSE;
-					inptr++;
-				} else if (crlf->saw_dot) {
-					crlf->saw_dot = FALSE;
-				}
-			}
-
-			crlf->saw_lf = FALSE;
-
-			inptr++;
-		}
-	}
-
-	*out = f->outbuf;
-	*outlen = outptr - f->outbuf;
-	*outprespace = f->outpre;
-}
-
-static void
-complete (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
-	  gchar **out, gsize *outlen, gsize *outprespace)
-{
-	if (len)
-		filter (f, in, len, prespace, out, outlen, outprespace);
-}
-
-static void
-reset (CamelMimeFilter *f)
-{
-	CamelMimeFilterCRLF *crlf = (CamelMimeFilterCRLF *)f;
-
-	crlf->saw_cr = FALSE;
-	crlf->saw_lf = TRUE;
-	crlf->saw_dot = FALSE;
 }
 
 /**
@@ -170,15 +203,17 @@ reset (CamelMimeFilter *f)
  * Returns: a new #CamelMimeFilterCRLF object
  **/
 CamelMimeFilter *
-camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction, CamelMimeFilterCRLFMode mode)
+camel_mime_filter_crlf_new (CamelMimeFilterCRLFDirection direction,
+                            CamelMimeFilterCRLFMode mode)
 {
-	CamelMimeFilterCRLF *crlf = CAMEL_MIME_FILTER_CRLF(camel_object_new (CAMEL_MIME_FILTER_CRLF_TYPE));
+	CamelMimeFilter *filter;
+	CamelMimeFilterCRLFPrivate *priv;
 
-	crlf->direction = direction;
-	crlf->mode = mode;
-	crlf->saw_cr = FALSE;
-	crlf->saw_lf = TRUE;
-	crlf->saw_dot = FALSE;
+	filter = CAMEL_MIME_FILTER (camel_object_new (CAMEL_MIME_FILTER_CRLF_TYPE));
+	priv = CAMEL_MIME_FILTER_CRLF (filter)->priv;
 
-	return (CamelMimeFilter *)crlf;
+	priv->direction = direction;
+	priv->mode = mode;
+
+	return filter;
 }

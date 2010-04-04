@@ -44,11 +44,6 @@ typedef struct _CamelDataCachePrivate CamelDataCachePrivate;
 struct _CamelDataCache {
 	CamelObject parent;
 	CamelDataCachePrivate *priv;
-
-	gchar *path;
-
-	time_t expire_age;
-	time_t expire_access;
 };
 
 struct _CamelDataCacheClass {
@@ -58,6 +53,9 @@ struct _CamelDataCacheClass {
 CamelType	camel_data_cache_get_type	(void);
 CamelDataCache *camel_data_cache_new		(const gchar *path,
 						 CamelException *ex);
+const gchar *	camel_data_cache_get_path	(CamelDataCache *cdc);
+void		camel_data_cache_set_path	(CamelDataCache *cdc,
+						 const gchar *path);
 void		camel_data_cache_set_expire_age	(CamelDataCache *cdc,
 						 time_t when);
 void		camel_data_cache_set_expire_access

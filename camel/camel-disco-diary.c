@@ -29,14 +29,12 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-disco-diary.h"
 #include "camel-disco-folder.h"
 #include "camel-disco-store.h"
-#include "camel-exception.h"
 #include "camel-file-utils.h"
 #include "camel-folder.h"
 #include "camel-operation.h"
@@ -44,19 +42,6 @@
 #include "camel-store.h"
 
 #define d(x)
-
-static void
-camel_disco_diary_class_init (CamelDiscoDiaryClass *camel_disco_diary_class)
-{
-	/* virtual method definition */
-}
-
-static void
-camel_disco_diary_init (CamelDiscoDiary *diary)
-{
-	diary->folders = g_hash_table_new (g_str_hash, g_str_equal);
-	diary->uidmap = g_hash_table_new (g_str_hash, g_str_equal);
-}
 
 static void
 unref_folder (gpointer key, gpointer value, gpointer data)
@@ -72,18 +57,32 @@ free_uid (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-camel_disco_diary_finalize (CamelDiscoDiary *diary)
+disco_diary_finalize (CamelDiscoDiary *diary)
 {
 	if (diary->file)
 		fclose (diary->file);
+
 	if (diary->folders) {
 		g_hash_table_foreach (diary->folders, unref_folder, NULL);
 		g_hash_table_destroy (diary->folders);
 	}
+
 	if (diary->uidmap) {
 		g_hash_table_foreach (diary->uidmap, free_uid, NULL);
 		g_hash_table_destroy (diary->uidmap);
 	}
+}
+
+static void
+camel_disco_diary_class_init (CamelDiscoDiaryClass *class)
+{
+}
+
+static void
+camel_disco_diary_init (CamelDiscoDiary *diary)
+{
+	diary->folders = g_hash_table_new (g_str_hash, g_str_equal);
+	diary->uidmap = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 CamelType
@@ -93,13 +92,13 @@ camel_disco_diary_get_type (void)
 
 	if (camel_disco_diary_type == CAMEL_INVALID_TYPE) {
 		camel_disco_diary_type = camel_type_register (
-			CAMEL_OBJECT_TYPE, "CamelDiscoDiary",
+			CAMEL_TYPE_OBJECT, "CamelDiscoDiary",
 			sizeof (CamelDiscoDiary),
 			sizeof (CamelDiscoDiaryClass),
 			(CamelObjectClassInitFunc) camel_disco_diary_class_init,
 			NULL,
 			(CamelObjectInitFunc) camel_disco_diary_init,
-			(CamelObjectFinalizeFunc) camel_disco_diary_finalize);
+			(CamelObjectFinalizeFunc) disco_diary_finalize);
 	}
 
 	return camel_disco_diary_type;
@@ -252,17 +251,21 @@ diary_decode_folder (CamelDiscoDiary *diary)
 		gchar *msg;
 
 		camel_exception_init (&ex);
-		folder = camel_store_get_folder (CAMEL_STORE (diary->store),
-						 name, 0, &ex);
+		folder = camel_store_get_folder (
+			CAMEL_STORE (diary->store), name, 0, &ex);
 		if (folder)
 			g_hash_table_insert (diary->folders, name, folder);
 		else {
-			msg = g_strdup_printf (_("Could not open '%s':\n%s\nChanges made to this folder will not be resynchronized."),
-					       name, camel_exception_get_description (&ex));
+			msg = g_strdup_printf (
+				_("Could not open '%s':\n%s\n"
+				  "Changes made to this folder "
+				  "will not be resynchronized."),
+				name, camel_exception_get_description (&ex));
 			camel_exception_clear (&ex);
-			camel_session_alert_user (camel_service_get_session (CAMEL_SERVICE (diary->store)),
-						  CAMEL_SESSION_ALERT_WARNING,
-						  msg, FALSE);
+			camel_session_alert_user (
+				camel_service_get_session (CAMEL_SERVICE (diary->store)),
+				CAMEL_SESSION_ALERT_WARNING,
+				msg, FALSE);
 			g_free (msg);
 			g_free (name);
 		}
@@ -280,7 +283,8 @@ close_folder (gpointer name, gpointer folder, gpointer data)
 }
 
 void
-camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
+camel_disco_diary_replay (CamelDiscoDiary *diary,
+                          CamelException *ex)
 {
 	guint32 action;
 	off_t size;
@@ -315,7 +319,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 				goto lose;
 
 			if (folder)
-				camel_disco_folder_expunge_uids (folder, uids, ex);
+				camel_disco_folder_expunge_uids (
+					folder, uids, ex);
 			free_uids (uids);
 			break;
 		}
@@ -344,7 +349,8 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 			}
 			info = camel_folder_get_message_info (folder, uid);
 
-			camel_folder_append_message (folder, message, info, &ret_uid, ex);
+			camel_folder_append_message (
+				folder, message, info, &ret_uid, ex);
 			camel_folder_free_message_info (folder, info);
 
 			if (ret_uid) {
@@ -376,7 +382,9 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 				continue;
 			}
 
-			camel_folder_transfer_messages_to (source, uids, destination, &ret_uids, delete_originals, ex);
+			camel_folder_transfer_messages_to (
+				source, uids, destination, &ret_uids,
+				delete_originals, ex);
 
 			if (ret_uids) {
 				for (i = 0; i < uids->len; i++) {
@@ -407,7 +415,9 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 }
 
 CamelDiscoDiary *
-camel_disco_diary_new (CamelDiscoStore *store, const gchar *filename, CamelException *ex)
+camel_disco_diary_new (CamelDiscoStore *store,
+                       const gchar *filename,
+                       CamelException *ex)
 {
 	CamelDiscoDiary *diary;
 
@@ -434,9 +444,10 @@ camel_disco_diary_new (CamelDiscoStore *store, const gchar *filename, CamelExcep
 	diary->file = g_fopen (filename, "a+b");
 	if (!diary->file) {
 		camel_object_unref (diary);
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "Could not open journal file: %s",
-				      g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			"Could not open journal file: %s",
+			g_strerror (errno));
 		return NULL;
 	}
 

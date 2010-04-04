@@ -38,9 +38,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSaslPOPB4SMTP CamelSaslPOPB4SMTP;
 typedef struct _CamelSaslPOPB4SMTPClass CamelSaslPOPB4SMTPClass;
+typedef struct _CamelSaslPOPB4SMTPPrivate CamelSaslPOPB4SMTPPrivate;
 
 struct _CamelSaslPOPB4SMTP {
 	CamelSasl parent;
+	CamelSaslPOPB4SMTPPrivate *priv;
 };
 
 struct _CamelSaslPOPB4SMTPClass {

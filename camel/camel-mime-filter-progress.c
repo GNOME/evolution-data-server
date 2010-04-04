@@ -32,11 +32,90 @@
 #define d(x)
 #define w(x)
 
-static void camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass);
-static void camel_mime_filter_progress_init       (CamelObject *o);
-static void camel_mime_filter_progress_finalize   (CamelObject *o);
+struct _CamelMimeFilterProgressPrivate {
+	CamelOperation *operation;
+	gsize total;
+	gsize count;
+};
 
 static CamelMimeFilterClass *parent_class = NULL;
+
+static void
+mime_filter_progress_finalize (CamelMimeFilterProgress *mime_filter)
+{
+	g_free (mime_filter->priv);
+}
+
+static void
+mime_filter_progress_filter (CamelMimeFilter *mime_filter,
+                             const gchar *in,
+                             gsize len,
+                             gsize prespace,
+                             gchar **out,
+                             gsize *outlen,
+                             gsize *outprespace)
+{
+	CamelMimeFilterProgressPrivate *priv;
+	gdouble percent;
+
+	priv = CAMEL_MIME_FILTER_PROGRESS (mime_filter)->priv;
+
+	priv->count += len;
+
+	if (priv->count < priv->total)
+		percent = ((gdouble) priv->count * 100.0) / ((gdouble) priv->total);
+	else
+		percent = 100.0;
+
+	camel_operation_progress (priv->operation, (gint) percent);
+
+	*outprespace = prespace;
+	*outlen = len;
+	*out = (gchar *) in;
+}
+
+static void
+mime_filter_progress_complete (CamelMimeFilter *mime_filter,
+                               const gchar *in,
+                               gsize len,
+                               gsize prespace,
+                               gchar **out,
+                               gsize *outlen,
+                               gsize *outprespace)
+{
+	mime_filter_progress_filter (
+		mime_filter, in, len, prespace,
+		out, outlen, outprespace);
+}
+
+static void
+mime_filter_progress_reset (CamelMimeFilter *mime_filter)
+{
+	CamelMimeFilterProgressPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_PROGRESS (mime_filter)->priv;
+
+	priv->count = 0;
+}
+
+static void
+camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
+
+	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_progress_filter;
+	mime_filter_class->complete = mime_filter_progress_complete;
+	mime_filter_class->reset = mime_filter_progress_reset;
+}
+
+static void
+camel_mime_filter_progress_init (CamelMimeFilterProgress *mime_filter)
+{
+	mime_filter->priv = g_new0 (CamelMimeFilterProgressPrivate, 1);
+}
 
 CamelType
 camel_mime_filter_progress_get_type (void)
@@ -51,72 +130,10 @@ camel_mime_filter_progress_get_type (void)
 					    (CamelObjectClassInitFunc) camel_mime_filter_progress_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_mime_filter_progress_init,
-					    (CamelObjectFinalizeFunc) camel_mime_filter_progress_finalize);
+					    (CamelObjectFinalizeFunc) mime_filter_progress_finalize);
 	}
 
 	return type;
-}
-
-static void
-camel_mime_filter_progress_finalize (CamelObject *o)
-{
-	;
-}
-
-static void
-camel_mime_filter_progress_init (CamelObject *o)
-{
-	CamelMimeFilterProgress *progress = (CamelMimeFilterProgress *) o;
-
-	progress->count = 0;
-}
-
-static void
-filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
-	       gchar **out, gsize *outlen, gsize *outprespace)
-{
-	CamelMimeFilterProgress *progress = (CamelMimeFilterProgress *) filter;
-	gdouble percent;
-
-	progress->count += len;
-
-	if (progress->count < progress->total)
-		percent = ((double) progress->count * 100.0) / ((double) progress->total);
-	else
-		percent = 100.0;
-
-	camel_operation_progress (progress->operation, (gint) percent);
-
-	*outprespace = prespace;
-	*outlen = len;
-	*out = (gchar *) in;
-}
-
-static void
-filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
-		 gchar **out, gsize *outlen, gsize *outprespace)
-{
-	filter_filter (filter, in, len, prespace, out, outlen, outprespace);
-}
-
-static void
-filter_reset (CamelMimeFilter *filter)
-{
-	CamelMimeFilterProgress *progress = (CamelMimeFilterProgress *) filter;
-
-	progress->count = 0;
-}
-
-static void
-camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass)
-{
-	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-
-	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
-
-	filter_class->reset = filter_reset;
-	filter_class->filter = filter_filter;
-	filter_class->complete = filter_complete;
 }
 
 /**
@@ -132,13 +149,17 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *klass)
  * Since: 2.24
  **/
 CamelMimeFilter *
-camel_mime_filter_progress_new (CamelOperation *operation, gsize total)
+camel_mime_filter_progress_new (CamelOperation *operation,
+                                gsize total)
 {
 	CamelMimeFilter *filter;
+	CamelMimeFilterProgressPrivate *priv;
 
 	filter = (CamelMimeFilter *) camel_object_new (camel_mime_filter_progress_get_type ());
-	((CamelMimeFilterProgress *) filter)->operation = operation;
-	((CamelMimeFilterProgress *) filter)->total = total;
+	priv = CAMEL_MIME_FILTER_PROGRESS (filter)->priv;
+
+	priv->operation = operation;
+	priv->total = total;
 
 	return filter;
 }

@@ -1358,7 +1358,7 @@ camel_imapx_store_init (gpointer object, gpointer klass)
 }
 
 static void
-imapx_store_finalise(CamelObject *object)
+imapx_store_finalize(CamelObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
@@ -1385,7 +1385,7 @@ camel_imapx_store_get_type (void)
 							    (CamelObjectClassInitFunc) camel_imapx_store_class_init,
 							    NULL,
 							    (CamelObjectInitFunc) camel_imapx_store_init,
-							     imapx_store_finalise);
+							     imapx_store_finalize);
 	}
 
 	return camel_imapx_store_type;

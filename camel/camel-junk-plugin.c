@@ -22,8 +22,6 @@
 
 #include <stdio.h>
 
-#include <glib.h>
-
 #include "camel-debug.h"
 #include "camel-junk-plugin.h"
 #include "camel-mime-message.h"

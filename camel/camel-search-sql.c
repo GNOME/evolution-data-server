@@ -30,7 +30,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <glib.h>
 #include "camel-search-sql.h"
 
 #define d(x)

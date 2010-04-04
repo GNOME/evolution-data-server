@@ -56,7 +56,7 @@ static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, co
 
 static void camel_nntp_store_summary_class_init (CamelNNTPStoreSummaryClass *klass);
 static void camel_nntp_store_summary_init       (CamelNNTPStoreSummary *obj);
-static void camel_nntp_store_summary_finalise   (CamelObject *obj);
+static void camel_nntp_store_summary_finalize   (CamelObject *obj);
 
 static CamelStoreSummaryClass *camel_nntp_store_summary_parent;
 
@@ -90,7 +90,7 @@ camel_nntp_store_summary_init (CamelNNTPStoreSummary *s)
 }
 
 static void
-camel_nntp_store_summary_finalise (CamelObject *obj)
+camel_nntp_store_summary_finalize (CamelObject *obj)
 {
 	/*struct _CamelNNTPStoreSummaryPrivate *p;*/
 	/*CamelNNTPStoreSummary *s = (CamelNNTPStoreSummary *)obj;*/
@@ -112,7 +112,7 @@ camel_nntp_store_summary_get_type (void)
 					   (CamelObjectClassInitFunc) camel_nntp_store_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_nntp_store_summary_init,
-					   (CamelObjectFinalizeFunc) camel_nntp_store_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_nntp_store_summary_finalize);
 	}
 
 	return type;

@@ -55,7 +55,7 @@ static CamelObjectClass *parent_class = NULL;
 static void
 camel_pop3_engine_class_init (CamelPOP3EngineClass *camel_pop3_engine_class)
 {
-	parent_class = camel_type_get_global_classfuncs( CAMEL_OBJECT_TYPE );
+	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
 }
 
 static void
@@ -68,7 +68,7 @@ camel_pop3_engine_init(CamelPOP3Engine *pe, CamelPOP3EngineClass *peclass)
 }
 
 static void
-camel_pop3_engine_finalise(CamelPOP3Engine *pe)
+camel_pop3_engine_finalize(CamelPOP3Engine *pe)
 {
 	/* FIXME: Also flush/free any outstanding requests, etc */
 
@@ -93,7 +93,7 @@ camel_pop3_engine_get_type (void)
 							     (CamelObjectClassInitFunc) camel_pop3_engine_class_init,
 							     NULL,
 							     (CamelObjectInitFunc) camel_pop3_engine_init,
-							     (CamelObjectFinalizeFunc) camel_pop3_engine_finalise );
+							     (CamelObjectFinalizeFunc) camel_pop3_engine_finalize );
 	}
 
 	return camel_pop3_engine_type;

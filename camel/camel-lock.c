@@ -50,7 +50,6 @@
 #include <sys/file.h>
 #endif
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -73,7 +72,8 @@
  * Returns: -1 on error, sets @ex appropriately.
  **/
 gint
-camel_lock_dot(const gchar *path, CamelException *ex)
+camel_lock_dot (const gchar *path,
+                CamelException *ex)
 {
 #ifdef USE_DOT
 	gchar *locktmp, *lock;
@@ -99,9 +99,10 @@ camel_lock_dot(const gchar *path, CamelException *ex)
 		sprintf(locktmp, "%sXXXXXX", path);
 		fdtmp = g_mkstemp(locktmp);
 		if (fdtmp == -1) {
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Could not create lock file for %s: %s"),
-					      path, g_strerror (errno));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Could not create lock file for %s: %s"),
+				path, g_strerror (errno));
 			return -1;
 		}
 		close(fdtmp);
@@ -141,7 +142,10 @@ camel_lock_dot(const gchar *path, CamelException *ex)
 
 	d(printf("failed to get lock after %d retries\n", retry));
 
-	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Timed out trying to get lock file on %s. Try again later."), path);
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_SYSTEM,
+		_("Timed out trying to get lock file on %s. "
+		"Try again later."), path);
 	return -1;
 #else /* !USE_DOT */
 	return 0;
@@ -181,7 +185,9 @@ camel_unlock_dot(const gchar *path)
  * Returns: -1 on error.
  **/
 gint
-camel_lock_fcntl(gint fd, CamelLockType type, CamelException *ex)
+camel_lock_fcntl (gint fd,
+                  CamelLockType type,
+                  CamelException *ex)
 {
 #ifdef USE_FCNTL
 	struct flock lock;
@@ -195,9 +201,10 @@ camel_lock_fcntl(gint fd, CamelLockType type, CamelException *ex)
 		   we assume the filesystem doesn't support fcntl() locking */
 		/* this is somewhat system-dependent */
 		if (errno != EINVAL && errno != ENOLCK) {
-			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("Failed to get lock using fcntl(2): %s"),
-					      g_strerror (errno));
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Failed to get lock using fcntl(2): %s"),
+				g_strerror (errno));
 			return -1;
 		} else {
 			static gint failed = 0;
@@ -245,7 +252,9 @@ camel_unlock_fcntl(gint fd)
  * Returns: -1 on error.
  **/
 gint
-camel_lock_flock(gint fd, CamelLockType type, CamelException *ex)
+camel_lock_flock (gint fd,
+                  CamelLockType type,
+                  CamelException *ex)
 {
 #ifdef USE_FLOCK
 	gint op;
@@ -258,9 +267,10 @@ camel_lock_flock(gint fd, CamelLockType type, CamelException *ex)
 		op = LOCK_EX|LOCK_NB;
 
 	if (flock(fd, op) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to get lock using flock(2): %s"),
-				      g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Failed to get lock using flock(2): %s"),
+			g_strerror (errno));
 		return -1;
 	}
 #endif
@@ -296,7 +306,10 @@ camel_unlock_flock(gint fd)
  * Returns: -1 on error, @ex will describe the locking system that failed.
  **/
 gint
-camel_lock_folder(const gchar *path, gint fd, CamelLockType type, CamelException *ex)
+camel_lock_folder (const gchar *path,
+                   gint fd,
+                   CamelLockType type,
+                   CamelException *ex)
 {
 	gint retry = 0;
 

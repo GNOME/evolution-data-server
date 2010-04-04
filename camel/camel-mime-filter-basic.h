@@ -50,12 +50,6 @@ typedef enum {
 struct _CamelMimeFilterBasic {
 	CamelMimeFilter parent;
 	CamelMimeFilterBasicPrivate *priv;
-
-	CamelMimeFilterBasicType type;
-
-	guchar uubuf[60];
-	gint state;
-	gint save;
 };
 
 struct _CamelMimeFilterBasicClass {

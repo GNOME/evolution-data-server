@@ -64,7 +64,7 @@ static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, CamelExcepti
 
 static void camel_nntp_summary_class_init (CamelNNTPSummaryClass *klass);
 static void camel_nntp_summary_init       (CamelNNTPSummary *obj);
-static void camel_nntp_summary_finalise   (CamelObject *obj);
+static void camel_nntp_summary_finalize   (CamelObject *obj);
 static CamelFolderSummaryClass *camel_nntp_summary_parent;
 
 CamelType
@@ -79,7 +79,7 @@ camel_nntp_summary_get_type(void)
 					   (CamelObjectClassInitFunc) camel_nntp_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_nntp_summary_init,
-					   (CamelObjectFinalizeFunc) camel_nntp_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_nntp_summary_finalize);
 	}
 
 	return type;
@@ -116,7 +116,7 @@ camel_nntp_summary_init(CamelNNTPSummary *obj)
 }
 
 static void
-camel_nntp_summary_finalise(CamelObject *obj)
+camel_nntp_summary_finalize(CamelObject *obj)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY(obj);
 

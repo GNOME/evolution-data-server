@@ -213,9 +213,9 @@ cobject_init(CamelObject *o, CamelObjectClass *klass)
 }
 
 static void
-cobject_finalise(CamelObject *o)
+cobject_finalize(CamelObject *o)
 {
-	/*printf("%p: finalise %s\n", o, o->klass->name);*/
+	/*printf("%p: finalize %s\n", o, o->klass->name);*/
 
 	if (o->ref_count == 0)
 		return;
@@ -492,7 +492,7 @@ cobject_class_init(CamelObjectClass *klass)
 }
 
 static void
-cobject_class_finalise(CamelObjectClass * klass)
+cobject_class_finalize(CamelObjectClass * klass)
 {
 	klass->magic = CAMEL_OBJECT_CLASS_FINALISED_MAGIC;
 
@@ -508,8 +508,8 @@ camel_object_get_type(void)
 
 		camel_object_type = camel_type_register(NULL, "CamelObject", /*, 0, 0*/
 							sizeof(CamelObject), sizeof(CamelObjectClass),
-							cobject_class_init, cobject_class_finalise,
-							cobject_init, cobject_finalise);
+							cobject_class_init, cobject_class_finalize,
+							cobject_init, cobject_finalize);
 	}
 
 	return camel_object_type;
@@ -530,9 +530,9 @@ co_type_register(CamelType parent, const gchar * name,
 		 /*guint ver, guint rev,*/
 		 gsize object_size, gsize klass_size,
 		 CamelObjectClassInitFunc class_init,
-		 CamelObjectClassFinalizeFunc class_finalise,
+		 CamelObjectClassFinalizeFunc class_finalize,
 		 CamelObjectInitFunc object_init,
-		 CamelObjectFinalizeFunc object_finalise)
+		 CamelObjectFinalizeFunc object_finalize)
 {
 	CamelObjectClass *klass;
 	/*int offset;
@@ -546,8 +546,8 @@ co_type_register(CamelType parent, const gchar * name,
 	klass = g_hash_table_lookup(type_table, name);
 	if (klass != NULL) {
 		if (klass->klass_size != klass_size || klass->object_size != object_size
-		    || klass->klass_init != class_init || klass->klass_finalise != class_finalise
-		    || klass->init != object_init || klass->finalise != object_finalise) {
+		    || klass->klass_init != class_init || klass->klass_finalize != class_finalize
+		    || klass->init != object_init || klass->finalize != object_finalize) {
 			g_warning("camel_type_register: Trying to re-register class '%s'", name);
 			klass = NULL;
 		}
@@ -596,10 +596,10 @@ co_type_register(CamelType parent, const gchar * name,
 	  klass->revision = rev;*/
 
 	klass->klass_init = class_init;
-	klass->klass_finalise = class_finalise;
+	klass->klass_finalize = class_finalize;
 
 	klass->init = object_init;
-	klass->finalise = object_finalise;
+	klass->finalize = object_finalize;
 
 	/* setup before class init, incase class init func uses the type or looks it up ? */
 	g_hash_table_insert(type_table, (gpointer)name, klass);
@@ -616,16 +616,16 @@ camel_type_register(CamelType parent, const gchar * name,
 		    /*guint ver, guint rev,*/
 		    gsize object_size, gsize klass_size,
 		    CamelObjectClassInitFunc class_init,
-		    CamelObjectClassFinalizeFunc class_finalise,
+		    CamelObjectClassFinalizeFunc class_finalize,
 		    CamelObjectInitFunc object_init,
-		    CamelObjectFinalizeFunc object_finalise)
+		    CamelObjectFinalizeFunc object_finalize)
 {
 	if (parent != NULL && parent->magic != CAMEL_OBJECT_CLASS_MAGIC) {
 		g_warning("camel_type_register: invalid junk parent class for '%s'", name);
 		return NULL;
 	}
 
-	return co_type_register(parent, name, object_size, klass_size, class_init, class_finalise, object_init, object_finalise);
+	return co_type_register(parent, name, object_size, klass_size, class_init, class_finalize, object_init, object_finalize);
 }
 
 static void
@@ -727,8 +727,8 @@ camel_object_unref(gpointer vo)
 
 	k = klass;
 	while (k) {
-		if (k->finalise)
-			k->finalise(o);
+		if (k->finalize)
+			k->finalize(o);
 		k = k->parent;
 	}
 
@@ -785,11 +785,11 @@ desc_data(CamelObject *o, guint32 ok)
 	else if (o->magic == CAMEL_INTERFACE_MAGIC)
 		what = g_strdup_printf("INTERFACE '%s'", ((CamelObjectClass *)o)->name);
 	else if (o->magic == CAMEL_OBJECT_FINALISED_MAGIC)
-		what = g_strdup_printf("finalised OBJECT");
+		what = g_strdup_printf("finalized OBJECT");
 	else if (o->magic == CAMEL_OBJECT_CLASS_FINALISED_MAGIC)
-		what = g_strdup_printf("finalised CLASS");
+		what = g_strdup_printf("finalized CLASS");
 	else if (o->magic == CAMEL_INTERFACE_FINALISED_MAGIC)
-		what = g_strdup_printf("finalised INTERFACE");
+		what = g_strdup_printf("finalized INTERFACE");
 	else
 		what = g_strdup_printf("junk data");
 

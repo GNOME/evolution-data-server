@@ -27,22 +27,73 @@
 #include "camel-mime-filter-save.h"
 #include "camel-stream-mem.h"
 
-static void filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
-		    gchar **out, gsize *outlen, gsize *outprespace);
-static void complete (CamelMimeFilter *f, const gchar *in, gsize len,
-		      gsize prespace, gchar **out, gsize *outlen,
-		      gsize *outprespace);
-static void reset (CamelMimeFilter *f);
+struct _CamelMimeFilterSavePrivate {
+	CamelStream *stream;
+};
 
 static void
-camel_mime_filter_save_class_init (CamelMimeFilterSaveClass *klass)
+mime_filter_save_finalize (CamelMimeFilterSave *mime_filter)
 {
-	CamelMimeFilterClass *mime_filter_class =
-		(CamelMimeFilterClass *) klass;
+	g_free (mime_filter->priv);
+}
 
-	mime_filter_class->filter = filter;
-	mime_filter_class->complete = complete;
-	mime_filter_class->reset = reset;
+static void
+mime_filter_save_filter (CamelMimeFilter *mime_filter,
+                         const gchar *in,
+                         gsize len,
+                         gsize prespace,
+                         gchar **out,
+                         gsize *outlen,
+                         gsize *outprespace)
+{
+	CamelMimeFilterSavePrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_SAVE (mime_filter)->priv;
+
+	if (priv->stream != NULL)
+		camel_stream_write (priv->stream, in, len);
+
+	*out = (gchar *) in;
+	*outlen = len;
+	*outprespace = mime_filter->outpre;
+}
+
+static void
+mime_filter_save_complete (CamelMimeFilter *mime_filter,
+                           const gchar *in,
+                           gsize len,
+                           gsize prespace,
+                           gchar **out,
+                           gsize *outlen,
+                           gsize *outprespace)
+{
+	if (len)
+		mime_filter_save_filter (
+			mime_filter, in, len, prespace,
+			out, outlen, outprespace);
+}
+
+static void
+mime_filter_save_reset (CamelMimeFilter *mime_filter)
+{
+	/* no-op */
+}
+
+static void
+camel_mime_filter_save_class_init (CamelMimeFilterSaveClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
+
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_save_filter;
+	mime_filter_class->complete = mime_filter_save_complete;
+	mime_filter_class->reset = mime_filter_save_reset;
+}
+
+static void
+camel_mime_filter_save_init (CamelMimeFilterSave *mime_filter)
+{
+	mime_filter->priv = g_new0 (CamelMimeFilterSavePrivate, 1);
 }
 
 CamelType
@@ -56,39 +107,11 @@ camel_mime_filter_save_get_type (void)
 					    sizeof (CamelMimeFilterSaveClass),
 					    (CamelObjectClassInitFunc) camel_mime_filter_save_class_init,
 					    NULL,
-					    NULL,
-					    NULL);
+					    (CamelObjectInitFunc) camel_mime_filter_save_init,
+					    (CamelObjectFinalizeFunc) mime_filter_save_finalize);
 	}
 
 	return type;
-}
-
-static void
-filter (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
-	gchar **out, gsize *outlen, gsize *outprespace)
-{
-	CamelMimeFilterSave *save = (CamelMimeFilterSave *) f;
-
-	if (save->stream)
-		camel_stream_write (save->stream, in, len);
-
-	*out = (gchar *) in;
-	*outlen = len;
-	*outprespace = f->outpre;
-}
-
-static void
-complete (CamelMimeFilter *f, const gchar *in, gsize len, gsize prespace,
-	  gchar **out, gsize *outlen, gsize *outprespace)
-{
-	if (len)
-		filter (f, in, len, prespace, out, outlen, outprespace);
-}
-
-static void
-reset (CamelMimeFilter *f)
-{
-	/* no-op */
 }
 
 /**
@@ -103,10 +126,18 @@ reset (CamelMimeFilter *f)
 CamelMimeFilter *
 camel_mime_filter_save_new (CamelStream *stream)
 {
-	CamelMimeFilterSave *save = CAMEL_MIME_FILTER_SAVE (camel_object_new (CAMEL_MIME_FILTER_SAVE_TYPE));
+	CamelMimeFilter *filter;
+	CamelMimeFilterSavePrivate *priv;
 
-	save->stream = stream;
-	camel_object_ref (stream);
+	if (stream != NULL)
+		g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 
-	return (CamelMimeFilter *) save;
+	filter = CAMEL_MIME_FILTER (camel_object_new (CAMEL_MIME_FILTER_SAVE_TYPE));
+	priv = CAMEL_MIME_FILTER_SAVE (filter)->priv;
+
+	priv->stream = stream;
+	if (stream != NULL)
+		camel_object_ref (stream);
+
+	return filter;
 }

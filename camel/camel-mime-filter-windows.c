@@ -34,11 +34,98 @@
 #define d(x)
 #define w(x)
 
-static void camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass);
-static void camel_mime_filter_windows_init       (CamelObject *o);
-static void camel_mime_filter_windows_finalize   (CamelObject *o);
-
 static CamelMimeFilterClass *parent_class = NULL;
+
+struct _CamelMimeFilterWindowsPrivate {
+	gboolean is_windows;
+	gchar *claimed_charset;
+};
+
+static void
+mime_filter_windows_finalize (CamelMimeFilterWindows *mime_filter)
+{
+	g_free (mime_filter->priv->claimed_charset);
+	g_free (mime_filter->priv);
+}
+
+static void
+mime_filter_windows_filter (CamelMimeFilter *mime_filter,
+                            const gchar *in,
+                            gsize len,
+                            gsize prespace,
+                            gchar **out,
+                            gsize *outlen,
+                            gsize *outprespace)
+{
+	CamelMimeFilterWindowsPrivate *priv;
+	register guchar *inptr;
+	guchar *inend;
+
+	priv = CAMEL_MIME_FILTER_WINDOWS (mime_filter)->priv;
+
+	if (!priv->is_windows) {
+		inptr = (guchar *) in;
+		inend = inptr + len;
+
+		while (inptr < inend) {
+			register guchar c = *inptr++;
+
+			if (c >= 128 && c <= 159) {
+				w(g_warning ("Encountered Windows charset masquerading as %s",
+					     priv->claimed_charset));
+				priv->is_windows = TRUE;
+				break;
+			}
+		}
+	}
+
+	*out = (gchar *) in;
+	*outlen = len;
+	*outprespace = prespace;
+}
+
+static void
+mime_filter_windows_complete (CamelMimeFilter *mime_filter,
+                              const gchar *in,
+                              gsize len,
+                              gsize prespace,
+                              gchar **out,
+                              gsize *outlen,
+                              gsize *outprespace)
+{
+	mime_filter_windows_filter (
+		mime_filter, in, len, prespace,
+		out, outlen, outprespace);
+}
+
+static void
+mime_filter_windows_reset (CamelMimeFilter *mime_filter)
+{
+	CamelMimeFilterWindowsPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_WINDOWS (mime_filter)->priv;
+
+	priv->is_windows = FALSE;
+}
+
+static void
+camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
+
+	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_windows_filter;
+	mime_filter_class->complete = mime_filter_windows_complete;
+	mime_filter_class->reset = mime_filter_windows_reset;
+}
+
+static void
+camel_mime_filter_windows_init (CamelMimeFilterWindows *mime_filter)
+{
+	mime_filter->priv = g_new0 (CamelMimeFilterWindowsPrivate, 1);
+}
 
 CamelType
 camel_mime_filter_windows_get_type (void)
@@ -53,83 +140,10 @@ camel_mime_filter_windows_get_type (void)
 					    (CamelObjectClassInitFunc) camel_mime_filter_windows_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_mime_filter_windows_init,
-					    (CamelObjectFinalizeFunc) camel_mime_filter_windows_finalize);
+					    (CamelObjectFinalizeFunc) mime_filter_windows_finalize);
 	}
 
 	return type;
-}
-
-static void
-camel_mime_filter_windows_finalize (CamelObject *o)
-{
-	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) o;
-
-	g_free (windows->claimed_charset);
-}
-
-static void
-camel_mime_filter_windows_init (CamelObject *o)
-{
-	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) o;
-
-	windows->is_windows = FALSE;
-	windows->claimed_charset = NULL;
-}
-
-static void
-filter_filter (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
-	       gchar **out, gsize *outlen, gsize *outprespace)
-{
-	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) filter;
-	register guchar *inptr;
-	guchar *inend;
-
-	if (!windows->is_windows) {
-		inptr = (guchar *) in;
-		inend = inptr + len;
-
-		while (inptr < inend) {
-			register guchar c = *inptr++;
-
-			if (c >= 128 && c <= 159) {
-				w(g_warning ("Encountered Windows charset masquerading as %s",
-					     windows->claimed_charset));
-				windows->is_windows = TRUE;
-				break;
-			}
-		}
-	}
-
-	*out = (gchar *) in;
-	*outlen = len;
-	*outprespace = prespace;
-}
-
-static void
-filter_complete (CamelMimeFilter *filter, const gchar *in, gsize len, gsize prespace,
-		 gchar **out, gsize *outlen, gsize *outprespace)
-{
-	filter_filter (filter, in, len, prespace, out, outlen, outprespace);
-}
-
-static void
-filter_reset (CamelMimeFilter *filter)
-{
-	CamelMimeFilterWindows *windows = (CamelMimeFilterWindows *) filter;
-
-	windows->is_windows = FALSE;
-}
-
-static void
-camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass)
-{
-	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-
-	parent_class = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
-
-	filter_class->reset = filter_reset;
-	filter_class->filter = filter_filter;
-	filter_class->complete = filter_complete;
 }
 
 /**
@@ -144,22 +158,24 @@ camel_mime_filter_windows_class_init (CamelMimeFilterWindowsClass *klass)
 CamelMimeFilter *
 camel_mime_filter_windows_new (const gchar *claimed_charset)
 {
-	CamelMimeFilterWindows *new;
+	CamelMimeFilter *filter;
+	CamelMimeFilterWindowsPrivate *priv;
 
 	g_return_val_if_fail (claimed_charset != NULL, NULL);
 
-	new = CAMEL_MIME_FILTER_WINDOWS (camel_object_new (camel_mime_filter_windows_get_type ()));
+	filter = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_windows_get_type ()));
+	priv = CAMEL_MIME_FILTER_WINDOWS (filter)->priv;
 
-	new->claimed_charset = g_strdup (claimed_charset);
+	priv->claimed_charset = g_strdup (claimed_charset);
 
-	return CAMEL_MIME_FILTER (new);
+	return filter;
 }
 
 /**
  * camel_mime_filter_windows_is_windows_charset:
  * @filter: a #CamelMimeFilterWindows object
  *
- * Get whether or not the textual content filtered by @filetr is
+ * Get whether or not the textual content filtered by @filter is
  * really in a Microsoft Windows charset rather than the claimed ISO
  * charset.
  *
@@ -171,7 +187,7 @@ camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter)
 {
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_WINDOWS (filter), FALSE);
 
-	return filter->is_windows;
+	return filter->priv->is_windows;
 }
 
 /**
@@ -188,10 +204,14 @@ camel_mime_filter_windows_is_windows_charset (CamelMimeFilterWindows *filter)
 const gchar *
 camel_mime_filter_windows_real_charset (CamelMimeFilterWindows *filter)
 {
+	const gchar *charset;
+
 	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_WINDOWS (filter), NULL);
 
-	if (filter->is_windows)
-		return camel_charset_iso_to_windows (filter->claimed_charset);
-	else
-		return filter->claimed_charset;
+	charset = filter->priv->claimed_charset;
+
+	if (filter->priv->is_windows)
+		charset = camel_charset_iso_to_windows (charset);
+
+	return charset;
 }

@@ -67,7 +67,7 @@ static void store_info_set_string(CamelStoreSummary *, CamelStoreInfo *, int, co
 
 static void camel_store_summary_class_init (CamelStoreSummaryClass *klass);
 static void camel_store_summary_init       (CamelStoreSummary *obj);
-static void camel_store_summary_finalise   (CamelObject *obj);
+static void camel_store_summary_finalize   (CamelObject *obj);
 
 static CamelObjectClass *camel_store_summary_parent;
 
@@ -114,7 +114,7 @@ camel_store_summary_init (CamelStoreSummary *s)
 }
 
 static void
-camel_store_summary_finalise (CamelObject *obj)
+camel_store_summary_finalize (CamelObject *obj)
 {
 	struct _CamelStoreSummaryPrivate *p;
 	CamelStoreSummary *s = (CamelStoreSummary *)obj;
@@ -150,7 +150,7 @@ camel_store_summary_get_type (void)
 					    (CamelObjectClassInitFunc) camel_store_summary_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_store_summary_init,
-					    (CamelObjectFinalizeFunc) camel_store_summary_finalise);
+					    (CamelObjectFinalizeFunc) camel_store_summary_finalize);
 	}
 
 	return type;

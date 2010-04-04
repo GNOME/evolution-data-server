@@ -42,15 +42,11 @@ enum {
 
 typedef struct _CamelMimeFilterLinewrap CamelMimeFilterLinewrap;
 typedef struct _CamelMimeFilterLinewrapClass CamelMimeFilterLinewrapClass;
+typedef struct _CamelMimeFilterLinewrapPrivate CamelMimeFilterLinewrapPrivate;
 
 struct _CamelMimeFilterLinewrap {
 	CamelMimeFilter parent;
-
-	guint wrap_len;
-	guint max_len;
-	gchar indent;
-	gint nchars;
-	guint32 flags;
+	CamelMimeFilterLinewrapPrivate *priv;
 };
 
 struct _CamelMimeFilterLinewrapClass {
@@ -62,7 +58,7 @@ CamelMimeFilter *
 		camel_mime_filter_linewrap_new	(guint preferred_len,
 						 guint max_len,
 						 gchar indent_char,
-						 guint32 flags);
+                                                 guint32 flags);
 
 G_END_DECLS
 

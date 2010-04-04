@@ -48,17 +48,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterToHTML CamelMimeFilterToHTML;
 typedef struct _CamelMimeFilterToHTMLClass CamelMimeFilterToHTMLClass;
+typedef struct _CamelMimeFilterToHTMLPrivate CamelMimeFilterToHTMLPrivate;
 
 struct _CamelMimeFilterToHTML {
 	CamelMimeFilter parent;
-
-	struct _CamelUrlScanner *scanner;
-
-	guint32 flags;
-	guint32 color;
-
-	guint32 column   : 31;
-	guint32 pre_open : 1;
+	CamelMimeFilterToHTMLPrivate *priv;
 };
 
 struct _CamelMimeFilterToHTMLClass {

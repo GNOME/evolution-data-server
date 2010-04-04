@@ -54,7 +54,7 @@ CamelGroupwiseStoreNamespace *camel_groupwise_store_summary_namespace_find_full(
 
 static void camel_groupwise_store_summary_class_init (CamelGroupwiseStoreSummaryClass *klass);
 static void camel_groupwise_store_summary_init       (CamelGroupwiseStoreSummary *obj);
-static void camel_groupwise_store_summary_finalise   (CamelObject *obj);
+static void camel_groupwise_store_summary_finalize   (CamelObject *obj);
 
 static CamelStoreSummaryClass *camel_groupwise_store_summary_parent;
 
@@ -84,7 +84,7 @@ camel_groupwise_store_summary_init (CamelGroupwiseStoreSummary *s)
 }
 
 static void
-camel_groupwise_store_summary_finalise (CamelObject *obj)
+camel_groupwise_store_summary_finalize (CamelObject *obj)
 {
 }
 
@@ -101,7 +101,7 @@ camel_groupwise_store_summary_get_type (void)
 				(CamelObjectClassInitFunc) camel_groupwise_store_summary_class_init,
 				NULL,
 				(CamelObjectInitFunc) camel_groupwise_store_summary_init,
-				(CamelObjectFinalizeFunc) camel_groupwise_store_summary_finalise);
+				(CamelObjectFinalizeFunc) camel_groupwise_store_summary_finalize);
 	}
 
 	return type;

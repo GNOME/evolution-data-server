@@ -186,7 +186,7 @@ camel_nntp_stream_class_init (CamelStreamClass *camel_nntp_stream_class)
 {
 	CamelStreamClass *camel_stream_class = (CamelStreamClass *)camel_nntp_stream_class;
 
-	parent_class = camel_type_get_global_classfuncs( CAMEL_OBJECT_TYPE );
+	parent_class = camel_type_get_global_classfuncs( CAMEL_TYPE_OBJECT );
 
 	/* virtual method definition */
 	camel_stream_class->read = stream_read;
@@ -213,7 +213,7 @@ camel_nntp_stream_init(CamelNNTPStream *is, CamelNNTPStreamClass *isclass)
 }
 
 static void
-camel_nntp_stream_finalise(CamelNNTPStream *is)
+camel_nntp_stream_finalize(CamelNNTPStream *is)
 {
 	g_free(is->buf);
 	g_free(is->linebuf);
@@ -234,7 +234,7 @@ camel_nntp_stream_get_type (void)
 							    (CamelObjectClassInitFunc) camel_nntp_stream_class_init,
 							    NULL,
 							    (CamelObjectInitFunc) camel_nntp_stream_init,
-							    (CamelObjectFinalizeFunc) camel_nntp_stream_finalise );
+							    (CamelObjectFinalizeFunc) camel_nntp_stream_finalize );
 	}
 
 	return camel_nntp_stream_type;

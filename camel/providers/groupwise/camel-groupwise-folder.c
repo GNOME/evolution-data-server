@@ -455,8 +455,7 @@ groupwise_folder_rename (CamelFolder *folder, const gchar *new)
 	summary_path = g_strdup_printf ("%s/summary", folder_dir);
 
 	CAMEL_GROUPWISE_FOLDER_REC_LOCK (folder, cache_lock);
-	g_free (gw_folder->cache->path);
-	gw_folder->cache->path = g_strdup (folder_dir);
+	camel_data_cache_set_path (gw_folder->cache, folder_dir);
 	CAMEL_GROUPWISE_FOLDER_REC_UNLOCK (folder, cache_lock);
 
 	((CamelFolderClass *)parent_class)->rename(folder, new);

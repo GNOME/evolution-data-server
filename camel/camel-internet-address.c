@@ -26,16 +26,6 @@
 
 #define d(x)
 
-static gint    internet_decode		(CamelAddress *, const gchar *raw);
-static gchar * internet_encode		(CamelAddress *);
-static gint    internet_unformat		(CamelAddress *, const gchar *raw);
-static gchar * internet_format		(CamelAddress *);
-static gint    internet_cat		(CamelAddress *dest, CamelAddress *source);
-static void   internet_remove		(CamelAddress *, gint index);
-
-static void camel_internet_address_class_init (CamelInternetAddressClass *klass);
-static void camel_internet_address_init       (CamelInternetAddress *obj);
-
 static CamelAddressClass *camel_internet_address_parent;
 
 struct _address {
@@ -43,46 +33,8 @@ struct _address {
 	gchar *address;
 };
 
-static void
-camel_internet_address_class_init(CamelInternetAddressClass *klass)
-{
-	CamelAddressClass *address = (CamelAddressClass *) klass;
-
-	camel_internet_address_parent = CAMEL_ADDRESS_CLASS(camel_type_get_global_classfuncs(camel_address_get_type()));
-
-	address->decode = internet_decode;
-	address->encode = internet_encode;
-	address->unformat = internet_unformat;
-	address->format = internet_format;
-	address->remove = internet_remove;
-	address->cat = internet_cat;
-}
-
-static void
-camel_internet_address_init(CamelInternetAddress *obj)
-{
-}
-
-CamelType
-camel_internet_address_get_type(void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register(camel_address_get_type(), "CamelInternetAddress",
-					   sizeof (CamelInternetAddress),
-					   sizeof (CamelInternetAddressClass),
-					   (CamelObjectClassInitFunc) camel_internet_address_class_init,
-					   NULL,
-					   (CamelObjectInitFunc) camel_internet_address_init,
-					   NULL);
-	}
-
-	return type;
-}
-
 static gint
-internet_decode	(CamelAddress *a, const gchar *raw)
+internet_address_decode (CamelAddress *a, const gchar *raw)
 {
 	struct _camel_header_address *ha, *n;
 	gint count = a->addresses->len;
@@ -112,7 +64,7 @@ internet_decode	(CamelAddress *a, const gchar *raw)
 }
 
 static gchar *
-internet_encode	(CamelAddress *a)
+internet_address_encode (CamelAddress *a)
 {
 	gint i;
 	GString *out;
@@ -143,7 +95,7 @@ internet_encode	(CamelAddress *a)
 }
 
 static gint
-internet_unformat(CamelAddress *a, const gchar *raw)
+internet_address_unformat(CamelAddress *a, const gchar *raw)
 {
 	gchar *buffer, *p, *name, *addr;
 	gint c;
@@ -209,7 +161,7 @@ internet_unformat(CamelAddress *a, const gchar *raw)
 }
 
 static gchar *
-internet_format	(CamelAddress *a)
+internet_address_format (CamelAddress *a)
 {
 	gint i;
 	GString *out;
@@ -238,8 +190,23 @@ internet_format	(CamelAddress *a)
 	return ret;
 }
 
+static void
+internet_address_remove (CamelAddress *a, gint index)
+{
+	struct _address *addr;
+
+	if (index < 0 || index >= a->addresses->len)
+		return;
+
+	addr = g_ptr_array_index(a->addresses, index);
+	g_free(addr->name);
+	g_free(addr->address);
+	g_free(addr);
+	g_ptr_array_remove_index(a->addresses, index);
+}
+
 static gint
-internet_cat (CamelAddress *dest, CamelAddress *source)
+internet_address_cat (CamelAddress *dest, CamelAddress *source)
 {
 	gint i;
 
@@ -254,18 +221,42 @@ internet_cat (CamelAddress *dest, CamelAddress *source)
 }
 
 static void
-internet_remove	(CamelAddress *a, gint index)
+camel_internet_address_class_init (CamelInternetAddressClass *class)
 {
-	struct _address *addr;
+	CamelAddressClass *address_class;
 
-	if (index < 0 || index >= a->addresses->len)
-		return;
+	camel_internet_address_parent = CAMEL_ADDRESS_CLASS(camel_type_get_global_classfuncs(camel_address_get_type()));
 
-	addr = g_ptr_array_index(a->addresses, index);
-	g_free(addr->name);
-	g_free(addr->address);
-	g_free(addr);
-	g_ptr_array_remove_index(a->addresses, index);
+	address_class = CAMEL_ADDRESS_CLASS (class);
+	address_class->decode = internet_address_decode;
+	address_class->encode = internet_address_encode;
+	address_class->unformat = internet_address_unformat;
+	address_class->format = internet_address_format;
+	address_class->remove = internet_address_remove;
+	address_class->cat = internet_address_cat;
+}
+
+static void
+camel_internet_address_init (CamelInternetAddress *internet_address)
+{
+}
+
+CamelType
+camel_internet_address_get_type(void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register(camel_address_get_type(), "CamelInternetAddress",
+					   sizeof (CamelInternetAddress),
+					   sizeof (CamelInternetAddressClass),
+					   (CamelObjectClassInitFunc) camel_internet_address_class_init,
+					   NULL,
+					   (CamelObjectInitFunc) camel_internet_address_init,
+					   NULL);
+	}
+
+	return type;
 }
 
 /**
@@ -278,8 +269,7 @@ internet_remove	(CamelAddress *a, gint index)
 CamelInternetAddress *
 camel_internet_address_new (void)
 {
-	CamelInternetAddress *new = CAMEL_INTERNET_ADDRESS(camel_object_new(camel_internet_address_get_type()));
-	return new;
+	return CAMEL_INTERNET_ADDRESS(camel_object_new(camel_internet_address_get_type()));
 }
 
 /**

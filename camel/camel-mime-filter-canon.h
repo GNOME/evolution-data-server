@@ -38,6 +38,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterCanon CamelMimeFilterCanon;
 typedef struct _CamelMimeFilterCanonClass CamelMimeFilterCanonClass;
+typedef struct _CamelMimeFilterCanonPrivate CamelMimeFilterCanonPrivate;
 
 enum {
 	CAMEL_MIME_FILTER_CANON_CRLF = (1<<0), /* canoncialise end of line to crlf, otherwise canonicalise to lf only */
@@ -47,8 +48,7 @@ enum {
 
 struct _CamelMimeFilterCanon {
 	CamelMimeFilter parent;
-
-	guint32 flags;
+	CamelMimeFilterCanonPrivate *priv;
 };
 
 struct _CamelMimeFilterCanonClass {

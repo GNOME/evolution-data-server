@@ -90,7 +90,8 @@ static gint write_n(gint fd, gpointer buffer, gint inlen)
 	return inlen;
 }
 
-static gint camel_lock_helper_init(CamelException *ex)
+static gint
+lock_helper_init (CamelException *ex)
 {
 	gint i;
 
@@ -100,9 +101,10 @@ static gint camel_lock_helper_init(CamelException *ex)
 	lock_stdout_pipe[1] = -1;
 	if (pipe(lock_stdin_pipe) == -1
 	    || pipe(lock_stdout_pipe) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot build locking helper pipe: %s"),
-				      g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot build locking helper pipe: %s"),
+			g_strerror (errno));
 		if (lock_stdin_pipe[0] != -1)
 			close(lock_stdin_pipe[0]);
 		if (lock_stdin_pipe[1] != -1)
@@ -122,9 +124,10 @@ static gint camel_lock_helper_init(CamelException *ex)
 		close(lock_stdin_pipe[1]);
 		close(lock_stdout_pipe[0]);
 		close(lock_stdout_pipe[1]);
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot fork locking helper: %s"),
-				      g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot fork locking helper: %s"),
+			g_strerror (errno));
 		return -1;
 	case 0:
 		close(STDIN_FILENO);
@@ -152,7 +155,9 @@ static gint camel_lock_helper_init(CamelException *ex)
 	return 0;
 }
 
-gint camel_lock_helper_lock(const gchar *path, CamelException *ex)
+gint
+camel_lock_helper_lock (const gchar *path,
+                        CamelException *ex)
 {
 	struct _CamelLockHelperMsg *msg;
 	gint len = strlen(path);
@@ -162,7 +167,7 @@ gint camel_lock_helper_lock(const gchar *path, CamelException *ex)
 	LOCK();
 
 	if (lock_helper_pid == -1) {
-		if (camel_lock_helper_init(ex) == -1) {
+		if (lock_helper_init(ex) == -1) {
 			UNLOCK();
 			return -1;
 		}
@@ -199,8 +204,10 @@ again:
 		    || msg->seq > lock_sequence) {
 			res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 			d(printf("lock child protocol error\n"));
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Could not lock '%s': protocol error with lock-helper"), path);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Could not lock '%s': protocol "
+				"error with lock-helper"), path);
 			goto fail;
 		}
 	} while (msg->seq < lock_sequence);
@@ -212,8 +219,9 @@ again:
 			res = msg->data;
 			break;
 		default:
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-					     _("Could not lock '%s'"), path);
+			camel_exception_setv (
+				ex, CAMEL_EXCEPTION_SYSTEM,
+				_("Could not lock '%s'"), path);
 			d(printf("locking failed !status = %d\n", msg->id));
 			break;
 		}
@@ -222,8 +230,10 @@ again:
 		retry--;
 		goto again;
 	} else {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not lock '%s': protocol error with lock-helper"), path);
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Could not lock '%s': protocol "
+			"error with lock-helper"), path);
 	}
 
 fail:
@@ -313,7 +323,7 @@ gint main(gint argc, gchar **argv)
 	gint id1, id2;
 
 	d(printf("locking started\n"));
-	camel_lock_helper_init();
+	lock_helper_init();
 
 	id1 = camel_lock_helper_lock("1 path 1");
 	if (id1 != -1) {

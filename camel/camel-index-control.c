@@ -43,11 +43,11 @@ do_compress(gint argc, gchar **argv)
 		idx = (CamelIndex *)camel_text_index_new(argv[i], O_RDWR);
 		if (idx) {
 			printf(" Compressing ...\n");
-			if (camel_index_compress(idx) == -1) {
-				camel_object_unref((CamelObject *)idx);
+			if (camel_index_compress (idx) == -1) {
+				camel_object_unref (idx);
 				return 1;
 			}
-			camel_object_unref((CamelObject *)idx);
+			camel_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
 			return 1;
@@ -68,7 +68,7 @@ do_dump(gint argc, gchar **argv)
 		if (idx) {
 			printf(" Dumping ...\n");
 			camel_text_index_dump((CamelTextIndex *)idx);
-			camel_object_unref((CamelObject *)idx);
+			camel_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
 			return 1;
@@ -108,7 +108,7 @@ do_check(gint argc, gchar **argv)
 		idx = (CamelIndex *)camel_text_index_new(argv[i], O_RDONLY);
 		if (idx) {
 			camel_text_index_validate((CamelTextIndex *)idx);
-			camel_object_unref((CamelObject *)idx);
+			camel_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
 			return 0;
@@ -167,7 +167,8 @@ do_perf(gint argc, gchar **argv)
 		return 1;
 	}
 
-	idx = (CamelIndex *)camel_text_index_new("/tmp/index", O_TRUNC|O_CREAT|O_RDWR);
+	idx = (CamelIndex *) camel_text_index_new (
+		"/tmp/index", O_TRUNC|O_CREAT|O_RDWR);
 	if (idx == NULL) {
 		perror("open index");
 		closedir(dir);
@@ -176,9 +177,9 @@ do_perf(gint argc, gchar **argv)
 
 	null = camel_stream_null_new();
 	filter = camel_stream_filter_new (null);
-	camel_object_unref((CamelObject *)null);
+	camel_object_unref (null);
 	filter_index = camel_mime_filter_index_new (idx);
-	camel_stream_filter_add((CamelStreamFilter *)filter, (CamelMimeFilter *)filter_index);
+	camel_stream_filter_add((CamelStreamFilter *)filter, filter_index);
 
 	while ((d = readdir(dir))) {
 		printf("indexing '%s'\n", d->d_name);
@@ -189,11 +190,11 @@ do_perf(gint argc, gchar **argv)
 		name = g_strdup_printf("%s/%s", path, d->d_name);
 		stream = camel_stream_fs_new_with_name(name, O_RDONLY, 0);
 		camel_stream_write_to_stream(stream, filter);
-		camel_object_unref((CamelObject *)stream);
+		camel_object_unref (stream);
 		g_free(name);
 
 		camel_index_write_name(idx, idn);
-		camel_object_unref((CamelObject *)idn);
+		camel_object_unref (idn);
 		camel_mime_filter_index_set_name (
 			CAMEL_MIME_FILTER_INDEX (filter_index), NULL);
 	}
@@ -201,10 +202,10 @@ do_perf(gint argc, gchar **argv)
 	closedir(dir);
 
 	camel_index_sync(idx);
-	camel_object_unref((CamelObject *)idx);
+	camel_object_unref (idx);
 
-	camel_object_unref((CamelObject *)filter);
-	camel_object_unref((CamelObject *)filter_index);
+	camel_object_unref (filter);
+	camel_object_unref (filter_index);
 
 	return 0;
 }

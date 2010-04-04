@@ -433,8 +433,8 @@ imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, g
 
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
 		camel_object_ref(ob);
-		camel_stream_printf((CamelStream *)ic->mem, "%s", ((CamelSasl *)ob)->mech);
-		if (!camel_sasl_authenticated((CamelSasl *)ob))
+		camel_stream_printf((CamelStream *)ic->mem, "%s", camel_sasl_get_mechanism (CAMEL_SASL (ob)));
+		if (!camel_sasl_get_authenticated((CamelSasl *)ob))
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 		break;
 	}
@@ -3804,7 +3804,7 @@ imapx_server_init(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 }
 
 static void
-imapx_server_finalise(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
+imapx_server_finalize(CamelIMAPXServer *is, CamelIMAPXServerClass *isclass)
 {
 	g_static_rec_mutex_free(&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);
@@ -3827,7 +3827,7 @@ camel_imapx_server_get_type (void)
 			(CamelObjectClassInitFunc) imapx_server_class_init,
 			NULL,
 			(CamelObjectInitFunc) imapx_server_init,
-			(CamelObjectFinalizeFunc) imapx_server_finalise);
+			(CamelObjectFinalizeFunc) imapx_server_finalize);
 	}
 
 	return type;

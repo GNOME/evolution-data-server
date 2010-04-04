@@ -56,7 +56,7 @@ static gint       stream_close      (CamelStream *stream);
 static gint       stream_flush      (CamelStream *stream);
 
 static void
-camel_stream_process_finalise (CamelObject *object)
+camel_stream_process_finalize (CamelObject *object)
 {
 	/* Ensure we clean up after ourselves -- kill
 	   the child process and reap it. */
@@ -68,7 +68,7 @@ camel_stream_process_class_init (CamelStreamProcessClass *camel_stream_process_c
 {
 	CamelStreamClass *camel_stream_class = (CamelStreamClass *) camel_stream_process_class;
 
-	parent_class = camel_type_get_global_classfuncs (CAMEL_OBJECT_TYPE);
+	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
 
 	/* virtual method definition */
 	camel_stream_class->read = stream_read;
@@ -99,7 +99,7 @@ camel_stream_process_get_type (void)
 					     (CamelObjectClassInitFunc) camel_stream_process_class_init,
 					     NULL,
 					     (CamelObjectInitFunc) camel_stream_process_init,
-					     (CamelObjectFinalizeFunc) camel_stream_process_finalise);
+					     (CamelObjectFinalizeFunc) camel_stream_process_finalize);
 	}
 
 	return type;

@@ -27,78 +27,76 @@
 
 #include "camel-mime-filter-bestenc.h"
 
-static void camel_mime_filter_bestenc_class_init (CamelMimeFilterBestencClass *klass);
-static void camel_mime_filter_bestenc_init       (CamelMimeFilter *obj);
-
 static CamelMimeFilterClass *camel_mime_filter_bestenc_parent;
 
-CamelType
-camel_mime_filter_bestenc_get_type (void)
+struct _CamelMimeFilterBestencPrivate {
+
+	guint flags;	/* our creation flags */
+
+	guint count0;	/* count of NUL characters */
+	guint count8;	/* count of 8 bit characters */
+	guint total;	/* total characters read */
+
+	guint lastc;	/* the last character read */
+	gint crlfnoorder;	/* if crlf's occured where they shouldn't have */
+
+	gint startofline;	/* are we at the start of a new line? */
+
+	gint fromcount;
+	gchar fromsave[6];	/* save a few characters if we found an \n near the end of the buffer */
+	gint hadfrom;		/* did we encounter a "\nFrom " in the data? */
+
+	guint countline;	/* current count of characters on a given line */
+	guint maxline;	/* max length of any line */
+
+	CamelCharset charset;	/* used to determine the best charset to use */
+};
+
+static void
+mime_filter_bestenc_finalize (CamelMimeFilterBestenc *mime_filter)
 {
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterBestenc",
-					    sizeof (CamelMimeFilterBestenc),
-					    sizeof (CamelMimeFilterBestencClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_bestenc_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_bestenc_init,
-					    NULL);
-	}
-
-	return type;
+	g_free (mime_filter->priv);
 }
 
 static void
-reset(CamelMimeFilter *mf)
+mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
+                            const gchar *in,
+                            gsize len,
+                            gsize prespace,
+                            gchar **out,
+                            gsize *outlen,
+                            gsize *outprespace)
 {
-	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
-
-	f->count0 = 0;
-	f->count8 = 0;
-	f->countline = 0;
-	f->total = 0;
-	f->lastc = ~0;
-	f->crlfnoorder = FALSE;
-	f->fromcount = 0;
-	f->hadfrom = FALSE;
-	f->startofline = TRUE;
-
-	camel_charset_init(&f->charset);
-}
-
-static void
-filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
-{
-	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
+	CamelMimeFilterBestencPrivate *priv;
 	register guchar *p, *pend;
+
+	priv = CAMEL_MIME_FILTER_BESTENC (mime_filter)->priv;
 
 	if (len == 0)
 		goto donothing;
 
-	if (f->flags & CAMEL_BESTENC_GET_ENCODING) {
+	if (priv->flags & CAMEL_BESTENC_GET_ENCODING) {
 		register guint /* hopefully reg's are assinged in the order they appear? */
 			c,
-			lastc=f->lastc,
-			countline=f->countline,
-			count0=f->count0,
-			count8 = f->count8;
+			lastc=priv->lastc,
+			countline=priv->countline,
+			count0=priv->count0,
+			count8 = priv->count8;
 
 		/* Check ^From  lines first call, or have the start of a new line waiting? */
-		if ((f->flags & CAMEL_BESTENC_NO_FROM) && !f->hadfrom
-		    && (f->fromcount > 0 || f->startofline)) {
-			if (f->fromcount + len >=5) {
-				memcpy(&f->fromsave[f->fromcount], in, 5-f->fromcount);
-				f->hadfrom = strncmp(f->fromsave, "From ", 5) == 0;
-				f->fromcount = 0;
+		if ((priv->flags & CAMEL_BESTENC_NO_FROM) && !priv->hadfrom
+		    && (priv->fromcount > 0 || priv->startofline)) {
+			if (priv->fromcount + len >=5) {
+				memcpy(&priv->fromsave[priv->fromcount], in, 5-priv->fromcount);
+				priv->hadfrom = strncmp(priv->fromsave, "From ", 5) == 0;
+				priv->fromcount = 0;
 			} else {
-				memcpy(&f->fromsave[f->fromcount], in, len);
-				f->fromcount += len;
+				memcpy(&priv->fromsave[priv->fromcount], in, len);
+				priv->fromcount += len;
 			}
 		}
 
-		f->startofline = FALSE;
+		priv->startofline = FALSE;
 
 		/* See rfc2045 section 2 for definitions of 7bit/8bit/binary */
 		p = (guchar *) in;
@@ -114,47 +112,47 @@ filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **
 				count0++;
 
 			/* check for wild '\r's in a unix format stream */
-			if (c == '\r' && (f->flags & CAMEL_BESTENC_LF_IS_CRLF)) {
-				f->crlfnoorder = TRUE;
+			if (c == '\r' && (priv->flags & CAMEL_BESTENC_LF_IS_CRLF)) {
+				priv->crlfnoorder = TRUE;
 			}
 
 			/* check for end of line */
 			if (c == '\n') {
 				/* check for wild '\n's in canonical format stream */
-				if (lastc == '\r' || (f->flags & CAMEL_BESTENC_LF_IS_CRLF)) {
-					if (countline > f->maxline)
-						f->maxline = countline;
+				if (lastc == '\r' || (priv->flags & CAMEL_BESTENC_LF_IS_CRLF)) {
+					if (countline > priv->maxline)
+						priv->maxline = countline;
 					countline = 0;
 
 					/* Check for "^From " lines */
-					if ((f->flags & CAMEL_BESTENC_NO_FROM) && !f->hadfrom) {
+					if ((priv->flags & CAMEL_BESTENC_NO_FROM) && !priv->hadfrom) {
 						if (pend-p >= 5) {
-							f->hadfrom = strncmp((gchar *) p, (gchar *) "From ", 5) == 0;
+							priv->hadfrom = strncmp((gchar *) p, (gchar *) "From ", 5) == 0;
 						} else if (pend-p == 0) {
-							f->startofline = TRUE;
+							priv->startofline = TRUE;
 						} else {
-							f->fromcount = pend-p;
-							memcpy(f->fromsave, p, pend-p);
+							priv->fromcount = pend-p;
+							memcpy(priv->fromsave, p, pend-p);
 						}
 					}
 				} else {
-					f->crlfnoorder = TRUE;
+					priv->crlfnoorder = TRUE;
 				}
 			} else {
 				countline++;
 			}
 			lastc = c;
 		}
-		f->count8 = count8;
-		f->count0 = count0;
-		f->countline = countline;
-		f->lastc = lastc;
+		priv->count8 = count8;
+		priv->count0 = count0;
+		priv->countline = countline;
+		priv->lastc = lastc;
 	}
 
-	f->total += len;
+	priv->total += len;
 
-	if (f->flags & CAMEL_BESTENC_GET_CHARSET)
-		camel_charset_step(&f->charset, in, len);
+	if (priv->flags & CAMEL_BESTENC_GET_CHARSET)
+		camel_charset_step(&priv->charset, in, len);
 
 donothing:
 	*out = (gchar *) in;
@@ -163,33 +161,83 @@ donothing:
 }
 
 static void
-complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
+mime_filter_bestenc_complete (CamelMimeFilter *mime_filter,
+                              const gchar *in,
+                              gsize len,
+                              gsize prespace,
+                              gchar **out,
+                              gsize *outlen,
+                              gsize *outprespace)
 {
-	CamelMimeFilterBestenc *f = (CamelMimeFilterBestenc *)mf;
+	CamelMimeFilterBestencPrivate *priv;
 
-	filter(mf, in, len, prespace, out, outlen, outprespace);
+	priv = CAMEL_MIME_FILTER_BESTENC (mime_filter)->priv;
 
-	if (f->countline > f->maxline)
-		f->maxline = f->countline;
-	f->countline = 0;
+	mime_filter_bestenc_filter (
+		mime_filter, in, len, prespace, out, outlen, outprespace);
+
+	if (priv->countline > priv->maxline)
+		priv->maxline = priv->countline;
+	priv->countline = 0;
 }
 
 static void
-camel_mime_filter_bestenc_class_init (CamelMimeFilterBestencClass *klass)
+mime_filter_bestenc_reset (CamelMimeFilter *mime_filter)
 {
-	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
+	CamelMimeFilterBestencPrivate *priv;
+
+	priv = CAMEL_MIME_FILTER_BESTENC (mime_filter)->priv;
+
+	priv->count0 = 0;
+	priv->count8 = 0;
+	priv->countline = 0;
+	priv->total = 0;
+	priv->lastc = ~0;
+	priv->crlfnoorder = FALSE;
+	priv->fromcount = 0;
+	priv->hadfrom = FALSE;
+	priv->startofline = TRUE;
+
+	camel_charset_init(&priv->charset);
+}
+
+static void
+camel_mime_filter_bestenc_class_init (CamelMimeFilterBestencClass *class)
+{
+	CamelMimeFilterClass *mime_filter_class;
 
 	camel_mime_filter_bestenc_parent = (CamelMimeFilterClass *)(camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
 
-	filter_class->reset = reset;
-	filter_class->filter = filter;
-	filter_class->complete = complete;
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_bestenc_filter;
+	mime_filter_class->complete = mime_filter_bestenc_complete;
+	mime_filter_class->reset = mime_filter_bestenc_reset;
 }
 
 static void
-camel_mime_filter_bestenc_init (CamelMimeFilter *f)
+camel_mime_filter_bestenc_init (CamelMimeFilterBestenc *filter)
 {
-	reset(f);
+	filter->priv = g_new0 (CamelMimeFilterBestencPrivate, 1);
+
+	mime_filter_bestenc_reset (CAMEL_MIME_FILTER (filter));
+}
+
+CamelType
+camel_mime_filter_bestenc_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterBestenc",
+					    sizeof (CamelMimeFilterBestenc),
+					    sizeof (CamelMimeFilterBestencClass),
+					    (CamelObjectClassInitFunc) camel_mime_filter_bestenc_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_mime_filter_bestenc_init,
+					    (CamelObjectFinalizeFunc) mime_filter_bestenc_finalize);
+	}
+
+	return type;
 }
 
 /**
@@ -203,9 +251,12 @@ camel_mime_filter_bestenc_init (CamelMimeFilter *f)
 CamelMimeFilter *
 camel_mime_filter_bestenc_new (guint flags)
 {
-	CamelMimeFilterBestenc *new = (CamelMimeFilterBestenc *)camel_object_new(camel_mime_filter_bestenc_get_type());
-	new->flags = flags;
-	return CAMEL_MIME_FILTER (new);
+	CamelMimeFilter *new;
+
+	new = (CamelMimeFilter *)camel_object_new(camel_mime_filter_bestenc_get_type());
+	CAMEL_MIME_FILTER_BESTENC (new)->priv->flags = flags;
+
+	return new;
 }
 
 /**
@@ -219,40 +270,44 @@ camel_mime_filter_bestenc_new (guint flags)
  * Returns: the best encoding to use
  **/
 CamelTransferEncoding
-camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, CamelBestencEncoding required)
+camel_mime_filter_bestenc_get_best_encoding (CamelMimeFilterBestenc *filter,
+                                             CamelBestencEncoding required)
 {
+	CamelMimeFilterBestencPrivate *priv;
 	CamelTransferEncoding bestenc;
 	gint istext;
+
+	priv = CAMEL_MIME_FILTER_BESTENC (filter)->priv;
 
 	istext = (required & CAMEL_BESTENC_TEXT) ? 1 : 0;
 	required = required & ~CAMEL_BESTENC_TEXT;
 
 #if 0
-	printf("count0 = %d, count8 = %d, total = %d\n", filter->count0, filter->count8, filter->total);
-	printf("maxline = %d, crlfnoorder = %s\n", filter->maxline, filter->crlfnoorder?"TRUE":"FALSE");
-	printf(" %d%% require encoding?\n", (filter->count0+filter->count8)*100 / filter->total);
+	printf("count0 = %d, count8 = %d, total = %d\n", priv->count0, priv->count8, priv->total);
+	printf("maxline = %d, crlfnoorder = %s\n", priv->maxline, priv->crlfnoorder?"TRUE":"FALSE");
+	printf(" %d%% require encoding?\n", (priv->count0+priv->count8)*100 / priv->total);
 #endif
 
 	/* if we're not allowed to have From lines and we had one, use an encoding
 	   that will never let it show.  Unfortunately only base64 can at present,
 	   although qp could be modified to allow it too */
-	if ((filter->flags & CAMEL_BESTENC_NO_FROM) && filter->hadfrom)
+	if ((priv->flags & CAMEL_BESTENC_NO_FROM) && priv->hadfrom)
 		return CAMEL_TRANSFER_ENCODING_BASE64;
 
 	/* if we need to encode, see how we do it */
 	if (required == CAMEL_BESTENC_BINARY)
 		bestenc = CAMEL_TRANSFER_ENCODING_BINARY;
-	else if (istext && (filter->count0 == 0 && filter->count8 < (filter->total * 17 / 100)))
+	else if (istext && (priv->count0 == 0 && priv->count8 < (priv->total * 17 / 100)))
 		bestenc = CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE;
 	else
 		bestenc = CAMEL_TRANSFER_ENCODING_BASE64;
 
 	/* if we have nocrlf order, or long lines, we need to encode always */
-	if (filter->crlfnoorder || filter->maxline >= 998)
+	if (priv->crlfnoorder || priv->maxline >= 998)
 		return bestenc;
 
 	/* if we have no 8 bit chars or nul's, we can just use 7 bit */
-	if (filter->count8 + filter->count0 == 0)
+	if (priv->count8 + priv->count0 == 0)
 		return CAMEL_TRANSFER_ENCODING_7BIT;
 
 	/* otherwise, we see if we can use 8 bit, or not */
@@ -262,7 +317,7 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 	case CAMEL_BESTENC_8BIT:
 	case CAMEL_BESTENC_BINARY:
 	default:
-		if (filter->count0 == 0)
+		if (priv->count0 == 0)
 			return CAMEL_TRANSFER_ENCODING_8BIT;
 		else
 			return bestenc;
@@ -282,7 +337,9 @@ camel_mime_filter_bestenc_get_best_encoding(CamelMimeFilterBestenc *filter, Came
 const gchar *
 camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
 {
-	return camel_charset_best_name(&filter->charset);
+	g_return_val_if_fail (CAMEL_IS_MIME_FILTER_BESTENC (filter), NULL);
+
+	return camel_charset_best_name (&filter->priv->charset);
 }
 
 /**
@@ -293,7 +350,10 @@ camel_mime_filter_bestenc_get_best_charset (CamelMimeFilterBestenc *filter)
  * Set the flags for subsequent operations.
  **/
 void
-camel_mime_filter_bestenc_set_flags(CamelMimeFilterBestenc *filter, guint flags)
+camel_mime_filter_bestenc_set_flags (CamelMimeFilterBestenc *filter,
+                                     guint flags)
 {
-	filter->flags = flags;
+	g_return_if_fail (CAMEL_IS_MIME_FILTER_BESTENC (filter));
+
+	filter->priv->flags = flags;
 }

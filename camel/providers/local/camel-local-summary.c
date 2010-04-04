@@ -63,7 +63,7 @@ static gint local_summary_need_index(void);
 
 static void camel_local_summary_class_init (CamelLocalSummaryClass *klass);
 static void camel_local_summary_init       (CamelLocalSummary *obj);
-static void camel_local_summary_finalise   (CamelObject *obj);
+static void camel_local_summary_finalize   (CamelObject *obj);
 static CamelFolderSummaryClass *camel_local_summary_parent;
 
 CamelType
@@ -78,7 +78,7 @@ camel_local_summary_get_type(void)
 					   (CamelObjectClassInitFunc) camel_local_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_local_summary_init,
-					   (CamelObjectFinalizeFunc) camel_local_summary_finalise);
+					   (CamelObjectFinalizeFunc) camel_local_summary_finalize);
 	}
 
 	return type;
@@ -123,7 +123,7 @@ camel_local_summary_init(CamelLocalSummary *obj)
 }
 
 static void
-camel_local_summary_finalise(CamelObject *obj)
+camel_local_summary_finalize(CamelObject *obj)
 {
 	CamelLocalSummary *mbs = CAMEL_LOCAL_SUMMARY(obj);
 

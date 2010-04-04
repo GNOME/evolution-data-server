@@ -37,7 +37,7 @@ test_message_create_simple(void)
 }
 
 static void
-content_finalise(CamelObject *folder, gpointer crap, gpointer ba)
+content_finalize(CamelObject *folder, gpointer crap, gpointer ba)
 {
 	g_byte_array_free(ba, TRUE);
 }
@@ -74,7 +74,7 @@ test_message_set_content_simple(CamelMimePart *part, gint how, const gchar *type
 		content = (CamelStreamMem *)camel_stream_mem_new();
 		camel_stream_mem_set_byte_array(content, ba);
 
-		camel_object_hook_event((CamelObject *)content, "finalize", content_finalise, ba);
+		camel_object_hook_event((CamelObject *)content, "finalize", content_finalize, ba);
 		break;
 	}
 

@@ -33,8 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
-
 #include <libedataserver/e-memory.h>
 
 #include "camel-folder-thread.h"
@@ -608,7 +606,7 @@ camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean
 	thread->tree = NULL;
 	thread->node_chunks = e_memchunk_new(32, sizeof(CamelFolderThreadNode));
 	thread->folder = folder;
-	camel_object_ref((CamelObject *)folder);
+	camel_object_ref (folder);
 
 	fsummary = camel_folder_summary_array (folder->summary);
 	thread->summary = summary = g_ptr_array_new();
@@ -713,7 +711,7 @@ camel_folder_thread_messages_unref(CamelFolderThread *thread)
 		for (i=0;i<thread->summary->len;i++)
 			camel_folder_free_message_info(thread->folder, thread->summary->pdata[i]);
 		g_ptr_array_free(thread->summary, TRUE);
-		camel_object_unref((CamelObject *)thread->folder);
+		camel_object_unref (thread->folder);
 	}
 	e_memchunk_destroy(thread->node_chunks);
 	g_free(thread);

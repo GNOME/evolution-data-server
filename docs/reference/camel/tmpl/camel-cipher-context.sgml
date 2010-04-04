@@ -24,10 +24,6 @@ CamelCipherContext
 
 @parent: 
 @priv: 
-@session: 
-@sign_protocol: 
-@encrypt_protocol: 
-@key_protocol: 
 
 <!-- ##### STRUCT CamelCipherValidity ##### -->
 <para>

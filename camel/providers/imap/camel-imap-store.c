@@ -1219,7 +1219,7 @@ try_auth (CamelImapStore *store, const gchar *mech, CamelException *ex)
 		return FALSE;
 
 	sasl = camel_sasl_new ("imap", mech, CAMEL_SERVICE (store));
-	while (!camel_sasl_authenticated (sasl)) {
+	while (!camel_sasl_get_authenticated (sasl)) {
 		resp = camel_imap_response_extract_continuation (store, response, ex);
 		if (!resp)
 			goto lose;

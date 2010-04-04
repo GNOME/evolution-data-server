@@ -29,28 +29,11 @@
 
 #define d(x)
 
-static void camel_mime_filter_from_class_init (CamelMimeFilterFromClass *klass);
-static void camel_mime_filter_from_init       (CamelMimeFilterFrom *obj);
-
 static CamelMimeFilterClass *camel_mime_filter_from_parent;
 
-CamelType
-camel_mime_filter_from_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterFrom",
-					    sizeof (CamelMimeFilterFrom),
-					    sizeof (CamelMimeFilterFromClass),
-					    (CamelObjectClassInitFunc) camel_mime_filter_from_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_mime_filter_from_init,
-					    NULL);
-	}
-
-	return type;
-}
+struct _CamelMimeFilterFromPrivate {
+	gboolean midline;	/* are we between lines? */
+};
 
 struct fromnode {
 	struct fromnode *next;
@@ -58,24 +41,29 @@ struct fromnode {
 };
 
 static void
-complete(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
+mime_filter_from_finalize (CamelMimeFilterFrom *filter)
 {
-	*out = (gchar *) in;
-	*outlen = len;
-	*outprespace = prespace;
+	g_free (filter->priv);
 }
 
 /* Yes, it is complicated ... */
 static void
-filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **out, gsize *outlen, gsize *outprespace)
+mime_filter_from_filter (CamelMimeFilter *mime_filter,
+                         const gchar *in,
+                         gsize len,
+                         gsize prespace,
+                         gchar **out,
+                         gsize *outlen,
+                         gsize *outprespace)
 {
-	CamelMimeFilterFrom *f = (CamelMimeFilterFrom *)mf;
+	CamelMimeFilterFromPrivate *priv;
 	const gchar *inptr, *inend;
 	gint left;
-	gint midline = f->midline;
 	gint fromcount = 0;
 	struct fromnode *head = NULL, *tail = (struct fromnode *)&head, *node;
 	gchar *outptr;
+
+	priv = CAMEL_MIME_FILTER_FROM (mime_filter)->priv;
 
 	inptr = in;
 	inend = inptr+len;
@@ -86,18 +74,18 @@ filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **
 	while (inptr<inend) {
 		register gint c = -1;
 
-		if (midline)
+		if (priv->midline)
 			while (inptr < inend && (c = *inptr++) != '\n')
 				;
 
-		if (c == '\n' || !midline) {
+		if (c == '\n' || !priv->midline) {
 			left = inend-inptr;
 			if (left > 0) {
-				midline = TRUE;
+				priv->midline = TRUE;
 				if (left < 5) {
 					if (inptr[0] == 'F') {
-						camel_mime_filter_backup(mf, inptr, left);
-						midline = FALSE;
+						camel_mime_filter_backup(mime_filter, inptr, left);
+						priv->midline = FALSE;
 						inend = inptr;
 						break;
 					}
@@ -116,18 +104,16 @@ filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **
 				}
 			} else {
 				/* \n is at end of line, check next buffer */
-				midline = FALSE;
+				priv->midline = FALSE;
 			}
 		}
 	}
 
-	f->midline = midline;
-
 	if (fromcount > 0) {
-		camel_mime_filter_set_size(mf, len + fromcount, FALSE);
+		camel_mime_filter_set_size(mime_filter, len + fromcount, FALSE);
 		node = head;
 		inptr = in;
-		outptr = mf->outbuf;
+		outptr = mime_filter->outbuf;
 		while (node) {
 			memcpy(outptr, inptr, node->pointer - inptr);
 			outptr += node->pointer - inptr;
@@ -137,9 +123,9 @@ filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **
 		}
 		memcpy(outptr, inptr, inend - inptr);
 		outptr += inend - inptr;
-		*out = mf->outbuf;
-		*outlen = outptr - mf->outbuf;
-		*outprespace = mf->outbuf - mf->outreal;
+		*out = mime_filter->outbuf;
+		*outlen = outptr - mime_filter->outbuf;
+		*outprespace = mime_filter->outbuf - mime_filter->outreal;
 
 		d(printf("Filtered '%.*s'\n", *outlen, *out));
 	} else {
@@ -152,20 +138,53 @@ filter(CamelMimeFilter *mf, const gchar *in, gsize len, gsize prespace, gchar **
 }
 
 static void
-camel_mime_filter_from_class_init (CamelMimeFilterFromClass *klass)
+mime_filter_from_complete (CamelMimeFilter *mime_filter,
+                           const gchar *in,
+                           gsize len,
+                           gsize prespace,
+                           gchar **out,
+                           gsize *outlen,
+                           gsize *outprespace)
 {
-	CamelMimeFilterClass *filter_class = (CamelMimeFilterClass *) klass;
-
-	camel_mime_filter_from_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
-
-	filter_class->filter = filter;
-	filter_class->complete = complete;
+	*out = (gchar *) in;
+	*outlen = len;
+	*outprespace = prespace;
 }
 
 static void
-camel_mime_filter_from_init (CamelMimeFilterFrom *obj)
+camel_mime_filter_from_class_init (CamelMimeFilterFromClass *class)
 {
-	;
+	CamelMimeFilterClass *mime_filter_class;
+
+	camel_mime_filter_from_parent = CAMEL_MIME_FILTER_CLASS (camel_type_get_global_classfuncs (camel_mime_filter_get_type ()));
+
+	mime_filter_class = CAMEL_MIME_FILTER_CLASS (class);
+	mime_filter_class->filter = mime_filter_from_filter;
+	mime_filter_class->complete = mime_filter_from_complete;
+}
+
+static void
+camel_mime_filter_from_init (CamelMimeFilterFrom *filter)
+{
+	filter->priv = g_new0 (CamelMimeFilterFromPrivate, 1);
+}
+
+CamelType
+camel_mime_filter_from_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_mime_filter_get_type (), "CamelMimeFilterFrom",
+					    sizeof (CamelMimeFilterFrom),
+					    sizeof (CamelMimeFilterFromClass),
+					    (CamelObjectClassInitFunc) camel_mime_filter_from_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_mime_filter_from_init,
+					    (CamelObjectFinalizeFunc) mime_filter_from_finalize);
+	}
+
+	return type;
 }
 
 /**

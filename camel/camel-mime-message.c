@@ -80,65 +80,284 @@ static const gchar *header_names[] = {
 	"Bcc", "Resent-Bcc", "Date", "Message-ID", NULL
 };
 
-static GHashTable *header_name_table;
-
-static CamelMimePartClass *parent_class = NULL;
+static gpointer camel_mime_message_parent_class = NULL;
 
 static const gchar *recipient_names[] = {
 	"To", "Cc", "Bcc", "Resent-To", "Resent-Cc", "Resent-Bcc", NULL
 };
 
-static gssize write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
-static void add_header (CamelMedium *medium, const gchar *name, gconstpointer value);
-static void set_header (CamelMedium *medium, const gchar *name, gconstpointer value);
-static void remove_header (CamelMedium *medium, const gchar *name);
-static gint construct_from_parser (CamelMimePart *, CamelMimeParser *);
-static void unref_recipient (gpointer key, gpointer value, gpointer user_data);
+static GHashTable *header_name_table;
 
-/* Returns the class for a CamelMimeMessage */
-#define CMM_CLASS(so) CAMEL_MIME_MESSAGE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CDW_CLASS(so) CAMEL_DATA_WRAPPER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-#define CMD_CLASS(so) CAMEL_MEDIUM_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-
-static void
-camel_mime_message_class_init (CamelMimeMessageClass *camel_mime_message_class)
+/* FIXME: check format of fields. */
+static gboolean
+process_header (CamelMedium *medium,
+                const gchar *name,
+                const gchar *value)
 {
-	CamelDataWrapperClass *camel_data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (camel_mime_message_class);
-	CamelMimePartClass *camel_mime_part_class = CAMEL_MIME_PART_CLASS (camel_mime_message_class);
-	CamelMediumClass *camel_medium_class = CAMEL_MEDIUM_CLASS (camel_mime_message_class);
-	gint i;
+	CamelHeaderType header_type;
+	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (medium);
+	CamelInternetAddress *addr;
+	const gchar *charset;
+	gchar *unfolded;
 
-	parent_class = CAMEL_MIME_PART_CLASS (camel_type_get_global_classfuncs (camel_mime_part_get_type ()));
+	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
+	switch (header_type) {
+	case HEADER_FROM:
+		addr = camel_internet_address_new();
+		unfolded = camel_header_unfold (value);
+		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
+			camel_object_unref (addr);
+		} else {
+			if (message->from)
+				camel_object_unref (message->from);
+			message->from = addr;
+		}
+		g_free (unfolded);
+		break;
+	case HEADER_REPLY_TO:
+		addr = camel_internet_address_new();
+		unfolded = camel_header_unfold (value);
+		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
+			camel_object_unref (addr);
+		} else {
+			if (message->reply_to)
+				camel_object_unref (message->reply_to);
+			message->reply_to = addr;
+		}
+		g_free (unfolded);
+		break;
+	case HEADER_SUBJECT:
+		g_free (message->subject);
+		if (((CamelDataWrapper *) message)->mime_type) {
+			charset = camel_content_type_param (((CamelDataWrapper *) message)->mime_type, "charset");
+			charset = camel_iconv_charset_name (charset);
+		} else
+			charset = NULL;
 
-	header_name_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-	for (i = 0;header_names[i]; i++)
-		g_hash_table_insert (
-			header_name_table,
-			(gpointer) header_names[i],
-			GINT_TO_POINTER(i+1));
+		unfolded = camel_header_unfold (value);
+		message->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
+		g_free (unfolded);
+		break;
+	case HEADER_TO:
+	case HEADER_CC:
+	case HEADER_BCC:
+	case HEADER_RESENT_TO:
+	case HEADER_RESENT_CC:
+	case HEADER_RESENT_BCC:
+		addr = g_hash_table_lookup (message->recipients, name);
+		if (value) {
+			unfolded = camel_header_unfold (value);
+			camel_address_decode (CAMEL_ADDRESS (addr), unfolded);
+			g_free (unfolded);
+		} else {
+			camel_address_remove (CAMEL_ADDRESS (addr), -1);
+		}
+		return FALSE;
+	case HEADER_DATE:
+		if (value) {
+			message->date = camel_header_decode_date (value, &message->date_offset);
+		} else {
+			message->date = CAMEL_MESSAGE_DATE_CURRENT;
+			message->date_offset = 0;
+		}
+		break;
+	case HEADER_MESSAGE_ID:
+		g_free (message->message_id);
+		if (value)
+			message->message_id = camel_header_msgid_decode (value);
+		else
+			message->message_id = NULL;
+		break;
+	default:
+		return FALSE;
+	}
 
-	/* virtual method overload */
-	camel_data_wrapper_class->write_to_stream = write_to_stream;
-	camel_data_wrapper_class->decode_to_stream = write_to_stream;
-
-	camel_medium_class->add_header = add_header;
-	camel_medium_class->set_header = set_header;
-	camel_medium_class->remove_header = remove_header;
-
-	camel_mime_part_class->construct_from_parser = construct_from_parser;
+	return TRUE;
 }
 
 static void
-camel_mime_message_init (gpointer object, gpointer klass)
+unref_recipient (gpointer key, gpointer value, gpointer user_data)
 {
-	CamelMimeMessage *mime_message = (CamelMimeMessage *)object;
-	gint i;
+	camel_object_unref (value);
+}
 
-	mime_message->recipients =  g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
-	for (i=0;recipient_names[i];i++) {
+static void
+mime_message_finalize (CamelObject *object)
+{
+	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
+
+	g_free (message->subject);
+
+	g_free (message->message_id);
+
+	if (message->reply_to)
+		camel_object_unref (message->reply_to);
+
+	if (message->from)
+		camel_object_unref (message->from);
+
+	g_hash_table_foreach (message->recipients, unref_recipient, NULL);
+	g_hash_table_destroy (message->recipients);
+}
+
+static gssize
+mime_message_write_to_stream (CamelDataWrapper *data_wrapper,
+                              CamelStream *stream)
+{
+	CamelDataWrapperClass *data_wrapper_class;
+	CamelMimeMessage *mm = CAMEL_MIME_MESSAGE (data_wrapper);
+
+	/* force mandatory headers ... */
+	if (mm->from == NULL) {
+		/* FIXME: should we just abort?  Should we make one up? */
+		g_warning ("No from set for message");
+		camel_medium_set_header ((CamelMedium *)mm, "From", "");
+	}
+	if (!camel_medium_get_header ((CamelMedium *)mm, "Date"))
+		camel_mime_message_set_date (mm, CAMEL_MESSAGE_DATE_CURRENT, 0);
+
+	if (mm->subject == NULL)
+		camel_mime_message_set_subject (mm, "No Subject");
+
+	if (mm->message_id == NULL)
+		camel_mime_message_set_message_id (mm, NULL);
+
+	/* FIXME: "To" header needs to be set explicitly as well ... */
+
+	if (!camel_medium_get_header ((CamelMedium *)mm, "Mime-Version"))
+		camel_medium_set_header ((CamelMedium *)mm, "Mime-Version", "1.0");
+
+	/* Chain up to parent's write_to_stream() method. */
+	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (camel_mime_message_parent_class);
+	return data_wrapper_class->write_to_stream (data_wrapper, stream);
+}
+
+static void
+mime_message_add_header (CamelMedium *medium,
+                         const gchar *name,
+                         gconstpointer value)
+{
+	CamelMediumClass *medium_class;
+
+	medium_class = CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class);
+
+	/* if we process it, then it must be forced unique as well ... */
+	if (process_header (medium, name, value))
+		medium_class->set_header (medium, name, value);
+	else
+		medium_class->add_header (medium, name, value);
+}
+
+static void
+mime_message_set_header (CamelMedium *medium,
+                         const gchar *name,
+                         gconstpointer value)
+{
+	process_header (medium, name, value);
+
+	/* Chain up to parent's set_header() method. */
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (medium, name, value);
+}
+
+static void
+mime_message_remove_header (CamelMedium *medium,
+                            const gchar *name)
+{
+	process_header (medium, name, NULL);
+
+	/* Chain up to parent's remove_header() method. */
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (medium, name);
+}
+
+static gint
+mime_message_construct_from_parser (CamelMimePart *dw,
+                                    CamelMimeParser *mp)
+{
+	CamelMimePartClass *mime_part_class;
+	gchar *buf;
+	gsize len;
+	gint state;
+	gint ret;
+	gint err;
+
+	d(printf("constructing mime-message\n"));
+
+	d(printf("mime_message::construct_from_parser()\n"));
+
+	/* let the mime-part construct the guts ... */
+	mime_part_class = CAMEL_MIME_PART_CLASS (camel_mime_message_parent_class);
+	ret = mime_part_class->construct_from_parser (dw, mp);
+
+	if (ret == -1)
+		return -1;
+
+	/* ... then clean up the follow-on state */
+	state = camel_mime_parser_step (mp, &buf, &len);
+	switch (state) {
+	case CAMEL_MIME_PARSER_STATE_EOF:
+	case CAMEL_MIME_PARSER_STATE_FROM_END:
+		/* these doesn't belong to us */
+		camel_mime_parser_unstep (mp);
+	case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
+		break;
+	default:
+		g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %u", camel_mime_parser_state (mp));
+		camel_mime_parser_unstep (mp);
+		return -1;
+	}
+
+	d(printf("mime_message::construct_from_parser() leaving\n"));
+	err = camel_mime_parser_errno(mp);
+	if (err != 0) {
+		errno = err;
+		ret = -1;
+	}
+
+	return ret;
+}
+
+static void
+camel_mime_message_class_init (CamelMimeMessageClass *class)
+{
+	CamelDataWrapperClass *data_wrapper_class;
+	CamelMimePartClass *mime_part_class;
+	CamelMediumClass *medium_class;
+	gint ii;
+
+	camel_mime_message_parent_class = CAMEL_MIME_PART_CLASS (camel_type_get_global_classfuncs (camel_mime_part_get_type ()));
+
+	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
+	data_wrapper_class->write_to_stream = mime_message_write_to_stream;
+	data_wrapper_class->decode_to_stream = mime_message_write_to_stream;
+
+	medium_class = CAMEL_MEDIUM_CLASS (class);
+	medium_class->add_header = mime_message_add_header;
+	medium_class->set_header = mime_message_set_header;
+	medium_class->remove_header = mime_message_remove_header;
+
+	mime_part_class = CAMEL_MIME_PART_CLASS (class);
+	mime_part_class->construct_from_parser = mime_message_construct_from_parser;
+
+	header_name_table = g_hash_table_new (
+		camel_strcase_hash, camel_strcase_equal);
+	for (ii = 0; header_names[ii] != NULL; ii++)
+		g_hash_table_insert (
+			header_name_table,
+			(gpointer) header_names[ii],
+			GINT_TO_POINTER (ii + 1));
+}
+
+static void
+camel_mime_message_init (CamelMimeMessage *mime_message)
+{
+	gint ii;
+
+	mime_message->recipients = g_hash_table_new (
+		camel_strcase_hash, camel_strcase_equal);
+	for (ii = 0; recipient_names[ii] != NULL; ii++) {
 		g_hash_table_insert (
 			mime_message->recipients,
-			(gpointer) recipient_names[i],
+			(gpointer) recipient_names[ii],
 			camel_internet_address_new ());
 	}
 
@@ -150,25 +369,6 @@ camel_mime_message_init (gpointer object, gpointer klass)
 	mime_message->date_received = CAMEL_MESSAGE_DATE_CURRENT;
 	mime_message->date_received_offset = 0;
 	mime_message->message_id = NULL;
-}
-
-static void
-camel_mime_message_finalize (CamelObject *object)
-{
-	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
-
-	g_free (message->subject);
-
-	g_free (message->message_id);
-
-	if (message->reply_to)
-		camel_object_unref ((CamelObject *)message->reply_to);
-
-	if (message->from)
-		camel_object_unref ((CamelObject *)message->from);
-
-	g_hash_table_foreach (message->recipients, unref_recipient, NULL);
-	g_hash_table_destroy (message->recipients);
 }
 
 CamelType
@@ -183,16 +383,10 @@ camel_mime_message_get_type (void)
 							       (CamelObjectClassInitFunc) camel_mime_message_class_init,
 							       NULL,
 							       (CamelObjectInitFunc) camel_mime_message_init,
-							       (CamelObjectFinalizeFunc) camel_mime_message_finalize);
+							       (CamelObjectFinalizeFunc) mime_message_finalize);
 	}
 
 	return camel_mime_message_type;
-}
-
-static void
-unref_recipient (gpointer key, gpointer value, gpointer user_data)
-{
-	camel_object_unref (value);
 }
 
 /**
@@ -240,7 +434,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, gint offse
 	message->date_offset = offset;
 
 	datestr = camel_header_format_date (date, offset);
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header ((CamelMedium *)message, "Date", datestr);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header ((CamelMedium *)message, "Date", datestr);
 	g_free (datestr);
 }
 
@@ -316,7 +510,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const gchar *
 
 	mime_message->message_id = id;
 	id = g_strdup_printf ("<%s>", mime_message->message_id);
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (mime_message), "Message-ID", id);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (mime_message), "Message-ID", id);
 	g_free (id);
 }
 
@@ -353,18 +547,18 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg, CamelInternetAddress *re
 	g_assert(msg);
 
 	if (msg->reply_to) {
-		camel_object_unref ((CamelObject *)msg->reply_to);
+		camel_object_unref (msg->reply_to);
 		msg->reply_to = NULL;
 	}
 
 	if (reply_to == NULL) {
-		CAMEL_MEDIUM_CLASS (parent_class)->remove_header (CAMEL_MEDIUM (msg), "Reply-To");
+		CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (CAMEL_MEDIUM (msg), "Reply-To");
 		return;
 	}
 
 	msg->reply_to = (CamelInternetAddress *)camel_address_new_clone ((CamelAddress *)reply_to);
 	addr = camel_address_encode ((CamelAddress *)msg->reply_to);
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (msg), "Reply-To", addr);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (msg), "Reply-To", addr);
 	g_free (addr);
 }
 
@@ -412,7 +606,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message, const gchar *subject)
 		text = NULL;
 	}
 
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (message), "Subject", text);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (message), "Subject", text);
 	g_free (text);
 }
 
@@ -453,18 +647,18 @@ camel_mime_message_set_from (CamelMimeMessage *msg, CamelInternetAddress *from)
 	g_assert(msg);
 
 	if (msg->from) {
-		camel_object_unref((CamelObject *)msg->from);
+		camel_object_unref (msg->from);
 		msg->from = NULL;
 	}
 
 	if (from == NULL || camel_address_length((CamelAddress *)from) == 0) {
-		CAMEL_MEDIUM_CLASS(parent_class)->remove_header(CAMEL_MEDIUM(msg), "From");
+		CAMEL_MEDIUM_CLASS(camel_mime_message_parent_class)->remove_header(CAMEL_MEDIUM(msg), "From");
 		return;
 	}
 
 	msg->from = (CamelInternetAddress *)camel_address_new_clone((CamelAddress *)from);
 	addr = camel_address_encode((CamelAddress *)msg->from);
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header(CAMEL_MEDIUM(msg), "From", addr);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header(CAMEL_MEDIUM(msg), "From", addr);
 	g_free(addr);
 }
 
@@ -512,7 +706,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
 
 	if (r == NULL || camel_address_length ((CamelAddress *)r) == 0) {
 		camel_address_remove ((CamelAddress *)addr, -1);
-		CAMEL_MEDIUM_CLASS (parent_class)->remove_header (CAMEL_MEDIUM (mime_message), type);
+		CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (CAMEL_MEDIUM (mime_message), type);
 		return;
 	}
 
@@ -521,7 +715,7 @@ camel_mime_message_set_recipients(CamelMimeMessage *mime_message, const gchar *t
 
 	/* and sync our headers */
 	text = camel_address_encode (CAMEL_ADDRESS (addr));
-	CAMEL_MEDIUM_CLASS (parent_class)->set_header (CAMEL_MEDIUM (mime_message), type, text);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (mime_message), type, text);
 	g_free(text);
 }
 
@@ -572,188 +766,6 @@ camel_mime_message_get_source (CamelMimeMessage *mime_message)
 			++src;
 	}
 	return src;
-}
-
-/* mime_message */
-static gint
-construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
-{
-	gchar *buf;
-	gsize len;
-	gint state;
-	gint ret;
-	gint err;
-
-	d(printf("constructing mime-message\n"));
-
-	d(printf("mime_message::construct_from_parser()\n"));
-
-	/* let the mime-part construct the guts ... */
-	ret = ((CamelMimePartClass *)parent_class)->construct_from_parser(dw, mp);
-
-	if (ret == -1)
-		return -1;
-
-	/* ... then clean up the follow-on state */
-	state = camel_mime_parser_step (mp, &buf, &len);
-	switch (state) {
-	case CAMEL_MIME_PARSER_STATE_EOF:
-	case CAMEL_MIME_PARSER_STATE_FROM_END:
-		/* these doesn't belong to us */
-		camel_mime_parser_unstep (mp);
-	case CAMEL_MIME_PARSER_STATE_MESSAGE_END:
-		break;
-	default:
-		g_error ("Bad parser state: Expecing MESSAGE_END or EOF or EOM, got: %u", camel_mime_parser_state (mp));
-		camel_mime_parser_unstep (mp);
-		return -1;
-	}
-
-	d(printf("mime_message::construct_from_parser() leaving\n"));
-	err = camel_mime_parser_errno(mp);
-	if (err != 0) {
-		errno = err;
-		ret = -1;
-	}
-
-	return ret;
-}
-
-static gssize
-write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
-{
-	CamelMimeMessage *mm = CAMEL_MIME_MESSAGE (data_wrapper);
-
-	/* force mandatory headers ... */
-	if (mm->from == NULL) {
-		/* FIXME: should we just abort?  Should we make one up? */
-		g_warning ("No from set for message");
-		camel_medium_set_header ((CamelMedium *)mm, "From", "");
-	}
-	if (!camel_medium_get_header ((CamelMedium *)mm, "Date"))
-		camel_mime_message_set_date (mm, CAMEL_MESSAGE_DATE_CURRENT, 0);
-
-	if (mm->subject == NULL)
-		camel_mime_message_set_subject (mm, "No Subject");
-
-	if (mm->message_id == NULL)
-		camel_mime_message_set_message_id (mm, NULL);
-
-	/* FIXME: "To" header needs to be set explicitly as well ... */
-
-	if (!camel_medium_get_header ((CamelMedium *)mm, "Mime-Version"))
-		camel_medium_set_header ((CamelMedium *)mm, "Mime-Version", "1.0");
-
-	return CAMEL_DATA_WRAPPER_CLASS (parent_class)->write_to_stream (data_wrapper, stream);
-}
-
-/* FIXME: check format of fields. */
-static gboolean
-process_header (CamelMedium *medium, const gchar *name, const gchar *value)
-{
-	CamelHeaderType header_type;
-	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (medium);
-	CamelInternetAddress *addr;
-	const gchar *charset;
-	gchar *unfolded;
-
-	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
-	switch (header_type) {
-	case HEADER_FROM:
-		addr = camel_internet_address_new();
-		unfolded = camel_header_unfold (value);
-		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
-			camel_object_unref(addr);
-		} else {
-			if (message->from)
-				camel_object_unref(message->from);
-			message->from = addr;
-		}
-		g_free (unfolded);
-		break;
-	case HEADER_REPLY_TO:
-		addr = camel_internet_address_new();
-		unfolded = camel_header_unfold (value);
-		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
-			camel_object_unref(addr);
-		} else {
-			if (message->reply_to)
-				camel_object_unref(message->reply_to);
-			message->reply_to = addr;
-		}
-		g_free (unfolded);
-		break;
-	case HEADER_SUBJECT:
-		g_free (message->subject);
-		if (((CamelDataWrapper *) message)->mime_type) {
-			charset = camel_content_type_param (((CamelDataWrapper *) message)->mime_type, "charset");
-			charset = camel_iconv_charset_name (charset);
-		} else
-			charset = NULL;
-
-		unfolded = camel_header_unfold (value);
-		message->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
-		g_free (unfolded);
-		break;
-	case HEADER_TO:
-	case HEADER_CC:
-	case HEADER_BCC:
-	case HEADER_RESENT_TO:
-	case HEADER_RESENT_CC:
-	case HEADER_RESENT_BCC:
-		addr = g_hash_table_lookup (message->recipients, name);
-		if (value) {
-			unfolded = camel_header_unfold (value);
-			camel_address_decode (CAMEL_ADDRESS (addr), unfolded);
-			g_free (unfolded);
-		} else {
-			camel_address_remove (CAMEL_ADDRESS (addr), -1);
-		}
-		return FALSE;
-	case HEADER_DATE:
-		if (value) {
-			message->date = camel_header_decode_date (value, &message->date_offset);
-		} else {
-			message->date = CAMEL_MESSAGE_DATE_CURRENT;
-			message->date_offset = 0;
-		}
-		break;
-	case HEADER_MESSAGE_ID:
-		g_free (message->message_id);
-		if (value)
-			message->message_id = camel_header_msgid_decode (value);
-		else
-			message->message_id = NULL;
-		break;
-	default:
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static void
-set_header (CamelMedium *medium, const gchar *name, gconstpointer value)
-{
-	process_header (medium, name, value);
-	parent_class->parent_class.set_header (medium, name, value);
-}
-
-static void
-add_header (CamelMedium *medium, const gchar *name, gconstpointer value)
-{
-	/* if we process it, then it must be forced unique as well ... */
-	if (process_header (medium, name, value))
-		parent_class->parent_class.set_header (medium, name, value);
-	else
-		parent_class->parent_class.add_header (medium, name, value);
-}
-
-static void
-remove_header (CamelMedium *medium, const gchar *name)
-{
-	process_header (medium, name, NULL);
-	parent_class->parent_class.remove_header (medium, name);
 }
 
 typedef gboolean (*CamelPartFunc)(CamelMimeMessage *, CamelMimePart *, gpointer data);
@@ -890,7 +902,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 	idb = camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filter), bestenc);
 	d(printf("writing to checking stream\n"));
-	camel_data_wrapper_decode_to_stream (content, (CamelStream *)filter);
+	camel_data_wrapper_decode_to_stream (content, filter);
 	camel_stream_filter_remove (
 		CAMEL_STREAM_FILTER (filter), idb);
 	if (idc != -1) {
@@ -922,7 +934,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 		if (charenc != NULL) {
 			/* otherwise, try another pass, converting to the real charset */
 
-			camel_mime_filter_reset ((CamelMimeFilter *)bestenc);
+			camel_mime_filter_reset (bestenc);
 			camel_mime_filter_bestenc_set_flags (
 				CAMEL_MIME_FILTER_BESTENC (bestenc),
 				CAMEL_BESTENC_GET_ENCODING |
@@ -934,7 +946,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 				CAMEL_STREAM_FILTER (filter), bestenc);
 
 			/* and write it to the new stream */
-			camel_data_wrapper_write_to_stream (content, (CamelStream *)filter);
+			camel_data_wrapper_write_to_stream (content, filter);
 
 			camel_object_unref (charenc);
 		}
@@ -1114,6 +1126,7 @@ static const gchar tz_days[][4] = {
 gchar *
 camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 {
+	CamelMimePart *mime_part;
 	struct _camel_header_raw *header = ((CamelMimePart *)message)->headers;
 	GString *out = g_string_new("From ");
 	gchar *ret;
@@ -1121,6 +1134,8 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 	time_t thetime;
 	gint offset;
 	struct tm tm;
+
+	mime_part = CAMEL_MIME_PART (message);
 
 	tmp = camel_header_raw_find (&header, "Sender", NULL);
 	if (tmp == NULL)

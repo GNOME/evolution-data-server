@@ -51,7 +51,7 @@ static gchar *mh_summary_next_uid_string(CamelFolderSummary *s);
 
 static void camel_mh_summary_class_init	(CamelMhSummaryClass *class);
 static void camel_mh_summary_init	(CamelMhSummary *gspaper);
-static void camel_mh_summary_finalise	(CamelObject *obj);
+static void camel_mh_summary_finalize	(CamelObject *obj);
 
 #define _PRIVATE(x) (((CamelMhSummary *)(x))->priv)
 
@@ -73,7 +73,7 @@ camel_mh_summary_get_type (void)
 					   (CamelObjectClassInitFunc)camel_mh_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc)camel_mh_summary_init,
-					   (CamelObjectFinalizeFunc)camel_mh_summary_finalise);
+					   (CamelObjectFinalizeFunc)camel_mh_summary_finalize);
 	}
 
 	return type;
@@ -106,7 +106,7 @@ camel_mh_summary_init (CamelMhSummary *o)
 }
 
 static void
-camel_mh_summary_finalise(CamelObject *obj)
+camel_mh_summary_finalize(CamelObject *obj)
 {
 	CamelMhSummary *o = (CamelMhSummary *)obj;
 

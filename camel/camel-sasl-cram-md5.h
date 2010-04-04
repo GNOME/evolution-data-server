@@ -38,9 +38,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSaslCramMd5 CamelSaslCramMd5;
 typedef struct _CamelSaslCramMd5Class CamelSaslCramMd5Class;
+typedef struct _CamelSaslCramMd5Private CamelSaslCramMd5Private;
 
 struct _CamelSaslCramMd5 {
 	CamelSasl parent;
+	CamelSaslCramMd5Private *priv;
 };
 
 struct _CamelSaslCramMd5Class {

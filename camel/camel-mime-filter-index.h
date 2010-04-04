@@ -42,9 +42,6 @@ typedef struct _CamelMimeFilterIndexPrivate CamelMimeFilterIndexPrivate;
 struct _CamelMimeFilterIndex {
 	CamelMimeFilter parent;
 	CamelMimeFilterIndexPrivate *priv;
-
-	CamelIndex *index;
-	CamelIndexName *name;
 };
 
 struct _CamelMimeFilterIndexClass {

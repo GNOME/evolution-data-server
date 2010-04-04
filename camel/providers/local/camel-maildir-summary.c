@@ -56,7 +56,7 @@ static gchar *maildir_summary_encode_x_evolution(CamelLocalSummary *cls, const C
 
 static void camel_maildir_summary_class_init	(CamelMaildirSummaryClass *class);
 static void camel_maildir_summary_init	(CamelMaildirSummary *gspaper);
-static void camel_maildir_summary_finalise	(CamelObject *obj);
+static void camel_maildir_summary_finalize	(CamelObject *obj);
 
 #define _PRIVATE(x) (((CamelMaildirSummary *)(x))->priv)
 
@@ -82,7 +82,7 @@ camel_maildir_summary_get_type (void)
 					   (CamelObjectClassInitFunc)camel_maildir_summary_class_init,
 					   NULL,
 					   (CamelObjectInitFunc)camel_maildir_summary_init,
-					   (CamelObjectFinalizeFunc)camel_maildir_summary_finalise);
+					   (CamelObjectFinalizeFunc)camel_maildir_summary_finalize);
 	}
 
 	return type;
@@ -132,7 +132,7 @@ camel_maildir_summary_init (CamelMaildirSummary *o)
 }
 
 static void
-camel_maildir_summary_finalise(CamelObject *obj)
+camel_maildir_summary_finalize(CamelObject *obj)
 {
 	CamelMaildirSummary *o = (CamelMaildirSummary *)obj;
 

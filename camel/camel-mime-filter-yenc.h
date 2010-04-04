@@ -40,6 +40,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterYenc CamelMimeFilterYenc;
 typedef struct _CamelMimeFilterYencClass CamelMimeFilterYencClass;
+typedef struct _CamelMimeFilterYencPrivate CamelMimeFilterYencPrivate;
 
 typedef enum {
 	CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE,
@@ -67,14 +68,7 @@ typedef enum {
 
 struct _CamelMimeFilterYenc {
 	CamelMimeFilter parent;
-
-	CamelMimeFilterYencDirection direction;
-
-	gint part;
-
-	gint state;
-	guint32 pcrc;
-	guint32 crc;
+	CamelMimeFilterYencPrivate *priv;
 };
 
 struct _CamelMimeFilterYencClass {

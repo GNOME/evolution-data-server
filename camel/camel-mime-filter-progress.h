@@ -38,6 +38,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeFilterProgress CamelMimeFilterProgress;
 typedef struct _CamelMimeFilterProgressClass CamelMimeFilterProgressClass;
+typedef struct _CamelMimeFilterProgressPrivate CamelMimeFilterProgressPrivate;
 
 /**
  * CamelMimeFilterProgress:
@@ -46,10 +47,7 @@ typedef struct _CamelMimeFilterProgressClass CamelMimeFilterProgressClass;
  **/
 struct _CamelMimeFilterProgress {
 	CamelMimeFilter parent;
-
-	CamelOperation *operation;
-	gsize total;
-        gsize count;
+	CamelMimeFilterProgressPrivate *priv;
 };
 
 struct _CamelMimeFilterProgressClass {

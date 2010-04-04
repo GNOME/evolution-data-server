@@ -67,7 +67,7 @@ camel_partition_table_init(CamelPartitionTable *cpi)
 }
 
 static void
-camel_partition_table_finalise(CamelPartitionTable *cpi)
+camel_partition_table_finalize(CamelPartitionTable *cpi)
 {
 	CamelBlock *bl;
 	struct _CamelPartitionTablePrivate *p;
@@ -102,7 +102,7 @@ camel_partition_table_get_type(void)
 					   (CamelObjectClassInitFunc) camel_partition_table_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_partition_table_init,
-					   (CamelObjectFinalizeFunc) camel_partition_table_finalise);
+					   (CamelObjectFinalizeFunc) camel_partition_table_finalize);
 	}
 
 	return type;
@@ -604,7 +604,7 @@ camel_key_table_init(CamelKeyTable *ki)
 }
 
 static void
-camel_key_table_finalise(CamelKeyTable *ki)
+camel_key_table_finalize(CamelKeyTable *ki)
 {
 	struct _CamelKeyTablePrivate *p;
 
@@ -637,7 +637,7 @@ camel_key_table_get_type(void)
 					   (CamelObjectClassInitFunc) camel_key_table_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_key_table_init,
-					   (CamelObjectFinalizeFunc) camel_key_table_finalise);
+					   (CamelObjectFinalizeFunc) camel_key_table_finalize);
 	}
 
 	return type;

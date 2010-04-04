@@ -24,8 +24,6 @@ CamelMimeFilterIndex
 
 @parent: 
 @priv: 
-@index: 
-@name: 
 
 <!-- ##### FUNCTION camel_mime_filter_index_new ##### -->
 <para>

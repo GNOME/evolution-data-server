@@ -46,7 +46,7 @@ struct _CamelStreamMem {
 	CamelSeekableStream parent;
 
 	guint owner:1;	/* do we own the buffer? */
-	guint secure:1;	/* do we clear the buffer on finalise (if we own it) */
+	guint secure:1;	/* do we clear the buffer on finalize (if we own it) */
 	GByteArray *buffer;
 };
 

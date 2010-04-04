@@ -23,8 +23,7 @@ CamelMimeFilterWindows
 </para>
 
 @parent: 
-@is_windows: 
-@claimed_charset: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_windows_new ##### -->
 <para>
