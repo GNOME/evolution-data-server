@@ -30,6 +30,11 @@
 
 #include "camel-smtp-transport.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 static guint smtp_url_hash (gconstpointer key);
 static gint smtp_url_equal (gconstpointer a, gconstpointer b);
 

@@ -43,6 +43,11 @@
 #include "camel-nntp-private.h"
 #include "camel-nntp-resp-codes.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 #define w(x)
 #define dd(x) (camel_debug("nntp")?(x):0)
 

@@ -35,9 +35,14 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
+typedef struct linger CamelLinger;
 #else
-#include <winsock2.h>
-#include <ws2tcpip.h>
+typedef struct {
+	unsigned short l_onoff;
+	unsigned short l_linger;
+} CamelLinger;
+#define socklen_t int
+struct addrinfo;
 #endif
 #include <unistd.h>
 
@@ -74,7 +79,6 @@ typedef enum {
 	CAMEL_SOCKOPT_LAST
 } CamelSockOpt;
 
-typedef struct linger CamelLinger;
 
 typedef struct _CamelSockOptData {
 	CamelSockOpt option;
@@ -133,5 +137,9 @@ struct sockaddr *
 						 socklen_t *len);
 
 G_END_DECLS
+
+#ifdef G_OS_WIN32
+#undef socklen_t
+#endif
 
 #endif /* CAMEL_TCP_STREAM_H */

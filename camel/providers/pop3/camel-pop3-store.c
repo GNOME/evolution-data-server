@@ -40,6 +40,11 @@
 #include "camel-pop3-folder.h"
 #include "camel-pop3-store.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 /* Specified in RFC 1939 */
 #define POP3_PORT "110"
 #define POP3S_PORT "995"

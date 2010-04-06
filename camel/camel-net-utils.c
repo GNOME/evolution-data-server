@@ -35,6 +35,8 @@
 #include "camel-msgport.h"
 #include "camel-net-utils.h"
 #ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include "camel-net-utils-win32.h"
 #endif
 #include "camel-operation.h"

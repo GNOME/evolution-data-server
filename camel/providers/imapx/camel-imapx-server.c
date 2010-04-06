@@ -29,6 +29,11 @@
 #include "camel-imapx-store.h"
 #include "camel-imapx-summary.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 #define c(x)
 #define e(x) 
 

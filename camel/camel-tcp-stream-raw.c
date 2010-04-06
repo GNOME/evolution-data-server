@@ -42,6 +42,8 @@
 #define SOCKET_ERROR_IS_EINPROGRESS() (errno == EINPROGRESS)
 #define SOCKET_ERROR_IS_EINTR() (errno == EINTR)
 #else
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #define SOCKET_ERROR_CODE() WSAGetLastError ()
 #define SOCKET_CLOSE(fd) closesocket (fd)
 #define SOCKET_ERROR_IS_EINPROGRESS() (WSAGetLastError () == WSAEWOULDBLOCK)

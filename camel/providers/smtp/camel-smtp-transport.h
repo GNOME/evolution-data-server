@@ -39,6 +39,10 @@
 
 #define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)  /* set if we are using authtypes from a broken AUTH= */
 
+#ifdef G_OS_WIN32
+#define socklen_t int
+#endif
+
 G_BEGIN_DECLS
 
 typedef struct {
@@ -64,5 +68,9 @@ typedef struct {
 CamelType camel_smtp_transport_get_type (void);
 
 G_END_DECLS
+
+#ifdef G_OS_WIN32
+#undef socklen_t
+#endif
 
 #endif /* CAMEL_SMTP_TRANSPORT_H */

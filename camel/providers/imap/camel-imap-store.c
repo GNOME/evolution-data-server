@@ -46,6 +46,11 @@
 #include "camel-imap-summary.h"
 #include "camel-imap-utils.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 #define d(x)
 
 /* Specified in RFC 2060 */

@@ -46,6 +46,11 @@
 #include "camel-groupwise-summary.h"
 #include "camel-groupwise-utils.h"
 
+#ifdef G_OS_WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 #define d(x)
 #define CURSOR_ITEM_LIMIT 100
 #define JUNK_ENABLE 1
