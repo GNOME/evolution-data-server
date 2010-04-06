@@ -272,7 +272,8 @@ camel_mime_filter_basic_new (CamelMimeFilterBasicType type)
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
 	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
 	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
-		new = camel_mime_filter_basic_new (type);
+		new = CAMEL_MIME_FILTER (camel_object_new (camel_mime_filter_basic_get_type ()));
+		CAMEL_MIME_FILTER_BASIC (new)->type = type;
 		break;
 	default:
 		g_warning ("Invalid type of CamelMimeFilterBasic requested: %u", type);
