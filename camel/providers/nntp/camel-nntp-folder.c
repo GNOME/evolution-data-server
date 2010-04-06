@@ -156,7 +156,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, con
 
  fail:
 	if (errno == EINTR)
-		camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
 	else
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), msgid, g_strerror (errno));
 
@@ -231,7 +231,7 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *
 	message = camel_mime_message_new ();
 	if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) message, stream) == -1) {
 		if (errno == EINTR)
-			camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
+			camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), uid, g_strerror (errno));
 		camel_object_unref(message);
@@ -392,7 +392,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 	    || camel_stream_write (stream, "\r\n.\r\n", 5) == -1
 	    || (ret = camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u)) == -1) {
 		if (errno == EINTR)
-			camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User canceled"));
+			camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Posting failed: %s"), g_strerror (errno));
 	} else if (atoi(line) != 240) {

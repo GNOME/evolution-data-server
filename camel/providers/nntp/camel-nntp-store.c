@@ -1304,7 +1304,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store, CamelException *ex, gchar **line
 
 ioerror:
 	if (errno == EINTR)
-		camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Canceled."));
+		camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
 	else
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("NNTP Command failed: %s"), g_strerror(errno));
 	return -1;

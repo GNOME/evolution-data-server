@@ -411,7 +411,7 @@ error:
 
 	if (ret == -1) {
 		if (errno == EINTR)
-			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("Use cancel"));
+			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
 		else
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Operation failed: %s"), g_strerror(errno));
 	}
