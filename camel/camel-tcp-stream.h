@@ -27,6 +27,8 @@
 #ifndef CAMEL_TCP_STREAM_H
 #define CAMEL_TCP_STREAM_H
 
+#include <camel/camel-stream.h>
+
 #ifndef G_OS_WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -38,8 +40,6 @@
 #include <ws2tcpip.h>
 #endif
 #include <unistd.h>
-
-#include <camel/camel-stream.h>
 
 #define CAMEL_TCP_STREAM_TYPE     (camel_tcp_stream_get_type ())
 #define CAMEL_TCP_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TCP_STREAM_TYPE, CamelTcpStream))
