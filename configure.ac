@@ -987,22 +987,6 @@ AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
 AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 
 dnl ******************************
-dnl IMAP4rev1 code support.
-dnl ******************************
-AC_ARG_ENABLE(imap4,
-	AS_HELP_STRING([--enable-imap4=no/yes],
-	[Attempt to compile yet another, incomplete, very unsupported IMAPv4r1 implementation]),
-	[],[enable_imap4=no])
-
-if test "x$enable_imap4" = "xyes"; then
-	AC_DEFINE(ENABLE_IMAP4,1,[Really don't try this at home])
-	msg_imap4="yes"
-else
-	msg_imap4="no"
-fi
-AM_CONDITIONAL(ENABLE_IMAP4, [test x$enable_imap4 = xyes])
-
-dnl ******************************
 dnl Hula support
 dnl ******************************
 AC_ARG_ENABLE([hula],
@@ -1474,7 +1458,6 @@ camel/providers/groupwise/Makefile
 camel/providers/hula/Makefile
 camel/providers/imap/Makefile
 camel/providers/imapx/Makefile
-camel/providers/imap4/Makefile
 camel/providers/local/Makefile
 camel/providers/nntp/Makefile
 camel/providers/pop3/Makefile
