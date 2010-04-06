@@ -1941,7 +1941,8 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 	CamelJunkPlugin *csp = ((CamelService *)m->folder->parent_store)->session->junk_plugin;
 
 	if (m->junk) {
-		camel_operation_start (NULL, ngettext ("Learning new spam message", "Learning new spam messages", m->junk->len));
+		/* Translators: The %s is replaced with a folder name where the operation is running. */
+		camel_operation_start (NULL, ngettext ("Learning new spam message in '%s'", "Learning new spam messages in '%s'", m->junk->len), m->folder->full_name);
 
 		for (i = 0; i < m->junk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->junk->pdata[i], &ex);
@@ -1959,7 +1960,8 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 	}
 
 	if (m->notjunk) {
-		camel_operation_start (NULL, ngettext ("Learning new ham message", "Learning new ham messages", m->notjunk->len));
+		/* Translators: The %s is replaced with a folder name where the operation is running. */
+		camel_operation_start (NULL, ngettext ("Learning new ham message in '%s'", "Learning new ham messages in '%s'", m->notjunk->len), m->folder->full_name);
 		for (i = 0; i < m->notjunk->len; i ++) {
 			CamelMimeMessage *msg = camel_folder_get_message(m->folder, m->notjunk->pdata[i], &ex);
 			gint pc = 100 * i / m->notjunk->len;
@@ -1979,7 +1981,8 @@ filter_filter(CamelSession *session, CamelSessionThreadMsg *tmsg)
 		camel_junk_plugin_commit_reports (csp);
 
 	if (m->driver && m->recents) {
-		camel_operation_start(NULL, ngettext ("Filtering new message", "Filtering new messages", m->recents->len));
+		/* Translators: The %s is replaced with a folder name where the operation is running. */
+		camel_operation_start(NULL, ngettext ("Filtering new message in '%s'", "Filtering new messages in '%s'", m->recents->len), m->folder->full_name);
 
 		source_url = camel_service_get_url((CamelService *)m->folder->parent_store);
 		uri = camel_url_new(source_url, NULL);
