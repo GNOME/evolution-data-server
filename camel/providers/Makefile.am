@@ -2,15 +2,11 @@ if ENABLE_NNTP
 NNTP_DIR=nntp
 endif
 
-if ENABLE_HULA
-HULA_DIR=hula
-endif
-
 if OS_WIN32
 else
 SENDMAIL_DIR=sendmail
 endif
 
-SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap imapx $(NNTP_DIR) local groupwise $(HULA_DIR)
+SUBDIRS = pop3 $(SENDMAIL_DIR) smtp imap imapx $(NNTP_DIR) local groupwise
 
 -include $(top_srcdir)/git.mk

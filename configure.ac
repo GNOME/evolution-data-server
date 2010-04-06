@@ -987,22 +987,6 @@ AM_CONDITIONAL(ENABLE_NNTP, [test x$enable_nntp = xyes])
 AC_DEFINE(HANDLE_LIBICAL_MEMORY, 1, [Define it once memory returned by libical is free'ed properly])
 
 dnl ******************************
-dnl Hula support
-dnl ******************************
-AC_ARG_ENABLE([hula],
-	AS_HELP_STRING([--enable-hula=no/yes],
-	[Enable support for the now-defunct Hula project]),
-	[],[enable_hula=no])
-
-if test "x$enable_hula" = "xyes"; then
-	AC_DEFINE(ENABLE_HULA,1,[Build Hula backend])
-	msg_hula="yes"
-else
-	msg_hula="no"
-fi
-AM_CONDITIONAL(ENABLE_HULA, [test x$enable_hula = xyes])
-
-dnl ******************************
 dnl File locking
 dnl ******************************
 AC_ARG_ENABLE([dot-locking],
@@ -1455,7 +1439,6 @@ calendar/tests/ecal/Makefile
 camel/Makefile
 camel/providers/Makefile
 camel/providers/groupwise/Makefile
-camel/providers/hula/Makefile
 camel/providers/imap/Makefile
 camel/providers/imapx/Makefile
 camel/providers/local/Makefile
@@ -1521,6 +1504,3 @@ echo "
 	Large files:		$enable_largefile
 	Gtk Doc:		$enable_gtk_doc
 "
-if test "x$msg_hula" = "xyes"; then
-	echo "Hula support:	$msg_hula"
-fi
