@@ -25,10 +25,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#include <camel/camel-mime-message.h>
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-mem.h>
-
 struct _text {
 	gchar *text;
 	gint len;

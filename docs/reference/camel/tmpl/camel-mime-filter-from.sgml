@@ -22,8 +22,6 @@ CamelMimeFilterFrom
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_from_new ##### -->
 <para>

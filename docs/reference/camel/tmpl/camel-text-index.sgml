@@ -32,32 +32,24 @@ CamelTextIndex
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### STRUCT CamelTextIndexCursor ##### -->
 <para>
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### STRUCT CamelTextIndexKeyCursor ##### -->
 <para>
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### STRUCT CamelTextIndexName ##### -->
 <para>
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_text_index_new ##### -->
 <para>

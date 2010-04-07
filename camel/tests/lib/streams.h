@@ -1,5 +1,4 @@
-
-#include "camel/camel-seekable-stream.h"
+#include <camel/camel.h>
 
 /* call one, then the other on the same stream content */
 void test_stream_seekable_writepart(CamelSeekableStream *s);

@@ -9,11 +9,6 @@
 
 #include "camel-test.h"
 
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-stream-filter.h>
-#include <camel/camel-mime-filter-crlf.h>
-
 #define d(x)
 
 #define NUM_CASES 1
@@ -85,7 +80,7 @@ main (gint argc, gchar **argv)
 			}
 			g_free (outfile);
 
-			filter = camel_stream_filter_new_with_stream (CAMEL_STREAM (source));
+			filter = camel_stream_filter_new (CAMEL_STREAM (source));
 			if (!filter) {
 				camel_test_fail ("Couldn't create CamelStreamFilter??");
 				continue;

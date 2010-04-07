@@ -9,9 +9,6 @@
 #include <stdio.h>
 #include <iconv.h>
 
-#include <camel/camel-internet-address.h>
-#include <camel/camel-address.h>
-
 #include "address-data.h"
 
 static gchar *convert(const gchar *in, const gchar *from, const gchar *to)

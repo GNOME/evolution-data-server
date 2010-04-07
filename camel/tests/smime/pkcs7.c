@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <camel/camel-smime-context.h>
-#include <camel/camel-stream-mem.h>
 
 #include "camel-test.h"
 

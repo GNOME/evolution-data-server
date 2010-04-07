@@ -22,20 +22,6 @@ CamelHttpStream
 
 </para>
 
-@parent: 
-@parser: 
-@content_type: 
-@headers: 
-@method: 
-@session: 
-@url: 
-@user_agent: 
-@proxy: 
-@authrealm: 
-@authpass: 
-@statuscode: 
-@raw: 
-@read: 
 
 <!-- ##### ENUM CamelHttpMethod ##### -->
 <para>

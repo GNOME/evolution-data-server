@@ -58,19 +58,6 @@ CamelKeyFile
 
 </para>
 
-@parent: 
-@priv: 
-@version: 
-@path: 
-@flags: 
-@fd: 
-@block_size: 
-@root: 
-@root_block: 
-@block_cache_limit: 
-@block_cache_count: 
-@block_cache: 
-@blocks: 
 
 <!-- ##### MACRO CAMEL_BLOCK_FILE_SYNC ##### -->
 <para>
@@ -227,12 +214,6 @@ CamelKeyFile
 
 </para>
 
-@parent: 
-@priv: 
-@fp: 
-@path: 
-@flags: 
-@last: 
 
 <!-- ##### FUNCTION camel_key_file_new ##### -->
 <para>

@@ -17,27 +17,3 @@ CamelIMAP4Search
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT CamelIMAP4Search ##### -->
-<para>
-
-</para>
-
-@parent: 
-@engine: 
-@lastuid: 
-@validity: 
-@cache: 
-@matches: 
-@matches_hash: 
-@matches_count: 
-
-<!-- ##### FUNCTION camel_imap4_search_new ##### -->
-<para>
-
-</para>
-
-@engine: 
-@cachedir: 
-@Returns: 
-
-

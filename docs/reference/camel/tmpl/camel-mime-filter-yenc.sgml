@@ -22,8 +22,6 @@ CamelMimeFilterYenc
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### ENUM CamelMimeFilterYencDirection ##### -->
 <para>

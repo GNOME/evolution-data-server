@@ -28,8 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <camel/camel-mime-filter-tohtml.h>
-
 #include "camel-test.h"
 
 struct {

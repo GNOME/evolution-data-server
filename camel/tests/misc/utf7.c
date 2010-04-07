@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
-#include <camel/camel-utf8.h>
-#include <camel/camel-exception.h>
 
 #include "camel-test.h"
 

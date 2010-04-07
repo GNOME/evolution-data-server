@@ -22,8 +22,6 @@ CamelSaslLogin
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### VARIABLE camel_sasl_login_authtype ##### -->
 <para>

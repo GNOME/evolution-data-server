@@ -22,8 +22,6 @@ CamelHTMLParser
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### ENUM camel_html_parser_t ##### -->
 <para>

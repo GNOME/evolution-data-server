@@ -28,11 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <camel/camel-gpg-context.h>
-#include <camel/camel-multipart-signed.h>
-#include <camel/camel-multipart-encrypted.h>
-#include <camel/camel-mime-part.h>
-#include <camel/camel-stream-mem.h>
 
 #include "camel-test.h"
 #include "session.h"

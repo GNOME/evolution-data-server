@@ -22,8 +22,6 @@ CamelTransport
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_transport_send_to ##### -->
 <para>

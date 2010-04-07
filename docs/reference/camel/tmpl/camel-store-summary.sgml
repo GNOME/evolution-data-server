@@ -53,18 +53,6 @@ CamelStoreSummary
 
 </para>
 
-@parent: 
-@priv: 
-@version: 
-@flags: 
-@count: 
-@time: 
-@uri_base: 
-@store_info_size: 
-@store_info_chunks: 
-@summary_path: 
-@folders: 
-@folders_path: 
 
 <!-- ##### MACRO CAMEL_STORE_INFO_FOLDER_UNKNOWN ##### -->
 <para>

@@ -10,14 +10,6 @@
 #include "folders.h"
 #include "session.h"
 
-#include <camel/camel-exception.h>
-#include <camel/camel-service.h>
-#include <camel/camel-store.h>
-
-#include <camel/camel-folder.h>
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-mime-message.h>
-
 static const gchar *local_drivers[] = { "local" };
 
 static gchar *stores[] = {

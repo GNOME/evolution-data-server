@@ -4,8 +4,6 @@
 #include "folders.h"
 #include "messages.h"
 
-#include "camel/camel-exception.h"
-
 /* check the total/unread is what we think it should be */
 void
 test_folder_counts(CamelFolder *folder, gint total, gint unread)

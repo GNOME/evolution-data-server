@@ -22,9 +22,6 @@ CamelVeeSummary
 
 </para>
 
-@summary: 
-@force_counts: 
-@fake_visible_count: 
 
 <!-- ##### STRUCT CamelVeeMessageInfo ##### -->
 <para>

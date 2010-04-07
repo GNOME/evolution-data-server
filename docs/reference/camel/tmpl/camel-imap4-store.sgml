@@ -17,13 +17,3 @@ CamelIMAP4Store
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### STRUCT CamelIMAP4Store ##### -->
-<para>
-
-</para>
-
-@parent: 
-@summary: 
-@engine: 
-@storage_path: 
-

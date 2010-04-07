@@ -7,10 +7,6 @@
 
 #include <string.h>
 
-#include "camel/camel-stream.h"
-#include "camel/camel-seekable-stream.h"
-#include "camel/camel-seekable-substream.h"
-
 #include "streams.h"
 
 #include "camel-test.h"

@@ -8,10 +8,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "camel/camel-stream-mem.h"
-#include "camel/camel-stream-fs.h"
-#include "camel/camel-seekable-substream.h"
-
 struct {
 	off_t lower, upper;
 } ranges[] = {

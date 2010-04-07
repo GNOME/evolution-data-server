@@ -10,11 +10,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#include <camel/camel-mime-message.h>
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-mem.h>
-#include "camel/camel-multipart.h"
-
 gint main(gint argc, gchar **argv)
 {
 	CamelMimeMessage *msg, *msg2, *msg3;

@@ -22,9 +22,6 @@ CamelAddress
 
 </para>
 
-@parent: 
-@addresses: 
-@priv: 
 
 <!-- ##### FUNCTION camel_address_new ##### -->
 <para>

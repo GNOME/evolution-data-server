@@ -1,9 +1,5 @@
 
-#include "camel-test-provider.h"
 #include "camel-test.h"
-#include "camel-exception.h"
-
-#include "camel-provider.h"
 
 void camel_test_provider_init(gint argc, gchar **argv)
 {

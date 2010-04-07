@@ -8,8 +8,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "camel/camel-stream-fs.h"
-
 gint main(gint argc, gchar **argv)
 {
 	CamelSeekableStream *ss = NULL;

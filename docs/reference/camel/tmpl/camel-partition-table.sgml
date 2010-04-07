@@ -56,13 +56,6 @@ CamelKeyTable
 
 </para>
 
-@parent: 
-@priv: 
-@blocks: 
-@rootid: 
-@is_key: 
-@is_key_data: 
-@partition: 
 
 <!-- ##### FUNCTION camel_partition_table_new ##### -->
 <para>
@@ -149,12 +142,6 @@ CamelKeyTable
 
 </para>
 
-@parent: 
-@priv: 
-@blocks: 
-@rootid: 
-@root: 
-@root_block: 
 
 <!-- ##### FUNCTION camel_key_table_new ##### -->
 <para>

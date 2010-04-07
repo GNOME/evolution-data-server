@@ -11,11 +11,6 @@
 
 #include "camel-test.h"
 
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-mem.h>
-#include <camel/camel-stream-filter.h>
-#include <camel/camel-mime-filter-charset.h>
-
 #define d(x)
 
 #define CHUNK_SIZE 4096
@@ -68,7 +63,7 @@ main (gint argc, gchar **argv)
 		}
 		g_free (outfile);
 
-		if (!(filter = camel_stream_filter_new_with_stream (CAMEL_STREAM (source)))) {
+		if (!(filter = camel_stream_filter_new (CAMEL_STREAM (source)))) {
 			camel_test_fail ("Couldn't create CamelStreamFilter??");
 			continue;
 		}
@@ -77,7 +72,7 @@ main (gint argc, gchar **argv)
 		ext = strchr (charset, '.');
 		*((gchar *) ext) = '\0';
 
-		if (!(f = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "UTF-8"))) {
+		if (!(f = (CamelMimeFilter *) camel_mime_filter_charset_new (charset, "UTF-8"))) {
 			camel_test_fail ("Couldn't create CamelMimeFilterCharset??");
 			g_free (charset);
 			continue;

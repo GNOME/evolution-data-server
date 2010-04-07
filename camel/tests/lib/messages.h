@@ -1,5 +1,4 @@
-
-#include <camel/camel-mime-message.h>
+#include <camel/camel.h>
 
 /* how many ways to set the content contents */
 #define SET_CONTENT_WAYS (5)

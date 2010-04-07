@@ -22,8 +22,6 @@ CamelMimeFilterSave
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_save_new ##### -->
 <para>

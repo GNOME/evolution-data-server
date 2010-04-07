@@ -22,13 +22,6 @@ CamelService
 
 </para>
 
-@parent: 
-@priv: 
-@session: 
-@provider: 
-@status: 
-@connect_op: 
-@url: 
 
 <!-- ##### MACRO CAMEL_SERVICE_USERNAME ##### -->
 <para>

@@ -30,11 +30,6 @@
 #include "camel-test.h"
 #include "messages.h"
 
-#include <camel/camel-multipart.h>
-#include <camel/camel-mime-message.h>
-#include <camel/camel-stream-fs.h>
-#include <camel/camel-stream-mem.h>
-
 #if 0
 static void
 dump_mime_struct (CamelMimePart *mime_part, gint depth)

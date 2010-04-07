@@ -22,15 +22,26 @@ CamelMimePart
 
 </para>
 
-@parent: 
-@headers: 
-@description: 
-@disposition: 
-@content_id: 
-@content_MD5: 
-@content_location: 
-@content_languages: 
-@encoding: 
+
+<!-- ##### ARG CamelMimePart:content-id ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelMimePart:content-md5 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelMimePart:description ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelMimePart:disposition ##### -->
+<para>
+
+</para>
 
 <!-- ##### FUNCTION camel_mime_part_new ##### -->
 <para>

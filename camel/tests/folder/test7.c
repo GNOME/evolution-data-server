@@ -6,14 +6,6 @@
 #include "messages.h"
 #include "session.h"
 
-#include <camel/camel-exception.h>
-#include <camel/camel-service.h>
-#include <camel/camel-store.h>
-
-#include <camel/camel-folder.h>
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-mime-message.h>
-
 static const gchar *nntp_drivers[] = { "nntp" };
 static gchar *remote_providers[] = {
 	"NNTP_TEST_URL",

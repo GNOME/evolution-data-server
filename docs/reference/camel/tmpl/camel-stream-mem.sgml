@@ -22,10 +22,6 @@ CamelStreamMem
 
 </para>
 
-@parent: 
-@owner: 
-@secure: 
-@buffer: 
 
 <!-- ##### FUNCTION camel_stream_mem_new ##### -->
 <para>

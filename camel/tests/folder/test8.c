@@ -9,10 +9,6 @@
 #include "messages.h"
 #include "session.h"
 
-#include <camel/camel-exception.h>
-#include <camel/camel-service.h>
-#include <camel/camel-store.h>
-
 #define MAX_MESSAGES (100)
 #define MAX_THREADS (10)
 

@@ -22,8 +22,6 @@ CamelStreamNull
 
 </para>
 
-@parent: 
-@written: 
 
 <!-- ##### FUNCTION camel_stream_null_new ##### -->
 <para>

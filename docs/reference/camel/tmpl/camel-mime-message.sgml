@@ -22,16 +22,6 @@ CamelMimeMessage
 
 </para>
 
-@parent: 
-@date: 
-@date_offset: 
-@date_received: 
-@date_received_offset: 
-@subject: 
-@message_id: 
-@reply_to: 
-@from: 
-@recipients: 
 
 <!-- ##### MACRO CAMEL_RECIPIENT_TYPE_TO ##### -->
 <para>

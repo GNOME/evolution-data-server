@@ -22,10 +22,6 @@ CamelSeekableStream
 
 </para>
 
-@parent: 
-@position: 
-@bound_start: 
-@bound_end: 
 
 <!-- ##### ENUM CamelStreamSeekPolicy ##### -->
 <para>

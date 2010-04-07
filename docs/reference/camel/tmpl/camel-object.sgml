@@ -35,13 +35,6 @@ CamelObject
 
 </para>
 
-@klass: 
-@magic: 
-@hooks: 
-@ref_count: 
-@flags: 
-@next: 
-@prev: 
 
 <!-- ##### MACRO CAMEL_CHECK_CAST ##### -->
 <para>

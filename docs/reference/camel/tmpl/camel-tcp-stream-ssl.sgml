@@ -22,8 +22,6 @@ CamelTcpStreamSSL
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### MACRO CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 ##### -->
 <para>

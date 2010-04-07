@@ -22,8 +22,6 @@ CamelInternetAddress
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_internet_address_new ##### -->
 <para>

@@ -22,8 +22,6 @@ CamelMimeFilterCanon
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_canon_new ##### -->
 <para>

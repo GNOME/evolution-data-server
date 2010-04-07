@@ -5,10 +5,6 @@
 #include "folders.h"
 #include "session.h"
 
-#include <camel/camel-exception.h>
-#include <camel/camel-service.h>
-#include <camel/camel-store.h>
-
 static const gchar *imap_drivers[] = { "imap4" };
 
 static gchar *remote_providers[] = {

@@ -22,8 +22,6 @@ CamelMimeFilterEnriched
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### MACRO CAMEL_MIME_FILTER_ENRICHED_IS_RICHTEXT ##### -->
 <para>

@@ -22,14 +22,6 @@ CamelStore
 
 </para>
 
-@parent: 
-@priv: 
-@folders: 
-@cdb_r: 
-@cdb_w: 
-@flags: 
-@mode: 
-@later: 
 
 <!-- ##### STRUCT CamelFolderInfo ##### -->
 <para>

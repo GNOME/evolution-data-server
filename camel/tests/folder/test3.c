@@ -8,14 +8,6 @@
 #include "folders.h"
 #include "session.h"
 
-#include <camel/camel-exception.h>
-#include <camel/camel-service.h>
-#include <camel/camel-store.h>
-
-#include <camel/camel-folder.h>
-#include <camel/camel-folder-summary.h>
-#include <camel/camel-mime-message.h>
-
 static void
 test_folder_search_sub(CamelFolder *folder, const gchar *expr, gint expected)
 {

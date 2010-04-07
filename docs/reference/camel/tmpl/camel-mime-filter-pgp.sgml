@@ -22,8 +22,6 @@ CamelMimeFilterPgp
 
 </para>
 
-@parent: 
-@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_pgp_new ##### -->
 <para>

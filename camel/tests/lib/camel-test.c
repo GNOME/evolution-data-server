@@ -10,8 +10,6 @@
 #include <signal.h>
 #include <errno.h>
 
-#include <camel/camel.h>
-
 /* well i dunno, doesn't seem to be in the headers but hte manpage mentions it */
 /* a nonportable checking mutex for glibc, not really needed, just validates
    the test harness really */

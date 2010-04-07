@@ -22,9 +22,6 @@ CamelSaslAnonymous
 
 </para>
 
-@parent: 
-@trace_info: 
-@type: 
 
 <!-- ##### ENUM CamelSaslAnonTraceType ##### -->
 <para>

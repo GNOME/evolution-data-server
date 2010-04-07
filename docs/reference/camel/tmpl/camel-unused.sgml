@@ -366,6 +366,24 @@ camel-types
 @f: 
 @l: 
 
+<!-- ##### MACRO CAMEL_IMAP4_FOLDER_MARKED ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_IMAP4_FOLDER_UNMARKED ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO CAMEL_IMAP4_MESSAGE_RECENT ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### MACRO CAMEL_IMAP_FOLDER_LOCK ##### -->
 <para>
 
@@ -495,6 +513,260 @@ camel-types
 </para>
 
 @parent_object: 
+
+<!-- ##### STRUCT CamelIMAP4Command ##### -->
+<para>
+
+</para>
+
+@node: 
+@engine: 
+@ref_count: 
+@status: 
+@result: 
+@id: 
+@tag: 
+@resp_codes: 
+@folder: 
+@ex: 
+@parts: 
+@part: 
+@untagged: 
+@plus: 
+@reset: 
+@user_data: 
+
+<!-- ##### STRUCT CamelIMAP4CommandPart ##### -->
+<para>
+
+</para>
+
+@next: 
+@buffer: 
+@buflen: 
+@literal: 
+
+<!-- ##### USER_FUNCTION CamelIMAP4CommandReset ##### -->
+<para>
+
+</para>
+
+@ic: 
+@user_data: 
+
+<!-- ##### STRUCT CamelIMAP4Engine ##### -->
+<para>
+
+</para>
+
+@parent: 
+@reconnect: 
+@reconnecting: 
+@session: 
+@service: 
+@url: 
+@state: 
+@level: 
+@capa: 
+@maxlen: 
+@maxlentype: 
+@namespaces: 
+@authtypes: 
+@istream: 
+@ostream: 
+@tagprefix: 
+@tag: 
+@nextid: 
+@folder: 
+@queue: 
+@current: 
+
+<!-- ##### STRUCT CamelIMAP4Folder ##### -->
+<para>
+
+</para>
+
+@parent: 
+@search: 
+@journal: 
+@cache: 
+@cachedir: 
+@utf7_name: 
+@read_only: 
+@enable_mlist: 
+
+<!-- ##### STRUCT CamelIMAP4Journal ##### -->
+<para>
+
+</para>
+
+@parent: 
+@failed: 
+
+<!-- ##### STRUCT CamelIMAP4JournalEntry ##### -->
+<para>
+
+</para>
+
+@node: 
+@type: 
+
+<!-- ##### STRUCT CamelIMAP4Literal ##### -->
+<para>
+
+</para>
+
+@type: 
+
+<!-- ##### STRUCT CamelIMAP4MessageContentInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+
+<!-- ##### STRUCT CamelIMAP4MessageInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+@server_flags: 
+
+<!-- ##### STRUCT CamelIMAP4Namespace ##### -->
+<para>
+
+</para>
+
+@next: 
+@path: 
+@sep: 
+
+<!-- ##### STRUCT CamelIMAP4NamespaceList ##### -->
+<para>
+
+</para>
+
+@personal: 
+@other: 
+@shared: 
+
+<!-- ##### USER_FUNCTION CamelIMAP4PlusCallback ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@linebuf: 
+@linelen: 
+@ex: 
+@Returns: 
+
+<!-- ##### USER_FUNCTION CamelIMAP4ReconnectFunc ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+<!-- ##### STRUCT CamelIMAP4RespCode ##### -->
+<para>
+
+</para>
+
+@code: 
+
+<!-- ##### STRUCT CamelIMAP4Search ##### -->
+<para>
+
+</para>
+
+@parent: 
+@engine: 
+@lastuid: 
+@validity: 
+@cache: 
+@matches: 
+@matches_hash: 
+@matches_count: 
+
+<!-- ##### STRUCT CamelIMAP4Store ##### -->
+<para>
+
+</para>
+
+@parent: 
+@summary: 
+@engine: 
+@storage_path: 
+
+<!-- ##### STRUCT CamelIMAP4StoreInfo ##### -->
+<para>
+
+</para>
+
+@info: 
+
+<!-- ##### STRUCT CamelIMAP4StoreSummary ##### -->
+<para>
+
+</para>
+
+@summary: 
+@priv: 
+@version: 
+@namespaces: 
+@capa: 
+
+<!-- ##### STRUCT CamelIMAP4Stream ##### -->
+<para>
+
+</para>
+
+@parent: 
+@stream: 
+@disconnected: 
+@have_unget: 
+@mode: 
+@eol: 
+@literal: 
+@realbuf: 
+@inbuf: 
+@inptr: 
+@inend: 
+@tokenbuf: 
+@tokenptr: 
+@tokenleft: 
+@unget: 
+
+<!-- ##### STRUCT CamelIMAP4Summary ##### -->
+<para>
+
+</para>
+
+@parent: 
+@version: 
+@exists: 
+@recent: 
+@unseen: 
+@uidvalidity: 
+@uidvalidity_changed: 
+@update_flags: 
+
+<!-- ##### USER_FUNCTION CamelIMAP4UntaggedCallback ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@index: 
+@token: 
+@ex: 
+@Returns: 
 
 <!-- ##### STRUCT CamelISubscribe ##### -->
 <para>
@@ -633,6 +905,18 @@ camel-types
 
 
 <!-- ##### STRUCT CamelStreamDataWrapper ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO IMAP4_READ_BUFLEN ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO IMAP4_READ_PRELEN ##### -->
 <para>
 
 </para>
@@ -834,6 +1118,668 @@ camel-types
 
 @summary: 
 @array: 
+
+<!-- ##### FUNCTION camel_imap4_build_folder_info_tree ##### -->
+<para>
+
+</para>
+
+@array: 
+@top: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_command_new ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@Varargs: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_command_newv ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@args: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_command_ref ##### -->
+<para>
+
+</para>
+
+@ic: 
+
+<!-- ##### FUNCTION camel_imap4_command_register_untagged ##### -->
+<para>
+
+</para>
+
+@ic: 
+@atom: 
+@untagged: 
+
+<!-- ##### FUNCTION camel_imap4_command_reset ##### -->
+<para>
+
+</para>
+
+@ic: 
+
+<!-- ##### FUNCTION camel_imap4_command_step ##### -->
+<para>
+
+</para>
+
+@ic: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_command_unref ##### -->
+<para>
+
+</para>
+
+@ic: 
+
+<!-- ##### FUNCTION camel_imap4_engine_capability ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_dequeue ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+
+<!-- ##### FUNCTION camel_imap4_engine_disconnect ##### -->
+<para>
+
+</para>
+
+@engine: 
+
+<!-- ##### FUNCTION camel_imap4_engine_eat_line ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_handle_untagged ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+
+<!-- ##### FUNCTION camel_imap4_engine_handle_untagged_1 ##### -->
+<para>
+
+</para>
+
+@engine: 
+@token: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_iterate ##### -->
+<para>
+
+</para>
+
+@engine: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_line ##### -->
+<para>
+
+</para>
+
+@engine: 
+@line: 
+@len: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_literal ##### -->
+<para>
+
+</para>
+
+@engine: 
+@literal: 
+@len: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_namespace ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_new ##### -->
+<para>
+
+</para>
+
+@service: 
+@reconnect: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_next_token ##### -->
+<para>
+
+</para>
+
+@engine: 
+@token: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_nstring ##### -->
+<para>
+
+</para>
+
+@engine: 
+@nstring: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_parse_resp_code ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_prequeue ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@Varargs: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_queue ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@format: 
+@Varargs: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_engine_select_folder ##### -->
+<para>
+
+</para>
+
+@engine: 
+@folder: 
+@ex: 
+@Returns: 
+
+<!-- ##### ENUM camel_imap4_engine_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAP4_ENGINE_DISCONNECTED: 
+@CAMEL_IMAP4_ENGINE_CONNECTED: 
+@CAMEL_IMAP4_ENGINE_PREAUTH: 
+@CAMEL_IMAP4_ENGINE_AUTHENTICATED: 
+@CAMEL_IMAP4_ENGINE_SELECTED: 
+
+<!-- ##### FUNCTION camel_imap4_engine_take_stream ##### -->
+<para>
+
+</para>
+
+@engine: 
+@stream: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_flags_diff ##### -->
+<para>
+
+</para>
+
+@diff: 
+@old: 
+@new: 
+
+<!-- ##### FUNCTION camel_imap4_flags_merge ##### -->
+<para>
+
+</para>
+
+@diff: 
+@flags: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_folder_new ##### -->
+<para>
+
+</para>
+
+@store: 
+@full_name: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_folder_utf7_name ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_get_path_delim ##### -->
+<para>
+
+</para>
+
+@s: 
+@full_name: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_get_uid_set ##### -->
+<para>
+
+</para>
+
+@engine: 
+@summary: 
+@infos: 
+@cur: 
+@linelen: 
+@set: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_journal_append ##### -->
+<para>
+
+</para>
+
+@journal: 
+@message: 
+@mi: 
+@appended_uid: 
+@ex: 
+
+<!-- ##### FUNCTION camel_imap4_journal_new ##### -->
+<para>
+
+</para>
+
+@folder: 
+@filename: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_journal_readd_failed ##### -->
+<para>
+
+</para>
+
+@journal: 
+
+<!-- ##### ENUM camel_imap4_level_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAP4_LEVEL_UNKNOWN: 
+@CAMEL_IMAP4_LEVEL_IMAP4: 
+@CAMEL_IMAP4_LEVEL_IMAP4REV1: 
+
+<!-- ##### STRUCT camel_imap4_list_t ##### -->
+<para>
+
+</para>
+
+@flags: 
+@delim: 
+@name: 
+
+<!-- ##### FUNCTION camel_imap4_merge_flags ##### -->
+<para>
+
+</para>
+
+@original: 
+@local: 
+@server: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_namespace_clear ##### -->
+<para>
+
+</para>
+
+@ns: 
+
+<!-- ##### FUNCTION camel_imap4_namespace_list_copy ##### -->
+<para>
+
+</para>
+
+@nsl: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_namespace_list_free ##### -->
+<para>
+
+</para>
+
+@nsl: 
+
+<!-- ##### FUNCTION camel_imap4_parse_flags_list ##### -->
+<para>
+
+</para>
+
+@engine: 
+@flags: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_resp_code_free ##### -->
+<para>
+
+</para>
+
+@rcode: 
+
+<!-- ##### ENUM camel_imap4_resp_code_t ##### -->
+<para>
+
+</para>
+
+@CAMEL_IMAP4_RESP_CODE_ALERT: 
+@CAMEL_IMAP4_RESP_CODE_BADCHARSET: 
+@CAMEL_IMAP4_RESP_CODE_CAPABILITY: 
+@CAMEL_IMAP4_RESP_CODE_PARSE: 
+@CAMEL_IMAP4_RESP_CODE_PERM_FLAGS: 
+@CAMEL_IMAP4_RESP_CODE_READONLY: 
+@CAMEL_IMAP4_RESP_CODE_READWRITE: 
+@CAMEL_IMAP4_RESP_CODE_TRYCREATE: 
+@CAMEL_IMAP4_RESP_CODE_UIDNEXT: 
+@CAMEL_IMAP4_RESP_CODE_UIDVALIDITY: 
+@CAMEL_IMAP4_RESP_CODE_UNSEEN: 
+@CAMEL_IMAP4_RESP_CODE_NEWNAME: 
+@CAMEL_IMAP4_RESP_CODE_APPENDUID: 
+@CAMEL_IMAP4_RESP_CODE_COPYUID: 
+@CAMEL_IMAP4_RESP_CODE_UNKNOWN: 
+
+<!-- ##### FUNCTION camel_imap4_search_new ##### -->
+<para>
+
+</para>
+
+@engine: 
+@cachedir: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_specials_init ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT camel_imap4_status_attr_t ##### -->
+<para>
+
+</para>
+
+@next: 
+@type: 
+@value: 
+
+<!-- ##### FUNCTION camel_imap4_status_free ##### -->
+<para>
+
+</para>
+
+@status: 
+
+<!-- ##### STRUCT camel_imap4_status_t ##### -->
+<para>
+
+</para>
+
+@attr_list: 
+@mailbox: 
+
+<!-- ##### FUNCTION camel_imap4_store_summary_get_folder_info ##### -->
+<para>
+
+</para>
+
+@s: 
+@top: 
+@flags: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_store_summary_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_store_summary_note_info ##### -->
+<para>
+
+</para>
+
+@s: 
+@fi: 
+
+<!-- ##### FUNCTION camel_imap4_store_summary_set_capabilities ##### -->
+<para>
+
+</para>
+
+@s: 
+@capa: 
+
+<!-- ##### FUNCTION camel_imap4_store_summary_set_namespaces ##### -->
+<para>
+
+</para>
+
+@s: 
+@ns: 
+
+<!-- ##### FUNCTION camel_imap4_store_summary_unnote_info ##### -->
+<para>
+
+</para>
+
+@s: 
+@fi: 
+
+<!-- ##### FUNCTION camel_imap4_stream_line ##### -->
+<para>
+
+</para>
+
+@stream: 
+@line: 
+@len: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_stream_literal ##### -->
+<para>
+
+</para>
+
+@stream: 
+@literal: 
+@len: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_stream_new ##### -->
+<para>
+
+</para>
+
+@stream: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_stream_next_token ##### -->
+<para>
+
+</para>
+
+@stream: 
+@token: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_stream_unget_token ##### -->
+<para>
+
+</para>
+
+@stream: 
+@token: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_summary_expunge ##### -->
+<para>
+
+</para>
+
+@summary: 
+@seqid: 
+
+<!-- ##### FUNCTION camel_imap4_summary_flush_updates ##### -->
+<para>
+
+</para>
+
+@summary: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_summary_new ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_summary_set_exists ##### -->
+<para>
+
+</para>
+
+@summary: 
+@exists: 
+
+<!-- ##### FUNCTION camel_imap4_summary_set_recent ##### -->
+<para>
+
+</para>
+
+@summary: 
+@recent: 
+
+<!-- ##### FUNCTION camel_imap4_summary_set_uidnext ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uidnext: 
+
+<!-- ##### FUNCTION camel_imap4_summary_set_uidvalidity ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uidvalidity: 
+
+<!-- ##### FUNCTION camel_imap4_summary_set_unseen ##### -->
+<para>
+
+</para>
+
+@summary: 
+@unseen: 
+
+<!-- ##### STRUCT camel_imap4_token_t ##### -->
+<para>
+
+</para>
+
+@token: 
+
+<!-- ##### FUNCTION camel_imap4_untagged_list ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@index: 
+@token: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_untagged_status ##### -->
+<para>
+
+</para>
+
+@engine: 
+@ic: 
+@index: 
+@token: 
+@ex: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_imap4_utils_set_unexpected_token_error ##### -->
+<para>
+
+</para>
+
+@ex: 
+@engine: 
+@token: 
 
 <!-- ##### FUNCTION camel_imap_store_summary_namespace_new ##### -->
 <para>
@@ -1406,4 +2352,47 @@ camel-types
 @gw_store: 
 @folder_name: 
 @Returns: 
+
+<!-- ##### MACRO is_atom ##### -->
+<para>
+
+</para>
+
+@x: 
+
+<!-- ##### MACRO is_ctrl ##### -->
+<para>
+
+</para>
+
+@x: 
+
+<!-- ##### MACRO is_lwsp ##### -->
+<para>
+
+</para>
+
+@x: 
+
+<!-- ##### MACRO is_qsafe ##### -->
+<para>
+
+</para>
+
+@x: 
+
+<!-- ##### MACRO is_type ##### -->
+<para>
+
+</para>
+
+@x: 
+@t: 
+
+<!-- ##### MACRO is_wild ##### -->
+<para>
+
+</para>
+
+@x: 
 

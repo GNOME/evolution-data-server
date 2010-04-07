@@ -22,16 +22,6 @@ CamelFolderSearch
 
 </para>
 
-@parent: 
-@priv: 
-@sexp: 
-@last_search: 
-@folder: 
-@summary: 
-@summary_set: 
-@current: 
-@current_message: 
-@body_index: 
 
 <!-- ##### FUNCTION camel_folder_search_new ##### -->
 <para>

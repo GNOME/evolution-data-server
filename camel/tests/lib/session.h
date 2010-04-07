@@ -1,4 +1,4 @@
-#include <camel/camel-session.h>
+#include <camel/camel.h>
 
 #define CAMEL_TEST_SESSION_TYPE     (camel_test_session_get_type ())
 #define CAMEL_TEST_SESSION(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TEST_SESSION_TYPE, CamelTestSession))

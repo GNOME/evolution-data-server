@@ -22,16 +22,6 @@ CamelMimeFilter
 
 </para>
 
-@parent: 
-@priv: 
-@outreal: 
-@outbuf: 
-@outptr: 
-@outsize: 
-@outpre: 
-@backbuf: 
-@backsize: 
-@backlen: 
 
 <!-- ##### FUNCTION camel_mime_filter_new ##### -->
 <para>
