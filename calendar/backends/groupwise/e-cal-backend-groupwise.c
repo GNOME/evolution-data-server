@@ -71,8 +71,6 @@ typedef struct {
 
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
-	/* A mutex to control access to the private structure */
-	GStaticRecMutex rec_mutex;
 	EGwConnection *cnc;
 	ECalBackendStore *store;
 	gboolean read_only;
@@ -82,7 +80,6 @@ struct _ECalBackendGroupwisePrivate {
 	gchar *container_id;
 	CalMode mode;
 	gboolean mode_changed;
-	icaltimezone *default_zone;
 	GHashTable *categories_by_id;
 	GHashTable *categories_by_name;
 
@@ -96,6 +93,9 @@ struct _ECalBackendGroupwisePrivate {
 	gchar *user_email;
 	gchar *local_attachments_store;
 
+	/* A mutex to control access to the private structure for the following */
+	GStaticRecMutex rec_mutex;
+	icaltimezone *default_zone;
 	guint timeout_id;
 	GThread *dthread;
 	SyncDelta *dlock;
@@ -155,6 +155,18 @@ e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
 	return cbgw->priv->default_zone;
 }
 
+void
+e_cal_backend_groupwise_priv_lock (ECalBackendGroupwise *cbgw)
+{
+       PRIV_LOCK (cbgw->priv);
+}
+
+void
+e_cal_backend_groupwise_priv_unlock (ECalBackendGroupwise *cbgw)
+{
+       PRIV_UNLOCK (cbgw->priv);
+}
+
 static const gchar *
 get_element_type (icalcomponent_kind kind)
 {
@@ -198,7 +210,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	total = priv->total_count;
 
-	PRIV_LOCK (priv);
 
 	type = get_element_type (kind);
 
@@ -236,7 +247,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 				"recipients message recipientStatus attachments default peek", filter[i], &cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
-			PRIV_UNLOCK (priv);
 			return status;
 		}
 		done = FALSE;
@@ -256,7 +266,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, forward, CURSOR_ITEM_LIMIT, position, &list);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				e_cal_backend_groupwise_notify_error_code (cbgw, status);
-				PRIV_UNLOCK (priv);
 				return status;
 			}
 			for (l = list; l != NULL; l = g_list_next(l)) {
@@ -304,7 +313,6 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	}
 	e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), "", 100);
 
-	PRIV_UNLOCK (priv);
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
@@ -345,7 +353,6 @@ get_deltas (gpointer handle)
 	gchar *time_string = NULL;
 	gchar t_str [26];
 	gchar *attempts;
-	gchar *container_id;
 	const gchar *serv_time;
 	const gchar *position;
 
@@ -366,11 +373,8 @@ get_deltas (gpointer handle)
 	if (priv->mode == CAL_MODE_LOCAL)
 		return FALSE;
 
-	PRIV_LOCK (priv);
-
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	cnc = priv->cnc;
-	container_id = g_strdup (cbgw->priv->container_id);
 
 	store = priv->store;
 	item_list = NULL;
@@ -406,13 +410,10 @@ get_deltas (gpointer handle)
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_AND, 2);
 
-	PRIV_UNLOCK (priv);
-
-	status = e_gw_connection_get_items (cnc, container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+	status = e_gw_connection_get_items (cnc, priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_items (cnc, container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+		status = e_gw_connection_get_items (cnc, priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 
-	PRIV_LOCK (priv);
 
 	g_object_unref (filter);
 
@@ -430,16 +431,12 @@ get_deltas (gpointer handle)
 		e_cal_backend_store_put_key_value (store, ATTEMPTS_KEY, attempts);
 		g_free (attempts);
 
-		g_free (container_id);
-
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			PRIV_UNLOCK (priv);
 			return TRUE;
 		}
 
 		msg = e_gw_connection_get_error_message (status);
 
-		PRIV_UNLOCK (priv);
 		return TRUE;
 	}
 
@@ -536,23 +533,16 @@ get_deltas (gpointer handle)
 	filter = e_gw_filter_new ();
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
 
-	PRIV_UNLOCK (priv);
-	status = e_gw_connection_create_cursor (cnc, container_id, "id iCalId recurrenceKey startDate", filter, &cursor);
-	PRIV_LOCK (priv);
+	status = e_gw_connection_create_cursor (cnc, priv->container_id, "id iCalId recurrenceKey startDate", filter, &cursor);
 
 	g_object_unref (filter);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
-
-		g_free (container_id);
-
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			PRIV_UNLOCK (priv);
 			return TRUE;
 		}
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-		PRIV_UNLOCK (priv);
 		return TRUE;
 	}
 
@@ -560,9 +550,7 @@ get_deltas (gpointer handle)
 
 	done = FALSE;
 	while (!done) {
-		PRIV_UNLOCK (priv);
-		status = e_gw_connection_read_cal_ids (cnc, container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
-		PRIV_LOCK (priv);
+		status = e_gw_connection_read_cal_ids (cnc, priv->container_id, cursor, FALSE, CURSOR_ICALID_LIMIT, position, &item_list);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
 				goto err_done;
@@ -585,9 +573,7 @@ get_deltas (gpointer handle)
 		position = E_GW_CURSOR_POSITION_CURRENT;
 
 	}
-	PRIV_UNLOCK (priv);
-	e_gw_connection_destroy_cursor (cnc, container_id, cursor);
-	PRIV_LOCK (priv);
+	e_gw_connection_destroy_cursor (cnc, priv->container_id, cursor);
 	e_cal_backend_store_freeze_changes (store);
 
 	uid_array = g_ptr_array_new ();
@@ -598,6 +584,8 @@ get_deltas (gpointer handle)
 
 		id = g_new0 (ECalComponentId, 1);
 
+		PRIV_LOCK (priv);
+		
 		if (calid->recur_key && calid->start_date) {
 			gchar *rid = NULL;
 
@@ -611,6 +599,8 @@ get_deltas (gpointer handle)
 			id->rid = rid;
 		} else
 			id->uid = g_strdup (calid->ical_id);
+		
+		PRIV_UNLOCK (priv);
 
 		if (!(remove = g_slist_find_custom (cache_ids, id,  (GCompareFunc) compare_ids))) {
 			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
@@ -650,12 +640,10 @@ get_deltas (gpointer handle)
 	}
 
 	if (needs_to_get) {
-		PRIV_UNLOCK (priv);
 		e_gw_connection_get_items_from_ids (
-			cnc, container_id,
+			cnc, priv->container_id,
 			"attachments recipients message recipientStatus default peek",
 			uid_array, &item_list);
-		PRIV_LOCK (priv);
 
 		for (l = item_list; l != NULL; l = l->next) {
 			ECalComponent *comp = NULL;
@@ -687,8 +675,6 @@ get_deltas (gpointer handle)
 	g_ptr_array_free (uid_array, TRUE);
 
  err_done:
-	g_free (container_id);
-
 	if (item_list) {
 		g_list_free (item_list);
 		item_list = NULL;
@@ -704,7 +690,6 @@ get_deltas (gpointer handle)
 		g_slist_free (cache_ids);
 	}
 
-	PRIV_UNLOCK (priv);
 	return TRUE;
 }
 
@@ -1654,11 +1639,15 @@ e_cal_backend_groupwise_set_default_zone (ECalBackendSync *backend, EDataCal *ca
 	zone = icaltimezone_new ();
 	icaltimezone_set_component (zone, tz_comp);
 
+	PRIV_LOCK (priv);
+	
 	if (priv->default_zone)
 		icaltimezone_free (priv->default_zone, 1);
 
 	/* Set the default timezone to it. */
 	priv->default_zone = zone;
+
+	PRIV_UNLOCK (priv);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1773,10 +1762,10 @@ e_cal_backend_groupwise_get_free_busy (ECalBackendSync *backend, EDataCal *cal, 
 	       return GNOME_Evolution_Calendar_RepositoryOffline;
        }
 
-       status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy, cbgw->priv->default_zone);
+       status = e_gw_connection_get_freebusy_info (cbgw, users, start, end, freebusy);
 
        if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-	       status = e_gw_connection_get_freebusy_info (cnc, users, start, end, freebusy, cbgw->priv->default_zone);
+	       status = e_gw_connection_get_freebusy_info (cbgw, users, start, end, freebusy);
 
        if (status != E_GW_CONNECTION_STATUS_OK)
                return GNOME_Evolution_Calendar_OtherError;
