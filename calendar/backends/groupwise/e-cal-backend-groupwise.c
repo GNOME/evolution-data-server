@@ -70,7 +70,7 @@ typedef struct {
 /* Private part of the CalBackendGroupwise structure */
 struct _ECalBackendGroupwisePrivate {
 	/* A mutex to control access to the private structure */
-	GMutex *mutex;
+	GStaticRecMutex rec_mutex;
 	EGwConnection *cnc;
 	ECalBackendStore *store;
 	gboolean read_only;
@@ -98,6 +98,9 @@ struct _ECalBackendGroupwisePrivate {
 	GThread *dthread;
 	SyncDelta *dlock;
 };
+
+#define PRIV_LOCK(p)   (g_static_rec_mutex_lock (&(p)->rec_mutex))
+#define PRIV_UNLOCK(p) (g_static_rec_mutex_unlock (&(p)->rec_mutex))
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
 static void e_cal_backend_groupwise_finalize (GObject *object);
@@ -150,8 +153,6 @@ e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
 	return cbgw->priv->default_zone;
 }
 
-static GMutex *mutex = NULL;
-
 static const gchar *
 get_element_type (icalcomponent_kind kind)
 {
@@ -195,11 +196,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
 	total = priv->total_count;
 
-	if (!mutex) {
-		mutex = g_mutex_new ();
-	}
-
-	g_mutex_lock (mutex);
+	PRIV_LOCK (priv);
 
 	type = get_element_type (kind);
 
@@ -237,7 +234,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 				"recipients message recipientStatus attachments default peek", filter[i], &cursor);
 		if (status != E_GW_CONNECTION_STATUS_OK) {
 			e_cal_backend_groupwise_notify_error_code (cbgw, status);
-			g_mutex_unlock (mutex);
+			PRIV_UNLOCK (priv);
 			return status;
 		}
 		done = FALSE;
@@ -257,7 +254,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 			status = e_gw_connection_read_cursor (priv->cnc, priv->container_id, cursor, forward, CURSOR_ITEM_LIMIT, position, &list);
 			if (status != E_GW_CONNECTION_STATUS_OK) {
 				e_cal_backend_groupwise_notify_error_code (cbgw, status);
-				g_mutex_unlock (mutex);
+				PRIV_UNLOCK (priv);
 				return status;
 			}
 			for (l = list; l != NULL; l = g_list_next(l)) {
@@ -305,7 +302,7 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	}
 	e_cal_backend_notify_view_progress (E_CAL_BACKEND (cbgw), "", 100);
 
-	g_mutex_unlock (mutex);
+	PRIV_UNLOCK (priv);
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
@@ -329,6 +326,8 @@ compare_ids (gconstpointer a, gconstpointer b)
 		return 1;
 }
 
+#define ATTEMPTS_KEY "attempts"
+
 static gboolean
 get_deltas (gpointer handle)
 {
@@ -343,10 +342,9 @@ get_deltas (gpointer handle)
 	GPtrArray *uid_array = NULL;
 	gchar *time_string = NULL;
 	gchar t_str [26];
+	gchar *attempts;
+	gchar *container_id;
 	const gchar *serv_time;
-	static GStaticMutex connecting = G_STATIC_MUTEX_INIT;
-	const gchar *key = "attempts";
-	const gchar *attempts;
 	const gchar *position;
 
 	EGwFilter *filter;
@@ -360,19 +358,21 @@ get_deltas (gpointer handle)
 
 	if (!handle)
 		return FALSE;
-	cbgw = (ECalBackendGroupwise *) handle;
-	priv= cbgw->priv;
-	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
-	cnc = priv->cnc;
-	store = priv->store;
-	item_list = NULL;
 
+	cbgw = (ECalBackendGroupwise *) handle;
+	priv = cbgw->priv;
 	if (priv->mode == CAL_MODE_LOCAL)
 		return FALSE;
 
-	attempts = e_cal_backend_store_get_key_value (store, key);
+	PRIV_LOCK (priv);
 
-	g_static_mutex_lock (&connecting);
+	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbgw));
+	cnc = priv->cnc;
+
+	store = priv->store;
+	item_list = NULL;
+
+	attempts = g_strdup (e_cal_backend_store_get_key_value (store, ATTEMPTS_KEY));
 
 	serv_time = e_cal_backend_store_get_key_value (store, SERVER_UTC_TIME);
 	if (serv_time) {
@@ -403,31 +403,39 @@ get_deltas (gpointer handle)
 	e_gw_filter_add_filter_component (filter, E_GW_FILTER_OP_EQUAL, "@type", get_element_type (kind));
 	e_gw_filter_group_conditions (filter, E_GW_FILTER_OP_AND, 2);
 
-	status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+	container_id = g_strdup (cbgw->priv->container_id);
+	PRIV_UNLOCK (priv);
+
+	status = e_gw_connection_get_items (cnc, container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
 	if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
-		status = e_gw_connection_get_items (cnc, cbgw->priv->container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+		status = e_gw_connection_get_items (cnc, container_id, "attachments recipients message recipientStatus default peek", filter, &item_list);
+	PRIV_LOCK (priv);
+
+	g_free (container_id);
 	g_object_unref (filter);
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 
 		const gchar *msg = NULL;
+		gint failures;
 
-		if (!attempts) {
-			e_cal_backend_store_put_key_value (store, key, "2");
-		} else {
-			gint failures;
-			failures = g_ascii_strtod(attempts, NULL) + 1;
-			e_cal_backend_store_put_key_value (store, key, GINT_TO_POINTER (failures));
-		}
+		if (!attempts)
+			failures = 2;
+		else
+			failures = g_ascii_strtod (attempts, NULL) + 1;
+		g_free (attempts);
+		attempts = g_strdup_printf ("%d", failures);
+		e_cal_backend_store_put_key_value (store, ATTEMPTS_KEY, attempts);
+		g_free (attempts);
 
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			g_static_mutex_unlock (&connecting);
+			PRIV_UNLOCK (priv);
 			return TRUE;
 		}
 
 		msg = e_gw_connection_get_error_message (status);
 
-		g_static_mutex_unlock (&connecting);
+		PRIV_UNLOCK (priv);
 		return TRUE;
 	}
 
@@ -499,10 +507,11 @@ get_deltas (gpointer handle)
 
 	if (attempts) {
 		tm.tm_min += (time_interval * g_ascii_strtod (attempts, NULL));
-		e_cal_backend_store_put_key_value (store, key, NULL);
+		e_cal_backend_store_put_key_value (store, ATTEMPTS_KEY, NULL);
 	} else {
 		tm.tm_min += time_interval;
 	}
+	g_free (attempts);
 	strftime (t_str, 26, "%Y-%m-%dT%H:%M:%SZ", &tm);
 	time_string = g_strdup (t_str);
 
@@ -528,12 +537,12 @@ get_deltas (gpointer handle)
 
 	if (status != E_GW_CONNECTION_STATUS_OK) {
 		if (status == E_GW_CONNECTION_STATUS_NO_RESPONSE) {
-			g_static_mutex_unlock (&connecting);
+			PRIV_UNLOCK (priv);
 			return TRUE;
 		}
 
 		e_cal_backend_groupwise_notify_error_code (cbgw, status);
-		g_static_mutex_unlock (&connecting);
+		PRIV_UNLOCK (priv);
 		return TRUE;
 	}
 
@@ -677,7 +686,7 @@ get_deltas (gpointer handle)
 		g_slist_free (cache_ids);
 	}
 
-	g_static_mutex_unlock (&connecting);
+	PRIV_UNLOCK (priv);
 	return TRUE;
 }
 
@@ -789,9 +798,9 @@ e_cal_backend_groupwise_refresh_calendar (ECalBackendGroupwise *cbgw)
 	if (priv->mode == CAL_MODE_LOCAL)
 		return;
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 	delta_started = fetch_deltas (cbgw);
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 
 	/* Emit the signal if the delta is already running */
 	if (!delta_started)
@@ -890,9 +899,9 @@ cache_init (ECalBackendGroupwise *cbgw)
 		}
 	}
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 	fetch_deltas (cbgw);
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 
 	return NULL;
 }
@@ -1075,7 +1084,6 @@ connect_to_server (ECalBackendGroupwise *cbgw)
 		e_cal_backend_cache_remove (uri, source_type);
 		priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
 		if (!priv->store) {
-			g_mutex_unlock (priv->mutex);
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
 			return GNOME_Evolution_Calendar_OtherError;
 		}
@@ -1154,10 +1162,7 @@ e_cal_backend_groupwise_finalize (GObject *object)
 		priv->dthread = NULL;
 	}
 
-	if (priv->mutex) {
-		g_mutex_free (priv->mutex);
-		priv->mutex = NULL;
-	}
+	g_static_rec_mutex_free (&priv->rec_mutex);
 
 	if (priv->cnc) {
 		g_object_unref (priv->cnc);
@@ -1335,7 +1340,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 
 	cbgw->priv->read_only = FALSE;
 
@@ -1365,7 +1370,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 		display_contents = e_source_get_property (esource, "offline_sync");
 
 		if (!display_contents || !g_str_equal (display_contents, "1")) {
-			g_mutex_unlock (priv->mutex);
+			PRIV_UNLOCK (priv);
 			return GNOME_Evolution_Calendar_RepositoryOffline;
 		}
 
@@ -1376,7 +1381,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 			e_cal_backend_cache_remove (uri, source_type);
 			priv->store = (ECalBackendStore *) e_cal_backend_file_store_new (uri, source_type);
 			if (!priv->store) {
-				g_mutex_unlock (priv->mutex);
+				PRIV_UNLOCK (priv);
 				e_cal_backend_notify_error (E_CAL_BACKEND (cbgw), _("Could not create cache file"));
 
 				return GNOME_Evolution_Calendar_OtherError;
@@ -1385,7 +1390,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 
 		e_cal_backend_store_set_default_timezone (priv->store, priv->default_zone);
 
-		g_mutex_unlock (priv->mutex);
+		PRIV_UNLOCK (priv);
 		return GNOME_Evolution_Calendar_Success;
 	}
 
@@ -1418,7 +1423,7 @@ e_cal_backend_groupwise_open (ECalBackendSync *backend, EDataCal *cal, gboolean 
 	/* FIXME: no need to set it online here when we implement the online/offline stuff correctly */
 	status = connect_to_server (cbgw);
 
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 	return status;
 }
 
@@ -1431,13 +1436,13 @@ e_cal_backend_groupwise_remove (ECalBackendSync *backend, EDataCal *cal)
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 
 	/* remove the cache */
 	if (priv->store)
 		e_cal_backend_store_remove (priv->store);
 
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1484,7 +1489,7 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 		return;
 	}
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 
 	priv->mode_changed = TRUE;
 	switch (mode) {
@@ -1512,7 +1517,7 @@ e_cal_backend_groupwise_set_mode (ECalBackend *backend, CalMode mode)
 					   cal_mode_to_corba (mode));
 	}
 
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 }
 
 static ECalBackendSyncStatus
@@ -1553,12 +1558,12 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 
 	priv = cbgw->priv;
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 
 	/* search the object in the cache */
 	comp = e_cal_backend_store_get_component (priv->store, uid, rid);
 	if (comp) {
-		g_mutex_unlock (priv->mutex);
+		PRIV_UNLOCK (priv);
 		if (e_cal_backend_get_kind (E_CAL_BACKEND (backend)) ==
 		    icalcomponent_isa (e_cal_component_get_icalcomponent (comp)))
 			*object = e_cal_component_get_as_string (comp);
@@ -1570,7 +1575,7 @@ e_cal_backend_groupwise_get_object (ECalBackendSync *backend, EDataCal *cal, con
 		return *object ? GNOME_Evolution_Calendar_Success : GNOME_Evolution_Calendar_ObjectNotFound;
 	}
 
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 
 	/* callers will never have a uuid that is in server but not in cache */
 	return GNOME_Evolution_Calendar_ObjectNotFound;
@@ -1692,7 +1697,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
 	priv = cbgw->priv;
 
-	g_mutex_lock (priv->mutex);
+	PRIV_LOCK (priv);
 
 	g_message (G_STRLOC ": Getting object list (%s)", sexp);
 
@@ -1701,7 +1706,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 
 	cbsexp = e_cal_backend_sexp_new (sexp);
 	if (!cbsexp) {
-		g_mutex_unlock (priv->mutex);
+		PRIV_UNLOCK (priv);
 		return GNOME_Evolution_Calendar_InvalidQuery;
 	}
 
@@ -1723,7 +1728,7 @@ e_cal_backend_groupwise_get_object_list (ECalBackendSync *backend, EDataCal *cal
 	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
 	g_slist_free (components);
 
-	g_mutex_unlock (priv->mutex);
+	PRIV_UNLOCK (priv);
 
 	return GNOME_Evolution_Calendar_Success;
 }
@@ -1918,7 +1923,12 @@ e_cal_backend_groupwise_internal_get_default_timezone (ECalBackend *backend)
 static icaltimezone *
 e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 {
-	icaltimezone *zone;
+	icaltimezone *zone = NULL;
+	ECalBackendGroupwise *cbgw;
+
+	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
+	g_return_val_if_fail (cbgw != NULL, NULL);
+	g_return_val_if_fail (cbgw->priv != NULL, NULL);
 
 	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
 
@@ -2839,7 +2849,7 @@ e_cal_backend_groupwise_init (ECalBackendGroupwise *cbgw, ECalBackendGroupwiseCl
 	priv->sendoptions_sync_timeout = 0;
 
 	/* create the mutex for thread safety */
-	priv->mutex = g_mutex_new ();
+	g_static_rec_mutex_init (&priv->rec_mutex);
 
 	cbgw->priv = priv;
 
