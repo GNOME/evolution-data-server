@@ -825,9 +825,15 @@ e_gw_item_new_from_cal_component (const gchar *container, ECalBackendGroupwise *
 
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
+	e_cal_backend_groupwise_priv_lock (cbgw);
+	
 	item = e_gw_item_new_empty ();
 	e_gw_item_set_container_id (item, container);
-	return set_properties_from_cal_component (item, comp, cbgw);
+	item = set_properties_from_cal_component (item, comp, cbgw);
+
+	e_cal_backend_groupwise_priv_unlock (cbgw);
+
+	return item;
 }
 
 /* Set the attendee list and send options to EGwItem */
@@ -844,8 +850,10 @@ e_gw_item_new_for_delegate_from_cal (ECalBackendGroupwise *cbgw, ECalComponent *
 	e_gw_item_set_id (item, e_cal_component_get_gw_id (comp));
 	user_email = e_gw_connection_get_user_email (e_cal_backend_groupwise_get_connection (cbgw));
 
+	e_cal_backend_groupwise_priv_lock (cbgw);
 	set_attendees_to_item (item, comp, default_zone, TRUE, user_email);
 	add_send_options_data_to_item (item, comp, default_zone);
+	e_cal_backend_groupwise_priv_unlock (cbgw);
 
 	return item;
 }
@@ -1035,10 +1043,12 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	EGwItemOrganizer *organizer;
 	EGwItemType item_type;
 
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+	
+	e_cal_backend_groupwise_priv_lock (cbgw);
+	
 	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
 	categories_by_id = e_cal_backend_groupwise_get_categories_by_id (cbgw);
-
-	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
 
 	comp = e_cal_component_new ();
 
@@ -1052,6 +1062,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_JOURNAL);
 	else {
 		g_object_unref (comp);
+		e_cal_backend_groupwise_priv_unlock (cbgw);
 		return NULL;
 	}
 
@@ -1175,8 +1186,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 		}
 
 		e_cal_component_set_dtstart (comp, &dt);
-	} else
+	} else {
+		e_cal_backend_groupwise_priv_unlock (cbgw);
 		return NULL;
+	}
 
 	/* UID */
 	if (e_gw_item_get_recurrence_key (item) != 0) {
@@ -1200,6 +1213,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 			e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
 		else {
 			g_object_unref (comp);
+			e_cal_backend_groupwise_priv_unlock (cbgw);
 			return NULL;
 		}
 	}
@@ -1405,10 +1419,12 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 	case E_GW_ITEM_TYPE_NOTE:
 		break;
 	default :
+		e_cal_backend_groupwise_priv_unlock (cbgw);
 		return NULL;
 	}
 
 	e_cal_component_commit_sequence (comp);
+	e_cal_backend_groupwise_priv_unlock (cbgw);
 
 	return comp;
 }
@@ -1726,17 +1742,22 @@ close_freebusy_session (EGwConnection *cnc, const gchar *session)
 }
 
 EGwConnectionStatus
-e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t start, time_t end, GList **freebusy, icaltimezone *default_zone)
+e_gw_connection_get_freebusy_info (ECalBackendGroupwise *cbgw, GList *users, time_t start, time_t end, GList **freebusy)
 {
         SoupSoapMessage *msg;
         SoupSoapResponse *response;
         EGwConnectionStatus status;
         SoupSoapParameter *param, *subparam, *param_outstanding;
+	EGwConnection *cnc;
         gchar *session;
 	gchar *outstanding = NULL;
 	gboolean resend_request = TRUE;
 	gint request_iteration = 0;
+	icaltimezone *default_zone;
 
+	default_zone = e_cal_backend_groupwise_get_default_zone (cbgw);
+	cnc = e_cal_backend_groupwise_get_connection (cbgw);
+	
 	g_return_val_if_fail (E_IS_GW_CONNECTION (cnc), E_GW_CONNECTION_STATUS_INVALID_CONNECTION);
 
 	/* Perform startFreeBusySession */
@@ -1815,6 +1836,8 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		GSList *attendee_list = NULL;
 		icalcomponent *icalcomp = NULL;
 		icaltimetype start_time, end_time;
+	
+		e_cal_backend_groupwise_priv_lock (cbgw);
 
 		tmp = soup_soap_parameter_get_first_child_by_name (subparam, "email");
 		if (tmp)
@@ -1861,6 +1884,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		if (!param_blocks) {
 			g_object_unref (response);
 			g_object_unref (msg);
+			e_cal_backend_groupwise_priv_unlock (cbgw);
 			return E_GW_CONNECTION_STATUS_INVALID_RESPONSE;
 		}
 
@@ -1932,6 +1956,7 @@ e_gw_connection_get_freebusy_info (EGwConnection *cnc, GList *users, time_t star
 		e_cal_component_commit_sequence (comp);
 		*freebusy = g_list_append (*freebusy, e_cal_component_get_as_string (comp));
 		g_object_unref (comp);
+		e_cal_backend_groupwise_priv_unlock (cbgw);
 	}
 
         g_object_unref (msg);
