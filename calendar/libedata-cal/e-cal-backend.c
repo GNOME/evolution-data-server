@@ -85,6 +85,7 @@ enum {
 static guint e_cal_backend_signals[LAST_SIGNAL];
 
 static void e_cal_backend_finalize (GObject *object);
+static void e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref);
 
 
 
@@ -383,9 +384,10 @@ e_cal_backend_get_kind (ECalBackend *backend)
 }
 
 static void
-last_client_gone (ECalBackend *backend)
+cal_destroy_cb (gpointer data, GObject *where_cal_was)
 {
-	g_signal_emit (backend, e_cal_backend_signals[LAST_CLIENT_GONE], 0);
+	e_cal_backend_remove_client_private (E_CAL_BACKEND (data),
+					     (EDataCal *) where_cal_was, FALSE);
 }
 
 /**
@@ -408,29 +410,15 @@ e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal)
 
 	priv = backend->priv;
 
-	/* TODO: Implement this? */
-#if 0
-	bonobo_object_set_immortal (BONOBO_OBJECT (cal), TRUE);
-
 	g_object_weak_ref (G_OBJECT (cal), cal_destroy_cb, backend);
-
-	ORBit_small_listen_for_broken (e_data_cal_get_listener (cal), G_CALLBACK (listener_died_cb), cal);
-#endif
 
 	g_mutex_lock (priv->clients_mutex);
 	priv->clients = g_list_append (priv->clients, cal);
 	g_mutex_unlock (priv->clients_mutex);
 }
 
-/**
- * e_cal_backend_remove_client:
- * @backend: An #ECalBackend object.
- * @cal: An #EDataCal object.
- *
- * Removes a client from the list of connected clients to the given backend.
- */
-void
-e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
+static void
+e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref)
 {
 	ECalBackendPrivate *priv;
 
@@ -444,6 +432,9 @@ e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
 
 	priv = backend->priv;
 
+	if (weak_unref)
+		g_object_weak_unref (G_OBJECT (cal), cal_destroy_cb, backend);
+
 	/* Disconnect */
 	g_mutex_lock (priv->clients_mutex);
 	priv->clients = g_list_remove (priv->clients, cal);
@@ -453,7 +444,20 @@ e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
 	 * it may decide whether to kill the backend or not.
 	 */
 	if (!priv->clients)
-		last_client_gone (backend);
+		g_signal_emit (backend, e_cal_backend_signals[LAST_CLIENT_GONE], 0);
+}
+
+/**
+ * e_cal_backend_remove_client:
+ * @backend: An #ECalBackend object.
+ * @cal: An #EDataCal object.
+ *
+ * Removes a client from the list of connected clients to the given backend.
+ */
+void
+e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
+{
+	e_cal_backend_remove_client_private (backend, cal, TRUE);
 }
 
 /**
