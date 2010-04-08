@@ -106,7 +106,6 @@ struct _ECalBackendGroupwisePrivate {
 
 static void e_cal_backend_groupwise_dispose (GObject *object);
 static void e_cal_backend_groupwise_finalize (GObject *object);
-static void sanitize_component (ECalBackendSync *backend, ECalComponent *comp, gchar *server_uid);
 static ECalBackendSyncStatus
 e_cal_backend_groupwise_add_timezone (ECalBackendSync *backend, EDataCal *cal, const gchar *tzobj);
 static const gchar * get_gw_item_id (icalcomponent *icalcomp);
@@ -153,6 +152,12 @@ e_cal_backend_groupwise_get_default_zone (ECalBackendGroupwise *cbgw) {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GROUPWISE (cbgw), NULL);
 
 	return cbgw->priv->default_zone;
+}
+
+const char *
+e_cal_backend_groupwise_get_container_id (ECalBackendGroupwise *cbgw) 
+{
+	return cbgw->priv->container_id;
 }
 
 void
@@ -316,24 +321,38 @@ populate_cache (ECalBackendGroupwise *cbgw)
 	return E_GW_CONNECTION_STATUS_OK;
 }
 
+typedef struct
+{
+	EGwItemCalId *calid;
+	ECalBackendStore *store;	
+} CompareIdData;
+
 static gint
 compare_ids (gconstpointer a, gconstpointer b)
 {
 	ECalComponentId *cache_id = (ECalComponentId *) a;
-	ECalComponentId *server_id = (ECalComponentId *) b;
+	CompareIdData *data = (CompareIdData *) b;
+	EGwItemCalId *calid = data->calid;
+	ECalBackendStore *store = data->store;
+	
+	if (!calid->recur_key)
+		return g_strcmp0 (cache_id->uid, calid->ical_id);
+	else {
+		ECalComponent *comp;
+		gint ret = 1;
+		const char *cache_item_id;
+	       
+		if (strcmp (cache_id->uid, calid->recur_key))
+			return 1;
 
-	if (g_str_equal (cache_id->uid, server_id->uid)) {
-		if (cache_id->rid && server_id->rid) {
-			if (g_str_equal (cache_id->rid, server_id->rid))
-				return 0;
-			else
-				return 1;
-		} else if (!cache_id->rid && !server_id->rid)
-			return 0;
+		comp = e_cal_backend_store_get_component (store, cache_id->uid, cache_id->rid);
+		cache_item_id = e_cal_component_get_gw_id (comp);
+		if (!strcmp (cache_item_id, calid->item_id))
+			ret = 0;
 
-		return 1;
-	} else
-		return 1;
+		g_object_unref (comp);
+		return ret;
+	}
 }
 
 #define ATTEMPTS_KEY "attempts"
@@ -580,37 +599,18 @@ get_deltas (gpointer handle)
 	for (l = total_list; l != NULL; l = g_list_next (l)) {
 		EGwItemCalId *calid = (EGwItemCalId *)	l->data;
 		GSList *remove = NULL;
-		ECalComponentId *id = NULL;
+		CompareIdData data;
 
-		id = g_new0 (ECalComponentId, 1);
-
-		PRIV_LOCK (priv);
+		data.calid = calid;
+		data.store = store;
 		
-		if (calid->recur_key && calid->start_date) {
-			gchar *rid = NULL;
-
-			icaltimetype tt = icaltime_from_string (calid->start_date);
-
-			tt = icaltime_convert_to_zone (tt, priv->default_zone);
-			icaltime_set_timezone (&tt, priv->default_zone);
-			rid = icaltime_as_ical_string_r (tt);
-
-			id->uid = g_strdup (calid->recur_key);
-			id->rid = rid;
-		} else
-			id->uid = g_strdup (calid->ical_id);
-		
-		PRIV_UNLOCK (priv);
-
-		if (!(remove = g_slist_find_custom (cache_ids, id,  (GCompareFunc) compare_ids))) {
+		if (!(remove = g_slist_find_custom (cache_ids, &data,  (GCompareFunc) compare_ids))) {
 			g_ptr_array_add (uid_array, g_strdup (calid->item_id));
 			needs_to_get = TRUE;
 		} else  {
 			cache_ids = g_slist_remove_link (cache_ids, remove);
 			e_cal_component_free_id (remove->data);
 		}
-
-		e_cal_component_free_id (id);
 	}
 
 	for (ls = cache_ids; ls; ls = g_slist_next (ls)) {
@@ -642,7 +642,7 @@ get_deltas (gpointer handle)
 	if (needs_to_get) {
 		e_gw_connection_get_items_from_ids (
 			cnc, priv->container_id,
-			"attachments recipients message recipientStatus default peek",
+			"attachments recipients message recipientStatus recurrenceKey default peek",
 			uid_array, &item_list);
 
 		for (l = item_list; l != NULL; l = l->next) {
@@ -654,7 +654,6 @@ get_deltas (gpointer handle)
 			comp = e_gw_item_to_cal_component (item, cbgw);
 			if (comp) {
 				e_cal_component_commit_sequence (comp);
-				sanitize_component (E_CAL_BACKEND_SYNC (cbgw), comp, (gchar *) e_gw_item_get_id (item));
 				e_cal_backend_store_put_component (store, comp);
 
 				if (kind == icalcomponent_isa (e_cal_component_get_icalcomponent (comp))) {
@@ -1918,36 +1917,6 @@ e_cal_backend_groupwise_internal_get_timezone (ECalBackend *backend, const gchar
 	return zone;
 }
 
-static void
-sanitize_component (ECalBackendSync *backend, ECalComponent *comp, gchar *server_uid)
-{
-	ECalBackendGroupwise *cbgw;
-	icalproperty *icalprop;
-	gint i;
-	GString *str = g_string_new ("");;
-
-	cbgw = E_CAL_BACKEND_GROUPWISE (backend);
-	if (server_uid) {
-
-		/* the ID returned by sendItemResponse includes the container ID of the
-		   inbox folder, so we need to replace that with our container ID */
-		for (i = 0; i < strlen (server_uid); i++) {
-			str = g_string_append_c (str, server_uid[i]);
-			if (server_uid[i] == ':') {
-				str = g_string_append (str, cbgw->priv->container_id);
-				break;
-			}
-		}
-
-		/* add the extra property to the component */
-		icalprop = icalproperty_new_x (str->str);
-		icalproperty_set_x_name (icalprop, "X-GWRECORDID");
-		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
-
-	}
-	g_string_free (str, TRUE);
-}
-
 static EGwConnectionStatus
 update_from_server (ECalBackendGroupwise *cbgw, GSList *uid_list, gchar **calobj, ECalComponent *comp)
 {
@@ -1986,7 +1955,6 @@ update_from_server (ECalBackendGroupwise *cbgw, GSList *uid_list, gchar **calobj
 		item = (EGwItem *) tmp->data;
 		e_cal_comp = e_gw_item_to_cal_component (item, cbgw);
 		e_cal_component_commit_sequence (e_cal_comp);
-		sanitize_component (backend, e_cal_comp, g_ptr_array_index (uid_array, i));
 		e_cal_backend_store_put_component (priv->store, e_cal_comp);
 
 		if (i == 0) {
