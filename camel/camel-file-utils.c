@@ -33,14 +33,14 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "camel-file-utils.h"
+#include "camel-operation.h"
+#include "camel-url.h"
+
 #ifdef G_OS_WIN32
 #include <winsock2.h>
 #define EWOULDBLOCK EAGAIN
 #endif
-
-#include "camel-file-utils.h"
-#include "camel-operation.h"
-#include "camel-url.h"
 
 #define IO_TIMEOUT (60*4)
 
