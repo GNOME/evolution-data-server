@@ -1020,13 +1020,41 @@ get_cn_from_display_name (gchar *display_name)
 	}
 }
 
+static void
+sanitize_component (ECalComponent *comp, const gchar *server_uid, const char *container_id)
+{
+	icalproperty *icalprop;
+	gint i;
+	GString *str = g_string_new ("");;
+
+	if (server_uid) {
+
+		/* the ID returned by sendItemResponse includes the container ID of the
+		   inbox folder, so we need to replace that with our container ID */
+		for (i = 0; i < strlen (server_uid); i++) {
+			str = g_string_append_c (str, server_uid[i]);
+			if (server_uid[i] == ':') {
+				str = g_string_append (str, container_id);
+				break;
+			}
+		}
+
+		/* add the extra property to the component */
+		icalprop = icalproperty_new_x (str->str);
+		icalproperty_set_x_name (icalprop, "X-GWRECORDID");
+		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
+
+	}
+	g_string_free (str, TRUE);
+}
+
 ECalComponent *
 e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 {
 	ECalComponent *comp;
 	ECalComponentText text;
 	ECalComponentDateTime dt;
-	const gchar *description, *uid;
+	const gchar *description, *uid, *item_id;
 	const gchar *t;
 	gchar *name;
 	GList *category_ids;
@@ -1068,13 +1096,10 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 	/* set common properties */
 	/* GW server ID */
-	description = e_gw_item_get_id (item);
-	if (description) {
-		icalproperty *icalprop;
-
-		icalprop = icalproperty_new_x (description);
-		icalproperty_set_x_name (icalprop, "X-GWRECORDID");
-		icalcomponent_add_property (e_cal_component_get_icalcomponent (comp), icalprop);
+	item_id = e_gw_item_get_id (item);
+	if (item_id) {
+		const gchar *container_id = e_cal_backend_groupwise_get_container_id (cbgw);
+		sanitize_component (comp, item_id, container_id);
 	}
 
 	if (e_gw_item_get_reply_request (item)) {
@@ -1210,7 +1235,7 @@ e_gw_item_to_cal_component (EGwItem *item, ECalBackendGroupwise *cbgw)
 
 		uid = e_gw_item_get_icalid (item);
 		if (uid)
-			e_cal_component_set_uid (comp, e_gw_item_get_icalid (item));
+			e_cal_component_set_uid (comp, uid);
 		else {
 			g_object_unref (comp);
 			e_cal_backend_groupwise_priv_unlock (cbgw);
