@@ -1530,13 +1530,12 @@ e_contact_get (EContact *contact, EContactField field_id)
 					g_string_append (str, (gchar *)v->data);
 					v = v->next;
 					if (v)
-						g_string_append_c (str, ',');
+						g_string_append (str, ", ");
 				}
 
 				rv = g_string_free (str, FALSE);
 			}
 			return rv;
-			break;
 		}
 		default:
 			g_warning ("unhandled synthetic field 0x%02x", info->field_id);
