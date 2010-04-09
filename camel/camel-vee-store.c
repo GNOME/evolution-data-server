@@ -49,7 +49,9 @@ static CamelFolderInfo *vee_get_folder_info(CamelStore *store, const gchar *top,
 static void camel_vee_store_class_init (CamelVeeStoreClass *klass);
 static void camel_vee_store_init       (CamelVeeStore *obj);
 static void camel_vee_store_finalize   (CamelObject *obj);
-static void construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
+
+static gchar *vee_get_name (CamelService *service, gboolean brief);
+static void vee_construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex);
 
 static CamelStoreClass *camel_vee_store_parent;
 
@@ -84,7 +86,9 @@ camel_vee_store_class_init (CamelVeeStoreClass *klass)
 	store_class->delete_folder = vee_delete_folder;
 	store_class->get_folder_info = vee_get_folder_info;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
-	((CamelServiceClass *)store_class)->construct = construct;
+
+	((CamelServiceClass *)store_class)->construct = vee_construct;
+	((CamelServiceClass *)store_class)->get_name = vee_get_name;
 
 	store_class->get_trash = vee_get_trash;
 	store_class->get_junk = vee_get_junk;
@@ -100,7 +104,7 @@ camel_vee_store_init (CamelVeeStore *obj)
 }
 
 static void
-construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
+vee_construct (CamelService *service, CamelSession *session, CamelProvider *provider, CamelURL *url, CamelException *ex)
 {
 	 CamelStore *store = (CamelStore *)service;
 	 CamelVeeStore *obj = (CamelVeeStore *)service;
@@ -116,6 +120,13 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 #endif
 
 }
+
+static gchar *
+vee_get_name (CamelService *service, gboolean brief)
+{
+	return g_strdup ("Virtual Folder Store");
+}
+
 static void
 cvs_free_unmatched(gpointer key, gpointer value, gpointer data)
 {
