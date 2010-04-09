@@ -2206,7 +2206,7 @@ book_view_thread (gpointer data)
 
 		filter = e_book_backend_groupwise_build_gw_filter (gwb, query, &is_auto_completion, &search_string);
 		view = "name email default members";
-		if (is_auto_completion)
+		if (is_auto_completion && !g_getenv ("AUTOCOMPLETE_EXPAND_CL"))
 			view = "name email";
 
 		if (search_string) {
