@@ -49,7 +49,6 @@
 #include <certdb.h>
 #include <pk11func.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -71,164 +70,15 @@
 
 static CamelTcpStreamClass *parent_class = NULL;
 
-/* Returns the class for a CamelTcpStreamSSL */
-#define CTSS_CLASS(so) CAMEL_TCP_STREAM_SSL_CLASS (CAMEL_OBJECT_GET_CLASS (so))
-
-static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
-static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
-static gint stream_flush  (CamelStream *stream);
-static gint stream_close  (CamelStream *stream);
-
-static PRFileDesc *enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd);
-
-static gint stream_connect    (CamelTcpStream *stream, struct addrinfo *host);
-static gint stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
-static gint stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
-static struct sockaddr *stream_get_local_address (CamelTcpStream *stream, socklen_t *len);
-static struct sockaddr *stream_get_remote_address (CamelTcpStream *stream, socklen_t *len);
-
 struct _CamelTcpStreamSSLPrivate {
 	PRFileDesc *sockfd;
 
-	struct _CamelSession *session;
+	CamelSession *session;
 	gchar *expected_host;
 	gboolean ssl_mode;
 	guint32 flags;
 };
 
-static void
-camel_tcp_stream_ssl_class_init (CamelTcpStreamSSLClass *camel_tcp_stream_ssl_class)
-{
-	CamelTcpStreamClass *camel_tcp_stream_class =
-		CAMEL_TCP_STREAM_CLASS (camel_tcp_stream_ssl_class);
-	CamelStreamClass *camel_stream_class =
-		CAMEL_STREAM_CLASS (camel_tcp_stream_ssl_class);
-
-	parent_class = CAMEL_TCP_STREAM_CLASS (camel_type_get_global_classfuncs (camel_tcp_stream_get_type ()));
-
-	/* virtual method overload */
-	camel_stream_class->read = stream_read;
-	camel_stream_class->write = stream_write;
-	camel_stream_class->flush = stream_flush;
-	camel_stream_class->close = stream_close;
-
-	camel_tcp_stream_class->connect = stream_connect;
-	camel_tcp_stream_class->getsockopt = stream_getsockopt;
-	camel_tcp_stream_class->setsockopt = stream_setsockopt;
-	camel_tcp_stream_class->get_local_address  = stream_get_local_address;
-	camel_tcp_stream_class->get_remote_address = stream_get_remote_address;
-}
-
-static void
-camel_tcp_stream_ssl_init (gpointer object, gpointer klass)
-{
-	CamelTcpStreamSSL *stream = CAMEL_TCP_STREAM_SSL (object);
-
-	stream->priv = g_new0 (struct _CamelTcpStreamSSLPrivate, 1);
-}
-
-static void
-camel_tcp_stream_ssl_finalize (CamelObject *object)
-{
-	CamelTcpStreamSSL *stream = CAMEL_TCP_STREAM_SSL (object);
-
-	if (stream->priv->sockfd != NULL) {
-		PR_Shutdown (stream->priv->sockfd, PR_SHUTDOWN_BOTH);
-		PR_Close (stream->priv->sockfd);
-	}
-
-	if (stream->priv->session)
-		camel_object_unref(stream->priv->session);
-
-	g_free (stream->priv->expected_host);
-
-	g_free (stream->priv);
-}
-
-CamelType
-camel_tcp_stream_ssl_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_tcp_stream_get_type (),
-					    "CamelTcpStreamSSL",
-					    sizeof (CamelTcpStreamSSL),
-					    sizeof (CamelTcpStreamSSLClass),
-					    (CamelObjectClassInitFunc) camel_tcp_stream_ssl_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_tcp_stream_ssl_init,
-					    (CamelObjectFinalizeFunc) camel_tcp_stream_ssl_finalize);
-	}
-
-	return type;
-}
-
-/**
- * camel_tcp_stream_ssl_new:
- * @session: an active #CamelSession object
- * @expected_host: host that the stream is expected to connect with
- * @flags: a bitwise combination of any of
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
- * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
- *
- * Since the SSL certificate authenticator may need to prompt the
- * user, a #CamelSession is needed. @expected_host is needed as a
- * protection against an MITM attack.
- *
- * Returns: a new #CamelTcpStreamSSL stream preset in SSL mode
- **/
-CamelStream *
-camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, guint32 flags)
-{
-	CamelTcpStreamSSL *stream;
-
-	g_assert(CAMEL_IS_SESSION(session));
-
-	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
-
-	stream->priv->session = session;
-	camel_object_ref(session);
-	stream->priv->expected_host = g_strdup (expected_host);
-	stream->priv->ssl_mode = TRUE;
-	stream->priv->flags = flags;
-
-	return CAMEL_STREAM (stream);
-}
-
-/**
- * camel_tcp_stream_ssl_new_raw:
- * @session: an active #CamelSession object
- * @expected_host: host that the stream is expected to connect with
- * @flags: a bitwise combination of any of
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
- * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
- * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
- *
- * Since the SSL certificate authenticator may need to prompt the
- * user, a CamelSession is needed. @expected_host is needed as a
- * protection against an MITM attack.
- *
- * Returns: a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
- **/
-CamelStream *
-camel_tcp_stream_ssl_new_raw (CamelSession *session, const gchar *expected_host, guint32 flags)
-{
-	CamelTcpStreamSSL *stream;
-
-	g_assert(CAMEL_IS_SESSION(session));
-
-	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
-
-	stream->priv->session = session;
-	camel_object_ref(session);
-	stream->priv->expected_host = g_strdup (expected_host);
-	stream->priv->ssl_mode = FALSE;
-	stream->priv->flags = flags;
-
-	return CAMEL_STREAM (stream);
-}
 
 static void
 set_errno (gint code)
@@ -292,47 +142,29 @@ set_errno (gint code)
 	}
 }
 
-/**
- * camel_tcp_stream_ssl_enable_ssl:
- * @ssl: a #CamelTcpStreamSSL object
- *
- * Toggles an ssl-capable stream into ssl mode (if it isn't already).
- *
- * Returns: %0 on success or %-1 on fail
- **/
-gint
-camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
+static void
+tcp_stream_ssl_finalize (CamelTcpStreamSSL *stream)
 {
-	PRFileDesc *fd;
+	CamelTcpStreamSSLPrivate *priv = stream->priv;
 
-	g_return_val_if_fail (CAMEL_IS_TCP_STREAM_SSL (ssl), -1);
-
-	if (ssl->priv->sockfd && !ssl->priv->ssl_mode) {
-		if (!(fd = enable_ssl (ssl, NULL))) {
-			set_errno (PR_GetError ());
-			return -1;
-		}
-
-		ssl->priv->sockfd = fd;
-
-		if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
-			set_errno (PR_GetError ());
-			return -1;
-		}
-
-		if (SSL_ForceHandshake (fd) == SECFailure) {
-			set_errno (PR_GetError ());
-			return -1;
-		}
+	if (priv->sockfd != NULL) {
+		PR_Shutdown (priv->sockfd, PR_SHUTDOWN_BOTH);
+		PR_Close (priv->sockfd);
 	}
 
-	ssl->priv->ssl_mode = TRUE;
+	if (priv->session)
+		camel_object_unref (priv->session);
 
-	return 0;
+	g_free (priv->expected_host);
+
+	g_free (priv);
 }
 
+
 static gssize
-stream_read (CamelStream *stream, gchar *buffer, gsize n)
+tcp_stream_ssl_read (CamelStream *stream,
+                     gchar *buffer,
+                     gsize n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	PRFileDesc *cancel_fd;
@@ -415,7 +247,9 @@ stream_read (CamelStream *stream, gchar *buffer, gsize n)
 }
 
 static gssize
-stream_write (CamelStream *stream, const gchar *buffer, gsize n)
+tcp_stream_ssl_write (CamelStream *stream,
+                      const gchar *buffer,
+                      gsize n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gssize w, written = 0;
@@ -510,14 +344,14 @@ stream_write (CamelStream *stream, const gchar *buffer, gsize n)
 }
 
 static gint
-stream_flush (CamelStream *stream)
+tcp_stream_ssl_flush (CamelStream *stream)
 {
 	/*return PR_Sync (((CamelTcpStreamSSL *)stream)->priv->sockfd);*/
 	return 0;
 }
 
 static gint
-stream_close (CamelStream *stream)
+tcp_stream_ssl_close (CamelStream *stream)
 {
 	if (((CamelTcpStreamSSL *)stream)->priv->sockfd == NULL) {
 		errno = EINVAL;
@@ -800,9 +634,12 @@ camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate
 	path = g_strdup_printf ("%s/%s", dir, fingerprint);
 	g_free (dir);
 
-	stream = camel_stream_fs_new_with_name (path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	stream = camel_stream_fs_new_with_name (
+		path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (stream != NULL) {
-		if (camel_stream_write (stream, (const gchar *) ccert->rawcert->data, ccert->rawcert->len) == -1) {
+		if (camel_stream_write (
+			stream, (const gchar *) ccert->rawcert->data,
+			ccert->rawcert->len) == -1) {
 			g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
 			g_unlink (path);
 		}
@@ -899,7 +736,7 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 	}
 
 	camel_certdb_cert_unref(certdb, ccert);
-	camel_object_unref(certdb);
+	camel_object_unref (certdb);
 
 	return accept ? SECSuccess : SECFailure;
 
@@ -1124,7 +961,8 @@ sockaddr_to_praddr(struct sockaddr *s, gint len, PRNetAddr *addr)
 }
 
 static gint
-socket_connect(CamelTcpStream *stream, struct addrinfo *host)
+tcp_socket_ssl_connect (CamelTcpStream *stream,
+                        struct addrinfo *host)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	PRNetAddr netaddr;
@@ -1219,10 +1057,11 @@ socket_connect(CamelTcpStream *stream, struct addrinfo *host)
 }
 
 static gint
-stream_connect(CamelTcpStream *stream, struct addrinfo *host)
+tcp_stream_ssl_connect (CamelTcpStream *stream,
+                        struct addrinfo *host)
 {
 	while (host) {
-		if (socket_connect(stream, host) == 0)
+		if (tcp_socket_ssl_connect (stream, host) == 0)
 			return 0;
 		host = host->ai_next;
 	}
@@ -1231,7 +1070,8 @@ stream_connect(CamelTcpStream *stream, struct addrinfo *host)
 }
 
 static gint
-stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
+tcp_stream_ssl_getsockopt (CamelTcpStream *stream,
+                           CamelSockOptData *data)
 {
 	PRSocketOptionData sodata;
 
@@ -1247,7 +1087,8 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 }
 
 static gint
-stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
+tcp_stream_ssl_setsockopt (CamelTcpStream *stream,
+                           const CamelSockOptData *data)
 {
 	PRSocketOptionData sodata;
 
@@ -1294,7 +1135,8 @@ sockaddr_from_praddr(PRNetAddr *addr, socklen_t *len)
 }
 
 static struct sockaddr *
-stream_get_local_address(CamelTcpStream *stream, socklen_t *len)
+tcp_stream_ssl_get_local_address (CamelTcpStream *stream,
+                                  socklen_t *len)
 {
 	PRFileDesc *sockfd = CAMEL_TCP_STREAM_SSL (stream)->priv->sockfd;
 	PRNetAddr addr;
@@ -1306,7 +1148,8 @@ stream_get_local_address(CamelTcpStream *stream, socklen_t *len)
 }
 
 static struct sockaddr *
-stream_get_remote_address (CamelTcpStream *stream, socklen_t *len)
+tcp_stream_ssl_get_remote_address (CamelTcpStream *stream,
+                                   socklen_t *len)
 {
 	PRFileDesc *sockfd = CAMEL_TCP_STREAM_SSL (stream)->priv->sockfd;
 	PRNetAddr addr;
@@ -1329,6 +1172,158 @@ PRFileDesc *
 camel_tcp_stream_ssl_sockfd (CamelTcpStreamSSL *stream)
 {
 	return stream->priv->sockfd;
+}
+
+static void
+camel_tcp_stream_ssl_class_init (CamelTcpStreamSSLClass *class)
+{
+	CamelStreamClass *stream_class;
+	CamelTcpStreamClass *tcp_stream_class;
+
+	parent_class = CAMEL_TCP_STREAM_CLASS (camel_type_get_global_classfuncs (camel_tcp_stream_get_type ()));
+
+	stream_class = CAMEL_STREAM_CLASS (class);
+	stream_class->read = tcp_stream_ssl_read;
+	stream_class->write = tcp_stream_ssl_write;
+	stream_class->flush = tcp_stream_ssl_flush;
+	stream_class->close = tcp_stream_ssl_close;
+
+	tcp_stream_class = CAMEL_TCP_STREAM_CLASS (class);
+	tcp_stream_class->connect = tcp_stream_ssl_connect;
+	tcp_stream_class->getsockopt = tcp_stream_ssl_getsockopt;
+	tcp_stream_class->setsockopt = tcp_stream_ssl_setsockopt;
+	tcp_stream_class->get_local_address  = tcp_stream_ssl_get_local_address;
+	tcp_stream_class->get_remote_address = tcp_stream_ssl_get_remote_address;
+}
+
+static void
+camel_tcp_stream_ssl_init (CamelTcpStreamSSL *stream)
+{
+	stream->priv = g_new0 (CamelTcpStreamSSLPrivate, 1);
+}
+
+CamelType
+camel_tcp_stream_ssl_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_tcp_stream_get_type (),
+					    "CamelTcpStreamSSL",
+					    sizeof (CamelTcpStreamSSL),
+					    sizeof (CamelTcpStreamSSLClass),
+					    (CamelObjectClassInitFunc) camel_tcp_stream_ssl_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_tcp_stream_ssl_init,
+					    (CamelObjectFinalizeFunc) tcp_stream_ssl_finalize);
+	}
+
+	return type;
+}
+
+/**
+ * camel_tcp_stream_ssl_new:
+ * @session: an active #CamelSession object
+ * @expected_host: host that the stream is expected to connect with
+ * @flags: a bitwise combination of any of
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
+ *
+ * Since the SSL certificate authenticator may need to prompt the
+ * user, a #CamelSession is needed. @expected_host is needed as a
+ * protection against an MITM attack.
+ *
+ * Returns: a new #CamelTcpStreamSSL stream preset in SSL mode
+ **/
+CamelStream *
+camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, guint32 flags)
+{
+	CamelTcpStreamSSL *stream;
+
+	g_assert(CAMEL_IS_SESSION(session));
+
+	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
+
+	stream->priv->session = session;
+	camel_object_ref (session);
+	stream->priv->expected_host = g_strdup (expected_host);
+	stream->priv->ssl_mode = TRUE;
+	stream->priv->flags = flags;
+
+	return CAMEL_STREAM (stream);
+}
+
+/**
+ * camel_tcp_stream_ssl_new_raw:
+ * @session: an active #CamelSession object
+ * @expected_host: host that the stream is expected to connect with
+ * @flags: a bitwise combination of any of
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL2,
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 or
+ * #CAMEL_TCP_STREAM_SSL_ENABLE_TLS
+ *
+ * Since the SSL certificate authenticator may need to prompt the
+ * user, a CamelSession is needed. @expected_host is needed as a
+ * protection against an MITM attack.
+ *
+ * Returns: a new #CamelTcpStreamSSL stream not yet toggled into SSL mode
+ **/
+CamelStream *
+camel_tcp_stream_ssl_new_raw (CamelSession *session, const gchar *expected_host, guint32 flags)
+{
+	CamelTcpStreamSSL *stream;
+
+	g_assert(CAMEL_IS_SESSION(session));
+
+	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
+
+	stream->priv->session = session;
+	camel_object_ref (session);
+	stream->priv->expected_host = g_strdup (expected_host);
+	stream->priv->ssl_mode = FALSE;
+	stream->priv->flags = flags;
+
+	return CAMEL_STREAM (stream);
+}
+
+/**
+ * camel_tcp_stream_ssl_enable_ssl:
+ * @ssl: a #CamelTcpStreamSSL object
+ *
+ * Toggles an ssl-capable stream into ssl mode (if it isn't already).
+ *
+ * Returns: %0 on success or %-1 on fail
+ **/
+gint
+camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
+{
+	PRFileDesc *fd;
+
+	g_return_val_if_fail (CAMEL_IS_TCP_STREAM_SSL (ssl), -1);
+
+	if (ssl->priv->sockfd && !ssl->priv->ssl_mode) {
+		if (!(fd = enable_ssl (ssl, NULL))) {
+			set_errno (PR_GetError ());
+			return -1;
+		}
+
+		ssl->priv->sockfd = fd;
+
+		if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
+			set_errno (PR_GetError ());
+			return -1;
+		}
+
+		if (SSL_ForceHandshake (fd) == SECFailure) {
+			set_errno (PR_GetError ());
+			return -1;
+		}
+	}
+
+	ssl->priv->ssl_mode = TRUE;
+
+	return 0;
 }
 
 #endif /* HAVE_NSS */

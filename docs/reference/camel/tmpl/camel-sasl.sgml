@@ -22,26 +22,8 @@ CamelSasl
 
 </para>
 
-
-<!-- ##### ARG CamelSasl:authenticated ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG CamelSasl:mechanism ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG CamelSasl:service ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG CamelSasl:service-name ##### -->
-<para>
-
-</para>
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_sasl_challenge ##### -->
 <para>

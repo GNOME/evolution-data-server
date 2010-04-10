@@ -22,6 +22,8 @@ CamelMimeFilterBasic
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### ENUM CamelMimeFilterBasicType ##### -->
 <para>

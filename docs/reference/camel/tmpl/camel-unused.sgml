@@ -492,6 +492,18 @@ camel-types
 </para>
 
 
+<!-- ##### ARG CamelCipherContext:session ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelDataCache:path ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelDigestFolder ##### -->
 <para>
 
@@ -513,6 +525,12 @@ camel-types
 </para>
 
 @parent_object: 
+
+<!-- ##### ARG CamelGpgContext:always-trust ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### STRUCT CamelIMAP4Command ##### -->
 <para>
@@ -828,7 +846,37 @@ camel-types
 </para>
 
 
+<!-- ##### ARG CamelMedium:content ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelMimeFilterChomp ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelMimePart:content-id ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelMimePart:content-md5 ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelMimePart:description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelMimePart:disposition ##### -->
 <para>
 
 </para>
@@ -897,6 +945,30 @@ camel-types
 @next: 
 @value: 
 @name: 
+
+<!-- ##### ARG CamelSasl:authenticated ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelSasl:mechanism ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelSasl:service ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelSasl:service-name ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### STRUCT CamelSimpleDataWrapper ##### -->
 <para>

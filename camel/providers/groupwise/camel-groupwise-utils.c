@@ -283,6 +283,7 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	EGwConnectionStatus status;
 	EGwItemAttachment *attachment;
 	EGwItem *temp_item;
+	GByteArray *byte_array;
 
 	attachment = g_new0 (EGwItemAttachment, 1);
 	attachment->contentType = camel_content_type_simple (type);
@@ -290,27 +291,29 @@ send_as_attachment (EGwConnection *cnc, EGwItem *item, CamelStreamMem *content, 
 	if (cid)
 		attachment->contentid = camel_header_contentid_decode (cid);
 
-	if (filename && content->buffer->data) {
+	byte_array = camel_stream_mem_get_byte_array (content);
+
+	if (filename && byte_array->data) {
 		if (camel_content_type_is (type, "application", "pgp-signature")) {
 			gchar *temp_str;
 			gint temp_len;
-			temp_str = g_base64_encode (content->buffer->data, content->buffer->len);
+			temp_str = g_base64_encode (byte_array->data, byte_array->len);
 			temp_len = strlen (temp_str);
 			attachment->data = g_strdup (temp_str);
 			attachment->size = temp_len;
 			g_free (temp_str);
 			temp_str = NULL;
 		} else {
-			attachment->data = g_base64_encode(content->buffer->data, content->buffer->len);
+			attachment->data = g_base64_encode(byte_array->data, byte_array->len);
 			attachment->size = strlen (attachment->data);
 		}
-	} else if (content->buffer->data) {
+	} else if (byte_array->data) {
 		gchar *temp_str;
 		gint temp_len;
 		if (!strcmp (attachment->contentType, "multipart/digest")) {
 			/* FIXME? */
 		} else {
-			temp_str = g_base64_encode (content->buffer->data, content->buffer->len);
+			temp_str = g_base64_encode (byte_array->data, byte_array->len);
 			temp_len = strlen (temp_str);
 			attachment->data = g_strdup (temp_str);
 			attachment->size = temp_len;
@@ -413,6 +416,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
 		CamelDataWrapper *dw = NULL;
 		CamelContentType *type;
+		GByteArray *byte_array;
 
 		dw = camel_medium_get_content (CAMEL_MEDIUM (message));
 		type = camel_mime_part_get_content_type((CamelMimePart *)message);
@@ -444,7 +448,8 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 			camel_object_unref (filtered_stream);
 
 			camel_stream_write ((CamelStream *) content, "", 1);
-			e_gw_item_set_message (item, (const gchar *)content->buffer->data);
+			byte_array = camel_stream_mem_get_byte_array (content);
+			e_gw_item_set_message (item, (const gchar *)byte_array->data);
 		} else {
 			camel_data_wrapper_decode_to_stream (dw, (CamelStream *) content);
 			send_as_attachment (cnc, item, content, type, dw, NULL, NULL, &attach_list);
@@ -602,9 +607,11 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 		CamelMimePart *part;
 		CamelStreamMem *content = (CamelStreamMem *)camel_stream_mem_new ();
 		CamelDataWrapper *dw = NULL;
+		GByteArray *byte_array;
 		const gchar *disposition, *filename;
 		const gchar *content_id = NULL;
 		gboolean is_alternative = FALSE;
+
 		/*
 		 * XXX:
 		 * Assuming the first part always is the actual message
@@ -671,7 +678,8 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 			camel_object_unref (filtered_stream);
 
 			camel_stream_write ((CamelStream *) content, "", 1);
-			e_gw_item_set_message (item, (const gchar *)content->buffer->data);
+			byte_array = camel_stream_mem_get_byte_array (content);
+			e_gw_item_set_message (item, (const gchar *) byte_array->data);
 		} else {
 			filename = camel_mime_part_get_filename (part);
 			disposition = camel_mime_part_get_disposition (part);

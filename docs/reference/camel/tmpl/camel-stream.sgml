@@ -22,6 +22,8 @@ CamelStream
 
 </para>
 
+@parent: 
+@eos: 
 
 <!-- ##### FUNCTION camel_stream_read ##### -->
 <para>

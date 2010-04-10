@@ -265,11 +265,15 @@ parse_content(CamelMultipartSigned *mps)
 		if (mps->start1 == -1) {
 			mps->start1 = camel_mime_parser_tell_start_headers(cmp);
 		} else if (mps->start2 == -1) {
+			GByteArray *buffer;
+
+			buffer = camel_stream_mem_get_byte_array (
+				CAMEL_STREAM_MEM (mem));
 			mps->start2 = camel_mime_parser_tell_start_headers(cmp);
 			mps->end1 = camel_mime_parser_tell_start_boundary(cmp);
-			if (mps->end1 > mps->start1 && mem->buffer->data[mps->end1-1] == '\n')
+			if (mps->end1 > mps->start1 && buffer->data[mps->end1-1] == '\n')
 				mps->end1--;
-			if (mps->end1 > mps->start1 && mem->buffer->data[mps->end1-1] == '\r')
+			if (mps->end1 > mps->start1 && buffer->data[mps->end1-1] == '\r')
 				mps->end1--;
 		} else {
 			g_warning("multipart/signed has more than 2 parts, remaining parts ignored");

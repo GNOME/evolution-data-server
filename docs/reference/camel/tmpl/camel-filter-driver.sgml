@@ -22,6 +22,8 @@ CamelFilterDriver
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### USER_FUNCTION CamelFilterGetFolderFunc ##### -->
 <para>

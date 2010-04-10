@@ -35,7 +35,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-exception.h"
@@ -1396,14 +1395,18 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 		truth = match_words_1message((CamelDataWrapper *)containee, words, mask);
 	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")) {
 		/* for all other text parts, we look inside, otherwise we dont care */
-		CamelStreamMem *mem = (CamelStreamMem *)camel_stream_mem_new ();
+		CamelStream *stream;
+		GByteArray *byte_array;
+
+		byte_array = g_byte_array_new ();
+		stream = camel_stream_mem_new_with_byte_array (byte_array);
 
 		/* FIXME: The match should be part of a stream op */
-		camel_data_wrapper_decode_to_stream (containee, CAMEL_STREAM (mem));
-		camel_stream_write (CAMEL_STREAM (mem), "", 1);
+		camel_data_wrapper_decode_to_stream (containee, stream);
+		camel_stream_write (stream, "", 1);
 		for (i=0;i<words->len;i++) {
 			/* FIXME: This is horridly slow, and should use a real search algorithm */
-			if (camel_ustrstrcase((const gchar *) mem->buffer->data, words->words[i]->word) != NULL) {
+			if (camel_ustrstrcase((const gchar *) byte_array->data, words->words[i]->word) != NULL) {
 				*mask |= (1<<i);
 				/* shortcut a match */
 				if (*mask == (1<<(words->len))-1)
@@ -1411,7 +1414,7 @@ match_words_1message (CamelDataWrapper *object, struct _camel_search_words *word
 			}
 		}
 
-		camel_object_unref (mem);
+		camel_object_unref (stream);
 	}
 
 	return truth;

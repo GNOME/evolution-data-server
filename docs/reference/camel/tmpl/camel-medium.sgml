@@ -22,11 +22,8 @@ CamelMedium
 
 </para>
 
-
-<!-- ##### ARG CamelMedium:content ##### -->
-<para>
-
-</para>
+@parent: 
+@content: 
 
 <!-- ##### STRUCT CamelMediumHeader ##### -->
 <para>

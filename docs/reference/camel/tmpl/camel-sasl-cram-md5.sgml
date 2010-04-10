@@ -22,6 +22,8 @@ CamelSaslCramMd5
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### VARIABLE camel_sasl_cram_md5_authtype ##### -->
 <para>

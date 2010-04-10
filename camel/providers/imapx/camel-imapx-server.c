@@ -403,6 +403,7 @@ imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, g
 {
 	CamelIMAPXCommandPart *cp;
 	CamelStreamNull *null;
+	GByteArray *byte_array;
 	guint ob_size = 0;
 
 	/* TODO: literal+? */
@@ -462,18 +463,20 @@ imapx_command_add_part(CamelIMAPXCommand *ic, camel_imapx_command_part_t type, g
 		ob_size = 0;
 	}
 
+	byte_array = camel_stream_mem_get_byte_array (ic->mem);
+
 	cp = g_malloc0(sizeof(*cp));
 	cp->type = type;
 	cp->ob_size = ob_size;
 	cp->ob = o;
-	cp->data_size = ic->mem->buffer->len;
+	cp->data_size = byte_array->len;
 	cp->data = g_malloc(cp->data_size+1);
-	memcpy(cp->data, ic->mem->buffer->data, cp->data_size);
+	memcpy(cp->data, byte_array->data, cp->data_size);
 	cp->data[cp->data_size] = 0;
 
 	camel_stream_reset((CamelStream *)ic->mem);
 	/* FIXME: hackish? */
-	g_byte_array_set_size(ic->mem->buffer, 0);
+	g_byte_array_set_size(byte_array, 0);
 
 	camel_dlist_addtail(&ic->parts, (CamelDListNode *)cp);
 }
@@ -733,8 +736,12 @@ void
 camel_imapx_command_close(CamelIMAPXCommand *ic)
 {
 	if (ic->mem) {
-		c(printf("completing command buffer is [%d] '%.*s'\n", ic->mem->buffer->len, (gint)ic->mem->buffer->len, ic->mem->buffer->data));
-		if (ic->mem->buffer->len > 0)
+		GByteArray *byte_array;
+
+		byte_array = camel_stream_mem_get_byte_array (ic->mem);
+
+		c(printf("completing command buffer is [%d] '%.*s'\n", byte_array->len, (gint)byte_array->len, byte_array->data));
+		if (byte_array->len > 0)
 			imapx_command_add_part(ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);
 
 		camel_object_unref((CamelObject *)ic->mem);

@@ -37,11 +37,14 @@
 #define CAMEL_STREAM_BUFFER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_BUFFER_TYPE, CamelStreamBuffer))
 #define CAMEL_STREAM_BUFFER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_BUFFER_TYPE, CamelStreamBufferClass))
 #define CAMEL_IS_STREAM_BUFFER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_BUFFER_TYPE))
+#define CAMEL_STREAM_BUFFER_GET_CLASS(obj) \
+	((CamelStreamBufferClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
 typedef struct _CamelStreamBuffer CamelStreamBuffer;
 typedef struct _CamelStreamBufferClass CamelStreamBufferClass;
+typedef struct _CamelStreamBufferPrivate CamelStreamBufferPrivate;
 
 typedef enum {
 	CAMEL_STREAM_BUFFER_BUFFER = 0,
@@ -53,18 +56,7 @@ typedef enum {
 
 struct _CamelStreamBuffer {
 	CamelStream parent;
-
-	/* these are all of course, private */
-	CamelStream *stream;
-
-	guchar *buf, *ptr, *end;
-	gint size;
-
-	guchar *linebuf;	/* for reading lines at a time */
-	gint linesize;
-
-	CamelStreamBufferMode mode;
-	guint flags;	/* internal flags */
+	CamelStreamBufferPrivate *priv;
 };
 
 struct _CamelStreamBufferClass {

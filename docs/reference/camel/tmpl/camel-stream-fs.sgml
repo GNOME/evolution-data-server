@@ -22,6 +22,8 @@ CamelStreamFs
 
 </para>
 
+@parent: 
+@fd: 
 
 <!-- ##### FUNCTION camel_stream_fs_new_with_name ##### -->
 <para>

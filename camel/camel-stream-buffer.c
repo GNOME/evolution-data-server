@@ -35,68 +35,302 @@
 
 static CamelStreamClass *parent_class = NULL;
 
+struct _CamelStreamBufferPrivate {
+
+	CamelStream *stream;
+
+	guchar *buf, *ptr, *end;
+	gint size;
+
+	guchar *linebuf;	/* for reading lines at a time */
+	gint linesize;
+
+	CamelStreamBufferMode mode;
+	guint flags;
+};
+
 enum {
 	BUF_USER = 1<<0	/* user-supplied buffer, do not free */
 };
 
 #define BUF_SIZE 1024
 
-static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
-static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
-static gint stream_flush (CamelStream *stream);
-static gint stream_close (CamelStream *stream);
-static gboolean stream_eos (CamelStream *stream);
+/* only returns the number passed in, or -1 on an error */
+static gssize
+stream_write_all (CamelStream *stream,
+                  const gchar *buffer,
+                  gsize n)
+{
+	gsize left = n, w;
 
-static void init_vbuf(CamelStreamBuffer *sbf, CamelStream *s, CamelStreamBufferMode mode, gchar *buf, guint32 size);
-static void init(CamelStreamBuffer *sbuf, CamelStream *s, CamelStreamBufferMode mode);
+	while (left > 0) {
+		w = camel_stream_write (stream, buffer, left);
+		if (w == -1)
+			return -1;
+		left -= w;
+		buffer += w;
+	}
+
+	return n;
+}
 
 static void
-camel_stream_buffer_class_init (CamelStreamBufferClass *camel_stream_buffer_class)
+set_vbuf (CamelStreamBuffer *stream,
+          gchar *buf,
+          CamelStreamBufferMode mode,
+          gint size)
 {
-	CamelStreamClass *camel_stream_class = CAMEL_STREAM_CLASS (camel_stream_buffer_class);
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	if (priv->buf && !(priv->flags & BUF_USER))
+		g_free (priv->buf);
+
+	if (buf) {
+		priv->buf = (guchar *) buf;
+		priv->flags |= BUF_USER;
+	} else {
+		priv->buf = g_malloc (size);
+		priv->flags &= ~BUF_USER;
+	}
+
+	priv->ptr = priv->buf;
+	priv->end = priv->buf;
+	priv->size = size;
+	priv->mode = mode;
+}
+
+static void
+stream_buffer_finalize (CamelStreamBuffer *stream_buffer)
+{
+	CamelStreamBufferPrivate *priv = stream_buffer->priv;
+
+	if (!(priv->flags & BUF_USER))
+		g_free (priv->buf);
+
+	if (priv->stream)
+		camel_object_unref (priv->stream);
+
+	g_free (priv->linebuf);
+
+	g_free (priv);
+}
+
+static gssize
+stream_buffer_read (CamelStream *stream,
+                    gchar *buffer,
+                    gsize n)
+{
+	CamelStreamBufferPrivate *priv;
+	gssize bytes_read = 1;
+	gssize bytes_left;
+	gchar *bptr = buffer;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	g_return_val_if_fail (
+		(priv->mode & CAMEL_STREAM_BUFFER_MODE) ==
+		CAMEL_STREAM_BUFFER_READ, 0);
+
+	while (n && bytes_read > 0) {
+		bytes_left = priv->end - priv->ptr;
+		if (bytes_left < n) {
+			if (bytes_left > 0) {
+				memcpy(bptr, priv->ptr, bytes_left);
+				n -= bytes_left;
+				bptr += bytes_left;
+				priv->ptr += bytes_left;
+			}
+			/* if we are reading a lot, then read directly to the destination buffer */
+			if (n >= priv->size/3) {
+				bytes_read = camel_stream_read (
+					priv->stream, bptr, n);
+				if (bytes_read>0) {
+					n -= bytes_read;
+					bptr += bytes_read;
+				}
+			} else {
+				bytes_read = camel_stream_read (
+					priv->stream, (gchar *)
+					priv->buf, priv->size);
+				if (bytes_read>0) {
+					gsize bytes_used = bytes_read > n ? n : bytes_read;
+					priv->ptr = priv->buf;
+					priv->end = priv->buf+bytes_read;
+					memcpy(bptr, priv->ptr, bytes_used);
+					priv->ptr += bytes_used;
+					bptr += bytes_used;
+					n -= bytes_used;
+				}
+			}
+		} else {
+			memcpy(bptr, priv->ptr, n);
+			priv->ptr += n;
+			bptr += n;
+			n = 0;
+		}
+	}
+
+	return (gssize)(bptr - buffer);
+}
+
+static gssize
+stream_buffer_write (CamelStream *stream,
+                     const gchar *buffer,
+                     gsize n)
+{
+	CamelStreamBufferPrivate *priv;
+	gssize total = n;
+	gssize left, todo;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	g_return_val_if_fail (
+		(priv->mode & CAMEL_STREAM_BUFFER_MODE) ==
+		CAMEL_STREAM_BUFFER_WRITE, 0);
+
+	/* first, copy as much as we can */
+	left = priv->size - (priv->ptr - priv->buf);
+	todo = MIN(left, n);
+
+	memcpy(priv->ptr, buffer, todo);
+	n -= todo;
+	buffer += todo;
+	priv->ptr += todo;
+
+	/* if we've filled the buffer, write it out, reset buffer */
+	if (left == todo) {
+		if (stream_write_all (
+			priv->stream, (gchar *) priv->buf,
+			priv->size) == -1)
+			return -1;
+
+		priv->ptr = priv->buf;
+	}
+
+	/* if we still have more, write directly, or copy to buffer */
+	if (n > 0) {
+		if (n >= priv->size/3) {
+			if (stream_write_all (
+				priv->stream, buffer, n) == -1)
+				return -1;
+		} else {
+			memcpy(priv->ptr, buffer, n);
+			priv->ptr += n;
+		}
+	}
+
+	return total;
+}
+
+static gint
+stream_buffer_flush (CamelStream *stream)
+{
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	if ((priv->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_WRITE) {
+		gsize len = priv->ptr - priv->buf;
+
+		if (camel_stream_write (
+			priv->stream, (gchar *) priv->buf, len) == -1)
+			return -1;
+
+		priv->ptr = priv->buf;
+	} else {
+		/* nothing to do for read mode 'flush' */
+	}
+
+	return camel_stream_flush (priv->stream);
+}
+
+static gint
+stream_buffer_close (CamelStream *stream)
+{
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	if (stream_buffer_flush (stream) == -1)
+		return -1;
+
+	return camel_stream_close (priv->stream);
+}
+
+static gboolean
+stream_buffer_eos (CamelStream *stream)
+{
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	return camel_stream_eos(priv->stream) && priv->ptr == priv->end;
+}
+
+static void
+stream_buffer_init_vbuf (CamelStreamBuffer *stream,
+                         CamelStream *other_stream,
+                         CamelStreamBufferMode mode,
+                         gchar *buf,
+                         guint32 size)
+{
+	CamelStreamBufferPrivate *priv;
+
+	priv = CAMEL_STREAM_BUFFER (stream)->priv;
+
+	set_vbuf (stream, buf, mode, size);
+
+	if (priv->stream)
+		camel_object_unref (priv->stream);
+
+	priv->stream = other_stream;
+	camel_object_ref (priv->stream);
+}
+
+static void
+stream_buffer_init_method (CamelStreamBuffer *stream,
+                           CamelStream *other_stream,
+                           CamelStreamBufferMode mode)
+{
+	stream_buffer_init_vbuf (stream, other_stream, mode, NULL, BUF_SIZE);
+}
+
+static void
+camel_stream_buffer_class_init (CamelStreamBufferClass *class)
+{
+	CamelStreamClass *stream_class;
 
 	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
 
-	/* virtual method definition */
-	camel_stream_buffer_class->init = init;
-	camel_stream_buffer_class->init_vbuf = init_vbuf;
+	stream_class = CAMEL_STREAM_CLASS (class);
+	stream_class->read = stream_buffer_read;
+	stream_class->write = stream_buffer_write;
+	stream_class->flush = stream_buffer_flush;
+	stream_class->close = stream_buffer_close;
+	stream_class->eos = stream_buffer_eos;
 
-	/* virtual method overload */
-	camel_stream_class->read = stream_read;
-	camel_stream_class->write = stream_write;
-	camel_stream_class->flush = stream_flush;
-	camel_stream_class->close = stream_close;
-	camel_stream_class->eos = stream_eos;
+	class->init = stream_buffer_init_method;
+	class->init_vbuf = stream_buffer_init_vbuf;
 }
 
 static void
-camel_stream_buffer_init (gpointer object, gpointer klass)
+camel_stream_buffer_init (CamelStreamBuffer *stream)
 {
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (object);
+	stream->priv = g_new0 (CamelStreamBufferPrivate, 1);
 
-	sbf->flags = 0;
-	sbf->size = BUF_SIZE;
-	sbf->buf = g_malloc(BUF_SIZE);
-	sbf->ptr = sbf->buf;
-	sbf->end = sbf->buf;
-	sbf->mode = CAMEL_STREAM_BUFFER_READ | CAMEL_STREAM_BUFFER_BUFFER;
-	sbf->stream = NULL;
-	sbf->linesize = 80;
-	sbf->linebuf = g_malloc(sbf->linesize);
-}
-
-static void
-camel_stream_buffer_finalize (CamelObject *object)
-{
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (object);
-
-	if (!(sbf->flags & BUF_USER)) {
-		g_free(sbf->buf);
-	}
-	if (sbf->stream)
-		camel_object_unref (sbf->stream);
-
-	g_free(sbf->linebuf);
+	stream->priv->flags = 0;
+	stream->priv->size = BUF_SIZE;
+	stream->priv->buf = g_malloc(BUF_SIZE);
+	stream->priv->ptr = stream->priv->buf;
+	stream->priv->end = stream->priv->buf;
+	stream->priv->mode =
+		CAMEL_STREAM_BUFFER_READ |
+		CAMEL_STREAM_BUFFER_BUFFER;
+	stream->priv->stream = NULL;
+	stream->priv->linesize = 80;
+	stream->priv->linebuf = g_malloc (stream->priv->linesize);
 }
 
 CamelType
@@ -111,46 +345,10 @@ camel_stream_buffer_get_type (void)
 								(CamelObjectClassInitFunc) camel_stream_buffer_class_init,
 								NULL,
 								(CamelObjectInitFunc) camel_stream_buffer_init,
-								(CamelObjectFinalizeFunc) camel_stream_buffer_finalize);
+								(CamelObjectFinalizeFunc) stream_buffer_finalize);
 	}
 
 	return camel_stream_buffer_type;
-}
-
-static void
-set_vbuf(CamelStreamBuffer *sbf, gchar *buf, CamelStreamBufferMode mode, gint size)
-{
-	if (sbf->buf && !(sbf->flags & BUF_USER)) {
-		g_free(sbf->buf);
-	}
-	if (buf) {
-		sbf->buf = (guchar *) buf;
-		sbf->flags |= BUF_USER;
-	} else {
-		sbf->buf = g_malloc(size);
-		sbf->flags &= ~BUF_USER;
-	}
-
-	sbf->ptr = sbf->buf;
-	sbf->end = sbf->buf;
-	sbf->size = size;
-	sbf->mode = mode;
-}
-
-static void
-init_vbuf(CamelStreamBuffer *sbf, CamelStream *s, CamelStreamBufferMode mode, gchar *buf, guint32 size)
-{
-	set_vbuf(sbf, buf, mode, size);
-	if (sbf->stream)
-		camel_object_unref (sbf->stream);
-	sbf->stream = s;
-	camel_object_ref (sbf->stream);
-}
-
-static void
-init(CamelStreamBuffer *sbuf, CamelStream *s, CamelStreamBufferMode mode)
-{
-	init_vbuf(sbuf, s, mode, NULL, BUF_SIZE);
 }
 
 /**
@@ -168,12 +366,20 @@ init(CamelStreamBuffer *sbuf, CamelStream *s, CamelStreamBufferMode mode)
  * Returns: a newly created buffered stream.
  **/
 CamelStream *
-camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
+camel_stream_buffer_new (CamelStream *stream,
+                         CamelStreamBufferMode mode)
 {
 	CamelStreamBuffer *sbf;
+	CamelStreamBufferClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
 
 	sbf = CAMEL_STREAM_BUFFER (camel_object_new (camel_stream_buffer_get_type ()));
-	CAMEL_STREAM_BUFFER_CLASS (CAMEL_OBJECT_GET_CLASS(sbf))->init (sbf, stream, mode);
+
+	class = CAMEL_STREAM_BUFFER_GET_CLASS (sbf);
+	g_return_val_if_fail (class->init != NULL, NULL);
+
+	class->init (sbf, stream, mode);
 
 	return CAMEL_STREAM (sbf);
 }
@@ -214,156 +420,25 @@ camel_stream_buffer_new (CamelStream *stream, CamelStreamBufferMode mode)
  * Returns: A new stream with buffering applied.
  **/
 CamelStream *
-camel_stream_buffer_new_with_vbuf (CamelStream *stream, CamelStreamBufferMode mode, gchar *buf, guint32 size)
+camel_stream_buffer_new_with_vbuf (CamelStream *stream,
+                                   CamelStreamBufferMode mode,
+                                   gchar *buf,
+                                   guint32 size)
 {
 	CamelStreamBuffer *sbf;
+	CamelStreamBufferClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_STREAM (stream), NULL);
+	g_return_val_if_fail (buf != NULL, NULL);
+
 	sbf = CAMEL_STREAM_BUFFER (camel_object_new (camel_stream_buffer_get_type ()));
-	CAMEL_STREAM_BUFFER_CLASS (CAMEL_OBJECT_GET_CLASS(sbf))->init_vbuf (sbf, stream, mode, buf, size);
+
+	class = CAMEL_STREAM_BUFFER_GET_CLASS (sbf);
+	g_return_val_if_fail (class->init_vbuf != NULL, NULL);
+
+	class->init_vbuf (sbf, stream, mode, buf, size);
 
 	return CAMEL_STREAM (sbf);
-}
-
-static gssize
-stream_read (CamelStream *stream, gchar *buffer, gsize n)
-{
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (stream);
-	gssize bytes_read = 1;
-	gssize bytes_left;
-	gchar *bptr = buffer;
-
-	g_return_val_if_fail( (sbf->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_READ, 0);
-
-	while (n && bytes_read > 0) {
-		bytes_left = sbf->end - sbf->ptr;
-		if (bytes_left < n) {
-			if (bytes_left > 0) {
-				memcpy(bptr, sbf->ptr, bytes_left);
-				n -= bytes_left;
-				bptr += bytes_left;
-				sbf->ptr += bytes_left;
-			}
-			/* if we are reading a lot, then read directly to the destination buffer */
-			if (n >= sbf->size/3) {
-				bytes_read = camel_stream_read(sbf->stream, bptr, n);
-				if (bytes_read>0) {
-					n -= bytes_read;
-					bptr += bytes_read;
-				}
-			} else {
-				bytes_read = camel_stream_read(sbf->stream, (gchar *) sbf->buf, sbf->size);
-				if (bytes_read>0) {
-					gsize bytes_used = bytes_read > n ? n : bytes_read;
-					sbf->ptr = sbf->buf;
-					sbf->end = sbf->buf+bytes_read;
-					memcpy(bptr, sbf->ptr, bytes_used);
-					sbf->ptr += bytes_used;
-					bptr += bytes_used;
-					n -= bytes_used;
-				}
-			}
-		} else {
-			memcpy(bptr, sbf->ptr, n);
-			sbf->ptr += n;
-			bptr += n;
-			n = 0;
-		}
-	}
-
-	return (gssize)(bptr - buffer);
-}
-
-/* only returns the number passed in, or -1 on an error */
-static gssize
-stream_write_all(CamelStream *stream, const gchar *buffer, gsize n)
-{
-	gsize left = n, w;
-
-	while (left > 0) {
-		w = camel_stream_write(stream, buffer, left);
-		if (w == -1)
-			return -1;
-		left -= w;
-		buffer += w;
-	}
-
-	return n;
-}
-
-static gssize
-stream_write (CamelStream *stream, const gchar *buffer, gsize n)
-{
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (stream);
-	gssize total = n;
-	gssize left, todo;
-
-	g_return_val_if_fail( (sbf->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_WRITE, 0);
-
-	/* first, copy as much as we can */
-	left = sbf->size - (sbf->ptr-sbf->buf);
-	todo = MIN(left, n);
-
-	memcpy(sbf->ptr, buffer, todo);
-	n -= todo;
-	buffer += todo;
-	sbf->ptr += todo;
-
-	/* if we've filled the buffer, write it out, reset buffer */
-	if (left == todo) {
-		if (stream_write_all(sbf->stream, (const gchar *) sbf->buf, sbf->size) == -1)
-			return -1;
-
-		sbf->ptr = sbf->buf;
-	}
-
-	/* if we still have more, write directly, or copy to buffer */
-	if (n > 0) {
-		if (n >= sbf->size/3) {
-			if (stream_write_all(sbf->stream, buffer, n) == -1)
-				return -1;
-		} else {
-			memcpy(sbf->ptr, buffer, n);
-			sbf->ptr += n;
-		}
-	}
-
-	return total;
-}
-
-static gint
-stream_flush (CamelStream *stream)
-{
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (stream);
-
-	if ((sbf->mode & CAMEL_STREAM_BUFFER_MODE) == CAMEL_STREAM_BUFFER_WRITE) {
-		gsize len = sbf->ptr - sbf->buf;
-
-		if (camel_stream_write (sbf->stream, (const gchar *) sbf->buf, len) == -1)
-			return -1;
-
-		sbf->ptr = sbf->buf;
-	} else {
-		/* nothing to do for read mode 'flush' */
-	}
-
-	return camel_stream_flush(sbf->stream);
-}
-
-static gint
-stream_close (CamelStream *stream)
-{
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (stream);
-
-	if (stream_flush(stream) == -1)
-		return -1;
-	return camel_stream_close(sbf->stream);
-}
-
-static gboolean
-stream_eos (CamelStream *stream)
-{
-	CamelStreamBuffer *sbf = CAMEL_STREAM_BUFFER (stream);
-
-	return camel_stream_eos(sbf->stream) && sbf->ptr == sbf->end;
 }
 
 /**
@@ -382,14 +457,16 @@ stream_eos (CamelStream *stream)
  * and %-1 on error.
  **/
 gint
-camel_stream_buffer_gets(CamelStreamBuffer *sbf, gchar *buf, guint max)
+camel_stream_buffer_gets (CamelStreamBuffer *sbf,
+                          gchar *buf,
+                          guint max)
 {
 	register gchar *outptr, *inptr, *inend, c, *outend;
 	gint bytes_read;
 
 	outptr = buf;
-	inptr = (gchar *) sbf->ptr;
-	inend = (gchar *) sbf->end;
+	inptr = (gchar *) sbf->priv->ptr;
+	inend = (gchar *) sbf->priv->end;
 	outend = buf+max-1;	/* room for NUL */
 
 	do {
@@ -398,34 +475,36 @@ camel_stream_buffer_gets(CamelStreamBuffer *sbf, gchar *buf, guint max)
 			*outptr++ = c;
 			if (c == '\n') {
 				*outptr = 0;
-				sbf->ptr = (guchar *) inptr;
+				sbf->priv->ptr = (guchar *) inptr;
 				return outptr-buf;
 			}
 		}
 		if (outptr == outend)
 			break;
 
-		bytes_read = camel_stream_read (sbf->stream, (gchar *) sbf->buf, sbf->size);
+		bytes_read = camel_stream_read (
+			sbf->priv->stream, (gchar *)
+			sbf->priv->buf, sbf->priv->size);
 		if (bytes_read == -1) {
 			if (buf == outptr)
 				return -1;
 			else
 				bytes_read = 0;
 		}
-		sbf->ptr = sbf->buf;
-		sbf->end = sbf->buf + bytes_read;
-		inptr = (gchar *) sbf->ptr;
-		inend = (gchar *) sbf->end;
+		sbf->priv->ptr = sbf->priv->buf;
+		sbf->priv->end = sbf->priv->buf + bytes_read;
+		inptr = (gchar *) sbf->priv->ptr;
+		inend = (gchar *) sbf->priv->end;
 	} while (bytes_read>0);
 
-	sbf->ptr = (guchar *) inptr;
+	sbf->priv->ptr = (guchar *) inptr;
 	*outptr = 0;
 
 	return (gint)(outptr - buf);
 }
 
 /**
- * camel_stream_buffer_read_line: read a complete line from the stream
+ * camel_stream_buffer_read_line:
  * @sbf: a #CamelStreamBuffer object
  *
  * This function reads a complete newline-terminated line from the stream
@@ -441,12 +520,14 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf)
 	guchar *p;
 	gint nread;
 
-	p = sbf->linebuf;
+	p = sbf->priv->linebuf;
 
 	while (1) {
-		nread = camel_stream_buffer_gets (sbf, (gchar *) p, sbf->linesize - (p - sbf->linebuf));
+		nread = camel_stream_buffer_gets (
+			sbf, (gchar *) p, sbf->priv->linesize -
+			(p - sbf->priv->linebuf));
 		if (nread <=0) {
-			if (p > sbf->linebuf)
+			if (p > sbf->priv->linebuf)
 				break;
 			return NULL;
 		}
@@ -455,16 +536,17 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf)
 		if (p[-1] == '\n')
 			break;
 
-		nread = p - sbf->linebuf;
-		sbf->linesize *= 2;
-		sbf->linebuf = g_realloc (sbf->linebuf, sbf->linesize);
-		p = sbf->linebuf + nread;
+		nread = p - sbf->priv->linebuf;
+		sbf->priv->linesize *= 2;
+		sbf->priv->linebuf = g_realloc (
+			sbf->priv->linebuf, sbf->priv->linesize);
+		p = sbf->priv->linebuf + nread;
 	}
 
 	p--;
-	if (p > sbf->linebuf && p[-1] == '\r')
+	if (p > sbf->priv->linebuf && p[-1] == '\r')
 		p--;
 	p[0] = 0;
 
-	return g_strdup((gchar *) sbf->linebuf);
+	return g_strdup ((gchar *) sbf->priv->linebuf);
 }

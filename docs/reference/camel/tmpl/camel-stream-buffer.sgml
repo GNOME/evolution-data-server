@@ -22,6 +22,16 @@ CamelStreamBuffer
 
 </para>
 
+@parent: 
+@stream: 
+@buf: 
+@ptr: 
+@end: 
+@size: 
+@linebuf: 
+@linesize: 
+@mode: 
+@flags: 
 
 <!-- ##### ENUM CamelStreamBufferMode ##### -->
 <para>

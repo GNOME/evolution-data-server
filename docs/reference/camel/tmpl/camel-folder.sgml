@@ -22,6 +22,16 @@ CamelFolder
 
 </para>
 
+@parent: 
+@priv: 
+@name: 
+@full_name: 
+@description: 
+@parent_store: 
+@summary: 
+@folder_flags: 
+@permanent_flags: 
+@later: 
 
 <!-- ##### STRUCT CamelFolderChangeInfo ##### -->
 <para>

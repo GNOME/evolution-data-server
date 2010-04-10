@@ -22,6 +22,8 @@ CamelMimeFilterProgress
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_progress_new ##### -->
 <para>

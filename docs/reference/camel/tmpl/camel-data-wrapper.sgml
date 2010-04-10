@@ -22,6 +22,12 @@ CamelDataWrapper
 
 </para>
 
+@parent: 
+@priv: 
+@encoding: 
+@mime_type: 
+@stream: 
+@offline: 
 
 <!-- ##### FUNCTION camel_data_wrapper_new ##### -->
 <para>

@@ -29,9 +29,7 @@
 #ifndef CAMEL_STREAM_VFS_H
 #define CAMEL_STREAM_VFS_H
 
-#include <glib.h>
 #include <glib-object.h>
-
 #include <camel/camel-stream.h>
 
 #define CAMEL_STREAM_VFS_TYPE     (camel_stream_vfs_get_type ())

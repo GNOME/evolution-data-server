@@ -289,9 +289,13 @@ fail_write:
 				      lf->folder_path, g_strerror (errno));
 
 	if (output_stream) {
+		gint fd;
+
+		fd = camel_stream_fs_get_fd (CAMEL_STREAM_FS (output_stream));
+
 		/* reset the file to original size */
 		do {
-			retval = ftruncate (((CamelStreamFs *) output_stream)->fd, mbs->folder_size);
+			retval = ftruncate (fd, mbs->folder_size);
 		} while (retval == -1 && errno == EINTR);
 
 		camel_object_unref (output_stream);

@@ -22,11 +22,8 @@ CamelGpgContext
 
 </para>
 
-
-<!-- ##### ARG CamelGpgContext:always-trust ##### -->
-<para>
-
-</para>
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_gpg_context_new ##### -->
 <para>

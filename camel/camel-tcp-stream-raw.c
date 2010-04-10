@@ -54,79 +54,6 @@
 
 static CamelTcpStreamClass *parent_class = NULL;
 
-/* Returns the class for a CamelTcpStreamRaw */
-#define CTSR_CLASS(so) CAMEL_TCP_STREAM_RAW_CLASS (CAMEL_OBJECT_GET_CLASS (so))
-
-static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
-static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
-static gint stream_flush  (CamelStream *stream);
-static gint stream_close  (CamelStream *stream);
-
-static gint stream_connect (CamelTcpStream *stream, struct addrinfo *host);
-static gint stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
-static gint stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
-static struct sockaddr *stream_get_local_address (CamelTcpStream *stream, socklen_t *len);
-static struct sockaddr *stream_get_remote_address (CamelTcpStream *stream, socklen_t *len);
-
-static void
-camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *camel_tcp_stream_raw_class)
-{
-	CamelTcpStreamClass *camel_tcp_stream_class =
-		CAMEL_TCP_STREAM_CLASS (camel_tcp_stream_raw_class);
-	CamelStreamClass *camel_stream_class =
-		CAMEL_STREAM_CLASS (camel_tcp_stream_raw_class);
-
-	parent_class = CAMEL_TCP_STREAM_CLASS (camel_type_get_global_classfuncs (camel_tcp_stream_get_type ()));
-
-	/* virtual method overload */
-	camel_stream_class->read = stream_read;
-	camel_stream_class->write = stream_write;
-	camel_stream_class->flush = stream_flush;
-	camel_stream_class->close = stream_close;
-
-	camel_tcp_stream_class->connect = stream_connect;
-	camel_tcp_stream_class->getsockopt = stream_getsockopt;
-	camel_tcp_stream_class->setsockopt  = stream_setsockopt;
-	camel_tcp_stream_class->get_local_address  = stream_get_local_address;
-	camel_tcp_stream_class->get_remote_address = stream_get_remote_address;
-}
-
-static void
-camel_tcp_stream_raw_init (gpointer object, gpointer klass)
-{
-	CamelTcpStreamRaw *stream = CAMEL_TCP_STREAM_RAW (object);
-
-	stream->sockfd = -1;
-}
-
-static void
-camel_tcp_stream_raw_finalize (CamelObject *object)
-{
-	CamelTcpStreamRaw *stream = CAMEL_TCP_STREAM_RAW (object);
-
-	if (stream->sockfd != -1)
-		SOCKET_CLOSE (stream->sockfd);
-}
-
-CamelType
-camel_tcp_stream_raw_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_tcp_stream_get_type (),
-					    "CamelTcpStreamRaw",
-					    sizeof (CamelTcpStreamRaw),
-					    sizeof (CamelTcpStreamRawClass),
-					    (CamelObjectClassInitFunc) camel_tcp_stream_raw_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_tcp_stream_raw_init,
-					    (CamelObjectFinalizeFunc) camel_tcp_stream_raw_finalize);
-	}
-
-	return type;
-}
-
 #ifdef SIMULATE_FLAKY_NETWORK
 static gssize
 flaky_tcp_write (gint fd, const gchar *buffer, gsize buflen)
@@ -228,53 +155,45 @@ flaky_tcp_read (gint fd, gchar *buffer, gsize buflen)
 
 #endif /* SIMULATE_FLAKY_NETWORK */
 
-/**
- * camel_tcp_stream_raw_new:
- *
- * Create a new #CamelTcpStreamRaw object.
- *
- * Returns: a new #CamelTcpStream object
- **/
-CamelStream *
-camel_tcp_stream_raw_new (void)
+static gint
+get_sockopt_level (const CamelSockOptData *data)
 {
-	CamelTcpStreamRaw *stream;
-
-	stream = CAMEL_TCP_STREAM_RAW (camel_object_new (camel_tcp_stream_raw_get_type ()));
-
-	return CAMEL_STREAM (stream);
-}
-
-static gssize
-stream_read (CamelStream *stream, gchar *buffer, gsize n)
-{
-	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
-
-	return camel_read_socket (raw->sockfd, buffer, n);
-}
-
-static gssize
-stream_write (CamelStream *stream, const gchar *buffer, gsize n)
-{
-	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
-
-	return camel_write_socket (raw->sockfd, buffer, n);
+	switch (data->option) {
+	case CAMEL_SOCKOPT_MAXSEGMENT:
+	case CAMEL_SOCKOPT_NODELAY:
+		return IPPROTO_TCP;
+	default:
+		return SOL_SOCKET;
+	}
 }
 
 static gint
-stream_flush (CamelStream *stream)
+get_sockopt_optname (const CamelSockOptData *data)
 {
-	return 0;
-}
-
-static gint
-stream_close (CamelStream *stream)
-{
-	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1)
+	switch (data->option) {
+#ifdef TCP_MAXSEG
+	case CAMEL_SOCKOPT_MAXSEGMENT:
+		return TCP_MAXSEG;
+#endif
+	case CAMEL_SOCKOPT_NODELAY:
+		return TCP_NODELAY;
+	case CAMEL_SOCKOPT_BROADCAST:
+		return SO_BROADCAST;
+	case CAMEL_SOCKOPT_KEEPALIVE:
+		return SO_KEEPALIVE;
+	case CAMEL_SOCKOPT_LINGER:
+		return SO_LINGER;
+	case CAMEL_SOCKOPT_RECVBUFFERSIZE:
+		return SO_RCVBUF;
+	case CAMEL_SOCKOPT_SENDBUFFERSIZE:
+		return SO_SNDBUF;
+	case CAMEL_SOCKOPT_REUSEADDR:
+		return SO_REUSEADDR;
+	case CAMEL_SOCKOPT_IPTYPEOFSERVICE:
+		return SO_TYPE;
+	default:
 		return -1;
-
-	((CamelTcpStreamRaw *)stream)->sockfd = -1;
-	return 0;
+	}
 }
 
 /* this is a 'cancellable' connect, cancellable from camel_operation_cancel etc */
@@ -402,8 +321,52 @@ socket_connect(struct addrinfo *h)
 	return fd;
 }
 
+static void
+tcp_stream_raw_finalize (CamelTcpStreamRaw *stream)
+{
+	if (stream->sockfd != -1)
+		SOCKET_CLOSE (stream->sockfd);
+}
+
+static gssize
+tcp_stream_raw_read (CamelStream *stream,
+                     gchar *buffer,
+                     gsize n)
+{
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+
+	return camel_read_socket (raw->sockfd, buffer, n);
+}
+
+static gssize
+tcp_stream_raw_write (CamelStream *stream,
+                      const gchar *buffer,
+                      gsize n)
+{
+	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
+
+	return camel_write_socket (raw->sockfd, buffer, n);
+}
+
 static gint
-stream_connect (CamelTcpStream *stream, struct addrinfo *host)
+tcp_stream_raw_flush (CamelStream *stream)
+{
+	return 0;
+}
+
+static gint
+tcp_stream_raw_close (CamelStream *stream)
+{
+	if (SOCKET_CLOSE (((CamelTcpStreamRaw *)stream)->sockfd) == -1)
+		return -1;
+
+	((CamelTcpStreamRaw *)stream)->sockfd = -1;
+	return 0;
+}
+
+static gint
+tcp_stream_raw_connect (CamelTcpStream *stream,
+                        struct addrinfo *host)
 {
 	CamelTcpStreamRaw *raw = CAMEL_TCP_STREAM_RAW (stream);
 
@@ -421,48 +384,8 @@ stream_connect (CamelTcpStream *stream, struct addrinfo *host)
 }
 
 static gint
-get_sockopt_level (const CamelSockOptData *data)
-{
-	switch (data->option) {
-	case CAMEL_SOCKOPT_MAXSEGMENT:
-	case CAMEL_SOCKOPT_NODELAY:
-		return IPPROTO_TCP;
-	default:
-		return SOL_SOCKET;
-	}
-}
-
-static gint
-get_sockopt_optname (const CamelSockOptData *data)
-{
-	switch (data->option) {
-#ifdef TCP_MAXSEG
-	case CAMEL_SOCKOPT_MAXSEGMENT:
-		return TCP_MAXSEG;
-#endif
-	case CAMEL_SOCKOPT_NODELAY:
-		return TCP_NODELAY;
-	case CAMEL_SOCKOPT_BROADCAST:
-		return SO_BROADCAST;
-	case CAMEL_SOCKOPT_KEEPALIVE:
-		return SO_KEEPALIVE;
-	case CAMEL_SOCKOPT_LINGER:
-		return SO_LINGER;
-	case CAMEL_SOCKOPT_RECVBUFFERSIZE:
-		return SO_RCVBUF;
-	case CAMEL_SOCKOPT_SENDBUFFERSIZE:
-		return SO_SNDBUF;
-	case CAMEL_SOCKOPT_REUSEADDR:
-		return SO_REUSEADDR;
-	case CAMEL_SOCKOPT_IPTYPEOFSERVICE:
-		return SO_TYPE;
-	default:
-		return -1;
-	}
-}
-
-static gint
-stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
+tcp_stream_raw_getsockopt (CamelTcpStream *stream,
+                           CamelSockOptData *data)
 {
 	gint optname, optlen;
 
@@ -492,7 +415,8 @@ stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 }
 
 static gint
-stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
+tcp_stream_raw_setsockopt (CamelTcpStream *stream,
+                           const CamelSockOptData *data)
 {
 	gint optname;
 
@@ -529,7 +453,8 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 }
 
 static struct sockaddr *
-stream_get_local_address (CamelTcpStream *stream, socklen_t *len)
+tcp_stream_raw_get_local_address (CamelTcpStream *stream,
+                                  socklen_t *len)
 {
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 sin;
@@ -549,7 +474,8 @@ stream_get_local_address (CamelTcpStream *stream, socklen_t *len)
 }
 
 static struct sockaddr *
-stream_get_remote_address (CamelTcpStream *stream, socklen_t *len)
+tcp_stream_raw_get_remote_address (CamelTcpStream *stream,
+                                   socklen_t *len)
 {
 #ifdef ENABLE_IPv6
 	struct sockaddr_in6 sin;
@@ -566,4 +492,64 @@ stream_get_remote_address (CamelTcpStream *stream, socklen_t *len)
 	memcpy(saddr, &sin, *len);
 
 	return saddr;
+}
+
+static void
+camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
+{
+	CamelStreamClass *stream_class;
+	CamelTcpStreamClass *tcp_stream_class;
+
+	parent_class = CAMEL_TCP_STREAM_CLASS (camel_type_get_global_classfuncs (camel_tcp_stream_get_type ()));
+
+	stream_class = CAMEL_STREAM_CLASS (class);
+	stream_class->read = tcp_stream_raw_read;
+	stream_class->write = tcp_stream_raw_write;
+	stream_class->flush = tcp_stream_raw_flush;
+	stream_class->close = tcp_stream_raw_close;
+
+	tcp_stream_class = CAMEL_TCP_STREAM_CLASS (class);
+	tcp_stream_class->connect = tcp_stream_raw_connect;
+	tcp_stream_class->getsockopt = tcp_stream_raw_getsockopt;
+	tcp_stream_class->setsockopt = tcp_stream_raw_setsockopt;
+	tcp_stream_class->get_local_address = tcp_stream_raw_get_local_address;
+	tcp_stream_class->get_remote_address = tcp_stream_raw_get_remote_address;
+}
+
+static void
+camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
+{
+	stream->sockfd = -1;
+}
+
+CamelType
+camel_tcp_stream_raw_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_tcp_stream_get_type (),
+					    "CamelTcpStreamRaw",
+					    sizeof (CamelTcpStreamRaw),
+					    sizeof (CamelTcpStreamRawClass),
+					    (CamelObjectClassInitFunc) camel_tcp_stream_raw_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_tcp_stream_raw_init,
+					    (CamelObjectFinalizeFunc) tcp_stream_raw_finalize);
+	}
+
+	return type;
+}
+
+/**
+ * camel_tcp_stream_raw_new:
+ *
+ * Create a new #CamelTcpStreamRaw object.
+ *
+ * Returns: a new #CamelTcpStream object
+ **/
+CamelStream *
+camel_tcp_stream_raw_new (void)
+{
+	return CAMEL_STREAM (camel_object_new (camel_tcp_stream_raw_get_type ()));
 }

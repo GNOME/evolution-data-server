@@ -22,6 +22,9 @@ CamelVeeStore
 
 </para>
 
+@parent: 
+@folder_unmatched: 
+@unmatched_uids: 
 
 <!-- ##### MACRO CAMEL_STORE_VEE_FOLDER_AUTO ##### -->
 <para>

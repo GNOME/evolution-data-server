@@ -22,6 +22,16 @@ CamelVeeFolder
 
 </para>
 
+@parent: 
+@priv: 
+@expression: 
+@flags: 
+@changes: 
+@search: 
+@parent_vee_store: 
+@hashes: 
+@loaded: 
+@deleted: 
 
 <!-- ##### MACRO CAMEL_UNMATCHED_NAME ##### -->
 <para>

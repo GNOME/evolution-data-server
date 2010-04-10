@@ -22,6 +22,8 @@ CamelMimeParser
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### ENUM camel_mime_parser_state_t ##### -->
 <para>

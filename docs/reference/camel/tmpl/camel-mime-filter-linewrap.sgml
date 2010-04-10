@@ -22,6 +22,8 @@ CamelMimeFilterLinewrap
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_linewrap_new ##### -->
 <para>

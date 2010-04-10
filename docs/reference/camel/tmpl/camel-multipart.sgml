@@ -22,6 +22,10 @@ CamelMultipart
 
 </para>
 
+@parent: 
+@parts: 
+@preface: 
+@postface: 
 
 <!-- ##### FUNCTION camel_multipart_new ##### -->
 <para>

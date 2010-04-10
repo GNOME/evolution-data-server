@@ -27,8 +27,6 @@
 #ifndef CAMEL_TCP_STREAM_H
 #define CAMEL_TCP_STREAM_H
 
-#include <camel/camel-stream.h>
-
 #ifndef G_OS_WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -46,10 +44,14 @@ struct addrinfo;
 #endif
 #include <unistd.h>
 
+#include <camel/camel-stream.h>
+
 #define CAMEL_TCP_STREAM_TYPE     (camel_tcp_stream_get_type ())
 #define CAMEL_TCP_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_TCP_STREAM_TYPE, CamelTcpStream))
 #define CAMEL_TCP_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_TCP_STREAM_TYPE, CamelTcpStreamClass))
 #define CAMEL_IS_TCP_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TCP_STREAM_TYPE))
+#define CAMEL_TCP_STREAM_GET_CLASS(obj) \
+	((CamelTcpStreamClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
@@ -78,7 +80,6 @@ typedef enum {
 	CAMEL_SOCKOPT_BROADCAST,       /* enable broadcast */
 	CAMEL_SOCKOPT_LAST
 } CamelSockOpt;
-
 
 typedef struct _CamelSockOptData {
 	CamelSockOpt option;

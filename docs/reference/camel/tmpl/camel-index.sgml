@@ -22,6 +22,14 @@ CamelIndex
 
 </para>
 
+@parent: 
+@priv: 
+@path: 
+@version: 
+@flags: 
+@state: 
+@normalize: 
+@normalize_data: 
 
 <!-- ##### USER_FUNCTION CamelIndexNorm ##### -->
 <para>
@@ -39,6 +47,9 @@ CamelIndex
 
 </para>
 
+@parent: 
+@priv: 
+@index: 
 
 <!-- ##### FUNCTION camel_index_cursor_new ##### -->
 <para>
@@ -72,6 +83,12 @@ CamelIndex
 
 </para>
 
+@parent: 
+@priv: 
+@index: 
+@name: 
+@buffer: 
+@words: 
 
 <!-- ##### FUNCTION camel_index_name_new ##### -->
 <para>

@@ -41,9 +41,6 @@ typedef struct _CamelStreamFilterPrivate CamelStreamFilterPrivate;
 
 struct _CamelStreamFilter {
 	CamelStream parent;
-
-	CamelStream *source;
-
 	CamelStreamFilterPrivate *priv;
 };
 
@@ -53,6 +50,7 @@ struct _CamelStreamFilterClass {
 
 CamelType	camel_stream_filter_get_type	(void);
 CamelStream *	camel_stream_filter_new		(CamelStream *stream);
+CamelStream *	camel_stream_filter_get_source	(CamelStreamFilter *stream);
 gint		camel_stream_filter_add		(CamelStreamFilter *stream,
 						 CamelMimeFilter *filter);
 void		camel_stream_filter_remove	(CamelStreamFilter *stream,

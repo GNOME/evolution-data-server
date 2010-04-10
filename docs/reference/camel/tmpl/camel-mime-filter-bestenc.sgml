@@ -42,6 +42,8 @@ CamelMimeFilterBestenc
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_mime_filter_bestenc_new ##### -->
 <para>

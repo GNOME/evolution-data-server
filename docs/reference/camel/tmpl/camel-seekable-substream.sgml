@@ -22,6 +22,8 @@ CamelSeekableSubstream
 
 </para>
 
+@parent: 
+@parent_stream: 
 
 <!-- ##### FUNCTION camel_seekable_substream_new ##### -->
 <para>

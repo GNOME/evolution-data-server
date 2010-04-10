@@ -22,11 +22,8 @@ CamelDataCache
 
 </para>
 
-
-<!-- ##### ARG CamelDataCache:path ##### -->
-<para>
-
-</para>
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_data_cache_new ##### -->
 <para>

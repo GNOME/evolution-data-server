@@ -45,11 +45,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelStreamFs CamelStreamFs;
 typedef struct _CamelStreamFsClass CamelStreamFsClass;
+typedef struct _CamelStreamFsPrivate CamelStreamFsPrivate;
 
 struct _CamelStreamFs {
 	CamelSeekableStream parent;
-
-	gint fd;             /* file descriptor on the underlying file */
+	CamelStreamFsPrivate *priv;
 };
 
 struct _CamelStreamFsClass {
@@ -71,6 +71,7 @@ CamelStream *	camel_stream_fs_new_with_fd_and_bounds
 						(gint fd,
 						 off_t start,
 						 off_t end);
+gint		camel_stream_fs_get_fd		(CamelStreamFs *stream);
 
 G_END_DECLS
 

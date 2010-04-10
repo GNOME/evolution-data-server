@@ -22,6 +22,9 @@ CamelDiscoStore
 
 </para>
 
+@parent: 
+@status: 
+@diary: 
 
 <!-- ##### ENUM CamelDiscoStoreStatus ##### -->
 <para>

@@ -36,6 +36,9 @@ CamelVTrashFolder
 
 </para>
 
+@parent: 
+@type: 
+@bit: 
 
 <!-- ##### ENUM camel_vtrash_folder_t ##### -->
 <para>

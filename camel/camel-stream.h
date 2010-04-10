@@ -37,6 +37,8 @@
 #define CAMEL_STREAM(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STREAM_TYPE, CamelStream))
 #define CAMEL_STREAM_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_TYPE, CamelStreamClass))
 #define CAMEL_IS_STREAM(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_TYPE))
+#define CAMEL_STREAM_GET_CLASS(obj) \
+	((CamelStreamClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
@@ -81,7 +83,7 @@ gssize		camel_stream_write_string	(CamelStream *stream,
 						 const gchar *string);
 gssize		camel_stream_printf		(CamelStream *stream,
 						 const gchar *fmt,
-						 ... ) G_GNUC_PRINTF (2, 3);
+						 ...) G_GNUC_PRINTF (2, 3);
 gssize		camel_stream_vprintf		(CamelStream *stream,
 						 const gchar *fmt,
 						 va_list ap);

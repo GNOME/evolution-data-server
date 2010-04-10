@@ -22,11 +22,8 @@ CamelCipherContext
 
 </para>
 
-
-<!-- ##### ARG CamelCipherContext:session ##### -->
-<para>
-
-</para>
+@parent: 
+@priv: 
 
 <!-- ##### STRUCT CamelCipherValidity ##### -->
 <para>

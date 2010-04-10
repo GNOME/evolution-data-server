@@ -22,6 +22,8 @@ CamelNNTPAddress
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### FUNCTION camel_nntp_address_new ##### -->
 <para>

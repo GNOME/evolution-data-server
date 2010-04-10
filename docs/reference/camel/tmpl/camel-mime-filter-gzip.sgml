@@ -22,6 +22,8 @@ CamelMimeFilterGZip
 
 </para>
 
+@parent: 
+@priv: 
 
 <!-- ##### ENUM CamelMimeFilterGZipMode ##### -->
 <para>

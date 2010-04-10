@@ -22,6 +22,33 @@ CamelFolderSummary
 
 </para>
 
+@parent: 
+@priv: 
+@version: 
+@flags: 
+@nextuid: 
+@time: 
+@saved_count: 
+@unread_count: 
+@deleted_count: 
+@junk_count: 
+@junk_not_deleted_count: 
+@visible_count: 
+@message_info_size: 
+@content_info_size: 
+@message_info_chunks: 
+@content_info_chunks: 
+@summary_path: 
+@build_content: 
+@uids: 
+@loaded_infos: 
+@folder: 
+@meta_summary: 
+@cache_load_time: 
+@timeout_handle: 
+@collate: 
+@sort_by: 
+@later: 
 
 <!-- ##### STRUCT CamelMessageInfo ##### -->
 <para>

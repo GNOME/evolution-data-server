@@ -43,6 +43,8 @@
 #include "camel-tcp-stream-ssl.h"
 #endif
 
+#define SSL_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
+
 #ifdef G_OS_WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -52,131 +54,11 @@
 
 static CamelStreamClass *parent_class = NULL;
 
-static gssize stream_read (CamelStream *stream, gchar *buffer, gsize n);
-static gssize stream_write (CamelStream *stream, const gchar *buffer, gsize n);
-static gint stream_flush  (CamelStream *stream);
-static gint stream_close  (CamelStream *stream);
-static gint stream_reset  (CamelStream *stream);
-
-static void
-camel_http_stream_class_init (CamelHttpStreamClass *camel_http_stream_class)
-{
-	CamelStreamClass *camel_stream_class =
-		CAMEL_STREAM_CLASS (camel_http_stream_class);
-
-	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
-
-	/* virtual method overload */
-	camel_stream_class->read = stream_read;
-	camel_stream_class->write = stream_write;
-	camel_stream_class->flush = stream_flush;
-	camel_stream_class->close = stream_close;
-	camel_stream_class->reset = stream_reset;
-}
-
-static void
-camel_http_stream_init (gpointer object, gpointer klass)
-{
-	CamelHttpStream *http = CAMEL_HTTP_STREAM (object);
-
-	http->parser = NULL;
-	http->content_type = NULL;
-	http->headers = NULL;
-	http->session = NULL;
-	http->url = NULL;
-	http->proxy = NULL;
-	http->authrealm = NULL;
-	http->authpass = NULL;
-	http->statuscode = 0;
-	http->raw = NULL;
-}
-
-static void
-camel_http_stream_finalize (CamelObject *object)
-{
-	CamelHttpStream *http = CAMEL_HTTP_STREAM (object);
-
-	if (http->parser)
-		camel_object_unref(http->parser);
-
-	if (http->content_type)
-		camel_content_type_unref (http->content_type);
-
-	if (http->headers)
-		camel_header_raw_clear (&http->headers);
-
-	if (http->session)
-		camel_object_unref(http->session);
-
-	if (http->url)
-		camel_url_free (http->url);
-
-	if (http->proxy)
-		camel_url_free (http->proxy);
-
-	g_free (http->authrealm);
-	g_free (http->authpass);
-
-	if (http->raw)
-		camel_object_unref(http->raw);
-	if (http->read)
-		camel_object_unref(http->read);
-}
-
-CamelType
-camel_http_stream_get_type (void)
-{
-	static CamelType type = CAMEL_INVALID_TYPE;
-
-	if (type == CAMEL_INVALID_TYPE) {
-		type = camel_type_register (camel_stream_get_type (),
-					    "CamelHttpStream",
-					    sizeof (CamelHttpStream),
-					    sizeof (CamelHttpStreamClass),
-					    (CamelObjectClassInitFunc) camel_http_stream_class_init,
-					    NULL,
-					    (CamelObjectInitFunc) camel_http_stream_init,
-					    (CamelObjectFinalizeFunc) camel_http_stream_finalize);
-	}
-
-	return type;
-}
-
-/**
- * camel_http_stream_new:
- * @method: HTTP method
- * @session: active session
- * @url: URL to act upon
- *
- * Returns: a http stream
- **/
-CamelStream *
-camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, CamelURL *url)
-{
-	CamelHttpStream *stream;
-	gchar *str;
-
-	g_return_val_if_fail(CAMEL_IS_SESSION(session), NULL);
-	g_return_val_if_fail(url != NULL, NULL);
-
-	stream = CAMEL_HTTP_STREAM (camel_object_new (camel_http_stream_get_type ()));
-
-	stream->method = method;
-	stream->session = session;
-	camel_object_ref(session);
-
-	str = camel_url_to_string (url, 0);
-	stream->url = camel_url_new (str, NULL);
-	g_free (str);
-
-	return (CamelStream *)stream;
-}
-
-#define SSL_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
-
 static CamelStream *
-http_connect (CamelHttpStream *http, CamelURL *url)
+http_connect (CamelHttpStream *http,
+              CamelURL *url)
 {
+	CamelTcpStream *tcp_stream;
 	CamelStream *stream = NULL;
 	struct addrinfo *ai, hints = { 0 };
 	gint errsave;
@@ -211,7 +93,9 @@ http_connect (CamelHttpStream *http, CamelURL *url)
 		return NULL;
 	}
 
-	if (camel_tcp_stream_connect (CAMEL_TCP_STREAM (stream), ai) == -1) {
+	tcp_stream = CAMEL_TCP_STREAM (stream);
+
+	if (camel_tcp_stream_connect (tcp_stream, ai) == -1) {
 		errsave = errno;
 		camel_object_unref (stream);
 		camel_freeaddrinfo(ai);
@@ -228,59 +112,97 @@ http_connect (CamelHttpStream *http, CamelURL *url)
 }
 
 static void
-http_disconnect(CamelHttpStream *http)
+http_disconnect (CamelHttpStream *http)
 {
 	if (http->raw) {
-		camel_object_unref(http->raw);
+		camel_object_unref (http->raw);
 		http->raw = NULL;
 	}
 
 	if (http->read) {
-		camel_object_unref(http->read);
+		camel_object_unref (http->read);
 		http->read = NULL;
 	}
 
 	if (http->parser) {
-		camel_object_unref(http->parser);
+		camel_object_unref (http->parser);
 		http->parser = NULL;
 	}
 }
 
-static const gchar *
-http_next_token (const guchar *in)
-{
-	const guchar *inptr = in;
-
-	while (*inptr && !isspace ((gint) *inptr))
-		inptr++;
-
-	while (*inptr && isspace ((gint) *inptr))
-		inptr++;
-
-	return (const gchar *) inptr;
-}
-
 static gint
-http_get_statuscode (CamelHttpStream *http)
+http_method_invoke (CamelHttpStream *http)
 {
-	const gchar *token;
-	gchar buffer[4096];
+	const gchar *method = NULL, *use_url;
+	gchar *url;
 
-	if (camel_stream_buffer_gets ((CamelStreamBuffer *)http->read, buffer, sizeof (buffer)) <= 0)
-		return -1;
-
-	d(printf("HTTP Status: %s\n", buffer));
-
-	/* parse the HTTP status code */
-	if (!g_ascii_strncasecmp (buffer, "HTTP/", 5)) {
-		token = http_next_token ((const guchar *) buffer);
-		http->statuscode = camel_header_decode_int (&token);
-		return http->statuscode;
+	switch (http->method) {
+	case CAMEL_HTTP_METHOD_GET:
+		method = "GET";
+		break;
+	case CAMEL_HTTP_METHOD_HEAD:
+		method = "HEAD";
+		break;
+	default:
+		g_assert_not_reached ();
 	}
 
-	http_disconnect(http);
+	url = camel_url_to_string (http->url, 0);
 
-	return -1;
+	if (http->proxy) {
+		use_url = url;
+	} else if (http->url->host && *http->url->host) {
+		use_url = strstr (url, http->url->host) + strlen (http->url->host);
+	} else {
+		use_url = http->url->path;
+	}
+
+	d(printf("HTTP Stream Sending: %s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
+		 method,
+		 use_url,
+		 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
+		 http->url->host));
+	if (camel_stream_printf (
+		http->raw,
+		"%s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
+		method, use_url, http->user_agent ? http->user_agent :
+		"CamelHttpStream/1.0", http->url->host) == -1) {
+		http_disconnect(http);
+		g_free (url);
+		return -1;
+	}
+	g_free (url);
+
+	if (http->authrealm) {
+		d(printf("HTTP Stream Sending: WWW-Authenticate: %s\n", http->authrealm));
+	}
+
+	if (http->authrealm && camel_stream_printf (
+		http->raw, "WWW-Authenticate: %s\r\n",
+		http->authrealm) == -1) {
+		http_disconnect(http);
+		return -1;
+	}
+
+	if (http->authpass && http->proxy) {
+		d(printf("HTTP Stream Sending: Proxy-Aurhorization: Basic %s\n", http->authpass));
+	}
+
+	if (http->authpass && http->proxy && camel_stream_printf (
+		http->raw, "Proxy-Authorization: Basic %s\r\n",
+		http->authpass) == -1) {
+		http_disconnect(http);
+		return -1;
+	}
+
+	/* end the headers */
+	if (camel_stream_write (http->raw, "\r\n", 2) == -1 ||
+		camel_stream_flush (http->raw) == -1) {
+		http_disconnect(http);
+		return -1;
+	}
+
+	return 0;
 }
 
 static gint
@@ -352,79 +274,80 @@ http_get_headers (CamelHttpStream *http)
 	return -1;
 }
 
-static gint
-http_method_invoke (CamelHttpStream *http)
+static const gchar *
+http_next_token (const guchar *in)
 {
-	const gchar *method = NULL, *use_url;
-	gchar *url;
+	const guchar *inptr = in;
 
-	switch (http->method) {
-	case CAMEL_HTTP_METHOD_GET:
-		method = "GET";
-		break;
-	case CAMEL_HTTP_METHOD_HEAD:
-		method = "HEAD";
-		break;
-	default:
-		g_assert_not_reached ();
-	}
+	while (*inptr && !isspace ((gint) *inptr))
+		inptr++;
 
-	url = camel_url_to_string (http->url, 0);
+	while (*inptr && isspace ((gint) *inptr))
+		inptr++;
 
-	if (http->proxy) {
-		use_url = url;
-	} else if (http->url->host && *http->url->host) {
-		use_url = strstr (url, http->url->host) + strlen (http->url->host);
-	} else {
-		use_url = http->url->path;
-	}
+	return (const gchar *) inptr;
+}
 
-	d(printf("HTTP Stream Sending: %s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
-		 method,
-		 use_url,
-		 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
-		 http->url->host));
-	if (camel_stream_printf (http->raw, "%s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
-				 method,
-				 use_url,
-				 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
-				 http->url->host) == -1) {
-		http_disconnect(http);
-		g_free (url);
+static gint
+http_get_statuscode (CamelHttpStream *http)
+{
+	const gchar *token;
+	gchar buffer[4096];
+
+	if (camel_stream_buffer_gets (
+		CAMEL_STREAM_BUFFER (http->read),
+		buffer, sizeof (buffer)) <= 0)
 		return -1;
-	}
-	g_free (url);
 
-	if (http->authrealm) {
-		d(printf("HTTP Stream Sending: WWW-Authenticate: %s\n", http->authrealm));
-	}
+	d(printf("HTTP Status: %s\n", buffer));
 
-	if (http->authrealm && camel_stream_printf (http->raw, "WWW-Authenticate: %s\r\n", http->authrealm) == -1) {
-		http_disconnect(http);
-		return -1;
+	/* parse the HTTP status code */
+	if (!g_ascii_strncasecmp (buffer, "HTTP/", 5)) {
+		token = http_next_token ((const guchar *) buffer);
+		http->statuscode = camel_header_decode_int (&token);
+		return http->statuscode;
 	}
 
-	if (http->authpass && http->proxy) {
-		d(printf("HTTP Stream Sending: Proxy-Aurhorization: Basic %s\n", http->authpass));
-	}
+	http_disconnect(http);
 
-	if (http->authpass && http->proxy && camel_stream_printf (http->raw, "Proxy-Authorization: Basic %s\r\n",
-								  http->authpass) == -1) {
-		http_disconnect(http);
-		return -1;
-	}
+	return -1;
+}
 
-	/* end the headers */
-	if (camel_stream_write (http->raw, "\r\n", 2) == -1 || camel_stream_flush (http->raw) == -1) {
-		http_disconnect(http);
-		return -1;
-	}
+static void
+http_stream_finalize (CamelHttpStream *http)
+{
+	if (http->parser)
+		camel_object_unref(http->parser);
 
-	return 0;
+	if (http->content_type)
+		camel_content_type_unref (http->content_type);
+
+	if (http->headers)
+		camel_header_raw_clear (&http->headers);
+
+	if (http->session != NULL)
+		camel_object_unref (http->session);
+
+	if (http->url != NULL)
+		camel_url_free (http->url);
+
+	if (http->proxy)
+		camel_url_free (http->proxy);
+
+	g_free (http->authrealm);
+	g_free (http->authpass);
+
+	if (http->raw != NULL)
+		camel_object_unref (http->raw);
+
+	if (http->read != NULL)
+		camel_object_unref (http->read);
 }
 
 static gssize
-stream_read (CamelStream *stream, gchar *buffer, gsize n)
+http_stream_read (CamelStream *stream,
+                  gchar *buffer,
+                  gsize n)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
 	const gchar *parser_buf;
@@ -438,7 +361,9 @@ stream_read (CamelStream *stream, gchar *buffer, gsize n)
  redirect:
 
 	if (!http->raw) {
-		if (http_connect (http, http->proxy ? http->proxy : http->url) == NULL)
+		if (http_connect (
+			http, http->proxy ? http->proxy :
+			http->url) == NULL)
 			return -1;
 
 		if (http_method_invoke (http) == -1) {
@@ -517,13 +442,15 @@ stream_read (CamelStream *stream, gchar *buffer, gsize n)
 }
 
 static gssize
-stream_write (CamelStream *stream, const gchar *buffer, gsize n)
+http_stream_write (CamelStream *stream,
+                   const gchar *buffer,
+                   gsize n)
 {
 	return -1;
 }
 
 static gint
-stream_flush (CamelStream *stream)
+http_stream_flush (CamelStream *stream)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
 
@@ -534,7 +461,7 @@ stream_flush (CamelStream *stream)
 }
 
 static gint
-stream_close (CamelStream *stream)
+http_stream_close (CamelStream *stream)
 {
 	CamelHttpStream *http = (CamelHttpStream *) stream;
 
@@ -549,7 +476,7 @@ stream_close (CamelStream *stream)
 }
 
 static gint
-stream_reset (CamelStream *stream)
+http_stream_reset (CamelStream *stream)
 {
 	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
 
@@ -559,13 +486,94 @@ stream_reset (CamelStream *stream)
 	return 0;
 }
 
+static void
+camel_http_stream_class_init (CamelHttpStreamClass *class)
+{
+	CamelStreamClass *stream_class;
+
+	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (camel_stream_get_type ()));
+
+	stream_class = CAMEL_STREAM_CLASS (class);
+	stream_class->read = http_stream_read;
+	stream_class->write = http_stream_write;
+	stream_class->flush = http_stream_flush;
+	stream_class->close = http_stream_close;
+	stream_class->reset = http_stream_reset;
+}
+
+static void
+camel_http_stream_init (CamelHttpStream *http)
+{
+	http->parser = NULL;
+	http->content_type = NULL;
+	http->headers = NULL;
+	http->session = NULL;
+	http->url = NULL;
+	http->proxy = NULL;
+	http->authrealm = NULL;
+	http->authpass = NULL;
+	http->statuscode = 0;
+	http->raw = NULL;
+}
+
+CamelType
+camel_http_stream_get_type (void)
+{
+	static CamelType type = CAMEL_INVALID_TYPE;
+
+	if (type == CAMEL_INVALID_TYPE) {
+		type = camel_type_register (camel_stream_get_type (),
+					    "CamelHttpStream",
+					    sizeof (CamelHttpStream),
+					    sizeof (CamelHttpStreamClass),
+					    (CamelObjectClassInitFunc) camel_http_stream_class_init,
+					    NULL,
+					    (CamelObjectInitFunc) camel_http_stream_init,
+					    (CamelObjectFinalizeFunc) http_stream_finalize);
+	}
+
+	return type;
+}
+
+/**
+ * camel_http_stream_new:
+ * @method: HTTP method
+ * @session: active session
+ * @url: URL to act upon
+ *
+ * Returns: a http stream
+ **/
+CamelStream *
+camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, CamelURL *url)
+{
+	CamelHttpStream *stream;
+	gchar *str;
+
+	g_return_val_if_fail(CAMEL_IS_SESSION(session), NULL);
+	g_return_val_if_fail(url != NULL, NULL);
+
+	stream = CAMEL_HTTP_STREAM (camel_object_new (camel_http_stream_get_type ()));
+
+	stream->method = method;
+	stream->session = session;
+	camel_object_ref(session);
+
+	str = camel_url_to_string (url, 0);
+	stream->url = camel_url_new (str, NULL);
+	g_free (str);
+
+	return (CamelStream *)stream;
+}
+
 CamelContentType *
 camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 {
 	g_return_val_if_fail (CAMEL_IS_HTTP_STREAM (http_stream), NULL);
 
 	if (!http_stream->content_type && !http_stream->raw) {
-		if (stream_read (CAMEL_STREAM (http_stream), NULL, 0) == -1)
+		CamelStream *stream = CAMEL_STREAM (http_stream);
+
+		if (http_stream_read (stream, NULL, 0) == -1)
 			return NULL;
 	}
 

@@ -41,13 +41,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelStreamMem CamelStreamMem;
 typedef struct _CamelStreamMemClass CamelStreamMemClass;
+typedef struct _CamelStreamMemPrivate CamelStreamMemPrivate;
 
 struct _CamelStreamMem {
 	CamelSeekableStream parent;
-
-	guint owner:1;	/* do we own the buffer? */
-	guint secure:1;	/* do we clear the buffer on finalize (if we own it) */
-	GByteArray *buffer;
+	CamelStreamMemPrivate *priv;
 };
 
 struct _CamelStreamMemClass {
@@ -61,6 +59,7 @@ CamelStream *	camel_stream_mem_new_with_byte_array
 CamelStream *	camel_stream_mem_new_with_buffer(const gchar *buffer,
 						 gsize len);
 void		camel_stream_mem_set_secure	(CamelStreamMem *mem);
+GByteArray *	camel_stream_mem_get_byte_array	(CamelStreamMem *mem);
 void		camel_stream_mem_set_byte_array	(CamelStreamMem *mem,
 						 GByteArray *buffer);
 void		camel_stream_mem_set_buffer	(CamelStreamMem *mem,
