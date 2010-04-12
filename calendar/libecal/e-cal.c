@@ -3952,10 +3952,6 @@ e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
 	if (priv->default_zone == zone)
 		return TRUE;
 
-	if (priv->load_state != E_CAL_LOAD_LOADED) {
-		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
-	}
-
 	/* FIXME Adding it to the server to change the tzid */
 	icalcomp = icaltimezone_get_component (zone);
 	if (!icalcomp) {
