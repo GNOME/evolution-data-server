@@ -31,7 +31,11 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#ifdef HAVE_HEIMDAL_KRB5
+#include <krb5.h>
+#else
 #include <krb5/krb5.h>
+#endif
 #ifdef HAVE_ET_COM_ERR_H
 #include <et/com_err.h>
 #else
