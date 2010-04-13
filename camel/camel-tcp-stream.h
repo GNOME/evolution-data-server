@@ -27,7 +27,7 @@
 #ifndef CAMEL_TCP_STREAM_H
 #define CAMEL_TCP_STREAM_H
 
-#ifndef G_OS_WIN32
+#ifndef _WIN32
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
