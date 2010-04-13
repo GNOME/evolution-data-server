@@ -1154,7 +1154,6 @@ update_free (CamelSession *session, CamelSessionThreadMsg *msg)
 	g_free (m->t_str);
 	g_free (m->container_id);
 	camel_object_unref (m->folder);
-	camel_folder_thaw (m->folder);
 	g_slist_foreach (m->slist, (GFunc) g_free, NULL);
 	g_slist_free (m->slist);
 	m->slist = NULL;
@@ -1452,7 +1451,6 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		msg->t_str = g_strdup (old_sync_time);
 		msg->container_id = g_strdup (container_id);
 		msg->folder = camel_object_ref (folder);
-		camel_folder_freeze (folder);
 		camel_session_thread_queue (session, &msg->msg, 0);
 		/*thread creation and queueing done*/
 	}
