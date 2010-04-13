@@ -659,8 +659,11 @@ groupwise_sync_summary (CamelFolder *folder, CamelException *ex)
 
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelGroupwiseStore *) folder->parent_store)->summary, folder->full_name);
 	camel_object_get(folder, NULL, CAMEL_FOLDER_TOTAL, &total, CAMEL_FOLDER_UNREAD, &unread, NULL);
-	si->unread = unread;
-	si->total = total;
+	
+	if (si) {
+		si->unread = unread;
+		si->total = total;
+	}
 
 	camel_store_summary_touch ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
 	camel_store_summary_save ((CamelStoreSummary *)((CamelGroupwiseStore *)folder->parent_store)->summary);
@@ -1610,8 +1613,10 @@ gw_update_cache (CamelFolder *folder, GList *list, CamelException *ex, gboolean 
 		item_status = e_gw_item_get_item_status (item);
 	
 		/* skip the deleted items */	
-		if (item_status & E_GW_ITEM_STAT_DELETED)
+		if (item_status & E_GW_ITEM_STAT_DELETED && strcmp (folder->full_name, "Trash")) {
+			i++;
 			continue;
+		}
 		
 		mi = NULL;
 		pmi = NULL;
