@@ -2149,7 +2149,7 @@ e_book_set_default_source (ESource *source, GError **error)
 	source = e_source_list_peek_source_by_uid (sources, uid);
 	if (!source) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_SOURCE,
-			     _("%s: there was no source for uid `%s' stored in gconf."), "e_book_set_default_source", uid);
+			     _("%s: there was no source for UID '%s' stored in GConf."), "e_book_set_default_source", uid);
 		g_object_unref (sources);
 		return FALSE;
 	}
