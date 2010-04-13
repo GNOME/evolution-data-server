@@ -23,9 +23,7 @@ CamelStreamMem
 </para>
 
 @parent: 
-@owner: 
-@secure: 
-@buffer: 
+@priv: 
 
 <!-- ##### FUNCTION camel_stream_mem_new ##### -->
 <para>

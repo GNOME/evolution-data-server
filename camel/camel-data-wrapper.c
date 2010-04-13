@@ -159,8 +159,8 @@ data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	if (data_wrapper->stream)
 		camel_object_unref (data_wrapper->stream);
 
-	data_wrapper->stream = stream;
-	camel_object_ref (stream);
+	data_wrapper->stream = camel_object_ref (stream);
+
 	return 0;
 }
 

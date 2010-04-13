@@ -23,7 +23,7 @@ CamelStreamFs
 </para>
 
 @parent: 
-@fd: 
+@priv: 
 
 <!-- ##### FUNCTION camel_stream_fs_new_with_name ##### -->
 <para>

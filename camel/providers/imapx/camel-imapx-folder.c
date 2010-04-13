@@ -200,11 +200,11 @@ imapx_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	
 		g_mutex_lock (ifolder->stream_lock);
 		if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg, stream) == -1) {
-			camel_object_unref(msg);
+			camel_object_unref (msg);
 			msg = NULL;
 		}
 		g_mutex_unlock (ifolder->stream_lock);
-		camel_object_unref(stream);
+		camel_object_unref (stream);
 	}
 
 	return msg;

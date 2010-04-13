@@ -400,7 +400,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 
 		if (!folder->summary)
 			camel_object_unref (ims);
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 	}
 }
 
@@ -1152,7 +1152,7 @@ imapx_refresh_free(CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _imapx_refresh_msg *m = (struct _imapx_refresh_msg *)msg;
 
-	camel_object_unref(m->store);
+	camel_object_unref (m->store);
 	camel_exception_clear(&m->ex);
 }
 
@@ -1211,7 +1211,7 @@ imapx_get_folder_info(CamelStore *store, const gchar *top, guint32 flags, CamelE
 			istore->last_refresh_time = time (NULL);
 			m = camel_session_thread_msg_new(((CamelService *)store)->session, &imapx_refresh_ops, sizeof(*m));
 			m->store = store;
-			camel_object_ref(store);
+			camel_object_ref (store);
 			camel_exception_init(&m->ex);
 			camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
 		}

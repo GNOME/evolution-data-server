@@ -357,8 +357,7 @@ camel_stream_filter_new (CamelStream *source)
 	stream = CAMEL_STREAM (camel_object_new (camel_stream_filter_get_type ()));
 	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
-	priv->source = source;
-	camel_object_ref (source);
+	priv->source = camel_object_ref (source);
 
 	return stream;
 }
@@ -398,8 +397,7 @@ camel_stream_filter_add (CamelStreamFilter *stream,
 
 	fn = g_malloc(sizeof(*fn));
 	fn->id = priv->filterid++;
-	fn->filter = filter;
-	camel_object_ref (filter);
+	fn->filter = camel_object_ref (filter);
 
 	/* sure, we could use a GList, but we wouldn't save much */
 	f = (struct _filter *)&priv->filters;

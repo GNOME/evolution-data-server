@@ -439,8 +439,7 @@ camel_groupwise_util_item_from_message (EGwConnection *cnc, CamelMimeMessage *me
 				camel_object_unref (filter);
 			} else {
 				/* US-ASCII or UTF-8 */
-				filtered_stream = (CamelStream *) content;
-				camel_object_ref (content);
+				filtered_stream = camel_object_ref (content);
 			}
 
 			camel_data_wrapper_decode_to_stream (dw, filtered_stream);
@@ -669,8 +668,7 @@ do_multipart (EGwConnection *cnc, EGwItem *item, CamelMultipart *mp, GSList **at
 				camel_object_unref (filter);
 			} else {
 				/* US-ASCII or UTF-8 */
-				filtered_stream = (CamelStream *) content;
-				camel_object_ref (content);
+				filtered_stream = camel_object_ref (content);
 			}
 
 			camel_data_wrapper_decode_to_stream (dw, filtered_stream);

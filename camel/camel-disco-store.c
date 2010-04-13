@@ -171,10 +171,9 @@ disco_connect (CamelService *service, CamelException *ex)
 		/* Need to resync.  Note we do the ref thing since during the replay
 		   disconnect could be called, which will remove store->diary and unref it */
 		store->status = CAMEL_DISCO_STORE_RESYNCING;
-		diary = store->diary;
-		camel_object_ref(diary);
+		diary = camel_object_ref (store->diary);
 		camel_disco_diary_replay(diary, ex);
-		camel_object_unref(diary);
+		camel_object_unref (diary);
 		store->status = CAMEL_DISCO_STORE_ONLINE;
 		if (camel_exception_is_set (ex))
 			return FALSE;
@@ -324,7 +323,7 @@ set_status(CamelDiscoStore *disco_store, CamelDiscoStoreStatus status, CamelExce
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "", &x);
 						camel_exception_clear(&x);
 					}
-					camel_object_unref(folder);
+					camel_object_unref (folder);
 				}
 				g_ptr_array_free(folders, TRUE);
 			}
@@ -432,7 +431,7 @@ camel_disco_store_prepare_for_offline(CamelDiscoStore *disco_store, CamelExcepti
 						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", &x);
 						camel_exception_clear(&x);
 					}
-					camel_object_unref(folder);
+					camel_object_unref (folder);
 				}
 				g_ptr_array_free(folders, TRUE);
 			}

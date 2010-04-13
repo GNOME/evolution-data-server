@@ -314,7 +314,7 @@ camel_data_cache_add(CamelDataCache *cdc, const gchar *path, const gchar *key, C
 		if (stream) {
 			g_unlink(real);
 			camel_object_bag_remove(cdc->priv->busy_bag, stream);
-			camel_object_unref(stream);
+			camel_object_unref (stream);
 		}
 	} while (stream != NULL);
 

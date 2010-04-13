@@ -88,7 +88,7 @@ do_info(gint argc, gchar **argv)
 		idx = (CamelIndex *)camel_text_index_new(argv[i], O_RDONLY);
 		if (idx) {
 			camel_text_index_info((CamelTextIndex *)idx);
-			camel_object_unref((CamelObject *)idx);
+			camel_object_unref (idx);
 		} else {
 			printf(" Failed: %s\n", g_strerror (errno));
 			return 0;

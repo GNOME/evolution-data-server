@@ -23,7 +23,6 @@ CamelStreamFilter
 </para>
 
 @parent: 
-@source: 
 @priv: 
 
 <!-- ##### FUNCTION camel_stream_filter_add ##### -->

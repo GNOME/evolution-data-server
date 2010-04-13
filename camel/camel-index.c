@@ -35,7 +35,7 @@
 
 #define w(x)
 #define io(x)
-#define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
+#define d(x) /*(printf ("%s (%d): ", __FILE__, __LINE__),(x))*/
 
 #define CAMEL_INDEX_VERSION (0x01)
 
@@ -45,8 +45,6 @@ struct _CamelIndexPrivate {
 
 #define _PRIVATE(o) (((CamelIndex *)(o))->priv)
 
-#define CI_CLASS(o) ((CamelIndexClass *)(((CamelObject *)o)->klass))
-
 /* ********************************************************************** */
 /* CamelIndex */
 /* ********************************************************************** */
@@ -54,26 +52,26 @@ struct _CamelIndexPrivate {
 static CamelObjectClass *camel_index_parent;
 
 static void
-camel_index_class_init(CamelIndexClass *klass)
+index_finalize (CamelIndex *index)
+{
+	g_free (index->path);
+	g_free (index->priv);
+}
+
+static void
+camel_index_class_init (CamelIndexClass *klass)
 {
 	camel_index_parent = CAMEL_OBJECT_CLASS(camel_type_get_global_classfuncs(camel_object_get_type()));
 }
 
 static void
-camel_index_init(CamelIndex *idx)
+camel_index_init (CamelIndex *idx)
 {
 	struct _CamelIndexPrivate *p;
 
 	p = _PRIVATE(idx) = g_malloc0(sizeof(*p));
 
 	idx->version = CAMEL_INDEX_VERSION;
-}
-
-static void
-camel_index_finalize(CamelIndex *idx)
-{
-	g_free(idx->path);
-	g_free(idx->priv);
 }
 
 CamelType
@@ -88,7 +86,7 @@ camel_index_get_type(void)
 					   (CamelObjectClassInitFunc) camel_index_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_index_init,
-					   (CamelObjectFinalizeFunc) camel_index_finalize);
+					   (CamelObjectFinalizeFunc) index_finalize);
 	}
 
 	return type;
@@ -97,28 +95,34 @@ camel_index_get_type(void)
 CamelIndex *
 camel_index_new(const gchar *path, gint flags)
 {
-	CamelIndex *idx = (CamelIndex *)camel_object_new(camel_index_get_type());
+	CamelIndex *idx;
 
-	camel_index_construct(idx, path, flags);
+	idx = (CamelIndex *)camel_object_new(camel_index_get_type());
+	camel_index_construct (idx, path, flags);
 
 	return idx;
 }
 
 void
-camel_index_construct(CamelIndex *idx, const gchar *path, gint flags)
+camel_index_construct (CamelIndex *idx, const gchar *path, gint flags)
 {
-	g_free(idx->path);
-	idx->path = g_strdup_printf("%s.index", path);
+	g_free (idx->path);
+	idx->path = g_strdup_printf ("%s.index", path);
 	idx->flags = flags;
 }
 
 gint
-camel_index_rename(CamelIndex *idx, const gchar *path)
+camel_index_rename (CamelIndex *idx, const gchar *path)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->rename != NULL, -1);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->rename(idx, path);
+		return class->rename (idx, path);
 	else {
 		errno = ENOENT;
 		return -1;
@@ -126,7 +130,7 @@ camel_index_rename(CamelIndex *idx, const gchar *path)
 }
 
 void
-camel_index_set_normalize(CamelIndex *idx, CamelIndexNorm func, gpointer data)
+camel_index_set_normalize (CamelIndex *idx, CamelIndexNorm func, gpointer data)
 {
 	g_return_if_fail (CAMEL_IS_INDEX (idx));
 
@@ -135,12 +139,17 @@ camel_index_set_normalize(CamelIndex *idx, CamelIndexNorm func, gpointer data)
 }
 
 gint
-camel_index_sync(CamelIndex *idx)
+camel_index_sync (CamelIndex *idx)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->sync != NULL, -1);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->sync(idx);
+		return class->sync (idx);
 	else {
 		errno = ENOENT;
 		return -1;
@@ -148,12 +157,17 @@ camel_index_sync(CamelIndex *idx)
 }
 
 gint
-camel_index_compress(CamelIndex *idx)
+camel_index_compress (CamelIndex *idx)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->compress != NULL, -1);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->compress(idx);
+		return class->compress (idx);
 	else {
 		errno = ENOENT;
 		return -1;
@@ -161,14 +175,18 @@ camel_index_compress(CamelIndex *idx)
 }
 
 gint
-camel_index_delete(CamelIndex *idx)
+camel_index_delete (CamelIndex *idx)
 {
+	CamelIndexClass *class;
 	gint ret;
 
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->delete != NULL, -1);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0) {
-		ret = CI_CLASS(idx)->delete(idx);
+		ret = class->delete (idx);
 		idx->state |= CAMEL_INDEX_DELETED;
 	} else {
 		errno = ENOENT;
@@ -179,34 +197,49 @@ camel_index_delete(CamelIndex *idx)
 }
 
 gint
-camel_index_has_name(CamelIndex *idx, const gchar *name)
+camel_index_has_name (CamelIndex *idx, const gchar *name)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), FALSE);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->has_name != NULL, FALSE);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->has_name(idx, name);
+		return class->has_name (idx, name);
 	else
 		return FALSE;
 }
 
 CamelIndexName *
-camel_index_add_name(CamelIndex *idx, const gchar *name)
+camel_index_add_name (CamelIndex *idx, const gchar *name)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->add_name != NULL, NULL);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->add_name(idx, name);
+		return class->add_name (idx, name);
 	else
 		return NULL;
 }
 
 gint
-camel_index_write_name(CamelIndex *idx, CamelIndexName *idn)
+camel_index_write_name (CamelIndex *idx, CamelIndexName *idn)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->write_name != NULL, -1);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->write_name(idx, idn);
+		return class->write_name (idx, idn);
 	else {
 		errno = ENOENT;
 		return -1;
@@ -214,65 +247,89 @@ camel_index_write_name(CamelIndex *idx, CamelIndexName *idn)
 }
 
 CamelIndexCursor *
-camel_index_find_name(CamelIndex *idx, const gchar *name)
+camel_index_find_name (CamelIndex *idx, const gchar *name)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->find_name != NULL, NULL);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->find_name(idx, name);
+		return class->find_name (idx, name);
 	else
 		return NULL;
 }
 
 void
-camel_index_delete_name(CamelIndex *idx, const gchar *name)
+camel_index_delete_name (CamelIndex *idx, const gchar *name)
 {
+	CamelIndexClass *class;
+
 	g_return_if_fail (CAMEL_IS_INDEX (idx));
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_if_fail (class->delete_name != NULL);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		CI_CLASS(idx)->delete_name(idx, name);
+		class->delete_name (idx, name);
 }
 
 CamelIndexCursor *
-camel_index_find(CamelIndex *idx, const gchar *word)
+camel_index_find (CamelIndex *idx, const gchar *word)
 {
-	gchar *b = (gchar *)word;
+	CamelIndexClass *class;
 	CamelIndexCursor *ret;
+	gchar *b = (gchar *) word;
 
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->find != NULL, NULL);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) != 0)
 		return NULL;
 
 	if (idx->normalize)
-		b = idx->normalize(idx, word, idx->normalize_data);
+		b = idx->normalize (idx, word, idx->normalize_data);
 
-	ret = CI_CLASS(idx)->find(idx, b);
+	ret = class->find (idx, b);
 
 	if (b != word)
-		g_free(b);
+		g_free (b);
 
 	return ret;
 }
 
 CamelIndexCursor *
-camel_index_words(CamelIndex *idx)
+camel_index_words (CamelIndex *idx)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->words != NULL, NULL);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->words(idx);
+		return class->words (idx);
 	else
 		return NULL;
 }
 
 CamelIndexCursor *
-camel_index_names(CamelIndex *idx)
+camel_index_names (CamelIndex *idx)
 {
+	CamelIndexClass *class;
+
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
 
+	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class->names != NULL, NULL);
+
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return CI_CLASS(idx)->names(idx);
+		return class->names (idx);
 	else
 		return NULL;
 }
@@ -283,7 +340,12 @@ camel_index_names(CamelIndex *idx)
 
 static CamelObjectClass *camel_index_name_parent;
 
-#define CIN_CLASS(o) ((CamelIndexNameClass *)(((CamelObject *)o)->klass))
+static void
+index_name_finalize(CamelIndexName *idn)
+{
+	if (idn->index)
+		camel_object_unref (idn->index);
+}
 
 static void
 camel_index_name_class_init(CamelIndexNameClass *klass)
@@ -294,13 +356,6 @@ camel_index_name_class_init(CamelIndexNameClass *klass)
 static void
 camel_index_name_init(CamelIndexName *idn)
 {
-}
-
-static void
-camel_index_name_finalize(CamelIndexName *idn)
-{
-	if (idn->index)
-		camel_object_unref((CamelObject *)idn->index);
 }
 
 CamelType
@@ -315,41 +370,57 @@ camel_index_name_get_type(void)
 					   (CamelObjectClassInitFunc) camel_index_name_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_index_name_init,
-					   (CamelObjectFinalizeFunc) camel_index_name_finalize);
+					   (CamelObjectFinalizeFunc) index_name_finalize);
 	}
 
 	return type;
 }
 
 CamelIndexName *
-camel_index_name_new(CamelIndex *idx, const gchar *name)
+camel_index_name_new (CamelIndex *idx, const gchar *name)
 {
-	CamelIndexName *idn = (CamelIndexName *)camel_object_new(camel_index_name_get_type());
+	CamelIndexName *idn;
 
-	idn->index = idx;
-	camel_object_ref((CamelObject *)idx);
+	idn = (CamelIndexName *)camel_object_new(camel_index_name_get_type());
+	idn->index = camel_object_ref (idx);
 
 	return idn;
 }
 
 void
-camel_index_name_add_word(CamelIndexName *idn, const gchar *word)
+camel_index_name_add_word (CamelIndexName *idn,
+                           const gchar *word)
 {
+	CamelIndexNameClass *class;
 	gchar *b = (gchar *)word;
 
-	if (idn->index->normalize)
-		b = idn->index->normalize(idn->index, word, idn->index->normalize_data);
+	g_return_if_fail (CAMEL_IS_INDEX_NAME (idn));
 
-	CIN_CLASS(idn)->add_word(idn, b);
+	class = CAMEL_INDEX_NAME_GET_CLASS (idn);
+	g_return_if_fail (class->add_word != NULL);
+
+	if (idn->index->normalize)
+		b = idn->index->normalize (idn->index, word, idn->index->normalize_data);
+
+	class->add_word (idn, b);
 
 	if (b != word)
-		g_free(b);
+		g_free (b);
 }
 
 gsize
-camel_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, gsize len)
+camel_index_name_add_buffer (CamelIndexName *idn,
+                             const gchar *buffer,
+                             gsize len)
 {
-	return CIN_CLASS(idn)->add_buffer(idn, buffer, len);
+	CamelIndexNameClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_INDEX_NAME (idn), 0);
+
+	class = CAMEL_INDEX_NAME_GET_CLASS (idn);
+	g_return_val_if_fail (class->add_buffer != NULL, 0);
+
+	return class->add_buffer (idn, buffer, len);
 }
 
 /* ********************************************************************** */
@@ -358,24 +429,22 @@ camel_index_name_add_buffer(CamelIndexName *idn, const gchar *buffer, gsize len)
 
 static CamelObjectClass *camel_index_cursor_parent;
 
-#define CIC_CLASS(o) ((CamelIndexCursorClass *)(((CamelObject *)o)->klass))
+static void
+index_cursor_finalize (CamelIndexCursor *idc)
+{
+	if (idc->index)
+		camel_object_unref (idc->index);
+}
 
 static void
-camel_index_cursor_class_init(CamelIndexCursorClass *klass)
+camel_index_cursor_class_init (CamelIndexCursorClass *klass)
 {
 	camel_index_cursor_parent = CAMEL_OBJECT_CLASS(camel_type_get_global_classfuncs(camel_object_get_type()));
 }
 
 static void
-camel_index_cursor_init(CamelIndexCursor *idc)
+camel_index_cursor_init (CamelIndexCursor *idc)
 {
-}
-
-static void
-camel_index_cursor_finalize(CamelIndexCursor *idc)
-{
-	if (idc->index)
-		camel_object_unref((CamelObject *)idc->index);
 }
 
 CamelType
@@ -390,32 +459,45 @@ camel_index_cursor_get_type(void)
 					   (CamelObjectClassInitFunc) camel_index_cursor_class_init,
 					   NULL,
 					   (CamelObjectInitFunc) camel_index_cursor_init,
-					   (CamelObjectFinalizeFunc) camel_index_cursor_finalize);
+					   (CamelObjectFinalizeFunc) index_cursor_finalize);
 	}
 
 	return type;
 }
 
 CamelIndexCursor *
-camel_index_cursor_new(CamelIndex *idx, const gchar *name)
+camel_index_cursor_new (CamelIndex *idx, const gchar *name)
 {
-	CamelIndexCursor *idc = (CamelIndexCursor *)camel_object_new(camel_index_cursor_get_type());
+	CamelIndexCursor *idc;
 
-	idc->index = idx;
-	camel_object_ref((CamelObject *)idx);
+	idc = (CamelIndexCursor *)camel_object_new(camel_index_cursor_get_type());
+	idc->index = camel_object_ref (idx);
 
 	return idc;
 }
 
 const gchar *
-camel_index_cursor_next(CamelIndexCursor *idc)
+camel_index_cursor_next (CamelIndexCursor *idc)
 {
-	return CIC_CLASS(idc)->next(idc);
+	CamelIndexCursorClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_INDEX_CURSOR (idc), NULL);
+
+	class = CAMEL_INDEX_CURSOR_GET_CLASS (idc);
+	g_return_val_if_fail (class->next != NULL, NULL);
+
+	return class->next (idc);
 }
 
 void
-camel_index_cursor_reset(CamelIndexCursor *idc)
+camel_index_cursor_reset (CamelIndexCursor *idc)
 {
-	CIC_CLASS(idc)->reset(idc);
-}
+	CamelIndexCursorClass *class;
 
+	g_return_if_fail (CAMEL_IS_INDEX_CURSOR (idc));
+
+	class = CAMEL_INDEX_CURSOR_GET_CLASS (idc);
+	g_return_if_fail (class->reset != NULL);
+
+	class->reset (idc);
+}

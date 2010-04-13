@@ -349,13 +349,13 @@ camel_store_get_folder (CamelStore *store, const gchar *folder_name, guint32 fla
 				if ((store->flags & CAMEL_STORE_VTRASH)
 				    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
 					camel_vee_folder_add_folder(vfolder, folder);
-					camel_object_unref(vfolder);
+					camel_object_unref (vfolder);
 				}
 
 				if ((store->flags & CAMEL_STORE_VJUNK)
 				    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
 					camel_vee_folder_add_folder(vfolder, folder);
-					camel_object_unref(vfolder);
+					camel_object_unref (vfolder);
 				}
 			}
 		}
@@ -444,19 +444,19 @@ cs_delete_cached_folder(CamelStore *store, const gchar *folder_name)
 		if ((store->flags & CAMEL_STORE_VTRASH)
 		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VTRASH_NAME))) {
 			camel_vee_folder_remove_folder(vfolder, folder);
-			camel_object_unref(vfolder);
+			camel_object_unref (vfolder);
 		}
 
 		if ((store->flags & CAMEL_STORE_VJUNK)
 		    && (vfolder = camel_object_bag_get(store->folders, CAMEL_VJUNK_NAME))) {
 			camel_vee_folder_remove_folder(vfolder, folder);
-			camel_object_unref(vfolder);
+			camel_object_unref (vfolder);
 		}
 
 		camel_folder_delete(folder);
 
 		camel_object_bag_remove(store->folders, folder);
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 	}
 }
 
@@ -568,7 +568,7 @@ camel_store_rename_folder (CamelStore *store, const gchar *old_namein, const gch
 			} else {
 				g_ptr_array_remove_index_fast(folders, i);
 				i--;
-				camel_object_unref(folder);
+				camel_object_unref (folder);
 			}
 		}
 	}
@@ -593,7 +593,7 @@ camel_store_rename_folder (CamelStore *store, const gchar *old_namein, const gch
 				g_free(new);
 
 				CAMEL_FOLDER_REC_UNLOCK(folder, lock);
-				camel_object_unref(folder);
+				camel_object_unref (folder);
 			}
 
 			/* Emit renamed signal */
@@ -611,7 +611,7 @@ camel_store_rename_folder (CamelStore *store, const gchar *old_namein, const gch
 			for (i=0;i<folders->len;i++) {
 				folder = folders->pdata[i];
 				CAMEL_FOLDER_REC_UNLOCK(folder, lock);
-				camel_object_unref(folder);
+				camel_object_unref (folder);
 			}
 		}
 	}
@@ -663,7 +663,7 @@ get_special(CamelStore *store, camel_vtrash_folder_t type)
 	for (i=0;i<folders->len;i++) {
 		if (!CAMEL_IS_VTRASH_FOLDER(folders->pdata[i]))
 			camel_vee_folder_add_folder((CamelVeeFolder *)folder, (CamelFolder *)folders->pdata[i]);
-		camel_object_unref(folders->pdata[i]);
+		camel_object_unref (folders->pdata[i]);
 	}
 	g_ptr_array_free(folders, TRUE);
 
@@ -748,7 +748,7 @@ store_sync (CamelStore *store, gint expunge, CamelException *ex)
 				ignore_no_such_table_exception (&x);
 			} else if (CAMEL_IS_VEE_FOLDER(folder))
 				camel_vee_folder_sync_headers(folder, NULL); /* Literally don't care of vfolder exceptions */
-			camel_object_unref(folder);
+			camel_object_unref (folder);
 		}
 		camel_exception_xfer(ex, &x);
 		g_ptr_array_free(folders, TRUE);

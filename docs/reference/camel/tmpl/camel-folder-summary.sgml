@@ -34,8 +34,6 @@ CamelFolderSummary
 @junk_count: 
 @junk_not_deleted_count: 
 @visible_count: 
-@message_info_size: 
-@content_info_size: 
 @message_info_chunks: 
 @content_info_chunks: 
 @summary_path: 

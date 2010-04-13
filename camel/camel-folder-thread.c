@@ -605,8 +605,7 @@ camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean
 	thread->subject = thread_subject;
 	thread->tree = NULL;
 	thread->node_chunks = e_memchunk_new(32, sizeof(CamelFolderThreadNode));
-	thread->folder = folder;
-	camel_object_ref (folder);
+	thread->folder = camel_object_ref (folder);
 
 	fsummary = camel_folder_summary_array (folder->summary);
 	thread->summary = summary = g_ptr_array_new();

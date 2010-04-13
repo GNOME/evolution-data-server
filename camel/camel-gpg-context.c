@@ -217,8 +217,7 @@ gpg_ctx_new (CamelCipherContext *context)
 
 	gpg = g_new (struct _GpgCtx, 1);
 	gpg->mode = GPG_CTX_MODE_SIGN;
-	gpg->session = session;
-	camel_object_ref (session);
+	gpg->session = camel_object_ref (session);
 	gpg->userid_hint = g_hash_table_new (g_str_hash, g_str_equal);
 	gpg->complete = FALSE;
 	gpg->seen_eof1 = TRUE;
@@ -1428,7 +1427,7 @@ gpg_sign (CamelCipherContext *context,
 	camel_content_type_unref(ct);
 
 	camel_medium_set_content ((CamelMedium *)sigpart, dw);
-	camel_object_unref(dw);
+	camel_object_unref (dw);
 
 	camel_mime_part_set_description(sigpart, "This is a digitally signed message part");
 
@@ -1443,11 +1442,11 @@ gpg_sign (CamelCipherContext *context,
 	mps->signature = sigpart;
 	mps->contentraw = istream;
 	camel_stream_reset(istream);
-	camel_object_ref(istream);
+	camel_object_ref (istream);
 
 	camel_medium_set_content ((CamelMedium *)opart, (CamelDataWrapper *)mps);
 fail:
-	camel_object_unref(ostream);
+	camel_object_unref (ostream);
 
 	if (gpg)
 		gpg_ctx_free (gpg);
@@ -1479,7 +1478,7 @@ swrite (CamelMimePart *sigpart)
 			ret = camel_stream_close (ostream);
 	}
 
-	camel_object_unref(ostream);
+	camel_object_unref (ostream);
 
 	if (ret == -1) {
 		g_unlink (template);
@@ -1600,7 +1599,7 @@ gpg_verify (CamelCipherContext *context,
 			printf("Writing gpg verify data to '%s'\n", name);
 			camel_stream_write_to_stream(istream, out);
 			camel_stream_reset(istream);
-			camel_object_unref(out);
+			camel_object_unref (out);
 		}
 
 		g_free(name);
@@ -1611,7 +1610,7 @@ gpg_verify (CamelCipherContext *context,
 			if (out) {
 				printf("Writing gpg verify signature to '%s'\n", name);
 				camel_data_wrapper_write_to_stream((CamelDataWrapper *)sigpart, out);
-				camel_object_unref(out);
+				camel_object_unref (out);
 			}
 			g_free(name);
 		}
@@ -1803,7 +1802,7 @@ gpg_encrypt (CamelCipherContext *context,
 	camel_content_type_unref(ct);
 
 	camel_medium_set_content ((CamelMedium *)encpart, dw);
-	camel_object_unref(dw);
+	camel_object_unref (dw);
 
 	camel_mime_part_set_description(encpart, _("This is a digitally encrypted message part"));
 
@@ -1826,8 +1825,7 @@ gpg_encrypt (CamelCipherContext *context,
 	camel_content_type_unref(ct);
 	camel_multipart_set_boundary((CamelMultipart *)mpe, NULL);
 
-	mpe->decrypted = ipart;
-	camel_object_ref (ipart);
+	mpe->decrypted = camel_object_ref (ipart);
 
 	camel_multipart_add_part((CamelMultipart *)mpe, verpart);
 	camel_object_unref (verpart);

@@ -125,7 +125,7 @@ camel_imap_search_finalize(CamelImapSearch *is)
 		free_match(is, mr);
 	g_hash_table_destroy(is->matches_hash);
 	if (is->cache)
-		camel_object_unref((CamelObject *)is->cache);
+		camel_object_unref (is->cache);
 }
 
 CamelType
@@ -237,7 +237,7 @@ save_match(CamelImapSearch *is, struct _match_record *mr)
 		ret = -1;
 	}
 
-	camel_object_unref((CamelObject *)stream);
+	camel_object_unref (stream);
 	return ret;
 }
 
@@ -295,7 +295,7 @@ load_match(CamelImapSearch *is, gchar hash[17], gint argc, struct _ESExpResult *
 			d(printf(" file format invalid/validity changed\n"));
 			memset(&header, 0, sizeof(header));
 		}
-		camel_object_unref((CamelObject *)stream);
+		camel_object_unref (stream);
 	} else {
 		d(printf(" no cache entry found\n"));
 	}

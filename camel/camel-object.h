@@ -198,13 +198,8 @@ CamelType camel_object_get_type (void);
 
 CamelObject *camel_object_new (CamelType type);
 
-void camel_object_ref(gpointer);
-void camel_object_unref(gpointer);
-
-#ifdef CAMEL_DEBUG
-#define camel_object_ref(o) (printf("%s (%s:%d):ref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_ref(o))
-#define camel_object_unref(o) (printf("%s (%s:%d):unref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_unref (o))
-#endif
+gpointer camel_object_ref (gpointer);
+void camel_object_unref (gpointer);
 
 /* hooks */
 CamelObjectHookID camel_object_hook_event(gpointer obj, const gchar *name, CamelObjectEventHookFunc hook, gpointer data);

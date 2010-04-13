@@ -439,7 +439,7 @@ retry:
 			  (glong)camel_mime_parser_tell_start_from(parser),
 			  camel_mime_parser_state(parser));
 
-		camel_object_unref((CamelObject *)parser);
+		camel_object_unref (parser);
 		parser = NULL;
 
 		if (!retried) {
@@ -459,7 +459,7 @@ retry:
 	if (camel_mime_part_construct_from_parser((CamelMimePart *)message, parser) == -1) {
 		set_cannot_get_message_ex (ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
 				     uid, lf->folder_path, _("Message construction failed."));
-		camel_object_unref((CamelObject *)message);
+		camel_object_unref (message);
 		message = NULL;
 		goto fail;
 	}
@@ -471,7 +471,7 @@ fail:
 	camel_local_folder_unlock(lf);
 
 	if (parser)
-		camel_object_unref((CamelObject *)parser);
+		camel_object_unref (parser);
 
 	/* use the opportunity to notify of changes (particularly if we had a rebuild) */
 	if (camel_folder_change_info_changed(lf->changes)) {

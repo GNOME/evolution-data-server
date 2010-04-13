@@ -37,6 +37,8 @@
 #define CAMEL_FOLDER_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_folder_summary_get_type (), CamelFolderSummary)
 #define CAMEL_FOLDER_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_folder_summary_get_type (), CamelFolderSummaryClass)
 #define CAMEL_IS_FOLDER_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_folder_summary_get_type ())
+#define CAMEL_FOLDER_SUMMARY_GET_CLASS(obj) \
+	((CamelFolderSummaryClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
@@ -231,10 +233,6 @@ struct _CamelFolderSummary {
 	guint32 junk_not_deleted_count;
 	guint32 visible_count;
 
-	/* sizes of memory objects */
-	guint32 message_info_size;
-	guint32 content_info_size;
-
 	/* memory allocators (setup automatically) */
 	struct _EMemChunk *message_info_chunks;
 	struct _EMemChunk *content_info_chunks;
@@ -263,6 +261,10 @@ struct _CamelFIRecord;
 
 struct _CamelFolderSummaryClass {
 	CamelObjectClass parent_class;
+
+	/* sizes of memory objects */
+	gsize message_info_size;
+	gsize content_info_size;
 
 	/* load/save the global info */
 	gint (*summary_header_load)(CamelFolderSummary *, FILE *);

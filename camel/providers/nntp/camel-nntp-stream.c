@@ -218,7 +218,7 @@ camel_nntp_stream_finalize(CamelNNTPStream *is)
 	g_free(is->buf);
 	g_free(is->linebuf);
 	if (is->source)
-		camel_object_unref((CamelObject *)is->source);
+		camel_object_unref (is->source);
 }
 
 CamelType
@@ -254,8 +254,7 @@ camel_nntp_stream_new(CamelStream *source)
 	CamelNNTPStream *is;
 
 	is = (CamelNNTPStream *)camel_object_new(camel_nntp_stream_get_type ());
-	camel_object_ref((CamelObject *)source);
-	is->source = source;
+	is->source = camel_object_ref (source);
 
 	return (CamelStream *)is;
 }

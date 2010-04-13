@@ -65,8 +65,7 @@ sasl_set_service (CamelSasl *sasl,
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 	g_return_if_fail (sasl->priv->service == NULL);
 
-	sasl->priv->service = service;
-	camel_object_ref (service);
+	sasl->priv->service = camel_object_ref (service);
 }
 
 static void

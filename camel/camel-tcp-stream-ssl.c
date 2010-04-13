@@ -1245,8 +1245,7 @@ camel_tcp_stream_ssl_new (CamelSession *session, const gchar *expected_host, gui
 
 	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
 
-	stream->priv->session = session;
-	camel_object_ref (session);
+	stream->priv->session = camel_object_ref (session);
 	stream->priv->expected_host = g_strdup (expected_host);
 	stream->priv->ssl_mode = TRUE;
 	stream->priv->flags = flags;
@@ -1278,8 +1277,7 @@ camel_tcp_stream_ssl_new_raw (CamelSession *session, const gchar *expected_host,
 
 	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
 
-	stream->priv->session = session;
-	camel_object_ref (session);
+	stream->priv->session = camel_object_ref (session);
 	stream->priv->expected_host = g_strdup (expected_host);
 	stream->priv->ssl_mode = FALSE;
 	stream->priv->flags = flags;

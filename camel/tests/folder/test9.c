@@ -71,8 +71,7 @@ static CamelFolder *get_folder(CamelFilterDriver *d, const gchar *uri, gpointer 
 
 	for (i = 0; i < G_N_ELEMENTS (mailboxes); i++)
 		if (!strcmp(mailboxes[i].name, uri)) {
-			camel_object_ref((CamelObject *)mailboxes[i].folder);
-			return mailboxes[i].folder;
+			return camel_object_ref (mailboxes[i].folder);
 		}
 	return NULL;
 }

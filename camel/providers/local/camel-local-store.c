@@ -290,7 +290,7 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 
 	folder = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder(store, name, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (folder) {
-		camel_object_unref((CamelObject *)folder);
+		camel_object_unref (folder);
 		info = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder_info(store, name, 0, ex);
 
 		/* get_folder(CREATE) will emit a folder_created event for us */
@@ -405,7 +405,7 @@ ibex_failed:
 	g_free(oldibex);
 
 	if (folder)
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 }
 
 /* default implementation, only delete metadata */

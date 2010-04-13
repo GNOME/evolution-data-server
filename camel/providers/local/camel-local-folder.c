@@ -142,15 +142,15 @@ local_finalize(CamelObject * object)
 
 	if (folder->summary) {
 		camel_local_summary_sync((CamelLocalSummary *)folder->summary, FALSE, local_folder->changes, NULL);
-		camel_object_unref((CamelObject *)folder->summary);
+		camel_object_unref (folder->summary);
 		folder->summary = NULL;
 	}
 
 	if (local_folder->search)
-		camel_object_unref((CamelObject *)local_folder->search);
+		camel_object_unref (local_folder->search);
 
 	if (local_folder->index)
-		camel_object_unref((CamelObject *)local_folder->index);
+		camel_object_unref (local_folder->index);
 
 	while (local_folder->locked> 0)
 		camel_local_folder_unlock(local_folder);

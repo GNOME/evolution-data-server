@@ -2670,7 +2670,7 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 			ret = camel_data_wrapper_construct_from_stream (CAMEL_DATA_WRAPPER (body_mp), stream);
 			camel_object_unref (CAMEL_OBJECT (stream));
 			if (ret == -1) {
-				camel_object_unref ((CamelObject *) body_mp);
+				camel_object_unref ( body_mp);
 				return NULL;
 			}
 		}
@@ -2746,10 +2746,10 @@ get_content (CamelImapFolder *imap_folder, const gchar *uid,
 			}
 
 			camel_medium_set_content (CAMEL_MEDIUM (part), content);
-			camel_object_unref(content);
+			camel_object_unref (content);
 
 			camel_multipart_add_part (body_mp, part);
-			camel_object_unref(part);
+			camel_object_unref (part);
 
 			ci = ci->next;
 		}
@@ -3094,7 +3094,7 @@ imap_sync_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 	}
 	msg = imap_get_message(folder, uid, ex);
 	if (msg)
-		camel_object_unref(msg);
+		camel_object_unref (msg);
 }
 
 /* FIXME Remove it after confirming

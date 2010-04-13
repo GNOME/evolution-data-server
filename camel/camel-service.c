@@ -218,8 +218,7 @@ service_construct (CamelService *service,
 
 	service->provider = provider;
 	service->url = camel_url_copy(url);
-	service->session = session;
-	camel_object_ref (session);
+	service->session = camel_object_ref (session);
 
 	service->status = CAMEL_SERVICE_DISCONNECTED;
 

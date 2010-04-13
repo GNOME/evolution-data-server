@@ -170,7 +170,7 @@ camel_imapx_stream_finalize(CamelIMAPXStream *is)
 {
 	g_free(is->buf);
 	if (is->source)
-		camel_object_unref((CamelObject *)is->source);
+		camel_object_unref (is->source);
 }
 
 CamelType
@@ -206,7 +206,7 @@ camel_imapx_stream_new(CamelStream *source)
 	CamelIMAPXStream *is;
 
 	is = (CamelIMAPXStream *)camel_object_new(camel_imapx_stream_get_type ());
-	camel_object_ref((CamelObject *)source);
+	camel_object_ref (source);
 	is->source = source;
 
 	return (CamelStream *)is;
@@ -380,7 +380,7 @@ camel_imapx_stream_nstring_stream(CamelIMAPXStream *is, CamelStream **stream, Ca
 			mem = camel_stream_mem_new();
 			if (camel_stream_write_to_stream((CamelStream *)is, mem) == -1) {
 				camel_exception_setv (ex, 1, "nstring: io error: %s", strerror(errno));
-				camel_object_unref((CamelObject *)mem);
+				camel_object_unref (mem);
 				ret = -1;
 				break;
 			}

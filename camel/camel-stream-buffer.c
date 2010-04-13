@@ -285,8 +285,7 @@ stream_buffer_init_vbuf (CamelStreamBuffer *stream,
 	if (priv->stream)
 		camel_object_unref (priv->stream);
 
-	priv->stream = other_stream;
-	camel_object_ref (priv->stream);
+	priv->stream = camel_object_ref (other_stream);
 }
 
 static void

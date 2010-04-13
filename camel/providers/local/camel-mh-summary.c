@@ -196,7 +196,7 @@ static gint camel_mh_summary_add(CamelLocalSummary *cls, const gchar *name, gint
 	}
 	mhs->priv->current_uid = (gchar *)name;
 	camel_folder_summary_add_from_parser((CamelFolderSummary *)mhs, mp);
-	camel_object_unref((CamelObject *)mp);
+	camel_object_unref (mp);
 	mhs->priv->current_uid = NULL;
 	camel_folder_summary_set_index((CamelFolderSummary *)mhs, NULL);
 	g_free(filename);

@@ -90,11 +90,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
 	CamelContentType *ct;
 	gchar *encoding;
 
-	/* This replaces the data wrapper repository ... and/or could be
-	 * replaced by it? */
-
-	if (!dw)
-		return;
+	g_return_if_fail (CAMEL_IS_MIME_PART (dw));
 
 	ct = camel_mime_parser_content_type (mp);
 
@@ -152,7 +148,8 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw, CamelMimeParse
  * Since: 2.28
  **/
 gboolean
-camel_mime_message_build_preview (CamelMimePart *msg, CamelMessageInfo *info)
+camel_mime_message_build_preview (CamelMimePart *msg,
+                                  CamelMessageInfo *info)
 {
 	CamelDataWrapper *dw;
 	gboolean got_plain = FALSE;

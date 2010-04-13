@@ -143,8 +143,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder, const gchar *id, con
 			if (camel_stream_reset (stream) == -1)
 				goto fail;
 		} else {
-			stream = (CamelStream *) nntp_store->stream;
-			camel_object_ref (stream);
+			stream = camel_object_ref (nntp_store->stream);
 		}
 	} else if (ret == 423 || ret == 430) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID, _("Cannot get message %s: %s"), msgid, line);
@@ -234,7 +233,7 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *
 			camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled the operation"));
 		else
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), uid, g_strerror (errno));
-		camel_object_unref(message);
+		camel_object_unref (message);
 		message = NULL;
 	}
 

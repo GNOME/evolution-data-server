@@ -152,6 +152,9 @@ camel_mbox_summary_class_init(CamelMboxSummaryClass *klass)
 
 	camel_mbox_summary_parent = (CamelLocalSummaryClass *)camel_type_get_global_classfuncs(camel_local_summary_get_type());
 
+	sklass->message_info_size = sizeof(CamelMboxMessageInfo);
+	sklass->content_info_size = sizeof(CamelMboxMessageContentInfo);
+
 	sklass->summary_header_load = summary_header_load;
 	sklass->summary_header_save = summary_header_save;
 
@@ -188,10 +191,6 @@ static void
 camel_mbox_summary_init(CamelMboxSummary *obj)
 {
 	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	/* subclasses need to set the right instance data sizes */
-	s->message_info_size = sizeof(CamelMboxMessageInfo);
-	s->content_info_size = sizeof(CamelMboxMessageContentInfo);
 
 	/* and a unique file version */
 	s->version += CAMEL_MBOX_SUMMARY_VERSION;
@@ -579,7 +578,7 @@ summary_update(CamelLocalSummary *cls, off_t offset, CamelFolderChangeInfo *chan
 		g_assert(camel_mime_parser_step(mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM_END);
 	}
 
-	camel_object_unref(CAMEL_OBJECT (mp));
+	camel_object_unref (CAMEL_OBJECT (mp));
 
 	count = camel_folder_summary_count(s);
 	for (i=0;i<count;i++) {
@@ -953,7 +952,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 
 	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (summary, TRUE);
-	camel_object_unref((CamelObject *)mp);
+	camel_object_unref (mp);
 
 	camel_operation_end(NULL);
 
@@ -964,7 +963,7 @@ mbox_summary_sync_quick(CamelMboxSummary *mbs, gboolean expunge, CamelFolderChan
 	if (fd != -1)
 		close(fd);
 	if (mp)
-		camel_object_unref((CamelObject *)mp);
+		camel_object_unref (mp);
 	if (info)
 		camel_message_info_free((CamelMessageInfo *)info);
 
@@ -1226,7 +1225,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 		write(fdout, "\n", 1);
 #endif
 
-	camel_object_unref((CamelObject *)mp);
+	camel_object_unref (mp);
 
 	/* clear working flags */
 	for (i=0; i<count; i++) {
@@ -1252,7 +1251,7 @@ camel_mbox_summary_sync_mbox(CamelMboxSummary *cls, guint32 flags, CamelFolderCh
 	g_free(xevnew);
 
 	if (mp)
-		camel_object_unref((CamelObject *)mp);
+		camel_object_unref (mp);
 	if (info)
 		camel_message_info_free((CamelMessageInfo *)info);
 

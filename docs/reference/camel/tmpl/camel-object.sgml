@@ -290,6 +290,7 @@ CamelObject
 </para>
 
 @Param1: 
+@Returns: 
 
 
 <!-- ##### FUNCTION camel_object_unref ##### -->

@@ -189,8 +189,7 @@ session_thread_msg_new (CamelSession *session,
 
 	m = g_malloc0(size);
 	m->ops = ops;
-	m->session = session;
-	camel_object_ref (session);
+	m->session = camel_object_ref (session);
 	m->op = camel_operation_new(cs_thread_status, m);
 	camel_exception_init(&m->ex);
 	CAMEL_SESSION_LOCK(session, thread_lock);

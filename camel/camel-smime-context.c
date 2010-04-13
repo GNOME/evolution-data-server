@@ -1059,7 +1059,7 @@ smime_context_encrypt (CamelCipherContext *context,
 		set_nss_error (ex, _("Failed to add data to encoder"));
 		goto fail;
 	}
-	camel_object_unref(mem);
+	camel_object_unref (mem);
 
 	if (NSS_CMSEncoder_Finish(enc) != SECSuccess) {
 		set_nss_error (ex, _("Failed to encode data"));

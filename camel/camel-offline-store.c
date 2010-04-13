@@ -24,7 +24,6 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-folder.h"
@@ -32,15 +31,45 @@
 #include "camel-offline-store.h"
 #include "camel-session.h"
 
-static void camel_offline_store_class_init (CamelOfflineStoreClass *klass);
-static void camel_offline_store_init (CamelOfflineStore *store, CamelOfflineStoreClass *klass);
-static void camel_offline_store_finalize (CamelObject *object);
+static gpointer camel_offline_store_parent_class;
 
-static void offline_store_construct (CamelService *service, CamelSession *session,
-				     CamelProvider *provider, CamelURL *url,
-				     CamelException *ex);
+static void
+offline_store_construct (CamelService *service,
+                         CamelSession *session,
+                         CamelProvider *provider,
+                         CamelURL *url,
+                         CamelException *ex)
+{
+	CamelOfflineStore *store = CAMEL_OFFLINE_STORE (service);
+	CamelServiceClass *service_class;
 
-static CamelStoreClass *parent_class = NULL;
+	/* Chain up to parent's construct() method. */
+	service_class = CAMEL_SERVICE_CLASS (camel_offline_store_parent_class);
+	service_class->construct (service, session, provider, url, ex);
+	if (camel_exception_is_set (ex))
+		return;
+
+	store->state = camel_session_is_online (session) ?
+		CAMEL_OFFLINE_STORE_NETWORK_AVAIL :
+		CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
+}
+
+static void
+camel_offline_store_class_init (CamelOfflineStoreClass *class)
+{
+	CamelServiceClass *service_class;
+
+	camel_offline_store_parent_class = (CamelStoreClass *) camel_type_get_global_classfuncs (CAMEL_STORE_TYPE);
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->construct = offline_store_construct;
+}
+
+static void
+camel_offline_store_init (CamelOfflineStore *store)
+{
+	store->state = CAMEL_OFFLINE_STORE_NETWORK_AVAIL;
+}
 
 CamelType
 camel_offline_store_get_type (void)
@@ -55,45 +84,10 @@ camel_offline_store_get_type (void)
 					    (CamelObjectClassInitFunc) camel_offline_store_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_offline_store_init,
-					    (CamelObjectFinalizeFunc) camel_offline_store_finalize);
+					    (CamelObjectFinalizeFunc) NULL);
 	}
 
 	return type;
-}
-
-static void
-camel_offline_store_class_init (CamelOfflineStoreClass *klass)
-{
-	parent_class = (CamelStoreClass *) camel_type_get_global_classfuncs (CAMEL_STORE_TYPE);
-
-	((CamelServiceClass *) klass)->construct = offline_store_construct;
-}
-
-static void
-camel_offline_store_init (CamelOfflineStore *store, CamelOfflineStoreClass *klass)
-{
-	store->state = CAMEL_OFFLINE_STORE_NETWORK_AVAIL;
-}
-
-static void
-camel_offline_store_finalize (CamelObject *object)
-{
-	;
-}
-
-static void
-offline_store_construct (CamelService *service, CamelSession *session,
-			  CamelProvider *provider, CamelURL *url,
-			  CamelException *ex)
-{
-	CamelOfflineStore *store = CAMEL_OFFLINE_STORE (service);
-
-	CAMEL_SERVICE_CLASS (parent_class)->construct (service, session, provider, url, ex);
-	if (camel_exception_is_set (ex))
-		return;
-
-	store->state = camel_session_is_online (session) ?
-		CAMEL_OFFLINE_STORE_NETWORK_AVAIL : CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL;
 }
 
 /**
@@ -107,7 +101,8 @@ offline_store_construct (CamelService *service, CamelSession *session,
  * Since: 2.24
  **/
 gint
-camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException *ex)
+camel_offline_store_get_network_state (CamelOfflineStore *store,
+                                       CamelException *ex)
 {
 	return store->state;
 }
@@ -122,7 +117,9 @@ camel_offline_store_get_network_state (CamelOfflineStore *store, CamelException 
  * or #CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL.
  **/
 void
-camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, CamelException *ex)
+camel_offline_store_set_network_state (CamelOfflineStore *store,
+                                       gint state,
+                                       CamelException *ex)
 {
 	CamelException lex;
 	CamelService *service = CAMEL_SERVICE (store);
@@ -182,7 +179,8 @@ camel_offline_store_set_network_state (CamelOfflineStore *store, gint state, Cam
  * Since: 2.22
  **/
 void
-camel_offline_store_prepare_for_offline (CamelOfflineStore *store, CamelException *ex)
+camel_offline_store_prepare_for_offline (CamelOfflineStore *store,
+                                         CamelException *ex)
 {
 	CamelException lex;
 	CamelService *service = CAMEL_SERVICE (store);

@@ -304,11 +304,11 @@ maildir_get_message(CamelFolder * folder, const gchar * uid, CamelException * ex
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
 		set_cannot_get_message_ex (ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM,
 				     uid, lf->folder_path, _("Invalid message contents"));
-		camel_object_unref((CamelObject *)message);
+		camel_object_unref (message);
 		message = NULL;
 
 	}
-	camel_object_unref((CamelObject *)message_stream);
+	camel_object_unref (message_stream);
  fail:
 	g_free (name);
 

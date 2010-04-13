@@ -85,7 +85,6 @@ typedef struct {
 	CamelMultipartClass parent_class;
 } CamelMultipartSignedClass;
 
-/* Standard Camel function */
 CamelType camel_multipart_signed_get_type (void);
 
 /* public methods */

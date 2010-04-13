@@ -619,7 +619,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 						camel_object_trigger_event((CamelObject *) folder, "folder_changed", changes);
 						camel_folder_change_info_free(changes);
 					}
-					camel_object_unref(folder);
+					camel_object_unref (folder);
 				}
 				camel_exception_clear(ex);
 			}
@@ -1015,7 +1015,7 @@ nntp_store_finalize (CamelObject *object)
 	}
 
 	if (nntp_store->cache)
-		camel_object_unref(nntp_store->cache);
+		camel_object_unref (nntp_store->cache);
 
 	if (disco_store->diary) {
 		camel_object_unref (disco_store->diary);

@@ -102,6 +102,9 @@ camel_imapx_summary_class_init (CamelIMAPXSummaryClass *klass)
 
 	camel_imapx_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
 
+	cfs_class->message_info_size = sizeof(CamelIMAPXMessageInfo);
+	cfs_class->content_info_size = sizeof(CamelIMAPXMessageContentInfo);
+
 	cfs_class->message_info_clone = imapx_message_info_clone;
 
 	cfs_class->summary_header_load = summary_header_load;
@@ -124,11 +127,6 @@ camel_imapx_summary_class_init (CamelIMAPXSummaryClass *klass)
 static void
 camel_imapx_summary_init (CamelIMAPXSummary *obj)
 {
-	CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	/* subclasses need to set the right instance data sizes */
-	s->message_info_size = sizeof(CamelIMAPXMessageInfo);
-	s->content_info_size = sizeof(CamelIMAPXMessageContentInfo);
 }
 
 static gint

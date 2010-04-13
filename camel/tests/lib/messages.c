@@ -96,7 +96,7 @@ test_message_write_file(CamelMimeMessage *msg, const gchar *name)
 	ret = camel_stream_close((CamelStream *)file);
 
 	check(((CamelObject *)file)->ref_count == 1);
-	camel_object_unref((CamelObject *)file);
+	camel_object_unref (file);
 
 	return ret;
 }
@@ -113,7 +113,7 @@ test_message_read_file(const gchar *name)
 	camel_data_wrapper_construct_from_stream((CamelDataWrapper *)msg2, (CamelStream *)file);
 	/* file's refcount may be > 1 if the message is real big */
 	check(CAMEL_OBJECT(file)->ref_count >=1);
-	camel_object_unref((CamelObject *)file);
+	camel_object_unref (file);
 
 	return msg2;
 }

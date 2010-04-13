@@ -35,6 +35,8 @@
 #define CAMEL_FOLDER(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_FOLDER_TYPE, CamelFolder))
 #define CAMEL_FOLDER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_FOLDER_TYPE, CamelFolderClass))
 #define CAMEL_IS_FOLDER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_FOLDER_TYPE))
+#define CAMEL_FOLDER_GET_CLASS(obj) \
+	((CamelFolderClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 

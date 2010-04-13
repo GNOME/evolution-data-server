@@ -92,6 +92,8 @@ camel_nntp_summary_class_init(CamelNNTPSummaryClass *klass)
 
 	camel_nntp_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
 
+	sklass->message_info_size = sizeof(CamelMessageInfoBase);
+	sklass->content_info_size = sizeof(CamelMessageContentInfo);
 	sklass->message_info_new_from_header  = message_info_new_from_header;
 	sklass->summary_header_load = summary_header_load;
 	sklass->summary_header_save = summary_header_save;
@@ -106,10 +108,6 @@ camel_nntp_summary_init(CamelNNTPSummary *obj)
 	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
 
 	p = _PRIVATE(obj) = g_malloc0(sizeof(*p));
-
-	/* subclasses need to set the right instance data sizes */
-	s->message_info_size = sizeof(CamelMessageInfoBase);
-	s->content_info_size = sizeof(CamelMessageContentInfo);
 
 	/* and a unique file version */
 	s->version += CAMEL_NNTP_SUMMARY_VERSION;
@@ -421,7 +419,7 @@ ioerror:
 		g_free(cns->priv->uid);
 		cns->priv->uid = NULL;
 	}
-	camel_object_unref((CamelObject *)mp);
+	camel_object_unref (mp);
 
 	camel_operation_end(NULL);
 

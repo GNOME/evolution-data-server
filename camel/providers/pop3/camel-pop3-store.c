@@ -123,9 +123,9 @@ finalize (CamelObject *object)
 	camel_service_disconnect((CamelService *)pop3_store, TRUE, NULL);
 
 	if (pop3_store->engine)
-		camel_object_unref((CamelObject *)pop3_store->engine);
+		camel_object_unref (pop3_store->engine);
 	if (pop3_store->cache)
-		camel_object_unref((CamelObject *)pop3_store->cache);
+		camel_object_unref (pop3_store->cache);
 }
 
 enum {
@@ -460,7 +460,7 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 			goto ioerror;
 
 	}
-	camel_object_unref((CamelObject *)sasl);
+	camel_object_unref (sasl);
 	return 0;
 
  ioerror:
@@ -472,7 +472,7 @@ try_sasl(CamelPOP3Store *store, const gchar *mech, CamelException *ex)
 				      CAMEL_SERVICE (store)->url->host, g_strerror (errno));
 	}
  done:
-	camel_object_unref((CamelObject *)sasl);
+	camel_object_unref (sasl);
 	return -1;
 }
 
@@ -683,7 +683,7 @@ pop3_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 	if (!CAMEL_SERVICE_CLASS (parent_class)->disconnect (service, clean, ex))
 		return FALSE;
 
-	camel_object_unref((CamelObject *)store->engine);
+	camel_object_unref (store->engine);
 	store->engine = NULL;
 
 	return TRUE;

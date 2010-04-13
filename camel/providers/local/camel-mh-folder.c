@@ -236,11 +236,11 @@ static CamelMimeMessage *mh_get_message(CamelFolder * folder, const gchar * uid,
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
 		set_cannot_get_message_ex (ex, CAMEL_EXCEPTION_SYSTEM,
 				      name, lf->folder_path, _("Message construction failed."));
-		camel_object_unref((CamelObject *)message);
+		camel_object_unref (message);
 		message = NULL;
 
 	}
-	camel_object_unref((CamelObject *)message_stream);
+	camel_object_unref (message_stream);
 
  fail:
 	g_free (name);

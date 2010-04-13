@@ -303,7 +303,7 @@ delete_folder(CamelStore *store, const gchar *folder_name, CamelException *ex)
 	if ((lf = camel_store_get_folder(store, folder_name, 0, &lex))) {
 		camel_object_get(lf, NULL, CAMEL_OBJECT_STATE_FILE, &path, NULL);
 		camel_object_set(lf, NULL, CAMEL_OBJECT_STATE_FILE, NULL, NULL);
-		camel_object_unref(lf);
+		camel_object_unref (lf);
 	} else {
 		camel_exception_clear(&lex);
 	}
@@ -395,7 +395,7 @@ create_folder(CamelStore *store, const gchar *parent_name, const gchar *folder_n
 
 	folder =((CamelStoreClass *)((CamelObject *) store)->klass)->get_folder(store, name, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (folder) {
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 		info =((CamelStoreClass *)((CamelObject *) store)->klass)->get_folder_info(store, name, 0, ex);
 	}
 
@@ -543,7 +543,7 @@ rename_folder(CamelStore *store, const gchar *old, const gchar *new, CamelExcept
 	g_free(newibex);
 
 	if (folder)
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 
 	return;
 
@@ -575,7 +575,7 @@ ibex_failed:
 	g_free(oldibex);
 
 	if (folder)
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 }
 
 /* used to find out where we've visited already */
@@ -620,7 +620,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 	} else {
 		gchar *path, *folderpath;
 		CamelMboxSummary *mbs;
@@ -636,7 +636,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			fi->total = ((CamelFolderSummary *)mbs)->saved_count;
 		}
 
-		camel_object_unref(mbs);
+		camel_object_unref (mbs);
 		g_free(folderpath);
 		g_free(path);
 	}

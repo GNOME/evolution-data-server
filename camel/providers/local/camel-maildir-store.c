@@ -306,7 +306,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 	} else {
 		gchar *path, *folderpath;
 		CamelFolderSummary *s;
@@ -321,7 +321,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
 		}
-		camel_object_unref(s);
+		camel_object_unref (s);
 		g_free(folderpath);
 		g_free(path);
 	}

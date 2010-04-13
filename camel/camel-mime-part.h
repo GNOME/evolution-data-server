@@ -38,27 +38,20 @@
 #define CAMEL_MIME_PART(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_MIME_PART_TYPE, CamelMimePart))
 #define CAMEL_MIME_PART_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_MIME_PART_TYPE, CamelMimePartClass))
 #define CAMEL_IS_MIME_PART(o)    (CAMEL_CHECK_TYPE((o), CAMEL_MIME_PART_TYPE))
+#define CAMEL_MIME_PART_GET_CLASS(obj) \
+	((CamelMimePartClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
 typedef struct _CamelMimePart CamelMimePart;
 typedef struct _CamelMimePartClass CamelMimePartClass;
+typedef struct _CamelMimePartPrivate CamelMimePartPrivate;
 
-/* Do not change these values directly, you would regret it one day */
 struct _CamelMimePart {
 	CamelMedium parent;
+	CamelMimePartPrivate *priv;
 
 	struct _camel_header_raw *headers; /* mime headers */
-
-	/* All fields here are -** PRIVATE **- */
-	/* TODO: these should be in a camelcontentinfo */
-	gchar *description;
-	CamelContentDisposition *disposition;
-	gchar *content_id;
-	gchar *content_MD5;
-	gchar *content_location;
-	GList *content_languages;
-	CamelTransferEncoding encoding;
 };
 
 struct _CamelMimePartClass {
@@ -68,7 +61,6 @@ struct _CamelMimePartClass {
 						 CamelMimeParser *parser);
 };
 
-/* Standard Camel function */
 CamelType camel_mime_part_get_type (void);
 
 /* public methods */

@@ -129,7 +129,7 @@ cdf_sync_free(CamelSession *session, CamelSessionThreadMsg *mm)
 
 	if (m->changes)
 		camel_folder_change_info_free(m->changes);
-	camel_object_unref(m->folder);
+	camel_object_unref (m->folder);
 }
 
 static CamelSessionThreadOps cdf_sync_ops = {
@@ -149,8 +149,7 @@ cdf_folder_changed(CamelFolder *folder, CamelFolderChangeInfo *changes, gpointer
 		m = camel_session_thread_msg_new(session, &cdf_sync_ops, sizeof(*m));
 		m->changes = camel_folder_change_info_new();
 		camel_folder_change_info_cat(m->changes, changes);
-		m->folder = folder;
-		camel_object_ref(folder);
+		m->folder = camel_object_ref (folder);
 		camel_session_thread_queue(session, &m->msg, 0);
 	}
 }

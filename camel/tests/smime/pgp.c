@@ -159,8 +159,8 @@ gint main (gint argc, gchar **argv)
 	dw = camel_data_wrapper_new();
 	camel_data_wrapper_construct_from_stream(dw, stream1);
 	camel_medium_set_content ((CamelMedium *)conpart, dw);
-	camel_object_unref(stream1);
-	camel_object_unref(dw);
+	camel_object_unref (stream1);
+	camel_object_unref (dw);
 
 	sigpart = camel_mime_part_new();
 
@@ -182,8 +182,8 @@ gint main (gint argc, gchar **argv)
 	camel_cipher_validity_free (valid);
 	camel_test_pull ();
 
-	camel_object_unref(conpart);
-	camel_object_unref(sigpart);
+	camel_object_unref (conpart);
+	camel_object_unref (sigpart);
 
 	stream1 = camel_stream_mem_new ();
 	camel_stream_write (stream1, "Hello, I am a test of encryption/decryption.", 44);
@@ -194,8 +194,8 @@ gint main (gint argc, gchar **argv)
 	camel_stream_reset(stream1);
 	camel_data_wrapper_construct_from_stream(dw, stream1);
 	camel_medium_set_content ((CamelMedium *)conpart, dw);
-	camel_object_unref(stream1);
-	camel_object_unref(dw);
+	camel_object_unref (stream1);
+	camel_object_unref (dw);
 
 	encpart = camel_mime_part_new();
 
@@ -231,11 +231,11 @@ gint main (gint argc, gchar **argv)
 	g_free (before);
 	g_free (after);
 
-	camel_object_unref(stream1);
-	camel_object_unref(stream2);
-	camel_object_unref(conpart);
-	camel_object_unref(encpart);
-	camel_object_unref(outpart);
+	camel_object_unref (stream1);
+	camel_object_unref (stream2);
+	camel_object_unref (conpart);
+	camel_object_unref (encpart);
+	camel_object_unref (outpart);
 
 	camel_test_pull ();
 

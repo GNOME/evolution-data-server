@@ -61,8 +61,7 @@ vee_message_info_clone(CamelFolderSummary *s, const CamelMessageInfo *mi)
 
 	to = (CamelVeeMessageInfo *)camel_message_info_new(s);
 
-	to->summary = from->summary;
-	camel_object_ref (to->summary);
+	to->summary = camel_object_ref (from->summary);
 	to->info.summary = s;
 	to->info.uid = camel_pstring_strdup(from->info.uid);
 
@@ -367,37 +366,29 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 }
 
 static void
-camel_vee_summary_class_init (CamelVeeSummaryClass *klass)
+camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 {
-	((CamelFolderSummaryClass *)klass)->message_info_clone = vee_message_info_clone;
-	((CamelFolderSummaryClass *)klass)->message_info_free = vee_message_info_free;
+	CamelFolderSummaryClass *folder_summary_class;
 
-	((CamelFolderSummaryClass *)klass)->info_ptr = vee_info_ptr;
-	((CamelFolderSummaryClass *)klass)->info_uint32 = vee_info_uint32;
-	((CamelFolderSummaryClass *)klass)->info_time = vee_info_time;
-	((CamelFolderSummaryClass *)klass)->info_user_flag = vee_info_user_flag;
-	((CamelFolderSummaryClass *)klass)->info_user_tag = vee_info_user_tag;
-
-#if 0
-	((CamelFolderSummaryClass *)klass)->info_set_string = vee_info_set_string;
-	((CamelFolderSummaryClass *)klass)->info_set_uint32 = vee_info_set_uint32;
-	((CamelFolderSummaryClass *)klass)->info_set_time = vee_info_set_time;
-	((CamelFolderSummaryClass *)klass)->info_set_references = vee_info_set_references;
-#endif
-	((CamelFolderSummaryClass *)klass)->info_set_user_flag = vee_info_set_user_flag;
-	((CamelFolderSummaryClass *)klass)->info_set_user_tag = vee_info_set_user_tag;
-
-	((CamelFolderSummaryClass *)klass)->info_set_flags = vee_info_set_flags;
-	((CamelFolderSummaryClass *)klass)->message_info_from_uid = message_info_from_uid;
+	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
+	folder_summary_class->message_info_size = sizeof (CamelVeeMessageInfo);
+	folder_summary_class->content_info_size = 0;
+	folder_summary_class->message_info_clone = vee_message_info_clone;
+	folder_summary_class->message_info_free = vee_message_info_free;
+	folder_summary_class->info_ptr = vee_info_ptr;
+	folder_summary_class->info_uint32 = vee_info_uint32;
+	folder_summary_class->info_time = vee_info_time;
+	folder_summary_class->info_user_flag = vee_info_user_flag;
+	folder_summary_class->info_user_tag = vee_info_user_tag;
+	folder_summary_class->info_set_user_flag = vee_info_set_user_flag;
+	folder_summary_class->info_set_user_tag = vee_info_set_user_tag;
+	folder_summary_class->info_set_flags = vee_info_set_flags;
+	folder_summary_class->message_info_from_uid = message_info_from_uid;
 }
 
 static void
-camel_vee_summary_init (CamelVeeSummary *obj)
+camel_vee_summary_init (CamelVeeSummary *vee_summary)
 {
-	CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	s->message_info_size = sizeof(CamelVeeMessageInfo);
-	s->content_info_size = 0;
 }
 
 CamelType
@@ -488,10 +479,8 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 		/* Possible that the entry is loaded, see if it has the summary */
 		d(g_message ("%s - already there\n", vuid));
 		g_free (vuid);
-		if (!mi->summary) {
-			mi->summary = summary;
-			camel_object_ref(summary);
-		}
+		if (!mi->summary)
+			mi->summary = camel_object_ref (summary);
 
 		camel_message_info_ref (mi);
 		return mi;

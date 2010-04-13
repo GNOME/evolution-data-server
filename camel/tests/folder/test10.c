@@ -39,11 +39,11 @@ worker(gpointer d)
 		folder = camel_store_get_folder(store, "testbox", CAMEL_STORE_FOLDER_CREATE, ex);
 		camel_exception_clear(ex);
 		if (testid == 0) {
-			camel_object_unref(folder);
-			camel_object_unref(store);
+			camel_object_unref (folder);
+			camel_object_unref (store);
 		} else {
-			camel_object_unref(store);
-			camel_object_unref(folder);
+			camel_object_unref (store);
+			camel_object_unref (folder);
 		}
 	}
 
@@ -93,7 +93,7 @@ gint main(gint argc, gchar **argv)
 		camel_test_end();
 	}
 
-	camel_object_unref((CamelObject *)session);
+	camel_object_unref (session);
 	camel_exception_free(ex);
 
 	return 0;

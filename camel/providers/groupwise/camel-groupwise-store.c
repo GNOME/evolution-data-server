@@ -260,10 +260,8 @@ groupwise_store_set_current_folder (CamelGroupwiseStore *groupwise_store, CamelF
 		groupwise_store->current_folder = NULL;
 	}
 
-	if (folder) {
-		camel_object_ref (folder);
-		groupwise_store->current_folder = folder;
-	}
+	if (folder)
+		groupwise_store->current_folder = camel_object_ref (folder);
 
 	CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
 }

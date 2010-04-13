@@ -317,7 +317,7 @@ static void
 http_stream_finalize (CamelHttpStream *http)
 {
 	if (http->parser)
-		camel_object_unref(http->parser);
+		camel_object_unref (http->parser);
 
 	if (http->content_type)
 		camel_content_type_unref (http->content_type);
@@ -555,8 +555,7 @@ camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, Ca
 	stream = CAMEL_HTTP_STREAM (camel_object_new (camel_http_stream_get_type ()));
 
 	stream->method = method;
-	stream->session = session;
-	camel_object_ref(session);
+	stream->session = camel_object_ref (session);
 
 	str = camel_url_to_string (url, 0);
 	stream->url = camel_url_new (str, NULL);

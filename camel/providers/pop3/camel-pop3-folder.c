@@ -170,7 +170,7 @@ cmd_builduid(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 	default:
 		break;
 	}
-	camel_object_unref(mp);
+	camel_object_unref (mp);
 	g_checksum_get_digest (checksum, digest, &length);
 	g_checksum_free (checksum);
 
@@ -380,7 +380,7 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 		message = camel_mime_message_new ();
 		if (camel_data_wrapper_construct_from_stream ((CamelDataWrapper *)message, stream) == -1) {
 			g_warning (_("Cannot get message %s: %s"), uid, g_strerror (errno));
-			camel_object_unref ((CamelObject *)message);
+			camel_object_unref (message);
 			message = NULL;
 		}
 
@@ -388,7 +388,7 @@ pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t 
 			res = TRUE;
 			*message_time = message->date + message->date_offset;
 
-			camel_object_unref ((CamelObject *)message);
+			camel_object_unref (message);
 		}
 	}
 
@@ -422,7 +422,7 @@ camel_pop3_delete_old(CamelFolder *folder, gint days_to_delete,	CamelException *
 			message = pop3_get_message (folder, fi->uid, ex);
 			if (message) {
 				message_time = message->date + message->date_offset;
-				camel_object_unref(message);
+				camel_object_unref (message);
 			}
 		}
 
@@ -516,7 +516,7 @@ done:
 		fi->err = 0;
 	}
 
-	camel_object_unref((CamelObject *)fi->stream);
+	camel_object_unref (fi->stream);
 	fi->stream = NULL;
 }
 
@@ -599,8 +599,7 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 			stream = camel_stream_mem_new();
 
 		/* ref it, the cache storage routine unref's when done */
-		camel_object_ref((CamelObject *)stream);
-		fi->stream = stream;
+		fi->stream = camel_object_ref (stream);
 		fi->err = EIO;
 		pcr = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_tocache, fi, "RETR %u\r\n", fi->id);
 
@@ -662,11 +661,11 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, CamelException *ex)
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				_("Cannot get message %s: %s"),
 				uid, g_strerror (errno));
-		camel_object_unref((CamelObject *)message);
+		camel_object_unref (message);
 		message = NULL;
 	}
 done:
-	camel_object_unref((CamelObject *)stream);
+	camel_object_unref (stream);
 fail:
 	camel_operation_end(NULL);
 

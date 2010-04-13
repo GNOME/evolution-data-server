@@ -1448,8 +1448,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		msg->cnc = cnc;
 		msg->t_str = g_strdup (old_sync_time);
 		msg->container_id = g_strdup (container_id);
-		msg->folder = folder;
-		camel_object_ref (folder);
+		msg->folder = camel_object_ref (folder);
 		camel_folder_freeze (folder);
 		camel_session_thread_queue (session, &msg->msg, 0);
 		/*thread creation and queueing done*/

@@ -73,7 +73,7 @@ camel_pop3_engine_finalize(CamelPOP3Engine *pe)
 	/* FIXME: Also flush/free any outstanding requests, etc */
 
 	if (pe->stream)
-		camel_object_unref(pe->stream);
+		camel_object_unref (pe->stream);
 
 	g_list_free(pe->auth);
 	if (pe->apop)

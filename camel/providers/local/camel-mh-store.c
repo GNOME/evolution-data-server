@@ -125,7 +125,7 @@ folders_update(const gchar *root, gint mode, const gchar *folder, const gchar *n
 	stream = camel_stream_fs_new_with_name(tmp, O_RDONLY, 0);
 	if (stream) {
 		in = camel_stream_buffer_new(stream, CAMEL_STREAM_BUFFER_READ);
-		camel_object_unref(stream);
+		camel_object_unref (stream);
 	}
 	if (in == NULL || stream == NULL) {
 		if (mode == UPDATE_ADD && camel_stream_printf(out, "%s\n", folder) == -1)
@@ -189,9 +189,9 @@ fail:
 	unlink(tmpnew);		/* remove it if its there */
 	g_free(line);
 	if (in)
-		camel_object_unref(in);
+		camel_object_unref (in);
 	if (out)
-		camel_object_unref(out);
+		camel_object_unref (out);
 }
 
 static CamelFolder *
@@ -314,7 +314,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread = camel_folder_get_unread_message_count(folder);
 		fi->total = camel_folder_get_message_count(folder);
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 	} else {
 		gchar *path, *folderpath;
 		CamelFolderSummary *s;
@@ -334,7 +334,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 			fi->unread = s->unread_count;
 			fi->total = s->saved_count;
 		}
-		camel_object_unref(s);
+		camel_object_unref (s);
 		g_free(folderpath);
 		g_free(path);
 	}
@@ -460,7 +460,7 @@ folders_scan(CamelStore *store, CamelURL *url, const gchar *root, const gchar *t
 		return;
 
 	in = camel_stream_buffer_new(stream, CAMEL_STREAM_BUFFER_READ);
-	camel_object_unref(stream);
+	camel_object_unref (stream);
 	if (in == NULL)
 		return;
 
@@ -520,7 +520,7 @@ folders_scan(CamelStore *store, CamelURL *url, const gchar *root, const gchar *t
 	g_hash_table_foreach(visited, (GHFunc)g_free, NULL);
 	g_hash_table_destroy(visited);
 
-	camel_object_unref(in);
+	camel_object_unref (in);
 }
 
 /* FIXME: move to camel-local, this is shared with maildir code */

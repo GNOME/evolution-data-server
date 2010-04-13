@@ -31,14 +31,20 @@
 #define CAMEL_INDEX(obj)         CAMEL_CHECK_CAST (obj, camel_index_get_type (), CamelIndex)
 #define CAMEL_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_get_type (), CamelIndexClass)
 #define CAMEL_IS_INDEX(obj)      CAMEL_CHECK_TYPE (obj, camel_index_get_type ())
+#define CAMEL_INDEX_GET_CLASS(obj) \
+	((CamelIndexClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 #define CAMEL_INDEX_NAME(obj)         CAMEL_CHECK_CAST (obj, camel_index_name_get_type (), CamelIndexName)
 #define CAMEL_INDEX_NAME_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_name_get_type (), CamelIndexNameClass)
 #define CAMEL_IS_INDEX_NAME(obj)      CAMEL_CHECK_TYPE (obj, camel_index_name_get_type ())
+#define CAMEL_INDEX_NAME_GET_CLASS(obj) \
+	((CamelIndexNameClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 #define CAMEL_INDEX_CURSOR(obj)         CAMEL_CHECK_CAST (obj, camel_index_cursor_get_type (), CamelIndexCursor)
 #define CAMEL_INDEX_CURSOR_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_index_cursor_get_type (), CamelIndexCursorClass)
 #define CAMEL_IS_INDEX_CURSOR(obj)      CAMEL_CHECK_TYPE (obj, camel_index_cursor_get_type ())
+#define CAMEL_INDEX_CURSOR_GET_CLASS(obj) \
+	((CamelIndexCursorClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 

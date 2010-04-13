@@ -1071,10 +1071,8 @@ check_content_id (CamelMimeMessage *message, CamelMimePart *part, gpointer data)
 	content_id = camel_mime_part_get_content_id (part);
 
 	found = content_id && !strcmp (content_id, check->content_id) ? TRUE : FALSE;
-	if (found) {
-		check->part = part;
-		camel_object_ref (part);
-	}
+	if (found)
+		check->part = camel_object_ref (part);
 
 	return !found;
 }

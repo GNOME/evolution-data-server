@@ -42,8 +42,6 @@
 #define MAXHOSTNAMELEN 1024
 #endif
 
-#include <glib.h>
-
 #include <libedataserver/e-time-utils.h>
 
 #include "camel-charset-map.h"
@@ -4147,17 +4145,17 @@ camel_header_location_decode(const gchar *in)
 
 #ifdef CHECKS
 static void
-check_header(struct _camel_header_raw *h)
+check_header (struct _camel_header_raw *header)
 {
-	guchar *p;
+	guchar *cp;
 
-	p = (guchar *) h->value;
-	while (p && *p) {
-		if (!isascii(*p)) {
-			w(g_warning("Appending header violates rfc: %s: %s", h->name, h->value));
+	cp = (guchar *) header->value;
+	while (cp && *cp) {
+		if (!isascii(*cp)) {
+			w(g_warning("Appending header violates rfc: %s: %s", header->name, header->value));
 			return;
 		}
-		p++;
+		cp++;
 	}
 }
 #endif

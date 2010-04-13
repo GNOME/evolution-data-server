@@ -109,6 +109,8 @@ camel_groupwise_summary_class_init (CamelGroupwiseSummaryClass *klass)
 
 	camel_groupwise_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
 
+	cfs_class->message_info_size = sizeof(CamelGroupwiseMessageInfo);
+	cfs_class->content_info_size = sizeof(CamelGroupwiseMessageContentInfo);
 	cfs_class->message_info_clone = gw_message_info_clone;
 	cfs_class->summary_header_load = gw_summary_header_load;
 	cfs_class->summary_header_save = gw_summary_header_save;
@@ -131,10 +133,6 @@ static void
 camel_groupwise_summary_init (CamelGroupwiseSummary *obj)
 {
 	CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	/* subclasses need to set the right instance data sizes */
-	s->message_info_size = sizeof(CamelGroupwiseMessageInfo);
-	s->content_info_size = sizeof(CamelGroupwiseMessageContentInfo);
 
 	/* Meta-summary - Overriding UID len */
 	s->meta_summary->uid_len = 2048;

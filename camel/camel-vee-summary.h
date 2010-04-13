@@ -28,7 +28,6 @@
 #define CAMEL_VEE_SUMMARY_H
 
 #include <camel/camel-folder-summary.h>
-#include <camel/camel-exception.h>
 
 #define CAMEL_VEE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_vee_summary_get_type (), CamelVeeSummary)
 #define CAMEL_VEE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_vee_summary_get_type (), CamelVeeSummaryClass)

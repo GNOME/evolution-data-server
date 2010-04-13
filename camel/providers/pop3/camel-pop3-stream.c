@@ -221,7 +221,7 @@ camel_pop3_stream_finalize(CamelPOP3Stream *is)
 	g_free(is->buf);
 	g_free(is->linebuf);
 	if (is->source)
-		camel_object_unref((CamelObject *)is->source);
+		camel_object_unref (is->source);
 }
 
 CamelType
@@ -257,8 +257,7 @@ camel_pop3_stream_new(CamelStream *source)
 	CamelPOP3Stream *is;
 
 	is = (CamelPOP3Stream *)camel_object_new(camel_pop3_stream_get_type ());
-	camel_object_ref((CamelObject *)source);
-	is->source = source;
+	is->source = camel_object_ref (source);
 
 	return (CamelStream *)is;
 }

@@ -97,6 +97,8 @@ camel_maildir_summary_class_init (CamelMaildirSummaryClass *class)
 	parent_class = (CamelLocalSummaryClass *)camel_type_get_global_classfuncs(camel_local_summary_get_type ());
 
 	/* override methods */
+	sklass->message_info_size = sizeof(CamelMaildirMessageInfo);
+	sklass->content_info_size = sizeof(CamelMaildirMessageContentInfo);
 	sklass->message_info_load = message_info_load;
 	sklass->message_info_new_from_header = message_info_new_from_header;
 	sklass->message_info_free = message_info_free;
@@ -119,9 +121,6 @@ camel_maildir_summary_init (CamelMaildirSummary *o)
 	o->priv = g_malloc0(sizeof(*o->priv));
 	/* set unique file version */
 	s->version += CAMEL_MAILDIR_SUMMARY_VERSION;
-
-	s->message_info_size = sizeof(CamelMaildirMessageInfo);
-	s->content_info_size = sizeof(CamelMaildirMessageContentInfo);
 
 	if (gethostname(hostname, 256) == 0) {
 		o->priv->hostname = g_strdup(hostname);
@@ -485,7 +484,7 @@ camel_maildir_summary_add (CamelLocalSummary *cls, const gchar *name, gint force
 	}
 	maildirs->priv->current_file = (gchar *)name;
 	camel_folder_summary_add_from_parser((CamelFolderSummary *)maildirs, mp);
-	camel_object_unref((CamelObject *)mp);
+	camel_object_unref (mp);
 	maildirs->priv->current_file = NULL;
 	camel_folder_summary_set_index((CamelFolderSummary *)maildirs, NULL);
 	g_free(filename);

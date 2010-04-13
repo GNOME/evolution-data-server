@@ -631,8 +631,7 @@ cipher_context_set_session (CamelCipherContext *context,
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (context->priv->session == NULL);
 
-	context->priv->session = session;
-	camel_object_ref (session);
+	context->priv->session = camel_object_ref (session);
 }
 
 static void

@@ -91,6 +91,9 @@ camel_local_summary_class_init(CamelLocalSummaryClass *klass)
 
 	camel_local_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS(camel_type_get_global_classfuncs(camel_folder_summary_get_type()));
 
+	sklass->message_info_size = sizeof(CamelLocalMessageInfo);
+	sklass->content_info_size = sizeof(CamelMessageContentInfo);
+
 	sklass->summary_header_load = summary_header_load;
 	sklass->summary_header_save = summary_header_save;
 
@@ -114,10 +117,6 @@ camel_local_summary_init(CamelLocalSummary *obj)
 {
 	struct _CamelFolderSummary *s = (CamelFolderSummary *)obj;
 
-	/* subclasses need to set the right instance data sizes */
-	s->message_info_size = sizeof(CamelLocalMessageInfo);
-	s->content_info_size = sizeof(CamelMessageContentInfo);
-
 	/* and a unique file version */
 	s->version += CAMEL_LOCAL_SUMMARY_VERSION;
 }
@@ -128,7 +127,7 @@ camel_local_summary_finalize(CamelObject *obj)
 	CamelLocalSummary *mbs = CAMEL_LOCAL_SUMMARY(obj);
 
 	if (mbs->index)
-		camel_object_unref((CamelObject *)mbs->index);
+		camel_object_unref (mbs->index);
 	g_free(mbs->folder_path);
 }
 
@@ -140,7 +139,7 @@ camel_local_summary_construct(CamelLocalSummary *new, const gchar *filename, con
 	new->folder_path = g_strdup(local_name);
 	new->index = index;
 	if (index)
-		camel_object_ref((CamelObject *)index);
+		camel_object_ref (index);
 }
 
 static gint
@@ -495,7 +494,7 @@ local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMess
 
 			camel_data_wrapper_write_to_stream((CamelDataWrapper *)msg, (CamelStream *)sn);
 			mi->info.size = sn->written;
-			camel_object_unref((CamelObject *)sn);
+			camel_object_unref (sn);
 		}
 
 		mi->info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED);

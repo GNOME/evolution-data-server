@@ -104,7 +104,8 @@ camel_imap_summary_class_init (CamelImapSummaryClass *klass)
 	camel_imap_summary_parent = CAMEL_FOLDER_SUMMARY_CLASS (camel_type_get_global_classfuncs (camel_folder_summary_get_type()));
 
 	cfs_class->message_info_clone = imap_message_info_clone;
-
+	cfs_class->message_info_size = sizeof (CamelImapMessageInfo);
+	cfs_class->content_info_size = sizeof (CamelImapMessageContentInfo);
 	cfs_class->summary_header_load = summary_header_load;
 	cfs_class->summary_header_save = summary_header_save;
 	cfs_class->message_info_load = message_info_load;
@@ -125,11 +126,6 @@ camel_imap_summary_class_init (CamelImapSummaryClass *klass)
 static void
 camel_imap_summary_init (CamelImapSummary *obj)
 {
-	CamelFolderSummary *s = (CamelFolderSummary *)obj;
-
-	/* subclasses need to set the right instance data sizes */
-	s->message_info_size = sizeof(CamelImapMessageInfo);
-	s->content_info_size = sizeof(CamelImapMessageContentInfo);
 }
 
 static gint

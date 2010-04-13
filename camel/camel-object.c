@@ -670,8 +670,8 @@ camel_object_new(CamelType type)
 	return o;
 }
 
-void
-camel_object_ref(gpointer vo)
+gpointer
+camel_object_ref (gpointer vo)
 {
 	register CamelObject *o = vo;
 
@@ -683,10 +683,12 @@ camel_object_ref(gpointer vo)
 	d(printf("%p: ref %s(%d)\n", o, o->klass->name, o->ref_count));
 
 	REF_UNLOCK();
+
+	return vo;
 }
 
 void
-camel_object_unref(gpointer vo)
+camel_object_unref (gpointer vo)
 {
 	register CamelObject *o = vo;
 	register CamelObjectClass *klass, *k;
@@ -1204,7 +1206,7 @@ trigger:
 
 trigger_interface:
 	/* lock the object for hook emission */
-	camel_object_ref(obj);
+	camel_object_ref (obj);
 	hooks = camel_object_get_hooks(obj);
 
 	if (hooks->list) {
@@ -1247,7 +1249,7 @@ trigger_interface:
 	}
 
 	camel_object_unget_hooks(obj);
-	camel_object_unref(obj);
+	camel_object_unref (obj);
 }
 
 /* get/set arg methods */

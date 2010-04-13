@@ -288,8 +288,7 @@ camel_seekable_substream_new(CamelSeekableStream *parent_stream, off_t start, of
 	seekable_substream = CAMEL_SEEKABLE_SUBSTREAM (camel_object_new (camel_seekable_substream_get_type ()));
 
 	/* Initialize it. */
-	seekable_substream->parent_stream = parent_stream;
-	camel_object_ref (parent_stream);
+	seekable_substream->parent_stream = camel_object_ref (parent_stream);
 
 	/* Set the bound of the substream. We can ignore any possible error
 	 * here, because if we fail to seek now, it will try again later. */

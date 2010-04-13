@@ -37,7 +37,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 
 #ifndef G_OS_WIN32
@@ -164,25 +163,27 @@ check_header (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 			}
 		} else {
 			CamelMimeMessage *message;
+			CamelMimePart *mime_part;
 			struct _camel_header_raw *header;
 			const gchar *charset = NULL;
 			camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
 			CamelContentType *ct;
 
 			message = camel_filter_search_get_message (fms, f);
+			mime_part = CAMEL_MIME_PART (message);
 
 			/* FIXME: what about Resent-To, Resent-Cc and Resent-From? */
 			if (g_ascii_strcasecmp("to", name) == 0 || g_ascii_strcasecmp("cc", name) == 0 || g_ascii_strcasecmp("from", name) == 0)
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
 			else if (message) {
-				ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
+				ct = camel_mime_part_get_content_type (mime_part);
 				if (ct) {
 					charset = camel_content_type_param (ct, "charset");
 					charset = camel_iconv_charset_name (charset);
 				}
 			}
 
-			for (header = ((CamelMimePart *)message)->headers; header && !matched; header = header->next) {
+			for (header = mime_part->headers; header && !matched; header = header->next) {
 				if (!g_ascii_strcasecmp(header->name, name)) {
 					for (i=1; i<argc && !matched; i++) {
 						if (argv[i]->type == ESEXP_RES_STRING)
@@ -274,12 +275,14 @@ header_regex (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMes
 static gchar *
 get_full_header (CamelMimeMessage *message)
 {
-	CamelMimePart *mp = CAMEL_MIME_PART (message);
+	CamelMimePart *mime_part;
 	GString *str = g_string_new ("");
 	gchar   *ret;
 	struct _camel_header_raw *h;
 
-	for (h = mp->headers; h; h = h->next) {
+	mime_part = CAMEL_MIME_PART (message);
+
+	for (h = mime_part->headers; h; h = h->next) {
 		if (h->value != NULL) {
 			g_string_append (str, h->name);
 			if (isspace (h->value[0]))
@@ -575,9 +578,10 @@ run_command (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMess
 				       &error)) {
 		g_ptr_array_free (args, TRUE);
 
-		camel_exception_setv (fms->ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to create child process '%s': %s"),
-				      argv[0]->value.string, error->message);
+		camel_exception_setv (
+			fms->ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Failed to create child process '%s': %s"),
+			argv[0]->value.string, error->message);
 		g_error_free (error);
 		return -1;
 	}
@@ -587,7 +591,8 @@ run_command (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMess
 	message = camel_filter_search_get_message (fms, f);
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
-	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), stream);
+	camel_data_wrapper_write_to_stream (
+		CAMEL_DATA_WRAPPER (message), stream);
 	camel_stream_flush (stream);
 	camel_object_unref (stream);
 
@@ -731,17 +736,20 @@ camel_filter_search_match (CamelSession *session,
 	e_sexp_input_text (sexp, expression, strlen (expression));
 	if (e_sexp_parse (sexp) == -1) {
 		if (!camel_exception_is_set (ex))
-			/* A filter search is a search through your filters, ie. your filters is the corpus being searched thru. */
-			camel_exception_setv (ex, 1, _("Error executing filter search: %s: %s"),
-					      e_sexp_error (sexp), expression);
+			/* A filter search is a search through your filters,
+			 * ie. your filters is the corpus being searched thru. */
+			camel_exception_setv (
+				ex, 1, _("Error executing filter search: %s: %s"),
+				e_sexp_error (sexp), expression);
 		goto error;
 	}
 
 	result = e_sexp_eval (sexp);
 	if (result == NULL) {
 		if (!camel_exception_is_set (ex))
-			camel_exception_setv (ex, 1, _("Error executing filter search: %s: %s"),
-					      e_sexp_error (sexp), expression);
+			camel_exception_setv (
+				ex, 1, _("Error executing filter search: %s: %s"),
+				e_sexp_error (sexp), expression);
 		goto error;
 	}
 

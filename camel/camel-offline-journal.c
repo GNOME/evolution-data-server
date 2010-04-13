@@ -33,7 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -46,11 +45,32 @@
 
 #define d(x)
 
-static void camel_offline_journal_class_init (CamelOfflineJournalClass *klass);
-static void camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalClass *klass);
-static void camel_offline_journal_finalize (CamelObject *object);
-
 static CamelObjectClass *parent_class = NULL;
+
+static void
+offline_journal_finalize (CamelOfflineJournal *journal)
+{
+	CamelDListNode *entry;
+
+	g_free (journal->filename);
+
+	while ((entry = camel_dlist_remhead (&journal->queue)))
+		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
+}
+
+static void
+camel_offline_journal_class_init (CamelOfflineJournalClass *klass)
+{
+	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
+}
+
+static void
+camel_offline_journal_init (CamelOfflineJournal *journal)
+{
+	journal->folder = NULL;
+	journal->filename = NULL;
+	camel_dlist_init (&journal->queue);
+}
 
 CamelType
 camel_offline_journal_get_type (void)
@@ -65,36 +85,10 @@ camel_offline_journal_get_type (void)
 					    (CamelObjectClassInitFunc) camel_offline_journal_class_init,
 					    NULL,
 					    (CamelObjectInitFunc) camel_offline_journal_init,
-					    (CamelObjectFinalizeFunc) camel_offline_journal_finalize);
+					    (CamelObjectFinalizeFunc) offline_journal_finalize);
 	}
 
 	return type;
-}
-
-static void
-camel_offline_journal_class_init (CamelOfflineJournalClass *klass)
-{
-	parent_class = camel_type_get_global_classfuncs (CAMEL_TYPE_OBJECT);
-}
-
-static void
-camel_offline_journal_init (CamelOfflineJournal *journal, CamelOfflineJournalClass *klass)
-{
-	journal->folder = NULL;
-	journal->filename = NULL;
-	camel_dlist_init (&journal->queue);
-}
-
-static void
-camel_offline_journal_finalize (CamelObject *object)
-{
-	CamelOfflineJournal *journal = (CamelOfflineJournal *) object;
-	CamelDListNode *entry;
-
-	g_free (journal->filename);
-
-	while ((entry = camel_dlist_remhead (&journal->queue)))
-		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
 }
 
 /**
@@ -148,16 +142,18 @@ camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *f
  * Returns: %0 on success or %-1 on fail
  **/
 gint
-camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
+camel_offline_journal_write (CamelOfflineJournal *journal,
+                             CamelException *ex)
 {
 	CamelDListNode *entry;
 	FILE *fp;
 	gint fd;
 
 	if ((fd = g_open (journal->filename, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0666)) == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot write offline journal for folder '%s': %s"),
-				      journal->folder->full_name, g_strerror (errno));
+		camel_exception_setv (
+			ex, CAMEL_EXCEPTION_SYSTEM,
+			_("Cannot write offline journal for folder '%s': %s"),
+			journal->folder->full_name, g_strerror (errno));
 		return -1;
 	}
 
@@ -178,9 +174,10 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
 
  exception:
 
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Cannot write offline journal for folder '%s': %s"),
-			      journal->folder->full_name, g_strerror (errno));
+	camel_exception_setv (
+		ex, CAMEL_EXCEPTION_SYSTEM,
+		_("Cannot write offline journal for folder '%s': %s"),
+		journal->folder->full_name, g_strerror (errno));
 
 	fclose (fp);
 
@@ -197,7 +194,8 @@ camel_offline_journal_write (CamelOfflineJournal *journal, CamelException *ex)
  * Returns: %0 on success (no entry failed to replay) or %-1 on fail
  **/
 gint
-camel_offline_journal_replay (CamelOfflineJournal *journal, CamelException *ex)
+camel_offline_journal_replay (CamelOfflineJournal *journal,
+                              CamelException *ex)
 {
 	CamelDListNode *entry, *next;
 	CamelException lex;

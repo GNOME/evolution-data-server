@@ -165,7 +165,7 @@ camel_imap_store_finalize (CamelObject *object)
 
 	if (imap_store->summary) {
 		camel_store_summary_save((CamelStoreSummary *)imap_store->summary);
-		camel_object_unref(imap_store->summary);
+		camel_object_unref (imap_store->summary);
 	}
 
 	if (imap_store->base_url)
@@ -1178,7 +1178,7 @@ imap_store_refresh_folders (CamelImapStore *store, CamelException *ex)
 
 		/* NB: we can have vtrash folders also in our store ... bit hacky */
 		if (!CAMEL_IS_IMAP_FOLDER(folder)) {
-			camel_object_unref(folder);
+			camel_object_unref (folder);
 			continue;
 		}
 
@@ -1194,12 +1194,12 @@ imap_store_refresh_folders (CamelImapStore *store, CamelException *ex)
 			 * after being offline */
 
 			namedup = g_strdup (folder->full_name);
-			camel_object_unref(folder);
+			camel_object_unref (folder);
 			imap_folder_effectively_unsubscribed (store, namedup, ex);
 			imap_forget_folder (store, namedup, ex);
 			g_free (namedup);
 		} else
-			camel_object_unref(folder);
+			camel_object_unref (folder);
 	}
 
 	g_ptr_array_free (folders, TRUE);
@@ -1573,13 +1573,13 @@ imap_disconnect (CamelService *service, gboolean clean, CamelException *ex)
 
 	if (store->istream) {
 		camel_stream_close(store->istream);
-		camel_object_unref(store->istream);
+		camel_object_unref (store->istream);
 		store->istream = NULL;
 	}
 
 	if (store->ostream) {
 		camel_stream_close(store->ostream);
-		camel_object_unref(store->ostream);
+		camel_object_unref (store->ostream);
 		store->ostream = NULL;
 	}
 
@@ -2011,8 +2011,7 @@ get_folder (CamelStore *store, const gchar *folder_name, guint32 flags, CamelExc
 	if (new_folder) {
 		CamelException local_ex;
 
-		imap_store->current_folder = new_folder;
-		camel_object_ref (new_folder);
+		imap_store->current_folder = camel_object_ref (new_folder);
 		camel_exception_init (&local_ex);
 		camel_imap_folder_selected (new_folder, response, &local_ex);
 
@@ -2699,7 +2698,7 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 
 		if (!folder->summary)
 			camel_object_unref (ims);
-		camel_object_unref(folder);
+		camel_object_unref (folder);
 	}
 }
 
@@ -2741,7 +2740,7 @@ refresh_free(CamelSession *session, CamelSessionThreadMsg *msg)
 {
 	struct _refresh_msg *m = (struct _refresh_msg *)msg;
 
-	camel_object_unref(m->store);
+	camel_object_unref (m->store);
 	camel_exception_clear(&m->ex);
 }
 
@@ -2787,8 +2786,7 @@ get_folder_info (CamelStore *store, const gchar *top, guint32 flags, CamelExcept
 				imap_store->refresh_stamp = now;
 
 				m = camel_session_thread_msg_new(((CamelService *)store)->session, &refresh_ops, sizeof(*m));
-				m->store = store;
-				camel_object_ref(store);
+				m->store = camel_object_ref (store);
 				camel_exception_init(&m->ex);
 				camel_session_thread_queue(((CamelService *)store)->session, &m->msg, 0);
 			}

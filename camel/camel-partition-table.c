@@ -81,7 +81,7 @@ camel_partition_table_finalize(CamelPartitionTable *cpi)
 		}
 		camel_block_file_sync(cpi->blocks);
 
-		camel_object_unref((CamelObject *)cpi->blocks);
+		camel_object_unref (cpi->blocks);
 	}
 
 	pthread_mutex_destroy(&p->lock);
@@ -195,8 +195,7 @@ CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel
 
 	cpi = (CamelPartitionTable *)camel_object_new(camel_partition_table_get_type());
 	cpi->rootid = root;
-	cpi->blocks = bs;
-	camel_object_ref((CamelObject *)bs);
+	cpi->blocks = camel_object_ref (bs);
 
 	/* read the partition table into memory */
 	do {
@@ -236,7 +235,7 @@ CamelPartitionTable *camel_partition_table_new(struct _CamelBlockFile *bs, camel
 	return cpi;
 
 fail:
-	camel_object_unref((CamelObject *)cpi);
+	camel_object_unref (cpi);
 	return NULL;
 }
 
@@ -616,7 +615,7 @@ camel_key_table_finalize(CamelKeyTable *ki)
 			camel_block_file_unref_block(ki->blocks, ki->root_block);
 		}
 		camel_block_file_sync(ki->blocks);
-		camel_object_unref((CamelObject *)ki->blocks);
+		camel_object_unref (ki->blocks);
 	}
 
 	pthread_mutex_destroy(&p->lock);
@@ -650,13 +649,12 @@ camel_key_table_new(CamelBlockFile *bs, camel_block_t root)
 
 	ki = (CamelKeyTable *)camel_object_new(camel_key_table_get_type());
 
-	ki->blocks = bs;
-	camel_object_ref((CamelObject *)bs);
+	ki->blocks = camel_object_ref (bs);
 	ki->rootid = root;
 
 	ki->root_block = camel_block_file_get_block(bs, ki->rootid);
 	if (ki->root_block == NULL) {
-		camel_object_unref((CamelObject *)ki);
+		camel_object_unref (ki);
 		ki = NULL;
 	} else {
 		camel_block_file_detach_block(bs, ki->root_block);
