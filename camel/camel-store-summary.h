@@ -35,6 +35,8 @@
 #define CAMEL_STORE_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_store_summary_get_type (), CamelStoreSummary)
 #define CAMEL_STORE_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_store_summary_get_type (), CamelStoreSummaryClass)
 #define CAMEL_IS_STORE_SUMMARY(obj)      CAMEL_CHECK_TYPE (obj, camel_store_summary_get_type ())
+#define CAMEL_STORE_SUMMARY_GET_CLASS(obj) \
+	((CamelStoreSummaryClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 

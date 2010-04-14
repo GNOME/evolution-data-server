@@ -4489,7 +4489,6 @@ camel_message_info_new (CamelFolderSummary *s)
 		CAMEL_SUMMARY_UNLOCK(s, alloc_lock);
 	} else {
 		info = g_slice_alloc0 (sizeof(CamelMessageInfoBase));
-
 	}
 
 	info->refcount = 1;

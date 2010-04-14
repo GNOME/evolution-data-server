@@ -41,6 +41,8 @@
 #define CAMEL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STORE_TYPE, CamelStore))
 #define CAMEL_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STORE_TYPE, CamelStoreClass))
 #define CAMEL_IS_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STORE_TYPE))
+#define CAMEL_STORE_GET_CLASS(obj) \
+	((CamelStoreClass *) CAMEL_OBJECT_GET_CLASS (obj))
 
 G_BEGIN_DECLS
 
