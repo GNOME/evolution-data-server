@@ -63,16 +63,6 @@
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 #endif
 
-#if 0
-gint strdup_count = 0;
-gint malloc_count = 0;
-gint free_count = 0;
-
-#define g_strdup(x) (strdup_count++, g_strdup(x))
-#define g_malloc(x) (malloc_count++, g_malloc(x))
-#define g_free(x) (free_count++, g_free(x))
-#endif
-
 /* for all non-essential warnings ... */
 #define w(x)
 
