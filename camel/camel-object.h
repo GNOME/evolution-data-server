@@ -33,7 +33,6 @@
 #include <stdio.h>		/* FILE */
 #include <stdlib.h>		/* gsize */
 #include <stdarg.h>
-#include <pthread.h>
 
 #include <camel/camel-arg.h>
 #include <camel/camel-exception.h>

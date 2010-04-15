@@ -24,7 +24,6 @@
 #include <config.h>
 #endif
 
-#include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -52,7 +51,7 @@ struct _CamelOperation {
 	struct _CamelOperation *next;
 	struct _CamelOperation *prev;
 
-	pthread_t id;		/* id of running thread */
+	GThread *thread;	/* running thread */
 	guint32 flags;		/* cancelled ? */
 	gint blocked;		/* cancellation blocked depth */
 	gint refcount;
@@ -78,31 +77,22 @@ struct _CamelOperation {
 /* Delay before a transient operation has any effect on the status */
 #define CAMEL_OPERATION_TRANSIENT_DELAY (5)
 
-static pthread_mutex_t operation_lock = PTHREAD_MUTEX_INITIALIZER;
-#define LOCK() pthread_mutex_lock(&operation_lock)
-#define UNLOCK() pthread_mutex_unlock(&operation_lock)
+static GStaticMutex operation_lock = G_STATIC_MUTEX_INIT;
+#define LOCK() g_static_mutex_lock(&operation_lock)
+#define UNLOCK() g_static_mutex_unlock(&operation_lock)
 
 static guint stamp (void);
 static CamelDList operation_list = CAMEL_DLIST_INITIALISER(operation_list);
-static pthread_key_t operation_key;
-static pthread_once_t operation_once = PTHREAD_ONCE_INIT;
+static GStaticPrivate operation_key = G_STATIC_PRIVATE_INIT;
 
 typedef struct _CamelOperationMsg {
 	CamelMsg msg;
 } CamelOperationMsg;
 
-static void
-co_createspecific(void)
-{
-	pthread_key_create(&operation_key, NULL);
-}
-
 static CamelOperation *
 co_getcc(void)
 {
-	pthread_once(&operation_once, co_createspecific);
-
-	return (CamelOperation *)pthread_getspecific(operation_key);
+	return (CamelOperation *)g_static_private_get (&operation_key);
 }
 
 /**
@@ -313,7 +303,7 @@ camel_operation_register (CamelOperation *cc)
 {
 	CamelOperation *oldcc = co_getcc();
 
-	pthread_setspecific(operation_key, cc);
+	g_static_private_set (&operation_key, cc, NULL);
 
 	return oldcc;
 }
@@ -327,8 +317,7 @@ camel_operation_register (CamelOperation *cc)
 void
 camel_operation_unregister (CamelOperation *cc)
 {
-	pthread_once(&operation_once, co_createspecific);
-	pthread_setspecific(operation_key, NULL);
+	g_static_private_set (&operation_key, NULL, NULL);
 }
 
 /**
@@ -346,7 +335,7 @@ camel_operation_cancel_check (CamelOperation *cc)
 	CamelOperationMsg *msg;
 	gint cancelled;
 
-	d(printf("checking for cancel in thread %d\n", pthread_self()));
+	d(printf("checking for cancel in thread %p\n", g_thread_self()));
 
 	if (cc == NULL)
 		cc = co_getcc();

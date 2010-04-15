@@ -44,11 +44,11 @@
 #define k(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
 
 struct _CamelPartitionTablePrivate {
-	pthread_mutex_t lock;	/* for locking partition */
+	GStaticMutex lock;	/* for locking partition */
 };
 
-#define CAMEL_PARTITION_TABLE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
-#define CAMEL_PARTITION_TABLE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))
+#define CAMEL_PARTITION_TABLE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
+#define CAMEL_PARTITION_TABLE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
 
 static void
 camel_partition_table_class_init(CamelPartitionTableClass *klass)
@@ -63,7 +63,7 @@ camel_partition_table_init(CamelPartitionTable *cpi)
 	camel_dlist_init(&cpi->partition);
 
 	p = cpi->priv = g_malloc0(sizeof(*cpi->priv));
-	pthread_mutex_init(&p->lock, NULL);
+	g_static_mutex_init (&p->lock);
 }
 
 static void
@@ -84,7 +84,7 @@ camel_partition_table_finalize(CamelPartitionTable *cpi)
 		camel_object_unref (cpi->blocks);
 	}
 
-	pthread_mutex_destroy(&p->lock);
+	g_static_mutex_free (&p->lock);
 
 	g_free(p);
 
@@ -582,11 +582,11 @@ fail:
 /* ********************************************************************** */
 
 struct _CamelKeyTablePrivate {
-	pthread_mutex_t lock;	/* for locking key */
+	GStaticMutex lock;	/* for locking key */
 };
 
-#define CAMEL_KEY_TABLE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
-#define CAMEL_KEY_TABLE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))
+#define CAMEL_KEY_TABLE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
+#define CAMEL_KEY_TABLE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
 
 static void
 camel_key_table_class_init(CamelKeyTableClass *klass)
@@ -599,7 +599,7 @@ camel_key_table_init(CamelKeyTable *ki)
 	struct _CamelKeyTablePrivate *p;
 
 	p = ki->priv = g_malloc0(sizeof(*ki->priv));
-	pthread_mutex_init(&p->lock, NULL);
+	g_static_mutex_init (&p->lock);
 }
 
 static void
@@ -618,7 +618,7 @@ camel_key_table_finalize(CamelKeyTable *ki)
 		camel_object_unref (ki->blocks);
 	}
 
-	pthread_mutex_destroy(&p->lock);
+	g_static_mutex_free (&p->lock);
 
 	g_free(p);
 

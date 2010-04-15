@@ -398,22 +398,16 @@ e_utf8_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm)
 }
 
 /**
- * e_util_pthread_id:
- * @t: A pthread_t value
+ * e_util_gthread_id:
+ * @thread: A #GThread pointer
  *
  * Returns a 64-bit integer hopefully uniquely identifying the
- * thread. To be used in debugging output and logging only. To test
- * whether two pthread_t values refer to the same thread, use
- * pthread_equal().
+ * thread. To be used in debugging output and logging only.
+ * The returned value is just a cast of a pointer to the 64-bit integer.
  *
- * There is no guarantee that calling e_util_pthread_id() on one
+ * There is no guarantee that calling e_util_gthread_id() on one
  * thread first and later after that thread has dies on another won't
  * return the same integer.
- *
- * On some platforms it might even be that when called two times on
- * the same thread's pthread_t (with some pthread API calls inbetween)
- * we will return different values (this of course makes this function
- * rather useless on such platforms).
  *
  * On Linux and Win32, known to really return a unique id for each
  * thread existing at a certain time. No guarantee that ids won't be
@@ -422,35 +416,13 @@ e_utf8_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm)
  * Returns: A 64-bit integer.
  */
 guint64
-e_util_pthread_id (pthread_t t)
+e_util_gthread_id (GThread *thread)
 {
-#ifdef HAVE_GUINT64_CASTABLE_PTHREAD_T
-	/* We know that pthread_t is an integral type, or at least
-	 * castable to such without loss of precision.
-	 */
-	return (guint64) t;
-#elif defined (PTW32_VERSION)
-	/* pthreads-win32 implementation on Windows: Return the
-	 * pointer to the "actual object" (see pthread.h)
-	 */
 #if GLIB_SIZEOF_VOID_P == 8
 	/* 64-bit Windows */
-	return (guint64) t.p;
+	return (guint64) thread;
 #else
-	return (gint) t.p;
-#endif
-#else
-	/* Just return a checksum of the contents of the pthread_t */
-	{
-		guint64 retval = 0;
-		guchar *const tend = (guchar *) ((&t)+1);
-		guchar *tp = (guchar *) &t;
-
-		while (tp < tend)
-			retval = (retval << 5) - retval * *tp++;
-
-		return retval;
-	}
+	return (gint) thread;
 #endif
 }
 

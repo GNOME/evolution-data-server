@@ -42,7 +42,7 @@ camel_data_wrapper_finalize (CamelObject *object)
 {
 	CamelDataWrapper *camel_data_wrapper = CAMEL_DATA_WRAPPER (object);
 
-	pthread_mutex_destroy (&camel_data_wrapper->priv->stream_lock);
+	g_static_mutex_free (&camel_data_wrapper->priv->stream_lock);
 
 	g_free (camel_data_wrapper->priv);
 
@@ -190,7 +190,7 @@ camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 {
 	data_wrapper->priv = g_malloc (sizeof (struct _CamelDataWrapperPrivate));
 
-	pthread_mutex_init (&data_wrapper->priv->stream_lock, NULL);
+	g_static_mutex_init (&data_wrapper->priv->stream_lock);
 
 	data_wrapper->mime_type = camel_content_type_new (
 		"application", "octet-stream");

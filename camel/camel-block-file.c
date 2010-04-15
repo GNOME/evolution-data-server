@@ -25,7 +25,6 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -51,21 +50,21 @@ struct _CamelBlockFilePrivate {
 
 	struct _CamelBlockFile *base;
 
-	pthread_mutex_t root_lock; /* for modifying the root block */
-	pthread_mutex_t cache_lock; /* for refcounting, flag manip, cache manip */
-	pthread_mutex_t io_lock; /* for all io ops */
+	GStaticMutex root_lock; /* for modifying the root block */
+	GStaticMutex cache_lock; /* for refcounting, flag manip, cache manip */
+	GStaticMutex io_lock; /* for all io ops */
 
 	guint deleted:1;
 };
 
-#define CAMEL_BLOCK_FILE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
-#define CAMEL_BLOCK_FILE_TRYLOCK(kf, lock) (pthread_mutex_trylock(&(kf)->priv->lock))
-#define CAMEL_BLOCK_FILE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))
+#define CAMEL_BLOCK_FILE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
+#define CAMEL_BLOCK_FILE_TRYLOCK(kf, lock) (g_static_mutex_trylock(&(kf)->priv->lock))
+#define CAMEL_BLOCK_FILE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
 
-#define LOCK(x) pthread_mutex_lock(&x)
-#define UNLOCK(x) pthread_mutex_unlock(&x)
+#define LOCK(x) g_static_mutex_lock(&x)
+#define UNLOCK(x) g_static_mutex_unlock(&x)
 
-static pthread_mutex_t block_file_lock = PTHREAD_MUTEX_INITIALIZER;
+static GStaticMutex block_file_lock = G_STATIC_MUTEX_INIT;
 
 /* lru cache of block files */
 static CamelDList block_file_list = CAMEL_DLIST_INITIALISER(block_file_list);
@@ -180,9 +179,9 @@ camel_block_file_finalize(CamelBlockFile *bs)
 	if (bs->fd != -1)
 		close(bs->fd);
 
-	pthread_mutex_destroy(&p->io_lock);
-	pthread_mutex_destroy(&p->cache_lock);
-	pthread_mutex_destroy(&p->root_lock);
+	g_static_mutex_free (&p->io_lock);
+	g_static_mutex_free (&p->cache_lock);
+	g_static_mutex_free (&p->root_lock);
 
 	g_free(p);
 }
@@ -216,9 +215,9 @@ camel_block_file_init(CamelBlockFile *bs)
 	p = bs->priv = g_malloc0(sizeof(*bs->priv));
 	p->base = bs;
 
-	pthread_mutex_init(&p->root_lock, NULL);
-	pthread_mutex_init(&p->cache_lock, NULL);
-	pthread_mutex_init(&p->io_lock, NULL);
+	g_static_mutex_init (&p->root_lock);
+	g_static_mutex_init (&p->cache_lock);
+	g_static_mutex_init (&p->io_lock);
 
 	/* link into lru list */
 	LOCK(block_file_lock);
@@ -307,9 +306,9 @@ block_file_use(CamelBlockFile *bs)
 		if (bf->fd != -1) {
 			/* Need to trylock, as any of these lock levels might be trying
 			   to lock the block_file_lock, so we need to check and abort if so */
-			if (CAMEL_BLOCK_FILE_TRYLOCK(bf, root_lock) == 0) {
-				if (CAMEL_BLOCK_FILE_TRYLOCK(bf, cache_lock) == 0) {
-					if (CAMEL_BLOCK_FILE_TRYLOCK(bf, io_lock) == 0) {
+			if (CAMEL_BLOCK_FILE_TRYLOCK (bf, root_lock)) {
+				if (CAMEL_BLOCK_FILE_TRYLOCK (bf, cache_lock)) {
+					if (CAMEL_BLOCK_FILE_TRYLOCK (bf, io_lock)) {
 						d(printf("[%d] Turning block file offline: %s\n", block_file_count-1, bf->path));
 						sync_nolock(bf);
 						close(bf->fd);
@@ -812,15 +811,15 @@ struct _CamelKeyFilePrivate {
 	struct _CamelKeyFilePrivate *prev;
 
 	struct _CamelKeyFile *base;
-	pthread_mutex_t lock;
+	GStaticMutex lock;
 	guint deleted:1;
 };
 
-#define CAMEL_KEY_FILE_LOCK(kf, lock) (pthread_mutex_lock(&(kf)->priv->lock))
-#define CAMEL_KEY_FILE_TRYLOCK(kf, lock) (pthread_mutex_trylock(&(kf)->priv->lock))
-#define CAMEL_KEY_FILE_UNLOCK(kf, lock) (pthread_mutex_unlock(&(kf)->priv->lock))
+#define CAMEL_KEY_FILE_LOCK(kf, lock) (g_static_mutex_lock(&(kf)->priv->lock))
+#define CAMEL_KEY_FILE_TRYLOCK(kf, lock) (g_static_mutex_trylock(&(kf)->priv->lock))
+#define CAMEL_KEY_FILE_UNLOCK(kf, lock) (g_static_mutex_unlock(&(kf)->priv->lock))
 
-static pthread_mutex_t key_file_lock = PTHREAD_MUTEX_INITIALIZER;
+static GStaticMutex key_file_lock = G_STATIC_MUTEX_INIT;
 
 /* lru cache of block files */
 static CamelDList key_file_list = CAMEL_DLIST_INITIALISER(key_file_list);
@@ -845,7 +844,7 @@ camel_key_file_finalize(CamelKeyFile *bs)
 
 	g_free(bs->path);
 
-	pthread_mutex_destroy(&p->lock);
+	g_static_mutex_free (&p->lock);
 
 	g_free(p);
 }
@@ -863,7 +862,7 @@ camel_key_file_init(CamelKeyFile *bs)
 	p = bs->priv = g_malloc0(sizeof(*bs->priv));
 	p->base = bs;
 
-	pthread_mutex_init(&p->lock, NULL);
+	g_static_mutex_init (&p->lock);
 
 	LOCK(key_file_lock);
 	camel_dlist_addhead(&key_file_list, (CamelDListNode *)p);
@@ -949,7 +948,7 @@ key_file_use(CamelKeyFile *bs)
 		if (bf->fp != NULL) {
 			/* Need to trylock, as any of these lock levels might be trying
 			   to lock the key_file_lock, so we need to check and abort if so */
-			if (CAMEL_BLOCK_FILE_TRYLOCK(bf, lock) == 0) {
+			if (CAMEL_BLOCK_FILE_TRYLOCK (bf, lock)) {
 				d(printf("Turning key file offline: %s\n", bf->path));
 				fclose(bf->fp);
 				bf->fp = NULL;

@@ -26,7 +26,6 @@
 #endif
 
 #include <stdio.h>
-#include <pthread.h>
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>

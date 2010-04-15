@@ -28,7 +28,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -64,11 +63,11 @@
 #define SUMMARY_CACHE_DROP 300 
 #define dd(x) if (camel_debug("sync")) x
 
-static pthread_mutex_t info_lock = PTHREAD_MUTEX_INITIALIZER;
+static GStaticMutex info_lock = G_STATIC_MUTEX_INIT;
 
 /* this lock is ONLY for the standalone messageinfo stuff */
-#define GLOBAL_INFO_LOCK(i) pthread_mutex_lock(&info_lock)
-#define GLOBAL_INFO_UNLOCK(i) pthread_mutex_unlock(&info_lock)
+#define GLOBAL_INFO_LOCK(i) g_static_mutex_lock(&info_lock)
+#define GLOBAL_INFO_UNLOCK(i) g_static_mutex_unlock(&info_lock)
 
 /* this should probably be conditional on it existing */
 #define USE_BSEARCH

@@ -25,7 +25,6 @@
 #endif
 
 #include <errno.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -90,7 +89,7 @@ struct _CamelObjectBagKey {
 
 	gpointer key;		/* the key reserved */
 	gint waiters;		/* count of threads waiting for key */
-	pthread_t owner;	/* the thread that has reserved the bag for a new entry */
+	GThread *owner;		/* the thread that has reserved the bag for a new entry */
 	gint have_owner;
 	GCond *cond;
 };
@@ -139,8 +138,6 @@ static GHashTable *type_table;
 CamelType camel_object_type = CAMEL_INVALID_TYPE;
 CamelType camel_interface_type = CAMEL_INVALID_TYPE;
 
-#define P_LOCK(l) (pthread_mutex_lock(&l))
-#define P_UNLOCK(l) (pthread_mutex_unlock(&l))
 #define CLASS_LOCK(k) (g_mutex_lock((((CamelObjectClass *)k)->lock)))
 #define CLASS_UNLOCK(k) (g_mutex_unlock((((CamelObjectClass *)k)->lock)))
 #define REF_LOCK() (g_mutex_lock(ref_lock))
@@ -675,7 +672,7 @@ camel_object_ref (gpointer vo)
 {
 	register CamelObject *o = vo;
 
-	g_return_if_fail(CAMEL_IS_OBJECT(o));
+	g_return_val_if_fail (CAMEL_IS_OBJECT (o), NULL);
 
 	REF_LOCK();
 
@@ -988,13 +985,13 @@ camel_object_free_hooks(CamelObject *o)
 static CamelHookList *
 camel_object_get_hooks(CamelObject *o)
 {
-	static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+	static GStaticMutex lock = G_STATIC_MUTEX_INIT;
 	CamelHookList *hooks;
 
 	/* if we have it, we dont have to do any other locking,
 	   otherwise use a global lock to setup the object's hook data */
 	if (o->hooks == NULL) {
-		pthread_mutex_lock(&lock);
+		g_static_mutex_lock(&lock);
 		if (o->hooks == NULL) {
 			hooks = hooks_alloc();
 			g_static_rec_mutex_init(&hooks->lock);
@@ -1004,7 +1001,7 @@ camel_object_get_hooks(CamelObject *o)
 			hooks->list = NULL;
 			o->hooks = hooks;
 		}
-		pthread_mutex_unlock(&lock);
+		g_static_mutex_unlock(&lock);
 	}
 
 	g_static_rec_mutex_lock(&o->hooks->lock);
@@ -1572,7 +1569,7 @@ co_bag_unreserve(CamelObjectBag *bag, gconstpointer key)
 	}
 
 	g_assert(res != NULL);
-	g_assert(res->have_owner && pthread_equal(res->owner, pthread_self()));
+	g_assert(res->have_owner && res->owner == g_thread_self ());
 
 	if (res->waiters > 0) {
 		b(printf("unreserve bag '%s', waking waiters\n", (gchar *)key));
@@ -1676,7 +1673,7 @@ camel_object_bag_get(CamelObjectBag *bag, gconstpointer key)
 			b(printf("object bag get '%s', reserved, waiting\n", (gchar *)key));
 
 			res->waiters++;
-			g_assert(!res->have_owner || !pthread_equal(res->owner, pthread_self()));
+			g_assert(!res->have_owner || res->owner != g_thread_self ());
 			g_cond_wait(res->cond, ref_lock);
 			res->waiters--;
 
@@ -1688,7 +1685,7 @@ camel_object_bag_get(CamelObjectBag *bag, gconstpointer key)
 			b(printf("object bag get '%s', finished waiting, got %p\n", (gchar *)key, o));
 
 			/* we don't actually reserve it */
-			res->owner = pthread_self();
+			res->owner = g_thread_self ();
 			res->have_owner = TRUE;
 			co_bag_unreserve(bag, key);
 		}
@@ -1771,7 +1768,7 @@ camel_object_bag_reserve(CamelObjectBag *bag, gconstpointer key)
 
 		if (res) {
 			b(printf("bag reserve %s, already reserved, waiting\n", (gchar *)key));
-			g_assert(!res->have_owner || !pthread_equal(res->owner, pthread_self()));
+			g_assert(!res->have_owner || res->owner != g_thread_self ());
 			res->waiters++;
 			g_cond_wait(res->cond, ref_lock);
 			res->waiters--;
@@ -1781,12 +1778,12 @@ camel_object_bag_reserve(CamelObjectBag *bag, gconstpointer key)
 				b(printf("finished wait, someone else created '%s' = %p\n", (gchar *)key, o));
 				o->ref_count++;
 				/* in which case we dont need to reserve the bag either */
-				res->owner = pthread_self();
+				res->owner = g_thread_self ();
 				res->have_owner = TRUE;
 				co_bag_unreserve(bag, key);
 			} else {
 				b(printf("finished wait, now owner of '%s'\n", (gchar *)key));
-				res->owner = pthread_self();
+				res->owner = g_thread_self ();
 				res->have_owner = TRUE;
 			}
 		} else {
@@ -1795,7 +1792,7 @@ camel_object_bag_reserve(CamelObjectBag *bag, gconstpointer key)
 			res->waiters = 0;
 			res->key = bag->copy_key(key);
 			res->cond = g_cond_new();
-			res->owner = pthread_self();
+			res->owner = g_thread_self ();
 			res->have_owner = TRUE;
 			res->next = bag->reserved;
 			bag->reserved = res;

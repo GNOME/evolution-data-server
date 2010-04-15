@@ -25,7 +25,6 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,9 +43,9 @@
 /* see also camel-lock.c */
 #define _(x) (x)
 
-static pthread_mutex_t lock_lock = PTHREAD_MUTEX_INITIALIZER;
-#define LOCK() pthread_mutex_lock(&lock_lock)
-#define UNLOCK() pthread_mutex_unlock(&lock_lock)
+static GStaticMutex lock_lock = G_STATIC_MUTEX_INIT;
+#define LOCK() g_static_mutex_lock(&lock_lock)
+#define UNLOCK() g_static_mutex_unlock(&lock_lock)
 
 static gint lock_sequence;
 static gint lock_helper_pid = -1;

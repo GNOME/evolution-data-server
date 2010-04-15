@@ -2,7 +2,6 @@
 /* threaded folder testing */
 
 #include <string.h>
-#include <pthread.h>
 
 #include "camel-test.h"
 #include "camel-test-provider.h"

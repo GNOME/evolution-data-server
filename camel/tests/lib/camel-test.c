@@ -5,7 +5,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
@@ -13,14 +12,10 @@
 /* well i dunno, doesn't seem to be in the headers but hte manpage mentions it */
 /* a nonportable checking mutex for glibc, not really needed, just validates
    the test harness really */
-# ifdef PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP
-static pthread_mutex_t lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
-# else
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-# endif
-#define CAMEL_TEST_LOCK pthread_mutex_lock(&lock)
-#define CAMEL_TEST_UNLOCK pthread_mutex_unlock(&lock)
-#define CAMEL_TEST_ID (pthread_self())
+static GStaticMutex lock = G_STATIC_MUTEX_INIT;
+#define CAMEL_TEST_LOCK g_static_mutex_lock(&lock)
+#define CAMEL_TEST_UNLOCK g_static_mutex_unlock(&lock)
+#define CAMEL_TEST_ID (g_thread_self())
 
 static gint setup;
 static gint ok;
@@ -43,11 +38,11 @@ static GHashTable *info_table;
 gint camel_test_verbose;
 
 static void
-dump_action(gint id, struct _state *s, gpointer d)
+dump_action (GThread *thread, struct _state *s, gpointer d)
 {
 	struct _stack *node;
 
-	printf("\nThread %d:\n", id);
+	printf("\nThread %p:\n", thread);
 
 	node = s->state;
 	if (node) {
@@ -86,10 +81,10 @@ current_state(void)
 	if (info_table == NULL)
 		info_table = g_hash_table_new(0, 0);
 
-	info = g_hash_table_lookup(info_table, (gpointer)CAMEL_TEST_ID);
+	info = g_hash_table_lookup(info_table, CAMEL_TEST_ID);
 	if (info == NULL) {
 		info = g_malloc0(sizeof(*info));
-		g_hash_table_insert(info_table, (gpointer)CAMEL_TEST_ID, info);
+		g_hash_table_insert(info_table, CAMEL_TEST_ID, info);
 	}
 	return info;
 }

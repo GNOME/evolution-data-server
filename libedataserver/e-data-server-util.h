@@ -22,7 +22,6 @@
 #ifndef __E_DATA_SERVER_UTIL_H__
 #define __E_DATA_SERVER_UTIL_H__
 
-#include <pthread.h>
 #include <sys/types.h>
 #include <glib.h>
 
@@ -36,7 +35,7 @@ const gchar *e_util_utf8_strstrcase (const gchar *haystack, const gchar *needle)
 const gchar *e_util_utf8_strstrcasedecomp (const gchar *haystack, const gchar *needle);
 gint	     e_util_utf8_strcasecmp (const gchar *s1, const gchar *s2);
 gchar       *e_util_utf8_remove_accents (const gchar *str);
-guint64      e_util_pthread_id (pthread_t t);
+guint64      e_util_gthread_id (GThread *thread);
 void         e_filename_make_safe (gchar *string);
 
 gsize e_utf8_strftime(gchar *s, gsize max, const gchar *fmt, const struct tm *tm);

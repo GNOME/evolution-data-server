@@ -24,7 +24,6 @@
 #include <config.h>
 #endif
 
-#include <pthread.h>
 #include <string.h>
 #include <time.h>
 
@@ -54,9 +53,9 @@ static GHashTable *poplast;
 /* use 1 hour as our pop timeout */
 #define POPB4SMTP_TIMEOUT (60*60)
 
-static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-#define POPB4SMTP_LOCK(l) pthread_mutex_lock(&l)
-#define POPB4SMTP_UNLOCK(l) pthread_mutex_unlock(&l)
+static GStaticMutex lock = G_STATIC_MUTEX_INIT;
+#define POPB4SMTP_LOCK(l) g_static_mutex_lock(&l)
+#define POPB4SMTP_UNLOCK(l) g_static_mutex_unlock(&l)
 
 static CamelSaslClass *parent_class = NULL;
 

@@ -19,12 +19,9 @@
  * USA
  */
 
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <libedataserver/e-data-server-util.h>
 
 #include "camel-debug.h"
 
@@ -112,7 +109,7 @@ gboolean camel_debug(const gchar *mode)
 	return FALSE;
 }
 
-static pthread_mutex_t debug_lock = PTHREAD_MUTEX_INITIALIZER;
+static GStaticMutex debug_lock = G_STATIC_MUTEX_INIT;
 /**
  * camel_debug_start:
  * @mode:
@@ -127,8 +124,8 @@ gboolean
 camel_debug_start(const gchar *mode)
 {
 	if (camel_debug(mode)) {
-		pthread_mutex_lock(&debug_lock);
-		printf("Thread %" G_GINT64_MODIFIER "x >\n", e_util_pthread_id(pthread_self()));
+		g_static_mutex_lock (&debug_lock);
+		printf ("Thread %p >\n", g_thread_self());
 		return TRUE;
 	}
 
@@ -144,8 +141,8 @@ camel_debug_start(const gchar *mode)
 void
 camel_debug_end(void)
 {
-	printf("< %" G_GINT64_MODIFIER "x >\n", e_util_pthread_id(pthread_self()));
-	pthread_mutex_unlock(&debug_lock);
+	printf ("< %p >\n", g_thread_self());
+	g_static_mutex_unlock (&debug_lock);
 }
 
 #if 0

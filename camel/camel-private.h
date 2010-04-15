@@ -31,7 +31,6 @@
 #endif
 
 #include <glib.h>
-#include <pthread.h>
 
 G_BEGIN_DECLS
 
@@ -167,13 +166,13 @@ struct _CamelVeeFolderPrivate {
 	(g_mutex_unlock(((CamelVeeFolder *) (f))->priv->l))
 
 struct _CamelDataWrapperPrivate {
-	pthread_mutex_t stream_lock;
+	GStaticMutex stream_lock;
 };
 
 #define CAMEL_DATA_WRAPPER_LOCK(dw, l) \
-	(pthread_mutex_lock(&((CamelDataWrapper *) (dw))->priv->l))
+	(g_static_mutex_lock(&((CamelDataWrapper *) (dw))->priv->l))
 #define CAMEL_DATA_WRAPPER_UNLOCK(dw, l) \
-	(pthread_mutex_unlock(&((CamelDataWrapper *) (dw))->priv->l))
+	(g_static_mutex_unlock(&((CamelDataWrapper *) (dw))->priv->l))
 
 /* most of this stuff really is private, but the lock can be used by subordinate classes */
 struct _CamelCertDBPrivate {

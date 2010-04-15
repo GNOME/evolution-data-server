@@ -597,7 +597,7 @@ dnl check if pkg-config files exist (which are only shipped by distributions, no
 			CFLAGS_save="$CFLAGS"
 			LDFLAGS_save="$LDFLAGS"
 			LIBS_save="$LIBS"
-			nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
+			nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4"
 
 			CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
 			LIBS="$nsprlibs"
@@ -1119,23 +1119,6 @@ dnl ******************************
 dnl Posix thread support
 dnl ******************************
 
-dnl GLIB_CONFIG=${GLIB_CONFIG-glib-config}
-dnl GNOME_PTHREAD_CHECK
-
-dnl if test "x$PTHREAD_LIB" = "x" ; then
-dnl 	AC_MSG_ERROR([POSIX threads are currently required for Evolution])
-dnl fi
-
-dnl Notice that this is a hack, and we wont be able to use this forever, but
-dnl at least for some time
-
-EVO_PTHREAD_CHECK
-
-THREADS_LIBS="$PTHREAD_LIB"
-THREADS_CFLAGS="$PTHREAD_CFLAGS"
-
-AC_SUBST(THREADS_LIBS)
-AC_SUBST(THREADS_CFLAGS)
 AC_DEFINE(ENABLE_THREADS,1,[Required])
 
 dnl ******************************
@@ -1183,7 +1166,7 @@ dnl libedataserver flags
 dnl ******************************
 E_DATA_SERVER_DEPS="libxml-2.0 gthread-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
 
-EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $THREADS_CFLAGS $MANUAL_NSPR_CFLAGS, $THREADS_LIBS $MANUAL_NSPR_LIBS)
+EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $MANUAL_NSPR_CFLAGS, $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
 AC_SUBST(E_DATA_SERVER_LIBS)
 
@@ -1192,7 +1175,7 @@ dnl libedataserverui
 dnl ******************************
 E_DATA_SERVER_UI_DEPS="gtk+-2.0 libxml-2.0 gobject-2.0 gthread-2.0 gconf-2.0 $GNOME_KEYRING_REQUIREMENT"
 
-EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, $THREADS_CFLAGS, $THREADS_LIBS)
+EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
 AC_SUBST(E_DATA_SERVER_UI_LIBS)
 
@@ -1322,7 +1305,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, [test "x$enable_largefile" = "xyes"])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, $THREADS_CFLAGS $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $THREADS_LIBS $KRB5_LIBS $MANUAL_NSS_LIBS)
+EVO_SET_COMPILE_FLAGS(CAMEL, $mozilla_nss gio-2.0 sqlite3 >= sqlite_minimum_version gthread-2.0, $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $KRB5_LIBS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 AC_SUBST(CAMEL_GROUPWISE_CFLAGS)

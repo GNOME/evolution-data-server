@@ -25,7 +25,6 @@
 #endif
 
 #include <string.h>
-#include <pthread.h>
 
 #include "camel-string-utils.h"
 
@@ -139,7 +138,7 @@ gchar camel_toupper(gchar c)
 }
 
 /* working stuff for pstrings */
-static pthread_mutex_t pstring_lock = PTHREAD_MUTEX_INITIALIZER;
+static GStaticMutex pstring_lock = G_STATIC_MUTEX_INIT;
 static GHashTable *pstring_table = NULL;
 
 /**
@@ -170,7 +169,7 @@ camel_pstring_add (gchar *str, gboolean own)
 		return "";
 	}
 
-	pthread_mutex_lock (&pstring_lock);
+	g_static_mutex_lock (&pstring_lock);
 	if (pstring_table == NULL)
 		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -184,7 +183,7 @@ camel_pstring_add (gchar *str, gboolean own)
 		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
 	}
 
-	pthread_mutex_unlock (&pstring_lock);
+	g_static_mutex_unlock (&pstring_lock);
 
 	return pstr;
 }
@@ -215,7 +214,7 @@ camel_pstring_peek (const gchar *str)
 		return "";
 	}
 
-	pthread_mutex_lock (&pstring_lock);
+	g_static_mutex_lock (&pstring_lock);
 	if (pstring_table == NULL)
 		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -224,7 +223,7 @@ camel_pstring_peek (const gchar *str)
 		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
 	}
 
-	pthread_mutex_unlock (&pstring_lock);
+	g_static_mutex_unlock (&pstring_lock);
 
 	return pstr;
 }
@@ -268,7 +267,7 @@ camel_pstring_free(const gchar *s)
 	if (s == NULL || s[0] == 0)
 		return;
 
-	pthread_mutex_lock(&pstring_lock);
+	g_static_mutex_lock (&pstring_lock);
 	if (g_hash_table_lookup_extended(pstring_table, s, (gpointer *)&p, &pcount)) {
 		count = GPOINTER_TO_INT(pcount)-1;
 		if (count == 0) {
@@ -288,5 +287,5 @@ camel_pstring_free(const gchar *s)
 			g_assert (0);
 		}
 	}
-	pthread_mutex_unlock(&pstring_lock);
+	g_static_mutex_unlock (&pstring_lock);
 }

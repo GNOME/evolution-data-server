@@ -1,7 +1,6 @@
 /* threaded folder testing */
 
 #include <string.h>
-#include <pthread.h>
 
 #include "camel-test.h"
 #include "camel-test-provider.h"
@@ -68,7 +67,7 @@ worker(gpointer d)
 	/* we add a message, search for it, twiddle some flags, delete it */
 	/* and flat out */
 	for (i=0;i<MAX_MESSAGES;i++) {
-		d(printf("Thread %ld message %i\n", pthread_self(), i));
+		d(printf ("Thread %p message %i\n", g_thread_self (), i));
 		test_add_message(info->folder, id+i);
 
 		sub = g_strdup_printf("(match-all (header-contains \"subject\" \"message %08x subject\"))", id+i);
@@ -126,7 +125,7 @@ gint main(gint argc, gchar **argv)
 	gint i, j, index;
 	gchar *path;
 	CamelStore *store;
-	pthread_t threads[MAX_THREADS];
+	GThread *threads[MAX_THREADS];
 	struct _threadinfo *info;
 	CamelFolder *folder;
 	GPtrArray *uids;
@@ -160,16 +159,25 @@ gint main(gint argc, gchar **argv)
 								CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_FOLDER_BODY_INDEX, ex);
 			check_msg(!camel_exception_is_set(ex), "%s", camel_exception_get_description(ex));
 
-			for (i=0;i<MAX_THREADS;i++) {
+			for (i = 0; i < MAX_THREADS; i++) {
+				GError *error = NULL;
+
 				info = g_malloc(sizeof(*info));
 				info->id = i*MAX_MESSAGES;
 				info->folder = folder;
-				pthread_create(&threads[i], 0, worker, info);
+
+				threads[i] = g_thread_create (worker, info, TRUE, &error);
+				if (error) {
+					fprintf (stderr, "%s: Failed to create a thread: %s\n", G_STRFUNC, error->message);
+					g_error_free (error);
+				}
 			}
 
-			for (i=0;i<MAX_THREADS;i++) {
-				pthread_join(threads[i], (gpointer *)&info);
-				g_free(info);
+			for (i = 0; i < MAX_THREADS; i++) {
+				if (threads[i]) {
+					info = g_thread_join (threads[i]);
+					g_free (info);
+				}
 			}
 			pull();
 

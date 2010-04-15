@@ -26,7 +26,6 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -147,12 +146,12 @@ camel_certdb_new (void)
 }
 
 static CamelCertDB *default_certdb = NULL;
-static pthread_mutex_t default_certdb_lock = PTHREAD_MUTEX_INITIALIZER;
+static GStaticMutex default_certdb_lock = G_STATIC_MUTEX_INIT;
 
 void
 camel_certdb_set_default (CamelCertDB *certdb)
 {
-	pthread_mutex_lock (&default_certdb_lock);
+	g_static_mutex_lock (&default_certdb_lock);
 
 	if (default_certdb)
 		camel_object_unref (default_certdb);
@@ -162,7 +161,7 @@ camel_certdb_set_default (CamelCertDB *certdb)
 
 	default_certdb = certdb;
 
-	pthread_mutex_unlock (&default_certdb_lock);
+	g_static_mutex_unlock (&default_certdb_lock);
 }
 
 CamelCertDB *
@@ -170,14 +169,14 @@ camel_certdb_get_default (void)
 {
 	CamelCertDB *certdb;
 
-	pthread_mutex_lock (&default_certdb_lock);
+	g_static_mutex_lock (&default_certdb_lock);
 
 	if (default_certdb)
 		camel_object_ref (default_certdb);
 
 	certdb = default_certdb;
 
-	pthread_mutex_unlock (&default_certdb_lock);
+	g_static_mutex_unlock (&default_certdb_lock);
 
 	return certdb;
 }

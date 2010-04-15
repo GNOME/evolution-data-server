@@ -7,13 +7,12 @@
 
 #include "camel-imapx-exception.h"
 
-#include <pthread.h>
-
-static pthread_key_t handler_key = 0;
+static GStaticPrivate handler_key = G_STATIC_PRIVATE_INIT;
 
 void camel_exception_setup(void)
 {
-	pthread_key_create(&handler_key, NULL);
+	/* No need for 'new' with GStaticPrivate */
+	/* g_static_private_new (&handler_key); */
 }
 
 void
@@ -21,12 +20,12 @@ camel_exception_try(struct _CamelExceptionEnv *env)
 {
 	struct _CamelExceptionEnv *handler;
 
-	handler = pthread_getspecific(handler_key);
+	handler = g_static_private_get (&handler_key);
 	env->parent = handler;
 	handler = env;
 	env->ex = NULL;
 
-	pthread_setspecific(handler_key, handler);
+	g_static_private_set (&handler_key, handler, NULL);
 }
 
 void
@@ -36,10 +35,10 @@ camel_exception_throw_ex(CamelException *ex)
 
 	printf("throwing exception '%s'\n", ex->desc);
 
-	env = pthread_getspecific(handler_key);
+	env = g_static_private_get (&handler_key);
 	if (env != NULL) {
 		env->ex = ex;
-		pthread_setspecific(handler_key, env->parent);
+		g_static_private_set (&handler_key, env->parent, NULL);
 		longjmp(env->env, ex->id);
 	} else {
 		fprintf(stderr, "\nUncaught exception: %s\n", ex->desc);
@@ -67,13 +66,13 @@ camel_exception_throw(gint id, gchar *fmt, ...)
 void
 camel_exception_drop(struct _CamelExceptionEnv *env)
 {
-	pthread_setspecific(handler_key, env->parent);
+	g_static_private_set (&handler_key, env->parent, NULL);
 }
 
 void
 camel_exception_done(struct _CamelExceptionEnv *env)
 {
-	pthread_setspecific(handler_key, env->parent);
+	g_static_private_set (&handler_key, env->parent, NULL);
 	if (env->ex != NULL) {
 		camel_exception_free(env->ex);
 	}

@@ -30,7 +30,6 @@
 #include <sys/types.h>
 #include <sys/param.h>  /* for MAXHOSTNAMELEN */
 #include <sys/stat.h>
-#include <pthread.h>
 #include <unistd.h>
 #include <regex.h>
 #include <fcntl.h>
@@ -4313,9 +4312,9 @@ camel_header_raw_clear(struct _camel_header_raw **list)
 gchar *
 camel_header_msgid_generate (void)
 {
-	static pthread_mutex_t count_lock = PTHREAD_MUTEX_INITIALIZER;
-#define COUNT_LOCK() pthread_mutex_lock (&count_lock)
-#define COUNT_UNLOCK() pthread_mutex_unlock (&count_lock)
+	static GStaticMutex count_lock = G_STATIC_MUTEX_INIT;
+#define COUNT_LOCK() g_static_mutex_lock (&count_lock)
+#define COUNT_UNLOCK() g_static_mutex_unlock (&count_lock)
 	gchar host[MAXHOSTNAMELEN];
 	const gchar *name;
 	static gint count = 0;
@@ -4397,10 +4396,8 @@ static struct {
 	{ "List-Unsubscribe", "<mailto:(.+)-unsubscribe@([^ \n\t\r>]*)" },
 };
 
-static pthread_once_t mailing_list_init_once = PTHREAD_ONCE_INIT;
-
-static void
-mailing_list_init(void)
+static gpointer
+mailing_list_init (gpointer param)
 {
 	gint i, errcode, failed=0;
 
@@ -4422,16 +4419,19 @@ mailing_list_init(void)
 	}
 
 	g_assert(failed == 0);
+
+	return NULL;
 }
 
 gchar *
 camel_header_raw_check_mailing_list(struct _camel_header_raw **list)
 {
+	static GOnce once = G_ONCE_INIT;
 	const gchar *v;
 	regmatch_t match[3];
 	gint i, j;
 
-	pthread_once(&mailing_list_init_once, mailing_list_init);
+	g_once (&once, mailing_list_init, NULL);
 
 	for (i = 0; i < G_N_ELEMENTS (mail_list_magic); i++) {
 		v = camel_header_raw_find (list, mail_list_magic[i].name, NULL);

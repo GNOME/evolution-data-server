@@ -31,7 +31,6 @@
 #endif
 
 #include <glib.h>
-#include <pthread.h>
 
 G_BEGIN_DECLS
 

@@ -1,7 +1,6 @@
 /* threaded folder testing */
 
 #include <string.h>
-#include <pthread.h>
 
 #include "camel-test.h"
 #include "camel-test-provider.h"
@@ -56,7 +55,7 @@ gint main(gint argc, gchar **argv)
 {
 	CamelException *ex;
 	gint i, j;
-	pthread_t threads[MAX_THREADS];
+	GThread *threads[MAX_THREADS];
 
 	camel_test_init(argc, argv);
 	camel_test_provider_init(1, local_drivers);
@@ -79,11 +78,19 @@ gint main(gint argc, gchar **argv)
 			camel_test_push("provider %s", local_providers[j]);
 			path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[j], local_providers[j]);
 
-			for (i=0;i<MAX_THREADS;i++)
-				pthread_create(&threads[i], 0, worker, NULL);
+			for (i = 0; i < MAX_THREADS; i++) {
+				GError *error = NULL;
 
-			for (i=0;i<MAX_THREADS;i++)
-				pthread_join(threads[i], NULL);
+				threads[i] = g_thread_create (worker, NULL, TRUE, &error);
+				if (error) {
+					fprintf (stderr, "%s: Failed to create a thread: %s\n", G_STRFUNC, error->message);
+					g_error_free (error);
+				}
+			}
+
+			for (i = 0; i < MAX_THREADS; i++) {
+				if (threads[i])
+					g_thread_join (threads[i]);
 
 			test_free(path);
 

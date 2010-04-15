@@ -68,10 +68,10 @@ static CamelProvider vee_provider = {
 	/* ... */
 };
 
-static pthread_once_t setup_once = PTHREAD_ONCE_INIT;
+static GOnce setup_once = G_ONCE_INIT;
 
-static void
-provider_setup(void)
+static gpointer
+provider_setup (gpointer param)
 {
 	module_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
 	provider_table = g_hash_table_new(camel_strcase_hash, camel_strcase_equal);
@@ -80,6 +80,8 @@ provider_setup(void)
 	vee_provider.url_hash = camel_url_hash;
 	vee_provider.url_equal = camel_url_equal;
 	camel_provider_register(&vee_provider);
+
+	return NULL;
 }
 
 /**
@@ -105,7 +107,7 @@ camel_provider_init (void)
 	CamelProviderModule *m;
 	static gint loaded = 0;
 
-	pthread_once(&setup_once, provider_setup);
+	g_once (&setup_once, provider_setup, NULL);
 
 	if (loaded)
 		return;
@@ -177,7 +179,7 @@ camel_provider_load (const gchar *path,
 	GModule *module;
 	CamelProvider *(*provider_module_init) (void);
 
-	pthread_once(&setup_once, provider_setup);
+	g_once (&setup_once, provider_setup, NULL);
 
 	if (!g_module_supported ()) {
 		camel_exception_setv (
