@@ -29,12 +29,13 @@
 #include "e-data-server-util.h"
 
 #ifdef G_OS_WIN32
-/* The localtime_r() definition in pthreads-win32's pthread.h doesn't guard
- * against localtime() returning NULL.
- */
+#ifdef localtime_r
 #undef localtime_r
+#endif
+
 /* The localtime() in Microsoft's C library is MT-safe */
 #define localtime_r(tp,tmp) (localtime(tp)?(*(tmp)=*localtime(tp),(tmp)):0)
+#endif
 
 #include <windows.h>
 

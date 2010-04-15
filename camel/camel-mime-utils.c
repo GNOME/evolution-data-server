@@ -55,10 +55,9 @@
 #include "camel-utf8.h"
 
 #ifdef G_OS_WIN32
-/* Undef the similar macro from pthread.h, it doesn't check if
- * gmtime() returns NULL.
- */
+#ifdef gmtime_r
 #undef gmtime_r
+#endif
 
 /* The gmtime() in Microsoft's C library is MT-safe */
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)

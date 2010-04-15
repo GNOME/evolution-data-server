@@ -39,10 +39,9 @@
 
 #include "libedataserver/e-data-server-util.h"
 
-/* The localtime_r() in <pthread.h> doesn't guard against localtime()
- * returning NULL
- */
+#ifdef localtime_r
 #undef localtime_r
+#endif
 
 /* The localtime() in Microsoft's C library is MT-safe */
 #define localtime_r(tp,tmp) (localtime(tp)?(*(tmp)=*localtime(tp),(tmp)):0)

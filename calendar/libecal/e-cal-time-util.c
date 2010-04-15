@@ -14,10 +14,10 @@
 
 
 #ifdef G_OS_WIN32
-/* The gmtime_r() definition in pthreads-win32's pthread.h doesn't
- * guard against gmtime() returning NULL.
- */
+#ifdef gmtime_r
 #undef gmtime_r
+#endif
+
 /* The gmtime() in Microsoft's C library is MT-safe */
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 #endif
