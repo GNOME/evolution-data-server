@@ -41,7 +41,7 @@
 #include "camel-folder-summary.h"
 #include "camel-folder.h"
 #include "camel-offline-journal.h"
-#include "camel-private.h"
+#include "camel-win32.h"
 
 #define d(x)
 

@@ -29,11 +29,14 @@
 #include "camel-data-wrapper.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-crlf.h"
-#include "camel-private.h"
 #include "camel-stream-filter.h"
 #include "camel-stream.h"
 
 #define d(x)
+
+struct _CamelDataWrapperPrivate {
+	GStaticMutex stream_lock;
+};
 
 static CamelObjectClass *parent_class = NULL;
 
@@ -63,15 +66,15 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 		return -1;
 	}
 
-	CAMEL_DATA_WRAPPER_LOCK (data_wrapper, stream_lock);
+	camel_data_wrapper_lock (data_wrapper, CDW_STREAM_LOCK);
 	if (camel_stream_reset (data_wrapper->stream) == -1) {
-		CAMEL_DATA_WRAPPER_UNLOCK (data_wrapper, stream_lock);
+		camel_data_wrapper_unlock (data_wrapper, CDW_STREAM_LOCK);
 		return -1;
 	}
 
 	ret = camel_stream_write_to_stream (data_wrapper->stream, stream);
 
-	CAMEL_DATA_WRAPPER_UNLOCK (data_wrapper, stream_lock);
+	camel_data_wrapper_unlock (data_wrapper, CDW_STREAM_LOCK);
 
 	return ret;
 }
@@ -413,4 +416,54 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (class->is_offline != NULL, TRUE);
 
 	return class->is_offline (data_wrapper);
+}
+
+/**
+ * camel_data_wrapper_lock:
+ * @data_wrapper: a #CamelDataWrapper
+ * @lock: lock type to lock
+ *
+ * Locks #data_wrapper's #lock. Unlock it with camel_data_wrapper_unlock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_data_wrapper_lock (CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock)
+{
+	g_return_if_fail (data_wrapper != NULL);
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (data_wrapper->priv != NULL);
+
+	switch (lock) {
+	case CDW_STREAM_LOCK:
+		g_static_mutex_lock (&data_wrapper->priv->stream_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
+}
+
+/**
+ * camel_data_wrapper_unlock:
+ * @data_wrapper: a #CamelDataWrapper
+ * @lock: lock type to unlock
+ *
+ * Unlocks #data_wrapper's #lock, previously locked with camel_data_wrapper_lock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_data_wrapper_unlock (CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock)
+{
+	g_return_if_fail (data_wrapper != NULL);
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (data_wrapper->priv != NULL);
+
+	switch (lock) {
+	case CDW_STREAM_LOCK:
+		g_static_mutex_unlock (&data_wrapper->priv->stream_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
 }

@@ -36,8 +36,8 @@
 
 #include "camel-file-utils.h"
 #include "camel-operation.h"
-#include "camel-private.h"
 #include "camel-stream-fs.h"
+#include "camel-win32.h"
 
 struct _CamelStreamFsPrivate {
 	gint fd;	/* file descriptor on the underlying file */

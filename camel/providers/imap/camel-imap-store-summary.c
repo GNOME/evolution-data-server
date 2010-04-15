@@ -29,8 +29,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-imap-store-summary.h"
 
 #define d(x)
@@ -706,10 +704,10 @@ store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const
 	switch (type) {
 	case CAMEL_IMAP_STORE_INFO_FULL_NAME:
 		d(printf("Set full name %s -> %s\n", isi->full_name, str));
-		CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
+		camel_store_summary_lock (s, CSS_SUMMARY_LOCK);
 		g_free(isi->full_name);
 		isi->full_name = g_strdup(str);
-		CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
+		camel_store_summary_unlock (s, CSS_SUMMARY_LOCK);
 		break;
 	default:
 		camel_imap_store_summary_parent->store_info_set_string(s, mi, type, str);

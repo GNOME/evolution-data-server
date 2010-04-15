@@ -34,8 +34,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-mh-summary.h"
 #include "camel-local-private.h"
 
@@ -284,8 +282,8 @@ mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, Came
 	g_hash_table_destroy(left);
 
 	/* sort the summary based on message number (uid), since the directory order is not useful */
-	CAMEL_SUMMARY_LOCK(s, summary_lock);
-	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+	camel_folder_summary_lock (s, CFS_SUMMARY_LOCK);
+	camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
 
 	return 0;
 }

@@ -63,6 +63,11 @@ enum {
 	CAMEL_SESSION_PASSPHRASE = 1 << 4
 };
 
+typedef enum _CamelSessionLock {
+	CS_SESSION_LOCK,
+	CS_THREAD_LOCK
+} CamelSessionLock;
+
 struct _CamelSession {
 	CamelObject parent;
 	CamelSessionPrivate *priv;
@@ -238,6 +243,9 @@ void		   camel_session_forward_to         (CamelSession *session,
 						     CamelMimeMessage *message,
 						     const gchar *address,
 						     CamelException *ex);
+
+void		camel_session_lock		(CamelSession *session, CamelSessionLock lock);
+void		camel_session_unlock		(CamelSession *session, CamelSessionLock lock);
 
 G_END_DECLS
 

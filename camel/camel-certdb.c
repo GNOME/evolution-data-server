@@ -38,9 +38,16 @@
 
 #include "camel-certdb.h"
 #include "camel-file-utils.h"
-#include "camel-private.h"
+#include "camel-win32.h"
 
 #define CAMEL_CERTDB_VERSION  0x100
+
+struct _CamelCertDBPrivate {
+	GMutex *db_lock;	/* for the db hashtable/array */
+	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
+	GMutex *alloc_lock;	/* for setting up and using allocators */
+	GMutex *ref_lock;	/* for reffing/unreffing certs */
+};
 
 static gint certdb_header_load (CamelCertDB *certdb, FILE *istream);
 static gint certdb_header_save (CamelCertDB *certdb, FILE *ostream);
@@ -187,12 +194,12 @@ camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename)
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (filename != NULL);
 
-	CAMEL_CERTDB_LOCK (certdb, db_lock);
+	camel_certdb_lock (certdb, CCD_DB_LOCK);
 
 	g_free (certdb->filename);
 	certdb->filename = g_strdup (filename);
 
-	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
+	camel_certdb_unlock (certdb, CCD_DB_LOCK);
 }
 
 static gint
@@ -252,7 +259,7 @@ camel_certdb_load (CamelCertDB *certdb)
 	g_return_val_if_fail (class->header_load != NULL, -1);
 	g_return_val_if_fail (class->cert_load != NULL, -1);
 
-	CAMEL_CERTDB_LOCK (certdb, io_lock);
+	camel_certdb_lock (certdb, CCD_IO_LOCK);
 	if (class->header_load (certdb, in) == -1)
 		goto error;
 
@@ -265,7 +272,7 @@ camel_certdb_load (CamelCertDB *certdb)
 		camel_certdb_add (certdb, cert);
 	}
 
-	CAMEL_CERTDB_UNLOCK (certdb, io_lock);
+	camel_certdb_unlock (certdb, CCD_IO_LOCK);
 
 	if (fclose (in) != 0)
 		return -1;
@@ -278,7 +285,7 @@ camel_certdb_load (CamelCertDB *certdb)
 
 	g_warning ("Cannot load certificate database: %s", g_strerror (ferror (in)));
 
-	CAMEL_CERTDB_UNLOCK (certdb, io_lock);
+	camel_certdb_unlock (certdb, CCD_IO_LOCK);
 
 	fclose (in);
 
@@ -349,7 +356,7 @@ camel_certdb_save (CamelCertDB *certdb)
 	g_return_val_if_fail (class->header_save != NULL, -1);
 	g_return_val_if_fail (class->cert_save != NULL, -1);
 
-	CAMEL_CERTDB_LOCK (certdb, io_lock);
+	camel_certdb_lock (certdb, CCD_IO_LOCK);
 
 	certdb->saved_certs = certdb->certs->len;
 	if (class->header_save (certdb, out) == -1)
@@ -362,7 +369,7 @@ camel_certdb_save (CamelCertDB *certdb)
 			goto error;
 	}
 
-	CAMEL_CERTDB_UNLOCK (certdb, io_lock);
+	camel_certdb_unlock (certdb, CCD_IO_LOCK);
 
 	if (fflush (out) != 0 || fsync (fileno (out)) == -1) {
 		i = errno;
@@ -394,7 +401,7 @@ camel_certdb_save (CamelCertDB *certdb)
 
 	g_warning ("Cannot save certificate database: %s", g_strerror (ferror (out)));
 
-	CAMEL_CERTDB_UNLOCK (certdb, io_lock);
+	camel_certdb_unlock (certdb, CCD_IO_LOCK);
 
 	i = errno;
 	fclose (out);
@@ -419,13 +426,13 @@ camel_certdb_get_cert (CamelCertDB *certdb, const gchar *fingerprint)
 
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
 
-	CAMEL_CERTDB_LOCK (certdb, db_lock);
+	camel_certdb_lock (certdb, CCD_DB_LOCK);
 
 	cert = g_hash_table_lookup (certdb->cert_hash, fingerprint);
 	if (cert)
 		camel_certdb_cert_ref (certdb, cert);
 
-	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
+	camel_certdb_unlock (certdb, CCD_DB_LOCK);
 
 	return cert;
 }
@@ -435,10 +442,10 @@ camel_certdb_add (CamelCertDB *certdb, CamelCert *cert)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
-	CAMEL_CERTDB_LOCK (certdb, db_lock);
+	camel_certdb_lock (certdb, CCD_DB_LOCK);
 
 	if (g_hash_table_lookup (certdb->cert_hash, cert->fingerprint)) {
-		CAMEL_CERTDB_UNLOCK (certdb, db_lock);
+		camel_certdb_unlock (certdb, CCD_DB_LOCK);
 		return;
 	}
 
@@ -448,7 +455,7 @@ camel_certdb_add (CamelCertDB *certdb, CamelCert *cert)
 
 	certdb->flags |= CAMEL_CERTDB_DIRTY;
 
-	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
+	camel_certdb_unlock (certdb, CCD_DB_LOCK);
 }
 
 void
@@ -456,7 +463,7 @@ camel_certdb_remove (CamelCertDB *certdb, CamelCert *cert)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
-	CAMEL_CERTDB_LOCK (certdb, db_lock);
+	camel_certdb_lock (certdb, CCD_DB_LOCK);
 
 	if (g_hash_table_lookup (certdb->cert_hash, cert->fingerprint)) {
 		g_hash_table_remove (certdb->cert_hash, cert->fingerprint);
@@ -466,7 +473,7 @@ camel_certdb_remove (CamelCertDB *certdb, CamelCert *cert)
 		certdb->flags |= CAMEL_CERTDB_DIRTY;
 	}
 
-	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
+	camel_certdb_unlock (certdb, CCD_DB_LOCK);
 }
 
 static CamelCert *
@@ -495,11 +502,11 @@ camel_certdb_cert_new (CamelCertDB *certdb)
 	class = CAMEL_CERTDB_GET_CLASS (certdb);
 	g_return_val_if_fail (class->cert_new != NULL, NULL);
 
-	CAMEL_CERTDB_LOCK (certdb, alloc_lock);
+	camel_certdb_lock (certdb, CCD_ALLOC_LOCK);
 
 	cert = class->cert_new (certdb);
 
-	CAMEL_CERTDB_UNLOCK (certdb, alloc_lock);
+	camel_certdb_unlock (certdb, CCD_ALLOC_LOCK);
 
 	return cert;
 }
@@ -510,9 +517,9 @@ camel_certdb_cert_ref (CamelCertDB *certdb, CamelCert *cert)
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
 
-	CAMEL_CERTDB_LOCK (certdb, ref_lock);
+	camel_certdb_lock (certdb, CCD_REF_LOCK);
 	cert->refcount++;
-	CAMEL_CERTDB_UNLOCK (certdb, ref_lock);
+	camel_certdb_unlock (certdb, CCD_REF_LOCK);
 }
 
 static void
@@ -538,7 +545,7 @@ camel_certdb_cert_unref (CamelCertDB *certdb,
 	class = CAMEL_CERTDB_GET_CLASS (certdb);
 	g_return_if_fail (class->cert_free != NULL);
 
-	CAMEL_CERTDB_LOCK (certdb, ref_lock);
+	camel_certdb_lock (certdb, CCD_REF_LOCK);
 
 	if (cert->refcount <= 1) {
 		class->cert_free (certdb, cert);
@@ -550,7 +557,7 @@ camel_certdb_cert_unref (CamelCertDB *certdb,
 		cert->refcount--;
 	}
 
-	CAMEL_CERTDB_UNLOCK (certdb, ref_lock);
+	camel_certdb_unlock (certdb, CCD_REF_LOCK);
 }
 
 static gboolean
@@ -567,7 +574,7 @@ camel_certdb_clear (CamelCertDB *certdb)
 
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
-	CAMEL_CERTDB_LOCK (certdb, db_lock);
+	camel_certdb_lock (certdb, CCD_DB_LOCK);
 
 	g_hash_table_foreach_remove (certdb->cert_hash, cert_remove, NULL);
 	for (i = 0; i < certdb->certs->len; i++) {
@@ -579,7 +586,7 @@ camel_certdb_clear (CamelCertDB *certdb)
 	g_ptr_array_set_size (certdb->certs, 0);
 	certdb->flags |= CAMEL_CERTDB_DIRTY;
 
-	CAMEL_CERTDB_UNLOCK (certdb, db_lock);
+	camel_certdb_unlock (certdb, CCD_DB_LOCK);
 }
 
 static const gchar *
@@ -677,4 +684,72 @@ camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust
 	g_return_if_fail (cert != NULL);
 
 	cert->trust = trust;
+}
+
+/**
+ * camel_certdb_lock:
+ * @certdb: a #CamelCertDB
+ * @lock: lock type to lock
+ *
+ * Locks #certdb's #lock. Unlock it with camel_certdb_unlock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_certdb_lock (CamelCertDB *certdb, CamelCertDBLock lock)
+{
+	g_return_if_fail (certdb != NULL);
+	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
+	g_return_if_fail (certdb->priv != NULL);
+
+	switch (lock) {
+	case CCD_DB_LOCK:
+		g_mutex_lock (certdb->priv->db_lock);
+		break;
+	case CCD_IO_LOCK:
+		g_mutex_lock (certdb->priv->io_lock);
+		break;
+	case CCD_ALLOC_LOCK:
+		g_mutex_lock (certdb->priv->alloc_lock);
+		break;
+	case CCD_REF_LOCK:
+		g_mutex_lock (certdb->priv->ref_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
+}
+
+/**
+ * camel_certdb_unlock:
+ * @certdb: a #CamelCertDB
+ * @lock: lock type to unlock
+ *
+ * Unlocks #certdb's #lock, previously locked with camel_certdb_lock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_certdb_unlock (CamelCertDB *certdb, CamelCertDBLock lock)
+{
+	g_return_if_fail (certdb != NULL);
+	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
+	g_return_if_fail (certdb->priv != NULL);
+
+	switch (lock) {
+	case CCD_DB_LOCK:
+		g_mutex_unlock (certdb->priv->db_lock);
+		break;
+	case CCD_IO_LOCK:
+		g_mutex_unlock (certdb->priv->io_lock);
+		break;
+	case CCD_ALLOC_LOCK:
+		g_mutex_unlock (certdb->priv->alloc_lock);
+		break;
+	case CCD_REF_LOCK:
+		g_mutex_unlock (certdb->priv->ref_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
 }

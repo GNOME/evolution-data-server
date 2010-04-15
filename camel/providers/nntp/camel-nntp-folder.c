@@ -33,8 +33,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-nntp-folder.h"
 #include "camel-nntp-private.h"
 #include "camel-nntp-store.h"
@@ -68,7 +66,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder, CamelException *ex)
 	nntp_store = (CamelNNTPStore *) folder->parent_store;
 	nntp_folder = (CamelNNTPFolder *) folder;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	camel_nntp_command(nntp_store, ex, nntp_folder, &line, NULL);
 
@@ -77,7 +75,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder, CamelException *ex)
 		nntp_folder->changes = camel_folder_change_info_new();
 	}
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	if (changes) {
 		camel_object_trigger_event ((CamelObject *) folder, "folder_changed", changes);
@@ -88,17 +86,17 @@ nntp_folder_refresh_info_online (CamelFolder *folder, CamelException *ex)
 static void
 nntp_folder_sync_online (CamelFolder *folder, CamelException *ex)
 {
-	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 	camel_folder_summary_save_to_db (folder->summary, ex);
-	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 }
 
 static void
 nntp_folder_sync_offline (CamelFolder *folder, CamelException *ex)
 {
-	CAMEL_SERVICE_REC_LOCK(folder->parent_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 	camel_folder_summary_save_to_db (folder->summary, ex);
-	CAMEL_SERVICE_REC_UNLOCK(folder->parent_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 }
 
 static gboolean
@@ -179,13 +177,13 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid, Cam
 	}
 	*msgid++ = 0;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	stream = nntp_folder_download_message ((CamelNNTPFolder *) disco_folder, article, msgid, ex);
 	if (stream)
 		camel_object_unref (stream);
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 }
 
 static CamelMimeMessage *
@@ -211,7 +209,7 @@ nntp_folder_get_message (CamelFolder *folder, const gchar *uid, CamelException *
 	}
 	*msgid++ = 0;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
 	stream = camel_data_cache_get (nntp_store->cache, "cache", msgid, NULL);
@@ -246,7 +244,7 @@ fail:
 		changes = NULL;
 	}
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	if (changes) {
 		camel_object_trigger_event ((CamelObject *) folder, "folder_changed", changes);
@@ -340,7 +338,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 	struct _camel_header_raw *header, *savedhdrs, *n, *tail;
 	gchar *group, *line;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	/* send 'POST' command */
 	ret = camel_nntp_command (nntp_store, ex, NULL, &line, "post");
@@ -351,7 +349,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 		else if (ret != -1)
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Posting failed: %s"), line);
-		CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 		return;
 	}
 
@@ -402,7 +400,7 @@ nntp_folder_append_message_online (CamelFolder *folder, CamelMimeMessage *mime_m
 	g_free(group);
 	header->next = savedhdrs;
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	return;
 }

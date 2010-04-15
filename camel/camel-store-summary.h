@@ -89,6 +89,12 @@ typedef enum _CamelStoreSummaryFlags {
 	CAMEL_STORE_SUMMARY_FRAGMENT = 1<<1 /* path name is stored in fragment rather than path */
 } CamelStoreSummaryFlags;
 
+typedef enum _CamelStoreSummaryLock {
+	CSS_SUMMARY_LOCK,
+	CSS_IO_LOCK,
+	CSS_REF_LOCK
+} CamelStoreSummaryLock;
+
 struct _CamelStoreSummary {
 	CamelObject parent;
 	CamelStoreSummaryPrivate *priv;
@@ -181,6 +187,9 @@ void camel_store_info_set_string(CamelStoreSummary *summary, CamelStoreInfo *inf
 #define camel_store_info_path(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_PATH))
 #define camel_store_info_uri(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_URI))
 #define camel_store_info_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_NAME))
+
+void camel_store_summary_lock   (CamelStoreSummary *summary, CamelStoreSummaryLock lock);
+void camel_store_summary_unlock (CamelStoreSummary *summary, CamelStoreSummaryLock lock);
 
 G_END_DECLS
 

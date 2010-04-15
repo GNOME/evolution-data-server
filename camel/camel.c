@@ -40,7 +40,7 @@
 #include "camel-certdb.h"
 #include "camel-debug.h"
 #include "camel-provider.h"
-#include "camel-private.h"
+#include "camel-win32.h"
 
 #ifdef HAVE_NSS
 /* To protect NSS initialization and shutdown. This prevents

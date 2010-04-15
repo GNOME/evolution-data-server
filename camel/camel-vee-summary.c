@@ -36,7 +36,6 @@
 #include "camel-vee-summary.h"
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"
-#include "camel-private.h"
 #include "camel-string-utils.h"
 
 #define d(x)
@@ -150,10 +149,10 @@ vee_info_set_user_flag(CamelMessageInfo *mi, const gchar *name, gboolean value)
 	if (camel_debug("vfolderexp"))
 		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
 
-	if (vf->priv->unread_vfolder == -1)
+	if (camel_vee_folder_get_unread_vfolder (vf) == -1)
 		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
 
-	if (vf->priv->unread_vfolder == 1)
+	if (camel_vee_folder_get_unread_vfolder (vf) == 1)
 		hacked_unread_folder = TRUE;
 
 	if (mi->uid) {
@@ -221,9 +220,9 @@ camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 		hacked_unread_folder = TRUE;
 
 	if (hacked_unread_folder)
-		vf->priv->unread_vfolder = 1;
+		camel_vee_folder_set_unread_vfolder (vf, 1);
 	else
-		vf->priv->unread_vfolder = 0;
+		camel_vee_folder_set_unread_vfolder (vf, 0);
 }
 
 static gboolean
@@ -236,10 +235,10 @@ vee_info_set_flags(CamelMessageInfo *mi, guint32 flags, guint32 set)
 	if (camel_debug("vfolderexp"))
 		printf("Expression for vfolder '%s' is '%s'\n", mi->summary->folder->full_name, g_strescape(vf->expression, ""));
 
-	if (vf->priv->unread_vfolder == -1)
+	if (camel_vee_folder_get_unread_vfolder (vf) == -1)
 		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
 
-	if (vf->priv->unread_vfolder == 1)
+	if (camel_vee_folder_get_unread_vfolder (vf) == 1)
 		hacked_unread_folder = TRUE;
 
 	if (mi->uid) {
@@ -327,14 +326,14 @@ message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
 
 	/* FIXME[disk-summary] too bad design. Need to peek it from cfs
 	 * instead of hacking ugly like this */
-	CAMEL_SUMMARY_LOCK(s, summary_lock);
+	camel_folder_summary_lock (s, CFS_SUMMARY_LOCK);
 
 	info = g_hash_table_lookup (s->loaded_infos, uid);
 
 	if (info)
 		camel_message_info_ref (info);
 
-	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+	camel_folder_summary_unlock (s, CFS_SUMMARY_LOCK);
 
 	if (!info) {
 		CamelVeeMessageInfo *vinfo;
@@ -471,9 +470,9 @@ camel_vee_summary_add(CamelVeeSummary *s, CamelFolderSummary *summary, const gch
 	memcpy(vuid, hash, 8);
 	strcpy(vuid+8, uid);
 
-	CAMEL_SUMMARY_LOCK(s, summary_lock);
+	camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (s), CFS_SUMMARY_LOCK);
 	mi = (CamelVeeMessageInfo *) g_hash_table_lookup(((CamelFolderSummary *) s)->loaded_infos, vuid);
-	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+	camel_folder_summary_unlock (CAMEL_FOLDER_SUMMARY (s), CFS_SUMMARY_LOCK);
 
 	if (mi) {
 		/* Possible that the entry is loaded, see if it has the summary */

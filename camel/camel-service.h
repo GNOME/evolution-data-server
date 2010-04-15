@@ -71,6 +71,11 @@ typedef enum {
 	CAMEL_SERVICE_DISCONNECTING
 } CamelServiceConnectionStatus;
 
+typedef enum _CamelServiceLock {
+	CS_REC_CONNECT_LOCK,
+	CS_CONNECT_OP_LOCK
+} CamelServiceLock;
+
 struct _CamelService {
 	CamelObject parent;
 	CamelServicePrivate *priv;
@@ -133,6 +138,9 @@ struct _CamelSession *
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 GList *		camel_service_query_auth_types	(CamelService *service,
 						 CamelException *ex);
+
+void		camel_service_lock		(CamelService *service, CamelServiceLock lock);
+void		camel_service_unlock		(CamelService *service, CamelServiceLock lock);
 
 G_END_DECLS
 

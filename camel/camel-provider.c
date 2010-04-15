@@ -39,10 +39,10 @@
 #include <gmodule.h>
 
 #include "camel-exception.h"
-#include "camel-private.h"
 #include "camel-provider.h"
 #include "camel-string-utils.h"
 #include "camel-vee-store.h"
+#include "camel-win32.h"
 
 /* table of CamelProviderModule's */
 static GHashTable *module_table;

@@ -51,6 +51,10 @@ enum {
 	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
+typedef enum _CamelTransportLock {
+	CT_SEND_LOCK
+} CamelTransportLock;
+
 struct _CamelTransport {
 	CamelService parent;
 	CamelTransportPrivate *priv;
@@ -73,6 +77,9 @@ gboolean camel_transport_send_to (CamelTransport *transport,
 				  CamelException *ex);
 
 CamelType camel_transport_get_type (void);
+
+void camel_transport_lock	(CamelTransport *transport, CamelTransportLock lock);
+void camel_transport_unlock	(CamelTransport *transport, CamelTransportLock lock);
 
 G_END_DECLS
 

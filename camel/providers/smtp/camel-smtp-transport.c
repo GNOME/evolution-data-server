@@ -36,8 +36,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-smtp-transport.h"
 
 #ifdef G_OS_WIN32
@@ -47,6 +45,8 @@
 
 #undef MIN
 #undef MAX
+
+extern gint camel_verbose_debug;
 
 #define d(x) (camel_verbose_debug ? (x) : 0)
 

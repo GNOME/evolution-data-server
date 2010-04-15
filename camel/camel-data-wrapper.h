@@ -47,6 +47,10 @@ typedef struct _CamelDataWrapper CamelDataWrapper;
 typedef struct _CamelDataWrapperClass CamelDataWrapperClass;
 typedef struct _CamelDataWrapperPrivate CamelDataWrapperPrivate;
 
+typedef enum _CamelDataWrapperLock {
+	CDW_STREAM_LOCK
+} CamelDataWrapperLock;
+
 struct _CamelDataWrapper {
 	CamelObject parent;
 	CamelDataWrapperPrivate *priv;
@@ -100,6 +104,9 @@ gint		camel_data_wrapper_construct_from_stream
 						(CamelDataWrapper *data_wrapper,
 						 CamelStream *stream);
 gboolean	camel_data_wrapper_is_offline	(CamelDataWrapper *data_wrapper);
+
+void		camel_data_wrapper_lock		(CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock);
+void		camel_data_wrapper_unlock	(CamelDataWrapper *data_wrapper, CamelDataWrapperLock lock);
 
 G_END_DECLS
 

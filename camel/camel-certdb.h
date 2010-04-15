@@ -74,6 +74,13 @@ typedef struct {
 	GByteArray *rawcert;
 } CamelCert;
 
+typedef enum _CamelCertDBLock {
+	CCD_DB_LOCK,
+	CCD_IO_LOCK,
+	CCD_ALLOC_LOCK,
+	CCD_REF_LOCK
+} CamelCertDBLock;
+
 struct _CamelCertDB {
 	CamelObject parent;
 	CamelCertDBPrivate *priv;
@@ -147,6 +154,9 @@ void camel_cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, c
 
 CamelCertTrust camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert);
 void camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust);
+
+void camel_certdb_lock	 (CamelCertDB *certdb, CamelCertDBLock lock);
+void camel_certdb_unlock (CamelCertDB *certdb, CamelCertDBLock lock);
 
 G_END_DECLS
 

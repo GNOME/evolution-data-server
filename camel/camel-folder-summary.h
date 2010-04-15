@@ -217,6 +217,14 @@ typedef enum _CamelFolderSummaryFlags {
 	CAMEL_SUMMARY_DIRTY = 1<<0
 } CamelFolderSummaryFlags;
 
+typedef enum _CamelFolderSummaryLock {
+	CFS_SUMMARY_LOCK,
+	CFS_IO_LOCK,
+	CFS_FILTER_LOCK,
+	CFS_ALLOC_LOCK,
+	CFS_REF_LOCK
+} CamelFolderSummaryLock;
+
 struct _CamelFolderSummary {
 	CamelObject parent;
 	CamelFolderSummaryPrivate *priv;
@@ -518,6 +526,9 @@ void camel_message_info_dump (CamelMessageInfo *mi);
 
 /* Migration code */
 gint camel_folder_summary_migrate_infos(CamelFolderSummary *s);
+
+void camel_folder_summary_lock   (CamelFolderSummary *summary, CamelFolderSummaryLock lock);
+void camel_folder_summary_unlock (CamelFolderSummary *summary, CamelFolderSummaryLock lock);
 
 G_END_DECLS
 

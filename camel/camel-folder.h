@@ -86,6 +86,11 @@ enum {
 	CAMEL_FOLDER_PROPERTIES = CAMEL_FOLDER_ARG_PROPERTIES | CAMEL_ARG_PTR
 };
 
+typedef enum _CamelFolderLock {
+	CF_CHANGE_LOCK,
+	CF_REC_LOCK
+} CamelFolderLock;
+
 struct _CamelFolderChangeInfo {
 	GPtrArray *uid_added;
 	GPtrArray *uid_removed;
@@ -388,6 +393,7 @@ void		camel_folder_rename		(CamelFolder *folder,
 void		camel_folder_freeze		(CamelFolder *folder);
 void		camel_folder_thaw		(CamelFolder *folder);
 gboolean	camel_folder_is_frozen		(CamelFolder *folder);
+gint		camel_folder_get_frozen_count	(CamelFolder *folder);
 
 /* quota support */
 CamelFolderQuotaInfo *
@@ -450,6 +456,9 @@ void		camel_folder_change_info_change_uid
 void		camel_folder_change_info_recent_uid
 						(CamelFolderChangeInfo *info,
 						 const gchar *uid);
+
+void		camel_folder_lock		(CamelFolder *folder, CamelFolderLock lock);
+void		camel_folder_unlock		(CamelFolder *folder, CamelFolderLock lock);
 
 G_END_DECLS
 

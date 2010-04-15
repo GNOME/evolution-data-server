@@ -41,8 +41,6 @@
 #include <posix1_lim.h>
 #endif
 
-#include <camel/camel-private.h>
-
 #include "camel-local-folder.h"
 #include "camel-local-private.h"
 #include "camel-local-store.h"

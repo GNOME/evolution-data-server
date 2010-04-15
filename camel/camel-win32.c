@@ -62,7 +62,7 @@ setup (void)
 	G_UNLOCK (mutex);
 }
 
-#include "camel-private.h"	/* For prototypes */
+#include "camel-win32.h"	/* For prototypes */
 
 #define GETTER(varbl)				\
 const gchar *					\

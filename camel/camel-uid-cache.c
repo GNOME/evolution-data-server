@@ -35,8 +35,8 @@
 #include <glib/gstdio.h>
 
 #include "camel-file-utils.h"
-#include "camel-private.h"
 #include "camel-uid-cache.h"
+#include "camel-win32.h"
 
 struct _uid_state {
 	gint level;

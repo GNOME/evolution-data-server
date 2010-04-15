@@ -29,7 +29,6 @@
 
 #include "camel-db.h"
 #include "camel-exception.h"
-#include "camel-private.h"
 #include "camel-session.h"
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"

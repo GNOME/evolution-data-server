@@ -46,7 +46,6 @@
 #include "camel-filter-search.h"
 #include "camel-list-utils.h"
 #include "camel-mime-message.h"
-#include "camel-private.h"
 #include "camel-service.h"
 #include "camel-session.h"
 #include "camel-stream-fs.h"

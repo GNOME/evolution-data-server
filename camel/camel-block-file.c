@@ -37,7 +37,6 @@
 #include "camel-block-file.h"
 #include "camel-file-utils.h"
 #include "camel-list-utils.h"
-#include "camel-private.h"
 
 #define d(x) /*(printf("%s(%d):%s: ",  __FILE__, __LINE__, __PRETTY_FUNCTION__),(x))*/
 

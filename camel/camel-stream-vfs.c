@@ -32,7 +32,6 @@
 
 #include "camel-file-utils.h"
 #include "camel-operation.h"
-#include "camel-private.h"
 #include "camel-stream-vfs.h"
 
 static CamelStreamClass *parent_class = NULL;

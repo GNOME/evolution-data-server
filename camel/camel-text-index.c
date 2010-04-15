@@ -40,7 +40,6 @@
 #include "camel-mempool.h"
 #include "camel-object.h"
 #include "camel-partition-table.h"
-#include "camel-private.h"
 #include "camel-text-index.h"
 
 #define w(x)

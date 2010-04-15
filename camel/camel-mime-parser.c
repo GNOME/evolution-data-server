@@ -37,7 +37,6 @@
 #include "camel-mime-filter.h"
 #include "camel-mime-parser.h"
 #include "camel-mime-utils.h"
-#include "camel-private.h"
 #include "camel-seekable-stream.h"
 #include "camel-stream.h"
 

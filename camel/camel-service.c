@@ -36,12 +36,16 @@
 
 #include "camel-exception.h"
 #include "camel-operation.h"
-#include "camel-private.h"
 #include "camel-service.h"
 #include "camel-session.h"
 
 #define d(x)
 #define w(x)
+
+struct _CamelServicePrivate {
+	GStaticRecMutex connect_lock;	/* for locking connection operations */
+	GStaticMutex connect_op_lock;	/* for locking the connection_op */
+};
 
 static CamelObjectClass *camel_service_parent_class = NULL;
 
@@ -420,16 +424,16 @@ camel_service_connect (CamelService *service,
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_val_if_fail (class->connect != NULL, FALSE);
 
-	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
+	camel_service_lock (service, CS_REC_CONNECT_LOCK);
 
 	if (service->status == CAMEL_SERVICE_CONNECTED) {
-		CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+		camel_service_unlock (service, CS_REC_CONNECT_LOCK);
 		return TRUE;
 	}
 
 	/* Register a separate operation for connecting, so that
 	 * the offline code can cancel it. */
-	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	camel_service_lock (service, CS_CONNECT_OP_LOCK);
 	service->connect_op = camel_operation_registered ();
 	if (!service->connect_op) {
 		service->connect_op = camel_operation_new (NULL, NULL);
@@ -437,13 +441,13 @@ camel_service_connect (CamelService *service,
 		unreg = TRUE;
 	}
 	connect_op = service->connect_op;
-	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+	camel_service_unlock (service, CS_CONNECT_OP_LOCK);
 
 	service->status = CAMEL_SERVICE_CONNECTING;
 	ret = class->connect (service, ex);
 	service->status = ret ? CAMEL_SERVICE_CONNECTED : CAMEL_SERVICE_DISCONNECTED;
 
-	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	camel_service_lock (service, CS_CONNECT_OP_LOCK);
 	if (connect_op) {
 		if (unreg && service->connect_op)
 			camel_operation_unregister (connect_op);
@@ -451,9 +455,9 @@ camel_service_connect (CamelService *service,
 		camel_operation_unref (connect_op);
 		service->connect_op = NULL;
 	}
-	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+	camel_service_unlock (service, CS_CONNECT_OP_LOCK);
 
-	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+	camel_service_unlock (service, CS_REC_CONNECT_LOCK);
 
 	return ret;
 }
@@ -483,35 +487,35 @@ camel_service_disconnect (CamelService *service,
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_val_if_fail (class->disconnect != NULL, FALSE);
 
-	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
+	camel_service_lock (service, CS_REC_CONNECT_LOCK);
 
 	if (service->status != CAMEL_SERVICE_DISCONNECTED
 	    && service->status != CAMEL_SERVICE_DISCONNECTING) {
-		CAMEL_SERVICE_LOCK (service, connect_op_lock);
+		camel_service_lock (service, CS_CONNECT_OP_LOCK);
 		service->connect_op = camel_operation_registered ();
 		if (!service->connect_op) {
 			service->connect_op = camel_operation_new (NULL, NULL);
 			camel_operation_register (service->connect_op);
 			unreg = TRUE;
 		}
-		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+		camel_service_unlock (service, CS_CONNECT_OP_LOCK);
 
 		service->status = CAMEL_SERVICE_DISCONNECTING;
 		res = class->disconnect (service, clean, ex);
 		service->status = CAMEL_SERVICE_DISCONNECTED;
 
-		CAMEL_SERVICE_LOCK (service, connect_op_lock);
+		camel_service_lock (service, CS_CONNECT_OP_LOCK);
 		if (unreg)
 			camel_operation_unregister (service->connect_op);
 
 		camel_operation_unref (service->connect_op);
 		service->connect_op = NULL;
-		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+		camel_service_unlock (service, CS_CONNECT_OP_LOCK);
 	}
 
-	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+	camel_service_unlock (service, CS_REC_CONNECT_LOCK);
 
-		service->status = CAMEL_SERVICE_DISCONNECTED;
+	service->status = CAMEL_SERVICE_DISCONNECTED;
 	return res;
 }
 
@@ -533,10 +537,10 @@ camel_service_cancel_connect (CamelService *service)
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_if_fail (class->cancel_connect != NULL);
 
-	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	camel_service_lock (service, CS_CONNECT_OP_LOCK);
 	if (service->connect_op)
 		class->cancel_connect (service);
-	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
+	camel_service_unlock (service, CS_CONNECT_OP_LOCK);
 }
 
 /**
@@ -668,9 +672,65 @@ camel_service_query_auth_types (CamelService *service,
 
 	/* Note that we get the connect lock here, which means the
 	 * callee must not call the connect functions itself. */
-	CAMEL_SERVICE_REC_LOCK (service, connect_lock);
+	camel_service_lock (service, CS_REC_CONNECT_LOCK);
 	ret = class->query_auth_types (service, ex);
-	CAMEL_SERVICE_REC_UNLOCK (service, connect_lock);
+	camel_service_unlock (service, CS_REC_CONNECT_LOCK);
 
 	return ret;
+}
+
+/**
+ * camel_service_lock:
+ * @service: a #CamelService
+ * @lock: lock type to lock
+ *
+ * Locks #service's #lock. Unlock it with camel_service_unlock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_service_lock (CamelService *service, CamelServiceLock lock)
+{
+	g_return_if_fail (service != NULL);
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	g_return_if_fail (service->priv != NULL);
+
+	switch (lock) {
+	case CS_REC_CONNECT_LOCK:
+		g_static_rec_mutex_lock (&service->priv->connect_lock);
+		break;
+	case CS_CONNECT_OP_LOCK:
+		g_static_mutex_lock (&service->priv->connect_op_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
+}
+
+/**
+ * camel_service_unlock:
+ * @service: a #CamelService
+ * @lock: lock type to unlock
+ *
+ * Unlocks #service's #lock, previously locked with camel_service_lock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_service_unlock (CamelService *service, CamelServiceLock lock)
+{
+	g_return_if_fail (service != NULL);
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+	g_return_if_fail (service->priv != NULL);
+
+	switch (lock) {
+	case CS_REC_CONNECT_LOCK:
+		g_static_rec_mutex_unlock (&service->priv->connect_lock);
+		break;
+	case CS_CONNECT_OP_LOCK:
+		g_static_mutex_unlock (&service->priv->connect_op_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
 }

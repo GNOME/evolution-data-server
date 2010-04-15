@@ -50,6 +50,10 @@ enum {
 	CAMEL_STORE_ARG_FIRST = CAMEL_SERVICE_ARG_FIRST + 100
 };
 
+typedef enum _CamelStoreLock {
+	CS_FOLDER_LOCK
+} CamelStoreLock;
+
 typedef struct _CamelFolderInfo {
 	struct _CamelFolderInfo *next;
 	struct _CamelFolderInfo *parent;
@@ -298,6 +302,9 @@ gint		camel_store_folder_uri_equal	(CamelStore *store,
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 CamelException *ex);
+
+void		camel_store_lock		(CamelStore *store, CamelStoreLock lock);
+void		camel_store_unlock		(CamelStore *store, CamelStoreLock lock);
 
 G_END_DECLS
 

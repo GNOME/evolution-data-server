@@ -29,8 +29,11 @@
 
 #include "camel-address.h"
 #include "camel-mime-message.h"
-#include "camel-private.h"
 #include "camel-transport.h"
+
+struct _CamelTransportPrivate {
+	GMutex *send_lock;   /* for locking send operations */
+};
 
 static CamelServiceClass *parent_class = NULL;
 
@@ -109,9 +112,59 @@ camel_transport_send_to (CamelTransport *transport,
 	class = CAMEL_TRANSPORT_GET_CLASS (transport);
 	g_return_val_if_fail (class->send_to != NULL, FALSE);
 
-	CAMEL_TRANSPORT_LOCK (transport, send_lock);
+	camel_transport_lock (transport, CT_SEND_LOCK);
 	sent = class->send_to (transport, message, from, recipients, ex);
-	CAMEL_TRANSPORT_UNLOCK (transport, send_lock);
+	camel_transport_unlock (transport, CT_SEND_LOCK);
 
 	return sent;
+}
+
+/**
+ * camel_transport_lock:
+ * @transport: a #CamelTransport
+ * @lock: lock type to lock
+ *
+ * Locks #transport's #lock. Unlock it with camel_transport_unlock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_transport_lock (CamelTransport *transport, CamelTransportLock lock)
+{
+	g_return_if_fail (transport != NULL);
+	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
+	g_return_if_fail (transport->priv != NULL);
+
+	switch (lock) {
+	case CT_SEND_LOCK:
+		g_mutex_lock (transport->priv->send_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
+}
+
+/**
+ * camel_transport_unlock:
+ * @transport: a #CamelTransport
+ * @lock: lock type to unlock
+ *
+ * Unlocks #transport's #lock, previously locked with camel_transport_lock().
+ *
+ * Since: 2.31.1
+ **/
+void
+camel_transport_unlock (CamelTransport *transport, CamelTransportLock lock)
+{
+	g_return_if_fail (transport != NULL);
+	g_return_if_fail (CAMEL_IS_TRANSPORT (transport));
+	g_return_if_fail (transport->priv != NULL);
+
+	switch (lock) {
+	case CT_SEND_LOCK:
+		g_mutex_unlock (transport->priv->send_lock);
+		break;
+	default:
+		g_return_if_reached ();
+	}
 }

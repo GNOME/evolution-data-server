@@ -34,8 +34,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-nntp-summary.h"
 #include "camel-nntp-store.h"
 #include "camel-nntp-store-summary.h"
@@ -162,7 +160,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	guint len;
 	gchar *path;
 
-	CAMEL_SERVICE_REC_LOCK(store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
 	if (ssl_mode != MODE_CLEAR) {
 #ifdef HAVE_SSL
@@ -254,7 +252,7 @@ connect_to_server (CamelService *service, struct addrinfo *ai, gint ssl_mode, Ca
 	store->current_folder = NULL;
 
  fail:
-	CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 	return retval;
 }
 
@@ -357,7 +355,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
 	gchar *line;
 
-	CAMEL_SERVICE_REC_LOCK(store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
 	if (clean) {
 		camel_nntp_raw_command (store, ex, &line, "quit");
@@ -365,7 +363,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	}
 
 	if (!service_class->disconnect (service, clean, ex)) {
-		CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 		return FALSE;
 	}
 
@@ -374,7 +372,7 @@ nntp_disconnect_online (CamelService *service, gboolean clean, CamelException *e
 	g_free(store->current_folder);
 	store->current_folder = NULL;
 
-	CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 
 	return TRUE;
 }
@@ -419,11 +417,11 @@ nntp_get_folder(CamelStore *store, const gchar *folder_name, guint32 flags, Came
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolder *folder;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	folder = camel_nntp_folder_new(store, folder_name, ex);
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	return folder;
 }
@@ -608,13 +606,13 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store, const gchar *top, 
 				if (folder) {
 					CamelFolderChangeInfo *changes = NULL;
 
-					CAMEL_SERVICE_REC_LOCK(store, connect_lock);
+					camel_service_lock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 					camel_nntp_command(store, ex, folder, &line, NULL);
 					if (camel_folder_change_info_changed(folder->changes)) {
 						changes = folder->changes;
 						folder->changes = camel_folder_change_info_new();
 					}
-					CAMEL_SERVICE_REC_UNLOCK(store, connect_lock);
+					camel_service_unlock (CAMEL_SERVICE (store), CS_REC_CONNECT_LOCK);
 					if (changes) {
 						camel_object_trigger_event((CamelObject *) folder, "folder_changed", changes);
 						camel_folder_change_info_free(changes);
@@ -767,7 +765,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 	gint ret = -1;
 	CamelFolderInfo *fi = NULL;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	if (top == NULL)
 		top = "";
@@ -837,7 +835,7 @@ nntp_store_get_folder_info_all(CamelNNTPStore *nntp_store, const gchar *top, gui
 
 	fi = nntp_store_get_cached_folder_info (nntp_store, top, flags, ex);
  error:
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	return fi;
 }
@@ -899,7 +897,7 @@ nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 	CamelStoreInfo *si;
 	CamelFolderInfo *fi;
 
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	si = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
 	if (!si) {
@@ -913,14 +911,14 @@ nntp_store_subscribe_folder (CamelStore *store, const gchar *folder_name,
 			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+			camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_subscribed", fi);
 			camel_folder_info_free (fi);
 			return;
 		}
 	}
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 }
 
 static void
@@ -930,7 +928,7 @@ nntp_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE(store);
 	CamelFolderInfo *fi;
 	CamelStoreInfo *fitem;
-	CAMEL_SERVICE_REC_LOCK(nntp_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 
 	fitem = camel_store_summary_path(CAMEL_STORE_SUMMARY(nntp_store->summary), folder_name);
 
@@ -944,14 +942,14 @@ nntp_store_unsubscribe_folder (CamelStore *store, const gchar *folder_name,
 			fi = nntp_folder_info_from_store_info (nntp_store, nntp_store->do_short_folder_notation, fitem);
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+			camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 			camel_object_trigger_event ((CamelObject *) nntp_store, "folder_unsubscribed", fi);
 			camel_folder_info_free (fi);
 			return;
 		}
 	}
 
-	CAMEL_SERVICE_REC_UNLOCK(nntp_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (nntp_store), CS_REC_CONNECT_LOCK);
 }
 
 /* stubs for various folder operations we're not implementing */

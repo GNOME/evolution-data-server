@@ -55,7 +55,6 @@
 #include "camel-certdb.h"
 #include "camel-file-utils.h"
 #include "camel-operation.h"
-#include "camel-private.h"
 #include "camel-session.h"
 #include "camel-stream-fs.h"
 #include "camel-tcp-stream-ssl.h"

@@ -41,6 +41,12 @@ typedef struct _CamelVeeFolder CamelVeeFolder;
 typedef struct _CamelVeeFolderClass CamelVeeFolderClass;
 typedef struct _CamelVeeFolderPrivate CamelVeeFolderPrivate;
 
+typedef enum _CamelVeeFolderLock {
+	CVF_SUMMARY_LOCK,
+	CVF_SUBFOLDER_LOCK,
+	CVF_CHANGED_LOCK
+} CamelVeeFolderLock;
+
 struct _CamelVeeFolder {
 	CamelFolder parent;
 	CamelVeeFolderPrivate *priv;
@@ -96,6 +102,12 @@ void	     camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, Came
 
 void	     camel_vee_folder_hash_folder	(CamelFolder *folder, gchar buffer[8]);
 void	     camel_vee_folder_sync_headers (CamelFolder *vf, CamelException *ex);
+
+gint camel_vee_folder_get_unread_vfolder (CamelVeeFolder *folder);
+void camel_vee_folder_set_unread_vfolder (CamelVeeFolder *folder, gint unread_vfolder);
+
+void         camel_vee_folder_lock		(CamelVeeFolder *folder, CamelVeeFolderLock lock);
+void         camel_vee_folder_unlock		(CamelVeeFolder *folder, CamelVeeFolderLock lock);
 
 G_END_DECLS
 

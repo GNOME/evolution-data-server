@@ -48,8 +48,6 @@ which needs to be better organized via functions */
 #include <e-gw-connection.h>
 #include <e-gw-item.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-groupwise-folder.h"
 #include "camel-groupwise-journal.h"
 #include "camel-groupwise-private.h"
@@ -754,13 +752,13 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		return;
 	}
 
-	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	if (!camel_groupwise_store_connected (gw_store, ex)) {
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 		camel_exception_clear (ex);
 		return;
 	}
-	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 
 	cnc = cnc_lookup (priv);
 	container_id =  camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
@@ -838,7 +836,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 					}
 
 					if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
-						CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+						camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 
 						/*
 							Sync up the READ changes before deleting the message.
@@ -863,7 +861,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 						status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
 						if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 							status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
-						CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+						camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 						if (status == E_GW_CONNECTION_STATUS_OK) {
 							gchar *uid;
 							while (deleted_items) {
@@ -897,7 +895,7 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 		read_items = g_list_concat (read_items, deleted_read_items);
 
 	if (read_items) {
-		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 		status = e_gw_connection_mark_read (cnc, read_items);
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_mark_read (cnc, read_items);
@@ -906,11 +904,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 			sync_flags (folder, read_items);
 
 		g_list_free (read_items);
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	}
 
 	if (deleted_items) {
-		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 		if (!strcmp (folder->full_name, "Trash")) {
 			status = e_gw_connection_purge_selected_items (cnc, deleted_items);
 			if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
@@ -933,11 +931,11 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 			}
 		}
 		g_list_free (deleted_items);
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	}
 
 	if (unread_items) {
-		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 		status = e_gw_connection_mark_unread (cnc, unread_items);
 		if (status == E_GW_CONNECTION_STATUS_INVALID_CONNECTION)
 			status = e_gw_connection_mark_unread (cnc, unread_items);
@@ -946,21 +944,21 @@ groupwise_sync (CamelFolder *folder, gboolean expunge, CamelMessageInfo *update_
 			sync_flags (folder, unread_items);
 
 		g_list_free (unread_items);
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	}
 
 	if (expunge) {
-		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 		status = e_gw_connection_purge_deleted_items (cnc);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			g_message ("Purged deleted items in %s", folder->name);
 		}
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	}
 
-	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	groupwise_sync_summary (folder, ex);
-	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	
 	camel_object_trigger_event (CAMEL_OBJECT (folder), "folder_changed", changes);
 	camel_folder_change_info_free (changes);
@@ -1057,7 +1055,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	   In case if user went offline, don't do anything.
 	   m->cnc would have become invalid, as the store disconnect unrefs it.
 	 */
-	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	if (((CamelOfflineStore *) gw_store)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL ||
 			((CamelService *)gw_store)->status == CAMEL_SERVICE_DISCONNECTED) {
 		goto end1;
@@ -1079,7 +1077,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	while (!done) {
 
 		if (camel_application_is_exiting) {
-				CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+				camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 				return;
 		}
 
@@ -1111,7 +1109,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 	}
 	e_gw_connection_destroy_cursor (m->cnc, m->container_id, cursor);
 
-	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	/* Take out only the first part in the list until the @ since it is guaranteed
 	   to be unique only until that symbol */
 
@@ -1137,7 +1135,7 @@ update_update (CamelSession *session, CamelSessionThreadMsg *msg)
 
 	return;
  end1:
-	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	camel_operation_end (NULL);
 	if (items_full_list) {
 		g_list_foreach (items_full_list, (GFunc)g_free, NULL);
@@ -1326,7 +1324,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		gw_folder->need_refresh = TRUE;
 	}
 
-	CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 
 	if (!camel_groupwise_store_connected (gw_store, ex))
 		goto end1;
@@ -1435,7 +1433,7 @@ groupwise_refresh_folder(CamelFolder *folder, CamelException *ex)
 		update_summary_string (folder, new_sync_time, ex);
 	}
 
-	CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	is_locked = FALSE;
 
 	/*
@@ -1466,7 +1464,7 @@ end2:
 	g_free (container_id);
 end1:
 	if (is_locked)
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 	return;
 }
 
@@ -2343,9 +2341,9 @@ gw_update_all_items (CamelFolder *folder, GList *item_list, CamelException *ex)
 	if (item_list) {
 		CamelGroupwiseStore *gw_store = CAMEL_GROUPWISE_STORE (folder->parent_store);
 
-		CAMEL_SERVICE_REC_LOCK (gw_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 		gw_update_cache (folder, item_list, ex, TRUE);
-		CAMEL_SERVICE_REC_UNLOCK (gw_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (gw_store), CS_REC_CONNECT_LOCK);
 
 		g_list_foreach (item_list, (GFunc)g_free, NULL);
 		g_list_free (item_list);
@@ -2386,7 +2384,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 	}
 	cnc = cnc_lookup (priv);
 
-	CAMEL_SERVICE_REC_LOCK (folder->parent_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 	/*Get the container id*/
 	container_id = camel_groupwise_store_container_id_lookup (gw_store, folder->full_name);
 
@@ -2411,7 +2409,7 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 
 		if (appended_uid)
 			*appended_uid = NULL;
-		CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 		return;
 	}
 
@@ -2424,14 +2422,14 @@ groupwise_append_message (CamelFolder *folder, CamelMimeMessage *message,
 		if (appended_uid)
 			*appended_uid = NULL;
 
-		CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 		return;
 	}
 
 	if (appended_uid)
 		*appended_uid = g_strdup (id);
 	g_free (id);
-	CAMEL_SERVICE_REC_UNLOCK (folder->parent_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (folder->parent_store), CS_REC_CONNECT_LOCK);
 }
 
 /* A function to compare uids, inspired by strcmp .
@@ -2492,7 +2490,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 		source_container_id = NULL;
 	dest_container_id = camel_groupwise_store_container_id_lookup (gw_store, destination->full_name);
 
-	CAMEL_SERVICE_REC_LOCK (source->parent_store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 	/* check for offline operation */
 	if (offline->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
 		CamelGroupwiseJournal *journal = (CamelGroupwiseJournal *) ((CamelGroupwiseFolder *) destination)->journal;
@@ -2530,7 +2528,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 			}
 		}
 
-		CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 		return;
 	}
 
@@ -2572,9 +2570,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 					*/
 
 					wrapper = g_list_prepend (wrapper, (gchar *)uid);
-					CAMEL_SERVICE_REC_LOCK (source->parent_store, connect_lock);
+					camel_service_lock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 					e_gw_connection_mark_read (cnc, wrapper);
-					CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
+					camel_service_unlock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 					g_list_free (wrapper);
 					wrapper = NULL;
 				}
@@ -2588,9 +2586,9 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 				if (unset_flags.bits & CAMEL_MESSAGE_SEEN) {
 					wrapper = g_list_prepend (wrapper, (gchar *)uid);
-					CAMEL_SERVICE_REC_LOCK (source->parent_store, connect_lock);
+					camel_service_lock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 					e_gw_connection_mark_unread (cnc, wrapper);
-					CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
+					camel_service_unlock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 					g_list_free (wrapper);
 					wrapper = NULL;
 				}
@@ -2651,7 +2649,7 @@ groupwise_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
 
 	groupwise_store_set_current_folder (gw_store, source);
 
-	CAMEL_SERVICE_REC_UNLOCK (source->parent_store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (source->parent_store), CS_REC_CONNECT_LOCK);
 }
 
 static void
@@ -2676,7 +2674,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 		return;
 
 	if (!strcmp (folder->full_name, "Trash")) {
-		CAMEL_SERVICE_REC_LOCK (groupwise_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (groupwise_store), CS_REC_CONNECT_LOCK);
 		status = e_gw_connection_purge_deleted_items (cnc);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			camel_folder_freeze (folder);
@@ -2684,7 +2682,7 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 			camel_folder_thaw (folder);
 		} else
 			g_warning ("Could not Empty Trash\n");
-		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (groupwise_store), CS_REC_CONNECT_LOCK);
 		return;
 	}
 
@@ -2707,9 +2705,9 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 			}
 			if (g_list_length (deleted_items) == GROUPWISE_BULK_DELETE_LIMIT ) {
 				/* Read the FIXME below */
-				CAMEL_SERVICE_REC_LOCK (groupwise_store, connect_lock);
+				camel_service_lock (CAMEL_SERVICE (groupwise_store), CS_REC_CONNECT_LOCK);
 				status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
-				CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
+				camel_service_unlock (CAMEL_SERVICE (groupwise_store), CS_REC_CONNECT_LOCK);
 				if (status == E_GW_CONNECTION_STATUS_OK) {
 					gchar *uid;
 					while (deleted_items) {
@@ -2732,9 +2730,9 @@ groupwise_expunge (CamelFolder *folder, CamelException *ex)
 
 	if (deleted_items) {
 		/* FIXME: Put these in a function and reuse it inside the above loop, here and in groupwise_sync*/
-		CAMEL_SERVICE_REC_LOCK (groupwise_store, connect_lock);
+		camel_service_lock (CAMEL_SERVICE (groupwise_store), CS_REC_CONNECT_LOCK);
 		status = e_gw_connection_remove_items (cnc, container_id, deleted_items);
-		CAMEL_SERVICE_REC_UNLOCK (groupwise_store, connect_lock);
+		camel_service_unlock (CAMEL_SERVICE (groupwise_store), CS_REC_CONNECT_LOCK);
 		if (status == E_GW_CONNECTION_STATUS_OK) {
 			gchar *uid;
 			while (deleted_items) {

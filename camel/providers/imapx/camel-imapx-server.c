@@ -19,8 +19,6 @@
 #include <prerr.h>
 #endif
 
-#include <camel/camel-private.h>
-
 #include "camel-imapx-utils.h"
 #include "camel-imapx-exception.h"
 #include "camel-imapx-stream.h"
@@ -3907,7 +3905,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelExcepti
 {
 	gboolean ret = FALSE;
 
-	CAMEL_SERVICE_REC_LOCK (is->store, connect_lock);
+	camel_service_lock (CAMEL_SERVICE (is->store), CS_REC_CONNECT_LOCK);
 	if (connect) {
 		if (is->state == IMAPX_AUTHENTICATED || is->state == IMAPX_SELECTED) {
 			ret = TRUE;
@@ -3934,7 +3932,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is, gboolean connect, CamelExcepti
 	}
 
 exit:
-	CAMEL_SERVICE_REC_UNLOCK (is->store, connect_lock);
+	camel_service_unlock (CAMEL_SERVICE (is->store), CS_REC_CONNECT_LOCK);
 	return ret;
 }
 

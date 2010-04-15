@@ -36,6 +36,7 @@
 
 #include "camel-spool-summary.h"
 #include "camel-local-private.h"
+#include "camel-win32.h"
 
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/

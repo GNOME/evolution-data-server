@@ -31,8 +31,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <camel/camel-private.h>
-
 #include "camel-groupwise-store-summary.h"
 
 #define CAMEL_GW_STORE_SUMMARY_VERSION (0)
@@ -558,10 +556,10 @@ store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const
 	switch (type) {
 		case CAMEL_STORE_INFO_LAST:
 			d(printf("Set full name %s -> %s\n", isi->full_name, str));
-			CAMEL_STORE_SUMMARY_LOCK(s, summary_lock);
+			camel_store_summary_lock (s, CSS_SUMMARY_LOCK);
 			g_free(isi->full_name);
 			isi->full_name = g_strdup(str);
-			CAMEL_STORE_SUMMARY_UNLOCK(s, summary_lock);
+			camel_store_summary_unlock (s, CSS_SUMMARY_LOCK);
 			break;
 		default:
 			camel_groupwise_store_summary_parent->store_info_set_string(s, mi, type, str);

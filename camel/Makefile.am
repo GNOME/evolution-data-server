@@ -392,7 +392,7 @@ install-exec-hook:
 
 noinst_HEADERS =				\
 	camel-charset-map-private.h		\
-	camel-private.h				
+	camel-win32.h				
 
 BUILT_SOURCES = camel-mime-tables.c
 
