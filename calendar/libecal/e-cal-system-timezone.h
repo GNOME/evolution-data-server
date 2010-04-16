@@ -22,6 +22,13 @@
 
 #include <libical/ical.h>
 
+#define ETC_TIMEZONE        "/etc/timezone"
+#define ETC_TIMEZONE_MAJ    "/etc/TIMEZONE"
+#define ETC_RC_CONF         "/etc/rc.conf"
+#define ETC_SYSCONFIG_CLOCK "/etc/sysconfig/clock"
+#define ETC_CONF_D_CLOCK    "/etc/conf.d/clock"
+#define ETC_LOCALTIME       "/etc/localtime"
+
 gchar *e_cal_system_timezone_get_location (void);
 
 #endif

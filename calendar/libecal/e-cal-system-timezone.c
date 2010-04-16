@@ -31,13 +31,6 @@
 #define SYSTEM_ZONEINFODIR "/usr/share/zoneinfo"
 #endif
 
-#define ETC_TIMEZONE        "/etc/timezone"
-#define ETC_TIMEZONE_MAJ    "/etc/TIMEZONE"
-#define ETC_RC_CONF         "/etc/rc.conf"
-#define ETC_SYSCONFIG_CLOCK "/etc/sysconfig/clock"
-#define ETC_CONF_D_CLOCK    "/etc/conf.d/clock"
-#define ETC_LOCALTIME       "/etc/localtime"
-
 #define TZ_MAGIC "TZif"
 
 static gchar *
