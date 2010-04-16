@@ -31,6 +31,7 @@
 #ifdef G_OS_WIN32
 #ifdef localtime_r
 #undef localtime_r
+#endif
 
 /* The localtime() in Microsoft's C library is MT-safe */
 #define localtime_r(tp,tmp) (localtime(tp)?(*(tmp)=*localtime(tp),(tmp)):0)
@@ -59,7 +60,6 @@ get_locale_string (gint lctype)
 
 	return g_quark_to_string (quark);
 }
-#endif
 
 static const gchar *
 translate_picture (const gchar *picture)
