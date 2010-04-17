@@ -49,7 +49,7 @@ static CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_command", NULL,
 	  N_("_Use custom command to connect to server"), "0" },
 	{ CAMEL_PROVIDER_CONF_ENTRY, "command", "use_command",
-	  N_("Command:"), "ssh -C -l %u %h exec /usr/sbin/imapd" },
+	  N_("Co_mmand:"), "ssh -C -l %u %h exec /usr/sbin/imapd" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 #endif
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
@@ -59,7 +59,7 @@ static CamelProviderConfEntry imap_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "override_namespace", NULL,
 	  N_("O_verride server-supplied folder namespace"), "0" },
 	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "override_namespace",
-	  N_("Namespace:") },
+	  N_("Names_pace:") },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
