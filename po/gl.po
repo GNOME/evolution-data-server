@@ -20,10 +20,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-17 21:09+0200\n"
-"PO-Revision-Date: 2010-04-17 21:09+0200\n"
+"POT-Creation-Date: 2010-04-18 18:12+0200\n"
+"PO-Revision-Date: 2010-04-18 18:17+0200\n"
 "Last-Translator: Fran Diéguez <frandieguez@ubuntu.com>\n"
-"Language-Team: Galician <proxecto@trasno.net>\n"
+"Language-Team: Galician <gnome@g11n.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -93,8 +93,8 @@ msgstr "Produciuse un erro ao realizar a busca"
 
 #: ../addressbook/libebook/e-book.c:2152
 #, c-format
-msgid "%s: there was no source for uid `%s' stored in gconf."
-msgstr "%s: non existía unha orixe para o uid `%s' almacenada no Gconf."
+msgid "%s: there was no source for UID '%s' stored in GConf."
+msgstr "%s: non existía unha orixe para o UID «%s» almacenada no Gconf."
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:115
@@ -362,28 +362,28 @@ msgid "GroupWise Work Screen Name 3"
 msgstr "Nome de pantalla profesional GroupWise 3"
 
 #: ../addressbook/libebook/e-contact.c:203
-msgid "Jabber Home Id 1"
-msgstr "Id Jabber persoal 1"
+msgid "Jabber Home ID 1"
+msgstr "ID persoal de Jabber 1"
 
 #: ../addressbook/libebook/e-contact.c:204
-msgid "Jabber Home Id 2"
-msgstr "Id Jabber persoal 2"
+msgid "Jabber Home ID 2"
+msgstr "ID persoal de Jabber 2"
 
 #: ../addressbook/libebook/e-contact.c:205
-msgid "Jabber Home Id 3"
-msgstr "Id Jabber persoal 3"
+msgid "Jabber Home ID 3"
+msgstr "ID persoal de Jabber 3"
 
 #: ../addressbook/libebook/e-contact.c:206
-msgid "Jabber Work Id 1"
-msgstr "Id Jabber profesional 1"
+msgid "Jabber Work ID 1"
+msgstr "Id profesional de Jabber 1"
 
 #: ../addressbook/libebook/e-contact.c:207
-msgid "Jabber Work Id 2"
-msgstr "Id Jabber profesional 2"
+msgid "Jabber Work ID 2"
+msgstr "Id profesional de Jabber 2"
 
 #: ../addressbook/libebook/e-contact.c:208
-msgid "Jabber Work Id 3"
-msgstr "Id Jabber profesional 3"
+msgid "Jabber Work ID 3"
+msgstr "Id profesional de Jabber 3"
 
 #: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 1"
@@ -434,28 +434,28 @@ msgid "MSN Work Screen Name 3"
 msgstr "Nome de pantalla profesional MSN 3"
 
 #: ../addressbook/libebook/e-contact.c:221
-msgid "ICQ Home Id 1"
-msgstr "Id ICQ Persoal 1"
+msgid "ICQ Home ID 1"
+msgstr "ID persoal de ICQ 1"
 
 #: ../addressbook/libebook/e-contact.c:222
-msgid "ICQ Home Id 2"
-msgstr "Id ICQ Persoal 2"
+msgid "ICQ Home ID 2"
+msgstr "ID persoal de ICQ 2"
 
 #: ../addressbook/libebook/e-contact.c:223
-msgid "ICQ Home Id 3"
-msgstr "Id ICQ Persoal 3"
+msgid "ICQ Home ID 3"
+msgstr "ID persoal de ICQ 3"
 
 #: ../addressbook/libebook/e-contact.c:224
-msgid "ICQ Work Id 1"
-msgstr "Id ICQ Profesional 1"
+msgid "ICQ Work ID 1"
+msgstr "ID profesional de ICQ 1"
 
 #: ../addressbook/libebook/e-contact.c:225
-msgid "ICQ Work Id 2"
-msgstr "Id ICQ Profesional 2"
+msgid "ICQ Work ID 2"
+msgstr "ID profesional de ICQ 2"
 
 #: ../addressbook/libebook/e-contact.c:226
-msgid "ICQ Work Id 3"
-msgstr "Id ICQ Profesional 3"
+msgid "ICQ Work ID 3"
+msgstr "ID profesional de ICQ 3"
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:229
@@ -511,12 +511,12 @@ msgid "AIM Screen Name List"
 msgstr "Lista de nomes de pantalla AIM"
 
 #: ../addressbook/libebook/e-contact.c:250
-msgid "GroupWise Id List"
-msgstr "Lista de Id GroupWise"
+msgid "GroupWise ID List"
+msgstr "Lista de ID de GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:251
-msgid "Jabber Id List"
-msgstr "Lista de Id Jabber"
+msgid "Jabber ID List"
+msgstr "Lista de ID de Jabber"
 
 #: ../addressbook/libebook/e-contact.c:252
 msgid "Yahoo! Screen Name List"
@@ -527,8 +527,8 @@ msgid "MSN Screen Name List"
 msgstr "Lista de nomes de pantalla MSN"
 
 #: ../addressbook/libebook/e-contact.c:254
-msgid "ICQ Id List"
-msgstr "Lista de Id ICQ"
+msgid "ICQ ID List"
+msgstr "Lista de ID de ICQ"
 
 #: ../addressbook/libebook/e-contact.c:256
 msgid "Wants HTML Mail"
@@ -558,32 +558,32 @@ msgid "X.509 Certificate"
 msgstr "Certificado X.509"
 
 #: ../addressbook/libebook/e-contact.c:267
-msgid "Gadu-Gadu Home Id 1"
-msgstr "Id Gadu-Gadu persoal 1"
+msgid "Gadu-Gadu Home ID 1"
+msgstr "Id persoal de Gadu-Gadu 1"
 
 #: ../addressbook/libebook/e-contact.c:268
-msgid "Gadu-Gadu Home Id 2"
-msgstr "Id Gadu-Gadu persoal 2"
+msgid "Gadu-Gadu Home ID 2"
+msgstr "Id persoal de Gadu-Gadu 2"
 
 #: ../addressbook/libebook/e-contact.c:269
-msgid "Gadu-Gadu Home Id 3"
-msgstr "Id Gadu-Gadu persoal 3"
+msgid "Gadu-Gadu Home ID 3"
+msgstr "Id persoal de Gadu-Gadu 3"
 
 #: ../addressbook/libebook/e-contact.c:270
-msgid "Gadu-Gadu Work Id 1"
-msgstr "Id Gadu-Gadu profesional 1"
+msgid "Gadu-Gadu Work ID 1"
+msgstr "Id profesional de Gadu-Gadu 1"
 
 #: ../addressbook/libebook/e-contact.c:271
-msgid "Gadu-Gadu Work Id 2"
-msgstr "Id Gadu-Gadu profesional 2"
+msgid "Gadu-Gadu Work ID 2"
+msgstr "Id profesional de Gadu-Gadu 2"
 
 #: ../addressbook/libebook/e-contact.c:272
-msgid "Gadu-Gadu Work Id 3"
-msgstr "Id Gadu-Gadu profesional 3"
+msgid "Gadu-Gadu Work ID 3"
+msgstr "Id profesional de Gadu-Gadu 3"
 
 #: ../addressbook/libebook/e-contact.c:273
-msgid "Gadu-Gadu Id List"
-msgstr "Lista de Id de Gadu-Gadu"
+msgid "Gadu-Gadu ID List"
+msgstr "Lista de ID de Gadu-Gadu"
 
 #. Geo information
 #: ../addressbook/libebook/e-contact.c:276
@@ -2016,15 +2016,15 @@ msgstr "A resposta do servidor contiña datos incompletos de autorización"
 msgid "Server response does not match"
 msgstr "A resposta do servidor non coincide"
 
-#: ../camel/camel-sasl-gssapi.c:76
+#: ../camel/camel-sasl-gssapi.c:78
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:78
+#: ../camel/camel-sasl-gssapi.c:80
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Esta opción conectará ao servidor usando a autenticación Kerberos 5."
 
-#: ../camel/camel-sasl-gssapi.c:115
+#: ../camel/camel-sasl-gssapi.c:117
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2032,11 +2032,11 @@ msgstr ""
 "O mecanismo especificado non é compatíbel coa credencial proporcionada ou "
 "non é recoñecido pola implementación."
 
-#: ../camel/camel-sasl-gssapi.c:120
+#: ../camel/camel-sasl-gssapi.c:122
 msgid "The provided target_name parameter was ill-formed."
 msgstr "O parámetro do target_name indicado é incorrecto."
 
-#: ../camel/camel-sasl-gssapi.c:123
+#: ../camel/camel-sasl-gssapi.c:125
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2045,7 +2045,7 @@ msgstr ""
 "non compatíbel."
 
 # (pofilter) accelerators: accelerator _ occurs 3 time(s) in original and 2 time(s) in translation
-#: ../camel/camel-sasl-gssapi.c:127
+#: ../camel/camel-sasl-gssapi.c:129
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2054,7 +2054,7 @@ msgstr ""
 "parámetro input_chan_bindings."
 
 # (pofilter) accelerators: accelerator _ is missing from translation
-#: ../camel/camel-sasl-gssapi.c:132
+#: ../camel/camel-sasl-gssapi.c:134
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2062,7 +2062,7 @@ msgstr ""
 "O input_token contén unha sinatura incorrecta ou unha sinatura que non pode "
 "ser verificada."
 
-#: ../camel/camel-sasl-gssapi.c:136
+#: ../camel/camel-sasl-gssapi.c:138
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2070,33 +2070,33 @@ msgstr ""
 "As credenciais dispoñíbeis non son correctas para a inicialización do "
 "contexto ou o manipulador de credenciais non indicou ningunha credencial."
 
-#: ../camel/camel-sasl-gssapi.c:141
+#: ../camel/camel-sasl-gssapi.c:143
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "O manipulador de contexto dispoñíbel non refire un contexto correcto."
 
-#: ../camel/camel-sasl-gssapi.c:144
+#: ../camel/camel-sasl-gssapi.c:146
 msgid "The consistency checks performed on the input_token failed."
 msgstr ""
 "Produciuse un fallo nas verificacións de coherencia efectuadas sobre "
 "input_token."
 
-#: ../camel/camel-sasl-gssapi.c:147
+#: ../camel/camel-sasl-gssapi.c:149
 msgid "The consistency checks performed on the credential failed."
 msgstr ""
 "Produciuse un fallo nas verificacións de coherencia efectuadas sobre a "
 "credencial."
 
-#: ../camel/camel-sasl-gssapi.c:150
+#: ../camel/camel-sasl-gssapi.c:152
 msgid "The referenced credentials have expired."
 msgstr "As credenciais indicadas caducaron."
 
-#: ../camel/camel-sasl-gssapi.c:156 ../camel/camel-sasl-gssapi.c:287
-#: ../camel/camel-sasl-gssapi.c:330 ../camel/camel-sasl-gssapi.c:346
+#: ../camel/camel-sasl-gssapi.c:158 ../camel/camel-sasl-gssapi.c:289
+#: ../camel/camel-sasl-gssapi.c:332 ../camel/camel-sasl-gssapi.c:348
 #: ../camel/providers/imap/camel-imap-store.c:1260
 msgid "Bad authentication response from server."
 msgstr "A resposta de autenticación desde o servidor non é válida."
 
-#: ../camel/camel-sasl-gssapi.c:357
+#: ../camel/camel-sasl-gssapi.c:359
 msgid "Unsupported security layer."
 msgstr "A capa de seguranza non é compatíbel."
 
@@ -3671,12 +3671,12 @@ msgstr "Non é posíbel elminar os cartafoles de spool"
 #: ../camel/providers/local/camel-spool-summary.c:185
 #: ../camel/providers/local/camel-spool-summary.c:195
 #, c-format
-msgid "Could not sync temporary folder %s: %s"
+msgid "Could not synchronize temporary folder %s: %s"
 msgstr "Non foi posíbel sincronizar o cartafol temporal %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:211
 #, c-format
-msgid "Could not sync spool folder %s: %s"
+msgid "Could not synchronize spool folder %s: %s"
 msgstr "Non foi posíbel sincronizar o cartafol spool %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:241
@@ -3684,11 +3684,11 @@ msgstr "Non foi posíbel sincronizar o cartafol spool %s: %s"
 #: ../camel/providers/local/camel-spool-summary.c:269
 #, c-format
 msgid ""
-"Could not sync spool folder %s: %s\n"
-"Folder may be corrupt, copy saved in '%s'"
+"Could not synchronize spool folder %s: %s\n"
+"Folder may be corrupt; copy saved in '%s'"
 msgstr ""
 "Non foi posíbel sincronizar o cartafol spool %s: %s\n"
-"O cartafol pode estar danado, gardouse unha copia en '%s'"
+"O cartafol pode estar danado, gardouse unha copia en «%s»"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:119
 #: ../camel/providers/nntp/camel-nntp-folder.c:175
