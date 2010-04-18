@@ -39,7 +39,9 @@
 #ifdef HAVE_ET_COM_ERR_H
 #include <et/com_err.h>
 #else
+#ifdef HAVE_COM_ERR_H
 #include <com_err.h>
+#endif
 #endif
 #ifdef HAVE_MIT_KRB5
 #include <gssapi/gssapi.h>
