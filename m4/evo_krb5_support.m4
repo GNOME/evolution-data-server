@@ -87,13 +87,13 @@ AC_DEFUN([EVO_KRB5_SUPPORT],[
 	AM_CONDITIONAL(ENABLE_KRB5, [test "x$with_krb5" != "xno"])
 
 	AC_CHECK_HEADER([et/com_err.h],
-		[AC_DEFINE([HAVE_ET_COM_ERR_H], 1, [Have <et/comm_err.h>])],,
+		[AC_DEFINE([HAVE_ET_COM_ERR_H], 1, [Have <et/com_err.h>])],,
 		[[	#if HAVE_ET_COM_ERR_H
 			#include <com_err.h>
 			#endif
 		]])
 	AC_CHECK_HEADER([com_err.h],
-		[AC_DEFINE([HAVE_COM_ERR_H], 1, [Have <comm_err.h>])],,
+		[AC_DEFINE([HAVE_COM_ERR_H], 1, [Have <com_err.h>])],,
 		[[	#if HAVE_COM_ERR_H
 			#include <com_err.h>
 			#endif
