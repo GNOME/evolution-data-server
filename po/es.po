@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&component=general\n"
-"POT-Creation-Date: 2010-04-18 16:18+0000\n"
-"PO-Revision-Date: 2010-04-18 21:57+0200\n"
+"POT-Creation-Date: 2010-04-18 19:57+0000\n"
+"PO-Revision-Date: 2010-04-19 09:09+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,6 @@ msgstr "Error efectuando búsqueda"
 
 #: ../addressbook/libebook/e-book.c:2152
 #, c-format
-#| msgid "%s: there was no source for uid `%s' stored in gconf."
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: no había origen para el UID «%s» almacenado en GConf."
 
@@ -358,32 +357,26 @@ msgid "GroupWise Work Screen Name 3"
 msgstr "Id  GroupWise 3 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:203
-#| msgid "Jabber Home Id 1"
 msgid "Jabber Home ID 1"
 msgstr "ID Jabber 1 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:204
-#| msgid "Jabber Home Id 2"
 msgid "Jabber Home ID 2"
 msgstr "ID Jabber 2 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:205
-#| msgid "Jabber Home Id 3"
 msgid "Jabber Home ID 3"
 msgstr "ID Jabber 3 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:206
-#| msgid "Jabber Work Id 1"
 msgid "Jabber Work ID 1"
 msgstr "ID Jabber 1 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:207
-#| msgid "Jabber Work Id 2"
 msgid "Jabber Work ID 2"
 msgstr "ID Jabber 2 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:208
-#| msgid "Jabber Work Id 3"
 msgid "Jabber Work ID 3"
 msgstr "ID Jabber 3 (trabajo)"
 
@@ -436,32 +429,26 @@ msgid "MSN Work Screen Name 3"
 msgstr "Id MSN 3 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:221
-#| msgid "ICQ Home Id 1"
 msgid "ICQ Home ID 1"
 msgstr "ID ICQ 1 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:222
-#| msgid "ICQ Home Id 2"
 msgid "ICQ Home ID 2"
 msgstr "ID ICQ 2 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:223
-#| msgid "ICQ Home Id 3"
 msgid "ICQ Home ID 3"
 msgstr "ID ICQ 3 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:224
-#| msgid "ICQ Work Id 1"
 msgid "ICQ Work ID 1"
 msgstr "ID ICQ 1 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:225
-#| msgid "ICQ Work Id 2"
 msgid "ICQ Work ID 2"
 msgstr "ID ICQ 2 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:226
-#| msgid "ICQ Work Id 3"
 msgid "ICQ Work ID 3"
 msgstr "ID ICQ 3 (trabajo)"
 
@@ -519,12 +506,10 @@ msgid "AIM Screen Name List"
 msgstr "Lista de identificadores AIM"
 
 #: ../addressbook/libebook/e-contact.c:250
-#| msgid "GroupWise Id List"
 msgid "GroupWise ID List"
 msgstr "Lista de ID de GroupWise"
 
 #: ../addressbook/libebook/e-contact.c:251
-#| msgid "Jabber Id List"
 msgid "Jabber ID List"
 msgstr "Lista de ID Jabber"
 
@@ -537,7 +522,6 @@ msgid "MSN Screen Name List"
 msgstr "Lista de Id MSN"
 
 #: ../addressbook/libebook/e-contact.c:254
-#| msgid "ICQ Id List"
 msgid "ICQ ID List"
 msgstr "Lista de ID ICQ"
 
@@ -569,37 +553,30 @@ msgid "X.509 Certificate"
 msgstr "Certificado X.509"
 
 #: ../addressbook/libebook/e-contact.c:267
-#| msgid "Gadu-Gadu Home Id 1"
 msgid "Gadu-Gadu Home ID 1"
 msgstr "ID Gadu-Gadu 1 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:268
-#| msgid "Gadu-Gadu Home Id 2"
 msgid "Gadu-Gadu Home ID 2"
 msgstr "ID Gadu-Gadu 2 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:269
-#| msgid "Gadu-Gadu Home Id 3"
 msgid "Gadu-Gadu Home ID 3"
 msgstr "ID Gadu-Gadu 3 (domicilio)"
 
 #: ../addressbook/libebook/e-contact.c:270
-#| msgid "Gadu-Gadu Work Id 1"
 msgid "Gadu-Gadu Work ID 1"
 msgstr "ID Gadu-Gadu 1 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:271
-#| msgid "Gadu-Gadu Work Id 2"
 msgid "Gadu-Gadu Work ID 2"
 msgstr "ID Gadu-Gadu 2 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:272
-#| msgid "Gadu-Gadu Work Id 3"
 msgid "Gadu-Gadu Work ID 3"
 msgstr "ID Gadu-Gadu 3 (trabajo)"
 
 #: ../addressbook/libebook/e-contact.c:273
-#| msgid "Gadu-Gadu Id List"
 msgid "Gadu-Gadu ID List"
 msgstr "Lista de ID Gadu-Gadu"
 
@@ -2639,7 +2616,7 @@ msgstr "Comprobación de correo nuevo"
 #: ../camel/providers/imap/camel-imap-provider.c:42
 #: ../camel/providers/imapx/camel-imapx-provider.c:45
 msgid "C_heck for new messages in all folders"
-msgstr "_Comprobar si hay mensajes nuevos en todas las carpetas"
+msgstr "Comprobar si hay mensajes nuevos en _todas las carpetas"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:54
 #: ../camel/providers/imap/camel-imap-provider.c:64
@@ -2658,7 +2635,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:58
 msgid "Check new messages for J_unk contents"
-msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
+msgstr "Comprobar si el contenido de los mensajes nuevos es S_PAM"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:60
 #: ../camel/providers/imap/camel-imap-provider.c:70
@@ -2936,7 +2913,7 @@ msgstr "Comprobación de correo nuevo"
 #: ../camel/providers/imap/camel-imap-provider.c:44
 #: ../camel/providers/imapx/camel-imapx-provider.c:47
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr "_Comprobar si hay mensajes nuevos en las carpetas suscritas"
+msgstr "Comprobar si hay mensajes nuevos en las ca_rpetas suscritas"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
 #: ../camel/providers/imapx/camel-imapx-provider.c:51
@@ -3675,13 +3652,11 @@ msgstr "Las carpetas «spool» no se pueden borrar"
 #: ../camel/providers/local/camel-spool-summary.c:185
 #: ../camel/providers/local/camel-spool-summary.c:195
 #, c-format
-#| msgid "Could not sync temporary folder %s: %s"
 msgid "Could not synchronize temporary folder %s: %s"
 msgstr "No se pudo sincronizar la carpeta temporal %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:211
 #, c-format
-#| msgid "Could not sync spool folder %s: %s"
 msgid "Could not synchronize spool folder %s: %s"
 msgstr "No se pudo sincronizar la carpeta de correo %s: %s"
 
@@ -3689,9 +3664,6 @@ msgstr "No se pudo sincronizar la carpeta de correo %s: %s"
 #: ../camel/providers/local/camel-spool-summary.c:258
 #: ../camel/providers/local/camel-spool-summary.c:269
 #, c-format
-#| msgid ""
-#| "Could not sync spool folder %s: %s\n"
-#| "Folder may be corrupt, copy saved in '%s'"
 msgid ""
 "Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt; copy saved in '%s'"
