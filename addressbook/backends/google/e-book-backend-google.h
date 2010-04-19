@@ -35,18 +35,16 @@ typedef struct _EBookBackendGoogle        EBookBackendGoogle;
 typedef struct _EBookBackendGoogleClass   EBookBackendGoogleClass;
 typedef struct _EBookBackendGooglePrivate EBookBackendGooglePrivate;
 
-struct _EBookBackendGoogle
-{
-    EBookBackendSync                   parent_object;
-    EBookBackendGooglePrivate *priv;
+struct _EBookBackendGoogle {
+	EBookBackendSync parent_object;
+	EBookBackendGooglePrivate *priv;
 };
 
-struct _EBookBackendGoogleClass
-{
-    EBookBackendSyncClass              parent_class;
+struct _EBookBackendGoogleClass {
+	EBookBackendSyncClass parent_class;
 };
 
-EBookBackend *e_book_backend_google_new      (void);
-GType         e_book_backend_google_get_type (void);
+EBookBackend *e_book_backend_google_new (void);
+GType e_book_backend_google_get_type (void);
 
 #endif /* __E_BOOK_BACKEND_GOOGLE_H__ */

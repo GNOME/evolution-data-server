@@ -27,40 +27,28 @@
 G_BEGIN_DECLS
 
 #define TYPE_GOOGLE_BOOK google_book_get_type()
-
-#define GOOGLE_BOOK(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_GOOGLE_BOOK, GoogleBook))
-
-#define GOOGLE_BOOK_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_GOOGLE_BOOK, GoogleBookClass))
-
-#define IS_GOOGLE_BOOK(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_GOOGLE_BOOK))
-
-#define IS_GOOGLE_BOOK_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_GOOGLE_BOOK))
-
-#define GOOGLE_BOOK_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_GOOGLE_BOOK, GoogleBookClass))
+#define GOOGLE_BOOK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_GOOGLE_BOOK, GoogleBook))
+#define GOOGLE_BOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_GOOGLE_BOOK, GoogleBookClass))
+#define IS_GOOGLE_BOOK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_GOOGLE_BOOK))
+#define IS_GOOGLE_BOOK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_GOOGLE_BOOK))
+#define GOOGLE_BOOK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_GOOGLE_BOOK, GoogleBookClass))
 
 typedef struct _GoogleBook      GoogleBook;
 typedef struct _GoogleBookClass GoogleBookClass;
 
-struct _GoogleBook
-{
-    GObject parent;
+struct _GoogleBook {
+	GObject parent;
 };
 
-struct _GoogleBookClass
-{
-    GObjectClass parent_class;
+struct _GoogleBookClass {
+	GObjectClass parent_class;
 
-    void (*contact_added) (EContact* contact);
-    void (*contact_changed) (EContact* contact);
-    void (*contact_removed) (const gchar *uid);
-    void (*sequence_complete) (GError *error);
+	void (*contact_added) (EContact* contact);
+	void (*contact_changed) (EContact* contact);
+	void (*contact_removed) (const gchar *uid);
+	void (*sequence_complete) (GError *error);
 
-    void (*auth_required) (void);
+	void (*auth_required) (void);
 };
 
 typedef void (*GoogleBookContactRetrievedCallback) (EContact *contact, gpointer user_data);
@@ -72,15 +60,15 @@ GoogleBook* google_book_new (const gchar *username, gboolean use_cache);
 gboolean google_book_connect_to_google (GoogleBook *book, const gchar *password, GError **error);
 
 void google_book_set_offline_mode (GoogleBook *book, gboolean offline);
-void google_book_set_live_mode    (GoogleBook *book, gboolean live_mode);
+void google_book_set_live_mode (GoogleBook *book, gboolean live_mode);
 
-gboolean google_book_add_contact    (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error);
+gboolean google_book_add_contact (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error);
 gboolean google_book_update_contact (GoogleBook *book, EContact *contact, EContact **out_contact, GError **error);
 gboolean google_book_remove_contact (GoogleBook *book, const gchar *uid, GError **error);
 
-EContact *google_book_get_contact                   (GoogleBook *book, const gchar * uid, GError **error);
-GList    *google_book_get_all_contacts              (GoogleBook *book, GError **error);
-GList    *google_book_get_all_contacts_in_live_mode (GoogleBook *book);
+EContact *google_book_get_contact (GoogleBook *book, const gchar * uid, GError **error);
+GList *google_book_get_all_contacts (GoogleBook *book, GError **error);
+GList *google_book_get_all_contacts_in_live_mode (GoogleBook *book);
 
 G_END_DECLS
 

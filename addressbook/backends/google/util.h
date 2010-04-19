@@ -19,6 +19,7 @@
  *
  * Author: Joergen Scheibengruber <joergen.scheibengruber AT googlemail.com>
  */
+
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
@@ -28,20 +29,14 @@
 
 extern gboolean __e_book_backend_google_debug__;
 
-#define __debug__(...) (__e_book_backend_google_debug__ ? \
-                       g_log (G_LOG_DOMAIN,         \
-                              G_LOG_LEVEL_DEBUG,    \
-                              __VA_ARGS__) : (void) 0 )
+#define __debug__(...) (__e_book_backend_google_debug__ ? g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, __VA_ARGS__) : (void) 0)
 
-GDataEntry* _gdata_entry_new_from_e_contact    (EContact   *contact);
-gboolean    _gdata_entry_update_from_e_contact (GDataEntry *entry,
-                                                EContact   *contact);
+GDataEntry *_gdata_entry_new_from_e_contact (EContact *contact);
+gboolean _gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact);
 
-EContact*   _e_contact_new_from_gdata_entry    (GDataEntry *entry);
-void        _e_contact_add_gdata_entry_xml     (EContact   *contact,
-                                                GDataEntry *entry);
-void        _e_contact_remove_gdata_entry_xml  (EContact   *contact);
-const gchar *_e_contact_get_gdata_entry_xml    (EContact *contact,
-						const gchar **edit_link);
+EContact *_e_contact_new_from_gdata_entry (GDataEntry *entry);
+void _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry);
+void _e_contact_remove_gdata_entry_xml (EContact *contact);
+const gchar *_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_link);
 
 #endif
