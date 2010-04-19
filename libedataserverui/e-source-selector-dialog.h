@@ -21,23 +21,36 @@
  * Author: Rodrigo Moya <rodrigo@novell.com>
  */
 
-#ifndef _E_SOURCE_SELECTOR_DIALOG_H_
-#define _E_SOURCE_SELECTOR_DIALOG_H_
+#ifndef E_SOURCE_SELECTOR_DIALOG_H
+#define E_SOURCE_SELECTOR_DIALOG_H
 
 #include <gtk/gtk.h>
 #include "libedataserver/e-source-list.h"
 
+/* Standard GObject macros */
+#define E_TYPE_SOURCE_SELECTOR_DIALOG \
+	(e_source_selector_dialog_get_type ())
+#define E_SOURCE_SELECTOR_DIALOG(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialog))
+#define E_SOURCE_SELECTOR_DIALOG_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialogClass))
+#define E_IS_SOURCE_SELECTOR_DIALOG(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_SOURCE_SELECTOR_DIALOG))
+#define E_IS_SOURCE_SELECTOR_DIALOG_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_SOURCE_SELECTOR_DIALOG))
+#define E_SOURCE_SELECTOR_DIALOG_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialogClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_SOURCE_SELECTOR_DIALOG		(e_source_selector_dialog_get_type ())
-#define E_SOURCE_SELECTOR_DIALOG(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialog))
-#define E_SOURCE_SELECTOR_DIALOG_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialogClass))
-#define E_IS_SOURCE_SELECTOR_DIALOG(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SOURCE_SELECTOR_DIALOG))
-#define E_IS_SOURCE_SELECTOR_DIALOG_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_SOURCE_SELECTOR_DIALOG))
-
-typedef struct _ESourceSelectorDialog        ESourceSelectorDialog;
+typedef struct _ESourceSelectorDialog ESourceSelectorDialog;
+typedef struct _ESourceSelectorDialogClass ESourceSelectorDialogClass;
 typedef struct _ESourceSelectorDialogPrivate ESourceSelectorDialogPrivate;
-typedef struct _ESourceSelectorDialogClass   ESourceSelectorDialogClass;
 
 struct _ESourceSelectorDialog {
 	GtkDialog parent;
@@ -48,12 +61,14 @@ struct _ESourceSelectorDialogClass {
 	GtkDialogClass parent_class;
 };
 
-GType      e_source_selector_dialog_get_type (void);
-
-GtkWidget *e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list);
-gboolean   e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog);
-ESource   *e_source_selector_dialog_peek_primary_selection (ESourceSelectorDialog *dialog);
+GType		e_source_selector_dialog_get_type (void);
+GtkWidget *	e_source_selector_dialog_new	(GtkWindow *parent,
+						 ESourceList *source_list);
+gboolean	e_source_selector_dialog_select_default_source
+						(ESourceSelectorDialog *dialog);
+ESource *	e_source_selector_dialog_peek_primary_selection
+						(ESourceSelectorDialog *dialog);
 
 G_END_DECLS
 
-#endif
+#endif /* E_SOURCE_SELECTOR_DIALOG_H */

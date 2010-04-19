@@ -31,39 +31,54 @@
 #include <libedataserverui/e-name-selector-entry.h>
 #include <libedataserverui/e-name-selector-list.h>
 
+/* Standard GObject macros */
+#define E_TYPE_NAME_SELECTOR \
+	(e_name_selector_get_type ())
+#define E_NAME_SELECTOR(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_NAME_SELECTOR, ENameSelector))
+#define E_NAME_SELECTOR_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_NAME_SELECTOR, ENameSelectorClass))
+#define E_IS_NAME_SELECTOR(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_NAME_SELECTOR))
+#define E_IS_NAME_SELECTOR_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_NAME_SELECTOR))
+#define E_NAME_SELECTOR_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_NAME_SELECTOR, ENameSelectorClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_NAME_SELECTOR		(e_name_selector_get_type ())
-#define E_NAME_SELECTOR(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_NAME_SELECTOR, ENameSelector))
-#define E_NAME_SELECTOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_NAME_SELECTOR, ENameSelectorClass))
-#define E_IS_NAME_SELECTOR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_NAME_SELECTOR))
-#define E_IS_NAME_SELECTOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_NAME_SELECTOR))
-
-typedef struct _ENameSelector       ENameSelector;
-typedef struct _ENameSelectorClass  ENameSelectorClass;
+typedef struct _ENameSelector ENameSelector;
+typedef struct _ENameSelectorClass ENameSelectorClass;
+typedef struct _ENameSelectorPrivate ENameSelectorPrivate;
 
 struct _ENameSelector {
-	GObject              parent;
-
-	/* Private */
-
-	ENameSelectorModel  *model;
-	ENameSelectorDialog *dialog;
-
-	GArray              *sections;
+	GObject parent;
+	ENameSelectorPrivate *priv;
 };
 
 struct _ENameSelectorClass {
 	GObjectClass parent_class;
 };
 
-GType                e_name_selector_get_type           (void);
-ENameSelector       *e_name_selector_new                (void);
-
-ENameSelectorModel  *e_name_selector_peek_model         (ENameSelector *name_selector);
-ENameSelectorDialog *e_name_selector_peek_dialog        (ENameSelector *name_selector);
-ENameSelectorEntry  *e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *name);
-ENameSelectorList   *e_name_selector_peek_section_list  (ENameSelector *name_selector, const gchar *name);
+GType		e_name_selector_get_type	(void);
+ENameSelector *	e_name_selector_new		(void);
+ENameSelectorModel *
+		e_name_selector_peek_model	(ENameSelector *name_selector);
+ENameSelectorDialog *
+		e_name_selector_peek_dialog	(ENameSelector *name_selector);
+ENameSelectorEntry *
+		e_name_selector_peek_section_entry
+						(ENameSelector *name_selector,
+						 const gchar *name);
+ENameSelectorList *
+		e_name_selector_peek_section_list
+						(ENameSelector *name_selector,
+						 const gchar *name);
 
 G_END_DECLS
 

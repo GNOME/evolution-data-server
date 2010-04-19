@@ -67,56 +67,52 @@
 
 G_BEGIN_DECLS
 
-typedef struct _ENameSelectorEntry      ENameSelectorEntry;
+typedef struct _ENameSelectorEntry ENameSelectorEntry;
 typedef struct _ENameSelectorEntryClass ENameSelectorEntryClass;
+typedef struct _ENameSelectorEntryPrivate ENameSelectorEntryPrivate;
+
+struct _ENameSelectorEntry {
+	GtkEntry parent;
+	ENameSelectorEntryPrivate *priv;
+};
 
 struct _ENameSelectorEntryClass {
 	GtkEntryClass parent_class;
+
 	void (*updated) (ENameSelectorEntry *entry, gchar *email);
+
 	gpointer reserved1;
 	gpointer reserved2;
 };
 
-struct _ENameSelectorEntry {
-	GtkEntry             parent;
-
-	/* Private */
-
-	PangoAttrList       *attr_list;
-	ESourceList         *source_list;
-	EContactStore       *contact_store;
-	ETreeModelGenerator *email_generator;
-	EDestinationStore   *destination_store;
-	GtkEntryCompletion  *entry_completion;
-
-	guint                type_ahead_complete_cb_id;
-	guint                update_completions_cb_id;
-
-	EDestination        *popup_destination;
-
-	/* TEMPORARY */
-	gpointer             (*contact_editor_func) (EBook *, EContact *, gboolean, gboolean);
-	gpointer             (*contact_list_editor_func) (EBook *, EContact *, gboolean, gboolean);
-};
-
-GType               e_name_selector_entry_get_type               (void);
-ENameSelectorEntry *e_name_selector_entry_new                    (void);
-
-EContactStore      *e_name_selector_entry_peek_contact_store     (ENameSelectorEntry *name_selector_entry);
-void                e_name_selector_entry_set_contact_store      (ENameSelectorEntry *name_selector_entry,
-								  EContactStore *contact_store);
-
-EDestinationStore  *e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_entry);
-void                e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_entry,
-								  EDestinationStore *destination_store);
+GType		e_name_selector_entry_get_type	(void);
+ENameSelectorEntry *
+		e_name_selector_entry_new	(void);
+EContactStore *	e_name_selector_entry_peek_contact_store
+						(ENameSelectorEntry *name_selector_entry);
+void		e_name_selector_entry_set_contact_store
+						(ENameSelectorEntry *name_selector_entry,
+						 EContactStore *contact_store);
+EDestinationStore *
+		e_name_selector_entry_peek_destination_store
+						(ENameSelectorEntry *name_selector_entry);
+void		e_name_selector_entry_set_destination_store
+						(ENameSelectorEntry *name_selector_entry,
+						 EDestinationStore *destination_store);
+EDestination *	e_name_selector_entry_get_popup_destination
+						(ENameSelectorEntry *name_selector_entry);
 
 /* TEMPORARY API - DO NOT USE */
-void                e_name_selector_entry_set_contact_editor_func      (ENameSelectorEntry *name_selector_entry,
-									gpointer func);
-void                e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry,
-									gpointer func);
-
-gchar *ens_util_populate_user_query_fields (GSList *user_query_fields, const gchar *cue_str, const gchar *encoded_cue_str);
+void		e_name_selector_entry_set_contact_editor_func
+						(ENameSelectorEntry *name_selector_entry,
+						 gpointer func);
+void		e_name_selector_entry_set_contact_list_editor_func
+						(ENameSelectorEntry *name_selector_entry,
+						 gpointer func);
+gchar *		ens_util_populate_user_query_fields
+						(GSList *user_query_fields,
+						 const gchar *cue_str,
+						 const gchar *encoded_cue_str);
 
 G_END_DECLS
 

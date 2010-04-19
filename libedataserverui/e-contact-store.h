@@ -50,41 +50,42 @@
 
 G_BEGIN_DECLS
 
-typedef struct _EContactStore       EContactStore;
-typedef struct _EContactStoreClass  EContactStoreClass;
+typedef struct _EContactStore EContactStore;
+typedef struct _EContactStoreClass EContactStoreClass;
+typedef struct _EContactStorePrivate EContactStorePrivate;
+
+struct _EContactStore {
+	GObject parent;
+	EContactStorePrivate *priv;
+};
 
 struct _EContactStoreClass {
 	GObjectClass parent_class;
 };
 
-struct _EContactStore {
-	GObject     parent;
+GType		e_contact_store_get_type	(void);
+EContactStore *	e_contact_store_new		(void);
 
-	/* Private */
-
-	gint        stamp;
-	EBookQuery *query;
-	GArray     *contact_sources;
-};
-
-GType          e_contact_store_get_type     (void);
-EContactStore *e_contact_store_new          (void);
-
-EBook         *e_contact_store_get_book     (EContactStore *contact_store, GtkTreeIter *iter);
-EContact      *e_contact_store_get_contact  (EContactStore *contact_store, GtkTreeIter *iter);
-gboolean       e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
-					     GtkTreeIter *iter);
+EBook *		e_contact_store_get_book	(EContactStore *contact_store,
+						 GtkTreeIter *iter);
+EContact *	e_contact_store_get_contact	(EContactStore *contact_store,
+						 GtkTreeIter *iter);
+gboolean	e_contact_store_find_contact	(EContactStore *contact_store,
+						 const gchar *uid,
+						 GtkTreeIter *iter);
 
 /* Returns a shallow copy; free the list when done, but don't unref elements */
-GList         *e_contact_store_get_books    (EContactStore *contact_store);
-
-void           e_contact_store_add_book     (EContactStore *contact_store, EBook *book);
-void           e_contact_store_remove_book  (EContactStore *contact_store, EBook *book);
-
-void           e_contact_store_set_query    (EContactStore *contact_store, EBookQuery *book_query);
-EBookQuery    *e_contact_store_peek_query   (EContactStore *contact_store);
-
-EBookView     *find_contact_source_by_book_return_view(EContactStore *contact_store, EBook *book);
+GList *		e_contact_store_get_books	(EContactStore *contact_store);
+void		e_contact_store_add_book	(EContactStore *contact_store,
+						 EBook *book);
+void		e_contact_store_remove_book	(EContactStore *contact_store,
+						 EBook *book);
+void		e_contact_store_set_query	(EContactStore *contact_store,
+						 EBookQuery *book_query);
+EBookQuery *	e_contact_store_peek_query	(EContactStore *contact_store);
+EBookView *	find_contact_source_by_book_return_view
+						(EContactStore *contact_store,
+						 EBook *book);
 
 G_END_DECLS
 

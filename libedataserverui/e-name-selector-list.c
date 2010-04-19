@@ -37,12 +37,21 @@
 #include <libedataserverui/e-name-selector-entry.h>
 #include "e-name-selector-list.h"
 
+#define E_NAME_SELECTOR_LIST_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListPrivate))
+
 #define MAX_ROW	10
 
-G_DEFINE_TYPE (ENameSelectorList, e_name_selector_list, E_TYPE_NAME_SELECTOR_ENTRY)
+struct _ENameSelectorListPrivate {
+	GtkWindow *popup;
+	GtkWidget *tree_view;
+	GtkWidget *menu;
+	EDestinationStore *store;
+	gint rows;
+};
 
-static void e_name_selector_list_dispose    (GObject *object);
-static void e_name_selector_list_finalize   (GObject *object);
+G_DEFINE_TYPE (ENameSelectorList, e_name_selector_list, E_TYPE_NAME_SELECTOR_ENTRY)
 
 /* Signals */
 
@@ -53,19 +62,19 @@ enl_popup_size (ENameSelectorList *list)
 	GtkAllocation allocation;
 	GtkTreeViewColumn *column = NULL;
 
-	column = gtk_tree_view_get_column ( GTK_TREE_VIEW (list->tree_view), 0);
+	column = gtk_tree_view_get_column ( GTK_TREE_VIEW (list->priv->tree_view), 0);
 	if (column)
 		gtk_tree_view_column_cell_get_size (column, NULL, NULL, NULL, NULL, &height);
 
 	/* Show a maximum of 10 rows in the popup list view */
-	count = list->rows;
+	count = list->priv->rows;
 	if (count > MAX_ROW)
 		count = MAX_ROW;
 	if (count <= 0)
 		count = 1;
 
 	gtk_widget_get_allocation (GTK_WIDGET (list), &allocation);
-	gtk_widget_set_size_request (list->tree_view, allocation.width - 3 , height * count);
+	gtk_widget_set_size_request (list->priv->tree_view, allocation.width - 3 , height * count);
 }
 
 static void
@@ -82,18 +91,20 @@ enl_popup_position (ENameSelectorList *list)
 	gdk_window_get_origin (window, &x, &y);
 	y = y + allocation.height;
 
-	gtk_window_move (list->popup, x, y);
+	gtk_window_move (list->priv->popup, x, y);
 }
 
 static void
 enl_popup_grab (ENameSelectorList *list)
 {
+	EDestinationStore *store;
+	ENameSelectorEntry *entry;
 	GdkWindow *window;
 	gint len;
 
-	window = gtk_widget_get_window (GTK_WIDGET (list->popup));
+	window = gtk_widget_get_window (GTK_WIDGET (list->priv->popup));
 
-	gtk_grab_add (GTK_WIDGET (list->popup));
+	gtk_grab_add (GTK_WIDGET (list->priv->popup));
 
 	gdk_pointer_grab (window, TRUE,
 			  GDK_BUTTON_PRESS_MASK |
@@ -105,7 +116,11 @@ enl_popup_grab (ENameSelectorList *list)
 	gtk_widget_grab_focus ((GtkWidget *)list);
 
 	/* Build the listview from the model */
-	gtk_tree_view_set_model (GTK_TREE_VIEW (list->tree_view), GTK_TREE_MODEL(((ENameSelectorEntry *)list)->destination_store));
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	store = e_name_selector_entry_peek_destination_store (entry);
+	gtk_tree_view_set_model (
+		GTK_TREE_VIEW (list->priv->tree_view),
+		GTK_TREE_MODEL (store));
 
 	/* If any selection of text is present, unselect it */
 	len = strlen(gtk_entry_get_text(GTK_ENTRY(list)));
@@ -115,11 +130,11 @@ enl_popup_grab (ENameSelectorList *list)
 static void
 enl_popup_ungrab (ENameSelectorList *list)
 {
-	if (!gtk_widget_has_grab (GTK_WIDGET (list->popup)))
+	if (!gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
 		return;
 
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
-	gtk_grab_remove (GTK_WIDGET (list->popup));
+	gtk_grab_remove (GTK_WIDGET (list->priv->popup));
 	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
 }
 
@@ -139,10 +154,10 @@ static gboolean
 enl_entry_focus_out (ENameSelectorList *list, GdkEventFocus *event, gpointer dummy)
 {
 	/* When we lose focus and popup is still present hide it. Dont do it, when we click the popup. Look for grab */
-	if (gtk_widget_get_visible (GTK_WIDGET (list->popup))
-            && !gtk_widget_has_grab (GTK_WIDGET (list->popup))) {
+	if (gtk_widget_get_visible (GTK_WIDGET (list->priv->popup))
+            && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup))) {
 		enl_popup_ungrab (list);
-		gtk_widget_hide ((GtkWidget *)list->popup);
+		gtk_widget_hide ((GtkWidget *)list->priv->popup);
 
 		return FALSE;
 	}
@@ -162,7 +177,7 @@ enl_popup_button_press (GtkWidget *widget,
 #endif
 		return FALSE;
 	/* if we come here, it's usually time to popdown */
-	gtk_widget_hide ((GtkWidget *)list->popup);
+	gtk_widget_hide ((GtkWidget *)list->priv->popup);
 
 	return TRUE;
 }
@@ -182,7 +197,7 @@ enl_popup_enter_notify (GtkWidget        *widget,
 			GdkEventCrossing *event,
 			ENameSelectorList *list)
 {
-  if (event->type == GDK_ENTER_NOTIFY && !gtk_widget_has_grab (GTK_WIDGET (list->popup)))
+  if (event->type == GDK_ENTER_NOTIFY && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
 	enl_popup_grab (list);
 
   return TRUE;
@@ -192,21 +207,29 @@ static void
 enl_tree_select_node (ENameSelectorList *list,
 		      gint n)
 {
+	EDestinationStore *store;
+	ENameSelectorEntry *entry;
 	GtkTreeSelection *selection;
+	GtkTreeViewColumn *column;
+	GtkTreeView *tree_view;
 	GtkTreeIter iter;
 	GtkTreePath *path;
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->tree_view));
-	iter.stamp = ((ENameSelectorEntry *) list)->destination_store->stamp;
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	tree_view = GTK_TREE_VIEW (list->priv->tree_view);
+	store = e_name_selector_entry_peek_destination_store (entry);
+	selection = gtk_tree_view_get_selection (tree_view);
+	iter.stamp = e_destination_store_get_stamp (store);
 	iter.user_data = GINT_TO_POINTER (n-1);
 
 	gtk_tree_selection_unselect_all (selection);
 	gtk_tree_selection_select_iter (selection, &iter);
 
-	path = e_destination_store_get_path (GTK_TREE_MODEL(((ENameSelectorEntry *) list)->destination_store), &iter);
-	gtk_tree_view_scroll_to_cell ( GTK_TREE_VIEW (list->tree_view), path, gtk_tree_view_get_column( GTK_TREE_VIEW (list->tree_view), 0), FALSE, 0, 0);
-	gtk_tree_view_set_cursor ( GTK_TREE_VIEW (list->tree_view), path, gtk_tree_view_get_column( GTK_TREE_VIEW (list->tree_view), 0), FALSE);
-	gtk_widget_grab_focus (list->tree_view);
+	column = gtk_tree_view_get_column (tree_view, 0);
+	path = e_destination_store_get_path (GTK_TREE_MODEL (store), &iter);
+	gtk_tree_view_scroll_to_cell (tree_view, path, column, FALSE, 0, 0);
+	gtk_tree_view_set_cursor (tree_view, path, column, FALSE);
+	gtk_widget_grab_focus (GTK_WIDGET (tree_view));
 	/*Fixme: We should grab the focus to the column. How? */
 
 	gtk_tree_path_free (path);
@@ -217,11 +240,17 @@ enl_entry_key_press_event (ENameSelectorList *list,
 			   GdkEventKey *event,
 			   gpointer dummy)
 {
+	ENameSelectorEntry *entry;
+	EDestinationStore *store;
+
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	store = e_name_selector_entry_peek_destination_store (entry);
+
 	if ( (event->state & GDK_CONTROL_MASK)  && (event->keyval == GDK_Down)) {
 		enl_popup_position (list);
-		gtk_widget_show_all (GTK_WIDGET (list->popup));
+		gtk_widget_show_all (GTK_WIDGET (list->priv->popup));
 		enl_popup_grab (list);
-		list->rows = e_destination_store_get_destination_count (((ENameSelectorEntry *) list)->destination_store);
+		list->priv->rows = e_destination_store_get_destination_count (store);
 		enl_popup_size (list);
 		enl_tree_select_node (list, 1);
 		return TRUE;
@@ -232,18 +261,23 @@ enl_entry_key_press_event (ENameSelectorList *list,
 static void
 delete_row (GtkTreePath *path, ENameSelectorList *list)
 {
+	ENameSelectorEntry *entry;
+	EDestinationStore *store;
 	GtkTreeIter   iter;
 	gint n, len;
 	GtkTreeSelection *selection;
 
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (E_NAME_SELECTOR_ENTRY (list)->destination_store), &iter, path))
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	store = e_name_selector_entry_peek_destination_store (entry);
+
+	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path))
 		return;
 
-	selection = gtk_tree_view_get_selection ( GTK_TREE_VIEW (list->tree_view));
-	len = e_destination_store_get_destination_count (E_NAME_SELECTOR_ENTRY (list)->destination_store);
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->priv->tree_view));
+	len = e_destination_store_get_destination_count (store);
 	n = GPOINTER_TO_INT (iter.user_data);
 
-	e_destination_store_remove_destination_nth (((ENameSelectorEntry *) list)->destination_store, n);
+	e_destination_store_remove_destination_nth (store, n);
 
 	/* If the last one is deleted select the last but one or the deleted +1 */
 	if (n == len -1)
@@ -252,13 +286,13 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 	/* We deleted the last entry */
 	if (len == 1) {
 		enl_popup_ungrab (list);
-		if (list->menu)
-			gtk_menu_popdown(GTK_MENU (list->menu));
-		gtk_widget_hide ( GTK_WIDGET (list->popup));
+		if (list->priv->menu)
+			gtk_menu_popdown (GTK_MENU (list->priv->menu));
+		gtk_widget_hide (GTK_WIDGET (list->priv->popup));
 		return;
 	}
 
-	iter.stamp = ((ENameSelectorEntry *) list)->destination_store->stamp;
+	iter.stamp = e_destination_store_get_stamp (store);
 	iter.user_data = GINT_TO_POINTER (n);
 
 	gtk_tree_selection_unselect_all (selection);
@@ -266,9 +300,8 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 
 	gtk_tree_path_free (path);
 
-	list->rows = e_destination_store_get_destination_count (((ENameSelectorEntry *) list)->destination_store);
+	list->priv->rows = e_destination_store_get_destination_count (store);
 	enl_popup_size (list);
-
 }
 
 static void
@@ -278,7 +311,7 @@ popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_i
 	EContact     *contact;
 	gint          email_num;
 
-	destination = name_selector_entry->popup_destination;
+	destination = e_name_selector_entry_get_popup_destination (name_selector_entry);
 	if (!destination)
 		return;
 
@@ -352,7 +385,8 @@ enl_tree_button_press_event (GtkWidget *widget,
 {
 	GtkWidget *menu;
 	EDestination *destination;
-	ENameSelectorEntry *name_selector_entry;
+	ENameSelectorEntry *entry;
+	EDestinationStore *store;
 	EContact     *contact;
 	GtkWidget    *menu_item;
 	GList        *email_list = NULL, *l;
@@ -363,16 +397,22 @@ enl_tree_button_press_event (GtkWidget *widget,
 	gboolean      is_list;
 	gboolean      show_menu = FALSE;
 	GtkTreeSelection *selection;
+	GtkTreeView *tree_view;
 	GtkTreePath  *path;
 	PopupDeleteRowInfo *row_info;
 	GtkTreeIter   iter;
 
-	if (!gtk_widget_has_grab (GTK_WIDGET (list->popup)))
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	tree_view = GTK_TREE_VIEW (list->priv->tree_view);
+	store = e_name_selector_entry_peek_destination_store (entry);
+
+	if (!gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
 		enl_popup_grab (list);
 
-	gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW (list->tree_view), event->x, event->y, &path, NULL);
-	selection = gtk_tree_view_get_selection ( GTK_TREE_VIEW (list->tree_view));
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (E_NAME_SELECTOR_ENTRY (list)->destination_store), &iter, path))
+	gtk_tree_view_get_dest_row_at_pos (
+		tree_view, event->x, event->y, &path, NULL);
+	selection = gtk_tree_view_get_selection (tree_view);
+	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path))
 		return FALSE;
 
 	gtk_tree_selection_unselect_all (selection);
@@ -382,9 +422,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 		return FALSE;
 	}
 
-	name_selector_entry = E_NAME_SELECTOR_ENTRY (list);
-
-	destination = e_destination_store_get_destination ( ((ENameSelectorEntry *)list)->destination_store, &iter);
+	destination = e_destination_store_get_destination (store, &iter);
 
 	if (!destination)
 		return FALSE;
@@ -393,12 +431,12 @@ enl_tree_button_press_event (GtkWidget *widget,
 	if (!contact)
 		return FALSE;
 
-	if (list->menu) {
-		gtk_menu_popdown (GTK_MENU (list->menu));
+	if (list->priv->menu) {
+		gtk_menu_popdown (GTK_MENU (list->priv->menu));
 	}
 	menu = gtk_menu_new ();
 	g_signal_connect (menu, "deactivate", G_CALLBACK(menu_deactivate), list);
-	list->menu = menu;
+	list->priv->menu = menu;
 	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, event->button, gtk_get_current_event_time());
 
 	email_num = e_destination_get_email_num (destination);
@@ -461,7 +499,7 @@ enl_tree_button_press_event (GtkWidget *widget,
 			if (i == email_num && len > 1) {
 				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
 				g_signal_connect_swapped (menu_item, "activate", G_CALLBACK (popup_activate_email),
-							  name_selector_entry);
+							  entry);
 			}
 		}
 		g_list_foreach (email_list, (GFunc) g_free, NULL);
@@ -500,14 +538,16 @@ enl_tree_key_press_event (GtkWidget *w,
 {
 	if (event->keyval == GDK_Escape) {
 		enl_popup_ungrab (list);
-		gtk_widget_hide ( GTK_WIDGET (list->popup));
+		gtk_widget_hide ( GTK_WIDGET (list->priv->popup));
 		return TRUE;
 	} else if (event->keyval == GDK_Delete) {
 		GtkTreeSelection *selection;
+		GtkTreeView *tree_view;
 		GList *paths;
 
-		selection = gtk_tree_view_get_selection ( GTK_TREE_VIEW (list->tree_view));
-		paths = gtk_tree_selection_get_selected_rows (selection, (GtkTreeModel **)&(E_NAME_SELECTOR_ENTRY (list)->destination_store));
+		tree_view = GTK_TREE_VIEW (list->priv->tree_view);
+		selection = gtk_tree_view_get_selection (tree_view);
+		paths = gtk_tree_selection_get_selected_rows (selection, NULL);
 		paths = g_list_reverse (paths);
 		g_list_foreach (paths, (GFunc) delete_row, list);
 		g_list_free (paths);
@@ -516,7 +556,7 @@ enl_tree_key_press_event (GtkWidget *w,
 		   && event->keyval != GDK_Control_R && event->keyval != GDK_Control_L) {
 
 		enl_popup_ungrab (list);
-		gtk_widget_hide ( GTK_WIDGET (list->popup));
+		gtk_widget_hide ( GTK_WIDGET (list->priv->popup));
 		gtk_widget_event (GTK_WIDGET (list), (GdkEvent *)event);
 		return TRUE;
 	}
@@ -527,61 +567,55 @@ enl_tree_key_press_event (GtkWidget *w,
 void
 e_name_selector_list_expand_clicked(ENameSelectorList *list)
 {
+	ENameSelectorEntry *entry;
+	EDestinationStore *store;
 
-	if (!gtk_widget_get_visible (GTK_WIDGET (list->popup))) {
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	store = e_name_selector_entry_peek_destination_store (entry);
+
+	if (!gtk_widget_get_visible (GTK_WIDGET (list->priv->popup))) {
 		enl_popup_position (list);
-		gtk_widget_show_all (GTK_WIDGET (list->popup));
+		gtk_widget_show_all (GTK_WIDGET (list->priv->popup));
 		enl_popup_grab (list);
-		list->rows = e_destination_store_get_destination_count (((ENameSelectorEntry *) list)->destination_store);
+		list->priv->rows = e_destination_store_get_destination_count (store);
 		enl_popup_size (list);
 		enl_tree_select_node (list, 1);
 	}
 	else {
 		enl_popup_ungrab (list);
-		if (list->menu)
-			gtk_menu_popdown(GTK_MENU (list->menu));
-		gtk_widget_hide (GTK_WIDGET (list->popup));
+		if (list->priv->menu)
+			gtk_menu_popdown(GTK_MENU (list->priv->menu));
+		gtk_widget_hide (GTK_WIDGET (list->priv->popup));
 	}
 }
-/* Object Methods */
-static void
-e_name_selector_list_dispose (GObject *object)
-{
-	if (G_OBJECT_CLASS (e_name_selector_list_parent_class)->dispose)
-		G_OBJECT_CLASS (e_name_selector_list_parent_class)->dispose (object);
-}
 
 static void
-e_name_selector_list_finalize (GObject *object)
+name_selector_list_realize (GtkWidget *widget)
 {
-	if (G_OBJECT_CLASS (e_name_selector_list_parent_class)->finalize)
-		G_OBJECT_CLASS (e_name_selector_list_parent_class)->finalize (object);
-}
+	ENameSelectorList *list;
+	ENameSelectorEntry *entry;
+	EDestinationStore *store;
 
-static void
-e_name_selector_list_realize (GtkWidget *widget)
-{
-	ENameSelectorList *list = (ENameSelectorList *)widget;
+	/* Chain up to parent's realize() method. */
 	GTK_WIDGET_CLASS (e_name_selector_list_parent_class)->realize (widget);
 
-	gtk_tree_view_set_model ( GTK_TREE_VIEW (list->tree_view), GTK_TREE_MODEL(((ENameSelectorEntry *)list)->destination_store));
+	list = E_NAME_SELECTOR_LIST (widget);
+	entry = E_NAME_SELECTOR_ENTRY (widget);
+	store = e_name_selector_entry_peek_destination_store (entry);
+
+	gtk_tree_view_set_model (
+		GTK_TREE_VIEW (list->priv->tree_view), GTK_TREE_MODEL (store));
 }
 
 static void
-e_name_selector_list_class_init (ENameSelectorListClass *name_selector_list_class)
+e_name_selector_list_class_init (ENameSelectorListClass *class)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (name_selector_list_class);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (name_selector_list_class);
+	GtkWidgetClass *widget_class;
 
-	object_class->dispose      = e_name_selector_list_dispose;
-	object_class->finalize     = e_name_selector_list_finalize;
+	g_type_class_add_private (class, sizeof (ENameSelectorListPrivate));
 
-	widget_class->realize      = e_name_selector_list_realize;
-
-	/* Install properties */
-
-	/* Install signals */
-
+	widget_class = GTK_WIDGET_CLASS (class);
+	widget_class->realize = name_selector_list_realize;
 }
 
 static void
@@ -591,20 +625,26 @@ e_name_selector_list_init (ENameSelectorList *list)
 	GtkWidget *scroll, *popup_frame, *vbox;
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
-	ENameSelectorEntry *entry = E_NAME_SELECTOR_ENTRY (list);
+	ENameSelectorEntry *entry;
+	EDestinationStore *store;
 	GtkEntryCompletion *completion;
 
-	list->store = e_destination_store_new ();
-	list->menu = NULL;
+	list->priv = E_NAME_SELECTOR_LIST_GET_PRIVATE (list);
 
-	list->tree_view = GTK_WIDGET (gtk_tree_view_new_with_model (GTK_TREE_MODEL(entry->destination_store)));
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (list->tree_view), FALSE);
-	gtk_tree_view_set_hover_selection (GTK_TREE_VIEW (list->tree_view), FALSE);
+	list->priv->store = e_destination_store_new ();
+	list->priv->menu = NULL;
 
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->tree_view));
+	entry = E_NAME_SELECTOR_ENTRY (list);
+	store = e_name_selector_entry_peek_destination_store (entry);
+
+	list->priv->tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (list->priv->tree_view), FALSE);
+	gtk_tree_view_set_hover_selection (GTK_TREE_VIEW (list->priv->tree_view), FALSE);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list->priv->tree_view));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
 	gtk_tree_selection_unselect_all (selection);
-	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (list->tree_view), FALSE);
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (list->priv->tree_view), FALSE);
 
 	completion = gtk_entry_get_completion (GTK_ENTRY(list));
 	gtk_entry_completion_set_inline_completion (completion, TRUE);
@@ -612,7 +652,7 @@ e_name_selector_list_init (ENameSelectorList *list)
 
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes ("Name", renderer, "text", E_DESTINATION_STORE_COLUMN_ADDRESS, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (list->tree_view), column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (list->priv->tree_view), column);
 	gtk_tree_view_column_set_clickable (column, TRUE);
 
 	scroll = gtk_scrolled_window_new (NULL, NULL);
@@ -625,19 +665,19 @@ e_name_selector_list_init (ENameSelectorList *list)
 		gtk_scrolled_window_get_vscrollbar (
 		GTK_SCROLLED_WINDOW (scroll)), -1, 0);
 
-	list->popup =  GTK_WINDOW (gtk_window_new (GTK_WINDOW_POPUP));
-	gtk_window_set_resizable (GTK_WINDOW (list->popup), FALSE);
+	list->priv->popup =  GTK_WINDOW (gtk_window_new (GTK_WINDOW_POPUP));
+	gtk_window_set_resizable (GTK_WINDOW (list->priv->popup), FALSE);
 
 	popup_frame = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (popup_frame),
 				   GTK_SHADOW_ETCHED_IN);
 
-	gtk_container_add (GTK_CONTAINER (list->popup), popup_frame);
+	gtk_container_add (GTK_CONTAINER (list->priv->popup), popup_frame);
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (popup_frame), vbox);
 
-	gtk_container_add (GTK_CONTAINER (scroll), list->tree_view);
+	gtk_container_add (GTK_CONTAINER (scroll), list->priv->tree_view);
 	gtk_box_pack_start (GTK_BOX (vbox), scroll,
 			    TRUE, TRUE, 0);
 
@@ -645,12 +685,12 @@ e_name_selector_list_init (ENameSelectorList *list)
 	g_signal_connect (GTK_WIDGET (list), "focus-out-event", G_CALLBACK(enl_entry_focus_out), NULL);
 	g_signal_connect (GTK_WIDGET (list), "key-press-event", G_CALLBACK(enl_entry_key_press_event), NULL);
 
-	g_signal_connect_after (list->tree_view, "key-press-event", G_CALLBACK(enl_tree_key_press_event), list);
-	g_signal_connect (list->tree_view, "button-press-event", G_CALLBACK (enl_tree_button_press_event), list);
+	g_signal_connect_after (list->priv->tree_view, "key-press-event", G_CALLBACK(enl_tree_key_press_event), list);
+	g_signal_connect (list->priv->tree_view, "button-press-event", G_CALLBACK (enl_tree_button_press_event), list);
 
-	g_signal_connect (GTK_WIDGET (list->popup), "button-press-event", G_CALLBACK(enl_popup_button_press), list);
-	g_signal_connect (GTK_WIDGET (list->popup), "focus-out-event", G_CALLBACK(enl_popup_focus_out), list);
-	g_signal_connect (GTK_WIDGET (list->popup), "enter-notify-event", G_CALLBACK (enl_popup_enter_notify), list);
+	g_signal_connect (GTK_WIDGET (list->priv->popup), "button-press-event", G_CALLBACK(enl_popup_button_press), list);
+	g_signal_connect (GTK_WIDGET (list->priv->popup), "focus-out-event", G_CALLBACK(enl_popup_focus_out), list);
+	g_signal_connect (GTK_WIDGET (list->priv->popup), "enter-notify-event", G_CALLBACK (enl_popup_enter_notify), list);
 
 }
 

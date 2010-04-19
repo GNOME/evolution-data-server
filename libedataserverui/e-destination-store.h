@@ -47,51 +47,55 @@
 
 G_BEGIN_DECLS
 
-typedef struct _EDestinationStore       EDestinationStore;
-typedef struct _EDestinationStoreClass  EDestinationStoreClass;
+typedef struct _EDestinationStore EDestinationStore;
+typedef struct _EDestinationStoreClass EDestinationStoreClass;
+typedef struct _EDestinationStorePrivate EDestinationStorePrivate;
 
 struct _EDestinationStore {
-	GObject     parent;
-
-	/* Private */
-
-	gint        stamp;
-	GPtrArray  *destinations;
+	GObject parent;
+	EDestinationStorePrivate *priv;
 };
 
 struct _EDestinationStoreClass {
 	GObjectClass parent_class;
 };
 
-typedef enum
-{
+typedef enum {
 	E_DESTINATION_STORE_COLUMN_NAME,
 	E_DESTINATION_STORE_COLUMN_EMAIL,
 	E_DESTINATION_STORE_COLUMN_ADDRESS,
-
 	E_DESTINATION_STORE_NUM_COLUMNS
-}
-EDestinationStoreColumnType;
+} EDestinationStoreColumnType;
 
-GType              e_destination_store_get_type           (void);
-EDestinationStore *e_destination_store_new                (void);
-
-EDestination      *e_destination_store_get_destination    (EDestinationStore *destination_store,
-							   GtkTreeIter *iter);
+GType		e_destination_store_get_type	(void);
+EDestinationStore *
+		e_destination_store_new		(void);
+EDestination *	e_destination_store_get_destination
+						(EDestinationStore *destination_store,
+						 GtkTreeIter *iter);
 
 /* Returns a shallow copy; free the list when done, but don't unref elements */
-GList             *e_destination_store_list_destinations  (EDestinationStore *destination_store);
+GList *		e_destination_store_list_destinations
+						(EDestinationStore *destination_store);
 
-void               e_destination_store_insert_destination (EDestinationStore *destination_store,
-							   gint index, EDestination *destination);
-void               e_destination_store_append_destination (EDestinationStore *destination_store,
-							   EDestination *destination);
-void               e_destination_store_remove_destination (EDestinationStore *destination_store,
-							   EDestination *destination);
-void		   e_destination_store_remove_destination_nth (EDestinationStore *destination_store,
-							       gint n);
-guint		   e_destination_store_get_destination_count (EDestinationStore *destination_store);
-GtkTreePath       *e_destination_store_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter);
+void		e_destination_store_insert_destination
+						(EDestinationStore *destination_store,
+						 gint index,
+						 EDestination *destination);
+void		e_destination_store_append_destination
+						(EDestinationStore *destination_store,
+						 EDestination *destination);
+void		e_destination_store_remove_destination
+						(EDestinationStore *destination_store,
+						 EDestination *destination);
+void		e_destination_store_remove_destination_nth
+						(EDestinationStore *destination_store,
+						 gint n);
+guint		e_destination_store_get_destination_count
+						(EDestinationStore *destination_store);
+GtkTreePath *	e_destination_store_get_path	(GtkTreeModel *tree_model,
+						 GtkTreeIter *iter);
+gint		e_destination_store_get_stamp	(EDestinationStore *destination_store);
 
 G_END_DECLS
 

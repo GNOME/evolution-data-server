@@ -52,52 +52,48 @@ typedef void (*ETreeModelGeneratorModifyFunc)   (GtkTreeModel *model, GtkTreeIte
 						 gint permutation_n, gint column, GValue *value,
 						 gpointer data);
 
-typedef struct _ETreeModelGenerator       ETreeModelGenerator;
-typedef struct _ETreeModelGeneratorClass  ETreeModelGeneratorClass;
+typedef struct _ETreeModelGenerator ETreeModelGenerator;
+typedef struct _ETreeModelGeneratorClass ETreeModelGeneratorClass;
+typedef struct _ETreeModelGeneratorPrivate ETreeModelGeneratorPrivate;
+
+struct _ETreeModelGenerator {
+	GObject parent;
+	ETreeModelGeneratorPrivate *priv;
+};
 
 struct _ETreeModelGeneratorClass {
 	GObjectClass parent_class;
 };
 
-struct _ETreeModelGenerator {
-	GObject                          parent;
-
-	/* Private */
-
-	gint                             stamp;
-	GtkTreeModel                    *child_model;
-	GArray                          *root_nodes;
-
-	ETreeModelGeneratorGenerateFunc  generate_func;
-	gpointer                         generate_func_data;
-
-	ETreeModelGeneratorModifyFunc    modify_func;
-	gpointer                         modify_func_data;
-};
-
-GType                e_tree_model_generator_get_type                   (void);
-
-ETreeModelGenerator *e_tree_model_generator_new                        (GtkTreeModel *child_model);
-GtkTreeModel        *e_tree_model_generator_get_model                  (ETreeModelGenerator *tree_model_generator);
-
-void                 e_tree_model_generator_set_generate_func          (ETreeModelGenerator *tree_model_generator,
-									ETreeModelGeneratorGenerateFunc func,
-									gpointer data, GDestroyNotify destroy);
-void                 e_tree_model_generator_set_modify_func            (ETreeModelGenerator *tree_model_generator,
-									ETreeModelGeneratorModifyFunc func,
-									gpointer data, GDestroyNotify destroy);
-
-GtkTreePath         *e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_model_generator,
-									GtkTreePath *child_path);
-void                 e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_model_generator,
-									GtkTreeIter *generator_iter,
-									GtkTreeIter *child_iter);
-GtkTreePath         *e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_model_generator,
-									GtkTreePath *generator_path);
-void                 e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_model_generator,
-									GtkTreeIter *child_iter,
-									gint *permutation_n,
-									GtkTreeIter *generator_iter);
+GType		e_tree_model_generator_get_type	(void);
+ETreeModelGenerator *
+		e_tree_model_generator_new	(GtkTreeModel *child_model);
+GtkTreeModel *	e_tree_model_generator_get_model(ETreeModelGenerator *tree_model_generator);
+void		e_tree_model_generator_set_generate_func
+						(ETreeModelGenerator *tree_model_generator,
+						 ETreeModelGeneratorGenerateFunc func,
+						 gpointer data,
+						 GDestroyNotify destroy);
+void		e_tree_model_generator_set_modify_func
+						(ETreeModelGenerator *tree_model_generator,
+						 ETreeModelGeneratorModifyFunc func,
+						 gpointer data,
+						 GDestroyNotify destroy);
+GtkTreePath *	e_tree_model_generator_convert_child_path_to_path
+						(ETreeModelGenerator *tree_model_generator,
+						 GtkTreePath *child_path);
+void		e_tree_model_generator_convert_child_iter_to_iter
+						(ETreeModelGenerator *tree_model_generator,
+						 GtkTreeIter *generator_iter,
+						 GtkTreeIter *child_iter);
+GtkTreePath *	e_tree_model_generator_convert_path_to_child_path
+						(ETreeModelGenerator *tree_model_generator,
+						 GtkTreePath *generator_path);
+void		e_tree_model_generator_convert_iter_to_child_iter
+						(ETreeModelGenerator *tree_model_generator,
+						 GtkTreeIter *child_iter,
+						 gint *permutation_n,
+						 GtkTreeIter *generator_iter);
 
 G_END_DECLS
 

@@ -18,8 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef _E_SOURCE_COMBO_BOX_H_
-#define _E_SOURCE_COMBO_BOX_H_
+#ifndef E_SOURCE_COMBO_BOX_H
+#define E_SOURCE_COMBO_BOX_H
 
 #include <gtk/gtk.h>
 #include <libedataserver/e-source-list.h>
@@ -53,7 +53,6 @@ typedef struct _ESourceComboBoxPrivate ESourceComboBoxPrivate;
  **/
 struct _ESourceComboBox {
 	GtkComboBox parent;
-
 	ESourceComboBoxPrivate *priv;
 };
 
@@ -81,4 +80,4 @@ void		e_source_combo_box_set_active_uid
 
 G_END_DECLS
 
-#endif /* _E_SOURCE_COMBO_BOX_H_ */
+#endif /* E_SOURCE_COMBO_BOX_H */

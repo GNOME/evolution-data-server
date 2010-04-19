@@ -30,26 +30,43 @@
 
 #define ETMG_DEBUG(x)
 
-#define ITER_IS_VALID(tree_model_generator, iter) ((iter)->stamp == (tree_model_generator)->stamp)
-#define ITER_GET(iter, group, index)                        \
-G_STMT_START {                                              \
-	*(group) = (iter)->user_data;                       \
-	*(index) = GPOINTER_TO_INT ((iter)->user_data2);    \
-} G_STMT_END
+#define ITER_IS_VALID(tree_model_generator, iter) \
+	((iter)->stamp == (tree_model_generator)->priv->stamp)
+#define ITER_GET(iter, group, index) \
+	G_STMT_START { \
+	*(group) = (iter)->user_data; \
+	*(index) = GPOINTER_TO_INT ((iter)->user_data2); \
+	} G_STMT_END
 
-#define ITER_SET(tree_model_generator, iter, group, index)  \
-G_STMT_START {                                              \
-	(iter)->stamp = (tree_model_generator)->stamp;      \
-	(iter)->user_data = group;                          \
-	(iter)->user_data2 = GINT_TO_POINTER (index);       \
-} G_STMT_END
+#define ITER_SET(tree_model_generator, iter, group, index) \
+	G_STMT_START { \
+	(iter)->stamp = (tree_model_generator)->priv->stamp; \
+	(iter)->user_data = group; \
+	(iter)->user_data2 = GINT_TO_POINTER (index); \
+	} G_STMT_END
+
+#define E_TREE_MODEL_GENERATOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_TREE_MODEL_GENERATOR, ETreeModelGeneratorPrivate))
+
+struct _ETreeModelGeneratorPrivate {
+	GtkTreeModel *child_model;
+	GArray *root_nodes;
+	gint stamp;
+
+	ETreeModelGeneratorGenerateFunc generate_func;
+	gpointer generate_func_data;
+
+	ETreeModelGeneratorModifyFunc modify_func;
+	gpointer modify_func_data;
+};
 
 static void e_tree_model_generator_tree_model_init (GtkTreeModelIface *iface);
 
-G_DEFINE_TYPE_EXTENDED (ETreeModelGenerator, e_tree_model_generator, G_TYPE_OBJECT, 0,
+G_DEFINE_TYPE_WITH_CODE (
+	ETreeModelGenerator, e_tree_model_generator, G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL, e_tree_model_generator_tree_model_init))
 
-static void         e_tree_model_generator_finalize        (GObject            *object);
 static GtkTreeModelFlags e_tree_model_generator_get_flags       (GtkTreeModel       *tree_model);
 static gint         e_tree_model_generator_get_n_columns   (GtkTreeModel       *tree_model);
 static GType        e_tree_model_generator_get_column_type (GtkTreeModel       *tree_model,
@@ -106,48 +123,30 @@ enum {
  * Class/object setup *
  * ------------------ */
 
-static GObjectClass *parent_class = NULL;
-
 static void
-e_tree_model_generator_get_property (GObject *object, guint prop_id,
-				     GValue *value, GParamSpec *pspec)
+tree_model_generator_set_property (GObject *object,
+                                   guint prop_id,
+                                   const GValue *value,
+                                   GParamSpec *pspec)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (object);
 
 	switch (prop_id)
 	{
 		case PROP_CHILD_MODEL:
-			g_value_set_object (value, tree_model_generator->child_model);
-			break;
+			tree_model_generator->priv->child_model = g_value_get_object (value);
+			g_object_ref (tree_model_generator->priv->child_model);
 
-		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-			break;
-	}
-}
-
-static void
-e_tree_model_generator_set_property (GObject *object, guint prop_id,
-				     const GValue *value, GParamSpec *pspec)
-{
-	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (object);
-
-	switch (prop_id)
-	{
-		case PROP_CHILD_MODEL:
-			tree_model_generator->child_model = g_value_get_object (value);
-			g_object_ref (tree_model_generator->child_model);
-
-			if (tree_model_generator->root_nodes)
-				release_node_map (tree_model_generator->root_nodes);
-			tree_model_generator->root_nodes =
+			if (tree_model_generator->priv->root_nodes)
+				release_node_map (tree_model_generator->priv->root_nodes);
+			tree_model_generator->priv->root_nodes =
 				build_node_map (tree_model_generator, NULL, NULL, -1);
 
-			g_signal_connect_swapped (tree_model_generator->child_model, "row-changed",
+			g_signal_connect_swapped (tree_model_generator->priv->child_model, "row-changed",
 						  G_CALLBACK (child_row_changed), tree_model_generator);
-			g_signal_connect_swapped (tree_model_generator->child_model, "row-deleted",
+			g_signal_connect_swapped (tree_model_generator->priv->child_model, "row-deleted",
 						  G_CALLBACK (child_row_deleted), tree_model_generator);
-			g_signal_connect_swapped (tree_model_generator->child_model, "row-inserted",
+			g_signal_connect_swapped (tree_model_generator->priv->child_model, "row-inserted",
 						  G_CALLBACK (child_row_inserted), tree_model_generator);
 			break;
 
@@ -158,23 +157,66 @@ e_tree_model_generator_set_property (GObject *object, guint prop_id,
 }
 
 static void
+tree_model_generator_get_property (GObject *object,
+                                   guint prop_id,
+                                   GValue *value,
+                                   GParamSpec *pspec)
+{
+	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (object);
+
+	switch (prop_id)
+	{
+		case PROP_CHILD_MODEL:
+			g_value_set_object (value, tree_model_generator->priv->child_model);
+			break;
+
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+			break;
+	}
+}
+
+static void
+tree_model_generator_finalize (GObject *object)
+{
+	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (object);
+
+	if (tree_model_generator->priv->child_model) {
+		g_signal_handlers_disconnect_matched (tree_model_generator->priv->child_model,
+						      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL,
+						      tree_model_generator);
+		g_object_unref (tree_model_generator->priv->child_model);
+	}
+
+	if (tree_model_generator->priv->root_nodes)
+		release_node_map (tree_model_generator->priv->root_nodes);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_tree_model_generator_parent_class)->finalize (object);
+}
+
+static void
 e_tree_model_generator_class_init (ETreeModelGeneratorClass *class)
 {
 	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (class);
-	object_class = (GObjectClass *) class;
+	g_type_class_add_private (class, sizeof (ETreeModelGeneratorPrivate));
 
-	object_class->get_property = e_tree_model_generator_get_property;
-	object_class->set_property = e_tree_model_generator_set_property;
-	object_class->finalize     = e_tree_model_generator_finalize;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->get_property = tree_model_generator_get_property;
+	object_class->set_property = tree_model_generator_set_property;
+	object_class->finalize = tree_model_generator_finalize;
 
-	g_object_class_install_property (object_class, PROP_CHILD_MODEL,
-					 g_param_spec_object ("child-model",
-							      "Child Model",
-							      "The child model to extend",
-							      G_TYPE_OBJECT,
-							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (
+		object_class,
+		PROP_CHILD_MODEL,
+		g_param_spec_object (
+			"child-model",
+			"Child Model",
+			"The child model to extend",
+			G_TYPE_OBJECT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -197,27 +239,11 @@ e_tree_model_generator_tree_model_init (GtkTreeModelIface *iface)
 static void
 e_tree_model_generator_init (ETreeModelGenerator *tree_model_generator)
 {
-	tree_model_generator->stamp      = g_random_int ();
-	tree_model_generator->root_nodes = g_array_new (FALSE, FALSE, sizeof (Node));
-}
+	tree_model_generator->priv =
+		E_TREE_MODEL_GENERATOR_GET_PRIVATE (tree_model_generator);
 
-static void
-e_tree_model_generator_finalize (GObject *object)
-{
-	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (object);
-
-	if (tree_model_generator->child_model) {
-		g_signal_handlers_disconnect_matched (tree_model_generator->child_model,
-						      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL,
-						      tree_model_generator);
-		g_object_unref (tree_model_generator->child_model);
-	}
-
-	if (tree_model_generator->root_nodes)
-		release_node_map (tree_model_generator->root_nodes);
-
-	if (G_OBJECT_CLASS (parent_class)->finalize)
-		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	tree_model_generator->priv->stamp      = g_random_int ();
+	tree_model_generator->priv->root_nodes = g_array_new (FALSE, FALSE, sizeof (Node));
 }
 
 /* ------------------ *
@@ -359,9 +385,9 @@ build_node_map (ETreeModelGenerator *tree_model_generator, GtkTreeIter *parent_i
 	gboolean     result;
 
 	if (parent_iter)
-		result = gtk_tree_model_iter_children (tree_model_generator->child_model, &iter, parent_iter);
+		result = gtk_tree_model_iter_children (tree_model_generator->priv->child_model, &iter, parent_iter);
 	else
-		result = gtk_tree_model_get_iter_first (tree_model_generator->child_model, &iter);
+		result = gtk_tree_model_get_iter_first (tree_model_generator->priv->child_model, &iter);
 
 	if (!result)
 		return NULL;
@@ -378,15 +404,15 @@ build_node_map (ETreeModelGenerator *tree_model_generator, GtkTreeIter *parent_i
 		node->parent_group = parent_group;
 		node->parent_index = parent_index;
 
-		if (tree_model_generator->generate_func)
+		if (tree_model_generator->priv->generate_func)
 			node->n_generated =
-				tree_model_generator->generate_func (tree_model_generator->child_model,
-								     &iter, tree_model_generator->generate_func_data);
+				tree_model_generator->priv->generate_func (tree_model_generator->priv->child_model,
+								     &iter, tree_model_generator->priv->generate_func_data);
 		else
 			node->n_generated = 1;
 
 		node->child_nodes = build_node_map (tree_model_generator, &iter, group, i);
-	} while (gtk_tree_model_iter_next (tree_model_generator->child_model, &iter));
+	} while (gtk_tree_model_iter_next (tree_model_generator->priv->child_model, &iter));
 
 	return group;
 }
@@ -416,7 +442,7 @@ get_node_by_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *
 	GArray *group;
 	gint    depth;
 
-	group = tree_model_generator->root_nodes;
+	group = tree_model_generator->priv->root_nodes;
 
 	for (depth = 0; depth < gtk_tree_path_get_depth (path); depth++) {
 		gint  index;
@@ -463,10 +489,10 @@ create_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 		group = node->child_nodes;
 		parent_index = gtk_tree_path_get_indices (parent_path) [gtk_tree_path_get_depth (parent_path) - 1];
 	} else {
-		if (!tree_model_generator->root_nodes)
-			tree_model_generator->root_nodes = g_array_new (FALSE, FALSE, sizeof (Node));
+		if (!tree_model_generator->priv->root_nodes)
+			tree_model_generator->priv->root_nodes = g_array_new (FALSE, FALSE, sizeof (Node));
 
-		group = tree_model_generator->root_nodes;
+		group = tree_model_generator->priv->root_nodes;
 		parent_index = -1;
 	}
 
@@ -549,7 +575,7 @@ delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 	if (node) {
 		group = node->child_nodes;
 	} else {
-		group = tree_model_generator->root_nodes;
+		group = tree_model_generator->priv->root_nodes;
 	}
 
 	gtk_tree_path_free (parent_path);
@@ -591,10 +617,10 @@ child_row_changed (ETreeModelGenerator *tree_model_generator, GtkTreePath *path,
 	gint         n_generated;
 	gint         i;
 
-	if (tree_model_generator->generate_func)
+	if (tree_model_generator->priv->generate_func)
 		n_generated =
-			tree_model_generator->generate_func (tree_model_generator->child_model,
-							     iter, tree_model_generator->generate_func_data);
+			tree_model_generator->priv->generate_func (tree_model_generator->priv->child_model,
+							     iter, tree_model_generator->priv->generate_func_data);
 	else
 		n_generated = 1;
 
@@ -632,10 +658,10 @@ child_row_inserted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path
 	Node        *node;
 	gint         n_generated;
 
-	if (tree_model_generator->generate_func)
+	if (tree_model_generator->priv->generate_func)
 		n_generated =
-			tree_model_generator->generate_func (tree_model_generator->child_model,
-							     iter, tree_model_generator->generate_func_data);
+			tree_model_generator->priv->generate_func (tree_model_generator->priv->child_model,
+							     iter, tree_model_generator->priv->generate_func_data);
 	else
 		n_generated = 1;
 
@@ -713,7 +739,7 @@ e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator)
 {
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator), NULL);
 
-	return tree_model_generator->child_model;
+	return tree_model_generator->priv->child_model;
 }
 
 /**
@@ -737,8 +763,8 @@ e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_genera
 {
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 
-	tree_model_generator->generate_func      = func;
-	tree_model_generator->generate_func_data = data;
+	tree_model_generator->priv->generate_func      = func;
+	tree_model_generator->priv->generate_func_data = data;
 }
 
 /**
@@ -760,8 +786,8 @@ e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generato
 {
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 
-	tree_model_generator->modify_func      = func;
-	tree_model_generator->modify_func_data = data;
+	tree_model_generator->priv->modify_func      = func;
+	tree_model_generator->priv->modify_func_data = data;
 }
 
 /**
@@ -786,7 +812,7 @@ e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_mod
 
 	path = gtk_tree_path_new ();
 
-	group = tree_model_generator->root_nodes;
+	group = tree_model_generator->priv->root_nodes;
 
 	for (depth = 0; depth < gtk_tree_path_get_depth (child_path); depth++) {
 		Node *node;
@@ -830,11 +856,11 @@ e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_mod
 
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 
-	path = gtk_tree_model_get_path (tree_model_generator->child_model, child_iter);
+	path = gtk_tree_model_get_path (tree_model_generator->priv->child_model, child_iter);
 	if (!path)
 		return;
 
-	group = tree_model_generator->root_nodes;
+	group = tree_model_generator->priv->root_nodes;
 
 	for (depth = 0; depth < gtk_tree_path_get_depth (path); depth++) {
 		Node *node;
@@ -878,7 +904,7 @@ e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_mod
 
 	path = gtk_tree_path_new ();
 
-	group = tree_model_generator->root_nodes;
+	group = tree_model_generator->priv->root_nodes;
 
 	for (depth = 0; depth < gtk_tree_path_get_depth (generator_path); depth++) {
 		Node *node;
@@ -947,7 +973,7 @@ e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_mod
 	}
 
 	if (child_iter)
-		gtk_tree_model_get_iter (tree_model_generator->child_model, child_iter, path);
+		gtk_tree_model_get_iter (tree_model_generator->priv->child_model, child_iter, path);
 	if (permutation_n)
 		*permutation_n = internal_offset;
 
@@ -965,7 +991,7 @@ e_tree_model_generator_get_flags (GtkTreeModel *tree_model)
 
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), 0);
 
-	return gtk_tree_model_get_flags (tree_model_generator->child_model);
+	return gtk_tree_model_get_flags (tree_model_generator->priv->child_model);
 }
 
 static gint
@@ -975,7 +1001,7 @@ e_tree_model_generator_get_n_columns (GtkTreeModel *tree_model)
 
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), 0);
 
-	return gtk_tree_model_get_n_columns (tree_model_generator->child_model);
+	return gtk_tree_model_get_n_columns (tree_model_generator->priv->child_model);
 }
 
 static GType
@@ -986,7 +1012,7 @@ e_tree_model_generator_get_column_type (GtkTreeModel *tree_model,
 
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), G_TYPE_INVALID);
 
-	return gtk_tree_model_get_column_type (tree_model_generator->child_model, index);
+	return gtk_tree_model_get_column_type (tree_model_generator->priv->child_model, index);
 }
 
 static gboolean
@@ -1000,7 +1026,7 @@ e_tree_model_generator_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, Gt
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), FALSE);
 	g_return_val_if_fail (gtk_tree_path_get_depth (path) > 0, FALSE);
 
-	group = tree_model_generator->root_nodes;
+	group = tree_model_generator->priv->root_nodes;
 	if (!group)
 		return FALSE;
 
@@ -1103,11 +1129,11 @@ e_tree_model_generator_iter_children (GtkTreeModel *tree_model,
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), FALSE);
 
 	if (!parent) {
-		if (!tree_model_generator->root_nodes ||
-		    !count_generated_nodes (tree_model_generator->root_nodes))
+		if (!tree_model_generator->priv->root_nodes ||
+		    !count_generated_nodes (tree_model_generator->priv->root_nodes))
 			return FALSE;
 
-		ITER_SET (tree_model_generator, iter, tree_model_generator->root_nodes, 0);
+		ITER_SET (tree_model_generator, iter, tree_model_generator->priv->root_nodes, 0);
 		return TRUE;
 	}
 
@@ -1140,8 +1166,8 @@ e_tree_model_generator_iter_has_child (GtkTreeModel *tree_model,
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), FALSE);
 
 	if (iter == NULL) {
-		if (!tree_model_generator->root_nodes ||
-		    !count_generated_nodes (tree_model_generator->root_nodes))
+		if (!tree_model_generator->priv->root_nodes ||
+		    !count_generated_nodes (tree_model_generator->priv->root_nodes))
 			return FALSE;
 
 		return TRUE;
@@ -1175,8 +1201,8 @@ e_tree_model_generator_iter_n_children (GtkTreeModel *tree_model,
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), 0);
 
 	if (iter == NULL)
-		return tree_model_generator->root_nodes ?
-			count_generated_nodes (tree_model_generator->root_nodes) : 0;
+		return tree_model_generator->priv->root_nodes ?
+			count_generated_nodes (tree_model_generator->priv->root_nodes) : 0;
 
 	ITER_GET (iter, &group, &index);
 	index = generated_offset_to_child_offset (group, index, NULL);
@@ -1205,13 +1231,13 @@ e_tree_model_generator_iter_nth_child (GtkTreeModel *tree_model,
 	g_return_val_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model), FALSE);
 
 	if (!parent) {
-		if (!tree_model_generator->root_nodes)
+		if (!tree_model_generator->priv->root_nodes)
 			return FALSE;
 
-		if (n >= count_generated_nodes (tree_model_generator->root_nodes))
+		if (n >= count_generated_nodes (tree_model_generator->priv->root_nodes))
 			return FALSE;
 
-		ITER_SET (tree_model_generator, iter, tree_model_generator->root_nodes, n);
+		ITER_SET (tree_model_generator, iter, tree_model_generator->priv->root_nodes, n);
 		return TRUE;
 	}
 
@@ -1276,13 +1302,13 @@ e_tree_model_generator_get_value (GtkTreeModel *tree_model,
 	e_tree_model_generator_convert_iter_to_child_iter (tree_model_generator, &child_iter,
 							   &permutation_n, iter);
 
-	if (tree_model_generator->modify_func) {
-		tree_model_generator->modify_func (tree_model_generator->child_model,
+	if (tree_model_generator->priv->modify_func) {
+		tree_model_generator->priv->modify_func (tree_model_generator->priv->child_model,
 						   &child_iter, permutation_n,
 						   column, value,
-						   tree_model_generator->modify_func_data);
+						   tree_model_generator->priv->modify_func_data);
 		return;
 	}
 
-	gtk_tree_model_get_value (tree_model_generator->child_model, &child_iter, column, value);
+	gtk_tree_model_get_value (tree_model_generator->priv->child_model, &child_iter, column, value);
 }

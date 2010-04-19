@@ -50,41 +50,30 @@
 
 G_BEGIN_DECLS
 
-typedef struct _ENameSelectorDialog      ENameSelectorDialog;
+typedef struct _ENameSelectorDialog ENameSelectorDialog;
 typedef struct _ENameSelectorDialogClass ENameSelectorDialogClass;
+typedef struct _ENameSelectorDialogPrivate ENameSelectorDialogPrivate;
+
+struct _ENameSelectorDialog {
+	GtkDialog parent;
+	ENameSelectorDialogPrivate *priv;
+};
 
 struct _ENameSelectorDialogClass {
 	GtkDialogClass parent_class;
 };
 
-struct _ENameSelectorDialog {
-	GtkDialog           parent;
-
-	/* Private */
-
-	EBook              *pending_book;
-	gpointer            unused;	/* Maintain ABI compatibility */
-	ENameSelectorModel *name_selector_model;
-	GtkTreeModelSort   *contact_sort;
-
-	GtkBuilder         *gui;
-	GtkTreeView        *contact_view;
-	GtkLabel           *status_label;
-	GtkBox             *destination_box;
-	GtkEntry           *search_entry;
-	GtkSizeGroup       *button_size_group;
-
-	GArray             *sections;
-};
-
-GType                e_name_selector_dialog_get_type   (void);
-ENameSelectorDialog *e_name_selector_dialog_new        (void);
-
-ENameSelectorModel  *e_name_selector_dialog_peek_model (ENameSelectorDialog *name_selector_dialog);
-void                 e_name_selector_dialog_set_model  (ENameSelectorDialog *name_selector_dialog,
-							ENameSelectorModel  *model);
-void                 e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector_dialog,
-								   guint                index);
+GType		e_name_selector_dialog_get_type	(void);
+ENameSelectorDialog *
+		e_name_selector_dialog_new	(void);
+ENameSelectorModel *
+		e_name_selector_dialog_peek_model
+						(ENameSelectorDialog *name_selector_dialog);
+void		e_name_selector_dialog_set_model(ENameSelectorDialog *name_selector_dialog,
+						 ENameSelectorModel  *model);
+void		e_name_selector_dialog_set_destination_index
+						(ENameSelectorDialog *name_selector_dialog,
+						 guint index);
 
 G_END_DECLS
 

@@ -21,9 +21,9 @@
 #ifndef _E_CELL_RENDERER_COLOR_H_
 #define _E_CELL_RENDERER_COLOR_H_
 
-#include <glib.h>
 #include <gtk/gtk.h>
 
+/* Standard GObject macros */
 #define E_TYPE_CELL_RENDERER_COLOR \
 	(e_cell_renderer_color_get_type ())
 #define E_CELL_RENDERER_COLOR(obj) \

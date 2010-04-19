@@ -33,25 +33,49 @@
 
 #include "e-name-selector-entry.h"
 
+#define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryPrivate))
+
+struct _ENameSelectorEntryPrivate {
+
+	PangoAttrList *attr_list;
+	ESourceList *source_list;
+	EContactStore *contact_store;
+	ETreeModelGenerator *email_generator;
+	EDestinationStore *destination_store;
+	GtkEntryCompletion *entry_completion;
+
+	guint type_ahead_complete_cb_id;
+	guint update_completions_cb_id;
+
+	EDestination *popup_destination;
+
+	gpointer	(*contact_editor_func)	(EBook *,
+						 EContact *,
+						 gboolean,
+						 gboolean);
+	gpointer	(*contact_list_editor_func)
+						(EBook *,
+						 EContact *,
+						 gboolean,
+						 gboolean);
+
+	gboolean is_completing;
+	GSList *user_query_fields;
+};
+
 enum {
 	UPDATED,
 	LAST_SIGNAL
 };
+
 static guint signals[LAST_SIGNAL] = { 0 };
 static guint COMPLETION_CUE_MIN_LEN = 0;
 static gboolean COMPLETION_FORCE_SHOW_ADDRESS = FALSE;
 #define ENS_DEBUG(x)
 
 G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY)
-
-typedef struct _ENameSelectorEntryPrivate	ENameSelectorEntryPrivate;
-struct _ENameSelectorEntryPrivate
-{
-	gboolean is_completing;
-	GSList *user_query_fields;
-};
-
-#define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryPrivate))
 
 /* 1/3 of the second to wait until invoking autocomplete lookup */
 #define AUTOCOMPLETE_TIMEOUT 333
@@ -61,9 +85,6 @@ struct _ENameSelectorEntryPrivate
 		g_source_remove (id);			\
 	id = g_timeout_add (AUTOCOMPLETE_TIMEOUT,	\
 			    (GSourceFunc) func, ptr);
-
-static void e_name_selector_entry_dispose    (GObject *object);
-static void e_name_selector_entry_finalize   (GObject *object);
 
 static void destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *path, GtkTreeIter *iter);
 static void destination_row_changed  (ENameSelectorEntry *name_selector_entry, GtkTreePath *path, GtkTreeIter *iter);
@@ -76,100 +97,66 @@ static void setup_default_contact_store (ENameSelectorEntry *name_selector_entry
 static void deep_free_list (GList *list);
 
 static void
-e_name_selector_entry_get_property (GObject *object, guint prop_id,
-				    GValue *value, GParamSpec *pspec)
+name_selector_entry_dispose (GObject *object)
 {
-}
-
-static void
-e_name_selector_entry_set_property (GObject *object, guint prop_id,
-				    const GValue *value, GParamSpec *pspec)
-{
-}
-
-static void
-e_name_selector_entry_realize (GtkWidget *widget)
-{
-	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (widget);
-
-	GTK_WIDGET_CLASS (e_name_selector_entry_parent_class)->realize (widget);
-
-	if (!name_selector_entry->contact_store) {
-		setup_default_contact_store (name_selector_entry);
-	}
-}
-
-/* Partial, repeatable destruction. Release references. */
-static void
-e_name_selector_entry_dispose (GObject *object)
-{
-	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (object);
 	ENameSelectorEntryPrivate *priv;
 
-	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (object);
 
-	if (name_selector_entry->entry_completion) {
-		g_object_unref (name_selector_entry->entry_completion);
-		name_selector_entry->entry_completion = NULL;
+	if (priv->entry_completion) {
+		g_object_unref (priv->entry_completion);
+		priv->entry_completion = NULL;
 	}
 
-	if (name_selector_entry->destination_store) {
-		g_object_unref (name_selector_entry->destination_store);
-		name_selector_entry->destination_store = NULL;
+	if (priv->destination_store) {
+		g_object_unref (priv->destination_store);
+		priv->destination_store = NULL;
 	}
 
-	if (priv && priv->user_query_fields) {
-		g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
-		g_slist_free (priv->user_query_fields);
-		priv->user_query_fields = NULL;
-	}
+	g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
+	g_slist_free (priv->user_query_fields);
+	priv->user_query_fields = NULL;
 
-	if (G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose)
-		G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose (object);
-}
-
-/* Final, one-time destruction. Free all. */
-static void
-e_name_selector_entry_finalize (GObject *object)
-{
-	if (G_OBJECT_CLASS (e_name_selector_entry_parent_class)->finalize)
-		G_OBJECT_CLASS (e_name_selector_entry_parent_class)->finalize (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose (object);
 }
 
 static void
-e_name_selector_entry_updated (ENameSelectorEntry *entry, gchar *email)
+name_selector_entry_realize (GtkWidget *widget)
 {
-	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (entry));
+	ENameSelectorEntryPrivate *priv;
+
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (widget);
+
+	/* Chain up to parent's realize() method. */
+	GTK_WIDGET_CLASS (e_name_selector_entry_parent_class)->realize (widget);
+
+	if (priv->contact_store == NULL)
+		setup_default_contact_store (E_NAME_SELECTOR_ENTRY (widget));
 }
 
 static void
-e_name_selector_entry_class_init (ENameSelectorEntryClass *name_selector_entry_class)
+e_name_selector_entry_class_init (ENameSelectorEntryClass *class)
 {
-	GObjectClass   *object_class = G_OBJECT_CLASS (name_selector_entry_class);
-	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (name_selector_entry_class);
+	GObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 
-	object_class->get_property = e_name_selector_entry_get_property;
-	object_class->set_property = e_name_selector_entry_set_property;
-	object_class->dispose      = e_name_selector_entry_dispose;
-	object_class->finalize     = e_name_selector_entry_finalize;
-	name_selector_entry_class->updated	   = e_name_selector_entry_updated;
+	g_type_class_add_private (class, sizeof (ENameSelectorEntryPrivate));
 
-	widget_class->realize      = e_name_selector_entry_realize;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = name_selector_entry_dispose;
 
-	/* Install properties */
+	widget_class = GTK_WIDGET_CLASS (class);
+	widget_class->realize = name_selector_entry_realize;
 
-	/* Install signals */
-
-	signals[UPDATED] = g_signal_new ("updated",
-					 E_TYPE_NAME_SELECTOR_ENTRY,
-					 G_SIGNAL_RUN_FIRST,
-					 G_STRUCT_OFFSET (ENameSelectorEntryClass, updated),
-					 NULL,
-					 NULL,
-					 g_cclosure_marshal_VOID__POINTER,
-					 G_TYPE_NONE, 1, G_TYPE_POINTER);
-
-	g_type_class_add_private (object_class, sizeof(ENameSelectorEntryPrivate));
+	signals[UPDATED] = g_signal_new (
+		"updated",
+		E_TYPE_NAME_SELECTOR_ENTRY,
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ENameSelectorEntryClass, updated),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
 /* Remove unquoted commas and control characters from string */
@@ -374,7 +361,7 @@ find_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
 	GtkTreeIter   iter;
 
 	path = gtk_tree_path_new_from_indices (index, -1);
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_entry->destination_store),
+	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_entry->priv->destination_store),
 				      &iter, path)) {
 		/* If we have zero destinations, getting a NULL destination at index 0
 		 * is valid. */
@@ -385,7 +372,7 @@ find_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
 	}
 	gtk_tree_path_free (path);
 
-	return e_destination_store_get_destination (name_selector_entry->destination_store, &iter);
+	return e_destination_store_get_destination (name_selector_entry->priv->destination_store, &iter);
 }
 
 /* Finds the destination in model */
@@ -534,12 +521,12 @@ set_completion_query (ENameSelectorEntry *name_selector_entry, const gchar *cue_
 
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
-	if (!name_selector_entry->contact_store)
+	if (!name_selector_entry->priv->contact_store)
 		return;
 
 	if (!cue_str) {
 		/* Clear the store */
-		e_contact_store_set_query (name_selector_entry->contact_store, NULL);
+		e_contact_store_set_query (name_selector_entry->priv->contact_store, NULL);
 		return;
 	}
 
@@ -567,7 +554,7 @@ set_completion_query (ENameSelectorEntry *name_selector_entry, const gchar *cue_
 	ENS_DEBUG (g_print ("%s\n", query_str));
 
 	book_query = e_book_query_from_string (query_str);
-	e_contact_store_set_query (name_selector_entry->contact_store, book_query);
+	e_contact_store_set_query (name_selector_entry->priv->contact_store, book_query);
 	e_book_query_unref (book_query);
 
 	g_free (query_str);
@@ -718,14 +705,14 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 
 	g_assert (cue_str);
 
-	if (!name_selector_entry->contact_store)
+	if (!name_selector_entry->priv->contact_store)
 		return FALSE;
 
 	cue_len = strlen (cue_str);
 
 	ENS_DEBUG (g_print ("Completing '%s'\n", cue_str));
 
-	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (name_selector_entry->contact_store), &iter))
+	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (name_selector_entry->priv->contact_store), &iter))
 		return FALSE;
 
 	do {
@@ -734,7 +721,7 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 		EContactField  current_field;
 		gboolean       matches;
 
-		current_contact = e_contact_store_get_contact (name_selector_entry->contact_store, &iter);
+		current_contact = e_contact_store_get_contact (name_selector_entry->priv->contact_store, &iter);
 		if (!current_contact)
 			continue;
 
@@ -744,7 +731,7 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 			best_field_rank = current_field_rank;
 			best_field      = current_field;
 		}
-	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->contact_store), &iter));
+	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->priv->contact_store), &iter));
 
 	if (!best_contact)
 		return FALSE;
@@ -774,10 +761,10 @@ generate_attribute_list (ENameSelectorEntry *name_selector_entry)
 
 	attr_list = pango_attr_list_new ();
 
-	if (name_selector_entry->attr_list)
-		pango_attr_list_unref (name_selector_entry->attr_list);
+	if (name_selector_entry->priv->attr_list)
+		pango_attr_list_unref (name_selector_entry->priv->attr_list);
 
-	name_selector_entry->attr_list = attr_list;
+	name_selector_entry->priv->attr_list = attr_list;
 
 	/* Parse the entry's text and apply attributes to real contacts */
 
@@ -811,7 +798,7 @@ expose_event (ENameSelectorEntry *name_selector_entry)
 	PangoLayout *layout;
 
 	layout = gtk_entry_get_layout (GTK_ENTRY (name_selector_entry));
-	pango_layout_set_attributes (layout, name_selector_entry->attr_list);
+	pango_layout_set_attributes (layout, name_selector_entry->priv->attr_list);
 
 	return FALSE;
 }
@@ -864,7 +851,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
 	g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
-	g_signal_handlers_block_by_func (name_selector_entry->destination_store,
+	g_signal_handlers_block_by_func (name_selector_entry->priv->destination_store,
 					 destination_row_changed, name_selector_entry);
 
 	if (textrep_len > range_len) {
@@ -892,7 +879,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 		generate_attribute_list (name_selector_entry);
 	}
 
-	g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
+	g_signal_handlers_unblock_by_func (name_selector_entry->priv->destination_store,
 					   destination_row_changed, name_selector_entry);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_insert_text, name_selector_entry);
@@ -907,10 +894,10 @@ clear_completion_model (ENameSelectorEntry *name_selector_entry)
 
 	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
-	if (!name_selector_entry->contact_store)
+	if (!name_selector_entry->priv->contact_store)
 		return;
 
-	e_contact_store_set_query (name_selector_entry->contact_store, NULL);
+	e_contact_store_set_query (name_selector_entry->priv->contact_store, NULL);
 	priv->is_completing = FALSE;
 }
 
@@ -944,7 +931,7 @@ static gboolean
 type_ahead_complete_on_timeout_cb (ENameSelectorEntry *name_selector_entry)
 {
 	type_ahead_complete (name_selector_entry);
-	name_selector_entry->type_ahead_complete_cb_id = 0;
+	name_selector_entry->priv->type_ahead_complete_cb_id = 0;
 	return FALSE;
 }
 
@@ -952,7 +939,7 @@ static gboolean
 update_completions_on_timeout_cb (ENameSelectorEntry *name_selector_entry)
 {
 	update_completion_model (name_selector_entry);
-	name_selector_entry->update_completions_cb_id = 0;
+	name_selector_entry->priv->update_completions_cb_id = 0;
 	return FALSE;
 }
 
@@ -969,11 +956,11 @@ insert_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	destination = build_destination_at_position (text, pos);
 	g_assert (destination);
 
-	g_signal_handlers_block_by_func (name_selector_entry->destination_store,
+	g_signal_handlers_block_by_func (name_selector_entry->priv->destination_store,
 					 destination_row_inserted, name_selector_entry);
-	e_destination_store_insert_destination (name_selector_entry->destination_store,
+	e_destination_store_insert_destination (name_selector_entry->priv->destination_store,
 						index, destination);
-	g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
+	g_signal_handlers_unblock_by_func (name_selector_entry->priv->destination_store,
 					   destination_row_inserted, name_selector_entry);
 	g_object_unref (destination);
 }
@@ -997,10 +984,10 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 	if (e_destination_get_contact (destination))
 		rebuild_attributes = TRUE;
 
-	g_signal_handlers_block_by_func (name_selector_entry->destination_store,
+	g_signal_handlers_block_by_func (name_selector_entry->priv->destination_store,
 					 destination_row_changed, name_selector_entry);
 	e_destination_set_raw (destination, raw_address);
-	g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
+	g_signal_handlers_unblock_by_func (name_selector_entry->priv->destination_store,
 					   destination_row_changed, name_selector_entry);
 
 	g_free (raw_address);
@@ -1088,11 +1075,11 @@ remove_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index
 
 	destination = find_destination_by_index (name_selector_entry, index);
 	if (destination) {
-		g_signal_handlers_block_by_func (name_selector_entry->destination_store,
+		g_signal_handlers_block_by_func (name_selector_entry->priv->destination_store,
 					 destination_row_deleted, name_selector_entry);
-		e_destination_store_remove_destination (name_selector_entry->destination_store,
+		e_destination_store_remove_destination (name_selector_entry->priv->destination_store,
 						destination);
-		g_signal_handlers_unblock_by_func (name_selector_entry->destination_store,
+		g_signal_handlers_unblock_by_func (name_selector_entry->priv->destination_store,
 					   destination_row_deleted, name_selector_entry);
 	}
 }
@@ -1213,8 +1200,8 @@ user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 
 	if (chars_inserted >= 1) {
 		/* If the user inserted one character, kick off completion */
-		re_set_timeout (name_selector_entry->update_completions_cb_id,  update_completions_on_timeout_cb,  name_selector_entry);
-		re_set_timeout (name_selector_entry->type_ahead_complete_cb_id, type_ahead_complete_on_timeout_cb, name_selector_entry);
+		re_set_timeout (name_selector_entry->priv->update_completions_cb_id,  update_completions_on_timeout_cb,  name_selector_entry);
+		re_set_timeout (name_selector_entry->priv->type_ahead_complete_cb_id, type_ahead_complete_on_timeout_cb, name_selector_entry);
 	}
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -1255,7 +1242,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 	if (end_pos - start_pos == 1) {
 		/* Might be backspace; update completion model so dropdown is accurate */
-		re_set_timeout (name_selector_entry->update_completions_cb_id, update_completions_on_timeout_cb, name_selector_entry);
+		re_set_timeout (name_selector_entry->priv->update_completions_cb_id, update_completions_on_timeout_cb, name_selector_entry);
 	}
 
 	index_start = get_index_at_position (text, start_pos);
@@ -1413,9 +1400,9 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		generate_attribute_list (name_selector_entry);
 
 	/* Prevent type-ahead completion */
-	if (name_selector_entry->type_ahead_complete_cb_id) {
-		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
-		name_selector_entry->type_ahead_complete_cb_id = 0;
+	if (name_selector_entry->priv->type_ahead_complete_cb_id) {
+		g_source_remove (name_selector_entry->priv->type_ahead_complete_cb_id);
+		name_selector_entry->priv->type_ahead_complete_cb_id = 0;
 	}
 
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -1432,16 +1419,16 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, GtkTreeModel
 	GtkTreeIter    contact_iter;
 	gint           email_n;
 
-	if (!name_selector_entry->contact_store)
+	if (!name_selector_entry->priv->contact_store)
 		return FALSE;
 
 	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
 							  &generator_iter, iter);
-	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->email_generator,
+	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->priv->email_generator,
 							   &contact_iter, &email_n,
 							   &generator_iter);
 
-	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_iter);
+	contact = e_contact_store_get_contact (name_selector_entry->priv->contact_store, &contact_iter);
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
 
 	/* Set the contact in the model's destination */
@@ -1554,9 +1541,9 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 	GString *str = g_string_new ("");
 
 	g_signal_handlers_block_matched (name_selector_entry, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
-	g_signal_handlers_block_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+	g_signal_handlers_block_matched (name_selector_entry->priv->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
 
-	known = e_destination_store_list_destinations (name_selector_entry->destination_store);
+	known = e_destination_store_list_destinations (name_selector_entry->priv->destination_store);
 	for (l = known, n = 0; l != NULL; l = l->next, n++) {
 		EDestination *dest = l->data;
 
@@ -1578,7 +1565,7 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 	g_list_free (known);
 
 	for (l = del; l != NULL; l = l->next) {
-		e_destination_store_remove_destination_nth (name_selector_entry->destination_store, GPOINTER_TO_INT (l->data));
+		e_destination_store_remove_destination_nth (name_selector_entry->priv->destination_store, GPOINTER_TO_INT (l->data));
 	}
 	g_list_free (del);
 
@@ -1586,7 +1573,7 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 
 	g_string_free (str, TRUE);
 
-	g_signal_handlers_unblock_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+	g_signal_handlers_unblock_matched (name_selector_entry->priv->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
 	g_signal_handlers_unblock_matched (name_selector_entry, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
 
 	generate_attribute_list (name_selector_entry);
@@ -1601,9 +1588,9 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 	EDestination *dest_dummy = e_destination_new ();
 
 	g_signal_handlers_block_matched (name_selector_entry, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
-	g_signal_handlers_block_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+	g_signal_handlers_block_matched (name_selector_entry->priv->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
 
-	known = e_destination_store_list_destinations (name_selector_entry->destination_store);
+	known = e_destination_store_list_destinations (name_selector_entry->priv->destination_store);
 	for (l = known, n = 0; l != NULL; l = l->next, n++) {
 		EDestination *dest = l->data;
 
@@ -1623,7 +1610,7 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 	g_list_free (known);
 
 	/* Add a blank destination */
-	e_destination_store_append_destination (name_selector_entry->destination_store, dest_dummy);
+	e_destination_store_append_destination (name_selector_entry->priv->destination_store, dest_dummy);
 	if (str->str && str->str[0])
 		g_string_append (str, ", ");
 
@@ -1631,7 +1618,7 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 
 	g_string_free (str, TRUE);
 
-	g_signal_handlers_unblock_matched (name_selector_entry->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
+	g_signal_handlers_unblock_matched (name_selector_entry->priv->destination_store, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
 	g_signal_handlers_unblock_matched (name_selector_entry, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_entry);
 
 	generate_attribute_list (name_selector_entry);
@@ -1650,14 +1637,14 @@ user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_fo
 		entry_activate (name_selector_entry);
 	}
 
-	if (name_selector_entry->type_ahead_complete_cb_id) {
-		g_source_remove (name_selector_entry->type_ahead_complete_cb_id);
-		name_selector_entry->type_ahead_complete_cb_id = 0;
+	if (name_selector_entry->priv->type_ahead_complete_cb_id) {
+		g_source_remove (name_selector_entry->priv->type_ahead_complete_cb_id);
+		name_selector_entry->priv->type_ahead_complete_cb_id = 0;
 	}
 
-	if (name_selector_entry->update_completions_cb_id) {
-		g_source_remove (name_selector_entry->update_completions_cb_id);
-		name_selector_entry->update_completions_cb_id = 0;
+	if (name_selector_entry->priv->update_completions_cb_id) {
+		g_source_remove (name_selector_entry->priv->update_completions_cb_id);
+		name_selector_entry->priv->update_completions_cb_id = 0;
 	}
 
 	clear_completion_model (name_selector_entry);
@@ -1707,16 +1694,16 @@ contact_layout_pixbuffer (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 	EContactPhoto *photo;
 	GdkPixbuf *pixbuf = NULL;
 
-	if (!name_selector_entry->contact_store)
+	if (!name_selector_entry->priv->contact_store)
 		return;
 
 	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
 							  &generator_iter, iter);
-	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->email_generator,
+	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->priv->email_generator,
 							   &contact_store_iter, &email_n,
 							   &generator_iter);
 
-	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_store_iter);
+	contact = e_contact_store_get_contact (name_selector_entry->priv->contact_store, &contact_store_iter);
 	if (!contact) {
 		g_object_set (cell, "pixbuf", pixbuf, NULL);
 		return;
@@ -1780,16 +1767,16 @@ contact_layout_formatter (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 	gchar         *email_str;
 	gint           email_n;
 
-	if (!name_selector_entry->contact_store)
+	if (!name_selector_entry->priv->contact_store)
 		return;
 
 	gtk_tree_model_filter_convert_iter_to_child_iter (GTK_TREE_MODEL_FILTER (model),
 							  &generator_iter, iter);
-	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->email_generator,
+	e_tree_model_generator_convert_iter_to_child_iter (name_selector_entry->priv->email_generator,
 							   &contact_store_iter, &email_n,
 							   &generator_iter);
 
-	contact = e_contact_store_get_contact (name_selector_entry->contact_store, &contact_store_iter);
+	contact = e_contact_store_get_contact (name_selector_entry->priv->contact_store, &contact_store_iter);
 	email_list = e_contact_get (contact, E_CONTACT_EMAIL);
 	email_str = g_list_nth_data (email_list, email_n);
 	file_as_str = e_contact_get (contact, E_CONTACT_FILE_AS);
@@ -1838,37 +1825,37 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 static void
 ensure_type_ahead_complete_on_timeout (ENameSelectorEntry *name_selector_entry)
 {
-	re_set_timeout (name_selector_entry->type_ahead_complete_cb_id, type_ahead_complete_on_timeout_cb, name_selector_entry);
+	re_set_timeout (name_selector_entry->priv->type_ahead_complete_cb_id, type_ahead_complete_on_timeout_cb, name_selector_entry);
 }
 
 static void
 setup_contact_store (ENameSelectorEntry *name_selector_entry)
 {
-	if (name_selector_entry->email_generator) {
-		g_object_unref (name_selector_entry->email_generator);
-		name_selector_entry->email_generator = NULL;
+	if (name_selector_entry->priv->email_generator) {
+		g_object_unref (name_selector_entry->priv->email_generator);
+		name_selector_entry->priv->email_generator = NULL;
 	}
 
-	if (name_selector_entry->contact_store) {
-		name_selector_entry->email_generator =
-			e_tree_model_generator_new (GTK_TREE_MODEL (name_selector_entry->contact_store));
+	if (name_selector_entry->priv->contact_store) {
+		name_selector_entry->priv->email_generator =
+			e_tree_model_generator_new (GTK_TREE_MODEL (name_selector_entry->priv->contact_store));
 
-		e_tree_model_generator_set_generate_func (name_selector_entry->email_generator,
+		e_tree_model_generator_set_generate_func (name_selector_entry->priv->email_generator,
 							  (ETreeModelGeneratorGenerateFunc) generate_contact_rows,
 							  name_selector_entry, NULL);
 
 		/* Assign the store to the entry completion */
 
-		gtk_entry_completion_set_model (name_selector_entry->entry_completion,
-						GTK_TREE_MODEL (name_selector_entry->email_generator));
+		gtk_entry_completion_set_model (name_selector_entry->priv->entry_completion,
+						GTK_TREE_MODEL (name_selector_entry->priv->email_generator));
 
 		/* Set up callback for incoming matches */
-		g_signal_connect_swapped (name_selector_entry->contact_store, "row-inserted",
+		g_signal_connect_swapped (name_selector_entry->priv->contact_store, "row-inserted",
 					  G_CALLBACK (ensure_type_ahead_complete_on_timeout), name_selector_entry);
 	} else {
 		/* Remove the store from the entry completion */
 
-		gtk_entry_completion_set_model (name_selector_entry->entry_completion, NULL);
+		gtk_entry_completion_set_model (name_selector_entry->priv->entry_completion, NULL);
 	}
 }
 
@@ -1878,12 +1865,12 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 	GSList *groups;
 	GSList *l;
 
-	g_return_if_fail (name_selector_entry->contact_store == NULL);
+	g_return_if_fail (name_selector_entry->priv->contact_store == NULL);
 
 	/* Create a book for each completion source, and assign them to the contact store */
 
-	name_selector_entry->contact_store = e_contact_store_new ();
-	groups = e_source_list_peek_groups (name_selector_entry->source_list);
+	name_selector_entry->priv->contact_store = e_contact_store_new ();
+	groups = e_source_list_peek_groups (name_selector_entry->priv->source_list);
 
 	for (l = groups; l; l = g_slist_next (l)) {
 		ESourceGroup *group   = l->data;
@@ -1904,7 +1891,7 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 			if (!book)
 				continue;
 
-			e_contact_store_add_book (name_selector_entry->contact_store, book);
+			e_contact_store_add_book (name_selector_entry->priv->contact_store, book);
 			g_object_unref (book);
 		}
 	}
@@ -1922,7 +1909,7 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 	gint          n;
 
 	n = gtk_tree_path_get_indices (path) [0];
-	destination = e_destination_store_get_destination (name_selector_entry->destination_store, iter);
+	destination = e_destination_store_get_destination (name_selector_entry->priv->destination_store, iter);
 
 	if (!destination)
 		return;
@@ -1964,7 +1951,7 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 	gint          n;
 
 	n = gtk_tree_path_get_indices (path) [0];
-	destination = e_destination_store_get_destination (name_selector_entry->destination_store, iter);
+	destination = e_destination_store_get_destination (name_selector_entry->priv->destination_store, iter);
 
 	g_assert (n >= 0);
 	g_assert (destination != NULL);
@@ -2078,24 +2065,24 @@ setup_destination_store (ENameSelectorEntry *name_selector_entry)
 {
 	GtkTreeIter  iter;
 
-	g_signal_connect_swapped (name_selector_entry->destination_store, "row-changed",
+	g_signal_connect_swapped (name_selector_entry->priv->destination_store, "row-changed",
 				  G_CALLBACK (destination_row_changed), name_selector_entry);
-	g_signal_connect_swapped (name_selector_entry->destination_store, "row-deleted",
+	g_signal_connect_swapped (name_selector_entry->priv->destination_store, "row-deleted",
 				  G_CALLBACK (destination_row_deleted), name_selector_entry);
-	g_signal_connect_swapped (name_selector_entry->destination_store, "row-inserted",
+	g_signal_connect_swapped (name_selector_entry->priv->destination_store, "row-inserted",
 				  G_CALLBACK (destination_row_inserted), name_selector_entry);
 
-	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter))
+	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (name_selector_entry->priv->destination_store), &iter))
 		return;
 
 	do {
 		GtkTreePath *path;
 
-		path = gtk_tree_model_get_path (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter);
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (name_selector_entry->priv->destination_store), &iter);
 		g_assert (path);
 
 		destination_row_inserted (name_selector_entry, path, &iter);
-	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->destination_store), &iter));
+	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->priv->destination_store), &iter));
 }
 
 static gboolean
@@ -2114,9 +2101,9 @@ prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButt
 	if (event_button->button != 3)
 		return FALSE;
 
-	if (name_selector_entry->popup_destination) {
-		g_object_unref (name_selector_entry->popup_destination);
-		name_selector_entry->popup_destination = NULL;
+	if (name_selector_entry->priv->popup_destination) {
+		g_object_unref (name_selector_entry->priv->popup_destination);
+		name_selector_entry->priv->popup_destination = NULL;
 	}
 
 	gtk_entry_get_layout_offsets (GTK_ENTRY (name_selector_entry),
@@ -2140,7 +2127,7 @@ prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButt
 		return FALSE;
 
 	/* TODO: Unref destination when we finalize */
-	name_selector_entry->popup_destination = g_object_ref (destination);
+	name_selector_entry->priv->popup_destination = g_object_ref (destination);
 	return FALSE;
 }
 
@@ -2177,7 +2164,7 @@ editor_closed_cb (GtkObject *editor, gpointer data)
 	gint email_num;
 	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (data);
 
-	destination = name_selector_entry->popup_destination;
+	destination = name_selector_entry->priv->popup_destination;
 	contact = e_destination_get_contact (destination);
 	if (!contact)
 		return;
@@ -2185,8 +2172,8 @@ editor_closed_cb (GtkObject *editor, gpointer data)
 	if (!contact_uid)
 		return;
 
-	if (name_selector_entry->contact_store) {
-		books = e_contact_store_get_books (name_selector_entry->contact_store);
+	if (name_selector_entry->priv->contact_store) {
+		books = e_contact_store_get_books (name_selector_entry->priv->contact_store);
 		book = find_book_by_contact (books, contact_uid);
 		g_list_free (books);
 	} else {
@@ -2210,7 +2197,7 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 {
 	const gchar *email_list, *text;
 	gchar *sanitized_text;
-	EDestination *destination = name_selector_entry->popup_destination;
+	EDestination *destination = name_selector_entry->priv->popup_destination;
 	gint position, start, end;
 
 	position = GPOINTER_TO_INT(g_object_get_data ((GObject *)name_selector_entry, "index"));
@@ -2243,7 +2230,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 	EContact     *contact;
 	gchar        *contact_uid;
 
-	destination = name_selector_entry->popup_destination;
+	destination = name_selector_entry->priv->popup_destination;
 	if (!destination)
 		return;
 
@@ -2254,8 +2241,8 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 	contact_uid = e_contact_get (contact, E_CONTACT_UID);
 	if (!contact_uid)
 		return;
-	if (name_selector_entry->contact_store) {
-		books = e_contact_store_get_books (name_selector_entry->contact_store);
+	if (name_selector_entry->priv->contact_store) {
+		books = e_contact_store_get_books (name_selector_entry->priv->contact_store);
 		/*FIXME: read URI from contact and get the book ?*/
 		book = find_book_by_contact (books, contact_uid);
 		g_list_free (books);
@@ -2270,20 +2257,20 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 	if (e_destination_is_evolution_list (destination)) {
 		GtkWidget *contact_list_editor;
 
-		if (!name_selector_entry->contact_list_editor_func)
+		if (!name_selector_entry->priv->contact_list_editor_func)
 			return;
 
-		contact_list_editor = (*name_selector_entry->contact_list_editor_func) (book, contact, FALSE, TRUE);
+		contact_list_editor = (*name_selector_entry->priv->contact_list_editor_func) (book, contact, FALSE, TRUE);
 		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_list_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
 	} else {
 		GtkWidget *contact_editor;
 
-		if (!name_selector_entry->contact_editor_func)
+		if (!name_selector_entry->priv->contact_editor_func)
 			return;
 
-		contact_editor = (*name_selector_entry->contact_editor_func) (book, contact, FALSE, TRUE);
+		contact_editor = (*name_selector_entry->priv->contact_editor_func) (book, contact, FALSE, TRUE);
 		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
@@ -2297,7 +2284,7 @@ popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_i
 	EContact     *contact;
 	gint          email_num;
 
-	destination = name_selector_entry->popup_destination;
+	destination = name_selector_entry->priv->popup_destination;
 	if (!destination)
 		return;
 
@@ -2325,7 +2312,7 @@ popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_ite
 	gchar *pemail = NULL;
 	GtkClipboard *clipboard;
 
-	destination = name_selector_entry->popup_destination;
+	destination = name_selector_entry->priv->popup_destination;
 	contact_email =e_destination_get_address(destination);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
@@ -2339,7 +2326,7 @@ popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_ite
 	gtk_clipboard_set_text (clipboard, pemail, strlen (pemail));
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), 0, 0);
-	e_destination_store_remove_destination (name_selector_entry->destination_store, destination);
+	e_destination_store_remove_destination (name_selector_entry->priv->destination_store, destination);
 
 	g_free (pemail);
 	g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
@@ -2354,7 +2341,7 @@ popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_it
 	gchar *pemail;
 	GtkClipboard *clipboard;
 
-	destination = name_selector_entry->popup_destination;
+	destination = name_selector_entry->priv->popup_destination;
 	contact_email = e_destination_get_address(destination);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
@@ -2417,7 +2404,7 @@ populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
 	gboolean      is_list;
 	gboolean      show_menu = FALSE;
 
-	destination = name_selector_entry->popup_destination;
+	destination = name_selector_entry->priv->popup_destination;
 	if (!destination)
 		return;
 
@@ -2654,87 +2641,88 @@ cut_clipboard (GtkEntry *entry, ENameSelectorEntry *name_selector_entry)
 static void
 e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 {
-  GtkCellRenderer *renderer;
-  ENameSelectorEntryPrivate *priv;
-  GConfClient *gconf;
+	GtkCellRenderer *renderer;
+	GConfClient *gconf;
 
-  priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
+	name_selector_entry->priv =
+		E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
-  /* Source list */
+	/* Source list */
 
-  if (!e_book_get_addressbooks (&name_selector_entry->source_list, NULL)) {
+	if (!e_book_get_addressbooks (&name_selector_entry->priv->source_list, NULL)) {
 	  g_warning ("ENameSelectorEntry can't find any addressbooks!");
 	  return;
-  }
+	}
 
-  /* read minimum_query_length from gconf*/
-  gconf = gconf_client_get_default();
-  if (COMPLETION_CUE_MIN_LEN == 0) {
+	/* read minimum_query_length from gconf*/
+	gconf = gconf_client_get_default();
+	if (COMPLETION_CUE_MIN_LEN == 0) {
 	  if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))
 		;
 	  else COMPLETION_CUE_MIN_LEN = 3;
-  }
-  COMPLETION_FORCE_SHOW_ADDRESS = gconf_client_get_bool (gconf, FORCE_SHOW_ADDRESS, NULL);
-	priv->user_query_fields = gconf_client_get_list (gconf, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
-  g_object_unref (G_OBJECT (gconf));
+	}
+	COMPLETION_FORCE_SHOW_ADDRESS = gconf_client_get_bool (gconf, FORCE_SHOW_ADDRESS, NULL);
+	name_selector_entry->priv->user_query_fields = gconf_client_get_list (
+		gconf, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
+	g_object_unref (G_OBJECT (gconf));
 
-  /* Edit signals */
+	/* Edit signals */
 
-  g_signal_connect (name_selector_entry, "insert-text", G_CALLBACK (user_insert_text), name_selector_entry);
-  g_signal_connect (name_selector_entry, "delete-text", G_CALLBACK (user_delete_text), name_selector_entry);
-  g_signal_connect (name_selector_entry, "focus-out-event", G_CALLBACK (user_focus_out), name_selector_entry);
-  g_signal_connect_after (name_selector_entry, "focus-in-event", G_CALLBACK (user_focus_in), name_selector_entry);
+	g_signal_connect (name_selector_entry, "insert-text", G_CALLBACK (user_insert_text), name_selector_entry);
+	g_signal_connect (name_selector_entry, "delete-text", G_CALLBACK (user_delete_text), name_selector_entry);
+	g_signal_connect (name_selector_entry, "focus-out-event", G_CALLBACK (user_focus_out), name_selector_entry);
+	g_signal_connect_after (name_selector_entry, "focus-in-event", G_CALLBACK (user_focus_in), name_selector_entry);
 
-  /* Exposition */
+	/* Exposition */
 
-  g_signal_connect (name_selector_entry, "expose-event", G_CALLBACK (expose_event), name_selector_entry);
+	g_signal_connect (name_selector_entry, "expose-event", G_CALLBACK (expose_event), name_selector_entry);
 
-  /* Activation: Complete current entry if possible */
+	/* Activation: Complete current entry if possible */
 
-  g_signal_connect (name_selector_entry, "activate", G_CALLBACK (entry_activate), name_selector_entry);
+	g_signal_connect (name_selector_entry, "activate", G_CALLBACK (entry_activate), name_selector_entry);
 
-  /* Pop-up menu */
+	/* Pop-up menu */
 
-  g_signal_connect (name_selector_entry, "button-press-event", G_CALLBACK (prepare_popup_destination), name_selector_entry);
-  g_signal_connect (name_selector_entry, "populate-popup", G_CALLBACK (populate_popup), name_selector_entry);
+	g_signal_connect (name_selector_entry, "button-press-event", G_CALLBACK (prepare_popup_destination), name_selector_entry);
+	g_signal_connect (name_selector_entry, "populate-popup", G_CALLBACK (populate_popup), name_selector_entry);
 
 	/* Clipboard signals */
 	g_signal_connect (name_selector_entry, "copy-clipboard", G_CALLBACK (copy_clipboard), name_selector_entry);
 	g_signal_connect (name_selector_entry, "cut-clipboard", G_CALLBACK (cut_clipboard), name_selector_entry);
 
-  /* Completion */
+	/* Completion */
 
-  name_selector_entry->email_generator = NULL;
+	name_selector_entry->priv->email_generator = NULL;
 
-  name_selector_entry->entry_completion = gtk_entry_completion_new ();
-  gtk_entry_completion_set_match_func (name_selector_entry->entry_completion,
+	name_selector_entry->priv->entry_completion = gtk_entry_completion_new ();
+	gtk_entry_completion_set_match_func (name_selector_entry->priv->entry_completion,
 				       (GtkEntryCompletionMatchFunc) completion_match_cb, NULL, NULL);
-  g_signal_connect_swapped (name_selector_entry->entry_completion, "match-selected",
+	g_signal_connect_swapped (name_selector_entry->priv->entry_completion, "match-selected",
 			    G_CALLBACK (completion_match_selected), name_selector_entry);
 
-  gtk_entry_set_completion (GTK_ENTRY (name_selector_entry), name_selector_entry->entry_completion);
+	gtk_entry_set_completion (GTK_ENTRY (name_selector_entry), name_selector_entry->priv->entry_completion);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->entry_completion), renderer, FALSE);
-	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion), renderer, FALSE);
+	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
 		GTK_CELL_RENDERER (renderer),
 		(GtkCellLayoutDataFunc) contact_layout_pixbuffer,
 		name_selector_entry, NULL);
 
-  /* Completion list name renderer */
-  renderer = gtk_cell_renderer_text_new ();
-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
+	/* Completion list name renderer */
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
 			      renderer, TRUE);
-  gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->entry_completion),
+	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
 				      GTK_CELL_RENDERER (renderer),
 				      (GtkCellLayoutDataFunc) contact_layout_formatter,
 				      name_selector_entry, NULL);
 
-  /* Destination store */
+	/* Destination store */
 
-  name_selector_entry->destination_store = e_destination_store_new ();
-  setup_destination_store (name_selector_entry);
-  priv->is_completing = FALSE;
+	name_selector_entry->priv->destination_store = e_destination_store_new ();
+	setup_destination_store (name_selector_entry);
+	name_selector_entry->priv->is_completing = FALSE;
 }
 
 /**
@@ -2763,7 +2751,7 @@ e_name_selector_entry_peek_contact_store (ENameSelectorEntry *name_selector_entr
 {
 	g_return_val_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry), NULL);
 
-	return name_selector_entry->contact_store;
+	return name_selector_entry->priv->contact_store;
 }
 
 /**
@@ -2780,14 +2768,14 @@ e_name_selector_entry_set_contact_store (ENameSelectorEntry *name_selector_entry
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 	g_return_if_fail (contact_store == NULL || E_IS_CONTACT_STORE (contact_store));
 
-	if (contact_store == name_selector_entry->contact_store)
+	if (contact_store == name_selector_entry->priv->contact_store)
 		return;
 
-	if (name_selector_entry->contact_store)
-		g_object_unref (name_selector_entry->contact_store);
-	name_selector_entry->contact_store = contact_store;
-	if (name_selector_entry->contact_store)
-		g_object_ref (name_selector_entry->contact_store);
+	if (name_selector_entry->priv->contact_store)
+		g_object_unref (name_selector_entry->priv->contact_store);
+	name_selector_entry->priv->contact_store = contact_store;
+	if (name_selector_entry->priv->contact_store)
+		g_object_ref (name_selector_entry->priv->contact_store);
 
 	setup_contact_store (name_selector_entry);
 }
@@ -2805,7 +2793,7 @@ e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_
 {
 	g_return_val_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry), NULL);
 
-	return name_selector_entry->destination_store;
+	return name_selector_entry->priv->destination_store;
 }
 
 /**
@@ -2823,13 +2811,21 @@ e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 	g_return_if_fail (E_IS_DESTINATION_STORE (destination_store));
 
-	if (destination_store == name_selector_entry->destination_store)
+	if (destination_store == name_selector_entry->priv->destination_store)
 		return;
 
-	g_object_unref (name_selector_entry->destination_store);
-	name_selector_entry->destination_store = g_object_ref (destination_store);
+	g_object_unref (name_selector_entry->priv->destination_store);
+	name_selector_entry->priv->destination_store = g_object_ref (destination_store);
 
 	setup_destination_store (name_selector_entry);
+}
+
+EDestination *
+e_name_selector_entry_get_popup_destination (ENameSelectorEntry *name_selector_entry)
+{
+	g_return_val_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry), NULL);
+
+	return name_selector_entry->priv->popup_destination;
 }
 
 /**
@@ -2840,7 +2836,7 @@ e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_
 void
 e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
 {
-	name_selector_entry->contact_editor_func = func;
+	name_selector_entry->priv->contact_editor_func = func;
 }
 
 /**
@@ -2851,5 +2847,5 @@ e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector
 void
 e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
 {
-	name_selector_entry->contact_list_editor_func = func;
+	name_selector_entry->priv->contact_list_editor_func = func;
 }

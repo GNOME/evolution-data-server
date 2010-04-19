@@ -35,6 +35,10 @@
 #include "e-name-selector-dialog.h"
 #include "e-name-selector-entry.h"
 
+#define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
+
 typedef struct {
 	gchar        *name;
 
@@ -52,9 +56,21 @@ typedef struct {
 	ENameSelectorDialog *dlg_ptr;
 } SelData;
 
-typedef struct _ENameSelectorDialogPrivate	ENameSelectorDialogPrivate;
-struct _ENameSelectorDialogPrivate
-{
+struct _ENameSelectorDialogPrivate {
+
+	EBook *pending_book;
+	ENameSelectorModel *name_selector_model;
+	GtkTreeModelSort *contact_sort;
+
+	GtkBuilder *gui;
+	GtkTreeView *contact_view;
+	GtkLabel *status_label;
+	GtkBox *destination_box;
+	GtkEntry *search_entry;
+	GtkSizeGroup *button_size_group;
+
+	GArray *sections;
+
 	guint destination_index;
 	GSList *user_query_fields;
 };
@@ -84,21 +100,6 @@ static void     destination_column_formatter  (GtkTreeViewColumn *column, GtkCel
 
 G_DEFINE_TYPE (ENameSelectorDialog, e_name_selector_dialog, GTK_TYPE_DIALOG)
 
-#define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
-
-static void
-e_name_selector_dialog_get_property (GObject *object, guint prop_id,
-				     GValue *value, GParamSpec *pspec)
-{
-}
-
-static void
-e_name_selector_dialog_set_property (GObject *object, guint prop_id,
-				     const GValue *value, GParamSpec *pspec)
-{
-}
-
 static void
 e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dialog)
 {
@@ -107,7 +108,7 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 
 	/* "Any Category" is preloaded. */
 	combo_box = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->gui, "combobox-category"));
+		name_selector_dialog->priv->gui, "combobox-category"));
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
@@ -141,21 +142,22 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gchar *uid;
 	GError *error = NULL;
 
-	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
-	priv->destination_index = 0;
-	priv->user_query_fields = NULL;
+	name_selector_dialog->priv =
+		E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 
 	/* Get GtkBuilder GUI */
 	uifile = g_build_filename (E_DATA_SERVER_UI_UIDIR,
 				"e-name-selector-dialog.ui",
 				NULL);
-	name_selector_dialog->gui = gtk_builder_new ();
-	gtk_builder_set_translation_domain (name_selector_dialog->gui, GETTEXT_PACKAGE);
+	name_selector_dialog->priv->gui = gtk_builder_new ();
+	gtk_builder_set_translation_domain (
+		name_selector_dialog->priv->gui, GETTEXT_PACKAGE);
 
-	if (!gtk_builder_add_from_file (name_selector_dialog->gui, uifile, &error)) {
+	if (!gtk_builder_add_from_file (
+		name_selector_dialog->priv->gui, uifile, &error)) {
 		g_free (uifile);
-		g_object_unref (name_selector_dialog->gui);
-		name_selector_dialog->gui = NULL;
+		g_object_unref (name_selector_dialog->priv->gui);
+		name_selector_dialog->priv->gui = NULL;
 
 		g_warning ("%s: Cannot load e-name-selector-dialog.ui file, %s", G_STRFUNC, error ? error->message : "Unknown error");
 
@@ -167,11 +169,12 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	g_free (uifile);
 
-	widget = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "name-selector-box"));
+	widget = GTK_WIDGET (gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "name-selector-box"));
 	if (!widget) {
 		g_warning ("%s: Cannot load e-name-selector-dialog.ui file", G_STRFUNC);
-		g_object_unref (name_selector_dialog->gui);
-		name_selector_dialog->gui = NULL;
+		g_object_unref (name_selector_dialog->priv->gui);
+		name_selector_dialog->priv->gui = NULL;
 		return;
 	}
 
@@ -179,7 +182,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	if (!e_book_get_addressbooks (&source_list, NULL)) {
 		g_warning ("ENameSelectorDialog can't find any addressbooks!");
-		g_object_unref (name_selector_dialog->gui);
+		g_object_unref (name_selector_dialog->priv->gui);
 		return;
 	}
 
@@ -196,18 +199,23 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Store pointers to relevant widgets */
 
-	name_selector_dialog->contact_view = GTK_TREE_VIEW (
-		gtk_builder_get_object (name_selector_dialog->gui, "source-tree-view"));
-	name_selector_dialog->status_label = GTK_LABEL (
-		gtk_builder_get_object (name_selector_dialog->gui, "status-message"));
-	name_selector_dialog->destination_box = GTK_BOX (
-		gtk_builder_get_object (name_selector_dialog->gui, "destination-box"));
-	name_selector_dialog->search_entry = GTK_ENTRY (
-		gtk_builder_get_object (name_selector_dialog->gui, "search"));
+	name_selector_dialog->priv->contact_view = GTK_TREE_VIEW (
+		gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "source-tree-view"));
+	name_selector_dialog->priv->status_label = GTK_LABEL (
+		gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "status-message"));
+	name_selector_dialog->priv->destination_box = GTK_BOX (
+		gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "destination-box"));
+	name_selector_dialog->priv->search_entry = GTK_ENTRY (
+		gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "search"));
 
 	/* Create size group for transfer buttons */
 
-	name_selector_dialog->button_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	name_selector_dialog->priv->button_size_group =
+		gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	/* Set up contacts view */
 
@@ -218,28 +226,35 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 						 (GtkTreeCellDataFunc) contact_column_formatter,
 						 name_selector_dialog, NULL);
 
-	selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
+	selection = gtk_tree_view_get_selection (
+		name_selector_dialog->priv->contact_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
-	gtk_tree_view_append_column (name_selector_dialog->contact_view, column);
-	g_signal_connect_swapped (name_selector_dialog->contact_view, "row-activated",
-				  G_CALLBACK (contact_activated), name_selector_dialog);
+	gtk_tree_view_append_column (
+		name_selector_dialog->priv->contact_view, column);
+	g_signal_connect_swapped (
+		name_selector_dialog->priv->contact_view, "row-activated",
+		G_CALLBACK (contact_activated), name_selector_dialog);
 
 	/* Listen for changes to the contact selection */
 
-	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
+	contact_selection = gtk_tree_view_get_selection (
+		name_selector_dialog->priv->contact_view);
 	g_signal_connect_swapped (contact_selection, "changed",
 				  G_CALLBACK (contact_selection_changed), name_selector_dialog);
 
 	/* Set up our data structures */
 
-	name_selector_dialog->name_selector_model = e_name_selector_model_new ();
-	name_selector_dialog->sections            = g_array_new (FALSE, FALSE, sizeof (Section));
+	name_selector_dialog->priv->name_selector_model =
+		e_name_selector_model_new ();
+	name_selector_dialog->priv->sections =
+		g_array_new (FALSE, FALSE, sizeof (Section));
 
 	gconf_client = gconf_client_get_default();
 	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
 			NULL);
 	/* read user_query_fields here, because we are using it in call of setup_name_selector_model */
-	priv->user_query_fields = gconf_client_get_list (gconf_client, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
+	name_selector_dialog->priv->user_query_fields = gconf_client_get_list (
+		gconf_client, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
 	g_object_unref (gconf_client);
 
 	setup_name_selector_model (name_selector_dialog);
@@ -258,19 +273,22 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 		g_free (uid);
 	}
 
-	label = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "AddressBookLabel"));
+	label = GTK_WIDGET (gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "AddressBookLabel"));
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
 
 	gtk_widget_show (widget);
 
-	container = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "source-menu-box"));
+	container = GTK_WIDGET (gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "source-menu-box"));
 	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
 
 	e_name_selector_dialog_populate_categories (name_selector_dialog);
 
 	/* Set up search-as-you-type signal */
 
-	widget = GTK_WIDGET (gtk_builder_get_object (name_selector_dialog->gui, "search"));
+	widget = GTK_WIDGET (gtk_builder_get_object (
+		name_selector_dialog->priv->gui, "search"));
 	g_signal_connect_swapped (widget, "changed", G_CALLBACK (search_changed), name_selector_dialog);
 
 	/* Display initial source */
@@ -293,55 +311,47 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_widget_grab_focus (widget);
 }
 
-/* Partial, repeatable destruction. Release references. */
 static void
 e_name_selector_dialog_dispose (GObject *object)
 {
-	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
+	ENameSelectorDialogPrivate *priv;
 
-	remove_books (name_selector_dialog);
-	shutdown_name_selector_model (name_selector_dialog);
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
 
-	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose)
-		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
+	remove_books (E_NAME_SELECTOR_DIALOG (object));
+	shutdown_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
 }
 
-/* Final, one-time destruction. Free all. */
 static void
 e_name_selector_dialog_finalize (GObject *object)
 {
-	ENameSelectorDialog *name_selector_dialog = E_NAME_SELECTOR_DIALOG (object);
-	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+	ENameSelectorDialogPrivate *priv;
 
-	if (priv && priv->user_query_fields) {
-		g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
-		g_slist_free (priv->user_query_fields);
-		priv->user_query_fields = NULL;
-	}
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
 
-	g_array_free (name_selector_dialog->sections, TRUE);
-	g_object_unref (name_selector_dialog->button_size_group);
+	g_slist_foreach (priv->user_query_fields, (GFunc)g_free, NULL);
+	g_slist_free (priv->user_query_fields);
 
-	if (G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize)
-		G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize (object);
+	g_array_free (priv->sections, TRUE);
+	g_object_unref (priv->button_size_group);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize (object);
 }
 
 static void
-e_name_selector_dialog_class_init (ENameSelectorDialogClass *name_selector_dialog_class)
+e_name_selector_dialog_class_init (ENameSelectorDialogClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (name_selector_dialog_class);
+	GObjectClass *object_class;
 
-	object_class->get_property = e_name_selector_dialog_get_property;
-	object_class->set_property = e_name_selector_dialog_set_property;
-	object_class->dispose      = e_name_selector_dialog_dispose;
-	object_class->finalize     = e_name_selector_dialog_finalize;
+	g_type_class_add_private (class, sizeof (ENameSelectorDialogPrivate));
 
-	/* Install properties */
-
-	/* Install signals */
-
-	g_type_class_add_private (object_class, sizeof(ENameSelectorDialogPrivate));
-
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = e_name_selector_dialog_dispose;
+	object_class->finalize = e_name_selector_dialog_finalize;
 }
 
 /**
@@ -384,11 +394,13 @@ sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkT
 	GtkTreeIter          child_iter;
 	gint                 email_n_local;
 
-	contact_filter = e_name_selector_model_peek_contact_filter (name_selector_dialog->name_selector_model);
+	contact_filter = e_name_selector_model_peek_contact_filter (
+		name_selector_dialog->priv->name_selector_model);
 
-	gtk_tree_model_sort_convert_iter_to_child_iter (name_selector_dialog->contact_sort,
-							&child_iter, iter);
-	e_tree_model_generator_convert_iter_to_child_iter (contact_filter, iter, &email_n_local, &child_iter);
+	gtk_tree_model_sort_convert_iter_to_child_iter (
+		name_selector_dialog->priv->contact_sort, &child_iter, iter);
+	e_tree_model_generator_convert_iter_to_child_iter (
+		contact_filter, iter, &email_n_local, &child_iter);
 
 	if (email_n)
 		*email_n = email_n_local;
@@ -423,10 +435,11 @@ remove_books (ENameSelectorDialog *name_selector_dialog)
 	GList         *books;
 	GList         *l;
 
-	if (!name_selector_dialog->name_selector_model)
+	if (!name_selector_dialog->priv->name_selector_model)
 		return;
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
+	contact_store = e_name_selector_model_peek_contact_store (
+		name_selector_dialog->priv->name_selector_model);
 
 	/* Remove books (should be just one) being viewed */
 	books = e_contact_store_get_books (contact_store);
@@ -437,10 +450,10 @@ remove_books (ENameSelectorDialog *name_selector_dialog)
 	g_list_free (books);
 
 	/* See if we have a book pending; stop loading it if so */
-	if (name_selector_dialog->pending_book) {
-		e_book_cancel (name_selector_dialog->pending_book, NULL);
-		g_object_unref (name_selector_dialog->pending_book);
-		name_selector_dialog->pending_book = NULL;
+	if (name_selector_dialog->priv->pending_book) {
+		e_book_cancel (name_selector_dialog->priv->pending_book, NULL);
+		g_object_unref (name_selector_dialog->priv->pending_book);
+		name_selector_dialog->priv->pending_book = NULL;
 	}
 }
 
@@ -453,8 +466,9 @@ find_section_by_transfer_button (ENameSelectorDialog *name_selector_dialog, GtkB
 {
 	gint i;
 
-	for (i = 0; i < name_selector_dialog->sections->len; i++) {
-		Section *section = &g_array_index (name_selector_dialog->sections, Section, i);
+	for (i = 0; i < name_selector_dialog->priv->sections->len; i++) {
+		Section *section = &g_array_index (
+			name_selector_dialog->priv->sections, Section, i);
 
 		if (section->transfer_button == transfer_button)
 			return i;
@@ -468,8 +482,9 @@ find_section_by_tree_view (ENameSelectorDialog *name_selector_dialog, GtkTreeVie
 {
 	gint i;
 
-	for (i = 0; i < name_selector_dialog->sections->len; i++) {
-		Section *section = &g_array_index (name_selector_dialog->sections, Section, i);
+	for (i = 0; i < name_selector_dialog->priv->sections->len; i++) {
+		Section *section = &g_array_index (
+			name_selector_dialog->priv->sections, Section, i);
 
 		if (section->destination_view == tree_view)
 			return i;
@@ -483,8 +498,9 @@ find_section_by_name (ENameSelectorDialog *name_selector_dialog, const gchar *na
 {
 	gint i;
 
-	for (i = 0; i < name_selector_dialog->sections->len; i++) {
-		Section *section = &g_array_index (name_selector_dialog->sections, Section, i);
+	for (i = 0; i < name_selector_dialog->priv->sections->len; i++) {
+		Section *section = &g_array_index (
+			name_selector_dialog->priv->sections, Section, i);
 
 		if (!strcmp (name, section->name))
 			return i;
@@ -574,7 +590,9 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	widget = gtk_alignment_new (0.5, 0.0, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.transfer_button));
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 6);
-	gtk_size_group_add_widget (name_selector_dialog->button_size_group, GTK_WIDGET (section.transfer_button));
+	gtk_size_group_add_widget (
+		name_selector_dialog->priv->button_size_group,
+		GTK_WIDGET (section.transfer_button));
 
 	/*to get the image embedded in the button*/
 	widget = gtk_alignment_new (0.7, 0.5, 0.0, 0.0);
@@ -595,7 +613,9 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	widget = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (section.remove_button));
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, TRUE, 0);
-	gtk_size_group_add_widget (name_selector_dialog->button_size_group, GTK_WIDGET (section.remove_button));
+	gtk_size_group_add_widget (
+		name_selector_dialog->priv->button_size_group,
+		GTK_WIDGET (section.remove_button));
 	gtk_widget_set_sensitive (GTK_WIDGET (section.remove_button), FALSE);
 
 	widget = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
@@ -647,15 +667,16 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	gtk_widget_show_all (GTK_WIDGET (section.section_box));
 
 	/* Pack this section's box into the dialog */
-	gtk_box_pack_start (name_selector_dialog->destination_box,
-			    GTK_WIDGET (section.section_box), TRUE, TRUE, 0);
+	gtk_box_pack_start (
+		name_selector_dialog->priv->destination_box,
+		GTK_WIDGET (section.section_box), TRUE, TRUE, 0);
 
-	g_array_append_val (name_selector_dialog->sections, section);
+	g_array_append_val (name_selector_dialog->priv->sections, section);
 
 	/* Make sure UI is consistent */
 	contact_selection_changed (name_selector_dialog);
 
-	return name_selector_dialog->sections->len - 1;
+	return name_selector_dialog->priv->sections->len - 1;
 }
 
 static void
@@ -664,9 +685,10 @@ free_section (ENameSelectorDialog *name_selector_dialog, gint n)
 	Section *section;
 
 	g_assert (n >= 0);
-	g_assert (n < name_selector_dialog->sections->len);
+	g_assert (n < name_selector_dialog->priv->sections->len);
 
-	section = &g_array_index (name_selector_dialog->sections, Section, n);
+	section = &g_array_index (
+		name_selector_dialog->priv->sections, Section, n);
 
 	g_free (section->name);
 	gtk_widget_destroy (GTK_WIDGET (section->section_box));
@@ -678,8 +700,9 @@ model_section_added (ENameSelectorDialog *name_selector_dialog, const gchar *nam
 	gchar             *pretty_name;
 	EDestinationStore *destination_store;
 
-	e_name_selector_model_peek_section (name_selector_dialog->name_selector_model, name,
-					    &pretty_name, &destination_store);
+	e_name_selector_model_peek_section (
+		name_selector_dialog->priv->name_selector_model,
+		name, &pretty_name, &destination_store);
 	add_section (name_selector_dialog, name, pretty_name, destination_store);
 	g_free (pretty_name);
 }
@@ -693,7 +716,8 @@ model_section_removed (ENameSelectorDialog *name_selector_dialog, const gchar *n
 	g_assert (section_index >= 0);
 
 	free_section (name_selector_dialog, section_index);
-	g_array_remove_index (name_selector_dialog->sections, section_index);
+	g_array_remove_index (
+		name_selector_dialog->priv->sections, section_index);
 }
 
 /* -------------------- *
@@ -704,9 +728,9 @@ static void
 status_message(EBookView *view, const gchar *message, ENameSelectorDialog *dialog)
 {
 	if (message == NULL)
-		gtk_label_set_text(dialog->status_label, "");
+		gtk_label_set_text (dialog->priv->status_label, "");
 	else
-		gtk_label_set_text(dialog->status_label, message);
+		gtk_label_set_text (dialog->priv->status_label, message);
 }
 
 static void
@@ -724,19 +748,22 @@ book_opened (EBook *book, EBookStatus status, gpointer data)
 
 	if (status != E_BOOK_ERROR_OK) {
 		/* TODO: Handle errors gracefully */
-		gtk_label_set_text(name_selector_dialog->status_label, "Error loading addressbook");
+		gtk_label_set_text(
+			name_selector_dialog->priv->status_label,
+			"Error loading addressbook");
 		g_warning ("ENameSelectorDialog failed to open book!");
 		return;
 	}
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
+	contact_store = e_name_selector_model_peek_contact_store (
+		name_selector_dialog->priv->name_selector_model);
 	e_contact_store_add_book (contact_store, book);
 	view = find_contact_source_by_book_return_view(contact_store, book);
 	g_signal_connect(view, "status_message", G_CALLBACK(status_message), name_selector_dialog);
 	g_signal_connect(view, "sequence_complete", G_CALLBACK(sequence_complete), name_selector_dialog);
 
 	g_object_unref (book);
-	name_selector_dialog->pending_book = NULL;
+	name_selector_dialog->priv->pending_book = NULL;
 }
 
 static void
@@ -751,8 +778,8 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 	remove_books (name_selector_dialog);
 
 	/* Start loading selected book */
-	name_selector_dialog->pending_book = e_load_book_source (source, book_opened,
-								 name_selector_dialog);
+	name_selector_dialog->priv->pending_book = e_load_book_source (
+		source, book_opened, name_selector_dialog);
 }
 
 /* --------------- *
@@ -774,14 +801,14 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	gchar         *user_fields_str;
 
 	combo_box = GTK_WIDGET (gtk_builder_get_object (
-		name_selector_dialog->gui, "combobox-category"));
+		name_selector_dialog->priv->gui, "combobox-category"));
 	if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box)) == -1)
 		gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), 0);
 
 	category = gtk_combo_box_get_active_text (GTK_COMBO_BOX (combo_box));
 	category_escaped = escape_sexp_string (category);
 
-	text = gtk_entry_get_text (name_selector_dialog->search_entry);
+	text = gtk_entry_get_text (name_selector_dialog->priv->search_entry);
 	text_escaped = escape_sexp_string (text);
 
 	user_fields_str = ens_util_populate_user_query_fields (priv->user_query_fields, text, text_escaped);
@@ -809,7 +836,7 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	book_query = e_book_query_from_string (query_string);
 
 	contact_store = e_name_selector_model_peek_contact_store (
-		name_selector_dialog->name_selector_model);
+		name_selector_dialog->priv->name_selector_model);
 	e_contact_store_set_query (contact_store, book_query);
 
 	e_book_query_unref (book_query);
@@ -828,12 +855,14 @@ contact_selection_changed (ENameSelectorDialog *name_selector_dialog)
 	gboolean          have_selection = FALSE;
 	gint              i;
 
-	contact_selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
+	contact_selection = gtk_tree_view_get_selection (
+		name_selector_dialog->priv->contact_view);
 	if (gtk_tree_selection_count_selected_rows (contact_selection))
 		have_selection = TRUE;
 
-	for (i = 0; i < name_selector_dialog->sections->len; i++) {
-		Section *section = &g_array_index (name_selector_dialog->sections, Section, i);
+	for (i = 0; i < name_selector_dialog->priv->sections->len; i++) {
+		Section *section = &g_array_index (
+			name_selector_dialog->priv->sections, Section, i);
 		gtk_widget_set_sensitive (GTK_WIDGET (section->transfer_button), have_selection);
 	}
 }
@@ -848,20 +877,20 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 	Section           *section;
 	gint               email_n;
 
-	ENameSelectorDialogPrivate *priv;
-
 	/* When a contact is activated, we transfer it to the first destination on our list */
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
+	contact_store = e_name_selector_model_peek_contact_store (
+		name_selector_dialog->priv->name_selector_model);
 
 	/* If we have no sections, we can't transfer */
-	if (name_selector_dialog->sections->len == 0)
+	if (name_selector_dialog->priv->sections->len == 0)
 		return;
 
 	/* Get the contact to be transferred */
 
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
-				      &iter, path))
+	if (!gtk_tree_model_get_iter (
+		GTK_TREE_MODEL (name_selector_dialog->priv->contact_sort),
+		&iter, path))
 		g_assert_not_reached ();
 
 	sort_iter_to_contact_store_iter (name_selector_dialog, &iter, &email_n);
@@ -872,16 +901,19 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 		return;
 	}
 
-	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
-
-	section = &g_array_index (name_selector_dialog->sections, Section, priv->destination_index);
-	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
-						 section->name, NULL, &destination_store)) {
+	section = &g_array_index (
+		name_selector_dialog->priv->sections,
+		Section, name_selector_dialog->priv->destination_index);
+	if (!e_name_selector_model_peek_section (
+		name_selector_dialog->priv->name_selector_model,
+		section->name, NULL, &destination_store)) {
 		g_warning ("ENameSelectorDialog has a section unknown to the model!");
 		return;
 	}
 
-	add_destination (name_selector_dialog->name_selector_model, destination_store, contact, email_n);
+	add_destination (
+		name_selector_dialog->priv->name_selector_model,
+		destination_store, contact, email_n);
 }
 
 static void
@@ -896,26 +928,32 @@ destination_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *p
 
 	/* When a destination is activated, we remove it from the section */
 
-	section_index = find_section_by_tree_view (name_selector_dialog, tree_view);
+	section_index = find_section_by_tree_view (
+		name_selector_dialog, tree_view);
 	if (section_index < 0) {
 		g_warning ("ENameSelectorDialog got activation from unknown view!");
 		return;
 	}
 
-	section = &g_array_index (name_selector_dialog->sections, Section, section_index);
-	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
-						 section->name, NULL, &destination_store)) {
+	section = &g_array_index (
+		name_selector_dialog->priv->sections, Section, section_index);
+	if (!e_name_selector_model_peek_section (
+		name_selector_dialog->priv->name_selector_model,
+		section->name, NULL, &destination_store)) {
 		g_warning ("ENameSelectorDialog has a section unknown to the model!");
 		return;
 	}
 
-	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (destination_store), &iter, path))
+	if (!gtk_tree_model_get_iter (
+		GTK_TREE_MODEL (destination_store), &iter, path))
 		g_assert_not_reached ();
 
-	destination = e_destination_store_get_destination (destination_store, &iter);
+	destination = e_destination_store_get_destination (
+		destination_store, &iter);
 	g_assert (destination);
 
-	e_destination_store_remove_destination (destination_store, destination);
+	e_destination_store_remove_destination (
+		destination_store, destination);
 }
 
 static gboolean
@@ -928,15 +966,18 @@ remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_v
 	GtkTreeSelection  *selection;
 	GList		  *rows, *l;
 
-	section_index = find_section_by_tree_view (name_selector_dialog, tree_view);
+	section_index = find_section_by_tree_view (
+		name_selector_dialog, tree_view);
 	if (section_index < 0) {
 		g_warning ("ENameSelectorDialog got key press from unknown view!");
 		return FALSE;
 	}
 
-	section = &g_array_index (name_selector_dialog->sections, Section, section_index);
-	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
-						 section->name, NULL, &destination_store)) {
+	section = &g_array_index (
+		name_selector_dialog->priv->sections, Section, section_index);
+	if (!e_name_selector_model_peek_section (
+		name_selector_dialog->priv->name_selector_model,
+		section->name, NULL, &destination_store)) {
 		g_warning ("ENameSelectorDialog has a section unknown to the model!");
 		return FALSE;
 	}
@@ -960,10 +1001,12 @@ remove_selection (ENameSelectorDialog *name_selector_dialog, GtkTreeView *tree_v
 
 		gtk_tree_path_free (path);
 
-		destination = e_destination_store_get_destination (destination_store, &iter);
+		destination = e_destination_store_get_destination (
+			destination_store, &iter);
 		g_assert (destination);
 
-		e_destination_store_remove_destination (destination_store, destination);
+		e_destination_store_remove_destination (
+			destination_store, destination);
 	}
 	g_list_free (rows);
 
@@ -1007,8 +1050,10 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 
 	/* Get the contact to be transferred */
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
-	selection = gtk_tree_view_get_selection (name_selector_dialog->contact_view);
+	contact_store = e_name_selector_model_peek_contact_store (
+		name_selector_dialog->priv->name_selector_model);
+	selection = gtk_tree_view_get_selection (
+		name_selector_dialog->priv->contact_view);
 
 	if (!gtk_tree_selection_count_selected_rows (selection)) {
 		g_warning ("ENameSelectorDialog transfer button clicked, but no selection!");
@@ -1016,15 +1061,18 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 	}
 
 	/* Get the target section */
-	section_index = find_section_by_transfer_button (name_selector_dialog, transfer_button);
+	section_index = find_section_by_transfer_button (
+		name_selector_dialog, transfer_button);
 	if (section_index < 0) {
 		g_warning ("ENameSelectorDialog got click from unknown button!");
 		return;
 	}
 
-	section = &g_array_index (name_selector_dialog->sections, Section, section_index);
-	if (!e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
-						 section->name, NULL, &destination_store)) {
+	section = &g_array_index (
+		name_selector_dialog->priv->sections, Section, section_index);
+	if (!e_name_selector_model_peek_section (
+		name_selector_dialog->priv->name_selector_model,
+		section->name, NULL, &destination_store)) {
 		g_warning ("ENameSelectorDialog has a section unknown to the model!");
 		return;
 	}
@@ -1036,8 +1084,9 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 		GtkTreeIter iter;
 		GtkTreePath *path = l->data;
 
-		if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (name_selector_dialog->contact_sort),
-				      &iter, path)) {
+		if (!gtk_tree_model_get_iter (
+			GTK_TREE_MODEL (name_selector_dialog->priv->contact_sort),
+			&iter, path)) {
 			gtk_tree_path_free (path);
 			return;
 		}
@@ -1052,7 +1101,9 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 			return;
 		}
 
-		add_destination (name_selector_dialog->name_selector_model, destination_store, contact, email_n);
+		add_destination (
+			name_selector_dialog->priv->name_selector_model,
+			destination_store, contact, email_n);
 	}
 	g_list_free (rows);
 }
@@ -1071,15 +1122,17 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	/* Create new destination sections in UI */
 
-	new_sections = e_name_selector_model_list_sections (name_selector_dialog->name_selector_model);
+	new_sections = e_name_selector_model_list_sections (
+		name_selector_dialog->priv->name_selector_model);
 
 	for (l = new_sections; l; l = g_list_next (l)) {
 		gchar             *name = l->data;
 		gchar             *pretty_name;
 		EDestinationStore *destination_store;
 
-		e_name_selector_model_peek_section (name_selector_dialog->name_selector_model,
-						    name, &pretty_name, &destination_store);
+		e_name_selector_model_peek_section (
+			name_selector_dialog->priv->name_selector_model,
+			name, &pretty_name, &destination_store);
 
 		add_section (name_selector_dialog, name, pretty_name, destination_store);
 
@@ -1091,27 +1144,33 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	/* Connect to section add/remove signals */
 
-	g_signal_connect_swapped (name_selector_dialog->name_selector_model, "section-added",
-				  G_CALLBACK (model_section_added), name_selector_dialog);
-	g_signal_connect_swapped (name_selector_dialog->name_selector_model, "section-removed",
-				  G_CALLBACK (model_section_removed), name_selector_dialog);
+	g_signal_connect_swapped (
+		name_selector_dialog->priv->name_selector_model, "section-added",
+		G_CALLBACK (model_section_added), name_selector_dialog);
+	g_signal_connect_swapped (
+		name_selector_dialog->priv->name_selector_model, "section-removed",
+		G_CALLBACK (model_section_removed), name_selector_dialog);
 
 	/* Get contact store and its filter wrapper */
 
-	contact_store  = e_name_selector_model_peek_contact_store  (name_selector_dialog->name_selector_model);
-	contact_filter = e_name_selector_model_peek_contact_filter (name_selector_dialog->name_selector_model);
+	contact_store  = e_name_selector_model_peek_contact_store  (
+		name_selector_dialog->priv->name_selector_model);
+	contact_filter = e_name_selector_model_peek_contact_filter (
+		name_selector_dialog->priv->name_selector_model);
 
 	/* Create sorting model on top of filter, assign it to view */
 
-	name_selector_dialog->contact_sort = GTK_TREE_MODEL_SORT (
+	name_selector_dialog->priv->contact_sort = GTK_TREE_MODEL_SORT (
 		gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (contact_filter)));
 
 	/* sort on full name as we display full name in name selector dialog */
-	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (name_selector_dialog->contact_sort),
-					      E_CONTACT_FULL_NAME, GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_column_id (
+		GTK_TREE_SORTABLE (name_selector_dialog->priv->contact_sort),
+		E_CONTACT_FULL_NAME, GTK_SORT_ASCENDING);
 
-	gtk_tree_view_set_model (name_selector_dialog->contact_view,
-				 GTK_TREE_MODEL (name_selector_dialog->contact_sort));
+	gtk_tree_view_set_model (
+		name_selector_dialog->priv->contact_view,
+		GTK_TREE_MODEL (name_selector_dialog->priv->contact_sort));
 
 	/* Make sure UI is consistent */
 
@@ -1126,26 +1185,27 @@ shutdown_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 
 	/* Rid UI of previous destination sections */
 
-	for (i = 0; i < name_selector_dialog->sections->len; i++)
+	for (i = 0; i < name_selector_dialog->priv->sections->len; i++)
 		free_section (name_selector_dialog, i);
 
-	g_array_set_size (name_selector_dialog->sections, 0);
+	g_array_set_size (name_selector_dialog->priv->sections, 0);
 
 	/* Free sorting model */
 
-	if (name_selector_dialog->contact_sort) {
-		g_object_unref (name_selector_dialog->contact_sort);
-		name_selector_dialog->contact_sort = NULL;
+	if (name_selector_dialog->priv->contact_sort) {
+		g_object_unref (name_selector_dialog->priv->contact_sort);
+		name_selector_dialog->priv->contact_sort = NULL;
 	}
 
 	/* Free backend model */
 
-	if (name_selector_dialog->name_selector_model) {
-		g_signal_handlers_disconnect_matched (name_selector_dialog->name_selector_model,
-						      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_dialog);
+	if (name_selector_dialog->priv->name_selector_model) {
+		g_signal_handlers_disconnect_matched (
+			name_selector_dialog->priv->name_selector_model,
+			G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_dialog);
 
-		g_object_unref (name_selector_dialog->name_selector_model);
-		name_selector_dialog->name_selector_model = NULL;
+		g_object_unref (name_selector_dialog->priv->name_selector_model);
+		name_selector_dialog->priv->name_selector_model = NULL;
 	}
 }
 
@@ -1163,11 +1223,15 @@ contact_column_formatter (GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkT
 	gint           email_n;
 
 	contact_store_iter = *iter;
-	sort_iter_to_contact_store_iter (name_selector_dialog, &contact_store_iter, &email_n);
+	sort_iter_to_contact_store_iter (
+		name_selector_dialog, &contact_store_iter, &email_n);
 
-	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->name_selector_model);
-	contact = e_contact_store_get_contact (contact_store, &contact_store_iter);
-	email_list = e_name_selector_model_get_contact_emails_without_used (name_selector_dialog->name_selector_model, contact, TRUE);
+	contact_store = e_name_selector_model_peek_contact_store (
+		name_selector_dialog->priv->name_selector_model);
+	contact = e_contact_store_get_contact (
+		contact_store, &contact_store_iter);
+	email_list = e_name_selector_model_get_contact_emails_without_used (
+		name_selector_dialog->priv->name_selector_model, contact, TRUE);
 	email_str = g_list_nth_data (email_list, email_n);
 	full_name_str = e_contact_get (contact, E_CONTACT_FULL_NAME);
 
@@ -1231,7 +1295,7 @@ e_name_selector_dialog_peek_model (ENameSelectorDialog *name_selector_dialog)
 {
 	g_return_val_if_fail (E_IS_NAME_SELECTOR_DIALOG (name_selector_dialog), NULL);
 
-	return name_selector_dialog->name_selector_model;
+	return name_selector_dialog->priv->name_selector_model;
 }
 
 /**
@@ -1248,11 +1312,11 @@ e_name_selector_dialog_set_model (ENameSelectorDialog *name_selector_dialog,
 	g_return_if_fail (E_IS_NAME_SELECTOR_DIALOG (name_selector_dialog));
 	g_return_if_fail (E_IS_NAME_SELECTOR_MODEL (model));
 
-	if (model == name_selector_dialog->name_selector_model)
+	if (model == name_selector_dialog->priv->name_selector_model)
 		return;
 
 	shutdown_name_selector_model (name_selector_dialog);
-	name_selector_dialog->name_selector_model = g_object_ref (model);
+	name_selector_dialog->priv->name_selector_model = g_object_ref (model);
 
 	setup_name_selector_model (name_selector_dialog);
 }
@@ -1268,12 +1332,10 @@ void
 e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector_dialog,
 					      guint                index)
 {
-	ENameSelectorDialogPrivate *priv;
+	g_return_if_fail (E_IS_NAME_SELECTOR_DIALOG (name_selector_dialog));
 
-	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
-
-	if (index >= name_selector_dialog->sections->len)
+	if (index >= name_selector_dialog->priv->sections->len)
 		return;
 
-	priv->destination_index = index;
+	name_selector_dialog->priv->destination_index = index;
 }

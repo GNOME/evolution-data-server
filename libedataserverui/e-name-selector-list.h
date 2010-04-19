@@ -32,49 +32,46 @@
 #include <libedataserverui/e-tree-model-generator.h>
 #include <libedataserverui/e-name-selector-entry.h>
 
-G_BEGIN_DECLS
-
 /* Standard GObject macros */
 #define E_TYPE_NAME_SELECTOR_LIST \
 	(e_name_selector_list_get_type ())
 #define E_NAME_SELECTOR_LIST(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), e_name_selector_list_get_type (), ENameSelectorEntry))
+	((obj), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorList))
 #define E_NAME_SELECTOR_LIST_CLASS(cls) \
 	(G_TYPE_CHECK_CLASS_CAST \
-	((cls), e_name_selector_list_get_type (), ENameSelectorEntryClass))
+	((cls), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListClass))
 #define E_IS_NAME_SELECTOR_LIST(obj) \
 	(G_TYPE_CHECK_INSTANCE_TYPE \
-	((obj), e_name_selector_list_get_type ()))
+	((obj), E_TYPE_NAME_SELECTOR_LIST))
 #define E_IS_NAME_SELECTOR_LIST_CLASS(cls) \
 	(G_TYPE_CHECK_CLASS_TYPE \
-	((cls), e_name_selector_list_get_type ()))
+	((cls), E_TYPE_NAME_SELECTOR_LIST))
 #define E_NAME_SELECTOR_LIST_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS \
-	((obj), E_NAME_SELECTOR_LIST_TYPE, ENameSelectorEntryClass))
+	((obj), E_TYPE_NAME_SELECTOR_LIST, ENameSelectorListClass))
 
-typedef struct _ENameSelectorList      ENameSelectorList;
+G_BEGIN_DECLS
+
+typedef struct _ENameSelectorList ENameSelectorList;
 typedef struct _ENameSelectorListClass ENameSelectorListClass;
+typedef struct _ENameSelectorListPrivate ENameSelectorListPrivate;
+
+struct _ENameSelectorList {
+	ENameSelectorEntry parent;
+	ENameSelectorListPrivate *priv;
+};
 
 struct _ENameSelectorListClass {
 	ENameSelectorEntryClass parent_class;
-
-	/* Signals */
 };
 
-struct _ENameSelectorList {
-	ENameSelectorEntry	parent;
-
-	GtkWindow *popup;
-	GtkWidget *tree_view;
-	GtkWidget *menu;
-	EDestinationStore *store;
-	gint rows;
-};
-
-GType		 e_name_selector_list_get_type (void);
-ENameSelectorList	*e_name_selector_list_new (void);
-void                    e_name_selector_list_expand_clicked (ENameSelectorList *list);
+GType		e_name_selector_list_get_type	(void);
+ENameSelectorList *
+		e_name_selector_list_new	(void);
+void		e_name_selector_list_expand_clicked
+						(ENameSelectorList *list);
 
 G_END_DECLS
-#endif
+
+#endif /* E_NAME_SELECTOR_LIST_H */
