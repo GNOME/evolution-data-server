@@ -122,7 +122,7 @@ contact_store_dispose (GObject *object)
 	g_array_set_size (priv->contact_sources, 0);
 
 	if (priv->query != NULL) {
-		g_object_unref (priv->query);
+		e_book_query_unref (priv->query);
 		priv->query = NULL;
 	}
 
