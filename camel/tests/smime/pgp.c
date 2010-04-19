@@ -223,9 +223,9 @@ gint main (gint argc, gchar **argv)
 	camel_data_wrapper_write_to_stream((CamelDataWrapper *)conpart, stream1);
 	camel_data_wrapper_write_to_stream((CamelDataWrapper *)outpart, stream2);
 
-	buf = CAMEL_STREAM_MEM (stream1)->buffer;
+	buf = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (stream1));
 	before = g_strndup (buf->data, buf->len);
-	buf = CAMEL_STREAM_MEM (stream2)->buffer;
+	buf = camel_stream_mem_get_byte_array (CAMEL_STREAM_MEM (stream2));
 	after = g_strndup (buf->data, buf->len);
 	check_msg (string_equal (before, after), "before = '%s', after = '%s'", before, after);
 	g_free (before);

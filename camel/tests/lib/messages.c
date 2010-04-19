@@ -151,26 +151,28 @@ hexdump (const guchar *in, gint inlen)
 gint
 test_message_compare_content(CamelDataWrapper *dw, const gchar *text, gint len)
 {
-	CamelStreamMem *content;
+	GByteArray *byte_array;
+	CamelStream *content;
 
 	/* sigh, ok, so i len == 0, dw will probably be 0 too
 	   camel_mime_part_set_content is weird like that */
 	if (dw == 0 && len == 0)
 		return 0;
 
-	content = (CamelStreamMem *)camel_stream_mem_new();
-	camel_data_wrapper_decode_to_stream(dw, (CamelStream *)content);
+	byte_array = g_byte_array_new ();
+	content = camel_stream_mem_new_with_byte_array (byte_array);
+	camel_data_wrapper_decode_to_stream (dw, content);
 
-	if (content->buffer->len != len) {
+	if (byte_array->len != len) {
 		printf ("original text:\n");
 		hexdump (text, len);
 
 		printf ("new text:\n");
-		hexdump (content->buffer->data, content->buffer->len);
+		hexdump (byte_array->data, byte_array->len);
 	}
 
-	check_msg(content->buffer->len == len, "buffer->len = %d, len = %d", content->buffer->len, len);
-	check_msg(memcmp(content->buffer->data, text, content->buffer->len) == 0, "len = %d", len);
+	check_msg(byte_array->len == len, "buffer->len = %d, len = %d", byte_array->len, len);
+	check_msg(memcmp(byte_array->data, text, byte_array->len) == 0, "len = %d", len);
 
 	check_unref(content, 1);
 
@@ -181,25 +183,29 @@ gint
 test_message_compare (CamelMimeMessage *msg)
 {
 	CamelMimeMessage *msg2;
-	CamelStreamMem *mem1, *mem2;
+	CamelStream *stream1, *stream2;
+	GByteArray *byte_array1;
+	GByteArray *byte_array2;
 
-	mem1 = (CamelStreamMem *) camel_stream_mem_new ();
-	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, (CamelStream *) mem1) != -1, "write_to_stream 1 failed");
-	camel_stream_reset ((CamelStream *) mem1);
+	byte_array1 = g_byte_array_new ();
+	stream1 = camel_stream_mem_new_with_byte_array (byte_array1);
+	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg, stream1) != -1, "write_to_stream 1 failed");
+	camel_stream_reset (stream1);
 
 	msg2 = camel_mime_message_new ();
-	check_msg(camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg2, (CamelStream *) mem1) != -1, "construct_from_stream 1 failed");
-	camel_stream_reset ((CamelStream *) mem1);
+	check_msg(camel_data_wrapper_construct_from_stream ((CamelDataWrapper *) msg2, (CamelStream *) stream1) != -1, "construct_from_stream 1 failed");
+	camel_stream_reset ((CamelStream *) stream1);
 
-	mem2 = (CamelStreamMem *) camel_stream_mem_new ();
-	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg2, (CamelStream *) mem2) != -1, "write_to_stream 2 failed");
-	camel_stream_reset ((CamelStream *) mem2);
+	byte_array2 = g_byte_array_new ();
+	stream2 = camel_stream_mem_new_with_byte_array (byte_array2);
+	check_msg(camel_data_wrapper_write_to_stream ((CamelDataWrapper *) msg2, stream2) != -1, "write_to_stream 2 failed");
+	camel_stream_reset (stream2);
 
-	if (mem1->buffer->len != mem2->buffer->len) {
+	if (byte_array1->len != byte_array2->len) {
 		CamelDataWrapper *content;
 
-		printf ("mem1 stream:\n%.*s\n", mem1->buffer->len, mem1->buffer->data);
-		printf ("mem2 stream:\n%.*s\n\n", mem2->buffer->len, mem2->buffer->data);
+		printf ("stream1 stream:\n%.*s\n", byte_array1->len, byte_array1->data);
+		printf ("stream2 stream:\n%.*s\n\n", byte_array2->len, byte_array2->data);
 
 		printf("msg1:\n");
 		test_message_dump_structure(msg);
@@ -211,14 +217,14 @@ test_message_compare (CamelMimeMessage *msg)
 
 	check_unref(msg2, 1);
 
-	check_msg (mem1->buffer->len == mem2->buffer->len,
-		   "mem1->buffer->len = %d, mem2->buffer->len = %d",
-		   mem1->buffer->len, mem2->buffer->len);
+	check_msg (byte_array1->len == byte_array2->len,
+		   "byte_array1->len = %d, byte_array2->len = %d",
+		   byte_array1->len, byte_array2->len);
 
-	check_msg (memcmp (mem1->buffer->data, mem2->buffer->data, mem1->buffer->len) == 0, "msg/stream compare");
+	check_msg (memcmp (byte_array1->data, byte_array2->data, byte_array1->len) == 0, "msg/stream compare");
 
-	camel_object_unref (mem1);
-	camel_object_unref (mem2);
+	camel_object_unref (stream1);
+	camel_object_unref (stream2);
 
 	return 0;
 }
@@ -252,7 +258,7 @@ message_dump_rec(CamelMimeMessage *msg, CamelMimePart *part, gint depth)
 	printf("%sContent-Type: %s\n", s, mime_type);
 	g_free(mime_type);
 	printf("%s encoding: %s\n", s, camel_transfer_encoding_to_string(((CamelDataWrapper *)part)->encoding));
-	printf("%s part encoding: %s\n", s, camel_transfer_encoding_to_string(part->encoding));
+	printf("%s part encoding: %s\n", s, camel_transfer_encoding_to_string(camel_mime_part_get_encoding(part)));
 
 	containee = camel_medium_get_content (CAMEL_MEDIUM (part));
 

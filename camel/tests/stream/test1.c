@@ -42,7 +42,7 @@ gint main(gint argc, gchar **argv)
 		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_CREAT|O_RDWR|O_TRUNC, 0600);
-			fd = ((CamelStreamFs *)ss)->fd;
+			fd = camel_stream_fs_get_fd ((CamelStreamFs *)ss);
 			break;
 		case 1:
 			fd = open("stream.txt", O_CREAT|O_RDWR|O_TRUNC, 0600);
@@ -70,7 +70,7 @@ gint main(gint argc, gchar **argv)
 		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR, 0);
-			fd = ((CamelStreamFs *)ss)->fd;
+			fd = camel_stream_fs_get_fd ((CamelStreamFs *)ss);
 			break;
 		case 1:
 			fd = open("stream.txt", O_RDWR, 0);
@@ -90,7 +90,7 @@ gint main(gint argc, gchar **argv)
 		switch (i) {
 		case 0:
 			ss = (CamelSeekableStream *)camel_stream_fs_new_with_name("stream.txt", O_RDWR|O_TRUNC, 0);
-			fd = ((CamelStreamFs *)ss)->fd;
+			fd = camel_stream_fs_get_fd ((CamelStreamFs *)ss);
 			break;
 		case 1:
 			fd = open("stream.txt", O_RDWR|O_TRUNC, 0);

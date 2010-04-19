@@ -91,6 +91,7 @@ gint main(gint argc, gchar **argv)
 			for (i = 0; i < MAX_THREADS; i++) {
 				if (threads[i])
 					g_thread_join (threads[i]);
+			}
 
 			test_free(path);
 
